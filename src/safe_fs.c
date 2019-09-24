@@ -44,6 +44,7 @@
 #include "error.h"
 #include "globalconst.h"
 #include "paths.h"
+#include "hidlib.h"
 
 
 /* Evaluates op(arg1,arg2); returns 0 if the operation is permitted */
@@ -105,6 +106,8 @@ FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 
 FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode, int *all)
 {
+	if (hidlib->batch_ask_ovr != NULL)
+		all = hidlib->batch_ask_ovr;
 	if (strchr(mode, 'w') != NULL) {
 		fgw_func_t *fun = pcb_act_lookup("gui_mayoverwritefile");
 
@@ -141,6 +144,21 @@ FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode,
 	return pcb_fopen(hidlib, path, mode);
 }
 
+int *pcb_batched_ask_ovr_init(pcb_hidlib_t *hidlib, int *storage)
+{
+	int *old = hidlib->batch_ask_ovr;
+	if (hidlib->batch_ask_ovr != NULL)
+		*storage = *hidlib->batch_ask_ovr;
+	hidlib->batch_ask_ovr = storage;
+	return old;
+}
+
+void pcb_batched_ask_ovr_uninit(pcb_hidlib_t *hidlib, int *init_retval)
+{
+	if (init_retval != NULL)
+		*init_retval = *hidlib->batch_ask_ovr;
+	hidlib->batch_ask_ovr = init_retval;
+}
 
 char *pcb_fopen_check(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 {

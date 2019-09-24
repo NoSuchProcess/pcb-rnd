@@ -48,6 +48,14 @@ int pcb_rename(pcb_hidlib_t *hidlib, const char *old_path, const char *new_path)
 int pcb_mkdir(pcb_hidlib_t *hidlib, const char *path, int mode);
 int pcb_unlink(pcb_hidlib_t *hidlib, const char *path);
 
+
+/* Batched ask-overwrite in storage provided by the caller; the return value
+   of the init() call needs to be passed to the uninit() so nested batching is
+   possible. */
+int *pcb_batched_ask_ovr_init(pcb_hidlib_t *hidlib, int *storage);
+void pcb_batched_ask_ovr_uninit(pcb_hidlib_t *hidlib, int *init_retval);
+
+
 /* Return the size of non-large files; on error or for large files
    (size larger than the value long can hold) return -1 */
 long pcb_file_size(pcb_hidlib_t *hidlib, const char *path);

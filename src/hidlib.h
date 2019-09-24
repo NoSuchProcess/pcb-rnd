@@ -33,6 +33,9 @@ struct pcb_hidlib_s {
 	pcb_coord_t size_x, size_y;        /* drawing area extents (or board dimensions) */
 	char *name;                        /* name of the design */
 	char *filename;                    /* name of the file (from load) */
+
+	/* internal */
+	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */
 };
 
 void pcb_hidlib_event_uninit(void);
