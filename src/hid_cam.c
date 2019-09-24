@@ -260,6 +260,7 @@ static char *parse_layer(char *curr, char **spk, char **spv, int *spc)
 				if (level == 0)
 					goto out;
 				append:;
+				*s = '\0';
 				if (*spc >= trmax)
 					return lp_err;
 				lasta = strip(lasta);
