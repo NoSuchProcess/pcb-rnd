@@ -14,7 +14,6 @@
 - FEATURE: parametric footprints: update fp2anim so the web page works again
 - CLEANUP: pcb_term_add() and pcb_term_del() should not be called from undo code but from attribute change callback [report: Majenko]
 	- BUG: undo_term_rename_swap() shall not require subc [report: Majenko]
-- BUG: CRITICAL: excellon cam export (e.g. eagle) broke: it's not really layerless because of plated/unplated (but retest the plugged via example) [report: Igor2]
 - BUG: switching away from rat layer using the layer selector leaves us on the rat layer, drawing rats with no grid [report: Majenko]
 - BUG: kicad5: bug_files/5.kicad_pcb doesn't load: (path /5D7245F8) [report: Majenko]
 - BUG: second click on mesh() generate button -> segfault on layer visibility [report: Evan]
