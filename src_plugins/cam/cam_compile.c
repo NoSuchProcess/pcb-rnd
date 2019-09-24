@@ -32,6 +32,7 @@
 #include "cam_compile.h"
 #include "layer_vis.h"
 #include "event.h"
+#include "safe_fs.h"
 #include <genvector/genvector_impl.c>
 
 
@@ -142,6 +143,9 @@ static int cam_exec(cam_ctx_t *ctx)
 {
 	int res = 0, n, have_gui, currly = INDEXOFCURRENT;
 	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
+	int ovr = 0, *old_ovr;
+
+	old_ovr = pcb_batched_ask_ovr_init(&PCB->hidlib, &ovr);
 
 	if (ctx->has_partial)
 		pcb_data_clear_flag(PCB->Data, PCB_FLAG_EXPORTSEL, 0, 0);
@@ -170,6 +174,8 @@ static int cam_exec(cam_ctx_t *ctx)
 		pcb_layervis_change_group_vis(currly, 1, 1);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
+
+	pcb_batched_ask_ovr_uninit(&PCB->hidlib, old_ovr);
 	return res;
 }
 
