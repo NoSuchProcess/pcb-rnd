@@ -43,6 +43,25 @@
 
 htsp_t *pcb_cam_vars = NULL; /* substitute %% variables from this hash */
 
+typedef struct  {
+	pcb_cam_t *cam;
+	const pcb_layergrp_t *grp;
+	const pcb_virt_layer_t *vl;
+	htsp_t *vars;
+} cam_name_ctx_t;
+static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input);
+
+static void cam_gen_fn(pcb_cam_t *dst)
+{
+	cam_name_ctx_t ctx;
+
+	memset(&ctx, 0, sizeof(ctx));
+	ctx.cam = dst;
+	ctx.vars = pcb_cam_vars;
+	free(dst->fn);
+	dst->fn = pcb_strdup_subst(dst->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+}
+
 char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
 	const pcb_virt_layer_t *v;
@@ -397,6 +416,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 	if (strchr(dst->fn, '%') != NULL) {
 		dst->fn_template = dst->fn;
 		dst->fn = NULL;
+		cam_gen_fn(dst);
 	}
 
 	while(isspace(*next))
@@ -527,18 +547,10 @@ int pcb_cam_end(pcb_cam_t *dst)
 	return dst->exported_grps;
 }
 
-typedef struct  {
-	pcb_cam_t *cam;
-	const pcb_layergrp_t *grp;
-	const pcb_virt_layer_t *vl;
-	htsp_t *vars;
-} cam_name_ctx_t;
-static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input);
 
 void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const char **fn_out)
 {
 	char *eq;
-	cam_name_ctx_t ctx;
 
 	memset(dst, 0, sizeof(pcb_cam_t));
 	dst->pcb = pcb;
@@ -578,11 +590,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 		if (eq != NULL)
 			*eq = '\0';
 
-		memset(&ctx, 0, sizeof(ctx));
-		ctx.cam = dst;
-		ctx.vars = pcb_cam_vars;
-		free(dst->fn);
-		dst->fn = pcb_strdup_subst(dst->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+		cam_gen_fn(dst);
 		*fn_out = dst->fn;
 		/* note: dst->active is not set so that layer selection is not altered */
 	}
