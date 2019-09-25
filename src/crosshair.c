@@ -1176,7 +1176,8 @@ void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y, int mous
 {
 	if (!mouse_mot) {
 		pcb_notify_crosshair_change(pcb_false);
-		pcb_crosshair_move_absolute(abs_x, abs_y);
+		if (pcb_crosshair_move_absolute(abs_x, abs_y))
+			pcb_notify_crosshair_change(pcb_true);
 		pcb_notify_crosshair_change(pcb_true);
 	}
 	else
