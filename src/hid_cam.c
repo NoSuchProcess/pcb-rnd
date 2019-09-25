@@ -581,6 +581,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 		memset(&ctx, 0, sizeof(ctx));
 		ctx.cam = dst;
 		ctx.vars = pcb_cam_vars;
+		free(dst->fn);
 		dst->fn = pcb_strdup_subst(dst->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
 		*fn_out = dst->fn;
 		/* note: dst->active is not set so that layer selection is not altered */
