@@ -245,6 +245,8 @@ static void ipcd356_pstk_shape(test_feature_t *t, pcb_pstk_shape_t *sh)
 
 			t->cx += (x1 + x2)/2;
 			t->cy += (y1 + y2)/2;
+			if (sh->data.poly.pa == NULL)
+				pcb_pstk_shape_update_pa(&sh->data.poly);
 			if (pcb_pline_is_rectangle(sh->data.poly.pa->contours)) {
 				t->width = (x2 - x1);
 				t->height = (y2 - y1);
