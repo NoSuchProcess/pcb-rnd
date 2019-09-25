@@ -511,6 +511,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			   action script, so actions after this one could do things
 			   that would be executed only after non-recognized gestures */
 			pcb_release_mode(&PCB->hidlib);
+			pcb_notify_crosshair_change(pcb_true);
 			return 1;
 		}
 		pcb_release_mode(&PCB->hidlib);
