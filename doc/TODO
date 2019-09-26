@@ -8,7 +8,6 @@
 + FEATURE/BUG: old gtk doesn't have GDK_Key_* but GDK_* (e.g. GDK_Tab); detect this in scconfig, use a wrapper macro in gtk code [report: Ade]
 + FEATURE: library window filter shouldn't modify filter if there's () in the string [report: pskibinski]
 + FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
-+ FEATURE: make the drill exporter sort drills by attributes, an user configured table telling which drill (by attribute) ends up in which file (for support for plugged vias/filled vias) [report: Vuokko]
 
 1. For the upcoming release ===============================================================================
 - FEATURE: parametric footprints: update fp2anim so the web page works again
