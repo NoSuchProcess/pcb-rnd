@@ -215,7 +215,6 @@
 - improve locking:
 	- FEATURE: consider a move-only lock?
 	- BUG: when thermal and some other operations are applied on a locked element, indicate it
-- BUG: rubberband_orig: draw a 90 deg arc, a 45 deg line that ends in the endpoints of the arc; enable rubber band, move the arc: only one endpoint of the line is moved [fixing:Ade]
 - CLEANUP: insert drag&drop strangeness (mainline too):
 	insert should just insert a new point and stop there, not starting a drag&drop
 	move; the new point should be marked somehow (e.g. green-find one half of the
