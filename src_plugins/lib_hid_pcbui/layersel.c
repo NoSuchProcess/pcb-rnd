@@ -263,6 +263,7 @@ static void layer_select(ls_layer_t *lys)
 			vis = &lys->ly->meta.real.vis;
 			*vis = 1;
 		}
+		PCB->RatDraw = 0;
 	}
 	else if (lys->ml != NULL) {
 		vis = (pcb_bool *)((char *)PCB + lys->ml->vis_offs);
