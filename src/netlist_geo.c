@@ -291,7 +291,7 @@ static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2, pcb_
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
 
-	return dist_poly(o2, (pcb_any_obj_t *)o1, o1->x, o1->y, 0);
+	return dist_poly(o2, (pcb_any_obj_t *)o1, o1->x, o1->y, 1);
 }
 
 static pcb_subnet_dist_t pcb_dist_pstk_pstk(pcb_pstk_t *o1, pcb_pstk_t *o2, pcb_rat_accuracy_t acc)
