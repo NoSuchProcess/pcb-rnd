@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,2004,2006 Thomas Nau
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas (pcb-rnd extensions)
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas (pcb-rnd extensions)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1081,6 +1081,10 @@ const pcb_dflgmap_t pcb_dflgmap[] = {
 	{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   NULL, PCB_LYC_SUB | PCB_LYC_AUTO, 1},
 	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   NULL, PCB_LYC_AUTO, 1},
 	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  NULL, PCB_LYC_AUTO, 1},
+
+	{"pmech",               PCB_LYT_MECH,                    "proute", PCB_LYC_AUTO, 0},
+	{"umech",               PCB_LYT_MECH,                    "uroute", PCB_LYC_AUTO, 0},
+
 	{NULL, 0}
 };
 
@@ -1137,7 +1141,13 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 
 	inhibit_notify++;
 	for(m = pcb_dflgmap; m->name != NULL; m++) {
-		if (pcb_layergrp_list(pcb, m->lyt, &gid, 1) == 1) {
+		int found;
+		if (m->purpose == NULL)
+			found = pcb_layergrp_list(pcb, m->lyt, &gid, 1);
+		else
+			found = pcb_layergrp_listp(pcb, m->lyt, &gid, 1, 0, m->purpose);
+		
+		if (found == 1) {
 			grp = &pcb->LayerGroups.grp[gid];
 			free(grp->name);
 		}
