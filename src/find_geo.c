@@ -292,7 +292,7 @@ static pcb_bool pcb_isc_rat_arc(pcb_rat_t *rat, pcb_arc_t *arc)
 /* ---------------------------------------------------------------------------
  * Tests if rat line point is connected to a polygon
  */
-static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
+static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon, int donut)
 {
 	pcb_coord_t cx, cy;
 	pcb_poly_it_t it;
@@ -301,6 +301,10 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 	/* clipped out of existence... */
 	if (polygon->Clipped == NULL)
 		return pcb_false;
+
+	/* special case: zero length connection */
+	if (donut)
+		return pcb_poly_is_point_in_p_ignore_holes(Point->X, Point->Y, polygon);
 
 	/* canonical point */
 	cx = polygon->Clipped->contours->head.point[0];
@@ -341,10 +345,11 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 static pcb_bool pcb_isc_rat_poly(pcb_rat_t *rat, pcb_poly_t *poly)
 {
 	pcb_layergrp_id_t gid = pcb_layer_get_group_(poly->parent.layer);
+	int donut = PCB_FLAG_TEST(PCB_FLAG_VIA, rat);
 
-	if ((rat->group1 == gid) && pcb_isc_ratp_poly(&rat->Point1, poly))
+	if ((rat->group1 == gid) && pcb_isc_ratp_poly(&rat->Point1, poly, donut))
 		return pcb_true;
-	if ((rat->group2 == gid) && pcb_isc_ratp_poly(&rat->Point2, poly))
+	if ((rat->group2 == gid) && pcb_isc_ratp_poly(&rat->Point2, poly, donut))
 		return pcb_true;
 
 	return pcb_false;
