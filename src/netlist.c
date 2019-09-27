@@ -581,7 +581,7 @@ pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 		}
 	}
 
-	/* Start collecting subnets into one bug snowball of newly connected
+	/* Start collecting subnets into one big snowball of newly connected
 	   subnets. done[subnet] is 1 if a subnet is already in the snowball.
 	   Use a greedy algorithm: mark the first subnet as dine, then always
 	   add the shortest from any 'undone' subnet to any 'done' */
