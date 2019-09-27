@@ -295,6 +295,8 @@ static pcb_bool pcb_isc_rat_arc(pcb_rat_t *rat, pcb_arc_t *arc)
 static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 {
 	pcb_coord_t cx, cy;
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
 
 	/* clipped out of existence... */
 	if (polygon->Clipped == NULL)
@@ -310,6 +312,27 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon)
 	pcb_obj_center((pcb_any_obj_t *)polygon, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
 		return pcb_true;
+
+	/* expensive test: the rat can end on any contour point */
+	for(pa = pcb_poly_island_first((pcb_any_obj_t *)polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_coord_t x, y;
+		pcb_pline_t *pl;
+		int go;
+
+		pl = pcb_poly_contour(&it);
+		if (pl != NULL) {
+			/* contour of the island */
+			for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+				if ((Point->X == x) && (Point->Y == y))
+					return pcb_true;
+
+			/* iterate over all holes within this island */
+			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
+				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
+					if ((Point->X == x) && (Point->Y == y))
+						return pcb_true;
+		}
+	}
 
 	return pcb_false;
 }
