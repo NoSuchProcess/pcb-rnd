@@ -145,7 +145,7 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_
 	best.o2x = o2x;
 	best.o2y = o2y;
 
-	/* special case: encosed in a polygon, minus the clearance (radius) -> donut (0 dist) */
+	/* special case: enclosed in a polygon, minus the clearance (radius) -> donut (0 dist) */
 	if (radius > 0) {
 		if (pcb_poly_is_point_in_p(o2x, o2y, radius, o1)) {
 			if (pcb_poly_is_point_in_p_ignore_holes(o2x, o2y, o1)) {
