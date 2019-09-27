@@ -86,7 +86,7 @@ typedef enum {
 	PCB_FLAG_NONETLIST    = 0x10000, /* object is not part of the netlist, don't warn for netlist issues */
 	PCB_FLAG_MINCUT       = 0x20000, /* used by the mincut short find code */
 	PCB_FLAG_ONPOINT      = 0x40000, /* crosshair is on line point or arc point */
-	PCB_FLAG_TERMNAME     = 0x80000, /* object is a terminal */
+	PCB_FLAG_TERMNAME     = 0x80000, /* show terminal name of the object */
 	PCB_FLAG_DRC_INTCONN  = 0x100000,/* Set for objects are put on the DRC mark because of an intconn */
 	PCB_FLAG_CLEARPOLYPOLY= 0x200000,/* polygon clearning other polygons */
 	PCB_FLAG_DYNTEXT      = 0x400000,/* templated text */
