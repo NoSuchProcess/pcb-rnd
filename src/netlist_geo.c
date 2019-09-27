@@ -133,7 +133,7 @@ do { \
 	} \
 } while(0)
 
-static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_t o2x, pcb_coord_t o2y)
+static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_t o2x, pcb_coord_t o2y, pcb_coord_t radius)
 {
 	pcb_subnet_dist_t best;
 	pcb_poly_it_t it;
@@ -144,6 +144,16 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_
 	best.o2 = o2;
 	best.o2x = o2x;
 	best.o2y = o2y;
+
+	/* special case: encosed in a polygon, minus the clearance (radius) -> donut (0 dist) */
+	if (radius > 0) {
+		if (pcb_poly_is_point_in_p(o2x, o2y, radius, o1)) {
+			best.dist2 = 0;
+			best.o1x = o2x;
+			best.o1y = o2y;
+			return best;
+		}
+	}
 
 	for(pa = pcb_poly_island_first(o1, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		pcb_coord_t x, y;
@@ -168,7 +178,7 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_
 static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	pcb_subnet_dist_t best, curr;
-	pcb_coord_t o2x1, o2y1, o2x2, o2y2;
+	pcb_coord_t o2x1, o2y1, o2x2, o2y2, radius;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
@@ -176,8 +186,9 @@ static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_ra
 	pcb_arc_get_end(o2, 0, &o2x1, &o2y1);
 	pcb_arc_get_end(o2, 1, &o2x2, &o2y2);
 
-	best = dist_poly(o1, (pcb_any_obj_t *)o2, o2x1, o2y1);
-	curr = dist_poly(o1, (pcb_any_obj_t *)o2, o2x2, o2y2);
+	radius = (o2->Thickness + o2->Clearance)/2+4;
+	best = dist_poly(o1, (pcb_any_obj_t *)o2, o2x1, o2y1, radius);
+	curr = dist_poly(o1, (pcb_any_obj_t *)o2, o2x2, o2y2, radius);
 	if (curr.dist2 < best.dist2)
 		return curr;
 
@@ -187,12 +198,14 @@ static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_ra
 static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
 	pcb_subnet_dist_t best, curr;
+	pcb_coord_t radius;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
 
-	best = dist_poly(o1, (pcb_any_obj_t *)o2, o2->Point1.X, o2->Point1.Y);
-	curr = dist_poly(o1, (pcb_any_obj_t *)o2, o2->Point2.X, o2->Point2.Y);
+	radius = (o2->Thickness + o2->Clearance)/2+4;
+	best = dist_poly(o1, (pcb_any_obj_t *)o2, o2->Point1.X, o2->Point1.Y, radius);
+	curr = dist_poly(o1, (pcb_any_obj_t *)o2, o2->Point2.X, o2->Point2.Y, radius);
 	if (curr.dist2 < best.dist2)
 		return curr;
 
@@ -201,7 +214,7 @@ static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_
 
 #define poly_pt_chk(x, y) \
 do { \
-	pcb_subnet_dist_t curr = dist_poly(o1, (pcb_any_obj_t *)o2, x, y); \
+	pcb_subnet_dist_t curr = dist_poly(o1, (pcb_any_obj_t *)o2, x, y, 0); \
 	if (curr.dist2 < best.dist2) \
 		best = curr; \
 } while(0)
@@ -276,7 +289,7 @@ static pcb_subnet_dist_t pcb_dist_pstk_poly(pcb_pstk_t *o1, pcb_poly_t *o2, pcb_
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
 
-	return dist_poly(o2, (pcb_any_obj_t *)o1, o1->x, o1->y);
+	return dist_poly(o2, (pcb_any_obj_t *)o1, o1->x, o1->y, 0);
 }
 
 static pcb_subnet_dist_t pcb_dist_pstk_pstk(pcb_pstk_t *o1, pcb_pstk_t *o2, pcb_rat_accuracy_t acc)
