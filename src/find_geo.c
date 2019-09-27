@@ -318,7 +318,7 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon, int d
 		return pcb_true;
 
 	/* expensive test: the rat can end on any contour point */
-	for(pa = pcb_poly_island_first((pcb_any_obj_t *)polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+	for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		pcb_coord_t x, y;
 		pcb_pline_t *pl;
 		int go;
