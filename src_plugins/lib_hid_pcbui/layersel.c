@@ -792,7 +792,8 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 	lys = (ls_layer_t **)ls->ui_layer.array;
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++,lys++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
-		lys_update_vis(*lys, ly->meta.real.vis);
+		if (ly != NULL)
+			lys_update_vis(*lys, ly->meta.real.vis);
 	}
 
 	/* update group open/close hides */
