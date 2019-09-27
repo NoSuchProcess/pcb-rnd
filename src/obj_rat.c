@@ -455,7 +455,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 
 	if (conf_core.appearance.rat_thickness < 20)
 		rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;
-	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
+	/* PCB_FLAG_VIA is set if this rat goes to a containing poly: draw a donut */
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
 
