@@ -205,6 +205,12 @@ static ls_group_t *lgs_get_real(layersel_ctx_t *ls, pcb_layergrp_id_t gid, int a
 	return lgs;
 }
 
+static void lgs_reset(layersel_ctx_t *ls)
+{
+	ls->group.used = 0;
+}
+
+
 static ls_group_t *lgs_get_virt(layersel_ctx_t *ls, virt_grp_id_t vid, int alloc)
 {
 	ls_group_t *lgs = lgs_get_(ls, vid, alloc);
@@ -735,6 +741,7 @@ static void hsep(layersel_ctx_t *ls)
 
 static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
+	lgs_reset(ls);
 	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
 		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT | PCB_HATF_SCROLL);
 		layersel_create_stack(&layersel, pcb);
