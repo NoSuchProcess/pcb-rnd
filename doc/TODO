@@ -178,6 +178,7 @@
 
 3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
+- BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1 [report: igor2]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is change with the layer binding [report: jg]
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
