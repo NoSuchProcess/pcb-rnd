@@ -961,7 +961,7 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 }
 
 /* adds a new line to the rubberband list of 'pcb_crosshair.AttachedObject'
- * if Layer == 0  it is a rat line */
+   if Layer == 0  it is a rat line; point_number and delta_index is 0 or 1 */
 static pcb_rb_line_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index)
 {
 	pcb_rb_line_t *ptr;
