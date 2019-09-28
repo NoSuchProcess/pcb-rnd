@@ -34,6 +34,7 @@
 #include <string.h>
 #include <memory.h>
 #include <math.h>
+#include <assert.h>
 
 #include "board.h"
 #include "data.h"
@@ -967,6 +968,8 @@ static pcb_rb_line_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *La
 	pcb_rb_line_t *ptr;
 	int n;
 
+	assert((point_number == 0) || (point_number == 1));
+
 	/* do not add any object twice; slow linear search but we expect to have only
 	   a few objects to check; required for special case: multiple terminals on
 	   the very same coord, the same rat endpoint found and added multiple times
@@ -977,7 +980,6 @@ static pcb_rb_line_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *La
 			return &rbnd->lines.array[n];
 
 	ptr = vtrbli_alloc_append(&rbnd->lines, 1);
-	point_number &= 1;
 	ptr->Layer = Layer;
 	ptr->Line = Line;
 	ptr->delta_index[point_number] = delta_index;
