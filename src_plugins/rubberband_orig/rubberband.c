@@ -965,25 +965,34 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
    if Layer == 0  it is a rat line; point_number and delta_index is 0 or 1 */
 static pcb_rb_line_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index)
 {
-	pcb_rb_line_t *ptr;
+	pcb_rb_line_t *ptr = NULL;
 	int n;
 
 	assert((point_number == 0) || (point_number == 1));
 
 	/* do not add any object twice; slow linear search but we expect to have only
-	   a few objects to check; required for special case: multiple terminals on
-	   the very same coord, the same rat endpoint found and added multiple times
-	   so the move operation is executed on it multiple times causing the move
-	   to end up with multiplied delta */
-	for(n = 0; n < rbnd->lines.used; n++)
-		if (rbnd->lines.array[n].Line == Line)
-			return &rbnd->lines.array[n];
+	   a few objects to check. Required for two special cases:
 
-	ptr = vtrbli_alloc_append(&rbnd->lines, 1);
-	ptr->Layer = Layer;
-	ptr->Line = Line;
+	   1. multiple terminals on the very same coord, the same rat endpoint
+	      found and added multiple times so the move operation is executed
+	      on it multiple times causing the move to end up with multiplied delta.
+	   2. the same rat line is referenced twice: both endpoints are being moved,
+	      e.g. when the rat is within a subc and the subc is moved. */
+	for(n = 0; n < rbnd->lines.used; n++) {
+		if ((rbnd->lines.array[n].Line == Line) && (rbnd->lines.array[n].Layer == Layer)) {
+			ptr = &rbnd->lines.array[n];
+			break;
+		}
+	}
+
+	if (ptr == NULL) {
+		ptr = vtrbli_alloc_append(&rbnd->lines, 1);
+		ptr->Layer = Layer;
+		ptr->Line = Line;
+		ptr->delta_index[0] = ptr->delta_index[1] = -1;
+	}
+
 	ptr->delta_index[point_number] = delta_index;
-	ptr->delta_index[point_number ^ 1] = -1;
 
 	return ptr;
 }
@@ -1029,7 +1038,7 @@ static void rbe_move(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 		const int dindex1 = ptr->delta_index[0];
 		const int dindex2 = ptr->delta_index[1];
 
-		if ((dindex1 >= 0) && (dindex2 >= 0) && !direct) {
+		if ((dindex1 >= 0) && (dindex2 >= 0) && !direct && (ptr->Layer != NULL)) {
 			/* Move both ends with route. */
 			const int argi1 = (dindex1 * 2) + 2;
 			const int argi2 = (dindex2 * 2) + 2;
