@@ -81,6 +81,8 @@ b;b;	pcb-menu-default.lht	LayerBinding(buffer) 	Layer bindings...
 b;c;c;	pcb-menu-default.lht	PasteBuffer(Clear) 	Clear buffer
 b;c;p	pcb-menu-default.lht	PadstackConvert(buffer);Mode(PasteBuffer)	Convert buffer to padstack
 b;c;s	pcb-menu-default.lht	PasteBuffer(ConvertSubc) 	Convert buffer to subcircuit
+b;f;l;	pcb-menu-default.lht	PasteBuffer(LoadAll) 	Load buffer content from file
+b;f;s;	pcb-menu-default.lht	PasteBuffer(SaveAll) 	Save buffer content to file
 b;m;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Mirror);PasteBuffer(Rotate,3)	Mirror buffer (left\057right)
 b;m;u	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Mirror)	Mirror buffer (up\057down)
 b;n	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Normalize)	Normalize
@@ -88,8 +90,10 @@ b;r;a	pcb-menu-default.lht	Mode(PasteBuffer);FreeRotateBuffer()	Arbitrarily Rota
 b;r;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
 b;r;r	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW (right)
 b;s;b	pcb-menu-default.lht	PasteBuffer(Restore) 	Break buffer subcircuits to pieces
+b;s;l;d	pcb-menu-default.lht	SaveLib(dir, buffer)	in multiple footprint files
+b;s;l;f	pcb-menu-default.lht	SaveLib(file, buffer)	in a single lib file
 b;s;p	pcb-menu-default.lht	PadstackBreakup(buffer) 	Break buffer padstacks to pieces
-b;s;s	pcb-menu-default.lht	Save(PasteBuffer) 	Save buffer subcircuits to file
+b;s;s	pcb-menu-default.lht	Save(PasteBuffer)	Save buffer subcircuit to file
 c-ctrl;	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Mode(PasteBuffer)	Copy selection to buffer
 c;c;	pcb-menu-default.lht	Connection(Reset);Display(Redraw)	Clear\057reset lookup
 c;d;	pcb-menu-default.lht	Atomic(Save);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Restore);Connection(Find);Atomic(Restore);Select(Connection);Atomic(Restore);RemoveSelected();Atomic(Restore);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Block)	Del\057Remove Connected
@@ -216,7 +220,7 @@ right-shift	pcb-menu-default.lht	Cursor(Pan,50,0,view) 	Step +Right
 s-ctrl	pcb-menu-default.lht	Save(Layout)	Save Layout
 s-ctrl-shift	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
 s;a;a;	pcb-menu-default.lht	Select(All) 	Select all visible objects
-s;a;c;	pcb-menu-default.lht	Select(Connection) 	Select all connected objects
+s;a;c;	pcb-menu-default.lht	Select(Connection)	Select all found objects
 s;b;p	pcb-menu-default.lht	PadstackBreakup(selected) 	Break selection padstack to pieces
 s;b;s	pcb-menu-default.lht	PasteBuffer(Push);PasteBuffer(5);PasteBuffer(Clear);PasteBuffer(AddSelected);RemoveSelected();PasteBuffer(Restore);PasteBuffer(ToLayout, crosshair);PasteBuffer(Clear);PasteBuffer(Pop)	Break selection subcircuits to pieces
 s;c;p;	pcb-menu-default.lht	PadstackConvert(selected);Mode(PasteBuffer)	Convert selection to padstack
@@ -227,7 +231,7 @@ s;l;	pcb-menu-default.lht	MoveToCurrentLayer(Selected) 	Move selected objects to
 s;r;	pcb-menu-default.lht	RemoveSelected() 	Remove selected objects
 s;s;	pcb-menu-default.lht	SearchDialog() 	Advanced search and select
 s;u;a;	pcb-menu-default.lht	Unselect(All) 	Unselect all objects
-s;u;c;	pcb-menu-default.lht	Unselect(Connection) 	unselect all connected objects
+s;u;c;	pcb-menu-default.lht	Unselect(Connection)	Unselect all found objects
 space	pcb-menu-default.lht	Mode(Arrow)	Arrow
 t;a	pcb-menu-default.lht	Mode(Arc)	Arc
 t;b	pcb-menu-default.lht	Mode(PasteBuffer)	Buffer
