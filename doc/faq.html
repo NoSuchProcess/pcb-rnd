@@ -26,6 +26,39 @@
 <!--content-->
 <h1> pcb-rnd FAQ </h1>
 
+<h2 id="export"> export </h2>
+
+<h3> Gerber export not producing excellon drill files </h3>
+<p>
+That is correct, by default direct gerber export shouldn't
+produce excellon files as excellon is a different format. Direct
+gerber export also won't produce ps or png files.
+<p>
+You have two ways getting excellon files:
+<ul>
+<li> If you need only excellon drill files, you can do a direct export using 
+the execllon export format; on GUI use the "File/Export layout" menu or 
+the {f e} key combination and select excellon; on CLI use -x excellon. 
+Unless you have an CNC router it's unlikely you want drill files only.
+
+<li> What you probably should do instead of direct exporting is CAM 
+exporting, using "File/Export with CAM job..." or {f c} on the GUI or "-x 
+cam jobname" on the CLI. The CAM exporter is designed to invoke multiple 
+export plugins (e.g. gerber and excellon). pcb-rnd is shipped with 
+preconfigured CAM jobs for the most popular fab houses so you get file 
+names you can directly upload to them. If you have a fab not yet 
+supported, please contact me.
+</ul>
+
+<p>
+<small>
+Note: as of 2019, for the transition time, direct exporting to gerber using any of the old 
+naming styles (e.g. "fixed") will still cross-call the excellon export 
+plugin and produce the extra (non-gerber) drill files. It will also 
+generate a bunch of warnings telling you that this feature will be removed 
+soon. You shouldn't depend on this too much.
+</small>
+
 <h2 id="slots"> padstacks </h2>
 
 <h3> Intern copper layer shape not rendering </h3>
