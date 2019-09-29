@@ -262,6 +262,12 @@
 	<th align=left>b<br>&nbsp;c<br>&nbsp;&nbsp;s
 	<td> <I>Convert buffer to subcircuit</I><br>PasteBuffer(ConvertSubc) 
 <tr bgcolor="#FFFFFF">
+	<th align=left>b<br>&nbsp;f<br>&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;
+	<td> <I>Load buffer content from file</I><br>PasteBuffer(LoadAll) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>b<br>&nbsp;f<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
+	<td> <I>Save buffer content to file</I><br>PasteBuffer(SaveAll) 
+<tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;m<br>&nbsp;&nbsp;l
 	<td> <I>Mirror buffer (left/right)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)
 <tr bgcolor="#DDFFFF">
@@ -283,11 +289,17 @@
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;b
 	<td> <I>Break buffer subcircuits to pieces</I><br>PasteBuffer(Restore) 
 <tr bgcolor="#DDFFFF">
+	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;d
+	<td> <I>in multiple footprint files</I><br>SaveLib(dir, buffer)
+<tr bgcolor="#FFFFFF">
+	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;f
+	<td> <I>in a single lib file</I><br>SaveLib(file, buffer)
+<tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;p
 	<td> <I>Break buffer padstacks to pieces</I><br>PadstackBreakup(buffer) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;s
-	<td> <I>Save buffer subcircuits to file</I><br>Save(PasteBuffer) 
+	<td> <I>Save buffer subcircuit to file</I><br>Save(PasteBuffer)
 <tr bgcolor="#DDFFFF">
 	<th align=left>c-ctrl<br>&nbsp;
 	<td> <I>Copy selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer)
@@ -668,7 +680,7 @@
 	<td> <I>Select all visible objects</I><br>Select(All) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;a<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
-	<td> <I>Select all connected objects</I><br>Select(Connection) 
+	<td> <I>Select all found objects</I><br>Select(Connection)
 <tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;b<br>&nbsp;&nbsp;p
 	<td> <I>Break selection padstack to pieces</I><br>PadstackBreakup(selected) 
@@ -701,7 +713,7 @@
 	<td> <I>Unselect all objects</I><br>Unselect(All) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;u<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
-	<td> <I>unselect all connected objects</I><br>Unselect(Connection) 
+	<td> <I>Unselect all found objects</I><br>Unselect(Connection)
 <tr bgcolor="#DDFFFF">
 	<th align=left>space
 	<td> <I>Arrow</I><br>Mode(Arrow)
