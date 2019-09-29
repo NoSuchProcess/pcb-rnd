@@ -26,9 +26,9 @@
 <!--content-->
 <h1> pcb-rnd FAQ </h1>
 
-<h2 id="export"> export </h2>
+<h2 id="export"> 1. export </h2>
 
-<h3> Gerber export not producing excellon drill files </h3>
+<h3> 1.1. Gerber export not producing excellon drill files </h3>
 <p>
 That is correct, by default direct gerber export shouldn't
 produce excellon files as excellon is a different format. Direct
@@ -59,9 +59,9 @@ generate a bunch of warnings telling you that this feature will be removed
 soon. You shouldn't depend on this too much.
 </small>
 
-<h2 id="slots"> padstacks </h2>
+<h2 id="slots"> 2. padstacks </h2>
 
-<h3> Intern copper layer shape not rendering </h3>
+<h3> 2.1. Intern copper layer shape not rendering </h3>
 <p>
 Does the padstack has a hole? Does the hole drill through any internal
 copper layer (in non-thru-hole case)?
@@ -72,9 +72,9 @@ hole reaches. If the padstack has no hole, no internal layer shape is
 rendered, even if it is specified.
 
 
-<h2 id="slots"> slots (oval holes) </h2>
+<h2 id="slots"> 3. slots (oval holes) </h2>
 
-<h3> My slot doesn't show up on screen or in exports </h3>
+<h3> 3.1. My slot doesn't show up on screen or in exports </h3>
 <p>
 Make sure you have the right layer groups and layers set up:
 <ul>
@@ -82,8 +82,8 @@ Make sure you have the right layer groups and layers set up:
 	<li> make sure there is a layer in each group that has <i>auto</i> in the comb flags - padstack side effects will land only on auto layers; auto layers are indicated with white hatching in the layer selector's layer color
 </ul>
 
-<h2 id="slots"> DSN format </h2>
-<h3> There are no holes in padstacks on import </h3>
+<h2 id="slots"> 4. DSN format </h2>
+<h3> 4.1. There are no holes in padstacks on import </h3>
 <p>
 The DSN format was originally designed for autorouting; an autorouter doesn't
 need to know the geometry of a hole, assuming copper annulus is always around
@@ -96,7 +96,7 @@ picks up - but if the file does not contain holes, pcb-rnd can't improvise them.
 You can use query() to find offending padstacks and use propset() or 
 the padstack editor to install the holes.
 
-<h3> There are no silk graphics on subcircuits after import </h3>
+<h3> 4.2. There are no silk graphics on subcircuits after import </h3>
 <p>
 The DSN format does not specify silk. There are outline and keepout objects
 in the format and pcb-rnd loads them on special purpose documentation layers.
@@ -106,7 +106,7 @@ may just draw a large, rectangular filled polygon.
 <p>
 Use the per subcircuit layer bindings to map them on a board silk layer.
 
-<h3> Missing solder mask cutouts and solder paste patterns after import </h3>
+<h3> 4.3. Missing solder mask cutouts and solder paste patterns after import </h3>
 <p>
 The DSN format does not specify solder mask or paste. Please use the padstack
 editor on the affected padstacks.
