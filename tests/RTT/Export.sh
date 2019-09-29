@@ -5,7 +5,7 @@ TRUNK=../..
 all=0
 valg=0
 libdir=`pwd`
-global_args="-c rc/export_basename=1 -c design/fab_author=TEST -c rc/quiet=1 -c rc/default_pcb_file={} -c rc/default_font_file=$libdir/default_font"
+global_args="-c rc/library_search_paths=lib -c rc/export_basename=1 -c design/fab_author=TEST -c rc/quiet=1 -c rc/default_pcb_file={} -c rc/default_font_file=$libdir/default_font"
 test_announce=0
 verbose=0
 CONVERT=convert

@@ -1,0 +1,3 @@
+dummy library dir with no footprints - configuring this the only lib dir
+cuts back test time to about 66% because pcb-rnd doesn't need to map
+the library for each test.
