@@ -521,9 +521,14 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		if (want_origin)
 			pcb_printf(DLF_PREFIX "origin mm %mm %mm\n", SCRATCH.X, SCRATCH.Y);
 
+		PCB_ACT_IRES(0);
 	}
-	else
+	else {
 		printf(DLF_PREFIX "error file not found\n");
+		PCB_ACT_IRES(1);
+	}
+
+	return 0;
 }
 
 #define	PCB_FORCECOLOR_TYPES        \
