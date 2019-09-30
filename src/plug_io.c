@@ -77,7 +77,7 @@ int pcb_io_err_inhibit = 0;
 pcb_view_list_t pcb_io_incompat_lst;
 static pcb_bool pcb_io_incompat_lst_enable = pcb_false;
 
-void plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename)
+void pcb_plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename)
 {
 	if (pcb_io_err_inhibit)
 		return;
@@ -237,7 +237,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
-	plug_io_err(&Ptr->hidlib, res, "load pcb", Filename);
+	pcb_plug_io_err(&Ptr->hidlib, res, "load pcb", Filename);
 	return res;
 }
 
@@ -277,7 +277,7 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 	if (res == 0)
 		pcb_data_flag_change(Ptr, PCB_OBJ_CLASS_REAL, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND | PCB_FLAG_SELECTED);
 
-	plug_io_err(&PCB->hidlib, res, "load footprint", Filename);
+	pcb_plug_io_err(&PCB->hidlib, res, "load footprint", Filename);
 	return res;
 }
 
@@ -286,7 +286,7 @@ int pcb_parse_font(pcb_font_t *Ptr, const char *Filename)
 	int res = -1;
 	PCB_HOOK_CALL(pcb_plug_io_t, pcb_plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
 
-	plug_io_err(&PCB->hidlib, res, "load font", Filename);
+	pcb_plug_io_err(&PCB->hidlib, res, "load font", Filename);
 	return res;
 }
 
@@ -423,7 +423,7 @@ static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bo
 /*	if ((res == 0) && (newfmt))
 		PCB->Data->loader = p;*/
 
-	plug_io_err(&PCB->hidlib, res, "write buffer", NULL);
+	pcb_plug_io_err(&PCB->hidlib, res, "write buffer", NULL);
 	return res;
 }
 
@@ -443,7 +443,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_
 	if ((res == 0) && (newfmt))
 		e->loader = p;
 
-	plug_io_err(&PCB->hidlib, res, "write element", NULL);
+	pcb_plug_io_err(&PCB->hidlib, res, "write element", NULL);
 	return res;
 }
 
@@ -462,7 +462,7 @@ int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
 /*	if ((res == 0) && (newfmt))
 		PCB->Data->loader = p;*/
 
-	plug_io_err(&PCB->hidlib, res, "write font", NULL);
+	pcb_plug_io_err(&PCB->hidlib, res, "write font", NULL);
 	return res;
 }
 
@@ -495,7 +495,7 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 	if (res == 0)
 		pcb_set_design_dir(new_filename);
 
-	plug_io_err(&PCB->hidlib, res, "write pcb", NULL);
+	pcb_plug_io_err(&PCB->hidlib, res, "write pcb", NULL);
 	return res;
 }
 
@@ -763,7 +763,7 @@ int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, co
 			break;
 	}
 
-	plug_io_err(hidlib, res, "load buffer", fn);
+	pcb_plug_io_err(hidlib, res, "load buffer", fn);
 	return res;
 
 }
