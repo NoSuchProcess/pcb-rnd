@@ -77,7 +77,7 @@ int pcb_io_err_inhibit = 0;
 pcb_view_list_t pcb_io_incompat_lst;
 static pcb_bool pcb_io_incompat_lst_enable = pcb_false;
 
-static void plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename)
+void plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename)
 {
 	if (pcb_io_err_inhibit)
 		return;

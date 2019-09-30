@@ -202,4 +202,6 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 
 void pcb_io_uninit(void);
 
+void plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename);
+
 #endif
