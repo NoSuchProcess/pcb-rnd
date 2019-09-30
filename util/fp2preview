@@ -231,7 +231,7 @@ END {
 	margin = grid*2
 
 	print "LoadFrom(SubcToBuffer, " q  fp q ")"
-	print "PasteBuffer(ToLayout, " (-1*bbx1)+margin ", " (-1*bby1)+margin ", mm)"
+	print "PasteBuffer(ToLayout, " (-1*bbx1+ox)+margin ", " (-1*bby1+oy)+margin ", mm)"
 
 	# draw the grid
 	x1 = (ox-bbx1-margin) - int((ox-bbx1-margin)) * grid
@@ -247,8 +247,11 @@ END {
 		text("#1", x-0.75, to+5, 90, 70, 1, unit_txt(x+bbx1-ox-margin))
 	}
 
+	dx = -bbx1+margin
+	dy = -bby1+margin
+
 	for(n = 0; n < dims; n++) {
-		dimension(DIM[n, "x1"]-bbx1+margin, DIM[n, "y1"]-bby1+margin, DIM[n, "x2"]-bbx1+margin, DIM[n, "y2"]-bby1+margin, DIM[n, "dist"], DIM[n, "name"], DIM[n, "val"]);
+		dimension(DIM[n, "x1"]+dx, DIM[n, "y1"]+dy, DIM[n, "x2"]+dx, DIM[n, "y2"]+dy, DIM[n, "dist"], DIM[n, "name"], DIM[n, "val"]);
 	}
 
 	print "autocrop()"
