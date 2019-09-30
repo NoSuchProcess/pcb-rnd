@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This module, diag, was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
@@ -45,6 +45,8 @@
 #include "hid_dad.h"
 #include "search.h"
 #include "macro.h"
+#include "plug_footprint.h"
+#include "plug_io.h"
 #include "funchash_core.h"
 
 conf_diag_t conf_diag;
@@ -470,6 +472,34 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+#define DLF_PREFIX "<DumpLibFootprint> "
+static const char pcb_acts_DumpLibFootprint[] = "DumpLibFootprint(footprintname)\n";
+static const char pcb_acth_DumpLibFootprint[] = "print footprint file and metadata to stdout";
+static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char *fpn;
+	FILE *f;
+	pcb_fp_fopen_ctx_t fctx;
+
+	PCB_ACT_CONVARG(1, FGW_STR, DumpLibFootprint, fpn = argv[1].val.str);
+
+	f = pcb_fp_fopen(pcb_fp_default_search_path(), fpn, &fctx, PCB->Data);
+	if ((f != PCB_FP_FOPEN_IN_DST) && (f != NULL)) {
+		printf(DLF_PREFIX "data begin\n");
+		while(!feof(f)) {
+			char buff[1024];
+			int len = fread(buff, 1, sizeof(buff), f);
+			if (len > 0)
+				fwrite(buff, 1, len, stdout);
+		}
+		printf(DLF_PREFIX "data end\n");
+	}
+	else
+		printf(DLF_PREFIX "error file not found\n");
+	pcb_fp_fclose(f, &fctx);
+}
+
 #define	PCB_FORCECOLOR_TYPES        \
 	(PCB_OBJ_PSTK | PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC_PART | PCB_OBJ_SUBC | PCB_OBJ_RAT)
 
@@ -512,6 +542,7 @@ pcb_action_t diag_action_list[] = {
 	{"integrity", pcb_act_integrity, integrity_help, integrity_syntax},
 	{"dumpflags", pcb_act_dumpflags, pcb_acth_dumpflags, pcb_acts_dumpflags},
 	{"dumpids", pcb_act_DumpIDs, pcb_acth_DumpIDs, pcb_acts_DumpIDs},
+	{"DumpLibFootprint", pcb_act_DumpLibFootprint, pcb_acth_DumpLibFootprint, pcb_acts_DumpLibFootprint},
 	{"forcecolor", pcb_act_forcecolor, pcb_acth_forcecolor, pcb_acts_forcecolor}
 };
 
