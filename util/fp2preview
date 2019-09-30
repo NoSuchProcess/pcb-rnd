@@ -1,6 +1,6 @@
 #!/bin/sh
 #   fp2preview - convert a library footprint to preview image
-#   Copyright (C) 2019 Tibor 'Igor2' Palinkas
+#   Copyright (C) 2015,2019 Tibor 'Igor2' Palinkas
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -52,10 +52,32 @@ done
 
 echo '
 	DumpLibFootprint("'$fp'", origin, bbox);
-' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" '
+' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" -v "annotation=$annotation" '
 
 BEGIN {
 	q="\""
+	dim_arrow_len = 0.7
+	if (annotation ~ "pins")
+		enable_pinnum = 1
+	if (annotation ~ "dimname")
+		enable_dim_name = 1
+	if (annotation ~ "dimvalue")
+		enable_dim_value = 1
+	dims = 0
+}
+
+
+/^[ \t]*#dimension/ {
+	if ((enable_dim_name) || (enable_dim_value)) {
+		DIM[dims, "x1"] = $2*0.0254
+		DIM[dims, "y1"] = $3*0.0254
+		DIM[dims, "x2"] = $4*0.0254
+		DIM[dims, "y2"] = $5*0.0254
+		DIM[dims, "dist"] = $6*0.0254
+		DIM[dims, "name"] = $7
+		DIM[dims, "val"] = $8
+		dims++
+	}
 }
 
 /^<DumpLibFootprint> error/ { exit(1) }
@@ -84,6 +106,122 @@ function unit_txt(s)
 		return sprintf("%.2f mm", s)
 }
 
+
+function annot(x, y, txt, rot, elev, hcenter    ,sx,sy)
+{
+	sx = length(txt)*0.5
+	sy = 1.2
+	if (rot)
+		text("#0", x-sy, y-sx/2, 90, 70, 1, txt)
+	else
+		text("#0", x-sx/2, y-sy, 0, 70, 1, txt)
+}
+
+function dimension(x1, y1, x2, y2, dist, name, value     ,vx,vy,nx,ny,X1,Y1,X2,Y2,len,alen,awidth,tmp, ang,negdist,cx,cy,dx,dy,D)
+{
+	alen = dim_arrow_len
+
+	vx = x2-x1
+	vy = y2-y1
+	len = vx*vx+vy*vy
+	if (len == 0)
+		return
+	len = sqrt(len)
+	vx = vx/len
+	vy = vy/len
+	nx = vy
+	ny = -vx
+
+	if (dist ~ "^[@]") {
+		cx = (x1+x2)/2
+		cy = (y1+y2)/2
+		sub("@", "", dist)
+		split(dist, D, ";")
+		nx = D[1] - cx
+		ny = D[2] - cy
+
+		X1 = x1+nx
+		Y1 = y1+ny
+		X2 = x2+nx
+		Y2 = y2+ny
+
+		dist = nx*nx+ny*ny
+		if (dist > 0)
+			dist = sqrt(dist)
+
+		nx /= dist
+		ny /= dist
+	}
+	else {
+		if (dist < 0) {
+			tmp = x1
+			x1 = x2
+			x2 = tmp
+			tmp = y1
+			y1 = y2
+			y2 = tmp
+			dist = -dist
+
+			vx = -vx
+			vy = -vy
+			nx = -nx
+			ny = -ny
+		}
+
+		X1 = x1+nx*dist
+		Y1 = y1+ny*dist
+		X2 = x2+nx*dist
+		Y2 = y2+ny*dist
+	}
+
+
+	if (alen > len/4)
+		alen=len/4
+
+	awidth=alen/6
+
+	ang = atan2(vx, vy)
+
+
+	line("#0", x1, y1, X1+nx*awidth, Y1+ny*awidth, "0.1mm")
+	line("#0", x2, y2, X2+nx*awidth, Y2+ny*awidth, "0.1mm")
+	line("#0", X1, Y1, X2, Y2, "0.1mm")
+	
+#arrowheads
+	line("#0", X1, Y1, X1+vx*alen+nx*awidth, Y1+vy*alen+ny*awidth, "0.1mm")
+	line("#0", X1, Y1, X1+vx*alen-nx*awidth, Y1+vy*alen-ny*awidth, "0.1mm")
+	line("#0", X2, Y2, X2-vx*alen+nx*awidth, Y2-vy*alen+ny*awidth, "0.1mm")
+	line("#0", X2, Y2, X2-vx*alen-nx*awidth, Y2-vy*alen-ny*awidth, "0.1mm")
+
+	if (enable_dim_value) {
+		if (value == "")
+			value = len
+		else if (value == "!")
+			value = ""
+		if (value != "")
+			value = unit_txt(value)
+	}
+	else
+		value = ""
+
+	if (!enable_dim_name)
+		name = ""
+
+	if ((name != "") && (value != ""))
+		name = name "=|" value
+	else if ((value != "") && (name == ""))
+		name = value
+
+	if (name != "") {
+		if (ang < 0)
+			ang = -ang
+		if ((ang < 3.1415*3/4) && (ang > 3.1415*1/4))
+			annot((X1+X2)/2, (Y1+Y2)/2, name, 0, awidth*1.1,0)
+		else
+			annot((X1+X2)/2, (Y1+Y2)/2, name, 1, awidth*1.1,0)
+	}
+}
+
 END {
 	if (grid_unit == "mil")
 		grid = 2.54;
@@ -109,7 +247,9 @@ END {
 		text("#1", x-0.75, to+5, 90, 70, 1, unit_txt(x+bbx1-ox-margin))
 	}
 
-
+	for(n = 0; n < dims; n++) {
+		dimension(DIM[n, "x1"]-bbx1+margin, DIM[n, "y1"]-bby1+margin, DIM[n, "x2"]-bbx1+margin, DIM[n, "y2"]-bby1+margin, DIM[n, "dist"], DIM[n, "name"], DIM[n, "val"]);
+	}
 
 	print "autocrop()"
 	print "Export(png, --dpi, " dpi ", --outfile, " q outfile q ")"
