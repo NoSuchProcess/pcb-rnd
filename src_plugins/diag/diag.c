@@ -474,18 +474,29 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 #define DLF_PREFIX "<DumpLibFootprint> "
-static const char pcb_acts_DumpLibFootprint[] = "DumpLibFootprint(footprintname)\n";
+#define SCRATCH pcb_buffers[PCB_MAX_BUFFER-1]
+static const char pcb_acts_DumpLibFootprint[] = "DumpLibFootprint(footprintname, [bbox|origin])\n";
 static const char pcb_acth_DumpLibFootprint[] = "print footprint file and metadata to stdout";
 static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	char *fpn;
+	const char *fpn, *opt;
 	FILE *f;
 	pcb_fp_fopen_ctx_t fctx;
+	int n, want_bbox = 0, want_origin = 0;
 
 	PCB_ACT_CONVARG(1, FGW_STR, DumpLibFootprint, fpn = argv[1].val.str);
 
+	for(n = 2; n < argc; n++) {
+		PCB_ACT_CONVARG(n, FGW_STR, DumpLibFootprint, opt = argv[n].val.str);
+		if (strcmp(opt, "bbox") == 0) want_bbox = 1;
+		else if (strcmp(opt, "origin") == 0) want_origin = 1;
+		else PCB_ACT_FAIL(DumpLibFootprint);
+	}
+
 	f = pcb_fp_fopen(pcb_fp_default_search_path(), fpn, &fctx, PCB->Data);
 	if ((f != PCB_FP_FOPEN_IN_DST) && (f != NULL)) {
+
+		/* dump file content */
 		printf(DLF_PREFIX "data begin\n");
 		while(!feof(f)) {
 			char buff[1024];
@@ -494,10 +505,25 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 				fwrite(buff, 1, len, stdout);
 		}
 		printf(DLF_PREFIX "data end\n");
+		pcb_fp_fclose(f, &fctx);
+
+		/* print exrtas */
+		if (want_bbox || want_origin) {
+			pcb_buffer_clear(PCB, &SCRATCH);
+			if (!pcb_buffer_load_footprint(&SCRATCH, fpn, NULL)) {
+				PCB_ACT_IRES(1);
+				return 0;
+			}
+		}
+
+		if (want_bbox)
+			pcb_printf(DLF_PREFIX "bbox mm %mm %mm %mm %mm\n", SCRATCH.BoundingBox.X1, SCRATCH.BoundingBox.Y1, SCRATCH.BoundingBox.X2, SCRATCH.BoundingBox.Y2);
+		if (want_origin)
+			pcb_printf(DLF_PREFIX "origin mm %mm %mm\n", SCRATCH.X, SCRATCH.Y);
+
 	}
 	else
 		printf(DLF_PREFIX "error file not found\n");
-	pcb_fp_fclose(f, &fctx);
 }
 
 #define	PCB_FORCECOLOR_TYPES        \
