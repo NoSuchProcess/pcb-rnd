@@ -23,12 +23,16 @@
 
 photo=0
 grid_unit="mil"
+dpi=600
+outfile=fp2preview.png
 
 annotation=pins
 
 while test $# -gt 0
 do
 	case "$1" in
+		--outfile) outfile="$2"; shift 1;;
+		--dpi) dpi="$2"; shift 1;;
 		--photo|p) photo=1;;
 		--grid-unit|g) grid_unit="$2"; shift 1;;
 		--mm) grid_unit="mm";;
@@ -48,7 +52,7 @@ done
 
 echo '
 	DumpLibFootprint("'$fp'", origin, bbox);
-' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit '
+' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" '
 
 BEGIN {
 	q="\""
@@ -108,7 +112,7 @@ END {
 
 
 	print "autocrop()"
-	print "Export(png, --dpi, 600)"
+	print "Export(png, --dpi, " dpi ", --outfile, " q outfile q ")"
 	print "Save(LayoutAs, \"A.lht\")"
 }
 
