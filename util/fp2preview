@@ -82,7 +82,7 @@ BEGIN {
 
 /^<DumpLibFootprint> error/ { exit(1) }
 /^<DumpLibFootprint> bbox mm/ { bbx1 = $4; bby1 = $5; bbx2 = $6; bby2 = $7; }
-/^<DumpLibFootprint> origin mm/ { ox = $4; oy1 = $5; }
+/^<DumpLibFootprint> origin mm/ { ox = $4; oy = $5; }
 
 function line(layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)
 {
