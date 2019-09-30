@@ -1,0 +1,121 @@
+#!/bin/sh
+#   fp2preview - convert a library footprint to preview image
+#   Copyright (C) 2019 Tibor 'Igor2' Palinkas
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#   http://repo.hu/projects/pcb-rnd
+
+
+# depends on the diag and the autocrop plugins
+
+photo=0
+grid_unit="mil"
+
+annotation=pins
+
+while test $# -gt 0
+do
+	case "$1" in
+		--photo|p) photo=1;;
+		--grid-unit|g) grid_unit="$2"; shift 1;;
+		--mm) grid_unit="mm";;
+		--diamond) diamond=1;;
+		--annotation) annotation="$2"; shift 1;;
+		*)
+			if test ! -z "$fp"
+			then
+				echo "only one footprint name is accepted; got: '$fp' and '$1'" >&1
+				exit 1
+			else
+				fp="$1"
+			fi
+	esac
+	shift 1
+done
+
+echo '
+	DumpLibFootprint("'$fp'", origin, bbox);
+' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit '
+
+BEGIN {
+	q="\""
+}
+
+/^<DumpLibFootprint> error/ { exit(1) }
+/^<DumpLibFootprint> bbox mm/ { bbx1 = $4; bby1 = $5; bbx2 = $6; bby2 = $7; }
+/^<DumpLibFootprint> origin mm/ { ox = $4; oy1 = $5; }
+
+function line(layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)
+{
+	if (Clearance == "") Clearance = 0;
+	if (Thickness == "") Thickness = 1;
+	print "LineNew(noundo, pcb, " layer "," X1 "mm," Y1 "mm," X2 "mm," Y2 "mm," Thickness "," Clearance "mm," q "clearline" q ")"
+}
+
+function text(layer, x, y, rot, scale, thickness, text_string)
+{
+	print "TextNew(noundo, pcb, " layer ", 0, " x "mm," y "mm," rot "," scale "," thickness "," q text_string q ", clearline)"
+}
+
+function unit_txt(s)
+{
+	if ((s < 0.001) && (s > -0.001))
+		return "0 " grid_unit
+	if (grid_unit == "mil")
+		return sprintf("%.2f mil", s/0.0254)
+	else
+		return sprintf("%.2f mm", s)
+}
+
+END {
+	if (grid_unit == "mil")
+		grid = 2.54;
+	else
+		grid = 1;
+
+	margin = grid*2
+
+	print "LoadFrom(SubcToBuffer, " q  fp q ")"
+	print "PasteBuffer(ToLayout, " (-1*bbx1)+margin ", " (-1*bby1)+margin ", mm)"
+
+	# draw the grid
+	x1 = (ox-bbx1-margin) - int((ox-bbx1-margin)) * grid
+	y1 = (oy-bby1-margin) - int((oy-bby1-margin)) * grid
+	for(y = y1; y < bby2-bby1+margin*1.5; y +=grid) {
+		to=bbx2-bbx1+margin*1.5
+		line("#1", x1, y, to, y);
+		text("#1", to+0.75, y-0.75, 0, 70, 1, unit_txt(y+bby1-oy-margin))
+	}
+
+	for(x = x1; x < bbx2-bbx1+margin*1.5; x +=grid) {
+		line("#1", x, y1, x, bby2-bby1+margin*1.5);
+		text("#1", x-0.75, to+5, 90, 70, 1, unit_txt(x+bbx1-ox-margin))
+	}
+
+
+
+	print "autocrop()"
+	print "Export(png, --dpi, 600)"
+	print "Save(LayoutAs, \"A.lht\")"
+}
+
+' | pcb-rnd --gui batch
+
+if test $? -ne 0
+then
+	exit 1
+fi
+
