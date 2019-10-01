@@ -304,9 +304,6 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 {
 	int per_side = conf_core.appearance.subc_layer_per_side;
 
-	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-
 	/* Draw pins' and pads' names */
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
