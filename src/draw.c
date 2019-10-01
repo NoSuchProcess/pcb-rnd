@@ -513,7 +513,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_draw_boundary_mech(info);
 
 	draw_virtual_layers(info, &lvly);
-	if (pcb_render->gui) {
+	if ((pcb_render->gui) || (!info->xform_caller->omit_overlay)) {
 		draw_rats(info->drawn_area);
 		draw_pins_and_pads(info, component, solder);
 	}
