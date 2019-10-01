@@ -28,6 +28,8 @@ B. changes that probably DO need action
    Note: import_pxm_gd depends on libgd so pcb-rnd-import-geo
    started to depend on libgd
 
+3. utility fp2anim got removed and replaced by the new utility fp2preview;
+   this affects the manual page file name too.
 
 Packaging changes between 2.1.2 and 2.1.3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
