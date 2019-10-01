@@ -272,9 +272,3 @@ print "photo=" photo > "/dev/stderr"
 }
 
 ' | pcb-rnd --gui batch
-
-if test $? -ne 0
-then
-	exit 1
-fi
-
