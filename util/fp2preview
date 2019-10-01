@@ -52,7 +52,7 @@ done
 
 echo '
 	DumpLibFootprint("'$fp'", origin, bbox);
-' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" -v "annotation=$annotation" '
+' | pcb-rnd --gui batch | awk -v "fp=$fp" -v grid_unit=$grid_unit -v "outfile=$outfile" -v "dpi=$dpi" -v "annotation=$annotation" -v "photo=$photo" '
 
 BEGIN {
 	q="\""
@@ -260,8 +260,14 @@ END {
 		print "query(unselect, @)"
 	}
 
+	if (photo) {
+		photo = "--photo-mode, "
+	}
+	else
+		photo = ""
+print "photo=" photo > "/dev/stderr"
 	print "autocrop()"
-	print "Export(png, --dpi, " dpi ", --as-shown, --outfile, " q outfile q ")"
+	print "Export(png, --dpi, " dpi ", --as-shown, " photo " --outfile, " q outfile q ")"
 	print "Save(LayoutAs, \"A.lht\")"
 }
 
