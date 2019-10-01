@@ -16,22 +16,20 @@
 .\" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 .\" 
 .\" Contact: pcb-rnd-man[removethis]@igor2.repo.hu
-.TH fp2anim 1 2016-12-27 "" "pcb-rnd manual"
+.TH fp2preview 1 2019-10-01 "" "pcb-rnd manual"
 .SH NAME
-fp2anim - convert a gEDA/PCB footprint to animator script
+fp2preview - generate a preview for a library footprint
 .SH SYNPOSIS
 .nf
 .sp
-\fBfp2anim [\fIoptions\fB] [\fIinputfile\fB]
+\fBfp2preview [\fIoptions\fB] [\fIinputfile\fB]
 .fi
 .SH DECSRIPTION
 
-.BR fp2anim
-converts a footprint to a script that can be run through animator(1). It's main use is to have a automated, light-weight footprint preview generator on hosts where installing pcb-rnd would be too expensive (e.g. on web servers). 
+.BR fp2preview
+invokes pcb-rnd to generate a preview image of a library footprint. Its main use is to have a automated, light-weight footprint preview generator using a static linked pcb-rnd (e.g. on web servers). 
 .PP
-If \fIinputfile\fR is not specified, 
-.BR fp2anim
-reads its STDIN for the footprint.
+
 .SH OPTIONS
 
 
@@ -57,11 +55,7 @@ same as --grid
 use an mm grid instead of a mil grid; shorthand for -g mm 
 .TP
 
-.B --diamond 
-draw a small diamond to mark at footprint origin 
-.TP
-
 .B --annotation types 
-turn on annotation types; types is a string that may consist "pins" for pin numbers, "dimname" and "dimvalue" for dimension names and values and "background" for drawing a background under annotation text
+turn on annotation types; types is a string that may consist "pins" for pin/pad numbers, "dimname" and "dimvalue" for dimension names and values and "background" for drawing a background under annotation text
 .PP
 

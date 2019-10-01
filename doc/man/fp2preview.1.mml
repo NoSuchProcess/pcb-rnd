@@ -1,18 +1,15 @@
-<title>fp2anim</title>
+<title>fp2preview</title>
 <sect>1</sect>
-<date>2016-12-27</date>
+<date>2019-10-01</date>
 
-<name> fp2anim - convert a gEDA/PCB footprint to animator script </name>
-<syn> <call>fp2anim</call> [<arg>options</arg>] [<arg>inputfile</arg>] </syn>
+<name> fp2preview - generate a preview for a library footprint </name>
+<syn> <call>fp2preview</call> [<arg>options</arg>] [<arg>inputfile</arg>] </syn>
 
 <description>
-<call>fp2anim</call> converts a footprint to a script that can be run through
-animator(1). It's main use is to have a automated, light-weight footprint
-preview generator on hosts where installing pcb-rnd would be too expensive
-(e.g. on web servers).
+<call>fp2preview</call> invokes pcb-rnd to generate a preview image of a
+library footprint. Its main use is to have a automated, light-weight footprint
+preview generator using a static linked pcb-rnd (e.g. on web servers).
 <p>
-If <arg>inputfile</arg> is not specified, <call>fp2anim</call> reads its
-STDIN for the footprint.
 </description>
 
 <options>
@@ -42,14 +39,9 @@ STDIN for the footprint.
 	</item>
 
 	<item>
-		<key> --diamond </key>
-		<value> draw a small diamond to mark at footprint origin</value>
-	</item>
-
-	<item>
 		<key> --annotation types </key>
 		<value> turn on annotation types; types is a string that may consist
-		        "pins" for pin numbers, "dimname" and "dimvalue" for dimension
+		        "pins" for pin/pad numbers, "dimname" and "dimvalue" for dimension
 		        names and values and "background" for drawing a background under
 		        annotation text </value>
 	</item>

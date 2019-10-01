@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML><HEAD>
 <meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
-<title>fp2anim - pcb-rnd manual</title>
+<title>fp2preview - pcb-rnd manual</title>
 </HEAD><BODY>
 <!--
 pcb-rnd - manual
@@ -25,8 +25,8 @@ Contact: pcb-rnd-man[removethis]@igor2.repo.hu
 -->
 <table width="100%">
 <TR>
-		<TH align="left">   fp2anim 1
-		<TH align="center"> 2016-12-27
+		<TH align="left">   fp2preview 1
+		<TH align="center"> 2019-10-01
 		<TH align="right">  pcb-rnd manual
 </table>
 
@@ -34,13 +34,13 @@ Contact: pcb-rnd-man[removethis]@igor2.repo.hu
 
 <H3>NAME</H3>
 <blockquote>
-fp2anim - convert a gEDA/PCB footprint to animator script
+fp2preview - generate a preview for a library footprint
 </blockquote>
 
 <H3>SYNPOSIS</H3>
 <blockquote>
 <P>
-<tt><B>fp2anim</B> [<I>options</I>] [<I>inputfile</I>]</tt>
+<tt><B>fp2preview</B> [<I>options</I>] [<I>inputfile</I>]</tt>
 
 
 
@@ -48,9 +48,9 @@ fp2anim - convert a gEDA/PCB footprint to animator script
 
 <H3>DESCRIPTION</H3>
 <blockquote>
-<B>fp2anim</B> converts a footprint to a script that can be run through animator(1). It's main use is to have a automated, light-weight footprint preview generator on hosts where installing pcb-rnd would be too expensive (e.g. on web servers). 
+<B>fp2preview</B> invokes pcb-rnd to generate a preview image of a library footprint. Its main use is to have a automated, light-weight footprint preview generator using a static linked pcb-rnd (e.g. on web servers). 
 <P>
-If <I>inputfile</I> is not specified, <B>fp2anim</B> reads its STDIN for the footprint.
+
 
 </blockquote>
 
@@ -82,19 +82,15 @@ If <I>inputfile</I> is not specified, <B>fp2anim</B> reads its STDIN for the foo
 		<TD> use an mm grid instead of a mil grid; shorthand for -g mm 
 	<TR>
 
-		<TD> --diamond 
-		<TD> draw a small diamond to mark at footprint origin 
-	<TR>
-
 		<TD> --annotation types 
-		<TD> turn on annotation types; types is a string that may consist "pins" for pin numbers, "dimname" and "dimvalue" for dimension names and values and "background" for drawing a background under annotation text
+		<TD> turn on annotation types; types is a string that may consist "pins" for pin/pad numbers, "dimname" and "dimvalue" for dimension names and values and "background" for drawing a background under annotation text
 </table>
 </blockquote>
 <P>
 <table width="100%">
 <TR>
-		<TH align="left">   fp2anim 1
-		<TH align="center"> 2016-12-27
+		<TH align="left">   fp2preview 1
+		<TH align="center"> 2019-10-01
 		<TH align="right">  pcb-rnd manual
 </table>
 
