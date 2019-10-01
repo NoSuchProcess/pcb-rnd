@@ -254,8 +254,14 @@ END {
 		dimension(DIM[n, "x1"]+dx, DIM[n, "y1"]+dy, DIM[n, "x2"]+dx, DIM[n, "y2"]+dy, DIM[n, "dist"], DIM[n, "name"], DIM[n, "val"]);
 	}
 
+	if (enable_pinnum) {
+		print "query(select, \"@.type==SUBC||@.type==PSTK\")"
+		print "propset(selection, p/flags/termname, 1)"
+		print "query(unselect, @)"
+	}
+
 	print "autocrop()"
-	print "Export(png, --dpi, " dpi ", --outfile, " q outfile q ")"
+	print "Export(png, --dpi, " dpi ", --as-shown, --outfile, " q outfile q ")"
 	print "Save(LayoutAs, \"A.lht\")"
 }
 
