@@ -36,7 +36,6 @@ do
 		--photo|p) photo=1;;
 		--grid-unit|g) grid_unit="$2"; shift 1;;
 		--mm) grid_unit="mm";;
-		--diamond) diamond=1;;
 		--annotation) annotation="$2"; shift 1;;
 		*)
 			if test ! -z "$fp"
