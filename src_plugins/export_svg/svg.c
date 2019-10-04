@@ -388,7 +388,7 @@ static int svg_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 
 	pcb_cam_set_layer_group(&svg_cam, group, purpose, purpi, flags, xform);
 
-	if (svg_cam.fn_changed) {
+	if (svg_cam.fn_changed || (f == NULL)) {
 		if (f != NULL) {
 			svg_footer();
 			fclose(f);
