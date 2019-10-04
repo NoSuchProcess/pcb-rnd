@@ -29,7 +29,7 @@
 	<td bgcolor="#ccccff"> layout characteristics
 	<td bgcolor="#ddddff"> multiple layers (16 copper, compile time tunable limit)
                          <br> smd and through-hole components
-                         <br> solder mask, paste, assembly drawings
+                         <br> editable solder mask, paste, assembly, keepout, documentation drawings
                          <br> board size up to 2x2 meter at nanometer precision
                          <br> arbitrary amount of routing styles
                          <br> Design Rule Checker
@@ -58,6 +58,12 @@
 	<td bgcolor="#ccccff"> data model: DRC
 	<td bgcolor="#ddddff"> named networks, rats nest, deliberate netlist changes + back annotation, logical and geometric drc checks
 <tr>
+	<td bgcolor="#ccccff"> netlist support
+	<td bgcolor="#ddddff"> <br> draw using netlist/footprints imported from schematics
+	                       <br> back annotation to schematics editor
+	                       <br> alternatively create netlist from scratch while drawing the PCB
+	                       <br> altnenatively draw without netlist
+<tr>
 	<td bgcolor="#ccccff"> export formats
 	<td bgcolor="#ddddff"> gerber, png, ps, svg, bom, xy, bboard, dsn, gcode, ipcd356, lpr, dxf, kicad old pcb format, tEDAx
 <tr>
@@ -72,7 +78,7 @@
 	                       <br>footprints from the web (edakrill, gedasymbols.org)
 <tr>
 	<td bgcolor="#ccccff"> scripting
-	<td bgcolor="#ddddff"> embedded scripting using fungw (awk, python, lua, tcl, ruby, perl, javascript, lisp, shell)
+	<td bgcolor="#ddddff"> embedded scripting using fungw (awk, python, lua, tcl, ruby, perl, javascript, lisp, shell, pascal, BASIC)
 <tr>
 	<td bgcolor="#ccccff"> layout helpers
 	<td bgcolor="#ddddff"> basic autorouter, basic autoplace, place objects in aligned grid,
@@ -81,6 +87,7 @@
 	                       <br>understands internal connections in footprints
 	                       <br>query mini-language for finding and selecting objects by rules
 	                       <br>command line mode for 2d drafting
+	                       <br>manual board assembly helper GUI
 <tr>
 	<td bgcolor="#ccccff"> misc
 	<td bgcolor="#ddddff"> flexible configuration system
