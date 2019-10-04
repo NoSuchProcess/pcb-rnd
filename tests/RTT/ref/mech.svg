@@ -57,4 +57,14 @@
 <!--normal-->
  <line x1="5.3340" y1="4.5720" x2="6.0960" y2="4.5720" stroke-width="0.2540" stroke="#008b54" stroke-linecap="round"/>
 </g>
+<g id="layer_8_group8">
+<!--normal-->
+ <line x1="3.4290" y1="1.2700" x2="3.6830" y2="1.2700" stroke-width="0.2540" stroke="#ffffff" stroke-linecap="round"/>
+ <polygon points="3.8100,8.2550 3.5560,8.5090 4.0640,8.5090 " stroke-width="0.010" stroke="#ffffff" fill="#ffffff"/>
+ <circle cx="5.8420" cy="8.3820" r="0.1270" stroke-width="0.0000" fill="#ffffff" stroke="none"/>
+</g>
+<g id="layer_9_group9">
+<!--normal-->
+ <line x1="5.4610" y1="1.2700" x2="5.7150" y2="1.2700" stroke-width="0.2540" stroke="#ffffff" stroke-linecap="round"/>
+</g>
 </svg>
