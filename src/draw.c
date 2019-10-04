@@ -589,6 +589,11 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group)
 	/* draw padstack holes - copper is drawn with each group */
 	if (PCB->pstk_on || !pcb_render->gui) {
 		pcb_draw_pstk_holes(info, group, PCB_PHOLE_PLATED | PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
+		if (
+			!pcb_render->gui /* on the gui padstacks can be turned off separately so we shouldn't enforce drawing the slot in it; on export, copper is copper, no matter if it is coming from a padstack: slot always needs to be drawn */
+			&& !info->xform_caller->no_slot_in_nonmech /* keep the output cleaner in some exporters, like gerber, where solid copper is drawn anyway */
+			)
+			pcb_draw_pstk_slots(info, group, PCB_PHOLE_PLATED | PCB_PHOLE_UNPLATED | PCB_PHOLE_BB);
 	}
 }
 
