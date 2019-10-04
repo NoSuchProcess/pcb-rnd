@@ -212,6 +212,10 @@ static void save_guess_format(save_t *save, const char *ext)
 			save->fmt_chg_lock = 0;
 			update_opts(save);
 			pcb_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 1);
+			fmt_chg(save->fmtsub->dlg_hid_ctx, save->fmtsub, save->fmtsub->dlg+save->wfmt);
+			/* turn on guessing - was turned off by the call above */
+			hv.lng = 1;
+			pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wguess, &hv);
 			return;
 		}
 	}
