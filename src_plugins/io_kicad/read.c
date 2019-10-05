@@ -113,6 +113,7 @@ typedef struct {
 
 	/* setup */
 	pcb_coord_t pad_to_mask_clearance;
+	pcb_coord_t zone_clearance;
 
 	/* delayed actions */
 	zone_connect_t *zc_head;
@@ -783,6 +784,7 @@ static int kicad_parse_setup(read_state_t *st, gsxl_node_t *subtree)
 {
 	static const autoload_t atbl[] = {
 		{"pad_to_mask_clearance", offsetof(read_state_t, pad_to_mask_clearance), KICAD_COORD},
+		{"zone_clearance", offsetof(read_state_t, zone_clearance), KICAD_COORD},
 		{NULL, 0, 0}
 	};
 	return kicad_foreach_autoload(st, subtree, st, atbl, 1);
@@ -2135,9 +2137,8 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	/* Kicad clearance hierarchy (top overrides bottom):
 	   - pad clearance
 	   - module clearance
-	   - zone clearance (from the board)?
+	   - zone_clearance (from (setup))
 	*/
-	TODO("CUCP#65 Not sure where this should be coming from (the ultimate fallback, bottom item above");
 	clearance = 0;
 	mask = 0;
 	paste = 0;
@@ -2275,7 +2276,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	if (subc != NULL) {
 		if (!definite_clearance) {
 			kicad_warning(n, "Couldn't determine pad clearance, using 0.25mm");
-			clearance = PCB_MM_TO_COORD(0.25);
+			clearance = st->zone_clearance;
 		}
 		if (kicad_make_pad(st, n, subc, netname, through_hole, plated, moduleX, moduleY, x, y, sx, sy, rot, moduleRotation, clearance, mask, paste, paste_ratio, zone_connect, drillx, drilly, pin_name, pad_shape, &feature_tally, moduleEmpty, smd_side, &layers, shape_arg, shape_arg2) != 0)
 			return -1;
