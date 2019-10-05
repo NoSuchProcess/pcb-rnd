@@ -46,7 +46,6 @@ typedef enum pcb_term_err_e {
 	PCB_TERM_ERR_ALREADY_TERMINAL, /* object is already in a terminal, can not be added in another */
 	PCB_TERM_ERR_NOT_IN_TERMINAL,  /* object is not part of any terminal */
 	PCB_TERM_ERR_TERM_NOT_FOUND,
-	PCB_TERM_ERR_NOT_IN_SUBC,
 	PCB_TERM_ERR_NO_CHANGE,
 	PCB_TERM_ERR_INVALID_NAME
 } pcb_term_err_t;

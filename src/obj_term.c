@@ -174,29 +174,31 @@ typedef struct {
 
 static int undo_term_rename_swap(void *udata)
 {
-	char *old_term = NULL;
+	char *old_term = NULL, *autofree = NULL;
 	pcb_subc_t *subc;
 	term_rename_t *r = udata;
 	int res = 0;
 	pcb_flag_t ftmp;
 
 	subc = pcb_obj_parent_subc(r->obj);
-	if (subc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Undo error: terminal rename: object %ld not part of a terminal\n", r->obj->ID);
-		return -1;
-	}
 
 	/* remove from previous terminal */
 	if (r->obj->term != NULL) {
 		old_term = pcb_strdup(r->obj->term);
-		res |= pcb_term_del(&subc->terminals, r->obj);
+		if (subc != NULL)
+			res |= pcb_term_del(&subc->terminals, r->obj);
+		else
+			pcb_attribute_remove(&r->obj->Attributes, "term");
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 		r->obj->term = NULL;
 	}
 
 	/* add to new terminal */
 	if (*r->str != '\0') {
-		res |= pcb_term_add(&subc->terminals, r->str, r->obj);
+		if (subc != NULL)
+			res |= pcb_term_add(&subc->terminals, r->str, r->obj);
+		else
+			autofree = r->obj->term = pcb_strdup(r->str);
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 	}
 
@@ -222,6 +224,7 @@ static int undo_term_rename_swap(void *udata)
 	if (r->obj->type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(r->obj->parent.layer->parent.data, r->obj->parent.layer, (pcb_poly_t *)r->obj);
 
+	free(autofree);
 	return res;
 }
 
@@ -244,17 +247,12 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 {
 	int nname_len = 0, oname_len = 0, len;
 	term_rename_t *r;
-	pcb_subc_t *subc;
 
 	if ((new_name == NULL) && (obj->term == NULL))
 		return PCB_TERM_ERR_NO_CHANGE;
 
 	if (((new_name != NULL) && (obj->term != NULL)) && (strcmp(new_name, obj->term) == 0))
 		return PCB_TERM_ERR_NO_CHANGE;
-
-	subc = pcb_obj_parent_subc(obj);
-	if (subc == NULL)
-		return PCB_TERM_ERR_NOT_IN_SUBC;
 
 	if (new_name != NULL)
 		nname_len = strlen(new_name);

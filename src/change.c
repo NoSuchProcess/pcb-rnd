@@ -776,7 +776,7 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 
 		default:
 			term_name:;
-			if (parent_subc != NULL) {
+			{
 				name = pcb_hid_prompt_for("Enter terminal ID:", PCB_EMPTY(obj->term), "Change terminal ID");
 				if (name != NULL) {
 					pcb_term_undoable_rename(PCB, obj, name);
