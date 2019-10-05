@@ -136,6 +136,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	const pcb_unit_t *unit;
 	int unum = su->dlg[su->wunit].val.lng;
 	int can_glob = su->wglob > 0;
+	int is_globbing = &su->dlg[su->wglob] == attr;
 
 	if (!can_glob)
 		unit = &pcb_units[unum];
@@ -148,7 +149,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	hv.str = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
 	hv.lng = 0;
-	if (can_glob)
+	if (!is_globbing && can_glob)
 		pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
 	su->valid = 1;
 }
