@@ -407,6 +407,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_buffer_rotate(PCB_PASTEBUFFER, ang);
+	pcb_crosshair_range_to_buffer();
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
@@ -450,6 +451,7 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_buffer_scale(PCB_PASTEBUFFER, x, y, th, recurse);
+	pcb_crosshair_range_to_buffer();
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
