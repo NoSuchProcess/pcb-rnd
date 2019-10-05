@@ -17,11 +17,10 @@
 + BUG: bug_files/slot1.lht: open as footprint for edit - no mech layers are created so slots won't display [report: cuvoodoo]
 + BUG: "save layout as", "guess format" is on by default, change the file extension in name to lht; format: combo changes correctly. But it doesn't *actually* change the format (may need an alien format loaded first) [report: Majenko]
 + BUG: missing slots from ps export [report: Ade]
++ BUG: undo_term_rename_swap() shall not require subc [report: Majenko]
 
 1. For the upcoming release ===============================================================================
 - FEATURE: switch over the web parametric footprint viewer to use fp2preview
-- CLEANUP: pcb_term_add() and pcb_term_del() should not be called from undo code but from attribute change callback [report: Majenko]
-	- BUG: undo_term_rename_swap() shall not require subc [report: Majenko]
 - BUG: lesstif: copy gtk fixes on DAD close sequence (invalid memory access when close_cb free's ctx)
 - BUG: unit dialog in DAD coord spinbox: select a unit, global gets unchecked -> can not check global back in [report: Piotr]
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing)
@@ -30,6 +29,7 @@
 2. For later releases ===============================================================================
 - CLEANUP: actions must get (hidlib *) in some way that doesn't ruin compatibility - remove TODO("#hl1:...") [report: Igor2]
 - CLEANUP/BUG: globalconst.h: PCB_MIN_LINESIZE shall be 1 but rather remove it alltogether; revise other minimums as well and rather update the coord spin DAD to make the limit or maybe use a double-to-coord macro that checks 0..maxcoord (or -maxcoord..maxcoord for some cases) ml:3351 [report: Majenko]
+- CLEANUP: pcb_term_add() and pcb_term_del() should not be called from undo code but from attribute change callback [report: Majenko]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
