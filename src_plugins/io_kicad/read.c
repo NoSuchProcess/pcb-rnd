@@ -1584,7 +1584,7 @@ static void exec_zone_connect(read_state_t *st)
 			for(p = pcb_rtree_first(&it, ly->polygon_tree, (const pcb_rtree_box_t *)&zc->ps->BoundingBox); p != NULL; p = pcb_rtree_next(&it)) {
 				const char *pnet;
 				pnet = htpp_get(&st->poly2net, p);
-				if (strcmp(pnet, zc->netname) == 0) {
+				if ((zc != NULL) && (zc->netname != NULL) && (pnet != NULL) && (strcmp(pnet, zc->netname) == 0)) {
 					unsigned char *th = pcb_pstk_get_thermal(zc->ps, lid, 1);
 
 					switch(zc->style) {
