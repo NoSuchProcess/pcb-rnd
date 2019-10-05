@@ -155,9 +155,11 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
 	hv.str = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
-	hv.lng = 0;
-	if (!is_globbing && can_glob)
+	if (!is_globbing && can_glob) {
+		/* unit changed: disable global, accept the user wants to use this unit */
+		hv.lng = 0;
 		pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
+	}
 	su->valid = 1;
 }
 
