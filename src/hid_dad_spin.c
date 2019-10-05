@@ -140,7 +140,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	if (!can_glob)
 		unit = &pcb_units[unum];
-	else if ((!su->dlg[su->wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
+	else if ((!is_globbing) && (unum >= 0) && (unum < pcb_get_n_units(0)))
 		unit = &pcb_units[unum];
 	else
 		unit = pcbhl_conf.editor.grid_unit;
