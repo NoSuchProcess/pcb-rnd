@@ -2044,8 +2044,9 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 				return kicad_error(n, "unknwon clearance option argument %s", n->children->str);
 		}
 		else if (strcmp(n->str, "anchor") == 0) {
-			TODO("CUCP#60");
-			kicad_warning(n, "ignoring pad anchor for now");
+			/* Ignore: CUCP#60: used only as a geometry placeholder for
+			   connection calculations, which is not required in pcb-rnd.
+			   Should never be located outside of the main pad shape */
 		}
 		else
 			return kicad_error(n, "unknwon pad option %s", n->str);
