@@ -26,5 +26,10 @@ int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet);
 void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height);
 void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height);
 
+/* trapezoid: deform the rectangle so that upper horizontal edge is smaller
+   by dx and lower horizontal edge is larger by dx; same happens to the vertical
+   edges and dy. */
+void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, pcb_coord_t dx, pcb_coord_t dy);
+
 
 #endif

@@ -326,6 +326,24 @@ void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t heig
 	dst->x[3] = -width; dst->y[3] = +height;
 }
 
+void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, pcb_coord_t dx, pcb_coord_t dy)
+{
+	pcb_pstk_poly_t *dst = &shape->data.poly;
+
+	pcb_pstk_shape_alloc_poly(dst, 4);
+	shape->shape = PCB_PSSH_POLY;
+
+	width/=2;
+	height/=2;
+	dx/=2;
+	dy/=2;
+
+	dst->x[0] = -width+dx; dst->y[0] = -height-dy;
+	dst->x[1] = +width-dx; dst->y[1] = -height+dy;
+	dst->x[2] = +width+dx; dst->y[2] = +height-dy;
+	dst->x[3] = -width-dx; dst->y[3] = +height+dy;
+}
+
 void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height)
 {
 	shape->shape = PCB_PSSH_LINE;
