@@ -437,6 +437,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_att
 			if (succ)
 				break;
 			strtod(inval, &ends);
+			while(isspace(*ends)) ends++;
 			if (*ends == '\0') {
 				pcb_hid_attr_val_t hv;
 				char *tmp = pcb_concat(inval, " ", pcbhl_conf.editor.grid_unit->suffix, NULL);
