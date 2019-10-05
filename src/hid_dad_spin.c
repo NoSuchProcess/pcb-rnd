@@ -145,6 +145,13 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	else
 		unit = pcbhl_conf.editor.grid_unit;
 
+	if (is_globbing && su->dlg[su->wglob].val.lng) {
+		/* global ticked in: also set the unit by force */
+		unum = pcbhl_conf.editor.grid_unit - pcb_units;
+		hv.lng = unum;
+		pcb_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
+	}
+
 	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
 	hv.str = su->buf;
 	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
