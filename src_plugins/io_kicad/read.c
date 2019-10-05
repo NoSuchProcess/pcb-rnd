@@ -2617,18 +2617,20 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 				}
 			}
 		}
+		else if (strcmp("layers", n->str) == 0) {
+			TODO("CUCP#49");
+			kicad_warning(n->children, "multi-layer zones (e.g. keepouts affecting many layers) are not yet supported - polygon omitted");
+			return 0;
+		}
 		else if (strcmp("layer", n->str) == 0) {
-
 			SEEN_NO_DUP(tally, 10);
 			PARSE_LAYER(ly, n->children, NULL, "zone polygon");
-			if (ly == NULL) {
-				TODO("CUCP#49");
-				kicad_error(n->children, "multi-layer zones are not yet supported - polygon omitted");
-				return 0;
+			if (ly != NULL) {
+				polygon = pcb_poly_new(ly, 0, flags);
+				if (polygon == NULL)
+					return kicad_error(n->children, "Failed to create polygon");
 			}
-			polygon = pcb_poly_new(ly, 0, flags);
-			if (polygon == NULL)
-				return kicad_error(n->children, "Failed to create polygon");
+			kicad_warning(n->children, "no polygon layer - polygon omitted (only single layer polygons are supported)");
 		}
 		else if (strcmp("polygon", n->str) == 0) {
 			if (polygon == NULL)
