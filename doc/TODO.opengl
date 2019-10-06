@@ -1,2 +1,1 @@
-- BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 - BUG: different padstack color with default settingsbetween gtk2_gl: bug_files/gl_pstk/* (sw render) and gtk2_gdk may make hole disappear (private mailing, 2019-06-24)
