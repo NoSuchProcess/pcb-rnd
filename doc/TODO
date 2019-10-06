@@ -92,8 +92,6 @@
 - XOR rendering upgrade:
 		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
 		- if worked: allow padstack xor draw to draw all shapes on all layers
-- opengl:
-	- BUG: heavy swapd +/- crash with radeon AMD GL driver, fixed by exporting LIBGL_ALWAYS_SOFTWARE=t GALLIUM_DRIVER=llvmpipe [report: erich] 
 - export_dsn/new io_dsn (with King Kevin and celem):
 	- missing global padstack (via) export:
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
@@ -168,7 +166,6 @@
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: gtk2_gl issue. view in netlist window circuit view clips or goes black when changing selected net (repro. w/ doc/tutorials/15_no_sch/step3.lht and open netlist view {w n} [report: miloh]
 - version 3.0.0:
 	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 
