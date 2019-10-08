@@ -146,7 +146,7 @@ void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rt
    from pcb4layer_groups. The new bound layers are not bound to any real layer. */
 void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data);
 
-/* Recalculate the layer bindings updating meta.bound.real to new board layers */
+/* Recalculate data's layer bindings in meta.bound.real to point to board layers */
 void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data);
 
 /* Break the binding in data bound layers (set htem all to NULL) */
