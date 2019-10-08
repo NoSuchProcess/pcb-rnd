@@ -233,10 +233,14 @@ parsepcb
 		    LayerFlag[1] = pcb_true;
 		    if (yyElemFixLayers) {
 		    	yyData->LayerN = 2;
+		    	free(yyData->Layer[0].name);
+		    	yyData->Layer[0].name = pcb_strdup("top-silk");
 		    	yyData->Layer[0].parent_type = PCB_PARENT_DATA;
 		    	yyData->Layer[0].parent.data = yyData;
 		    	yyData->Layer[0].is_bound = 1;
 		    	yyData->Layer[0].meta.bound.type = PCB_LYT_SILK | PCB_LYT_TOP;
+		    	free(yyData->Layer[1].name);
+		    	yyData->Layer[1].name = pcb_strdup("bottom-silk");
 		    	yyData->Layer[1].parent_type = PCB_PARENT_DATA;
 		    	yyData->Layer[1].parent.data = yyData;
 		    	yyData->Layer[1].is_bound = 1;
