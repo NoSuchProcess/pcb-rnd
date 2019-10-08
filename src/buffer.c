@@ -765,6 +765,10 @@ pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const
 			pcb_subc_t *subc = pcb_subclist_first(&Buffer->Data->subc);
 			pcb_subc_get_origin(subc, &Buffer->X, &Buffer->Y);
 		}
+
+		/* the loader may have created new layers */
+		pcb_data_binding_update(PCB, Buffer->Data);
+
 		return pcb_true;
 	}
 
