@@ -1445,7 +1445,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 		pcb_subc_free(subc);
 	}
 	if (warn)
-		pcb_message(PCB_MSG_WARNING, "There are %ld objects that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
+		pcb_message(PCB_MSG_WARNING, "There are %ld layers that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
 	return pcb_true;
 }
 
