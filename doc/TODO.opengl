@@ -1,1 +1,2 @@
 - BUG: different padstack color with default settingsbetween gtk2_gl: bug_files/gl_pstk/* (sw render) and gtk2_gdk may make hole disappear (private mailing, 2019-06-24)
+- BUG: xor draw (e.g. selection box or tool's crosshair attached line) does not result in the same color as in gdk
