@@ -16,7 +16,6 @@
 
 1. For the upcoming release ===============================================================================
 - FEATURE: switch over the web parametric footprint viewer to use fp2preview
-- BUG: lesstif: copy gtk fixes on DAD close sequence (invalid memory access when close_cb free's ctx)
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing)
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 
