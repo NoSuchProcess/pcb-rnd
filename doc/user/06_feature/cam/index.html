@@ -69,10 +69,12 @@ Examples:
 	     <th> explanation
 	<tr> <td> bot.gbr=@bottom_copper,@bottom_silk
 	     <td> export layer groups called bottom_copper and bottom_silk (by group name)
-	<tr> <td> asm=top-assy
-	     <td> export the top assembly group, by type
-	<tr> <td> fabrication.ps=fab
-	     <td> export any fab layer group, by type
+	<tr> <td> asm_top.ps=@topassembly
+	     <td> export the top assembly layer group
+	<tr> <td> asm_bot.ps=@bottomassembly
+	     <td> export the bottom assembly layer group
+	<tr> <td> fabrication.ps=virtual(purpose=fab)
+	     <td> export the first virtual layer group with 'fab' purpose
 	<tr> <td> gnd=copper:2
 	     <td> export the second copper layer group from the top (the first internal copper layer group under the top copper layer group, if it is a multilayer board; for 2 layer boards this will be the bottom copper layer group)
 	<tr> <td> gnd=intern-copper:1
