@@ -1,5 +1,4 @@
 0. old, still waiting for ack
-+ CLEANUP: Vuokko's list of warnings on OpenBSD: bug_files/warn-obsd-r26600.log [report: Vuokko]
 + CLEANUP/feature: pcb_subc_smash_buffer() should really copy data so it can smash multiple subcs and subc objects end up on the layer they were bound to [report: keantoken]
 + FEATURE: connection check separator in log: bug_files/connreq.txt [report: keantoken]
 + FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
