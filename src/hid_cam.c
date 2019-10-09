@@ -480,6 +480,10 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 			parse_layer_supplements(spk, spv, spc, &purpose, &xf, &xf_);
 
 			vl = pcb_vlayer_get_first(lyt, purpose, -1);
+			if ((lyt & PCB_LYT_VIRTUAL) && (vl == NULL)) {
+				pcb_message(PCB_MSG_ERROR, "CAM rule: no virtual layer with purpose '%s'\n", purpose);
+				goto err;
+			}
 			if (vl == NULL) {
 				pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 				int n, len = pcb_layergrp_listp(dst->pcb, lyt, gids, sizeof(gids)/sizeof(gids[0]), -1, purpose);
