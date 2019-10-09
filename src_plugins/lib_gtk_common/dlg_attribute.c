@@ -681,7 +681,8 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 	ctx->freeing_gui = 1;
 
 	/* make sure we are not called again from the destroy signal */
-	g_signal_handler_disconnect(ctx->dialog, ctx->destroy_handler);
+	if (ctx->dialog != NULL)
+		g_signal_handler_disconnect(ctx->dialog, ctx->destroy_handler);
 
 	for(i = 0; i < ctx->n_attrs; i++) {
 		switch(ctx->attrs[i].type) {
@@ -858,8 +859,11 @@ void ghid_attr_dlg_close(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
-	if (ctx->dialog != NULL)
-		gtk_widget_destroy(ctx->dialog);
+	if (ctx->dialog != NULL) {
+		GtkWidget *dlg = ctx->dialog; /* the destroy callback may free ctx */
+		ctx->dialog = NULL;
+		gtk_widget_destroy(dlg);
+	}
 }
 
 void ghid_attr_dlg_free(void *hid_ctx)
