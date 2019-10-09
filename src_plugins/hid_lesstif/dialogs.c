@@ -594,7 +594,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 		ctx->close_cb_called = 1;
 		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
 	}
-	if (!ctx->widget_destroyed) {
+	else if (!ctx->widget_destroyed) {
 		ctx->widget_destroyed = 1;
 		readres_all(ctx);
 		XtUnmanageChild(w);
