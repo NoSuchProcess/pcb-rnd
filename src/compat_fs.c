@@ -330,7 +330,7 @@ int pcb_is_path_abs(const char *fn)
 		return 1;
 
 	/* full path without drive and remote paths, e.g. \\workgroup\foo */
-	if ((fn[0] == '\\') || (fn[0] == '/')))
+	if ((fn[0] == '\\') || (fn[0] == '/'))
 		return 1;
 
 	return 0;
