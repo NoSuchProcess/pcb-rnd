@@ -1,12 +1,18 @@
 State on windows
 ~~~~~~~~~~~~~~~~
 
-Does not work yet but there has been a breakthrough recently.
+We have a pack in beta testing. It should work on any windows version
+from 7 up. (It will _not_ work on XP.)
 
 1. download the binary pack and install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO
+Download the zop from http://igor2.repo.hu/tmp/pcb-rnd-w32.zip
+
+Unpack the zip anywhere, and run pcb-rnd from bin:
+- start a shell (cmd.exe), cd to where you unpacked it, cd bin, pcb-rnd
+- create a shortcut icon (TODO: what's needed for the exe to find the dlls?)
+
 
 2. limitations
 ~~~~~~~~~~~~~~
