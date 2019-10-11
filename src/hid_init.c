@@ -439,6 +439,8 @@ static int truncdir(char *dir)
 	return 0;
 }
 extern int pcb_mkdir_(const char *path, int mode);
+char *pcb_w32_root;
+char *pcb_w32_libdir, *pcb_w32_bindir, *pcb_w32_sharedir, *pcb_w32_cachedir;
 #endif
 
 void pcb_fix_locale_and_env()
@@ -457,7 +459,7 @@ void pcb_fix_locale_and_env()
 
 #ifdef __WIN32__
 	{
-		char *s, *libdir, *bindir, *sharedir, exedir[MAX_PATH];
+		char *s, exedir[MAX_PATH];
 		wchar_t *w, wexedir[MAX_PATH];
 
 		if (!GetModuleFileNameW(NULL, wexedir, MAX_PATH)) {
@@ -471,29 +473,29 @@ void pcb_fix_locale_and_env()
 
 		truncdir(exedir);
 
-		bindir = pcb_strdup(exedir);
+		pcb_w32_bindir = pcb_strdup(exedir);
 		truncdir(exedir);
-		libdir = pcb_concat(exedir, "\\lib", NULL);
-		sharedir = pcb_concat(exedir, "\\share", NULL);
+		pcb_w32_root = pcb_strdup(exedir);
+		pcb_w32_libdir = pcb_concat(exedir, "\\lib", NULL);
+		pcb_w32_sharedir = pcb_concat(exedir, "\\share", NULL);
 
 /*		printf("WIN32 bindir='%s' libdir='%s' sharedir='%s'\n", bindir, libdir, sharedir);*/
 
 		/* set up gdk pixmap modules */
 		{
-			char *cache, *cmd;
+			char *cache, *pcb_w32_cachedir, *cmd;
 
-			cache = pcb_concat(exedir, "\\cache", NULL);
-			pcb_mkdir_(cache, 0755);
-			free(cache);
+			pcb_w32_cachedir = pcb_concat(pcb_w32_root, "\\cache", NULL);
+			pcb_mkdir_(pcb_w32_cachedir, 0755);
 
-			cache = pcb_concat(exedir, "\\cache\\gdk-pixmap-loaders.cache", NULL);
+			cache = pcb_concat(pcb_w32_cachedir, "\\gdk-pixmap-loaders.cache", NULL);
 			pcb_setenv("GDK_PIXBUF_MODULE_FILE", cache, 1);
 printf("cache='%s' %d\n", cache, pcb_file_readable(cache));
 			for(s = cache; *s != '\0'; s++)
 				if (*s == '\\')
 					*s = '/';
 			if (!pcb_file_readable(cache)) {
-				cmd = pcb_concat(bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
+				cmd = pcb_concat(pcb_w32_bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
 				printf("update cache!\n");
 				system(cmd);
 				free(cmd);

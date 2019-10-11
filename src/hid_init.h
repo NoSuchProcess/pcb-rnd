@@ -149,4 +149,12 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
    shall be invoked) */
 #define pcbhl_main_exporting (pcb_gui->printer || pcb_gui->exporter)
 
+#ifdef __WIN32__
+extern char *pcb_w32_root;     /* installation prefix; what would be $PREFIX on FHS, e.g. /usr/local */
+extern char *pcb_w32_libdir;   /* on FHS this would be $PREFIX/lib*/
+extern char *pcb_w32_bindir;   /* on FHS this would be $PREFIX/bin - on win32 this also hosts the dlls */
+extern char *pcb_w32_sharedir; /* on FHS this would be $PREFIX/share */
+extern char *pcb_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf loader cache; persistent, but not part of the distribution */
+#endif
+
 #endif
