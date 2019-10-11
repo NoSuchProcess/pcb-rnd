@@ -44,6 +44,7 @@
 #include "error.h"
 #include "conf.h"
 #include "conf_core.h"
+#include "hid_init.h"
 #include "macro.h"
 #include "safe_fs.h"
 #include "safe_fs_dir.h"
@@ -513,8 +514,19 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 				libshell = "";
 				sep = "";
 			}
+#ifdef __WIN32__
+			{
+				char *s;
+				cmd = malloc(strlen(pcb_w32_bindir) + strlen(libshell) + strlen(fullname) + strlen(params) + 32);
+				sprintf(cmd, "%s/sh -c \"%s%s%s %s\"", pcb_w32_bindir, libshell, sep, fullname, params);
+				for(s = cmd; *s != '\0'; s++)
+					if (*s == '\\')
+						*s = '/';
+			}
+#else
 			cmd = malloc(strlen(libshell) + strlen(fullname) + strlen(params) + 16);
 			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
+#endif
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
 			fctx->field[F_TMPNAME].p = pcb_tempfile_name_new("pcb-rnd-pfp");
 			f = pcb_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "w+");
