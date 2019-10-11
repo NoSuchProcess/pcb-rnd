@@ -20,6 +20,7 @@ Unpack the zip anywhere, and run pcb-rnd from bin:
 pcb-rnd is a package designed for UNIX. The windows port does not
 change the UNIX aspect of pcb-rnd, thus a few things are different from
 a normal windows application:
+ - there can not be space in the path where the pack is unzipped
  - pcb-rnd works from config files, not from the registry
  - pcb-rnd will figure the users home directory and will look for .pcb-rnd/
    in there for the user configs
