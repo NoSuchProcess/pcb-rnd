@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
 
 	pcbhl_main_args_t ga;
 
-	pcb_fix_locale();
+	pcb_fix_locale_and_env();
 
 	pcbhl_main_args_init(&ga, argc, pcb_action_args);
 

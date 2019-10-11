@@ -33,6 +33,10 @@
 #include <stdlib.h>
 #include <locale.h>
 
+#ifdef __WIN32__
+#include <wchar.h>
+#endif
+
 #include <genvector/vts0.h>
 
 #include "hid.h"
@@ -50,6 +54,7 @@
 #include "misc_util.h"
 #include "compat_misc.h"
 #include "compat_inc.h"
+#include "compat_fs.h"
 #include "file_loaded.h"
 #include "hidlib.h"
 #include "hidlib_conf.h"
@@ -418,7 +423,25 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 	return 0;
 }
 
-void pcb_fix_locale(void)
+#ifdef __WIN32__
+/* truncate the last dir segment; returns remaining length or 0 on failure */
+static int truncdir(char *dir)
+{
+	char *s;
+
+	for(s = dir + strlen(dir) - 1; s >= dir; s--) {
+		if ((*s == '/') || (*s == '\\')) {
+			*s = '\0';
+			return s - dir;
+		}
+	}
+	*dir = '\0';
+	return 0;
+}
+extern int pcb_mkdir_(const char *path, int mode);
+#endif
+
+void pcb_fix_locale_and_env()
 {
 	static const char *lcs[] = { "LANG", "LC_NUMERIC", "LC_ALL", NULL };
 	const char **lc;
@@ -430,6 +453,55 @@ void pcb_fix_locale(void)
 		pcb_setenv(*lc, "C", 1);
 
 	setlocale(LC_ALL, "C");
+
+
+#ifdef __WIN32__
+	{
+		char *s, *libdir, *bindir, *sharedir, exedir[MAX_PATH];
+		wchar_t *w, wexedir[MAX_PATH];
+
+		if (!GetModuleFileNameW(NULL, wexedir, MAX_PATH)) {
+			fprintf(stderr, "pcb-rnd: GetModuleFileNameW(): failed to determine executable full path\n");
+			exit(1);
+		}
+
+		for(w = wexedir, s = exedir; *w != 0; w++)
+			s += wctomb(s, *w);
+		*s = '\0';
+
+		truncdir(exedir);
+
+		bindir = pcb_strdup(exedir);
+		truncdir(exedir);
+		libdir = pcb_concat(exedir, "\\lib", NULL);
+		sharedir = pcb_concat(exedir, "\\share", NULL);
+
+/*		printf("WIN32 bindir='%s' libdir='%s' sharedir='%s'\n", bindir, libdir, sharedir);*/
+
+		/* set up gdk pixmap modules */
+		{
+			char *cache, *cmd;
+
+			cache = pcb_concat(exedir, "\\cache", NULL);
+			pcb_mkdir_(cache, 0755);
+			free(cache);
+
+			cache = pcb_concat(exedir, "\\cache\\gdk-pixmap-loaders.cache", NULL);
+			pcb_setenv("GDK_PIXBUF_MODULE_FILE", cache, 1);
+printf("cache='%s' %d\n", cache, pcb_file_readable(cache));
+			for(s = cache; *s != '\0'; s++)
+				if (*s == '\\')
+					*s = '/';
+			if (!pcb_file_readable(cache)) {
+				cmd = pcb_concat(bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
+				printf("update cache!\n");
+				system(cmd);
+				free(cmd);
+			}
+			free(cache);
+		}
+	}
+#endif
 }
 
 static int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng)

@@ -113,8 +113,9 @@ typedef struct {
 	int autopick_gui;
 } pcbhl_main_args_t;
 
-/* call this before anything, to switch locale to "C" permanently */
-void pcb_fix_locale(void);
+/* call this before anything, to switch locale to "C" permanently;
+   also sets up the environment on win32. */
+void pcb_fix_locale_and_env();
 
 void pcb_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
 void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins); /* after CLI argument parsing */
