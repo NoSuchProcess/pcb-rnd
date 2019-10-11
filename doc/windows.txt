@@ -3,10 +3,43 @@ State on windows
 
 Does not work yet but there has been a breakthrough recently.
 
-1. Cross compilation from Linux to win32
+1. download the binary pack and install
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TODO
+
+2. limitations
+~~~~~~~~~~~~~~
+
+pcb-rnd is a package designed for UNIX. The windows port does not
+change the UNIX aspect of pcb-rnd, thus a few things are different from
+a normal windows application:
+ - pcb-rnd works from config files, not from the registry
+ - pcb-rnd will figure the users home directory and will look for .pcb-rnd/
+   in there for the user configs
+ - if anything breaks, try to run pcb-rnd from the command line: run a cmd.exe
+   and cd to the bin dir within the installation root and run pcb-rnd from
+   there watching what it prints to the console.
+
+The usual pcb-rnd policies apply:
+ - pcb-rnd speaks English - there's no internalization, no unicode or utf
+ - some keyboard shortcuts may not work if your keyboard layout is not set
+   to English
+ - pcb-rnd uses the keyboard and the command line heavily
+
+There are a few limitations specific to the current windows pack:
+ - it does not support opengl, it is always doing software rendering
+ - some of the export formats are not yet supported on windows
+ - there is no fp_wget support because there's no wget in the pack
+   (may work with busybox wget, busybox shipped in the pack, testing required)
+ - gsch2pcb-rnd is not supported
+ - import schematics with gnetlist has not been tested yet
+   (importing tEDAx netlist should work)
+ - the windows port may have some overhead; if you find pcb-rnd slow,
+   please try it on Linux.
+
+3. Cross compilation from Linux to win32
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(developers may need this, if you are an user, skip to 2.)
+(developers may need this, if you are an user, it is safe to skip.)
 
-
-2. download the binary pack
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO
