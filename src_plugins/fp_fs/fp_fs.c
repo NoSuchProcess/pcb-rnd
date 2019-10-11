@@ -306,7 +306,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	char path[PCB_PATH_MAX + 1];
 	fp_search_t ctx;
 
-	if ((*basename == '/') || (*basename == PCB_DIR_SEPARATOR_C))
+	if (pcb_is_path_abs(basename))
 		return pcb_strdup(basename);
 
 	ctx.target = basename;
