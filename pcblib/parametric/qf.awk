@@ -92,15 +92,6 @@ function pinnum(num)
 	return ((num-1) + pinoffs) % (pinmax)+1
 }
 
-# draw a matrix of paste rectangles; top-left corner is x1;y1, there are nx*ny
-# rectangles of w*h size. rows/cols of pads are drawn with ox and oy offset
-function paste_matrix(x1, y1, nx, ny, w, h, ox, oy,    flags, attrbiutes, clearance,      ix,iy)
-{
-	for(iy = 0; iy < ny; iy++)
-		for(ix = 0; ix < nx; ix++)
-			subc_rect("top-paste", x1+ix*ox, y1+iy*oy, x1+ix*ox+w, y1+iy*oy+h, clearance, flags, attributes)
-}
-
 BEGIN {
 	base_unit_mm = 0
 
