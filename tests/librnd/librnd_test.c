@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 	int n;
 	pcbhl_main_args_t ga;
 
-	pcb_fix_locale();
+	pcb_fix_locale_and_env();
 
 	pcbhl_main_args_init(&ga, argc, action_args);
 
