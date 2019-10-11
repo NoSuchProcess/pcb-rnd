@@ -35,6 +35,7 @@ The usual pcb-rnd policies apply:
 
 There are a few limitations specific to the current windows pack:
  - there can not be space in the path where the pack is unzipped
+ - UNC paths (\\server\something) may fail randomly
  - it does not support opengl, it is always doing software rendering
  - some of the export formats are not yet supported on windows
  - there is no fp_wget support because there's no wget in the pack
