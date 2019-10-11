@@ -50,6 +50,7 @@
 #include "compat_misc.h"
 #include "globalconst.h"
 #include "safe_fs.h"
+#include "hid_init.h"
 
 #include <genvector/gds_char.h>
 
@@ -149,6 +150,22 @@ int pcb_spawnvp(const char **argv)
 char *pcb_tempfile_name_new(const char *name)
 {
 	char *tmpfile = NULL;
+
+#ifdef __WIN32__
+	const char *tmpdir;
+	char *res, *c, num[256];
+	unsigned int r1 = rand(), r2 = rand(); /* weaker fallback */
+
+	rand_s(&r1); rand_s(&r2); /* crypto secure according to the API doc */
+
+	sprintf(num, "%lu%lu", r1, r2);
+	tmpdir = pcb_w32_cachedir;
+	res = pcb_concat(tmpdir, "/", num, NULL);
+	for(c = res; *c; c++)
+		if (*c == '\\')
+			*c = '/';
+	return res;
+#else
 #ifdef HAVE_MKDTEMP
 #ifdef inline
 	/* Suppress compiler warnings; -Dinline means we are compiling in
@@ -212,18 +229,9 @@ char *pcb_tempfile_name_new(const char *name)
 	 * in case someone decides to create multiple temp names.
 	 */
 	tmpfile = pcb_strdup(tmpnam(NULL));
-#ifdef __WIN32__
-	{
-		/* Guile doesn't like \ separators */
-		char *c;
-		for (c = tmpfile; *c; c++)
-			if (*c == '\\')
-				*c = '/';
-	}
 #endif
-#endif
-
 	return tmpfile;
+#endif
 }
 
 /* If we have mkdtemp() then our temp file lives in a temporary directory and
