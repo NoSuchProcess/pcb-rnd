@@ -32,6 +32,7 @@
 #include "paths.h"
 #include "error.h"
 #include "hidlib.h"
+#include "hid_init.h"
 #include "hidlib_conf.h"
 
 int pcb_getpid(void);
@@ -114,12 +115,20 @@ int pcb_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
 
 char *pcb_build_fn(pcb_hidlib_t *hidlib, const char *template)
 {
-	return pcb_strdup_subst(template, pcb_build_fn_cb, hidlib, PCB_SUBST_ALL);
+	pcb_strdup_subst_t sbs = PCB_SUBST_ALL;
+#ifdef __WIN32__
+	sbs &= ~PCB_SUBST_BACKSLASH;
+#endif
+	return pcb_strdup_subst(template, pcb_build_fn_cb, hidlib, sbs);
 }
 
 char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg)
 {
-	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg, PCB_SUBST_ALL);
+	pcb_strdup_subst_t sbs = PCB_SUBST_ALL;
+#ifdef __WIN32__
+	sbs &= ~PCB_SUBST_BACKSLASH;
+#endif
+	return pcb_strdup_subst(template, pcb_build_argfn_cb, arg, sbs);
 }
 
 int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room)
@@ -133,6 +142,13 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 
 	if (*template == '?')
 		template++;
+
+#ifdef __WIN32__
+	if (*template == '@') {
+		gds_append_str(s, pcb_w32_root);
+		template++;
+	}
+#endif
 
 	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
 		if (pcbhl_conf.rc.path.home == NULL) {
@@ -228,8 +244,18 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 										pcb_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
 									goto error;
 								}
-								if (cn->val.string[0] != NULL)
-									gds_append_str(s, cn->val.string[0]);
+								if (cn->val.string[0] != NULL) {
+									if (*cn->val.string[0] == '@') {
+#ifdef __WIN32__
+										gds_append_str(s, pcb_w32_root);
+										gds_append_str(s, cn->val.string[0]+1);
+#else
+										gds_append_str(s, cn->val.string[0]);
+#endif
+									}
+									else
+										gds_append_str(s, cn->val.string[0]);
+								}
 								curr = end+1;
 							}
 							else {
@@ -285,6 +311,9 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 void pcb_paths_resolve(pcb_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
 {
 	pcb_strdup_subst_t flags = PCB_SUBST_ALL;
+#ifdef __WIN32__
+	flags &= ~PCB_SUBST_BACKSLASH;
+#endif
 	if (quiet)
 		flags |= PCB_SUBST_QUIET;
 	for (; numpaths > 0; numpaths--, in++, out++)
