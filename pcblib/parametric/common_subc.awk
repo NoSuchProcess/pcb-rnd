@@ -172,7 +172,7 @@ function unit(coord)
 function subc_text(layer, x, y, str, scale, rot, flags, attributes      ,s)
 {
 
-	s = s "      ha:text." ++objid "{" NL
+	s = s "      ha:text." (++objid) "{" NL
 	s = s "       scale = " either(scale, 100) NL
 	if (attributes != "")
 	s = s "       ha:attributes {" attributes "}" NL
@@ -189,7 +189,7 @@ function subc_text(layer, x, y, str, scale, rot, flags, attributes      ,s)
 
 function subc_line(layer, x1, y1, x2, y2, thick, clr, flags, attributes      ,s)
 {
-	s = s "      ha:line." ++objid " {" NL
+	s = s "      ha:line." (++objid) " {" NL
 	s = s "       x1 = " unit(x1) NL
 	s = s "       y1 = " unit(y1) NL
 	s = s "       x2 = " unit(x2) NL
@@ -206,7 +206,7 @@ function subc_line(layer, x1, y1, x2, y2, thick, clr, flags, attributes      ,s)
 
 function subc_arc(layer, cx, cy, r, a_start, a_delta, thick, clr, flags, attributes      ,s)
 {
-	s = s "      ha:arc." ++objid " {" NL
+	s = s "      ha:arc." (++objid) " {" NL
 	s = s "       x = " unit(cx) NL
 	s = s "       y = " unit(cy) NL
 	s = s "       astart = " a_start NL
@@ -227,7 +227,7 @@ function subc_rect(layer, x1, y1, x2, y2, clearance, flags, attributes     ,s)
 {
 	w = w/2
 	h = h/2
-	s = s "          ha:polygon." ++objid " {" NL
+	s = s "          ha:polygon." (++objid) " {" NL
 	s = s "           clearance=" unit(clearance) NL
 	s = s "           li:geometry {" NL
 	s = s "             ta:contour {" NL
@@ -248,7 +248,7 @@ function subc_rect(layer, x1, y1, x2, y2, clearance, flags, attributes     ,s)
 function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 {
 	print "li:pcb-rnd-subcircuit-v6 {"
-	print " ha:subc." ++objid "{"
+	print " ha:subc." (++objid) "{"
 	print "  ha:attributes {"
 	print "   footprint = " lht_str(footprint)
 	if (refdes != "")
@@ -595,7 +595,7 @@ function subc_pstk(proto, x, y, rot, termid, name, clearance,      s)
 	if (termid == "")
 		termid = ++pin_number
 
-	s = s "    ha:padstack_ref." ++objid " {" NL
+	s = s "    ha:padstack_ref." (++objid) " {" NL
 	s = s "     proto = " proto NL
 	s = s "     x = " unit(x) NL
 	s = s "     y = " unit(y) NL
