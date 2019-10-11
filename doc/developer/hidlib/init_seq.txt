@@ -1,0 +1,117 @@
+1. simplified (custom) init sequence
+
+This method is useful for the simplest, gui-only applications that
+potentially do not have plugins.
+
+int main(int argc, char *argv[])
+{
+	pcb_fix_locale_and_env();
+
+	/* set up non-hidlib related app states */
+	...
+
+	pcb_hidlib_init1(conf_core_init);
+
+	/* process command line args */
+	...
+
+	pcb_hidlib_init2(pup_buildins);
+
+	/* set up hidlib related app states - all main infrastructure is up by now */
+	...
+
+	/* initialize the gui and run the main loop */
+	pcb_gui = pcb_hid_find_gui(gui_name);
+	if (pcb_gui == NULL) {
+		pcb_message(PCB_MSG_ERROR, "can't find HID '%s'\n", gui_name);
+		pcbhl_log_print_uninit_errs("");
+		exit(1);
+	}
+	if (pcb_gui->parse_arguments(&argc, &argv) != 0) {
+		pcb_message(PCB_MSG_ERROR, "can't init HID '%s'\n", gui_name);
+		pcbhl_log_print_uninit_errs("");
+		exit(1);
+	}
+	pcb_gui->do_export(&camv.hidlib, 0);
+
+	/* application state uninit */
+	...
+}
+
+
+2. standard init sequence
+
+Hidlib calls help to initialize the plugin system, parse the command line
+argument, choose command line action, exporter or GUI in a standard way.
+Full featured hidlib applications with feature and export plugins should
+use this sequence.
+
+static const char *camv_action_args[] = {
+/*short, -long, action, help, hint-on-error */
+	"V",  "-version",         "PrintVersion()",     "Print version info and exit",                             NULL,
+	"V",  "-dump-version",    "DumpVersion()",      "Print version info in script readable format and exit",   NULL,
+	NULL, "-copyright",       "PrintCopyright()",   "Print copyright and exit",                                NULL,
+	NULL, NULL, NULL, NULL, NULL /* terminator */
+};
+
+int main(int argc, char *argv[])
+{
+	pcbhl_main_args_t ga;
+
+	pcb_fix_locale_and_env();
+
+	pcbhl_main_args_init(&ga, argc, camv_action_args);
+
+	pcb_hidlib_init1(conf_core_init);
+	for(n = 1; n < argc; n++) {
+		/* process application-specific arguments here and skip the next line for those */
+		n += pcbhl_main_args_add(&ga, argv[n], argv[n+1]);
+	}
+	pcb_hidlib_init2(pup_buildins);
+
+	/* direct exporting via -x */
+	if (pcbhl_main_args_setup1(&ga) != 0) {
+		camv_main_uninit();
+		pcbhl_main_args_uninit(&ga);
+		exit(1);
+	}
+
+/* Initialize actions only when the gui is already known so only the right
+   one is registered (there can be only one GUI). */
+#include "generated_lists.h"
+
+	if (pcbhl_main_args_setup2(&ga, &n) != 0) {
+		camv_main_uninit();
+		pcbhl_main_args_uninit(&ga);
+		exit(n);
+	}
+
+	if (ga.hid_argc > 0) {
+		/* command line leftover: typically file name(s) to load, in
+		   ga.hid_argv[0 .. ga.hid_argc-1]; */
+	}
+
+	/* do the export if -x was specified */
+	if (pcbhl_main_exported(&ga, ...)) {
+		camv_main_uninit();
+		pcbhl_main_args_uninit(&ga);
+		exit(0);
+	}
+
+	/* main loop */
+	do {
+		/* optional: if a plugin is required for basic GUI operation, load it here */
+		if (PCB_HAVE_GUI_ATTR_DLG)
+			gui_support_plugins(1);
+		pcbhl_mainloop_interactive(&ga, ...);
+	} while(pcb_gui != NULL);
+
+	/* application specific uninit */
+	...
+
+	pcbhl_main_args_uninit(&ga);
+	return 0;
+}
+
+
+
