@@ -1197,7 +1197,7 @@ void lesstif_show_crosshair(int show)
 	if (!crosshair_in_window || !window)
 		return;
 	if (xor_gc == 0) {
-		crosshair_color = lesstif_parse_color(&conf_core.appearance.color.crosshair) ^ bgcolor;
+		crosshair_color = lesstif_parse_color(&pcbhl_conf.appearance.color.cross);
 		xor_gc = XCreateGC(display, window, 0, 0);
 		XSetFunction(display, xor_gc, GXxor);
 		XSetForeground(display, xor_gc, crosshair_color);
