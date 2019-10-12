@@ -1323,20 +1323,21 @@ static void show_crosshair(gboolean paint_new_location)
 	static gint x_prev = -1, y_prev = -1;
 	static GdkGC *xor_gc;
 	static GdkColor cross_color;
+	static unsigned long cross_color_packed;
 
 	if (ghidgui->port.view.crosshair_x < 0 || !ghidgui->topwin.active || !ghidgui->port.view.has_entered) {
 		x_prev = y_prev = -1; /* if leaving the drawing area, invalidate last known coord to make sure we redraw on reenter, even on the same coords */
 		return;
 	}
 
-	if (!xor_gc) {
+	if (!xor_gc || (cross_color_packed != pcbhl_conf.appearance.color.cross.packed)) {
 		xor_gc = gdk_gc_new(window);
 		gdk_gc_copy(xor_gc, style->white_gc);
 		gdk_gc_set_function(xor_gc, GDK_XOR);
 		gdk_gc_set_clip_origin(xor_gc, 0, 0);
 		set_clip(priv, xor_gc);
-		/* FIXME: when CrossColor changed from config */
 		map_color(&pcbhl_conf.appearance.color.cross, &cross_color);
+		cross_color_packed = pcbhl_conf.appearance.color.cross.packed;
 	}
 	x = Vx(ghidgui->port.view.crosshair_x);
 	y = Vy(ghidgui->port.view.crosshair_y);
