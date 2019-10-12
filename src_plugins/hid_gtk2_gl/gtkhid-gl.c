@@ -671,14 +671,15 @@ static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_loca
 	GLint x, y, z;
 	static int done_once = 0;
 	static pcb_gtk_color_t cross_color;
+	static unsigned long cross_color_packed;
 
 	if (!paint_new_location)
 		return;
 
-	if (!done_once) {
+	if (!done_once || (cross_color_packed != pcbhl_conf.appearance.color.cross.packed)) {
 		done_once = 1;
-		/* FIXME: when CrossColor changed from config */
 		map_color(&pcbhl_conf.appearance.color.cross, &cross_color);
+		cross_color_packed = pcbhl_conf.appearance.color.cross.packed;
 	}
 	x = ghidgui->port.view.crosshair_x;
 	y = ghidgui->port.view.crosshair_y;
