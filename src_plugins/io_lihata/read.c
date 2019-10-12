@@ -66,6 +66,7 @@ TODO("cleanup: put these in a gloal load-context-struct")
 vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
 unsigned long warned, old_model_warned;
+static conf_role_t cfg_dest;
 
 static pcb_data_t DUMMY_BUFFER_SUBC;
 
@@ -383,7 +384,8 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 	if (parse_coord(&tmp, nd) != 0)
 		return -1;
 
-	pcb_conf_set(CFR_DESIGN, path, -1, nd->data.text.value, POL_OVERWRITE);
+	if (cfg_dest != CFR_invalid)
+		pcb_conf_set(cfg_dest, path, -1, nd->data.text.value, POL_OVERWRITE);
 	return 0;
 }
 
@@ -2214,7 +2216,9 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 
 static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 {
-	if (pcb_conf_insert_tree_as(CFR_DESIGN, sub) != 0)
+	if (cfg_dest == CFR_invalid)
+		return;
+	if (pcb_conf_insert_tree_as(cfg_dest, sub) != 0)
 		pcb_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
 	else
 		pcb_conf_update(NULL, -1);
@@ -2343,6 +2347,8 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
+	cfg_dest = settings_dest;
+
 	realfn = pcb_fopen_check(NULL, Filename, "r");
 	if (realfn != NULL)
 		doc = lht_dom_load(realfn, &errmsg);
@@ -2388,6 +2394,8 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 	int res;
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
+
+	cfg_dest = CFR_invalid;
 
 	realfn = pcb_fopen_check(NULL, filename, "r");
 	if (realfn != NULL)
@@ -2519,6 +2527,8 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 	pcb_fp_fopen_ctx_t st;
 	FILE *f;
 	pcb_subc_t *sc;
+
+	cfg_dest = CFR_invalid;
 
 	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st, NULL);
 
