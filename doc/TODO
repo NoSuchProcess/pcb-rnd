@@ -17,6 +17,7 @@
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 
 2. For later releases ===============================================================================
+- CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node [report: Majenko]
 - CLEANUP: actions must get (hidlib *) in some way that doesn't ruin compatibility - remove TODO("#hl1:...") [report: Igor2]
 - CLEANUP/BUG: globalconst.h: PCB_MIN_LINESIZE shall be 1 but rather remove it alltogether; revise other minimums as well and rather update the coord spin DAD to make the limit or maybe use a double-to-coord macro that checks 0..maxcoord (or -maxcoord..maxcoord for some cases) ml:3351 [report: Majenko]
 - CLEANUP: pcb_term_add() and pcb_term_del() should not be called from undo code but from attribute change callback [report: Majenko]
