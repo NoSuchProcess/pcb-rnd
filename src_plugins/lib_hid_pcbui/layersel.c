@@ -422,7 +422,14 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 static void layer_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	layer_select(attr->user_data);
+	ls_layer_t *lys = attr->user_data;
+
+	/* enable the popup only when there is a real layer behind the button;
+	   example: rats is selectable, drawable, but there's no real layer */
+	if (lys->ly == NULL)
+		return;
+
+	layer_select(lys);
 	pcb_actionl("Popup", "layer", NULL);
 }
 
