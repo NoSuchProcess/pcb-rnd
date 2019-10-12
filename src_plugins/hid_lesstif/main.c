@@ -1193,14 +1193,16 @@ void lesstif_show_crosshair(int show)
 	static int sx, sy;
 	static GC xor_gc = 0;
 	Pixel crosshair_color;
+	static unsigned long cross_color_packed;
 
 	if (!crosshair_in_window || !window)
 		return;
-	if (xor_gc == 0) {
+	if ((xor_gc == 0) || (cross_color_packed != pcbhl_conf.appearance.color.cross.packed)) {
 		crosshair_color = lesstif_parse_color(&pcbhl_conf.appearance.color.cross);
 		xor_gc = XCreateGC(display, window, 0, 0);
 		XSetFunction(display, xor_gc, GXxor);
 		XSetForeground(display, xor_gc, crosshair_color);
+		cross_color_packed = pcbhl_conf.appearance.color.cross.packed;
 	}
 	if (show == showing)
 		return;
