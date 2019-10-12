@@ -232,7 +232,7 @@ pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_data_binding_update(pcb, Buffer->Data);
 		pcb_board_free(newPCB);
 		free(newPCB);
-		Buffer->from_outside = 1;
+		Buffer->from_outside = 0; /* always place matching top-to-top, don't swap sides only because the user is viewing the board from the bottom */
 		free(Buffer->source_path); Buffer->source_path = pcb_strdup(Filename);
 		PCB = orig;
 		pcb_layergrp_inhibit_dec();
