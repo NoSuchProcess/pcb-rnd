@@ -1073,12 +1073,14 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	if (ctx->copy.from_outside && conf_core.editor.show_solder_side) {
 		uundo_serial_t last;
+		pcb_coord_t w, h;
 
 		/* move-to-the-other-side is not undoable: it's part of the placement */
 		pcb_undo_inc_serial();
 		last = pcb_undo_serial();
-TODO("subc: should not depend on crosshair, because of automatic/scripted placement; test case 1: load subc footprint in buffer, swap side to bottom, place; test case 2: bug_files/cmd_element, execute the cmd while being on the bottom side, without crosshair set subcircuits catapult to negative y")
-		pcb_subc_change_side(sc, 2 * pcb_crosshair.Y - PCB->hidlib.size_y);
+
+		pcb_subc_get_origin(sc, &w, &h);
+		pcb_subc_change_side(sc, 2 * h - PCB->hidlib.size_y);
 		pcb_undo_truncate_from(last);
 		
 	}
