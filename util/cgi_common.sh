@@ -64,6 +64,8 @@ fix_ltgt()
 
 cgi_png()
 {
+	local fptmp
+	echo "#$fp_full#" > /tmp/L13
 	echo "Content-type: image/png"
 	echo ""
 	cparm=""
@@ -79,10 +81,10 @@ cgi_png()
 	then
 		annot=$QS_annotation
 	fi
-	if test ! -z "$QS_diamond"
-	then
-		cparm="$cparm --diamond"
-	fi
+#	if test ! -z "$QS_diamond"
+#	then
+#		cparm="$cparm --diamond"
+#	fi
 	if test ! -z "$QS_photo"
 	then
 		cparm="$cparm --photo"
@@ -114,5 +116,9 @@ cgi_png()
 	then
 			cparm="$cparm --annotation $annot"
 	fi
-	(echo "$fptext" | $fp2anim $cparm; echo 'screenshot "/dev/stdout"') | $animator -H $animarg
+
+	fptmp=`mktemp`
+	$fp2preview --outfile $fptmp $cparm "$fp_full" >/dev/null 2>&1
+	cat $fptmp
+	rm $fptmp
 }

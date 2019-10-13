@@ -3,6 +3,9 @@
 ulimit -t 5
 ulimit -v 80000
 
+export HOME=/tmp
+cd /tmp
+
 # read the config
 . /etc/pcblib.cgi.conf
 CGI=$CGI_param
@@ -10,11 +13,11 @@ CGI=$CGI_param
 # import the lib
 . $pcb_rnd_util/cgi_common.sh
 
+
 gen()
 {
 	cd $gendir
-	params=`echo $QS_cmd | sed "s/.*[(]//;s/[)]//" `
-	./$gen "$params"
+	./$gen "$fp_params"
 }
 
 help_params()
@@ -342,6 +345,8 @@ then
 	exit
 fi
 
+fp_params=`echo $QS_cmd | sed "s/.*[(]//;s/[)]//" `
+export fp_full="$gen($fp_params)"
 fptext=`gen`
 if test ! "$?" = 0
 then
