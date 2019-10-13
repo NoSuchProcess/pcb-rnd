@@ -81,10 +81,6 @@ cgi_png()
 	then
 		annot=$QS_annotation
 	fi
-#	if test ! -z "$QS_diamond"
-#	then
-#		cparm="$cparm --diamond"
-#	fi
 	if test ! -z "$QS_photo"
 	then
 		cparm="$cparm --photo"

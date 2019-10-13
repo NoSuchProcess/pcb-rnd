@@ -318,7 +318,6 @@ export QS_cmd=`echo "$QS_cmd" | url_decode`
 if test -z "$QS_cmd"
 then
 	export QS_cmd='connector(2,3)'
-	export QS_diamond=1
 	gen=connector
 else
 	gen=`awk -v "n=$QS_cmd" '
@@ -445,7 +444,6 @@ echo "<textarea id=\"cmd\" name=\"cmd\" cols=80 rows=3>$QS_cmd</textarea>"
 echo "<ul>"
 echo "	<li><input type=\"checkbox\" name=\"mm\" value=\"1\" `checked $QS_mm`> draw grid in mm"
 echo "	<li><input type=\"checkbox\" name=\"photo\" value=\"1\" `checked $QS_photo`> draw in \"photo mode\""
-echo "	<li><input type=\"checkbox\" name=\"diamond\" value=\"1\" `checked $QS_diamond`> diamond at origin"
 echo "	<li><input type=\"checkbox\" name=\"pins\" value=\"1\" `checked $QS_pins`> annotate pin names"
 echo "	<li><input type=\"checkbox\" name=\"dimname\" value=\"1\" `checked $QS_dimname`> annotate dimension names"
 echo "	<li><input type=\"checkbox\" name=\"dimvalue\" value=\"1\" `checked $QS_dimvalue`> annotate dimension values (in grid units)"

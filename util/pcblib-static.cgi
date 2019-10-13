@@ -92,7 +92,6 @@ export QS_cmd=`echo "$QS_cmd" | url_decode`
 if test -z "$QS_fp"
 then
 	export QS_fp='TO220'
-	export QS_diamond=1
 	gen=connector
 fi
 
@@ -131,10 +130,6 @@ then
 	then
 		cparm="$cparm --mm"
 	fi
-#	if test ! -z "$QS_diamond"
-#	then
-#		cparm="$cparm --diamond"
-#	fi
 	if test ! -z "$QS_photo"
 	then
 		cparm="$cparm --photo"
@@ -209,7 +204,6 @@ echo "name: <input name=\"fp\" value=\"$QS_fp\">"
 echo "<ul>"
 echo "	<li><input type=\"checkbox\" name=\"mm\" value=\"1\" `checked $QS_mm`> draw grid in mm"
 echo "	<li><input type=\"checkbox\" name=\"photo\" value=\"1\" `checked $QS_photo`> draw in \"photo mode\""
-echo "	<li><input type=\"checkbox\" name=\"diamond\" value=\"1\" `checked $QS_diamond`> diamond at origin"
 echo "</ul>"
 echo "<p>"
 echo "<input type=\"submit\" value=\"Find my footprint!\">"
