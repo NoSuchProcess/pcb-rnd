@@ -3,6 +3,9 @@
 ulimit -t 5
 ulimit -v 80000
 
+export HOME=/tmp
+cd /tmp
+
 # read the config
 . /etc/pcblib.cgi.conf
 CGI=$CGI_static
@@ -128,15 +131,20 @@ then
 	then
 		cparm="$cparm --mm"
 	fi
-	if test ! -z "$QS_diamond"
-	then
-		cparm="$cparm --diamond"
-	fi
+#	if test ! -z "$QS_diamond"
+#	then
+#		cparm="$cparm --diamond"
+#	fi
 	if test ! -z "$QS_photo"
 	then
 		cparm="$cparm --photo"
 	fi
-	(echo "$fptext" | $fp2anim $cparm; echo 'screenshot "/dev/stdout"') | $animator -H
+
+	fptmp=`mktemp`
+	$fp2preview --outfile $fptmp $cparm "$QS_fp" >/dev/null 2>&1
+	cat $fptmp
+	rm $fptmp
+
 	exit
 fi
 
