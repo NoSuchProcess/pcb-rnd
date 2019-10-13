@@ -264,7 +264,6 @@ END {
 	}
 	else
 		photo = ""
-print "photo=" photo > "/dev/stderr"
 	print "autocrop()"
 	print "Export(png, --dpi, " dpi ", --as-shown, " photo " --outfile, " q outfile q ")"
 	print "Save(LayoutAs, \"A.lht\")"
