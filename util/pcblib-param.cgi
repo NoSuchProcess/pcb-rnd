@@ -447,7 +447,7 @@ echo "	<li><input type=\"checkbox\" name=\"photo\" value=\"1\" `checked $QS_phot
 echo "	<li><input type=\"checkbox\" name=\"pins\" value=\"1\" `checked $QS_pins`> annotate pin names"
 echo "	<li><input type=\"checkbox\" name=\"dimname\" value=\"1\" `checked $QS_dimname`> annotate dimension names"
 echo "	<li><input type=\"checkbox\" name=\"dimvalue\" value=\"1\" `checked $QS_dimvalue`> annotate dimension values (in grid units)"
-echo "	<li><input type=\"checkbox\" name=\"background\" value=\"1\" `checked $QS_background`> lighten annotataion background"
+#echo "	<li><input type=\"checkbox\" name=\"background\" value=\"1\" `checked $QS_background`> lighten annotataion background"
 echo "</ul>"
 echo "<p>"
 echo "<input type=\"submit\" value=\"Generate my footprint!\">"
