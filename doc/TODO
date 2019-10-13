@@ -12,7 +12,6 @@
 + BUG: unit dialog in DAD coord spinbox: select a unit, global gets unchecked -> can not check global back in [report: Piotr]
 
 1. For the upcoming release ===============================================================================
-- FEATURE: switch over the web parametric footprint viewer to use fp2preview
 - DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing)
 - FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 
