@@ -1,0 +1,68 @@
+<html>
+<body>
+
+<h1> DAD: running the dialog box </h1>
+
+<h2> From C </h2>
+<p>
+Dialog box data is created in memory using either PCB_DAD_DECL(table) or
+PCB_DAD_DECL_NOINIT(table). The first call declares and initializes all
+variables and is suitable for when the dialog box is hosted directly in
+(static) global variables or as local variables of a function. The _NOINIT
+version omits the initialization and is suitable for declaring the dialog box
+as part of a struct. In the latter case the caller needs to make sure all
+dialog box fields are initialized to zero.
+
+<h3> Running non-modal dialogs </h3>
+<p>
+The typical sequence of running a non-modal dialog is:
+<pre>
+<i>(declaration)</i>
+<i>(filling in with widgets)</i>
+PCB_DAD_NEW();
+</pre>
+<p>
+The <i>modal</i> argument of PCB_DAD_NEW() is pcb_false. The dialog box
+is created in the PCB_DAD_NEW() call, which returns immediately, leaving
+the dialog box running in the background.
+
+<h3> Running modal dialogs </h3>
+<p>
+The typical sequence of running a modal dialog is:
+<pre>
+<i>(declaration)</i>
+<i>(filling in with widgets)</i>
+PCB_DAD_NEW();
+PCB_DAD_RUN();
+<i>(process the return value of PCB_DAD_RUN())</i>
+PCB_DAD_FREE();
+</pre>
+<p>
+The <i>modal</i> argument of PCB_DAD_NEW() is pcb_true. PCB_DAD_RUN()
+will not return until the user gets the modal dialog box closed (either
+by the VM or by the code).
+
+<h3> Running modal dialogs - shorthand </h3>
+<p>
+There is an alternative sequence using PCB_DAD_AUTORUN() but it saves
+only one line compared to the above code and makes handling the return
+value somewhat more complicated. Thus the above sequence should be
+preferred.
+
+
+<h2> From user scripts </h2>
+<p>
+After creating the dialog box widgets in memory, the actual GUI can be
+started up by a call to action dad(dialog_name, run, title) or
+dad(dlgname, run_modal, title).
+<p>
+The difference between <i>run</i> and <i>run_modal</i> is when the
+call returns:
+<ul>
+	<li> in case of <i>run</i>, the dialog box is created and the action
+	     call returns immediatley, leaving the dialog box running async to
+	     the rest of the current script function.
+	<li> in case of <i>run_modal</i> the call returns only when the dialog
+	     box is closed and the dialog box is modal (no other dialog boxes
+	     work until this one is closed)
+</ul>
