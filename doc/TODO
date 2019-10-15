@@ -13,7 +13,6 @@
 + BUG: unit dialog in DAD coord spinbox: select a unit, global gets unchecked -> can not check global back in [report: Piotr]
 
 1. For the upcoming release ===============================================================================
-- DOC: finish DAD doc (doc/developer/dad/: e.g. run.html is missing)
 
 2. For later releases ===============================================================================
 - CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node [report: Majenko]
