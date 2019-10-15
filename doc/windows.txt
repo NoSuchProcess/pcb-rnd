@@ -1,8 +1,15 @@
-State on windows
-~~~~~~~~~~~~~~~~
+pcb-rnd on windows
+~~~~~~~~~~~~~~~~~~
 
 We have a pack in beta testing. It should work on any windows version
-from 7 up. (It will _not_ work on XP.)
+from 7 up. (It does _not_ work on XP.)
+
+IMPORTANT: if you use the windows version of pcb-rnd, please send me
+an email to:   pcb-rnd-win (at) igor2.repo.hu
+
+I will use this for sampling user demand. If there are no emails, that
+means there are no windows users which means it is not worth investing
+time in compiling windows releases.
 
 1. download the binary pack and install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,6 +19,8 @@ Download the zop from http://igor2.repo.hu/tmp/pcb-rnd-w32.zip
 Unpack the zip anywhere, and run pcb-rnd from bin:
 - start a shell (cmd.exe), cd to where you unpacked it, cd bin, pcb-rnd
 - create a shortcut icon (TODO: what's needed for the exe to find the dlls?)
+
+IMPORTANT: Please make sure there's no space in the full path where you unpack.
 
 
 2. limitations
@@ -37,7 +46,7 @@ There are a few limitations specific to the current windows pack:
  - there can not be space in the path where the pack is unzipped
  - UNC paths (\\server\something) may fail randomly
  - it does not support opengl, it is always doing software rendering
- - some of the export formats are not yet supported on windows
+ - some of the export formats (e.g. png) are not yet supported on windows
  - there is no fp_wget support because there's no wget in the pack
    (may work with busybox wget, busybox shipped in the pack, testing required)
  - gsch2pcb-rnd is not supported
