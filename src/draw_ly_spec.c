@@ -144,7 +144,13 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 	for(n = 0; n < len; n++) {
 		pcb_layergrp_t *grp = &info->pcb->LayerGroups.grp[gid[n]];
 		pcb_layer_t *ly = NULL;
-		
+
+		/* Special case: 'global' location is not a specific location bit but
+		   lack of location bits; for that case listing will return every group
+		   and we need to filter by hand */
+		if ((lyt_side == 0) && (grp->ltype & PCB_LYT_ANYWHERE != 0))
+			continue;
+
 		/* workaround: in direct export group visibility is not really set
 		   but layer visibility is set; if they are contradicting, it's enough
 		   if either is set. Assume all layers are visible or invisible within
