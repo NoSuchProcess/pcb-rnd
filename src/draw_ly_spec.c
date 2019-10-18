@@ -142,7 +142,16 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 		return;
 
 	for(n = 0; n < len; n++) {
-		if (!info->pcb->LayerGroups.grp[gid[n]].vis)
+		pcb_layergrp_t *grp = &info->pcb->LayerGroups.grp[gid[n]];
+		pcb_layer_t *ly = NULL;
+		
+		/* workaround: in direct export group visibility is not really set
+		   but layer visibility is set; if they are contradicting, it's enough
+		   if either is set. Assume all layers are visible or invisible within
+		   a group, so depend only on the first layer */
+		if (grp->len > 0)
+		 ly = pcb_get_layer(info->pcb->Data, grp->lid[0]);
+		if ((!grp->vis) && ((ly == NULL) || (!ly->meta.real.vis)))
 			continue;
 
 		if (setgrp)
