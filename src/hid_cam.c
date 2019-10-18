@@ -68,6 +68,7 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 	pcb_layergrp_id_t group;
 	int nlayers;
 	const char *single_name, *res = NULL;
+	static char buf[PCB_DERIVE_FN_SUFF_LEN];
 
 	if (flags == 0)
 		flags = pcb_layer_flags(PCB, lid);
@@ -117,6 +118,8 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 			res = "topmask";
 		else if (flags & PCB_LYT_PASTE)
 			res = "toppaste";
+		else if (purpose != NULL)
+			pcb_snprintf(res = buf, sizeof(buf), "top-%s", purpose);
 		else
 			res = "top";
 	}
@@ -129,8 +132,10 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 			res = "bottommask";
 		else if (flags & PCB_LYT_PASTE)
 			res = "bottompaste";
+		else if (purpose != NULL)
+			pcb_snprintf(res = buf, sizeof(buf), "bottom-%s", purpose);
 		else
-		res = "bottom";
+			res = "bottom";
 	}
 	else {
 		static char buf[PCB_DERIVE_FN_SUFF_LEN];
