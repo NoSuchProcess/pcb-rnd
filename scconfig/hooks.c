@@ -253,7 +253,21 @@ static void all_plugin_select(const char *state, int force)
 	if ((all_) || force) { \
 		sprintf(buff, "/local/pcb/%s/controls", name); \
 		put(buff, state); \
-	} \
+	}
+#define plugin_header(sect)
+#define plugin_dep(plg, on, hidlib)
+#include "plugins.h"
+}
+
+/* set up /hidlib nodes in the db to indicate which plugins are in the hidlib */
+static void plugin_db_hidlib(void)
+{
+	char buff[1024];
+
+#undef plugin_def
+#undef plugin_header
+#undef plugin_dep
+#define plugin_def(name, desc, default_, all_, hidlib_) \
 	if (hidlib_) { \
 		sprintf(buff, "/local/pcb/%s/hidlib", name); \
 		put(buff, strue); \
@@ -432,6 +446,8 @@ int hook_detect_target()
 
 /****** TODO #21: core depends on this plugin (yes, this is a bug) ******/
 	hook_custom_arg("buildin-lib_compat_help", NULL);
+
+	plugin_db_hidlib();
 
 	require("cc/fpic",  0, 0);
 	host_ansi = get("/host/cc/argstd/ansi");
