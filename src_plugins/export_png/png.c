@@ -759,7 +759,8 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_hid_restore_layer_ons(save_ons);
 
 	png_foot();
-	fclose(f);
+	if (f != NULL)
+		fclose(f);
 
 	if (master_im != NULL) {
 		gdImageDestroy(master_im);
