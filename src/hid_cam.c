@@ -118,8 +118,10 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 			res = "topmask";
 		else if (flags & PCB_LYT_PASTE)
 			res = "toppaste";
-		else if (purpose != NULL)
-			pcb_snprintf(res = buf, sizeof(buf), "top-%s", purpose);
+		else if (purpose != NULL) {
+			pcb_snprintf(buf, sizeof(buf), "top-%s", purpose);
+			res = buf;
+		}
 		else
 			res = "top";
 	}
@@ -132,8 +134,10 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 			res = "bottommask";
 		else if (flags & PCB_LYT_PASTE)
 			res = "bottompaste";
-		else if (purpose != NULL)
-			pcb_snprintf(res = buf, sizeof(buf), "bottom-%s", purpose);
+		else if (purpose != NULL) {
+			pcb_snprintf(buf, sizeof(buf), "bottom-%s", purpose);
+			res = buf;
+		}
 		else
 			res = "bottom";
 	}
