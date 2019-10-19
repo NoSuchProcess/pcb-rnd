@@ -148,7 +148,7 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 		/* Special case: 'global' location is not a specific location bit but
 		   lack of location bits; for that case listing will return every group
 		   and we need to filter by hand */
-		if ((lyt_side == 0) && (grp->ltype & PCB_LYT_ANYWHERE != 0))
+		if ((lyt_side == 0) && ((grp->ltype & PCB_LYT_ANYWHERE) != 0))
 			continue;
 
 		/* workaround: in direct export group visibility is not really set
