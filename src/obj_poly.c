@@ -499,8 +499,15 @@ double pcb_poly_area(const pcb_poly_t *poly)
 /* copies a polygon to buffer */
 void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
-	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
 	pcb_poly_t *polygon;
+	pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, Layer);
+	pcb_layer_t *layer;
+
+	/* the buffer may not have the specified layer, e.g. on loose subc subc-aux layer */
+	if (lid == -1)
+		return NULL;
+
+	layer = &ctx->buffer.dst->Layer[lid];
 
 	polygon = pcb_poly_new(layer, Polygon->Clearance, Polygon->Flags);
 	pcb_poly_copy(polygon, Polygon, 0, 0);

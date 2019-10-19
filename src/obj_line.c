@@ -420,7 +420,14 @@ void pcb_line_post(pcb_line_t *line)
 void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
-	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
+	pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, Layer);
+	pcb_layer_t *layer;
+
+	/* the buffer may not have the specified layer, e.g. on loose subc subc-aux layer */
+	if (lid == -1)
+		return NULL;
+
+	layer = &ctx->buffer.dst->Layer[lid];
 	line = pcb_line_new(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
 															Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));

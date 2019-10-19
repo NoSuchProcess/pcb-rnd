@@ -377,8 +377,16 @@ void pcb_arc_post(pcb_arc_t *arc)
 /* copies an arc to buffer */
 void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-	pcb_arc_t *a = pcb_arc_new(layer, Arc->X, Arc->Y,
+	pcb_arc_t *a;
+	pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, Layer);
+	pcb_layer_t *layer;
+
+	/* the buffer may not have the specified layer, e.g. on loose subc subc-aux layer */
+	if (lid == -1)
+		return NULL;
+
+	layer = &ctx->buffer.dst->Layer[lid];
+	a = pcb_arc_new(layer, Arc->X, Arc->Y,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
 		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), pcb_false);
 
