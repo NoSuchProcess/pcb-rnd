@@ -198,7 +198,7 @@ static int undo_term_rename_swap(void *udata)
 		if (subc != NULL)
 			res |= pcb_term_add(&subc->terminals, r->str, r->obj);
 		else
-			autofree = r->obj->term = pcb_strdup(r->str);
+			r->obj->term = autofree = pcb_strdup(r->str);
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 	}
 
