@@ -59,8 +59,6 @@ There are a few limitations specific to the current windows pack:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (developers may need this, if you are an user, it is safe to skip.)
 
-(TODO: this description needs much more details)
-
 There is an svn repo that hosts all the sources for the dependencies. From
 this, the binary DLLs can be compiled (this step may need some manual
 intervention, autotools is not very nice for cross compilation). The result
@@ -68,9 +66,12 @@ is the "ultimate hidlib dependency pack" (uhdp), 90+ megabytes of dlls
 with gtk, glib, gettext and whatnot.
 
 The uhdp has two versions: the smaller one, with the dlls only, is part
-of the pack downloaded by end users for installation. The bigger one also
-contains the installed headers, .a and .la files and can be used as "sysroot"
-for cross-compiling pcb-rnd (or other software) against.
+of the pack downloaded by end users for installation. The bigger one,
+called the developer pack, also contains the installed headers, .a and
+.la files and can be used as "sysroot" for cross-compiling pcb-rnd
+(or other software) against.
+
+The uhdp can be donwloaded from http://repo.hu/projects/hidlib.w32
 
 The normal process is:
  - download and unpack the binary developer vesion of uhdp (so you don't need
