@@ -12,6 +12,7 @@
 + BUG: bug_files/slot1.lht: open as footprint for edit - no mech layers are created so slots won't display [report: cuvoodoo]
 + BUG: unit dialog in DAD coord spinbox: select a unit, global gets unchecked -> can not check global back in [report: Piotr]
 + BUG: swap_start_direction conf setting pops user out of Ortho draw after drawing a line segment. temp fix is to unset mode, but shouldn't swap_start_direction not do anything when the user is in ortho draw mode? Speeds up drawing workflow to allow this. [report: miloh]
++ BUG: property edit dialog for a subcircuit includes text 'Subcircuit' and shows the subcircuit ID# instead of parent refdes [report: Miloh] -> that is appropriate in the property editor: if goes by object ID, not refdes (note: refdes doesn't always uniquelly identify a subcircuit!); to get the UI unified, I've adde subc ID and terminal object ID in the tooltip instead.
 
 1. For the upcoming release ===============================================================================
 
@@ -162,7 +163,6 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - version 3.0.0:
 	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
-- BUG:  property edit dialog for a subcircuit includes text 'Subcircuit' and shows the subcircuit ID# instead of parent refdes [report: Miloh]
 
 3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
