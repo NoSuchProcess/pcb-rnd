@@ -209,7 +209,8 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.Route.end_point.X;
 		pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.Route.end_point.Y;
 
-		if (conf_core.editor.swap_start_direction) 
+		/* automatic swap of line refraction after each click - should work only if refraction is in effect (no ortho, no alldir) */
+		if (conf_core.editor.swap_start_direction && (conf_core.editor.line_refraction != 0) && !conf_core.editor.all_direction_lines)
 			pcb_conf_setf(CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
 
 		if (conf_core.editor.orthogonal_moves) {
