@@ -179,13 +179,13 @@ ha:pcb-rnd-board-v6 {
            x1=996.07mil; y1=21.01977mm; x2=25.499822mm; y2=21.01977mm; thickness=8.0mil; clearance=0.0;
           }
           ha:text.6 {
-           string=%a.parent.refdes%; x=1.0315in; y=768.5mil; scale=100; fid=0;
+           string=%a.parent.refdes%; x=24.864822mm; y=756.5mil; scale=100; fid=0;
            ha:flags {
             dyntext=1
             floater=1
             onsolder=1
            }
-           rot = 180.000000
+           rot = 360.000000
           }
          }
          ha:type {
@@ -356,7 +356,7 @@ ha:pcb-rnd-board-v6 {
            x1=796.07mil; y1=772.45mil; x2=20.419822mm; y2=772.45mil; thickness=8.0mil; clearance=0.0;
           }
           ha:text.28 {
-           string=%a.parent.refdes%; x=768.5mil; y=831.5mil; scale=100; fid=0;
+           string=%a.parent.refdes%; x=783.07mil; y=756.5mil; scale=100; fid=0;
            ha:flags {
             dyntext=1
             floater=1
