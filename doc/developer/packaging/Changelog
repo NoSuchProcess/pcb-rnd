@@ -8,8 +8,6 @@ How to get a release candidate tarball in /tmp:
 Packaging changes between 2.1.3 and 2.1.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(preliminary)
-
 A. changes that probably don't need action
 
 1. removed plugin lib_gtk_hid from pcb-rnd-hid-gtk
