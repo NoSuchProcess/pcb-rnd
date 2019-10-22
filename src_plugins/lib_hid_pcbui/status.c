@@ -385,6 +385,7 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_net_term_t *term = NULL;
 	static gds_t desc;
 	const char *ret = NULL;
+	char ids[64];
 
 	if (argc > 3)
 		PCB_ACT_FAIL(StatusSetText);
@@ -413,9 +414,13 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		term = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, obj->term);
 
 	desc.used = 0;
-	gds_append_str(&desc, "Subcircuit:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
+	gds_append_str(&desc, "Subc. refdes:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
 	gds_append_str(&desc, "\nTerminal:  \t"); gds_append_str(&desc, obj->term == NULL ? "--" : obj->term);
 	gds_append_str(&desc, "\nNetlist:     \t"); gds_append_str(&desc, term == NULL ? "--" : term->parent.net->name);
+	sprintf(ids, "#%ld", subc->ID);
+	gds_append_str(&desc, "\nSubcircuit ID:\t"); gds_append_str(&desc, ids);
+	sprintf(ids, "#%ld", obj->ID);
+	gds_append_str(&desc, "\nTerm. obj. ID:\t"); gds_append_str(&desc, ids);
 
 	ret = desc.array;
 
