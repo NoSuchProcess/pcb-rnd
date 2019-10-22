@@ -517,8 +517,10 @@ TODO("layer: handle multiple outline layers")
 					redraw_text = 1;
 				}
 
-				if (redraw_text)
+				if (redraw_text) {
 					t = dtext_bg(gc, x, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
+					pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+				}
 				else
 					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 
