@@ -163,6 +163,7 @@
 	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 - BUG: swap_start_direction conf setting pops user out of Ortho draw after drawing a line segment. temp fix is to unset mode, but shouldn't swap_start_direction not do anything when the user is in ortho draw mode? Speeds up drawing workflow to allow this. [report: miloh]
 - FEATURE: <shift> should swap the line_refraction setting in status display and possibly in main window when drawing line objects ('Tab' effects changes to these windows)[report: miloh]
+- BUG:  property edit dialog for a subcircuit includes text 'Subcircuit' and shows the subcircuit ID# instead of parent refdes [report: Miloh]
 
 3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
