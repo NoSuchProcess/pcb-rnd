@@ -4,7 +4,6 @@
 + FEATURE: extend the CAM job script syntax so that XY and other non-layer exporters can be called [report: celem]
 + FEATURE: extedit: when editing subc with pcb, save configuration and load it in the external pcb-rnd so that grid sizes and other settings are preserved [report: jg]
 + FEATURE: library window filter shouldn't modify filter if there's () in the string [report: pskibinski]
-+ FEATURE: io_tedax: tEDAx netlist load should import and write pinname [report: Ade]
 + FEATURE: edakrill script for growing line thickness keeping the line on one side (side alignment) [report: keantoken]
 + BUG: rat rubberband bug: bug_files/anchor.lht - move the right trim subc - the internal rat conn will break; happens after {c r} too. [report: keantoken]
 ? BUG: parametric dialog: double click dip() in the tree; close the parametric dialog; click dip() again; edit n -> the parameter string in the filter text is ruined [report: Piotr]
