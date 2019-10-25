@@ -155,6 +155,7 @@
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: asm: coords are not printed by the template - fix: bug_files/asm_coord.patch [report: miloh]
 - version 3.0.0:
 	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 
