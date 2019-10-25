@@ -709,13 +709,19 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 	unsigned char thr;
 	pcb_pstk_shape_t *shp, tmpshp;
 	pcb_polyarea_t *pres = NULL;
-	pcb_layer_t *layer = pcb_get_layer(pcb->Data, lid);
+	pcb_layer_t *layer;
 	pcb_coord_t clearance = ps->Clearance;
+
+	/* thermal needs a stackup - only a PCB has a stackup, buffers don't */
+	if (pcb == NULL)
+		return NULL;
 
 	/* if we have no clearance, there's no reason to do anything;
 	   ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
 		return NULL;
+
+	layer = pcb_get_layer(pcb->Data, lid);
 
 	/* retrieve shape; assume 0 (no shape) for layers not named */
 	if (lid < ps->thermals.used)
