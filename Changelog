@@ -1,3 +1,667 @@
+pcb-rnd 2.1.4 (r27909)
+~~~~~~~~~~~~~~~~~~~~~~
+	[act_draw]
+		-Fix: PstkProtoTmp(): accept board or buffer instead of idpath
+		-Fix: more accurate check for optional noundo in first argument (accept real strings only)
+		-Del: check that disabled creating padstacks in buffer
+		-Change: all New*() actions should return an idpath, not an integer ID, so the object can be addressed
+		-Add: PstkProto() action subcommand for changing the hole diameter
+		-Add: padstack prototype edit: shape:line to create a line shape on a layer type
+
+	[act_read]
+		-Add: is-point-on-line and is-point-on-arc actions
+		-Add: action for checking if two objects intersect
+		-Add: IDP(dup) action for cloning idpaths
+		-Add: GetMark() to read fields of the mark
+
+	[asm]
+		-Add: button for removing a part done status
+		-Add: group undo button
+		-Add: when a group is touched, start printing progress in the 'done' column
+		-Add: pan to part if it is outside of the screen
+
+	[cam]
+		-Fix: don't do invalid free() even when exporting fails wiht the specified plugin
+		-Fix: yes-to-all in a cam export job should use the global ask-overwrite mechanism so multiple exporters still ask only once
+		-Fix: supplement parser did not terminate each supplement word properly
+		-Fix: typo: when setting up for using a virtual layer, don't address into real layer xform array
+		-Fix: memory leak on templated file name buffering
+		-Fix: cam jobs writing fab layer should merge the obsolete virtual layer and the new explicit fab layer (to work on both old bords and new boards)
+		-Fix: print error when a virtual layer is defined in cam rule, but not existing
+		-Change: re-classify the plugin from WIP to works
+		-Add: output file name and supplement support function for no-layer exporters
+		-Add: elecrow cam export job
+		-Add: cam_begin sets up an xform struct that would be passed to the expose call by the exporters; this will make it possible for the cam API to specify transformations
+		-Add: supplement "partial" for partial exporting (object filtering)
+		-Add: cam job syntax: new instructions: partial and full for partial exports
+		-Add: global option for "ok empty" to suppress exporter warnings where needed
+		-Add: generate ->fn (file name) in templated case right in _begin() - some exporters, like excellon, need this before a setlayer
+		-Add: set global flag okempty on excellon output in the default cam jobs, expecting that the design may lack plated or unplated holes
+		-Add: layer supplement: faded
+
+	[color]
+		-Fix: color cache: allow caller to have NULL free() function
+		-Fix: typo on color packing made all packed color values 1
+		-Fix: don't use sprintf for bin->hex conversion while converting color to string - use cheaper, manual method
+		-Del: hid_color.[ch] -> use color_cache.h instead
+		-Add: pcb_color_white (the gdk HID needs it)
+
+	[core]
+		-Fix: PasteBuffer(Save) should just call SaveTo(PasteBuffer) instead of doing anything locally
+		-Fix: uninitialized memory in pcb_printf for trunc0 may have caused odd behavior when printing human readable coords
+		-Fix: x-y mixup when calling poly dicer caused wrong clipping rectangle used (fixes randomly disappearing polygons)
+		-Fix: Add clip inhibiting to rotate, move and flip operations
+		-Fix: PasteBuffer() failed to restore crosshair notification at some function exits causing no further corsshair draws
+		-Fix: pcb_buffer_load_layout() shouldn't set PCB->Data to NULL, not even temporarily because many parts of the code depends on ->Data always present - rather reuse the ex-buffer-Data and postpone its free()
+		-Fix: loading pcb to buffer shouldn't mess with the undo list
+		-Fix: when placing a line on a layer, make sure the line's parent is set to always keep it in sync
+		-Fix: Remove(object, idp) passes parent as ptr1 (instead of the obj that goes in ptr2)
+		-Fix: do ask for overwrite permission when saving buffers subc or buffer
+		-Fix: don't export holes and slots if the object is no-export or not marked for the partial export
+		-Fix: hidlib crosshair attached/tool draw always sets the crosshair color first
+		-Fix: revert shall load settings to CFR_DESIGN, not the defualtpcb, as it is (re)loading a real board - fixes the confused zoom after revert
+		-Fix: ->set_layer() is called from the renderer, not from the GUI as we may be exporting
+		-Fix: unbalanced call to pcb_notify_crosshair_change() in crosshair move cause xor draw to stop working (e.g. after a stroke action)
+		-Fix: new pcb action: don't redraw the PCB before hidlib is set
+		-Fix: allow exporters to draw overlays (labels and rats) if the xform doesn't disable it
+		-Fix: slot draw: layer-is-empty was passed in inverse which fooled some exporters to draw empty layers because of slots or to not draw slots at all
+		-Fix: allow non-subc-part terminals to be named using the undoable terminal naming infra: ChangeName() and {e t}
+		-Fix: update crosshair range after scaling or rotating buffer
+		-Fix: misleading API doc on pcb_data_binding_update(): it's the data that changes, not pcb
+		-Fix: after loading a subcircuit to buffer, update buffer layer bindings: the loader may have changed the layer bindings (fixes: missing silk layer in loading old fp files and breaking them up)
+		-Fix: decouple subc copy from buffer to board from corsshair (fixes subc slingshot when placing imported board on the other side)
+		-Fix: when loading a layout to buffer, don't mark it with "from_outside" as it won't ever need to switch sides per view
+		-Fix: doc layer group visibility workaround: direct exporters don't set group visibility so the code can not depend on that exclusively
+		-Fix: doc layer rendering: don't accidentally export all DOC layers for global DOC layers
+		-Fix: old direct export: when a "new" layer type (e.g. doc) is exported on top or bottom, and it has a purpose string, include that in the name so layer name is not only "top" but something more descriptive
+		-Fix: when copying layer object to buffer, don't crash if the buffer doesn't have the specific bound layer (happens when the aux layer lines of a subc is selected in loose subc mode)
+		-Fix: draw layer location mask: missing parenthesis could be misinterpreted
+		-Fix: swap_start_direction should trigger only if refraction is in effect (no ortho, no all-direction)
+		-Fix: don't crash in padstack thermal render when working off-board: it's a NOP in the buffer (can't look up padstack shape without a stackup and only boards have stackups)
+		-Del: SwitchHID() action, pcb_next_gui: gtk is not capable of running multiple main loops anyway
+		-Del: do not enforce minimum via geometry from conf postproc - the whole hardwired via geometry will be gone soon
+		-Cleanup: remove old, unused icons
+		-Cleanup: conf based and export based --help should print in the same style
+		-Cleanup: rename pcb_save_buffer_elements() to replace elements with subcircuits in the terminology - elements are long gone
+		-Change: action SaveTo(PasteBuffer) will attempt to save exactly one subcircuit - use SaveLib() for saving multiple subcircuits
+		-Add: centralized 'ask if file can be overwritten' mechanism
+		-Add: introduce pcb_render, as an alternative to pcb_gui: render is used for rendering, gui is for everything else, so dialog boxes can be still presented while rendering
+		-Add: NewGroup() can optionally set the group and layer name
+		-Add: support for explicit top fab layer (keeping backward compatibility with vlayer for now)
+		-Add: support for explicit top & bottom assy layer (keeping backward compatibility with vlayer for now)
+		-Add: netlist patching: apply change attribute lines
+		-Add: rats patch: changing attrib to NULL or empty string is really del attrib
+		-Add: PasteBuffer() SaveAll/LoadAll implementation
+		-Add: SaveLib() action for saving multiple footprints at once
+		-Add: SaveLib() uses format-enabled dialog box (Save()) when the dialogs plugin is available
+		-Add: extend normalize() to be able to work on buffers
+		-Add: buffer remembers source file path for data coming from the outside
+		-Add: PasteBuffer(GetSource) so that scripts can access the source path after a buffer load
+		-Add: Delete(object) has an optional argument with idpath so it can be used from scripts
+		-Add: add PcbDelete() is an alias to Delete() for AWK, which has delete as keyword
+		-Add: select(object, idpath)
+		-Add: MoveCursorTo(), for scripts
+		-Add: partial export transformation in xform
+		-Add: safe_fs: optional global "batched ask-overwrite" in hidlib states - can be nested
+		-Add: publish pcb_plug_io_err() so low level io operations can be done by plugins
+		-Add: draw: xform option to not draw slots on non-mechanical layers - for example gerber doesn't want to draw slots on copper at the moment
+		-Add: secure tmp file name creation on win32
+
+	[dad]
+		-Fix: when preferred unit is set explicitly, automatically unset 'global' tro save a click: the user most probably wants the selected unit
+		-Fix: min & max val are double so they can represent coords and a bigger range of values (e.g. GHz frequencies)
+		-Fix: unit spin: remember last good coordinate and use that if the user enters something invalid
+		-Fix: allow the global checkbox to be thicked back in the unit selection dialog
+		-Fix: coord spin: when a new unit is selected, apply it to the value immediately
+		-Fix: coord spin: when global is ticked back in, set the unit enum to the global to reduce confusion
+		-Fix: coord spin: if enter is pressed for getting the default unit, tolerate trailing whitespace
+		-Cleanup: rename hid_attribute's default_val to val as it always holds the current value (and is default only at startup)
+		-Cleanup: rename enumerations to wdata (widget data) and turn it into a void * - it is used as a generic store of widget-data, enum is just one of the possible cases
+		-Cleanup: separate auxiliary widget data from min_val for table cols
+		-Cleanup: rename pcb_hid_register_attributes() to pcb_export_register_opts() to reflect the change in type names and the split of DAD from export options
+		-Cleanup: rename export related hid helpers from pcb_hid to pcb_export
+		-Cleanup: rename pcb_hids_t to more expressive pcb_hid_attr_type_t
+		-Cleanup: rename enum pcb_hids_e to pcb_hid_attr_type_e for consistency
+		-Cleanup: move: dad-specific sutrcts from hid_attrib.h to hid_dad.h
+		-Cleanup: get rid of the result(s) array: the initial/default/current/result value is always stored in the attribute's .val field
+		-Split: generic dad functions from hid_dad_tree
+		-Split: move dad-specific lookups from hid_attrib.c to hid_dad.c
+		-Del: hid_attribute doesn't need ->value (it was for export plugins only)
+		-Add: pcb_export_opt_t for export options; switch over all exporters and HIDs to use this type
+		-Add: new closing sequence: attr_dlg_close()
+		-Add: extend the spinbox, preparing for a freq spin
+		-Add: macro to retrieve the HATT widget type from a composite spin's end
+		-Add: coord spin: comment how the global tick is removed from the checkbox (and group the code that does it)
+
+	[ddraft]
+		-Fix: don't let split fall into inifinite loop for numerical errors in comparison to 1 and 0
+		-Add: PcbSplit() executes the splits and returns a list of new objects
+
+	[diag]
+		-Add: DumpLibFootprint() so external scripts can use pcb-rnd to search/download/extract footprints from the lib (saves reimplementing fp_* plugin methods and library searches)
+		-Add: DumpLibFootprint can print origin and bbox
+
+	[dialogs]
+		-Fix: preferences dialog: library insertion shouldn't crash on empty/unfilled fields
+		-Fix: library path insert help dialog: must be modal because the parent is modal too
+		-Fix: export dialog: the main tabbed widget for export settings shall be EXPFILL
+		-Fix: wrong context pointer passed to library insert help dialog
+		-Fix: parametric library dialog: closing sequence to avoid crashes on reopen (for the same or different parametric)
+		-Fix: library dialog: print the first help text (and first description) only; fixes "msop using so" bug
+		-Fix: library parameter edit dialog: enums should have first item empty string for going back to default
+		-Fix: library parameter edit dialog: closing the library dialog should auto-close the parameter dialog
+		-Fix: library dialog: when a new parametric is double clicked, overwrite the filter text to make sure the dilalog can be filled in properly
+		-Fix: library parameter editor dialog: reset the number of parameters between invocations
+		-Fix: netlist dialog: terminal list needs a scrollar because some nets will get real huge
+		-Fix: parametric library dialog: never set enum to invalid value, even if the source value is invalid
+		-Fix: save as dialog: when format is guessed from the file name, make sure to update all internal data so the actual save will really use the guessed file format (the GUI already showed the right format)
+		-Fix: view close shouldn't bypass the normal GUI close sequence - fixes drc window close bug
+		-Change: library dialog: open the parametric edit box only on the second click to make browsing more smooth
+		-Change: library dialog: stop filtering when '(' is entered in the library dialog filter
+		-Add: netlist dialog: network attribute edit button
+		-Add: subcircuit save for footprint allows file format selection
+		-Add: save dialog option for presenting the dialog only without performing any real file operation (for scripts and SaveLib())
+
+	[doc]
+		-Fix: PasteBuffer() saves subcircuits, not elements
+		-Fix: clarify examples steps in using and exiting awk cli
+		-Change: INSTALL: reorder, shorten the content, but extend the configure part so autotools bad practices wouldn't be applied automatically
+		-Change: provide layer type definition instead of layer name example in cam plugin
+		-Move: directory layout from INSTALL to README
+		-Add: document DAD closing sequence; blocking is really modal and normal PCB_DAD_RUN() can do it too
+		-Add: mech and doc layer types in the format doc
+		-Add: new layer type conventions, e.g. fab, assy, keepouts, etc. (import from pool doc_grps)
+		-Add: document the buffer lihata format
+		-Add: document PasteBuffer() LoadAll and SaveAll
+		-Add: cross link SaveTo(PasteBuffer) and SaveLib() in the action ref
+		-Add: action ref: document Save(DialogByPattern)
+		-Add: document attributes understood by pcb-rnd
+		-Add: document the thus operator of query()
+		-Add: document PasteBuffer(GetSource)
+		-Add: document select(object, idpath)
+		-Add: document the new "partial" feature of CAM
+		-Add: cam global options and okempty
+		-Add: FAQ on excellon drill file export
+		-Add: help wanted: video editor
+		-Add: manual for fp2preview
+		-Add: hidlib: initialization seq
+		-Add: document the new windows port, user's point of view
+		-Add: developer doc on DAD: how to run dialog boxes
+		-Add: DAD doc: link the example code templates
+		-Update: datasheet for latest improvements
+		-Update: assembly/fab layers definition in cam plugin
+
+	[draw_csect]
+		-Fix: make sure the bounding box of the layer name text is calculated when it is re-generated for the negative layer name
+
+	[draw_fab]
+		-Fix: make sure line cap is set before drawing lines
+
+	[export]
+		-Add: use the ask-overwrite version of the safe_fs API in export plugins where appropriate
+
+	[export_bboard]
+		-Del: retire this defunct plugin
+
+	[export_bom]
+		-Cleanup: remove obsolete export option doc comment
+		-Add: --cam option
+
+	[export_dsn]
+		-Add: --cam option
+
+	[export_excellon]
+		-Fix: don't crash on internal error (aperture not found)
+
+	[export_gcode]
+		-Fix: missing (dummy) set_drawing_mode() - we are exporting copper only and that has no compositing
+		-Fix: unregister export options on uninit
+		-Cleanup: replace hid color cache with htpp for caching brushes
+
+	[export_gerber]
+		-Fix: do not draw slot in copper
+		-Cleanup: no vararg
+		-Cleanup: remove excess function forward declarations; reorder functions to avoid forward declarations
+
+	[export_ipcd356]
+		-Fix: crash on invalid read on polygon pads on command line export (due to missing poly area cache update)
+		-Add: --cam option
+
+	[export_openscad]
+		-Add: --cam option
+
+	[export_png]
+		-Fix: make local brush hash functions static
+		-Fix: don't use strcmp() for color comparison
+		-Fix: the drawing-line-at-the-positive-edge libgd bug workround does not really depend on the outline, apply it to any line
+		-Fix: don't crash if there is no file to close
+		-Del: remove undocumented export options: 'ben mode' (same as photo mode)
+		-Split: png photo mode code out from the png main code so later on this pcb-specific part can be moved out to a separate plugin
+
+	[export_ps]
+		-Fix: packed color really needs to be at least 32 bit unsigned int for portability
+		-Fix: use pcb_render to reset layer groups instead of pcb_gui
+		-Cleanup: remove excess static function forward declarations
+
+	[export_stat]
+		-Add: --cam option
+
+	[export_svg]
+		-Fix: don't crash when exporting CAM if the previos file was NULL
+		-Fix: allow exporting any layer group in cam mode
+
+	[export_xy]
+		-Del: remove undocumented export attribute xy-in-mm
+		-Add: --cam option
+
+	[extedit]
+		-Add: be able to supply design role config with %c - this way a pcb-rnd extedit can have the same grid settings as the caller
+
+	[find]
+		-Fix: copper-copper plain layer object connections need to be checked in a per layer group basis, not per layer because layers within a layer group are on the same physical copper sheet
+		-Fix: don't segfault on rat line vs. "polygon cleared out of existence" ghost poly intersection
+		-Fix: rat line ending on a polygon really means ending on any contour point of the polygon
+		-Fix: donut (zero-length) rat line vs. polygon jump did not work
+
+	[fp_fs]
+		-Fix: use pcb_is_path_abs() instead of a local heuristics (which broke on non-UNIX anyway)
+		-Fix: on win32 always use sh -c for now, to work around the posix shell assumption in most parametric footprint implementations
+
+	[gl]
+		-Fix: explicit dependency on hidlib.h
+		-Fix: wrong set mode API caused asserts
+		-Fix: don't use strcmp/strcpy for color caching
+		-Update: new lib_gtk_common API
+		-Update: get hidlib from ghidgui since the HID API change doesn't deliver it
+		-Cleanup: remove pcb_gl_color_t - use pcb_color_t instead, avoid conversions where possible
+		-Add: enable pixmap transparency
+
+	[gsch2pcb-rnd]
+		-Cleanup: use hidlib instead of manually linked objects
+
+	[gtk]
+		-Fix: typo in lr invalidate coords
+		-Fix: initialization sequence makes sure common gtk is set up only when the HID implementation is really selected
+		-Fix: all combination of modal/non-modal should work with PCB_DAD_FREE() called from the close cb without invalid memory access
+		-Fix: wrong context variable passed to mouse scroll caused crash on scroll zoom
+		-Fix: internal pixmap API: pass size-on-board as parameter - the appearant size of the image will be determined by the object
+		-Fix: pixmap dest origin shall be in absolute board coordinates, not in pixels as it is really just an object to draw
+		-Fix: use detected gdk key macro prefix (compatibility with ~10 years old gtk2)
+		-Fix: don't use G_VALUE_INIT: it's non-portable and it's just all-zero, there is a portable way to do that in C
+		-Fix: don't use gtk_widget_get_window() in gtk2 - it's an useless accessor that is not portable to early versions
+		-Fix: don't use gtk_adjustment_configuration: isn't portable to old versions
+		-Fix: use older method to set can_focus on top window, for better portability to old versions
+		-Fix: don't use non-portable accessor gtk_widget_get_allocation() - just use the field
+		-Fix: don't call gtk_dialog_get_content_area - it's an useless wrapper that is not portable to old versions
+		-Fix: don't use gtk_combo_box_text_new_with_entry(), the call is too new
+		-Fix: don't use gtk_widget_get_state() - call too new
+		-Fix: don't use the gtk_activable_* accessors, those calls are too new
+		-Fix: double free on dialog close (destroy signal received twice, nested?)
+		-Fix: reset ctx->dialog to NULL after destroying it
+		-Fix: gdk & gl rendering: apply crosshair color change on the fly
+		-Fix: disable on-the-fly theme update because it tends to crash while there seems no easy way to trigger it
+		-Merge: lib_gtk_hid plugin into lib_gtk_common - there won't be different looking gtk HIDs
+		-Merge: glue_conf into glue_common - init/uninit of the conf should be transparent to the rendering implementations
+		-Merge: make win32 workarounds part of the standard initialization
+		-Merge: render.c (preview helpers) into glue_common
+		-Del: unnecessary function prototype tie between lib_gtk_common and hid_gtk2_*
+		-Del: ghid_invalidate_all() - unnecessary wrapper; just use the HID API, it's not more complicated
+		-Del: unnecessary wrapper ghid_drawing_area_configure_hook() - called only once, just use a direct call
+		-Del: render.h - use glue_common.h instead
+		-Del: preview_helper.h - use glue_common.h
+		-Del: common.[ch] - merged into glue_common and glue_hid
+		-Del: command_entry_is_active() - use direct struct field access
+		-Del: port_ranges_scale from glue struct - call directly
+		-Del: remove function pointer indirection from note_event_location()
+		-Del: remove function pointer indirection from interface_input_signals_*()
+		-Del: function pointer indirection for interface_set_sensitive()
+		-Del: remove port_button_press_main() and port_button_release_main() - context is available at the only one caller
+		-Del: function pointer indirection from port_ranges_changed()
+		-Del: remove function pointer indirection of mode_cursor_main()
+		-Del: function pointer indirection from pan_common()
+		-Del: invalidate_all() through gtk-common function pointer - accessigble through the HID struct
+		-Del: useless wrappers: ghid_port_ranges_scale() and ghid_screen_update()
+		-Del: handling of undocumented export attributes
+		-Move: top window related helpers from common.[ch] to glue_common.[ch] (getting rid of common.[ch])
+		-Move: input signal handling code from common.[ch] to glue_common.[ch] (getting rid of common.[ch])
+		-Move: *is_pressed() from common.[ch] to glue_hid.c - inly the HID API should depend on these
+		-Cleanup: context struct naming conventions
+		-Cleanup: reentrant do_export()
+		-Cleanup: make parse_arguments() reentrant using the hid_t * first arg
+		-Cleanup: remove top window unnecessary fields
+		-Cleanup: type naming convention in timer and watch
+		-Cleanup: context: move hidlib, preview list and top window widget out from impl
+		-Cleanup: remove global var for port - moved it to be a field of ghidgui
+		-Cleanup: remove direct ghidgui references in favor of pcb_hid_t.hid_data
+		-Cleanup: rename color cache type to comply with pcb-rnd naming conventions
+		-Cleanup: use the color cache that depends on packed values instead of strings (for speed)
+		-Cleanup: remove pcb.rc from gtk2 renderers - desktop integration is not relevant
+		-Cleanup: switch over internal pixmap API: don't use local copy of width and height, use core pixmaps fields
+		-Change: centralize the mouse struct to simplify the API
+		-Change: in_mouse.[ch] gets pcb_ctx_t instead of a mouse-only ptr to simplify the API
+		-Change: centralize the top win struct
+		-Change: rename common to impl and centralize it
+		-Change: switch over to using pcb_gtk_t instead of pcb_gtk_impl_t for context in the DAD cluster (attribute dialogs, topwin, zoompan and preview)
+		-Change: switch over util_watch from pcb_gtk_impl_t to pcb_gtk_t context
+		-Change: switch over from pcb_gtk_impl_t to pcb_gtk_t context in in_mouse
+		-Change: switch over from pcb_gtk_impl_t to pcb_gtk_t context in util_timer
+		-Change: color map API: take core color struct instead of color string, avoid converting from string
+		-Change: switch over internal API for background imaging from gdk pixbuf to pcb-rnd pixmap
+		-Change: load background image using core pixmap API instead of gdk calls (so internal API for bg image won't differ from the usual pixmap drawing API)
+		-Rename: gui.h -> pcb_gtk.h - this holds the pcb gtk context
+		-Add: explain glue_ in the doc
+		-Add: remember ghidgui in the hid struct
+		-Add: render API for pixmaps: pixmap cache struct
+		-Add: preapre the internals of gdk & gl renderers for rendering arbitrary pixmaps
+
+	[hid]
+		-Del: HID API: do_export() doesn't need to get pcb_hidlib_t *
+		-Del: HID API: remove pcb_hidlib_t * from the invalidate calls and notify_mark_change() and notify_crosshair_change
+		-Del: HID API: remove pcb_hidlib_t * from the set_layer call
+		-Del: HID API: view_get() doesn't get pcb_hidlib_t * - the batch HID needs to remember it from set_hidlib
+		-Del: HID API: mouse cursor shape calls don't need to get pcb_hidlib_t *
+		-Del: HID API: set_top_title() doesn't need pcb_hidlib_t *
+		-Del: HID API: pcb_hidlib_t * is not needed for busy()
+		-Rename: hid attrib int_value to lng to cut back on boilerplate; lng field is not int but long to make sure we have a wider range of numbers available (at least 2^31-1)
+		-Rename: hid attrib str_value to str to cut back on boilerplate
+		-Rename: hid attrib real_value to dbl to cut back on boilerplate (and to follow the naming conventions)
+		-Rename: hid attrib coord_value to crd to cut back on boilerplate
+		-Rename: hid attrib clr_value to clr to cut back on boilerplate
+		-Add: HID API: ->do_export() gets hid_t * as first arg, for the context pointer
+		-Add: HID API: ->parse_argument() gets a hid_t * as first arg for the context
+		-Add: HID API: ->get_export_options() gets pcb_hid_t * as first arg
+		-Add: HID API: invalidate API calls get a pcb_hid_t * as first arg
+		-Add: HID API: notify_crosshair_change() and notify_mark_change() has pcb_hid_t * as first arg
+		-Add: HID API: set_layer_group() and end_layer() gets pcb_hid_t * as first arg
+		-Add: HID API: gc make/destroy first argument is pcb_hid_t *
+		-Add: gc core remember pcb_hid_t * that allocated the gc
+		-Add: HID API: render callbacks have pcb_hid_t * as first argument
+		-Add: HID API: calibrate() gets pcb_hid_t * as first arg
+		-Add: HID API: *_is_pressed() calls get pcb_hid_t * as first argument
+		-Add: HID API: get_coords() gets pcb_hid_t * as first arg
+		-Add: HID API: set_crosshair() gets pcb_hid_t * as first arg
+		-Add: HID API: pcb_hid_t * as first arg for the timer and watch calls
+		-Add: HID API: pcb_hid_t * as first argument for fileselect
+		-Add: HID API: attr dlg main call gets pcb_hid_t * as first arg - subsequent calls shall use hid_ctx to remember this pointer
+		-Add: HID API: docking calls get pcb_hid_t * as first arg
+		-Add: HID API: beep() gets pcb_hid_t *
+		-Add: HID API: attributes dialog gets pcb_hid_t * as first argument
+		-Add: HID API: menu related calls get pcb_hid_t * as first arg
+		-Add: HID API: pcb_hid_t * arg for usage()
+		-Add: HID API: point_cursor() gets pcb_hid_t * as first arg
+		-Add: HID API: command_entry() gets pcb_hid_t * as first arg
+		-Add: HID API: clipboard functions get pcb_hid_t * as first arg
+		-Add: HID API: benchmark() gets pcb_hid_t * as first arg
+		-Add: HID API: zoom/pan calls get pcb_hid_t * as first arg
+		-Add: HID API: open_popup() and open_command() gets pcb_hid_t * as first arg
+		-Add: HID API: set_hidlib() gets pcb_hid_t * as first arg
+		-Add: HID API: mouse cursor functions get pcb_hid_t * as first arg
+		-Add: HID API: set_top_title() and busy() get pcb_hid_t * as first arg
+
+	[hidlib]
+		-Fix: generic grid.h shouldn't include pcb-specific board.h
+		-Fix: init2() takes an optional second argument for initializing local buildins
+		-Fix: make distclean removes librnd.mak instead of old hidlib.mak
+		-Fix: don't link all the GUI libs to the 3rd and poly libs, only to the hid lib
+		-Fix: gui_MayOverwriteFile() gets hidlib as first arg temporarily so it doesn't depend on PCB
+		-Fix: dad(set) and dad(get) work on composite spin widgets
+		-Fix: fix_locale is really an env initialization under windows - it also has to calculate FHS paths and set up gdk pixbuf cache
+		-Split: separate 3rd libs into a new .a/.so (letting the host app decide to use system installed version)
+		-Rename: simplify rndlib file names by removing the lib suffix
+		-Rename: hidlib.mak to librnd.mak to make it more general
+		-Rename: hidlib to librnd-hidlib - librnd will be a family of smaller libs
+		-Move: gtk-specific cache init (gdk loaders cache) to lib_gtk_common (matters on win32)
+		-Cleanup: hid.h can not include layer.h because layer.h has pcb-specific things
+		-Cleanup: move the box struct into a central place - pretty much everything needs it
+		-Cleanup: rename conf_* to pcb_conf_* to keep namespace clean
+		-Cleanup: move and rewrite expose call API doc to hidlib.h
+		-Change: merge puplug and minuid objects directly into the 3rd lib instead of depending on installed .a's
+		-Add: headers for librnd in the Makefile
+		-Add: generic poly lib in librnd
+		-Add: install 3rd lib headers
+		-Add: install all dynamic and static libs of librnd
+		-Add: install rndlib.mak
+		-Add: install puplug headers
+		-Add: install core config.h
+		-Add: missing genvector header installation
+		-Add: install more core headers
+		-Add: install some of the genrtree headers
+		-Add: install more core headers required for hid.h
+		-Add: install some of the genlist headers
+		-Add: install more core headers
+		-Add: install more genrtree headers
+		-Add: genvector vtd0 in lib 3rd, some apps will need that
+		-Add: install puplug (the util) for 3rd part apps building their plugin lists
+		-Add: install gen_conf (utility that is closely related to the conf subsystem)
+		-Add: set soname of librnd .so files
+		-Add: install fptr_cast.h for librnd - will be needed by 3rd party apps
+		-Add: explain what a gc is in the HID API
+		-Add: include fungw-only LDFLAGS and CFLAGS in librnd.mak for the case where not the whole hidlib is used
+		-Add: create hidlib .so symlinks on installation
+		-Add: command line argument -C loads config files on CLI role; a "role;" prefix can be used to modify the default role (CLI)
+		-Add: on win32, export the directories (e.g. libdir) learned on startup so other parts of the code can reuse them
+		-Add: win32 specific exceptions in path rendering: leading @ means package root and never use backslash substitution on paths
+
+	[io]
+		-Fix: don't list plugins that can't save footprints when offering the dialog box for footprint save
+		-Split: save buffer from save a subcircuit from a buffer API to make room for full buffer saves
+		-Cleanup: rename elem_only to subc_only - elements are long gone
+		-Del: don't use the ->write_buffer_subc API, use the common footprint write API instead
+		-Del: write_buffer_subc() from the API - written using the footprint write call
+		-Del: remove the old footprint write API, use the new, subc write API instead
+		-Add: prepare the API for saving a specific subc from a buffer, by idx
+		-Add: API to determine which subc(s) to save from a pcb_data_t that potentially has multiple footprints
+		-Add: specify the new subcircuit write API
+
+	[io_eagle]
+		-Fix: don't leak FILE *
+
+	[io_kicad]
+		-Fix: typo blocked the code from properly ignoring module's path rendering some files unloadable
+		-Fix: don't crash if no netname available
+		-Fix: CUCP#65: experiments show final fallback on the pad clearance is the global pad clearance, as defined in the (setup) field
+		-Fix: kicad5 multi-layer zones sdshould throw warnings only: it seems they happen only to keepouts and we do not yet have full official support for keepouts yet
+		-Change: CUCP#60: it is safe to ignore pad anchors
+		-Del: write_buffer_subc
+		-Add: implement the new subcircuit write API
+		-Add: support for trapezoid pins and pads (CUCP#64)
+
+	[io_kicad_legacy]
+		-Del: write_buffer_subc
+		-Add: implement the new subcircuit write API
+
+	[io_lihata]
+		-Fix: typo made the code unable to load netlist patch that changed attribute value
+		-Fix: respect conf dest on loading the pcb (so that import board won't accidentally override the target board's settings)
+		-Del: write_buffer_subc
+		-Add: buffer save and load implementation
+		-Add: implement the new subcircuit write API
+
+	[io_pcb]
+		-Fix: when creating new layers in the buffer for an element, also set the layer name to avoid confusion
+		-Move: PCB_DEFAULT_DRILLINGHOLE from core to the parser - this setting is used only in loading the old pcb format
+		-Del: non-element buffer save (probably broken format)
+		-Del: WriteBuffer_subc
+		-Add: implement the new subcircuit write API
+
+	[io_tedax]
+		-Fix: broken hid unregister sequence
+		-Add: switch over from element write to subc write API
+		-Add: etest save: a small round testpad for each padstack that has a net
+		-Add: list drc and etest for tedax capabilities
+		-Add: --cam compatible etest export
+		-Add: tEDAx netlist: load and apply pinname lines
+
+	[layer]
+		-Fix: don't print an error message for failed to create doc layer in the first loop of pcb_layer_create_all_for_recipe(): doc layers are created later on
+		-Cleanup: centralize layer group initialization code that sets up type and parent
+		-Add: parse and cache layer group init-invis attribute in a bit; when set, the layer is set inivisble on the GUI on load
+		-Add: layer group create action can set attributes
+		-Add: explicit assy and fab layer in default 2 and 4 layer boards
+		-Add: macros for IS_ASSY and IS_FAB should include explicit fab and assy layers
+		-Add: default layer upgrade for padstacks shall include mech layers for slotting so that opening a footprint with slots works out-of-the-box
+
+	[lesstif]
+		-Workaround: tree table extent prediction is private but needs to be called from high level
+		-Fix: missing callback function cast in menu code
+		-Fix: do not hardwire pixmap on-board size but pass it as an argument
+		-Fix: use XCreateImage() instead of XGetImage() for drawing pixmaps (scaled image should not depend on window size)
+		-Fix: invalid read on dad close
+		-Fix: use the same conf node (appearance/color/cross) for the crosshair that gtk uses
+		-Fix: rendering: apply crosshair color change on the fly
+		-Cleanup: don't do color conv from string when already parsed values are available
+		-Cleanup: use the color cache that depends on packed values instead of strings (for speed)
+		-Change: switch over from "peephole" pixmap rendering to cache scaled pixmap by default
+		-Del: handling of the undocumented export attributes
+		-Del: old/dead arc center/radius debug draw - if we need this, it must be done centrally, not in the HID
+		-Del: hid_color.h dep; 
+		-Del: color conversion from string function is not needed anymore
+		-Del: local pnm loading - use the central pixmap API instead
+		-Add: transparent pixmap handling with clips
+
+	[lib_hid_common]
+		-Add: common dialog for asking permission for overwriting files
+		-Add: file overwrite ask dialog: can be disabled with a conf node, offers a checkbox for this
+
+	[lib_hid_pcbui]
+		-Fix: layersel infinite loop looking for layer to activate (happened especially when footprint was open from the gui)
+		-Fix: shift-tab and ctrl-tab flip will keep the cursor in place
+		-Fix: route style dialog: enforce via ring at least 10% larger than hole to avoid broken vias making route style unselectable
+		-Fix: selecting a real layer after the rat layer was selected should remove the global PCB->RatDraw flag so normal drawing is resumed
+		-Fix: don't crash when UI layer temporarily becomes unavailable
+		-Fix: reset internal layer-sel-group array when rebuilding the layer selector so previous states won't affect the new state (fixes: randomly broken groups on loading layout or removing groups)
+		-Fix: don't allow non-real layers (e.g. rats) to open the right click context popup
+		-Add: print subcircuit and terminal object ID in the tooltip to make it possible ot uniquely identify objects
+
+	[lib_wget]
+		-Add: extend the API with a wget option struct for extras
+		-Add: apply wget opts (extra headers and --post-file) to the command line
+
+	[mark]
+		-Fix: do not change the mark as a side effect if it was user placed
+		-Fix: route radius related orthogonal move uses pcb_grabbed instead of pcb_mark
+		-Add: user_placed flag so we can track if the mark is an explicit one
+		-Add: pcb_grabbed to indicate where grab started (last click really) - use this instead of mark for ortho
+
+	[netlist]
+		-Fix: line endpoints and arc endpoints can produce zero-length ("donut") rats
+		-Fix: allow "donut" rat on line end only if it would then be picked up by find.c (when in clearance, it's also in a hole)
+		-Add: separator (header) in netlist result logging so subsequent runs won't cause confusion
+		-Add: print details in warning about missing terminals or otherwise failed rat placement
+		-Add: allow "donut" zero length rats on padstack vs. sorrunding poly
+
+	[noexport]
+		-Add: support for noexport attribute	[pcblib]
+		-Fix: some awk implementations don't like ++oid in print, use parenthesis to protect it
+		-Move: center pad functions and pastematrix() from qf() to common_subc.awk so it can be reused in so() later
+		-Change: switch over static footprints from alien geda/pcb element format to lihata subcircuit v6
+		-Change: switch over parametric footprints from alien geda/pcb element format to lihata subcircuit v6
+		-Add: new, lht based parametric framework script
+		-Add: common option: pad_mask_ratio and pad_mask_offs
+		-Add: common option: pad_mask_offs, pin_mask_offs, pad_mask_ratio, pin_mask_ratio
+
+	[plug_io]
+		-Add: load buffer infra
+
+	[png]
+		-Change: switch over from hid_color to color_cache (more efficient code, better API)
+
+	[propedit]
+		-Fix: don't use PCB where pcb is available from context
+		-Fix: allow propset to operate on objects in buffer
+		-Fix: propget() always has geo turned on so all fields are accessible
+		-Add: introduce new scope: "net:" for networks (mainly for editing attributes)
+		-Add: map filename of the board
+		-Add: propget() action so scripts can read board properties
+		-Add: propset can change board filename
+		-Add: new scope: geo; when set, list and allow editing of x;y coords of lines, arcs, padstacks and subcircuits
+
+	[query]
+		-Fix: QueryObj() accepts quoted attribute names
+		-Fix: don't redraw in query() if there's no gui
+		-Add: the "thus" operator
+		-Add: bbox_naked field
+		-Add: optional scope argument that works on board (by default) or on buffer
+		-Add: query() setflag and unsetflag
+
+	[res]
+		-Change: move create new group entries in submenus to make room for new conentional layer types
+		-Change: layer context menu: the flag change submenu really changes the name too, so its name should reflect that
+		-Add: context menu items for creating cut and vcut layers
+		-Add: context menu items for creating fab and assy layers
+		-Add: creating new fab and assy layer groups set names
+		-Add: submenus for creating the remainin layers of the new convention
+		-Add: menu items for saving a library of footprints from buffer
+		-Add: use a limited context menu for padstack that is part of a subcircuit so the subc lock is bypassed less
+
+	[rosetta]
+		-Add: 10_hello in fawk, BASIC and pascal
+		-Add: fawk examples: 11_hello_menu, 12_hello_dad in fawk, 13_hello_dad in fawk, 21_timer in fawk, 72_dad_unitconv in fawk
+		-Add: BASIC and pascal variants of the simplest examples
+
+	[rtt]
+		-Fix: replace sed -i with a more portable local implementation that uses plain old sed and temp files
+		-Add: test infra and ref files for gcode
+		-Optimize: use local, empty lib - cuts back testing time to about 66%
+
+	[rubberband_orig]
+		-Fix: corner case: rat line with both endpoints moving
+
+	[scconfig]
+		-Fix: use -fPIC and other generic cflags for compiling minuid
+		-Fix: missing dependency on libfungw scconfig hooks - ./configure must be recompiled when that changes
+		-Fix: soname: do not generate anything if cc/soname is empty
+		-Fix: order in make distclean does matter: src has to be after utils because utils depend on hidlib which is ruined by make distclean in src
+		-Fix: make distclean should remove buildin.*
+		-Fix: don't use -Wall for compiling scconfig, it is not portable and generates tons of false positive warnings
+		-Fix: always calculate and set /hidlib for each plugin, not only when --all is specified
+		-Cleanup: remove unused define HAVE_CONFIG_H - we always have it
+		-Cleanup: don't -I on icons/: not used at all
+		-Del: cairo detection logic - nothing uses cairo anymore
+		-Add: apply detected undefined symbols clang/OSX link flag when compiling .so files to make them really dynamic
+		-Add: detect gdk key_prefix
+
+	[script]
+		-Add: plugin names, language names and one-liner boilerplate code for fawk, fbas and fpas
+		-Add: make sure fawk, fbas and fpas are available in (live) scripting, in static link, even when no system installed fungw found
+		-Add: math functions (mainly for fawk)
+
+	[stroke]
+		-Fix: do not leave crosshair in blocked state after executing a stroke
+
+	[subc]
+		-Fix: don't even try to do anything with the subc-aux layer in smash code - no layer binding, no object copy
+		-Add: option for low level object relocate calls to move (unreg from src and reg to dst) the object
+		-Add: rewrite smash buffer so it can handle multiple subcircuits
+
+	[tests]
+		-Fix: explicit rule for compiling printf test objects
+		-Fix: explicit rule for linking test programs in pcb-printf, for non-GNU-make
+		-Fix: make clean in pcb-printf test should remove prclimq
+		-Fix: conf test uses hidlib instead of manually linking the objects from all around the source tree
+		-Add: librnd link test
+
+	[unit]
+		-Fix: coord spinbox allows metric and imperial units
+		-Fix: don't let pcb-printf iterate beyond the unit table
+		-Del: stepping factors - the new DAD based spinbox code is generic, doesn't need this
+		-Del: long unused helper macros
+		-Del: decimil conversion macros: the code generally shouldn't use decimil constants anywhere
+		-Del: remove internationalized suffix field: pcb-rnd does not support internationalization
+		-Cleanup: regroup fields so auto-generated ones don't need to be manually specified in the unit table
+		-Cleanup: remove the alias field; one unit can have multiple aliases, flatten the table and group aliases at the end
+		-Cleanup: finalize the meaning of PCB_UNIT_ALLOW_READABLE - it's exclusively for io_pcb legacy
+		-Cleanup: global_typedefs.h shouldn't include unit.h - include it directly from users
+		-Add: reorder printf %m's for exotic units to make sure new code won't use them
+		-Add: frequency units
+		-Add: get unit by suffix
+		-Add: PCB_DAD_UNIT() gets a bitfield of families allowed
+
+	[util]
+		-Add: script for generating pngs for different parametric footprint values of all (relevant) parameters (for comparing old and new parametrics)
+		-Add: fp2preview: new footprint preview generator that calls pcb-rnd instead of locally parsing the file
+		-Del: fp2anim - use fp2preview
+
 pcb-rnd 2.1.3 (r26629)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
