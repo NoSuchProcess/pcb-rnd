@@ -156,6 +156,7 @@
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: asm: coords are not printed by the template - fix: bug_files/asm_coord.patch [report: miloh]
+- BUG: bug_files/polyclpoly.lht: excess clearing into the corner of the otuer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - version 3.0.0:
 	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 
