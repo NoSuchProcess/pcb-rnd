@@ -929,7 +929,7 @@ void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 {
 	pcb_coord_t thickness = arc->Thickness;
 
-	if (!arc->Thickness)
+	if (arc->Thickness < 0)
 		return;
 
 	if (delayed_terms_enabled && (arc->term != NULL)) {
