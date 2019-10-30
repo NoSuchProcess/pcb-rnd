@@ -43,7 +43,7 @@
 #define PCB_MAX_THICKNESS    PCB_MAX_COORD
 #define PCB_MIN_ARCRADIUS    PCB_MIN_SIZE
 #define PCB_MAX_ARCRADIUS    PCB_MAX_COORD
-#define PCB_MIN_TEXTSCALE    10 /* scaling of text objects in percent */
+#define PCB_MIN_TEXTSCALE    1 /* scaling of text objects in percent */
 #define PCB_MAX_TEXTSCALE    10000
 #define PCB_MIN_PINORVIASIZE PCB_MIL_TO_COORD(20)	/* size of a pin or via */
 #define PCB_MIN_PINORVIAHOLE PCB_MIL_TO_COORD(4)	/* size of a pins or vias drilling hole */
