@@ -151,6 +151,7 @@
 - BUG: bug_files/polyclpoly.lht: excess clearing into the corner of the otuer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497 [report: gpaubert]
 - BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
+- BUG: place so(8), {m k s}, remove one term, {u u}, remove the subc -> the terminal put back by undo is not part of the subc [report: Igor2]
 - version 3.0.0:
 	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 
