@@ -54,8 +54,6 @@
 
 #define PCB_MAX_BUFFER       5 /* number of pastebuffers additional changes in menu.c are also required to select more buffers */
 
-#define PCB_MAX_SIZE ((pcb_coord_t)PCB_LARGE_VALUE)
-
 #ifndef PCB_PATH_MAX   /* maximum path length */
 #ifdef PATH_MAX
 #define PCB_PATH_MAX PATH_MAX
