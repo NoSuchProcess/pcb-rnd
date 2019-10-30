@@ -36,6 +36,8 @@
 #include "obj_common.h"
 #include "obj_arc_ui.h"
 #include "obj_pstk.h"
+#include "obj_subc.h"
+#include "obj_subc_parent.h"
 
 const char *pcb_obj_type_name(pcb_objtype_t type)
 {
@@ -150,7 +152,13 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)(((char *)list) - offsetof(pcb_any_obj_t, Attributes));
 	if (strcmp(name, "term") == 0) {
 		const char *inv;
+		pcb_subc_t *subc = pcb_obj_parent_subc(obj);
+
+		if ((subc != NULL) && (obj->term != NULL)) /* remove the old term */
+			pcb_term_del(&subc->terminals, obj->term, obj);
 		obj->term = value;
+		if ((subc != NULL) && (obj->term != NULL)) /* add the new term */
+			pcb_term_add(&subc->terminals, obj);
 		inv = pcb_obj_id_invalid(obj->term);
 		if (inv != NULL)
 			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);

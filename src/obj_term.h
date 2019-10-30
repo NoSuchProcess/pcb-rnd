@@ -63,13 +63,12 @@ pcb_term_err_t pcb_term_uninit(htsp_t *terminals);
 /* Determines if tname is a valid terminal name */
 pcb_term_err_t pcb_term_name_is_valid(const char *tname);
 
-/* Add obj to a list of terminals named tname. Sets the term field of obj if
-   it is unset (else fails). */
-pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, pcb_any_obj_t *obj);
+/* Add obj to a list of terminals named tname (obj->term must be set already). */
+pcb_term_err_t pcb_term_add(htsp_t *terminals, pcb_any_obj_t *obj);
 
-/* Remove obj from terminal tname. Sets obj's term to NULL. Removes
-   terminal if it becomes empty. */
-pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj);
+/* Remove obj from terminal terminals. termid is the old terminal name.
+   Removes terminal if it becomes empty. */
+pcb_term_err_t pcb_term_del(htsp_t *terminals, const char *termid, pcb_any_obj_t *obj);
 
 /* Remove a terminal from, calling pcb_term_del() on all objects in it. */
 pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname);

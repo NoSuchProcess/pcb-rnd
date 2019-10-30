@@ -61,46 +61,38 @@ pcb_term_err_t pcb_term_name_is_valid(const char *tname)
 	return PCB_TERM_ERR_SUCCESS;
 }
 
-pcb_term_err_t pcb_term_add(htsp_t *terminals, const char *tname, pcb_any_obj_t *obj)
+pcb_term_err_t pcb_term_add(htsp_t *terminals, pcb_any_obj_t *obj)
 {
 	htsp_entry_t *e;
 	vtp0_t *v;
 
-	if (obj->term != NULL)
-		return PCB_TERM_ERR_ALREADY_TERMINAL;
-
-	if (term_name_invalid(tname))
+	if ((obj->term == NULL) || (term_name_invalid(obj->term)))
 		return PCB_TERM_ERR_INVALID_NAME;
 
-	e = htsp_getentry(terminals, tname);
+	e = htsp_getentry(terminals, obj->term);
 	if (e == NULL) {
 		/* allocate new terminal */
-		tname = pcb_strdup(tname);
+		char *tname = pcb_strdup(obj->term);
 		v = malloc(sizeof(vtp0_t));
 		vtp0_init(v);
-		htsp_set(terminals, (char *)tname, v);
+		htsp_set(terminals, tname, v);
 	}
 	else {
 		/* need to use the ones from the hash to avoid extra allocation/leak */
 		v = e->value;
-		tname = e->key;
 	}
 
-	obj->term = tname;
 	vtp0_append(v, obj);
 
 	return PCB_TERM_ERR_SUCCESS;
 }
 
-pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
+pcb_term_err_t pcb_term_del(htsp_t *terminals, const char *termid, pcb_any_obj_t *obj)
 {
 	vtp0_t *v;
 	size_t n;
 
-	if (obj->term == NULL)
-		return PCB_TERM_ERR_NOT_IN_TERMINAL;
-
-	v = htsp_get(terminals, obj->term);
+	v = htsp_get(terminals, termid);
 	if (v == NULL)
 		return PCB_TERM_ERR_TERM_NOT_FOUND;
 
@@ -108,8 +100,7 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, pcb_any_obj_t *obj)
 		if (v->array[n] == obj) {
 			vtp0_remove(v, n, 1);
 			if (v->used == 0)
-				pcb_term_remove(terminals, obj->term);
-			obj->term = NULL;
+				pcb_term_remove(terminals, termid);
 			return PCB_TERM_ERR_SUCCESS;
 		}
 	}
@@ -175,30 +166,21 @@ typedef struct {
 static int undo_term_rename_swap(void *udata)
 {
 	char *old_term = NULL, *autofree = NULL;
-	pcb_subc_t *subc;
 	term_rename_t *r = udata;
 	int res = 0;
 	pcb_flag_t ftmp;
 
-	subc = pcb_obj_parent_subc(r->obj);
-
 	/* remove from previous terminal */
 	if (r->obj->term != NULL) {
 		old_term = pcb_strdup(r->obj->term);
-		if (subc != NULL)
-			res |= pcb_term_del(&subc->terminals, r->obj);
-		else
-			pcb_attribute_remove(&r->obj->Attributes, "term");
+		pcb_attribute_remove(&r->obj->Attributes, "term");
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 		r->obj->term = NULL;
 	}
 
 	/* add to new terminal */
 	if (*r->str != '\0') {
-		if (subc != NULL)
-			res |= pcb_term_add(&subc->terminals, r->str, r->obj);
-		else
-			r->obj->term = autofree = pcb_strdup(r->str);
+		r->obj->term = autofree = pcb_strdup(r->str);
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 	}
 
