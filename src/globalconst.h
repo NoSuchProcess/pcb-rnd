@@ -33,11 +33,14 @@
 
 #define PCB_LARGE_VALUE      (COORD_MAX / 2 - 1) /* maximum extent of board and elements */
 
+#define PCB_MAX_COORD        ((pcb_coord_t)PCB_LARGE_VALUE) /* coordinate limits */
+#define PCB_MIN_SIZE         PCB_MIL_TO_COORD(10) /* lowest width and height of the board */
+
 #define PCB_MAX_LAYER        38    /* max number of layer, check source code for more changes, a *lot* more changes */
 /* new array size that allows substrate layers */
 #define PCB_MAX_LAYERGRP     ((PCB_MAX_LAYER+8)*2)    /* max number of layer groups, a.k.a. physical layers: a few extra outer layers per side, pluse one substrate per real layer */
-#define PCB_MIN_THICKNESS    0
-#define PCB_MAX_THICKNESS    ((pcb_coord_t)PCB_LARGE_VALUE)
+#define PCB_MIN_THICKNESS    PCB_MIN_SIZE
+#define PCB_MAX_THICKNESS    PCB_MAX_COORD
 #define PCB_MIN_ARCSIZE      PCB_MIL_TO_COORD(0.01)
 #define PCB_MAX_ARCSIZE      ((pcb_coord_t)PCB_LARGE_VALUE)
 #define PCB_MIN_TEXTSCALE    10 /* scaling of text objects in percent */
@@ -49,8 +52,6 @@
 #define PCB_MIN_GRID         1
 #define PCB_MAX_FONTPOSITION 255 /* upper limit of characters in my font */
 
-#define PCB_MAX_COORD        ((pcb_coord_t)PCB_LARGE_VALUE) /* coordinate limits */
-#define PCB_MIN_SIZE         PCB_MIL_TO_COORD(10) /* lowest width and height of the board */
 #define PCB_MAX_BUFFER       5 /* number of pastebuffers additional changes in menu.c are also required to select more buffers */
 
 #define PCB_MAX_SIZE ((pcb_coord_t)PCB_LARGE_VALUE)
