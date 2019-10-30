@@ -115,6 +115,7 @@ void pcb_attribute_free(pcb_attribute_list_t *list)
 	int i;
 
 	for (i = 0; i < list->Number; i++) {
+		NOTIFY(list, list->List[i].name, list->List[i].value);
 		free(list->List[i].name);
 		free(list->List[i].value);
 	}
