@@ -59,9 +59,10 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 	/* Replace an existing attribute if there is a name match. */
 	for (i = 0; i < list->Number; i++) {
 		if (strcmp(name, list->List[i].name) == 0) {
-			free(list->List[i].value);
+			char *old_value = list->List[i].value;
 			list->List[i].value = pcb_strdup_null(value);
 			NOTIFY(list, list->List[i].name, list->List[i].value);
+			free(old_value);
 			return 1;
 		}
 	}
@@ -146,9 +147,10 @@ void pcb_attribute_copyback(pcb_attribute_list_t *dst, const char *name, const c
 		if (strcmp(name, dst->List[i].name) == 0) {
 			dst->List[i].cpb_written = 1;
 			if (strcmp(value, dst->List[i].value) != 0) {
-				free(dst->List[i].value);
+				char *old_value = dst->List[i].value;
 				dst->List[i].value = pcb_strdup(value);
 				NOTIFY(dst, dst->List[i].name, dst->List[i].value);
+				free(old_value);
 			}
 			return;
 		}
