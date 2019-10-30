@@ -491,7 +491,7 @@ void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 	}
 
 	value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : (*dst) + ctx->chgsize.value;
-	value = MIN(PCB_MAX_ARCSIZE, MAX(value, PCB_MIN_ARCSIZE));
+	value = MIN(PCB_MAX_ARCRADIUS, MAX(value, PCB_MIN_ARCRADIUS));
 	if (value != *dst) {
 		pcb_undo_add_obj_to_change_radii(PCB_OBJ_ARC, Layer, Arc, Arc);
 		pcb_arc_invalidate_erase(Arc);
