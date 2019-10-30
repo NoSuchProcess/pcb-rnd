@@ -20,7 +20,7 @@ do { \
 
 static void conf_core_postproc(void)
 {
-	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, PCB_MIN_LINESIZE, PCB_MAX_LINESIZE, PCB_MIL_TO_COORD(10));
+	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, PCB_MIN_THICKNESS, PCB_MAX_THICKNESS, PCB_MIL_TO_COORD(10));
 	conf_force_set_bool(conf_core.rc.have_regex, 1);
 	pcb_conf_ro("rc/have_regex");
 

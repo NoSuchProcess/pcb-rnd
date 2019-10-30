@@ -561,7 +561,7 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, poly))
 			return NULL;
 
-		value = MIN(PCB_MAX_LINESIZE, value);
+		value = MIN(PCB_MAX_THICKNESS, value);
 		if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < conf_core.design.bloat * 2)
 			value = 0;
 		if (ctx->chgsize.value > 0 && value < conf_core.design.bloat * 2)

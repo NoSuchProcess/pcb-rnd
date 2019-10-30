@@ -287,7 +287,7 @@ void pcb_board_remove(pcb_board_t *Ptr)
 /* sets a new line thickness */
 void pcb_board_set_line_width(pcb_coord_t Size)
 {
-	if (Size >= PCB_MIN_LINESIZE && Size <= PCB_MAX_LINESIZE) {
+	if (Size >= PCB_MIN_THICKNESS && Size <= PCB_MAX_THICKNESS) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
 			pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
@@ -313,7 +313,7 @@ void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force)
 /* sets a clearance width */
 void pcb_board_set_clearance(pcb_coord_t Width)
 {
-	if (Width <= PCB_MAX_LINESIZE) {
+	if (Width <= PCB_MAX_THICKNESS) {
 		conf_set_design("design/clearance", "%$mS", Width);
 	}
 }

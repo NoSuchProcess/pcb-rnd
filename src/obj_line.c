@@ -466,7 +466,7 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return NULL;
-	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Line->Thickness) {
+	if (value <= PCB_MAX_THICKNESS && value >= PCB_MIN_THICKNESS && value != Line->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_OBJ_LINE, Layer, Line, Line);
 		pcb_line_invalidate_erase(Line);
 		pcb_r_delete_entry(Layer->line_tree, (pcb_box_t *) Line);
@@ -490,7 +490,7 @@ void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_lin
 		return NULL;
 	if (value < 0)
 		value = 0;
-	value = MIN(PCB_MAX_LINESIZE, value);
+	value = MIN(PCB_MAX_THICKNESS, value);
 	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < conf_core.design.bloat * 2)
 		value = 0;
 	if (ctx->chgsize.value > 0 && value < conf_core.design.bloat * 2)

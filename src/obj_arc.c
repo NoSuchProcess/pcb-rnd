@@ -426,7 +426,7 @@ void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return NULL;
-	if (value <= PCB_MAX_LINESIZE && value >= PCB_MIN_LINESIZE && value != Arc->Thickness) {
+	if (value <= PCB_MAX_THICKNESS && value >= PCB_MIN_THICKNESS && value != Arc->Thickness) {
 		pcb_undo_add_obj_to_size(PCB_OBJ_ARC, Layer, Arc, Arc);
 		pcb_arc_invalidate_erase(Arc);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) Arc);
@@ -450,7 +450,7 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 		return NULL;
 	if (value < 0)
 		value = 0;
-	value = MIN(PCB_MAX_LINESIZE, value);
+	value = MIN(PCB_MAX_THICKNESS, value);
 	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < conf_core.design.bloat * 2)
 		value = 0;
 	if (ctx->chgsize.value > 0 && value < conf_core.design.bloat * 2)

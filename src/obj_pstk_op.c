@@ -290,7 +290,7 @@ void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		return NULL;
 	if (value < 0)
 		value = 0;
-	value = MIN(PCB_MAX_LINESIZE, value);
+	value = MIN(PCB_MAX_THICKNESS, value);
 	if (!ctx->chgsize.is_absolute && (ctx->chgsize.value < 0) && (value < conf_core.design.bloat))
 		value = 0;
 	if ((ctx->chgsize.value > 0) && (value < conf_core.design.bloat))
