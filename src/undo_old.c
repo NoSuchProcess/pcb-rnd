@@ -67,6 +67,7 @@
 
 #include "obj_poly_draw.h"
 #include "obj_subc_parent.h"
+#include "obj_term.h"
 
 #include "brave.h"
 
@@ -531,6 +532,7 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 	int type;
 	Removed *r = &Entry->Data.Removed;
 	pcb_data_t *data = PCB->Data;
+	pcb_subc_t *subc = NULL;
 
 	if (pcb_brave & PCB_BRAVE_CLIPBATCH)
 		pcb_data_clip_inhibit_inc(PCB->Data);
@@ -541,7 +543,7 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 		if (r->p_subc_id > 0) { /* need to use a subc layer - putting back a floater */
 			void *p1, *p2, *p3;
 			if (pcb_search_obj_by_id(PCB->Data, &p1, &p2, &p3, r->p_subc_id, PCB_OBJ_SUBC) != 0) {
-				pcb_subc_t *subc = p2;
+				subc = p2;
 				if (r->p_subc_layer < subc->data->LayerN) {
 					data = subc->data;
 					ptr1 = &data->Layer[r->p_subc_layer];
@@ -556,6 +558,8 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 		if (pcb_brave & PCB_BRAVE_CLIPBATCH)
 			pcb_data_clip_inhibit_dec(PCB->Data, 1);
 
+		if (subc != NULL)
+			pcb_term_add(&subc->terminals, (pcb_any_obj_t *)ptr2);
 		return pcb_true;
 	}
 
@@ -961,14 +965,17 @@ void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		case PCB_OBJ_POLY:
 			subc = pcb_obj_parent_subc(Ptr3);
 			if (subc != NULL) {
+				pcb_term_del(&subc->terminals, o->term, o);
 				r->p_subc_id = subc->ID;
 				r->p_subc_layer = o->parent.layer - subc->data->Layer;
 			}
 			break;
 		case PCB_OBJ_PSTK:
 			subc = pcb_obj_parent_subc(Ptr3);
-			if (subc != NULL)
+			if (subc != NULL) {
+				pcb_term_del(&subc->terminals, o->term, o);
 				r->p_subc_id = subc->ID;
+			}
 			break;
 TODO("subc: floater subc in subc should remember its subc parent too")
 		default:
