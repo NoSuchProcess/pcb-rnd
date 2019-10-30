@@ -137,7 +137,7 @@ static char *templ_exec(pcb_subc_t *subc, gdl_list_t *temp)
 	gds_t s;
 	template_t *t;
 	int n, bot, have_coords = 0;
-	char *tmp, buf[64];
+	char *tmp;
 	pcb_coord_t x = 0, y = 0;
 
 	gds_init(&s);
