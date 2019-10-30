@@ -160,14 +160,14 @@ static char *templ_exec(pcb_subc_t *subc, gdl_list_t *temp)
 					pcb_subc_get_origin(subc, &x, &y);
 					have_coords = 1;
 				}
-				pcb_sprintf(buf, "%.08mm", x);
+				pcb_append_printf(&s, "%.08mm", x);
 				break;
 			case TT_Y:
 				if (!have_coords) {
 					pcb_subc_get_origin(subc, &x, &y);
 					have_coords = 1;
 				}
-				pcb_sprintf(buf, "%.08mm", y);
+				pcb_append_printf(&s, "%.08mm", y);
 				break;
 		}
 	}
