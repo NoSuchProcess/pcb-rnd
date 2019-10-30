@@ -289,6 +289,7 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 void pcb_arc_free(pcb_arc_t *arc)
 {
+	pcb_attribute_free(&arc->Attributes);
 	pcb_arc_unreg(arc);
 	free(arc);
 }

@@ -131,6 +131,7 @@ pcb_subc_t *pcb_subc_new(void)
 
 void pcb_subc_free(pcb_subc_t *sc)
 {
+	pcb_attribute_free(&sc->Attributes);
 	pcb_term_uninit(&sc->terminals);
 	pcb_subc_unreg(sc);
 	pcb_data_free(sc->data);

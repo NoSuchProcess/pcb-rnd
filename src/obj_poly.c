@@ -107,6 +107,7 @@ pcb_poly_t *pcb_poly_alloc(pcb_layer_t *layer)
 
 void pcb_poly_free(pcb_poly_t *poly)
 {
+	pcb_attribute_free(&poly->Attributes);
 	pcb_poly_unreg(poly);
 	free(poly);
 }

@@ -105,6 +105,7 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 
 void pcb_pstk_free(pcb_pstk_t *ps)
 {
+	pcb_attribute_free(&ps->Attributes);
 	pcb_pstk_unreg(ps);
 	free(ps->thermals.shape);
 	free(ps);

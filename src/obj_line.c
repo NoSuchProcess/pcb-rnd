@@ -106,6 +106,7 @@ pcb_line_t *pcb_line_alloc(pcb_layer_t *layer)
 
 void pcb_line_free(pcb_line_t *line)
 {
+	pcb_attribute_free(&line->Attributes);
 	pcb_line_unreg(line);
 	free(line);
 }
