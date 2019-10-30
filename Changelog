@@ -1,4 +1,4 @@
-pcb-rnd 2.1.4 (r27909)
+pcb-rnd 2.1.4 (r27921)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Fix: PstkProtoTmp(): accept board or buffer instead of idpath
