@@ -54,12 +54,6 @@
 #undef NDEBUG
 #include <assert.h>
 
-#define	SMALL_SMALL_TEXT_SIZE	0
-#define	SMALL_TEXT_SIZE			1
-#define	NORMAL_TEXT_SIZE		2
-#define	LARGE_TEXT_SIZE			3
-#define	N_TEXT_SIZES			4
-
 pcb_output_t pcb_draw_out; /* global context used for drawing */
 
 pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX };
