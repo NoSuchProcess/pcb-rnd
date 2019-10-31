@@ -111,6 +111,12 @@ struct pcb_export_opt_s {
 	void *value;
 };
 
+/* Only when ran with -x: the selected export plugin (and potentially
+   dependent exporter plugins) register their optioins and command line
+   options will be looked up in these. Plugins not participating in the
+   current session won't register and the registration is lost immediately
+   after the export because pcb-rnd exits. Cam or dialog box direct exporting
+   won't go through this. */
 extern void pcb_export_register_opts(pcb_export_opt_t *, int, const char *cookie, int copy);
 #define PCB_REGISTER_ATTRIBUTES(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
 { pcb_export_register_opts(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
