@@ -188,8 +188,7 @@ pcb_export_opt_t gcode_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(gcode_attribute_list)/sizeof(gcode_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(gcode_attribute_list, gcode_cookie)
-		 static pcb_hid_attr_val_t gcode_values[NUM_OPTIONS];
+static pcb_hid_attr_val_t gcode_values[NUM_OPTIONS];
 
 /* *** Utility funcions **************************************************** */
 

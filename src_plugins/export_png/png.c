@@ -373,8 +373,6 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 
 #define NUM_OPTIONS (sizeof(png_attribute_list)/sizeof(png_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(png_attribute_list, png_cookie)
-
 static pcb_hid_attr_val_t png_values[NUM_OPTIONS];
 
 static const char *get_file_suffix(void)

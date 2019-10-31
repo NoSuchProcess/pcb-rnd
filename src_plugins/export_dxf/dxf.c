@@ -195,8 +195,6 @@ Draw drill contour with thin line
 
 #define NUM_OPTIONS (sizeof(dxf_attribute_list)/sizeof(dxf_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(dxf_attribute_list, dxf_cookie)
-
 static pcb_hid_attr_val_t dxf_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *dxf_get_export_options(pcb_hid_t *hid, int *n)

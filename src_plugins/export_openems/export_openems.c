@@ -154,8 +154,6 @@ pcb_export_opt_t openems_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(openems_attribute_list)/sizeof(openems_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(openems_attribute_list, openems_cookie)
-
 static pcb_hid_attr_val_t openems_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *openems_get_export_options(pcb_hid_t *hid, int *n)

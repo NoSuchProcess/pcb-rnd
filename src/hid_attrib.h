@@ -118,8 +118,6 @@ struct pcb_export_opt_s {
    after the export because pcb-rnd exits. Cam or dialog box direct exporting
    won't go through this. */
 extern void pcb_export_register_opts(pcb_export_opt_t *, int, const char *cookie, int copy);
-#define PCB_REGISTER_ATTRIBUTES(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
-{ pcb_export_register_opts(a, sizeof(a)/sizeof(a[0]), cookie, 0); }
 
 /* Remove all attributes registered with the given cookie */
 void pcb_export_remove_opts_by_cookie(const char *cookie);

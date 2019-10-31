@@ -281,7 +281,6 @@ automatically scaled to fit the canvas.
 
 TODO("menu: pcb-menu should be generic and not depend on the HID")
 
-PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
 
 static int lesstif_direct = 0;
 static pcb_composite_op_t lesstif_drawing_mode = 0;
@@ -3145,7 +3144,7 @@ static int lesstif_attrs_regd = 0;
 static void lesstif_reg_attrs(void)
 {
 	if (!lesstif_attrs_regd)
-		PCB_REGISTER_ATTRIBUTES(lesstif_attribute_list, lesstif_cookie)
+		pcb_export_register_opts(lesstif_attribute_list, sizeof(lesstif_attribute_list)/sizeof(lesstif_attribute_list[0]), lesstif_cookie, 0);
 	lesstif_attrs_regd = 1;
 }
 

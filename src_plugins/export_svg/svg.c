@@ -192,9 +192,6 @@ do { \
 		y = PCB->hidlib.size_y - y; \
 } while(0)
 
-
-PCB_REGISTER_ATTRIBUTES(svg_attribute_list, svg_cookie)
-
 static pcb_hid_attr_val_t svg_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *svg_get_export_options(pcb_hid_t *hid, int *n)

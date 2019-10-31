@@ -293,8 +293,6 @@ Diameter of the small hole when drill-helper is on
 
 #define NUM_OPTIONS (sizeof(ps_attribute_list)/sizeof(ps_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(ps_attribute_list, ps_cookie)
-
 /* All file-scope data is in global struct */
 static struct {
 	double calibration_x, calibration_y;

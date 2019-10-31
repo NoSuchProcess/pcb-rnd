@@ -115,8 +115,6 @@ Limit the bounds of the EPS file to the visible items.
 
 #define NUM_OPTIONS (sizeof(eps_attribute_list)/sizeof(eps_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(eps_attribute_list, ps_cookie)
-
 static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *eps_get_export_options(pcb_hid_t *hid, int *n)

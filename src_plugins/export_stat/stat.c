@@ -108,8 +108,6 @@ pcb_export_opt_t stat_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(stat_attribute_list)/sizeof(stat_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(stat_attribute_list, stat_cookie)
-
 static pcb_hid_attr_val_t stat_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *stat_get_export_options(pcb_hid_t *hid, int *n)

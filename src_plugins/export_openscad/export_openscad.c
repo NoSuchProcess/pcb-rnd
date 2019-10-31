@@ -127,8 +127,6 @@ Name of the file to be exported to. Can contain a path.
 #include "scad_draw.c"
 #include "scad_models.c"
 
-PCB_REGISTER_ATTRIBUTES(openscad_attribute_list, openscad_cookie)
-
 static pcb_hid_attr_val_t openscad_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *openscad_get_export_options(pcb_hid_t *hid, int *n)

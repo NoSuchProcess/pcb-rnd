@@ -36,8 +36,6 @@ static pcb_export_opt_t export_vfs_mc_options[] = {
 
 #define NUM_OPTIONS (sizeof(export_vfs_mc_options)/sizeof(export_vfs_mc_options[0]))
 
-PCB_REGISTER_ATTRIBUTES(export_vfs_mc_options, export_vfs_mc_cookie)
-
 static pcb_hid_attr_val_t export_vfs_mc_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *export_vfs_mc_get_export_options(pcb_hid_t *hid, int *n)

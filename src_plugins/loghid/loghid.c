@@ -100,8 +100,6 @@ static int loghid_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-PCB_REGISTER_ATTRIBUTES(loghid_attribute_list, loghid_cookie)
-
 static pcb_export_opt_t *loghid_get_export_options(pcb_hid_t *hid, int *n)
 {
 /*	loghid_attribute_list[HA_psfile] = pcb_strdup("default?");*/

@@ -79,8 +79,6 @@ pcb_export_opt_t fidocadj_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(fidocadj_attribute_list)/sizeof(fidocadj_attribute_list[0]))
 
-PCB_REGISTER_ATTRIBUTES(fidocadj_attribute_list, fidocadj_cookie)
-
 static pcb_hid_attr_val_t fidocadj_values[NUM_OPTIONS];
 
 static pcb_export_opt_t *fidocadj_get_export_options(pcb_hid_t *hid, int *n)
