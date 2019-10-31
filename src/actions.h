@@ -53,12 +53,13 @@ extern const char *PCB_PTR_DOMAIN_IDPATH_LIST;
 void pcb_register_action(const pcb_action_t *a, const char *cookie);
 void pcb_register_actions(const pcb_action_t *a, int, const char *cookie);
 
+/* shorthand for registering all actions from an action table */
 #define PCB_REGISTER_ACTIONS(a, cookie) \
 	pcb_register_actions(a, sizeof(a)/sizeof(a[0]), cookie);
 
+/* split registration, when action tables are in separate objects */
 #define PCB_REGISTER_ACTIONS_FUNC(a, cookie) PCB_HIDCONCAT(void register_,a) ()\
 	{ pcb_register_actions(a, sizeof(a)/sizeof(a[0]), cookie); }
-
 #define PCB_REGISTER_ACTIONS_CALL(a, cookie) {extern void PCB_HIDCONCAT(register_,a)();PCB_HIDCONCAT(register_,a)();}
 
 /* Inits and uninits the whole action framework */
