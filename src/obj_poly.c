@@ -1321,7 +1321,7 @@ pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (pcb_hidden_floater((pcb_any_obj_t*)b) || pcb_partial_export((pcb_any_obj_t*)b, i))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	if (!polygon->Clipped)
+	if (polygon->Clipped == NULL)
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
