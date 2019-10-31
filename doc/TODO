@@ -161,7 +161,6 @@
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - CLEANUP: reduce
 		- export_bom: rewrite the string list code using htsp and/or lists
-		- hash in hid_attrib.c?
 		- gcode invents .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
 		- vendordrill
