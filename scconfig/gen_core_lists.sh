@@ -17,20 +17,9 @@ BEGIN {
 }
 
 /^___name___/ {
-	fullname = $2
 	basename = $2
 	sub("/[^/]*$", "", basename)
-	if (fullname ~ "src_plugins/")
-		TYPE[basename]="plugdir"
 }
-
-/^type=/ {
-	type = $0
-	sub("^type=", "", type)
-	TYPE[basename] = type
-	print "/* ", type, basename " */"
-}
-
 
 /^PCB_REGISTER/ {
 	LIST[basename] = LIST[basename] $0 "\n"
@@ -38,25 +27,10 @@ BEGIN {
 
 END {
 	for(n in LIST) {
-		hn = n
-		sub("^hid/", "", hn)
-#		if (hn in HIDNAME_FIXUP)
-#			hn = HIDNAME_FIXUP[hn]
-
-		print "/* " n  " (" TYPE[n] ") */"
-		if (TYPE[n] == "gui")
-			print "if ((gui != NULL) && (strcmp(gui->name, " q hn q ") == 0)) {"
-		if (TYPE[n] == "plugdir") {
-			vname = LIST[n]
-			sub("PCB_REGISTER_ACTIONS.*[(]", "", vname)
-			sub("[)].*[\\n\\r]*", "", vname)
-			print "extern HID_Action " vname "[];"
-		}
+		print "/* " n " */"
 		sub("PCB_REGISTER_ACTIONS_FUNC", "PCB_REGISTER_ACTIONS_CALL", LIST[n])
 
 		print LIST[n]
-		if (TYPE[n] == "gui")
-			print "}"
 	}
 }
 
