@@ -38,6 +38,7 @@
 #include "obj_pstk.h"
 #include "obj_subc.h"
 #include "obj_subc_parent.h"
+#include "obj_term.h"
 
 const char *pcb_obj_type_name(pcb_objtype_t type)
 {
