@@ -163,13 +163,12 @@
 		- export_bom: rewrite the string list code using htsp and/or lists
 		- gcode invents .png name locally
 		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
-		- vendordrill
-			- search for /units, replace it with pcb-printf something
-			- add round down
-			- replace ignore_refdes, ignore_value and ignore_descr with genvector
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
+	- CLEANUP: search for /units, replace it with pcb-printf something
+	- CLEANUP: replace ignore_refdes, ignore_value and ignore_descr with genvector
 	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
+	- FEATURE: add round down
 - FEATURE: lesstif: implement/enable local grid in lesstif (menu option is disabled)
 - FEATURE: lihata v7
 	- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
