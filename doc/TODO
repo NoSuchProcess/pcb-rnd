@@ -198,8 +198,6 @@
 	which is strange
 - FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
-- CLEANUP: win32 port {large}
-	- clean up central Makefile.in rules: remove cat, sed, grep where possible, use scconfig instead
 - BUG: arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
 	-> AttachForCopy() calls SetCrosshairRange() that then sets crosshair max* which
 	- similar with lines: bug_files/dwgarea.lht; grabbing the lines for move will force them to fall within the drawing area [report: pstuge]
