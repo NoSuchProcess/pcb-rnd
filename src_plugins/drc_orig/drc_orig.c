@@ -450,7 +450,6 @@ void pplg_uninit_drc_orig(void)
 	pcb_event_unbind_allcookie(drc_orig_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_drc_orig(void)
 {
 	PCB_API_CHK_VER;

@@ -579,8 +579,6 @@ pcb_action_t diag_action_list[] = {
 
 static const char *diag_cookie = "diag plugin";
 
-PCB_REGISTER_ACTIONS(diag_action_list, diag_cookie)
-
 int pplg_check_ver_diag(int ver_needed) { return 0; }
 
 void pplg_uninit_diag(void)
@@ -590,7 +588,6 @@ void pplg_uninit_diag(void)
 	pcb_event_unbind_allcookie(diag_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_diag(void)
 {
 	PCB_API_CHK_VER;

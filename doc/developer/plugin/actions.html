@@ -49,7 +49,6 @@ static const pcb_action_t <i>pluginname</i>_action_list[] = {
 	{"Action1", pcb_act_Action1, pcb_acth_Action1, pcb_acts_Action1},
 	{"Action2", pcb_act_Action2, pcb_acth_Action2, pcb_acts_Action2}
 };
-PCB_REGISTER_ACTIONS(<i>pluginname</i>_action_list, <i>pluginname</i>_cookie)
 </pre>
 <p>
 The action name in the first column must be unique. If an action has
@@ -65,24 +64,16 @@ rows of the table.
 The table should be placed after the last action to avoid action
 function/help/syntax forward declarations. Most often the table is placed
 right above the check_ver callback.
-<p>
-The PCB_REGISTER_ACTIONS() macro invocation is right after the table; it
-requires <a href="cookie.html">the standard plugin cookie</a>.
 
 <h2> action registration on init </h2>
 <p>
-Place <b>#include "dolists.h"</b> right above the plugins standard init
-callback function. This include will change some global states so
-that PCB_REGISTER_ACTIONS will work differently, so its place is significant.
-<p>
 Invoke macro
 <b>PCB_REGISTER_ACTIONS(<i>pluginname</i>_action_list, <i>pluginname</i>_cookie)</b>
-again, from the init callback.
+again, from the init callback. It requires <a href="cookie.html">the
+standard plugin cookie</a>.
 <p>
 In practice, the plugin init will look like this:
 <pre>
-#include "dolists.h"
-
 int pplg_init_expfeat(void)
 {
 	PCB_API_CHK_VER;

@@ -44,8 +44,6 @@ static fgw_error_t pcb_act_ExtFoo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const pcb_action_t ext_foo_action_list[] = {
 	{"ExtFoo", pcb_act_ExtFoo, pcb_acth_ExtFoo, pcb_acts_ExtFoo}
 };
-PCB_REGISTER_ACTIONS(ext_foo_action_list, ext_foo_cookie)
-
 
 int pplg_check_ver_ext_foo(int ver_needed) { return 0; }
 
@@ -55,7 +53,6 @@ void pplg_uninit_ext_foo(void)
 	pcb_remove_actions_by_cookie(ext_foo_cookie);
 }
 
-#include "src/dolists.h"
 
 int pplg_init_ext_foo(void)
 {

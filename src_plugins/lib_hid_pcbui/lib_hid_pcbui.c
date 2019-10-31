@@ -58,13 +58,11 @@ static const char *layersel_cookie = "lib_hid_pcbui/layersel";
 static pcb_action_t rst_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
 };
-PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie)
 
 static pcb_action_t status_action_list[] = {
 	{"StatusSetText", pcb_act_StatusSetText, pcb_acth_StatusSetText, pcb_acts_StatusSetText},
 	{"DescribeLocation", pcb_act_DescribeLocation, pcb_acth_DescribeLocation, pcb_acts_DescribeLocation}
 };
-PCB_REGISTER_ACTIONS(status_action_list, status_cookie)
 
 static pcb_action_t act_action_list[] = {
 	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
@@ -76,7 +74,6 @@ static pcb_action_t act_action_list[] = {
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup}
 };
-PCB_REGISTER_ACTIONS(act_action_list, act_cookie)
 
 int pplg_check_ver_lib_hid_pcbui(int ver_needed) { return 0; }
 
@@ -100,9 +97,6 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_conf_hid_unreg(status_rd_cookie);
 	pcb_conf_hid_unreg(infobar_cookie);
 }
-
-#include "dolists.h"
-
 
 static conf_hid_id_t install_events(const char *cookie, const char *paths[], conf_hid_callbacks_t cb[], void (*update_cb)(conf_native_t*,int))
 {

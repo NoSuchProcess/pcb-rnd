@@ -1868,4 +1868,4 @@ pcb_action_t gui_action_list[] = {
 	{"Redraw", pcb_act_Redraw, pcb_acth_Redraw, pcb_acts_Redraw}
 };
 
-PCB_REGISTER_ACTIONS(gui_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(gui_action_list, NULL)

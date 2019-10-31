@@ -830,8 +830,6 @@ pcb_action_t report_action_list[] = {
 
 static const char *report_cookie = "report plugin";
 
-PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
-
 int pplg_check_ver_report(int ver_needed) { return 0; }
 
 void pplg_uninit_report(void)
@@ -840,7 +838,6 @@ void pplg_uninit_report(void)
 	pcb_conf_unreg_fields("plugins/report/");
 }
 
-#include "dolists.h"
 int pplg_init_report(void)
 {
 	PCB_API_CHK_VER;

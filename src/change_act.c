@@ -984,4 +984,4 @@ pcb_action_t change_action_list[] = {
 	{"ClrFlag", pcb_act_ClrFlag, pcb_acth_ClrFlag, pcb_acts_ClrFlag}
 };
 
-PCB_REGISTER_ACTIONS(change_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(change_action_list, NULL)

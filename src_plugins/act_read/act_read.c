@@ -117,8 +117,6 @@ pcb_action_t act_read_action_list[] = {
 
 static const char *act_read_cookie = "act_read";
 
-PCB_REGISTER_ACTIONS(act_read_action_list, act_read_cookie)
-
 int pplg_check_ver_act_read(int ver_needed) { return 0; }
 
 void pplg_uninit_act_read(void)
@@ -126,7 +124,6 @@ void pplg_uninit_act_read(void)
 	pcb_remove_actions_by_cookie(act_read_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_act_read(void)
 {
 	PCB_API_CHK_VER;

@@ -53,8 +53,6 @@ static const pcb_action_t expfeat_action_list[] = {
 
 static const char *expfeat_cookie = "experimental features plugin";
 
-PCB_REGISTER_ACTIONS(expfeat_action_list, expfeat_cookie)
-
 int pplg_check_ver_expfeat(int ver_needed) { return 0; }
 
 void pplg_uninit_expfeat(void)
@@ -62,7 +60,6 @@ void pplg_uninit_expfeat(void)
 	pcb_remove_actions_by_cookie(expfeat_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_expfeat(void)
 {
 	PCB_API_CHK_VER;

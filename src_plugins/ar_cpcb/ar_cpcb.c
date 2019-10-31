@@ -406,8 +406,6 @@ static pcb_action_t cpcb_action_list[] = {
 	{"cpcb", pcb_act_cpcb, pcb_acth_cpcb, pcb_acts_cpcb}
 };
 
-PCB_REGISTER_ACTIONS(cpcb_action_list, cpcb_cookie)
-
 int pplg_check_ver_ar_cpcb(int ver_needed) { return 0; }
 
 void pplg_uninit_ar_cpcb(void)
@@ -416,7 +414,6 @@ void pplg_uninit_ar_cpcb(void)
 }
 
 
-#include "dolists.h"
 int pplg_init_ar_cpcb(void)
 {
 	PCB_API_CHK_VER;

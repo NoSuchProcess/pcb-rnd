@@ -521,8 +521,6 @@ static pcb_action_t polyhelp_action_list[] = {
 	{"PolyOffs", pcb_act_PolyOffs, pcb_acth_PolyOffs, pcb_acts_PolyOffs},
 	{"ToPoly", pcb_act_topoly, pcb_acth_topoly, pcb_acts_topoly}
 };
-PCB_REGISTER_ACTIONS(polyhelp_action_list, polyhelp_cookie)
-
 
 int pplg_check_ver_lib_polyhelp(int ver_needed) { return 0; }
 
@@ -530,8 +528,6 @@ void pplg_uninit_lib_polyhelp(void)
 {
 	pcb_remove_actions_by_cookie(polyhelp_cookie);
 }
-
-#include "dolists.h"
 
 int pplg_init_lib_polyhelp(void)
 {

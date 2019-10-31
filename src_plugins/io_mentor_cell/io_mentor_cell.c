@@ -59,8 +59,6 @@ void pplg_uninit_io_mentor_cell(void)
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_mentor_cell);
 }
 
-#include "dolists.h"
-
 int pplg_init_io_mentor_cell(void)
 {
 	PCB_API_CHK_VER;

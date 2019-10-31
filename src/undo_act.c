@@ -144,4 +144,4 @@ pcb_action_t undo_action_list[] = {
 	{"Redo", pcb_act_Redo, pcb_acth_Redo, pcb_acts_Redo}
 };
 
-PCB_REGISTER_ACTIONS(undo_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(undo_action_list, NULL)

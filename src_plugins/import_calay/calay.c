@@ -228,8 +228,6 @@ pcb_action_t calay_action_list[] = {
 	{"LoadCalayFrom", pcb_act_LoadCalayFrom, pcb_acth_LoadCalayFrom, pcb_acts_LoadCalayFrom}
 };
 
-PCB_REGISTER_ACTIONS(calay_action_list, calay_cookie)
-
 int pplg_check_ver_import_calay(int ver_needed) { return 0; }
 
 void pplg_uninit_import_calay(void)
@@ -237,7 +235,6 @@ void pplg_uninit_import_calay(void)
 	pcb_remove_actions_by_cookie(calay_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_calay(void)
 {
 	PCB_API_CHK_VER;

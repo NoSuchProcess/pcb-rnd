@@ -122,8 +122,6 @@ pcb_action_t hyp_action_list[] = {
 	{"LoadhypFrom", pcb_act_LoadhypFrom, pcb_acth_LoadhypFrom, pcb_acts_LoadhypFrom}
 };
 
-PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
-
 /* cheap, partial read of the file to determine if it is worth running the real parser */
 int io_hyp_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE * f)
 {
@@ -167,7 +165,6 @@ void pplg_uninit_io_hyp(void)
 
 }
 
-#include "dolists.h"
 int pplg_init_io_hyp(void)
 {
 	PCB_API_CHK_VER;

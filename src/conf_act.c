@@ -339,4 +339,4 @@ pcb_action_t conf_action_list[] = {
 	{"ChkBuffer", pcb_act_ChkBuffer, pcb_acth_ChkBuffer, pcb_acts_ChkBuffer}
 };
 
-PCB_REGISTER_ACTIONS(conf_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(conf_action_list, NULL)

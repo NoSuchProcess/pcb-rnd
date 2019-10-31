@@ -177,4 +177,4 @@ pcb_action_t find_action_list[] = {
 	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
 };
 
-PCB_REGISTER_ACTIONS(find_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(find_action_list, NULL)

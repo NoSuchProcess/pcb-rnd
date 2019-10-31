@@ -212,8 +212,6 @@ pcb_action_t shand_cmd_action_list[] = {
 
 static const char *shand_cmd_cookie = "shand_cmd plugin";
 
-PCB_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
-
 int pplg_check_ver_shand_cmd(int ver_needed) { return 0; }
 
 void pplg_uninit_shand_cmd(void)
@@ -221,7 +219,6 @@ void pplg_uninit_shand_cmd(void)
 	pcb_remove_actions_by_cookie(shand_cmd_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_shand_cmd(void)
 {
 	PCB_API_CHK_VER;

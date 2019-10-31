@@ -1175,8 +1175,6 @@ pcb_action_t sketch_route_action_list[] = {
 	{"sktransform", pcb_act_sktransform, pcb_acth_sktransform, pcb_acts_sktransform}
 };
 
-PCB_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
-
 int pplg_check_ver_sketch_route(int ver_needed) { return 0; }
 
 void pplg_uninit_sketch_route(void)
@@ -1186,8 +1184,6 @@ void pplg_uninit_sketch_route(void)
 	sketches_uninit();
 }
 
-
-#include "dolists.h"
 int pplg_init_sketch_route(void)
 {
 	PCB_API_CHK_VER;

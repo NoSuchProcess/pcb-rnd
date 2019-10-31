@@ -325,8 +325,6 @@ static int batch_open_popup(pcb_hid_t *hid, const char *menupath)
 }
 
 
-#include "dolists.h"
-
 static pcb_hid_t batch_hid;
 
 int pplg_check_ver_hid_batch(int ver_needed) { return 0; }

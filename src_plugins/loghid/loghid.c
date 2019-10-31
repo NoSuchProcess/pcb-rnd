@@ -110,8 +110,6 @@ static pcb_export_opt_t *loghid_get_export_options(pcb_hid_t *hid, int *n)
 }
 
 
-#include "dolists.h"
-
 int pplg_check_ver_loghid(int ver_needed) { return 0; }
 
 void pplg_uninit_loghid(void)

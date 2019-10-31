@@ -220,4 +220,4 @@ pcb_action_t padstack_action_list[] = {
 	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace}
 };
 
-PCB_REGISTER_ACTIONS(padstack_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(padstack_action_list, NULL)

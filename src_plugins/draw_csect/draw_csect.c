@@ -928,17 +928,12 @@ pcb_action_t draw_csect_action_list[] = {
 	{"DumpCsect", pcb_act_dump_csect, pcb_acth_dump_csect, pcb_acts_dump_csect}
 };
 
-
-PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
-
 int pplg_check_ver_draw_csect(int ver_needed) { return 0; }
 
 void pplg_uninit_draw_csect(void)
 {
 	pcb_remove_actions_by_cookie(draw_csect_cookie);
 }
-
-#include "dolists.h"
 
 int pplg_init_draw_csect(void)
 {

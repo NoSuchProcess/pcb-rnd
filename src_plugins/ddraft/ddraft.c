@@ -473,8 +473,6 @@ static pcb_action_t ddraft_action_list[] = {
 	{"ddraft", pcb_act_ddraft, pcb_acth_ddraft, pcb_acts_ddraft}
 };
 
-PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
-
 /* XPM */
 static const char *ddraft_xpm[] = {
 "21 21 3 1",
@@ -548,7 +546,6 @@ void pplg_uninit_ddraft(void)
 static const conf_hid_callbacks_t conf_cbs_adl = { NULL, cons_gui_confchg, NULL, NULL };
 static const conf_hid_callbacks_t conf_cbs_mode = { NULL, mode_confchg, NULL, NULL };
 
-#include "dolists.h"
 int pplg_init_ddraft(void)
 {
 	conf_native_t *cn;

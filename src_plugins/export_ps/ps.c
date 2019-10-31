@@ -1418,11 +1418,6 @@ pcb_action_t hidps_action_list[] = {
 	{"pscalib", pcb_act_PSCalib, NULL, NULL}
 };
 
-PCB_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
-
-
-#include "dolists.h"
-
 static int ps_inited = 0;
 void ps_ps_init(pcb_hid_t * hid)
 {

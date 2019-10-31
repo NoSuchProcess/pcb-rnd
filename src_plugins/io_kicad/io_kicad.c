@@ -54,9 +54,6 @@ pcb_action_t eeschema_action_list[] = {
 	{"LoadEeschemaFrom", pcb_act_LoadeeschemaFrom, pcb_acth_LoadeeschemaFrom, pcb_acts_LoadeeschemaFrom}
 };
 
-PCB_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie)
-
-
 int pplg_check_ver_io_kicad(int ver_needed) { return 0; }
 
 void pplg_uninit_io_kicad(void)
@@ -65,8 +62,6 @@ void pplg_uninit_io_kicad(void)
 	pcb_remove_actions_by_cookie(kicad_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 }
-
-#include "dolists.h"
 
 int pplg_init_io_kicad(void)
 {

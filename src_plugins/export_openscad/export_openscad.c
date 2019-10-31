@@ -653,10 +653,6 @@ static pcb_action_t scad_action_list[] = {
 	{"ExportScadPoly", pcb_act_scad_export_poly, pcb_acth_scad_export_poly, pcb_acts_scad_export_poly}
 };
 
-PCB_REGISTER_ACTIONS(scad_action_list, openscad_cookie)
-
-#include "dolists.h"
-
 int pplg_check_ver_export_openscad(int ver_needed) { return 0; }
 
 void pplg_uninit_export_openscad(void)

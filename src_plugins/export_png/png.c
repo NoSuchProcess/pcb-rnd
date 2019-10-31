@@ -1389,8 +1389,6 @@ static int png_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-#include "dolists.h"
-
 int pplg_check_ver_export_png(int ver_needed) { return 0; }
 
 void pplg_uninit_export_png(void)

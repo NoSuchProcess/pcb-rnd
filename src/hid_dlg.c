@@ -272,7 +272,7 @@ static pcb_action_t hid_dlg_action_list[] = {
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print}
 };
 
-PCB_REGISTER_ACTIONS(hid_dlg_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(hid_dlg_action_list, NULL)
 
 
 static const char *event_dlg_cookie = "hid_dlg";

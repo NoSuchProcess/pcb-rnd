@@ -323,8 +323,6 @@ pcb_action_t propedit_action_list[] = {
 	{"propget", pcb_act_propget, pcb_acth_propget, pcb_acts_propget}
 };
 
-PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
-
 int pplg_check_ver_propedit(int ver_needed) { return 0; }
 
 void pplg_uninit_propedit(void)
@@ -333,7 +331,6 @@ void pplg_uninit_propedit(void)
 	pcb_remove_actions_by_cookie(propedit_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_propedit(void)
 {
 	PCB_API_CHK_VER;

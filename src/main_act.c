@@ -437,4 +437,4 @@ pcb_action_t main_action_list[] = {
 	{"ExecuteFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
 };
 
-PCB_REGISTER_ACTIONS(main_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(main_action_list, NULL)

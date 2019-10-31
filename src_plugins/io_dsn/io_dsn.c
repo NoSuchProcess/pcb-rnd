@@ -66,7 +66,6 @@ void pplg_uninit_io_dsn(void)
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_dsn);
 }
 
-#include "dolists.h"
 int pplg_init_io_dsn(void)
 {
 	PCB_API_CHK_VER;

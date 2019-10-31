@@ -198,8 +198,6 @@ pcb_action_t tinycad_action_list[] = {
 	{"LoadTinycadFrom", pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
 };
 
-PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
-
 int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
 
 void pplg_uninit_import_tinycad(void)
@@ -207,7 +205,6 @@ void pplg_uninit_import_tinycad(void)
 	pcb_remove_actions_by_cookie(tinycad_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_tinycad(void)
 {
 	PCB_API_CHK_VER;

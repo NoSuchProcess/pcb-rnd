@@ -542,4 +542,4 @@ pcb_action_t rats_patch_action_list[] = {
 	{"SavePatch", pcb_act_SavePatch, pcb_acth_SavePatch, pcb_acts_SavePatch}
 };
 
-PCB_REGISTER_ACTIONS(rats_patch_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(rats_patch_action_list, NULL)

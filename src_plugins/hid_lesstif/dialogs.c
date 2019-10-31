@@ -1187,4 +1187,4 @@ pcb_action_t lesstif_dialog_action_list[] = {
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes}
 };
 
-PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
+PCB_REGISTER_ACTIONS_FUNC(lesstif_dialog_action_list, lesstif_cookie)

@@ -205,9 +205,6 @@ static pcb_action_t cam_action_list[] = {
 	{"cam", pcb_act_cam, pcb_acth_cam, pcb_acts_cam}
 };
 
-PCB_REGISTER_ACTIONS(cam_action_list, cam_cookie)
-
-
 static pcb_export_opt_t *export_cam_get_export_options(pcb_hid_t *hid, int *n)
 {
 	return 0;
@@ -293,7 +290,6 @@ void pplg_uninit_cam(void)
 
 pcb_hid_t export_cam_hid;
 
-#include "dolists.h"
 int pplg_init_cam(void)
 {
 	PCB_API_CHK_VER;

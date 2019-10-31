@@ -283,8 +283,6 @@ pcb_action_t mentor_sch_action_list[] = {
 	{"LoadMentorFrom", pcb_act_LoadMentorFrom, pcb_acth_Loadmentor_schFrom, pcb_acts_Loadmentor_schFrom}
 };
 
-PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
-
 int pplg_check_ver_import_mentor_sch(int ver_needed) { return 0; }
 
 void pplg_uninit_import_mentor_sch(void)
@@ -293,7 +291,6 @@ void pplg_uninit_import_mentor_sch(void)
 	pcb_conf_unreg_fields("plugins/import_mentor_sch/");
 }
 
-#include "dolists.h"
 int pplg_init_import_mentor_sch(void)
 {
 	PCB_API_CHK_VER;

@@ -586,8 +586,6 @@ pcb_action_t shape_action_list[] = {
 	{"shape", pcb_act_shape, pcb_acth_shape, pcb_acts_shape}
 };
 
-PCB_REGISTER_ACTIONS(shape_action_list, pcb_shape_cookie)
-
 int pplg_check_ver_shape(int ver_needed) { return 0; }
 
 void pplg_uninit_shape(void)
@@ -596,8 +594,6 @@ void pplg_uninit_shape(void)
 	pcb_remove_actions_by_cookie(pcb_shape_cookie);
 }
 
-
-#include "dolists.h"
 int pplg_init_shape(void)
 {
 	PCB_API_CHK_VER;

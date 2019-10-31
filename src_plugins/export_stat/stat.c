@@ -385,8 +385,6 @@ static int stat_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-#include "dolists.h"
-
 int pplg_check_ver_export_stat(int ver_needed) { return 0; }
 
 void pplg_uninit_export_stat(void)

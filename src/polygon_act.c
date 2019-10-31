@@ -128,4 +128,4 @@ pcb_action_t polygon_action_list[] = {
 	{"Polygon", pcb_act_Polygon, pcb_acth_Polygon, pcb_acts_Polygon}
 };
 
-PCB_REGISTER_ACTIONS(polygon_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(polygon_action_list, NULL)

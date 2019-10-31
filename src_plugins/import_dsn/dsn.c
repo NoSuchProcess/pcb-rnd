@@ -339,8 +339,6 @@ pcb_action_t dsn_action_list[] = {
 	{"LoadDsnFrom", pcb_act_LoadDsnFrom, pcb_acth_LoadDsnFrom, pcb_acts_LoadDsnFrom}
 };
 
-PCB_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
-
 int pplg_check_ver_import_dsn(int ver_needed) { return 0; }
 
 void pplg_uninit_import_dsn(void)
@@ -349,7 +347,6 @@ void pplg_uninit_import_dsn(void)
 
 }
 
-#include "dolists.h"
 int pplg_init_import_dsn(void)
 {
 	PCB_API_CHK_VER;

@@ -623,4 +623,4 @@ pcb_action_t netlist_action_list[] = {
 	{"claimnet", pcb_act_ClaimNet, pcb_acth_ClaimNet, pcb_acts_ClaimNet}
 };
 
-PCB_REGISTER_ACTIONS(netlist_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(netlist_action_list, NULL)

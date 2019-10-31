@@ -78,8 +78,6 @@ static pcb_action_t autocrop_action_list[] = {
 
 char *autocrop_cookie = "autocrop plugin";
 
-PCB_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie)
-
 int pplg_check_ver_autocrop(int ver_needed) { return 0; }
 
 void pplg_uninit_autocrop(void)
@@ -87,7 +85,6 @@ void pplg_uninit_autocrop(void)
 	pcb_remove_actions_by_cookie(autocrop_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_autocrop(void)
 {
 	PCB_API_CHK_VER;

@@ -2196,8 +2196,6 @@ pcb_action_t puller_action_list[] = {
 
 static const char *puller_cookie = "puller plugin";
 
-PCB_REGISTER_ACTIONS(puller_action_list, puller_cookie)
-
 int pplg_check_ver_puller(int ver_needed) { return 0; }
 
 void pplg_uninit_puller(void)
@@ -2205,7 +2203,6 @@ void pplg_uninit_puller(void)
 	pcb_remove_actions_by_cookie(puller_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_puller(void)
 {
 	PCB_API_CHK_VER;

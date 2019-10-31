@@ -189,8 +189,6 @@ pcb_action_t fpcb_nl_action_list[] = {
 	{"LoadFpcbnlFrom", pcb_act_LoadFpcbnlFrom, pcb_acth_LoadFpcbnlFrom, pcb_acts_LoadFpcbnlFrom}
 };
 
-PCB_REGISTER_ACTIONS(fpcb_nl_action_list, fpcb_nl_cookie)
-
 int pplg_check_ver_import_fpcb_nl(int ver_needed) { return 0; }
 
 void pplg_uninit_import_fpcb_nl(void)
@@ -198,7 +196,6 @@ void pplg_uninit_import_fpcb_nl(void)
 	pcb_remove_actions_by_cookie(fpcb_nl_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_fpcb_nl(void)
 {
 	PCB_API_CHK_VER;

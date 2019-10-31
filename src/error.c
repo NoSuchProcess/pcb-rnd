@@ -255,4 +255,4 @@ pcb_action_t log_action_list[] = {
 	{"Log", pcb_act_Log, pcb_acth_Log, pcb_acts_Log}
 };
 
-PCB_REGISTER_ACTIONS(log_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(log_action_list, NULL)

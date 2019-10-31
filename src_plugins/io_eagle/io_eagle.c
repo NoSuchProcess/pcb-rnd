@@ -64,8 +64,6 @@ void pplg_uninit_io_eagle(void)
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_dru);
 }
 
-#include "dolists.h"
-
 int pplg_init_io_eagle(void)
 {
 	PCB_API_CHK_VER;

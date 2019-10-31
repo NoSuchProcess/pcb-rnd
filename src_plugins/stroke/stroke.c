@@ -149,8 +149,6 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 pcb_action_t stroke_action_list[] = {
 	{"stroke", pcb_act_stroke, pcb_acth_stroke, pcb_acts_stroke}
 };
-PCB_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)
-
 
 int pplg_check_ver_stroke(int ver_needed) { return 0; }
 
@@ -162,8 +160,6 @@ int pplg_uninit_stroke(void)
 	return 0;
 }
 
-
-#include "dolists.h"
 int pplg_init_stroke(void)
 {
 	PCB_API_CHK_VER;

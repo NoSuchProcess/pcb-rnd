@@ -368,9 +368,6 @@ void pplg_uninit_renumber(void)
 	pcb_remove_actions_by_cookie(renumber_cookie);
 }
 
-PCB_REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
-
-#include "dolists.h"
 int pplg_init_renumber(void)
 {
 	PCB_API_CHK_VER;

@@ -313,8 +313,6 @@ pcb_action_t ltspice_action_list[] = {
 	{"LoadLtspiceFrom", pcb_act_LoadLtspiceFrom, pcb_acth_LoadLtspiceFrom, pcb_acts_LoadLtspiceFrom}
 };
 
-PCB_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
-
 int pplg_check_ver_import_ltspice(int ver_needed) { return 0; }
 
 void pplg_uninit_import_ltspice(void)
@@ -322,7 +320,6 @@ void pplg_uninit_import_ltspice(void)
 	pcb_remove_actions_by_cookie(ltspice_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_ltspice(void)
 {
 	PCB_API_CHK_VER;

@@ -377,8 +377,6 @@ pcb_action_t oldactions_action_list[] = {
 
 static const char *oldactions_cookie = "oldactions plugin";
 
-PCB_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
-
 int pplg_check_ver_oldactions(int ver_needed) { return 0; }
 
 void pplg_uninit_oldactions(void)
@@ -386,7 +384,6 @@ void pplg_uninit_oldactions(void)
 	pcb_remove_actions_by_cookie(oldactions_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_oldactions(void)
 {
 	PCB_API_CHK_VER;

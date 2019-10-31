@@ -629,8 +629,6 @@ static pcb_action_t asm_action_list[] = {
 	{"asm", pcb_act_asm, pcb_acth_asm, pcb_acts_asm}
 };
 
-PCB_REGISTER_ACTIONS(asm_action_list, asm_cookie)
-
 int pplg_check_ver_asm(int ver_needed) { return 0; }
 
 void pplg_uninit_asm(void)
@@ -640,8 +638,6 @@ void pplg_uninit_asm(void)
 	pcb_conf_unreg_fields("plugins/asm1/");
 }
 
-
-#include "dolists.h"
 int pplg_init_asm(void)
 {
 	PCB_API_CHK_VER;

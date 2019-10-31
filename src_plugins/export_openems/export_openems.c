@@ -830,10 +830,6 @@ static pcb_action_t openems_action_list[] = {
 	{"OpenemsExcitation", pcb_act_OpenemsExcitation, pcb_acth_OpenemsExcitation, pcb_acts_OpenemsExcitation}
 };
 
-PCB_REGISTER_ACTIONS(openems_action_list, openems_cookie)
-
-#include "dolists.h"
-
 int pplg_check_ver_export_openems(int ver_needed) { return 0; }
 
 void pplg_uninit_export_openems(void)

@@ -182,8 +182,6 @@ pcb_action_t tedax_action_list[] = {
 	{"SaveTedax", pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
 };
 
-PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
-
 static int io_tedax_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 {
 	return tedax_fp_load(Ptr, name, 0, NULL, 0);
@@ -254,7 +252,6 @@ void pplg_uninit_io_tedax(void)
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
 }
 
-#include "dolists.h"
 int pplg_init_io_tedax(void)
 {
 	PCB_API_CHK_VER;

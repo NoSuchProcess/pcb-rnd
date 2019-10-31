@@ -158,8 +158,6 @@ pcb_action_t mucs_action_list[] = {
 	{"LoadMucsFrom", pcb_act_LoadMucsFrom, pcb_acth_LoadMucsFrom, pcb_acts_LoadMucsFrom}
 };
 
-PCB_REGISTER_ACTIONS(mucs_action_list, mucs_cookie)
-
 int pplg_check_ver_import_mucs(int ver_needed) { return 0; }
 
 void pplg_uninit_import_mucs(void)
@@ -167,7 +165,6 @@ void pplg_uninit_import_mucs(void)
 	pcb_remove_actions_by_cookie(mucs_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_mucs(void)
 {
 	PCB_API_CHK_VER;

@@ -440,9 +440,6 @@ pcb_action_t serpentine_action_list[] = {
   {"Serpentine", pcb_act_serpentine, pcb_acth_serpentine, pcb_acts_serpentine}
 };
 
-
-PCB_REGISTER_ACTIONS(serpentine_action_list, serpentine_cookie)
-
 int pplg_check_ver_serpentine(int ver_needed) { return 0; }
 
 void pplg_uninit_serpentine(void)
@@ -452,7 +449,6 @@ void pplg_uninit_serpentine(void)
 	pcb_conf_unreg_fields("plugins/serpentine/");
 }
 
-#include "dolists.h"
 int pplg_init_serpentine(void)
 {
 	PCB_API_CHK_VER;

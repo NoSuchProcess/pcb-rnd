@@ -94,8 +94,6 @@ pcb_action_t dialogs_action_list[] = {
 
 static const char *dialogs_cookie = "dialogs plugin";
 
-PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
-
 int pplg_check_ver_dialogs(int ver_needed) { return 0; }
 
 void pplg_uninit_dialogs(void)
@@ -110,8 +108,6 @@ void pplg_uninit_dialogs(void)
 	pcb_dlg_fontsel_uninit();
 	pcb_conf_unreg_fields("plugins/dialogs/");
 }
-
-#include "dolists.h"
 
 int pplg_init_dialogs(void)
 {

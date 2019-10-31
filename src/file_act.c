@@ -531,4 +531,4 @@ pcb_action_t file_action_list[] = {
 	{"Quit", pcb_act_Quit, pcb_acth_Quit, pcb_acts_Quit}
 };
 
-PCB_REGISTER_ACTIONS(file_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(file_action_list, NULL)

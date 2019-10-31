@@ -230,8 +230,6 @@ static pcb_action_t smartdisperse_action_list[] = {
 
 char *smartdisperse_cookie = "smartdisperse plugin";
 
-PCB_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie)
-
 int pplg_check_ver_smartdisperse(int ver_needed) { return 0; }
 
 void pplg_uninit_smartdisperse(void)
@@ -239,7 +237,6 @@ void pplg_uninit_smartdisperse(void)
 	pcb_remove_actions_by_cookie(smartdisperse_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_smartdisperse(void)
 {
 	PCB_API_CHK_VER;

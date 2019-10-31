@@ -420,8 +420,6 @@ int script_oneliner(const char *lang, const char *src)
 
 char *script_cookie = "script plugin";
 
-PCB_REGISTER_ACTIONS(script_action_list, script_cookie)
-
 int pplg_check_ver_script(int ver_needed) { return 0; }
 
 void pplg_uninit_script(void)
@@ -445,7 +443,6 @@ void pplg_uninit_script(void)
 #endif
 }
 
-#include "dolists.h"
 int pplg_init_script(void)
 {
 	PCB_API_CHK_VER;

@@ -910,8 +910,6 @@ static int gcode_usage(pcb_hid_t *hid, const char *topic)
 
 /* *** Miscellaneous ******************************************************* */
 
-#include "dolists.h"
-
 pcb_hid_t gcode_hid;
 
 int pplg_check_ver_export_gcode(int ver_needed) { return 0; }

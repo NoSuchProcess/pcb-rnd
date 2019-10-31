@@ -174,4 +174,4 @@ pcb_action_t font_action_list[] = {
 	{"SaveFontTo", pcb_act_save_font_to, pcb_acth_save_font_to, pcb_acts_save_font_to}
 };
 
-PCB_REGISTER_ACTIONS(font_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(font_action_list, NULL)

@@ -345,8 +345,6 @@ static pcb_action_t extedit_action_list[] = {
 
 static const char *extedit_cookie = "extedit plugin";
 
-PCB_REGISTER_ACTIONS(extedit_action_list, extedit_cookie)
-
 int pplg_check_ver_extedit(int ver_needed) { return 0; }
 
 void pplg_uninit_extedit(void)
@@ -354,7 +352,6 @@ void pplg_uninit_extedit(void)
 	pcb_remove_actions_by_cookie(extedit_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_extedit(void)
 {
 	PCB_API_CHK_VER;

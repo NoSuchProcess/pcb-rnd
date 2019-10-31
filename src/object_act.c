@@ -1052,4 +1052,4 @@ pcb_action_t object_action_list[] = {
 	{"Rotate90", pcb_act_Rotate90, pcb_acth_Rotate90, pcb_acts_Rotate90}
 };
 
-PCB_REGISTER_ACTIONS(object_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(object_action_list, NULL)

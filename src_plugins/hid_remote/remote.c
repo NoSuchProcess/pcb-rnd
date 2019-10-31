@@ -380,9 +380,6 @@ static void remote_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_
 {
 }
 
-#include "dolists.h"
-
-
 int pplg_check_ver_hid_remote(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_remote(void)

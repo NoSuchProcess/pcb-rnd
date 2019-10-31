@@ -484,9 +484,6 @@ pcb_action_t query_action_list[] = {
 	{"QueryCompileField", pcb_act_QueryCompileField, pcb_acth_QueryCompileField, pcb_acts_QueryCompileField}
 };
 
-PCB_REGISTER_ACTIONS(query_action_list, NULL)
-
-#include "dolists.h"
 void query_action_reg(const char *cookie)
 {
 	PCB_REGISTER_ACTIONS(query_action_list, cookie)

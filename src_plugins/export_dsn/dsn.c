@@ -608,7 +608,6 @@ void pplg_uninit_export_dsn(void)
 	pcb_export_remove_opts_by_cookie(dsn_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_export_dsn(void)
 {
 	PCB_API_CHK_VER;

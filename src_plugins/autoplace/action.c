@@ -60,8 +60,6 @@ pcb_action_t autoplace_action_list[] = {
 	{"AutoPlaceSelected", pcb_act_AutoPlaceSelected, autoplace_help, autoplace_syntax}
 };
 
-PCB_REGISTER_ACTIONS(autoplace_action_list, autoplace_cookie)
-
 int pplg_check_ver_autoplace(int ver_needed) { return 0; }
 
 void pplg_uninit_autoplace(void)
@@ -69,7 +67,6 @@ void pplg_uninit_autoplace(void)
 	pcb_remove_actions_by_cookie(autoplace_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_autoplace(void)
 {
 	PCB_API_CHK_VER;

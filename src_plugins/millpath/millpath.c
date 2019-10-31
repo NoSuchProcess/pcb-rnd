@@ -57,8 +57,6 @@ pcb_action_t millpath_action_list[] = {
 	{"mill", pcb_act_mill, pcb_acth_mill, pcb_acts_mill}
 };
 
-PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
-
 int pplg_check_ver_millpath(int ver_needed) { return 0; }
 
 void pplg_uninit_millpath(void)
@@ -67,7 +65,6 @@ void pplg_uninit_millpath(void)
 }
 
 
-#include "dolists.h"
 int pplg_init_millpath(void)
 {
 	PCB_API_CHK_VER;

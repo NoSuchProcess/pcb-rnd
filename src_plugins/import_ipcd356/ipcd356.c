@@ -436,7 +436,6 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 pcb_action_t import_ipcd356_action_list[] = {
 	{"LoadIpc356From", pcb_act_LoadIpc356From, pcb_acth_LoadIpc356From, pcb_acts_LoadIpc356From}
 };
-PCB_REGISTER_ACTIONS(import_ipcd356_action_list, ipcd356_cookie)
 
 int pplg_check_ver_import_ipcd356(int ver_needed) { return 0; }
 
@@ -445,7 +444,6 @@ void pplg_uninit_import_ipcd356(void)
 	pcb_remove_actions_by_cookie(ipcd356_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_ipcd356(void)
 {
 	PCB_API_CHK_VER;

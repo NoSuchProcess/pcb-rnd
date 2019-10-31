@@ -71,9 +71,6 @@ pcb_action_t hid_common_action_list[] = {
 
 static const char *hid_common_cookie = "lib_hid_common plugin";
 
-PCB_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
-
-
 int pplg_check_ver_lib_hid_common(int ver_needed) { return 0; }
 
 static conf_hid_id_t conf_id;
@@ -93,8 +90,6 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_conf_unreg_fields("plugins/lib_hid_common/");
 	pcb_dlg_log_uninit();
 }
-
-#include "dolists.h"
 
 int pplg_init_lib_hid_common(void)
 {

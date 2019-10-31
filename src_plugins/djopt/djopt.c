@@ -2565,8 +2565,6 @@ pcb_action_t djopt_action_list[] = {
 	{"djopt", pcb_act_DJopt, pcb_acth_DJopt, pcb_acts_DJopt}
 };
 
-PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
-
 int pplg_check_ver_djopt(int ver_needed) { return 0; }
 
 void pplg_uninit_djopt(void)
@@ -2575,7 +2573,6 @@ void pplg_uninit_djopt(void)
 	pcb_conf_unreg_fields("plugins/djopt/");
 }
 
-#include "dolists.h"
 int pplg_init_djopt(void)
 {
 	PCB_API_CHK_VER;

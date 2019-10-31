@@ -591,8 +591,6 @@ static pcb_action_t distaligntext_action_list[] = {
 
 char *distaligntext_cookie = "distaligntext plugin";
 
-PCB_REGISTER_ACTIONS(distaligntext_action_list, distaligntext_cookie)
-
 int pplg_check_ver_distaligntext(int ver_needed) { return 0; }
 
 void pplg_uninit_distaligntext(void)
@@ -600,7 +598,6 @@ void pplg_uninit_distaligntext(void)
 	pcb_remove_actions_by_cookie(distaligntext_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_distaligntext(void)
 {
 	PCB_API_CHK_VER;

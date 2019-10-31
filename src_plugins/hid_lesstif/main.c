@@ -2846,8 +2846,6 @@ static int lesstif_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-#include "dolists.h"
-
 static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 {
 	if (!lesstif_active)
@@ -3150,10 +3148,10 @@ static void lesstif_reg_attrs(void)
 
 static void lesstif_begin(void)
 {
-	PCB_REGISTER_ACTIONS(lesstif_library_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS_CALL(lesstif_library_action_list, lesstif_cookie)
 	lesstif_reg_attrs();
-	PCB_REGISTER_ACTIONS(lesstif_dialog_action_list, lesstif_cookie)
-	PCB_REGISTER_ACTIONS(lesstif_netlist_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS_CALL(lesstif_dialog_action_list, lesstif_cookie)
+	PCB_REGISTER_ACTIONS_CALL(lesstif_netlist_action_list, lesstif_cookie)
 
 	lesstif_active = 1;
 }

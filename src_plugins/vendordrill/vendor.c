@@ -614,8 +614,6 @@ pcb_action_t vendor_action_list[] = {
 	{"LoadVendorFrom", pcb_act_LoadVendorFrom, pcb_acth_LoadVendorFrom, pcb_acts_LoadVendorFrom}
 };
 
-PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
-
 static char **vendor_free_vect(char **lst, int *len)
 {
 	if (lst != NULL) {
@@ -665,7 +663,6 @@ void pplg_uninit_vendordrill(void)
 	pcb_conf_unreg_fields("plugins/vendor/");
 }
 
-#include "dolists.h"
 int pplg_init_vendordrill(void)
 {
 	PCB_API_CHK_VER;

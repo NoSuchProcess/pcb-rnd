@@ -130,7 +130,6 @@ void pplg_uninit_import_pxm_gd(void)
 	pcb_pixmap_unreg_import_all(import_pxm_gd_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_pxm_gd(void)
 {
 	PCB_API_CHK_VER;

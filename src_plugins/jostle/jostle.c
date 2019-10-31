@@ -515,8 +515,6 @@ static pcb_action_t jostle_action_list[] = {
 
 char *jostle_cookie = "jostle plugin";
 
-PCB_REGISTER_ACTIONS(jostle_action_list, jostle_cookie)
-
 int pplg_check_ver_jostle(int ver_needed) { return 0; }
 
 void pplg_uninit_jostle(void)
@@ -524,7 +522,6 @@ void pplg_uninit_jostle(void)
 	pcb_remove_actions_by_cookie(jostle_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_jostle(void)
 {
 	PCB_API_CHK_VER;

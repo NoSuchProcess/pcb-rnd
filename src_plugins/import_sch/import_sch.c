@@ -378,8 +378,6 @@ pcb_action_t import_sch_action_list[] = {
 	{"Import", pcb_act_Import, pcb_acth_Import, pcb_acts_Import}
 };
 
-PCB_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
-
 int pplg_check_ver_import_sch(int ver_needed) { return 0; }
 
 void pplg_uninit_import_sch(void)
@@ -388,7 +386,6 @@ void pplg_uninit_import_sch(void)
 	pcb_conf_unreg_fields("plugins/import_sch/");
 }
 
-#include "dolists.h"
 int pplg_init_import_sch(void)
 {
 	char *tmp;

@@ -46,16 +46,12 @@ static pcb_action_t stl_action_list[] = {
 	{"ExportSTL", pcb_act_ExportSTL, pcb_acth_ExportSTL, pcb_acts_ExportSTL}
 };
 
-PCB_REGISTER_ACTIONS(stl_action_list, stl_cookie)
-
 int pplg_check_ver_export_stl(int ver_needed) { return 0; }
 
 void pplg_uninit_export_stl(void)
 {
 	pcb_remove_actions_by_cookie(stl_cookie);
 }
-
-#include "dolists.h"
 
 int pplg_init_export_stl(void)
 {

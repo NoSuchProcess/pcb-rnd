@@ -241,4 +241,4 @@ pcb_action_t select_action_list[] = {
 	{"Unselect", pcb_act_Unselect, pcb_acth_Unselect, pcb_acts_Unselect}
 };
 
-PCB_REGISTER_ACTIONS(select_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(select_action_list, NULL)

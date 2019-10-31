@@ -75,8 +75,6 @@ pcb_action_t autoroute_action_list[] = {
 	{"AutoRoute", pcb_act_AutoRoute, pcb_acth_AutoRoute, pcb_acts_AutoRoute},
 };
 
-PCB_REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
-
 int pplg_check_ver_autoroute(int ver_needed) { return 0; }
 
 void pplg_uninit_autoroute(void)
@@ -84,7 +82,6 @@ void pplg_uninit_autoroute(void)
 	pcb_remove_actions_by_cookie(autoroute_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_autoroute(void)
 {
 	PCB_API_CHK_VER;

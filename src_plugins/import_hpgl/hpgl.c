@@ -175,8 +175,6 @@ pcb_action_t hpgl_action_list[] = {
 	{"LoadHpglFrom", pcb_act_LoadHpglFrom, pcb_acth_LoadHpglFrom, pcb_acts_LoadHpglFrom}
 };
 
-PCB_REGISTER_ACTIONS(hpgl_action_list, hpgl_cookie)
-
 int pplg_check_ver_import_hpgl(int ver_needed) { return 0; }
 
 void pplg_uninit_import_hpgl(void)
@@ -184,7 +182,6 @@ void pplg_uninit_import_hpgl(void)
 	pcb_remove_actions_by_cookie(hpgl_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_import_hpgl(void)
 {
 	PCB_API_CHK_VER;

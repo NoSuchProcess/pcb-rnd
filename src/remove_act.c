@@ -112,4 +112,4 @@ pcb_action_t remove_action_list[] = {
 	{"RemoveSelected", pcb_act_RemoveSelected, pcb_acth_RemoveSelected, pcb_acts_RemoveSelected}
 };
 
-PCB_REGISTER_ACTIONS(remove_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(remove_action_list, NULL)

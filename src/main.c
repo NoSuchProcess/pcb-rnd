@@ -250,9 +250,6 @@ static void InitPaths(char *argv0)
 /* ----------------------------------------------------------------------
  * main program
  */
-
-#include "dolists.h"
-
 static void gui_support_plugins(int load)
 {
 	static int loaded = 0;

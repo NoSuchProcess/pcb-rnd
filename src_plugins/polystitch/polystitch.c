@@ -121,8 +121,6 @@ static pcb_action_t polystitch_action_list[] = {
 
 char *polystitch_cookie = "polystitch plugin";
 
-PCB_REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie)
-
 int pplg_check_ver_polystitch(int ver_needed) { return 0; }
 
 void pplg_uninit_polystitch(void)
@@ -130,7 +128,6 @@ void pplg_uninit_polystitch(void)
 	pcb_remove_actions_by_cookie(polystitch_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_polystitch(void)
 {
 	PCB_API_CHK_VER;

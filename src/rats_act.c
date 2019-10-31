@@ -201,4 +201,4 @@ pcb_action_t rats_action_list[] = {
 	{"DeleteRats", pcb_act_DeleteRats, pcb_acth_DeleteRats, pcb_acts_DeleteRats}
 };
 
-PCB_REGISTER_ACTIONS(rats_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(rats_action_list, NULL)

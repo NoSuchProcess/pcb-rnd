@@ -308,16 +308,12 @@ static pcb_action_t oldconn_action_list[] = {
 	{"ExportOldConn", pcb_act_ExportOldConn, pcb_acth_ExportOldConn, pcb_acts_ExportOldConn}
 };
 
-PCB_REGISTER_ACTIONS(oldconn_action_list, oldconn_cookie)
-
 int pplg_check_ver_export_oldconn(int ver_needed) { return 0; }
 
 void pplg_uninit_export_oldconn(void)
 {
 	pcb_remove_actions_by_cookie(oldconn_cookie);
 }
-
-#include "dolists.h"
 
 int pplg_init_export_oldconn(void)
 {

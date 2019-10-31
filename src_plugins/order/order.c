@@ -81,8 +81,6 @@ static pcb_action_t order_action_list[] = {
 	{"OrderPCB", pcb_act_OrderPCB, pcb_acth_OrderPCB, pcb_acts_OrderPCB}
 };
 
-PCB_REGISTER_ACTIONS(order_action_list, order_cookie)
-
 static void order_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	char *end = path + strlen(path);
@@ -209,8 +207,6 @@ void pplg_uninit_order(void)
 	pcb_conf_unreg_file(ORDER_CONF_FN, order_conf_internal);
 	pcb_conf_unreg_fields("plugins/order/");
 }
-
-#include "dolists.h"
 
 int pplg_init_order(void)
 {

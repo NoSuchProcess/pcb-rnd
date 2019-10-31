@@ -215,8 +215,6 @@ pcb_action_t acompnet_action_list[] = {
 
 static const char *acompnet_cookie = "acompnet plugin";
 
-PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
-
 int pplg_check_ver_acompnet(int ver_needed) { return 0; }
 
 void pplg_uninit_acompnet(void)
@@ -225,7 +223,6 @@ void pplg_uninit_acompnet(void)
 	pcb_uilayer_free_all_cookie(acompnet_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_acompnet(void)
 {
 	static pcb_color_t clr;

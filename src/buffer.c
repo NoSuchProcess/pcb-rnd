@@ -1038,4 +1038,4 @@ pcb_action_t buffer_action_list[] = {
 	{"PasteBuffer", pcb_act_PasteBuffer, pcb_acth_PasteBuffer, pcb_acts_PasteBuffer}
 };
 
-PCB_REGISTER_ACTIONS(buffer_action_list, NULL)
+PCB_REGISTER_ACTIONS_FUNC(buffer_action_list, NULL)

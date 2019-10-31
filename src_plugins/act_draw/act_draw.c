@@ -433,8 +433,6 @@ pcb_action_t act_draw_action_list[] = {
 
 static const char *act_draw_cookie = "act_draw";
 
-PCB_REGISTER_ACTIONS(act_draw_action_list, act_draw_cookie)
-
 int pplg_check_ver_act_draw(int ver_needed) { return 0; }
 
 void pplg_uninit_act_draw(void)
@@ -442,7 +440,6 @@ void pplg_uninit_act_draw(void)
 	pcb_remove_actions_by_cookie(act_draw_cookie);
 }
 
-#include "dolists.h"
 int pplg_init_act_draw(void)
 {
 	PCB_API_CHK_VER;

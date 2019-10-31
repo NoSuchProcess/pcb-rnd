@@ -52,6 +52,8 @@ END {
 			sub("[)].*[\\n\\r]*", "", vname)
 			print "extern HID_Action " vname "[];"
 		}
+		sub("PCB_REGISTER_ACTIONS_FUNC", "PCB_REGISTER_ACTIONS_CALL", LIST[n])
+
 		print LIST[n]
 		if (TYPE[n] == "gui")
 			print "}"
