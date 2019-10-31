@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 + CLEANUP/BUG: globalconst.h: PCB_MIN_THICKNESS shall be 0 - removed all artificial limits on object thickness ml:3351 [report: Majenko]
-
++ BUG: The 'As Drawn' polygon contour {m d d} is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node [report: Majenko]
@@ -12,8 +12,6 @@
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 	- CLEANUP: remove attrib.o from the hidlib objects
-- CLEANUP/BUG: The 'As Drawn' polygon contour is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
-	-> need a new rtree that holds the polygons that have ->clipped == NULL for this purpose
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
 - CLEANUP: lesstif DAD support for top window docks [report: Igor2]
