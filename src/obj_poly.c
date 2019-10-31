@@ -1321,8 +1321,14 @@ pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 	if (pcb_hidden_floater((pcb_any_obj_t*)b) || pcb_partial_export((pcb_any_obj_t*)b, i))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
-	if (polygon->Clipped == NULL)
+	if (polygon->Clipped == NULL) {
+		/* if poly is cleared out of existence, it may still have some annotations
+		   visible. Do it the cheap way: if it has term, it's not cleared, so the
+		   only thing affected is the as-drawn contour */
+		if (conf_core.editor.as_drawn_poly)
+			pcb_draw_annotation_add((pcb_any_obj_t *)polygon);
 		return PCB_R_DIR_NOT_FOUND;
+	}
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent))
 		return PCB_R_DIR_NOT_FOUND;
