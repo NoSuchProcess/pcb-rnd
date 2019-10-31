@@ -92,6 +92,9 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, const char *termid, pcb_any_obj_t
 	vtp0_t *v;
 	size_t n;
 
+	if (termid == NULL)
+		return PCB_TERM_ERR_TERM_NOT_FOUND;
+
 	v = htsp_get(terminals, termid);
 	if (v == NULL)
 		return PCB_TERM_ERR_TERM_NOT_FOUND;
