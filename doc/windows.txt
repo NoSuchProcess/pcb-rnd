@@ -14,7 +14,7 @@ time in compiling windows releases.
 1. download the binary pack and install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Download the zop from http://igor2.repo.hu/tmp/pcb-rnd-w32.zip
+Download the zip from http://igor2.repo.hu/tmp/pcb-rnd-w32.zip
 
 Unpack the zip anywhere, and run pcb-rnd from bin:
 - start a shell (cmd.exe), cd to where you unpacked it, cd bin, pcb-rnd
