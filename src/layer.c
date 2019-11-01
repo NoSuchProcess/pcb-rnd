@@ -123,11 +123,6 @@ void pcb_layer_free_fields(pcb_layer_t *layer)
 {
 	if (!layer->is_bound)
 		pcb_attribute_free(&layer->Attributes);
-	PCB_TEXT_LOOP(layer);
-	{
-		free(text->TextString);
-	}
-	PCB_END_LOOP;
 
 	list_map0(&layer->Line, pcb_line_t, pcb_line_free);
 	list_map0(&layer->Arc,  pcb_arc_t,  pcb_arc_free);

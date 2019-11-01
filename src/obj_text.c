@@ -106,6 +106,7 @@ void pcb_text_free(pcb_text_t *text)
 {
 	pcb_attribute_free(&text->Attributes);
 	pcb_text_unreg(text);
+	free(text->TextString);
 	free(text);
 }
 
