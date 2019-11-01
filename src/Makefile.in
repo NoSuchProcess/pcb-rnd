@@ -485,7 +485,8 @@ buildin.hidlib.h: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 	$(PUPLUG) buildin.h > buildin.hidlib.h
 
 $(PUPLUG):
-	cd ../src_3rd/puplug && make
+	cd ../src_3rd/puplug && make libpuplug.a
+	cd ../src_3rd/puplug && make util/puplug CC=$(HOSTCC)
 
 ../src_3rd/libminuid/libminuid.a: ../src_3rd/libminuid/libminuid.c ../src_3rd/libminuid/libminuid.h
 	cd  ../src_3rd/libminuid && $(MAKE) libminuid.a LIBMINUID_CFLAGS="$(LIBMINUID_CFLAGS)" LIBMINUID_LDFLAGS="$(LIBMINUID_LDFLAGS)"
