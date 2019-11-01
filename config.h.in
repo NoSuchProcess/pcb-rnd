@@ -170,10 +170,10 @@ print [@
 #define HOST "@sys/sysid@"
 
 /* Directory separator char */
-#define PCB_DIR_SEPARATOR_C '@sys/path_sep@'
+#define PCB_DIR_SEPARATOR_C '@sys/path_sep_escaped@'
 
 /* Directory separator string */
-#define PCB_DIR_SEPARATOR_S "@sys/path_sep@"
+#define PCB_DIR_SEPARATOR_S "@sys/path_sep_escaped@"
 
 /* Search path separator string */
 #define PCB_PATH_DELIMETER ":"
