@@ -154,9 +154,9 @@ void pcb_loop_all(pcb_board_t *pcb, void *ctx,
 void pcb_data_uninit(pcb_data_t *data)
 {
 	pcb_layer_t *layer;
-	int i, subc;
+	int i, is_subc;
 
-	subc = (data->parent_type == PCB_PARENT_SUBC);
+	is_subc = (data->parent_type == PCB_PARENT_SUBC);
 
 	PCB_SUBC_LOOP(data);
 	{
@@ -169,7 +169,7 @@ void pcb_data_uninit(pcb_data_t *data)
 	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++)
 		pcb_layer_free_fields(layer);
 
-	if (!subc) {
+	if (!is_subc) {
 		if (data->subc_tree)
 			pcb_r_destroy_tree(&data->subc_tree);
 		if (data->padstack_tree)
