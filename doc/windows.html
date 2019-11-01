@@ -1,0 +1,92 @@
+<html>
+<body>
+
+<h1> pcb-rnd on windows </h1>
+
+<p>We have a pack in beta testing. It should work on any windows version
+from 7 up. (It does _not_ work on XP.)
+
+<p><b>IMPORTANT:</b> if you use the windows version of pcb-rnd, please send me
+an email to:   pcb-rnd-win (at) igor2.repo.hu
+
+<p>I will use this for sampling user demand. If there are no emails, that
+means there are no windows users which means it is not worth investing
+time in compiling windows releases.
+
+<h2> 1. download the binary pack and install </h2>
+
+<p>Download the zip from http://igor2.repo.hu/tmp/pcb-rnd-w32.zip
+
+<p>Unpack the zip anywhere, and run pcb-rnd from bin:
+<ul>
+	<li> start a shell (cmd.exe), cd to where you unpacked it, cd bin, pcb-rnd
+	<li> create a shortcut icon (TODO: what's needed for the exe to find the dlls?)
+</ul>
+
+<p>
+<b>IMPORTANT:</b> Please make sure there's no space in the full path where you unpack.
+
+
+<h2>2. limitations</h2>
+
+<p>pcb-rnd is a package designed for UNIX. The windows port does not
+change the UNIX aspect of pcb-rnd, thus a few things are different from
+a normal windows application:
+<ul>
+ <li> pcb-rnd works from config files, not from the registry
+ <li> pcb-rnd will figure the users home directory and will look for .pcb-rnd/
+      in there for the user configs
+ <li> if anything breaks, try to run pcb-rnd from the command line: run a cmd.exe
+      and cd to the bin dir within the installation root and run pcb-rnd from
+      there watching what it prints to the console.
+</ul>
+
+<p>The usual pcb-rnd policies apply:
+<ul>
+ <li> pcb-rnd speaks English - there's no internalization, no unicode or utf
+ <li> some keyboard shortcuts may not work if your keyboard layout is not set
+      to English
+ <li> pcb-rnd uses the keyboard and the command line heavily
+</ul>
+
+<p>There are a few limitations specific to the current windows pack:
+<ul>
+ <li> there can not be space in the path where the pack is unzipped
+ <li> UNC paths (\\server\something) may fail randomly
+ <li> it does not support opengl, it is always doing software rendering
+ <li> some of the export formats (e.g. png) are not yet supported on windows
+ <li> there is no fp_wget support because there's no wget in the pack
+      (may work with busybox wget, busybox shipped in the pack, testing required)
+ <li> gsch2pcb-rnd is not supported
+ <li> import schematics with gnetlist has not been tested yet
+      (importing tEDAx netlist should work)
+ <li> the windows port may have some overhead; if you find pcb-rnd slow,
+      please try it on Linux.
+</ul>
+
+<h2>3. Cross compilation from Linux to win32</h2>
+
+<b>(developers may need this, if you are an user, it is safe to skip.)</b>
+
+<p>There is an svn repo that hosts all the sources for the dependencies. From
+this, the binary DLLs can be compiled (this step may need some manual
+intervention, autotools is not very nice for cross compilation). The result
+is the "ultimate hidlib dependency pack" (uhdp), 90+ megabytes of dlls
+with gtk, glib, gettext and whatnot.
+
+<p>The uhdp has two versions: the smaller one, with the dlls only, is part
+of the pack downloaded by end users for installation. The bigger one,
+called the developer pack, also contains the installed headers, .a and
+.la files and can be used as "sysroot" for cross-compiling pcb-rnd
+(or other software) against.
+
+<p>The uhdp can be donwloaded from http://repo.hu/projects/hidlib.w32
+
+<p>The normal process is:
+<ul>
+ <li> download and unpack the binary developer vesion of uhdp (so you don't need
+      to spend long hours compiling all the deps)
+ <li> install mingw for the cross compilation
+ <li> configure pcb-rnd for cross compilation with the uhdp path on -I and -L
+</ul>
+
