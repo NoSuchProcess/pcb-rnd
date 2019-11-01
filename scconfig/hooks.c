@@ -435,6 +435,10 @@ int hook_detect_target()
 {
 	int need_gtklibs = 0, want_glib = 0, want_gtk, want_gtk2, want_gd, want_stroke, need_inl = 0, want_xml2, has_gtk2 = 0, want_gl, want_freetype2, want_fuse;
 	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
+	int can_live_without_dynlib = 0; /* special optional exception for windows cross compilation for now */
+
+	if (istrue(get("/target/pcb/can_live_without_dynlib")))
+		can_live_without_dynlib = 1;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk    = want_gtk2; /* plus |gtkN */
@@ -514,8 +518,13 @@ int hook_detect_target()
 
 	if (require("libs/ldl",  0, 0) != 0) {
 		if (require("libs/LoadLibrary",  0, 0) != 0) {
-			report_repeat("\nERROR: no dynamic linking found on your system. Can not compile pcb-rnd.\n\n");
-			return 1;
+			if (can_live_without_dynlib) {
+				report_repeat("\nWARNING: no dynamic linking found on your system. Dynamic plugin loading will fail.\n\n");
+			}
+			else {
+				report_repeat("\nERROR: no dynamic linking found on your system. Can not compile pcb-rnd.\n\n");
+				return 1;
+			}
 		}
 	}
 
