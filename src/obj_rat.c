@@ -82,6 +82,8 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 
 void pcb_rat_free(pcb_rat_t *rat)
 {
+	if ((rat->parent.data != NULL) && (rat->parent.data->rat_tree != NULL))
+		pcb_r_delete_entry(rat->parent.data->rat_tree, (pcb_box_t *)rat);
 	pcb_rat_unreg(rat);
 	free(rat->anchor[0]);
 	free(rat->anchor[1]);

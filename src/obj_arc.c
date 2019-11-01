@@ -289,6 +289,8 @@ void pcb_add_arc_on_layer(pcb_layer_t *Layer, pcb_arc_t *Arc)
 
 void pcb_arc_free(pcb_arc_t *arc)
 {
+	if ((arc->parent.layer != NULL) && (arc->parent.layer->arc_tree != NULL))
+		pcb_r_delete_entry(arc->parent.layer->arc_tree, (pcb_box_t *)arc);
 	pcb_attribute_free(&arc->Attributes);
 	pcb_arc_unreg(arc);
 	free(arc);

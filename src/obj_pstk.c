@@ -105,6 +105,8 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 
 void pcb_pstk_free(pcb_pstk_t *ps)
 {
+	if ((ps->parent.data != NULL) && (ps->parent.data->padstack_tree != NULL))
+		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 	pcb_attribute_free(&ps->Attributes);
 	pcb_pstk_unreg(ps);
 	free(ps->thermals.shape);

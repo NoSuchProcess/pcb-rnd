@@ -104,6 +104,8 @@ pcb_text_t *pcb_text_alloc(pcb_layer_t *layer)
 
 void pcb_text_free(pcb_text_t *text)
 {
+	if ((text->parent.layer != NULL) && (text->parent.layer->text_tree != NULL))
+		pcb_r_delete_entry(text->parent.layer->text_tree, (pcb_box_t *)text);
 	pcb_attribute_free(&text->Attributes);
 	pcb_text_unreg(text);
 	free(text->TextString);

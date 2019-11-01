@@ -106,6 +106,8 @@ pcb_line_t *pcb_line_alloc(pcb_layer_t *layer)
 
 void pcb_line_free(pcb_line_t *line)
 {
+	if ((line->parent.layer != NULL) && (line->parent.layer->line_tree != NULL))
+		pcb_r_delete_entry(line->parent.layer->line_tree, (pcb_box_t *)line);
 	pcb_attribute_free(&line->Attributes);
 	pcb_line_unreg(line);
 	free(line);
