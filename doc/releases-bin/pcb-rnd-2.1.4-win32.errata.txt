@@ -1,0 +1,6 @@
+Known bugs:
+ - the parametric footprint dialog crashes with a GTK-Critical
+   mitigation: do not open the parametric footprint editor dialog
+   (do not double-click the parametric footprint name and do not use
+   the edit icon); entering the footprint in the filter still works, 
+   e.g. entering so(8) or acy(300) should produce the right footprint.
