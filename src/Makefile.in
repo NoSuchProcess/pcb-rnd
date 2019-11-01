@@ -484,7 +484,7 @@ buildin.hidlib.c: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 buildin.hidlib.h: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 	$(PUPLUG) buildin.h > buildin.hidlib.h
 
-$(PUPLUG):
+../src_3rd/puplug/libpuplug.a $(PUPLUG):
 	cd ../src_3rd/puplug && make libpuplug.a
 	cd ../src_3rd/puplug && make util/puplug CC=$(HOSTCC)
 
