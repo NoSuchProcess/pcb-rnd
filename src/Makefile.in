@@ -389,7 +389,8 @@ LIBS_3RD=@/local/pcb/LIBS_3RD@
 EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
-CC=@cc/cc@
+CC=@/target/cc/cc@
+HOSTCC=@/host/cc/cc@
 CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
@@ -465,7 +466,7 @@ librnd: $(HIDLIB_CLEAN_FILES)
 ### pcb-rnd infra ###
 
 $(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
-	$(CC) -o pcb-rnd$(EXE) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
+	$(HOSTCC) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
 
 # needed by gsch2pcb-rnd
 ../src_3rd/genlist/genadlist.o ../src_3rd/genlist/genlistalloc.o:
@@ -553,7 +554,7 @@ distclean: FORCE
 
 install_pcbrnd:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins"
-	$(SCCBOX) $(HOW) "pcb-rnd" "$(BINDIR)/pcb-rnd"
+	$(SCCBOX) $(HOW) "pcb-rnd$(EXE)" "$(BINDIR)/pcb-rnd$(EXE)"
 	$(SCCBOX) $(HOW) "default2.lht" "$(DATADIR)/default2.lht"
 	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
 	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(DATADIR)/pcb-conf.lht"
