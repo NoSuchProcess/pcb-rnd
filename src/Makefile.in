@@ -465,8 +465,8 @@ librnd: $(HIDLIB_CLEAN_FILES)
 
 ### pcb-rnd infra ###
 
-$(SPHASH_PATH)/sphash: $(SPHASH_PATH)/sphash.c
-	$(HOSTCC) $(SPHASH_PATH)/sphash.c -o $(SPHASH_PATH)/sphash
+$(SPHASH): $(SPHASH_PATH)/sphash.c
+	$(HOSTCC) $(SPHASH_PATH)/sphash.c -o $(SPHASH)
 
 # needed by gsch2pcb-rnd
 ../src_3rd/genlist/genadlist.o ../src_3rd/genlist/genlistalloc.o:
