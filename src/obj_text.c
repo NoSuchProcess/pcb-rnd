@@ -945,7 +945,7 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
-static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx_t mx, pcb_coord_t xo, int xordraw, int thindraw, pcb_coord_t xordx, pcb_coord_t xordy)
+static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx_t mx, pcb_coord_t xo, int xordraw, int thindraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_draw_text_cb cb, void *cb_ctx)
 {
 	pcb_coord_t x[MAX_SIMPLE_POLY_POINTS], y[MAX_SIMPLE_POLY_POINTS];
 	int max, n;
@@ -981,6 +981,24 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 			y[n] = pcb_round(p->y);
 		}
 	}
+
+	if (cb == NULL) {
+		pcb_poly_t po;
+		pcb_point_t pt[MAX_SIMPLE_POLY_POINTS];
+
+		memset(&po, 0, sizeof(po));
+		po.type = PCB_OBJ_POLY;
+		po.PointN = max;
+		po.Points = pt;
+		for(n = 0, p = po.Points; n < max; n++,p++) {
+			p->X = x[n];
+			p->Y = y[n];
+		}
+
+		cb(cb_ctx, (const pcb_any_obj_t *)&po);
+		return;
+	}
+
 
 	if (xordraw || thindraw) {
 		pcb_hid_gc_t gc = xordraw ? pcb_crosshair.GC : pcb_draw_out.fgGC;
@@ -1087,7 +1105,7 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 	return 0;
 }
 
-static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
+PCB_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
 {
 	pcb_coord_t x = 0;
 	pcb_cardinal_t n;
@@ -1101,7 +1119,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 	pcb_xform_mx_rotate(mx, rotdeg);
 
 	/* Text too small at this zoom level: cheap draw */
-	if (tiny != PCB_TXT_TINY_ACCURATE) {
+	if ((tiny != PCB_TXT_TINY_ACCURATE) && (cb == NULL)) {
 		if (draw_text_cheap(font, mx, string, scale, xordraw, xordx, xordy, tiny))
 			return;
 	}
@@ -1129,7 +1147,11 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 					newline.Thickness = min_line_width;
 				if (thickness > 0)
 					newline.Thickness = thickness;
-				if (xordraw)
+				if (cb != NULL) {
+					newline.type = PCB_OBJ_LINE;
+					cb(cb_ctx, (const pcb_any_obj_t *)&newline);
+				}
+				else if (xordraw)
 					pcb_render->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
 				else
 					pcb_line_draw_(info, &newline, 0);
@@ -1152,7 +1174,11 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 					newarc.Thickness = min_line_width;
 				if (thickness > 0)
 					newarc.Thickness = thickness;
-				if (xordraw)
+				if (cb != NULL) {
+					newarc.type = PCB_OBJ_ARC;
+					cb(cb_ctx, (const pcb_any_obj_t *)&newarc);
+				}
+				else if (xordraw)
 					pcb_render->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
 				else
 					pcb_arc_draw_(info, &newarc, 0);
@@ -1161,7 +1187,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			/* draw the polygons */
 			poly_thin = conf_core.editor.thin_draw || conf_core.editor.wireframe_draw;
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
-				draw_text_poly(info, p, mx, x, xordraw, poly_thin, xordx, xordy);
+				draw_text_poly(info, p, mx, x, xordraw, poly_thin, xordx, xordy, cb, cb_ctx);
 
 			/* move on to next cursor position */
 			x += (font->Symbol[*string].Width + font->Symbol[*string].Delta);
@@ -1181,7 +1207,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 			py[3] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
 
 			/* draw move on to next cursor position */
-			if (xordraw || (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)) {
+			if ((cb == NULL) && (xordraw || (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw))) {
 				if (xordraw) {
 					pcb_render->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
 					pcb_render->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);
@@ -1196,7 +1222,22 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 				}
 			}
 			else {
-				pcb_render->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
+				if (cb != NULL) {
+					pcb_poly_t po;
+					pcb_point_t pt[4], *p;
+
+					memset(&po, 0, sizeof(po));
+					po.type = PCB_OBJ_POLY;
+					po.PointN = 4;
+					po.Points = pt;
+					for(n = 0, p = po.Points; n < po.PointN; n++,p++) {
+						p->X = px[n];
+						p->Y = py[n];
+					}
+					cb(cb_ctx, (const pcb_any_obj_t *)&po);
+				}
+				else
+					pcb_render->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
 			}
 			x += size;
 		}
@@ -1206,7 +1247,7 @@ static void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const
 
 void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
-	pcb_text_draw_string_(info, font, string, x0, y0, scale, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny);
+	pcb_text_draw_string_(info, font, string, x0, y0, scale, rotdeg, mirror, thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
 }
 
 void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy)
@@ -1214,7 +1255,20 @@ void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, pcb_coord
 	if (font == NULL)
 		font = pcb_font(PCB, 0, 0);
 
-	pcb_text_draw_string_(NULL, font, (const unsigned char *)string, x0, y0, scale, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP);
+	pcb_text_draw_string_(NULL, font, (const unsigned char *)string, x0, y0, scale, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP, NULL, NULL);
+}
+
+
+void pcb_text_decompose_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, pcb_draw_text_cb cb, void *cb_ctx)
+{
+	pcb_text_draw_string_(info, font, string, x0, y0, scale, rotdeg, mirror, thickness, 0, 0, 0, 0, PCB_TXT_TINY_ACCURATE, cb, cb_ctx);
+}
+
+void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_text_cb cb, void *cb_ctx)
+{
+	unsigned char *rendered = pcb_text_render_str(text);
+	pcb_text_decompose_string(info, pcb_font(PCB, text->fid, 1), rendered, text->X, text->Y, text->Scale, text->rot, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, text), text->thickness, cb, cb_ctx);
+	pcb_text_free_str(text, rendered);
 }
 
 
@@ -1222,7 +1276,7 @@ void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, pcb_coord
 static void DrawTextLowLevel_(pcb_draw_info_t *info, pcb_text_t *Text, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny)
 {
 	unsigned char *rendered = pcb_text_render_str(Text);
-	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, Text->Scale, Text->rot, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny);
+	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, Text->Scale, Text->rot, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
 	pcb_text_free_str(Text, rendered);
 }
 

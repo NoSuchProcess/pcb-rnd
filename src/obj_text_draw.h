@@ -56,3 +56,9 @@ void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigne
 pcb_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *string);
 pcb_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *string);
 
+/* Call cb(ctx, ...) for every object in a rendered string or text; obj will
+   be disacrded after the call, can be modified by the callback */
+typedef void (*pcb_draw_text_cb)(void *ctx, pcb_any_obj_t *obj);
+void pcb_text_decompose_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, pcb_draw_text_cb cb, void *cb_ctx);
+void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_text_cb cb, void *cb_ctx);
+
