@@ -189,7 +189,7 @@ PCB_INLINE void pcb_arc_get_endpt(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wi
 
 /* adjustment to make the segments outline the circle rather than connect
    points on the circle: 1 - cos (\alpha / 2) < (\alpha / 2) ^ 2 / 2 */
-#define PCB_POLY_CIRC_RADIUS_ADJ (1.0 + M_PI / PCB_POLY_CIRC_SEGS_F * \
-                                    M_PI / PCB_POLY_CIRC_SEGS_F / 2.0)
+#define PCB_POLY_CIRC_RADIUS_ADJ \
+	(1.0 + M_PI / PCB_POLY_CIRC_SEGS_F * M_PI / PCB_POLY_CIRC_SEGS_F / 2.0)
 
 #endif /* PCB_POLYAREA_H */
