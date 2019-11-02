@@ -42,9 +42,12 @@
 #include "obj_poly.h"
 #include "obj_poly_op.h"
 #include "polygon.h"
+#include "polygon1_gen.h"
 #include "funchash_core.h"
+#include "rtree.h"
 
 #include "src_plugins/lib_polyhelp/polyhelp.h"
+#include "src_plugins/ddraft/centgeo.h"
 
 extern const char *pcb_millpath_cookie;
 
@@ -217,7 +220,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		pcb_polyarea_boolean(result->remain->Clipped, result->fill->Clipped, &rp, PCB_PBO_SUB);
 		pcb_polyarea_free(&result->remain->Clipped);
 		result->remain->Clipped = rp;
-		
+		result->remain->Flags.f |= PCB_FLAG_FULLPOLY;
 	}
 }
 
@@ -250,15 +253,126 @@ static void trace_spiral(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_i
 		extra_offs += tool_dia;
 }
 
+/*** remove cuts that would cut into remaining copper ***/
+typedef struct {
+	pcb_tlp_session_t *result;
+	pcb_any_obj_t *cut;
+} pline_ctx_t;
+
+pcb_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const pcb_rtree_box_t *box)
+{
+	pline_ctx_t *ctx = ctx_;
+	pcb_line_t *l = (pcb_line_t *)ctx->cut, lo, vl;
+	pcb_box_t ip;
+	double offs[2], ox, oy, vx, vy, len, r;
+
+	assert(ctx->cut->type == PCB_OBJ_LINE); /* need to handle arc later */
+
+	pcb_polyarea_get_tree_seg(obj, &vl.Point1.X, &vl.Point1.Y, &vl.Point2.X, &vl.Point2.Y);
+
+	/* ox;oy: normal vector scaled to thickness/2 */
+	vx = l->Point2.X - l->Point1.X;
+	vy = l->Point2.Y - l->Point1.Y;
+	len = sqrt(vx*vx + vy*vy);
+	r = (double)l->Thickness/2.0 - 100;
+	ox = vy * r / len;
+	oy = -vx * r / len;
+
+	/* check shifted edges for intersection */
+	lo.Point1.X = l->Point1.X + ox; lo.Point1.Y = l->Point1.Y + oy;
+	lo.Point2.X = l->Point2.X + ox; lo.Point2.Y = l->Point2.Y + oy;
+	if (pcb_intersect_cline_cline(&lo, &vl, &ip, offs))
+		return pcb_RTREE_DIR_FOUND | pcb_RTREE_DIR_STOP;
+
+	lo.Point1.X = l->Point1.X - ox; lo.Point1.Y = l->Point1.Y - oy;
+	lo.Point2.X = l->Point2.X - ox; lo.Point2.Y = l->Point2.Y - oy;
+	if (pcb_intersect_cline_cline(&lo, &vl, &ip, offs))
+		return pcb_RTREE_DIR_FOUND | pcb_RTREE_DIR_STOP;
+
+	return 0;
+}
+
+pcb_rtree_dir_t fix_overcuts_in_pline(void *ctx_, void *obj, const pcb_rtree_box_t *box)
+{
+	pline_ctx_t *ctx = ctx_;
+	pcb_pline_t *pl = obj;
+
+	return pcb_rtree_search_obj(pl->tree, (const pcb_rtree_box_t *)&ctx->cut->BoundingBox, fix_overcuts_in_seg, ctx);
+}
+
+static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
+{
+	pcb_line_t *line;
+  gdl_iterator_t it;
+	pline_ctx_t pctx;
+	long error = 0;
+
+	pctx.result = result;
+
+	linelist_foreach(&result->res_path->Line, &it, line) {
+		pcb_polyarea_t *pa;
+
+		pa = result->remain->Clipped;
+		do {
+			pcb_pline_t *pl;
+			pcb_rtree_dir_t dir;
+
+			pctx.cut = (pcb_any_obj_t *)line;
+
+			dir = pcb_rtree_search_obj(pa->contour_tree, (const pcb_rtree_box_t *)&line->BoundingBox, fix_overcuts_in_pline, &pctx);
+			if (dir & pcb_RTREE_DIR_FOUND) { /* line crosses poly */
+				error++;
+				pcb_line_free(line);
+				line = NULL;
+			}
+			else {  /* check endpoints only if side didn't intersect */
+				pcb_polyarea_t *c;
+				pcb_coord_t r = (line->Thickness-1)/2 - 1000;
+				int within = 0;
+
+				c = pcb_poly_from_circle(line->Point1.X, line->Point1.Y, r);
+				within |= pcb_poly_contour_in_contour(pa->contours, c->contours);
+				if (!within)
+					within |= pcb_polyarea_touching(pa, c);
+				pcb_polyarea_free(&c);
+
+				if (!within) {
+					c = pcb_poly_from_circle(line->Point2.X, line->Point2.Y, r);
+					within |= pcb_poly_contour_in_contour(pa->contours, c->contours);
+					if (!within)
+						within |= pcb_polyarea_touching(pa, c);
+					pcb_polyarea_free(&c);
+				}
+
+				if (within) {
+/*					error++; end circle intersection is normally harmless */
+					pcb_line_free(line);
+					line = NULL;
+				}
+			}
+			
+			if (line == NULL)
+				break;
+			pa = pa->f;
+		} while(pa != result->remain->Clipped);
+	}
+	return error;
+}
+
 
 int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
 	pcb_board_t *pcb = pcb_data_get_top(layer->parent.data);
+	long rem;
 
 	setup_ui_layers(pcb, result, layer);
 	setup_remove_poly(pcb, result, layer);
 
-	trace_contour(pcb, result, 0, 0);
+	trace_contour(pcb, result, 0, 1000);
+
+	rem = fix_overcuts(pcb, result);
+	if (rem != 0)
+		pcb_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 
 	return 0;
 }
