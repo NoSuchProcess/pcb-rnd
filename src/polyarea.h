@@ -192,4 +192,9 @@ PCB_INLINE void pcb_arc_get_endpt(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wi
 #define PCB_POLY_CIRC_RADIUS_ADJ \
 	(1.0 + M_PI / PCB_POLY_CIRC_SEGS_F * M_PI / PCB_POLY_CIRC_SEGS_F / 2.0)
 
+/*** special purpose, internal tools ***/
+/* Convert a struct seg *obj extracted from a pline->tree into coords */
+void pcb_polyarea_get_tree_seg(void *obj, pcb_coord_t *x1, pcb_coord_t *y1, pcb_coord_t *x2, pcb_coord_t *y2);
+
+
 #endif /* PCB_POLYAREA_H */

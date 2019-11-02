@@ -3549,6 +3549,15 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 
 #include "polygon_selfi.c"
 
+void pcb_polyarea_get_tree_seg(void *obj, pcb_coord_t *x1, pcb_coord_t *y1, pcb_coord_t *x2, pcb_coord_t *y2)
+{
+	struct seg *s = obj;
+	*x1 = s->v->point[0];
+	*x2 = s->v->next->point[0];
+	*y1 = s->v->point[1];
+	*y2 = s->v->next->point[1];
+}
+
 /* how about expanding polygons so that edges can be arcs rather than
  * lines. Consider using the third coordinate to store the radius of the
  * arc. The arc would pass through the vertex points. Positive radius
