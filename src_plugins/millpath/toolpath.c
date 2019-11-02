@@ -373,7 +373,6 @@ static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 
 		pa = result->remain->Clipped;
 		do {
-			pcb_pline_t *pl;
 			pcb_rtree_dir_t dir;
 
 			pctx.cut = (pcb_any_obj_t *)line;
