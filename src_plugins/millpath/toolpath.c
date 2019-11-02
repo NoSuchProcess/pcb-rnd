@@ -389,14 +389,11 @@ static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 				int within = 0;
 
 				c = pcb_poly_from_circle(line->Point1.X, line->Point1.Y, r);
-				within |= pcb_poly_contour_in_contour(pa->contours, c->contours);
-				if (!within)
-					within |= pcb_polyarea_touching(pa, c);
+				within |= pcb_polyarea_touching(pa, c);
 				pcb_polyarea_free(&c);
 
 				if (!within) {
 					c = pcb_poly_from_circle(line->Point2.X, line->Point2.Y, r);
-					within |= pcb_poly_contour_in_contour(pa->contours, c->contours);
 					if (!within)
 						within |= pcb_polyarea_touching(pa, c);
 					pcb_polyarea_free(&c);
