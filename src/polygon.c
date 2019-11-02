@@ -221,8 +221,7 @@ static pcb_polyarea_t *biggest(pcb_polyarea_t * p)
 	return p;
 }
 
-/* Convert a polygon to an unclipped polyarea */
-static pcb_polyarea_t *original_poly(pcb_poly_t *p, pcb_bool *need_full)
+pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, pcb_bool *need_full)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np1 = NULL, *np = NULL;
@@ -302,7 +301,7 @@ static pcb_polyarea_t *original_poly(pcb_poly_t *p, pcb_bool *need_full)
 pcb_polyarea_t *pcb_poly_from_poly(pcb_poly_t * p)
 {
 	pcb_bool tmp;
-	return original_poly(p, &tmp);
+	return pcb_poly_to_polyarea(p, &tmp);
 }
 
 
@@ -430,7 +429,7 @@ static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 		case PCB_OBJ_LINE: np = pcb_poly_from_pcb_line(line, line->Thickness + ctx->clearance); break;
 		case PCB_OBJ_ARC: np = pcb_poly_from_pcb_arc(arc, arc->Thickness + ctx->clearance); break;
 		case PCB_OBJ_POLY:
-			poly->Clipped = original_poly(poly, &need_full);
+			poly->Clipped = pcb_poly_to_polyarea(poly, &need_full);
 			np = pcb_poly_clearance_construct(poly, &ctx->clearance);
 			pcb_polyarea_free(&poly->Clipped);
 			break;
@@ -842,7 +841,7 @@ static int Unsubtract(pcb_polyarea_t * np1, pcb_poly_t * p)
 	assert(np);
 	assert(p); /* NOTE: p->clipped might be NULL if a poly is "cleared out of existence" and is now coming back */
 
-	orig_poly = original_poly(p, &need_full);
+	orig_poly = pcb_poly_to_polyarea(p, &need_full);
 
 	x = pcb_polyarea_boolean_free(np, orig_poly, &clipped_np, PCB_PBO_ISECT);
 	if (x != pcb_err_ok) {
@@ -963,7 +962,7 @@ int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p,
 
 	if (p->Clipped)
 		pcb_polyarea_free(&p->Clipped);
-	p->Clipped = original_poly(p, &need_full);
+	p->Clipped = pcb_poly_to_polyarea(p, &need_full);
 	if (need_full && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, p)) {
 		pcb_message(PCB_MSG_WARNING, "Polygon #%ld was self intersecting; it had to be split up and\nthe full poly flag set.\n", (long)p->ID);
 		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, p);

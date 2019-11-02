@@ -71,6 +71,9 @@ int pcb_poly_init_clip(pcb_data_t * d, pcb_layer_t * l, pcb_poly_t * p);
 void pcb_poly_restore_to_poly(pcb_data_t *, int, void *, void *);
 void pcb_poly_clear_from_poly(pcb_data_t *, int, void *, void *);
 
+/* Convert a polygon to an unclipped polyarea */
+pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, pcb_bool *need_full);
+
 /* Same as pcb_poly_init_clip() but also call cb before each operation,
    giving the caller a chance to draw a progress bar */
 int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx);
