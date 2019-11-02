@@ -112,10 +112,15 @@ typedef struct {
 static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
 {
 	sub_layer_text_t *ctx = ctx_;
+	pcb_poly_t *poly = (pcb_poly_t *)obj;
 	switch(obj->type) {
 		case PCB_OBJ_LINE: sub_layer_line(ctx->pcb, ctx->result, ctx->layer, (pcb_line_t *)obj, ctx->centerline); break;
 		case PCB_OBJ_ARC:  sub_layer_arc(ctx->pcb, ctx->result, ctx->layer, (pcb_arc_t *)obj, ctx->centerline); break;
-		case PCB_OBJ_POLY: sub_layer_poly(ctx->pcb, ctx->result, ctx->layer, (pcb_poly_t *)obj, ctx->centerline); break;
+		case PCB_OBJ_POLY:
+			pcb_poly_init_clip(ctx->pcb->Data, ctx->layer, poly);
+			sub_layer_poly(ctx->pcb, ctx->result, ctx->layer, poly, ctx->centerline);
+			pcb_polyarea_free(&poly->Clipped);
+			break;
 		default:           pcb_message(PCB_MSG_ERROR, "Internal error: toolpath sub_layer_text() invalid object type %ld\n", obj->type);
 	}
 }
