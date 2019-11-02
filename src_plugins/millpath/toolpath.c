@@ -41,6 +41,7 @@
 #include "obj_arc.h"
 #include "obj_poly.h"
 #include "obj_poly_op.h"
+#include "obj_text_draw.h"
 #include "polygon.h"
 #include "polygon1_gen.h"
 #include "funchash_core.h"
@@ -51,64 +52,103 @@
 
 extern const char *pcb_millpath_cookie;
 
+PCB_INLINE void sub_layer_line(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_line_t *line_in, int centerline)
+{
+	pcb_line_t line_tmp;
+
+	memcpy(&line_tmp, line_in, sizeof(line_tmp));
+	PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &line_tmp);
+	if (centerline) {
+		line_tmp.Thickness = 1;
+		line_tmp.Clearance = result->edge_clearance;
+	}
+	else
+		line_tmp.Clearance = 1;
+	pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_LINE, &line_tmp);
+}
+
+PCB_INLINE void sub_layer_arc(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_arc_t *arc_in, int centerline)
+{
+	pcb_arc_t arc_tmp;
+
+	memcpy(&arc_tmp, arc_in, sizeof(arc_tmp));
+	PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &arc_tmp);
+	if (centerline) {
+		arc_tmp.Thickness = 1;
+		arc_tmp.Clearance = result->edge_clearance;
+	}
+	else
+		arc_tmp.Clearance = 1;
+	pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_ARC, &arc_tmp);
+}
+
+PCB_INLINE void sub_layer_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_poly_t *poly, int centerline)
+{
+	pcb_polyarea_t *f, *b, *ra;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
+		f = poly->Clipped->f;
+		b = poly->Clipped->b;
+		poly->Clipped->f = poly->Clipped->b = poly->Clipped;
+	}
+
+	pcb_polyarea_boolean(result->fill->Clipped, poly->Clipped, &ra, PCB_PBO_SUB);
+	pcb_polyarea_free(&result->fill->Clipped);
+	result->fill->Clipped = ra;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
+		poly->Clipped->f = f;
+		poly->Clipped->b = b;
+	}
+}
+
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_tlp_session_t *result;
+	int centerline;
+	pcb_layer_t *layer;
+} sub_layer_text_t;
+
+static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
+{
+	sub_layer_text_t *ctx = ctx_;
+	switch(obj->type) {
+		case PCB_OBJ_LINE: sub_layer_line(ctx->pcb, ctx->result, ctx->layer, (pcb_line_t *)obj, ctx->centerline); break;
+		case PCB_OBJ_ARC:  sub_layer_arc(ctx->pcb, ctx->result, ctx->layer, (pcb_arc_t *)obj, ctx->centerline); break;
+		case PCB_OBJ_POLY: sub_layer_poly(ctx->pcb, ctx->result, ctx->layer, (pcb_poly_t *)obj, ctx->centerline); break;
+		default:           pcb_message(PCB_MSG_ERROR, "Internal error: toolpath sub_layer_text() invalid object type %ld\n", obj->type);
+	}
+}
+
 static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, int centerline)
 {
-	pcb_line_t *line, line_tmp;
-	pcb_arc_t *arc, arc_tmp;
-	pcb_text_t *text;
-	pcb_poly_t *poly;
 	pcb_rtree_it_t it;
+	pcb_line_t *line;
+	pcb_arc_t *arc;
+	pcb_poly_t *poly;
+	pcb_text_t *text;
+	sub_layer_text_t slt;
 
-	for(line = (pcb_line_t *)pcb_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)pcb_r_next(&it)) {
-		memcpy(&line_tmp, line, sizeof(line_tmp));
-		PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &line_tmp);
-		if (centerline) {
-			line_tmp.Thickness = 1;
-			line_tmp.Clearance = result->edge_clearance;
-		}
-		else
-			line_tmp.Clearance = 1;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_LINE, &line_tmp);
-	}
+	for(line = (pcb_line_t *)pcb_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)pcb_r_next(&it))
+		sub_layer_line(pcb, result, layer, line, centerline);
 	pcb_r_end(&it);
 
-	for(arc = (pcb_arc_t *)pcb_r_first(layer->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)pcb_r_next(&it)) {
-		memcpy(&arc_tmp, arc, sizeof(arc_tmp));
-		PCB_FLAG_SET(PCB_FLAG_CLEARLINE, &arc_tmp);
-		if (centerline) {
-			arc_tmp.Thickness = 1;
-			arc_tmp.Clearance = result->edge_clearance;
-		}
-		else
-			arc_tmp.Clearance = 1;
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_ARC, &arc_tmp);
-	}
+	for(arc = (pcb_arc_t *)pcb_r_first(layer->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)pcb_r_next(&it))
+		sub_layer_arc(pcb, result, layer, arc, centerline);
 	pcb_r_end(&it);
 
-TODO(": centerline")
+	for(poly = (pcb_poly_t *)pcb_r_first(layer->polygon_tree, &it); poly != NULL; poly = (pcb_poly_t *)pcb_r_next(&it))
+		sub_layer_poly(pcb, result, layer, poly, centerline);
+	pcb_r_end(&it);
+
+	slt.pcb = pcb;
+	slt.layer = layer;
+	slt.centerline = centerline;
+	slt.result = result;
 	for(text = (pcb_text_t *)pcb_r_first(layer->text_tree, &it); text != NULL; text = (pcb_text_t *)pcb_r_next(&it))
-		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_ARC, text);
+		pcb_text_decompose_text(NULL, text, sub_layer_text, &slt);
 	pcb_r_end(&it);
 
-	for(poly = (pcb_poly_t *)pcb_r_first(layer->polygon_tree, &it); poly != NULL; poly = (pcb_poly_t *)pcb_r_next(&it)) {
-		pcb_polyarea_t *f, *b, *ra;
-
-		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
-			f = poly->Clipped->f;
-			b = poly->Clipped->b;
-			poly->Clipped->f = poly->Clipped->b = poly->Clipped;
-		}
-
-		pcb_polyarea_boolean(result->fill->Clipped, poly->Clipped, &ra, PCB_PBO_SUB);
-		pcb_polyarea_free(&result->fill->Clipped);
-		result->fill->Clipped = ra;
-
-		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
-			poly->Clipped->f = f;
-			poly->Clipped->b = b;
-		}
-	}
-	pcb_r_end(&it);
 }
 
 
