@@ -84,19 +84,19 @@ struct pcb_pline_s {
 
 pcb_pline_t *pcb_poly_contour_new(pcb_vector_t v);
 
-void pcb_poly_contour_init(pcb_pline_t * c);
-void pcb_poly_contour_clear(pcb_pline_t * c); /* clears list of vertices */
-void pcb_poly_contour_del(pcb_pline_t ** c);
+void pcb_poly_contour_init(pcb_pline_t *c);
+void pcb_poly_contour_clear(pcb_pline_t *c); /* clears list of vertices */
+void pcb_poly_contour_del(pcb_pline_t **c);
 
-pcb_bool pcb_poly_contour_copy(pcb_pline_t ** dst, pcb_pline_t * src);
+pcb_bool pcb_poly_contour_copy(pcb_pline_t **dst, pcb_pline_t *src);
 
-void pcb_poly_contour_pre(pcb_pline_t * c, pcb_bool optimize); /* prepare contour */
-void pcb_poly_contour_inv(pcb_pline_t * c); /* invert contour */
+void pcb_poly_contour_pre(pcb_pline_t *c, pcb_bool optimize); /* prepare contour */
+void pcb_poly_contour_inv(pcb_pline_t *c); /* invert contour */
 
 pcb_vnode_t *pcb_poly_node_create(pcb_vector_t v);
 
-void pcb_poly_vertex_include(pcb_vnode_t * after, pcb_vnode_t * node);
-void pcb_poly_vertex_exclude(pcb_vnode_t * node);
+void pcb_poly_vertex_include(pcb_vnode_t *after, pcb_vnode_t *node);
+void pcb_poly_vertex_exclude(pcb_vnode_t *node);
 
 /**********************************************************************/
 
@@ -106,33 +106,33 @@ struct pcb_polyarea_s {
 	pcb_rtree_t *contour_tree;
 };
 
-pcb_bool pcb_polyarea_m_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * srcfst);
-void pcb_polyarea_m_include(pcb_polyarea_t ** list, pcb_polyarea_t * a);
+pcb_bool pcb_polyarea_m_copy0(pcb_polyarea_t **dst, const pcb_polyarea_t *srcfst);
+void pcb_polyarea_m_include(pcb_polyarea_t **list, pcb_polyarea_t *a);
 
-pcb_bool pcb_polyarea_copy0(pcb_polyarea_t ** dst, const pcb_polyarea_t * src);
-pcb_bool pcb_polyarea_copy1(pcb_polyarea_t * dst, const pcb_polyarea_t * src);
+pcb_bool pcb_polyarea_copy0(pcb_polyarea_t **dst, const pcb_polyarea_t *src);
+pcb_bool pcb_polyarea_copy1(pcb_polyarea_t *dst, const pcb_polyarea_t *src);
 
-pcb_bool pcb_polyarea_contour_include(pcb_polyarea_t * p, pcb_pline_t * c);
-pcb_bool pcb_polyarea_contour_exclude(pcb_polyarea_t * p, pcb_pline_t * c);
+pcb_bool pcb_polyarea_contour_include(pcb_polyarea_t *p, pcb_pline_t *c);
+pcb_bool pcb_polyarea_contour_exclude(pcb_polyarea_t *p, pcb_pline_t *c);
 
 
-pcb_bool pcb_polyarea_contour_check(pcb_pline_t * a);
+pcb_bool pcb_polyarea_contour_check(pcb_pline_t *a);
 
-pcb_bool pcb_polyarea_contour_inside(pcb_polyarea_t * c, pcb_vector_t v0);
-pcb_bool pcb_polyarea_touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
+pcb_bool pcb_polyarea_contour_inside(pcb_polyarea_t *c, pcb_vector_t v0);
+pcb_bool pcb_polyarea_touching(pcb_polyarea_t *p1, pcb_polyarea_t *p2);
 
 /*** tools for clipping ***/
 
 /* checks whether point lies within contour independently of its orientation */
 
-int pcb_poly_contour_inside(pcb_pline_t * c, pcb_vector_t v);
-int pcb_poly_contour_in_contour(pcb_pline_t * poly, pcb_pline_t * inner);
+int pcb_poly_contour_inside(pcb_pline_t *c, pcb_vector_t v);
+int pcb_poly_contour_in_contour(pcb_pline_t *poly, pcb_pline_t *inner);
 pcb_polyarea_t *pcb_polyarea_create(void);
 
-void pcb_polyarea_free(pcb_polyarea_t ** p);
-void pcb_polyarea_init(pcb_polyarea_t * p);
-void pcb_poly_contours_free(pcb_pline_t ** pl);
-pcb_bool pcb_poly_valid(pcb_polyarea_t * p);
+void pcb_polyarea_free(pcb_polyarea_t **p);
+void pcb_polyarea_init(pcb_polyarea_t *p);
+void pcb_poly_contours_free(pcb_pline_t **pl);
+pcb_bool pcb_poly_valid(pcb_polyarea_t *p);
 
 enum pcb_poly_bool_op_e {
 	PCB_PBO_UNITE,
@@ -147,13 +147,13 @@ double pcb_vect_len2(pcb_vector_t v1);
 
 int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
 
-int pcb_polyarea_boolean(const pcb_polyarea_t * a, const pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
-int pcb_polyarea_boolean_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** res, int action);
-int pcb_polyarea_and_subtract_free(pcb_polyarea_t * a, pcb_polyarea_t * b, pcb_polyarea_t ** aandb, pcb_polyarea_t ** aminusb);
-int pcb_polyarea_save(pcb_polyarea_t * PA, char *fname);
+int pcb_polyarea_boolean(const pcb_polyarea_t *a, const pcb_polyarea_t *b, pcb_polyarea_t **res, int action);
+int pcb_polyarea_boolean_free(pcb_polyarea_t *a, pcb_polyarea_t *b, pcb_polyarea_t **res, int action);
+int pcb_polyarea_and_subtract_free(pcb_polyarea_t *a, pcb_polyarea_t *b, pcb_polyarea_t **aandb, pcb_polyarea_t **aminusb);
+int pcb_polyarea_save(pcb_polyarea_t *PA, char *fname);
 
 /* calculate the bounding box of a pcb_polyarea_t and save result in b */
-void pcb_polyarea_bbox(pcb_polyarea_t * p, pcb_box_t * b);
+void pcb_polyarea_bbox(pcb_polyarea_t *p, pcb_box_t *b);
 
 /* Move each point of pa1 by dx and dy */
 void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy);
