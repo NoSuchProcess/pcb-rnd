@@ -29,8 +29,7 @@
 #define PCB_PLF_INV 0
 #define PCB_PLF_MARK 1
 
-typedef pcb_coord_t pcb_vertex_t[2];				/* longing point representation of
-																   coordinates */
+typedef pcb_coord_t pcb_vertex_t[2]; /* longing point representation of coordinates */
 typedef pcb_vertex_t pcb_vector_t;
 
 #define pcb_vertex_equ(a,b) (memcmp((a),(b),sizeof(pcb_vector_t))==0)
@@ -86,13 +85,13 @@ struct pcb_pline_s {
 pcb_pline_t *pcb_poly_contour_new(pcb_vector_t v);
 
 void pcb_poly_contour_init(pcb_pline_t * c);
-void pcb_poly_contour_clear(pcb_pline_t * c);	/* clears list of vertices */
+void pcb_poly_contour_clear(pcb_pline_t * c); /* clears list of vertices */
 void pcb_poly_contour_del(pcb_pline_t ** c);
 
 pcb_bool pcb_poly_contour_copy(pcb_pline_t ** dst, pcb_pline_t * src);
 
-void pcb_poly_contour_pre(pcb_pline_t * c, pcb_bool optimize);	/* prepare contour */
-void pcb_poly_contour_inv(pcb_pline_t * c);	/* invert contour */
+void pcb_poly_contour_pre(pcb_pline_t * c, pcb_bool optimize); /* prepare contour */
+void pcb_poly_contour_inv(pcb_pline_t * c); /* invert contour */
 
 pcb_vnode_t *pcb_poly_node_create(pcb_vector_t v);
 
@@ -124,8 +123,7 @@ pcb_bool pcb_polyarea_touching(pcb_polyarea_t * p1, pcb_polyarea_t * p2);
 
 /*** tools for clipping ***/
 
-/* checks whether point lies within contour
-independently of its orientation */
+/* checks whether point lies within contour independently of its orientation */
 
 int pcb_poly_contour_inside(pcb_pline_t * c, pcb_vector_t v);
 int pcb_poly_contour_in_contour(pcb_pline_t * poly, pcb_pline_t * inner);
@@ -190,8 +188,7 @@ PCB_INLINE void pcb_arc_get_endpt(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wi
 #define PCB_POLY_CIRC_SEGS_F ((float)PCB_POLY_CIRC_SEGS)
 
 /* adjustment to make the segments outline the circle rather than connect
- * points on the circle: 1 - cos (\alpha / 2) < (\alpha / 2) ^ 2 / 2
- */
+   points on the circle: 1 - cos (\alpha / 2) < (\alpha / 2) ^ 2 / 2 */
 #define PCB_POLY_CIRC_RADIUS_ADJ (1.0 + M_PI / PCB_POLY_CIRC_SEGS_F * \
                                     M_PI / PCB_POLY_CIRC_SEGS_F / 2.0)
 
