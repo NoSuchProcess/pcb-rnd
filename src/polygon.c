@@ -412,16 +412,59 @@ static int SubtractArc(pcb_arc_t * arc, pcb_poly_t * p)
 	return Subtract(np, p, pcb_true);
 }
 
+typedef struct {
+	pcb_poly_t *poly;
+	pcb_coord_t clearance;
+} poly_sub_text_t;
+
+static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
+{
+	poly_sub_text_t *ctx = ctx_;
+	pcb_line_t *line = (pcb_line_t *)obj;
+	pcb_poly_t *poly = (pcb_poly_t *)obj;
+	pcb_arc_t *arc = (pcb_arc_t *)obj;
+	pcb_polyarea_t *np = NULL;
+	pcb_bool need_full;
+
+	switch(obj->type) {
+		case PCB_OBJ_LINE: np = pcb_poly_from_pcb_line(line, line->Thickness + ctx->clearance); break;
+		case PCB_OBJ_ARC: np = pcb_poly_from_pcb_arc(arc, arc->Thickness + ctx->clearance); break;
+		case PCB_OBJ_POLY:
+			poly->Clipped = original_poly(poly, &need_full);
+			np = pcb_poly_clearance_construct(poly, &ctx->clearance);
+			pcb_polyarea_free(&poly->Clipped);
+			break;
+		default:;
+	}
+
+	if (np != NULL) {
+		Subtract(np, ctx->poly, pcb_true);
+		ctx->poly->NoHolesValid = 0;
+	}
+}
+
 static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 {
-	pcb_polyarea_t *np;
-	const pcb_box_t *b = &text->BoundingBox;
+	int by_bbox = 1; TODO("v7textclr");
+	poly_sub_text_t sctx;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
 		return 0;
-	if (!(np = RoundRect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, conf_core.design.bloat)))
-		return -1;
-	return Subtract(np, p, pcb_true);
+
+	if (by_bbox) {
+		/* old method: clear by bounding box */
+		const pcb_box_t *b = &text->BoundingBox;
+		pcb_polyarea_t *np;
+		if (!(np = RoundRect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, conf_core.design.bloat)))
+			return -1;
+		return Subtract(np, p, pcb_true);
+	}
+
+	/* new method: detailed clearance */
+	sctx.poly = p;
+	sctx.clearance = text->clearance + PCB_MM_TO_COORD(0.5);
+	pcb_text_decompose_text(NULL, text, poly_sub_text_cb, &sctx);
+	return 1;
 }
 
 struct cpInfo {
@@ -586,15 +629,22 @@ void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, pc
 #undef pa_append
 
 /* Construct a poly area that represents the enlarged subpoly - so it can be
-   subtracted from the parent poly to form the clearance for subpoly */
-pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly)
+   subtracted from the parent poly to form the clearance for subpoly.
+   If clr_override is not NULL, use that clearance value instead of the subpoly's */
+pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, pcb_coord_t *clr_override)
 {
 	pcb_polyarea_t *ret = NULL, *pa;
 	pcb_poly_it_t it;
+	pcb_coord_t clr;
+
+	if (clr_override != NULL)
+		clr = *clr_override;
+	else
+		clr = subpoly->Clearance/2;
 
 	/* iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
-		pcb_poly_pa_clearance_construct(&ret, &it, subpoly->Clearance/2);
+		pcb_poly_pa_clearance_construct(&ret, &it, clr);
 
 	return ret;
 }
@@ -604,7 +654,7 @@ static pcb_polyarea_t *poly_clearance_poly(pcb_cardinal_t layernum, pcb_board_t 
 {
 	if (subpoly->thermal & PCB_THERMAL_ON)
 		return pcb_thermal_area_poly(pcb, subpoly, layernum);
-	return pcb_poly_clearance_construct(subpoly);
+	return pcb_poly_clearance_construct(subpoly, NULL);
 }
 
 

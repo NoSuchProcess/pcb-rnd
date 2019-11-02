@@ -42,6 +42,7 @@ struct pcb_text_s {
 	pcb_font_id_t fid;
 	char *TextString;             /* string */
 	pcb_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
+	pcb_coord_t clearance;        /* clearance around the object in polygon if flags have PCB_FLAG_CLEARLINE */
 	double rot;                   /* used when Direction is PCB_TEXT_FREEROT */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
