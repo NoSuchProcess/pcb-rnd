@@ -982,7 +982,7 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 		}
 	}
 
-	if (cb == NULL) {
+	if (cb != NULL) {
 		pcb_poly_t po;
 		pcb_point_t pt[MAX_SIMPLE_POLY_POINTS];
 
