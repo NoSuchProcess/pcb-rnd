@@ -118,21 +118,29 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
-	static pcb_color_t clr1, clr2;
+	static pcb_color_t clr1, clr2, clr3;
 
 	if (clr1.str[0] != '#')
 		pcb_color_load_str(&clr1, "#EE9922");
 	if (clr2.str[0] != '#')
 		pcb_color_load_str(&clr2, "#886611");
+	if (clr3.str[0] != '#')
+		pcb_color_load_str(&clr3, "#FFCC55");
 
 	if (result->res_ply == NULL)
 		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", &clr1);
+
+	if (result->res_remply == NULL)
+		result->res_remply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remain", &clr3);
 
 	if (result->res_path == NULL)
 		result->res_path = pcb_uilayer_alloc(pcb_millpath_cookie, "mill toolpath", &clr2);
 
 	if (result->fill != NULL)
 		pcb_polyop_destroy(NULL, result->res_ply, result->fill);
+
+	if (result->remain != NULL)
+		pcb_polyop_destroy(NULL, result->res_remply, result->remain);
 
 	linelist_foreach(&result->res_path->Line, &it, line) {
 		pcb_lineop_destroy(NULL, result->res_path, line);
@@ -186,11 +194,15 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 			pcb_r_end(&it);
 		}
 		result->fill = pcb_poly_new_from_rectangle(result->res_ply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
+		result->remain = pcb_poly_new_from_rectangle(result->res_remply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
 	}
-	else
+	else {
 		result->fill = pcb_poly_new_from_rectangle(result->res_ply, 0, 0, pcb->hidlib.size_x, pcb->hidlib.size_y, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
+		result->remain = pcb_poly_new_from_rectangle(result->res_remply, 0, 0, pcb->hidlib.size_x, pcb->hidlib.size_y, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
+	}
 
 	pcb_poly_init_clip(pcb->Data, result->res_ply, result->fill);
+	pcb_poly_init_clip(pcb->Data, result->res_remply, result->remain);
 
 	sub_group_all(pcb, result, result->grp, 0);
 	if (has_otl)
@@ -198,6 +210,15 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 			if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi))
 				sub_group_all(pcb, result, g, 1);
 	sub_global_all(pcb, result, layer);
+
+	/* remove fill from remain */
+	{
+		pcb_polyarea_t *rp;
+		pcb_polyarea_boolean(result->remain->Clipped, result->fill->Clipped, &rp, PCB_PBO_SUB);
+		pcb_polyarea_free(&result->remain->Clipped);
+		result->remain->Clipped = rp;
+		
+	}
 }
 
 static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs)
