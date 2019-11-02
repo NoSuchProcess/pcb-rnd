@@ -38,7 +38,7 @@
 struct pcb_text_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
 	int Scale;                    /* text scaling in percent */
-	pcb_coord_t X, Y;                   /* origin */
+	pcb_coord_t X, Y;             /* origin */
 	pcb_font_id_t fid;
 	char *TextString;             /* string */
 	pcb_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
