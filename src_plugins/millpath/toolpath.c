@@ -56,6 +56,7 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 	pcb_line_t *line, line_tmp;
 	pcb_arc_t *arc, arc_tmp;
 	pcb_text_t *text;
+	pcb_poly_t *poly;
 	pcb_rtree_it_t it;
 
 	for(line = (pcb_line_t *)pcb_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)pcb_r_next(&it)) {
@@ -89,7 +90,25 @@ TODO(": centerline")
 		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_ARC, text);
 	pcb_r_end(&it);
 
-TODO(": subs poly: not supported by core")
+	for(poly = (pcb_poly_t *)pcb_r_first(layer->polygon_tree, &it); poly != NULL; poly = (pcb_poly_t *)pcb_r_next(&it)) {
+		pcb_polyarea_t *f, *b, *ra;
+
+		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
+			f = poly->Clipped->f;
+			b = poly->Clipped->b;
+			poly->Clipped->f = poly->Clipped->b = poly->Clipped;
+		}
+
+		pcb_polyarea_boolean(result->fill->Clipped, poly->Clipped, &ra, PCB_PBO_SUB);
+		pcb_polyarea_free(&result->fill->Clipped);
+		result->fill->Clipped = ra;
+
+		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
+			poly->Clipped->f = f;
+			poly->Clipped->b = b;
+		}
+	}
+	pcb_r_end(&it);
 }
 
 
