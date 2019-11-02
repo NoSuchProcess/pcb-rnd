@@ -44,7 +44,7 @@
 #include "../src_plugins/stroke/conf_internal.c"
 #include "stroke_conf.h"
 
-#define STROKE_CONF_FN "export_xy.conf"
+#define STROKE_CONF_FN "stroke.conf"
 
 conf_stroke_t conf_stroke;
 
