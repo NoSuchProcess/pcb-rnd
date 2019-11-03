@@ -631,7 +631,7 @@ static pcb_r_dir_t seg_in_seg(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static void *make_edge_tree(pcb_pline_t * pb)
+void *pcb_poly_make_edge_tree(pcb_pline_t *pb)
 {
 	struct seg *s;
 	pcb_vnode_t *bv;
@@ -2367,7 +2367,7 @@ void pcb_poly_contour_pre(pcb_pline_t * C, pcb_bool optimize)
 	C->area = PCB_ABS(area);
 	if (C->Count > 2)
 		C->Flags.orient = ((area < 0) ? PCB_PLF_INV : PCB_PLF_DIR);
-	C->tree = (pcb_rtree_t *) make_edge_tree(C);
+	C->tree = (pcb_rtree_t *) pcb_poly_make_edge_tree(C);
 }																/* poly_PreContour */
 
 static pcb_r_dir_t flip_cb(const pcb_box_t * b, void *cl)
@@ -2455,7 +2455,7 @@ pcb_bool pcb_poly_contour_copy(pcb_pline_t ** dst, pcb_pline_t * src)
 		/* newnode->Flags = cur->Flags; */
 		pcb_poly_vertex_include((*dst)->head.prev, newnode);
 	}
-	(*dst)->tree = (pcb_rtree_t *) make_edge_tree(*dst);
+	(*dst)->tree = (pcb_rtree_t *) pcb_poly_make_edge_tree(*dst);
 	return pcb_true;
 }
 
@@ -3356,7 +3356,7 @@ pcb_bool pcb_pline_isect_line(pcb_pline_t *pl, pcb_coord_t lx1, pcb_coord_t ly1,
 	lbx.Y2 = MAX(ly1, ly2);
 
 	if (pl->tree == NULL)
-		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+		pl->tree = (pcb_rtree_t *) pcb_poly_make_edge_tree(pl);
 
 	if (pcb_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == PCB_R_DIR_CANCEL) {
 		if (cx != NULL) *cx = ctx.cx;
@@ -3415,7 +3415,7 @@ pcb_bool pcb_pline_isect_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy, p
 	cbx.X2 = cx + r; cbx.Y2 = cy + r;
 
 	if (pl->tree == NULL)
-		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+		pl->tree = (pcb_rtree_t *) pcb_poly_make_edge_tree(pl);
 
 	return pcb_r_search(pl->tree, &cbx, NULL, pline_isect_circ_cb, &ctx, NULL) == PCB_R_DIR_CANCEL;
 }
@@ -3444,7 +3444,7 @@ pcb_bool pcb_pline_embraces_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy
 
 	bx.Y1 = cy; bx.Y2 = cy+1;
 	if (pl->tree == NULL)
-		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+		pl->tree = (pcb_rtree_t *) pcb_poly_make_edge_tree(pl);
 
 	/* ray to the right */
 	bx.X1 = cx + r;
@@ -3482,7 +3482,7 @@ pcb_bool pcb_pline_overlaps_circ(pcb_pline_t *pl, pcb_coord_t cx, pcb_coord_t cy
 		return pcb_false;
 
 	if (pl->tree == NULL)
-		pl->tree = (pcb_rtree_t *) make_edge_tree(pl);
+		pl->tree = (pcb_rtree_t *) pcb_poly_make_edge_tree(pl);
 
 	if (pcb_pline_isect_circ(pl, cx, cy, r))
 		return pcb_true;
@@ -3540,7 +3540,7 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 				pcb_r_free_tree_data(pl->tree, free);
 				pcb_r_destroy_tree(&pl->tree);
 			}
-			pl->tree = (pcb_rtree_t *)make_edge_tree(pl);
+			pl->tree = (pcb_rtree_t *)pcb_poly_make_edge_tree(pl);
 
 			pcb_r_insert_entry(pa->contour_tree, (pcb_box_t *)pl);
 		}

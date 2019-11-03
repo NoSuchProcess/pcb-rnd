@@ -196,5 +196,8 @@ PCB_INLINE void pcb_arc_get_endpt(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wi
 /* Convert a struct seg *obj extracted from a pline->tree into coords */
 void pcb_polyarea_get_tree_seg(void *obj, pcb_coord_t *x1, pcb_coord_t *y1, pcb_coord_t *x2, pcb_coord_t *y2);
 
+/* create a (pcb_rtree_t *) of each seg derived from src */
+void *pcb_poly_make_edge_tree(pcb_pline_t *src);
+
 
 #endif /* PCB_POLYAREA_H */
