@@ -45,6 +45,9 @@ double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts);
 /* Ortho-shift all edges of a polygon. Positive offset means grow. */
 void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts);
 
+/* modify dst so it is at least offs far from any point or line of src */
+void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_t offs);
+
 /* Orhto-shift an edge specified by x0;y0 and x1;y1. Calculate the new
    edge points by extending/shrinking the previous and next line segment.
    Modifies the target edge's start and end coords. Requires cached normals
