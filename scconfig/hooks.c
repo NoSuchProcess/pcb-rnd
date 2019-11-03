@@ -309,7 +309,6 @@ int hook_postinit()
 	/* DEFAULTS */
 	put("/local/prefix", "/usr/local");
 	put("/local/man1dir", "/share/man/man1");
-	put("/local/man1dir", "/share/man/man1");
 	put("/local/libarchdir", "lib");
 
 #undef plugin_def
