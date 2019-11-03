@@ -2409,15 +2409,27 @@ void pcb_poly_vertex_exclude(pcb_vnode_t * node)
 	node->next->prev = node->prev;
 }
 
-void pcb_poly_vertex_include(pcb_vnode_t * after, pcb_vnode_t * node)
+PCB_INLINE void pcb_poly_vertex_include_force_(pcb_vnode_t *after, pcb_vnode_t *node)
 {
-	double a, b;
 	assert(after != NULL);
 	assert(node != NULL);
 
 	node->prev = after;
 	node->next = after->next;
 	after->next = after->next->prev = node;
+}
+
+void pcb_poly_vertex_include_force(pcb_vnode_t *after, pcb_vnode_t *node)
+{
+	pcb_poly_vertex_include_force_(after, node);
+}
+
+void pcb_poly_vertex_include(pcb_vnode_t *after, pcb_vnode_t *node)
+{
+	double a, b;
+
+	pcb_poly_vertex_include_force_(after, node);
+
 	/* remove points on same line */
 	if (node->prev->prev == node)
 		return;											/* we don't have 3 points in the poly yet */
