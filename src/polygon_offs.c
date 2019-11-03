@@ -174,12 +174,13 @@ TODO("this should be coming from gengeo2d");
 /* Return the square of the distance between point x0;y0 and line x1;y1 - x2;y2 */
 static double dist_line_to_pt(double x0, double y0, double x1, double y1, double x2, double y2)
 {
-	double tmp1, tmp2, tmp3;
+	double tmp1, dx, dy, dx2, dy2;
 
 	tmp1 = (y2-y1)*x0 - (x2-x1)*y0 + x2*y1 - y2*x1;
-	tmp2 = y2 - y1;
-	tmp3 = x2 - x1;
-	return (tmp1*tmp1) / (tmp2*tmp2 + tmp3*tmp3);
+	dx = y2 - y1; dx2 = dx * dx;
+	dy = x2 - x1; dy2 = dy * dy;
+
+	return (tmp1*tmp1) / (dx2 + dy2);
 }
 
 void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_t offs)
