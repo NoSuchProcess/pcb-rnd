@@ -6,5 +6,5 @@ $fmt-native no
 $fmt-feature-w export a matlab file suitable for OpenEMS simulation
 $package export-sim
 dep lib_polyhelp
-default disable
+default buildin
 autoload 1

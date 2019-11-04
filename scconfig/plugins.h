@@ -97,7 +97,7 @@ plugin_def("export_gerber",    "Gerber pcb_exporter",             sbuildin, 1, 0
 plugin_def("export_ipcd356",   "IPC-D-356 Netlist pcb_exporter",  sbuildin, 1, 0)
 plugin_def("export_lpr",       "lpr pcb_exporter (printer)",      sbuildin, 1, 0)
 plugin_def("export_oldconn",   "old connection data format",      sbuildin, 1, 0)
-plugin_def("export_openems",   "openems exporter",                sdisable, 1, 0)
+plugin_def("export_openems",   "openems exporter",                sbuildin, 1, 0)
 plugin_def("export_openscad",  "openscad pcb_exporter",           sbuildin, 1, 0)
 plugin_def("export_png",       "png/gif/jpg pcb_exporter",        sbuildin, 1, 0)
 plugin_def("export_ps",        "postscript pcb_exporter",         sbuildin, 1, 0)
