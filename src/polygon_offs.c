@@ -190,6 +190,31 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 	return (tmp1 * tmp1) / d2;
 }
 
+/* Modify v, pulling it back toward vp so that the distance to line ldx;ldy is increased by tune */
+PCB_INLINE void pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy)
+{
+	double c, vx, vy, vlen, prx, pry, prlen;
+
+	vx = vp->point[0] - v->point[0];
+	vy = vp->point[1] - v->point[1];
+	vlen = sqrt(vx*vx + vy*vy);
+	vx /= vlen;
+	vy /= vlen;
+
+	prx = vp->point[0] - prjx;
+	pry = vp->point[1] - prjy;
+	prlen = sqrt(prx*prx + pry*pry);
+	prx /= prlen;
+	pry /= prlen;
+
+	c = tune * (-pry * ldx + prx * ldy) / (ldy * vx - ldx * vy);
+	pcb_printf("   vect: vx=%f;%f prx=%f;%f tune=%f\n", vx, vy, prx, pry, tune);
+	pcb_printf("   MOVE: %f %mm;%mm\n", c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
+
+	v->point[0] += c * vx;
+	v->point[1] += c * vy;
+}
+
 void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_t offs)
 {
 	const pcb_vnode_t *v;
@@ -214,7 +239,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 			pcb_polyarea_get_tree_seg(seg, &x1, &y1, &x2, &y2);
 			dist = dist_line_to_pt(v->point[0], v->point[1], x1, y1, x2, y2, &dx, &dy, &dlen2);
-			if (dist < offs2) {
+			if ((offs2 - dist) > 10) {
 				pcb_vector_t nv_;
 				pcb_vnode_t *nv;
 
@@ -234,14 +259,16 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				pcb_printf("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
 
 
-#if 0
-				nv_[0] = pcb_round(v->point[0] + PCB_MM_TO_COORD(0.1));
-				nv_[1] = pcb_round(v->point[1] + PCB_MM_TO_COORD(0.1));
+				nv_[0] = pcb_round(v->point[0]);
+				nv_[1] = pcb_round(v->point[1]);
 				nv = pcb_poly_node_create(&nv_);
 				pcb_poly_vertex_include_force(v, nv);
-				pull_back(v, v->prev, offs);
-				pull_back(nv, nv->next, offs);
-#endif
+
+				pull_back(v, v->prev, tune, dx, dy, prjx, prjy);
+				pull_back(nv, nv->next, tune, dx, dy, prjx, prjy);
+
+/*				v = v->next;*/
+/*				goto retry;*/
 			}
 		}
 	} while((v = v->next) != &dst->head);
