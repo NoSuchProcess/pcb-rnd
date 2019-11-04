@@ -86,82 +86,87 @@ Below is a table with the summary of core plugins.
 <tr><th>module <th>size [sloc] <th> status <th> configure<br>default <th> class <th> description
 
 
-<tr><th align=left>acompnet<td>306
+<tr><th align=left>acompnet<td>304
 <td  > WIP
 <td bgcolor="red"> disable
 <td> feature
 <td> Auto-complete the current network. A very limited autorouter/assistant.
-<tr><th align=left>act_draw<td>355
+<tr><th align=left>act_draw<td>565
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Expose drawing related API as actions
-<tr><th align=left>ar_cpcb<td>320
+<tr><th align=left>act_read<td>306
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> feature
+<td> Data access related API as actions
+<tr><th align=left>ar_cpcb<td>318
 <td  > WIP
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Autoroute using external tool c-pcb
-<tr><th align=left>asm<td>491
+<tr><th align=left>asm<td>559
 <td  > WIP
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> hand assembly assistant GUI
-<tr><th align=left>autocrop<td>53
+<tr><th align=left>autocrop<td>51
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Reduce the board dimensions to just enclose the objects on the board.
-<tr><th align=left>autoplace<td>720
+<tr><th align=left>autoplace<td>646
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Automatically place subcircuits.
-<tr><th align=left>autoroute<td>4448
+<tr><th align=left>autoroute<td>4385
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Automatically route selected or all rats. This is the original autorouter.
-<tr><th align=left>cam<td>215
-<td  > WIP
+<tr><th align=left>cam<td>1574
+<td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Configurable output job based batch exporting
-<tr><th align=left>ddraft<td>2018
+<tr><th align=left>ddraft<td>2129
 <td  > WIP
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Actions and a command interpreter for supporting advanced/precise 2 dimensional drafting
-<tr><th align=left>diag<td>722
+<tr><th align=left>diag<td>795
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable
 <td> feature
 <td> Actions for pcb-rnd core diagnostics, intended for developers. These are not in core because end users normally don't need these. As a plugin, due to dynamic loading, it can be dropped on an existing pcb-rnd installation with minimal risk of scaring away a reproducible bug.
-<tr><th align=left>dialogs<td>7071
+<tr><th align=left>dialogs<td>8710
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable
 <td> feature
 <td> Interactive core functionality: HID-independent GUI dialogs (enabled by GUI HIDs)
-<tr><th align=left>distalign<td>441
+<tr><th align=left>distalign<td>439
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Introducing Align() and Distribute(), which work much like the similarly named functions in Visio. Given that PCB does not have the concept of "first selected object" to draw on, the reference points can be selected by arguments.
-<tr><th align=left>distaligntext<td>477
+<tr><th align=left>distaligntext<td>475
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Same as distalign, operates on text objects.
-<tr><th align=left>djopt<td>2253
+<tr><th align=left>djopt<td>2251
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Various board optimization algorithms.
-<tr><th align=left>draw_csect<td>785
+<tr><th align=left>draw_csect<td>787
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable
 <td> feature
 <td> Draw cross section and layer map.
-<tr><th align=left>draw_fab<td>288
+<tr><th align=left>draw_fab<td>291
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
@@ -171,52 +176,52 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disable
 <td> feature
 <td> Draw the font selector GUI
-<tr><th align=left>drc_orig<td>353
+<tr><th align=left>drc_orig<td>352
 <td  >
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> A few simple, hardwired Design Rule Checks.
-<tr><th align=left>expfeat<td>33
+<tr><th align=left>expfeat<td>31
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable
 <td> feature
 <td> Staging plugin for experimenting with new actions and dialogs before getting them into core or other plugins
-<tr><th align=left>export_bboard<td>447
-<td  > WIP
-<td bgcolor="red"> disable-all
-<td> export
-<td> Export breadboard
-<tr><th align=left>export_bom<td>234
+<tr><th align=left>export_bom<td>240
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export bom (Bill of Materials)
-<tr><th align=left>export_dsn<td>451
+<tr><th align=left>export_dsn<td>445
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export specctra .dsn files
-<tr><th align=left>export_dxf<td>610
+<tr><th align=left>export_dxf<td>2332
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export dxf
-<tr><th align=left>export_fidocadj<td>279
+<tr><th align=left>export_excellon<td>563
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> export
+<td> Export to excellon drill/cnc files
+<tr><th align=left>export_fidocadj<td>274
 <td  > WIP
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to FidoCadJ format (.fcd)
-<tr><th align=left>export_gcode<td>2474
+<tr><th align=left>export_gcode<td>2501
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gcode
-<tr><th align=left>export_gerber<td>1260
+<tr><th align=left>export_gerber<td>1142
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to gerber
-<tr><th align=left>export_ipcd356<td>384
+<tr><th align=left>export_ipcd356<td>383
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
@@ -226,14 +231,14 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to lpr (using export_ps to generate postscript)
-<tr><th align=left>export_oldconn<td>224
+<tr><th align=left>export_oldconn<td>241
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export subc/terminal connection map in an old, custom file format
-<tr><th align=left>export_openems<td>1749
+<tr><th align=left>export_openems<td>2180
 <td  > WIP
-<td bgcolor="red"> disable
+<td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export copper to OpenEMS simulation
 <tr><th align=left>export_openscad<td>725
@@ -241,42 +246,57 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export openscad
-<tr><th align=left>export_png<td>1403
+<tr><th align=left>export_png<td>1448
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export to png, gif and jpeg
-<tr><th align=left>export_ps<td>1612
+<tr><th align=left>export_ps<td>1552
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export postscript or embedded postscript.
-<tr><th align=left>export_stat<td>316
+<tr><th align=left>export_stat<td>320
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Export various board statistics in lihata format
-<tr><th align=left>export_svg<td>671
+<tr><th align=left>export_stl<td>26
+<td  > WIP
+<td bgcolor="red"> disable
+<td> export
+<td> Export stl (triangulated surface)
+<tr><th align=left>export_svg<td>703
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Scalable Vector Graphics (SVG) exporter
-<tr><th align=left>export_test<td>92
+<tr><th align=left>export_test<td>90
 <td  > WIP
 <td bgcolor="red"> disable
 <td> export
 <td> A thin layer of code to dump exporter calls for testing the HID exporter API.
-<tr><th align=left>export_xy<td>721
+<tr><th align=left>export_vfs_fuse<td>311
+<td  > WIP
+<td bgcolor="red"> disable
+<td> export
+<td> Export all data and config of a board to a FUSE mountable filesystem
+<tr><th align=left>export_vfs_mc<td>149
+<td  > WIP
+<td bgcolor="red"> disable
+<td> export
+<td> Export all data and config of a board to GNU mc
+<tr><th align=left>export_xy<td>988
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> export
 <td> Template based export of XY centroid subcircuit data e.g. for pick & place.
-<tr><th align=left>extedit<td>315
+<tr><th align=left>extedit<td>352
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> invoke external program to edit parts of the current board
-<tr><th align=left>fontmode<td>259
+<tr><th align=left>fontmode<td>257
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
@@ -286,147 +306,147 @@ Below is a table with the summary of core plugins.
 <td bgcolor="lightgreen"> buildin
 <td> fp
 <td> Footprint: load a board and expose all the unique subcircuits on that board as a footprint library
-<tr><th align=left>fp_fs<td>428
+<tr><th align=left>fp_fs<td>440
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> fp
 <td> Footprint: file system based implementation. Used to be called Newlib: load footprints from directories. Run external processes for the parametric footprints.
-<tr><th align=left>fp_wget<td>637
+<tr><th align=left>fp_wget<td>654
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> fp
 <td> Footprint: get static (file) footprints from the web, e.g. from http://gedasymbols.org
-<tr><th align=left>hid_batch<td>294
+<tr><th align=left>hid_batch<td>325
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> HID without GUI: read actions from stdin.
-<tr><th align=left>hid_gtk2_gdk<td>1335
+<tr><th align=left>hid_gtk2_gdk<td>1286
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: GTK2 HID with GDK software rendering.
-<tr><th align=left>hid_gtk2_gl<td>916
+<tr><th align=left>hid_gtk2_gl<td>830
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: GTK2 with opengl rendering
-<tr><th align=left>hid_gtk3_cairo<td>1122
-<td  > WIP
-<td bgcolor="red"> disable-all
-<td> hid
-<td> GUI: the GTK3 HID, using cairo for rendering
-<tr><th align=left>hid_gtk3_gl<td>51
-<td  > WIP
-<td bgcolor="red"> disable-all
-<td> hid
-<td> GUI: the GTK3 HID, using gl for rendering
-<tr><th align=left>hid_lesstif<td>9133
+<tr><th align=left>hid_lesstif<td>9162
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> hid
 <td> GUI: the lesstif HID.
-<tr><th align=left>hid_remote<td>1148
+<tr><th align=left>hid_remote<td>1100
 <td  > WIP
 <td bgcolor="red"> disable-all
 <td> hid
 <td> Remote access HID: implement a protocol and use it to relay between a core and a remote HID implementation.
-<tr><th align=left>import_calay<td>177
+<tr><th align=left>import_calay<td>175
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import the netlist and footprints from a calay netlist.
-<tr><th align=left>import_dsn<td>270
+<tr><th align=left>import_dsn<td>268
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import specctra .dsn files
-<tr><th align=left>import_edif<td>3626
+<tr><th align=left>import_edif<td>3620
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import plugin for netlists in the EDIF format.
-<tr><th align=left>import_fpcb_nl<td>153
+<tr><th align=left>import_fpcb_nl<td>151
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import the netlist and footprints from freepcb format (exported by e.g. easyeda)
-<tr><th align=left>import_hpgl<td>133
+<tr><th align=left>import_hpgl<td>131
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Emulate a plotter and import the plot as lines, arcs and polygons.
-<tr><th align=left>import_ipcd356<td>383
+<tr><th align=left>import_ipcd356<td>381
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> IPC-D-356 Netlist and pad centroid import
-<tr><th align=left>import_ltspice<td>244
+<tr><th align=left>import_ltspice<td>502
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import the netlist and footprints from an ltspice .asc and .net pair of files
-<tr><th align=left>import_mentor_sch<td>495
+<tr><th align=left>import_mentor_sch<td>494
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import Mentor Graphics Design Capture from flattened .edf netlist, using a parts conversion table.
-<tr><th align=left>import_mucs<td>124
+<tr><th align=left>import_mucs<td>122
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import lines and vias from MUCS unixplot .pl files
-<tr><th align=left>import_netlist<td>141
+<tr><th align=left>import_netlist<td>133
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import plugin for netlists in the classic pcb netlist format.
-<tr><th align=left>import_sch<td>335
+<tr><th align=left>import_pxm_gd<td>103
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> import
+<td> Import png, gif and jpeg using libgd
+<tr><th align=left>import_pxm_pnm<td>119
+<td bgcolor="lightgreen" > works
+<td bgcolor="lightgreen"> buildin
+<td> import
+<td> Import pnm P4, P5 and P6 into pcb-rnd pixmaps
+<tr><th align=left>import_sch<td>333
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Imports footprints and netlist data from the schematics (or some other source).
-<tr><th align=left>import_tinycad<td>151
+<tr><th align=left>import_tinycad<td>149
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import the netlist and footprints from a tinycad netlist.
-<tr><th align=left>import_ttf<td>165
+<tr><th align=left>import_ttf<td>163
 <td  > WIP
 <td bgcolor="lightgreen"> buildin
 <td> import
 <td> Import outline ttf glyphs into the current font, either as polygons or lines
-<tr><th align=left>io_autotrax<td>1584
+<tr><th align=left>io_autotrax<td>1585
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Import and export autotrax layouts and footprints.
-<tr><th align=left>io_dsn<td>1676
+<tr><th align=left>io_dsn<td>1673
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable
 <td> io
 <td> Load and save specctra DSN files
-<tr><th align=left>io_eagle<td>4027
+<tr><th align=left>io_eagle<td>4044
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Load the design from eagle's xml and binary formats.
-<tr><th align=left>io_hyp<td>4087
+<tr><th align=left>io_hyp<td>4096
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Import plugin for hyperlynx geometry (no polygons yet).
-<tr><th align=left>io_kicad<td>3508
+<tr><th align=left>io_kicad<td>3546
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Load and save the design and footprints in Kicad's s-expression format - this is the new, currently preferred format in Kicad.
-<tr><th align=left>io_kicad_legacy<td>936
+<tr><th align=left>io_kicad_legacy<td>902
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Export the design and footprints in Kicad's legacy format.
-<tr><th align=left>io_lihata<td>4160
+<tr><th align=left>io_lihata<td>4341
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
@@ -436,22 +456,22 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disable
 <td> io
 <td> Load Mentor Graphics cell footprint library and make footprints available (e.g. for fp_board)
-<tr><th align=left>io_pcb<td>2859
+<tr><th align=left>io_pcb<td>2950
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Load and save the design and footprints in the original gEDA/PCB text format.
-<tr><th align=left>io_tedax<td>2281
+<tr><th align=left>io_tedax<td>2518
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> io
 <td> Import and export tEDAx netlists and footprints.
-<tr><th align=left>jostle<td>423
+<tr><th align=left>jostle<td>420
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Pushes lines out of the way.
-<tr><th align=left>lib_compat_help<td>1167
+<tr><th align=left>lib_compat_help<td>1249
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> lib
@@ -461,142 +481,157 @@ Below is a table with the summary of core plugins.
 <td bgcolor="red"> disable-all
 <td> lib
 <td> S-expression parser lib
-<tr><th align=left>lib_gtk_common<td>10463
+<tr><th align=left>lib_gtk_common<td>5639
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable-all
 <td> lib
-<td> hid_gtk* common code (regardless of gtk version or drawing mechanism: for both gtk2 and gtk3 and for both sw rendering and gl)
-<tr><th align=left>lib_gtk_hid<td>1313
+<td> hid_gtk* common code (regardless of rendering mechanism: for both gdk sw rendering and gl)
+<tr><th align=left>lib_hid_common<td>2044
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable-all
 <td> lib
-<td> Generic gtk HID implementation, independent of GTK version (2 vs. 3) and rendering engine. Mostly a dispatcher that fills in all the glue to connect the parts. An actual gtk HID implementation may use this lib or replace parts of it or the whole with local implementation.
-<tr><th align=left>lib_hid_common<td>715
-<td bgcolor="lightgreen" > works
-<td bgcolor="red"> disable-all
-<td> lib
-<td> hid_* common helper functions
-<tr><th align=left>lib_hid_gl<td>1106
+<td> hidlib common helper functions for non-PCB GUI
+<tr><th align=left>lib_hid_gl<td>1014
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable-all
 <td> lib
 <td> generic openGL renderer shared among GUI HIDs
-<tr><th align=left>lib_legacy_func<td>90
+<tr><th align=left>lib_hid_pcbui<td>2419
 <td bgcolor="lightgreen" > works
-<td bgcolor="lightgreen"> buildin
+<td bgcolor="red"> disable-all
 <td> lib
-<td> Random collection of old/obsolete (legacy) functions. 3rd party plugins may depend on them. This module implements C functions and variables and does not register actions or flags.
+<td> PCB related helper functions for GUI HIDs
 <tr><th align=left>lib_netmap<td>216
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable-all
 <td> lib
 <td> create disposable cross-reference maps between all objects and all nets
-<tr><th align=left>lib_polyhelp<td>708
+<tr><th align=left>lib_polyhelp<td>740
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> lib
 <td> functions to help plugins processing polygons and PolyHatch() action
-<tr><th align=left>loghid<td>307
+<tr><th align=left>lib_vfs<td>456
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disable-all
+<td> lib
+<td> Retrieve, sort and query data under VFS export plugins
+<tr><th align=left>lib_wget<td>67
+<td bgcolor="lightgreen" > works
+<td bgcolor="red"> disable-all
+<td> lib
+<td> retrieve files from the web using wget(1)
+<tr><th align=left>loghid<td>295
 <td  > WIP
 <td bgcolor="red"> disable
 <td> feature
 <td> Sits between a HID (or exporter) and the core and logs all core->plugin calls made through the HID structure.
-<tr><th align=left>millpath<td>246
+<tr><th align=left>millpath<td>402
 <td  > WIP
 <td bgcolor="red"> disable
 <td> feature
 <td> Calculate and simulate toolpath for milling away opper
-<tr><th align=left>mincut<td>948
+<tr><th align=left>mincut<td>882
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Use the minimal cut algorithm to indicate shorts: instead of highlighting two random pins/pads, try to highlight the least number of objects that connect the two networks.
-<tr><th align=left>oldactions<td>270
+<tr><th align=left>oldactions<td>268
 <td bgcolor="lightgreen" > works
 <td bgcolor="red"> disable
 <td> feature
 <td> Random collection of old/obsolete actions. Bell(): audible feedback, DumpLibrary(): print footprint library on stdout, a set of debug actions useful for writing pcb scripts: Debug(), DebugXY(), Return(). Old plugin actions to toggle or set settings that are now accessible via the unified config system (vendordrill, djopt)
-<tr><th align=left>polycombine<td>209
+<tr><th align=left>order<td>309
+<td  > WIP
+<td bgcolor="red"> disable
+<td> feature
+<td> order boards through the Internet
+<tr><th align=left>order_pcbway<td>612
+<td  > WIP
+<td bgcolor="red"> disable
+<td> feature
+<td> order from PCBWay through the Internet
+<tr><th align=left>polycombine<td>207
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> The selected polygons are combined together according to the ordering of their points.
-<tr><th align=left>polystitch<td>98
+<tr><th align=left>polystitch<td>96
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> The polygon under the cursor (based on closest-corner) is stitched together with the polygon surrounding it on the same layer. Use with pstoedit conversions where there's a "hole" in the shape - select the hole.
-<tr><th align=left>propedit<td>1540
+<tr><th align=left>propedit<td>1913
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> List and edit properties of a group of objects.
-<tr><th align=left>puller<td>1749
+<tr><th align=left>puller<td>1747
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Pull traces to minimize their length.
-<tr><th align=left>query<td>1986
+<tr><th align=left>query<td>2276
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> pcb-rnd query language: execute expressions on objects and rules for the programmed drc.
-<tr><th align=left>renumber<td>332
+<tr><th align=left>renumber<td>322
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Renumber subcircuits (renaming them) and generate a text file for back annotation.
-<tr><th align=left>report<td>899
+<tr><th align=left>report<td>910
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Report() and ReportObject() actions - print a report about design objects.
-<tr><th align=left>rubberband_orig<td>1252
+<tr><th align=left>rubberband_orig<td>1219
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> The original rubberband code.
-<tr><th align=left>script<td>812
+<tr><th align=left>script<td>1498
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Load and execute scripts written in any language supported by fungw
-<tr><th align=left>serpentine<td>371
+<tr><th align=left>serpentine<td>369
 <td  > WIP
 <td bgcolor="red"> disable-all
 <td> feature
 <td> Create serpentines on existing lines.
-<tr><th align=left>shand_cmd<td>167
+<tr><th align=left>shand_cmd<td>165
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> vi-like command shorthands (1..3 character long commands)
-<tr><th align=left>shape<td>829
+<tr><th align=left>shape<td>828
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Generate objects of regular shape (regular polygons, circle, round rect)
-<tr><th align=left>sketch_route<td>2677
+<tr><th align=left>sketch_route<td>2701
 <td  > WIP
 <td bgcolor="red"> disable
 <td> feature
 <td> TODO
-<tr><th align=left>smartdisperse<td>276
+<tr><th align=left>smartdisperse<td>164
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Improve the initial dispersion of subcircuits by choosing an order based on the netlist, rather than the arbitrary subcircuit order. This isn't the same as a global autoplace, it's more of a linear autoplace. It might make some useful local groupings. For example, you should not have to chase all over the board to find the resistor that goes with a given LED.
-<tr><th align=left>stroke<td>133
+<tr><th align=left>stroke<td>288
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Configurable gesture recognition with libstroke.
-<tr><th align=left>teardrops<td>217
+<tr><th align=left>teardrops<td>215
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
 <td> Draw teardrops on pins.
-<tr><th align=left>vendordrill<td>517
+<tr><th align=left>vendordrill<td>515
 <td bgcolor="lightgreen" > works
 <td bgcolor="lightgreen"> buildin
 <td> feature
