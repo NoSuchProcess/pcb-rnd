@@ -176,13 +176,9 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 {
 	double tmp1, d2, dx, dy;
 
-	tmp1 = (y2-y1)*x0 - (x2-x1)*y0 + x2*y1 - y2*x1;
-	if (tmp1 < 0)
-		tmp1 = -tmp1;
-
-	dy = y2 - y1;
-	dx = x2 - x1;
-	d2 = dx * dx + dy * dy;
+	dx = x2 - x1; dy = y2 - y1;
+	tmp1 = dy*x0 - dx*y0 + x2*y1 - y2*x1;
+	d2 = dx*dx + dy*dy;
 
 	*dd2 = d2;
 	*odx = dx;
