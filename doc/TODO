@@ -212,3 +212,4 @@
 - FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
 - BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
+- BUG: bisect when globalpuller() broke [report: Igor2]
