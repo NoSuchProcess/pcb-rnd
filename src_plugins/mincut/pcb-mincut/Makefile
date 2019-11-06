@@ -1,6 +1,6 @@
-CFLAGS = -g -Wall -I../../../src_3rd/liblihata -I../../../src -I../../..
+CFLAGS = -g -Wall -I../../../src_3rd -I../../../src -I../../..
 LDFLAGS = -lm
-OBJS = main.o solve.o load.o graph.o ../../../src_3rd/liblihata/genht/htsi.o ../../../src_3rd/liblihata/genht/hash.o
+OBJS = main.o solve.o load.o graph.o ../../../src_3rd/genht/htsi.o ../../../src_3rd/genht/hash.o
 
 all: main
 
