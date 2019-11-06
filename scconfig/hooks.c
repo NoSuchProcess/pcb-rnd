@@ -502,6 +502,14 @@ int hook_detect_target()
 	require("libs/userpass/getpwuid/*",  0, 0);
 	require("libs/script/fungw/*",  0, 0);
 
+	if (istrue(get("libs/script/fungw/presents"))) {
+		require("libs/script/fungw/user_call_ctx/*",  0, 0);
+		if (!istrue(get("libs/script/fungw/user_call_ctx/presents"))) {
+			put("libs/script/fungw/presents", sfalse);
+			report_repeat("\nWARNING: system installed fungw is too old, can not use it, please install a newer version (falling back to minimal fungw shipped with pcb-rnd).\n\n");
+		}
+	}
+
 	if (!istrue(get("libs/script/fungw/presents")))
 		fungw_hook_detect_target();
 
@@ -718,7 +726,7 @@ int hook_detect_target()
 
 	if (!istrue(get("libs/script/fungw/presents"))) {
 		if (plug_is_enabled("script"))
-			report_repeat("WARNING: Since there's no system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure.\n");
+			report_repeat("WARNING: Since there's no suitable system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure.\n");
 		put("/local/pcb/fungw_system", sfalse);
 	}
 	else
