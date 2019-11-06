@@ -17,9 +17,13 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "graph.h"
-#include "safe_fs.h"
+
+/* allow direct use, bypassing safe_fs */
+#undef popen
+#undef pclose
 
 /* allocate a new graph of n nodes with no edges */
 gr_t *gr_alloc(int n)
@@ -97,7 +101,7 @@ int gr_draw(gr_t *g, const char *name, const char *type)
 
 	cmd = malloc(strlen(type)*2 + strlen(name) + 64);
 	sprintf(cmd, "dot -T%s -o %s.%s", type, name, type);
-	f = pcb_popen(NULL, cmd, "w");
+	f = popen(cmd, "w");
 	if (f == NULL)
 		return -1;
 
@@ -122,7 +126,7 @@ int gr_draw(gr_t *g, const char *name, const char *type)
 	}
 
 	fprintf(f, "}\n");
-	pcb_pclose(f);
+	pclose(f);
 	return 0;
 }
 
