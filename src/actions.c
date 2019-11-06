@@ -304,7 +304,8 @@ fgw_error_t pcb_actionv_bin(const char *name, fgw_arg_t *res, int argc, fgw_arg_
 		return FGW_ERR_NOT_FOUND;
 
 	argv[0].type = FGW_FUNC;
-	argv[0].val.func = f;
+	argv[0].val.argv0.func = f;
+	argv[0].val.argv0.user_call_ctx = NULL;
 
 	res->type = FGW_INVALID;
 	return pcb_actionv_(f, res, argc, argv);
@@ -335,7 +336,8 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 		return 1;
 	}
 	argv[0].type = FGW_FUNC;
-	argv[0].val.func = f;
+	argv[0].val.argv0.func = f;
+	argv[0].val.argv0.user_call_ctx = NULL;
 	for(n = 0; n < argc; n++) {
 		argv[n+1].type = FGW_STR;
 		argv[n+1].val.str = (char *)argsv[n];
@@ -594,7 +596,8 @@ static int pcb_cli_common(fgw_arg_t *args)
 		return -1;
 
 	args[0].type = FGW_FUNC;
-	args[0].val.func = f;
+	args[0].val.argv0.func = f;
+	args[0].val.argv0.user_call_ctx = NULL;
 	return 0;
 }
 
@@ -679,7 +682,9 @@ int pcb_parse_command(const char *str_, pcb_bool force_action_mode)
 	end = strpbrk(str_, "\n\r");
 
 	args[0].type = FGW_FUNC;
-	args[0].val.func = f;
+	args[0].val.argv0.func = f;
+	args[0].val.argv0.user_call_ctx = NULL;
+
 	if (end == NULL) {
 		/* optimization: string doesn't contain newline - pass it as is to save an strdup */
 		args[1].type = FGW_STR;

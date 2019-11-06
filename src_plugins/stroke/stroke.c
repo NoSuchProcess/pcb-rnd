@@ -122,7 +122,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 
-		args[0].type = FGW_FUNC; args[0].val.func = f;
+		args[0].type = FGW_FUNC; args[0].val.argv0.func = f; args[0].val.argv0.user_call_ctx = NULL;
 		args[1].type = FGW_COORD; fgw_coord(&args[1]) = stroke_first_x;
 		args[2].type = FGW_COORD; fgw_coord(&args[2]) = stroke_first_y;
 		args[3].type = FGW_COORD; fgw_coord(&args[3]) = stroke_last_x;

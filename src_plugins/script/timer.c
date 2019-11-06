@@ -70,7 +70,8 @@ static void timer_cb(pcb_hidval_t hv)
 			if (f == NULL)
 				goto remove;
 			argv[0].type = FGW_FUNC;
-			argv[0].val.func = f;
+			argv[0].val.argv0.func = f;
+			argv[0].val.argv0.user_call_ctx = NULL;
 			argv[1].type = FGW_DOUBLE;
 			argv[1].val.nat_double = now;
 			argv[2].type = FGW_LONG;

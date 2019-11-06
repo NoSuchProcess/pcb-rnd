@@ -459,7 +459,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	PCB_ACT_CONVARG(4, FGW_STR, ElementList, value = argv[4].val.str);
 
 	args[0].type = FGW_FUNC;
-	args[0].val.func = NULL;
+	args[0].val.argv0.func = NULL;
+	args[0].val.argv0.user_call_ctx = argv[0].val.argv0.user_call_ctx;
 	args[1] = argv[3];
 	args[2] = argv[2];
 	args[3] = argv[4];

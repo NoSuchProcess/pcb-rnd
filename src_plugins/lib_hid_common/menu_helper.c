@@ -101,7 +101,8 @@ int pcb_hid_get_flag(const char *name)
 				memcpy(buff, cp, len);
 				buff[len] = '\0';
 				argv[0].type = FGW_FUNC;
-				argv[0].val.func = f;
+				argv[0].val.argv0.func = f;
+				argv[0].val.argv0.user_call_ctx = NULL;
 				argv[1].type = FGW_STR;
 				argv[1].val.str = buff;
 				res.type = FGW_INVALID;

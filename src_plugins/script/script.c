@@ -127,7 +127,8 @@ static void script_free(script_t *s, const char *preunload, const char *cookie)
 		f = fgw_func_lookup(s->obj, "preunload");
 		if (f != NULL) {
 			argv[0].type = FGW_FUNC;
-			argv[0].val.func = f;
+			argv[0].val.argv0.func = f;
+			argv[0].val.argv0.user_call_ctx = NULL;
 			argv[1].type = FGW_STR;
 			argv[1].val.cstr = preunload;
 			res.type = FGW_INVALID;
