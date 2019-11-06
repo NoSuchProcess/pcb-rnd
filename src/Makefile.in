@@ -653,12 +653,12 @@ install_librnd_sy:
 install:
 	$(MAKE) install_pcbrnd HOW="install -f"
 	$(MAKE) install_librnd HOW="install -f"
-	$(MAKE) install_librnd_sy HOW="linstall -f"
+	$(MAKE) install_librnd_sy HOW="ln -f --relative"
 
 linstall:
 	$(MAKE) install_pcbrnd HOW="linstall -f"
 	$(MAKE) install_librnd HOW="linstall -f"
-	$(MAKE) install_librnd_sy HOW="linstall -f"
+	$(MAKE) install_librnd_sy HOW="ln -f --relative"
 
 uninstall:
 	$(MAKE) install_pcbrnd HOW="uninstall"
