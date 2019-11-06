@@ -325,10 +325,9 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int
 
 static void pcb_mincut_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	int *handled;
+	int *handled, *cancel;
 	pcb_any_obj_t *term;
 	pcb_net_t *Snet, *Tnet;
-	int cancel = 0;
 
 	if (!conf_mincut.plugins.mincut.enable)
 		return;
@@ -336,10 +335,11 @@ static void pcb_mincut_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	if (argc < 5)
 		return;
 
-	if (argv[4].type != PCB_EVARG_PTR)
+	if ((argv[4].type != PCB_EVARG_PTR) || (argv[5].type != PCB_EVARG_PTR))
 		return;
 	handled = (int *)argv[4].d.p;
-	if (*handled)
+	cancel = (int *)argv[5].d.p;
+	if (*handled || *cancel)
 		return;
 
 	if (argv[2].type != PCB_EVARG_PTR)
@@ -354,7 +354,7 @@ static void pcb_mincut_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		return;
 	Tnet = (pcb_net_t *)argv[3].d.p;
 
-	if (proc_short(term, Snet, Tnet, &cancel) == 0)
+	if (proc_short(term, Snet, Tnet, cancel) == 0)
 		*handled = 1;
 }
 

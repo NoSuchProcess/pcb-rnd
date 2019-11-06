@@ -141,6 +141,7 @@ typedef struct {
 	pcb_net_t *current_net;
 	htsp_t found;
 	pcb_cardinal_t changed, missing, num_shorts;
+	int cancel_advanced; /* do not do any time consuming advanced operations (such as mincut) in the event handler because the user already clicked cancel */
 } pcb_short_ctx_t;
 
 void pcb_net_short_ctx_init(pcb_short_ctx_t *sctx, const pcb_board_t *pcb, pcb_net_t *net);
