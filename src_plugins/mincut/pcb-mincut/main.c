@@ -23,7 +23,7 @@ int main()
 		fprintf(stderr, "Failed to load input, exiting\n");
 		exit(1);
 	}
-	best = solve(g, NULL, &cancel);
+	best = pcb_mincut_solve(g, NULL, &cancel);
 	for(n = 0; best[n*2] != -1; n++)
 		printf("%s-%s\n", strempty(g->node2name[best[n*2+0]]), strempty(g->node2name[best[n*2+1]]));
 

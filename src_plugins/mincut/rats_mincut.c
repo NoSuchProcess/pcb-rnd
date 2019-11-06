@@ -282,7 +282,7 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int
 #endif
 
 	if (!bad_gr) {
-		solution = solve(g, pcb_hid_progress, cancel);
+		solution = pcb_mincut_solve(g, pcb_hid_progress, cancel);
 		if (cancel)
 			return 1;
 
