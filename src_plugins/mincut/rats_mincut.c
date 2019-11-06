@@ -109,7 +109,7 @@ static int proc_short_cb(pcb_find_t *fctx, pcb_any_obj_t *curr, pcb_any_obj_t *f
 }
 
 /* returns 0 on succes */
-static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet)
+static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int *cancel)
 {
 	pcb_coord_t x, y;
 	short_conn_t *n, **lut_by_oid, **lut_by_gid, *next;
@@ -282,7 +282,9 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet)
 #endif
 
 	if (!bad_gr) {
-		solution = solve(g, pcb_hid_progress);
+		solution = solve(g, pcb_hid_progress, cancel);
+		if (cancel)
+			return 1;
 
 		if (solution != NULL) {
 			debprintf("Would cut:\n");
@@ -326,6 +328,7 @@ static void pcb_mincut_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	int *handled;
 	pcb_any_obj_t *term;
 	pcb_net_t *Snet, *Tnet;
+	int cancel = 0;
 
 	if (!conf_mincut.plugins.mincut.enable)
 		return;
@@ -351,7 +354,7 @@ static void pcb_mincut_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		return;
 	Tnet = (pcb_net_t *)argv[3].d.p;
 
-	if (proc_short(term, Snet, Tnet) == 0)
+	if (proc_short(term, Snet, Tnet, &cancel) == 0)
 		*handled = 1;
 }
 

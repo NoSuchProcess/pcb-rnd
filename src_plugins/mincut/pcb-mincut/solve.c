@@ -207,7 +207,7 @@ int solve_(gr_t *g_, int *cuts)
 }
 
 #define strempty(s) ((s) == NULL ? "" : (s))
-int *solve(gr_t *g, int (*progress)(long so_far, long total, const char *msg))
+int *solve(gr_t *g, int (*progress)(long so_far, long total, const char *msg), int *cancel)
 {
 	int n, best, res, till, cuts_size, have_progress = 0;
 	double nd;
@@ -236,8 +236,10 @@ int *solve(gr_t *g, int (*progress)(long so_far, long total, const char *msg))
 			currt = time(NULL);
 			if (currt >= nextt) {
 				have_progress = 1;
-				if (progress(n, till, "Optimizing shortcircuit indication\nusing mincut... Press cancel\nto get a dumb indication"))
+				if (progress(n, till, "Optimizing shortcircuit indication\nusing mincut... Press cancel\nto get a dumb indication")) {
+					*cancel = 1;
 					break;
+				}
 				nextt = currt+1;
 			}
 		}
