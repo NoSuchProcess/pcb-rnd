@@ -271,7 +271,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (conf_import_sch.plugins.import_sch.verbose)
 			pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
 
-		fgw_vcall(&pcb_fgw, &rs, "executefile", FGW_STR, tmpfile, 0);
+		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfile, 0);
 
 		for(i = 0; i < nsources; i++)
 			free((char *) cmd[8 + i]);
@@ -348,7 +348,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 
-		fgw_vcall(&pcb_fgw, &rs, "executefile", FGW_STR, tmpfile, 0);
+		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfile, 0);
 
 		free((char*)cmd[2]);
 		free((char*)cmd[3]);

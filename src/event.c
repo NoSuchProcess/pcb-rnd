@@ -232,7 +232,7 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 	for (e = events[ev]; e != NULL; e = e->next)
 		e->handler(hidlib, e->user_data, argc, argv);
 
-	fgw_call_all(&pcb_fgw, pcb_fgw_evnames[ev], argc, fargv);
+	fgw_ucall_all(&pcb_fgw, hidlib, pcb_fgw_evnames[ev], argc, fargv);
 }
 
 void pcb_events_init(void)
