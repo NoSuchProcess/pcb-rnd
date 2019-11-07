@@ -251,6 +251,20 @@ int pcb_action(const char *name)
 	return pcb_actionv(name, 0, 0);
 }
 
+int pcb_actionva(const char *name, ...)
+{
+	const char *argv[20];
+	int argc = 0;
+	va_list ap;
+	char *arg;
+
+	va_start(ap, name);
+	while ((arg = va_arg(ap, char *)) != 0)
+		argv[argc++] = arg;
+	va_end(ap);
+	return pcb_actionv(name, argc, argv);
+}
+
 int pcb_actionl(const char *name, ...)
 {
 	const char *argv[20];

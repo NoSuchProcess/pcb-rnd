@@ -76,9 +76,13 @@ void pcb_remove_actions(const pcb_action_t *a, int n);
 void pcb_remove_actions_by_cookie(const char *cookie);
 
 int pcb_action(const char *action_);
-int pcb_actionl(const char *action_, ...); /* NULL terminated */
+int pcb_actionva(const char *action_, ...); /* NULL terminated */
 int pcb_actionv(const char *action_, int argc_, const char **argv_);
 fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
+
+int pcb_actionl(const char *action_, ...); /* NULL terminated - DEPRECATED, DO NOT USE (does not set user_call_ctx) */
+
 
 /* Call an action by name, passing arguments and res in fungw binary format;
    Caller must leave argv[0] empty for the function designator. */
