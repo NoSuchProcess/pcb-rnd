@@ -248,7 +248,7 @@ void pcb_dump_actions(void)
 
 int pcb_action(pcb_hidlib_t *hl, const char *name)
 {
-	return pcb_actionv(name, 0, 0);
+	return pcb_actionv(hl, name, 0, 0);
 }
 
 int pcb_actionva(pcb_hidlib_t *hl, const char *name, ...)
@@ -262,7 +262,7 @@ int pcb_actionva(pcb_hidlib_t *hl, const char *name, ...)
 	while ((arg = va_arg(ap, char *)) != 0)
 		argv[argc++] = arg;
 	va_end(ap);
-	return pcb_actionv(name, argc, argv);
+	return pcb_actionv(hl, name, argc, argv);
 }
 
 int pcb_actionl(const char *name, ...)
@@ -276,7 +276,7 @@ int pcb_actionl(const char *name, ...)
 	while ((arg = va_arg(ap, char *)) != 0)
 		argv[argc++] = arg;
 	va_end(ap);
-	return pcb_actionv(name, argc, argv);
+	return pcb_actionv(NULL, name, argc, argv);
 }
 
 fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -326,7 +326,7 @@ fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, 
 }
 
 
-int pcb_actionv(const char *name, int argc, const char **argsv)
+int pcb_actionv(pcb_hidlib_t *hl, const char *name, int argc, const char **argsv)
 {
 	fgw_func_t *f;
 	fgw_arg_t res, argv[PCB_ACTION_MAX_ARGS+1];
@@ -351,7 +351,7 @@ int pcb_actionv(const char *name, int argc, const char **argsv)
 	}
 	argv[0].type = FGW_FUNC;
 	argv[0].val.argv0.func = f;
-	argv[0].val.argv0.user_call_ctx = NULL;
+	argv[0].val.argv0.user_call_ctx = hl;
 	for(n = 0; n < argc; n++) {
 		argv[n+1].type = FGW_STR;
 		argv[n+1].val.str = (char *)argsv[n];
@@ -375,7 +375,7 @@ void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int for
 		pcb_gui->get_coords(pcb_gui, msg, x, y, force);
 }
 
-static int hid_parse_actionstring(const char *rstr, char require_parens)
+static int hid_parse_actionstring(pcb_hidlib_t *hl, const char *rstr, char require_parens)
 {
 	const char **list = NULL;
 	int max = 0;
@@ -423,7 +423,7 @@ another:
 	 * with no parameters or event.
 	 */
 	if (*sp == '\0') {
-		retcode = pcb_actionv(aname, 0, 0);
+		retcode = pcb_actionv(hl, aname, 0, 0);
 		goto cleanup;
 	}
 
@@ -446,7 +446,7 @@ another:
 		 * ","
 		 */
 		if (!maybe_empty && ((parens && *sp == ')') || (!parens && !*sp))) {
-			retcode = pcb_actionv(aname, num, list);
+			retcode = pcb_actionv(hl, aname, num, list);
 			if (retcode)
 				goto cleanup;
 
@@ -682,7 +682,7 @@ int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_
 	/* no backend or forced action mode: classic pcb-rnd action parse */
 	if (force_action_mode || (pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0')) {
 		pcb_event(NULL, PCB_EVENT_CLI_ENTER, "s", str_);
-		return hid_parse_actionstring(str_, pcb_false);
+		return hid_parse_actionstring(hl, str_, pcb_false);
 	}
 
 	/* backend: let the backend action handle it */
@@ -719,7 +719,7 @@ int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_
 
 int pcb_parse_actions(pcb_hidlib_t *hl, const char *str_)
 {
-	return hid_parse_actionstring(str_, pcb_true);
+	return hid_parse_actionstring(hl, str_, pcb_true);
 }
 
 /*** custom fungw types ***/
