@@ -243,7 +243,7 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 	}
 
 	ghid_wheel_zoom = 1;
-	hid_cfg_mouse_action(&ghid_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);
 	ghid_wheel_zoom = 0;
 
 	return TRUE;
@@ -268,7 +268,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	gdkc_window_get_pointer(drawing_area, NULL, NULL, &mask);
 
-	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
 
 	pcb_gui->invalidate_all(pcb_gui);
 	if (!ctx->port.view.panning)
@@ -287,7 +287,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 
-	hid_cfg_mouse_action(&ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
+	hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
 
 	pcb_hidlib_adjust_attached_objects();
 	pcb_gui->invalidate_all(pcb_gui);

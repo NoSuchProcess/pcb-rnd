@@ -717,7 +717,7 @@ int pcb_parse_command(const char *str_, pcb_bool force_action_mode)
 	return res.val.nat_int;
 }
 
-int pcb_parse_actions(const char *str_)
+int pcb_parse_actions(pcb_hidlib_t *hl, const char *str_)
 {
 	return hid_parse_actionstring(str_, pcb_true);
 }

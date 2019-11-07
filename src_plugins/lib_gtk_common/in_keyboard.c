@@ -85,6 +85,8 @@ ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierT
 
 gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
 {
+	pcb_gtk_t *gctx = data;
+
 	if (ghid_is_modifier_key_sym(kev->keyval))
 		return FALSE;
 
@@ -121,7 +123,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 
 		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
 		if (slen > 0) {
-			pcb_hid_cfg_keys_action(&ghid_keymap);
+			pcb_hid_cfg_keys_action(gctx->hidlib, &ghid_keymap);
 			return TRUE;
 		}
 	}

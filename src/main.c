@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
 	}
 	if (conf_core.rc.action_string) {
 		pcb_message(PCB_MSG_INFO, "Executing startup action %s\n", conf_core.rc.action_string);
-		pcb_parse_actions(conf_core.rc.action_string);
+		pcb_parse_actions(&PCB->hidlib, conf_core.rc.action_string);
 	}
 
 	if (pcbhl_main_exported(&ga, &PCB->hidlib, pcb_data_is_empty(PCB->Data))) {

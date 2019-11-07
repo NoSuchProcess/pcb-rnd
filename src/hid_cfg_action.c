@@ -28,17 +28,17 @@
 #include "hid_cfg_action.h"
 #include "actions.h"
 
-int pcb_hid_cfg_action(const lht_node_t *node)
+int pcb_hid_cfg_action(pcb_hidlib_t *hl, const lht_node_t *node)
 {
 	if (node == NULL)
 		return -1;
 	switch(node->type) {
 		case LHT_TEXT:
-			return pcb_parse_actions(node->data.text.value);
+			return pcb_parse_actions(hl, node->data.text.value);
 		case LHT_LIST:
 			for(node = node->data.list.first; node != NULL; node = node->next) {
 				if (node->type == LHT_TEXT) {
-					if (pcb_parse_actions(node->data.text.value) != 0)
+					if (pcb_parse_actions(hl, node->data.text.value) != 0)
 						return -1;
 				}
 				else

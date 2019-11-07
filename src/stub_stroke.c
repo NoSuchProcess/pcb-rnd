@@ -60,7 +60,7 @@ static void stub_stroke_start_dummy(void)
 	pcb_mid_stroke = pcb_true;
 }
 
-static int stub_stroke_finish_dummy(void)
+static int stub_stroke_finish_dummy(pcb_hidlib_t *hl)
 {
 	if (far) {
 		if (!warned) {
@@ -78,4 +78,4 @@ void (*pcb_stub_stroke_record)(pcb_coord_t ev_x, pcb_coord_t ev_y) = stub_stroke
 void (*pcb_stub_stroke_start)(void) = stub_stroke_start_dummy;
 
 /* Returns 0 on success (gesture recognized) */
-int (*pcb_stub_stroke_finish)(void) = stub_stroke_finish_dummy;
+int (*pcb_stub_stroke_finish)(pcb_hidlib_t *hl) = stub_stroke_finish_dummy;

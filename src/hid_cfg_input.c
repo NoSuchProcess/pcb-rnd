@@ -182,10 +182,10 @@ static lht_node_t *find_best_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_
 	return NULL;
 }
 
-void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active)
+void hid_cfg_mouse_action(pcb_hidlib_t *hl, pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active)
 {
 	pcbhl_conf.temp.click_cmd_entry_active = cmd_entry_active;
-	pcb_hid_cfg_action(find_best_action(mouse, button_and_mask));
+	pcb_hid_cfg_action(hl, find_best_action(mouse, button_and_mask));
 	pcb_event(NULL, PCB_EVENT_USER_INPUT_POST, NULL);
 	pcbhl_conf.temp.click_cmd_entry_active = 0;
 }
@@ -557,21 +557,21 @@ int pcb_hid_cfg_keys_input(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsig
 	return pcb_hid_cfg_keys_input_(km, mods, key_raw, key_tr, km->seq, &km->seq_len);
 }
 
-int pcb_hid_cfg_keys_action_(pcb_hid_cfg_keyseq_t **seq, int seq_len)
+int pcb_hid_cfg_keys_action_(pcb_hidlib_t *hl, pcb_hid_cfg_keyseq_t **seq, int seq_len)
 {
 	int res;
 
 	if (seq_len < 1)
 		return -1;
 
-	res = pcb_hid_cfg_action(seq[seq_len-1]->action_node);
-	pcb_event(NULL, PCB_EVENT_USER_INPUT_POST, NULL);
+	res = pcb_hid_cfg_action(hl, seq[seq_len-1]->action_node);
+	pcb_event(hl, PCB_EVENT_USER_INPUT_POST, NULL);
 	return res;
 }
 
-int pcb_hid_cfg_keys_action(pcb_hid_cfg_keys_t *km)
+int pcb_hid_cfg_keys_action(pcb_hidlib_t *hl, pcb_hid_cfg_keys_t *km)
 {
-	int ret = pcb_hid_cfg_keys_action_(km->seq, km->seq_len_action);
+	int ret = pcb_hid_cfg_keys_action_(hl, km->seq, km->seq_len_action);
 	km->seq_len_action = 0;
 	return ret;
 }

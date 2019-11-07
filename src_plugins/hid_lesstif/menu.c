@@ -212,7 +212,7 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 	}
 
 	lesstif_need_idle_proc();
-	pcb_hid_cfg_action(node);
+	pcb_hid_cfg_action(ltf_hidlib, node);
 }
 
 static void note_accelerator(const lht_node_t *node)
@@ -295,7 +295,7 @@ TODO("TODO#3: pass on raw and translated keys")
 
 	/* Parsing actions may not return until more user interaction
 	   happens.  */
-	pcb_hid_cfg_keys_action(&lesstif_keymap);
+	pcb_hid_cfg_keys_action(ltf_hidlib, &lesstif_keymap);
 
 	return 1;
 }

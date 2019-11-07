@@ -100,7 +100,7 @@ int pcb_parse_command(const char *str_, pcb_bool force_action_mode);
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only
    "action(arg1, arg2)" */
-int pcb_parse_actions(const char *str_);
+int pcb_parse_actions(pcb_hidlib_t *hl, const char *str_);
 
 /* Return a static buffer with the current prompt plus an optional
    suffix glued to it. Valid until the next call. */

@@ -37,8 +37,11 @@
 #include "actions.h"
 #include "compat_misc.h"
 
+#include "util_listener.h"
+
 static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gpointer data)
 {
+	pcb_gtk_t *gctx = data;
 	GIOStatus status;
 	gchar *str;
 	gsize len;
@@ -55,7 +58,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 		status = g_io_channel_read_line(source, &str, &len, &term, &err);
 		switch (status) {
 		case G_IO_STATUS_NORMAL:
-			pcb_parse_actions(str);
+			pcb_parse_actions(gctx->hidlib, str);
 			g_free(str);
 			break;
 
@@ -87,12 +90,12 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 	return TRUE;
 }
 
-void pcb_gtk_create_listener(void)
+void pcb_gtk_create_listener(pcb_gtk_t *gctx)
 {
 	GIOChannel *channel;
 	int fd = pcb_fileno(stdin);
 
 	channel = g_io_channel_unix_new(fd);
-	g_io_add_watch(channel, G_IO_IN, ghid_listener_cb, NULL);
+	g_io_add_watch(channel, G_IO_IN, ghid_listener_cb, gctx);
 }
 

@@ -1022,7 +1022,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #else
 				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0);
 #endif
-			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
+			hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 
 			pcb_notify_crosshair_change(pcb_true);
 			break;
@@ -1044,7 +1044,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0)
 #endif
 				+ PCB_M_Release;
-			hid_cfg_mouse_action(&lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
+			hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 		}
@@ -1613,7 +1613,7 @@ static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
 
 	if (nbytes) {
 		buf[nbytes] = '\0';
-		pcb_parse_actions(buf);
+		pcb_parse_actions(ltf_hidlib, buf);
 	}
 }
 

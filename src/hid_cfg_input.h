@@ -39,7 +39,7 @@ typedef struct {
 } pcb_hid_cfg_mouse_t;
 
 int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse);
-void hid_cfg_mouse_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active);
+void hid_cfg_mouse_action(pcb_hidlib_t *hl, pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active);
 
 
 /************************** KEYBOARD ***************************/
@@ -151,8 +151,8 @@ int pcb_hid_cfg_keys_input_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsi
 
 /* Run the action for a key sequence looked up by pcb_hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */
-int pcb_hid_cfg_keys_action(pcb_hid_cfg_keys_t *km);
-int pcb_hid_cfg_keys_action_(pcb_hid_cfg_keyseq_t **seq, int seq_len);
+int pcb_hid_cfg_keys_action(pcb_hidlib_t *hl, pcb_hid_cfg_keys_t *km);
+int pcb_hid_cfg_keys_action_(pcb_hidlib_t *hl, pcb_hid_cfg_keyseq_t **seq, int seq_len);
 
 /* Print a squence into dst in human readable form; returns strlen(dst) */
 int pcb_hid_cfg_keys_seq(pcb_hid_cfg_keys_t *km, char *dst, int dst_len);

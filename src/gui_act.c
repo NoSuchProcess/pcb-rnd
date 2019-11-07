@@ -506,7 +506,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_POLYGON_HOLE);
 		break;
 	case F_Release:
-		if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish() == 0)) {
+		if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish(argv[0].val.argv0.user_call_ctx) == 0)) {
 			/* Ugly hack: returning 1 here will break execution of the
 			   action script, so actions after this one could do things
 			   that would be executed only after non-recognized gestures */

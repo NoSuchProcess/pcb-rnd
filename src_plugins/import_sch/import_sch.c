@@ -363,7 +363,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_rats_destroy(pcb_false);
-	pcb_parse_actions("Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)");
+	pcb_parse_actions(argv[0].val.argv0.user_call_ctx, "Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)");
 
 	if (conf_import_sch.plugins.import_sch.verbose)
 		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Leaving pcb_act_Import  ===\n");

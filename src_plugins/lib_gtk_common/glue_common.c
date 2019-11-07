@@ -207,7 +207,7 @@ void pcb_gtk_mode_cursor_main(void)
 
 static void kbd_input_signals_connect(int idx, void *obj)
 {
-	ghidgui->key_press_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghidgui->port.view);
+	ghidgui->key_press_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), &ghidgui);
 	ghidgui->key_release_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
 }
 

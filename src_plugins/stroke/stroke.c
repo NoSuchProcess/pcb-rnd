@@ -55,13 +55,13 @@ static const char *pcb_stroke_cookie = "stroke plugin";
 
 static pcb_coord_t stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y;
 
-static int pcb_stroke_exec(const char *seq)
+static int pcb_stroke_exec(pcb_hidlib_t *hl, const char *seq)
 {
 	pcb_conf_listitem_t *item;
 	int idx;
 
 	conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {
-		if ((strcmp(seq, item->name) == 0) && (pcb_parse_actions(item->val.string[0]) == 0))
+		if ((strcmp(seq, item->name) == 0) && (pcb_parse_actions(hl, item->val.string[0]) == 0))
 			return 0;
 	}
 	if (conf_stroke.plugins.stroke.warn4unknown)
@@ -69,13 +69,13 @@ static int pcb_stroke_exec(const char *seq)
 	return -1;
 }
 
-static int pcb_stroke_finish(void)
+static int pcb_stroke_finish(pcb_hidlib_t *hl)
 {
 	char msg[255];
 
 	pcb_mid_stroke = pcb_false;
 	if (stroke_trans(msg))
-		return pcb_stroke_exec(msg);
+		return pcb_stroke_exec(hl, msg);
 	return -1;
 }
 
@@ -110,7 +110,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
 		if (arg == NULL)
 			PCB_ACT_FAIL(stroke);
-		pcb_stroke_exec(arg);
+		pcb_stroke_exec(argv[0].val.argv0.user_call_ctx, arg);
 	}
 	else if (pcb_strcasecmp(cmd, "zoom") == 0) {
 		fgw_arg_t args[5];
