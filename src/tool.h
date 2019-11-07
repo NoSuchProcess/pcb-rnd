@@ -80,12 +80,12 @@ typedef struct pcb_tool_s {
 	/* tool implementation */
 	void     (*init)(void);
 	void     (*uninit)(void);
-	void     (*notify_mode)(void);
-	void     (*release_mode)(void);
-	void     (*adjust_attached_objects)(void);
-	void     (*draw_attached)(void);
-	pcb_bool (*undo_act)(void);
-	pcb_bool (*redo_act)(void);
+	void     (*notify_mode)(pcb_hidlib_t *hl);
+	void     (*release_mode)(pcb_hidlib_t *hl);
+	void     (*adjust_attached_objects)(pcb_hidlib_t *hl);
+	void     (*draw_attached)(pcb_hidlib_t *hl);
+	pcb_bool (*undo_act)(pcb_hidlib_t *hl);
+	pcb_bool (*redo_act)(pcb_hidlib_t *hl);
 	
 	pcb_bool allow_when_drawing_ratlines;
 } pcb_tool_t;
@@ -121,11 +121,11 @@ void pcb_tool_gui_init(void);
 /**** Tool function wrappers; calling these will operate on the current tool 
       as defined in pcbhl_conf.editor.mode ****/
 
-void pcb_tool_notify_mode(void);
-void pcb_tool_adjust_attached_objects(void);
-void pcb_tool_draw_attached(void);
-pcb_bool pcb_tool_undo_act(void);
-pcb_bool pcb_tool_redo_act(void);
+void pcb_tool_notify_mode(pcb_hidlib_t *hidlib);
+void pcb_tool_adjust_attached_objects(pcb_hidlib_t *hl);
+void pcb_tool_draw_attached(pcb_hidlib_t *hl);
+pcb_bool pcb_tool_undo_act(pcb_hidlib_t *hl);
+pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl);
 
 
 /**** tool helper functions ****/

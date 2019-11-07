@@ -69,7 +69,7 @@ void pcb_tool_line_init(void)
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedBox.Point1.X;
 		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y;
-		pcb_tool_adjust_attached_objects();
+		pcb_tool_adjust_attached_objects(NULL);
 	}
 	else {
 		if (conf_core.editor.auto_drc) {
@@ -140,7 +140,7 @@ TODO("subc: this should work on heavy terminals too!")
 	}
 }
 
-void pcb_tool_line_notify_mode(void)
+void pcb_tool_line_notify_mode(pcb_hidlib_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
 	
@@ -335,7 +335,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 	}
 }
 
-void pcb_tool_line_adjust_attached_objects(void)
+void pcb_tool_line_adjust_attached_objects(pcb_hidlib_t *hl)
 {
 	/* don't draw outline when ctrl key is pressed */
 	if (pcb_gui->control_is_pressed(pcb_gui)) {
@@ -347,7 +347,7 @@ void pcb_tool_line_adjust_attached_objects(void)
 	}
 }
 
-void pcb_tool_line_draw_attached(void)
+void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 {
 	if (PCB->RatDraw) {
 		/* draw only if starting point exists and the line has length */
@@ -384,7 +384,7 @@ void pcb_tool_line_draw_attached(void)
 	}
 }
 
-pcb_bool pcb_tool_line_undo_act(void)
+pcb_bool pcb_tool_line_undo_act(pcb_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
 		if (conf_core.editor.auto_drc)
@@ -434,7 +434,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
 		}
 		pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
-		pcb_tool_adjust_attached_objects();
+		pcb_tool_adjust_attached_objects(hl);
 		if (--pcb_added_lines == 0) {
 			pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 			last_layer = CURRENT;
@@ -450,7 +450,7 @@ pcb_bool pcb_tool_line_undo_act(void)
 	return pcb_true;
 }
 
-pcb_bool pcb_tool_line_redo_act(void)
+pcb_bool pcb_tool_line_redo_act(pcb_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
 		return pcb_false;

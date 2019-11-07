@@ -52,7 +52,7 @@ void pcb_tool_rectangle_uninit(void)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-void pcb_tool_rectangle_notify_mode(void)
+void pcb_tool_rectangle_notify_mode(pcb_hidlib_t *hl)
 {
 	/* do update of position */
 	pcb_tool_notify_block();
@@ -91,7 +91,7 @@ void pcb_tool_rectangle_notify_mode(void)
 	}
 }
 
-void pcb_tool_rectangle_adjust_attached_objects(void)
+void pcb_tool_rectangle_adjust_attached_objects(pcb_hidlib_t *hl)
 {
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_SECOND:						/* one corner is selected */
@@ -104,7 +104,7 @@ void pcb_tool_rectangle_adjust_attached_objects(void)
 	}
 }
 
-pcb_bool pcb_tool_rectangle_anydo_act(void)
+pcb_bool pcb_tool_rectangle_anydo_act(pcb_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)

@@ -51,7 +51,7 @@
 TODO("padstack: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
-void pcb_tool_via_notify_mode(void)
+void pcb_tool_via_notify_mode(pcb_hidlib_t *hl)
 {
 
 	if (!PCB->pstk_on) {
@@ -91,7 +91,7 @@ static void xor_draw_fake_via(pcb_coord_t x, pcb_coord_t y, pcb_coord_t dia, pcb
 }
 
 
-void pcb_tool_via_draw_attached(void)
+void pcb_tool_via_draw_attached(pcb_hidlib_t *hl)
 {
 TODO("pstk: replace this when route style has a prototype")
 	xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);

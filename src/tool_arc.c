@@ -58,7 +58,7 @@ void pcb_tool_arc_init(void)
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
 		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
-		pcb_tool_adjust_attached_objects();
+		pcb_tool_adjust_attached_objects(NULL);
 	}
 	pcb_notify_crosshair_change(pcb_true);
 }
@@ -75,7 +75,7 @@ void pcb_tool_arc_uninit(void)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-void pcb_tool_arc_notify_mode(void)
+void pcb_tool_arc_notify_mode(pcb_hidlib_t *hl)
 {
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:
@@ -131,12 +131,12 @@ void pcb_tool_arc_notify_mode(void)
 	}
 }
 
-void pcb_tool_arc_adjust_attached_objects(void)
+void pcb_tool_arc_adjust_attached_objects(pcb_hidlib_t *hl)
 {
 	pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed(pcb_gui);
 }
 
-void pcb_tool_arc_draw_attached(void)
+void pcb_tool_arc_draw_attached(pcb_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 		pcb_xordraw_attached_arc(conf_core.design.line_thickness);
@@ -168,7 +168,7 @@ void pcb_tool_arc_draw_attached(void)
 
 }
 
-pcb_bool pcb_tool_arc_undo_act(void)
+pcb_bool pcb_tool_arc_undo_act(pcb_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
@@ -183,7 +183,7 @@ pcb_bool pcb_tool_arc_undo_act(void)
 		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
 		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
-		pcb_tool_adjust_attached_objects();
+		pcb_tool_adjust_attached_objects(hl);
 		if (--pcb_added_lines == 0)
 			pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 	}

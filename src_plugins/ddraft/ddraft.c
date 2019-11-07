@@ -441,7 +441,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-void ddraft_tool_draw_attached(void)
+void ddraft_tool_draw_attached(pcb_hidlib_t *hl)
 {
 	int n;
 	pcb_render->set_line_cap(pcb_crosshair.GC, pcb_cap_round);

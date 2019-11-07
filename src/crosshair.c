@@ -478,7 +478,7 @@ void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 	}
 
 	pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
-	pcb_tool_draw_attached();
+	pcb_tool_draw_attached(hidlib);
 
 	/* an attached box does not depend on a special mode */
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND || pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
@@ -1132,7 +1132,7 @@ static void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 		pcb_stub_stroke_record(ev_x, ev_y);
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
-		pcb_tool_adjust_attached_objects();
+		pcb_tool_adjust_attached_objects(&PCB->hidlib);
 		pcb_event(&PCB->hidlib, PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
 		pcb_notify_crosshair_change(pcb_true);
 	}

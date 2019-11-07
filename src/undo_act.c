@@ -104,7 +104,7 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
 	if (!function || !*function) {
 		pcb_notify_crosshair_change(pcb_false);
-		if (pcb_tool_undo_act())
+		if (pcb_tool_undo_act(argv[0].val.argv0.user_call_ctx))
 			if (pcb_undo(pcb_true) == 0)
 				pcb_board_set_changed_flag(pcb_true);
 	}
@@ -129,7 +129,7 @@ static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
 fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_notify_crosshair_change(pcb_false);
-	if (pcb_tool_redo_act())
+	if (pcb_tool_redo_act(argv[0].val.argv0.user_call_ctx))
 		if (pcb_redo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
 	pcb_notify_crosshair_change(pcb_true);

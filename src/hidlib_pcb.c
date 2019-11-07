@@ -24,9 +24,10 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "board.h"
 #include "tool.h"
 
 void pcb_hidlib_adjust_attached_objects(void)
 {
-	pcb_tool_adjust_attached_objects();
+	pcb_tool_adjust_attached_objects(&PCB->hidlib);
 }

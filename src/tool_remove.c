@@ -44,7 +44,7 @@
 #include "tool.h"
 
 
-void pcb_tool_remove_notify_mode(void)
+void pcb_tool_remove_notify_mode(pcb_hidlib_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
 	pcb_any_obj_t *obj;

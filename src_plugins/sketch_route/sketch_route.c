@@ -787,7 +787,7 @@ static void sketches_uninit()
 
 
 /*** sketch line tool ***/
-static void tool_skline_adjust_attached_objects(void);
+static void tool_skline_adjust_attached_objects(pcb_hidlib_t *hl);
 
 struct {
 	pcb_any_obj_t *start_term;
@@ -813,7 +813,7 @@ static void attached_path_next_line()
 	pcb_attached_line_t *next_l = attached_path_new_line();
 	if (last >= 0)
 		next_l->Point1 = ((pcb_attached_line_t *) attached_path.lines.array[last])->Point2;
-	tool_skline_adjust_attached_objects();
+	tool_skline_adjust_attached_objects(&PCB->hidlib);
 }
 
 static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term)
@@ -832,7 +832,7 @@ static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term
 	vtp0_init(&attached_path.lines);
 	start_l = attached_path_new_line();
 	pcb_obj_center(start_term, &start_l->Point1.X, &start_l->Point1.Y);
-	tool_skline_adjust_attached_objects();
+	tool_skline_adjust_attached_objects(&PCB->hidlib);
 
 	attached_path.start_p = sketch_get_point_at_terminal(attached_path.sketch, start_term);
 	attached_path.current_t = NULL;
@@ -1017,7 +1017,7 @@ static void tool_skline_uninit(void)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-static void tool_skline_notify_mode(void)
+static void tool_skline_notify_mode(pcb_hidlib_t *hl)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
@@ -1067,7 +1067,7 @@ static void tool_skline_notify_mode(void)
 	}
 }
 
-static void tool_skline_adjust_attached_objects(void)
+static void tool_skline_adjust_attached_objects(pcb_hidlib_t *hl)
 {
 	int last = vtp0_len(&attached_path.lines) - 1;
 	if (last >= 0) {
@@ -1076,7 +1076,7 @@ static void tool_skline_adjust_attached_objects(void)
 	}
 }
 
-static void tool_skline_draw_attached(void)
+static void tool_skline_draw_attached(pcb_hidlib_t *hl)
 {
 	int i;
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
@@ -1088,7 +1088,7 @@ static void tool_skline_draw_attached(void)
 	}
 }
 
-pcb_bool tool_skline_undo_act(void)
+pcb_bool tool_skline_undo_act(pcb_hidlib_t *hl)
 {
 	/* TODO */
 	return pcb_false;

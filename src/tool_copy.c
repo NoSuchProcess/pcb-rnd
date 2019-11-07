@@ -48,7 +48,7 @@ void pcb_tool_copy_uninit(void)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-void pcb_tool_copy_notify_mode(void)
+void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
 {
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
@@ -87,26 +87,26 @@ void pcb_tool_copy_notify_mode(void)
 	}
 }
 
-void pcb_tool_copy_release_mode (void)
+void pcb_tool_copy_release_mode(pcb_hidlib_t *hl)
 {
 	if (pcb_tool_note.Hit) {
-		pcb_tool_copy_notify_mode();
+		pcb_tool_copy_notify_mode(hl);
 		pcb_tool_note.Hit = 0;
 	}
 }
 
-void pcb_tool_copy_adjust_attached_objects(void)
+void pcb_tool_copy_adjust_attached_objects(pcb_hidlib_t *hl)
 {
 	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
 	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
 }
 
-void pcb_tool_copy_draw_attached(void)
+void pcb_tool_copy_draw_attached(pcb_hidlib_t *hl)
 {
 	pcb_xordraw_movecopy();
 }
 
-pcb_bool pcb_tool_copy_undo_act(void)
+pcb_bool pcb_tool_copy_undo_act(pcb_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)

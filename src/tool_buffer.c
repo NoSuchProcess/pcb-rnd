@@ -55,7 +55,7 @@ void pcb_tool_buffer_uninit(void)
 	pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 }
 
-void pcb_tool_buffer_notify_mode(void)
+void pcb_tool_buffer_notify_mode(pcb_hidlib_t *hl)
 {
 	if (pcb_gui->shift_is_pressed(pcb_gui)) {
 		pcb_actionva(&PCB->hidlib, "ReplaceFootprint", "object", "@buffer", "dumb", NULL);
@@ -68,11 +68,11 @@ void pcb_tool_buffer_notify_mode(void)
 	}
 }
 
-void pcb_tool_buffer_release_mode(void)
+void pcb_tool_buffer_release_mode(pcb_hidlib_t *hl)
 {
 	if (pcb_tool_note.Moving) {
 		pcb_undo_restore_serial();
-		pcb_tool_buffer_notify_mode();
+		pcb_tool_buffer_notify_mode(hl);
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		pcb_buffer_set_number(pcb_tool_note.Buffer);
 		pcb_tool_note.Moving = pcb_false;
@@ -80,13 +80,13 @@ void pcb_tool_buffer_release_mode(void)
 	}
 }
 
-void pcb_tool_buffer_adjust_attached_objects(void)
+void pcb_tool_buffer_adjust_attached_objects(pcb_hidlib_t *hl)
 {
 	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
 	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
 }
 
-void pcb_tool_buffer_draw_attached(void)
+void pcb_tool_buffer_draw_attached(pcb_hidlib_t *hl)
 {
 	pcb_xordraw_buffer(PCB_PASTEBUFFER);
 }

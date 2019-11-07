@@ -226,34 +226,34 @@ static void uninit_current_tool(void)
 	wrap_void(uninit, ());
 }
 
-void pcb_tool_notify_mode(void)
+void pcb_tool_notify_mode(pcb_hidlib_t *hidlib)
 {
-	wrap_void(notify_mode, ());
+	wrap_void(notify_mode, (hidlib));
 }
 
 void pcb_tool_release_mode(pcb_hidlib_t *hidlib)
 {
-	wrap_void(release_mode, ());
+	wrap_void(release_mode, (hidlib));
 }
 
-void pcb_tool_adjust_attached_objects(void)
+void pcb_tool_adjust_attached_objects(pcb_hidlib_t *hl)
 {
-	wrap_void(adjust_attached_objects, ());
+	wrap_void(adjust_attached_objects, (hl));
 }
 
-void pcb_tool_draw_attached(void)
+void pcb_tool_draw_attached(pcb_hidlib_t *hl)
 {
-	wrap_void(draw_attached, ());
+	wrap_void(draw_attached, (hl));
 }
 
-pcb_bool pcb_tool_undo_act(void)
+pcb_bool pcb_tool_undo_act(pcb_hidlib_t *hl)
 {
-	wrap_retv(undo_act, return pcb_true, ());
+	wrap_retv(undo_act, return pcb_true, (hl));
 }
 
-pcb_bool pcb_tool_redo_act(void)
+pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
 {
-	wrap_retv(redo_act, return pcb_true, ());
+	wrap_retv(redo_act, return pcb_true, (hl));
 }
 
 
@@ -439,6 +439,6 @@ void pcb_notify_mode(pcb_hidlib_t *hidlib)
 		if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1, 0) > 0)
 			pcb_board_set_changed_flag(pcb_true);
 	}
-	pcb_tool_notify_mode();
+	pcb_tool_notify_mode(hidlib);
 	pcb_draw();
 }

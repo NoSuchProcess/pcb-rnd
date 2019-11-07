@@ -45,7 +45,7 @@
 #include "obj_text_draw.h"
 
 
-void pcb_tool_text_notify_mode(void)
+void pcb_tool_text_notify_mode(pcb_hidlib_t *hl)
 {
 	char *string;
 
@@ -69,7 +69,7 @@ void pcb_tool_text_notify_mode(void)
 	}
 }
 
-void pcb_tool_text_draw_attached(void)
+void pcb_tool_text_draw_attached(pcb_hidlib_t *hl)
 {
 	pcb_text_t text;
 	int flag = PCB_FLAG_CLEARLINE;
