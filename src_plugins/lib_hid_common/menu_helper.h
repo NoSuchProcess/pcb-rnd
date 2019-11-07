@@ -41,7 +41,7 @@ int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const pcb_menu_
    an action (if name has a parenthesis). When an action is run, it has 0
    or 1 argument only and the return value of the action is returned.
    On error, returns -1. */
-int pcb_hid_get_flag(const char *name);
+int pcb_hid_get_flag(pcb_hidlib_t *hidlib, const char *name);
 
 /* Return non-zero if submenu has further submenus; generate pcb_message(PCB_MSG_ERROR, ) if
    there is a submenu field with the wrong lihata type */

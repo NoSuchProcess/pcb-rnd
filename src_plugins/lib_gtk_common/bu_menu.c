@@ -362,7 +362,7 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
    flag (maybe NULL), and its active flag (maybe NULL), to a
    callback function. It is the responsibility of the function
    to actually change the state of the action. */
-void ghid_main_menu_update_toggle_state(GHidMainMenu *menu, void (*cb)(GtkAction *, const char *toggle_flag, const char *active_flag))
+void ghid_main_menu_update_toggle_state(pcb_hidlib_t *hidlib, GHidMainMenu *menu, void (*cb)(pcb_hidlib_t *, GtkAction *, const char *toggle_flag, const char *active_flag))
 {
 	GList *list;
 	for (list = menu->actions; list; list = list->next) {
@@ -371,7 +371,7 @@ void ghid_main_menu_update_toggle_state(GHidMainMenu *menu, void (*cb)(GtkAction
 		const char *tf = g_object_get_data(G_OBJECT(list->data), "checked-flag");
 		const char *af = g_object_get_data(G_OBJECT(list->data), "active-flag");
 		g_signal_handlers_block_by_func(G_OBJECT(list->data), menu->action_cb, act);
-		cb(GTK_ACTION(list->data), tf, af);
+		cb(hidlib, GTK_ACTION(list->data), tf, af);
 		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
 	}
 }
@@ -425,10 +425,10 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 }
 
 /* callback for ghid_main_menu_update_toggle_state() */
-void menu_toggle_update_cb(GtkAction *act, const char *tflag, const char *aflag)
+void menu_toggle_update_cb(pcb_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {
-		int v = pcb_hid_get_flag(tflag);
+		int v = pcb_hid_get_flag(hidlib, tflag);
 		if (v < 0) {
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), 0);
 			gtk_action_set_sensitive(act, 0);
@@ -437,7 +437,7 @@ void menu_toggle_update_cb(GtkAction *act, const char *tflag, const char *aflag)
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), !!v);
 	}
 	if (aflag != NULL) {
-		int v = pcb_hid_get_flag(aflag);
+		int v = pcb_hid_get_flag(hidlib, aflag);
 		gtk_action_set_sensitive(act, !!v);
 	}
 }

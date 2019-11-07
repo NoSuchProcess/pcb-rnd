@@ -139,9 +139,9 @@ void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub)
 
 /*** static top window code ***/
 /* sync the menu checkboxes with actual pcb state */
-void ghid_update_toggle_flags(pcb_gtk_topwin_t *tw, const char *cookie)
+void ghid_update_toggle_flags(pcb_hidlib_t *hidlib, pcb_gtk_topwin_t *tw, const char *cookie)
 {
-	ghid_main_menu_update_toggle_state(GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
+	ghid_main_menu_update_toggle_state(hidlib, GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
 }
 
 static void h_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
@@ -540,7 +540,7 @@ void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in
 
 	ghid_build_pcb_top_window(ctx, tw);
 	ghid_install_accel_groups(GTK_WINDOW(ghidgui->wtop_window), tw);
-	ghid_update_toggle_flags(tw, NULL);
+	ghid_update_toggle_flags(ghidgui->hidlib, tw, NULL);
 }
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)

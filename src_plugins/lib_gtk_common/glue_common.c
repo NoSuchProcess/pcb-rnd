@@ -86,7 +86,7 @@ static void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx)
 void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
-		ghid_update_toggle_flags(&ghidgui->topwin, NULL);
+		ghid_update_toggle_flags(ghidgui->hidlib, &ghidgui->topwin, NULL);
 }
 
 static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)

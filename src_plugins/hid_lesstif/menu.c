@@ -103,7 +103,7 @@ void lesstif_update_widget_flags(pcb_hid_t *hid, const char *cookie)
 		if (wflags[i].w == NULL)
 			continue;
 
-		v = pcb_hid_get_flag(wflags[i].flagname);
+		v = pcb_hid_get_flag(ltf_hidlib, wflags[i].flagname);
 		if (v < 0) {
 			XtSetArg(args[0], wflags[i].xres, 0);
 			XtSetArg(args[1], XtNsensitive, 0);
