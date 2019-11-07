@@ -100,6 +100,8 @@ pcb_view_t *pcb_view_by_uid_cnt(const pcb_view_list_t *lst, unsigned long int ui
 	return NULL;
 }
 
+TODO("remove this when pcb_view_goto loses PCB->hidlib")
+#include "board.h"
 
 void pcb_view_goto(pcb_view_t *item)
 {
@@ -110,7 +112,7 @@ void pcb_view_goto(pcb_view_t *item)
 		argv[2].type = FGW_COORD; fgw_coord(&argv[2]) = item->bbox.Y1;
 		argv[3].type = FGW_COORD; fgw_coord(&argv[3]) = item->bbox.X2;
 		argv[4].type = FGW_COORD; fgw_coord(&argv[4]) = item->bbox.Y2;
-		pcb_actionv_bin("zoom", &res, 5, argv);
+		pcb_actionv_bin(&PCB->hidlib, "zoom", &res, 5, argv);
 	}
 }
 

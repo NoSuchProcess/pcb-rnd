@@ -86,7 +86,7 @@ int pcb_actionl(const char *action_, ...); /* NULL terminated - DEPRECATED, DO N
 
 /* Call an action by name, passing arguments and res in fungw binary format;
    Caller must leave argv[0] empty for the function designator. */
-fgw_error_t pcb_actionv_bin(const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv);
+fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 
 /* Parse the given command string into action calls, and call

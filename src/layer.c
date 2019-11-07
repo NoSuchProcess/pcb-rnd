@@ -650,12 +650,12 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 	}
 
 	if (new_index == -1 && is_last_top_copper_layer(pcb, old_index)) {
-		pcb_hid_message_box("warning", "Layer delete", "You can't delete the last top-side layer\n", "cancel", 0, NULL);
+		pcb_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last top-side layer\n", "cancel", 0, NULL);
 		return 1;
 	}
 
 	if (new_index == -1 && is_last_bottom_copper_layer(pcb, old_index)) {
-		pcb_hid_message_box("warning", "Layer delete", "You can't delete the last bottom-side layer\n", "cancel", 0, NULL);
+		pcb_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last bottom-side layer\n", "cancel", 0, NULL);
 		return 1;
 	}
 

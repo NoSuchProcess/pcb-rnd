@@ -219,7 +219,7 @@ void pcb_undo_inc_serial(void)
  */
 void pcb_undo_clear_list(pcb_bool Force)
 {
-	if (pcb_uundo.num_undo && (Force || pcb_hid_message_box("warning", "clear undo buffer", "Do you reall want to clear 'undo' buffer?", "yes", 1, "no", 0, NULL) == 1)) {
+	if (pcb_uundo.num_undo && (Force || pcb_hid_message_box(&PCB->hidlib, "warning", "clear undo buffer", "Do you reall want to clear 'undo' buffer?", "yes", 1, "no", 0, NULL) == 1)) {
 		uundo_list_clear(&pcb_uundo);
 		pcb_event(&PCB->hidlib, PCB_EVENT_UNDO_POST, "i", PCB_UNDO_EV_CLEAR_LIST);
 	}

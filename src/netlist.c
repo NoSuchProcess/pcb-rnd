@@ -858,7 +858,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 			sprintf(ratname_, "pcbrnd%ld", ++netname_cnt);
 		} while(htsp_has(&pcb->netlist[PCB_NETLIST_EDITED], ratname_));
 		if (interactive) {
-			ratname = pcb_hid_prompt_for("Name of the new net", ratname_, "rat net name");
+			ratname = pcb_hid_prompt_for(&pcb->hidlib, "Name of the new net", ratname_, "rat net name");
 			if (ratname == NULL) /* cancel */
 				return NULL;
 		}

@@ -75,9 +75,10 @@ static gint ghid_port_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 	return FALSE;
 }
 
-static gboolean check_object_tooltips(pcb_gtk_port_t *out)
+static gboolean check_object_tooltips(pcb_gtk_t *gctx)
 {
-	return pcb_gtk_dwg_tooltip_check_object(out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
+	pcb_gtk_port_t *out = &gctx->port;
+	return pcb_gtk_dwg_tooltip_check_object(gctx->hidlib, out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
 static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *ctx_)
@@ -101,7 +102,7 @@ static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, vo
 	x_prev = y_prev = -1;
 	pcb_gtk_note_event_location((GdkEventButton *)ev);
 
-	pcb_gtk_dwg_tooltip_queue(out->drawing_area, (GSourceFunc)check_object_tooltips, out);
+	pcb_gtk_dwg_tooltip_queue(out->drawing_area, (GSourceFunc)check_object_tooltips, gctx);
 
 	return FALSE;
 }

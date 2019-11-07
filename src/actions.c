@@ -310,7 +310,7 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	return ret;
 }
 
-fgw_error_t pcb_actionv_bin(const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	fgw_func_t *f = pcb_act_lookup(name);
 
@@ -319,7 +319,7 @@ fgw_error_t pcb_actionv_bin(const char *name, fgw_arg_t *res, int argc, fgw_arg_
 
 	argv[0].type = FGW_FUNC;
 	argv[0].val.argv0.func = f;
-	argv[0].val.argv0.user_call_ctx = NULL;
+	argv[0].val.argv0.user_call_ctx = hl;
 
 	res->type = FGW_INVALID;
 	return pcb_actionv_(f, res, argc, argv);

@@ -257,7 +257,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 	argv[0].type = FGW_VOID;
 	argv[1].type = FGW_STR | FGW_DYN;
 	argv[1].val.str = pcb_strdup_printf("#%02x%02x%02x", clr->r, clr->g, clr->b);
-	rs = pcb_actionv_bin(CPACT, &res, 2, argv);
+	rs = pcb_actionv_bin(ltf_hidlib, CPACT, &res, 2, argv);
 	if (rs != 0)
 		return;
 

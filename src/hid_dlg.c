@@ -49,11 +49,11 @@ static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, f
 	strcpy(tmp, "gui_");
 	strncpy(tmp+4, act_name, sizeof(tmp)-5);
 	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, tmp) != NULL))
-		return pcb_actionv_bin(tmp, res, argc, argv);
+		return pcb_actionv_bin(argv[0].val.argv0.user_call_ctx, tmp, res, argc, argv);
 
 	tmp[0] = 'c'; tmp[1] = 'l';
 	if (fgw_func_lookup(&pcb_fgw, tmp) != NULL)
-		return pcb_actionv_bin(tmp, res, argc, argv);
+		return pcb_actionv_bin(argv[0].val.argv0.user_call_ctx, tmp, res, argc, argv);
 
 	return FGW_ERR_NOT_FOUND;
 }
@@ -66,7 +66,7 @@ static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return call_dialog("promptfor", res, argc, argv);
 }
 
-char *pcb_hid_prompt_for(const char *msg, const char *default_string, const char *title)
+char *pcb_hid_prompt_for(pcb_hidlib_t *hl, const char *msg, const char *default_string, const char *title)
 {
 	fgw_arg_t res, argv[4];
 
@@ -74,7 +74,7 @@ char *pcb_hid_prompt_for(const char *msg, const char *default_string, const char
 	argv[2].type = FGW_STR; argv[2].val.cstr = default_string;
 	argv[3].type = FGW_STR; argv[3].val.cstr = title;
 
-	if (pcb_actionv_bin("PromptFor", &res, 4, argv) != 0)
+	if (pcb_actionv_bin(hl, "PromptFor", &res, 4, argv) != 0)
 		return NULL;
 
 	if (res.type == (FGW_STR | FGW_DYN))
@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return call_dialog("messagebox", res, argc, argv);
 }
 
-int pcb_hid_message_box(const char *icon, const char *title, const char *label, ...)
+int pcb_hid_message_box(pcb_hidlib_t *hl, const char *icon, const char *title, const char *label, ...)
 {
 	fgw_arg_t res, argv[128];
 	int argc;
@@ -116,7 +116,7 @@ int pcb_hid_message_box(const char *icon, const char *title, const char *label, 
 	}
 	va_end(ap);
 
-	if (pcb_actionv_bin("MessageBox", &res, argc, argv) != 0)
+	if (pcb_actionv_bin(hl, "MessageBox", &res, argc, argv) != 0)
 		return -1;
 
 	if (fgw_arg_conv(&pcb_fgw, &res, FGW_INT) == 0)
@@ -260,7 +260,7 @@ static const char pcb_acth_Print[] = "Present the print export dialog for printi
 static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, "printgui") != NULL))
-		return pcb_actionv_bin("printgui", res, argc, argv);
+		return pcb_actionv_bin(argv[0].val.argv0.user_call_ctx, "printgui", res, argc, argv);
 	pcb_message(PCB_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
 	return FGW_ERR_NOT_FOUND;
 }

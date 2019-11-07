@@ -723,7 +723,7 @@ static void data_clip_all_cb(void *ctx_)
 				ctx->inited = 1;
 			}
 			if (pcb_hid_progress(ctx->at, ctx->total, "Clipping polygons...") != 0) {
-				int rv = pcb_hid_message_box("warning", "Stop poly clipping", "The only way to cancel poly clipping is to quit pcb-rnd.\nAre you sure you want to quit?", "yes, quit pcb-rnd", 1, "no, continue clipping", 2, NULL);
+				int rv = pcb_hid_message_box(&PCB->hidlib, "warning", "Stop poly clipping", "The only way to cancel poly clipping is to quit pcb-rnd.\nAre you sure you want to quit?", "yes, quit pcb-rnd", 1, "no, continue clipping", 2, NULL);
 				if (rv == 1) {
 					exit(1);
 				}

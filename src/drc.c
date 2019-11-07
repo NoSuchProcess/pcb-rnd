@@ -60,7 +60,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (pcb_strcasecmp(dlg_type, "list") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "list";
-			return pcb_actionv_bin(dlgact, res, 2, args);
+			return pcb_actionv_bin(argv[0].val.argv0.user_call_ctx, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}
@@ -68,7 +68,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "simple";
-			return pcb_actionv_bin(dlgact, res, 2, args);
+			return pcb_actionv_bin(argv[0].val.argv0.user_call_ctx, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}

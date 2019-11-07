@@ -597,13 +597,13 @@ extern int pcb_pixel_slop;
    value. "msg" is printed above the query. The optional title
    is the window title.
    Returns NULL on cancel. The caller needs to free the returned string */
-char *pcb_hid_prompt_for(const char *msg, const char *default_string, const char *title);
+char *pcb_hid_prompt_for(pcb_hidlib_t *hl, const char *msg, const char *default_string, const char *title);
 
 /* Present a dialog box with a message and variable number of buttons. If icon
    is not NULL, attempt to draw the named icon on the left. The vararg part is
    one or more buttons, as a list of "char *label, int retval", terminated with
    NULL. */
-int pcb_hid_message_box(const char *icon, const char *title, const char *label, ...);
+int pcb_hid_message_box(pcb_hidlib_t *hl, const char *icon, const char *title, const char *label, ...);
 
 /* Show modal progressbar to the user, offering cancel long running processes.
    Pass all zeros to flush display and remove the dialog.

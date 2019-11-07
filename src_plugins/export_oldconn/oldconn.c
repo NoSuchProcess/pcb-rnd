@@ -245,7 +245,7 @@ static FILE *pcb_check_and_open_file(const char *Filename)
 
 		if (pcb_file_readable(Filename)) {
 			sprintf(message, "File '%s' exists, use anyway?", Filename);
-			response = pcb_hid_message_box("warning", "Overwrite file", message, "cancel", 0, "ok", 1, NULL);
+			response = pcb_hid_message_box(&PCB->hidlib, "warning", "Overwrite file", message, "cancel", 0, "ok", 1, NULL);
 			if (response != 1)
 				return NULL;
 		}
