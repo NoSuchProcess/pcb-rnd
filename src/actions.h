@@ -115,15 +115,15 @@ int pcb_cli_enter(const char *backend, const char *prompt);
 int pcb_cli_leave(void);
 
 /* Request for tab completion */
-int pcb_cli_tab(void);
+int pcb_cli_tab(pcb_hidlib_t *hl);
 
 /* Called on each key press so indication can be updated */
-int pcb_cli_edit(void);
+int pcb_cli_edit(pcb_hidlib_t *hl);
 
 /* Mouse event while the command line is open; returns zero if
    normal event processing shall be inhibited; notify is true if
    called in notify mode, false if called in release mode */
-int pcb_cli_mouse(pcb_bool notify);
+int pcb_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify);
 
 /* Discard the cli mode stack */
 void pcb_cli_uninit(void);

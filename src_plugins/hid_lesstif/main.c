@@ -503,7 +503,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 	switch (e->type) {
 		case KeyRelease:
 			if (cmd_is_active)
-				pcb_cli_edit();
+				pcb_cli_edit(ltf_hidlib);
 			break;
 		case KeyPress:
 
@@ -530,7 +530,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 						XmTextSetString(w, XmStrCast(""));
 					break;
 				case XK_Tab:
-					pcb_cli_tab();
+					pcb_cli_tab(ltf_hidlib);
 					*cont = False;
 					break;
 				case XK_Escape:

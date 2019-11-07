@@ -595,7 +595,7 @@ int pcb_cli_leave(void)
 	return -1;
 }
 
-static int pcb_cli_common(fgw_arg_t *args)
+static int pcb_cli_common(pcb_hidlib_t *hl, fgw_arg_t *args)
 {
 	const pcb_action_t *a;
 	fgw_func_t *f;
@@ -611,15 +611,15 @@ static int pcb_cli_common(fgw_arg_t *args)
 
 	args[0].type = FGW_FUNC;
 	args[0].val.argv0.func = f;
-	args[0].val.argv0.user_call_ctx = NULL;
+	args[0].val.argv0.user_call_ctx = hl;
 	return 0;
 }
 
-int pcb_cli_tab(void)
+int pcb_cli_tab(pcb_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
-	if (pcb_cli_common(args) != 0)
+	if (pcb_cli_common(hl, args) != 0)
 		return -1;
 
 	args[1].type = FGW_STR;
@@ -631,11 +631,11 @@ int pcb_cli_tab(void)
 	return res.val.nat_int;
 }
 
-int pcb_cli_edit(void)
+int pcb_cli_edit(pcb_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
-	if (pcb_cli_common(args) != 0)
+	if (pcb_cli_common(hl, args) != 0)
 		return -1;
 
 	args[1].type = FGW_STR;
@@ -647,11 +647,11 @@ int pcb_cli_edit(void)
 	return res.val.nat_int;
 }
 
-int pcb_cli_mouse(pcb_bool notify)
+int pcb_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify)
 {
 	fgw_arg_t res, args[3];
 
-	if (pcb_cli_common(args) != 0)
+	if (pcb_cli_common(hl, args) != 0)
 		return -1;
 
 	args[1].type = FGW_STR;

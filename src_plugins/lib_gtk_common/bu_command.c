@@ -43,6 +43,7 @@
 #include "crosshair.h"
 #include "actions.h"
 
+#include "pcb_gtk.h"
 #include "hid_gtk_conf.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
 
@@ -104,7 +105,7 @@ static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 	gint ksym = kev->keyval;
 
 	if (ksym == PCB_GTK_KEY(Tab)) {
-		pcb_cli_tab();
+		pcb_cli_tab(ghidgui->hidlib);
 		return TRUE;
 	}
 
@@ -120,7 +121,7 @@ static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
 {
 	if (ctx->command_entry_status_line_active)
-		pcb_cli_edit();
+		pcb_cli_edit(ghidgui->hidlib);
 	return TRUE;
 }
 
