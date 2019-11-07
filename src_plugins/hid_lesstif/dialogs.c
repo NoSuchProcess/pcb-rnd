@@ -856,7 +856,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		lesstif_show_library();
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
-		pcb_actionva("LogDialog", NULL);
+		pcb_actionva(ltf_hidlib, "LogDialog", NULL);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
 		lesstif_show_netlist();

@@ -94,8 +94,8 @@ static int parse_netlist_instance(nethlp_ctx_t *nhctx, gsxl_node_t *inst)
 		}
 	}
 
-	nethlp_elem_done(&ectx);
-/*	pcb_actionva("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);*/
+	nethlp_elem_done(&PCB->hidlib, &ectx);
+/*	pcb_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);*/
 	return 0;
 }
 
@@ -117,7 +117,7 @@ static int parse_netlist_net(nethlp_ctx_t *nhctx, gsxl_node_t *net)
 					if ((part != NULL) && (pin != NULL)) {
 						if (*pin == '&')
 							pin++;
-						nethlp_net_add_term(&nctx, part, pin);
+						nethlp_net_add_term(&PCB->hidlib, &nctx, part, pin);
 					}
 				}
 			}
@@ -176,9 +176,9 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 		return -1;
 	}
 
-	pcb_actionva("Netlist", "Freeze", NULL);
-	pcb_actionva("Netlist", "Clear", NULL);
-	pcb_actionva("ElementList", "start", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 
 	for(library = dom->root->children; library != NULL; library = library->next) {
 		if (strcmp(library->str, "library") == 0) {
@@ -198,9 +198,9 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 		}
 	}
 
-	pcb_actionva("ElementList", "Done", NULL);
-	pcb_actionva("Netlist", "Sort", NULL);
-	pcb_actionva("Netlist", "Thaw", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 
 /*	for(n = library->children; n != NULL; n = n->next) {
 		printf("n=%s\n", n->str);

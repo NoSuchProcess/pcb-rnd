@@ -73,6 +73,7 @@ typedef struct {
 #include <genvector/genvector_undef.h>
 
 typedef struct {
+	pcb_hidlib_t *hidlib;
 	char *prefix;            /* strdup'd file name prefix from the last prefix command */
 	pcb_hid_t *exporter;
 	unsigned partial:1;      /* when 1, there are objects marked with the EXPORTSEL flag */

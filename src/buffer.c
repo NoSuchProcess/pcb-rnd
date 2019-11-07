@@ -849,7 +849,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;
 			}
-			pcb_actionva("RemoveSelected", NULL);
+			pcb_actionva(argv[0].val.argv0.user_call_ctx, "RemoveSelected", NULL);
 			break;
 
 			/* converts buffer contents into a subcircuit */
@@ -941,7 +941,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_Save:
 			name = sbufnum;
-			rv = pcb_actionva("SaveTo", "PasteBuffer", name, fmt, NULL);
+			rv = pcb_actionva(argv[0].val.argv0.user_call_ctx, "SaveTo", "PasteBuffer", name, fmt, NULL);
 			pcb_notify_crosshair_change(pcb_true);
 			return rv;
 

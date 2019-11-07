@@ -199,7 +199,7 @@ static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	if (row != NULL) {
 		const char *outfile = ctx->dlg[ctx->woutfile].val.str;
 		char *tmp = pcb_strdup_printf("outfile=%s", outfile);
-		pcb_actionva("cam", "call", row->cell[0], tmp, NULL);
+		pcb_actionva(ctx->cam.hidlib, "cam", "call", row->cell[0], tmp, NULL);
 		free(tmp);
 	}
 }
@@ -257,7 +257,7 @@ static void header_label(cam_dlg_t *ctx, const char *text)
 	PCB_DAD_END(ctx->dlg);
 }
 
-static int cam_gui(const char *arg)
+static int cam_gui(pcb_hidlib_t *hidlib, const char *arg)
 {
 	cam_dlg_t *ctx = calloc(sizeof(cam_dlg_t), 1);
 	const char *opt_hdr[] = {"key", "option value", NULL};
@@ -265,6 +265,7 @@ static int cam_gui(const char *arg)
 	const char *digest_hdr[] = {"file", "plugin", "layer groups", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
+	ctx->cam.hidlib = hidlib;
 	ctx->cam.vars = pcb_cam_vars_alloc();
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);

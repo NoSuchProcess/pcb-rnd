@@ -42,6 +42,7 @@ typedef struct{
 	int active;
 	int wtxt, wscroll;
 	int gui_inited;
+	pcb_hidlib_t *hidlib;
 } log_ctx_t;
 
 static log_ctx_t log_ctx;
@@ -110,12 +111,14 @@ static void log_import(log_ctx_t *ctx)
 
 static void btn_clear_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva("log", "clear", NULL);
+	log_ctx_t *ctx = caller_data;
+	pcb_actionva(ctx->hidlib, "log", "clear", NULL);
 }
 
 static void btn_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva("log", "export", NULL);
+	log_ctx_t *ctx = caller_data;
+	pcb_actionva(ctx->hidlib, "log", "export", NULL);
 }
 
 static void maybe_scroll_to_bottom()
@@ -127,7 +130,7 @@ static void maybe_scroll_to_bottom()
 		txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
 }
 
-static void log_window_create(void)
+static void log_window_create(pcb_hidlib_t *hidlib)
 {
 	log_ctx_t *ctx = &log_ctx;
 	pcb_hid_attr_val_t hv;
@@ -136,6 +139,7 @@ static void log_window_create(void)
 		return;
 
 	memset(ctx, 0, sizeof(log_ctx_t));
+	ctx->hidlib = hidlib;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
@@ -181,7 +185,7 @@ const char pcb_acts_LogDialog[] = "LogDialog()\n";
 const char pcb_acth_LogDialog[] = "Open the log dialog.";
 fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	log_window_create();
+	log_window_create(argv[0].val.argv0.user_call_ctx);
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -202,7 +206,7 @@ static void log_append_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 
 		pcb_conf_loglevel_props(line->level, &prefix, &popup);
 		if (popup)
-			log_window_create();
+			log_window_create(hidlib);
 	}
 }
 
@@ -230,7 +234,7 @@ static void log_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb
 
 		pcb_conf_loglevel_props(n->level, &prefix, &popup);
 		if (popup) {
-			log_window_create();
+			log_window_create(hidlib);
 			return;
 		}
 	}

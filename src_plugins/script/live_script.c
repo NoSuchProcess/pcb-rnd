@@ -51,6 +51,7 @@ static const char *lvs_cookie = "live_script";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_hidlib_t *hidlib;
 	char *name, *longname, *fn;
 	char **langs;
 	char **lang_engines;
@@ -191,10 +192,10 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		return;
 	}
 
-	pcb_actionva("livescript", arg, lvs->name, NULL);
+	pcb_actionva(lvs->hidlib, "livescript", arg, lvs->name, NULL);
 }
 
-static live_script_t *pcb_dlg_live_script(const char *name)
+static live_script_t *pcb_dlg_live_script(pcb_hidlib_t *hidlib, const char *name)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *title;
@@ -207,6 +208,7 @@ static live_script_t *pcb_dlg_live_script(const char *name)
 		return NULL;
 	}
 
+	lvs->hidlib = hidlib;
 	lvs->name = pcb_strdup(name);
 	lvs->longname = pcb_concat("_live_script_", name, NULL);
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
@@ -448,7 +450,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(1);
 			return 0;
 		}
-		lvs = pcb_dlg_live_script(name);
+		lvs = pcb_dlg_live_script(argv[0].val.argv0.user_call_ctx, name);
 		if (lvs != NULL) {
 			htsp_set(&pcb_live_scripts, lvs->name, lvs);
 			PCB_ACT_IRES(0);

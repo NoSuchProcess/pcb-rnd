@@ -112,7 +112,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 	}
 
-	if (pcb_actionva("New", "Font", 0))
+	if (pcb_actionva(argv[0].val.argv0.user_call_ctx, "New", "Font", 0))
 		return 1;
 
 	pcb_conf_set(CFR_DESIGN, "editor/grid_unit", -1, "mil", POL_OVERWRITE);
@@ -338,7 +338,7 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_font_set_info(font);
-	pcb_actionva("SaveFontTo", NULL);
+	pcb_actionva(argv[0].val.argv0.user_call_ctx, "SaveFontTo", NULL);
 
 	PCB_ACT_IRES(0);
 	return 0;

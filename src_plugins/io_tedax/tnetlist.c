@@ -76,8 +76,8 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 	htsp_init(&fps, strhash, strkeyeq);
 	htsp_init(&pinnames, strhash, strkeyeq);
 
-	pcb_actionva("Netlist", "Freeze", NULL);
-	pcb_actionva("Netlist", "Clear", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 		if ((argc == 3) && (strcmp(argv[0], "footprint") == 0)) {
@@ -91,7 +91,7 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 		else if ((argc == 4) && (strcmp(argv[0], "conn") == 0)) {
 			char id[512];
 			sprintf(id, "%s-%s", argv[2], argv[3]);
-			pcb_actionva("Netlist", "Add",  argv[1], id, NULL);
+			pcb_actionva(&PCB->hidlib, "Netlist", "Add",  argv[1], id, NULL);
 		}
 		else if ((argc == 4) && (strcmp(argv[0], "pinname") == 0)) {
 			char id[512];
@@ -107,11 +107,11 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 			break;
 	}
 
-	pcb_actionva("Netlist", "Sort", NULL);
-	pcb_actionva("Netlist", "Thaw", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 
 	if (import_fp) {
-		pcb_actionva("ElementList", "start", NULL);
+		pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 		for (e = htsp_first(&fps); e; e = htsp_next(&fps, e)) {
 			fp_t *fp = e->value;
 
@@ -119,14 +119,14 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 			if (fp->footprint == NULL)
 				pcb_message(PCB_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
 			else
-				pcb_actionva("ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
+				pcb_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
 
 			free(e->key);
 			free(fp->value);
 			free(fp->footprint);
 			free(fp);
 		}
-		pcb_actionva("ElementList", "Done", NULL);
+		pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 	}
 
 	for (e = htsp_first(&pinnames); e; e = htsp_next(&pinnames, e)) {
@@ -135,7 +135,7 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 		if (pin != NULL) {
 			*pin = '\0';
 			pin++;
-			pcb_actionva("ChangePinName", refdes, pin, name, NULL);
+			pcb_actionva(&PCB->hidlib, "ChangePinName", refdes, pin, name, NULL);
 		}
 		free(e->key);
 		free(e->value);

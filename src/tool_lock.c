@@ -58,7 +58,7 @@ void pcb_tool_lock_notify_mode(void)
 
 		DrawSubc(subc);
 		pcb_draw();
-		pcb_actionva("Report", "Subc", "log", NULL);
+		pcb_actionva(&PCB->hidlib, "Report", "Subc", "log", NULL);
 	}
 	else if (type != PCB_OBJ_VOID) {
 		pcb_text_t *thing = (pcb_text_t *) ptr3;
@@ -70,7 +70,7 @@ void pcb_tool_lock_notify_mode(void)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 			pcb_draw();
 		}
-		pcb_actionva("Report", "Object", "log", NULL);
+		pcb_actionva(&PCB->hidlib, "Report", "Object", "log", NULL);
 	}
 }
 

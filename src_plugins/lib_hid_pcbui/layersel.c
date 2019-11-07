@@ -274,7 +274,7 @@ static void layer_select(ls_layer_t *lys)
 	else if (lys->ml != NULL) {
 		vis = (pcb_bool *)((char *)PCB + lys->ml->vis_offs);
 		*vis = 1;
-		pcb_actionva("SelectLayer", lys->ml->select_name, NULL);
+		pcb_actionva(&PCB->hidlib, "SelectLayer", lys->ml->select_name, NULL);
 	}
 	else
 		return;
@@ -430,7 +430,7 @@ static void layer_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 
 	layer_select(lys);
-	pcb_actionva("Popup", "layer", NULL);
+	pcb_actionva(&PCB->hidlib, "Popup", "layer", NULL);
 }
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
@@ -440,7 +440,7 @@ static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	if (grp->gid < 0)
 		return;
 	pcb_actd_EditGroup_gid = grp->gid;
-	pcb_actionva("Popup", "group", NULL);
+	pcb_actionva(&PCB->hidlib, "Popup", "group", NULL);
 }
 
 

@@ -72,7 +72,7 @@ static void sym_flush(symattr_t *sattr)
 		if (sattr->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "tinycad: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
-			pcb_actionva("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+			pcb_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
@@ -87,9 +87,9 @@ static int tinycad_parse_net(FILE *fn)
 
 	memset(&sattr, 0, sizeof(sattr));
 
-	pcb_actionva("ElementList", "start", NULL);
-	pcb_actionva("Netlist", "Freeze", NULL);
-	pcb_actionva("Netlist", "Clear", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
@@ -118,7 +118,7 @@ static int tinycad_parse_net(FILE *fn)
 				if (sep != NULL) {
 					*sep = '-';
 /*					pcb_trace("net-add '%s' '%s'\n", argv[2], curr);*/
-					pcb_actionva("Netlist", "Add",  argv[2], curr, NULL);
+					pcb_actionva(&PCB->hidlib, "Netlist", "Add",  argv[2], curr, NULL);
 				}
 			}
 		}
@@ -144,9 +144,9 @@ static int tinycad_parse_net(FILE *fn)
 
 	sym_flush(&sattr);
 
-	pcb_actionva("Netlist", "Sort", NULL);
-	pcb_actionva("Netlist", "Thaw", NULL);
-	pcb_actionva("ElementList", "Done", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 
 	return 0;
 }

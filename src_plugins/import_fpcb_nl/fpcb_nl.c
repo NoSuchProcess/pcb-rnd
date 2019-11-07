@@ -70,9 +70,9 @@ static int fpcb_nl_load(const char *fn)
 		return -1;
 	}
 
-	pcb_actionva("ElementList", "start", NULL);
-	pcb_actionva("Netlist", "Freeze", NULL);
-	pcb_actionva("Netlist", "Clear", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while((line = fgets(buff, sizeof(buff), f)) != NULL) {
 		rtrim(line);
@@ -123,7 +123,7 @@ static int fpcb_nl_load(const char *fn)
 					ltrim(fp);
 				}
 				if ((fp != NULL) && (*fp != '\0')) {
-					pcb_actionva("ElementList", "Need", line, fp, "", NULL);
+					pcb_actionva(&PCB->hidlib, "ElementList", "Need", line, fp, "", NULL);
 				}
 				else
 					pcb_message(PCB_MSG_ERROR, "No footprint specified for %s\n", line);
@@ -145,16 +145,16 @@ static int fpcb_nl_load(const char *fn)
 						continue;
 					}
 					*tn = '-';
-					pcb_actionva("Netlist", "Add",  signame, curr, NULL);
+					pcb_actionva(&PCB->hidlib, "Netlist", "Add",  signame, curr, NULL);
 				}
 				break;
 			default: break; /* ignore line */
 		}
 	}
 
-	pcb_actionva("Netlist", "Sort", NULL);
-	pcb_actionva("Netlist", "Thaw", NULL);
-	pcb_actionva("ElementList", "Done", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 
 	fclose(f);
 	return -1;

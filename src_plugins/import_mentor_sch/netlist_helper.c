@@ -214,7 +214,7 @@ static void elem_map_apply(nethlp_elem_ctx_t *ectx, nethlp_rule_t *r)
 	htsp_set(&ectx->attr, pcb_strdup(r->new_key), pcb_strdup(dst));
 }
 
-void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
+void nethlp_elem_done(pcb_hidlib_t *hl, nethlp_elem_ctx_t *ectx)
 {
 	htsp_entry_t *e;
 	char *refdes, *footprint, *value;
@@ -256,7 +256,7 @@ void nethlp_elem_done(nethlp_elem_ctx_t *ectx)
 		if (value == NULL) value = "";
 
 		/* create elemet */
-		pcb_actionva("ElementList", "Need", refdes, footprint, value, NULL);
+		pcb_actionva(hl, "ElementList", "Need", refdes, footprint, value, NULL);
 /*		printf("Elem '%s' -> %s:%s:%s\n", ectx->id, refdes, footprint, value);*/
 	}
 	else
@@ -288,7 +288,7 @@ nethlp_net_ctx_t *nethlp_net_new(nethlp_ctx_t *nhctx, nethlp_net_ctx_t *prealloc
 	return prealloc;
 }
 
-void nethlp_net_add_term(nethlp_net_ctx_t *nctx, const char *part, const char *pin)
+void nethlp_net_add_term(pcb_hidlib_t *hl, nethlp_net_ctx_t *nctx, const char *part, const char *pin)
 {
 	char *refdes = htsp_get(&nctx->nhctx->id2refdes, part);
 	char term[256];
@@ -296,7 +296,7 @@ void nethlp_net_add_term(nethlp_net_ctx_t *nctx, const char *part, const char *p
 		pcb_message(PCB_MSG_ERROR, "nethelper: can't resolve refdes of part %s\n", part);
 	}
 	pcb_snprintf(term, sizeof(term), "%s-%s", refdes, pin);
-	pcb_actionva("Netlist", "Add",  nctx->netname, term, NULL);
+	pcb_actionva(hl, "Netlist", "Add",  nctx->netname, term, NULL);
 }
 
 void nethlp_net_destroy(nethlp_net_ctx_t *nctx)

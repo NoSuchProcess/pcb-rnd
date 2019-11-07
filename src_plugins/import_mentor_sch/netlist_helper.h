@@ -1,5 +1,6 @@
 #include <genht/htsp.h>
 #include <genregex/regex_se.h>
+#include "global_typedefs.h"
 
 typedef struct nethlp_rule_s nethlp_rule_t;
 
@@ -42,9 +43,9 @@ int nethlp_load_part_map(nethlp_ctx_t *nhctx, const char *fn);
 nethlp_elem_ctx_t *nethlp_elem_new(nethlp_ctx_t *nhctx, nethlp_elem_ctx_t *prealloc, const char *id);
 void nethlp_elem_refdes(nethlp_elem_ctx_t *ectx, const char *refdes);
 void nethlp_elem_attr(nethlp_elem_ctx_t *ectx, const char *key, const char *val);
-void nethlp_elem_done(nethlp_elem_ctx_t *ectx);
+void nethlp_elem_done(pcb_hidlib_t *hl, nethlp_elem_ctx_t *ectx);
 
 
 nethlp_net_ctx_t *nethlp_net_new(nethlp_ctx_t *nhctx, nethlp_net_ctx_t *prealloc, const char *netname);
-void nethlp_net_add_term(nethlp_net_ctx_t *nctx, const char *part, const char *pin);
+void nethlp_net_add_term(pcb_hidlib_t *hl, nethlp_net_ctx_t *nctx, const char *part, const char *pin);
 void nethlp_net_destroy(nethlp_net_ctx_t *nctx);

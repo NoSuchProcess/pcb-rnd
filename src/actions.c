@@ -251,7 +251,7 @@ int pcb_action(pcb_hidlib_t *hl, const char *name)
 	return pcb_actionv(name, 0, 0);
 }
 
-int pcb_actionva(const char *name, ...)
+int pcb_actionva(pcb_hidlib_t *hl, const char *name, ...)
 {
 	const char *argv[20];
 	int argc = 0;

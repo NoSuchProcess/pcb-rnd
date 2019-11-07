@@ -65,8 +65,8 @@ static int calay_parse_net(FILE *fn)
 	char line[512];
 	char *curr = NULL;
 
-	pcb_actionva("Netlist", "Freeze", NULL);
-	pcb_actionva("Netlist", "Clear", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		char *s, *next, *num;
@@ -98,7 +98,7 @@ static int calay_parse_net(FILE *fn)
 			if (num != NULL) {
 				*num = '-';
 				if (curr != NULL)
-					pcb_actionva("Netlist", "Add",  curr, s, NULL);
+					pcb_actionva(&PCB->hidlib, "Netlist", "Add",  curr, s, NULL);
 				else
 					pcb_message(PCB_MSG_ERROR, "Calay syntax error: %s is after a ;, not in any net\n", s);
 			}
@@ -120,8 +120,8 @@ static int calay_parse_net(FILE *fn)
 	}
 
 	free(curr);
-	pcb_actionva("Netlist", "Sort", NULL);
-	pcb_actionva("Netlist", "Thaw", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 
 	return 0;
 }
@@ -131,7 +131,7 @@ static int calay_parse_comp(FILE *f)
 	char line[512];
 	char *val, *refdes, *footprint, *end;
 	int len;
-	pcb_actionva("ElementList", "start", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		len = strlen(line);
@@ -159,9 +159,9 @@ static int calay_parse_comp(FILE *f)
 		if (end != NULL)
 			*end = '\0';
 
-		pcb_actionva("ElementList", "Need", refdes, footprint, val, NULL);
+		pcb_actionva(&PCB->hidlib, "ElementList", "Need", refdes, footprint, val, NULL);
 	}
-	pcb_actionva("ElementList", "Done", NULL);
+	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 	return 0;
 }
 

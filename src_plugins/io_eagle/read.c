@@ -1252,10 +1252,10 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 	net = eagle_get_attrs(st, PARENT(subtree), "name", NULL);
 
 	if (net != NULL && net[0] == '-' && net[1] == '\0') { /* pcb-rnd doesn't like it when Eagle uses '-' for GND*/
-		pcb_actionva("Netlist", "Add", "GND", conn, NULL);
+		pcb_actionva(&st->pcb->hidlib, "Netlist", "Add", "GND", conn, NULL);
 		pcb_message(PCB_MSG_WARNING, "Substituted contactref net \"GND\" instead of original invalid '-'\n");
 	} else {
-		pcb_actionva("Netlist", "Add",  net, conn, NULL);
+		pcb_actionva(&st->pcb->hidlib, "Netlist", "Add",  net, conn, NULL);
 	}
 	return 0;
 }
@@ -1274,8 +1274,8 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 		{NULL, NULL}
 	};
 
-	pcb_actionva("Netlist", "Freeze", NULL);
-	pcb_actionva("Netlist", "Clear", NULL);
+	pcb_actionva(&st->pcb->hidlib, "Netlist", "Freeze", NULL);
+	pcb_actionva(&st->pcb->hidlib, "Netlist", "Clear", NULL);
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "signal") == 0) {
@@ -1288,8 +1288,8 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 		}
 	}
 
-	pcb_actionva("Netlist", "Sort", NULL);
-	pcb_actionva("Netlist", "Thaw", NULL);
+	pcb_actionva(&st->pcb->hidlib, "Netlist", "Sort", NULL);
+	pcb_actionva(&st->pcb->hidlib, "Netlist", "Thaw", NULL);
 
 	return 0;
 }

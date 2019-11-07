@@ -1639,7 +1639,7 @@ static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 		if (pcb_strcasecmp(nwr->str, "pins") == 0) {
 			gsxl_node_t *n;
 			for(n = nwr->children; n != NULL; n = n->next)
-				pcb_actionva("Netlist", "Add",  netname, n->str, NULL);
+				pcb_actionva(&ctx->pcb->hidlib, "Netlist", "Add",  netname, n->str, NULL);
 		}
 		else if (pcb_strcasecmp(nwr->str, "property") == 0) {
 			parse_attribute(ctx, &net->Attributes, nwr->children);
@@ -1651,8 +1651,8 @@ static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 
 static int dsn_parse_network(dsn_read_t *ctx, gsxl_node_t *nwr)
 {
-	pcb_actionva("Netlist", "Freeze", NULL);
-	pcb_actionva("Netlist", "Clear", NULL);
+	pcb_actionva(&ctx->pcb->hidlib, "Netlist", "Freeze", NULL);
+	pcb_actionva(&ctx->pcb->hidlib, "Netlist", "Clear", NULL);
 
 	for(nwr = nwr->children; nwr != NULL; nwr = nwr->next) {
 		if (nwr->str == NULL)
@@ -1663,8 +1663,8 @@ static int dsn_parse_network(dsn_read_t *ctx, gsxl_node_t *nwr)
 		}
 	}
 
-	pcb_actionva("Netlist", "Sort", NULL);
-	pcb_actionva("Netlist", "Thaw", NULL);
+	pcb_actionva(&ctx->pcb->hidlib, "Netlist", "Sort", NULL);
+	pcb_actionva(&ctx->pcb->hidlib, "Netlist", "Thaw", NULL);
 
 	return 0;
 }

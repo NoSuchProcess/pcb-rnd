@@ -119,7 +119,7 @@ static void fontsel_preview_update(fontsel_ctx_t *ctx)
 
 static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva("LoadFontFrom", NULL); /* modal, blocking */
+	pcb_actionva(&PCB->hidlib, "LoadFontFrom", NULL); /* modal, blocking */
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
@@ -127,7 +127,7 @@ static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	char file[1] = "", id[5];
 	pcb_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
-	pcb_actionva("LoadFontFrom", file, id, NULL); /* modal, blocking */
+	pcb_actionva(&PCB->hidlib, "LoadFontFrom", file, id, NULL); /* modal, blocking */
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 

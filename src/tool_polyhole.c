@@ -50,6 +50,9 @@ void pcb_tool_polyhole_uninit(void)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
+TODO("remove this when pcb_tool_polyhole_notify_mode() loses PCB")
+#include "board.h"
+
 void pcb_tool_polyhole_notify_mode(void)
 {
 	switch (pcb_crosshair.AttachedObject.State) {
@@ -96,13 +99,13 @@ void pcb_tool_polyhole_notify_mode(void)
 
 			/* check if this is the last point of a polygon */
 			if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-				pcb_actionva("Polygon", "CloseHole", NULL);
+				pcb_actionva(&PCB->hidlib, "Polygon", "CloseHole", NULL);
 				break;
 			}
 
 			/* Someone clicking twice on the same point ('doubleclick'): close polygon hole */
 			if (n >= 3 && points[n - 1].X == pcb_crosshair.AttachedLine.Point2.X && points[n - 1].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-				pcb_actionva("Polygon", "CloseHole", NULL);
+				pcb_actionva(&PCB->hidlib, "Polygon", "CloseHole", NULL);
 				break;
 			}
 
