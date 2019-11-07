@@ -461,7 +461,7 @@ struct pcb_hid_s {
 	   HID-internal menu struct */
 	pcb_hid_cfg_t *(*get_menu_cfg)(pcb_hid_t *hid);
 
-	/* Update the state of all checkboxed menus whose luhata
+	/* Update the state of all checkboxed menus whose lihata
 	   node cookie matches cookie (or all checkboxed menus globally if cookie
 	   is NULL) */
 	void (*update_menu_checkbox)(pcb_hid_t *hid, const char *cookie);
