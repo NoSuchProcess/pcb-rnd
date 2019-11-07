@@ -639,7 +639,7 @@ fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		free(name);
 
 		lock = 1;
-		rv = pcb_action("Import");
+		rv = pcb_action(&PCB->hidlib, "Import");
 		lock = 0;
 	}
 

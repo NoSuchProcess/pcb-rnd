@@ -1600,7 +1600,7 @@ pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmVa
 
 static void mainwind_delete_cb()
 {
-	pcb_action("Quit");
+	pcb_action(ltf_hidlib, "Quit");
 }
 
 static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)

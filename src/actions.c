@@ -246,7 +246,7 @@ void pcb_dump_actions(void)
 	}
 }
 
-int pcb_action(const char *name)
+int pcb_action(pcb_hidlib_t *hl, const char *name)
 {
 	return pcb_actionv(name, 0, 0);
 }

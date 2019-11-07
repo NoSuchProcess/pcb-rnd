@@ -198,7 +198,9 @@ void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 /*** Top window ***/
 static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
 {
-	pcb_action("Quit");
+	pcb_gtk_t *gctx = data;
+
+	pcb_action(gctx->hidlib, "Quit");
 
 	/* Return TRUE to keep our app running.  A FALSE here would let the
 	   delete signal continue on and kill our program. */
@@ -513,7 +515,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
 	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
 
-	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "delete_event", G_CALLBACK(delete_chart_cb), ghidgui->impl.gport);
+	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "delete_event", G_CALLBACK(delete_chart_cb), ctx);
 	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);
 
 	gtk_widget_show_all(ghidgui->wtop_window);

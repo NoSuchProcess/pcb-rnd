@@ -195,7 +195,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *dot, *slash, *bslash;
 
 		if (!pcbname) {
-			PCB_ACT_IRES(pcb_action("ImportGUI"));
+			PCB_ACT_IRES(pcb_action(&PCB->hidlib, "ImportGUI"));
 			return 0;
 		}
 
@@ -213,7 +213,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		strcat(schname, ".sch");
 
 		if (pcb_file_readable(schname)) {
-			PCB_ACT_IRES(pcb_action("ImportGUI"));
+			PCB_ACT_IRES(pcb_action(&PCB->hidlib, "ImportGUI"));
 			return 0;
 		}
 

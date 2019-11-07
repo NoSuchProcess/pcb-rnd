@@ -75,7 +75,7 @@ const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out);
 void pcb_remove_actions(const pcb_action_t *a, int n);
 void pcb_remove_actions_by_cookie(const char *cookie);
 
-int pcb_action(const char *action_);
+int pcb_action(pcb_hidlib_t *hl, const char *action_);
 int pcb_actionva(const char *action_, ...); /* NULL terminated */
 int pcb_actionv(const char *action_, int argc_, const char **argv_);
 fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv);
