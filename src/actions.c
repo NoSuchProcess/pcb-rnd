@@ -697,7 +697,7 @@ int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_
 
 	args[0].type = FGW_FUNC;
 	args[0].val.argv0.func = f;
-	args[0].val.argv0.user_call_ctx = NULL;
+	args[0].val.argv0.user_call_ctx = hl;
 
 	if (end == NULL) {
 		/* optimization: string doesn't contain newline - pass it as is to save an strdup */
