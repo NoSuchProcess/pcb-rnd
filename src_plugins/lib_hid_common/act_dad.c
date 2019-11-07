@@ -65,6 +65,7 @@ union tmp_u {
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
+	pcb_hidlib_t *hidlib;
 	char *name;
 	const char *row_domain;
 	int level;
@@ -75,7 +76,7 @@ typedef struct {
 
 htsp_t dads;
 
-static int dad_new(const char *name)
+static int dad_new(pcb_hidlib_t *hl, const char *name)
 {
 	dad_t *dad;
 
@@ -87,6 +88,7 @@ static int dad_new(const char *name)
 	dad = calloc(sizeof(dad_t), 1);
 	dad->name = pcb_strdup(name);
 	dad->row_domain = dad->name;
+	dad->hidlib = hl;
 	htsp_set(&dads, dad->name, dad);
 	return 0;
 }
@@ -116,7 +118,7 @@ static void dad_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	int idx = attr - dad->dlg;
 	char **act = vts0_get(&dad->change_cb, idx, 0);
 	if ((act != NULL) && (*act != NULL))
-		pcb_parse_command(*act, 1);
+		pcb_parse_command(dad->hidlib, *act, 1);
 }
 
 static void dad_row_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -212,7 +214,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(2, FGW_STR, dad, cmd = argv[2].val.str);
 
 	if (pcb_strcasecmp(cmd, "new") == 0) {
-		PCB_ACT_IRES(dad_new(dlgname));
+		PCB_ACT_IRES(dad_new(argv[0].val.argv0.user_call_ctx, dlgname));
 		return 0;
 	}
 

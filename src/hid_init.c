@@ -637,7 +637,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 	pcb_conf_update(NULL, -1);
 
 	if (ga->main_action != NULL) {
-		int res = pcb_parse_command(ga->main_action, pcb_true);
+		int res = pcb_parse_command(NULL, ga->main_action, pcb_true); /* hidlib is NULL because there is no context yet */
 		if ((res != 0) && (ga->main_action_hint != NULL))
 			pcb_message(PCB_MSG_ERROR, "\nHint: %s\n", ga->main_action_hint);
 		pcbhl_log_print_uninit_errs("main_action parse error");

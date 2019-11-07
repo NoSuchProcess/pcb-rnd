@@ -672,7 +672,7 @@ void pcb_cli_uninit(void)
 		free(cli_pop());
 }
 
-int pcb_parse_command(const char *str_, pcb_bool force_action_mode)
+int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode)
 {
 	fgw_arg_t res, args[2];
 	fgw_func_t *f;

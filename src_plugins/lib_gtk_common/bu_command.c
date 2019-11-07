@@ -230,14 +230,14 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 }
 
 
-void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise)
+void ghid_handle_user_command(pcb_hidlib_t *hl, pcb_gtk_command_t *ctx, pcb_bool raise)
 {
 	char *command;
 
 	command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (gchar *)"");
 	if (command != NULL) {
 		/* copy new command line to save buffer */
-		pcb_parse_command(command, pcb_false);
+		pcb_parse_command(hl, command, pcb_false);
 		g_free(command);
 	}
 }

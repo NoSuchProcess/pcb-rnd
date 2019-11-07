@@ -495,7 +495,7 @@ static void ghid_view_get(pcb_hid_t *hid, pcb_box_t *viewbox)
 static void ghid_open_command(pcb_hid_t *hid)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	ghid_handle_user_command(&gctx->topwin.cmd, TRUE);
+	ghid_handle_user_command(gctx->hidlib, &gctx->topwin.cmd, TRUE);
 }
 
 static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)

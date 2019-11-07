@@ -440,7 +440,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
 		pcb_clihist_append(s, NULL, NULL, NULL);
-		pcb_parse_command(s, pcb_false);
+		pcb_parse_command(ltf_hidlib, s, pcb_false);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
 

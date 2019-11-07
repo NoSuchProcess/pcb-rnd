@@ -113,7 +113,7 @@ int pcb_hid_get_flag(pcb_hidlib_t *hidlib, const char *name)
 			}
 			else {
 				/* slower but more generic way */
-				return pcb_parse_command(name, pcb_true);
+				return pcb_parse_command(hidlib, name, pcb_true);
 			}
 		}
 		else {

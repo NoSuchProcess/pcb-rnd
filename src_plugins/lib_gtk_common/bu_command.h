@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include <glib.h>
 #include "pcb_bool.h"
+#include "global_typedefs.h"
 
 typedef struct pcb_gtk_command_s {
 	GtkWidget *command_combo_box, *prompt_label;
@@ -20,7 +21,7 @@ typedef struct pcb_gtk_command_s {
 	void *status_ctx;
 } pcb_gtk_command_t;
 
-void ghid_handle_user_command(pcb_gtk_command_t *ctx, pcb_bool raise);
+void ghid_handle_user_command(pcb_hidlib_t *hl, pcb_gtk_command_t *ctx, pcb_bool raise);
 char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const char *command);
 
 /* Update the prompt text before the command entry - call it when any of conf_core.rc.cli_* change */

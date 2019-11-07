@@ -95,7 +95,7 @@ fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, 
    action in the later case. If force_action_mode is true, str
    is interpreted as pcb-rnd action despite of the cli mode.
    Returns nonzero if the action handler(s) return nonzero. */
-int pcb_parse_command(const char *str_, pcb_bool force_action_mode);
+int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode);
 
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only
