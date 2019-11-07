@@ -476,7 +476,7 @@ int main(int argc, char *argv[])
 
 	if (conf_core.rc.script_filename) {
 		pcb_message(PCB_MSG_INFO, "Executing startup script file %s\n", conf_core.rc.script_filename);
-		pcb_actionl("ExecuteFile", conf_core.rc.script_filename, NULL);
+		pcb_actionva("ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
 		pcb_message(PCB_MSG_INFO, "Executing startup action %s\n", conf_core.rc.action_string);

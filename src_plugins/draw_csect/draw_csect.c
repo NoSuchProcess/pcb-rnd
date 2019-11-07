@@ -793,7 +793,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 				if (lactive >= 0) {
 					char tmp[32];
 					sprintf(tmp, "%ld", lactive);
-					pcb_actionl("MoveLayer", tmp, "-1", NULL);
+					pcb_actionva("MoveLayer", tmp, "-1", NULL);
 				}
 				drag_dellayer = 0;
 				lactive = -1;
@@ -860,13 +860,13 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 			lid = get_layer_coords(x, y);
 			if (lid >= 0) {
 				pcb_layervis_change_group_vis(lid, 1, 1);
-				pcb_actionl("Popup", "layer", NULL);
+				pcb_actionva("Popup", "layer", NULL);
 			}
 			else if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
 				pcb_coord_t tmp;
 				pcb_actd_EditGroup_gid = get_group_coords(y, &tmp, &tmp);
 				if (pcb_actd_EditGroup_gid >= 0)
-					pcb_actionl("Popup", "group", NULL);
+					pcb_actionva("Popup", "group", NULL);
 			}
 			break;
 

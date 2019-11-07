@@ -121,17 +121,17 @@ static void nbcb_rat_off(pcb_net_t *net, int pos)
 
 static void nbcb_select(pcb_net_t *net, int pos)
 {
-	pcb_actionl("netlist", "select", net->name, NULL);
+	pcb_actionva("netlist", "select", net->name, NULL);
 }
 
 static void nbcb_deselect(pcb_net_t *net, int pos)
 {
-	pcb_actionl("netlist", "unselect", net->name, NULL);
+	pcb_actionva("netlist", "unselect", net->name, NULL);
 }
 
 static void nbcb_find(pcb_net_t *net, int pos)
 {
-	pcb_actionl("netlist", "find", net->name, NULL);
+	pcb_actionva("netlist", "find", net->name, NULL);
 }
 
 static void nbcb_std_callback(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * cbs)
@@ -142,7 +142,7 @@ static void nbcb_std_callback(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStr
 	if (XmListGetSelectedPos(netlist_list, &posl, &posc) == False)
 		return;
 	if (v == nbcb_find)
-		pcb_actionl("connection", "reset", NULL);
+		pcb_actionva("connection", "reset", NULL);
 
 	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]), i = 0; e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e), i++) {
 		pcb_net_t *net = e->value;

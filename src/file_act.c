@@ -275,14 +275,14 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* shorthand kept only for compatibility reasons - do not use */
 		case F_AllConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionl("ExportOldConn", "AllConnections", name, NULL);
+			return pcb_actionva("ExportOldConn", "AllConnections", name, NULL);
 		case F_AllUnusedPins:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionl("ExportOldConn", "AllUnusedPins", name, NULL);
+			return pcb_actionva("ExportOldConn", "AllUnusedPins", name, NULL);
 		case F_ElementConnections:
 		case F_SubcConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionl("ExportOldConn", "SubcConnections", name, NULL);
+			return pcb_actionva("ExportOldConn", "SubcConnections", name, NULL);
 	}
 
 	PCB_ACT_FAIL(SaveTo);

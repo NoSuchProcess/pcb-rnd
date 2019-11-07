@@ -158,18 +158,18 @@ static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 static void set_paral(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("paral", NULL);
+	pcb_actionva("paral", NULL);
 }
 
 static void set_perp(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("perp", NULL);
+	pcb_actionva("perp", NULL);
 }
 
 
 static void set_tang(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("tang", NULL);
+	pcb_actionva("tang", NULL);
 }
 
 void cons_gui_confchg(conf_native_t *cfg, int arr_idx)

@@ -191,7 +191,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		return;
 	}
 
-	pcb_actionl("livescript", arg, lvs->name, NULL);
+	pcb_actionva("livescript", arg, lvs->name, NULL);
 }
 
 static live_script_t *pcb_dlg_live_script(const char *name)

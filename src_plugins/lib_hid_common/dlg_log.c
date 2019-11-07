@@ -110,12 +110,12 @@ static void log_import(log_ctx_t *ctx)
 
 static void btn_clear_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("log", "clear", NULL);
+	pcb_actionva("log", "clear", NULL);
 }
 
 static void btn_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("log", "export", NULL);
+	pcb_actionva("log", "export", NULL);
 }
 
 static void maybe_scroll_to_bottom()

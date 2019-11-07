@@ -202,30 +202,30 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	name = pcb_strdup(r->cell[0]);
 
 	if (w == ctx->wsel)
-		pcb_actionl("netlist", "select", name, NULL);
+		pcb_actionva("netlist", "select", name, NULL);
 	else if (w == ctx->wunsel)
-		pcb_actionl("netlist", "unselect", name, NULL);
+		pcb_actionva("netlist", "unselect", name, NULL);
 	else if (w == ctx->wfind) {
-		pcb_actionl("connection", "reset", NULL);
-		pcb_actionl("netlist", "find", name, NULL);
+		pcb_actionva("connection", "reset", NULL);
+		pcb_actionva("netlist", "find", name, NULL);
 	}
 	else if (w == ctx->wunfind)
-		pcb_actionl("connection", "reset", NULL);
+		pcb_actionva("connection", "reset", NULL);
 	else if (w == ctx->wrats)
-		pcb_actionl("netlist", "rats", name, NULL);
+		pcb_actionva("netlist", "rats", name, NULL);
 	else if (w == ctx->wnorats)
-		pcb_actionl("netlist", "norats", name, NULL);
+		pcb_actionva("netlist", "norats", name, NULL);
 	else if (w == ctx->wripup)
-		pcb_actionl("netlist", "ripup", name, NULL);
+		pcb_actionva("netlist", "ripup", name, NULL);
 	else if (w == ctx->waddrats)
-		pcb_actionl("netlist", "AddRats", name, NULL);
+		pcb_actionva("netlist", "AddRats", name, NULL);
 	else if (w == ctx->wrename)
-		pcb_actionl("netlist", "rename", name, NULL);
+		pcb_actionva("netlist", "rename", name, NULL);
 	else if (w == ctx->wmerge)
-		pcb_actionl("netlist", "merge", name, NULL);
+		pcb_actionva("netlist", "merge", name, NULL);
 	else if (w == ctx->wattr) {
 		char *tmp = pcb_concat("net:", name, NULL);
-		pcb_actionl("propedit", tmp, NULL);
+		pcb_actionva("propedit", tmp, NULL);
 		free(tmp);
 	}
 	else {
@@ -237,17 +237,17 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 static void netlist_claim_obj_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("ClaimNet", "object", NULL);
+	pcb_actionva("ClaimNet", "object", NULL);
 }
 
 static void netlist_claim_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("ClaimNet", "selected", NULL);
+	pcb_actionva("ClaimNet", "selected", NULL);
 }
 
 static void netlist_claim_fnd_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionl("ClaimNet", "found", NULL);
+	pcb_actionva("ClaimNet", "found", NULL);
 }
 
 static vtp0_t netlist_color_save;
@@ -443,7 +443,7 @@ static const char pcb_acth_NetlistDialog[] = "Open the netlist dialog.";
 static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (strcmp(pcb_gui->name, "lesstif") == 0)
-		pcb_actionl("DoWindows", "netlist");
+		pcb_actionva("DoWindows", "netlist");
 	else
 		pcb_dlg_netlist(PCB);
 	PCB_ACT_IRES(0);

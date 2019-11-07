@@ -84,7 +84,7 @@ static void sym_flush(symattr_t *sattr)
 		if (sattr->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "ltspice: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
-			pcb_actionl("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+			pcb_actionva("ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
@@ -98,7 +98,7 @@ static int ltspice_parse_asc(FILE *fa)
 
 	memset(&sattr, 0, sizeof(sattr));
 
-	pcb_actionl("ElementList", "start", NULL);
+	pcb_actionva("ElementList", "start", NULL);
 
 	while(fgets(line, sizeof(line), fa) != NULL) {
 		char *s;
@@ -192,7 +192,7 @@ static int ltspice_parse_asc(FILE *fa)
 		}
 	}
 	sym_flush(&sattr);
-	pcb_actionl("ElementList", "Done", NULL);
+	pcb_actionva("ElementList", "Done", NULL);
 	return 0;
 }
 
@@ -200,8 +200,8 @@ static int ltspice_parse_net(FILE *fn)
 {
 	char line[1024];
 
-	pcb_actionl("Netlist", "Freeze", NULL);
-	pcb_actionl("Netlist", "Clear", NULL);
+	pcb_actionva("Netlist", "Freeze", NULL);
+	pcb_actionva("Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
@@ -215,13 +215,13 @@ static int ltspice_parse_net(FILE *fn)
 			int n;
 			for(n = 2; n < argc; n++) {
 /*				pcb_trace("net-add '%s' '%s'\n", argv[1], argv[n]);*/
-				pcb_actionl("Netlist", "Add",  argv[1], argv[n], NULL);
+				pcb_actionva("Netlist", "Add",  argv[1], argv[n], NULL);
 			}
 		}
 	}
 
-	pcb_actionl("Netlist", "Sort", NULL);
-	pcb_actionl("Netlist", "Thaw", NULL);
+	pcb_actionva("Netlist", "Sort", NULL);
+	pcb_actionva("Netlist", "Thaw", NULL);
 
 	return 0;
 }

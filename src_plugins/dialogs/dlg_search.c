@@ -298,7 +298,7 @@ static void search_apply_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 {
 	search_ctx_t *ctx = caller_data;
 	if (ctx->dlg[ctx->wexpr_str].val.str != NULL)
-		pcb_actionl("query", search_acts[ctx->dlg[ctx->wact].val.lng], ctx->dlg[ctx->wexpr_str].val.str, NULL);
+		pcb_actionva("query", search_acts[ctx->dlg[ctx->wact].val.lng], ctx->dlg[ctx->wexpr_str].val.str, NULL);
 }
 
 

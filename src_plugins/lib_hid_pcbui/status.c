@@ -242,9 +242,9 @@ static void status_rd_pcb2dlg(void)
 static void unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	if (pcbhl_conf.editor.grid_unit == get_unit_struct("mm"))
-		pcb_actionl("SetUnits", "mil", NULL);
+		pcb_actionva("SetUnits", "mil", NULL);
 	else
-		pcb_actionl("SetUnits", "mm", NULL);
+		pcb_actionva("SetUnits", "mm", NULL);
 
 	status_rd_pcb2dlg();
 }

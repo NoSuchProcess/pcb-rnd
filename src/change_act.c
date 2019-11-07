@@ -510,7 +510,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					if (pcb_chg_obj_name_query(ptr2)) {
 						pcb_hid_redraw(PCB);
 						pcb_board_set_changed_flag(pcb_true);
-						pcb_actionl("DeleteRats", "AllRats", NULL);
+						pcb_actionva("DeleteRats", "AllRats", NULL);
 					}
 				}
 				break;

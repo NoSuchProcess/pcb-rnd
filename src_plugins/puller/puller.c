@@ -2090,7 +2090,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	}
 
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
-	/* pcb_actionl("djopt", "puller", 0); */
+	/* pcb_actionva("djopt", "puller", 0); */
 
 	cflg = pcb_layergrp_flags(PCB, pcb_layer_get_group_(CURRENT));
 	current_is_solder = (cflg & PCB_LYT_BOTTOM);
