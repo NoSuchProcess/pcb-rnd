@@ -780,7 +780,7 @@ static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_co
 	}
 }
 
-static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nearest_grid_x, pcb_coord_t nearest_grid_y)
+static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_data, pcb_coord_t nearest_grid_x, pcb_coord_t nearest_grid_y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int ans;
@@ -803,7 +803,7 @@ static void check_snap_offgrid_line(struct snap_data *snap_data, pcb_coord_t nea
 
 	line = (pcb_line_t *) ptr2;
 
-	if (!pcb_tool_should_snap_offgrid_line(ptr1, line))
+	if (!pcb_tool_should_snap_offgrid_line(pcb, ptr1, line))
 		return;
 
 	dx = line->Point2.X - line->Point1.X;
@@ -953,7 +953,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	 * Snap to offgrid points on lines.
 	 */
 	if (conf_core.editor.snap_offgrid_line)
-		check_snap_offgrid_line(&snap_data, nearest_grid_x, nearest_grid_y);
+		check_snap_offgrid_line(PCB, &snap_data, nearest_grid_x, nearest_grid_y);
 
 	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
