@@ -76,7 +76,7 @@ static void PushOnTopOfLayerStack(int NewTop)
 int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder)
 {
 	pcb_layergrp_id_t group;
-	int i, changed = 1;		/* at least the current layer changes */
+	int i, changed = 1; /* at least the current layer changes */
 
 
 	if (Layer & PCB_LYT_UI) {
