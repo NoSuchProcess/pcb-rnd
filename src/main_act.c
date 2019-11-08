@@ -360,7 +360,7 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);
 	pcb_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
-	pcb_setenv("PCB_RND_CURRENT_LAYER_NAME", CURRENT->name, 1);
+	pcb_setenv("PCB_RND_CURRENT_LAYER_NAME", PCB_CURRLAYER(PCB_ACT_BOARD)->name, 1);
 	PCB_ACT_IRES(pcb_system(PCB_ACT_HIDLIB, cmd));
 	return 0;
 }
