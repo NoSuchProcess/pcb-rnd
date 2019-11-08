@@ -995,7 +995,7 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 			p->Y = y[n];
 		}
 
-		cb(cb_ctx, (const pcb_any_obj_t *)&po);
+		cb(cb_ctx, (pcb_any_obj_t *)&po);
 		return;
 	}
 
@@ -1149,7 +1149,7 @@ PCB_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 					newline.Thickness = thickness;
 				if (cb != NULL) {
 					newline.type = PCB_OBJ_LINE;
-					cb(cb_ctx, (const pcb_any_obj_t *)&newline);
+					cb(cb_ctx, (pcb_any_obj_t *)&newline);
 				}
 				else if (xordraw)
 					pcb_render->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
@@ -1176,7 +1176,7 @@ PCB_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 					newarc.Thickness = thickness;
 				if (cb != NULL) {
 					newarc.type = PCB_OBJ_ARC;
-					cb(cb_ctx, (const pcb_any_obj_t *)&newarc);
+					cb(cb_ctx, (pcb_any_obj_t *)&newarc);
 				}
 				else if (xordraw)
 					pcb_render->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
@@ -1234,7 +1234,7 @@ PCB_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 						p->X = px[n];
 						p->Y = py[n];
 					}
-					cb(cb_ctx, (const pcb_any_obj_t *)&po);
+					cb(cb_ctx, (pcb_any_obj_t *)&po);
 				}
 				else
 					pcb_render->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
