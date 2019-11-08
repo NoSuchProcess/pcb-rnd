@@ -60,7 +60,7 @@ void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
 				pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 			if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
-				pcb_tool_attach_for_copy(pcb_tool_note.X, pcb_tool_note.Y, pcb_false);
+				pcb_tool_attach_for_copy(hl, pcb_tool_note.X, pcb_tool_note.Y, pcb_false);
 			}
 			break;
 		}

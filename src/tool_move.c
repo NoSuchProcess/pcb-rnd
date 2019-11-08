@@ -69,7 +69,7 @@ void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 				}
 				else
-					pcb_tool_attach_for_copy(pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
+					pcb_tool_attach_for_copy(hl, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
 			}
 			break;
 		}

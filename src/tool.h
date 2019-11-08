@@ -93,8 +93,8 @@ typedef struct pcb_tool_s {
 vtp0_t pcb_tools;
 
 /* (un)initialize the tool subsystem */
-void pcb_tool_init(void);
-void pcb_tool_uninit(void);
+void pcb_tool_init();
+void pcb_tool_uninit();
 
 /* Insert a new tool in pcb_tools; returns 0 on success */
 int pcb_tool_reg(pcb_tool_t *tool, const char *cookie);
@@ -146,7 +146,7 @@ extern pcb_bool pcb_tool_is_saved;
 extern pcb_toolid_t pcb_tool_prev_id;
 extern pcb_toolid_t pcb_tool_next_id;
 
-void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband);
+void pcb_tool_attach_for_copy(pcb_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband);
 void pcb_tool_notify_block(void);	/* create first or second corner of a marked block (when clicked) */
 pcb_bool pcb_tool_should_snap_offgrid_line(pcb_layer_t *layer, pcb_line_t *line);
 

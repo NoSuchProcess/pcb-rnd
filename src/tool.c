@@ -52,13 +52,13 @@ static void default_tool_unreg(void);
 static void init_current_tool(void);
 static void uninit_current_tool(void);
 
-void pcb_tool_init(void)
+void pcb_tool_init()
 {
 	vtp0_init(&pcb_tools);
 	default_tool_reg(); /* temporary */
 }
 
-void pcb_tool_uninit(void)
+void pcb_tool_uninit()
 {
 	default_tool_unreg(); /* temporary */
 	while(vtp0_len(&pcb_tools) != 0) {
@@ -79,7 +79,7 @@ int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 	vtp0_append(&pcb_tools, (void *)tool);
 	if (pcb_gui != NULL)
 		pcb_gui->reg_mouse_cursor(pcb_gui, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
-	pcb_event(&PCB->hidlib, PCB_EVENT_TOOL_REG, "p", tool);
+	pcb_event(NULL, PCB_EVENT_TOOL_REG, "p", tool);
 	return 0;
 }
 
@@ -293,12 +293,12 @@ static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *pt
 	}
 }
 
-void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband)
+void pcb_tool_attach_for_copy(pcb_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband)
 {
 	pcb_box_t box;
 	pcb_coord_t mx = 0, my = 0;
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
+	pcb_event(hl, PCB_EVENT_RUBBER_RESET, NULL);
 	if (!conf_core.editor.snap_pin) {
 		/* dither the grab point so that the mark, center, etc
 		 * will end up on a grid coordinate
@@ -306,8 +306,8 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 		get_grid_lock_coordinates(pcb_crosshair.AttachedObject.Type,
 															pcb_crosshair.AttachedObject.Ptr1,
 															pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &mx, &my);
-		mx = pcb_grid_fit(mx, PCB->hidlib.grid, PCB->hidlib.grid_ox) - mx;
-		my = pcb_grid_fit(my, PCB->hidlib.grid, PCB->hidlib.grid_oy) - my;
+		mx = pcb_grid_fit(mx, hl->grid, hl->grid_ox) - mx;
+		my = pcb_grid_fit(my, hl->grid, hl->grid_oy) - my;
 	}
 	pcb_crosshair.AttachedObject.X = PlaceX - mx;
 	pcb_crosshair.AttachedObject.Y = PlaceY - my;
@@ -319,17 +319,17 @@ void pcb_tool_attach_for_copy(pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool d
 	pcb_obj_get_bbox_naked(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &box);
 	pcb_crosshair_set_range(pcb_crosshair.AttachedObject.X - box.X1,
 										pcb_crosshair.AttachedObject.Y - box.Y1,
-										PCB->hidlib.size_x - (box.X2 - pcb_crosshair.AttachedObject.X),
-										PCB->hidlib.size_y - (box.Y2 - pcb_crosshair.AttachedObject.Y));
+										hl->size_x - (box.X2 - pcb_crosshair.AttachedObject.X),
+										hl->size_y - (box.Y2 - pcb_crosshair.AttachedObject.Y));
 
 	/* get all attached objects if necessary */
 	if (do_rubberband && conf_core.editor.rubber_band_mode)
-		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+		pcb_event(hl, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	if (do_rubberband &&
 			(pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC ||
 			 pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK ||
 			 pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE || pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT))
-		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+		pcb_event(hl, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 }
 
 void pcb_tool_notify_block(void)

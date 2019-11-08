@@ -101,7 +101,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			box.Y2 = pcb_tool_note.Y - PCB_SLOP * pcb_pixel_slop;
 			pcb_crosshair.drags = pcb_list_block(PCB, &box, &pcb_crosshair.drags_len);
 			pcb_crosshair.drags_current = 0;
-			pcb_tool_attach_for_copy(pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
+			pcb_tool_attach_for_copy(&PCB->hidlib, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
 		}
 		else {
 			pcb_box_t box;
