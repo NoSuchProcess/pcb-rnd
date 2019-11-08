@@ -56,7 +56,7 @@ PCB_INLINE pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
 {
 	if (it->global) {
 		/* over all layers, random order, without any checks - go the cheap way, bypassing groups */
-		if (it->lidx < pcb_max_layer)
+		if (it->lidx < pcb_max_layer(PCB))
 			return it->lidx++;
 		return -1;
 	}

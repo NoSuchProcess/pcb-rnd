@@ -178,7 +178,7 @@ static void check_pstk(pcb_pstk_t *ps)
 {
 	pstk = ps;
 
-	for (layer = 0; layer < pcb_max_layer; layer++) {
+	for (layer = 0; layer < pcb_max_layer(PCB); layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
 		pcb_pstk_shape_t *shp, tmpshp;
 		pcb_box_t spot;

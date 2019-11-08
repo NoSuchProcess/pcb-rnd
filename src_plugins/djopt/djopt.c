@@ -1694,7 +1694,7 @@ static int vianudge()
 			counts[c->lines[i]->layer]++;
 			directions[c->lines[i]->layer] |= o;
 		}
-		for (o = 0, i = 0; i < pcb_max_layer; i++) {
+		for (o = 0, i = 0; i < pcb_max_layer(PCB); i++) {
 			if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
 				continue;
 			if (counts[i] == 1) {
@@ -1714,7 +1714,7 @@ static int vianudge()
 		default:
 			continue;
 		}
-		for (i = 0; i < pcb_max_layer; i++) {
+		for (i = 0; i < pcb_max_layer(PCB); i++) {
 			if (!(pcb_layer_flags(PCB, i) & PCB_LYT_COPPER))
 				continue;
 			if (counts[i] && directions[i] != o && directions[i] != oboth)
@@ -2211,7 +2211,7 @@ static void pinsnap()
 			bottom = pin->BoundingBox.Y2;
 
 			dprintf("%s x %#mS-%#mS y %#mS-%#mS\n", corner_name(c), left, right, bottom, top);
-			for (l = 0; l <= pcb_max_layer; l++) {
+			for (l = 0; l <= pcb_max_layer(PCB); l++) {
 				if (!(pcb_layer_flags(PCB, l) & PCB_LYT_COPPER))
 					continue;
 				best_dist[l] = close * 2;
@@ -2248,10 +2248,10 @@ static void pinsnap()
 					}
 				}
 				if (!got_one && c->n_lines == (c->pad ? 1 : 0)) {
-					for (l = 0; l <= pcb_max_layer; l++)
+					for (l = 0; l <= pcb_max_layer(PCB); l++)
 						if (best_c[l])
 							dprintf("best[%d] = %s\n", l, corner_name(best_c[l]));
-					for (l = 0; l <= pcb_max_layer; l++)
+					for (l = 0; l <= pcb_max_layer(PCB); l++)
 						if (best_c[l]) {
 							dprintf("move %s to %s\n", corner_name(best_c[l]), corner_name(c));
 							connect_corners(best_c[l], c);
@@ -2405,7 +2405,7 @@ static void grok_layer_groups()
 	pcb_layer_stack_t *l = &(PCB->LayerGroups);
 
 	solder_layer = component_layer = -1;
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		layer_type[i] = 0;
 		layer_groupings[i] = 0;
 	}
@@ -2419,7 +2419,7 @@ static void grok_layer_groups()
 				f |= LT_COMPONENT;
 		}
 		for (j = 0; j < l->grp[i].len; j++) {
-			if (l->grp[i].lid[j] < pcb_max_layer) {
+			if (l->grp[i].lid[j] < pcb_max_layer(PCB)) {
 				layer_type[l->grp[i].lid[j]] |= f;
 				layer_groupings[l->grp[i].lid[j]] = i;
 				if (solder_layer == -1 && f == LT_SOLDER)
@@ -2488,7 +2488,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	for (layn = 0; layn < pcb_max_layer; layn++) {
+	for (layn = 0; layn < pcb_max_layer(PCB); layn++) {
 		pcb_layer_t *layer = pcb_get_layer(PCB->Data, layn);
 
 		if (!(pcb_layer_flags(PCB, layn) & PCB_LYT_COPPER))

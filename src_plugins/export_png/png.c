@@ -412,7 +412,7 @@ static pcb_export_opt_t *png_get_export_options(pcb_hid_t *hid, int *n)
 
 static pcb_layergrp_id_t group_for_layer(int l)
 {
-	if (l < pcb_max_layer && l >= 0)
+	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
 	return pcb_max_group(PCB) + 3 + l;
@@ -429,7 +429,7 @@ static int layer_sort(const void *va, const void *vb)
 	pcb_layergrp_id_t bl = group_for_layer(b);
 	int d = bl - al;
 
-	if (a >= 0 && a < pcb_max_layer) {
+	if (a >= 0 && a < pcb_max_layer(PCB)) {
 		int aside = (is_solder(al) ? 0 : is_component(al) ? 2 : 1);
 		int bside = (is_solder(bl) ? 0 : is_component(bl) ? 2 : 1);
 
@@ -550,7 +550,7 @@ void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xfo
 /*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
-		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+		qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 
 		if (photo_mode)
 			png_photo_as_shown();
@@ -561,7 +561,7 @@ void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xfo
 
 	if (!photo_mode && conf_core.editor.show_solder_side) {
 		int i, j;
-		for (i = 0, j = pcb_max_layer - 1; i < j; i++, j--) {
+		for (i = 0, j = pcb_max_layer(PCB) - 1; i < j; i++, j--) {
 			int k = pcb_layer_stack[i];
 			pcb_layer_stack[i] = pcb_layer_stack[j];
 			pcb_layer_stack[j] = k;

@@ -240,7 +240,7 @@ do { \
 	PCB_END_LOOP;
 
 	/* check layers */
-	LAYER_LOOP(pcb->Data, pcb_max_layer);
+	LAYER_LOOP(pcb->Data, pcb_max_layer(PCB));
 	{
 		unsigned int lflg = pcb_layer_flags(pcb, n);
 

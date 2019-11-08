@@ -198,7 +198,7 @@ static void fidocadj_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fprintf(f, "[FIDOCAD]\n");
 
 	fidoly_next = 3;
-	for(lid = 0; lid < pcb_max_layer; lid++) {
+	for(lid = 0; lid < pcb_max_layer(PCB); lid++) {
 		pcb_layer_t *ly = PCB->Data->Layer+lid;
 		unsigned int lflg = pcb_layer_flags(PCB, lid);
 		int fidoly = layer_map(lflg, &fidoly_next, ly->name);

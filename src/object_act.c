@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (layername) {
 				int i;
 				layer = NULL;
-				for (i = 0; i < pcb_max_layer; i++)
+				for (i = 0; i < pcb_max_layer(PCB); i++)
 					if (strcmp(pcb->Data->Layer[i].name, layername) == 0) {
 						layer = &(pcb->Data->Layer[i]);
 						break;
@@ -847,7 +847,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (strcmp(a1, "down") == 0) {
 		new_index = PCB_CURRLID(pcb) + 1;
-		if (new_index >= pcb_max_layer) {
+		if (new_index >= pcb_max_layer(PCB)) {
 			PCB_ACT_IRES(1);
 			return 0;
 		}

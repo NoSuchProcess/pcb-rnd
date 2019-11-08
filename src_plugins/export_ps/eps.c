@@ -129,7 +129,7 @@ static pcb_export_opt_t *eps_get_export_options(pcb_hid_t *hid, int *n)
 
 static pcb_layergrp_id_t group_for_layer(int l)
 {
-	if (l < pcb_max_layer && l >= 0)
+	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
 	return pcb_max_group(PCB) + 3 + l;
@@ -146,7 +146,7 @@ static int layer_sort(const void *va, const void *vb)
 	pcb_layergrp_id_t bl = group_for_layer(b);
 	int d = bl - al;
 
-	if (a >= 0 && a < pcb_max_layer) {
+	if (a >= 0 && a < pcb_max_layer(PCB)) {
 		int aside = (is_solder(al) ? 0 : is_component(al) ? 2 : 1);
 		int bside = (is_solder(bl) ? 0 : is_component(bl) ? 2 : 1);
 		if (bside != aside)
@@ -241,7 +241,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 	memset(print_layer, 0, sizeof(print_layer));
 
 	/* Figure out which layers actually have stuff on them.  */
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		pcb_layer_t *layer = PCB->Data->Layer + i;
 		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK)
 			continue;
@@ -273,7 +273,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 
 	/* Now, for each group we're printing, mark its layers for
 	   printing.  */
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK)
 			continue;
 		if (print_group[pcb_layer_get_group(PCB, i)])
@@ -283,7 +283,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	as_shown = options[HA_as_shown].lng;
 	if (!options[HA_as_shown].lng) {
-		qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+		qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 	linewidth = -1;
 	lastcap = -1;

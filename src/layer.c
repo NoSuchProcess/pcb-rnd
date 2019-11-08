@@ -741,7 +741,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 				memmove(pcb_layer_stack + l, pcb_layer_stack + l + 1, (pcb->Data->LayerN - l - 1) * sizeof(pcb_layer_stack[0]));
 
 		/* remove layer from the logical layer array */
-		pcb_max_layer--;
+		pcb_max_layer(PCB)--;
 		for (l = 0; l < pcb->Data->LayerN; l++)
 			if (pcb_layer_stack[l] > old_index)
 				pcb_layer_stack[l]--;

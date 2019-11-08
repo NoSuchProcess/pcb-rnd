@@ -1426,7 +1426,7 @@ int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 		if (Data->parent_type != PCB_PARENT_BOARD)
 			return 0;
 		if (ptr1 == NULL) { /* no layer specified: run on all layers */
-			LAYER_LOOP(Data, pcb_max_layer);
+			LAYER_LOOP(Data, pcb_max_layer(PCB));
 			{
 				if (!(pcb_layer_flags_(layer) & PCB_LYT_COPPER))
 					continue;

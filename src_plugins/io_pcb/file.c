@@ -695,16 +695,16 @@ static void LayersFixup(void)
 		return;
 	}
 
-	if (bs != pcb_max_layer - 2) {
-		pcb_layer_swap(PCB, bs, pcb_max_layer - 2);
+	if (bs != pcb_max_layer(PCB) - 2) {
+		pcb_layer_swap(PCB, bs, pcb_max_layer(PCB) - 2);
 		chg = 1;
 	}
 
 	bs = pcb_layer_get_bottom_silk();
 	ts = pcb_layer_get_top_silk();
 
-	if (ts != pcb_max_layer - 1) {
-		pcb_layer_swap(PCB, ts, pcb_max_layer - 1);
+	if (ts != pcb_max_layer(PCB) - 1) {
+		pcb_layer_swap(PCB, ts, pcb_max_layer(PCB) - 1);
 		chg = 1;
 	}
 

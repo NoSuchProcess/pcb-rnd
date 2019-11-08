@@ -1253,7 +1253,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 			return found;
 	}
 
-	for(i = 0; i < pcb_max_layer; i++) {
+	for(i = 0; i < pcb_max_layer(PCB); i++) {
 		int found;
 		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK) /* special order: silks are searched before/after this loop, if we meet them elsewhere, skip */
 			continue;

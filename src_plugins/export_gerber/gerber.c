@@ -273,7 +273,7 @@ static pcb_export_opt_t *gerber_get_export_options(pcb_hid_t *hid, int *n)
 
 static pcb_layergrp_id_t group_for_layer(int l)
 {
-	if (l < pcb_max_layer && l >= 0)
+	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
 	return pcb_max_group(PCB) + 3 + l;
@@ -576,7 +576,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
-	qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+	qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 	linewidth = -1;
 	lastcap = -1;
 	lastgroup = -1;

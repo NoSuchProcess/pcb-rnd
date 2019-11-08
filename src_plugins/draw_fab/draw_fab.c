@@ -298,7 +298,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 		strcpy(utcTime, "<date>");
 
 	yoff = -TEXT_LINE;
-	for (found = 0, i = 0; i < pcb_max_layer; i++) {
+	for (found = 0, i = 0; i < pcb_max_layer(PCB); i++) {
 		pcb_layer_t *l = &PCB->Data->Layer[i];
 		pcb_layer_type_t flags = pcb_layer_flags(PCB, i);
 		int purpi = pcb_layer_purpose(PCB, i, NULL);

@@ -60,9 +60,9 @@ static void PushOnTopOfLayerStack(int NewTop)
 	int i;
 
 	/* ignore silk layers */
-	if (NewTop < pcb_max_layer) {
+	if (NewTop < pcb_max_layer(PCB)) {
 		/* first find position of passed one */
-		for (i = 0; i < pcb_max_layer; i++)
+		for (i = 0; i < pcb_max_layer(PCB); i++)
 			if (pcb_layer_stack[i] == NewTop)
 				break;
 
@@ -99,7 +99,7 @@ int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On
 			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[--i];
 
 			/* don't count the passed member of the group */
-			if (layer != Layer && layer < pcb_max_layer) {
+			if (layer != Layer && layer < pcb_max_layer(PCB)) {
 				PCB->Data->Layer[layer].meta.real.vis = On;
 
 				/* push layer on top of stack if switched on */
@@ -128,7 +128,7 @@ void pcb_layervis_reset_stack(pcb_hidlib_t *hl)
 	pcb_cardinal_t i;
 
 	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, PCB->Data->Layer[i].meta.real.grp);
 
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
@@ -167,7 +167,7 @@ void pcb_layervis_save_stack(void)
 	if (SavedStack.cnt != 0)
 		pcb_message(PCB_MSG_ERROR, "pcb_layervis_save_stack()  layerstack was already saved and not yet restored.  cnt = %d\n", SavedStack.cnt);
 
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			SavedStack.pcb_layer_stack[i] = pcb_layer_stack[i];
 		SavedStack.LayerOn[i] = PCB->Data->Layer[i].meta.real.vis;
@@ -194,7 +194,7 @@ void pcb_layervis_restore_stack(void)
 		pcb_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
 	}
 
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = SavedStack.pcb_layer_stack[i];
 		PCB->Data->Layer[i].meta.real.vis = SavedStack.LayerOn[i];
@@ -218,7 +218,7 @@ void layer_vis_chg_mask(conf_native_t *cfg, int arr_idx)
 		return;
 
 	in = 1;
-	for(n = 0; n < pcb_max_layer; n++) {
+	for(n = 0; n < pcb_max_layer(PCB); n++) {
 		if (pcb_layer_flags(PCB, n) & PCB_LYT_MASK) {
 			if (PCB->Data->Layer[n].meta.real.vis != *cfg->val.boolean) {
 				chg = 1;
@@ -312,7 +312,7 @@ pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)
 void pcb_hid_save_and_show_layer_ons(int *save_array)
 {
 	pcb_layer_id_t i;
-	for (i = 0; i < pcb_max_layer; i++) {
+	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		save_array[i] = PCB->Data->Layer[i].meta.real.vis;
 		PCB->Data->Layer[i].meta.real.vis = 1;
 	}
@@ -328,7 +328,7 @@ void pcb_hid_save_and_show_layergrp_ons(int *save_array)
 void pcb_hid_restore_layer_ons(int *save_array)
 {
 	pcb_layer_id_t i;
-	for (i = 0; i < pcb_max_layer; i++)
+	for (i = 0; i < pcb_max_layer(PCB); i++)
 		PCB->Data->Layer[i].meta.real.vis = save_array[i];
 }
 

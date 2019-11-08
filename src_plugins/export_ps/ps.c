@@ -350,7 +350,7 @@ static pcb_export_opt_t *ps_get_export_options(pcb_hid_t *hid, int *n)
 
 static pcb_layergrp_id_t group_for_layer(int l)
 {
-	if (l < pcb_max_layer && l >= 0)
+	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
 	/* else something unique */
 	return pcb_max_group(PCB) + 3 + l;
@@ -568,7 +568,7 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xf
 
 	global.has_outline = pcb_has_explicit_outline(PCB);
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
-	qsort(pcb_layer_stack, pcb_max_layer, sizeof(pcb_layer_stack[0]), layer_sort);
+	qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 
 	global.linewidth = -1;
 	/* reset static vars */

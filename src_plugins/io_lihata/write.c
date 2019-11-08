@@ -217,7 +217,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type, int intconn)
 	/* thermal flags per layer */
 	lst = lht_dom_node_alloc(LHT_HASH, "thermal");
 
-	for(layer = 0; layer < pcb_max_layer; layer++) {
+	for(layer = 0; layer < pcb_max_layer(PCB); layer++) {
 		if (PCB_FLAG_THERM_TEST_ANY(&fh)) {
 			int t = PCB_FLAG_THERM_GET(layer, &fh);
 			if (t != 0) {
@@ -1052,14 +1052,14 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 		grp[g - PCB->LayerGroups.grp] = gtop;
 
 		/* v1 needs to have silk at the end of the list */
-		for(n = 0; n < pcb_max_layer; n++) {
+		for(n = 0; n < pcb_max_layer(PCB); n++) {
 			if ((pcb_layer_flags(PCB, n) & PCB_LYT_SILK) == 0) {
 				pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
 				LAYER_GID_FIX_V1();
 				lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
 			}
 		}
-		for(n = 0; n < pcb_max_layer; n++) {
+		for(n = 0; n < pcb_max_layer(PCB); n++) {
 			if (pcb_layer_flags(PCB, n) & PCB_LYT_SILK) {
 				pcb_layer_id_t gid = pcb_layer_get_group(PCB, n);
 				LAYER_GID_FIX_V1();

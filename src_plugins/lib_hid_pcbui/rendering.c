@@ -40,7 +40,7 @@ static int common_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		int n = PCB->LayerGroups.grp[group].len;
 		for (idx = 0; idx < n - 1; idx++) {
 			int ni = PCB->LayerGroups.grp[group].lid[idx];
-			if (ni >= 0 && ni < pcb_max_layer && PCB->Data->Layer[ni].meta.real.vis)
+			if (ni >= 0 && ni < pcb_max_layer(PCB) && PCB->Data->Layer[ni].meta.real.vis)
 				break;
 		}
 		idx = PCB->LayerGroups.grp[group].lid[idx];
@@ -53,7 +53,7 @@ static int common_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 			return (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags) && PCB->LayerGroups.grp[group].vis);
 	}
 
-	if (idx >= 0 && idx < pcb_max_layer && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
+	if (idx >= 0 && idx < pcb_max_layer(PCB) && ((flags & PCB_LYT_ANYTHING) != PCB_LYT_SILK))
 		return PCB->Data->Layer[idx].meta.real.vis;
 
 	/* virtual layers */
