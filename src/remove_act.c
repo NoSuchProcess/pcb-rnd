@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
+ *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -72,10 +73,10 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else { /* interactive remove */
 			pcb_hid_get_coords("Click on object to delete", &pcb_tool_note.X, &pcb_tool_note.Y, 0);
-			pcb_tool_save(&PCB->hidlib);
-			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_REMOVE);
-			pcb_notify_mode(&PCB->hidlib);
-			pcb_tool_restore(&PCB->hidlib);
+			pcb_tool_save(PCB_ACT_HIDLIB);
+			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_REMOVE);
+			pcb_notify_mode(PCB_ACT_HIDLIB);
+			pcb_tool_restore(PCB_ACT_HIDLIB);
 		}
 		break;
 	case F_Selected:
