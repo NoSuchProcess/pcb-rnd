@@ -352,7 +352,7 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 	ls_layer_t *lys;
 	int repeat = 0;
 
-	ly = LAYER_ON_STACK(0);
+	ly = PCB_CURRLAYER(PCB);
 	if ((ly == NULL) || (ly->meta.real.vis))
 		return;
 

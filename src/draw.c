@@ -359,7 +359,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	lvly.top_fab = -1;
 	lvly.top_assy = lvly.bot_assy = -1;
 	for (ngroups = 0, i = 0; i < pcb_max_layer; i++) {
-		pcb_layer_t *l = LAYER_ON_STACK(i);
+		pcb_layer_t *l = PCB_STACKLAYER(PCB, i);
 		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
 		unsigned int gflg = 0;

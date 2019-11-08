@@ -1257,7 +1257,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		int found;
 		if (pcb_layer_flags(PCB, i) & PCB_LYT_SILK) /* special order: silks are searched before/after this loop, if we meet them elsewhere, skip */
 			continue;
-		SearchLayer = LAYER_ON_STACK(i);
+		SearchLayer = PCB_STACKLAYER(PCB, i);
 
 		found = pcb_search_obj_by_loc_layer(Type, Result1, Result2, Result3, req_flag, SearchLayer, HigherAvail, HigherBound, objst);
 		if (found < 0)
