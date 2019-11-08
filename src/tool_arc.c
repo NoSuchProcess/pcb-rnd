@@ -77,6 +77,8 @@ void pcb_tool_arc_uninit(void)
 
 void pcb_tool_arc_notify_mode(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_tool_note.X;
@@ -104,7 +106,7 @@ void pcb_tool_arc_notify_mode(pcb_hidlib_t *hl)
 				dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
 				wy = wx;
 			}
-			if (coord_abs(wy) > 0 && (arc = pcb_arc_new(pcb_loose_subc_layer(PCB, CURRENT, pcb_true),
+			if (coord_abs(wy) > 0 && (arc = pcb_arc_new(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true),
 																										pcb_crosshair.AttachedBox.Point2.X,
 																										pcb_crosshair.AttachedBox.Point2.Y,
 																										coord_abs(wy),
@@ -114,15 +116,15 @@ void pcb_tool_arc_notify_mode(pcb_hidlib_t *hl)
 																										conf_core.design.line_thickness,
 																										2 * conf_core.design.clearance,
 																										pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0), pcb_true))) {
-				pcb_obj_add_attribs(arc, PCB->pen_attr);
+				pcb_obj_add_attribs(arc, pcb->pen_attr);
 				pcb_arc_get_end(arc, 1, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
 				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
-				pcb_undo_add_obj_to_create(PCB_OBJ_ARC, CURRENT, arc, arc);
+				pcb_undo_add_obj_to_create(PCB_OBJ_ARC, PCB_CURRLAYER(pcb), arc, arc);
 				pcb_undo_inc_serial();
 				pcb_added_lines++;
-				pcb_arc_invalidate_draw(CURRENT, arc);
-				pcb_subc_as_board_update(PCB);
+				pcb_arc_invalidate_draw(PCB_CURRLAYER(pcb), arc);
+				pcb_subc_as_board_update(pcb);
 				pcb_draw();
 				pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 			}
@@ -138,6 +140,8 @@ void pcb_tool_arc_adjust_attached_objects(pcb_hidlib_t *hl)
 
 void pcb_tool_arc_draw_attached(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 		pcb_xordraw_attached_arc(conf_core.design.line_thickness);
 		if (conf_core.editor.show_drc) {
@@ -148,8 +152,8 @@ void pcb_tool_arc_draw_attached(pcb_hidlib_t *hl)
 	}
 	else {
 		/* Draw a circle (0 length line) to show where the arc will start when placed */
-		if(CURRENT)
-			pcb_render->set_color(pcb_crosshair.GC, &CURRENT->meta.real.color);
+		if(PCB_CURRLAYER(pcb))
+			pcb_render->set_color(pcb_crosshair.GC, &PCB_CURRLAYER(pcb)->meta.real.color);
 
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_crosshair.X, pcb_crosshair.Y,
