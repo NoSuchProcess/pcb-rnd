@@ -426,7 +426,7 @@ static void draw_everything(pcb_draw_info_t *info)
 
 		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform_exporter)) {
 			int is_current = 0;
-			pcb_layergrp_id_t cgrp = CURRENT->meta.real.grp;
+			pcb_layergrp_id_t cgrp = PCB_CURRLAYER(PCB)->meta.real.grp;
 
 			if ((cgrp == solder) || (cgrp == component)) {
 				/* current group is top or bottom: visibility depends on side we are looking at */
@@ -677,7 +677,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 
 	xform_setup(info, &xform, Layer);
 
-	current_grp = (Layer_->meta.real.grp == CURRENT->meta.real.grp);
+	current_grp = (Layer_->meta.real.grp == PCB_CURRLAYER(PCB)->meta.real.grp);
 
 	if ((info->xform != NULL) && (info->xform->layer_faded)) {
 		orig_color = Layer->meta.real.color;
@@ -905,7 +905,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 			ly1 = info->pcb->Data->Layer + layers[0];
 
 		xform_setup(info, &tmp, ly1);
-		pcb_draw_pstks(info, group, (CURRENT->meta.real.grp == group), 0);
+		pcb_draw_pstks(info, group, (PCB_CURRLAYER(PCB)->meta.real.grp == group), 0);
 		info->xform = NULL;
 		info->layer = NULL;
 	}

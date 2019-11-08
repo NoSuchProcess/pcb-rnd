@@ -31,7 +31,7 @@
 #include "layer.h"
 #include "pcb_bool.h"
 
-/* special layer: when used, the shape is always placed on the CURRENT layer */
+/* special layer: when used, the shape is always placed on the current layer */
 extern pcb_layer_t *pcb_shape_current_layer;
 
 void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pcb_bool modal);

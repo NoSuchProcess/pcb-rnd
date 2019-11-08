@@ -133,7 +133,7 @@ static void acompnet_mesh(pcb_meshgraph_t *gr, pcb_layer_t *layer)
 	double sep = conf_core.design.line_thickness + conf_core.design.bloat;
 	int n;
 
-	PCB_LINE_LOOP(CURRENT) {
+	PCB_LINE_LOOP(PCB_CURRLAYER(PCB)) {
 		double i, len, vx, vy, x1, y1, x2, y2, nx, ny;
 		x1 = line->Point1.X;
 		x2 = line->Point2.X;
@@ -178,7 +178,7 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	long int is, ie;
 
 	pcb_msgr_init(&gr);
-	acompnet_mesh(&gr, CURRENT);
+	acompnet_mesh(&gr, PCB_CURRLAYER(PCB));
 
 	{ /* temporary hack for testing: fixed, off-mesh start/end */
 		pcb_box_t bbox;

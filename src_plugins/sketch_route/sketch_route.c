@@ -1030,9 +1030,9 @@ static void tool_skline_notify_mode(pcb_hidlib_t *hl)
 		if (type != PCB_OBJ_VOID) {
 			term_obj = ptr2;
 			if (term_obj->term != NULL
-					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, CURRENT) != NULL)
+					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, PCB_CURRLAYER(PCB)) != NULL)
 							|| type != PCB_OBJ_PSTK)
-					&& attached_path_init(CURRENT, term_obj)) {
+					&& attached_path_init(PCB_CURRLAYER(PCB), term_obj)) {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE;
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			}
@@ -1047,7 +1047,7 @@ static void tool_skline_notify_mode(pcb_hidlib_t *hl)
 		if (type != PCB_OBJ_VOID) {
 			term_obj = ptr2;
 			if (term_obj->term != NULL
-					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, CURRENT) != NULL)
+					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, PCB_CURRLAYER(PCB)) != NULL)
 							|| type != PCB_OBJ_PSTK)) {
 				if (attached_path_finish(term_obj) == pcb_true) {
 					attached_path_uninit();

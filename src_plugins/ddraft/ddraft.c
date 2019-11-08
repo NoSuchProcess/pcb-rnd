@@ -453,7 +453,7 @@ void ddraft_tool_draw_attached(pcb_hidlib_t *hl)
 	}
 
 	if (pcb_ddraft_attached.line_valid) {
-		pcb_render->set_color(pcb_crosshair.GC, &CURRENT->meta.real.color);
+		pcb_render->set_color(pcb_crosshair.GC, &PCB_CURRLAYER(PCB)->meta.real.color);
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y,
 			conf_core.design.line_thickness, 0);

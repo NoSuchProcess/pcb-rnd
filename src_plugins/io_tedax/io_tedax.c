@@ -90,7 +90,7 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (pcb_strcasecmp(type, "layer") == 0) {
-		PCB_ACT_IRES(tedax_layer_save(PCB, pcb_layer_get_group_(CURRENT), NULL, fname));
+		PCB_ACT_IRES(tedax_layer_save(PCB, pcb_layer_get_group_(PCB_CURRLAYER(PCB)), NULL, fname));
 		return 0;
 	}
 

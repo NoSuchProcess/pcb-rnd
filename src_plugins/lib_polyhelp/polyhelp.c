@@ -477,17 +477,17 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 				pcb_pline_t *pl = pcb_poly_contour(&it);
 				if (pl != NULL) { /* we have a contour */
-					pcb_pline_to_lines(CURRENT, pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+					pcb_pline_to_lines(PCB_CURRLAYER(PCB), pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
 					for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
-						pcb_pline_to_lines(CURRENT, pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+						pcb_pline_to_lines(PCB_CURRLAYER(PCB), pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
 				}
 			}
 		}
 		if (want_poly) {
-			pcb_poly_t *p = pcb_poly_new_from_poly(CURRENT, polygon, period, polygon->Clearance, polygon->Flags);
+			pcb_poly_t *p = pcb_poly_new_from_poly(PCB_CURRLAYER(PCB), polygon, period, polygon->Clearance, polygon->Flags);
 			PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
 		}
-		pcb_cpoly_hatch_lines(CURRENT, polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+		pcb_cpoly_hatch_lines(PCB_CURRLAYER(PCB), polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
 	} PCB_ENDALL_LOOP;
 
 	PCB_ACT_IRES(0);
@@ -507,7 +507,7 @@ static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon))
 			continue;
 
-		p = pcb_poly_new_from_poly(CURRENT, polygon, offs, polygon->Clearance, polygon->Flags);
+		p = pcb_poly_new_from_poly(PCB_CURRLAYER(PCB), polygon, offs, polygon->Clearance, polygon->Flags);
 		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
 	} PCB_ENDALL_LOOP;
 

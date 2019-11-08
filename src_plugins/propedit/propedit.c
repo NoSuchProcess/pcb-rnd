@@ -89,7 +89,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			vtl0_append(&pe->layergrps, id);
 		}
 		else {
-			vtl0_append(&pe->layergrps, CURRENT->meta.real.grp);
+			vtl0_append(&pe->layergrps, PCB_CURRLAYER(PCB)->meta.real.grp);
 		}
 	}
 	else if (strncmp(cmd, "layer", 5) == 0) {

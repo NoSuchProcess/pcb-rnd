@@ -326,8 +326,8 @@ static int find_pair(int Px, int Py)
 	spot.Y1 = y - 1;
 	spot.X2 = x + 1;
 	spot.Y2 = y + 1;
-	pcb_r_search(CURRENT->line_tree, &spot, NULL, line_callback, CURRENT, NULL);
-	pcb_r_search(CURRENT->arc_tree, &spot, NULL, arc_callback, CURRENT, NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &spot, NULL, line_callback, PCB_CURRLAYER(PCB), NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &spot, NULL, arc_callback, PCB_CURRLAYER(PCB), NULL);
 	if (the_line && the_arc && !multi)
 		return 1;
 	x = Px;
@@ -379,7 +379,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cx = the_arc->X;
 	cy = the_arc->Y;
 	if (arc_endpoint_is(the_arc, the_arc->StartAngle, x, y)) {
-		pcb_arc_set_angles(CURRENT, the_arc, the_arc->StartAngle + the_arc->Delta, -the_arc->Delta);
+		pcb_arc_set_angles(PCB_CURRLAYER(PCB), the_arc, the_arc->StartAngle + the_arc->Delta, -the_arc->Delta);
 	}
 	else if (!arc_endpoint_is(the_arc, the_arc->StartAngle + the_arc->Delta, x, y)) {
 #if TRACE1
@@ -427,7 +427,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		new_delta_angle -= 360;
 	if (new_delta_angle < -180)
 		new_delta_angle += 360;
-	pcb_arc_set_angles(CURRENT, the_arc, the_arc->StartAngle, new_delta_angle);
+	pcb_arc_set_angles(PCB_CURRLAYER(PCB), the_arc, the_arc->StartAngle, new_delta_angle);
 
 #if TRACE1
 	printf("arc now start %ld end %ld\n", the_arc->StartAngle, the_arc->StartAngle + new_delta_angle);
@@ -437,7 +437,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	x = the_arc->X - the_arc->Width * cos(d2r(arc_angle)) + 0.5;
 	y = the_arc->Y + the_arc->Height * sin(d2r(arc_angle)) + 0.5;
 
-	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
+	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
 
 	pcb_gui->invalidate_all(pcb_gui);
 	pcb_undo_inc_serial();
@@ -688,8 +688,8 @@ static void find_pairs_1(void *me, Extra ** e, int x, int y)
 	b.X2 = x + 10;
 	b.Y1 = y - 10;
 	b.Y2 = y + 10;
-	pcb_r_search(CURRENT->line_tree, &b, NULL, find_pair_line_callback, &fpcs, NULL);
-	pcb_r_search(CURRENT->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &b, NULL, find_pair_line_callback, &fpcs, NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
 }
 
 static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y, End *e)
@@ -803,8 +803,8 @@ static void find_pairs_pstk(pcb_data_t *data)
 	PCB_PADSTACK_LOOP(PCB->Data); {
 		pcb_box_t box;
 		box = padstack->BoundingBox;
-		pcb_r_search(CURRENT->line_tree, &box, NULL, find_pair_pstkline_callback, padstack, NULL);
-		pcb_r_search(CURRENT->arc_tree, &box, NULL, find_pair_pstkarc_callback, padstack, NULL);
+		pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &box, NULL, find_pair_pstkline_callback, padstack, NULL);
+		pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &box, NULL, find_pair_pstkarc_callback, padstack, NULL);
 	}
 	PCB_END_LOOP;
 }
@@ -820,16 +820,16 @@ static void find_pairs_subc_pstk(pcb_data_t *data)
 
 static void find_pairs()
 {
-	PCB_ARC_LOOP(CURRENT); {
+	PCB_ARC_LOOP(PCB_CURRLAYER(PCB)); {
 		Extra *e = new_arc_extra(arc);
 		fix_arc_extra(arc, e);
 	} PCB_END_LOOP;
 
-	PCB_LINE_LOOP(CURRENT); {
+	PCB_LINE_LOOP(PCB_CURRLAYER(PCB)); {
 		new_line_extra(line);
 	} PCB_END_LOOP;
 
-	PCB_LINE_LOOP(CURRENT); {
+	PCB_LINE_LOOP(PCB_CURRLAYER(PCB)); {
 		Extra *e = LINE2EXTRA(line);
 		if (line->Point1.X >= 0) {
 			find_pairs_1(line, &e->start.next, line->Point1.X, line->Point1.Y);
@@ -838,7 +838,7 @@ static void find_pairs()
 	}
 	PCB_END_LOOP;
 
-	PCB_ARC_LOOP(CURRENT); {
+	PCB_ARC_LOOP(PCB_CURRLAYER(PCB)); {
 		Extra *e = ARC2EXTRA(arc);
 		if (!e->deleted) {
 			find_pairs_1(arc, &e->start.next, e->start.x, e->start.y);
@@ -1014,11 +1014,11 @@ static void trace_paths()
 	Extra *e;
 
 	clear_found();
-	PCB_LINE_LOOP(CURRENT); {
+	PCB_LINE_LOOP(PCB_CURRLAYER(PCB)); {
 		e = LINE2EXTRA(line);
 		trace_path(e);
 	} PCB_END_LOOP;
-	PCB_ARC_LOOP(CURRENT); {
+	PCB_ARC_LOOP(PCB_CURRLAYER(PCB)); {
 		e = ARC2EXTRA(arc);
 		trace_path(e);
 	} PCB_END_LOOP;
@@ -1034,8 +1034,8 @@ static void reverse_line(pcb_line_t *line)
 	x = line->Point1.X;
 	y = line->Point1.Y;
 #if 1
-	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, line, &(line->Point1), line->Point2.X - line->Point1.X, line->Point2.Y - line->Point1.Y);
-	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, line, &(line->Point2), x - line->Point2.X, y - line->Point2.Y);
+	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), line, &(line->Point1), line->Point2.X - line->Point1.X, line->Point2.Y - line->Point1.Y);
+	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), line, &(line->Point2), x - line->Point2.X, y - line->Point2.Y);
 #else
 	/* In theory, we should be using the above so that undo works.  */
 	line->Point1.X = line->Point2.X;
@@ -1054,7 +1054,7 @@ static void reverse_arc(pcb_arc_t *arc)
 	End etmp;
 
 #if 1
-	pcb_arc_set_angles(CURRENT, arc, arc->StartAngle + arc->Delta, -arc->Delta);
+	pcb_arc_set_angles(PCB_CURRLAYER(PCB), arc, arc->StartAngle + arc->Delta, -arc->Delta);
 #else
 	/* Likewise, see above.  */
 	arc->StartAngle += arc->Delta;
@@ -1398,7 +1398,7 @@ static pcb_r_dir_t gp_poly_cb(const pcb_box_t * b, void *cb)
 static pcb_r_dir_t gp_pstk_cb(const pcb_box_t *b, void *cb)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b; /* have to drop const because we may update the cache in ps */
-	pcb_layer_t *layer = CURRENT;
+	pcb_layer_t *layer = PCB_CURRLAYER(PCB);
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer), tmpshp;
 
 	if (ps == start_pinpad || ps == end_pinpad)
@@ -1433,9 +1433,9 @@ static pcb_line_t *create_line(pcb_line_t *sample, int x1, int y1, int x2, int y
 	Extra *e;
 	pcb_printf("create_line from %#mD to %#mD\n", x1, y1, x2, y2);
 #endif
-	pcb_line_t *line = pcb_line_new(CURRENT, x1, y1, x2, y2,
+	pcb_line_t *line = pcb_line_new(PCB_CURRLAYER(PCB), x1, y1, x2, y2,
 																					sample->Thickness, sample->Clearance, sample->Flags);
-	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, line, line);
+	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, PCB_CURRLAYER(PCB), line, line);
 
 #if TRACE1
 	e =
@@ -1459,11 +1459,11 @@ static pcb_arc_t *create_arc(pcb_line_t *sample, int x, int y, int r, int sa, in
 #if TRACE1
 	pcb_printf("create_arc at %#mD r %#mS sa %d delta %d\n", x, y, r, sa, da);
 #endif
-	arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
+	arc = pcb_arc_new(PCB_CURRLAYER(PCB), x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
 	if (arc == 0) {
-		arc = pcb_arc_new(CURRENT, x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
+		arc = pcb_arc_new(PCB_CURRLAYER(PCB), x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
 	}
-	pcb_undo_add_obj_to_create(PCB_OBJ_ARC, CURRENT, arc, arc);
+	pcb_undo_add_obj_to_create(PCB_OBJ_ARC, PCB_CURRLAYER(PCB), arc, arc);
 
 	if (!arc)
 		longjmp(abort_buf, 1);
@@ -1544,8 +1544,8 @@ static void mark_line_for_deletion(pcb_line_t *l)
 		fprintf(stderr, "double neg move?\n");
 		abort();
 	}
-	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, l, &(l->Point1), -1 - l->Point1.X, -1 - l->Point1.Y);
-	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, l, &(l->Point2), -1 - l->Point2.X, -1 - l->Point2.Y);
+	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), l, &(l->Point1), -1 - l->Point1.X, -1 - l->Point1.Y);
+	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), l, &(l->Point2), -1 - l->Point2.X, -1 - l->Point2.Y);
 #endif
 }
 
@@ -1735,10 +1735,10 @@ static void maybe_pull_1(pcb_line_t *line)
 	end_pinpad = start_extra->end.pin;
 	fp = 0;
 
-	pcb_r_search(CURRENT->line_tree, &box, NULL, gp_line_cb, 0, NULL);
-	pcb_r_search(CURRENT->arc_tree, &box, NULL, gp_arc_cb, 0, NULL);
-	pcb_r_search(CURRENT->text_tree, &box, NULL, gp_text_cb, 0, NULL);
-	pcb_r_search(CURRENT->polygon_tree, &box, NULL, gp_poly_cb, 0, NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &box, NULL, gp_line_cb, 0, NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &box, NULL, gp_arc_cb, 0, NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->text_tree, &box, NULL, gp_text_cb, 0, NULL);
+	pcb_r_search(PCB_CURRLAYER(PCB)->polygon_tree, &box, NULL, gp_poly_cb, 0, NULL);
 	pcb_r_search(PCB->Data->padstack_tree, &box, NULL, gp_pstk_cb, 0, NULL);
 
 	/* radians, absolute angle of (at the moment) the start_line */
@@ -1788,7 +1788,7 @@ static void maybe_pull_1(pcb_line_t *line)
 		mark_arc_for_deletion(end_arc);
 		mark_line_for_deletion(start_line);
 		mark_line_for_deletion(end_line);
-		pcb_arc_set_angles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
+		pcb_arc_set_angles(PCB_CURRLAYER(PCB), start_arc, start_arc->StartAngle, new_delta);
 		fix_arc_extra(start_arc, sarc_extra);
 		did_something++;
 		return;
@@ -1823,13 +1823,13 @@ static void maybe_pull_1(pcb_line_t *line)
 		if (new_delta * start_arc->Delta <= 0)
 			del_arc = 1;
 
-		pcb_arc_set_angles(CURRENT, start_arc, start_arc->StartAngle, new_delta);
+		pcb_arc_set_angles(PCB_CURRLAYER(PCB), start_arc, start_arc->StartAngle, new_delta);
 		fix_arc_extra(start_arc, sarc_extra);
-		pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
+		pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), start_line, &(start_line->Point1),
 							 sarc_extra->end.x - start_line->Point1.X, sarc_extra->end.y - start_line->Point1.Y);
 
 		if (del_arc) {
-			pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, start_line, &(start_line->Point1),
+			pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), start_line, &(start_line->Point1),
 								 sarc_extra->start.x - start_line->Point1.X, sarc_extra->start.y - start_line->Point1.Y);
 			mark_arc_for_deletion(start_arc);
 		}
@@ -1889,19 +1889,19 @@ static void maybe_pull_1(pcb_line_t *line)
 			if (new_delta * end_arc->Delta <= 0)
 				del_arc = 1;
 
-			pcb_arc_set_angles(CURRENT, end_arc, end_arc->StartAngle, new_delta);
+			pcb_arc_set_angles(PCB_CURRLAYER(PCB), end_arc, end_arc->StartAngle, new_delta);
 			fix_arc_extra(end_arc, earc_extra);
-			pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+			pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), start_line, &(start_line->Point2),
 								 earc_extra->end.x - start_line->Point2.X, earc_extra->end.y - start_line->Point2.Y);
 
 			if (del_arc) {
-				pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+				pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), start_line, &(start_line->Point2),
 									 earc_extra->start.x - start_line->Point2.X, earc_extra->start.y - start_line->Point2.Y);
 				mark_arc_for_deletion(end_arc);
 			}
 		}
 		else {
-			pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+			pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), start_line, &(start_line->Point2),
 								 end_line->Point2.X - start_line->Point2.X, end_line->Point2.Y - start_line->Point2.Y);
 		}
 		mark_line_for_deletion(end_line);
@@ -1935,7 +1935,7 @@ static void maybe_pull_1(pcb_line_t *line)
 #if TRACE1
 	pcb_printf("new point %#mS\n", ex, ey);
 #endif
-	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, end_line, &(end_line->Point1), ex - end_line->Point1.X, ey - end_line->Point1.Y);
+	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), end_line, &(end_line->Point1), ex - end_line->Point1.X, ey - end_line->Point1.Y);
 
 	/* Step 4: Split start_line at the obstacle and insert a zero-delta
 	   arc at it.  */
@@ -1948,7 +1948,7 @@ static void maybe_pull_1(pcb_line_t *line)
 	if (end_arc)
 		earc_extra = ARC2EXTRA(end_arc);
 
-	pcb_move_obj(PCB_OBJ_LINE_POINT, CURRENT, start_line, &(start_line->Point2),
+	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), start_line, &(start_line->Point2),
 						 new_aextra->start.x - start_line->Point2.X, new_aextra->start.y - start_line->Point2.Y);
 
 	new_line = create_line(start_line, new_aextra->end.x, new_aextra->end.y, ex, ey);
@@ -2092,7 +2092,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
 	/* pcb_actionva(&PCB->hidlib, "djopt", "puller", 0); */
 
-	cflg = pcb_layergrp_flags(PCB, pcb_layer_get_group_(CURRENT));
+	cflg = pcb_layergrp_flags(PCB, pcb_layer_get_group_(PCB_CURRLAYER(PCB)));
 	current_is_solder = (cflg & PCB_LYT_BOTTOM);
 	current_is_component = (cflg & PCB_LYT_TOP);
 
@@ -2126,7 +2126,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			nloops++;
 			status();
 			did_something = 0;
-			PCB_LINE_LOOP(CURRENT); {
+			PCB_LINE_LOOP(PCB_CURRLAYER(PCB)); {
 				Extra *e = LINE2EXTRA(line);
 				if (e->deleted)
 					continue;
@@ -2161,17 +2161,17 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	printf("\nlines\n");
 #endif
 
-	PCB_LINE_LOOP(CURRENT);
+	PCB_LINE_LOOP(PCB_CURRLAYER(PCB));
 	{
 		if (LINE2EXTRA(line)->deleted)
-			pcb_line_destroy(CURRENT, line);
+			pcb_line_destroy(PCB_CURRLAYER(PCB), line);
 	}
 	PCB_END_LOOP;
 
-	PCB_ARC_LOOP(CURRENT);
+	PCB_ARC_LOOP(PCB_CURRLAYER(PCB));
 	{
 		if (ARC2EXTRA(arc)->deleted)
-			pcb_arc_destroy(CURRENT, arc);
+			pcb_arc_destroy(PCB_CURRLAYER(PCB), arc);
 	}
 	PCB_END_LOOP;
 

@@ -283,7 +283,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch (b[0]) {
 			case 'S':
 			case 's':
-				lyt = (pcb_layer_flags_(CURRENT) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
+				lyt = (pcb_layer_flags_(PCB_CURRLAYER(PCB)) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
 				lid = pcb_layer_vis_last_lyt(lyt);
 				if (lid >= 0)
 					pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);

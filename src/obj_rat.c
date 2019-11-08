@@ -383,18 +383,18 @@ void *pcb_ratop_insert_point(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 {
 	pcb_line_t *newone;
 
-	newone = pcb_line_new_merge(CURRENT, Rat->Point1.X, Rat->Point1.Y,
+	newone = pcb_line_new_merge(PCB_CURRLAYER(PCB), Rat->Point1.X, Rat->Point1.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (!newone)
 		return newone;
-	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, newone, newone);
+	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, PCB_CURRLAYER(PCB), newone, newone);
 	pcb_rat_invalidate_erase(Rat);
-	pcb_line_invalidate_draw(CURRENT, newone);
-	newone = pcb_line_new_merge(CURRENT, Rat->Point2.X, Rat->Point2.Y,
+	pcb_line_invalidate_draw(PCB_CURRLAYER(PCB), newone);
+	newone = pcb_line_new_merge(PCB_CURRLAYER(PCB), Rat->Point2.X, Rat->Point2.Y,
 																	ctx->insert.x, ctx->insert.y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (newone) {
-		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, newone, newone);
-		pcb_line_invalidate_draw(CURRENT, newone);
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, PCB_CURRLAYER(PCB), newone, newone);
+		pcb_line_invalidate_draw(PCB_CURRLAYER(PCB), newone);
 	}
 	pcb_undo_move_obj_to_remove(PCB_OBJ_RAT, Rat, Rat, Rat);
 	return newone;

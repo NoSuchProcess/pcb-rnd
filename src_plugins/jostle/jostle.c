@@ -482,7 +482,7 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	y = pcb_crosshair.Y;
 	fprintf(stderr, "%d, %d, %f\n", (int) x, (int) y, value);
 	info.brush = pcb_poly_from_circle(x, y, value / 2);
-	info.layer = CURRENT;
+	info.layer = PCB_CURRLAYER(PCB);
 	PCB_LINE_LOOP(info.layer);
 	{
 		PCB_FLAG_CLEAR(PCB_FLAG_DRC, line);

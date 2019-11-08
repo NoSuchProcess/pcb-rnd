@@ -45,7 +45,7 @@ void pcb_line_adjust_attached(void)
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 	int flags = conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0;
 
-	if (conf_core.editor.auto_drc && (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER))
+	if (conf_core.editor.auto_drc && (pcb_layer_flags_(PCB_CURRLAYER(PCB)) & PCB_LYT_COPPER))
 		flags |= PCB_FLAG_FOUND;
 
 	/* I need at least one point */
@@ -57,7 +57,7 @@ void pcb_line_adjust_attached(void)
 
 	pcb_route_calculate(PCB,
 		&pcb_crosshair.Route, &line->Point1, &line->Point2,
-		pcb_layer_id(PCB->Data, CURRENT),
+		pcb_layer_id(PCB->Data, PCB_CURRLAYER(PCB)),
 		conf_core.design.line_thickness, conf_core.design.clearance * 2,
 		pcb_flag_make(flags), pcb_gui->shift_is_pressed(pcb_gui),
 		pcb_gui->control_is_pressed(pcb_gui));
@@ -243,7 +243,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *en
 	line1.type = line2.type = PCB_OBJ_LINE;
 	line1.Flags = line2.Flags = pcb_no_flags();
 	line1.parent_type = line2.parent_type = PCB_PARENT_LAYER;
-	line1.parent.layer = line2.parent.layer = CURRENT;
+	line1.parent.layer = line2.parent.layer = PCB_CURRLAYER(PCB);
 	line1.Thickness = conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
@@ -420,7 +420,7 @@ static void drc_line(pcb_point_t *end)
 	aline.Point1.Y = pcb_crosshair.AttachedLine.Point1.Y;
 	pcb_line_45(&aline);
 	line.parent_type = PCB_PARENT_LAYER;
-	line.parent.layer = CURRENT;
+	line.parent.layer = PCB_CURRLAYER(PCB);
 	line.type = PCB_OBJ_LINE;
 	line.Point1 = aline.Point1;
 	line.Point2 = aline.Point2;

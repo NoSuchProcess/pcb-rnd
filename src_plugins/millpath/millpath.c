@@ -48,7 +48,7 @@ fgw_error_t pcb_act_mill(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	ctx.edge_clearance = PCB_MM_TO_COORD(0.05);
 	ctx.tools = &tools;
-	PCB_ACT_IRES(pcb_tlp_mill_copper_layer(&ctx, CURRENT));
+	PCB_ACT_IRES(pcb_tlp_mill_copper_layer(&ctx, PCB_CURRLAYER(PCB)));
 	return 0;
 }
 

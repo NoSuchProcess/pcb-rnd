@@ -740,7 +740,7 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps)
 {
 	pcb_pstk_shape_t *shape = NULL;
 	pcb_board_t *pcb;
-	pcb_layergrp_id_t gid = CURRENT->meta.real.grp;
+	pcb_layergrp_id_t gid = PCB_CURRLAYER(PCB)->meta.real.grp;
 
 	pcb = pcb_data_get_top(ps->parent.data);
 	if (pcb != NULL) {

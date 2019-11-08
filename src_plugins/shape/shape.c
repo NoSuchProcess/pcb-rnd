@@ -209,13 +209,13 @@ static pcb_poly_t *any_poly_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly
 	if (p == NULL)
 		return NULL;
 
-	pcb_poly_init_clip(PCB->Data, CURRENT, p);
-	pcb_poly_invalidate_draw(CURRENT, p);
+	pcb_poly_init_clip(PCB->Data, PCB_CURRLAYER(PCB), p);
+	pcb_poly_invalidate_draw(PCB_CURRLAYER(PCB), p);
 
 	if (data != PCB->Data) {
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-		pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_POLY, CURRENT, p, p);
-		pcb_r_delete_entry(CURRENT->polygon_tree, (pcb_box_t *)p);
+		pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_POLY, PCB_CURRLAYER(PCB), p, p);
+		pcb_r_delete_entry(PCB_CURRLAYER(PCB)->polygon_tree, (pcb_box_t *)p);
 		pcb_poly_free_fields(p);
 		pcb_poly_free(p);
 		pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
@@ -228,7 +228,7 @@ static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corne
 	pcb_poly_t *p;
 
 	if (layer == pcb_shape_current_layer)	
-		layer = CURRENT;
+		layer = PCB_CURRLAYER(PCB);
 
 	p = regpoly(layer, corners, rx, ry, rot_deg, cx, cy);
 	return any_poly_place(data, layer, p);
@@ -239,7 +239,7 @@ static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coo
 	pcb_poly_t *p;
 
 	if (layer == pcb_shape_current_layer)
-		layer = CURRENT;
+		layer = PCB_CURRLAYER(PCB);
 
 	p = pcb_genpoly_roundrect(layer, w, h, rx, ry, rot_deg, cx, cy, corner, roundres);
 	return any_poly_place(data, layer, p);
@@ -251,7 +251,7 @@ static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_
 	pcb_line_t *l;
 
 	if (layer == pcb_shape_current_layer)
-		layer = CURRENT;
+		layer = PCB_CURRLAYER(PCB);
 
 	if (conf_core.editor.clear_line)
 		flags |= PCB_FLAG_CLEARLINE;
@@ -263,8 +263,8 @@ static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, pcb_coord_
 
 		if (data != PCB->Data) {
 			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-			pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_LINE, CURRENT, l, l);
-			pcb_r_delete_entry(CURRENT->line_tree, (pcb_box_t *)l);
+			pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_LINE, PCB_CURRLAYER(PCB), l, l);
+			pcb_r_delete_entry(PCB_CURRLAYER(PCB)->line_tree, (pcb_box_t *)l);
 			pcb_line_free(l);
 			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 		}
@@ -400,7 +400,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
-	if (regpoly_place(data, CURRENT, corners, rx, ry, rot, x, y) == NULL)
+	if (regpoly_place(data, PCB_CURRLAYER(PCB), corners, rx, ry, rot, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "regpoly(): failed to create the polygon\n");
 
 	PCB_ACT_IRES(0);
@@ -516,7 +516,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
-	if (roundrect_place(data, CURRENT, w, h, rx, ry, rot, x, y, corner, roundres) == NULL)
+	if (roundrect_place(data, PCB_CURRLAYER(PCB), w, h, rx, ry, rot, x, y, corner, roundres) == NULL)
 		pcb_message(PCB_MSG_ERROR, "roundrect(): failed to create the polygon\n");
 
 	PCB_ACT_IRES(0);
@@ -570,7 +570,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((data == PCB->Data) && (!have_coords))
 		pcb_hid_get_coords("Click on the center of the circle", &x, &y, 0);
 
-	if (circle_place(PCB->Data, CURRENT, dia, x, y) == NULL)
+	if (circle_place(PCB->Data, PCB_CURRLAYER(PCB), dia, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");
 
 	PCB_ACT_IRES(0);

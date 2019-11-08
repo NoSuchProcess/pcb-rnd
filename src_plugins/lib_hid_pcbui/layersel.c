@@ -341,7 +341,7 @@ static void all_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 }
 
 /* Select the first visible layer (physically) below the one turned off or
-   reenable the original if all are off; this how we ensure the CURRENT layer
+   reenable the original if all are off; this how we ensure the current layer
    is visible and avoid drawing on inivisible layers */
 static void ensure_visible_current(layersel_ctx_t *ls)
 {
@@ -359,10 +359,10 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 	/* currently selected layer lost visible state - choose another */
 
 	/* At the moment the layer selector displays only board layers which are always real */
-	assert(!CURRENT->is_bound);
+	assert(!PCB_CURRLAYER(PCB)->is_bound);
 
 	/* look for the next one to enable, group-vise */
-	for(gid = CURRENT->meta.real.grp + 1; gid != CURRENT->meta.real.grp; gid++) {
+	for(gid = PCB_CURRLAYER(PCB)->meta.real.grp + 1; gid != PCB_CURRLAYER(PCB)->meta.real.grp; gid++) {
 		pcb_layergrp_t *g;
 		if (gid >= pcb_max_group(PCB)) {
 			gid = 0;
@@ -379,7 +379,7 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 	}
 
 	/* fallback: all off; turn the current one back on */
-	l = CURRENT;
+	l = PCB_CURRLAYER(PCB);
 
 	change_selection:;
 	lid = pcb_layer_id(PCB->Data, l);
@@ -624,7 +624,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 			if (is_open)
 				layersel_create_layer_open(ls, lys, ly->name, clr, brd, hatch, 1);
 			else
-				layersel_create_layer_closed(ls, lys, ly->name, clr, brd, hatch, (ly == CURRENT), 1);
+				layersel_create_layer_closed(ls, lys, ly->name, clr, brd, hatch, (ly ==PCB_CURRLAYER(PCB)), 1);
 		}
 	}
 	if (is_open)
@@ -820,8 +820,8 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		pcb_gui->attr_dlg_widget_hide(ls->sub.dlg_hid_ctx, (*lgs)->wclosed, (*lgs)->is_open);
 	}
 
-	{ /* if CURRENT is not selected, select it */
-		ls_layer_t *lys = lys_get(ls, &ls->real_layer, pcb_layer_id(PCB->Data, CURRENT), 0);
+	{ /* ifPCB_CURRLAYER(PCB) is not selected, select it */
+		ls_layer_t *lys = lys_get(ls, &ls->real_layer, pcb_layer_id(PCB->Data,PCB_CURRLAYER(PCB)), 0);
 		if ((lys != NULL) && (lys->wlab != ls->w_last_sel))
 			locked_layersel(ls, lys->wlab, lys->wunsel_closed, lys->wsel_closed);
 	}
