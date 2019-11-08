@@ -56,9 +56,9 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font(PCB_ACT_BOARD, fid, 0) != NULL) {	/* font already exists */
+		if (pcb_font(PCB_ACT_BOARD, fid, 0) != NULL) { /* font already exists */
 			dst_fid = fid;
-			fid = -1;	/* allocate a new id, which will be later moved to dst_fid */
+			fid = -1; /* allocate a new id, which will be later moved to dst_fid */
 		}
 	}
 	else
