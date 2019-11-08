@@ -32,10 +32,6 @@
  *  haceaton@aplcomm.jhuapl.edu
  *
  */
-
-/* action routines for output window
- */
-
 #include "config.h"
 #include "conf_core.h"
 
