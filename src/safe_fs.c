@@ -120,16 +120,14 @@ FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode,
 				if (all != NULL)
 					res = *all;
 				if (res != 2) {
-					fgw_arg_t ares, argv[4];
+					fgw_arg_t ares, argv[3];
 
-					TODO("#hl1 don't pass hidlib as argv[1]");
 					argv[0].type = FGW_FUNC; argv[0].val.argv0.func = fun; argv[0].val.argv0.user_call_ctx = hidlib;
-					argv[1].type = FGW_PTR;  argv[1].val.ptr_void = hidlib;
-					argv[2].type = FGW_STR;  argv[2].val.cstr = path;
-					argv[3].type = FGW_INT;  argv[3].val.nat_int = (all != NULL);
+					argv[1].type = FGW_STR;  argv[1].val.cstr = path;
+					argv[2].type = FGW_INT;  argv[2].val.nat_int = (all != NULL);
 					ares.type = FGW_INVALID;
 
-					if ((pcb_actionv_(fun, &ares, 4, argv) != 0) || (fgw_arg_conv(&pcb_fgw, &ares, FGW_INT) != 0))
+					if ((pcb_actionv_(fun, &ares, 3, argv) != 0) || (fgw_arg_conv(&pcb_fgw, &ares, FGW_INT) != 0))
 						res = -1;
 					else
 						res = ares.val.nat_int;
