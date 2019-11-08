@@ -444,8 +444,8 @@ static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 
 static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 {
-	int by_bbox = 1; TODO("v7textclr");
 	poly_sub_text_t sctx;
+	int by_bbox = 1; TODO("v7textclr");
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
 		return 0;
