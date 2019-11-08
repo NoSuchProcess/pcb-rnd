@@ -237,10 +237,10 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /*	pcb_trace("SwapSides: xy=%mm;%mm cent=%mm;%mm ofs=%mm;%mm\n", x, y, (pcb_coord_t)xcent, (pcb_coord_t)ycent, (pcb_coord_t)xoffs, (pcb_coord_t)yoffs);*/
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
-		solder_on = LAYER_PTR(PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
+		solder_on = pcb_get_layer(PCB->Data, PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_group, 1) > 0)
-		comp_on = LAYER_PTR(PCB->LayerGroups.grp[comp_group].lid[0])->meta.real.vis;
+		comp_on = pcb_get_layer(PCB->Data, PCB->LayerGroups.grp[comp_group].lid[0])->meta.real.vis;
 
 	pcb_draw_inhibit_inc();
 	if (argc > 1) {

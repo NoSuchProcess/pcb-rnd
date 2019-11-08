@@ -582,7 +582,7 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
 		swap = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
-		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, LAYER_PTR(Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
+		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, pcb_get_layer(PCB->Data, Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
 		Entry->Data.MoveToLayer.OriginalLayer = swap;
 		return pcb_true;
 	}

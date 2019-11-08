@@ -180,7 +180,7 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 			/* fallback: implicit layer -> original code: draw auto+manual */
 			pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-			pcb_draw_layer(info, LAYER_PTR(lid));
+			pcb_draw_layer(info, pcb_get_layer(info->pcb->Data, lid));
 			pcb_draw_silk_auto(&cctx, &lyt_side);
 			pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 		}
@@ -248,7 +248,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		   outline */
 		numobj = 0;
 		for(n = 0; n < g->len; n++) {
-			pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
+			pcb_layer_t *ly = pcb_get_layer(info->pcb->Data, g->lid[n]);
 			if (ly->line_tree != NULL)
 				numobj += ly->line_tree->size;
 			if (ly->arc_tree != NULL)
@@ -266,7 +266,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 			pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 			pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 			for(n = 0; n < g->len; n++) {
-				pcb_layer_t *ly = LAYER_PTR(g->lid[n]);
+				pcb_layer_t *ly = pcb_get_layer(info->pcb->Data, g->lid[n]);
 				pcb_draw_layer(info, ly);
 			}
 			pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);

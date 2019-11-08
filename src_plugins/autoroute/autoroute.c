@@ -1380,7 +1380,7 @@ typedef short pcb_dimension_t;
 static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 {
 	pcb_line_t *line;
-	pcb_layer_t *csl, *SLayer = LAYER_PTR(group);
+	pcb_layer_t *csl, *SLayer = pcb_get_layer(PCB->Data, group);
 	pcb_layer_id_t cs_id;
 	if (showboxen < -1)
 		return;
@@ -1400,7 +1400,7 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 
 #if 1
 	if (pcb_layer_find(PCB_LYT_TOP | PCB_LYT_SILK, &cs_id, 1) > 0)  {
-		csl = LAYER_PTR(cs_id);
+		csl = pcb_get_layer(PCB->Data, cs_id);
 		if (b.Y1 == b.Y2 || b.X1 == b.X2)
 			thickness = 5;
 		line = pcb_line_new(csl, b.X1, b.Y1, b.X2, b.Y1, thickness, 0, pcb_flag_make(0));
@@ -1456,7 +1456,7 @@ static void showroutebox(routebox_t * rb)
 {
 	pcb_layerid_t cs_id;
 	if (pcb_layer_find(PCB_LYT_TOP | PCB_LYT_SILK, &cs_id, 1) > 0)
-		showbox(rb->sbox, rb->flags.source ? 20 : (rb->flags.target ? 10 : 1), rb->flags.is_via ? LAYER_PTR(cs_id) : rb->group);
+		showbox(rb->sbox, rb->flags.source ? 20 : (rb->flags.target ? 10 : 1), rb->flags.is_via ? pcb_get_layer(PCB->Data, cs_id) : rb->group);
 }
 #endif
 
@@ -3044,7 +3044,7 @@ RD_DrawLine(routedata_t * rd,
 	pcb_r_insert_entry(rd->layergrouptree[rb->group], &rb->box);
 
 	if (conf_core.editor.live_routing) {
-		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.grp[rb->group].lid[0]);
+		pcb_layer_t *layer = pcb_get_layer(PCB->Data, PCB->LayerGroups.grp[rb->group].lid[0]);
 		pcb_line_t *line = pcb_line_new(layer, qX1, qY1, qX2, qY2,
 																					2 * qhthick, 0, pcb_flag_make(0));
 		rb->livedraw_obj.line = line;
@@ -4139,7 +4139,7 @@ pcb_bool no_expansion_boxes(routedata_t * rd)
 static void ripout_livedraw_obj(routebox_t * rb)
 {
 	if (rb->type == LINE && rb->livedraw_obj.line) {
-		pcb_layer_t *layer = LAYER_PTR(PCB->LayerGroups.grp[rb->group].lid[0]);
+		pcb_layer_t *layer = pcb_get_layer(PCB->Data, PCB->LayerGroups.grp[rb->group].lid[0]);
 		pcb_line_invalidate_erase(rb->livedraw_obj.line);
 		pcb_destroy_object(PCB->Data, PCB_OBJ_LINE, layer, rb->livedraw_obj.line, NULL);
 		rb->livedraw_obj.line = NULL;
@@ -4500,7 +4500,7 @@ pcb_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				assert(PCB->LayerGroups.grp[p->group].len > 0);
 				assert(is_layer_group_active[p->group]);
 				for (i = 0, layer = NULL; i < PCB->LayerGroups.grp[p->group].len; i++) {
-					layer = LAYER_PTR(PCB->LayerGroups.grp[p->group].lid[i]);
+					layer = pcb_get_layer(PCB->Data, PCB->LayerGroups.grp[p->group].lid[i]);
 					if (layer->meta.real.vis)
 						break;
 				}
@@ -4578,11 +4578,11 @@ TODO("padstack: when style contains proto, remove this")
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
 					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_false);
-					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_PSTK, LAYER_PTR(p->layer), pin);
+					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_PSTK, pcb_get_layer(PCB->Data, p->layer), pin);
 					pcb_undo_add_obj_to_flag(pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, autoroute_therm_style, pin);
 					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_true);
-					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_PSTK, LAYER_PTR(p->layer), pin);
+					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_PSTK, pcb_get_layer(PCB->Data, p->layer), pin);
 					changed = pcb_true;
 				}
 			}

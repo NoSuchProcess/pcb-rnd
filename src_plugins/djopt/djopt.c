@@ -429,7 +429,7 @@ static pcb_line_t *create_pcb_line(int layer, int x1, int y1, int x2, int y2, in
 {
 	char *from, *to;
 	pcb_line_t *nl;
-	pcb_layer_t *lyr = LAYER_PTR(layer);
+	pcb_layer_t *lyr = pcb_get_layer(PCB->Data, layer);
 
 	from = (char *) linelist_first(&lyr->Line);
 	nl = pcb_line_new(PCB->Data->Layer + layer, x1, y1, x2, y2, thick, clear, flags);
@@ -631,8 +631,8 @@ static void move_line_to_layer(line_s * l, int layer)
 {
 	pcb_layer_t *ls, *ld;
 
-	ls = LAYER_PTR(l->layer);
-	ld = LAYER_PTR(layer);
+	ls = pcb_get_layer(PCB->Data, l->layer);
+	ld = pcb_get_layer(PCB->Data, layer);
 
 	pcb_move_obj_to_layer(PCB_OBJ_LINE, ls, l->line, 0, ld, 0);
 	l->layer = layer;
@@ -712,10 +712,10 @@ static void move_corner(corner_s * c, int x, int y)
 		pcb_line_t *tl = c->lines[i]->line;
 		if (tl) {
 			if (c->lines[i]->s == c) {
-				pcb_move_obj(PCB_OBJ_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point1, x - (tl->Point1.X), y - (tl->Point1.Y));
+				pcb_move_obj(PCB_OBJ_LINE_POINT, pcb_get_layer(PCB->Data, c->lines[i]->layer), tl, &tl->Point1, x - (tl->Point1.X), y - (tl->Point1.Y));
 			}
 			else {
-				pcb_move_obj(PCB_OBJ_LINE_POINT, LAYER_PTR(c->lines[i]->layer), tl, &tl->Point2, x - (tl->Point2.X), y - (tl->Point2.Y));
+				pcb_move_obj(PCB_OBJ_LINE_POINT, pcb_get_layer(PCB->Data, c->lines[i]->layer), tl, &tl->Point2, x - (tl->Point2.X), y - (tl->Point2.Y));
 			}
 			dprintf("Line %p moved to %#mD %#mD\n", (void *) tl, tl->Point1.X, tl->Point1.Y, tl->Point2.X, tl->Point2.Y);
 		}
@@ -807,7 +807,7 @@ static int split_line(line_s * l, corner_s * c)
 	add_line_to_corner(l, c);
 	add_line_to_corner(ls, c);
 
-	pcb_move_obj(PCB_OBJ_LINE_POINT, LAYER_PTR(l->layer), l->line, &l->line->Point2,
+	pcb_move_obj(PCB_OBJ_LINE_POINT, pcb_get_layer(PCB->Data, l->layer), l->line, &l->line->Point2,
 						 c->x - (l->line->Point2.X), c->y - (l->line->Point2.Y));
 
 	return 1;
@@ -2489,7 +2489,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	for (layn = 0; layn < pcb_max_layer; layn++) {
-		pcb_layer_t *layer = LAYER_PTR(layn);
+		pcb_layer_t *layer = pcb_get_layer(PCB->Data, layn);
 
 		if (!(pcb_layer_flags(PCB, layn) & PCB_LYT_COPPER))
 			continue;
