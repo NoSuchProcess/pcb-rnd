@@ -829,7 +829,9 @@ int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name)
 {
 	free(grp->name);
 	grp->name = name;
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+
+	assert(grp->parent_type == PCB_PARENT_BOARD);
+	pcb_event(&grp->parent.board->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return 0;
 }
 
@@ -859,7 +861,8 @@ int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose)
 int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose)
 {
 	int ret = pcb_layergrp_set_purpose__(lg, purpose);
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	assert(lg->parent_type == PCB_PARENT_BOARD);
+	pcb_event(&lg->parent.board->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return ret;
 }
 
