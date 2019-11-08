@@ -46,6 +46,7 @@
 
 void pcb_tool_remove_notify_mode(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_any_obj_t *obj;
 	int type;
@@ -58,14 +59,14 @@ void pcb_tool_remove_notify_mode(pcb_hidlib_t *hl)
 		}
 
 		if (type == PCB_OBJ_SUBC) {
-			if(PCB->is_footprint) {
+			if(pcb->is_footprint) {
 				pcb_message(PCB_MSG_WARNING, "Can not remove the subcircuit being edited in the footprint edit mode\n");
 				return;
 			}
 		}
 
 		obj = ptr2;
-		pcb_rat_update_obj_removed(PCB, obj);
+		pcb_rat_update_obj_removed(pcb, obj);
 
 		/* preserve original parent over the board layer pcb_search_screen operated on -
 		   this is essential for undo: it needs to put back the object to the original

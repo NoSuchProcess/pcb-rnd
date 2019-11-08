@@ -116,6 +116,7 @@ int pcb_tool_select_by_name(pcb_hidlib_t *hidlib, const char *name)
 
 int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	char id_s[32];
 	static pcb_bool recursing = pcb_false;
 	
@@ -130,7 +131,7 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 		return -1;
 	recursing = pcb_true;
 	
-	if (PCB->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
+	if (pcb->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
 		pcb_message(PCB_MSG_WARNING, "That mode is NOT allowed when drawing ratlines!\n");
 		id = PCB_MODE_ARROW;
 	}
@@ -429,6 +430,8 @@ void pcb_release_mode(pcb_hidlib_t *hidlib)
 
 void pcb_notify_mode(pcb_hidlib_t *hidlib)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
+
 	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 1) == 0))
 		return;
 
@@ -436,7 +439,7 @@ void pcb_notify_mode(pcb_hidlib_t *hidlib)
 	pcb_grabbed.Y = pcb_crosshair.Y;
 
 	if (conf_core.temp.rat_warn) {
-		if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1, 0) > 0)
+		if (pcb_data_clear_flag(pcb->Data, PCB_FLAG_WARN, 1, 0) > 0)
 			pcb_board_set_changed_flag(pcb_true);
 	}
 	pcb_tool_notify_mode(hidlib);

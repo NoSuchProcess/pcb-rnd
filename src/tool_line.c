@@ -107,7 +107,7 @@ static void notify_line(pcb_hidlib_t *hl)
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
 TODO("subc: this should work on heavy terminals too!")
-		if (PCB->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_OBJ_VOID) {
+		if (pcb->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_OBJ_VOID) {
 			pcb_gui->beep(pcb_gui);
 			break;
 		}
@@ -117,7 +117,7 @@ TODO("subc: this should work on heavy terminals too!")
 			memset(&fctx, 0, sizeof(fctx));
 			fctx.flag_set = PCB_FLAG_FOUND;
 			fctx.flag_chg_undoable = 1;
-			pcb_find_from_xy(&fctx, PCB->Data, pcb_crosshair.X, pcb_crosshair.Y);
+			pcb_find_from_xy(&fctx, pcb->Data, pcb_crosshair.X, pcb_crosshair.Y);
 			pcb_find_free(&fctx);
 		}
 		if (type == PCB_OBJ_PSTK) {
@@ -162,7 +162,7 @@ void pcb_tool_line_notify_mode(pcb_hidlib_t *hl)
 	}
 
 	if (pcb->RatDraw) {
-		pcb_rat_t *line = pcb_net_create_by_rat_coords(PCB, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 1);
+		pcb_rat_t *line = pcb_net_create_by_rat_coords(pcb, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 1);
 
 		if (line != NULL) {
 			pcb_added_lines++;
@@ -257,7 +257,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		if ((pcb_crosshair.AttachedLine.Point1.X !=
 				 pcb_crosshair.AttachedLine.Point2.X || pcb_crosshair.AttachedLine.Point1.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(PCB, PCB_CURRLAYER(pcb), pcb_true),
+						pcb_line_new_merge(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true),
 																	 pcb_crosshair.AttachedLine.Point1.X,
 																	 pcb_crosshair.AttachedLine.Point1.Y,
 																	 pcb_crosshair.AttachedLine.Point2.X,
@@ -303,7 +303,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		}
 		if (conf_core.editor.line_refraction && (pcb_tool_note.X != pcb_crosshair.AttachedLine.Point2.X || pcb_tool_note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(PCB, PCB_CURRLAYER(pcb), pcb_true),
+						pcb_line_new_merge(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true),
 																	 pcb_crosshair.AttachedLine.Point2.X,
 																	 pcb_crosshair.AttachedLine.Point2.Y,
 																	 pcb_tool_note.X, pcb_tool_note.Y,

@@ -50,6 +50,8 @@ void pcb_tool_copy_uninit(void)
 
 void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
@@ -68,7 +70,7 @@ void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
 		/* second notify, move or copy object */
 	case PCB_CH_STATE_SECOND:
 
-		if ((PCB->is_footprint) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
+		if ((pcb->is_footprint) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
 			pcb_message(PCB_MSG_WARNING, "Can not copy subcircuit in the footprint edit mode\n");
 		}
 		else {

@@ -47,6 +47,7 @@
 
 void pcb_tool_lock_notify_mode(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	
@@ -54,7 +55,7 @@ void pcb_tool_lock_notify_mode(pcb_hidlib_t *hl)
 
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *subc = (pcb_subc_t *)ptr2;
-		pcb_flag_change(PCB, PCB_CHGFLG_TOGGLE, PCB_FLAG_LOCK, PCB_OBJ_SUBC, ptr1, ptr2, ptr3);
+		pcb_flag_change(pcb, PCB_CHGFLG_TOGGLE, PCB_FLAG_LOCK, PCB_OBJ_SUBC, ptr1, ptr2, ptr3);
 
 		DrawSubc(subc);
 		pcb_draw();
