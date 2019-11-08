@@ -53,8 +53,9 @@ TODO("padstack: remove this when via is removed and the padstack is created from
 
 void pcb_tool_via_notify_mode(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 
-	if (!PCB->pstk_on) {
+	if (!pcb->pstk_on) {
 		pcb_message(PCB_MSG_WARNING, "You must turn via visibility on before\nyou can place vias\n");
 		return;
 	}
@@ -66,17 +67,17 @@ void pcb_tool_via_notify_mode(pcb_hidlib_t *hl)
 
 TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 	{
-		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, -1, pcb_tool_note.X, pcb_tool_note.Y,
+		pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, -1, pcb_tool_note.X, pcb_tool_note.Y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, pcb_true);
 		if (ps == NULL)
 			return;
 
-		pcb_obj_add_attribs(ps, PCB->pen_attr);
+		pcb_obj_add_attribs(ps, pcb->pen_attr);
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 
 		if (pcb_gui->shift_is_pressed(pcb_gui))
-			pcb_tool_thermal_on_pstk(ps, INDEXOFCURRENT);
+			pcb_tool_thermal_on_pstk(ps, PCB_CURRLID(pcb));
 
 		pcb_undo_inc_serial();
 		pcb_pstk_invalidate_draw(ps);
