@@ -355,13 +355,13 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
 	PCB_ACT_IRES(0);
 
-	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB->hidlib.filename == NULL ? "" : PCB->hidlib.filename, 1);
+	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB_ACT_HIDLIB->filename == NULL ? "" : PCB_ACT_HIDLIB->filename, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.X);
 	pcb_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);
 	pcb_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
 	pcb_setenv("PCB_RND_CURRENT_LAYER_NAME", CURRENT->name, 1);
-	PCB_ACT_IRES(pcb_system(&PCB->hidlib, cmd));
+	PCB_ACT_IRES(pcb_system(PCB_ACT_HIDLIB, cmd));
 	return 0;
 }
 
@@ -378,7 +378,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
 
-	if ((fp = pcb_fopen(&PCB->hidlib, fname, "r")) == NULL) {
+	if ((fp = pcb_fopen(PCB_ACT_HIDLIB, fname, "r")) == NULL) {
 		fprintf(stderr, "Could not open actions file \"%s\".\n", fname);
 		return 1;
 	}
