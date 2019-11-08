@@ -780,6 +780,22 @@ static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_co
 	}
 }
 
+static pcb_bool should_snap_offgrid_line(pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
+{
+	/* Allow snapping to off-grid lines when drawing new lines (on
+	 * the same layer), and when moving a line end-point
+	 * (but don't snap to the same line)
+	 */
+	if ((pcbhl_conf.editor.mode == PCB_MODE_LINE && PCB_CURRLAYER(pcb) == layer) ||
+			(pcbhl_conf.editor.mode == PCB_MODE_MOVE
+			 && pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT
+			 && pcb_crosshair.AttachedObject.Ptr1 == layer
+			 && pcb_crosshair.AttachedObject.Ptr2 != line))
+		return pcb_true;
+	else
+		return pcb_false;
+}
+
 static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_data, pcb_coord_t nearest_grid_x, pcb_coord_t nearest_grid_y)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -803,7 +819,7 @@ static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_dat
 
 	line = (pcb_line_t *) ptr2;
 
-	if (!pcb_tool_should_snap_offgrid_line(pcb, ptr1, line))
+	if (!should_snap_offgrid_line(pcb, ptr1, line))
 		return;
 
 	dx = line->Point2.X - line->Point1.X;

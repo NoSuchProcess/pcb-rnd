@@ -350,22 +350,6 @@ void pcb_tool_notify_block(void)
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-pcb_bool pcb_tool_should_snap_offgrid_line(pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
-{
-	/* Allow snapping to off-grid lines when drawing new lines (on
-	 * the same layer), and when moving a line end-point
-	 * (but don't snap to the same line)
-	 */
-	if ((pcbhl_conf.editor.mode == PCB_MODE_LINE && PCB_CURRLAYER(pcb) == layer) ||
-			(pcbhl_conf.editor.mode == PCB_MODE_MOVE
-			 && pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT
-			 && pcb_crosshair.AttachedObject.Ptr1 == layer
-			 && pcb_crosshair.AttachedObject.Ptr2 != line))
-		return pcb_true;
-	else
-		return pcb_false;
-}
-
 TODO("tool: move this out to a tool plugin")
 
 #include "tool_arc.h"
