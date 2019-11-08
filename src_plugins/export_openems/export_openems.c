@@ -281,7 +281,7 @@ static void openems_write_layers(wctx_t *ctx)
 		fprintf(ctx->f, "layer_types(%d).subtype = %d;\n", next, iscop ? 2 : 3);
 
 		fprintf(ctx->f, "layer_types(%d).thickness = ", next);
-		print_lparm(ctx, grp, "thickness", HA_def_copper_thick, HA_def_substrate_thick, 0);
+		print_lparm(ctx, grp, "thickness", HA_def_copper_thick, HA_def_substrate_thick / 1000, 0); /* Note: openems wants this one value in meters */
 		fprintf(ctx->f, ";\n");
 
 		if (iscop) {
