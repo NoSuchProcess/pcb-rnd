@@ -33,6 +33,7 @@
 #include "plug_io.h"
 #include "event.h"
 
+#define PCB (do not use PCB directly)
 
 static const char pcb_acts_load_font_from[] = "LoadFontFrom([file, id])";
 static const char pcb_acth_load_font_from[] = "Load PCB font from a file";
@@ -55,7 +56,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font(PCB, fid, 0) != NULL) {	/* font already exists */
+		if (pcb_font(PCB_ACT_BOARD, fid, 0) != NULL) {	/* font already exists */
 			dst_fid = fid;
 			fid = -1;	/* allocate a new id, which will be later moved to dst_fid */
 		}
@@ -86,22 +87,22 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	fnt = pcb_new_font(&PCB->fontkit, fid, NULL);
+	fnt = pcb_new_font(&PCB_ACT_BOARD->fontkit, fid, NULL);
 	if (fnt == NULL) {
 		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): unable to allocate font\n");
 		return 1;
 	}
 	
 	r = pcb_parse_font(fnt, fname);
-	pcb_event(&PCB->hidlib, PCB_EVENT_FONT_CHANGED, "i", fnt->id);
+	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_FONT_CHANGED, "i", fnt->id);
 	if (r != 0) {
 		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
-		pcb_del_font(&PCB->fontkit, fnt->id);
+		pcb_del_font(&PCB_ACT_BOARD->fontkit, fnt->id);
 		return 1;
 	}
 	
 	if (dst_fid != -1) {
-		pcb_move_font(&PCB->fontkit, fnt->id, dst_fid);
+		pcb_move_font(&PCB_ACT_BOARD->fontkit, fnt->id, dst_fid);
 	}
 	
 	fid = dst_fid == 0 ? 0 : fnt->id;
@@ -132,7 +133,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_ERROR, "SaveFontTo(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
-		if (pcb_font(PCB, fid, 0) == NULL) {
+		if (pcb_font(PCB_ACT_BOARD, fid, 0) == NULL) {
 			pcb_message(PCB_MSG_ERROR, "SaveFontTo(): can not fetch font ID %d\n", fid);
 			return 1;
 		}
@@ -140,7 +141,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		fid = conf_core.design.text_font_id;
 
-	fnt = pcb_font(PCB, fid, 0);
+	fnt = pcb_font(PCB_ACT_BOARD, fid, 0);
 	if (fnt == NULL) {
 		pcb_message(PCB_MSG_ERROR, "SaveFontTo(): failed to fetch font %d\n", fid);
 		return 1;
