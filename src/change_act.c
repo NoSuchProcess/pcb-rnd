@@ -53,6 +53,8 @@
 #include "route_style.h"
 #include "hidlib_conf.h"
 
+#define PCB (do not use PCB directly)
+
 static void ChangeFlag(const char *, const char *, int, const char *);
 static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
@@ -437,7 +439,7 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_ACT_CONVARG(2, FGW_STR, ChangePinName, pinnum = argv[2].val.str);
 	PCB_ACT_CONVARG(3, FGW_STR, ChangePinName, pinname = argv[3].val.str);
 
-	PCB_SUBC_LOOP(PCB->Data);
+	PCB_SUBC_LOOP(PCB_ACT_BOARD->Data);
 	{
 		if ((subc->refdes != NULL) && (PCB_NSTRCMP(refdes, subc->refdes) == 0)) {
 			pcb_any_obj_t *o;
@@ -522,9 +524,9 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layer name:", PCB_EMPTY(CURRENT->name), "Layer name");
+			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layer name:", PCB_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
-			if (name && (pcb_layer_rename_(CURRENT, name) == 0))
+			if (name && (pcb_layer_rename_(PCB_CURRLAYER(PCB_ACT_BOARD), name) == 0))
 				pcb_board_set_changed_flag(pcb_true);
 			else
 				free(name);
@@ -663,18 +665,18 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case F_Object:
 				pcb_hid_get_coords("Click on object for SetThermal", &gx, &gy, 0);
 				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
-					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind, INDEXOFCURRENT);
+					pcb_chg_obj_thermal(type, ptr1, ptr2, ptr3, kind, PCB_CURRLID(PCB_ACT_BOARD));
 					pcb_undo_inc_serial();
 					pcb_draw();
 				}
 				break;
 			case F_SelectedPins:
 			case F_SelectedVias:
-				pcb_chg_selected_thermals(PCB_OBJ_PSTK, kind, INDEXOFCURRENT);
+				pcb_chg_selected_thermals(PCB_OBJ_PSTK, kind, PCB_CURRLID(PCB_ACT_BOARD));
 				break;
 			case F_Selected:
 			case F_SelectedElements:
-				pcb_chg_selected_thermals(PCB_CHANGETHERMAL_TYPES, kind, INDEXOFCURRENT);
+				pcb_chg_selected_thermals(PCB_CHANGETHERMAL_TYPES, kind, PCB_CURRLID(PCB_ACT_BOARD));
 				break;
 			default:
 				err = 1;
