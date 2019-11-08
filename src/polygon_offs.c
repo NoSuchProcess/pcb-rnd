@@ -213,7 +213,7 @@ PCB_INLINE void pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, do
 
 void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_t offs)
 {
-	const pcb_vnode_t *v;
+	pcb_vnode_t *v;
 	double offs2 = (double)offs * (double)offs;
 
 	/* there are two ways dst can get too close to src: */
@@ -257,7 +257,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 				nv_[0] = pcb_round(v->point[0]);
 				nv_[1] = pcb_round(v->point[1]);
-				nv = pcb_poly_node_create(&nv_);
+				nv = pcb_poly_node_create(nv_);
 				pcb_poly_vertex_include_force(v, nv);
 
 				pull_back(v, v->prev, tune, dx, dy, prjx, prjy);
