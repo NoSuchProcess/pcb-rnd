@@ -201,7 +201,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 	*minx = newx2 + GAP;
 	if (*maxy < newy2) {
 		*maxy = newy2;
-		if (*maxy > PCB->hidlib.size_y - GAP) {
+		if (*maxy > pcb->hidlib.size_y - GAP) {
 			*maxy = GAP;
 			pcb_message(PCB_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
 		}
@@ -268,7 +268,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_freeze_serial();
-				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB->hidlib.size_y);
+				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB_ACT_HIDLIB->size_y);
 				pcb_undo_unfreeze_serial();
 				pcb_undo_inc_serial();
 				pcb_draw();
@@ -319,11 +319,11 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (ny->absolute[0])
 		ny->c[0] -= pcb_crosshair.Y;
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
+	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
-		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 	if (type == PCB_OBJ_SUBC)
-		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx->c[0], ny->c[0]);
 	pcb_board_set_changed_flag(pcb_true);
 
@@ -495,9 +495,9 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			return 0;
 		}
 
-		nx = PCB->hidlib.size_x / 2;
-		ny = PCB->hidlib.size_y / 2;
-		d = MIN(PCB->hidlib.size_x, PCB->hidlib.size_y) / 10;
+		nx = PCB_ACT_HIDLIB->size_x / 2;
+		ny = PCB_ACT_HIDLIB->size_y / 2;
+		d = MIN(PCB_ACT_HIDLIB->size_x, PCB_ACT_HIDLIB->size_y) / 10;
 
 		nx = parse_layout_attribute_units("import::newX", nx);
 		ny = parse_layout_attribute_units("import::newY", ny);
@@ -510,12 +510,12 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		if (nx < 0)
 			nx = 0;
-		if (nx >= PCB->hidlib.size_x)
-			nx = PCB->hidlib.size_x - 1;
+		if (nx >= PCB_ACT_HIDLIB->size_x)
+			nx = PCB_ACT_HIDLIB->size_x - 1;
 		if (ny < 0)
 			ny = 0;
-		if (ny >= PCB->hidlib.size_y)
-			ny = PCB->hidlib.size_y - 1;
+		if (ny >= PCB_ACT_HIDLIB->size_y)
+			ny = PCB_ACT_HIDLIB->size_y - 1;
 
 		/* Place components onto center of board. */
 		pcb_crosshair.Y = ny; /* flipping side depends on the crosshair unfortunately */
@@ -556,7 +556,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				pcb_coord_t pcx = 0, pcy = 0;
 				pcb_subc_get_origin(psc, &pcx, &pcy);
 				if (!orig_on_top)
-					pcb_subc_change_side(psc, pcy * 2 - PCB->hidlib.size_y);
+					pcb_subc_change_side(psc, pcy * 2 - PCB_ACT_HIDLIB->size_y);
 				if (orig_rot != 0) {
 					double cosa, sina;
 					cosa = cos(orig_rot / PCB_RAD_TO_DEG);
