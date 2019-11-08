@@ -289,7 +289,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 
 	hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
 
-	pcb_hidlib_adjust_attached_objects();
+	pcb_hidlib_adjust_attached_objects(ctx->hidlib);
 	pcb_gui->invalidate_all(pcb_gui);
 	g_idle_add(ghid_idle_cb, &ctx->topwin);
 

@@ -27,7 +27,7 @@
 #include "board.h"
 #include "tool.h"
 
-void pcb_hidlib_adjust_attached_objects(void)
+void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl)
 {
-	pcb_tool_adjust_attached_objects(&PCB->hidlib);
+	pcb_tool_adjust_attached_objects(hl);
 }

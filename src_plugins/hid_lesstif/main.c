@@ -489,7 +489,7 @@ static void ltf_mod_key(XKeyEvent *e, int set, int mainloop)
 	if (panning)
 		Pan(2, e->x, e->y);
 	pcb_hidlib_crosshair_move_to(Px(e->x), Py(e->y), 1);
-	pcb_hidlib_adjust_attached_objects();
+	pcb_hidlib_adjust_attached_objects(ltf_hidlib);
 	pcb_notify_crosshair_change(pcb_true);
 	in_move_event = 0;
 }

@@ -48,7 +48,8 @@ void pcbhl_log_print_uninit_errs(const char *title);
 /*** The following API is implemented by the host application ***/
 
 /* update crosshair-attached object because crosshair coords likely changed */
-void pcb_hidlib_adjust_attached_objects(void);
+void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl);
+#define PCB_HIDLIB_ADJUST_ATTACHED_OBJECTS_HAS_HL 1
 
 /* Suspend the crosshair: save all crosshair states in a newly allocated
    and returned temp buffer, then reset the crosshair to initial state;
