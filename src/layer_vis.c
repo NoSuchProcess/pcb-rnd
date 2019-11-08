@@ -293,7 +293,7 @@ static void layer_vis_grp_defaults(pcb_hidlib_t *hidlib, void *user_data, int ar
 		}
 	}
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
+	pcb_event(hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
 pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)

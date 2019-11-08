@@ -690,9 +690,9 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 			grp_idx = 0;
 		g->lid[grp_idx] = new_lid;
 		g->len++;
-		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 		pcb_layervis_change_group_vis(new_lid, 1, 1);
-		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 		at = new_lid;
 	}
 	else if (new_index == -1) { /* Delete the layer at old_index */
