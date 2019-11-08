@@ -861,7 +861,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	pcb_layer_t *layer = CURRENT;
+	pcb_layer_t *layer = PCB_CURRLAYER(PCB_ACT_BOARD);
 
 	pcb_hid_get_coords("Select item to use properties from", &x, &y, 0);
 
@@ -896,7 +896,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_IRES(-1);
 		return 0;
 	}
-	if (layer != CURRENT) {
+	if (layer != PCB_CURRLAYER(PCB_ACT_BOARD)) {
 		pcb_layervis_change_group_vis(PCB_ACT_HIDLIB, pcb_layer_id(PCB_ACT_BOARD->Data, layer), pcb_true, pcb_true);
 		pcb_hid_redraw(PCB);
 	}
@@ -1032,7 +1032,7 @@ static const char pcb_acth_EditLayer[] = "Change a property or attribute of a la
 static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int ret = 0, n, interactive = 1, explicit = 0;
-	pcb_layer_t *ly = CURRENT;
+	pcb_layer_t *ly = PCB_CURRLAYER(PCB_ACT_BOARD);
 
 	for(n = 1; n < argc; n++) {
 		const char *arg;
@@ -1126,14 +1126,14 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layergrp_t *g = NULL;
 
-	if (CURRENT->is_bound) {
+	if (PCB_CURRLAYER(PCB_ACT_BOARD)->is_bound) {
 		pcb_message(PCB_MSG_ERROR, "Can't edit bound layers yet\n");
 		PCB_ACT_IRES(1);
 		return 0;
 	}
 
-	if (CURRENT != NULL)
-		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
+	if (PCB_CURRLAYER(PCB_ACT_BOARD) != NULL)
+		g = pcb_get_layergrp(PCB, PCB_CURRLAYER(PCB_ACT_BOARD)->meta.real.grp);
 
 	for(n = 1; n < argc; n++) {
 		const char *arg;
@@ -1236,8 +1236,8 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_t *g = NULL;
 	pcb_layergrp_id_t gid;
 
-	if (CURRENT != NULL)
-		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
+	if (PCB_CURRLAYER(PCB_ACT_BOARD) != NULL)
+		g = pcb_get_layergrp(PCB, PCB_CURRLAYER(PCB_ACT_BOARD)->meta.real.grp);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, DelGroup, name = argv[1].val.str);
 	if (*name == '@') {
@@ -1378,8 +1378,8 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_t *g = NULL;
 	pcb_layergrp_id_t gid, ng;
 
-	if (CURRENT != NULL)
-		g = pcb_get_layergrp(PCB, CURRENT->meta.real.grp);
+	if (PCB_CURRLAYER(PCB_ACT_BOARD) != NULL)
+		g = pcb_get_layergrp(PCB, PCB_CURRLAYER(PCB_ACT_BOARD)->meta.real.grp);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, DupGroup, name = argv[1].val.str);
 	if (*name == '@') {
@@ -1498,7 +1498,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	/* if any virtual is selected, do not accept CURRENT as selected */
+	/* if any virtual is selected, do not accept PCB_CURRLAYER(PCB_ACT_BOARD) as selected */
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++) {
 		pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
 		if ((ml->sel_offs != 0) && (*s)) {
@@ -1512,7 +1512,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (ly == NULL)
 		PCB_ACT_IRES(-1);
 	else
-		PCB_ACT_IRES(ly == CURRENT);
+		PCB_ACT_IRES(ly == PCB_CURRLAYER(PCB_ACT_BOARD));
 	return 0;
 }
 
