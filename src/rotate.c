@@ -85,32 +85,31 @@ void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsign
 	PCB_COORD_ROTATE90(Point->X, Point->Y, X, Y, Number);
 }
 
-void *pcb_obj_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
+pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
-	void *ptr2;
 	int changed = 0;
 	pcb_opctx_t ctx;
 
-	pcb_data_clip_inhibit_inc(PCB->Data);
+	pcb_data_clip_inhibit_inc(pcb->Data);
 
 	/* setup default  global identifiers */
-	ctx.rotate.pcb = PCB;
+	ctx.rotate.pcb = pcb;
 	ctx.rotate.number = Steps;
 	ctx.rotate.center_x = X;
 	ctx.rotate.center_y = Y;
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_ROTATE90, "ipppccip", Type, Ptr1, Ptr2, Ptr2, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number, &changed);
+	pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_ROTATE90, "ipppccip", obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number, &changed);
 
-	if (Type != PCB_OBJ_PSTK) /* padstack has its own way doing the rotation-undo */
-		pcb_undo_add_obj_to_rotate90(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
-	ptr2 = pcb_object_operation(&Rotate90Functions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	changed |= (ptr2 != NULL);
+	if (obj->type != PCB_OBJ_PSTK) /* padstack has its own way doing the rotation-undo */
+		pcb_undo_add_obj_to_rotate90(obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
+	obj = pcb_object_operation(&Rotate90Functions, &ctx, obj->type, obj->parent.any, obj, obj);
+	changed |= (obj != NULL);
 	if (changed) {
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	pcb_data_clip_inhibit_dec(PCB->Data, 0);
-	return ptr2;
+	pcb_data_clip_inhibit_dec(pcb->Data, 0);
+	return obj;
 }
 
 void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
@@ -156,7 +155,7 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 		if (type == PCB_OBJ_SUBC)
 			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
-		pcb_obj_rotate90(type, ptr1, ptr2, ptr3, X, Y, Steps);
+		pcb_obj_rotate90(PCB, obj, X, Y, Steps);
 		pcb_board_set_changed_flag(pcb_true);
 	}
 }

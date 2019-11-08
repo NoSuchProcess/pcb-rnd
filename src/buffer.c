@@ -264,7 +264,7 @@ void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number)
 
 	PCB_SUBC_LOOP(Buffer->Data);
 	{
-		pcb_obj_rotate90(PCB_OBJ_SUBC, subc, subc, subc, Buffer->X, Buffer->Y, Number);
+		pcb_obj_rotate90(PCB, (pcb_any_obj_t *)subc, Buffer->X, Buffer->Y, Number);
 	}
 	PCB_END_LOOP;
 

@@ -53,10 +53,9 @@
 
 #define PCB_ROTATE_TYPES (PCB_OBJ_PSTK | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_ARC | PCB_OBJ_LINE_POINT | PCB_OBJ_LINE | PCB_OBJ_POLY | PCB_OBJ_FLOATER)
 
-/* rotates an object passed;
- * the center of rotation is determined by the current cursor location
- */
-void *pcb_obj_rotate90(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, unsigned);
+/* rotates an object passed; pcb is the parent board or associated board (in
+   case of buffer) */
+pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, unsigned Steps);
 
 /* rotates an objects passed;
  * the center of rotation is determined by the current cursor location */
