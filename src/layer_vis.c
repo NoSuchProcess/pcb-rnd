@@ -122,9 +122,6 @@ int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On
 	return changed;
 }
 
-/* ---------------------------------------------------------------------------
- * resets the layerstack setting
- */
 void pcb_layervis_reset_stack(void)
 {
 	pcb_layer_id_t comp;
