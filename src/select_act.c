@@ -152,8 +152,8 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 				pcb_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
-				x = pcb_grid_fit(x, PCB->hidlib.grid, PCB->hidlib.grid_ox);
-				y = pcb_grid_fit(y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
+				x = pcb_grid_fit(x, PCB_ACT_HIDLIB->grid, PCB_ACT_HIDLIB->grid_ox);
+				y = pcb_grid_fit(y, PCB_ACT_HIDLIB->grid, PCB_ACT_HIDLIB->grid_oy);
 				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true);
 				pcb_undo_save_serial();
 				pcb_remove_selected(pcb_false);
