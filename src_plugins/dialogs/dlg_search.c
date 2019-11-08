@@ -33,6 +33,7 @@
 #include "hid_dad.h"
 #include "event.h"
 #include "error.h"
+#include "board.h"
 
 #define MAX_ROW 8
 #define MAX_COL 4
@@ -294,8 +295,6 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	pcb_message(PCB_MSG_ERROR, "Too many expression rows, can not add more\n");
 }
 
-TODO("remove this when search_apply_cb loses PCB")
-#include "board.h"
 static void search_apply_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
