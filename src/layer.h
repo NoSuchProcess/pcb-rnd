@@ -196,8 +196,8 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
 
 /************ NEW API - new code should use these **************/
 
-#define PCB_STACKLAYER(pcb, n)   (&pcb->Data->Layer[pcb_layer_stack[(n)]])
-#define PCB_CURRLAYER(pcb)       (PCB_STACKLAYER(pcb, 0))
+#define PCB_STACKLAYER(pcb, n)   (&((pcb)->Data->Layer[pcb_layer_stack[(n)]]))
+#define PCB_CURRLAYER(pcb)       (PCB_STACKLAYER((pcb), 0))
 #define PCB_CURRLID(pcb)         (pcb_layer_stack[0])
 
 /* Free all metadata and objects of a layer; does not free(layer) */
