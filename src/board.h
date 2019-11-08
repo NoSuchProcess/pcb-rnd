@@ -179,4 +179,6 @@ const char *pcb_board_get_name(void);
    board is not a subc, this call is a NOP; implemented in obj_subc.c */
 void pcb_subc_as_board_update(pcb_board_t *pcb);
 
+#define PCB_ACT_BOARD ((pcb_board_t *)argv[0].val.argv0.user_call_ctx)
+
 #endif

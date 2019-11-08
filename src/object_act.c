@@ -1032,7 +1032,7 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (steps < 0)
 		steps = 4+steps;
 
-	pcb_screen_obj_rotate90(x, y, steps);
+	pcb_screen_obj_rotate90(PCB_ACT_BOARD, x, y, steps);
 
 	return 0;
 }

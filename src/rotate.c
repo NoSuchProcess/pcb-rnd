@@ -139,7 +139,7 @@ pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t 
 	return obj;
 }
 
-void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
+void pcb_screen_obj_rotate90(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
@@ -149,17 +149,17 @@ void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
 			pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
-		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
+		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
-			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 		if (type == PCB_OBJ_SUBC)
-			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
-		pcb_obj_rotate90(PCB, obj, X, Y, Steps);
+			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+		pcb_obj_rotate90(pcb, obj, X, Y, Steps);
 		pcb_board_set_changed_flag(pcb_true);
 	}
 }
 
-void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
+void pcb_screen_obj_rotate(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
@@ -169,11 +169,11 @@ void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
 			pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
-		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
+		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
-			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 		if (type == PCB_OBJ_SUBC)
-			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate(PCB, obj, X, Y, angle);
 		pcb_board_set_changed_flag(pcb_true);
 	}

@@ -60,8 +60,8 @@ pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_
 /* rotates obj by angle around X;Y. pcb is the current board if obj is on buffer */
 pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
 
-void pcb_screen_obj_rotate90(pcb_coord_t, pcb_coord_t, unsigned);
-void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
+void pcb_screen_obj_rotate90(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, unsigned steps);
+void pcb_screen_obj_rotate(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
 void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 
 PCB_INLINE void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)
