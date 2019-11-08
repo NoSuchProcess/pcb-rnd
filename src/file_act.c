@@ -78,19 +78,19 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Footprint:
 			pcb_notify_crosshair_change(pcb_false);
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
-				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+				pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_PASTE_BUFFER);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 
 		case F_LayoutToBuffer:
 			pcb_notify_crosshair_change(pcb_false);
 			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
-				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+				pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_PASTE_BUFFER);
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 
 		case F_Layout:
-			if (!PCB->Changed ||  pcb_hid_message_box(&PCB->hidlib, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
+			if (!PCB->Changed ||  pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
 				pcb_load_pcb(name, format, pcb_true, 0);
 			break;
 
@@ -105,12 +105,12 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_netlist_init(&(PCB->netlist[i]));
 				}
 			}
-			if (!pcb_import_netlist(&PCB->hidlib, PCB->Netlistname))
+			if (!pcb_import_netlist(PCB_ACT_HIDLIB, PCB->Netlistname))
 				pcb_netlist_changed(1);
 			break;
 
 		case F_Revert:
-			if (PCB->hidlib.filename && (!PCB->Changed || (pcb_hid_message_box(&PCB->hidlib, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
+			if (PCB_ACT_HIDLIB->filename && (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 
@@ -158,12 +158,12 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 		/* setup the new name and reset some values to default */
-		free(PCB->hidlib.name);
-		PCB->hidlib.name = name;
+		free(PCB_ACT_HIDLIB->name);
+		PCB_ACT_HIDLIB->name = name;
 
 		pcb_layervis_reset_stack();
-		pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
+		pcb_crosshair_set_range(0, 0, PCB_ACT_HIDLIB->size_x, PCB_ACT_HIDLIB->size_y);
+		pcb_center_display(PCB_ACT_HIDLIB->size_x / 2, PCB_ACT_HIDLIB->size_y / 2);
 		pcb_board_changed(0);
 		pcb_hid_redraw(PCB);
 		pcb_notify_crosshair_change(pcb_true);
@@ -244,17 +244,17 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
 				return FGW_ERR_ARGC;
 			}
-			if (pcb_save_pcb(PCB->hidlib.filename, NULL) == 0)
+			if (pcb_save_pcb(PCB_ACT_HIDLIB->filename, NULL) == 0)
 				pcb_board_set_changed_flag(pcb_false);
-			pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_FN_CHANGED, NULL);
+			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 			return 0;
 
 		case F_LayoutAs:
 			if (pcb_save_pcb(name, fmt) == 0) {
 				pcb_board_set_changed_flag(pcb_false);
-				free(PCB->hidlib.filename);
-				PCB->hidlib.filename = pcb_strdup(name);
-				pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_FN_CHANGED, NULL);
+				free(PCB_ACT_HIDLIB->filename);
+				PCB_ACT_HIDLIB->filename = pcb_strdup(name);
+				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 			}
 			return 0;
 
@@ -372,7 +372,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			name = pcb_strdup(fn);
 
-		f = pcb_fopen(&PCB->hidlib, name, "w");
+		f = pcb_fopen(PCB_ACT_HIDLIB, name, "w");
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Failed to open %s for write\n", name);
 			free(name);
@@ -429,7 +429,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			FILE *f;
 			char *fullname = pcb_strdup_printf("%s.%ld%s%s", name, (long)sit.count, sep, ending);
 
-			f = pcb_fopen(&PCB->hidlib, fullname, "w");
+			f = pcb_fopen(PCB_ACT_HIDLIB, fullname, "w");
 			free(fullname);
 			if (f != NULL) {
 				if (p->write_subcs_head(p, &udata, f, 0, 1) == 0) {
