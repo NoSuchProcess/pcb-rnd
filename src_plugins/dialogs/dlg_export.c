@@ -72,7 +72,7 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 {
 	export_ctx_t *export_ctx = caller_data;
 	int h, wid;
-	int have_gui, currly = INDEXOFCURRENT;
+	int have_gui, currly = PCB_CURRLID(PCB);
 	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
 	
 	have_gui = (pcb_gui != NULL) && pcb_gui->gui;

@@ -71,7 +71,7 @@ static double msgr_connect(pcb_meshnode_t *curr, pcb_meshnode_t *next)
 	np.Y = next->bbox.Y1;
 	cp.X = curr->bbox.X1;
 	cp.Y = curr->bbox.Y1;
-	pcb_route_calculate(PCB, &route, &np, &cp, INDEXOFCURRENT, conf_core.design.line_thickness, conf_core.design.bloat, pcb_flag_make(PCB_FLAG_CLEARLINE), 0, 0);
+	pcb_route_calculate(PCB, &route, &np, &cp, PCB_CURRLID(PCB), conf_core.design.line_thickness, conf_core.design.bloat, pcb_flag_make(PCB_FLAG_CLEARLINE), 0, 0);
 
 	pcb_trace("size=%d\n", route.size);
 

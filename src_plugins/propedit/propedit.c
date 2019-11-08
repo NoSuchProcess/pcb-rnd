@@ -103,7 +103,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			vtl0_append(&pe->layers, id);
 		}
 		else {
-			vtl0_append(&pe->layers, INDEXOFCURRENT);
+			vtl0_append(&pe->layers, PCB_CURRLID(pe->pcb));
 		}
 	}
 	else if (strncmp(cmd, "net:", 4) == 0) {

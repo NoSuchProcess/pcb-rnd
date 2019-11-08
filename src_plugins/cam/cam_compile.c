@@ -141,7 +141,7 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 static int cam_exec(cam_ctx_t *ctx)
 {
-	int res = 0, n, have_gui, currly = INDEXOFCURRENT;
+	int res = 0, n, have_gui, currly = PCB_CURRLID(PCB);
 	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
 	int ovr = 0, *old_ovr;
 
