@@ -39,7 +39,7 @@
 int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder);
 
 /* resets the layer visibility stack setting */
-void pcb_layervis_reset_stack(void);
+void pcb_layervis_reset_stack(pcb_hidlib_t *hl);
 
 /* saves the layerstack setting */
 void pcb_layervis_save_stack(void);

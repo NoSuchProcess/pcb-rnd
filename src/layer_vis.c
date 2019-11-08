@@ -122,7 +122,7 @@ int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On
 	return changed;
 }
 
-void pcb_layervis_reset_stack(void)
+void pcb_layervis_reset_stack(pcb_hidlib_t *hl)
 {
 	pcb_layer_id_t comp;
 	pcb_cardinal_t i;
@@ -148,7 +148,7 @@ void pcb_layervis_reset_stack(void)
 
 	/* Bring the top copper group to the front and make it active.  */
 	if (pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
-		pcb_layervis_change_group_vis(&PCB->hidlib, comp, 1, 1);
+		pcb_layervis_change_group_vis(hl, comp, 1, 1);
 }
 
 /* ---------------------------------------------------------------------------

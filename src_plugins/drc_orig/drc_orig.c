@@ -406,7 +406,7 @@ static void pcb_drc_orig(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 	pcb_view_list_free_fields(lst);
 
 	pcb_layervis_save_stack();
-	pcb_layervis_reset_stack();
+	pcb_layervis_reset_stack(&PCB->hidlib);
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 
 	/* actual tests */

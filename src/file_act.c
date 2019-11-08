@@ -161,7 +161,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		free(PCB_ACT_HIDLIB->name);
 		PCB_ACT_HIDLIB->name = name;
 
-		pcb_layervis_reset_stack();
+		pcb_layervis_reset_stack(PCB_ACT_HIDLIB);
 		pcb_crosshair_set_range(0, 0, PCB_ACT_HIDLIB->size_x, PCB_ACT_HIDLIB->size_y);
 		pcb_center_display(PCB_ACT_HIDLIB->size_x / 2, PCB_ACT_HIDLIB->size_y / 2);
 		pcb_board_changed(0);

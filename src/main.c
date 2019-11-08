@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
 	/* Add silk layers to newly created PCB */
 	pcb_board_new_postproc(PCB, 1);
 
-	pcb_layervis_reset_stack();
+	pcb_layervis_reset_stack(&PCB->hidlib);
 
 	if (pcb_gui->gui)
 		pcb_crosshair_init();
