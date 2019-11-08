@@ -68,7 +68,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 
 	pcb_bool changed = pcb_true;
 
-	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB) | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 		return pcb_false;
 	switch (type) {

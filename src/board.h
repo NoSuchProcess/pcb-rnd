@@ -131,7 +131,7 @@ void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const p
 #define	PCB_CSWAP_Y(y, h, cond)		((cond) ? (h+PCB_SWAP_SIGN_Y(y)) : (y))
 
 /* Conditionally allow subc parts to be reached directly in search masks */
-#define PCB_LOOSE_SUBC (PCB->loose_subc ? PCB_OBJ_SUBC_PART : 0)
+#define PCB_LOOSE_SUBC(pcb) ((pcb)->loose_subc ? PCB_OBJ_SUBC_PART : 0)
 
 
 /* changes the name of a layout; Name is allocated by the caller (no strdup() is made) */

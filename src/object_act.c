@@ -353,7 +353,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_hid_get_coords("Select an Object", &x, &y, 0);
-				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_layer_t *target = PCB_CURRLAYER(pcb);
 					pcb_any_obj_t *o = ptr2;
 

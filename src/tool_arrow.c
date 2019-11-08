@@ -143,7 +143,7 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 	 * (pcb_tool_note.Moving) or clicked on a MOVE_TYPE
 	 * (pcb_tool_note.Hit)
 	 */
-	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_OBJ_FLOATER | PCB_LOOSE_SUBC) & ~PCB_OBJ_RAT; test; test &= ~type) {
+	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_OBJ_FLOATER | PCB_LOOSE_SUBC(PCB)) & ~PCB_OBJ_RAT; test; test &= ~type) {
 		/* grab object/point (e.g. line endpoint) for edit */
 		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, test, &ptr1, &ptr2, &ptr3);
 		if (!pcb_tool_note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2)) {
@@ -154,7 +154,7 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 			pcb_crosshair.AttachedObject.tx = pcb_tool_note.X;
 			pcb_crosshair.AttachedObject.ty = pcb_tool_note.Y;
 		}
-		if (!pcb_tool_note.Moving && (type & (PCB_SELECT_TYPES | PCB_LOOSE_SUBC)) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *) ptr2)) {
+		if (!pcb_tool_note.Moving && (type & (PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB))) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *) ptr2)) {
 			pcb_tool_note.Moving = pcb_true;
 			/* remember where the user clicked to start this op */
 			pcb_crosshair.AttachedObject.tx = pcb_crosshair.AttachedObject.X = pcb_tool_note.X;
