@@ -186,18 +186,22 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
 
 /************ OLD API - new code should not use these **************/
 
-#define	LAYER_ON_STACK(n)	(&PCB->Data->Layer[pcb_layer_stack[(n)]])
-#define LAYER_PTR(n)            (&PCB->Data->Layer[(n)])
-#define	CURRENT	(LAYER_ON_STACK(0))
-#define	INDEXOFCURRENT	(pcb_layer_stack[0])
+#define LAYER_ON_STACK(n)   (&PCB->Data->Layer[pcb_layer_stack[(n)]])
+#define LAYER_PTR(n)        (&PCB->Data->Layer[(n)])
+#define CURRENT             (LAYER_ON_STACK(0))
+#define INDEXOFCURRENT      (pcb_layer_stack[0])
 
-#define LAYER_LOOP(data, ml) do { \
-        pcb_cardinal_t n; \
-	for (n = 0; n < ml; n++) \
-	{ \
-	   pcb_layer_t *layer = (&data->Layer[(n)]);
+#define LAYER_LOOP(data, ml) \
+	do { \
+		pcb_cardinal_t n; \
+		for (n = 0; n < ml; n++) { \
+			pcb_layer_t *layer = (&data->Layer[(n)]);
 
 /************ NEW API - new code should use these **************/
+
+#define PCB_STACKLAYER(pcb, n)   (&pcb->Data->Layer[pcb_layer_stack[(n)]])
+#define PCB_CURRLAYER(pcb)       (PCB_STACKLAYER(pcb, 0))
+#define PCB_CURRLID(pcb)         (pcb_layer_stack[0])
 
 /* Free all metadata and objects of a layer; does not free(layer) */
 void pcb_layer_free_fields(pcb_layer_t *layer);
