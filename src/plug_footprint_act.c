@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This module was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
@@ -43,7 +43,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 
 	if (name == NULL) {
-		pcb_fp_rehash(&PCB->hidlib, NULL);
+		pcb_fp_rehash(PCB_ACT_HIDLIB, NULL);
 		return 0;
 	}
 
@@ -66,7 +66,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (pcb_fp_rehash(&PCB->hidlib, l) != 0) {
+	if (pcb_fp_rehash(PCB_ACT_HIDLIB, l) != 0) {
 		pcb_message(PCB_MSG_ERROR, "Failed to rehash %s\n", name);
 		PCB_ACT_IRES(1);
 		return 0;
