@@ -49,6 +49,7 @@
 #include "undo.h"
 #include "layer.h"
 #include "obj_poly_draw.h"
+#include "obj_text_draw.h"
 #include "polygon_selfi.h"
 #include "polygon1_gen.h"
 #include "event.h"
