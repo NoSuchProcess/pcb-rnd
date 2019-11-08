@@ -62,6 +62,9 @@ void pcb_tool_arrow_uninit(void)
 	 at the initial click event) */
 static void click_timer_cb(pcb_hidval_t hv)
 {
+	pcb_hidlib_t *hl = hv.ptr;
+	pcb_board_t *pcb = hv.ptr;
+
 	if (pcb_tool_note.Click) {
 		pcb_notify_crosshair_change(pcb_false);
 		pcb_tool_note.Click = pcb_false;
@@ -69,21 +72,21 @@ static void click_timer_cb(pcb_hidval_t hv)
 			pcb_grabbed.status = pcb_true;
 			pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
-			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
+			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
+			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
 			pcb_undo_save_serial();
 			pcb_remove_selected(pcb_false);
-			pcb_tool_save(&PCB->hidlib);
+			pcb_tool_save(hl);
 			pcb_tool_is_saved = pcb_true;
-			pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+			pcb_tool_select_by_id(hl, PCB_MODE_PASTE_BUFFER);
 		}
 		else if (pcb_tool_note.Hit && !pcb_gui->shift_is_pressed(pcb_gui)) {
 			pcb_box_t box;
 
 			pcb_grabbed.status = pcb_true;
-			pcb_tool_save(&PCB->hidlib);
+			pcb_tool_save(hl);
 			pcb_tool_is_saved = pcb_true;
-			pcb_tool_select_by_id(&PCB->hidlib, pcb_gui->control_is_pressed(pcb_gui)? PCB_MODE_COPY : PCB_MODE_MOVE);
+			pcb_tool_select_by_id(hl, pcb_gui->control_is_pressed(pcb_gui)? PCB_MODE_COPY : PCB_MODE_MOVE);
 			pcb_crosshair.AttachedObject.Ptr1 = pcb_tool_note.ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = pcb_tool_note.ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = pcb_tool_note.ptr3;
@@ -99,9 +102,9 @@ static void click_timer_cb(pcb_hidval_t hv)
 			box.X2 = pcb_tool_note.X - PCB_SLOP * pcb_pixel_slop;
 			box.Y1 = pcb_tool_note.Y + PCB_SLOP * pcb_pixel_slop;
 			box.Y2 = pcb_tool_note.Y - PCB_SLOP * pcb_pixel_slop;
-			pcb_crosshair.drags = pcb_list_block(PCB, &box, &pcb_crosshair.drags_len);
+			pcb_crosshair.drags = pcb_list_block(pcb, &box, &pcb_crosshair.drags_len);
 			pcb_crosshair.drags_current = 0;
-			pcb_tool_attach_for_copy(&PCB->hidlib, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
+			pcb_tool_attach_for_copy(hl, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
 		}
 		else {
 			pcb_box_t box;
@@ -114,7 +117,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			box.X2 = PCB_MAX_COORD;
 			box.Y2 = PCB_MAX_COORD;
 			/* unselect first if shift key not down */
-			if (!pcb_gui->shift_is_pressed(pcb_gui) && pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
+			if (!pcb_gui->shift_is_pressed(pcb_gui) && pcb_select_block(pcb, &box, pcb_false, pcb_false, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			pcb_tool_notify_block();
 			pcb_crosshair.AttachedBox.Point1.X = pcb_tool_note.X;
@@ -133,6 +136,7 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 
 	pcb_tool_note.Click = pcb_true;
 	/* do something after click time */
+	hv.ptr = hl;
 	pcb_gui->add_timer(pcb_gui, click_timer_cb, conf_core.editor.click_time, hv);
 
 	/* see if we clicked on something already selected
@@ -164,6 +168,7 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 void pcb_tool_arrow_release_mode(pcb_hidlib_t *hl)
 {
 	pcb_box_t box;
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if (pcb_tool_note.Click) {
 		pcb_box_t box;
@@ -177,7 +182,7 @@ void pcb_tool_arrow_release_mode(pcb_hidlib_t *hl)
 		pcb_undo_save_serial();
 		/* unselect first if shift key not down */
 		if (!pcb_gui->shift_is_pressed(pcb_gui)) {
-			if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
+			if (pcb_select_block(pcb, &box, pcb_false, pcb_false, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
 			if (pcb_tool_note.Moving) {
 				pcb_tool_note.Moving = 0;
@@ -202,7 +207,7 @@ void pcb_tool_arrow_release_mode(pcb_hidlib_t *hl)
 		box.Y2 = pcb_crosshair.AttachedBox.Point2.Y;
 
 		pcb_undo_restore_serial();
-		if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false))
+		if (pcb_select_block(pcb, &box, pcb_true, pcb_true, pcb_false))
 			pcb_board_set_changed_flag(pcb_true);
 		else if (pcb_bumped)
 			pcb_undo_inc_serial();
