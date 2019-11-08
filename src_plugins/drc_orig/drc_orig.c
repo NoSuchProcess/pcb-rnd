@@ -90,7 +90,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 doIsBad:
 	pcb_poly_invalidate_draw(layer, polygon);
 	pcb_draw_obj((pcb_any_obj_t *)ptr2);
-	violation = pcb_view_new("short", message, "Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.");
+	violation = pcb_view_new(&PCB->hidlib, "short", message, "Circuits that are too close may bridge during imaging, etching,\n" "plating, or soldering processes resulting in a direct short.");
 	pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
 	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
 	pcb_view_set_bbox_by_objs(PCB->Data, violation);
@@ -106,7 +106,7 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 		return 0; /* automatic thickness is always valid - ensured by the renderer */
 	if (text->thickness < min_wid) {
 		pcb_text_invalidate_draw(layer, text);
-		violation = pcb_view_new("thin", "Text thickness is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
+		violation = pcb_view_new(&PCB->hidlib, "thin", "Text thickness is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 		pcb_drc_set_data(violation, &text->thickness, min_wid);
 		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)text);
 		pcb_view_set_bbox_by_objs(PCB->Data, violation);
@@ -139,11 +139,11 @@ static int drc_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t
 	if (!IS_FOUND(new_obj, fa) && IS_FOUND(arrived_from, fa)) {
 
 		if (ctx->shrunk) {
-			violation = pcb_view_new("broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
+			violation = pcb_view_new(&PCB->hidlib, "broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
 			pcb_drc_set_data(violation, NULL, conf_core.design.shrink);
 		}
 		else {
-			violation = pcb_view_new("short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
+			violation = pcb_view_new(&PCB->hidlib, "short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
 			pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
 		}
 		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)new_obj);
@@ -277,7 +277,7 @@ void drc_copper_lines(pcb_view_list_t *lst)
 		pcb_poly_plows(PCB->Data, PCB_OBJ_LINE, layer, line, drc_callback, lst);
 		if (line->Thickness < conf_core.design.min_wid) {
 			pcb_line_invalidate_draw(layer, line);
-			violation = pcb_view_new("thin", "Line width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
+			violation = pcb_view_new(&PCB->hidlib, "thin", "Line width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 			pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_wid);
 			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
 			pcb_view_set_bbox_by_objs(PCB->Data, violation);
@@ -297,7 +297,7 @@ void drc_copper_arcs(pcb_view_list_t *lst)
 		pcb_poly_plows(PCB->Data, PCB_OBJ_ARC, layer, arc, drc_callback, lst);
 		if (arc->Thickness < conf_core.design.min_wid) {
 			pcb_arc_invalidate_draw(layer, arc);
-			violation = pcb_view_new("thin", "Arc width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
+			violation = pcb_view_new(&PCB->hidlib, "thin", "Arc width is too thin", "Process specifications dictate a minimum feature-width\nthat can reliably be reproduced");
 			pcb_drc_set_data(violation, &arc->Thickness, conf_core.design.min_wid);
 			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)arc);
 			pcb_view_set_bbox_by_objs(PCB->Data, violation);
@@ -320,14 +320,14 @@ void drc_global_pstks(pcb_view_list_t *lst)
 		if ((ring > 0) || (hole > 0)) {
 			pcb_pstk_invalidate_draw(padstack);
 			if (ring) {
-				violation = pcb_view_new("thin", "padstack annular ring too small", "Annular rings that are too small may erode during etching,\nresulting in a broken connection");
+				violation = pcb_view_new(&PCB->hidlib, "thin", "padstack annular ring too small", "Annular rings that are too small may erode during etching,\nresulting in a broken connection");
 				pcb_drc_set_data(violation, &ring, conf_core.design.min_ring);
 				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
 				pcb_view_set_bbox_by_objs(PCB->Data, violation);
 				pcb_view_list_append(lst, violation);
 			}
 			if (hole > 0) {
-				violation = pcb_view_new("drill", "Padstack drill size is too small", "Process rules dictate the minimum drill size which can be used");
+				violation = pcb_view_new(&PCB->hidlib, "drill", "Padstack drill size is too small", "Process rules dictate the minimum drill size which can be used");
 				pcb_drc_set_data(violation, &hole, conf_core.design.min_drill);
 				pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)padstack);
 				pcb_view_set_bbox_by_objs(PCB->Data, violation);
@@ -348,7 +348,7 @@ TODO("DRC: need to check text and polygons too!")
 	{
 		if (line->Thickness < conf_core.design.min_slk) {
 			pcb_line_invalidate_draw(layer, line);
-			violation = pcb_view_new("thin", "Silk line is too thin", "Process specifications dictate a minimum silkscreen feature-width\nthat can reliably be reproduced");
+			violation = pcb_view_new(&PCB->hidlib, "thin", "Silk line is too thin", "Process specifications dictate a minimum silkscreen feature-width\nthat can reliably be reproduced");
 			pcb_drc_set_data(violation, &line->Thickness, conf_core.design.min_slk);
 			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)line);
 			pcb_view_set_bbox_by_objs(PCB->Data, violation);
@@ -391,7 +391,7 @@ static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
 
 
 		if (message != NULL) {
-			violation = pcb_view_new("beyond", message, "Object hard to edit or export because being outside of the drawing area.");
+			violation = pcb_view_new(&PCB->hidlib, "beyond", message, "Object hard to edit or export because being outside of the drawing area.");
 			pcb_drc_set_data(violation, &measured, required);
 			pcb_view_append_obj(violation, 0, o);
 			pcb_view_set_bbox_by_objs(PCB->Data, violation);

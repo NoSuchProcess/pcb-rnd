@@ -47,6 +47,8 @@ typedef enum pcb_view_type_e {
 struct pcb_view_s {
 	unsigned long int uid;        /* ID unique for each view (for GUI identification) - 0 means invalid */
 
+	pcb_hidlib_t *hidlib;
+
 	char *type;
 	char *title;
 	char *description;
@@ -104,7 +106,7 @@ pcb_view_t *pcb_view_by_uid_cnt(const pcb_view_list_t *lst, unsigned long int ui
 void pcb_view_goto(pcb_view_t *item);
 
 /* Allocate a new, floating (unlinked) view with no data or bbox */
-pcb_view_t *pcb_view_new(const char *type, const char *title, const char *description);
+pcb_view_t *pcb_view_new(pcb_hidlib_t *hl, const char *type, const char *title, const char *description);
 
 /* Append obj to one of the object groups in view (resolving to idpath) */
 void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj);

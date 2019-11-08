@@ -977,7 +977,7 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 {
 
 	if ((pcb_io_incompat_lst_enable) && (conf_core.editor.io_incomp_popup)) {
-		pcb_view_t *violation = pcb_view_new(type, title, description);
+		pcb_view_t *violation = pcb_view_new(&PCB->hidlib, type, title, description);
 		if ((obj != NULL) && (obj->type & PCB_OBJ_CLASS_REAL)) {
 			pcb_view_append_obj(violation, 0, obj);
 			pcb_view_set_bbox_by_objs(PCB->Data, violation);
