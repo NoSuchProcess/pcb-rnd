@@ -113,7 +113,7 @@ static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
 {
 	sub_layer_text_t *ctx = ctx_;
 	pcb_poly_t *poly = (pcb_poly_t *)obj;
-	pcb_bool_t dummy;
+	pcb_bool dummy;
 
 	switch(obj->type) {
 		case PCB_OBJ_LINE: sub_layer_line(ctx->pcb, ctx->result, ctx->layer, (pcb_line_t *)obj, ctx->centerline); break;
