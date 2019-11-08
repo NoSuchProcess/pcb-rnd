@@ -1703,6 +1703,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	st.default_unit = "du"; /* du = decimicron = 0.1 micron unit for eagle bin format */
 	st_init(&st);
 
+	pcb_data_clip_inhibit_inc(st.pcb->Data);
 	eagle_read_design_rules(&st);
 
 	old_leni = pcb_create_being_lenient;
@@ -1719,6 +1720,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	pcb_layer_colors_from_conf(pcb, 1);
 
 	pp_res = post_process_thermals(&st);
+	pcb_data_clip_inhibit_dec(st.pcb->Data, 1);
 	st_uninit(&st);
 	return pp_res;
 }
