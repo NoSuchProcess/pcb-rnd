@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -518,7 +518,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layout name:", PCB_EMPTY(PCB->hidlib.name), "Layout name");
+			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layout name:", PCB_EMPTY(PCB_ACT_HIDLIB->name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb_true);
@@ -770,9 +770,9 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		pcb_grid_inval();
 		if (val[0] == '*')
-			pcb_hidlib_set_grid(&PCB->hidlib, pcb_round(PCB->hidlib.grid * d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
 		else
-			pcb_hidlib_set_grid(&PCB->hidlib, pcb_round(PCB->hidlib.grid / d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
 	}
 
 	value = pcb_get_value(val, units, &absolute, NULL);
@@ -781,23 +781,23 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Grid:
 			pcb_grid_inval();
 			if (absolute)
-				pcb_hidlib_set_grid(&PCB->hidlib, value, pcb_false, 0, 0);
+				pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
 			else {
 				/* On the way down, short against the minimum
 				 * PCB drawing unit */
-				if ((value + PCB->hidlib.grid) < 1)
-					pcb_hidlib_set_grid(&PCB->hidlib, 1, pcb_false, 0, 0);
-				else if (PCB->hidlib.grid == 1)
-					pcb_hidlib_set_grid(&PCB->hidlib, value, pcb_false, 0, 0);
+				if ((value + PCB_ACT_HIDLIB->grid) < 1)
+					pcb_hidlib_set_grid(PCB_ACT_HIDLIB, 1, pcb_false, 0, 0);
+				else if (PCB_ACT_HIDLIB->grid == 1)
+					pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
 				else
-					pcb_hidlib_set_grid(&PCB->hidlib, value + PCB->hidlib.grid, pcb_false, 0, 0);
+					pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value + PCB_ACT_HIDLIB->grid, pcb_false, 0, 0);
 			}
 			break;
 
 		case F_LineSize:
 		case F_Line:
 			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
-			pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			break;
 
 		case F_Text:
