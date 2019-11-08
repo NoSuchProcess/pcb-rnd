@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (layername) {
 				int i;
 				layer = NULL;
-				for (i = 0; i < pcb_max_layer(PCB); i++)
+				for (i = 0; i < pcb_max_layer(pcb); i++)
 					if (strcmp(pcb->Data->Layer[i].name, layername) == 0) {
 						layer = &(pcb->Data->Layer[i]);
 						break;
@@ -244,7 +244,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	/* done with our action so increment the undo # */
 	pcb_undo_inc_serial();
 
-	pcb_hid_redraw(PCB);
+	pcb_hid_redraw(pcb);
 	pcb_board_set_changed_flag(pcb_true);
 
 	return 0;
@@ -353,7 +353,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 				void *ptr1, *ptr2, *ptr3;
 
 				pcb_hid_get_coords("Select an Object", &x, &y, 0);
-				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC(pcb), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_layer_t *target = PCB_CURRLAYER(pcb);
 					pcb_any_obj_t *o = ptr2;
 
@@ -847,7 +847,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (strcmp(a1, "down") == 0) {
 		new_index = PCB_CURRLID(pcb) + 1;
-		if (new_index >= pcb_max_layer(PCB)) {
+		if (new_index >= pcb_max_layer(pcb)) {
 			PCB_ACT_IRES(1);
 			return 0;
 		}
