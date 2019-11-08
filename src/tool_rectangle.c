@@ -54,6 +54,8 @@ void pcb_tool_rectangle_uninit(void)
 
 void pcb_tool_rectangle_notify_mode(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
 	/* do update of position */
 	pcb_tool_notify_block();
 
@@ -64,7 +66,7 @@ void pcb_tool_rectangle_notify_mode(pcb_hidlib_t *hl)
 			pcb_crosshair.AttachedBox.Point1.X != pcb_crosshair.AttachedBox.Point2.X &&
 			pcb_crosshair.AttachedBox.Point1.Y != pcb_crosshair.AttachedBox.Point2.Y) {
 		pcb_poly_t *polygon;
-		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, CURRENT, pcb_true);
+		pcb_layer_t *layer = pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true);
 
 		int flags = PCB_FLAG_CLEARPOLY;
 		if (conf_core.editor.full_poly)
@@ -78,7 +80,7 @@ void pcb_tool_rectangle_notify_mode(pcb_hidlib_t *hl)
 																								 pcb_crosshair.AttachedBox.Point2.Y,
 																								 2 * conf_core.design.clearance,
 																								 pcb_flag_make(flags))) != NULL) {
-			pcb_obj_add_attribs(polygon, PCB->pen_attr);
+			pcb_obj_add_attribs(polygon, pcb->pen_attr);
 			pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, polygon, polygon);
 			pcb_undo_inc_serial();
 			pcb_poly_invalidate_draw(layer, polygon);
