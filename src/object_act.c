@@ -801,17 +801,18 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0, *a1;
 	int old_index, new_index;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 
 	PCB_ACT_CONVARG(1, FGW_STR, MoveLayer, a0 = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_STR, MoveLayer, a1 = argv[2].val.str);
 
 	if (strcmp(a0, "c") == 0)
-		old_index = INDEXOFCURRENT;
+		old_index = PCB_CURRLID(pcb);
 	else
 		old_index = atoi(a0);
 
 	if (strcmp(a1, "c") == 0) {
-		new_index = INDEXOFCURRENT;
+		new_index = PCB_CURRLID(pcb);
 		if (new_index < 0)
 			new_index = 0;
 	}
@@ -831,14 +832,14 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	else if (strcmp(a1, "up") == 0) {
-		new_index = INDEXOFCURRENT - 1;
+		new_index = PCB_CURRLID(pcb) - 1;
 		if (new_index < 0) {
 			PCB_ACT_IRES(1);
 			return 0;
 		}
 	}
 	else if (strcmp(a1, "down") == 0) {
-		new_index = INDEXOFCURRENT + 1;
+		new_index = PCB_CURRLID(pcb) + 1;
 		if (new_index >= pcb_max_layer) {
 			PCB_ACT_IRES(1);
 			return 0;

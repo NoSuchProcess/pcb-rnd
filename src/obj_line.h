@@ -97,7 +97,7 @@ void pcb_line_adjust_attached_2lines(pcb_bool);
 /* makes the attached line fit into a 45 degree direction */
 void pcb_line_45(pcb_attached_line_t *);
 
-void pcb_line_enforce_drc(void);
+void pcb_line_enforce_drc(pcb_board_t *pcb);
 
 /* Calculate a pair of refractioned (ortho-45) lines between 'start' and 'end'.
    If 'mid_out' is not NULL, load it with the coords of the middle point.
@@ -114,7 +114,7 @@ void pcb_line_enforce_drc(void);
    the fields of 'end' needed to find the closest point to the original target
    that still won't hit any object. Returns the straigh-line distance between
    start and the new end. */
-double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize);
+double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize);
 
 
 /* Rather than mode the line bounding box, we set it so the point bounding

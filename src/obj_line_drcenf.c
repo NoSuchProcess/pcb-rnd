@@ -226,7 +226,7 @@ static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize)
+double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize)
 {
 	double f, s, f2, s2, len, best;
 	pcb_coord_t dx, dy, temp, last, length;
@@ -261,7 +261,7 @@ double pcb_drc_lines(const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mi
 		length = coord_abs(dy);
 	}
 
-	group = pcb_layer_get_group(PCB, INDEXOFCURRENT);
+	group = pcb_layer_get_group(PCB, PCB_CURRLID(pcb));
 	comp = PCB->LayerGroups.len + 10; /* this out-of-range group might save a call */
 
 	if (pcb_layergrp_flags(PCB, group) & PCB_LYT_BOTTOM)
@@ -426,7 +426,7 @@ static void drc_line(pcb_point_t *end)
 	line.Point2 = aline.Point2;
 
 	/* prepare for the intersection search */
-	group = pcb_layer_get_group(PCB, INDEXOFCURRENT);
+	group = pcb_layer_get_group(PCB, PCB_CURRLID(pcb));
 	comp = PCB->LayerGroups.len + 10;  /* this out-of-range group might save a call */
 	if (pcb_layergrp_flags(PCB, group) & PCB_LYT_BOTTOM)
 		info.solder = pcb_true;
@@ -459,14 +459,14 @@ static void drc_line(pcb_point_t *end)
 	end->Y = last_good.Y;
 }
 
-void pcb_line_enforce_drc(void)
+void pcb_line_enforce_drc(pcb_board_t *pcb)
 {
 	pcb_point_t r45, rs, start;
 	pcb_bool shift;
 	double r1, r2;
 
 	/* Silence a bogus compiler warning by storing this in a variable */
-	pcb_layer_id_t layer_idx = INDEXOFCURRENT;
+	pcb_layer_id_t layer_idx = PCB_CURRLID(pcb);
 
 	if (pcb_gui->mod1_is_pressed(pcb_gui) || pcb_gui->control_is_pressed(pcb_gui) || PCB->RatDraw)
 		return;
@@ -481,9 +481,9 @@ void pcb_line_enforce_drc(void)
 
 	if (conf_core.editor.line_refraction != 0) {
 		/* first try starting straight */
-		r1 = pcb_drc_lines(&start, &rs, NULL, pcb_false, pcb_true);
+		r1 = pcb_drc_lines(pcb, &start, &rs, NULL, pcb_false, pcb_true);
 		/* then try starting at 45 */
-		r2 = pcb_drc_lines(&start, &r45, NULL, pcb_true, pcb_true);
+		r2 = pcb_drc_lines(pcb, &start, &r45, NULL, pcb_true, pcb_true);
 	}
 	else {
 		drc_line(&rs);
