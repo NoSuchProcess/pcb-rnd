@@ -96,10 +96,11 @@ void pcb_tool_line_uninit(void)
 }
 
 /* creates points of a line (when clicked) */
-static void notify_line(void)
+static void notify_line(pcb_hidlib_t *hl)
 {
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if ((!pcb_marked.status || conf_core.editor.local_ref) && !pcb_marked.user_placed)
 			pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
@@ -133,7 +134,7 @@ TODO("subc: this should work on heavy terminals too!")
 
 	case PCB_CH_STATE_SECOND:
 		/* fall through to third state too */
-		last_layer = CURRENT;
+		last_layer = PCB_CURRLAYER(pcb);
 	default:											/* all following points */
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_THIRD;
 		break;
@@ -143,9 +144,10 @@ TODO("subc: this should work on heavy terminals too!")
 void pcb_tool_line_notify_mode(pcb_hidlib_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
-	
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
 	/* do update of position */
-	notify_line();
+	notify_line(hl);
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)
 		return;
 	/* Remove anchor if clicking on start point;
@@ -159,7 +161,7 @@ void pcb_tool_line_notify_mode(pcb_hidlib_t *hl)
 		return;
 	}
 
-	if (PCB->RatDraw) {
+	if (pcb->RatDraw) {
 		pcb_rat_t *line = pcb_net_create_by_rat_coords(PCB, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y, 1);
 
 		if (line != NULL) {
@@ -181,22 +183,22 @@ void pcb_tool_line_notify_mode(pcb_hidlib_t *hl)
 			 in a new group since the last line and there
 			 isn't a pin already here */
 TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
-		if (conf_core.editor.auto_via && PCB->pstk_on
-				&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer)
+		if (conf_core.editor.auto_via && pcb->pstk_on
+				&& pcb_layer_get_group_(PCB_CURRLAYER(pcb)) != pcb_layer_get_group_(last_layer)
 				&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 																			pcb_crosshair.AttachedLine.Point1.X,
 																			pcb_crosshair.AttachedLine.Point1.Y,
 																			conf_core.design.via_thickness / 2) ==
 																				PCB_OBJ_VOID
-				&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
+				&& (pcb_layer_flags_(PCB_CURRLAYER(pcb)) & PCB_LYT_COPPER)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
-				&& (!PCB->is_footprint)
-				&& ((ps = pcb_pstk_new_compat_via(PCB->Data, -1,
+				&& (!pcb->is_footprint)
+				&& ((ps = pcb_pstk_new_compat_via(pcb->Data, -1,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
 				conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
-					pcb_obj_add_attribs(ps, PCB->pen_attr);
+					pcb_obj_add_attribs(ps, pcb->pen_attr);
 					pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 		}
 
@@ -225,7 +227,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 
 		pcb_draw();
 		pcb_undo_inc_serial();
-		last_layer = CURRENT;
+		last_layer = PCB_CURRLAYER(pcb);
 	}
 	else
 		/* create line if both ends are determined && length != 0 */
@@ -247,7 +249,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		}
 
 		if (conf_core.editor.auto_drc
-				&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER))
+				&& (pcb_layer_flags_(PCB_CURRLAYER(pcb)) & PCB_LYT_COPPER))
 			maybe_found_flag = PCB_FLAG_FOUND;
 		else
 			maybe_found_flag = 0;
@@ -255,7 +257,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		if ((pcb_crosshair.AttachedLine.Point1.X !=
 				 pcb_crosshair.AttachedLine.Point2.X || pcb_crosshair.AttachedLine.Point1.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT, pcb_true),
+						pcb_line_new_merge(pcb_loose_subc_layer(PCB, PCB_CURRLAYER(pcb), pcb_true),
 																	 pcb_crosshair.AttachedLine.Point1.X,
 																	 pcb_crosshair.AttachedLine.Point1.Y,
 																	 pcb_crosshair.AttachedLine.Point2.X,
@@ -267,28 +269,28 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			pcb_pstk_t *ps = NULL;
 
 			pcb_added_lines++;
-			pcb_obj_add_attribs(line, PCB->pen_attr);
-			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, line, line);
-			pcb_line_invalidate_draw(CURRENT, line);
+			pcb_obj_add_attribs(line, pcb->pen_attr);
+			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, PCB_CURRLAYER(pcb), line, line);
+			pcb_line_invalidate_draw(PCB_CURRLAYER(pcb), line);
 			/* place a via if vias are visible, the layer is
 				 in a new group since the last line and there
 				 isn't a pin already here */
 TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
-			if (PCB->pstk_on
-					&& pcb_layer_get_group_(CURRENT) != pcb_layer_get_group_(last_layer) 
-					&& (pcb_layer_flags_(CURRENT) & PCB_LYT_COPPER)
+			if (pcb->pstk_on
+					&& pcb_layer_get_group_(PCB_CURRLAYER(pcb)) != pcb_layer_get_group_(last_layer) 
+					&& (pcb_layer_flags_(PCB_CURRLAYER(pcb)) & PCB_LYT_COPPER)
 					&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
-					&& (!PCB->is_footprint)
+					&& (!pcb->is_footprint)
 					&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
 																 conf_core.design.via_thickness / 2) == PCB_OBJ_VOID
-				&& ((ps = pcb_pstk_new_compat_via(PCB->Data, -1,
+				&& ((ps = pcb_pstk_new_compat_via(pcb->Data, -1,
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
 															conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 															0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
-				pcb_obj_add_attribs(ps, PCB->pen_attr);
+				pcb_obj_add_attribs(ps, pcb->pen_attr);
 				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 				pcb_pstk_invalidate_draw(ps);
 			}
@@ -296,12 +298,12 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y;
 			pcb_undo_inc_serial();
-			last_layer = CURRENT;
+			last_layer = PCB_CURRLAYER(pcb);
 			pcb_subc_as_board_update(PCB);
 		}
 		if (conf_core.editor.line_refraction && (pcb_tool_note.X != pcb_crosshair.AttachedLine.Point2.X || pcb_tool_note.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(PCB, CURRENT, pcb_true),
+						pcb_line_new_merge(pcb_loose_subc_layer(PCB, PCB_CURRLAYER(pcb), pcb_true),
 																	 pcb_crosshair.AttachedLine.Point2.X,
 																	 pcb_crosshair.AttachedLine.Point2.Y,
 																	 pcb_tool_note.X, pcb_tool_note.Y,
@@ -310,10 +312,10 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 																	 pcb_flag_make((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
 																						 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 			pcb_added_lines++;
-			pcb_obj_add_attribs(line, PCB->pen_attr);
-			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, CURRENT, line, line);
+			pcb_obj_add_attribs(line, pcb->pen_attr);
+			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, PCB_CURRLAYER(pcb), line, line);
 			pcb_undo_inc_serial();
-			pcb_line_invalidate_draw(CURRENT, line);
+			pcb_line_invalidate_draw(PCB_CURRLAYER(pcb), line);
 			/* move to new start point */
 			pcb_crosshair.AttachedLine.Point1.X = pcb_tool_note.X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_tool_note.Y;
@@ -349,7 +351,9 @@ void pcb_tool_line_adjust_attached_objects(pcb_hidlib_t *hl)
 
 void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 {
-	if (PCB->RatDraw) {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
+	if (pcb->RatDraw) {
 		/* draw only if starting point exists and the line has length */
 		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && pcb_crosshair.AttachedLine.draw) 
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
@@ -365,8 +369,8 @@ void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 	}
 	else {
 		/* Draw a circle (0 length line) to show where the line will be placed */
-		if (CURRENT)
-			pcb_render->set_color(pcb_crosshair.GC, &CURRENT->meta.real.color);
+		if (PCB_CURRLAYER(pcb))
+			pcb_render->set_color(pcb_crosshair.GC, &PCB_CURRLAYER(pcb)->meta.real.color);
 
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_crosshair.X, pcb_crosshair.Y,
@@ -386,6 +390,8 @@ void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 
 pcb_bool pcb_tool_line_undo_act(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
 		if (conf_core.editor.auto_drc)
 			pcb_undo(pcb_true);	  /* undo the connection find */
@@ -428,7 +434,7 @@ pcb_bool pcb_tool_line_undo_act(pcb_hidlib_t *hl)
 			if (conf_core.editor.auto_drc) {
 				/* undo loses PCB_FLAG_FOUND */
 				PCB_FLAG_SET(PCB_FLAG_FOUND, ptr2);
-				pcb_line_invalidate_draw(CURRENT, ptr2);
+				pcb_line_invalidate_draw(PCB_CURRLAYER(pcb), ptr2);
 			}
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ptr2->Point2.X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
@@ -437,7 +443,7 @@ pcb_bool pcb_tool_line_undo_act(pcb_hidlib_t *hl)
 		pcb_tool_adjust_attached_objects(hl);
 		if (--pcb_added_lines == 0) {
 			pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
-			last_layer = CURRENT;
+			last_layer = PCB_CURRLAYER(pcb);
 		}
 		else {
 			/* this search is guaranteed to succeed too */
@@ -452,12 +458,14 @@ pcb_bool pcb_tool_line_undo_act(pcb_hidlib_t *hl)
 
 pcb_bool pcb_tool_line_redo_act(pcb_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
 		return pcb_false;
 	if (pcb_redo(pcb_true)) {
 		pcb_board_set_changed_flag(pcb_true);
 		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
-			pcb_line_t *line = linelist_last(&CURRENT->Line);
+			pcb_line_t *line = linelist_last(&PCB_CURRLAYER(pcb)->Line);
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = line->Point2.X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = line->Point2.Y;
 			pcb_added_lines++;
