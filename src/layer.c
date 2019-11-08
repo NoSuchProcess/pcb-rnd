@@ -533,7 +533,10 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 {
 	free((char*)Layer->name);
 	Layer->name = Name;
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	if (!Layer->is_bound) {
+		assert((Layer->parent_type == PCB_PARENT_DATA) && (Layer->parent.data->parent_type == PCB_PARENT_BOARD));
+		pcb_event(&Layer->parent.data->parent.board->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	}
 	return 0;
 }
 
@@ -547,7 +550,10 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color)
 	if (Layer->is_bound)
 		return -1;
 	Layer->meta.real.color = *color;
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	if (!Layer->is_bound) {
+		assert((Layer->parent_type == PCB_PARENT_DATA) && (Layer->parent.data->parent_type == PCB_PARENT_BOARD));
+		pcb_event(&Layer->parent.data->parent.board->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	}
 	return 0;
 }
 
