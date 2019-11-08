@@ -263,7 +263,7 @@ static void layer_select(ls_layer_t *lys)
 	if (lys->ly != NULL) {
 		if (lys->grp_vis) {
 			pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
-			pcb_layervis_change_group_vis(lid, 1, 1);
+			pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);
 		}
 		else {
 			vis = &lys->ly->meta.real.vis;
@@ -383,7 +383,7 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 
 	change_selection:;
 	lid = pcb_layer_id(PCB->Data, l);
-	pcb_layervis_change_group_vis(lid, 1, 1);
+	pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);
 
 	lys = lys_get(ls, &ls->real_layer, lid, 0);
 	if (lys != 0)
@@ -407,7 +407,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 	if (lys->grp_vis) {
 		pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
-		pcb_layervis_change_group_vis(lid, !*vis, 1);
+		pcb_layervis_change_group_vis(&PCB->hidlib, lid, !*vis, 1);
 	}
 	else {
 		*vis = !(*vis);

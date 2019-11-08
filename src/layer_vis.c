@@ -78,7 +78,7 @@ static void PushOnTopOfLayerStack(int NewTop)
  * changes the visibility of all layers in a group
  * returns the number of changed layers
  */
-int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder)
+int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder)
 {
 	pcb_layergrp_id_t group;
 	int i, changed = 1;		/* at least the current layer changes */
@@ -123,7 +123,7 @@ int pcb_layervis_change_group_vis(pcb_layer_id_t Layer, int On, pcb_bool ChangeS
 
 	done:;
 	/* update control panel and exit */
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	pcb_event(hl, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return changed;
 }
 
@@ -156,7 +156,7 @@ void pcb_layervis_reset_stack(void)
 
 	/* Bring the top copper group to the front and make it active.  */
 	if (pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
-		pcb_layervis_change_group_vis(comp, 1, 1);
+		pcb_layervis_change_group_vis(&PCB->hidlib, comp, 1, 1);
 }
 
 /* ---------------------------------------------------------------------------

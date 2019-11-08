@@ -286,7 +286,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				lyt = (pcb_layer_flags_(CURRENT) & PCB_LYT_ANYTHING) | (!conf_core.editor.show_solder_side ?  PCB_LYT_BOTTOM : PCB_LYT_TOP);
 				lid = pcb_layer_vis_last_lyt(lyt);
 				if (lid >= 0)
-					pcb_layervis_change_group_vis(lid, 1, 1);
+					pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);
 		}
 	}
 
@@ -296,9 +296,9 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
 
 		if (comp_group >= 0)
-			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
+			pcb_layervis_change_group_vis(&PCB->hidlib, PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
 		if (solder_group >= 0)
-			pcb_layervis_change_group_vis(PCB->LayerGroups.grp[solder_group].lid[0], new_solder_vis, new_solder_vis);
+			pcb_layervis_change_group_vis(&PCB->hidlib, PCB->LayerGroups.grp[solder_group].lid[0], new_solder_vis, new_solder_vis);
 	}
 
 	pcb_draw_inhibit_dec();

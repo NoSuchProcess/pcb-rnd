@@ -171,7 +171,7 @@ static int cam_exec(cam_ctx_t *ctx)
 	if (have_gui) {
 		pcb_hid_restore_layer_ons(save_l_ons);
 		pcb_hid_restore_layergrp_ons(save_g_ons);
-		pcb_layervis_change_group_vis(currly, 1, 1);
+		pcb_layervis_change_group_vis(&PCB->hidlib, currly, 1, 1);
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 

@@ -859,7 +859,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 		case PCB_HID_MOUSE_POPUP:
 			lid = get_layer_coords(x, y);
 			if (lid >= 0) {
-				pcb_layervis_change_group_vis(lid, 1, 1);
+				pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);
 				pcb_actionva(&PCB->hidlib, "Popup", "layer", NULL);
 			}
 			else if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {

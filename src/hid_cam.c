@@ -472,7 +472,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 			}
 			if (pcb->LayerGroups.grp[gid].len <= 0)
 				continue;
-			pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+			pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 			dst->grp_vis[gid] = 1;
 
 			parse_layer_supplements(spk, spv, spc, &purpose, &xf, &xf_);
@@ -507,7 +507,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 						offs--;
 					if ((offs >= 0) && (offs < len)) {
 						pcb_layergrp_id_t gid = gids[offs];
-						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+						pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 						dst->grp_vis[gid] = 1;
 						if (xf != NULL) {
 							dst->xform[gid] = &dst->xform_[gid];
@@ -518,7 +518,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 				else {
 					for(n = 0; n < len; n++) {
 						pcb_layergrp_id_t gid = gids[n];
-						pcb_layervis_change_group_vis(pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+						pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 						dst->grp_vis[gid] = 1;
 						if (xf != NULL) {
 							dst->xform[gid] = &dst->xform_[gid];

@@ -897,7 +897,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	if (layer != CURRENT) {
-		pcb_layervis_change_group_vis(pcb_layer_id(PCB->Data, layer), pcb_true, pcb_true);
+		pcb_layervis_change_group_vis(PCB_ACT_HIDLIB, pcb_layer_id(PCB_ACT_BOARD->Data, layer), pcb_true, pcb_true);
 		pcb_hid_redraw(PCB);
 	}
 	PCB_ACT_IRES(0);
@@ -1438,7 +1438,7 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	if (pcb_strcasecmp(name, "silk") == 0) {
 		PCB->RatDraw = 0;
 		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0) {
-			pcb_layervis_change_group_vis(lid, 1, 1);
+			pcb_layervis_change_group_vis(PCB_ACT_HIDLIB, lid, 1, 1);
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
@@ -1462,7 +1462,7 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	}
 
 	PCB->RatDraw = 0;
-	pcb_layervis_change_group_vis(atoi(name)-1, 1, 1);
+	pcb_layervis_change_group_vis(PCB_ACT_HIDLIB, atoi(name)-1, 1, 1);
 	pcb_gui->invalidate_all(pcb_gui);
 	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return 0;
@@ -1550,7 +1550,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(name, "silk") == 0) {
 		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
-			pcb_layervis_change_group_vis(lid, -1, 0);
+			pcb_layervis_change_group_vis(PCB_ACT_HIDLIB, lid, -1, 0);
 		else
 			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
@@ -1579,7 +1579,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *end;
 		int id = strtol(name, &end, 10) - 1;
 		if (*end == '\0') { /* integer layer */
-			pcb_layervis_change_group_vis(id, -1, 0);
+			pcb_layervis_change_group_vis(PCB_ACT_HIDLIB, id, -1, 0);
 			pcb_gui->invalidate_all(pcb_gui);
 			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 			return 0;
