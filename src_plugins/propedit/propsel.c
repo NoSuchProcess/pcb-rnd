@@ -664,10 +664,10 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 		    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
 		if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
 			if (st->d_absolute) {
-				if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d - ps->rot)) DONE;
+				if (pcb_obj_rotate(st->pcb, (pcb_any_obj_t *)ps, ps->x, ps->y, st->d - ps->rot)) DONE;
 			}
 			else {
-				if (pcb_obj_rotate(PCB_OBJ_PSTK, ps, ps, NULL, ps->x, ps->y, st->d)) DONE;
+				if (pcb_obj_rotate(st->pcb, (pcb_any_obj_t *)ps, ps->x, ps->y, st->d)) DONE;
 			}
 			return;
 		}

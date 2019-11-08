@@ -112,32 +112,31 @@ pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_
 	return obj;
 }
 
-void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
+pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
 {
-	void *ptr2;
 	int changed = 0;
 	pcb_opctx_t ctx;
 
-	pcb_data_clip_inhibit_inc(PCB->Data);
+	pcb_data_clip_inhibit_inc(pcb->Data);
 
 	/* setup default  global identifiers */
-	ctx.rotate.pcb = PCB;
+	ctx.rotate.pcb = pcb;
 	ctx.rotate.angle = angle;
 	ctx.rotate.center_x = X;
 	ctx.rotate.center_y = Y;
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_ROTATE, "ipppccip", Type, Ptr1, Ptr2, Ptr2, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle, &changed);
+	pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_ROTATE, "ipppccip", obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle, &changed);
 
-	if (Type != PCB_OBJ_PSTK) /* padstack has its own way doing the rotation-undo */
-		pcb_undo_add_obj_to_rotate(Type, Ptr1, Ptr2, Ptr3, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle);
-	ptr2 = pcb_object_operation(&RotateFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
-	changed |= (ptr2 != NULL);
+	if (obj->type != PCB_OBJ_PSTK) /* padstack has its own way doing the rotation-undo */
+		pcb_undo_add_obj_to_rotate(obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle);
+	obj = pcb_object_operation(&RotateFunctions, &ctx, obj->type, obj->parent.any, obj, obj);
+	changed |= (obj != NULL);
 	if (changed) {
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
-	pcb_data_clip_inhibit_dec(PCB->Data, 0);
-	return ptr2;
+	pcb_data_clip_inhibit_dec(pcb->Data, 0);
+	return obj;
 }
 
 void pcb_screen_obj_rotate90(pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
@@ -175,7 +174,7 @@ void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
 			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 		if (type == PCB_OBJ_SUBC)
 			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
-		pcb_obj_rotate(type, ptr1, ptr2, ptr3, X, Y, angle);
+		pcb_obj_rotate(PCB, obj, X, Y, angle);
 		pcb_board_set_changed_flag(pcb_true);
 	}
 }

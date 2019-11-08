@@ -57,9 +57,8 @@
    case of buffer) */
 pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, unsigned Steps);
 
-/* rotates an objects passed;
- * the center of rotation is determined by the current cursor location */
-void *pcb_obj_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
+/* rotates obj by angle around X;Y. pcb is the current board if obj is on buffer */
+pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
 
 void pcb_screen_obj_rotate90(pcb_coord_t, pcb_coord_t, unsigned);
 void pcb_screen_obj_rotate(pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);

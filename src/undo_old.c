@@ -174,7 +174,7 @@ static pcb_bool UndoRotate(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
-		pcb_obj_rotate(type, ptr1, ptr2, ptr3, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, -(Entry->Data.Angle));
+		pcb_obj_rotate(PCB, ptr2, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, -(Entry->Data.Angle));
 		Entry->Data.Angle = -(Entry->Data.Angle);
 		return pcb_true;
 	}
