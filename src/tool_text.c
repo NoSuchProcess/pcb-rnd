@@ -49,7 +49,7 @@ void pcb_tool_text_notify_mode(pcb_hidlib_t *hl)
 {
 	char *string;
 
-	if ((string = pcb_hid_prompt_for(&PCB->hidlib, "Enter text:", "", "text")) != NULL) {
+	if ((string = pcb_hid_prompt_for(hl, "Enter text:", "", "text")) != NULL) {
 		if (strlen(string) > 0) {
 			pcb_text_t *text;
 			int flag = PCB_FLAG_CLEARLINE;
