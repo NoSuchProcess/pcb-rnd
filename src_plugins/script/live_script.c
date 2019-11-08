@@ -450,7 +450,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(1);
 			return 0;
 		}
-		lvs = pcb_dlg_live_script(argv[0].val.argv0.user_call_ctx, name);
+		lvs = pcb_dlg_live_script(PCB_ACT_HIDLIB, name);
 		if (lvs != NULL) {
 			htsp_set(&pcb_live_scripts, lvs->name, lvs);
 			PCB_ACT_IRES(0);

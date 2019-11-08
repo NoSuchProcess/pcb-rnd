@@ -231,7 +231,7 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		return 2;
 	}
 
-	hidlib = argv[0].val.argv0.user_call_ctx;
+	hidlib = PCB_ACT_HIDLIB;
 	PCB_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
 	PCB_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
 

@@ -383,7 +383,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_IRES(0);
 
 	if (angle_s == NULL)
-		angle_s = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Enter Rotation (degrees, CCW):", "0", "Rotation angle");
+		angle_s = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter Rotation (degrees, CCW):", "0", "Rotation angle");
 
 	if ((angle_s == NULL) || (*angle_s == '\0')) {
 		free(angle_s);
@@ -427,7 +427,7 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = pcb_strdup(argv[1].val.str));
 
 	if (sx == NULL)
-		sx = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Enter scaling factor (unitless multiplier):", "1.0", "scaling factor");
+		sx = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter scaling factor (unitless multiplier):", "1.0", "scaling factor");
 	if ((sx == NULL) || (*sx == '\0')) {
 		free(sx);
 		PCB_ACT_IRES(-1);
@@ -849,7 +849,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;
 			}
-			pcb_actionva(argv[0].val.argv0.user_call_ctx, "RemoveSelected", NULL);
+			pcb_actionva(PCB_ACT_HIDLIB, "RemoveSelected", NULL);
 			break;
 
 			/* converts buffer contents into a subcircuit */
@@ -941,7 +941,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_Save:
 			name = sbufnum;
-			rv = pcb_actionva(argv[0].val.argv0.user_call_ctx, "SaveTo", "PasteBuffer", name, fmt, NULL);
+			rv = pcb_actionva(PCB_ACT_HIDLIB, "SaveTo", "PasteBuffer", name, fmt, NULL);
 			pcb_notify_crosshair_change(pcb_true);
 			return rv;
 

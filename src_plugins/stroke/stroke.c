@@ -110,7 +110,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
 		if (arg == NULL)
 			PCB_ACT_FAIL(stroke);
-		pcb_stroke_exec(argv[0].val.argv0.user_call_ctx, arg);
+		pcb_stroke_exec(PCB_ACT_HIDLIB, arg);
 	}
 	else if (pcb_strcasecmp(cmd, "zoom") == 0) {
 		fgw_arg_t args[5];

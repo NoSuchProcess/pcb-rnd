@@ -87,7 +87,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (name != NULL) {
 		if (pcbhl_conf.rc.verbose)
 			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
-		pcb_actionva(argv[0].val.argv0.user_call_ctx, "LoadFrom", function, name, NULL);
+		pcb_actionva(PCB_ACT_HIDLIB, "LoadFrom", function, name, NULL);
 		free(name);
 	}
 
@@ -414,7 +414,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->hidlib.filename != NULL)
-			return pcb_actionva(argv[0].val.argv0.user_call_ctx, "SaveTo", "Layout", NULL);
+			return pcb_actionva(PCB_ACT_HIDLIB, "SaveTo", "Layout", NULL);
 
 	if (is_dialog) {
 		const char *siot, *sext;
@@ -593,7 +593,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *sfmt = avail.plug[fmt]->description;
 		if (fmt_param != NULL)
 			sfmt = avail.plug[save.pick]->description;
-		pcb_actionva(argv[0].val.argv0.user_call_ctx, "PasteBuffer", "Save", final_name, sfmt, NULL);
+		pcb_actionva(PCB_ACT_HIDLIB, "PasteBuffer", "Save", final_name, sfmt, NULL);
 	}
 	else {
 		const char *sfmt = NULL;
@@ -606,9 +606,9 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 * just obtained.
 		 */
 		if (pcb_strcasecmp(function, "Layout") == 0)
-			pcb_actionva(argv[0].val.argv0.user_call_ctx, "SaveTo", "LayoutAs", final_name, sfmt, NULL);
+			pcb_actionva(PCB_ACT_HIDLIB, "SaveTo", "LayoutAs", final_name, sfmt, NULL);
 		else
-			pcb_actionva(argv[0].val.argv0.user_call_ctx, "SaveTo", function, final_name, sfmt, NULL);
+			pcb_actionva(PCB_ACT_HIDLIB, "SaveTo", function, final_name, sfmt, NULL);
 	}
 
 	free(final_name);

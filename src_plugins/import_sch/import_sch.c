@@ -86,7 +86,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (!ds) {
 			const char *as = pcb_attrib_get(PCB, "import::disperse");
-			ds = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Enter dispersion:", as ? as : "0", "Import dispersion");
+			ds = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter dispersion:", as ? as : "0", "Import dispersion");
 			ds_alloced = 1;
 		}
 		if (units) {
@@ -363,7 +363,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_rats_destroy(pcb_false);
-	pcb_parse_actions(argv[0].val.argv0.user_call_ctx, "Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)");
+	pcb_parse_actions(PCB_ACT_HIDLIB, "Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Block)");
 
 	if (conf_import_sch.plugins.import_sch.verbose)
 		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Leaving pcb_act_Import  ===\n");

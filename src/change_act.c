@@ -510,7 +510,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					if (pcb_chg_obj_name_query(ptr2)) {
 						pcb_hid_redraw(PCB);
 						pcb_board_set_changed_flag(pcb_true);
-						pcb_actionva(argv[0].val.argv0.user_call_ctx, "DeleteRats", "AllRats", NULL);
+						pcb_actionva(PCB_ACT_HIDLIB, "DeleteRats", "AllRats", NULL);
 					}
 				}
 				break;
@@ -518,7 +518,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Enter the layout name:", PCB_EMPTY(PCB->hidlib.name), "Layout name");
+			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layout name:", PCB_EMPTY(PCB->hidlib.name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb_true);
@@ -526,7 +526,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Enter the layer name:", PCB_EMPTY(CURRENT->name), "Layer name");
+			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layer name:", PCB_EMPTY(CURRENT->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
 			if (name && (pcb_layer_rename_(CURRENT, name) == 0))
 				pcb_board_set_changed_flag(pcb_true);

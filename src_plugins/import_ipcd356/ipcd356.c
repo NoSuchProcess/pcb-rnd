@@ -403,15 +403,15 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (want_net) {
-		pcb_actionva(argv[0].val.argv0.user_call_ctx, "Netlist", "Freeze", NULL);
-		pcb_actionva(argv[0].val.argv0.user_call_ctx, "Netlist", "Clear", NULL);
+		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Freeze", NULL);
+		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Clear", NULL);
 	}
 
 	rs = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
 
 	if (want_net) {
-		pcb_actionva(argv[0].val.argv0.user_call_ctx, "Netlist", "Sort", NULL);
-		pcb_actionva(argv[0].val.argv0.user_call_ctx, "Netlist", "Thaw", NULL);
+		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Sort", NULL);
+		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Thaw", NULL);
 	}
 
 	fclose(f);

@@ -177,7 +177,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (pcb_strcasecmp(cmd, "gui") == 0) {
-		rs = cam_gui(argv[0].val.argv0.user_call_ctx, arg);
+		rs = cam_gui(PCB_ACT_HIDLIB, arg);
 	}
 	else {
 		if (arg == NULL) {

@@ -134,11 +134,11 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
-	if (!PCB->Changed || (pcb_hid_message_box(argv[0].val.argv0.user_call_ctx, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
+	if (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
 			name = pcb_strdup(argument_name);
 		else
-			name = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Enter the layout name:", "", "Layout name");
+			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layout name:", "", "Layout name");
 
 		if (!name)
 			return 1;
@@ -275,14 +275,14 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* shorthand kept only for compatibility reasons - do not use */
 		case F_AllConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionva(argv[0].val.argv0.user_call_ctx, "ExportOldConn", "AllConnections", name, NULL);
+			return pcb_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllConnections", name, NULL);
 		case F_AllUnusedPins:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionva(argv[0].val.argv0.user_call_ctx, "ExportOldConn", "AllUnusedPins", name, NULL);
+			return pcb_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllUnusedPins", name, NULL);
 		case F_ElementConnections:
 		case F_SubcConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionva(argv[0].val.argv0.user_call_ctx, "ExportOldConn", "SubcConnections", name, NULL);
+			return pcb_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "SubcConnections", name, NULL);
 	}
 
 	PCB_ACT_FAIL(SaveTo);
@@ -462,7 +462,7 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((force != NULL) && (pcb_strcasecmp(force, "force") == 0))
 		exit(0);
-	if (!PCB->Changed || (pcb_hid_message_box(argv[0].val.argv0.user_call_ctx, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
 	PCB_ACT_IRES(-1);
 	return 0;

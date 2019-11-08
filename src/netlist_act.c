@@ -372,7 +372,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (a1 == NULL)
 				PCB_ACT_FAIL(Netlist);
 			if (a2 == NULL) {
-				a2 = a2free = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "New name of the network", NULL, "net rename");
+				a2 = a2free = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "New name of the network", NULL, "net rename");
 				if (a2 == NULL) {
 					PCB_ACT_IRES(1);
 					return 0;
@@ -385,7 +385,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (a1 == NULL)
 				PCB_ACT_FAIL(Netlist);
 			if (a2 == NULL) {
-				a2 = a2free = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Network name to merge into", NULL, "net merge");
+				a2 = a2free = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Network name to merge into", NULL, "net merge");
 				if (a2 == NULL) {
 					PCB_ACT_IRES(1);
 					return 0;
@@ -584,7 +584,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (netname == NULL) {
-		free_netname = netname = pcb_hid_prompt_for(argv[0].val.argv0.user_call_ctx, "Name of the new network", NULL, "net name");
+		free_netname = netname = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Name of the new network", NULL, "net name");
 		if (netname == NULL) {
 			vtp0_uninit(&termlist);
 			PCB_ACT_IRES(1);

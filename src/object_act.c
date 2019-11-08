@@ -460,7 +460,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	args[0].type = FGW_FUNC;
 	args[0].val.argv0.func = NULL;
-	args[0].val.argv0.user_call_ctx = argv[0].val.argv0.user_call_ctx;
+	args[0].val.argv0.user_call_ctx = PCB_ACT_HIDLIB;
 	args[1] = argv[3];
 	args[2] = argv[2];
 	args[3] = argv[4];

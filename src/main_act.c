@@ -406,7 +406,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (*sp && *sp != '#') {
 			/*pcb_message("%s : line %-3d : \"%s\"\n", fname, n, sp); */
-			pcb_parse_actions(argv[0].val.argv0.user_call_ctx, sp);
+			pcb_parse_actions(PCB_ACT_HIDLIB, sp);
 		}
 	}
 

@@ -214,7 +214,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(2, FGW_STR, dad, cmd = argv[2].val.str);
 
 	if (pcb_strcasecmp(cmd, "new") == 0) {
-		PCB_ACT_IRES(dad_new(argv[0].val.argv0.user_call_ctx, dlgname));
+		PCB_ACT_IRES(dad_new(PCB_ACT_HIDLIB, dlgname));
 		return 0;
 	}
 
