@@ -519,7 +519,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 /* this results in saving flipped (bottom-side) footprints whenlooking at the board from the bottom */
 	PCB_SUBC_LOOP(Buffer->Data);
 	{
-		pcb_subc_change_side(subc, /*2 * pcb_crosshair.Y - PCB->hidlib.size_y*/0);
+		pcb_subc_change_side(subc, /*2 * pcb_crosshair.Y - pcb->hidlib.size_y*/0);
 	}
 	PCB_END_LOOP;
 #endif
@@ -900,9 +900,9 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			{
 				FILE *exist;
 
-				if ((!force) && ((exist = pcb_fopen(&PCB->hidlib, name, "r")))) {
+				if ((!force) && ((exist = pcb_fopen(PCB_ACT_HIDLIB, name, "r")))) {
 					fclose(exist);
-					if (pcb_hid_message_box(&PCB->hidlib, "warning", "Buffer: overwrite file", "File exists!  Ok to overwrite?", "cancel", 0, "yes", 1, NULL) == 1)
+					if (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "Buffer: overwrite file", "File exists!  Ok to overwrite?", "cancel", 0, "yes", 1, NULL) == 1)
 						pcb_save_buffer(name, fmt);
 				}
 				else
@@ -931,12 +931,12 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			else
 				name = sbufnum;
 
-			if (pcb_load_buffer(&PCB->hidlib, PCB_PASTEBUFFER, name, NULL) != 0) {
+			if (pcb_load_buffer(PCB_ACT_HIDLIB, PCB_PASTEBUFFER, name, NULL) != 0) {
 				pcb_message(PCB_MSG_ERROR, "Failed to load buffer from %s\n", name);
 				PCB_ACT_IRES(-1);
 			}
 			else
-				pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
+				pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_PASTE_BUFFER);
 			break;
 
 		case F_Save:
