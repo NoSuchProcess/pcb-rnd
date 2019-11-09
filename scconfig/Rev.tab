@@ -1,3 +1,4 @@
+28114	distclean	puplug bug blocked loading script pups
 27952	configure	removing dolists.h to simplify action declaration
 27878	configure	hidlib related bugfix in ./configure
 27468	configure	order pcbway now depends on libxml2
