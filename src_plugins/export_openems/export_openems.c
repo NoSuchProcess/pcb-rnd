@@ -251,7 +251,7 @@ TODO(": try openems::attr first - make a new core call for prefixed get, this wi
 	if (is_str)
 		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str);
 	else
-		pcb_fprintf(ctx->f, "%mm", ctx->options[opt].crd);
+		pcb_fprintf(ctx->f, "%.09mm", ctx->options[opt].crd);
 }
 
 static void openems_write_layers(wctx_t *ctx)
