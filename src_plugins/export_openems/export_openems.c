@@ -227,8 +227,9 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int cop_opt, int subs_opt, int is_str)
+static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int cop_opt, int subs_opt, const char *cop_fmt, const char *subs_fmt)
 {
+	const char *fmt;
 	int opt;
 
 TODO(": this needs layer group attributes in core (planned for lihata v5)")
@@ -247,11 +248,12 @@ TODO(": try openems::attr first - make a new core call for prefixed get, this wi
 #endif
 
 	opt = (grp->ltype & PCB_LYT_COPPER) ? cop_opt : subs_opt;
+	fmt = (grp->ltype & PCB_LYT_COPPER) ? cop_fmt : subs_fmt;
 	assert(opt >= 0);
-	if (is_str)
+	if (fmt == NULL)
 		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str);
 	else
-		pcb_fprintf(ctx->f, "%.09mm", ctx->options[opt].crd);
+		pcb_fprintf(ctx->f, fmt, ctx->options[opt].crd);
 }
 
 static void openems_write_layers(wctx_t *ctx)
@@ -281,29 +283,29 @@ static void openems_write_layers(wctx_t *ctx)
 		fprintf(ctx->f, "layer_types(%d).subtype = %d;\n", next, iscop ? 2 : 3);
 
 		fprintf(ctx->f, "layer_types(%d).thickness = ", next);
-		print_lparm(ctx, grp, "thickness", HA_def_copper_thick / 1000, HA_def_substrate_thick, 0);
+		print_lparm(ctx, grp, "thickness", HA_def_copper_thick, HA_def_substrate_thick, "%.09mm/1000", "%.09mm"); /* the /1000 works around that openems ignores the default mm unit and reads this one value in meter */
 		fprintf(ctx->f, ";\n");
 
 		if (iscop) {
 			fprintf(ctx->f, "layer_types(%d).conductivity = ", next);
-			print_lparm(ctx, grp, "conductivity", HA_def_copper_cond, -1, 1);
+			print_lparm(ctx, grp, "conductivity", HA_def_copper_cond, -1, NULL, NULL);
 			fprintf(ctx->f, ";\n");
 		}
 		else { /* substrate */
 			fprintf(ctx->f, "layer_types(%d).epsilon = ", next);
-			print_lparm(ctx, grp, "epsilon", -1, HA_def_subst_epsilon, 1);
+			print_lparm(ctx, grp, "epsilon", -1, HA_def_subst_epsilon, NULL, NULL);
 			fprintf(ctx->f, ";\n");
 
 			fprintf(ctx->f, "layer_types(%d).mue = ", next);
-			print_lparm(ctx, grp, "mue", -1, HA_def_subst_mue, 1);
+			print_lparm(ctx, grp, "mue", -1, HA_def_subst_mue, NULL, NULL);
 			fprintf(ctx->f, ";\n");
 
 			fprintf(ctx->f, "layer_types(%d).kappa = ", next);
-			print_lparm(ctx, grp, "kappa", -1, HA_def_subst_kappa, 1);
+			print_lparm(ctx, grp, "kappa", -1, HA_def_subst_kappa, NULL, NULL);
 			fprintf(ctx->f, ";\n");
 
 			fprintf(ctx->f, "layer_types(%d).sigma = ", next);
-			print_lparm(ctx, grp, "sigma", -1, HA_def_subst_sigma, 1);
+			print_lparm(ctx, grp, "sigma", -1, HA_def_subst_sigma, NULL, NULL);
 			fprintf(ctx->f, ";\n");
 
 		}
