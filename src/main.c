@@ -89,7 +89,7 @@ const char *pcbhl_app_url = "http://repo.hu/projects/pcb-rnd";
 
 /* Figure out the canonical name of the executed program
    and fix up the defaults for various paths */
-static void InitPaths(char *argv0)
+static void main_path_init(char *argv0)
 {
 	size_t l;
 	int haspath;
@@ -118,7 +118,7 @@ static void InitPaths(char *argv0)
 #endif
 
 #ifdef DEBUG
-	printf("InitPaths (%s): haspath = %d\n", argv0, haspath);
+	printf("main_path_init (%s): haspath = %d\n", argv0, haspath);
 #endif
 
 	if (haspath) {
@@ -143,7 +143,7 @@ static void InitPaths(char *argv0)
 				printf("Looking for %s in %s\n", argv0, p);
 #endif
 				if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
-					fprintf(stderr, "InitPaths():  malloc failed\n");
+					fprintf(stderr, "main_path_init():  malloc failed\n");
 					exit(1);
 				}
 				sprintf(tmps, "%s%s%s", p, PCB_DIR_SEPARATOR_S, argv0);
@@ -184,7 +184,7 @@ static void InitPaths(char *argv0)
 	/* now find the path to exec_prefix */
 	l = strlen(bindir) + 1 + strlen(BINDIR_TO_EXECPREFIX) + 1;
 	if ((exec_prefix = (char *) malloc(l * sizeof(char))) == NULL) {
-		fprintf(stderr, "InitPaths():  malloc failed\n");
+		fprintf(stderr, "main_path_init():  malloc failed\n");
 		exit(1);
 	}
 	sprintf(exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
@@ -206,7 +206,7 @@ static void InitPaths(char *argv0)
 }
 
 /* initialize signal and error handlers */
-static void InitHandler(void)
+static void main_sighand_init(void)
 {
 #ifdef PCB_HAVE_SIGHUP
 	signal(SIGHUP, pcb_catch_signal);
@@ -369,7 +369,7 @@ int main(int argc, char *argv[])
 	pcb_actions_init_pcb_only();
 
 	setbuf(stdout, 0);
-	InitPaths(argv[0]);
+	main_path_init(argv[0]);
 
 	pcb_fp_init();
 
@@ -435,7 +435,7 @@ int main(int argc, char *argv[])
 
 	if (pcb_gui->gui)
 		pcb_crosshair_init();
-	InitHandler();
+	main_sighand_init();
 	pcb_init_buffers(PCB);
 
 	pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
