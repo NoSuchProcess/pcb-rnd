@@ -190,7 +190,7 @@ static char *main_path_init(char *argv0)
 
 	pcbhl_menu_file_paths[0] = "./";
 	pcbhl_menu_file_paths[1] = "~/.pcb-rnd/";
-	pcbhl_menu_file_paths[2] = pcb_concat(PCBSHAREDIR, "/", NULL);
+	pcbhl_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
 	pcbhl_menu_file_paths[3] = NULL;
 
 	pcbhl_conf_userdir_path = CONF_USER_DIR;
