@@ -164,6 +164,12 @@ else
 print {\n/* Not available */\n#define TODO(x)\n}
 end
 
+# calculate the /local/confdir: either specified conf-time or compatibility fallback
+switch /local/confdir
+	case {^$} put /local/confdir_final {PCBSHAREDIR}; end
+	default put /local/confdir_final [@"@/local/confdir@"@]; end
+end
+
 print [@
 
 /* The host "triplet" - it's really a pair now: machine-os */
@@ -200,6 +206,7 @@ print [@
 #define PCB_PREFIX "@/local/prefix@"
 #define PCBSHAREDIR PCB_PREFIX "/share/pcb-rnd"
 #define PCBLIBDIR PCB_PREFIX "/lib/pcb-rnd"
+#define PCBCONFDIR @/local/confdir_final@
 
 #define BINDIR PCB_PREFIX "/bin"
 
