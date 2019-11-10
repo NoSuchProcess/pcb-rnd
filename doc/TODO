@@ -158,8 +158,7 @@
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - CLEANUP: reduce
 		- export_bom: rewrite the string list code using htsp and/or lists
-		- gcode invents .png name locally
-		- get rid of gcode/lists.h,  and vector.[ch] (autorouter)
+		- get rid of autorouter/vector.[ch]
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
 	- CLEANUP: search for /units, replace it with pcb-printf something
