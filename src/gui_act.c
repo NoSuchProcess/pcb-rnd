@@ -998,7 +998,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* Allow leaving snapped pin/pad/padstack */
 	if (pcb_crosshair.snapped_pstk) {
 		pcb_pstk_t *ps = pcb_crosshair.snapped_pstk;
-		pcb_coord_t radius = ((ps->BoundingBox.X2 - ps->BoundingBox.X1) + (ps->BoundingBox.Y2 - ps->BoundingBox.Y1))/2;
+		pcb_coord_t radius = ((ps->BoundingBox.X2 - ps->BoundingBox.X1) + (ps->BoundingBox.Y2 - ps->BoundingBox.Y1))/6;
 		if (dx < 0)
 			dx -= radius;
 		else if (dx > 0)
