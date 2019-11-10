@@ -7,6 +7,8 @@
 #include <string.h>
 #include <time.h>
 
+#include <genvector/vts0.h>
+
 #include "build_run.h"
 #include "board.h"
 #include "data.h"
@@ -49,16 +51,11 @@ static pcb_hid_attr_val_t bom_values[NUM_OPTIONS];
 
 static const char *bom_filename;
 
-typedef struct _StringList {
-	char *str;
-	struct _StringList *next;
-} StringList;
-
 typedef struct _BomList {
 	char *descr;
 	char *value;
 	int num;
-	StringList *refdes;
+	vts0_t refdes;
 	struct _BomList *next;
 } BomList;
 
@@ -107,29 +104,6 @@ char *CleanBOMString(const char *in)
 	return out;
 }
 
-static StringList *string_insert(char *str, StringList * list)
-{
-	StringList *newlist, *cur;
-
-	if ((newlist = (StringList *) malloc(sizeof(StringList))) == NULL) {
-		fprintf(stderr, "malloc() failed in string_insert()\n");
-		exit(1);
-	}
-
-	newlist->next = NULL;
-	newlist->str = pcb_strdup(str);
-
-	if (list == NULL)
-		return newlist;
-
-	cur = list;
-	while (cur->next != NULL)
-		cur = cur->next;
-
-	cur->next = newlist;
-
-	return list;
-}
 
 static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom)
 {
@@ -146,7 +120,8 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 		newlist->descr = pcb_strdup(descr);
 		newlist->value = pcb_strdup(value);
 		newlist->num = 1;
-		newlist->refdes = string_insert(refdes, NULL);
+		vts0_init(&newlist->refdes);
+		vts0_append(&newlist->refdes, pcb_strdup(refdes));
 		return newlist;
 	}
 
@@ -156,7 +131,7 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 	while (cur != NULL) {
 		if ((PCB_NSTRCMP(descr, cur->descr) == 0) && (PCB_NSTRCMP(value, cur->value) == 0)) {
 			cur->num++;
-			cur->refdes = string_insert(refdes, cur->refdes);
+			vts0_append(&cur->refdes, pcb_strdup(refdes));
 			break;
 		}
 		prev = cur;
@@ -175,7 +150,8 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 		newlist->descr = pcb_strdup(descr);
 		newlist->value = pcb_strdup(value);
 		newlist->num = 1;
-		newlist->refdes = string_insert(refdes, NULL);
+		vts0_init(&newlist->refdes);
+		vts0_append(&newlist->refdes, pcb_strdup(refdes));
 	}
 
 	return bom;
@@ -189,8 +165,8 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 static void print_and_free(FILE * fp, BomList * bom)
 {
 	BomList *lastb;
-	StringList *lasts;
 	char *descr, *value;
+	long n;
 
 	while (bom != NULL) {
 		if (fp) {
@@ -201,15 +177,13 @@ static void print_and_free(FILE * fp, BomList * bom)
 			free(value);
 		}
 
-		while (bom->refdes != NULL) {
-			if (fp) {
-				fprintf(fp, "%s ", bom->refdes->str);
-			}
-			free(bom->refdes->str);
-			lasts = bom->refdes;
-			bom->refdes = bom->refdes->next;
-			free(lasts);
+		for(n = 0; n < bom->refdes.used; n++) {
+			char *refdes = bom->refdes.array[n];
+			if (fp)
+				fprintf(fp, "%s ", refdes);
+			free(refdes);
 		}
+		vts0_uninit(&bom->refdes);
 		if (fp) {
 			fprintf(fp, "\n");
 		}
