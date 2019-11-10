@@ -2,6 +2,10 @@
 #include "conf.h"
 #include "conf_core.h"
 #include "hidlib_conf.h"
+
+TODO("win32: remove this once the w32_ dir workaround is removed")
+#include "hid_init.h"
+
 conf_core_t conf_core;
 
 #define conf_clamp_to(type, var, min, max, safe_val) \
