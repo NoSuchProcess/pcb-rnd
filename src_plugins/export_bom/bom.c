@@ -82,7 +82,7 @@ char *pcb_bom_clean_str(const char *in)
 	char *out;
 	int i;
 
-	if ((out = (char *) malloc((strlen(in) + 1) * sizeof(char))) == NULL) {
+	if ((out = malloc((strlen(in) + 1) * sizeof(char))) == NULL) {
 		fprintf(stderr, "Error:  pcb_bom_clean_str() malloc() failed\n");
 		exit(1);
 	}
@@ -111,7 +111,7 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 
 	if (bom == NULL) {
 		/* this is the first subcircuit so automatically create an entry */
-		if ((newlist = (pcb_bom_list_t *) malloc(sizeof(pcb_bom_list_t))) == NULL) {
+		if ((newlist = malloc(sizeof(pcb_bom_list_t))) == NULL) {
 			fprintf(stderr, "malloc() failed in bom_insert()\n");
 			exit(1);
 		}
@@ -139,7 +139,7 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 	}
 
 	if (cur == NULL) {
-		if ((newlist = (pcb_bom_list_t *) malloc(sizeof(pcb_bom_list_t))) == NULL) {
+		if ((newlist = malloc(sizeof(pcb_bom_list_t))) == NULL) {
 			fprintf(stderr, "malloc() failed in bom_insert()\n");
 			exit(1);
 		}
