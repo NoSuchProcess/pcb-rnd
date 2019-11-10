@@ -26,8 +26,6 @@
  *
  */
 
-
-/* main program, initializes some stuff and handles user input */
 #include "config.h"
 #include <stdlib.h>
 
@@ -430,7 +428,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	/* Add silk layers to newly created PCB */
+	/* Update board layer colors and buffer bindings */
 	pcb_board_new_postproc(PCB, 1);
 
 	pcb_layervis_reset_stack(&PCB->hidlib);
