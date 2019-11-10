@@ -205,5 +205,4 @@
 	- display the number of vias and net trace length along the found objects
 - FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
-
 - BUG: bisect when globalpuller() broke [report: Igor2]
