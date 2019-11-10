@@ -328,215 +328,251 @@
 	<th align=left>down
 	<td> <I>Step Down</I><br>Cursor(Warp,0,-1,grid) 
 <tr bgcolor="#FFFFFF">
+	<th align=left>down-ctrl
+	<td> <I>Scroll Down</I><br>Scroll(down) 
+<tr bgcolor="#DDFFFF">
 	<th align=left>down-shift
 	<td> <I>Step +Down</I><br>Cursor(Pan,0,-50,view) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;c
 	<td> <I>Copy selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;d
 	<td> <I>Remove object</I><br>Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;f
 	<td> <I>Object flags...</I><br>FlagEdit() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;c
 	<td> <I>Clearance +2 mil</I><br>ChangeClearSize(Object,+2,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;c-shift
 	<td> <I>Clearance -2 mil</I><br>ChangeClearSize(Object,-2,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;d
 	<td> <I>ChangeDrill +5 mil</I><br>ChangeDrillSize(Object,+5,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;d-shift
 	<td> <I>ChangeDrill -5 mil</I><br>ChangeDrillSize(Object,-5,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;s
 	<td> <I>ChangeSize +5 mil</I><br>ChangeSize(Object,+5,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;s-shift
 	<td> <I>ChangeSize -5 mil</I><br>ChangeSize(Object,-5,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;y
 	<td> <I>ChangeSizes to Route style</I><br>ChangeSizes(Object,style,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;i
 	<td> <I>Flip Object</I><br>Flip(Object) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;j
 	<td> <I>ChangeJoin Object</I><br>ChangeJoin(Object) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;l
 	<td> <I>Move to current layer</I><br>MoveToCurrentLayer(Object) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;o
 	<td> <I>Change font...</I><br>FontSel(Object) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;p
 	<td> <I>Object Properties...</I><br>PropEdit(selection) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;r
 	<td> <I>Change refdes</I><br>ChangeName(Refdes) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;b
 	<td> <I>Layer bindings...</I><br>LayerBinding() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;e
 	<td> <I>External editor...</I><br>GetXY(Click on the subcircuit to edit); extedit(object)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;r
 	<td> <I>Refdes</I><br>ChangeName(Subc) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;s
 	<td> <I>Set Same Style</I><br>SetSame() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;t
 	<td> <I>Edit text...</I><br>ChangeName(Object) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;v
 	<td> <I>Paste buffer to layout</I><br>Mode(PasteBuffer) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;x
 	<td> <I>Cut selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Unselect(All); Mode(PasteBuffer)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;y<br>&nbsp;&nbsp;
 	<td> <I>Cycle object being dragged</I><br>CycleDrag() 
-<tr bgcolor="#DDFFFF">
-	<th align=left>enter
-	<td> <I>Click</I><br>Mode(Notify); Mode(Release)
 <tr bgcolor="#FFFFFF">
+	<th align=left>enter
+	<td> <I>Click (left)</I><br>Mode(Notify); Mode(Release)
+<tr bgcolor="#DDFFFF">
 	<th align=left>escape
 	<td> <I>Cancel</I><br>Mode(Escape) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f1
 	<td> <I>Via</I><br>Mode(Via)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f10
 	<td> <I>Thermal</I><br>Mode(Thermal)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f11
 	<td> <I>Arrow</I><br>Mode(Arrow)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f12
 	<td> <I>Lock</I><br>Mode(Lock)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f2
 	<td> <I>Line</I><br>Mode(Line)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f3
 	<td> <I>Arc</I><br>Mode(Arc)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f4
 	<td> <I>Text</I><br>Mode(Text)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f5
 	<td> <I>Rectangle</I><br>Mode(Rectangle)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f6
 	<td> <I>Polygon</I><br>Mode(Polygon)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f7
 	<td> <I>Buffer</I><br>Mode(PasteBuffer)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f7-shift
 	<td> <I>Rotate buffer 90 deg CCW (left)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f8
 	<td> <I>Del/Remove</I><br>Mode(Remove)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f9
 	<td> <I>Rotate</I><br>Mode(Rotate)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;a
 	<td> <I>Save Layout As...</I><br>Save(LayoutAs)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;c
 	<td> <I>Export with CAM job...</I><br>cam()
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;e
 	<td> <I>Export layout...</I><br>ExportGUI()
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;l
 	<td> <I>Load layout...</I><br>Load(Layout)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;n
 	<td> <I>Start New Layout</I><br>New() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;o
 	<td> <I>Load layout...</I><br>Load(Layout)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;p
 	<td> <I>Print layout...</I><br>Print()
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;q
 	<td> <I>Quit Program</I><br>Quit() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;r
 	<td> <I>Revert</I><br>Load(Revert,none)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>f<br>&nbsp;s
 	<td> <I>Save Layout</I><br>Save(Layout)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;x<br>&nbsp;&nbsp;p
 	<td> <I>netlist patch for back annotation</I><br>SavePatch() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>g<br>&nbsp;b
 	<td> <I>Previous grid</I><br>Grid(down) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>g<br>&nbsp;d
 	<td> <I>Grid *2</I><br>SetValue(Grid,*2) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>g<br>&nbsp;f
 	<td> <I>Next grid</I><br>Grid(up) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>g<br>&nbsp;h
 	<td> <I>Grid /2</I><br>SetValue(Grid,/2) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>g<br>&nbsp;i
 	<td> <I>mil</I><br>SetUnits(mil)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>g<br>&nbsp;l
 	<td> <I>Enable local grid</I><br>conf(toggle, plugins/hid_gtk/local_grid/enable, design) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>g<br>&nbsp;m
 	<td> <I>mm</I><br>SetUnits(mm)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>g<br>&nbsp;r
 	<td> <I>Realign grid</I><br> GetXY(Click to set the grid origin);  Display(ToggleGrid) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>g<br>&nbsp;v
 	<td> <I>Enable visible grid</I><br>conf(toggle, editor/draw_grid, design) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;a
 	<td> <I>About...</I><br>About() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>i<br>&nbsp;c<br>&nbsp;&nbsp;c
 	<td> <I>Calibrate Printer...</I><br>PrintCalibrate() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;c<br>&nbsp;&nbsp;i
 	<td> <I>Data integrity check</I><br>Integrity() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>i<br>&nbsp;c<br>&nbsp;&nbsp;p
 	<td> <I>Preferences...</I><br>preferences
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;c<br>&nbsp;&nbsp;r
 	<td> <I>Re-scan the footprint library</I><br>fp_rehash() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>i<br>&nbsp;d
 	<td> <I>Generate drill summary</I><br>Report(DrillReport) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>i<br>&nbsp;f
 	<td> <I>Report found padstacks</I><br>Report(FoundPins) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>i<br>&nbsp;r
 	<td> <I>Generate object report</I><br>ReportObject() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>insert
 	<td> <I>Insert Point</I><br>Mode(InsertPoint)
+<tr bgcolor="#FFFFFF">
+	<th align=left>j<br>&nbsp;h
+	<td> <I>Scroll Left</I><br>Scroll(left) 
 <tr bgcolor="#DDFFFF">
+	<th align=left>j<br>&nbsp;j
+	<td> <I>Scroll Down</I><br>Scroll(down) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>j<br>&nbsp;k
+	<td> <I>Scroll Up</I><br>Scroll(up) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>j<br>&nbsp;l
+	<td> <I>Scroll Right</I><br>Scroll(right) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>k<br>&nbsp;h
+	<td> <I>Step Left</I><br>Cursor(Warp,-1,0,grid) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>k<br>&nbsp;j
+	<td> <I>Step Down</I><br>Cursor(Warp,0,-1,grid) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>k<br>&nbsp;k
+	<td> <I>Step Up</I><br>Cursor(Warp,0,1,grid) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>k<br>&nbsp;l
+	<td> <I>Step Right</I><br>Cursor(Warp,1,0,grid) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>k<br>&nbsp;r
+	<td> <I>Click (right)</I><br>Mode(Release); Popup(popup-obj, obj-type)
+<tr bgcolor="#DDFFFF">
+	<th align=left>k<br>&nbsp;space
+	<td> <I>Click (left)</I><br>Mode(Notify); Mode(Release)
+<tr bgcolor="#FFFFFF">
 	<th align=left>left
 	<td> <I>Step Left</I><br>Cursor(Warp,-1,0,grid) 
+<tr bgcolor="#DDFFFF">
+	<th align=left>left-ctrl
+	<td> <I>Scroll Left</I><br>Scroll(left) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>left-shift
 	<td> <I>Step +Left</I><br>Cursor(Pan,-50,0,view) 
@@ -667,131 +703,137 @@
 	<th align=left>right
 	<td> <I>Step Right</I><br>Cursor(Warp,1,0,grid) 
 <tr bgcolor="#DDFFFF">
+	<th align=left>right-ctrl
+	<td> <I>Scroll Right</I><br>Scroll(right) 
+<tr bgcolor="#FFFFFF">
 	<th align=left>right-shift
 	<td> <I>Step +Right</I><br>Cursor(Pan,50,0,view) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s-ctrl
 	<td> <I>Save Layout</I><br>Save(Layout)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s-ctrl-shift
 	<td> <I>Save Layout As...</I><br>Save(LayoutAs)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;a<br>&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Select all visible objects</I><br>Select(All) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;a<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Select all found objects</I><br>Select(Connection)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;b<br>&nbsp;&nbsp;p
 	<td> <I>Break selection padstack to pieces</I><br>PadstackBreakup(selected) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;b<br>&nbsp;&nbsp;s
 	<td> <I>Break selection subcircuits to pieces</I><br>PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Convert selection to padstack</I><br>PadstackConvert(selected); Mode(PasteBuffer)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Convert selection to subcircuit</I><br>Select(ConvertSubc) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;f<br>&nbsp;&nbsp;
 	<td> <I>Move selected subcircuits to other side</I><br>Flip(SelectedElements) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;i<br>&nbsp;&nbsp;
 	<td> <I>Invert selection</I><br>Select(Invert) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;l<br>&nbsp;&nbsp;
 	<td> <I>Move selected objects to current layer</I><br>MoveToCurrentLayer(Selected) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;r<br>&nbsp;&nbsp;
 	<td> <I>Remove selected objects</I><br>RemoveSelected() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;s<br>&nbsp;&nbsp;
 	<td> <I>Advanced search and select</I><br>SearchDialog() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;u<br>&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Unselect all objects</I><br>Unselect(All) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;u<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Unselect all found objects</I><br>Unselect(Connection)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>space
 	<td> <I>Arrow</I><br>Mode(Arrow)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;a
 	<td> <I>Arc</I><br>Mode(Arc)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;b
 	<td> <I>Buffer</I><br>Mode(PasteBuffer)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;c
 	<td> <I>Copy</I><br>Mode(Copy)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;d
 	<td> <I>Del/Remove</I><br>Mode(Remove)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;e
 	<td> <I>Thermal</I><br>Mode(Thermal)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;h
 	<td> <I>Polygon Hole</I><br>Mode(PolygonHole)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;i
 	<td> <I>Insert Point</I><br>Mode(InsertPoint)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;k
 	<td> <I>Lock</I><br>Mode(Lock)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;l
 	<td> <I>Line</I><br>Mode(Line)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;m
 	<td> <I>Move</I><br>Mode(Move)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;n
 	<td> <I>Arrow</I><br>Mode(Arrow)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;o
 	<td> <I>Rotate</I><br>Mode(Rotate)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;p
 	<td> <I>Polygon</I><br>Mode(Polygon)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;r
 	<td> <I>Rectangle</I><br>Mode(Rectangle)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;t
 	<td> <I>Text</I><br>Mode(Text)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;v
 	<td> <I>Via</I><br>Mode(Via)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>tab
 	<td> <I>Flip up/down</I><br>SwapSides(V) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>tab-ctrl
 	<td> <I>Spin 180 degrees</I><br>SwapSides(R) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>tab-ctrl-shift
 	<td> <I>Swap Sides</I><br>SwapSides() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>tab-shift
 	<td> <I>Flip left/right</I><br>SwapSides(H) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>u<br>&nbsp;c
 	<td> <I>Clear undo-buffer</I><br>Undo(ClearList) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>u<br>&nbsp;d<br>&nbsp;&nbsp;
 	<td> <I>Undo dialog (for debugging)</I><br>UndoDialog() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>u<br>&nbsp;r
 	<td> <I>Redo last undone operation</I><br>Redo() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>u<br>&nbsp;u
 	<td> <I>Undo last operation</I><br>Undo() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>up
 	<td> <I>Step Up</I><br>Cursor(Warp,0,1,grid) 
+<tr bgcolor="#FFFFFF">
+	<th align=left>up-ctrl
+	<td> <I>Scroll Up</I><br>Scroll(up) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>up-shift
 	<td> <I>Step +Up</I><br>Cursor(Pan,0,50,view) 

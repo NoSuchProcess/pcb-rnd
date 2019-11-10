@@ -103,6 +103,7 @@ c;r;	pcb-menu-default.lht	Atomic(Save);DeleteRats(AllRats);Atomic(Restore);AddRa
 c;s;	pcb-menu-default.lht	AddRats(Close) 	Select shortest rat
 delete	pcb-menu-default.lht	Mode(Save);Mode(Remove);Mode(Notify);Mode(Restore)	Remove object
 down	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
+down-ctrl	pcb-menu-default.lht	Scroll(down) 	Scroll Down
 down-shift	pcb-menu-default.lht	Cursor(Pan,0,-50,view) 	Step +Down
 e;c	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Mode(PasteBuffer)	Copy selection to buffer
 e;d	pcb-menu-default.lht	Mode(Save);Mode(Remove);Mode(Notify);Mode(Restore)	Remove object
@@ -128,7 +129,7 @@ e;t	pcb-menu-default.lht	ChangeName(Object) 	Edit text...
 e;v	pcb-menu-default.lht	Mode(PasteBuffer) 	Paste buffer to layout
 e;x	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);RemoveSelected();Unselect(All);Mode(PasteBuffer)	Cut selection to buffer
 e;y;	pcb-menu-default.lht	CycleDrag() 	Cycle object being dragged
-enter	pcb-menu-default.lht	Mode(Notify);Mode(Release)	Click
+enter	pcb-menu-default.lht	Mode(Notify);Mode(Release)	Click (left)
 escape	pcb-menu-default.lht	Mode(Escape) 	Cancel
 f1	pcb-menu-default.lht	Mode(Via)	Via
 f10	pcb-menu-default.lht	Mode(Thermal)	Thermal
@@ -172,7 +173,18 @@ i;d	pcb-menu-default.lht	Report(DrillReport) 	Generate drill summary
 i;f	pcb-menu-default.lht	Report(FoundPins) 	Report found padstacks
 i;r	pcb-menu-default.lht	ReportObject() 	Generate object report
 insert	pcb-menu-default.lht	Mode(InsertPoint)	Insert Point
+j;h	pcb-menu-default.lht	Scroll(left) 	Scroll Left
+j;j	pcb-menu-default.lht	Scroll(down) 	Scroll Down
+j;k	pcb-menu-default.lht	Scroll(up) 	Scroll Up
+j;l	pcb-menu-default.lht	Scroll(right) 	Scroll Right
+k;h	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
+k;j	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
+k;k	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
+k;l	pcb-menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
+k;r	pcb-menu-default.lht	Mode(Release);Popup(popup-obj, obj-type)	Click (right)
+k;space	pcb-menu-default.lht	Mode(Notify);Mode(Release)	Click (left)
 left	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
+left-ctrl	pcb-menu-default.lht	Scroll(left) 	Scroll Left
 left-shift	pcb-menu-default.lht	Cursor(Pan,-50,0,view) 	Step +Left
 m;c;c	pcb-menu-default.lht	conf(toggle, editor\057show_drc, design) 	Crosshair shows DRC clearance
 m;c;o	pcb-menu-default.lht	conf(toggle, editor\057orthogonal_moves, design) 	Orthogonal moves
@@ -216,6 +228,7 @@ r;r;-	pcb-menu-default.lht	conf(delta, editor\057route_radius, -0.5, design)	Rou
 r;r;m	pcb-menu-default.lht	conf(delta, editor\057route_radius, -0.5, design)	Route radius -0.5
 r;r;p	pcb-menu-default.lht	conf(delta, editor\057route_radius, +0.5, design)	Route radius +0.5
 right	pcb-menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
+right-ctrl	pcb-menu-default.lht	Scroll(right) 	Scroll Right
 right-shift	pcb-menu-default.lht	Cursor(Pan,50,0,view) 	Step +Right
 s-ctrl	pcb-menu-default.lht	Save(Layout)	Save Layout
 s-ctrl-shift	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
@@ -258,6 +271,7 @@ u;d;	pcb-menu-default.lht	UndoDialog() 	Undo dialog (for debugging)
 u;r	pcb-menu-default.lht	Redo() 	Redo last undone operation
 u;u	pcb-menu-default.lht	Undo() 	Undo last operation
 up	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
+up-ctrl	pcb-menu-default.lht	Scroll(up) 	Scroll Up
 up-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Up
 v;c	pcb-menu-default.lht	Center() 	Center cursor
 v;f	pcb-menu-default.lht	Zoom() 	Zoom Extents
