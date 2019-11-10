@@ -156,9 +156,7 @@
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is change with the layer binding [report: jg]
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
-- CLEANUP: reduce
-		- export_bom: rewrite the string list code using htsp and/or lists
-		- get rid of autorouter/vector.[ch]
+- CLEANUP: reduce: get rid of autorouter/vector.[ch]
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
 	- CLEANUP: search for /units, replace it with pcb-printf something
