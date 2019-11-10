@@ -21,6 +21,7 @@
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
+	- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
 - CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 - CLENAUP: decide about exporter policy:
@@ -203,6 +204,5 @@
 	- stop at the first junction (anywhere where more than 2 objects are connected)
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
-- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
 - BUG: bisect when globalpuller() broke [report: Igor2]
