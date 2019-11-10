@@ -195,8 +195,8 @@ static char *main_path_init(char *argv0)
 
 	pcbhl_conf_userdir_path = CONF_USER_DIR;
 	pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
-	pcbhl_conf_sysdir_path = PCBSHAREDIR;
-	pcbhl_conf_sys_path = pcb_concat(PCBSHAREDIR, "/pcb-conf.lht", NULL);
+	pcbhl_conf_sysdir_path = PCBCONFDIR;
+	pcbhl_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 
 	free(bindir);
 	return exec_prefix;
