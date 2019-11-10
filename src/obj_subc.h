@@ -52,6 +52,8 @@ struct pcb_subc_s {
 	pcb_line_t *aux_cache[PCB_SUBCH_max];
 	pcb_layer_t *aux_layer;
 	const char *refdes; /* cached from attributes for fast lookup */
+	int part_changed_inhibit;
+	unsigned part_changed_bbox_dirty:1; /* part_changed_inhibit_dec() should recalculate the bbox */
 	gdl_elem_t link;
 };
 
@@ -149,6 +151,9 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name);
 /* Update the subcircuit (e.g. bbox) after a part of the subcircuit has changed */
 void pcb_subc_part_changed_(pcb_any_obj_t *obj);
 #define pcb_subc_part_changed(obj) pcb_subc_part_changed_((pcb_any_obj_t *)obj)
+void pcb_subc_part_changed_inhibit_inc(pcb_subc_t *sc);
+void pcb_subc_part_changed_inhibit_dec(pcb_subc_t *sc);
+
 
 /*** subc creation helpers ***/
 

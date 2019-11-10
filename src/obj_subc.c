@@ -958,6 +958,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (Data != NULL))
 		pcb_data_clip_inhibit_inc(Data);
+	pcb_subc_part_changed_inhibit_inc(sc);
 
 	switch(batch_undo) {
 		case PCB_SUBCOP_UNDO_SUBC:
@@ -1050,6 +1051,9 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	pcb_close_box(&sc->bbox_naked);
 	if (pcb_data_get_top(Data) != NULL)
 		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc);
+
+	sc->part_changed_bbox_dirty = 0; /* we've just recalculated the bbox */
+	pcb_subc_part_changed_inhibit_dec(sc);
 	DrawSubc(sc);
 
 	switch(batch_undo) {
@@ -1924,15 +1928,42 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	return &sc->data->Layer[n];
 }
 
+PCB_INLINE void pcb_subc_part_changed__(pcb_subc_t *sc, int force)
+{
+	/* can't do this incrementally: if a boundary object is smaller than before
+	   it has to make the subc bbox smaller too */
+	if (force || sc->part_changed_bbox_dirty) {
+		pcb_subc_bbox(sc);
+		sc->part_changed_bbox_dirty = 0;
+	}
+}
+
+
 void pcb_subc_part_changed_(pcb_any_obj_t *obj)
 {
 	pcb_subc_t *sc = pcb_obj_parent_subc(obj);
 	if (sc == NULL)
 		return;
+	if (sc->part_changed_inhibit)
+		sc->part_changed_bbox_dirty = 1;
+	else
+		pcb_subc_part_changed__(sc, 1);
+}
 
-	/* can't do this incrementally: if a boundary object is smaller than before
-	   it has to make the subc bbox smaller too */
-	pcb_subc_bbox(sc);
+void pcb_subc_part_changed_inhibit_inc(pcb_subc_t *sc)
+{
+	sc->part_changed_inhibit++;
+}
+
+void pcb_subc_part_changed_inhibit_dec(pcb_subc_t *sc)
+{
+	if (sc->part_changed_inhibit > 0) {
+		sc->part_changed_inhibit--;
+		if (sc->part_changed_inhibit == 0)
+			pcb_subc_part_changed__(sc, 0);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "Internal error: pcb_subc_part_changed_inhibit_dec(): underflow; please reprot this bug\n");
 }
 
 
