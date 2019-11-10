@@ -106,7 +106,6 @@ static void main_path_init(char *argv0)
 	 * just get back pcb again.
 	 */
 
-#ifndef NO_BINDIR_HEURISTICS
 	{
 		int i;
 		haspath = 0;
@@ -115,16 +114,13 @@ static void main_path_init(char *argv0)
 				haspath = 1;
 		}
 	}
-#endif
 
 #ifdef DEBUG
 	printf("main_path_init (%s): haspath = %d\n", argv0, haspath);
 #endif
 
 	if (haspath) {
-#ifndef NO_BINDIR_HEURISTICS
 		bindir = pcb_lrealpath(argv0);
-#endif
 		found_bindir = 1;
 	}
 	else {
