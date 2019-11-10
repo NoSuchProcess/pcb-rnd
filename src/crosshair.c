@@ -932,6 +932,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		check_snap_object(&snap_data, ps->x, ps->y, pcb_true, (pcb_any_obj_t *)ps);
 		pcb_crosshair.snapped_pstk = ps;
 	}
+	else
+		pcb_crosshair.snapped_pstk = NULL;
 
 	/*** arc ***/
 	ans = PCB_OBJ_VOID;
