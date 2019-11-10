@@ -79,17 +79,16 @@ const char *pcbhl_menu_file_paths[4];
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *pcbhl_conf_userdir_path = CONF_USER_DIR;
-const char *pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
-const char *pcbhl_conf_sysdir_path = PCBSHAREDIR;
-const char *pcbhl_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
+const char *pcbhl_conf_userdir_path, *pcphl_conf_user_path;
+const char *pcbhl_conf_sysdir_path, *pcbhl_conf_sys_path;
 const char *pcbhl_app_package = PCB_PACKAGE;
 const char *pcbhl_app_version = PCB_VERSION;
 const char *pcbhl_app_url = "http://repo.hu/projects/pcb-rnd";
 
 /* Figure out the canonical name of the executed program
-   and fix up the defaults for various paths */
-static void main_path_init(char *argv0)
+   and fix up the defaults for various paths; returns exec prefix that
+   should be saved in the config */
+static char *main_path_init(char *argv0)
 {
 	size_t l;
 	int haspath;
@@ -175,7 +174,6 @@ static void main_path_init(char *argv0)
 		exit(1);
 	}
 	sprintf(exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
-	pcb_conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
 	tmp = pcb_concat(PCBSHAREDIR, "/pcblib", NULL);
@@ -195,14 +193,21 @@ static void main_path_init(char *argv0)
 	pcbhl_menu_file_paths[2] = pcb_concat(PCBSHAREDIR, "/", NULL);
 	pcbhl_menu_file_paths[3] = NULL;
 
-	free(exec_prefix);
+	pcbhl_conf_userdir_path = CONF_USER_DIR;
+	pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	pcbhl_conf_sysdir_path = PCBSHAREDIR;
+	pcbhl_conf_sys_path = pcb_concat(PCBSHAREDIR, "/pcb-conf.lht", NULL);
+
 	free(bindir);
+	return exec_prefix;
 }
 
 static void main_path_uninit(void)
 {
 	/* const for all other parts of the code, but we had to concat (alloc) it above */
 	free((char *)pcbhl_menu_file_paths[2]);
+	free((char *)pcphl_conf_user_path);
+	free((char *)pcbhl_conf_sys_path);
 }
 
 
@@ -337,11 +342,12 @@ void print_pup_err(pup_err_stack_t *entry, char *string)
 int main(int argc, char *argv[])
 {
 	int n;
-	char **sp, *command_line_pcb = NULL;
+	char **sp, *exec_prefix, *command_line_pcb = NULL;
 
 	pcbhl_main_args_t ga;
 
 	pcb_fix_locale_and_env();
+	exec_prefix = main_path_init(argv[0]);
 
 	pcbhl_main_args_init(&ga, argc, pcb_action_args);
 
@@ -356,7 +362,11 @@ int main(int argc, char *argv[])
 	pcb_netlist_geo_init();
 	pcb_minuid_init();
 	pcb_extobj_init();
+
 	pcb_hidlib_init1(conf_core_init);
+	pcb_conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
+	free(exec_prefix);
+
 	pcb_layer_vis_init();
 	pcb_brave_init();
 
@@ -367,11 +377,11 @@ int main(int argc, char *argv[])
 	}
 	pcb_tool_init(); /* init before the plugins so that the static tools have the lowest index */
 
+
 	pcb_hidlib_init2(pup_buildins, NULL);
 	pcb_actions_init_pcb_only();
 
 	setbuf(stdout, 0);
-	main_path_init(argv[0]);
 
 	pcb_fp_init();
 
