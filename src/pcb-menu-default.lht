@@ -587,6 +587,10 @@ ha:{
 								ha:Step +Down                   = { a=Shift<Key>Down; action=Cursor(Pan,0,-50,view) }
 								ha:Step +Left                   = { a=Shift<Key>Left; action=Cursor(Pan,-50,0,view) }
 								ha:Step +Right                  = { a=Shift<Key>Right; action=Cursor(Pan,50,0,view) }
+								ha:Scroll Up                    = { a=Ctrl<Key>Up; action=Scroll(up) }
+								ha:Scroll Down                  = { a=Ctrl<Key>Down; action=Scroll(down) }
+								ha:Scroll Left                  = { a=Ctrl<Key>Left; action=Scroll(left) }
+								ha:Scroll Right                 = { a=Ctrl<Key>Right; action=Scroll(right) }
 								ha:Click                        = { a=<Key>Enter; li:action={Mode(Notify); Mode(Release)} }
 							}
 						}
