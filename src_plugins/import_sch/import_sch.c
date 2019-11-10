@@ -52,6 +52,9 @@
 #include "obj_rat.h"
 #include "safe_fs.h"
 
+TODO("win32: remove this once the w32_ dir workaround is removed")
+#include "hid_init.h"
+
 conf_import_sch_t conf_import_sch;
 
 extern fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
