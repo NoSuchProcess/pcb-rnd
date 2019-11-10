@@ -381,10 +381,10 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
 			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
-			PCB_DAD_LABEL(dlg, "Attribut key:");
+			PCB_DAD_LABEL(dlg, "Attribute key:");
 			PCB_DAD_STRING(dlg);
 				wkey = PCB_DAD_CURRENT(dlg);
-			PCB_DAD_LABEL(dlg, "Attribut value:");
+			PCB_DAD_LABEL(dlg, "Attribute value:");
 			PCB_DAD_STRING(dlg);
 				wval = PCB_DAD_CURRENT(dlg);
 		PCB_DAD_END(dlg);
