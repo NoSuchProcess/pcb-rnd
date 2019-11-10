@@ -149,7 +149,8 @@
 - BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
 - BUG: run pcb-rnd, start new layout, press enter (empty name) -> segf [report: Evan]
 - version 3.0.0:
-	- dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
+	- maybe rename pcblib? dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
+	- ./configure --config should default to /etc
 
 3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
