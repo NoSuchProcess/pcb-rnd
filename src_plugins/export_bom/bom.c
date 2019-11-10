@@ -147,7 +147,6 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 	}
 
 	return bom;
-
 }
 
 /* If fp is not NULL then print out the bill of materials contained in
