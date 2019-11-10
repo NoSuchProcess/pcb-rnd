@@ -1,3 +1,6 @@
+/* Print bill of materials file is which can be used for checking stock
+   and purchasing needed materials. */
+
 #include "config.h"
 #include "conf_core.h"
 
@@ -69,14 +72,6 @@ static pcb_export_opt_t *bom_get_export_options(pcb_hid_t *hid, int *n)
 	return bom_options;
 }
 
-/* ---------------------------------------------------------------------------
- * prints a centroid file in a format which includes data needed by a
- * pick and place machine.  Further formatting for a particular factory setup
- * can easily be generated with awk or perl.  In addition, a bill of materials
- * file is generated which can be used for checking stock and purchasing needed
- * materials.
- * returns != zero on error
- */
 char *pcb_bom_clean_str(const char *in)
 {
 	char *out;
