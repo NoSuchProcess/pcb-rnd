@@ -32,7 +32,6 @@
 	- inhibit mechanism to speed things up:
 		- under inhibit, pcb_subc_part_changed(ps) should mark subcircuits dirty
 		- when inhibit drops to zero, revisit all subcircuits that are dirty
-		- get a common inhibit function for batch processing that turn on draw, poly clip and pcb_subc_part_changed inhibit
 - CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
