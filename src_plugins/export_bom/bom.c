@@ -64,7 +64,7 @@ typedef struct pcb_bom_list_s {
 
 static pcb_export_opt_t *bom_get_export_options(pcb_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (bom_options[HA_bomfile].default_val.str == NULL))
+	if ((PCB != NULL) && (bom_options[HA_bomfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bom_options[HA_bomfile], ".bom");
 
 	if (n)
@@ -82,10 +82,8 @@ char *pcb_bom_clean_str(const char *in)
 		exit(1);
 	}
 
-	/*
-	 * copy over in to out with some character conversions.
-	 * Go all the way to then end to get the terminating \0
-	 */
+	/* copy over in to out with some character conversions.
+	   Go all the way to then end to get the terminating \0 */
 	for (i = 0; i <= strlen(in); i++) {
 		switch (in[i]) {
 		case '"':
@@ -120,10 +118,9 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 		return newlist;
 	}
 
-	/* search and see if we already have used one of these
-	   components */
+	/* search and see if we already have used one of these components */
 	cur = bom;
-	while (cur != NULL) {
+	while(cur != NULL) {
 		if ((PCB_NSTRCMP(descr, cur->descr) == 0) && (PCB_NSTRCMP(value, cur->value) == 0)) {
 			cur->num++;
 			vts0_append(&cur->refdes, pcb_strdup(refdes));
@@ -153,11 +150,9 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 
 }
 
-/*
- * If fp is not NULL then print out the bill of materials contained in
- * bom.  Either way, free all memory which has been allocated for bom.
- */
-static void print_and_free(FILE * fp, pcb_bom_list_t * bom)
+/* If fp is not NULL then print out the bill of materials contained in
+   bom. Either way, free all memory which has been allocated for bom. */
+static void print_and_free(FILE * fp, pcb_bom_list_t *bom)
 {
 	pcb_bom_list_t *lastb;
 	char *descr, *value;
@@ -179,9 +174,8 @@ static void print_and_free(FILE * fp, pcb_bom_list_t * bom)
 			free(refdes);
 		}
 		vts0_uninit(&bom->refdes);
-		if (fp) {
+		if (fp)
 			fprintf(fp, "\n");
-		}
 		lastb = bom;
 		bom = bom->next;
 		free(lastb);
