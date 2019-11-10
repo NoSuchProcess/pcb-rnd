@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 + CLEANUP/BUG: globalconst.h: PCB_MIN_THICKNESS shall be 0 - removed all artificial limits on object thickness ml:3351 [report: Majenko]
 + BUG: The 'As Drawn' polygon contour {m d d} is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
++ BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node [report: Majenko]
@@ -203,5 +204,5 @@
 	- display the number of vias and net trace length along the found objects
 - FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
-- BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
+
 - BUG: bisect when globalpuller() broke [report: Igor2]
