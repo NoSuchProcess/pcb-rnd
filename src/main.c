@@ -27,8 +27,7 @@
  */
 
 
-/* main program, initializes some stuff and handles user input
- */
+/* main program, initializes some stuff and handles user input */
 #include "config.h"
 #include <stdlib.h>
 
@@ -37,7 +36,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <string.h>
 #include <signal.h>
 #include <sys/stat.h>
-#include <time.h>								/* Seed for srand() */
+#include <time.h> /* Seed for srand() */
 #include <libminuid/libminuid.h>
 
 #include "board.h"
@@ -90,13 +89,8 @@ const char *pcbhl_app_package = PCB_PACKAGE;
 const char *pcbhl_app_version = PCB_VERSION;
 const char *pcbhl_app_url = "http://repo.hu/projects/pcb-rnd";
 
-
-
-/* ----------------------------------------------------------------------
- * Figure out the canonical name of the executed program
- * and fix up the defaults for various paths
- */
-
+/* Figure out the canonical name of the executed program
+   and fix up the defaults for various paths */
 static void InitPaths(char *argv0)
 {
 	size_t l;
@@ -213,9 +207,7 @@ static void InitPaths(char *argv0)
 	free(bindir);
 }
 
-/* ----------------------------------------------------------------------
- * initialize signal and error handlers
- */
+/* initialize signal and error handlers */
 static void InitHandler(void)
 {
 #ifdef PCB_HAVE_SIGHUP
@@ -241,8 +233,7 @@ static void InitHandler(void)
 #	endif
 #endif
 
-	/* calling external program by popen() may cause a PIPE signal,
-	   so we ignore it */
+/* calling external program by popen() may cause a PIPE signal, so we ignore it */
 #ifdef PCB_HAVE_SIGPIPE
 	signal(SIGPIPE, SIG_IGN);
 #endif
@@ -279,7 +270,6 @@ void pcb_main_uninit(void)
 	if (pcb_log_last != NULL)
 		pcb_log_last->seen = 1; /* ignore anything unseen before the uninit */
 
-
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
 
@@ -297,8 +287,8 @@ void pcb_main_uninit(void)
 		pcb_uninit_buffers(PCB);
 
 		/* Free up memory allocated to the PCB. Why bother when we're about to exit ?
-		 * Because it removes some false positives from heap bug detectors such as
-		 * valgrind. */
+		   Because it removes some false positives from heap bug detectors such as
+		   valgrind. */
 		pcb_board_free(PCB);
 		free(PCB);
 	}
@@ -312,7 +302,7 @@ void pcb_main_uninit(void)
 
 	pcb_extobj_uninit();
 	pcb_import_uninit();
-	 pcb_pixmap_uninit();
+	pcb_pixmap_uninit();
 	pcb_io_uninit();
 	pcb_fp_uninit();
 	pcb_fp_host_uninit();
@@ -356,12 +346,11 @@ int main(int argc, char *argv[])
 	pcbhl_main_args_init(&ga, argc, pcb_action_args);
 
 	/* init application:
-	 * - make program name available for error handlers
-	 * - initialize infrastructure (e.g. the conf system)
-	 * - evaluate options
-	 * - create an empty PCB with default symbols
-	 * - register 'call on exit()' function
-	 */
+	   - make program name available for error handlers
+	   - initialize infrastructure (e.g. the conf system)
+	   - evaluate options
+	   - create an empty PCB with default symbols
+	   - register 'call on exit()' function */
 
 	/* Minimal conf setup before we do anything else */
 	pcb_netlist_geo_init();
@@ -391,11 +380,10 @@ int main(int argc, char *argv[])
 	pcb_funchash_init();
 	pcb_polygon_init();
 
-	/* Register a function to be called when the program terminates.
-	 * This makes sure that data is saved even if LEX/YACC routines
-	 * abort the program.
-	 * If the OS doesn't have at least one of them,
-	 * the critical sections will be handled by parse_l.l */
+	/* Register a function to be called when the program terminates. This makes
+	   sure that data is saved even if LEX/YACC routines abort the program.
+	   If the OS doesn't have at least one of them, the critical sections will
+	   be handled by parse_l.l */
 	atexit(pcb_emergency_save);
 
 	pcb_text_init();
