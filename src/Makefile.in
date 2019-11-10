@@ -567,10 +567,10 @@ distclean: FORCE
 install_pcbrnd:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins"
 	$(SCCBOX) $(HOW) "pcb-rnd$(EXE)" "$(BINDIR)/pcb-rnd$(EXE)"
+	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(CONFDIR)/pcb-conf.lht"
+	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(CONFDIR)/pcb-menu-default.lht"
 	$(SCCBOX) $(HOW) "default2.lht" "$(DATADIR)/default2.lht"
 	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
-	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(DATADIR)/pcb-conf.lht"
-	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(DATADIR)/pcb-menu-default.lht"
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
 
 install_librnd: librnd
