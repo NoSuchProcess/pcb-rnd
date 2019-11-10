@@ -980,13 +980,21 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		PCB_ACT_FAIL(Cursor);
 
-	dx = pcb_get_value_ex(a1, a3, NULL, extra_units_x, "", NULL);
+	if (pcb_strcasecmp(a3, "grid") == 0) {
+		char *end;
+		dx = strtod(a1, &end) * pcbhl_conf.editor.grid;
+		dy = strtod(a2, &end) * pcbhl_conf.editor.grid;
+	}
+	else {
+		dx = pcb_get_value_ex(a1, a3, NULL, extra_units_x, "", NULL);
+		dy = pcb_get_value_ex(a2, a3, NULL, extra_units_y, "", NULL);
+	}
+
 	if (pcbhl_conf.editor.view.flip_x)
 		dx = -dx;
-	dy = pcb_get_value_ex(a2, a3, NULL, extra_units_y, "", NULL);
 	if (!pcbhl_conf.editor.view.flip_y)
 		dy = -dy;
-	
+
 	/* Allow leaving snapped pin/pad/padstack */
 	if (pcb_crosshair.snapped_pstk) {
 		pcb_pstk_t *ps = pcb_crosshair.snapped_pstk;
