@@ -91,40 +91,6 @@ const char *pcbhl_app_version = PCB_VERSION;
 const char *pcbhl_app_url = "http://repo.hu/projects/pcb-rnd";
 
 
-/* ----------------------------------------------------------------------
- * initialize signal and error handlers
- */
-static void InitHandler(void)
-{
-#ifdef PCB_HAVE_SIGHUP
-	signal(SIGHUP, pcb_catch_signal);
-#endif
-#ifdef PCB_HAVE_SIGQUIT
-	signal(SIGQUIT, pcb_catch_signal);
-#endif
-#ifdef PCB_HAVE_SIGTERM
-	signal(SIGTERM, pcb_catch_signal);
-#endif
-#ifdef PCB_HAVE_SIGINT
-	signal(SIGINT, pcb_catch_signal);
-#endif
-
-#ifdef NDEBUG
-/* so that we get a core dump on segfault in debug mode */
-#	ifdef PCB_HAVE_SIGABRT
-		signal(SIGABRT, pcb_catch_signal);
-#	endif
-#	ifdef PCB_HAVE_SIGSEGV
-		signal(SIGSEGV, pcb_catch_signal);
-#	endif
-#endif
-
-	/* calling external program by popen() may cause a PIPE signal,
-	   so we ignore it */
-#ifdef PCB_HAVE_SIGPIPE
-	signal(SIGPIPE, SIG_IGN);
-#endif
-}
 
 /* ----------------------------------------------------------------------
  * Figure out the canonical name of the executed program
@@ -245,6 +211,41 @@ static void InitPaths(char *argv0)
 
 	free(exec_prefix);
 	free(bindir);
+}
+
+/* ----------------------------------------------------------------------
+ * initialize signal and error handlers
+ */
+static void InitHandler(void)
+{
+#ifdef PCB_HAVE_SIGHUP
+	signal(SIGHUP, pcb_catch_signal);
+#endif
+#ifdef PCB_HAVE_SIGQUIT
+	signal(SIGQUIT, pcb_catch_signal);
+#endif
+#ifdef PCB_HAVE_SIGTERM
+	signal(SIGTERM, pcb_catch_signal);
+#endif
+#ifdef PCB_HAVE_SIGINT
+	signal(SIGINT, pcb_catch_signal);
+#endif
+
+#ifdef NDEBUG
+/* so that we get a core dump on segfault in debug mode */
+#	ifdef PCB_HAVE_SIGABRT
+		signal(SIGABRT, pcb_catch_signal);
+#	endif
+#	ifdef PCB_HAVE_SIGSEGV
+		signal(SIGSEGV, pcb_catch_signal);
+#	endif
+#endif
+
+	/* calling external program by popen() may cause a PIPE signal,
+	   so we ignore it */
+#ifdef PCB_HAVE_SIGPIPE
+	signal(SIGPIPE, SIG_IGN);
+#endif
 }
 
 /* ----------------------------------------------------------------------
