@@ -75,7 +75,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "hid_init.h"
 #include "compat_misc.h"
 
-const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
+const char *pcbhl_menu_file_paths[4];
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
@@ -190,9 +190,21 @@ static void main_path_init(char *argv0)
 	if (se != 0)
 		fprintf(stderr, "WARNING: setenv() failed - external commands such as parametric footprints may not have a proper environment\n");
 
+	pcbhl_menu_file_paths[0] = "./";
+	pcbhl_menu_file_paths[1] = "~/.pcb-rnd/";
+	pcbhl_menu_file_paths[2] = pcb_concat(PCBSHAREDIR, "/", NULL);
+	pcbhl_menu_file_paths[3] = NULL;
+
 	free(exec_prefix);
 	free(bindir);
 }
+
+static void main_path_uninit(void)
+{
+	/* const for all other parts of the code, but we had to concat (alloc) it above */
+	free((char *)pcbhl_menu_file_paths[2]);
+}
+
 
 /* initialize signal and error handlers */
 static void main_sighand_init(void)
@@ -298,6 +310,7 @@ void pcb_main_uninit(void)
 
 	pcbhl_log_print_uninit_errs("Log produced during uninitialization");
 	pcb_log_uninit();
+	main_path_uninit();
 }
 
 /* action table number of columns for a single action */
