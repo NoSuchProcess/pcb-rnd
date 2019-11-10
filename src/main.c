@@ -100,11 +100,10 @@ static void main_path_init(char *argv0)
 
 
 	/* see if argv0 has enough of a path to let lrealpath give the
-	 * real path.  This should be the case if you invoke pcb with
-	 * something like /usr/local/bin/pcb or ./pcb or ./foo/pcb
-	 * but if you just use pcb and it exists in your path, you'll
-	 * just get back pcb again.
-	 */
+	   real path.  This should be the case if you invoke pcb with
+	   something like /usr/local/bin/pcb or ./pcb or ./foo/pcb
+	   but if you just use pcb and it exists in your path, you'll
+	   just get back pcb again. */
 	haspath = (strchr(argv0, PCB_DIR_SEPARATOR_C) != NULL);
 
 #ifdef DEBUG
