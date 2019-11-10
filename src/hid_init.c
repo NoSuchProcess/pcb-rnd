@@ -473,13 +473,17 @@ void pcb_fix_locale_and_env()
 
 		truncdir(exedir);
 
+		for(s = exedir; *s != '\0'; s++)
+			if (*s == '\\')
+				*s = '/';
+
 		pcb_w32_bindir = pcb_strdup(exedir);
 		truncdir(exedir);
 		pcb_w32_root = pcb_strdup(exedir);
-		pcb_w32_libdir = pcb_concat(exedir, "\\lib", NULL);
-		pcb_w32_sharedir = pcb_concat(exedir, "\\share", NULL);
+		pcb_w32_libdir = pcb_concat(exedir, "/lib/pcb-rnd", NULL);
+		pcb_w32_sharedir = pcb_concat(exedir, "/share/pcb-rnd", NULL);
 
-		pcb_w32_cachedir = pcb_concat(pcb_w32_root, "\\cache", NULL);
+		pcb_w32_cachedir = pcb_concat(pcb_w32_root, "/cache", NULL);
 		pcb_mkdir_(pcb_w32_cachedir, 0755);
 
 /*		printf("WIN32 bindir='%s' libdir='%s' sharedir='%s'\n", bindir, libdir, sharedir);*/
