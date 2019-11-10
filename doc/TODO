@@ -195,7 +195,6 @@
 	- similar with lines: bug_files/dwgarea.lht; grabbing the lines for move will force them to fall within the drawing area [report: pstuge]
 	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
 	- similar issue: can't move outline lines to coord 0;0 because of line width.[report: pstuge]
-- FEATURE: while drawing a line, the temporary outline should reflect the layer color
 - FEATURE: trace length calculator:
 	- click a line or arc or via
 	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
