@@ -579,19 +579,20 @@ ha:{
 
 						ha:Step Cursor {
 							li:submenu {
-								ha:Step Up                      = { a=<Key>Up; action=Cursor(Warp,0,1,grid) }
-								ha:Step Down                    = { a=<Key>Down; action=Cursor(Warp,0,-1,grid) }
-								ha:Step Left                    = { a=<Key>Left; action=Cursor(Warp,-1,0,grid) }
-								ha:Step Right                   = { a=<Key>Right; action=Cursor(Warp,1,0,grid) }
+								ha:Step Up                      = { li:a={{<Key>Up};{<Key>k;<Key>k};}; action=Cursor(Warp,0,1,grid) }
+								ha:Step Down                    = { li:a={{<Key>Down};{<Key>k;<Key>j};}; action=Cursor(Warp,0,-1,grid) }
+								ha:Step Left                    = { li:a={{<Key>Left};{<Key>k;<Key>h};}; action=Cursor(Warp,-1,0,grid) }
+								ha:Step Right                   = { li:a={{<Key>Right};{<Key>k;<Key>l};}; action=Cursor(Warp,1,0,grid) }
 								ha:Step +Up                     = { a=Shift<Key>Up; action=Cursor(Pan,0,50,view) }
 								ha:Step +Down                   = { a=Shift<Key>Down; action=Cursor(Pan,0,-50,view) }
 								ha:Step +Left                   = { a=Shift<Key>Left; action=Cursor(Pan,-50,0,view) }
 								ha:Step +Right                  = { a=Shift<Key>Right; action=Cursor(Pan,50,0,view) }
-								ha:Scroll Up                    = { a=Ctrl<Key>Up; action=Scroll(up) }
-								ha:Scroll Down                  = { a=Ctrl<Key>Down; action=Scroll(down) }
-								ha:Scroll Left                  = { a=Ctrl<Key>Left; action=Scroll(left) }
-								ha:Scroll Right                 = { a=Ctrl<Key>Right; action=Scroll(right) }
-								ha:Click                        = { a=<Key>Enter; li:action={Mode(Notify); Mode(Release)} }
+								ha:Scroll Up                    = { li:a={{Ctrl<Key>Up};{<Key>j;<Key>k};}; action=Scroll(up) }
+								ha:Scroll Down                  = { li:a={{Ctrl<Key>Down};{<Key>j;<Key>j};}; action=Scroll(down) }
+								ha:Scroll Left                  = { li:a={{Ctrl<Key>Left};{<Key>j;<Key>h};}; action=Scroll(left) }
+								ha:Scroll Right                 = { li:a={{Ctrl<Key>Right};{<Key>j;<Key>l};}; action=Scroll(right) }
+								ha:Click (left)                 = { li:a={{<Key>Enter};{<Key>k;<Key>space};}; li:action={Mode(Notify); Mode(Release)} }
+								ha:Click (right)                = { a={<Key>k;<Key>r}; li:action={Mode(Release); Popup(popup-obj, obj-type)} }
 							}
 						}
 						ha:layer keys {
