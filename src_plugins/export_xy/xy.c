@@ -40,7 +40,7 @@
 
 conf_xy_t conf_xy;
 
-extern char *CleanBOMString(const char *in);
+extern char *pcb_bom_clean_str(const char *in);
 
 const char *xy_cookie = "XY HID";
 
@@ -694,9 +694,9 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.pad_w = ctx.pad_h = 0;
 		ctx.theta = ctx.xray_theta = 0.0;
 
-		ctx.name = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes")));
-		ctx.descr = CleanBOMString((char *) PCB_UNKNOWN(pcb_subc_name(subc, "export_xy::footprint")));
-		ctx.value = CleanBOMString((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")));
+		ctx.name = pcb_bom_clean_str((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes")));
+		ctx.descr = pcb_bom_clean_str((char *) PCB_UNKNOWN(pcb_subc_name(subc, "export_xy::footprint")));
+		ctx.value = pcb_bom_clean_str((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")));
 
 		/* prefer the pnp-origin but if that doesn't exist, pick the subc origin */
 		if (!pcb_subc_find_aux_point(subc, "pnp-origin", &ctx.x, &ctx.y))

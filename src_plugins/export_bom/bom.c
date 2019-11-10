@@ -51,13 +51,13 @@ static pcb_hid_attr_val_t bom_values[NUM_OPTIONS];
 
 static const char *bom_filename;
 
-typedef struct _BomList {
+typedef struct pcb_bom_list_s {
 	char *descr;
 	char *value;
 	int num;
 	vts0_t refdes;
-	struct _BomList *next;
-} BomList;
+	struct pcb_bom_list_s *next;
+} pcb_bom_list_t;
 
 static pcb_export_opt_t *bom_get_export_options(pcb_hid_t *hid, int *n)
 {
@@ -77,13 +77,13 @@ static pcb_export_opt_t *bom_get_export_options(pcb_hid_t *hid, int *n)
  * materials.
  * returns != zero on error
  */
-char *CleanBOMString(const char *in)
+char *pcb_bom_clean_str(const char *in)
 {
 	char *out;
 	int i;
 
 	if ((out = (char *) malloc((strlen(in) + 1) * sizeof(char))) == NULL) {
-		fprintf(stderr, "Error:  CleanBOMString() malloc() failed\n");
+		fprintf(stderr, "Error:  pcb_bom_clean_str() malloc() failed\n");
 		exit(1);
 	}
 
@@ -105,13 +105,13 @@ char *CleanBOMString(const char *in)
 }
 
 
-static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom)
+static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bom_list_t * bom)
 {
-	BomList *newlist, *cur, *prev = NULL;
+	pcb_bom_list_t *newlist, *cur, *prev = NULL;
 
 	if (bom == NULL) {
 		/* this is the first subcircuit so automatically create an entry */
-		if ((newlist = (BomList *) malloc(sizeof(BomList))) == NULL) {
+		if ((newlist = (pcb_bom_list_t *) malloc(sizeof(pcb_bom_list_t))) == NULL) {
 			fprintf(stderr, "malloc() failed in bom_insert()\n");
 			exit(1);
 		}
@@ -139,7 +139,7 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
 	}
 
 	if (cur == NULL) {
-		if ((newlist = (BomList *) malloc(sizeof(BomList))) == NULL) {
+		if ((newlist = (pcb_bom_list_t *) malloc(sizeof(pcb_bom_list_t))) == NULL) {
 			fprintf(stderr, "malloc() failed in bom_insert()\n");
 			exit(1);
 		}
@@ -162,16 +162,16 @@ static BomList *bom_insert(char *refdes, char *descr, char *value, BomList * bom
  * If fp is not NULL then print out the bill of materials contained in
  * bom.  Either way, free all memory which has been allocated for bom.
  */
-static void print_and_free(FILE * fp, BomList * bom)
+static void print_and_free(FILE * fp, pcb_bom_list_t * bom)
 {
-	BomList *lastb;
+	pcb_bom_list_t *lastb;
 	char *descr, *value;
 	long n;
 
 	while (bom != NULL) {
 		if (fp) {
-			descr = CleanBOMString(bom->descr);
-			value = CleanBOMString(bom->value);
+			descr = pcb_bom_clean_str(bom->descr);
+			value = pcb_bom_clean_str(bom->value);
 			fprintf(fp, "%d,\"%s\",\"%s\",", bom->num, descr, value);
 			free(descr);
 			free(value);
@@ -193,11 +193,11 @@ static void print_and_free(FILE * fp, BomList * bom)
 	}
 }
 
-static int PrintBOM(void)
+static int bom_print(void)
 {
 	char utcTime[64];
 	FILE *fp;
-	BomList *bom = NULL;
+	pcb_bom_list_t *bom = NULL;
 
 	pcb_print_utc(utcTime, sizeof(utcTime), 0);
 
@@ -252,7 +252,7 @@ static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &bom_filename);
 
-	PrintBOM();
+	bom_print();
 	pcb_cam_end(&cam);
 }
 
