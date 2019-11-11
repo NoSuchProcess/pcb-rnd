@@ -126,7 +126,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 			s->shp.data.circ.x = ox;
 			s->shp.data.circ.y = oy;
 		}
-		else if (strcmp(n->argv[0], "RECTANGLE") == 0) {
+		else if ((strcmp(n->argv[0], "RECTANGLE") == 0) || (strcmp(n->argv[0], "SQUARE") == 0)) {
 			pcb_coord_t w, h;
 			SHAPE_CHECK_DUP;
 			tmp = find_nth(n->first_child, "WIDTH", 0);
@@ -134,11 +134,15 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 				pcb_message(PCB_MSG_ERROR, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
 				return -1;
 			}
-			tmp = find_nth(n->first_child, "HEIGHT", 0);
-			if (parse_coord(ctx, tmp->argv[1], &h) != 0) {
-				pcb_message(PCB_MSG_ERROR, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
-				return -1;
+			if (*n->argv[0] == 'R') {
+				tmp = find_nth(n->first_child, "HEIGHT", 0);
+				if (parse_coord(ctx, tmp->argv[1], &h) != 0) {
+					pcb_message(PCB_MSG_ERROR, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
+					return -1;
+				}
 			}
+			else
+				h = w; /* square */
 
 			s->shp.shape = PCB_PSSH_POLY;
 			pcb_pstk_shape_alloc_poly(&s->shp.data.poly, 4);
