@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <qparse/qparse.h>
 #include <genvector/gds_char.h>
+#include <genht/htsp.h>
 
 #include "board.h"
 #include "data.h"
@@ -60,9 +61,25 @@ typedef struct {
 } hkp_tree_t;
 
 typedef struct {
+	node_t *subtree;
+} hkp_shape_t;
+
+typedef struct {
+	node_t *subtree;
+} hkp_hole_t;
+
+typedef struct {
+	node_t *subtree;
+} hkp_pstk_t;
+
+
+typedef struct {
 	pcb_board_t *pcb;
 	char *unit;      /* default unit used while converting coords any given time */
 	char *pstk_unit; /* default unit for the padstacks file */
+	htsp_t shapes;   /* name -> hkp_shape_t */
+	htsp_t holes;    /* name -> hkp_hole_t */
+	htsp_t pstks;    /* name -> hkp_pstk_t */
 	hkp_tree_t layout, padstacks;
 } hkp_ctx_t;
 
@@ -528,6 +545,9 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				return -1;
 			}
 		}
+		else if (strcmp(n->argv[0], "PAD") == 0) {}
+		else if (strcmp(n->argv[0], "HOLE") == 0) {}
+		else if (strcmp(n->argv[0], "PADSTACK") == 0) {}
 	}
 
 	TODO("parse padstacks");
