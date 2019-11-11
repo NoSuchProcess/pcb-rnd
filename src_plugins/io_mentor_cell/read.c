@@ -56,9 +56,13 @@ struct node_s {
 };
 
 typedef struct {
+	node_t *root, *curr;
+} hkp_tree_t;
+
+typedef struct {
 	pcb_board_t *pcb;
 	char *unit;
-	node_t *root, *curr;
+	hkp_tree_t layout;
 } hkp_ctx_t;
 
 /*** High level parser ***/
@@ -348,12 +352,12 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	return subc;
 }
 
-static int parse_root(hkp_ctx_t *ctx)
+static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 {
 	node_t *n;
 
 	/* extract globals */
-	for(n = ctx->root->first_child; n != NULL; n = n->next) {
+	for(n = tree->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "UNITS") == 0) {
 			if (strcmp(n->argv[1], "MIL") == 0) ctx->unit = "mil";
 			else if (strcmp(n->argv[1], "TH") == 0) ctx->unit = "mil";
@@ -368,7 +372,7 @@ static int parse_root(hkp_ctx_t *ctx)
 	pcb_layergrp_upgrade_to_pstk(ctx->pcb);
 
 	/* build packages */
-	for(n = ctx->root->first_child; n != NULL; n = n->next)
+	for(n = tree->root->first_child; n != NULL; n = n->next)
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
 			parse_package(ctx, ctx->pcb->Data, n);
 
@@ -410,7 +414,7 @@ static void destroy(node_t *nd)
 }
 
 /* Split up a virtual line and save it in the tree */
-void save_vline(hkp_ctx_t *ctx, char *vline, int level)
+void save_vline(hkp_tree_t *tree, char *vline, int level)
 {
 	node_t *nd;
 
@@ -418,21 +422,21 @@ void save_vline(hkp_ctx_t *ctx, char *vline, int level)
 	nd->argc = qparse2(vline, &nd->argv, QPARSE_DOUBLE_QUOTE | QPARSE_PAREN | QPARSE_MULTISEP);
 	nd->level = level;
 
-	if (level == ctx->curr->level) { /* sibling */
+	if (level == tree->curr->level) { /* sibling */
 		sibling:;
-		nd->parent = ctx->curr->parent;
-		ctx->curr->next = nd;
+		nd->parent = tree->curr->parent;
+		tree->curr->next = nd;
 		nd->parent->last_child = nd;
 	}
-	else if (level == ctx->curr->level+1) { /* first child */
-		ctx->curr->first_child = ctx->curr->last_child = nd;
-		nd->parent = ctx->curr;
+	else if (level == tree->curr->level+1) { /* first child */
+		tree->curr->first_child = tree->curr->last_child = nd;
+		nd->parent = tree->curr;
 	}
-	else if (level < ctx->curr->level) { /* step back to a previous level */
-		while(level < ctx->curr->level) ctx->curr = ctx->curr->parent;
+	else if (level < tree->curr->level) { /* step back to a previous level */
+		while(level < tree->curr->level) tree->curr = tree->curr->parent;
 		goto sibling;
 	}
-	ctx->curr = nd;
+	tree->curr = nd;
 }
 
 static void rtrim(gds_t *s)
@@ -475,10 +479,10 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	ctx.pcb = pcb;
 	ctx.unit = "mm";
-	ctx.curr = ctx.root = calloc(sizeof(node_t), 1);
+
+
+	ctx.layout.curr = ctx.layout.root = calloc(sizeof(node_t), 1);
 	gds_init(&vline);
-
-
 
 	/* read physical lines, build virtual lines and save them in the tree*/
 	while(fgets(line, sizeof(line), f) != NULL) {
@@ -489,7 +493,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 		if (*s == '.') {
 			if (gds_len(&vline) > 0) {
 				rtrim(&vline);
-				save_vline(&ctx, vline.array, level);
+				save_vline(&ctx.layout, vline.array, level);
 				gds_truncate(&vline, 0);
 			}
 			level = 0;
@@ -504,7 +508,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	/* the last virtual line before eof */
 	if (gds_len(&vline) > 0) {
 		rtrim(&vline);
-		save_vline(&ctx, vline.array, level);
+		save_vline(&ctx.layout, vline.array, level);
 	}
 	gds_uninit(&vline);
 
@@ -517,16 +521,18 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	pcb_layergrp_inhibit_dec();
 
 	/* parse the root */
-	res = parse_root(&ctx);
+	res = parse_layout_root(&ctx, &ctx.layout);
 
 	pcb_layer_colors_from_conf(pcb, 1);
 
 	res = 0; /* all ok */
 
 	err:;
-	if (res != 0)
-		dump(ctx.root);
-	destroy(ctx.root);
+	if (res != 0) {
+		printf("### layout tree:\n");
+		dump(ctx.layout.root);
+	}
+	destroy(ctx.layout.root);
 	fclose(f);
 	return res;
 }
