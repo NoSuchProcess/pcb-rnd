@@ -153,34 +153,34 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 	old_unit = ctx->unit;
 	ctx->unit = p->unit;
 
-	/* parse the padstack */
-	for(n = n->first_child; n != NULL; n = n->next) {
+	/* hole needs special threatment for two reasons:
+	    - it's normally not a shape (except when it is a slot)
+	    - it may have an offset on input, which will be an offset of all shapes
+	      so we can keep the hole at 0;0 */
+	hn = find_nth(n->first_child, "HOLE_NAME", 0);
+	if (hn != NULL) {
+		hkp_hole_t *hole;
 
-		/* hole needs special threatment for two reasons:
-		    - it's normally not a shape (except when it is a slot)
-		    - it may have an offset on input, which will be an offset of all shapes
-		      so we can keep the hole at 0;0 */
-		hn = find_nth(n, "HOLE_NAME", 0);
-		if (hn != NULL) {
-			hkp_hole_t *hole;
-
-			on = find_nth(hn->first_child, "OFFSET", 0);
-			if (on != NULL) {
-				parse_xy(ctx, on->argv[1], &ox, &oy);
-				if (ox != 0) ox = -ox;
-				if (oy != 0) oy = -oy;
-				TODO("test this when ox;oy != 0");
-			}
-
-			hole = parse_hole(ctx, hn->argv[1]);
-			if (hole == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Undefined hole '%s'\n", hn->argv[1]);
-				goto error;
-			}
-			p->proto.hdia = hole->dia;
-			p->proto.hplated = hole->plated;
-			TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
+		on = find_nth(hn->first_child, "OFFSET", 0);
+		if (on != NULL) {
+			parse_xy(ctx, on->argv[1], &ox, &oy);
+			if (ox != 0) ox = -ox;
+			if (oy != 0) oy = -oy;
+			TODO("test this when ox;oy != 0");
 		}
+
+		hole = parse_hole(ctx, hn->argv[1]);
+		if (hole == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Undefined hole '%s'\n", hn->argv[1]);
+			goto error;
+		}
+		p->proto.hdia = hole->dia;
+		p->proto.hplated = hole->plated;
+		TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
+	}
+
+	/* parse the shapes */
+	for(n = n->first_child; n != NULL; n = n->next) {
 	}
 
 	p->proto.in_use = 1;
