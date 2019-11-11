@@ -75,8 +75,10 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	char *unit;      /* default unit used while converting coords any given time */
-	char *pstk_unit; /* default unit for the padstacks file */
+
+	const pcb_unit_t *unit;      /* default unit used while converting coords any given time */
+	const pcb_unit_t *pstk_unit; /* default unit for the padstacks file */
+
 	htsp_t shapes;   /* name -> hkp_shape_t */
 	htsp_t holes;    /* name -> hkp_hole_t */
 	htsp_t pstks;    /* name -> hkp_pstk_t */
@@ -108,7 +110,7 @@ static int parse_coord(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
 	if (end != NULL)
 		*end = '\0';
 
-	*crd = pcb_get_value(s, ctx->unit, NULL, &suc);
+	*crd = pcb_get_value(s, ctx->unit->suffix, NULL, &suc);
 	return !suc;
 }
 
@@ -125,8 +127,8 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	*sy = '\0';
 	sy++;
 
-	*x = pcb_get_value(s, ctx->unit, NULL, &suc1);
-	*y = pcb_get_value(sy, ctx->unit, NULL, &suc2);
+	*x = pcb_get_value(s, ctx->unit->suffix, NULL, &suc1);
+	*y = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
 
 	return !(suc1 && suc2);
 }
@@ -157,7 +159,7 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t p
 				curr += 6;
 				ltrim(curr);
 				flags = pcb_flag_add(flags, PCB_FLAG_SQUARE);
-				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+				thickness = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
 				sqpad_pending = 1;
 			}
 			if (strncmp(curr, "Rectangle", 9) == 0) {
@@ -165,7 +167,7 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t p
 				pcb_coord_t w, h;
 				curr += 9;
 				ltrim(curr);
-				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+				thickness = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
 				hs = strchr(curr, 'x');
 				if (hs == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Broken Rectangle pad: no 'x' in size\n");
@@ -173,8 +175,8 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t p
 				}
 				*hs = '\0';
 				hs++;
-				w = pcb_get_value(curr, ctx->unit, NULL, NULL);
-				h = pcb_get_value(hs, ctx->unit, NULL, NULL);
+				w = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
+				h = pcb_get_value(hs, ctx->unit->suffix, NULL, NULL);
 TODO("padstack: rewrite")
 #if 0
 				pcb_element_pad_new_rect(elem, px+w/2, py+h/2, px-w/2, py-h/2, cl, ms, name, name, flags);
@@ -185,7 +187,7 @@ TODO("padstack: rewrite")
 			else if (strncmp(curr, "Round", 5) == 0) {
 				curr += 5;
 				ltrim(curr);
-				thickness = pcb_get_value(curr, ctx->unit, NULL, NULL);
+				thickness = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
 			}
 			else if (strncmp(curr, "Oblong", 6) == 0) {
 				pcb_message(PCB_MSG_ERROR, "Ignoring oblong pin - not yet supported\n");
@@ -199,7 +201,7 @@ TODO("padstack: rewrite")
 		else if (strncmp(curr, "Hole Rnd", 8) == 0) {
 			curr += 8;
 			ltrim(curr);
-			hole = pcb_get_value(curr, ctx->unit, NULL, NULL);
+			hole = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
 		}
 	}
 
@@ -256,7 +258,7 @@ static void parse_silk(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 		th = PCB_MM_TO_COORD(0.5);
 		tmp = find_nth(pp->first_child, "WIDTH", 0);
 		if (tmp != NULL)
-			pcb_get_value(tmp->argv[1], ctx->unit, NULL, NULL);
+			pcb_get_value(tmp->argv[1], ctx->unit->suffix, NULL, NULL);
 		tmp = find_nth(pp->first_child, "XY", 0);
 		parse_xy(ctx, tmp->argv[1], &px, &py);
 		for(n = 2; n < tmp->argc; n++) {
@@ -382,12 +384,12 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	return subc;
 }
 
-static const char *parse_units(const char *ust)
+static const pcb_unit_t *parse_units(const char *ust)
 {
-	if (strcmp(ust, "MIL") == 0) return "mil";
-	if (strcmp(ust, "TH") == 0)  return "mil";
-	if (strcmp(ust, "MM") == 0)  return "mm";
-	if (strcmp(ust, "IN") == 0)  return "inch";
+	if (strcmp(ust, "MIL") == 0) return get_unit_struct("mil");
+	if (strcmp(ust, "TH") == 0)  return get_unit_struct("mil");
+	if (strcmp(ust, "MM") == 0)  return get_unit_struct("mm");
+	if (strcmp(ust, "IN") == 0)  return get_unit_struct("inch");
 	return NULL;
 }
 
@@ -585,7 +587,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	}
 
 	ctx.pcb = pcb;
-	ctx.unit = "mm";
+	ctx.unit = get_unit_struct("mm");
 
 	load_hkp(&ctx.layout, flay);
 	fclose(flay);
