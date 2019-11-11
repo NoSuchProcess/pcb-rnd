@@ -27,8 +27,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#if 0
-static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
+static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
 {
 	pcb_flag_t flags = pcb_no_flags();
 	pcb_coord_t thickness, hole, ms;
@@ -111,14 +110,15 @@ TODO("padstack: rewrite")
 #else
 	(void)sqpad_pending; (void)ms; (void)hole; (void)thickness;
 #endif
+	return NULL;
 }
-#endif
 
-#if 0
+
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 {
 	node_t *tmp;
 	pcb_coord_t px, py;
+	hkp_pstk_t *hpstk;
 
 	tmp = find_nth(nd->first_child, "XY", 0);
 	if (tmp == NULL) {
@@ -128,10 +128,16 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 	parse_xy(ctx, tmp->argv[1], &px, &py);
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
-	if (tmp != NULL)
-		parse_pstk(ctx, subc, tmp->argv[1], px, py, nd->argv[1]);
+	if (tmp == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Ignoring pin with no padstack\n");
+		return;
+	}
+	hpstk = parse_pstk(ctx, subc, tmp->argv[1], px, py, nd->argv[1]);
+	if (hpstk == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Ignoring pin with undefined padstack '%s'\n", tmp->argv[1]);
+		return;
+	}
 }
-#endif
 
 static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 {

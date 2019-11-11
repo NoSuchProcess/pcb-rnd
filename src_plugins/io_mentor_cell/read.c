@@ -95,6 +95,10 @@ typedef struct {
 	hkp_tree_t layout, padstacks;
 } hkp_ctx_t;
 
+/*** read_pstk.c ***/
+static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd);
+
+
 /*** High level parser ***/
 
 /* Return the idxth sibling with matching name */
@@ -260,15 +264,15 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	(void)desc; (void)refdes; (void)value;
 #endif
 
-#if 0
 	/* extract pins and silk lines */
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PIN") == 0)
 			parse_pin(ctx, subc, n);
+#if 0
 		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0)
 			parse_silk(ctx, subc, n);
-	}
 #endif
+	}
 
 #if 0
 	/* extract tags */
