@@ -269,11 +269,11 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			/* hkp rotation: top side positive value is CW; in pcb-rnd: that's negative */
 			rot = -strtod(n->argv[1], &end);
 			if (*end != '\0') {
-				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotationv value (expected numeric)\n");
+				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotation value (expected numeric)\n");
 				return NULL;
 			}
 			if ((rot < -360) || (rot > 360)) {
-				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotationv value (out of range)\n");
+				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotation value (out of range)\n");
 				return NULL;
 			}
 		}
