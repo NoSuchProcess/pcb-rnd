@@ -27,6 +27,21 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+static int parse_dia(hkp_ctx_t *ctx, node_t *roundn, pcb_coord_t *dia)
+{
+	node_t *hr = roundn->first_child;
+	if ((hr == NULL) || (strcmp(hr->argv[0], "DIAMETER") != 0)) {
+		pcb_message(PCB_MSG_ERROR, "Expected DIAMETER as first child of ROUND\n");
+		return -1;
+	}
+	if (parse_coord(ctx, hr->argv[1], dia) != 0) {
+		pcb_message(PCB_MSG_ERROR, "Invalid ROUND DIAMETER value '%s'\n", hr->argv[1]);
+		return -1;
+	}
+	return 0;
+}
+
+
 static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 {
 	const pcb_unit_t *old_unit;
@@ -51,15 +66,8 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 
 	hr = find_nth(h->subtree->first_child, "ROUND", 0);
 	if (hr != NULL) {
-		hr = hr->first_child;
-		if ((hr == NULL) || (strcmp(hr->argv[0], "DIAMETER") != 0)) {
-			pcb_message(PCB_MSG_ERROR, "Expected DIAMETER as first child of ROUND\n");
+		if (parse_dia(ctx, hr, &h->dia) != 0)
 			goto error;
-		}
-		if (parse_coord(ctx, hr->argv[1], &h->dia) != 0) {
-			pcb_message(PCB_MSG_ERROR, "Invalid ROUND DIAMETER value '%s'\n", hr->argv[1]);
-			goto error;
-		}
 	}
 	else {
 		TODO("handle slots");
@@ -77,6 +85,52 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 	return NULL;
 }
 
+#define SHAPE_CHECK_DUP \
+do { \
+	if (has_shape) { \
+		pcb_message(PCB_MSG_ERROR, "PAD with multiple shapes\n"); \
+		goto error; \
+	} \
+	has_shape = 1; \
+} while(0)
+static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
+{
+	const pcb_unit_t *old_unit;
+	node_t *n, *on;
+	pcb_coord_t ox = 0, oy = 0;
+	hkp_shape_t *s = htsp_get(&ctx->shapes, name);
+	int has_shape = 0;
+
+	if (s == NULL)
+		return NULL;
+	if (s->valid)
+		return s;
+
+	old_unit = ctx->unit;
+	ctx->unit = s->unit;
+
+	on = find_nth(s->subtree->first_child, "OFFSET", 0);
+	if (on != NULL)
+		parse_xy(ctx, on->argv[1], &ox, &oy);
+
+	for(n = s->subtree->first_child; n != NULL; n = n->next) {
+		if (strcmp(n->argv[0], "ROUND") == 0) {
+			pcb_coord_t dia;
+			SHAPE_CHECK_DUP;
+			if (parse_dia(ctx, n, &dia) != 0)
+				goto error;
+		}
+	}
+
+	s->valid = 1;
+	ctx->unit = old_unit;
+	return s;
+
+	error:;
+	ctx->unit = old_unit;
+	return NULL;
+}
+#undef SHAPE_CHECK_DUP
 
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
