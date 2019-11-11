@@ -448,7 +448,15 @@ static void rtrim(gds_t *s)
 
 static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 {
+	FILE *fpstk;
+	fpstk = pcb_fopen(&PCB->hidlib, fn, "r");
+	if (fpstk == NULL)
+		return -1;
+
 	TODO("parse padstacks");
+
+	close(fpstk);
+	return 0;
 }
 
 static void load_hkp(hkp_tree_t *tree, FILE *f)
@@ -494,7 +502,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 {
 	hkp_ctx_t ctx;
 	int res = -1;
-	FILE *flay;
+	FILE *flay, *fpstk;
 	char *end, fn2[PCB_PATH_MAX];
 
 
@@ -511,7 +519,11 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	else
 		end++;
 	strcpy(end, "Padstack.hkp");
-	io_mentor_cell_pstks(&ctx, fn2);
+
+	if (io_mentor_cell_pstks(&ctx, fn2) != 0) {
+		fclose(flay);
+		goto err;
+	}
 
 	ctx.pcb = pcb;
 	ctx.unit = "mm";
