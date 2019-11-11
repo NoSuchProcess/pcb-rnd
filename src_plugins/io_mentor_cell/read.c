@@ -348,6 +348,7 @@ static int parse_root(hkp_ctx_t *ctx)
 	for(n = ctx->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "UNITS") == 0) {
 			if (strcmp(n->argv[1], "MIL") == 0) ctx->unit = "mil";
+			else if (strcmp(n->argv[1], "TH") == 0) ctx->unit = "mil";
 			else if (strcmp(n->argv[1], "MM") == 0) ctx->unit = "mm";
 			else {
 				pcb_message(PCB_MSG_ERROR, "Unkown unit '%s'\n", n->argv[1]);
