@@ -446,19 +446,6 @@ static void rtrim(gds_t *s)
 		s->array[n] = '\0';
 }
 
-static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
-{
-	FILE *fpstk;
-	fpstk = pcb_fopen(&PCB->hidlib, fn, "r");
-	if (fpstk == NULL)
-		return -1;
-
-	TODO("parse padstacks");
-
-	close(fpstk);
-	return 0;
-}
-
 static void load_hkp(hkp_tree_t *tree, FILE *f)
 {
 	char *s, line[1024];
@@ -496,6 +483,19 @@ static void load_hkp(hkp_tree_t *tree, FILE *f)
 	}
 	gds_uninit(&vline);
 
+}
+
+static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
+{
+	FILE *fpstk;
+	fpstk = pcb_fopen(&PCB->hidlib, fn, "r");
+	if (fpstk == NULL)
+		return -1;
+
+	TODO("parse padstacks");
+
+	close(fpstk);
+	return 0;
 }
 
 int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
