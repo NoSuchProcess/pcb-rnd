@@ -494,12 +494,12 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 {
 	hkp_ctx_t ctx;
 	int res = -1;
-	FILE *f;
+	FILE *flay;
 	char *end, fn2[PCB_PATH_MAX];
 
 
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
-	if (f == NULL)
+	flay = pcb_fopen(&PCB->hidlib, fn, "r");
+	if (flay == NULL)
 		goto err;
 
 	/* create the file name for the padstacks */
@@ -515,7 +515,9 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	ctx.pcb = pcb;
 	ctx.unit = "mm";
-	load_hkp(&ctx.layout, f);
+
+	load_hkp(&ctx.layout, flay);
+	fclose(flay);
 
 	/* we are loading the cells into a board, make a default layer stack for that */
 	pcb_layergrp_inhibit_inc();
@@ -538,7 +540,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 		dump(ctx.layout.root);
 	}
 	destroy(ctx.layout.root);
-	fclose(f);
+
 	return res;
 }
 
