@@ -249,7 +249,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 #endif
 	pcb_subc_t *subc;
 	pcb_flag_t flags = pcb_no_flags();
-	char *desc = "", *refdes = "", *value = "";
+	char *end, *desc = "", *refdes = "", *value = "";
 	node_t *n, *tt, *attr, *tmp;
 	pcb_coord_t ox, oy, tx = 0, ty = 0;
 	double rot = 0;
@@ -264,6 +264,17 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 				return NULL;
 			}
 			seen_oxy = 1;
+		}
+		else if (strcmp(n->argv[0], "ROTATION") == 0) {
+			rot = strtod(n->argv[1], &end);
+			if (*end != '\0') {
+				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotationv value (expected numeric)\n");
+				return NULL;
+			}
+			if ((rot < -360) || (rot > 360)) {
+				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotationv value (out of range)\n");
+				return NULL;
+			}
 		}
 		else if (strcmp(n->argv[0], "TEXT") == 0) {
 			tt = find_nth(n, "TEXT_TYPE", 0);
