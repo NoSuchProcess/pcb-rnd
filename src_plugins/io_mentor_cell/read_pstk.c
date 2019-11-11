@@ -132,6 +132,23 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 }
 #undef SHAPE_CHECK_DUP
 
+typedef struct {
+	const char *name;
+	pcb_layer_type_t lyt;
+} lyt_name_t;
+
+lyt_name_t lyt_names[] = {
+	{"TOP_PAD",                PCB_LYT_TOP | PCB_LYT_COPPER },
+	{"BOTTOM_PAD",             PCB_LYT_BOTTOM | PCB_LYT_COPPER },
+	{"INTERNAL_PAD",           PCB_LYT_INTERN | PCB_LYT_COPPER },
+	{"TOP_SOLDERMASK_PAD",     PCB_LYT_TOP | PCB_LYT_MASK },
+	{"BOTTOM_SOLDERMASK_PAD",  PCB_LYT_TOP | PCB_LYT_MASK },
+	{"TOP_SOLDERPASTE_PAD",    PCB_LYT_TOP | PCB_LYT_PASTE },
+	{"BOTTOM_SOLDERPASTE_PAD", PCB_LYT_TOP | PCB_LYT_PASTE },
+	{NULL, 0}
+};
+
+
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
 	const pcb_unit_t *old_unit;
@@ -181,6 +198,17 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 	/* parse the shapes */
 	for(n = n->first_child; n != NULL; n = n->next) {
+		lyt_name_t *ln;
+		for(ln = lyt_names; ln->name != NULL; ln++) {
+			if (strcmp(ln->name, n->argv[0]) == 0) {
+				hkp_shape_t *shp = parse_shape(ctx, n->argv[1]);
+				if (shp == NULL) {
+					pcb_message(PCB_MSG_ERROR, "Undefined shape '%s'\n", hn->argv[1]);
+					goto error;
+				}
+				printf("SHAPE: %s %lx %s %p\n", ln->name, ln->lyt, n->argv[1], shp);
+			}
+		}
 	}
 
 	p->proto.in_use = 1;
