@@ -143,6 +143,9 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (!name)
 			return 1;
 
+/* PCB usgae: at the moment, while having only one global PCB, this function
+   legitimately uses that */
+
 		pcb_notify_crosshair_change(pcb_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
@@ -154,16 +157,18 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_board_remove(PCB);
 		PCB = pcb_board_new(1);
 		pcb_board_new_postproc(PCB, 1);
+		if (pcb_gui->set_hidlib != NULL)
+			pcb_gui->set_hidlib(pcb_gui, PCB);
 		pcb_set_design_dir(NULL);
 		pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 		/* setup the new name and reset some values to default */
-		free(PCB_ACT_HIDLIB->name);
-		PCB_ACT_HIDLIB->name = name;
+		free(PCB->hidlib.name);
+		PCB->hidlib.name = name;
 
-		pcb_layervis_reset_stack(PCB_ACT_HIDLIB);
-		pcb_crosshair_set_range(0, 0, PCB_ACT_HIDLIB->size_x, PCB_ACT_HIDLIB->size_y);
-		pcb_center_display(PCB_ACT_HIDLIB->size_x / 2, PCB_ACT_HIDLIB->size_y / 2);
+		pcb_layervis_reset_stack(PCB);
+		pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_board_changed(0);
 		pcb_hid_redraw(PCB);
 		pcb_notify_crosshair_change(pcb_true);
