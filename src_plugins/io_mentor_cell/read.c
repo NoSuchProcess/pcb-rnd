@@ -62,7 +62,7 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	char *unit;
-	hkp_tree_t layout;
+	hkp_tree_t layout, padstacks;
 } hkp_ctx_t;
 
 /*** High level parser ***/
@@ -492,6 +492,8 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 	if (fpstk == NULL)
 		return -1;
 
+	load_hkp(&ctx->padstacks, fpstk);
+
 	TODO("parse padstacks");
 
 	close(fpstk);
@@ -550,7 +552,10 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	if (res != 0) {
 		printf("### layout tree:\n");
 		dump(ctx.layout.root);
+		printf("### padstack tree:\n");
+		dump(ctx.padstacks.root);
 	}
+	destroy(ctx.padstacks.root);
 	destroy(ctx.layout.root);
 
 	return res;
