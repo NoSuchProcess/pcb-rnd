@@ -123,8 +123,13 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 				pcb_message(PCB_MSG_ERROR, "Undefined hole '%s'\n", hn->argv[1]);
 				goto error;
 			}
+			p->proto.hdia = hole->dia;
+			p->proto.hplated = hole->plated;
+			TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
 		}
 	}
+
+	p->proto.in_use = 1;
 	p->valid = 1;
 	ctx->unit = old_unit;
 	return p;
