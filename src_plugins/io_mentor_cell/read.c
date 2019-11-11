@@ -457,8 +457,11 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	pcb_layer_colors_from_conf(pcb, 1);
 
+	res = 0; /* all ok */
+
 	err:;
-	dump(ctx.root);
+	if (res != 0)
+		dump(ctx.root);
 	destroy(ctx.root);
 	fclose(f);
 	return res;
