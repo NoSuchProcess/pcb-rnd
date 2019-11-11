@@ -50,6 +50,11 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 	/* parse the padstack */
 	for(n = n->first_child; n != NULL; n = n->next) {
+
+		/* hole needs special threatment for two reasons:
+		    - it's normally not a shape (except when it is a slot)
+		    - it may have an offset on input, which will be an offset of all shapes
+		      so we can keep the hole at 0;0 */
 		hn = find_nth(n, "HOLE_NAME", 0);
 		if (hn != NULL) {
 			on = find_nth(hn->first_child, "OFFSET", 0);
@@ -57,6 +62,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 				parse_xy(ctx, on->argv[1], &ox, &oy);
 				if (ox != 0) ox = -ox;
 				if (oy != 0) oy = -oy;
+				TODO("test this when ox;oy != 0");
 			}
 TODO("find the hole by name hn->argv[1]");
 		}
