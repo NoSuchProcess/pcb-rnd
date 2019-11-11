@@ -195,9 +195,11 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	pcb_subc_t *subc;
 	char *end, *desc = "", *refdes = "", *value = "";
 	node_t *n, *tt, *attr, *tmp;
-	pcb_coord_t ox, oy, tx = 0, ty = 0;
+	pcb_coord_t ox, oy;
 	double rot = 0;
 	int on_bottom = 0, seen_oxy = 0;
+
+	subc = pcb_subc_alloc();
 
 	/* extract global */
 	for(n = nd->first_child; n != NULL; n = n->next) {
@@ -230,24 +232,30 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			}
 		}
 		else if (strcmp(n->argv[0], "TEXT") == 0) {
-			tt = find_nth(n, "TEXT_TYPE", 0);
-			if ((tt != NULL) && (strcmp(tt->argv[2], "REF_DES") == 0)) {
+			pcb_coord_t tx, ty;
+			tt = find_nth(n->first_child, "TEXT_TYPE", 0);
+			if (tt != NULL) {
+				if (strcmp(tt->argv[1], "REF_DES") == 0)
+					pcb_attribute_put(&subc->Attributes, "refdes", n->argv[1]);
+				else if (strcmp(tt->argv[1], "PARTNO") == 0)
+					pcb_attribute_put(&subc->Attributes, "footprint", n->argv[1]);
 				attr = find_nth(tt, "DISPLAY_ATTR", 0);
 				if (attr != NULL) {
 					tmp = find_nth(attr, "XY", 0);
 					if (tmp != NULL)
 						parse_xy(ctx, tmp->argv[1], &tx, &ty);
+					
 				}
 			}
 		}
 	}
 
 	if (!seen_oxy) {
+		pcb_subc_free(subc);
 		pcb_message(PCB_MSG_ERROR, "Can't load package: no placement XY coord\n");
 		return NULL;
 	}
 
-	subc = pcb_subc_alloc();
 	if (dt != NULL) {
 		pcb_subc_reg(dt, subc);
 		pcb_obj_id_reg(dt, subc);
