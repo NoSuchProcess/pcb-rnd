@@ -364,6 +364,14 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	return subc;
 }
 
+static const char *parse_units(const char *ust)
+{
+	if (strcmp(ust, "MIL") == 0) return "mil";
+	if (strcmp(ust, "TH") == 0)  return "mil";
+	if (strcmp(ust, "MM") == 0)  return "mm";
+	return NULL;
+}
+
 static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 {
 	node_t *n;
@@ -371,10 +379,8 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	/* extract globals */
 	for(n = tree->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "UNITS") == 0) {
-			if (strcmp(n->argv[1], "MIL") == 0) ctx->unit = "mil";
-			else if (strcmp(n->argv[1], "TH") == 0) ctx->unit = "mil";
-			else if (strcmp(n->argv[1], "MM") == 0) ctx->unit = "mm";
-			else {
+			ctx->unit = parse_units(n->argv[1]);
+			if (ctx->unit == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Unkown unit '%s'\n", n->argv[1]);
 				return -1;
 			}
