@@ -286,7 +286,13 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 #endif
 
 
+	pcb_subc_bbox(subc);
 	if ((dt != NULL) && (ctx->pcb != NULL)) {
+
+		if (dt->subc_tree == NULL)
+			dt->subc_tree = pcb_r_create_tree();
+		pcb_r_insert_entry(dt->subc_tree, (pcb_box_t *)subc);
+
 		pcb_subc_rebind(ctx->pcb, subc);
 	}
 	return subc;
