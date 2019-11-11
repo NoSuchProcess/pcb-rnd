@@ -186,6 +186,27 @@ TODO("handle error: what it tmp == NULL?");
 	}
 }
 
+static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
+{
+	node_t *tt, *attr, *tmp;
+	pcb_coord_t tx, ty;
+
+	tt = find_nth(textnode->first_child, "TEXT_TYPE", 0);
+	if (tt != NULL) {
+		if (strcmp(tt->argv[1], "REF_DES") == 0)
+			pcb_attribute_put(&subc->Attributes, "refdes", textnode->argv[1]);
+		else if (strcmp(tt->argv[1], "PARTNO") == 0)
+			pcb_attribute_put(&subc->Attributes, "footprint", textnode->argv[1]);
+		attr = find_nth(tt, "DISPLAY_ATTR", 0);
+		if (attr != NULL) {
+			tmp = find_nth(attr, "XY", 0);
+			if (tmp != NULL)
+				parse_xy(ctx, tmp->argv[1], &tx, &ty);
+		}
+	}
+}
+
+
 static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 {
 #if 0
@@ -232,21 +253,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			}
 		}
 		else if (strcmp(n->argv[0], "TEXT") == 0) {
-			pcb_coord_t tx, ty;
-			tt = find_nth(n->first_child, "TEXT_TYPE", 0);
-			if (tt != NULL) {
-				if (strcmp(tt->argv[1], "REF_DES") == 0)
-					pcb_attribute_put(&subc->Attributes, "refdes", n->argv[1]);
-				else if (strcmp(tt->argv[1], "PARTNO") == 0)
-					pcb_attribute_put(&subc->Attributes, "footprint", n->argv[1]);
-				attr = find_nth(tt, "DISPLAY_ATTR", 0);
-				if (attr != NULL) {
-					tmp = find_nth(attr, "XY", 0);
-					if (tmp != NULL)
-						parse_xy(ctx, tmp->argv[1], &tx, &ty);
-					
-				}
-			}
+			parse_subc_text(ctx, subc, n);
 		}
 	}
 
