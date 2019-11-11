@@ -113,12 +113,18 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 	if (on != NULL)
 		parse_xy(ctx, on->argv[1], &ox, &oy);
 
+	memset(&s->shp, 0, sizeof(pcb_pstk_shape_t));
+
 	for(n = s->subtree->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "ROUND") == 0) {
 			pcb_coord_t dia;
 			SHAPE_CHECK_DUP;
 			if (parse_dia(ctx, n, &dia) != 0)
 				goto error;
+			s->shp.shape = PCB_PSSH_CIRC;
+			s->shp.data.circ.dia = dia;
+			s->shp.data.circ.x = ox;
+			s->shp.data.circ.y = oy;
 		}
 	}
 
