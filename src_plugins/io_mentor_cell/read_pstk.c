@@ -96,7 +96,7 @@ do { \
 static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 {
 	const pcb_unit_t *old_unit;
-	node_t *n, *on;
+	node_t *n, *on, *tmp;
 	pcb_coord_t ox = 0, oy = 0;
 	hkp_shape_t *s = htsp_get(&ctx->shapes, name);
 	int has_shape = 0;
@@ -123,6 +123,26 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 				goto error;
 			s->shp.shape = PCB_PSSH_CIRC;
 			s->shp.data.circ.dia = dia;
+			s->shp.data.circ.x = ox;
+			s->shp.data.circ.y = oy;
+		}
+		else if (strcmp(n->argv[0], "RECTANGLE") == 0) {
+			pcb_coord_t w, h;
+			SHAPE_CHECK_DUP;
+			tmp = find_nth(n->first_child, "WIDTH", 0);
+			if (parse_coord(ctx, tmp->argv[1], &w) != 0) {
+				pcb_message(PCB_MSG_ERROR, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
+				return -1;
+			}
+			tmp = find_nth(n->first_child, "HEIGHT", 0);
+			if (parse_coord(ctx, tmp->argv[1], &h) != 0) {
+				pcb_message(PCB_MSG_ERROR, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
+				return -1;
+			}
+
+TODO("make a rect instead");
+			s->shp.shape = PCB_PSSH_CIRC;
+			s->shp.data.circ.dia = (w+h)/2;
 			s->shp.data.circ.x = ox;
 			s->shp.data.circ.y = oy;
 		}
