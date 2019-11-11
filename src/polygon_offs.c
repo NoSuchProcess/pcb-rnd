@@ -205,7 +205,7 @@ PCB_INLINE void pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, do
 
 	c = tune * (-pry * ldx + prx * ldy) / (ldy * vx - ldx * vy);
 	pcb_printf("   vect: vx=%f;%f prx=%f;%f tune=%f\n", vx, vy, prx, pry, tune);
-	pcb_printf("   MOVE: %f %mm;%mm\n", c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
+	pcb_printf("   MOVE: %.012mm %mm;%mm\n", (pcb_coord_t)c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
 
 	v->point[0] += c * vx;
 	v->point[1] += c * vy;
@@ -255,7 +255,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 				/* this is how much the point needs to be moved away from the line */
 				tune = offs - sqrt(dist);
-				pcb_printf("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
+				pcb_printf("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
 
 
 				nv_[0] = pcb_round(v->point[0]);
