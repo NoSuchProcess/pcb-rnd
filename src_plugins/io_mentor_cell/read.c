@@ -412,7 +412,7 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 		if (strcmp(n->argv[0], "UNITS") == 0) {
 			ctx->unit = parse_units(n->argv[1]);
 			if (ctx->unit == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Unkown unit '%s'\n", n->argv[1]);
+				pcb_message(PCB_MSG_ERROR, "Unknown unit '%s'\n", n->argv[1]);
 				return -1;
 			}
 		}
@@ -557,7 +557,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 		if (strcmp(n->argv[0], "UNITS") == 0) {
 			ctx->pstk_unit = parse_units(n->argv[1]);
 			if (ctx->pstk_unit == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Unkown unit '%s'\n", n->argv[1]);
+				pcb_message(PCB_MSG_ERROR, "Unknown unit '%s'\n", n->argv[1]);
 				return -1;
 			}
 		}
