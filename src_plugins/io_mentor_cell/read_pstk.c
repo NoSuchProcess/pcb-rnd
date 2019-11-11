@@ -319,9 +319,10 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 	}
 
 	pid = pcb_pstk_proto_insert_dup(subc->data, &hpstk->proto, 1);
-	ps = pcb_pstk_alloc_id(subc->data, pid);
+	ps = pcb_pstk_alloc(subc->data);
 	ps->x = px;
 	ps->y = py;
+	ps->proto = pid;
 	pcb_pstk_add(subc->data, ps);
 }
 
