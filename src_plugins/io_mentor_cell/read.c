@@ -76,6 +76,20 @@ static node_t *find_nth(node_t *nd, char *name, int idx)
 	return NULL;
 }
 
+/* parse a string it into a coord - modifies s; returns 0 on success */
+static int parse_coord(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
+{
+	char *end;
+	pcb_bool suc;
+
+	end = strchr(s, ',');
+	if (end != NULL)
+		*end = '\0';
+
+	*crd = pcb_get_value(s, ctx->unit, NULL, &suc);
+	return !suc;
+}
+
 /* split s and parse  it into (x,y) - modifies s */
 static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 {
@@ -237,13 +251,20 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	pcb_flag_t flags = pcb_no_flags();
 	char *desc = "", *refdes = "", *value = "";
 	node_t *n, *tt, *attr, *tmp;
-	pcb_coord_t tx = 0, ty = 0;
+	pcb_coord_t ox, oy, tx = 0, ty = 0;
 	double rot = 0;
-	int on_bottom = 0;
+	int on_bottom = 0, seen_oxy = 0;
 
 	/* extract global */
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "DESCRIPTION") == 0) desc = n->argv[1];
+		else if (strcmp(n->argv[0], "XY") == 0) {
+			if ((parse_coord(ctx, n->argv[1], &ox) != 0) || (parse_coord(ctx, n->argv[2], &oy) != 0)) {
+				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement XY coord\n");
+				return NULL;
+			}
+			seen_oxy = 1;
+		}
 		else if (strcmp(n->argv[0], "TEXT") == 0) {
 			tt = find_nth(n, "TEXT_TYPE", 0);
 			if ((tt != NULL) && (strcmp(tt->argv[2], "REF_DES") == 0)) {
@@ -257,6 +278,12 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 		}
 	}
 
+	if (!seen_oxy) {
+		pcb_message(PCB_MSG_ERROR, "Can't load package: no placement XY coord\n");
+		return NULL;
+	}
+
+pcb_printf("ox=%mm  oy=%mm\n", ox, oy);
 	subc = pcb_subc_alloc();
 
 	if (dt != NULL) {
@@ -268,7 +295,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			pcb_subc_bind_globals(ctx->pcb, subc);
 	}
 
-	pcb_subc_create_aux(subc, tx, ty, rot, on_bottom);
+	pcb_subc_create_aux(subc, ox, oy, rot, on_bottom);
 
 #if 0
 	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb, 0, 1),
