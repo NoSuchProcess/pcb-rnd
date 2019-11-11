@@ -27,90 +27,42 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
+static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
-	pcb_flag_t flags = pcb_no_flags();
-	pcb_coord_t thickness, hole, ms;
-	char *curr, *next;
-	int sqpad_pending = 0;
+	const pcb_unit_t *old_unit;
+	pcb_coord_t ox = 0, oy = 0;
+	node_t *n, *hn, *on;
+	hkp_pstk_t *p = htsp_get(&ctx->pstks, ps);
 
-	thickness = 0;
-	hole = 0;
-	ms = 0;
+	if (p == NULL)
+		return NULL;
+	if (p->valid)
+		return p;
 
-	for(curr = ps; curr != NULL; curr = next) {
-		next = strchr(curr, ',');
-		if (next != NULL) {
-			*next = '\0';
-			next++;
-		}
-		ltrim(curr);
-		if (strncmp(curr, "Pad", 3) == 0) {
-			curr += 4;
-			ltrim(curr);
-			if (strncmp(curr, "Square", 6) == 0) {
-				curr += 6;
-				ltrim(curr);
-				flags = pcb_flag_add(flags, PCB_FLAG_SQUARE);
-				thickness = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
-				sqpad_pending = 1;
-			}
-			if (strncmp(curr, "Rectangle", 9) == 0) {
-				char *hs;
-				pcb_coord_t w, h;
-				curr += 9;
-				ltrim(curr);
-				thickness = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
-				hs = strchr(curr, 'x');
-				if (hs == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Broken Rectangle pad: no 'x' in size\n");
-					return;
-				}
-				*hs = '\0';
-				hs++;
-				w = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
-				h = pcb_get_value(hs, ctx->unit->suffix, NULL, NULL);
-TODO("padstack: rewrite")
-#if 0
-				pcb_element_pad_new_rect(elem, px+w/2, py+h/2, px-w/2, py-h/2, cl, ms, name, name, flags);
-#else
-				(void)w; (void)h;
-#endif
-			}
-			else if (strncmp(curr, "Round", 5) == 0) {
-				curr += 5;
-				ltrim(curr);
-				thickness = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
-			}
-			else if (strncmp(curr, "Oblong", 6) == 0) {
-				pcb_message(PCB_MSG_ERROR, "Ignoring oblong pin - not yet supported\n");
-				return;
-			}
-			else {
-				pcb_message(PCB_MSG_ERROR, "Ignoring unknown pad shape: %s\n", curr);
-				return;
-			}
-		}
-		else if (strncmp(curr, "Hole Rnd", 8) == 0) {
-			curr += 8;
-			ltrim(curr);
-			hole = pcb_get_value(curr, ctx->unit->suffix, NULL, NULL);
-		}
+	n = find_nth(p->subtree->first_child, "TECHNOLOGY", 0);
+	if (n == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Padstack without technology\n");
+		return NULL;
 	}
 
-TODO("padstack: rewrite")
-#if 0
-	if (hole > 0) {
-		pcb_element_pin_new(elem, px, py, thickness, cl, ms, hole, name, name, flags);
-		sqpad_pending = 0;
-	}
+	old_unit = ctx->unit;
+	ctx->unit = p->unit;
 
-	if (sqpad_pending)
-		pcb_element_pad_new_rect(elem, px, py, px+thickness, py+thickness, cl, ms, name, name, flags);
-#else
-	(void)sqpad_pending; (void)ms; (void)hole; (void)thickness;
-#endif
-	return NULL;
+	/* parse the padstack */
+	for(n = n->first_child; n != NULL; n = n->next) {
+		hn = find_nth(n, "HOLE_NAME", 0);
+		if (hn != NULL) {
+			on = find_nth(hn->first_child, "OFFSET", 0);
+			if (on != NULL) {
+				parse_xy(ctx, on->argv[1], &ox, &oy);
+				if (ox != 0) ox = -ox;
+				if (oy != 0) oy = -oy;
+			}
+TODO("find the hole by name hn->argv[1]");
+		}
+	}
+	ctx->unit = old_unit;
+	return p;
 }
 
 
@@ -132,7 +84,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 		pcb_message(PCB_MSG_ERROR, "Ignoring pin with no padstack\n");
 		return;
 	}
-	hpstk = parse_pstk(ctx, subc, tmp->argv[1], px, py, nd->argv[1]);
+	hpstk = parse_pstk(ctx, tmp->argv[1]);
 	if (hpstk == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Ignoring pin with undefined padstack '%s'\n", tmp->argv[1]);
 		return;
