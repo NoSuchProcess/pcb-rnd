@@ -277,6 +277,14 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 				return NULL;
 			}
 		}
+		else if (strcmp(n->argv[0], "FACEMENT") == 0) {
+			if (strcmp(n->argv[1], "TOP") == 0) on_bottom = 0;
+			else if (strcmp(n->argv[1], "BOTTOM") == 0) on_bottom = 1;
+			else {
+				pcb_message(PCB_MSG_ERROR, "Can't load package: broken facement (should be TOP or BOTTOM)\n");
+				return NULL;
+			}
+		}
 		else if (strcmp(n->argv[0], "TEXT") == 0) {
 			tt = find_nth(n, "TEXT_TYPE", 0);
 			if ((tt != NULL) && (strcmp(tt->argv[2], "REF_DES") == 0)) {
