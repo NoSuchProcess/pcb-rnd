@@ -472,7 +472,7 @@ int io_mentor_cell_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char
 		if (fgets(line, sizeof(line), f) != NULL) {
 			s = line;
 			while(isspace(*s)) s++; /* strip leading whitespace */
-			if (strncmp(s, ".FILETYPE CELL_LIBRARY", 22) == 0) /* valid root */
+			if (strncmp(s, ".FILETYPE LAYOUT", 16) == 0) /* valid root */
 				return 1;
 			if ((*s == '\r') || (*s == '\n') || (*s == '\0')) /* ignore empty lines and comments */
 				continue;
