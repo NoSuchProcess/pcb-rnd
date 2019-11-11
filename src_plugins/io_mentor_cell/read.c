@@ -61,7 +61,8 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	char *unit;
+	char *unit;      /* default unit used while converting coords any given time */
+	char *pstk_unit; /* default unit for the padstacks file */
 	hkp_tree_t layout, padstacks;
 } hkp_ctx_t;
 
@@ -506,11 +507,24 @@ static void load_hkp(hkp_tree_t *tree, FILE *f)
 static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 {
 	FILE *fpstk;
+	node_t *n;
+
 	fpstk = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (fpstk == NULL)
 		return -1;
 
 	load_hkp(&ctx->padstacks, fpstk);
+
+	/* build the indices */
+	for(n = ctx->padstacks.root->first_child; n != NULL; n = n->next) {
+		if (strcmp(n->argv[0], "UNITS") == 0) {
+			ctx->pstk_unit = parse_units(n->argv[1]);
+			if (ctx->pstk_unit == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Unkown unit '%s'\n", n->argv[1]);
+				return -1;
+			}
+		}
+	}
 
 	TODO("parse padstacks");
 
