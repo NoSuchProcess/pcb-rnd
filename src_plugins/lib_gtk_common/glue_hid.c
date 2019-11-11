@@ -344,7 +344,7 @@ static void ghid_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_me
 static void ghid_update_menu_checkbox(pcb_hid_t *hid, const char *cookie)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	if (gctx->hid_active)
+	if ((gctx->hid_active) && (gctx->hidlib != NULL))
 		ghid_update_toggle_flags(gctx->hidlib, &gctx->topwin, cookie);
 }
 
