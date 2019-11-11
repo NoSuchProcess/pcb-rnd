@@ -27,6 +27,57 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
+{
+	const pcb_unit_t *old_unit;
+	node_t *n, *hr, *ho;
+	hkp_hole_t *h = htsp_get(&ctx->holes, name);
+
+	if (h == NULL)
+		return NULL;
+	if (h->valid)
+		return h;
+
+	old_unit = ctx->unit;
+	ctx->unit = h->unit;
+
+	ho = find_nth(h->subtree->first_child, "HOLE_OPTIONS", 0);
+	if (ho != NULL) {
+		int n;
+		for(n = 1; n < ho->argc; n++)
+			if (strcmp(ho->argv[n], "PLATED") == 0)
+				h->plated = 1;
+	}
+
+	hr = find_nth(h->subtree->first_child, "ROUND", 0);
+	if (hr != NULL) {
+		hr = hr->first_child;
+		if ((hr == NULL) || (strcmp(hr->argv[0], "DIAMETER") != 0)) {
+			pcb_message(PCB_MSG_ERROR, "Expected DIAMETER as first child of ROUND\n");
+			goto error;
+		}
+		if (parse_coord(ctx, hr->argv[1], &h->dia) != 0) {
+			pcb_message(PCB_MSG_ERROR, "Invalid ROUND DIAMETER value '%s'\n", hr->argv[1]);
+			goto error;
+		}
+	}
+	else {
+		TODO("handle slots");
+		pcb_message(PCB_MSG_ERROR, "Only ROUND holes are supported yet\n");
+		goto error;
+	}
+
+
+	h->valid = 1;
+	ctx->unit = old_unit;
+	return h;
+
+	error:;
+	ctx->unit = old_unit;
+	return NULL;
+}
+
+
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
 	const pcb_unit_t *old_unit;
@@ -57,6 +108,8 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 		      so we can keep the hole at 0;0 */
 		hn = find_nth(n, "HOLE_NAME", 0);
 		if (hn != NULL) {
+			hkp_hole_t *hole;
+
 			on = find_nth(hn->first_child, "OFFSET", 0);
 			if (on != NULL) {
 				parse_xy(ctx, on->argv[1], &ox, &oy);
@@ -64,12 +117,23 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 				if (oy != 0) oy = -oy;
 				TODO("test this when ox;oy != 0");
 			}
-TODO("find the hole by name hn->argv[1]");
+
+			hole = parse_hole(ctx, hn->argv[1]);
+			if (hole == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Undefined hole '%s'\n", hn->argv[1]);
+				goto error;
+			}
 		}
 	}
+	p->valid = 1;
 	ctx->unit = old_unit;
 	return p;
+
+	error:;
+	ctx->unit = old_unit;
+	return NULL;
 }
+
 
 
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
