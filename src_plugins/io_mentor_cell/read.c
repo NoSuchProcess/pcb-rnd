@@ -370,6 +370,7 @@ static const char *parse_units(const char *ust)
 	if (strcmp(ust, "MIL") == 0) return "mil";
 	if (strcmp(ust, "TH") == 0)  return "mil";
 	if (strcmp(ust, "MM") == 0)  return "mm";
+	if (strcmp(ust, "IN") == 0)  return "inch";
 	return NULL;
 }
 
