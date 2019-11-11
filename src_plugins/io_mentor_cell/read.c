@@ -283,9 +283,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 		return NULL;
 	}
 
-pcb_printf("ox=%mm  oy=%mm\n", ox, oy);
 	subc = pcb_subc_alloc();
-
 	if (dt != NULL) {
 		pcb_subc_reg(dt, subc);
 		pcb_obj_id_reg(dt, subc);
