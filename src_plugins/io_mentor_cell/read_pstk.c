@@ -142,9 +142,9 @@ lyt_name_t lyt_names[] = {
 	{"BOTTOM_PAD",             PCB_LYT_BOTTOM | PCB_LYT_COPPER },
 	{"INTERNAL_PAD",           PCB_LYT_INTERN | PCB_LYT_COPPER },
 	{"TOP_SOLDERMASK_PAD",     PCB_LYT_TOP | PCB_LYT_MASK },
-	{"BOTTOM_SOLDERMASK_PAD",  PCB_LYT_TOP | PCB_LYT_MASK },
+	{"BOTTOM_SOLDERMASK_PAD",  PCB_LYT_BOTTOM | PCB_LYT_MASK },
 	{"TOP_SOLDERPASTE_PAD",    PCB_LYT_TOP | PCB_LYT_PASTE },
-	{"BOTTOM_SOLDERPASTE_PAD", PCB_LYT_TOP | PCB_LYT_PASTE },
+	{"BOTTOM_SOLDERPASTE_PAD", PCB_LYT_BOTTOM | PCB_LYT_PASTE },
 	{NULL, 0}
 };
 
@@ -153,8 +153,9 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
 	const pcb_unit_t *old_unit;
 	pcb_coord_t ox = 0, oy = 0;
-	node_t *n, *hn, *on;
+	node_t *n, *hn, *on, *tn;
 	hkp_pstk_t *p = htsp_get(&ctx->pstks, ps);
+	int top_only = 0;
 
 	if (p == NULL)
 		return NULL;
@@ -169,6 +170,21 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 	old_unit = ctx->unit;
 	ctx->unit = p->unit;
+
+	tn = find_nth(p->subtree->first_child, "PADSTACK_TYPE", 0);
+	if (tn == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Padstack without PADSTACK_TYPE\n");
+		return NULL;
+	}
+	if (strcmp(tn->argv[1], "PIN_SMD") == 0) top_only = 1;
+	else if (strcmp(tn->argv[1], "PIN_THROUGH") == 0) top_only = 0;
+	else if (strcmp(tn->argv[1], "VIA") == 0) top_only = 0;
+	else {
+		pcb_message(PCB_MSG_ERROR, "Unknown PADSTACK_TYPE %s\n", tn->argv[1]);
+		return NULL;
+	}
+
+
 
 	/* hole needs special threatment for two reasons:
 	    - it's normally not a shape (except when it is a slot)
@@ -200,13 +216,17 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 	for(n = n->first_child; n != NULL; n = n->next) {
 		lyt_name_t *ln;
 		for(ln = lyt_names; ln->name != NULL; ln++) {
+			if (top_only && ((ln->lyt & PCB_LYT_TOP) == 0)) /* ignore anything but top shapes for smd pads */
+				continue;
 			if (strcmp(ln->name, n->argv[0]) == 0) {
-				hkp_shape_t *shp = parse_shape(ctx, n->argv[1]);
+				hkp_shape_t *shp;
+
+				shp = parse_shape(ctx, n->argv[1]);
 				if (shp == NULL) {
 					pcb_message(PCB_MSG_ERROR, "Undefined shape '%s'\n", hn->argv[1]);
 					goto error;
 				}
-				printf("SHAPE: %s %lx %s %p\n", ln->name, ln->lyt, n->argv[1], shp);
+				printf("SHAPE: %d %s %lx %s %p\n", top_only, ln->name, ln->lyt, n->argv[1], shp);
 			}
 		}
 	}
