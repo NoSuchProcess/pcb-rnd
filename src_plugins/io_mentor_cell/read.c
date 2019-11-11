@@ -61,6 +61,7 @@ typedef struct {
 } hkp_tree_t;
 
 typedef struct {
+	const pcb_unit_t *unit;
 	node_t *subtree;
 } hkp_shape_t;
 
@@ -69,6 +70,7 @@ typedef struct {
 } hkp_hole_t;
 
 typedef struct {
+	const pcb_unit_t *unit;
 	node_t *subtree;
 } hkp_pstk_t;
 
