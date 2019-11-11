@@ -422,6 +422,9 @@ static void destroy(node_t *nd)
 {
 	node_t *n, *next;
 
+	if (nd == NULL)
+		return;
+
 	qparse_free(nd->argc, &nd->argv);
 
 	for(n = nd->first_child; n != NULL; n = next) {
@@ -539,6 +542,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	FILE *flay;
 	char *end, fn2[PCB_PATH_MAX];
 
+	memset(&ctx, 0, sizeof(ctx));
 
 	flay = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (flay == NULL)
@@ -582,10 +586,14 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	err:;
 	if (res != 0) {
-		printf("### layout tree:\n");
-		dump(ctx.layout.root);
-		printf("### padstack tree:\n");
-		dump(ctx.padstacks.root);
+		if (ctx.layout.root != NULL) {
+			printf("### layout tree:\n");
+			dump(ctx.layout.root);
+		}
+		if (ctx.padstacks.root != NULL) {
+			printf("### padstack tree:\n");
+			dump(ctx.padstacks.root);
+		}
 	}
 	destroy(ctx.padstacks.root);
 	destroy(ctx.layout.root);
