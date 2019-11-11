@@ -4,6 +4,7 @@
 + CLEANUP/BUG: globalconst.h: PCB_MIN_THICKNESS shall be 0 - removed all artificial limits on object thickness ml:3351 [report: Majenko]
 + BUG: The 'As Drawn' polygon contour {m d d} is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 + BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
++ BUG: run pcb-rnd, start new layout, press enter (empty name) -> segf [report: Evan, keantoken]
 
 2. For later releases ===============================================================================
 - CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node [report: Majenko]
@@ -148,7 +149,6 @@
 - BUG: place so(8), {m k s}, remove one term, {u u}, remove the subc -> the terminal put back by undo is not part of the subc [report: Igor2]
 - BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
 - BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
-- BUG: run pcb-rnd, start new layout, press enter (empty name) -> segf [report: Evan, keantoken]
 - version 3.0.0:
 	- maybe rename pcblib? dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 	- ./configure --config should default to /etc
