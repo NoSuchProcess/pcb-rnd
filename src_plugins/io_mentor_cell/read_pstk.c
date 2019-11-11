@@ -166,16 +166,17 @@ TODO("make a rect instead");
 typedef struct {
 	const char *name;
 	pcb_layer_type_t lyt;
+	pcb_layer_combining_t lyc;
 } lyt_name_t;
 
 lyt_name_t lyt_names[] = {
-	{"TOP_PAD",                PCB_LYT_TOP | PCB_LYT_COPPER },
-	{"BOTTOM_PAD",             PCB_LYT_BOTTOM | PCB_LYT_COPPER },
-	{"INTERNAL_PAD",           PCB_LYT_INTERN | PCB_LYT_COPPER },
-	{"TOP_SOLDERMASK_PAD",     PCB_LYT_TOP | PCB_LYT_MASK },
-	{"BOTTOM_SOLDERMASK_PAD",  PCB_LYT_BOTTOM | PCB_LYT_MASK },
-	{"TOP_SOLDERPASTE_PAD",    PCB_LYT_TOP | PCB_LYT_PASTE },
-	{"BOTTOM_SOLDERPASTE_PAD", PCB_LYT_BOTTOM | PCB_LYT_PASTE },
+	{"TOP_PAD",                PCB_LYT_TOP | PCB_LYT_COPPER,    0 },
+	{"BOTTOM_PAD",             PCB_LYT_BOTTOM | PCB_LYT_COPPER, 0 },
+	{"INTERNAL_PAD",           PCB_LYT_INTERN | PCB_LYT_COPPER, 0 },
+	{"TOP_SOLDERMASK_PAD",     PCB_LYT_TOP | PCB_LYT_MASK,      PCB_LYC_AUTO | PCB_LYC_SUB },
+	{"BOTTOM_SOLDERMASK_PAD",  PCB_LYT_BOTTOM | PCB_LYT_MASK,   PCB_LYC_AUTO | PCB_LYC_SUB },
+	{"TOP_SOLDERPASTE_PAD",    PCB_LYT_TOP | PCB_LYT_PASTE,     PCB_LYC_AUTO },
+	{"BOTTOM_SOLDERPASTE_PAD", PCB_LYT_BOTTOM | PCB_LYT_PASTE,  PCB_LYC_AUTO },
 	{NULL, 0}
 };
 
@@ -263,7 +264,10 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 					pcb_message(PCB_MSG_ERROR, "Undefined shape '%s'\n", n->argv[1]);
 					goto error;
 				}
-				ts->shape[ts->len++] = shp->shp;
+				ts->shape[ts->len] = shp->shp;
+				ts->shape[ts->len].layer_mask = ln->lyt;
+				ts->shape[ts->len].comb = ln->lyc;
+				ts->len++;
 				printf("SHAPE: %d %s %lx %s %p\n", top_only, ln->name, ln->lyt, n->argv[1], shp);
 			}
 		}
