@@ -63,15 +63,23 @@ typedef struct {
 typedef struct {
 	const pcb_unit_t *unit;
 	node_t *subtree;
+	unsigned valid:1; /* whether it's already parsed */
+	pcb_pstk_shape_t shp;
 } hkp_shape_t;
 
 typedef struct {
+	const pcb_unit_t *unit;
 	node_t *subtree;
+	unsigned valid:1; /* whether it's already parsed */
+	unsigned plated:1;
+	pcb_coord_t dia;
 } hkp_hole_t;
 
 typedef struct {
 	const pcb_unit_t *unit;
 	node_t *subtree;
+	unsigned valid:1; /* whether it's already parsed */
+	pcb_pstk_proto_t proto;
 } hkp_pstk_t;
 
 
@@ -569,6 +577,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 			if (!htsp_has(&ctx->holes, n->argv[1])) {
 				hkp_shape_t *hole = calloc(sizeof(hkp_hole_t), 1);
 				hole->subtree = n;
+				hole->unit = ctx->pstk_unit;
 				htsp_insert(&ctx->holes, n->argv[1], hole);
 			}
 			else {
