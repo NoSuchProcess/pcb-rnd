@@ -35,10 +35,13 @@
 #include <genvector/gds_char.h>
 
 #include "board.h"
+#include "data.h"
 #include "conf_core.h"
 #include "plug_io.h"
 #include "error.h"
 #include "safe_fs.h"
+
+#include "obj_subc.h"
 
 #define ltrim(s) while(isspace(*s)) (s)++
 
@@ -224,7 +227,7 @@ TODO("subc: rewrite this for subcircuits")
 	}
 }
 
-static void parse_package(hkp_ctx_t *ctx, node_t *nd)
+static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 {
 #if 0
 	static const char *tagnames[] = { "PACKAGE_GROUP", "MOUNT_TYPE", "NUMBER_LAYERS", "TIMESTAMP", NULL };
@@ -235,7 +238,8 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 	char *desc = "", *refdes = "", *value = "";
 	node_t *n, *tt, *attr, *tmp;
 	pcb_coord_t tx = 0, ty = 0;
-	int dir = 0;
+	double rot = 0;
+	int on_bottom = 0;
 
 	/* extract global */
 	for(n = nd->first_child; n != NULL; n = n->next) {
@@ -253,17 +257,31 @@ static void parse_package(hkp_ctx_t *ctx, node_t *nd)
 		}
 	}
 
-TODO("subc: rewrite for subc")
+	subc = pcb_subc_alloc();
+
+	if (dt != NULL) {
+		pcb_subc_reg(dt, subc);
+		pcb_obj_id_reg(dt, subc);
+
+		/* bind the via rtree so that vias added in this subc show up on the board */
+		if (ctx->pcb != NULL)
+			pcb_subc_bind_globals(ctx->pcb, subc);
+	}
+
+	pcb_subc_create_aux(subc, tx, ty, rot, on_bottom);
+
 #if 0
 	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb, 0, 1),
 		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);
+#endif
 
+#if 0
 	/* extract pins and silk lines */
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PIN") == 0)
-			parse_pin(ctx, elem, n);
+			parse_pin(ctx, subc, n);
 		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0)
-			parse_silk(ctx, elem, n);
+			parse_silk(ctx, subc, n);
 	}
 #endif
 
@@ -277,6 +295,12 @@ TODO("subc: rewrite for subc")
 		}
 	}
 #endif
+
+
+	if ((dt != NULL) && (ctx->pcb != NULL)) {
+		pcb_subc_rebind(ctx->pcb, subc);
+	}
+	return subc;
 }
 
 static int parse_root(hkp_ctx_t *ctx)
@@ -300,7 +324,7 @@ static int parse_root(hkp_ctx_t *ctx)
 	/* build packages */
 	for(n = ctx->root->first_child; n != NULL; n = n->next)
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
-			parse_package(ctx, n);
+			parse_package(ctx, ctx->pcb->Data, n);
 
 	return 0;
 }
