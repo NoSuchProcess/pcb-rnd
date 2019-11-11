@@ -147,42 +147,44 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	return !(suc1 && suc2);
 }
 
-#if 0
-static void parse_silk(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
+static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
 {
-	node_t *tmp, *pp;
+	node_t *tmp, *pp, *rp;
 
-	tmp = find_nth(nd->first_child, "SIDE", 0);
-	if (tmp != NULL) {
-		if (strcmp(tmp->argv[1], "MNT_SIDE") != 0) {
-			pcb_message(PCB_MSG_ERROR, "Ignoring subcircuit silk line not on mount-side\n");
-			return;
-		}
-	}
 	pp = find_nth(nd->first_child, "POLYLINE_PATH", 0);
 	if (pp != NULL) {
-		pcb_coord_t th, px, py, x, y;
+		pcb_coord_t th = 1, px, py, x, y;
 		int n;
 		th = PCB_MM_TO_COORD(0.5);
 		tmp = find_nth(pp->first_child, "WIDTH", 0);
 		if (tmp != NULL)
-			pcb_get_value(tmp->argv[1], ctx->unit->suffix, NULL, NULL);
+			parse_coord(ctx, tmp->argv[1], &th);
 		tmp = find_nth(pp->first_child, "XY", 0);
+TODO("handle error: what it tmp == NULL?");
 		parse_xy(ctx, tmp->argv[1], &px, &py);
 		for(n = 2; n < tmp->argc; n++) {
 			parse_xy(ctx, tmp->argv[n], &x, &y);
-TODO("subc: rewrite this for subcircuits")
-#if 0
-			pcb_element_line_new(elem, px, py, x, y, th);
-#else
-	(void)th;
-#endif
+			pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags());
 			px = x;
 			py = y;
 		}
 	}
+
+	rp = find_nth(nd->first_child, "RECT_PATH", 0);
+	if (rp != NULL) {
+		pcb_coord_t th = 1, x1, y1, x2, y2;
+		tmp = find_nth(rp->first_child, "WIDTH", 0);
+		if (tmp != NULL)
+			parse_coord(ctx, tmp->argv[1], &th);
+		tmp = find_nth(rp->first_child, "XY", 0);
+		parse_xy(ctx, tmp->argv[1], &x1, &y1);
+		parse_xy(ctx, tmp->argv[2], &x2, &y2);
+		pcb_line_new(ly, x1, y1, x2, y1, th, 0, pcb_no_flags());
+		pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
+		pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
+		pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
+	}
 }
-#endif
 
 static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 {
@@ -268,10 +270,17 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PIN") == 0)
 			parse_pin(ctx, subc, n);
-#if 0
-		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0)
-			parse_silk(ctx, subc, n);
-#endif
+		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
+			pcb_layer_t *ly;
+			pcb_layer_type_t side = PCB_LYT_TOP;;
+			tmp = find_nth(n->first_child, "SIDE", 0);
+			if (tmp != NULL) {
+				if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) side = PCB_LYT_TOP;
+				else side = PCB_LYT_BOTTOM;
+			}
+			ly  = pcb_subc_get_layer(subc, side | PCB_LYT_SILK, PCB_LYC_AUTO, 1, "top-silk", 0);
+			parse_dwg(ctx, subc, ly, n);
+		}
 	}
 
 #if 0
