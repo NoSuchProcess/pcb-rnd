@@ -113,16 +113,16 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	return !(suc1 && suc2);
 }
 
+#if 0
 static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t px, pcb_coord_t py, char *name)
 {
 	pcb_flag_t flags = pcb_no_flags();
-	pcb_coord_t thickness, hole, ms, cl;
+	pcb_coord_t thickness, hole, ms;
 	char *curr, *next;
 	int sqpad_pending = 0;
 
 	thickness = 0;
 	hole = 0;
-	cl = PCB_MM_TO_COORD(1);
 	ms = 0;
 
 	for(curr = ps; curr != NULL; curr = next) {
@@ -160,6 +160,8 @@ static void parse_pstk(hkp_ctx_t *ctx, pcb_subc_t *subc, char *ps, pcb_coord_t p
 TODO("padstack: rewrite")
 #if 0
 				pcb_element_pad_new_rect(elem, px+w/2, py+h/2, px-w/2, py-h/2, cl, ms, name, name, flags);
+#else
+				(void)w; (void)h;
 #endif
 			}
 			else if (strncmp(curr, "Round", 5) == 0) {
@@ -192,13 +194,17 @@ TODO("padstack: rewrite")
 
 	if (sqpad_pending)
 		pcb_element_pad_new_rect(elem, px, py, px+thickness, py+thickness, cl, ms, name, name, flags);
+#else
+	(void)sqpad_pending; (void)ms; (void)hole; (void)thickness;
 #endif
 }
+#endif
 
+#if 0
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 {
 	node_t *tmp;
-	pcb_coord_t px, py, ms, cl;
+	pcb_coord_t px, py;
 
 	tmp = find_nth(nd->first_child, "XY", 0);
 	if (tmp == NULL) {
@@ -211,7 +217,9 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 	if (tmp != NULL)
 		parse_pstk(ctx, subc, tmp->argv[1], px, py, nd->argv[1]);
 }
+#endif
 
+#if 0
 static void parse_silk(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 {
 	node_t *tmp, *pp;
@@ -238,12 +246,15 @@ static void parse_silk(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 TODO("subc: rewrite this for subcircuits")
 #if 0
 			pcb_element_line_new(elem, px, py, x, y, th);
+#else
+	(void)th;
 #endif
 			px = x;
 			py = y;
 		}
 	}
 }
+#endif
 
 static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 {
@@ -252,7 +263,6 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	const char **t;
 #endif
 	pcb_subc_t *subc;
-	pcb_flag_t flags = pcb_no_flags();
 	char *end, *desc = "", *refdes = "", *value = "";
 	node_t *n, *tt, *attr, *tmp;
 	pcb_coord_t ox, oy, tx = 0, ty = 0;
@@ -322,6 +332,8 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 #if 0
 	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb, 0, 1),
 		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);
+#else
+	(void)desc; (void)refdes; (void)value;
 #endif
 
 #if 0
@@ -496,7 +508,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 
 	TODO("parse padstacks");
 
-	close(fpstk);
+	fclose(fpstk);
 	return 0;
 }
 
@@ -504,7 +516,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 {
 	hkp_ctx_t ctx;
 	int res = -1;
-	FILE *flay, *fpstk;
+	FILE *flay;
 	char *end, fn2[PCB_PATH_MAX];
 
 
