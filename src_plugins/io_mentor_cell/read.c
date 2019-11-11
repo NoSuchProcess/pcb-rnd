@@ -266,7 +266,8 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			seen_oxy = 1;
 		}
 		else if (strcmp(n->argv[0], "ROTATION") == 0) {
-			rot = strtod(n->argv[1], &end);
+			/* hkp rotation: top side positive value is CW; in pcb-rnd: that's negative */
+			rot = -strtod(n->argv[1], &end);
 			if (*end != '\0') {
 				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotationv value (expected numeric)\n");
 				return NULL;
