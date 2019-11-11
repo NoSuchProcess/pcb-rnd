@@ -5,6 +5,12 @@
 + BUG: The 'As Drawn' polygon contour {m d d} is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 + BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
 + BUG: run pcb-rnd, start new layout, press enter (empty name) -> segf [report: Evan, keantoken]
+- CLEANUP/FEATURE: new gcode export
+- FEATURE: extended objects: line-of-vias
+- FEATURE: new breadboard
+	- FEATURE: hidlib: render pixmap
+	- FEATURE: optional subc pixmaps from attributes
+	- DOC: pool node on how to use pixmap for breadboading
 
 2. For later releases ===============================================================================
 - CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node [report: Majenko]
@@ -36,10 +42,7 @@
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: thermal to undo stack. reproduce: new layout, place via, place poly around via, use thermal tool on via, {u u } undo shows thermal isn't undoable [report: miloh]
-- FEATURE: new breadboard
-	- FEATURE: hidlib: render pixmap
-	- FEATURE: optional subc pixmaps from attributes
-	- DOC: pool node on how to use pixmap for breadboading
+- FEATUER: new STL export
 - BUG: rat draw undo not stacking correctly -- repro: draw a rat, { u u } undo, then { c r } redraws it [report: miloh]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: (TT) route style upgrade to prototypes:
