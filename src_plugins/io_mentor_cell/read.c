@@ -295,6 +295,8 @@ static int parse_root(hkp_ctx_t *ctx)
 		}
 	}
 
+	pcb_layergrp_upgrade_to_pstk(ctx->pcb);
+
 	/* build packages */
 	for(n = ctx->root->first_child; n != NULL; n = n->next)
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
