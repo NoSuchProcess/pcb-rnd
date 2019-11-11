@@ -204,7 +204,7 @@ PCB_INLINE void pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, do
 	pry /= prlen;
 
 	c = tune * (-pry * ldx + prx * ldy) / (ldy * vx - ldx * vy);
-	pcb_printf("   vect: vx=%f;%f prx=%f;%f tune=%f\n", vx, vy, prx, pry, tune);
+	pcb_printf("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (pcb_coord_t)tune);
 	pcb_printf("   MOVE: %.012mm %mm;%mm\n", (pcb_coord_t)c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
 
 	v->point[0] += c * vx;
