@@ -146,6 +146,8 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 	node_t *tmp;
 	pcb_coord_t px, py;
 	hkp_pstk_t *hpstk;
+	pcb_cardinal_t pid;
+	pcb_pstk_t *ps;
 
 	tmp = find_nth(nd->first_child, "XY", 0);
 	if (tmp == NULL) {
@@ -164,6 +166,12 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 		pcb_message(PCB_MSG_ERROR, "Ignoring pin with undefined padstack '%s'\n", tmp->argv[1]);
 		return;
 	}
+
+	pid = pcb_pstk_proto_insert_dup(subc->data, &hpstk->proto, 1);
+	ps = pcb_pstk_alloc_id(subc->data, pid);
+	ps->x = px;
+	ps->y = py;
+	pcb_pstk_add(subc->data, ps);
 }
 
 static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
