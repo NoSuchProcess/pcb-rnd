@@ -128,6 +128,11 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 		}
 	}
 
+	if (!has_shape) {
+		pcb_message(PCB_MSG_ERROR, "PAD without a shape\n");
+		return NULL;
+	}
+
 	s->valid = 1;
 	ctx->unit = old_unit;
 	return s;
@@ -162,6 +167,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 	node_t *n, *hn, *on, *tn;
 	hkp_pstk_t *p = htsp_get(&ctx->pstks, ps);
 	int top_only = 0;
+	pcb_pstk_tshape_t *ts;
 
 	if (p == NULL)
 		return NULL;
@@ -218,6 +224,11 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 		TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
 	}
 
+	ts = pcb_vtpadstack_tshape_alloc_insert(&p->proto.tr, 0, 1);
+
+	memset(ts, 0, sizeof(pcb_vtpadstack_tshape_t));
+	ts->shape = calloc(sizeof(pcb_pstk_shape_t), 8); /* large enough to host all possible shapes; ->len will be smaller; when copied to the final prorotype e.g. in subcircuits, only entries used will be allocated */
+
 	/* parse the shapes */
 	for(n = n->first_child; n != NULL; n = n->next) {
 		lyt_name_t *ln;
@@ -229,9 +240,10 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 				shp = parse_shape(ctx, n->argv[1]);
 				if (shp == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Undefined shape '%s'\n", hn->argv[1]);
+					pcb_message(PCB_MSG_ERROR, "Undefined shape '%s'\n", n->argv[1]);
 					goto error;
 				}
+				ts->shape[ts->len++] = shp->shp;
 				printf("SHAPE: %d %s %lx %s %p\n", top_only, ln->name, ln->lyt, n->argv[1], shp);
 			}
 		}
