@@ -154,7 +154,9 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 		pcb_message(PCB_MSG_ERROR, "Ignoring pin with no coords\n");
 		return;
 	}
-	parse_xy(ctx, tmp->argv[1], &px, &py);
+
+	parse_coord(ctx, tmp->argv[1], &px);
+	parse_coord(ctx, tmp->argv[2], &py);
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
 	if (tmp == NULL) {
