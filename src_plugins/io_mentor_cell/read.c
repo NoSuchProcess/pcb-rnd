@@ -541,6 +541,10 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 	load_hkp(&ctx->padstacks, fpstk);
 
 	/* build the indices */
+	htsp_init(&ctx->shapes, strhash, strkeyeq);
+	htsp_init(&ctx->holes, strhash, strkeyeq);
+	htsp_init(&ctx->pstks, strhash, strkeyeq);
+
 	for(n = ctx->padstacks.root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "UNITS") == 0) {
 			ctx->pstk_unit = parse_units(n->argv[1]);
@@ -549,9 +553,42 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				return -1;
 			}
 		}
-		else if (strcmp(n->argv[0], "PAD") == 0) {}
-		else if (strcmp(n->argv[0], "HOLE") == 0) {}
-		else if (strcmp(n->argv[0], "PADSTACK") == 0) {}
+		else if (strcmp(n->argv[0], "PAD") == 0) {
+			if (!htsp_has(&ctx->shapes, n->argv[1])) {
+				hkp_shape_t *shp = calloc(sizeof(hkp_shape_t), 1);
+				shp->subtree = n;
+				shp->unit = ctx->pstk_unit;
+				htsp_insert(&ctx->shapes, n->argv[1], shp);
+			}
+			else {
+				pcb_message(PCB_MSG_ERROR, "Duplicate PAD '%s'\n", n->argv[1]);
+				return -1;
+			}
+		}
+		else if (strcmp(n->argv[0], "HOLE") == 0) {
+			if (!htsp_has(&ctx->holes, n->argv[1])) {
+				hkp_shape_t *shp = calloc(sizeof(hkp_shape_t), 1);
+				shp->subtree = n;
+				shp->unit = ctx->pstk_unit;
+				htsp_insert(&ctx->holes, n->argv[1], shp);
+			}
+			else {
+				pcb_message(PCB_MSG_ERROR, "Duplicate HOLE '%s'\n", n->argv[1]);
+				return -1;
+			}
+		}
+		else if (strcmp(n->argv[0], "PADSTACK") == 0) {
+			if (!htsp_has(&ctx->pstks, n->argv[1])) {
+				hkp_shape_t *shp = calloc(sizeof(hkp_shape_t), 1);
+				shp->subtree = n;
+				shp->unit = ctx->pstk_unit;
+				htsp_insert(&ctx->pstks, n->argv[1], shp);
+			}
+			else {
+				pcb_message(PCB_MSG_ERROR, "Duplicate PADSTACK '%s'\n", n->argv[1]);
+				return -1;
+			}
+		}
 	}
 
 	TODO("parse padstacks");
@@ -559,6 +596,30 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 	fclose(fpstk);
 	return 0;
 }
+
+static int free_pstks(hkp_ctx_t *ctx)
+{
+	htsp_entry_t *e;
+
+	for(e = htsp_first(&ctx->shapes); e != NULL; e = htsp_next(&ctx->shapes, e)) {
+		hkp_shape_t *shp = e->value;
+		free(e->value);
+	}
+	htsp_uninit(&ctx->shapes);
+
+	for(e = htsp_first(&ctx->holes); e != NULL; e = htsp_next(&ctx->holes, e)) {
+		hkp_hole_t *shp = e->value;
+		free(e->value);
+	}
+	htsp_uninit(&ctx->holes);
+
+	for(e = htsp_first(&ctx->pstks); e != NULL; e = htsp_next(&ctx->pstks, e)) {
+		hkp_shape_t *shp = e->value;
+		free(e->value);
+	}
+	htsp_uninit(&ctx->pstks);
+}
+
 
 int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
 {
@@ -610,6 +671,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	res = 0; /* all ok */
 
 	err:;
+	free_pstks(&ctx);
 	if (res != 0) {
 		if (ctx.layout.root != NULL) {
 			printf("### layout tree:\n");
