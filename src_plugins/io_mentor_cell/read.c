@@ -41,6 +41,7 @@
 #include "plug_io.h"
 #include "error.h"
 #include "safe_fs.h"
+#include "compat_misc.h"
 
 #include "obj_subc.h"
 
@@ -186,10 +187,51 @@ TODO("handle error: what it tmp == NULL?");
 	}
 }
 
+static pcb_layer_t *parse_subc_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln)
+{
+	pcb_layer_t *ly;
+	pcb_layer_type_t lyt = 0;
+	pcb_layer_combining_t lyc = 0;
+	char *purpose = NULL;
+	char *name = NULL;
+
+	if (strcmp(ln, "SILKSCREEN_TOP")) {
+		lyt = PCB_LYT_TOP | PCB_LYT_SILK;
+		lyc = PCB_LYC_AUTO;
+		name = "silk-top";
+	}
+	else if (strcmp(ln, "SILKSCREEN_BOTTOM")) {
+		lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK;
+		lyc = PCB_LYC_AUTO;
+		name = "silk-bot";
+	}
+	else if (strcmp(ln, "ASSEMBLY_TOP")) {
+		lyt = PCB_LYT_TOP | PCB_LYT_DOC;
+		lyc = PCB_LYC_AUTO;
+		purpose = "assy";
+		name = "top-assy";
+	}
+	else if (strcmp(ln, "ASSEMBLY_BOTTOM")) {
+		lyt = PCB_LYT_BOTTOM | PCB_LYT_DOC;
+		purpose = "assy";
+		name = "bot-assy";
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Unknown package layer '%s'\n", ln);
+		return NULL;
+	}
+
+	ly = pcb_subc_get_layer(subc, lyt, lyc, 1, name, (purpose != NULL));
+	if (purpose != NULL)
+		ly->meta.bound.purpose = pcb_strdup(purpose);
+	return ly;
+}
+
 static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 {
 	node_t *tt, *attr, *tmp;
 	pcb_coord_t tx, ty;
+	pcb_layer_t *ly;
 
 	tt = find_nth(textnode->first_child, "TEXT_TYPE", 0);
 	if (tt != NULL) {
@@ -199,7 +241,13 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 			pcb_attribute_put(&subc->Attributes, "footprint", textnode->argv[1]);
 		attr = find_nth(tt, "DISPLAY_ATTR", 0);
 		if (attr != NULL) {
-			tmp = find_nth(attr, "XY", 0);
+			tmp = find_nth(attr->first_child, "TEXT_LYR", 0);
+			if (tmp == NULL)
+				return;
+			ly = parse_subc_layer(ctx, subc, tmp->argv[1]);
+			if (ly == NULL)
+				return;
+			tmp = find_nth(attr->first_child, "XY", 0);
 			if (tmp != NULL)
 				parse_xy(ctx, tmp->argv[1], &tx, &ty);
 		}
