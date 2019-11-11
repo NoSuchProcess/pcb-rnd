@@ -216,6 +216,9 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 	pcb_vnode_t *v;
 	double offs2 = (double)offs * (double)offs;
 
+	if (offs < 0)
+		offs = -offs;
+
 	/* there are two ways dst can get too close to src: */
 
 	/* case #1: a point in dst is too close to a line in src */
