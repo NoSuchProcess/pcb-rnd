@@ -433,6 +433,11 @@ static void rtrim(gds_t *s)
 		s->array[n] = '\0';
 }
 
+static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
+{
+	TODO("parse padstacks");
+}
+
 int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
 {
 	hkp_ctx_t ctx;
@@ -440,7 +445,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	int argc, res = -1;
 	FILE *f;
 	gds_t vline;
-	char line[1024];
+	char *end, line[1024], fn2[PCB_PATH_MAX];
 	int level;
 
 
@@ -448,10 +453,23 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	if (f == NULL)
 		goto err;
 
+	/* create the file name for the padstacks */
+	strncpy(fn2, fn, PCB_PATH_MAX);
+	fn2[PCB_PATH_MAX-1] = '\0';
+	end = strchr(fn2, PCB_DIR_SEPARATOR_C);
+	if (end == NULL)
+		end = fn2;
+	else
+		end++;
+	strcpy(end, "Padstack.hkp");
+	io_mentor_cell_pstks(&ctx, fn2);
+
 	ctx.pcb = pcb;
 	ctx.unit = "mm";
 	ctx.curr = ctx.root = calloc(sizeof(node_t), 1);
 	gds_init(&vline);
+
+
 
 	/* read physical lines, build virtual lines and save them in the tree*/
 	while(fgets(line, sizeof(line), f) != NULL) {
