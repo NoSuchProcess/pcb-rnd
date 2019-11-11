@@ -255,6 +255,8 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 				/* this is how much the point needs to be moved away from the line */
 				tune = offs - sqrt(dist);
+				if (tune < 1)
+					continue;
 				pcb_printf("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
 
 
