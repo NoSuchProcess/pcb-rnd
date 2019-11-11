@@ -567,10 +567,9 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 		}
 		else if (strcmp(n->argv[0], "HOLE") == 0) {
 			if (!htsp_has(&ctx->holes, n->argv[1])) {
-				hkp_shape_t *shp = calloc(sizeof(hkp_shape_t), 1);
-				shp->subtree = n;
-				shp->unit = ctx->pstk_unit;
-				htsp_insert(&ctx->holes, n->argv[1], shp);
+				hkp_shape_t *hole = calloc(sizeof(hkp_hole_t), 1);
+				hole->subtree = n;
+				htsp_insert(&ctx->holes, n->argv[1], hole);
 			}
 			else {
 				pcb_message(PCB_MSG_ERROR, "Duplicate HOLE '%s'\n", n->argv[1]);
@@ -579,10 +578,10 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 		}
 		else if (strcmp(n->argv[0], "PADSTACK") == 0) {
 			if (!htsp_has(&ctx->pstks, n->argv[1])) {
-				hkp_shape_t *shp = calloc(sizeof(hkp_shape_t), 1);
-				shp->subtree = n;
-				shp->unit = ctx->pstk_unit;
-				htsp_insert(&ctx->pstks, n->argv[1], shp);
+				hkp_shape_t *pstk = calloc(sizeof(hkp_pstk_t), 1);
+				pstk->subtree = n;
+				pstk->unit = ctx->pstk_unit;
+				htsp_insert(&ctx->pstks, n->argv[1], pstk);
 			}
 			else {
 				pcb_message(PCB_MSG_ERROR, "Duplicate PADSTACK '%s'\n", n->argv[1]);
@@ -603,19 +602,19 @@ static int free_pstks(hkp_ctx_t *ctx)
 
 	for(e = htsp_first(&ctx->shapes); e != NULL; e = htsp_next(&ctx->shapes, e)) {
 		hkp_shape_t *shp = e->value;
-		free(e->value);
+		free(shp);
 	}
 	htsp_uninit(&ctx->shapes);
 
 	for(e = htsp_first(&ctx->holes); e != NULL; e = htsp_next(&ctx->holes, e)) {
-		hkp_hole_t *shp = e->value;
-		free(e->value);
+		hkp_hole_t *hole = e->value;
+		free(hole);
 	}
 	htsp_uninit(&ctx->holes);
 
 	for(e = htsp_first(&ctx->pstks); e != NULL; e = htsp_next(&ctx->pstks, e)) {
-		hkp_shape_t *shp = e->value;
-		free(e->value);
+		hkp_pstk_t *pstk = e->value;
+		free(pstk);
 	}
 	htsp_uninit(&ctx->pstks);
 }
