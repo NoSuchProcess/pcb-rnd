@@ -96,6 +96,10 @@ static int del_widget_flag(int idx)
 void lesstif_update_widget_flags(pcb_hid_t *hid, const char *cookie)
 {
 	int i;
+
+	if (ltf_hidlib == NULL)
+		return;
+
 	for (i = 0; i < n_wflags; i++) {
 		int v;
 		Arg args[2];
