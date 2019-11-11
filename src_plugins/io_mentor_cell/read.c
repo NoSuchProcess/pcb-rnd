@@ -451,15 +451,51 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 	TODO("parse padstacks");
 }
 
+static void load_hkp(hkp_tree_t *tree, FILE *f)
+{
+	char *s, line[1024];
+	gds_t vline;
+	int level;
+
+	tree->curr = tree->root = calloc(sizeof(node_t), 1);
+	gds_init(&vline);
+
+	/* read physical lines, build virtual lines and save them in the tree*/
+	while(fgets(line, sizeof(line), f) != NULL) {
+		s = line;
+		while(isspace(*s)) s++;
+
+		/* first char is '.' means it's a new virtual line */
+		if (*s == '.') {
+			if (gds_len(&vline) > 0) {
+				rtrim(&vline);
+				save_vline(tree, vline.array, level);
+				gds_truncate(&vline, 0);
+			}
+			level = 0;
+			while(*s == '.') { s++; level++; };
+		}
+
+		if (gds_len(&vline) > 0)
+			gds_append(&vline, ' ');
+		gds_append_str(&vline, s);
+	}
+
+	/* the last virtual line before eof */
+	if (gds_len(&vline) > 0) {
+		rtrim(&vline);
+		save_vline(tree, vline.array, level);
+	}
+	gds_uninit(&vline);
+
+}
+
 int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
 {
 	hkp_ctx_t ctx;
-	char *s, **argv;
-	int argc, res = -1;
+	int res = -1;
 	FILE *f;
-	gds_t vline;
-	char *end, line[1024], fn2[PCB_PATH_MAX];
-	int level;
+	char *end, fn2[PCB_PATH_MAX];
 
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
@@ -479,38 +515,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	ctx.pcb = pcb;
 	ctx.unit = "mm";
-
-
-	ctx.layout.curr = ctx.layout.root = calloc(sizeof(node_t), 1);
-	gds_init(&vline);
-
-	/* read physical lines, build virtual lines and save them in the tree*/
-	while(fgets(line, sizeof(line), f) != NULL) {
-		s = line;
-		while(isspace(*s)) s++;
-
-		/* first char is '.' means it's a new virtual line */
-		if (*s == '.') {
-			if (gds_len(&vline) > 0) {
-				rtrim(&vline);
-				save_vline(&ctx.layout, vline.array, level);
-				gds_truncate(&vline, 0);
-			}
-			level = 0;
-			while(*s == '.') { s++; level++; };
-		}
-
-		if (gds_len(&vline) > 0)
-			gds_append(&vline, ' ');
-		gds_append_str(&vline, s);
-	}
-
-	/* the last virtual line before eof */
-	if (gds_len(&vline) > 0) {
-		rtrim(&vline);
-		save_vline(&ctx.layout, vline.array, level);
-	}
-	gds_uninit(&vline);
+	load_hkp(&ctx.layout, f);
 
 	/* we are loading the cells into a board, make a default layer stack for that */
 	pcb_layergrp_inhibit_inc();
