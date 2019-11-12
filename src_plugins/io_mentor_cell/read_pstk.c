@@ -396,7 +396,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 	return 0;
 }
 
-static int free_pstks(hkp_ctx_t *ctx)
+static void free_pstks(hkp_ctx_t *ctx)
 {
 	htsp_entry_t *e;
 
