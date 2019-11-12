@@ -130,14 +130,14 @@ ha:pcb-rnd-board-v6 {
     li:layers { 14; }
    }
    ha:12 {
-    name = top-assy
+    name = top_assy
     ha:type { top=1; doc=1; }
     purpose = assy
     ha:attributes { init-invis=1; }
     li:layers { 15; }
    }
    ha:13 {
-    name = bot-assy
+    name = bot_assy
     ha:type { bottom=1; doc=1; }
     purpose = assy
     ha:attributes { init-invis=1; }
