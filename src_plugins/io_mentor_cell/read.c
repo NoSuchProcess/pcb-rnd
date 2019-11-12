@@ -265,6 +265,13 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 	tmp = find_nth(attr->first_child, "XY", 0);
 	if (tmp != NULL)
 		parse_xy(ctx, tmp->argv[1], &tx, &ty);
+
+TODO("ROTATION");
+
+TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
+TODO("HEIGHT should become scale");
+TODO("figure what TEXT_OPTIONS we have");
+TODO("STROKE_WIDTH: we have support for that, but what's the unit? what if it is 0?");
 	pcb_text_new(ly, pcb_font(PCB, 0, 0), tx, ty, rot, 100, 0, text_str, pcb_flag_make(flg));
 }
 
