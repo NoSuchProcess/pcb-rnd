@@ -149,18 +149,19 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 }
 
 TODO("May need to get a side arg, if rotation is specified differently on the back side");
-static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out);
+static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 {
 	double rot;
+	char *end;
 
 	/* hkp rotation: top side positive value is CW; in pcb-rnd: that's negative */
-	rot = -strtod(n->argv[1], &end);
+	rot = -strtod(nd->argv[1], &end);
 	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (expected numeric)\n", n->argv[1]);
+		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (expected numeric)\n", nd->argv[1]);
 		return -1;
 	}
 	if ((rot < -360) || (rot > 360)) {
-		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (out of range)\n", n->argv[1]);
+		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (out of range)\n", nd->argv[1]);
 		return -1;
 	}
 	*rot_out = rot;
@@ -297,7 +298,9 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 		parse_coord(ctx, tmp->argv[2], &ty);
 	}
 
-TODO("ROTATION");
+	tmp = find_nth(attr->first_child, "ROTATION", 0);
+	if (tmp != NULL)
+		parse_rot(ctx, tmp, &rot);
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
