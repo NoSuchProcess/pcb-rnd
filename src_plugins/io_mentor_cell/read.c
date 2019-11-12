@@ -569,7 +569,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	/* create the file name for the padstacks */
 	strncpy(fn2, fn, PCB_PATH_MAX);
 	fn2[PCB_PATH_MAX-1] = '\0';
-	end = strchr(fn2, PCB_DIR_SEPARATOR_C);
+	end = strrchr(fn2, PCB_DIR_SEPARATOR_C);
 	if (end == NULL)
 		end = fn2;
 	else
