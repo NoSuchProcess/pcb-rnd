@@ -312,12 +312,7 @@ TODO("STROKE_WIDTH: we have support for that, but what's the unit? what if it is
 
 static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 {
-#if 0
-	static const char *tagnames[] = { "PACKAGE_GROUP", "MOUNT_TYPE", "NUMBER_LAYERS", "TIMESTAMP", NULL };
-	const char **t;
-#endif
 	pcb_subc_t *subc;
-	char *end, *desc = "", *refdes = "", *value = "";
 	node_t *n, *tt, *attr, *tmp;
 	pcb_coord_t ox, oy;
 	double rot = 0;
@@ -327,7 +322,9 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 
 	/* extract global */
 	for(n = nd->first_child; n != NULL; n = n->next) {
-		if (strcmp(n->argv[0], "DESCRIPTION") == 0) desc = n->argv[1];
+		if (strcmp(n->argv[0], "DESCRIPTION") == 0) {
+			pcb_attribute_put(&subc->Attributes, "description", n->argv[1]);
+		}
 		else if (strcmp(n->argv[0], "XY") == 0) {
 			if ((parse_coord(ctx, n->argv[1], &ox) != 0) || (parse_coord(ctx, n->argv[2], &oy) != 0)) {
 				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement XY coord\n");
@@ -370,13 +367,6 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	}
 
 	pcb_subc_create_aux(subc, ox, oy, rot, on_bottom);
-
-#if 0
-	elem = pcb_element_new(ctx->pcb->Data, NULL, pcb_font(ctx->pcb, 0, 1),
-		flags, desc, refdes, value, tx, ty, dir, 100, flags, 0);
-#else
-	(void)desc; (void)refdes; (void)value;
-#endif
 
 	/* extract pins and silk lines */
 	for(n = nd->first_child; n != NULL; n = n->next) {
