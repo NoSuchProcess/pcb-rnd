@@ -273,7 +273,6 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 				ts->shape[ts->len].layer_mask = ln->lyt;
 				ts->shape[ts->len].comb = ln->lyc;
 				ts->len++;
-				printf("SHAPE: %d %s %lx %s %p\n", top_only, ln->name, ln->lyt, n->argv[1], shp);
 			}
 		}
 	}
