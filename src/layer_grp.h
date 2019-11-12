@@ -261,7 +261,8 @@ typedef struct pcb_dflgmap_s {
 	const char *purpose;
 	pcb_layer_combining_t comb;
 	enum { /* bitfield */
-		PCB_DFLGMAP_FORCE_END = 1
+		PCB_DFLGMAP_FORCE_END = 1,
+		PCB_DFLGMAP_INIT_INVIS = 2
 	} flags;
 } pcb_dflgmap_t;
 

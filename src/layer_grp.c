@@ -1111,9 +1111,9 @@ const pcb_dflgmap_t pcb_dflg_outline = {
 };
 
 const pcb_dflgmap_t pcb_dflgmap_doc[] = {
-	{"top_assy",           PCB_LYT_TOP | PCB_LYT_DOC,     "assy", 0,            0},
-	{"bottom_assy",        PCB_LYT_BOTTOM | PCB_LYT_DOC,  "assy", 0,            0},
-	{"fab",                PCB_LYT_TOP | PCB_LYT_DOC,     "fab",  PCB_LYC_AUTO, 0},
+	{"top_assy",           PCB_LYT_TOP | PCB_LYT_DOC,     "assy", 0,            PCB_DFLGMAP_INIT_INVIS},
+	{"bottom_assy",        PCB_LYT_BOTTOM | PCB_LYT_DOC,  "assy", 0,            PCB_DFLGMAP_INIT_INVIS},
+	{"fab",                PCB_LYT_TOP | PCB_LYT_DOC,     "fab",  PCB_LYC_AUTO, PCB_DFLGMAP_INIT_INVIS},
 	{NULL, 0}
 };
 
@@ -1163,6 +1163,8 @@ void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
 		}
 		else
 			grp = pcb_get_grp_new_intern_(pcb, 1, (m->flags & PCB_DFLGMAP_FORCE_END));
+		if (m->flags & PCB_DFLGMAP_INIT_INVIS)
+			pcb_attribute_put(&grp->Attributes, "init-invis", "1");
 		pcb_layergrp_set_dflgly(pcb, grp, m, NULL, NULL);
 	}
 	inhibit_notify--;
