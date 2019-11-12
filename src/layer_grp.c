@@ -1081,9 +1081,9 @@ const pcb_dflgmap_t pcb_dflgmap[] = {
 	{"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    NULL, 0, 0},
 	{"any_internal_copper", PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0, 0},
 	{"bottom_copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0, 0},
-	{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   NULL, PCB_LYC_SUB | PCB_LYC_AUTO, 1},
-	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   NULL, PCB_LYC_AUTO, 1},
-	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  NULL, PCB_LYC_AUTO, 1},
+	{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   NULL, PCB_LYC_SUB | PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
 
 	{"pmech",               PCB_LYT_MECH,                    "proute", PCB_LYC_AUTO, 0},
 	{"umech",               PCB_LYT_MECH,                    "uroute", PCB_LYC_AUTO, 0},
@@ -1162,7 +1162,7 @@ void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
 			free(grp->name);
 		}
 		else
-			grp = pcb_get_grp_new_intern_(pcb, 1, m->force_end);
+			grp = pcb_get_grp_new_intern_(pcb, 1, (m->flags & PCB_DFLGMAP_FORCE_END));
 		pcb_layergrp_set_dflgly(pcb, grp, m, NULL, NULL);
 	}
 	inhibit_notify--;

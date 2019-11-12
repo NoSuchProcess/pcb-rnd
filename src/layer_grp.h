@@ -260,7 +260,9 @@ typedef struct pcb_dflgmap_s {
 	pcb_layer_type_t lyt;
 	const char *purpose;
 	pcb_layer_combining_t comb;
-	int force_end;
+	enum { /* bitfield */
+		PCB_DFLGMAP_FORCE_END = 1
+	} flags;
 } pcb_dflgmap_t;
 
 extern const pcb_dflgmap_t pcb_dflgmap[]; /* the whole map, without doc layers */
