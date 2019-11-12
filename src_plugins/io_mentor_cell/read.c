@@ -235,6 +235,7 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 	pcb_layer_t *ly;
 	const char *text_str;
 	pcb_flag_values_t flg = PCB_FLAG_FLOATER;
+	int omit_on_silk = 0;
 
 	tt = find_nth(textnode->first_child, "TEXT_TYPE", 0);
 	if (tt == NULL)
@@ -250,6 +251,7 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 		pcb_attribute_put(&subc->Attributes, "footprint", textnode->argv[1]);
 		text_str = "%a.parent.footprint%";
 		flg |= PCB_FLAG_DYNTEXT;
+		omit_on_silk = 1;
 	}
 
 	attr = find_nth(tt, "DISPLAY_ATTR", 0);
@@ -262,6 +264,13 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 	ly = parse_subc_layer(ctx, subc, tmp->argv[1]);
 	if (ly == NULL)
 		return;
+
+	/* Special case: although the PARTNO is written on the silk layer by the
+	   hkp file, it does not show up on the gerber so there must be some
+	   mechanism in the original software to hide it */
+	if (omit_on_silk && (pcb_layer_flags_(ly) & PCB_LYT_SILK))
+		return;
+
 	tmp = find_nth(attr->first_child, "XY", 0);
 	if (tmp != NULL) {
 		parse_coord(ctx, tmp->argv[1], &tx);
