@@ -195,23 +195,23 @@ static pcb_layer_t *parse_subc_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const cha
 	char *purpose = NULL;
 	char *name = NULL;
 
-	if (strcmp(ln, "SILKSCREEN_TOP")) {
+	if (strcmp(ln, "SILKSCREEN_TOP") == 0) {
 		lyt = PCB_LYT_TOP | PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
 		name = "silk-top";
 	}
-	else if (strcmp(ln, "SILKSCREEN_BOTTOM")) {
+	else if (strcmp(ln, "SILKSCREEN_BOTTOM") == 0) {
 		lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
 		name = "silk-bot";
 	}
-	else if (strcmp(ln, "ASSEMBLY_TOP")) {
+	else if (strcmp(ln, "ASSEMBLY_TOP") == 0) {
 		lyt = PCB_LYT_TOP | PCB_LYT_DOC;
 		lyc = PCB_LYC_AUTO;
 		purpose = "assy";
 		name = "top-assy";
 	}
-	else if (strcmp(ln, "ASSEMBLY_BOTTOM")) {
+	else if (strcmp(ln, "ASSEMBLY_BOTTOM") == 0) {
 		lyt = PCB_LYT_BOTTOM | PCB_LYT_DOC;
 		purpose = "assy";
 		name = "bot-assy";
