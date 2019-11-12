@@ -415,7 +415,11 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 		}
 	}
 
-	pcb_layergrp_upgrade_to_pstk(ctx->pcb);
+	/* make sure layers potentially referenced by padstacks and subcircuits are
+	   all available even if they were not picked up by reading the input
+	   layer stack */
+	pcb_layergrp_upgrade_by_map(ctx->pcb, pcb_dflgmap);
+	pcb_layergrp_upgrade_by_map(ctx->pcb, pcb_dflgmap_doc);
 
 	/* build packages */
 	for(n = tree->root->first_child; n != NULL; n = n->next)
