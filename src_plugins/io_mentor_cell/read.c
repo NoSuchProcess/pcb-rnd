@@ -148,6 +148,26 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	return !(suc1 && suc2);
 }
 
+TODO("May need to get a side arg, if rotation is specified differently on the back side");
+static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out);
+{
+	double rot;
+
+	/* hkp rotation: top side positive value is CW; in pcb-rnd: that's negative */
+	rot = -strtod(n->argv[1], &end);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (expected numeric)\n", n->argv[1]);
+		return -1;
+	}
+	if ((rot < -360) || (rot > 360)) {
+		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (out of range)\n", n->argv[1]);
+		return -1;
+	}
+	*rot_out = rot;
+	return 0;
+}
+
+
 static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
 {
 	node_t *tmp, *pp, *rp;
@@ -313,14 +333,8 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			seen_oxy = 1;
 		}
 		else if (strcmp(n->argv[0], "ROTATION") == 0) {
-			/* hkp rotation: top side positive value is CW; in pcb-rnd: that's negative */
-			rot = -strtod(n->argv[1], &end);
-			if (*end != '\0') {
-				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotation value (expected numeric)\n");
-				return NULL;
-			}
-			if ((rot < -360) || (rot > 360)) {
-				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement rotation value (out of range)\n");
+			if (parse_rot(ctx, n, &rot) != 0) {
+				pcb_message(PCB_MSG_ERROR, "Can't load package due to wrong rotation value\n");
 				return NULL;
 			}
 		}
