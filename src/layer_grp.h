@@ -278,6 +278,8 @@ extern const pcb_dflgmap_t pcb_dflg_substrate;
 extern const pcb_dflgmap_t pcb_dflg_bot_copper;
 extern const pcb_dflgmap_t pcb_dflg_outline;
 
+/* Overwrite or create all groups from a map */
+void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map);
 
 /* Overwrite an existing group from a default layer group map entry and create
    a layer in the group */

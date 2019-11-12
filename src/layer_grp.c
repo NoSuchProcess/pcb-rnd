@@ -1143,14 +1143,14 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 	grp->valid = 1;
 }
 
-void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
+void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
 {
 	const pcb_dflgmap_t *m;
 	pcb_layergrp_t *grp;
 	pcb_layergrp_id_t gid;
 
 	inhibit_notify++;
-	for(m = pcb_dflgmap; m->name != NULL; m++) {
+	for(m = map; m->name != NULL; m++) {
 		int found;
 		if (m->purpose == NULL)
 			found = pcb_layergrp_list(pcb, m->lyt, &gid, 1);
@@ -1169,6 +1169,10 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 	NOTIFY(pcb);
 }
 
+void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
+{
+	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap);
+}
 
 static pcb_layergrp_id_t pcb_layergrp_get_cached(pcb_board_t *pcb, pcb_layer_id_t *cache, unsigned int loc, unsigned int typ)
 {
