@@ -45,7 +45,7 @@ static int parse_dia(hkp_ctx_t *ctx, node_t *roundn, pcb_coord_t *dia)
 static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 {
 	const pcb_unit_t *old_unit;
-	node_t *n, *hr, *ho;
+	node_t *hr, *ho;
 	hkp_hole_t *h = htsp_get(&ctx->holes, name);
 
 	if (h == NULL)
