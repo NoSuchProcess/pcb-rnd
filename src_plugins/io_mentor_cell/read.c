@@ -263,8 +263,10 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 	if (ly == NULL)
 		return;
 	tmp = find_nth(attr->first_child, "XY", 0);
-	if (tmp != NULL)
-		parse_xy(ctx, tmp->argv[1], &tx, &ty);
+	if (tmp != NULL) {
+		parse_coord(ctx, tmp->argv[1], &tx);
+		parse_coord(ctx, tmp->argv[2], &ty);
+	}
 
 TODO("ROTATION");
 
