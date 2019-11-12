@@ -1110,6 +1110,13 @@ const pcb_dflgmap_t pcb_dflg_outline = {
 	"outline",             PCB_LYT_BOUNDARY, "uroute", 0, 0
 };
 
+const pcb_dflgmap_t pcb_dflgmap_doc[] = {
+	{"top_assy",           PCB_LYT_TOP | PCB_LYT_DOC,     "assy", 0,            0},
+	{"bottom_assy",        PCB_LYT_BOTTOM | PCB_LYT_DOC,  "assy", 0,            0},
+	{"fab",                PCB_LYT_TOP | PCB_LYT_DOC,     "fab",  PCB_LYC_AUTO, 0},
+	{NULL, 0}
+};
+
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname)
 {
 	pcb_layergrp_id_t gid = grp - pcb->LayerGroups.grp;

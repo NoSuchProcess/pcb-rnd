@@ -263,11 +263,13 @@ typedef struct pcb_dflgmap_s {
 	int force_end;
 } pcb_dflgmap_t;
 
-extern const pcb_dflgmap_t pcb_dflgmap[]; /* the whole map */
+extern const pcb_dflgmap_t pcb_dflgmap[]; /* the whole map, without doc layers */
 
 /* pointers into the array marking boundaries */
 extern const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper;
 extern const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper;
+
+extern const pcb_dflgmap_t pcb_dflgmap_doc[]; /* map for the doc layers, e.g. assy and fab layers */
 
 /* predefined common default map entries for building a stack */
 extern const pcb_dflgmap_t pcb_dflg_top_copper;
