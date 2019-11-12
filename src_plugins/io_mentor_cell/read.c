@@ -237,32 +237,35 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 	pcb_flag_values_t flg = PCB_FLAG_FLOATER;
 
 	tt = find_nth(textnode->first_child, "TEXT_TYPE", 0);
-	if (tt != NULL) {
-		text_str = textnode->argv[1];
-		if (strcmp(tt->argv[1], "REF_DES") == 0) {
-			pcb_attribute_put(&subc->Attributes, "refdes", textnode->argv[1]);
-			text_str = "%a.parent.refdes%";
-			flg |= PCB_FLAG_DYNTEXT;
-		}
-		else if (strcmp(tt->argv[1], "PARTNO") == 0) {
-			pcb_attribute_put(&subc->Attributes, "footprint", textnode->argv[1]);
-			text_str = "%a.parent.footprint%";
-			flg |= PCB_FLAG_DYNTEXT;
-		}
-		attr = find_nth(tt, "DISPLAY_ATTR", 0);
-		if (attr != NULL) {
-			tmp = find_nth(attr->first_child, "TEXT_LYR", 0);
-			if (tmp == NULL)
-				return;
-			ly = parse_subc_layer(ctx, subc, tmp->argv[1]);
-			if (ly == NULL)
-				return;
-			tmp = find_nth(attr->first_child, "XY", 0);
-			if (tmp != NULL)
-				parse_xy(ctx, tmp->argv[1], &tx, &ty);
-			pcb_text_new(ly, pcb_font(PCB, 0, 0), tx, ty, rot, 100, 0, text_str, pcb_flag_make(flg));
-		}
+	if (tt == NULL)
+		return;
+
+	text_str = textnode->argv[1];
+	if (strcmp(tt->argv[1], "REF_DES") == 0) {
+		pcb_attribute_put(&subc->Attributes, "refdes", textnode->argv[1]);
+		text_str = "%a.parent.refdes%";
+		flg |= PCB_FLAG_DYNTEXT;
 	}
+	else if (strcmp(tt->argv[1], "PARTNO") == 0) {
+		pcb_attribute_put(&subc->Attributes, "footprint", textnode->argv[1]);
+		text_str = "%a.parent.footprint%";
+		flg |= PCB_FLAG_DYNTEXT;
+	}
+
+	attr = find_nth(tt, "DISPLAY_ATTR", 0);
+	if (attr == NULL)
+		return;
+
+	tmp = find_nth(attr->first_child, "TEXT_LYR", 0);
+	if (tmp == NULL)
+		return;
+	ly = parse_subc_layer(ctx, subc, tmp->argv[1]);
+	if (ly == NULL)
+		return;
+	tmp = find_nth(attr->first_child, "XY", 0);
+	if (tmp != NULL)
+		parse_xy(ctx, tmp->argv[1], &tx, &ty);
+	pcb_text_new(ly, pcb_font(PCB, 0, 0), tx, ty, rot, 100, 0, text_str, pcb_flag_make(flg));
 }
 
 
