@@ -60,7 +60,6 @@ typedef struct hid_gc_s {
 	const pcb_color_t *pcolor;
 	double alpha_mult;
 	pcb_coord_t width;
-	gchar xor;
 } hid_gc_s;
 
 void ghid_gl_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
@@ -316,6 +315,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	render_priv_t *priv = ghidgui->port.render_priv;
 	static GdkColormap *colormap = NULL;
 	double r, g, b, a;
+	pcb_composite_op_t composite_op = hidgl_get_drawing_mode();
 
 	if (*gc->pcolor->str == '\0') {
 		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = 0, setting to magenta\n");
@@ -325,7 +325,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	if ((priv->current_color_packed == gc->pcolor->packed) && (priv->current_alpha_mult == gc->alpha_mult))
 		return;
 
-	priv->current_color_packed = gc->pcolor->packed;
+  priv->current_color_packed = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? ~gc->pcolor->packed : gc->pcolor->packed);
 	priv->current_alpha_mult = gc->alpha_mult;
 
 	if (colormap == NULL)
@@ -355,7 +355,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 			cc->blue = cc->color.blue / 65535.;
 			cc->color_set = 1;
 		}
-		if (gc->xor) {
+		if (composite_op == PCB_HID_COMP_POSITIVE_XOR) {
 			if (!cc->xor_set) {
 				cc->xor_color.red = cc->color.red ^ ((unsigned)priv->bg_color.r << 8);
 				cc->xor_color.green = cc->color.green ^ ((unsigned)priv->bg_color.g << 8);
@@ -366,10 +366,15 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 				cc->blue = cc->color.blue / 65535.;
 				cc->xor_set = 1;
 			}
+			r = cc->xor_color.red / 65535.0;
+			g = cc->xor_color.green / 65535.0;
+			b = cc->xor_color.blue / 65535.0;
 		}
-		r = cc->red;
-		g = cc->green;
-		b = cc->blue;
+		else {
+			r = cc->red;
+			g = cc->green;
+			b = cc->blue;
+		}
 		a = pcbhl_conf.appearance.layer_alpha;
 	}
 	if (1) {

@@ -85,7 +85,7 @@ static inline void mode_positive_xor(pcb_bool direct, const pcb_box_t *screen)
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_EQUIV);
+	glLogicOp(GL_XOR);
 }
 
 static inline void mode_negative(pcb_bool direct, const pcb_box_t *screen)
@@ -133,6 +133,11 @@ static inline void mode_flush(pcb_bool direct, pcb_bool xor_mode, const pcb_box_
 	glDisable(GL_STENCIL_TEST);
 	stencilgl_reset_stencil_usage();
 	comp_stencil_bit = 0;
+}
+
+pcb_composite_op_t hidgl_get_drawing_mode()
+{
+	return composite_op;
 }
 
 void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
