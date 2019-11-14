@@ -100,6 +100,7 @@ typedef struct {
 
 /*** read_pstk.c ***/
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd);
+static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps);
 
 
 /*** local ***/
@@ -335,7 +336,7 @@ static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
 		pcb_message(PCB_MSG_ERROR, "Missing VIA PADSTACK, can't place via\n"); \
 		return;
 	}
-	hps = htsp_get(&ctx->pstks, tmp->argv[1]);
+	hps = parse_pstk(ctx, tmp->argv[1]);
 	if (hps == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Unknown VIA PADSTACK '%s', can't place via\n", tmp->argv[1]);
 		return;
