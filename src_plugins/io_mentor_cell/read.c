@@ -926,6 +926,9 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	FILE *flay;
 	char *end, fn2[PCB_PATH_MAX];
 
+	pcb_data_clip_inhibit_inc(pcb->Data);
+	pcb_layergrp_inhibit_inc();
+
 	memset(&ctx, 0, sizeof(ctx));
 
 	flay = pcb_fopen(&pcb->hidlib, fn, "r");
@@ -984,6 +987,9 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	}
 	destroy(ctx.padstacks.root);
 	destroy(ctx.layout.root);
+
+	pcb_layergrp_inhibit_dec();
+	pcb_data_clip_inhibit_dec(pcb->Data, 1);
 
 	return res;
 }
