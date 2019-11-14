@@ -987,6 +987,41 @@ static void load_hkp(hkp_tree_t *tree, FILE *f, const char *fn)
 
 }
 
+static int io_mentor_cell_netlist(hkp_ctx_t *ctx, const char *fn)
+{
+	FILE *fnet;
+	node_t *p, *nnet, *pinsect;
+	hkp_tree_t net_tree; /* no need to keep the tree in ctx, no data is needed after the function returns */
+
+	fnet = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
+	if (fnet == NULL) {
+		pcb_message(PCB_MSG_ERROR, "can't open netprops hkp '%s' for read\n", fn);
+		return -1;
+	}
+
+	load_hkp(&net_tree, fnet, fn);
+	fclose(fnet);
+
+	for(nnet = net_tree.root->first_child; nnet != NULL; nnet = nnet->next) {
+		if (strcmp(nnet->argv[0], "NETNAME") == 0) {
+fprintf(stderr, "netname: '%s'\n", nnet->argv[1]);
+			pinsect = find_nth(nnet->first_child, "PIN_SECTION", 0);
+			if (pinsect == NULL)
+				continue;
+			for(p = pinsect->first_child; p != NULL; p = p->next) {
+				if (strcmp(p->argv[0], "REF_PINNAME") != 0)
+					continue;
+fprintf(stderr, "         '%s'\n", p->argv[1]);
+			}
+		}
+	}
+
+
+	tree_destroy(&net_tree);
+	return 0;
+}
+
+
 #include "read_pstk.c"
 
 int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
@@ -1024,6 +1059,13 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	ctx.pcb = pcb;
 	ctx.unit = get_unit_struct("mm");
+
+	strcpy(end, "NetProps.hkp");
+	if (io_mentor_cell_netlist(&ctx, fn2) != 0) {
+		fclose(flay);
+		goto err;
+	}
+
 
 	load_hkp(&ctx.layout, flay, fn);
 	fclose(flay);
