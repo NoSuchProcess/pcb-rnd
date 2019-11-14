@@ -87,6 +87,8 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 
+	int num_cop_layers;
+
 	const pcb_unit_t *unit;      /* default unit used while converting coords any given time */
 	const pcb_unit_t *pstk_unit; /* default unit for the padstacks file */
 
@@ -252,7 +254,25 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 	char *purpose = NULL;
 	char *name = NULL;
 
-	if (strcmp(ln, "SILKSCREEN_TOP") == 0) {
+	if (strncmp(ln, "LYR_", 4) == 0) {
+		int cidx;
+		char *end;
+		TODO("can a subcircuit have intern copper objects? assume NO for now:");
+		assert(subc == NULL);
+		cidx = strtol(ln+4, &end, 10);
+		if (*end != '\0') {
+			pcb_message(PCB_MSG_ERROR, "Unknown layer '%s' (expected integer after LYR_)\n", ln);
+			return NULL;
+		}
+		cidx--; /* hkp numbers from 1, we number from 0 */
+		if ((cidx < 0) || (cidx >= ctx->num_cop_layers)) {
+			pcb_message(PCB_MSG_ERROR, "Layer '%s' is out of range (1..%d)\n", ln, ctx->num_cop_layers);
+			return NULL;
+		}
+		TODO("pick board copper layer");
+		return NULL;
+	}
+	else if (strcmp(ln, "SILKSCREEN_TOP") == 0) {
 		lyt = PCB_LYT_TOP | PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
 		name = "silk-top";
@@ -289,7 +309,7 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 		name = "top-fab";
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Unknown package layer '%s'\n", ln);
+		pcb_message(PCB_MSG_ERROR, "Unknown layer '%s'\n", ln);
 		return NULL;
 	}
 
