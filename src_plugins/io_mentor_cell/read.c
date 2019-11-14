@@ -206,9 +206,11 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 			return; \
 		} \
 		ly = parse_layer(ctx, subc, __tmp__->argv[1]); \
+		if (ly == NULL) { \
+			pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp__->argv[1], name); \
+			return; \
+		} \
 	}
-
-TODO("^^^ process the layer name");
 
 
 #define DWG_REQ_LY(node) \
@@ -302,6 +304,8 @@ static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *
 		parse_dwg_path_polyline(ctx, subc, ly, n);
 	else if (strcmp(n->argv[0], "RECT_PATH") == 0)
 		parse_dwg_path_rect(ctx, subc, ly, n);
+	else if ((strcmp(n->argv[0], "TEXT") == 0) && (subc == NULL))
+		parse_dwg_text(ctx, subc, ly, n, 0, 0);
 	else
 		return 0;
 
