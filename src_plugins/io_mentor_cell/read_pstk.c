@@ -323,6 +323,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 	ps->y = py;
 	ps->proto = pid;
 	pcb_pstk_add(subc->data, ps);
+	pcb_attribute_put(&ps->Attributes, "term", nd->argv[1]);
 }
 
 static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
