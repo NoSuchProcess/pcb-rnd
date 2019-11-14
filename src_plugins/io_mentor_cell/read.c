@@ -112,6 +112,28 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 
 /*** High level parser ***/
 
+static int hkp_error(node_t *nd, char *fmt, ...)
+{
+	gds_t str;
+	va_list ap;
+
+	gds_init(&str);
+	gds_append_str(&str, "io_mentor_cell ERROR");
+	if (nd != NULL)
+		pcb_append_printf(&str, " at %s:%d: ", nd->tree->filename, nd->lineno);
+	else
+		gds_append_str(&str, ": ");
+
+	va_start(ap, fmt);
+	pcb_append_vprintf(&str, fmt, ap);
+	va_end(ap);
+
+	pcb_message(PCB_MSG_ERROR, "%s", str.array);
+
+	gds_uninit(&str);
+	return -1;
+}
+
 /* Return the idxth sibling with matching name */
 static node_t *find_nth(node_t *nd, char *name, int idx)
 {
@@ -191,10 +213,8 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 
 	/* hkp rotation: top side positive value is CW; in pcb-rnd: that's negative */
 	rot = -strtod(nd->argv[1], &end);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "Wrong rotation value '%s' (expected numeric)\n", nd->argv[1]);
-		return -1;
-	}
+	if (*end != '\0')
+		return hkp_error(nd, "Wrong rotation value '%s' (expected numeric)\n", nd->argv[1]);
 	if ((rot < -360) || (rot > 360)) {
 		pcb_message(PCB_MSG_ERROR, "Wrong rotation value '%s' (out of range)\n", nd->argv[1]);
 		return -1;
