@@ -306,6 +306,8 @@ static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
 	pcb_coord_t vx, vy;
 	node_t *tmp;
 	hkp_pstk_t *hps;
+	pcb_cardinal_t pid;
+	pcb_pstk_t *ps;
 
 	tmp = find_nth(nv->first_child, "XY", 0);
 	if (tmp == NULL) {
@@ -338,7 +340,13 @@ static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
 		pcb_message(PCB_MSG_ERROR, "Unknown VIA PADSTACK '%s', can't place via\n", tmp->argv[1]);
 		return;
 	}
-pcb_fprintf(stderr, "via: %s at %mm;%mm\n", tmp->argv[1], vx, vy);
+
+	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, &hps->proto, 1);
+	ps = pcb_pstk_alloc(ctx->pcb->Data);
+	ps->x = vx;
+	ps->y = vy;
+	ps->proto = pid;
+	pcb_pstk_add(ctx->pcb->Data, ps);
 }
 
 
