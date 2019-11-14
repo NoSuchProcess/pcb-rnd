@@ -636,6 +636,7 @@ static void load_hkp(hkp_tree_t *tree, FILE *f)
 	/* read physical lines, build virtual lines and save them in the tree*/
 	while(fgets(line, sizeof(line), f) != NULL) {
 		s = line;
+		if (*s == '!') s++; /* header line prefix? */
 		while(isspace(*s)) s++;
 
 		/* first char is '.' means it's a new virtual line */
