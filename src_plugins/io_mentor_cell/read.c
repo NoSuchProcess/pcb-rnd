@@ -234,16 +234,29 @@ static void parse_dwg_path_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *l
 	pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
 }
 
-static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
+/* Returns number of objects drawn: 0 or 1 */
+static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *n)
+{
+	if (strcmp(n->argv[0], "POLYLINE_PATH") == 0)
+		parse_dwg_path_polyline(ctx, subc, ly, n);
+	else if (strcmp(n->argv[0], "RECT_PATH") == 0)
+		parse_dwg_path_rect(ctx, subc, ly, n);
+	else
+		return 0;
+
+	return 1;
+}
+
+/* Returns number of objects drawn: 0 or more */
+static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
 {
 	node_t *n;
+	long cnt;
 
-	for(n = nd->first_child; n != NULL; n = n->next) {
-		if (strcmp(n->argv[0], "POLYLINE_PATH") == 0)
-			parse_dwg_path_polyline(ctx, subc, ly, n);
-		else if (strcmp(n->argv[0], "RECT_PATH") == 0)
-			parse_dwg_path_rect(ctx, subc, ly, n);
-	}
+	for(n = nd->first_child; n != NULL; n = n->next)
+		cnt += parse_dwg(ctx, subc, ly, nd);
+
+	return cnt;
 }
 
 static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln)
@@ -460,7 +473,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 				else side = PCB_LYT_BOTTOM;
 			}
 			ly  = pcb_subc_get_layer(subc, side | PCB_LYT_SILK, PCB_LYC_AUTO, 1, "top-silk", 0);
-			parse_dwg(ctx, subc, ly, n);
+			parse_dwg_all(ctx, subc, ly, n);
 		}
 	}
 
