@@ -289,7 +289,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 
 
-static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
+static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_bottom)
 {
 	node_t *tmp;
 	pcb_coord_t px, py;
@@ -322,6 +322,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 	ps->x = px;
 	ps->y = py;
 	ps->proto = pid;
+	ps->xmirror = ps->smirror = on_bottom;
 	pcb_pstk_add(subc->data, ps);
 	pcb_attribute_put(&ps->Attributes, "term", nd->argv[1]);
 }

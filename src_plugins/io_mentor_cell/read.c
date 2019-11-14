@@ -104,7 +104,7 @@ typedef struct {
 } hkp_ctx_t;
 
 /*** read_pstk.c ***/
-static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd);
+static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_bottom);
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps);
 
 
@@ -711,7 +711,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	/* extract pins and silk lines */
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PIN") == 0)
-			parse_pin(ctx, subc, n);
+			parse_pin(ctx, subc, n, on_bottom);
 		else
 			parse_dwg_layer(ctx, subc, n);
 	}
