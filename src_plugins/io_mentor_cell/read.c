@@ -205,8 +205,7 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
 			return; \
 		} \
-		if (subc != NULL) \
-			ly = parse_layer(ctx, subc, __tmp__->argv[1]); \
+		ly = parse_layer(ctx, subc, __tmp__->argv[1]); \
 	}
 
 TODO("^^^ process the layer name");
