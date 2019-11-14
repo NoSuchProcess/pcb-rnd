@@ -262,6 +262,14 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 		lyc = PCB_LYC_AUTO;
 		name = "silk-bot";
 	}
+	else if (strcmp(ln, "SOLDERMASK_TOP") == 0) {
+		lyt = PCB_LYT_TOP | PCB_LYT_MASK;
+		lyc = PCB_LYC_AUTO;
+	}
+	else if (strcmp(ln, "SOLDERMASK_BOTTOM") == 0) {
+		lyt = PCB_LYT_BOTTOM | PCB_LYT_MASK;
+		lyc = PCB_LYC_AUTO;
+	}
 	else if (strcmp(ln, "ASSEMBLY_TOP") == 0) {
 		lyt = PCB_LYT_TOP | PCB_LYT_DOC;
 		lyc = PCB_LYC_AUTO;
@@ -270,8 +278,15 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 	}
 	else if (strcmp(ln, "ASSEMBLY_BOTTOM") == 0) {
 		lyt = PCB_LYT_BOTTOM | PCB_LYT_DOC;
+		lyc = PCB_LYC_AUTO;
 		purpose = "assy";
 		name = "bot-assy";
+	}
+	else if (strncmp(ln, "DRILLDRAWING_", 13) == 0) {
+		lyt = PCB_LYT_TOP | PCB_LYT_DOC;
+		lyc = PCB_LYC_AUTO;
+		purpose = "fab";
+		name = "top-fab";
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Unknown package layer '%s'\n", ln);
