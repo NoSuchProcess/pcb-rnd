@@ -363,6 +363,8 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 	if (strncmp(ln, "LYR_", 4) == 0) {
 		int cidx;
 		char *end;
+		pcb_layergrp_id_t gid;
+
 		TODO("can a subcircuit have intern copper objects? assume NO for now:");
 		assert(subc == NULL);
 		cidx = strtol(ln+4, &end, 10);
@@ -375,8 +377,13 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 			pcb_message(PCB_MSG_ERROR, "Layer '%s' is out of range (1..%d)\n", ln, ctx->num_cop_layers);
 			return NULL;
 		}
-		TODO("pick board copper layer");
-		return NULL;
+		gid = pcb_layergrp_step(ctx->pcb, pcb_layergrp_get_top_copper(), cidx, PCB_LYT_COPPER);
+		if (gid < 0) {
+			pcb_message(PCB_MSG_ERROR, "Layer '%s' is out of range (copper layer group not found)\n", ln);
+			return NULL;
+		}
+		assert(ctx->pcb->LayerGroups.grp[gid].len > 0);
+		return &ctx->pcb->Data->Layer[ctx->pcb->LayerGroups.grp[gid].lid[0]];
 	}
 	else if (strcmp(ln, "SILKSCREEN_TOP") == 0) {
 		lyt = PCB_LYT_TOP | PCB_LYT_SILK;
