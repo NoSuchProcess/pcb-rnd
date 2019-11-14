@@ -291,10 +291,17 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
 		pcb_layer_type_t side = PCB_LYT_TOP;;
 		tmp = find_nth(n->first_child, "SIDE", 0);
 		if (tmp != NULL) {
-			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) side = PCB_LYT_TOP;
+			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) side = PCB_LYT_TOP;
 			else side = PCB_LYT_BOTTOM;
 		}
-		ly = pcb_subc_get_layer(subc, side | PCB_LYT_SILK, PCB_LYC_AUTO, 1, "top-silk", 0);
+		if (subc == NULL) {
+			pcb_layer_id_t lid;
+			if (pcb_layer_list(ctx->pcb, side | PCB_LYT_SILK, &lid, 1) != 1)
+				return 0;
+			ly = &ctx->pcb->Data->Layer[lid];
+		}
+		else
+			ly = pcb_subc_get_layer(subc, side | PCB_LYT_SILK, PCB_LYC_AUTO, 1, "top-silk", 0);
 		cnt += parse_dwg_all(ctx, subc, ly, n);
 	}
 
@@ -506,7 +513,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PIN") == 0)
 			parse_pin(ctx, subc, n);
-		else 
+		else
 			parse_dwg_layer(ctx, subc, n);
 	}
 
@@ -609,8 +616,11 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	for(n = tree->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
 			parse_package(ctx, ctx->pcb->Data, n);
-		else
+		else {
 			parse_dwg(ctx, NULL, NULL, n);
+			parse_dwg_layer(ctx, NULL, n);
+		}
+
 	}
 
 	/* 'autocrop' the board for now (required by y mirror and unknown extents) */
