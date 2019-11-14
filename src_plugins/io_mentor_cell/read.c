@@ -244,7 +244,7 @@ static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t 
 	}
 }
 
-static pcb_layer_t *parse_subc_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln)
+static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln)
 {
 	pcb_layer_t *ly;
 	pcb_layer_type_t lyt = 0;
@@ -278,9 +278,17 @@ static pcb_layer_t *parse_subc_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const cha
 		return NULL;
 	}
 
-	ly = pcb_subc_get_layer(subc, lyt, lyc, 1, name, (purpose != NULL));
-	if (purpose != NULL)
-		ly->meta.bound.purpose = pcb_strdup(purpose);
+	if (subc != NULL) {
+		ly = pcb_subc_get_layer(subc, lyt, lyc, 1, name, (purpose != NULL));
+		if ((purpose != NULL) && (ly->meta.bound.purpose == NULL)) /* newly created bound layer */
+			ly->meta.bound.purpose = pcb_strdup(purpose);
+	}
+	else {
+		int ln = pcb_layer_listp(ctx->pcb, lyt, &ly, 1, -1, purpose);
+		if (ln == 0)
+			return NULL;
+		return ly;
+	}
 	return ly;
 }
 
@@ -318,7 +326,7 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 	tmp = find_nth(attr->first_child, "TEXT_LYR", 0);
 	if (tmp == NULL)
 		return;
-	ly = parse_subc_layer(ctx, subc, tmp->argv[1]);
+	ly = parse_layer(ctx, subc, tmp->argv[1]);
 	if (ly == NULL)
 		return;
 
