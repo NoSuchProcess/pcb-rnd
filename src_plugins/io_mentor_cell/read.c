@@ -195,12 +195,31 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 	return 0;
 }
 
+#define DWG_LY(node, name) \
+	if (ly == NULL) { \
+		node_t *__tmp__ = find_nth(node->first_child, name, 0); \
+		if (__tmp__ == NULL) { \
+			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
+			return 0; \
+		} \
+	}
+
+TODO("^^^ process the layer name");
+
+
+#define DWG_REQ_LY(node) \
+	if (ly == NULL) { \
+		pcb_message(PCB_MSG_ERROR, "Internal error: expected existing layer from the caller\n"); \
+		return 0; \
+	}
 
 static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, px, py, x, y;
 	int n;
+
+	DWG_REQ_LY(pp);
 
 	th = PCB_MM_TO_COORD(0.5);
 	tmp = find_nth(pp->first_child, "WIDTH", 0);
@@ -221,6 +240,8 @@ static void parse_dwg_path_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *l
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, x1, y1, x2, y2;
+
+	DWG_REQ_LY(rp);
 
 	tmp = find_nth(rp->first_child, "WIDTH", 0);
 	if (tmp != NULL)
@@ -572,10 +593,13 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	/* plus assy and fab layers */
 	pcb_layergrp_upgrade_by_map(ctx->pcb, pcb_dflgmap_doc);
 
-	/* build packages */
-	for(n = tree->root->first_child; n != NULL; n = n->next)
+	/* build packages and draw objects */
+	for(n = tree->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
 			parse_package(ctx, ctx->pcb->Data, n);
+		else
+			parse_dwg(ctx, NULL, NULL, n);
+	}
 
 	/* 'autocrop' the board for now (required by y mirror and unknown extents) */
 	{
