@@ -199,16 +199,30 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 	return 0;
 }
 
-#define DWG_LY(node, name) \
+static void d1() {}
+
+#define DWG_LY(node, name, name2) \
 	if (ly == NULL) { \
-		node_t *__tmp__ = find_nth(node->first_child, name, 0); \
-		if (__tmp__ == NULL) { \
-			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
-			return; \
+		node_t *__tmp__ = find_nth(node->first_child, name, 0), *__tmp2__ = NULL; \
+		if ((__tmp__ == NULL) && (name2 != NULL)) \
+			__tmp2__ = find_nth(node->first_child, name2, 0); \
+		if (__tmp__ != NULL) { \
+			ly = parse_layer(ctx, subc, __tmp__->argv[1]); \
+			if (ly == NULL) { \
+				pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp__->argv[1], name); \
+				return; \
+			} \
 		} \
-		ly = parse_layer(ctx, subc, __tmp__->argv[1]); \
-		if (ly == NULL) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp__->argv[1], name); \
+		else if (__tmp2__ != NULL) { \
+			ly = parse_layer(ctx, subc, __tmp2__->argv[1]); \
+			if (ly == NULL) { \
+				pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp2__->argv[1], name2); \
+				return; \
+			} \
+			return; \
+		}\
+		else {\
+			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
 			return; \
 		} \
 	}
@@ -277,7 +291,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 	if (attr == NULL)
 		return;
 
-	DWG_LY(attr, "TEXT_LYR")
+	DWG_LY(attr, "TEXT_LYR", "USER_LYR")
 
 	/* Special case: although the PARTNO is written on the silk layer by the
 	   hkp file, it does not show up on the gerber so there must be some
