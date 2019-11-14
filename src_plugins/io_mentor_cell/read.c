@@ -965,7 +965,6 @@ static void load_hkp(hkp_tree_t *tree, FILE *f, const char *fn)
 
 		/* first char is '.' means it's a new virtual line */
 		if (*s == '.') {
-			lineno++;
 			if (gds_len(&vline) > 0) {
 				rtrim(&vline);
 				save_vline(tree, vline.array, level, lineno);
@@ -978,6 +977,7 @@ static void load_hkp(hkp_tree_t *tree, FILE *f, const char *fn)
 		if (gds_len(&vline) > 0)
 			gds_append(&vline, ' ');
 		gds_append_str(&vline, s);
+		lineno++;
 	}
 
 	/* the last virtual line before eof */
