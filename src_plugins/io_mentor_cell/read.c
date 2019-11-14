@@ -301,6 +301,46 @@ TODO("STROKE_WIDTH: we have support for that, but what's the unit? what if it is
 	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg));
 }
 
+static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
+{
+	pcb_coord_t vx, vy;
+	node_t *tmp;
+	hkp_pstk_t *hps;
+
+	tmp = find_nth(nv->first_child, "XY", 0);
+	if (tmp == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Missing VIA XY, can't place via\n"); \
+		return;
+	}
+	parse_x(ctx, tmp->argv[1], &vx);
+	parse_y(ctx, tmp->argv[2], &vy);
+
+	TODO("bbvia:");
+/*
+	tmp = find_nth(nv->first_child, "LAYER_PAIR", 0);
+	if (tmp != NULL) {
+	
+	}
+*/
+
+	tmp = find_nth(nv->first_child, "VIA_OPTIONS", 0);
+	if (tmp != NULL) {
+		TODO("what's this?");
+	}
+
+	tmp = find_nth(nv->first_child, "PADSTACK", 0);
+	if (tmp == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Missing VIA PADSTACK, can't place via\n"); \
+		return;
+	}
+	hps = htsp_get(&ctx->pstks, tmp->argv[1]);
+	if (hps == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Unknown VIA PADSTACK '%s', can't place via\n", tmp->argv[1]);
+		return;
+	}
+pcb_fprintf(stderr, "via: %s at %mm;%mm\n", tmp->argv[1], vx, vy);
+}
+
 
 /* Returns number of objects drawn: 0 or 1 */
 static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *n)
@@ -657,6 +697,8 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 			}
 			parse_dwg_all(ctx, NULL, ly, n);
 		}
+		else if (strcmp(n->argv[0], "VIA") == 0)
+			parse_dgw_via(ctx, n);
 	}
 }
 
