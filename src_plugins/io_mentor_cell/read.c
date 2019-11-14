@@ -200,7 +200,7 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 		node_t *__tmp__ = find_nth(node->first_child, name, 0); \
 		if (__tmp__ == NULL) { \
 			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
-			return 0; \
+			return; \
 		} \
 	}
 
@@ -210,7 +210,7 @@ TODO("^^^ process the layer name");
 #define DWG_REQ_LY(node) \
 	if (ly == NULL) { \
 		pcb_message(PCB_MSG_ERROR, "Internal error: expected existing layer from the caller\n"); \
-		return 0; \
+		return; \
 	}
 
 static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
@@ -272,10 +272,31 @@ static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *
 static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
 {
 	node_t *n;
-	long cnt;
+	long cnt = 0;
 
 	for(n = nd->first_child; n != NULL; n = n->next)
 		cnt += parse_dwg(ctx, subc, ly, n);
+
+	return cnt;
+}
+
+/* Returns number of objects drawn: 0 or more */
+static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
+{
+	long cnt = 0;
+	node_t *tmp;
+
+	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
+		pcb_layer_t *ly;
+		pcb_layer_type_t side = PCB_LYT_TOP;;
+		tmp = find_nth(n->first_child, "SIDE", 0);
+		if (tmp != NULL) {
+			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) side = PCB_LYT_TOP;
+			else side = PCB_LYT_BOTTOM;
+		}
+		ly = pcb_subc_get_layer(subc, side | PCB_LYT_SILK, PCB_LYC_AUTO, 1, "top-silk", 0);
+		cnt += parse_dwg_all(ctx, subc, ly, n);
+	}
 
 	return cnt;
 }
@@ -485,17 +506,8 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PIN") == 0)
 			parse_pin(ctx, subc, n);
-		else if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
-			pcb_layer_t *ly;
-			pcb_layer_type_t side = PCB_LYT_TOP;;
-			tmp = find_nth(n->first_child, "SIDE", 0);
-			if (tmp != NULL) {
-				if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) side = PCB_LYT_TOP;
-				else side = PCB_LYT_BOTTOM;
-			}
-			ly  = pcb_subc_get_layer(subc, side | PCB_LYT_SILK, PCB_LYC_AUTO, 1, "top-silk", 0);
-			parse_dwg_all(ctx, subc, ly, n);
-		}
+		else 
+			parse_dwg_layer(ctx, subc, n);
 	}
 
 #if 0
