@@ -336,7 +336,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 		return -1;
 	}
 
-	load_hkp(&ctx->padstacks, fpstk);
+	load_hkp(&ctx->padstacks, fpstk, fn);
 
 	/* build the indices */
 	htsp_init(&ctx->shapes, strhash, strkeyeq);

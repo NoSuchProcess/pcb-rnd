@@ -48,18 +48,22 @@
 #define ltrim(s) while(isspace(*s)) (s)++
 
 typedef struct node_s node_t;
+typedef struct hkp_tree_s hkp_tree_t;
 
 struct node_s {
 	char **argv;
 	int argc;
 	int level;
+	hkp_tree_t *tree;
+	long lineno;
 	node_t *parent, *next;
 	node_t *first_child, *last_child;
 };
 
-typedef struct {
+struct hkp_tree_s {
+	char *filename;
 	node_t *root, *curr;
-} hkp_tree_t;
+};
 
 typedef struct {
 	const pcb_unit_t *unit;
@@ -862,7 +866,7 @@ static void dump(node_t *nd)
 		dump(nd);
 }
 
-static void destroy(node_t *nd)
+static void node_destroy(node_t *nd)
 {
 	node_t *n, *next;
 
@@ -873,20 +877,30 @@ static void destroy(node_t *nd)
 
 	for(n = nd->first_child; n != NULL; n = next) {
 		next = n->next;
-		destroy(n);
+		node_destroy(n);
 	}
 
 	free(nd);
 }
 
+static void tree_destroy(hkp_tree_t *tree)
+{
+	node_destroy(tree->root);
+	free(tree->filename);
+	tree->root = NULL;
+	tree->filename = NULL;
+}
+
 /* Split up a virtual line and save it in the tree */
-void save_vline(hkp_tree_t *tree, char *vline, int level)
+void save_vline(hkp_tree_t *tree, char *vline, int level, long lineno)
 {
 	node_t *nd;
 
 	nd = calloc(sizeof(node_t), 1);
 	nd->argc = qparse2(vline, &nd->argv, QPARSE_DOUBLE_QUOTE | QPARSE_PAREN | QPARSE_MULTISEP);
 	nd->level = level;
+	nd->lineno = lineno;
+	nd->tree = tree;
 
 	if (level == tree->curr->level) { /* sibling */
 		sibling:;
@@ -912,12 +926,14 @@ static void rtrim(gds_t *s)
 		s->array[n] = '\0';
 }
 
-static void load_hkp(hkp_tree_t *tree, FILE *f)
+static void load_hkp(hkp_tree_t *tree, FILE *f, const char *fn)
 {
 	char *s, line[1024];
 	gds_t vline;
 	int level;
+	long lineno = 0;
 
+	tree->filename = pcb_strdup(fn);
 	tree->curr = tree->root = calloc(sizeof(node_t), 1);
 	gds_init(&vline);
 
@@ -929,9 +945,10 @@ static void load_hkp(hkp_tree_t *tree, FILE *f)
 
 		/* first char is '.' means it's a new virtual line */
 		if (*s == '.') {
+			lineno++;
 			if (gds_len(&vline) > 0) {
 				rtrim(&vline);
-				save_vline(tree, vline.array, level);
+				save_vline(tree, vline.array, level, lineno);
 				gds_truncate(&vline, 0);
 			}
 			level = 0;
@@ -946,7 +963,7 @@ static void load_hkp(hkp_tree_t *tree, FILE *f)
 	/* the last virtual line before eof */
 	if (gds_len(&vline) > 0) {
 		rtrim(&vline);
-		save_vline(tree, vline.array, level);
+		save_vline(tree, vline.array, level, lineno);
 	}
 	gds_uninit(&vline);
 
@@ -990,7 +1007,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	ctx.pcb = pcb;
 	ctx.unit = get_unit_struct("mm");
 
-	load_hkp(&ctx.layout, flay);
+	load_hkp(&ctx.layout, flay, fn);
 	fclose(flay);
 
 	/* we are loading the cells into a board, make a default layer stack for that */
@@ -1020,8 +1037,8 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 			dump(ctx.padstacks.root);
 		}
 	}
-	destroy(ctx.padstacks.root);
-	destroy(ctx.layout.root);
+	tree_destroy(&ctx.padstacks);
+	tree_destroy(&ctx.layout);
 
 	pcb_layergrp_inhibit_dec();
 	pcb_data_clip_inhibit_dec(pcb->Data, 1);
