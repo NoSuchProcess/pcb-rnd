@@ -197,37 +197,39 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
 {
 	node_t *tmp;
-		pcb_coord_t th = 1, px, py, x, y;
-		int n;
-		th = PCB_MM_TO_COORD(0.5);
-		tmp = find_nth(pp->first_child, "WIDTH", 0);
-		if (tmp != NULL)
-			parse_coord(ctx, tmp->argv[1], &th);
-		tmp = find_nth(pp->first_child, "XY", 0);
+	pcb_coord_t th = 1, px, py, x, y;
+	int n;
+
+	th = PCB_MM_TO_COORD(0.5);
+	tmp = find_nth(pp->first_child, "WIDTH", 0);
+	if (tmp != NULL)
+		parse_coord(ctx, tmp->argv[1], &th);
+	tmp = find_nth(pp->first_child, "XY", 0);
 TODO("handle error: what it tmp == NULL?");
-		parse_xy(ctx, tmp->argv[1], &px, &py, 1);
-		for(n = 2; n < tmp->argc; n++) {
-			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
-			pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags());
-			px = x;
-			py = y;
-		}
+	parse_xy(ctx, tmp->argv[1], &px, &py, 1);
+	for(n = 2; n < tmp->argc; n++) {
+		parse_xy(ctx, tmp->argv[n], &x, &y, 1);
+		pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags());
+		px = x;
+		py = y;
+	}
 }
 
 static void parse_dwg_path_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp)
 {
 	node_t *tmp;
-		pcb_coord_t th = 1, x1, y1, x2, y2;
-		tmp = find_nth(rp->first_child, "WIDTH", 0);
-		if (tmp != NULL)
-			parse_coord(ctx, tmp->argv[1], &th);
-		tmp = find_nth(rp->first_child, "XY", 0);
-		parse_xy(ctx, tmp->argv[1], &x1, &y1, 1);
-		parse_xy(ctx, tmp->argv[2], &x2, &y2, 1);
-		pcb_line_new(ly, x1, y1, x2, y1, th, 0, pcb_no_flags());
-		pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
-		pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
-		pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
+	pcb_coord_t th = 1, x1, y1, x2, y2;
+
+	tmp = find_nth(rp->first_child, "WIDTH", 0);
+	if (tmp != NULL)
+		parse_coord(ctx, tmp->argv[1], &th);
+	tmp = find_nth(rp->first_child, "XY", 0);
+	parse_xy(ctx, tmp->argv[1], &x1, &y1, 1);
+	parse_xy(ctx, tmp->argv[2], &x2, &y2, 1);
+	pcb_line_new(ly, x1, y1, x2, y1, th, 0, pcb_no_flags());
+	pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
+	pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
+	pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
 }
 
 static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
