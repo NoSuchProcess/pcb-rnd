@@ -129,10 +129,27 @@ static int parse_coord(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
 	return !suc;
 }
 
+static int parse_x(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
+{
+	return parse_coord(ctx, s, crd);
+}
+
+
+static int parse_y(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
+{
+	pcb_coord_t tmp;
+	if (parse_coord(ctx, s, &tmp) != 0)
+		return -1;
+	*crd = ctx->pcb->hidlib.size_y - tmp;
+	return 0;
+}
+
+
 /* split s and parse  it into (x,y) - modifies s */
-static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
+static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int xform)
 {
 	char *sy;
+	pcb_coord_t xx, yy;
 	pcb_bool suc1, suc2;
 
 	sy = strchr(s, ',');
@@ -142,8 +159,16 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y)
 	*sy = '\0';
 	sy++;
 
-	*x = pcb_get_value(s, ctx->unit->suffix, NULL, &suc1);
-	*y = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
+
+	xx = pcb_get_value(s, ctx->unit->suffix, NULL, &suc1);
+	yy = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
+
+	if (xform) {
+		yy = ctx->pcb->hidlib.size_y - yy;
+	}
+	
+	*x = xx;
+	*y = yy;
 
 	return !(suc1 && suc2);
 }
@@ -183,9 +208,9 @@ static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t 
 			parse_coord(ctx, tmp->argv[1], &th);
 		tmp = find_nth(pp->first_child, "XY", 0);
 TODO("handle error: what it tmp == NULL?");
-		parse_xy(ctx, tmp->argv[1], &px, &py);
+		parse_xy(ctx, tmp->argv[1], &px, &py, 1);
 		for(n = 2; n < tmp->argc; n++) {
-			parse_xy(ctx, tmp->argv[n], &x, &y);
+			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
 			pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags());
 			px = x;
 			py = y;
@@ -199,8 +224,8 @@ TODO("handle error: what it tmp == NULL?");
 		if (tmp != NULL)
 			parse_coord(ctx, tmp->argv[1], &th);
 		tmp = find_nth(rp->first_child, "XY", 0);
-		parse_xy(ctx, tmp->argv[1], &x1, &y1);
-		parse_xy(ctx, tmp->argv[2], &x2, &y2);
+		parse_xy(ctx, tmp->argv[1], &x1, &y1, 1);
+		parse_xy(ctx, tmp->argv[2], &x2, &y2, 1);
 		pcb_line_new(ly, x1, y1, x2, y1, th, 0, pcb_no_flags());
 		pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
 		pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
@@ -294,8 +319,8 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 
 	tmp = find_nth(attr->first_child, "XY", 0);
 	if (tmp != NULL) {
-		parse_coord(ctx, tmp->argv[1], &tx);
-		parse_coord(ctx, tmp->argv[2], &ty);
+		parse_x(ctx, tmp->argv[1], &tx);
+		parse_y(ctx, tmp->argv[2], &ty);
 	}
 
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
@@ -326,7 +351,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			pcb_attribute_put(&subc->Attributes, "description", n->argv[1]);
 		}
 		else if (strcmp(n->argv[0], "XY") == 0) {
-			if ((parse_coord(ctx, n->argv[1], &ox) != 0) || (parse_coord(ctx, n->argv[2], &oy) != 0)) {
+			if ((parse_x(ctx, n->argv[1], &ox) != 0) || (parse_y(ctx, n->argv[2], &oy) != 0)) {
 				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement XY coord\n");
 				return NULL;
 			}

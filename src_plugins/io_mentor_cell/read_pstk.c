@@ -111,7 +111,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 
 	on = find_nth(s->subtree->first_child, "OFFSET", 0);
 	if (on != NULL)
-		parse_xy(ctx, on->argv[1], &ox, &oy);
+		parse_xy(ctx, on->argv[1], &ox, &oy, 0);
 
 	memset(&s->shp, 0, sizeof(pcb_pstk_shape_t));
 
@@ -234,7 +234,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 		on = find_nth(hn->first_child, "OFFSET", 0);
 		if (on != NULL) {
-			parse_xy(ctx, on->argv[1], &ox, &oy);
+			parse_xy(ctx, on->argv[1], &ox, &oy, 1);
 			if (ox != 0) ox = -ox;
 			if (oy != 0) oy = -oy;
 			TODO("test this when ox;oy != 0");
@@ -303,8 +303,8 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd)
 		return;
 	}
 
-	parse_coord(ctx, tmp->argv[1], &px);
-	parse_coord(ctx, tmp->argv[2], &py);
+	parse_x(ctx, tmp->argv[1], &px);
+	parse_y(ctx, tmp->argv[2], &py);
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
 	if (tmp == NULL) {
