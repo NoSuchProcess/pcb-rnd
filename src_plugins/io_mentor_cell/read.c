@@ -275,7 +275,7 @@ static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, nod
 	long cnt;
 
 	for(n = nd->first_child; n != NULL; n = n->next)
-		cnt += parse_dwg(ctx, subc, ly, nd);
+		cnt += parse_dwg(ctx, subc, ly, n);
 
 	return cnt;
 }
