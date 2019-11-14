@@ -108,7 +108,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps);
 
 
 /*** local ***/
-static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln, int user);
+static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln, int user, node_t *err_node);
 
 /*** High level parser ***/
 
@@ -229,14 +229,14 @@ static void d1() {}
 		if ((__tmp__ == NULL) && (name2 != NULL)) \
 			__tmp2__ = find_nth(node->first_child, name2, 0); \
 		if (__tmp__ != NULL) { \
-			ly = parse_layer(ctx, subc, __tmp__->argv[1], 0); \
+			ly = parse_layer(ctx, subc, __tmp__->argv[1], 0, __tmp__); \
 			if (ly == NULL) { \
 				pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp__->argv[1], name); \
 				return; \
 			} \
 		} \
 		else if (__tmp2__ != NULL) { \
-			ly = parse_layer(ctx, subc, __tmp2__->argv[1], 1); \
+			ly = parse_layer(ctx, subc, __tmp2__->argv[1], 1, __tmp2__); \
 			if (ly == NULL) { \
 				pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp2__->argv[1], name2); \
 				return; \
@@ -511,7 +511,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
 	return parse_dwg_all(ctx, subc, ly, n);
 }
 
-static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln, int user)
+static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln, int user, node_t *err_node)
 {
 	pcb_layer_t *ly;
 	pcb_layer_type_t lyt = 0;
@@ -550,7 +550,7 @@ TODO("this should be done only when subc == NULL");
 		assert(subc == NULL);
 		cidx = strtol(ln+4, &end, 10);
 		if (*end != '\0') {
-			pcb_message(PCB_MSG_ERROR, "Unknown layer '%s' (expected integer after LYR_)\n", ln);
+			hkp_error(err_node, "Unknown layer '%s' (expected integer after LYR_)\n", ln);
 			return NULL;
 		}
 		cidx--; /* hkp numbers from 1, we number from 0 */
@@ -756,7 +756,7 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 			lyn = find_nth(n->first_child, "ROUTE_LYR", 0);
 			if (lyn == NULL)
 				continue;
-			ly = parse_layer(ctx, NULL, lyn->argv[1], 0);
+			ly = parse_layer(ctx, NULL, lyn->argv[1], 0, lyn);
 			if (ly == NULL) {
 				pcb_message(PCB_MSG_ERROR, "Unknown trace layer '%s'\n", lyn->argv[1]);
 				continue;
