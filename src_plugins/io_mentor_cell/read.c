@@ -184,11 +184,11 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 	/* hkp rotation: top side positive value is CW; in pcb-rnd: that's negative */
 	rot = -strtod(nd->argv[1], &end);
 	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (expected numeric)\n", nd->argv[1]);
+		pcb_message(PCB_MSG_ERROR, "Wrong rotation value '%s' (expected numeric)\n", nd->argv[1]);
 		return -1;
 	}
 	if ((rot < -360) || (rot > 360)) {
-		pcb_message(PCB_MSG_ERROR, "Erong rotation value '%s' (out of range)\n", nd->argv[1]);
+		pcb_message(PCB_MSG_ERROR, "Wrong rotation value '%s' (out of range)\n", nd->argv[1]);
 		return -1;
 	}
 	*rot_out = rot;
