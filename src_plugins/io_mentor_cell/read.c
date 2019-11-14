@@ -102,6 +102,9 @@ typedef struct {
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd);
 
 
+/*** local ***/
+static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln);
+
 /*** High level parser ***/
 
 /* Return the idxth sibling with matching name */
@@ -202,6 +205,8 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
 			return; \
 		} \
+		if (subc != NULL) \
+			ly = parse_layer(ctx, subc, __tmp__->argv[1]); \
 	}
 
 TODO("^^^ process the layer name");
@@ -254,6 +259,42 @@ static void parse_dwg_path_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *l
 	pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
 	pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
 }
+
+static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
+{
+	node_t *attr, *tmp;
+	pcb_coord_t tx, ty;
+	double rot = 0;
+
+	attr = find_nth(nt->first_child, "DISPLAY_ATTR", 0);
+	if (attr == NULL)
+		return;
+
+	DWG_LY(attr, "TEXT_LYR")
+
+	/* Special case: although the PARTNO is written on the silk layer by the
+	   hkp file, it does not show up on the gerber so there must be some
+	   mechanism in the original software to hide it */
+	if (omit_on_silk && (pcb_layer_flags_(ly) & PCB_LYT_SILK))
+		return;
+
+	tmp = find_nth(attr->first_child, "XY", 0);
+	if (tmp != NULL) {
+		parse_x(ctx, tmp->argv[1], &tx);
+		parse_y(ctx, tmp->argv[2], &ty);
+	}
+
+	tmp = find_nth(attr->first_child, "ROTATION", 0);
+	if (tmp != NULL)
+		parse_rot(ctx, tmp, &rot);
+
+TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
+TODO("HEIGHT should become scale");
+TODO("figure what TEXT_OPTIONS we have");
+TODO("STROKE_WIDTH: we have support for that, but what's the unit? what if it is 0?");
+	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg));
+}
+
 
 /* Returns number of objects drawn: 0 or 1 */
 static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *n)
@@ -392,9 +433,6 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 {
 	node_t *tt, *attr, *tmp;
-	pcb_coord_t tx, ty;
-	double rot = 0;
-	pcb_layer_t *ly;
 	const char *text_str;
 	pcb_flag_values_t flg = PCB_FLAG_FLOATER;
 	int omit_on_silk = 0;
@@ -416,38 +454,7 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 		omit_on_silk = 1;
 	}
 
-	attr = find_nth(tt, "DISPLAY_ATTR", 0);
-	if (attr == NULL)
-		return;
-
-	tmp = find_nth(attr->first_child, "TEXT_LYR", 0);
-	if (tmp == NULL)
-		return;
-	ly = parse_layer(ctx, subc, tmp->argv[1]);
-	if (ly == NULL)
-		return;
-
-	/* Special case: although the PARTNO is written on the silk layer by the
-	   hkp file, it does not show up on the gerber so there must be some
-	   mechanism in the original software to hide it */
-	if (omit_on_silk && (pcb_layer_flags_(ly) & PCB_LYT_SILK))
-		return;
-
-	tmp = find_nth(attr->first_child, "XY", 0);
-	if (tmp != NULL) {
-		parse_x(ctx, tmp->argv[1], &tx);
-		parse_y(ctx, tmp->argv[2], &ty);
-	}
-
-	tmp = find_nth(attr->first_child, "ROTATION", 0);
-	if (tmp != NULL)
-		parse_rot(ctx, tmp, &rot);
-
-TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
-TODO("HEIGHT should become scale");
-TODO("figure what TEXT_OPTIONS we have");
-TODO("STROKE_WIDTH: we have support for that, but what's the unit? what if it is 0?");
-	pcb_text_new(ly, pcb_font(PCB, 0, 0), tx, ty, rot, 100, 0, text_str, pcb_flag_make(flg));
+	parse_dwg_text(ctx, subc, NULL, textnode, omit_on_silk, flg);
 }
 
 
