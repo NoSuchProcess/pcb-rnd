@@ -531,10 +531,32 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 		return -1;
 	}
 
-	/* make sure layers potentially referenced by padstacks and subcircuits are
-	   all available even if they were not picked up by reading the input
-	   layer stack */
-	pcb_layergrp_upgrade_by_map(ctx->pcb, pcb_dflgmap);
+	{ /* create the layer stack: copper layers, as many as required by the header */
+		int len = 0, n;
+		pcb_dflgmap_t map[PCB_MAX_LAYERGRP];
+		const pcb_dflgmap_t *m;
+
+		while(ctx->pcb->LayerGroups.len > 0)
+			pcb_layergrp_del(ctx->pcb, 0, 1);
+
+		for(m = pcb_dflg_top_noncop; m->name != NULL; m++) map[len++] = *m;
+
+		map[len++] = pcb_dflg_top_copper;
+		map[len++] = pcb_dflg_substrate;
+		for(n = 0; n < (ctx->num_cop_layers-2); n++) {
+			map[len++] = pcb_dflg_int_copper;
+			map[len++] = pcb_dflg_substrate;
+		}
+		map[len++] = pcb_dflg_bot_copper;
+
+		for(m = pcb_dflg_bot_noncop; m->name != NULL; m++) map[len++] = *m;
+		for(m = pcb_dflg_glob_noncop; m->name != NULL; m++) map[len++] = *m;
+
+		map[len].name = NULL; /* terminator */
+		pcb_layergrp_create_by_map(ctx->pcb, map);
+	}
+
+	/* plus assy and fab layers */
 	pcb_layergrp_upgrade_by_map(ctx->pcb, pcb_dflgmap_doc);
 
 	/* build packages */
