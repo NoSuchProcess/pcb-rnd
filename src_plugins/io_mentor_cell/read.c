@@ -140,7 +140,7 @@ static int parse_y(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
 	pcb_coord_t tmp;
 	if (parse_coord(ctx, s, &tmp) != 0)
 		return -1;
-	*crd = ctx->pcb->hidlib.size_y - tmp;
+	*crd = -tmp;
 	return 0;
 }
 
@@ -164,7 +164,7 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int
 	yy = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
 
 	if (xform) {
-		yy = ctx->pcb->hidlib.size_y - yy;
+		yy = -yy;
 	}
 	
 	*x = xx;
@@ -468,6 +468,15 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	for(n = tree->root->first_child; n != NULL; n = n->next)
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
 			parse_package(ctx, ctx->pcb->Data, n);
+
+	/* 'autocrop' the board for now (required by y mirror and unknown extents) */
+	{
+		pcb_box_t bb;
+		pcb_data_normalize(ctx->pcb->Data);
+		pcb_data_bbox(&bb, ctx->pcb->Data, 0);
+		ctx->pcb->hidlib.size_x = bb.X2;
+		ctx->pcb->hidlib.size_y = bb.Y2;
+	}
 
 	return 0;
 }
