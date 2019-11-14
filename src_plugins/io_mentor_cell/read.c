@@ -638,7 +638,8 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 	node_t *n;
 	const char *netname = netroot->argv[1];
 
-	pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
+	if (strcmp(netname, "Unconnected_Net") != 0)
+		pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
 
 	for(n = netroot->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "CONDUCTIVE_AREA") == 0) {
