@@ -50,6 +50,11 @@ do { \
 	} \
 } while(0)
 
+void pcb_layergrp_notify_chg(pcb_board_t *pcb)
+{
+	NOTIFY(pcb);
+}
+
 void pcb_layergrp_inhibit_inc(void)
 {
 	inhibit_notify++;

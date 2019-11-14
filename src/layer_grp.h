@@ -160,6 +160,10 @@ pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int
 void pcb_layergrp_inhibit_inc(void);
 void pcb_layergrp_inhibit_dec(void);
 
+/* send out a layers changed notification, respecting the inhibit flag */
+void pcb_layergrp_notify_chg(pcb_board_t *pcb);
+
+
 /* Send out a layer changed event if not inhibited */
 void pcb_layergrp_notify(pcb_board_t *pcb);
 
