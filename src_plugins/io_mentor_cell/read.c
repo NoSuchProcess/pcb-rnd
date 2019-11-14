@@ -324,32 +324,44 @@ static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, nod
 	return cnt;
 }
 
-/* Returns number of objects drawn: 0 or more */
+/* Returns number of objects drawn: 0 or more for valid layers, -1 for invalid layer */
 static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
 {
-	long cnt = 0;
 	node_t *tmp;
+	pcb_layer_type_t type = 0;
+	pcb_layer_type_t side = PCB_LYT_TOP;
+	pcb_layer_combining_t lyc = 0;
+	const char *lyname = NULL;
+	pcb_layer_t *ly;
+
 
 	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
-		pcb_layer_t *ly;
-		pcb_layer_type_t side = PCB_LYT_TOP;;
+		type = PCB_LYT_SILK;
+		lyc = PCB_LYC_AUTO;
 		tmp = find_nth(n->first_child, "SIDE", 0);
 		if (tmp != NULL) {
-			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) side = PCB_LYT_TOP;
-			else side = PCB_LYT_BOTTOM;
+			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
+				side = PCB_LYT_TOP;
+				lyname = "top-silk";
+			}
+			else {
+				side = PCB_LYT_BOTTOM;
+				lyname = "bot-silk";
+			}
 		}
-		if (subc == NULL) {
-			pcb_layer_id_t lid;
-			if (pcb_layer_list(ctx->pcb, side | PCB_LYT_SILK, &lid, 1) != 1)
-				return 0;
-			ly = &ctx->pcb->Data->Layer[lid];
-		}
-		else
-			ly = pcb_subc_get_layer(subc, side | PCB_LYT_SILK, PCB_LYC_AUTO, 1, "top-silk", 0);
-		cnt += parse_dwg_all(ctx, subc, ly, n);
 	}
+	else
+		return -1;
 
-	return cnt;
+	if (subc == NULL) {
+		pcb_layer_id_t lid;
+		if (pcb_layer_list(ctx->pcb, side | type, &lid, 1) != 1)
+			return 0;
+		ly = &ctx->pcb->Data->Layer[lid];
+	}
+	else
+		ly = pcb_subc_get_layer(subc, side | type, lyc, 1, lyname, 0);
+	return parse_dwg_all(ctx, subc, ly, n);
 }
 
 static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln)
