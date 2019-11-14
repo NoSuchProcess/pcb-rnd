@@ -635,7 +635,8 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 
 static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 {
-	node_t *n;
+	node_t *n, *lyn;
+	pcb_layer_t *ly;
 	const char *netname = netroot->argv[1];
 
 	if (strcmp(netname, "Unconnected_Net") != 0)
@@ -646,7 +647,15 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 		
 		}
 		else if (strcmp(n->argv[0], "TRACE") == 0) {
-		
+			lyn = find_nth(n->first_child, "ROUTE_LYR", 0);
+			if (lyn == NULL)
+				continue;
+			ly = parse_layer(ctx, NULL, lyn->argv[1]);
+			if (ly == NULL) {
+				pcb_message(PCB_MSG_ERROR, "Unknown trace layer '%s'\n", lyn->argv[1]);
+				continue;
+			}
+			parse_dwg_all(ctx, NULL, ly, n);
 		}
 	}
 }
