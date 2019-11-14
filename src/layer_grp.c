@@ -1089,6 +1089,7 @@ const pcb_dflgmap_t pcb_dflg_bot_noncop[] = {
 };
 
 const pcb_dflgmap_t pcb_dflg_glob_noncop[] = {
+	{"outline",             PCB_LYT_BOUNDARY,                "uroute", 0, 0},
 	{"pmech",               PCB_LYT_MECH,                    "proute", PCB_LYC_AUTO, 0},
 	{"umech",               PCB_LYT_MECH,                    "uroute", PCB_LYC_AUTO, 0},
 	{NULL, 0}
@@ -1105,6 +1106,7 @@ const pcb_dflgmap_t pcb_dflgmap[] = {
 	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
 	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
 
+	{"outline",             PCB_LYT_BOUNDARY,                "uroute", 0, 0},
 	{"pmech",               PCB_LYT_MECH,                    "proute", PCB_LYC_AUTO, 0},
 	{"umech",               PCB_LYT_MECH,                    "uroute", PCB_LYC_AUTO, 0},
 
