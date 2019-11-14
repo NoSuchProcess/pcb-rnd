@@ -219,7 +219,6 @@ static void d1() {}
 				pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp2__->argv[1], name2); \
 				return; \
 			} \
-			return; \
 		}\
 		else {\
 			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
