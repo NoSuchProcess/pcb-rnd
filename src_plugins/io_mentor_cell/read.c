@@ -242,16 +242,21 @@ TODO("handle error: what it tmp == NULL?");
 	}
 }
 
-static void parse_dwg_path_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp)
+static void parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp, int is_shape)
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, x1, y1, x2, y2;
 
 	DWG_REQ_LY(rp);
 
-	tmp = find_nth(rp->first_child, "WIDTH", 0);
-	if (tmp != NULL)
-		parse_coord(ctx, tmp->argv[1], &th);
+	if (!is_shape) {
+		tmp = find_nth(rp->first_child, "WIDTH", 0);
+		if (tmp != NULL)
+			parse_coord(ctx, tmp->argv[1], &th);
+	}
+
+TODO("check for FILLED, do a poly instead");
+
 	tmp = find_nth(rp->first_child, "XY", 0);
 	parse_xy(ctx, tmp->argv[1], &x1, &y1, 1);
 	parse_xy(ctx, tmp->argv[2], &x2, &y2, 1);
@@ -302,8 +307,8 @@ static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *
 {
 	if (strcmp(n->argv[0], "POLYLINE_PATH") == 0)
 		parse_dwg_path_polyline(ctx, subc, ly, n);
-	else if (strcmp(n->argv[0], "RECT_PATH") == 0)
-		parse_dwg_path_rect(ctx, subc, ly, n);
+	else if ((strcmp(n->argv[0], "RECT_PATH") == 0) || (strcmp(n->argv[0], "RECT_SHAPE") == 0))
+		parse_dwg_rect(ctx, subc, ly, n, n->argv[0][5] == 'S');
 	else if ((strcmp(n->argv[0], "TEXT") == 0) && (subc == NULL))
 		parse_dwg_text(ctx, subc, ly, n, 0, 0);
 	else
