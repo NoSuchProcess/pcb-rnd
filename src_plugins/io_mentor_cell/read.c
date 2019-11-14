@@ -42,6 +42,7 @@
 #include "error.h"
 #include "safe_fs.h"
 #include "compat_misc.h"
+#include "netlist.h"
 
 #include "obj_subc.h"
 
@@ -1004,14 +1005,21 @@ static int io_mentor_cell_netlist(hkp_ctx_t *ctx, const char *fn)
 
 	for(nnet = net_tree.root->first_child; nnet != NULL; nnet = nnet->next) {
 		if (strcmp(nnet->argv[0], "NETNAME") == 0) {
-fprintf(stderr, "netname: '%s'\n", nnet->argv[1]);
+			pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], nnet->argv[1], 1);
+			if (net == NULL) {
+				hkp_error(nnet, "Failed to create net '%s' - netlist will be incomplete\n", nnet->argv[1]);
+				continue;
+			}
 			pinsect = find_nth(nnet->first_child, "PIN_SECTION", 0);
 			if (pinsect == NULL)
 				continue;
 			for(p = pinsect->first_child; p != NULL; p = p->next) {
+				pcb_net_term_t *term;
 				if (strcmp(p->argv[0], "REF_PINNAME") != 0)
 					continue;
-fprintf(stderr, "         '%s'\n", p->argv[1]);
+				term = pcb_net_term_get_by_pinname(net, p->argv[1], 1);
+				if (net == NULL)
+					hkp_error(p, "Failed to create pin '%s' in net '%s' - netlist will be incomplete\n", p->argv[1], nnet->argv[1]);
 			}
 		}
 	}
