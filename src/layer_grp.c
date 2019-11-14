@@ -1143,7 +1143,7 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 	grp->valid = 1;
 }
 
-void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
+static void pcb_layergrp_upgrade_by_map_(pcb_board_t *pcb, const pcb_dflgmap_t *map, int force)
 {
 	const pcb_dflgmap_t *m;
 	pcb_layergrp_t *grp;
@@ -1151,12 +1151,15 @@ void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
 
 	inhibit_notify++;
 	for(m = map; m->name != NULL; m++) {
-		int found;
-		if (m->purpose == NULL)
-			found = pcb_layergrp_list(pcb, m->lyt, &gid, 1);
-		else
-			found = pcb_layergrp_listp(pcb, m->lyt, &gid, 1, 0, m->purpose);
-		
+		int found = 0;
+
+		if (!force) {
+			if (m->purpose == NULL)
+				found = pcb_layergrp_list(pcb, m->lyt, &gid, 1);
+			else
+				found = pcb_layergrp_listp(pcb, m->lyt, &gid, 1, 0, m->purpose);
+		}
+
 		if (found == 1) {
 			grp = &pcb->LayerGroups.grp[gid];
 			free(grp->name);
@@ -1170,6 +1173,17 @@ void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
 	inhibit_notify--;
 	NOTIFY(pcb);
 }
+
+void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
+{
+	pcb_layergrp_upgrade_by_map_(pcb, map, 0);
+}
+
+void pcb_layergrp_create_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map)
+{
+	pcb_layergrp_upgrade_by_map_(pcb, map, 1);
+}
+
 
 void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb)
 {

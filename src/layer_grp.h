@@ -284,6 +284,9 @@ extern const pcb_dflgmap_t pcb_dflg_outline;
 /* Overwrite or create all groups from a map */
 void pcb_layergrp_upgrade_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map);
 
+/* Create all groups from a map (even if duplicate to existing) */
+void pcb_layergrp_create_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map);
+
 /* Overwrite an existing group from a default layer group map entry and create
    a layer in the group */
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname);
