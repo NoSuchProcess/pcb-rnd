@@ -331,7 +331,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
 	pcb_layer_type_t type = 0;
 	pcb_layer_type_t side = PCB_LYT_TOP;
 	pcb_layer_combining_t lyc = 0;
-	const char *lyname = NULL;
+	const char *lyname = NULL, *purpose = NULL;
 	pcb_layer_t *ly;
 
 
@@ -350,13 +350,71 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
 			}
 		}
 	}
+	else if (strcmp(n->argv[0], "SOLDER_MASK") == 0) {
+		type = PCB_LYT_MASK;
+		lyc = PCB_LYC_AUTO;
+		tmp = find_nth(n->first_child, "SIDE", 0);
+		if (tmp != NULL) {
+			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
+				side = PCB_LYT_TOP;
+				lyname = "top-mask";
+			}
+			else {
+				side = PCB_LYT_BOTTOM;
+				lyname = "bot-mask";
+			}
+		}
+	}
+	else if (strcmp(n->argv[0], "SOLDER_PASTE") == 0) {
+		type = PCB_LYT_PASTE;
+		lyc = PCB_LYC_AUTO;
+		tmp = find_nth(n->first_child, "SIDE", 0);
+		if (tmp != NULL) {
+			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
+				side = PCB_LYT_TOP;
+				lyname = "top-paste";
+			}
+			else {
+				side = PCB_LYT_BOTTOM;
+				lyname = "bot-paste";
+			}
+		}
+	}
+	else if (strcmp(n->argv[0], "ASSEMBLY_OUTLINE") == 0) {
+		type = PCB_LYT_DOC;
+		lyc = PCB_LYC_AUTO;
+		tmp = find_nth(n->first_child, "SIDE", 0);
+		purpose = "assy";
+		if (tmp != NULL) {
+			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
+				side = PCB_LYT_TOP;
+				lyname = "top_assy";
+			}
+			else {
+				side = PCB_LYT_BOTTOM;
+				lyname = "bottom_assy";
+			}
+		}
+	}
+	else if (strcmp(n->argv[0], "ROUTE_OUTLINE") == 0) {
+		type = PCB_LYT_BOUNDARY;
+		side = 0; /* global */
+		lyname = "outline";
+		purpose = "uroute";
+	}
 	else
 		return -1;
 
 	if (subc == NULL) {
 		pcb_layer_id_t lid;
-		if (pcb_layer_list(ctx->pcb, side | type, &lid, 1) != 1)
-			return 0;
+		if (purpose == NULL) {
+			if (pcb_layer_list(ctx->pcb, side | type, &lid, 1) != 1)
+				return 0;
+		}
+		else {
+			if (pcb_layer_listp(ctx->pcb, side | type, &lid, 1, -1, purpose) != 1)
+				return 0;
+		}
 		ly = &ctx->pcb->Data->Layer[lid];
 	}
 	else
