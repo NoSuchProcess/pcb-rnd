@@ -868,7 +868,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	memset(&ctx, 0, sizeof(ctx));
 
-	flay = pcb_fopen(&PCB->hidlib, fn, "r");
+	flay = pcb_fopen(&pcb->hidlib, fn, "r");
 	if (flay == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't open layout hkp '%s' for read\n", fn);
 		goto err;
