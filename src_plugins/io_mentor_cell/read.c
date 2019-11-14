@@ -644,7 +644,7 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 
 	for(n = netroot->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "CONDUCTIVE_AREA") == 0) {
-		
+			TODO("poly!");
 		}
 		else if (strcmp(n->argv[0], "TRACE") == 0) {
 			lyn = find_nth(n->first_child, "ROUTE_LYR", 0);
