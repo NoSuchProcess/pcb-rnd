@@ -268,6 +268,11 @@ typedef struct pcb_dflgmap_s {
 
 extern const pcb_dflgmap_t pcb_dflgmap[]; /* the whole map, without doc layers */
 
+/* non-coper parts of the map, without doc layers, without doc layers */
+extern const pcb_dflgmap_t pcb_dflg_top_noncop[];
+extern const pcb_dflgmap_t pcb_dflg_bot_noncop[];
+extern const pcb_dflgmap_t pcb_dflg_glob_noncop[];
+
 /* pointers into the array marking boundaries */
 extern const pcb_dflgmap_t *pcb_dflgmap_last_top_noncopper;
 extern const pcb_dflgmap_t *pcb_dflgmap_first_bottom_noncopper;

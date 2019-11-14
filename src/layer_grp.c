@@ -1074,6 +1074,26 @@ void pcb_layergroup_free_stack(pcb_layer_stack_t *st)
 	st->cache.copper_len = st->cache.copper_alloced = 0;
 }
 
+const pcb_dflgmap_t pcb_dflg_top_noncop[] = {
+	{"top_paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     NULL, PCB_LYC_AUTO, 0},
+	{"top_silk",            PCB_LYT_TOP | PCB_LYT_SILK,      NULL, PCB_LYC_AUTO, 0},
+	{"top_mask",            PCB_LYT_TOP | PCB_LYT_MASK,      NULL, PCB_LYC_SUB | PCB_LYC_AUTO, 0},
+	{NULL, 0}
+};
+
+const pcb_dflgmap_t pcb_dflg_bot_noncop[] = {
+	{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   NULL, PCB_LYC_SUB | PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+	{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+	{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+	{NULL, 0}
+};
+
+const pcb_dflgmap_t pcb_dflg_glob_noncop[] = {
+	{"pmech",               PCB_LYT_MECH,                    "proute", PCB_LYC_AUTO, 0},
+	{"umech",               PCB_LYT_MECH,                    "uroute", PCB_LYC_AUTO, 0},
+	{NULL, 0}
+};
+
 const pcb_dflgmap_t pcb_dflgmap[] = {
 	{"top_paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     NULL, PCB_LYC_AUTO, 0},
 	{"top_silk",            PCB_LYT_TOP | PCB_LYT_SILK,      NULL, PCB_LYC_AUTO, 0},
