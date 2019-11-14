@@ -633,6 +633,23 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	return subc;
 }
 
+static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
+{
+	node_t *n;
+	const char *nentame = netroot->argv[1];
+
+	TODO("create the net");
+
+	for(n = netroot->first_child; n != NULL; n = n->next) {
+		if (strcmp(n->argv[0], "CONDUCTIVE_AREA") == 0) {
+		
+		}
+		else if (strcmp(n->argv[0], "TRACE") == 0) {
+		
+		}
+	}
+}
+
 static const pcb_unit_t *parse_units(const char *ust)
 {
 	if (strcmp(ust, "MIL") == 0) return get_unit_struct("mil");
@@ -708,7 +725,9 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	for(n = tree->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
 			parse_package(ctx, ctx->pcb->Data, n);
-		else {
+		if (strcmp(n->argv[0], "NET") == 0)
+			parse_net(ctx, n);
+		else { /* global drawing objects in layers or outside of layers */
 			parse_dwg(ctx, NULL, NULL, n);
 			parse_dwg_layer(ctx, NULL, n);
 		}
