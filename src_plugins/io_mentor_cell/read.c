@@ -194,12 +194,9 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 }
 
 
-static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
+static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
 {
-	node_t *tmp, *pp, *rp;
-
-	pp = find_nth(nd->first_child, "POLYLINE_PATH", 0);
-	if (pp != NULL) {
+	node_t *tmp;
 		pcb_coord_t th = 1, px, py, x, y;
 		int n;
 		th = PCB_MM_TO_COORD(0.5);
@@ -215,10 +212,11 @@ TODO("handle error: what it tmp == NULL?");
 			px = x;
 			py = y;
 		}
-	}
+}
 
-	rp = find_nth(nd->first_child, "RECT_PATH", 0);
-	if (rp != NULL) {
+static void parse_dwg_path_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp)
+{
+	node_t *tmp;
 		pcb_coord_t th = 1, x1, y1, x2, y2;
 		tmp = find_nth(rp->first_child, "WIDTH", 0);
 		if (tmp != NULL)
@@ -230,6 +228,17 @@ TODO("handle error: what it tmp == NULL?");
 		pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
 		pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
 		pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
+}
+
+static void parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
+{
+	node_t *n;
+
+	for(n = nd->first_child; n != NULL; n = n->next) {
+		if (strcmp(n->argv[0], "POLYLINE_PATH") == 0)
+			parse_dwg_path_polyline(ctx, subc, ly, n);
+		else if (strcmp(n->argv[0], "RECT_PATH") == 0)
+			parse_dwg_path_rect(ctx, subc, ly, n);
 	}
 }
 
