@@ -565,7 +565,7 @@ distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
 
 install_pcbrnd:
-	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins"
+	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins" "$(CONFDIR)"
 	$(SCCBOX) $(HOW) "pcb-rnd$(EXE)" "$(BINDIR)/pcb-rnd$(EXE)"
 	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(CONFDIR)/pcb-conf.lht"
 	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(CONFDIR)/pcb-menu-default.lht"
