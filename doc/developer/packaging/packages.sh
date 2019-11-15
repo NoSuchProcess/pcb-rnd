@@ -43,6 +43,13 @@ cat extra.digest
 		PKG[pkg] = "<i>n/a</i>"
 	}
 
+	($1 ~ "@appendfiles") {
+		pkg=$2
+		files=$0
+		sub("@appendfiles[ \t]*[^ \t]*[ \t]", "", files)
+		IFILES[pkg] = IFILES[pkg] " " files
+	}
+
 	($1 ~ "[.]pup$") {
 		pkg = $1;
 		sub("[.]pup$", "", pkg)
