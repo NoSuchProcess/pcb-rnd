@@ -1,54 +1,53 @@
-Description-en: Modular Printed Circuit Board layout tool
- pcb-rnd is a highly modular PCB (Printed Circuit Board) layout tool
- with a rich set of plugins for communicating with various external
- design tools and other EDA/CAD packages.
- .
- Feature highlights:
-   - subcircuits, pad stacks
-   - flexible footprint model; unrestricted pad shapes
-   - arbitrary copper, silk, paste and soldermask objects
-   - sophisticated, flexible layer model
-   - flexible/universal polygon model
-   - any object, even polygons, can have a clearance within a polygon
-   - advanced mil and mm grid, with support for mixed unit design
-   - strong CLI support
-   - static footprints and parametric (generated) footprints
-   - query language for advanced search & select
-   - layout optimizers such as teardrops and a trace puller
-   - footprint library from local file systems, HTTP and board files
-   - netlist management: imported and as-built; back annotation
-   - design rule checker
- .
- File formats and compatibility:
-   - text based, tree structured native file format
-   - gerber (export)
-   - KiCad, s-expr format boards (read, write)
-   - KiCad, s-expr format elements (write)
-   - KiCad, legacy text format boards (write)
-   - KiCad, eeschema netlist+footprint info (import)
-   - tEDAx footprints (read, write)
-   - tEDAx netlist (read)
-   - Autotrax (protel) pcb boards (read, write)
-   - Eagle XML format boards and libraries (read)
-   - Eagle binary format boards and libraries (read)
-   - Eagle DRU files (read)
-   - Mentor Graphics Hyperlynx (read/write)
-   - gEDA/PCB (read, write)
-   - Specctra DSN (partial import/export, for freerouting.net)
-   - flat EDIF netlist (import)
-   - HPGL plot files (import)
-   - openSCAD colored 3d model script (export)
-   - ltspice netlist+footprint info (import)
-   - Mentor Graphics Design Capture netlist+footprint info (import)
-   - MUCS unixplot (partial import: lines, vias)
-   - gEDA/gschem netlist+footprint info (import)
-   - TinyCAD netlist+footprint info (import)
-   - breadboard assembly drawing png (export)
-   - BoM (Bill of Materials; export)
-   - dxf, 2d drawings (export)
-   - fidocadj board (export)
-   - gcode (export)
-   - PNG, JPEG, GIF (export with photo-realistic render option)
-   - postscript: ps, eps (export)
-   - svg (export)
-   - xy: template based, multi-format footprint/coord list (export)
+pcb-rnd is a highly modular PCB (Printed Circuit Board) layout tool
+with a rich set of plugins for communicating with various external
+design tools and other EDA/CAD packages.
+
+Feature highlights:
+  - subcircuits, pad stacks
+  - flexible footprint model; unrestricted pad shapes
+  - arbitrary copper, silk, paste and soldermask objects
+  - sophisticated, flexible layer model
+  - flexible/universal polygon model
+  - any object, even polygons, can have a clearance within a polygon
+  - advanced mil and mm grid, with support for mixed unit design
+  - strong CLI support
+  - static footprints and parametric (generated) footprints
+  - query language for advanced search & select
+  - layout optimizers such as teardrops and a trace puller
+  - footprint library from local file systems, HTTP and board files
+  - netlist management: imported and as-built; back annotation
+  - design rule checker
+
+File formats and compatibility:
+  - text based, tree structured native file format
+  - gerber (export)
+  - KiCad, s-expr format boards (read, write)
+  - KiCad, s-expr format elements (write)
+  - KiCad, legacy text format boards (write)
+  - KiCad, eeschema netlist+footprint info (import)
+  - tEDAx footprints (read, write)
+  - tEDAx netlist (read)
+  - Autotrax (protel) pcb boards (read, write)
+  - Eagle XML format boards and libraries (read)
+  - Eagle binary format boards and libraries (read)
+  - Eagle DRU files (read)
+  - Mentor Graphics Hyperlynx (read/write)
+  - gEDA/PCB (read, write)
+  - Specctra DSN (partial import/export, for freerouting.net)
+  - flat EDIF netlist (import)
+  - HPGL plot files (import)
+  - openSCAD colored 3d model script (export)
+  - ltspice netlist+footprint info (import)
+  - Mentor Graphics Design Capture netlist+footprint info (import)
+  - MUCS unixplot (partial import: lines, vias)
+  - gEDA/gschem netlist+footprint info (import)
+  - TinyCAD netlist+footprint info (import)
+  - breadboard assembly drawing png (export)
+  - BoM (Bill of Materials; export)
+  - dxf, 2d drawings (export)
+  - fidocadj board (export)
+  - gcode (export)
+  - PNG, JPEG, GIF (export with photo-realistic render option)
+  - postscript: ps, eps (export)
+  - svg (export)
+  - xy: template based, multi-format footprint/coord list (export)
