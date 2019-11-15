@@ -64,8 +64,7 @@ cat extra.digest
 	}
 
 	{
-		if (!(pkg ~ "^lib"))
-			pkg = "pcb-rnd-" pkg
+		pkg = "pcb-rnd-" pkg
 	}
 
 	($1 ~ "[.]pup$") && ($2 == "$package") {
