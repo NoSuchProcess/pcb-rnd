@@ -95,14 +95,26 @@
 @pcb-rnd-lib-gl
 	Support library for rendering with opengl.
 
+	Provides plugins for driving an opengl output, rendering pcb-rnd
+	views on opengl.
+
 @pcb-rnd-lib-gtk
 	Support library for building the GUI with gtk.
+
+	Provides the common gtk code (e.g. dialog box engine, input handling)
+	for any gtk based HID plugin.
 
 @pcb-rnd-lib-gui
 	Support library for building the GUI.
 
+	Provides pcb-rnd specific dialog boxes (e.g. fontsel) and top
+	window GUI elements.
+
 @pcb-rnd-lib-io
 	Support library for alien file formats.
+
+	Provides generic, low level parsers (such as s-expression
+	parser) for I/O plugins that need to deal with alien file formats.
 
 @librnd
 	pcb-rnd library, binaries.
