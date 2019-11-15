@@ -71,9 +71,13 @@ cat extra.digest
 	($1 ~ "[.]pup$") && ($2 == "$package") {
 		PKG[val] = PKG[val] " " cfg;
 		PLUGIN[pkg] = val;
-		IFILES[val] = IFILES[val] " $P/" cfg ".pup $P/" cfg ".so"
-		if (val == "pcb-rnd-core") CFG_BUILDIN[cfg]++
-		else CFG_PLUGIN[cfg]++
+		if (val == "pcb-rnd-core") {
+			CFG_BUILDIN[cfg]++
+		}
+		else {
+			CFG_PLUGIN[cfg]++
+			IFILES[val] = IFILES[val] " $P/" cfg ".pup $P/" cfg ".so"
+		}
 	}
 
 	($1 ~ "[.]pup$") && ($2 == "dep") { PLUGIN_DEP[pkg] = PLUGIN_DEP[pkg] " " val }
