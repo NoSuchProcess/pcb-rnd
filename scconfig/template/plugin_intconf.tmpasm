@@ -18,7 +18,7 @@ append /local/pcb/RULES [@
 switch /local/pcb/mod/enabled
 	case {1}
 		append /local/pcb/rules/install_ [@
-	$(SCCBOX) $(HOW) "@/local/pcb/MCFG@" "$(DATADIR)/@/local/pcb/mod/CONFFILE@"@]
+	$(SCCBOX) $(HOW) "@/local/pcb/MCFG@" "$(CONFDIR)/@/local/pcb/mod/CONFFILE@"@]
 	end
 	default end;
 end
