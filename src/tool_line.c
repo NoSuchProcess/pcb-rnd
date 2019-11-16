@@ -378,7 +378,7 @@ void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 			conf_core.design.line_thickness,0 );
 
 		if (conf_core.editor.show_drc) {
-			pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
 				pcb_crosshair.X, pcb_crosshair.Y,
 				pcb_crosshair.X, pcb_crosshair.Y, 
