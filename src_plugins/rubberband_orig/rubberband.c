@@ -1197,7 +1197,7 @@ static void rbe_draw(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 					pcb_route_draw_drc(&route, pcb_crosshair.GC);
 				pcb_route_destroy(&route);
 			}
-			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
+			pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 		}
 
 		ptr++;

@@ -158,7 +158,7 @@ typedef struct {
 		CFT_BOOLEAN black_current_group;   /* render all layers of the current group black, for maximum contrast */
 
 		struct {                           /* color */
-			CFT_COLOR crosshair;             /* color of the on-screen crosshair */
+			CFT_COLOR crosshair;             /* obsolete - DO NOT USE - kept for compatibility (use appearance/color/cross instead) */
 			CFT_COLOR drc;                   /* color of the on-screen drc clearance indication while routing */
 			CFT_COLOR selected;              /* generic object selection color */
 			CFT_COLOR via;                   /* non-terminal padstack shape on current layer */
