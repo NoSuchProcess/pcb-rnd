@@ -36,6 +36,7 @@ plugin_def("draw_fontsel",     "font selection GUI",              sdisable, 1, 0
 plugin_def("drc_orig",         "the original DRC code",           sbuildin, 1, 0)
 plugin_def("expfeat",          "experimental features",           sdisable, 1, 0)
 plugin_def("extedit",          "edit with external program",      sbuildin, 1, 0)
+plugin_def("exto_std",         "standard extended objects",       sdisable, 1, 0)
 plugin_def("fontmode",         "font editor",                     sbuildin, 1, 0)
 plugin_def("jostle",           "push lines out of the way",       sbuildin, 1, 0)
 plugin_def("loghid",           "diagnostics: log HID calls",      sdisable, 1, 0)

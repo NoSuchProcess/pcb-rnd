@@ -41,6 +41,7 @@ include {../src_plugins/export_vfs_fuse/Plug.tmpasm}
 include {../src_plugins/export_vfs_mc/Plug.tmpasm}
 include {../src_plugins/export_xy/Plug.tmpasm}
 include {../src_plugins/extedit/Plug.tmpasm}
+include {../src_plugins/exto_std/Plug.tmpasm}
 include {../src_plugins/fontmode/Plug.tmpasm}
 include {../src_plugins/fp_board/Plug.tmpasm}
 include {../src_plugins/fp_fs/Plug.tmpasm}
