@@ -177,7 +177,7 @@ static pcb_line_t *find_aux_line(pcb_layer_t *aux, const char *key)
 }
 
 /* Find and save the aux layer in the cache, of it exists */
-static void pcb_subc_cache_find_aux(pcb_subc_t *sc, int alloc)
+void pcb_subc_cache_find_aux(pcb_subc_t *sc, int alloc)
 {
 	int n;
 	for(n = 0; n < sc->data->LayerN; n++) {
