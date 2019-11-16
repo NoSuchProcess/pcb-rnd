@@ -160,6 +160,7 @@ typedef struct {
 		struct {                           /* color */
 			CFT_COLOR crosshair;             /* obsolete - DO NOT USE - kept for compatibility (use appearance/color/cross instead) */
 			CFT_COLOR drc;                   /* color of the on-screen drc clearance indication while routing */
+			CFT_COLOR mark;                  /* color of the on-screen marks (user placed mark and automatic 'grabbed' mark) */
 			CFT_COLOR selected;              /* generic object selection color */
 			CFT_COLOR via;                   /* non-terminal padstack shape on current layer */
 			CFT_COLOR via_far;               /* non-terminal padstack shape on non-current ('far side') layer */

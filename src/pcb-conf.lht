@@ -162,6 +162,7 @@ li:pcb-rnd-conf-v1 {
 			ha:color {
 				background = {#e5e5e5}
 				cross = {#cdcd00}
+				mark = {#ff0000}
 				drc = {#cdcd00}
 				selected = {#00ffff}
 				via = {#707070}

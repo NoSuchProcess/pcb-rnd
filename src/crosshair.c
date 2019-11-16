@@ -505,7 +505,7 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
 			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, NULL);
 		}
-		pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.mark);
 	}
 
 	if (pcb_marked.status) {
