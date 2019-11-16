@@ -57,6 +57,7 @@
 #include "pcb_minuid.h"
 #include "conf_core.h"
 #include "hidlib_conf.h"
+#include "extobj.h"
 
 #define SUBC_AUX_NAME "subc-aux"
 
@@ -1709,9 +1710,17 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
-	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
+	int selected;
 	int freq = conf_core.appearance.subc.dash_freq;
 	const pcb_color_t *nnclr;
+	pcb_extobj_t *extobj = pcb_extobj_get(subc);
+
+	if ((extobj != NULL) && (extobj->draw_mark != NULL)) {
+		extobj->draw_mark(info, subc);
+		return PCB_R_DIR_FOUND_CONTINUE;
+	}
+
+	selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
 
 	draw_subc_per_layer();
 
