@@ -505,15 +505,13 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
 			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, NULL);
 		}
+		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 	}
-
-	pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.crosshair);
 
 	if (pcb_marked.status) {
 		pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
 		pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
 	}
-
 
 	if (pcb_grabbed.status) {
 		pcb_render->draw_line(pcb_crosshair.GC, pcb_grabbed.X - ms, pcb_grabbed.Y - ms2, pcb_grabbed.X + ms, pcb_grabbed.Y + ms2);
