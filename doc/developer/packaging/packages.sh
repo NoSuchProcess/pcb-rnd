@@ -50,6 +50,13 @@ cat extra.digest
 		IFILES[pkg] = IFILES[pkg] " " files
 	}
 
+	($1 ~ "@appenddeps") {
+		pkg=$2
+		deps=$0
+		sub("@appenddeps[ \t]*[^ \t]*[ \t]", "", deps)
+		PKG_DEP[pkg] = PKG_DEP[pkg] " " deps
+	}
+
 	($1 ~ "[.]pup$") {
 		pkg = $1;
 		sub("[.]pup$", "", pkg)
