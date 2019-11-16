@@ -80,7 +80,7 @@ typedef struct {
 			CFT_COLOR background;            /* background and cursor color ... */
 			CFT_COLOR off_limit;             /* on-screen background beyond the configured drawing area */
 			CFT_COLOR grid;                  /* on-screen grid */
-			CFT_COLOR cross;                 /* crosshair, drc outline color */
+			CFT_COLOR cross;                 /* on-screen crosshair color (inverted) */
 		} color;
 	} appearance;
 
