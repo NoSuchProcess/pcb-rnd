@@ -164,10 +164,10 @@ li:pcb-rnd-conf-v1 {
 				crosshair = {#ff0000}
 				cross = {#cdcd00}
 				selected = {#00ffff}
-				via = {#7f7f7f}
-				via_far = {#aaaaaa}
-				pin = {#4d4d4d}
-				pin_far = {#999999}
+				via = {#707070}
+				via_far = {#a0a0a0}
+				pin = {#404040}
+				pin_far = {#707070}
 				pin_name = {#ff0000}
 				element = {#000000}
 				subc = {#CC0000}
