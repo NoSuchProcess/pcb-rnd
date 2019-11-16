@@ -8,14 +8,14 @@
 </g>
 <g id="layer_3_top">
 <!--normal-->
- <line x1="1.2700" y1="1.2700" x2="3.1750" y2="1.2700" stroke-width="0.2540" stroke="#4d4d4d" stroke-linecap="round"/>
- <line x1="1.2700" y1="3.1750" x2="1.2700" y2="5.0800" stroke-width="0.2540" stroke="#4d4d4d" stroke-linecap="round"/>
- <polygon points="4.9530,1.1430 4.9530,1.3970 7.1120,1.3970 7.1120,1.1430 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
- <polygon points="1.3970,6.8580 1.1430,6.8580 1.1430,9.0170 1.3970,9.0170 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
- <line x1="3.1750" y1="3.8100" x2="4.5220" y2="5.1570" stroke-width="0.2540" stroke="#4d4d4d" stroke-linecap="round"/>
- <polygon points="5.7150,3.6304 5.5354,3.8100 7.0620,5.3366 7.2416,5.1570 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
- <line x1="3.1750" y1="7.6200" x2="4.9385" y2="8.3403" stroke-width="0.2540" stroke="#4d4d4d" stroke-linecap="round"/>
- <polygon points="6.9155,7.4544 6.8194,7.6895 8.8181,8.5059 8.9141,8.2708 " stroke-width="0.010" stroke="#4d4d4d" fill="#4d4d4d"/>
+ <line x1="1.2700" y1="1.2700" x2="3.1750" y2="1.2700" stroke-width="0.2540" stroke="#404040" stroke-linecap="round"/>
+ <line x1="1.2700" y1="3.1750" x2="1.2700" y2="5.0800" stroke-width="0.2540" stroke="#404040" stroke-linecap="round"/>
+ <polygon points="4.9530,1.1430 4.9530,1.3970 7.1120,1.3970 7.1120,1.1430 " stroke-width="0.010" stroke="#404040" fill="#404040"/>
+ <polygon points="1.3970,6.8580 1.1430,6.8580 1.1430,9.0170 1.3970,9.0170 " stroke-width="0.010" stroke="#404040" fill="#404040"/>
+ <line x1="3.1750" y1="3.8100" x2="4.5220" y2="5.1570" stroke-width="0.2540" stroke="#404040" stroke-linecap="round"/>
+ <polygon points="5.7150,3.6304 5.5354,3.8100 7.0620,5.3366 7.2416,5.1570 " stroke-width="0.010" stroke="#404040" fill="#404040"/>
+ <line x1="3.1750" y1="7.6200" x2="4.9385" y2="8.3403" stroke-width="0.2540" stroke="#404040" stroke-linecap="round"/>
+ <polygon points="6.9155,7.4544 6.8194,7.6895 8.8181,8.5059 8.9141,8.2708 " stroke-width="0.010" stroke="#404040" fill="#404040"/>
 </g>
 <g id="layer_1_topsilk">
 <!--normal-->
