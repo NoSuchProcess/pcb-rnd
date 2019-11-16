@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  Basic, standard extended objects
+ *  Extended object for a line-of-vias; edit: line; places a row of vias over the line
  *  pcb-rnd Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -26,34 +26,14 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "config.h"
 
-#include <stdio.h>
-
-#include "board.h"
-#include "data.h"
-#include "plugins.h"
-#include "actions.h"
-#include "obj_subc.h"
-#include "pcb-printf.h"
-#include "extobj.h"
-
-static const char *exto_std_cookie = "exto_std plugin";
-
-#include "line_of_vias.c"
-
-int pplg_check_ver_exto_std(int ver_needed) { return 0; }
-
-void pplg_uninit_exto_std(void)
+static void pcb_line_of_vias_draw(pcb_draw_info_t *info, pcb_subc_t *obj)
 {
-	pcb_extobj_unreg(&pcb_line_of_vias);
+pcb_trace("pcb_line_of_vias_draw\n");
 }
 
-int pplg_init_exto_std(void)
-{
-	PCB_API_CHK_VER;
 
-	pcb_extobj_reg(&pcb_line_of_vias);
-
-	return 0;
-}
+static pcb_extobj_t pcb_line_of_vias = {
+	"line-of-vias",
+	pcb_line_of_vias_draw
+};
