@@ -264,13 +264,14 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE_XOR, pcb_draw_out.direct, info->drawn_area);
 
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
 
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
 		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_mark_callback, info, NULL);
 	}
+
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 
 	if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);

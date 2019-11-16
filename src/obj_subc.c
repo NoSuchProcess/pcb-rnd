@@ -57,6 +57,7 @@
 #include "pcb_minuid.h"
 #include "conf_core.h"
 #include "hidlib_conf.h"
+#include "hid_inlines.h"
 #include "extobj.h"
 
 #define SUBC_AUX_NAME "subc-aux"
@@ -1729,6 +1730,7 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 
 	nnclr = (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc)) ? &conf_core.appearance.color.subc_nonetlist : &conf_core.appearance.color.subc;
 	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : nnclr);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
 
 	if (freq >= 0) {
