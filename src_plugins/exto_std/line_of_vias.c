@@ -75,8 +75,23 @@ static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	pcb_render->draw_line(pcb_draw_out.fgGC, lov->edit.Point1.X, lov->edit.Point1.Y, lov->edit.Point2.X, lov->edit.Point2.Y);
 }
 
+pcb_objtype_t pcb_line_of_vias_get_edit_obj(pcb_subc_t *subc, pcb_coord_t x, pcb_coord_t y, void **ptr1, void **ptr2, void **ptr3)
+{
+	line_of_vias *lov;
+
+	if (subc->extobj_data == NULL)
+		line_of_vias_unpack(subc);
+	lov = subc->extobj_data;
+
+	*ptr1 = NULL;
+	*ptr2 = &lov->edit;
+	*ptr2 = &lov->edit;
+	return PCB_OBJ_LINE;
+}
+
 
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
-	pcb_line_of_vias_draw_mark
+	pcb_line_of_vias_draw_mark,
+	pcb_line_of_vias_get_edit_obj
 };

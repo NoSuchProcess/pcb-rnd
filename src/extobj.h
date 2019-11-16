@@ -29,6 +29,7 @@
 
 #include <genvector/vtp0.h>
 
+#include "obj_common.h"
 #include "obj_subc.h"
 #include "draw.h"
 
@@ -39,6 +40,8 @@ struct pcb_extobj_s {
 	/* static data - filled in by the extobj code */
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
+	pcb_objtype_t (*get_edit_obj)(pcb_subc_t *subc, pcb_coord_t x, pcb_coord_t y, void **ptr1, void **ptr2, void **ptr3); /* called when a tool found the subc of the object; should replace ptrs with the edit object and return the type of the edit object */
+
 
 	/* dynamic data - filled in by core */
 	int idx;
