@@ -141,7 +141,7 @@ li:pcb-rnd-conf-v1 {
 			compact = 1
 			rat_thickness = 0.25 mm
 			mark_size = 50 mil
-			layer_alpha = 0.7
+			layer_alpha = 0.75
 			drill_alpha = 0.85
 			text_host_bbox = true
 			term_label_size = 50
