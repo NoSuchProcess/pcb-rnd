@@ -169,7 +169,7 @@ void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, con
 pcb_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, pcb_coord_t *x, pcb_coord_t *y);
 
 /* Find and save the aux layer in the cache, of it exists */
-void pcb_subc_cache_find_aux(pcb_subc_t *sc, int alloc);
+void pcb_subc_cache_find_aux(pcb_subc_t *sc);
 
 
 pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy, pcb_bool keep_ids);

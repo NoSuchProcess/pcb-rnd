@@ -177,7 +177,7 @@ static pcb_line_t *find_aux_line(pcb_layer_t *aux, const char *key)
 }
 
 /* Find and save the aux layer in the cache, of it exists */
-void pcb_subc_cache_find_aux(pcb_subc_t *sc, int alloc)
+void pcb_subc_cache_find_aux(pcb_subc_t *sc)
 {
 	int n;
 	for(n = 0; n < sc->data->LayerN; n++) {
@@ -198,7 +198,7 @@ void pcb_subc_cache_find_aux(pcb_subc_t *sc, int alloc)
 static int pcb_subc_cache_update(pcb_subc_t *sc)
 {
 	if (sc->aux_layer == NULL)
-		pcb_subc_cache_find_aux(sc, 0);
+		pcb_subc_cache_find_aux(sc);
 
 	if (sc->aux_cache[0] != NULL)
 		return 0;
@@ -405,7 +405,7 @@ static pcb_coord_t read_mask(pcb_any_obj_t *obj)
 static void get_aux_layer(pcb_subc_t *sc, int alloc)
 {
 	if (sc->aux_layer == NULL)
-		pcb_subc_cache_find_aux(sc, 1);
+		pcb_subc_cache_find_aux(sc);
 	pcb_subc_cache_update(sc);
 }
 
