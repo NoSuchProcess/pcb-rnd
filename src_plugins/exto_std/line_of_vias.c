@@ -27,7 +27,7 @@
  */
 
 
-static void pcb_line_of_vias_draw(pcb_draw_info_t *info, pcb_subc_t *obj)
+static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *obj)
 {
 pcb_trace("pcb_line_of_vias_draw\n");
 }
@@ -35,5 +35,5 @@ pcb_trace("pcb_line_of_vias_draw\n");
 
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
-	pcb_line_of_vias_draw
+	pcb_line_of_vias_draw_mark
 };

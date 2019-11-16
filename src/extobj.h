@@ -38,7 +38,7 @@ typedef struct pcb_extobj_s pcb_extobj_t;
 struct pcb_extobj_s {
 	/* static data - filled in by the extobj code */
 	const char *name;
-	void (*draw)(pcb_draw_info_t *info, pcb_subc_t *obj);
+	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
 
 	/* dynamic data - filled in by core */
 	int idx;
