@@ -26,10 +26,53 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+typedef struct {
+	pcb_line_t edit;
+} line_of_vias;
 
-static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *obj)
+static void line_of_vias_unpack(pcb_subc_t *obj)
 {
-pcb_trace("pcb_line_of_vias_draw\n");
+	line_of_vias *lov;
+	const char *s;
+	double v;
+	pcb_bool succ;
+
+	if (obj->extobj_data == NULL)
+		obj->extobj_data = calloc(sizeof(line_of_vias), 1);
+
+	lov = obj->extobj_data;
+	lov->edit.Thickness = 1;
+	pcb_subc_get_origin(obj, &lov->edit.Point1.X, &lov->edit.Point1.Y);
+
+	lov->edit.Point2.X = lov->edit.Point1.X; lov->edit.Point2.Y = lov->edit.Point1.Y;
+
+	s = pcb_attribute_get(&obj->Attributes, "extobj::x2");
+	if (s != NULL) {
+		v = pcb_get_value(s, NULL, NULL, &succ);
+		if (succ) lov->edit.Point2.X = v;
+	}
+
+	s = pcb_attribute_get(&obj->Attributes, "extobj::y2");
+	if (s != NULL) {
+		v = pcb_get_value(s, NULL, NULL, &succ);
+		if (succ) lov->edit.Point2.Y = v;
+	}
+	
+}
+
+static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
+{
+	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
+	line_of_vias *lov;
+
+	if (subc->extobj_data == NULL)
+		line_of_vias_unpack(subc);
+	lov = subc->extobj_data;
+
+
+	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.15));
+	pcb_render->draw_line(pcb_draw_out.fgGC, lov->edit.Point1.X, lov->edit.Point1.Y, lov->edit.Point2.X, lov->edit.Point2.Y);
 }
 
 

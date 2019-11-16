@@ -37,6 +37,8 @@
 #include "obj_subc.h"
 #include "pcb-printf.h"
 #include "extobj.h"
+#include "conf_core.h"
+#include "hid_inlines.h"
 
 static const char *exto_std_cookie = "exto_std plugin";
 
