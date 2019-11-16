@@ -46,6 +46,7 @@ struct pcb_subc_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
 	const char *extobj;
 	int extobj_idx;
+	void *extobj_data; /* the extobj implementation may store decoded data here */
 	minuid_bin_t uid;
 	pcb_data_t *data;
 	htsp_t terminals;
