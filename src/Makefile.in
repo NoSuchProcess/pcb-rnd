@@ -647,8 +647,11 @@ print [@
 
 install_librnd_sy:
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so"
 
 install:
 	$(MAKE) install_pcbrnd HOW="install -f"
