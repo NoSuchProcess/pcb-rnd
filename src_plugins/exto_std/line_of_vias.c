@@ -37,10 +37,14 @@ static void line_of_vias_unpack(pcb_subc_t *obj)
 	double v;
 	pcb_bool succ;
 
+	if (obj->aux_layer == NULL)
+		pcb_subc_cache_find_aux(obj);
+
 	if (obj->extobj_data == NULL)
 		obj->extobj_data = calloc(sizeof(line_of_vias), 1);
 
 	lov = obj->extobj_data;
+	PCB_SET_PARENT(&lov->edit, layer, obj->aux_layer);
 	lov->edit.Thickness = 1;
 	pcb_subc_get_origin(obj, &lov->edit.Point1.X, &lov->edit.Point1.Y);
 
@@ -57,7 +61,6 @@ static void line_of_vias_unpack(pcb_subc_t *obj)
 		v = pcb_get_value(s, NULL, NULL, &succ);
 		if (succ) lov->edit.Point2.Y = v;
 	}
-	
 }
 
 static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
@@ -83,7 +86,7 @@ pcb_objtype_t pcb_line_of_vias_get_edit_obj(pcb_subc_t *subc, pcb_coord_t x, pcb
 		line_of_vias_unpack(subc);
 	lov = subc->extobj_data;
 
-	*ptr1 = NULL;
+	*ptr1 = &lov->edit.parent.layer;
 	*ptr2 = &lov->edit;
 	*ptr2 = &lov->edit;
 	return PCB_OBJ_LINE;
