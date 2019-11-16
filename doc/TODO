@@ -5,6 +5,7 @@
 + BUG: The 'As Drawn' polygon contour {m d d} is not displayed if the polygon is totally clipped out of existence even though it still exists in the layout. [report: Ade]
 + BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
 + BUG: run pcb-rnd, start new layout, press enter (empty name) -> segf [report: Evan, keantoken]
++ CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node (found while experimenting with dark background) -> cross(hair), mark and drc color are 3 separate nodes now [report: Majenko]
 - CLEANUP/FEATURE: new gcode export
 - FEATURE: extended objects: line-of-vias
 - FEATURE: new breadboard
@@ -14,7 +15,6 @@
 - BUG: when drawing rats manually generated netlist, if the user needs to undo a step, rat line is removed but named net is not. [repot: Miloh]
 
 2. For later releases ===============================================================================
-- CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node [report: Majenko]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
