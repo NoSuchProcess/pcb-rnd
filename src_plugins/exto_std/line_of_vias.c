@@ -70,7 +70,7 @@ static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	lov = subc->extobj_data;
 
 
-	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
+	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.extobj);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.15));
 	pcb_render->draw_line(pcb_draw_out.fgGC, lov->edit.Point1.X, lov->edit.Point1.Y, lov->edit.Point2.X, lov->edit.Point2.Y);
 }

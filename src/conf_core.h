@@ -169,6 +169,7 @@ typedef struct {
 			CFT_COLOR pin_name;              /* on-screen terminal number/name labels */
 			CFT_COLOR subc;                  /* on-screen subcircuit marks */
 			CFT_COLOR subc_nonetlist;        /* on-screen subcircuit marks for subcircuits with the nonetlist flag */
+			CFT_COLOR extobj;                /* on-screen marks of extended objects */
 			CFT_COLOR padstackmark;          /* on-screen center mark cross for padstacks */
 			CFT_COLOR rat;                   /* on-screen rat lines */
 			CFT_COLOR invisible_objects;     /* other-side objects and padstack shapes on non-current layer */
