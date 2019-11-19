@@ -365,7 +365,7 @@ void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 		pcb_route_draw(&pcb_crosshair.Route,pcb_crosshair.GC);
 		if (conf_core.editor.show_drc)
 			pcb_route_draw_drc(&pcb_crosshair.Route,pcb_crosshair.GC);
-		pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	}
 	else {
 		/* Draw a circle (0 length line) to show where the line will be placed */
@@ -383,7 +383,7 @@ void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 				pcb_crosshair.X, pcb_crosshair.Y,
 				pcb_crosshair.X, pcb_crosshair.Y, 
 				conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
-			pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 	}
 }

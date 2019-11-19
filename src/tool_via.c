@@ -100,7 +100,7 @@ TODO("pstk: replace this when route style has a prototype")
 		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
 		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 		xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, conf_core.design.clearance);
-		pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	}
 }
 

@@ -159,6 +159,7 @@ typedef struct {
 
 		struct {                           /* color */
 			CFT_COLOR crosshair;             /* obsolete - DO NOT USE - kept for compatibility (use appearance/color/cross instead) */
+			CFT_COLOR attached;              /* color of the non-layer corsshair-attached objects drawn in XOR (e.g. when padstack or buffer outline before placed; layer-objects like lines and arcs typically onherit the layer color) */
 			CFT_COLOR drc;                   /* color of the on-screen drc clearance indication while routing */
 			CFT_COLOR mark;                  /* color of the on-screen marks (user placed mark and automatic 'grabbed' mark) */
 			CFT_COLOR selected;              /* generic object selection color */

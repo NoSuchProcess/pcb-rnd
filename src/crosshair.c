@@ -293,7 +293,7 @@ void pcb_xordraw_movecopy(void)
 				pcb_draw_wireframe_line(pcb_crosshair.GC,line.Point1.X, line.Point1.Y,
 																line.Point2.X, line.Point2.Y,
 																line.Thickness + 2 * (conf_core.design.bloat + 1), 0);
-				pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
 			break;
 		}
@@ -315,7 +315,7 @@ void pcb_xordraw_movecopy(void)
 				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
-				pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
 			break;
 		}
@@ -358,7 +358,7 @@ void pcb_xordraw_movecopy(void)
 					pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 					pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, 
 																	point2.Y,line->Thickness + 2 * (conf_core.design.bloat + 1), 0);
-					pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+					pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 				}
 			}
 			else {
@@ -413,7 +413,7 @@ void pcb_xordraw_movecopy(void)
 				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
-				pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
 
 			/* Get the new arc point positions, calculate the movement deltas and send them 
@@ -477,7 +477,7 @@ void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE_XOR, 1, NULL);
 	}
 
-	pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+	pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	pcb_tool_draw_attached(hidlib);
 
 	/* an attached box does not depend on a special mode */

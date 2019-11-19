@@ -88,8 +88,8 @@ pcb_objtype_t pcb_line_of_vias_get_edit_obj(pcb_subc_t *subc, pcb_coord_t x, pcb
 
 	*ptr1 = &lov->edit.parent.layer;
 	*ptr2 = &lov->edit;
-	*ptr2 = &lov->edit;
-	return PCB_OBJ_LINE;
+	*ptr2 = &lov->edit.Point1;
+	return PCB_OBJ_LINE_POINT;
 }
 
 
