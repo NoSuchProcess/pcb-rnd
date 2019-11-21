@@ -805,8 +805,7 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	}
 
 	if (ctx->num_cop_layers < 0) {
-		pcb_message(PCB_MSG_ERROR, "Missing NUMBER_OF_LAYERS\n");
-		return -1;
+		return hkp_error(tree->root, "Missing NUMBER_OF_LAYERS\n");
 	}
 
 	{ /* create the layer stack: copper layers, as many as required by the header */
