@@ -347,8 +347,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 		if (strcmp(n->argv[0], "UNITS") == 0) {
 			ctx->pstk_unit = parse_units(n->argv[1]);
 			if (ctx->pstk_unit == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Unknown unit '%s'\n", n->argv[1]);
-				return -1;
+				return hkp_error(n, "Unknown unit '%s'\n", n->argv[1]);
 			}
 		}
 		else if (strcmp(n->argv[0], "PAD") == 0) {
@@ -359,8 +358,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				htsp_insert(&ctx->shapes, n->argv[1], shp);
 			}
 			else {
-				pcb_message(PCB_MSG_ERROR, "Duplicate PAD '%s'\n", n->argv[1]);
-				return -1;
+				return hkp_error(n, "Duplicate PAD '%s'\n", n->argv[1]);
 			}
 		}
 		else if (strcmp(n->argv[0], "HOLE") == 0) {
@@ -371,8 +369,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				htsp_insert(&ctx->holes, n->argv[1], hole);
 			}
 			else {
-				pcb_message(PCB_MSG_ERROR, "Duplicate HOLE '%s'\n", n->argv[1]);
-				return -1;
+				return hkp_error(n, "Duplicate HOLE '%s'\n", n->argv[1]);
 			}
 		}
 		else if (strcmp(n->argv[0], "PADSTACK") == 0) {
@@ -383,8 +380,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				htsp_insert(&ctx->pstks, n->argv[1], pstk);
 			}
 			else {
-				pcb_message(PCB_MSG_ERROR, "Duplicate PADSTACK '%s'\n", n->argv[1]);
-				return -1;
+				return hkp_error(n, "Duplicate PADSTACK '%s'\n", n->argv[1]);
 			}
 		}
 	}
