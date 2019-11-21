@@ -556,12 +556,12 @@ TODO("this should be done only when subc == NULL");
 		}
 		cidx--; /* hkp numbers from 1, we number from 0 */
 		if ((cidx < 0) || (cidx >= ctx->num_cop_layers)) {
-			pcb_message(PCB_MSG_ERROR, "Layer '%s' is out of range (1..%d)\n", ln, ctx->num_cop_layers);
+			hkp_error(err_node, "Layer '%s' is out of range (1..%d)\n", ln, ctx->num_cop_layers);
 			return NULL;
 		}
 		gid = pcb_layergrp_step(ctx->pcb, pcb_layergrp_get_top_copper(), cidx, PCB_LYT_COPPER);
 		if (gid < 0) {
-			pcb_message(PCB_MSG_ERROR, "Layer '%s' is out of range (copper layer group not found)\n", ln);
+			hkp_error(err_node, "Layer '%s' is out of range (copper layer group not found)\n", ln);
 			return NULL;
 		}
 		assert(ctx->pcb->LayerGroups.grp[gid].len > 0);
@@ -604,7 +604,7 @@ TODO("this should be done only when subc == NULL");
 		name = "top-fab";
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Unknown layer '%s'\n", ln);
+		hkp_error(err_node, "Unknown layer '%s'\n", ln);
 		return NULL;
 	}
 
