@@ -31,12 +31,10 @@ static int parse_dia(hkp_ctx_t *ctx, node_t *roundn, pcb_coord_t *dia)
 {
 	node_t *hr = roundn->first_child;
 	if ((hr == NULL) || (strcmp(hr->argv[0], "DIAMETER") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "Expected DIAMETER as first child of ROUND\n");
-		return -1;
+		return hkp_error(hr, "Expected DIAMETER as first child of ROUND\n");
 	}
 	if (parse_coord(ctx, hr->argv[1], dia) != 0) {
-		pcb_message(PCB_MSG_ERROR, "Invalid ROUND DIAMETER value '%s'\n", hr->argv[1]);
-		return -1;
+		return hkp_error(hr, "Invalid ROUND DIAMETER value '%s'\n", hr->argv[1]);
 	}
 	return 0;
 }
