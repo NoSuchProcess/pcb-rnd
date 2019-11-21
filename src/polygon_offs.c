@@ -174,9 +174,28 @@ TODO("this should be coming from gengeo2d");
 /* Return the square of distance between point x0;y0 and line x1;y1 - x2;y2 */
 static double dist_line_to_pt(double x0, double y0, double x1, double y1, double x2, double y2, double *odx, double *ody, double *dd2)
 {
-	double tmp1, d2, dx, dy;
+	double ax = x0 - x1, ay = y0 - y1;
+	double dx = x2 - x1, dy = y2 - y1;
+	double len = sqrt(dx*dx+dy*dy);
+	double o, dxn, dyn;
+	double tmp1, d2;
 
-	dx = x2 - x1; dy = y2 - y1;
+
+	dxn = dx / len;
+	dyn = dy / len;
+
+	o = (ax * dxn + ay * dyn) / len;
+	if (o <= 0.0) {
+		/* beyond x1;y1 */
+		return ax * ax + ay * ay;
+	}
+	if (o >= 1.0) {
+		/* beyond x1;y1 */
+		double bx = x0 - x2, by = y0 - y2;
+		return bx * bx + by * by;
+	}
+
+	/* in range: normal line-point dist */
 	tmp1 = dy*x0 - dx*y0 + x2*y1 - y2*x1;
 	d2 = dx*dx + dy*dy;
 
