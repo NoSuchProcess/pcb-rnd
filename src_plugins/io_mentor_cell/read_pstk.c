@@ -297,7 +297,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 
 	tmp = find_nth(nd->first_child, "XY", 0);
 	if (tmp == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Ignoring pin with no coords\n");
+		hkp_error(nd, "Ignoring pin with no coords\n");
 		return;
 	}
 
@@ -306,12 +306,12 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
 	if (tmp == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Ignoring pin with no padstack\n");
+		hkp_error(nd, "Ignoring pin with no padstack\n");
 		return;
 	}
 	hpstk = parse_pstk(ctx, tmp->argv[1]);
 	if (hpstk == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Ignoring pin with undefined padstack '%s'\n", tmp->argv[1]);
+		hkp_error(nd, "Ignoring pin with undefined padstack '%s'\n", tmp->argv[1]);
 		return;
 	}
 
