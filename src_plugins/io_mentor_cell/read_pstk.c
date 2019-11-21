@@ -69,7 +69,7 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 	}
 	else {
 		TODO("handle slots");
-		pcb_message(PCB_MSG_ERROR, "Only ROUND holes are supported yet\n");
+		hkp_error(hr, "Only ROUND holes are supported yet\n");
 		goto error;
 	}
 
