@@ -369,12 +369,12 @@ static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
 
 	tmp = find_nth(nv->first_child, "PADSTACK", 0);
 	if (tmp == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Missing VIA PADSTACK, can't place via\n"); \
+		hkp_error(nv, "Missing VIA PADSTACK, can't place via\n"); \
 		return;
 	}
 	hps = parse_pstk(ctx, tmp->argv[1]);
 	if (hps == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Unknown VIA PADSTACK '%s', can't place via\n", tmp->argv[1]);
+		hkp_error(nv, "Unknown VIA PADSTACK '%s', can't place via\n", tmp->argv[1]);
 		return;
 	}
 
