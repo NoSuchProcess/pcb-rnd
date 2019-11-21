@@ -252,7 +252,7 @@ static void d1() {}
 
 #define DWG_REQ_LY(node) \
 	if (ly == NULL) { \
-		pcb_message(PCB_MSG_ERROR, "Internal error: expected existing layer from the caller\n"); \
+		hkp_error(node, "Internal error: expected existing layer from the caller\n"); \
 		return; \
 	}
 
