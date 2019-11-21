@@ -86,7 +86,7 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 #define SHAPE_CHECK_DUP \
 do { \
 	if (has_shape) { \
-		pcb_message(PCB_MSG_ERROR, "PAD with multiple shapes\n"); \
+		hkp_error(n, "PAD with multiple shapes\n"); \
 		goto error; \
 	} \
 	has_shape = 1; \
