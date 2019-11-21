@@ -232,19 +232,19 @@ static void d1() {}
 		if (__tmp__ != NULL) { \
 			ly = parse_layer(ctx, subc, __tmp__->argv[1], 0, __tmp__); \
 			if (ly == NULL) { \
-				pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp__->argv[1], name); \
+				hkp_error(__tmp__, "Invalid layer %s in %s\n", __tmp__->argv[1], name); \
 				return; \
 			} \
 		} \
 		else if (__tmp2__ != NULL) { \
 			ly = parse_layer(ctx, subc, __tmp2__->argv[1], 1, __tmp2__); \
 			if (ly == NULL) { \
-				pcb_message(PCB_MSG_ERROR, "Invalid layer %s in %s\n", __tmp2__->argv[1], name2); \
+				hkp_error(__tmp2__, "Invalid layer %s in %s\n", __tmp2__->argv[1], name2); \
 				return; \
 			} \
 		}\
 		else {\
-			pcb_message(PCB_MSG_ERROR, "Missing layer reference (%s)\n", name); \
+			hkp_error(node, "Missing layer reference (%s)\n", name); \
 			return; \
 		} \
 	}
