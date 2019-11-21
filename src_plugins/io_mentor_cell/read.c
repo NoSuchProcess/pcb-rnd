@@ -667,14 +667,14 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 		}
 		else if (strcmp(n->argv[0], "XY") == 0) {
 			if ((parse_x(ctx, n->argv[1], &ox) != 0) || (parse_y(ctx, n->argv[2], &oy) != 0)) {
-				pcb_message(PCB_MSG_ERROR, "Can't load package: broken placement XY coord\n");
+				hkp_error(n, "Can't load package: broken placement XY coord\n");
 				return NULL;
 			}
 			seen_oxy = 1;
 		}
 		else if (strcmp(n->argv[0], "ROTATION") == 0) {
 			if (parse_rot(ctx, n, &rot) != 0) {
-				pcb_message(PCB_MSG_ERROR, "Can't load package due to wrong rotation value\n");
+				hkp_error(n, "Can't load package due to wrong rotation value\n");
 				return NULL;
 			}
 		}
@@ -682,7 +682,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			if (strcmp(n->argv[1], "TOP") == 0) on_bottom = 0;
 			else if (strcmp(n->argv[1], "BOTTOM") == 0) on_bottom = 1;
 			else {
-				pcb_message(PCB_MSG_ERROR, "Can't load package: broken facement (should be TOP or BOTTOM)\n");
+				hkp_error(n, "Can't load package: broken facement (should be TOP or BOTTOM)\n");
 				return NULL;
 			}
 		}
@@ -693,7 +693,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 
 	if (!seen_oxy) {
 		pcb_subc_free(subc);
-		pcb_message(PCB_MSG_ERROR, "Can't load package: no placement XY coord\n");
+		hkp_error(nd, "Can't load package: no placement XY coord\n");
 		return NULL;
 	}
 
