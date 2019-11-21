@@ -216,7 +216,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 	else if (strcmp(tn->argv[1], "PIN_THROUGH") == 0) top_only = 0;
 	else if (strcmp(tn->argv[1], "VIA") == 0) top_only = 0;
 	else {
-		pcb_message(PCB_MSG_ERROR, "Unknown PADSTACK_TYPE %s\n", tn->argv[1]);
+		hkp_error(tn, "Unknown PADSTACK_TYPE %s\n", tn->argv[1]);
 		return NULL;
 	}
 
