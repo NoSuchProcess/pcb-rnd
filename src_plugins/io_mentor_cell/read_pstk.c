@@ -129,13 +129,13 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 			SHAPE_CHECK_DUP;
 			tmp = find_nth(n->first_child, "WIDTH", 0);
 			if (parse_coord(ctx, tmp->argv[1], &w) != 0) {
-				pcb_message(PCB_MSG_ERROR, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
+				hkp_error(tmp, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
 				return NULL;
 			}
 			if (*n->argv[0] == 'R') {
 				tmp = find_nth(n->first_child, "HEIGHT", 0);
 				if (parse_coord(ctx, tmp->argv[1], &h) != 0) {
-					pcb_message(PCB_MSG_ERROR, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
+					hkp_error(tmp, "Invalid RECTANGLE WIDTH value '%s'\n", tmp->argv[1]);
 					return NULL;
 				}
 			}
