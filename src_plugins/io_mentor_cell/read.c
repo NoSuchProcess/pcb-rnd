@@ -759,7 +759,7 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 				continue;
 			ly = parse_layer(ctx, NULL, lyn->argv[1], 0, lyn);
 			if (ly == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Unknown trace layer '%s'\n", lyn->argv[1]);
+				hkp_error(lyn, "Unknown trace layer '%s'\n", lyn->argv[1]);
 				continue;
 			}
 			parse_dwg_all(ctx, NULL, ly, n);
