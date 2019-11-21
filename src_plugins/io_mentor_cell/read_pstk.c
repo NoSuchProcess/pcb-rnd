@@ -69,6 +69,7 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 	}
 	else {
 		TODO("handle slots");
+		hkp_error(hr, "Only ROUND holes are supported yet\n");
 		hr = find_nth(h->subtree->first_child, "SLOT", 0);
 		if (hr != NULL) {
 			pcb_coord_t w, h;
@@ -84,7 +85,6 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 				return NULL;
 			}
 		}
-		hkp_error(hr, "Only ROUND holes are supported yet\n");
 		goto error;
 	}
 
