@@ -69,6 +69,21 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 	}
 	else {
 		TODO("handle slots");
+		hr = find_nth(h->subtree->first_child, "SLOT", 0);
+		if (hr != NULL) {
+			pcb_coord_t w, h;
+			node_t *tmp;
+			tmp = find_nth(hr->first_child, "WIDTH", 0);
+			if (parse_coord(ctx, tmp->argv[1], &w) != 0) {
+				hkp_error(tmp, "Invalid SLOT WIDTH value '%s'\n", tmp->argv[1]);
+				return NULL;
+			}
+			tmp = find_nth(hr->first_child, "HEIGHT", 0);
+			if (parse_coord(ctx, tmp->argv[1], &h) != 0) {
+				hkp_error(tmp, "Invalid SLOT HEIGHT value '%s'\n", tmp->argv[1]);
+				return NULL;
+			}
+		}
 		hkp_error(hr, "Only ROUND holes are supported yet\n");
 		goto error;
 	}
