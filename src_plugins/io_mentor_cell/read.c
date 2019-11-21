@@ -790,19 +790,16 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 		if (strcmp(n->argv[0], "NUMBER_OF_LAYERS") == 0) {
 			ctx->num_cop_layers = strtol(n->argv[1], &end, 10);
 			if (*end != '\0') {
-				pcb_message(PCB_MSG_ERROR, "Invalid number of layers '%s' (expected integer)\n", n->argv[1]);
-				return -1;
+				return hkp_error(n, "Invalid number of layers '%s' (expected integer)\n", n->argv[1]);
 			}
 			if ((ctx->num_cop_layers < 1) || (ctx->num_cop_layers > ((PCB_MAX_LAYER/2)-8))) {
-				pcb_message(PCB_MSG_ERROR, "Invalid number of layers '%s' (out of range)\n", n->argv[1]);
-				return -1;
+				return hkp_error(n, "Invalid number of layers '%s' (out of range)\n", n->argv[1]);
 			}
 		}
 		else if (strcmp(n->argv[0], "UNITS") == 0) {
 			ctx->unit = parse_units(n->argv[1]);
 			if (ctx->unit == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Unknown unit '%s'\n", n->argv[1]);
-				return -1;
+				return hkp_error(n, "Unknown unit '%s'\n", n->argv[1]);
 			}
 		}
 	}
