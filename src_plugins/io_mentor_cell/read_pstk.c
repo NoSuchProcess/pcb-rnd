@@ -152,7 +152,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 	}
 
 	if (!has_shape) {
-		pcb_message(PCB_MSG_ERROR, "PAD without a shape\n");
+		hkp_error(s->subtree, "PAD without a shape\n");
 		return NULL;
 	}
 
