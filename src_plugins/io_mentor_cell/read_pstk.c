@@ -200,7 +200,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 	n = find_nth(p->subtree->first_child, "TECHNOLOGY", 0);
 	if (n == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Padstack without technology\n");
+		hkp_error(p->subtree, "Padstack without technology\n");
 		return NULL;
 	}
 
@@ -209,7 +209,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 	tn = find_nth(p->subtree->first_child, "PADSTACK_TYPE", 0);
 	if (tn == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Padstack without PADSTACK_TYPE\n");
+		hkp_error(p->subtree, "Padstack without PADSTACK_TYPE\n");
 		return NULL;
 	}
 	if (strcmp(tn->argv[1], "PIN_SMD") == 0) top_only = 1;
@@ -240,7 +240,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 		hole = parse_hole(ctx, hn->argv[1]);
 		if (hole == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Undefined hole '%s'\n", hn->argv[1]);
+			hkp_error(hn, "Undefined hole '%s'\n", hn->argv[1]);
 			goto error;
 		}
 		p->proto.hdia = hole->dia;
@@ -264,7 +264,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 				shp = parse_shape(ctx, n->argv[1]);
 				if (shp == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Undefined shape '%s'\n", n->argv[1]);
+					hkp_error(n, "Undefined shape '%s'\n", n->argv[1]);
 					goto error;
 				}
 				ts->shape[ts->len] = shp->shp;
