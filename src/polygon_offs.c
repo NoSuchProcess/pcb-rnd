@@ -275,7 +275,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 		pb.x2 = v->point[0] + offs-1; pb.y2 = v->point[1] + offs-1;
 		for(seg = pcb_rtree_first(&it, src->tree, &pb); seg != NULL; seg = pcb_rtree_next(&it)) {
 			pcb_coord_t x1, y1, x2, y2;
-			double dist, tune, prjx, prjy, dx, dy, ax, ay, dotp;
+			double dist, tune, prjx, prjy, dx, dy, ax, ay, dotp, prevx, prevy, prevl;
 
 			pcb_polyarea_get_tree_seg(seg, &x1, &y1, &x2, &y2);
 			dist = dist_line_to_pt(v->point[0], v->point[1], x1, y1, x2, y2, &dx, &dy);
@@ -297,6 +297,26 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 					continue;
 				pcb_printf("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
 				pcb_printf(" tune=%.012mm dist=%.012mm\n", (pcb_coord_t)tune, (pcb_coord_t)sqrt(dist));
+
+				/* corner case: if next segment is parallel to what we are compesing to
+				   (chamfed V with bottom horizontal being too close to target horizontal line),
+				   do not insert a new point because that would retain the horizontal line
+				   which can not be moved because it is parallel to the target line */
+				prevx = v->prev->point[0] - v->point[0];
+				prevy = v->prev->point[1] - v->point[1];
+				prevl = sqrt(prevx*prevx + prevy*prevy);
+				prevx /= prevl;
+				prevy /= prevl;
+
+				if (((prevx == dx) || (prevx == -dx)) && ((prevy == dy) || (prevy == -dy))) {
+					/* apply direct shift of the whole parallel line */
+					v->point[0] = pcb_round(v->point[0] + prjx * dist);
+					v->point[1] = pcb_round(v->point[1] + prjy * dist);
+					v->prev->point[0] = pcb_round(v->prev->point[0] + prjx * dist);
+					v->prev->point[1] = pcb_round(v->prev->point[1] + prjy * dist);
+					v = v->next;
+					goto retry;
+				}
 
 				nv_[0] = v->point[0];
 				nv_[1] = v->point[1];
