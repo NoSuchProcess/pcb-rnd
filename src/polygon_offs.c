@@ -133,14 +133,13 @@ double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts)
 	return a;
 }
 
-pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
+void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, pcb_coord_t offs)
 {
 	const pcb_vnode_t *v;
 	pcb_vector_t tmp;
 	pcb_pline_t *res = NULL;
-	long num_pts, n;
+	long num_pts, n, from;
 	pcb_polo_t *pcsh;
-	vtp0_t selfi;
 
 	/* count corners */
 	v = &src->head;
@@ -173,17 +172,42 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 
 	free(pcsh);
 
-	vtp0_init(&selfi);
-	if (pcb_pline_is_selfint(res)) {
-		pcb_pline_split_selfint(res, &selfi);
-printf("ARR SELFI: %d\n", selfi.used);
-		res = selfi.array[1];
-	}
+	from = dst->used;
+	if (pcb_pline_is_selfint(res))
+		pcb_pline_split_selfint(res, dst);
+	else
+		vtp0_append(dst, res);
 
-/*	pcb_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
-	res->tree = pcb_poly_make_edge_tree(res);
+	for(n = from; n < dst->used; n++) {
+		res = dst->array[n];
+		pcb_poly_contour_pre(res, 1);
+		pcb_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
+		res->tree = pcb_poly_make_edge_tree(res);
+		dst->array[n] = res;
+	}
+}
+
+pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
+{
+	vtp0_t selfi;
+	pcb_pline_t *res = NULL;
+	int n;
+	double best = 0;
+
+	vtp0_init(&selfi);
+	pcb_pline_dup_offsets(&selfi, src, offs);
+
+	for(n = 0; n < selfi.used; n++) {
+		pcb_pline_t *pl = selfi.array[n];
+		if (pl->area > best) {
+			best = pl->area;
+			res = pl;
+		}
+	}
+	pcbo_trace("best area: %f out of %d\n", best, selfi.used);
 	return res;
 }
+
 
 TODO("this should be coming from gengeo2d");
 /* Return the square of distance between point x0;y0 and line x1;y1 - x2;y2 */
@@ -279,6 +303,9 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 	if (offs < 0)
 		offs = -offs;
+
+	if (offs2 > dst->area)
+		return; /* degenerate case: polygon too small */
 
 	/* there are two ways dst can get too close to src: */
 

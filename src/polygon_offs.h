@@ -26,7 +26,14 @@
 
 /* Polygon contour offset calculation */
 
+#include <genvector/vtp0.h>
 
+
+/* Calculate the offset plines of src and append the resulting plines to dst.
+   Yields multiple islands in some corner cases. */
+void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, pcb_coord_t offs);
+
+/* Same, but returns the largest island only */
 pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs);
 
 
