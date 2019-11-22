@@ -125,7 +125,14 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 	pcb_cardinal_t cnt;
 	vhub_t *endh;
 
-	for(v = start->next, cnt = 0; v->Flags.in_hub == 0; v = v->next) cnt++;
+	for(v = start->next, cnt = 0;; v = v->next) {
+		if (v->Flags.in_hub) {
+			if (pcb_vect_dist2(start->point, v->point) < ENDP_EPSILON)
+				break; /* found a matching hub point */
+			goto skip; /* found a different hub point, skip */
+		}
+		cnt++;
+	}
 	endh = hub_find(hubs, v, pcb_false);
 	if (h == endh) { /* forward loop */
 		TRACE("  Fwd %ld!\n", (long)cnt);
@@ -142,7 +149,15 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 		goto new_pl;
 	}
 
-	for(v = start->prev, cnt = 0; v->Flags.in_hub == 0; v = v->prev) cnt++;
+	skip:;
+	for(v = start->prev, cnt = 0;; v = v->prev) {
+		if (v->Flags.in_hub) {
+			if (pcb_vect_dist2(start->point, v->point) < ENDP_EPSILON)
+				break; /* found a matching hub point */
+			return 0; /* found a different hub point, skip */
+		}
+		cnt++;
+	}
 	if (h == endh) { /* backward loop */
 		TRACE("  Bwd %ld!\n", (long)cnt);
 		newpl = pcb_poly_contour_new(start->point);
@@ -185,7 +200,7 @@ pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 
 void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
 {
-	int n;
+	int n, t;
 	vtp0_t hubs;
 	pcb_vnode_t *va, *vb, *iva, *ivb;
 
@@ -217,7 +232,7 @@ void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
 		va = va->next;
 	} while (va != &pl->head);
 
-/*	for(t = MAX_HUB_TRIES; t > 0; t--)*/ {
+	for(t = MAX_HUB_TRIES; t > 0; t--) {
 		for(n = 0; n < vtp0_len(&hubs); n++) {
 			int m;
 			vhub_t *h = *vtp0_get(&hubs, n, 0);
