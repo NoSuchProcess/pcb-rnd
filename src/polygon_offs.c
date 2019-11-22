@@ -310,10 +310,10 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 				if (((prevx == dx) || (prevx == -dx)) && ((prevy == dy) || (prevy == -dy))) {
 					/* apply direct shift of the whole parallel line */
-					v->point[0] = pcb_round(v->point[0] + prjx * dist);
-					v->point[1] = pcb_round(v->point[1] + prjy * dist);
-					v->prev->point[0] = pcb_round(v->prev->point[0] + prjx * dist);
-					v->prev->point[1] = pcb_round(v->prev->point[1] + prjy * dist);
+					v->point[0] = pcb_round(v->point[0] + prjx * tune);
+					v->point[1] = pcb_round(v->point[1] + prjy * tune);
+					v->prev->point[0] = pcb_round(v->prev->point[0] + prjx * tune);
+					v->prev->point[1] = pcb_round(v->prev->point[1] + prjy * tune);
 					v = v->next;
 					goto retry;
 				}
