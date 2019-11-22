@@ -30,7 +30,7 @@
 /* expect no more than this number of hubs in a complex polygon */
 #define MAX_HUB_TRIES 1024
 
-#if 0
+#if 1
 #	define TRACE pcb_trace
 #else
 	void TRACE(const char *fmt, ...) {}
@@ -70,16 +70,22 @@ static pcb_vnode_t *pcb_pline_end_at(pcb_vnode_t *v, pcb_vector_t at)
 static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, pcb_bool insert)
 {
 	int n, m;
-	vhub_t *h;
 
-	for(n = 0, h = hubs->array[0]; n < vtp0_len(hubs); n++,h++) {
-		pcb_vnode_t *stored = *vtp0_get(&h->node, 0, 0);
+	for(n = 0; n < vtp0_len(hubs); n++) {
+		vhub_t *h = *vtp0_get(hubs, n, 0);
+		pcb_vnode_t *stored, **st;
+		st = vtp0_get(&h->node, 0, 0);
+		if (st == NULL) continue;
+		stored = *st;
 		/* found the hub at the specific location */
 		if (pcb_vect_dist2(stored->point, v->point) < ENDP_EPSILON) {
 			for(m = 0; m < vtp0_len(&h->node); m++) {
-				stored = *vtp0_get(&h->node, m, 0);
-				if (stored == v) /* already on the list */
-					return h;
+				st = vtp0_get(&h->node, m, 0);
+				if (st != NULL) {
+					stored = *st;
+					if (stored == v) /* already on the list */
+						return h;
+				}
 			}
 			/* not found on the hub's list, maybe insert */
 			if (insert) {
@@ -212,7 +218,6 @@ void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
 	} while (va != &pl->head);
 
 /*	for(t = MAX_HUB_TRIES; t > 0; t--)*/ {
-
 		for(n = 0; n < vtp0_len(&hubs); n++) {
 			int m;
 			vhub_t *h = *vtp0_get(&hubs, n, 0);
