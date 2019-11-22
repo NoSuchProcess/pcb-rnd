@@ -98,6 +98,34 @@ static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, pcb_bool insert)
 	return NULL;
 }
 
+/* remove v from h; if h has only one node, remove that too */
+static void remove_from_hub(vhub_t *h, pcb_vnode_t *v)
+{
+	int m;
+	pcb_vnode_t *stored, **st;
+
+	for(m = 0; m < vtp0_len(&h->node); m++) {
+		st = vtp0_get(&h->node, m, 0);
+		if (st == NULL) {
+			vtp0_remove(&h->node, m, 1);
+			m--;
+			continue;
+		}
+		if (st == v) {
+			vtp0_remove(&h->node, m, 1);
+			m--;
+			v->Flags.in_hub = 0;
+		}
+	}
+	
+	/* only one node remains: this is no longer a hub! */
+	if (h->node.used == 1) {
+		stored = *vtp0_get(&h->node, 0, 0); /* the previous loop guarantees it can not be NULL */
+		vtp0_remove(&h->node, 0, 1);
+		stored->Flags.in_hub = 0;
+	}
+}
+
 /* returns 1 if a new intersection is mapped */
 static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
 {
@@ -138,6 +166,7 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 		TRACE("  Fwd %ld!\n", (long)cnt);
 		newpl = pcb_poly_contour_new(start->point);
 		next = start->next;
+		remove_from_hub(h, start);
 		pcb_poly_vertex_exclude(start);
 		for(v = next; cnt > 0; v = next, cnt--) {
 			TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
@@ -163,6 +192,7 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 		newpl = pcb_poly_contour_new(start->point);
 		next = start->prev;
 		newpl->head = *start;
+		remove_from_hub(h, start);
 		pcb_poly_vertex_exclude(start);
 		for(v = next; cnt > 0; v = next, cnt--) {
 			TRACE("   Append!\n");

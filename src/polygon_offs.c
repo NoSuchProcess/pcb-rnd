@@ -140,6 +140,7 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 	pcb_pline_t *res = NULL;
 	long num_pts, n;
 	pcb_polo_t *pcsh;
+	vtp0_t selfi;
 
 	/* count corners */
 	v = &src->head;
@@ -171,7 +172,15 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 	}
 
 	free(pcsh);
-	pcb_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
+
+	vtp0_init(&selfi);
+	if (pcb_pline_is_selfint(res)) {
+		pcb_pline_split_selfint(res, &selfi);
+printf("ARR SELFI: %d\n", selfi.used);
+		res = selfi.array[1];
+	}
+
+/*	pcb_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
 	res->tree = pcb_poly_make_edge_tree(res);
 	return res;
 }
