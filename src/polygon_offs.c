@@ -172,7 +172,7 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 
 TODO("this should be coming from gengeo2d");
 /* Return the square of distance between point x0;y0 and line x1;y1 - x2;y2 */
-static double dist_line_to_pt(double x0, double y0, double x1, double y1, double x2, double y2, double *odx, double *ody, double *dd2)
+static double dist_line_to_pt(double x0, double y0, double x1, double y1, double x2, double y2, double *odx, double *ody)
 {
 	double ax = x0 - x1, ay = y0 - y1;
 	double dx = x2 - x1, dy = y2 - y1;
@@ -199,9 +199,8 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 	tmp1 = dy*x0 - dx*y0 + x2*y1 - y2*x1;
 	d2 = dx*dx + dy*dy;
 
-	*dd2 = d2;
-	*odx = dx;
-	*ody = dy;
+	*odx = dxn;
+	*ody = dyn;
 	return (tmp1 * tmp1) / d2;
 }
 
@@ -222,9 +221,9 @@ PCB_INLINE void pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, do
 	prx /= prlen;
 	pry /= prlen;
 
-	c = 1.2*tune * ((-pry * ldx + prx * ldy) / (ldy * vx - ldx * vy));
+	c = tune * ((-pry * ldx + prx * ldy) / (ldy * vx - ldx * vy));
 	pcb_printf("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (pcb_coord_t)tune);
-	pcb_printf("   MOVE: %.012mm %mm;%mm\n", (pcb_coord_t)c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
+	pcb_printf("   MOVE: c=%.012mm %mm;%mm\n", (pcb_coord_t)c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
 
 	v->point[0] += c * vx;
 	v->point[1] += c * vy;
@@ -253,10 +252,10 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 		pb.x2 = v->point[0] + offs-1; pb.y2 = v->point[1] + offs-1;
 		for(seg = pcb_rtree_first(&it, src->tree, &pb); seg != NULL; seg = pcb_rtree_next(&it)) {
 			pcb_coord_t x1, y1, x2, y2;
-			double dist, tune, prjx, prjy, dx, dy, dlen, dlen2, ax, ay, dotp;
+			double dist, tune, prjx, prjy, dx, dy, ax, ay, dotp;
 
 			pcb_polyarea_get_tree_seg(seg, &x1, &y1, &x2, &y2);
-			dist = dist_line_to_pt(v->point[0], v->point[1], x1, y1, x2, y2, &dx, &dy, &dlen2);
+			dist = dist_line_to_pt(v->point[0], v->point[1], x1, y1, x2, y2, &dx, &dy);
 			if ((offs2 - dist) > 10) {
 				pcb_vector_t nv_;
 				pcb_vnode_t *nv;
@@ -264,20 +263,17 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				/* calculate x0;y0 projected onto the line */
 				ax = v->point[0] - x1;
 				ay = v->point[1] - y1;
-				dlen = sqrt(dlen2);
-				dx /= dlen;
-				dy /= dlen;
 				dotp = ax * dx + ay * dy;
-/*			printf("  dotp=%f dx=%f dy=%f\n", dotp, dx, dy);*/
 				prjx = x1 + dx * dotp;
 				prjy = y1 + dy * dotp;
+				pcb_fprintf(stderr, "  dotp=%f dx=%f dy=%f res: %mm %mm\n", dotp, dx, dy, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
 
 				/* this is how much the point needs to be moved away from the line */
 				tune = offs - sqrt(dist);
 				if (tune < 5)
 					continue;
 				pcb_printf("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
-
+				pcb_printf(" tune=%.012mm dist=%.012mm\n", (pcb_coord_t)tune, (pcb_coord_t)sqrt(dist));
 
 				nv_[0] = pcb_round(v->point[0]);
 				nv_[1] = pcb_round(v->point[1]);
@@ -285,7 +281,16 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				pcb_poly_vertex_include_force(v, nv);
 
 				pull_back(v, v->prev, tune, dx, dy, prjx, prjy);
+
+			dist = dist_line_to_pt(v->point[0], v->point[1], x1, y1, x2, y2, &dx, &dy);
+printf("  final v  dist=%f (min %f)\n", sqrt(dist), (double)offs);
+
+
 				pull_back(nv, nv->next, tune, dx, dy, prjx, prjy);
+
+
+			dist = dist_line_to_pt(nv->point[0], nv->point[1], x1, y1, x2, y2, &dx, &dy);
+printf("  final nv dist=%f (min %f)\n", sqrt(dist), (double)offs);
 /*return;*/
 
 				v = v->next;
