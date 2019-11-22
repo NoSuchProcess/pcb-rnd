@@ -432,7 +432,7 @@ int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
 
 	trace_contour(pcb, result, 0, 1000);
 
-/*	rem = fix_overcuts(pcb, result);*/
+	rem = fix_overcuts(pcb, result);
 	if (rem != 0)
 		pcb_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 
