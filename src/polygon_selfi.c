@@ -157,28 +157,27 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 		if (v->Flags.in_hub) {
 			if (pcb_vect_dist2(start->point, v->point) < ENDP_EPSILON)
 				break; /* found a matching hub point */
-			goto skip; /* found a different hub point, skip */
+			goto skip_to_backward; /* found a different hub point, skip */
 		}
 		cnt++;
 	}
-	endh = hub_find(hubs, v, pcb_false);
-	if (h == endh) { /* forward loop */
-		TRACE("  Fwd %ld!\n", (long)cnt);
-		newpl = pcb_poly_contour_new(start->point);
-		next = start->next;
-		remove_from_hub(h, start);
-		pcb_poly_vertex_exclude(start);
-		for(v = next; cnt > 0; v = next, cnt--) {
-			TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
-			next = v->next;
-			pcb_poly_vertex_exclude(v);
-			tmp = pcb_poly_node_create(v->point);
-			pcb_poly_vertex_include(newpl->head.prev, tmp);
-		}
-		goto new_pl;
+	
+	/* forward loop */
+	TRACE("  Fwd %ld!\n", (long)cnt);
+	newpl = pcb_poly_contour_new(start->point);
+	next = start->next;
+	remove_from_hub(h, start);
+	pcb_poly_vertex_exclude(start);
+	for(v = next; cnt > 0; v = next, cnt--) {
+		TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
+		next = v->next;
+		pcb_poly_vertex_exclude(v);
+		tmp = pcb_poly_node_create(v->point);
+		pcb_poly_vertex_include(newpl->head.prev, tmp);
 	}
+	goto new_pl;
 
-	skip:;
+	skip_to_backward:;
 	for(v = start->prev, cnt = 0;; v = v->prev) {
 		if (v->Flags.in_hub) {
 			if (pcb_vect_dist2(start->point, v->point) < ENDP_EPSILON)
