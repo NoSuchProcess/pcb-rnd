@@ -353,5 +353,12 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 	/* case #2: a line in dst is too close to a point in src */
 
+
+	/* cleanup: remove redundant points */
+	v = &dst->head;
+	do {
+		if ((v->prev->point[0] == v->point[0]) && (v->prev->point[1] == v->point[1]))
+			pcb_poly_vertex_exclude(v->prev);
+	} while((v = v->next) != &dst->head);
 }
 
