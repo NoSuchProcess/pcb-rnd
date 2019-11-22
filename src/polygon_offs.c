@@ -205,7 +205,7 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 }
 
 /* Modify v, pulling it back toward vp so that the distance to line ldx;ldy is increased by tune */
-PCB_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy)
+PCB_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy, int inside)
 {
 	pcb_coord_t ox, oy;
 	double c, vx, vy, vlen, prx, pry, prlen;
@@ -240,6 +240,8 @@ printf("nope1\n");
 	pcb_printf("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (pcb_coord_t)tune);
 	pcb_printf("   MOVE: c=%.012mm %mm;%mm\n", (pcb_coord_t)c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
 
+	if (inside)
+		c = -c;
 	ox = v->point[0]; oy = v->point[1];
 	v->point[0] = pcb_round(v->point[0] + c * vx);
 	v->point[1] = pcb_round(v->point[1] + c * vy);
@@ -268,11 +270,14 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 		pcb_rtree_it_t it;
 		pcb_rtree_box_t pb;
 		void *seg;
+		int inside;
 
 
 		retry:;
 		pb.x1 = v->point[0] - offs+1; pb.y1 = v->point[1] - offs+1;
 		pb.x2 = v->point[0] + offs-1; pb.y2 = v->point[1] + offs-1;
+		inside = pcb_poly_contour_inside(src, v->point);
+
 		for(seg = pcb_rtree_first(&it, src->tree, &pb); seg != NULL; seg = pcb_rtree_next(&it)) {
 			pcb_coord_t x1, y1, x2, y2;
 			double dist, tune, prjx, prjy, dx, dy, ax, ay, dotp, prevx, prevy, prevl;
@@ -289,10 +294,13 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				dotp = ax * dx + ay * dy;
 				prjx = x1 + dx * dotp;
 				prjy = y1 + dy * dotp;
-				pcb_fprintf(stderr, "  dotp=%f dx=%f dy=%f res: %mm %mm\n", dotp, dx, dy, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
+				pcb_printf("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (pcb_coord_t)prjx, (pcb_coord_t)prjy, inside);
 
 				/* this is how much the point needs to be moved away from the line */
-				tune = offs - sqrt(dist);
+				if (inside)
+					tune = offs + sqrt(dist);
+				else
+					tune = offs - sqrt(dist);
 				if (tune < 5)
 					continue;
 				pcb_printf("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
@@ -323,7 +331,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				nv = pcb_poly_node_create(nv_);
 				pcb_poly_vertex_include_force(v, nv);
 
-				if (pull_back(v, v->prev, tune, dx, dy, prjx, prjy) != 0) {
+				if (pull_back(v, v->prev, tune, dx, dy, prjx, prjy, inside) != 0) {
 					pcb_poly_vertex_exclude(nv);
 					v = v->next;
 					goto retry;
@@ -334,7 +342,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 printf("  final1 v  dist=%f (min %f)\n", sqrt(dist), (double)offs);
 
 
-				if (pull_back(nv, nv->next, tune, dx, dy, prjx, prjy) != 0) {
+				if (pull_back(nv, nv->next, tune, dx, dy, prjx, prjy, inside) != 0) {
 					pcb_poly_vertex_exclude(nv);
 					v = v->next;
 					goto retry;
