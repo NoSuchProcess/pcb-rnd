@@ -209,19 +209,20 @@ PCB_INLINE void pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, do
 {
 	double c, vx, vy, vlen, prx, pry, prlen;
 
-	vx = vp->point[0] - v->point[0];
-	vy = vp->point[1] - v->point[1];
+	vx = v->point[0] - vp->point[0];
+	vy = v->point[1] - vp->point[1];
 	vlen = sqrt(vx*vx + vy*vy);
 	vx /= vlen;
 	vy /= vlen;
 
-	prx = vp->point[0] - prjx;
-	pry = vp->point[1] - prjy;
+	prx = v->point[0] - prjx;
+	pry = v->point[1] - prjy;
 	prlen = sqrt(prx*prx + pry*pry);
 	prx /= prlen;
 	pry /= prlen;
 
 	c = tune * ((-pry * ldx + prx * ldy) / (ldy * vx - ldx * vy));
+	pcb_printf("   vect: vp=%mm;%mm v=%mm;%mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
 	pcb_printf("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (pcb_coord_t)tune);
 	pcb_printf("   MOVE: c=%.012mm %mm;%mm\n", (pcb_coord_t)c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
 
@@ -282,6 +283,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 
 				pull_back(v, v->prev, tune, dx, dy, prjx, prjy);
 
+
 			dist = dist_line_to_pt(v->point[0], v->point[1], x1, y1, x2, y2, &dx, &dy);
 printf("  final v  dist=%f (min %f)\n", sqrt(dist), (double)offs);
 
@@ -291,7 +293,7 @@ printf("  final v  dist=%f (min %f)\n", sqrt(dist), (double)offs);
 
 			dist = dist_line_to_pt(nv->point[0], nv->point[1], x1, y1, x2, y2, &dx, &dy);
 printf("  final nv dist=%f (min %f)\n", sqrt(dist), (double)offs);
-/*return;*/
+
 
 				v = v->next;
 				goto retry;
