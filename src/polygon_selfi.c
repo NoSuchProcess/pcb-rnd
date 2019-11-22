@@ -111,7 +111,8 @@ static void remove_from_hub(vhub_t *h, pcb_vnode_t *v)
 			m--;
 			continue;
 		}
-		if (st == v) {
+		stored = *st;
+		if (stored == v) {
 			vtp0_remove(&h->node, m, 1);
 			m--;
 			v->Flags.in_hub = 0;
@@ -229,7 +230,7 @@ pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 
 void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
 {
-	int n, t;
+	int n;
 	vtp0_t hubs;
 	pcb_vnode_t *va, *vb, *iva, *ivb;
 
@@ -261,32 +262,27 @@ void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
 		va = va->next;
 	} while (va != &pl->head);
 
-	for(t = MAX_HUB_TRIES; t > 0; t--) {
+	/*for(t = MAX_HUB_TRIES; t > 0; t--)*/ {
+		retry:;
 		for(n = 0; n < vtp0_len(&hubs); n++) {
 			int m;
 			vhub_t *h = *vtp0_get(&hubs, n, 0);
-			pcb_vnode_t *v = *vtp0_get(&h->node, 0, 0);
+			pcb_vnode_t *v, **v_ = vtp0_get(&h->node, 0, 0);
+			if (v_ == NULL) continue;
+			v = *v_;
 			TRACE("hub %p at %mm;%mm:\n", h, v->point[0], v->point[1]);
 			for(m = 0; m < vtp0_len(&h->node); m++) {
 				v = *vtp0_get(&h->node, m, 0);
 				TRACE(" %d=%p\n", m, v);
 				/* try to split off a leaf loop from the hub */
 				
-				if (pline_split_off_loop(&hubs, out, h, v)) {
-					vtp0_remove(&h->node, m, 1);
-					m--;
-					if (vtp0_len(&h->node) == 0) {
-						vtp0_uninit(&h->node);
-						free(h);
-						vtp0_remove(&hubs, n, 1);
-						n--;
-						break;
-					}
-				}
+				if (pline_split_off_loop(&hubs, out, h, v))
+					goto retry;
 			}
 			TRACE("\n");
 		}
 	}
 
+TODO("leak: remove the unused hubs");
 	vtp0_uninit(&hubs);
 }
