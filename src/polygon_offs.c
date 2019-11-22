@@ -367,8 +367,15 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 	/* cleanup: remove redundant points */
 	v = &dst->head;
 	do {
-		if ((v->prev->point[0] == v->point[0]) && (v->prev->point[1] == v->point[1]))
+		if ((v->prev->point[0] == v->point[0]) && (v->prev->point[1] == v->point[1])) {
+			if (v->prev == &dst->head) {
+				pcb_vnode_t *nv = v->next;
+				pcb_poly_vertex_exclude(v);
+				v = nv;
+				continue;
+			}
 			pcb_poly_vertex_exclude(v->prev);
+		}
 	} while((v = v->next) != &dst->head);
 }
 
