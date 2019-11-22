@@ -29,6 +29,12 @@
 #include "compat_misc.h"
 #include "polygon_offs.h"
 
+#if 0
+#define pcbo_trace pcb_trace
+#else
+static void pcbo_trace(char *fmt, ...) {}
+#endif
+
 void pcb_polo_norm(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
@@ -226,21 +232,23 @@ PCB_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, dou
 	pry /= prlen;
 
 	c = (ldy * vx - ldx * vy);
-	if (c == 0) {
-/*
-		pcb_trace("   vect: vp=%.12mm;%.12mm v=%.12mm;%.12mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
-		pcb_trace("   vect: vx=%f;%f ld=%f;%f\n", vx, vy, ldx, ldy);
-*/
+	if ((c < 0.0001) && (c > -0.0001)) {
+		pcbo_trace("   par1: vp=%.12mm;%.12mm v=%.12mm;%.12mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
+		pcbo_trace("   par2: vx=%f;%f ld=%f;%f\n", vx, vy, ldx, ldy);
 		return -1; /* perpendicular; no pullbakc could help */
 	}
 
 	c = tune * ((-pry * ldx + prx * ldy) / c);
 
-/*
-	pcb_trace("   vect: vp=%mm;%mm v=%mm;%mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
-	pcb_trace("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (pcb_coord_t)tune);
-	pcb_trace("   MOVE: c=%.012mm %mm;%mm\n", (pcb_coord_t)c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
-*/
+	pcbo_trace("   vect: vp=%mm;%mm v=%mm;%mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
+	pcbo_trace("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (pcb_coord_t)tune);
+	pcbo_trace("   MOVE: c=%.012mm (%f) %mm;%mm\n", (pcb_coord_t)c, c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
+
+	if (c < 0) {
+		v->point[0] = vp->point[0];
+		v->point[1] = vp->point[1];
+		return 0; /* not enough room - cut back line to zero length so it gets removed */
+	}
 
 	if (inside)
 		c = -c;
@@ -258,6 +266,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 {
 	pcb_vnode_t *v;
 	double offs2 = (double)offs * (double)offs;
+	int negoffs = offs < 0;
 
 	if (offs < 0)
 		offs = -offs;
@@ -270,13 +279,14 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 		pcb_rtree_it_t it;
 		pcb_rtree_box_t pb;
 		void *seg;
-		int inside;
+		int inside = 0;
 
 
 		retry:;
 		pb.x1 = v->point[0] - offs+1; pb.y1 = v->point[1] - offs+1;
 		pb.x2 = v->point[0] + offs-1; pb.y2 = v->point[1] + offs-1;
-		inside = pcb_poly_contour_inside(src, v->point);
+		if (!negoffs)
+			inside = pcb_poly_contour_inside(src, v->point);
 
 		for(seg = pcb_rtree_first(&it, src->tree, &pb); seg != NULL; seg = pcb_rtree_next(&it)) {
 			pcb_coord_t x1, y1, x2, y2;
@@ -294,7 +304,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				dotp = ax * dx + ay * dy;
 				prjx = x1 + dx * dotp;
 				prjy = y1 + dy * dotp;
-/*				pcb_trace("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (pcb_coord_t)prjx, (pcb_coord_t)prjy, inside);*/
+				pcbo_trace("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (pcb_coord_t)prjx, (pcb_coord_t)prjy, inside);
 
 				/* this is how much the point needs to be moved away from the line */
 				if (inside)
@@ -303,10 +313,10 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 					tune = offs - sqrt(dist);
 				if (tune < 5)
 					continue;
-/*
-				pcb_trace("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
-				pcb_trace(" tune=%.012mm dist=%.012mm\n", (pcb_coord_t)tune, (pcb_coord_t)sqrt(dist));
-*/
+
+				pcbo_trace("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
+				pcbo_trace(" tune=%.012mm dist=%.012mm\n", (pcb_coord_t)tune, (pcb_coord_t)sqrt(dist));
+
 
 				/* corner case: if next segment is parallel to what we are compesing to
 				   (chamfed V with bottom horizontal being too close to target horizontal line),
