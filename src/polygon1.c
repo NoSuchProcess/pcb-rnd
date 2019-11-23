@@ -457,7 +457,7 @@ static pcb_cvc_list_t *add_descriptors(pcb_pline_t * pl, char poly, pcb_cvc_list
 	return list;
 }
 
-static inline void cntrbox_adjust(pcb_pline_t * c, pcb_vector_t p)
+static inline void cntrbox_adjust(pcb_pline_t * c, const pcb_vector_t p)
 {
 	c->xmin = min(c->xmin, p[0]);
 	c->xmax = max(c->xmax, p[0] + 1);
