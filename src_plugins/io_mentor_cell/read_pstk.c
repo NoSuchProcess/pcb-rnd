@@ -326,7 +326,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 	}
 	hpstk = parse_pstk(ctx, tmp->argv[1]);
 	if (hpstk == NULL) {
-		hkp_error(nd, "Ignoring pin with undefined padstack '%s'\n", tmp->argv[1]);
+		hkp_error(tmp, "Ignoring pin with undefined padstack '%s'\n", tmp->argv[1]);
 		return;
 	}
 
