@@ -2226,7 +2226,7 @@ int pcb_polyarea_and_subtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb
 	return code;
 }																/* poly_AndSubtract_free */
 
-static inline int cntrbox_pointin(pcb_pline_t * c, pcb_vector_t p)
+static inline int cntrbox_pointin(const pcb_pline_t *c, const pcb_vector_t p)
 {
 	return (p[0] >= c->xmin && p[1] >= c->ymin && p[0] <= c->xmax && p[1] <= c->ymax);
 
@@ -2598,7 +2598,7 @@ static pcb_r_dir_t crossing(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-int pcb_poly_contour_inside(pcb_pline_t * c, pcb_vector_t p)
+int pcb_poly_contour_inside(const pcb_pline_t *c, pcb_vector_t p)
 {
 	struct pip info;
 	pcb_box_t ray;

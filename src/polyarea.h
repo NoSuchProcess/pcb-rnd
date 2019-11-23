@@ -126,7 +126,7 @@ pcb_bool pcb_polyarea_touching(pcb_polyarea_t *p1, pcb_polyarea_t *p2);
 
 /* checks whether point lies within contour independently of its orientation */
 
-int pcb_poly_contour_inside(pcb_pline_t *c, pcb_vector_t v);
+int pcb_poly_contour_inside(const pcb_pline_t *c, pcb_vector_t v);
 int pcb_poly_contour_in_contour(pcb_pline_t *poly, pcb_pline_t *inner);
 pcb_polyarea_t *pcb_polyarea_create(void);
 
