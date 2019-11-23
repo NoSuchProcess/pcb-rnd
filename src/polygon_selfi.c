@@ -147,12 +147,32 @@ static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
 	return 1;
 }
 
+static int pline_split_off_loop_new(vtp0_t *out, vhub_t *h, pcb_vnode_t *start, pcb_cardinal_t cnt)
+{
+	pcb_pline_t *newpl = NULL;
+	pcb_vnode_t *v, *next, *tmp;
+
+	newpl = pcb_poly_contour_new(start->point);
+	next = start->next;
+	remove_from_hub(h, start);
+	pcb_poly_vertex_exclude(start);
+	for(v = next; cnt > 0; v = next, cnt--) {
+		TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
+		next = v->next;
+		pcb_poly_vertex_exclude(v);
+		tmp = pcb_poly_node_create(v->point);
+		pcb_poly_vertex_include(newpl->head.prev, tmp);
+	}
+
+TRACE("APPEND: %p %p\n", newpl, newpl->head.next);
+	vtp0_append(out, newpl);
+	return 1;
+}
+
 static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_t *start)
 {
-	pcb_vnode_t *v, *next, *tmp;
-	pcb_pline_t *newpl = NULL;
+	pcb_vnode_t *v;
 	pcb_cardinal_t cnt;
-	vhub_t *endh;
 
 	for(v = start->next, cnt = 0;; v = v->next) {
 		if (v->Flags.in_hub) {
@@ -165,18 +185,7 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 	
 	/* forward loop */
 	TRACE("  Fwd %ld!\n", (long)cnt);
-	newpl = pcb_poly_contour_new(start->point);
-	next = start->next;
-	remove_from_hub(h, start);
-	pcb_poly_vertex_exclude(start);
-	for(v = next; cnt > 0; v = next, cnt--) {
-		TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
-		next = v->next;
-		pcb_poly_vertex_exclude(v);
-		tmp = pcb_poly_node_create(v->point);
-		pcb_poly_vertex_include(newpl->head.prev, tmp);
-	}
-	goto new_pl;
+	return pline_split_off_loop_new(out, h, start, cnt);
 
 	skip_to_backward:;
 	for(v = start->prev, cnt = 0;; v = v->prev) {
@@ -191,22 +200,7 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 	}
 
 	TRACE("  Bwd %ld!\n", (long)cnt);
-	newpl = pcb_poly_contour_new(start->point);
-	next = start->prev;
-	remove_from_hub(h, start);
-	pcb_poly_vertex_exclude(start);
-	for(v = next; cnt > 0; v = next, cnt--) {
-		TRACE("   Append!\n");
-		next = v->prev;
-		pcb_poly_vertex_exclude(v);
-		tmp = pcb_poly_node_create(v->point);
-		pcb_poly_vertex_include(newpl->head.prev, tmp);
-	}
-
-	new_pl:;
-TRACE("APPEND: %p %p\n", newpl, newpl->head.next);
-	vtp0_append(out, newpl);
-	return 1;
+	return pline_split_off_loop_new(out, h, start, cnt);
 }
 
 pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
