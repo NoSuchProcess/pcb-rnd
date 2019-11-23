@@ -173,8 +173,10 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, pcb_coord_t offs
 	free(pcsh);
 
 	from = dst->used;
-	if (pcb_pline_is_selfint(res))
+	if (pcb_pline_is_selfint(res)) {
 		pcb_pline_split_selfint(res, dst);
+		pcb_poly_contour_del(&res);
+	}
 	else
 		vtp0_append(dst, res);
 
