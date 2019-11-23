@@ -88,7 +88,7 @@ void pcb_poly_contour_init(pcb_pline_t *c);
 void pcb_poly_contour_clear(pcb_pline_t *c); /* clears list of vertices */
 void pcb_poly_contour_del(pcb_pline_t **c);
 
-pcb_bool pcb_poly_contour_copy(pcb_pline_t **dst, pcb_pline_t *src);
+pcb_bool pcb_poly_contour_copy(pcb_pline_t **dst, const pcb_pline_t *src);
 
 void pcb_poly_contour_pre(pcb_pline_t *c, pcb_bool optimize); /* prepare contour */
 void pcb_poly_contour_inv(pcb_pline_t *c); /* invert contour */

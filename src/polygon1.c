@@ -2445,7 +2445,7 @@ void pcb_poly_vertex_include(pcb_vnode_t *after, pcb_vnode_t *node)
 	}
 }
 
-pcb_bool pcb_poly_contour_copy(pcb_pline_t ** dst, pcb_pline_t * src)
+pcb_bool pcb_poly_contour_copy(pcb_pline_t **dst, const pcb_pline_t *src)
 {
 	pcb_vnode_t *cur, *newnode;
 
