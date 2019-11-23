@@ -257,8 +257,13 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 			hkp_error(hn, "Undefined hole '%s'\n", hn->argv[1]);
 			goto error;
 		}
-		p->proto.hdia = hole->dia;
-		p->proto.hplated = hole->plated;
+		if (hole->dia > 0) {
+			p->proto.hdia = hole->dia;
+			p->proto.hplated = hole->plated;
+		}
+		else {
+			hkp_error(hole, "Slots are not yet supported\n");
+		}
 		TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
 	}
 
