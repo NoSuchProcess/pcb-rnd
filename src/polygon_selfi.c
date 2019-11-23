@@ -30,7 +30,7 @@
 /* expect no more than this number of hubs in a complex polygon */
 #define MAX_HUB_TRIES 1024
 
-#if 1
+#if 0
 #	define TRACE pcb_trace
 #else
 	void TRACE(const char *fmt, ...) {}
