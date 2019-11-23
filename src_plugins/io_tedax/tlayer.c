@@ -75,7 +75,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 				long i, n;
 				fprintf(f, "begin polyline v1 pllay_%ld_%ld_%ld\n", gid, polygon->ID, plid);
 				n = pl->Count;
-				for(v = &pl->head, i = 0; i < n; v = v->next, i++)
+				for(v = pl->head, i = 0; i < n; v = v->next, i++)
 					pcb_fprintf(f, " v %.06mm %.06mm\n", v->point[0], v->point[1]);
 				fprintf(f, "end polyline\n");
 			}

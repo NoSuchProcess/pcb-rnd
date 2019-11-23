@@ -57,7 +57,7 @@ static pcb_polyarea_t *original_poly(pcb_poly_t *p, pcb_bool *forward)
 				return NULL;
 		}
 		else {
-			pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+			pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 		}
 
 		/* Is current point last in contour? If so process it. */

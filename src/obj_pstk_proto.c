@@ -778,7 +778,7 @@ void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly)
 	pl = pcb_poly_contour_new(v);
 	for(n = 1; n < poly->len; n++) {
 		v[0] = poly->x[n]; v[1] = poly->y[n];
-		pcb_poly_vertex_include(pl->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(pl->head->prev, pcb_poly_node_create(v));
 	}
 	pcb_poly_contour_pre(pl, 1);
 

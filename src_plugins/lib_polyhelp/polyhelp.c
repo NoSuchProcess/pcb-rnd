@@ -54,12 +54,12 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 {
 	const pcb_vnode_t *v, *n;
 	fprintf(f, "!pline start\n");
-	v = &pl->head;
+	v = pl->head;
 	do {
 		n = v->next;
 		pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
 	}
-	while((v = v->next) != &pl->head);
+	while((v = v->next) != pl->head);
 	fprintf(f, "!pline end\n");
 }
 
@@ -86,13 +86,13 @@ pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_
 		const pcb_vnode_t *v, *n;
 		pcb_pline_t *track = tracks.array[i];
 
-		v = &track->head;
+		v = track->head;
 		do {
 			n = v->next;
 			pcb_line_new(dst, v->point[0], v->point[1], n->point[0], n->point[1], thickness, clearance, flags);
 			cnt++;
 		}
-		while((v = v->next) != &track->head);
+		while((v = v->next) != track->head);
 		pcb_poly_contour_del(&track);
 	}
 
@@ -104,13 +104,13 @@ pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src)
 {
 	const pcb_vnode_t *v, *n;
 
-	v = &src->head;
+	v = src->head;
 	do {
 		n = v->next;
 		if ((v->point[0] != n->point[0]) && (v->point[1] != n->point[1]))
 			return pcb_false;
 	}
-	while((v = v->next) != &src->head);
+	while((v = v->next) != src->head);
 	return pcb_true;
 }
 

@@ -42,9 +42,9 @@ static size_t fc_alloced = 0;
 #define vert_opt_begin() \
 	{ \
 		pcb_coord_t last_x, last_y, this_x, this_y, next_x, next_y, mindist; \
-		last_x = pl->head.point[0]; \
-		last_y = pl->head.point[1]; \
-		v = pl->head.next; \
+		last_x = pl->head->point[0]; \
+		last_y = pl->head->point[1]; \
+		v = pl->head->next; \
 		mindist = pcb_render->coord_per_pix * 2; \
 
 /* call this before drawing the next vertex */
@@ -94,7 +94,7 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 		fc_y[i++] = this_y;
 		vert_opt_loop2();
 	}
-	while ((v = v->next) != pl->head.next);
+	while ((v = v->next) != pl->head->next);
 
 	if (i < 3)
 		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
@@ -120,7 +120,7 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	}
 
 	/* Need at least two points in the contour */
-	if (pl->head.next == NULL)
+	if (pl->head->next == NULL)
 		return;
 
 	vert_opt_begin();
@@ -129,7 +129,7 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
 		vert_opt_loop2();
 	}
-	while ((v = v->next) != pl->head.next);
+	while ((v = v->next) != pl->head->next);
 	vert_opt_end();
 }
 

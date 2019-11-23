@@ -128,7 +128,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_co
 		ang += da;
 		v[0] = cx - rx * cos(ang * PCB_M180);
 		v[1] = cy + ry * sin(ang * PCB_M180);
-		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	}
 	/* find last point */
 	ang = astart + adelta;
@@ -146,7 +146,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	for (i = 0; i < segs; i++) {
 		v[0] = cx - rx * cos(ang * PCB_M180);
 		v[1] = cy + ry * sin(ang * PCB_M180);
-		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 		ang += da;
 	}
 
@@ -159,7 +159,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	if (edx < 0) edx = -edx;
 	if (edy < 0) edy = -edy;
 	if (edx+edy > PCB_MM_TO_COORD(0.001))
-		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v2));
+		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v2));
 
 
 	/* now add other round cap */
@@ -187,13 +187,13 @@ pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y
 		return NULL;
 	v[0] = x2;
 	v[1] = y1;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	v[0] = x2;
 	v[1] = y2;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	v[0] = x1;
 	v[1] = y2;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	return pcb_poly_from_contour(contour);
 }
 
@@ -214,31 +214,31 @@ TODO(": rewrite this to use the same table as the square/oct pin draw function")
 	/* point 6 */
 	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[6];
 	v[1] = y + ROUND(radius * 0.5) * ym[6];
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 5 */
 	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[5];
 	v[1] = y + ROUND(radius * 0.5) * ym[5];
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 4 */
 	v[0] = x - ROUND(radius * 0.5) * xm[4];
 	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[4];
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 3 */
 	v[0] = x - ROUND(radius * 0.5) * xm[3];
 	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[3];
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 2 */
 	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[2];
 	v[1] = y - ROUND(radius * 0.5) * ym[2];
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 1 */
 	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[1];
 	v[1] = y - ROUND(radius * 0.5) * ym[1];
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 0 */
 	v[0] = x + ROUND(radius * 0.5) * xm[0];
 	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[0];
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	return pcb_poly_from_contour(contour);
 }
 
@@ -252,7 +252,7 @@ static void pcb_poly_frac_circle_(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y,
 	oe1 = (v[0] - X);
 	oe2 = (v[1] - Y);
 
-	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
 
 	/* move vector to origin */
 	e1 = (v[0] - X) * PCB_POLY_CIRC_RADIUS_ADJ;
@@ -267,13 +267,13 @@ static void pcb_poly_frac_circle_(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y,
 		e1 = t1;
 		v[0] = X + ROUND(e1);
 		v[1] = Y + ROUND(e2);
-		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
 	}
 
 	if ((add_last) && (orange == 4)) {
 		v[0] = X - ROUND(oe2);
 		v[1] = Y + ROUND(oe1);
-		pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
 	}
 }
 
@@ -332,15 +332,15 @@ pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_co
 	pcb_poly_frac_circle_end(contour, x1, y1, v, 4);
 	v[0] = x2;
 	v[1] = y1 - t;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	pcb_poly_frac_circle_end(contour, x2, y1, v, 4);
 	v[0] = x2 + t;
 	v[1] = y2;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	pcb_poly_frac_circle_end(contour, x2, y2, v, 4);
 	v[0] = x1;
 	v[1] = y2 + t;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	pcb_poly_frac_circle_end(contour, x1, y2, v, 4);
 	return pcb_poly_from_contour(contour);
 }
@@ -383,16 +383,16 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x
 	v[0] = x2 - dx;
 	v[1] = y2 - dy;
 	if (square)
-		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	else
 		pcb_poly_frac_circle(contour, x2, y2, v, 2);
 	v[0] = x2 + dx;
 	v[1] = y2 + dy;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	v[0] = x1 + dx;
 	v[1] = y1 + dy;
 	if (square)
-		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	else
 		pcb_poly_frac_circle(contour, x1, y1, v, 2);
 	/* now we have the line contour */

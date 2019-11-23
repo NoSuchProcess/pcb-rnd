@@ -307,8 +307,8 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon, int d
 		return pcb_poly_is_point_in_p_ignore_holes(Point->X, Point->Y, polygon);
 
 	/* canonical point */
-	cx = polygon->Clipped->contours->head.point[0];
-	cy = polygon->Clipped->contours->head.point[1];
+	cx = polygon->Clipped->contours->head->point[0];
+	cy = polygon->Clipped->contours->head->point[1];
 	if ((Point->X == cx) && (Point->Y == cy))
 		return pcb_true;
 
@@ -731,7 +731,7 @@ pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 		pcb_pline_t *c;
 		for (c = P1->Clipped->contours; c; c = c->next) {
 			pcb_line_t line;
-			pcb_vnode_t *v = &c->head;
+			pcb_vnode_t *v = c->head;
 			if (c->xmin - Bloat <= P2->Clipped->contours->xmax &&
 					c->xmax + Bloat >= P2->Clipped->contours->xmin &&
 					c->ymin - Bloat <= P2->Clipped->contours->ymax && c->ymax + Bloat >= P2->Clipped->contours->ymin) {
@@ -741,7 +741,7 @@ pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 				line.Thickness = 2 * Bloat;
 				line.Clearance = 0;
 				line.Flags = pcb_no_flags();
-				for (v = v->next; v != &c->head; v = v->next) {
+				for (v = v->next; v != c->head; v = v->next) {
 					line.Point2.X = v->point[0];
 					line.Point2.Y = v->point[1];
 					pcb_line_bbox(&line);
@@ -799,7 +799,7 @@ PCB_INLINE pcb_bool_t pcb_isc_line_polyline(pcb_pline_t *pl, pcb_coord_t x1, pcb
 		q[2][0] = x1 - ox; q[2][1] = y1 - oy;
 		q[3][0] = x2 - ox; q[3][1] = y2 - oy;
 
-		return pcb_is_point_in_convex_quad(pl->head.point, q);
+		return pcb_is_point_in_convex_quad(pl->head->point, q);
 	}
 }
 
@@ -935,7 +935,7 @@ PCB_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape
 	pl = pcb_poly_contour_new(v);
 	for(n = 1; n < shape->data.poly.len; n++) {
 		v[0] = shape->data.poly.x[n] + ps->x; v[1] = shape->data.poly.y[n] + ps->y;
-		pcb_poly_vertex_include(pl->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(pl->head->prev, pcb_poly_node_create(v));
 	}
 	pcb_poly_contour_pre(pl, 1);
 	pcb_polyarea_contour_include(shp, pl);

@@ -1038,20 +1038,20 @@ void hyp_arc2contour(pcb_pline_t * contour, pcb_coord_t x1, pcb_coord_t y1, pcb_
 	/* add first point to contour */
 	v[0] = x1;
 	v[1] = y1;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 
 	/* intermediate points */
 	for (i = 1; i < poly_points; i++) {
 		double angle = alpha + (beta - alpha) * i / poly_points;
 		v[0] = xc + r * cos(angle);
 		v[1] = yc + r * sin(angle);
-		pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	}
 
 	/* last point */
 	v[0] = x2;
 	v[1] = y2;
-	pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 
 	return;
 }
@@ -1187,7 +1187,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 		else {
 			if (!vrtx->is_arc)
 				/* line. add vertex to contour */
-				pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+				pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 			else
 				/* arc. pcb polyarea contains line segments, not arc segments. convert arc segment to line segments. */
 				hyp_arc2contour(contour, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, pcb_false);

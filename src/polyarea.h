@@ -69,7 +69,7 @@ typedef struct pcb_pline_s pcb_pline_t;
 struct pcb_pline_s {
 	pcb_coord_t xmin, ymin, xmax, ymax;
 	pcb_pline_t *next;
-	pcb_vnode_t head;
+	pcb_vnode_t *head;
 	unsigned int Count;
 	double area;
 	pcb_rtree_t *tree;

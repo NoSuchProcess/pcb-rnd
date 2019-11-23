@@ -602,22 +602,22 @@ TODO("do we really need to reimplement this, can not cpoly_hatch_lines handle it
 					if (pl != NULL) {
 						const pcb_vnode_t *v, *n;
 						track = pcb_pline_dup_offset(pl, -((Thickness / 2) + 1));
-						v = &track->head;
+						v = track->head;
 						do {
 							n = v->next;
 							wrax_pline_segment(ctx, v->point[0]+dx, v->point[1]+dy, n->point[0]+dx, n->point[1]+dy, Thickness, current_layer);
-						} while((v = v->next) != &track->head);
+						} while((v = v->next) != track->head);
 						pcb_poly_contour_del(&track);
 
 						/* iterate over all holes within this island */
 						for(pl = pcb_poly_hole_first(&poly_it); pl != NULL; pl = pcb_poly_hole_next(&poly_it)) {
 							const pcb_vnode_t *v, *n;
 							track = pcb_pline_dup_offset(pl, -((Thickness / 2) + 1));
-							v = &track->head;
+							v = track->head;
 							do {
 								n = v->next;
 								wrax_pline_segment(ctx, v->point[0]+dx, v->point[1]+dy, n->point[0]+dx, n->point[1]+dy, Thickness, current_layer);
-							} while((v = v->next) != &track->head);
+							} while((v = v->next) != track->head);
 							pcb_poly_contour_del(&track);
 						}
 					}

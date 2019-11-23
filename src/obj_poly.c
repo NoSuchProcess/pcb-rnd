@@ -1055,10 +1055,10 @@ void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb)
 		for(cidx = 0, pl = pa->contours; pl != NULL; cidx++, pl = pl->next) {
 			pcb_vnode_t *v;
 			cb(p, ctx, (cidx == 0 ? PCB_POLYEV_ISLAND_START : PCB_POLYEV_HOLE_START), 0, 0);
-			v = pl->head.next;
+			v = pl->head->next;
 			do {
 				cb(p, ctx, (cidx == 0 ? PCB_POLYEV_ISLAND_POINT : PCB_POLYEV_HOLE_POINT), v->point[0], v->point[1]);
-			} while ((v = v->next) != pl->head.next);
+			} while ((v = v->next) != pl->head->next);
 
 			cb(p, ctx, (cidx == 0 ? PCB_POLYEV_ISLAND_END : PCB_POLYEV_HOLE_END), 0, 0);
 		}
@@ -1224,7 +1224,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 			pcb_vnode_t *n, *head;
 			int i;
 			pcb_dhlp_fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, info->drawn_area);
-			head = &polygon->Clipped->contours->head;
+			head = polygon->Clipped->contours->head;
 			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
 			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
 				pcb_coord_t x, y, r;

@@ -248,7 +248,7 @@ pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, pcb_bool *need_full)
 				return NULL;
 		}
 		else {
-			pcb_poly_vertex_include(contour->head.prev, pcb_poly_node_create(v));
+			pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 		}
 
 		/* Is current point last in contour? If so process it. */
@@ -1605,9 +1605,9 @@ pcb_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 			if (!newone)
 				return pcb_false;
 			many = pcb_true;
-			v = &p->contours->head;
+			v = p->contours->head;
 			pcb_poly_point_new(newone, v->point[0], v->point[1]);
-			for (v = v->next; v != &p->contours->head; v = v->next)
+			for (v = v->next; v != p->contours->head; v = v->next)
 				pcb_poly_point_new(newone, v->point[0], v->point[1]);
 			newone->BoundingBox.X1 = p->contours->xmin;
 			newone->BoundingBox.X2 = p->contours->xmax + 1;
@@ -1638,11 +1638,11 @@ void debug_pline(pcb_pline_t * pl)
 {
 	pcb_vnode_t *v;
 	pcb_fprintf(stderr, "\txmin %#mS xmax %#mS ymin %#mS ymax %#mS\n", pl->xmin, pl->xmax, pl->ymin, pl->ymax);
-	v = &pl->head;
+	v = pl->head;
 	while (v) {
 		pcb_fprintf(stderr, "\t\tvnode: %#mD\n", v->point[0], v->point[1]);
 		v = v->next;
-		if (v == &pl->head)
+		if (v == pl->head)
 			break;
 	}
 }
@@ -1705,11 +1705,11 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 				pcb_poly_hole_new(Polygon);
 			outer = pcb_false;
 
-			node = &pline->head;
+			node = pline->head;
 			do {
 				pcb_poly_point_new(Polygon, node->point[0], node->point[1]);
 			}
-			while ((node = node->next) != &pline->head);
+			while ((node = node->next) != pline->head);
 
 		}
 		while ((pline = pline->next) != NULL);
@@ -1735,14 +1735,14 @@ pcb_bool pcb_pline_is_rectangle(pcb_pline_t *pl)
 	pcb_coord_t x[4], y[4];
 	pcb_vnode_t *v;
 
-	v = pl->head.next;
+	v = pl->head->next;
 	n = 0;
 	do {
 		x[n] = v->point[0];
 		y[n] = v->point[1];
 		n++;
 		v = v->next;
-	} while((n < 4) && (v != pl->head.next));
+	} while((n < 4) && (v != pl->head->next));
 	
 	if (n != 4)
 		return pcb_false;

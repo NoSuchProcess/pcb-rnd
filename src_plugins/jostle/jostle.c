@@ -92,7 +92,7 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 			n = pl->Count;
 			x = (int *) malloc(n * sizeof(int));
 			y = (int *) malloc(n * sizeof(int));
-			for (v = &pl->head; i < n; v = v->next) {
+			for (v = pl->head; i < n; v = v->next) {
 				x[i] = v->point[0];
 				y[i++] = v->point[1];
 			}
@@ -219,7 +219,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 				pcb_message(PCB_MSG_ERROR, "jostle: aiee, what side?");
 				return;
 			}
-			v = &a->contours->head;
+			v = a->contours->head;
 			do {
 				int test = kx * v->point[0] + ky * v->point[1];
 				if (test < mm[0]) {
@@ -232,7 +232,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 					mmp[1][0] = v->point[0];
 					mmp[1][1] = v->point[1];
 				}
-			} while ((v = v->next) != &a->contours->head);
+			} while ((v = v->next) != a->contours->head);
 			Vcpy2(p, mmp[minmax]);
 			/* add clearance in the right direction */
 			clearance *= 0.707123;		/* = cos(45) = sqrt(2)/2 */

@@ -161,10 +161,10 @@ static int pline_split_off_loop_new(vtp0_t *out, vhub_t *h, pcb_vnode_t *start, 
 		next = v->next;
 		pcb_poly_vertex_exclude(v);
 		tmp = pcb_poly_node_create(v->point);
-		pcb_poly_vertex_include(newpl->head.prev, tmp);
+		pcb_poly_vertex_include(newpl->head->prev, tmp);
 	}
 
-TRACE("APPEND: %p %p\n", newpl, newpl->head.next);
+TRACE("APPEND: %p %p\n", newpl, newpl->head->next);
 	vtp0_append(out, newpl);
 	return 1;
 }
@@ -207,7 +207,7 @@ pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 {
 	pcb_vnode_t *va, *vb;
 
-	va = (pcb_vnode_t *)&pl->head;
+	va = (pcb_vnode_t *)pl->head;
 	do {
 		for(vb = va->next->next; vb->next != va; vb = vb->next) {
 			pcb_vector_t i, tmp;
@@ -215,7 +215,7 @@ pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 				return pcb_true;
 		}
 		va = va->next;
-	} while (va != &pl->head);
+	} while (va != pl->head);
 	return pcb_false;
 }
 
@@ -231,14 +231,14 @@ void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
 
 	/* copy the pline and reset the in_hub flag */
 	pcb_poly_contour_copy(&pl, pl_in);
-	va = (pcb_vnode_t *)&pl->head;
+	va = (pcb_vnode_t *)pl->head;
 	do {
 		va->Flags.in_hub = 0;
 		va = va->next;
-	} while (va != &pl->head);
+	} while (va != pl->head);
 
 	/* insert corners at intersections, collect a list of intersection hubs */
-	va = (pcb_vnode_t *)&pl->head;
+	va = (pcb_vnode_t *)pl->head;
 	do {
 		for(vb = va->next->next; vb->next != va; vb = vb->next) {
 			pcb_vector_t i, tmp;
@@ -254,7 +254,7 @@ void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
 			}
 		}
 		va = va->next;
-	} while (va != &pl->head);
+	} while (va != pl->head);
 
 	/*for(t = MAX_HUB_TRIES; t > 0; t--)*/ {
 		retry:;

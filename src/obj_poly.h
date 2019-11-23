@@ -170,7 +170,7 @@ PCB_INLINE pcb_pline_t *pcb_poly_hole_next(pcb_poly_it_t *it)
    read the coords into x,y; returns 1 on success, 0 if there are no points */
 PCB_INLINE int pcb_poly_vect_first(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
 {
-	it->v = it->cntr->head.next;
+	it->v = it->cntr->head->next;
 	if (it->v == NULL)
 		return 0;
 	*x = it->v->point[0];
@@ -184,7 +184,7 @@ PCB_INLINE int pcb_poly_vect_first(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_
 PCB_INLINE int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
 {
 	it->v = it->v->next;
-	if (it->v == it->cntr->head.next)
+	if (it->v == it->cntr->head->next)
 		return 0;
 	*x = it->v->point[0];
 	*y = it->v->point[1];

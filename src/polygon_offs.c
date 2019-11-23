@@ -142,15 +142,15 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, pcb_coord_t offs
 	pcb_polo_t *pcsh;
 
 	/* count corners */
-	v = &src->head;
+	v = src->head;
 	num_pts = 0;
 	do {
 		num_pts++;
-	} while((v = v->next) != &src->head);
+	} while((v = v->next) != src->head);
 
 	/* allocate the cache and copy all data */
 	pcsh = malloc(sizeof(pcb_polo_t) * num_pts);
-	for(n = 0, v = &src->head; n < num_pts; n++, v = v->next) {
+	for(n = 0, v = src->head; n < num_pts; n++, v = v->next) {
 		pcsh[n].x = v->point[0];
 		pcsh[n].y = v->point[1];
 		pcb_polo_norm(&pcsh[n].nx, &pcsh[n].ny, v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
@@ -167,7 +167,7 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, pcb_coord_t offs
 	for(n = 1; n < num_pts; n++) {
 		tmp[0] = pcb_round(pcsh[n].x);
 		tmp[1] = pcb_round(pcsh[n].y);
-		pcb_poly_vertex_include(res->head.prev, pcb_poly_node_create(tmp));
+		pcb_poly_vertex_include(res->head->prev, pcb_poly_node_create(tmp));
 	}
 
 	free(pcsh);
@@ -318,7 +318,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 	/* there are two ways dst can get too close to src: */
 
 	/* case #1: a point in dst is too close to a line in src */
-	v = &dst->head;
+	v = dst->head;
 	do {
 		pcb_rtree_it_t it;
 		pcb_rtree_box_t pb;
@@ -403,16 +403,16 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				goto retry;
 			}
 		}
-	} while((v = v->next) != &dst->head);
+	} while((v = v->next) != dst->head);
 
 	/* case #2: a line in dst is too close to a point in src */
 
 
 	/* cleanup: remove redundant points */
-	v = &dst->head;
+	v = dst->head;
 	do {
 		if ((v->prev->point[0] == v->point[0]) && (v->prev->point[1] == v->point[1])) {
-			if (v->prev == &dst->head) {
+			if (v->prev == dst->head) {
 				pcb_vnode_t *nv = v->next;
 				pcb_poly_vertex_exclude(v);
 				v = nv;
@@ -420,6 +420,6 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 			}
 			pcb_poly_vertex_exclude(v->prev);
 		}
-	} while((v = v->next) != &dst->head);
+	} while((v = v->next) != dst->head);
 }
 

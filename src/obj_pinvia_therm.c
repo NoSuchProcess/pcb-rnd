@@ -66,13 +66,13 @@ static pcb_polyarea_t *pcb_pa_diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_
 		return NULL;
 	v[0] = X - x2;
 	v[1] = Y - y1;
-	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
 	v[0] = X - x1;
 	v[1] = Y - y2;
-	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
 	v[0] = X + x2;
 	v[1] = Y + y1;
-	pcb_poly_vertex_include(c->head.prev, pcb_poly_node_create(v));
+	pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
 	return pcb_poly_from_contour(c);
 }
 

@@ -228,11 +228,11 @@ TODO(": fprintf() some curve using arc->*")
 				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "polygon", "FidoCadJ can't handle holes in polygons, ignoring holes for this export", "(some of the polygons will look different unless you remove the holes or split up the polygons)");
 			}
 
-			fprintf(f, "PP %ld %ld", crd(pl->head.point[0]), crd(pl->head.point[1]));
-			v = pl->head.next;
+			fprintf(f, "PP %ld %ld", crd(pl->head->point[0]), crd(pl->head->point[1]));
+			v = pl->head->next;
 			do {
 				fprintf(f, " %ld %ld", crd(v->point[0]), crd(v->point[1]));
-			} while ((v = v->next) != pl->head.next);
+			} while ((v = v->next) != pl->head->next);
 			fprintf(f, " %d\n", fidoly);
 		}
 		PCB_END_LOOP;
