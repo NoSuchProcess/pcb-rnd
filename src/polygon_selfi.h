@@ -32,9 +32,12 @@
 /* Returns whether a polyline is self-intersecting. O(n^2) */
 pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl);
 
-
 /* Assume pl is self-intersecting split it up into a list of freshly allocated
    plines in out. O(n^2) */
 void pcb_pline_split_selfint(const pcb_pline_t *pl, vtp0_t *out);
+
+
+pcb_cardinal_t pcb_polyarea_split_selfint(pcb_polyarea_t *pa);
+
 
 

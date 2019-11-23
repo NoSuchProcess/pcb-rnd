@@ -283,3 +283,46 @@ void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
 TODO("leak: remove the unused hubs");
 	vtp0_uninit(&hubs);
 }
+
+pcb_cardinal_t pcb_polyarea_split_selfint(pcb_polyarea_t *pa)
+{
+	pcb_pline_t *pl, *next, *pln, *prev = NULL;
+	pcb_cardinal_t cnt = 0;
+
+	for(pl = pa->contours; pl != NULL; pl = next) {
+		next = pl->next;
+		if (pcb_pline_is_selfint(pl)) {
+			vtp0_t pls;
+			int n;
+			cnt++;
+			vtp0_init(&pls);
+			pcb_pline_split_selfint(pl, &pls);
+
+
+			if (prev != NULL)
+				prev->next = next;
+			else
+				pa->contours = next;
+
+			for(n = 0; n < pls.used; n++) {
+				pln = (pcb_pline_t *)pls.array[n];
+				pcb_poly_contour_pre(pln, pcb_true);
+				if (pln->Flags.orient != pl->Flags.orient)
+					pcb_poly_contour_inv(pln);
+				pcb_poly_contour_pre(pln, 0);
+				pln->tree = pcb_poly_make_edge_tree(pln);
+				pcb_polyarea_contour_include(pa, pln);
+				cnt++;
+			}
+
+			pcb_poly_contour_del(&pl);
+			cnt--;
+
+			vtp0_uninit(&pls);
+		}
+		else
+			prev = pl;
+	}
+
+	return cnt;
+}
