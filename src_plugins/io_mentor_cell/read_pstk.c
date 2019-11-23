@@ -68,8 +68,6 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 			goto error;
 	}
 	else {
-		TODO("handle slots");
-		hkp_error(hr, "Only ROUND holes are supported yet\n");
 		hr = find_nth(h->subtree->first_child, "SLOT", 0);
 		if (hr != NULL) {
 			node_t *tmp;
@@ -84,7 +82,6 @@ static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 				return NULL;
 			}
 		}
-		goto error;
 	}
 
 
@@ -262,7 +259,9 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 			p->proto.hplated = hole->plated;
 		}
 		else {
-			hkp_error(hole, "Slots are not yet supported\n");
+			TODO("handle slots");
+			hkp_error(hn, "Only ROUND holes are supported yet\n");
+
 		}
 		TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
 	}
