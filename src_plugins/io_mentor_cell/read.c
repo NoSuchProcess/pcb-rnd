@@ -78,7 +78,8 @@ typedef struct {
 	node_t *subtree;
 	unsigned valid:1; /* whether it's already parsed */
 	unsigned plated:1;
-	pcb_coord_t dia;
+	pcb_coord_t dia; /* Should be zero when defining w,h slot */
+	pcb_coord_t w,h; /* Slot width and height */
 } hkp_hole_t;
 
 typedef struct {
