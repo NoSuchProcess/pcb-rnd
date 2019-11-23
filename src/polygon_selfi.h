@@ -34,8 +34,7 @@ pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl);
 
 
 /* Assume pl is self-intersecting split it up into a list of freshly allocated
-   plines in out. Converts the original pline into a version that has a point
-   on each intersection; O(n^2) */
-void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out);
+   plines in out. O(n^2) */
+void pcb_pline_split_selfint(const pcb_pline_t *pl, vtp0_t *out);
 
 

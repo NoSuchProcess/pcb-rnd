@@ -228,15 +228,17 @@ pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 }
 
 
-void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
+void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
 {
 	int n;
 	vtp0_t hubs;
+	pcb_pline_t *pl = NULL;
 	pcb_vnode_t *va, *vb, *iva, *ivb;
 
 	vtp0_init(&hubs);
 
-	/* reset the in_hub flag */
+	/* copy the pline and reset the in_hub flag */
+	pcb_poly_contour_copy(&pl, pl_in);
 	va = (pcb_vnode_t *)&pl->head;
 	do {
 		va->Flags.in_hub = 0;
@@ -282,6 +284,9 @@ void pcb_pline_split_selfint(pcb_pline_t *pl, vtp0_t *out)
 			TRACE("\n");
 		}
 	}
+
+	/* what's left by now is a single loop, with all hubs already removed */
+	vtp0_append(out, pl);
 
 TODO("leak: remove the unused hubs");
 	vtp0_uninit(&hubs);
