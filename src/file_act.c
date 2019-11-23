@@ -158,7 +158,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB = pcb_board_new(1);
 		pcb_board_new_postproc(PCB, 1);
 		if (pcb_gui->set_hidlib != NULL)
-			pcb_gui->set_hidlib(pcb_gui, PCB);
+			pcb_gui->set_hidlib(pcb_gui, &PCB->hidlib);
 		pcb_set_design_dir(NULL);
 		pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
@@ -166,7 +166,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		free(PCB->hidlib.name);
 		PCB->hidlib.name = name;
 
-		pcb_layervis_reset_stack(PCB);
+		pcb_layervis_reset_stack(&PCB->hidlib);
 		pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_board_changed(0);
