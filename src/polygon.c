@@ -260,38 +260,21 @@ pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, pcb_bool *need_full)
 				pcb_poly_contour_inv(contour);
 			assert(contour->Flags.orient == (hole ? PCB_PLF_INV : PCB_PLF_DIR));
 
-			/* attempt to auto-correct simple self intersecting cases */
-			if (0 && pcb_pline_is_selfint(contour)) {
-				vtp0_t islands;
-				int n;
-
-				/* self intersecting polygon - attempt to fix it by splitting up into multiple polyareas */
-				vtp0_init(&islands);
-				pcb_pline_split_selfint(contour, &islands);
-				for(n = 0; n < vtp0_len(&islands); n++) {
-					pcb_pline_t *pl = *vtp0_get(&islands, n, 0);
-					if (n > 0) {
-						pcb_polyarea_t *newpa = pcb_polyarea_create();
-						newpa->b = np;
-						newpa->f = np->f;
-						np->f->b = newpa;
-						np->f = newpa;
-						np = newpa;
-						*need_full = pcb_true;
-					}
-					pcb_poly_contour_pre(pl, pcb_true);
-					if (pl->Flags.orient != (hole ? PCB_PLF_INV : PCB_PLF_DIR))
-						pcb_poly_contour_inv(pl);
-					assert(pl->Flags.orient == (hole ? PCB_PLF_INV : PCB_PLF_DIR));
-					pcb_polyarea_contour_include(np, pl);
-				}
-				vtp0_uninit(&islands);
-				free(contour);
-			}
-			else
-				pcb_polyarea_contour_include(np, contour);
+			pcb_polyarea_contour_include(np, contour);
 			contour = NULL;
-			assert(pcb_poly_valid(np));
+
+TODO("multiple plines within the returned polyarea np does not really work\n");
+#if 0
+			if (!pcb_poly_valid(np)) {
+				pcb_cardinal_t cnt = pcb_polyarea_split_selfint(np);
+				pcb_message(PCB_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", (long)cnt);
+				if (cnt > 1)
+					*need_full = pcb_true;
+				assert(pcb_poly_valid(np));
+			}
+#else
+				assert(pcb_poly_valid(np));
+#endif
 
 			hole++;
 		}
