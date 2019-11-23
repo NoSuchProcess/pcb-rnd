@@ -246,7 +246,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 			parse_xy(ctx, on->argv[1], &ox, &oy, 1);
 			if (ox != 0) ox = -ox;
 			if (oy != 0) oy = -oy;
-			TODO("test this when ox;oy != 0");
+			TODO("[easy] test this when ox;oy != 0");
 		}
 
 		hole = parse_hole(ctx, hn->argv[1]);
