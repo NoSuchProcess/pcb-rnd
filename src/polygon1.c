@@ -2224,12 +2224,11 @@ int pcb_polyarea_and_subtract_free(pcb_polyarea_t * ai, pcb_polyarea_t * bi, pcb
 	assert(!*aandb || pcb_poly_valid(*aandb));
 	assert(!*aminusb || pcb_poly_valid(*aminusb));
 	return code;
-}																/* poly_AndSubtract_free */
+} /* poly_AndSubtract_free */
 
 static inline int cntrbox_pointin(const pcb_pline_t *c, const pcb_vector_t p)
 {
 	return (p[0] >= c->xmin && p[1] >= c->ymin && p[0] <= c->xmax && p[1] <= c->ymax);
-
 }
 
 static inline int node_neighbours(pcb_vnode_t * a, pcb_vnode_t * b)
