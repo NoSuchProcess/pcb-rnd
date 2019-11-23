@@ -176,7 +176,7 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 
 	for(ps = (pcb_pstk_t *)pcb_r_first(pcb->Data->padstack_tree, &it); ps != NULL; ps = (pcb_pstk_t *)pcb_r_next(&it)) {
 		memcpy(&ps_tmp, ps, sizeof(ps_tmp));
-		ps_tmp.Clearance = 10;
+		ps_tmp.Clearance = 1;
 		ps_tmp.thermals.used = 0;
 		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_PSTK, &ps_tmp);
 	}
