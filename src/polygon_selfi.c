@@ -269,7 +269,7 @@ void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
 		for(n = 0; n < vtp0_len(&hubs); n++) {
 			int m;
 			vhub_t *h = *vtp0_get(&hubs, n, 0);
-			pcb_vnode_t *v, **v_ = vtp0_get(&h->node, 0, 0);
+			pcb_vnode_t *v, **v_ = (pcb_vnode_t **)vtp0_get(&h->node, 0, 0);
 			if (v_ == NULL) continue;
 			v = *v_;
 			TRACE("hub %p at %mm;%mm:\n", h, v->point[0], v->point[1]);
