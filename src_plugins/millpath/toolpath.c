@@ -341,19 +341,33 @@ pcb_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const pcb_rtree_box_t
 	vy = l->Point2.Y - l->Point1.Y;
 	len = sqrt(vx*vx + vy*vy);
 	r = (double)l->Thickness/2.0 - 100;
-	ox = vy * r / len;
-	oy = -vx * r / len;
+	vx /= len;
+	vy /= len;
+	ox = vy * r;
+	oy = -vx * r;
 
 	/* check shifted edges for intersection */
-	lo.Point1.X = l->Point1.X + ox; lo.Point1.Y = l->Point1.Y + oy;
-	lo.Point2.X = l->Point2.X + ox; lo.Point2.Y = l->Point2.Y + oy;
-	if (pcb_intersect_cline_cline(&lo, &vl, &ip, offs))
+	lo.Point1.X = l->Point1.X + ox + vx*100; lo.Point1.Y = l->Point1.Y + oy + vy*100;
+	lo.Point2.X = l->Point2.X + ox - vx*100; lo.Point2.Y = l->Point2.Y + oy - vy*100;
+	if (pcb_intersect_cline_cline(&lo, &vl, &ip, offs)) {
+/*
+		pcb_layer_t *ly = &PCB->Data->Layer[1];
+		pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, 1, 0, pcb_no_flags());
+		pcb_line_new(ly, lo.Point1.X, lo.Point1.Y, lo.Point2.X, lo.Point2.Y, 1, 0, pcb_no_flags());
+*/
 		return pcb_RTREE_DIR_FOUND | pcb_RTREE_DIR_STOP;
+	}
 
-	lo.Point1.X = l->Point1.X - ox; lo.Point1.Y = l->Point1.Y - oy;
-	lo.Point2.X = l->Point2.X - ox; lo.Point2.Y = l->Point2.Y - oy;
-	if (pcb_intersect_cline_cline(&lo, &vl, &ip, offs))
+	lo.Point1.X = l->Point1.X - ox + vx*100; lo.Point1.Y = l->Point1.Y - oy + vy*100;
+	lo.Point2.X = l->Point2.X - ox - vx*100; lo.Point2.Y = l->Point2.Y - oy - vy*100;
+	if (pcb_intersect_cline_cline(&lo, &vl, &ip, offs)) {
+/*
+		pcb_layer_t *ly = &PCB->Data->Layer[1];
+		pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, 1, 0, pcb_no_flags());
+		pcb_line_new(ly, lo.Point1.X, lo.Point1.Y, lo.Point2.X, lo.Point2.Y, 1, 0, pcb_no_flags());
+*/
 		return pcb_RTREE_DIR_FOUND | pcb_RTREE_DIR_STOP;
+	}
 
 	return 0;
 }
