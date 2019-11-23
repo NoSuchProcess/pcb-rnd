@@ -388,13 +388,13 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				pcb_poly_vertex_include_force(v, nv);
 
 				if (pull_back(v, v->prev, tune, dx, dy, prjx, prjy, inside) != 0) {
-					pcb_poly_vertex_exclude(nv);
+					pcb_poly_vertex_exclude(dst, nv);
 					v = v->next;
 					goto retry;
 				}
 
 				if (pull_back(nv, nv->next, tune, dx, dy, prjx, prjy, inside) != 0) {
-					pcb_poly_vertex_exclude(nv);
+					pcb_poly_vertex_exclude(dst, nv);
 					v = v->next;
 					goto retry;
 				}
@@ -414,11 +414,11 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 		if ((v->prev->point[0] == v->point[0]) && (v->prev->point[1] == v->point[1])) {
 			if (v->prev == dst->head) {
 				pcb_vnode_t *nv = v->next;
-				pcb_poly_vertex_exclude(v);
+				pcb_poly_vertex_exclude(dst, v);
 				v = nv;
 				continue;
 			}
-			pcb_poly_vertex_exclude(v->prev);
+			pcb_poly_vertex_exclude(dst, v->prev);
 		}
 	} while((v = v->next) != dst->head);
 }

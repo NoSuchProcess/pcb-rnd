@@ -238,13 +238,13 @@ static pcb_cvc_list_t *new_descriptor(pcb_vnode_t * a, char poly, char side)
 		if (side == 'P') {
 			if (a->prev->cvc_prev == (pcb_cvc_list_t *) - 1)
 				a->prev->cvc_prev = a->prev->cvc_next = NULL;
-			pcb_poly_vertex_exclude(a->prev);
+			pcb_poly_vertex_exclude(NULL, a->prev);
 			vect_sub(v, a->prev->point, a->point);
 		}
 		else {
 			if (a->next->cvc_prev == (pcb_cvc_list_t *) - 1)
 				a->next->cvc_prev = a->next->cvc_next = NULL;
-			pcb_poly_vertex_exclude(a->next);
+			pcb_poly_vertex_exclude(NULL, a->next);
 			vect_sub(v, a->next->point, a->point);
 		}
 	}
@@ -2294,7 +2294,7 @@ void pcb_poly_contour_clear(pcb_pline_t * c)
 
 	assert(c != NULL);
 	while ((cur = c->head->next) != c->head) {
-		pcb_poly_vertex_exclude(cur);
+		pcb_poly_vertex_exclude(NULL, cur);
 		free(cur);
 	}
 	free(c->head);
@@ -2350,7 +2350,7 @@ void pcb_poly_contour_pre(pcb_pline_t * C, pcb_bool optimize)
 			 */
 
 			if (pcb_vect_det2(p1, p2) == 0) {
-				pcb_poly_vertex_exclude(c);
+				pcb_poly_vertex_exclude(C, c);
 				free(c);
 				c = p;
 			}
@@ -2404,15 +2404,24 @@ void pcb_poly_contour_inv(pcb_pline_t * c)
 	}
 }
 
-void pcb_poly_vertex_exclude(pcb_vnode_t * node)
+void pcb_poly_vertex_exclude(pcb_pline_t *parent, pcb_vnode_t * node)
 {
 	assert(node != NULL);
+	if (parent != NULL) {
+		if (parent->head == node) /* if node is excluded from a pline, it can not remain the head */
+			parent->head = node->next;
+	}
 	if (node->cvc_next) {
 		free(node->cvc_next);
 		free(node->cvc_prev);
 	}
 	node->prev->next = node->next;
 	node->next->prev = node->prev;
+
+	if (parent != NULL) {
+		if (parent->head == node) /* special case: removing head which was the last node in pline  */
+			parent->head = NULL;
+	}
 }
 
 PCB_INLINE void pcb_poly_vertex_include_force_(pcb_vnode_t *after, pcb_vnode_t *node)

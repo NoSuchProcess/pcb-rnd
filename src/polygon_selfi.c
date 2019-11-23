@@ -147,7 +147,7 @@ static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
 	return 1;
 }
 
-static int pline_split_off_loop_new(vtp0_t *out, vhub_t *h, pcb_vnode_t *start, pcb_cardinal_t cnt)
+static int pline_split_off_loop_new(pcb_pline_t *pl, vtp0_t *out, vhub_t *h, pcb_vnode_t *start, pcb_cardinal_t cnt)
 {
 	pcb_pline_t *newpl = NULL;
 	pcb_vnode_t *v, *next, *tmp;
@@ -155,11 +155,11 @@ static int pline_split_off_loop_new(vtp0_t *out, vhub_t *h, pcb_vnode_t *start, 
 	newpl = pcb_poly_contour_new(start->point);
 	next = start->next;
 	remove_from_hub(h, start);
-	pcb_poly_vertex_exclude(start);
+	pcb_poly_vertex_exclude(pl, start);
 	for(v = next; cnt > 0; v = next, cnt--) {
 		TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
 		next = v->next;
-		pcb_poly_vertex_exclude(v);
+		pcb_poly_vertex_exclude(pl, v);
 		tmp = pcb_poly_node_create(v->point);
 		pcb_poly_vertex_include(newpl->head->prev, tmp);
 	}
@@ -169,7 +169,7 @@ TRACE("APPEND: %p %p\n", newpl, newpl->head->next);
 	return 1;
 }
 
-static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_t *start)
+static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_t *start)
 {
 	pcb_vnode_t *v;
 	pcb_cardinal_t cnt;
@@ -185,7 +185,7 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 	
 	/* forward loop */
 	TRACE("  Fwd %ld!\n", (long)cnt);
-	return pline_split_off_loop_new(out, h, start, cnt);
+	return pline_split_off_loop_new(pl, out, h, start, cnt);
 
 	skip_to_backward:;
 	for(v = start->prev, cnt = 0;; v = v->prev) {
@@ -200,7 +200,7 @@ static int pline_split_off_loop(vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_
 	}
 
 	TRACE("  Bwd %ld!\n", (long)cnt);
-	return pline_split_off_loop_new(out, h, start, cnt);
+	return pline_split_off_loop_new(pl, out, h, start, cnt);
 }
 
 pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
@@ -270,7 +270,7 @@ void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
 				TRACE(" %d=%p\n", m, v);
 				/* try to split off a leaf loop from the hub */
 				
-				if (pline_split_off_loop(&hubs, out, h, v))
+				if (pline_split_off_loop(pl, &hubs, out, h, v))
 					goto retry;
 			}
 			TRACE("\n");

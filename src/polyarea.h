@@ -97,7 +97,7 @@ pcb_vnode_t *pcb_poly_node_create(pcb_vector_t v);
 
 void pcb_poly_vertex_include(pcb_vnode_t *after, pcb_vnode_t *node);
 void pcb_poly_vertex_include_force(pcb_vnode_t *after, pcb_vnode_t *node); /* do not remove nodes even if on the same line */
-void pcb_poly_vertex_exclude(pcb_vnode_t *node);
+void pcb_poly_vertex_exclude(pcb_pline_t *parent, pcb_vnode_t *node);
 
 /**********************************************************************/
 
