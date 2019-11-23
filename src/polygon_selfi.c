@@ -74,13 +74,13 @@ static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, pcb_bool insert)
 	for(n = 0; n < vtp0_len(hubs); n++) {
 		vhub_t *h = *vtp0_get(hubs, n, 0);
 		pcb_vnode_t *stored, **st;
-		st = vtp0_get(&h->node, 0, 0);
+		st = (pcb_vnode_t **)vtp0_get(&h->node, 0, 0);
 		if (st == NULL) continue;
 		stored = *st;
 		/* found the hub at the specific location */
 		if (pcb_vect_dist2(stored->point, v->point) < ENDP_EPSILON) {
 			for(m = 0; m < vtp0_len(&h->node); m++) {
-				st = vtp0_get(&h->node, m, 0);
+				st = (pcb_vnode_t **)vtp0_get(&h->node, m, 0);
 				if (st != NULL) {
 					stored = *st;
 					if (stored == v) /* already on the list */
@@ -105,7 +105,7 @@ static void remove_from_hub(vhub_t *h, pcb_vnode_t *v)
 	pcb_vnode_t *stored, **st;
 
 	for(m = 0; m < vtp0_len(&h->node); m++) {
-		st = vtp0_get(&h->node, m, 0);
+		st = (pcb_vnode_t **)vtp0_get(&h->node, m, 0);
 		if (st == NULL) {
 			vtp0_remove(&h->node, m, 1);
 			m--;
