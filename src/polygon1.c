@@ -3098,8 +3098,12 @@ pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 	pcb_pline_t *c;
 	pa_chk_res_t chk;
 
-	if ((p == NULL) || (p->contours == NULL))
+	if ((p == NULL) || (p->contours == NULL)) {
+#ifndef NDEBUG
+		pcb_fprintf(stderr, "Invalid polyarea: no contours\n");
+#endif
 		return pcb_false;
+	}
 
 	if (p->contours->Flags.orient == PCB_PLF_INV) {
 #ifndef NDEBUG
