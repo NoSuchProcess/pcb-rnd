@@ -2267,7 +2267,7 @@ void pcb_poly_contour_init(pcb_pline_t * c)
 	c->radius = 0;
 }
 
-pcb_pline_t *pcb_poly_contour_new(pcb_vector_t v)
+pcb_pline_t *pcb_poly_contour_new(const pcb_vector_t v)
 {
 	pcb_pline_t *res;
 

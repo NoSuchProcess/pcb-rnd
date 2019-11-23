@@ -82,7 +82,7 @@ struct pcb_pline_s {
 	} Flags;
 };
 
-pcb_pline_t *pcb_poly_contour_new(pcb_vector_t v);
+pcb_pline_t *pcb_poly_contour_new(const pcb_vector_t v);
 
 void pcb_poly_contour_init(pcb_pline_t *c);
 void pcb_poly_contour_clear(pcb_pline_t *c); /* clears list of vertices */
