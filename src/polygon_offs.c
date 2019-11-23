@@ -204,13 +204,13 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
 			res = pl;
 		}
 	}
+	pcbo_trace("best area: %f out of %d\n", best, selfi.used);
 	for(n = 0; n < selfi.used; n++) {
 		pcb_pline_t *pl = selfi.array[n];
 		if (res != pl)
 			pcb_poly_contour_del(&pl);
 	}
 	vtp0_uninit(&selfi);
-	pcbo_trace("best area: %f out of %d\n", best, selfi.used);
 	return res;
 }
 
