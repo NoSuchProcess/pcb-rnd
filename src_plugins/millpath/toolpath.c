@@ -420,6 +420,8 @@ static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 
 			pctx.cut = (pcb_any_obj_t *)line;
 
+			if (pa == NULL)
+				continue;
 			dir = pcb_rtree_search_obj(pa->contour_tree, (const pcb_rtree_box_t *)&line->BoundingBox, fix_overcuts_in_pline, &pctx);
 			if (dir & pcb_RTREE_DIR_FOUND) { /* line crosses poly */
 				error++;
