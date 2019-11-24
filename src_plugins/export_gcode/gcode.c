@@ -190,7 +190,14 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 		last_to = to;
 	}
 	gcode_print_lines_(from, last_to, passes, start_depth);
-	pcb_fprintf(gctx.f, "G0 Z#100\n");
+
+	pcb_fprintf(gctx.f,
+		"G0 Z#100\n" /* remove the tool from the board, just in case */
+		"M05 " /* stop spindle */
+		"M09 " /* coolant off */
+		"M02\n" /* end */
+	);
+
 }
 
 static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
