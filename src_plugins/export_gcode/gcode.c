@@ -75,7 +75,7 @@ pcb_export_opt_t gcode_attribute_list[] = {
 
 	{"mill-depth", "Milling depth on layers",
 	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-0.05)}, 0},
-#define HA_cutdepth 4
+#define HA_layerdepth 4
 
 	{"safe-Z", "Safe Z (above the board) for traverse move",
 	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
@@ -113,7 +113,7 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 	}
 
 	pcb_fprintf(gctx.f, "#100=%mm  (safe Z for travels above the board)\n", gcode_values[HA_safeZ].crd);
-	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_cutdepth].crd);
+	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_layerdepth].crd);
 	pcb_fprintf(gctx.f,
 		"G17 " /* X-Y plane */
 		"G21 " /* mm */
