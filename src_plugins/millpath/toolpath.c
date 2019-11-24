@@ -319,12 +319,19 @@ static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result,
 	return cnt;
 }
 
-static void trace_spiral(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs)
+static long trace_spiral(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs, long passes)
 {
+	long pass = 0;
 	pcb_coord_t tool_dia = result->tools->dia[tool_idx];
 
-	while(trace_contour(pcb, result, tool_idx, extra_offs) > 0)
+	for(;;) {
+		if ((passes > 0) && (pass >= passes))
+			return pass;
+		if (trace_contour(pcb, result, tool_idx, extra_offs) <= 0)
+			return pass;
 		extra_offs += tool_dia;
+		pass++;
+	}
 }
 
 /*** remove cuts that would cut into remaining copper ***/
@@ -484,6 +491,15 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 			if (argc > 1) tool = atoi(argv[1]);
 			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
 			trace_contour(pcb, result, tool, extra);
+		}
+		else if (strcmp(argv[0], "trace_spiral") == 0) {
+			long passes = -1;
+			int tool = 0;
+			pcb_coord_t extra = 1000;
+			if (argc > 1) tool = atoi(argv[1]);
+			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
+			if (argc > 3) passes = strtol(argv[3], NULL, 10);
+			trace_spiral(pcb, result, tool, extra, passes);
 		}
 		else if (strcmp(argv[0], "fix_overcuts") == 0) {
 			long rem = fix_overcuts(pcb, result);
