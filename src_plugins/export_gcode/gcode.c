@@ -239,7 +239,10 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 	linelist_foreach(&tctx->res_path->Line, &it, to) {
 		pcb_coord_t x1 = TX(to->Point1.X), y1 = TY(to->Point1.Y), x2 = TX(to->Point2.X), y2 = TY(to->Point2.Y);
 		if ((lastx != x1) && (lasty != y1)) {
-			gcode_print_lines_(from, to->link.prev, passes, start_depth);
+			if (to->link.prev == NULL)
+				gcode_print_lines_(from, from, passes, start_depth); /* corner case: first line is a stand-alone segment */
+			else
+				gcode_print_lines_(from, to->link.prev, passes, start_depth);
 			from = to;
 		}
 		lastx = x2;
