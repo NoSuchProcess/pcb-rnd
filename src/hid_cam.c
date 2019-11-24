@@ -62,7 +62,8 @@ static void cam_gen_fn(pcb_cam_t *dst)
 	dst->fn = pcb_strdup_subst(dst->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
 }
 
-char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
+
+char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
 	const pcb_virt_layer_t *v;
 	pcb_layergrp_id_t group;
@@ -73,7 +74,6 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 	if (flags == 0)
 		flags = pcb_layer_flags(PCB, lid);
 
-	dest->used = 0;
 
 	if (style == PCB_FNS_pcb_rnd) {
 		const char *sloc, *styp;
@@ -152,6 +152,12 @@ char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags
 	assert(res != NULL);
 	gds_append_str(dest, res);
 	return dest->array;
+}
+
+char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
+{
+	dest->used = 0;
+	return pcb_layer_to_file_name_append(dest, lid, flags, purpose, purpi, style);
 }
 
 
