@@ -98,7 +98,10 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 	return gcode_attribute_list;
 }
 
-static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
+#define TX(x) (x)
+#define TY(y) (gctx.pcb->hidlib.size_y - (y))
+
+static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int thru)
 {
 	pcb_line_t *line;
 	gdl_iterator_t it;
@@ -123,18 +126,19 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
 		"\n");
 
 	linelist_foreach(&tctx->res_path->Line, &it, line) {
-		if ((lastx != line->Point1.X) && (lasty != line->Point1.Y))
-			pcb_fprintf(gctx.f, "G0 Z#100\nG0 X%mm Y%mm\nG0 Z#101\n", line->Point1.X, line->Point1.Y);
-		pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", line->Point2.X, line->Point2.Y);
-		lastx = line->Point2.X;
-		lasty = line->Point2.Y;
+		pcb_coord_t x1 = TX(line->Point1.X), y1 = TY(line->Point1.Y), x2 = TX(line->Point2.X), y2 = TY(line->Point2.Y);
+		if ((lastx != x1) && (lasty != y1))
+			pcb_fprintf(gctx.f, "G0 Z#100\nG0 X%mm Y%mm\nG0 Z#101\n", x1, y1);
+		pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", x2, y2);
+		lastx = x2;
+		lasty = y2;
 	}
 	pcb_fprintf(gctx.f, "G0 Z#100\n");
 }
 
 static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
 {
-	int script_ha;
+	int script_ha, thru;
 	const char *script;
 	pcb_layergrp_t *grp = &gctx.pcb->LayerGroups.grp[group];
 	static pcb_tlp_session_t tctx;
@@ -180,10 +184,12 @@ static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose
 	if (PCB_LAYER_IS_ROUTE(flags, purpi) || PCB_LAYER_IS_DRILL(flags, purpi)) {
 		script_ha = HA_layer_script;
 		script = def_layer_script;
+		thru = 0;
 	}
 	else {
 		script_ha = HA_mech_script;
 		script = def_mech_script;
+		thru = 1;
 	}
 
 	if (gcode_values[script_ha].str != NULL)
@@ -194,7 +200,7 @@ static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose
 	tctx.tools = &tools;
 	pcb_tlp_mill_script(gctx.pcb, &tctx, grp, script);
 
-	gcode_print_lines(&tctx, grp);
+	gcode_print_lines(&tctx, grp, thru);
 
 	if (!gctx.cam.active)
 		fclose(gctx.f);
