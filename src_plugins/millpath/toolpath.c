@@ -217,7 +217,7 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 	}
 }
 
-static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp)
+static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp, int polarity)
 {
 	int has_otl;
 	pcb_layergrp_id_t i;
@@ -456,7 +456,7 @@ int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	long rem;
 
 	setup_ui_layers(pcb, result, grp);
-	setup_remove_poly(pcb, result, grp);
+	setup_remove_poly(pcb, result, grp, -1);
 
 	trace_contour(pcb, result, 0, 1000);
 
@@ -491,12 +491,12 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 
 		argc = qparse3(script, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_TERM_SEMICOLON | QPARSE_TERM_NEWLINE | QPARSE_SEP_COMMA, &consumed);
 
-		if (strcmp(argv[0], "remove") == 0) {
+		if (strcmp(argv[0], "setup_negative") == 0) {
 			req_setup(0);
-			setup_remove_poly(pcb, result, grp);
+			setup_remove_poly(pcb, result, grp, -1);
 			setup = 1;
 		}
-		else if (strcmp(argv[0], "contour") == 0) {
+		else if (strcmp(argv[0], "trace_contour") == 0) {
 			int tool = 0;
 			pcb_coord_t extra = 1000;
 			req_setup(1);
@@ -507,8 +507,8 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		else if (strcmp(argv[0], "trace_spiral") == 0) {
 			long passes = -1;
 			int tool = 0;
-			req_setup(1);
 			pcb_coord_t extra = 1000;
+			req_setup(1);
 			if (argc > 1) tool = atoi(argv[1]);
 			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
 			if (argc > 3) passes = strtol(argv[3], NULL, 10);
