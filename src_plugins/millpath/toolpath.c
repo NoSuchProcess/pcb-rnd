@@ -296,6 +296,13 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		result->remain->Clipped = rp;
 		result->remain->Flags.f |= PCB_FLAG_FULLPOLY;
 	}
+
+	/* for positive polarity, simply swap the two polygons to invert the scene */
+	if (polarity > 0) {
+		pcb_polyarea_t *tmp = result->remain;
+		result->remain = result->fill;
+		result->fill = tmp;
+	}
 }
 
 static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs)
@@ -494,6 +501,11 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		if (strcmp(argv[0], "setup_negative") == 0) {
 			req_setup(0);
 			setup_remove_poly(pcb, result, grp, -1);
+			setup = 1;
+		}
+		if (strcmp(argv[0], "setup_positive") == 0) {
+			req_setup(0);
+			setup_remove_poly(pcb, result, grp, +1);
 			setup = 1;
 		}
 		else if (strcmp(argv[0], "trace_contour") == 0) {
