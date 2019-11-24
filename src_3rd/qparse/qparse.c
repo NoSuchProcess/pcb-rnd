@@ -112,10 +112,19 @@ int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_
 						else
 							qpush(*s);
 						break;
-					case ' ':
-					case '\t':
+
+					case ';':
+						if (flg & QPARSE_TERM_SEMICOLON)
+							goto stop;
+						qpush(*s);  /* plain ';', don't care */
+						break;
+
 					case '\n':
 					case '\r':
+						if (flg & QPARSE_TERM_NEWLINE)
+							goto stop;
+					case ' ':
+					case '\t':
 						if (flg & QPARSE_MULTISEP)
 							while(isspace(s[1])) s++;
 						qnext();
@@ -172,6 +181,8 @@ int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_
 				break;
 		}
 	}
+
+	stop:;
 
 	qnext();
 
