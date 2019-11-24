@@ -73,9 +73,17 @@ pcb_export_opt_t gcode_attribute_list[] = {
 	 PCB_HATT_STRING, 0, 0, {0, def_mech_script, 0}, 0, 0},
 #define HA_mech_script 3
 
+	{"mill-depth", "Milling depth on layers",
+	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-0.05)}, 0},
+#define HA_cutdepth 4
+
+	{"safe-Z", "Safe Z (above the board) for traverse move",
+	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
+#define HA_safeZ 5
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 4
+#define HA_cam 6
 
 };
 
@@ -97,17 +105,21 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
 	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
 
 	if (tctx->res_path->Line.lst.length == 0) {
-		pcb_fprintf(gctx.f, "# empty layer group: %s\n", grp->name);
+		pcb_fprintf(gctx.f, "(empty layer group: %s)\n", grp->name);
 		return;
 	}
 
+	pcb_fprintf(gctx.f, "#100=%mm  (safe Z for travels above the board)\n", gcode_values[HA_safeZ].crd);
+	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_cutdepth].crd);
+
 	linelist_foreach(&tctx->res_path->Line, &it, line) {
 		if ((lastx != line->Point1.X) && (lasty != line->Point1.Y))
-			pcb_fprintf(gctx.f, "G0 X%mm Y%mm\n", line->Point1.X, line->Point1.Y);
+			pcb_fprintf(gctx.f, "G0 Z#100\nG0 X%mm Y%mm\nG0 Z#101\n", line->Point1.X, line->Point1.Y);
 		pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", line->Point2.X, line->Point2.Y);
 		lastx = line->Point2.X;
 		lasty = line->Point2.Y;
 	}
+	pcb_fprintf(gctx.f, "G0 Z#100\n");
 }
 
 static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
