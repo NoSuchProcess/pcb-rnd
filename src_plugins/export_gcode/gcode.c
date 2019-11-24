@@ -29,6 +29,8 @@
 #include "actions.h"
 #include "board.h"
 #include "safe_fs.h"
+#include "funchash_core.h"
+#include "layer.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -59,13 +61,17 @@ pcb_export_opt_t gcode_attribute_list[] = {
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_template 1
 
-	{"script", "rendering script",
+	{"layer-script", "rendering script for layer graphics",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_script 2
+#define HA_layer_script 2
+
+	{"mech-script", "rendering script for boundary/mech/drill",
+	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_mech_script 3
 
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 3
+#define HA_cam 4
 
 };
 
@@ -82,6 +88,8 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 
 static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
 {
+	int script_ha;
+
 	if (flags & PCB_LYT_UI)
 		return;
 
@@ -113,6 +121,12 @@ static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpos
 
 	if (gctx.f == NULL)
 		return;
+
+	if (PCB_LAYER_IS_ROUTE(flags, purpi) || PCB_LAYER_IS_DRILL(flags, purpi))
+		script_ha = HA_layer_script;
+	else
+		script_ha = HA_mech_script;
+
 
 	if (!gctx.cam.active)
 		fclose(gctx.f);
