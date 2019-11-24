@@ -405,7 +405,7 @@ pcb_rtree_dir_t fix_overcuts_in_pline(void *ctx_, void *obj, const pcb_rtree_box
 static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 {
 	pcb_line_t *line;
-  gdl_iterator_t it;
+	gdl_iterator_t it;
 	pline_ctx_t pctx;
 	long error = 0;
 
