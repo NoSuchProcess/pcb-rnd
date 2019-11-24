@@ -39,6 +39,8 @@
 #include "hid_attrib.h"
 #include "hid_cam.h"
 
+#include "../src_plugins/millpath/toolpath.h"
+
 const char *pcb_export_gcode_cookie = "export_gcode plugin";
 
 static pcb_hid_t gcode_hid;
@@ -51,6 +53,8 @@ typedef struct {
 
 static gcode_t gctx;
 
+static const char def_layer_script[] = "setup_negative; trace_contour; fix_overcuts";
+static const char def_mech_script[]  = "setup_positive; trace_contour; fix_overcuts";
 
 pcb_export_opt_t gcode_attribute_list[] = {
 	{"outfile", "file name prefix for non-cam",
@@ -62,11 +66,11 @@ pcb_export_opt_t gcode_attribute_list[] = {
 #define HA_template 1
 
 	{"layer-script", "rendering script for layer graphics",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, def_layer_script, 0}, 0, 0},
 #define HA_layer_script 2
 
 	{"mech-script", "rendering script for boundary/mech/drill",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 PCB_HATT_STRING, 0, 0, {0, def_mech_script, 0}, 0, 0},
 #define HA_mech_script 3
 
 	{"cam", "CAM instruction",
@@ -86,9 +90,38 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 	return gcode_attribute_list;
 }
 
+static gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
+{
+	pcb_line_t *line;
+	gdl_iterator_t it;
+	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
+
+	if (tctx->res_path->Line.lst.length == 0) {
+		pcb_fprintf(gctx.f, "# empty layer group: %s\n", grp->name);
+		return;
+	}
+
+	linelist_foreach(&tctx->res_path->Line, &it, line) {
+		if ((lastx != line->Point1.X) && (lasty != line->Point1.Y))
+			pcb_fprintf(gctx.f, "G0 X%mm Y%mm\n", line->Point1.X, line->Point1.Y);
+		pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", line->Point2.X, line->Point2.Y);
+		lastx = line->Point2.X;
+		lasty = line->Point2.Y;
+	}
+}
+
 static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
 {
 	int script_ha;
+	const char *script;
+	pcb_layergrp_t *grp = &gctx.pcb->LayerGroups.grp[group];
+	static pcb_tlp_session_t tctx;
+	static pcb_coord_t tool_dias[] = {
+		PCB_MM_TO_COORD(0.2),
+		PCB_MM_TO_COORD(3)
+	};
+	static pcb_tlp_tools_t tools = { sizeof(tool_dias)/sizeof(tool_dias[0]), tool_dias};
+
 
 	if (flags & PCB_LYT_UI)
 		return;
@@ -122,11 +155,24 @@ static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpos
 	if (gctx.f == NULL)
 		return;
 
-	if (PCB_LAYER_IS_ROUTE(flags, purpi) || PCB_LAYER_IS_DRILL(flags, purpi))
+	if (PCB_LAYER_IS_ROUTE(flags, purpi) || PCB_LAYER_IS_DRILL(flags, purpi)) {
 		script_ha = HA_layer_script;
-	else
+		script = def_layer_script;
+	}
+	else {
 		script_ha = HA_mech_script;
+		script = def_mech_script;
+	}
 
+	if (gcode_values[script_ha].str != NULL)
+		script = gcode_values[script_ha].str;
+
+	memset(&tctx, 0, sizeof(tctx));
+	tctx.edge_clearance = PCB_MM_TO_COORD(0.05);
+	tctx.tools = &tools;
+	pcb_tlp_mill_script(gctx.pcb, &tctx, grp, script);
+
+	gcode_print_lines(&tctx, grp);
 
 	if (!gctx.cam.active)
 		fclose(gctx.f);

@@ -9,6 +9,7 @@ Packaging changes between 2.1.4 and 2.2.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO:
 	- export_gcode doesn't depend on libgd
+	- export_gcode depends on plugin millpath
 
 A. changes that probably don't need action
 

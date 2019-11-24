@@ -6,4 +6,5 @@ $fmt-native no
 $fmt-feature-w export gcode (for milling)
 $package export
 default buildin
+dep millpath
 autoload 1
