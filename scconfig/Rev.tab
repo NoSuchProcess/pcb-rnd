@@ -1,3 +1,4 @@
+28441	configure	remove old gcode plugin
 28114	distclean	puplug bug blocked loading script pups
 27952	configure	removing dolists.h to simplify action declaration
 27878	configure	hidlib related bugfix in ./configure

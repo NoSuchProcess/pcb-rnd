@@ -1166,57 +1166,7 @@
  compat_misc.h plug_io.h safe_fs.h hid.h hid_nogui.h hid_init.h \
  hid_attrib.h hid_cam.h hid_attrib.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
-../src_plugins/export_gcode/curve.o: ../src_plugins/export_gcode/curve.c \
- ../config.h ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h
-../src_plugins/export_gcode/decompose.o: \
- ../src_plugins/export_gcode/decompose.c ../config.h \
- ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h \
- ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/bitmap.h \
- ../src_plugins/export_gcode/decompose.h
-../src_plugins/export_gcode/gcode.o: ../src_plugins/export_gcode/gcode.c \
- ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h pcb-printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h unit.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
- ../src_3rd/genvector/vtp0.h list_conf.h \
- ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h color.h hidlib_conf.h \
- plugins.h ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h layer.h \
- obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h box.h math_helper.h misc_util.h layer_grp.h \
- rats_patch.h board.h hidlib.h color.h error.h data.h crosshair.h \
- vtonpoint.h hid.h error.h route.h buffer.h ../src_3rd/libfungw/fungw.h \
- obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h rtree.h \
- ../src_3rd/genrtree/genrtree_api.h rtree2_compat.h ht_subc.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h hid_cam.h \
- hid_attrib.h layer.h layer_vis.h compat_misc.h safe_fs.h hid.h \
- hid_nogui.h ../src_plugins/export_gcode/gcode.h \
- ../src_plugins/export_gcode/bitmap.h \
- ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h \
- ../src_plugins/export_gcode/trace.h \
- ../src_plugins/export_gcode/decompose.h pcb-printf.h funchash_core.h \
- funchash.h funchash_core_list.h hid_init.h hid_attrib.h
-../src_plugins/export_gcode/trace.o: ../src_plugins/export_gcode/trace.c \
- ../config.h ../src_plugins/export_gcode/potracelib.h \
- ../src_plugins/export_gcode/curve.h \
- ../src_plugins/export_gcode/auxiliary.h \
- ../src_plugins/export_gcode/lists.h ../src_plugins/export_gcode/trace.h \
- compat_cc.h
+../src_plugins/export_gcode/gcode.o: ../src_plugins/export_gcode/gcode.c
 ../src_plugins/export_gerber/gerber.o: \
  ../src_plugins/export_gerber/gerber.c ../config.h math_helper.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h global_typedefs.h \

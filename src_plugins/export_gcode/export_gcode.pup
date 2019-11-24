@@ -1,7 +1,7 @@
 $class export
 $short gcode pcb_exporter
 $long Export to gcode
-$state works
+$state WIP
 $fmt-native no
 $fmt-feature-w export gcode (for milling)
 $package export
