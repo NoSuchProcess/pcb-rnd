@@ -306,13 +306,13 @@ static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose
 		return 0;
 
 	if (PCB_LAYER_IS_ROUTE(flags, purpi) || PCB_LAYER_IS_DRILL(flags, purpi)) {
-		script_ha = HA_layer_script;
-		script = def_layer_script;
+		script_ha = HA_mech_script;
+		script = def_mech_script;
 		thru = 1;
 	}
 	else {
-		script_ha = HA_mech_script;
-		script = def_mech_script;
+		script_ha = HA_layer_script;
+		script = def_layer_script;
 		thru = 0;
 	}
 
