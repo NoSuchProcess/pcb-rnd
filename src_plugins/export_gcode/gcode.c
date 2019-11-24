@@ -111,6 +111,16 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
 
 	pcb_fprintf(gctx.f, "#100=%mm  (safe Z for travels above the board)\n", gcode_values[HA_safeZ].crd);
 	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_cutdepth].crd);
+	pcb_fprintf(gctx.f,
+		"G17 " /* X-Y plane */
+		"G21 " /* mm */
+		"G90 " /* absolute coords */
+		"G64 " /* best speed path */
+		"M03 " /* spindle on, CW */
+		"S3000 " /* spindle speed */
+		"M07 " /* mist coolant on */
+		"F1 " /* feed rate */
+		"\n");
 
 	linelist_foreach(&tctx->res_path->Line, &it, line) {
 		if ((lastx != line->Point1.X) && (lasty != line->Point1.Y))
