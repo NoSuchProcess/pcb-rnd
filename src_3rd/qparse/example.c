@@ -10,6 +10,7 @@ int main()
 	while(fgets(s, sizeof(s), stdin) != NULL) {
 		int n, argc;
 		char *end, **argv;
+		size_t cons = 424242;
 
 		/* remove trailing newline (if we don't we just get an extra empty field at the end) */
 		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--)
@@ -17,10 +18,11 @@ int main()
 
 		/* split and print fields */
 		printf("Splitting '%s':\n", s);
-		argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
+		argc = qparse3(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE, &cons);
 		for(n = 0; n < argc; n++)
 			printf(" [%d] '%s'\n", n, argv[n]);
 		qparse_free(argc, &argv);
+		printf("consumed: %ld bytes\n", cons);
 	}
 	return 0;
 }

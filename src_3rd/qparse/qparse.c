@@ -67,7 +67,7 @@ typedef enum qp_state_e {
 		buff_used = 0; \
 	}
 
-int qparse2(const char *input, char **argv_ret[], flags_t flg)
+int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_out)
 {
 	int argc;
 	int allocated;
@@ -178,8 +178,15 @@ int qparse2(const char *input, char **argv_ret[], flags_t flg)
 	if (buff != NULL)
 		free(buff);
 
+	if (consumed_out != NULL)
+		*consumed_out = s-input;
 	*argv_ret = argv;
 	return argc;
+}
+
+int qparse2(const char *input, char **argv_ret[], flags_t flg)
+{
+	return qparse3(input, argv_ret, flg, NULL);
 }
 
 int qparse(const char *input, char **argv_ret[])

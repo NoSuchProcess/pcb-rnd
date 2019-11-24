@@ -20,3 +20,6 @@ typedef enum {
 
 int qparse2(const char *input, char **argv_ret[], flags_t flg);
 
+/* This variant returns the number of characters consumed from the input
+   so it can be used for multi-command parsing */
+int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_out);
