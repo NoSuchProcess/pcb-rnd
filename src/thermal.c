@@ -34,6 +34,7 @@
 #include "obj_pstk_inlines.h"
 #include "obj_pinvia_therm.h"
 #include "polygon.h"
+#include "funchash_core.h"
 
 pcb_cardinal_t pcb_themal_style_new2old(unsigned char t)
 {
@@ -730,14 +731,43 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 		thr = 0;
 
 	shp = pcb_pstk_shape_at_(pcb, ps, layer, 1);
-	if (shp == NULL)
-		return NULL;
+	if (shp == NULL) {
+		pcb_layergrp_id_t gid;
+		pcb_layergrp_t *grp;
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		if (proto->hdia < 0)
+			return NULL;
+
+		/* corner case: subtracting a hole from a mech/drill poly (e.g. gcode) */
+		gid = pcb_layer_get_group_(layer);
+		grp = pcb_get_layergrp(pcb, gid);
+		if (PCB_LAYER_IS_DRILL(grp->ltype, grp->purpi) || ((grp->ltype & PCB_LYT_MECH) && (grp->purpi == (proto->hplated ? F_proute : F_uroute)))) {
+			thr = 0;
+			shp = &tmpshp;
+			shp->shape = PCB_PSSH_CIRC;
+			shp->data.circ.x = 0;
+			shp->data.circ.y = 0;
+			shp->data.circ.dia = proto->hdia;
+		}
+		else
+			return NULL;
+	}
 
 	if (clearance <= 0)
 		clearance = shp->clearance/2;
 
-	if (clearance <= 0)
-		return NULL;
+	if (clearance <= 0) {
+		pcb_layergrp_id_t gid = pcb_layer_get_group_(layer);
+		pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		if (grp == NULL) return NULL;
+		if (PCB_LAYER_IS_DRILL(grp->ltype, grp->purpi) || ((grp->ltype & PCB_LYT_MECH) && (grp->purpi == (proto->hplated ? F_proute : F_uroute)))) {
+			/* shape on a slot layer - do it, but without termals! */
+			thr = 0;
+		}
+		else
+			return NULL;
+	}
 
 	if (!(thr & PCB_THERMAL_ON))
 		return pcb_thermal_area_pstk_nothermal(pcb, ps, lid, shp, clearance);
