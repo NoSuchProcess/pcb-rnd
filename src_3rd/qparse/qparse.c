@@ -191,7 +191,7 @@ int qparse2(const char *input, char **argv_ret[], flags_t flg)
 
 int qparse(const char *input, char **argv_ret[])
 {
-	return qparse2(input, argv_ret, QPARSE_DOUBLE_QUOTE);
+	return qparse3(input, argv_ret, QPARSE_DOUBLE_QUOTE, NULL);
 }
 
 
