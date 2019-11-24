@@ -49,6 +49,7 @@ typedef struct {
 	pcb_cam_t cam;
 	pcb_board_t *pcb;
 	FILE *f; /* output file */
+	int passes; /* number of millings for a thru-cut - calculated for the header */
 } gcode_t;
 
 static gcode_t gctx;
@@ -172,54 +173,38 @@ static pcb_coord_t pcb_board_thickness(pcb_board_t *pcb)
 	return curr;
 }
 
-static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int thru)
-{
-	pcb_line_t *from = NULL, *to, *last_to = NULL;
-	gdl_iterator_t it;
-	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
-	int passes, start_depth;
+#define thru_start_depth 102
 
-	if (tctx->res_path->Line.lst.length == 0) {
-		pcb_fprintf(gctx.f, "(empty layer group: %s)\n", grp->name);
-		return;
-	}
+static void gcode_print_header(void)
+{
+	pcb_coord_t step = gcode_values[HA_cutdepth].crd;
+	pcb_coord_t total = gcode_values[HA_totalcutdepth].crd;
+	pcb_coord_t at = gcode_values[HA_layerdepth].crd;
 
 	pcb_fprintf(gctx.f, "#100=%mm  (safe Z for travels above the board)\n", gcode_values[HA_safeZ].crd);
 	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_layerdepth].crd);
 
-	if (thru) {
-		pcb_coord_t step = gcode_values[HA_cutdepth].crd;
-		pcb_coord_t total = gcode_values[HA_totalcutdepth].crd;
-		pcb_coord_t at = gcode_values[HA_layerdepth].crd;
 
-		if (step > 0)
-			step = -step;
-		else if (step == 0) {
-			pcb_message(PCB_MSG_ERROR, "export_gcode: cut increment not configured - not exporting thru-cut layer\n");
+	if (step > 0)
+		step = -step;
+	else if (step == 0) {
+		pcb_message(PCB_MSG_ERROR, "export_gcode: cut increment not configured - not exporting thru-cut layer\n");
+		return;
+	}
+
+
+	if (total == 0) {
+		total = pcb_board_thickness(gctx.pcb);
+		if (total == 0) {
+			pcb_message(PCB_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
 			return;
 		}
-
-
-		if (total == 0) {
-			total = pcb_board_thickness(gctx.pcb);
-			if (total == 0) {
-				pcb_message(PCB_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
-				return;
-			}
-		}
-
-		start_depth = 102;
-
-		for(passes = 0, at += step; at > total; passes++, at += step)
-			pcb_fprintf(gctx.f, "#%d=%mm  (%s cutting depth for thru-cuts)\n", start_depth+passes, at, passes == 0 ? "first" : "next");
-		pcb_fprintf(gctx.f, "#%d=%mm  (last cutting depth for thru-cuts)\n", start_depth+passes, total);
-		passes++;
-	}
-	else {
-		passes = 1;
-		start_depth = 101;
 	}
 
+	for(gctx.passes = 0, at += step; at > total; gctx.passes++, at += step)
+		pcb_fprintf(gctx.f, "#%d=%mm  (%s cutting depth for thru-cuts)\n", thru_start_depth+gctx.passes, at, gctx.passes == 0 ? "first" : "next");
+	pcb_fprintf(gctx.f, "#%d=%mm  (last cutting depth for thru-cuts)\n", thru_start_depth+gctx.passes, total);
+	gctx.passes++;
 
 	pcb_fprintf(gctx.f,
 		"G17 " /* X-Y plane */
@@ -231,7 +216,39 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 		"M07 " /* mist coolant on */
 		"F1 " /* feed rate */
 		"\n");
+}
 
+static void gcode_print_footer(void)
+{
+	pcb_fprintf(gctx.f,
+		"G0 Z#100\n" /* remove the tool from the board, just in case */
+		"M05 " /* stop spindle */
+		"M09 " /* coolant off */
+		"M02\n" /* end */
+	);
+}
+
+
+static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int thru)
+{
+	pcb_line_t *from = NULL, *to, *last_to = NULL;
+	gdl_iterator_t it;
+	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
+	int start_depth, passes;
+
+	if (tctx->res_path->Line.lst.length == 0) {
+		pcb_fprintf(gctx.f, "(empty layer group: %s)\n", grp->name);
+		return;
+	}
+
+	if (thru) {
+		passes = gctx.passes;
+		start_depth = thru_start_depth;
+	}
+	else {
+		passes = 1;
+		start_depth = 101;
+	}
 
 	from = linelist_first(&tctx->res_path->Line);
 	lastx = TX(from->Point2.X);
@@ -250,13 +267,6 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 		last_to = to;
 	}
 	gcode_print_lines_(from, last_to, passes, start_depth);
-
-	pcb_fprintf(gctx.f,
-		"G0 Z#100\n" /* remove the tool from the board, just in case */
-		"M05 " /* stop spindle */
-		"M09 " /* coolant off */
-		"M02\n" /* end */
-	);
 
 }
 
@@ -298,6 +308,8 @@ static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose
 		gds_append_str(&fn, ".cnc");
 
 		gctx.f = pcb_fopen_askovr(&gctx.pcb->hidlib, fn.array, "w", NULL);
+		if (gctx.f != NULL)
+			gcode_print_header();
 
 		gds_uninit(&fn);
 	}
@@ -326,8 +338,10 @@ static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose
 
 	gcode_print_lines(&tctx, grp, thru);
 
-	if (!gctx.cam.active)
+	if (!gctx.cam.active) {
+		gcode_print_footer();
 		fclose(gctx.f);
+	}
 	return 0;
 }
 
@@ -350,8 +364,11 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_begin(pcb, &gctx.cam, &xform, options[HA_cam].str, gcode_attribute_list, NUM_OPTIONS, options);
 
 
-	if (gctx.cam.active)
+	if (gctx.cam.active) {
 		gctx.f = pcb_fopen_askovr(&pcb->hidlib, gctx.cam.fn, "w", NULL);
+		if (gctx.f != NULL)
+			gcode_print_header();
+	}
 
 	if (!gctx.cam.active || (gctx.f != NULL)) {
 		for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
@@ -360,8 +377,10 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			gcode_export_layer_group(gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, &xf);
 		}
 
-		if (gctx.cam.active)
+		if (gctx.cam.active) {
+			gcode_print_footer();
 			fclose(gctx.f);
+		}
 	}
 
 	if (pcb_cam_end(&gctx.cam) == 0)
