@@ -18,6 +18,7 @@ typedef enum {
 	QPARSE_MULTISEP = 8,        /* multiple separators are taken as a single separator */
 	QPARSE_TERM_NEWLINE = 16,   /* terminate parsing at newline */
 	QPARSE_TERM_SEMICOLON = 32, /* terminate parsing at semicolon */
+	QPARSE_SEP_COMMA = 64,      /* comma is a separator, like whitespace */
 } flags_t;
 
 int qparse2(const char *input, char **argv_ret[], flags_t flg);

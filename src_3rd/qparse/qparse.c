@@ -123,6 +123,11 @@ int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_
 					case '\r':
 						if (flg & QPARSE_TERM_NEWLINE)
 							goto stop;
+					case ',':
+						if (!(flg & QPARSE_SEP_COMMA)) {
+							qpush(*s);  /* plain ',', don't care */
+							break;
+						}
 					case ' ':
 					case '\t':
 						if (flg & QPARSE_MULTISEP)

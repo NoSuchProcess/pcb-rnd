@@ -18,7 +18,7 @@ int main()
 
 		/* split and print fields */
 		printf("Splitting '%s':\n", s);
-		argc = qparse3(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_TERM_SEMICOLON, &cons);
+		argc = qparse3(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_TERM_SEMICOLON | QPARSE_SEP_COMMA, &cons);
 		for(n = 0; n < argc; n++)
 			printf(" [%d] '%s'\n", n, argv[n]);
 		qparse_free(argc, &argv);
