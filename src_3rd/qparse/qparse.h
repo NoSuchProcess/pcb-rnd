@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 /* Split input into a list of strings in argv_ret[] using whitepsace as field
    separator. It supports double quoted fields and backslash as escape character.
    Returns the number of arguments. argv_ret should be free'd using
