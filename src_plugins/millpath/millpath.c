@@ -46,9 +46,10 @@ static const char pcb_acts_mill[] = "mill()";
 static const char pcb_acth_mill[] = "Calculate toolpath for milling away copper";
 fgw_error_t pcb_act_mill(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = (pcb_board_t *)PCB_ACT_HIDLIB;
 	ctx.edge_clearance = PCB_MM_TO_COORD(0.05);
 	ctx.tools = &tools;
-	PCB_ACT_IRES(pcb_tlp_mill_copper_layer(&ctx, PCB_CURRLAYER(PCB)));
+	PCB_ACT_IRES(pcb_tlp_mill_copper_layer(pcb, &ctx, pcb_get_layergrp(pcb, PCB_CURRLAYER(PCB)->meta.real.grp)));
 	return 0;
 }
 

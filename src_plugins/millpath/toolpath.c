@@ -183,7 +183,7 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 	pcb_r_end(&it);
 }
 
-static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
+static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -216,15 +216,13 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 	}
 }
 
-static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
+static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp)
 {
 	int has_otl;
 	pcb_layergrp_id_t i;
 	pcb_layergrp_t *g;
 
-	assert(!layer->is_bound);
-
-	result->grp = pcb_get_layergrp(pcb, layer->meta.real.grp);
+	result->grp = grp;
 
 	has_otl = 0;
 	for(i = 0, g = pcb->LayerGroups.grp; i < pcb->LayerGroups.len; i++,g++) {
@@ -278,7 +276,16 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		for(i = 0, g = pcb->LayerGroups.grp; i < pcb->LayerGroups.len; i++,g++)
 			if (PCB_LAYER_IS_OUTLINE(g->ltype, g->purpi))
 				sub_group_all(pcb, result, g, 1);
-	sub_global_all(pcb, result, layer);
+
+
+	{ /* apply all layers within the group */
+		long n;
+		for(n = 0; n < grp->len; n++) {
+			pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[n]);
+			if (ly != NULL)
+				sub_global_all(pcb, result, ly);
+		}
+	}
 
 	/* remove fill from remain */
 	{
@@ -436,13 +443,12 @@ static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 }
 
 
-int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer)
+int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp)
 {
-	pcb_board_t *pcb = pcb_data_get_top(layer->parent.data);
 	long rem;
 
-	setup_ui_layers(pcb, result, layer);
-	setup_remove_poly(pcb, result, layer);
+	setup_ui_layers(pcb, result, grp);
+	setup_remove_poly(pcb, result, grp);
 
 	trace_contour(pcb, result, 0, 1000);
 

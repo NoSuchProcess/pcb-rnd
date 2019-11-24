@@ -71,4 +71,4 @@ struct pcb_tlp_session_s {
 	/* TODO: list on segments */
 };
 
-int pcb_tlp_mill_copper_layer(pcb_tlp_session_t *result, pcb_layer_t *layer);
+int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp);
