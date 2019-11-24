@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <assert.h>
+#include <qparse/qparse.h>
 
 #include "toolpath.h"
 
@@ -456,6 +457,43 @@ int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	if (rem != 0)
 		pcb_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 
+	return 0;
+}
+
+
+int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp, const char *script)
+{
+	setup_ui_layers(pcb, result, grp);
+
+	for(;;) {
+		size_t consumed;
+		char **argv;
+		int argc;
+
+		while(isspace(*script)) script++;
+		if (*script == '\0') break;
+
+		argc = qparse3(script, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_TERM_SEMICOLON | QPARSE_TERM_NEWLINE | QPARSE_SEP_COMMA, &consumed);
+
+		if (strcmp(argv[0], "remove") == 0) {
+			setup_remove_poly(pcb, result, grp);
+		}
+		else if (strcmp(argv[0], "contour") == 0) {
+			int tool = 0;
+			pcb_coord_t extra = 1000;
+			if (argc > 1) tool = atoi(argv[1]);
+			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
+			trace_contour(pcb, result, tool, extra);
+		}
+		else if (strcmp(argv[0], "fix_overcuts") == 0) {
+			long rem = fix_overcuts(pcb, result);
+			if (rem != 0)
+				pcb_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
+		}
+
+		qparse_free(argc, &argv);
+		script += consumed;
+	}
 	return 0;
 }
 

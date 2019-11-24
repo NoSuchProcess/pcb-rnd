@@ -72,3 +72,6 @@ struct pcb_tlp_session_s {
 };
 
 int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp);
+
+int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp, const char *script);
+
