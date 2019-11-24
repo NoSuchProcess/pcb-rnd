@@ -90,7 +90,7 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 	return gcode_attribute_list;
 }
 
-static gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
+static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
 {
 	pcb_line_t *line;
 	gdl_iterator_t it;
@@ -110,7 +110,7 @@ static gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp)
 	}
 }
 
-static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
+static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
 {
 	int script_ha;
 	const char *script;
@@ -124,14 +124,14 @@ static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpos
 
 
 	if (flags & PCB_LYT_UI)
-		return;
+		return 0;
 
 	pcb_cam_set_layer_group(&gctx.cam, group, purpose, purpi, flags, xform);
 
 	if (!gctx.cam.active) {
 		/* in direct export do only mechanical and copper layer groups */
 		if (!(flags & PCB_LYT_COPPER) && !(flags & PCB_LYT_BOUNDARY) && !(flags & PCB_LYT_MECH))
-			return;
+			return 0;
 	}
 
 	if (!gctx.cam.active) {
@@ -153,7 +153,7 @@ static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpos
 	}
 
 	if (gctx.f == NULL)
-		return;
+		return 0;
 
 	if (PCB_LAYER_IS_ROUTE(flags, purpi) || PCB_LAYER_IS_DRILL(flags, purpi)) {
 		script_ha = HA_layer_script;
@@ -176,6 +176,7 @@ static void gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpos
 
 	if (!gctx.cam.active)
 		fclose(gctx.f);
+	return 0;
 }
 
 static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
