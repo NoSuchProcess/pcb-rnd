@@ -467,9 +467,18 @@ int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	return 0;
 }
 
+#define req_setup(target) \
+	if (setup != target) { \
+		if (target) \
+			pcb_message(PCB_MSG_ERROR, "millpath script: need to call a setup_* function before milling"); \
+		else \
+			pcb_message(PCB_MSG_ERROR, "millpath script: can not call multiple setup_* functions"); \
+		continue; \
+	}
 
 int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp, const char *script)
 {
+	int setup = 0;
 	setup_ui_layers(pcb, result, grp);
 
 	for(;;) {
@@ -483,11 +492,14 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		argc = qparse3(script, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_TERM_SEMICOLON | QPARSE_TERM_NEWLINE | QPARSE_SEP_COMMA, &consumed);
 
 		if (strcmp(argv[0], "remove") == 0) {
+			req_setup(0);
 			setup_remove_poly(pcb, result, grp);
+			setup = 1;
 		}
 		else if (strcmp(argv[0], "contour") == 0) {
 			int tool = 0;
 			pcb_coord_t extra = 1000;
+			req_setup(1);
 			if (argc > 1) tool = atoi(argv[1]);
 			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
 			trace_contour(pcb, result, tool, extra);
@@ -495,6 +507,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		else if (strcmp(argv[0], "trace_spiral") == 0) {
 			long passes = -1;
 			int tool = 0;
+			req_setup(1);
 			pcb_coord_t extra = 1000;
 			if (argc > 1) tool = atoi(argv[1]);
 			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
@@ -503,6 +516,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		}
 		else if (strcmp(argv[0], "fix_overcuts") == 0) {
 			long rem = fix_overcuts(pcb, result);
+			req_setup(1);
 			if (rem != 0)
 				pcb_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 		}
