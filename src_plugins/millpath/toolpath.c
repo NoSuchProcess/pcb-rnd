@@ -486,7 +486,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		char **argv;
 		int argc;
 
-		while(isspace(*script)) script++;
+		while(isspace(*script) || (*script == ';')) script++;
 		if (*script == '\0') break;
 
 		argc = qparse3(script, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_TERM_SEMICOLON | QPARSE_TERM_NEWLINE | QPARSE_SEP_COMMA, &consumed);
