@@ -77,13 +77,21 @@ pcb_export_opt_t gcode_attribute_list[] = {
 	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-0.05)}, 0},
 #define HA_layerdepth 4
 
+	{"total-cut-depth", "Total milling depth when cutting through the board (if 0, use pcb thickness)",
+	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-1.6)}, 0},
+#define HA_totalcutdepth 5
+
+	{"cut-depth", "Milling depth increment in each pass",
+	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
+#define HA_cutdepth 6
+
 	{"safe-Z", "Safe Z (above the board) for traverse move",
 	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
-#define HA_safeZ 5
+#define HA_safeZ 7
 
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 6
+#define HA_cam 8
 
 };
 
@@ -136,12 +144,40 @@ static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int
 
 }
 
+static pcb_coord_t pcb_board_thickness(pcb_board_t *pcb)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *grp;
+	pcb_coord_t curr, total = 0;
+
+	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
+		const char *s;
+
+		if (!(grp->ltype & PCB_LYT_COPPER) && !(grp->ltype & PCB_LYT_SUBSTRATE))
+			continue;
+		s = pcb_attribute_get(&grp->Attributes, "gcode::thickness");
+		if (s == NULL)
+			s = pcb_attribute_get(&grp->Attributes, "thickness");
+
+		curr = 0;
+		if (s != NULL)
+			curr = pcb_get_value(s, NULL, NULL, NULL);
+		if (curr <= 0) {
+			if (grp->ltype & PCB_LYT_SUBSTRATE)
+				pcb_message(PCB_MSG_ERROR, "gcode: can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
+			continue;
+		}
+		total += curr;
+	}
+	return curr;
+}
+
 static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int thru)
 {
 	pcb_line_t *from = NULL, *to, *last_to = NULL;
 	gdl_iterator_t it;
 	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
-	int p, passes, start_depth;
+	int passes, start_depth;
 
 	if (tctx->res_path->Line.lst.length == 0) {
 		pcb_fprintf(gctx.f, "(empty layer group: %s)\n", grp->name);
@@ -152,11 +188,32 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_layerdepth].crd);
 
 	if (thru) {
-		pcb_coord_t step = -PCB_MM_TO_COORD(0.1), at = gcode_values[HA_layerdepth].crd + step;
-		passes = 2;
+		pcb_coord_t step = gcode_values[HA_cutdepth].crd;
+		pcb_coord_t total = gcode_values[HA_totalcutdepth].crd;
+		pcb_coord_t at = gcode_values[HA_layerdepth].crd;
+
+		if (step > 0)
+			step = -step;
+		else if (step == 0) {
+			pcb_message(PCB_MSG_ERROR, "export_gcode: cut increment not configured - not exporting thru-cut layer\n");
+			return;
+		}
+
+
+		if (total == 0) {
+			total = pcb_board_thickness(gctx.pcb);
+			if (total == 0) {
+				pcb_message(PCB_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
+				return;
+			}
+		}
+
 		start_depth = 102;
-		for(p = 0; p < passes-1; p++, at += step)
-			pcb_fprintf(gctx.f, "#%d=%mm  (cutting depth for thru-cuts)\n", 102+p, at);
+
+		for(passes = 0, at += step; at > total; passes++, at += step)
+			pcb_fprintf(gctx.f, "#%d=%mm  (%s cutting depth for thru-cuts)\n", start_depth+passes, at, passes == 0 ? "first" : "next");
+		pcb_fprintf(gctx.f, "#%d=%mm  (last cutting depth for thru-cuts)\n", start_depth+passes, total);
+		passes++;
 	}
 	else {
 		passes = 1;
