@@ -42,14 +42,22 @@ static pcb_coord_t tool_dias[] = {
 };
 static pcb_tlp_tools_t tools = { sizeof(tool_dias)/sizeof(tool_dias[0]), tool_dias};
 
-static const char pcb_acts_mill[] = "mill()";
+static const char pcb_acts_mill[] = "mill([script])";
 static const char pcb_acth_mill[] = "Calculate toolpath for milling away copper";
 fgw_error_t pcb_act_mill(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *script = NULL;
 	pcb_board_t *pcb = (pcb_board_t *)PCB_ACT_HIDLIB;
 	ctx.edge_clearance = PCB_MM_TO_COORD(0.05);
 	ctx.tools = &tools;
-	PCB_ACT_IRES(pcb_tlp_mill_copper_layer(pcb, &ctx, pcb_get_layergrp(pcb, PCB_CURRLAYER(PCB)->meta.real.grp)));
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, mill, script = argv[1].val.str);
+
+	if (script == NULL)
+		PCB_ACT_IRES(pcb_tlp_mill_copper_layer(pcb, &ctx, pcb_get_layergrp(pcb, PCB_CURRLAYER(PCB)->meta.real.grp)));
+	else
+		PCB_ACT_IRES(pcb_tlp_mill_script(pcb, &ctx, pcb_get_layergrp(pcb, PCB_CURRLAYER(PCB)->meta.real.grp), script));
+
 	return 0;
 }
 
