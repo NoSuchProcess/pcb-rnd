@@ -9,13 +9,12 @@
 <h2> smartdisperse - smart netlist disperse</h2>
 <p>
 The smartdisperse plugin provides an action called <i>smartdisperse</i> that
-uses a loaded netlist to arranges layout subcircuits linear order based on
-refdes.
+uses a loaded netlist to arrange the layout subcircuits in a linear order based.
+on the netlist connections rather than arbitrary subcircuit order.
 <p>
 The plugin is useful with a GUI HID for initial layout, as well as with batch
 mode to programmatically generate subcircuit 'proof' sheets. The layout must
-include a netlist for smartdisperse to work.  The plugin uses the netlist to
-disperse all the subcircuits or all selected subcircuits according to a linear
-order in a spaced grid at the top of the board outline.
+include a netlist for smartdisperse to work. The plugin uses the netlist to
+disperse all the subcircuits into clusters prioritized by netlist connections.
 </body>
 </html>
