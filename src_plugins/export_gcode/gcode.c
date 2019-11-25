@@ -50,6 +50,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	FILE *f; /* output file */
 	int passes; /* number of millings for a thru-cut - calculated for the header */
+	pcb_layergrp_t *grp; /* layer group being exported */
 } gcode_t;
 
 static gcode_t gctx;
@@ -108,7 +109,9 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 }
 
 #define TX(x) (x)
-#define TY(y) (gctx.pcb->hidlib.size_y - (y))
+#define TY_MIRROR(y) (gctx.pcb->hidlib.size_y - (y))
+#define TY_NORMAL(y) (y)
+#define TY(y) (gctx.grp->ltype & PCB_LYT_BOTTOM ? TY_MIRROR(y) : TY_NORMAL(y))
 
 static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int depth)
 {
@@ -374,7 +377,9 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
 			pcb_layergrp_t *grp = &pcb->LayerGroups.grp[gid];
 			pcb_xform_t *xf = &xform;
+			gctx.grp = grp;
 			gcode_export_layer_group(gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, &xf);
+			gctx.grp = NULL;
 		}
 
 		if (gctx.cam.active) {
