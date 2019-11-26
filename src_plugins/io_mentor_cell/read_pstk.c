@@ -331,6 +331,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 	hkp_pstk_t *hpstk;
 	pcb_cardinal_t pid;
 	pcb_pstk_t *ps;
+	double rot = 0;
 
 	tmp = find_nth(nd->first_child, "XY", 0);
 	if (tmp == NULL) {
@@ -340,6 +341,10 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 
 	parse_x(ctx, tmp->argv[1], &px);
 	parse_y(ctx, tmp->argv[2], &py);
+
+	tmp = find_nth(nd->first_child, "ROTATION", 0);
+	if (tmp != NULL)
+		parse_rot(ctx, tmp, &rot);
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
 	if (tmp == NULL) {
@@ -356,6 +361,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 	ps = pcb_pstk_alloc(subc->data);
 	ps->x = px;
 	ps->y = py;
+	ps->rot = rot;
 	ps->proto = pid;
 	ps->xmirror = ps->smirror = on_bottom;
 	pcb_pstk_add(subc->data, ps);
