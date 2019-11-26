@@ -233,38 +233,6 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 
 
-	/* hole needs special threatment for two reasons:
-	    - it's normally not a shape (except when it is a slot)
-	    - it may have an offset on input, which will be an offset of all shapes
-	      so we can keep the hole at 0;0 */
-	hn = find_nth(n->first_child, "HOLE_NAME", 0);
-	if (hn != NULL) {
-		hkp_hole_t *hole;
-
-		on = find_nth(hn->first_child, "OFFSET", 0);
-		if (on != NULL) {
-			parse_xy(ctx, on->argv[1], &ox, &oy, 1);
-			if (ox != 0) ox = -ox;
-			if (oy != 0) oy = -oy;
-			TODO("[easy] test this when ox;oy != 0");
-		}
-
-		hole = parse_hole(ctx, hn->argv[1]);
-		if (hole == NULL) {
-			hkp_error(hn, "Undefined hole '%s'\n", hn->argv[1]);
-			goto error;
-		}
-		if (hole->dia > 0) {
-			p->proto.hdia = hole->dia;
-			p->proto.hplated = hole->plated;
-		}
-		else {
-			TODO("handle slots");
-			hkp_error(hn, "Only ROUND holes are supported yet\n");
-
-		}
-		TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
-	}
 
 	ts = pcb_vtpadstack_tshape_alloc_insert(&p->proto.tr, 0, 1);
 
@@ -291,6 +259,40 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 				ts->len++;
 			}
 		}
+	}
+
+	/* hole needs special threatment for two reasons:
+	    - it's normally not a shape (except when it is a slot)
+	    - it may have an offset on input, which will be an offset of all shapes
+	      so we can keep the hole at 0;0 */
+	n = find_nth(p->subtree->first_child, "TECHNOLOGY", 0);
+	hn = find_nth(n->first_child, "HOLE_NAME", 0);
+	if (hn != NULL) {
+		hkp_hole_t *hole;
+
+		on = find_nth(hn->first_child, "OFFSET", 0);
+		if (on != NULL) {
+			parse_xy(ctx, on->argv[1], &ox, &oy, 1);
+			if (ox != 0) ox = -ox;
+			if (oy != 0) oy = -oy;
+			TODO("[easy] test this when ox;oy != 0");
+		}
+
+		hole = parse_hole(ctx, hn->argv[1]);
+		if (hole == NULL) {
+			hkp_error(hn, "Undefined hole '%s'\n", hn->argv[1]);
+			goto error;
+		}
+		if (hole->dia > 0) {
+			p->proto.hdia = hole->dia;
+			p->proto.hplated = hole->plated;
+		}
+		else {		
+			TODO("handle slots");
+			hkp_error(hn, "Only ROUND holes are supported yet\n");
+
+		}
+		TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
 	}
 
 	p->proto.in_use = 1;
