@@ -194,6 +194,24 @@ lyt_name_t lyt_names[] = {
 	{NULL, 0}
 };
 
+static void slot_shape(pcb_pstk_shape_t *shape, pcb_coord_t sx, pcb_coord_t sy)
+{
+	shape->shape = PCB_PSSH_LINE;
+	if (sx > sy) { /* horizontal */
+		shape->data.line.thickness = sy;
+		shape->data.line.x1 = (-sx + sy)/2;
+		shape->data.line.x2 = (+sx - sy)/2;
+		shape->data.line.y1 = shape->data.line.y2 = 0;
+	}
+	else { /* vertical */
+		shape->data.line.thickness = sx;
+		shape->data.line.y1 = (-sy + sx)/2;
+		shape->data.line.y2 = (+sy - sx)/2;
+		shape->data.line.x1 = shape->data.line.x2 = 0;
+	}
+	shape->layer_mask = PCB_LYT_MECH;
+	shape->comb = PCB_LYC_AUTO;
+}
 
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
@@ -288,9 +306,8 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 			p->proto.hplated = hole->plated;
 		}
 		else {		
-			TODO("handle slots");
-			hkp_error(hn, "Only ROUND holes are supported yet\n");
-
+			slot_shape(&(ts->shape[ts->len]), hole->w, hole->h);
+			ts->len++;
 		}
 		TODO("htop/hbottom: do we get bbvia span from the hole or from the padstack?");
 	}
