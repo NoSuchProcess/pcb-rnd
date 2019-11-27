@@ -340,7 +340,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
 TODO("figure what TEXT_OPTIONS we have. One of them is MIRRORED (brd2 example)");
-TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what if it is 0?");
+TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what if it is 0?. STROKE_WIDTH == 0 and != 0 in brd1 example");
 	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg));
 }
 
