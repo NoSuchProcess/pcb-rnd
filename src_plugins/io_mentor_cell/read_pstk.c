@@ -155,10 +155,10 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 
 			s->shp.shape = PCB_PSSH_POLY;
 			pcb_pstk_shape_alloc_poly(&s->shp.data.poly, 4);
-			s->shp.data.poly.x[0] = ox - w/2; s->shp.data.poly.y[0] = oy - w/2;
-			s->shp.data.poly.x[1] = ox - w/2; s->shp.data.poly.y[1] = oy + w/2;
-			s->shp.data.poly.x[2] = ox + w/2; s->shp.data.poly.y[2] = oy + w/2;
-			s->shp.data.poly.x[3] = ox + w/2; s->shp.data.poly.y[3] = oy - w/2;
+			s->shp.data.poly.x[0] = ox - w/2; s->shp.data.poly.y[0] = oy - h/2;
+			s->shp.data.poly.x[1] = ox - w/2; s->shp.data.poly.y[1] = oy + h/2;
+			s->shp.data.poly.x[2] = ox + w/2; s->shp.data.poly.y[2] = oy + h/2;
+			s->shp.data.poly.x[3] = ox + w/2; s->shp.data.poly.y[3] = oy - h/2;
 		}
 	}
 
