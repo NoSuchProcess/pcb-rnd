@@ -362,6 +362,8 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 	ps->x = px;
 	ps->y = py;
 	ps->rot = rot;
+	if (on_bottom == 0)
+		ps->rot = -rot;
 	ps->proto = pid;
 	ps->xmirror = ps->smirror = on_bottom;
 	pcb_pstk_add(subc->data, ps);
