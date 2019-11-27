@@ -208,7 +208,7 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int
 }
 
 TODO("May need to get a side arg, if rotation is specified differently on the back side");
-static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
+static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out, int on_bottom)
 {
 	double rot;
 	char *end;
@@ -219,6 +219,8 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out)
 		return hkp_error(nd, "Wrong rotation value '%s' (expected numeric)\n", nd->argv[1]);
 	if ((rot < -360) || (rot > 360))
 		return hkp_error(nd, "Wrong rotation value '%s' (out of range)\n", nd->argv[1]);
+	if (on_bottom == 0)
+		rot = -rot;
 	*rot_out = rot;
 	return 0;
 }
@@ -330,7 +332,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
 	if (tmp != NULL)
-		parse_rot(ctx, tmp, &rot);
+		parse_rot(ctx, tmp, &rot, (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM));
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
@@ -674,7 +676,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			seen_oxy = 1;
 		}
 		else if (strcmp(n->argv[0], "ROTATION") == 0) {
-			if (parse_rot(ctx, n, &rot) != 0) {
+			if (parse_rot(ctx, n, &rot, on_bottom) != 0) {
 				hkp_error(n, "Can't load package due to wrong rotation value\n");
 				return NULL;
 			}

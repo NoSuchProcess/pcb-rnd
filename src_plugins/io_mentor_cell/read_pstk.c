@@ -344,7 +344,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 
 	tmp = find_nth(nd->first_child, "ROTATION", 0);
 	if (tmp != NULL)
-		parse_rot(ctx, tmp, &rot);
+		parse_rot(ctx, tmp, &rot, on_bottom);
 
 	tmp = find_nth(nd->first_child, "PADSTACK", 0);
 	if (tmp == NULL) {
@@ -362,8 +362,6 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 	ps->x = px;
 	ps->y = py;
 	ps->rot = rot;
-	if (on_bottom == 0)
-		ps->rot = -rot;
 	ps->proto = pid;
 	ps->xmirror = ps->smirror = on_bottom;
 	pcb_pstk_add(subc->data, ps);
