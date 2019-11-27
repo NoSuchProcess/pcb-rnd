@@ -272,7 +272,10 @@ static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_
 	if (tmp != NULL)
 		parse_coord(ctx, tmp->argv[1], &th);
 	tmp = find_nth(pp->first_child, "XY", 0);
-TODO("[easy] handle error: what it tmp == NULL?");
+	if (tmp == NULL) {
+		hkp_error(pp, "Missing polyline XY, can't place via\n");
+		return;
+	}
 	parse_xy(ctx, tmp->argv[1], &px, &py, 1);
 	for(n = 2; n < tmp->argc; n++) {
 		parse_xy(ctx, tmp->argv[n], &x, &y, 1);
