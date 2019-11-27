@@ -305,7 +305,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 			p->proto.hdia = hole->dia;
 			p->proto.hplated = hole->plated;
 		}
-		else {		
+		else {
 			slot_shape(&(ts->shape[ts->len]), hole->w, hole->h);
 			ts->len++;
 		}
