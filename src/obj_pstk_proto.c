@@ -594,6 +594,18 @@ void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
 					pcb_polyarea_free(&sh->data.poly.pa);
 				for(i = 0; i < sh->data.poly.len; i++)
 					sh->data.poly.y[i] = -sh->data.poly.y[i];
+
+				/* reverse order of data to keep normals pointing out */
+				for(i = 0; i < sh->data.poly.len/2; i++) {
+					pcb_coord_t tx, ty;
+					int other = sh->data.poly.len-1-i;
+					tx = sh->data.poly.x[i];
+					ty = sh->data.poly.y[i];
+					sh->data.poly.x[i] = sh->data.poly.x[other];
+					sh->data.poly.y[i] = sh->data.poly.y[other];
+					sh->data.poly.x[other] = tx;
+					sh->data.poly.y[other] = ty;
+				}
 				pcb_pstk_shape_update_pa(&sh->data.poly);
 				break;
 		}
