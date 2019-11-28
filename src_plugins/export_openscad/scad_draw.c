@@ -80,22 +80,11 @@ static void scad_draw_primitives(void)
 
 static int scad_draw_outline(void)
 {
-	pcb_any_obj_t *start = pcb_topoly_find_1st_outline(PCB);
-	pcb_poly_t *poly;
+	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB);
 	int n;
 
-	if (start == NULL) {
-		poly = pcb_poly_alloc(PCB->Data->Layer);
-		pcb_poly_point_new(poly, 0, 0);
-		pcb_poly_point_new(poly, PCB->hidlib.size_x, 0);
-		pcb_poly_point_new(poly, PCB->hidlib.size_x, PCB->hidlib.size_y);
-		pcb_poly_point_new(poly, 0, PCB->hidlib.size_y);
-	}
-	else {
-		poly = pcb_topoly_conn(PCB, start, PCB_TOPOLY_FLOATING);
-		if (poly == NULL)
-			return -1;
-	}
+	if (poly == NULL)
+		return -1;
 
 	fprintf(f, "module pcb_outline() {\n");
 	fprintf(f, "	polygon([\n\t\t");

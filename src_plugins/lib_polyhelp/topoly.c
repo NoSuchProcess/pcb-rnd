@@ -314,6 +314,24 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 }
 #undef check
 
+pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb)
+{
+	pcb_poly_t *poly;
+	pcb_any_obj_t *start = pcb_topoly_find_1st_outline(pcb);
+
+	if (start == NULL) {
+		poly = pcb_poly_alloc(pcb->Data->Layer);
+		pcb_poly_point_new(poly, 0, 0);
+		pcb_poly_point_new(poly, pcb->hidlib.size_x, 0);
+		pcb_poly_point_new(poly, pcb->hidlib.size_x, pcb->hidlib.size_y);
+		pcb_poly_point_new(poly, 0, pcb->hidlib.size_y);
+	}
+	else
+		poly = pcb_topoly_conn(pcb, start, PCB_TOPOLY_FLOATING);
+
+	return poly;
+}
+
 const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";
 const char pcb_acth_topoly[] = "convert a closed loop of lines and arcs into a polygon";
 fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
