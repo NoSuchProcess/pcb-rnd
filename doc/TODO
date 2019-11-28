@@ -29,7 +29,6 @@
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 	- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
-- CLEANUP: fp_fs_search: kill anything that gets ':' separated string as path list, get a config list instead
 - CLENAUP: decide about exporter policy:
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
