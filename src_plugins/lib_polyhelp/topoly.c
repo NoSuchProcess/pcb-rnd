@@ -55,18 +55,8 @@ typedef struct {
 	vti0_t *endlist;
 	pcb_any_obj_t *curr, *result;
 	pcb_coord_t tx, ty;
+	pcb_dynf_t mark;
 } next_conn_t;
-
-/* Return whether the object is already on the list (but ignore the start object
-   so we can do a full circle) */
-static int already_found(next_conn_t *ctx, pcb_any_obj_t *obj)
-{
-	int n;
-	for(n = 1; n < vtp0_len(ctx->list); n++)
-		if (ctx->list->array[n] == obj)
-			return 1;
-	return 0;
-}
 
 static pcb_r_dir_t next_conn_found_arc(const pcb_box_t *box, void *cl)
 {
@@ -75,17 +65,15 @@ static pcb_r_dir_t next_conn_found_arc(const pcb_box_t *box, void *cl)
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 	int n;
 
-	if (obj == ctx->curr)
-		return PCB_R_DIR_NOT_FOUND; /* need the object connected to the other endpoint */
-
-	if (already_found(ctx, obj))
-		return PCB_R_DIR_NOT_FOUND;
+	if (PCB_DFLAG_TEST(&obj->Flags, ctx->mark))
+		return PCB_R_DIR_NOT_FOUND; /* object already mapped */
 
 	for(n = 0; n < 2; n++) {
 		pcb_arc_get_end((pcb_arc_t *)obj, n, &ex, &ey);
 		if (NEAR(ctx->tx, ex, ctx->ty, ey)) {
 			vti0_append(ctx->endlist, n);
 			vtp0_append(ctx->list, obj);
+			PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 			ctx->result = obj;
 			return PCB_R_DIR_FOUND_CONTINUE;
 		}
@@ -100,15 +88,13 @@ static pcb_r_dir_t next_conn_found_line(const pcb_box_t *box, void *cl)
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 	pcb_line_t *l = (pcb_line_t *)box;
 
-	if (obj == ctx->curr)
-		return PCB_R_DIR_NOT_FOUND; /* need the object connected to the other endpoint */
-
-	if (already_found(ctx, obj))
-		return PCB_R_DIR_NOT_FOUND;
+	if (PCB_DFLAG_TEST(&obj->Flags, ctx->mark))
+		return PCB_R_DIR_NOT_FOUND; /* object already mapped */
 
 	if (NEAR(ctx->tx, l->Point1.X, ctx->ty, l->Point1.Y)) {
 		vti0_append(ctx->endlist, 0);
 		vtp0_append(ctx->list, obj);
+		PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 		ctx->result = obj;
 		return PCB_R_DIR_FOUND_CONTINUE;
 	}
@@ -116,6 +102,7 @@ static pcb_r_dir_t next_conn_found_line(const pcb_box_t *box, void *cl)
 	if (NEAR(ctx->tx, l->Point2.X, ctx->ty, l->Point2.Y)) {
 		vti0_append(ctx->endlist, 1);
 		vtp0_append(ctx->list, obj);
+		PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 		ctx->result = obj;
 		return PCB_R_DIR_FOUND_CONTINUE;
 	}
@@ -123,7 +110,7 @@ static pcb_r_dir_t next_conn_found_line(const pcb_box_t *box, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *curr)
+static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *curr, pcb_dynf_t df)
 {
 	pcb_line_t *l;
 	int n;
@@ -149,6 +136,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 	ctx.list = list;
 	ctx.endlist = endlist;
 	ctx.result = NULL;
+	ctx.mark = df;
 
 	for(n = 0; n < 2; n++) {
 		pcb_box_t region;
@@ -181,19 +169,28 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 	return NULL; /* nothing found */
 }
 
-static int map_contour(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *start)
+static int map_contour(pcb_data_t *data, vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *start)
 {
+	long i;
 	pcb_any_obj_t *n;
+	pcb_dynf_t df;
 
-pcb_trace("loop start: %d\n", start->ID);
+	df = pcb_dynflag_alloc("topoly_map_contour");
+	pcb_data_dynflag_clear(data, df);
+
+/*pcb_trace("loop start: %d\n", start->ID);*/
 	vtp0_append(list, start);
-	for(n = next_conn(list, endlist, start); n != start; n = next_conn(list, endlist, n)) {
-		if (n == NULL)
+	PCB_DFLAG_SET(&start->Flags, df);
+	for(i = 0, n = next_conn(list, endlist, start, df); n != start; n = next_conn(list, endlist, n, df), i++) {
+		if (n == NULL) {
+/*			pcb_trace("      broken trace\n");*/
 			return -1;
-pcb_trace("      next: %d\n", n->ID);
+		}
+		if (i == 1)
+			PCB_DFLAG_CLR(&start->Flags, df); /* allow finding the start object again for proper closing */
 	}
-pcb_trace("    (next): %d\n", n->ID);
 
+	pcb_dynflag_free(df);
 	return 0;
 }
 
@@ -259,7 +256,7 @@ pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t
 
 	vtp0_init(&objs);
 	vti0_init(&ends);
-	res = map_contour(&objs, &ends, start);
+	res = map_contour(pcb->Data, &objs, &ends, start);
 	if (res != 0) {
 		pcb_message(PCB_MSG_ERROR, "pcb_topoly_conn(): failed to find a closed loop of lines and arcs\n");
 		vtp0_uninit(&objs);
