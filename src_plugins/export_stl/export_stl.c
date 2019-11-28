@@ -54,7 +54,6 @@ pcb_export_opt_t stl_attribute_list[] = {
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 3
-
 };
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
@@ -73,7 +72,7 @@ static pcb_export_opt_t *stl_get_export_options(pcb_hid_t *hid, int *n)
 	return stl_attribute_list;
 }
 
-void stl_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+void stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options)
 {
 }
 
