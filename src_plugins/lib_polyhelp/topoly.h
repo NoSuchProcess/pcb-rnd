@@ -44,7 +44,7 @@ pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t
 pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb);
 
 /* Construct apolygon of the first line/arc on the outline layer from top-left */
-pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb);
+pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how);
 
 
 extern const char pcb_acts_topoly[];

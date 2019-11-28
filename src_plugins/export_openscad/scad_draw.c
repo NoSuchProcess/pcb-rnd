@@ -80,7 +80,7 @@ static void scad_draw_primitives(void)
 
 static int scad_draw_outline(void)
 {
-	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB);
+	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
 	int n;
 
 	if (poly == NULL)

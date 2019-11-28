@@ -314,7 +314,7 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 }
 #undef check
 
-pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb)
+pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how)
 {
 	pcb_poly_t *poly;
 	pcb_any_obj_t *start = pcb_topoly_find_1st_outline(pcb);
@@ -327,7 +327,7 @@ pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb)
 		pcb_poly_point_new(poly, 0, pcb->hidlib.size_y);
 	}
 	else
-		poly = pcb_topoly_conn(pcb, start, PCB_TOPOLY_FLOATING);
+		poly = pcb_topoly_conn(pcb, start, how);
 
 	return poly;
 }
