@@ -341,6 +341,13 @@ TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to 
 TODO("HEIGHT should become scale");
 TODO("figure what TEXT_OPTIONS we have. One of them is MIRRORED (brd2 example)");
 TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what if it is 0?. STROKE_WIDTH == 0 and != 0 in brd1 example");
+TODO("STROKE_WIDTH is the thickness of the \"pen\" drawing the text.\n");
+TODO("  Its units are mm or inches, whatever is used in the file at that moment\n");
+TODO("  When it is 0, original SW draws the outline of the letters, with 0.005mm pen thickness.\n");
+TODO("  When drawing the outline of a vertical trace for '1' character, there are two thin traces.\n");
+TODO("  The distance between those traces seems to depend on text height.\n");
+TODO("  In brd2 example, it is 0.04mm for J1, assembly layer, and 0.02mm for R1.\n");
+
 	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg));
 }
 
