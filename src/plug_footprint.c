@@ -353,7 +353,7 @@ void fp_dump()
 
 /* This function loads the newlib footprints into the Library.
  * It examines all directories pointed to by the search paths
- * (normally Settings.LibraryTree).
+ * (usually from conf node rc/library_search_paths)
  * In each directory specified there, it looks both in that directory,
  * as well as *one* level down.  It calls the subfunction
  * fp_fs_load_dir to put the footprints into PCB's internal
@@ -366,9 +366,6 @@ static int fp_read_lib_all_(const pcb_conflist_t *searchpath)
 	int n_footprints = 0;  /* Running count of footprints found */
 	int res;
 
-	/* Additional loop to allow for multiple 'newlib' style library directories
-	 * called out in Settings.LibraryTree
-	 */
 	for(ci = pcb_conflist_first((pcb_conflist_t *)searchpath); ci != NULL; ci = pcb_conflist_next(ci)) {
 		const char *p = ci->val.string[0];
 		int silent_fail = 0;
