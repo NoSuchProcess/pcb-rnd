@@ -47,7 +47,7 @@
 #define VALID_TYPE(obj) (((obj)->type == PCB_OBJ_ARC)  || ((obj)->type == PCB_OBJ_LINE))
 #define CONT_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC)
 
-#define NEAR(x1, x2, y1, y2) (((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)) < 4)
+#define NEAR(x1, x2, y1, y2) (((double)(x1-x2)*(double)(x1-x2) + (double)(y1-y2)*(double)(y1-y2)) < 4)
 
 /*** map the contour ***/
 typedef struct {
