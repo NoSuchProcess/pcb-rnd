@@ -2530,7 +2530,7 @@ int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *nam
 
 	cfg_dest = CFR_invalid;
 
-	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &st, NULL);
+	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, name, &st, NULL);
 
 	if (f != NULL) {
 		doc = lht_dom_load_stream(f, name, &errmsg);

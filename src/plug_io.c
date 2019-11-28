@@ -250,7 +250,7 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 	FILE *f;
 	pcb_fp_fopen_ctx_t fctx;
 
-	f = pcb_fp_fopen(pcb_fp_default_search_path(), Filename, &fctx, Ptr);
+	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, Filename, &fctx, Ptr);
 	if (f == PCB_FP_FOPEN_IN_DST)
 		return 0;
 	len = pcb_test_parse_all(f, Filename, fmt, PCB_IOT_FOOTPRINT, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);

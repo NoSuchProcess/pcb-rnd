@@ -2839,7 +2839,7 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 	read_state_t st;
 	gsx_parse_res_t res;
 
-	f = pcb_fp_fopen(pcb_fp_default_search_path(), name, &fpst, NULL);
+	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, name, &fpst, NULL);
 
 	if (f == NULL) {
 		return -1;

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "vtlibrary.h"
 #include "data.h"
+#include "conf.h"
 
 typedef struct pcb_plug_fp_s pcb_plug_fp_t;
 
@@ -16,7 +17,7 @@ typedef struct {
 } pcb_fp_fopen_ctx_t;
 
 /* hook bindings, see below */
-FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
+FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
 void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
 
 /* duplicates the name and splits it into a basename and params;
@@ -84,9 +85,6 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 
 /* walk through all lib paths and build the library menu */
 int pcb_fp_read_lib_all(void);
-
-
-const char *pcb_fp_default_search_path(void);
 
 int pcb_fp_host_uninit(void);
 

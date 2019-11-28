@@ -114,27 +114,15 @@ const char *pcb_fp_tagname(const void *tagid)
 	return (char *) tagid;
 }
 
-FILE *pcb_fp_fopen(const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
+FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
+	pcb_conf_listitem_t *ci;
 	FILE *res = NULL;
-	if (strchr(path, ':') != NULL)  {
-		char *tmp, *next, *curr;
 
-		curr = tmp = pcb_strdup(path);
-		while((res == NULL) && (curr != NULL)) {
-			next = strchr(curr, ':');
-			if (next != NULL) {
-				*next= '\0';
-				next++;
-			}
-
-			PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, name, fctx, dst));
-			curr = next;
-		}
-		free(tmp);
+	for(ci = pcb_conflist_first((pcb_conflist_t *)path); ci != NULL; ci = pcb_conflist_next(ci)) {
+		const char *curr = ci->val.string[0];
+		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, name, fctx, dst));
 	}
-	else
-		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, path, name, fctx, dst));
 	return res;
 }
 
@@ -371,19 +359,18 @@ void fp_dump()
  * fp_fs_load_dir to put the footprints into PCB's internal
  * datastructures.
  */
-static int fp_read_lib_all_(const char *searchpath)
+static int fp_read_lib_all_(const pcb_conflist_t *searchpath)
 {
+	pcb_conf_listitem_t *ci;
 	char *toppath, toppath_[PCB_PATH_MAX + 1];  /* String holding abs path to top level library dir */
-	char *libpaths;        /* String holding list of library paths to search */
-	char *p;               /* Helper string used in iteration */
 	int n_footprints = 0;  /* Running count of footprints found */
 	int res;
 
 	/* Additional loop to allow for multiple 'newlib' style library directories
 	 * called out in Settings.LibraryTree
 	 */
-	libpaths = pcb_strdup(searchpath);
-	for (p = strtok(libpaths, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
+	for(ci = pcb_conflist_first((pcb_conflist_t *)searchpath); ci != NULL; ci = pcb_conflist_next(ci)) {
+		const char *p = ci->val.string[0];
 		int silent_fail = 0;
 
 		/* remove trailing path delimiter */
@@ -414,17 +401,11 @@ static int fp_read_lib_all_(const char *searchpath)
 	printf("Leaving ParseLibraryTree, found %d footprints.\n", n_footprints);
 #endif
 
-	free(libpaths);
 	return n_footprints;
 }
 
 static gds_t fpds_paths;
 static int fpds_inited = 0;
-
-const char *pcb_fp_default_search_path(void)
-{
-	return pcb_conf_concat_strlist(&conf_core.rc.library_search_paths, &fpds_paths, &fpds_inited, ':');
-}
 
 int pcb_fp_host_uninit(void)
 {
@@ -440,7 +421,7 @@ int pcb_fp_read_lib_all(void)
 	/* List all footprint libraries.  Then sort the whole
 	 * library.
 	 */
-	if (fp_read_lib_all_(pcb_fp_default_search_path()) > 0 || resultFP != NULL) {
+	if (fp_read_lib_all_(&conf_core.rc.library_search_paths) > 0 || resultFP != NULL) {
 		pcb_fp_sort_children(&pcb_library);
 		return 0;
 	}

@@ -48,6 +48,7 @@
 #include "plug_footprint.h"
 #include "plug_io.h"
 #include "funchash_core.h"
+#include "conf_core.h"
 
 conf_diag_t conf_diag;
 
@@ -493,7 +494,7 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		else PCB_ACT_FAIL(DumpLibFootprint);
 	}
 
-	f = pcb_fp_fopen(pcb_fp_default_search_path(), fpn, &fctx, PCB->Data);
+	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, fpn, &fctx, PCB->Data);
 	if ((f != PCB_FP_FOPEN_IN_DST) && (f != NULL)) {
 
 		/* dump file content */
