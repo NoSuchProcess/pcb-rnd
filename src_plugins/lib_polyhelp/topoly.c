@@ -352,7 +352,9 @@ fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		if (strcmp(op, "outline") == 0) {
-			r2 = pcb_topoly_find_1st_outline(PCB);
+			pcb_topoly_1st_outline(PCB, 0);
+			PCB_ACT_IRES(0);
+			return 0;
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid first argument\n");
