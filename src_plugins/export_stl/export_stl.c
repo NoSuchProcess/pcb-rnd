@@ -34,6 +34,7 @@
 #include "plugins.h"
 
 #include "../lib_polyhelp/topoly.h"
+#include "../lib_polyhelp/triangulate.h"
 
 static pcb_hid_t stl_hid;
 const char *stl_cookie = "export_stl HID";
@@ -72,8 +73,50 @@ static pcb_export_opt_t *stl_get_export_options(pcb_hid_t *hid, int *n)
 	return stl_attribute_list;
 }
 
-void stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options)
+int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options)
 {
+	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
+	size_t mem_req = fp2t_memory_required(poly->PointN);
+	void *mem = calloc(mem_req, 1);
+	fp2t_t tri;
+	long n, pn;
+
+	if (!fp2t_init(&tri, mem, poly->PointN)) {
+		free(mem);
+		pcb_poly_free(poly);
+		return -1;
+	}
+
+	TODO("this is less if there are holes:");
+	pn = poly->PointN;
+
+	for(n = 0; n < pn; n++) {
+		fp2t_point_t *pt = fp2t_push_point(&tri);
+		pt->X = poly->Points[n].X;
+		pt->Y = poly->Points[n].Y;
+	}
+
+	fp2t_add_edge(&tri);
+
+	TODO("add holes");
+	fp2t_triangulate(&tri);
+
+	fprintf(f, "solid pcb\n");
+	for(n = 0; n < tri.TriangleCount; n++) {
+		fp2t_triangle_t *t = tri.Triangles[n];
+		fprintf(f, "	facet normal %f %f %f\n", 0, 0, 0);
+		fprintf(f, "		outer loop\n");
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, 0);
+		fprintf(f, "		endloop\n");
+		fprintf(f, "	endfacet\n");
+	}
+	fprintf(f, "endfacet\n");
+
+	free(mem);
+	pcb_poly_free(poly);
+	return 0;
 }
 
 static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
