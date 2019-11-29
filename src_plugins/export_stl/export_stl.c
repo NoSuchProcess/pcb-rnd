@@ -120,7 +120,7 @@ static void stl_print_vert_tri(FILE *f, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 	fprintf(f, "	endfacet\n");
 }
 
-int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t z0, pcb_coord_t z1)
+int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t maxy, pcb_coord_t z0, pcb_coord_t z1)
 {
 	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
 	size_t mem_req = fp2t_memory_required(poly->PointN);
@@ -137,10 +137,10 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t z0,
 	TODO("this is less if there are holes:");
 	pn = poly->PointN;
 
-	for(n = 0; n < pn; n++) {
+	for(n = pn-1; n >= 0; n--) {
 		fp2t_point_t *pt = fp2t_push_point(&tri);
 		pt->X = poly->Points[n].X;
-		pt->Y = poly->Points[n].Y;
+		pt->Y = maxy - poly->Points[n].Y;
 	}
 
 	fp2t_add_edge(&tri);
@@ -157,11 +157,11 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t z0,
 	}
 
 	/* write the side */
-	for(n = 0; n < pn; n++) {
-		nn = n+1;
-		if (nn == pn)
-			nn = 0;
-		stl_print_vert_tri(f, poly->Points[n].X, poly->Points[n].Y, poly->Points[nn].X, poly->Points[nn].Y, z0, z1);
+	for(n = pn-1; n >= 0; n--) {
+		nn = n-1;
+		if (nn < 0)
+			nn = pn-1;
+		stl_print_vert_tri(f, poly->Points[n].X, maxy - poly->Points[n].Y, poly->Points[nn].X, maxy - poly->Points[nn].Y, z0, z1);
 	}
 
 
@@ -197,7 +197,7 @@ static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		perror(filename);
 		return;
 	}
-	stl_hid_export_to_file(f, options, 0, PCB_MM_TO_COORD(1.6));
+	stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, PCB_MM_TO_COORD(1.6));
 
 	fclose(f);
 	pcb_cam_end(&cam);
