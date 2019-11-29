@@ -18,7 +18,7 @@
 +------+
          *out-----------------------------------------------------------------+
          | [bbrd]    [bom_]    [xy__]    [gerb]    [opcd]    [lpr_]    [scad] | [web     ]
-         |      [stat]    [ps__]    [svg_]    [png_]              [dxf_]      |
+         |      [stat]    [ps__]    [svg_]    [png_]     [stl]    [dxf_]      |
          +--------------------------------------------------------------------+
 %%
 
@@ -144,6 +144,9 @@
 [opcd]
 	label ipcd356\ne-tester
 
+[stl]
+	label STL\n(3d)
+
 [lpr_]
 	label lpr\n(print)
 
@@ -204,6 +207,9 @@
 
 -> pcbrnd opcd.n
 	label IPC356D
+
+-> pcbrnd stl.n
+	label stl
 
 -> pcbrnd lpr_.n
 	label ps
