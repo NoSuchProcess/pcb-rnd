@@ -715,11 +715,13 @@ static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const cha
 		if (flags & PCB_LYT_NOEXPORT)
 			return 0;
 
-		if (is_empty)
-			return 0;
+		if (!PCB_LAYER_IS_OUTLINE(flags, purpi)) { /* outline layer can never be empty, because of the implicit outline */
+			if (is_empty)
+				return 0;
 
-		if ((group >= 0) && pcb_layergrp_is_empty(PCB, group))
-			return 0;
+			if ((group >= 0) && pcb_layergrp_is_empty(PCB, group))
+				return 0;
+		}
 
 		if (flags & PCB_LYT_INVIS)
 			return 0;
