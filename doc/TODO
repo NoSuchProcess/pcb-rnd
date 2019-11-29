@@ -36,6 +36,7 @@
 - CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
+- FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
 - FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
@@ -152,6 +153,8 @@
 - BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
 - BUG: segfault: bug_files/layer_segf.pcb [report: Igor2]
 - BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
+- BUG: windows: locale is broken, setting it to C within the app is not possible - need local strtod() and printf(%f) implementation [report: aron]
+- BUG: black screen lib preview
 - version 3.0.0:
 	- maybe rename pcblib? dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 	- ./configure --config should default to /etc
