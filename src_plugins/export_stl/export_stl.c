@@ -56,9 +56,13 @@ pcb_export_opt_t stl_attribute_list[] = {
 	 PCB_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_ovrthick 3
 
+	{"z-center", "when true: z=0 is the center of board cross section, instead of being at the bottom side",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_zcent 4
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 4
+#define HA_cam 5
 };
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
@@ -240,7 +244,11 @@ static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_message(PCB_MSG_WARNING, "STL: can not determine board thickness - falling back to hardwired 1.6mm\n");
 		thick = PCB_MM_TO_COORD(1.6);
 	}
-	stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, thick);
+
+	if (options[HA_zcent].lng)
+		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, -thick/2, +thick/2);
+	else
+		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, thick);
 
 	fclose(f);
 	pcb_cam_end(&cam);
