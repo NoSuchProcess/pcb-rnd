@@ -80,6 +80,15 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a);
 void pcb_arc_get_end(pcb_arc_t *Arc, int which, pcb_coord_t *x, pcb_coord_t *y);
 void pcb_arc_middle(const pcb_arc_t *arc, pcb_coord_t *x, pcb_coord_t *y);
 
+/* Call cb() with coords of approximation for an arc from start to end, or
+   end to start (if reverse is true). Resolution is set by res: if it is positive,
+   it is an angle in degrees; if negative, it's an edge length in pcb_coord_t; if
+   zero, the default 1 mm resolution is used. If cb returns non-zero, the loop
+   quits immediately. Even stepping is not guaranteed, but visiting the exact
+   arc start and end point is. */
+void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, int (*cb)(void *uctx, pcb_coord_t x, pcb_coord_t y));
+
+
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pcb_angle_t new_da);
 void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height);
 
