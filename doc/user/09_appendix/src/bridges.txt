@@ -18,8 +18,8 @@
 |[hkp_]|   +-----------------------------------------------------------+   +-----------+
 +------+
          *out------------------------------------------------------------+
-         | [bbrd]  [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]        | [web     ]
-         |     [stat]  [ps__]  [svg_]  [png_]  [stl_]  [dxf_]            |
+         | [bbrd]  [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]  [oems]| [web     ]
+         |     [stat]  [ps__]  [svg_]  [png_]  [stl_]  [dxf_]  [gcod]    |
          +---------------------------------------------------------------+
 %%
 
@@ -160,6 +160,12 @@
 [scad]
 	label openscad\n(3D CAD)
 
+[gcod]
+	label g-code\n(mill)
+
+[oems]
+	label OpenEMS\n(sim)
+
 [stat]
 	label stat\nstatistics
 
@@ -221,6 +227,10 @@
 -> pcbrnd dxf_.n
 
 -> pcbrnd scad.n
+
+-> pcbrnd gcod.n
+
+-> pcbrnd oems.n
 
 -> pcbrnd stat.n
 	label lihata
