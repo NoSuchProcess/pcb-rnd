@@ -73,6 +73,26 @@ static pcb_export_opt_t *stl_get_export_options(pcb_hid_t *hid, int *n)
 	return stl_attribute_list;
 }
 
+static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up)
+{
+	fprintf(f, "	facet normal 0 0 %d\n", up ? 1 : -1);
+	fprintf(f, "		outer loop\n");
+
+	if (up) {
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, 0);
+	}
+	else {
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, 0);
+	}
+
+	fprintf(f, "		endloop\n");
+	fprintf(f, "	endfacet\n");
+}
+
 int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options)
 {
 	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
@@ -102,15 +122,11 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options)
 	fp2t_triangulate(&tri);
 
 	fprintf(f, "solid pcb\n");
+
+	/* write the top and bottom plane */
 	for(n = 0; n < tri.TriangleCount; n++) {
-		fp2t_triangle_t *t = tri.Triangles[n];
-		fprintf(f, "	facet normal %f %f %f\n", 0, 0, 0);
-		fprintf(f, "		outer loop\n");
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, 0);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, 0);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, 0);
-		fprintf(f, "		endloop\n");
-		fprintf(f, "	endfacet\n");
+		stl_print_horiz_tri(f, tri.Triangles[n], 0);
+		stl_print_horiz_tri(f, tri.Triangles[n], 1);
 	}
 	fprintf(f, "endfacet\n");
 
