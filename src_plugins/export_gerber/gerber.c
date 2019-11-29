@@ -711,12 +711,14 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 			   layers will become non-empty: even an empty outline would bring
 			   the implicit outline rectangle at board extents! */
 
+			if (PCB_LAYER_IS_OUTLINE(flags, purpi)) stay = 1; /* outline layer can never be empty, because of the implicit outline */
+
 			if (copy_outline_mode == COPY_OUTLINE_MASK && (flags & PCB_LYT_MASK)) stay = 1;
 			if (copy_outline_mode == COPY_OUTLINE_SILK && (flags & PCB_LYT_SILK)) stay = 1;
 			if (copy_outline_mode == COPY_OUTLINE_ALL && \
 				((flags & PCB_LYT_SILK) || (flags & PCB_LYT_MASK) ||
-				PCB_LAYER_IS_FAB(flags, purpi) || PCB_LAYER_IS_ASSY(flags, purpi) ||
-				PCB_LAYER_IS_OUTLINE(flags, purpi))) stay = 1;
+				PCB_LAYER_IS_FAB(flags, purpi) ||
+				PCB_LAYER_IS_ASSY(flags, purpi))) stay = 1;
 
 			if (!stay) return 0;
 		}
