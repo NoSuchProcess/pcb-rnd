@@ -35,6 +35,7 @@
 	- document the decision in "hacking"
 - CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
+- CLEANUP: separate the cam export empty output warning by reason: addressed groups don't exist or only layers are empty ml=3566 [report: cuvoodoo]
 - CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
 - FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
