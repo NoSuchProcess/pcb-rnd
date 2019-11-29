@@ -165,7 +165,7 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t max
 	}
 
 
-	fprintf(f, "endfacet\n");
+	fprintf(f, "endsolid\n");
 
 	free(mem);
 	pcb_poly_free(poly);
