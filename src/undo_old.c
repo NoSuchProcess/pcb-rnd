@@ -581,8 +581,14 @@ static pcb_bool UndoMoveToLayer(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
-		swap = pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1);
-		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, pcb_get_layer(PCB->Data, Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
+		pcb_data_t *data;
+		pcb_any_obj_t *o = ptr2;
+		assert(o->parent_type == PCB_PARENT_LAYER);
+		assert(o->parent.layer != NULL);
+		assert(o->parent.layer->parent_type == PCB_PARENT_DATA);
+		data = o->parent.layer->parent.data;
+		swap = pcb_layer_id(data, o->parent.layer);
+		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, pcb_get_layer(data, Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
 		Entry->Data.MoveToLayer.OriginalLayer = swap;
 		return pcb_true;
 	}
@@ -1102,8 +1108,9 @@ void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *P
 	UndoListTypePtr undo;
 
 	if (!Locked) {
+		pcb_layer_t *ly = Ptr1;
 		undo = GetUndoSlot(PCB_UNDO_MOVETOLAYER, PCB_OBJECT_ID(Ptr3), Type);
-		undo->Data.MoveToLayer.OriginalLayer = pcb_layer_id(PCB->Data, (pcb_layer_t *) Ptr1);
+		undo->Data.MoveToLayer.OriginalLayer = pcb_layer_id(ly->parent.data, ly);
 	}
 }
 
