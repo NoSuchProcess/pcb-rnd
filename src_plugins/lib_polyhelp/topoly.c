@@ -194,6 +194,13 @@ static int map_contour(pcb_data_t *data, vtp0_t *list, vti0_t *endlist, pcb_any_
 	return 0;
 }
 
+static int contour2poly_cb(void *uctx, pcb_coord_t x, pcb_coord_t y)
+{
+	pcb_poly_t *poly = uctx;
+	pcb_poly_point_new(poly, x, y);
+	return 0;
+}
+
 pcb_poly_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topoly_t how)
 {
 	int n;
@@ -219,11 +226,8 @@ pcb_poly_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topol
 				}
 				break;
 			case PCB_OBJ_ARC:
-TODO(": fix this with a real approx")
-				pcb_arc_get_end(a, end[0], &x, &y);
-				pcb_poly_point_new(poly, x, y);
-				pcb_arc_middle(a, &x, &y);
-				pcb_poly_point_new(poly, x, y);
+				pcb_arc_approx(a, 0, end[0] != 0, poly, contour2poly_cb);
+				poly->PointN--; /* remove the arc endpoint to avoid redundant point on the start of the next object */
 				break;
 			default:
 				pcb_poly_free(poly);
