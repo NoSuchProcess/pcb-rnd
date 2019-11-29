@@ -4,6 +4,7 @@ $long Import and export tEDAx netlists and footprints.
 $state works
 $fmt-native no
 $fmt-feature-r tEDAx netlist (any version)
+$fmt-feature-w tEDAx netlist (any version)
 $fmt-feature-r tEDAx footprint (any version)
 $fmt-feature-w tEDAx footprint (any version)
 $fmt-feature-w tEDAx etest
