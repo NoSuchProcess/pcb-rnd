@@ -1,7 +1,7 @@
-           *io-----------------------------------------------------------+
-           |  [kica         ]    [gpcb   ]  [hyp_]  [gsch]  [c_pcb]      |
-           |               [ frt_ ]     [fido]  [prtl]  [eagl]   [dsn_ ] |
-           +-------------------------------------------------------------+
+           *io------------------------------------------------------------+
+           |[kica    ]       [gpcb  ]    [hyp_]  [gsch]  [c_pcb] [dsn_ ] |
+           |        [  tedax  ]    [ frt_ ]  [fido]  [prtl]  [eagl]      |
+           +--------------------------------------------------------------+
 *inp---+                                                                        *hid--------+
 |[eesc]|   *pcbrnd----------------------------------------------------------+   |[batch  ]  |
 |[mucs]|   |                                                                |   |           |
@@ -15,7 +15,9 @@
 |[xsch]|   |                                                                |   |           |
 |[caly]|   |                                                                |   |           |
 |[hpgl]|   |                                                                |   |           |
-|[hkp_]|   +----------------------------------------------------------------+   +-----------+
+|[hkp_]|   |                                                                |   |           |
+|[fpcb]|   |                                                                |   +-----------+
+|[msch]|   +----------------------------------------------------------------+   +-----------+
 +------+
          *out----------------------------------------------------------------+
          |[bbrd]  [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]  [oems]     |    [web     ]
@@ -91,6 +93,12 @@ OA
 [hkp_]
 	label hkp\n(mentor)
 
+[fpcb]
+	label FreePCB\n(netlist)
+
+[msch]
+	label Mentor grp.\n(netlist)
+
 [easy]
 	label EasyEDA\n(web2.0)
 
@@ -112,6 +120,9 @@ OA
 
 [kica]
 	label kicad\npcbnew
+
+[tedax]
+	label tEDAx\n(exchange file format)
 
 [gpcb]
 	label gEDA\npcb
@@ -289,6 +300,12 @@ OA
 -> hkp_.e pcbrnd
 	label import\nPCB
 
+-> fpcb.e pcbrnd
+	label import\nnetlist
+
+-> msch.e pcbrnd
+	label import\nnetlist
+
 
 
 
@@ -298,20 +315,33 @@ OA
 <-> gsch.s pcbrnd
 	label schematics
 
-<-> gpcb.s-0.3 pcbrnd
+<-> gpcb.s-0.2 pcbrnd
 	label board
 
-<-> gpcb.s+0.3 pcbrnd
+<-> gpcb.s+0.2 pcbrnd
 	label footprint
 
-<-> kica.s-0.4 pcbrnd
+<-> kica.s-0.3 pcbrnd
 	label board\ns-expr
 
 <- kica.s pcbrnd
 	label board\nlegacy
 
-<-> kica.s+0.4 pcbrnd
+<-> kica.s+0.3 pcbrnd
 	label footprint\ns-expr
+
+<-> tedax.s-0.35 pcbrnd
+	label netlist
+
+<-> tedax.s-0.1 pcbrnd
+	label footprint
+
+<-> tedax.s+0.1 pcbrnd
+	label etest
+
+<-> tedax.s+0.4 pcbrnd
+	label DRC\nspec
+
 
 <-> frt_.s pcbrnd
 	label board
