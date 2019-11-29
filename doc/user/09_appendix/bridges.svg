@@ -228,44 +228,48 @@
 	</g>
 	<line  marker-end="url(#ahe)"  x1="80" y1="216" x2="176" y2="216" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="216" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">netlist</tspan></text>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1080" y1="50.4" x2="1080" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 1080 108)">
-	<text fill="#000000" text-anchor="middle" x="1080" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="952" y1="50.4" x2="952" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 952 108)">
+	<text fill="#000000" text-anchor="middle" x="952" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="80" y1="396" x2="176" y2="396" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="396" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">netlist</tspan></text>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1008" y1="86.4" x2="1008" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 1008 126)">
-	<text fill="#000000" text-anchor="middle" x="1008" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="995.2" y1="86.4" x2="995.2" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 995.2 126)">
+	<text fill="#000000" text-anchor="middle" x="995.2" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="80" y1="324" x2="176" y2="324" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="324" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="396" x2="1296" y2="396" stroke="#000000"/>
 	<line  marker-end="url(#ahe)"  x1="80" y1="504" x2="176" y2="504" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="504" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="752" y1="86.4" x2="752" y2="165.6" stroke="#000000"/>
 	<g transform="rotate(-90 752 126)">
 	<text fill="#000000" text-anchor="middle" x="752" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="180" x2="1296" y2="180" stroke="#000000"/>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="324" x2="1296" y2="324" stroke="#000000"/>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1080" y1="50.4" x2="1080" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 1080 108)">
+	<text fill="#000000" text-anchor="middle" x="1080" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	</g>
 	<line  marker-end="url(#ahe)"  x1="80" y1="432" x2="176" y2="432" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="432" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">netlist</tspan><tspan x="128" dy="1em">pads/subcs</tspan></text>
+	<line  marker-end="url(#ahe)"  x1="1020.8" y1="86.4" x2="1020.8" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 1020.8 126)">
+	<text fill="#000000" text-anchor="middle" x="1020.8" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">DRU</tspan></text>
+	</g>
+	<line  marker-end="url(#ahe)"  x1="80" y1="360" x2="176" y2="360" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="360" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="396" x2="1296" y2="396" stroke="#000000"/>
+	<line  marker-end="url(#ahe)"  x1="80" y1="540" x2="176" y2="540" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="540" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="180" x2="1296" y2="180" stroke="#000000"/>
+	<line  marker-end="url(#ahe)"  x1="80" y1="468" x2="176" y2="468" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="468" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1344" y1="410.4" x2="1344" y2="777.6" stroke="#000000"/>
 	<g transform="rotate(-90 1344 594)">
 	<text fill="#000000" text-anchor="middle" x="1344" y="594" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">TCP/IP</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="952" y1="50.4" x2="952" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 952 108)">
-	<text fill="#000000" text-anchor="middle" x="952" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
-	</g>
-	<line  marker-end="url(#ahe)"  x1="80" y1="360" x2="176" y2="360" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="360" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="252" x2="1296" y2="252" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="80" y1="540" x2="176" y2="540" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="540" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
-	<line  marker-end="url(#ahe)"  x1="80" y1="468" x2="176" y2="468" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="468" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="324" x2="1296" y2="324" stroke="#000000"/>
 	<line  marker-end="url(#ahe)"  x1="80" y1="576" x2="176" y2="576" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="576" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">lines/arcs</tspan></text>
 </g>

@@ -352,8 +352,11 @@ OA
 <-> prtl.s pcbrnd
 	label board
 
-<-> eagl.s pcbrnd
+<-> eagl.s-0.2 pcbrnd
 	label board
+
+-> eagl.s+0.2 pcbrnd
+	label DRU
 
 <-> c_pcb.s pcbrnd
 	label board
