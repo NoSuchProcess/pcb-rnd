@@ -121,6 +121,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 	on = find_nth(s->subtree->first_child, "OFFSET", 0);
 	if (on != NULL)
 		parse_xy(ctx, on->argv[1], &ox, &oy, 0);
+	ox = -ox;
 
 	memset(&s->shp, 0, sizeof(pcb_pstk_shape_t));
 
