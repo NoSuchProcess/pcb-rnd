@@ -122,8 +122,10 @@ FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ct
 	for(ci = pcb_conflist_first((pcb_conflist_t *)path); ci != NULL; ci = pcb_conflist_next(ci)) {
 		const char *curr = ci->val.string[0];
 		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, name, fctx, dst));
+		if (res != NULL)
+			return res;
 	}
-	return res;
+	return NULL;
 }
 
 void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
