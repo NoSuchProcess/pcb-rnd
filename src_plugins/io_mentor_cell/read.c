@@ -207,7 +207,6 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int
 	return !(suc1 && suc2);
 }
 
-TODO("May need to get a side arg, if rotation is specified differently on the back side");
 static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out, int on_bottom)
 {
 	double rot;
