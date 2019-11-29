@@ -314,6 +314,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 	node_t *attr, *tmp;
 	pcb_coord_t tx, ty;
 	double rot = 0;
+	unsigned long mirrored = 0;
 
 	attr = find_nth(nt->first_child, "DISPLAY_ATTR", 0);
 	if (attr == NULL)
@@ -337,6 +338,14 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 	if (tmp != NULL)
 		parse_rot(ctx, tmp, &rot, (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM));
 
+	tmp = find_nth(attr->first_child, "TEXT_OPTIONS", 0);
+	if (tmp != NULL)
+		if (strcmp(tmp->argv[1], "MIRRORED") == 0) {
+			mirrored = PCB_FLAG_ONSOLDER;
+			rot = rot + 180;
+			if (rot > 360) rot = rot - 360;
+		}
+
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
 TODO("figure what TEXT_OPTIONS we have. One of them is MIRRORED (brd2 example)");
@@ -348,7 +357,9 @@ TODO("  When drawing the outline of a vertical trace for '1' character, there ar
 TODO("  The distance between those traces seems to depend on text height.\n");
 TODO("  In brd2 example, it is 0.04mm for J1, assembly layer, and 0.02mm for R1.\n");
 
-	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg));
+	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg | mirrored));
+		
+
 }
 
 static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
