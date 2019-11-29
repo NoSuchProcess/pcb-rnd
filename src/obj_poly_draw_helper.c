@@ -96,8 +96,11 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	}
 	while ((v = v->next) != pl->head->next);
 
-	if (i < 3)
+	if (i < 3) {
+		pcb_hid_set_line_width(gc, PCB_MM_TO_COORD(0.01));
+		pcb_hid_set_line_cap(gc, pcb_cap_round);
 		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
+	}
 	else
 		pcb_render->fill_polygon(gc, i, fc_x, fc_y);
 
