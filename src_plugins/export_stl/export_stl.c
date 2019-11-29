@@ -93,13 +93,40 @@ static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up)
 	fprintf(f, "	endfacet\n");
 }
 
-int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options)
+static void stl_print_vert_tri(FILE *f, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t z0, pcb_coord_t z1)
+{
+	double vx, vy, nx, ny, len;
+
+	vx = x2 - x1; vy = y2 - y1;
+	len = sqrt(vx*vx + vy*vy);
+	if (len == 0) return;
+	vx /= len; vy /= len;
+	nx = -vy; ny = vx;
+
+	fprintf(f, "	facet normal %f %f 0\n", nx, ny);
+	fprintf(f, "		outer loop\n");
+	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
+	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z1);
+	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
+	fprintf(f, "		endloop\n");
+	fprintf(f, "	endfacet\n");
+
+	fprintf(f, "	facet normal %f %f 0\n", nx, ny);
+	fprintf(f, "		outer loop\n");
+	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
+	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
+	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z0);
+	fprintf(f, "		endloop\n");
+	fprintf(f, "	endfacet\n");
+}
+
+int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t z0, pcb_coord_t z1)
 {
 	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
 	size_t mem_req = fp2t_memory_required(poly->PointN);
 	void *mem = calloc(mem_req, 1);
 	fp2t_t tri;
-	long n, pn;
+	long n, pn, nn;
 
 	if (!fp2t_init(&tri, mem, poly->PointN)) {
 		free(mem);
@@ -128,6 +155,16 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options)
 		stl_print_horiz_tri(f, tri.Triangles[n], 0);
 		stl_print_horiz_tri(f, tri.Triangles[n], 1);
 	}
+
+	/* write the side */
+	for(n = 0; n < pn; n++) {
+		nn = n+1;
+		if (nn == pn)
+			nn = 0;
+		stl_print_vert_tri(f, poly->Points[n].X, poly->Points[n].Y, poly->Points[nn].X, poly->Points[nn].Y, z0, z1);
+	}
+
+
 	fprintf(f, "endfacet\n");
 
 	free(mem);
@@ -160,7 +197,7 @@ static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		perror(filename);
 		return;
 	}
-	stl_hid_export_to_file(f, options);
+	stl_hid_export_to_file(f, options, 0, PCB_MM_TO_COORD(1.6));
 
 	fclose(f);
 	pcb_cam_end(&cam);
