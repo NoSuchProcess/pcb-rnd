@@ -14,7 +14,8 @@
 |[easy]|   |                                                           |   |           |
 |[xsch]|   |                                                           |   |           |
 |[caly]|   |                                                           |   |           |
-|[hpgl]|   +-----------------------------------------------------------+   +-----------+
+|[hpgl]|   |                                                           |   |           |
+|[hkp_]|   +-----------------------------------------------------------+   +-----------+
 +------+
          *out------------------------------------------------------------+
          | [bbrd]  [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]        | [web     ]
@@ -86,6 +87,9 @@
 
 [hpgl]
 	label HPGL\n(2D CAD)
+
+[hkp_]
+	label hkp\n(mentor)
 
 [easy]
 	label EasyEDA\n(web2.0)
@@ -263,6 +267,9 @@
 
 -> hpgl.e pcbrnd
 	label import\nlines/arcs
+
+-> hkp_.e pcbrnd
+	label import\nPCB
 
 
 
