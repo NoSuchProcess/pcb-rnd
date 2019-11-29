@@ -73,20 +73,20 @@ static pcb_export_opt_t *stl_get_export_options(pcb_hid_t *hid, int *n)
 	return stl_attribute_list;
 }
 
-static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up)
+static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up, pcb_coord_t z)
 {
 	fprintf(f, "	facet normal 0 0 %d\n", up ? 1 : -1);
 	fprintf(f, "		outer loop\n");
 
 	if (up) {
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, 0);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, 0);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, z);
 	}
 	else {
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, 0);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, 0);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, 0);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, z);
 	}
 
 	fprintf(f, "		endloop\n");
@@ -152,8 +152,8 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t z0,
 
 	/* write the top and bottom plane */
 	for(n = 0; n < tri.TriangleCount; n++) {
-		stl_print_horiz_tri(f, tri.Triangles[n], 0);
-		stl_print_horiz_tri(f, tri.Triangles[n], 1);
+		stl_print_horiz_tri(f, tri.Triangles[n], 0, z0);
+		stl_print_horiz_tri(f, tri.Triangles[n], 1, z1);
 	}
 
 	/* write the side */
