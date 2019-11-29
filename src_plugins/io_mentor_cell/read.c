@@ -338,8 +338,6 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 	if (tmp != NULL) {
 		parse_coord(ctx, tmp->argv[1], &height);
 		height=height/1000000;
-		hkp_error(NULL, "height: %i\n", height);
-		TODO("Parse HEIGHT value\n");
 	}
 
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
