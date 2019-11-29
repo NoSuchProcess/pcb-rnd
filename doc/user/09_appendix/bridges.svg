@@ -32,16 +32,16 @@
 	<text fill="#000000" text-anchor="middle" x="1352" y="180" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">batch</tspan><tspan x="1352" dy="1em">CLI/automation</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="1296,309.6 1408,309.6  1408,338.4 1296,338.4"/>
 	<text fill="#000000" text-anchor="middle" x="1352" y="324" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">lesstif</tspan><tspan x="1352" dy="1em">(motif)</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="560,21.6 672,21.6  672,50.4 560,50.4"/>
-	<text fill="#000000" text-anchor="middle" x="616" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">gEDA</tspan><tspan x="616" dy="1em">pcb</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="528,21.6 640,21.6  640,50.4 528,50.4"/>
+	<text fill="#000000" text-anchor="middle" x="584" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">gEDA</tspan><tspan x="584" dy="1em">pcb</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="1296,381.6 1392,381.6  1392,410.4 1296,410.4"/>
 	<text fill="#000000" text-anchor="middle" x="1344" y="396" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">remote</tspan><tspan x="1344" dy="1em">(network)</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="448,57.6 544,57.6  544,86.4 448,86.4"/>
-	<text fill="#000000" text-anchor="middle" x="496" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">freerouting.net</tspan><tspan x="496" dy="1em">autorouter</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="992,21.6 1072,21.6  1072,50.4 992,50.4"/>
-	<text fill="#000000" text-anchor="middle" x="1032" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">c-pcb</tspan><tspan x="1032" dy="1em">(autorouting)</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="16,417.6 80,417.6  80,446.4 16,446.4"/>
-	<text fill="#000000" text-anchor="middle" x="48" y="432" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">(any)</tspan><tspan x="48" dy="1em">IPC-D-356</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="432,57.6 528,57.6  528,86.4 432,86.4"/>
+	<text fill="#000000" text-anchor="middle" x="480" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">freerouting.net</tspan><tspan x="480" dy="1em">autorouter</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="960,21.6 1040,21.6  1040,50.4 960,50.4"/>
+	<text fill="#000000" text-anchor="middle" x="1000" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">c-pcb</tspan><tspan x="1000" dy="1em">(autorouting)</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="1040,57.6 1120,57.6  1120,86.4 1040,86.4"/>
+	<text fill="#000000" text-anchor="middle" x="1080" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">dsn</tspan><tspan x="1080" dy="1em">(autorouting)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,309.6 80,309.6  80,338.4 16,338.4"/>
 	<text fill="#000000" text-anchor="middle" x="48" y="324" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">TinyCAD</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,525.6 80,525.6  80,554.4 16,554.4"/>
@@ -50,6 +50,8 @@
 	<text fill="#000000" text-anchor="middle" x="48" y="216" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">mucs PCB</tspan><tspan x="48" dy="1em">autorouter</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,489.6 80,489.6  80,518.4 16,518.4"/>
 	<text fill="#000000" text-anchor="middle" x="48" y="504" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">XSCHEM</tspan><tspan x="48" dy="1em"></tspan></text>
+	<polygon fill="none" stroke="#000000"  points="16,417.6 80,417.6  80,446.4 16,446.4"/>
+	<text fill="#000000" text-anchor="middle" x="48" y="432" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">(any)</tspan><tspan x="48" dy="1em">IPC-D-356</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,345.6 80,345.6  80,374.4 16,374.4"/>
 	<text fill="#000000" text-anchor="middle" x="48" y="360" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">(any)</tspan><tspan x="48" dy="1em">EDIF</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,273.6 80,273.6  80,302.4 16,302.4"/>
@@ -62,16 +64,16 @@
 	<text fill="#000000" text-anchor="middle" x="48" y="180" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">kicad</tspan><tspan x="48" dy="1em">eeschema</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,381.6 80,381.6  80,410.4 16,410.4"/>
 	<text fill="#000000" text-anchor="middle" x="48" y="396" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">(any)</tspan><tspan x="48" dy="1em">netlist</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="736,21.6 800,21.6  800,50.4 736,50.4"/>
-	<text fill="#000000" text-anchor="middle" x="768" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Mentor</tspan><tspan x="768" dy="1em">hyperlynx</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="864,21.6 928,21.6  928,50.4 864,50.4"/>
-	<text fill="#000000" text-anchor="middle" x="896" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">gEDA</tspan><tspan x="896" dy="1em">gschem</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="928,57.6 992,57.6  992,86.4 928,86.4"/>
-	<text fill="#000000" text-anchor="middle" x="960" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Eagle</tspan><tspan x="960" dy="1em">(board)</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="672,57.6 736,57.6  736,86.4 672,86.4"/>
-	<text fill="#000000" text-anchor="middle" x="704" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">FidoCadJ</tspan><tspan x="704" dy="1em">(board)</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="800,57.6 864,57.6  864,86.4 800,86.4"/>
-	<text fill="#000000" text-anchor="middle" x="832" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Protel</tspan><tspan x="832" dy="1em">Autotrax</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="704,21.6 768,21.6  768,50.4 704,50.4"/>
+	<text fill="#000000" text-anchor="middle" x="736" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Mentor</tspan><tspan x="736" dy="1em">hyperlynx</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="832,21.6 896,21.6  896,50.4 832,50.4"/>
+	<text fill="#000000" text-anchor="middle" x="864" y="36" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">gEDA</tspan><tspan x="864" dy="1em">gschem</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="896,57.6 960,57.6  960,86.4 896,86.4"/>
+	<text fill="#000000" text-anchor="middle" x="928" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Eagle</tspan><tspan x="928" dy="1em">(board)</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="640,57.6 704,57.6  704,86.4 640,86.4"/>
+	<text fill="#000000" text-anchor="middle" x="672" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">FidoCadJ</tspan><tspan x="672" dy="1em">(board)</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="768,57.6 832,57.6  832,86.4 768,86.4"/>
+	<text fill="#000000" text-anchor="middle" x="800" y="72" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Protel</tspan><tspan x="800" dy="1em">Autotrax</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,561.6 80,561.6  80,590.4 16,590.4"/>
 	<text fill="#000000" text-anchor="middle" x="48" y="576" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">HPGL</tspan><tspan x="48" dy="1em">(2D CAD)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="544,705.6 608,705.6  608,734.4 544,734.4"/>
@@ -108,35 +110,50 @@
 	<text fill="#000000" text-anchor="middle" x="1024" y="756" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">g-code</tspan><tspan x="1024" dy="1em">(mill)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="224,741.6 288,741.6  288,770.4 224,770.4"/>
 	<text fill="#000000" text-anchor="middle" x="256" y="756" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">stat</tspan><tspan x="256" dy="1em">statistics</tspan></text>
+	<line  marker-end="url(#ahe)"  x1="320" y1="626.4" x2="320" y2="705.6" stroke="#000000"/>
+	<g transform="rotate(-90 320 666)">
+	<text fill="#000000" text-anchor="middle" x="320" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">text</tspan></text>
+	</g>
+	<line  marker-end="url(#ahe)"  x1="80" y1="180" x2="176" y2="180" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="180" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="550.4" y1="50.4" x2="550.4" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 550.4 108)">
+	<text fill="#000000" text-anchor="middle" x="550.4" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	</g>
 	<line  marker-end="url(#ahe)"  x1="448" y1="626.4" x2="448" y2="705.6" stroke="#000000"/>
 	<g transform="rotate(-90 448 666)">
 	<text fill="#000000" text-anchor="middle" x="448" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">.xy</tspan></text>
+	</g>
+	<line  marker-end="url(#ahe)"  x1="832" y1="626.4" x2="832" y2="705.6" stroke="#000000"/>
+	<g transform="rotate(-90 832 666)">
+	<text fill="#000000" text-anchor="middle" x="832" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">ps</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="192" y1="626.4" x2="192" y2="705.6" stroke="#000000"/>
 	<g transform="rotate(-90 192 666)">
 	<text fill="#000000" text-anchor="middle" x="192" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">.png</tspan></text>
 	</g>
+	<line  marker-start="url(#ahs)"  x1="328" y1="50.4" x2="328" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 328 108)">
+	<text fill="#000000" text-anchor="middle" x="328" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan><tspan x="328" dy="1em">legacy</tspan></text>
+	</g>
 	<line  marker-end="url(#ahe)"  x1="704" y1="626.4" x2="704" y2="705.6" stroke="#000000"/>
 	<g transform="rotate(-90 704 666)">
 	<text fill="#000000" text-anchor="middle" x="704" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">IPC356D</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="649.6" y1="50.4" x2="649.6" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 649.6 108)">
-	<text fill="#000000" text-anchor="middle" x="649.6" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">footprint</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="617.6" y1="50.4" x2="617.6" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 617.6 108)">
+	<text fill="#000000" text-anchor="middle" x="617.6" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">footprint</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="576" y1="626.4" x2="576" y2="705.6" stroke="#000000"/>
 	<g transform="rotate(-90 576 666)">
 	<text fill="#000000" text-anchor="middle" x="576" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">.grb, .cnc</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="896" y1="626.4" x2="896" y2="741.6" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="320" y1="626.4" x2="320" y2="705.6" stroke="#000000"/>
-	<g transform="rotate(-90 320 666)">
-	<text fill="#000000" text-anchor="middle" x="320" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">text</tspan></text>
-	</g>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="411.2" y1="50.4" x2="411.2" y2="165.6" stroke="#000000"/>
 	<g transform="rotate(-90 411.2 108)">
 	<text fill="#000000" text-anchor="middle" x="411.2" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">footprint</tspan><tspan x="411.2" dy="1em">s-expr</tspan></text>
 	</g>
+	<line  marker-end="url(#ahe)"  x1="1152" y1="626.4" x2="1152" y2="741.6" stroke="#000000"/>
 	<line  marker-end="url(#ahe)"  x1="768" y1="626.4" x2="768" y2="741.6" stroke="#000000"/>
 	<g transform="rotate(-90 768 684)">
 	<text fill="#000000" text-anchor="middle" x="768" y="684" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">stl</tspan></text>
@@ -146,95 +163,84 @@
 	<text fill="#000000" text-anchor="middle" x="244.8" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan><tspan x="244.8" dy="1em">s-expr</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="960" y1="626.4" x2="960" y2="705.6" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="80" y1="180" x2="176" y2="180" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="180" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="256" y1="626.4" x2="256" y2="741.6" stroke="#000000"/>
 	<g transform="rotate(-90 256 684)">
 	<text fill="#000000" text-anchor="middle" x="256" y="684" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">lihata</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="496" y1="86.4" x2="496" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 496 126)">
-	<text fill="#000000" text-anchor="middle" x="496" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="800" y1="86.4" x2="800" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 800 126)">
+	<text fill="#000000" text-anchor="middle" x="800" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	</g>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="480" y1="86.4" x2="480" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 480 126)">
+	<text fill="#000000" text-anchor="middle" x="480" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="1024" y1="626.4" x2="1024" y2="741.6" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="832" y1="626.4" x2="832" y2="705.6" stroke="#000000"/>
-	<g transform="rotate(-90 832 666)">
-	<text fill="#000000" text-anchor="middle" x="832" y="666" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">ps</tspan></text>
-	</g>
-	<line  marker-start="url(#ahs)"  x1="328" y1="50.4" x2="328" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 328 108)">
-	<text fill="#000000" text-anchor="middle" x="328" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan><tspan x="328" dy="1em">legacy</tspan></text>
+	<line  marker-end="url(#ahe)"  x1="640" y1="626.4" x2="640" y2="741.6" stroke="#000000"/>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1080" y1="86.4" x2="1080" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 1080 126)">
+	<text fill="#000000" text-anchor="middle" x="1080" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="384" y1="626.4" x2="384" y2="741.6" stroke="#000000"/>
 	<g transform="rotate(-90 384 684)">
 	<text fill="#000000" text-anchor="middle" x="384" y="684" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">postscript</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="1088" y1="626.4" x2="1088" y2="705.6" stroke="#000000"/>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="960" y1="86.4" x2="960" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 960 126)">
-	<text fill="#000000" text-anchor="middle" x="960" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="928" y1="86.4" x2="928" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 928 126)">
+	<text fill="#000000" text-anchor="middle" x="928" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="704" y1="86.4" x2="704" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 704 126)">
-	<text fill="#000000" text-anchor="middle" x="704" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="672" y1="86.4" x2="672" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 672 126)">
+	<text fill="#000000" text-anchor="middle" x="672" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="252" x2="1296" y2="252" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="1152" y1="626.4" x2="1152" y2="741.6" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="80" y1="216" x2="176" y2="216" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="216" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">netlist</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="396" x2="1296" y2="396" stroke="#000000"/>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="180" x2="1296" y2="180" stroke="#000000"/>
+	<line  marker-end="url(#ahe)"  x1="80" y1="288" x2="176" y2="288" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="288" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="512" y1="626.4" x2="512" y2="741.6" stroke="#000000"/>
 	<g transform="rotate(-90 512 684)">
 	<text fill="#000000" text-anchor="middle" x="512" y="684" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">svg</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="324" x2="1296" y2="324" stroke="#000000"/>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1032" y1="50.4" x2="1032" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 1032 108)">
-	<text fill="#000000" text-anchor="middle" x="1032" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
-	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="832" y1="86.4" x2="832" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 832 126)">
-	<text fill="#000000" text-anchor="middle" x="832" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
-	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="396" x2="1296" y2="396" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="80" y1="324" x2="176" y2="324" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="324" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
-	<line  marker-end="url(#ahe)"  x1="640" y1="626.4" x2="640" y2="741.6" stroke="#000000"/>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="180" x2="1296" y2="180" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="80" y1="252" x2="176" y2="252" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="252" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1344" y1="410.4" x2="1344" y2="705.6" stroke="#000000"/>
 	<g transform="rotate(-90 1344 558)">
 	<text fill="#000000" text-anchor="middle" x="1344" y="558" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">TCP/IP</tspan></text>
 	</g>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1000" y1="50.4" x2="1000" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 1000 108)">
+	<text fill="#000000" text-anchor="middle" x="1000" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	</g>
+	<line  marker-end="url(#ahe)"  x1="80" y1="216" x2="176" y2="216" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="216" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">netlist</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="252" x2="1296" y2="252" stroke="#000000"/>
+	<line  marker-end="url(#ahe)"  x1="80" y1="396" x2="176" y2="396" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="396" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">netlist</tspan></text>
+	<line  marker-end="url(#ahe)"  x1="80" y1="324" x2="176" y2="324" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="324" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
+	<line  marker-end="url(#ahe)"  x1="80" y1="504" x2="176" y2="504" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="504" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1200" y1="324" x2="1296" y2="324" stroke="#000000"/>
+	<line  marker-end="url(#ahe)"  x1="80" y1="252" x2="176" y2="252" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="128" y="252" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="80" y1="432" x2="176" y2="432" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="432" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">netlist</tspan><tspan x="128" dy="1em">pads/subcs</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="80" y1="360" x2="176" y2="360" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="360" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="80" y1="540" x2="176" y2="540" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="540" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
-	<line  marker-end="url(#ahe)"  x1="80" y1="288" x2="176" y2="288" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="288" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="80" y1="468" x2="176" y2="468" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="468" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
-	<line  marker-end="url(#ahe)"  x1="80" y1="396" x2="176" y2="396" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="396" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">netlist</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="80" y1="576" x2="176" y2="576" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="576" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">lines/arcs</tspan></text>
-	<line  marker-end="url(#ahe)"  x1="80" y1="504" x2="176" y2="504" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="128" y="504" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">schematics</tspan></text>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="768" y1="50.4" x2="768" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 768 108)">
-	<text fill="#000000" text-anchor="middle" x="768" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="736" y1="50.4" x2="736" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 736 108)">
+	<text fill="#000000" text-anchor="middle" x="736" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
 	<line  marker-end="url(#ahe)"  x1="80" y1="612" x2="176" y2="612" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="128" y="612" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="128" dy="1em">PCB</tspan></text>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="896" y1="50.4" x2="896" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 896 108)">
-	<text fill="#000000" text-anchor="middle" x="896" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">schematics</tspan></text>
-	</g>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="582.4" y1="50.4" x2="582.4" y2="165.6" stroke="#000000"/>
-	<g transform="rotate(-90 582.4 108)">
-	<text fill="#000000" text-anchor="middle" x="582.4" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="864" y1="50.4" x2="864" y2="165.6" stroke="#000000"/>
+	<g transform="rotate(-90 864 108)">
+	<text fill="#000000" text-anchor="middle" x="864" y="108" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">schematics</tspan></text>
 	</g>
 </g>
 </svg>

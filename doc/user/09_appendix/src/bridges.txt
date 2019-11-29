@@ -1,6 +1,6 @@
            *io-----------------------------------------------------------+
-           |  [kica         ]      [gpcb   ]  [hyp_]  [gsch]  [c_pcb]    |
-           |                [ frt_ ]      [fido]  [prtl]  [eagl]         |
+           |  [kica         ]    [gpcb   ]  [hyp_]  [gsch]  [c_pcb]      |
+           |               [ frt_ ]     [fido]  [prtl]  [eagl]   [dsn_ ] |
            +-------------------------------------------------------------+
 *inp---+                                                                        *hid--------+
 |[eesc]|   *pcbrnd----------------------------------------------------------+   |[batch  ]  |
@@ -130,6 +130,9 @@ OA
 
 [c_pcb]
 	label c-pcb\n(autorouting)
+
+[dsn_]
+	label dsn\n(autorouting)
 
 
 
@@ -323,6 +326,9 @@ OA
 	label board
 
 <-> c_pcb.s pcbrnd
+	label board
+
+<-> dsn_.s pcbrnd
 	label board
 
 <-> pcbrnd batch.w
