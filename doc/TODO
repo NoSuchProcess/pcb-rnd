@@ -152,7 +152,6 @@
 - BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
 - BUG: segfault: bug_files/layer_segf.pcb [report: Igor2]
 - BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
-- DOC: g-code export is not on bridges.svg
 - version 3.0.0:
 	- maybe rename pcblib? dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 	- ./configure --config should default to /etc
