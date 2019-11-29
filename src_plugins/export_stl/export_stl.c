@@ -52,9 +52,13 @@ pcb_export_opt_t stl_attribute_list[] = {
 	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_drill 2
 
+	{"override-thickness", "override calculated board thickness (when non-zero)",
+	 PCB_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_ovrthick 3
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 3
+#define HA_cam 4
 };
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
@@ -172,12 +176,43 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t max
 	return 0;
 }
 
+TODO("this is the same code as in g-code and probably openscad has a version too - centralize");
+static pcb_coord_t pcb_board_thickness(pcb_board_t *pcb)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *grp;
+	pcb_coord_t curr, total = 0;
+
+	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
+		const char *s;
+
+		if (!(grp->ltype & PCB_LYT_COPPER) && !(grp->ltype & PCB_LYT_SUBSTRATE))
+			continue;
+		s = pcb_attribute_get(&grp->Attributes, "stl::thickness");
+		if (s == NULL)
+			s = pcb_attribute_get(&grp->Attributes, "thickness");
+
+		curr = 0;
+		if (s != NULL)
+			curr = pcb_get_value(s, NULL, NULL, NULL);
+		if (curr <= 0) {
+			if (grp->ltype & PCB_LYT_SUBSTRATE)
+				pcb_message(PCB_MSG_ERROR, "stl: can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
+			continue;
+		}
+		total += curr;
+	}
+	return curr;
+}
+
+
 static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	const char *filename;
 	int i;
 	pcb_cam_t cam;
 	FILE *f;
+	pcb_coord_t thick;
 
 	if (!options) {
 		stl_get_export_options(hid, 0);
@@ -197,7 +232,15 @@ static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		perror(filename);
 		return;
 	}
-	stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, PCB_MM_TO_COORD(1.6));
+
+	/* determine sheet thickness */
+	if (options[HA_ovrthick].crd > 0) thick = options[HA_ovrthick].crd;
+	else thick = pcb_board_thickness(PCB);
+	if (thick <= 0) {
+		pcb_message(PCB_MSG_WARNING, "STL: can not determine board thickness - falling back to hardwired 1.6mm\n");
+		thick = PCB_MM_TO_COORD(1.6);
+	}
+	stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, thick);
 
 	fclose(f);
 	pcb_cam_end(&cam);
