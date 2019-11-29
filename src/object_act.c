@@ -356,6 +356,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC(pcb), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 					pcb_layer_t *target = PCB_CURRLAYER(pcb);
 					pcb_any_obj_t *o = ptr2;
+					pcb_layer_t *ly;
 
 					/* if object is part of a subc (must be a floater!), target layer
 					   shall be within the subc too else we would move out the object from
@@ -372,7 +373,10 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 						if (old_len != subc->data->LayerN)
 							pcb_subc_rebind(pcb, subc); /* had to alloc a new layer */
 					}
-					if (pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, target, pcb_false))
+					ly = ptr1;
+					if (((pcb_any_obj_t *)ptr2)->parent_type == PCB_PARENT_LAYER)
+						ly = ((pcb_any_obj_t *)ptr2)->parent.layer; /* might be a bound layer, and ptr1 is a resolved one; we don't want undo to put the object back on the resolved layer instead of the original bound layer */
+					if (pcb_move_obj_to_layer(type, ly, ptr2, ptr3, target, pcb_false))
 						pcb_board_set_changed_flag(pcb_true);
 				}
 				break;
