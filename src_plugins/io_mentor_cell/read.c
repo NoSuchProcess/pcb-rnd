@@ -314,7 +314,6 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 	pcb_coord_t tx, ty;
 	double rot = 0;
 	unsigned long mirrored = 0;
-	pcb_coord_t height = 1;
 
 	attr = find_nth(nt->first_child, "DISPLAY_ATTR", 0);
 	if (attr == NULL)
@@ -332,12 +331,6 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 	if (tmp != NULL) {
 		parse_x(ctx, tmp->argv[1], &tx);
 		parse_y(ctx, tmp->argv[2], &ty);
-	}
-
-	tmp = find_nth(attr->first_child, "HEIGHT", 0);
-	if (tmp != NULL) {
-		parse_coord(ctx, tmp->argv[1], &height);
-		height=height/1000000;
 	}
 
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
@@ -363,7 +356,7 @@ TODO("  When drawing the outline of a vertical trace for '1' character, there ar
 TODO("  The distance between those traces seems to depend on text height.\n");
 TODO("  In brd2 example, it is 0.04mm for J1, assembly layer, and 0.02mm for R1.\n");
 
-	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 120*height, 0, nt->argv[1], pcb_flag_make(flg | mirrored));
+	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg | mirrored));
 		
 
 }
