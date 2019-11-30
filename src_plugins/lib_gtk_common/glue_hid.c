@@ -228,6 +228,7 @@ TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_
 	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
 	free(tmps);
 
+	gtk_disable_setlocale();
 #undef REST_OF_PATH
 
 #endif
