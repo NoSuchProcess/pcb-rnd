@@ -429,8 +429,6 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 		}
 	}
 
-	TODO("parse padstacks");
-
 	fclose(fpstk);
 	return 0;
 }
