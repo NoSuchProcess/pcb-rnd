@@ -156,7 +156,7 @@
 - BUG: segfault: bug_files/layer_segf.pcb [report: Igor2]
 - BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
 - BUG: windows: locale is broken, setting it to C within the app is not possible - need local strtod() and printf(%f) implementation [report: aron]
-- BUG: black screen lib preview
+- BUG: direct ps export: implicit outline layer appears twice in the TOC [report=cuvoodoo]
 - version 3.0.0:
 	- maybe rename pcblib? dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 	- ./configure --config should default to /etc
