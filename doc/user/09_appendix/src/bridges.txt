@@ -20,7 +20,7 @@
 |[msch ]|   +----------------------------------------------------------------+   +-----------+
 +-------+
           *out----------------------------------------------------------------+
-          |[bbrd]  [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]  [oems]     |    [web     ]
+          |        [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]  [oems]     |    [web     ]
           |    [stat]  [ps__]  [svg_]  [png_]  [stl_]  [dxf_]  [gcod]  [exce] |
           +-------------------------------------------------------------------+
 %%
@@ -108,9 +108,6 @@ OA
 [caly]
 	label Calay\n
 
-[bbrd]
-	label breadboard
-
 
 [hyp_]
 	label Mentor\nhyperlynx
@@ -146,9 +143,6 @@ OA
 	label dsn\n(autorouting)
 
 
-
-[bbrd]
-	label breadboard
 
 [bom_]
 	label BOM
@@ -216,9 +210,6 @@ OA
 	linecolor #aaaaaa
 	textcolor #aaaaaa
 
-
--> pcbrnd bbrd.n
-	label .png
 
 -> pcbrnd bom_.n
 	label text
