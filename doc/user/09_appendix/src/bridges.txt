@@ -352,7 +352,7 @@ OA
 <-> prtl.s pcbrnd
 	label board
 
-<-> eagl.s-0.2 pcbrnd
+-> eagl.s-0.2 pcbrnd
 	label board
 
 -> eagl.s+0.2 pcbrnd

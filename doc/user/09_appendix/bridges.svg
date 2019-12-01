@@ -234,7 +234,7 @@
 	</g>
 	<line  marker-end="url(#ahe)"  x1="96" y1="396" x2="192" y2="396" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="144" y="396" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="144" dy="1em">netlist</tspan></text>
-	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1011.2" y1="86.4" x2="1011.2" y2="165.6" stroke="#000000"/>
+	<line  marker-end="url(#ahe)"  x1="1011.2" y1="86.4" x2="1011.2" y2="165.6" stroke="#000000"/>
 	<g transform="rotate(-90 1011.2 126)">
 	<text fill="#000000" text-anchor="middle" x="1011.2" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>
