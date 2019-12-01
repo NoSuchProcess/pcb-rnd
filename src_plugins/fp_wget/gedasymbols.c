@@ -153,6 +153,30 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 #define FIELD_WGET_CTX 0
 
+static int search_gedasyms(char *out, int out_len, FILE *f, const char *fn)
+{
+	char *line, line_[8192];
+
+	*out = '\0';
+
+	if (f == NULL)
+		return -1;
+
+	while((line = fgets(line_, sizeof(line_), f)) != NULL) {
+		char *sep;
+		sep = strchr(line, '|');
+		if (sep == NULL)
+			continue;
+		*sep = '\0';
+		if ((strstr(line, fn) != NULL) && (strlen(line) < out_len)) {
+			strcpy(out, line);
+			return 0;
+		}
+	}
+	return -1;
+}
+
+
 FILE *fp_gedasymbols_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
 	gds_t s;
@@ -171,7 +195,7 @@ FILE *fp_gedasymbols_fopen(pcb_plug_fp_t *ctx, const char *path, const char *nam
 		name++;
 
 	if (from_path) {
-		if (fp_wget_search(tmp, sizeof(tmp), name, !conf_fp_wget.plugins.fp_wget.auto_update_gedasymbols, url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir) != 0)
+		if (fp_wget_search(tmp, sizeof(tmp), name, !conf_fp_wget.plugins.fp_wget.auto_update_gedasymbols, url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir, search_gedasyms) != 0)
 			goto bad;
 		name = tmp;
 	}

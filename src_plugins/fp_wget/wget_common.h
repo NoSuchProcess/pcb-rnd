@@ -12,10 +12,7 @@ char *load_md5_sum(FILE *f);
 int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new);
 
 /* search fn in an auto updated index file; return 0 on success and
-   fill in out with the full path from the index. */
-int fp_wget_search(char *out, int out_len, const char *fn, int offline, const char *idx_url, const char *idx_cache);
-
-/* search fn in an index file; return 0 on success and fill in out with the
+   fill in out with the full path from the index. Search_cb: 
+   search fn in an index file; return 0 on success and fill in out with the
    full path from the index. */
-int fp_wget_search_(char *out, int out_len, FILE *f_idx, const char *fn);
-
+int fp_wget_search(char *out, int out_len, const char *fn, int offline, const char *idx_url, const char *idx_cache, int (*search_cb)(char *out, int out_len, FILE *f, const char *fn));

@@ -245,6 +245,45 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 #define FIELD_WGET_CTX 0
 
+static int search_edakrill(char *out, int out_len, FILE *f, const char *fn)
+{
+	char *line, line_[8192], *end;
+
+	*out = '\0';
+
+	if (f == NULL)
+		return -1;
+
+	while((line = fgets(line_, sizeof(line_), f)) != NULL) {
+		size_t len;
+		if (*line != 'f')
+			continue;
+		next:;
+		line += 2;
+		len = strlen(line);
+		if ((strstr(line, fn) != NULL) && (len < out_len)) {
+			while((line = fgets(line_, sizeof(line_), f)) != NULL) {
+				if (*line == 'f')
+					goto next; /* no suitable 'm' line but bumped into the next 'f' line -> process the next fp */
+				if (*line == 'm') {
+					line += 2;
+
+					end = strstr(line, ".cnv.fp "); /* accept only converted pcb footprints for now */
+					if (end != NULL) {
+						end += 7;
+						*end = '\0';
+						end++;
+						strcpy(out, line);
+						return 0;
+					}
+				}
+			}
+		}
+	}
+	return -1;
+}
+
+
 FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
 	gds_t s;
@@ -263,7 +302,7 @@ FILE *fp_edakrill_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name, 
 		name++;
 
 	if (from_path) {
-		if (fp_wget_search(tmp, sizeof(tmp), name, !conf_fp_wget.plugins.fp_wget.auto_update_edakrill, url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir) != 0)
+		if (fp_wget_search(tmp, sizeof(tmp), name, !conf_fp_wget.plugins.fp_wget.auto_update_edakrill, url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir, search_edakrill) != 0)
 			goto bad;
 		name = tmp;
 	}
