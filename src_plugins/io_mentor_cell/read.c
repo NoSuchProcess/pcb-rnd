@@ -968,11 +968,10 @@ static const pcb_unit_t *parse_units(const char *ust)
 	return NULL;
 }
 
-static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
+static int parse_layout_globals(hkp_ctx_t *ctx, hkp_tree_t *tree)
 {
 	node_t *n;
 	char *end;
-	const hkp_netclass_t *nc = NULL;
 
 	ctx->num_cop_layers = -1;
 
@@ -1026,6 +1025,13 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 
 	/* plus assy and fab layers */
 	pcb_layergrp_upgrade_by_map(ctx->pcb, pcb_dflgmap_doc);
+}
+
+static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
+{
+	node_t *n;
+	char *end;
+	const hkp_netclass_t *nc = NULL;
 
 	/* build packages and draw objects */
 	for(n = tree->root->first_child; n != NULL; n = n->next) {
@@ -1288,6 +1294,9 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	pcb_layer_group_setup_silks(pcb);
 	pcb_layer_auto_fixup(pcb);
 	pcb_layergrp_inhibit_dec();
+
+	/* parse the stackup and some global settings first, since netclass depends on this */
+	parse_layout_globals(&ctx, &ctx.layout);
 
 	/* parse the root */
 	res = parse_layout_root(&ctx, &ctx.layout);
