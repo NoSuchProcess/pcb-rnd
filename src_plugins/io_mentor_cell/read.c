@@ -294,7 +294,7 @@ static void d1() {}
 		return; \
 	}
 
-static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
+static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, px, py, x, y;
@@ -307,10 +307,8 @@ static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_
 	if (tmp != NULL)
 		parse_coord(ctx, tmp->argv[1], &th);
 	tmp = find_nth(pp->first_child, "XY", 0);
-	if (tmp == NULL) {
-		hkp_error(pp, "Missing polyline XY, can't place via\n");
-		return;
-	}
+	if (tmp == NULL)
+		return hkp_error(pp, "Missing polyline XY, can't place via\n");
 	parse_xy(ctx, tmp->argv[1], &px, &py, 1);
 	for(n = 2; n < tmp->argc; n++) {
 		parse_xy(ctx, tmp->argv[n], &x, &y, 1);
@@ -318,6 +316,7 @@ static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_
 		px = x;
 		py = y;
 	}
+	return 0;
 }
 
 static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
