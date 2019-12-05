@@ -92,8 +92,16 @@ typedef struct {
 	pcb_pstk_proto_t proto;
 } hkp_pstk_t;
 
+typedef enum {
+	HKP_CLR_POLY2TRACE,
+	HKP_CLR_POLY2TERM,
+	HKP_CLR_POLY2VIA,
+	HKP_CLR_POLY2POLY,
+	HKP_CLR_max
+} hkp_clearance_type_t;
+
 typedef struct {
-	pcb_coord_t clearance;
+	pcb_coord_t clearance[PCB_MAX_LAYER][HKP_CLR_max];
 } hkp_netclass_t;
 
 typedef struct {
