@@ -324,6 +324,7 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 	node_t *tmp;
 	pcb_coord_t th = 1, sx, sy, cx, cy, r, ex, ey, dummy;
 	pcb_coord_t srx, sry, erx, ery; /* relative x;y from the center for start and end */
+	double sa, ea, da;
 	int n;
 
 	DWG_REQ_LY(pp);
@@ -343,6 +344,25 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 	if (parse_xyr(ctx, tmp->argv[3], &ex, &ey, &dummy, 1) != 0)
 		return hkp_error(pp, "Failed to parse polyarc XYR end point, can't place arc\n");
 
+	srx = sx - cx; sry = sy - cy;
+	erx = ex - cx; ery = ey - cy;
+	sa = atan2(sry, srx) * PCB_RAD_TO_DEG - 90.0;
+	ea = atan2(ery, erx) * PCB_RAD_TO_DEG - 90.0;
+	da = ea-sa;
+pcb_trace("arc: c-r=%mm;%mm;%mm ", cx, cy, r);
+
+	if (r < 0) {
+		r = -r;
+	}
+	else {
+		if (da < 0)
+			da = 360+da;
+		else
+			da = 360-da;
+	}
+pcb_trace(" sa=%f ea=%f ->da=%f\n", sa, ea, da);
+	pcb_arc_new(ly, cx, cy, r, r, sa, da, th, 0, pcb_no_flags(), 0);
+	return 0;
 }
 
 static void parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp, int is_shape)
