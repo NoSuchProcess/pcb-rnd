@@ -92,6 +92,9 @@ typedef struct {
 	pcb_pstk_proto_t proto;
 } hkp_pstk_t;
 
+typedef struct {
+	pcb_coord_t clearance;
+} hkp_netclass_t;
 
 typedef struct {
 	pcb_board_t *pcb;
@@ -297,7 +300,7 @@ static void d1() {}
 		return -1; \
 	}
 
-static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp, int is_shape)
+static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *pp, int is_shape)
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, px, py, x, y;
@@ -369,7 +372,7 @@ pcb_trace(" sa=%f ea=%f ->da=%f\n", *sa, ea, *da);
 
 }
 
-static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp, int is_shape)
+static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *pp, int is_shape)
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, r, ex, ey, dummy, x, y, px, py;
@@ -427,7 +430,7 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 	return 0;
 }
 
-static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp, int is_shape)
+static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *rp, int is_shape)
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, x1, y1, x2, y2;
@@ -463,7 +466,7 @@ TODO("when to generate a rounded corner?");
 	return 0;
 }
 
-static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
+static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
 {
 	node_t *attr, *tmp;
 	pcb_coord_t tx, ty;
@@ -516,7 +519,7 @@ TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what i
 
 }
 
-static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
+static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
 {
 	pcb_coord_t vx, vy;
 	node_t *tmp;
@@ -566,16 +569,16 @@ static void parse_dgw_via(hkp_ctx_t *ctx, node_t *nv)
 
 
 /* Returns number of objects drawn: 0 or 1 */
-static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *n)
+static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *n)
 {
 	if ((strcmp(n->argv[0], "POLYLINE_PATH") == 0) || (strcmp(n->argv[0], "POLYLINE_SHAPE") == 0))
-		parse_dwg_path_polyline(ctx, subc, ly, n, n->argv[0][9] == 'S');
+		parse_dwg_path_polyline(ctx, subc, ly, nc, n, n->argv[0][9] == 'S');
 	if ((strcmp(n->argv[0], "POLYARC_PATH") == 0) || (strcmp(n->argv[0], "POLYARC_SHAPE") == 0))
-		parse_dwg_path_polyarc(ctx, subc, ly, n, n->argv[0][8] == 'S');
+		parse_dwg_path_polyarc(ctx, subc, ly, nc, n, n->argv[0][8] == 'S');
 	else if ((strcmp(n->argv[0], "RECT_PATH") == 0) || (strcmp(n->argv[0], "RECT_SHAPE") == 0))
-		parse_dwg_rect(ctx, subc, ly, n, n->argv[0][5] == 'S');
+		parse_dwg_rect(ctx, subc, ly, nc, n, n->argv[0][5] == 'S');
 	else if ((strcmp(n->argv[0], "TEXT") == 0) && (subc == NULL))
-		parse_dwg_text(ctx, subc, ly, n, 0, 0);
+		parse_dwg_text(ctx, subc, ly, nc, n, 0, 0);
 	else
 		return 0;
 
@@ -583,19 +586,19 @@ static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *
 }
 
 /* Returns number of objects drawn: 0 or more */
-static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nd)
+static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *nd)
 {
 	node_t *n;
 	long cnt = 0;
 
 	for(n = nd->first_child; n != NULL; n = n->next)
-		cnt += parse_dwg(ctx, subc, ly, n);
+		cnt += parse_dwg(ctx, subc, ly, nc, n);
 
 	return cnt;
 }
 
 /* Returns number of objects drawn: 0 or more for valid layers, -1 for invalid layer */
-static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
+static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *n)
 {
 	node_t *tmp;
 	pcb_layer_type_t type = 0;
@@ -603,7 +606,6 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
 	pcb_layer_combining_t lyc = 0;
 	const char *lyname = NULL, *purpose = NULL;
 	pcb_layer_t *ly;
-
 
 	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
 		type = PCB_LYT_SILK;
@@ -689,7 +691,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *n)
 	}
 	else
 		ly = pcb_subc_get_layer(subc, side | type, lyc, 1, lyname, 0);
-	return parse_dwg_all(ctx, subc, ly, n);
+	return parse_dwg_all(ctx, subc, ly, nc, n);
 }
 
 static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln, int user, node_t *err_node)
@@ -802,7 +804,7 @@ TODO("this should be done only when subc == NULL");
 	return ly;
 }
 
-static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
+static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *textnode)
 {
 	node_t *tt, *attr, *tmp;
 	const char *text_str;
@@ -826,7 +828,7 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *textnode)
 		omit_on_silk = 1;
 	}
 
-	parse_dwg_text(ctx, subc, NULL, textnode, omit_on_silk, flg);
+	parse_dwg_text(ctx, subc, NULL, nc, textnode, omit_on_silk, flg);
 }
 
 
@@ -837,6 +839,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	pcb_coord_t ox, oy;
 	double rot = 0;
 	int on_bottom = 0, seen_oxy = 0;
+	const hkp_netclass_t *nc;
 
 	subc = pcb_subc_alloc();
 
@@ -867,7 +870,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 			}
 		}
 		else if (strcmp(n->argv[0], "TEXT") == 0) {
-			parse_subc_text(ctx, subc, n);
+			parse_subc_text(ctx, subc, nc, n);
 		}
 	}
 
@@ -893,7 +896,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 		if (strcmp(n->argv[0], "PIN") == 0)
 			parse_pin(ctx, subc, n, on_bottom);
 		else
-			parse_dwg_layer(ctx, subc, n);
+			parse_dwg_layer(ctx, subc, nc, n);
 	}
 
 #if 0
@@ -925,6 +928,8 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 	node_t *n, *lyn;
 	pcb_layer_t *ly;
 	const char *netname = netroot->argv[1];
+TODO("netclass: fill this in:");
+	const hkp_netclass_t *nc = NULL;
 
 	if (strcmp(netname, "Unconnected_Net") != 0)
 		pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
@@ -939,10 +944,10 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 				hkp_error(lyn, "Unknown trace layer '%s'\n", lyn->argv[1]);
 				continue;
 			}
-			parse_dwg_all(ctx, NULL, ly, n);
+			parse_dwg_all(ctx, NULL, ly, nc, n);
 		}
 		else if (strcmp(n->argv[0], "VIA") == 0)
-			parse_dgw_via(ctx, n);
+			parse_dgw_via(ctx, nc, n);
 	}
 }
 
@@ -959,6 +964,7 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 {
 	node_t *n;
 	char *end;
+	const hkp_netclass_t *nc = NULL;
 
 	ctx->num_cop_layers = -1;
 
@@ -1017,8 +1023,10 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	for(n = tree->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "PACKAGE_CELL") == 0)
 			parse_package(ctx, ctx->pcb->Data, n);
-		if (strcmp(n->argv[0], "NET") == 0)
+		if (strcmp(n->argv[0], "NET") == 0) {
 			parse_net(ctx, n);
+TODO("netclass: set nc for net's netclass");
+		}
 		if (strcmp(n->argv[0], "GRAPHIC") == 0) {
 			pcb_layer_t *ly;
 			node_t *lyn;
@@ -1031,11 +1039,11 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 				hkp_error(lyn, "Unknown graphic layer '%s'\n", lyn->argv[1]);
 				continue;
 			}
-			parse_dwg_all(ctx, NULL, ly, n);
+			parse_dwg_all(ctx, NULL, ly, nc, n);
 		}
 		else { /* global drawing objects in layers or outside of layers */
-			parse_dwg(ctx, NULL, NULL, n);
-			parse_dwg_layer(ctx, NULL, n);
+			parse_dwg(ctx, NULL, NULL, nc, n);
+			parse_dwg_layer(ctx, NULL, nc, n);
 		}
 
 	}
