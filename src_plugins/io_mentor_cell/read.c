@@ -46,6 +46,9 @@
 
 #include "obj_subc.h"
 
+#define DEFAULT_OBJ_FLAG    pcb_flag_make(PCB_FLAG_CLEARLINE)
+#define DEFAULT_POLY_FLAG   pcb_flag_make(PCB_FLAG_CLEARPOLY)
+
 #define ltrim(s) while(isspace(*s)) (s)++
 
 typedef struct node_s node_t;
@@ -319,7 +322,7 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 		return hkp_error(pp, "Missing polyline XY, can't place via\n");
 
 	if (filled) { /* filled = polygon */
-		pcb_poly_t *poly = pcb_poly_new(ly, 0, pcb_no_flags());
+		pcb_poly_t *poly = pcb_poly_new(ly, 0, DEFAULT_POLY_FLAG);
 		for(n = 1; n < tmp->argc; n++) {
 			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
 			pcb_poly_point_new(poly, x, y);
@@ -332,7 +335,7 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 		parse_xy(ctx, tmp->argv[1], &px, &py, 1);
 		for(n = 2; n < tmp->argc; n++) {
 			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
-			if (pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags()) == NULL)
+			if (pcb_line_new(ly, px, py, x, y, th, 0, DEFAULT_OBJ_FLAG) == NULL)
 				return hkp_error(pp, "Failed to create line for POLYLINE_PATH\n");
 			px = x;
 			py = y;
@@ -409,13 +412,13 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 
 			convert_arc(px, py, x, y, ex, ey, &r, &sa, &da);
 
-			if (pcb_arc_new(ly, x, y, r, r, sa, da, th, 0, pcb_no_flags(), 0) == NULL)
+			if (pcb_arc_new(ly, x, y, r, r, sa, da, th, 0, DEFAULT_OBJ_FLAG, 0) == NULL)
 				return hkp_error(pp, "Failed to create arc for POLYARC_PATH\n");
 
 			px = ex; py = ey;
 		}
 		else { /* plain old line: px;py=start, x;y=end */
-			if (pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags()) == NULL)
+			if (pcb_line_new(ly, px, py, x, y, th, 0, DEFAULT_OBJ_FLAG) == NULL)
 				return hkp_error(pp, "Failed to create line for POLYARC_PATH\n");
 			px = x; py = y;
 		}
@@ -449,13 +452,13 @@ static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, nod
 
 	if (filled) {
 TODO("when to generate a rounded corner?");
-		pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, 0, pcb_no_flags());
+		pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, 0, DEFAULT_POLY_FLAG);
 	}
 	else {
-		pcb_line_new(ly, x1, y1, x2, y1, th, 0, pcb_no_flags());
-		pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
-		pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
-		pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
+		pcb_line_new(ly, x1, y1, x2, y1, th, 0, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x2, y1, x2, y2, th, 0, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x2, y2, x1, y2, th, 0, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x1, y2, x1, y1, th, 0, DEFAULT_OBJ_FLAG);
 	}
 	return 0;
 }
