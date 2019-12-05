@@ -291,7 +291,7 @@ static void d1() {}
 #define DWG_REQ_LY(node) \
 	if (ly == NULL) { \
 		hkp_error(node, "Internal error: expected existing layer from the caller\n"); \
-		return; \
+		return -1; \
 	}
 
 static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp, int is_shape)
@@ -411,7 +411,7 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 	return 0;
 }
 
-static void parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp, int is_shape)
+static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp, int is_shape)
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, x1, y1, x2, y2;
@@ -444,6 +444,7 @@ TODO("when to generate a rounded corner?");
 		pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
 		pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
 	}
+	return 0;
 }
 
 static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
