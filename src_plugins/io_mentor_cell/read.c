@@ -1006,6 +1006,20 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 			parse_package(ctx, ctx->pcb->Data, n);
 		if (strcmp(n->argv[0], "NET") == 0)
 			parse_net(ctx, n);
+		if (strcmp(n->argv[0], "GRAPHIC") == 0) {
+			pcb_layer_t *ly;
+			node_t *lyn;
+
+			lyn = find_nth(n->first_child, "USER_LYR", 0);
+			if (lyn == NULL)
+				continue;
+			ly = parse_layer(ctx, NULL, lyn->argv[1], 0, lyn);
+			if (ly == NULL) {
+				hkp_error(lyn, "Unknown graphic layer '%s'\n", lyn->argv[1]);
+				continue;
+			}
+			parse_dwg_all(ctx, NULL, ly, n);
+		}
 		else { /* global drawing objects in layers or outside of layers */
 			parse_dwg(ctx, NULL, NULL, n);
 			parse_dwg_layer(ctx, NULL, n);
