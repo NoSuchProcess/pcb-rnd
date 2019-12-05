@@ -317,13 +317,26 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 	tmp = find_nth(pp->first_child, "XY", 0);
 	if (tmp == NULL)
 		return hkp_error(pp, "Missing polyline XY, can't place via\n");
-	parse_xy(ctx, tmp->argv[1], &px, &py, 1);
-	for(n = 2; n < tmp->argc; n++) {
-		parse_xy(ctx, tmp->argv[n], &x, &y, 1);
-		if (pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags()) == NULL)
-			return hkp_error(pp, "Failed to create line for POLYLINE_PATH\n");
-		px = x;
-		py = y;
+
+	if (filled) { /* filled = polygon */
+		pcb_poly_t *poly = pcb_poly_new(ly, 0, pcb_no_flags());
+		for(n = 1; n < tmp->argc; n++) {
+			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
+			pcb_poly_point_new(poly, x, y);
+		}
+		pcb_add_poly_on_layer(ly, poly);
+		if (subc == NULL)
+			pcb_poly_init_clip(ctx->pcb->Data, ly, poly);
+	}
+	else { /* "polyline" = a bunch of line objects */
+		parse_xy(ctx, tmp->argv[1], &px, &py, 1);
+		for(n = 2; n < tmp->argc; n++) {
+			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
+			if (pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags()) == NULL)
+				return hkp_error(pp, "Failed to create line for POLYLINE_PATH\n");
+			px = x;
+			py = y;
+		}
 	}
 	return 0;
 }
