@@ -123,6 +123,7 @@ typedef struct {
 /*** read_pstk.c ***/
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *nd, int on_bottom);
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps);
+static void set_pstk_clearance(hkp_ctx_t *ctx, const hkp_netclass_t *nc, pcb_pstk_t *ps, node_t *errnd);
 
 /*** read_net.c ***/
 static pcb_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode);
@@ -580,10 +581,12 @@ static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
 
 	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, &hps->proto, 1);
 	ps = pcb_pstk_alloc(ctx->pcb->Data);
+	ps->Flags = DEFAULT_OBJ_FLAG;
 	ps->x = vx;
 	ps->y = vy;
 	ps->proto = pid;
 	pcb_pstk_add(ctx->pcb->Data, ps);
+	set_pstk_clearance(ctx, nc, ps, nv);
 }
 
 
