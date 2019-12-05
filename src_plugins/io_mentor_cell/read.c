@@ -348,7 +348,7 @@ pcb_trace(" sa=%f ea=%f ->da=%f\n", *sa, ea, *da);
 static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
 {
 	node_t *tmp;
-	pcb_coord_t th = 1, sx, sy, cx, cy, r, ex, ey, dummy;
+	pcb_coord_t th = 1, r, ex, ey, dummy, x, y, px, py;
 	double sa, da;
 	int n;
 
@@ -362,17 +362,34 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 	if (tmp == NULL)
 		return hkp_error(pp, "Missing polyarc XYR, can't place arc\n");
 
-	if (parse_xyr(ctx, tmp->argv[1], &sx, &sy, &dummy, 1) != 0)
-		return hkp_error(pp, "Failed to parse polyarc XYR start point, can't place arc\n");
-	if (parse_xyr(ctx, tmp->argv[2], &cx, &cy, &r, 1) != 0)
-		return hkp_error(pp, "Failed to parse polyarc XYR center point, can't place arc\n");
-	if (parse_xyr(ctx, tmp->argv[3], &ex, &ey, &dummy, 1) != 0)
-		return hkp_error(pp, "Failed to parse polyarc XYR end point, can't place arc\n");
 
-	convert_arc(sx, sy, cx, cy, ex, ey, &r, &sa, &da);
+	if (parse_xyr(ctx, tmp->argv[1], &px, &py, &r, 1) != 0)
+		return hkp_error(pp, "Failed to parse polyarc XYR start point, can't place polyarc\n");
+	if (r != 0)
+		return hkp_error(pp, "Failed to parse polyarc XYR start point (r must be zero), can't place polyarc\n");
+	for(n = 2; n < tmp->argc; n++) {
+		if (parse_xyr(ctx, tmp->argv[n], &x, &y, &r, 1) != 0)
+			return hkp_error(pp, "Failed to parse %dth polyarc XYR point, can't place polyarc\n", n);
+		if (r != 0) { /* arc: px;py=start, x;y=center, ex;ey=end */
+			n++;
+			if (parse_xyr(ctx, tmp->argv[n], &ex, &ey, &dummy, 1) != 0)
+				return hkp_error(pp, "Failed to parse %dth polyarc XYR point (arc end), can't place polyarc\n", n);
+			if (dummy != 0)
+				return hkp_error(pp, "Failed to parse %dth polyarc XYR point (r must be zero), can't place polyarc\n", n);
 
-	if (pcb_arc_new(ly, cx, cy, r, r, sa, da, th, 0, pcb_no_flags(), 0) == NULL)
-		return hkp_error(pp, "Failed to create arc for POLYARC_PATH\n");
+			convert_arc(px, py, x, y, ex, ey, &r, &sa, &da);
+
+			if (pcb_arc_new(ly, x, y, r, r, sa, da, th, 0, pcb_no_flags(), 0) == NULL)
+				return hkp_error(pp, "Failed to create arc for POLYARC_PATH\n");
+
+			px = ex; py = ey;
+		}
+		else { /* plain old line: px;py=start, x;y=end */
+			if (pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags()) == NULL)
+				return hkp_error(pp, "Failed to create line for POLYARC_PATH\n");
+			px = x; py = y;
+		}
+	}
 
 	return 0;
 }
