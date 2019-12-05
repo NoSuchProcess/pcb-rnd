@@ -112,6 +112,8 @@ typedef struct {
 	const pcb_unit_t *unit;      /* default unit used while converting coords any given time */
 	const pcb_unit_t *pstk_unit; /* default unit for the padstacks file */
 
+	hkp_netclass_t nc_dflt; /* for default clearances */
+
 	htsp_t shapes;   /* name -> hkp_shape_t */
 	htsp_t holes;    /* name -> hkp_hole_t */
 	htsp_t pstks;    /* name -> hkp_pstk_t */

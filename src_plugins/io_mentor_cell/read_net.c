@@ -30,7 +30,7 @@
 static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 {
 	FILE *fnc;
-	node_t *n, *ncl, *nsch, *ns, *ndefault = NULL, *ncrs = NULL;
+	node_t *n, *ncl, *nsch, *ns, *nln, *ndefault = NULL, *ncrs = NULL;
 	hkp_tree_t nc_tree; /* no need to keep the tree in ctx, no data is needed after the function returns */
 
 	fnc = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
@@ -72,14 +72,39 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 
 	/* load default CLEARANCE_RULE_SET's children */
 	for(ns = ncrs->first_child; ns != NULL; ns = ns->next) {
+		pcb_layergrp_id_t gid;
+		pcb_layergrp_t *grp;
+		pcb_coord_t val;
+		int i;
+
 		if (strcmp(ns->argv[0], "SUBRULE") != 0) continue;
+		
+		nln = find_nth(ns->first_child, "LAYER_NUM", 0);
+		if (nln == NULL) continue; /* layer number is required */
+
+		/* layer number is in copper offset, translate it to layer ID */
+		gid = pcb_layergrp_step(ctx->pcb, pcb_layergrp_get_top_copper(), atoi(nln)-1, PCB_LYT_COPPER);
+		grp = pcb_get_layergrp(ctx->pcb, gid);
+		if ((grp == NULL) || (grp->len < 1)) continue;
+
 		for(n = ns->first_child; n != NULL; n = n->next) {
 			hkp_clearance_type_t type;
+
+			if (parse_coord(ctx, n->argv[1], &val) != 0) {
+				hkp_error(n, "Ignoring invalid clearance value '%s'\n", n->argv[1]);
+				continue;
+			}
+
 			if (strcmp(n->argv[0], "PLANE_TO_TRACE") != 0) type = HKP_CLR_POLY2TRACE;
 			else if (strcmp(n->argv[0], "PLANE_TO_PAD") != 0) type = HKP_CLR_POLY2TERM;
 			else if (strcmp(n->argv[0], "PLANE_TO_VIA") != 0) type = HKP_CLR_POLY2VIA;
 			else if (strcmp(n->argv[0], "PLANE_TO_PLANE") != 0) type = HKP_CLR_POLY2POLY;
 			else continue; /* ignore the rest for now */
+
+			for(i = 0; i < grp->len; i++) {
+				pcb_layer_id_t lid = grp->lid[i];
+				ctx->nc_dflt.clearance[lid][type] = val;
+			}
 		}
 	}
 
