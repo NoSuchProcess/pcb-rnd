@@ -207,6 +207,42 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int
 	return !(suc1 && suc2);
 }
 
+/* split s and parse  it into (x,y,r) - modifies s */
+static int parse_xyr(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t *r, int xform)
+{
+	char *sy, *sr;
+	pcb_coord_t xx, yy, rr;
+	pcb_bool suc1, suc2, suc3;
+
+	sy = strchr(s, ',');
+	if (sy == NULL)
+		return -1;
+
+	*sy = '\0';
+	sy++;
+
+	sr = strchr(sy, ',');
+	if (sr == NULL)
+		return -1;
+
+	*sr = '\0';
+	sr++;
+
+	xx = pcb_get_value(s, ctx->unit->suffix, NULL, &suc1);
+	yy = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
+	rr = pcb_get_value(sr, ctx->unit->suffix, NULL, &suc3);
+
+	if (xform) {
+		yy = -yy;
+	}
+	
+	*x = xx;
+	*y = yy;
+	*r = rr;
+
+	return !(suc1 && suc2 && suc3);
+}
+
 static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out, int on_bottom)
 {
 	double rot;
@@ -282,6 +318,32 @@ static void parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_
 		px = x;
 		py = y;
 	}
+}
+
+static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *pp)
+{
+	node_t *tmp;
+	pcb_coord_t th = 1, sx, sy, cx, cy, r, ex, ey, dummy;
+	pcb_coord_t srx, sry, erx, ery; /* relative x;y from the center for start and end */
+	int n;
+
+	DWG_REQ_LY(pp);
+
+	th = PCB_MM_TO_COORD(0.5);
+	tmp = find_nth(pp->first_child, "WIDTH", 0);
+	if (tmp != NULL)
+		parse_coord(ctx, tmp->argv[1], &th);
+	tmp = find_nth(pp->first_child, "XYR", 0);
+	if (tmp == NULL)
+		return hkp_error(pp, "Missing polyarc XYR, can't place arc\n");
+
+	if (parse_xyr(ctx, tmp->argv[1], &sx, &sy, &dummy, 1) != 0)
+		return hkp_error(pp, "Failed to parse polyarc XYR start point, can't place arc\n");
+	if (parse_xyr(ctx, tmp->argv[2], &cx, &cy, &r, 1) != 0)
+		return hkp_error(pp, "Failed to parse polyarc XYR center point, can't place arc\n");
+	if (parse_xyr(ctx, tmp->argv[3], &ex, &ey, &dummy, 1) != 0)
+		return hkp_error(pp, "Failed to parse polyarc XYR end point, can't place arc\n");
+
 }
 
 static void parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *rp, int is_shape)
@@ -415,6 +477,8 @@ static int parse_dwg(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *
 {
 	if (strcmp(n->argv[0], "POLYLINE_PATH") == 0)
 		parse_dwg_path_polyline(ctx, subc, ly, n);
+	if (strcmp(n->argv[0], "POLYARC_PATH") == 0)
+		parse_dwg_path_polyarc(ctx, subc, ly, n);
 	else if ((strcmp(n->argv[0], "RECT_PATH") == 0) || (strcmp(n->argv[0], "RECT_SHAPE") == 0))
 		parse_dwg_rect(ctx, subc, ly, n, n->argv[0][5] == 'S');
 	else if ((strcmp(n->argv[0], "TEXT") == 0) && (subc == NULL))
