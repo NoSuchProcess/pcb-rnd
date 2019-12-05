@@ -323,7 +323,12 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 	return NULL;
 }
 
-
+static void set_pstk_clearance(hkp_ctx_t *ctx, const hkp_netclass_t *nc, pcb_pstk_t *ps, node_t *errnd)
+{
+	pcb_layergrp_t *clgrp = pcb_get_layergrp(ctx->pcb, pcb_layergrp_get_top_copper());
+	if ((clgrp != NULL) && (clgrp->len > 0))
+		ps->Clearance = net_get_clearance_(ctx, clgrp->lid[0], nc, HKP_CLR_POLY2TERM, errnd);
+}
 
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *nd, int on_bottom)
 {
@@ -369,12 +374,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc
 	pcb_pstk_add(subc->data, ps);
 	pcb_attribute_put(&ps->Attributes, "term", nd->argv[1]);
 
-
-	{
-		pcb_layergrp_t *clgrp = pcb_get_layergrp(ctx->pcb, pcb_layergrp_get_top_copper());
-		if ((clgrp != NULL) && (clgrp->len > 0))
-			ps->Clearance = net_get_clearance_(ctx, clgrp->lid[0], nc, HKP_CLR_POLY2TERM, nd);
-	}
+	set_pstk_clearance(ctx, nc, ps, nd);
 }
 
 static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
