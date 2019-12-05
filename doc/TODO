@@ -13,6 +13,7 @@
 	- FEATURE: optional subc pixmaps from attributes
 	- DOC: pool node on how to use pixmap for breadboading
 - BUG: when drawing rats manually generated netlist, if the user needs to undo a step, rat line is removed but named net is not. [repot: Miloh]
+- BUG: library window, select a parametric footprint with single click, the edit button is not enabled (but it is, after double click) [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: (TT) propedit revamp:
