@@ -347,7 +347,7 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 			pcb_poly_init_clip(ctx->pcb->Data, ly, poly);
 	}
 	else { /* "polyline" = a bunch of line objects */
-		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp);
+		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 		parse_xy(ctx, tmp->argv[1], &px, &py, 1);
 		for(n = 2; n < tmp->argc; n++) {
 			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
@@ -418,7 +418,7 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 	if (r != 0)
 		return hkp_error(pp, "Failed to parse polyarc XYR start point (r must be zero), can't place polyarc\n");
 
-	cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp);
+	cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 
 	for(n = 2; n < tmp->argc; n++) {
 		if (parse_xyr(ctx, tmp->argv[n], &x, &y, &r, 1) != 0)
@@ -471,12 +471,12 @@ static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, con
 	parse_xy(ctx, tmp->argv[2], &x2, &y2, 1);
 
 	if (filled) {
-		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2POLY, tmp);
+		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2POLY, tmp) * 2;
 TODO("when to generate a rounded corner?");
 		pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, cl, DEFAULT_POLY_FLAG);
 	}
 	else {
-		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp);
+		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 		pcb_line_new(ly, x1, y1, x2, y1, th, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y1, x2, y2, th, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y2, x1, y2, th, cl, DEFAULT_OBJ_FLAG);
