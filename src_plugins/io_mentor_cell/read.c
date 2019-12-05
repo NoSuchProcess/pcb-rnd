@@ -312,7 +312,8 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 	parse_xy(ctx, tmp->argv[1], &px, &py, 1);
 	for(n = 2; n < tmp->argc; n++) {
 		parse_xy(ctx, tmp->argv[n], &x, &y, 1);
-		pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags());
+		if (pcb_line_new(ly, px, py, x, y, th, 0, pcb_no_flags()) == NULL)
+			return hkp_error(pp, "Failed to create line for POLYLINE_PATH\n");
 		px = x;
 		py = y;
 	}
@@ -361,7 +362,9 @@ pcb_trace("arc: c-r=%mm;%mm;%mm ", cx, cy, r);
 			da = 360-da;
 	}
 pcb_trace(" sa=%f ea=%f ->da=%f\n", sa, ea, da);
-	pcb_arc_new(ly, cx, cy, r, r, sa, da, th, 0, pcb_no_flags(), 0);
+	if (pcb_arc_new(ly, cx, cy, r, r, sa, da, th, 0, pcb_no_flags(), 0) == NULL)
+		return hkp_error(pp, "Failed to create arc for POLYARC_PATH\n");
+
 	return 0;
 }
 
