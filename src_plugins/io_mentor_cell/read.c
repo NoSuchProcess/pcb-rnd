@@ -1013,7 +1013,7 @@ static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 			lyn = find_nth(n->first_child, "USER_LYR", 0);
 			if (lyn == NULL)
 				continue;
-			ly = parse_layer(ctx, NULL, lyn->argv[1], 0, lyn);
+			ly = parse_layer(ctx, NULL, lyn->argv[1], 1, lyn);
 			if (ly == NULL) {
 				hkp_error(lyn, "Unknown graphic layer '%s'\n", lyn->argv[1]);
 				continue;
