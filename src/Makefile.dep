@@ -1523,8 +1523,18 @@
  ../src_3rd/puplug/libs.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h hid_attrib.h \
- ../src_3rd/genlist/gendlist.h color.h plugins.h \
- ../src_3rd/puplug/error.h
+ ../src_3rd/genlist/gendlist.h color.h hid_cam.h layer.h obj_arc_list.h \
+ obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
+ obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
+ ../src_3rd/genvector/gds_char.h hid_attrib.h safe_fs.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h plugins.h \
+ ../src_3rd/puplug/error.h \
+ ../src_plugins/export_stl/../lib_polyhelp/topoly.h board.h \
+ vtroutestyle.h layer_grp.h rats_patch.h board.h hidlib.h obj_common.h \
+ ../src_plugins/export_stl/../lib_polyhelp/triangulate.h \
+ ../src_3rd/fast89-poly2tri/fast89_poly2tri.h
 ../src_plugins/export_svg/svg.o: ../src_plugins/export_svg/svg.c \
  ../config.h conf_core.h conf.h global_typedefs.h pcb_bool.h pcb-printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -3400,6 +3410,7 @@
  vtpadstack_t.h conf_core.h conf.h pcb-printf.h \
  ../src_3rd/liblihata/lihata.h list_conf.h plug_io.h error.h safe_fs.h \
  compat_misc.h netlist.h obj_subc.h \
+ ../src_plugins/io_mentor_cell/read_net.c \
  ../src_plugins/io_mentor_cell/read_pstk.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
  ../config.h conf.h global_typedefs.h pcb_bool.h pcb-printf.h \
