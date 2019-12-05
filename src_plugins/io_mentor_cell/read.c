@@ -1277,11 +1277,6 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	ctx.pcb = pcb;
 	ctx.unit = get_unit_struct("mm");
 
-	strcpy(end, "NetProps.hkp");
-	if (io_mentor_cell_netlist(&ctx, fn2) != 0) {
-		fclose(flay);
-		goto err;
-	}
 
 
 	load_hkp(&ctx.layout, flay, fn);
@@ -1297,6 +1292,12 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	/* parse the stackup and some global settings first, since netclass depends on this */
 	parse_layout_globals(&ctx, &ctx.layout);
+
+	strcpy(end, "NetProps.hkp");
+	if (io_mentor_cell_netlist(&ctx, fn2) != 0) {
+		fclose(flay);
+		goto err;
+	}
 
 	/* parse the root */
 	res = parse_layout_root(&ctx, &ctx.layout);
