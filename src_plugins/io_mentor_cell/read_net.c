@@ -27,6 +27,25 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+static pcb_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
+{
+	pcb_layer_id_t lid;
+
+	if (ly == NULL) /* typically non-copper layer: clearance is 0 */
+		return 0;
+
+	ly = pcb_layer_get_real(ly);
+	if (ly == NULL)
+		return 0;
+	lid = ly - ctx->pcb->Data->Layer;
+	if ((lid < 0) || (lid >= PCB_MAX_LAYER)) {
+		hkp_error(errnode, "failed to determine clearance, falling back to default value\n");
+		return PCB_MIL_TO_COORD(12);
+	}
+	return ctx->nc_dflt.clearance[lid][type];
+}
+
+
 static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 {
 	FILE *fnc;
@@ -83,7 +102,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 		if (nln == NULL) continue; /* layer number is required */
 
 		/* layer number is in copper offset, translate it to layer ID */
-		gid = pcb_layergrp_step(ctx->pcb, pcb_layergrp_get_top_copper(), atoi(nln)-1, PCB_LYT_COPPER);
+		gid = pcb_layergrp_step(ctx->pcb, pcb_layergrp_get_top_copper(), atoi(nln->argv[1])-1, PCB_LYT_COPPER);
 		grp = pcb_get_layergrp(ctx->pcb, gid);
 		if ((grp == NULL) || (grp->len < 1)) continue;
 
@@ -95,10 +114,10 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 				continue;
 			}
 
-			if (strcmp(n->argv[0], "PLANE_TO_TRACE") != 0) type = HKP_CLR_POLY2TRACE;
-			else if (strcmp(n->argv[0], "PLANE_TO_PAD") != 0) type = HKP_CLR_POLY2TERM;
-			else if (strcmp(n->argv[0], "PLANE_TO_VIA") != 0) type = HKP_CLR_POLY2VIA;
-			else if (strcmp(n->argv[0], "PLANE_TO_PLANE") != 0) type = HKP_CLR_POLY2POLY;
+			if (strcmp(n->argv[0], "PLANE_TO_TRACE") == 0) type = HKP_CLR_POLY2TRACE;
+			else if (strcmp(n->argv[0], "PLANE_TO_PAD") == 0) type = HKP_CLR_POLY2TERM;
+			else if (strcmp(n->argv[0], "PLANE_TO_VIA") == 0) type = HKP_CLR_POLY2VIA;
+			else if (strcmp(n->argv[0], "PLANE_TO_PLANE") == 0) type = HKP_CLR_POLY2POLY;
 			else continue; /* ignore the rest for now */
 
 			for(i = 0; i < grp->len; i++) {

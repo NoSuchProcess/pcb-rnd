@@ -124,6 +124,8 @@ typedef struct {
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_bottom);
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps);
 
+/*** read_net.c ***/
+static pcb_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode);
 
 /*** local ***/
 static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln, int user, node_t *err_node);
@@ -345,10 +347,11 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 			pcb_poly_init_clip(ctx->pcb->Data, ly, poly);
 	}
 	else { /* "polyline" = a bunch of line objects */
+		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp);
 		parse_xy(ctx, tmp->argv[1], &px, &py, 1);
 		for(n = 2; n < tmp->argc; n++) {
 			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
-			if (pcb_line_new(ly, px, py, x, y, th, 0, DEFAULT_OBJ_FLAG) == NULL)
+			if (pcb_line_new(ly, px, py, x, y, th, cl, DEFAULT_OBJ_FLAG) == NULL)
 				return hkp_error(pp, "Failed to create line for POLYLINE_PATH\n");
 			px = x;
 			py = y;
@@ -388,6 +391,7 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 	pcb_coord_t th = 1, r, ex, ey, dummy, x, y, px, py;
 	double sa, da;
 	int n, filled = 0;
+	pcb_coord_t cl;
 
 	DWG_REQ_LY(pp);
 
@@ -413,6 +417,9 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 		return hkp_error(pp, "Failed to parse polyarc XYR start point, can't place polyarc\n");
 	if (r != 0)
 		return hkp_error(pp, "Failed to parse polyarc XYR start point (r must be zero), can't place polyarc\n");
+
+	cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp);
+
 	for(n = 2; n < tmp->argc; n++) {
 		if (parse_xyr(ctx, tmp->argv[n], &x, &y, &r, 1) != 0)
 			return hkp_error(pp, "Failed to parse %dth polyarc XYR point, can't place polyarc\n", n);
@@ -425,13 +432,13 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 
 			convert_arc(px, py, x, y, ex, ey, &r, &sa, &da);
 
-			if (pcb_arc_new(ly, x, y, r, r, sa, da, th, 0, DEFAULT_OBJ_FLAG, 0) == NULL)
+			if (pcb_arc_new(ly, x, y, r, r, sa, da, th, cl, DEFAULT_OBJ_FLAG, 0) == NULL)
 				return hkp_error(pp, "Failed to create arc for POLYARC_PATH\n");
 
 			px = ex; py = ey;
 		}
 		else { /* plain old line: px;py=start, x;y=end */
-			if (pcb_line_new(ly, px, py, x, y, th, 0, DEFAULT_OBJ_FLAG) == NULL)
+			if (pcb_line_new(ly, px, py, x, y, th, cl, DEFAULT_OBJ_FLAG) == NULL)
 				return hkp_error(pp, "Failed to create line for POLYARC_PATH\n");
 			px = x; py = y;
 		}
@@ -464,14 +471,16 @@ static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, con
 	parse_xy(ctx, tmp->argv[2], &x2, &y2, 1);
 
 	if (filled) {
+		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2POLY, tmp);
 TODO("when to generate a rounded corner?");
-		pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, 0, DEFAULT_POLY_FLAG);
+		pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, cl, DEFAULT_POLY_FLAG);
 	}
 	else {
-		pcb_line_new(ly, x1, y1, x2, y1, th, 0, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, x2, y1, x2, y2, th, 0, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, x2, y2, x1, y2, th, 0, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, x1, y2, x1, y1, th, 0, DEFAULT_OBJ_FLAG);
+		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp);
+		pcb_line_new(ly, x1, y1, x2, y1, th, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x2, y1, x2, y2, th, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x2, y2, x1, y2, th, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x1, y2, x1, y1, th, cl, DEFAULT_OBJ_FLAG);
 	}
 	return 0;
 }
