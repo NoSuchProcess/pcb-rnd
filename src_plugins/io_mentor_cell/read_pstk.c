@@ -325,7 +325,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 
 
 
-static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_bottom)
+static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *nd, int on_bottom)
 {
 	node_t *tmp;
 	pcb_coord_t px, py;
@@ -360,6 +360,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 
 	pid = pcb_pstk_proto_insert_dup(subc->data, &hpstk->proto, 1);
 	ps = pcb_pstk_alloc(subc->data);
+	ps->Flags = DEFAULT_OBJ_FLAG;
 	ps->x = px;
 	ps->y = py;
 	ps->rot = rot;
@@ -367,6 +368,13 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, node_t *nd, int on_botto
 	ps->xmirror = ps->smirror = on_bottom;
 	pcb_pstk_add(subc->data, ps);
 	pcb_attribute_put(&ps->Attributes, "term", nd->argv[1]);
+
+
+	{
+		pcb_layergrp_t *clgrp = pcb_get_layergrp(ctx->pcb, pcb_layergrp_get_top_copper());
+		if ((clgrp != NULL) && (clgrp->len > 0))
+			ps->Clearance = net_get_clearance_(ctx, clgrp->lid[0], nc, HKP_CLR_POLY2TERM, nd);
+	}
 }
 
 static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)

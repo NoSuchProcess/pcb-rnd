@@ -27,6 +27,16 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+
+static pcb_coord_t net_get_clearance_(hkp_ctx_t *ctx, pcb_layer_id_t lid, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
+{
+	if ((lid < 0) || (lid >= PCB_MAX_LAYER)) {
+		hkp_error(errnode, "failed to determine clearance, falling back to default value\n");
+		return PCB_MIL_TO_COORD(12);
+	}
+	return ctx->nc_dflt.clearance[lid][type];
+}
+
 static pcb_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
 {
 	pcb_layer_id_t lid;
@@ -38,11 +48,7 @@ static pcb_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_
 	if (ly == NULL)
 		return 0;
 	lid = ly - ctx->pcb->Data->Layer;
-	if ((lid < 0) || (lid >= PCB_MAX_LAYER)) {
-		hkp_error(errnode, "failed to determine clearance, falling back to default value\n");
-		return PCB_MIL_TO_COORD(12);
-	}
-	return ctx->nc_dflt.clearance[lid][type];
+	return net_get_clearance_(ctx, lid, nc, type, errnode);
 }
 
 
