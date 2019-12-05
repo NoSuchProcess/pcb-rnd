@@ -398,24 +398,35 @@ static void parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, no
 {
 	node_t *tmp;
 	pcb_coord_t th = 1, x1, y1, x2, y2;
+	int filled = 0;
 
 	DWG_REQ_LY(rp);
 
-	if (!is_shape) {
+	if (is_shape) {
+		tmp = find_nth(rp->first_child, "SHAPE_OPTIONS", 0);
+		if (tmp != NULL)
+			filled = (strcmp(tmp->argv[1], "FILLED") == 0);
+	}
+	else {
 		tmp = find_nth(rp->first_child, "WIDTH", 0);
 		if (tmp != NULL)
 			parse_coord(ctx, tmp->argv[1], &th);
 	}
 
-TODO("check for FILLED, do a poly instead");
-
 	tmp = find_nth(rp->first_child, "XY", 0);
 	parse_xy(ctx, tmp->argv[1], &x1, &y1, 1);
 	parse_xy(ctx, tmp->argv[2], &x2, &y2, 1);
-	pcb_line_new(ly, x1, y1, x2, y1, th, 0, pcb_no_flags());
-	pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
-	pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
-	pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
+
+	if (filled) {
+TODO("when to generate a rounded corner?");
+		pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, 0, pcb_no_flags());
+	}
+	else {
+		pcb_line_new(ly, x1, y1, x2, y1, th, 0, pcb_no_flags());
+		pcb_line_new(ly, x2, y1, x2, y2, th, 0, pcb_no_flags());
+		pcb_line_new(ly, x2, y2, x1, y2, th, 0, pcb_no_flags());
+		pcb_line_new(ly, x1, y2, x1, y1, th, 0, pcb_no_flags());
+	}
 }
 
 static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
