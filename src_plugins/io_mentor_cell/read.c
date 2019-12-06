@@ -363,25 +363,36 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 
 static void convert_arc(pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t ex, pcb_coord_t ey, pcb_coord_t *r, double *sa, double *da)
 {
+	/* In pcb-rnd, start angle 0 is towards the left of the screen (-x direction)*/
+	/* da > 0 is counterclockwise */
+	/* In HKP format, r<0 means counterclockwise, r>0 means clockwise */
 	double ea;
 	pcb_coord_t srx, sry, erx, ery; /* relative x;y from the center for start and end */
 
-	srx = sx - cx; sry = sy - cy;
-	erx = ex - cx; ery = ey - cy;
-	*sa = atan2(sry, srx) * PCB_RAD_TO_DEG - 90.0;
-	ea = atan2(ery, erx) * PCB_RAD_TO_DEG - 90.0;
-	*da = ea - *sa;
-pcb_trace("arc: c-r=%mm;%mm;%mm ", cx, cy, *r);
+	srx = -(sx - cx); sry = sy - cy; /* Since angle = 0 is towards -x, change sign to x part */
+	erx = -(ex - cx); ery = ey - cy; /* Since angle = 0 is towards -x, change sign to x part */
+	*sa = atan2(sry, srx) * PCB_RAD_TO_DEG;
+	*sa = fmodf(360 + *sa, 360.0); /* normalize angle between 0 and 359 */
+	ea = atan2(ery, erx) * PCB_RAD_TO_DEG;
+	ea = fmodf(360 + ea, 360.0); /* normalize angle between 0 and 359 */
 
 	if (*r < 0) {
+		/* counterclockwise */
 		*r = -(*r);
+		if (*sa < ea)
+			*da = ea - *sa;
+		else 
+			*da = (360 - *sa) + ea;
+	} else {
+		/* clockwise */
+		if (*sa > ea)
+			*da = *sa - ea;
+		else 
+			*da = *sa + (360 - ea);
+		*da = -*da;
 	}
-	else {
-		if (*da < 0)
-			*da = 360 + *da;
-		else
-			*da = 360 - *da;
-	}
+
+pcb_trace("arc: c-r=%mm;%mm;%mm ", cx, cy, *r);
 pcb_trace(" sa=%f ea=%f ->da=%f\n", *sa, ea, *da);
 
 }
