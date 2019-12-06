@@ -1,7 +1,7 @@
 #!/bin/sh
 #DBG=cdb
 
-TESTS=grp_name type
+TESTS="grp_name type offs"
 
 do_test()
 {
