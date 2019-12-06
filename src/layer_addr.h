@@ -17,10 +17,13 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 
 /* parse addr into:
    - a list of layer group IDs
-   - supplement key/value pairs in spk/spv (at most spc items)
+
    - in case of a virtual group is addressed, return 0 and load vid if *vid is non-NULL
    - load xf with xf_in if there are transformations requested
    - if err_prefix is not NULL, use pcb_message() with this prefix to priont detailed error
+  Input:
+   - the address, without supplements or other suffixes, in addr
+   - parsed supplement key/value pairs are expected in spk/spv (at most spc items)
   Returns:
   - 0 for valid syntax if no matching group is found
   - 0 for valid syntax if a virtual group is found (*vid is loaded if vid != NULL)
