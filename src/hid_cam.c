@@ -41,6 +41,7 @@
 #include "layer_addr.h"
 #include "layer_vis.h"
 #include "plug_io.h"
+#include "misc_util.h"
 
 htsp_t *pcb_cam_vars = NULL; /* substitute %% variables from this hash */
 
@@ -200,19 +201,6 @@ void pcb_derive_default_filename(const char *pcbfile, pcb_export_opt_t *filename
 	filename_attrib->default_val.str = pcb_derive_default_filename_(pcbfile, suffix);
 }
 
-/* remove leading and trailing whitespace */
-static char *strip(char *s)
-{
-	char *end;
-	while(isspace(*s)) s++;
-	end = s + strlen(s) - 1;
-	while((end >= s) && (isspace(*end))) {
-		*end = '\0';
-		end--;
-	}
-	return s;
-}
-
 static void layervis_save_and_reset(pcb_cam_t *cam)
 {
 	pcb_layer_id_t n;
@@ -227,68 +215,6 @@ static void layervis_restore(pcb_cam_t *cam)
 	pcb_layer_id_t n;
 	for(n = 0; n < cam->pcb->Data->LayerN; n++)
 		cam->pcb->Data->Layer[n].meta.real.vis = cam->orig_vis[n];
-}
-
-static char *lp_err = "";
-
-/* Parse a layer directive: split at comma, curr will end up holding the
-   layer name. If there were transformations in (), they are split and
-   listed in tr up to at most *spc entries. Returns NULL on error or
-   pointer to the next layer directive. */
-static char *parse_layer(char *curr, char **spk, char **spv, int *spc)
-{
-	char *s, *lasta, *eq;
-	int level = 0, trmax = *spc;
-	*spc = 0;
-
-	for(s = curr; *s != '\0'; s++) {
-		switch(*s) {
-			case '(':
-				if (level == 0) {
-					*s = '\0';
-					lasta = s+1;
-				}
-				level++;
-				break;
-			case ')':
-				if (level > 0)
-					level--;
-				if (level == 0)
-					goto append;
-				break;
-			case ',':
-				if (level == 0)
-					goto out;
-				append:;
-				*s = '\0';
-				if (*spc >= trmax)
-					return lp_err;
-				lasta = strip(lasta);
-				spk[*spc] = lasta;
-				eq = strchr(lasta, '=');
-				if (eq != NULL) {
-					*eq = '\0';
-					eq++;
-				}
-				spv[*spc] = eq;
-				(*spc)++;
-				*s = '\0';
-				lasta = s+1;
-		}
-	}
-
-	if (level > 0)
-		return lp_err;
-
-	out:;
-
-	if (*s != '\0') {
-		*s = '\0';
-		s++;
-		return s;
-	}
-
-	return NULL; /* no more layers */
 }
 
 static void cam_xform_init(pcb_xform_t *dst_xform)
@@ -360,7 +286,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 		goto err;
 	}
 	read_out_params(dst, &next);
-	dst->fn = strip(dst->inst);
+	dst->fn = pcb_str_strip(dst->inst);
 
 	if (strchr(dst->fn, '%') != NULL) {
 		dst->fn_template = dst->fn;
@@ -379,13 +305,13 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 		char *spk[64], *spv[64];
 		int spc = sizeof(spk) / sizeof(spk[0]);
 
-		next = parse_layer(curr, spk, spv, &spc);
-		if (next == lp_err) {
+		next = pcb_parse_layergrp_address(curr, spk, spv, &spc);
+		if (next == pcb_parse_layergrp_err) {
 			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer transformation\n");
 			goto err;
 		}
 
-		curr = strip(curr);
+		curr = pcb_str_strip(curr);
 		numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, &vid, &xf, &xf_, "CAM rule: ");
 		if (numg < 0)
 			goto err;
@@ -461,7 +387,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 				pcb_xform_t *dummy;
 
 				tmp = pcb_strdup(start);
-				end = parse_layer(start, spk, spv, &spc);
+				end = pcb_parse_layergrp_address(start, spk, spv, &spc);
 				if ((end != NULL) && (*end != '\0'))
 					pcb_message(PCB_MSG_ERROR, "global exporter --cam takes only one set of global supplements\n");
 				pcb_parse_layer_supplements(spk, spv, spc, &purpose, &dummy, dst_xform);

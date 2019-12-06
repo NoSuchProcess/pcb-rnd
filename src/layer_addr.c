@@ -29,8 +29,66 @@
 #include "board.h"
 #include "data.h"
 #include "error.h"
+#include "misc_util.h"
 
 #include "layer_addr.h"
+
+char *pcb_parse_layergrp_err = "";
+char *pcb_parse_layergrp_address(char *curr, char **spk, char **spv, int *spc)
+{
+	char *s, *lasta, *eq;
+	int level = 0, trmax = *spc;
+	*spc = 0;
+
+	for(s = curr; *s != '\0'; s++) {
+		switch(*s) {
+			case '(':
+				if (level == 0) {
+					*s = '\0';
+					lasta = s+1;
+				}
+				level++;
+				break;
+			case ')':
+				if (level > 0)
+					level--;
+				if (level == 0)
+					goto append;
+				break;
+			case ',':
+				if (level == 0)
+					goto out;
+				append:;
+				*s = '\0';
+				if (*spc >= trmax)
+					return pcb_parse_layergrp_err;
+				lasta = pcb_str_strip(lasta);
+				spk[*spc] = lasta;
+				eq = strchr(lasta, '=');
+				if (eq != NULL) {
+					*eq = '\0';
+					eq++;
+				}
+				spv[*spc] = eq;
+				(*spc)++;
+				*s = '\0';
+				lasta = s+1;
+		}
+	}
+
+	if (level > 0)
+		return pcb_parse_layergrp_err;
+
+	out:;
+
+	if (*s != '\0') {
+		*s = '\0';
+		s++;
+		return s;
+	}
+
+	return NULL; /* no more layers */
+}
 
 static int parse_layer_type(char *type, pcb_layer_type_t *lyt, int *offs, int *has_offs)
 {

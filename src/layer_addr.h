@@ -13,6 +13,13 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str);
 
 /*** for internal use ***/
 
+/* Parse a layer group address: split at comma, addr will end up holding the
+   layer name. If there were transformations in (), they are split and
+   listed in tr up to at most *spc entries. Returns NULL on error or
+   pointer to the next layer directive. */
+char *pcb_parse_layergrp_address(char *curr, char **spk, char **spv, int *spc);
+extern char *pcb_parse_layergrp_err;
+
 void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, pcb_xform_t **xf, pcb_xform_t *xf_);
 
 /* parse addr into:

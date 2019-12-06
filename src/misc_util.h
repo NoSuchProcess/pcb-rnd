@@ -66,4 +66,7 @@ char *pcb_strdup_strip_wspace(const char *S);
    original sep chaarcters with nonsep. */
 char *pcb_text_wrap(char *inp, int len, int sep, int nonsep);
 
+/* remove leading and trailing whitespace */
+char *pcb_str_strip(char *s);
+
 #endif

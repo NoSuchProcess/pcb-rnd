@@ -265,3 +265,15 @@ char *pcb_text_wrap(char *inp, int len, int sep, int nonsep)
 	}
 	return inp;
 }
+
+char *pcb_str_strip(char *s)
+{
+	char *end;
+	while(isspace(*s)) s++;
+	end = s + strlen(s) - 1;
+	while((end >= s) && (isspace(*end))) {
+		*end = '\0';
+		end--;
+	}
+	return s;
+}
