@@ -391,10 +391,6 @@ static void convert_arc(pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t cx, pcb_coor
 			*da = *sa + (360 - ea);
 		*da = -*da;
 	}
-
-pcb_trace("arc: c-r=%mm;%mm;%mm ", cx, cy, *r);
-pcb_trace(" sa=%f ea=%f ->da=%f\n", *sa, ea, *da);
-
 }
 
 static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *pp, int is_shape)
