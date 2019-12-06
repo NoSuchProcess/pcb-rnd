@@ -112,6 +112,18 @@ int pcb_layergrp_list_by_addr(pcb_board_t *pcb, char *curr, pcb_layergrp_id_t gi
 	if (vid != NULL)
 		*vid = -1;
 
+	if (*curr == '#') {
+		char *end;
+		gid = strtol(curr+1, &end, 10);
+		if ((*end == '\0') && (gid >= 0) && (gid < pcb->LayerGroups.len)) {
+			gids[0] = gid;
+			return 1;
+		}
+		if (err_prefix != NULL)
+			pcb_message(PCB_MSG_ERROR, "%sinvalid layer group number\n", err_prefix);
+		return -1;
+	}
+
 	if (*curr == '@') {
 		/* named layer group */
 		curr++;
