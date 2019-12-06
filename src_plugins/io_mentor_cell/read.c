@@ -381,13 +381,13 @@ static void convert_arc(pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t cx, pcb_coor
 		*r = -(*r);
 		if (*sa < ea)
 			*da = ea - *sa;
-		else 
+		else
 			*da = (360 - *sa) + ea;
 	} else {
 		/* clockwise */
 		if (*sa > ea)
 			*da = *sa - ea;
-		else 
+		else
 			*da = *sa + (360 - ea);
 		*da = -*da;
 	}
