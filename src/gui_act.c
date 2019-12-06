@@ -1275,7 +1275,7 @@ static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, a
 static const char pcb_acth_NewGroup[] = "Create a new layer group with a single, positive drawn layer in it";
 static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL, *name = NULL, *attr;
+	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL, *name = NULL, *attr = NULL;
 	pcb_layergrp_t *g = NULL;
 	pcb_layer_type_t ltype = 0, lloc = 0;
 
