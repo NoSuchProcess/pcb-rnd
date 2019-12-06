@@ -405,9 +405,89 @@ static void read_out_params(pcb_cam_t *dst, char **str)
 	}
 }
 
+int pcb_layergrp_list_by_addr(pcb_board_t *pcb, char *curr, pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, pcb_xform_t **xf, pcb_xform_t *xf_in, const char *err_prefix)
+{
+	pcb_layergrp_id_t gid, lgids[PCB_MAX_LAYERGRP];
+	int gids_max = PCB_MAX_LAYERGRP;
+	char *purpose;
+
+	if (vid != NULL)
+		*vid = -1;
+
+	if (*curr == '@') {
+		/* named layer group */
+		curr++;
+		gid = pcb_layergrp_by_name(pcb, curr);
+		if (gid < 0) {
+			if (vid != NULL) {
+				const pcb_virt_layer_t *v;
+				int n;
+				parse_layer_supplements(spk, spv, spc, &purpose, xf, xf_in);
+				for(n = 0, v = pcb_virt_layers; v->name != NULL; n++,v++) {
+					if (strcmp(v->name, curr) == 0) {
+						*vid = n;
+						return 0;
+					}
+				}
+			}
+			return 0;
+		}
+		if (gid < 0) {
+			if (err_prefix != NULL)
+				pcb_message(PCB_MSG_ERROR, "%sno such layer group '%s'\n", curr, err_prefix);
+			return -1;
+		}
+		if (pcb->LayerGroups.grp[gid].len <= 0)
+			return 0;
+		pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+		parse_layer_supplements(spk, spv, spc, &purpose, xf, xf_in);
+		gids[0] = gid;
+		return 1;
+	}
+	else {
+		/* by layer type */
+		int offs, has_offs;
+		pcb_layer_type_t lyt;
+		const pcb_virt_layer_t *vl;
+
+		if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
+			return -1;
+
+		parse_layer_supplements(spk, spv, spc, &purpose, xf, xf_in);
+
+		vl = pcb_vlayer_get_first(lyt, purpose, -1);
+		if ((lyt & PCB_LYT_VIRTUAL) && (vl == NULL)) {
+			if (err_prefix != NULL)
+				pcb_message(PCB_MSG_ERROR, "%sno virtual layer with purpose '%s'\n", err_prefix, purpose);
+			return -1;
+		}
+		if (vl == NULL) {
+			if (has_offs) {
+				int len = pcb_layergrp_listp(pcb, lyt, lgids, sizeof(lgids)/sizeof(lgids[0]), -1, purpose);
+				if (offs < 0)
+					offs = len + offs;
+				else
+					offs--;
+				if ((offs >= 0) && (offs < len)) {
+					gids[0] = lgids[offs];
+					return 1;
+				}
+			}
+			else {
+				return pcb_layergrp_listp(pcb, lyt, gids, gids_max, -1, purpose);
+			}
+		}
+		else {
+			if (vid != NULL)
+				*vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
+		}
+	}
+	return 0;
+}
+
 int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
 {
-	char *curr, *next, *purpose;
+	char *curr, *next;
 
 	memset(dst, 0, sizeof(pcb_cam_t));
 
@@ -443,8 +523,12 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 
 	/* parse layers */
 	for(curr = next; curr != NULL; curr = next) {
+		pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
+		pcb_xform_t *xf = NULL, xf_;
+		int numg, vid;
 		char *spk[64], *spv[64];
 		int spc = sizeof(spk) / sizeof(spk[0]);
+
 		next = parse_layer(curr, spk, spv, &spc);
 		if (next == lp_err) {
 			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer transformation\n");
@@ -452,96 +536,26 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 		}
 
 		curr = strip(curr);
-		if (*curr == '@') {
-			/* named layer group */
-			pcb_xform_t *xf, xf_;
-			pcb_layergrp_id_t gid;
-			curr++;
-			gid = pcb_layergrp_by_name(pcb, curr);
-			if (gid < 0) {
-				const pcb_virt_layer_t *v;
-				int n, vid = -1;
-				for(n = 0, v = pcb_virt_layers; v->name != NULL; n++,v++) {
-					if (strcmp(v->name, curr) == 0) {
-						vid = n;
-						break;
-					}
-				}
-				if (vid != -1) {
-					dst->vgrp_vis[vid] = 1;
-					continue;
-				}
-			}
-			if (gid < 0) {
-				pcb_message(PCB_MSG_ERROR, "CAM rule: no such layer group '%s'\n", curr);
-				goto err;
-			}
-			if (pcb->LayerGroups.grp[gid].len <= 0)
-				continue;
-			pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
-			dst->grp_vis[gid] = 1;
-
-			parse_layer_supplements(spk, spv, spc, &purpose, &xf, &xf_);
-
-			dst->xform[gid] = &dst->xform_[gid];
-			memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
-		}
-		else {
-			/* by layer type */
-			int offs, has_offs;
-			pcb_layer_type_t lyt;
-			const pcb_virt_layer_t *vl;
-			pcb_xform_t *xf = NULL, xf_;
-
-			if (parse_layer_type(curr, &lyt, &offs, &has_offs) != 0)
-				goto err;
-
-			parse_layer_supplements(spk, spv, spc, &purpose, &xf, &xf_);
-
-			vl = pcb_vlayer_get_first(lyt, purpose, -1);
-			if ((lyt & PCB_LYT_VIRTUAL) && (vl == NULL)) {
-				pcb_message(PCB_MSG_ERROR, "CAM rule: no virtual layer with purpose '%s'\n", purpose);
-				goto err;
-			}
-			if (vl == NULL) {
-				pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
-				int n, len = pcb_layergrp_listp(dst->pcb, lyt, gids, sizeof(gids)/sizeof(gids[0]), -1, purpose);
-				if (has_offs) {
-					if (offs < 0)
-						offs = len + offs;
-					else
-						offs--;
-					if ((offs >= 0) && (offs < len)) {
-						pcb_layergrp_id_t gid = gids[offs];
-						pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
-						dst->grp_vis[gid] = 1;
-						if (xf != NULL) {
-							dst->xform[gid] = &dst->xform_[gid];
-							memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
-						}
-					}
-				}
-				else {
-					for(n = 0; n < len; n++) {
-						pcb_layergrp_id_t gid = gids[n];
-						pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
-						dst->grp_vis[gid] = 1;
-						if (xf != NULL) {
-							dst->xform[gid] = &dst->xform_[gid];
-							memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
-						}
-					}
-				}
-				
-			}
-			else {
-				int vid = vl->new_id - PCB_LYT_VIRTUAL - 1;
-				dst->vgrp_vis[vid] = 1;
+		numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, &vid, &xf, &xf_, "CAM rule: ");
+		if (numg < 0)
+			goto err;
+		else if (numg >= 1) {
+			int n;
+			for(n = 0; n < numg; n++) {
+				pcb_layergrp_id_t gid = gids[n];
+				pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
+				dst->grp_vis[gid] = 1;
 				if (xf != NULL) {
-					dst->vxform[vid] = &dst->vxform_[vid];
-					memcpy(&dst->vxform_[vid], &xf_, sizeof(pcb_xform_t));
+					dst->xform[gid] = &dst->xform_[gid];
+					memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
 				}
-
+			}
+		}
+		else if (vid >= 0) {
+			dst->vgrp_vis[vid] = 1;
+			if (xf != NULL) {
+				dst->vxform[vid] = &dst->vxform_[vid];
+				memcpy(&dst->vxform_[vid], &xf_, sizeof(pcb_xform_t));
 			}
 		}
 	}
