@@ -300,8 +300,6 @@ void pcb_layergrp_create_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map);
    a layer in the group */
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname);
 
-pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str);
-
 /* Return true if the board has an outline layer with at least one object on it */
 pcb_bool pcb_has_explicit_outline(pcb_board_t *pcb);
 

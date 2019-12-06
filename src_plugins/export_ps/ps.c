@@ -760,8 +760,8 @@ static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const cha
 			global.pagecount++;
 			lastgroup = group;
 			fprintf(global.f, "(%d.) tocp\n", global.single_page ? 2 : global.pagecount);
+			fprintf(global.f, "(%s) toc\n", name);
 		}
-		fprintf(global.f, "(%s) toc\n", name);
 		gds_uninit(&tmp_ln);
 		return 0;
 	}

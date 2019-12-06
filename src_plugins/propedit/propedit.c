@@ -36,6 +36,7 @@
 #include "pcb-printf.h"
 #include "error.h"
 #include "layer.h"
+#include "layer_addr.h"
 #include "layer_grp.h"
 #include "search.h"
 #include "crosshair.h"

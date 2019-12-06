@@ -324,10 +324,6 @@ void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src);
 /* Open the attribute editor for a layer */
 void pcb_layer_edit_attrib(pcb_layer_t *layer);
 
-/* Convert a textual layer reference into a layer ID. The text is either
-   #id or a layer name. */
-pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str);
-
 /* How deep subcs can be nested */
 #define PCB_MAX_BOUND_LAYER_RECURSION 128
 

@@ -37,6 +37,7 @@
 #include "data.h"
 #include "compat_misc.h"
 #include "layer.h"
+#include "layer_addr.h"
 #include "pcb-printf.h"
 #include "conf_core.h"
 
