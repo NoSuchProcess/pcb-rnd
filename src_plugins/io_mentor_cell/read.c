@@ -631,23 +631,45 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 {
 	node_t *tmp;
 	pcb_layer_type_t type = 0;
-	pcb_layer_type_t side = PCB_LYT_TOP;
+	pcb_layer_type_t side = PCB_LYT_TOP, subc_side = 0;
 	pcb_layer_combining_t lyc = 0;
 	const char *lyname = NULL, *purpose = NULL;
 	pcb_layer_t *ly;
+
+	if (subc != NULL) {
+		if ((subc->aux_layer->meta.bound.type & PCB_LYT_BOTTOM) != 0) {
+			subc_side = PCB_LYT_BOTTOM;
+		} else {
+			if ((subc->aux_layer->meta.bound.type & PCB_LYT_TOP) != 0) {
+				subc_side = PCB_LYT_TOP;
+			}
+		}
+	}
 
 	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
 		type = PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
 		tmp = find_nth(n->first_child, "SIDE", 0);
 		if (tmp != NULL) {
-			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
-				side = PCB_LYT_TOP;
-				lyname = "top-silk";
-			}
-			else {
-				side = PCB_LYT_BOTTOM;
-				lyname = "bot-silk";
+			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
+				if (subc_side != 0) {
+					side = subc_side;
+					if ((subc_side & PCB_LYT_TOP) != 0) {
+						lyname = "top-silk";
+					} else {
+						lyname = "bot-silk";
+					}
+				} else {
+					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
+				}
+			} else {
+				if(strcmp(tmp->argv[1], "TOP") == 0) {
+					side = PCB_LYT_TOP;
+					lyname = "top-silk";
+				} else {
+					side = PCB_LYT_BOTTOM;
+					lyname = "bot-silk";
+				}
 			}
 		}
 	}
@@ -656,13 +678,25 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 		lyc = PCB_LYC_AUTO;
 		tmp = find_nth(n->first_child, "SIDE", 0);
 		if (tmp != NULL) {
-			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
-				side = PCB_LYT_TOP;
-				lyname = "top-mask";
-			}
-			else {
-				side = PCB_LYT_BOTTOM;
-				lyname = "bot-mask";
+			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
+				if (subc_side != 0) {
+					side = subc_side;
+					if ((subc_side & PCB_LYT_TOP) != 0) {
+						lyname = "top-mask";
+					} else {
+						lyname = "bot-mask";
+					}
+				} else {
+					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
+				}
+			} else {
+				if(strcmp(tmp->argv[1], "TOP") == 0) {
+					side = PCB_LYT_TOP;
+					lyname = "top-mask";
+				} else {
+					side = PCB_LYT_BOTTOM;
+					lyname = "bot-mask";
+				}
 			}
 		}
 	}
@@ -671,13 +705,25 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 		lyc = PCB_LYC_AUTO;
 		tmp = find_nth(n->first_child, "SIDE", 0);
 		if (tmp != NULL) {
-			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
-				side = PCB_LYT_TOP;
-				lyname = "top-paste";
-			}
-			else {
-				side = PCB_LYT_BOTTOM;
-				lyname = "bot-paste";
+			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
+				if (subc_side != 0) {
+					side = subc_side;
+					if ((subc_side & PCB_LYT_TOP) != 0) {
+						lyname = "top-paste";
+					} else {
+						lyname = "bot-paste";
+					}
+				} else {
+					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
+				}
+			} else {
+				if(strcmp(tmp->argv[1], "TOP") == 0) {
+					side = PCB_LYT_TOP;
+					lyname = "top-silk";
+				} else {
+					side = PCB_LYT_BOTTOM;
+					lyname = "bot-silk";
+				}
 			}
 		}
 	}
@@ -687,13 +733,25 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 		tmp = find_nth(n->first_child, "SIDE", 0);
 		purpose = "assy";
 		if (tmp != NULL) {
-			if ((strcmp(tmp->argv[1], "MNT_SIDE") == 0) || (strcmp(tmp->argv[1], "TOP") == 0)) {
-				side = PCB_LYT_TOP;
-				lyname = "top_assy";
-			}
-			else {
-				side = PCB_LYT_BOTTOM;
-				lyname = "bottom_assy";
+			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
+				if (subc_side != 0) {
+					side = subc_side;
+					if ((subc_side & PCB_LYT_TOP) != 0) {
+						lyname = "top-assy";
+					} else {
+						lyname = "bot-assy";
+					}
+				} else {
+					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
+				}
+			} else {
+				if(strcmp(tmp->argv[1], "TOP") == 0) {
+					side = PCB_LYT_TOP;
+					lyname = "top-assy";
+				} else {
+					side = PCB_LYT_BOTTOM;
+					lyname = "bot-assy";
+				}
 			}
 		}
 	}
