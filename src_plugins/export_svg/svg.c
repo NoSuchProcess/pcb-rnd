@@ -358,8 +358,10 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!svg_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
 
-	svg_footer();
-	fclose(f);
+	if (f != NULL) {
+		svg_footer();
+		fclose(f);
+	}
 	f = NULL;
 
 	if (pcb_cam_end(&svg_cam) == 0)
