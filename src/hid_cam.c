@@ -508,7 +508,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 				int n, len = pcb_layergrp_listp(dst->pcb, lyt, gids, sizeof(gids)/sizeof(gids[0]), -1, purpose);
 				if (has_offs) {
 					if (offs < 0)
-						offs = len - offs;
+						offs = len + offs;
 					else
 						offs--;
 					if ((offs >= 0) && (offs < len)) {
