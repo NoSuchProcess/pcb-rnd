@@ -372,9 +372,9 @@ static void convert_arc(pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t cx, pcb_coor
 	srx = -(sx - cx); sry = sy - cy; /* Since angle = 0 is towards -x, change sign to x part */
 	erx = -(ex - cx); ery = ey - cy; /* Since angle = 0 is towards -x, change sign to x part */
 	*sa = atan2(sry, srx) * PCB_RAD_TO_DEG;
-	*sa = fmodf(360 + *sa, 360.0); /* normalize angle between 0 and 359 */
+	*sa = pcb_normalize_angle(360 + *sa); /* normalize angle between 0 and 359 */
 	ea = atan2(ery, erx) * PCB_RAD_TO_DEG;
-	ea = fmodf(360 + ea, 360.0); /* normalize angle between 0 and 359 */
+	ea = pcb_normalize_angle(360 + ea); /* normalize angle between 0 and 359 */
 
 	if (*r < 0) {
 		/* counterclockwise */
