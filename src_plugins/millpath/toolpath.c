@@ -299,7 +299,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 
 	/* for positive polarity, simply swap the two polygons to invert the scene */
 	if (polarity > 0) {
-		pcb_polyarea_t *tmp = result->remain;
+		pcb_poly_t *tmp = result->remain;
 		result->remain = result->fill;
 		result->fill = tmp;
 	}
