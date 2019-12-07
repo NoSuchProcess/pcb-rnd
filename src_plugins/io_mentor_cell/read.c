@@ -952,9 +952,8 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 				return NULL;
 			}
 		}
-		else if (strcmp(n->argv[0], "TEXT") == 0) {
+		else if (strcmp(n->argv[0], "TEXT") == 0)
 			parse_subc_text(ctx, subc, nc, n);
-		}
 	}
 
 	if (!seen_oxy) {
