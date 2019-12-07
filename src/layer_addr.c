@@ -358,7 +358,6 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 			free(tmp);
 			return -1;
 		}
-		curr = pcb_str_strip(curr);
 	}
 	else
 		curr = str;
