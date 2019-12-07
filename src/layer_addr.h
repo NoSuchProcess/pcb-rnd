@@ -37,6 +37,6 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
   - a positive integer if 1 or more real matching groups are found
   - -1 on error (typically syntax error)
 */
-int pcb_layergrp_list_by_addr(pcb_board_t *pcb, char *addr, pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, pcb_xform_t **xf, pcb_xform_t *xf_in, const char *err_prefix);
+int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *addr, pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, pcb_xform_t **xf, pcb_xform_t *xf_in, const char *err_prefix);
 
 #endif

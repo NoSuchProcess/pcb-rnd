@@ -91,9 +91,10 @@ char *pcb_parse_layergrp_address(char *curr, char **spk, char **spv, int *spc)
 	return NULL; /* no more layers */
 }
 
-static int parse_layer_type(char *type, pcb_layer_type_t *lyt, int *offs, int *has_offs)
+static int parse_layer_type(const char *type, pcb_layer_type_t *lyt, int *offs, int *has_offs)
 {
-	char *soffs, *end, *nxt, *cur;
+	const char *soffs, *nxt, *cur;
+	char *end;
 	pcb_layer_type_t l;
 
 	*lyt = 0;
@@ -101,7 +102,6 @@ static int parse_layer_type(char *type, pcb_layer_type_t *lyt, int *offs, int *h
 
 	soffs = strchr(type, ':');
 	if (soffs != NULL) {
-		*soffs = '\0';
 		*offs = strtol(soffs+1, &end, 10);
 		if (*end != '\0') {
 			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid offset '%s'\n", soffs);
@@ -111,12 +111,17 @@ static int parse_layer_type(char *type, pcb_layer_type_t *lyt, int *offs, int *h
 	}
 
 	for(cur = type; cur != NULL; cur = nxt) {
-		nxt = strchr(cur, '-');
+		nxt = strpbrk(cur, "-:");
+		if (nxt != NULL)
+			l = pcb_layer_type_strn2bit(cur, nxt - cur);
+		else
+			l = pcb_layer_type_str2bit(cur);
 		if (nxt != NULL) {
-			*nxt = '\0';
-			nxt++;
+			if (*nxt == ':')
+				nxt = NULL;
+			else
+				nxt++;
 		}
-		l = pcb_layer_type_str2bit(cur);
 		if (l == 0) {
 			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer type '%s'\n", cur);
 			return 1;
@@ -162,7 +167,7 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 }
 
 
-int pcb_layergrp_list_by_addr(pcb_board_t *pcb, char *curr, pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, pcb_xform_t **xf, pcb_xform_t *xf_in, const char *err_prefix)
+int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, pcb_xform_t **xf, pcb_xform_t *xf_in, const char *err_prefix)
 {
 	pcb_layergrp_id_t gid, lgids[PCB_MAX_LAYERGRP];
 	int gids_max = PCB_MAX_LAYERGRP;
