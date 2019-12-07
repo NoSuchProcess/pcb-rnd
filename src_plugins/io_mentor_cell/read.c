@@ -216,10 +216,9 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int
 	xx = pcb_get_value(s, ctx->unit->suffix, NULL, &suc1);
 	yy = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
 
-	if (xform) {
+	if (xform)
 		yy = -yy;
-	}
-	
+
 	*x = xx;
 	*y = yy;
 
@@ -251,9 +250,8 @@ static int parse_xyr(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, pc
 	yy = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
 	rr = pcb_get_value(sr, ctx->unit->suffix, NULL, &suc3);
 
-	if (xform) {
+	if (xform)
 		yy = -yy;
-	}
 
 	*x = xx;
 	*y = yy;
