@@ -668,7 +668,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 				}
 			}
 			else {
-				if(strcmp(tmp->argv[1], "TOP") == 0) {
+				if (strcmp(tmp->argv[1], "TOP") == 0) {
 					side = PCB_LYT_TOP;
 					lyname = "top-silk";
 				}
@@ -697,7 +697,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
 				}
 			} else {
-				if(strcmp(tmp->argv[1], "TOP") == 0) {
+				if (strcmp(tmp->argv[1], "TOP") == 0) {
 					side = PCB_LYT_TOP;
 					lyname = "top-mask";
 				}
@@ -728,7 +728,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 				}
 			}
 			else {
-				if(strcmp(tmp->argv[1], "TOP") == 0) {
+				if (strcmp(tmp->argv[1], "TOP") == 0) {
 					side = PCB_LYT_TOP;
 					lyname = "top-silk";
 				}
@@ -760,7 +760,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 				}
 			}
 			else {
-				if(strcmp(tmp->argv[1], "TOP") == 0) {
+				if (strcmp(tmp->argv[1], "TOP") == 0) {
 					side = PCB_LYT_TOP;
 					lyname = "top-assy";
 				}
