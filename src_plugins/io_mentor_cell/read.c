@@ -787,7 +787,6 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 
 	if (user) { /* user layers are DOC layers identified by name and are allocated on the go */
 		pcb_layer_id_t lid;
-		pcb_layergrp_t *grp;
 		pcb_dflgmap_t map[2];
 		int retry;
 
@@ -1105,7 +1104,6 @@ static int parse_layout_globals(hkp_ctx_t *ctx, hkp_tree_t *tree)
 static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
 {
 	node_t *n;
-	char *end;
 	const hkp_netclass_t *nc = NULL;
 
 	/* build packages and draw objects */
