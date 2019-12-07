@@ -1023,6 +1023,15 @@ pcb_layer_type_t pcb_layer_type_str2bit(const char *name)
 	return 0;
 }
 
+pcb_layer_type_t pcb_layer_type_strn2bit(const char *name, size_t len)
+{
+	const pcb_layer_type_name_t *n;
+	for(n = pcb_layer_type_names; n->name != NULL; n++)
+		if ((strncmp(n->name, name, len) == 0) && (n->name[len] == '\0'))
+			return n->type;
+	return 0;
+}
+
 const char *pcb_layer_type_bit2str(pcb_layer_type_t type)
 {
 	const pcb_layer_type_name_t *n;

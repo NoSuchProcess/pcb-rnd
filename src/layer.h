@@ -239,6 +239,7 @@ int pcb_layer_comb_map(pcb_layer_combining_t type, void *ctx, void (*cb)(void *c
 
 /* return 0 or the flag value correspoding to name (linear search) */
 pcb_layer_type_t pcb_layer_type_str2bit(const char *name);
+pcb_layer_type_t pcb_layer_type_strn2bit(const char *name, size_t len);
 pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name);
 
 /* Convert a list of types/combs from string to bits. Returns 0 on success.
