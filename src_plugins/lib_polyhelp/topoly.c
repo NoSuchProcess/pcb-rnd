@@ -208,7 +208,6 @@ pcb_poly_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topol
 	int *end = &ends->array[0];
 	pcb_layer_t *layer = (*obj)->parent.layer;
 	pcb_poly_t *poly = pcb_poly_alloc(layer);
-	pcb_coord_t x, y;
 
 	obj++;
 	for(n = 1; n < vtp0_len(objs); obj++,end++,n++) {
