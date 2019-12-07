@@ -621,6 +621,46 @@ static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, con
 	return cnt;
 }
 
+/* Return 1 on success, 0 on fail */
+/* Return the side of "side", and set lyname to lyname_top or lyname_bottom depending on side */
+/* For a subcircuit, the side is given by MNT_SIDE argument */
+static int parse_side(node_t* n, pcb_layer_type_t subc_side, pcb_layer_type_t *side, char *lyname, char *lyname_top, char *lyname_bottom) {
+	node_t *tmp;
+
+	if (n != NULL) {
+		tmp = find_nth(n->first_child, "SIDE", 0);
+		if (tmp != NULL) {
+			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
+TODO("Look how opposite side to MNT_SIDE is defined.\n");
+				if (subc_side != 0) {
+					*side = subc_side;
+					if ((subc_side & PCB_LYT_TOP) != 0)
+						lyname = lyname_top;
+					else
+						lyname = lyname_bottom;
+					return 1;
+				}
+				else {
+					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
+				}
+			}
+			else if (strcmp(tmp->argv[1], "TOP") == 0) {
+					*side = PCB_LYT_TOP;
+					lyname = lyname_top;
+					return 1;
+			} else if (strcmp(tmp->argv[1], "BOTTOM") == 0) {
+					*side = PCB_LYT_BOTTOM;
+					lyname = lyname_bottom;
+					return 1;
+			} else {
+				hkp_error(n, "Unknown SIDE argument\n");
+			}
+		} else
+			return 0;
+	} else
+		return 0;
+}
+
 /* Returns number of objects drawn: 0 or more for valid layers, -1 for invalid layer */
 static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *n)
 {
@@ -647,115 +687,22 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
 		type = PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
-		tmp = find_nth(n->first_child, "SIDE", 0);
-		if (tmp != NULL) {
-			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
-				if (subc_side != 0) {
-					side = subc_side;
-					if ((subc_side & PCB_LYT_TOP) != 0)
-						lyname = "top-silk";
-					else
-						lyname = "bot-silk";
-				}
-				else
-					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
-			}
-			else {
-				if (strcmp(tmp->argv[1], "TOP") == 0) {
-					side = PCB_LYT_TOP;
-					lyname = "top-silk";
-				}
-				else {
-					side = PCB_LYT_BOTTOM;
-					lyname = "bot-silk";
-				}
-			}
-		}
+		parse_side(n, subc_side, &side, lyname, "top-silk", "bot-silk");
 	}
 	else if (strcmp(n->argv[0], "SOLDER_MASK") == 0) {
 		type = PCB_LYT_MASK;
 		lyc = PCB_LYC_AUTO;
-		tmp = find_nth(n->first_child, "SIDE", 0);
-		if (tmp != NULL) {
-			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
-				if (subc_side != 0) {
-					side = subc_side;
-					if ((subc_side & PCB_LYT_TOP) != 0)
-						lyname = "top-mask";
-					else
-						lyname = "bot-mask";
-				}
-				else
-					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
-			}
-			else {
-				if (strcmp(tmp->argv[1], "TOP") == 0) {
-					side = PCB_LYT_TOP;
-					lyname = "top-mask";
-				}
-				else {
-					side = PCB_LYT_BOTTOM;
-					lyname = "bot-mask";
-				}
-			}
-		}
+		parse_side(n, subc_side, &side, lyname, "top-mask", "bot-mask");
 	}
 	else if (strcmp(n->argv[0], "SOLDER_PASTE") == 0) {
 		type = PCB_LYT_PASTE;
 		lyc = PCB_LYC_AUTO;
-		tmp = find_nth(n->first_child, "SIDE", 0);
-		if (tmp != NULL) {
-			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
-				if (subc_side != 0) {
-					side = subc_side;
-					if ((subc_side & PCB_LYT_TOP) != 0)
-						lyname = "top-paste";
-					else
-						lyname = "bot-paste";
-				}
-				else
-					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
-			}
-			else {
-				if (strcmp(tmp->argv[1], "TOP") == 0) {
-					side = PCB_LYT_TOP;
-					lyname = "top-silk";
-				}
-				else {
-					side = PCB_LYT_BOTTOM;
-					lyname = "bot-silk";
-				}
-			}
-		}
+		parse_side(n, subc_side, &side, lyname, "top-paste", "bot-paste");
 	}
 	else if (strcmp(n->argv[0], "ASSEMBLY_OUTLINE") == 0) {
 		type = PCB_LYT_DOC;
 		lyc = PCB_LYC_AUTO;
-		tmp = find_nth(n->first_child, "SIDE", 0);
-		purpose = "assy";
-		if (tmp != NULL) {
-			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
-				if (subc_side != 0) {
-					side = subc_side;
-					if ((subc_side & PCB_LYT_TOP) != 0)
-						lyname = "top-assy";
-					else
-						lyname = "bot-assy";
-				}
-				else
-					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
-			}
-			else {
-				if (strcmp(tmp->argv[1], "TOP") == 0) {
-					side = PCB_LYT_TOP;
-					lyname = "top-assy";
-				}
-				else {
-					side = PCB_LYT_BOTTOM;
-					lyname = "bot-assy";
-				}
-			}
-		}
+		parse_side(n, subc_side, &side, lyname, "top-assy", "bot-assy");
 	}
 	else if (strcmp(n->argv[0], "ROUTE_OUTLINE") == 0) {
 		type = PCB_LYT_BOUNDARY;
