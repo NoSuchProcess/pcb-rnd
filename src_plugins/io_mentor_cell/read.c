@@ -878,10 +878,11 @@ TODO("this should be done only when subc == NULL");
 			ly->meta.bound.purpose = pcb_strdup(purpose);
 	}
 	else {
-		int ln = pcb_layer_listp(ctx->pcb, lyt, &ly, 1, -1, purpose);
+		pcb_layer_id_t lid;
+		int ln = pcb_layer_listp(ctx->pcb, lyt, &lid, 1, -1, purpose);
 		if (ln == 0)
 			return NULL;
-		return ly;
+		return pcb_get_layer(ctx->pcb, lid);
 	}
 	return ly;
 }
