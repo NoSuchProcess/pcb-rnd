@@ -1011,7 +1011,7 @@ static void parse_net(hkp_ctx_t *ctx, node_t *netroot)
 	node_t *n, *lyn;
 	pcb_layer_t *ly;
 	const char *netname = netroot->argv[1];
-TODO("netclass: fill this in:");
+TODO("netclass: fill this in:")
 	const hkp_netclass_t *nc = NULL;
 
 	if (strcmp(netname, "Unconnected_Net") != 0)
