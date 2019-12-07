@@ -23,7 +23,7 @@ The syntax and capabilities are the same for all exporter's cam option.
 <p>
 The syntax is:
 <pre>
-outfile=[global-opts] layergrp[,layergrp,...]
+outfile=[global-opts] layergrp,layergrp,...
 </pre>
 <p>
 where:
@@ -35,33 +35,13 @@ where:
 			<li> %top_offs% is substituted with the layer group offset from the top (top layer group being 0); only layer groups with the same material considered
 			<li> %bot_offs% is substituted with the layer group offset from the bottom (bottom layer group being 0); only layer groups with the same material considered
 		</ul>
-	<li> layergrp: one or more layer group definitions separated by comma (see below)
+	<li> optionally [global-opts]: a comma separated list of group-global (but per-output-file) options in [] brackets. Options supported:
+		<ul>
+			<li> okempty: empty output is okay, do not warn
+		</ul>
+	<li> layergrp: one or more layer group addresses separated by comma (syntax is documented in <a href="../../09_appendix/layer_addr.html">layer addressing appendix.</a>)
 	<li> optionally a list of exporter options in the same format as on direct command line (e.g. --verbose); when there's overlap on any state/definition between opts and CAM operation, the effect of the opt is ignored
 </ul>
-Syntax of the layer group definition:
-<ul>
-	<li> @layername (e.g. "@top_copper" if the group's name is <i>top_copper</i>)
-	<li> location-material (e.g. "top-copper" for any layer group that is copper and is on the top side)
-	<li> type[-type...] (more generally: a list of layer type flags)
-	<li> type:offs (e.g. "copper:+2" means the second copper layer group from the top, "copper:-3" means the third copper layer group from the bottom; offs is counted from 1, +1 meaning top outer layer, -1 meaning bottom outer layer)
-	<li> plus an optional list of supplements in paranthesis
-</ul>
-<p>
-When supplements are specified, it's a comma separated list of key=value pairs.
-Available supplements are:
-<ul>
-	<li> purpose: specify matching layer group purpose field
-	<li> bloat: bloat or shrink objects by the specified value (e.g. 1mm)
-	<li> <a href="#partial">partial</a>: only export objects with the EXPORTSEL flag set
-	<li> (TODO: supplement for inversion)
-</ul>
-<p>
-The syntax for the optional global-opts is: a comma separated list of
-group-global (but per-output-file) options in [] brackets. Options supported:
-<ul>
-	<li> okempty: empty output is okay, do not warn
-</ul>
-
 <p>
 Examples:
 <table border=1 cellspacing=0>
