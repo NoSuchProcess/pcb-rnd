@@ -882,7 +882,7 @@ TODO("this should be done only when subc == NULL");
 		int ln = pcb_layer_listp(ctx->pcb, lyt, &lid, 1, -1, purpose);
 		if (ln == 0)
 			return NULL;
-		return pcb_get_layer(ctx->pcb, lid);
+		return pcb_get_layer(ctx->pcb->Data, lid);
 	}
 	return ly;
 }
