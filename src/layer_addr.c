@@ -311,9 +311,13 @@ static pcb_layer_id_t layer_str2id_grp(pcb_board_t *pcb, pcb_layergrp_t *grp, co
 		return -1;
 	}
 	if (*str == '@') {
-		
+		for(n = 0; n < grp->len; n++) {
+			pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[n]);
+			if (ly == NULL) continue;
+			if (strcmp(ly->name, str+1) == 0)
+				return grp->lid[n];
+		}
 	}
-TODO("layer: do the same that cam does; test with propedit");
 	return -1;
 }
 
