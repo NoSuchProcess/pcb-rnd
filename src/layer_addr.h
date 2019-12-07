@@ -11,6 +11,14 @@
 pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str);
 pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str);
 
+/* Convert a layer(grp) into a reusable address; returns NULL on error;
+   caller needs to free() the returned string */
+char *pcb_layergrp_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp);
+
+/* Same, but append to dst instead of allocating new string; return 0 on
+   success */
+int pcb_layergrp_append_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *dst);
+
 /*** for internal use ***/
 
 /* Parse a layer group address: split at comma, addr will end up holding the

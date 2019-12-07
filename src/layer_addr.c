@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <genvector/gds_char.h>
+
 #include "board.h"
 #include "data.h"
 #include "error.h"
@@ -379,4 +381,89 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 
 	free(tmp);
 	return gid;
+}
+
+/*** layer/group to addr ***/
+
+static void addr_append_loc_type(gds_t *res, pcb_layer_type_t mask)
+{
+	const char *tmp;
+	tmp = pcb_layer_type_bit2str(mask & PCB_LYT_ANYWHERE);
+	if (tmp != NULL) {
+		gds_append_str(res, tmp);
+		gds_append(res, '-');
+	}
+	tmp = pcb_layer_type_bit2str(mask & PCB_LYT_ANYTHING);
+	if (tmp != NULL)
+		gds_append_str(res, tmp);
+}
+
+/* append loc-type:offs */
+static int pcb_layergrp_append_to_addr_offs(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *dst)
+{
+	char buf[64];
+	long n, np = 0, nt = 0, offs, found = 0;
+	pcb_layer_type_t mask = grp->ltype & (PCB_LYT_ANYWHERE | PCB_LYT_ANYTHING);
+
+	addr_append_loc_type(dst, grp->ltype);
+
+	for(n = 0; n < pcb->LayerGroups.len; n++) {
+		pcb_layergrp_t *ng = &pcb->LayerGroups.grp[n];
+		if (ng == grp)
+			found = 1;
+		if ((ng->ltype & (PCB_LYT_ANYWHERE | PCB_LYT_ANYTHING)) == mask) {
+			if (!found)
+				np++;
+			nt++;
+		}
+	}
+	/* np is the number of matching layer groups before grp, nt is the number
+	   of matching groups total */
+	if (mask & PCB_LYT_BOTTOM)
+		offs = -(nt-np); /* bottom groups are counted from the bottom */
+	else if (mask & PCB_LYT_TOP)
+		offs = np+1; /* top groups are counted from top */
+	else if (mask & PCB_LYT_INTERN) { /* intern groups are counted from the closer side */
+		if (np < nt/2)
+			offs = np+1;
+		else
+			offs = -(nt-np);
+	}
+	else { /* global: count from "top" */
+		offs = np+1;
+	}
+	sprintf(buf, ":%ld", offs);
+	gds_append_str(dst, buf);
+	return 0;
+}
+
+/* append loc-type(purpose=...) */
+static int pcb_layergrp_append_to_addr_purp(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *dst)
+{
+	addr_append_loc_type(dst, grp->ltype);
+	if (grp->purpose != NULL) {
+		gds_append_str(dst, "(purpose=");
+		gds_append_str(dst, grp->purpose);
+		gds_append(dst, ')');
+	}
+	return 0;
+}
+
+int pcb_layergrp_append_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *dst)
+{
+	if (PCB_LAYER_IN_STACK(grp->ltype))
+		return pcb_layergrp_append_to_addr_offs(pcb, grp, dst);
+	return pcb_layergrp_append_to_addr_purp(pcb, grp, dst);
+}
+
+char *pcb_layergrp_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp)
+{
+	gds_t res;
+	gds_init(&res);
+
+	if (pcb_layergrp_append_to_addr(pcb, grp, &res) == 0)
+		return res.array;
+
+	gds_uninit(&res);
+	return NULL;
 }
