@@ -454,10 +454,8 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 	if (value < 0)
 		value = 0;
 	value = MIN(PCB_MAX_THICKNESS, value);
-	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0 && value < conf_core.design.bloat * 2)
+	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0)
 		value = 0;
-	if (ctx->chgsize.value > 0 && value < conf_core.design.bloat * 2)
-		value = conf_core.design.bloat * 2 + 2;
 	if (value != Arc->Clearance) {
 		pcb_undo_add_obj_to_clear_size(PCB_OBJ_ARC, Layer, Arc, Arc);
 		pcb_arc_invalidate_erase(Arc);
