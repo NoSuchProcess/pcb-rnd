@@ -13,10 +13,12 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str);
 
 /* Convert a layer(grp) into a reusable address; returns NULL on error;
    caller needs to free() the returned string */
+char *pcb_layer_to_addr(pcb_board_t *pcb, pcb_layer_t *ly);
 char *pcb_layergrp_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp);
 
 /* Same, but append to dst instead of allocating new string; return 0 on
    success */
+int pcb_layer_append_to_addr(pcb_board_t *pcb, pcb_layer_t *ly, gds_t *dst);
 int pcb_layergrp_append_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *dst);
 
 /*** for internal use ***/

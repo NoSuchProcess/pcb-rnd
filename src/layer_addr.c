@@ -456,12 +456,52 @@ int pcb_layergrp_append_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *ds
 	return pcb_layergrp_append_to_addr_purp(pcb, grp, dst);
 }
 
+int pcb_layer_append_to_addr(pcb_board_t *pcb, pcb_layer_t *ly, gds_t *dst)
+{
+	pcb_layer_id_t lid;
+	pcb_layergrp_t *grp;
+	long n;
+	char buf[64];
+
+	if (ly->is_bound)
+		return -1;
+
+	grp = pcb_get_layergrp(pcb, ly->meta.real.grp);
+	if (grp == NULL)
+		return -1;
+
+	lid = ly - pcb->Data->Layer;
+
+	for(n = 0; n < grp->len; n++) {
+		if (grp->lid[n] == lid) {
+			pcb_layergrp_append_to_addr(pcb, grp, dst);
+			sprintf(buf, "/#%ld", n);
+			gds_append_str(dst, buf);
+			return 0;
+		}
+	}
+
+	return -1;
+}
+
 char *pcb_layergrp_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp)
 {
 	gds_t res;
 	gds_init(&res);
 
 	if (pcb_layergrp_append_to_addr(pcb, grp, &res) == 0)
+		return res.array;
+
+	gds_uninit(&res);
+	return NULL;
+}
+
+char *pcb_layer_to_addr(pcb_board_t *pcb, pcb_layer_t *ly)
+{
+	gds_t res;
+	gds_init(&res);
+
+	if (pcb_layer_append_to_addr(pcb, ly, &res) == 0)
 		return res.array;
 
 	gds_uninit(&res);
