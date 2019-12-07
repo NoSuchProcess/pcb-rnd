@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ CLEANUP/BUG: globalconst.h: PCB_MIN_THICKNESS shall be 0 - removed all artificial limits on object thickness ml:3351 [report: Majenko]
 + BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
 + BUG: run pcb-rnd, start new layout, press enter (empty name) -> segf [report: Evan, keantoken]
 - FEATURE: openems: pick up board thickness from data: centralize the code developed for stl and openems [report: Erich]
