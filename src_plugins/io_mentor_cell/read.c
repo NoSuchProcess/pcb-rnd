@@ -279,8 +279,6 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out, int on_bottom)
 	return 0;
 }
 
-static void d1() {}
-
 #define DWG_LY(node, name, name2) \
 	if (ly == NULL) { \
 		node_t *__tmp__ = find_nth(node->first_child, name, 0), *__tmp2__ = NULL; \
