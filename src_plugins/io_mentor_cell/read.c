@@ -922,7 +922,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	pcb_coord_t ox, oy;
 	double rot = 0;
 	int on_bottom = 0, seen_oxy = 0;
-	const hkp_netclass_t *nc;
+	const hkp_netclass_t *nc = NULL;
 
 	subc = pcb_subc_alloc();
 
