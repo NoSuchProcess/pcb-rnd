@@ -1099,6 +1099,8 @@ static int parse_layout_globals(hkp_ctx_t *ctx, hkp_tree_t *tree)
 
 	/* plus assy and fab layers */
 	pcb_layergrp_upgrade_by_map(ctx->pcb, pcb_dflgmap_doc);
+
+	return 0;
 }
 
 static int parse_layout_root(hkp_ctx_t *ctx, hkp_tree_t *tree)
