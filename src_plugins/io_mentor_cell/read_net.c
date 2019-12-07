@@ -166,7 +166,7 @@ static int io_mentor_cell_netlist(hkp_ctx_t *ctx, const char *fn)
 				if (strcmp(p->argv[0], "REF_PINNAME") != 0)
 					continue;
 				term = pcb_net_term_get_by_pinname(net, p->argv[1], 1);
-				if (net == NULL)
+				if (term == NULL)
 					hkp_error(p, "Failed to create pin '%s' in net '%s' - netlist will be incomplete\n", p->argv[1], nnet->argv[1]);
 			}
 		}
