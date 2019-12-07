@@ -76,6 +76,89 @@ Supplement examples:
 	     <td> the above two combined
 </table>
 
+<h3> Layer address </h3>
+<p>
+The layer address is used to name one or more matching layer(s).
+If the code needs only one layer and the address matches multiple,
+always the first match is used (the layer with the lowest ID).
+Note: layers are not indexed in physical stack order.
+<p>
+There are two kind of layer addresses: direct and through-group.
+<p>
+The direct address has only two variants:
+<table border=1>
+<tr><th>syntax
+    <th> description
+    <th> example
+
+<tr><td> #idx
+    <td> layer index (the internal, unique numbering, from 0)
+    <td> <i>#0</i><br>matches the first layer; useful only if the layer index was resolved earlier
+
+<tr><td> @name
+    <td> layer name - case sensitive match of user assigned layer name
+    <td> <i>@mysignal</i><br>matches layers with name "mysignal"
+</table>
+<p>
+The through grup address has a group address, a slash and a local
+layer address. Counts are always from 1 (first layer within the 
+group is count 1). It is one of:
+
+<table border=1>
+<tr><th>syntax
+    <th> description
+    <th> example
+
+<tr><td> <i>group</i>/#count
+    <td> layer index within the group
+    <td> <i>top-copper/#2</i><br>matches the second layer in the top copper group
+
+<tr><td> <i>group</i>/#-count
+    <td> layer index within the group
+    <td> <i>top-copper/#-1</i><br>matches the last layer in the top copper group
+
+<tr><td> <i>group</i>/#count+
+    <td> layer index within the group, considering only positive layers
+    <td> <i>top-silk/#2</i><br>matches the second positive layer in the top silk group
+
+<tr><td> <i>group</i>/#-count+
+    <td> layer index within the group counted back from the last, considering only positive layers
+    <td> <i>top-silk/#-1+</i><br>matches the last positive layer in the top silk group
+
+<tr><td> <i>group</i>/#count-
+    <td> layer index within the group, considering only negative (sub) layers
+    <td> <i>top-silk/#2-</i><br>matches the second negative (sub) layer in the top silk group
+
+<tr><td> <i>group</i>/#-count-
+    <td> layer index within the group counted back from the last, considering only negative (sub) layers
+    <td> <i>top-silk/#-1-</i><br>matches the last negative (sub) layer in the top silk group
+
+<tr><td> <i>group</i>/@name
+    <td> user assigned layer name matches <i>name</i> (only the group's layers are considered)
+    <td> <i>top-copper/@gnd</i><br>matches the layer called "gnd" within the top copper group
+</table>
+<p>
+Note: the full group addressing syntax can be used, so 
+<pre>
+top-doc(purpose=assy)/#-1
+</pre>
+<p>
+works and means "fetch the first top documentation layer group whose purpose is
+assy and pick the last layer in that group".
+
+<h3> Best practices </h3>
+<p>
+Avoid addressing by user assigned name (the @ syntax): that scheme is
+fragile and unique names are not guaranteed.
+<p>
+When addressing a layer for the first time, it is best to use the
+group-type/#count syntax (e.g. top-copper/1 fir the first layer of the
+top copper group).
+<p>
+If a lot of accesses to the same layer is required (and the layer stack
+is not changed during the operation) the best strategy is to resolve the
+layer once , using e.g. the group-type/#count, then remember its layer id
+and use the faster #id addressing for subsequent access.
 
 </body>
 </html>
