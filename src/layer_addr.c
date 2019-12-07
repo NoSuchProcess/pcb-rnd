@@ -275,7 +275,14 @@ static pcb_layer_id_t layer_str2id_data(pcb_data_t *data, const char *str)
 		if ((*end == '\0') && (id >= 0) && (id < data->LayerN))
 			return id;
 	}
-TODO("layer: search by name for @");
+	if (*str == '@') {
+		for(id = 0; id < data->LayerN; id++) {
+			pcb_layer_t *ly = pcb_get_layer(data, id);
+			if (ly == NULL) continue;
+			if (strcmp(ly->name, str+1) == 0)
+				return id;
+		}
+	}
 	return -1;
 }
 
