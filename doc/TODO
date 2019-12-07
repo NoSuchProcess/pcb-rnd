@@ -4,7 +4,6 @@
 + CLEANUP/BUG: globalconst.h: PCB_MIN_THICKNESS shall be 0 - removed all artificial limits on object thickness ml:3351 [report: Majenko]
 + BUG: typos in the property editor Propedit:add new attribute subdialog, string: replace 'Attribut' with attribute [report: Miloh]
 + BUG: run pcb-rnd, start new layout, press enter (empty name) -> segf [report: Evan, keantoken]
-+ CLEANUP: conf node split: appearance/color/cross shall be only the crosshair color; DRC highlight should use a separate node (found while experimenting with dark background) -> cross(hair), mark and drc color are 3 separate nodes now [report: Majenko]
 - FEATURE: openems: pick up board thickness from data: centralize the code developed for stl and openems [report: Erich]
 - FEATURE: extended objects: line-of-vias
 - FEATURE: buffer scale in only x or y direction [report: Erich]
