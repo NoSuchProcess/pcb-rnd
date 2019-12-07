@@ -278,7 +278,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 	layervis_save_and_reset(dst);
 
 
-	/* Syntax: fn=layergrp,layergrp(opt=val,opt=val),layergrp */
+	/* Syntax: fn=[out_params]layergrp,layergrp(opt=val,opt=val),layergrp */
 	/* parse: get file name name */
 	next = strchr(dst->inst, '=');
 	if (next == NULL) {
