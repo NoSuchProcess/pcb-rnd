@@ -111,13 +111,13 @@ static int parse_layer_type(const char *type, pcb_layer_type_t *lyt, int *offs, 
 	}
 
 	for(cur = type; cur != NULL; cur = nxt) {
-		nxt = strpbrk(cur, "-:");
+		nxt = strpbrk(cur, "-:(/");
 		if (nxt != NULL)
 			l = pcb_layer_type_strn2bit(cur, nxt - cur);
 		else
 			l = pcb_layer_type_str2bit(cur);
 		if (nxt != NULL) {
-			if (*nxt == ':')
+			if (*nxt != '-')
 				nxt = NULL;
 			else
 				nxt++;
@@ -265,17 +265,80 @@ int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_i
 	return 0;
 }
 
-pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
+static pcb_layer_id_t layer_str2id_data(pcb_data_t *data, const char *str)
 {
 	char *end;
 	pcb_layer_id_t id;
+
 	if (*str == '#') {
 		id = strtol(str+1, &end, 10);
 		if ((*end == '\0') && (id >= 0) && (id < data->LayerN))
 			return id;
 	}
+TODO("layer: search by name for @");
+	return -1;
+}
+
+static pcb_layer_id_t layer_str2id_grp(pcb_board_t *pcb, pcb_layergrp_t *grp, const char *str)
+{
+	char *end;
+	long id, n;
+
+	if (*str == '#') {
+		str++;
+		id = strtol(str, &end, 10);
+		if ((*end == '+') || (*end == '-')) { /* search the nth positive or negative layer, count from 1 */
+			int pos = (id > 0);
+			if (!pos) id = -id;
+			n = pos ? 0 : grp->len-1;
+			for(; (pos ? (n < grp->len) : (n >= 0));) {
+				pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[n]);
+				if (ly == NULL) continue;
+				if ((*end == '-') && (ly->comb & PCB_LYC_SUB)) id--;
+				else if ((*end == '+') && !(ly->comb & PCB_LYC_SUB)) id--;
+				if (id == 0)
+					return grp->lid[n];
+				if (pos) n++;
+				else n--;
+			}
+			return -1; /* not enough layers */
+		}
+		/* simply the nth layer ID, counting from 1 */
+		if ((*end == '\0') && (id > 0) && (id <= grp->len))
+			return grp->lid[id - 1];
+		if ((*end == '\0') && (id < 0) && (id >= -((long)grp->len)))
+			return grp->lid[id + grp->len];
+		return -1;
+	}
+	if (*str == '@') {
+		
+	}
 TODO("layer: do the same that cam does; test with propedit");
 	return -1;
+}
+
+pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
+{
+	char *sep;
+	pcb_board_t *pcb = NULL;
+
+	if (data->parent_type == PCB_PARENT_BOARD)
+		pcb = data->parent.board;
+
+	sep = strchr(str, '/');
+	if (sep != NULL) {
+		pcb_layergrp_id_t gid;
+		pcb_layergrp_t *grp;
+		if (pcb == NULL)
+			return -1; /* group addressing works only on a board */
+		gid = pcb_layergrp_str2id(pcb, str);
+		grp = pcb_get_layergrp(pcb, gid);
+		if (grp == NULL)
+			return -1; /* invalid group */
+		return layer_str2id_grp(pcb, grp, sep+1);
+	}
+
+	return layer_str2id_data(data, str);
 }
 
 pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
@@ -295,11 +358,11 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 			free(tmp);
 			return -1;
 		}
+		curr = pcb_str_strip(curr);
 	}
 	else
 		curr = str;
 
-	curr = pcb_str_strip(curr);
 	numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, NULL, NULL, NULL, NULL);
 	if (numg > 0)
 		gid = gids[0];
