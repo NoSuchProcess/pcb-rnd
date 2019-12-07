@@ -627,15 +627,21 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 	node_t *tmp;
 	pcb_layer_type_t type = 0;
 	pcb_layer_type_t side = PCB_LYT_TOP, subc_side = 0;
+	int on_bottom=-1;
 	pcb_layer_combining_t lyc = 0;
 	const char *lyname = NULL, *purpose = NULL;
 	pcb_layer_t *ly;
 
 	if (subc != NULL) {
-		if ((subc->aux_layer->meta.bound.type & PCB_LYT_BOTTOM) != 0)
-			subc_side = PCB_LYT_BOTTOM;
-		else if ((subc->aux_layer->meta.bound.type & PCB_LYT_TOP) != 0)
-			subc_side = PCB_LYT_TOP;
+		if (pcb_subc_get_side(subc, &on_bottom) == -1) {
+			hkp_error(subc, "Error getting subc side\n");
+		} else {
+			if (on_bottom == 1) {
+				subc_side = PCB_LYT_BOTTOM;
+			} else {
+				subc_side = PCB_LYT_TOP;
+			}
+		}
 	}
 
 	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
