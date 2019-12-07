@@ -136,7 +136,8 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 	int n;
 
 	*purpose = NULL;
-	memset(xf_, 0, sizeof(pcb_xform_t));
+	if (xf_ != NULL)
+		memset(xf_, 0, sizeof(pcb_xform_t));
 
 	for(n = 0; n < spc; n++) {
 		char *key = spk[n], *val = spv[n];
@@ -147,19 +148,25 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 			pcb_bool succ;
 			double v = pcb_get_value(val, NULL, NULL, &succ);
 			if (succ) {
-				xf_->bloat = v;
-				*xf = xf_;
+				if (xf_ != NULL)
+					xf_->bloat = v;
+				if (xf != NULL)
+					*xf = xf_;
 			}
 			else
 				pcb_message(PCB_MSG_ERROR, "CAM: ignoring invalid layer supplement value '%s' for bloat\n", val);
 		}
 		else if (strcmp(key, "partial") == 0) {
-			xf_->partial_export = 1;
-			*xf = xf_;
+			if (xf_ != NULL)
+				xf_->partial_export = 1;
+			if (xf != NULL)
+				*xf = xf_;
 		}
 		else if (strcmp(key, "faded") == 0) {
-			xf_->layer_faded = 1;
-			*xf = xf_;
+			if (xf_ != NULL)
+				xf_->layer_faded = 1;
+			if (xf != NULL)
+				*xf = xf_;
 		}
 		else
 			pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
@@ -278,7 +285,6 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 	char *spk[64], *spv[64];
 	int spc = sizeof(spk) / sizeof(spk[0]), numg;
 	pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
-	pcb_xform_t *xf = NULL, xf_;
 
 	tmp = curr = pcb_strdup(str);
 	end = pcb_parse_layergrp_address(curr, spk, spv, &spc);
@@ -288,7 +294,7 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 	}
 
 	curr = pcb_str_strip(curr);
-	numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, NULL, &xf, &xf_, NULL);
+	numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, NULL, NULL, NULL, NULL);
 	if (numg > 0)
 		gid = gids[0];
 
