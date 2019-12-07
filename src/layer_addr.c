@@ -280,18 +280,24 @@ TODO("layer: do the same that cam does; test with propedit");
 
 pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 {
-	char *end, *tmp, *curr;
+	char *end, *tmp = NULL;
+	const char *curr;
 	pcb_layer_id_t gid = -1;
 	char *spk[64], *spv[64];
-	int spc = sizeof(spk) / sizeof(spk[0]), numg;
+	int spc = 0, numg;
 	pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 
-	tmp = curr = pcb_strdup(str);
-	end = pcb_parse_layergrp_address(curr, spk, spv, &spc);
-	if (end != NULL) {
-		free(tmp);
-		return -1;
+	if (strchr(str, '(') != NULL) {
+		curr = tmp = pcb_strdup(str);
+		spc = sizeof(spk) / sizeof(spk[0]);
+		end = pcb_parse_layergrp_address(tmp, spk, spv, &spc);
+		if (end != NULL) {
+			free(tmp);
+			return -1;
+		}
 	}
+	else
+		curr = str;
 
 	curr = pcb_str_strip(curr);
 	numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, NULL, NULL, NULL, NULL);
