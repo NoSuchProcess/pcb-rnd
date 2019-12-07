@@ -1053,24 +1053,20 @@ static int parse_layout_globals(hkp_ctx_t *ctx, hkp_tree_t *tree)
 	for(n = tree->root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "NUMBER_OF_LAYERS") == 0) {
 			ctx->num_cop_layers = strtol(n->argv[1], &end, 10);
-			if (*end != '\0') {
+			if (*end != '\0')
 				return hkp_error(n, "Invalid number of layers '%s' (expected integer)\n", n->argv[1]);
-			}
-			if ((ctx->num_cop_layers < 1) || (ctx->num_cop_layers > ((PCB_MAX_LAYER/2)-8))) {
+			if ((ctx->num_cop_layers < 1) || (ctx->num_cop_layers > ((PCB_MAX_LAYER/2)-8)))
 				return hkp_error(n, "Invalid number of layers '%s' (out of range)\n", n->argv[1]);
-			}
 		}
 		else if (strcmp(n->argv[0], "UNITS") == 0) {
 			ctx->unit = parse_units(n->argv[1]);
-			if (ctx->unit == NULL) {
+			if (ctx->unit == NULL)
 				return hkp_error(n, "Unknown unit '%s'\n", n->argv[1]);
-			}
 		}
 	}
 
-	if (ctx->num_cop_layers < 0) {
+	if (ctx->num_cop_layers < 0)
 		return hkp_error(tree->root, "Missing NUMBER_OF_LAYERS\n");
-	}
 
 	{ /* create the layer stack: copper layers, as many as required by the header */
 		int len = 0, n;

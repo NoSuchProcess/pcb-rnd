@@ -30,12 +30,10 @@
 static int parse_dia(hkp_ctx_t *ctx, node_t *roundn, pcb_coord_t *dia)
 {
 	node_t *hr = roundn->first_child;
-	if ((hr == NULL) || (strcmp(hr->argv[0], "DIAMETER") != 0)) {
+	if ((hr == NULL) || (strcmp(hr->argv[0], "DIAMETER") != 0))
 		return hkp_error(hr, "Expected DIAMETER as first child of ROUND\n");
-	}
-	if (parse_coord(ctx, hr->argv[1], dia) != 0) {
+	if (parse_coord(ctx, hr->argv[1], dia) != 0)
 		return hkp_error(hr, "Invalid ROUND DIAMETER value '%s'\n", hr->argv[1]);
-	}
 	return 0;
 }
 
@@ -398,9 +396,8 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 	for(n = ctx->padstacks.root->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "UNITS") == 0) {
 			ctx->pstk_unit = parse_units(n->argv[1]);
-			if (ctx->pstk_unit == NULL) {
+			if (ctx->pstk_unit == NULL)
 				return hkp_error(n, "Unknown unit '%s'\n", n->argv[1]);
-			}
 		}
 		else if (strcmp(n->argv[0], "PAD") == 0) {
 			if (!htsp_has(&ctx->shapes, n->argv[1])) {
@@ -409,9 +406,8 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				shp->unit = ctx->pstk_unit;
 				htsp_insert(&ctx->shapes, n->argv[1], shp);
 			}
-			else {
+			else
 				return hkp_error(n, "Duplicate PAD '%s'\n", n->argv[1]);
-			}
 		}
 		else if (strcmp(n->argv[0], "HOLE") == 0) {
 			if (!htsp_has(&ctx->holes, n->argv[1])) {
@@ -420,9 +416,8 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				hole->unit = ctx->pstk_unit;
 				htsp_insert(&ctx->holes, n->argv[1], hole);
 			}
-			else {
+			else
 				return hkp_error(n, "Duplicate HOLE '%s'\n", n->argv[1]);
-			}
 		}
 		else if (strcmp(n->argv[0], "PADSTACK") == 0) {
 			if (!htsp_has(&ctx->pstks, n->argv[1])) {
@@ -431,9 +426,8 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 				pstk->unit = ctx->pstk_unit;
 				htsp_insert(&ctx->pstks, n->argv[1], pstk);
 			}
-			else {
+			else
 				return hkp_error(n, "Duplicate PADSTACK '%s'\n", n->argv[1]);
-			}
 		}
 	}
 
