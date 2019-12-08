@@ -806,7 +806,32 @@ TODO("{smdrot} rot is ignored - can we roate?");
 			shapes[7].layer_mask = 0;
 			break;
 		case EAGLE_PSH_OCTAGON:
-TODO("{pstk_shape} need octagon shape generation function/API accessible from read.c padstack creation function")
+			{
+				pcb_coord_t dx2 = dx/2, dy2 = dy/2;
+				shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+				shapes[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
+				pcb_shape_octagon(&shapes[0], dx2 + mask_gap, dy2 + mask_gap);
+				shapes[1].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE;
+				shapes[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
+				pcb_shape_octagon(&shapes[1], dx2 + paste_gap, dy2 + paste_gap);
+				shapes[2].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+				shapes[2].comb = 0;
+				pcb_shape_octagon(&shapes[2], dx2, dy2);
+				shapes[3].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
+				shapes[3].comb = 0;
+				pcb_shape_octagon(&shapes[3], dx2, dy2);
+				shapes[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+				shapes[4].comb = 0;
+				pcb_shape_octagon(&shapes[4], dx2, dy2);
+				shapes[5].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+				shapes[5].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
+				pcb_shape_octagon(&shapes[5], dx2 + paste_gap, dy2 + paste_gap);
+				shapes[6].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
+				shapes[6].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
+				pcb_shape_octagon(&shapes[6], dx2 + mask_gap, dy2 + mask_gap);
+				shapes[7].layer_mask = 0;
+			}
+			break;
 		case EAGLE_PSH_ROUND:
 			assert(dx == dy);
 		case EAGLE_PSH_LONG:
