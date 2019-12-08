@@ -45,6 +45,9 @@ extern const char *pcb_shape_corner_name[];
 
 pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4], double roundres);
 
+/* shorthand rounded rectangle: rounding radius is roundness * smaller_size */
+void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness);
+
 #endif
 
 

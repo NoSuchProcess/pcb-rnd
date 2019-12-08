@@ -1614,42 +1614,6 @@ static void exec_zone_connect(read_state_t *st)
 	htpp_uninit(&poly_upd);
 }
 
-void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness)
-{
-	pcb_pstk_poly_t *dst = &shape->data.poly;
-	pcb_poly_t *p;
-	pcb_layer_t *layer;
-	static pcb_data_t data = {0};
-	int inited = 0, n;
-	pcb_coord_t rr, minor = MIN(width, height);
-	pcb_shape_corner_t corner[4] = { PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
-
-
-	if (!inited) {
-		pcb_data_init(&data);
-		data.LayerN = 1;
-		layer = &data.Layer[0];
-		memset(layer, 0, sizeof(pcb_layer_t));
-		layer->parent.data = &data;
-		layer->parent_type = PCB_PARENT_DATA;
-		inited = 1;
-	}
-	else
-		layer = &data.Layer[0];
-
-	rr = pcb_round(minor * roundness);
-	p = pcb_genpoly_roundrect(layer, width, height, rr, rr, 0, 0, 0, corner, 4.0);
-	pcb_pstk_shape_alloc_poly(dst, p->PointN);
-	shape->shape = PCB_PSSH_POLY;
-
-	for(n = 0; n < p->PointN; n++) {
-		dst->x[n] = p->Points[n].X;
-		dst->y[n] = p->Points[n].Y;
-	}
-	pcb_poly_free_fields(p);
-	free(p);
-}
-
 typedef struct {
 	pcb_layer_type_t want[PCB_LYT_INTERN+1]; /* indexed by location, contains OR'd bitmask of PCB_LYT_COPPER, PCB_LYT_MASK, PCB_LYT_PASTE */
 } kicad_padly_t;
