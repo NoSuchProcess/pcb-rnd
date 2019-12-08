@@ -1063,7 +1063,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	}
 
 	poly = pcb_poly_new(ly, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
-TODO("TODO need to check XML never defines a polygon outline with arcs or curves")
+TODO("{polyarc} TODO need to check XML never defines a polygon outline with arcs or curves")
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "vertex") == 0) {
 			pcb_coord_t x, y;
