@@ -973,6 +973,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 			return -1;
 		}
 	}
+TODO("variable mask is ignored");
 	ps = eagle_create_pstk(st, data, x, y, sh, diax, diay, clr, drill, roundness, rot, onbottom, plated);
 
 	if (name != NULL)
