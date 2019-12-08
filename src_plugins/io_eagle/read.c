@@ -578,7 +578,7 @@ TODO(": need to convert")
 		else
 			pcb_message(PCB_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
 	}
-TODO("read_text	requires size_bump(st, X, Y)")
+TODO("{text_size} calculate bounding box, requires size_bump(st, X, Y)")
 	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, text_scaling, 0, text_val, text_flags);
 	return 0;
 }
