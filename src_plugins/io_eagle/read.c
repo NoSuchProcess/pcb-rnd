@@ -536,15 +536,6 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate text layer 'ly' to 'ln:%d' in eagle_read_text()\n", ln);
 		return 0;
 	}
-TODO("TODO text - need better filtering/exclusion of unsupported text layers +/- correct flags")
-TODO(": remove this hack - if there is a bug, fix it, do not work it around like this")
-	if (ln == 51) {
-		ln = 21; /* we seem to trigger a segfault if we create text with ln = 51 */
-		pcb_message(PCB_MSG_WARNING, "Moved text on tDocu layer: 51 to top silk\n", ln);
-	} else if (!(ln == 21 || ln == 16 )) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring text on non top copper/silk Eagle layer: %ld\n", ln);
-		return 0;
-	}
 	if (!(text_val = eagle_get_attrs(st, subtree, "textfield", NULL)) && CHILDREN(subtree) == NULL) {
 		pcb_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;
