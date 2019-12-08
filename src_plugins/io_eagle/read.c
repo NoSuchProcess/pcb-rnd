@@ -740,28 +740,10 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	return 0;
 }
 
-static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int type)
+static int eagle_read_wire_line(read_state_t *st, trnode_t *subtree, void *obj, int type, pcb_layer_t *ly)
 {
 	eagle_loc_t loc = type;
 	pcb_line_t *lin;
-	pcb_layer_t *ly;
-	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
-	long linetype = eagle_get_attrl(st, subtree, "linetype", -1);/* only present if bin file */
-	double curve = eagle_get_attrd(st, subtree, "curve", 0); /*present if a wire "arc" */
-
-	ly = eagle_layer_get(st, ln, loc, obj);
-	if (ly == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n");
-		return 0;
-	}
-
-	if (curve) {
-		return eagle_read_wire_curve(st, subtree, obj, type, ly, curve);
-	}
-	if (linetype > 0) { /* only occurs if loading eagle binary wire type != 0 */
-		return eagle_read_circle(st, subtree, obj, type);
-	}
-
 
 	lin = pcb_line_alloc(ly);
 	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
@@ -784,6 +766,30 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	}
 
 	return 0;
+}
+
+
+static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int type)
+{
+	eagle_loc_t loc = type;
+	pcb_layer_t *ly;
+	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
+	long linetype = eagle_get_attrl(st, subtree, "linetype", -1);/* only present if bin file */
+	double curve = eagle_get_attrd(st, subtree, "curve", 0); /*present if a wire "arc" */
+
+	ly = eagle_layer_get(st, ln, loc, obj);
+	if (ly == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n");
+		return 0;
+	}
+
+	if (curve)
+		return eagle_read_wire_curve(st, subtree, obj, type, ly, curve);
+
+	if (linetype > 0) /* only occurs if loading eagle binary wire type != 0 */
+		return eagle_read_circle(st, subtree, obj, type);
+
+	return eagle_read_wire_line(st, subtree, obj, type, ly);
 }
 
 typedef enum {
