@@ -10,5 +10,6 @@ $fmt-feature-r eagle binary library
 $fmt-feature-r eagle DRU (design rules)
 $package io-alien
 dep shape
+dep lib_compat_help
 default buildin
 autoload 1
