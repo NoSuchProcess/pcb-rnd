@@ -886,7 +886,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	pcb_pstk_t *ps;
 	pcb_subc_t *subc = obj;
 	const char *name;
-TODO("{smdsides} do not ignore ln");
+TODO("{smdsides} do not ignore ln")
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long roundness = 0;
 	pcb_coord_t clr;
@@ -1648,10 +1648,10 @@ static int post_process_polyholes(read_state_t *st)
 {
 	pcb_layer_id_t lid;
 	for(lid = 0; lid < st->pcb->Data->LayerN; lid++) {
-		pcb_layer_t *ly = &st->pcb->Data->Layer[lid];
-		if (!(pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER)) continue;
 		pcb_poly_t *hole, *poly;
 		gdl_iterator_t ith, itp;
+		pcb_layer_t *ly = &st->pcb->Data->Layer[lid];
+		if (!(pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER)) continue;
 		linelist_foreach(&(ly)->Polygon, &ith, hole) {
 			if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, hole)) continue;
 			linelist_foreach(&(ly)->Polygon, &itp, poly) {
