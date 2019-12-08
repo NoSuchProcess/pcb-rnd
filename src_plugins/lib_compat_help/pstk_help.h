@@ -31,5 +31,8 @@ void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t heig
    edges and dy. */
 void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, pcb_coord_t dx, pcb_coord_t dy);
 
+/* Create a regular octagon shape */
+void pcb_shape_octagon(pcb_pstk_shape_t *dst, pcb_coord_t radiusx, pcb_coord_t radiusy);
+
 
 #endif

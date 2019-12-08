@@ -38,7 +38,7 @@
 #define sqr(o) ((double)(o)*(double)(o))
 
 /* emulate old pcb-rnd "pin shape" feature */
-static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb_coord_t radius, int style)
+static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb_coord_t rx, pcb_coord_t ry, int style)
 {
 	double xm[8], ym[8];
 
@@ -46,22 +46,22 @@ static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb
 
 	pcb_poly_square_pin_factors(style, xm, ym);
 
-	dst->x[7] = x0 + pcb_round(radius * 0.5) * xm[7];
-	dst->y[7] = y0 + pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * ym[7];
-	dst->x[6] = x0 + pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * xm[6];
-	dst->y[6] = y0 + pcb_round(radius * 0.5) * ym[6];
-	dst->x[5] = x0 - pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * xm[5];
-	dst->y[5] = y0 + pcb_round(radius * 0.5) * ym[5];
-	dst->x[4] = x0 - pcb_round(radius * 0.5) * xm[4];
-	dst->y[4] = y0 + pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * ym[4];
-	dst->x[3] = x0 - pcb_round(radius * 0.5) * xm[3];
-	dst->y[3] = y0 - pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * ym[3];
-	dst->x[2] = x0 - pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * xm[2];
-	dst->y[2] = y0 - pcb_round(radius * 0.5) * ym[2];
-	dst->x[1] = x0 + pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * xm[1];
-	dst->y[1] = y0 - pcb_round(radius * 0.5) * ym[1];
-	dst->x[0] = x0 + pcb_round(radius * 0.5) * xm[0];
-	dst->y[0] = y0 - pcb_round(radius * PCB_TAN_22_5_DEGREE_2) * ym[0];
+	dst->x[7] = x0 + pcb_round(rx * 0.5) * xm[7];
+	dst->y[7] = y0 + pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[7];
+	dst->x[6] = x0 + pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[6];
+	dst->y[6] = y0 + pcb_round(ry * 0.5) * ym[6];
+	dst->x[5] = x0 - pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[5];
+	dst->y[5] = y0 + pcb_round(ry * 0.5) * ym[5];
+	dst->x[4] = x0 - pcb_round(rx * 0.5) * xm[4];
+	dst->y[4] = y0 + pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[4];
+	dst->x[3] = x0 - pcb_round(rx * 0.5) * xm[3];
+	dst->y[3] = y0 - pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[3];
+	dst->x[2] = x0 - pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[2];
+	dst->y[2] = y0 - pcb_round(ry * 0.5) * ym[2];
+	dst->x[1] = x0 + pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[1];
+	dst->y[1] = y0 - pcb_round(ry * 0.5) * ym[1];
+	dst->x[0] = x0 + pcb_round(rx * 0.5) * xm[0];
+	dst->y[0] = y0 - pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[0];
 }
 
 /* emulate the old 'square flag' feature */
@@ -82,7 +82,7 @@ static int compat_via_shape_gen(pcb_pstk_shape_t *dst, pcb_pstk_compshape_t csha
 {
 	if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
 		dst->shape = PCB_PSSH_POLY;
-		octa_shape(&dst->data.poly, 0, 0, pad_dia, cshape);
+		octa_shape(&dst->data.poly, 0, 0, pad_dia, pad_dia, cshape);
 		return 0;
 	}
 
@@ -99,7 +99,7 @@ static int compat_via_shape_gen(pcb_pstk_shape_t *dst, pcb_pstk_compshape_t csha
 			break;
 		case PCB_PSTK_COMPAT_OCTAGON:
 			dst->shape = PCB_PSSH_POLY;
-			octa_shape(&dst->data.poly, 0, 0, pad_dia, 1);
+			octa_shape(&dst->data.poly, 0, 0, pad_dia, pad_dia, 1);
 			break;
 		default:
 			return -1;
@@ -775,4 +775,10 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, pcb_coord_t X, pcb_co
 		pcb_attribute_put(&p->Attributes, "name", Name);
 
 	return p;
+}
+
+void pcb_shape_octagon(pcb_pstk_shape_t *dst, pcb_coord_t radiusx, pcb_coord_t radiusy)
+{
+	dst->shape = PCB_PSSH_POLY;
+	octa_shape(&dst->data.poly, 0, 0, radiusx, radiusy, 0);
 }
