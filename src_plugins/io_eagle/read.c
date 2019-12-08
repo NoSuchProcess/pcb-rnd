@@ -915,12 +915,6 @@ TODO("TODO need to load thermals flags to set clearance; may in fact be more con
 TODO(": this should be coming from the eagle file")
 	clr = conf_core.design.clearance;
 
-TODO("TODO padstacks - consider roundrect, oval etc shapes when padstacks available")
-#if 0
-	if (roundness >= 65) /* round smd pads found in fiducials, some discretes, it seems */
-		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, pad);
-#endif
-
 	ps = eagle_create_pstk(st, subc->data, x, y, EAGLE_PSH_SMD, dx, dy, clr, 0, roundness, rot, onbottom, 0);
 	if (ps == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to load smd pad\n");
