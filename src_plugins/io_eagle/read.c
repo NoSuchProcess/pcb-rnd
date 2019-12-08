@@ -967,10 +967,8 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 
 	TODO("padstack: process the extent attribute for bbvia")
 	TODO("padstack: revise this for numeric values ?")
-	/* shape = {square, round, octagon, long, offset} binary */
-
 	TODO("{plating} check how to determine plated");
-	TODO("figure the binary numbers for offset and long");
+	TODO("test the binary numbers for offset and long: shape = {square, round, octagon, long, offset} binary");
 	diay = diax;
 	if (shape != NULL) {
 		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
@@ -979,11 +977,11 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 			sh = EAGLE_PSH_SQUARE;
 		else if ((strcmp(shape, "round") == 0) || (strcmp(shape, "1") == 0))
 			sh = EAGLE_PSH_ROUND;
-		else if (strcmp(shape, "offset") == 0) {
+		else if ((strcmp(shape, "offset") == 0) || (strcmp(shape, "4") == 0)) {
 			sh = EAGLE_PSH_OFFSET;
 			diay *= 2;
 		}
-		else if (strcmp(shape, "long") == 0) {
+		else if ((strcmp(shape, "long") == 0) || (strcmp(shape, "3") == 0)) {
 			sh = EAGLE_PSH_LONG;
 			diay *= 2;
 		}
