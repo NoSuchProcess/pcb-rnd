@@ -779,6 +779,7 @@ TODO("TODO need to establish how mask clearance is defined and done in eagle")
 	pcb_coord_t mask_gap = clr;
 TODO("TODO need to establish how paste clearance, if any, is defined and done in eagle")
 	pcb_coord_t paste_gap = 0;
+TODO("{smdrot} rot is ignored - can we roate?");
 	switch (shape) {
 		case EAGLE_PSH_SQUARE:
 			shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
