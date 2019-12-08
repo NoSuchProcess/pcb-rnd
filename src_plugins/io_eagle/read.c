@@ -863,7 +863,7 @@ TODO("TODO need octagon shape generation function/API accessible from read.c pad
 			break;
 		case EAGLE_PSH_SMD:
 			{
-TODO("TODO need to implement SMD roundness ")
+TODO("{smd} TODO need to implement SMD roundness ")
 				pcb_layer_type_t side = onbottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 				shapes[0].layer_mask = side | PCB_LYT_MASK;
 				shapes[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
