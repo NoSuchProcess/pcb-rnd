@@ -648,45 +648,15 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	x2 = eagle_get_attrc(st, subtree, "x2", -1);
 	y2 = eagle_get_attrc(st, subtree, "y2", -1);
 
-	lin1 = pcb_line_alloc(ly);
-	lin2 = pcb_line_alloc(ly);
-	lin3 = pcb_line_alloc(ly);
-	lin4 = pcb_line_alloc(ly);
-
-	lin1->Point1.X = x1;
-	lin1->Point1.Y = y1;
-	lin1->Point2.X = x2;
-	lin1->Point2.Y = y1;
-
-	lin2->Point1.X = x2;
-	lin2->Point1.Y = y1;
-	lin2->Point2.X = x2;
-	lin2->Point2.Y = y2;
-
-	lin3->Point1.X = x2;
-	lin3->Point1.Y = y2;
-	lin3->Point2.X = x1;
-	lin3->Point2.Y = y2;
-
-	lin4->Point1.X = x1;
-	lin4->Point1.Y = y2;
-	lin4->Point2.X = x1;
-	lin4->Point2.Y = y1;
-
-	lin1->Thickness = lin2->Thickness = lin3->Thickness = lin4->Thickness = st->ms_width;
+	pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, 0, pcb_no_flags());
 
 	switch(loc) {
 		case IN_SUBC:
 			break;
 
 		case ON_BOARD:
-			size_bump(st, x1 - lin1->Thickness, y1 - lin1->Thickness);
-			size_bump(st, x2 + lin1->Thickness, y2 + lin1->Thickness);
-			pcb_add_line_on_layer(ly, lin1);
-			pcb_add_line_on_layer(ly, lin2);
-			pcb_add_line_on_layer(ly, lin3);
-			pcb_add_line_on_layer(ly, lin4);
-
+			size_bump(st, x1, y1);
+			size_bump(st, x2, y2);
 			break;
 	}
 
