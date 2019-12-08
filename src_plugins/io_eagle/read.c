@@ -935,7 +935,7 @@ TODO("TODO padstacks - consider roundrect, oval etc shapes when padstacks availa
 static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj, int type, int hole)
 {
 	eagle_loc_t loc = type;
-	pcb_coord_t x, y, drill, dia, clr, mask;
+	pcb_coord_t x, y, drill, diax, diay, clr, mask;
 	pcb_pstk_t *ps;
 	const char *name, *shape;
 	pcb_pstk_compshape_t cshp = PCB_PSTK_COMPAT_INVALID;
@@ -957,14 +957,14 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	x = eagle_get_attrc(st, subtree, "x", 0);
 	y = eagle_get_attrc(st, subtree, "y", 0);
 	drill = eagle_get_attrc(st, subtree, "drill", 0);
-	dia = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
+	diax = eagle_get_attrc(st, subtree, "diameter", drill * (1.0+st->rv_pad_top*2.0));
 	shape = eagle_get_attrs(st, subtree, "shape", 0);
 
 	clr = conf_core.design.clearance; /* eagle doesn't seem to support per via clearance */
 	mask = (loc == IN_SUBC) ? conf_core.design.clearance : 0; /* board vias don't have mask */
 
-	if ((dia - drill) / 2.0 < st->ms_width)
-		dia = drill + 2*st->ms_width;
+	if ((diax - drill) / 2.0 < st->ms_width)
+		diax = drill + 2*st->ms_width;
 
 TODO("padstack: process the extent attribute for bbvia")
 TODO("padstack: revise this for numeric values ?")
@@ -991,6 +991,7 @@ TODO(": call eagle_create_pstk() instead")
 
 	TODO("{plating} check how to determine plated");
 	TODO("figure the binary numbers for offset and long");
+	diay = diax;
 	if (shape != NULL) {
 		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
 			sh = EAGLE_PSH_OCTAGON;
@@ -998,16 +999,20 @@ TODO(": call eagle_create_pstk() instead")
 			sh = EAGLE_PSH_SQUARE;
 		else if ((strcmp(shape, "round") == 0) || (strcmp(shape, "1") == 0))
 			sh = EAGLE_PSH_ROUND;
-		else if (strcmp(shape, "offset") == 0)
+		else if (strcmp(shape, "offset") == 0) {
 			sh = EAGLE_PSH_OFFSET;
-		else if (strcmp(shape, "long") == 0)
+			diay *= 2;
+		}
+		else if (strcmp(shape, "long") == 0) {
 			sh = EAGLE_PSH_LONG;
+			diay *= 2;
+		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid padstack shape: '%s' - omitting padstack\n", shape);
 			return -1;
 		}
 	}
-	ps = eagle_create_pstk(st, data, x, y, sh, dia, dia, clr, drill, roundness, rot, onbottom, plated);
+	ps = eagle_create_pstk(st, data, x, y, sh, diax, diay, clr, drill, roundness, rot, onbottom, plated);
 
 	if (name != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", name);
@@ -1015,7 +1020,7 @@ TODO(": call eagle_create_pstk() instead")
 	switch(loc) {
 		case IN_SUBC: break;
 		case ON_BOARD:
-			size_bump(st, x + dia, y + dia);
+			size_bump(st, x + diax, y + diay);
 			break;
 	}
 
