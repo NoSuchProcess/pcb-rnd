@@ -966,7 +966,6 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 		diax = drill + 2*st->ms_width;
 
 	TODO("padstack: process the extent attribute for bbvia")
-	TODO("padstack: revise this for numeric values ?")
 	TODO("{plating} check how to determine plated");
 	TODO("test the binary numbers for offset and long: shape = {square, round, octagon, long, offset} binary");
 	diay = diax;
