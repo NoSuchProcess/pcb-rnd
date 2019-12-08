@@ -885,6 +885,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	pcb_pstk_t *ps;
 	pcb_subc_t *subc = obj;
 	const char *name;
+TODO("{smdsides} do not ignore ln");
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long roundness = 0;
 	pcb_coord_t clr;
