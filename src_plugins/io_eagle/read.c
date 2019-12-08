@@ -915,6 +915,9 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	const char *name, *shape;
 	pcb_pstk_compshape_t cshp = PCB_PSTK_COMPAT_INVALID;
 	pcb_data_t *data;
+	eagle_pstk_shape_t sh;
+	int roundness = 0;
+	int rot = 0, onbottom = 0, plated = 1;
 
 	switch(loc) {
 		case IN_SUBC:
@@ -942,6 +945,7 @@ TODO("padstack: process the extent attribute for bbvia")
 TODO("padstack: revise this for numeric values ?")
 	/* shape = {square, round, octagon, long, offset} binary */
 
+#if 0
 TODO(": call eagle_create_pstk() instead")
 	if (shape != NULL) {
 		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
@@ -958,6 +962,27 @@ TODO(": call eagle_create_pstk() instead")
 	}
 
 	ps = pcb_pstk_new_compat_via(data, -1, x, y, drill, dia, clr, mask,  cshp, !hole);
+#endif
+
+	TODO("{plating} check how to determine plated");
+	TODO("figure the binary numbers for offset and long");
+	if (shape != NULL) {
+		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
+			sh = EAGLE_PSH_OCTAGON;
+		else if ((strcmp(shape, "square") == 0) || (strcmp(shape, "0") == 0))
+			sh = EAGLE_PSH_SQUARE;
+		else if ((strcmp(shape, "round") == 0) || (strcmp(shape, "1") == 0))
+			sh = EAGLE_PSH_ROUND;
+		else if (strcmp(shape, "offset") == 0)
+			sh = EAGLE_PSH_OFFSET;
+		else if (strcmp(shape, "long") == 0)
+			sh = EAGLE_PSH_LONG;
+		else {
+			pcb_message(PCB_MSG_ERROR, "Invalid padstack shape: '%s' - omitting padstack\n", shape);
+			return -1;
+		}
+	}
+	ps = eagle_create_pstk(st, data, x, y, sh, dia, dia, clr, drill, roundness, rot, onbottom, plated);
 
 	if (name != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", name);
