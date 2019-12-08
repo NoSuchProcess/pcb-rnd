@@ -125,7 +125,6 @@
 		- layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich].
 		- eagle XML import fails on polygon import reported by miloh, test file alien_formats/eagle/OSHW_XML_examples/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
 		- {rect} eagle rectangle parsing should generate a rectangular feature, not a four line rectangular outline [erich]
-		- eagle XML wire elements need to have "curve" attribute processed, if present. i.e. arcs. Can see translate2geda for hints [report: erich]
 		- eagle binary format appended text block needs to be parsed and the text strings allocated to ASCII-127 references in preceding text blocks [erich] 
 		- eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
 		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
