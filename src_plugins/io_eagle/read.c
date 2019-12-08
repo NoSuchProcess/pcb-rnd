@@ -775,9 +775,9 @@ typedef enum {
 static pcb_pstk_t *eagle_create_pstk(read_state_t *st, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, eagle_pstk_shape_t shape, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t clr, pcb_coord_t drill_dia, int roundness, int rot, int onbottom, pcb_bool plated)
 {
 	pcb_pstk_shape_t shapes[8];
-TODO("TODO need to establish how mask clearance is defined and done in eagle")
+TODO("{clearance} need to establish how mask clearance is defined and done in eagle")
 	pcb_coord_t mask_gap = clr;
-TODO("TODO need to establish how paste clearance, if any, is defined and done in eagle")
+TODO("{clearance} need to establish how paste clearance, if any, is defined and done in eagle")
 	pcb_coord_t paste_gap = 0;
 TODO("{smdrot} rot is ignored - can we roate?");
 	switch (shape) {
@@ -912,7 +912,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 TODO("TODO need to load thermals flags to set clearance; may in fact be more contactref related.")
 
-TODO(": this should be coming from the eagle file")
+TODO("this should be coming from the eagle file")
 	clr = conf_core.design.clearance;
 
 	ps = eagle_create_pstk(st, subc->data, x, y, EAGLE_PSH_SMD, dx, dy, clr, 0, roundness, rot, onbottom, 0);
@@ -961,7 +961,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 
 	TODO("padstack: process the extent attribute for bbvia")
 	TODO("{plating} check how to determine plated");
-	TODO("test the binary numbers for offset and long: shape = {square, round, octagon, long, offset} binary");
+	TODO("bin: test the binary numbers for offset and long: shape = {square, round, octagon, long, offset} binary");
 	diay = diax;
 	if (shape != NULL) {
 		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
@@ -1084,7 +1084,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	}
 
 	poly = pcb_poly_new(ly, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
-TODO("{polyarc} TODO need to check XML never defines a polygon outline with arcs or curves")
+TODO("{polyarc} need to check XML never defines a polygon outline with arcs or curves")
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "vertex") == 0) {
 			pcb_coord_t x, y;
@@ -1098,8 +1098,8 @@ TODO("{polyarc} TODO need to check XML never defines a polygon outline with arcs
 					size_bump(st, x, y);
 					break;
 			}
-TODO("TODO need to check if binary format is sometimes using arcs or curves for polygn outlines")
-TODO("TODO can remove the following if dealt with in post processor for binary tree")
+TODO("bin: need to check if binary format is sometimes using arcs or curves for polygn outlines")
+TODO("bin: can remove the following if dealt with in post processor for binary tree")
 		} else if (STRCMP(NODENAME(n), "wire") == 0) { /* binary format vertices it seems */
 			eagle_read_poly_corner(st, n, poly, "linetype_0_x1", "linetype_0_y1", loc);
 			eagle_read_poly_corner(st, n, poly, "linetype_0_x2", "linetype_0_y2", loc);
@@ -1167,7 +1167,7 @@ TODO("subc: revise this: are we loading an instance here? do we need to place it
 			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
 			pcb_subc_rebind(st->pcb, subc);
 
-TODO(": revise rotation and flip")
+TODO("revise rotation and flip")
 #if 0
 			if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
 				/* lossles module rotation for round steps */
@@ -1486,7 +1486,7 @@ static int eagle_read_plain(read_state_t *st, trnode_t *subtree, void *obj, int 
 		{NULL, NULL}
 	};
 
-TODO(": test (should process these probably no-net-no-signal objects)")
+TODO("test (should process these probably no-net-no-signal objects)")
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, NULL, ON_BOARD);
 }
 
@@ -1646,7 +1646,7 @@ static void st_uninit(read_state_t *st)
 
 static int post_process_thermals(read_state_t *st)
 {
-TODO(": process thermals")
+TODO("process thermals")
 	PCB_PADSTACK_LOOP(st->pcb->Data);
 	{
 	}
