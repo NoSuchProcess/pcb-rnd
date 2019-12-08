@@ -594,9 +594,8 @@ static long eagle_degrees_to_pcb_degrees(long const eagle_degrees) {
 	return (360 - e_degrees);
 }
 
-static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int type)
+static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, eagle_loc_t loc)
 {
-	eagle_loc_t loc = type;
 	pcb_arc_t *circ;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_layer_t *ly;
@@ -694,9 +693,8 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	return 0;
 }
 
-static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj, int type, pcb_layer_t *ly, double curvang)
+static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj, eagle_loc_t loc, pcb_layer_t *ly, double curvang)
 {
-	eagle_loc_t loc = type;
 	pcb_arc_t *arc;
 	pcb_coord_t x1, y1, x2, y2, th, cx, cy;
 	double sidex, sidey, sidelen, nx, ny, midx, midy, r, sa, ea, da, dx, dy;
@@ -740,9 +738,8 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	return 0;
 }
 
-static int eagle_read_wire_line(read_state_t *st, trnode_t *subtree, void *obj, int type, pcb_layer_t *ly)
+static int eagle_read_wire_line(read_state_t *st, trnode_t *subtree, void *obj, eagle_loc_t loc, pcb_layer_t *ly)
 {
-	eagle_loc_t loc = type;
 	pcb_line_t *lin;
 
 	lin = pcb_line_alloc(ly);
@@ -784,12 +781,12 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	}
 
 	if (curve)
-		return eagle_read_wire_curve(st, subtree, obj, type, ly, curve);
+		return eagle_read_wire_curve(st, subtree, obj, loc, ly, curve);
 
 	if (linetype > 0) /* only occurs if loading eagle binary wire type != 0 */
-		return eagle_read_circle(st, subtree, obj, type);
+		return eagle_read_circle(st, subtree, obj, loc);
 
-	return eagle_read_wire_line(st, subtree, obj, type, ly);
+	return eagle_read_wire_line(st, subtree, obj, loc, ly);
 }
 
 typedef enum {
