@@ -903,7 +903,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 TODO("{thermal} need to load thermals flags to set clearance; may in fact be more contactref related.")
 
-TODO("this should be coming from the eagle file")
+TODO("{clearance} this should be coming from the eagle file")
 	clr = conf_core.design.clearance;
 
 	ps = eagle_create_pstk(st, subc->data, x, y, EAGLE_PSH_SMD, dx, dy, clr, 0, roundness, rot, onbottom, 0);
@@ -1123,6 +1123,8 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
+
+	TODO("^^^ can polygon be in footprints?");
 
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, subc, IN_SUBC);
 }
