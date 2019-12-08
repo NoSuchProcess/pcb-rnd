@@ -922,7 +922,6 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	pcb_coord_t x, y, drill, diax, diay, clr, mask;
 	pcb_pstk_t *ps;
 	const char *name, *shape;
-	pcb_pstk_compshape_t cshp = PCB_PSTK_COMPAT_INVALID;
 	pcb_data_t *data;
 	eagle_pstk_shape_t sh = EAGLE_PSH_ROUND; /* if nothing is said, round is used by eagle */
 	int roundness = 0;
