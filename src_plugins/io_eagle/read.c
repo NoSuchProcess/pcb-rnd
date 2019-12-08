@@ -46,6 +46,7 @@
 #include "trparse_xml.h"
 #include "trparse_bin.h"
 #include "obj_subc.h"
+#include "obj_poly_op.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
