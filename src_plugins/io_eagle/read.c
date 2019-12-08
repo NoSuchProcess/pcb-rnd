@@ -834,6 +834,8 @@ TODO("{smdrot} rot is ignored - can we roate?");
 			break;
 		case EAGLE_PSH_ROUND:
 			assert(dx == dy);
+		case EAGLE_PSH_OFFSET:
+TODO("{pstk_shape} TODO need OFFSET shape generation function, once OFFSET object understood")
 		case EAGLE_PSH_LONG:
 			shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
 			shapes[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
@@ -883,9 +885,6 @@ TODO("{smdrot} rot is ignored - can we roate?");
 				shapes[3].layer_mask = 0;
 			}
 			break;
-		case EAGLE_PSH_OFFSET:
-TODO("{pstk_shape} TODO need OFFSET shape generation function, once OFFSET object understood")
-			return NULL;
 	}
 	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, clr, shapes);
 }
