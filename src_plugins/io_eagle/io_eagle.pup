@@ -9,5 +9,6 @@ $fmt-feature-r eagle binary board version 3, 4 and 5
 $fmt-feature-r eagle binary library
 $fmt-feature-r eagle DRU (design rules)
 $package io-alien
+dep shape
 default buildin
 autoload 1

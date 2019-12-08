@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
  *  Copyright (C) 2017 Erich S. Heinzle
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -50,6 +50,7 @@
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
+#include "../src_plugins/shape/shape.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
 #define EAGLE_TEXT_SIZE_100 PCB_MIL_TO_COORD(50)
@@ -833,17 +834,26 @@ TODO("{pstk_shape} need octagon shape generation function/API accessible from re
 			break;
 		case EAGLE_PSH_SMD:
 			{
-TODO("{smd} TODO need to implement SMD roundness ")
+				double rnd = (double)roundness / 200.0;
 				pcb_layer_type_t side = onbottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 				shapes[0].layer_mask = side | PCB_LYT_MASK;
 				shapes[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[0], dx + mask_gap, dy + mask_gap);
+				if (rnd == 0)
+					pcb_shape_rect(&shapes[0], dx + mask_gap, dy + mask_gap);
+				else
+					pcb_shape_roundrect(&shapes[0], dx + mask_gap, dy + mask_gap, rnd);
 				shapes[1].layer_mask = side | PCB_LYT_PASTE;
 				shapes[1].comb = PCB_LYC_SUB | PCB_LYC_AUTO;
-				pcb_shape_rect(&shapes[1], dx + paste_gap, dy + paste_gap);
+				if (rnd == 0)
+					pcb_shape_rect(&shapes[1], dx + paste_gap, dy + paste_gap);
+				else
+					pcb_shape_roundrect(&shapes[1], dx + paste_gap, dy + paste_gap, rnd);
 				shapes[2].layer_mask = side | PCB_LYT_COPPER;
 				shapes[2].comb = 0;
-				pcb_shape_rect(&shapes[2], dx, dy);
+				if (rnd == 0)
+					pcb_shape_rect(&shapes[2], dx, dy);
+				else
+					pcb_shape_roundrect(&shapes[2], dx, dy, rnd);
 				shapes[3].layer_mask = 0;
 			}
 			break;
@@ -862,9 +872,8 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	const char *name;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	long roundness = 0;
-	pcb_pstk_shape_t sh[4];
 	pcb_coord_t clr;
-	int rot;
+	int rot, onbottom = 0;
 
 	assert(type == IN_SUBC);
 
@@ -887,22 +896,7 @@ TODO("TODO padstacks - consider roundrect, oval etc shapes when padstacks availa
 		PCB_FLAG_CLEAR(PCB_FLAG_SQUARE, pad);
 #endif
 
-	memset(sh, 0, sizeof(sh));
-	sh[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; sh[0].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect(&sh[0], dx+clr, dy+clr);
-	sh[1].layer_mask = PCB_LYT_TOP | PCB_LYT_PASTE; sh[1].comb = PCB_LYC_AUTO; pcb_shape_rect(&sh[1], dx, dy);
-	sh[2].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; pcb_shape_rect(&sh[2], dx, dy);
-	sh[3].layer_mask = 0;
-
-	if (rot != 0) {
-		double sina = sin(rot / PCB_RAD_TO_DEG), cosa = cos(rot / PCB_RAD_TO_DEG);
-		pcb_pstk_shape_rot(&sh[0], sina, cosa, rot);
-		pcb_pstk_shape_rot(&sh[1], sina, cosa, rot);
-		pcb_pstk_shape_rot(&sh[2], sina, cosa, rot);
-	}
-
-TODO(": call eagle_create_pstk() instead")
-	ps = pcb_pstk_new_from_shape(subc->data, x, y, 0, 0, clr, sh);
-
+	ps = eagle_create_pstk(st, subc->data, x, y, EAGLE_PSH_SMD, dx, dy, clr, 0, roundness, rot, onbottom, 0);
 	if (ps == NULL)
 		pcb_message(PCB_MSG_ERROR, "Failed to load smd pad\n");
 
