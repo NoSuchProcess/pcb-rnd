@@ -1654,7 +1654,7 @@ static int post_process_polyholes(read_state_t *st)
 		gdl_iterator_t ith, itp;
 		linelist_foreach(&(ly)->Polygon, &ith, hole) {
 			if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, hole)) continue;
-			linelist_foreach(&(ly)->Polygon, &ith, poly) {
+			linelist_foreach(&(ly)->Polygon, &itp, poly) {
 				if (PCB_FLAG_TEST(PCB_FLAG_FOUND, poly)) continue;
 				if (pcb_polyarea_touching(hole->Clipped, poly->Clipped)) {
 					pcb_cardinal_t n;
