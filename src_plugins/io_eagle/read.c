@@ -554,7 +554,7 @@ TODO(": remove this hack - if there is a bug, fix it, do not work it around like
 		return 0;
 	}
 
-TODO(": need to convert")
+TODO("need to convert multiline text (\n) into multiple text objects; example: work/alien_formats/85 veegashield")
 	if (text_val == NULL) {
 		text_val = (const char *)GET_TEXT(CHILDREN(subtree));
 	}
