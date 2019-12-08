@@ -1074,8 +1074,10 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	eagle_loc_t loc = type;
 	pcb_layer_t *ly;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
+	const char *pour = GET_PROP(subtree, "pour");
 	pcb_poly_t *poly;
 	trnode_t *n;
+	int is_cutout;
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
@@ -1083,7 +1085,9 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 		return 0;
 	}
 
-	poly = pcb_poly_new(ly, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
+	is_cutout = ((pour != NULL) && (strcmp(pour, "cutout") == 0));
+
+	poly = pcb_poly_new(ly, 0, pcb_flag_make(is_cutout ? PCB_FLAG_FOUND : PCB_FLAG_CLEARPOLY));
 TODO("{polyarc} need to check XML never defines a polygon outline with arcs or curves")
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "vertex") == 0) {
@@ -1654,6 +1658,34 @@ TODO("{thermal} process thermals")
 	return 0;
 }
 
+static int post_process_polyholes(read_state_t *st)
+{
+	pcb_layer_id_t lid;
+	for(lid = 0; lid < st->pcb->Data->LayerN; lid++) {
+		pcb_layer_t *ly = &st->pcb->Data->Layer[lid];
+		if (!(pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER)) continue;
+		pcb_poly_t *hole, *poly;
+		gdl_iterator_t ith, itp;
+		linelist_foreach(&(ly)->Polygon, &ith, hole) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, hole)) continue;
+			linelist_foreach(&(ly)->Polygon, &ith, poly) {
+				if (PCB_FLAG_TEST(PCB_FLAG_FOUND, poly)) continue;
+				if (pcb_polyarea_touching(hole->Clipped, poly->Clipped)) {
+					pcb_cardinal_t n;
+					poly->clip_dirty = 1;
+					/* add hole points to the permanent list */
+					pcb_poly_hole_new(poly);
+					for(n = 0; n < hole->PointN; n++)
+						pcb_poly_point_new(poly, hole->Points[n].X, hole->Points[n].Y);
+				}
+			}
+			pcb_polyop_destroy(NULL, ly, hole);
+		}
+	}
+	return 0;
+}
+
+
 int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
 {
 	int pp_res, res, old_leni;
@@ -1700,6 +1732,14 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 	pp_res = post_process_thermals(&st);
 	pcb_data_clip_inhibit_dec(pcb->Data, 1);
+
+
+	/* need to do the poly hole calculations in a new clip session because
+	   each polygon needs to be clipped already to see if holes affect them */
+	pcb_data_clip_inhibit_inc(pcb->Data);
+	pp_res |= post_process_polyholes(&st);
+	pcb_data_clip_inhibit_dec(pcb->Data, 1);
+
 	st_uninit(&st);
 	return pp_res;
 
