@@ -1133,15 +1133,11 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	trnode_t *n;
-	pcb_text_t *t;
-	int direction = 0;
-	pcb_flag_t TextFlags = pcb_no_flags();
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		pcb_trace("looking at child %s of packages node\n", NODENAME(n)); 
 		if (STRCMP(NODENAME(n), "package") == 0) {
 			pcb_subc_t *subc;
-			pcb_coord_t x, y;
 
 			subc = pcb_subc_alloc();
 			pcb_attribute_put(&subc->Attributes, "refdes", "K1");
@@ -1188,7 +1184,6 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 {
 	trnode_t *n;
 	eagle_library_t *lib = obj;
-	pcb_text_t *t;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "package") == 0) {
@@ -1330,9 +1325,6 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 
 static void eagle_read_subc_attrs(read_state_t *st, trnode_t *nd, pcb_subc_t *subc, pcb_coord_t x, pcb_coord_t y, const char *attname, const char *subc_attr, const char *str, pcb_bool add_text)
 {
-	int direction = 0;
-	pcb_coord_t size;
-
 	pcb_attribute_put(&subc->Attributes, subc_attr, str);
 	if (!add_text)
 		return;
