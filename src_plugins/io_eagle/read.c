@@ -383,29 +383,29 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
 	if ((ly == NULL) || (ly->lid < 0)) {
-TODO(": move this out to a separate function")
+		TODO("move this out to a separate function")
 		if (id == 51 || id == 52) {
-			/* create docu on the first reference */
-		pcb_layer_type_t typ;
-		pcb_layergrp_id_t gid;
-		switch (id) {
-			case 51: /* = tDocu */
-				typ        = PCB_LYT_SILK | PCB_LYT_TOP;
-				ly->name   = "tDocu";
-				ly->color  = 14;
-				break;
-			default: /* i.e. 52 = bDocu: */
-				typ        = PCB_LYT_SILK | PCB_LYT_BOTTOM;
-				ly->name   = "bDocu";
-				ly->color  = 7;
-				break;
-		}
+				/* create docu on the first reference */
+			pcb_layer_type_t typ;
+			pcb_layergrp_id_t gid;
+			switch (id) {
+				case 51: /* = tDocu */
+					typ        = PCB_LYT_SILK | PCB_LYT_TOP;
+					ly->name   = "tDocu";
+					ly->color  = 14;
+					break;
+				default: /* i.e. 52 = bDocu: */
+					typ        = PCB_LYT_SILK | PCB_LYT_BOTTOM;
+					ly->name   = "bDocu";
+					ly->color  = 7;
+					break;
+			}
 
-		ly->fill    = 1;
-		ly->visible = 0;
-		ly->active  = 1;
-		pcb_layergrp_list(st->pcb, typ, &gid, 1);
-		ly->lid = pcb_layer_create(st->pcb, gid, ly->name);	
+			ly->fill    = 1;
+			ly->visible = 0;
+			ly->active  = 1;
+			pcb_layergrp_list(st->pcb, typ, &gid, 1);
+			ly->lid = pcb_layer_create(st->pcb, gid, ly->name);	
 		}
 		else
 			return NULL; /* not found and not supported */
