@@ -527,7 +527,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_coord_t X, Y, height;
 	const char *rot, *text_val;
-	unsigned int text_direction = 0, text_scaling = 100;
+	unsigned int rotdeg = 0, text_scaling = 100;
 	pcb_flag_t text_flags = pcb_flag_make(0);
 	pcb_layer_t *ly;
 	ly = eagle_layer_get(st, ln, type, obj);
@@ -562,28 +562,24 @@ TODO(": need to convert")
 	height = eagle_get_attrc(st, subtree, "size", -1);
 	text_scaling = (int)((double)height/(double)EAGLE_TEXT_SIZE_100 * 100);
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
-	if (rot == NULL) {
-		rot = "R0";
-	}
+	if (rot != NULL) {
+		if (*rot == 'R') {
+			char *end;
+			rotdeg = strtol(rot+1, &end, 10);
+			if (*end != '\0')
+				pcb_message(PCB_MSG_WARNING, "Ignoring invalid text rotation '%s' (requires integer)\n", rot);
 
-	if (rot[0] == 'R') {
-		int deg = atoi(rot+1);
-		if (deg < 45 || deg >= 315) {
-			text_direction = 0;
+				TODO("but: alignment changed, see {text_rot}");
+/*
+			if ((rotdeg > 90) && (rotdeg <= 270))
+				rotdeg = rotdeg - 180;
+*/
 		}
-		else if (deg < 135 && deg >= 45) {
-			text_direction = 1;
-		}
-		else if (deg < 225 && deg >= 135) {
-			text_direction = 2;
-		}
-		else {
-			text_direction = 3;
-		}
+		else
+			pcb_message(PCB_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
 	}
 TODO("read_text	requires size_bump(st, X, Y)")
-TODO("{test} text_rot: check if we can just use the angle")
-	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*text_direction, text_scaling, 0, text_val, text_flags);
+	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, text_scaling, 0, text_val, text_flags);
 	return 0;
 }
 
