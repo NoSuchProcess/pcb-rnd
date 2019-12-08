@@ -624,7 +624,6 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, eag
 static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
-	pcb_line_t *lin1, *lin2, *lin3, *lin4;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_layer_t *ly;
 	pcb_coord_t x1, y1, x2, y2;
