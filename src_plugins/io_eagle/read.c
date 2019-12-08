@@ -804,7 +804,7 @@ TODO("TODO need to establish how paste clearance, if any, is defined and done in
 			shapes[7].layer_mask = 0;
 			break;
 		case EAGLE_PSH_OCTAGON:
-TODO("TODO need octagon shape generation function/API accessible from read.c padstack creation function")
+TODO("{pstk_shape} need octagon shape generation function/API accessible from read.c padstack creation function")
 		case EAGLE_PSH_ROUND:
 			assert(dx == dy);
 		case EAGLE_PSH_LONG:
@@ -848,7 +848,7 @@ TODO("{smd} TODO need to implement SMD roundness ")
 			}
 			break;
 		case EAGLE_PSH_OFFSET:
-TODO("TODO need OFFSET shape generation function, once OFFSET object understood")
+TODO("{pstk_shape} TODO need OFFSET shape generation function, once OFFSET object understood")
 			return NULL;
 	}
 	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, clr, shapes);
