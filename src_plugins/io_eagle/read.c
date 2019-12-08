@@ -910,7 +910,7 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	rot = eagle_rot2degrees(eagle_get_attrs(st, subtree, "rot", 0));
 	roundness = eagle_get_attrl(st, subtree, "roundness", 0);
 
-TODO("TODO need to load thermals flags to set clearance; may in fact be more contactref related.")
+TODO("{thermal} need to load thermals flags to set clearance; may in fact be more contactref related.")
 
 TODO("this should be coming from the eagle file")
 	clr = conf_core.design.clearance;
@@ -959,7 +959,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 	if ((diax - drill) / 2.0 < st->ms_width)
 		diax = drill + 2*st->ms_width;
 
-	TODO("padstack: process the extent attribute for bbvia")
+	TODO("{bbvia} padstack: process the extent attribute for bbvia")
 	TODO("{plating} check how to determine plated");
 	TODO("bin: test the binary numbers for offset and long: shape = {square, round, octagon, long, offset} binary");
 	diay = diax;
@@ -1339,7 +1339,7 @@ static void eagle_read_subc_attrs(read_state_t *st, trnode_t *nd, pcb_subc_t *su
 	if (!add_text)
 		return;
 
-TODO("some text objects should be already created in the library; we should iterate over existing %DYNTEXT% attributes, add the new ones, change the coords of existing ones CUCP#45")
+TODO("{libtext} some text objects should be already created in the library; we should iterate over existing %DYNTEXT% attributes, add the new ones, change the coords of existing ones CUCP#45")
 #if 0
 	y += EAGLE_TEXT_SIZE_100;
 
@@ -1646,7 +1646,7 @@ static void st_uninit(read_state_t *st)
 
 static int post_process_thermals(read_state_t *st)
 {
-TODO("process thermals")
+TODO("{thermal} process thermals")
 	PCB_PADSTACK_LOOP(st->pcb->Data);
 	{
 	}
