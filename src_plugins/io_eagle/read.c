@@ -969,25 +969,6 @@ TODO("padstack: process the extent attribute for bbvia")
 TODO("padstack: revise this for numeric values ?")
 	/* shape = {square, round, octagon, long, offset} binary */
 
-#if 0
-TODO(": call eagle_create_pstk() instead")
-	if (shape != NULL) {
-		if ((strcmp(shape, "octagon") == 0) || (strcmp(shape, "2") == 0))
-			cshp = PCB_PSTK_COMPAT_OCTAGON;
-		else if ((strcmp(shape, "square") == 0) || (strcmp(shape, "0") == 0))
-			cshp = PCB_PSTK_COMPAT_SQUARE;
-		else if ((strcmp(shape, "round") == 0) || (strcmp(shape, "1") == 0))
-			cshp = PCB_PSTK_COMPAT_ROUND;
-	}
-
-	if (cshp == PCB_PSTK_COMPAT_INVALID) {
-		cshp = PCB_PSTK_COMPAT_OCTAGON;
-		pcb_message(PCB_MSG_ERROR, "Invalid padstack shape: '%s' - using octagon instead\n", shape);
-	}
-
-	ps = pcb_pstk_new_compat_via(data, -1, x, y, drill, dia, clr, mask,  cshp, !hole);
-#endif
-
 	TODO("{plating} check how to determine plated");
 	TODO("figure the binary numbers for offset and long");
 	diay = diax;
