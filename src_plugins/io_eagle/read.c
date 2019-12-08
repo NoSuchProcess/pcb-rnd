@@ -694,6 +694,52 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 	return 0;
 }
 
+static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj, int type, pcb_layer_t *ly, double curvang)
+{
+	eagle_loc_t loc = type;
+	pcb_arc_t *arc;
+	pcb_coord_t x1, y1, x2, y2, th, cx, cy;
+	double sidex, sidey, sidelen, nx, ny, midx, midy, r, sa, ea, da, dx, dy;
+
+	x1 = eagle_get_attrc(st, subtree, "x1", -1);
+	y1 = eagle_get_attrc(st, subtree, "y1", -1);
+	x2 = eagle_get_attrc(st, subtree, "x2", -1);
+	y2 = eagle_get_attrc(st, subtree, "y2", -1);
+	th = eagle_get_attrc(st, subtree, "width", -1);
+
+	midx = (x2 + x1) / 2.0;
+	midy = (y2 + y1) / 2.0;
+	sidex = x2 - x1;
+	sidey = y2 - y1;
+	sidelen = sqrt(sidex * sidex + sidey * sidey);
+	nx = -sidey / sidelen;
+	ny = sidex / sidelen;
+	r = (sidelen / 2) / tan(curvang / PCB_RAD_TO_DEG / 2.0);
+	cx  = pcb_round(midx + nx * r);
+	cy  = pcb_round(midy + ny * r);
+/*	pcb_trace("curve mid: %mm;%mm center: %mm;%mm\n", midx, midy, cx, cy);*/
+
+	dx = x1 - cx;
+	dy = y1 - cy;
+	r = sqrt(dx * dx + dy * dy);
+	sa = 180.0 - atan2(y1 - cy, x1 - cx) * PCB_RAD_TO_DEG;
+	ea = 180.0 - atan2(y2 - cy, x2 - cx) * PCB_RAD_TO_DEG;
+	da = ea - sa;
+/*	pcb_trace("  r=%mm %f %f -> %f\n", (pcb_coord_t)r, sa, ea, da);*/
+	arc = pcb_arc_new(ly, cx, cy, r, r, sa, da, th, st->md_wire_wire*2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+
+	switch (loc) {
+		case IN_SUBC:
+			break;
+		case ON_BOARD:
+			size_bump(st, arc->BoundingBox.X1, arc->BoundingBox.Y1);
+			size_bump(st, arc->BoundingBox.X2, arc->BoundingBox.Y2);
+			break;
+	}
+
+	return 0;
+}
+
 static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int type)
 {
 	eagle_loc_t loc = type;
@@ -703,19 +749,19 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 	long linetype = eagle_get_attrl(st, subtree, "linetype", -1);/* only present if bin file */
 	double curve = eagle_get_attrd(st, subtree, "curve", 0); /*present if a wire "arc" */
 
-TODO(": need to process curve value if present to draw an arc, not a line")
-	if (curve) {
-		pcb_message(PCB_MSG_ERROR, "Curved wire not yet handled in eagle_read_wire()\n");
-	}
-	if (linetype > 0) { /* only occurs if loading eagle binary wire type != 0 */
-		return eagle_read_circle(st, subtree, obj, type);
-	}
-
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n");
 		return 0;
 	}
+
+	if (curve) {
+		return eagle_read_wire_curve(st, subtree, obj, type, ly, curve);
+	}
+	if (linetype > 0) { /* only occurs if loading eagle binary wire type != 0 */
+		return eagle_read_circle(st, subtree, obj, type);
+	}
+
 
 	lin = pcb_line_alloc(ly);
 	lin->Point1.X = eagle_get_attrc(st, subtree, "x1", -1);
