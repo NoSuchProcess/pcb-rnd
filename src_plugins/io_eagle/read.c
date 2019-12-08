@@ -586,8 +586,9 @@ static long eagle_degrees_to_pcb_degrees(long const eagle_degrees) {
 	return (360 - e_degrees);
 }
 
-static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, eagle_loc_t loc)
+static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
+	eagle_loc_t loc = type;
 	pcb_arc_t *circ;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	pcb_layer_t *ly;
