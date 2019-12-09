@@ -30,7 +30,7 @@ append /local/pcb/RULES [@
 ### Module @/local/pcb/mod@: plugin ###
 
 $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so: @/local/pcb/mod/OBJS@ @/local/pcb/mod/OBJS_C99@
-	$(CC) $(LDFLAGS) @/local/pcb/mod/LDFLAGS@ -shared @cc/rdynamic@ -o $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@ @/local/pcb/mod/OBJS_C99@
+	$(CC) -shared @cc/rdynamic@ -o $(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@ @/local/pcb/mod/OBJS_C99@  $(LDFLAGS) @/local/pcb/mod/LDFLAGS@
 
 mod_@/local/pcb/mod@: $(PLUGIDIR)/@/local/pcb/mod@.so
 
