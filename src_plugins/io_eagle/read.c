@@ -771,7 +771,7 @@ TODO("{clearance} need to establish how mask clearance is defined and done in ea
 	pcb_coord_t mask_gap = clr;
 TODO("{clearance} need to establish how paste clearance, if any, is defined and done in eagle")
 	pcb_coord_t paste_gap = 0;
-TODO("{smdrot} rot is ignored - can we roate?");
+
 	switch (shape) {
 		case EAGLE_PSH_SQUARE:
 			shapes[0].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
@@ -878,6 +878,17 @@ TODO("{pstk_shape} TODO need OFFSET shape generation function, once OFFSET objec
 			}
 			break;
 	}
+
+	if (rot != 0) {
+		int n;
+		double sina = sin(-(double)rot / PCB_RAD_TO_DEG), cosa = cos(-(double)rot / PCB_RAD_TO_DEG);
+
+		for(n = 0; n < sizeof(shapes)/sizeof(shapes[0]); n++) {
+			if (shapes[n].layer_mask == 0) break;
+			pcb_pstk_shape_rot(&shapes[n], sina, cosa, rot);
+		}
+	}
+
 	return pcb_pstk_new_from_shape(data, x, y, drill_dia, plated, clr, shapes);
 }
 
