@@ -898,13 +898,23 @@ static int eagle_read_smd(read_state_t *st, trnode_t *subtree, void *obj, int ty
 	pcb_pstk_t *ps;
 	pcb_subc_t *subc = obj;
 	const char *name, *srot;
-TODO("{smdsides} do not ignore ln, need a new {smdrot} example too, on the bottom side")
-	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
+TODO("{smdsides} rot example too, on the bottom side to check if rotation inverts")
+	eagle_layerid_t ln;
+	eagle_layer_t *ly;
 	long roundness = 0;
 	pcb_coord_t clr;
 	int rot = 0, onbottom = 0;
 
 	assert(type == IN_SUBC);
+
+	ln = eagle_get_attrl(st, subtree, "layer", -1);
+	if (ln != -1) { /* can't go by layer type because there's no layer stack yet (we are in lib) */
+		if (ln == 16) onbottom = 1;
+		else if (ln== 1) onbottom = 0;
+		else pcb_message(PCB_MSG_ERROR, "Failed to determine smd pad side, assuming top (invalid layer %d)\n", ln);
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "Failed to determine smd pad side, assuming top (missing layer)\n");
 
 	name = eagle_get_attrs(st, subtree, "name", NULL);
 	x = eagle_get_attrc(st, subtree, "x", 0);
