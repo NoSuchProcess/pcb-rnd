@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,64 +35,73 @@
 #include "conf_core.h"
 #include "undo.h"
 #include "brave.h"
+#include "extobj.h"
 
 /* ----------------------------------------------------------------------
  * performs several operations on the passed object
  */
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
+	pcb_any_obj_t *res = NULL, *exto;
+
+	exto = pcb_extobj_edit_pre(Ptr2);
+
 	switch (Type) {
 		case PCB_OBJ_LINE:
 			if (F->Line)
-				return (F->Line(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2));
+				res = F->Line(ctx, (pcb_layer_t *)Ptr1, (pcb_line_t *)Ptr2);
 			break;
 
 		case PCB_OBJ_ARC:
 			if (F->Arc)
-				return (F->Arc(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2));
+				res = F->Arc(ctx, (pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2);
 			break;
 
 		case PCB_OBJ_LINE_POINT:
 			if (F->LinePoint)
-				return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3));
+				res = F->LinePoint(ctx, (pcb_layer_t *)Ptr1, (pcb_line_t *)Ptr2, (pcb_point_t *)Ptr3);
 			break;
 
 		case PCB_OBJ_ARC_POINT:
 			if (F->ArcPoint)
-				return (F->ArcPoint(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3));
+				res = F->ArcPoint(ctx, (pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2, (int *)Ptr3);
 			break;
 
 		case PCB_OBJ_TEXT:
 			if (F->Text)
-				return (F->Text(ctx, (pcb_layer_t *) Ptr1, (pcb_text_t *) Ptr2));
+				res = F->Text(ctx, (pcb_layer_t *)Ptr1, (pcb_text_t *)Ptr2);
 			break;
 
 		case PCB_OBJ_POLY:
 			if (F->Polygon)
-				return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2));
+				res = F->Polygon(ctx, (pcb_layer_t *)Ptr1, (pcb_poly_t *)Ptr2);
 			break;
 
 		case PCB_OBJ_POLY_POINT:
 			if (F->Point)
-				return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2, (pcb_point_t *) Ptr3));
+				res = F->Point(ctx, (pcb_layer_t *)Ptr1, (pcb_poly_t *)Ptr2, (pcb_point_t *)Ptr3);
 			break;
 
 		case PCB_OBJ_SUBC:
 			if (F->subc)
-				return (F->subc(ctx, (pcb_subc_t *) Ptr2));
+				res = F->subc(ctx, (pcb_subc_t *)Ptr2);
 			break;
 
 		case PCB_OBJ_PSTK:
 			if (F->padstack)
-				return (F->padstack(ctx, (pcb_pstk_t *)Ptr2));
+				res = F->padstack(ctx, (pcb_pstk_t *)Ptr2);
 			break;
 
 		case PCB_OBJ_RAT:
 			if (F->Rat)
-				return (F->Rat(ctx, (pcb_rat_t *) Ptr2));
+				res = F->Rat(ctx, (pcb_rat_t *)Ptr2);
 			break;
 	}
-	return NULL;
+
+	if (exto != NULL)
+		pcb_extobj_edit_geo(exto);
+
+	return res;
 }
 
 /* ----------------------------------------------------------------------
@@ -103,9 +113,11 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type, pcb_bool on_locked_too)
 {
 	pcb_bool changed = pcb_false;
+	pcb_any_obj_t *exto;
 
 	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (data != NULL))
 		pcb_data_clip_inhibit_inc(data);
+
 
 	/* check lines */
 	if (type & PCB_OBJ_LINE && F->Line) {
@@ -119,7 +131,9 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				pcb_undo_add_obj_to_flag(line);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 			}
+			exto = pcb_extobj_edit_pre((pcb_any_obj_t *)line);
 			F->Line(ctx, layer, line);
+			if (exto != NULL) pcb_extobj_edit_geo(exto);
 			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
@@ -137,7 +151,9 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				pcb_undo_add_obj_to_flag(arc);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
 			}
+			exto = pcb_extobj_edit_pre((pcb_any_obj_t *)arc);
 			F->Arc(ctx, layer, arc);
+			if (exto != NULL) pcb_extobj_edit_geo(exto);
 			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
@@ -155,7 +171,9 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				pcb_undo_add_obj_to_flag(text);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, text);
 			}
+			exto = pcb_extobj_edit_pre((pcb_any_obj_t *)text);
 			F->Text(ctx, layer, text);
+			if (exto != NULL) pcb_extobj_edit_geo(exto);
 			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
@@ -173,7 +191,9 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				pcb_undo_add_obj_to_flag(polygon);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
 			}
+			exto = pcb_extobj_edit_pre((pcb_any_obj_t *)polygon);
 			F->Polygon(ctx, layer, polygon);
+			if (exto != NULL) pcb_extobj_edit_geo(exto);
 			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;
@@ -189,7 +209,9 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 					pcb_undo_add_obj_to_flag(subc);
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, subc);
 				}
+				exto = pcb_extobj_edit_pre((pcb_any_obj_t *)subc);
 				F->subc(ctx, subc);
+				if (exto != NULL) pcb_extobj_edit_geo(exto);
 				changed = pcb_true;
 			}
 			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART)) {
@@ -212,7 +234,9 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				pcb_undo_add_obj_to_flag(padstack);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, padstack);
 			}
+			exto = pcb_extobj_edit_pre((pcb_any_obj_t *)padstack);
 			F->padstack(ctx, padstack);
+			if (exto != NULL) pcb_extobj_edit_geo(exto);
 			changed = pcb_true;
 		}
 		PCB_END_LOOP;
