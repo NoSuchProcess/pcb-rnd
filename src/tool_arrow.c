@@ -55,7 +55,6 @@ void pcb_tool_arrow_uninit(void)
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-	pcb_crosshair.extobj_edit = NULL;
 	pcb_notify_crosshair_change(pcb_true);
 }
 
