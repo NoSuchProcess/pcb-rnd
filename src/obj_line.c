@@ -664,8 +664,8 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 												pcb_gui->control_is_pressed(pcb_gui) );
 		pcb_route_apply_to_line(&route,Layer,Line);
 		pcb_route_destroy(&route);
+		return Line; /* first line is preserved */
 	}
-	return NULL;
 }
 
 /* moves a line between layers; lowlevel routines */
