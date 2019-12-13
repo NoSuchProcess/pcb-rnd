@@ -113,7 +113,12 @@ pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *obj)
 	char *end;
 	long id;
 
-	assert(obj->parent_type == PCB_PARENT_DATA);
+	if (obj->parent_type == PCB_PARENT_DATA)
+		data = obj->parent.data;
+	else if (obj->parent_type == PCB_PARENT_LAYER)
+		data = obj->parent.layer->parent.data;
+	else
+		return NULL;
 
 	s = pcb_attribute_get(&obj->Attributes, "extobj::subcobj");
 	if (s == NULL)
