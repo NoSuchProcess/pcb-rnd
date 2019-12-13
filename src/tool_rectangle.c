@@ -80,7 +80,7 @@ void pcb_tool_rectangle_notify_mode(pcb_hidlib_t *hl)
 																								 pcb_crosshair.AttachedBox.Point2.Y,
 																								 2 * conf_core.design.clearance,
 																								 pcb_flag_make(flags))) != NULL) {
-			pcb_obj_add_attribs(polygon, pcb->pen_attr);
+			pcb_obj_add_attribs(polygon, pcb->pen_attr, pcb_true);
 			pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, polygon, polygon);
 			pcb_undo_inc_serial();
 			pcb_poly_invalidate_draw(layer, polygon);

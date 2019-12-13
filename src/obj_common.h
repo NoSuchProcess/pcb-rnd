@@ -166,7 +166,10 @@ void pcb_create_ID_bump(int min_id);
 void pcb_create_ID_reset(void);
 long int pcb_create_ID_get(void);
 
-void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src);
+/* Copy src attributes into obj's attributes, overwriting anything. If smart
+   is true, be smart about extobj and other attribute side effects
+   (some of those will not be copied or will be changed) */
+void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src, pcb_bool smart);
 
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very
