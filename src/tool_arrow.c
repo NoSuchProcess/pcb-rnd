@@ -55,6 +55,7 @@ void pcb_tool_arrow_uninit(void)
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.extobj_edit = NULL;
 	pcb_notify_crosshair_change(pcb_true);
 }
 
@@ -154,14 +155,14 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 			pcb_tool_note.ptr3 = ptr3;
 			pcb_crosshair.AttachedObject.tx = pcb_tool_note.X;
 			pcb_crosshair.AttachedObject.ty = pcb_tool_note.Y;
-			pcb_extobj_edit_pre(ptr2);
+			pcb_crosshair.extobj_edit = pcb_extobj_edit_pre(ptr2);
 		}
 		if (!pcb_tool_note.Moving && (type & (PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB))) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *) ptr2)) {
 			pcb_tool_note.Moving = pcb_true;
 			/* remember where the user clicked to start this op */
 			pcb_crosshair.AttachedObject.tx = pcb_crosshair.AttachedObject.X = pcb_tool_note.X;
 			pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y = pcb_tool_note.Y;
-			pcb_extobj_edit_pre(ptr2);
+			pcb_crosshair.extobj_edit = pcb_extobj_edit_pre(ptr2);
 		}
 		if ((pcb_tool_note.Hit && pcb_tool_note.Moving) || type == PCB_OBJ_VOID)
 			return;

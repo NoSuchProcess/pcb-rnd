@@ -74,6 +74,7 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	vtop_t onpoint_objs;
 	vtop_t old_onpoint_objs;
 	pcb_pstk_t *snapped_pstk;
+	pcb_any_obj_t *extobj_edit;            /* refers to the editobject (of an extobj) being edited */
 
 	/* list of object IDs that could have been dragged so that they can be cycled */
 	long int *drags;

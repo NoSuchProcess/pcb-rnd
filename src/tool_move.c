@@ -48,6 +48,7 @@ void pcb_tool_move_uninit(void)
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_notify_crosshair_change(pcb_true);
+	pcb_crosshair.extobj_edit = NULL;
 }
 
 void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
@@ -68,6 +69,7 @@ void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
 					pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+					pcb_crosshair.extobj_edit = NULL;
 				}
 				else
 					pcb_tool_attach_for_copy(hl, pcb_tool_note.X, pcb_tool_note.Y, pcb_true);
@@ -87,11 +89,14 @@ void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
 			pcb_subc_as_board_update(PCB);
 			pcb_board_set_changed_flag(pcb_true);
 		}
+		else if (pcb_crosshair.extobj_edit != NULL)
+			pcb_extobj_edit_geo(pcb_crosshair.extobj_edit);
 
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair_set_range(0, 0, hl->size_x, hl->size_y);
+		pcb_crosshair.extobj_edit = NULL;
 		break;
 	}
 }

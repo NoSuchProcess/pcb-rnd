@@ -56,6 +56,7 @@ void pcb_tool_insert_uninit(void)
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+	pcb_crosshair.extobj_edit = NULL;
 	pcb_notify_crosshair_change(pcb_true);
 }
 
@@ -73,6 +74,7 @@ void pcb_tool_insert_notify_mode(pcb_hidlib_t *hl)
 			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
 				pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+				pcb_crosshair.extobj_edit = NULL;
 				break;
 			}
 			else {
@@ -106,6 +108,7 @@ void pcb_tool_insert_notify_mode(pcb_hidlib_t *hl)
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.extobj_edit = NULL;
 		break;
 	}
 }

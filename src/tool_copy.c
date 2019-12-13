@@ -46,6 +46,7 @@ void pcb_tool_copy_uninit(void)
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_notify_crosshair_change(pcb_true);
+	pcb_crosshair.extobj_edit = NULL;
 }
 
 void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
@@ -85,6 +86,7 @@ void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+		pcb_crosshair.extobj_edit = NULL;
 		break;
 	}
 }

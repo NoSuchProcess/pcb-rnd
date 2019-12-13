@@ -98,20 +98,23 @@ PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *o
 	return pcb_extobj_get_editobj_by_attr(obj);
 }
 
-PCB_INLINE void pcb_extobj_edit_pre(pcb_any_obj_t *edit_obj)
+/* Calls edit_pre() and returns edit_obj if it is really the edit object of
+   a known extended object */
+PCB_INLINE pcb_any_obj_t *pcb_extobj_edit_pre(pcb_any_obj_t *edit_obj)
 {
 	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
 	pcb_extobj_t *eo;
 
 	if (sc == NULL)
-		return;
+		return NULL;
 
 	eo = pcb_extobj_get(sc);
 	if (eo == NULL)
-		return;
+		return NULL;
 
 	if (eo->edit_pre != NULL)
 		eo->edit_pre(sc, edit_obj);
+	return edit_obj;
 }
 
 PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
