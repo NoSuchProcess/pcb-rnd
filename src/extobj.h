@@ -29,6 +29,8 @@
 
 #include <genvector/vtp0.h>
 
+#include "board.h"
+#include "data.h"
 #include "obj_common.h"
 #include "obj_subc.h"
 #include "draw.h"
@@ -133,5 +135,39 @@ PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
 		eo->edit_geo(sc, edit_obj);
 }
 
+PCB_INLINE void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_attr_from)
+{
+	pcb_data_t *data;
+	pcb_board_t *pcb;
+	pcb_subc_t *sc;
+	char tmp[128];
+
+	if (edit_obj->parent_type == PCB_PARENT_DATA)
+		data = edit_obj->parent.data;
+	else if (edit_obj->parent_type == PCB_PARENT_LAYER)
+		data = edit_obj->parent.layer->parent.data;
+	else
+		return;
+
+	pcb = pcb_data_get_top(data);
+	if (pcb == NULL)
+		return;
+	
+	sc = pcb_subc_new();
+	sc->ID = pcb_create_ID_get();
+	pcb_subc_reg(pcb->Data, sc);
+	pcb_obj_id_reg(pcb->Data, sc);
+
+	if (subc_copy_attr_from != NULL)
+		pcb_attribute_copy_all(&sc->Attributes, &subc_copy_attr_from->Attributes);
+
+	sprintf(tmp, "%ld", sc->ID);
+	pcb_attribute_put(&edit_obj->Attributes, "extobj::subcobj", tmp);
+	sprintf(tmp, "%ld", edit_obj->ID);
+	pcb_attribute_put(&sc->Attributes, "extobj::editobj", tmp);
+
+	pcb_extobj_edit_pre(edit_obj);
+	pcb_extobj_edit_geo(edit_obj);
+}
 
 #endif
