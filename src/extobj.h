@@ -41,6 +41,8 @@ struct pcb_extobj_s {
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
 	pcb_any_obj_t *(*get_editobj)(pcb_subc_t *subc); /* resolve the edit object from the subc; if NULL, use the extobj::editobj attribute */
+	void (*edit_pre)(pcb_subc_t *subc); /* called before the edit-object is edited in any way */
+	void (*edit_geo)(pcb_subc_t *subc); /* called after the geometry of the edit-object changed */
 
 	/* dynamic data - filled in by core */
 	int idx;
@@ -88,5 +90,16 @@ PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *o
 
 	return pcb_extobj_get_editobj_by_attr(obj);
 }
+
+PCB_INLINE void pcb_extobj_edit_pre(pcb_any_obj_t *edit_obj)
+{
+	
+}
+
+PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
+{
+	
+}
+
 
 #endif
