@@ -49,28 +49,14 @@ static void line_of_vias_udpate_line(line_of_vias *lov, pcb_line_t *line)
 static void line_of_vias_unpack(pcb_subc_t *obj)
 {
 	line_of_vias *lov;
-	const char *s;
-	double v;
-	pcb_bool succ;
 	pcb_any_obj_t *edit;
 
 	if (obj->extobj_data == NULL)
 		obj->extobj_data = calloc(sizeof(line_of_vias), 1);
-
 	lov = obj->extobj_data;
 
-	s = pcb_attribute_get(&obj->Attributes, "extobj::pitch");
-	if (s != NULL) {
-		v = pcb_get_value(s, NULL, NULL, &succ);
-		if (succ) lov->pitch = v;
-	}
-
-	s = pcb_attribute_get(&obj->Attributes, "extobj::clearance");
-	if (s != NULL) {
-		v = pcb_get_value(s, NULL, NULL, &succ);
-		if (succ) lov->clearance = v;
-	}
-
+	pcb_extobj_unpack_coord(obj, &lov->pitch, "extobj::pitch");
+	pcb_extobj_unpack_coord(obj, &lov->clearance, "extobj::clearance");
 
 	edit = pcb_extobj_get_editobj_by_attr(obj);
 	if ((edit != NULL) && (edit->type == PCB_OBJ_LINE))
@@ -93,7 +79,6 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	double offs, x, y, pitch;
 	line_of_vias *lov;
 	pcb_line_t *line = (pcb_line_t *)edit_obj;
-	pcb_data_t *data = subc->parent.data;
 
 	if (edit_obj->type != PCB_OBJ_LINE)
 		return -1;
@@ -103,9 +88,7 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	lov = subc->extobj_data;
 	line_of_vias_udpate_line(lov, line);
 
-	if (data->subc_tree != NULL)
-		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
-	pcb_undo_freeze_add();
+	pcb_exto_regen_begin(subc);
 
 	x = line->Point1.X;
 	y = line->Point1.Y;
@@ -116,12 +99,7 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		y += lov->dy * pitch;
 	}
 
-	pcb_undo_unfreeze_add();
-	pcb_subc_bbox(subc);
-	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
-
-	return 0;
+	return pcb_exto_regen_end(subc);
 }
 
 
