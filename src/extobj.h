@@ -55,7 +55,14 @@ void pcb_extobj_uninit(void);
 void pcb_extobj_unreg(pcb_extobj_t *o);
 void pcb_extobj_reg(pcb_extobj_t *o);
 
-pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *obj);
+/* given an extobj subc, resolve the corresponding edit-object, or return
+   NULL if there's none */
+pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *extobj);
+
+/* given an edit-object, resolve the corresponding extobj's subc, or return
+   NULL if there's none */
+pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *editobj);
+
 
 int pcb_extobj_lookup_idx(const char *name);
 

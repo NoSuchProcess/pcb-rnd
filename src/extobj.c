@@ -104,3 +104,28 @@ pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *obj)
 
 	return htip_get(&data->id2obj, id);
 }
+
+pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *obj)
+{
+	pcb_any_obj_t *res;
+	pcb_data_t *data = obj->parent.data;
+	const char *s;
+	char *end;
+	long id;
+
+	assert(obj->parent_type == PCB_PARENT_DATA);
+
+	s = pcb_attribute_get(&obj->Attributes, "extobj::subcobj");
+	if (s == NULL)
+		return NULL;
+
+	id = strtol(s, &end, 10);
+	if (*end != '\0')
+		return NULL;
+
+	res = htip_get(&data->id2obj, id);
+	if ((res == NULL) || (res->type != PCB_OBJ_SUBC))
+		return NULL;
+
+	return res;
+}
