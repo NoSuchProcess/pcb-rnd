@@ -49,23 +49,6 @@ static void line_of_vias_unpack(pcb_subc_t *obj)
 	}
 }
 
-#if 0
-static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
-{
-	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
-	line_of_vias *lov;
-
-	if (subc->extobj_data == NULL)
-		line_of_vias_unpack(subc);
-	lov = subc->extobj_data;
-
-
-	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.extobj);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.15));
-	pcb_render->draw_line(pcb_draw_out.fgGC, lov->edit.Point1.X, lov->edit.Point1.Y, lov->edit.Point2.X, lov->edit.Point2.Y);
-}
-#endif
-
 pcb_any_obj_t *pcb_line_of_vias_get_edit_obj(pcb_subc_t *obj)
 {
 	pcb_any_obj_t *edit = pcb_extobj_get_editobj_by_attr(obj);
@@ -79,6 +62,6 @@ pcb_any_obj_t *pcb_line_of_vias_get_edit_obj(pcb_subc_t *obj)
 
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
-	/*pcb_line_of_vias_draw_mark*/ NULL,
+	NULL,
 	pcb_line_of_vias_get_edit_obj
 };
