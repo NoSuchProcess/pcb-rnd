@@ -41,55 +41,55 @@
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	switch (Type) {
-	case PCB_OBJ_LINE:
-		if (F->Line)
-			return (F->Line(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2));
-		break;
+		case PCB_OBJ_LINE:
+			if (F->Line)
+				return (F->Line(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2));
+			break;
 
-	case PCB_OBJ_ARC:
-		if (F->Arc)
-			return (F->Arc(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2));
-		break;
+		case PCB_OBJ_ARC:
+			if (F->Arc)
+				return (F->Arc(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2));
+			break;
 
-	case PCB_OBJ_LINE_POINT:
-		if (F->LinePoint)
-			return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3));
-		break;
+		case PCB_OBJ_LINE_POINT:
+			if (F->LinePoint)
+				return (F->LinePoint(ctx, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3));
+			break;
 
-	case PCB_OBJ_ARC_POINT:
-		if (F->ArcPoint)
-			return (F->ArcPoint(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3));
-		break;
+		case PCB_OBJ_ARC_POINT:
+			if (F->ArcPoint)
+				return (F->ArcPoint(ctx, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *) Ptr3));
+			break;
 
-	case PCB_OBJ_TEXT:
-		if (F->Text)
-			return (F->Text(ctx, (pcb_layer_t *) Ptr1, (pcb_text_t *) Ptr2));
-		break;
+		case PCB_OBJ_TEXT:
+			if (F->Text)
+				return (F->Text(ctx, (pcb_layer_t *) Ptr1, (pcb_text_t *) Ptr2));
+			break;
 
-	case PCB_OBJ_POLY:
-		if (F->Polygon)
-			return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2));
-		break;
+		case PCB_OBJ_POLY:
+			if (F->Polygon)
+				return (F->Polygon(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2));
+			break;
 
-	case PCB_OBJ_POLY_POINT:
-		if (F->Point)
-			return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2, (pcb_point_t *) Ptr3));
-		break;
+		case PCB_OBJ_POLY_POINT:
+			if (F->Point)
+				return (F->Point(ctx, (pcb_layer_t *) Ptr1, (pcb_poly_t *) Ptr2, (pcb_point_t *) Ptr3));
+			break;
 
-	case PCB_OBJ_SUBC:
-		if (F->subc)
-			return (F->subc(ctx, (pcb_subc_t *) Ptr2));
-		break;
+		case PCB_OBJ_SUBC:
+			if (F->subc)
+				return (F->subc(ctx, (pcb_subc_t *) Ptr2));
+			break;
 
-	case PCB_OBJ_PSTK:
-		if (F->padstack)
-			return (F->padstack(ctx, (pcb_pstk_t *)Ptr2));
-		break;
+		case PCB_OBJ_PSTK:
+			if (F->padstack)
+				return (F->padstack(ctx, (pcb_pstk_t *)Ptr2));
+			break;
 
-	case PCB_OBJ_RAT:
-		if (F->Rat)
-			return (F->Rat(ctx, (pcb_rat_t *) Ptr2));
-		break;
+		case PCB_OBJ_RAT:
+			if (F->Rat)
+				return (F->Rat(ctx, (pcb_rat_t *) Ptr2));
+			break;
 	}
 	return NULL;
 }
