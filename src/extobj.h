@@ -41,8 +41,8 @@ struct pcb_extobj_s {
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
 	pcb_any_obj_t *(*get_editobj)(pcb_subc_t *subc); /* resolve the edit object from the subc; if NULL, use the extobj::editobj attribute */
-	void (*edit_pre)(pcb_subc_t *subc); /* called before the edit-object is edited in any way */
-	void (*edit_geo)(pcb_subc_t *subc); /* called after the geometry of the edit-object changed */
+	void (*edit_pre)(pcb_subc_t *subc, pcb_any_obj_t *edit_obj); /* called before the edit-object is edited in any way */
+	void (*edit_geo)(pcb_subc_t *subc, pcb_any_obj_t *edit_obj); /* called after the geometry of the edit-object changed */
 
 	/* dynamic data - filled in by core */
 	int idx;
@@ -100,12 +100,34 @@ PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *o
 
 PCB_INLINE void pcb_extobj_edit_pre(pcb_any_obj_t *edit_obj)
 {
-	
+	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
+	pcb_extobj_t *eo;
+
+	if (sc == NULL)
+		return;
+
+	eo = pcb_extobj_get(sc);
+	if (eo == NULL)
+		return;
+
+	if (eo->edit_pre != NULL)
+		eo->edit_pre(sc, edit_obj);
 }
 
 PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
 {
-	
+	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
+	pcb_extobj_t *eo;
+
+	if (sc == NULL)
+		return;
+
+	eo = pcb_extobj_get(sc);
+	if (eo == NULL)
+		return;
+
+	if (eo->edit_pre != NULL)
+		eo->edit_geo(sc, edit_obj);
 }
 
 
