@@ -618,7 +618,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 	return (pcb_object_operation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
-pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y)
+pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_bool keep_id)
 {
 	pcb_cardinal_t i;
 	pcb_bool changed = pcb_false;
@@ -973,7 +973,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 				oldx = x;
 				oldy = y;
-				if (pcb_buffer_copy_to_layout(PCB, x, y))
+				if (pcb_buffer_copy_to_layout(PCB, x, y, pcb_false))
 					pcb_board_set_changed_flag(pcb_true);
 			}
 			break;

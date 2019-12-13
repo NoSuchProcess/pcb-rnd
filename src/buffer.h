@@ -90,8 +90,11 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int oargc, fgw_arg_t *oargv);
 
 /* pastes the contents of the buffer to the layout. Only visible objects
-   are handled by the routine. */
-pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y);
+   are handled by the routine.
+   If keep_id is true, do not change object IDs - this should be used only
+   in one specific case, when selected objects are moved using the buffer
+   (which means exactly 1 copy is made and the original version is removed). */
+pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_bool keep_id);
 
 /* change the side of all objects in the buffer */
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer);

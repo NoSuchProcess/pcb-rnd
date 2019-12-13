@@ -159,7 +159,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_remove_selected(pcb_false);
 				pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
-				pcb_buffer_copy_to_layout(PCB, x, y);
+				pcb_buffer_copy_to_layout(PCB, x, y, pcb_false);
 				pcb_buffer_set_number(pcb_tool_note.Buffer);
 			}
 			break;

@@ -315,7 +315,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_remove_selected(pcb_true);
 				if (paste) {
 					pcb_undo_save_serial();
-					pcb_buffer_copy_to_layout(PCB, pastex, pastey);
+					pcb_buffer_copy_to_layout(PCB, pastex, pastey, pcb_false);
 					pcb_undo_restore_serial();
 					pcb_remove_object(type, ptr1, ptr2, ptr3);
 					pcb_undo_inc_serial();
