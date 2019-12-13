@@ -39,6 +39,7 @@
 #include "crosshair.h"
 #include "search.h"
 #include "tool.h"
+#include "extobj.h"
 
 
 void pcb_tool_move_uninit(void)
@@ -79,7 +80,8 @@ void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
 		dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
 		dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
 		if ((dx != 0) || (dy != 0)) {
-			pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
+			pcb_any_obj_t *newo = pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
+			pcb_extobj_edit_geo(newo);
 			if (!pcb_marked.user_placed)
 				pcb_crosshair_set_local_ref(0, 0, pcb_false);
 			pcb_subc_as_board_update(PCB);
