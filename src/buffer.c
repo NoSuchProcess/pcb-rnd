@@ -129,11 +129,12 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 }
 
 /* add (or move) selected */
-static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool on_locked_too)
+static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool on_locked_too, pcb_bool keep_id)
 {
 	pcb_opctx_t ctx;
 
 	ctx.buffer.pcb = pcb;
+	ctx.buffer.keep_id = keep_id;
 
 	/* switch crosshair off because adding objects to the pastebuffer
 	 * may change the 'valid' area for the cursor
@@ -162,9 +163,9 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	pcb_notify_crosshair_change(pcb_true);
 }
 
-void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected)
+void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool keep_id)
 {
-	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false);
+	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
 }
 
 static const char pcb_acts_LoadFootprint[] = "pcb_load_footprint(filename[,refdes,value])";
@@ -659,26 +660,42 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		if (destlayer->meta.real.vis) {
 			PCB_LINE_LOOP(sourcelayer);
 			{
-				if (pcb_lineop_copy(&ctx, destlayer, line))
+				pcb_line_t *nline = pcb_lineop_copy(&ctx, destlayer, line);
+				if (nline != NULL) {
+					if (keep_id)
+						nline->ID = line->ID;
 					changed = 1;
+				}
 			}
 			PCB_END_LOOP;
 			PCB_ARC_LOOP(sourcelayer);
 			{
-				if (pcb_arcop_copy(&ctx, destlayer, arc))
+				pcb_arc_t *narc = pcb_arcop_copy(&ctx, destlayer, arc);
+				if (narc != NULL) {
+					if (keep_id)
+						narc->ID = arc->ID;
 					changed = 1;
+				}
 			}
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(sourcelayer);
 			{
-				if (pcb_textop_copy(&ctx, destlayer, text))
+				pcb_text_t *ntext = pcb_textop_copy(&ctx, destlayer, text);
+				if (ntext != NULL) {
+					if (keep_id)
+						ntext->ID = text->ID;
 					changed = 1;
+				}
 			}
 			PCB_END_LOOP;
 			PCB_POLY_LOOP(sourcelayer);
 			{
-				if (pcb_polyop_copy(&ctx, destlayer, polygon))
+				pcb_poly_t *npoly = pcb_polyop_copy(&ctx, destlayer, polygon);
+				if (npoly != NULL) {
+					if (keep_id)
+						npoly->ID = polygon->ID;
 					changed = 1;
+				}
 			}
 			PCB_END_LOOP;
 		}
@@ -687,12 +704,17 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	/* paste subcircuits */
 	PCB_SUBC_LOOP(PCB_PASTEBUFFER->Data);
 	{
+		pcb_subc_t *nsubc;
 		if (pcb->is_footprint) {
 			pcb_message(PCB_MSG_WARNING, "Can not paste subcircuit in the footprint edit mode\n");
 			break;
 		}
-		pcb_subcop_copy(&ctx, subc);
-		changed = pcb_true;
+		nsubc = pcb_subcop_copy(&ctx, subc);
+		if (nsubc != NULL) {
+			if (keep_id)
+				nsubc->ID = subc->ID;
+			changed = 1;
+		}
 	}
 	PCB_END_LOOP;
 
@@ -715,7 +737,13 @@ TODO("subc: fix this after the element removal")
 
 		PCB_PADSTACK_LOOP(PCB_PASTEBUFFER->Data);
 		{
-			pcb_pstkop_copy(&ctx, padstack);
+			pcb_pstk_t *nps;
+			nps = pcb_pstkop_copy(&ctx, padstack);
+			if (nps != NULL) {
+				if (keep_id)
+					nps->ID = padstack->ID;
+				changed = 1;
+			}
 		}
 		PCB_END_LOOP;
 	}
@@ -835,7 +863,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 			/* copies objects to paste buffer */
 		case F_AddSelected:
-			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
+			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
 				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing copied to the paste buffer\n");
 				goto error;
@@ -844,7 +872,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 			/* moves objects to paste buffer: kept for compatibility with old menu files */
 		case F_MoveSelected:
-			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false);
+			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_true);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
 				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;

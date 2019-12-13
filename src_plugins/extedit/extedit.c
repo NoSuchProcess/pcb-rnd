@@ -203,7 +203,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if ((argc > 1) && (pcb_strcasecmp(cmd, "selected") == 0)) {
 		pcb_buffer_set_number(bn);
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-		pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_crosshair.X, pcb_crosshair.Y, pcb_false);
+		pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_crosshair.X, pcb_crosshair.Y, pcb_false, pcb_false);
 		pastex = pcb_crosshair.X;
 		pastey = pcb_crosshair.Y;
 		del_selected = 1;

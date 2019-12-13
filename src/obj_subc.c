@@ -1417,6 +1417,8 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		pcb_undo_unfreeze_serial();
 	}
 
+	if (ctx->buffer.keep_id) nsc->ID = sc->ID;
+
 	return nsc;
 }
 

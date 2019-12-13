@@ -394,6 +394,7 @@ void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), pcb_false);
 
 	pcb_arc_copy_meta(a, Arc);
+	if (ctx->buffer.keep_id) a->ID = Arc->ID;
 	return a;
 }
 

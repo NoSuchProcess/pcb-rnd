@@ -39,6 +39,7 @@
 typedef struct {
 	pcb_board_t *pcb;
 	int extraflg;
+	unsigned keep_id:1;
 	pcb_data_t *dst, *src;
 } pcb_opctx_buffer_t;
 

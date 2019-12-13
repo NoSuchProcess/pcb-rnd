@@ -434,7 +434,9 @@ void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t 
 	line = pcb_line_new(layer, Line->Point1.X, Line->Point1.Y,
 															Line->Point2.X, Line->Point2.Y,
 															Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
-	return pcb_line_copy_meta(line, Line);
+	pcb_line_copy_meta(line, Line);
+	if (ctx->buffer.keep_id) line->ID = Line->ID;
+	return line;
 }
 
 /* moves a line between board and buffer */
