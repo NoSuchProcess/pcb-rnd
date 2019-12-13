@@ -147,13 +147,6 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_OBJ_FLOATER | PCB_LOOSE_SUBC(PCB)) & ~PCB_OBJ_RAT; test; test &= ~otype) {
 		/* grab object/point (e.g. line endpoint) for edit */
 		otype = type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, test, &ptr1, &ptr2, &ptr3);
-		if (type == PCB_OBJ_SUBC) {
-			pcb_extobj_t *extobj = pcb_extobj_get(ptr2);
-			if ((extobj != NULL) && (extobj->get_edit_obj != NULL)) {
-				type = extobj->get_edit_obj(ptr2, pcb_tool_note.X, pcb_tool_note.Y, &ptr1, &ptr2, &ptr3);
-				pcb_trace("extobj grab!\n");
-			}
-		}
 		if (!pcb_tool_note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2)) {
 			pcb_tool_note.Hit = type;
 			pcb_tool_note.ptr1 = ptr1;

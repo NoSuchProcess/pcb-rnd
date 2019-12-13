@@ -40,8 +40,7 @@ struct pcb_extobj_s {
 	/* static data - filled in by the extobj code */
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
-	pcb_objtype_t (*get_edit_obj)(pcb_subc_t *subc, pcb_coord_t x, pcb_coord_t y, void **ptr1, void **ptr2, void **ptr3); /* called when a tool found the subc of the object; should replace ptrs with the edit object and return the type of the edit object */
-
+	pcb_any_obj_t *(*get_editobj)(pcb_subc_t *subc); /* resolve the edit object from the subc; if NULL, use the extobj::editobj attribute */
 
 	/* dynamic data - filled in by core */
 	int idx;
@@ -53,6 +52,8 @@ void pcb_extobj_uninit(void);
 
 void pcb_extobj_unreg(pcb_extobj_t *o);
 void pcb_extobj_reg(pcb_extobj_t *o);
+
+pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *obj);
 
 int pcb_extobj_lookup_idx(const char *name);
 
@@ -80,5 +81,12 @@ PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 	return *eo;
 }
 
+PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *obj)
+{
+	if (eo->get_editobj != NULL)
+		return eo->get_editobj(obj);
+
+	return pcb_extobj_get_editobj_by_attr(obj);
+}
 
 #endif

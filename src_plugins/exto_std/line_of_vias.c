@@ -27,7 +27,7 @@
  */
 
 typedef struct {
-	pcb_line_t edit;
+	pcb_coord_t pitch;
 } line_of_vias;
 
 static void line_of_vias_unpack(pcb_subc_t *obj)
@@ -37,32 +37,19 @@ static void line_of_vias_unpack(pcb_subc_t *obj)
 	double v;
 	pcb_bool succ;
 
-	if (obj->aux_layer == NULL)
-		pcb_subc_cache_find_aux(obj);
-
 	if (obj->extobj_data == NULL)
 		obj->extobj_data = calloc(sizeof(line_of_vias), 1);
 
 	lov = obj->extobj_data;
-	PCB_SET_PARENT(&lov->edit, layer, obj->aux_layer);
-	lov->edit.Thickness = 1;
-	pcb_subc_get_origin(obj, &lov->edit.Point1.X, &lov->edit.Point1.Y);
 
-	lov->edit.Point2.X = lov->edit.Point1.X; lov->edit.Point2.Y = lov->edit.Point1.Y;
-
-	s = pcb_attribute_get(&obj->Attributes, "extobj::x2");
+	s = pcb_attribute_get(&obj->Attributes, "extobj::pitch");
 	if (s != NULL) {
 		v = pcb_get_value(s, NULL, NULL, &succ);
-		if (succ) lov->edit.Point2.X = v;
-	}
-
-	s = pcb_attribute_get(&obj->Attributes, "extobj::y2");
-	if (s != NULL) {
-		v = pcb_get_value(s, NULL, NULL, &succ);
-		if (succ) lov->edit.Point2.Y = v;
+		if (succ) lov->pitch = v;
 	}
 }
 
+#if 0
 static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
 	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
@@ -77,24 +64,21 @@ static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.15));
 	pcb_render->draw_line(pcb_draw_out.fgGC, lov->edit.Point1.X, lov->edit.Point1.Y, lov->edit.Point2.X, lov->edit.Point2.Y);
 }
+#endif
 
-pcb_objtype_t pcb_line_of_vias_get_edit_obj(pcb_subc_t *subc, pcb_coord_t x, pcb_coord_t y, void **ptr1, void **ptr2, void **ptr3)
+pcb_any_obj_t *pcb_line_of_vias_get_edit_obj(pcb_subc_t *obj)
 {
-	line_of_vias *lov;
+	pcb_any_obj_t *edit = pcb_extobj_get_editobj_by_attr(obj);
 
-	if (subc->extobj_data == NULL)
-		line_of_vias_unpack(subc);
-	lov = subc->extobj_data;
+	if (edit->type != PCB_OBJ_LINE)
+		return NULL;
 
-	*ptr1 = &lov->edit.parent.layer;
-	*ptr2 = &lov->edit;
-	*ptr2 = &lov->edit.Point1;
-	return PCB_OBJ_LINE_POINT;
+	return edit;
 }
 
 
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
-	pcb_line_of_vias_draw_mark,
+	/*pcb_line_of_vias_draw_mark*/ NULL,
 	pcb_line_of_vias_get_edit_obj
 };

@@ -30,6 +30,8 @@
 #include <genht/htsi.h>
 #include <genht/hash.h>
 
+#include "data.h"
+
 #include "extobj.h"
 
 
@@ -83,3 +85,22 @@ void pcb_extobj_uninit(void)
 	vtp0_uninit(&pcb_extobj_i2o);
 }
 
+pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *obj)
+{
+	pcb_data_t *data = obj->parent.data;
+	const char *s;
+	char *end;
+	long id;
+
+	assert(obj->parent_type == PCB_PARENT_DATA);
+
+	s = pcb_attribute_get(&obj->Attributes, "extobj::editobj");
+	if (s == NULL)
+		return NULL;
+
+	id = strtol(s, &end, 10);
+	if (*end != '\0')
+		return NULL;
+
+	return htip_get(&data->id2obj, id);
+}
