@@ -74,7 +74,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 			pcb_tool_note.Buffer = conf_core.editor.buffer_number;
 			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
-			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, pcb_tool_note.X, pcb_tool_note.Y, pcb_true, pcb_false);
+			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, pcb_tool_note.X, pcb_tool_note.Y, pcb_true, pcb_true);
 			pcb_undo_save_serial();
 			pcb_remove_selected(pcb_false);
 			pcb_tool_save(hl);
