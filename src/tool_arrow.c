@@ -126,6 +126,11 @@ static void click_timer_cb(pcb_hidval_t hv)
 		}
 		pcb_notify_crosshair_change(pcb_true);
 	}
+
+	if (pcb_crosshair.extobj_edit != NULL) {
+		pcb_extobj_edit_geo(pcb_crosshair.extobj_edit);
+		pcb_gui->invalidate_all(pcb_gui);
+	}
 }
 
 void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
