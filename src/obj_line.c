@@ -435,7 +435,7 @@ void *pcb_lineop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t 
 															Line->Point2.X, Line->Point2.Y,
 															Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
 	pcb_line_copy_meta(line, Line);
-	if (ctx->buffer.keep_id) line->ID = Line->ID;
+	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)line, Line->ID);
 	return line;
 }
 

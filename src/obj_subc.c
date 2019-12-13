@@ -1407,7 +1407,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_t *nsc;
-	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0, pcb_false);
+	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0, ctx->buffer.keep_id);
 
 	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED) {
 		pcb_undo_freeze_serial();
@@ -1416,8 +1416,6 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		pcb_undo_unfreeze_add();
 		pcb_undo_unfreeze_serial();
 	}
-
-	if (ctx->buffer.keep_id) nsc->ID = sc->ID;
 
 	return nsc;
 }

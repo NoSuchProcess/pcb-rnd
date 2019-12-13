@@ -428,7 +428,7 @@ void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t 
 	pcb_text_t *t = pcb_text_new(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->rot, Text->Scale, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
 
 	pcb_text_copy_meta(t, Text);
-	if (ctx->buffer.keep_id) t->ID = Text->ID;
+	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)t, Text->ID);
 	return t;
 }
 

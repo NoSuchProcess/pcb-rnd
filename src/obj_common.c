@@ -385,3 +385,20 @@ void pcb_obj_post(pcb_any_obj_t *o)
 		default: break;
 	}
 }
+
+void pcb_obj_change_id(pcb_any_obj_t *obj, long int new_id)
+{
+	pcb_data_t *data;
+
+	if (obj->parent_type == PCB_PARENT_DATA)
+		data = obj->parent.data;
+	else if (obj->parent_type == PCB_PARENT_LAYER)
+		data = obj->parent.layer->parent.data;
+	else
+		return;
+
+	pcb_obj_id_del(data, obj);
+	obj->ID = new_id;
+	pcb_obj_id_reg(data, obj);
+}
+

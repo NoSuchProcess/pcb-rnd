@@ -235,6 +235,8 @@ char *pcb_obj_id_fix(char *id);
 void pcb_obj_pre(pcb_any_obj_t *o);
 void pcb_obj_post(pcb_any_obj_t *o);
 
+/* change the ID of an object already registered in the ID hash */
+void pcb_obj_change_id(pcb_any_obj_t *o, long int new_id);
 
 #define pcb_obj_id_reg(data, obj) \
 	do { \

@@ -37,7 +37,7 @@ void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
 	p = pcb_pstk_new_tr(ctx->buffer.dst, -1, npid, ps->x, ps->y, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), ps->rot, ps->xmirror, ps->smirror);
-	if (ctx->buffer.keep_id) p->ID = ps->ID;
+	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)p, ps->ID);
 	return pcb_pstk_copy_meta(p, ps);
 }
 

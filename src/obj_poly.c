@@ -515,7 +515,7 @@ void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t 
 	polygon = pcb_poly_new(layer, Polygon->Clearance, Polygon->Flags);
 	pcb_poly_copy(polygon, Polygon, 0, 0);
 	pcb_poly_copy_meta(polygon, Polygon);
-	if (ctx->buffer.keep_id) polygon->ID = Polygon->ID;
+	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)polygon, Polygon->ID);
 
 	/* Update the polygon r-tree. Unlike similarly named functions for
 	 * other objects, CreateNewPolygon does not do this as it creates a
