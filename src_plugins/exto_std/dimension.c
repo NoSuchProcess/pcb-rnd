@@ -56,18 +56,6 @@ static int dimension_update_src(dimension *dim, pcb_any_obj_t *edit)
 
 
 	if (dim->valid) {
-		int swap;
-		if (dim->x1 == dim->x2)
-			swap = dim->y1 < dim->y2;
-		else
-			swap = dim->x1 < dim->x2;
-
-		if (swap) {
-			double tmp;
-			tmp = dim->x1; dim->x1 = dim->x2; dim->x2 = tmp;
-			tmp = dim->y1; dim->y1 = dim->y2; dim->y2 = tmp;
-		}
-
 		dim->dx = dim->x2 - dim->x1;
 		dim->dy = dim->y2 - dim->y1;
 		dim->len = sqrt(dim->dx*dim->dx + dim->dy*dim->dy);
@@ -251,7 +239,7 @@ static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	dimension *dim;
 	pcb_any_obj_t *edit_obj;
 	pcb_line_t *fline = floater, bline;
-	pcb_coord_t fx, fy;
+	pcb_coord_t fx, fy, cpx, cpy;
 	double d;
 
 	pcb_trace("dim: float geo %ld %ld\n", subc->ID, floater->ID);
@@ -268,7 +256,7 @@ static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	memset(&bline, 0, sizeof(bline));
 	bline.Point1.X = dim->x1; bline.Point1.Y = dim->y1;
 	bline.Point2.X = dim->x2; bline.Point2.Y = dim->y2;
-	d = pcb_point_line_dist2(fx, fy, &bline);
+	d = pcb_point_line_dist2_point(fx, fy, &bline, &cpx, &cpy);
 	if (d != 0)
 		d = sqrt(d);
 
