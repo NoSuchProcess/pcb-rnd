@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  Extended object for a line-of-vias; edit: line; places a row of vias over the line
+ *  Extended object for a dimension; draws a dimension line over the size of the edit-object
  *  pcb-rnd Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
