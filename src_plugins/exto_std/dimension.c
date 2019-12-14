@@ -126,7 +126,8 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	pcb_board_t *pcb;
 	pcb_layer_t *ly;
 	pcb_line_t *flt;
-	double ang, dispe, arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
+	double ang, deg, dispe, rotsign;
+	double arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
 	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y;
 	pcb_text_t *t;
 	char ttmp[128];
@@ -190,12 +191,21 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	tx = t->BoundingBox.X2 - t->BoundingBox.X1;
 	ty = t->BoundingBox.Y2 - t->BoundingBox.Y1;
 
-	x = (x1+x2)/2; y = (y1+y2)/2;
-	x += tx/2 * dim->dx; y += tx/2 * dim->dy;
-	x += ty * -dim->dy; y += ty * dim->dx;
 	ang = atan2(-dim->dy, dim->dx) + M_PI;
+	deg = ang * PCB_RAD_TO_DEG;
+	if ((deg > 135) && (deg < 315)) {
+		ang = ang-M_PI;
+		deg = ang * PCB_RAD_TO_DEG;
+		rotsign = -1;
+	}
+	else
+		rotsign = +1;
+
+	x = (x1+x2)/2; y = (y1+y2)/2;
+	x += rotsign * tx/2 * dim->dx; y += rotsign * tx/2 * dim->dy;
+	x += rotsign * ty * -dim->dy;  y += rotsign * ty * dim->dx;
 	if ((ang > 0.001) || (ang < -0.001))
-		pcb_text_rotate(t, 0, 0, cos(ang), sin(ang), ang * PCB_RAD_TO_DEG);
+		pcb_text_rotate(t, 0, 0, cos(ang), sin(ang), deg);
 	pcb_text_move(t,  x, y);
 	return pcb_exto_regen_end(subc);
 }
