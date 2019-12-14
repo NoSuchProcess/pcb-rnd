@@ -197,6 +197,7 @@ void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src, pcb_bool sm
 	unsigned char        intconn, intnoconn; \
 	unsigned int         noexport:1; \
 	unsigned int         noexport_named:1; \
+	unsigned int         extobj_editing:1; \
 	const pcb_color_t    *override_color
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */

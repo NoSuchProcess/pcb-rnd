@@ -114,8 +114,10 @@ PCB_INLINE pcb_any_obj_t *pcb_extobj_edit_pre(pcb_any_obj_t *edit_obj)
 	if (eo == NULL)
 		return NULL;
 
-	if (eo->edit_pre != NULL)
+	if ((eo->edit_pre != NULL) && !edit_obj->extobj_editing) {
+		edit_obj->extobj_editing = 1;
 		eo->edit_pre(sc, edit_obj);
+	}
 	return edit_obj;
 }
 
@@ -131,8 +133,10 @@ PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
 	if (eo == NULL)
 		return;
 
-	if (eo->edit_pre != NULL)
+	if ((eo->edit_pre != NULL) && edit_obj->extobj_editing) {
 		eo->edit_geo(sc, edit_obj);
+		edit_obj->extobj_editing = 0;
+	}
 }
 
 PCB_INLINE void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
