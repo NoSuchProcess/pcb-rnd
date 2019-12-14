@@ -34,6 +34,7 @@
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
+#include "extobj.h"
 #include "find.h"
 #include "polygon.h"
 #include "rtree.h"
@@ -422,6 +423,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 	int i;
 	int applied = 0;
 	pcb_line_t *attr_src = apply_to_line;
+	pcb_any_obj_t *exto;
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
@@ -443,6 +445,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 						pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, apply_to_line_layer, apply_to_line, &apply_to_line->Point2, p_obj->point2.X - apply_to_line->Point2.X, p_obj->point2.Y - apply_to_line->Point2.Y);
 
 					/* Move the existing line point/s */
+					exto = pcb_extobj_edit_pre((pcb_any_obj_t *)apply_to_line);
 					pcb_line_invalidate_erase(apply_to_line);
 					pcb_r_delete_entry(apply_to_line_layer->line_tree, (pcb_box_t *) apply_to_line);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, apply_to_line_layer, apply_to_line);
@@ -455,6 +458,8 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, layer, apply_to_line);
 					pcb_line_invalidate_draw(layer, apply_to_line);
 					apply_to_line_layer = layer;
+					if (exto != NULL)
+						pcb_extobj_edit_geo(exto);
 
 					/* The existing line has been used so forget about it. */
 					apply_to_line = NULL;
@@ -528,6 +533,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 	int i;
 	int applied = 0;
 	pcb_arc_t *attr_src = apply_to_arc;
+	pcb_any_obj_t *exto;
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
@@ -565,6 +571,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 
 					if (changes > 0) {
 						/* Modify the existing arc */
+						exto = pcb_extobj_edit_pre((pcb_any_obj_t *)apply_to_arc);
 						pcb_arc_invalidate_erase(apply_to_arc);
 
 						pcb_r_delete_entry(apply_to_arc_layer->arc_tree, (pcb_box_t *) apply_to_arc);
@@ -582,6 +589,8 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc);
 						pcb_arc_invalidate_draw(layer, apply_to_arc);
 						apply_to_arc_layer = layer;
+						if (exto != NULL)
+							pcb_extobj_edit_geo(exto);
 					}
 
 					/* The existing arc has been used so forget about it. */
