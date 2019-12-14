@@ -33,6 +33,7 @@
 #include "data.h"
 #include "obj_common.h"
 #include "obj_subc.h"
+#include "obj_subc_parent.h"
 #include "draw.h"
 
 
@@ -45,6 +46,8 @@ struct pcb_extobj_s {
 	pcb_any_obj_t *(*get_editobj)(pcb_subc_t *subc); /* resolve the edit object from the subc; if NULL, use the extobj::editobj attribute */
 	void (*edit_pre)(pcb_subc_t *subc, pcb_any_obj_t *edit_obj); /* called before the edit-object is edited in any way */
 	void (*edit_geo)(pcb_subc_t *subc, pcb_any_obj_t *edit_obj); /* called after the geometry of the edit-object changed */
+	void (*float_pre)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called before an extobj floater is edited in any way */
+	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed */
 
 	/* dynamic data - filled in by core */
 	int idx;
@@ -107,42 +110,70 @@ PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *o
 	return pcb_extobj_get_editobj_by_attr(obj);
 }
 
+/* For internal use, do not call directly */
+PCB_INLINE pcb_extobj_t *pcb_extobj_edit_common_(pcb_any_obj_t *edit_obj, pcb_subc_t **sc, int *is_floater)
+{
+	*sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
+
+	*is_floater = 0;
+	if (*sc == NULL) {
+		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, edit_obj)) {
+			*sc = pcb_obj_parent_subc(edit_obj);
+			*is_floater = 1;
+		}
+		else
+			return NULL;
+	}
+
+	return pcb_extobj_get(*sc);
+}
+
 /* Calls edit_pre() and returns edit_obj if it is really the edit object of
    a known extended object */
 PCB_INLINE pcb_any_obj_t *pcb_extobj_edit_pre(pcb_any_obj_t *edit_obj)
 {
-	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
-	pcb_extobj_t *eo;
+	int flt;
+	pcb_subc_t *sc;
+	pcb_extobj_t *eo = pcb_extobj_edit_common_(edit_obj, &sc, &flt);
 
-	if (sc == NULL)
-		return NULL;
-
-	eo = pcb_extobj_get(sc);
 	if (eo == NULL)
 		return NULL;
 
-	if ((eo->edit_pre != NULL) && !edit_obj->extobj_editing) {
-		edit_obj->extobj_editing = 1;
-		eo->edit_pre(sc, edit_obj);
+	if (flt) { /* editing a subc part floater */
+		if ((eo->float_pre != NULL) && !edit_obj->extobj_editing) {
+			edit_obj->extobj_editing = 1;
+			eo->float_pre(sc, edit_obj);
+		}
+	}
+	else { /* editing the edit-object */
+		if ((eo->edit_pre != NULL) && !edit_obj->extobj_editing) {
+			edit_obj->extobj_editing = 1;
+			eo->edit_pre(sc, edit_obj);
+		}
 	}
 	return edit_obj;
 }
 
 PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
 {
-	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
-	pcb_extobj_t *eo;
+	int flt;
+	pcb_subc_t *sc;
+	pcb_extobj_t *eo = pcb_extobj_edit_common_(edit_obj, &sc, &flt);
 
-	if (sc == NULL)
-		return;
-
-	eo = pcb_extobj_get(sc);
 	if (eo == NULL)
 		return;
 
-	if ((eo->edit_pre != NULL) && edit_obj->extobj_editing) {
-		eo->edit_geo(sc, edit_obj);
-		edit_obj->extobj_editing = 0;
+	if (flt) { /* editing a subc part floater */
+		if ((eo->float_geo != NULL) && edit_obj->extobj_editing) {
+			edit_obj->extobj_editing = 0;
+			eo->float_geo(sc, edit_obj);
+		}
+	}
+	else { /* editing the edit-object */
+		if ((eo->edit_pre != NULL) && edit_obj->extobj_editing) {
+			eo->edit_geo(sc, edit_obj);
+			edit_obj->extobj_editing = 0;
+		}
 	}
 }
 

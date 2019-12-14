@@ -225,11 +225,23 @@ static void pcb_dimension_edit_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	dimension_gen(subc, edit_obj);
 }
 
+static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
+{
+	pcb_trace("dim: float pre %ld %ld\n", subc->ID, floater->ID);
+}
+
+static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
+{
+	pcb_trace("dim: float geo %ld %ld\n", subc->ID, floater->ID);
+}
+
 
 static pcb_extobj_t pcb_dimension = {
 	"dimension",
 	pcb_dimension_draw_mark,
 	pcb_dimension_get_edit_obj,
 	pcb_dimension_edit_pre,
-	pcb_dimension_edit_geo
+	pcb_dimension_edit_geo,
+	pcb_dimension_float_pre,
+	pcb_dimension_float_geo
 };

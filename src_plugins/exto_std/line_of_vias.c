@@ -185,5 +185,7 @@ static pcb_extobj_t pcb_line_of_vias = {
 	pcb_line_of_vias_draw_mark,
 	pcb_line_of_vias_get_edit_obj,
 	pcb_line_of_vias_edit_pre,
-	pcb_line_of_vias_edit_geo
+	pcb_line_of_vias_edit_geo,
+	NULL, /* float_pre */
+	NULL  /* float_geo */
 };
