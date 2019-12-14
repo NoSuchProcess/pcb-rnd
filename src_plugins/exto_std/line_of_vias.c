@@ -76,12 +76,15 @@ static void line_of_vias_clear(pcb_subc_t *subc)
 /* create all new padstacks */
 static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	double offs, x, y, pitch;
+	double offs, x, y, pitch, too_close, qbox_bloat;
 	line_of_vias *lov;
 	pcb_line_t *line = (pcb_line_t *)edit_obj;
+	pcb_board_t *pcb;
 
 	if (edit_obj->type != PCB_OBJ_LINE)
 		return -1;
+
+	pcb = pcb_data_get_top(subc->data);
 
 	if (subc->extobj_data == NULL)
 		line_of_vias_unpack(subc);
@@ -93,8 +96,28 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	x = line->Point1.X;
 	y = line->Point1.Y;
 	pitch = lov->pitch;
+	too_close = pitch/2.0;
+	qbox_bloat = pitch/4.0;
 	for(offs = 0; offs <= lov->len; offs += pitch) {
-		pcb_pstk_new(subc->data, -1, 0, pcb_round(x), pcb_round(y), lov->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		pcb_rtree_it_t it;
+		pcb_rtree_box_t qbox;
+		pcb_pstk_t *cl;
+		int skip = 0;
+		pcb_coord_t rx = pcb_round(x), ry = pcb_round(y);
+
+		/* skip if there's a via too close */
+		qbox.x1 = pcb_round(rx - qbox_bloat); qbox.y1 = pcb_round(ry - qbox_bloat);
+		qbox.x2 = pcb_round(rx + qbox_bloat); qbox.y2 = pcb_round(ry + qbox_bloat);
+		for(cl = pcb_rtree_first(&it, pcb->Data->padstack_tree, &qbox); cl != NULL; cl = pcb_rtree_next(&it)) {
+			if (pcb_distance(rx, ry, cl->x, cl->y) < too_close) {
+				skip = 1;
+				break;
+			}
+		}
+		
+		if (!skip)
+			pcb_pstk_new(subc->data, -1, 0, rx, ry, lov->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+
 		x += lov->dx * pitch;
 		y += lov->dy * pitch;
 	}
