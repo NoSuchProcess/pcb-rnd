@@ -102,11 +102,13 @@ static void dimension_unpack(pcb_subc_t *obj)
 /* remove all existing graphics from the subc */
 static void dimension_clear(pcb_subc_t *subc)
 {
-	pcb_line_t *l;
+	pcb_line_t *l, *next;
 	pcb_poly_t *p;
 	pcb_text_t *t;
 
-	for(l = linelist_first(&subc->data->Layer[0].Line); l != NULL; l = linelist_first(&subc->data->Layer[0].Line)) {
+	for(l = linelist_first(&subc->data->Layer[0].Line); l != NULL; l = next) {
+		next = linelist_next(l);
+		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* do not free the floater */
 		pcb_poly_restore_to_poly(l->parent.data, PCB_OBJ_LINE, NULL, l);
 		pcb_line_free(l);
 	}
@@ -133,12 +135,12 @@ static void draw_arrow(dimension *dim, pcb_data_t *data, pcb_layer_t *ly, pcb_co
 }
 
 /* create the graphics */
-static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj, pcb_any_obj_t **floater)
+static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	dimension *dim;
 	pcb_board_t *pcb;
 	pcb_layer_t *ly;
-	pcb_any_obj_t *flt;
+	pcb_line_t *flt;
 	double ang, dispe, arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
 	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y;
 	pcb_text_t *t;
@@ -170,10 +172,24 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj, pcb_any_obj_
 	y2e = pcb_round(dim->y2 + dispe * +dim->dx);
 
 	/* main dim line */
-	flt = (pcb_any_obj_t *)pcb_line_new(ly,
-		x1 + arrx * dim->dx, y1 + arrx * dim->dy,
-		x2 - arrx * dim->dx, y2 - arrx * dim->dy,
-		PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(PCB_FLAG_FLOATER));
+	flt = linelist_first(&subc->data->Layer[0].Line);
+	if (flt == NULL) { /* create the floater if it doesn't exist */
+		flt = (pcb_any_obj_t *)pcb_line_new(ly,
+			x1 + arrx * dim->dx, y1 + arrx * dim->dy,
+			x2 - arrx * dim->dx, y2 - arrx * dim->dy,
+			PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(PCB_FLAG_FLOATER));
+	}
+	else { /* modify the floater if it exists */
+		if (ly->line_tree != NULL)
+			pcb_r_delete_entry(ly->line_tree, (pcb_box_t *)flt);
+
+		flt->Point1.X = x1 + arrx * dim->dx; flt->Point1.Y = y1 + arrx * dim->dy;
+		flt->Point2.X = x2 - arrx * dim->dx; flt->Point2.Y = y2 - arrx * dim->dy;
+
+		pcb_line_bbox(flt);
+		if (ly->line_tree != NULL)
+			pcb_r_insert_entry(ly->line_tree, (pcb_box_t *)flt);
+	}
 
 	/* guide lines */
 	pcb_line_new(ly, dim->x1, dim->y1, x1e, y1e, PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
@@ -196,8 +212,6 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj, pcb_any_obj_
 	if ((ang > 0.001) || (ang < -0.001))
 		pcb_text_rotate(t, 0, 0, cos(ang), sin(ang), ang * PCB_RAD_TO_DEG);
 	pcb_text_move(t,  x, y);
-	if (floater != NULL)
-		*floater = flt;
 	return pcb_exto_regen_end(subc);
 }
 
@@ -227,7 +241,7 @@ static void pcb_dimension_edit_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 static void pcb_dimension_edit_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	pcb_trace("dim: edit geo %ld %ld\n", subc->ID, edit_obj->ID);
-	dimension_gen(subc, edit_obj, NULL);
+	dimension_gen(subc, edit_obj);
 }
 
 static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
@@ -240,7 +254,6 @@ static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	dimension *dim;
 	pcb_any_obj_t *edit_obj;
 	pcb_line_t *fline = floater, bline;
-	pcb_any_obj_t *nfloater;
 	pcb_coord_t fx, fy;
 	double d;
 
@@ -272,7 +285,7 @@ pcb_trace("let's do it!\n");
 	edit_obj = pcb_extobj_get_editobj_by_attr(subc);
 	dimension_clear(subc);
 	dim->displace = d;
-	dimension_gen(subc, edit_obj, NULL);
+	dimension_gen(subc, edit_obj);
 }
 
 
