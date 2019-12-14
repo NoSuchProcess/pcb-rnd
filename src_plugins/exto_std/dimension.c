@@ -29,6 +29,7 @@
 typedef struct {
 	int style;
 	pcb_coord_t displace;
+	const char *fmt;
 
 	unsigned int valid:1;
 	double x1, y1, x2, y2, len, dx, dy;
@@ -87,6 +88,9 @@ static void dimension_unpack(pcb_subc_t *obj)
 	dim = obj->extobj_data;
 
 	pcb_extobj_unpack_coord(obj, &dim->displace, "extobj::displace");
+	dim->fmt = pcb_attribute_get(&obj->Attributes, "extobj::format");
+	if (dim->fmt == NULL)
+		dim->fmt = "%.03$mm";
 
 	edit = pcb_extobj_get_editobj_by_attr(obj);
 	if (edit != NULL)
@@ -98,6 +102,7 @@ static void dimension_clear(pcb_subc_t *subc)
 {
 	pcb_line_t *l;
 	pcb_poly_t *p;
+	pcb_text_t *t;
 
 	for(l = linelist_first(&subc->data->Layer[0].Line); l != NULL; l = linelist_first(&subc->data->Layer[0].Line)) {
 		pcb_poly_restore_to_poly(l->parent.data, PCB_OBJ_LINE, NULL, l);
@@ -107,6 +112,11 @@ static void dimension_clear(pcb_subc_t *subc)
 	for(p = polylist_first(&subc->data->Layer[0].Polygon); p != NULL; p = polylist_first(&subc->data->Layer[0].Polygon)) {
 		pcb_poly_restore_to_poly(p->parent.data, PCB_OBJ_POLY, NULL, p);
 		pcb_poly_free(p);
+	}
+
+	for(t = textlist_first(&subc->data->Layer[0].Text); t != NULL; t = textlist_first(&subc->data->Layer[0].Text)) {
+		pcb_poly_restore_to_poly(t->parent.data, PCB_OBJ_TEXT, NULL, t);
+		pcb_text_free(t);
 	}
 }
 
@@ -126,8 +136,10 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	dimension *dim;
 	pcb_board_t *pcb;
 	pcb_layer_t *ly;
-	double dispe, arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
-	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e;
+	double ang, dispe, arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
+	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y;
+	pcb_text_t *t;
+	char ttmp[128];
 
 	pcb = pcb_data_get_top(subc->data);
 
@@ -168,7 +180,19 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	draw_arrow(dim, subc->data, ly, x1, y1, arrx, arry);
 	draw_arrow(dim, subc->data, ly, x2, y2, -arrx, arry);
 
+	/* text */
+	pcb_snprintf(ttmp, sizeof(ttmp), dim->fmt, (pcb_coord_t)dim->len);
+	t = pcb_text_new(ly, pcb_font(PCB, 0, 0), 0, 0, 0, 100, 0, ttmp, pcb_flag_make(0));
+	tx = t->BoundingBox.X2 - t->BoundingBox.X1;
+	ty = t->BoundingBox.Y2 - t->BoundingBox.Y1;
 
+	x = (x1+x2)/2; y = (y1+y2)/2;
+	x += tx/2 * dim->dx; y += tx/2 * dim->dy;
+	x += ty * -dim->dy; y += ty * dim->dx;
+	ang = atan2(-dim->dy, dim->dx) + M_PI;
+	if ((ang > 0.001) || (ang < -0.001))
+		pcb_text_rotate(t, 0, 0, cos(ang), sin(ang), ang * PCB_RAD_TO_DEG);
+	pcb_text_move(t,  x, y);
 	return pcb_exto_regen_end(subc);
 }
 
