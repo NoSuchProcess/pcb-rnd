@@ -134,3 +134,40 @@ pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *obj)
 
 	return res;
 }
+
+void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
+{
+	pcb_data_t *data;
+	pcb_board_t *pcb;
+	pcb_subc_t *sc;
+	char tmp[128];
+
+	if (edit_obj->parent_type == PCB_PARENT_DATA)
+		data = edit_obj->parent.data;
+	else if (edit_obj->parent_type == PCB_PARENT_LAYER)
+		data = edit_obj->parent.layer->parent.data;
+	else
+		return;
+
+	pcb = pcb_data_get_top(data);
+	if (pcb == NULL)
+		return;
+
+	if (subc_copy_from == NULL) {
+		sc = pcb_subc_new();
+		sc->ID = pcb_create_ID_get();
+		pcb_subc_reg(pcb->Data, sc);
+		pcb_obj_id_reg(pcb->Data, sc);
+	}
+	else
+		sc = pcb_subc_dup_at(pcb, pcb->Data, subc_copy_from, 0, 0, pcb_false);
+
+
+	sprintf(tmp, "%ld", sc->ID);
+	pcb_attribute_put(&edit_obj->Attributes, "extobj::subcobj", tmp);
+	sprintf(tmp, "%ld", edit_obj->ID);
+	pcb_attribute_put(&sc->Attributes, "extobj::editobj", tmp);
+
+	pcb_extobj_edit_pre(edit_obj);
+	pcb_extobj_edit_geo(edit_obj);
+}
