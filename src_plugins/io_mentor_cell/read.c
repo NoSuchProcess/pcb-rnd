@@ -640,24 +640,26 @@ TODO("Look how opposite side to MNT_SIDE is defined.\n");
 						lyname = lyname_bottom;
 					return 1;
 				}
-				else {
+				else
 					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
-				}
 			}
 			else if (strcmp(tmp->argv[1], "TOP") == 0) {
-					*side = PCB_LYT_TOP;
-					lyname = lyname_top;
-					return 1;
-			} else if (strcmp(tmp->argv[1], "BOTTOM") == 0) {
-					*side = PCB_LYT_BOTTOM;
-					lyname = lyname_bottom;
-					return 1;
-			} else {
-				hkp_error(n, "Unknown SIDE argument\n");
+				*side = PCB_LYT_TOP;
+				lyname = lyname_top;
+				return 1;
 			}
-		} else
+			else if (strcmp(tmp->argv[1], "BOTTOM") == 0) {
+				*side = PCB_LYT_BOTTOM;
+				lyname = lyname_bottom;
+				return 1;
+			}
+			else
+				hkp_error(n, "Unknown SIDE argument\n");
+		}
+		else
 			return 0;
-	} else
+	}
+	else
 		return 0;
 }
 
@@ -675,12 +677,12 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 	if (subc != NULL) {
 		if (pcb_subc_get_side(subc, &on_bottom) == -1) {
 			hkp_error(subc, "Error getting subc side\n");
-		} else {
-			if (on_bottom == 1) {
+		}
+		else {
+			if (on_bottom == 1)
 				subc_side = PCB_LYT_BOTTOM;
-			} else {
+			else
 				subc_side = PCB_LYT_TOP;
-			}
 		}
 	}
 
