@@ -256,9 +256,13 @@ static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	memset(&bline, 0, sizeof(bline));
 	bline.Point1.X = dim->x1; bline.Point1.Y = dim->y1;
 	bline.Point2.X = dim->x2; bline.Point2.Y = dim->y2;
-	d = pcb_point_line_dist2_point(fx, fy, &bline, &cpx, &cpy);
-	if (d != 0)
+	d = pcb_point_line_dist2(fx, fy, &bline);
+	if (d != 0) {
+		double side = ((dim->x2 - dim->x1)*(fy - dim->y1) - (dim->y2 - dim->y1)*(fx - dim->x1)); /* which side fx;fy is on */
 		d = sqrt(d);
+		if (side < 0)
+			d = -d;
+	}
 
 pcb_trace("new disp: %mm f=%mm;%mm\n", (pcb_coord_t)d, fx, fy);
 
