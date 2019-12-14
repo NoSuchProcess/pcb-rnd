@@ -646,11 +646,18 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 	else {
 		/* Move with Route Code */
 		pcb_route_t route;
-		pcb_point_t point1 = (&Line->Point1 == Point ? Line->Point2 : Line->Point1);
-		pcb_point_t point2 = *Point;
+		int is_first = (&Line->Point1 == Point);
+		pcb_point_t point1 = Line->Point1;
+		pcb_point_t point2 = Line->Point2;
 
-		point2.X += ctx->move.dx;
-		point2.Y += ctx->move.dy;
+		if (is_first) {
+			point1.X += ctx->move.dx;
+			point1.Y += ctx->move.dy;
+		}
+		else {
+			point2.X += ctx->move.dx;
+			point2.Y += ctx->move.dy;
+		}
 	
 		/* Calculate the new line route and add apply it */
 		pcb_route_init(&route);
