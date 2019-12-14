@@ -69,6 +69,10 @@ pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *editobj);
    copy all data from there (including objects). */
 void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from);
 
+/* called before an edit-obj is removed */
+void pcb_extobj_del_pre(pcb_any_obj_t *edit_obj);
+
+
 int pcb_extobj_lookup_idx(const char *name);
 
 extern int pcb_extobj_invalid; /* this changes upon each new extobj reg, forcing the caches to be invalidated eventually */

@@ -30,6 +30,7 @@
 
 #include "board.h"
 #include "draw.h"
+#include "extobj.h"
 #include "remove.h"
 #include "select.h"
 #include "undo.h"
@@ -98,6 +99,7 @@ void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
+	pcb_extobj_del_pre(Ptr2);
 	ptr = pcb_object_operation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	pcb_draw();
 	return ptr;
