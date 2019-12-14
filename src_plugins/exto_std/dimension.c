@@ -26,6 +26,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "search.h"
+
 typedef struct {
 	int style;
 	pcb_coord_t displace;
@@ -131,11 +133,12 @@ static void draw_arrow(dimension *dim, pcb_data_t *data, pcb_layer_t *ly, pcb_co
 }
 
 /* create the graphics */
-static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj, pcb_any_obj_t **floater)
 {
 	dimension *dim;
 	pcb_board_t *pcb;
 	pcb_layer_t *ly;
+	pcb_any_obj_t *flt;
 	double ang, dispe, arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
 	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y;
 	pcb_text_t *t;
@@ -167,7 +170,7 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	y2e = pcb_round(dim->y2 + dispe * +dim->dx);
 
 	/* main dim line */
-	pcb_line_new(ly,
+	flt = (pcb_any_obj_t *)pcb_line_new(ly,
 		x1 + arrx * dim->dx, y1 + arrx * dim->dy,
 		x2 - arrx * dim->dx, y2 - arrx * dim->dy,
 		PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(PCB_FLAG_FLOATER));
@@ -193,6 +196,8 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	if ((ang > 0.001) || (ang < -0.001))
 		pcb_text_rotate(t, 0, 0, cos(ang), sin(ang), ang * PCB_RAD_TO_DEG);
 	pcb_text_move(t,  x, y);
+	if (floater != NULL)
+		*floater = flt;
 	return pcb_exto_regen_end(subc);
 }
 
@@ -222,7 +227,7 @@ static void pcb_dimension_edit_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 static void pcb_dimension_edit_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	pcb_trace("dim: edit geo %ld %ld\n", subc->ID, edit_obj->ID);
-	dimension_gen(subc, edit_obj);
+	dimension_gen(subc, edit_obj, NULL);
 }
 
 static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
@@ -232,7 +237,42 @@ static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
+	dimension *dim;
+	pcb_any_obj_t *edit_obj;
+	pcb_line_t *fline = floater, bline;
+	pcb_any_obj_t *nfloater;
+	pcb_coord_t fx, fy;
+	double d;
+
 	pcb_trace("dim: float geo %ld %ld\n", subc->ID, floater->ID);
+	if (floater->type != PCB_OBJ_LINE)
+		return;
+
+	if (subc->extobj_data == NULL)
+		dimension_unpack(subc);
+	dim = subc->extobj_data;
+
+	fx = pcb_round((double)(fline->Point1.X + fline->Point2.X)/2.0);
+	fy = pcb_round((double)(fline->Point1.Y + fline->Point2.Y)/2.0);
+
+	memset(&bline, 0, sizeof(bline));
+	bline.Point1.X = dim->x1; bline.Point1.Y = dim->y1;
+	bline.Point2.X = dim->x2; bline.Point2.Y = dim->y2;
+	d = pcb_point_line_dist2(fx, fy, &bline);
+	if (d != 0)
+		d = sqrt(d);
+
+pcb_trace("new disp: %mm f=%mm;%mm\n", (pcb_coord_t)d, fx, fy);
+
+	if ((d > -PCB_MM_TO_COORD(0.1)) && (d < PCB_MM_TO_COORD(0.1)))
+		return;
+
+pcb_trace("let's do it!\n");
+
+	edit_obj = pcb_extobj_get_editobj_by_attr(subc);
+	dimension_clear(subc);
+	dim->displace = d;
+	dimension_gen(subc, edit_obj, NULL);
 }
 
 
