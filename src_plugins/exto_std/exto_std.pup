@@ -1,7 +1,7 @@
 $class feature
 $short standard extended objects
 $long Extended objects for: line-of-vias
-$state WIP
-$package auto
+$state buildin
+$package core
 default disable
 autoload 1
