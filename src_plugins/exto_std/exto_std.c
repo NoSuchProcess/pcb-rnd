@@ -44,12 +44,14 @@
 static const char *exto_std_cookie = "exto_std plugin";
 
 #include "line_of_vias.c"
+#include "dimension.c"
 
 int pplg_check_ver_exto_std(int ver_needed) { return 0; }
 
 void pplg_uninit_exto_std(void)
 {
 	pcb_extobj_unreg(&pcb_line_of_vias);
+	pcb_extobj_unreg(&pcb_dimension);
 }
 
 int pplg_init_exto_std(void)
@@ -57,6 +59,7 @@ int pplg_init_exto_std(void)
 	PCB_API_CHK_VER;
 
 	pcb_extobj_reg(&pcb_line_of_vias);
+	pcb_extobj_reg(&pcb_dimension);
 
 	return 0;
 }
