@@ -171,8 +171,11 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,
 pcb_bool pcb_is_point_in_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_any_line_t *Pad);
 pcb_bool pcb_is_point_in_box(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t Radius);
 
-/* Return the distance^2 between a line-center and a point */
+/* Return the distance^2 between a line-center and a point, optionally
+   also returning the coordinates of the closest point */
 double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line);
+double pcb_point_line_dist2_point(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line, pcb_coord_t *cpx, pcb_coord_t *cpy);
+
 
 /* Return the first line object that has its centerline crossing the point;
    if ang is not NULL, only return lines that are pointing in the right

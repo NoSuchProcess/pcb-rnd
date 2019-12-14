@@ -611,7 +611,8 @@ pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line)
  *   distance^2 = (X-QX)^2 + (Y-QY)^2
  */
 
-double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line)
+/* also returns closest point-on-line in cpx;cpy if they are not NULL */
+PCB_INLINE double pcb_point_line_dist2_(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line, pcb_coord_t *cpx, pcb_coord_t *cpy)
 {
 	const double abx = Line->Point2.X - Line->Point1.X;
 	const double aby = Line->Point2.Y - Line->Point1.Y;
@@ -633,11 +634,24 @@ double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line)
 	qx = Line->Point1.X + (t * abx);
 	qy = Line->Point1.Y + (t * aby);
 
+	if (cpx != NULL) *cpx = qx;
+	if (cpy != NULL) *cpy = qy;
+
 	/* Return the distance from Q to (X,Y), squared */
 	dx = X - qx;
 	dy = Y - qy;
 
 	return (dx * dx) + (dy * dy);
+}
+
+double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line)
+{
+	return pcb_point_line_dist2_(X, Y, Line, NULL, NULL);
+}
+
+double pcb_point_line_dist2_point(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line, pcb_coord_t *cpx, pcb_coord_t *cpy)
+{
+	return pcb_point_line_dist2_(X, Y, Line, cpx, cpy);
 }
 
 pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line)
