@@ -135,7 +135,7 @@ PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
 		eo->edit_geo(sc, edit_obj);
 }
 
-PCB_INLINE void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_attr_from)
+PCB_INLINE void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 {
 	pcb_data_t *data;
 	pcb_board_t *pcb;
@@ -152,14 +152,16 @@ PCB_INLINE void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_co
 	pcb = pcb_data_get_top(data);
 	if (pcb == NULL)
 		return;
-	
-	sc = pcb_subc_new();
-	sc->ID = pcb_create_ID_get();
-	pcb_subc_reg(pcb->Data, sc);
-	pcb_obj_id_reg(pcb->Data, sc);
 
-	if (subc_copy_attr_from != NULL)
-		pcb_attribute_copy_all(&sc->Attributes, &subc_copy_attr_from->Attributes);
+	if (subc_copy_from == NULL) {
+		sc = pcb_subc_new();
+		sc->ID = pcb_create_ID_get();
+		pcb_subc_reg(pcb->Data, sc);
+		pcb_obj_id_reg(pcb->Data, sc);
+	}
+	else
+		sc = pcb_subc_dup_at(pcb, pcb->Data, subc_copy_from, 0, 0, pcb_false);
+
 
 	sprintf(tmp, "%ld", sc->ID);
 	pcb_attribute_put(&edit_obj->Attributes, "extobj::subcobj", tmp);
