@@ -277,7 +277,9 @@ new string appears.
 Text objects can be placed on copper and silk layers.
 Each text object has a scale parameter that
 determines its size in percentage. A scale of 100% means symbols are
-rendered in 1:1 size.
+rendered in 1:1 size. Text has a thickness field; if it is non-zero,
+it specifies the stroke (line and arc) thickness of symbols (glyphs); if it
+is zero, the thickness value is calculated from scale.
 <p>
 The clearance around text is rendered as a round corner rectangular cutout.
 Bug: copper text can not participate in short circuits, the galvanic connection
