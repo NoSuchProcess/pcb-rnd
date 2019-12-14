@@ -78,8 +78,10 @@ static void dimension_unpack(pcb_subc_t *obj)
 	dim = obj->extobj_data;
 
 	pcb_extobj_unpack_coord(obj, &dim->displace, "extobj::displace");
+#if 0
 	dim->fmt = pcb_attribute_get(&obj->Attributes, "extobj::format");
 	if (dim->fmt == NULL)
+#endif
 		dim->fmt = "%.03$mm";
 
 	edit = pcb_extobj_get_editobj_by_attr(obj);
