@@ -109,17 +109,14 @@ static void dimension_clear(pcb_subc_t *subc)
 	for(l = linelist_first(&subc->data->Layer[0].Line); l != NULL; l = next) {
 		next = linelist_next(l);
 		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* do not free the floater */
-		pcb_poly_restore_to_poly(l->parent.data, PCB_OBJ_LINE, NULL, l);
 		pcb_line_free(l);
 	}
 
 	for(p = polylist_first(&subc->data->Layer[0].Polygon); p != NULL; p = polylist_first(&subc->data->Layer[0].Polygon)) {
-		pcb_poly_restore_to_poly(p->parent.data, PCB_OBJ_POLY, NULL, p);
 		pcb_poly_free(p);
 	}
 
 	for(t = textlist_first(&subc->data->Layer[0].Text); t != NULL; t = textlist_first(&subc->data->Layer[0].Text)) {
-		pcb_poly_restore_to_poly(t->parent.data, PCB_OBJ_TEXT, NULL, t);
 		pcb_text_free(t);
 	}
 }
