@@ -367,10 +367,18 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					if ((type == 0) || ((o != NULL) && (pcb_gobj_parent_subc(o->parent_type, &o->parent) == NULL))) {
 						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
 
-						if (type == 0)
-							tn = "none";
-						else
-							tn = pcb_obj_type_name(type);
+						switch(type) {
+							case 0: tn = "none"; break;
+							case PCB_OBJ_SUBC:
+								if (pcb_attribute_get(&((pcb_any_obj_t *)o2)->Attributes, "extobj") != 0) {
+									tn = "extobj-subcircuit";
+									break;
+								}
+								/* fall through */
+							default:
+								tn = pcb_obj_type_name(type);
+								break;
+						}
 
 						sprintf(name, "/popups/%s-%s", a0, tn);
 					}
