@@ -624,6 +624,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					if (CoordsToString(string, value, 1, &spec, mask, suffix) != 0) goto err;
 					break;
 				case 'H':
+					if ((safe & PCB_SAFEPRINT_COORD_ONLY) && (value[0] > 1))
+						return -1;
 					if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
 					break;
 				case 'M':
@@ -655,10 +657,14 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					value[count++] = va_arg(args, pcb_coord_t);
 				case '2':
 				case 'D':
+					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+						return -1;
 					value[count++] = va_arg(args, pcb_coord_t);
 					if (CoordsToString(string, value, count, &spec, mask & PCB_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 					break;
 				case 'd':
+					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+						return -1;
 					value[1] = va_arg(args, pcb_coord_t);
 					if (CoordsToString(string, value, 2, &spec, PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_MIL, suffix) != 0) goto err;
 					break;
@@ -677,6 +683,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					}
 					break;
 				case 'a':
+					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+						return -1;
 					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
 					if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;
@@ -684,6 +692,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 'A':
+					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+						return -1;
 					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
 					/* if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
@@ -691,6 +701,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 'f':
+					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+						return -1;
 					gds_append_len(&spec, "f", 1);
 					tmplen = sprintf(tmp, spec.array, va_arg(args, double));
 					dot = strchr(spec.array, '.');
