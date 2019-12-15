@@ -334,7 +334,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 
 /*******************/
 
-static void set_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
+static void set_attr_raw(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
 {
 	const char *key = st->name+2;
 	const char *orig = pcb_attribute_get(list, key);
@@ -343,6 +343,16 @@ static void set_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
 		return;
 
 	pcb_attribute_put(list, key, st->s);
+	st->set_cnt++;
+}
+
+static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
+{
+	const char *key = st->name+2;
+
+	if (pcb_uchg_attr(st->pcb, obj, key, st->s) != 0)
+		return;
+
 	st->set_cnt++;
 }
 
@@ -377,7 +387,7 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 	const char *pn = st->name + 8;
 
 	if (st->is_attr) {
-		set_attr(st, &pcb->Attributes);
+		set_attr_raw(st, &pcb->Attributes);
 		return;
 	}
 
@@ -412,7 +422,7 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 	const char *pn = st->name + 8;
 
 	if (st->is_attr) {
-		set_attr(st, &layer->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)layer);
 		return 0;
 	}
 
@@ -433,7 +443,7 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 	const char *pn = st->name + 14;
 
 	if (st->is_attr) {
-		set_attr(st, &grp->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)grp);
 		return;
 	}
 
@@ -470,7 +480,7 @@ static void set_line(pcb_propset_ctx_t *st, pcb_line_t *line)
 	const char *pn = st->name + 8;
 
 	if (st->is_attr) {
-		set_attr(st, &line->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)line);
 		return;
 	}
 
@@ -521,7 +531,7 @@ static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
 	const char *pn = st->name + 8;
 
 	if (st->is_attr) {
-		set_attr(st, &arc->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)arc);
 		return;
 	}
 
@@ -576,7 +586,7 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 	char *old;
 
 	if (st->is_attr) {
-		set_attr(st, &text->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)text);
 		return;
 	}
 
@@ -634,7 +644,7 @@ static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
 	}
 
 	if (st->is_attr) {
-		set_attr(st, &poly->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)poly);
 		return;
 	}
 }
@@ -647,7 +657,7 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 	pcb_pstk_proto_t *proto;
 
 	if (st->is_attr) {
-		set_attr(st, &ps->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)ps);
 		return;
 	}
 
@@ -736,7 +746,7 @@ static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
 	if (set_common(st, (pcb_any_obj_t *)ssubc)) return;
 
 	if (st->is_attr) {
-		set_attr(st, &ssubc->Attributes);
+		set_attr_obj(st, (pcb_any_obj_t *)ssubc);
 		return;
 	}
 
