@@ -288,6 +288,16 @@ pcb_trace("let's do it!\n");
 	dimension_gen(subc, edit_obj);
 }
 
+static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
+{
+	pcb_trace("dim chg_attr\n");
+	if (strncmp(key, "extobj::", 8) == 0) {
+		pcb_any_obj_t *edit_obj = pcb_extobj_get_editobj_by_attr(subc);
+		dimension_clear(subc);
+		dimension_unpack(subc);
+		dimension_gen(subc, edit_obj);
+	}
+}
 
 static pcb_extobj_t pcb_dimension = {
 	"dimension",
@@ -296,5 +306,6 @@ static pcb_extobj_t pcb_dimension = {
 	pcb_dimension_edit_pre,
 	pcb_dimension_edit_geo,
 	pcb_dimension_float_pre,
-	pcb_dimension_float_geo
+	pcb_dimension_float_geo,
+	pcb_dimension_chg_attr
 };
