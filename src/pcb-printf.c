@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2011 Andrew Poelstra
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -770,6 +770,30 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 	va_end(args);
 	return str.used;
 }
+
+int pcb_safe_snprintf(char *string, size_t len, pcb_safe_printf_t safe, const char *fmt, ...)
+{
+	gds_t str;
+	va_list args;
+	int res;
+
+	memset(&str, 0, sizeof(str)); /* can't use gds_init, it'd allocate str.array */
+	va_start(args, fmt);
+
+	str.array = string;
+	str.alloced = len;
+	str.no_realloc = 1;
+	if (len > 0)
+		*string = '\0'; /* make sure the string is empty on error of the low level call didn't print anything */
+
+	res = pcb_safe_append_vprintf(&str, safe, fmt, args);
+
+	va_end(args);
+	if (res < 0)
+		return res;
+	return str.used;
+}
+
 
 int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args)
 {

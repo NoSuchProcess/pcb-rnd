@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2011 Andrew Poelstra
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -103,21 +103,21 @@
 #include <genvector/gds_char.h>
 #include "unit.h"
 
+typedef enum {                   /* bitmask for printf hardening */
+	PCB_SAFEPRINT_COORD_ONLY = 1   /* print only coords (%m); anything else will result in error, returning -1  */
+} pcb_safe_printf_t;
+
 int pcb_fprintf(FILE * f, const char *fmt, ...);
 int pcb_vfprintf(FILE * f, const char *fmt, va_list args);
 int pcb_sprintf(char *string, const char *fmt, ...);
 int pcb_snprintf(char *string, size_t len, const char *fmt, ...);
+int pcb_safe_snprintf(char *string, size_t len, pcb_safe_printf_t safe, const char *fmt, ...);
 int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args);
 int pcb_printf(const char *fmt, ...);
 char *pcb_strdup_printf(const char *fmt, ...);
 char *pcb_strdup_vprintf(const char *fmt, va_list args);
 
 int pcb_append_printf(gds_t *str, const char *fmt, ...);
-
-
-typedef enum {                   /* bitmask for printf hardening */
-	PCB_SAFEPRINT_COORD_ONLY = 1   /* print only coords (%m); anything else will result in error, returning -1  */
-} pcb_safe_printf_t;
 
 /* Low level call that does the job */
 int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *fmt, va_list args);
