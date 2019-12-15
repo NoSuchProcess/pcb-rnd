@@ -214,6 +214,8 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 
 	Ptr->Data->loader = NULL;
 
+	pcb_layergrp_inhibit_inc();
+
 	/* try all plugins that said it could handle the file */
 	for(n = 0; n < len; n++) {
 		if ((available[n].plug->parse_pcb == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
@@ -225,6 +227,9 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 			break;
 		}
 	}
+
+	pcb_layergrp_inhibit_dec();
+
 
 	if ((res == 0) && (load_settings))
 		pcb_conf_load_project(NULL, Filename);
