@@ -217,20 +217,9 @@ int gtkhid_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	pcb_gtk_t *gctx = hid->hid_data;
 	GtkWidget *window;
 
-	/* on windows we need to figure out the installation directory */
-TODO("This needs to be done centrally, and should not use PCB_PACKAGE but pcbhl_app_*")
 #ifdef WIN32
-	char *tmps;
-	char *libdir;
-	tmps = g_win32_get_package_installation_directory(PCB_PACKAGE "-" PCB_VERSION, NULL);
-#define REST_OF_PATH G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S PCB_PACKAGE  G_DIR_SEPARATOR_S "pcblib"
-	libdir = (char *) malloc(strlen(tmps) + strlen(REST_OF_PATH) + 1);
-	sprintf(libdir, "%s%s", tmps, REST_OF_PATH);
-	free(tmps);
-
+	/* make sure gtk won't ruin the locale */
 	gtk_disable_setlocale();
-#undef REST_OF_PATH
-
 #endif
 
 	pcb_conf_parse_arguments("plugins/hid_gtk/", argc, argv);
