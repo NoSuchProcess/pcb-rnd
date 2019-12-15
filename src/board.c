@@ -147,7 +147,6 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 	}
 
 	PCB = old;
-	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	return nw;
 }
 
@@ -164,6 +163,9 @@ int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 			pcb_data_binding_update(pcb, pcb_buffers[n].Data);
 		}
 	}
+
+	if (pcb == PCB)
+		pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 
 	return 0;
 }
