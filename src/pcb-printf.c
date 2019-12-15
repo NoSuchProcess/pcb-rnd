@@ -420,7 +420,7 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
  * [in] args   Arguments to specifier
  *
  * return 0 on success */
-int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args)
+int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *fmt, va_list args)
 {
 	gds_t spec;
 	const char *qstr, *needsq;
@@ -735,7 +735,7 @@ int pcb_sprintf(char *string, const char *fmt, ...)
 	str.alloced = 1<<31;
 	str.no_realloc = 1;
 
-	pcb_append_vprintf(&str, fmt, args);
+	pcb_safe_append_vprintf(&str, 0, fmt, args);
 
 	va_end(args);
 	return str.used;
@@ -753,7 +753,7 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 	str.alloced = len;
 	str.no_realloc = 1;
 
-	pcb_append_vprintf(&str, fmt, args);
+	pcb_safe_append_vprintf(&str, 0, fmt, args);
 
 	va_end(args);
 	return str.used;
@@ -769,7 +769,7 @@ int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args)
 	str.alloced = len;
 	str.no_realloc = 1;
 
-	pcb_append_vprintf(&str, fmt, args);
+	pcb_safe_append_vprintf(&str, 0, fmt, args);
 
 	return str.used;
 }
@@ -795,7 +795,7 @@ int pcb_vfprintf(FILE * fh, const char *fmt, va_list args)
 	if (fh == NULL)
 		rv = -1;
 	else {
-		pcb_append_vprintf(&str, fmt, args);
+		pcb_safe_append_vprintf(&str, 0, fmt, args);
 		rv = fprintf(fh, "%s", str.array);
 	}
 
@@ -812,7 +812,7 @@ int pcb_printf(const char *fmt, ...)
 	gds_init(&str);
 	va_start(args, fmt);
 
-	pcb_append_vprintf(&str, fmt, args);
+	pcb_safe_append_vprintf(&str, 0, fmt, args);
 	rv = printf("%s", str.array);
 
 	va_end(args);
@@ -828,7 +828,7 @@ char *pcb_strdup_printf(const char *fmt, ...)
 	gds_init(&str);
 
 	va_start(args, fmt);
-	pcb_append_vprintf(&str, fmt, args);
+	pcb_safe_append_vprintf(&str, 0, fmt, args);
 	va_end(args);
 
 	return str.array; /* no other allocation has been made */
@@ -839,20 +839,20 @@ char *pcb_strdup_vprintf(const char *fmt, va_list args)
 	gds_t str;
 	gds_init(&str);
 
-	pcb_append_vprintf(&str, fmt, args);
+	pcb_safe_append_vprintf(&str, 0, fmt, args);
 
 	return str.array; /* no other allocation has been made */
 }
 
 
-/* Wrapper for pcb_append_vprintf that appends to a string using vararg API */
+/* Wrapper for pcb_safe_append_vprintf that appends to a string using vararg API */
 int pcb_append_printf(gds_t *str, const char *fmt, ...)
 {
 	int retval;
 
 	va_list args;
 	va_start(args, fmt);
-	retval = pcb_append_vprintf(str, fmt, args);
+	retval = pcb_safe_append_vprintf(str, 0, fmt, args);
 	va_end(args);
 
 	return retval;

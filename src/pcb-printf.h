@@ -113,7 +113,14 @@ char *pcb_strdup_printf(const char *fmt, ...);
 char *pcb_strdup_vprintf(const char *fmt, va_list args);
 
 int pcb_append_printf(gds_t *str, const char *fmt, ...);
-int pcb_append_vprintf(gds_t *string, const char *fmt, va_list args);
+
+
+typedef enum {                /* bitmask for printf hardening */
+	PCB_SAFEPRINT_NO_PTR = 1    /* do not interpret/resolve pointers (e.g. %s) */
+} pcb_safe_printf_t;
+
+/* Low level call that does the job */
+int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *fmt, va_list args);
 
 /* Predefined slots (macros): %[n] will use the nth string from this list.
    The first 8 are user-definable. */

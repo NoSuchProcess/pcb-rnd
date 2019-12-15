@@ -499,7 +499,7 @@ static int vfs_conf_printf(void *ctx, const char *fmt, ...)
 	int res;
 
 	va_start(ap, fmt);
-	res = pcb_append_vprintf(buff, fmt, ap);
+	res = pcb_safe_append_vprintf(buff, 0, fmt, ap);
 	va_end(ap);
 	return res;
 }

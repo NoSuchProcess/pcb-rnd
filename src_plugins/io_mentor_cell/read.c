@@ -146,7 +146,7 @@ static int hkp_error(node_t *nd, char *fmt, ...)
 		gds_append_str(&str, ": ");
 
 	va_start(ap, fmt);
-	pcb_append_vprintf(&str, fmt, ap);
+	pcb_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
 	pcb_message(PCB_MSG_ERROR, "%s", str.array);
