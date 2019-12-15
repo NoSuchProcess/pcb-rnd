@@ -186,7 +186,7 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	draw_arrow(dim, subc->data, ly, x2, y2, -arrx, arry);
 
 	/* text */
-	if (pcb_safe_snprintf(ttmp, sizeof(ttmp), PCB_SAFEPRINT_COORD_ONLY, dim->fmt, (pcb_coord_t)dim->len) < 0)
+	if (pcb_safe_snprintf(ttmp, sizeof(ttmp), PCB_SAFEPRINT_COORD_ONLY | 1, dim->fmt, (pcb_coord_t)dim->len) < 0)
 		strcpy(ttmp, "<invalid format>");
 	t = pcb_text_new(ly, pcb_font(PCB, 0, 0), 0, 0, 0, 100, 0, ttmp, pcb_flag_make(0));
 	tx = t->BoundingBox.X2 - t->BoundingBox.X1;
