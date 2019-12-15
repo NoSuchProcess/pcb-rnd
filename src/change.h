@@ -108,4 +108,8 @@ void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t 
 /* Invalidate the term label of an object */
 void *pcb_obj_invalidate_label(pcb_objtype_t Type, void *Ptr1, void *Ptr2, void *Ptr3);
 
+/* Undoable obj attribute change; if new_value is NULL, delete the attribute */
+int pcb_uchg_attr(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *key, const char *new_value);
+
+
 #endif

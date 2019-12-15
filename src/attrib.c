@@ -50,6 +50,15 @@ char *pcb_attribute_get(const pcb_attribute_list_t *list, const char *name)
 	return NULL;
 }
 
+char **pcb_attribute_get_ptr(const pcb_attribute_list_t *list, const char *name)
+{
+	int i;
+	for (i = 0; i < list->Number; i++)
+		if (strcmp(name, list->List[i].name) == 0)
+			return &list->List[i].value;
+	return NULL;
+}
+
 int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value)
 {
 	int i;

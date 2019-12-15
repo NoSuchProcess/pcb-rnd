@@ -32,6 +32,7 @@
 #include "conf_core.h"
 
 #include "change.h"
+#include "compat_misc.h"
 #include "board.h"
 #include "data.h"
 #include "draw.h"
@@ -47,6 +48,8 @@
 #include "obj_poly_op.h"
 #include "obj_text_op.h"
 #include "obj_subc_op.h"
+
+static const char core_chg_cookie[] = "core: change.c";
 
 int defer_updates = 0;
 int defer_needs_update = 0;
@@ -819,4 +822,102 @@ void *pcb_obj_invalidate_label(pcb_objtype_t Type, void *Ptr1, void *Ptr2, void 
 	pcb_opctx_t ctx;
 	ctx.noarg.pcb = PCB;
 	return pcb_object_operation(&InvalLabelFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+}
+
+
+/*** undoable attribute change */
+typedef struct {
+	pcb_any_obj_t *obj;
+	char *value;
+	int delete;
+	char key[1]; /* must be the last item, spans longer than 1 */
+} chg_attr_t;
+
+static int undo_chg_attr_swap(void *udata)
+{
+	chg_attr_t *ca = udata;
+	int curr_delete = 0;
+	char *curr_value = NULL, **slot;
+
+	slot = pcb_attribute_get_ptr(&ca->obj->Attributes, ca->key);
+
+	/* temp save current state */
+	if (slot == NULL)
+		curr_delete = 1;
+	else
+		curr_value = *slot;
+
+	/* install ca in the slot */
+	if (!ca->delete) {
+		if (curr_delete) {
+			pcb_attribute_put(&ca->obj->Attributes, ca->key, NULL);
+			slot = pcb_attribute_get_ptr(&ca->obj->Attributes, ca->key);
+		}
+		*slot = ca->value;
+	}
+	else {
+		*slot = NULL;
+		pcb_attribute_remove(&ca->obj->Attributes, ca->key);
+	}
+
+
+	/* save current state in ca */
+	ca->delete = curr_delete;
+	ca->value = curr_value;
+	return 0;
+}
+
+static void undo_chg_attr_print(void *udata, char *dst, size_t dst_len)
+{
+	chg_attr_t *ca = udata;
+	pcb_snprintf(dst, dst_len, "chg_attr: #%ld/%s to '%s'\n",
+		ca->obj->ID, ca->key, ca->delete ? "<delete>" : ca->value);
+}
+
+static void undo_chg_attr_free(void *udata)
+{
+	chg_attr_t *ca = udata;
+	free(ca->value);
+}
+
+static const uundo_oper_t undo_chg_attr = {
+	core_chg_cookie,
+	undo_chg_attr_free,
+	undo_chg_attr_swap,
+	undo_chg_attr_swap,
+	undo_chg_attr_print
+};
+
+int pcb_uchg_attr(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *key, const char *new_value)
+{
+	int len;
+	chg_attr_t *ca;
+	const char *curr;
+
+	if (key == NULL)
+		return -1;
+
+	curr = pcb_attribute_get(&obj->Attributes, key);
+	if ((curr == NULL) && (new_value == NULL))
+		return 0; /* nothing to do: both delete */
+	if ((curr != NULL) && (new_value != NULL) && (strcmp(curr, new_value) == 0))
+		return 0; /* nothing to do: value match */
+
+	len = strlen(key); /* +1 for the terminator is implied by sizeof(->str) */
+
+	ca = pcb_undo_alloc(pcb, &undo_chg_attr, sizeof(chg_attr_t) + len);
+	ca->obj = obj;
+	memcpy(ca->key, key, len+1);
+	if (new_value == NULL) {
+		ca->value = NULL;
+		ca->delete = 1;
+	}
+	else {
+		ca->value = pcb_strdup(new_value);
+		ca->delete = 0;
+	}
+	undo_chg_attr_swap(ca);
+
+	pcb_undo_inc_serial();
+	return 0;
 }
