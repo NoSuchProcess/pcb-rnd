@@ -179,6 +179,17 @@ static void pcb_line_of_vias_edit_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	line_of_vias_gen(subc, edit_obj);
 }
 
+static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
+{
+	pcb_trace("LoV chg_attr\n");
+	if (strncmp(key, "extobj::", 8) == 0) {
+		pcb_any_obj_t *edit_obj = pcb_extobj_get_editobj_by_attr(subc);
+		line_of_vias_clear(subc);
+		line_of_vias_unpack(subc);
+		line_of_vias_gen(subc, edit_obj);
+	}
+}
+
 
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
@@ -187,5 +198,6 @@ static pcb_extobj_t pcb_line_of_vias = {
 	pcb_line_of_vias_edit_pre,
 	pcb_line_of_vias_edit_geo,
 	NULL, /* float_pre */
-	NULL  /* float_geo */
+	NULL, /* float_geo */
+	pcb_line_of_vias_chg_attr
 };
