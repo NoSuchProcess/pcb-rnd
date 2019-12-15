@@ -78,10 +78,8 @@ static void dimension_unpack(pcb_subc_t *obj)
 	dim = obj->extobj_data;
 
 	pcb_extobj_unpack_coord(obj, &dim->displace, "extobj::displace");
-#if 0
 	dim->fmt = pcb_attribute_get(&obj->Attributes, "extobj::format");
 	if (dim->fmt == NULL)
-#endif
 		dim->fmt = "%.03$mm";
 
 	edit = pcb_extobj_get_editobj_by_attr(obj);
@@ -188,7 +186,8 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	draw_arrow(dim, subc->data, ly, x2, y2, -arrx, arry);
 
 	/* text */
-	pcb_snprintf(ttmp, sizeof(ttmp), dim->fmt, (pcb_coord_t)dim->len);
+	if (pcb_safe_snprintf(ttmp, sizeof(ttmp), PCB_SAFEPRINT_COORD_ONLY, dim->fmt, (pcb_coord_t)dim->len) < 0)
+		strcpy(ttmp, "<invalid format>");
 	t = pcb_text_new(ly, pcb_font(PCB, 0, 0), 0, 0, 0, 100, 0, ttmp, pcb_flag_make(0));
 	tx = t->BoundingBox.X2 - t->BoundingBox.X1;
 	ty = t->BoundingBox.Y2 - t->BoundingBox.Y1;
