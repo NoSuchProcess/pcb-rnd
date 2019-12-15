@@ -642,7 +642,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 
 extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);
 
-const char pcb_acts_propedit[] = "propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|selection|selected)\n";
+const char pcb_acts_propedit[] = "propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|subc|selection|selected)\n";
 const char pcb_acth_propedit[] = "";
 fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

@@ -47,7 +47,19 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 {
 	pcb_idpath_t *idp;
 	long id;
+	void *o2;
 
+
+	if (strcmp(cmd, "subc") == 0) {
+		void *o1, *o3;
+		pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
+		if (type == 0) {
+			if (!quiet)
+				pcb_message(PCB_MSG_ERROR, "No object under the cursor\n");
+			return FGW_ERR_ARG_CONV;
+		}
+		goto object_scope;
+	}
 	if (strncmp(cmd, "object", 6) == 0) {
 		if (cmd[6] == ':') {
 			idp = pcb_str2idpath(pe->pcb, cmd+7);
@@ -59,7 +71,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			pcb_idpath_list_append(&pe->objs, idp);
 		}
 		else {
-			void *o1, *o2, *o3;
+			void *o1, *o3;
 			pcb_objtype_t type;
 
 			type = pcb_search_obj_by_location(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
@@ -70,6 +82,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 					pcb_message(PCB_MSG_ERROR, "No object under the cursor\n");
 				return FGW_ERR_ARG_CONV;
 			}
+			object_scope:;
 			idp = pcb_obj2idpath(o2);
 			if (idp == NULL) {
 				if (!quiet)
