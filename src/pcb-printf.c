@@ -531,6 +531,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 			case 'u':
 			case 'x':
 			case 'X':
+				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					return -1;
 				if (spec.array[1] == 'l')
 					tmplen = sprintf(tmp, spec.array, va_arg(args, long));
 				else
@@ -542,6 +544,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 			case 'f':
 			case 'g':
 			case 'G':
+				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					return -1;
 				if (strchr(spec.array, '*')) {
 					int prec = va_arg(args, int);
 					tmplen = sprintf(tmp, spec.array, va_arg(args, double), prec);
@@ -551,6 +555,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'c':
+				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					return -1;
 				if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
 					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t));
 				else
@@ -558,6 +564,8 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 's':
+				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					return -1;
 				if (spec.array[0] == 'l') {
 					/* TODO: convert wchar to char and append it */
 					fprintf(stderr, "Internal error: appending %%ls is not supported\n");
@@ -570,12 +578,16 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 				}
 				break;
 			case 'n':
+				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					return -1;
 				/* Depending on gcc settings, this will probably break with
 				 *  some silly "can't put %n in writable data space" message */
 				tmplen = sprintf(tmp, spec.array, va_arg(args, int *));
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'p':
+				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					return -1;
 				tmplen = sprintf(tmp, spec.array, va_arg(args, void *));
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;

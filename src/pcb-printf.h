@@ -115,8 +115,8 @@ char *pcb_strdup_vprintf(const char *fmt, va_list args);
 int pcb_append_printf(gds_t *str, const char *fmt, ...);
 
 
-typedef enum {                /* bitmask for printf hardening */
-	PCB_SAFEPRINT_NO_PTR = 1    /* do not interpret/resolve pointers (e.g. %s) */
+typedef enum {                   /* bitmask for printf hardening */
+	PCB_SAFEPRINT_COORD_ONLY = 1   /* print only coords (%m); anything else will result in error, returning -1  */
 } pcb_safe_printf_t;
 
 /* Low level call that does the job */
