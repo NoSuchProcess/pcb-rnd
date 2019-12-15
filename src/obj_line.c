@@ -646,7 +646,7 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 	else {
 		/* Move with Route Code */
 		pcb_route_t route;
-		int is_first = (&Line->Point1 == Point);
+		int mod1, is_first = (&Line->Point1 == Point);
 		pcb_point_t point1 = Line->Point1;
 		pcb_point_t point2 = Line->Point2;
 
@@ -658,7 +658,11 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 			point2.X += ctx->move.dx;
 			point2.Y += ctx->move.dy;
 		}
-	
+
+		mod1 = pcb_gui->shift_is_pressed(pcb_gui);
+		if (is_first)
+			mod1 = !mod1;
+
 		/* Calculate the new line route and add apply it */
 		pcb_route_init(&route);
 		pcb_route_calculate(PCB,
@@ -669,7 +673,7 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 												Line->Thickness,
 												Line->Clearance,
 												Line->Flags,
-												pcb_gui->shift_is_pressed(pcb_gui),
+												mod1,
 												pcb_gui->control_is_pressed(pcb_gui) );
 		pcb_route_apply_to_line(&route,Layer,Line);
 		pcb_route_destroy(&route);
