@@ -428,6 +428,12 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 	int tmplen, retval = -1, slot_recursion = 0, mq_has_spec;
 	char *dot, *free_fmt = NULL;
 	enum pcb_allow_e mask = PCB_UNIT_ALLOW_ALL_SANE;
+	unsigned long maxfmts;
+
+	if ((safe & PCB_SAFEPRINT_arg_max) > 0)
+		maxfmts = (safe & PCB_SAFEPRINT_arg_max);
+	else
+		maxfmts = 1UL<<31;
 
 	gds_init(&spec);
 
@@ -520,6 +526,11 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					suffix = PCB_UNIT_FILE_MODE;
 				}
 			}
+
+			if (maxfmts == 0)
+				return -1;
+			maxfmts--;
+
 			/* Tack full specifier onto specifier */
 			if (*fmt != 'm')
 				if (gds_append(&spec, *fmt) != 0) goto err;

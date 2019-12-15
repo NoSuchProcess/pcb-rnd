@@ -103,8 +103,9 @@
 #include <genvector/gds_char.h>
 #include "unit.h"
 
-typedef enum {                   /* bitmask for printf hardening */
-	PCB_SAFEPRINT_COORD_ONLY = 1   /* print only coords (%m); anything else will result in error, returning -1  */
+typedef enum {                    /* bitmask for printf hardening */
+	PCB_SAFEPRINT_arg_max = 1023,   /* for internal use */
+	PCB_SAFEPRINT_COORD_ONLY = 1024 /* print only coords (%m); anything else will result in error, returning -1  */
 } pcb_safe_printf_t;
 
 int pcb_fprintf(FILE * f, const char *fmt, ...);
