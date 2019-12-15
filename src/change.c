@@ -48,6 +48,7 @@
 #include "obj_poly_op.h"
 #include "obj_text_op.h"
 #include "obj_subc_op.h"
+#include "extobj.h"
 
 static const char core_chg_cookie[] = "core: change.c";
 
@@ -838,6 +839,7 @@ static int undo_chg_attr_swap(void *udata)
 	chg_attr_t *ca = udata;
 	int curr_delete = 0;
 	char *curr_value = NULL, **slot;
+	const char *new_val;
 
 	slot = pcb_attribute_get_ptr(&ca->obj->Attributes, ca->key);
 
@@ -854,9 +856,11 @@ static int undo_chg_attr_swap(void *udata)
 			slot = pcb_attribute_get_ptr(&ca->obj->Attributes, ca->key);
 		}
 		*slot = ca->value;
+		new_val = ca->value;
 	}
 	else {
 		*slot = NULL;
+		new_val = NULL;
 		pcb_attribute_remove(&ca->obj->Attributes, ca->key);
 	}
 
@@ -864,6 +868,10 @@ static int undo_chg_attr_swap(void *udata)
 	/* save current state in ca */
 	ca->delete = curr_delete;
 	ca->value = curr_value;
+
+
+	/* side effects */
+	pcb_extobj_chg_attr(ca->obj, ca->key, new_val);
 	return 0;
 }
 
