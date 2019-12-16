@@ -44,6 +44,8 @@
 #include "obj_poly_op.h"
 
 static pcb_opfunc_t InsertFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_insert_point,
 	NULL,
 	pcb_polyop_insert_point,

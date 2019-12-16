@@ -61,6 +61,8 @@
 #include "extobj.h"
 
 static pcb_opfunc_t AddBufferFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_add_to_buffer,
 	pcb_textop_add_to_buffer,
 	pcb_polyop_add_to_buffer,
@@ -74,6 +76,8 @@ static pcb_opfunc_t AddBufferFunctions = {
 };
 
 static pcb_opfunc_t MoveBufferFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_move_buffer,
 	pcb_textop_move_buffer,
 	pcb_polyop_move_buffer,

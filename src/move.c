@@ -50,6 +50,8 @@
 #include "obj_rat_op.h"
 
 pcb_opfunc_t MoveFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_move,
 	pcb_textop_move,
 	pcb_polyop_move,
@@ -63,6 +65,8 @@ pcb_opfunc_t MoveFunctions = {
 };
 
 pcb_opfunc_t MoveFunctions_noclip = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_move_noclip,
 	pcb_textop_move_noclip,
 	pcb_polyop_move_noclip,
@@ -76,6 +80,8 @@ pcb_opfunc_t MoveFunctions_noclip = {
 };
 
 pcb_opfunc_t ClipFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_clip,
 	pcb_textop_clip,
 	pcb_polyop_clip,
@@ -89,6 +95,8 @@ pcb_opfunc_t ClipFunctions = {
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_move_to_layer,
 	pcb_textop_move_to_layer,
 	pcb_polyop_move_to_layer,
@@ -102,6 +110,8 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 };
 
 static pcb_opfunc_t CopyFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_copy,
 	pcb_textop_copy,
 	pcb_polyop_copy,

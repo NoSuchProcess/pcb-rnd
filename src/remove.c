@@ -43,6 +43,8 @@
 #include "obj_pstk_op.h"
 
 static pcb_opfunc_t RemoveFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_remove,
 	pcb_textop_remove,
 	pcb_polyop_remove,
@@ -56,6 +58,8 @@ static pcb_opfunc_t RemoveFunctions = {
 };
 
 static pcb_opfunc_t DestroyFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_destroy,
 	pcb_textop_destroy,
 	pcb_polyop_destroy,

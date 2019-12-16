@@ -52,6 +52,8 @@
 #include "obj_rat_draw.h"
 
 pcb_opfunc_t Rotate90Functions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_rotate90,
 	pcb_textop_rotate90,
 	pcb_polyop_rotate90,
@@ -65,6 +67,8 @@ pcb_opfunc_t Rotate90Functions = {
 };
 
 pcb_opfunc_t RotateFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_rotate,
 	pcb_textop_rotate,
 	pcb_polyop_rotate,

@@ -56,6 +56,8 @@ int defer_updates = 0;
 int defer_needs_update = 0;
 
 pcb_opfunc_t ChangeSizeFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_change_size,
 	pcb_textop_change_size,
 	pcb_polyop_change_clear,
@@ -69,6 +71,8 @@ pcb_opfunc_t ChangeSizeFunctions = {
 };
 
 pcb_opfunc_t Change1stSizeFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_change_size,
 	pcb_textop_change_size,
 	pcb_polyop_change_clear,
@@ -82,6 +86,8 @@ pcb_opfunc_t Change1stSizeFunctions = {
 };
 
 pcb_opfunc_t Change2ndSizeFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	NULL,
 	pcb_textop_change_2nd_size,
 	NULL,
@@ -95,6 +101,8 @@ pcb_opfunc_t Change2ndSizeFunctions = {
 };
 
 pcb_opfunc_t ChangeRotFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	NULL,
 	pcb_textop_change_rot,
 	NULL,
@@ -108,6 +116,8 @@ pcb_opfunc_t ChangeRotFunctions = {
 };
 
 static pcb_opfunc_t ChangeThermalFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	NULL,
 	NULL,
 	NULL,
@@ -121,6 +131,8 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 };
 
 pcb_opfunc_t ChangeClearSizeFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_change_clear_size,
 	NULL,
 	pcb_polyop_change_clear_size,				/* just to tell the user not to :-) */
@@ -134,6 +146,8 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 };
 
 static pcb_opfunc_t ChangeNameFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	NULL,
 	pcb_textop_change_name,
 	NULL,
@@ -147,6 +161,8 @@ static pcb_opfunc_t ChangeNameFunctions = {
 };
 
 static pcb_opfunc_t ChangeNonetlistFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	NULL,
 	NULL,
 	NULL,
@@ -160,6 +176,8 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 };
 
 static pcb_opfunc_t ChangeJoinFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_change_join,
 	pcb_textop_change_join,
 	pcb_polyop_change_join,
@@ -173,6 +191,8 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 };
 
 static pcb_opfunc_t SetJoinFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_set_join,
 	pcb_textop_set_join,
 	NULL,
@@ -186,6 +206,8 @@ static pcb_opfunc_t SetJoinFunctions = {
 };
 
 static pcb_opfunc_t ClrJoinFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_clear_join,
 	pcb_textop_clear_join,
 	NULL,
@@ -199,6 +221,8 @@ static pcb_opfunc_t ClrJoinFunctions = {
 };
 
 static pcb_opfunc_t ChangeRadiusFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	NULL,
 	NULL,
 	NULL,
@@ -212,6 +236,8 @@ static pcb_opfunc_t ChangeRadiusFunctions = {
 };
 
 static pcb_opfunc_t ChangeAngleFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	NULL,
 	NULL,
 	NULL,
@@ -225,6 +251,8 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 };
 
 pcb_opfunc_t ChgFlagFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_change_flag,
 	pcb_textop_change_flag,
 	pcb_polyop_change_flag,
@@ -238,6 +266,8 @@ pcb_opfunc_t ChgFlagFunctions = {
 };
 
 static pcb_opfunc_t InvalLabelFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
 	pcb_lineop_invalidate_label,
 	pcb_textop_invalidate_label,
 	pcb_polyop_invalidate_label,
