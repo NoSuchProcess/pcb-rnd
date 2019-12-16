@@ -151,7 +151,11 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	y2 = pcb_round(dim->y2 + dim->displace * +dim->dx);
 
 	/* endpoints of the extended-displaced baseline */
-	dispe = dim->displace + PCB_MM_TO_COORD(0.5);
+	dispe = PCB_MM_TO_COORD(0.5);
+	if (dim->displace < 0)
+		dispe = -dispe;
+	dispe = dim->displace + dispe;
+
 	x1e = pcb_round(dim->x1 + dispe * -dim->dy);
 	y1e = pcb_round(dim->y1 + dispe * +dim->dx);
 	x2e = pcb_round(dim->x2 + dispe * -dim->dy);
