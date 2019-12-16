@@ -108,17 +108,10 @@ pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *obj)
 pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *obj)
 {
 	pcb_subc_t *res;
-	pcb_data_t *data = obj->parent.data;
+	pcb_data_t *data = pcb_extobj_parent_data(obj);
 	const char *s;
 	char *end;
 	long id;
-
-	if (obj->parent_type == PCB_PARENT_DATA)
-		data = obj->parent.data;
-	else if (obj->parent_type == PCB_PARENT_LAYER)
-		data = obj->parent.layer->parent.data;
-	else
-		return NULL;
 
 	s = pcb_attribute_get(&obj->Attributes, "extobj::subcobj");
 	if (s == NULL)
@@ -137,17 +130,10 @@ pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *obj)
 
 void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 {
-	pcb_data_t *data;
+	pcb_data_t *data = pcb_extobj_parent_data(edit_obj);
 	pcb_board_t *pcb;
 	pcb_subc_t *sc;
 	char tmp[128];
-
-	if (edit_obj->parent_type == PCB_PARENT_DATA)
-		data = edit_obj->parent.data;
-	else if (edit_obj->parent_type == PCB_PARENT_LAYER)
-		data = edit_obj->parent.layer->parent.data;
-	else
-		return;
 
 	pcb = pcb_data_get_top(data);
 	if (pcb == NULL)

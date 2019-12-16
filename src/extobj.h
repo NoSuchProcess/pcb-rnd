@@ -87,6 +87,15 @@ int pcb_extobj_lookup_idx(const char *name);
 extern int pcb_extobj_invalid; /* this changes upon each new extobj reg, forcing the caches to be invalidated eventually */
 extern vtp0_t pcb_extobj_i2o;  /* extobj_idx -> (pcb_ext_obj_t *) */
 
+PCB_INLINE pcb_data_t *pcb_extobj_parent_data(pcb_any_obj_t *obj)
+{
+	if (obj->parent_type == PCB_PARENT_DATA)
+		return obj->parent.data;
+	if (obj->parent_type == PCB_PARENT_LAYER)
+		return obj->parent.layer->parent.data;
+	return NULL;
+}
+
 PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 {
 	pcb_extobj_t **eo;
