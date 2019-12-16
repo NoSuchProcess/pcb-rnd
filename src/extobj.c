@@ -172,20 +172,17 @@ void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 	pcb_extobj_edit_geo(edit_obj);
 }
 
-void pcb_extobj_del_pre(pcb_any_obj_t *edit_obj)
+void pcb_extobj_del_pre(pcb_subc_t *sc)
 {
-	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
-	pcb_extobj_t *eo;
+	pcb_extobj_t *eo = pcb_extobj_get(sc);
+	pcb_any_obj_t *edit_obj = NULL;
 
-	if (sc == NULL)
-		return;
-
-	eo = pcb_extobj_get(sc);
 	if ((eo != NULL) && (eo->del_pre != NULL))
 		eo->del_pre(sc);
 
-	pcb_attribute_remove(&edit_obj->Attributes, "extobj::subcobj");
-	pcb_attribute_remove(&sc->Attributes, "extobj::editobj");
+	edit_obj = pcb_extobj_get_editobj(eo, sc);
+	if (edit_obj != NULL)
+		pcb_attribute_remove(&edit_obj->Attributes, "extobj::subcobj");
 
-	pcb_subc_remove(sc);
+	pcb_attribute_remove(&sc->Attributes, "extobj::editobj");
 }

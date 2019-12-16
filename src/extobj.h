@@ -74,8 +74,12 @@ pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *editobj);
    copy all data from there (including objects). */
 void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from);
 
-/* called before an edit-obj is removed */
-void pcb_extobj_del_pre(pcb_any_obj_t *edit_obj);
+/* Called to remove the subc of an edit object */
+PCB_INLINE void pcb_extobj_del_subc(pcb_any_obj_t *edit_obj);
+
+
+/* called (by the subc code) before an edit-obj is removed */
+void pcb_extobj_del_pre(pcb_subc_t *edit_obj);
 
 
 int pcb_extobj_lookup_idx(const char *name);
@@ -106,7 +110,7 @@ PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 
 PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *obj)
 {
-	if (eo->get_editobj != NULL)
+	if ((eo != NULL) && (eo->get_editobj != NULL))
 		return eo->get_editobj(obj);
 
 	return pcb_extobj_get_editobj_by_attr(obj);
@@ -196,6 +200,15 @@ PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const c
 
 	if ((eo != NULL) && (eo->chg_attr != NULL))
 		eo->chg_attr(subc, key, value);
+}
+
+PCB_INLINE void pcb_extobj_del_subc(pcb_any_obj_t *edit_obj)
+{
+	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
+	if (sc == NULL)
+		return;
+
+	pcb_subc_remove(sc);
 }
 
 #endif

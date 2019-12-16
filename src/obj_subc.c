@@ -133,6 +133,7 @@ pcb_subc_t *pcb_subc_new(void)
 
 void pcb_subc_free(pcb_subc_t *sc)
 {
+	pcb_extobj_del_pre(sc);
 	if ((sc->parent.data != NULL) && (sc->parent.data->subc_tree != NULL))
 		pcb_r_delete_entry(sc->parent.data->subc_tree, (pcb_box_t *)sc);
 	pcb_attribute_free(&sc->Attributes);
