@@ -107,7 +107,7 @@ pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *obj)
 
 pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *obj)
 {
-	pcb_any_obj_t *res;
+	pcb_subc_t *res;
 	pcb_data_t *data = obj->parent.data;
 	const char *s;
 	char *end;
