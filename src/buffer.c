@@ -60,8 +60,11 @@
 #include "tool.h"
 #include "extobj.h"
 
+static void move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
+static void add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
+
 static pcb_opfunc_t AddBufferFunctions = {
-	NULL, /* common_pre */
+	add_buffer_pre,
 	NULL, /* common_post */
 	pcb_lineop_add_to_buffer,
 	pcb_textop_add_to_buffer,
@@ -76,7 +79,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 };
 
 static pcb_opfunc_t MoveBufferFunctions = {
-	NULL, /* common_pre */
+	move_buffer_pre,
 	NULL, /* common_post */
 	pcb_lineop_move_buffer,
 	pcb_textop_move_buffer,
@@ -89,6 +92,32 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_subcop_move_buffer,
 	pcb_pstkop_move_buffer,
 };
+
+static void move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
+{
+	pcb_subc_t *subc;
+	if (obj->type == PCB_OBJ_SUBC)
+		return;
+	subc = pcb_extobj_get_subcobj_by_attr(obj);
+	if (subc == NULL)
+		return;
+
+	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
+	pcb_subcop_move_buffer(ctx, subc);
+}
+
+static void add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
+{
+	pcb_subc_t *subc;
+	if (obj->type == PCB_OBJ_SUBC)
+		return;
+	subc = pcb_extobj_get_subcobj_by_attr(obj);
+	if (subc == NULL)
+		return;
+
+	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
+	pcb_subcop_add_to_buffer(ctx, subc);
+}
 
 int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 {
