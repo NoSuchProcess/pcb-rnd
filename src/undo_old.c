@@ -53,6 +53,7 @@
 #include "draw.h"
 #include "move.h"
 #include "error.h"
+#include "extobj.h"
 #include "insert.h"
 #include "polygon.h"
 #include "remove.h"
@@ -553,6 +554,14 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 		if (pcb_undo_and_draw)
 			DrawRecoveredObject((pcb_any_obj_t *)ptr2);
 		Entry->Type = PCB_UNDO_CREATE;
+
+		{ /* if extended object's edit-obj is restored, make sure the corresponding subc is updated */
+			pcb_any_obj_t *o = ptr2;
+			if (o->type != PCB_OBJ_SUBC) {
+				pcb_extobj_edit_pre(o);
+				pcb_extobj_edit_geo(o);
+			}
+		}
 
 		if (pcb_brave & PCB_BRAVE_CLIPBATCH)
 			pcb_data_clip_inhibit_dec(PCB->Data, 1);
