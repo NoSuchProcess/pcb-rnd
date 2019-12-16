@@ -154,11 +154,15 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_save_in_tmp();
 		if (pcb_gui->set_hidlib != NULL)
 			pcb_gui->set_hidlib(pcb_gui, NULL);
+
+		pcb_draw_inhibit_inc();
 		pcb_board_remove(PCB);
 		PCB = pcb_board_new(1);
 		pcb_board_new_postproc(PCB, 1);
 		if (pcb_gui->set_hidlib != NULL)
 			pcb_gui->set_hidlib(pcb_gui, &PCB->hidlib);
+		pcb_draw_inhibit_dec();
+
 		pcb_set_design_dir(NULL);
 		pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
