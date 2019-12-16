@@ -37,6 +37,13 @@ typedef struct {
 	double x1, y1, x2, y2, len, dx, dy;
 } dimension;
 
+static void pcb_dimension_del_pre(pcb_subc_t *subc)
+{
+	pcb_trace("dim del_pre\n");
+	free(subc->extobj_data);
+	subc->extobj_data = NULL;
+}
+
 static int dimension_update_src(dimension *dim, pcb_any_obj_t *edit)
 {
 	dim->valid = 0;
@@ -287,6 +294,8 @@ pcb_trace("new disp: %mm f=%mm;%mm\n", (pcb_coord_t)d, fx, fy);
 pcb_trace("let's do it!\n");
 
 	edit_obj = pcb_extobj_get_editobj_by_attr(subc);
+	if (edit_obj == NULL)
+		return;
 	dimension_clear(subc);
 	dim->displace = d;
 	dimension_gen(subc, edit_obj);
@@ -311,5 +320,6 @@ static pcb_extobj_t pcb_dimension = {
 	pcb_dimension_edit_geo,
 	pcb_dimension_float_pre,
 	pcb_dimension_float_geo,
-	pcb_dimension_chg_attr
+	pcb_dimension_chg_attr,
+	pcb_dimension_del_pre
 };

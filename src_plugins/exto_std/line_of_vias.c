@@ -35,6 +35,13 @@ typedef struct {
 	double len, dx, dy;
 } line_of_vias;
 
+static void pcb_line_of_vias_del_pre(pcb_subc_t *subc)
+{
+	pcb_trace("LoV del_pre\n");
+	free(subc->extobj_data);
+	subc->extobj_data = NULL;
+}
+
 static void line_of_vias_udpate_line(line_of_vias *lov, pcb_line_t *line)
 {
 	lov->x1 = line->Point1.X;
@@ -184,6 +191,8 @@ static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const c
 	pcb_trace("LoV chg_attr\n");
 	if (strncmp(key, "extobj::", 8) == 0) {
 		pcb_any_obj_t *edit_obj = pcb_extobj_get_editobj_by_attr(subc);
+		if (edit_obj == NULL)
+			return;
 		line_of_vias_clear(subc);
 		line_of_vias_unpack(subc);
 		line_of_vias_gen(subc, edit_obj);
@@ -199,5 +208,6 @@ static pcb_extobj_t pcb_line_of_vias = {
 	pcb_line_of_vias_edit_geo,
 	NULL, /* float_pre */
 	NULL, /* float_geo */
-	pcb_line_of_vias_chg_attr
+	pcb_line_of_vias_chg_attr,
+	pcb_line_of_vias_del_pre
 };
