@@ -131,6 +131,9 @@ PCB_INLINE pcb_extobj_t *pcb_extobj_edit_common_(pcb_any_obj_t *edit_obj, pcb_su
 			return NULL;
 	}
 
+	if (*sc == NULL)
+		return NULL;
+
 	return pcb_extobj_get(*sc);
 }
 
