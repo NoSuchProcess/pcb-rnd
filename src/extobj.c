@@ -162,6 +162,7 @@ void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 	else
 		sc = pcb_subc_dup_at(pcb, pcb->Data, subc_copy_from, 0, 0, pcb_false);
 
+	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, sc, sc, sc);
 
 	sprintf(tmp, "%ld", sc->ID);
 	pcb_attribute_put(&edit_obj->Attributes, "extobj::subcobj", tmp);
