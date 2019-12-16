@@ -128,6 +128,14 @@ PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *o
 /* For internal use, do not call directly */
 PCB_INLINE pcb_extobj_t *pcb_extobj_edit_common_(pcb_any_obj_t *edit_obj, pcb_subc_t **sc, int *is_floater)
 {
+	pcb_data_t *data = pcb_extobj_parent_data(edit_obj);
+
+	if (data->parent_type != PCB_PARENT_BOARD) { /* don't do anything with edit objects in the buffer */
+		/* NOTE: this will break for subc-in-subc */
+		*sc = NULL;
+		return NULL;
+	}
+
 	*sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
 
 	*is_floater = 0;
