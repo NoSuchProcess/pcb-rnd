@@ -42,10 +42,12 @@
 #include "obj_subc_op.h"
 #include "obj_pstk_op.h"
 
+static void remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3);
+
 static pcb_opfunc_t RemoveFunctions = {
-	NULL, /* common_pre */
+	remove_pre,
 	NULL, /* common_post */
-	pcb_lineop_remove,
+		pcb_lineop_remove,
 	pcb_textop_remove,
 	pcb_polyop_remove,
 	pcb_lineop_remove_point,
@@ -71,6 +73,17 @@ static pcb_opfunc_t DestroyFunctions = {
 	pcb_subcop_destroy,
 	pcb_pstkop_destroy,
 };
+
+static void remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
+{
+	pcb_subc_t *subc;
+	if ((obj->type == PCB_OBJ_SUBC) || ((subc = pcb_extobj_get_subcobj_by_attr(obj)) == NULL))
+		return;
+
+	/* when an edit-object is removed, the corresponding subc obj needs to be removed */
+	pcb_extobj_del_subc(obj);
+}
+
 
 /* ----------------------------------------------------------------------
  * removes all selected and visible objects
@@ -103,7 +116,6 @@ void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
-	pcb_extobj_del_subc(Ptr2);
 	ptr = pcb_object_operation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	pcb_draw();
 	return ptr;
