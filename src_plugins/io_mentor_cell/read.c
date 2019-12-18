@@ -676,7 +676,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 
 	if (subc != NULL) {
 		if (pcb_subc_get_side(subc, &on_bottom) == -1) {
-			hkp_error(subc, "Error getting subc side\n");
+			hkp_error(n, "Error getting subc side\n");
 		}
 		else {
 			if (on_bottom == 1)
