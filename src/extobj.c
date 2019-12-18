@@ -31,6 +31,7 @@
 #include <genht/hash.h>
 
 #include "data.h"
+#include "undo.h"
 
 #include "extobj.h"
 
