@@ -628,40 +628,39 @@ static int parse_side(node_t *n, pcb_layer_type_t subc_side, pcb_layer_type_t *s
 {
 	node_t *tmp;
 
-	if (n != NULL) {
-		tmp = find_nth(n->first_child, "SIDE", 0);
-		if (tmp != NULL) {
-			if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
+	if (n == NULL)
+		return 0;
+
+	tmp = find_nth(n->first_child, "SIDE", 0);
+	if (tmp == NULL)
+		return 0;
+
+	if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
 TODO("Look how opposite side to MNT_SIDE is defined.\n");
-				if (subc_side != 0) {
-					*side = subc_side;
-					if ((subc_side & PCB_LYT_TOP) != 0)
-						lyname = lyname_top;
-					else
-						lyname = lyname_bottom;
-					return 1;
-				}
-				else
-					hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
-			}
-			else if (strcmp(tmp->argv[1], "TOP") == 0) {
-				*side = PCB_LYT_TOP;
+		if (subc_side != 0) {
+			*side = subc_side;
+			if ((subc_side & PCB_LYT_TOP) != 0)
 				lyname = lyname_top;
-				return 1;
-			}
-			else if (strcmp(tmp->argv[1], "BOTTOM") == 0) {
-				*side = PCB_LYT_BOTTOM;
-				lyname = lyname_bottom;
-				return 1;
-			}
 			else
-				hkp_error(n, "Unknown SIDE argument\n");
+				lyname = lyname_bottom;
+			return 1;
 		}
 		else
-			return 0;
+			hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
 	}
-	else
-		return 0;
+	else if (strcmp(tmp->argv[1], "TOP") == 0) {
+		*side = PCB_LYT_TOP;
+		lyname = lyname_top;
+		return 1;
+	}
+	else if (strcmp(tmp->argv[1], "BOTTOM") == 0) {
+		*side = PCB_LYT_BOTTOM;
+		lyname = lyname_bottom;
+		return 1;
+	}
+
+	hkp_error(n, "Unknown SIDE argument\n");
+	return 0;
 }
 
 /* Returns number of objects drawn: 0 or more for valid layers, -1 for invalid layer */
