@@ -1,0 +1,7 @@
+put /local/objs /local/pcb/HDRS_HIDLIB
+gsub /local/objs { } {\n}
+
+foreach /local/h in /local/objs
+	print [@#include "core/@/local/h@"
+@]
+end
