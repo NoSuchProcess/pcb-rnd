@@ -32,3 +32,4 @@ FORCE:
 
 clean:
 	-rm librnd_test librnd_test.o
+	TDIR=`pwd` && cd ../../src make && $(MAKE) install_librnd HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
