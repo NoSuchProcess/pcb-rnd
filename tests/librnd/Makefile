@@ -1,13 +1,12 @@
 TRUNK = ../..
-SRC=$(TRUNK)/src
+LIBRND_ROOT=include/$(HL_LIBDIR)/..
 
 include $(TRUNK)/Makefile.conf
-include $(SRC)/librnd.mak
+include include/$(HL_SHAREDIR)/librnd.mak
 
 CFLAGS = $(CFLAGS_LIBRND)
 LDFLAGS = $(LDFLAGS_LIBRND)
 LIBRND = include/$(HL_LIBDIR)/librnd-poly.a include/$(HL_LIBDIR)/librnd-hid.a include/$(HL_LIBDIR)/librnd-3rd.a
-LIBRND_ROOT=include/$(HL_LIBDIR)/..
 
 all: librnd_test librnd_includes
 
