@@ -29,6 +29,7 @@
  */
 
 #include "config.h"
+#include <string.h>
 #include "hid_attrib.h"
 #include "compat_misc.h"
 #include "macro.h"
