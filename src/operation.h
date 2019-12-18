@@ -135,8 +135,8 @@ typedef union {
 
 /* pointer to low-level operation (copy, move and rotate) functions */
 typedef struct {
-	void *(*common_pre)(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);  /* called before anything else (not object-type-dependent) */
-	void *(*common_post)(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3); /* called after everything else (not object-type-dependent) */
+	void (*common_pre)(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);  /* called before anything else (not object-type-dependent) */
+	void (*common_post)(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3); /* called after everything else (not object-type-dependent) */
 
 	void *(*Line)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_line_t *);
 	void *(*Text)(pcb_opctx_t *ctx, pcb_layer_t *, pcb_text_t *);
