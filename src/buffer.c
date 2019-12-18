@@ -698,7 +698,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 				if (nline != NULL) {
 					if (keep_id) {
 						pcb_obj_change_id((pcb_any_obj_t *)nline, line->ID);
-						pcb_extobj_edit_geo(nline);
+						pcb_extobj_edit_geo((pcb_any_obj_t *)nline);
 					}
 					changed = 1;
 				}
@@ -710,7 +710,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 				if (narc != NULL) {
 					if (keep_id) {
 						pcb_obj_change_id((pcb_any_obj_t *)narc, arc->ID);
-						pcb_extobj_edit_geo(narc);
+						pcb_extobj_edit_geo((pcb_any_obj_t *)narc);
 					}
 					changed = 1;
 				}
@@ -722,7 +722,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 				if (ntext != NULL) {
 					if (keep_id) {
 						pcb_obj_change_id((pcb_any_obj_t *)ntext, text->ID);
-						pcb_extobj_edit_geo(ntext);
+						pcb_extobj_edit_geo((pcb_any_obj_t *)ntext);
 					}
 					changed = 1;
 				}
@@ -734,7 +734,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 				if (npoly != NULL) {
 					if (keep_id) {
 						pcb_obj_change_id((pcb_any_obj_t *)npoly, polygon->ID);
-						pcb_extobj_edit_geo(npoly);
+						pcb_extobj_edit_geo((pcb_any_obj_t *)npoly);
 					}
 					changed = 1;
 				}
@@ -755,7 +755,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		if (nsubc != NULL) {
 			if (keep_id) {
 				pcb_obj_change_id((pcb_any_obj_t *)nsubc, subc->ID);
-				pcb_extobj_edit_geo(nsubc);
+				pcb_extobj_edit_geo((pcb_any_obj_t *)nsubc);
 			}
 			changed = 1;
 		}
@@ -786,7 +786,7 @@ TODO("subc: fix this after the element removal")
 			if (nps != NULL) {
 				if (keep_id) {
 					pcb_obj_change_id((pcb_any_obj_t *)nps, padstack->ID);
-					pcb_extobj_edit_geo(nps);
+					pcb_extobj_edit_geo((pcb_any_obj_t *)nps);
 				}
 				changed = 1;
 			}
