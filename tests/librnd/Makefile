@@ -1,11 +1,13 @@
 TRUNK = ../..
 SRC=$(TRUNK)/src
 
+include $(TRUNK)/Makefile.conf
 include $(SRC)/librnd.mak
 
-CFLAGS = -I$(SRC) -I$(TRUNK) -I$(TRUNK)/src_3rd $(CFLAGS_LIBRND)
+CFLAGS = -I$(SRC) $(CFLAGS_LIBRND)
 LDFLAGS = $(LDFLAGS_LIBRND)
-LIBRND =$(SRC)/librnd-poly.a $(SRC)/librnd-hid.a  $(SRC)/librnd-3rd.a
+LIBRND =$(HL_LIBDIR)/librnd-poly.a $(HL_LIBDIR)/librnd-hid.a  $(HL_LIBDIR)/librnd-3rd.a
+LIBRND_ROOT=include/$(HL_LIBDIR)/..
 
 all: librnd_test
 
@@ -15,7 +17,7 @@ test: librnd_test
 librnd_test: librnd_test.o $(LIBRND)
 	$(CC) -o librnd_test librnd_test.o $(LIBRND) $(LDFLAGS)
 
-librnd_test.o: librnd_test.c
+librnd_test.o: librnd_test.c includes
 	$(CC) $(CFLAGS) -c -o librnd_test.o librnd_test.c
 
 librnd_includes: librnd_includes.o $(LIBRND)
@@ -24,7 +26,7 @@ librnd_includes: librnd_includes.o $(LIBRND)
 librd_includes.o: librnd_includes.c includes
 
 includes: FORCE
-	cd ../../src make && $(MAKE) install_librnd HOW="install -f" DESTDIR=../tests/librnd/include
+	TDIR=`pwd` && cd ../../src make && $(MAKE) install_librnd HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
 
 FORCE:
 
