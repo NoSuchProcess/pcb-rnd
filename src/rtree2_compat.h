@@ -38,6 +38,11 @@
 /* Compatibility layer between the new rtree and the old rtree for the
    period of transition */
 
+#ifndef PCB_RTREE2_COMPAT_H
+#define PCB_RTREE2_COMPAT_H
+
+#include "rtree.h"
+
 /* callback direction to the search engine */
 typedef enum pcb_r_dir_e {
 	PCB_R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
@@ -89,3 +94,5 @@ pcb_box_t *pcb_r_next(pcb_rtree_it_t *it);
 
 /* Free fields of the iterator - not needed anymore, will be removed */
 void pcb_r_end(pcb_rtree_it_t *it);
+
+#endif

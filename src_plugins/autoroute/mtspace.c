@@ -52,6 +52,7 @@
 #include "rtree.h"
 #include "mtspace.h"
 #include "vector.h"
+#include "rtree2_compat.h"
 
 /* mtspace data structures are built on r-trees. */
 

@@ -40,6 +40,7 @@
 #include "obj_rat_list.h"
 #include "obj_subc_list.h"
 #include "obj_pstk_list.h"
+#include "rtree2_compat.h"
 #include "vtpadstack.h"
 #include <genht/htip.h>
 

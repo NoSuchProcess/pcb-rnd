@@ -37,6 +37,8 @@
 #include "rtree.h"
 #include "math_helper.h"
 #include "polyarea.h"
+#include "rtree2_compat.h"
+
 
 /* Prototypes */
 

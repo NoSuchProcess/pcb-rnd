@@ -43,6 +43,4 @@ typedef pcb_coord_t pcb_rtree_coord_t;
 
 #include <genrtree/genrtree_api.h>
 
-#include "rtree2_compat.h"
-
 #endif /* PCB_RTREE_H */
