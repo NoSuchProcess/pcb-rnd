@@ -667,7 +667,6 @@ TODO("Look how opposite side to MNT_SIDE is defined.\n");
 /* Returns number of objects drawn: 0 or more for valid layers, -1 for invalid layer */
 static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *n)
 {
-	node_t *tmp;
 	pcb_layer_type_t type = 0;
 	pcb_layer_type_t side = PCB_LYT_TOP, subc_side = 0;
 	int on_bottom=-1;
@@ -845,7 +844,7 @@ TODO("this should be done only when subc == NULL");
 
 static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *textnode)
 {
-	node_t *tt, *attr, *tmp;
+	node_t *tt;
 	const char *text_str;
 	pcb_flag_values_t flg = PCB_FLAG_FLOATER;
 	int omit_on_silk = 0;
@@ -874,7 +873,7 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 {
 	pcb_subc_t *subc;
-	node_t *n, *tmp;
+	node_t *n;
 	pcb_coord_t ox, oy;
 	double rot = 0;
 	int on_bottom = 0, seen_oxy = 0;
