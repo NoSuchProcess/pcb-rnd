@@ -449,3 +449,9 @@ void pcb_obj_change_id(pcb_any_obj_t *obj, long int new_id)
 	pcb_obj_id_reg(data, obj);
 }
 
+
+void pcb_set_point_bounding_box(pcb_point_t *Pnt)
+{
+	Pnt->X2 = Pnt->X + 1;
+	Pnt->Y2 = Pnt->Y + 1;
+}

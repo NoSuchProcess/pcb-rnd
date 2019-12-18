@@ -242,6 +242,10 @@ void pcb_obj_post(pcb_any_obj_t *o);
 /* change the ID of an object already registered in the ID hash */
 void pcb_obj_change_id(pcb_any_obj_t *o, long int new_id);
 
+/* sets the bounding box of a point */
+void pcb_set_point_bounding_box(pcb_point_t *Pnt);
+
+
 #define pcb_obj_id_reg(data, obj) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \

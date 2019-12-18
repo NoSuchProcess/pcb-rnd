@@ -33,12 +33,6 @@
 #include "rotate.h"
 #include "box.h"
 
-void pcb_set_point_bounding_box(pcb_point_t *Pnt)
-{
-	Pnt->X2 = Pnt->X + 1;
-	Pnt->Y2 = Pnt->Y + 1;
-}
-
 void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
 {
 	pcb_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;

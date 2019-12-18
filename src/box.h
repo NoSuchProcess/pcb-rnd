@@ -44,10 +44,10 @@
 #define PCB_BOX_H
 
 #include <assert.h>
+#include "config.h"
 #include "math_helper.h"
 #include "global_typedefs.h"
-#include "config.h"
-#include "obj_common.h"
+#include "pcb_bool.h"
 
 struct pcb_box_list_s {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */
@@ -254,9 +254,6 @@ PCB_INLINE void pcb_box_bump_point(pcb_box_t *dst, pcb_coord_t x, pcb_coord_t y)
 	if (x > dst->X2) dst->X2 = x;
 	if (y > dst->Y2) dst->Y2 = y;
 }
-
-/* sets the bounding box of a point */
-void pcb_set_point_bounding_box(pcb_point_t *Pnt);
 
 /* rotates a box in 90 degree steps */
 void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
