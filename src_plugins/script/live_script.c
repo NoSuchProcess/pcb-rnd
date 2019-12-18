@@ -40,6 +40,7 @@
 #include "compat_fs.h"
 #include "event.h"
 #include "undo.h"
+#include "globalconst.h"
 
 #include "script.h"
 

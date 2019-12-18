@@ -4,15 +4,16 @@ SRC=$(TRUNK)/src
 include $(TRUNK)/Makefile.conf
 include $(SRC)/librnd.mak
 
-CFLAGS = -I$(SRC) $(CFLAGS_LIBRND)
+CFLAGS = $(CFLAGS_LIBRND)
 LDFLAGS = $(LDFLAGS_LIBRND)
 LIBRND =$(HL_LIBDIR)/librnd-poly.a $(HL_LIBDIR)/librnd-hid.a  $(HL_LIBDIR)/librnd-3rd.a
 LIBRND_ROOT=include/$(HL_LIBDIR)/..
 
-all: librnd_test
+all: librnd_test librnd_includes
 
-test: librnd_test
+test: librnd_test librnd_includes
 	./librnd_test --gui batch
+	./librnd_includes
 
 librnd_test: librnd_test.o $(LIBRND)
 	$(CC) -o librnd_test librnd_test.o $(LIBRND) $(LDFLAGS)
