@@ -621,9 +621,9 @@ static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, con
 	return cnt;
 }
 
-/* Return 1 on success, 0 on fail */
-/* Return the side of "side", and set lyname to lyname_top or lyname_bottom depending on side */
-/* For a subcircuit, the side is given by MNT_SIDE argument */
+/* Return 1 on success, 0 on fail
+   Return the side of "side", and set lyname to lyname_top or lyname_bottom depending on side
+   For a subcircuit, the side is given by MNT_SIDE argument */
 static int parse_side(node_t* n, pcb_layer_type_t subc_side, pcb_layer_type_t *side, char *lyname, char *lyname_top, char *lyname_bottom) {
 	node_t *tmp;
 
