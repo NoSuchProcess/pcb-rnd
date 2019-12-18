@@ -6,7 +6,7 @@ include $(SRC)/librnd.mak
 
 CFLAGS = $(CFLAGS_LIBRND)
 LDFLAGS = $(LDFLAGS_LIBRND)
-LIBRND =$(HL_LIBDIR)/librnd-poly.a $(HL_LIBDIR)/librnd-hid.a  $(HL_LIBDIR)/librnd-3rd.a
+LIBRND = include/$(HL_LIBDIR)/librnd-poly.a include/$(HL_LIBDIR)/librnd-hid.a include/$(HL_LIBDIR)/librnd-3rd.a
 LIBRND_ROOT=include/$(HL_LIBDIR)/..
 
 all: librnd_test librnd_includes
