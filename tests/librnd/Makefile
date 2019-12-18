@@ -18,5 +18,15 @@ librnd_test: librnd_test.o $(LIBRND)
 librnd_test.o: librnd_test.c
 	$(CC) $(CFLAGS) -c -o librnd_test.o librnd_test.c
 
+librnd_includes: librnd_includes.o $(LIBRND)
+	$(CC) -o librnd_includes librnd_includes.o $(LIBRND) $(LDFLAGS)
+
+librd_includes.o: librnd_includes.c includes
+
+includes: FORCE
+	cd ../../src make && $(MAKE) install_librnd HOW="install -f" DESTDIR=../tests/librnd/include
+
+FORCE:
+
 clean:
 	-rm librnd_test librnd_test.o
