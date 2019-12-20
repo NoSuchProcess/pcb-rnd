@@ -45,6 +45,7 @@
 #include "route_draw.h"
 #include "obj_line.h"
 #include "obj_line_op.h"
+#include "obj_subc_parent.h"
 #include "draw_wireframe.h"
 
 void pcb_route_init(pcb_route_t *p_route)
