@@ -85,7 +85,7 @@ PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 {
 	pcb_extobj_t **eo;
 
-	if ((obj->extobj == NULL) || (obj->extobj_idx == pcb_extobj_invalid))
+	if ((obj == NULL) || (obj->extobj == NULL) || (obj->extobj_idx == pcb_extobj_invalid))
 		return NULL; /* known negative */
 
 	if (obj->extobj_idx <= 0) { /* invalid idx cache - look up by name */
