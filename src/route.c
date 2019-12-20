@@ -418,6 +418,23 @@ int pcb_route_apply(const pcb_route_t *p_route)
 	return pcb_route_apply_to_line(p_route, NULL, NULL);
 }
 
+/* Return the layer the route code should add new object onot; normally it
+   is the board layer of the route, but when a floater of a subcircuit is split
+   e.g. by the line tool code, new floaters within the same subcircuit shall
+   be created instead */
+static pcb_layer_t *get_route_layer(pcb_board_t *pcb, const pcb_any_obj_t *apply_to, pcb_route_object_t const *p_obj)
+{
+	if ((apply_to != NULL) && (PCB_FLAG_TEST(PCB_FLAG_FLOATER, apply_to))) {
+		pcb_subc_t *psc = pcb_obj_parent_subc(apply_to);
+		if (psc != NULL) {
+TODO("Call extobj new floater hook");
+			assert(apply_to->parent_type == PCB_PARENT_LAYER);
+			return apply_to->parent.layer;
+		}
+	}
+	return pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer), pcb_true);
+}
+
 int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_line_layer, pcb_line_t *apply_to_line)
 {
 	int i;
@@ -427,7 +444,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer), pcb_true);
+		pcb_layer_t *layer = get_route_layer(PCB, attr_src, p_obj);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_LINE:
@@ -537,7 +554,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer), pcb_true);
+		pcb_layer_t *layer = get_route_layer(PCB, attr_src, p_obj);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_ARC:
