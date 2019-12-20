@@ -63,8 +63,8 @@ void pcb_arc_reg(pcb_layer_t *layer, pcb_arc_t *arc)
 	if (layer->parent_type == PCB_PARENT_UI)
 		return;
 
-	assert(layer->parent_type == PCB_PARENT_DATA);
-	pcb_obj_id_reg(layer->parent.data, arc);
+	if (layer->parent_type == PCB_PARENT_DATA)
+		pcb_obj_id_reg(layer->parent.data, arc);
 }
 
 void pcb_arc_unreg(pcb_arc_t *arc)

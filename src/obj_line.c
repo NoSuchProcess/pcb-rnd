@@ -69,8 +69,8 @@ void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line)
 	if (layer->parent_type == PCB_PARENT_UI)
 		return;
 
-	assert(layer->parent_type == PCB_PARENT_DATA);
-	pcb_obj_id_reg(layer->parent.data, line);
+	if (layer->parent_type == PCB_PARENT_DATA)
+		pcb_obj_id_reg(layer->parent.data, line);
 }
 
 void pcb_line_unreg(pcb_line_t *line)

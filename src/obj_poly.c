@@ -69,8 +69,8 @@ void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly)
 	if (layer->parent_type == PCB_PARENT_UI)
 		return;
 
-	assert(layer->parent_type == PCB_PARENT_DATA);
-	pcb_obj_id_reg(layer->parent.data, poly);
+	if (layer->parent_type == PCB_PARENT_DATA)
+		pcb_obj_id_reg(layer->parent.data, poly);
 }
 
 void pcb_poly_unreg(pcb_poly_t *poly)
