@@ -130,6 +130,12 @@ static void pcb_attribute_copy_all_smart(pcb_attribute_list_t *dest, const pcb_a
 	int i, exto = 0;
 	pcb_subc_t *copy_from = NULL;
 
+
+	for (i = 0; i < src->Number; i++)
+		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
+
+TODO("extobj: this code used to dup the subc if a new object got added - check if we still need it with floaters");
+#if 0
 	if (copy_from_any != NULL) {
 		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, copy_from_any))
 			copy_from = pcb_obj_parent_subc(copy_from_any);
@@ -140,11 +146,9 @@ static void pcb_attribute_copy_all_smart(pcb_attribute_list_t *dest, const pcb_a
 			copy_from = NULL;
 	}
 
-	for (i = 0; i < src->Number; i++)
-		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
-
 	if (copy_from != NULL)
 		pcb_extobj_new_subc(dstobj, copy_from);
+#endif
 }
 
 
