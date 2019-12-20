@@ -130,17 +130,9 @@ static void pcb_attribute_copy_all_smart(pcb_attribute_list_t *dest, const pcb_a
 	int i, exto = 0;
 	const char *subcobj;
 
-	for (i = 0; i < src->Number; i++) {
-		if (strncmp(src->List[i].name, "extobj", 6) == 0) {
-			exto = 1;
-			if (strcmp(src->List[i].name+6, "::subcobj") == 0) {
-				subcobj = src->List[i].value;
-				continue; /* do not copy, will be re-generated */
-			}
-		}
-
+	for (i = 0; i < src->Number; i++)
 		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
-	}
+
 	if (exto) {
 		pcb_subc_t *copy_from = NULL;
 		if (subcobj != NULL) {

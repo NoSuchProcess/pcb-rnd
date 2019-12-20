@@ -130,6 +130,4 @@ void pcb_extobj_del_pre(pcb_subc_t *sc)
 
 	if ((eo != NULL) && (eo->del_pre != NULL))
 		eo->del_pre(sc);
-
-	pcb_attribute_remove(&sc->Attributes, "extobj::editobj");
 }
