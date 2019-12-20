@@ -9,6 +9,7 @@
 - BUG: when drawing rats manually generated netlist, if the user needs to undo a step, rat line is removed but named net is not. [repot: Miloh]
 - BUG: library window, select a parametric footprint with single click, the edit button is not enabled (but it is, after double click) [report: Ade]
 - BUG: detect fungw when installed in /usr/local [report: Bob Paddock]
+- BUG: subc floater remove undo/redo bug: place a dip(8), remove the refdes floater, {u u}, {u r}, {u u} -> text put back on the wrong layer (bug probably in redo) [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP: (TT) propedit revamp:
