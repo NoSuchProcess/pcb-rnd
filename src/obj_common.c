@@ -125,48 +125,35 @@ long int pcb_create_ID_get(void)
 	return ID++;
 }
 
-static void pcb_attribute_copy_all_smart(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, pcb_any_obj_t *dstobj)
+static void pcb_attribute_copy_all_smart(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, pcb_any_obj_t *dstobj, pcb_any_obj_t *copy_from_any)
 {
 	int i, exto = 0;
-	const char *subcobj;
+	pcb_subc_t *copy_from = NULL;
+
+	if (copy_from_any != NULL) {
+		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, copy_from_any))
+			copy_from = pcb_obj_parent_subc(copy_from_any);
+		else if (copy_from_any->type == PCB_OBJ_SUBC)
+			copy_from = (pcb_subc_t *)copy_from_any;
+
+		if (pcb_extobj_get(copy_from) == NULL)
+			copy_from = NULL;
+	}
 
 	for (i = 0; i < src->Number; i++)
 		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
 
-	if (exto) {
-		pcb_subc_t *copy_from = NULL;
-		if (subcobj != NULL) {
-			pcb_data_t *data;
-
-			if (dstobj->parent_type == PCB_PARENT_DATA)
-				data = dstobj->parent.data;
-			else if (dstobj->parent_type == PCB_PARENT_LAYER)
-				data = dstobj->parent.layer->parent.data;
-			else
-				data = NULL;
-
-			if (data != NULL) {
-				char *end;
-				long id = strtol(subcobj, &end, 10);
-				if (*end == '\0') {
-					copy_from = htip_get(&data->id2obj, id);
-					if ((copy_from != NULL) && (copy_from->type != PCB_OBJ_SUBC))
-						copy_from = NULL;
-				}
-			}
-		}
+	if (copy_from != NULL)
 		pcb_extobj_new_subc(dstobj, copy_from);
-	}
 }
 
 
-void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src, pcb_bool smart)
+void pcb_obj_add_attribs(pcb_any_obj_t *o, const pcb_attribute_list_t *src, pcb_any_obj_t *copy_from)
 {
-	pcb_any_obj_t *o = obj;
 	if (src == NULL)
 		return;
-	if (smart)
-		pcb_attribute_copy_all_smart(&o->Attributes, src, obj);
+	if (copy_from)
+		pcb_attribute_copy_all_smart(&o->Attributes, src, o, copy_from);
 	else
 		pcb_attribute_copy_all(&o->Attributes, src);
 }

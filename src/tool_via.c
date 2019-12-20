@@ -73,7 +73,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		if (ps == NULL)
 			return;
 
-		pcb_obj_add_attribs(ps, pcb->pen_attr, pcb_true);
+		pcb_obj_add_attribs(ps, pcb->pen_attr, NULL);
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 
 		if (pcb_gui->shift_is_pressed(pcb_gui))

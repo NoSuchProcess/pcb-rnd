@@ -166,10 +166,11 @@ void pcb_create_ID_bump(int min_id);
 void pcb_create_ID_reset(void);
 long int pcb_create_ID_get(void);
 
-/* Copy src attributes into obj's attributes, overwriting anything. If smart
-   is true, be smart about extobj and other attribute side effects
-   (some of those will not be copied or will be changed) */
-void pcb_obj_add_attribs(void *obj, const pcb_attribute_list_t *src, pcb_bool smart);
+/* Copy src attributes into obj's attributes, overwriting anything. If src_obj
+   is not NULL, it is the source object - be smart about extobj and other
+   attribute side effects (some of those will not be copied or will be
+   changed); src_obj should be the objec src attributes are coming from */
+void pcb_obj_add_attribs(pcb_any_obj_t *obj, const pcb_attribute_list_t *src, pcb_any_obj_t *src_obj);
 
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very
