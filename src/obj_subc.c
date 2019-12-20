@@ -99,18 +99,8 @@ static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *
 		if (inv != NULL)
 			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
 	}
-	else if (strncmp(name, "extobj", 6) == 0) {
-		const char *arg = name+6;
-		if (*arg != '\0') {
-			if ((arg[0] == ':') && (arg[1] == ':')) {
-				arg += 2;
-				if (strcmp(arg, "role") == 0)
-					sc->extobj_role = value;
-			}
-		}
-		else
-			sc->extobj = value;
-	}
+	else if (strcmp(name, "extobj") == 0)
+		sc->extobj = value;
 	pcb_text_dyn_bbox_update(sc->data);
 }
 
