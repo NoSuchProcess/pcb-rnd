@@ -44,8 +44,6 @@ struct pcb_extobj_s {
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
 	pcb_any_obj_t *(*get_editobj)(pcb_subc_t *subc); /* resolve the edit object from the subc; if NULL, use the extobj::editobj attribute */
-	void (*edit_pre)(pcb_subc_t *subc, pcb_any_obj_t *edit_obj); /* called before the edit-object is edited in any way */
-	void (*edit_geo)(pcb_subc_t *subc, pcb_any_obj_t *edit_obj); /* called after the geometry of the edit-object changed */
 	void (*float_pre)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called before an extobj floater is edited in any way - must not free() the floater */
 	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed - must not free() the floater */
 	void (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created */

@@ -210,8 +210,6 @@ static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
 	pcb_line_of_vias_draw_mark,
 	pcb_line_of_vias_get_edit_obj,
-	NULL,
-	NULL,
 	pcb_line_of_vias_float_pre,
 	pcb_line_of_vias_float_geo,
 	pcb_line_of_vias_float_new,

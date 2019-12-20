@@ -315,8 +315,6 @@ static pcb_extobj_t pcb_dimension = {
 	"dimension",
 	pcb_dimension_draw_mark,
 	pcb_dimension_get_edit_obj,
-	NULL,
-	NULL,
 	pcb_dimension_float_pre,
 	pcb_dimension_float_geo,
 	pcb_dimension_float_new,
