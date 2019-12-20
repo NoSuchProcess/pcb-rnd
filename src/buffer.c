@@ -60,7 +60,7 @@
 #include "tool.h"
 #include "extobj.h"
 
-static void move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
+static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
 static void add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
 
 static pcb_opfunc_t AddBufferFunctions = {
@@ -93,11 +93,12 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	pcb_pstkop_move_buffer,
 };
 
-static void move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
+static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
 	TODO("extobj floater: move the whole subc instead");
 	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
 /*	pcb_subcop_move_buffer(ctx, subc);*/
+	return 0;
 }
 
 static void add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)

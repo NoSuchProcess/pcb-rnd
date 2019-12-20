@@ -46,8 +46,10 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 
 	exto = pcb_extobj_float_pre(Ptr2);
 
-	if (F->common_pre != NULL)
-		F->common_pre(ctx, Ptr2, Ptr3);
+	if (F->common_pre != NULL) {
+		if (F->common_pre(ctx, Ptr2, Ptr3) == 1)
+			return NULL;
+	}
 
 	switch (Type) {
 		case PCB_OBJ_LINE:
@@ -138,7 +140,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 			}
 			exto = pcb_extobj_float_pre((pcb_any_obj_t *)line);
-			if (F->common_pre != NULL) F->common_pre(ctx, (pcb_any_obj_t *)line, NULL);
+			if (F->common_pre != NULL)
+				if (F->common_pre(ctx, (pcb_any_obj_t *)line, NULL) == 1) continue;
 			F->Line(ctx, layer, line);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)line, NULL);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
@@ -160,7 +163,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
 			}
 			exto = pcb_extobj_float_pre((pcb_any_obj_t *)arc);
-			if (F->common_pre != NULL) F->common_pre(ctx, (pcb_any_obj_t *)arc, NULL);
+			if (F->common_pre != NULL)
+				if (F->common_pre(ctx, (pcb_any_obj_t *)arc, NULL) == 1) continue;
 			F->Arc(ctx, layer, arc);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)arc, NULL);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
@@ -182,7 +186,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, text);
 			}
 			exto = pcb_extobj_float_pre((pcb_any_obj_t *)text);
-			if (F->common_pre != NULL) F->common_pre(ctx, (pcb_any_obj_t *)text, NULL);
+			if (F->common_pre != NULL)
+				if (F->common_pre(ctx, (pcb_any_obj_t *)text, NULL) == 1) continue;
 			F->Text(ctx, layer, text);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)text, NULL);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
@@ -204,7 +209,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
 			}
 			exto = pcb_extobj_float_pre((pcb_any_obj_t *)polygon);
-			if (F->common_pre != NULL) F->common_pre(ctx, (pcb_any_obj_t *)polygon, NULL);
+			if (F->common_pre != NULL)
+				if (F->common_pre(ctx, (pcb_any_obj_t *)polygon, NULL) == 1) continue;
 			F->Polygon(ctx, layer, polygon);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)polygon, NULL);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
@@ -224,7 +230,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 					PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, subc);
 				}
 				exto = pcb_extobj_float_pre((pcb_any_obj_t *)subc);
-				if (F->common_pre != NULL) F->common_pre(ctx, (pcb_any_obj_t *)subc, NULL);
+				if (F->common_pre != NULL)
+					if (F->common_pre(ctx, (pcb_any_obj_t *)subc, NULL) == 1) continue;
 				F->subc(ctx, subc);
 				if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)subc, NULL);
 				if (exto != NULL) pcb_extobj_float_geo(exto);
@@ -251,7 +258,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, padstack);
 			}
 			exto = pcb_extobj_float_pre((pcb_any_obj_t *)padstack);
-			if (F->common_pre != NULL) F->common_pre(ctx, (pcb_any_obj_t *)padstack, NULL);
+			if (F->common_pre != NULL)
+				if (F->common_pre(ctx, (pcb_any_obj_t *)padstack, NULL) == 1) continue;
 			F->padstack(ctx, padstack);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)padstack, NULL);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
@@ -272,7 +280,8 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				pcb_undo_add_obj_to_flag(line);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
 			}
-			if (F->common_pre != NULL) F->common_pre(ctx, (pcb_any_obj_t *)line, NULL);
+			if (F->common_pre != NULL)
+				if (F->common_pre(ctx, (pcb_any_obj_t *)line, NULL) == 1) continue;
 			F->Rat(ctx, line);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)line, NULL);
 			changed = pcb_true;

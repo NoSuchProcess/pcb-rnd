@@ -68,8 +68,9 @@ pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *editobj);
    copy all data from there (including objects). */
 void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from);
 
-/* Called to remove the subc of an edit object floater */
-PCB_INLINE void pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
+/* Called to remove the subc of an edit object floater; returns 0 on no
+   action, 1 if it removed an extobj subc */
+PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
 
 
 /* called (by the subc code) before an edit-obj is removed */
@@ -115,23 +116,25 @@ PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const c
 		eo->chg_attr(subc, key, value);
 }
 
-PCB_INLINE void pcb_extobj_del_floater(pcb_any_obj_t *flt)
+PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;
 	pcb_extobj_t *eo;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
-		return;
+		return 0;
 
 	subc = pcb_obj_parent_subc(flt);
 	if (subc == NULL)
-		return;
+		return 0;
 
 	eo = pcb_extobj_get(subc);
 	if (eo == NULL)
-		return; /* do not delete non-extobjs */
+		return 0; /* do not delete non-extobjs */
 
+pcb_trace("del floater removes subc\n");
 	pcb_subc_remove(subc);
+	return 1;
 }
 
 PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)

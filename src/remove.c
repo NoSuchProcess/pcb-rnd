@@ -42,7 +42,7 @@
 #include "obj_subc_op.h"
 #include "obj_pstk_op.h"
 
-static void remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3);
+static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3);
 
 static pcb_opfunc_t RemoveFunctions = {
 	remove_pre,
@@ -74,10 +74,10 @@ static pcb_opfunc_t DestroyFunctions = {
 	pcb_pstkop_destroy,
 };
 
-static void remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
+static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
 	/* when an edit-object is removed, the corresponding subc obj needs to be removed */
-	pcb_extobj_del_floater(obj);
+	return pcb_extobj_del_floater(obj);
 }
 
 
