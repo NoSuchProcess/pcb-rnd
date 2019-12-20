@@ -504,7 +504,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
 						if (exto_flt)
-							pcb_exto_float_new((pcb_any_obj_t *)line);
+							pcb_extobj_float_new((pcb_any_obj_t *)line);
 					}
 				}
 				break;
@@ -531,7 +531,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 						pcb_arc_invalidate_draw(layer, arc);
 						applied = 1;
 						if (exto_flt)
-							pcb_exto_float_new((pcb_any_obj_t *)arc);
+							pcb_extobj_float_new((pcb_any_obj_t *)arc);
 					}
 				}
 				break;
@@ -643,7 +643,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_arc_invalidate_draw(layer, arc);
 						applied = 1;
 						if (exto_flt)
-							pcb_exto_float_new((pcb_any_obj_t *)arc);
+							pcb_extobj_float_new((pcb_any_obj_t *)arc);
 					}
 				}
 				break;
@@ -668,7 +668,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
 						if (exto_flt)
-							pcb_exto_float_new((pcb_any_obj_t *)line);
+							pcb_extobj_float_new((pcb_any_obj_t *)line);
 					}
 				}
 				break;

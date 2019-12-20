@@ -184,7 +184,7 @@ PCB_INLINE void pcb_extobj_del_subc(pcb_any_obj_t *edit_obj)
 	pcb_subc_remove(sc);
 }
 
-PCB_INLINE void pcb_exto_float_new(pcb_any_obj_t *flt)
+PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc = pcb_obj_parent_subc(flt);
 	pcb_extobj_t *eo;
