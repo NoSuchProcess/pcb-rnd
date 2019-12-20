@@ -423,12 +423,13 @@ int pcb_route_apply(const pcb_route_t *p_route)
    is the board layer of the route, but when a floater of a subcircuit is split
    e.g. by the line tool code, new floaters within the same subcircuit shall
    be created instead */
-static pcb_layer_t *get_route_layer(pcb_board_t *pcb, const pcb_any_obj_t *apply_to, pcb_route_object_t const *p_obj)
+static pcb_layer_t *get_route_layer(pcb_board_t *pcb, const pcb_any_obj_t *apply_to, pcb_route_object_t const *p_obj, int *exto_flt)
 {
+	*exto_flt = 0;
 	if ((apply_to != NULL) && (PCB_FLAG_TEST(PCB_FLAG_FLOATER, apply_to))) {
 		pcb_subc_t *psc = pcb_obj_parent_subc(apply_to);
 		if (psc != NULL) {
-TODO("Call extobj new floater hook");
+			*exto_flt = 1;
 			assert(apply_to->parent_type == PCB_PARENT_LAYER);
 			return apply_to->parent.layer;
 		}
@@ -445,7 +446,8 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = get_route_layer(PCB, (const pcb_any_obj_t *)attr_src, p_obj);
+		int exto_flt;
+		pcb_layer_t *layer = get_route_layer(PCB, (const pcb_any_obj_t *)attr_src, p_obj, &exto_flt);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_LINE:
@@ -501,6 +503,8 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 						pcb_line_invalidate_draw(layer, line);
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
+						if (exto_flt)
+							pcb_exto_float_new((pcb_any_obj_t *)line);
 					}
 				}
 				break;
@@ -526,6 +530,8 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 						pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 						pcb_arc_invalidate_draw(layer, arc);
 						applied = 1;
+						if (exto_flt)
+							pcb_exto_float_new((pcb_any_obj_t *)arc);
 					}
 				}
 				break;
@@ -555,7 +561,8 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = get_route_layer(PCB, (const pcb_any_obj_t *)attr_src, p_obj);
+		int exto_flt;
+		pcb_layer_t *layer = get_route_layer(PCB, (const pcb_any_obj_t *)attr_src, p_obj, &exto_flt);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_ARC:
@@ -635,6 +642,8 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 						pcb_arc_invalidate_draw(layer, arc);
 						applied = 1;
+						if (exto_flt)
+							pcb_exto_float_new((pcb_any_obj_t *)arc);
 					}
 				}
 				break;
@@ -658,6 +667,8 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_line_invalidate_draw(layer, line);
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
+						if (exto_flt)
+							pcb_exto_float_new((pcb_any_obj_t *)line);
 					}
 				}
 				break;

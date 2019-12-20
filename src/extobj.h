@@ -235,4 +235,18 @@ PCB_INLINE void pcb_extobj_del_subc(pcb_any_obj_t *edit_obj)
 	pcb_subc_remove(sc);
 }
 
+PCB_INLINE void pcb_exto_float_new(pcb_any_obj_t *flt)
+{
+	pcb_subc_t *subc = pcb_obj_parent_subc(flt);
+	pcb_extobj_t *eo;
+
+	if (subc == NULL)
+		return;
+
+	eo = pcb_extobj_get(subc);
+
+	if ((eo != NULL) && (eo->float_new != NULL))
+		eo->float_new(subc, flt);
+}
+
 #endif
