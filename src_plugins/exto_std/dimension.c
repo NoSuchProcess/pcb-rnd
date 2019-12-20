@@ -237,26 +237,13 @@ pcb_any_obj_t *pcb_dimension_get_edit_obj(pcb_subc_t *obj)
 	return edit;
 }
 
-
-
-static void pcb_dimension_edit_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	pcb_trace("dim: edit pre %ld %ld\n", subc->ID, edit_obj->ID);
 	dimension_clear(subc);
 }
 
-static void pcb_dimension_edit_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
-{
-	pcb_trace("dim: edit geo %ld %ld\n", subc->ID, edit_obj->ID);
-	dimension_gen(subc, edit_obj);
-}
 
-static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
-{
-	pcb_trace("dim: float pre %ld %ld\n", subc->ID, floater->ID);
-}
-
-static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
+static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	dimension *dim;
 	pcb_any_obj_t *edit_obj;
@@ -301,6 +288,13 @@ pcb_trace("let's do it!\n");
 	dimension_gen(subc, edit_obj);
 }
 
+static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+{
+/* TODO: call this when role is not "edit" */
+/*	pcb_dimension_dimline_geo(subc, edit_obj)*/
+	dimension_gen(subc, edit_obj);
+}
+
 static void pcb_dimension_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	pcb_trace("dim: float new %ld %ld\n", subc->ID, floater->ID);
@@ -321,8 +315,8 @@ static pcb_extobj_t pcb_dimension = {
 	"dimension",
 	pcb_dimension_draw_mark,
 	pcb_dimension_get_edit_obj,
-	pcb_dimension_edit_pre,
-	pcb_dimension_edit_geo,
+	NULL,
+	NULL,
 	pcb_dimension_float_pre,
 	pcb_dimension_float_geo,
 	pcb_dimension_float_new,

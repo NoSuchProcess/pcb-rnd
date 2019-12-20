@@ -557,10 +557,8 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 
 		{ /* if extended object's edit-obj is restored, make sure the corresponding subc is updated */
 			pcb_any_obj_t *o = ptr2;
-			if (o->type != PCB_OBJ_SUBC) {
-				pcb_extobj_edit_pre(o);
-				pcb_extobj_edit_geo(o);
-			}
+			pcb_extobj_float_pre(o);
+			pcb_extobj_float_geo(o);
 		}
 
 		if (pcb_brave & PCB_BRAVE_CLIPBATCH)

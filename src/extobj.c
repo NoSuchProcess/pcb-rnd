@@ -156,8 +156,8 @@ void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 	sprintf(tmp, "%ld", edit_obj->ID);
 	pcb_attribute_put(&sc->Attributes, "extobj::editobj", tmp);
 
-	pcb_extobj_edit_pre(edit_obj);
-	pcb_extobj_edit_geo(edit_obj);
+	pcb_extobj_float_pre(edit_obj);
+	pcb_extobj_float_geo(edit_obj);
 }
 
 void pcb_extobj_del_pre(pcb_subc_t *sc)

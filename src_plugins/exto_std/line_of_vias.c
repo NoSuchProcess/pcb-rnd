@@ -174,13 +174,13 @@ pcb_any_obj_t *pcb_line_of_vias_get_edit_obj(pcb_subc_t *obj)
 
 
 
-static void pcb_line_of_vias_edit_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+static void pcb_line_of_vias_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	pcb_trace("LoV: edit pre %ld %ld\n", subc->ID, edit_obj->ID);
 	line_of_vias_clear(subc);
 }
 
-static void pcb_line_of_vias_edit_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+static void pcb_line_of_vias_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	pcb_trace("LoV: edit geo %ld %ld\n", subc->ID, edit_obj->ID);
 	line_of_vias_gen(subc, edit_obj);
@@ -210,10 +210,10 @@ static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
 	pcb_line_of_vias_draw_mark,
 	pcb_line_of_vias_get_edit_obj,
-	pcb_line_of_vias_edit_pre,
-	pcb_line_of_vias_edit_geo,
-	NULL, /* float_pre */
-	NULL, /* float_geo */
+	NULL,
+	NULL,
+	pcb_line_of_vias_float_pre,
+	pcb_line_of_vias_float_geo,
 	pcb_line_of_vias_float_new,
 	pcb_line_of_vias_chg_attr,
 	pcb_line_of_vias_del_pre

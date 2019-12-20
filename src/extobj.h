@@ -158,55 +158,6 @@ PCB_INLINE pcb_extobj_t *pcb_extobj_edit_common_(pcb_any_obj_t *edit_obj, pcb_su
 	return pcb_extobj_get(*sc);
 }
 
-/* Calls edit_pre() and returns edit_obj if it is really the edit object of
-   a known extended object */
-PCB_INLINE pcb_any_obj_t *pcb_extobj_edit_pre(pcb_any_obj_t *edit_obj)
-{
-	int flt;
-	pcb_subc_t *sc;
-	pcb_extobj_t *eo = pcb_extobj_edit_common_(edit_obj, &sc, &flt);
-
-	if (eo == NULL)
-		return NULL;
-
-	if (flt) { /* editing a subc part floater */
-		if ((eo->float_pre != NULL) && !edit_obj->extobj_editing) {
-			edit_obj->extobj_editing = 1;
-			eo->float_pre(sc, edit_obj);
-		}
-	}
-	else { /* editing the edit-object */
-		if ((eo->edit_pre != NULL) && !edit_obj->extobj_editing) {
-			edit_obj->extobj_editing = 1;
-			eo->edit_pre(sc, edit_obj);
-		}
-	}
-	return edit_obj;
-}
-
-PCB_INLINE void pcb_extobj_edit_geo(pcb_any_obj_t *edit_obj)
-{
-	int flt;
-	pcb_subc_t *sc;
-	pcb_extobj_t *eo = pcb_extobj_edit_common_(edit_obj, &sc, &flt);
-
-	if (eo == NULL)
-		return;
-
-	if (flt) { /* editing a subc part floater */
-		if ((eo->float_geo != NULL) && edit_obj->extobj_editing) {
-			edit_obj->extobj_editing = 0;
-			eo->float_geo(sc, edit_obj);
-		}
-	}
-	else { /* editing the edit-object */
-		if ((eo->edit_pre != NULL) && edit_obj->extobj_editing) {
-			eo->edit_geo(sc, edit_obj);
-			edit_obj->extobj_editing = 0;
-		}
-	}
-}
-
 PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const char *value)
 {
 	pcb_subc_t *subc;
@@ -247,6 +198,48 @@ PCB_INLINE void pcb_exto_float_new(pcb_any_obj_t *flt)
 
 	if ((eo != NULL) && (eo->float_new != NULL))
 		eo->float_new(subc, flt);
+}
+
+PCB_INLINE pcb_any_obj_t *pcb_extobj_float_pre(pcb_any_obj_t *flt)
+{
+	pcb_subc_t *subc;
+	pcb_extobj_t *eo;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
+		return NULL;
+
+	subc = pcb_obj_parent_subc(flt);
+	if (subc == NULL)
+		return NULL;
+
+	eo = pcb_extobj_get(subc);
+
+	if ((eo != NULL) && (eo->float_pre != NULL)) {
+		eo->float_pre(subc, flt);
+		return flt;
+	}
+
+	return NULL;
+}
+
+PCB_INLINE void pcb_extobj_float_geo(pcb_any_obj_t *flt)
+{
+	pcb_subc_t *subc;
+	pcb_extobj_t *eo;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
+		return NULL;
+
+	subc = pcb_obj_parent_subc(flt);
+	if (subc == NULL)
+		return NULL;
+
+	eo = pcb_extobj_get(subc);
+
+	if ((eo != NULL) && (eo->float_geo != NULL))
+		return eo->float_geo(subc, flt);
+
+	return NULL;
 }
 
 #endif
