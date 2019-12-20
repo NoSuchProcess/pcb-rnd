@@ -440,12 +440,12 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 {
 	int i;
 	int applied = 0;
-	pcb_line_t *attr_src = apply_to_line;
+	const pcb_line_t *attr_src = apply_to_line;
 	pcb_any_obj_t *exto;
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = get_route_layer(PCB, attr_src, p_obj);
+		pcb_layer_t *layer = get_route_layer(PCB, (const pcb_any_obj_t *)attr_src, p_obj);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_LINE:
@@ -550,12 +550,12 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 {
 	int i;
 	int applied = 0;
-	pcb_arc_t *attr_src = apply_to_arc;
+	const pcb_arc_t *attr_src = apply_to_arc;
 	pcb_any_obj_t *exto;
 
 	for(i = 0; i < p_route->size; i++) {
 		pcb_route_object_t const *p_obj = &p_route->objects[i];
-		pcb_layer_t *layer = get_route_layer(PCB, attr_src, p_obj);
+		pcb_layer_t *layer = get_route_layer(PCB, (const pcb_any_obj_t *)attr_src, p_obj);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_ARC:
