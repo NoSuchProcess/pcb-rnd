@@ -76,12 +76,8 @@ static pcb_opfunc_t DestroyFunctions = {
 
 static void remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
-	pcb_subc_t *subc;
-	if ((obj->type == PCB_OBJ_SUBC) || ((subc = pcb_extobj_get_subcobj_by_attr(obj)) == NULL))
-		return;
-
 	/* when an edit-object is removed, the corresponding subc obj needs to be removed */
-	pcb_extobj_del_subc(obj);
+	pcb_extobj_del_floater(obj);
 }
 
 

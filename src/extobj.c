@@ -86,47 +86,13 @@ void pcb_extobj_uninit(void)
 	vtp0_uninit(&pcb_extobj_i2o);
 }
 
-pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *obj)
+PCB_INLINE pcb_data_t *pcb_extobj_parent_data(pcb_any_obj_t *obj)
 {
-	pcb_data_t *data = obj->parent.data;
-	const char *s;
-	char *end;
-	long id;
-
-	assert(obj->parent_type == PCB_PARENT_DATA);
-
-	s = pcb_attribute_get(&obj->Attributes, "extobj::editobj");
-	if (s == NULL)
-		return NULL;
-
-	id = strtol(s, &end, 10);
-	if (*end != '\0')
-		return NULL;
-
-	return htip_get(&data->id2obj, id);
-}
-
-pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *obj)
-{
-	pcb_subc_t *res;
-	pcb_data_t *data = pcb_extobj_parent_data(obj);
-	const char *s;
-	char *end;
-	long id;
-
-	s = pcb_attribute_get(&obj->Attributes, "extobj::subcobj");
-	if (s == NULL)
-		return NULL;
-
-	id = strtol(s, &end, 10);
-	if (*end != '\0')
-		return NULL;
-
-	res = htip_get(&data->id2obj, id);
-	if ((res == NULL) || (res->type != PCB_OBJ_SUBC))
-		return NULL;
-
-	return res;
+	if (obj->parent_type == PCB_PARENT_DATA)
+		return obj->parent.data;
+	if (obj->parent_type == PCB_PARENT_LAYER)
+		return obj->parent.layer->parent.data;
+	return NULL;
 }
 
 void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
@@ -151,10 +117,7 @@ void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 
 	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, sc, sc, sc);
 
-	sprintf(tmp, "%ld", sc->ID);
-	pcb_attribute_put(&edit_obj->Attributes, "extobj::subcobj", tmp);
-	sprintf(tmp, "%ld", edit_obj->ID);
-	pcb_attribute_put(&sc->Attributes, "extobj::editobj", tmp);
+TODO("put edit_obj within the new subc, set subc attributes");
 
 	pcb_extobj_float_pre(edit_obj);
 	pcb_extobj_float_geo(edit_obj);
@@ -167,10 +130,6 @@ void pcb_extobj_del_pre(pcb_subc_t *sc)
 
 	if ((eo != NULL) && (eo->del_pre != NULL))
 		eo->del_pre(sc);
-
-	edit_obj = pcb_extobj_get_editobj(eo, sc);
-	if (edit_obj != NULL)
-		pcb_attribute_remove(&edit_obj->Attributes, "extobj::subcobj");
 
 	pcb_attribute_remove(&sc->Attributes, "extobj::editobj");
 }

@@ -89,9 +89,12 @@ static void dimension_unpack(pcb_subc_t *obj)
 	if (dim->fmt == NULL)
 		dim->fmt = "%.03$mm";
 
+TODO("iterate over all edit roled objects");
+/*
 	edit = pcb_extobj_get_editobj_by_attr(obj);
 	if (edit != NULL)
 		dimension_update_src(dim, edit);
+*/
 }
 
 /* remove all existing graphics from the subc */
@@ -227,16 +230,6 @@ static void pcb_dimension_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
 }
 
-pcb_any_obj_t *pcb_dimension_get_edit_obj(pcb_subc_t *obj)
-{
-	pcb_any_obj_t *edit = pcb_extobj_get_editobj_by_attr(obj);
-
-	if (edit->type != PCB_OBJ_LINE)
-		return NULL;
-
-	return edit;
-}
-
 static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	dimension_clear(subc);
@@ -280,8 +273,9 @@ pcb_trace("new disp: %mm f=%mm;%mm\n", (pcb_coord_t)d, fx, fy);
 
 pcb_trace("let's do it!\n");
 
-	edit_obj = pcb_extobj_get_editobj_by_attr(subc);
-	if (edit_obj == NULL)
+TODO("iterate over all edit roled objects");
+/*	edit_obj = pcb_extobj_get_editobj_by_attr(subc);
+	if (edit_obj == NULL)*/
 		return;
 	dimension_clear(subc);
 	dim->displace = d;
@@ -304,17 +298,17 @@ static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char
 {
 	pcb_trace("dim chg_attr\n");
 	if (strncmp(key, "extobj::", 8) == 0) {
-		pcb_any_obj_t *edit_obj = pcb_extobj_get_editobj_by_attr(subc);
+TODO("iterate over all edit roled objects");
+/*		pcb_any_obj_t *edit_obj = pcb_extobj_get_editobj_by_attr(subc);
 		dimension_clear(subc);
 		dimension_unpack(subc);
-		dimension_gen(subc, edit_obj);
+		dimension_gen(subc, edit_obj);*/
 	}
 }
 
 static pcb_extobj_t pcb_dimension = {
 	"dimension",
 	pcb_dimension_draw_mark,
-	pcb_dimension_get_edit_obj,
 	pcb_dimension_float_pre,
 	pcb_dimension_float_geo,
 	pcb_dimension_float_new,

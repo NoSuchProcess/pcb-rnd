@@ -43,7 +43,6 @@ struct pcb_extobj_s {
 	/* static data - filled in by the extobj code */
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
-	pcb_any_obj_t *(*get_editobj)(pcb_subc_t *subc); /* resolve the edit object from the subc; if NULL, use the extobj::editobj attribute */
 	void (*float_pre)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called before an extobj floater is edited in any way - must not free() the floater */
 	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed - must not free() the floater */
 	void (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created */
@@ -61,10 +60,6 @@ void pcb_extobj_uninit(void);
 void pcb_extobj_unreg(pcb_extobj_t *o);
 void pcb_extobj_reg(pcb_extobj_t *o);
 
-/* given an extobj subc, resolve the corresponding edit-object, or return
-   NULL if there's none */
-pcb_any_obj_t *pcb_extobj_get_editobj_by_attr(pcb_subc_t *extobj);
-
 /* given an edit-object, resolve the corresponding extobj's subc, or return
    NULL if there's none */
 pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *editobj);
@@ -73,8 +68,8 @@ pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *editobj);
    copy all data from there (including objects). */
 void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from);
 
-/* Called to remove the subc of an edit object */
-PCB_INLINE void pcb_extobj_del_subc(pcb_any_obj_t *edit_obj);
+/* Called to remove the subc of an edit object floater */
+PCB_INLINE void pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
 
 
 /* called (by the subc code) before an edit-obj is removed */
@@ -85,15 +80,6 @@ int pcb_extobj_lookup_idx(const char *name);
 
 extern int pcb_extobj_invalid; /* this changes upon each new extobj reg, forcing the caches to be invalidated eventually */
 extern vtp0_t pcb_extobj_i2o;  /* extobj_idx -> (pcb_ext_obj_t *) */
-
-PCB_INLINE pcb_data_t *pcb_extobj_parent_data(pcb_any_obj_t *obj)
-{
-	if (obj->parent_type == PCB_PARENT_DATA)
-		return obj->parent.data;
-	if (obj->parent_type == PCB_PARENT_LAYER)
-		return obj->parent.layer->parent.data;
-	return NULL;
-}
 
 PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 {
@@ -116,72 +102,31 @@ PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 	return *eo;
 }
 
-PCB_INLINE pcb_any_obj_t *pcb_extobj_get_editobj(pcb_extobj_t *eo, pcb_subc_t *obj)
-{
-	if ((eo != NULL) && (eo->get_editobj != NULL))
-		return eo->get_editobj(obj);
-
-	return pcb_extobj_get_editobj_by_attr(obj);
-}
-
-/* For internal use, do not call directly */
-PCB_INLINE pcb_extobj_t *pcb_extobj_edit_common_(pcb_any_obj_t *edit_obj, pcb_subc_t **sc, int *is_floater)
-{
-	pcb_data_t *data = pcb_extobj_parent_data(edit_obj);
-
-	if (data == NULL)
-		return NULL;
-
-	if (data->parent_type != PCB_PARENT_BOARD) { /* don't do anything with edit objects in the buffer */
-		/* NOTE: this will break for subc-in-subc */
-		*sc = NULL;
-		return NULL;
-	}
-
-	*sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
-
-	*is_floater = 0;
-	if (*sc == NULL) {
-		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, edit_obj)) {
-			*sc = pcb_obj_parent_subc(edit_obj);
-			*is_floater = 1;
-		}
-		else
-			return NULL;
-	}
-
-	if (*sc == NULL)
-		return NULL;
-
-	return pcb_extobj_get(*sc);
-}
-
 PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const char *value)
 {
-	pcb_subc_t *subc;
+	pcb_subc_t *subc = (pcb_subc_t *)obj;
 	pcb_extobj_t *eo;
 
-	if (obj->type == PCB_OBJ_SUBC)
-		subc = (pcb_subc_t *)obj;
-	else
-		subc = pcb_extobj_get_subcobj_by_attr(obj);
-
-	if (subc == NULL)
+	if ((obj->type != PCB_OBJ_SUBC) || (PCB_FLAG_TEST(PCB_FLAG_FLOATER, obj)))
 		return;
 
 	eo = pcb_extobj_get(subc);
-
 	if ((eo != NULL) && (eo->chg_attr != NULL))
 		eo->chg_attr(subc, key, value);
 }
 
-PCB_INLINE void pcb_extobj_del_subc(pcb_any_obj_t *edit_obj)
+PCB_INLINE void pcb_extobj_del_floater(pcb_any_obj_t *flt)
 {
-	pcb_subc_t *sc = pcb_extobj_get_subcobj_by_attr(edit_obj);
-	if (sc == NULL)
+	pcb_subc_t *subc;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
 		return;
 
-	pcb_subc_remove(sc);
+	subc = pcb_obj_parent_subc(flt);
+	if (subc == NULL)
+		return;
+
+	pcb_subc_remove(subc);
 }
 
 PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)

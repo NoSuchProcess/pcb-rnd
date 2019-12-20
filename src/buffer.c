@@ -95,28 +95,14 @@ static pcb_opfunc_t MoveBufferFunctions = {
 
 static void move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
-	pcb_subc_t *subc;
-	if (obj->type == PCB_OBJ_SUBC)
-		return;
-	subc = pcb_extobj_get_subcobj_by_attr(obj);
-	if (subc == NULL)
-		return;
-
+	TODO("extobj floater: move the whole subc instead");
 	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
-	pcb_subcop_move_buffer(ctx, subc);
+/*	pcb_subcop_move_buffer(ctx, subc);*/
 }
 
 static void add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
-	pcb_subc_t *subc;
-	if (obj->type == PCB_OBJ_SUBC)
-		return;
-	subc = pcb_extobj_get_subcobj_by_attr(obj);
-	if (subc == NULL)
-		return;
-
-	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
-	pcb_subcop_add_to_buffer(ctx, subc);
+	TODO("extobj floater: move the whole subc instead");
 }
 
 int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)

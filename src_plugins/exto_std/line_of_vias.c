@@ -65,9 +65,12 @@ static void line_of_vias_unpack(pcb_subc_t *obj)
 	pcb_extobj_unpack_coord(obj, &lov->pitch, "extobj::pitch");
 	pcb_extobj_unpack_coord(obj, &lov->clearance, "extobj::clearance");
 
+TODO("iterate over all edit roled objects");
+/*
 	edit = pcb_extobj_get_editobj_by_attr(obj);
 	if ((edit != NULL) && (edit->type == PCB_OBJ_LINE))
 		line_of_vias_udpate_line(lov, (pcb_line_t *)edit);
+*/
 }
 
 /* remove all existing padstacks from the subc */
@@ -162,17 +165,6 @@ static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	pcb_render->draw_line(pcb_draw_out.fgGC, ax2, ay2, ax, ay);
 }
 
-pcb_any_obj_t *pcb_line_of_vias_get_edit_obj(pcb_subc_t *obj)
-{
-	pcb_any_obj_t *edit = pcb_extobj_get_editobj_by_attr(obj);
-
-	if (edit->type != PCB_OBJ_LINE)
-		return NULL;
-
-	return edit;
-}
-
-
 
 static void pcb_line_of_vias_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
@@ -196,8 +188,9 @@ static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const c
 {
 	pcb_trace("LoV chg_attr\n");
 	if (strncmp(key, "extobj::", 8) == 0) {
-		pcb_any_obj_t *edit_obj = pcb_extobj_get_editobj_by_attr(subc);
-		if (edit_obj == NULL)
+TODO("iterate over all edit roled objects");
+		pcb_any_obj_t *edit_obj;/* = pcb_extobj_get_editobj_by_attr(subc);
+		if (edit_obj == NULL)*/
 			return;
 		line_of_vias_clear(subc);
 		line_of_vias_unpack(subc);
@@ -209,7 +202,6 @@ static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const c
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
 	pcb_line_of_vias_draw_mark,
-	pcb_line_of_vias_get_edit_obj,
 	pcb_line_of_vias_float_pre,
 	pcb_line_of_vias_float_geo,
 	pcb_line_of_vias_float_new,
