@@ -48,6 +48,7 @@ struct pcb_extobj_s {
 	void (*edit_geo)(pcb_subc_t *subc, pcb_any_obj_t *edit_obj); /* called after the geometry of the edit-object changed */
 	void (*float_pre)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called before an extobj floater is edited in any way - must not free() the floater */
 	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed - must not free() the floater */
+	void (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created */
 	void (*chg_attr)(pcb_subc_t *subc, const char *key, const char *value); /* called after an attribute changed; value == NULL means attribute is deleted */
 	void (*del_pre)(pcb_subc_t *subc); /* called before the extobj subcircuit is deleted - should free any internal cache, but shouldn't delete the subcircuit */
 

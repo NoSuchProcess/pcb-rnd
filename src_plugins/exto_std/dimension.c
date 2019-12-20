@@ -301,6 +301,11 @@ pcb_trace("let's do it!\n");
 	dimension_gen(subc, edit_obj);
 }
 
+static void pcb_dimension_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
+{
+	pcb_trace("dim: float new %ld %ld\n", subc->ID, floater->ID);
+}
+
 static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
 {
 	pcb_trace("dim chg_attr\n");
@@ -320,6 +325,7 @@ static pcb_extobj_t pcb_dimension = {
 	pcb_dimension_edit_geo,
 	pcb_dimension_float_pre,
 	pcb_dimension_float_geo,
+	pcb_dimension_float_new,
 	pcb_dimension_chg_attr,
 	pcb_dimension_del_pre
 };
