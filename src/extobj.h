@@ -171,18 +171,16 @@ PCB_INLINE void pcb_extobj_float_geo(pcb_any_obj_t *flt)
 	pcb_extobj_t *eo;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
-		return NULL;
+		return;
 
 	subc = pcb_obj_parent_subc(flt);
 	if (subc == NULL)
-		return NULL;
+		return;
 
 	eo = pcb_extobj_get(subc);
 
 	if ((eo != NULL) && (eo->float_geo != NULL))
-		return eo->float_geo(subc, flt);
-
-	return NULL;
+		eo->float_geo(subc, flt);
 }
 
 #endif
