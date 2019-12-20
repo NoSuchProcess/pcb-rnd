@@ -118,6 +118,7 @@ PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const c
 PCB_INLINE void pcb_extobj_del_floater(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;
+	pcb_extobj_t *eo;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
 		return;
@@ -125,6 +126,10 @@ PCB_INLINE void pcb_extobj_del_floater(pcb_any_obj_t *flt)
 	subc = pcb_obj_parent_subc(flt);
 	if (subc == NULL)
 		return;
+
+	eo = pcb_extobj_get(subc);
+	if (eo == NULL)
+		return; /* do not delete non-extobjs */
 
 	pcb_subc_remove(subc);
 }
