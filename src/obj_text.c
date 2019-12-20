@@ -438,8 +438,14 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 	pcb_layer_t *srcly = text->parent.layer;
 
 	assert(text->parent_type == PCB_PARENT_LAYER);
-	if ((dstly == NULL) || (dstly == srcly)) /* auto layer in dst */
-		dstly = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, srcly)];
+	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
+		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
+		if (lid < 0) {
+			pcb_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_textop_move_buffer\n");
+			return NULL;
+		}
+		dstly = &ctx->buffer.dst->Layer[lid];
+	}
 
 	pcb_r_delete_entry(srcly->text_tree, (pcb_box_t *) text);
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_TEXT, srcly, text);
