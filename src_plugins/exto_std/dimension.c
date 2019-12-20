@@ -28,6 +28,9 @@
 
 #include "search.h"
 
+#define LID_EDIT 0
+#define LID_TARGET 1
+
 typedef struct {
 	int style;
 	pcb_coord_t displace;
@@ -36,6 +39,12 @@ typedef struct {
 	unsigned int valid:1;
 	double x1, y1, x2, y2, len, dx, dy;
 } dimension;
+
+static pcb_any_obj_t *dimension_edit_obj(pcb_subc_t *subc)
+{
+	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
+	return (pcb_any_obj_t *)linelist_first(&ly->Line);
+}
 
 static void pcb_dimension_del_pre(pcb_subc_t *subc)
 {
@@ -47,6 +56,10 @@ static void pcb_dimension_del_pre(pcb_subc_t *subc)
 static int dimension_update_src(dimension *dim, pcb_any_obj_t *edit)
 {
 	dim->valid = 0;
+
+	if (edit == NULL)
+		return 0;
+
 	switch(edit->type) {
 		case PCB_OBJ_LINE:
 			{
@@ -75,6 +88,7 @@ static int dimension_update_src(dimension *dim, pcb_any_obj_t *edit)
 	return !dim->valid;
 }
 
+
 static void dimension_unpack(pcb_subc_t *obj)
 {
 	dimension *dim;
@@ -89,32 +103,29 @@ static void dimension_unpack(pcb_subc_t *obj)
 	if (dim->fmt == NULL)
 		dim->fmt = "%.03$mm";
 
-TODO("iterate over all edit roled objects");
-/*
-	edit = pcb_extobj_get_editobj_by_attr(obj);
-	if (edit != NULL)
-		dimension_update_src(dim, edit);
-*/
+	edit = dimension_edit_obj(obj);
+	dimension_update_src(dim, edit);
 }
 
 /* remove all existing graphics from the subc */
 static void dimension_clear(pcb_subc_t *subc)
 {
+	pcb_layer_t *ly = &subc->data->Layer[LID_TARGET];
 	pcb_line_t *l, *next;
 	pcb_poly_t *p;
 	pcb_text_t *t;
 
-	for(l = linelist_first(&subc->data->Layer[0].Line); l != NULL; l = next) {
+	for(l = linelist_first(&ly->Line); l != NULL; l = next) {
 		next = linelist_next(l);
 		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* do not free the floater */
 		pcb_line_free(l);
 	}
 
-	for(p = polylist_first(&subc->data->Layer[0].Polygon); p != NULL; p = polylist_first(&subc->data->Layer[0].Polygon)) {
+	for(p = polylist_first(&ly->Polygon); p != NULL; p = polylist_first(&ly->Polygon)) {
 		pcb_poly_free(p);
 	}
 
-	for(t = textlist_first(&subc->data->Layer[0].Text); t != NULL; t = textlist_first(&subc->data->Layer[0].Text)) {
+	for(t = textlist_first(&ly->Text); t != NULL; t = textlist_first(&ly->Text)) {
 		pcb_text_free(t);
 	}
 }
@@ -130,10 +141,9 @@ static void draw_arrow(dimension *dim, pcb_data_t *data, pcb_layer_t *ly, pcb_co
 }
 
 /* create the graphics */
-static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+static int dimension_gen(pcb_subc_t *subc)
 {
 	dimension *dim;
-	pcb_board_t *pcb;
 	pcb_layer_t *ly;
 	pcb_line_t *flt;
 	double ang, deg, dispe, rotsign;
@@ -141,19 +151,19 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y;
 	pcb_text_t *t;
 	char ttmp[128];
-
-	pcb = pcb_data_get_top(subc->data);
+	pcb_any_obj_t *edit_obj;
 
 	if (subc->extobj_data == NULL)
 		dimension_unpack(subc);
 	dim = subc->extobj_data;
+	edit_obj = dimension_edit_obj(subc);
 	if (dimension_update_src(dim, edit_obj) != 0)
 		return -1;
 
 	pcb_exto_regen_begin(subc);
 
-	ly = &subc->data->Layer[0];
-	
+	ly = &subc->data->Layer[LID_TARGET];
+
 	/* endpoints of the displaced baseline */
 	x1 = pcb_round(dim->x1 + dim->displace * -dim->dy);
 	y1 = pcb_round(dim->y1 + dim->displace * +dim->dx);
@@ -172,12 +182,13 @@ static int dimension_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	y2e = pcb_round(dim->y2 + dispe * +dim->dx);
 
 	/* main dim line */
-	flt = linelist_first(&subc->data->Layer[0].Line);
+	flt = linelist_first(&subc->data->Layer[LID_TARGET].Line);
 	if (flt == NULL) { /* create the floater if it doesn't exist */
-		flt = (pcb_any_obj_t *)pcb_line_new(ly,
+		flt = pcb_line_new(ly,
 			x1 + arrx * dim->dx, y1 + arrx * dim->dy,
 			x2 - arrx * dim->dx, y2 - arrx * dim->dy,
 			PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(PCB_FLAG_FLOATER));
+		pcb_attribute_put(&flt->Attributes, "extobj::role", "dimline");
 	}
 	else { /* modify the floater if it exists */
 		if (ly->line_tree != NULL)
@@ -239,9 +250,8 @@ static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	dimension *dim;
-	pcb_any_obj_t *edit_obj;
-	pcb_line_t *fline = floater, bline;
-	pcb_coord_t fx, fy, cpx, cpy;
+	pcb_line_t *fline = (pcb_line_t *)floater, bline;
+	pcb_coord_t fx, fy;
 	double d;
 
 	pcb_trace("dim: float geo %ld %ld\n", subc->ID, floater->ID);
@@ -273,20 +283,21 @@ pcb_trace("new disp: %mm f=%mm;%mm\n", (pcb_coord_t)d, fx, fy);
 
 pcb_trace("let's do it!\n");
 
-TODO("iterate over all edit roled objects");
-/*	edit_obj = pcb_extobj_get_editobj_by_attr(subc);
-	if (edit_obj == NULL)*/
-		return;
 	dimension_clear(subc);
 	dim->displace = d;
-	dimension_gen(subc, edit_obj);
+	dimension_gen(subc);
 }
 
-static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-/* TODO: call this when role is not "edit" */
-/*	pcb_dimension_dimline_geo(subc, edit_obj)*/
-	dimension_gen(subc, edit_obj);
+	if (floater->extobj_role == NULL)
+		return;
+
+	if (strcmp(floater->extobj_role, "edit") == 0)
+		dimension_gen(subc);
+	else if (strcmp(floater->extobj_role, "dimline") == 0)
+		pcb_dimension_dimline_geo(subc, floater);
+
 }
 
 static void pcb_dimension_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
@@ -298,11 +309,9 @@ static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char
 {
 	pcb_trace("dim chg_attr\n");
 	if (strncmp(key, "extobj::", 8) == 0) {
-TODO("iterate over all edit roled objects");
-/*		pcb_any_obj_t *edit_obj = pcb_extobj_get_editobj_by_attr(subc);
 		dimension_clear(subc);
 		dimension_unpack(subc);
-		dimension_gen(subc, edit_obj);*/
+		dimension_gen(subc);
 	}
 }
 
