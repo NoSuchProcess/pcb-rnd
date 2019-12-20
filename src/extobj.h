@@ -132,7 +132,6 @@ PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
 	if (eo == NULL)
 		return 0; /* do not delete non-extobjs */
 
-pcb_trace("del floater removes subc\n");
 	pcb_subc_remove(subc);
 	return 1;
 }
