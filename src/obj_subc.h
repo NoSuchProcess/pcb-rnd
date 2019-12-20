@@ -45,7 +45,7 @@ typedef enum pcb_subc_cached_s {
 
 struct pcb_subc_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
-	const char *extobj;
+	const char *extobj, *extobj_role;
 	int extobj_idx;
 	void *extobj_data; /* the extobj implementation may store decoded data here */
 	minuid_bin_t uid;
