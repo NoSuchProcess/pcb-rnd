@@ -317,6 +317,7 @@ static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char
 
 static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs)
 {
+	pcb_trace("dim: conv_objs\n");
 	return NULL;
 }
 
