@@ -87,6 +87,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 	pcb_subc_create_aux(subc, ox, oy, 0, on_bottom);
 
 	pcb_subc_bbox(subc);
+	pcb_subc_reg(dst, subc);
 
 	if (dst->parent_type == PCB_PARENT_BOARD)
 		pcb = dst->parent.board;
