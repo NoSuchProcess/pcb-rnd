@@ -63,10 +63,6 @@ void pcb_extobj_reg(pcb_extobj_t *o);
 
 pcb_extobj_t *pcb_extobj_lookup(const char *name);
 
-/* given an edit-object, resolve the corresponding extobj's subc, or return
-   NULL if there's none */
-pcb_subc_t *pcb_extobj_get_subcobj_by_attr(pcb_any_obj_t *editobj);
-
 /* Create a new subc for for new the edit_obj; if subc_copy_from is not NULL,
    copy all data from there (including objects). */
 void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from);
