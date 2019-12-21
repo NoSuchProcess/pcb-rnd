@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include "actions.h"
+#include "conf_core.h"
 #include "funchash_core.h"
 #include "search.h"
 #include "tool.h"
@@ -87,6 +88,9 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_Buffer:
+			sc = pcb_extobj_conv_all_objs(pcb, eo, PCB_PASTEBUFFER->Data, PCB_PASTEBUFFER->Data, 1);
+			break;
+
 		default:
 			PCB_ACT_FAIL(ExtobjConvFrom);
 	}
