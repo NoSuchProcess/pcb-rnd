@@ -48,6 +48,7 @@ struct pcb_extobj_s {
 	void (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created */
 	void (*chg_attr)(pcb_subc_t *subc, const char *key, const char *value); /* called after an attribute changed; value == NULL means attribute is deleted */
 	void (*del_pre)(pcb_subc_t *subc); /* called before the extobj subcircuit is deleted - should free any internal cache, but shouldn't delete the subcircuit */
+	pcb_subc_t *(*conv_objs)(pcb_data_t *dst, vtp0_t *objs); /* called to convert objects into an extobj subc; returns NULL on error; objects should not be changed */
 
 	/* dynamic data - filled in by core */
 	int idx;
@@ -75,6 +76,11 @@ PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
 
 /* called (by the subc code) before an edit-obj is removed */
 void pcb_extobj_del_pre(pcb_subc_t *edit_obj);
+
+/* Creates and returns a new extended object on dst, using selected objects
+   of src. If the operation was successful and remove is true, remove selected
+   objects. */
+pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove);
 
 
 int pcb_extobj_lookup_idx(const char *name);

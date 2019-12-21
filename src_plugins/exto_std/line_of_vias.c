@@ -199,6 +199,11 @@ static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const c
 }
 
 
+static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs)
+{
+	return NULL;
+}
+
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
 	pcb_line_of_vias_draw_mark,
@@ -206,5 +211,6 @@ static pcb_extobj_t pcb_line_of_vias = {
 	pcb_line_of_vias_float_geo,
 	pcb_line_of_vias_float_new,
 	pcb_line_of_vias_chg_attr,
-	pcb_line_of_vias_del_pre
+	pcb_line_of_vias_del_pre,
+	pcb_line_of_vias_conv_objs
 };

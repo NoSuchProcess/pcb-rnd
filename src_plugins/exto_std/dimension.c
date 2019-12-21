@@ -315,6 +315,11 @@ static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char
 	}
 }
 
+static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs)
+{
+	return NULL;
+}
+
 static pcb_extobj_t pcb_dimension = {
 	"dimension",
 	pcb_dimension_draw_mark,
@@ -322,5 +327,6 @@ static pcb_extobj_t pcb_dimension = {
 	pcb_dimension_float_geo,
 	pcb_dimension_float_new,
 	pcb_dimension_chg_attr,
-	pcb_dimension_del_pre
+	pcb_dimension_del_pre,
+	pcb_dimension_conv_objs
 };
