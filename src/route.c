@@ -499,7 +499,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 						pcb_added_lines++;
 						pcb_obj_add_attribs((pcb_any_obj_t *)line, PCB->pen_attr, NULL);
 						if (attr_src != NULL)
-							pcb_obj_add_attribs((pcb_any_obj_t *)line, &attr_src->Attributes, attr_src);
+							pcb_obj_add_attribs((pcb_any_obj_t *)line, &attr_src->Attributes, (pcb_any_obj_t *)attr_src);
 						pcb_line_invalidate_draw(layer, line);
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
@@ -526,7 +526,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 						pcb_added_lines++;
 						pcb_obj_add_attribs((pcb_any_obj_t *)arc, PCB->pen_attr, NULL);
 						if (attr_src != NULL)
-							pcb_obj_add_attribs((pcb_any_obj_t *)arc, &attr_src->Attributes, attr_src);
+							pcb_obj_add_attribs((pcb_any_obj_t *)arc, &attr_src->Attributes, (pcb_any_obj_t *)attr_src);
 						pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 						pcb_arc_invalidate_draw(layer, arc);
 						applied = 1;
@@ -638,7 +638,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_added_lines++;
 						pcb_obj_add_attribs((pcb_any_obj_t *)arc, PCB->pen_attr, NULL);
 						if (attr_src != NULL)
-							pcb_obj_add_attribs((pcb_any_obj_t *)arc, &attr_src->Attributes, attr_src);
+							pcb_obj_add_attribs((pcb_any_obj_t *)arc, &attr_src->Attributes, (pcb_any_obj_t *)attr_src);
 						pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 						pcb_arc_invalidate_draw(layer, arc);
 						applied = 1;
@@ -663,7 +663,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						pcb_added_lines++;
 						pcb_obj_add_attribs((pcb_any_obj_t *)line, PCB->pen_attr, NULL);
 						if (attr_src != NULL)
-							pcb_obj_add_attribs((pcb_any_obj_t *)line, &attr_src->Attributes, attr_src);
+							pcb_obj_add_attribs((pcb_any_obj_t *)line, &attr_src->Attributes, (pcb_any_obj_t *)attr_src);
 						pcb_line_invalidate_draw(layer, line);
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 						applied = 1;
