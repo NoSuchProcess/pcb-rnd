@@ -63,7 +63,10 @@ void pcb_extobj_reg(pcb_extobj_t *o)
 
 pcb_extobj_t *pcb_extobj_lookup(const char *name)
 {
-	return htsi_get(&pcb_extobj_n2i, name);
+	int idx = htsi_get(&pcb_extobj_n2i, name);
+	if ((idx <= 0) || (idx >= pcb_extobj_i2o.used))
+		return NULL;
+	return pcb_extobj_i2o.array[idx];
 }
 
 int pcb_extobj_lookup_idx(const char *name)
