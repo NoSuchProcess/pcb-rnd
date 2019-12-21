@@ -1,3 +1,4 @@
+28855	configure	extended object action infra
 28805	configure	generate new header for librnd header integrity test
 28759	configure	compile standard extobjs by default
 28609	configure	layer code split (layer_addr.[ch])
