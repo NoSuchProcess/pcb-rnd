@@ -29,10 +29,45 @@
 #include "actions.h"
 #include "conf_core.h"
 #include "funchash_core.h"
+#include "hid_dad.h"
 #include "search.h"
 #include "tool.h"
 
 #include "extobj.h"
+
+static int extobj_pick_gui(void)
+{
+	int n, res;
+	static int last = 0;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
+	PCB_DAD_DECL(dlg);
+
+	PCB_DAD_BEGIN_VBOX(dlg);
+		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_LABEL(dlg, "Choose extended object:");
+		if ((last > 0) && (last < pcb_extobj_i2o.used)) {
+			pcb_extobj_t *eo = pcb_extobj_i2o.array[last];
+			PCB_DAD_BEGIN_HBOX(dlg);
+				PCB_DAD_LABEL(dlg, "Last used:");
+				PCB_DAD_BUTTON_CLOSE(dlg, eo->name, last);
+			PCB_DAD_END(dlg);
+		}
+		PCB_DAD_BEGIN_TABLE(dlg, 3);
+			for(n = 1; n < pcb_extobj_i2o.used; n++) {
+				pcb_extobj_t *eo = pcb_extobj_i2o.array[n];
+				PCB_DAD_BUTTON_CLOSE(dlg, eo->name, n);
+			}
+		PCB_DAD_END(dlg);
+		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
+	PCB_DAD_END(dlg);
+
+	PCB_DAD_NEW("extobj_select", dlg, "Select extended object", NULL, pcb_true, NULL);
+	res = PCB_DAD_RUN(dlg);
+	PCB_DAD_FREE(dlg);
+	if (res > 0)
+		last = res;
+	return res;
+}
 
 static const char pcb_acts_ExtobjConvFrom[] = "ExtobjConvFrom(selected|buffer, extotype)\nExtobjConvFrom(object, extotype, [idpath])";
 static const char pcb_acth_ExtobjConvFrom[] = "Create a new extended object of extotype by converting existing objects";
@@ -48,11 +83,21 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, ExtobjConvFrom, op = fgw_keyword(&argv[1]));
 	PCB_ACT_CONVARG(2, FGW_STR, ExtobjConvFrom, eoname = argv[2].val.str);
 
-	eo = pcb_extobj_lookup(eoname);
-	if (eo == NULL) {
-		pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: extended object '%s' is not available\n", eoname);
-		PCB_ACT_IRES(-1);
-		return 0;
+	if (strcmp(eoname, "@gui") != 0) {
+		eo = pcb_extobj_lookup(eoname);
+		if (eo == NULL) {
+			pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: extended object '%s' is not available\n", eoname);
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+	}
+	else {
+		int idx = extobj_pick_gui();
+		if (idx <= 0) {
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+		eo = pcb_extobj_i2o.array[idx];
 	}
 
 	switch(op) {
