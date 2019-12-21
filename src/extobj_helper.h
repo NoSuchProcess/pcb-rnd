@@ -86,6 +86,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 
 	pcb_subc_create_aux(subc, ox, oy, 0, on_bottom);
 
+	PCB_FLAG_SET(PCB_FLAG_LOCK, subc);
 	pcb_subc_bbox(subc);
 	pcb_subc_reg(dst, subc);
 
