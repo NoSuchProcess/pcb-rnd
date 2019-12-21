@@ -28,6 +28,8 @@
 
 #define LID_EDIT 0
 
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
+
 typedef struct {
 	pcb_coord_t pitch;
 	pcb_coord_t clearance;
@@ -201,7 +203,49 @@ static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const c
 
 static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs)
 {
-	return NULL;
+	long n;
+	pcb_subc_t *subc;
+	pcb_line_t *l;
+	pcb_layer_t *ly;
+	pcb_dflgmap_t layers[] = {
+		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
+		{NULL, 0, NULL, 0, 0}
+	};
+
+	pcb_trace("LoV: conv_objs\n");
+
+	/* refuse anything that's not a line */
+	for(n = 0; n < objs->used; n++) {
+		l = objs->array[n];
+		if (l->type != PCB_OBJ_LINE)
+			return NULL;
+	}
+
+	/* use the layer of the first object */
+	l = objs->array[0];
+	layers[0].lyt = pcb_layer_flags_(l->parent.layer);
+	pcb_layer_purpose_(l->parent.layer, &layers[0].purpose);
+
+	subc = pcb_exto_create(dst, "line-of-vias", layers, l->Point1.X, l->Point1.Y, 0);
+	pcb_attribute_put(&subc->Attributes, "extobj::pitch", "4mm");
+
+	/* create edit-objects */
+	ly = &subc->data->Layer[LID_EDIT];
+	for(n = 0; n < objs->used; n++) {
+		l = pcb_line_dup(ly, objs->array[n]);
+		PCB_FLAG_SET(PCB_FLAG_FLOATER, l);
+		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, l);
+		pcb_attribute_put(&l->Attributes, "extobj::role", "edit");
+	}
+
+	/* create the padstack prototype */
+TODO("pstk #21: do not work in comp mode, use a pstk proto + remove the plugin dependency when done")
+	pcb_pstk_new_compat_via(subc->data, -1, l->Point1.X, l->Point1.Y,
+		conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
+		0, PCB_PSTK_COMPAT_ROUND, pcb_true);
+
+	line_of_vias_unpack(subc);
+	return subc;
 }
 
 static pcb_extobj_t pcb_line_of_vias = {

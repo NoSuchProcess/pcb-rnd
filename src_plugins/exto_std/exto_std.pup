@@ -3,5 +3,6 @@ $short standard extended objects
 $long Extended objects for: line-of-vias
 $state buildin
 $package core
+dep lib_compat_help
 default disable
 autoload 1
