@@ -5935,6 +5935,9 @@
 ../src_3rd/libfungw/fungw_ptr.o: ../src_3rd/libfungw/fungw_ptr.c \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
+../src_3rd/libfungwbind/c/fungw_c.o: ../src_3rd/libfungwbind/c/fungw_c.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
 ../src_3rd/liblhtpers/lhtpers.o: ../src_3rd/liblhtpers/lhtpers.c \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  ../src_3rd/liblhtpers/lhtpers.h ../src_3rd/liblihata/dom.h \
@@ -6392,8 +6395,10 @@ extobj.o: extobj.c ../config.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/libminuid/libminuid.h rtree2_compat.h rtree.h \
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h extobj.h \
- board.h vtroutestyle.h rats_patch.h hidlib.h obj_subc_parent.h draw.h
+ vtpadstack_t.h data_list.h remove.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h extobj.h board.h vtroutestyle.h rats_patch.h hidlib.h \
+ obj_subc_parent.h draw.h
+extobj_act.o: extobj_act.c ../config.h
 file_act.o: file_act.c ../config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h global_typedefs.h pcb_bool.h vtroutestyle.h unit.h \
  attrib.h ../src_3rd/genvector/genvector_impl.h \
