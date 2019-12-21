@@ -118,11 +118,12 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	pcb_line_t *line;
 	pcb_board_t *pcb = pcb_data_get_top(subc->data);
 	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
-	line_of_vias *lov = subc->extobj_data;
+	line_of_vias *lov;
 
 	if (subc->extobj_data == NULL)
 		line_of_vias_unpack(subc);
 
+	lov = subc->extobj_data;
 	if (lov->pitch < PCB_MM_TO_COORD(0.001)) {
 		pcb_message(PCB_MSG_ERROR, "line_of_vias_gen(): can not generate line-of-vias, pitch value is too small\n");
 		return -1;
