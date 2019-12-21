@@ -94,6 +94,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 		pcb = dst->parent.board;
 
 	if (pcb != NULL) {
+		pcb_subc_rebind(pcb, subc);
 		if (!dst->subc_tree)
 			dst->subc_tree = pcb_r_create_tree();
 		pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)subc);
