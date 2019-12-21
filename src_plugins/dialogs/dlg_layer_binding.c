@@ -39,7 +39,7 @@
 
 const char *pcb_lb_comp[] = { "+manual", "-manual", "+auto", "-auto", NULL };
 const char *pcb_lb_types[] = { "UNKNOWN", "paste", "mask", "silk", "copper", "boundary", "mech", "doc", "virtual", NULL };
-const char *pcb_lb_side[] = { "top", "bottom", NULL };
+const char *pcb_lb_side[] = { "top", "bottom", "global", NULL };
 
 typedef struct {
 	int name, comp, type, offs, from, side, purpose, layer; /* widet indices */
@@ -73,6 +73,23 @@ static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 	PCB_DAD_SET_VALUE(hid_ctx, wid, lng, pcb_ly_type2enum(type));
 }
 
+static pcb_layer_type_t int2side(int i)
+{
+	switch(i) {
+		case 0: return PCB_LYT_TOP;
+		case 1: return PCB_LYT_BOTTOM;
+		case 2: return 0;
+	}
+	return 0;
+}
+
+static int side2int(pcb_layer_type_t s)
+{
+	if (s & PCB_LYT_TOP) return 0;
+	if (s & PCB_LYT_BOTTOM) return 1;
+	return 2;
+}
+
 void pcb_get_ly_type_(int combo_type, pcb_layer_type_t *type)
 {
 	/* clear relevant flags */
@@ -99,10 +116,7 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 	if (PCB_LAYER_SIDED(*type)) {
 		/* set side and offset */
 		if (dlg_offs == 0) {
-			if (combo_side == 0)
-				*type |= PCB_LYT_TOP;
-			else
-				*type |= PCB_LYT_BOTTOM;
+			*type |= int2side(combo_side);
 		}
 		else {
 			if (combo_side != 0)
@@ -155,7 +169,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		/* disable side for non-sided */
 		if (PCB_LAYER_SIDED(layer->meta.bound.type)) {
 			/* side & offset */
-			PCB_DAD_SET_VALUE(hid_ctx, w->side, lng, !!(layer->meta.bound.type & PCB_LYT_BOTTOM));
+			PCB_DAD_SET_VALUE(hid_ctx, w->side, lng, side2int(layer->meta.bound.type));
 			pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, 1);
 		}
 		else
