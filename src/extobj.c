@@ -61,6 +61,11 @@ void pcb_extobj_reg(pcb_extobj_t *o)
 	pcb_extobj_invalid = -o->idx;
 }
 
+pcb_extobj_t *pcb_extobj_lookup(const char *name)
+{
+	return htsi_get(&pcb_extobj_n2i, name);
+}
+
 int pcb_extobj_lookup_idx(const char *name)
 {
 	return htsi_get(&pcb_extobj_n2i, (char *)name);
