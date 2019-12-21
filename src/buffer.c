@@ -61,7 +61,7 @@
 #include "extobj.h"
 
 static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
-static void add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
+static int add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
 
 static pcb_opfunc_t AddBufferFunctions = {
 	add_buffer_pre,
@@ -101,9 +101,10 @@ static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 	return 0;
 }
 
-static void add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
+static int add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
 	TODO("extobj floater: move the whole subc instead");
+	return 0;
 }
 
 int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
