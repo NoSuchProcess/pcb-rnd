@@ -98,13 +98,16 @@ static void line_of_vias_gen_line(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t
 		/* skip if there's a via too close */
 		qbox.x1 = pcb_round(rx - qbox_bloat); qbox.y1 = pcb_round(ry - qbox_bloat);
 		qbox.x2 = pcb_round(rx + qbox_bloat); qbox.y2 = pcb_round(ry + qbox_bloat);
-		for(cl = pcb_rtree_first(&it, pcb->Data->padstack_tree, &qbox); cl != NULL; cl = pcb_rtree_next(&it)) {
-			if (pcb_distance(rx, ry, cl->x, cl->y) < too_close) {
-				skip = 1;
-				break;
+
+		if ((pcb != NULL) && (pcb->Data->padstack_tree != NULL)) {
+			for(cl = pcb_rtree_first(&it, pcb->Data->padstack_tree, &qbox); cl != NULL; cl = pcb_rtree_next(&it)) {
+				if (pcb_distance(rx, ry, cl->x, cl->y) < too_close) {
+					skip = 1;
+					break;
+				}
 			}
 		}
-		
+
 		if (!skip)
 			pcb_pstk_new(subc->data, -1, 0, rx, ry, lov->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 
