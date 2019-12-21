@@ -122,6 +122,25 @@ PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const c
 		eo->chg_attr(subc, key, value);
 }
 
+PCB_INLINE pcb_subc_t *pcb_extobj_get_floater_subc(pcb_any_obj_t *flt)
+{
+	pcb_subc_t *subc;
+	pcb_extobj_t *eo;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
+		return NULL;
+
+	subc = pcb_obj_parent_subc(flt);
+	if (subc == NULL)
+		return NULL;
+
+	eo = pcb_extobj_get(subc);
+	if (eo == NULL)
+		return NULL;
+
+	return subc;
+}
+
 PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;

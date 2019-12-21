@@ -222,7 +222,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if ((type & (PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART)) && F->subc) {
 		PCB_SUBC_LOOP(data);
 		{
-			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc) && (subc->extobj == NULL)) /* extobj: even locked means floaters can be operated on */
 				continue;
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
 				if (Reset) {
@@ -237,7 +237,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				if (exto != NULL) pcb_extobj_float_geo(exto);
 				changed = pcb_true;
 			}
-			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART)) {
+			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART) || (subc->extobj != NULL)) {
 				if (pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type, on_locked_too))
 					changed = pcb_true;
 			}
