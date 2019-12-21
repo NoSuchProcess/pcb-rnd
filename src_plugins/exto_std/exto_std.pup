@@ -4,5 +4,5 @@ $long Extended objects for: line-of-vias, dimension
 $state WIP
 $package core
 dep lib_compat_help
-default disable
+default buildin
 autoload 1
