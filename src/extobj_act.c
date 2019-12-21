@@ -25,3 +25,54 @@
  */
 
 #include "config.h"
+
+#include "actions.h"
+#include "funchash_core.h"
+
+#include "extobj.h"
+
+static const char pcb_acts_ExtobjConvFrom[] = "ExtobjConvFrom(object|selected|buffer, extotype)";
+static const char pcb_acth_ExtobjConvFrom[] = "Create a new extended object of extotype by converting existing objects";
+fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	pcb_extobj_t *eo;
+	const char *eoname = NULL;
+	int op;
+	pcb_subc_t *sc;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, ExtobjConvFrom, op = fgw_keyword(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_STR, ExtobjConvFrom, eoname = argv[2].val.str);
+
+	eo = pcb_extobj_lookup(eoname);
+	if (eo == NULL) {
+		pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: extended object '%s' is not available\n", eoname);
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	switch(op) {
+		case F_Selected:
+			sc = pcb_extobj_conv_selected_objs(pcb, eo, pcb->Data, pcb->Data, 1);
+			break;
+		case F_Object:
+		case F_Buffer:
+		default:
+			PCB_ACT_FAIL(ExtobjConvFrom);
+	}
+
+	if (sc == NULL) {
+		pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: failed to create the extended object\n");
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
+
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
+pcb_action_t pcb_extobj_action_list[] = {
+	{"ExtobjConvFrom", pcb_act_ExtobjConvFrom, pcb_acth_ExtobjConvFrom, pcb_acts_ExtobjConvFrom}
+};
+
+PCB_REGISTER_ACTIONS_FUNC(pcb_extobj_action_list, NULL)

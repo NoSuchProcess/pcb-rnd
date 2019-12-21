@@ -158,8 +158,9 @@ PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
 	return res->val.nat_int;
 }
 
-/* Retrieve the (pcb_hidli_t *) context from argv[0] within an action */
+/* Retrieve the (pcb_hidlib_t *) context from argv[0] within an action */
 #define PCB_ACT_HIDLIB ((pcb_hidlib_t *)argv[0].val.argv0.user_call_ctx)
+#define PCB_ACT_BOARD  ((pcb_board_t *)argv[0].val.argv0.user_call_ctx)
 
 /* Call an action function directly, bypassing fungw; evaluates to an int
    that is 0 on success */
