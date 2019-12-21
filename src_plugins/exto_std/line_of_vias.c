@@ -245,6 +245,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto + remove the plugin d
 		0, PCB_PSTK_COMPAT_ROUND, pcb_true);
 
 	line_of_vias_unpack(subc);
+	line_of_vias_gen(subc, NULL);
 	return subc;
 }
 
