@@ -73,3 +73,29 @@ PCB_INLINE int pcb_exto_regen_end(pcb_subc_t *subc)
 
 	return 0;
 }
+
+PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, const pcb_dflgmap_t *layers, pcb_coord_t ox, pcb_coord_t oy, pcb_bool on_bottom)
+{
+	pcb_subc_t *subc = pcb_subc_alloc();
+	pcb_board_t *pcb = NULL;
+
+	pcb_attribute_put(&subc->Attributes, "extobj", eoname);
+
+	for(; layers->name != NULL; layers++)
+		pcb_subc_layer_create(subc, layers->name, layers->lyt, layers->comb, 0, layers->purpose);
+
+	pcb_subc_create_aux(subc, ox, oy, 0, on_bottom);
+
+	pcb_subc_bbox(subc);
+
+	if (dst->parent_type == PCB_PARENT_BOARD)
+		pcb = dst->parent.board;
+
+	if (pcb != NULL) {
+		if (!dst->subc_tree)
+			dst->subc_tree = pcb_r_create_tree();
+		pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)subc);
+	}
+
+	return subc;
+}
