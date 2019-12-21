@@ -144,7 +144,7 @@ static pcb_subc_t *pcb_extobj_conv_list(pcb_board_t *pcb, const pcb_extobj_t *eo
 {
 	pcb_subc_t *res;
 
-	if (eo->conv_objs == NULL)
+	if ((eo->conv_objs == NULL) || (list->used == 0))
 		return NULL;
 
 	res = eo->conv_objs(dst, list);
