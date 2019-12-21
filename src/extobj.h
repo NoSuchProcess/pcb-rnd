@@ -79,10 +79,11 @@ PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
 /* called (by the subc code) before an edit-obj is removed */
 void pcb_extobj_del_pre(pcb_subc_t *edit_obj);
 
-/* Creates and returns a new extended object on dst, using selected objects
+/* Creates and returns a new extended object on dst, using (selected) object(s)
    of src. If the operation was successful and remove is true, remove selected
    objects. */
 pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove);
+pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove);
 
 
 int pcb_extobj_lookup_idx(const char *name);
