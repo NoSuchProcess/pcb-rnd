@@ -317,8 +317,51 @@ static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char
 
 static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs)
 {
+	long n;
+	pcb_subc_t *subc;
+	pcb_line_t *l;
+	pcb_layer_t *ly;
+	pcb_dflgmap_t layers[] = {
+		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
+		{"target", PCB_LYT_DOC, "fab", 0, 0},
+		{NULL, 0, NULL, 0, 0}
+	};
+
 	pcb_trace("dim: conv_objs\n");
-	return NULL;
+
+	if (objs->used != 1)
+		return NULL; /* there must be a single line */
+
+	/* use the layer of the first object */
+	l = objs->array[0];
+	if (l->type != PCB_OBJ_LINE)
+		return NULL;
+
+	layers[0].lyt = pcb_layer_flags_(l->parent.layer);
+	pcb_layer_purpose_(l->parent.layer, &layers[0].purpose);
+	if (dst->parent_type == PCB_PARENT_BOARD) {
+		pcb_board_t *pcb = dst->parent.board;
+		pcb_layer_t *curr = PCB_CURRLAYER(pcb);
+		if (curr != NULL) {
+			layers[1].lyt = pcb_layer_flags_(curr);
+			pcb_layer_purpose_(curr, &layers[1].purpose);
+		}
+	}
+
+	subc = pcb_exto_create(dst, "dimension", layers, l->Point1.X, l->Point1.Y, 0);
+	pcb_attribute_put(&subc->Attributes, "extobj::displace", "4mm");
+
+	/* create edit-objects */
+	ly = &subc->data->Layer[LID_EDIT];
+	l = pcb_line_dup(ly, objs->array[0]);
+	PCB_FLAG_SET(PCB_FLAG_FLOATER, l);
+	PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, l);
+	pcb_attribute_put(&l->Attributes, "extobj::role", "edit");
+
+	dimension_unpack(subc);
+	dimension_gen(subc);
+	return subc;
+
 }
 
 static pcb_extobj_t pcb_dimension = {
