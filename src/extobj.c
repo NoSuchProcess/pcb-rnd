@@ -100,7 +100,6 @@ void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 	pcb_data_t *data = pcb_extobj_parent_data(edit_obj);
 	pcb_board_t *pcb;
 	pcb_subc_t *sc;
-	char tmp[128];
 
 	pcb = pcb_data_get_top(data);
 	if (pcb == NULL)
@@ -126,7 +125,6 @@ TODO("put edit_obj within the new subc, set subc attributes");
 void pcb_extobj_del_pre(pcb_subc_t *sc)
 {
 	pcb_extobj_t *eo = pcb_extobj_get(sc);
-	pcb_any_obj_t *edit_obj = NULL;
 
 	if ((eo != NULL) && (eo->del_pre != NULL))
 		eo->del_pre(sc);
