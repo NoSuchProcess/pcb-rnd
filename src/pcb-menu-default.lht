@@ -140,6 +140,7 @@ ha:{
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
 						ha:Move to current layer    = { a={<key>e; <key>l}; action=MoveToCurrentLayer(Object) }
 						ha:ChangeJoin Object        = { a={<key>e; <key>j}; action=ChangeJoin(Object) }
+						ha:Convert to extended object... = { a={<key>e; <key>o}; action=ExtobjConvFrom(Object, @gui) }
 						ha:Geometry {
 							li:submenu {
 								ha:Clearance +2 mil             = { a={<key>e; <key>g; <key>c}; action=ChangeClearSize(Object,+2,mil) }
@@ -409,6 +410,7 @@ ha:{
 				ha:Remove selected objects                = { a={<key>s; <key>r;} action=RemoveSelected() }
 				ha:Convert selection to subcircuit        = { a={<key>s; <key>c; <key>s;} action=Select(ConvertSubc) }
 				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Mode(PasteBuffer);} }
+				ha:Convert selection to extended object...= { a={<key>s; <key>c; <key>e;} action=ExtobjConvFrom(Selected, @gui); }
 				ha:Break selection subcircuits to pieces  = { a={<key>s; <key>b; <key>s}; li:action={PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop);} }
 				ha:Break selection padstack to pieces     = { a={<key>s; <key>b; <key>p}; action=PadstackBreakup(selected) }
 				ha:Change selected objects {
@@ -446,6 +448,7 @@ ha:{
 				-
 				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
 				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Mode(PasteBuffer);} }
+				ha:Convert buffer to extended object... = { a={<key>b;<key>c;<key>e}; li:action={ExtobjConvFrom(buffer, @gui); Mode(PasteBuffer);} }
 				ha:Break buffer subcircuits to pieces = { a={<key>b;<key>s;<key>b};  action=PasteBuffer(Restore) }
 				ha:Break buffer padstacks to pieces = { a={<key>b;<key>s;<key>p};  action=PadstackBreakup(buffer) }
 				ha:Save buffer subcircuit to file   = { a={<key>b;<key>s;<key>s}; action=Save(PasteBuffer); tip={save one subcircuits from the buffer as a footprint file} }
@@ -754,6 +757,7 @@ ha:{
 						ha:Copy selection to buffer           = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Mode(PasteBuffer)} }
 						ha:Cut selection to buffer            = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Mode(PasteBuffer)} }
 						ha:Convert selection to subcircuit    = { action=Select(ConvertSubc) }
+						ha:Convert selection to extended object... = { action=ExtobjConvFrom(selected, @gui) }
 						ha:Auto place selected subcircuits    = { action=AutoPlaceSelected() }
 						ha:Autoroute selected subcircuits     = { action=AutoRoute(SelectedRats) }
 						ha:Rip up selected auto-routed tracks = { action=RipUp(Selected) }
