@@ -116,7 +116,7 @@ void pcb_tool_arc_notify_mode(pcb_hidlib_t *hl)
 																										conf_core.design.line_thickness,
 																										2 * conf_core.design.clearance,
 																										pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0), pcb_true))) {
-				pcb_obj_add_attribs(arc, pcb->pen_attr, NULL);
+				pcb_obj_add_attribs((pcb_any_obj_t *)arc, pcb->pen_attr, NULL);
 				pcb_arc_get_end(arc, 1, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
 				pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
 				pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
