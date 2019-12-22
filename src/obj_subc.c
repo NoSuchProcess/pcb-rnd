@@ -772,7 +772,7 @@ do { \
 		dst->ID = src->ID; \
 } while(0)
 
-static pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src)
+pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src)
 {
 	if (dst == NULL)
 		return NULL;

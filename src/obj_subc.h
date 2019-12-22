@@ -176,6 +176,9 @@ void pcb_subc_cache_find_aux(pcb_subc_t *sc);
 pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_type_t type, pcb_layer_combining_t comb, int stack_offs, const char *purpose);
 
 
+/* Copy non-layer, non-geometrical metadata (e.g. attributes) */
+pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src);
+
 pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy, pcb_bool keep_ids);
 
 /* Replace dst with a copy of src in place (preserving location and orientation

@@ -122,8 +122,7 @@ pcb_extobj_float_new_spawn(pcb_subc_t *subc_copy_from, pcb_any_obj_t *edit_obj)
 
 TODO("copy layers");
 
-	if (subc_copy_from != NULL)
-		pcb_attribute_copy_all(&sc->Attributes, &subc_copy_from->Attributes);
+	pcb_subc_copy_meta(sc, subc_copy_from);
 
 	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, sc, sc, sc);
 
