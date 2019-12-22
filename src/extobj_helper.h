@@ -25,6 +25,8 @@
  */
 
 #include "obj_subc.h"
+#include "conf_core.h"
+#include "hid_inlines.h"
 #include "undo.h"
 
 /*** API ***/
@@ -106,4 +108,19 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, subc, subc, subc);
 
 	return subc;
+}
+
+PCB_INLINE void pcb_exto_draw_makr(pcb_draw_info_t *info, pcb_subc_t *subc)
+{
+	pcb_coord_t x, y, unit = PCB_MM_TO_COORD(1);
+
+	if (pcb_subc_get_origin(subc, &x, &y) != 0)
+		return;
+
+	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, -2);
+	pcb_render->draw_line(pcb_draw_out.fgGC, x, y, x, y + unit);
+	pcb_render->draw_line(pcb_draw_out.fgGC, x, y, x + unit/2, y);
+	pcb_render->draw_line(pcb_draw_out.fgGC, x, y + unit, x + unit/2, y + unit);
+	pcb_render->draw_line(pcb_draw_out.fgGC, x, y + unit/2, x + unit/3, y + unit/2);
 }
