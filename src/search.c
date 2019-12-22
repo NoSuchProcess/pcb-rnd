@@ -498,6 +498,13 @@ static pcb_r_dir_t subc_callback(const pcb_box_t *box, void *cl)
 	TEST_OBJST(i->objst, i->req_flag, g, subc, subc);
 
 	if ((front || i->BackToo) && PCB_POINT_IN_BOX(PosX, PosY, &subc->BoundingBox)) {
+		pcb_coord_t ox, oy;
+		if ((subc->extobj != NULL) && (pcb_subc_get_origin(subc, &ox, &oy) == 0)) {
+			/* extended objects are special case: only the origin should be clickable
+			   to avoid problems with large extended objects that cover the board */
+			if ((PosX < ox) || (PosX > ox + PCB_SUBC_AUX_UNIT) || (PosY < oy) || (PosY > oy + PCB_SUBC_AUX_UNIT))
+				return PCB_R_DIR_NOT_FOUND;
+		}
 		/* use the subcircuit with the smallest bounding box */
 		newarea = (subc->BoundingBox.X2 - subc->BoundingBox.X1) * (double) (subc->BoundingBox.Y2 - subc->BoundingBox.Y1);
 		if (newarea < i->area) {
