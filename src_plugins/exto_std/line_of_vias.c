@@ -307,7 +307,7 @@ static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
 	pcb_trace("LoV: gui propedit\n");
 
 	if (subc->extobj_data == NULL)
-		subc->extobj_data = calloc(sizeof(line_of_vias), 1);
+		line_of_vias_unpack(subc);
 	lov = subc->extobj_data;
 
 	pcb_trace("LoV: active=%d\n", lov->gui_active);
