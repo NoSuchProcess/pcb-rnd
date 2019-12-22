@@ -101,5 +101,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 		pcb_r_insert_entry(dst->subc_tree, (pcb_box_t *)subc);
 	}
 
+	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, subc, subc, subc);
+
 	return subc;
 }
