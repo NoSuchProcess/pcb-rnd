@@ -32,6 +32,9 @@
 #define LID_TARGET 1
 
 typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
+	int gui_active;
+
 	int style;
 	pcb_coord_t displace;
 	const char *fmt;
@@ -385,13 +388,45 @@ static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_su
 	dimension_unpack(subc);
 	dimension_gen(subc);
 	return subc;
+}
 
+static void pcb_dimension_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	pcb_subc_t *subc = caller_data;
+	dimension *dim = subc->extobj_data;
+
+	PCB_DAD_FREE(dim->dlg);
+	dim->gui_active = 0;
 }
 
 static void pcb_dimension_gui_propedit(pcb_subc_t *subc)
 {
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	dimension *dim;
+
 	pcb_trace("dim: gui propedit\n");
 
+	if (subc->extobj_data == NULL)
+		dimension_unpack(subc);
+	dim = subc->extobj_data;
+
+	pcb_trace("dim: active=%d\n", dim->gui_active);
+	if (dim->gui_active)
+		return; /* do not open another */
+
+	PCB_DAD_BEGIN_VBOX(dim->dlg);
+		PCB_DAD_COMPFLAG(dim->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_TABLE(dim->dlg, 2);
+			pcb_exto_dlg_coord(dim->dlg, subc, "displacement", "extobj::displace", "distance between base line and dimension line");
+			pcb_exto_dlg_str(dim->dlg, subc, "format", "extobj::format", "printf coord format string of the dimension value");
+		PCB_DAD_END(dim->dlg);
+		PCB_DAD_BUTTON_CLOSES(dim->dlg, clbtn);
+	PCB_DAD_END(dim->dlg);
+
+	/* set up the context */
+	dim->gui_active = 1;
+
+	PCB_DAD_NEW("dimension", dim->dlg, "Dimension line", subc, pcb_false, pcb_dimension_close_cb);
 }
 
 static pcb_extobj_t pcb_dimension = {
