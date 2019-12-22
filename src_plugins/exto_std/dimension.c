@@ -364,7 +364,8 @@ static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_su
 	}
 
 	subc = pcb_exto_create(dst, "dimension", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
-	pcb_attribute_put(&subc->Attributes, "extobj::displace", "4mm");
+	if (copy_from == NULL)
+		pcb_attribute_put(&subc->Attributes, "extobj::displace", "4mm");
 
 	/* create edit-objects */
 	ly = &subc->data->Layer[LID_EDIT];
