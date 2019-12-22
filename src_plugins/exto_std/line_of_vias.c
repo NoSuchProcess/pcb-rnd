@@ -195,9 +195,10 @@ static void pcb_line_of_vias_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj
 	line_of_vias_gen(subc, edit_obj);
 }
 
-static void pcb_line_of_vias_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
+static pcb_extobj_new_t pcb_line_of_vias_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	pcb_trace("LoV: float new %ld %ld\n", subc->ID, floater->ID);
+	return PCB_EXTONEW_FLOATER;
 }
 
 static pcb_extobj_del_t pcb_line_of_vias_float_del(pcb_subc_t *subc, pcb_any_obj_t *floater)

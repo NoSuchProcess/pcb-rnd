@@ -105,7 +105,7 @@ PCB_INLINE pcb_data_t *pcb_extobj_parent_data(pcb_any_obj_t *obj)
 	return NULL;
 }
 
-void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
+pcb_extobj_float_new_spawn(pcb_subc_t *subc_copy_from, pcb_any_obj_t *edit_obj)
 {
 	pcb_data_t *data = pcb_extobj_parent_data(edit_obj);
 	pcb_board_t *pcb;
@@ -115,14 +115,15 @@ void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from)
 	if (pcb == NULL)
 		return;
 
-	if (subc_copy_from == NULL) {
-		sc = pcb_subc_new();
-		sc->ID = pcb_create_ID_get();
-		pcb_subc_reg(pcb->Data, sc);
-		pcb_obj_id_reg(pcb->Data, sc);
-	}
-	else
-		sc = pcb_subc_dup_at(pcb, pcb->Data, subc_copy_from, 0, 0, pcb_false);
+	sc = pcb_subc_new();
+	sc->ID = pcb_create_ID_get();
+	pcb_subc_reg(pcb->Data, sc);
+	pcb_obj_id_reg(pcb->Data, sc);
+
+TODO("copy layers");
+
+	if (subc_copy_from != NULL)
+		pcb_attribute_copy_all(&sc->Attributes, &subc_copy_from->Attributes);
 
 	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, sc, sc, sc);
 
@@ -131,6 +132,7 @@ TODO("put edit_obj within the new subc, set subc attributes");
 	pcb_extobj_float_pre(edit_obj);
 	pcb_extobj_float_geo(edit_obj);
 }
+
 
 void pcb_extobj_del_pre(pcb_subc_t *sc)
 {
@@ -196,4 +198,5 @@ pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_da
 
 	return res;
 }
+
 

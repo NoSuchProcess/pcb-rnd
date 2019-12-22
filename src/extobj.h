@@ -45,13 +45,18 @@ typedef enum pcb_extobj_del_e {
 	PCB_EXTODEL_SUBC       /* remove the whole subcircuit */
 } pcb_extobj_del_t;
 
+typedef enum pcb_extobj_new_e {
+	PCB_EXTONEW_FLOATER,   /* new floater created normally */
+	PCB_EXTONEW_SPAWN      /* spawn a new subc the new floater will be in */
+} pcb_extobj_new_t;
+
 struct pcb_extobj_s {
 	/* static data - filled in by the extobj code */
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
 	void (*float_pre)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called before an extobj floater is edited in any way - must not free() the floater */
 	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed - must not free() the floater; floater may be NULL (post-floater-deletion update on the parent subc) */
-	void (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created */
+	pcb_extobj_new_t (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created; defaults to PCB_EXTONEW_SPAWN if NULL */
 	pcb_extobj_del_t (*float_del)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is to be removed; returns what the core should do; if not specified: remove the subc */
 	void (*chg_attr)(pcb_subc_t *subc, const char *key, const char *value); /* called after an attribute changed; value == NULL means attribute is deleted */
 	void (*del_pre)(pcb_subc_t *subc); /* called before the extobj subcircuit is deleted - should free any internal cache, but shouldn't delete the subcircuit */
@@ -70,10 +75,6 @@ void pcb_extobj_reg(pcb_extobj_t *o);
 
 pcb_extobj_t *pcb_extobj_lookup(const char *name);
 
-/* Create a new subc for for new the edit_obj; if subc_copy_from is not NULL,
-   copy all data from there (including objects). */
-void pcb_extobj_new_subc(pcb_any_obj_t *edit_obj, pcb_subc_t *subc_copy_from);
-
 /* Called to remove the subc of an edit object floater; returns 0 on no
    action, 1 if it removed an extobj subc */
 PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
@@ -88,6 +89,10 @@ void pcb_extobj_del_pre(pcb_subc_t *edit_obj);
 pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove);
 pcb_subc_t *pcb_extobj_conv_all_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove);
 pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove);
+
+/* for internal use: when an extobj needs to be cloned becase a new floater
+   is added */
+void pcb_extobj_float_new_spawn(pcb_subc_t *subc, pcb_any_obj_t *flt);
 
 
 int pcb_extobj_lookup_idx(const char *name);
@@ -184,6 +189,7 @@ PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc = pcb_obj_parent_subc(flt);
 	pcb_extobj_t *eo;
+	pcb_extobj_new_t act = PCB_EXTONEW_SPAWN;
 
 	if (subc == NULL)
 		return;
@@ -191,7 +197,16 @@ PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
 	eo = pcb_extobj_get(subc);
 
 	if ((eo != NULL) && (eo->float_new != NULL))
-		eo->float_new(subc, flt);
+		act = eo->float_new(subc, flt);
+
+	switch(act) {
+		case PCB_EXTONEW_FLOATER:
+			/* no action required, the new floater got created already and got registered in the hook above */
+			break;
+		case PCB_EXTONEW_SPAWN:
+			pcb_extobj_float_new_spawn(subc, flt);
+			break;
+	}
 }
 
 PCB_INLINE pcb_any_obj_t *pcb_extobj_float_pre(pcb_any_obj_t *flt)

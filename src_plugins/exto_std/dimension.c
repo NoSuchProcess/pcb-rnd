@@ -304,9 +304,10 @@ static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 }
 
-static void pcb_dimension_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
+static pcb_extobj_new_t pcb_dimension_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	pcb_trace("dim: float new %ld %ld\n", subc->ID, floater->ID);
+	return PCB_EXTONEW_SPAWN;
 }
 
 static pcb_extobj_del_t pcb_dimension_float_del(pcb_subc_t *subc, pcb_any_obj_t *floater)
