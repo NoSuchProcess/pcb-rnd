@@ -337,7 +337,6 @@ static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char
 
 static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from)
 {
-	long n;
 	pcb_subc_t *subc;
 	pcb_line_t *l;
 	pcb_layer_t *ly, *targetly = NULL;

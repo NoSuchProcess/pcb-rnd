@@ -42,8 +42,6 @@
 #include "hid_inlines.h"
 #include "hid_dad.h"
 
-static const char *exto_std_cookie = "exto_std plugin";
-
 #include "line_of_vias.c"
 #include "dimension.c"
 
