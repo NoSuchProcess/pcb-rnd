@@ -72,7 +72,7 @@
 #define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
 #define PCB_MIN_GRID_DISTANCE           4   /* minimum distance between point to enable grid drawing */
 #define PCB_EMARK_SIZE                  PCB_MIL_TO_COORD(10) 	/* size of diamond element mark */
-
+#define PCB_SUBC_AUX_UNIT               PCB_MM_TO_COORD(1) /* size of the unit vector for the subc-aux layer */
 
 /**** Font ***/
 /* These are used in debug draw font rendering (e.g. pin names) and reverse

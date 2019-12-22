@@ -112,7 +112,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 
 PCB_INLINE void pcb_exto_draw_makr(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
-	pcb_coord_t x, y, unit = PCB_MM_TO_COORD(1);
+	pcb_coord_t x, y, unit = PCB_SUBC_AUX_UNIT;
 
 	if (pcb_subc_get_origin(subc, &x, &y) != 0)
 		return;

@@ -433,7 +433,7 @@ static void get_aux_layer(pcb_subc_t *sc, int alloc)
 
 void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot, pcb_bool bottom)
 {
-	double unit = PCB_MM_TO_COORD(1);
+	double unit = PCB_SUBC_AUX_UNIT;
 	double cs, sn;
 
 	get_aux_layer(sc, 1);
