@@ -61,6 +61,7 @@
 #include "extobj.h"
 
 static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
+static void move_buffer_post(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
 static int add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
 
 static pcb_opfunc_t AddBufferFunctions = {
@@ -80,7 +81,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 
 static pcb_opfunc_t MoveBufferFunctions = {
 	move_buffer_pre,
-	NULL, /* common_post */
+	move_buffer_post,
 	pcb_lineop_move_buffer,
 	pcb_textop_move_buffer,
 	pcb_polyop_move_buffer,
@@ -95,21 +96,31 @@ static pcb_opfunc_t MoveBufferFunctions = {
 
 static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
-	pcb_subc_t *subc;
-
+	ctx->buffer.post_subc = pcb_extobj_get_floater_subc(obj);
 
 	if (ctx->buffer.removing)
 		return 0; /* don't do anything extobj-special for removing, it's already been done */
 
-	subc = pcb_extobj_get_floater_subc(obj);
-
-pcb_trace("move buff %p\n", subc);
+pcb_trace("move buff %p\n", ctx->buffer.post_subc);
 	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
-	if (subc != NULL) {
-		pcb_subcop_move_buffer(ctx, subc);
+	if (ctx->buffer.post_subc != NULL) {
+		pcb_subcop_move_buffer(ctx, ctx->buffer.post_subc);
 		return 1;
 	}
 	return 0;
+}
+
+static void move_buffer_post(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
+{
+	if ((!ctx->buffer.removing) || (ctx->buffer.post_subc == NULL))
+		return;
+
+pcb_trace("move buff post: %p\n", ctx->buffer.post_subc);
+	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
+	if (ctx->buffer.post_subc != NULL) {
+		pcb_extobj_subc_geo(ctx->buffer.post_subc);
+		ctx->buffer.post_subc = NULL;
+	}
 }
 
 static int add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)

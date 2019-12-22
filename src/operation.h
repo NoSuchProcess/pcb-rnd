@@ -42,6 +42,9 @@ typedef struct {
 	unsigned keep_id:1;
 	unsigned removing:1;
 	pcb_data_t *dst, *src;
+
+	/* internal */
+	pcb_subc_t *post_subc; /* remember the extobj parent subc while removing a floater */
 } pcb_opctx_buffer_t;
 
 typedef struct {

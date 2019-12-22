@@ -50,7 +50,7 @@ struct pcb_extobj_s {
 	const char *name;
 	void (*draw_mark)(pcb_draw_info_t *info, pcb_subc_t *obj); /* called when drawing the subc marks (instead of drawing the dashed outline and diamond origin) */
 	void (*float_pre)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called before an extobj floater is edited in any way - must not free() the floater */
-	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed - must not free() the floater */
+	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed - must not free() the floater; floater may be NULL (post-floater-deletion update on the parent subc) */
 	void (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created */
 	pcb_extobj_del_t (*float_del)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is to be removed; returns what the core should do; if not specified: remove the subc */
 	void (*chg_attr)(pcb_subc_t *subc, const char *key, const char *value); /* called after an attribute changed; value == NULL means attribute is deleted */
@@ -232,6 +232,16 @@ PCB_INLINE void pcb_extobj_float_geo(pcb_any_obj_t *flt)
 
 	if ((eo != NULL) && (eo->float_geo != NULL))
 		eo->float_geo(subc, flt);
+}
+
+PCB_INLINE void pcb_extobj_subc_geo(pcb_subc_t *subc)
+{
+	pcb_extobj_t *eo;
+
+	eo = pcb_extobj_get(subc);
+
+	if ((eo != NULL) && (eo->float_geo != NULL))
+		eo->float_geo(subc, NULL);
 }
 
 #endif
