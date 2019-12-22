@@ -241,8 +241,10 @@ static void pcb_dimension_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
 }
 
-static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
+static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
+	pcb_trace("dim: float pre %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
+
 	dimension_clear(subc);
 }
 
@@ -254,7 +256,7 @@ static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	pcb_coord_t fx, fy;
 	double d;
 
-	pcb_trace("dim: float geo %ld %ld\n", subc->ID, floater->ID);
+
 	if (floater->type != PCB_OBJ_LINE)
 		return;
 
@@ -290,6 +292,8 @@ pcb_trace("let's do it!\n");
 
 static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
+	pcb_trace("dim: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
+
 	if (floater->extobj_role == NULL)
 		return;
 
