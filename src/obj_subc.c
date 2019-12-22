@@ -340,6 +340,44 @@ int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg)
 	return res;
 }
 
+static int pcb_subc_move_origin_(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool and_undo)
+{
+	int n;
+
+	if ((dx == 0) && (dy == 0))
+		return 0;
+
+	for(n = 0; n < PCB_SUBCH_max; n++) {
+		pcb_line_t *l = sc->aux_cache[n];
+		pcb_line_move(l, dx, dy);
+		if (and_undo)
+			pcb_undo_add_obj_to_move(PCB_OBJ_LINE, l->parent.layer, l, l, dx, dy);
+	}
+
+	return 0;
+}
+
+int pcb_subc_move_origin(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool and_undo)
+{
+	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_ORIGIN] == NULL))
+		return -1;
+	return pcb_subc_move_origin_(sc, dx, dy, and_undo);
+}
+
+int pcb_subc_move_origin_to(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, pcb_bool and_undo)
+{
+	pcb_coord_t ox, oy;
+
+	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_ORIGIN] == NULL))
+		return -1;
+
+	ox = sc->aux_cache[PCB_SUBCH_ORIGIN]->Point1.X;
+	oy = sc->aux_cache[PCB_SUBCH_ORIGIN]->Point1.Y;
+
+	return pcb_subc_move_origin_(sc, x-ox, y-oy, and_undo);
+}
+
+
 static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 {
 	sc->aux_cache[0] = NULL;

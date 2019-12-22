@@ -126,6 +126,11 @@ int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom);
    if neg is non-zero, these are the transformations back to neutral state. */
 int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg);
 
+/* Move the origin, without moving the subcircuit itself */
+int pcb_subc_move_origin(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool and_undo);
+int pcb_subc_move_origin_to(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, pcb_bool and_undo);
+
+
 /* Search for the named subc; name is relative path in hierarchy. Returns
    NULL if not found */
 pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name);
