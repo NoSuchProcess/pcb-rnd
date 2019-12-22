@@ -61,6 +61,7 @@ struct pcb_extobj_s {
 	void (*chg_attr)(pcb_subc_t *subc, const char *key, const char *value); /* called after an attribute changed; value == NULL means attribute is deleted */
 	void (*del_pre)(pcb_subc_t *subc); /* called before the extobj subcircuit is deleted - should free any internal cache, but shouldn't delete the subcircuit */
 	pcb_subc_t *(*conv_objs)(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from); /* called to convert objects into an extobj subc; returns NULL on error; objects should not be changed; if copy_from is not NULL, the new extobj is being created by copying copy_from (the implementation should pick up info from there, not from PCB) */
+	void (*gui_propedit)(pcb_subc_t *subc); /* invoke implementation-defined GUI for editing extended object properties */
 
 	/* dynamic data - filled in by core */
 	int idx;

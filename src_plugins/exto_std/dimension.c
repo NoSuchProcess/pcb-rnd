@@ -389,6 +389,12 @@ static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_su
 
 }
 
+static void pcb_dimension_gui_propedit(pcb_subc_t *subc)
+{
+	pcb_trace("dim: gui propedit\n");
+
+}
+
 static pcb_extobj_t pcb_dimension = {
 	"dimension",
 	pcb_dimension_draw_mark,
@@ -398,5 +404,6 @@ static pcb_extobj_t pcb_dimension = {
 	pcb_dimension_float_del,
 	pcb_dimension_chg_attr,
 	pcb_dimension_del_pre,
-	pcb_dimension_conv_objs
+	pcb_dimension_conv_objs,
+	pcb_dimension_gui_propedit
 };

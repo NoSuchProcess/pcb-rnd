@@ -282,6 +282,11 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto + remove the plugin d
 	return subc;
 }
 
+static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
+{
+	pcb_trace("LoV: gui propedit\n");
+}
+
 static pcb_extobj_t pcb_line_of_vias = {
 	"line-of-vias",
 	pcb_line_of_vias_draw_mark,
@@ -291,5 +296,6 @@ static pcb_extobj_t pcb_line_of_vias = {
 	pcb_line_of_vias_float_del,
 	pcb_line_of_vias_chg_attr,
 	pcb_line_of_vias_del_pre,
-	pcb_line_of_vias_conv_objs
+	pcb_line_of_vias_conv_objs,
+	pcb_line_of_vias_gui_propedit
 };

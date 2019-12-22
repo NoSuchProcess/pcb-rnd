@@ -742,7 +742,8 @@ ha:{
 
 		ha:popup-obj-extobj-subcircuit {
 			li:submenu {
-				ha:Edit extobj properties             { action=propedit(subc) }
+				ha:Edit extobj properties (generic)   { action=propedit(subc) }
+				ha:Edit extobj properties (specific)  { action=ExtobjGUIPropEdit(object) }
 				ha:Edit extobj layer bindings...      { action=LayerBinding() }
 				ha:Edit extobjpadstack prototypes...  { action=pstklib(object) }
 			}
