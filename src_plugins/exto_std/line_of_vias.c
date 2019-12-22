@@ -137,6 +137,14 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	for(line = linelist_first(&ly->Line); line != NULL; line = linelist_next(line))
 		line_of_vias_gen_line(pcb, subc, line);
 
+
+	{
+		line_geo_def;
+		line = linelist_first(&ly->Line);
+		line_geo_calc(line);
+		pcb_subc_move_origin_to(subc, line->Point1.X - dy * PCB_SUBC_AUX_UNIT, line->Point1.Y + dx * PCB_SUBC_AUX_UNIT, 0);
+	}
+
 	return pcb_exto_regen_end(subc);
 }
 

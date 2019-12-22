@@ -148,7 +148,7 @@ static int dimension_gen(pcb_subc_t *subc)
 	pcb_line_t *flt;
 	double ang, deg, dispe, rotsign;
 	double arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
-	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y;
+	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y, ex, ey;
 	pcb_text_t *t;
 	char ttmp[128];
 	pcb_any_obj_t *edit_obj;
@@ -227,12 +227,17 @@ static int dimension_gen(pcb_subc_t *subc)
 	else
 		rotsign = +1;
 
-	x = (x1+x2)/2; y = (y1+y2)/2;
+	x = ex = (x1+x2)/2; y = ey = (y1+y2)/2;
 	x += rotsign * tx/2 * dim->dx; y += rotsign * tx/2 * dim->dy;
 	x += rotsign * ty * -dim->dy;  y += rotsign * ty * dim->dx;
 	if ((ang > 0.001) || (ang < -0.001))
 		pcb_text_rotate(t, 0, 0, cos(ang), sin(ang), deg);
 	pcb_text_move(t,  x, y);
+
+	x = ex + dim->dy * PCB_SUBC_AUX_UNIT * 0.5 * rotsign;
+	y = ey - dim->dx * PCB_SUBC_AUX_UNIT * 0.5 * rotsign;
+	pcb_subc_move_origin_to(subc, x, y, 0);
+
 	return pcb_exto_regen_end(subc);
 }
 
