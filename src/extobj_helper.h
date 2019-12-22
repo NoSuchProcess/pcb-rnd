@@ -129,12 +129,10 @@ PCB_INLINE void pcb_exto_draw_makr(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 /*** dialog box build ***/
 
-PCB_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+PCB_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, pcb_hid_attribute_t *attr, const char *newval) /* for internal use */
 {
-	pcb_subc_t *subc = caller_data;
 	pcb_board_t *pcb;
 	pcb_data_t *data;
-	char tmp[128];
 
 	if (subc->parent_type != PCB_PARENT_DATA)
 		return;
@@ -143,10 +141,18 @@ PCB_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_
 		return;
 	pcb = data->parent.board;
 
-	pcb_snprintf(tmp, sizeof(tmp), "%$mm", attr->val.crd);
-	pcb_uchg_attr(pcb, (pcb_any_obj_t *)subc, (char *)attr->user_data, tmp);
+	pcb_uchg_attr(pcb, (pcb_any_obj_t *)subc, (char *)attr->user_data, newval);
 	pcb_trace("chg: %s\n", (char *)attr->user_data);
 	pcb_gui->invalidate_all(pcb_gui);
+}
+
+PCB_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_subc_t *subc = caller_data;
+	char tmp[128];
+
+	pcb_snprintf(tmp, sizeof(tmp), "%$mm", attr->val.crd);
+	pcb_exto_dlg_gui_chg_attr(subc, attr, tmp);
 }
 
 #define pcb_exto_dlg_coord(dlg, subc, vis_name, attr_name, help) \
