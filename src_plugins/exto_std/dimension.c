@@ -255,6 +255,7 @@ static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	pcb_line_t *fline = (pcb_line_t *)floater, bline;
 	pcb_coord_t fx, fy;
 	double d;
+	char tmp[128];
 
 
 	if (floater->type != PCB_OBJ_LINE)
@@ -287,6 +288,8 @@ pcb_trace("let's do it!\n");
 
 	dimension_clear(subc);
 	dim->displace = d;
+	pcb_snprintf(tmp, sizeof(tmp), "%.08$mH", (pcb_coord_t)d);
+	pcb_attribute_put(&subc->Attributes, "extobj::displace", tmp);
 	dimension_gen(subc);
 }
 
