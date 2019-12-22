@@ -200,6 +200,12 @@ static void pcb_line_of_vias_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	pcb_trace("LoV: float new %ld %ld\n", subc->ID, floater->ID);
 }
 
+static pcb_extobj_del_t pcb_line_of_vias_float_del(pcb_subc_t *subc, pcb_any_obj_t *floater)
+{
+	pcb_trace("LoV: float del %ld %ld\n", subc->ID, floater->ID);
+	return PCB_EXTODEL_FLOATER;
+}
+
 
 static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
 {
@@ -266,6 +272,7 @@ static pcb_extobj_t pcb_line_of_vias = {
 	pcb_line_of_vias_float_pre,
 	pcb_line_of_vias_float_geo,
 	pcb_line_of_vias_float_new,
+	pcb_line_of_vias_float_del,
 	pcb_line_of_vias_chg_attr,
 	pcb_line_of_vias_del_pre,
 	pcb_line_of_vias_conv_objs

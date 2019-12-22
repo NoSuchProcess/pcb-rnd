@@ -39,6 +39,12 @@
 
 typedef struct pcb_extobj_s pcb_extobj_t;
 
+typedef enum pcb_extobj_del_e {
+	PCB_EXTODEL_NOOP,      /* do not do anything (floater is not removed either) */
+	PCB_EXTODEL_FLOATER,   /* remove the floater only */
+	PCB_EXTODEL_SUBC       /* remove the whole subcircuit */
+} pcb_extobj_del_t;
+
 struct pcb_extobj_s {
 	/* static data - filled in by the extobj code */
 	const char *name;
@@ -46,6 +52,7 @@ struct pcb_extobj_s {
 	void (*float_pre)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called before an extobj floater is edited in any way - must not free() the floater */
 	void (*float_geo)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called after the geometry of an extobj floater is changed - must not free() the floater */
 	void (*float_new)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is split so a new floater is created */
+	pcb_extobj_del_t (*float_del)(pcb_subc_t *subc, pcb_any_obj_t *floater); /* called when a floater object is to be removed; returns what the core should do; if not specified: remove the subc */
 	void (*chg_attr)(pcb_subc_t *subc, const char *key, const char *value); /* called after an attribute changed; value == NULL means attribute is deleted */
 	void (*del_pre)(pcb_subc_t *subc); /* called before the extobj subcircuit is deleted - should free any internal cache, but shouldn't delete the subcircuit */
 	pcb_subc_t *(*conv_objs)(pcb_data_t *dst, vtp0_t *objs); /* called to convert objects into an extobj subc; returns NULL on error; objects should not be changed */
@@ -145,6 +152,7 @@ PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;
 	pcb_extobj_t *eo;
+	pcb_extobj_del_t act = PCB_EXTODEL_SUBC;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
 		return 0;
@@ -157,8 +165,19 @@ PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
 	if (eo == NULL)
 		return 0; /* do not delete non-extobjs */
 
-	pcb_subc_remove(subc);
-	return 1;
+	if (eo->float_del != NULL)
+		act = eo->float_del(subc, flt);
+
+	switch(act) {
+		case PCB_EXTODEL_NOOP:
+			return 1;
+		case PCB_EXTODEL_FLOATER:
+			return 0;
+		case PCB_EXTODEL_SUBC:
+			pcb_subc_remove(subc);
+			return 1;
+	}
+	return 0;
 }
 
 PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
