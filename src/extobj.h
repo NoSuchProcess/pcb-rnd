@@ -92,7 +92,7 @@ pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_da
 
 /* for internal use: when an extobj needs to be cloned becase a new floater
    is added */
-void pcb_extobj_float_new_spawn(pcb_subc_t *subc, pcb_any_obj_t *flt);
+void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc, pcb_any_obj_t *flt);
 
 
 int pcb_extobj_lookup_idx(const char *name);
@@ -204,7 +204,7 @@ PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
 			/* no action required, the new floater got created already and got registered in the hook above */
 			break;
 		case PCB_EXTONEW_SPAWN:
-			pcb_extobj_float_new_spawn(subc, flt);
+			pcb_extobj_float_new_spawn(eo, subc, flt);
 			break;
 	}
 }
