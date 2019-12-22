@@ -202,8 +202,12 @@ static void pcb_line_of_vias_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 static pcb_extobj_del_t pcb_line_of_vias_float_del(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("LoV: float del %ld %ld\n", subc->ID, floater->ID);
-	return PCB_EXTODEL_FLOATER;
+	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
+	long len = linelist_length(&ly->Line);
+
+	pcb_trace("LoV: float del %ld %ld edit-objs=%ld\n", subc->ID, floater->ID, len);
+
+	return len == 1 ? PCB_EXTODEL_SUBC : PCB_EXTODEL_FLOATER; /* removing the last floater should remove the subc */
 }
 
 
