@@ -77,6 +77,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	NULL,
 	pcb_subcop_add_to_buffer,
 	pcb_pstkop_add_to_buffer,
+	0 /* extobj_inhibit_regen */
 };
 
 static pcb_opfunc_t MoveBufferFunctions = {
@@ -92,6 +93,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	NULL,
 	pcb_subcop_move_buffer,
 	pcb_pstkop_move_buffer,
+	0 /* extobj_inhibit_regen */
 };
 
 static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)

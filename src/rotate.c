@@ -63,7 +63,8 @@ pcb_opfunc_t Rotate90Functions = {
 	NULL,
 	NULL,
 	pcb_subcop_rotate90,
-	pcb_pstkop_rotate90
+	pcb_pstkop_rotate90,
+	0 /* extobj_inhibit_regen */
 };
 
 pcb_opfunc_t RotateFunctions = {
@@ -78,7 +79,8 @@ pcb_opfunc_t RotateFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_rotate,
-	pcb_pstkop_rotate
+	pcb_pstkop_rotate,
+	0 /* extobj_inhibit_regen */
 };
 
 /* ---------------------------------------------------------------------------

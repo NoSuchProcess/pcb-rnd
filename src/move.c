@@ -61,7 +61,8 @@ pcb_opfunc_t MoveFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_move,
-	pcb_pstkop_move
+	pcb_pstkop_move,
+	0 /* extobj_inhibit_regen */
 };
 
 pcb_opfunc_t MoveFunctions_noclip = {
@@ -76,7 +77,8 @@ pcb_opfunc_t MoveFunctions_noclip = {
 	NULL,
 	NULL,
 	NULL, /* subc */
-	pcb_pstkop_move_noclip
+	pcb_pstkop_move_noclip,
+	0 /* extobj_inhibit_regen */
 };
 
 pcb_opfunc_t ClipFunctions = {
@@ -91,7 +93,8 @@ pcb_opfunc_t ClipFunctions = {
 	NULL,
 	NULL,
 	NULL, /* subc */
-	pcb_pstkop_clip
+	pcb_pstkop_clip,
+	1 /* extobj_inhibit_regen */
 };
 
 static pcb_opfunc_t MoveToLayerFunctions = {
@@ -106,7 +109,8 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 	pcb_ratop_move_to_layer,
 	NULL,
 	NULL, /* subc */
-	NULL  /* padstack */
+	NULL, /* padstack */
+	0 /* extobj_inhibit_regen */
 };
 
 static pcb_opfunc_t CopyFunctions = {
@@ -121,7 +125,8 @@ static pcb_opfunc_t CopyFunctions = {
 	NULL,
 	NULL,
 	pcb_subcop_copy,
-	pcb_pstkop_copy
+	pcb_pstkop_copy,
+	0 /* extobj_inhibit_regen */
 };
 
 

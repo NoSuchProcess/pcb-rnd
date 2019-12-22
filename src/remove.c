@@ -56,7 +56,8 @@ static pcb_opfunc_t RemoveFunctions = {
 	pcb_ratop_remove,
 	pcb_arcop_remove_point,
 	pcb_subcop_remove,
-	pcb_pstkop_remove
+	pcb_pstkop_remove,
+	0 /* extobj_inhibit_regen */
 };
 
 static pcb_opfunc_t DestroyFunctions = {
@@ -72,6 +73,7 @@ static pcb_opfunc_t DestroyFunctions = {
 	NULL,
 	pcb_subcop_destroy,
 	pcb_pstkop_destroy,
+	0 /* extobj_inhibit_regen */
 };
 
 static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)

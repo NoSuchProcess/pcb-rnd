@@ -55,7 +55,8 @@ static pcb_opfunc_t InsertFunctions = {
 	pcb_ratop_insert_point,
 	NULL,
 	NULL, /* subc */
-	NULL  /* padstack */
+	NULL,  /* padstack */
+	0 /* extobj_inhibit_regen */
 };
 
 void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last)
