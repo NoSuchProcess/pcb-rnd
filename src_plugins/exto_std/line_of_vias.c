@@ -223,7 +223,7 @@ static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const c
 }
 
 
-static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs)
+static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from)
 {
 	long n;
 	pcb_subc_t *subc;
@@ -248,8 +248,9 @@ static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs)
 	layers[0].lyt = pcb_layer_flags_(l->parent.layer);
 	pcb_layer_purpose_(l->parent.layer, &layers[0].purpose);
 
-	subc = pcb_exto_create(dst, "line-of-vias", layers, l->Point1.X, l->Point1.Y, 0);
-	pcb_attribute_put(&subc->Attributes, "extobj::pitch", "4mm");
+	subc = pcb_exto_create(dst, "line-of-vias", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
+	if (copy_from == NULL)
+		pcb_attribute_put(&subc->Attributes, "extobj::pitch", "4mm");
 
 	/* create edit-objects */
 	ly = &subc->data->Layer[LID_EDIT];

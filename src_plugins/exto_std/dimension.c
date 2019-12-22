@@ -326,12 +326,12 @@ static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char
 	}
 }
 
-static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs)
+static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from)
 {
 	long n;
 	pcb_subc_t *subc;
 	pcb_line_t *l;
-	pcb_layer_t *ly;
+	pcb_layer_t *ly, *targetly = NULL;
 	pcb_dflgmap_t layers[] = {
 		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
 		{"target", PCB_LYT_DOC, "fab", 0, 0},
@@ -350,16 +350,20 @@ static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs)
 
 	layers[0].lyt = pcb_layer_flags_(l->parent.layer);
 	pcb_layer_purpose_(l->parent.layer, &layers[0].purpose);
-	if (dst->parent_type == PCB_PARENT_BOARD) {
+	if ((copy_from != NULL) && (copy_from->data->LayerN > LID_TARGET) && (copy_from->data->Layer[LID_TARGET].meta.bound.real != NULL)) {
+		targetly = copy_from->data->Layer[LID_TARGET].meta.bound.real;
+	}
+	else if (dst->parent_type == PCB_PARENT_BOARD) {
 		pcb_board_t *pcb = dst->parent.board;
-		pcb_layer_t *curr = PCB_CURRLAYER(pcb);
-		if (curr != NULL) {
-			layers[1].lyt = pcb_layer_flags_(curr);
-			pcb_layer_purpose_(curr, &layers[1].purpose);
-		}
+		targetly = PCB_CURRLAYER(pcb);
 	}
 
-	subc = pcb_exto_create(dst, "dimension", layers, l->Point1.X, l->Point1.Y, 0);
+	if (targetly != NULL) {
+		layers[1].lyt = pcb_layer_flags_(targetly);
+		pcb_layer_purpose_(targetly, &layers[1].purpose);
+	}
+
+	subc = pcb_exto_create(dst, "dimension", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
 	pcb_attribute_put(&subc->Attributes, "extobj::displace", "4mm");
 
 	/* create edit-objects */

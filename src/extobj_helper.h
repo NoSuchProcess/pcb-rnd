@@ -74,7 +74,7 @@ PCB_INLINE int pcb_exto_regen_end(pcb_subc_t *subc)
 	return 0;
 }
 
-PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, const pcb_dflgmap_t *layers, pcb_coord_t ox, pcb_coord_t oy, pcb_bool on_bottom)
+PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, const pcb_dflgmap_t *layers, pcb_coord_t ox, pcb_coord_t oy, pcb_bool on_bottom, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *subc = pcb_subc_alloc();
 	pcb_board_t *pcb = NULL;

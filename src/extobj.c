@@ -105,7 +105,7 @@ PCB_INLINE pcb_data_t *pcb_extobj_parent_data(pcb_any_obj_t *obj)
 	return NULL;
 }
 
-pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc_copy_from, pcb_any_obj_t *edit_obj)
+void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc_copy_from, pcb_any_obj_t *edit_obj)
 {
 	pcb_data_t *data = pcb_extobj_parent_data(edit_obj);
 	pcb_board_t *pcb;
@@ -119,7 +119,7 @@ pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc_copy_from, pcb_any
 	save = subc_copy_from->extobj;
 	subc_copy_from->extobj = NULL;
 	PCB_FLAG_CLEAR(PCB_FLAG_FLOATER, edit_obj);
-	sc = pcb_extobj_conv_obj(pcb, eo, pcb->Data, edit_obj, 1);
+	sc = pcb_extobj_conv_obj_using(pcb, eo, pcb->Data, edit_obj, 1, subc_copy_from);
 	pcb_subc_copy_meta(sc, subc_copy_from);
 	subc_copy_from->extobj = save;
 }
@@ -133,14 +133,14 @@ void pcb_extobj_del_pre(pcb_subc_t *sc)
 		eo->del_pre(sc);
 }
 
-static pcb_subc_t *pcb_extobj_conv_list(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, vtp0_t *list, pcb_bool remove)
+static pcb_subc_t *pcb_extobj_conv_list(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, vtp0_t *list, pcb_bool remove, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *res;
 
 	if ((eo->conv_objs == NULL) || (list->used == 0))
 		return NULL;
 
-	res = eo->conv_objs(dst, list);
+	res = eo->conv_objs(dst, list, copy_from);
 
 	if ((res != NULL) && remove) {
 		long n;
@@ -153,14 +153,14 @@ static pcb_subc_t *pcb_extobj_conv_list(pcb_board_t *pcb, const pcb_extobj_t *eo
 	return res;
 }
 
-static pcb_subc_t *pcb_extobj_conv_flag_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove, pcb_flag_values_t flg)
+static pcb_subc_t *pcb_extobj_conv_flag_objs_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove, pcb_flag_values_t flg, pcb_subc_t *copy_from)
 {
 	vtp0_t list;
 	pcb_subc_t *res;
 
 	vtp0_init(&list);
 	pcb_data_list_by_flag(src, &list, PCB_OBJ_ANY, flg);
-	res = pcb_extobj_conv_list(pcb, eo, dst, &list, remove);
+	res = pcb_extobj_conv_list(pcb, eo, dst, &list, remove, copy_from);
 	vtp0_uninit(&list);
 
 	return res;
@@ -168,26 +168,30 @@ static pcb_subc_t *pcb_extobj_conv_flag_objs(pcb_board_t *pcb, const pcb_extobj_
 
 pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove)
 {
-	return pcb_extobj_conv_flag_objs(pcb, eo, dst, src, remove, PCB_FLAG_SELECTED);
+	return pcb_extobj_conv_flag_objs_using(pcb, eo, dst, src, remove, PCB_FLAG_SELECTED, NULL);
 }
 
 pcb_subc_t *pcb_extobj_conv_all_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove)
 {
-	return pcb_extobj_conv_flag_objs(pcb, eo, dst, src, remove, 0);
+	return pcb_extobj_conv_flag_objs_using(pcb, eo, dst, src, remove, 0, NULL);
 }
 
 
-pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove)
+pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove, pcb_subc_t *copy_from)
 {
 	vtp0_t list;
 	pcb_subc_t *res;
 
 	vtp0_init(&list);
 	vtp0_append(&list, src);
-	res = pcb_extobj_conv_list(pcb, eo, dst, &list, remove);
+	res = pcb_extobj_conv_list(pcb, eo, dst, &list, remove, copy_from);
 	vtp0_uninit(&list);
 
 	return res;
 }
 
 
+pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove)
+{
+	return pcb_extobj_conv_obj_using(pcb, eo, dst, src, remove, NULL);
+}
