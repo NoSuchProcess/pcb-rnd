@@ -600,3 +600,16 @@ void pcb_dad_spin_update_global_coords(void)
 		do_step(hid_ctx, spin, &dlg[spin->wstr], &dlg[spin->cmp.wend], 0); /* cheap conversion*/
 	}
 }
+
+void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin)
+{
+	pcb_hid_attribute_t *dlg = *spin->attrs, *end = dlg+spin->cmp.wend;
+	pcb_hid_attribute_t *str = dlg + spin->wstr;
+	void *hid_ctx = *spin->hid_ctx;
+	char buf[128];
+
+	if (hid_ctx == NULL) /* before run() */
+		str->val.str = pcb_strdup(gen_str_coord(spin, end->val.crd, buf, sizeof(buf)));
+	else
+		do_step(hid_ctx, spin, &dlg[spin->wstr], &dlg[spin->cmp.wend], 0); /* cheap conversion*/
+}

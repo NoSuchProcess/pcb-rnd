@@ -148,6 +148,8 @@ int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, p
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 void pcb_dad_spin_set_help(pcb_hid_attribute_t *end, const char *help);
 
+void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin); /* update the widget from spin, before or after the dialog is realized */
+
 extern gdl_list_t pcb_dad_coord_spins; /* list of all active coord spinboxes */
 
 #endif
