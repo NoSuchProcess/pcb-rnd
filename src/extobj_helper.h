@@ -174,3 +174,25 @@ do { \
 		dlg[wid].user_data = (void *)attr_name; \
 		PCB_DAD_DEFAULT_NUM(dlg, currval); \
 } while(0)
+
+PCB_INLINE void pcb_exto_dlg_str_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_subc_t *subc = caller_data;
+	pcb_exto_dlg_gui_chg_attr(subc, attr, attr->val.str);
+}
+
+#define pcb_exto_dlg_str(dlg, subc, vis_name, attr_name, help) \
+do { \
+	int wid; \
+	const char *currval = pcb_attribute_get(&subc->Attributes, attr_name); \
+	if (currval == NULL) currval = ""; \
+	currval = pcb_strdup(currval); \
+	PCB_DAD_LABEL(dlg, vis_name); \
+		if (help != NULL) PCB_DAD_HELP(dlg, help); \
+	PCB_DAD_STRING(dlg); \
+		if (help != NULL) PCB_DAD_HELP(dlg, help); \
+		PCB_DAD_CHANGE_CB(dlg, pcb_exto_dlg_str_cb); \
+		wid = PCB_DAD_CURRENT(dlg); \
+		dlg[wid].user_data = (void *)attr_name; \
+		PCB_DAD_DEFAULT_PTR(dlg, currval); \
+} while(0)
