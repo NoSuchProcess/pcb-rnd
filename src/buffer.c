@@ -95,7 +95,13 @@ static pcb_opfunc_t MoveBufferFunctions = {
 
 static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 {
-	pcb_subc_t *subc =  pcb_extobj_get_floater_subc(obj);
+	pcb_subc_t *subc;
+
+
+	if (ctx->buffer.removing)
+		return 0; /* don't do anything extobj-special for removing, it's already been done */
+
+	subc = pcb_extobj_get_floater_subc(obj);
 
 pcb_trace("move buff %p\n", subc);
 	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
@@ -170,6 +176,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 
 	ctx.buffer.pcb = pcb;
 	ctx.buffer.keep_id = keep_id;
+	ctx.buffer.removing = 0;
 
 	/* switch crosshair off because adding objects to the pastebuffer
 	 * may change the 'valid' area for the cursor
@@ -641,6 +648,7 @@ void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 	ctx.buffer.pcb = pcb;
 	ctx.buffer.dst = Destination;
 	ctx.buffer.src = Src;
+	ctx.buffer.removing = (Destination == pcb_removelist);
 	return (pcb_object_operation(&MoveBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
@@ -651,6 +659,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 	ctx.buffer.pcb = pcb;
 	ctx.buffer.dst = Destination;
 	ctx.buffer.src = Src;
+	ctx.buffer.removing = 0;
 	return (pcb_object_operation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
