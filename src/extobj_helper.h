@@ -79,6 +79,8 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 	pcb_subc_t *subc = pcb_subc_alloc();
 	pcb_board_t *pcb = NULL;
 
+	if (copy_from != NULL)
+		pcb_subc_copy_meta(subc, copy_from);
 	pcb_attribute_put(&subc->Attributes, "extobj", eoname);
 
 	for(; layers->name != NULL; layers++)

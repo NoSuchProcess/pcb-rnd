@@ -120,7 +120,6 @@ void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc_copy_from, pc
 	subc_copy_from->extobj = NULL;
 	PCB_FLAG_CLEAR(PCB_FLAG_FLOATER, edit_obj);
 	sc = pcb_extobj_conv_obj_using(pcb, eo, pcb->Data, edit_obj, 1, subc_copy_from);
-	pcb_subc_copy_meta(sc, subc_copy_from);
 	subc_copy_from->extobj = save;
 }
 
