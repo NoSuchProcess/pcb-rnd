@@ -27,6 +27,8 @@
 #include "obj_subc.h"
 #include "conf_core.h"
 #include "hid_inlines.h"
+#include "hid_dad.h"
+#include "change.h"
 #include "undo.h"
 
 /*** API ***/
@@ -124,3 +126,45 @@ PCB_INLINE void pcb_exto_draw_makr(pcb_draw_info_t *info, pcb_subc_t *subc)
 	pcb_render->draw_line(pcb_draw_out.fgGC, x, y + unit, x + unit/2, y + unit);
 	pcb_render->draw_line(pcb_draw_out.fgGC, x, y + unit/2, x + unit/3, y + unit/2);
 }
+
+/*** dialog box build ***/
+
+PCB_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_subc_t *subc = caller_data;
+	pcb_board_t *pcb;
+	pcb_data_t *data;
+	char tmp[128];
+
+	if (subc->parent_type != PCB_PARENT_DATA)
+		return;
+	data = subc->parent.data;
+	if (data->parent_type != PCB_PARENT_BOARD)
+		return;
+	pcb = data->parent.board;
+
+	pcb_snprintf(tmp, sizeof(tmp), "%$mm", attr->val.crd);
+	pcb_uchg_attr(pcb, (pcb_any_obj_t *)subc, (char *)attr->user_data, tmp);
+	pcb_trace("chg: %s\n", (char *)attr->user_data);
+	pcb_gui->invalidate_all(pcb_gui);
+}
+
+#define pcb_exto_dlg_coord(dlg, subc, vis_name, attr_name, help) \
+do { \
+	double d; \
+	pcb_coord_t currval = 0; \
+	const pcb_unit_t *unit_out; \
+	int wid; \
+	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
+	if (sval != NULL) \
+		pcb_get_value_unit(sval, NULL, 0, &d, &unit_out); \
+	currval = d; \
+	PCB_DAD_LABEL(dlg, vis_name); \
+		if (help != NULL) PCB_DAD_HELP(dlg, help); \
+	PCB_DAD_COORD(dlg, ""); \
+		if (help != NULL) PCB_DAD_HELP(dlg, help); \
+		PCB_DAD_CHANGE_CB(dlg, pcb_exto_dlg_coord_cb); \
+		wid = PCB_DAD_CURRENT(dlg); \
+		dlg[wid].user_data = (void *)attr_name; \
+		PCB_DAD_DEFAULT_NUM(dlg, currval); \
+} while(0)

@@ -40,6 +40,7 @@
 #include "extobj_helper.h"
 #include "conf_core.h"
 #include "hid_inlines.h"
+#include "hid_dad.h"
 
 static const char *exto_std_cookie = "exto_std plugin";
 

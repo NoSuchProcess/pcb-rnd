@@ -31,14 +31,21 @@
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
 typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
+	int gui_active;
 	pcb_coord_t pitch;
 	pcb_coord_t clearance;
 } line_of_vias;
 
 static void pcb_line_of_vias_del_pre(pcb_subc_t *subc)
 {
+	line_of_vias *lov = subc->extobj_data;
 	pcb_trace("LoV del_pre\n");
-	free(subc->extobj_data);
+
+	if ((lov != NULL) && (lov->gui_active))
+		PCB_DAD_FREE(lov->dlg);
+
+	free(lov);
 	subc->extobj_data = NULL;
 }
 
@@ -282,9 +289,44 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto + remove the plugin d
 	return subc;
 }
 
+
+static void pcb_line_of_vias_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	pcb_subc_t *subc = caller_data;
+	line_of_vias *lov = subc->extobj_data;
+
+	PCB_DAD_FREE(lov->dlg);
+	lov->gui_active = 0;
+}
+
 static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
 {
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	line_of_vias *lov;
+
 	pcb_trace("LoV: gui propedit\n");
+
+	if (subc->extobj_data == NULL)
+		subc->extobj_data = calloc(sizeof(line_of_vias), 1);
+	lov = subc->extobj_data;
+
+	pcb_trace("LoV: active=%d\n", lov->gui_active);
+	if (lov->gui_active)
+		return; /* do not open another */
+
+	PCB_DAD_BEGIN_VBOX(lov->dlg);
+		PCB_DAD_COMPFLAG(lov->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_TABLE(lov->dlg, 2);
+			pcb_exto_dlg_coord(lov->dlg, subc, "pitch", "extobj::pitch", "target distance between center of vias");
+			pcb_exto_dlg_coord(lov->dlg, subc, "clearance", "extobj::clearance", "global clarance value on vias");
+		PCB_DAD_END(lov->dlg);
+		PCB_DAD_BUTTON_CLOSES(lov->dlg, clbtn);
+	PCB_DAD_END(lov->dlg);
+
+	/* set up the context */
+	lov->gui_active = 1;
+
+	PCB_DAD_NEW("line_of_vias", lov->dlg, "Line of vias", subc, pcb_false, pcb_line_of_vias_close_cb);
 }
 
 static pcb_extobj_t pcb_line_of_vias = {
