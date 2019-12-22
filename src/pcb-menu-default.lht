@@ -129,7 +129,7 @@ ha:{
 				ha:Redo last undone operation   = { li:a={{<key>u; <Key>r}; {Ctrl<Key>y};};   action=Redo() }
 				ha:Clear undo-buffer            = { a={<key>u; <Key>c}; action=Undo(ClearList) }
 				-
-				ha:Cut selection to buffer      = { li:a={{<key>e; <Key>x}; a=Ctrl<Key>x;};   li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Unselect(All); Mode(PasteBuffer) } }
+				ha:Cut selection to buffer      = { li:a={{<key>e; <Key>x}; a=Ctrl<Key>x;};   li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(MoveSelected); Mode(PasteBuffer) } }
 				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};};  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer) } }
 				ha:Paste buffer to layout       = { li:a={{<key>e; <Key>v}; a=Ctrl<Key>v;};   action=Mode(PasteBuffer) }
 				-

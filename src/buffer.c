@@ -223,6 +223,11 @@ void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t
 	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
 }
 
+void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool keep_id)
+{
+	pcb_buffer_toss_selected(&MoveBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
+}
+
 static const char pcb_acts_LoadFootprint[] = "pcb_load_footprint(filename[,refdes,value])";
 static const char pcb_acth_LoadFootprint[] = "Loads a single footprint by name.";
 /* DOC: loadfootprint.html */
@@ -876,7 +881,7 @@ pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const
 
 
 static const char pcb_acts_PasteBuffer[] =
-	"PasteBuffer(AddSelected|Clear|1..PCB_MAX_BUFFER)\n"
+	"PasteBuffer(AddSelected|MoveSelected|Clear|1..PCB_MAX_BUFFER)\n"
 	"PasteBuffer(Rotate, 1..3)\n"
 	"PasteBuffer(Convert|Restore|Mirror)\n"
 	"PasteBuffer(ToLayout, X, Y, units)\n"
@@ -939,14 +944,13 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			}
 			break;
 
-			/* moves objects to paste buffer: kept for compatibility with old menu files */
+			/* cuts objects to paste buffer; it's different from AddSelected+RemoveSelected in extobj side effects */
 		case F_MoveSelected:
-			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_true);
+			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
 				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;
 			}
-			pcb_actionva(PCB_ACT_HIDLIB, "RemoveSelected", NULL);
 			break;
 
 			/* converts buffer contents into a subcircuit */
