@@ -191,7 +191,7 @@ static void pcb_line_of_vias_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj
 
 static void pcb_line_of_vias_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	pcb_trace("LoV: edit geo %ld %ld\n", subc->ID, edit_obj->ID);
+	pcb_trace("LoV: edit geo %ld %ld\n", subc->ID, edit_obj == NULL ? -1 : edit_obj->ID);
 	line_of_vias_gen(subc, edit_obj);
 }
 
