@@ -15,6 +15,7 @@ remove
 
 init_invis
 ltype
+ltypestr
 name
 open
 purpose

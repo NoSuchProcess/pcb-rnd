@@ -40,9 +40,17 @@
 #include "search.h"
 #include "find.h"
 
+static void append_type_bit(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name)
+{
+	gds_t *s = ctx;
+	if (s->used > 0)
+		gds_append(s, ',');
+	gds_append_str(s, name);
+}
+
 static const char pcb_acts_ReadGroup[] =
 	"ReadGroup(length)\n"
-	"ReadGroup(field, group, [init_invis|ltype|name|open|purpose|vis|length])\n"
+	"ReadGroup(field, group, [init_invis|ltype|ltypestr|name|open|purpose|vis|length])\n"
 	"ReadGroup(layerid, idx)\n"
 	;
 static const char pcb_acth_ReadGroup[] = "Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.";
@@ -87,6 +95,14 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					return 0;
 				case act_read_keywords_ltype:
 					res->type = FGW_LONG; res->val.nat_long = grp->ltype;
+					return 0;
+				case act_read_keywords_ltypestr:
+					{
+						gds_t tmp;
+						gds_init(&tmp);
+						pcb_layer_type_map(grp->ltype, &tmp, append_type_bit);
+						res->type = FGW_STR | FGW_DYN; res->val.str = tmp.array;
+					}
 					return 0;
 				case act_read_keywords_length:
 					res->type = FGW_LONG; res->val.nat_long = grp->len;
