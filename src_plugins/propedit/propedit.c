@@ -42,6 +42,7 @@
 #include "crosshair.h"
 #include "compat_misc.h"
 
+extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 
 int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 {
@@ -94,12 +95,16 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 	}
 	else if (strncmp(cmd, "layergrp", 8) == 0) {
 		if (cmd[8] == ':') {
-			id = pcb_layergrp_str2id(pe->pcb, cmd+9);
-			if (id < 0) {
-				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Invalid layergrp ID '%s'\n", cmd+9);
-				return FGW_ERR_ARG_CONV;
+			if (strcmp(cmd+9, "editgroup") != 0) {
+				id = pcb_layergrp_str2id(pe->pcb, cmd+9);
+				if (id < 0) {
+					if (!quiet)
+						pcb_message(PCB_MSG_ERROR, "Invalid layergrp ID '%s'\n", cmd+9);
+					return FGW_ERR_ARG_CONV;
+				}
 			}
+			else
+				id = pcb_actd_EditGroup_gid;
 			vtl0_append(&pe->layergrps, id);
 		}
 		else {
