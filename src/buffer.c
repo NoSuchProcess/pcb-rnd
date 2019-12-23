@@ -59,6 +59,7 @@
 #include "actions.h"
 #include "tool.h"
 #include "extobj.h"
+#include "hid_dad.h"
 
 static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
 static void move_buffer_post(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
@@ -473,6 +474,74 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+typedef struct {
+	PCB_DAD_DECL_NOINIT(dlg)
+	int wx, wy, wlock;
+} scale_t;
+
+/* make sure x;y values are synced when lock is active */
+static void scale_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	scale_t *ctx = caller_data;
+	int wid = attr - ctx->dlg, locked = ctx->dlg[ctx->wlock].val.lng;
+	pcb_hid_attr_val_t hv;
+
+	if (!locked)
+		return;
+
+	if (wid == ctx->wy) { /* copy y into x */
+		hv.dbl = ctx->dlg[ctx->wy].val.dbl;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wx, &hv);
+	}
+	else { /* copy x into y */
+		hv.dbl = ctx->dlg[ctx->wx].val.dbl;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wy, &hv);
+	}
+}
+
+/* returns 0 on OK */
+static int pcb_actgui_ScaleBuffer(pcb_hidlib_t *hidlib, double *x, double *y)
+{
+	scale_t ctx;
+	int res;
+
+	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"Apply", 0}, {NULL, 0}};
+
+	memset(&ctx, 0, sizeof(ctx));
+	PCB_DAD_BEGIN_VBOX(ctx.dlg);
+		PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+
+			PCB_DAD_LABEL(ctx.dlg, "scale X");
+			PCB_DAD_REAL(ctx.dlg, "");
+				ctx.wx = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_DEFAULT_NUM(ctx.dlg, 1);
+				PCB_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
+
+			PCB_DAD_LABEL(ctx.dlg, "same");
+			PCB_DAD_BOOL(ctx.dlg, "");
+				ctx.wlock = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_DEFAULT_NUM(ctx.dlg, 1);
+				PCB_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
+
+			PCB_DAD_LABEL(ctx.dlg, "scale Y");
+			PCB_DAD_REAL(ctx.dlg, "");
+				ctx.wy = PCB_DAD_CURRENT(ctx.dlg);
+				PCB_DAD_DEFAULT_NUM(ctx.dlg, 1);
+				PCB_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
+
+		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+	PCB_DAD_END(ctx.dlg);
+
+	PCB_DAD_NEW("buffer_scale", ctx.dlg, "Buffer scale factors", &ctx, pcb_true, NULL);
+	res = PCB_DAD_RUN(ctx.dlg);
+	*x = ctx.dlg[ctx.wx].val.dbl;
+	*y = ctx.dlg[ctx.wy].val.dbl;
+	PCB_DAD_FREE(ctx.dlg);
+	return res;
+}
+
 static const char pcb_acts_ScaleBuffer[] = "ScaleBuffer(x [,y [,thickness [,subc]]])";
 static const char pcb_acth_ScaleBuffer[] =
 	"Scales the buffer by multiplying all coordinates by a floating point number.\n"
@@ -480,35 +549,38 @@ static const char pcb_acth_ScaleBuffer[] =
 	"empty, subcircuits are also scaled\n";
 fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	char *sx = NULL;
+	const char *sx = NULL;
 	double x, y, th;
 	int recurse = 0;
 	char *end;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = pcb_strdup(argv[1].val.str));
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = argv[1].val.str);
 
-	if (sx == NULL)
-		sx = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter scaling factor (unitless multiplier):", "1.0", "scaling factor");
-	if ((sx == NULL) || (*sx == '\0')) {
-		free(sx);
-		PCB_ACT_IRES(-1);
-		return 0;
+	if (sx != NULL) {
+		x = strtod(sx, &end);
+		if (*end != '\0') {
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
+		y = th = x;
 	}
-	x = strtod(sx, &end);
-	if (*end != '\0') {
-		free(sx);
-		PCB_ACT_IRES(-1);
-		return 0;
+	else {
+		if (pcb_actgui_ScaleBuffer(PCB_ACT_HIDLIB, &x, &y) != 0) {
+			PCB_ACT_IRES(-1);
+			return 0;
+		}
 	}
-	free(sx);
-	y = th = x;
 
 	PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, ScaleBuffer, y = argv[2].val.nat_double);
 	PCB_ACT_MAY_CONVARG(3, FGW_DOUBLE, ScaleBuffer, th = argv[3].val.nat_double);
 	PCB_ACT_MAY_CONVARG(4, FGW_STR, ScaleBuffer, recurse = (argv[4].val.str != NULL));
 
-	PCB_ACT_IRES(0);
+	if ((x <= 0) || (y <= 0)) {
+		PCB_ACT_IRES(-1);
+		return 0;
+	}
 
+	PCB_ACT_IRES(0);
 
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_buffer_scale(PCB_PASTEBUFFER, x, y, th, recurse);
