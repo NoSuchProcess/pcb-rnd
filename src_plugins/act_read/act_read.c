@@ -42,6 +42,7 @@
 
 #include "act_idpath.c"
 #include "act_geo.c"
+#include "act_layer.c"
 
 
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
