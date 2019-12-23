@@ -88,6 +88,7 @@ ha:pcb-rnd-board-v6 {
    }
    ha:4 {
     ha:type { substrate=1; intern=1; }
+    ha:attributes { thickness=1.6mm }
     li:layers { }
     name = grp_4
    }
