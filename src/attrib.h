@@ -50,6 +50,11 @@ struct pcb_attribute_list_s {
 char *pcb_attribute_get(const pcb_attribute_list_t *list, const char *name);
 char **pcb_attribute_get_ptr(const pcb_attribute_list_t *list, const char *name);
 
+/* Same as pcb_attribute_get, but also look for plugin::key which overrides
+   plain key hits */
+char *pcb_attribute_get_namespace(const pcb_attribute_list_t *list, const char *plugin, const char *key);
+char **pcb_attribute_get_namespace_ptr(const pcb_attribute_list_t *list, const char *plugin, const char *key);
+
 
 /* Adds an attribute to the list.  If the attribute already exists, the value
    is replaced. Returns non-zero if an existing attribute was replaced.  */

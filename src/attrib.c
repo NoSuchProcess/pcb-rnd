@@ -59,6 +59,31 @@ char **pcb_attribute_get_ptr(const pcb_attribute_list_t *list, const char *name)
 	return NULL;
 }
 
+char **pcb_attribute_get_namespace_ptr(const pcb_attribute_list_t *list, const char *plugin, const char *key)
+{
+	int i, glb = -1, plugin_len = strlen(plugin);
+
+	for (i = 0; i < list->Number; i++) {
+		if (strcmp(list->List[i].name, key) == 0)
+			glb = i;
+		if ((strncmp(list->List[i].name, plugin, plugin_len) == 0) && (list->List[i].name[plugin_len] == ':') && (list->List[i].name[plugin_len+1] == ':')) {
+			if (strcmp(list->List[i].name+plugin_len+2, key) == 0)
+				return &list->List[i].value; /* found the plugin-specific value, that wins */
+		}
+	}
+	if (glb >= 0)
+		return &list->List[glb].value; /* fall back to global if present */
+	return NULL; /* nothing */
+}
+
+char *pcb_attribute_get_namespace(const pcb_attribute_list_t *list, const char *plugin, const char *key)
+{
+	char **res = pcb_attribute_get_namespace_ptr(list, plugin, key);
+	if (res == NULL)
+		return NULL;
+	return *res;
+}
+
 int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value)
 {
 	int i;
