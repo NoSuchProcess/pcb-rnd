@@ -111,6 +111,8 @@ pcb_action_t act_read_action_list[] = {
 
 	{"GetMark", pcb_act_GetMark, pcb_acth_GetMark, pcb_acts_GetMark},
 
+	{"ReadGroup", pcb_act_ReadGroup, pcb_acth_ReadGroup, pcb_acts_ReadGroup},
+
 	{"IsPointOnArc", pcb_act_IsPointOnArc, pcb_acth_IsPointOnArc, pcb_acts_IsPointOnArc},
 	{"IsPointOnLine", pcb_act_IsPointOnLine, pcb_acth_IsPointOnLine, pcb_acts_IsPointOnLine},
 	{"IntersectObjObj", pcb_act_IntersectObjObj, pcb_acth_IntersectObjObj, pcb_acts_IntersectObjObj}

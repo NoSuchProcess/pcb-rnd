@@ -33,6 +33,7 @@
 #include "data.h"
 #include "layer.h"
 #include "actions.h"
+#include "actions_pcb.h"
 #include "plugins.h"
 #include "misc_util.h"
 #include "idpath.h"
@@ -50,24 +51,31 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int cmd, fld;
 	char *cmds, *flds;
+	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	long idx;
 
 	PCB_ACT_CONVARG(1, FGW_STR, ReadGroup, cmds = argv[1].val.str);
-TODO("Get the group here");
-
 	cmd = act_read_keywords_sphash(cmds);
 	switch(cmd) {
 		case act_read_keywords_length:
-			PCB_ACT_IRES(0);
+			res->type = FGW_LONG; res->val.nat_long = pcb->LayerGroups.len;
 			return 0;
 		case act_read_keywords_layerid:
+			PCB_ACT_CONVARG(2, FGW_LAYERGRPID, ReadGroup, gid = fgw_layergrpid(&argv[2]));
+			grp = pcb_get_layergrp(pcb, gid);
+			if (grp == NULL)
+				return FGW_ERR_ARG_CONV;
 			PCB_ACT_CONVARG(3, FGW_LONG, ReadGroup, idx = argv[3].val.nat_long);
 			if ((idx < 0) || (idx >= grp->len))
 				return FGW_ERR_ARG_CONV;
 			res->type = FGW_LONG; res->val.nat_long = grp->lid[idx];
 			return 0;
 		case act_read_keywords_field:
+			PCB_ACT_CONVARG(2, FGW_LAYERGRPID, ReadGroup, gid = fgw_layergrpid(&argv[2]));
+			grp = pcb_get_layergrp(pcb, gid);
+			if (grp == NULL)
+				return FGW_ERR_ARG_CONV;
 			PCB_ACT_CONVARG(3, FGW_STR, ReadGroup, flds = argv[3].val.str);
 			fld = act_read_keywords_sphash(flds);
 			switch(fld) {
