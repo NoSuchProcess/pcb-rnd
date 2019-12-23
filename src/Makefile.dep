@@ -1733,10 +1733,11 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h actions.h obj_subc.h pcb-printf.h extobj.h \
- data.h obj_subc_parent.h draw.h extobj_helper.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h conf.h pcb-printf.h \
- ../src_3rd/liblihata/lihata.h list_conf.h hid_inlines.h \
- ../src_plugins/exto_std/line_of_vias.c \
+ data.h obj_subc_parent.h draw.h extobj_helper.h conf_core.h conf.h \
+ pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h hid_inlines.h \
+ hid_dad.h compat_misc.h hid_attrib.h hid_dad_spin.h change.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h hid_inlines.h \
+ hid_dad.h ../src_plugins/exto_std/line_of_vias.c \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/exto_std/dimension.c search.h
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
@@ -6106,7 +6107,8 @@ buffer.o: buffer.c ../config.h conf_core.h conf.h global_typedefs.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h funchash.h \
  funchash_core_list.h obj_arc_op.h obj_line_op.h obj_text_op.h \
  obj_subc_op.h obj_poly_op.h obj_pstk_op.h obj_rat_op.h event.h safe_fs.h \
- actions.h tool.h extobj.h obj_subc_parent.h
+ actions.h tool.h extobj.h obj_subc_parent.h hid_dad.h hid_attrib.h \
+ hid_dad_spin.h
 build_run.o: build_run.c ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h conf_core.h conf.h \
@@ -6410,8 +6412,9 @@ extobj_act.o: extobj_act.c ../config.h actions.h hid.h \
  ../src_3rd/genvector/vtp0.h list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h color.h funchash_core.h \
- funchash.h funchash_core_list.h search.h layer.h obj_common.h flag.h \
- data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ funchash.h funchash_core_list.h hid_dad.h compat_misc.h hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h hid_dad_spin.h search.h layer.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h polyarea.h \
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h tool.h \
  extobj.h board.h vtroutestyle.h layer_grp.h rats_patch.h hidlib.h data.h \
