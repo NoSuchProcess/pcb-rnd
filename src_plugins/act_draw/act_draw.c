@@ -417,6 +417,47 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_LayerObjDup[] = "LayerObjDup([noundo,] data, layer, srcobj)";
+static const char pcb_acth_LayerObjDup[] = "Duplicate srcobj on a layer. Srcobj is specified by an idpath. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
+static fgw_error_t pcb_act_LayerObjDup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_data_t *data;
+	pcb_layer_t *layer;
+	pcb_any_obj_t *src, *dst;
+	pcb_idpath_t *idp;
+	DRAWOPTARG;
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1+ao, FGW_DATA, LayerObjDup, data = fgw_data(&argv[1+ao]));
+	PCB_ACT_CONVARG(2+ao, FGW_LAYER, LayerObjDup, layer = fgw_layer(&argv[2+ao]));
+	PCB_ACT_CONVARG(3+ao, FGW_PTR, LayerObjDup, idp = argv[3+ao].val.ptr_void);
+	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3], PCB_PTR_DOMAIN_IDPATH)) {
+		pcb_message(PCB_MSG_ERROR, "LayerObjDup: invalid object pointer\n");
+		return FGW_ERR_PTR_DOMAIN;
+	}
+	src = pcb_idpath2obj(PCB, idp);
+	if (src == NULL)
+		return FGW_ERR_ARG_CONV;
+
+	switch(src->type) {
+		case PCB_OBJ_ARC:   dst = (pcb_any_obj_t *)pcb_arc_dup(layer, (pcb_arc_t *)src); break;
+		case PCB_OBJ_LINE:  dst = (pcb_any_obj_t *)pcb_line_dup(layer, (pcb_line_t *)src); break;
+		case PCB_OBJ_POLY:  dst = (pcb_any_obj_t *)pcb_poly_dup(layer, (pcb_poly_t *)src); break;
+		case PCB_OBJ_TEXT:  dst = (pcb_any_obj_t *)pcb_text_dup(layer, (pcb_text_t *)src); break;
+		default:
+			return FGW_ERR_ARG_CONV;
+	}
+
+	if (dst != NULL) {
+		idp = pcb_obj2idpath(dst);
+		fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp);
+
+		pcb_poly_clear_from_poly(data, dst->type, layer, dst);
+	}
+
+	return 0;
+}
+
 pcb_action_t act_draw_action_list[] = {
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
@@ -428,7 +469,8 @@ pcb_action_t act_draw_action_list[] = {
 	{"PolyNewPoints", pcb_act_PolyNewPoints, pcb_acth_PolyNewPoints, pcb_acts_PolyNewPoints},
 	{"PolyNewEnd", pcb_act_PolyNewEnd, pcb_acth_PolyNewEnd, pcb_acts_PolyNewEnd},
 	{"PstkProtoTmp", pcb_act_PstkProtoTmp, pcb_acth_PstkProtoTmp, pcb_acts_PstkProtoTmp},
-	{"PstkProtoEdit", pcb_act_PstkProtoEdit, pcb_acth_PstkProtoEdit, pcb_acts_PstkProtoEdit}
+	{"PstkProtoEdit", pcb_act_PstkProtoEdit, pcb_acth_PstkProtoEdit, pcb_acts_PstkProtoEdit},
+	{"LayerObjDup", pcb_act_LayerObjDup, pcb_acth_LayerObjDup, pcb_acts_LayerObjDup}
 };
 
 static const char *act_draw_cookie = "act_draw";
