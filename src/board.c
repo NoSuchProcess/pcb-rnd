@@ -370,6 +370,44 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	return chg;
 }
 
+pcb_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags)
+{
+	pcb_layergrp_id_t gid;
+	pcb_layergrp_t *grp;
+	pcb_coord_t curr, total = 0;
+
+	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
+		const char *s;
+
+		if (!(grp->ltype & PCB_LYT_COPPER) && !(grp->ltype & PCB_LYT_SUBSTRATE))
+			continue;
+
+		if (namespace != NULL)
+			s = pcb_attribute_get_namespace(&grp->Attributes, namespace, "thickness");
+		else
+			s = pcb_attribute_get(&grp->Attributes, "thickness");
+		curr = 0;
+		if (s != NULL)
+			curr = pcb_get_value(s, NULL, NULL, NULL);
+		if (curr <= 0) {
+			if (grp->ltype & PCB_LYT_SUBSTRATE) {
+				if (flags & PCB_BRDTHICK_PRINT_ERROR) {
+					if (namespace != NULL)
+						pcb_message(PCB_MSG_ERROR, "%s: ", namespace);
+					pcb_message(PCB_MSG_ERROR, "can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
+				}
+				if (flags & PCB_BRDTHICK_TOLERANT)
+					continue;
+				return -1;
+			}
+			else
+				continue;
+		}
+		total += curr;
+	}
+	return total;
+}
+
 pcb_pixmap_t *pcb_pixmap_insert_or_free(pcb_board_t *pcb, pcb_pixmap_t *pm)
 {
 	return NULL;

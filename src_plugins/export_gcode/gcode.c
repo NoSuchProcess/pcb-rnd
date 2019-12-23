@@ -148,33 +148,6 @@ static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int
 
 }
 
-static pcb_coord_t pcb_board_thickness(pcb_board_t *pcb)
-{
-	pcb_layergrp_id_t gid;
-	pcb_layergrp_t *grp;
-	pcb_coord_t curr, total = 0;
-
-	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
-		const char *s;
-
-		if (!(grp->ltype & PCB_LYT_COPPER) && !(grp->ltype & PCB_LYT_SUBSTRATE))
-			continue;
-		s = pcb_attribute_get(&grp->Attributes, "gcode::thickness");
-		if (s == NULL)
-			s = pcb_attribute_get(&grp->Attributes, "thickness");
-
-		curr = 0;
-		if (s != NULL)
-			curr = pcb_get_value(s, NULL, NULL, NULL);
-		if (curr <= 0) {
-			if (grp->ltype & PCB_LYT_SUBSTRATE)
-				pcb_message(PCB_MSG_ERROR, "gcode: can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
-			continue;
-		}
-		total += curr;
-	}
-	return curr;
-}
 
 #define thru_start_depth 102
 
@@ -197,7 +170,7 @@ static void gcode_print_header(void)
 
 
 	if (total == 0) {
-		total = pcb_board_thickness(gctx.pcb);
+		total = pcb_board_thickness(gctx.pcb, "gcode", PCB_BRDTHICK_PRINT_ERROR);
 		if (total == 0) {
 			pcb_message(PCB_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
 			return;

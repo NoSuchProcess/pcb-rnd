@@ -176,6 +176,16 @@ const char *pcb_board_get_name(void);
    board is not a subc, this call is a NOP; implemented in obj_subc.c */
 void pcb_subc_as_board_update(pcb_board_t *pcb);
 
+/*** thickness ***/
+typedef enum pcb_board_thickness_flags_e { /* bitfield */
+	PCB_BRDTHICK_TOLERANT = 1,               /* return -1 if any substrate layer lacks thickness */
+	PCB_BRDTHICK_PRINT_ERROR = 2             /* print an error message for missing thickness attributes */
+} pcb_board_thickness_flags_t;
+
+/* Return the board thickness or -1 on error */
+pcb_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags);
+
+
 #define PCB_ACT_BOARD ((pcb_board_t *)argv[0].val.argv0.user_call_ctx)
 
 #endif
