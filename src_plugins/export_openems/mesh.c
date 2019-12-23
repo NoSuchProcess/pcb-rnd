@@ -53,9 +53,17 @@ typedef struct {
 } mesh_dlg_t;
 static mesh_dlg_t ia;
 
-static void mesh2dlg(void)
+static void mesh2dlg()
 {
 	int n;
+	pcb_coord_t subst_thick;
+
+	subst_thick = pcb_board_thickness(PCB, "openems", PCB_BRDTHICK_PRINT_ERROR);
+	if (subst_thick <= 0) {
+		pcb_message(PCB_MSG_ERROR, "Assuming 1.5mm thick substrate because of the missing thickness attributes.\nFeel free to change it in the mesh dialog or add the attributes to the substrate groups.");
+		subst_thick = PCB_MM_TO_COORD(1.5);
+	}
+
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.pml, lng, mesh.pml);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, crd, PCB_MM_TO_COORD(0.15));
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, crd, PCB_MM_TO_COORD(0.5));
@@ -66,7 +74,7 @@ static void mesh2dlg(void)
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.ver, lng, 1);
 TODO("enum lookup");
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.subslines, lng, 3);
-	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_subs_thick, crd, PCB_MM_TO_COORD(1.5));
+	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_subs_thick, crd, subst_thick);
 /*	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_copper_thick, crd, PCB_MM_TO_COORD(1.5));*/
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_top, lng, 1);
 	PCB_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_bot, lng, 1);
