@@ -41,6 +41,10 @@
 #include "pcb-printf.h"
 #include "conf_core.h"
 
+const char *PCB_PTR_DOMAIN_LAYER = "pcb_fgw_ptr_domain_layer";
+const char *PCB_PTR_DOMAIN_LAYERGRP = "pcb_fgw_ptr_domain_layergrp";
+
+
 #define conv_str2layerid(dst, src) \
 do { \
 	pcb_layer_id_t lid = pcb_layer_str2id(PCB->Data, src); \
@@ -125,6 +129,90 @@ static int layer_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	abort();
 }
 
+#define conv_str2layergrpid(dst, src) \
+do { \
+	pcb_layergrp_id_t gid = pcb_layergrp_str2id(PCB, src); \
+	if (gid < 0) \
+		return -1; \
+	dst = gid; \
+} while(0)
+
+static int layergrpid_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_LAYERGRPID) { /* convert to layergrp id */
+		pcb_layergrp_id_t tmp;
+		switch(FGW_BASE_TYPE(arg->type)) {
+			ARG_CONV_CASE_LONG(tmp, conv_assign)
+			ARG_CONV_CASE_LLONG(tmp, conv_assign)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_assign)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_assign)
+			ARG_CONV_CASE_STR(tmp, conv_str2layergrpid)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+		}
+		arg->type = FGW_LAYERGRPID;
+		fgw_layergrpid(arg) = tmp;
+		return 0;
+	}
+	if (arg->type == FGW_LAYERGRPID) { /* convert from layergrp id */
+		pcb_layergrp_id_t tmp = fgw_layergrpid(arg);
+		switch(target) {
+			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LLONG(tmp, conv_rev_assign)
+			ARG_CONV_CASE_DOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_LDOUBLE(tmp, conv_rev_assign)
+			ARG_CONV_CASE_PTR(tmp, conv_err)
+			ARG_CONV_CASE_CLASS(tmp, conv_err)
+			ARG_CONV_CASE_INVALID(tmp, conv_err)
+			case FGW_STR:
+				arg->val.str = (char *)pcb_strdup_printf("#%ld", (long)tmp);
+				arg->type = FGW_STR | FGW_DYN;
+				return 0;
+		}
+		arg->type = target;
+		return 0;
+	}
+	fprintf(stderr, "Neither side of the conversion is layer group id\n");
+	abort();
+}
+
+static int layergrp_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_LAYERGRP) { /* convert to layer group */
+		pcb_layergrp_id_t gid;
+		if (layergrpid_arg_conv(ctx, arg, FGW_LAYERGRPID) != 0)
+			return -1;
+		gid = fgw_layergrpid(arg);
+		arg->val.ptr_void = pcb_get_layergrp(PCB, gid);
+		if (arg->val.ptr_void == NULL) {
+			arg->type = FGW_INVALID;
+			return -1;
+		}
+		arg->type = FGW_LAYERGRP;
+		return 0;
+	}
+	if (arg->type == FGW_LAYERGRP) { /* convert from layer group */
+		pcb_layer_id_t gid;
+		pcb_layergrp_t *grp = arg->val.ptr_void;
+		pcb_board_t *pcb;
+		if (grp == NULL)
+			return -1;
+		pcb = grp->parent.board;
+		gid = grp - pcb->LayerGroups.grp;
+		if ((gid >= 0) && (gid < pcb->LayerGroups.len)) {
+			arg->type = FGW_LAYERGRPID;
+			arg->val.nat_long = gid;
+			if (layergrpid_arg_conv(ctx, arg, target) != 0)
+				return -1;
+			return 0;
+		}
+		return -1;
+	}
+	fprintf(stderr, "Neither side of the conversion is layer group\n");
+	abort();
+}
+
 static int data_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_DATA) { /* convert to data */
@@ -178,6 +266,14 @@ void pcb_actions_init_pcb_only(void)
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_arg_conv, NULL) != FGW_LAYER) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERGRPID, "layergrpid", layergrpid_arg_conv, NULL) != FGW_LAYERGRPID) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERGRPID\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERGRP, "layergrp", layergrp_arg_conv, NULL) != FGW_LAYERGRP) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERGRP\n");
 		abort();
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_DATA, "data", data_arg_conv, NULL) != FGW_DATA) {
