@@ -473,6 +473,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, dbl, d);
 				break;
 			case PCB_HATT_INTEGER:
+			case PCB_HATT_BOOL:
 				PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, lng, i);
 				break;
@@ -522,6 +523,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				break;
 			case PCB_HATT_INTEGER:
+			case PCB_HATT_BOOL:
 			case PCB_HATT_ENUM:
 				res->type = FGW_INT;
 				res->val.nat_int = dad->dlg[wid].val.lng;
