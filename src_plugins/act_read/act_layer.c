@@ -61,6 +61,7 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *cmds, *flds;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
+	pcb_layer_type_t lyt;
 	long idx;
 
 	PCB_ACT_CONVARG(1, FGW_STR, ReadGroup, cmds = argv[1].val.str);
@@ -96,14 +97,28 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case act_read_keywords_ltype:
 					res->type = FGW_LONG; res->val.nat_long = grp->ltype;
 					return 0;
+				case act_read_keywords_ltype_anywhere:
+					res->type = FGW_LONG; res->val.nat_long = grp->ltype & PCB_LYT_ANYWHERE;
+					return 0;
+				case act_read_keywords_ltype_anything:
+					res->type = FGW_LONG; res->val.nat_long = grp->ltype & PCB_LYT_ANYTHING;
+					return 0;
 				case act_read_keywords_ltypestr:
+					lyt = grp->ltype;
+					ltypestr:;
 					{
 						gds_t tmp;
 						gds_init(&tmp);
-						pcb_layer_type_map(grp->ltype, &tmp, append_type_bit);
+						pcb_layer_type_map(lyt, &tmp, append_type_bit);
 						res->type = FGW_STR | FGW_DYN; res->val.str = tmp.array;
 					}
 					return 0;
+				case act_read_keywords_ltypestr_anything:
+					lyt = grp->ltype & PCB_LYT_ANYTHING;
+					goto ltypestr;
+				case act_read_keywords_ltypestr_anywhere:
+					lyt = grp->ltype & PCB_LYT_ANYWHERE;
+					goto ltypestr;
 				case act_read_keywords_length:
 					res->type = FGW_LONG; res->val.nat_long = grp->len;
 					return 0;
