@@ -569,6 +569,7 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(-1);
 			return 0;
 		}
+		th = 1;
 	}
 
 	PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, ScaleBuffer, y = argv[2].val.nat_double);
