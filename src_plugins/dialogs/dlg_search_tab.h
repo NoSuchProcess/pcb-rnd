@@ -71,7 +71,7 @@ static const char *right_const_objtype[] = { "POINT", "LINE", "TEXT", "POLYGON",
 static const char *right_const_yesno[] = {"YES", "NO", NULL};
 static const char *right_const_10[] = {"1", "0", NULL};
 static const char *right_const_layerpos[] = {"TOP", "BOTTOM", "INTERNAL", NULL};
-static const char *right_const_layertype[] = {"COPPER", "SILK", "MASK", "PASTE", "OUTLINE" , NULL};
+static const char *right_const_layertype[] = {"COPPER", "SILK", "MASK", "PASTE", "BOUNDARY", "MECH", "DOC" , NULL};
 static const char *right_const_side[] = {"TOP", "BOTTOM", NULL};
 
 enum {
