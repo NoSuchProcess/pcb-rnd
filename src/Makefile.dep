@@ -107,7 +107,8 @@
  ../src_plugins/act_read/act_layer.c data.h crosshair.h buffer.h \
  obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h layer.h \
+ actions_pcb.h
 ../src_plugins/act_read/keywords_sphash.o: \
  ../src_plugins/act_read/keywords_sphash.c
 ../src_plugins/ar_cpcb/ar_cpcb.o: ../src_plugins/ar_cpcb/ar_cpcb.c \
