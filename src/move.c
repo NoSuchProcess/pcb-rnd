@@ -184,6 +184,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 				pcb_arc_get_end(p_arc,0, &nx1, &ny1);
 				pcb_arc_get_end(p_arc,1, &nx2, &ny2);
 				pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE, "icccc", 0, nx1-ox1, ny1-oy1, nx2-ox2, ny2-oy2);
+				ptr2 = p_arc;
 			}
 			break;
 
