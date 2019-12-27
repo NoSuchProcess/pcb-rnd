@@ -1,7 +1,11 @@
 #CFLAGS = -Wall -Wextra -g
 CFLAGS = -g
 
-example: example.o qparse.o
+all: example_dynamic example_static
+
+example_dynamic: example_dynamic.o qparse.o
+
+example_static: example_static.o qparse.o
 
 qparse.o: qparse.c qparse.h
 	$(CC) $(CFLAGS) -c qparse.c -o qparse.o

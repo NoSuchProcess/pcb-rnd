@@ -2,7 +2,8 @@
 #include <string.h>
 #include "qparse.h"
 
-/* Read lines of text from stdin and split them in fields using qparse. */
+/* Read lines of text from stdin and split them in fields using qparse.
+   Uses dynamic allocations. */
 
 int main()
 {
