@@ -10,6 +10,7 @@
 int main()
 {
 	char s[1024];
+	const char *start[3] = {0};
 	char *tmp, *argv_static[8] = {0}, **argv = argv_static;
 	unsigned int argv_alloced = 8;
 	size_t tmp_len;
@@ -29,11 +30,14 @@ int main()
 
 		/* split and print fields */
 		printf("Splitting '%s':\n", s);
-		argc = qparse4(s, &argv, &argv_alloced, SYNTAX, &cons, &tmp, &tmp_len);
+		argc = qparse4(s, &argv, &argv_alloced, SYNTAX, &cons, &tmp, &tmp_len, start, 3);
 		for(n = 0; n < argc; n++)
 			printf(" [%d] '%s'\n", n, argv[n]);
 		qparse_free_strs(argc, &argv);
-		printf("consumed: %ld bytes\n", cons);
+		printf("consumed: %ld bytes, starts at", cons);
+		for(n = 0; (n < argc) && (n < 3); n++)
+			printf(" '%s'", start[n]);
+		printf("\n");
 	}
 	qparse4_free(&argv, &argv_alloced, SYNTAX, &tmp, &tmp_len);
 

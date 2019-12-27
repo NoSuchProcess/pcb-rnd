@@ -36,10 +36,12 @@ int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_
 /* This variant keeps track of argv_ret[] size in user supplied 'argv_allocated' so
    it can be persistent across calls, can save mallocs and frees. If buffer
    and buffer_alloced are not NULL, temporary field buffer is persistent
-   across calls. Call qparse_free_strs() after the call to get rid of the
-   strings (this won't free argv[] itself). After the last parse, call to
+   across calls. If start is not NULL, the start of the first start_len
+   words are saved there.
+   Call qparse_free_strs() after the call to get rid of the strings (this
+   won't free argv[] itself). After the last parse, call qparse4_free() to
    free everything */
-int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, size_t *consumed_out, char **buffer, size_t *buffer_alloced);
+int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, size_t *consumed_out, char **buffer, size_t *buffer_alloced, const char **start, int start_len);
 void qparse_free_strs(int argc, char **argv_ret[]);
 void qparse4_free(char **argv_ret[], unsigned int *argv_allocated, flags_t flg, char **buffer, size_t *buffer_alloced);
 
