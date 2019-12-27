@@ -10,7 +10,7 @@
 int main()
 {
 	char s[1024];
-	char *tmp, *argv_static[8], **argv = argv_static;
+	char *tmp, *argv_static[8] = {0}, **argv = argv_static;
 	unsigned int argv_alloced = 8;
 	size_t tmp_len;
 
