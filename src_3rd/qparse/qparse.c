@@ -258,8 +258,10 @@ int qparse(const char *input, char **argv_ret[])
 void qparse_free_strs(int argc, char **argv_ret[])
 {
 	int n;
-	for (n = 0; n < argc; n++)
+	for (n = 0; n < argc; n++) {
 		free((*argv_ret)[n]);
+		(*argv_ret)[n] = NULL;
+	}
 }
 
 void qparse_free(int argc, char **argv_ret[])
@@ -270,9 +272,9 @@ void qparse_free(int argc, char **argv_ret[])
 	*argv_ret = NULL;
 }
 
-void qparse4_free(int argc, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, char **buffer, size_t *buffer_alloced)
+void qparse4_free(char **argv_ret[], unsigned int *argv_allocated, flags_t flg, char **buffer, size_t *buffer_alloced)
 {
-	qparse_free_strs(argc, argv_ret);
+	qparse_free_strs(*argv_allocated, argv_ret);
 
 	if (!(flg & QPARSE_NO_ARGV_REALLOC)) {
 		free(*argv_ret);

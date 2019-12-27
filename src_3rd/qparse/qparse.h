@@ -40,5 +40,5 @@ int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_
    free everything */
 int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, size_t *consumed_out, char **buffer, size_t *buffer_alloced);
 void qparse_free_strs(int argc, char **argv_ret[]);
-void qparse4_free(int argc, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, char **buffer, size_t *buffer_alloced);
+void qparse4_free(char **argv_ret[], unsigned int *argv_allocated, flags_t flg, char **buffer, size_t *buffer_alloced);
 
