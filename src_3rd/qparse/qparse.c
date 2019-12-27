@@ -89,19 +89,21 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 		allocated_     = 0;
 		argv_allocated = &allocated_;
 	}
+	else
+		argv = *argv_ret;
 
 	argc      = 0;
 	state     = qp_normal;
 
 	if (buffer == NULL) {
 		buff_len  = 128;
-		buff_used = 0;
 		buff      = malloc(buff_len);
 	}
 	else {
 		buff_len = *buffer_alloced;
 		buff     = *buffer;
 	}
+	buff_used = 0;
 
 	for(s = input; *s != '\0'; s++) {
 		switch (state) {
