@@ -22,8 +22,9 @@ typedef enum {
 	QPARSE_TERM_SEMICOLON = 32, /* terminate parsing at semicolon */
 	QPARSE_SEP_COMMA = 64,      /* comma is a separator, like whitespace */
 	QPARSE_COLON_LAST = 128,    /* if an argument starts with a colon, it's the last argument until the end of the message or line (IRC) */
+	QPARSE_PAREN_FUNC = 256,    /* func(...) where func will be argv[0] */
 
-	QPARSE_NO_ARGV_REALLOC = 256 /* in qparse4: do not realloc() argv_ret (caller uses a static variant); if argc == *allocated, extra arguments are concatenated */
+	QPARSE_NO_ARGV_REALLOC = 512 /* in qparse4: do not realloc() argv_ret (caller uses a static variant); if argc == *allocated, extra arguments are concatenated */
 } flags_t;
 
 int qparse2(const char *input, char **argv_ret[], flags_t flg);

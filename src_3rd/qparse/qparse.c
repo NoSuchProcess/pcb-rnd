@@ -83,6 +83,7 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 	char *buff;
 	size_t buff_len, buff_used;
 	char **argv;
+	int num_fparens = 0;
 
 	if (argv_allocated == NULL) {
 		argv           = NULL;
@@ -131,7 +132,17 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 						else
 							qpush(*s);
 						break;
+					case ')':
+						if ((flg & QPARSE_PAREN_FUNC) && (num_fparens == 1))
+							goto stop;
+						qpush(*s);  /* plain ')', don't care */
+						break;
 					case '(':
+						if ((flg & QPARSE_PAREN_FUNC) && (num_fparens == 0)) {
+							num_fparens++;
+							qnext();
+							break;
+						}
 						if (flg & QPARSE_PAREN)
 							state = qp_paren;
 						else
