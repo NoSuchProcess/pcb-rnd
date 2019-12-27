@@ -56,36 +56,52 @@ typedef enum qp_state_e {
 	}
 
 #define qnext() \
-	{ \
-		if (argc >= allocated) { \
-			allocated += 8; \
-			argv = realloc(argv, sizeof(char *) * allocated); \
+	do { \
+		int ran_out = 0; \
+		if (argc >= *argv_allocated) { \
+			if (!(flg & QPARSE_NO_ARGV_REALLOC)) { \
+				*argv_allocated += 8; \
+				argv = realloc(argv, sizeof(char *) * (*argv_allocated)); \
+			} \
+			else \
+				ran_out = 1; \
 		} \
-		buff[buff_used] = '\0'; \
-		argv[argc] = qparse_strdup(buff); \
-		argc++; \
-		*buff = '\0'; \
-		buff_used = 0; \
-	}
+		if (!ran_out) { \
+			buff[buff_used] = '\0'; \
+			argv[argc] = qparse_strdup(buff); \
+			argc++; \
+			*buff = '\0'; \
+			buff_used = 0; \
+		} \
+	} while(0)
 
-int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_out)
+int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, size_t *consumed_out, char **buffer, size_t *buffer_alloced)
 {
-	int argc;
-	int allocated;
+	int argc, allocated_;
 	qp_state_t state;
 	const char *s;
 	char *buff;
-	int buff_len, buff_used;
+	size_t buff_len, buff_used;
 	char **argv;
 
+	if (argv_allocated == NULL) {
+		argv           = NULL;
+		allocated_     = 0;
+		argv_allocated = &allocated_;
+	}
+
 	argc      = 0;
-	allocated = 0;
-	argv      = NULL;
 	state     = qp_normal;
 
-	buff_len  = 128;
-	buff_used = 0;
-	buff      = malloc(buff_len);
+	if (buffer == NULL) {
+		buff_len  = 128;
+		buff_used = 0;
+		buff      = malloc(buff_len);
+	}
+	else {
+		buff_len = *buffer_alloced;
+		buff     = *buffer;
+	}
 
 	for(s = input; *s != '\0'; s++) {
 		switch (state) {
@@ -207,8 +223,14 @@ int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_
 
 	qnext();
 
-	if (buff != NULL)
-		free(buff);
+	if (buffer == NULL) {
+		if (buff != NULL)
+			free(buff);
+	}
+	else {
+		*buffer = buff;
+		*buffer_alloced = buff_len;
+	}
 
 	if (consumed_out != NULL)
 		*consumed_out = s-input;
@@ -216,27 +238,54 @@ int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_
 	return argc;
 }
 
+int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_out)
+{
+	return qparse4(input, argv_ret, 0, flg, consumed_out, NULL, NULL);
+}
+
+
 int qparse2(const char *input, char **argv_ret[], flags_t flg)
 {
-	return qparse3(input, argv_ret, flg, NULL);
+	return qparse4(input, argv_ret, 0, flg, NULL, NULL, NULL);
 }
 
 int qparse(const char *input, char **argv_ret[])
 {
-	return qparse3(input, argv_ret, QPARSE_DOUBLE_QUOTE, NULL);
+	return qparse4(input, argv_ret, 0, QPARSE_DOUBLE_QUOTE, NULL, NULL, NULL);
 }
 
 
-void qparse_free(int argc, char **argv_ret[])
+void qparse_free_strs(int argc, char **argv_ret[])
 {
 	int n;
-
 	for (n = 0; n < argc; n++)
 		free((*argv_ret)[n]);
+}
+
+void qparse_free(int argc, char **argv_ret[])
+{
+	qparse_free_strs(argc, argv_ret);
 
 	free(*argv_ret);
 	*argv_ret = NULL;
 }
+
+void qparse4_free(int argc, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, char **buffer, size_t *buffer_alloced)
+{
+	qparse_free_strs(argc, argv_ret);
+
+	if (!(flg & QPARSE_NO_ARGV_REALLOC)) {
+		free(*argv_ret);
+		*argv_ret = NULL;
+		*argv_allocated = 0;
+	}
+
+	if (*buffer != NULL) {
+		free(*buffer);
+		*buffer_alloced = 0;
+	}
+}
+
 
 char *qparse_strdup(const char *s)
 {

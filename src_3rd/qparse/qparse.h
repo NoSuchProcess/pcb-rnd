@@ -21,7 +21,9 @@ typedef enum {
 	QPARSE_TERM_NEWLINE = 16,   /* terminate parsing at newline */
 	QPARSE_TERM_SEMICOLON = 32, /* terminate parsing at semicolon */
 	QPARSE_SEP_COMMA = 64,      /* comma is a separator, like whitespace */
-	QPARSE_COLON_LAST = 128     /* if an argument starts with a colon, it's the last argument until the end of the message or line (IRC) */
+	QPARSE_COLON_LAST = 128,    /* if an argument starts with a colon, it's the last argument until the end of the message or line (IRC) */
+
+	QPARSE_NO_ARGV_REALLOC = 256 /* in qparse4: do not realloc() argv_ret (caller uses a static variant); if argc == *allocated, extra arguments are concatenated */
 } flags_t;
 
 int qparse2(const char *input, char **argv_ret[], flags_t flg);
@@ -29,3 +31,14 @@ int qparse2(const char *input, char **argv_ret[], flags_t flg);
 /* This variant returns the number of characters consumed from the input
    so it can be used for multi-command parsing */
 int qparse3(const char *input, char **argv_ret[], flags_t flg, size_t *consumed_out);
+
+/* This variant keeps track of argv_ret[] size in user supplied 'argv_allocated' so
+   it can be persistent across calls, can save mallocs and frees. If buffer
+   and buffer_alloced are not NULL, temporary field buffer is persistent
+   across calls. Call qparse_free_strs() after the call to get rid of the
+   strings (this won't free argv[] itself). After the last parse, call to
+   free everything */
+int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, size_t *consumed_out, char **buffer, size_t *buffer_alloced);
+void qparse_free_strs(int argc, char **argv_ret[]);
+void qparse4_free(int argc, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, char **buffer, size_t *buffer_alloced);
+
