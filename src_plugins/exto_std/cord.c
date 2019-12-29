@@ -116,6 +116,9 @@ static void pcb_cord_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	pcb_trace("cord: float pre %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
+	if (floater->extobj_role == NULL)
+		return;
+
 	cord_clear(subc, group_of(floater));
 }
 
