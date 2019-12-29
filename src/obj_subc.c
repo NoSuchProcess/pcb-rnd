@@ -1766,7 +1766,9 @@ do { \
 
 #include "conf_core.h"
 #include "draw.h"
-pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
+
+
+pcb_r_dir_t pcb_draw_subc_mark(const pcb_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
@@ -1774,12 +1776,6 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	int selected;
 	int freq = conf_core.appearance.subc.dash_freq;
 	const pcb_color_t *nnclr;
-	pcb_extobj_t *extobj = pcb_extobj_get(subc);
-
-	if ((extobj != NULL) && (extobj->draw_mark != NULL)) {
-		extobj->draw_mark(info, subc);
-		return PCB_R_DIR_FOUND_CONTINUE;
-	}
 
 	selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
 
@@ -1801,6 +1797,20 @@ pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
+}
+
+pcb_r_dir_t draw_subc_mark_callback(const pcb_box_t *b, void *cl)
+{
+	pcb_draw_info_t *info = cl;
+	pcb_subc_t *subc = (pcb_subc_t *) b;
+	pcb_extobj_t *extobj = pcb_extobj_get(subc);
+
+	if ((extobj != NULL) && (extobj->draw_mark != NULL)) {
+		extobj->draw_mark(info, subc);
+		return PCB_R_DIR_FOUND_CONTINUE;
+	}
+
+	return pcb_draw_subc_mark(b, cl);
 }
 
 pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
