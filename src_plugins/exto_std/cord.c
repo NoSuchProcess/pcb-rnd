@@ -27,6 +27,7 @@
  */
 
 #include "search.h"
+#include "data_parent.h"
 
 #define LID_EDIT 0
 #define LID_TARGET 1
@@ -304,6 +305,57 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 		for(ps = padstacklist_first(&s->data->padstack); ps != NULL; ps = padstacklist_next(ps))
 			conv_pstk(subc, ps, &grp, &term, &has_origin);
+	}
+
+	/* step 2: copy layer objects */
+	for(n = 0; n < objs->used; n++) {
+		int lid;
+		pcb_subc_t *s = objs->array[n];
+		if (s->type != PCB_OBJ_SUBC) continue;
+		for(lid = 0; lid < s->data->LayerN; lid++) {
+			gdl_iterator_t it;
+			pcb_line_t *line;
+			pcb_arc_t *arc;
+			pcb_text_t *text;
+			pcb_poly_t *poly;
+			pcb_layer_t *sl = &s->data->Layer[lid], *dl;
+
+			if (strcmp(sl->name, "subc-aux") == 0) continue;
+
+			TODO("this layer copy is code dup from subc_dup_at(); make it common");
+			dl = &subc->data->Layer[subc->data->LayerN++];
+			dl->is_bound = 1;
+			dl->type = PCB_OBJ_LAYER;
+			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+			dl->name = pcb_strdup(sl->name);
+			dl->comb = sl->comb;
+			if (dl->meta.bound.real != NULL)
+				pcb_layer_link_trees(dl, dl->meta.bound.real);
+
+			linelist_foreach(&sl->Line, &it, line) {
+				pcb_line_t *nline = pcb_line_dup_at(dl, line, 0, 0);
+				if (nline != NULL)
+					PCB_SET_PARENT(nline, layer, dl);
+			}
+
+			arclist_foreach(&sl->Arc, &it, arc) {
+				pcb_arc_t *narc = pcb_arc_dup_at(dl, arc, 0, 0);
+				if (narc != NULL)
+					PCB_SET_PARENT(narc, layer, dl);
+			}
+
+			textlist_foreach(&sl->Text, &it, text) {
+				pcb_text_t *ntext = pcb_text_dup_at(dl, text, 0, 0);
+				if (ntext != NULL)
+					PCB_SET_PARENT(ntext, layer, dl);
+			}
+
+			polylist_foreach(&sl->Polygon, &it, poly) {
+				pcb_poly_t *npoly = pcb_poly_dup_at(dl, poly, 0, 0);
+				if (npoly != NULL)
+					PCB_SET_PARENT(npoly, layer, dl);
+			}
+		}
 	}
 
 
