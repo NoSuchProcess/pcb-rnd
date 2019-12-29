@@ -170,7 +170,7 @@ static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 	return pcb_pstk_proto_insert_dup(data, &proto, 1);
 }
 
-static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, const char *grp)
+static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, const char *term, const char *grp)
 {
 	pcb_pstk_t *ps;
 
@@ -178,6 +178,8 @@ static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t 
 	set_grp((pcb_any_obj_t *)ps, grp);
 	PCB_FLAG_SET(PCB_FLAG_FLOATER, ps);
 	pcb_attribute_put(&ps->Attributes, "extobj::role", "edit");
+	pcb_attribute_put(&ps->Attributes, "intconn", grp);
+	pcb_attribute_put(&ps->Attributes, "term", term);
 	return ps;
 }
 
@@ -185,7 +187,7 @@ static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t 
 static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *subc;
-	long n, grp = 0;
+	long n, grp = 1, term = 0; /* for intconn grp needs to start from 1 */
 	pcb_coord_t ox = 0, oy = 0;
 	pcb_dflgmap_t layers[] = {
 		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
@@ -217,14 +219,17 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 	for(n = 0; n < objs->used; n++) {
 		pcb_line_t *l = objs->array[n];
-		char sgrp[16];
+		char sgrp[16], sterm[16];
 
 		if (l->type != PCB_OBJ_LINE) continue;
 
 		sprintf(sgrp, "%ld", grp++);
 
-		endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sgrp);
-		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sgrp);
+		sprintf(sterm, "cord%ld", term++);
+		endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sterm, sgrp);
+
+		sprintf(sterm, "cord%ld", term++);
+		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sterm, sgrp);
 
 		cord_gen(subc, sgrp);
 	}
