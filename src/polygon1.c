@@ -3100,8 +3100,11 @@ pcb_bool pcb_poly_valid(pcb_polyarea_t * p)
 	pa_chk_res_t chk;
 
 	if ((p == NULL) || (p->contours == NULL)) {
+#if 0
+(disabled for too many false positive)
 #ifndef NDEBUG
 		pcb_fprintf(stderr, "Invalid polyarea: no contours\n");
+#endif
 #endif
 		return pcb_false;
 	}
