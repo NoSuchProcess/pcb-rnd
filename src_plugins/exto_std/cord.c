@@ -138,7 +138,7 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 	cord_gen(subc, grp);
 
 	if (floater->type == PCB_OBJ_PSTK) {
-		pcb_pstk_t *ps = floater;
+		pcb_pstk_t *ps = (pcb_pstk_t *)floater;
 		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
 	}
 }
@@ -157,7 +157,7 @@ static pcb_extobj_del_t pcb_cord_float_del(pcb_subc_t *subc, pcb_any_obj_t *floa
 	for(p = padstacklist_first(&subc->data->padstack); p != NULL; p = next) {
 		const char *lg;
 		next = padstacklist_next(p);
-		if (p == floater) continue;  /* do not remove the input floater, the caller may need it */
+		if ((pcb_any_obj_t *)p == floater) continue;  /* do not remove the input floater, the caller may need it */
 		lg = group_of((pcb_any_obj_t *)p);
 		if ((lg == NULL) || (strcmp(lg, group) != 0)) {
 			has_other_grp = 1;
