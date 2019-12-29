@@ -154,7 +154,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			continue;
 
 		t1 = pcb_termlist_first(&net->conns);
-		t2 = pcb_termlist_next(t2);
+		t2 = pcb_termlist_next(t1);
 		to1 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t1->refdes, t1->term, NULL, NULL);
 		to2 = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t2->refdes, t2->term, NULL, NULL);
 
