@@ -137,7 +137,7 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 	cord_gen(subc, grp);
 
-	if (floater->type == PCB_OBJ_PSTK) {
+	if ((floater->type == PCB_OBJ_PSTK) && (pcb_attribute_get(&subc->Attributes, "extobj::fixed_origin") == NULL)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)floater;
 		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
 	}
@@ -241,7 +241,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 {
 	pcb_subc_t *subc;
 	long n, grp = 1, term = 0; /* for intconn grp needs to start from 1 */
-	pcb_coord_t ox = 0, oy = 0, has_origin = 0;
+	pcb_coord_t ox = 0, oy = 0, has_origin = 0, has_subc = 0;
 	pcb_dflgmap_t layers[] = {
 		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
 		{"target", PCB_LYT_SILK | PCB_LYT_TOP, NULL, 0, 0},
@@ -250,6 +250,18 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 	pcb_trace("cord: conv_objs\n");
 
+	/* origin override: if converting subcircuits, keep the first subcircuits origin */
+	for(n = 0; n < objs->used; n++) {
+		pcb_subc_t *s = objs->array[n];
+		if (s->type != PCB_OBJ_SUBC) continue;
+		has_subc = 1;
+
+		if (pcb_subc_get_origin(s, &ox, &oy) == 0) {
+			has_origin = 1;
+			break;
+		}
+	}
+
 	/* set target layer from the first line object's layer */
 	for(n = 0; n < objs->used; n++) {
 		pcb_line_t *l = objs->array[n];
@@ -257,9 +269,11 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 		layers[1].lyt = pcb_layer_flags_(l->parent.layer);
 		pcb_layer_purpose_(l->parent.layer, &layers[1].purpose);
-		ox = l->Point1.X + PCB_MM_TO_COORD(0.3);
-		oy = l->Point1.Y + PCB_MM_TO_COORD(0.3);
-		has_origin = 1;
+		if (!has_origin) {
+			ox = l->Point1.X + PCB_MM_TO_COORD(0.3);
+			oy = l->Point1.Y + PCB_MM_TO_COORD(0.3);
+			has_origin = 1;
+		}
 		break;
 	}
 
@@ -362,6 +376,8 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 	}
 
 
+	if (has_subc)
+		pcb_attribute_put(&subc->Attributes, "extobj::fixed_origin", "(yes)");
 
 	return subc;
 }
