@@ -31,7 +31,7 @@
 #define LID_EDIT 0
 #define LID_TARGET 1
 #define COPPER_END 0
-#define SILK_END 0
+#define SILK_END 1
 
 
 static const char *group_of(pcb_any_obj_t *floater)
