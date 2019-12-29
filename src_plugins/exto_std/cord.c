@@ -295,6 +295,19 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 			conv_pstk(subc, ps, &grp, &term, &has_origin);
 	}
 
+	/* convert subcircuits (footprints) */
+	/* step 1: convert padstacks */
+	for(n = 0; n < objs->used; n++) {
+		pcb_pstk_t *ps;
+		pcb_subc_t *s = objs->array[n];
+		if (s->type != PCB_OBJ_SUBC) continue;
+
+		for(ps = padstacklist_first(&s->data->padstack); ps != NULL; ps = padstacklist_next(ps))
+			conv_pstk(subc, ps, &grp, &term, &has_origin);
+	}
+
+
+
 	return subc;
 }
 
