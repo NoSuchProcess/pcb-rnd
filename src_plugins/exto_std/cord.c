@@ -120,6 +120,11 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	const char *grp;
 
+	if (floater == NULL) {
+		/* post-floater-del update: noop */
+		return;
+	}
+
 	pcb_trace("cord: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
 	if (floater->extobj_role == NULL)
@@ -139,9 +144,28 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 static pcb_extobj_del_t pcb_cord_float_del(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-TODO("remove only the group");
+	pcb_pstk_t *p, *next;
+	const char *group = group_of(floater);
+	int has_other_grp = 0;
+
 	pcb_trace("cord: float del %ld %ld\n", subc->ID, floater->ID);
-	return PCB_EXTODEL_SUBC;
+
+	if ((floater->type != PCB_OBJ_PSTK) || (group == NULL))
+		return PCB_EXTODEL_FLOATER; /* e.g. refdes text - none of our business */
+
+	for(p = padstacklist_first(&subc->data->padstack); p != NULL; p = next) {
+		const char *lg;
+		next = padstacklist_next(p);
+		if (p == floater) continue;  /* do not remove the input floater, the caller may need it */
+		lg = group_of((pcb_any_obj_t *)p);
+		if ((lg == NULL) || (strcmp(lg, group) != 0)) {
+			has_other_grp = 1;
+			continue;
+		}
+		pcb_pstk_free(p);
+	}
+
+	return has_other_grp ? PCB_EXTODEL_FLOATER : PCB_EXTODEL_SUBC;
 }
 
 static void pcb_cord_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
