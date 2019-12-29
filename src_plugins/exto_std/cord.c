@@ -187,6 +187,7 @@ static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 
 	memset(&proto, 0, sizeof(proto));
 	memset(&tshp, 0, sizeof(tshp));
+	memset(&shape, 0, sizeof(shape));
 
 	tshp.shape = &shape;
 	proto.tr.alloced = proto.tr.used = 1; /* has the canonical form only */
