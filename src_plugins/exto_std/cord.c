@@ -217,19 +217,14 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 	for(n = 0; n < objs->used; n++) {
 		pcb_line_t *l = objs->array[n];
-		pcb_pstk_t *end;
 		char sgrp[16];
 
 		if (l->type != PCB_OBJ_LINE) continue;
 
 		sprintf(sgrp, "%ld", grp++);
 
-		end = endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sgrp);
-
-		end = endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sgrp);
-		set_grp((pcb_any_obj_t *)end, sgrp);
-		PCB_FLAG_SET(PCB_FLAG_FLOATER, end);
-		pcb_attribute_put(&end->Attributes, "extobj::role", "edit");
+		endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sgrp);
+		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sgrp);
 
 		cord_gen(subc, sgrp);
 	}
