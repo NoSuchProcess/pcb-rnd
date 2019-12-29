@@ -119,6 +119,7 @@ static void pcb_cord_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
 static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	const char *grp;
+
 	pcb_trace("cord: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
 	if (floater->extobj_role == NULL)
@@ -129,6 +130,11 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 		return;
 
 	cord_gen(subc, grp);
+
+	if (floater->type == PCB_OBJ_PSTK) {
+		pcb_pstk_t *ps = floater;
+		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
+	}
 }
 
 static pcb_extobj_del_t pcb_cord_float_del(pcb_subc_t *subc, pcb_any_obj_t *floater)
@@ -205,8 +211,8 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 		layers[1].lyt = pcb_layer_flags_(l->parent.layer);
 		pcb_layer_purpose_(l->parent.layer, &layers[1].purpose);
-		ox = l->Point1.X;
-		oy = l->Point1.Y;
+		ox = l->Point1.X + PCB_MM_TO_COORD(0.3);
+		oy = l->Point1.Y + PCB_MM_TO_COORD(0.3);
 		break;
 	}
 
