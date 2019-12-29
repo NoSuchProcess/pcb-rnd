@@ -15,7 +15,6 @@
 - BUG: place so(8), {m k s}, remove one term, {u u}, remove the subc -> the terminal put back by undo is not part of the subc [report: Igor2]
 - BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
 - BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
-- BUG: segfault: bug_files/layer_segf.pcb [report: Igor2]
 - BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
 - BUG: direct ps export: implicit outline layer appears twice in the TOC [report=cuvoodoo]
 - BUG: report preferences dialog, library tab, 'edit' should be disabled if no line is selected [report: Stefan]
