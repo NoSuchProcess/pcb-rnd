@@ -106,6 +106,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 static void pcb_cord_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
+	pcb_exto_draw_makr(info, subc);
 }
 
 static void pcb_cord_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
