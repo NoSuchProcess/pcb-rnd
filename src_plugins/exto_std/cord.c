@@ -108,6 +108,8 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 static void pcb_cord_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
 	pcb_exto_draw_makr(info, subc);
+	if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
+		pcb_draw_subc_mark((const pcb_box_t *)subc, info);
 }
 
 static void pcb_cord_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
@@ -376,8 +378,10 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 	}
 
 
-	if (has_subc)
+	if (has_subc) {
 		pcb_attribute_put(&subc->Attributes, "extobj::fixed_origin", "(yes)");
+		PCB_FLAG_CLEAR(PCB_FLAG_LOCK, subc);
+	}
 
 	return subc;
 }
