@@ -217,12 +217,30 @@ static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t 
 }
 
 
+static void conv_pstk(pcb_subc_t *subc, pcb_pstk_t *ps, long *grp, long *term, int *has_origin)
+{
+	char sgrp[16], sterm[16];
+
+	sprintf(sgrp, "%ld", (*grp)++);
+
+	endpt_pstk(subc->data, COPPER_END, ps->x, ps->y, ps->term, sgrp, 1);
+
+	sprintf(sterm, "cord%ld", (*term)++);
+	endpt_pstk(subc->data, SILK_END, ps->x, ps->y, ps->term, sgrp, 0);
+
+	if (!*has_origin) {
+		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
+		*has_origin = 1;
+	}
+
+	cord_gen(subc, sgrp);
+}
+
 static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *subc;
-	char sgrp[16], sterm[16];
 	long n, grp = 1, term = 0; /* for intconn grp needs to start from 1 */
-	pcb_coord_t ox = 0, oy = 0;
+	pcb_coord_t ox = 0, oy = 0, has_origin = 0;
 	pcb_dflgmap_t layers[] = {
 		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
 		{"target", PCB_LYT_SILK | PCB_LYT_TOP, NULL, 0, 0},
@@ -240,6 +258,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		pcb_layer_purpose_(l->parent.layer, &layers[1].purpose);
 		ox = l->Point1.X + PCB_MM_TO_COORD(0.3);
 		oy = l->Point1.Y + PCB_MM_TO_COORD(0.3);
+		has_origin = 1;
 		break;
 	}
 
@@ -253,6 +272,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 	/* convert lines into 2-ended cords */
 	for(n = 0; n < objs->used; n++) {
+		char sgrp[16], sterm[16];
 		pcb_line_t *l = objs->array[n];
 
 		if (l->type != PCB_OBJ_LINE) continue;
@@ -271,17 +291,8 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 	/* convert padstacks into single-ended cords, one end anchored at the original position */
 	for(n = 0; n < objs->used; n++) {
 		pcb_pstk_t *ps = objs->array[n];
-
-		if (ps->type != PCB_OBJ_PSTK) continue;
-
-		sprintf(sgrp, "%ld", grp++);
-
-		endpt_pstk(subc->data, COPPER_END, ps->x, ps->y, ps->term, sgrp, 1);
-
-		sprintf(sterm, "cord%ld", term++);
-		endpt_pstk(subc->data, SILK_END, ps->x, ps->y, ps->term, sgrp, 0);
-
-		cord_gen(subc, sgrp);
+		if (ps->type == PCB_OBJ_PSTK)
+			conv_pstk(subc, ps, &grp, &term, &has_origin);
 	}
 
 	return subc;
