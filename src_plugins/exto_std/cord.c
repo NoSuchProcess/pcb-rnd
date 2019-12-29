@@ -98,7 +98,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 	l = pcb_line_new(ly, e1->x, e1->y, e2->x, e2->y,
 		PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
 	pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
-	pcb_attribute_put(&l->Attributes, "extobj::group", group);
+	set_grp((pcb_any_obj_t *)l, group);
 
 	return pcb_exto_regen_end(subc);
 }
