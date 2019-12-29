@@ -940,9 +940,9 @@ pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int
 void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t g;
-	for(g = 0; g < pcb->LayerGroups.len-2; g++) {
+	for(g = 0; g < ((pcb_layergrp_id_t)pcb->LayerGroups.len)-2; g++) {
 		pcb_layergrp_t *g0 = &pcb->LayerGroups.grp[g], *g1 = &pcb->LayerGroups.grp[g+1];
-		if ((g < pcb->LayerGroups.len-3) && (g1->ltype & PCB_LYT_BOUNDARY)) g1++;
+		if ((g < ((pcb_layergrp_id_t)pcb->LayerGroups.len)-3) && (g1->ltype & PCB_LYT_BOUNDARY)) g1++;
 		if ((g0->ltype & PCB_LYT_COPPER) && (g1->ltype & PCB_LYT_COPPER)) {
 			pcb_layergrp_t *ng = pcb_layergrp_insert_after(pcb, g);
 			ng->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
