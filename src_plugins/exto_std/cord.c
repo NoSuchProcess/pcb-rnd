@@ -312,6 +312,9 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		int lid;
 		pcb_subc_t *s = objs->array[n];
 		if (s->type != PCB_OBJ_SUBC) continue;
+
+		pcb_attribute_copy_all(&subc->Attributes, &s->Attributes);
+
 		for(lid = 0; lid < s->data->LayerN; lid++) {
 			gdl_iterator_t it;
 			pcb_line_t *line;
