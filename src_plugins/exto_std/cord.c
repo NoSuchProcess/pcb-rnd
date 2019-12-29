@@ -283,7 +283,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sterm, sgrp, 1);
 
 		sprintf(sterm, "cord%ld", term++);
-		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sterm, sgrp, 0);
+		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sterm, sgrp, 1);
 
 		cord_gen(subc, sgrp);
 	}
