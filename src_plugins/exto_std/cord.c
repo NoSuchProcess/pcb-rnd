@@ -384,7 +384,12 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 	if (has_subc) {
 		pcb_attribute_put(&subc->Attributes, "extobj::fixed_origin", "(yes)");
 		PCB_FLAG_CLEAR(PCB_FLAG_LOCK, subc);
+
+		pcb_subc_unreg(subc);
+		pcb_subc_bbox(subc);
+		pcb_subc_reg(dst, subc);
 	}
+
 
 	return subc;
 }
