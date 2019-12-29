@@ -177,16 +177,18 @@ static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 	return pcb_pstk_proto_insert_dup(data, &proto, 1);
 }
 
-static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, const char *term, const char *grp)
+static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, const char *term, const char *grp, int floater)
 {
 	pcb_pstk_t *ps;
 
 	ps = pcb_pstk_new(data, -1, pid, x, y, 0, pcb_flag_make(0));
 	set_grp((pcb_any_obj_t *)ps, grp);
-	PCB_FLAG_SET(PCB_FLAG_FLOATER, ps);
+	if (floater)
+		PCB_FLAG_SET(PCB_FLAG_FLOATER, ps);
 	pcb_attribute_put(&ps->Attributes, "extobj::role", "edit");
 	pcb_attribute_put(&ps->Attributes, "intconn", grp);
-	pcb_attribute_put(&ps->Attributes, "term", term);
+	if (term != NULL)
+		pcb_attribute_put(&ps->Attributes, "term", term);
 	return ps;
 }
 
@@ -194,6 +196,7 @@ static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t 
 static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *subc;
+	char sgrp[16], sterm[16];
 	long n, grp = 1, term = 0; /* for intconn grp needs to start from 1 */
 	pcb_coord_t ox = 0, oy = 0;
 	pcb_dflgmap_t layers[] = {
@@ -224,28 +227,37 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 	if (endpt_pstk_proto(subc->data, PCB_LYT_SILK | PCB_LYT_TOP) != SILK_END)
 		pcb_message(PCB_MSG_WARNING, "extended object cord: wrong pstk proto ID for silk end\n");
 
+	/* convert lines into 2-ended cords */
 	for(n = 0; n < objs->used; n++) {
 		pcb_line_t *l = objs->array[n];
-		char sgrp[16], sterm[16];
 
 		if (l->type != PCB_OBJ_LINE) continue;
 
 		sprintf(sgrp, "%ld", grp++);
 
 		sprintf(sterm, "cord%ld", term++);
-		endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sterm, sgrp);
+		endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sterm, sgrp, 1);
 
 		sprintf(sterm, "cord%ld", term++);
-		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sterm, sgrp);
+		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sterm, sgrp, 0);
 
 		cord_gen(subc, sgrp);
 	}
 
-TODO("convert thru-hole pins to single ended cords, keepin term");
+	/* convert padstacks into single-ended cords, one end anchored at the original position */
 	for(n = 0; n < objs->used; n++) {
 		pcb_pstk_t *ps = objs->array[n];
 
 		if (ps->type != PCB_OBJ_PSTK) continue;
+
+		sprintf(sgrp, "%ld", grp++);
+
+		endpt_pstk(subc->data, COPPER_END, ps->x, ps->y, ps->term, sgrp, 1);
+
+		sprintf(sterm, "cord%ld", term++);
+		endpt_pstk(subc->data, SILK_END, ps->x, ps->y, ps->term, sgrp, 0);
+
+		cord_gen(subc, sgrp);
 	}
 
 	return subc;
