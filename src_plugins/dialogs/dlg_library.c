@@ -218,7 +218,17 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 static void update_edit_button(library_ctx_t *ctx)
 {
 	const char *otext = ctx->dlg[ctx->wfilt].val.str;
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL));
+	int param_entered = 0, param_selected = 0;
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+
+	if (row != NULL) {
+		pcb_fplibrary_t *l = row->user_data;
+		param_selected = (l != NULL) && (l->type == LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC);
+	}
+
+	param_entered = !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL);
+
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, param_selected || param_entered);
 }
 
 #include "dlg_library_param.c"
@@ -332,6 +342,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 			if ((l->data.fp.type == PCB_FP_PARAMETRIC)) {
 				if (last != l) { /* first click */
 					library_select_show_param_example(ctx, l);
+					update_edit_button(ctx);
 				}
 				else { /* second click */
 					library_param_dialog(ctx, l);
@@ -343,6 +354,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 					pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_PASTE_BUFFER);
 					if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 						library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
+					update_edit_button(ctx);
 					pcb_gui->invalidate_all(pcb_gui);
 				}
 			}
