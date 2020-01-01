@@ -256,6 +256,8 @@ DIR *pcb_opendir(pcb_hidlib_t *hidlib, const char *name)
 {
 	DIR *d;
 	char *path_exp = pcb_build_fn(hidlib, name);
+	if (path_exp == NULL)
+		return NULL;
 	d = opendir(path_exp);
 	free(path_exp);
 	return d;
