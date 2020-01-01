@@ -707,22 +707,30 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
 		type = PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
-		parse_side(n, subc_side, &side, lyname, "top-silk", "bot-silk");
+		if (parse_side(n, subc_side, &side, lyname, "top-silk", "bot-silk") != 1) {
+			hkp_error(n, "Error parsing silkscreen side.\n"); 
+		}
 	}
 	else if (strcmp(n->argv[0], "SOLDER_MASK") == 0) {
 		type = PCB_LYT_MASK;
 		lyc = PCB_LYC_AUTO;
-		parse_side(n, subc_side, &side, lyname, "top-mask", "bot-mask");
+		if (parse_side(n, subc_side, &side, lyname, "top-mask", "bot-mask") != 1) {
+			hkp_error(n, "Error parsing solder mask side.\n");
+		}
 	}
 	else if (strcmp(n->argv[0], "SOLDER_PASTE") == 0) {
 		type = PCB_LYT_PASTE;
 		lyc = PCB_LYC_AUTO;
-		parse_side(n, subc_side, &side, lyname, "top-paste", "bot-paste");
+		if (parse_side(n, subc_side, &side, lyname, "top-paste", "bot-paste") != 1) {
+			hkp_error(n, "Error parsing paste side.\n");
+		}
 	}
 	else if (strcmp(n->argv[0], "ASSEMBLY_OUTLINE") == 0) {
 		type = PCB_LYT_DOC;
 		lyc = PCB_LYC_AUTO;
-		parse_side(n, subc_side, &side, lyname, "top-assy", "bot-assy");
+		if (parse_side(n, subc_side, &side, lyname, "top-assy", "bot-assy") != 1) {
+			hkp_error(n, "Error parsing assembly outline.\n");
+		}
 	}
 	else if (strcmp(n->argv[0], "ROUTE_OUTLINE") == 0) {
 		type = PCB_LYT_BOUNDARY;
