@@ -340,7 +340,8 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 	if (filled) { /* filled = polygon */
 		pcb_poly_t *poly = pcb_poly_new(ly, 0, DEFAULT_POLY_FLAG);
 		for(n = 1; n < tmp->argc; n++) {
-			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
+			if (parse_xy(ctx, tmp->argv[n], &x, &y, 1) != 0)
+				return hkp_error(pp, "Failed to parse filled polygon point (%s), can't place polygon\n", tmp->argv[n]);
 			pcb_poly_point_new(poly, x, y);
 		}
 		pcb_add_poly_on_layer(ly, poly);
@@ -349,9 +350,11 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 	}
 	else { /* "polyline" = a bunch of line objects */
 		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
-		parse_xy(ctx, tmp->argv[1], &px, &py, 1);
+		if (parse_xy(ctx, tmp->argv[1], &px, &py, 1) != 0)
+			return hkp_error(pp, "Failed to parse polyline start point (%s), can't place polygon\n", tmp->argv[1]);
 		for(n = 2; n < tmp->argc; n++) {
-			parse_xy(ctx, tmp->argv[n], &x, &y, 1);
+			if (parse_xy(ctx, tmp->argv[n], &x, &y, 1) != 0)
+				return hkp_error(pp, "Failed to parse polyline point (%s), can't place polygon\n", tmp->argv[n]);
 			if (pcb_line_new(ly, px, py, x, y, th, cl, DEFAULT_OBJ_FLAG) == NULL)
 				return hkp_error(pp, "Failed to create line for POLYLINE_PATH\n");
 			px = x;
