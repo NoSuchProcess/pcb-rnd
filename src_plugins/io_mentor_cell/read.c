@@ -644,13 +644,24 @@ static int parse_side(node_t *n, pcb_layer_type_t subc_side, pcb_layer_type_t *s
 		return 0;
 
 	if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
-TODO("Look how opposite side to MNT_SIDE is defined.\n");
 		if (subc_side != 0) {
 			*side = subc_side;
 			if ((subc_side & PCB_LYT_TOP) != 0)
 				lyname = lyname_top;
 			else
 				lyname = lyname_bottom;
+			return 1;
+		}
+		else
+			hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
+	}
+	if (strcmp(tmp->argv[1], "OPP_SIDE") == 0) {
+		if (subc_side != 0) {
+			*side = (subc_side ^ PCB_LYT_TOP) ^ PCB_LYT_BOTTOM;
+			if ((subc_side & PCB_LYT_TOP) != 0)
+				lyname = lyname_bottom;
+			else
+				lyname = lyname_top;
 			return 1;
 		}
 		else
