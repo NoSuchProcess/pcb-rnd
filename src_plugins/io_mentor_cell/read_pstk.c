@@ -159,6 +159,21 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 			s->shp.data.poly.x[2] = ox + w/2; s->shp.data.poly.y[2] = oy + h/2;
 			s->shp.data.poly.x[3] = ox + w/2; s->shp.data.poly.y[3] = oy - h/2;
 		}
+		else if (strcmp(n->argv[0], "OBLONG") == 0) {
+			pcb_coord_t w, h;
+			SHAPE_CHECK_DUP;
+			tmp = find_nth(n->first_child, "WIDTH", 0);
+			if (parse_coord(ctx, tmp->argv[1], &w) != 0) {
+				hkp_error(tmp, "Invalid OBLONG WIDTH value '%s'\n", tmp->argv[1]);
+				return NULL;
+			}
+			tmp = find_nth(n->first_child, "HEIGHT", 0);
+			if (parse_coord(ctx, tmp->argv[1], &h) != 0) {
+				hkp_error(tmp, "Invalid OBLONG WIDTH value '%s'\n", tmp->argv[1]);
+				return NULL;
+			}
+			pcb_shape_oval(&(s->shp), w, h);
+		}
 	}
 
 	if (!has_shape) {
