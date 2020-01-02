@@ -19,7 +19,7 @@ if ?libs/script/fungw/presents
 then
 	append /local/pcb/CFLAGS libs/script/fungw/cflags
 	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
-	append /local/pcb/LIBDND_3RD_LDFLAGS libs/script/fungw/ldflags
+	append /local/pcb/LIBRND_3RD_LDFLAGS libs/script/fungw/ldflags
 else
 # no system installed fungw means we need to use local genht
 	append /local/pcb/OBJS_3RDLIB [@
@@ -40,7 +40,7 @@ else
 	../src_3rd/libfungw/fungw_call.o
 	../src_3rd/libfungwbind/c/fungw_c.o
 	@]
-	put /local/pcb/LIBDND_3RD_LDFLAGS {}
+	put /local/pcb/LIBRND_3RD_LDFLAGS {}
 end
 
 # These files are to be generated before make dep is run
@@ -456,7 +456,7 @@ librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
 	$(CC) $(LDFLAGS) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
 
 librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
-	$(CC) @cc/ldflags@ @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) @/local/pcb/LIBDND_3RD_LDFLAGS@ -ldl -lm
+	$(CC) @cc/ldflags@ @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) @/local/pcb/LIBRND_3RD_LDFLAGS@ -ldl -lm
 
 librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
 	$(CC) @cc/ldflags@ @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) -lm
