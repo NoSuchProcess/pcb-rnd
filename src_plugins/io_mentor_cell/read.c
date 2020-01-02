@@ -669,7 +669,7 @@ static int parse_side(node_t *n, pcb_layer_type_t subc_side, pcb_layer_type_t *s
 			return 1;
 		}
 		else
-			hkp_error(n, "Unknown MNT_SIDE while parsing package.\n");
+			hkp_error(tmp, "Unknown MNT_SIDE while parsing package.\n");
 	}
 	else if (strcmp(tmp->argv[1], "TOP") == 0) {
 		*side = PCB_LYT_TOP;
