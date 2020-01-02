@@ -342,8 +342,10 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 	if (filled) { /* filled = polygon */
 		pcb_poly_t *poly = pcb_poly_new(ly, 0, DEFAULT_POLY_FLAG);
 		for(n = 1; n < tmp->argc; n++) {
-			if (parse_xy(ctx, tmp->argv[n], &x, &y, 1) != 0)
+			if (parse_xy(ctx, tmp->argv[n], &x, &y, 1) != 0) {
+				pcb_poly_free(poly);
 				return hkp_error(pp, "Failed to parse filled polygon point (%s), can't place polygon\n", tmp->argv[n]);
+			}
 			pcb_poly_point_new(poly, x, y);
 		}
 		pcb_add_poly_on_layer(ly, poly);
