@@ -40,6 +40,7 @@ else
 	../src_3rd/libfungw/fungw_call.o
 	../src_3rd/libfungwbind/c/fungw_c.o
 	@]
+	put /local/pcb/LIBDND_3RD_LDFLAGS {}
 end
 
 # These files are to be generated before make dep is run
