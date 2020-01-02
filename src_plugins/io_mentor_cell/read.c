@@ -484,9 +484,9 @@ static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, con
 
 	tmp = find_nth(rp->first_child, "XY", 0);
 	if (parse_xy(ctx, tmp->argv[1], &x1, &y1, 1) != 0)
-		return hkp_error(rp, "Failed to parse rect start point (%s), can't place rectangle\n", tmp->argv[1]);
+		return hkp_error(tmp, "Failed to parse rect start point (%s), can't place rectangle\n", tmp->argv[1]);
 	if (parse_xy(ctx, tmp->argv[2], &x2, &y2, 1) != 0)
-		return hkp_error(rp, "Failed to parse rect end point (%s), can't place rectangle\n", tmp->argv[2]);
+		return hkp_error(tmp, "Failed to parse rect end point (%s), can't place rectangle\n", tmp->argv[2]);
 	if (filled) {
 		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2POLY, tmp) * 2;
 TODO("when to generate a rounded corner?");
