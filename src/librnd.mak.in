@@ -6,6 +6,7 @@ append /local/pcb/LDFLAGS_HIDLIB_STATIC_ ?/local/pcb/LDFLAGS_HIDLIB_STATIC
 append /local/pcb/LDFLAGS_HIDLIB_STATIC_ [@ -lm @?/target/libs/ldl@ @]
 if ?libs/script/fungw/presents
 then
+# system installed fungw
 	append /local/pcb/CFLAGS_HIDLIB_STATIC_ libs/script/fungw/cflags
 	append /local/pcb/LDFLAGS_HIDLIB_STATIC_ libs/script/fungw/ldflags
 end
