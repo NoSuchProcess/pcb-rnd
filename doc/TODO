@@ -15,7 +15,7 @@
 + BUG: when drawing rats manually generated netlist, if the user needs to undo a step, rat line is removed but named net is not. [repot: Miloh]
 - BUG: subc floater remove undo/redo bug: place a dip(8), remove the refdes floater, {u u}, {u r}, {u u} -> text put back on the wrong layer (bug probably in redo) [report: Igor2]
 - BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
-- BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
++ BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
 - BUG: place so(8), {m k s}, remove one term, {u u}, remove the subc -> the terminal put back by undo is not part of the subc [report: Igor2]
 
 2. For later releases ===============================================================================
