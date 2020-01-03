@@ -486,6 +486,20 @@ static pcb_bool UndoOtherSide(UndoListTypePtr Entry)
 	return pcb_false;
 }
 
+static void get_subc_parent_data(long subcid, pcb_layer_id_t subclayer, pcb_subc_t **subc, pcb_data_t **data, void **ptr1)
+{
+	if (subcid > 0) { /* need to use a subc layer - putting back a floater */
+		void *p1, *p2, *p3;
+		if (pcb_search_obj_by_id(PCB->Data, &p1, &p2, &p3, subcid, PCB_OBJ_SUBC) != 0) {
+			*subc = p2;
+			if (subclayer < (*subc)->data->LayerN) {
+				*data = (*subc)->data;
+				*ptr1 = &(*data)->Layer[subclayer];
+			}
+		}
+	}
+}
+
 /* ---------------------------------------------------------------------------
  * recovers an object from a 'copy' or 'create' operation
  * returns pcb_true if anything has been recovered
@@ -494,19 +508,25 @@ static pcb_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
+	pcb_subc_t *subc = NULL;
+	pcb_data_t *data = PCB->Data;
 
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
 		Removed *r = &Entry->Data.Removed;
+		get_subc_parent_data(r->p_subc_id, r->p_subc_layer, &subc, &data, &ptr1);
 		if (!pcb_removelist)
 			pcb_removelist = pcb_buffer_new(NULL);
 		if (pcb_undo_and_draw)
 			pcb_erase_obj(type, ptr1, ptr2);
 		/* in order to make this re-doable we move it to the pcb_removelist */
-		pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, type, ptr1, ptr2, ptr3);
+		pcb_move_obj_to_buffer(PCB, pcb_removelist, data, type, ptr1, ptr2, ptr3);
+
+		if ((subc != NULL) && (((pcb_any_obj_t *)ptr2)->term != NULL))
+			pcb_term_del(&subc->terminals, ((pcb_any_obj_t *)ptr2)->term, (pcb_any_obj_t *)ptr2);
+
 		Entry->Type = PCB_UNDO_REMOVE;
-		r->p_subc_id = 0;
 		return pcb_true;
 	}
 	return pcb_false;
@@ -550,16 +570,7 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(pcb_removelist, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
-		if (r->p_subc_id > 0) { /* need to use a subc layer - putting back a floater */
-			void *p1, *p2, *p3;
-			if (pcb_search_obj_by_id(PCB->Data, &p1, &p2, &p3, r->p_subc_id, PCB_OBJ_SUBC) != 0) {
-				subc = p2;
-				if (r->p_subc_layer < subc->data->LayerN) {
-					data = subc->data;
-					ptr1 = &data->Layer[r->p_subc_layer];
-				}
-			}
-		}
+		get_subc_parent_data(r->p_subc_id, r->p_subc_layer, &subc, &data, &ptr1);
 		pcb_move_obj_to_buffer(PCB, data, pcb_removelist, type, ptr1, ptr2, ptr3);
 		if (pcb_undo_and_draw)
 			DrawRecoveredObject((pcb_any_obj_t *)ptr2);
@@ -574,8 +585,6 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 		if (pcb_brave & PCB_BRAVE_CLIPBATCH)
 			pcb_data_clip_inhibit_dec(PCB->Data, 1);
 
-		if (subc != NULL)
-			pcb_term_add(&subc->terminals, (pcb_any_obj_t *)ptr2);
 		return pcb_true;
 	}
 
