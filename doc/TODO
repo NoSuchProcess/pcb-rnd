@@ -7,7 +7,6 @@
 + FEATURE: user script to copy the outline layer onto all copper layers as no-export [report: Ade]
 + BUG: library window, select a parametric footprint with single click, the edit button is not enabled (but it is, after double click) [report: Ade]
 - BUG: detect fungw when installed in /usr/local [report: Bob Paddock]
-+ BUG: asm: coords are not printed by the template - fix: bug_files/asm_coord.patch [report: miloh]
 - BUG: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497 [report: gpaubert]
 - BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
