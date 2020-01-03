@@ -2890,7 +2890,7 @@ yyreduce:
   case 183:
 #line 1246 "parse_y.y" /* yacc.c:1652  */
     {
-				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], (yyvsp[-3].string), 1);
+				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], (yyvsp[-3].string), PCB_NETA_ALLOC);
 				if (((yyvsp[-2].string) != NULL) && (*(yyvsp[-2].string) != '\0'))
 					pcb_attribute_put(&currnet->Attributes, "style", (yyvsp[-2].string));
 				free ((yyvsp[-3].string));

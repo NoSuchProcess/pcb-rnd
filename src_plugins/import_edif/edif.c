@@ -189,7 +189,7 @@
 	 pair_list_free(nodes);
 	 return;
      }
-     net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], name->str1, 1);
+     net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], name->str1, PCB_NETA_ALLOC);
      free(name->str1);
      /* if renamed str2 also exists and must be freed */
      if ( name->str2 )  free(name->str2);

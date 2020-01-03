@@ -50,6 +50,8 @@
 #include "netlist.h"
 #include <genlist/gentdlist_impl.c>
 
+#include <assert.h>
+
 void pcb_net_term_free_fields(pcb_net_term_t *term)
 {
 	pcb_attribute_free(&term->Attributes);
@@ -180,9 +182,11 @@ pcb_bool pcb_net_name_valid(const char *netname)
 	return pcb_true;
 }
 
-static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname)
+static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_net_alloc_t alloc)
 {
 	pcb_net_t *net;
+
+	assert(alloc != 0);
 
 	net = calloc(sizeof(pcb_net_t), 1);
 	net->type = PCB_OBJ_NET;
@@ -193,7 +197,7 @@ static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char 
 	return net;
 }
 
-pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc)
+pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_net_alloc_t alloc)
 {
 	pcb_net_t *net;
 
@@ -208,7 +212,7 @@ pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname,
 		return net;
 
 	if (alloc)
-		return pcb_net_alloc(pcb, nl, netname);
+		return pcb_net_alloc(pcb, nl, netname, alloc);
 
 	return NULL;
 }
@@ -767,7 +771,7 @@ void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src)
 		pcb_net_term_t *src_term, *dst_term;
 
 		src_net = e->value;
-		dst_net = pcb_net_alloc(pcb, dst, src_net->name);
+		dst_net = pcb_net_alloc(pcb, dst, src_net->name, PCB_NETA_ALLOC);
 		dst_net->export_tmp = src_net->export_tmp;
 		dst_net->inhibit_rats = src_net->inhibit_rats;
 		pcb_attribute_copy_all(&dst_net->Attributes, &src_net->Attributes);
@@ -864,7 +868,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 		}
 		else
 			ratname = ratname_;
-		target_net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], ratname, 1);
+		target_net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], ratname, PCB_NETA_ALLOC);
 
 		assert(target_net != NULL);
 		if (ratname != ratname_)

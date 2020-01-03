@@ -133,7 +133,7 @@ static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 	if ((*netname == '\0') || (*pinname == '\0'))
 		return -1;
 
-	n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT+(!!patch)], netname, 1);
+	n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT+(!!patch)], netname, PCB_NETA_ALLOC);
 	t = pcb_net_term_get_by_pinname(n, pinname, 0);
 	if (t == NULL) {
 		if (!patch) {
@@ -328,7 +328,7 @@ static int netlist_merge(pcb_board_t *pcb, const char *from, const char *to, int
 			pcb_message(PCB_MSG_ERROR, "Net name '%s' already in use\n", to);
 			return 1;
 		}
-		nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, 1);
+		nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, PCB_NETA_ALLOC);
 	}
 
 	/* move over all terminals from nfrom to nto */
@@ -600,7 +600,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 1);
+	net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, PCB_NETA_ALLOC);
 	free(free_netname);
 
 	if (net == NULL) {

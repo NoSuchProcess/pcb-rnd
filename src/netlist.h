@@ -33,6 +33,13 @@
 #include "board.h"
 #include "obj_common.h"
 
+/* some calls may create new nets as side effect; they are normally controlled by this enum */
+typedef enum {
+	PCB_NETA_NOALLOC=0,
+	PCB_NETA_ALLOC=1,
+	PCB_NETA_ALLOC_UNDOABLE=2
+} pcb_net_alloc_t;
+
 struct pcb_net_term_s {
 	PCB_ANY_OBJ_FIELDS;
 	char *refdes;
@@ -82,7 +89,7 @@ void pcb_netlist_uninit(pcb_netlist_t *nl);
 void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src);
 
 /* Look up (or allocate) a net by name within a netlist. Returns NULL on error */
-pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_bool alloc);
+pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_net_alloc_t alloc);
 pcb_net_t *pcb_net_get_icase(pcb_board_t *pcb, pcb_netlist_t *nl, const char *name); /* read-only, case-insnensitive */
 pcb_net_t *pcb_net_get_regex(pcb_board_t *pcb, pcb_netlist_t *nl, const char *regex);
 pcb_net_t *pcb_net_get_user(pcb_board_t *pcb, pcb_netlist_t *nl, const char *name_or_rx); /* run all three above in order, until one succeeds */

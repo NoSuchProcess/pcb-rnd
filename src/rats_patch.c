@@ -171,7 +171,7 @@ static int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, 
 	if (refdeslen < 1)
 		return 1; /* invalid id */
 
-	net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], patch->arg1.net_name, 1);
+	net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], patch->arg1.net_name, PCB_NETA_ALLOC);
 	for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
 		if ((strncmp(patch->id, term->refdes, refdeslen) == 0) && (strcmp(termid, term->term) == 0)) {
 			if (del) {
@@ -199,7 +199,7 @@ static int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, 
 
 static int rats_patch_apply_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *patch)
 {
-	pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], patch->id, 1);
+	pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], patch->id, PCB_NETA_ALLOC);
 	if (net == NULL)
 		return 1;
 	if ((patch->arg2.attrib_val == NULL) || (*patch->arg2.attrib_val == '\0'))

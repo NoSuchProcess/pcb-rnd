@@ -1244,7 +1244,7 @@ net
 			/* name style pin pin ... */
 		: T_NET '(' STRING STRING ')' '('
 			{
-				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], $3, 1);
+				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], $3, PCB_NETA_ALLOC);
 				if (($4 != NULL) && (*$4 != '\0'))
 					pcb_attribute_put(&currnet->Attributes, "style", $4);
 				free ($3);

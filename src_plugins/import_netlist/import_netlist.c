@@ -127,7 +127,7 @@ static int ReadNetlist(const char *filename)
 			while (inputline[i] != '\0' && BLANK(inputline[i]))
 				i++;
 			if (kind == 0) {
-				net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], temp, 1);
+				net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], temp, PCB_NETA_ALLOC);
 				kind++;
 			}
 			else {

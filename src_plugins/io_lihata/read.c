@@ -2132,7 +2132,7 @@ static int parse_netlist_input(pcb_board_t *pcb, pcb_netlist_t *nl, lht_node_t *
 			style = nstyle->data.text.value;
 		}
 
-		net = pcb_net_get(pcb, nl, nnet->name, 1);
+		net = pcb_net_get(pcb, nl, nnet->name, PCB_NETA_ALLOC);
 		if (net == NULL)
 			return iolht_error(nnet, "failed to add network\n");
 		if (nconn != NULL) {

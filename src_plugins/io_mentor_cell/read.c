@@ -995,7 +995,7 @@ TODO("netclass: fill this in:")
 	const hkp_netclass_t *nc = NULL;
 
 	if (strcmp(netname, "Unconnected_Net") != 0)
-		pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
+		pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, PCB_NETA_ALLOC);
 
 	for(n = netroot->first_child; n != NULL; n = n->next) {
 		if ((strcmp(n->argv[0], "TRACE") == 0) || (strcmp(n->argv[0], "CONDUCTIVE_AREA") == 0)) {

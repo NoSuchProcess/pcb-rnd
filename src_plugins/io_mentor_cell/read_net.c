@@ -153,7 +153,7 @@ static int io_mentor_cell_netlist(hkp_ctx_t *ctx, const char *fn)
 
 	for(nnet = net_tree.root->first_child; nnet != NULL; nnet = nnet->next) {
 		if (strcmp(nnet->argv[0], "NETNAME") == 0) {
-			pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], nnet->argv[1], 1);
+			pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], nnet->argv[1], PCB_NETA_ALLOC);
 			if (net == NULL) {
 				hkp_error(nnet, "Failed to create net '%s' - netlist will be incomplete\n", nnet->argv[1]);
 				continue;

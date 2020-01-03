@@ -1545,7 +1545,7 @@ static int kicad_parse_net(read_state_t *st, gsxl_node_t *subtree)
 	if (*netname == '\0')
 		return 0; /* do not create the anonymous net (is it the no-connect net in kicad?) */
 
-	if (pcb_net_get(st->pcb, &st->pcb->netlist[PCB_NETLIST_INPUT], netname, 1) == NULL)
+	if (pcb_net_get(st->pcb, &st->pcb->netlist[PCB_NETLIST_INPUT], netname, PCB_NETA_ALLOC) == NULL)
 		return kicad_error(subtree->next, "Failed to create net %s", netname);
 
 	return 0;
