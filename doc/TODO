@@ -18,7 +18,6 @@
 - BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
 - BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
 - BUG: place so(8), {m k s}, remove one term, {u u}, remove the subc -> the terminal put back by undo is not part of the subc [report: Igor2]
-+ BUG: extobj, user opens dialog with {s c e} then closes dialog with the esc key and gets 'ExtobjConvFrom: failed to create the extended object' error in log [report: miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: (TT) propedit revamp:
