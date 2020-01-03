@@ -846,7 +846,7 @@ int ghid_attr_dlg_run(void *hid_ctx)
 
 	if (res == GTK_RESPONSE_OK)
 		return 0;
-	return 1;
+	return -42; /* the close cb destroyed the window; real return value should be set by DAD ret override */
 }
 
 void ghid_attr_dlg_raise(void *hid_ctx)
