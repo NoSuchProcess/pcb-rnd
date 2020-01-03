@@ -52,6 +52,8 @@
 
 #include <assert.h>
 
+static const char core_net_cookie[] = "core-net";
+
 void pcb_net_term_free_fields(pcb_net_term_t *term)
 {
 	pcb_attribute_free(&term->Attributes);
@@ -182,11 +184,9 @@ pcb_bool pcb_net_name_valid(const char *netname)
 	return pcb_true;
 }
 
-static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_net_alloc_t alloc)
+static pcb_net_t *pcb_net_alloc_(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname)
 {
 	pcb_net_t *net;
-
-	assert(alloc != 0);
 
 	net = calloc(sizeof(pcb_net_t), 1);
 	net->type = PCB_OBJ_NET;
@@ -195,6 +195,68 @@ static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char 
 	net->name = pcb_strdup(netname);
 	htsp_set(nl, net->name, net);
 	return net;
+}
+
+/*** undoable net alloc ***/
+typedef struct {
+	pcb_board_t *pcb;
+	int nl_idx;
+	char netname[1]; /* must be the last item, spans longer than 1 */
+} undo_net_alloc_t;
+
+static int undo_net_alloc_redo(void *udata)
+{
+	undo_net_alloc_t *a = udata;
+	if (pcb_net_alloc_(a->pcb, &a->pcb->netlist[a->nl_idx], a->netname) == NULL)
+		return -1;
+	return 0;
+}
+
+static int undo_net_alloc_undo(void *udata)
+{
+	undo_net_alloc_t *a = udata;
+	return pcb_net_del(&a->pcb->netlist[a->nl_idx], a->netname);
+}
+
+static void undo_net_alloc_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_net_alloc_t *a = udata;
+	pcb_snprintf(dst, dst_len, "net_alloc: %d %s\n", a->nl_idx, a->netname);
+}
+
+static const uundo_oper_t undo_net_alloc = {
+	core_net_cookie,
+	NULL, /* free */
+	undo_net_alloc_undo,
+	undo_net_alloc_redo,
+	undo_net_alloc_print
+};
+
+
+static pcb_net_t *pcb_net_alloc(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_net_alloc_t alloc)
+{
+	int nl_idx = -1;
+	undo_net_alloc_t *a;
+
+	assert(alloc != 0);
+
+	if (alloc == PCB_NETA_ALLOC)
+		return pcb_net_alloc_(pcb, nl, netname);
+
+	if (nl == &pcb->netlist[PCB_NETLIST_INPUT]) nl_idx = PCB_NETLIST_INPUT;
+	else if (nl == &pcb->netlist[PCB_NETLIST_EDITED]) nl_idx = PCB_NETLIST_EDITED;
+	else {
+		assert(!"netlist alloc is undoable only on board nets");
+		return NULL;
+	}
+
+
+	a = pcb_undo_alloc(pcb, &undo_net_alloc, sizeof(undo_net_alloc_t) + strlen(netname));
+	a->pcb = pcb;
+	a->nl_idx = nl_idx;
+	strcpy(a->netname, netname);
+
+	return pcb_net_alloc_(pcb, nl, netname);
 }
 
 pcb_net_t *pcb_net_get(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname, pcb_net_alloc_t alloc)
