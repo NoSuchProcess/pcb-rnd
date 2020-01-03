@@ -1237,11 +1237,72 @@ unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_
 	return ps->thermals.shape + lid;
 }
 
+/*** undoable thermal change ***/
+typedef struct {
+	pcb_pstk_t *ps;
+	pcb_layer_id_t lid;
+	unsigned char shape;
+} undo_pstk_thermal_t;
+
+static int undo_pstk_thermal_swap(void *udata)
+{
+	undo_pstk_thermal_t *t = udata;
+	unsigned char old, *th = pcb_pstk_get_thermal(t->ps, t->lid, 1);
+
+	if (th != NULL) {
+		pcb_board_t *pcb = pcb_data_get_top(t->ps->parent.data);
+		pcb_layer_t *layer = pcb_get_layer(pcb->Data, t->lid);
+
+		pcb_poly_restore_to_poly(pcb->Data, PCB_OBJ_PSTK, layer, t->ps);
+
+		old = *th;
+		*th = t->shape;
+		t->shape = old;
+
+		pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_PSTK, layer, t->ps);
+		pcb_pstk_invalidate_draw(t->ps);
+	}
+	return 0;
+}
+
+static void undo_pstk_thermal_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_pstk_thermal_t *t = udata;
+	pcb_snprintf(dst, dst_len, "pstk_thermal: #%ld %ld %d", t->ps->ID, t->lid, t->shape);
+}
+
+static const uundo_oper_t undo_pstk_thermal = {
+	core_pstk_cookie,
+	NULL, /* free */
+	undo_pstk_thermal_swap,
+	undo_pstk_thermal_swap,
+	undo_pstk_thermal_print
+};
+
+
 void pcb_pstk_set_thermal(pcb_pstk_t *ps, unsigned long lid, unsigned char shape, int undoable)
 {
-	unsigned char *th = pcb_pstk_get_thermal(ps, lid, 1);
-	if (th != NULL)
-		*th = shape;
+	undo_pstk_thermal_t *t;
+	pcb_board_t *pcb = NULL;
+
+	if (undoable) {
+		assert(ps->parent_type == PCB_PARENT_DATA);
+		pcb = pcb_data_get_top(ps->parent.data);
+	}
+
+
+	if (!undoable || (pcb == NULL)) {
+		unsigned char *th = pcb_pstk_get_thermal(ps, lid, 1);
+		if (th != NULL)
+			*th = shape;
+		return;
+	}
+
+	t = pcb_undo_alloc(pcb, &undo_pstk_thermal, sizeof(undo_pstk_thermal_t));
+	t->ps = ps;
+	t->lid = lid;
+	t->shape = shape;
+	undo_pstk_thermal_swap(t);
 }
 
 /*** Undoable instance parameter change ***/
