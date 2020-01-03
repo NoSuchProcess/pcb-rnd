@@ -429,8 +429,8 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	const char *otext;
-	char *text, *sep;
-	int have_filter_text, is_para;
+	char *text, *sep, *para_start;
+	int have_filter_text, is_para, is_para_closed = 0;
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = attr->wdata;
@@ -438,7 +438,10 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	text = pcb_strdup(otext);
 	have_filter_text = (*text != '\0');
 
-	is_para = (strchr(otext, '(') != NULL);
+	para_start = strchr(otext, '(');
+	is_para = (para_start != NULL);
+	if (is_para)
+		is_para_closed = (strchr(para_start, ')') != NULL);
 
 	sep = strpbrk(text, " ()\t\r\n");
 	if (sep != NULL)
@@ -500,7 +503,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	skip_filter:;
 
 	/* parametric footprints need to be refreshed on edit */
-	if (is_para)
+	if (is_para_closed)
 		timed_update_preview(ctx, 1);
 
 	update_edit_button(ctx);
