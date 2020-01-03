@@ -1237,7 +1237,7 @@ unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_
 	return ps->thermals.shape + lid;
 }
 
-void pcb_pstk_set_thermal(pcb_pstk_t *ps, unsigned long lid, unsigned char shape)
+void pcb_pstk_set_thermal(pcb_pstk_t *ps, unsigned long lid, unsigned char shape, int undoable)
 {
 	unsigned char *th = pcb_pstk_get_thermal(ps, lid, 1);
 	if (th != NULL)

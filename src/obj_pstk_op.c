@@ -162,7 +162,7 @@ void *pcb_pstkop_change_thermal(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb_poly_restore_to_poly(pcb->Data, PCB_OBJ_PSTK, layer, ps);
 
 TODO("undo")
-	pcb_pstk_set_thermal(ps, ctx->chgtherm.lid, ctx->chgtherm.style);
+	pcb_pstk_set_thermal(ps, ctx->chgtherm.lid, ctx->chgtherm.style, 0);
 
 	pcb_undo_add_obj_to_clear_poly(PCB_OBJ_PSTK, ps, ps, ps, pcb_true);
 	pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_PSTK, layer, ps);
