@@ -563,7 +563,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 	else {
 		pcb_fplibrary_t *l = r->user_data;
-		name = l->name;
+		name = pcb_strdup(l->name);
 		if (name != NULL) {
 			pcb_hid_attr_val_t hv;
 			hv.str = name;
