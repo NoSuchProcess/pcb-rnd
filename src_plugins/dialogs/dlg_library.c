@@ -77,6 +77,7 @@ typedef struct{
 	int pwid[MAX_PARAMS];   /* param_idx -> widget_idx (for the input field widget) */
 	char *pnames[MAX_PARAMS]; /* param_idx -> parameter_name (also key stored in the param_names hash */
 	int num_params, first_optional;
+	unsigned last_clicked:1; /* 1 if the last user action was a click in the tree, 0 if it was an edit of the filter text */
 	gds_t descr;
 } library_ctx_t;
 
@@ -333,6 +334,8 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	int close_param = 1;
 	static pcb_fplibrary_t *last = NULL;
 
+	ctx->last_clicked = 1;
+
 	timed_update_preview(ctx, 0);
 
 	library_update_preview(ctx, NULL, NULL);
@@ -431,6 +434,8 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	const char *otext;
 	char *text, *sep, *para_start;
 	int have_filter_text, is_para, is_para_closed = 0;
+
+	ctx->last_clicked = 0;
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = attr->wdata;
@@ -550,7 +555,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	attr = &ctx->dlg[ctx->wtree];
 	r = pcb_dad_tree_get_selected(attr);
 
-	if (otext != NULL) {
+	if (!ctx->last_clicked && (otext != NULL)) {
 		name = pcb_strdup(otext);
 		sep = strchr(name, '(');
 		if (sep != NULL)
