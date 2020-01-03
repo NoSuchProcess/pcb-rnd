@@ -410,7 +410,7 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 	void *ptr1, *ptr1e, *ptr2, *ptr3, *txt_save;
 	int type;
 	pcb_flag_t swap;
-	int must_redraw;
+	int must_redraw = 0, must_reclip = 0;
 	unsigned long oldflg;
 
 	/* lookup entry by ID */
@@ -422,15 +422,21 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 		ptr1e = ptr1;
 		swap = obj->Flags;
 
-		must_redraw = 0;
 		f1 = pcb_flag_mask(obj->Flags, ~DRAW_FLAGS);
 		f2 = pcb_flag_mask(Entry->Data.Flags, ~DRAW_FLAGS);
-
 		if (!PCB_FLAG_EQ(f1, f2))
 			must_redraw = 1;
 
+		f1 = pcb_flag_mask(obj->Flags, ~CLIP_FLAGS);
+		f2 = pcb_flag_mask(Entry->Data.Flags, ~CLIP_FLAGS);
+		if (!PCB_FLAG_EQ(f1, f2))
+			must_reclip = 1;
+
 		if (pcb_undo_and_draw && must_redraw && (ptr1e != NULL))
 			pcb_erase_obj(type, ptr1e, ptr2);
+
+		if (must_reclip)
+			pcb_poly_restore_to_poly(PCB->Data, obj->type, ptr1, ptr2);
 
 		if (obj->type == PCB_OBJ_TEXT) {
 			oldflg = obj->Flags.f;
@@ -439,6 +445,9 @@ static pcb_bool UndoFlag(UndoListTypePtr Entry)
 
 		obj->Flags = Entry->Data.Flags;
 		Entry->Data.Flags = swap;
+
+		if (must_reclip)
+			pcb_poly_clear_from_poly(PCB->Data, obj->type, ptr1, ptr2);
 
 		if (obj->type == PCB_OBJ_TEXT)
 			pcb_text_flagchg_post((pcb_text_t *)obj, oldflg, &txt_save);

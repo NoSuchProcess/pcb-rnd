@@ -36,6 +36,8 @@
 #define DRAW_FLAGS	(PCB_FLAG_RAT | PCB_FLAG_SELECTED \
 			| PCB_FLAG_HIDENAME | PCB_FLAG_HOLE | PCB_FLAG_OCTAGON | PCB_FLAG_FOUND | PCB_FLAG_CLEARLINE)
 
+#define CLIP_FLAGS (PCB_FLAG_CLEARLINE | PCB_FLAG_CLEARPOLY | PCB_FLAG_CLEARPOLYPOLY)
+
 /* different layers */
 
 void pcb_undo_move_obj_to_remove(int, void *, void *, void *);
