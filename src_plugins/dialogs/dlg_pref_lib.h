@@ -7,7 +7,7 @@ typedef struct pref_libhelp_ctx_s {
 } pref_libhelp_ctx_t;
 
 typedef struct {
-	int wlist, whsbutton;
+	int wlist, whsbutton, wmoveup, wmovedown, wedit, wremove;
 	int lock; /* a change in on the dialog box causes a change on the board but this shouldn't in turn casue a changein the dialog */
 	char *cursor_path;
 	pref_libhelp_ctx_t help;

@@ -36,6 +36,23 @@ static const char *SRC_BRD = "<board file>";
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
+static void pref_lib_update_buttons(void)
+{
+	pcb_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	int en = (r != NULL);
+
+	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wedit, en);
+	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wremove, en);
+	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmoveup, en);
+	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmovedown, en);
+}
+
+static void pref_lib_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+{
+	pref_lib_update_buttons();
+}
+
 static void pref_lib_row_free(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	free(row->cell[0]);
@@ -109,6 +126,7 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 		free(pref_ctx.lib.cursor_path);
 		pref_ctx.lib.cursor_path = NULL;
 	}
+	pref_lib_update_buttons();
 }
 
 TODO(": move this to liblihata")
@@ -173,8 +191,10 @@ static void lib_btn_remove(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	if (r == NULL)
 		return;
 
-	if (pcb_dad_tree_remove(attr, r) == 0)
+	if (pcb_dad_tree_remove(attr, r) == 0) {
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
+		pref_lib_update_buttons();
+	}
 }
 
 static void lib_btn_up(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *btn_attr)
@@ -420,21 +440,26 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 			ctx->lib.wlist = PCB_DAD_CURRENT(ctx->dlg);
 			tree = ctx->dlg[ctx->lib.wlist].wdata;
 			tree->user_free_cb = pref_lib_row_free;
+			PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pref_lib_select_cb);
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
 		PCB_DAD_BUTTON(ctx->dlg, "Move up");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_up);
+			ctx->lib.wmoveup = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BUTTON(ctx->dlg, "Move down");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_down);
+			ctx->lib.wmovedown = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BUTTON(ctx->dlg, "Insert before");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_before);
 		PCB_DAD_BUTTON(ctx->dlg, "Insert after");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_after);
 		PCB_DAD_BUTTON(ctx->dlg, "Remove");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
+			ctx->lib.wremove = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
 			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_edit);
+			ctx->lib.wedit = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BUTTON(ctx->dlg, "Help...");
 			ctx->lib.whsbutton = PCB_DAD_CURRENT(ctx->dlg);
 			PCB_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
