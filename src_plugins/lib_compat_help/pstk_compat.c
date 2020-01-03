@@ -767,7 +767,7 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, pcb_coord_t X, pcb_co
 				case 4: nt |= PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL; break;
 				case 5: nt |= PCB_THERMAL_ROUND; break;
 			}
-			pcb_pstk_set_thermal(p, n, nt);
+			pcb_pstk_set_thermal(p, n, nt, 0);
 		}
 	}
 
