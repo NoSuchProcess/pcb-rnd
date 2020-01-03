@@ -547,7 +547,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 			pcb_crosshair.Y = PCB->hidlib.size_y/2;
 
 			/* update cursor confinement and output area (scrollbars) */
-			pcb_board_resize(PCB->hidlib.size_x, PCB->hidlib.size_y);
+			pcb_board_resize(PCB->hidlib.size_x, PCB->hidlib.size_y, 0);
 		}
 
 		/* have to be called after pcb_board_resize() so vis update is after a board changed update */
@@ -733,7 +733,7 @@ int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int h
 				res = -1;
 			}
 			else
-				pcb_board_resize(b.X2*1.5, b.Y2*1.5);
+				pcb_board_resize(b.X2*1.5, b.Y2*1.5, 0);
 		}
 	}
 	return res;

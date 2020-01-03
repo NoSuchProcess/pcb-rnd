@@ -136,7 +136,7 @@ pcb_bool pcb_board_change_name(char *Name);
 
 /* changes the maximum size of a layout, notifies the GUI
  * and adjusts the cursor confinement box */
-void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height);
+void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height, int undoable);
 
 
 /* free the board and remove its undo list */

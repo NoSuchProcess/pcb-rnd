@@ -655,7 +655,7 @@ void hyp_resize_board()
 
 	/* resize if board too small */
 	if ((width > PCB->hidlib.size_x) || (height > PCB->hidlib.size_y))
-		pcb_board_resize(width, height);
+		pcb_board_resize(width, height, 0);
 
 	return;
 

@@ -378,7 +378,7 @@ static int set_common(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 
 static int brd_resize(pcb_coord_t w, pcb_coord_t h)
 {
-	pcb_board_resize(w, h);
+	pcb_board_resize(w, h, 0);
 	return 1;
 }
 

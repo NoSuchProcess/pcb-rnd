@@ -45,6 +45,8 @@
 
 pcb_board_t *PCB;
 
+static const char core_board_cookie[] = "core/board";
+
 void pcb_board_free(pcb_board_t * pcb)
 {
 	int i;
@@ -259,10 +261,10 @@ pcb_bool pcb_board_change_name(char *Name)
 	return pcb_true;
 }
 
-void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
+static void pcb_board_resize_(pcb_board_t *pcb, pcb_coord_t Width, pcb_coord_t Height)
 {
-	PCB->hidlib.size_x = Width;
-	PCB->hidlib.size_y = Height;
+	pcb->hidlib.size_x = Width;
+	pcb->hidlib.size_y = Height;
 
 	/* crosshair range is different if pastebuffer-mode
 	 * is enabled
@@ -276,8 +278,57 @@ void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height)
 	else
 		pcb_crosshair_set_range(0, 0, Width, Height);
 
-	pcb_board_changed(0);
+	if (pcb == PCB)
+		pcb_board_changed(0);
 }
+
+/*** undoable board resize ***/
+
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_coord_t w, h;
+} undo_board_size_t;
+
+static int undo_board_size_swap(void *udata)
+{
+	undo_board_size_t *s = udata;
+	pcb_coord_t oldw = s->pcb->hidlib.size_x, oldh = s->pcb->hidlib.size_y;
+	pcb_board_resize_(s->pcb, s->w, s->h);
+	s->w = oldw;
+	s->h = oldh;
+	return 0;
+}
+
+static void undo_board_size_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_board_size_t *s = udata;
+	pcb_snprintf(dst, dst_len, "board_size: %mmx%mm", s->w, s->h);
+}
+
+static const uundo_oper_t undo_board_size = {
+	core_board_cookie,
+	NULL, /* free */
+	undo_board_size_swap,
+	undo_board_size_swap,
+	undo_board_size_print
+};
+
+void pcb_board_resize(pcb_coord_t width, pcb_coord_t height, int undoable)
+{
+	undo_board_size_t *s;
+
+	if (!undoable) {
+		pcb_board_resize_(PCB, width, height);
+		return;
+	}
+
+	s = pcb_undo_alloc(PCB, &undo_board_size, sizeof(undo_board_size_t));
+	s->pcb = PCB;
+	s->w = width;
+	s->h = height;
+	undo_board_size_swap(s);
+}
+
 
 void pcb_board_remove(pcb_board_t *Ptr)
 {

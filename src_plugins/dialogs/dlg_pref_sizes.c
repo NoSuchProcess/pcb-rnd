@@ -47,7 +47,7 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 	ctx->sizes.lock++;
 	if ((PCB->hidlib.size_x != ctx->dlg[ctx->sizes.wwidth].val.crd) || (PCB->hidlib.size_y != ctx->dlg[ctx->sizes.wheight].val.crd))
-		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].val.crd, ctx->dlg[ctx->sizes.wheight].val.crd);
+		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].val.crd, ctx->dlg[ctx->sizes.wheight].val.crd, 0);
 	ctx->sizes.lock--;
 }
 

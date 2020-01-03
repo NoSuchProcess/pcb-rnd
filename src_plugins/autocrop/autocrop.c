@@ -2,9 +2,9 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
- *  This module, debug, was written and is Copyright (C) 2016 by Tibor Palinkas
+ *  This module, debug, was written and is Copyright (C) by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -60,7 +60,7 @@ static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_draw_inhibit_inc();
 	pcb_data_clip_inhibit_inc(PCB->Data);
 	pcb_data_move(PCB->Data, dx, dy);
-	pcb_board_resize(w, h);
+	pcb_board_resize(w, h, 0);
 	pcb_data_clip_inhibit_dec(PCB->Data, 1);
 	pcb_draw_inhibit_dec();
 
