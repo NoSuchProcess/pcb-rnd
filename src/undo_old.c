@@ -72,9 +72,6 @@
 
 #include "brave.h"
 
-#define STEP_REMOVELIST 500
-#define STEP_UNDOLIST   500
-
 #define Locked pcb_undoing()
 
 #include "undo_old_str.h"
