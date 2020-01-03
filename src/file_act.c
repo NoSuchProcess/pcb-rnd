@@ -215,7 +215,7 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			bn = conf_core.editor.buffer_number;
 
 		if ((pcb_buffers[bn].bbox_naked.X1 != 0) || (pcb_buffers[bn].bbox_naked.Y1 != 0)) {
-			pcb_data_move(pcb_buffers[bn].Data, -pcb_buffers[bn].bbox_naked.X1, -pcb_buffers[bn].bbox_naked.Y1);
+			pcb_data_move(pcb_buffers[bn].Data, -pcb_buffers[bn].bbox_naked.X1, -pcb_buffers[bn].bbox_naked.Y1, 0);
 			pcb_set_buffer_bbox(&pcb_buffers[bn]);
 		}
 

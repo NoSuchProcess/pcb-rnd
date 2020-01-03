@@ -42,6 +42,7 @@
 #include "layer_it.h"
 #include "operation.h"
 #include "flag.h"
+#include "undo_old.h"
 #include "obj_arc.h"
 #include "obj_line.h"
 #include "obj_poly.h"
@@ -513,7 +514,7 @@ int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox)
 		dy = -data_bbox->Y1;
 
 	if ((dx > 0) || (dy > 0)) {
-		pcb_data_move(data, dx, dy);
+		pcb_data_move(data, dx, dy, 0);
 		return 1;
 	}
 
@@ -543,7 +544,7 @@ void pcb_data_set_parent_globals(pcb_data_t *data, pcb_data_t *new_parent)
 
 
 extern pcb_opfunc_t MoveFunctions;
-void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy, int undoable)
 {
 	pcb_opctx_t ctx;
 
@@ -553,31 +554,37 @@ void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy)
 
 	PCB_PADSTACK_LOOP(data);
 	{
+		if (undoable) pcb_undo_add_obj_to_move(PCB_OBJ_PSTK, data, padstack, padstack, dx, dy);
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_PSTK, padstack, padstack, padstack);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);
 	{
+		if (undoable) pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, data, subc, subc, dx, dy);
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_SUBC, subc, subc, subc);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(data);
 	{
+		if (undoable) pcb_undo_add_obj_to_move(PCB_OBJ_LINE, layer, line, line, dx, dy);
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_LINE, layer, line, line);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(data);
 	{
+		if (undoable) pcb_undo_add_obj_to_move(PCB_OBJ_ARC, layer, arc, arc, dx, dy);
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_ARC, layer, arc, arc);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(data);
 	{
+		if (undoable) pcb_undo_add_obj_to_move(PCB_OBJ_TEXT, layer, text, text, dx, dy);
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_TEXT, layer, text, text);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(data);
 	{
+		if (undoable) pcb_undo_add_obj_to_move(PCB_OBJ_POLY, layer, polygon, polygon, dx, dy);
 		pcb_object_operation(&MoveFunctions, &ctx, PCB_OBJ_POLY, layer, polygon, polygon);
 	}
 	PCB_ENDALL_LOOP;

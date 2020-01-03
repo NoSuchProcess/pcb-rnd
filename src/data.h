@@ -172,7 +172,7 @@ typedef enum pcb_data_mirror_text_e {
 } pcb_data_mirror_text_t;
 void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror);
 
-void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy);
+void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy, int undoable);
 
 /* Multiply x and y coords by sx and sy and thickness by sth (where applicable).
    If recurse is non-zero, also modify subcircuits */
