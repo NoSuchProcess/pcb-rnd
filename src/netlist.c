@@ -221,7 +221,7 @@ static int undo_net_alloc_undo(void *udata)
 static void undo_net_alloc_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_net_alloc_t *a = udata;
-	pcb_snprintf(dst, dst_len, "net_alloc: %d %s\n", a->nl_idx, a->netname);
+	pcb_snprintf(dst, dst_len, "net_alloc: %d %s", a->nl_idx, a->netname);
 }
 
 static const uundo_oper_t undo_net_alloc = {
