@@ -149,24 +149,10 @@ void *pcb_pstkop_destroy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 void *pcb_pstkop_change_thermal(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
-	pcb_board_t *pcb;
-	pcb_layer_t *layer;
-
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
 		return NULL;
 
-	pcb = ctx->chgtherm.pcb;
-	layer = pcb_get_layer(pcb->Data, ctx->chgtherm.lid);
-
-	pcb_undo_add_obj_to_clear_poly(PCB_OBJ_PSTK, ps, ps, ps, pcb_false);
-	pcb_poly_restore_to_poly(pcb->Data, PCB_OBJ_PSTK, layer, ps);
-
-TODO("undo")
-	pcb_pstk_set_thermal(ps, ctx->chgtherm.lid, ctx->chgtherm.style, 0);
-
-	pcb_undo_add_obj_to_clear_poly(PCB_OBJ_PSTK, ps, ps, ps, pcb_true);
-	pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_PSTK, layer, ps);
-	pcb_pstk_invalidate_draw(ps);
+	pcb_pstk_set_thermal(ps, ctx->chgtherm.lid, ctx->chgtherm.style, 1);
 	return ps;
 }
 
