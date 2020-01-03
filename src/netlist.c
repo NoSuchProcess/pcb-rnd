@@ -209,13 +209,17 @@ static int undo_net_alloc_redo(void *udata)
 	undo_net_alloc_t *a = udata;
 	if (pcb_net_alloc_(a->pcb, &a->pcb->netlist[a->nl_idx], a->netname) == NULL)
 		return -1;
+	pcb_netlist_changed(0);
 	return 0;
 }
 
 static int undo_net_alloc_undo(void *udata)
 {
 	undo_net_alloc_t *a = udata;
-	return pcb_net_del(&a->pcb->netlist[a->nl_idx], a->netname);
+	int res = pcb_net_del(&a->pcb->netlist[a->nl_idx], a->netname);
+	if (res == 0)
+		pcb_netlist_changed(0);
+	return res;
 }
 
 static void undo_net_alloc_print(void *udata, char *dst, size_t dst_len)
