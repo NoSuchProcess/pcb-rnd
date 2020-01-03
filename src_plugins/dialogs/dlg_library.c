@@ -547,15 +547,30 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	char *name, *sep;
 	int namelen;
 
-	name = pcb_strdup(otext);
-	sep = strchr(name, '(');
-	if (sep != NULL)
-		*sep = '\0';
-	namelen = strlen(name);
-
-
 	attr = &ctx->dlg[ctx->wtree];
 	r = pcb_dad_tree_get_selected(attr);
+
+	if (otext != NULL) {
+		name = pcb_strdup(otext);
+		sep = strchr(name, '(');
+		if (sep != NULL)
+			*sep = '\0';
+	}
+	else {
+		pcb_fplibrary_t *l = r->user_data;
+		name = l->name;
+		if (name != NULL) {
+			pcb_hid_attr_val_t hv;
+			hv.str = name;
+			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+		}
+	}
+
+	if ((name == NULL) || (*name == '\0')) {
+		pcb_message(PCB_MSG_ERROR, "Filed to figure the name of the parametric footprint\n");
+		return;
+	}
+	namelen = strlen(name);
 
 	if ((r == NULL) || (pcb_strncasecmp(name, r->cell[0], namelen) != 0)) {
 		/* no selection or wrong selection: go find the right one */

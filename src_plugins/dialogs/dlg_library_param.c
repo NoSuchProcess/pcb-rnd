@@ -446,7 +446,7 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 	free(parahlp);
 }
 
-static void library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
+void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 {
 	pcb_hid_attr_val_t hv;
 	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str;
@@ -558,6 +558,6 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	PCB_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, pcb_false, library_param_close_cb);
 
 	update_edit_button(ctx);
-	library_param_fillin(ctx, l);
+	pcb_library_param_fillin(ctx, l);
 }
 
