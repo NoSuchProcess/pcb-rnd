@@ -930,7 +930,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 		}
 		else
 			ratname = ratname_;
-		target_net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], ratname, PCB_NETA_ALLOC);
+		target_net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], ratname, PCB_NETA_ALLOC_UNDOABLE);
 
 		assert(target_net != NULL);
 		if (ratname != ratname_)
