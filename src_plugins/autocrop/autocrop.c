@@ -59,8 +59,8 @@ static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_draw_inhibit_inc();
 	pcb_data_clip_inhibit_inc(PCB->Data);
-	pcb_data_move(PCB->Data, dx, dy);
-	pcb_board_resize(w, h, 0);
+	pcb_data_move(PCB->Data, dx, dy, 1);
+	pcb_board_resize(w, h, 1);
 	pcb_data_clip_inhibit_dec(PCB->Data, 1);
 	pcb_draw_inhibit_dec();
 
