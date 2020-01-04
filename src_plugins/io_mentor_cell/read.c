@@ -636,16 +636,42 @@ static long parse_dwg_all(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, con
 /* Return 1 on success, 0 on fail
    Return the side of "side", and set lyname to lyname_top or lyname_bottom depending on side
    For a subcircuit, the side is given by MNT_SIDE argument */
-static int parse_side(node_t *n, pcb_layer_type_t subc_side, pcb_layer_type_t *side, const char *lyname, const char *lyname_top, const char *lyname_bottom)
+static int parse_side(node_t *n, pcb_subc_t *subc, pcb_layer_type_t *side, const char *lyname, const char *lyname_top, const char *lyname_bottom)
 {
 	node_t *tmp;
+	pcb_layer_type_t subc_side = 0;
+	int on_bottom=-1;
 
 	if (n == NULL)
 		return 0;
 
+	if (subc != NULL) {
+		if (pcb_subc_get_side(subc, &on_bottom) == -1) {
+			hkp_error(n, "Error getting subc side\n");
+		}
+		else {
+			if (on_bottom == 1)
+				subc_side = PCB_LYT_BOTTOM;
+			else
+				subc_side = PCB_LYT_TOP;
+		}
+	}
+
+	/* In some sections, like ..ASSEMBLY_OUTLINE inside .PACKAGE_CELL (a subcircuit), there is no explicit SIDE line. */
+	/* So if this is a subcircuit, and there is no SIDE line, get the side from subc side.*/
 	tmp = find_nth(n->first_child, "SIDE", 0);
-	if (tmp == NULL)
-		return 0;
+	if (tmp == NULL) {
+		if (subc != NULL) {
+			*side = subc_side;
+			if ((subc_side & PCB_LYT_TOP) != 0)
+				lyname = lyname_top;
+			else
+				lyname = lyname_bottom;
+			return 1;
+		}
+		else
+			return 0;
+	}
 
 	if (strcmp(tmp->argv[1], "MNT_SIDE") == 0) {
 		if (subc_side != 0) {
@@ -691,45 +717,32 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 {
 	pcb_layer_type_t type = 0;
 	pcb_layer_type_t side = PCB_LYT_TOP, subc_side = 0;
-	int on_bottom=-1;
 	pcb_layer_combining_t lyc = 0;
 	const char *lyname = NULL, *purpose = NULL;
 	pcb_layer_t *ly;
 
-	if (subc != NULL) {
-		if (pcb_subc_get_side(subc, &on_bottom) == -1) {
-			hkp_error(n, "Error getting subc side\n");
-		}
-		else {
-			if (on_bottom == 1)
-				subc_side = PCB_LYT_BOTTOM;
-			else
-				subc_side = PCB_LYT_TOP;
-		}
-	}
-
 	if (strcmp(n->argv[0], "SILKSCREEN_OUTLINE") == 0) {
 		type = PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
-		if (parse_side(n, subc_side, &side, lyname, "top-silk", "bot-silk") != 1)
+		if (parse_side(n, subc, &side, lyname, "top-silk", "bot-silk") != 1)
 			hkp_error(n, "Error parsing silkscreen side.\n"); 
 	}
 	else if (strcmp(n->argv[0], "SOLDER_MASK") == 0) {
 		type = PCB_LYT_MASK;
 		lyc = PCB_LYC_AUTO;
-		if (parse_side(n, subc_side, &side, lyname, "top-mask", "bot-mask") != 1)
+		if (parse_side(n, subc, &side, lyname, "top-mask", "bot-mask") != 1)
 			hkp_error(n, "Error parsing solder mask side.\n");
 	}
 	else if (strcmp(n->argv[0], "SOLDER_PASTE") == 0) {
 		type = PCB_LYT_PASTE;
 		lyc = PCB_LYC_AUTO;
-		if (parse_side(n, subc_side, &side, lyname, "top-paste", "bot-paste") != 1)
+		if (parse_side(n, subc, &side, lyname, "top-paste", "bot-paste") != 1)
 			hkp_error(n, "Error parsing paste side.\n");
 	}
 	else if (strcmp(n->argv[0], "ASSEMBLY_OUTLINE") == 0) {
 		type = PCB_LYT_DOC;
 		lyc = PCB_LYC_AUTO;
-		if (parse_side(n, subc_side, &side, lyname, "top-assy", "bot-assy") != 1)
+		if (parse_side(n, subc, &side, lyname, "top-assy", "bot-assy") != 1)
 			hkp_error(n, "Error parsing assembly outline.\n");
 	}
 	else if (strcmp(n->argv[0], "ROUTE_OUTLINE") == 0) {
