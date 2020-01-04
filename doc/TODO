@@ -5,7 +5,7 @@
 + FEATURE: openems: pick up board thickness from data: centralize the code developed for stl and openems [report: Erich]
 + FEATURE: buffer scale in only x or y direction [report: Erich]
 + FEATURE: user script to copy the outline layer onto all copper layers as no-export [report: Ade]
-- BUG: detect fungw when installed in /usr/local [report: Bob Paddock]
++ BUG: detect fungw when installed in /usr/local [report: Bob Paddock]
 + BUG: direct ps export: implicit outline layer appears twice in the TOC -> fixed in r28610 [report=cuvoodoo]
 + BUG: preferences dialog, library tab, 'edit' should be disabled if no line is selected [report: Stefan]
 + BUG: when drawing rats manually generated netlist, if the user needs to undo a step, rat line is removed but named net is not. -> it was removed, just the netlist window didn't get updated [repot: Miloh]
