@@ -8,7 +8,7 @@
 - BUG: detect fungw when installed in /usr/local [report: Bob Paddock]
 - BUG: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497 [report: gpaubert]
-- BUG: direct ps export: implicit outline layer appears twice in the TOC [report=cuvoodoo]
++ BUG: direct ps export: implicit outline layer appears twice in the TOC -> fixed in r28610 [report=cuvoodoo]
 + BUG: preferences dialog, library tab, 'edit' should be disabled if no line is selected [report: Stefan]
 + BUG: when drawing rats manually generated netlist, if the user needs to undo a step, rat line is removed but named net is not. -> it was removed, just the netlist window didn't get updated [repot: Miloh]
 + BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
