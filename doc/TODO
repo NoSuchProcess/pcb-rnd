@@ -207,4 +207,3 @@
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
-- BUG: bisect when globalpuller() broke [report: Igor2]
