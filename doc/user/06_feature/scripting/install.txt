@@ -1,3 +1,8 @@
+Note: if you need only fawk, fbas and fpascal scripting, there is no
+      need to do the steps below, pcb-rnd source comes with those
+      embedded. The below steps are needed if you need more scripting
+      languages (e.g. python, lua, perl, tcl, mawk).
+
 Requirements:
  1. download and install genht - svn://repo.hu/genht/trunk
     Some Linux distributions already have this packaged, please check your
