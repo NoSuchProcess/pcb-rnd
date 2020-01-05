@@ -129,6 +129,7 @@ static UndoListType *GetUndoSlot(int CommandType, long int ID, pcb_objtype_t Kin
 {
 	UndoListType *slot = pcb_undo_alloc(PCB, &pcb_undo_old_oper, sizeof(UndoListType));
 
+	memset(slot, 0, sizeof(UndoListType));
 	slot->Type = CommandType;
 	slot->ID = ID;
 	slot->Kind = Kind;
