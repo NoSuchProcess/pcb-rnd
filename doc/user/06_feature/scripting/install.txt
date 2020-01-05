@@ -3,7 +3,7 @@ Requirements:
     Some Linux distributions already have this packaged, please check your
     repositries (and install the development version)
     NOTE: version 1.0.1 is too old, please get a newer one (e.g. svn version)
- 2. optional, but strongly recommended:
+ 2. recommended, non-standard, optional dependency for runing mawk scripts:
     install libmawk - svn://repo.hu/libmawk/trunk
     (Many of the example scripts are written in awk)
     At least version 1.0.2 is required.
