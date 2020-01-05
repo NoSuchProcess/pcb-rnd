@@ -8,6 +8,7 @@
 + BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
 + BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
 - BUG: 2nd drawn rat regenerating after undo: setup with 2 rat lines connecting three terminals from subc with distinct refdes, undo once and regen rats. rat that is just undone is regenerated. [report: miloh]
+
 2. For later releases ===============================================================================
 - CLEANUP: remove the donut rats special casing
 - CLEANUP: (TT) propedit revamp:
