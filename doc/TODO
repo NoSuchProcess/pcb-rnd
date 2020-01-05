@@ -11,6 +11,7 @@
 + BUG: hace internal error with undo. reproduce: open pcb-rnd, place via, place rectangle poly around via, add thermal to via, { u u } { u u } (use undo at least twice) and log shows a "hace: Internal error, search for ID [...]" [report: Miloh]
 
 2. For later releases ===============================================================================
+- CLEANUP: remove the donut rats special casing
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
