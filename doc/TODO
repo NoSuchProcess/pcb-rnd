@@ -8,7 +8,7 @@
 + BUG: preferences dialog, library tab, 'edit' should be disabled if no line is selected [report: Stefan]
 + BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
 + BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
-- BUG: hace internal error with undo. reproduce: open pcb-rnd, place via, place rectangle poly around via, add thermal to via, { u u } { u u } (use undo at least twice) and log shows a "hace: Internal error, search for ID [...]" [report: Miloh]
++ BUG: hace internal error with undo. reproduce: open pcb-rnd, place via, place rectangle poly around via, add thermal to via, { u u } { u u } (use undo at least twice) and log shows a "hace: Internal error, search for ID [...]" [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: (TT) propedit revamp:
