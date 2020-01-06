@@ -286,6 +286,7 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 			PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
 			PCB_DAD_LABEL(ctx.dlg, pcb_strdup(cell[1]));
 				ctx.wexp = PCB_DAD_CURRENT(ctx.dlg);
+				ctx.dlg[ctx.wexp].val.str = pcb_strdup(cell[1]);
 
 			PCB_DAD_LABEL(ctx.dlg, "");
 			PCB_DAD_BUTTON(ctx.dlg, "Help...");
@@ -333,10 +334,18 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		}
 	}
 
-	cell[0] = pcb_strdup("");
-	cell[1] = pcb_strdup("");
-	cell[2] = pcb_strdup(SRC_BRD);
+	if (pos != 0) {
+		cell[0] = pcb_strdup("");
+		cell[1] = pcb_strdup("");
+		cell[2] = pcb_strdup(SRC_BRD);
+	}
+	else {
+		cell[0] = pcb_strdup(r->cell[0]);
+		cell[1] = pcb_strdup(r->cell[1]);
+		cell[2] = pcb_strdup(r->cell[2]);
+	}
 	cell[3] = NULL;
+
 	if (lib_cell_edit(ctx, cell) != 0) {
 		free(cell[0]);
 		free(cell[1]);
