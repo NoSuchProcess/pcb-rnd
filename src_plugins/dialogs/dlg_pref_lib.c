@@ -405,7 +405,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 
 				pcb_snprintf(tmp, sizeof(tmp), "$(rc.path.%s)", e->key + 8);
 				PCB_DAD_LABEL(ctx->dlg, tmp);
-				PCB_DAD_LABEL(ctx->dlg, nat->val.string[0]);
+				PCB_DAD_LABEL(ctx->dlg, nat->val.string[0] == NULL ? "" : nat->val.string[0]);
 			}
 		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
