@@ -391,6 +391,9 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 	htsp_entry_t *e;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
+	if (ctx->active)
+		return;
+
 	PCB_DAD_LABEL(ctx->dlg, "The following $(variables) can be used in the path:");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			conf_fields_foreach(e) {
@@ -417,11 +420,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	cell_edit_ctx_t *hctx = caller_data;
-
-	if (hctx->pctx->lib.help.active)
-		return;
-	pref_libhelp_open(&hctx->pctx->lib.help);
+	pref_libhelp_open(&pref_ctx.lib.help);
 }
 
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
