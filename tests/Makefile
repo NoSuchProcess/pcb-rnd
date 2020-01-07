@@ -8,7 +8,8 @@ test:
 	cd propedit && $(MAKE) all && $(MAKE) test
 	cd remote && $(MAKE) all && $(MAKE) test
 	cd drc_pstk_hbrk && $(MAKE) all && $(MAKE) test
-	cd librnd && $(MAKE) all && $(MAKE) test
+# This uses make instead of $(MAKE) on purpose as a "portbale" -j1 to work aroudn GNU make
+	cd librnd && make all && make test
 #	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
 	@echo " "
 	@echo "+-------------------------------------------------+"
