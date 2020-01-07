@@ -26,8 +26,8 @@ librnd_includes: librnd_includes.o $(LIBRND)
 librd_includes.o: librnd_includes.c includes
 
 $(LIBRND) includes: ../../src/Makefile ../../src/pcb-rnd
-	TDIR=`pwd` && cd ../../src make && $(MAKE) install_librnd HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
+	TDIR=`pwd` && cd ../../src && $(MAKE) && $(MAKE) install_librnd HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
 
 clean:
 	-rm librnd_test librnd_test.o librnd_includes librnd_includes.o
-	TDIR=`pwd` && cd ../../src make && $(MAKE) install_librnd HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
+	TDIR=`pwd` && cd ../../src && $(MAKE) install_librnd HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
