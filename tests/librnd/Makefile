@@ -25,7 +25,7 @@ librnd_includes: librnd_includes.o $(LIBRND)
 
 librd_includes.o: librnd_includes.c includes
 
-includes: FORCE
+$(LIBRND) includes: FORCE
 	TDIR=`pwd` && cd ../../src make && $(MAKE) install_librnd HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
 
 FORCE:
