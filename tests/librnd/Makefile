@@ -31,5 +31,5 @@ includes: FORCE
 FORCE:
 
 clean:
-	-rm librnd_test librnd_test.o
+	-rm librnd_test librnd_test.o librnd_includes librnd_includes.o
 	TDIR=`pwd` && cd ../../src make && $(MAKE) install_librnd HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
