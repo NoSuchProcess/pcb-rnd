@@ -1,5 +1,6 @@
 @files librnd-dev $PREFIX/include/librnd/*
-@files librnd $PREFIX/lib/*.so*
+@files librnd-dev $PREFIX/lib/*.so
+@files librnd $PREFIX/lib/*.so.*
 @appendfiles pcb-rnd-core $PREFIX/bin/pcb-rnd $PREFIX/share/man/man1/pcb-rnd.1
 @appendfiles pcb-rnd-core $C/pcb-conf.lht $C/pcb-menu-default.lht
 @appendfiles pcb-rnd-core $PREFIX/bin/fp2preview $PREFIX/bin/fp2subc $PREFIX/bin/pcb-prj2lht $PREFIX/share/man/man1/fp2preview.1 $PREFIX/share/man/man1/fp2subc.1 $PREFIX/share/man/man1/pcb-prj2lht.1
