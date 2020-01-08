@@ -85,7 +85,9 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	for(h = 0; h < export_ctx->len; h++) {
 		if (export_ctx->button[h] == wid) {
 			pcb_hid_attr_val_t *results = get_results(export_ctx, h);
+			pcb_event(&PCB->hidlib, PCB_EVENT_EXPORT_SESSION_BEGIN, NULL);
 			export_ctx->hid[h]->do_export(export_ctx->hid[h], results);
+			pcb_event(&PCB->hidlib, PCB_EVENT_EXPORT_SESSION_END, NULL);
 			free(results);
 			pcb_message(PCB_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
 			goto done;
