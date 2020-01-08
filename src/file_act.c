@@ -510,10 +510,12 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	argc-=2;
 
 	/* call the exporter */
+	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	a = args;
 	a++;
 	pcb_exporter->parse_arguments(pcb_exporter, &argc, &a);
 	pcb_exporter->do_export(pcb_exporter, NULL);
+	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_EXPORT_SESSION_END, NULL);
 
 	pcb_exporter = NULL;
 	PCB_ACT_IRES(0);

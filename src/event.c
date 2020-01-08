@@ -73,7 +73,9 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_drc_run",
 	"pcbev_dad_new_dialog",
 	"pcbev_dad_new_geo",
-	"pcbev_net_indicate_short"
+	"pcbev_net_indicate_short",
+	"pcbev_export_session_begin",
+	"pcbev_export_session_end"
 };
 
 typedef struct event_s event_t;

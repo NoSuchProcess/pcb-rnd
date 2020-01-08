@@ -83,6 +83,9 @@ typedef enum {
 
 	PCB_EVENT_NET_INDICATE_SHORT,     /* called by core to get a shortcircuit indicated (e.g. by mincut). Args: (pcb_net_t *net, pcb_any_obj_t *offending_term, pcb_net_t *offending_net, int *handled, int *cancel) - if *handled is non-zero, the short is already indicated; if *cancel is non-zero the whole process is cancelled, no more advanced short checking should take place in this session */
 
+	PCB_EVENT_EXPORT_SESSION_BEGIN,   /* called before an export session (e.g. CAM script execution) starts; should not be nested; there's no guarantee that options are parsed before or after this event */
+	PCB_EVENT_EXPORT_SESSION_END,     /* called after an export session (e.g. CAM script execution) ends */
+
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 
