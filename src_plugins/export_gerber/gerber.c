@@ -70,7 +70,7 @@ static int want_cross_sect;
 static int has_outline;
 static int gerber_debug;
 static int gerber_ovr;
-
+static int gerber_global_aperture_cnt;
 
 static aperture_list_t *layer_aptr_list;
 static aperture_list_t *curr_aptr_list;
@@ -122,6 +122,7 @@ static aperture_list_t *set_layer_aperture_list(int layer_idx)
 			init_aperture_list(&layer_aptr_list[i]);
 	}
 	curr_aptr_list = &layer_aptr_list[layer_idx];
+	curr_aptr_list->aperture_count = &gerber_global_aperture_cnt;
 	return curr_aptr_list;
 }
 
@@ -523,6 +524,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_xform_t xform;
 
 	gerber_ovr = 0;
+	gerber_global_aperture_cnt = 0;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);

@@ -24,6 +24,7 @@ typedef struct aperture {
 typedef struct {
 	aperture_t *data;
 	int count;
+	int aperture_count_default, *aperture_count;
 } aperture_list_t;
 
 void init_aperture_list(aperture_list_t *list);

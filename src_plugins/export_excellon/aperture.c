@@ -13,7 +13,8 @@
 void init_aperture_list(aperture_list_t *list)
 {
 	list->data = NULL;
-	list->count = 0;
+	list->aperture_count_default = list->count = 0;
+	list->aperture_count = &list->aperture_count_default;
 }
 
 void uninit_aperture_list(aperture_list_t *list)
@@ -30,15 +31,13 @@ void uninit_aperture_list(aperture_list_t *list)
 
 aperture_t *add_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shape_t shape)
 {
-	static int aperture_count;
-
 	aperture_t *app = (aperture_t *) malloc(sizeof *app);
 	if (app == NULL)
 		return NULL;
 
 	app->width = width;
 	app->shape = shape;
-	app->dCode = DCODE_BASE + aperture_count++;
+	app->dCode = DCODE_BASE + (*list->aperture_count)++;
 	app->next = list->data;
 
 	list->data = app;
