@@ -71,7 +71,7 @@ static int want_per_file_apertures;
 static int has_outline;
 static int gerber_debug;
 static int gerber_ovr;
-static int gerber_global_aperture_cnt;
+static int gerber_global_aperture_cnt, gerber_global_exc_aperture_cnt;
 
 static aperture_list_t *layer_aptr_list;
 static aperture_list_t *curr_aptr_list;
@@ -532,14 +532,12 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_xform_t xform;
 
 	gerber_ovr = 0;
-	gerber_global_aperture_cnt = 0;
+	gerber_global_aperture_cnt = gerber_global_exc_aperture_cnt = 0;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
-	pcb_drill_init(&pdrills);
-	pcb_drill_init(&udrills);
 
 	drawing_mode_issued = PCB_HID_COMP_POSITIVE;
 
@@ -559,6 +557,9 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	gerber_cfmt = &coord_format[i];
 	pcb_printf_slot[4] = gerber_cfmt->cfmt;
 	pcb_printf_slot[5] = gerber_cfmt->afmt;
+
+	pcb_drill_init(&pdrills, options[HA_apeture_per_file].lng ? NULL : &gerber_global_exc_aperture_cnt);
+	pcb_drill_init(&udrills, options[HA_apeture_per_file].lng ? NULL : &gerber_global_exc_aperture_cnt);
 
 	pcb_cam_begin(PCB, &gerber_cam, &xform, options[HA_cam].str, gerber_options, NUM_OPTIONS, options);
 

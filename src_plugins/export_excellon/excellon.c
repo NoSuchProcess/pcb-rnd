@@ -17,11 +17,14 @@
 #include "plugins.h"
 #include "funchash_core.h"
 #include "conf_core.h"
+#include "event.h"
 #include "excellon_conf.h"
 
 #include "excellon.h"
 
 conf_excellon_t conf_excellon;
+
+static int exc_aperture_cnt;
 
 #define excellonDrX(pcb, x) ((pcb_coord_t) (x))
 #define excellonDrY(pcb, y) ((pcb_coord_t) ((pcb)->hidlib.size_y - (y)))
@@ -141,7 +144,7 @@ static const char *excellon_cookie = "excellon drill/cnc exporter";
 #define SUFF_LEN 32
 
 /* global exporter states */
-static int is_plated, finding_apertures;
+static int is_plated, finding_apertures, exc_aperture_cnt;
 static pcb_drill_ctx_t pdrills, udrills;
 static pcb_cam_t excellon_cam;
 static pcb_coord_t lastwidth;
@@ -185,9 +188,13 @@ excellon output file prefix. Can include a path.
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
 #define HA_excellonfile_coordfmt 3
 
+	{"aperture-per-file", "Restart aperture numbering in each new file",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_apeture_per_file 4
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 4
+#define HA_cam 5
 };
 
 #define NUM_OPTIONS (sizeof(excellon_options)/sizeof(excellon_options[0]))
@@ -217,9 +224,6 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
-	pcb_drill_init(&pdrills);
-	pcb_drill_init(&udrills);
-	memset(&warn, 0, sizeof(warn));
 
 	if (!options) {
 		excellon_get_export_options(hid, NULL);
@@ -227,6 +231,9 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			excellon_values[i] = excellon_options[i].default_val;
 		options = excellon_values;
 	}
+	pcb_drill_init(&pdrills, options[HA_apeture_per_file].lng ? NULL : &exc_aperture_cnt);
+	pcb_drill_init(&udrills, options[HA_apeture_per_file].lng ? NULL : &exc_aperture_cnt);
+	memset(&warn, 0, sizeof(warn));
 
 	pcb_cam_begin(PCB, &excellon_cam, &xform, options[HA_cam].str, excellon_options, NUM_OPTIONS, options);
 
@@ -463,7 +470,10 @@ static void excellon_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y,
 {
 }
 
-
+static void exc_session_begin(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	exc_aperture_cnt = 0;
+}
 
 int pplg_check_ver_export_excellon(int ver_needed) { return 0; }
 
@@ -472,6 +482,7 @@ void pplg_uninit_export_excellon(void)
 	pcb_export_remove_opts_by_cookie(excellon_cookie);
 	free(filename);
 	pcb_conf_unreg_fields("plugins/export_excellon/");
+	pcb_event_unbind_allcookie(excellon_cookie);
 }
 
 int pplg_init_export_excellon(void)
@@ -514,5 +525,7 @@ int pplg_init_export_excellon(void)
 	excellon_hid.usage = excellon_usage;
 
 	pcb_hid_register_hid(&excellon_hid);
+
+	pcb_event_bind(PCB_EVENT_EXPORT_SESSION_BEGIN, exc_session_begin, NULL, excellon_cookie);
 	return 0;
 }

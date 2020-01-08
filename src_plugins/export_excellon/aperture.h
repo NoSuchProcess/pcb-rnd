@@ -68,7 +68,7 @@ typedef struct pcb_drill_ctx_s {
 	aperture_list_t apr;
 } pcb_drill_ctx_t;
 
-void pcb_drill_init(pcb_drill_ctx_t *ctx);
+void pcb_drill_init(pcb_drill_ctx_t *ctx, int *aper_cnt);
 void pcb_drill_uninit(pcb_drill_ctx_t *ctx);
 pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t diam);
 void pcb_drill_sort(pcb_drill_ctx_t *ctx);

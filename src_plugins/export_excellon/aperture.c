@@ -66,10 +66,12 @@ aperture_t *find_aperture(aperture_list_t *list, pcb_coord_t width, aperture_sha
 
 /*** drill ***/
 
-void pcb_drill_init(pcb_drill_ctx_t *ctx)
+void pcb_drill_init(pcb_drill_ctx_t *ctx, int *aper_cnt)
 {
 	vtpdr_init(&ctx->obj);
 	init_aperture_list(&ctx->apr);
+	if (aper_cnt != NULL)
+		ctx->apr.aperture_count = aper_cnt;
 }
 
 void pcb_drill_uninit(pcb_drill_ctx_t *ctx)
