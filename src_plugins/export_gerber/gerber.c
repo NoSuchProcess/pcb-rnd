@@ -26,6 +26,7 @@
 #include "macro.h"
 #include "funchash_core.h"
 #include "gerber_conf.h"
+#include "event.h"
 
 #include "hid.h"
 #include "hid_nogui.h"
@@ -532,7 +533,6 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_xform_t xform;
 
 	gerber_ovr = 0;
-	gerber_global_aperture_cnt = gerber_global_exc_aperture_cnt = 0;
 
 	conf_force_set_bool(conf_core.editor.thin_draw, 0);
 	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
@@ -1345,12 +1345,18 @@ static void gerber_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, i
 {
 }
 
+static void gerber_session_begin(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	gerber_global_aperture_cnt = gerber_global_exc_aperture_cnt = 0;
+}
+
 int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
 
 void pplg_uninit_export_gerber(void)
 {
 	pcb_export_remove_opts_by_cookie(gerber_cookie);
 	pcb_conf_unreg_fields("plugins/export_gerber/");
+	pcb_event_unbind_allcookie(gerber_cookie);
 }
 
 int pplg_init_export_gerber(void)
@@ -1395,6 +1401,9 @@ int pplg_init_export_gerber(void)
 	gerber_hid.usage = gerber_usage;
 
 	pcb_hid_register_hid(&gerber_hid);
+
+	pcb_event_bind(PCB_EVENT_EXPORT_SESSION_BEGIN, gerber_session_begin, NULL, gerber_cookie);
+
 	return 0;
 }
 
