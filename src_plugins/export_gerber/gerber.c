@@ -67,6 +67,7 @@ static int flash_drills, line_slots;
 static int copy_outline_mode;
 static int name_style;
 static int want_cross_sect;
+static int want_per_file_apertures;
 static int has_outline;
 static int gerber_debug;
 static int gerber_ovr;
@@ -111,7 +112,7 @@ static void fprint_aperture(FILE *f, aperture_t *aptr)
 
 /* Set the aperture list for the current layer,
  * expanding the list buffer if needed  */
-static aperture_list_t *set_layer_aperture_list(int layer_idx)
+static aperture_list_t *set_layer_aperture_list(int layer_idx, int aper_per_file)
 {
 	if (layer_idx >= layer_list_max) {
 		int i = layer_list_max;
@@ -122,7 +123,10 @@ static aperture_list_t *set_layer_aperture_list(int layer_idx)
 			init_aperture_list(&layer_aptr_list[i]);
 	}
 	curr_aptr_list = &layer_aptr_list[layer_idx];
-	curr_aptr_list->aperture_count = &gerber_global_aperture_cnt;
+	if (aper_per_file)
+		curr_aptr_list->aperture_count = &curr_aptr_list->aperture_count_default;
+	else
+		curr_aptr_list->aperture_count = &gerber_global_aperture_cnt;
 	return curr_aptr_list;
 }
 
@@ -253,9 +257,13 @@ Print file names and aperture counts on stdout.
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
 #define HA_coord_format 6
 
+	{"aperture-per-file", "Restart aperture numbering in each new file",
+	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_apeture_per_file 7
+
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 7
+#define HA_cam 8
 };
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
@@ -565,6 +573,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	name_style = options[HA_name_style].lng;
 
 	want_cross_sect = options[HA_cross_sect].lng;
+	want_per_file_apertures = options[HA_apeture_per_file].lng;
 
 	has_outline = pcb_has_explicit_outline(PCB);
 
@@ -764,7 +773,7 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		linewidth = -1;
 		lastcap = -1;
 
-		aptr_list = set_layer_aperture_list(layer_list_idx++);
+		aptr_list = set_layer_aperture_list(layer_list_idx++, want_per_file_apertures);
 
 		if (finding_apertures)
 			goto emit_outline;
