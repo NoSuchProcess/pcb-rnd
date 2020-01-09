@@ -53,6 +53,8 @@
 
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 
+#include "font.c"
+
 typedef struct node_s node_t;
 typedef struct hkp_tree_s hkp_tree_t;
 
