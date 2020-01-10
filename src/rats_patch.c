@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2015..2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2015..2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,9 @@
 #include "genht/hash.h"
 
 #include "config.h"
+
+#include <assert.h>
+
 #include "actions.h"
 #include "data.h"
 #include "error.h"
@@ -40,8 +43,11 @@
 #include "undo.h"
 #include "conf_core.h"
 #include "netlist.h"
+#include "macro.h"
 
 static void rats_patch_remove(pcb_board_t *pcb, pcb_ratspatch_line_t * n, int do_free);
+
+static const char core_ratspatch_cookie[] = "core-rats-patch";
 
 const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
 	"input",
@@ -56,19 +62,20 @@ typedef struct {
 	char *id;
 	char *a1;
 	char *a2;
-} pcb_ratspatch_append_t;
+	int used_by_attr; /* can not free */
+} undo_ratspatch_append_t;
 
-static void pcb_ratspatch_append_(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
+static void pcb_ratspatch_append_(pcb_board_t *pcb, pcb_rats_patch_op_t op, char *id, char *a1, char *a2)
 {
 	pcb_ratspatch_line_t *n;
 
 	n = malloc(sizeof(pcb_ratspatch_line_t));
 
 	n->op = op;
-	n->id = pcb_strdup(id);
-	n->arg1.net_name = pcb_strdup(a1);
+	n->id = id;
+	n->arg1.net_name = a1;
 	if (a2 != NULL)
-		n->arg2.attrib_val = pcb_strdup(a2);
+		n->arg2.attrib_val = a2;
 	else
 		n->arg2.attrib_val = NULL;
 
@@ -83,9 +90,78 @@ static void pcb_ratspatch_append_(pcb_board_t *pcb, pcb_rats_patch_op_t op, cons
 	n->next = NULL;
 }
 
+static int undo_ratspatch_append_redo(void *udata)
+{
+	undo_ratspatch_append_t *a = udata;
+	pcb_ratspatch_append_(a->pcb, a->op, a->id, a->a1, a->a2);
+	a->used_by_attr = 1;
+	return 0;
+}
+
+static int undo_ratspatch_append_undo(void *udata)
+{
+	undo_ratspatch_append_t *a = udata;
+	pcb_ratspatch_line_t *n;
+
+	/* because undo and redo should be sequential, we only need to remove the last entry from the rats patch list */
+	n = a->pcb->NetlistPatchLast;
+	assert(n->next == NULL);
+
+	a->pcb->NetlistPatchLast = n->prev;
+	if (n->prev != NULL)
+		n->prev->next = NULL;
+
+	if (a->pcb->NetlistPatches == n)
+		a->pcb->NetlistPatches = NULL;
+
+	free(n); /* do not free the fields: they are shared with the undo slot, allocated at/for the undo slot */
+
+	a->used_by_attr = 0;
+	return 0;
+}
+
+static void undo_ratspatch_append_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_ratspatch_append_t *a = udata;
+	pcb_snprintf(dst, dst_len, "ratspatch_append: op=%d '%s' '%s' '%s' (used by attr: %d)", a->op, PCB_EMPTY(a->id), PCB_EMPTY(a->a1), PCB_EMPTY(a->a2), a->used_by_attr);
+}
+
+static void undo_ratspatch_append_free(void *udata)
+{
+	undo_ratspatch_append_t *a = udata;
+	free(a->id);
+	free(a->a1);
+	free(a->a2);
+}
+
+static const uundo_oper_t undo_ratspatch_append = {
+	core_ratspatch_cookie,
+	undo_ratspatch_append_free,
+	undo_ratspatch_append_undo,
+	undo_ratspatch_append_redo,
+	undo_ratspatch_append_print
+};
+
 void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2, int undoable)
 {
-	pcb_ratspatch_append_(pcb, op, id, a1, a2);
+	undo_ratspatch_append_t *a;
+	char *nid = NULL, *na1 = NULL, *na2 = NULL;
+
+	if (id != NULL) nid = pcb_strdup(id);
+	if (a1 != NULL) na1 = pcb_strdup(a1);
+	if (a2 != NULL) na2 = pcb_strdup(a2);
+
+	if (undoable) {
+		a = pcb_undo_alloc(pcb, &undo_ratspatch_append, sizeof(undo_ratspatch_append_t));
+		a->pcb = pcb;
+		a->op = op;
+		a->id = nid;
+		a->a1 = na1;
+		a->a2 = na2;
+		a->used_by_attr = 1;
+	}
+
+	pcb_ratspatch_append_(pcb, op, nid, na1, na2);
 }
 
 static void rats_patch_free_fields(pcb_ratspatch_line_t *n)
