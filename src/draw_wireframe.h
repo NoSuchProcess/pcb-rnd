@@ -39,6 +39,11 @@ PCB_INLINE void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc, pcb_coor
 	pcb_coord_t wid = thick / 2;
 	pcb_coord_t x1, y1, x2, y2;
 
+	if ((arc->Width == 0) && (arc->Height == 0)) {
+		pcb_render->draw_arc(gc, arc->X, arc->Y, wid, wid, 0, 360);
+		return;
+	}
+
 	pcb_arc_get_end(arc, 0, &x1, &y1);
 	pcb_arc_get_end(arc, 1, &x2, &y2);
 
