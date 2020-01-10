@@ -6,7 +6,7 @@
 + BUG: direct ps export: implicit outline layer appears twice in the TOC -> fixed in r28610 [report=cuvoodoo]
 + BUG: undo doesn't work on the clearline flag when changed from the property editor [report: keantoken]
 + BUG: undo doesn't work on thermals. I can place a via on a poly, use the thermal relief tool and undo will no remove the relief. [report: keantoken]
-- BUG: creating nets and adding terminals in nets by drawing rats is not undoable: 2 drawn rat lines coconnect three terminals into a single net, after one undo, rat is removed but net is not removed. [report: miloh]
++ BUG: creating nets and adding terminals in nets by drawing rats is not undoable: 2 drawn rat lines coconnect three terminals into a single net, after one undo, rat is removed but net is not removed. [report: miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove the donut rats special casing
