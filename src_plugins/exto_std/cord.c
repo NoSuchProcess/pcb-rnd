@@ -35,7 +35,7 @@
 #define SILK_END 1
 #define CTRL_END 2
 
-#undef BEZIER
+#define BEZIER
 
 static char cord_footprint[] = "fp";
 
