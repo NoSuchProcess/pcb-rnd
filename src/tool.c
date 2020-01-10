@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@
 #include "grid.h"
 #include "undo.h"
 #include "actions.h"
+#include "conf_hid.h"
 
 
 pcb_toolid_t pcb_tool_prev_id;
@@ -52,14 +53,35 @@ static void default_tool_unreg(void);
 static void init_current_tool(void);
 static void uninit_current_tool(void);
 
+static conf_hid_id_t tool_conf_id;
+static const char *pcb_tool_cookie = "default tools";
+
+void tool_chg_mode(conf_native_t *cfg, int arr_idx)
+{
+	if (PCB != NULL)
+		pcb_tool_select_by_id(&PCB->hidlib, pcbhl_conf.editor.mode);
+}
+
 void pcb_tool_init()
 {
+	static conf_hid_callbacks_t cbs_mode;
+	conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
+
 	vtp0_init(&pcb_tools);
 	default_tool_reg(); /* temporary */
+
+	tool_conf_id = pcb_conf_hid_reg(pcb_tool_cookie, NULL);
+
+	if (n_mode != NULL) {
+		memset(&cbs_mode, 0, sizeof(conf_hid_callbacks_t));
+		cbs_mode.val_change_post = tool_chg_mode;
+		pcb_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
+	}
 }
 
 void pcb_tool_uninit()
 {
+	pcb_conf_hid_unreg(pcb_tool_cookie);
 	default_tool_unreg(); /* temporary */
 	while(vtp0_len(&pcb_tools) != 0) {
 		const pcb_tool_t *tool = pcb_tool_get(0);
@@ -67,6 +89,7 @@ void pcb_tool_uninit()
 		pcb_tool_unreg_by_cookie(tool->cookie);
 	}
 	vtp0_uninit(&pcb_tools);
+
 }
 
 int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
@@ -369,7 +392,6 @@ TODO("tool: move this out to a tool plugin")
 #include "tool_thermal.h"
 #include "tool_via.h"
 
-static const char *pcb_tool_cookie = "default tools";
 
 static void default_tool_reg(void)
 {
