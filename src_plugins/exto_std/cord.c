@@ -302,13 +302,14 @@ static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, pcb_cardinal_
 static void conv_pstk(pcb_subc_t *subc, pcb_pstk_t *ps, long *grp, long *term, int *has_origin)
 {
 	char sgrp[16], sterm[16];
+	pcb_coord_t d = PCB_MM_TO_COORD(0.75);
 
 	sprintf(sgrp, "%ld", (*grp)++);
 
-	endpt_pstk(subc, "0", COPPER_END, ps->x, ps->y, ps->x, ps->y, ps->term, sgrp, 1);
+	endpt_pstk(subc, "0", COPPER_END, ps->x+d, ps->y+d, ps->x, ps->y, ps->term, sgrp, 1);
 
 	sprintf(sterm, "cord%ld", (*term)++);
-	endpt_pstk(subc, "1", SILK_END, ps->x, ps->y, 0, 0, ps->term, sgrp, 0);
+	endpt_pstk(subc, "1", SILK_END, ps->x, ps->y, ps->x+d, ps->x+d, ps->term, sgrp, 0);
 
 	if (!*has_origin) {
 		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
