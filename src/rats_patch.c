@@ -129,9 +129,12 @@ static void undo_ratspatch_append_print(void *udata, char *dst, size_t dst_len)
 static void undo_ratspatch_append_free(void *udata)
 {
 	undo_ratspatch_append_t *a = udata;
-	free(a->id);
-	free(a->a1);
-	free(a->a2);
+	if (!a->used_by_attr) {
+		free(a->id);
+		free(a->a1);
+		free(a->a2);
+	}
+	a->id = a->a1 = a->a2 = NULL;
 }
 
 static const uundo_oper_t undo_ratspatch_append = {
