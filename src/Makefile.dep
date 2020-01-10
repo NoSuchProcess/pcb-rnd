@@ -7694,7 +7694,7 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h move.h compat_misc.h safe_fs.h \
  conf.h pcb-printf.h ../src_3rd/liblihata/lihata.h list_conf.h \
  funchash_core.h funchash.h funchash_core_list.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist.h
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h netlist.h macro.h
 remove.o: remove.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -7953,10 +7953,11 @@ tool.o: tool.c ../config.h tool.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h event.h find.h grid.h \
- undo.h ../src_3rd/libuundo/uundo.h undo_old.h actions.h tool_arc.h \
- tool_arrow.h tool_buffer.h tool_copy.h tool_insert.h tool_line.h \
- tool_lock.h tool_move.h tool_poly.h tool_polyhole.h tool_rectangle.h \
- tool_remove.h tool_rotate.h tool_text.h tool_thermal.h tool_via.h
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h actions.h conf_hid.h \
+ tool_arc.h tool_arrow.h tool_buffer.h tool_copy.h tool_insert.h \
+ tool_line.h tool_lock.h tool_move.h tool_poly.h tool_polyhole.h \
+ tool_rectangle.h tool_remove.h tool_rotate.h tool_text.h tool_thermal.h \
+ tool_via.h
 tool_arc.o: tool_arc.c ../config.h conf_core.h conf.h global_typedefs.h \
  pcb_bool.h pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
