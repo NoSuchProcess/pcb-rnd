@@ -526,7 +526,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pstklib_select);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 					ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
