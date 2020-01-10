@@ -9,6 +9,11 @@
 
 2. For later releases ===============================================================================
 - CLEANUP: remove the donut rats special casing
+- CLEANUP: remove drawing area rendering limitation 
+	- arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
+	-> AttachForCopy() calls SetCrosshairRange() that then sets crosshair max* which
+	- similar with lines: bug_files/dwgarea.lht; grabbing the lines for move will force them to fall within the drawing area [report: pstuge]
+	- similar issue: can't move outline lines to coord 0;0 because of line width.[report: pstuge]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
@@ -188,11 +193,6 @@
 	which is strange
 - FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
-- BUG: arc bug: draw an arc with one end out of the drawing area; it will be jumpy and can not be placed properly
-	-> AttachForCopy() calls SetCrosshairRange() that then sets crosshair max* which
-	- similar with lines: bug_files/dwgarea.lht; grabbing the lines for move will force them to fall within the drawing area [report: pstuge]
-	limits the arc to move freely. Problem: this is not arc-specific, this happens with any buffer copy! going for no-design-limit is probably better
-	- similar issue: can't move outline lines to coord 0;0 because of line width.[report: pstuge]
 - FEATURE: trace length calculator:
 	- click a line or arc or via
 	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
