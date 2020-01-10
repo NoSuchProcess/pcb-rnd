@@ -51,10 +51,8 @@ static void set_grp(pcb_any_obj_t *obj, const char *grp)
 	pcb_attribute_put(&obj->Attributes, "cord::group", grp);
 }
 
-/* remove all existing graphics from the subc */
-static void cord_clear(pcb_subc_t *subc, const char *group)
+static void cord_clear_ly(pcb_subc_t *subc, pcb_layer_t *ly, const char *group)
 {
-	pcb_layer_t *ly = &subc->data->Layer[LID_TARGET];
 	pcb_line_t *l, *next;
 
 	for(l = linelist_first(&ly->Line); l != NULL; l = next) {
@@ -66,6 +64,15 @@ static void cord_clear(pcb_subc_t *subc, const char *group)
 		pcb_line_free(l);
 	}
 }
+
+/* remove all existing graphics from the subc */
+static void cord_clear(pcb_subc_t *subc, const char *group)
+{
+	cord_clear_ly(subc, &subc->data->Layer[LID_TARGET], group);
+	cord_clear_ly(subc, &subc->data->Layer[LID_EDIT], group);
+
+}
+
 
 /* find the two endpoint padstacks of a group */
 static void cord_get_ends(pcb_subc_t *subc, const char *group, pcb_pstk_t **end1, pcb_arc_t **ctrl1, pcb_pstk_t **end2, pcb_arc_t **ctrl2)
@@ -96,6 +103,7 @@ static void cord_get_ends(pcb_subc_t *subc, const char *group, pcb_pstk_t **end1
 static int cord_gen(pcb_subc_t *subc, const char *group)
 {
 	pcb_layer_t *lyr = &subc->data->Layer[LID_TARGET];
+	pcb_layer_t *elyr = &subc->data->Layer[LID_EDIT];
 	pcb_line_t *l;
 	pcb_pstk_t *e1, *e2;
 	pcb_arc_t *a1, *a2;
@@ -110,14 +118,14 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 
 	if (a1 != NULL) {
-		l = pcb_line_new(lyr, e1->x, e1->y, a1->X, a1->Y,
+		l = pcb_line_new(elyr, e1->x, e1->y, a1->X, a1->Y,
 			1, 0, pcb_flag_make(0));
 		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
 		set_grp((pcb_any_obj_t *)l, group);
 	}
 
 	if (a2 != NULL) {
-		l = pcb_line_new(lyr, e2->x, e2->y, a2->X, a2->Y,
+		l = pcb_line_new(elyr, e2->x, e2->y, a2->X, a2->Y,
 			1, 0, pcb_flag_make(0));
 		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
 		set_grp((pcb_any_obj_t *)l, group);
