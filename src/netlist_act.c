@@ -134,14 +134,14 @@ static int pcb_netlist_add(int patch, const char *netname, const char *pinname)
 		return -1;
 
 	n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT+(!!patch)], netname, PCB_NETA_ALLOC);
-	t = pcb_net_term_get_by_pinname(n, pinname, 0);
+	t = pcb_net_term_get_by_pinname(n, pinname, PCB_NETA_NOALLOC);
 	if (t == NULL) {
 		if (!patch) {
-			t = pcb_net_term_get_by_pinname(n, pinname, 1);
+			t = pcb_net_term_get_by_pinname(n, pinname, PCB_NETA_ALLOC);
 			PCB->netlist_needs_update=1;
 		}
 		else {
-			t = pcb_net_term_get_by_pinname(n, pinname, 1);
+			t = pcb_net_term_get_by_pinname(n, pinname, PCB_NETA_ALLOC);
 			pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pinname, netname, NULL);
 		}
 	}
@@ -339,7 +339,7 @@ static int netlist_merge(pcb_board_t *pcb, const char *from, const char *to, int
 		pcb_net_term_del(nfrom, t);
 		pcb_ratspatch_append_optimize(PCB, RATP_DEL_CONN, pinname, nfrom->name, NULL);
 
-		pcb_net_term_get_by_pinname(nto, pinname, 1);
+		pcb_net_term_get_by_pinname(nto, pinname, PCB_NETA_ALLOC);
 		pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pinname, nto->name, NULL);
 
 		free(pinname);
@@ -525,7 +525,7 @@ static void pcb_net_claim_from_list(pcb_board_t *pcb, pcb_net_t *net, vtp0_t *te
 			free(pinname);
 		}
 
-		t = pcb_net_term_get(net, subc->refdes, obj->term, 1);
+		t = pcb_net_term_get(net, subc->refdes, obj->term, PCB_NETA_ALLOC);
 		pinname = pcb_strdup_printf("%s-%s", t->refdes, t->term);
 		pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pinname, net->name, NULL);
 		free(pinname);

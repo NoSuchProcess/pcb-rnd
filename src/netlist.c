@@ -81,7 +81,7 @@ static pcb_net_term_t *pcb_net_term_alloc(pcb_net_t *net, const char *refdes, co
 	return t;
 }
 
-pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_bool alloc)
+pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_net_alloc_t alloc)
 {
 	pcb_net_term_t *t;
 
@@ -119,10 +119,10 @@ pcb_net_term_t *pcb_net_term_get_by_obj(pcb_net_t *net, const pcb_any_obj_t *obj
 	if (sc->refdes == NULL)
 		return NULL;
 
-	return pcb_net_term_get(net, sc->refdes, obj->term, pcb_false);
+	return pcb_net_term_get(net, sc->refdes, obj->term, PCB_NETA_NOALLOC);
 }
 
-pcb_net_term_t *pcb_net_term_get_by_pinname(pcb_net_t *net, const char *pinname, pcb_bool alloc)
+pcb_net_term_t *pcb_net_term_get_by_pinname(pcb_net_t *net, const char *pinname, pcb_net_alloc_t alloc)
 {
 	char tmp[256];
 	char *pn, *refdes, *term;
@@ -947,7 +947,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	res = pcb_rat_new(pcb->Data, -1, x1, y1, x2, y2, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags(), o1, o2);
 
 	old_len = pcb_termlist_length(&target_net->conns);
-	pcb_net_term_get(target_net, sc1->refdes, o1->term, 1);
+	pcb_net_term_get(target_net, sc1->refdes, o1->term, PCB_NETA_ALLOC);
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
@@ -956,7 +956,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	}
 
 	old_len = new_len;
-	pcb_net_term_get(target_net, sc2->refdes, o2->term, 1);
+	pcb_net_term_get(target_net, sc2->refdes, o2->term, PCB_NETA_ALLOC);
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc2->refdes, "-", o2->term, NULL);

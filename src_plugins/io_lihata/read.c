@@ -2139,7 +2139,7 @@ static int parse_netlist_input(pcb_board_t *pcb, pcb_netlist_t *nl, lht_node_t *
 			for(nt = nconn->data.list.first; nt != NULL; nt = nt->next) {
 				if ((nt->type != LHT_TEXT) || (*nt->data.text.value == '\0'))
 					return iolht_error(nt, "terminal id must be a non-empty text\n");
-				if (pcb_net_term_get_by_pinname(net, nt->data.text.value, 1) == NULL)
+				if (pcb_net_term_get_by_pinname(net, nt->data.text.value, PCB_NETA_ALLOC) == NULL)
 					return iolht_error(nt, "failed to add terminal id to network\n");
 			}
 		}

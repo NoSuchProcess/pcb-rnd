@@ -281,7 +281,7 @@ static int rats_patch_apply_conn(pcb_board_t *pcb, pcb_ratspatch_line_t *patch, 
 
 	/* Wanted to add, let's add it */
 	*sep = '\0';
-	term = pcb_net_term_get(net, patch->id, termid, 1);
+	term = pcb_net_term_get(net, patch->id, termid, PCB_NETA_ALLOC);
 	*sep = '-';
 	if (term != NULL)
 		return 0;

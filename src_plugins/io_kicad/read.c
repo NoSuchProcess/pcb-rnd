@@ -1865,7 +1865,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		if (net == NULL)
 			return kicad_error(subtree, "Can not connect pad %s-%s to net '%s': no such net", subc->refdes, pin_name, netname);
 
-		term = pcb_net_term_get(net, subc->refdes, pin_name, 1);
+		term = pcb_net_term_get(net, subc->refdes, pin_name, PCB_NETA_ALLOC);
 		if (term == NULL)
 			return kicad_error(subtree, "Failed to connect pad to net '%s'", netname);
 	}

@@ -136,7 +136,7 @@ static int ReadNetlist(const char *filename)
 					pcb_attribute_put(&net->Attributes, "style", temp);
 				}
 				else {
-					pcb_net_term_get_by_pinname(net, temp, 1);
+					pcb_net_term_get_by_pinname(net, temp, PCB_NETA_ALLOC);
 				}
 			}
 		}

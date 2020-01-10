@@ -176,7 +176,7 @@
 	 free(node->str1);
 	 free(node->str2);
 
-	 pcb_net_term_get_by_pinname(net, buf, 1);
+	 pcb_net_term_get_by_pinname(net, buf, PCB_NETA_ALLOC);
 
 	 done_node = node;
 	 node = node->next;
