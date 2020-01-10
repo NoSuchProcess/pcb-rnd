@@ -155,7 +155,6 @@ static const char pcb_acts_ExtobjGUIPropEdit[] = "ExtobjGUIPropEdit([object, [id
 static const char pcb_acth_ExtobjGUIPropEdit[] = "Invoke the extobj-implementation-specific GUI property editor, if available";
 fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_extobj_t *eo;
 	int op = F_Object;
 	pcb_subc_t *obj;

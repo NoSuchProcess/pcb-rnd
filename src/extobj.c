@@ -109,7 +109,6 @@ void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc_copy_from, pc
 {
 	pcb_data_t *data = pcb_extobj_parent_data(edit_obj);
 	pcb_board_t *pcb;
-	pcb_subc_t *sc;
 	const char *save;
 
 	pcb = pcb_data_get_top(data);
@@ -119,7 +118,7 @@ void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc_copy_from, pc
 	save = subc_copy_from->extobj;
 	subc_copy_from->extobj = NULL;
 	PCB_FLAG_CLEAR(PCB_FLAG_FLOATER, edit_obj);
-	sc = pcb_extobj_conv_obj_using(pcb, eo, pcb->Data, edit_obj, 1, subc_copy_from);
+	pcb_extobj_conv_obj_using(pcb, eo, pcb->Data, edit_obj, 1, subc_copy_from);
 	subc_copy_from->extobj = save;
 }
 
