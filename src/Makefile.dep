@@ -3413,6 +3413,8 @@
  ../src_3rd/liblihata/lihata.h list_conf.h plug_io.h error.h safe_fs.h \
  compat_misc.h netlist.h obj_subc.h \
  ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h \
+ ../src_plugins/io_mentor_cell/font.c \
+ ../src_plugins/io_mentor_cell/font_geo.c \
  ../src_plugins/io_mentor_cell/read_net.c \
  ../src_plugins/io_mentor_cell/read_pstk.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
