@@ -951,7 +951,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
-		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
+		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL, 1);
 		free(id);
 	}
 
@@ -960,7 +960,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc2->refdes, "-", o2->term, NULL);
-		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL);
+		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL, 1);
 		free(id);
 	}
 

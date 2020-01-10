@@ -48,7 +48,17 @@ const char *pcb_netlist_names[PCB_NUM_NETLISTS] = {
 	"edited"
 };
 
-void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
+/*** undoable ratspatch append */
+
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_rats_patch_op_t op;
+	char *id;
+	char *a1;
+	char *a2;
+} pcb_ratspatch_append_t;
+
+static void pcb_ratspatch_append_(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2)
 {
 	pcb_ratspatch_line_t *n;
 
@@ -71,6 +81,11 @@ void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *
 	else
 		pcb->NetlistPatchLast = pcb->NetlistPatches = n;
 	n->next = NULL;
+}
+
+void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2, int undoable)
+{
+	pcb_ratspatch_append_(pcb, op, id, a1, a2);
 }
 
 static void rats_patch_free_fields(pcb_ratspatch_line_t *n)
@@ -131,7 +146,7 @@ void pcb_ratspatch_append_optimize(pcb_board_t *pcb, pcb_rats_patch_op_t op, con
 	}
 
 quit:;
-	pcb_ratspatch_append(pcb, op, id, a1, a2);
+	pcb_ratspatch_append(pcb, op, id, a1, a2, 0);
 }
 
 /* Unlink n from the list; if do_free is non-zero, also free fields and n */
