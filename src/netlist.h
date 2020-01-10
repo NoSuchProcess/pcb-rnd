@@ -72,6 +72,7 @@ typedef enum { /* bitfield */
 
 struct pcb_net_s {
 	PCB_ANY_OBJ_FIELDS;
+	int parent_nl_idx; /* netlist index within the parent board */
 	char *name;
 	pcb_cardinal_t export_tmp; /* filled in and used by export code; valid only until the end of exporting */
 	unsigned inhibit_rats:1;

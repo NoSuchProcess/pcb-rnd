@@ -81,8 +81,75 @@ static pcb_net_term_t *pcb_net_term_alloc(pcb_net_t *net, const char *refdes, co
 	return t;
 }
 
+/*** undoable term alloc ***/
+typedef struct {
+	pcb_board_t *pcb;
+	int nl_idx;
+	char *netname; /* have to save net by name because pcb_net_t * is not persistent for removal */
+	char *refdes;
+	char *term;
+} undo_term_alloc_t;
+
+static int undo_term_alloc_redo(void *udata)
+{
+	undo_term_alloc_t *a = udata;
+	pcb_net_t *net = pcb_net_get(a->pcb, &a->pcb->netlist[a->nl_idx], a->netname, PCB_NETA_NOALLOC);
+	if (pcb_net_term_alloc(net, a->refdes, a->term) == NULL)
+		return -1;
+	pcb_netlist_changed(0);
+	return 0;
+}
+
+static int undo_term_alloc_undo(void *udata)
+{
+	undo_term_alloc_t *a = udata;
+	pcb_net_t *net = pcb_net_get(a->pcb, &a->pcb->netlist[a->nl_idx], a->netname, PCB_NETA_NOALLOC);
+	pcb_net_term_t *term;
+	int res;
+
+	if (net == NULL) {
+		pcb_message(PCB_MSG_ERROR, "undo_term_alloc_undo failed: net is NULL\n");
+		return -1;
+	}
+
+	term = pcb_net_term_get(net, a->refdes, a->term, PCB_NETA_NOALLOC);
+	if (term == NULL) {
+		pcb_message(PCB_MSG_ERROR, "undo_term_alloc_undo failed: term is NULL\n");
+		return -1;
+	}
+
+	res = pcb_net_term_del(net, term);
+	if (res == 0)
+		pcb_netlist_changed(0);
+	return res;
+}
+
+static void undo_term_alloc_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_term_alloc_t *a = udata;
+	pcb_snprintf(dst, dst_len, "net_term_alloc: %s/%d %s-%s", a->netname, a->nl_idx, a->refdes, a->term);
+}
+
+static void undo_term_alloc_free(void *udata)
+{
+	undo_term_alloc_t *a = udata;
+	free(a->netname);
+	free(a->refdes);
+	free(a->term);
+}
+
+
+static const uundo_oper_t undo_term_alloc = {
+	core_net_cookie,
+	undo_term_alloc_free,
+	undo_term_alloc_undo,
+	undo_term_alloc_redo,
+	undo_term_alloc_print
+};
+
 pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char *term, pcb_net_alloc_t alloc)
 {
+	undo_term_alloc_t *a;
 	pcb_net_term_t *t;
 
 	/* for allocation this is slow, O(N^2) algorithm, but other than a few
@@ -92,8 +159,26 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 			return t;
 	}
 
-	if (alloc)
-		return pcb_net_term_alloc(net, refdes, term);
+	switch(alloc) {
+		case PCB_NETA_NOALLOC:
+			return NULL;
+		case PCB_NETA_ALLOC_UNDOABLE:
+			if (net->parent_nl_idx >= 0) {
+				assert(net->parent_type == PCB_PARENT_BOARD);
+				a = pcb_undo_alloc(net->parent.board, &undo_term_alloc, sizeof(undo_term_alloc_t));
+				a->pcb = net->parent.board;
+				a->nl_idx = net->parent_nl_idx;
+				a->netname = pcb_strdup(net->name);
+				a->refdes = pcb_strdup(refdes);
+				a->term = pcb_strdup(term);
+				return pcb_net_term_alloc(net, a->refdes, a->term);
+			}
+			else
+				pcb_message(PCB_MSG_ERROR, "Internal error: failed to add terminal in an undoable way\nUndo will not affect this temrinal. Please report this bug.");
+			/* intentional fall-through */
+		case PCB_NETA_ALLOC:
+			return pcb_net_term_alloc(net, refdes, term);
+	}
 	return NULL;
 }
 
@@ -187,11 +272,16 @@ pcb_bool pcb_net_name_valid(const char *netname)
 static pcb_net_t *pcb_net_alloc_(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname)
 {
 	pcb_net_t *net;
+	int n;
 
 	net = calloc(sizeof(pcb_net_t), 1);
 	net->type = PCB_OBJ_NET;
 	net->parent_type = PCB_PARENT_BOARD;
 	net->parent.board = pcb;
+	net->parent_nl_idx = -1;
+	for(n = 0; n < PCB_NUM_NETLISTS; n++)
+		if (nl == &pcb->netlist[n])
+			net->parent_nl_idx = n;
 	net->name = pcb_strdup(netname);
 	htsp_set(nl, net->name, net);
 	return net;
@@ -947,7 +1037,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	res = pcb_rat_new(pcb->Data, -1, x1, y1, x2, y2, group1, group2, conf_core.appearance.rat_thickness, pcb_no_flags(), o1, o2);
 
 	old_len = pcb_termlist_length(&target_net->conns);
-	pcb_net_term_get(target_net, sc1->refdes, o1->term, PCB_NETA_ALLOC);
+	pcb_net_term_get(target_net, sc1->refdes, o1->term, PCB_NETA_ALLOC_UNDOABLE);
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
@@ -956,7 +1046,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, pcb_coord_t x1, pcb_c
 	}
 
 	old_len = new_len;
-	pcb_net_term_get(target_net, sc2->refdes, o2->term, PCB_NETA_ALLOC);
+	pcb_net_term_get(target_net, sc2->refdes, o2->term, PCB_NETA_ALLOC_UNDOABLE);
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
 		id = pcb_concat(sc2->refdes, "-", o2->term, NULL);
