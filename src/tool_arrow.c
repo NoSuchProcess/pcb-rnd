@@ -152,6 +152,12 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_OBJ_FLOATER | PCB_LOOSE_SUBC(PCB)) & ~PCB_OBJ_RAT; test; test &= ~otype) {
 		/* grab object/point (e.g. line endpoint) for edit */
 		otype = type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, test, &ptr1, &ptr2, &ptr3);
+		if (otype == PCB_OBJ_ARC_POINT) { /* ignore arc endpoints if arc radius is 0 (so arc center is grabbed) */
+			pcb_arc_t *arc = (pcb_arc_t *)ptr2;
+			if ((arc->Width == 0) && (arc->Height == 0))
+				continue;
+			pcb_trace("jajj\n");
+		}
 		if (!pcb_tool_note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2)) {
 			pcb_tool_note.Hit = type;
 			pcb_tool_note.ptr1 = ptr1;
