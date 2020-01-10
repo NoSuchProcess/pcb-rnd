@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  Extended object for a cords: insulated wires with 1 or 2 conductive end(s)
- *  pcb-rnd Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,9 @@
 #define LID_TARGET 1
 #define COPPER_END 0
 #define SILK_END 1
+#define CTRL_END 2
+
+#undef BEZIER
 
 static char cord_footprint[] = "fp";
 
@@ -65,31 +68,39 @@ static void cord_clear(pcb_subc_t *subc, const char *group)
 }
 
 /* find the two endpoint padstacks of a group */
-static void cord_get_ends(pcb_subc_t *subc, const char *group, pcb_pstk_t **end1, pcb_pstk_t **end2)
+static void cord_get_ends(pcb_subc_t *subc, const char *group, pcb_pstk_t **end1, pcb_arc_t **ctrl1, pcb_pstk_t **end2, pcb_arc_t **ctrl2)
 {
 	pcb_pstk_t *p;
+	pcb_arc_t *a;
+	pcb_layer_t *ely = &subc->data->Layer[LID_EDIT];
 
 	*end1 = *end2 = NULL;
+	*ctrl1 = *ctrl2 = NULL;
 
 	for(p = padstacklist_first(&subc->data->padstack); p != NULL; p = padstacklist_next(p)) {
-		const char *lg = group_of((pcb_any_obj_t *)p);
-		if ((lg == NULL) || (strcmp(lg, group) != 0)) continue;
-		if (*end1 == NULL) *end1 = p;
-		else if (*end2 == NULL) {
-			*end2 = p;
-			break;
-		}
+		const char *lg = group_of((pcb_any_obj_t *)p), *idxs = pcb_attribute_get(&p->Attributes, "extobj::idx");
+		if ((lg == NULL) || (strcmp(lg, group) != 0) || (idxs == NULL)) continue;
+		if (idxs[0] == '0') *end1 = p;
+		else if (idxs[0] == '1') *end2 = p;
+	}
+
+	for(a = arclist_first(&ely->Arc); a != NULL; a = arclist_next(a)) {
+		const char *lg = group_of((pcb_any_obj_t *)a), *idxs = pcb_attribute_get(&a->Attributes, "extobj::idx");
+		if ((lg == NULL) || (strcmp(lg, group) != 0) || (idxs == NULL)) continue;
+		if (idxs[0] == '0') *ctrl1 = a;
+		else if (idxs[0] == '1') *ctrl2 = a;
 	}
 }
 
 /* create the graphics */
 static int cord_gen(pcb_subc_t *subc, const char *group)
 {
-	pcb_layer_t *ly = &subc->data->Layer[LID_TARGET];
+	pcb_layer_t *lyr = &subc->data->Layer[LID_TARGET];
 	pcb_line_t *l;
 	pcb_pstk_t *e1, *e2;
+	pcb_arc_t *a1, *a2;
 
-	cord_get_ends(subc, group, &e1, &e2);
+	cord_get_ends(subc, group, &e1, &a1, &e2, &a2);
 	if ((e1 == NULL) || (e2 == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "extended object cord: failed to generate cord for #%ld group %s: missing endpoint\n", subc->ID, group);
 		return -1;
@@ -97,10 +108,55 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 	pcb_exto_regen_begin(subc);
 
-	l = pcb_line_new(ly, e1->x, e1->y, e2->x, e2->y,
-		PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
-	pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
-	set_grp((pcb_any_obj_t *)l, group);
+
+	if (a1 != NULL) {
+		l = pcb_line_new(lyr, e1->x, e1->y, a1->X, a1->Y,
+			1, 0, pcb_flag_make(0));
+		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
+		set_grp((pcb_any_obj_t *)l, group);
+	}
+
+	if (a2 != NULL) {
+		l = pcb_line_new(lyr, e2->x, e2->y, a2->X, a2->Y,
+			1, 0, pcb_flag_make(0));
+		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
+		set_grp((pcb_any_obj_t *)l, group);
+	}
+
+	if ((a1 != NULL) && (a2 != NULL)) {
+		double t, it, t2, t3, it2, it3, step = 1.0/25.0;
+		pcb_coord_t lx, ly, x, y;
+
+		lx = e1->x; ly = e1->y;
+		for(t = step; t <= 1.0+step/2.0; t += step) {
+			if (t > 1.0)
+				t = 1.0;
+			it = 1-t;
+			it2 = it*it;
+			it3 = it2 * it;
+			t2 = t*t;
+			t3 = t2*t;
+
+			/* B(t)=(1-t)^3 * P0 + 3*(1-t)^2 * t * P1 + 3 * (1-t)*t^2 * P2 + t^3*P3 */
+
+			x = pcb_round(it3*e1->x + 3*it2*t*a1->X + 3*it*t2*a2->X + t3*e2->x);
+			y = pcb_round(it3*e1->y + 3*it2*t*a1->Y + 3*it*t2*a2->Y + t3*e2->y);
+
+			l = pcb_line_new(lyr, lx, ly, x, y,
+				PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
+			pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
+			set_grp((pcb_any_obj_t *)l, group);
+
+			lx = x; ly = y;
+		}
+
+	}
+	else {
+		l = pcb_line_new(lyr, e1->x, e1->y, e2->x, e2->y,
+			PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
+		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
+		set_grp((pcb_any_obj_t *)l, group);
+	}
 
 	return pcb_exto_regen_end(subc);
 }
@@ -143,7 +199,7 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 	cord_gen(subc, grp);
 
-	if ((floater->type == PCB_OBJ_PSTK) && (pcb_attribute_get(&subc->Attributes, "extobj::fixed_origin") == NULL)) {
+	if ((floater->type == PCB_OBJ_LINE) && (pcb_attribute_get(&subc->Attributes, "extobj::fixed_origin") == NULL)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)floater;
 		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
 	}
@@ -157,7 +213,7 @@ static pcb_extobj_del_t pcb_cord_float_del(pcb_subc_t *subc, pcb_any_obj_t *floa
 
 	pcb_trace("cord: float del %ld %ld\n", subc->ID, floater->ID);
 
-	if ((floater->type != PCB_OBJ_PSTK) || (group == NULL))
+	if ((floater->type != PCB_OBJ_LINE) || (group == NULL))
 		return PCB_EXTODEL_FLOATER; /* e.g. refdes text - none of our business */
 
 	for(p = padstacklist_first(&subc->data->padstack); p != NULL; p = next) {
@@ -209,18 +265,36 @@ static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 	return pcb_pstk_proto_insert_dup(data, &proto, 1);
 }
 
-static pcb_pstk_t *endpt_pstk(pcb_data_t *data, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, const char *term, const char *grp, int floater)
+static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, pcb_coord_t ox, pcb_coord_t oy, const char *term, const char *grp, int floater)
 {
 	pcb_pstk_t *ps;
+	pcb_coord_t dx = ox-x, dy = oy-y,  cpx = x+dx/4, cpy = y+dy/4, cpr = PCB_MM_TO_COORD(0.5);
+	pcb_layer_t *ely = &subc->data->Layer[LID_EDIT];
 
-	ps = pcb_pstk_new(data, -1, pid, x, y, 0, pcb_flag_make(0));
+
+	ps = pcb_pstk_new(subc->data, -1, pid, x, y, 0, pcb_flag_make(0));
 	set_grp((pcb_any_obj_t *)ps, grp);
-	if (floater)
-		PCB_FLAG_SET(PCB_FLAG_FLOATER, ps);
-	pcb_attribute_put(&ps->Attributes, "extobj::role", "edit");
+	pcb_attribute_put(&ps->Attributes, "extobj::role", "endpt");
+	pcb_attribute_put(&ps->Attributes, "extobj::idx", ptidx);
 	pcb_attribute_put(&ps->Attributes, "intconn", grp);
 	if (term != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", term);
+
+
+#ifdef BEZIER
+	{
+	pcb_arc_t *a;
+	a = pcb_arc_new(ely, cpx, cpy, 0, 0, 0, 360, cpr, cpr*2, pcb_flag_make(0), 0);
+	set_grp((pcb_any_obj_t *)a, grp);
+	pcb_attribute_put(&a->Attributes, "extobj::role", "control");
+	pcb_attribute_put(&a->Attributes, "extobj::idx", ptidx);
+	PCB_FLAG_SET(PCB_FLAG_FLOATER, a);
+	}
+#endif
+
+	if (floater)
+		PCB_FLAG_SET(PCB_FLAG_FLOATER, ps);
+
 	return ps;
 }
 
@@ -231,10 +305,10 @@ static void conv_pstk(pcb_subc_t *subc, pcb_pstk_t *ps, long *grp, long *term, i
 
 	sprintf(sgrp, "%ld", (*grp)++);
 
-	endpt_pstk(subc->data, COPPER_END, ps->x, ps->y, ps->term, sgrp, 1);
+	endpt_pstk(subc, "0", COPPER_END, ps->x, ps->y, ps->x, ps->y, ps->term, sgrp, 1);
 
 	sprintf(sterm, "cord%ld", (*term)++);
-	endpt_pstk(subc->data, SILK_END, ps->x, ps->y, ps->term, sgrp, 0);
+	endpt_pstk(subc, "1", SILK_END, ps->x, ps->y, 0, 0, ps->term, sgrp, 0);
 
 	if (!*has_origin) {
 		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
@@ -302,10 +376,10 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		sprintf(sgrp, "%ld", grp++);
 
 		sprintf(sterm, "cord%ld", term++);
-		endpt_pstk(subc->data, COPPER_END, l->Point1.X, l->Point1.Y, sterm, sgrp, 1);
+		endpt_pstk(subc, "0", COPPER_END, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, sterm, sgrp, 1);
 
 		sprintf(sterm, "cord%ld", term++);
-		endpt_pstk(subc->data, COPPER_END, l->Point2.X, l->Point2.Y, sterm, sgrp, 1);
+		endpt_pstk(subc, "1", COPPER_END, l->Point2.X, l->Point2.Y, l->Point1.X, l->Point1.Y, sterm, sgrp, 1);
 
 		cord_gen(subc, sgrp);
 	}
