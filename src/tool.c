@@ -55,10 +55,11 @@ static void uninit_current_tool(void);
 
 static conf_hid_id_t tool_conf_id;
 static const char *pcb_tool_cookie = "default tools";
+static int tool_select_lock = 0;
 
 void tool_chg_mode(conf_native_t *cfg, int arr_idx)
 {
-	if (PCB != NULL)
+	if ((PCB != NULL) && (!tool_select_lock))
 		pcb_tool_select_by_id(&PCB->hidlib, pcbhl_conf.editor.mode);
 }
 
@@ -81,7 +82,6 @@ void pcb_tool_init()
 
 void pcb_tool_uninit()
 {
-	pcb_conf_hid_unreg(pcb_tool_cookie);
 	default_tool_unreg(); /* temporary */
 	while(vtp0_len(&pcb_tools) != 0) {
 		const pcb_tool_t *tool = pcb_tool_get(0);
@@ -89,8 +89,13 @@ void pcb_tool_uninit()
 		pcb_tool_unreg_by_cookie(tool->cookie);
 	}
 	vtp0_uninit(&pcb_tools);
-
 }
+
+void pcb_tool_uninit_conf(void)
+{
+	pcb_conf_hid_unreg(pcb_tool_cookie);
+}
+
 
 int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 {
@@ -163,7 +168,9 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	pcb_tool_next_id = id;
 	uninit_current_tool();
 	sprintf(id_s, "%d", id);
+	tool_select_lock = 1;
 	pcb_conf_set(CFR_DESIGN, "editor/mode", -1, id_s, POL_OVERWRITE);
+	tool_select_lock = 0;
 	init_current_tool();
 
 	recursing = pcb_false;
