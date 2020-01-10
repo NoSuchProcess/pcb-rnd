@@ -114,7 +114,7 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_coord_t x, y;
 				pcb_hid_get_coords("Click on object to convert", &x, &y, 0);
 				obj = NULL;
-				if (pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &p1, &obj, &p3) == 0) {
+				if (pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &p1, (void **)&obj, &p3) == 0) {
 					pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found (no object under the cursor)\n");
 					PCB_ACT_IRES(-1);
 					return 0;
@@ -168,14 +168,14 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_ACT_CONVARG(2, FGW_IDPATH, ExtobjGUIPropEdit, idp = fgw_idpath(&argv[2]));
 				if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH))
 					return FGW_ERR_PTR_DOMAIN;
-				obj = pcb_idpath2obj(PCB, idp);
+				obj = (pcb_subc_t *)pcb_idpath2obj(PCB, idp);
 			}
 			else { /* interactive convert */
 				void *p1, *p3;
 				pcb_coord_t x, y;
 				pcb_hid_get_coords("Click on extended object to edit", &x, &y, 0);
 				obj = NULL;
-				if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &p1, &obj, &p3) == 0) {
+				if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &p1, (void **)&obj, &p3) == 0) {
 					pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found (no object under the cursor)\n");
 					PCB_ACT_IRES(-1);
 					return 0;
