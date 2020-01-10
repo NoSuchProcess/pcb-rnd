@@ -157,7 +157,6 @@ PCB_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_
 
 #define pcb_exto_dlg_coord(dlg, subc, vis_name, attr_name, help) \
 do { \
-	pcb_hid_attr_val_t hv; \
 	pcb_hid_dad_spin_t *spin; \
 	double d; \
 	pcb_coord_t currval = 0; \
