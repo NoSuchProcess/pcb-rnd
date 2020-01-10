@@ -427,6 +427,9 @@ static fgw_error_t pcb_act_LayerObjDup(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	pcb_idpath_t *idp;
 	DRAWOPTARG;
 
+TODO("implement noundo");
+	(void)noundo;
+
 	PCB_ACT_IRES(0);
 	PCB_ACT_CONVARG(1+ao, FGW_DATA, LayerObjDup, data = fgw_data(&argv[1+ao]));
 	PCB_ACT_CONVARG(2+ao, FGW_LAYER, LayerObjDup, layer = fgw_layer(&argv[2+ao]));
