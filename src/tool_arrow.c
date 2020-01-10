@@ -156,7 +156,6 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 			pcb_arc_t *arc = (pcb_arc_t *)ptr2;
 			if ((arc->Width == 0) && (arc->Height == 0))
 				continue;
-			pcb_trace("jajj\n");
 		}
 		if (!pcb_tool_note.Hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2)) {
 			pcb_tool_note.Hit = type;
