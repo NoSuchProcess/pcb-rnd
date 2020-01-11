@@ -20,7 +20,7 @@
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 	- CLEANUP: remove attrib.o from the hidlib objects
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
-	- BUG: adding attribute works on subc parts but deleting attribute stops after deleiting it from a subc; bug_files/subcsel.bug [report: Wojciech]
+	- BUG: propedit adding/deleting attributes inconsistency; search depth problem (see TODO#28)  bug_files/subcsel.bug [report: Ade]
 - CLEANUP: lesstif DAD support for top window docks [report: Igor2]
 - CLEANUP: layer order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
