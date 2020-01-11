@@ -900,6 +900,16 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *
 			return isneg ? PCB_PAD_TOUCHES_BOX(&pad, box) : PCB_PAD_IN_BOX(&pad, box);
 
 		case PCB_PSSH_HSHADOW:
+			if (proto->hdia > 0) {
+				/* If there is a hole, we have already checked that the hole is near.
+				   Since hshadow is the hole. The negative case was already handled
+				   above at the hole, need to handle the positive for hit. Note: for
+				   slots there is a separate shape that will match */
+
+				if (!isneg && PCB_POINT_IN_BOX(ps->x-proto->hdia/2,ps->y-proto->hdia/2, box) &&
+					PCB_POINT_IN_BOX(ps->x+proto->hdia/2,ps->y+proto->hdia/2, box))
+					return 1;
+			}
 			return 0;
 
 		case PCB_PSSH_POLY:
