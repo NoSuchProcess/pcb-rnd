@@ -323,6 +323,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
+		TODO("TODO#28: should be rtree based for recursion");
 		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
 				map_any(ctx, o);
@@ -827,6 +828,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
+		TODO("TODO#28: should be rtree based for recursion");
 		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
 				set_any(sctx, o);
@@ -943,6 +945,7 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 	if (ctx->selection) {
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
+		TODO("TODO#28: should be rtree based for recursion");
 		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
 				del_cnt += del_any(ctx, o, key);
