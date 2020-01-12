@@ -97,7 +97,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 
 		end = e->data.fp.loc_info = malloc(sl+nl+3);
 		memcpy(end, subdir, sl); end += sl;
-		*end = '/'; end++;
+		*end = PCB_DIR_SEPARATOR_C; end++;
 		memcpy(end, name, nl+1); end += nl;
 	}
 
