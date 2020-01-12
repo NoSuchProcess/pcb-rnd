@@ -202,13 +202,30 @@ print [@
 
 /****************************************************************************/
 /* Paths */
+@]
 
+switch sys/class
+	case {win32}
+		print [@
+#define PCB_PREFIX pcb_w32_root
+#define PCBSHAREDIR pcb_w32_sharedir
+#define PCBLIBDIR pcb_w32_libdir
+#define BINDIR pcb_w32_bindir
+#define PCBCONFDIR @/local/confdir_final@
+@]
+		end;
+	default
+		print [@
 #define PCB_PREFIX "@/local/prefix@"
 #define PCBSHAREDIR PCB_PREFIX "/share/pcb-rnd"
 #define PCBLIBDIR PCB_PREFIX "/lib/pcb-rnd"
-#define PCBCONFDIR @/local/confdir_final@
-
 #define BINDIR PCB_PREFIX "/bin"
+#define PCBCONFDIR @/local/confdir_final@
+@]
+		end;
+end;
+
+print [@
 
 /* Relative path from bindir to exec_prefix */
 #define BINDIR_TO_EXECPREFIX ".."
