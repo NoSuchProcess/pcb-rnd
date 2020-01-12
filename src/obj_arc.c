@@ -600,6 +600,8 @@ void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 														Arc->Delta, Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND), pcb_true);
 	if (!arc)
 		return arc;
+	if (ctx->copy.keep_id)
+		arc->ID = Arc->ID;
 	pcb_arc_copy_meta(arc, Arc);
 	pcb_arc_invalidate_draw(Layer, arc);
 	pcb_undo_add_obj_to_create(PCB_OBJ_ARC, Layer, arc, arc);

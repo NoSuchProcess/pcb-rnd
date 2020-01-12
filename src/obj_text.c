@@ -592,6 +592,8 @@ void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 
 	text = pcb_text_new(Layer, pcb_font(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
 											 Text->Y + ctx->copy.DeltaY, Text->rot, Text->Scale, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
+	if (ctx->copy.keep_id)
+		text->ID = Text->ID;
 	pcb_text_copy_meta(text, Text);
 	pcb_text_invalidate_draw(Layer, text);
 	pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, Layer, text, text);

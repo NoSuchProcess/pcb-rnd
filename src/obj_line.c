@@ -566,6 +566,8 @@ void *pcb_lineop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 																Line->Point2.Y + ctx->copy.DeltaY, Line->Thickness, Line->Clearance, pcb_flag_mask(Line->Flags, PCB_FLAG_FOUND));
 	if (!line)
 		return line;
+	if (ctx->copy.keep_id)
+		line->ID = Line->ID;
 	pcb_line_copy_meta(line, Line);
 	pcb_line_invalidate_draw(Layer, line);
 	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, Layer, line, line);

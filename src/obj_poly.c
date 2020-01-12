@@ -956,6 +956,8 @@ void *pcb_polyop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	pcb_poly_t *polygon;
 
 	polygon = pcb_poly_new(Layer, Polygon->Clearance, pcb_no_flags());
+	if (ctx->copy.keep_id)
+		polygon->ID = Polygon->ID;
 	pcb_poly_copy(polygon, Polygon, ctx->copy.DeltaX, ctx->copy.DeltaY);
 	pcb_poly_copy_meta(polygon, Polygon);
 	if (!Layer->polygon_tree)

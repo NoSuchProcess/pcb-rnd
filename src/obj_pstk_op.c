@@ -85,6 +85,8 @@ void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (nps == NULL)
 		return NULL;
 
+	if (ctx->copy.keep_id)
+		nps->ID = ps->ID;
 	pcb_pstk_copy_meta(nps, ps);
 	pcb_pstk_invalidate_draw(nps);
 	pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, data, nps, nps);

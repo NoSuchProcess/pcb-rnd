@@ -292,6 +292,7 @@ void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 	ctx.copy.DeltaX = DX;
 	ctx.copy.DeltaY = DY;
 	ctx.copy.from_outside = 0;
+	ctx.copy.keep_id = 0;
 
 	/* the subroutines add the objects to the undo-list */
 	ptr = pcb_object_operation(&CopyFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);

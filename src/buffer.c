@@ -769,6 +769,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	ctx.copy.DeltaX = X - PCB_PASTEBUFFER->X;
 	ctx.copy.DeltaY = Y - PCB_PASTEBUFFER->Y;
 	ctx.copy.from_outside = PCB_PASTEBUFFER->from_outside;
+	ctx.copy.keep_id = keep_id;
 
 	/* paste all layers */
 	num_layers = PCB_PASTEBUFFER->Data->LayerN;
@@ -794,10 +795,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			{
 				pcb_line_t *nline = pcb_lineop_copy(&ctx, destlayer, line);
 				if (nline != NULL) {
-					if (keep_id) {
-						pcb_obj_change_id((pcb_any_obj_t *)nline, line->ID);
+					if (keep_id)
 						pcb_extobj_float_geo((pcb_any_obj_t *)nline);
-					}
 					changed = 1;
 				}
 			}
@@ -806,10 +805,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			{
 				pcb_arc_t *narc = pcb_arcop_copy(&ctx, destlayer, arc);
 				if (narc != NULL) {
-					if (keep_id) {
-						pcb_obj_change_id((pcb_any_obj_t *)narc, arc->ID);
+					if (keep_id)
 						pcb_extobj_float_geo((pcb_any_obj_t *)narc);
-					}
 					changed = 1;
 				}
 			}
@@ -818,10 +815,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			{
 				pcb_text_t *ntext = pcb_textop_copy(&ctx, destlayer, text);
 				if (ntext != NULL) {
-					if (keep_id) {
-						pcb_obj_change_id((pcb_any_obj_t *)ntext, text->ID);
+					if (keep_id)
 						pcb_extobj_float_geo((pcb_any_obj_t *)ntext);
-					}
 					changed = 1;
 				}
 			}
@@ -830,10 +825,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 			{
 				pcb_poly_t *npoly = pcb_polyop_copy(&ctx, destlayer, polygon);
 				if (npoly != NULL) {
-					if (keep_id) {
-						pcb_obj_change_id((pcb_any_obj_t *)npoly, polygon->ID);
+					if (keep_id)
 						pcb_extobj_float_geo((pcb_any_obj_t *)npoly);
-					}
 					changed = 1;
 				}
 			}
@@ -851,10 +844,8 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 		}
 		nsubc = pcb_subcop_copy(&ctx, subc);
 		if (nsubc != NULL) {
-			if (keep_id) {
-				pcb_obj_change_id((pcb_any_obj_t *)nsubc, subc->ID);
+			if (keep_id)
 				pcb_extobj_float_geo((pcb_any_obj_t *)nsubc);
-			}
 			changed = 1;
 		}
 	}
@@ -882,10 +873,8 @@ TODO("subc: fix this after the element removal")
 			pcb_pstk_t *nps;
 			nps = pcb_pstkop_copy(&ctx, padstack);
 			if (nps != NULL) {
-				if (keep_id) {
-					pcb_obj_change_id((pcb_any_obj_t *)nps, padstack->ID);
+				if (keep_id)
 					pcb_extobj_float_geo((pcb_any_obj_t *)nps);
-				}
 				changed = 1;
 			}
 		}
