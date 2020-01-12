@@ -486,7 +486,7 @@ void pcb_fix_locale_and_env()
 		pcb_w32_cachedir = pcb_concat(pcb_w32_root, "/cache", NULL);
 		pcb_mkdir_(pcb_w32_cachedir, 0755);
 
-/*		printf("WIN32 bindir='%s' libdir='%s' sharedir='%s'\n", bindir, libdir, sharedir);*/
+/*		printf("WIN32 root='%s' libdir='%s' sharedir='%s'\n", pcb_w32_root, pcb_w32_libdir, pcb_w32_sharedir);*/
 	}
 #endif
 }
