@@ -175,7 +175,6 @@
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- save and load rat anchor object idpath
 	- poly side clearance value (complements object's clearance) when it is introduced in the data model
-- FEATURE: scconfig: menuconfig and a config file for scconfig
 
 4. Low prio ===============================================================================
 - FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304; also keep thermals per term ID [report: gpaubert]
@@ -200,3 +199,4 @@
 	- stop at polygons
 	- display the number of vias and net trace length along the found objects
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
+- FEATURE: scconfig: menuconfig and a config file for scconfig: requires a more declarative dependency handling system
