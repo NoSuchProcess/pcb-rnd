@@ -178,7 +178,7 @@
 - FEATURE: scconfig: menuconfig and a config file for scconfig
 
 4. Low prio ===============================================================================
-- FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304 [report: gpaubert]
+- FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304; also keep thermals per term ID [report: gpaubert]
 - BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: igor2, miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
