@@ -98,6 +98,7 @@
 		- action to reload if file name is known
 		- gui load dialog with tags listed
 - FEATURE: project specific menus from extra lihata files - maybe from project.lht
+- FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
@@ -159,7 +160,6 @@
 - BUG: in poly lib rewrite: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is change with the layer binding [report: jg]
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
-- FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - CLEANUP: reduce: get rid of autorouter/vector.[ch]
 - vendor drill plugin:
 	- CLEANUP: check if we want to keep vendor name
