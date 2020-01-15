@@ -682,11 +682,7 @@ void *pcb_textop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t
 /* destroys a text from a layer */
 void *pcb_textop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	free(Text->TextString);
-	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
-
 	pcb_text_free(Text);
-
 	return NULL;
 }
 
