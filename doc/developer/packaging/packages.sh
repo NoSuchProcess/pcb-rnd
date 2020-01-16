@@ -154,7 +154,10 @@ cat extra.digest
 		print "<tr><th> package <th> depends on (packages) <th> consists of (plugins)"
 
 		for(pkg in PKG) {
-			print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>" PKG[pkg]
+			if (pkg == "pcb-rnd-core")
+				print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>(builtin: " PKG[pkg] ")"
+			else
+				print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>" PKG[pkg]
 			print strip(PKG_DEP[pkg]) >  "auto/" pkg ".deps"
 			print pkg > "auto/List"
 		}

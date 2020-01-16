@@ -17,6 +17,10 @@ A. changes that probably don't need action
 2. sorted out files and dependencies of the librnd packages; please make
    sure librnd is packaged.
 
+3. pcb-rnd-core has all plugins built-in, so they are not dynamically loaded;
+   old versions of pacakges.html listed non-existing .so and .pup files for
+   these plugins, new version does not.
+
 B. changes that probably DO need action
 
 1. if you had a workaround for the --as-needed linker problem, please
