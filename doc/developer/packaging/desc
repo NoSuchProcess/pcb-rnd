@@ -116,12 +116,12 @@
 	Provides generic, low level parsers (such as s-expression
 	parser) for I/O plugins that need to deal with alien file formats.
 
-@librnd
+@librnd2
 	pcb-rnd library, binaries.
 	
 	HID, polygons, infrastructure for 3rd party applications.
 
-@librnd-dev
+@librnd2-dev
 	pcb-rnd library, headers.
 
 	HID, polygons, infrastructure for 3rd party applications.
