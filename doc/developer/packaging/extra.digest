@@ -7,3 +7,4 @@
 @appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd
 @appendfiles librnd-dev $PREFIX/lib/*.so
 @appenddeps librnd-dev librnd
+@appenddeps pcb-rnd-cloud wget
