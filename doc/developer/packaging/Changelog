@@ -1,22 +1,43 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.1.4
+  ver=2.2.0
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
 Packaging changes between 2.1.4 and 2.2.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TODO:
-	- export_gcode doesn't depend on libgd
-	- export_gcode depends on plugin millpath
-
 A. changes that probably don't need action
+
+1. new plugins in existing packages:
+   - millpath in package pcb-rnd-export
+   - exto_std in package pcb-rnd-core
+   - export_stl in package pcb-rnd-export-extra
+
+2. sorted out files and dependencies of the librnd packages; please make
+   sure librnd is packaged.
 
 B. changes that probably DO need action
 
 1. if you had a workaround for the --as-needed linker problem, please
    disable it; the code should work fine with that flag since r28707.
+
+2. ./configure options changed (for the new plugins)
+
+3. please make sure pcb-rnd-cloud depends on wget
+
+4. fixed a dependency list bug in the script that generates packages.html;
+   this does not change dependencies, but it's best to double check these:
+   - the following packages should depend on pcb-rnd-lib-io:
+     pcb-rnd-import-net, pcb-rnd-auto, pcb-rnd-io-standard, pcb-rnd-io-alien,
+   - pcb-rnd-lib-gtk and pcb-rnd-hid-lesstif depend on pcb-rnd-lib-gui
+   - pcb-rnd-hid-gtk2-gdk and pcb-rnd-hid-gtk2-gl depend on pcb-rnd-lib-gtk
+
+5. pcb-rnd-import-net should contain gsch2pcb-rnd related files
+   (see packages.html)
+
+6. written/updated/refined package description for: 
+   pcb-rnd-lib-gl, pcb-rnd-lib-io, pcb-rnd-lib-gui, pcb-rnd-lib-gtk
 
 
 Packaging changes between 2.1.3 and 2.1.4
