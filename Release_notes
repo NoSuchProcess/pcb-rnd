@@ -1,31 +1,34 @@
-pcb-rnd 2.1.4
+pcb-rnd 2.2.0
 ~~~~~~~~~~~~~
 
-This release improves on the infrastructure (installable hidlib, gtk
-internals simplified) and upgrades user scripting support. Beside
-these main targets a lot of bugs got fixed and a several smaller features
-got implemented.
+This version of pcb-rnd is mainly a cleanup/bugfix version with only 3
+notable new features. One of the new features is the extended object
+infrastructure, that provides a sustainable way to extend pcb-rnd features
+with new tools and objects without having to complicate the data model.
+
+With this release the second digit of the version bumped because pcb-rnd
+is entering a new era. librnd (including the hidlib) is already installed
+and being used by external applications. The new 2.2.x era is about
+starting to separate librnd from pcb-rnd. This effort will take multiple
+development cycles.
 
 Feature highlight:
 
-1. scripting anywhere: AWK (fawk), BASIC (fbas) and Pascal (fpas) scripting
-   using the libfawk minilib, without any external dependency
+1. extended objects (line-of-vias and dimension lines)
 
-2. full buffer content save and load (in lihata)
+2. OpenEMS export: suitable for microwave filter and antenne simulation
 
-3. a new option for saving all buffer subcircuits as a library
+3. STL export: yet another path to 3D
 
-4. the mark (placed with {a m}) is not changed by pcb-rnd as side effect
-   of drawing operations
+4. io_eagle: various bugfixes and improvements in the loader allows more
+   eagle boards to be loaded with less glitches
 
-5. converted pcblib (both static and parametric footprints) to lihata;
-   new, global parameters: pad_mask_ratio pad_mask_offs, pad_mask_offs,
-   pin_mask_offs, pad_mask_ratio, pin_mask_ratio
+5. scripting: action code upgrade allows delivering the hildib/PCB pointer
+   to actions as argument (in argv[0]) which long term makes the code
+   reentrant; centralized and unified layer and layer group adressing
+   (using the syntax and experiences from cam)
 
-6. noexport attribute to inhibit objects from exporting with specific
-   exporters or in general
+6. windows port: the cross compilation setup got smoother and the startup code
+   more robust, removing all known windows-port-specific bugs - locales and
+   parametric footprint dialog work well now
 
-7. first working windows cross-compiled version
-
-8. export code tuning, menus and documentation for the new assy layers;
-   document all the common doc layer types/purposes (including keepouts)
