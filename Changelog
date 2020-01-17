@@ -1,0 +1,354 @@
+pcb-rnd 2.2.0 (r29166)
+~~~~~~~~~~~~~~~~~~~~~~
+
+	[act_draw]
+		-Add: action for layer object duplication
+
+	[act_read]
+		-Add: ReadGroup(): action for querying group fields
+
+	[asm]
+		-Fix: template for x and y didn't append the coordinate values to the right string
+
+	[autocrop]
+		-Fix: both board size change and data move should be undoable
+
+	[bom]
+		-Cleanup: remove local string list implementation in favor of common vts0
+		-Cleanup: name space conventions
+		-Cleanup: no need to cast malloc() return value, the code is not C++
+		-Cleanup: code formatting & whitespace
+		-Fix: obsolete comment on what the plugin does
+
+	[cam]
+		-Fix: default cam jobs: gerber assy exports always export both the virtual and the doc layer for compatibility with old and new stackups
+		-Fix: negative layer group offset sign bug (should count _back_ from the last group)
+		-Add: doc: mention [output options] in the syntax comment
+		-Add: executing a cam export script should be a single export session
+
+	[core]
+		-Cleanup: remove dolists.h and make action table registration macros more explicit to simplify the API
+		-Cleanup: attribute change callback should always happen, including when the attribute is free'd so administration depending on the callback will always work
+		-Cleanup: attribute memory leak at object free
+		-Cleanup: centralize/move subc-terminal-hash administration into attrib post-change handler, so it can not miss any term change
+		-Cleanup: actions: get hidlib through argv0 instead if using global var PCB
+		-Cleanup: change order of functions in main.c so path initialziation is on top, close to path var declarations
+		-Cleanup: simplify the exec_prefix code by not re-implementing strchr()
+		-Cleanup: de-doxyfy the exec_prefix comment
+		-Cleanup: remove use of appearance/color/crosshair - redundant with appearance/color/cross
+		-Cleanup: const correctness in pcb_poly_contour_copy(), pcb_poly_contour_new(), cntrbox_adjust(), pcb_poly_contour_inside()
+		-Cleanup: footprint API: take a conf list instead of a ':' separated lsit of strings for footprint search path
+		-Cleanup: centralize pcb aux unit vector size as more and more parts of the code start to depend on it
+		-Fix: do draw arcs with 0 thickness, only omit negative thickness objects
+		-Fix: minimum thickness should be minimum size and maximum thickness should be maximum coord - don't constraint thickness beyond our number representation
+		-Fix: allow arc radius to go down to 0 and text to scale down to 1% - don't constraint it with a random value when nothing breaks
+		-Fix: do update subc->terminals hash if a terminal is removed or added back by undo
+		-Fix: still draw "cleared out of existence" polygon's as-drawn contour if it was requested
+		-Fix: objects that are being free'd need to be removed from their rtree
+		-Fix: attribute free should be done in 2 steps (notify then free), to avoid cached pointers dangling
+		-Fix: run-time concat of config paths - don't assume all parts are compile-time-known (helps win32)
+		-Fix: pcb_crosshair.snapped_pstk was never set back to NULL after leaving the snapped padstack
+		-Fix: Cursor() steps really in grid unit when addressed by grid in last arg and is not snapped
+		-Fix: Cursor(): when leaving the snapped padstack, don't go much further than really needed
+		-Fix: file-action: new pcb action legitimately uses the PCB variable directly, but it needs to notify the GUI about the new PCB as soon as possible
+		-Fix: default boards: group name for top and bottom assy should have _ for separator, not -, for consistency
+		-Fix: set color before drawing marks.
+		-Fix: do not set crosshair color if nothing is drawn from the crosshair
+		-Fix: polygon support: pline's head vnode is a pointer, not a local struct - this adds one extra allocation per pline, but removes the special casing for head, which is required for the 'exclude head' bugfix later
+		-Fix: pcb_poly_vertex_exclude() can be called with the pline the node is deleted from; if the node is the head, the pline's head is bumped to the next node to avoid dangling head
+		-Fix: thermal/padstack-shape poly render corner case: in gcode, the hole and slot shape does need to be subtracted on mech layers
+		-Fix: padstack x-mirroring: also have to reverse the order of polygon points to keep the normal vectors in the right direction (wihout this, shrinking/growing will do the opposite)
+		-Fix: fp fopen: return the first footprint found instead of returning NULL if the last search path didn't have it
+		-Fix: poly draw helper: when drawing optimization (single line instead of polygon too small), set line cap and width
+		-Fix: move-to-current-layer: make sure the original (sometimes bound) layer (parent of the object) is passed as original layer instead of the resolved board layer so the undo would put the object back to its right layer
+		-Fix: move-to-layer undo: do not assume the other layer is in PCB, it can be a subc layer as well
+		-Fix: NewGroup(): uninitialized attr argument caused segfaults in some cases
+		-Fix: allow setting clearance value through the Change infrastructure to smaller than DRC minimum (pcb-rnd is not a nanny, it should just do what the user ordered)
+		-Fix: pcb_lineop_move_point_with_route() shall return the original line object instead of NULL (extobj will need it)
+		-Fix: route code should copy attributes of lines and arcs being split
+		-Fix: line endpoint move with the route code does not swap endpoints
+		-Fix: invalid memory handling on routing style caused by emitting the event before the correct pcb is made global
+		-Fix: inhibit redraws while creating a new board
+		-Fix: moving arc endpoint did not set return value properly, caused uninitialized pointer return
+		-Fix: when undoing flags, re-clip on flag changes that affect poly clipping (the CLEAR* flags)
+		-Fix: make low level calls of board size change undoable (will fix non-undoable autocrop)
+		-Fix: uninitialized memory in undo slot allocation caused invalid memory access of parent-subc-ID when undoing 'create object'
+		-Fix: when grabbing an arc with radius=0, do not ever grab the endpoint - the only reasonable thing to move is the arc itself
+		-Fix: 0 radius arc is special case in wireframe draw: should be a single, full-circle arc, no end-point calculation needed
+		-Fix: selected move, keeping object IDs, must do the ID manipulation before adding the object to the undo list
+		-Fix: disabled win32 debug print on path calculation: use the new, prefixed vairable names
+		-Fix: double free on text object destroy
+		-Split: layer(grp) addressing code from cam and layer to layer_addr.[ch]
+		-Split: drc clearance indication color from cross color
+		-Split: mark color conf node from the cross(hair) color, especially because the crosshair is inverted
+		-Split: (crosshair-) attached object color from cross(hair) color into a separate conf node so the user has more freedom in setting different colors
+		-Tune: layer alpha for gl raised from 0.7 to 0.75 so that the slot/hole color with standard colors don't end up hiding the slots; darken the default color for padstacks to get them visible on both gdk and gl with the default setup
+		-Change: load the menu file from confdir, not sharedir
+		-Update: default boards have substrate thickness set to 1.6mm finished
+		-Add: poly seg accessor
+		-Add: polyarea: rename and publish the function that calculates the edge tree
+		-Add: polyarea: a forced include_vertex() variant that doesn't do anything smart after including the vertex
+		-Add: polyon offset post-processing: remove self-intersection where possible
+		-Add: callback based arc approximation helper with configurable resolution and scan direction
+		-Add: API change: pcb_buffer_copy_to_layout() gets a keep_id argument that will be used later to make sure selected objects that moved through a buffer copy don't get new IDs
+		-Add: API change: copy-to-buffer API for keeping IDs (for seamless "move selected object" using a buffer)
+		-Add: centralize layer stackup update inhibition in loading boards (the gui may be slow and all io plugins change the stack in multiple steps anyway)
+		-Add: printf hardedning: safe low level printf API (printf format string hardening) for using unsafe format string from the user
+		-Add: undoable object attribute change call
+		-Add: hooks for type-common pre/post calls on operations
+		-Add: subc layer creation helper/shorthand (for extobj)
+		-Add: subc move origin calls
+		-Add: buffer scaling GUI: input both x and y scale and provide a lock checkbox to keep them in sync
+		-Add: attribute: helper function for attribute query with both global and "::" namespace
+		-Add: centralized board thickness calculator (multiple plugins depend on this)
+		-Add: action infra: layergrp and layergrpid fungw types (so scripts can access groups)
+		-Add: export session begin/end events to inform plugins which calls will be for a single session
+
+	[dialogs]
+		-Fix: layer binding dialog: allow 'global' location to be set explicitly
+		-Fix: library window: enable the edit button not only when '(' is entered in the filter but also when a parametric is clicked in the tree
+		-Fix: preferences: disable library path move, edit and remove buttons when no row is selected
+		-Fix: library window: do not attempt to generate the parametric footprint until the clsoing parenthesis appears - this spares unwanted error messages while typing a long parametric
+		-Fix: library window: do not crash when parametric footprint edit clicked after a single click select of a parametric footprint in the tree
+		-Fix: library window: prefer the footprint of the active row in the tree when editing a parametric footprint using the edit button, if the last operation was a click (and prefer the filter text if the last operation was editing the text)
+		-Fix: library window: memory handling bug when picking up footprint name for parametric edit button from the tree
+		-Fix: preferences library tab help button: the same dialog is invoked in two different contexts, better use the global var for getting the struct for now
+		-Fix: preferences lib help: do not crash if $() subst has undefined value
+		-Fix: preferences: editing an existing library path won't start with an empty edit value but the original value filled in
+		-Fix: padstack lib window: scroll the padstack list as it can grow real huge
+		-Fix: on win32 the posix shell has to be used explicitly for getting --help on parametric footprints
+		-Add: new layer types in the advanced search dialog
+		-Add: pressing the export button in the direct export dialog should begin/end a new export session
+
+	[doc]
+		-Fix: packager's doc: don't lise .so and .pup files for plugins that are built-in
+		-Fix: packager's doc: do not generate a non-existing lib package for each lib plugin
+		-Fix: packaging: include files in the core package, but put sch-import related files in the sch import package
+		-Fix: packaging librnd-dev should depend on librnd, the headers are usuless without the libs
+		-Fix: packager's doc: missing librnd.mak from librnd-dev
+		-Fix: packager's doc: missing librnd binaries from the file list
+		-Fix: bridges.svg: we don't yet write eagle, only read; there's no separate breadboard export anymore
+		-Fix: data model: remove text 90-degree-rotation-only from the doc, it's not true anymore
+		-Update: fungw installation path (detector picks it up from multiple standard paths)
+		-Change: fungw installation:make mawk dependency only optional but recommended in fung winstallation now, that we have fawk
+		-Change: link to the windows downloads from the experimental version to the official version
+		-Change: packager's doc: change the long description syntax from debian to plain text (as this file is used for rpms too)
+		-Change: compact bridges.svg horizontally to make room for even more plugins
+		-Split: layer group addressing from cam, move it to the appendix as many things will use it
+		-Add: windows dev doc links to the pool node describing the cross compilation steps
+		-Add: long/detailed package descriptions for the lib packages
+		-Add: smartdisperse doc
+		-Add: bridges: hkp board import, g-code export, openems export, excellon export, dsn, tEDAx, eagle DRU
+		-Add: add short command line summary for each cam section header to make the context easier to understand
+		-Add: data model: text thickness
+		-Add: fungw installation: note on when it is needed
+		-Add: packaging: move .so-with-no-ver-suffix to the -dev package (Debian policy)
+
+	[export_excellon]
+		-Add: per export session tool numbering, with an option for a per file numbering
+
+	[export_gcode]
+		-Change: plugin got rewritten from scratch using millpath
+
+	[export_gerber]
+		-Fix: implicit outline shall be drawn, boundary layer is not empty with that
+		-Fix: use a per session global aperture count, so subsequent sessions restart counting
+		-Add: option for per layer aperture numbering
+
+	[export_openems]
+		-Add: enable openems export plugin by default (simulation)
+
+	[export_ps]
+		-Fix: the boundary is never empty: it's either explicit or implicit
+
+	[export_stl]
+		-Add: STL export HID for board outline
+
+	[export_svg]
+		-Fix: don't crash in print footer if failed to create the output file
+
+	[extobj]
+		-Add: extended object infra
+		-Add: line-of-vias extended object
+		-Add: dimension line extended object
+		-Add: experimental, unstable cord extended object
+
+	[fp_wget]
+		-Fix: footprint search needs to be per backend because index format differs between gedasymbols and edakrill
+
+	[fungw]
+		-Cleanup: use macro PCB_ACT_HIDLIB, shorthand to argv[0].val.argv0.user_call_ctx to simplify the code
+		-Fix: wrong gtk context passing to keyboard handler ruined hidlib passdown
+		-Split: pcb_actionl() and pcb_actionva(); pcb_actionl() is kept for compatibility for some releases, but shouldn't be used
+		-Change: use pcb_actionva() instead of pcb_actionl() so pcb_actionl() can be removed later on
+		-Add: always reset user_call_ctx() when directly calling fungw functions - actions now get the hidlib context
+		-Add: pcb_hid_get_flag() gets pcb_hidlib_t * so it can pass it on to actions as user_call_ctx
+		-Add: pcb_actionv_bin() gets (pcb_hidlib_t *) as first arg so it can be passed down to the action
+		-Add: pcb_action(), pcb_actionva(), pcb_parse_actions(), pcb_parse_command(), pcb_actionv(), pcb_cli_common()  get (pcb_hidlib_t *) as first arg so it can be passed down to the actions
+
+	[gl]
+		-Fix: xor drawing in the gl hid so that it matches the gdk hid.
+
+	[gtk]
+		-Fix: don't crash on menu sync while creating a new PCB and hidlib is NULL
+		-Fix: don't let gtk_init() change the locale on windows, that ruins strtod()
+		-Fix: attribute dialog run: wm-close shoudl return a large negative value instead of 1; some dialogs try to return meaningful values using small positive numbers for different close buttons
+
+	[hidlib]
+		-Cleanup: gui_MayOverwriteFile() doesn't need to get an explicit hidlib arg, it's in argv[0]
+		-Fix: librnd installation: .so shorthand symlinks should always be relative, including full path to the build dir will break it in packaging
+		-Fix: cross color explanation: not related to drc anymore, but is inverted
+		-Fix: rtree.h shouldn't depend on pcb-rnd-only rtree2_compat.h, that breaks librnd; rtree2_compat.h should depend on rtree.h
+		-Fix: also install safe_fs_dir.h with librnd (does not have a .o so does not get auto-selected)
+		-Fix: need to install compat_inc.h too for librnd (doesn't have a .o, required by safe_fs_dir)
+		-Fix: compat_inc.h needs header watchdog because of #defines that could cause redefine warnings
+		-Fix: pcb_opendir() shouldn't crash if file name resolution fails
+		-API CHANGE: pcb_hidlib_adjust_attached_objects() needs to get (pcb_hidlib_t *) so it cna pass it down to the tool code (and to actions in turn)
+		-Move: pcb_set_point_bounding_box() from box to obj_common because it depends on pcb internals while box.[ch] is part of librnd
+		-Add: when there is no system-installed fungw, use the local version of the c binding (for apps that depend on registering fungw engines written in C directly)
+		-Add: comment in system installed fungw condition in the .mak file to make the situation more clear
+
+	[io_eagle]
+		-Fix: don't truncate text rotation to 90 degree steps
+		-Fix: proper (filled) rectangle support
+		-Fix: plugin dependencies (lib_compat_help and shape)
+		-Fix: missing default pad shape (round)
+		-Fix: use the layer parameter of smd pads for top/bottom
+		-Fix: pin/via/hole should call eagle_create_pstk() instead of compatibility calls
+		-Add: apply polygon clip inhibit on binary load too to speed it up
+		-Add: implement trace curve using arc()
+		-Add: roundness support for <smd> pads
+		-Add: create octagonal padstack shape
+		-Add: long pads seem to be having a hardwired 2:1 ratio
+		-Add: offset pad shape is the same as oblong for now
+		-Add: support for long and offset pins from binary (untested)
+		-Add: support for polygon holes
+		-Add: <smd> rot is applied
+
+	[layer]
+		-Cleanup: redundant comment, whitespace, indentation
+		-Cleanup: remove global var PCB refs from parts of the code (for reentrancy)
+		-Cleanup: layer address decoding goes by const strings, without having to modify the input for the splitup (will make action argument parsing more efficient)
+		-Cleanup: make transoformations optional in layer address decoding
+		-Fix: layer group substrate fixup: handling layer group size as unsigned caused overflow on group size 0
+		-Fix: layer.c respects layergrp notification inhibit
+		-Del: LAYER_PTR() macro - use the safe, reentrant layer get function instead
+		-Move: first level layer address parser function from hid_cam to layer_addr
+		-Add: default group map for the doc new layers; also set init-invis
+		-Add: pcb_layergrp_upgrade_by_map() to create layers by any map
+		-Add: turn force_end into a bitfield flag (enum), for init-invis
+		-Add: map based layer group creation (always-create-duplicate version)
+		-Add: separate mini-tables for non-copper top, bottom and global layer groups so they can be created without copper
+		-Add: default layer group map contains the outline boundary group
+		-Add: layer group address accepts #gid
+		-Add: layer group str2id follows the same layer group addressing that cam follows (this extends the syntax for all actions too)
+		-Add: strn2bit() version of str2bit() that doesn't require nul-terminater string but stops at len
+		-Add: new layer addressing options: group/#count, where count can be positive or negative (forward or backward counting) and an optional + or - suffix limits the search for positive or negtive layers
+		-Add: layer addressing: search by name within a group (the @ prefix)
+		-Add: layer address: global by name for the @ prefix
+		-Add: group-to-address functions
+		-Add: layer-to-address functions
+
+	[lesstif]
+		-Fix: don't crash on menu update when hidlib is NULL (happens on new pcb from gui)
+		-Fix: use the same return value for wm close that gtk uses
+
+	[lib_hid_common]
+		-Add: dad() action can get and set bool widgets
+
+	[lib_polyhelp]
+		-Fix: topoly map_contour() uses a faster, dynamic flag based marking of objects already visited
+		-Fix: integer overflow on map_contour
+		-Fix: use the central arc approximation call for more detailed arc tracing
+		-Move: board contour to poly conversion from export_openscad because this is common in any 3d export
+		-Add: expose the 'how' flag on automatic board outline mapping
+		-Add: prepare for multiple plines to appear after a poly offseting in poly-to-line conv
+		-Change: action topoly(outline) calls the higher level API that will do the cutouts as well
+
+	[millpath]
+		-Fix: when scaling down lines in width, also scale them down in length, so there's no "corner" collision
+		-Fix: copper remove: work by copper group, not by copper layer, because the final graphics is per group
+		-Fix: don't crash on empty polygon/layer group
+		-Tune: allow 500 nm overcut because of dense polygon arc approximation in thermals
+		-Add: calcualte (and display) the remaining copper poly - will be required for over-cut checks
+		-Add: remove cuts that affect remaining copper
+		-Add: mill around full and non-full polygons
+		-Add: decompose text so it can be traced around with the router
+		-Add: scripted toolpath API, with support for trace_spiral
+		-Add: mill() can execute a script (optional)
+
+	[mincut]
+		-Cleanup: namespace pollution with solve()
+		-Cleanup: README for the low level solver: remove any geda/pcb specific part, they are not going to use this code ever
+		-Del: summary of alternative ideas - mincut was the winner, this document is only of historical interest (moved to the pool)
+		-Fix: pressing cancel should stop mincut for this short-circuit-search, for subsequent shorts (there may be more than one)
+		-Update: test code: use genht directly, there's no copy in lihata anymore; test code shouldn't use safe_fs for popen(), just go with the raw libc calls
+
+	[netlist]
+		-Fix: creating new networks by drawing rat lines is undoable
+		-Fix: adding terminals to networks by drawing rat lines is undoable
+		-Fix: emit netlist changed event to get the netlist window updated when rat drawn new net is undone
+
+	[propedit]
+		-Fix: typo in dialog box label "Attribut"
+		-Fix: attribute changes are undoable (except for the board, which is not an object)
+		-Fix: layergrp:editgroup scope so that right click on the cross-section view layer group addresses the right layer
+		-Add: "subc" scope (similar to object without ID, but picks up subcircuits only)
+
+	[pstk]
+		-Fix: thermal shape change should be undoable
+		-Fix: hshadow-near-box bug: hshadow shoudl behave like the hole it shadows (if there is a hole)
+
+	[puller]
+		-Add: help text: explain that without arguments the GlobalPuller() action operates on the current layer (so it is much less global than the name suggests)
+
+	[res]
+		-Add: ctrl+arrow keys for no-mouse scroll
+		-Add: multi-key plain qwerty based cursor movement, left and right click options
+
+	[scconfig]
+		-Cleanup: del redundant default setting
+		-Fix: make cc/ldflags_dynlib and cc/so_undefined optional - win32 for example won't have these
+		-Fix: use $(HOSTCC) for compiling tools required for the compilation, attach $(EXE) to the target executable (on windows that'd provide the .exe)
+		-Fix: make sure to build puplug util with HOSTCC
+		-Fix: proper dependencu for puplug's .a
+		-Fix: make sure libminuid is compiled with target CC
+		-Fix: do 2-step puplug compilation (for host and target) only in cross-compiling mode
+		-Fix: do not turn a buildin back to a plugin because of plugins depending on it
+		-Fix: link order of -l's does matter for building plugin .so's with gcc if --as-needed is enabled, and it's enabled by default since ver 9
+		-Fix: librnd-3rd.so should always depend on -ldl, but should also depoend on -lfungw if system-installed fungw is present
+		-Fix: always set LIBRND_3RD_LDFLAGS, empty for local fungw
+		-Change: install config files in CONFDIR, not DATADIR
+		-Add: hidden config option can_live_without_dynlib for disabling the hard dependency on -ldl when cross compiling to win32
+		-Add: detect new fungw feature user_call_ctx and accept system installed fungw only if it is found
+		-Add: --confdir and related confdir variables in Makefile.conf and config.h - if not set, same as sharedir, for compatibility
+
+	[smartdisperse]
+		-Fix: invalid memory handling on iterating terminals
+
+	[stroke]
+		-Fix: wrong plugin conf file name
+
+	[subc]
+		-Add: inhibit parts changed mechanism to save on bbox recalculations when a subc with many padstacks suffer an operation
+
+	[tests]
+		-Add: installed-librnd test for figuring if all headers are independent of pcb-rnd core
+
+	[tool]
+		-Fix: moving selected objects (through the buffer) should not change the ID of the objects
+		-Fix: react on conf node editor/mode changes and update tool selection (including the cursor)
+		-Fix: uninit sequence: need to dereg the conf binding before hidlib uninit but need to uninit the rest of the tool system after
+		-Fix: locking: do not set the tool if we are already setting the tool
+		-Add: pass on (pcb_hidlib_t *) to all tool calls because they may need to call actions
+		-Cleanup: don't use PCB->hidlib where hidlib is available from arg
+
+	[undo]
+		-Cleanup: namespace pollution: move local flag sets in the .c
+		-Cleanup: remove long unused macros for old undo array allocation
+		-Fix: when CLEARPOLY or CLEARPOLYPOLY flag changes during undo, that should trigger an object redraw
+		-Fix: the 'remove' undo/redo of subc floaters preserve subc parent id and layer id
+
+	[win32]
+		-Fix: installation path detection bugs on path sep and missing /lib
+		-Cleanup: remove unnecessary g_win32_get_package_installation_directory() call
