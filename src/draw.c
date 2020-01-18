@@ -630,14 +630,14 @@ static void pcb_draw_annotations(pcb_draw_info_t *info)
 	size_t n;
 
 	if ((pcb_render != NULL) && (pcb_render->gui)) {
-	for(n = 0; n < annot_objs.used; n++) {
-		pcb_any_obj_t *o = annot_objs.array[n];
-		switch(o->type) {
-			case PCB_OBJ_POLY: pcb_poly_draw_annotation(info, (pcb_poly_t *)o); break;
-			default:
-				assert(!"Don't know how to draw annotation for object");
+		for(n = 0; n < annot_objs.used; n++) {
+			pcb_any_obj_t *o = annot_objs.array[n];
+			switch(o->type) {
+				case PCB_OBJ_POLY: pcb_poly_draw_annotation(info, (pcb_poly_t *)o); break;
+				default:
+					assert(!"Don't know how to draw annotation for object");
+			}
 		}
-	}
 	}
 	vtp0_truncate(&annot_objs, 0);
 }
