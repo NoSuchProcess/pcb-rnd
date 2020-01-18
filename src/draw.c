@@ -629,6 +629,7 @@ static void pcb_draw_annotations(pcb_draw_info_t *info)
 {
 	size_t n;
 
+	if ((pcb_render != NULL) && (pcb_render->gui)) {
 	for(n = 0; n < annot_objs.used; n++) {
 		pcb_any_obj_t *o = annot_objs.array[n];
 		switch(o->type) {
@@ -636,6 +637,7 @@ static void pcb_draw_annotations(pcb_draw_info_t *info)
 			default:
 				assert(!"Don't know how to draw annotation for object");
 		}
+	}
 	}
 	vtp0_truncate(&annot_objs, 0);
 }
