@@ -34,6 +34,7 @@
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
+	- CLEANUP: wireframe mode shouldn't affect export; draw code shouldn't depend directly on the config settings but they should be applied through transformations [report: Gabriel]
 - CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
 - CLEANUP: separate the cam export empty output warning by reason: addressed groups don't exist or only layers are empty ml=3566 [report: cuvoodoo]
