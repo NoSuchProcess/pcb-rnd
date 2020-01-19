@@ -82,6 +82,7 @@ int pcb_color_load_int(pcb_color_t *dst, unsigned char r, unsigned char g, unsig
 
 int pcb_color_load_packed(pcb_color_t *dst, unsigned long p)
 {
+	dst->packed = p;
 	dst->r = (p & 0xff000000UL) >> 24;
 	dst->g = (p & 0x00ff0000UL) >> 16;
 	dst->b = (p & 0x0000ff00UL) >> 8;
