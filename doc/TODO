@@ -154,7 +154,6 @@
 - BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert]
 - BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1 [report: igor2]
 - BUG: bug_files/arcedit.lht - grab the lower endpoint for move and it turns the arc into 360 deg [report: gpaubert]
-- CLEANUP/BUG: windows: locale is broken, setting it to C within the app is not possible - need local strtod() and printf(%f) implementation [report: aron]
 - version 3.0.0:
 	- maybe rename pcblib? dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 	- ./configure --config should default to /etc
