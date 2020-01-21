@@ -623,10 +623,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 			y1 = ty+height; y2 = ty;
 		}
 		else if (strcmp(tmp->argv[1], "Center") == 0) {
-			y1 = ty + ymin - (ymax >> 1); y2 = ty + (ymax >> 1);
+			y1 = ty - ymin + (ymax >> 1); y2 = ty - (ymax >> 1);
 		}
 		else if (strcmp(tmp->argv[1], "Bottom") == 0) {
-			y1=tx+ymin; y2=tx+ymin+height; /* ymin is negative */
+			y1=ty-ymin; y2=ty-ymin-height; /* ymin is negative */
 		}
 		else 
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
