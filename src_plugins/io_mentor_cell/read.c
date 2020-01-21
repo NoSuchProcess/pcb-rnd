@@ -514,7 +514,7 @@ TODO("when to generate a rounded corner?");
 static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
 {
 	node_t *attr, *tmp;
-	pcb_coord_t tx, ty, h, thickness = 0;
+	pcb_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
 	double rot = 0;
 	unsigned long mirrored = 0;
 	long int font_id = 0;
@@ -566,6 +566,14 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		font_id = strtol(tmp->argv[1]+16, &tmp_char, 10);
 		if (*tmp_char != '\0')
 			hkp_error(tmp, "Unparsed text (%s) after font ID. Text will be rendered, but it may not have a correct size.\n", tmp_char);
+	}
+
+	result = font_text_nominal_size(font_id, nt->argv[1], &width, &height, &ymin);
+	if (result == FSR_INVALID_GLYPH_ID) 
+			hkp_error(tmp, "Invalid glyph ID. Text will be rendered, but it may not have a correct size.\n");
+	else if (result == FSR_INVALID_FONT_ID) {
+		hkp_error(tmp, "Invalid font ID. Text will be NOT rendered.\n");
+		return;
 	}
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
