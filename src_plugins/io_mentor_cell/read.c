@@ -517,6 +517,9 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	pcb_coord_t tx, ty, h, thickness = 0;
 	double rot = 0;
 	unsigned long mirrored = 0;
+	long int font_id = 0;
+	char *tmp_char;
+	font_size_res_t result;
 
 	attr = find_nth(nt->first_child, "DISPLAY_ATTR", 0);
 	if (attr == NULL)
@@ -555,6 +558,15 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "STROKE_WIDTH", 0);
 	if (tmp != NULL)
 		parse_x(ctx, tmp->argv[1], &thickness);
+
+	tmp = find_nth(attr->first_child, "FONT", 0);
+	if (tmp != NULL) {
+		if (pcb_strncasecmp(tmp->argv[1], "VeriBest Gerber ", 16) != 0)
+			hkp_error(tmp, "Unknown font (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
+		font_id = strtol(tmp->argv[1]+16, &tmp_char, 10);
+		if (*tmp_char != '\0')
+			hkp_error(tmp, "Unparsed text (%s) after font ID. Text will be rendered, but it may not have a correct size.\n", tmp_char);
+	}
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
