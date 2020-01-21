@@ -238,8 +238,9 @@ static int parse_xyr(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, pc
 	pcb_coord_t xx, yy, rr;
 	pcb_bool suc1, suc2, suc3;
 
-        if (s == NULL)
-                return -1;
+	if (s == NULL)
+		return -1;
+
 	sy = strchr(s, ',');
 	if (sy == NULL)
 		return -1;
