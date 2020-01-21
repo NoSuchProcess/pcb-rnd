@@ -515,6 +515,8 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 {
 	node_t *attr, *tmp;
 	pcb_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
+	pcb_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+
 	double rot = 0;
 	unsigned long mirrored = 0;
 	long int font_id = 0;
@@ -574,6 +576,21 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	else if (result == FSR_INVALID_FONT_ID) {
 		hkp_error(tmp, "Invalid font ID. Text will be NOT rendered.\n");
 		return;
+	}
+
+	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
+	if (tmp != NULL) {
+		if (strcmp(tmp->argv[1], "Left") == 0) {
+			x1 = tx; x2 = tx+width;
+		}
+		else if (strcmp(tmp->argv[1], "Center") == 0) {
+			x1 = tx - (width >> 1); x2 = tx + (width >> 1);
+		}
+		else if (strcmp(tmp->argv[1], "Right") == 0) {
+			x1=tx-width; x2=tx;
+		}
+		else 
+			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
