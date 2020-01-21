@@ -593,6 +593,23 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
 
+	tmp = find_nth(attr->first_child, "VERT_JUST", 0);
+	if (tmp != NULL) {
+		pcb_coord_t ymax = height+ymin;
+		if (strcmp(tmp->argv[1], "Top") == 0) {
+			y1 = ty+height; y2 = ty;
+		}
+		else if (strcmp(tmp->argv[1], "Center") == 0) {
+			y1 = ty + ymin - (ymax >> 1); y2 = ty + (ymax >> 1);
+		}
+		else if (strcmp(tmp->argv[1], "Bottom") == 0) {
+			y1=tx+ymin; y2=tx+ymin+height; /* ymin is negative */
+		}
+		else 
+			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
+	}
+
+
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
 TODO("figure what TEXT_OPTIONS we have. One of them is MIRRORED (brd2 example)");
