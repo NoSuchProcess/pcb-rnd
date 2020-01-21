@@ -597,6 +597,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 
+	width = width * PCB_COORD_TO_MM(h);
+	height = height * PCB_COORD_TO_MM(h);
+	ymin = ymin * PCB_COORD_TO_MM(h);
+
 	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
 	if (tmp != NULL) {
 		if (strcmp(tmp->argv[1], "Left") == 0) {
