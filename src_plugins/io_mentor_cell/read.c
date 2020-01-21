@@ -447,11 +447,11 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 
 	for(n = 2; n < tmp->argc; n++) {
 		if (parse_xyr(ctx, tmp->argv[n], &x, &y, &r, 1) != 0)
-			return hkp_error(pp, "Failed to parse %dth polyarc XYR point, can't place polyarc\n", n);
+			return hkp_error(pp, "Failed to parse %dth polyarc XYR point (%s), can't place polyarc\n", n, tmp->argv[n]);
 		if (r != 0) { /* arc: px;py=start, x;y=center, ex;ey=end */
 			n++;
 			if (parse_xyr(ctx, tmp->argv[n], &ex, &ey, &dummy, 1) != 0)
-				return hkp_error(pp, "Failed to parse %dth polyarc XYR point (arc end), can't place polyarc\n", n);
+				return hkp_error(pp, "Failed to parse %dth polyarc XYR point (arc end) (%s), can't place polyarc\n", n, tmp->argv[n]);
 			if (dummy != 0)
 				return hkp_error(pp, "Failed to parse %dth polyarc XYR point (r must be zero), can't place polyarc\n", n);
 
