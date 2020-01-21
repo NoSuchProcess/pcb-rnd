@@ -265,6 +265,12 @@ static int parse_xyr(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, pc
 	*y = yy;
 	*r = rr;
 
+	if (suc1 == pcb_false)
+		hkp_error(NULL, "parse_xyr error parsing %s.\n", s);
+	if (suc2 == pcb_false)
+		hkp_error(NULL, "parse_xyr error parsing %s.\n", sy);
+	if (suc3 == pcb_false)
+		hkp_error(NULL, "parse_xyr error parsing %s.\n", sr);
 	return !(suc1 && suc2 && suc3);
 }
 
