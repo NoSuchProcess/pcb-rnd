@@ -540,10 +540,17 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		parse_x(ctx, tmp->argv[1], &tx);
 		parse_y(ctx, tmp->argv[2], &ty);
 	}
-
+	else {
+		hkp_error(attr, "Can not find XY position of text. Text will be NOT rendered.\n");
+		return;
+	}
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
 	if (tmp != NULL)
 		parse_rot(ctx, tmp, &rot, (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM));
+	else {
+		hkp_error(attr, "Can not find rotation of text. Text will be NOT rendered.\n");
+		return;
+	}
 
 	tmp = find_nth(attr->first_child, "TEXT_OPTIONS", 0);
 	if (tmp != NULL)
@@ -556,10 +563,18 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "HEIGHT", 0);
 	if (tmp != NULL)
 		parse_x(ctx, tmp->argv[1], &h);
+	else {
+		hkp_error(attr, "Can not find height of text. Text will be NOT rendered.\n");
+		return;
+	}
 
 	tmp = find_nth(attr->first_child, "STROKE_WIDTH", 0);
 	if (tmp != NULL)
 		parse_x(ctx, tmp->argv[1], &thickness);
+	else {
+		hkp_error(attr, "Can not find thickness (STROKE WIDTH) of text. Text will be NOT rendered.\n");
+		return;
+	}
 
 	tmp = find_nth(attr->first_child, "FONT", 0);
 	if (tmp != NULL) {
@@ -568,6 +583,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		font_id = strtol(tmp->argv[1]+16, &tmp_char, 10);
 		if (*tmp_char != '\0')
 			hkp_error(tmp, "Unparsed text (%s) after font ID. Text will be rendered, but it may not have a correct size.\n", tmp_char);
+	}
+	else {
+		hkp_error(attr, "Can not find font of text. Text will be NOT rendered.\n");
+		return;
 	}
 
 	result = font_text_nominal_size(font_id, nt->argv[1], &width, &height, &ymin);
@@ -592,6 +611,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		else 
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
+	else {
+		hkp_error(attr, "Can not find horizontal justification of text. Text will be NOT rendered.\n");
+		return;
+	}
 
 	tmp = find_nth(attr->first_child, "VERT_JUST", 0);
 	if (tmp != NULL) {
@@ -608,6 +631,11 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		else 
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
+	else {
+		hkp_error(attr, "Can not find vertical justification of text. Text will be NOT rendered.\n");
+		return;
+	}
+
 	{
 		TODO("Remove this block after checking text bounding box calculations");
 		TODO("Use an UI layer for this.  UI layer API in src/layer_ui.h");
