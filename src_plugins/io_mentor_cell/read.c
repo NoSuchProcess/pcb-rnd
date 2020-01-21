@@ -514,7 +514,7 @@ TODO("when to generate a rounded corner?");
 static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
 {
 	node_t *attr, *tmp;
-	pcb_coord_t tx, ty;
+	pcb_coord_t tx, ty, h;
 	double rot = 0;
 	unsigned long mirrored = 0;
 
@@ -547,6 +547,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 			rot = rot + 180;
 			if (rot > 360) rot = rot - 360;
 		}
+
+	tmp = find_nth(attr->first_child, "HEIGHT", 0);
+	if (tmp != NULL)
+		parse_x(ctx, tmp->argv[1], &h);
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
