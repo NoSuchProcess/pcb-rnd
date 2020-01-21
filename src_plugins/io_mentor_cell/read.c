@@ -608,6 +608,16 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		else 
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
+	{
+		TODO("Remove this block after checking text bounding box calculations");
+		TODO("Use an UI layer for this.  UI layer API in src/layer_ui.h");
+		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
+		pcb_line_new(ly, x1, y1, x2, y1, thickness, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x2, y1, x2, y2, thickness, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x2, y2, x1, y2, thickness, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x1, y2, x1, y1, thickness, cl, DEFAULT_OBJ_FLAG);
+
+	}
 
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
