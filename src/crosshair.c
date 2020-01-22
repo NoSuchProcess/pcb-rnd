@@ -967,9 +967,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 	}
 
-	/*
-	 * Snap to offgrid points on lines.
-	 */
+	/* Snap to offgrid points on lines. */
 	if (conf_core.editor.snap_offgrid_line)
 		check_snap_offgrid_line(PCB, &snap_data, nearest_grid_x, nearest_grid_y);
 
