@@ -1,7 +1,8 @@
 release check list
 
-0. test compile and test run a clean checkout on a clean system
+(0. test compile and test run a clean checkout on a clean system
    configure with --debug --all=buildin, then without
+   not required anymore: autotest does it now)
 1. check next version number and previous revision in tags/
 2. update the changelog
 3. rewrite the release notes
@@ -9,3 +10,5 @@ release check list
 5. commit trunk
 6. svn tag using URLs
 7. update the timeline, events and doc/news.html
+8. update locally built binaries: windows
+
