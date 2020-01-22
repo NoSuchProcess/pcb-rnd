@@ -660,7 +660,7 @@ static void pcb_gl_draw_crosshair(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint 
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
-	if (ghidgui->port.view.crosshair_x < 0 || !ghidgui->topwin.active || !ghidgui->port.view.has_entered)
+	if (!ghidgui->topwin.active || !ghidgui->port.view.has_entered)
 		return;
 
 	pcb_gl_draw_right_cross(hidlib, x, y, z);
@@ -695,7 +695,7 @@ static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_loca
 
 	glColor3f(cross_color.red / 65535., cross_color.green / 65535., cross_color.blue / 65535.);
 
-	if (x >= 0 && paint_new_location) {
+	if (paint_new_location) {
 		glBegin(GL_LINES);
 		pcb_gl_draw_crosshair(hidlib, x, y, z);
 		glEnd();
