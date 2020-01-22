@@ -1046,10 +1046,10 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 	ctx.view.X2 = MAX(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
 	ctx.view.Y2 = MAX(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
 
-	ctx.view.X1 = MAX(0, MIN(hidlib->size_x, ctx.view.X1));
-	ctx.view.X2 = MAX(0, MIN(hidlib->size_x, ctx.view.X2));
-	ctx.view.Y1 = MAX(0, MIN(hidlib->size_y, ctx.view.Y1));
-	ctx.view.Y2 = MAX(0, MIN(hidlib->size_y, ctx.view.Y2));
+	ctx.view.X1 = ctx.view.X1;
+	ctx.view.X2 = ctx.view.X2;
+	ctx.view.Y1 = ctx.view.Y1;
+	ctx.view.Y2 = ctx.view.Y2;
 
 	eleft = Vx(0);
 	eright = Vx(hidlib->size_x);

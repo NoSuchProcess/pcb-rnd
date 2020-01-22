@@ -836,10 +836,10 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	ghid_gl_start_drawing(port);
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = hidlib->size_x;
-	ctx.view.Y2 = hidlib->size_y;
+	ctx.view.X1 = MIN(0, Pz(ev->area.x) + ghidgui->port.view.x0);
+	ctx.view.Y1 = MIN(0, Pz(ev->area.y) + ghidgui->port.view.y0);
+	ctx.view.X2 = MAX(hidlib->size_x, Pz(ev->area.x + ev->area.width) + ghidgui->port.view.x0);
+	ctx.view.Y2 = MAX(hidlib->size_y, Pz(ev->area.y + ev->area.height) + ghidgui->port.view.y0);
 
 	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &priv->offlimits_color);
 
