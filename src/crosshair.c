@@ -980,10 +980,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true, NULL);
 	}
 
-	if (snap_data.x >= 0 && snap_data.y >= 0) {
-		pcb_crosshair.X = snap_data.x;
-		pcb_crosshair.Y = snap_data.y;
-	}
+	pcb_crosshair.X = snap_data.x;
+	pcb_crosshair.Y = snap_data.y;
 
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
