@@ -1,4 +1,4 @@
-pcb-rnd 2.2.0 (r29166)
+pcb-rnd 2.2.0 (r29205)
 ~~~~~~~~~~~~~~~~~~~~~~
 
 	[act_draw]
@@ -78,6 +78,8 @@ pcb-rnd 2.2.0 (r29166)
 		-Fix: selected move, keeping object IDs, must do the ID manipulation before adding the object to the undo list
 		-Fix: disabled win32 debug print on path calculation: use the new, prefixed vairable names
 		-Fix: double free on text object destroy
+		-Fix: do not export poly annotation overlay (should appear only on gui)
+		-Fix: color: packed set color did not really set the packed field
 		-Split: layer(grp) addressing code from cam and layer to layer_addr.[ch]
 		-Split: drc clearance indication color from cross color
 		-Split: mark color conf node from the cross(hair) color, especially because the crosshair is inverted
