@@ -1,7 +1,7 @@
 pcb-rnd 2.2.0
 ~~~~~~~~~~~~~
 
-This version of pcb-rnd is mainly a cleanup/bugfix version with only 3
+This version of pcb-rnd is mainly a cleanup/bugfix version with 3
 notable new features. One of the new features is the extended object
 infrastructure, that provides a sustainable way to extend pcb-rnd features
 with new tools and objects without having to complicate the data model.
