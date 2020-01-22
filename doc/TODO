@@ -139,6 +139,7 @@
 	- tabbed: redisplay bug in the about box
 	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
+- BUG: win32: gsch2pcb-rnd doesn't compile (because of non-const paths) [report: Igor2]
 - BUG: padstack proto edit dialog gets confused on s-mirrored instances ml=3678 [report: gpaubert]
 - BUG/FEATURE: changing padstack prototypes from the padstack editor dialog won't set the board change flag and is not unodable [report: Gabriel]
 - BUG: aligntext() fails if first arg is Y and should not require 4 arguments, only 1 (missing _MAY_) [report: cuvoodoo]
