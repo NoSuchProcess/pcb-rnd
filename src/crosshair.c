@@ -879,8 +879,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	struct snap_data snap_data;
 	int ans;
 
-	pcb_crosshair.X = PCB_CLAMP(X, pcb_crosshair.MinX, pcb_crosshair.MaxX);
-	pcb_crosshair.Y = PCB_CLAMP(Y, pcb_crosshair.MinY, pcb_crosshair.MaxY);
+	pcb_crosshair.X = PCB_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
+	pcb_crosshair.Y = PCB_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
 
 	if (PCB->RatDraw) {
 		nearest_grid_x = -PCB_MIL_TO_COORD(6);
@@ -1045,17 +1045,6 @@ pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 	return pcb_false;
 }
 
-void pcb_crosshair_set_range(pcb_coord_t MinX, pcb_coord_t MinY, pcb_coord_t MaxX, pcb_coord_t MaxY)
-{
-	pcb_crosshair.MinX = MAX(0, MinX);
-	pcb_crosshair.MinY = MAX(0, MinY);
-	pcb_crosshair.MaxX = MIN(PCB->hidlib.size_x, MaxX);
-	pcb_crosshair.MaxY = MIN(PCB->hidlib.size_y, MaxY);
-
-	/* force update of position */
-	pcb_crosshair_move_relative(0, 0);
-}
-
 /* ---------------------------------------------------------------------------
  * centers the displayed PCB around the specified point (X,Y)
  */
@@ -1082,11 +1071,6 @@ void pcb_crosshair_init(void)
 	pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
 
-	/* set default limits */
-	pcb_crosshair.MinX = pcb_crosshair.MinY = 0;
-	pcb_crosshair.MaxX = PCB->hidlib.size_x;
-	pcb_crosshair.MaxY = PCB->hidlib.size_y;
-
 	/* Initialize the onpoint data. */
 	memset(&pcb_crosshair.onpoint_objs, 0, sizeof(vtop_t));
 	memset(&pcb_crosshair.old_onpoint_objs, 0, sizeof(vtop_t));
@@ -1104,21 +1088,6 @@ void pcb_crosshair_uninit(void)
 	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
 	pcb_route_destroy(&pcb_crosshair.Route);
 	pcb_hid_destroy_gc(pcb_crosshair.GC);
-}
-
-void pcb_crosshair_range_to_buffer(void)
-{
-	if (pcbhl_conf.editor.mode == PCB_MODE_PASTE_BUFFER) {
-		if (pcb_set_buffer_bbox(PCB_PASTEBUFFER) == 0) {
-			pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->bbox_naked.X1,
-											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->bbox_naked.Y1,
-											PCB->hidlib.size_x -
-											(PCB_PASTEBUFFER->bbox_naked.X2 - PCB_PASTEBUFFER->X),
-											PCB->hidlib.size_y - (PCB_PASTEBUFFER->bbox_naked.Y2 - PCB_PASTEBUFFER->Y));
-		}
-		else /* failed to calculate the bounding box of the buffer, it's probably a single-object move, allow the whole page */
-			pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-	}
 }
 
 void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)

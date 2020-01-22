@@ -266,18 +266,6 @@ static void pcb_board_resize_(pcb_board_t *pcb, pcb_coord_t Width, pcb_coord_t H
 	pcb->hidlib.size_x = Width;
 	pcb->hidlib.size_y = Height;
 
-	/* crosshair range is different if pastebuffer-mode
-	 * is enabled
-	 */
-	if (pcbhl_conf.editor.mode == PCB_MODE_PASTE_BUFFER)
-		pcb_crosshair_set_range(PCB_PASTEBUFFER->X - PCB_PASTEBUFFER->BoundingBox.X1,
-											PCB_PASTEBUFFER->Y - PCB_PASTEBUFFER->BoundingBox.Y1,
-											MAX(0,
-													Width - (PCB_PASTEBUFFER->BoundingBox.X2 -
-																	 PCB_PASTEBUFFER->X)), MAX(0, Height - (PCB_PASTEBUFFER->BoundingBox.Y2 - PCB_PASTEBUFFER->Y)));
-	else
-		pcb_crosshair_set_range(0, 0, Width, Height);
-
 	if (pcb == PCB)
 		pcb_board_changed(0);
 }

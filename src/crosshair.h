@@ -64,7 +64,6 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	pcb_hid_gc_t AttachGC;                 /* and for displaying buffer contents */
 	pcb_coord_t ptr_x, ptr_y;              /* last seen raw mouse pointer x;y coords */
 	pcb_coord_t X, Y;                      /* (snapped) crosshair position */
-	pcb_coord_t MinX, MinY, MaxX, MaxY;    /* lowest and highest coordinates */
 	pcb_attached_line_t AttachedLine;      /* data of new lines... */
 	pcb_attached_box_t AttachedBox;
 	pcb_poly_t AttachedPolygon;
@@ -96,14 +95,11 @@ void pcb_notify_crosshair_change(pcb_bool changes_complete);
 void pcb_notify_mark_change(pcb_bool changes_complete);
 void pcb_crosshair_move_relative(pcb_coord_t, pcb_coord_t);
 pcb_bool pcb_crosshair_move_absolute(pcb_coord_t, pcb_coord_t);
-void pcb_crosshair_set_range(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
 void pcb_crosshair_init(void);
 void pcb_crosshair_uninit(void);
 void pcb_crosshair_grid_fit(pcb_coord_t, pcb_coord_t);
 void pcb_center_display(pcb_coord_t X, pcb_coord_t Y);
 
-/* sets the crosshair range to the current buffer extents */
-void pcb_crosshair_range_to_buffer(void);
 void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing);
 
 /*** utility for plugins ***/

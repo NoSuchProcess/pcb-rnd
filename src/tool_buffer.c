@@ -47,12 +47,10 @@
 
 void pcb_tool_buffer_init(void)
 {
-	pcb_crosshair_range_to_buffer();
 }
 
 void pcb_tool_buffer_uninit(void)
 {
-	pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 }
 
 static void pcb_tool_buffer_notify_mode_(pcb_hidlib_t *hl, pcb_bool keep_ids)

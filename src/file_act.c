@@ -171,7 +171,6 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB->hidlib.name = name;
 
 		pcb_layervis_reset_stack(&PCB->hidlib);
-		pcb_crosshair_set_range(0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_board_changed(0);
 		pcb_hid_redraw(PCB);

@@ -95,7 +95,6 @@ void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-		pcb_crosshair_set_range(0, 0, hl->size_x, hl->size_y);
 		pcb_crosshair.extobj_edit = NULL;
 		break;
 	}

@@ -466,7 +466,6 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_buffer_rotate(PCB_PASTEBUFFER, ang);
-	pcb_crosshair_range_to_buffer();
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
@@ -582,7 +581,6 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_buffer_scale(PCB_PASTEBUFFER, x, y, th, recurse);
-	pcb_crosshair_range_to_buffer();
 	pcb_notify_crosshair_change(pcb_true);
 	return 0;
 }
@@ -725,7 +723,6 @@ void pcb_buffers_flip_side(pcb_board_t *pcb)
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++)
 		pcb_buffer_flip_side(pcb, &pcb_buffers[i]);
-	pcb_crosshair_range_to_buffer();
 }
 
 void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
@@ -898,12 +895,8 @@ TODO("subc: fix this after the element removal")
 
 void pcb_buffer_set_number(int Number)
 {
-	if (Number >= 0 && Number < PCB_MAX_BUFFER) {
+	if (Number >= 0 && Number < PCB_MAX_BUFFER)
 		conf_set_design("editor/buffer_number", "%d", Number);
-
-		/* do an update on the crosshair range */
-		pcb_crosshair_range_to_buffer();
-	}
 }
 
 /* loads footprint data from file/library into buffer (as subcircuit)
@@ -1035,7 +1028,6 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				if (numtmp < 0)
 					numtmp = 4-numtmp;
 				pcb_buffer_rotate90(PCB_PASTEBUFFER, (unsigned int)numtmp);
-				pcb_crosshair_range_to_buffer();
 			}
 			break;
 
@@ -1142,7 +1134,6 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			pcb_set_buffer_bbox(PCB_PASTEBUFFER);
 			PCB_PASTEBUFFER->X = pcb_round(((double)PCB_PASTEBUFFER->BoundingBox.X1 + (double)PCB_PASTEBUFFER->BoundingBox.X2) / 2.0);
 			PCB_PASTEBUFFER->Y = pcb_round(((double)PCB_PASTEBUFFER->BoundingBox.Y1 + (double)PCB_PASTEBUFFER->BoundingBox.Y2) / 2.0);
-			pcb_crosshair_range_to_buffer();
 			break;
 
 		case F_GetSource:
