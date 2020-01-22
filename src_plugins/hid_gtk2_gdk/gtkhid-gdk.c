@@ -1320,13 +1320,13 @@ static void show_crosshair(gboolean paint_new_location)
 	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 	GtkStyle *style = gtk_widget_get_style(ghidgui->port.drawing_area);
 	gint x, y;
-	static gint x_prev = -1, y_prev = -1;
+	static gint x_prev = -1, y_prev = -1, prev_valid = 0;
 	static GdkGC *xor_gc;
 	static GdkColor cross_color;
 	static unsigned long cross_color_packed;
 
-	if (ghidgui->port.view.crosshair_x < 0 || !ghidgui->topwin.active || !ghidgui->port.view.has_entered) {
-		x_prev = y_prev = -1; /* if leaving the drawing area, invalidate last known coord to make sure we redraw on reenter, even on the same coords */
+	if (!ghidgui->topwin.active || !ghidgui->port.view.has_entered) {
+		prev_valid = 0; /* if leaving the drawing area, invalidate last known coord to make sure we redraw on reenter, even on the same coords */
 		return;
 	}
 
@@ -1344,16 +1344,17 @@ static void show_crosshair(gboolean paint_new_location)
 
 	gdk_gc_set_foreground(xor_gc, &cross_color);
 
-	if (x_prev >= 0 && !paint_new_location)
+	if (prev_valid && !paint_new_location)
 		draw_crosshair(xor_gc, x_prev, y_prev);
 
-	if (x >= 0 && paint_new_location) {
+	if (paint_new_location) {
 		draw_crosshair(xor_gc, x, y);
 		x_prev = x;
 		y_prev = y;
+		prev_valid = 1;
 	}
 	else
-		x_prev = y_prev = -1;
+		prev_valid = 0;
 }
 
 static void ghid_gdk_init_renderer(int *argc, char ***argv, void *vport)
