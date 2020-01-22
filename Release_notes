@@ -16,16 +16,16 @@ Feature highlight:
 
 1. extended objects (line-of-vias and dimension lines)
 
-2. OpenEMS export: suitable for microwave filter and antenne simulation
+2. OpenEMS export: suitable for microwave filter and antenna simulation
 
 3. STL export: yet another path to 3D
 
 4. io_eagle: various bugfixes and improvements in the loader allows more
    eagle boards to be loaded with less glitches
 
-5. scripting: action code upgrade allows delivering the hildib/PCB pointer
+5. scripting: action code upgrade allows delivering the hidlib/PCB pointer
    to actions as argument (in argv[0]) which long term makes the code
-   reentrant; centralized and unified layer and layer group adressing
+   reentrant; centralized and unified layer and layer group addressing
    (using the syntax and experiences from cam)
 
 6. windows port: the cross compilation setup got smoother and the startup code
