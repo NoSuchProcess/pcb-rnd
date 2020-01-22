@@ -695,11 +695,9 @@ static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_loca
 
 	glColor3f(cross_color.red / 65535., cross_color.green / 65535., cross_color.blue / 65535.);
 
-	if (paint_new_location) {
-		glBegin(GL_LINES);
-		pcb_gl_draw_crosshair(hidlib, x, y, z);
-		glEnd();
-	}
+	glBegin(GL_LINES);
+	pcb_gl_draw_crosshair(hidlib, x, y, z);
+	glEnd();
 
 	glDisable(GL_COLOR_LOGIC_OP);
 }
