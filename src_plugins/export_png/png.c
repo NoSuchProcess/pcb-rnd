@@ -785,9 +785,10 @@ pcb_trace("EMPTY: %ld %d\n", png_drawn_objs, png_cam.okempty_content);
 		if (!png_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
-	else if (png_drawn_objs == 0)
+	else if (png_drawn_objs == 0) {
 		if (!png_cam.okempty_content)
 			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+	}
 }
 
 static int png_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
