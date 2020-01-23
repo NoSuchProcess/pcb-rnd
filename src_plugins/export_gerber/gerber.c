@@ -1349,7 +1349,12 @@ static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 
 static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt)
 {
-	const char warn_txt[] = "WARNING: direct gerber export is most probably not what you want,\nespecially if you are exporting to fab the board.\nPlease use the cam export instead.\n";
+	const char warn_txt[] =
+		"WARNING: direct gerber export is most probably NOT what\n"
+		"you want, especially if you are exporting to fab the\n"
+		"board. Please use the cam export instead!\n"
+		"For more info please read:\n"
+		"http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=cam_switch\n";
 	pcb_hid_export_opt_func_dad_t *dad = call_ctx;
 
 	switch(act) {
@@ -1358,7 +1363,7 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 			fprintf((FILE *)call_ctx, warn_txt);
 			fprintf((FILE *)call_ctx, "For the cam export, try --help cam\n");
 			fprintf((FILE *)call_ctx, "Command line would look like pcb-rnd -x cam gerber:fixed filename\n");
-			fprintf((FILE *)call_ctx, "******************************************************************************\n");
+			fprintf((FILE *)call_ctx, "******************************************************************************\n\n");
 			break;
 		case PCB_HIDEOF_DAD:
 			PCB_DAD_BEGIN_VBOX(dad->dlg);
