@@ -1,11 +1,24 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 - BUG: printf %ma truncates to integer; ml=3697 [report: gpaubert]
+- CLEANUP: separate the cam export empty output warning by reason: addressed groups don't exist or only layers are empty ml=3566 [report: cuvoodoo]
 - CLEANUP: remove the donut rats special casing
 	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
+- CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
+	- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
+- CLEANUP: decide about exporter policy:
+	- png exports selection (even in not-as-shown), others don't
+	- extend png hid attribs with a flag for this, maybe do the same for others
+	- document the decision in "hacking"
+	- CLEANUP: wireframe mode shouldn't affect export; draw code shouldn't depend directly on the config settings but they should be applied through transformations [report: Gabriel]
+- CLEANUP/FEATURE: undo: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
+- CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
+	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
+- CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
+	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
+
+2. For later releases ===============================================================================
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
@@ -17,19 +30,6 @@
 - CLEANUP: layer order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
-- CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
-	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
-	- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
-- CLEANUP/FEATURE: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
-- CLENAUP: decide about exporter policy:
-	- png exports selection (even in not-as-shown), others don't
-	- extend png hid attribs with a flag for this, maybe do the same for others
-	- document the decision in "hacking"
-	- CLEANUP: wireframe mode shouldn't affect export; draw code shouldn't depend directly on the config settings but they should be applied through transformations [report: Gabriel]
-- CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
-	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
-- CLEANUP: separate the cam export empty output warning by reason: addressed groups don't exist or only layers are empty ml=3566 [report: cuvoodoo]
 - CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 - FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
 - FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
