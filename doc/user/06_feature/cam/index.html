@@ -37,7 +37,9 @@ where:
 		</ul>
 	<li> optionally [global-opts]: a comma separated list of group-global (but per-output-file) options in [] brackets. Options supported:
 		<ul>
-			<li> okempty: empty output is okay, do not warn
+			<li> okempty-group: warning suppression: do not warn when none of the layer groups referenced for an outfile exists (outfile can not be created or will be empty)
+			<li> okempty-content: warning suppression: do not warn when all layer groups for an outfile were empty (outfile is normally created and valid, but is empty as no object got exported)
+			<li> okempty: shorthand that enables both okempty-group and okempty-content
 		</ul>
 	<li> layergrp: one or more layer group addresses separated by comma (syntax is documented in <a href="../../09_appendix/layer_addr.html">layer addressing appendix.</a>)
 </ul>
