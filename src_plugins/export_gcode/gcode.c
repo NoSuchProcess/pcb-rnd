@@ -365,9 +365,10 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		}
 	}
 
-	if (pcb_cam_end(&gctx.cam) == 0)
+	if (pcb_cam_end(&gctx.cam) == 0) {
 		if (!gctx.cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	}
 	else if (gctx.drawn_objs == 0) {
 		if (!gctx.cam.okempty_content)
 			pcb_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
