@@ -385,6 +385,7 @@ pcb_drill_ctx_t *get_drill_ctx(void)
 
 static void use_gc(pcb_hid_gc_t gc, pcb_coord_t radius)
 {
+	exc_drawn_objs++;
 	if ((gc->style != pcb_cap_round) && (!warn.nonround)) {
 		warn.nonround = 1;
 		pcb_message(PCB_MSG_ERROR, "Excellon: can not set non-round aperture (some features may be missing from the export)\n");
