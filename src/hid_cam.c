@@ -251,8 +251,10 @@ static void read_out_params(pcb_cam_t *dst, char **str)
 				*next = '\0';
 				next++;
 			}
-			if (strcmp(curr, "okempty") == 0)
-				dst->okempty = 1;
+			if (strcmp(curr, "okempty") == 0) {
+				dst->okempty_group = 1;
+				dst->okempty_content = 1;
+			}
 			else
 				pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown global parameter [%s]\n", curr);
 		}

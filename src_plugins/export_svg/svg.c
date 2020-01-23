@@ -365,7 +365,7 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	f = NULL;
 
 	if (pcb_cam_end(&svg_cam) == 0)
-		if (!svg_cam.okempty)
+		if (!svg_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 }
 

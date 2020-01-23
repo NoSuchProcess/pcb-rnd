@@ -674,7 +674,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	if (pcb_cam_end(&gerber_cam) == 0)
-		if (!gerber_cam.okempty)
+		if (!gerber_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 
 	pcb_drill_uninit(&pdrills);
