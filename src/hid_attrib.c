@@ -119,6 +119,8 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 					*(int *) a->value = a->default_val.lng;
 				break;
 			default:
+				if (PCB_HATT_IS_COMPOSITE(a->type)) /* function callback */
+					break;
 				pcb_message(PCB_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
 				abort();
 			}
@@ -257,7 +259,13 @@ void pcb_hid_usage(pcb_export_opt_t *a, int numa)
 		const char *help;
 		if (a->help_text == NULL) help = "";
 		else help = a->help_text;
-		pcb_hid_usage_option(a->name, help);
+		if (PCB_HATT_IS_COMPOSITE(a->type)) {
+			pcb_hid_export_opt_func_t fnc = a->default_val.func;
+			if (fnc != NULL)
+				fnc(PCB_HIDEOF_USAGE, stderr, a);
+		}
+		else
+			pcb_hid_usage_option(a->name, help);
 	}
 }
 

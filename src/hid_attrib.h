@@ -149,4 +149,14 @@ int pcb_attribute_dialog(const char *id, pcb_hid_attribute_t *attrs, int n_attrs
 const char *pcb_hid_compflag_bit2name(pcb_hatt_compflags_t bit);
 pcb_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name);
 
+/*** When an pcb_export_opt_t item is a box, the following function is called
+     from its ->func ***/
+
+typedef enum pcb_hid_export_opt_func_action_e {
+	PCB_HIDEOF_USAGE, /* call_ctx is a FILE * */
+	PCB_HIDEOF_DAD    /* call_ctx is a pcb_hid_export_opt_func_dad_t */
+} pcb_hid_export_opt_func_action_t;
+
+typedef void (*pcb_hid_export_opt_func_t)(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt);
+
 #endif
