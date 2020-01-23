@@ -19,7 +19,8 @@ typedef struct pcb_cam_s {
 	pcb_xform_t *vxform[PCB_VLY_end];
 	pcb_xform_t vxform_[PCB_VLY_end];
 
-	unsigned int okempty:1;        /* do not warn if no group/object exported */
+	unsigned int okempty_content:1; /* do not warn if no objects exported */
+	unsigned int okempty:1;         /* do not warn if no group/object exported */
 
 	/* private/internal/cache */
 	const char *fn_template;
