@@ -1009,28 +1009,6 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 		if (f && aptr)
 			fprintf(f, "G54D%d*", aptr->dCode);
 	}
-
-TODO("gerber: remove this dead code");
-#if 0
-	if (lastcolor != gc->color) {
-		c = gc->color;
-		if (is_drill)
-			return;
-		if (is_mask)
-			c = (gc->erase ? 0 : 1);
-		lastcolor = gc->color;
-		if (f) {
-			if (c) {
-				fprintf(f, "%%LN%s_C%d*%%\r\n", layername, lncount++);
-				fprintf(f, "%%LPC*%%\r\n");
-			}
-			else {
-				fprintf(f, "%%LN%s_D%d*%%\r\n", layername, lncount++);
-				fprintf(f, "%%LPD*%%\r\n");
-			}
-		}
-	}
-#endif
 }
 
 static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
