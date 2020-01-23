@@ -33,6 +33,7 @@
 #include "hid_init.h"
 #include "hid_attrib.h"
 #include "hid_inlines.h"
+#include "hid_dad.h"
 #include "conf_core.h"
 #include "hidlib_conf.h"
 
@@ -211,7 +212,12 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 	NULL
 };
 
+static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt);
+
 static pcb_export_opt_t gerber_options[] = {
+	{"", "WARNING",
+	 PCB_HATT_BEGIN_VBOX, 0, 0, {0, 0, 0, 0, {0}, gerber_warning}, 0, 0},
+#define HA_warning 0
 
 /* %start-doc options "90 Gerber Export"
 @ftable @code
@@ -222,7 +228,7 @@ Gerber output file prefix. Can include a path.
 */
 	{"gerberfile", "Gerber output file base",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_gerberfile 0
+#define HA_gerberfile 1
 
 /* %start-doc options "90 Gerber Export"
 @ftable @code
@@ -233,7 +239,7 @@ Output contains all layers, even empty ones.
 */
 	{"all-layers", "Output all layers, even empty ones",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_all_layers 1
+#define HA_all_layers 2
 
 /* %start-doc options "90 Gerber Export"
 @ftable @code
@@ -244,28 +250,28 @@ Print file names and aperture counts on stdout.
 */
 	{"verbose", "Print file names and aperture counts on stdout",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_verbose 2
+#define HA_verbose 3
 	{"copy-outline", "Copy outline onto other layers",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names, 0},
-#define HA_copy_outline 3
+#define HA_copy_outline 4
 	{"name-style", "DEPRECATED: Naming style for individual gerber files - please use the CAM export instead",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, name_style_names, 0},
-#define HA_name_style 4
+#define HA_name_style 5
 	{"cross-sect", "Export the cross section layer",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cross_sect 5
+#define HA_cross_sect 6
 
 	{"coord-format", "Coordinate format (resolution)",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
-#define HA_coord_format 6
+#define HA_coord_format 7
 
 	{"aperture-per-file", "Restart aperture numbering in each new file",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_apeture_per_file 7
+#define HA_apeture_per_file 8
 
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 8
+#define HA_cam 9
 };
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
@@ -1326,6 +1332,26 @@ static int gerber_usage(pcb_hid_t *hid, const char *topic)
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gerber [gerber options] foo.pcb\n\n");
 	return 0;
 }
+
+static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt)
+{
+	const char warn_txt[] = "WARNING: direct gerber export is most probably not what you want,\nespecially if you are exporting to fab the board.\nPlease use the cam export instead.\n";
+	pcb_hid_export_opt_func_dad_t *dad = call_ctx;
+
+	switch(act) {
+		case PCB_HIDEOF_USAGE:
+			fprintf((FILE *)call_ctx, "******************************************************************************\n");
+			fprintf((FILE *)call_ctx, warn_txt);
+			fprintf((FILE *)call_ctx, "For the cam export, try --help cam\n");
+			fprintf((FILE *)call_ctx, "Command line would look like pcb-rnd -x cam gerber:fixed filename\n");
+			fprintf((FILE *)call_ctx, "******************************************************************************\n");
+			break;
+		case PCB_HIDEOF_DAD:
+			PCB_DAD_LABEL(dad->dlg, warn_txt);
+			break;
+	}
+}
+
 
 static void gerber_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
 {
