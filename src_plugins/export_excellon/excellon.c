@@ -162,6 +162,7 @@ typedef struct hid_gc_s {
 	pcb_coord_t width;
 } hid_gc_s;
 
+static long exc_drawn_objs;
 
 static pcb_export_opt_t excellon_options[] = {
 
@@ -235,6 +236,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_drill_init(&udrills, options[HA_apeture_per_file].lng ? NULL : &exc_aperture_cnt);
 	memset(&warn, 0, sizeof(warn));
 
+	exc_drawn_objs = 0;
 	pcb_cam_begin(PCB, &excellon_cam, &xform, options[HA_cam].str, excellon_options, NUM_OPTIONS, options);
 
 	fnbase = options[HA_excellonfile].str;
@@ -286,9 +288,14 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 	}
 
-	if (pcb_cam_end(&excellon_cam) == 0)
+	if (pcb_cam_end(&excellon_cam) == 0) {
 		if (!excellon_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	}
+	else if (exc_drawn_objs == 0) {
+		if (!excellon_cam.okempty_content)
+			pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+	}
 
 	pcb_drill_uninit(&pdrills);
 	pcb_drill_uninit(&udrills);
