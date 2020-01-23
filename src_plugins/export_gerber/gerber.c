@@ -40,6 +40,9 @@
 #include "../src_plugins/export_excellon/aperture.h"
 #include "../src_plugins/export_excellon/excellon.h"
 
+#include "../src_plugins/lib_hid_common/xpm.h"
+
+
 const char *gerber_cookie = "gerber HID";
 
 conf_gerber_t conf_gerber;
@@ -1347,7 +1350,13 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 			fprintf((FILE *)call_ctx, "******************************************************************************\n");
 			break;
 		case PCB_HIDEOF_DAD:
-			PCB_DAD_LABEL(dad->dlg, warn_txt);
+			PCB_DAD_BEGIN_VBOX(dad->dlg);
+				PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+				PCB_DAD_BEGIN_HBOX(dad->dlg);
+					PCB_DAD_PICTURE(dad->dlg, pcp_dlg_xpm_by_name("warning"));
+					PCB_DAD_LABEL(dad->dlg, warn_txt);
+				PCB_DAD_END(dad->dlg);
+			PCB_DAD_END(dad->dlg);
 			break;
 	}
 }
