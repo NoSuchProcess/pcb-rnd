@@ -75,6 +75,7 @@ typedef struct {
 	unsigned long handle;
 	lht_doc_t *temp;
 	const char *layer_name;
+	long drawn_objs;
 	unsigned force_thin:1;
 	unsigned enable_force_thin:1;
 	unsigned poly_fill:1;
@@ -280,6 +281,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = dxf_values;
 	}
 
+	dxf_ctx.drawn_objs = 0;
 	pcb_cam_begin(PCB, &dxf_cam, &xform, options[HA_cam].str, dxf_attribute_list, NUM_OPTIONS, options);
 
 	filename = options[HA_dxffile].str;
@@ -334,9 +336,14 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
 	fclose(dxf_ctx.f);
 
-	if (pcb_cam_end(&dxf_cam) == 0)
+	if (pcb_cam_end(&dxf_cam) == 0) {
 		if (!dxf_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	}
+	else if (dxf_ctx.drawn_objs == 0) {
+		if (!dxf_cam.okempty_content)
+			pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+	}
 }
 
 static int dxf_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)

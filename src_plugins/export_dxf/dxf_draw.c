@@ -29,6 +29,7 @@
 
 static void dxf_draw_handle(dxf_ctx_t *ctx)
 {
+	ctx->drawn_objs++;
 	ctx->handle++;
 	fprintf(ctx->f, "5\n%lu\n", ctx->handle);
 }
@@ -144,6 +145,8 @@ static void dxf_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 {
 	dxf_ctx_t *ctx = &dxf_ctx;
 	int n, to;
+
+	dxf_ctx.drawn_objs++;
 
 #if HATCH_NEEDS_BBOX
 	pcb_coord_t x_min, x_max, y_min, y_max;
