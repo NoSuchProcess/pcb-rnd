@@ -336,6 +336,7 @@ static struct {
 
 	pcb_composite_op_t drawing_mode;
 	int ovr_all;
+	long drawn_objs;
 } global;
 
 static pcb_export_opt_t *ps_get_export_options(pcb_hid_t *hid, int *n)
@@ -621,6 +622,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = global.ps_values;
 	}
 
+	global.drawn_objs = 0;
 	pcb_cam_begin(PCB, &ps_cam, &xform, options[HA_cam].str, ps_attribute_list, NUM_OPTIONS, options);
 
 	global.filename = options[HA_psfile].str;
@@ -660,9 +662,15 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		fclose(fh);
 	}
 
-	if (pcb_cam_end(&ps_cam) == 0)
+	if (pcb_cam_end(&ps_cam) == 0) {
 		if (!ps_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	}
+	else if (global.drawn_objs == 0) {
+		if (!ps_cam.okempty_content)
+			pcb_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+	}
+
 }
 
 static int ps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
@@ -1011,6 +1019,7 @@ static void use_gc(pcb_hid_gc_t gc)
 	static int lastcap = -1;
 	static int lastcolor = -1;
 
+	global.drawn_objs++;
 	if (gc == NULL) {
 		lastcap = lastcolor = -1;
 		return;

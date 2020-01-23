@@ -46,6 +46,7 @@ static int print_group[PCB_MAX_LAYERGRP];
 static int print_layer[PCB_MAX_LAYER];
 static int fast_erase = -1;
 static pcb_composite_op_t drawing_mode;
+static long eps_drawn_objs;
 
 static pcb_export_opt_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -322,6 +323,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = eps_values;
 	}
 
+	eps_drawn_objs = 0;
 	pcb_cam_begin(PCB, &eps_cam, &xform, options[HA_cam].str, eps_attribute_list, NUM_OPTIONS, options);
 
 	filename = options[HA_psfile].str;
@@ -346,9 +348,14 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	fclose(f);
 
-	if (pcb_cam_end(&eps_cam) == 0)
+	if (pcb_cam_end(&eps_cam) == 0) {
 		if (!eps_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	}
+	else if (eps_drawn_objs == 0) {
+		if (!eps_cam.okempty_content)
+			pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+	}
 }
 
 static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
@@ -498,6 +505,7 @@ static void eps_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void use_gc(pcb_hid_gc_t gc)
 {
+	eps_drawn_objs++;
 	if (linewidth != gc->width) {
 		pcb_fprintf(f, "%mi setlinewidth\n", gc->width);
 		linewidth = gc->width;
