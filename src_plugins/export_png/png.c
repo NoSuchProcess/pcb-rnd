@@ -780,7 +780,6 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	free(white);
 	free(black);
 
-pcb_trace("EMPTY: %ld %d\n", png_drawn_objs, png_cam.okempty_content);
 	if (pcb_cam_end(&png_cam) == 0) {
 		if (!png_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
