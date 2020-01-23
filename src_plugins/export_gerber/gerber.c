@@ -668,6 +668,9 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			"http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=cam_switch\n"
 			);
 
+		pcb_message(PCB_MSG_ERROR, "\n\nplease read the above (waiting for 8 seconds)\n\n");
+		pcbhl_log_print_uninit_errs("Gerber naming style warnings:");
+		sleep(8);
 
 		pagecount++;
 		purpi = F_pdrill;
