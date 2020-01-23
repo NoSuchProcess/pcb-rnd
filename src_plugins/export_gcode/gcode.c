@@ -51,6 +51,7 @@ typedef struct {
 	FILE *f; /* output file */
 	int passes; /* number of millings for a thru-cut - calculated for the header */
 	pcb_layergrp_t *grp; /* layer group being exported */
+	long drawn_objs;
 } gcode_t;
 
 static gcode_t gctx;
@@ -116,6 +117,8 @@ static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
 static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int depth)
 {
 	pcb_line_t *l;
+
+	gctx.drawn_objs++;
 	pcb_fprintf(gctx.f, "G0 Z#100\nG0 X%mm Y%mm\n", TX(from->Point1.X), TY(from->Point1.Y));
 
 	if (passes > 1)
@@ -337,6 +340,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	gctx.pcb = pcb;
 	gctx.f = NULL;
+	gctx.drawn_objs = 0;
 	pcb_cam_begin(pcb, &gctx.cam, &xform, options[HA_cam].str, gcode_attribute_list, NUM_OPTIONS, options);
 
 
@@ -364,6 +368,10 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (pcb_cam_end(&gctx.cam) == 0)
 		if (!gctx.cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	else if (gctx.drawn_objs == 0) {
+		if (!gctx.cam.okempty_content)
+			pcb_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+	}
 }
 
 static int gcode_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
