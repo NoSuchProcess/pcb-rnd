@@ -197,7 +197,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 					export_ctx.exp_attr[n] = exp_attr = malloc(sizeof(int) * numo);
 					for(i = 0; i < numo; i++) {
 						PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
-							/* hid attributes are atomic while DAD widgets may be compound */
+							
 							switch(opts[i].type) {
 								case PCB_HATT_COORD:
 									PCB_DAD_COORD(export_ctx.dlg, opts[i].name);
@@ -219,7 +219,13 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
 									break;
 								default:
-									PCB_DAD_DUP_EXPOPT(export_ctx.dlg, &(opts[i]));
+									if (PCB_HATT_IS_COMPOSITE(opts[i].type)) {
+										pcb_hid_export_opt_func_t fnc = opts[i].default_val.func;
+										if (fnc != NULL)
+											fnc(PCB_HIDEOF_DAD, &export_ctx, &opts[i]);
+									}
+									else
+										PCB_DAD_DUP_EXPOPT(export_ctx.dlg, &(opts[i]));
 							}
 							exp_attr[i] = PCB_DAD_CURRENT(export_ctx.dlg);
 							if (opts[i].name != NULL)
