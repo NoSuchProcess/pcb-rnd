@@ -255,6 +255,10 @@ static void read_out_params(pcb_cam_t *dst, char **str)
 				dst->okempty_group = 1;
 				dst->okempty_content = 1;
 			}
+			else if (strcmp(curr, "okempty-group") == 0)
+				dst->okempty_group = 1;
+			else if (strcmp(curr, "okempty-content") == 0)
+				dst->okempty_content = 1;
 			else
 				pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown global parameter [%s]\n", curr);
 		}
