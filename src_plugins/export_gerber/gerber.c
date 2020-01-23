@@ -1336,6 +1336,14 @@ static int gerber_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
+static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_dad_retovr_t retovr;
+	pcb_hid_dad_close(hid_ctx, &retovr, -1);
+	pcb_actionl("cam", NULL);
+}
+
+
 static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt)
 {
 	const char warn_txt[] = "WARNING: direct gerber export is most probably not what you want,\nespecially if you are exporting to fab the board.\nPlease use the cam export instead.\n";
@@ -1354,7 +1362,12 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 				PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
 				PCB_DAD_BEGIN_HBOX(dad->dlg);
 					PCB_DAD_PICTURE(dad->dlg, pcp_dlg_xpm_by_name("warning"));
-					PCB_DAD_LABEL(dad->dlg, warn_txt);
+					PCB_DAD_BEGIN_VBOX(dad->dlg);
+						PCB_DAD_LABEL(dad->dlg, warn_txt);
+						PCB_DAD_BUTTON(dad->dlg, "Get me to the cam export dialog");
+							PCB_DAD_CHANGE_CB(dad->dlg, gerber_go_to_cam_cb);
+						PCB_DAD_LABEL(dad->dlg, "");
+					PCB_DAD_END(dad->dlg);
 				PCB_DAD_END(dad->dlg);
 			PCB_DAD_END(dad->dlg);
 			break;
