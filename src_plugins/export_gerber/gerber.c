@@ -73,6 +73,7 @@ static int has_outline;
 static int gerber_debug;
 static int gerber_ovr;
 static int gerber_global_aperture_cnt, gerber_global_exc_aperture_cnt;
+static long gerber_drawn_objs;
 
 static aperture_list_t *layer_aptr_list;
 static aperture_list_t *curr_aptr_list;
@@ -561,6 +562,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_drill_init(&pdrills, options[HA_apeture_per_file].lng ? NULL : &gerber_global_exc_aperture_cnt);
 	pcb_drill_init(&udrills, options[HA_apeture_per_file].lng ? NULL : &gerber_global_exc_aperture_cnt);
 
+	gerber_drawn_objs = 0;
 	pcb_cam_begin(PCB, &gerber_cam, &xform, options[HA_cam].str, gerber_options, NUM_OPTIONS, options);
 
 	fnbase = options[HA_gerberfile].str;
@@ -673,9 +675,14 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, 0, filename);
 	}
 
-	if (pcb_cam_end(&gerber_cam) == 0)
+	if (pcb_cam_end(&gerber_cam) == 0) {
 		if (!gerber_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	}
+	else if (gerber_drawn_objs == 0) {
+		if (!gerber_cam.okempty_content)
+			pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+	}
 
 	pcb_drill_uninit(&pdrills);
 	pcb_drill_uninit(&udrills);
@@ -944,6 +951,7 @@ static void gerber_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 static void use_gc(pcb_hid_gc_t gc, int radius)
 {
+	gerber_drawn_objs++;
 	if ((f != NULL) && (gerber_drawing_mode != drawing_mode_issued)) {
 		if ((gerber_drawing_mode == PCB_HID_COMP_POSITIVE) || (gerber_drawing_mode == PCB_HID_COMP_POSITIVE_XOR)) {
 			fprintf(f, "%%LPD*%%\r\n");
