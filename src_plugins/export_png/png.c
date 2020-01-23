@@ -88,6 +88,7 @@ static double scale = 1;
 static pcb_coord_t x_shift = 0;
 static pcb_coord_t y_shift = 0;
 static int show_solder_side;
+static long png_drawn_objs = 0;
 #define SCALE(w)   ((int)pcb_round((w)/scale))
 #define SCALE_X(x) ((int)pcb_hack_round(((x) - x_shift)/scale))
 #define SCALE_Y(y) ((int)pcb_hack_round(((show_solder_side ? (PCB->hidlib.size_y-(y)) : (y)) - y_shift)/scale))
@@ -614,6 +615,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		options = png_values;
 	}
 
+	png_drawn_objs = 0;
 	pcb_cam_begin(PCB, &png_cam, &xform, options[HA_cam].str, png_attribute_list, NUM_OPTIONS, options);
 
 	if (options[HA_photo_mode].lng) {
@@ -778,9 +780,14 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	free(white);
 	free(black);
 
-	if (pcb_cam_end(&png_cam) == 0)
+pcb_trace("EMPTY: %ld %d\n", png_drawn_objs, png_cam.okempty_content);
+	if (pcb_cam_end(&png_cam) == 0) {
 		if (!png_cam.okempty)
 			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+	}
+	else if (png_drawn_objs == 0)
+		if (!png_cam.okempty_content)
+			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 }
 
 static int png_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
@@ -1013,6 +1020,8 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 	int need_brush = 0;
 	pcb_hid_gc_t agc;
 	gdImagePtr brp;
+
+	png_drawn_objs++;
 
 	agc = gc;
 	if (unerase_override) {
