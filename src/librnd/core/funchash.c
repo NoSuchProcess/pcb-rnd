@@ -29,16 +29,10 @@
 #include <stdio.h>
 #include <genht/htpi.h>
 #include <genht/hash.h>
-#include "funchash_core.h"
 #include <librnd/config.h>
+#include <librnd/core/funchash.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/misc_util.h>
-
-#define action_entry(x) { #x, F_ ## x},
-static pcb_funchash_table_t Functions[] = {
-#include "funchash_core_list.h"
-	{"F_END", F_END}
-};
 
 typedef struct {
 	const char *cookie;
@@ -65,7 +59,6 @@ static unsigned fh_hash(const void *key)
 void pcb_funchash_init(void)
 {
 	funchash = htpi_alloc(fh_hash, keyeq);
-	pcb_funchash_set_table(Functions, PCB_ENTRIES(Functions), NULL);
 }
 
 void pcb_funchash_uninit(void)

@@ -356,6 +356,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 	pcb_conf_load_extra(NULL, NULL);
 	pcb_units_init();
+	pcb_funchash_init();
 }
 
 

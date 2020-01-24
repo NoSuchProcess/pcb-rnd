@@ -340,6 +340,13 @@ void print_pup_err(pup_err_stack_t *entry, char *string)
 	pcb_message(PCB_MSG_ERROR, "puplug: %s\n", string);
 }
 
+#include "funchash_core.h"
+#define action_entry(x) { #x, F_ ## x},
+static pcb_funchash_table_t Functions[] = {
+#include "funchash_core_list.h"
+	{"F_END", F_END}
+};
+
 int main(int argc, char *argv[])
 {
 	int n;
@@ -391,7 +398,7 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));  /* Set seed for rand() */
 
-	pcb_funchash_init();
+	pcb_funchash_set_table(Functions, PCB_ENTRIES(Functions), NULL);
 	pcb_polygon_init();
 
 	/* Register a function to be called when the program terminates. This makes
