@@ -21,10 +21,10 @@
 #include "board.h"
 #include "data.h"
 #include <librnd/core/hid.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "undo.h"
 #include "polygon.h"
-#include "polygon1_gen.h"
+#include <librnd/poly/polygon1_gen.h>
 #include "remove.h"
 #include <librnd/core/error.h>
 #include <librnd/core/pcb-printf.h>

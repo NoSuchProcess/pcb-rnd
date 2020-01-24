@@ -44,7 +44,7 @@
 #include "obj_line_op.h"
 #include "obj_term.h"
 #include "obj_text_draw.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "draw.h"
 #include "draw_wireframe.h"
 #include "flag.h"

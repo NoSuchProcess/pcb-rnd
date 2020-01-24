@@ -53,7 +53,7 @@
 #include "parse_common.h"
 #include <librnd/core/pcb-printf.h>
 #include "polygon.h"
-#include "polygon1_gen.h"
+#include <librnd/poly/polygon1_gen.h>
 #include "remove.h"
 #include "flag_str.h"
 #include <librnd/core/compat_fs.h>

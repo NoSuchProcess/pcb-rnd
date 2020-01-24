@@ -40,7 +40,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 

@@ -1,6 +1,6 @@
 #ifndef PCB_ACOMPNET_MESHGRAPH_H
 #define PCB_ACOMPNET_MESHGRAPH_H
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include <librnd/core/box.h>
 #include <genht/htip.h>
 

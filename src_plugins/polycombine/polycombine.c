@@ -20,9 +20,9 @@
 #include "remove.h"
 #include <librnd/core/hid.h>
 #include <librnd/core/error.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "polygon.h"
-#include "polyarea.h"
+#include <librnd/poly/polyarea.h>
 #include "assert.h"
 #include "flag_str.h"
 #include "find.h"

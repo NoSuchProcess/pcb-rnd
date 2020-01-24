@@ -51,7 +51,7 @@
 #include "obj_poly_draw.h"
 #include "obj_text_draw.h"
 #include "polygon_selfi.h"
-#include "polygon1_gen.h"
+#include <librnd/poly/polygon1_gen.h>
 #include <librnd/core/event.h>
 
 #define UNSUBTRACT_BLOAT 10

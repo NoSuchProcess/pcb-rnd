@@ -34,7 +34,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/paths.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "undo.h"
 #include "draw.h"
 #include <librnd/core/event.h>

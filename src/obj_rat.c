@@ -33,7 +33,7 @@
 #include "conf_core.h"
 #include <librnd/core/hid_inlines.h>
 #include "undo.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "search.h"
 
 #include "obj_line_draw.h"

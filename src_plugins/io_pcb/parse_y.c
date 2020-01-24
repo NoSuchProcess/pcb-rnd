@@ -118,7 +118,7 @@
 #include "parse_l.h"
 #include "polygon.h"
 #include "remove.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "flag_str.h"
 #include "obj_pinvia_therm.h"
 #include "rats_patch.h"

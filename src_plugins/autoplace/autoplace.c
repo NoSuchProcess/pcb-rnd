@@ -57,7 +57,7 @@
 #include <librnd/core/error.h>
 #include "layer.h"
 #include "intersect.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "macro.h"
 #include "move.h"
 #include "netlist.h"

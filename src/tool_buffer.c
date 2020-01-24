@@ -40,7 +40,7 @@
 #include <librnd/core/compat_misc.h>
 #include "data.h"
 #include <librnd/core/actions.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "search.h"
 #include "tool.h"
 #include "undo.h"

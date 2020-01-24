@@ -27,7 +27,7 @@
 /* Resolve polygon self intersections */
 
 #include <genvector/vtp0.h>
-#include "polyarea.h"
+#include <librnd/poly/polyarea.h>
 
 /* Returns whether a polyline is self-intersecting. O(n^2) */
 pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl);

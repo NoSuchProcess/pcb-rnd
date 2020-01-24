@@ -22,7 +22,7 @@
 #include "remove.h"
 #include <librnd/core/hid.h>
 #include <librnd/core/error.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "draw.h"
 #include "polygon.h"
 #include <librnd/core/plugins.h>

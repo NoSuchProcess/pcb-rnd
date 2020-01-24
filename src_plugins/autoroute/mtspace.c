@@ -49,7 +49,7 @@
 
 #include <librnd/core/box.h>
 #include <librnd/core/heap.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "mtspace.h"
 #include "vector.h"
 #include "rtree2_compat.h"

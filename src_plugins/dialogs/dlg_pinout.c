@@ -30,7 +30,7 @@
 #include "obj_subc_parent.h"
 #include "draw.h"
 #include "obj_term.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "search.h"
 #include "search_r.h"
 #include "netlist.h"

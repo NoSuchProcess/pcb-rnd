@@ -37,7 +37,7 @@
 #include <librnd/core/grid.h>
 #include <librnd/core/hid.h>
 #include "hidgl.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include <librnd/core/hidlib.h>
 
 #include "draw_gl.c"

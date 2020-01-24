@@ -33,11 +33,11 @@
 #include <assert.h>
 
 #include <librnd/core/global_typedefs.h>
-#include "polyarea.h"
+#include <librnd/poly/polyarea.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/unit.h>
 
-#include "polygon1_gen.h"
+#include <librnd/poly/polygon1_gen.h>
 
 /* kept to ensure nanometer compatibility */
 #define ROUND(x) ((long)(((x) >= 0 ? (x) + 0.5  : (x) - 0.5)))

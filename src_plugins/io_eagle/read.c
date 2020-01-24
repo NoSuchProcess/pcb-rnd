@@ -38,7 +38,7 @@
 #include "conf_core.h"
 #include <librnd/core/error.h>
 #include "polygon.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include <librnd/core/actions.h>
 #include "undo.h"
 #include <librnd/core/compat_misc.h>

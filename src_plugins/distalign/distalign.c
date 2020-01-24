@@ -21,7 +21,7 @@
 #include "config.h"
 #include "data.h"
 #include <librnd/core/hid.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "undo.h"
 #include <librnd/core/error.h>
 #include "move.h"

@@ -47,7 +47,7 @@
 #include "layer.h"
 #include "move.h"
 #include "remove.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "flag_str.h"
 #include "undo.h"
 #include <librnd/core/pcb-printf.h>

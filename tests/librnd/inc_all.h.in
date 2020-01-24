@@ -2,7 +2,7 @@ put /local/objs /local/pcb/HDRS_HIDLIB
 gsub /local/objs { } {\n}
 
 foreach /local/h in /local/objs
-	sub /local/h {^[$](LIBRND)/core/} {}
-	print [@#include <librnd/core/@/local/h@>
+	sub /local/h {^[$](LIBRND)/} {}
+	print [@#include <librnd/@/local/h@>
 @]
 end

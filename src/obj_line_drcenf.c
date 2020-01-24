@@ -37,7 +37,7 @@
 #include "board.h"
 #include "data.h"
 #include "find.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "macro.h"
 
 void pcb_line_adjust_attached(void)

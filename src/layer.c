@@ -38,7 +38,7 @@
 #include "layer_ui.h"
 #include "layer_vis.h"
 #include "funchash_core.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "obj_pstk_inlines.h"
 #include "list_common.h"
 

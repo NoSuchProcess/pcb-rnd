@@ -29,7 +29,7 @@
 #ifndef PCB_SEARCH_R_H
 #define PCB_SEARCH_R_H
 
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 
 /* Search data for given object types within a box using the usual rtree conventions for the callback */
 pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const pcb_box_t *query_box, pcb_r_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure);

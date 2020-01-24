@@ -31,7 +31,7 @@
 #include "pstk_compat.h"
 #include "obj_pstk_inlines.h"
 #include <librnd/core/compat_misc.h>
-#include "polygon1_gen.h"
+#include <librnd/poly/polygon1_gen.h>
 
 #include "plug_io.h"
 

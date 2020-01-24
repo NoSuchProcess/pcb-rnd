@@ -34,7 +34,7 @@
 #include "config.h"
 #include <genlist/gendlist.h>
 #include "obj_common.h"
-#include "polyarea.h"
+#include <librnd/poly/polyarea.h>
 
 struct pcb_poly_s  {           /* holds information about a polygon */
 	PCB_ANY_PRIMITIVE_FIELDS;

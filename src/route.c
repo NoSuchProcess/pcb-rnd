@@ -37,7 +37,7 @@
 #include "extobj.h"
 #include "find.h"
 #include "polygon.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "route.h"
 #include "undo.h"
 #include "obj_line_draw.h"

@@ -46,12 +46,12 @@
 #include	<string.h>
 
 #include "config.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/heap.h>
 #include <librnd/core/compat_cc.h>
 #include <librnd/core/pcb-printf.h>
-#include "polyarea.h"
+#include <librnd/poly/polyarea.h>
 #include "obj_common.h"
 #include "macro.h"
 #include <librnd/core/box.h>

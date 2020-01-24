@@ -32,7 +32,7 @@
 #include "topoly.h"
 
 #include <librnd/core/error.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "data.h"
 #include "obj_arc.h"
 #include "obj_line.h"

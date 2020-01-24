@@ -37,7 +37,7 @@
 #include "draw.h"
 #include <librnd/core/event.h>
 #include "rotate.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "stub_draw.h"
 #include "layer_ui.h"
 #include <librnd/core/hid_inlines.h>

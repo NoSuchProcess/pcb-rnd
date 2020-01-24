@@ -41,7 +41,7 @@
 #ifndef PCB_RTREE2_COMPAT_H
 #define PCB_RTREE2_COMPAT_H
 
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 
 /* callback direction to the search engine */
 typedef enum pcb_r_dir_e {

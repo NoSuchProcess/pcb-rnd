@@ -37,7 +37,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/error.h>
 #include "tetest.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "obj_subc_parent.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"

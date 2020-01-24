@@ -66,7 +66,7 @@
 #include "move.h"
 #include <librnd/core/pcb-printf.h>
 #include "remove.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "flag_str.h"
 #include "undo.h"
 #include "layer.h"

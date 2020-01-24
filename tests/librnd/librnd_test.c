@@ -6,7 +6,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/polyarea.h>
+#include <librnd/poly/polyarea.h>
 
 /*** hidlib glue ***/
 

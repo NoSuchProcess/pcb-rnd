@@ -34,9 +34,9 @@
 
 #include "config.h"
 #include "flag.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include <librnd/core/math_helper.h>
-#include "polyarea.h"
+#include <librnd/poly/polyarea.h>
 #include "rtree2_compat.h"
 
 

@@ -36,7 +36,7 @@
 #include <librnd/core/error.h>
 #include "search.h"
 #include "tool.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "flag_str.h"
 #include "macro.h"
 #include "undo.h"

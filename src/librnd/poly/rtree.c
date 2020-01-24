@@ -31,7 +31,7 @@
 #include <string.h>
 
 #include <librnd/core/unit.h>
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 
 #include <genrtree/genrtree_impl.h>
 #include <genrtree/genrtree_search.h>

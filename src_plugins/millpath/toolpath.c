@@ -44,9 +44,9 @@
 #include "obj_poly_op.h"
 #include "obj_text_draw.h"
 #include "polygon.h"
-#include "polygon1_gen.h"
+#include <librnd/poly/polygon1_gen.h>
 #include "funchash_core.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 
 #include "src_plugins/lib_polyhelp/polyhelp.h"
 #include "src_plugins/ddraft/centgeo.h"

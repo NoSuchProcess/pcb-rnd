@@ -36,7 +36,7 @@
 #include "data.h"
 #include "data_list.h"
 #include "data_it.h"
-#include "rtree.h"
+#include <librnd/poly/rtree.h>
 #include "list_common.h"
 #include <librnd/core/compat_misc.h>
 #include "layer_it.h"
