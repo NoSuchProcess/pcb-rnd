@@ -30,7 +30,7 @@
 #include <genht/htpi.h>
 #include <genht/hash.h>
 #include "funchash_core.h"
-#include "config.h"
+#include <librnd/config.h>
 #include "macro.h"
 #include <librnd/core/compat_misc.h>
 

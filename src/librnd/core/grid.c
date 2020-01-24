@@ -28,7 +28,7 @@
  *
  */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <stdlib.h>
 #include <string.h>

@@ -31,7 +31,7 @@
 #include <genht/hash.h>
 #include <liblihata/tree.h>
 #include <stdarg.h>
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include <librnd/core/conf_hid.h>

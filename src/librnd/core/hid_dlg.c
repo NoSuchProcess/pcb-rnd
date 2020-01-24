@@ -27,7 +27,7 @@
  *
  */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <librnd/core/actions.h>
 #include <librnd/core/event.h>

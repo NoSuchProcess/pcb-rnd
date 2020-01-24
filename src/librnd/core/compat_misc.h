@@ -28,7 +28,7 @@
 #ifndef PCB_COMPAT_MISC_H
 #define PCB_COMPAT_MISC_H
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <stdlib.h>
 #include <stdio.h>

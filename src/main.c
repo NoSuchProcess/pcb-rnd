@@ -347,6 +347,9 @@ int main(int argc, char *argv[])
 
 	pcbhl_main_args_t ga;
 
+	pcbhl_conf_dot_dir = DOT_PCB_RND;
+	pcbhl_conf_lib_dir = PCBLIBDIR;
+
 	pcb_fix_locale_and_env();
 	exec_prefix = main_path_init(argv[0]);
 

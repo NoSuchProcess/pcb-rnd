@@ -28,7 +28,7 @@
  *
  */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <stdlib.h>
 #include <locale.h>
@@ -59,6 +59,9 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf.h>
+
+char *pcbhl_conf_dot_dir = ".librnd";
+char *pcbhl_conf_lib_dir = "/usr/lib/librnd";
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 
@@ -95,20 +98,20 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	free(tmp);
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-	tmp = pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = pcb_concat(pcbhl_conf_lib_dir, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
-	tmp = pcb_concat(PCBLIBDIR, PCB_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = pcb_concat(pcbhl_conf_lib_dir, PCB_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* pcbhl_conf.rc.path.home is set by the conf_core immediately on startup */
 	if (pcbhl_conf.rc.path.home != NULL) {
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+		tmp = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, "plugins", NULL);
+		tmp = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, PCB_DIR_SEPARATOR_S, "plugins", NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 	}

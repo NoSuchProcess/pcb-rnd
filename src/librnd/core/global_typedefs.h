@@ -27,7 +27,7 @@
 
 #ifndef GLOBAL_TYPEDEFS_H
 #define GLOBAL_TYPEDEFS_H
-#include "config.h"
+#include <librnd/config.h>
 
 struct pcb_box_s {        /* a bounding box */
 	pcb_coord_t X1, Y1;     /* upper left */

@@ -26,7 +26,7 @@
 
 #ifndef PCB_CONF_H
 #define PCB_CONF_H
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/pcb-printf.h>
 #include <liblihata/lihata.h>

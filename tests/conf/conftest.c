@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include "config.h"
 #include <librnd/core/hid.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>

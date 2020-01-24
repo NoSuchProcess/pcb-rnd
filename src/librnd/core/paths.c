@@ -28,7 +28,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hidlib.h>

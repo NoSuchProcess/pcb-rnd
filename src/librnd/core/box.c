@@ -27,7 +27,7 @@
  *
  */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <string.h>
 #include <librnd/core/rotate.h>

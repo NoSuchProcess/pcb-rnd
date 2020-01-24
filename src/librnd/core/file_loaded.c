@@ -26,7 +26,7 @@
  *
  */
 
-#include "config.h"
+#include <librnd/config.h>
 #include <assert.h>
 #include <genht/hash.h>
 #include <librnd/core/file_loaded.h>

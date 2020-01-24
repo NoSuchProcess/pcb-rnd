@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <liblihata/dom.h>
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/error.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/attrib.h>

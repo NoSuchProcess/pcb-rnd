@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/attrib.h>
 

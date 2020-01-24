@@ -29,7 +29,7 @@
 #include <librnd/core/plugins.h>
 
 /* for the action */
-#include "config.h"
+#include <librnd/config.h>
 #include "genvector/gds_char.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>

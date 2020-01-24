@@ -26,7 +26,7 @@
 
 /* widget-type-independent DAD functions */
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/hid_dad.h>
 
 int pcb_dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */

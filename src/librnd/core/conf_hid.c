@@ -1,4 +1,4 @@
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/conf_hid.h>
 #include <genht/hash.h>
 #include <genht/htpp.h>

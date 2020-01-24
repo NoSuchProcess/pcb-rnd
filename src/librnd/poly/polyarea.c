@@ -45,7 +45,7 @@
 #include	<setjmp.h>
 #include	<string.h>
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/heap.h>

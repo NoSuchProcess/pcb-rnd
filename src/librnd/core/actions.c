@@ -28,7 +28,7 @@
  *
  */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <ctype.h>
 

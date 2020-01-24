@@ -31,7 +31,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/error.h>

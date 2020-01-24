@@ -29,7 +29,7 @@
 #ifndef PCB_GLOBALCONST_H
 #define PCB_GLOBALCONST_H
 
-#include "config.h"
+#include <librnd/config.h>
 
 #define PCB_LARGE_VALUE      (COORD_MAX / 2 - 1) /* maximum extent of board and elements */
 

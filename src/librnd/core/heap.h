@@ -40,7 +40,7 @@
 #ifndef PCB_HEAP_H
 #define PCB_HEAP_H
 
-#include "config.h"
+#include <librnd/config.h>
 
 /* type of heap costs */
 typedef double pcb_cost_t;

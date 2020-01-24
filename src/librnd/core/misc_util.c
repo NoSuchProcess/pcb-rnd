@@ -29,7 +29,7 @@
 /* misc functions used by several modules
  */
 
-#include "config.h"
+#include <librnd/config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>

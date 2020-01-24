@@ -26,7 +26,7 @@
 
 /* Non-inline utility functions for the DAD tree widget */
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/hid_dad_tree.h>
 
 /* recursively free a row list subtree */

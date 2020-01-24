@@ -29,7 +29,7 @@
 #ifndef RND_ROTATE_H
 #define RND_ROTATE_H
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/compat_misc.h>
 

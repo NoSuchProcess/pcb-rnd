@@ -33,7 +33,7 @@
 #include <genht/hash.h>
 #include <genvector/gds_char.h>
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/hid_cfg_input.h>
 #include <librnd/core/hid_cfg_action.h>
 #include <librnd/core/hidlib_conf.h>

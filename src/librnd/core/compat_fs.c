@@ -30,7 +30,7 @@
 /* misc functions used by several modules */
 
 #define PCB_SAFE_FS
-#include "config.h"
+#include <librnd/config.h>
 
 #include <librnd/core/compat_inc.h>
 

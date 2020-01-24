@@ -1,7 +1,7 @@
 #ifndef VTC0_H
 #define VTC0_H
 
-#include "config.h"
+#include <librnd/config.h>
 #include <stdlib.h>
 #include <string.h>
 

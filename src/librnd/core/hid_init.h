@@ -94,6 +94,9 @@ extern pcb_plugin_dir_t *pcb_plugin_dir_first, *pcb_plugin_dir_last;
    else it is the full file name */
 const char *pcb_hid_export_fn(const char *filename);
 
+/* Config directories the caller needs to load before the conf system is initialized */
+extern char *pcbhl_conf_dot_dir, *pcbhl_conf_lib_dir;
+
 
 /*** main(), initialize ***/
 

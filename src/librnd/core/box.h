@@ -44,7 +44,7 @@
 #define PCB_BOX_H
 
 #include <assert.h>
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/pcb_bool.h>

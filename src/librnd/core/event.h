@@ -26,7 +26,7 @@
 
 #ifndef PCB_EVENT_H
 #define PCB_EVENT_H
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/unit.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/hidlib.h>
