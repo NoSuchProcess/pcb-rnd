@@ -34,7 +34,6 @@
 #include <librnd/core/event.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/safe_fs.h>
-#include "funchash_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include "genvector/gds_char.h"
 
@@ -205,23 +204,20 @@ static const char pcb_acts_Log[] =
 static const char pcb_acth_Log[] = "Manages the central, in-memory log.";
 static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int ret, op = -1;
+	int ret;
+	const char *op = "";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, Log, op = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, Log, op = argv[1].val.str);
 
-	switch(op) {
-		case F_Clear:
-			{
+	if (pcb_strcasecmp(op, "Clear") == 0) {
 				unsigned long from = -1, to = -1;
 				PCB_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
 				PCB_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
 				pcb_log_del_range(from, to);
 				pcb_event(NULL, PCB_EVENT_LOG_CLEAR, "pp", &from, &to);
 				ret = 0;
-			}
-			break;
-		case F_Export:
-			{
+	}
+	else if (pcb_strcasecmp(op, "Export") == 0) {
 				const char *fmts[] = { "text", "lihata", NULL };
 				pcb_hid_dad_subdialog_t fmtsub;
 				char *fn;
@@ -239,9 +235,8 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				else
 					ret = 0;
-			}
-			break;
-		default:
+	}
+	else {
 			PCB_ACT_FAIL(Log);
 			ret = -1;
 	}
