@@ -96,13 +96,13 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/list_conf.o
 	$(LIBRND)/core/misc_util.o
 	$(LIBRND)/core/paths.o
-	pcb_bool.o
-	pcb-printf.o
-	plugins.o
-	pixmap.o
-	safe_fs.o
-	unit.o
-	vtc0.o
+	$(LIBRND)/core/pcb_bool.o
+	$(LIBRND)/core/pcb-printf.o
+	$(LIBRND)/core/plugins.o
+	$(LIBRND)/core/pixmap.o
+	$(LIBRND)/core/safe_fs.o
+	$(LIBRND)/core/unit.o
+	$(LIBRND)/core/vtc0.o
 @]
 
 put /local/pcb/OBJS_POLYLIB [@
