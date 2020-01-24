@@ -1,9 +1,9 @@
 #ifndef PCB_CONF_CORE_H
 #define PCB_CONF_CORE_H
 
-#include "conf.h"
-#include "globalconst.h"
-#include "color.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/globalconst.h>
+#include <librnd/core/color.h>
 
 /* NOTE: this struct has a strict format because a code generator needs to
    read it. Please always keep the format (preferably even whitespace style).
