@@ -2,11 +2,11 @@
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/conf.h>
-#include "buildin.hidlib.h"
+#include <librnd/core/buildin.hidlib.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hidlib.h>
-#include "polyarea.h"
+#include <librnd/core/polyarea.h>
 
 /*** hidlib glue ***/
 
