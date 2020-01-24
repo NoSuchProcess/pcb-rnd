@@ -2502,7 +2502,7 @@
  vtlibrary.h data.h librnd/core/conf.h librnd/core/pcb-printf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  librnd/core/compat_fs.h librnd/core/compat_misc.h conf_core.h \
- librnd/core/hid_init.h macro.h librnd/core/safe_fs.h safe_fs_dir.h
+ librnd/core/hid_init.h macro.h librnd/core/safe_fs.h librnd/core/math_helper.h
 ../src_plugins/fp_wget/edakrill.o: ../src_plugins/fp_wget/edakrill.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6674,7 +6674,7 @@
  librnd/core/hid_dad_spin.h librnd/core/safe_fs.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h safe_fs_dir.h librnd/core/compat_inc.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/math_helper.h librnd/core/compat_inc.h \
  librnd/core/compat_fs.h librnd/core/event.h librnd/core/hidlib.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h librnd/core/globalconst.h \
  ../src_plugins/script/script.h ../src_plugins/script/live_script.h

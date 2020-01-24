@@ -36,7 +36,7 @@
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/safe_fs.h>
-#include "safe_fs_dir.h"
+#include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/event.h>
 #include "undo.h"

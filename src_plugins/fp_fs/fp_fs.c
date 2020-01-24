@@ -47,7 +47,7 @@
 #include <librnd/core/hid_init.h>
 #include "macro.h"
 #include <librnd/core/safe_fs.h>
-#include "safe_fs_dir.h"
+#include <librnd/core/safe_fs_dir.h>
 
 static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags);
 
