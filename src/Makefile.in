@@ -61,7 +61,7 @@ include {../scconfig/template/debug.tmpasm}
 # effectively c89; typical example is casting a function pointer to a
 # data pointer for dlsym().
 put /local/pcb/OBJS_C99_HIDLIB [@
-	fptr_cast.o
+	$(LIBRND)/core/fptr_cast.o
 @]
 
 append /local/pcb/OBJS_HIDLIB [@
@@ -75,11 +75,11 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/compat_fs.o
 	$(LIBRND)/core/compat_lrealpath.o
 	$(LIBRND)/core/compat_misc.o
-	error.o
-	event.o
-	file_loaded.o
-	funchash.o
-	grid.o
+	$(LIBRND)/core/error.o
+	$(LIBRND)/core/event.o
+	$(LIBRND)/core/file_loaded.o
+	$(LIBRND)/core/funchash.o
+	$(LIBRND)/core/grid.o
 	hid_attrib.o
 	hid_cfg.o
 	hid_cfg_action.o
@@ -280,7 +280,7 @@ put /local/pcb/OBJS_UTIL [@
 
 # main: action registrations
 put /local/pcb/ACTION_REG_SRC  {
-	buffer.c brave.c change_act.c conf_act.c file_act.c drc.c error.c extobj_act.c
+	buffer.c brave.c change_act.c conf_act.c file_act.c drc.c $(LIBRND)/core/error.c extobj_act.c
 	gui_act.c hid_dlg.c hid_nogui.c main_act.c netlist_act.c font_act.c
 	object_act.c obj_pstk_act.c polygon_act.c plug_footprint_act.c rats_act.c
 	rats_patch.c remove_act.c select_act.c undo_act.c
