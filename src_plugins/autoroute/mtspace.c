@@ -48,7 +48,7 @@
 #include <setjmp.h>
 
 #include <librnd/core/box.h>
-#include "heap.h"
+#include <librnd/core/heap.h>
 #include "rtree.h"
 #include "mtspace.h"
 #include "vector.h"

@@ -923,7 +923,7 @@ char *yytext;
 #include "plug_footprint.h"
 #include "attribs.h"
 #include <librnd/core/compat_misc.h>
-#include "compat_cc.h"
+#include <librnd/core/compat_cc.h>
 #include "obj_common.h"
 #include <librnd/core/paths.h>
 #include <librnd/core/safe_fs.h>

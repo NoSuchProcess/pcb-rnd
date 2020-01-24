@@ -48,8 +48,8 @@
 #include "config.h"
 #include "rtree.h"
 #include <librnd/core/math_helper.h>
-#include "heap.h"
-#include "compat_cc.h"
+#include <librnd/core/heap.h>
+#include <librnd/core/compat_cc.h>
 #include <librnd/core/pcb-printf.h>
 #include "polyarea.h"
 #include "obj_common.h"

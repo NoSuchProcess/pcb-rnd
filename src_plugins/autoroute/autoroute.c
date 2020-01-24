@@ -72,7 +72,7 @@
 #include "draw.h"
 #include <librnd/core/error.h>
 #include "find.h"
-#include "heap.h"
+#include <librnd/core/heap.h>
 #include "rtree.h"
 #include "netlist.h"
 #include "mtspace.h"

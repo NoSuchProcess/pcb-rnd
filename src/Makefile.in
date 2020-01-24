@@ -80,6 +80,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/file_loaded.o
 	$(LIBRND)/core/funchash.o
 	$(LIBRND)/core/grid.o
+	$(LIBRND)/core/heap.o
 	$(LIBRND)/core/hid_attrib.o
 	$(LIBRND)/core/hid_cfg.o
 	$(LIBRND)/core/hid_cfg_action.o
@@ -108,7 +109,6 @@ append /local/pcb/OBJS_HIDLIB [@
 put /local/pcb/OBJS_POLYLIB [@
 	polygon1.o
 	polygon1_gen.o
-	heap.o
 	rtree.o
 @]
 
