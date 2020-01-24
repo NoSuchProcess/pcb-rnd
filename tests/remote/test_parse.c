@@ -1,5 +1,5 @@
 #include <string.h>
-#include "base64.c"
+#include <librnd/core/base64.c>
 #include "proto_lowcommon.h"
 #include "proto_lowparse.h"
 #include "proto_lowdbg.h"
