@@ -30,7 +30,7 @@
 
 /* for the action */
 #include <librnd/config.h>
-#include "genvector/gds_char.h"
+#include <genvector/gds_char.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 

@@ -35,7 +35,7 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hidlib_conf.h>
-#include "genvector/gds_char.h"
+#include <genvector/gds_char.h>
 
 void pcb_trace(const char *Format, ...)
 {

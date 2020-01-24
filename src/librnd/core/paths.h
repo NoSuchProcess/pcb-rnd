@@ -26,7 +26,7 @@
 
 /* Resolve paths, build paths using template */
 
-#include "genvector/gds_char.h"
+#include <genvector/gds_char.h>
 #include <librnd/core/global_typedefs.h>
 
 /* Allocate *out and copy the path from in to out, replacing ~ with conf_core.rc.path.home
