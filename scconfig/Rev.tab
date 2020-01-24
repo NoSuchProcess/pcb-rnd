@@ -1,3 +1,4 @@
+29309	distclean	librnd separation
 28871	configure	compile standard extobjs by default
 28855	configure	extended object action infra
 28805	configure	generate new header for librnd header integrity test
