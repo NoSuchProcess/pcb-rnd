@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include "config.h"
 #include "gsch2pcb.h"
 #include "gsch2pcb_rnd_conf.h"
 #include "method_import.h"

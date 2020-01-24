@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <errno.h>
+#include "config.h"
 #include <librnd/core/error.h>
 #include <librnd/core/event.h>
 #include <librnd/core/plugins.h>
