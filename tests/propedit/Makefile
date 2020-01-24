@@ -2,16 +2,17 @@ ROOT=../..
 PED=$(ROOT)/src_plugins/propedit
 LHT=$(ROOT)/src_3rd
 SRC=$(ROOT)/src
+LIBRND=$(SRC)/librnd
 
 CFLAGS = -g -Wall -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
 LDLIBS = -lm
 LIB_OBJS = \
  $(LHT)/genht/htsp.o \
  $(LHT)/genht/hash.o \
- $(SRC)/compat_misc.o \
- $(SRC)/misc_util.o \
- $(SRC)/pcb-printf.o \
- $(SRC)/unit.o \
+ $(LIBRND)/core/compat_misc.o \
+ $(LIBRND)/core/misc_util.o \
+ $(LIBRND)/core/pcb-printf.o \
+ $(LIBRND)/core/unit.o \
  $(ROOT)/src_3rd/genvector/gds_char.o
 
 OBJS = tester.o $(PED)/props.o
