@@ -36,7 +36,7 @@
 #include "undo.h"
 #include "polygon.h"
 #include <librnd/poly/polygon1_gen.h>
-#include <librnd/poly/polygon_offs.h>
+#include <librnd/poly/offset.h>
 #include "rotate.h"
 #include "search.h"
 #include <librnd/core/hid_inlines.h>

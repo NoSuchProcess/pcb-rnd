@@ -29,8 +29,8 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/polyarea.h>
-#include <librnd/poly/polygon_selfi.h>
-#include <librnd/poly/polygon_offs.h>
+#include <librnd/poly/self_isc.h>
+#include <librnd/poly/offset.h>
 
 #if 0
 #define pcbo_trace pcb_trace

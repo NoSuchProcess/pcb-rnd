@@ -41,7 +41,7 @@
 #include "vtpadstack_t.h"
 #include "obj_hash.h"
 #include "funchash_core.h"
-#include <librnd/poly/polygon_offs.h>
+#include <librnd/poly/offset.h>
 
 static const char core_proto_cookie[] = "padstack prototypes";
 

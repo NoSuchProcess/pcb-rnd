@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/polyarea.h>
-#include <librnd/poly/polygon_selfi.h>
+#include <librnd/poly/self_isc.h>
 
 /* expect no more than this number of hubs in a complex polygon */
 #define MAX_HUB_TRIES 1024

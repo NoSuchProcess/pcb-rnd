@@ -45,7 +45,7 @@
 #include <librnd/core/math_helper.h>
 #include <librnd/core/actions.h>
 #include "netlist.h"
-#include <librnd/poly/polygon_offs.h>
+#include <librnd/poly/offset.h>
 
 #include "read.h"
 

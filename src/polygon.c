@@ -50,7 +50,7 @@
 #include "layer.h"
 #include "obj_poly_draw.h"
 #include "obj_text_draw.h"
-#include <librnd/poly/polygon_selfi.h>
+#include <librnd/poly/self_isc.h>
 #include <librnd/poly/polygon1_gen.h>
 #include <librnd/core/event.h>
 
