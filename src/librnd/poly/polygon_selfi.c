@@ -25,10 +25,18 @@
  */
 
 #include "config.h"
-#include "polygon_selfi.h"
+#include <math.h>
+#include <assert.h>
+#include <librnd/poly/rtree.h>
+#include <librnd/poly/polyarea.h>
+#include <librnd/poly/polygon_selfi.h>
 
 /* expect no more than this number of hubs in a complex polygon */
 #define MAX_HUB_TRIES 1024
+
+TODO("convert this into an enum")
+#define UNKNWN  0
+
 
 #if 0
 #	define TRACE pcb_trace
@@ -42,7 +50,7 @@ typedef struct {
 
 static pcb_vnode_t *pcb_pline_split(pcb_vnode_t *v, pcb_vector_t at)
 {
-	pcb_vnode_t *v2 = node_add_single(v, at);
+	pcb_vnode_t *v2 = pcb_poly_node_add_single(v, at);
 
 	v2 = pcb_poly_node_create(at);
 	assert(v2 != NULL);
@@ -60,9 +68,9 @@ static pcb_vnode_t *pcb_pline_split(pcb_vnode_t *v, pcb_vector_t at)
 
 static pcb_vnode_t *pcb_pline_end_at(pcb_vnode_t *v, pcb_vector_t at)
 {
-	if (pcb_vect_dist2(at, v->point) < ENDP_EPSILON)
+	if (pcb_vect_dist2(at, v->point) < PCB_POLY_ENDP_EPSILON)
 		return v;
-	if (pcb_vect_dist2(at, v->next->point) < ENDP_EPSILON)
+	if (pcb_vect_dist2(at, v->next->point) < PCB_POLY_ENDP_EPSILON)
 		return v->next;
 	return NULL;
 }
@@ -78,7 +86,7 @@ static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, pcb_bool insert)
 		if (st == NULL) continue;
 		stored = *st;
 		/* found the hub at the specific location */
-		if (pcb_vect_dist2(stored->point, v->point) < ENDP_EPSILON) {
+		if (pcb_vect_dist2(stored->point, v->point) < PCB_POLY_ENDP_EPSILON) {
 			for(m = 0; m < vtp0_len(&h->node); m++) {
 				st = (pcb_vnode_t **)vtp0_get(&h->node, m, 0);
 				if (st != NULL) {
@@ -176,7 +184,7 @@ static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 
 	for(v = start->next, cnt = 0;; v = v->next) {
 		if (v->Flags.in_hub) {
-			if (pcb_vect_dist2(start->point, v->point) < ENDP_EPSILON)
+			if (pcb_vect_dist2(start->point, v->point) < PCB_POLY_ENDP_EPSILON)
 				break; /* found a matching hub point */
 			goto skip_to_backward; /* found a different hub point, skip */
 		}
@@ -190,7 +198,7 @@ static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 	skip_to_backward:;
 	for(v = start->prev, cnt = 0;; v = v->prev) {
 		if (v->Flags.in_hub) {
-			if (pcb_vect_dist2(start->point, v->point) < ENDP_EPSILON) {
+			if (pcb_vect_dist2(start->point, v->point) < PCB_POLY_ENDP_EPSILON) {
 				start = v;
 				break; /* found a matching hub point */
 			}

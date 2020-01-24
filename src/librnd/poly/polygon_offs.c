@@ -27,7 +27,10 @@
 /* Polygon contour offset calculation */
 
 #include <librnd/core/compat_misc.h>
-#include "polygon_offs.h"
+#include <librnd/poly/rtree.h>
+#include <librnd/poly/polyarea.h>
+#include <librnd/poly/polygon_selfi.h>
+#include <librnd/poly/polygon_offs.h>
 
 #if 0
 #define pcbo_trace pcb_trace

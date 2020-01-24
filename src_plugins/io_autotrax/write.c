@@ -35,7 +35,7 @@
 #include "data.h"
 #include "write.h"
 #include "layer.h"
-#include "polygon_offs.h"
+#include <librnd/poly/polygon_offs.h>
 #include "../lib_polyhelp/polyhelp.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"

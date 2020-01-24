@@ -190,7 +190,7 @@ node_add
  1 means a new node was created and inserted
  4 means the intersection was not on the dest point
 */
-static pcb_vnode_t *node_add_single(pcb_vnode_t * dest, pcb_vector_t po)
+pcb_vnode_t *pcb_poly_node_add_single(pcb_vnode_t *dest, pcb_vector_t po)
 {
 	pcb_vnode_t *p;
 
@@ -357,7 +357,7 @@ static pcb_vnode_t *node_add_single_point(pcb_vnode_t * a, pcb_vector_t p)
 
 	next_a = a->next;
 
-	new_node = node_add_single(a, p);
+	new_node = pcb_poly_node_add_single(a, p);
 	assert(new_node != NULL);
 
 	new_node->cvc_prev = new_node->cvc_next = (pcb_cvc_list_t *) - 1;
@@ -2949,21 +2949,16 @@ pcb_bool pcb_polyarea_contour_check_(pcb_pline_t *a, pa_chk_res_t *res)
 				}
 
 TODO(": ugly workaround: test where exactly the intersection happens and tune the endpoint of the line")
-				/* EPSILON^2 for endpoint matching; the bool algebra code is not
-				   perfect and causes tiny self intersections at the end of sharp
-				   spikes. Accept at most 10 nanometer of such intersection */
-#				define ENDP_EPSILON 100
-
-				if (pcb_vect_dist2(i1, a1->point) < ENDP_EPSILON)
+				if (pcb_vect_dist2(i1, a1->point) < PCB_POLY_ENDP_EPSILON)
 					hit1 = a1;
-				else if (pcb_vect_dist2(i1, a1->next->point) < ENDP_EPSILON)
+				else if (pcb_vect_dist2(i1, a1->next->point) < PCB_POLY_ENDP_EPSILON)
 					hit1 = a1->next;
 				else
 					hit1 = NULL;
 
-				if (pcb_vect_dist2(i1, a2->point) < ENDP_EPSILON)
+				if (pcb_vect_dist2(i1, a2->point) < PCB_POLY_ENDP_EPSILON)
 					hit2 = a2;
-				else if (pcb_vect_dist2(i1, a2->next->point) < ENDP_EPSILON)
+				else if (pcb_vect_dist2(i1, a2->next->point) < PCB_POLY_ENDP_EPSILON)
 					hit2 = a2->next;
 				else
 					hit2 = NULL;
@@ -3581,8 +3576,6 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, pcb_coord_t dx, pcb_coord_t dy)
 		}
 	}
 }
-
-#include "polygon_selfi.c"
 
 void pcb_polyarea_get_tree_seg(void *obj, pcb_coord_t *x1, pcb_coord_t *y1, pcb_coord_t *x2, pcb_coord_t *y2)
 {

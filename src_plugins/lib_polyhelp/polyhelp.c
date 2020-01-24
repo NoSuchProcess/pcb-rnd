@@ -35,7 +35,7 @@
 #include <librnd/core/pcb-printf.h>
 #include "obj_line.h"
 #include <librnd/core/box.h>
-#include "polygon_offs.h"
+#include <librnd/poly/polygon_offs.h>
 #include <librnd/core/hid_dad.h>
 
 #include "topoly.h"

@@ -48,7 +48,7 @@
 #include "vtpadstack.h"
 #include <librnd/core/event.h>
 #include <librnd/core/hid_inlines.h>
-#include "polygon_offs.h"
+#include <librnd/poly/polygon_offs.h>
 
 #define SQR(o) ((o)*(o))
 

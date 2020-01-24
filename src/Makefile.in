@@ -109,6 +109,8 @@ append /local/pcb/OBJS_HIDLIB [@
 put /local/pcb/OBJS_POLYLIB [@
 	$(LIBRND)/poly/polyarea.o
 	$(LIBRND)/poly/polygon1_gen.o
+	$(LIBRND)/poly/polygon_offs.o
+	$(LIBRND)/poly/polygon_selfi.o
 	$(LIBRND)/poly/rtree.o
 @]
 

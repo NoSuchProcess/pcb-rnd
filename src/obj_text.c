@@ -38,7 +38,7 @@
 #include <librnd/core/hid_inlines.h>
 #include "undo.h"
 #include "polygon.h"
-#include "polygon_offs.h"
+#include <librnd/poly/polygon_offs.h>
 #include <librnd/core/event.h>
 #include "layer.h"
 

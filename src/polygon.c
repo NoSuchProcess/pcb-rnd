@@ -50,7 +50,7 @@
 #include "layer.h"
 #include "obj_poly_draw.h"
 #include "obj_text_draw.h"
-#include "polygon_selfi.h"
+#include <librnd/poly/polygon_selfi.h>
 #include <librnd/poly/polygon1_gen.h>
 #include <librnd/core/event.h>
 
@@ -1736,4 +1736,3 @@ pcb_bool pcb_pline_is_rectangle(pcb_pline_t *pl)
 	return pcb_false;
 }
 
-#include "polygon_offs.c"

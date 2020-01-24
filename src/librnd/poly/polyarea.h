@@ -99,6 +99,8 @@ void pcb_poly_vertex_include(pcb_vnode_t *after, pcb_vnode_t *node);
 void pcb_poly_vertex_include_force(pcb_vnode_t *after, pcb_vnode_t *node); /* do not remove nodes even if on the same line */
 void pcb_poly_vertex_exclude(pcb_pline_t *parent, pcb_vnode_t *node);
 
+pcb_vnode_t *pcb_poly_node_add_single(pcb_vnode_t *dest, pcb_vector_t po);
+
 /**********************************************************************/
 
 struct pcb_polyarea_s {
@@ -200,5 +202,10 @@ void pcb_polyarea_get_tree_seg(void *obj, pcb_coord_t *x1, pcb_coord_t *y1, pcb_
 /* create a (pcb_rtree_t *) of each seg derived from src */
 void *pcb_poly_make_edge_tree(pcb_pline_t *src);
 
+
+/* EPSILON^2 for endpoint matching; the bool algebra code is not
+   perfect and causes tiny self intersections at the end of sharp
+   spikes. Accept at most 10 nanometer of such intersection */
+#define PCB_POLY_ENDP_EPSILON 100
 
 #endif /* PCB_POLYAREA_H */
