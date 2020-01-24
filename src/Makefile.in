@@ -65,10 +65,11 @@ put /local/pcb/OBJS_C99_HIDLIB [@
 @]
 
 append /local/pcb/OBJS_HIDLIB [@
-	actions.o
-	attrib.o
-	base64.o
-	color.o
+	$(LIBRND)/core/actions.o
+	$(LIBRND)/core/attrib.o
+	$(LIBRND)/core/base64.o
+	$(LIBRND)/core/box.o
+	$(LIBRND)/core/color.o
 	conf.o
 	conf_hid.o
 	compat_fs.o
@@ -149,7 +150,6 @@ append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
 append /local/pcb/OBJS [@
 	actions_pcb.o
 	board.o
-	box.o
 	brave.o
 	buffer.o
 	build_run.o
@@ -385,8 +385,8 @@ OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/pcb/OBJS_C99_HIDLIB_PLG@
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
-CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
-C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
+CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@ -I$(LIBRND)/core
+C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ -I$(LIBRND)/core
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS_PRE=@/local/pcb/LIBS_PRE@
 LIBS=@/local/pcb/LIBS@ -lm @?/target/libs/ldl@
@@ -404,6 +404,7 @@ LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 GENLIST_LDFLAGS=@cc/ldflags@
+LIBRND=librnd
 
 all:
 	$(MAKE) revcheck
@@ -605,7 +606,7 @@ gsub /local/pcb/HDRS_3RDLIB {.o } {.h }
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/pcb/HDRS_HIDLIB {hid_dlg.h } {}
 sub /local/pcb/HDRS_HIDLIB {polygon1.h } {}
-append /local/pcb/HDRS_HIDLIB {hid.h polyarea.h global_typedefs.h globalconst.h box.h math_helper.h buildin.hidlib.h hid_inlines.h hid_dad.h rotate.h fptr_cast.h safe_fs_dir.h compat_inc.h }
+append /local/pcb/HDRS_HIDLIB {hid.h polyarea.h global_typedefs.h globalconst.h math_helper.h buildin.hidlib.h hid_inlines.h hid_dad.h rotate.h fptr_cast.h safe_fs_dir.h compat_inc.h }
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
