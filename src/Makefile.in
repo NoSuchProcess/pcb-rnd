@@ -44,7 +44,7 @@ else
 end
 
 # These files are to be generated before make dep is run
-put /local/pcb/DEPDEPS { hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
+put /local/pcb/DEPDEPS { $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
 
 include {../scconfig/template/debug.tmpasm}
 
@@ -91,11 +91,11 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/hid_dad_unit.o
 	$(LIBRND)/core/hid_init.o
 	$(LIBRND)/core/hid_nogui.o
-	hidlib.o
-	hidlib_conf.o
-	list_conf.o
-	misc_util.o
-	paths.o
+	$(LIBRND)/core/hidlib.o
+	$(LIBRND)/core/hidlib_conf.o
+	$(LIBRND)/core/list_conf.o
+	$(LIBRND)/core/misc_util.o
+	$(LIBRND)/core/paths.o
 	pcb_bool.o
 	pcb-printf.o
 	plugins.o
@@ -541,11 +541,11 @@ generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 conf_core_fields.h: conf_core.h $(ROOT)/doc/conf/tree/rc.html
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh  < conf_core.h > conf_core_fields.h
 
-hidlib_conf_fields.h: hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
-	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh < hidlib_conf.h > hidlib_conf_fields.h
+$(LIBRND)/core/hidlib_conf_fields.h: $(LIBRND)/core/hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
+	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh < $(LIBRND)/core/hidlib_conf.h > $(LIBRND)/core/hidlib_conf_fields.h
 
-$(ROOT)/doc/conf/tree/rc.html: hidlib_conf.h conf_core.h
-	cat conf_core.h hidlib_conf.h | AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree > /dev/null
+$(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h conf_core.h
+	cat conf_core.h $(LIBRND)/core/hidlib_conf.h | AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree > /dev/null
 
 conf_internal.c: pcb-conf.lht $(CQUOTE)
 	$(CQUOTE) -n pcb_conf_internal < pcb-conf.lht > conf_internal.c
@@ -562,7 +562,7 @@ util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o ../src_3rd/genlis
 FORCE:
 
 
-DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c buildin.hidlib.h compat_inc.h hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups librnd.mak @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c buildin.hidlib.h compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
