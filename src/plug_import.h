@@ -31,7 +31,7 @@
 #define PCB_PLUG_IMPORT_H
 
 #include "config.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 /**************************** API definition *********************************/
 

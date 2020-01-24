@@ -1,4 +1,4 @@
-#include "conf.h"
+#include <librnd/core/conf.h>
 void pcb_wplc_load(conf_role_t role);
 
 

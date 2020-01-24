@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <genht/hash.h>
 #include "egb_tree.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 egb_node_t *egb_node_alloc(int id, const char *id_name)
 {

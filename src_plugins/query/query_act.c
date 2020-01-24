@@ -31,7 +31,7 @@
 #include <string.h>
 #include "config.h"
 #include "conf_core.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "query.h"
 #include "query_y.h"
 #include "query_exec.h"
@@ -41,7 +41,7 @@
 #include "board.h"
 #include "macro.h"
 #include "idpath.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"

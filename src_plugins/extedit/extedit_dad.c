@@ -27,7 +27,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)

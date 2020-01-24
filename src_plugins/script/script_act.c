@@ -28,8 +28,8 @@
  */
 
 #include <ctype.h>
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 #include "live_script.h"
 
 

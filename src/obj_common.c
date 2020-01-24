@@ -31,8 +31,8 @@
 #include <ctype.h>
 #include "conf_core.h"
 #include "flag_str.h"
-#include "global_typedefs.h"
-#include "error.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/error.h>
 #include "obj_common.h"
 #include "obj_arc_ui.h"
 #include "obj_pstk.h"

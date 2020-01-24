@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 
 int pplg_check_ver_lib_gensexpr(int ver_needed) { return 0; }
 

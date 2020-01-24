@@ -26,10 +26,10 @@
 #include "config.h"
 #include "props.h"
 #include "propsel.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "board.h"
-#include "pcb-printf.h"
-#include "hid.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/hid.h>
 #include <genht/hash.h>
 /*#define HT_INVALID_VALUE ((pcb_propval_t){PCB_PROPT_invalid, {0}})*/
 #define HT(x) htprop_ ## x

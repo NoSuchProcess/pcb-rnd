@@ -2205,7 +2205,7 @@ char *yytext;
 #line 28 "hyp_l.l"
 #include <stdlib.h>
 
-char *pcb_strdup(const char *s); /* from #include "compat_misc.h" */
+char *pcb_strdup(const char *s); /* from #include <librnd/core/compat_misc.h> */
 
 #include "hyp_y.h"
 

@@ -43,7 +43,7 @@
 #include <stdlib.h>
 
 #include "intersect.h"
-#include "box.h"
+#include <librnd/core/box.h>
 
 static int compareleft(const void *ptr1, const void *ptr2);
 static int compareright(const void *ptr1, const void *ptr2);

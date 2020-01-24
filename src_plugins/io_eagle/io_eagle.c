@@ -28,12 +28,12 @@
  */
 
 #include "config.h"
-#include "plugins.h"
-#include "hid.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid.h>
 #include "plug_io.h"
 #include "read.h"
 #include "read_dru.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 static pcb_plug_io_t io_eagle_xml, io_eagle_bin, io_eagle_dru;
 static const char *eagle_cookie = "eagle plugin";

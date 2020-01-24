@@ -3,8 +3,8 @@
 
 typedef struct pref_ctx_s pref_ctx_t;
 
-#include "conf.h"
-#include "conf_hid.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/conf_hid.h>
 #include "dlg_pref_sizes.h"
 #include "dlg_pref_board.h"
 #include "dlg_pref_general.h"

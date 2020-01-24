@@ -28,9 +28,9 @@
  */
 #include "config.h"
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"

@@ -33,9 +33,9 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "hid.h"
-#include "actions.h"
-#include "compat_misc.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 
 #include "util_listener.h"
 

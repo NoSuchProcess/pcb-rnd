@@ -38,10 +38,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_import.h"
-#include "error.h"
-#include "safe_fs.h"
+#include <librnd/core/error.h>
+#include <librnd/core/safe_fs.h>
 
 
 pcb_plug_import_t *pcb_plug_import_chain = NULL;

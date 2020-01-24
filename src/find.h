@@ -30,7 +30,7 @@
 #define PCB_FIND2_H
 
 #include <genvector/vtp0.h>
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include "flag.h"
 
 typedef enum {

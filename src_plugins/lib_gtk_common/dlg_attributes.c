@@ -32,11 +32,11 @@
 #include "dlg_attributes.h"
 #include <stdlib.h>
 
-#include "pcb-printf.h"
-#include "hid_attrib.h"
-#include "hid_init.h"
-#include "misc_util.h"
-#include "compat_misc.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/compat_misc.h>
 
 #include "compat.h"
 

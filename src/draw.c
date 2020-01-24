@@ -30,12 +30,12 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "rotate.h"
 #include "rtree.h"
 #include "stub_draw.h"

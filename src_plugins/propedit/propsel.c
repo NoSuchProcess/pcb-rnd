@@ -31,15 +31,15 @@
 #include "props.h"
 #include "propsel.h"
 #include "change.h"
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 #include "flag_str.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "undo.h"
 #include "rotate.h"
 #include "obj_pstk_inlines.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "netlist.h"
 
 #include "obj_line_op.h"

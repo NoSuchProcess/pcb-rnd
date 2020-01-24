@@ -28,7 +28,7 @@
  */
 
 #include "config.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "parse_common.h"
 #include "file.h"
 

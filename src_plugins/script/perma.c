@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 
-#include "hidlib.h"
+#include <librnd/core/hidlib.h>
 
 static const char *guess_lang(const char *ext);
 

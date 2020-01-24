@@ -5,10 +5,10 @@
 #include "crosshair.h"
 #include "draw.h"
 #include "color_cache.h"
-#include "hid_attrib.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hidlib_conf.h>
 #include "funchash_core.h"
-#include "pixmap.h"
+#include <librnd/core/pixmap.h>
 
 #include "../src_plugins/lib_hid_common/clip.h"
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"

@@ -73,7 +73,7 @@ int undo_check(void);
 void undo_dump(void);
 
 /* temporary */
-#include "pcb_bool.h"
+#include <librnd/core/pcb_bool.h>
 extern pcb_data_t *pcb_removelist;
 extern pcb_bool pcb_undo_and_draw;
 

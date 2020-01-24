@@ -30,14 +30,14 @@
 #include "layer.h"
 #include "layer_ui.h"
 /*#include "acompnet_conf.h"*/
-#include "actions.h"
-#include "plugins.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/plugins.h>
 #include "search.h"
 #include "polygon.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "compat_misc.h"
-#include "error.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
 #include "meshgraph.h"
 
 static pcb_layer_t *ly;

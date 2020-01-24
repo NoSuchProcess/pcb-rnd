@@ -30,9 +30,9 @@
 
 #include "board.h"
 #include "data.h"
-#include "error.h"
-#include "compat_misc.h"
-#include "misc_util.h"
+#include <librnd/core/error.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/misc_util.h>
 
 #include "layer_addr.h"
 

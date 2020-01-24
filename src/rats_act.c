@@ -36,13 +36,13 @@
 
 #include "board.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
 #include "find.h"
 #include "remove.h"
 #include "funchash_core.h"
 #include "obj_rat.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "netlist.h"
 #include "draw.h"
 

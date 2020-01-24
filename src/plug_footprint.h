@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "vtlibrary.h"
 #include "data.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 typedef struct pcb_plug_fp_s pcb_plug_fp_t;
 

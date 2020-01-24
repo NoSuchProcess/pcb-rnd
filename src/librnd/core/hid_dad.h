@@ -29,10 +29,10 @@
 
 #include <stddef.h>
 #include <assert.h>
-#include "compat_misc.h"
-#include "hid_attrib.h"
-#include "pcb-printf.h"
-#include "global_typedefs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/global_typedefs.h>
 
 #include <genlist/gendlist.h>
 
@@ -145,7 +145,7 @@ typedef struct {
 	void (*free)(pcb_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
 } pcb_hid_compound_t;
 
-#include "hid_dad_spin.h"
+#include <librnd/core/hid_dad_spin.h>
 
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
 #define PCB_DAD_DECL(table) \

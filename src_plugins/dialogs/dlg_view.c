@@ -30,20 +30,20 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "view.h"
 #include "draw.h"
 #include "drc.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "hid_inlines.h"
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 #include "undo.h"
-#include "safe_fs.h"
-#include "misc_util.h"
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/misc_util.h>
 
 static const char *dlg_view_cookie = "dlg_drc";
 

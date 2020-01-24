@@ -28,7 +28,7 @@
 
 #include "board.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
 
 #define CHK "Broken integrity: "

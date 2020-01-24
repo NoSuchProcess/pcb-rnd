@@ -26,7 +26,7 @@
 
 #include <assert.h>
 #include "config.h"
-#include "fptr_cast.h"
+#include <librnd/core/fptr_cast.h>
 
 void *pcb_cast_f2d(pcb_fptr_t f)
 {

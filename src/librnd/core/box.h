@@ -46,8 +46,8 @@
 #include <assert.h>
 #include "config.h"
 #include "math_helper.h"
-#include "global_typedefs.h"
-#include "pcb_bool.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/pcb_bool.h>
 
 struct pcb_box_list_s {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */
@@ -55,7 +55,7 @@ struct pcb_box_list_s {
 	pcb_box_t *Box;
 };
 
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 
 typedef enum {
 	PCB_NORTH = 0, PCB_EAST = 1, PCB_SOUTH = 2, PCB_WEST = 3,

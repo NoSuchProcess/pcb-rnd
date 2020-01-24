@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <genht/htsp.h>
 
-#include "pixmap.h"
+#include <librnd/core/pixmap.h>
 #include "pixmap_pcb.h"
 
 void pcb_pixmap_hash_init(pcb_pixmap_hash_t *pmhash)

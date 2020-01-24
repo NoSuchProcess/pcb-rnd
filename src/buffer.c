@@ -44,7 +44,7 @@
 #include "draw.h"
 #include "undo.h"
 #include "funchash_core.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "obj_arc_op.h"
 #include "obj_line_op.h"
 #include "obj_text_op.h"
@@ -54,12 +54,12 @@
 #include "obj_rat_op.h"
 #include "obj_pstk.h"
 #include "layer_grp.h"
-#include "event.h"
-#include "safe_fs.h"
-#include "actions.h"
+#include <librnd/core/event.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/actions.h>
 #include "tool.h"
 #include "extobj.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 
 static int move_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);
 static void move_buffer_post(pcb_opctx_t *ctx, pcb_any_obj_t *ptr2, void *ptr3);

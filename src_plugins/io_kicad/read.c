@@ -36,22 +36,22 @@
 #include <genht/htpp.h>
 #include <genvector/vtp0.h>
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "board.h"
 #include "plug_io.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "data.h"
 #include "read.h"
 #include "layer.h"
 #include "polygon.h"
 #include "plug_footprint.h"
-#include "misc_util.h" /* for distance calculations */
+#include <librnd/core/misc_util.h> /* for distance calculations */
 #include "conf_core.h"
 #include "move.h"
 #include "macro.h"
 #include "rotate.h"
-#include "safe_fs.h"
-#include "attrib.h"
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/attrib.h>
 #include "netlist.h"
 #include "math_helper.h"
 #include "obj_pstk_inlines.h"

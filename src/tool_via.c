@@ -35,7 +35,7 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "board.h"
 #include "change.h"

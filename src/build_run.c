@@ -34,9 +34,9 @@
 #include "conf_core.h"
 #include "board.h"
 #include "build_run.h"
-#include "hid_init.h"
+#include <librnd/core/hid_init.h>
 #include "plug_io.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 extern void pcb_main_uninit(void);
 

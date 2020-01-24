@@ -26,7 +26,7 @@
 
 #include <unistd.h>
 #include <stdarg.h>
-#include "base64.h"
+#include <librnd/core/base64.h>
 
 #define MAX_FIELD_ALLOC 1024*1024
 

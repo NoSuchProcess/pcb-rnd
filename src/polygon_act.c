@@ -33,7 +33,7 @@
  */
 #include "config.h"
 
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "board.h"
 #include "data.h"
@@ -45,7 +45,7 @@
 #include "search.h"
 #include "crosshair.h"
 #include "tool.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 #include "obj_poly.h"
 

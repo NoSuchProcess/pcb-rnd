@@ -31,17 +31,17 @@
    then got reworked heavily by Tibor 'Igor2' Palinkas for pcb-rnd DAD */
 
 #include "config.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "dlg_attribute.h"
 #include <stdlib.h>
 
-#include "pcb-printf.h"
-#include "hid_attrib.h"
-#include "hid_dad_tree.h"
-#include "hid_init.h"
-#include "misc_util.h"
-#include "compat_misc.h"
-#include "event.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
 
 #include "compat.h"
 

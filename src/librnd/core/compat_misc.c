@@ -34,7 +34,7 @@
 #include <sys/types.h>
 #include <math.h>
 #include <genvector/gds_char.h>
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 /* On some old systems random() works better than rand(). Unfortunately
 random() is less portable than rand(), which is C89. By default, just

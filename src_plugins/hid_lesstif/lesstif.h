@@ -1,4 +1,4 @@
-#include "hid_cfg_input.h"
+#include <librnd/core/hid_cfg_input.h>
 #include "board.h"
 
 #define app_context lesstif_app_context

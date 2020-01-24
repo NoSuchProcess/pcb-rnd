@@ -24,8 +24,8 @@
 #include "parser.h"
 #include "hyp_l.h"
 #include "hyp_y.h"
-#include "error.h"
-#include "pcb-printf.h"
+#include <librnd/core/error.h>
+#include <librnd/core/pcb-printf.h>
 #include "flag_str.h"
 #include "polygon.h"
 #include "board.h"
@@ -33,10 +33,10 @@
 #include "data.h"
 #include "search.h"
 #include "rotate.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "plug_io.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include <string.h>

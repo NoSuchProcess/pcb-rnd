@@ -34,8 +34,8 @@
 #include "config.h"
 #include "board.h"
 #include "flag.h"
-#include "pcb_bool.h"
-#include "unit.h"
+#include <librnd/core/pcb_bool.h>
+#include <librnd/core/unit.h>
 
 extern int defer_updates, defer_needs_update;
 

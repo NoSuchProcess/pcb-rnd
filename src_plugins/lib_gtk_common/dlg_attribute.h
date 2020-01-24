@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "pcb_gtk.h"
 
 void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);

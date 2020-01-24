@@ -20,13 +20,13 @@
 #include "data.h"
 #include "macro.h"
 #include "remove.h"
-#include "hid.h"
-#include "error.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/error.h>
 #include "rtree.h"
 #include "draw.h"
 #include "polygon.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "obj_poly.h"
 #include "obj_poly_draw.h"
 

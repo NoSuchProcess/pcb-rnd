@@ -46,7 +46,7 @@
 #include "search.h"
 #include "undo.h"
 #include "vtpadstack.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "hid_inlines.h"
 #include "polygon_offs.h"
 

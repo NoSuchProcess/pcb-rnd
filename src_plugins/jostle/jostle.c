@@ -20,21 +20,21 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "rtree.h"
 #include "undo.h"
 #include "polygon.h"
 #include "polygon1_gen.h"
 #include "remove.h"
-#include "error.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/error.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "layer.h"
 #include "conf_core.h"
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 #include "obj_line.h"
-#include "event.h"
+#include <librnd/core/event.h>
 
 /*#define DEBUG_pcb_polyarea_t*/
 

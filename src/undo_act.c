@@ -35,10 +35,10 @@
 #include "conf_core.h"
 
 #include "board.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "data.h"
-#include "compat_misc.h"
-#include "error.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
 #include "funchash_core.h"
 
 #include "undo.h"

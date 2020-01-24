@@ -38,7 +38,7 @@
 #include "change.h"
 #include "data.h"
 #include "draw.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "search.h"
 #include "tool.h"
 #include "tool_lock.h"

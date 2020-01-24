@@ -31,7 +31,7 @@
 
 #include "topoly.h"
 
-#include "error.h"
+#include <librnd/core/error.h>
 #include "rtree.h"
 #include "data.h"
 #include "obj_arc.h"
@@ -40,8 +40,8 @@
 #include "obj_poly_draw.h"
 #include "polygon.h"
 #include "search.h"
-#include "hid.h"
-#include "actions.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/actions.h>
 #include "funchash_core.h"
 
 #define VALID_TYPE(obj) (((obj)->type == PCB_OBJ_ARC)  || ((obj)->type == PCB_OBJ_LINE))

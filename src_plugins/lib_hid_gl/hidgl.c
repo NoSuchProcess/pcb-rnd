@@ -26,7 +26,7 @@
  */
 
 #include "config.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,11 +34,11 @@
 #include <math.h>
 #include <assert.h>
 
-#include "grid.h"
-#include "hid.h"
+#include <librnd/core/grid.h>
+#include <librnd/core/hid.h>
 #include "hidgl.h"
 #include "rtree.h"
-#include "hidlib.h"
+#include <librnd/core/hidlib.h>
 
 #include "draw_gl.c"
 

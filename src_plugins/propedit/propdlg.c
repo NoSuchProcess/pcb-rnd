@@ -31,10 +31,10 @@
 #include <genvector/gds_char.h>
 
 #include "board.h"
-#include "actions.h"
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
-#include "conf_hid.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/conf_hid.h>
 #include "netlist.h"
 
 #include "props.h"

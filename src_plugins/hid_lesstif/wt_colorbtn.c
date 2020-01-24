@@ -31,8 +31,8 @@
 #include <Xm/PushB.h>
 #include <Xm/Xm.h>
 
-#include "compat_misc.h"
-#include "color.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/color.h>
 
 static int fill_bar(Display *display, XImage *image, const pcb_color_t *color, int width, int height)
 {

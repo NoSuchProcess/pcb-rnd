@@ -27,12 +27,12 @@
 #ifndef PCB_CONF_H
 #define PCB_CONF_H
 #include "config.h"
-#include "global_typedefs.h"
-#include "pcb-printf.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/pcb-printf.h>
 #include <liblihata/lihata.h>
 #include <liblihata/dom.h>
 #include <genvector/vtp0.h>
-#include "unit.h"
+#include <librnd/core/unit.h>
 
 typedef union confitem_u confitem_t ;
 typedef struct conf_listitem_s pcb_conf_listitem_t;

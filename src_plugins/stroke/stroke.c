@@ -32,13 +32,13 @@
 
 #include "board.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "crosshair.h"
-#include "actions.h"
-#include "unit.h"
-#include "plugins.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/unit.h>
+#include <librnd/core/plugins.h>
 #include "stub_stroke.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "tool.h"
 
 #include "../src_plugins/stroke/conf_internal.c"

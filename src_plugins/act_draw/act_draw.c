@@ -30,15 +30,15 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "flag_str.h"
 #include "obj_arc.h"
 #include "obj_line.h"
 #include "obj_pstk.h"
 #include "obj_text.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "undo.h"
 
 #include "keywords_sphash.h"

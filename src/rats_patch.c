@@ -32,12 +32,12 @@
 
 #include <assert.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "move.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 #include "funchash_core.h"
 #include "search.h"
 #include "undo.h"

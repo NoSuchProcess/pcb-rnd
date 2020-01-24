@@ -107,6 +107,6 @@ typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
 typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;
 typedef struct pcb_export_opt_s pcb_export_opt_t;
 
-#include "pcb_bool.h"
+#include <librnd/core/pcb_bool.h>
 
 #endif

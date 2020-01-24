@@ -35,8 +35,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "compat_misc.h"
-#include "unit.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/unit.h>
 
 /* Should be kept in order of smallest scale_factor to largest -- the code
    uses this ordering for finding the best scale to use for a group of units */

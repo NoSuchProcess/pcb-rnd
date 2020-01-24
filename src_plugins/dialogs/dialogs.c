@@ -28,11 +28,11 @@
  */
 
 #include "config.h"
-#include "hid.h"
-#include "hid_attrib.h"
-#include "actions.h"
-#include "hid_dad.h"
-#include "plugins.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/plugins.h>
 #include "funchash_core.h"
 #include "../src_plugins/lib_hid_common/dialogs_conf.h"
 

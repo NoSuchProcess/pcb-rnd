@@ -31,16 +31,16 @@
 #include <errno.h>
 
 #include "board.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "plug_import.h"
 #include "conf_core.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "data.h"
 #include "rats_patch.h"
-#include "compat_misc.h"
-#include "paths.h"
-#include "safe_fs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/paths.h>
+#include <librnd/core/safe_fs.h>
 #include "macro.h"
 #include "netlist.h"
 

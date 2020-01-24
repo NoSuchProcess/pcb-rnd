@@ -28,10 +28,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "config.h"
-#include "event.h"
-#include "error.h"
-#include "actions.h"
-#include "fptr_cast.h"
+#include <librnd/core/event.h>
+#include <librnd/core/error.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/fptr_cast.h>
 
 static const char *pcb_fgw_evnames[] = {
 	"pcbev_gui_init",

@@ -25,6 +25,6 @@
  */
 
 #define FROM_CONF_C
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "list_conf.h"
 #include <genlist/gentdlist_impl.c>

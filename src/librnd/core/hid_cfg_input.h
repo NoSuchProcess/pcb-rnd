@@ -4,7 +4,7 @@
 #include <liblihata/dom.h>
 #include <genht/htip.h>
 #include <genht/htpp.h>
-#include "hid_cfg.h"
+#include <librnd/core/hid_cfg.h>
 
 #define PCB_M_Mod0(n)  (1u<<(n))
 typedef enum {

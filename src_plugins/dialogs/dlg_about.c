@@ -27,11 +27,11 @@
 #include "config.h"
 
 #include <genvector/gds_char.h>
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "build_run.h"
-#include "file_loaded.h"
-#include "hid_dad.h"
-#include "pcb-printf.h"
+#include <librnd/core/file_loaded.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/pcb-printf.h>
 #include "dlg_about.h"
 
 typedef struct{

@@ -6,13 +6,13 @@
 #include <liblihata/tree.h>
 
 #include "board.h"
-#include "pcb-printf.h"
-#include "misc_util.h"
-#include "error.h"
-#include "conf.h"
-#include "hidlib.h"
-#include "hid_cfg.h"
-#include "hid_cfg_action.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/error.h>
+#include <librnd/core/conf.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_cfg_action.h>
 
 #include "pcb_gtk.h"
 #include "bu_menu.h"

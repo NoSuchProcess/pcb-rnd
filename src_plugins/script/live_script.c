@@ -31,14 +31,14 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 
-#include "actions.h"
-#include "plugins.h"
-#include "hid_cfg.h"
-#include "hid_dad.h"
-#include "safe_fs.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/safe_fs.h>
 #include "safe_fs_dir.h"
-#include "compat_fs.h"
-#include "event.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/event.h>
 #include "undo.h"
 #include "globalconst.h"
 

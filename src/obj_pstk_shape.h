@@ -27,7 +27,7 @@
 #ifndef PCB_OBJ_PSTK_SHAPE_H
 #define PCB_OBJ_PSTK_SHAPE_H
 
-#include "unit.h"
+#include <librnd/core/unit.h>
 #include "polygon.h"
 #include "layer.h"
 

@@ -28,9 +28,9 @@
 
 #include <liblihata/tree.h>
 #include "dlg_pref.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "paths.h"
+#include <librnd/core/paths.h>
 
 static const char *SRC_BRD = "<board file>";
 

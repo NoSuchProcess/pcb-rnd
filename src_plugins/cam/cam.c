@@ -34,14 +34,14 @@
 
 #include "board.h"
 #include "hid_cam.h"
-#include "hid_attrib.h"
-#include "hid_init.h"
-#include "hid_nogui.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "cam_conf.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 #include "../src_plugins/cam/conf_internal.c"
 
 static const char *cam_cookie = "cam exporter";

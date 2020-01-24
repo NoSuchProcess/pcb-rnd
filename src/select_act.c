@@ -36,7 +36,7 @@
 
 #include "board.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
 #include "funchash_core.h"
 
@@ -45,10 +45,10 @@
 #include "draw.h"
 #include "remove.h"
 #include "move.h"
-#include "grid.h"
-#include "hid_attrib.h"
-#include "compat_misc.h"
-#include "actions.h"
+#include <librnd/core/grid.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/actions.h>
 
 
 static const char pcb_acts_Select[] =

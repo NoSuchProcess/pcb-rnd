@@ -2,9 +2,9 @@
 #define PCB_VTROUTESTYLE_H
 #include <stdlib.h>
 #include <string.h>
-#include "unit.h"
-#include "attrib.h"
-#include "global_typedefs.h"
+#include <librnd/core/unit.h>
+#include <librnd/core/attrib.h>
+#include <librnd/core/global_typedefs.h>
 
 /* Elem=RouteStyle; init=0 */
 

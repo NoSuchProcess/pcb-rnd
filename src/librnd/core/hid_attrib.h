@@ -2,8 +2,8 @@
 #define PCB_HID_ATTRIB_H
 
 #include <genlist/gendlist.h>
-#include "hid.h"
-#include "color.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/color.h>
 
 /* Used for HID attributes (exporting and printing, mostly).
    HA_boolean uses lng, HA_enum sets lng to the index and

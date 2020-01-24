@@ -29,8 +29,8 @@
 #include "config.h"
 #include <assert.h>
 #include <genht/hash.h>
-#include "file_loaded.h"
-#include "compat_misc.h"
+#include <librnd/core/file_loaded.h>
+#include <librnd/core/compat_misc.h>
 
 htsp_t pcb_file_loaded;
 

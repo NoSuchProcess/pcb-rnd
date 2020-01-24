@@ -39,7 +39,7 @@
 #include <string.h>
 
 #include "flag_str.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "obj_common.h"
 #include "macro.h"
 

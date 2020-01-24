@@ -33,21 +33,21 @@
 #include <assert.h>
 #include <math.h>
 #include <qparse/qparse.h>
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "board.h"
 #include "plug_io.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "data.h"
 #include "read.h"
 #include "layer.h"
 #include "polygon.h"
-#include "misc_util.h" /* for distance calculations */
+#include <librnd/core/misc_util.h> /* for distance calculations */
 #include "conf_core.h"
 #include "move.h"
 #include "macro.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "rotate.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "undo.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"

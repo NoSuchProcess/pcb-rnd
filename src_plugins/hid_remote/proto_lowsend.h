@@ -28,7 +28,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
-#include "base64.h"
+#include <librnd/core/base64.h>
 
 #define SUBSEQ_MASK (1 << (ctx->depth - 1))
 

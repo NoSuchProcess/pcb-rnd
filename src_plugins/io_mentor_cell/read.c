@@ -39,9 +39,9 @@
 #include "data.h"
 #include "conf_core.h"
 #include "plug_io.h"
-#include "error.h"
-#include "safe_fs.h"
-#include "compat_misc.h"
+#include <librnd/core/error.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_misc.h>
 #include "netlist.h"
 
 #include "obj_subc.h"

@@ -31,7 +31,7 @@
 #include "config.h"
 #include <stdlib.h>
 
-#include "unit.h"
+#include <librnd/core/unit.h>
 
 #include "media.h"
 

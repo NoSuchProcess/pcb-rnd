@@ -32,17 +32,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "write.h"
 #include "read.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 #include "board.h"
 #include "conf_core.h"
 #include "buffer.h"
-#include "hid.h"
-#include "compat_misc.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/compat_misc.h>
 
 static pcb_plug_io_t io_autotrax;
 static const char *autotrax_cookie = "autotrax IO";

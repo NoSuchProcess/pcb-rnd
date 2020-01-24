@@ -1,11 +1,11 @@
-#include "unit.h"
-#include "hid_init.h"
-#include "hid.h"
-#include "conf.h"
+#include <librnd/core/unit.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid.h>
+#include <librnd/core/conf.h>
 #include "buildin.hidlib.h"
-#include "compat_misc.h"
-#include "plugins.h"
-#include "hidlib.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/hidlib.h>
 #include "polyarea.h"
 
 /*** hidlib glue ***/

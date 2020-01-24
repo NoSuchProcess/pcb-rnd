@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 typedef struct pcb_onpoint_st {
 	int type;

@@ -34,13 +34,13 @@
 
 #include "board.h"
 #include "data.h"
-#include "plugins.h"
-#include "actions.h"
-#include "compat_misc.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 #include "obj_subc.h"
-#include "pcb-printf.h"
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 #include "search.h"
 #include "draw.h"
 #include "select.h"

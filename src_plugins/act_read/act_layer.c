@@ -32,10 +32,10 @@
 #include "board.h"
 #include "data.h"
 #include "layer.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "actions_pcb.h"
-#include "plugins.h"
-#include "misc_util.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/misc_util.h>
 #include "idpath.h"
 #include "search.h"
 #include "find.h"

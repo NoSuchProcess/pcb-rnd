@@ -33,7 +33,7 @@
 #include "crosshair.h"
 #include "brave.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "obj_subc.h"
 #include "obj_subc_op.h"
 #include "obj_subc_parent.h"
@@ -52,11 +52,11 @@
 #include "operation.h"
 #include "undo.h"
 #include "macro.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "math_helper.h"
 #include "pcb_minuid.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "hid_inlines.h"
 #include "extobj.h"
 

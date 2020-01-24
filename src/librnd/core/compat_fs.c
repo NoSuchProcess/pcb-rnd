@@ -46,15 +46,15 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <assert.h>
-#include "compat_fs.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_misc.h>
 #include "globalconst.h"
-#include "safe_fs.h"
-#include "hid_init.h"
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/hid_init.h>
 
 #include <genvector/gds_char.h>
 
-#include "error.h"
+#include <librnd/core/error.h>
 
 char *pcb_get_wd(char *path)
 {

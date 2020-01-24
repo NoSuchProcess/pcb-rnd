@@ -30,15 +30,15 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
-#include "compat_fs.h"
+#include <librnd/core/compat_fs.h>
 #include "data.h"
 #include "data_it.h"
 #include "draw.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "find.h"
 #include "macro.h"
 #include "obj_subc_parent.h"
@@ -46,8 +46,8 @@
 #include "funchash_core.h"
 #include "search.h"
 
-#include "hid_init.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
 
 const char *oldconn_cookie = "export_oldconn HID";
 

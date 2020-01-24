@@ -27,7 +27,7 @@
 #ifndef PCB_COLOR_H
 #define PCB_COLOR_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include <stddef.h>
 
 struct pcb_color_s {

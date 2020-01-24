@@ -32,8 +32,8 @@
 
 #include "board.h"
 #include "parse.h"
-#include "safe_fs.h"
-#include "error.h"
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/error.h>
 #include "tdrc.h"
 
 typedef struct {

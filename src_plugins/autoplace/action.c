@@ -34,10 +34,10 @@
 
 #include "config.h"
 #include "autoplace.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "board.h"
-#include "event.h"
+#include <librnd/core/event.h>
 
 static const char autoplace_syntax[] = "AutoPlaceSelected()";
 static const char autoplace_help[] = "Auto-place selected components.";

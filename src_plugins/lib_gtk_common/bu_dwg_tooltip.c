@@ -33,7 +33,7 @@
 /* Drawing area tooltips */
 
 #include "config.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "bu_dwg_tooltip.h"
 
 #define TOOLTIP_UPDATE_DELAY 200

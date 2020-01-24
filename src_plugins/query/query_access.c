@@ -28,7 +28,7 @@
 
 #include "config.h"
 #include "math_helper.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "board.h"
 #include "data.h"
 #include "query_access.h"

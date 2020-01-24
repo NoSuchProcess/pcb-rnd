@@ -26,10 +26,10 @@
 
 #include "config.h"
 
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "tool.h"
-#include "event.h"
-#include "hid.h"
+#include <librnd/core/event.h>
+#include <librnd/core/hid.h>
 
 static const char *hidlib_cookie = "hidlib";
 

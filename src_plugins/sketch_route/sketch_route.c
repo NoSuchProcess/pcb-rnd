@@ -32,18 +32,18 @@
 
 #include "config.h"
 
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "list_common.h"
 #include "obj_line_list.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "search.h"
 #include "tool.h"
 #include "layer_ui.h"

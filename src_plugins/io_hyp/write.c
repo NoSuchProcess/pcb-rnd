@@ -30,7 +30,7 @@
 
 #include "board.h"
 #include "data.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "polygon.h"
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"

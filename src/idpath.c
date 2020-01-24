@@ -39,7 +39,7 @@
 #include "board.h"
 #include "data.h"
 #include "layer.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 
 static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *numlevels)
 {

@@ -35,7 +35,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "crosshair.h"
 #include "conf_core.h"

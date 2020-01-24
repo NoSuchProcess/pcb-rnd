@@ -33,23 +33,23 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
-#include "event.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
 #include "plug_io.h"
 #include "find.h"
 #include "polygon.h"
 #include "search.h"
 #include "undo.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "netlist.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "obj_common.h"
 #include "obj_subc_parent.h"
 
 #include "pcb-mincut/graph.h"
 #include "pcb-mincut/solve.h"
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "rats_mincut_conf.h"
 conf_mincut_t conf_mincut;
 

@@ -40,40 +40,40 @@ static const char *EXPERIMENTAL = NULL;
 #include "board.h"
 #include "brave.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "plug_io.h"
 #include "buffer.h"
 #include "crosshair.h"
-#include "compat_lrealpath.h"
+#include <librnd/core/compat_lrealpath.h>
 #include "polygon.h"
 #include "buildin.h"
 #include "build_run.h"
-#include "file_loaded.h"
+#include <librnd/core/file_loaded.h>
 #include "flag.h"
 #include "flag_str.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_footprint.h"
 #include "plug_import.h"
-#include "event.h"
-#include "funchash.h"
-#include "conf.h"
+#include <librnd/core/event.h>
+#include <librnd/core/funchash.h>
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include <genvector/vtp0.h>
 #include "layer_vis.h"
 #include "layer_ui.h"
 #include "obj_text.h"
 #include "pcb_minuid.h"
 #include "tool.h"
-#include "color.h"
+#include <librnd/core/color.h>
 #include "netlist.h"
 #include "extobj.h"
-#include "pixmap.h"
+#include <librnd/core/pixmap.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "actions_pcb.h"
-#include "hid_init.h"
-#include "compat_misc.h"
+#include <librnd/core/hid_init.h>
+#include <librnd/core/compat_misc.h>
 
 const char *pcbhl_menu_file_paths[4];
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";

@@ -29,7 +29,7 @@
 #define PCB_DRAW_WIREFRAME_H
 
 #include "config.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 
 /*-----------------------------------------------------------
  * Draws the outline of an arc

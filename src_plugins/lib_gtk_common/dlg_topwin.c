@@ -43,14 +43,14 @@
 #include "config.h"
 #include "dlg_topwin.h"
 #include "conf_core.h"
-#include "hidlib.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib.h>
+#include <librnd/core/hidlib_conf.h>
 
 #include "board.h"
 #include "crosshair.h"
-#include "pcb-printf.h"
-#include "actions.h"
-#include "compat_misc.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 
 #include "compat.h"
 #include "bu_menu.h"

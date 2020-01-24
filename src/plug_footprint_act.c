@@ -28,7 +28,7 @@
  */
 
 #include "config.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "plug_footprint.h"
 

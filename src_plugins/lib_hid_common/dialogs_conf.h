@@ -1,7 +1,7 @@
 #ifndef PCB_DIALOGS_CONF_H
 #define PCB_DIALOGS_CONF_H
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 /* dialog config is here because of hidlib: each hidlib user shall have its
    own dialogs plugin */

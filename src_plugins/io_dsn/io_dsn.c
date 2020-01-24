@@ -35,10 +35,10 @@
 #include "read.h"
 #include "write.h"
 
-#include "hid.h"
-#include "compat_misc.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/compat_misc.h>
 #include "plug_io.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 
 
 static const char *dsn_cookie = "dsn IO";

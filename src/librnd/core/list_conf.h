@@ -27,7 +27,7 @@
 #ifndef LIST_CONF_H
 #define LIST_CONF_H
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 #include <genlist/gentdlist_undef.h>
 

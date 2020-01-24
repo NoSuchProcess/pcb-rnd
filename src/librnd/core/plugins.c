@@ -26,13 +26,13 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 
 /* for the action */
 #include "config.h"
 #include "genvector/gds_char.h"
-#include "compat_misc.h"
-#include "actions.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/actions.h>
 
 unsigned long pcb_api_ver = PCB_API_VER;
 

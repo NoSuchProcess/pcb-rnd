@@ -25,8 +25,8 @@
  */
 
 #include "config.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "toolpath.h"
 
 #include "board.h"

@@ -27,8 +27,8 @@
 #ifndef PCB_HIDLIB_CONF_H
 #define PCB_HIDLIB_CONF_H
 
-#include "conf.h"
-#include "color.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/color.h>
 
 enum pcb_crosshair_shape_e {
 	pcb_ch_shape_basic       = 0,    /*  4-ray */

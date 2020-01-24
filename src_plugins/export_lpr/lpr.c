@@ -7,16 +7,16 @@
 #include <assert.h>
 
 #include "data.h"
-#include "plugins.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "../export_ps/ps.h"
-#include "hid_nogui.h"
-#include "hid_init.h"
-#include "hid_attrib.h"
-#include "actions.h"
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/actions.h>
 
 const char *lpr_cookie = "lpr HID";
 

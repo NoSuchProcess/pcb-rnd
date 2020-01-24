@@ -32,18 +32,18 @@
 #include <liblihata/tree.h>
 #include <stdarg.h>
 #include "config.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "conf_hid.h"
-#include "hid_cfg.h"
-#include "misc_util.h"
-#include "error.h"
-#include "paths.h"
-#include "compat_fs.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
-#include "file_loaded.h"
-#include "hidlib.h"
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/error.h>
+#include <librnd/core/paths.h>
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/file_loaded.h>
+#include <librnd/core/hidlib.h>
 
 /* conf list node's name */
 const char *pcb_conf_list_name = "pcb-rnd-conf-v1";

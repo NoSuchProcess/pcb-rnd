@@ -31,7 +31,7 @@
 #ifndef	PCB_UNDO_OLD_H
 #define	PCB_UNDO_OLD_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 void pcb_undo_move_obj_to_remove(int, void *, void *, void *);
 void pcb_undo_add_obj_to_remove_point(int, void *, void *, pcb_cardinal_t);

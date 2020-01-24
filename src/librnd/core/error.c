@@ -29,14 +29,14 @@
 #include <errno.h>
 #include <stdarg.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "data.h"
-#include "error.h"
-#include "event.h"
-#include "hid_dad.h"
-#include "safe_fs.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/safe_fs.h>
 #include "funchash_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "genvector/gds_char.h"
 
 void pcb_trace(const char *Format, ...)

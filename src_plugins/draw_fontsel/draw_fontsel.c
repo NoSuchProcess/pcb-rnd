@@ -35,11 +35,11 @@
 #include "data.h"
 #include "draw.h"
 #include "font.h"
-#include "actions.h"
-#include "plugins.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/plugins.h>
 #include "stub_draw.h"
-#include "pcb-printf.h"
-#include "compat_misc.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/compat_misc.h>
 #include "conf_core.h"
 
 #include "obj_text.h"

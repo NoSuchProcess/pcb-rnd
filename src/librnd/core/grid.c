@@ -35,16 +35,16 @@
 #include <ctype.h>
 #include <genvector/gds_char.h>
 
-#include "unit.h"
-#include "grid.h"
+#include <librnd/core/unit.h>
+#include <librnd/core/grid.h>
 #include "board.h"
-#include "conf.h"
-#include "hidlib_conf.h"
-#include "conf_hid.h"
-#include "compat_misc.h"
-#include "misc_util.h"
-#include "pcb_bool.h"
-#include "pcb-printf.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/pcb_bool.h>
+#include <librnd/core/pcb-printf.h>
 
 pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
 {

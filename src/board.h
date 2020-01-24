@@ -47,14 +47,14 @@ enum {
 #include <ctype.h>
 #include <genht/htsp.h>
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include "vtroutestyle.h"
 #include "layer.h"
 #include "layer_grp.h"
-#include "attrib.h"
+#include <librnd/core/attrib.h>
 #include "rats_patch.h"
 #include "font.h"
-#include "hidlib.h"
+#include <librnd/core/hidlib.h>
 
 typedef htsp_t pcb_netlist_t;
 

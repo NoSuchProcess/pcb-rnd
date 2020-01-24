@@ -26,7 +26,7 @@
 
 #include "config.h"
 
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
 
 static void library_param_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)

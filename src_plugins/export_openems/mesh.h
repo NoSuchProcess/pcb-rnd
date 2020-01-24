@@ -1,5 +1,5 @@
 #include "layer.h"
-#include "vtc0.h"
+#include <librnd/core/vtc0.h>
 #include "vtr0.h"
 #include <libfungw/fungw.h>
 

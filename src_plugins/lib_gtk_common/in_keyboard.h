@@ -4,7 +4,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkevents.h>
 
-#include "hid_cfg_input.h"
+#include <librnd/core/hid_cfg_input.h>
 #include "ui_zoompan.h"
 
 typedef enum {

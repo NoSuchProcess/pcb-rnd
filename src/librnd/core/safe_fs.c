@@ -36,15 +36,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
-#include "actions.h"
-#include "compat_fs.h"
-#include "compat_misc.h"
-#include "error.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
 #include "globalconst.h"
-#include "paths.h"
-#include "hidlib.h"
+#include <librnd/core/paths.h>
+#include <librnd/core/hidlib.h>
 
 
 /* Evaluates op(arg1,arg2); returns 0 if the operation is permitted */

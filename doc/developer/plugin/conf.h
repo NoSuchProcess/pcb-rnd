@@ -3,7 +3,7 @@
 #ifndef PCB_FOOBAR_CONF_H
 #define PCB_FOOBAR_CONF_H
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 typedef struct {
 	const struct {

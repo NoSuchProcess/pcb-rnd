@@ -31,7 +31,7 @@
 
 #include "config.h"
 #include "vtonpoint.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "obj_line.h"
 #include "obj_poly.h"
 #include "route.h"

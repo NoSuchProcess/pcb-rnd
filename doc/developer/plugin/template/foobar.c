@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 
 int pplg_check_ver_foobar(int ver_needed) { return 0; }
 

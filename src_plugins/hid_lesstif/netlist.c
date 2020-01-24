@@ -7,7 +7,7 @@
 
 #include "xincludes.h"
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "data.h"
 
 #include "find.h"
@@ -17,11 +17,11 @@
 #include "remove.h"
 #include "crosshair.h"
 #include "draw.h"
-#include "event.h"
-#include "fptr_cast.h"
+#include <librnd/core/event.h>
+#include <librnd/core/fptr_cast.h>
 
-#include "hid.h"
-#include "actions.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/actions.h>
 #include "lesstif.h"
 #include "ltf_stdarg.h"
 

@@ -23,7 +23,7 @@
 #include "genht/htsi.h"
 #include "genht/hash.h"
 #include "graph.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 /*#define DEBUG_GR*/
 

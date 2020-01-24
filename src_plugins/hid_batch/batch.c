@@ -6,20 +6,20 @@
 #include <string.h>
 
 #include "board.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "data.h"
 #include "layer.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "compat_misc.h"
-#include "event.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
-#include "hid_nogui.h"
-#include "actions.h"
-#include "hid_init.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
 
 static const char *batch_cookie = "batch HID";
 

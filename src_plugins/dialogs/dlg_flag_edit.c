@@ -25,8 +25,8 @@
  */
 
 #include "config.h"
-#include "actions.h"
-#include "hid_dad.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_dad.h>
 #include "flag.h"
 #include "flag_str.h"
 #include "change.h"

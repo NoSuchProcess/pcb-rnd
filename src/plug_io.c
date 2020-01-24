@@ -40,7 +40,7 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include <locale.h>
 #include <dirent.h>
@@ -50,25 +50,25 @@
 #include <errno.h>
 
 #include "change.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "plug_io.h"
 #include "remove.h"
-#include "paths.h"
+#include <librnd/core/paths.h>
 #include "rats_patch.h"
-#include "actions.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "event.h"
-#include "compat_misc.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/event.h>
+#include <librnd/core/compat_misc.h>
 #include "route_style.h"
-#include "compat_fs.h"
-#include "compat_lrealpath.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_lrealpath.h>
 #include "layer_vis.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "plug_footprint.h"
-#include "file_loaded.h"
+#include <librnd/core/file_loaded.h>
 #include "macro.h"
 #include "view.h"
 

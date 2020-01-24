@@ -3,7 +3,7 @@ put /local/pcb/CFLAGS_GENERIC cc/cflags
 append /local/pcb/CFLAGS_GENERIC cc/fpic
 append /local/pcb/CFLAGS_GENERIC ?/local/pcb/cflags_profile
 put /local/pcb/CFLAGS /local/pcb/CFLAGS_GENERIC
-append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src_3rd/liblihata }
+append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src -I../src_3rd/liblihata }
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
@@ -385,8 +385,8 @@ OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/pcb/OBJS_C99_HIDLIB_PLG@
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
-CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@ -I$(LIBRND)/core
-C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ -I$(LIBRND)/core
+CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
+C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS_PRE=@/local/pcb/LIBS_PRE@
 LIBS=@/local/pcb/LIBS@ -lm @?/target/libs/ldl@

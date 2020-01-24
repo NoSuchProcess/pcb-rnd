@@ -40,7 +40,7 @@
 #include <ctype.h>
 #include <math.h>
 #include "config.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 
 const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] =
 {

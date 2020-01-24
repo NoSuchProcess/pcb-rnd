@@ -27,7 +27,7 @@
 /* Preferences dialog, board tab */
 
 #include "dlg_pref.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
 
 #define PCB_EMPTY(a)           ((a) ? (a) : "")

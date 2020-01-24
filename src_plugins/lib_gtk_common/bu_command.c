@@ -35,13 +35,13 @@
 
 #include "config.h"
 #include "bu_command.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include <gdk/gdkkeysyms.h>
 
 #include "board.h"
 #include "crosshair.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 #include "pcb_gtk.h"
 #include "hid_gtk_conf.h"

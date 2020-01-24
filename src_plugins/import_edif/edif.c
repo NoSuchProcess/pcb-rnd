@@ -106,11 +106,11 @@
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "netlist.h"
-#include "plugins.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 
 /*
  *	Local definitions.

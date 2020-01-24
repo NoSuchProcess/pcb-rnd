@@ -27,7 +27,7 @@
 /* Non-inline utility functions for the DAD tree widget */
 
 #include "config.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/hid_dad_tree.h>
 
 /* recursively free a row list subtree */
 static void pcb_dad_tree_free_rowlist(pcb_hid_attribute_t *attr, gdl_list_t *list)

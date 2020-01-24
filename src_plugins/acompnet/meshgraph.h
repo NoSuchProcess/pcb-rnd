@@ -1,7 +1,7 @@
 #ifndef PCB_ACOMPNET_MESHGRAPH_H
 #define PCB_ACOMPNET_MESHGRAPH_H
 #include "rtree.h"
-#include "box.h"
+#include <librnd/core/box.h>
 #include <genht/htip.h>
 
 typedef struct {

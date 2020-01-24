@@ -32,11 +32,11 @@
 #include <genvector/vtp0.h>
 
 #include "change.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "obj_common.h"
 #include "obj_term.h"
 #include "obj_subc_parent.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "undo.h"
 #include "macro.h"
 #include "polygon.h"

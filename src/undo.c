@@ -51,8 +51,8 @@
 #include "change.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
-#include "event.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
 #include "insert.h"
 #include "polygon.h"
 #include "remove.h"
@@ -62,7 +62,7 @@
 #include "undo_old.h"
 #include "flag_str.h"
 #include "conf_core.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 #include "obj_poly_draw.h"
 

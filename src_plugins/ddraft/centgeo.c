@@ -34,7 +34,7 @@
 #include "obj_line.h"
 #include "obj_arc.h"
 #include "math_helper.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "search.h"
 
 /* Note about all intersection code: same basic algo as in find_geo.c -

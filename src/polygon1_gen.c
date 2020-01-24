@@ -32,10 +32,10 @@
 #include <math.h>
 #include <assert.h>
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include "polyarea.h"
 #include "math_helper.h"
-#include "unit.h"
+#include <librnd/core/unit.h>
 
 #include "polygon1_gen.h"
 

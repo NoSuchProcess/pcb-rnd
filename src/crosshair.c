@@ -30,7 +30,7 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "board.h"
 #include "crosshair.h"
@@ -39,15 +39,15 @@
 #include "draw_wireframe.h"
 #include "search.h"
 #include "polygon.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "hid_inlines.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "vtonpoint.h"
 #include "find.h"
 #include "undo.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "macro.h"
-#include "grid.h"
+#include <librnd/core/grid.h>
 #include "stub_stroke.h"
 
 #include "obj_line_draw.h"

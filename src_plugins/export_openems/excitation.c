@@ -26,8 +26,8 @@
 
 #include "config.h"
 
-#include "hid_dad.h"
-#include "event.h"
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/event.h>
 
 #define MAX_EXC 16
 #define FREQ_MAX ((double)(100.0*1000.0*1000.0*1000.0))

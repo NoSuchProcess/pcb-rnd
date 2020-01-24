@@ -40,10 +40,10 @@
 #include "data.h"
 #include "data_it.h"
 #include "board.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "plug_io.h"
-#include "actions.h"
-#include "compat_misc.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 #include "netlist.h"
 #include "data_it.h"
 #include "find.h"

@@ -28,7 +28,7 @@
 
 #include "thermal.h"
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "data.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"

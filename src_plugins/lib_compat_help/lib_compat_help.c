@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 
 #include "layer_compat.c"
 #include "pstk_compat.c"

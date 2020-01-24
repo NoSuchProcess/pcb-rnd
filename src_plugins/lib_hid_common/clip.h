@@ -31,7 +31,7 @@
 #define PCB_CLIP_H
 
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 /* Clip X,Y to the given bounding box, plus a margin.  Returns pcb_true if
    there is something left to be drawn.  */

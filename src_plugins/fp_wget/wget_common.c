@@ -29,8 +29,8 @@
 #include <ctype.h>
 #include "config.h"
 #include "wget_common.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 #include "globalconst.h"
 
 #include "../src_plugins/lib_wget/lib_wget.h"

@@ -1,10 +1,10 @@
 #include "config.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 TODO("win32: remove this once the w32_ dir workaround is removed")
-#include "hid_init.h"
+#include <librnd/core/hid_init.h>
 
 conf_core_t conf_core;
 

@@ -1,7 +1,7 @@
 #include "xincludes.h"
 
 #include "config.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -10,21 +10,21 @@
 
 #include "FillBox.h"
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "data.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "build_run.h"
 #include "crosshair.h"
 #include "layer.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "lesstif.h"
-#include "hid_attrib.h"
-#include "actions.h"
-#include "hid_init.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_init.h>
 #include "ltf_stdarg.h"
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 #include "search.h"
 #include "change.h"
 

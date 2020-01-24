@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 
 int pplg_check_ver_lib_hid_gl(int ver_needed) { return 0; }
 

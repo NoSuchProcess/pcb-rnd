@@ -33,19 +33,19 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "board.h"
 #include "data.h"
 #include "data_it.h"
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "polygon.h"
 #include "search.h"
 #include "select.h"
 #include "undo.h"
 #include "find.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 #include "obj_arc_draw.h"
 #include "obj_line_draw.h"

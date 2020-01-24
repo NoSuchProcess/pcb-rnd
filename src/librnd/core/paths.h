@@ -27,7 +27,7 @@
 /* Resolve paths, build paths using template */
 
 #include "genvector/gds_char.h"
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 /* Allocate *out and copy the path from in to out, replacing ~ with conf_core.rc.path.home
    If extra_room is non-zero, allocate this many bytes extra for each slot;

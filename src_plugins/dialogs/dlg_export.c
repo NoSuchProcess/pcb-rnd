@@ -25,15 +25,15 @@
  */
 
 #include "config.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
 #include "layer_vis.h"
-#include "event.h"
-#include "hid.h"
-#include "hid_dad.h"
-#include "hid_dad_unit.h"
-#include "hid_init.h"
+#include <librnd/core/event.h>
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_unit.h>
+#include <librnd/core/hid_init.h>
 #include "dlg_export.h"
 
 typedef struct{

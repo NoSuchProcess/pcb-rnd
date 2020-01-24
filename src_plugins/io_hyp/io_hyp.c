@@ -32,13 +32,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hid.h"
-#include "hid_nogui.h"
-#include "actions.h"
-#include "hid_init.h"
-#include "hid_attrib.h"
-#include "plugins.h"
-#include "event.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/event.h>
 #include "plug_io.h"
 #include "parser.h"
 #include "board.h"

@@ -32,8 +32,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "config.h"
-#include "compat_misc.h"
-#include "attrib.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/attrib.h>
 
 #define NOTIFY(list, name, value) \
 do { \

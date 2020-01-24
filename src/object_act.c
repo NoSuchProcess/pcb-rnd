@@ -35,28 +35,28 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "data.h"
 #include "board.h"
 #include "tool.h"
 #include "change.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "funchash_core.h"
 
 #include "search.h"
 #include "draw.h"
 #include "move.h"
 #include "remove.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "layer_vis.h"
 #include "operation.h"
 #include "obj_pstk.h"
 #include "macro.h"
 #include "rotate.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 static const char pcb_acth_Attributes[] =

@@ -29,14 +29,14 @@
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
-#include "event.h"
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/event.h>
 #include "layer.h"
 #include "layer_ui.h"
 #include "layer_grp.h"
-#include "pcb-printf.h"
-#include "hid_cfg.h"
-#include "hid.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid.h>
 
 #include "layer_menu.h"
 

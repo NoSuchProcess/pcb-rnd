@@ -27,13 +27,13 @@
 /* Padstack library dialog */
 
 #include "config.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "data.h"
 #include "obj_subc.h"
 #include "vtpadstack.h"
 #include "hid_inlines.h"
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_text_draw.h"

@@ -1,7 +1,7 @@
 #ifndef PCB_ACTIONS_H
 #define PCB_ACTIONS_H
 
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include <string.h>
 #include <libfungw/fungw.h>
 

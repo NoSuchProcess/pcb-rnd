@@ -31,7 +31,7 @@
 
 #include "config.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include <locale.h>
 #include <time.h>
@@ -43,30 +43,30 @@
 #include "change.h"
 #include "crosshair.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "file.h"
 #include "plug_io.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "layer.h"
 #include "layer_grp.h"
 #include "move.h"
 #include "parse_common.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "polygon.h"
 #include "polygon1_gen.h"
 #include "remove.h"
 #include "flag_str.h"
-#include "compat_fs.h"
-#include "compat_misc.h"
-#include "paths.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/paths.h>
 #include "rats_patch.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "flag_str.h"
 #include "attribs.h"
 #include "route_style.h"
 #include "obj_poly.h"
 #include "thermal.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "macro.h"
 #include "funchash_core.h"
 #include "netlist.h"

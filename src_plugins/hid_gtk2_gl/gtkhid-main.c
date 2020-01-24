@@ -2,9 +2,9 @@
 
 #include <stdlib.h>
 
-#include "plugins.h"
-#include "hid_init.h"
-#include "hidlib_conf.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hidlib_conf.h>
 
 #include "../src_plugins/lib_hid_gl/draw_gl.h"
 

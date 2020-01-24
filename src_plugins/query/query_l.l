@@ -23,10 +23,10 @@
 
 /* Query language - compiler: lexical analyzer */
 
-#include "unit.h"
+#include <librnd/core/unit.h>
 #include "query.h"
 #include "query_y.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "layer.h"
 
 static const char *pcb_qry_program, *pcb_qry_program_ptr;

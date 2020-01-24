@@ -36,13 +36,13 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "flag_str.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "macro.h"
-#include "error.h"
-#include "misc_util.h"
+#include <librnd/core/error.h>
+#include <librnd/core/misc_util.h>
 #include "layer.h"
 #include <genvector/vtp0.h>
 #include "common.h"
@@ -52,7 +52,7 @@
 #include "pcb_minuid.h"
 #include "thermal.h"
 #include "io_lihata.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "plug_footprint.h"
 #include "vtpadstack.h"
 #include "obj_pstk_inlines.h"

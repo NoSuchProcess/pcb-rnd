@@ -40,8 +40,8 @@
 #include "data.h"
 #include "data_it.h"
 #include "data_list.h"
-#include "error.h"
-#include "event.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
 #include "undo.h"
 #include "operation.h"
 #include "rotate.h"
@@ -53,9 +53,9 @@
 #include "obj_line_draw.h"
 #include "obj_pstk_inlines.h"
 #include "route_draw.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "layer_grp.h"
 #include "fgeometry.h"
 #include "search.h"

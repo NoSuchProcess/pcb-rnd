@@ -18,8 +18,8 @@
 #include "data.h"
 #include "macro.h"
 #include "remove.h"
-#include "hid.h"
-#include "error.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/error.h>
 #include "rtree.h"
 #include "polygon.h"
 #include "polyarea.h"
@@ -28,8 +28,8 @@
 #include "find.h"
 #include "draw.h"
 #include "undo.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "obj_poly.h"
 
 static pcb_polyarea_t *original_poly(pcb_poly_t *p, pcb_bool *forward)

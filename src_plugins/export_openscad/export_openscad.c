@@ -37,26 +37,26 @@
 #include <genvector/vti0.h>
 #include <genht/htsp.h>
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "layer.h"
 #include "layer_vis.h"
 #include "math_helper.h"
-#include "misc_util.h"
-#include "plugins.h"
-#include "safe_fs.h"
+#include <librnd/core/misc_util.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/safe_fs.h>
 #include "obj_pstk_inlines.h"
 #include "funchash_core.h"
 
-#include "hid.h"
-#include "hid_nogui.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
 
-#include "hid_init.h"
-#include "actions.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_init.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
 
 

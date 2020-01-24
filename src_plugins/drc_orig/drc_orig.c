@@ -35,8 +35,8 @@
 #include "data_it.h"
 #include "conf_core.h"
 #include "find.h"
-#include "event.h"
-#include "plugins.h"
+#include <librnd/core/event.h>
+#include <librnd/core/plugins.h>
 #include "layer_vis.h"
 
 #include "obj_arc_draw.h"

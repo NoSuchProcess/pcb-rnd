@@ -32,18 +32,18 @@
  *
  */
 #include "config.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "data.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "change.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "plug_footprint.h"
 #include "obj_subc.h"
 #include "macro.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "netlist.h"
 
 static void conf_toggle(conf_role_t role, const char *path)

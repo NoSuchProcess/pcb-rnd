@@ -37,9 +37,9 @@
 
 #include "board.h"
 #include "buffer.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "data.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "rtree.h"
 #include "search.h"
 #include "tool.h"

@@ -37,8 +37,8 @@
 #include <genvector/gds_char.h>
 #include <math.h>
 #include <ctype.h>
-#include "misc_util.h"
-#include "unit.h"
+#include <librnd/core/misc_util.h>
+#include <librnd/core/unit.h>
 
 /* pcb_distance() should be used so that there is only one
  *  place to deal with overflow/precision errors

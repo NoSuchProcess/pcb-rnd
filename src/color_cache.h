@@ -30,8 +30,8 @@
 #include <stdlib.h>
 #include <genht/htip.h>
 #include <genht/hash.h>
-#include "global_typedefs.h"
-#include "color.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/color.h>
 
 typedef void (*pcb_clrcache_free_t)(pcb_clrcache_t *cache, void *hidclr);
 

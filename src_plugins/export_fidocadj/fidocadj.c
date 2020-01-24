@@ -46,17 +46,17 @@
 #include "board.h"
 #include "data.h"
 #include "layer_vis.h"
-#include "plugins.h"
-#include "pcb-printf.h"
-#include "compat_misc.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/compat_misc.h>
 #include "plug_io.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
-#include "hid.h"
-#include "hid_nogui.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
 
-#include "hid_init.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"

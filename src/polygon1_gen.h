@@ -1,7 +1,7 @@
 #ifndef PCB_POLYGON1_GEN_H
 #define PCB_POLYGON1_GEN_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include "polyarea.h"
 
 void pcb_poly_square_pin_factors(int style, double *xm, double *ym);

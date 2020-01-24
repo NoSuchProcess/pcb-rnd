@@ -50,11 +50,11 @@
 #include "rtree.h"
 #include "flag_str.h"
 #include "undo.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "actions.h"
-#include "compat_misc.h"
-#include "event.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
 #include "polygon.h"
 #include "obj_poly_draw.h"
 

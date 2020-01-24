@@ -28,7 +28,7 @@
 
 #include "board.h"
 #include "conf_core.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
 static pcb_hidval_t infobar_timer;
 static int infobar_timer_active = 0;

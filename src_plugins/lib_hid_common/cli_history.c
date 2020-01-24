@@ -33,8 +33,8 @@
 
 #include "cli_history.h"
 #include "lib_hid_common.h"
-#include "safe_fs.h"
-#include "paths.h"
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/paths.h>
 
 #define CFG dialogs_conf.plugins.lib_hid_common.cli_history
 

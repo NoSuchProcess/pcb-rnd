@@ -25,9 +25,9 @@
  */
 
 #include "config.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "board.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 #define LISTSEP " [[pcb-rnd]] "
 

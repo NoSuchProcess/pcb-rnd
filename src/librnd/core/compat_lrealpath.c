@@ -35,14 +35,14 @@ components will be simplified.  The returned value will be allocated using
 
 #include "compat_inc.h"
 #include "config.h"
-#include "compat_lrealpath.h"
+#include <librnd/core/compat_lrealpath.h>
 #include <limits.h>
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <string.h>
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 /* On GNU libc systems the declaration is only visible with _GNU_SOURCE.  */
 #if defined(HAVE_CANONICALIZE_FILE_NAME) \

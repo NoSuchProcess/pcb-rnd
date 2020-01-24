@@ -10,21 +10,21 @@
 #include <assert.h>
 
 #include "data.h"
-#include "error.h"
-#include "pcb-printf.h"
+#include <librnd/core/error.h>
+#include <librnd/core/pcb-printf.h>
 #include "layer.h"
 
-#include "hid.h"
-#include "hid_cfg.h"
-#include "hid_cfg_action.h"
-#include "hid_cfg_input.h"
-#include "conf_hid.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_cfg_action.h>
+#include <librnd/core/hid_cfg_input.h>
+#include <librnd/core/conf_hid.h>
 #include "lesstif.h"
-#include "paths.h"
-#include "actions.h"
+#include <librnd/core/paths.h>
+#include <librnd/core/actions.h>
 #include "ltf_stdarg.h"
-#include "event.h"
-#include "compat_misc.h"
+#include <librnd/core/event.h>
+#include <librnd/core/compat_misc.h>
 #include "layer_vis.h"
 #include <genht/hash.h>
 

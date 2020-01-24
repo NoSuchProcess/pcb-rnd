@@ -34,13 +34,13 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "move.h"
 #include "select.h"
 #include "undo.h"
-#include "event.h"
-#include "actions.h"
-#include "compat_misc.h"
+#include <librnd/core/event.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 #include "obj_arc_op.h"
 #include "obj_line_op.h"
 #include "obj_text_op.h"

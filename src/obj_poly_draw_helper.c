@@ -29,7 +29,7 @@
  */
 
 #include "config.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "polygon.h"
 #include "obj_poly.h"
 #include "hid_inlines.h"

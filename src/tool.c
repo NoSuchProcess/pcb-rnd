@@ -29,18 +29,18 @@
 #include "tool.h"
 
 #include "board.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "conf_core.h"
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
-#include "event.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
 #include "find.h"
-#include "grid.h"
+#include <librnd/core/grid.h>
 #include "undo.h"
-#include "actions.h"
-#include "conf_hid.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/conf_hid.h>
 
 
 pcb_toolid_t pcb_tool_prev_id;

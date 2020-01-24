@@ -25,12 +25,12 @@
  */
 
 #include "config.h"
-#include "event.h"
-#include "compat_misc.h"
-#include "error.h"
-#include "conf.h"
+#include <librnd/core/event.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
+#include <librnd/core/conf.h>
 #include "board.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
 static const char *place_cookie = "dialogs/place";
 

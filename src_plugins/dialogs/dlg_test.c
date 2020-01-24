@@ -26,8 +26,8 @@
 
 #include "board.h"
 #include "obj_text.h"
-#include "hid_dad_tree.h"
-#include "hid_dad_spin.h"
+#include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/hid_dad_spin.h>
 
 static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";

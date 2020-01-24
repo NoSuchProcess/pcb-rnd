@@ -29,11 +29,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
-#include "paths.h"
-#include "error.h"
-#include "hidlib.h"
-#include "hid_init.h"
-#include "hidlib_conf.h"
+#include <librnd/core/paths.h>
+#include <librnd/core/error.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hidlib_conf.h>
 
 int pcb_getpid(void);
 

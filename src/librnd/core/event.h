@@ -27,9 +27,9 @@
 #ifndef PCB_EVENT_H
 #define PCB_EVENT_H
 #include "config.h"
-#include "unit.h"
-#include "global_typedefs.h"
-#include "hidlib.h"
+#include <librnd/core/unit.h>
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/hidlib.h>
 
 typedef enum {
 	PCB_EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */

@@ -38,11 +38,11 @@
 #include "board.h"
 #include "data.h"
 #include "polygon.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
-#include "actions.h"
-#include "hid.h"
-#include "plugins.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/hid.h>
+#include <librnd/core/plugins.h>
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 

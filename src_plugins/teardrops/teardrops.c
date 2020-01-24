@@ -19,11 +19,11 @@
 #include "math_helper.h"
 #include "board.h"
 #include "data.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "rtree.h"
 #include "undo.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "obj_pstk_inlines.h"
 
 #define MIN_LINE_LENGTH 700

@@ -32,7 +32,7 @@
 #include <genht/htsp.h>
 #include "obj_common.h"
 #include "layer.h"
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include "rtree2_compat.h"
 
 

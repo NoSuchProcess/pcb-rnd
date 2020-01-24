@@ -31,9 +31,9 @@
 #include <stdio.h>
 #include <genlist/gendlist.h>
 #include <genvector/gds_char.h>
-#include "unit.h"
+#include <librnd/core/unit.h>
 #include "idpath.h"
-#include "box.h"
+#include <librnd/core/box.h>
 
 /* A saved view on the board (e.g. a drc violation); metadata includes two lists
    of objects to highlight on preview and some optional, application-specific

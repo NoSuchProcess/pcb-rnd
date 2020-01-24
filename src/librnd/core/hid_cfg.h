@@ -31,8 +31,8 @@
 
 #include <liblihata/dom.h>
 #include <stdarg.h>
-#include "global_typedefs.h"
-#include "hid.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/hid.h>
 
 struct pcb_hid_cfg_s {
 	lht_doc_t *doc;

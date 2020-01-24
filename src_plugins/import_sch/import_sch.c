@@ -37,23 +37,23 @@
 #include "board.h"
 #include "data.h"
 #include "change.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
-#include "plugins.h"
-#include "paths.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/paths.h>
 
-#include "compat_fs.h"
-#include "pcb-printf.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/pcb-printf.h>
 #include "remove.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "import_sch_conf.h"
-#include "misc_util.h"
-#include "compat_misc.h"
+#include <librnd/core/misc_util.h>
+#include <librnd/core/compat_misc.h>
 #include "obj_rat.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
 TODO("win32: remove this once the w32_ dir workaround is removed")
-#include "hid_init.h"
+#include <librnd/core/hid_init.h>
 
 conf_import_sch_t conf_import_sch;
 

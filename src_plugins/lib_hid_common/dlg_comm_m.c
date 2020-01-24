@@ -29,9 +29,9 @@
    action). */
 
 #include "config.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 #include "xpm.h"
 #include "dlg_comm_m.h"
 #include "plug_io.h"

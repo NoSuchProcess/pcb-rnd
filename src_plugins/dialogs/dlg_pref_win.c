@@ -27,9 +27,9 @@
 /* Preferences dialog, window geometry tab */
 
 #include "dlg_pref.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "../src_plugins/lib_hid_common/dialogs_conf.h"
 
 extern const conf_dialogs_t dialogs_conf;

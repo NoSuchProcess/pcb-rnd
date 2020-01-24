@@ -37,10 +37,10 @@
 #include "board.h"
 #include "conf_core.h"
 #include "buffer.h"
-#include "plugins.h"
-#include "hid.h"
-#include "actions.h"
-#include "compat_misc.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 #include "plug_io.h"
 #include "stackup.h"
 #include "tlayer.h"

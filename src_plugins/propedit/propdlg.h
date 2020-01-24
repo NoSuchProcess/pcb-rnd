@@ -1,7 +1,7 @@
 #ifndef PCB_PROPDLG_H
 #define PCB_PROPDLG_H
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 extern const char pcb_acts_propedit[];
 extern const char pcb_acth_propedit[];

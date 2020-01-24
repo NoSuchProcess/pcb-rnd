@@ -33,9 +33,9 @@
 #include <string.h>
 #include <gd.h>
 
-#include "plugins.h"
-#include "pixmap.h"
-#include "safe_fs.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/pixmap.h>
+#include <librnd/core/safe_fs.h>
 
 static const char *import_pxm_gd_cookie = "import_pxm_gd";
 

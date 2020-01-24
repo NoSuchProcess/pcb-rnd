@@ -29,7 +29,7 @@
 #ifndef PCB_PIXMAP_H
 #define PCB_PIXMAP_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 typedef struct pcb_pixmap_import_s pcb_pixmap_import_t;
 

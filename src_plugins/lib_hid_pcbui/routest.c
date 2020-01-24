@@ -27,13 +27,13 @@
 #include "config.h"
 
 #include "board.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
 #include "route_style.h"
-#include "event.h"
-#include "hid.h"
-#include "hid_cfg.h"
-#include "hid_dad.h"
+#include <librnd/core/event.h>
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_dad.h>
 
 #include "routest.h"
 

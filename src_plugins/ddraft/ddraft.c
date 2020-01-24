@@ -33,15 +33,15 @@
 #include <genvector/gds_char.h>
 #include <genvector/vtp0.h>
 
-#include "hid_attrib.h"
-#include "hid_init.h"
-#include "plugins.h"
-#include "event.h"
-#include "actions.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/event.h>
+#include <librnd/core/actions.h>
 #include "funchash_core.h"
 #include "search.h"
 #include "centgeo.h"
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 #include "board.h"
 #include "data_it.h"
 #include "obj_line.h"
@@ -49,8 +49,8 @@
 #include "fields_sphash.h"
 #include "draw_wireframe.h"
 #include "conf_core.h"
-#include "conf_hid.h"
-#include "vtc0.h"
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/vtc0.h>
 
 static const char *ddraft_cookie = "ddraft plugin";
 static int pcb_ddraft_tool;

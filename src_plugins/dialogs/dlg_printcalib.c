@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "hid_init.h"
+#include <librnd/core/hid_init.h>
 
 static pcb_hid_attribute_t printer_calibrate_attrs[] = {
 	{"Enter Values here:", "",

@@ -33,11 +33,11 @@
 #include <genht/hash.h>
 #include <genvector/vts0.h>
 #include <ctype.h>
-#include "actions.h"
-#include "compat_misc.h"
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
-#include "error.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/error.h>
 
 #include "act_dad.h"
 

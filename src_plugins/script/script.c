@@ -35,13 +35,13 @@
 #include <puplug/puplug.h>
 #include <genregex/regex_se.h>
 
-#include "actions.h"
-#include "plugins.h"
-#include "error.h"
-#include "compat_misc.h"
-#include "compat_fs.h"
-#include "safe_fs.h"
-#include "pcb-printf.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/error.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/pcb-printf.h>
 #include "globalconst.h"
 
 #include "script.h"
@@ -62,8 +62,8 @@ static htsp_t scripts; /* ID->script_t */
 static pup_context_t script_pup;
 
 #include "c_script.c"
-#include "hidlib_conf.h"
-#include "compat_fs.h"
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/compat_fs.h>
 
 /* dir name under dotdir for saving script persistency data */
 #define SCRIPT_PERS "script_pers"

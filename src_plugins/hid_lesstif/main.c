@@ -3,9 +3,9 @@
 #include "config.h"
 #include "math_helper.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
-#include "hidlib.h"
-#include "pixmap.h"
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/pixmap.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,32 +19,32 @@
 
 #include "data.h"
 #include "draw.h"
-#include "color.h"
+#include <librnd/core/color.h>
 #include "color_cache.h"
 #include "crosshair.h"
-#include "conf_hid.h"
+#include <librnd/core/conf_hid.h>
 #include "layer.h"
-#include "pcb-printf.h"
-#include "event.h"
-#include "error.h"
-#include "plugins.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/event.h>
+#include <librnd/core/error.h>
+#include <librnd/core/plugins.h>
 #include "macro.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "funchash_core.h"
 
-#include "hid.h"
-#include "hid_nogui.h"
-#include "hid_cfg.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/hid_cfg.h>
 #include "lesstif.h"
-#include "hid_cfg_input.h"
-#include "hid_attrib.h"
-#include "hid_init.h"
-#include "hid_dad.h"
-#include "actions.h"
+#include <librnd/core/hid_cfg_input.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/actions.h>
 #include "ltf_stdarg.h"
-#include "grid.h"
-#include "misc_util.h"
-#include "compat_misc.h"
+#include <librnd/core/grid.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/compat_misc.h>
 #include "layer_vis.h"
 #include "tool.h"
 

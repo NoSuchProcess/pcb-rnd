@@ -32,8 +32,8 @@
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
-#include "error.h"
-#include "safe_fs.h"
+#include <librnd/core/error.h>
+#include <librnd/core/safe_fs.h>
 
 #include "trparse.h"
 #include "trparse_xml.h"

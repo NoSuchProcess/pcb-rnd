@@ -33,7 +33,7 @@
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "lib_gtk_config.h"
 
 int pplg_check_ver_lib_gtk_common(int ver_needed) { return 0; }

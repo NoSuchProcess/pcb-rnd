@@ -31,9 +31,9 @@
 #include "board.h"
 #include "data.h"
 #include "layer_grp.h"
-#include "compat_misc.h"
-#include "event.h"
-#include "funchash.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
+#include <librnd/core/funchash.h>
 #include "funchash_core.h"
 
 /* notify the rest of the code after layer group changes so that the GUI

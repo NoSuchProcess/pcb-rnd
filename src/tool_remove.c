@@ -35,8 +35,8 @@
 #include "config.h"
 
 #include "board.h"
-#include "event.h"
-#include "actions.h"
+#include <librnd/core/event.h>
+#include <librnd/core/actions.h>
 #include "undo.h"
 #include "remove.h"
 #include "search.h"

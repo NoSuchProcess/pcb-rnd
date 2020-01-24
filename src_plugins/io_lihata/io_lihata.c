@@ -25,7 +25,7 @@
  */
 
 #include "config.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "read.h"
 #include "write.h"

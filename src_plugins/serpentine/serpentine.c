@@ -33,7 +33,7 @@
 #include "board.h"
 #include "data.h"
 #include "data_it.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "search.h"
 #include "tool.h"
 #include "rtree.h"
@@ -43,9 +43,9 @@
 #include "find.h"
 #include "draw.h"
 #include "draw_wireframe.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "serpentine_conf.h"
 #include "layer.h"
 #include "route.h"

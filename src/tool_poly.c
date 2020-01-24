@@ -36,7 +36,7 @@
 #include "conf_core.h"
 
 #include "crosshair.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "polygon.h"
 #include "tool.h"
 

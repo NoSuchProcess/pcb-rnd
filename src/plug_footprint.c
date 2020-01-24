@@ -29,14 +29,14 @@
 #include "config.h"
 
 #include "plug_footprint.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include "conf_core.h"
-#include "error.h"
-#include "compat_misc.h"
-#include "event.h"
+#include <librnd/core/error.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
 
 FILE PCB_FP_FOPEN_IN_DST_, *PCB_FP_FOPEN_IN_DST = &PCB_FP_FOPEN_IN_DST_;
 

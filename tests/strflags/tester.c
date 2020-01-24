@@ -31,7 +31,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 #define FLAG_TEST
 #include "flag_str.c"

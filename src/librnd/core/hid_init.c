@@ -39,26 +39,26 @@
 
 #include <genvector/vts0.h>
 
-#include "hid.h"
-#include "hid_nogui.h"
-#include "event.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/event.h>
 
 /* for dlopen() and friends; will also solve all system-dependent includes
    and provides a dl-compat layer on windows. Also solves the opendir related
    includes. */
-#include "plugins.h"
-#include "actions.h"
-#include "hid_attrib.h"
-#include "hid_init.h"
-#include "hid_dad_unit.h"
-#include "misc_util.h"
-#include "compat_misc.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_dad_unit.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/compat_misc.h>
 #include "compat_inc.h"
-#include "compat_fs.h"
-#include "file_loaded.h"
-#include "hidlib.h"
-#include "hidlib_conf.h"
-#include "conf.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/file_loaded.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/conf.h>
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 

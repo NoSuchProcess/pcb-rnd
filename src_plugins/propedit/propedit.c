@@ -27,20 +27,20 @@
 #include <stdlib.h>
 #include "board.h"
 #include "data.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "config.h"
 #include "props.h"
 #include "propsel.h"
 #include "propdlg.h"
-#include "actions.h"
-#include "pcb-printf.h"
-#include "error.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/error.h>
 #include "layer.h"
 #include "layer_addr.h"
 #include "layer_grp.h"
 #include "search.h"
 #include "crosshair.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
 

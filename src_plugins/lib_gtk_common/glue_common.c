@@ -28,13 +28,13 @@
  */
 
 #include "config.h"
-#include "pixmap.h"
+#include <librnd/core/pixmap.h>
 
 #include "glue_common.h"
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "pcb_gtk.h"
-#include "hidlib.h"
+#include <librnd/core/hidlib.h>
 #include "dlg_topwin.h"
 #include "hid_gtk_conf.h"
 #include "in_keyboard.h"
@@ -46,8 +46,8 @@ pcb_gtk_t _ghidgui, *ghidgui = &_ghidgui;
 
 #ifdef __WIN32__
 
-#include "hid_init.h"
-#include "compat_fs.h"
+#include <librnd/core/hid_init.h>
+#include <librnd/core/compat_fs.h>
 
 static void ghid_win32_init(void)
 {

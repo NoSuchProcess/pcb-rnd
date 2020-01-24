@@ -32,9 +32,9 @@
 #include "data.h"
 #include "conf_core.h"
 #include "layer.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "undo.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "layer_ui.h"
 #include "layer_vis.h"
 #include "funchash_core.h"

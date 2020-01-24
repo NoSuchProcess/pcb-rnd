@@ -5,10 +5,10 @@
 #include <liblihata/dom.h>
 
 #include "config.h"
-#include "error.h"
-#include "global_typedefs.h"
-#include "attrib.h"
-#include "box.h"
+#include <librnd/core/error.h>
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/attrib.h>
+#include <librnd/core/box.h>
 
 /* attribute dialog properties */
 typedef enum pcb_hat_property_e {

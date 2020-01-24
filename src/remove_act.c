@@ -34,7 +34,7 @@
  */
 #include "config.h"
 #include "data.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "tool.h"
 #include "remove.h"
 #include "board.h"

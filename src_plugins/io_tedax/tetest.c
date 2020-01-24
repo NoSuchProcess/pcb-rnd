@@ -34,21 +34,21 @@
 #include "board.h"
 #include "data.h"
 #include "parse.h"
-#include "safe_fs.h"
-#include "error.h"
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/error.h>
 #include "tetest.h"
 #include "rtree.h"
 #include "obj_subc_parent.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "netlist.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "hid_cam.h"
-#include "hid_nogui.h"
-#include "hid_init.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
 
 static const char *sides(pcb_layer_type_t lyt)
 {

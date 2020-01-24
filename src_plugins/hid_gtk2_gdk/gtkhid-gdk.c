@@ -1,16 +1,16 @@
 #include "config.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include <stdio.h>
 
 #include "crosshair.h"
 #include "draw.h"
-#include "grid.h"
-#include "color.h"
+#include <librnd/core/grid.h>
+#include <librnd/core/color.h>
 #include "color_cache.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_attrib.h>
 #include "funchash_core.h"
-#include "pixmap.h"
+#include <librnd/core/pixmap.h>
 
 #include "../src_plugins/lib_gtk_common/pcb_gtk.h"
 #include "../src_plugins/lib_gtk_common/compat.h"

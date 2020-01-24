@@ -1,6 +1,6 @@
 #include "config.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -14,24 +14,24 @@
 #include "board.h"
 #include "data.h"
 #include "data_it.h"
-#include "error.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "compat_misc.h"
+#include <librnd/core/error.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/compat_misc.h>
 #include "obj_pstk_inlines.h"
 #include "obj_subc_op.h"
 #include "layer.h"
 #include "netlist.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "macro.h"
 #include "operation.h"
 #include "xy_conf.h"
 
-#include "hid.h"
-#include "hid_nogui.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
-#include "hid_init.h"
+#include <librnd/core/hid_init.h>
 
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 #include "../src_plugins/export_xy/conf_internal.c"

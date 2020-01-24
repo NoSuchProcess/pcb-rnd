@@ -1,7 +1,7 @@
 #ifndef PCB_FP_WGET_CONF_H
 #define PCB_FP_WGET_CONF_H
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 typedef struct {
 	const struct {

@@ -31,7 +31,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include "meshgraph.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "layer.h"
 #include "route.h"
 

@@ -32,13 +32,13 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "polygon.h"
 #include "rotate.h"
 #include "search.h"
 #include "select.h"
 #include "undo.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "data.h"
 #include "conf_core.h"
 #include "obj_arc_op.h"

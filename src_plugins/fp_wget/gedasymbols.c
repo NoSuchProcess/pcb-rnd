@@ -32,13 +32,13 @@
 #include <genvector/gds_char.h>
 #include <genht/htsp.h>
 #include <genht/hash.h>
-#include "error.h"
+#include <librnd/core/error.h>
 #include "wget_common.h"
 #include "gedasymbols.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_footprint.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 #include "fp_wget_conf.h"
 #include "globalconst.h"
 

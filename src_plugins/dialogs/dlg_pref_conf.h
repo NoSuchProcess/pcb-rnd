@@ -1,7 +1,7 @@
 #ifndef PCB_DLG_PREF_CONF_H
 #define PCB_DLG_PREF_CONF_H
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 typedef struct {
 	int wtree, wintree, wdesc, wname, wmainp, wnattype, wfilter;

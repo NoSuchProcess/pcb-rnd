@@ -38,9 +38,9 @@
 
 #include "eagle_bin.h"
 #include "egb_tree.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "math_helper.h"
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 
 /* Describe a bitfield: width of the field that hosts the bitfield, first
 and last bit offsets, inclusive. Bit offsets are starting from 0 at LSB. */

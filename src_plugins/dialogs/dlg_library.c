@@ -32,22 +32,22 @@
 #include <genvector/gds_char.h>
 #include <genregex/regex_sei.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "buffer.h"
 #include "conf_core.h"
 #include "data.h"
 #include "draw.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "obj_subc.h"
 #include "plug_footprint.h"
 #include "tool.h"
 #include "undo.h"
 
-#include "hid.h"
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
-#include "hid_init.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/hid_init.h>
 
 #include "dlg_library.h"
 

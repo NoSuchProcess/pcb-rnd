@@ -26,12 +26,12 @@
 
 #include "config.h"
 
-#include "conf.h"
-#include "hidlib_conf.h"
-#include "grid.h"
-#include "event.h"
-#include "hid_cfg.h"
-#include "hid.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/grid.h>
+#include <librnd/core/event.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid.h>
 
 #include "grid_menu.h"
 

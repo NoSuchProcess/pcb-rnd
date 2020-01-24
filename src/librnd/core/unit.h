@@ -35,7 +35,7 @@
 #ifndef PCB_UNIT_H
 #define PCB_UNIT_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 enum pcb_allow_e {
 	PCB_UNIT_NO_PRINT = 0, /* suffixes we can read but not print (i.e., "inch") */

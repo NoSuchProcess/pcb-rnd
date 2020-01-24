@@ -29,17 +29,17 @@
 #include "config.h"
 #include <genht/hash.h>
 #include <genht/htsi.h>
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "data.h"
 #include "change.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
-#include "plugins.h"
-#include "hid_init.h"
-#include "actions.h"
-#include "compat_misc.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 #include "query.h"
-#include "fptr_cast.h"
+#include <librnd/core/fptr_cast.h>
 
 /******** tree helper ********/
 

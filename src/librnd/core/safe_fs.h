@@ -33,7 +33,7 @@
 #define PCB_SAFE_FS_H
 
 #include <stdio.h>
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 /* file name templating wrappers around file system calls; later they
    will also execute checks to avoid unsafe access */
@@ -80,7 +80,7 @@ FILE *pcb_fopen_fn(pcb_hidlib_t *hidlib, const char *path, const char *mode, cha
 FILE *pcb_fopen_at(pcb_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
 
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 /* Open a file with standard path search and substitutions performed on
    the file name. If fn is not an absolute path, search paths for the

@@ -1,6 +1,6 @@
-#include "hid.h"
-#include "event.h"
-#include "conf_hid.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/event.h>
+#include <librnd/core/conf_hid.h>
 
 extern conf_hid_id_t ghid_conf_id;
 

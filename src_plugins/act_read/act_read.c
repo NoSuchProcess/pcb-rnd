@@ -31,10 +31,10 @@
 
 #include "board.h"
 #include "data_parent.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "crosshair.h"
-#include "plugins.h"
-#include "misc_util.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/misc_util.h>
 #include "idpath.h"
 #include "obj_subc.h"
 

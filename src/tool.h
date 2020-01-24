@@ -29,8 +29,8 @@
 
 #include <genvector/vtp0.h>
 
-#include "global_typedefs.h"
-#include "pcb_bool.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/pcb_bool.h>
 
 typedef enum {
 	PCB_MODE_VIA             = 15,  /* draw vias */

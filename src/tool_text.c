@@ -38,7 +38,7 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "tool.h"
 #include "undo.h"
 

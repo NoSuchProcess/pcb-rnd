@@ -25,8 +25,8 @@
  */
 
 #include "config.h"
-#include "pcb_bool.h"
-#include "compat_misc.h"
+#include <librnd/core/pcb_bool.h>
+#include <librnd/core/compat_misc.h>
 
 pcb_bool_op_t pcb_str2boolop(const char *s)
 {

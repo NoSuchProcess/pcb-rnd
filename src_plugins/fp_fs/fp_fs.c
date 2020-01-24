@@ -36,17 +36,17 @@
 
 #include "board.h"
 #include "data.h"
-#include "paths.h"
-#include "plugins.h"
+#include <librnd/core/paths.h>
+#include <librnd/core/plugins.h>
 #include "plug_footprint.h"
-#include "compat_fs.h"
-#include "compat_misc.h"
-#include "error.h"
-#include "conf.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "hid_init.h"
+#include <librnd/core/hid_init.h>
 #include "macro.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "safe_fs_dir.h"
 
 static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags);

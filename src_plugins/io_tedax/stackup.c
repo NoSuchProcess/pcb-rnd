@@ -35,9 +35,9 @@
 
 #include "stackup.h"
 #include "parse.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
-#include "error.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/error.h>
 #include "plug_io.h"
 
 void tedax_stackup_init(tedax_stackup_t *ctx)

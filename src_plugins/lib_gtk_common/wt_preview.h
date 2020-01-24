@@ -37,7 +37,7 @@
 
 #include <gtk/gtk.h>
 #include <genlist/gendlist.h>
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "ui_zoompan.h"
 #include "pcb_gtk.h"
 #include "compat.h"

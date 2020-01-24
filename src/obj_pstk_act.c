@@ -33,7 +33,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "search.h"
 #include "data_list.h"
 

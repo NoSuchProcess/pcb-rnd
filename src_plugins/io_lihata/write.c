@@ -35,26 +35,26 @@
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "flag_str.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "rats_patch.h"
-#include "actions.h"
-#include "misc_util.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/misc_util.h>
 #include "macro.h"
 #include "layer.h"
 #include "common.h"
 #include "write_style.h"
 #include "io_lihata.h"
-#include "paths.h"
+#include <librnd/core/paths.h>
 #include "obj_subc_list.h"
 #include "pcb_minuid.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "thermal.h"
 #include "funchash_core.h"
 #include "netlist.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 

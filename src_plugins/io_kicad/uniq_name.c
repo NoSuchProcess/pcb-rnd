@@ -4,7 +4,7 @@
 #include <genht/hash.h>
 #include "config.h"
 #include "uniq_name.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 static const char *unm_default_unnamed = "unnamed";
 static const char *unm_default_suffix_sep = "_dup";

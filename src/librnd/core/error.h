@@ -30,7 +30,7 @@
 #define PCB_ERROR_H
 
 #include <time.h>
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 /* pcb_printf()-like call to print temporary trace messages to stderr;
    disabled in non-debug compilation */

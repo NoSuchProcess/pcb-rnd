@@ -32,13 +32,13 @@
 
 #include <libfungw/fungw_conv.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "layer.h"
 #include "layer_addr.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "conf_core.h"
 
 const char *PCB_PTR_DOMAIN_LAYER = "pcb_fgw_ptr_domain_layer";

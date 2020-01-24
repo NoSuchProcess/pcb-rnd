@@ -39,7 +39,7 @@
 #include "buffer.h"
 #include "crosshair.h"
 #include "data.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "remove.h"
 #include "move.h"
 #include "search.h"

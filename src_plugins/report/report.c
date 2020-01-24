@@ -33,7 +33,7 @@
 #include "config.h"
 
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 
 #include <math.h>
@@ -45,7 +45,7 @@
 #include "data.h"
 #include "data_it.h"
 #include "drill.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "search.h"
 #include "rtree.h"
 #include "flag_str.h"
@@ -53,18 +53,18 @@
 #include "undo.h"
 #include "find.h"
 #include "draw.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "actions.h"
-#include "misc_util.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/misc_util.h>
 #include "report_conf.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "layer.h"
 #include "obj_term.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 #include "netlist.h"
 
 #include <genregex/regex_sei.h>

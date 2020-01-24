@@ -106,10 +106,10 @@
 /* Query language - compiler: grammar */
 
 #include <assert.h>
-#include "unit.h"
+#include <librnd/core/unit.h>
 #include "query.h"
 #include "query_l.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "flag_str.h"
 #include "fields_sphash.h"
 

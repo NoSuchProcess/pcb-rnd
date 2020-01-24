@@ -131,10 +131,10 @@ void pcb_eagle_dru_parse_line(FILE *f, gds_t *buff, char **key, char **value)
 
 #ifndef PCB_EAGLE_DRU_PARSER_TEST
 
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "board.h"
 #include "layer_grp.h"
-#include "error.h"
+#include <librnd/core/error.h>
 
 int io_eagle_test_parse_dru(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {

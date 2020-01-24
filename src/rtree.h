@@ -27,7 +27,7 @@
 #ifndef PCB_RTREE_H
 #define PCB_RTREE_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 typedef long int pcb_rtree_cardinal_t;
 typedef pcb_coord_t pcb_rtree_coord_t;

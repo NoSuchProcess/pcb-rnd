@@ -1,6 +1,6 @@
-#include "conf.h"
-#include "event.h"
-#include "actions.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/event.h>
+#include <librnd/core/actions.h>
 
 void pcb_rst_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 void pcb_rst_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);

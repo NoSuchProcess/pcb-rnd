@@ -1,6 +1,6 @@
 #include "brave.h"
 #include "xm_tree_table_widget.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/hid_dad_tree.h>
 
 typedef struct {
 	lesstif_attr_dlg_t *ctx;

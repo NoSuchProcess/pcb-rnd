@@ -28,7 +28,7 @@
 #define PCB_ORDER_H
 
 #include <genvector/vtp0.h>
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 #include "../src_plugins/order/order_conf.h"
 
 extern conf_order_t conf_order;

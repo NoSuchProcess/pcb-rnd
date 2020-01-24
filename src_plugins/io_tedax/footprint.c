@@ -36,14 +36,14 @@
 #include "footprint.h"
 #include "parse.h"
 
-#include "unit.h"
-#include "attrib.h"
-#include "error.h"
+#include <librnd/core/unit.h>
+#include <librnd/core/attrib.h>
+#include <librnd/core/error.h>
 #include "data.h"
 #include "board.h"
-#include "pcb-printf.h"
-#include "compat_misc.h"
-#include "safe_fs.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 #include "obj_line.h"
 #include "obj_arc.h"
 #include "obj_pstk.h"

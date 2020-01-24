@@ -31,8 +31,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include "error.h"
-#include "safe_fs.h"
+#include <librnd/core/error.h>
+#include <librnd/core/safe_fs.h>
 #include "egb_tree.h"
 #include "eagle_bin.h"
 

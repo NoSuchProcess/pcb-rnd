@@ -29,12 +29,12 @@
 #include <genvector/vti0.h>
 #include <liblihata/tree.h>
 
-#include "hid.h"
-#include "hid_cfg.h"
-#include "hid_dad.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_dad.h>
 #include "tool.h"
 #include "board.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "toolbar.h"
 

@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 #include <limits.h>
-#include "base64.h"
+#include <librnd/core/base64.h>
 
 static char int2digit(int digit)
 {

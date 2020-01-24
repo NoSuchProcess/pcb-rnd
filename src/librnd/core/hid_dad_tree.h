@@ -29,8 +29,8 @@
 #ifndef PCB_HID_DAD_TREE_H
 #define PCB_HID_DAD_TREE_H
 
-#include "hid_attrib.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_dad.h>
 #include <assert.h>
 #include <genvector/gds_char.h>
 #include <genht/hash.h>

@@ -1,6 +1,6 @@
 /* central, auto-generated enum of core function IDs */
 
-#include "funchash.h"
+#include <librnd/core/funchash.h>
 
 #define action_entry(x) F_ ## x,
 typedef enum {

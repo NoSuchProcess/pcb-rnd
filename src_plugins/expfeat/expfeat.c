@@ -25,13 +25,13 @@
  */
 
 #include "config.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "data.h"
 #include "change.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 
 
 static const char pcb_acts_ExpFeatTmp[] = "ExpFeatTmp(...)";

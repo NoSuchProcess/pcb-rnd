@@ -38,10 +38,10 @@
 #include <setjmp.h>
 
 #include "board.h"
-#include "box.h"
+#include <librnd/core/box.h>
 #include "data.h"
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "polygon.h"
 #include "remove.h"
 #include "search.h"
@@ -52,7 +52,7 @@
 #include "obj_text_draw.h"
 #include "polygon_selfi.h"
 #include "polygon1_gen.h"
-#include "event.h"
+#include <librnd/core/event.h>
 
 #define UNSUBTRACT_BLOAT 10
 #define SUBTRACT_PIN_VIA_BATCH_SIZE 100

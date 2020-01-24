@@ -30,15 +30,15 @@
 
 #include <genvector/gds_char.h>
 #include <limits.h>
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "build_run.h"
-#include "pcb-printf.h"
-#include "error.h"
-#include "event.h"
-#include "conf.h"
-#include "conf_hid.h"
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
+#include <librnd/core/conf.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 
 #include "dlg_pref.h"
 

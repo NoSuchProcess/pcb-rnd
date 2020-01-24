@@ -34,11 +34,11 @@
 #include <genht/hash.h>
 
 #include "netlist_helper.h"
-#include "compat_misc.h"
-#include "pcb-printf.h"
-#include "error.h"
-#include "actions.h"
-#include "safe_fs.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/error.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/safe_fs.h>
 
 
 nethlp_ctx_t *nethlp_new(nethlp_ctx_t *prealloc)

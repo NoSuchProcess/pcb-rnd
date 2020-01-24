@@ -34,9 +34,9 @@
 
 #include "board.h"
 #include "data.h"
-#include "plugins.h"
-#include "actions.h"
-#include "safe_fs.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/safe_fs.h>
 #include "conf_core.h"
 #include "obj_pstk_inlines.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"

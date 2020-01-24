@@ -1,7 +1,7 @@
 #include "config.h"
 #include "gedasymbols.h"
 #include "edakrill.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "fp_wget_conf.h"
 #include "../src_plugins/fp_wget/conf_internal.c"
 

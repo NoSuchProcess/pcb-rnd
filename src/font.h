@@ -31,12 +31,12 @@
 #define PCB_FONT_H
 
 #include <genht/htip.h>
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include "obj_poly.h"
 #include "obj_poly_list.h"
 #include "obj_arc.h"
 #include "obj_arc_list.h"
-#include "box.h"
+#include <librnd/core/box.h>
 
 /* ---------------------------------------------------------------------------
  * symbol and font related stuff

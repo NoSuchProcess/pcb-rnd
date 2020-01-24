@@ -28,10 +28,10 @@
 
 #include "board.h"
 #include "data.h"
-#include "plugins.h"
-#include "pcb-printf.h"
-#include "compat_misc.h"
-#include "conf.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/conf.h>
 
 #include "../src_plugins/propedit/props.h"
 #include "../src_plugins/propedit/propsel.h"

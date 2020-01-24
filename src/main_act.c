@@ -44,18 +44,18 @@
 #include "board.h"
 #include "data.h"
 #include "crosshair.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "layer.h"
-#include "actions.h"
-#include "hid_init.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_init.h>
 #include "conf_core.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "build_run.h"
-#include "file_loaded.h"
-#include "safe_fs.h"
+#include <librnd/core/file_loaded.h>
+#include <librnd/core/safe_fs.h>
 #include "flag_str.h"
 #include "obj_common.h"
-#include "hid_init.h"
+#include <librnd/core/hid_init.h>
 
 static const char pcb_acts_PrintActions[] = "PrintActions()";
 static const char pcb_acth_PrintActions[] = "Print all actions available.";

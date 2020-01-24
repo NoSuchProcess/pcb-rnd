@@ -41,7 +41,7 @@
 #ifndef PCB_INTERSECT_H
 #define PCB_INTERSECT_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 double pcb_intersect_box_box(pcb_box_list_t *boxlist);	/* will sort boxlist */
 double pcb_union_box_box(pcb_box_list_t *boxlist);

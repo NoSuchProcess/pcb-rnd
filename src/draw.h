@@ -30,7 +30,7 @@
 #define PCB_DRAW_H
 
 #include "config.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "layer.h"
 
 /* holds information about output window */

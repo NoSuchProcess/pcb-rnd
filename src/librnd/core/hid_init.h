@@ -33,7 +33,7 @@
 
 #include <puplug/puplug.h>
 #include <genvector/vtp0.h>
-#include "hid.h"
+#include <librnd/core/hid.h>
 
 #define PCBHL_ACTION_ARGS_WIDTH 5
 

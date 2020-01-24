@@ -42,32 +42,32 @@
 #include <math.h>
 
 #include "board.h"
-#include "color.h"
+#include <librnd/core/color.h>
 #include "color_cache.h"
 #include "data.h"
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "layer.h"
 #include "layer_vis.h"
-#include "misc_util.h"
-#include "compat_misc.h"
-#include "plugins.h"
-#include "safe_fs.h"
+#include <librnd/core/misc_util.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/safe_fs.h>
 #include "funchash_core.h"
 
-#include "hid.h"
-#include "hid_nogui.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
 #include "png.h"
 
 /* the gd library which makes this all so easy */
 #include <gd.h>
 
-#include "hid_init.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
 
 #define PNG_SCALE_HACK1 0
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #define pcb_hack_round(d) pcb_round(d)
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()

@@ -32,14 +32,14 @@
 #include <genht/hash.h>
 #include "data.h"
 #include "tlayer.h"
-#include "safe_fs.h"
-#include "error.h"
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/error.h>
 #include "parse.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "obj_line.h"
 #include "obj_arc.h"
 #include "obj_poly.h"
-#include "vtc0.h"
+#include <librnd/core/vtc0.h>
 #include "plug_io.h"
 
 int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, FILE *f)

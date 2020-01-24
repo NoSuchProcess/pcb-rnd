@@ -26,7 +26,7 @@
 
 /* Preferences dialog, conf tree tab -> edit conf node (input side) popup */
 
-#include "hid_dad_unit.h"
+#include <librnd/core/hid_dad_unit.h>
 
 #define is_read_only_(role) ((role == CFR_INTERNAL) || (role == CFR_SYSTEM) || (role == CFR_DEFAULTPCB))
 #define is_read_only(ctx)   is_read_only_(ctx->role)

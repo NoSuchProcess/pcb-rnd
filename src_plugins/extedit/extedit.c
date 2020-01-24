@@ -29,21 +29,21 @@
 
 #include "config.h"
 
-#include "hid.h"
-#include "hid_attrib.h"
-#include "actions.h"
-#include "hid_dad.h"
-#include "plugins.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/plugins.h>
 
 #include "board.h"
-#include "compat_fs.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_misc.h>
 #include "conf_core.h"
 #include "data.h"
 #include "buffer.h"
-#include "paths.h"
+#include <librnd/core/paths.h>
 #include "remove.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "search.h"
 #include "undo.h"
 #include "../src_plugins/io_lihata/io_lihata.h"

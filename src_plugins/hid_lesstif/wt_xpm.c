@@ -31,7 +31,7 @@
 #include <Xm/Label.h>
 #include <Xm/PushB.h>
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 
 static unsigned long hex_digit(char c)

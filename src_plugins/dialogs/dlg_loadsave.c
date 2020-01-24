@@ -27,14 +27,14 @@
 #include "config.h"
 
 #include <genvector/gds_char.h>
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include "event.h"
-#include "hid_dad.h"
-#include "compat_fs.h"
+#include <librnd/core/event.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/compat_fs.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "plug_io.h"
 #include "../src_plugins/lib_hid_common/dialogs_conf.h"
 

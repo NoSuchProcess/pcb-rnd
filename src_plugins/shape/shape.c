@@ -28,16 +28,16 @@
 
 #include "shape.h"
 
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 
 #include "board.h"
 #include "buffer.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "conf_core.h"
 #include "data.h"
-#include "error.h"
-#include "event.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
 #include "layer.h"
 #include "math_helper.h"
 #include "obj_poly.h"

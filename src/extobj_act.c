@@ -26,10 +26,10 @@
 
 #include "config.h"
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "conf_core.h"
 #include "funchash_core.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 #include "search.h"
 #include "tool.h"
 

@@ -36,12 +36,12 @@
 #include "board.h"
 #include "data.h"
 #include "hid_cam.h"
-#include "hid_attrib.h"
-#include "compat_misc.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/compat_misc.h>
 #include "layer_addr.h"
 #include "layer_vis.h"
 #include "plug_io.h"
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 
 htsp_t *pcb_cam_vars = NULL; /* substitute %% variables from this hash */
 

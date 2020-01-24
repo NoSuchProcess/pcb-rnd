@@ -28,12 +28,12 @@
  */
 #include <ctype.h>
 #include "config.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "genvector/gds_char.h"
 #include "route_style.h"
-#include "error.h"
-#include "conf.h"
-#include "misc_util.h"
+#include <librnd/core/error.h>
+#include <librnd/core/conf.h>
+#include <librnd/core/misc_util.h>
 #include "board.h"
 #include "funchash_core.h"
 #include "conf_core.h"

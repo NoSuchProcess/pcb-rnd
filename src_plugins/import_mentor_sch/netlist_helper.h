@@ -1,6 +1,6 @@
 #include <genht/htsp.h>
 #include <genregex/regex_se.h>
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 typedef struct nethlp_rule_s nethlp_rule_t;
 

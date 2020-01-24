@@ -32,7 +32,7 @@
 #include "query.h"
 #include "query_exec.h"
 #include "query_access.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root, int bufno)
 {

@@ -50,11 +50,11 @@
 
 #include "board.h"
 #include "autoplace.h"
-#include "box.h"
-#include "compat_misc.h"
+#include <librnd/core/box.h>
+#include <librnd/core/compat_misc.h>
 #include "data.h"
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "layer.h"
 #include "intersect.h"
 #include "rtree.h"

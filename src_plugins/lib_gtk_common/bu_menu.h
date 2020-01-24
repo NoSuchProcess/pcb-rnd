@@ -4,10 +4,10 @@
 #include <gtk/gtk.h>
 
 
-#include "conf.h"
-#include "hid_cfg.h"
-#include "hid_cfg_input.h"
-#include "conf_hid.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_cfg_input.h>
+#include <librnd/core/conf_hid.h>
 
 #define GHID_MAIN_MENU_TYPE            (ghid_main_menu_get_type ())
 #define GHID_MAIN_MENU(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GHID_MAIN_MENU_TYPE, GHidMainMenu))

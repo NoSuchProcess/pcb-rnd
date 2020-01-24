@@ -33,7 +33,7 @@
    then got a major refactoring by Tibor 'Igor2' Palinkas and Alain in pcb-rnd */
 
 #include "config.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "in_mouse.h"
 #include "compat.h"
@@ -42,7 +42,7 @@
 #include "board.h"
 #include "data.h"
 #include "draw.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp);
 

@@ -33,7 +33,7 @@
 
 #include "config.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "board.h"
 
 #include <memory.h>
@@ -48,13 +48,13 @@
 #include "flag_str.h"
 #include "find.h"
 #include "layer.h"
-#include "pcb-printf.h"
-#include "compat_misc.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "djopt_conf.h"
 #include "obj_line.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "macro.h"
 #include "obj_pstk_inlines.h"
 

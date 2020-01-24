@@ -8,19 +8,19 @@
 
 #include "math_helper.h"
 #include "board.h"
-#include "color.h"
+#include <librnd/core/color.h>
 #include "data.h"
 #include "draw.h"
 #include "layer.h"
 #include "layer_vis.h"
-#include "pcb-printf.h"
-#include "safe_fs.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/safe_fs.h>
 
-#include "hid.h"
-#include "hid_nogui.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
 #include "ps.h"
-#include "hid_init.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
 #include "funchash_core.h"
 

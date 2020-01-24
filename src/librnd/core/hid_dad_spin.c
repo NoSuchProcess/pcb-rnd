@@ -30,13 +30,13 @@
 
 #include <ctype.h>
 
-#include "hid_attrib.h"
-#include "hid_dad.h"
-#include "hid_dad_spin.h"
-#include "hid_dad_unit.h"
-#include "pcb-printf.h"
-#include "compat_misc.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_spin.h>
+#include <librnd/core/hid_dad_unit.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/hidlib_conf.h>
 
 gdl_list_t pcb_dad_coord_spins;
 

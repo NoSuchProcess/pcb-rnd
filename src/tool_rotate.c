@@ -35,7 +35,7 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "rotate.h"
 #include "tool.h"

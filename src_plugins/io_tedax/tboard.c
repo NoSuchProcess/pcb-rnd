@@ -39,15 +39,15 @@
 #include "data.h"
 #include "tboard.h"
 #include "parse.h"
-#include "error.h"
-#include "safe_fs.h"
+#include <librnd/core/error.h>
+#include <librnd/core/safe_fs.h>
 #include "stackup.h"
 #include "footprint.h"
 #include "tdrc.h"
 #include "tlayer.h"
 #include "ht_subc.h"
 #include "obj_pstk.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "plug_io.h"
 #include "tnetlist.h"
 

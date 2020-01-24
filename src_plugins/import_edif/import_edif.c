@@ -30,7 +30,7 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_import.h"
 #include "rats_patch.h"
 

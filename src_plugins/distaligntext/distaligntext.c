@@ -23,18 +23,18 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "rtree.h"
 #include "undo.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "move.h"
 #include "draw.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "conf_core.h"
-#include "box.h"
+#include <librnd/core/box.h>
 #include "macro.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 enum {
 	K_X,

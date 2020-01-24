@@ -32,7 +32,7 @@
 #include "wt_xpm.h"
 #include "wt_colorbtn.h"
 
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 
 #include "../src_plugins/lib_hid_common/dad_markup.h"
 

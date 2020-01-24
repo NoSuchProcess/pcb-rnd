@@ -38,7 +38,7 @@
 
 #include "board.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "find.h"
 #include "polygon.h"
 #include "search.h"

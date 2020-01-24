@@ -10,15 +10,15 @@
 #include "build_run.h"
 #include "board.h"
 #include "data.h"
-#include "error.h"
-#include "pcb-printf.h"
-#include "plugins.h"
+#include <librnd/core/error.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 
-#include "hid.h"
-#include "hid_attrib.h"
-#include "hid_init.h"
-#include "hid_nogui.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_nogui.h>
 
 #include "../src_plugins/lib_vfs/lib_vfs.h"
 

@@ -28,8 +28,8 @@
 #ifndef PCB_GTK_H
 #define PCB_GTK_H
 
-#include "hid.h"
-#include "conf.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/conf.h>
 
 typedef struct pcb_gtk_port_s  pcb_gtk_port_t;
 typedef struct pcb_gtk_s pcb_gtk_t;
@@ -133,9 +133,9 @@ struct pcb_gtk_topwin_s {
 /* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not required for the structs! */
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"
 
-#include "event.h"
-#include "conf_hid.h"
-#include "pcb_bool.h"
+#include <librnd/core/event.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/pcb_bool.h>
 
 typedef struct pcb_gtk_pixmap_s {
 	pcb_pixmap_t *pxm;        /* core-side pixmap (raw input image) */

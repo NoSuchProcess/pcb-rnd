@@ -53,7 +53,7 @@
 #include "data.h"
 #include "draw.h"
 #include "move.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "extobj.h"
 #include "insert.h"
 #include "polygon.h"
@@ -64,7 +64,7 @@
 #include "undo_old.h"
 #include "flag_str.h"
 #include "conf_core.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "netlist.h"
 
 #include "obj_poly_draw.h"

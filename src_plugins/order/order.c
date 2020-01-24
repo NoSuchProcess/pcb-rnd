@@ -28,15 +28,15 @@
 
 #include <stdio.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "hid_dad.h"
-#include "hid_cfg.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_cfg.h>
 #include "layer.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "order_conf.h"
 #include "../src_plugins/order/conf_internal.c"
 

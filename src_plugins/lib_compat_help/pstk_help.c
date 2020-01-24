@@ -28,7 +28,7 @@
 
 #include "pstk_help.h"
 #include "obj_pstk_inlines.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "search.h"
 #include "remove.h"
 #include "find.h"

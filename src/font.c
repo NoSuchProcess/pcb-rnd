@@ -37,12 +37,12 @@
 #include "font.h"
 #include "board.h"
 #include "conf_core.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "plug_io.h"
-#include "paths.h"
-#include "compat_misc.h"
-#include "event.h"
-#include "file_loaded.h"
+#include <librnd/core/paths.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
+#include <librnd/core/file_loaded.h>
 
 #define STEP_SYMBOLLINE 10
 

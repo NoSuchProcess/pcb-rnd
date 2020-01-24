@@ -27,9 +27,9 @@
 /* Preferences dialog, conf tree tab */
 
 #include "dlg_pref.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
-#include "misc_util.h"
+#include <librnd/core/misc_util.h>
 
 static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *nat, int idx);
 #include "dlg_pref_confedit.c"

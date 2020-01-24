@@ -31,12 +31,12 @@
 
 #include "polyhelp.h"
 #include "polygon.h"
-#include "plugins.h"
-#include "pcb-printf.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/pcb-printf.h>
 #include "obj_line.h"
-#include "box.h"
+#include <librnd/core/box.h>
 #include "polygon_offs.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 
 #include "topoly.h"
 
@@ -46,9 +46,9 @@ static const char *polyhelp_cookie = "lib_polyhelp";
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
-#include "compat_misc.h"
-#include "hid_attrib.h"
-#include "actions.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/actions.h>
 
 void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 {

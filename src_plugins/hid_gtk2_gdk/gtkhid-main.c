@@ -2,8 +2,8 @@
 
 #include <stdlib.h>
 
-#include "plugins.h"
-#include "hid_init.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid_init.h>
 
 #include "../src_plugins/lib_gtk_common/glue_common.h"
 #include "../src_plugins/lib_gtk_common/glue_hid.h"

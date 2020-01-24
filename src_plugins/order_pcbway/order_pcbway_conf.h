@@ -1,7 +1,7 @@
 #ifndef PCB_ORDER_PCBWAY_CONF_H
 #define PCB_ORDER_PCBWAY_CONF_H
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 
 typedef struct {
 	const struct {

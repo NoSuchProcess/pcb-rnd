@@ -30,8 +30,8 @@
 #ifndef PCB_PLUG_IO_H
 #define PCB_PLUG_IO_H
 
-#include "global_typedefs.h"
-#include "conf.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/conf.h>
 
 typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not all formats support all things */
 	PCB_IOT_PCB        = 1,

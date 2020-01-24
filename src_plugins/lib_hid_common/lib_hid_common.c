@@ -27,11 +27,11 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include "plugins.h"
-#include "conf_hid.h"
-#include "event.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/event.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "grid_menu.h"
 #include "cli_history.h"
 #include "lead_user.h"

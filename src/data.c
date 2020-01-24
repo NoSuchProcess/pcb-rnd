@@ -38,7 +38,7 @@
 #include "data_it.h"
 #include "rtree.h"
 #include "list_common.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "layer_it.h"
 #include "operation.h"
 #include "flag.h"

@@ -1,9 +1,9 @@
 #include "config.h"
-#include "conf_hid.h"
+#include <librnd/core/conf_hid.h>
 #include <genht/hash.h>
 #include <genht/htpp.h>
-#include "error.h"
-#include "hidlib_conf.h"
+#include <librnd/core/error.h>
+#include <librnd/core/hidlib_conf.h>
 
 typedef struct {
 	const conf_hid_callbacks_t *cb;

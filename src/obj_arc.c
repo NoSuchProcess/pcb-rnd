@@ -37,7 +37,7 @@
 #include "rotate.h"
 #include "move.h"
 #include "conf_core.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "draw_wireframe.h"
 #include "hid_inlines.h"
 

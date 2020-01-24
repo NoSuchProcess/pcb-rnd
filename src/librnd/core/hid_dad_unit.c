@@ -28,10 +28,10 @@
 
 #include "config.h"
 
-#include "hid_attrib.h"
-#include "hid_dad.h"
-#include "hid_dad_unit.h"
-#include "unit.h"
+#include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_unit.h>
+#include <librnd/core/unit.h>
 
 void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {

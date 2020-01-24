@@ -108,9 +108,9 @@ typedef enum { /* bitfield */
 #define PCB_LAYER_IS_OUTLINE(lyt, purpi) (((lyt) & PCB_LYT_BOUNDARY) && (((purpi) == F_proute) || ((purpi) == F_uroute) || ((purpi) == F_ucut) || ((purpi) == F_uvcut)))
 
 #include "globalconst.h"
-#include "global_typedefs.h"
-#include "attrib.h"
-#include "color.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/attrib.h>
+#include <librnd/core/color.h>
 #include "obj_common.h"
 #include "obj_arc_list.h"
 #include "obj_line_list.h"

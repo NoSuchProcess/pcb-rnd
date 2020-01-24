@@ -23,9 +23,9 @@
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
-#include "error.h"
+#include <librnd/core/error.h>
 #include "config.h"
-#include "pcb_bool.h"
+#include <librnd/core/pcb_bool.h>
 
 pcb_bool pcb_mid_stroke = pcb_false;
 

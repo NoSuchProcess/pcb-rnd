@@ -32,7 +32,7 @@
 #define PCB_LAYER_UI_H
 
 /* Virtual layers for UI and debug */
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 #include "genvector/vtp0.h"
 

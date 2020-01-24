@@ -35,11 +35,11 @@
 
 #include "data.h"
 #include "board.h"
-#include "conf.h"
-#include "error.h"
-#include "actions.h"
-#include "hid_cfg.h"
-#include "compat_misc.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/error.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/compat_misc.h>
 
 #include "menu_helper.h"
 

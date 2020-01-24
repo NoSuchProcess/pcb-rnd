@@ -1,5 +1,5 @@
 #include "xincludes.h"
-#include "color.h"
+#include <librnd/core/color.h>
 
 extern Colormap lesstif_colormap;
 

@@ -32,15 +32,15 @@
 
 #include "board.h"
 #include "data.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "obj_subc.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "extobj.h"
 #include "extobj_helper.h"
 #include "conf_core.h"
 #include "hid_inlines.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_dad.h>
 
 #include "line_of_vias.c"
 #include "dimension.c"

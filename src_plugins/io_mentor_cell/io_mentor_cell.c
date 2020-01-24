@@ -28,10 +28,10 @@
  */
 
 #include "config.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "read.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 static pcb_plug_io_t io_mentor_cell;
 static const char *mentor_cell_cookie = "mentor_cell plugin";

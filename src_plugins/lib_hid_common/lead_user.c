@@ -28,9 +28,9 @@
 
 #include <assert.h>
 
-#include "unit.h"
-#include "event.h"
-#include "hid.h"
+#include <librnd/core/unit.h>
+#include <librnd/core/event.h>
+#include <librnd/core/hid.h>
 
 #define LEAD_ARROW_LEN    PCB_MM_TO_COORD(3)
 #define LEAD_CENTER_RAD   PCB_MM_TO_COORD(0.5)

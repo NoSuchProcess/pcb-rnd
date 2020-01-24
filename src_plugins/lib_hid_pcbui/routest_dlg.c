@@ -26,7 +26,7 @@
 
 /* included from routest.c - split for clarity */
 
-#include "hid_dad_tree.h"
+#include <librnd/core/hid_dad_tree.h>
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)

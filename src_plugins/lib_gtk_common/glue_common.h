@@ -1,4 +1,4 @@
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "pcb_gtk.h"
 
 #include "../src_plugins/lib_gtk_common/dlg_topwin.h"

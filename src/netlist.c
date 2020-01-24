@@ -33,8 +33,8 @@
 #include "board.h"
 #include "data.h"
 #include "data_it.h"
-#include "event.h"
-#include "compat_misc.h"
+#include <librnd/core/event.h>
+#include <librnd/core/compat_misc.h>
 #include "layer_grp.h"
 #include "find.h"
 #include "obj_term.h"

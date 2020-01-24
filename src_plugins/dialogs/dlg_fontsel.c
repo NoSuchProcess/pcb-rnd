@@ -25,12 +25,12 @@
  */
 
 #include "config.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "change.h"
 #include "conf_core.h"
-#include "event.h"
-#include "hid_dad.h"
+#include <librnd/core/event.h>
+#include <librnd/core/hid_dad.h>
 #include "stub_draw.h"
 #include "idpath.h"
 #include "search.h"

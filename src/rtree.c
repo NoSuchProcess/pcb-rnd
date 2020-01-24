@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "unit.h"
+#include <librnd/core/unit.h>
 #include "rtree.h"
 
 #include <genrtree/genrtree_impl.h>

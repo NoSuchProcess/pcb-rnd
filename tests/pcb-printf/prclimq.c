@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <locale.h>
-#include "misc_util.h"
-#include "pcb-printf.h"
-#include "pcb_bool.h"
+#include <librnd/core/misc_util.h>
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/pcb_bool.h>
 
 int main(int argc, char *argv[])
 {

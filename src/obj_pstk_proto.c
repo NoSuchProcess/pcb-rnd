@@ -30,7 +30,7 @@
 
 #include "board.h"
 #include "buffer.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "conf_core.h"
 #include "data.h"
 #include "data_list.h"

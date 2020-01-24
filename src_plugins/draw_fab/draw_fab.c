@@ -33,15 +33,15 @@
 
 #include "board.h"
 #include "build_run.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "data.h"
 #include "draw.h"
 #include "../report/drill.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "stub_draw.h"
 #include "draw_fab_conf.h"
 #include "conf_core.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "macro.h"
 #include "obj_pstk_inlines.h"
 #include "hid_inlines.h"

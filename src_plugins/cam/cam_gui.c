@@ -27,8 +27,8 @@
  */
 
 #include <genht/htsp.h>
-#include "hid_dad.h"
-#include "hid_dad_tree.h"
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 
 static const char *OUTFILE_HELP = "Output file name sample, which will\nbe split to prefix and base name (%base%)\nto be used in file name templates";
 static const char *PREFIX_HELP = "File name prefix: every output file\npath will start with this prefix.\nIt is derived from outfile.";

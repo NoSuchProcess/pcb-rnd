@@ -27,7 +27,7 @@
 #ifndef PCB_DATA_PARENT_H
 #define PCB_DATA_PARENT_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 /* which elem of the parent union is active */
 typedef enum pcb_parenttype_e {

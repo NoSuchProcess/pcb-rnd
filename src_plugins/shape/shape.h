@@ -29,7 +29,7 @@
 #include "board.h"
 #include "data.h"
 #include "layer.h"
-#include "pcb_bool.h"
+#include <librnd/core/pcb_bool.h>
 
 /* special layer: when used, the shape is always placed on the current layer */
 extern pcb_layer_t *pcb_shape_current_layer;

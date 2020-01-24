@@ -38,7 +38,7 @@
 #ifndef PCB_AUTOPLACE_H
 #define PCB_AUTOPLACE_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 pcb_bool AutoPlaceSelected(void);
 

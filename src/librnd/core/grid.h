@@ -31,9 +31,9 @@
 #define PCB_GRID_H
 
 #include <genvector/gds_char.h>
-#include "pcb_bool.h"
-#include "global_typedefs.h"
-#include "unit.h"
+#include <librnd/core/pcb_bool.h>
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/unit.h>
 
 /* String packed syntax (bracket means optional):
 

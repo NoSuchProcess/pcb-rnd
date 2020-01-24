@@ -26,7 +26,7 @@
 
 #include <genht/hash.h>
 #include <genlist/gendlist.h>
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 /* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
 PCB_INLINE int pcb_neqs(const char *s1, const char *s2)

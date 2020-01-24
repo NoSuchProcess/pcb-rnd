@@ -26,13 +26,13 @@
 
 #include "config.h"
 
-#include "conf.h"
-#include "error.h"
-#include "color.h"
-#include "hidlib.h"
-#include "hid.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/error.h>
+#include <librnd/core/color.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/hid.h>
 
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #define PCB_MAX_GRID         PCB_MIL_TO_COORD(1000)
 

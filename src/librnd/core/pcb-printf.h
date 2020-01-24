@@ -101,7 +101,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <genvector/gds_char.h>
-#include "unit.h"
+#include <librnd/core/unit.h>
 
 typedef enum {                    /* bitmask for printf hardening */
 	PCB_SAFEPRINT_arg_max = 1023,   /* for internal use */

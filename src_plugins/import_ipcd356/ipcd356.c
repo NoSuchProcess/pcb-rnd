@@ -33,13 +33,13 @@
 
 #include "board.h"
 #include "data.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
 #include "conf_core.h"
-#include "hid.h"
-#include "compat_misc.h"
-#include "actions.h"
-#include "plugins.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/plugins.h>
 #include "rtree.h"
 
 #include "../src_plugins/lib_compat_help/pstk_help.h"

@@ -46,18 +46,18 @@
 
 #include "crosshair.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "file.h"
 #include "flag_str.h"
 #include "parse_common.h"
 #include "parse_y.h"
 #include "plug_footprint.h"
 #include "attribs.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "compat_cc.h"
 #include "obj_common.h"
-#include "paths.h"
-#include "safe_fs.h"
+#include <librnd/core/paths.h>
+#include <librnd/core/safe_fs.h>
 #include "macro.h"
 
 #define YY_NO_INPUT

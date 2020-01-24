@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "lht_conf.h"
 
 extern conf_io_lihata_t conf_io_lihata;

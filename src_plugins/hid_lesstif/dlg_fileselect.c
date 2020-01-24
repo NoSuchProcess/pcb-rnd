@@ -30,9 +30,9 @@
 #include "lesstif.h"
 #include "ltf_stdarg.h"
 
-#include "hid.h"
-#include "hid_dad.h"
-#include "event.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/event.h>
 
 #include "dlg_fileselect.h"
 

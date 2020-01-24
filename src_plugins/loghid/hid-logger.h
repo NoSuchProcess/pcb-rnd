@@ -1,7 +1,7 @@
 #ifndef PCB_HID_LOGGER_H
 #define PCB_HID_LOGGER_H
 
-#include "hid.h"
+#include <librnd/core/hid.h>
 
 #include <stdio.h>
 

@@ -29,19 +29,19 @@
 #include <genvector/vti0.h>
 #include <genvector/vtp0.h>
 
-#include "hid.h"
-#include "hid_cfg.h"
-#include "hid_dad.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_dad.h>
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "layer.h"
 #include "layer_grp.h"
 #include "layer_ui.h"
 #include "layer_vis.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #include "layersel.h"
 

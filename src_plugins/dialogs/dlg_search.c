@@ -28,11 +28,11 @@
 
 #include <genvector/gds_char.h>
 
-#include "actions.h"
-#include "conf_hid.h"
-#include "hid_dad.h"
-#include "event.h"
-#include "error.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/event.h>
+#include <librnd/core/error.h>
 #include "board.h"
 
 #define MAX_ROW 8

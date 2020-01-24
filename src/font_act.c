@@ -26,12 +26,12 @@
 #include "config.h"
 #include <stdlib.h>
 #include "board.h"
-#include "actions.h"
-#include "error.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/error.h>
 #include "font.h"
 #include "conf_core.h"
 #include "plug_io.h"
-#include "event.h"
+#include <librnd/core/event.h>
 
 #define PCB (do not use PCB directly)
 

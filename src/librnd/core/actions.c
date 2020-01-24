@@ -35,12 +35,12 @@
 #include <genht/htsp.h>
 #include <libfungw/fungw_conv.h>
 
-#include "error.h"
-#include "event.h"
-#include "actions.h"
-#include "compat_misc.h"
-#include "funchash.h"
-#include "hidlib_conf.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/funchash.h>
+#include <librnd/core/hidlib_conf.h>
 
 const pcb_action_t *pcb_current_action = NULL;
 

@@ -34,12 +34,12 @@
 #include <genvector/gds_char.h>
 
 #include "config.h"
-#include "hid_cfg_input.h"
-#include "hid_cfg_action.h"
-#include "hidlib_conf.h"
-#include "error.h"
-#include "compat_misc.h"
-#include "event.h"
+#include <librnd/core/hid_cfg_input.h>
+#include <librnd/core/hid_cfg_action.h>
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/error.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
 #include "crosshair.h"
 
 /* split value into a list of '-' separated words; examine each word

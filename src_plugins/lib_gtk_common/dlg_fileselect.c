@@ -30,12 +30,12 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 
-#include "hid.h"
-#include "hid_dad.h"
-#include "compat_misc.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/compat_misc.h>
 #include "compat.h"
-#include "event.h"
-#include "safe_fs.h"
+#include <librnd/core/event.h>
+#include <librnd/core/safe_fs.h>
 
 #include "dlg_attribute.h"
 

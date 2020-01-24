@@ -2,7 +2,7 @@
 #define PCB_HID_HELPER_H
 
 #include "layer.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid_attrib.h>
 #include <genvector/gds_char.h>
 
 /*** CAM plugin side API ***/

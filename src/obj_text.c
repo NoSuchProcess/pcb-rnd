@@ -34,12 +34,12 @@
 #include "rotate.h"
 #include "board.h"
 #include "data.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "hid_inlines.h"
 #include "undo.h"
 #include "polygon.h"
 #include "polygon_offs.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "layer.h"
 
 #include "obj_text.h"

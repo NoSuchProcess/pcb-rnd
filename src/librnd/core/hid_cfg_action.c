@@ -25,8 +25,8 @@
  */
 
 #include "config.h"
-#include "hid_cfg_action.h"
-#include "actions.h"
+#include <librnd/core/hid_cfg_action.h>
+#include <librnd/core/actions.h>
 
 int pcb_hid_cfg_action(pcb_hidlib_t *hl, const lht_node_t *node)
 {

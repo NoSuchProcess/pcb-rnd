@@ -47,7 +47,7 @@
 #include <assert.h>
 #include <setjmp.h>
 
-#include "box.h"
+#include <librnd/core/box.h>
 #include "heap.h"
 #include "rtree.h"
 #include "mtspace.h"

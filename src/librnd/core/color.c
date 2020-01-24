@@ -30,7 +30,7 @@
 #include <string.h>
 
 #define GVT_DONT_UNDEF
-#include "color.h"
+#include <librnd/core/color.h>
 #include <genvector/genvector_impl.c>
 
 #define PACK_COLOR_(r,g,b,a) ((((unsigned long)(r)) << 24) | (((unsigned long)(g)) << 16) | (((unsigned long)(b)) << 8) | (((unsigned long)(a))))

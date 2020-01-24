@@ -31,8 +31,8 @@
 #include <assert.h>
 
 #include "parse.h"
-#include "error.h"
-#include "compat_misc.h"
+#include <librnd/core/error.h>
+#include <librnd/core/compat_misc.h>
 
 int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int argv_size)
 {

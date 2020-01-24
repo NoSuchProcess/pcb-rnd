@@ -30,8 +30,8 @@
 #define	PCB_ROTATE_H
 
 #include "config.h"
-#include "global_typedefs.h"
-#include "compat_misc.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/compat_misc.h>
 
 /*** Transformation macros ***/
 #define	PCB_COORD_ROTATE90(x,y,x0,y0,n)							\

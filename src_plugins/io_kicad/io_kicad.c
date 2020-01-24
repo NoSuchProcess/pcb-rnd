@@ -28,12 +28,12 @@
  */
 
 #include "config.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_io.h"
 #include "write.h"
 #include "read.h"
 #include "read_net.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 
 static pcb_plug_io_t io_kicad;
 static const char *kicad_cookie = "kicad plugin";

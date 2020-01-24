@@ -34,7 +34,7 @@
 #include <puplug/os_dep.h>
 #include <stdlib.h>
 
-#include "fptr_cast.h"
+#include <librnd/core/fptr_cast.h>
 
 static fgw_error_t fgws_c_call_script(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

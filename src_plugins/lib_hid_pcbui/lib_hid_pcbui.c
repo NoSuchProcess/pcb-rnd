@@ -27,9 +27,9 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include "plugins.h"
-#include "conf_hid.h"
-#include "event.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/event.h>
 
 #include "layer_menu.h"
 #include "layersel.h"

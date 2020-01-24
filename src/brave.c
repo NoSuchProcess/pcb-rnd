@@ -33,12 +33,12 @@
 
 #include "board.h"
 #include "brave.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "conf_core.h"
-#include "conf_hid.h"
-#include "compat_misc.h"
-#include "error.h"
-#include "hid_dad.h"
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
+#include <librnd/core/hid_dad.h>
 
 pcb_brave_t pcb_brave = 0;
 static const char brave_cookie[] = "brave";

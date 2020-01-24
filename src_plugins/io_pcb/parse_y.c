@@ -113,7 +113,7 @@
 #include "conf_core.h"
 #include "layer.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "file.h"
 #include "parse_l.h"
 #include "polygon.h"
@@ -123,7 +123,7 @@
 #include "obj_pinvia_therm.h"
 #include "rats_patch.h"
 #include "route_style.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "netlist.h"
 

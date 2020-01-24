@@ -30,7 +30,7 @@
 #include <math.h>
 #include "obj_arc_ui.h"
 #include "obj_arc.h"
-#include "box.h"
+#include <librnd/core/box.h>
 
 
 #include <stdio.h>

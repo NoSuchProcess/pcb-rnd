@@ -29,13 +29,13 @@
 #include "mesh.h"
 #include "layer.h"
 #include "layer_ui.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include "hid_dad.h"
-#include "event.h"
-#include "safe_fs.h"
-#include "pcb-printf.h"
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/event.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/pcb-printf.h>
 
 static pcb_mesh_t mesh;
 static const char *mesh_ui_cookie = "mesh ui layer cookie";

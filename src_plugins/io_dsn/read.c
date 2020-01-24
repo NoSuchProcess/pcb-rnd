@@ -36,14 +36,14 @@
 #include "board.h"
 #include "data.h"
 #include "plug_io.h"
-#include "error.h"
-#include "pcb_bool.h"
-#include "safe_fs.h"
-#include "compat_misc.h"
+#include <librnd/core/error.h>
+#include <librnd/core/pcb_bool.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_misc.h>
 #include "layer_grp.h"
 #include "conf_core.h"
 #include "math_helper.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "netlist.h"
 #include "polygon_offs.h"
 

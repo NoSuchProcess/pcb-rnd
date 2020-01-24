@@ -25,13 +25,13 @@
  */
 
 #include "config.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "conf_core.h"
-#include "compat_misc.h"
-#include "hid_dad.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/hid_dad.h>
 #include "funchash_core.h"
 #include "obj_subc.h"
 #include "search.h"

@@ -1,5 +1,5 @@
 #include <libminuid/libminuid.h>
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "pcb_minuid.h"
 
 minuid_session_t pcb_minuid;

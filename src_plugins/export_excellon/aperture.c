@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 #define GVT_DONT_UNDEF
 #include "aperture.h"

@@ -27,7 +27,7 @@
 /* Preferences dialog, color tab */
 
 #include "dlg_pref.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "conf_core.h"
 
 static void pref_color_brd2dlg(pref_ctx_t *ctx)

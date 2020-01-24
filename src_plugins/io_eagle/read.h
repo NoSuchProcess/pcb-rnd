@@ -1,5 +1,5 @@
 #include "board.h"
-#include "conf.h"
+#include <librnd/core/conf.h>
 #include "plug_io.h"
 
 int io_eagle_test_parse_xml(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f);

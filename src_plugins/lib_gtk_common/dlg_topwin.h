@@ -5,8 +5,8 @@
 
 #include <gtk/gtk.h>
 
-#include "hid_cfg.h"
-#include "hid_dad.h"
+#include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_dad.h>
 
 #include "pcb_gtk.h"
 #include "bu_menu.h"

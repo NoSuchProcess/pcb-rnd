@@ -36,9 +36,9 @@
 #include "layer.h"
 #include "layer_ui.h"
 #include "layer_vis.h"
-#include "event.h"
-#include "compat_misc.h"
-#include "conf_hid.h"
+#include <librnd/core/event.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/conf_hid.h>
 
 /*
  * Used by pcb_layervis_save_stack() and

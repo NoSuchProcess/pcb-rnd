@@ -32,7 +32,7 @@
 #include "funchash_core.h"
 #include "config.h"
 #include "macro.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 
 #define action_entry(x) { #x, F_ ## x},
 static pcb_funchash_table_t Functions[] = {

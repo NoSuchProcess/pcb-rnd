@@ -50,11 +50,11 @@
 #include "math_helper.h"
 #include "heap.h"
 #include "compat_cc.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "polyarea.h"
 #include "obj_common.h"
 #include "macro.h"
-#include "box.h"
+#include <librnd/core/box.h>
 #include "rtree2_compat.h"
 
 

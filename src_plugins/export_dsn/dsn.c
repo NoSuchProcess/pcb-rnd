@@ -45,25 +45,25 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 
 #include "board.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "buffer.h"
 #include "change.h"
 #include "draw.h"
 #include "undo.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "polygon.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "layer.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "netlist.h"
 
-#include "hid.h"
-#include "hid_nogui.h"
-#include "actions.h"
-#include "hid_init.h"
-#include "hid_attrib.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_nogui.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/hid_init.h>
+#include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "obj_line.h"
 #include "obj_pstk_inlines.h"
 

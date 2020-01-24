@@ -68,9 +68,9 @@
 #include "data.h"
 #include "macro.h"
 #include "autoroute.h"
-#include "box.h"
+#include <librnd/core/box.h>
 #include "draw.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "find.h"
 #include "heap.h"
 #include "rtree.h"
@@ -81,7 +81,7 @@
 #include "obj_pinvia_therm.h"
 #include "undo.h"
 #include "vector.h"
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 #include "layer.h"
 #include <genvector/vtp0.h>
 #include "layer.h"

@@ -29,9 +29,9 @@
 #include "config.h"
 #include "ui_zoompan.h"
 
-#include "hidlib_conf.h"
-#include "compat_misc.h"
-#include "hidlib.h"
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/hidlib.h>
 #include "glue_common.h"
 
 #include "../src_plugins/lib_hid_pcbui/util.h"

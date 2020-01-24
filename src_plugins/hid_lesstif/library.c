@@ -8,17 +8,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "data.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "buffer.h"
 #include <genvector/vtp0.h>
 #include "plug_footprint.h"
 
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "lesstif.h"
 #include "ltf_stdarg.h"
-#include "event.h"
+#include <librnd/core/event.h>
 #include "tool.h"
 
 extern pcb_hidlib_t *ltf_hidlib;

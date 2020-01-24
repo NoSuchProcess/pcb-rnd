@@ -35,12 +35,12 @@
 */
 
 #include <limits.h>
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 #include <genht/htsp.h>
 #include <genvector/vtl0.h>
 
 #include "idpath.h"
-#include "color.h"
+#include <librnd/core/color.h>
 
 typedef enum {
 	PCB_PROPT_invalid,

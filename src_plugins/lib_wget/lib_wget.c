@@ -28,9 +28,9 @@
 
 #include <stdio.h>
 
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "safe_fs.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/safe_fs.h>
 #include "lib_wget.h"
 
 const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";

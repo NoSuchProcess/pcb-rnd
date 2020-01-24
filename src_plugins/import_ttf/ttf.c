@@ -34,9 +34,9 @@
 #include "board.h"
 #include "data.h"
 
-#include "actions.h"
-#include "plugins.h"
-#include "hid.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid.h>
 
 #include "ttf_load.h"
 

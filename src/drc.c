@@ -27,13 +27,13 @@
  */
 #include "config.h"
 
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "board.h"
 #include "drc.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 #include "conf_core.h"
-#include "compat_misc.h"
-#include "event.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
 
 
 pcb_view_list_t pcb_drc_lst;

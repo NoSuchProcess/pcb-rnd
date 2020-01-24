@@ -32,13 +32,13 @@
 #include "conf_core.h"
 
 #include "change.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "board.h"
 #include "data.h"
 #include "draw.h"
 #include "select.h"
 #include "undo.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "macro.h"
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"

@@ -29,11 +29,11 @@
 
 #include "config.h"
 
-#include "actions.h"
-#include "event.h"
-#include "hid.h"
-#include "hid_dad.h"
-#include "hid_nogui.h"
+#include <librnd/core/actions.h>
+#include <librnd/core/event.h>
+#include <librnd/core/hid.h>
+#include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_nogui.h>
 
 static int hid_dlg_gui_inited = 0;
 

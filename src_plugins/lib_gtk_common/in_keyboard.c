@@ -34,8 +34,8 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "event.h"
-#include "compat_misc.h"
+#include <librnd/core/event.h>
+#include <librnd/core/compat_misc.h>
 #include "glue_common.h"
 
 pcb_hid_cfg_keys_t ghid_keymap;

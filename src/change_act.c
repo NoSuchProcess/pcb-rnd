@@ -39,19 +39,19 @@
 #include "funchash_core.h"
 
 #include "board.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "change.h"
 #include "draw.h"
 #include "search.h"
 #include "undo.h"
-#include "event.h"
-#include "compat_misc.h"
+#include <librnd/core/event.h>
+#include <librnd/core/compat_misc.h>
 #include "obj_rat_draw.h"
 #include "data_it.h"
 #include "macro.h"
-#include "grid.h"
+#include <librnd/core/grid.h>
 #include "route_style.h"
-#include "hidlib_conf.h"
+#include <librnd/core/hidlib_conf.h>
 
 #define PCB (do not use PCB directly)
 

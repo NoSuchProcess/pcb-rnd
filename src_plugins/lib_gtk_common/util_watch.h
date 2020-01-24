@@ -1,4 +1,4 @@
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "pcb_gtk.h"
 
 pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,

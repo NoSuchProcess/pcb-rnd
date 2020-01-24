@@ -33,11 +33,11 @@
 #include <genvector/vts0.h>
 
 #include "board.h"
-#include "pcb-printf.h"
-#include "plugins.h"
-#include "safe_fs.h"
-#include "paths.h"
-#include "compat_fs.h"
+#include <librnd/core/pcb-printf.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/safe_fs.h>
+#include <librnd/core/paths.h>
+#include <librnd/core/compat_fs.h>
 #include "../src_plugins/lib_wget/lib_wget.h"
 #include "../src_plugins/order/order.h"
 #include "order_pcbway_conf.h"

@@ -31,7 +31,7 @@
 #include <assert.h>
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "src_plugins/lib_hid_common/place.h"
 
 static const char *lib_gtk_config_cookie = "lib_gtk_config";

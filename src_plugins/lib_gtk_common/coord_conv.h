@@ -1,6 +1,6 @@
 /* Coordinate conversions */
-#include "compat_misc.h"
-#include "hidlib_conf.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/hidlib_conf.h>
 
 /* Px converts view->pcb, Vx converts pcb->view */
 static inline int Vx(pcb_coord_t x)

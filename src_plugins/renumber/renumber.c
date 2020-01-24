@@ -36,17 +36,17 @@
 #include "board.h"
 #include "data.h"
 #include "change.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "undo.h"
-#include "plugins.h"
-#include "actions.h"
+#include <librnd/core/plugins.h>
+#include <librnd/core/actions.h>
 #include "conf_core.h"
-#include "compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "netlist.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 #include "macro.h"
 
-#include "pcb-printf.h"
+#include <librnd/core/pcb-printf.h>
 
 static const char pcb_acts_Renumber[] = "Renumber()\n" "Renumber(filename)";
 static const char pcb_acth_Renumber[] =

@@ -1,20 +1,20 @@
 
 #include "config.h"
 
-#include "plugins.h"
+#include <librnd/core/plugins.h>
 #include "plug_footprint.h"
 #include "board.h"
 #include "buffer.h"
 #include "data.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "obj_subc.h"
 #include "obj_subc_list.h"
 #include "obj_subc_op.h"
-#include "compat_misc.h"
-#include "pcb-printf.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/pcb-printf.h>
 #include "operation.h"
 #include "plug_io.h"
-#include "safe_fs.h"
+#include <librnd/core/safe_fs.h>
 
 #define REQUIRE_PATH_PREFIX "board@"
 

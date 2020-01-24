@@ -16,12 +16,12 @@
 
 #include "config.h"
 #include "board.h"
-#include "actions.h"
+#include <librnd/core/actions.h>
 #include "data.h"
-#include "hid.h"
+#include <librnd/core/hid.h>
 #include "rtree.h"
 #include "undo.h"
-#include "error.h"
+#include <librnd/core/error.h>
 #include "change.h"
 #include "conf_core.h"
 
