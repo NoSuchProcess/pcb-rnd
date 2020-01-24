@@ -37,7 +37,6 @@
 
 #include <librnd/core/unit.h>
 #include <librnd/core/grid.h>
-#include "board.h"
 #include <librnd/core/conf.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf_hid.h>

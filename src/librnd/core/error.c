@@ -30,7 +30,6 @@
 #include <stdarg.h>
 
 #include <librnd/core/actions.h>
-#include "data.h"
 #include <librnd/core/error.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hid_dad.h>
