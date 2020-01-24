@@ -424,7 +424,7 @@ pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 ### librnd, hidlib ####
 
 OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
-DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) buildin.hidlib.h
+DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) $(LIBRND)/core/buildin.hidlib.h
 @]
 
 switch cc/soname
@@ -487,8 +487,8 @@ buildin.h: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 buildin.hidlib.c: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 	cd $(PLUGDIR) && $(PUPLUG) buildin.c "-" < $(PLUGDIR)/.builtin.hidlib.pups > $(ROOT)/src/buildin.hidlib.c
 
-buildin.hidlib.h: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
-	$(PUPLUG) buildin.h > buildin.hidlib.h
+$(LIBRND)/core/buildin.hidlib.h: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
+	$(PUPLUG) buildin.h > $(LIBRND)/core/buildin.hidlib.h
 
 ../src_3rd/libminuid/libminuid.a: ../src_3rd/libminuid/libminuid.c ../src_3rd/libminuid/libminuid.h
 	cd  ../src_3rd/libminuid && $(MAKE) libminuid.a LIBMINUID_CFLAGS="$(LIBMINUID_CFLAGS)" LIBMINUID_LDFLAGS="$(LIBMINUID_LDFLAGS)" CC=$(CC)
@@ -562,7 +562,7 @@ util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o ../src_3rd/genlis
 FORCE:
 
 
-DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c buildin.hidlib.h compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups librnd.mak @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
