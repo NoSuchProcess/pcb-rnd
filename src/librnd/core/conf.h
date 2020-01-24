@@ -37,7 +37,7 @@
 typedef union confitem_u confitem_t ;
 typedef struct conf_listitem_s pcb_conf_listitem_t;
 
-#include "list_conf.h"
+#include <librnd/core/list_conf.h>
 
 extern int pcb_conf_rev; /* increased by one each time there's a change in any of the config binaries */
 
