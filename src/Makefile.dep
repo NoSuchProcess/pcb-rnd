@@ -72,7 +72,7 @@
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/paths.h \
  librnd/core/compat_fs.h librnd/core/compat_misc.h librnd/core/safe_fs.h \
  librnd/core/file_loaded.h librnd/core/hidlib.h \
- ../src_3rd/genvector/genvector_impl.c conf_regfile.c
+ ../src_3rd/genvector/genvector_impl.c librnd/core/conf_regfile.c
 ../src/librnd/core/conf_hid.o: ../src/librnd/core/conf_hid.c \
  librnd/config.h librnd/core/conf_hid.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
