@@ -28,7 +28,7 @@ BEGIN {
 END {
 	for(n in LIST) {
 		print "/* " n " */"
-		sub("PCB_REGISTER_ACTIONS_FUNC", "PCB_REGISTER_ACTIONS_CALL", LIST[n])
+		gsub("PCB_REGISTER_ACTIONS_FUNC", "PCB_REGISTER_ACTIONS_CALL", LIST[n])
 
 		print LIST[n]
 	}
