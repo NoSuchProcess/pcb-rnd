@@ -48,7 +48,7 @@
 #include <assert.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/compat_misc.h>
-#include "globalconst.h"
+#include <librnd/core/globalconst.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hid_init.h>
 

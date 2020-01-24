@@ -562,7 +562,7 @@ util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o ../src_3rd/genlis
 FORCE:
 
 
-DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups librnd.mak @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
@@ -587,7 +587,7 @@ install_librnd: librnd
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
-	$(SCCBOX) $(HOW) "librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
+	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd/puplug"
 	$(SCCBOX) $(HOW) "../scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd/gen_conf"
@@ -606,7 +606,7 @@ gsub /local/pcb/HDRS_3RDLIB {.o } {.h }
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
 sub /local/pcb/HDRS_HIDLIB {polygon1.h } {}
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/hid.h polyarea.h $(LIBRND)/core/global_typedefs.h globalconst.h math_helper.h $(LIBRND)/core/buildin.hidlib.h hid_inlines.h rotate.h $(LIBRND)/core/fptr_cast.h safe_fs_dir.h compat_inc.h }
+append /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/hid.h polyarea.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h math_helper.h $(LIBRND)/core/buildin.hidlib.h hid_inlines.h rotate.h $(LIBRND)/core/fptr_cast.h safe_fs_dir.h $(LIBRND)/core/compat_inc.h }
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}

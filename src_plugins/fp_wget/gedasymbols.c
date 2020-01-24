@@ -40,7 +40,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
 #include "fp_wget_conf.h"
-#include "globalconst.h"
+#include <librnd/core/globalconst.h>
 
 #define REQUIRE_PATH_PREFIX "wget@gedasymbols"
 

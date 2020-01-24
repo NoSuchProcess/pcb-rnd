@@ -964,13 +964,13 @@ int hook_generate()
 
 	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
-	printf("Generating pcb/librnd.mak (%d)\n", generr |= tmpasm("../src", "librnd.mak.in", "librnd.mak"));
+	printf("Generating librnd.mak (%d)\n", generr |= tmpasm("../src/librnd/core", "librnd.mak.in", "librnd.mak"));
 
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
 
 	printf("Generating config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
 
-	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm("../src", "compat_inc.h.in", "compat_inc.h"));
+	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm("../src/librnd/core", "compat_inc.h.in", "compat_inc.h"));
 
 	printf("Generating opengl.h (%d)\n", generr |= tmpasm("../src_plugins/lib_hid_gl", "opengl.h.in", "opengl.h"));
 

@@ -42,7 +42,7 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
-#include "globalconst.h"
+#include <librnd/core/globalconst.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/hidlib.h>
 

@@ -29,7 +29,7 @@
 #ifndef PCB_FLAG_H
 #define PCB_FLAG_H
 
-#include "globalconst.h"
+#include <librnd/core/globalconst.h>
 
 /* Nobody should know about the internals of this except the macros in
    macros.h that access it.  This structure must be simple-assignable
