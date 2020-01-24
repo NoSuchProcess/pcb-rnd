@@ -69,7 +69,6 @@ void pcb_tool_init()
 	conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
 
 	vtp0_init(&pcb_tools);
-	default_tool_reg(); /* temporary */
 
 	tool_conf_id = pcb_conf_hid_reg(pcb_tool_cookie, NULL);
 
@@ -82,7 +81,6 @@ void pcb_tool_init()
 
 void pcb_tool_uninit()
 {
-	default_tool_unreg(); /* temporary */
 	while(vtp0_len(&pcb_tools) != 0) {
 		const pcb_tool_t *tool = pcb_tool_get(0);
 		pcb_message(PCB_MSG_WARNING, "Unregistered tool: %s of %s; check your plugins, fix them to unregister their tools!\n", tool->name, tool->cookie);
@@ -371,52 +369,6 @@ void pcb_tool_notify_block(void)
 	}
 	pcb_notify_crosshair_change(pcb_true);
 }
-
-TODO("tool: move this out to a tool plugin")
-
-#include "tool_arc.h"
-#include "tool_arrow.h"
-#include "tool_buffer.h"
-#include "tool_copy.h"
-#include "tool_insert.h"
-#include "tool_line.h"
-#include "tool_lock.h"
-#include "tool_move.h"
-#include "tool_poly.h"
-#include "tool_polyhole.h"
-#include "tool_rectangle.h"
-#include "tool_remove.h"
-#include "tool_rotate.h"
-#include "tool_text.h"
-#include "tool_thermal.h"
-#include "tool_via.h"
-
-
-static void default_tool_reg(void)
-{
-	pcb_tool_reg(&pcb_tool_arc, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_arrow, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_buffer, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_copy, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_insert, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_line, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_lock, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_move, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_poly, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_polyhole, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_rectangle, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_remove, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_rotate, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_text, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_thermal, pcb_tool_cookie);
-	pcb_tool_reg(&pcb_tool_via, pcb_tool_cookie);
-}
-
-static void default_tool_unreg(void)
-{
-	pcb_tool_unreg_by_cookie(pcb_tool_cookie);
-}
-
 
 /*** old helpers ***/
 void pcb_release_mode(pcb_hidlib_t *hidlib)

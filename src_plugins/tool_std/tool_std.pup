@@ -1,0 +1,7 @@
+$class feature
+$short standard tools
+$long The basic set of PCB drawing tools
+$state works
+$package (core)
+default buildin
+autoload 1

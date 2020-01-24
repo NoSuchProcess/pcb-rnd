@@ -109,4 +109,5 @@ include {../src_plugins/sketch_route/Plug.tmpasm}
 include {../src_plugins/smartdisperse/Plug.tmpasm}
 include {../src_plugins/stroke/Plug.tmpasm}
 include {../src_plugins/teardrops/Plug.tmpasm}
+include {../src_plugins/tool_std/Plug.tmpasm}
 include {../src_plugins/vendordrill/Plug.tmpasm}

@@ -236,22 +236,6 @@ append /local/pcb/OBJS [@
 	stub_stroke.o
 	thermal.o
 	tool.o
-	tool_arc.o
-	tool_arrow.o
-	tool_buffer.o
-	tool_copy.o
-	tool_insert.o
-	tool_line.o
-	tool_lock.o
-	tool_move.o
-	tool_poly.o
-	tool_polyhole.o
-	tool_rectangle.o
-	tool_remove.o
-	tool_rotate.o
-	tool_text.o
-	tool_thermal.o
-	tool_via.o
 	undo.o
 	undo_act.o
 	undo_old.o

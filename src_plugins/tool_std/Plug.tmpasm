@@ -1,0 +1,26 @@
+put /local/pcb/mod {tool_std}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/tool_std/tool_std.o
+	$(PLUGDIR)/tool_std/tool_arc.o
+	$(PLUGDIR)/tool_std/tool_arrow.o
+	$(PLUGDIR)/tool_std/tool_buffer.o
+	$(PLUGDIR)/tool_std/tool_copy.o
+	$(PLUGDIR)/tool_std/tool_insert.o
+	$(PLUGDIR)/tool_std/tool_line.o
+	$(PLUGDIR)/tool_std/tool_lock.o
+	$(PLUGDIR)/tool_std/tool_move.o
+	$(PLUGDIR)/tool_std/tool_poly.o
+	$(PLUGDIR)/tool_std/tool_polyhole.o
+	$(PLUGDIR)/tool_std/tool_rectangle.o
+	$(PLUGDIR)/tool_std/tool_remove.o
+	$(PLUGDIR)/tool_std/tool_rotate.o
+	$(PLUGDIR)/tool_std/tool_text.o
+	$(PLUGDIR)/tool_std/tool_thermal.o
+	$(PLUGDIR)/tool_std/tool_via.o
+@]
+
+switch /local/pcb/tool_std/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

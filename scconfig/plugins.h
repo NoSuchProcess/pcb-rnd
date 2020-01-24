@@ -61,6 +61,7 @@ plugin_def("sketch_route",     "assisted semi-auto-routing",      sdisable, 1, 0
 plugin_def("smartdisperse",    "netlist based dispenser",         sbuildin, 1, 0)
 plugin_def("stroke",           "mouse gestures",                  sbuildin, 1, 0)
 plugin_def("teardrops",        "draw teardrops on pins",          sbuildin, 1, 0)
+plugin_def("tool_std",         "standard tools",                  sbuildin, 1, 0)
 plugin_def("vendordrill",      "vendor drill mapping",            sbuildin, 1, 0)
 
 plugin_header("\nFootprint backends:\n")
