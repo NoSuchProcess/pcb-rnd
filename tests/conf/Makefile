@@ -1,4 +1,4 @@
-include ../../src/librnd.mak
+include ../../src/librnd/core/librnd.mak
 
 CFLAGS = -Wall -g -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND_FUNGW)
 LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW)
