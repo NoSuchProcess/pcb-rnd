@@ -66,7 +66,6 @@
 #include <setjmp.h>
 
 #include "data.h"
-#include "macro.h"
 #include "autoroute.h"
 #include <librnd/core/box.h>
 #include "draw.h"

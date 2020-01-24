@@ -18,7 +18,6 @@
 #include "config.h"
 #include "board.h"
 #include "data.h"
-#include "macro.h"
 #include "remove.h"
 #include <librnd/core/hid.h>
 #include <librnd/core/error.h>

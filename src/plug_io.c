@@ -69,7 +69,6 @@
 #include <librnd/core/safe_fs.h>
 #include "plug_footprint.h"
 #include <librnd/core/file_loaded.h>
-#include "macro.h"
 #include "view.h"
 
 pcb_plug_io_t *pcb_plug_io_chain = NULL;

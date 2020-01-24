@@ -54,7 +54,6 @@
 #include "layer_vis.h"
 #include "operation.h"
 #include "obj_pstk.h"
-#include "macro.h"
 #include "rotate.h"
 #include <librnd/core/actions.h>
 

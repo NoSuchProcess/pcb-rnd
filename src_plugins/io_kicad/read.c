@@ -48,7 +48,6 @@
 #include <librnd/core/misc_util.h> /* for distance calculations */
 #include "conf_core.h"
 #include "move.h"
-#include "macro.h"
 #include "rotate.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/attrib.h>

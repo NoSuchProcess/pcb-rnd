@@ -40,8 +40,8 @@
 
 #include "flag_str.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/misc_util.h>
 #include "obj_common.h"
-#include "macro.h"
 
 /* Because the common flag access macros expect an object struct to work on. */
 typedef struct {

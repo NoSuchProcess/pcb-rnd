@@ -40,7 +40,6 @@
 #include "plug_io.h"
 #include <librnd/core/safe_fs.h>
 #include "find.h"
-#include "macro.h"
 #include "obj_subc_parent.h"
 #include "undo.h"
 #include "funchash_core.h"

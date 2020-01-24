@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include "config.h"
 #include "data.h"
-#include "macro.h"
 #include "common.h"
 #include "thermal.h"
 

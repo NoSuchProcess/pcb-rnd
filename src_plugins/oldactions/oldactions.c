@@ -42,7 +42,6 @@
 #include <librnd/core/actions.h>
 #include "plug_footprint.h"
 #include "obj_subc.h"
-#include "macro.h"
 #include <librnd/core/compat_misc.h>
 #include "netlist.h"
 

@@ -39,7 +39,6 @@
 #include "draw.h"
 #include "select.h"
 #include "board.h"
-#include "macro.h"
 #include "idpath.h"
 #include <librnd/core/compat_misc.h>
 

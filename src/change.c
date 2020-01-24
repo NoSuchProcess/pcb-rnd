@@ -39,7 +39,6 @@
 #include "select.h"
 #include "undo.h"
 #include <librnd/core/actions.h>
-#include "macro.h"
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
 #include "obj_term.h"

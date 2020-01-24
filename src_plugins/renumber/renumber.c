@@ -44,7 +44,6 @@
 #include <librnd/core/compat_misc.h>
 #include "netlist.h"
 #include <librnd/core/safe_fs.h>
-#include "macro.h"
 
 #include <librnd/core/pcb-printf.h>
 

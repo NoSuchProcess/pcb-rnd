@@ -58,7 +58,6 @@
 #include "obj_common.h"
 #include <librnd/core/paths.h>
 #include <librnd/core/safe_fs.h>
-#include "macro.h"
 
 #define YY_NO_INPUT
 

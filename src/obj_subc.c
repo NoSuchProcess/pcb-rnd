@@ -51,7 +51,6 @@
 #include "polygon.h"
 #include "operation.h"
 #include "undo.h"
-#include "macro.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/math_helper.h>
 #include "pcb_minuid.h"

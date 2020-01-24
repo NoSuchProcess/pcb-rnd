@@ -40,7 +40,6 @@
 #include "plug_io.h"
 #include "flag_str.h"
 #include <librnd/core/compat_misc.h>
-#include "macro.h"
 #include <librnd/core/error.h>
 #include <librnd/core/misc_util.h>
 #include "layer.h"

@@ -67,7 +67,6 @@
 #include "obj_poly.h"
 #include "thermal.h"
 #include <librnd/core/event.h>
-#include "macro.h"
 #include "funchash_core.h"
 #include "netlist.h"
 

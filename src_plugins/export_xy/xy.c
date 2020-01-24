@@ -23,7 +23,6 @@
 #include "layer.h"
 #include "netlist.h"
 #include <librnd/core/safe_fs.h>
-#include "macro.h"
 #include "operation.h"
 #include "xy_conf.h"
 

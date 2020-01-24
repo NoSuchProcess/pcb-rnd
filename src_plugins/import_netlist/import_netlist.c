@@ -41,7 +41,6 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/safe_fs.h>
-#include "macro.h"
 #include "netlist.h"
 
 static pcb_plug_import_t import_netlist;

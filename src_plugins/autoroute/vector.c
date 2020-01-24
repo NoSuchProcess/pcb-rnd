@@ -45,7 +45,6 @@
 
 #include <librnd/core/math_helper.h>
 #include "vector.h"
-#include "macro.h"
 
 struct vector_struct {
 	vector_element_t *element;

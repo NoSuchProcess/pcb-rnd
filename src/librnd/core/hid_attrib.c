@@ -32,7 +32,6 @@
 #include <string.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/compat_misc.h>
-#include "macro.h"
 
 pcb_hid_attr_node_t *hid_attr_nodes = 0;
 

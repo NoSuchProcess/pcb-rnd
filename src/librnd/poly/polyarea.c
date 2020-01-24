@@ -53,7 +53,6 @@
 #include <librnd/core/pcb-printf.h>
 #include <librnd/poly/polyarea.h>
 #include "obj_common.h"
-#include "macro.h"
 #include <librnd/core/box.h>
 #include <librnd/poly/rtree2_compat.h>
 

@@ -33,7 +33,6 @@
 
 #include "data.h"
 #include "drill.h"
-#include "macro.h"
 #include "obj_pstk_inlines.h"
 
 #define STEP_ELEMENT 50

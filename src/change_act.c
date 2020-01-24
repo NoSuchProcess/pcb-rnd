@@ -48,7 +48,6 @@
 #include <librnd/core/compat_misc.h>
 #include "obj_rat_draw.h"
 #include "data_it.h"
-#include "macro.h"
 #include <librnd/core/grid.h>
 #include "route_style.h"
 #include <librnd/core/hidlib_conf.h>

@@ -69,4 +69,11 @@ char *pcb_text_wrap(char *inp, int len, int sep, int nonsep);
 /* remove leading and trailing whitespace */
 char *pcb_str_strip(char *s);
 
+#define PCB_ENTRIES(x)         (sizeof((x))/sizeof((x)[0]))
+#define PCB_UNKNOWN(a)         ((a) && *(a) ? (a) : "(unknown)")
+#define PCB_NSTRCMP(a, b)      ((a) ? ((b) ? strcmp((a),(b)) : 1) : -1)
+#define PCB_EMPTY(a)           ((a) ? (a) : "")
+#define PCB_EMPTY_STRING_P(a)  ((a) ? (a)[0]==0 : 1)
+#define PCB_XOR(a,b)           (((a) && !(b)) || (!(a) && (b)))
+
 #endif

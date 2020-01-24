@@ -45,7 +45,6 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include <librnd/core/hid_init.h>
-#include "macro.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 

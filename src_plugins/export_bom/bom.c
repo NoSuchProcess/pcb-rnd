@@ -26,7 +26,6 @@
 #include <librnd/core/hid_attrib.h>
 #include "hid_cam.h"
 #include <librnd/core/hid_init.h>
-#include "macro.h"
 
 const char *bom_cookie = "bom HID";
 

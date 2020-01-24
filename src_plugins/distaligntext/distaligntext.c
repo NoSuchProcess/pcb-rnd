@@ -33,7 +33,6 @@
 #include <librnd/core/actions.h>
 #include "conf_core.h"
 #include <librnd/core/box.h>
-#include "macro.h"
 #include <librnd/core/compat_misc.h>
 
 enum {

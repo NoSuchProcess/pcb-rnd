@@ -27,7 +27,6 @@
 #include "move.h"
 #include "draw.h"
 #include <librnd/core/plugins.h>
-#include "macro.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 

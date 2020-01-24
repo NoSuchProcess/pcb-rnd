@@ -28,7 +28,6 @@
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>
 #include <librnd/core/plugins.h>
-#include "macro.h"
 #include <librnd/core/safe_fs.h>
 #include "funchash_core.h"
 

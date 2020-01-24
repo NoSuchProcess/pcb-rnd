@@ -42,7 +42,6 @@
 #include "rats_patch.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/misc_util.h>
-#include "macro.h"
 #include "layer.h"
 #include "common.h"
 #include "write_style.h"

@@ -49,7 +49,6 @@
 #include "search.h"
 #include <librnd/poly/rtree.h>
 #include "flag_str.h"
-#include "macro.h"
 #include "undo.h"
 #include "find.h"
 #include "draw.h"

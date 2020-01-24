@@ -33,7 +33,6 @@
 #include "route_style.h"
 #include <librnd/core/error.h>
 #include "tool.h"
-#include "macro.h"
 
 static const char pcb_acts_Conf[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting to an absolute value\n"

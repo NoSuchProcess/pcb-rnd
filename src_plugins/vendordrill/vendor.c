@@ -50,7 +50,6 @@
 #include <librnd/core/compat_misc.h>
 #include "obj_pstk_inlines.h"
 #include <librnd/core/event.h>
-#include "macro.h"
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 

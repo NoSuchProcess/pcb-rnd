@@ -58,7 +58,6 @@
 #include "layer.h"
 #include "intersect.h"
 #include <librnd/poly/rtree.h>
-#include "macro.h"
 #include "move.h"
 #include "netlist.h"
 #include "remove.h"

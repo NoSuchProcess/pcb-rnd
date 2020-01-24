@@ -45,7 +45,6 @@
 #include "search.h"
 #include "tool.h"
 #include "undo.h"
-#include "macro.h"
 
 #include "obj_arc_draw.h"
 

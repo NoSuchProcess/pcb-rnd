@@ -44,7 +44,6 @@
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/hid_dad.h>
 #include "search.h"
-#include "macro.h"
 #include "plug_footprint.h"
 #include "plug_io.h"
 #include "funchash_core.h"

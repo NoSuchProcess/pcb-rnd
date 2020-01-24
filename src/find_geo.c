@@ -42,7 +42,6 @@
  * - see the description of 'pcb_isc_line_line()'
  */
 
-#include "macro.h"
 #include "obj_arc_ui.h"
 #include "obj_pstk_inlines.h"
 #include "search.h"

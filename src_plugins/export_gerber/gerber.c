@@ -23,7 +23,6 @@
 #include "hid_cam.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-#include "macro.h"
 #include "funchash_core.h"
 #include "gerber_conf.h"
 #include <librnd/core/event.h>

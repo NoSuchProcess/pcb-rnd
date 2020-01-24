@@ -46,7 +46,6 @@
 #include "find.h"
 #include "undo.h"
 #include <librnd/core/event.h>
-#include "macro.h"
 #include <librnd/core/grid.h>
 #include "stub_stroke.h"
 
