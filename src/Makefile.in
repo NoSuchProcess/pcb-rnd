@@ -70,11 +70,11 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/base64.o
 	$(LIBRND)/core/box.o
 	$(LIBRND)/core/color.o
-	conf.o
-	conf_hid.o
-	compat_fs.o
-	compat_lrealpath.o
-	compat_misc.o
+	$(LIBRND)/core/conf.o
+	$(LIBRND)/core/conf_hid.o
+	$(LIBRND)/core/compat_fs.o
+	$(LIBRND)/core/compat_lrealpath.o
+	$(LIBRND)/core/compat_misc.o
 	error.o
 	event.o
 	file_loaded.o
@@ -404,7 +404,7 @@ LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 GENLIST_LDFLAGS=@cc/ldflags@
-LIBRND=librnd
+LIBRND=../src/librnd
 
 all:
 	$(MAKE) revcheck
