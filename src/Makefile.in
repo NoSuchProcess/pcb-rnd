@@ -541,7 +541,7 @@ generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
 conf_core_fields.h: conf_core.h $(ROOT)/doc/conf/tree/rc.html
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh  < conf_core.h > conf_core_fields.h
 
-$(LIBRND)/core/hidlib_conf_fields.h: $(LIBRND)/core/hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
+librnd/core/hidlib_conf_fields.h: $(LIBRND)/core/hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh < $(LIBRND)/core/hidlib_conf.h > $(LIBRND)/core/hidlib_conf_fields.h
 
 $(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h conf_core.h
