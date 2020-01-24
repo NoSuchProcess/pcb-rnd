@@ -592,7 +592,7 @@ gsub /local/pcb/HDRS_3RDLIB {.o } {.h }
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
 sub /local/pcb/HDRS_HIDLIB {polygon1.h } {}
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/hid.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h }
+append /local/pcb/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/hid.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}

@@ -20,7 +20,7 @@
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/color.h>
-#include "color_cache.h"
+#include <librnd/core/color_cache.h>
 #include "crosshair.h"
 #include <librnd/core/conf_hid.h>
 #include "layer.h"

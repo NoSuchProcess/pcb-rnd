@@ -43,7 +43,7 @@
 
 #include "board.h"
 #include <librnd/core/color.h>
-#include "color_cache.h"
+#include <librnd/core/color_cache.h>
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/error.h>

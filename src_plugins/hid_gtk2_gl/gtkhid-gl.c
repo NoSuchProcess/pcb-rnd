@@ -4,7 +4,7 @@
 
 #include "crosshair.h"
 #include "draw.h"
-#include "color_cache.h"
+#include <librnd/core/color_cache.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/hidlib_conf.h>
 #include "funchash_core.h"

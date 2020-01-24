@@ -7,7 +7,7 @@
 #include "draw.h"
 #include <librnd/core/grid.h>
 #include <librnd/core/color.h>
-#include "color_cache.h"
+#include <librnd/core/color_cache.h>
 #include <librnd/core/hid_attrib.h>
 #include "funchash_core.h"
 #include <librnd/core/pixmap.h>
