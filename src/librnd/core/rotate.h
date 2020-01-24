@@ -26,22 +26,42 @@
  *
  */
 
-#ifndef	PCB_ROTATE_H
-#define	PCB_ROTATE_H
+#ifndef RND_ROTATE_H
+#define RND_ROTATE_H
 
-#include <librnd/core/rotate.h>
+#include "config.h"
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/compat_misc.h>
 
-#define PCB_ROTATE_TYPES (PCB_OBJ_PSTK | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_ARC | PCB_OBJ_LINE_POINT | PCB_OBJ_LINE | PCB_OBJ_POLY | PCB_OBJ_FLOATER)
+/*** Transformation macros ***/
+#define	PCB_COORD_ROTATE90(x,y,x0,y0,n)							\
+	do {												\
+		pcb_coord_t	dx = (x)-(x0),					\
+					dy = (y)-(y0);					\
+													\
+		switch(n & 0x03)									\
+		{											\
+			case 1:		(x)=(x0)+dy; (y)=(y0)-dx;	\
+						break;						\
+			case 2:		(x)=(x0)-dx; (y)=(y0)-dy;	\
+						break;						\
+			case 3:		(x)=(x0)-dy; (y)=(y0)+dx;	\
+						break;						\
+			default:	break;						\
+		}											\
+	} while(0)
 
-/* rotates an object passed; pcb is the parent board or associated board (in
-   case of buffer) */
-pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, unsigned Steps);
+PCB_INLINE void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)
+{
+	double nx, ny;
+	pcb_coord_t px = *x - cx;
+	pcb_coord_t py = *y - cy;
 
-/* rotates obj by angle around X;Y. pcb is the current board if obj is on buffer */
-pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
+	nx = pcb_round(px * cosa + py * sina + cx);
+	ny = pcb_round(py * cosa - px * sina + cy);
 
-void pcb_screen_obj_rotate90(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, unsigned steps);
-void pcb_screen_obj_rotate(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle);
-void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
+	*x = nx;
+	*y = ny;
+}
 
 #endif

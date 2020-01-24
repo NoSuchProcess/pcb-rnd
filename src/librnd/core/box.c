@@ -30,7 +30,7 @@
 #include "config.h"
 
 #include <string.h>
-#include "rotate.h"
+#include <librnd/core/rotate.h>
 #include <librnd/core/box.h>
 
 void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
