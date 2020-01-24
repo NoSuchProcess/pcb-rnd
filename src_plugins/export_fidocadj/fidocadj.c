@@ -42,7 +42,7 @@
 
 #include "genht/htsi.h"
 
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "board.h"
 #include "data.h"
 #include "layer_vis.h"

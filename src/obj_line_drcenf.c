@@ -29,7 +29,7 @@
 
 #include "config.h"
 #include "conf_core.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 
 #include <setjmp.h>
 #include <stdlib.h>

@@ -35,7 +35,7 @@
 #include "config.h"
 #include "flag.h"
 #include "rtree.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "polyarea.h"
 #include "rtree2_compat.h"
 

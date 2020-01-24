@@ -31,7 +31,7 @@
 #include <librnd/core/compat_misc.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "board.h"
 #include "data.h"
 #include "extobj.h"

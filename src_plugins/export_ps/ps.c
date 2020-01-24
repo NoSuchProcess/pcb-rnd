@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <time.h>
 
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "board.h"
 #include "data.h"
 #include "layer.h"

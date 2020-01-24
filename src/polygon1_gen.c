@@ -34,7 +34,7 @@
 
 #include <librnd/core/global_typedefs.h>
 #include "polyarea.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include <librnd/core/unit.h>
 
 #include "polygon1_gen.h"

@@ -43,7 +43,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "vector.h"
 #include "macro.h"
 

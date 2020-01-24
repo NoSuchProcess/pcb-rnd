@@ -26,7 +26,7 @@
 
 #include "obj_subc.h"
 #include "conf_core.h"
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include <librnd/core/hid_dad.h>
 #include "change.h"
 #include "undo.h"

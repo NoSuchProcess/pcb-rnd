@@ -33,7 +33,7 @@
 
 #include "obj_line.h"
 #include "obj_arc.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include <librnd/core/compat_misc.h>
 #include "search.h"
 

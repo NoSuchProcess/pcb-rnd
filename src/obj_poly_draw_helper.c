@@ -32,7 +32,7 @@
 #include <librnd/core/hid.h>
 #include "polygon.h"
 #include "obj_poly.h"
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 
 static pcb_coord_t *fc_x = NULL, *fc_y = NULL;
 static size_t fc_alloced = 0;

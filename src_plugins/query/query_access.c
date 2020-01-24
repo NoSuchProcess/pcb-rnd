@@ -27,7 +27,7 @@
 /* Query language - access to / extract core data */
 
 #include "config.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include <librnd/core/compat_misc.h>
 #include "board.h"
 #include "data.h"

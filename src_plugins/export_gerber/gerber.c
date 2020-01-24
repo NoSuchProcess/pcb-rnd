@@ -9,7 +9,7 @@
 
 #include <time.h>
 
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "board.h"
 #include "build_run.h"
 #include "config.h"
@@ -32,7 +32,7 @@
 #include <librnd/core/hid_nogui.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid_attrib.h>
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include <librnd/core/hid_dad.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>

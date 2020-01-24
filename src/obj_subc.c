@@ -53,11 +53,11 @@
 #include "undo.h"
 #include "macro.h"
 #include <librnd/core/compat_misc.h>
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "pcb_minuid.h"
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include "extobj.h"
 
 #define SUBC_AUX_NAME "subc-aux"

@@ -39,7 +39,7 @@
 #include "eagle_bin.h"
 #include "egb_tree.h"
 #include <librnd/core/error.h>
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include <librnd/core/misc_util.h>
 
 /* Describe a bitfield: width of the field that hosts the bitfield, first

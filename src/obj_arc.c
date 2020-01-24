@@ -39,7 +39,7 @@
 #include "conf_core.h"
 #include <librnd/core/compat_misc.h>
 #include "draw_wireframe.h"
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 
 #include "obj_arc.h"
 #include "obj_arc_op.h"

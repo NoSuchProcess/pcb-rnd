@@ -47,7 +47,7 @@
 
 #include "config.h"
 #include "rtree.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "heap.h"
 #include "compat_cc.h"
 #include <librnd/core/pcb-printf.h>

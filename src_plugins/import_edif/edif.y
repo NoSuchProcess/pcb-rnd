@@ -26,7 +26,7 @@
 
 #include <ctype.h>
 
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "board.h"
 #include "data.h"
 #include <librnd/core/error.h>

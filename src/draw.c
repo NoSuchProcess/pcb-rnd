@@ -31,7 +31,7 @@
 
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "board.h"
 #include "data.h"
 #include "draw.h"
@@ -40,7 +40,7 @@
 #include "rtree.h"
 #include "stub_draw.h"
 #include "layer_ui.h"
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include "funchash_core.h"
 
 #include "obj_pstk_draw.h"

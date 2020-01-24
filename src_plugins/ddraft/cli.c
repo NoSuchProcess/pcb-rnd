@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include <librnd/core/compat_misc.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>

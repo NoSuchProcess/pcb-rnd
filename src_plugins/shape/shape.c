@@ -39,7 +39,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/event.h>
 #include "layer.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "obj_poly.h"
 #include "obj_poly_draw.h"
 #include "rotate.h"

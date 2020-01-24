@@ -44,7 +44,7 @@
 #include <librnd/core/error.h>
 #include "layer.h"
 #include "layer_vis.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>

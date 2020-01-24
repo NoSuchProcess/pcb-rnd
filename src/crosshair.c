@@ -40,7 +40,7 @@
 #include "search.h"
 #include "polygon.h"
 #include <librnd/core/actions.h>
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include <librnd/core/compat_misc.h>
 #include "vtonpoint.h"
 #include "find.h"

@@ -38,7 +38,7 @@
 #include "draw.h"
 #include "drc.h"
 #include <librnd/core/event.h>
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
 #include "undo.h"

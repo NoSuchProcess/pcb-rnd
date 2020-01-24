@@ -37,7 +37,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/compat_misc.h>
 #include "netlist.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "layer.h"
 #include "obj_arc.h"
 #include "obj_line.h"

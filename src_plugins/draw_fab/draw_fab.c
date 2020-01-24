@@ -44,7 +44,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include "macro.h"
 #include "obj_pstk_inlines.h"
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include "funchash_core.h"
 
 #include "obj_text_draw.h"

@@ -6,7 +6,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "board.h"
 #include <librnd/core/color.h>
 #include "data.h"

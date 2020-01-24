@@ -42,7 +42,7 @@
 #include <librnd/core/compat_misc.h>
 #include "layer_grp.h"
 #include "conf_core.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include <librnd/core/actions.h>
 #include "netlist.h"
 #include "polygon_offs.h"

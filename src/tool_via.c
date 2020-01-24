@@ -39,7 +39,7 @@
 
 #include "board.h"
 #include "change.h"
-#include "hid_inlines.h"
+#include <librnd/core/hid_inlines.h>
 #include "data.h"
 #include "draw.h"
 #include "tool.h"

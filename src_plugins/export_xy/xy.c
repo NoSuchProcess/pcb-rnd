@@ -9,7 +9,7 @@
 #include <time.h>
 #include <genvector/vts0.h>
 
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "build_run.h"
 #include "board.h"
 #include "data.h"

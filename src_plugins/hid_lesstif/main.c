@@ -1,7 +1,7 @@
 #include "xincludes.h"
 
 #include "config.h"
-#include "math_helper.h"
+#include <librnd/core/math_helper.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/hidlib.h>
