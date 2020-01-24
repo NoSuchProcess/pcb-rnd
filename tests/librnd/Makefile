@@ -2,7 +2,7 @@ TRUNK = ../..
 LIBRND_ROOT=include/$(HL_LIBDIR)/..
 
 include $(TRUNK)/Makefile.conf
-include $(LIBRND_ROOT)/share/librnd/librnd.mak
+include $(TRUNK)/src/librnd/core/librnd.mak
 
 CFLAGS = $(CFLAGS_LIBRND)
 LDFLAGS = $(LDFLAGS_LIBRND)
