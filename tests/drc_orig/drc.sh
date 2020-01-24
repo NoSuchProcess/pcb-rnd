@@ -6,7 +6,7 @@ cd $ROOT/src
 
 echo '
 DRC(dump)
-' | ./pcb-rnd $fn -c rc/quiet=1 -c rc/library_search_paths= --gui batch | awk '
+' | ./pcb-rnd $fn -c rc/quiet=1 -c rc/library_search_paths=/dev/null --gui batch | awk '
 /^V/ { print ""; next}
 /^E/ {  next}
 {
