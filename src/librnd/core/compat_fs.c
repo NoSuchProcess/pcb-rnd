@@ -32,7 +32,7 @@
 #define PCB_SAFE_FS
 #include "config.h"
 
-#include "compat_inc.h"
+#include <librnd/core/compat_inc.h>
 
 #include <stdlib.h>
 #include <stdio.h>

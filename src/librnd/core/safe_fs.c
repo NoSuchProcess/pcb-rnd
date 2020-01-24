@@ -28,7 +28,7 @@
 #define PCB_SAFE_FS
 
 /* opendir, readdir */
-#include "compat_inc.h"
+#include <librnd/core/compat_inc.h>
 
 #include "config.h"
 

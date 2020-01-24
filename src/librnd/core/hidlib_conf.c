@@ -44,7 +44,7 @@ int pcb_hidlib_conf_init()
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(pcbhl_conf, field,isarray,type_name,cpath,cname,desc,flags);
-#include "hidlib_conf_fields.h"
+#include <librnd/core/hidlib_conf_fields.h>
 
 	return cnt;
 }

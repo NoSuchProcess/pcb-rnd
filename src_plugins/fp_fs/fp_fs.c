@@ -32,7 +32,7 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "compat_inc.h"
+#include <librnd/core/compat_inc.h>
 
 #include "board.h"
 #include "data.h"

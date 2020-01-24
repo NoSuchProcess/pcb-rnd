@@ -33,7 +33,7 @@ components will be simplified.  The returned value will be allocated using
 
 */
 
-#include "compat_inc.h"
+#include <librnd/core/compat_inc.h>
 #include "config.h"
 #include <librnd/core/compat_lrealpath.h>
 #include <limits.h>

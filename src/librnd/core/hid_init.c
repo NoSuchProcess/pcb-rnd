@@ -53,7 +53,7 @@
 #include <librnd/core/hid_dad_unit.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
-#include "compat_inc.h"
+#include <librnd/core/compat_inc.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/hidlib.h>

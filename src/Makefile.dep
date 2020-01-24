@@ -1801,7 +1801,7 @@
  buffer.h data.h ../src/librnd/core/error.h obj_subc.h obj_subc_list.h obj_subc_op.h \
  operation.h ../src/librnd/core/compat_misc.h ../src/librnd/core/pcb-printf.h operation.h plug_io.h ../src/librnd/core/safe_fs.h
 ../src_plugins/fp_fs/fp_fs.o: ../src_plugins/fp_fs/fp_fs.c ../config.h \
- compat_inc.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src/librnd/core/compat_inc.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/core/pcb_bool.h vtroutestyle.h ../src/librnd/core/unit.h ../src/librnd/core/attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h ../src/librnd/core/globalconst.h ../src/librnd/core/color.h \
@@ -1826,7 +1826,7 @@
  ../src_3rd/puplug/error.h plug_footprint.h vtlibrary.h data.h ../src/librnd/core/conf.h \
  ../src/librnd/core/pcb-printf.h ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h ../src/librnd/core/compat_fs.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/error.h ../src/librnd/core/conf.h conf_core.h ../src/librnd/core/hid_init.h macro.h ../src/librnd/core/safe_fs.h \
- safe_fs_dir.h compat_inc.h
+ safe_fs_dir.h ../src/librnd/core/compat_inc.h
 ../src_plugins/fp_wget/edakrill.o: ../src_plugins/fp_wget/edakrill.c \
  ../config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -5499,7 +5499,7 @@
  ../src/librnd/core/pcb-printf.h ../src_3rd/genvector/gds_char.h ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/safe_fs.h \
  ../src/librnd/core/conf.h ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h safe_fs_dir.h compat_inc.h ../src/librnd/core/compat_fs.h \
+ ../src_3rd/genlist/gendlist.h safe_fs_dir.h ../src/librnd/core/compat_inc.h ../src/librnd/core/compat_fs.h \
  ../src/librnd/core/event.h ../src/librnd/core/hidlib.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src/librnd/core/globalconst.h ../src_plugins/script/script.h \
  ../src_plugins/script/live_script.h
@@ -6195,7 +6195,7 @@ color.o: color.c ../config.h ../src/librnd/core/color.h ../src/librnd/core/globa
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
-compat_fs.o: compat_fs.c ../config.h compat_inc.h ../src/librnd/core/compat_fs.h \
+compat_fs.o: compat_fs.c ../config.h ../src/librnd/core/compat_inc.h ../src/librnd/core/compat_fs.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/globalconst.h ../src/librnd/core/safe_fs.h ../src/librnd/core/global_typedefs.h ../src/librnd/core/pcb_bool.h \
  ../src/librnd/core/conf.h ../src/librnd/core/pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6209,9 +6209,9 @@ compat_fs.o: compat_fs.c ../config.h compat_inc.h ../src/librnd/core/compat_fs.h
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h ../src/librnd/core/hid.h ../src/librnd/core/error.h \
  ../src/librnd/core/attrib.h ../src/librnd/core/box.h math_helper.h ../src/librnd/core/misc_util.h
-compat_lrealpath.o: compat_lrealpath.c compat_inc.h ../config.h \
+compat_lrealpath.o: compat_lrealpath.c ../src/librnd/core/compat_inc.h ../config.h \
  ../src/librnd/core/compat_lrealpath.h ../src/librnd/core/compat_misc.h
-compat_misc.o: compat_misc.c compat_inc.h ../config.h \
+compat_misc.o: compat_misc.c ../src/librnd/core/compat_inc.h ../config.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/compat_misc.h
 conf.o: conf.c ../src_3rd/genht/htsi.h ../src_3rd/genht/ht.h \
@@ -6687,7 +6687,7 @@ hid_init.o: hid_init.c ../config.h ../src_3rd/genvector/vts0.h \
  ../src_3rd/genht/htpp.h ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  ../src/librnd/core/color.h ../src/librnd/core/hid_init.h ../src_3rd/genvector/vtp0.h ../src/librnd/core/hid_dad_unit.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/pcb-printf.h ../src_3rd/genvector/gds_char.h \
- ../src/librnd/core/hid_dad_spin.h compat_inc.h ../src/librnd/core/compat_fs.h ../src/librnd/core/file_loaded.h ../src/librnd/core/hidlib_conf.h \
+ ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/compat_inc.h ../src/librnd/core/compat_fs.h ../src/librnd/core/file_loaded.h ../src/librnd/core/hidlib_conf.h \
  ../src/librnd/core/conf.h ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h
@@ -7810,7 +7810,7 @@ rtree.o: rtree.c ../config.h ../src/librnd/core/unit.h ../src/librnd/core/global
  ../src_3rd/genrtree/genrtree_search.h \
  ../src_3rd/genrtree/genrtree_delete.h \
  ../src_3rd/genrtree/genrtree_debug.h rtree2_compat.h
-safe_fs.o: safe_fs.c compat_inc.h ../config.h ../src/librnd/core/safe_fs.h ../src/librnd/core/global_typedefs.h \
+safe_fs.o: safe_fs.c ../src/librnd/core/compat_inc.h ../config.h ../src/librnd/core/safe_fs.h ../src/librnd/core/global_typedefs.h \
  ../src/librnd/core/pcb_bool.h ../src/librnd/core/conf.h ../src/librnd/core/pcb-printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
