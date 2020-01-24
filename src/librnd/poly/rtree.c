@@ -37,7 +37,7 @@
 #include <genrtree/genrtree_search.h>
 #include <genrtree/genrtree_delete.h>
 #include <genrtree/genrtree_debug.h>
-#include "rtree2_compat.h"
+#include <librnd/poly/rtree2_compat.h>
 
 /* Temporary compatibility layer for the transition */
 pcb_rtree_t *pcb_r_create_tree(void)

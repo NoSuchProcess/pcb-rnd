@@ -33,7 +33,7 @@
 #include "obj_common.h"
 #include "layer.h"
 #include <librnd/core/global_typedefs.h>
-#include "rtree2_compat.h"
+#include <librnd/poly/rtree2_compat.h>
 
 
 typedef enum pcb_subc_cached_s {

@@ -52,7 +52,7 @@
 #include <librnd/poly/rtree.h>
 #include "mtspace.h"
 #include "vector.h"
-#include "rtree2_compat.h"
+#include <librnd/poly/rtree2_compat.h>
 
 /* mtspace data structures are built on r-trees. */
 
