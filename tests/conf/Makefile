@@ -20,10 +20,10 @@ LIB_PCBRND_OBJS=\
 	../../src/conf_internal.o
 
 DEPH = \
-	../../src/conf.h \
-	../../src/conf_hid.h \
+	../../src/librnd/core/conf.h \
+	../../src/librnd/core/conf_hid.h \
+	../../src/librnd/core/compat_misc.h \
 	../../src/conf_core.h \
-	../../src/compat_misc.h \
 	../../src_plugins/diag/diag_conf.h \
 
 OBJS = conftest.o help.o

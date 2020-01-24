@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <ctype.h>
-#include "hid.h"
-#include "conf.h"
-#include "conf_hid.h"
+#include <librnd/core/hid.h>
+#include <librnd/core/conf.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/compat_misc.h>
 #include "conf_core.h"
-#include "hidlib_conf.h"
-#include "compat_misc.h"
 #include "src_plugins/diag/diag_conf.h"
 
 int lineno = 0;
