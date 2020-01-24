@@ -29,14 +29,14 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include "../src/plug_footprint.h"
-#include "../src/paths.h"
-#include "../src/conf.h"
+#include <librnd/core/paths.h>
+#include <librnd/core/conf.h>
 #include "../src/conf_core.h"
 #include "../config.h"
-#include "../src/compat_misc.h"
+#include <librnd/core/compat_misc.h>
 #include "gsch2pcb_rnd_conf.h"
 #include "gsch2pcb.h"
-#include "../src/misc_util.h"
+#include <librnd/core/misc_util.h>
 #include "run.h"
 
 const char *gnetlist_name(void)

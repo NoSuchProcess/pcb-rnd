@@ -1,5 +1,5 @@
 put /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
+append /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS ?/target/libs/ldl
 include {../scconfig/template/debug.tmpasm}
@@ -38,8 +38,9 @@ uniq /local/pcb/OBJS
 
 print [@
 
+LIBRND=../../src/librnd
 FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o
-CONF_OBJS  = ../../src/vtlibrary.o ../../src/compat_fs.o ../../src/paths.o ../../src/conf.o ../../src/conf_core.o ../../src/hid_cfg.o ../../src/hidlib_conf.o ../../src/misc_util.o ../../src/unit.o ../../src/conf_internal.o ../../src/list_conf.o ../../src/conf_hid.o ../../src/pcb-printf.o ../../src/compat_misc.o ../../src/safe_fs.o
+CONF_OBJS  = ../../src/vtlibrary.o $(LIBRND)/core/compat_fs.o $(LIBRND)/core/paths.o $(LIBRND)/core/conf.o ../../src/conf_core.o $(LIBRND)/core/hid_cfg.o $(LIBRND)/core/hidlib_conf.o $(LIBRND)/core/misc_util.o $(LIBRND)/core/unit.o ../../src/conf_internal.o $(LIBRND)/core/list_conf.o $(LIBRND)/core/conf_hid.o $(LIBRND)/core/pcb-printf.o $(LIBRND)/core/compat_misc.o $(LIBRND)/core/safe_fs.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 OBJS = \

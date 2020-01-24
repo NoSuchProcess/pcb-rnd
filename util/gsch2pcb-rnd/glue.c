@@ -19,11 +19,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <errno.h>
-#include "../src/error.h"
-#include "../src/event.h"
-#include "../src/plugins.h"
-#include "../src/hid.h"
-#include "../src/hidlib_conf.h"
+#include <librnd/core/error.h>
+#include <librnd/core/event.h>
+#include <librnd/core/plugins.h>
+#include <librnd/core/hid.h>
+#include <librnd/core/hidlib_conf.h>
 #include "gsch2pcb_rnd_conf.h"
 #include <libfungw/fungw.h>
 

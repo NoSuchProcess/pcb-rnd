@@ -27,11 +27,11 @@
 #include "run.h"
 #include "netlister.h"
 #include "method.h"
-#include "../src/conf.h"
+#include <librnd/core/conf.h>
 #include "../src/conf_core.h"
-#include "../src/compat_misc.h"
-#include "../src/compat_fs.h"
-#include "../src/misc_util.h"
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/misc_util.h>
 
 char *cmd_file_name;
 char *pcb_file_name;
