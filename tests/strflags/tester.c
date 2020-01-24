@@ -36,7 +36,7 @@
 #define FLAG_TEST
 #include "flag_str.c"
 #include "flag.c"
-#include "compat_misc.c"
+#include <librnd/core/compat_misc.c>
 
 static void dump_flag(pcb_flag_t * f)
 {
