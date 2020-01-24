@@ -40,7 +40,6 @@
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
-#include "crosshair.h"
 
 /* split value into a list of '-' separated words; examine each word
    and set the bitmask of modifiers */
