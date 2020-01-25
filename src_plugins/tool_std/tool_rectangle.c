@@ -156,6 +156,7 @@ pcb_tool_t pcb_tool_rectangle = {
 	NULL,
 	pcb_tool_rectangle_anydo_act,
 	pcb_tool_rectangle_anydo_act,
+	NULL, /* escape */
 	
 	pcb_false
 };

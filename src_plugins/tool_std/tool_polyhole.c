@@ -219,6 +219,7 @@ pcb_tool_t pcb_tool_polyhole = {
 	pcb_tool_polyhole_draw_attached,
 	pcb_tool_polyhole_undo_act,
 	pcb_tool_polyhole_redo_act,
+	NULL, /* escape */
 	
 	pcb_false
 };

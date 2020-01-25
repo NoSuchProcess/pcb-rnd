@@ -275,6 +275,7 @@ pcb_tool_t pcb_tool_arrow = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_true
 };

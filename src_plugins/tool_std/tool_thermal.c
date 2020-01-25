@@ -143,6 +143,7 @@ pcb_tool_t pcb_tool_thermal = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_false
 };

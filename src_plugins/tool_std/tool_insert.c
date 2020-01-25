@@ -175,6 +175,7 @@ pcb_tool_t pcb_tool_insert = {
 	pcb_tool_insert_draw_attached,
 	pcb_tool_insert_undo_act,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_true
 };

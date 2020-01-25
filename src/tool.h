@@ -86,6 +86,7 @@ typedef struct pcb_tool_s {
 	void     (*draw_attached)(pcb_hidlib_t *hl);
 	pcb_bool (*undo_act)(pcb_hidlib_t *hl);
 	pcb_bool (*redo_act)(pcb_hidlib_t *hl);
+	pcb_bool (*escape)(pcb_hidlib_t *hl);
 	
 	pcb_bool allow_when_drawing_ratlines;
 } pcb_tool_t;

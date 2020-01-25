@@ -128,6 +128,7 @@ pcb_tool_t pcb_tool_copy = {
 	pcb_tool_copy_draw_attached,
 	pcb_tool_copy_undo_act,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_true
 };

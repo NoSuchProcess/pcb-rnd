@@ -234,6 +234,7 @@ pcb_tool_t pcb_tool_arc = {
 	pcb_tool_arc_draw_attached,
 	pcb_tool_arc_undo_act,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_false
 };

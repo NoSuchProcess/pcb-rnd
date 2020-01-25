@@ -124,6 +124,7 @@ pcb_tool_t pcb_tool_remove = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_true
 };

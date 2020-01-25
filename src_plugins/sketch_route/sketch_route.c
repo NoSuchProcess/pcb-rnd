@@ -1133,6 +1133,7 @@ static pcb_tool_t tool_skline = {
 	tool_skline_draw_attached,
 	tool_skline_undo_act,
 	NULL,
+	NULL, /* escape */
 
 	pcb_false
 };

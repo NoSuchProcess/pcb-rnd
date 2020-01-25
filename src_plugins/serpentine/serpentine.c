@@ -417,6 +417,7 @@ static pcb_tool_t tool_serpentine = {
 	tool_serpentine_draw_attached,
 	tool_serpentine_undo_act,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_false
 };

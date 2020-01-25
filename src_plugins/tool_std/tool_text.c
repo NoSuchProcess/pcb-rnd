@@ -134,6 +134,7 @@ pcb_tool_t pcb_tool_text = {
 	pcb_tool_text_draw_attached,
 	NULL,
 	NULL,
+	NULL, /* escape */
 	
 	pcb_false
 };

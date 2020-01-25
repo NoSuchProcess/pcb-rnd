@@ -512,6 +512,7 @@ static pcb_tool_t tool_ddraft = {
 	ddraft_tool_draw_attached,
 	NULL,
 	NULL,
+	NULL, /* escape */
 	pcb_false
 };
 
