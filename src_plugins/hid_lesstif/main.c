@@ -99,7 +99,6 @@ XtAppContext app_context;
 Widget appwidget;
 Display *display;
 static Window window = 0;
-static Cursor my_cursor = 0;
 static int old_cursor_mode = -1;
 static int over_point = 0;
 
@@ -1383,6 +1382,8 @@ void lesstif_init_menu(void);
 extern Widget lesstif_menubar;
 static int lesstif_hid_inited = 0;
 
+#include "mouse.c"
+
 static void lesstif_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	Dimension width, height;
@@ -1554,6 +1555,7 @@ static void lesstif_uninit(pcb_hid_t *hid)
 {
 	if (lesstif_hid_inited) {
 		lesstif_uninit_menu();
+		ltf_mouse_uninit();
 		lesstif_hid_inited = 0;
 	}
 }
@@ -2036,96 +2038,6 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 	}
 
-	{
-		if (old_cursor_mode != pcbhl_conf.editor.mode) {
-			int cursor = -1;
-			static int free_cursor = 0;
-
-			old_cursor_mode = pcbhl_conf.editor.mode;
-			switch (pcbhl_conf.editor.mode) {
-			case PCB_MODE_VIA:
-				cursor = -1;
-				break;
-			case PCB_MODE_LINE:
-				cursor = XC_pencil;
-				break;
-			case PCB_MODE_RECTANGLE:
-				cursor = XC_ul_angle;
-				break;
-			case PCB_MODE_POLYGON:
-				cursor = XC_sb_up_arrow;
-				break;
-			case PCB_MODE_POLYGON_HOLE:
-				cursor = XC_sb_up_arrow;
-				break;
-			case PCB_MODE_PASTE_BUFFER:
-				cursor = XC_hand1;
-				break;
-			case PCB_MODE_TEXT:
-				cursor = XC_xterm;
-				break;
-			case PCB_MODE_ROTATE:
-				cursor = XC_exchange;
-				break;
-			case PCB_MODE_REMOVE:
-				cursor = XC_pirate;
-				break;
-			case PCB_MODE_MOVE:
-				cursor = XC_crosshair;
-				break;
-			case PCB_MODE_COPY:
-				cursor = XC_crosshair;
-				break;
-			case PCB_MODE_INSERT_POINT:
-				cursor = XC_dotbox;
-				break;
-			case PCB_MODE_RUBBERBAND_MOVE:
-				cursor = XC_top_left_corner;
-				break;
-			case PCB_MODE_THERMAL:
-				cursor = XC_iron_cross;
-				break;
-			case PCB_MODE_ARC:
-				cursor = XC_question_arrow;
-				break;
-			case PCB_MODE_ARROW:
-				if (over_point)
-					cursor = XC_draped_box;
-				else
-					cursor = XC_left_ptr;
-				break;
-			case PCB_MODE_LOCK:
-				cursor = XC_hand2;
-				break;
-			}
-
-			if (free_cursor) {
-				XFreeCursor(display, my_cursor);
-				free_cursor = 0;
-			}
-			if (cursor == -1) {
-				static Pixmap nocur_source = 0;
-				static Pixmap nocur_mask = 0;
-				static Cursor nocursor = 0;
-				if (nocur_source == 0) {
-					XColor fg, bg;
-					nocur_source = XCreateBitmapFromData(display, window, "\0", 1, 1);
-					nocur_mask = XCreateBitmapFromData(display, window, "\0", 1, 1);
-
-					fg.red = fg.green = fg.blue = 65535;
-					bg.red = bg.green = bg.blue = 0;
-					fg.flags = bg.flags = DoRed | DoGreen | DoBlue;
-					nocursor = XCreatePixmapCursor(display, nocur_source, nocur_mask, &fg, &bg, 0, 0);
-				}
-				my_cursor = nocursor;
-			}
-			else {
-				my_cursor = XCreateFontCursor(display, cursor);
-				free_cursor = 1;
-			}
-			XDefineCursor(display, window, my_cursor);
-		}
-	}
 	{
 		static const char *old_clip = NULL;
 		static int old_tscale = -1;
@@ -2989,15 +2901,6 @@ static void ltf_open_command(pcb_hid_t *hid)
 	XtManageChild(m_cmd);
 	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
 	cmd_is_active = 1;
-}
-
-static void ltf_reg_mouse_cursor(pcb_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
-{
-
-}
-
-static void ltf_set_mouse_cursor(pcb_hid_t *hid, int idx)
-{
 }
 
 static void ltf_set_top_title(pcb_hid_t *hid, const char *title)
