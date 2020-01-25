@@ -627,4 +627,21 @@ do { \
 		pcb_gui->busy(pcb_gui, is_busy); \
 } while(0)
 
+
+/* Notify the GUI that data relating to the crosshair is being changed.
+ *
+ * The argument passed is pcb_false to notify "changes are about to happen",
+ * and pcb_true to notify "changes have finished".
+ *
+ * Each call with a 'pcb_false' parameter must be matched with a following one
+ * with a 'pcb_true' parameter. Unmatched 'pcb_true' calls are currently not permitted,
+ * but might be allowed in the future.
+ *
+ * GUIs should not complain if they receive extra calls with 'pcb_true' as parameter.
+ * They should initiate a redraw of the crosshair attached objects - which may
+ * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
+ * location of existing attached drawing. */
+void pcb_notify_crosshair_change(pcb_hidlib_t *hl, pcb_bool changes_complete);
+
+
 #endif

@@ -106,7 +106,6 @@ extern pcb_crosshair_t pcb_crosshair;
 extern pcb_mark_t pcb_marked;  /* the point the user explicitly marked, or in some operations where the operation originally started */
 extern pcb_mark_t pcb_grabbed; /* point where a drag&drop operation started */
 
-void pcb_notify_crosshair_change(pcb_bool changes_complete);
 void pcb_notify_mark_change(pcb_bool changes_complete);
 void pcb_crosshair_move_relative(pcb_coord_t, pcb_coord_t);
 pcb_bool pcb_crosshair_move_absolute(pcb_coord_t, pcb_coord_t);

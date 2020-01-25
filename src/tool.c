@@ -28,19 +28,17 @@
 
 #include "tool.h"
 
-#include "board.h"
 #include <librnd/core/hidlib_conf.h>
-#include "conf_core.h"
-#include "crosshair.h"
-#include "data.h"
-#include "draw.h"
 #include <librnd/core/error.h>
 #include <librnd/core/event.h>
-#include "find.h"
 #include <librnd/core/grid.h>
-#include "undo.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/conf_hid.h>
+
+#include "board.h"
+#include "conf_core.h"
+#include "crosshair.h"
+
 
 vtp0_t pcb_tools;
 
@@ -141,7 +139,6 @@ int pcb_tool_select_by_name(pcb_hidlib_t *hidlib, const char *name)
 
 int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 {
-	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	char id_s[32];
 	static pcb_bool recursing = pcb_false;
 	int ok = 1;
@@ -175,9 +172,9 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	recursing = pcb_false;
 
 	/* force a crosshair grid update because the valid range may have changed */
-	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(hidlib, pcb_false);
 	pcb_crosshair_move_relative(0, 0);
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(hidlib, pcb_true);
 	if (pcb_gui != NULL)
 		pcb_gui->set_mouse_cursor(pcb_gui, id);
 	return 0;
@@ -355,7 +352,7 @@ void pcb_tool_attach_for_copy(pcb_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t 
 
 void pcb_tool_notify_block(void)
 {
-	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:						/* setup first point */
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
@@ -367,10 +364,13 @@ void pcb_tool_notify_block(void)
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 		break;
 	}
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 /*** old helpers ***/
+#include "data.h"
+#include "draw.h"
+
 void pcb_release_mode(pcb_hidlib_t *hidlib)
 {
 	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 0) == 0))

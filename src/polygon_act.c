@@ -99,7 +99,7 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, Polygon, op = fgw_keyword(&argv[1]));
 
 	if ((argc > 1) && ((pcbhl_conf.editor.mode == pcb_crosshair.tool_poly) || (pcbhl_conf.editor.mode == pcb_crosshair.tool_poly_hole))) {
-		pcb_notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 		switch(op) {
 			/* close open polygon if possible */
 		case F_Close:
@@ -116,7 +116,7 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_polygon_go_to_prev_point();
 			break;
 		}
-		pcb_notify_crosshair_change(pcb_true);
+		pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 	}
 	PCB_ACT_IRES(0);
 	return 0;

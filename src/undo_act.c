@@ -103,17 +103,17 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function = NULL;
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
 	if (!function || !*function) {
-		pcb_notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 		if (pcb_tool_undo_act(PCB_ACT_HIDLIB))
 			if (pcb_undo(pcb_true) == 0)
 				pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
-		pcb_notify_crosshair_change(pcb_false);
+		pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 		if (pcb_strcasecmp(function, "ClearList") == 0)
 			pcb_undo_clear_list(pcb_false);
 	}
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -128,11 +128,11 @@ static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
 
 fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 	if (pcb_tool_redo_act(PCB_ACT_HIDLIB))
 		if (pcb_redo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 	PCB_ACT_IRES(0);
 	return 0;
 }

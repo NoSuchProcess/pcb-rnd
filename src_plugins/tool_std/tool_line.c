@@ -63,7 +63,7 @@ static pcb_layer_t *last_layer;
 
 void pcb_tool_line_init(void)
 {
-	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	if (pcb_tool_prev_id == pcb_crosshair.tool_arc && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
@@ -79,12 +79,12 @@ void pcb_tool_line_init(void)
 			}
 		}
 	}
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 void pcb_tool_line_uninit(void)
 {
-	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_added_lines = 0;
 	pcb_route_reset(&pcb_crosshair.Route);
 	if (pcb_tool_next_id != pcb_crosshair.tool_arc) {
@@ -92,7 +92,7 @@ void pcb_tool_line_uninit(void)
 		if (!pcb_marked.user_placed)
 			pcb_crosshair_set_local_ref(0, 0, pcb_false);
 	}
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 /* creates points of a line (when clicked) */

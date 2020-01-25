@@ -285,16 +285,16 @@ serpentine_calculate_route(	pcb_route_t * route,
 
 static void tool_serpentine_init(void)
 {
-	pcb_notify_crosshair_change(pcb_false);
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 static void tool_serpentine_uninit(void)
 {
-	pcb_notify_crosshair_change(pcb_false);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	pcb_notify_crosshair_change(pcb_true);
+	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 static void tool_serpentine_notify_mode(void)
