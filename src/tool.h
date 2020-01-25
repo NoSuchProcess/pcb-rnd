@@ -71,11 +71,11 @@ typedef struct pcb_tool_s {
 	pcb_bool allow_when_drawing_ratlines;
 } pcb_tool_t;
 
-vtp0_t pcb_tools;
+extern vtp0_t pcb_tools;
 
 /* (un)initialize the tool subsystem */
-void pcb_tool_init();
-void pcb_tool_uninit();
+void pcb_tool_init(void);
+void pcb_tool_uninit(void);
 void pcb_tool_uninit_conf(void); /* call this one before hidlib uninit for conf uninit */
 
 /* Insert a new tool in pcb_tools; returns -1 on failure */

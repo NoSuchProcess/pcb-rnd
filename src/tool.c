@@ -42,6 +42,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/conf_hid.h>
 
+vtp0_t pcb_tools;
 
 pcb_toolid_t pcb_tool_prev_id;
 pcb_toolid_t pcb_tool_next_id;
@@ -61,7 +62,7 @@ void tool_chg_mode(conf_native_t *cfg, int arr_idx)
 		pcb_tool_select_by_id(&PCB->hidlib, pcbhl_conf.editor.mode);
 }
 
-void pcb_tool_init()
+void pcb_tool_init(void)
 {
 	static conf_hid_callbacks_t cbs_mode;
 	conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
@@ -77,7 +78,7 @@ void pcb_tool_init()
 	}
 }
 
-void pcb_tool_uninit()
+void pcb_tool_uninit(void)
 {
 	while(vtp0_len(&pcb_tools) != 0) {
 		const pcb_tool_t *tool = pcb_tool_get(0);
