@@ -136,6 +136,6 @@ pcb_tool_t pcb_tool_text = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_false
+	0
 };
 

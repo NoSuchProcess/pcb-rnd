@@ -147,5 +147,5 @@ pcb_tool_t pcb_tool_via = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_false
+	0
 };

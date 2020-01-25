@@ -27,6 +27,10 @@
 #ifndef PCB_TOOL_LOGIC_H
 #define PCB_TOOL_LOGIC_H
 
+typedef enum { /* bitfield */
+	PCB_TLF_RAT = 1   /* tool can be used on the rat layer */
+} pcb_tool_user_flags_t;
+
 void pcb_tool_logic_init(void);
 void pcb_tool_logic_uninit(void);
 

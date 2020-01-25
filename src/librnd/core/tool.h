@@ -68,7 +68,7 @@ typedef struct pcb_tool_s {
 	pcb_bool (*redo_act)(pcb_hidlib_t *hl);
 	pcb_bool (*escape)(pcb_hidlib_t *hl);
 	
-	pcb_bool allow_when_drawing_ratlines;
+	unsigned long user_flags;
 } pcb_tool_t;
 
 extern vtp0_t pcb_tools;

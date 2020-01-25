@@ -52,7 +52,7 @@ static void tool_logic_chg_tool(pcb_hidlib_t *hidlib, void *user_data, int argc,
 	int *ok = argv[1].d.p;
 	int id = argv[2].d.i;
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
-	if (pcb->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
+	if (pcb->RatDraw && !(pcb_tool_get(id)->user_flags & PCB_TLF_RAT)) {
 		pcb_message(PCB_MSG_WARNING, "That tool can not be used on the rat layer!\n");
 		*ok = 0;
 	}
@@ -93,7 +93,7 @@ void pcb_tool_logic_uninit(void)
 static void tool_logic_chg_layer(conf_native_t *cfg, int arr_idx)
 {
 	static int was_rat;
-	if (PCB->RatDraw && !was_rat && !pcb_tool_get(pcbhl_conf.editor.mode)->allow_when_drawing_ratlines)
+	if (PCB->RatDraw && !was_rat && !(pcb_tool_get(pcbhl_conf.editor.mode)->user_flags & PCB_TLF_RAT))
 		pcb_tool_select_by_name(&PCB->hidlib, "line");
 	was_rat = PCB->RatDraw;
 }

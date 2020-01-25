@@ -278,5 +278,5 @@ pcb_tool_t pcb_tool_arrow = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_true
+	PCB_TLF_RAT
 };

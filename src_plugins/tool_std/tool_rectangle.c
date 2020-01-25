@@ -166,5 +166,5 @@ pcb_tool_t pcb_tool_rectangle = {
 	pcb_tool_rectangle_anydo_act,
 	pcb_tool_rectangle_escape,
 	
-	pcb_false
+	0
 };

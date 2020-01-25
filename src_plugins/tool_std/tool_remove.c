@@ -43,6 +43,7 @@
 #include "obj_rat.h"
 #include <librnd/core/tool.h>
 #include "crosshair.h"
+#include "tool_logic.h"
 
 
 void pcb_tool_remove_notify_mode(pcb_hidlib_t *hl)
@@ -127,5 +128,5 @@ pcb_tool_t pcb_tool_remove = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_true
+	PCB_TLF_RAT
 };

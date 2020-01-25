@@ -139,5 +139,5 @@ pcb_tool_t pcb_tool_move = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_true
+	0
 };

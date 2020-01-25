@@ -49,6 +49,7 @@
 #include <librnd/core/tool.h>
 #include "undo.h"
 #include "netlist.h"
+#include "tool_logic.h"
 
 #include "obj_line_draw.h"
 #include "obj_pstk_draw.h"
@@ -527,5 +528,5 @@ pcb_tool_t pcb_tool_line = {
 	pcb_tool_line_redo_act,
 	pcb_tool_line_escape,
 
-	pcb_true
+	PCB_TLF_RAT
 };

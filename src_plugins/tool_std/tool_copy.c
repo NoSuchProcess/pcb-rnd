@@ -130,5 +130,5 @@ pcb_tool_t pcb_tool_copy = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_true
+	0
 };

@@ -201,5 +201,5 @@ pcb_tool_t pcb_tool_poly = {
 	pcb_tool_poly_redo_act,
 	pcb_tool_poly_escape,
 	
-	pcb_false
+	0
 };

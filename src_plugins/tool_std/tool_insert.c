@@ -177,5 +177,5 @@ pcb_tool_t pcb_tool_insert = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_true
+	0
 };

@@ -244,5 +244,5 @@ pcb_tool_t pcb_tool_arc = {
 	NULL,
 	pcb_tool_arc_escape,
 	
-	pcb_false
+	0
 };
