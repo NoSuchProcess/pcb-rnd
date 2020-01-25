@@ -172,9 +172,9 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	recursing = pcb_false;
 
 	/* force a crosshair grid update because the valid range may have changed */
-	pcb_notify_crosshair_change(hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(hidlib, pcb_false);
 	pcb_crosshair_move_relative(0, 0);
-	pcb_notify_crosshair_change(hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(hidlib, pcb_true);
 	if (pcb_gui != NULL)
 		pcb_gui->set_mouse_cursor(pcb_gui, id);
 	return 0;
@@ -352,7 +352,7 @@ void pcb_tool_attach_for_copy(pcb_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t 
 
 void pcb_tool_notify_block(void)
 {
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:						/* setup first point */
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
@@ -364,7 +364,7 @@ void pcb_tool_notify_block(void)
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 		break;
 	}
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 /*** old helpers ***/

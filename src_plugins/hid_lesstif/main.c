@@ -229,13 +229,13 @@ static void ShowCrosshair(pcb_bool show)
 	if (crosshair_on == show)
 		return;
 
-	pcb_notify_crosshair_change(ltf_hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
 	if (pcb_marked.status)
 		pcb_notify_mark_change(pcb_false);
 
 	crosshair_on = show;
 
-	pcb_notify_crosshair_change(ltf_hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
 	if (pcb_marked.status)
 		pcb_notify_mark_change(pcb_true);
 }
@@ -483,12 +483,12 @@ static void ltf_mod_key(XKeyEvent *e, int set, int mainloop)
 		return;
 
 	in_move_event = 1;
-	pcb_notify_crosshair_change(ltf_hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
 	if (panning)
 		Pan(2, e->x, e->y);
 	pcb_hidlib_crosshair_move_to(Px(e->x), Py(e->y), 1);
 	pcb_hidlib_adjust_attached_objects(ltf_hidlib);
-	pcb_notify_crosshair_change(ltf_hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
 	in_move_event = 0;
 }
 
@@ -1011,7 +1011,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (lesstif_button_event(w, e))
 				return;
 
-			pcb_notify_crosshair_change(ltf_hidlib, pcb_false);
+			pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
 			pressed_button = e->xbutton.button;
 			mods = ((e->xbutton.state & ShiftMask) ? PCB_M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? PCB_M_Ctrl : 0)
@@ -1022,7 +1022,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 			hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 
-			pcb_notify_crosshair_change(ltf_hidlib, pcb_true);
+			pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
 			break;
 		}
 
@@ -1032,7 +1032,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (e->xbutton.button != pressed_button)
 				return;
 			lesstif_button_event(w, e);
-			pcb_notify_crosshair_change(ltf_hidlib, pcb_false);
+			pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
 			pressed_button = 0;
 			mods = ((e->xbutton.state & ShiftMask) ? PCB_M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? PCB_M_Ctrl : 0)
@@ -1043,7 +1043,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 				+ PCB_M_Release;
 			hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
-			pcb_notify_crosshair_change(ltf_hidlib, pcb_true);
+			pcb_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
 			break;
 		}
 

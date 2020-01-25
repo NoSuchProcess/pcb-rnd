@@ -51,7 +51,7 @@ static void log_invalidate_all(pcb_hid_t *hid)
 
 static void log_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
-	pcb_fprintf(out_, "pcb_notify_crosshair_change(%s)\n", changes_complete ? "true" : "false");
+	pcb_fprintf(out_, "pcb_hid_notify_crosshair_change(%s)\n", changes_complete ? "true" : "false");
 	delegatee_->notify_crosshair_change(hid, changes_complete);
 }
 

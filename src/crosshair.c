@@ -1014,7 +1014,7 @@ pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 		x = z;
 		z = pcb_crosshair.Y;
 		pcb_crosshair.Y = y;
-		pcb_notify_crosshair_change(&PCB->hidlib, pcb_false); /* Our caller notifies when it has done */
+		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false); /* Our caller notifies when it has done */
 		/* now move forward again */
 		pcb_crosshair.X = x;
 		pcb_crosshair.Y = z;
@@ -1031,7 +1031,7 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 	pcb_coord_t save_grid = PCB->hidlib.grid;
 	PCB->hidlib.grid = 1;
 	if (pcb_crosshair_move_absolute(X, Y))
-		pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	pcb_gui->set_crosshair(pcb_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_WARP_POINTER);
 	PCB->hidlib.grid = save_grid;
 }
@@ -1122,7 +1122,7 @@ static void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 		/* update object position and cursor location */
 		pcb_tool_adjust_attached_objects(&PCB->hidlib);
 		pcb_event(&PCB->hidlib, PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
-		pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	}
 }
 
@@ -1138,11 +1138,11 @@ void *pcb_hidlib_crosshair_suspend(void)
 	buf->obj = pcb_crosshair.AttachedObject.State;
 	buf->line = pcb_crosshair.AttachedLine.State;
 	buf->box = pcb_crosshair.AttachedBox.State;
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	return buf;
 }
 
@@ -1150,11 +1150,11 @@ void pcb_hidlib_crosshair_restore(void *susp_data)
 {
 	old_crosshair_t *buf = susp_data;
 
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedObject.State = buf->obj;
 	pcb_crosshair.AttachedLine.State = buf->line;
 	pcb_crosshair.AttachedBox.State = buf->box;
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 
 	free(buf);
 }
@@ -1163,10 +1163,10 @@ void pcb_hidlib_crosshair_restore(void *susp_data)
 void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
 {
 	if (!mouse_mot) {
-		pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
+		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 		if (pcb_crosshair_move_absolute(abs_x, abs_y))
-			pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
-		pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+			pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	}
 	else
 		pcb_event_move_crosshair(abs_x, abs_y);

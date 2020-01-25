@@ -44,10 +44,10 @@
 
 void pcb_tool_poly_uninit(void)
 {
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedPolygon.PointN = 0;
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 TODO("remove this when pcb_tool_poly_notify_mode() loses PCB")

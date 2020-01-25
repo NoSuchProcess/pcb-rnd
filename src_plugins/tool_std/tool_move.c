@@ -44,10 +44,10 @@
 
 void pcb_tool_move_uninit(void)
 {
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	pcb_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	pcb_crosshair.extobj_edit = NULL;
 }
 

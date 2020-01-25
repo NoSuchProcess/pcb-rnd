@@ -641,7 +641,7 @@ do { \
  * They should initiate a redraw of the crosshair attached objects - which may
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing. */
-void pcb_notify_crosshair_change(pcb_hidlib_t *hl, pcb_bool changes_complete);
+void pcb_hid_notify_crosshair_change(pcb_hidlib_t *hl, pcb_bool changes_complete);
 
 
 #endif

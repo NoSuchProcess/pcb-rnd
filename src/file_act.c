@@ -76,17 +76,17 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_SubcToBuffer:
 		case F_Subcircuit:
 		case F_Footprint:
-			pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
 				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
-			pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_LayoutToBuffer:
-			pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
 				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
-			pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_Layout:
@@ -146,7 +146,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* PCB usgae: at the moment, while having only one global PCB, this function
    legitimately uses that */
 
-		pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
@@ -174,7 +174,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_board_changed(0);
 		pcb_hid_redraw(PCB);
-		pcb_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 		PCB_ACT_IRES(0);
 		return 0;
 	}
