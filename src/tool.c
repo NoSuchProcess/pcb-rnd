@@ -93,7 +93,7 @@ void pcb_tool_uninit_conf(void)
 }
 
 
-int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
+pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 {
 	pcb_toolid_t id;
 	if (pcb_tool_lookup(tool->name) != PCB_TOOLID_INVALID) /* don't register two tools with the same name */
@@ -104,7 +104,7 @@ int pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 	if (pcb_gui != NULL)
 		pcb_gui->reg_mouse_cursor(pcb_gui, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
 	pcb_event(NULL, PCB_EVENT_TOOL_REG, "p", tool);
-	return 0;
+	return id;
 }
 
 void pcb_tool_unreg_by_cookie(const char *cookie)

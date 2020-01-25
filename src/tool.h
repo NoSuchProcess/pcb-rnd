@@ -98,8 +98,8 @@ void pcb_tool_init();
 void pcb_tool_uninit();
 void pcb_tool_uninit_conf(void); /* call this one before hidlib uninit for conf uninit */
 
-/* Insert a new tool in pcb_tools; returns 0 on success */
-int pcb_tool_reg(pcb_tool_t *tool, const char *cookie);
+/* Insert a new tool in pcb_tools; returns -1 on failure */
+pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie);
 
 /* Unregister all tools that has matching cookie */
 void pcb_tool_unreg_by_cookie(const char *cookie);

@@ -557,9 +557,7 @@ int pplg_init_ddraft(void)
 	PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 	pcb_event_bind(PCB_EVENT_DRAW_CROSSHAIR_CHATT, cnst_enforce, NULL, ddraft_cookie);
 
-	pcb_tool_reg(&tool_ddraft, ddraft_cookie);
-	pcb_ddraft_tool = pcb_tool_lookup(tool_ddraft.name);
-
+	pcb_ddraft_tool = pcb_tool_reg(&tool_ddraft, ddraft_cookie);
 
 	confid = pcb_conf_hid_reg(ddraft_cookie, NULL);
 	cn = pcb_conf_get_field("editor/all_direction_lines");
