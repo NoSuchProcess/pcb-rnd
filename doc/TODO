@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - BUG: printf %ma truncates to integer; ml=3697 [report: gpaubert]
 + CLEANUP: separate the cam export empty output warning by reason: addressed groups don't exist or only layers are empty ml=3566 [report: cuvoodoo]
-- CLEANUP: librnd separation: when switching to the rat layer, select tool line [report: igor2]
 - CLEANUP: librnd separation: replace hardwired tool rat flag with generic bitfield flags [report: igor2]
 - CLEANUP: librnd separation: get rid of the old, centralized action registration magic in core, use init/uninit [report: igor2]
 - CLEANUP: librnd separation: centralize and move the tool code, see API renames in sch-rnd [report: igor2]
