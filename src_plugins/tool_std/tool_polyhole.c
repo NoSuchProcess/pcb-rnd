@@ -179,6 +179,14 @@ pcb_bool pcb_tool_polyhole_redo_act(pcb_hidlib_t *hl)
 		return pcb_true;
 }
 
+pcb_bool pcb_tool_polyhole_escape(pcb_hidlib_t *hl)
+{
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+		pcb_tool_select_by_name(hl, "arrow");
+	else
+		pcb_tool_select_by_name(hl, "polyhole");
+}
+
 /* XPM */
 static const char * polyhole_icon[] = {
 "21 21 3 1",
@@ -219,7 +227,7 @@ pcb_tool_t pcb_tool_polyhole = {
 	pcb_tool_polyhole_draw_attached,
 	pcb_tool_polyhole_undo_act,
 	pcb_tool_polyhole_redo_act,
-	NULL, /* escape */
+	pcb_tool_polyhole_escape,
 	
 	pcb_false
 };

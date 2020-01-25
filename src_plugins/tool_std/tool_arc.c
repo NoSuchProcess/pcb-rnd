@@ -193,6 +193,14 @@ pcb_bool pcb_tool_arc_undo_act(pcb_hidlib_t *hl)
 	return pcb_true;
 }
 
+pcb_bool pcb_tool_arc_escape(pcb_hidlib_t *hl)
+{
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+		pcb_tool_select_by_name(hl, "arrow");
+	else
+		pcb_tool_select_by_name(hl, "arc");
+}
+
 /* XPM */
 static const char *arc_icon[] = {
 /* columns rows colors chars-per-pixel */
@@ -234,7 +242,7 @@ pcb_tool_t pcb_tool_arc = {
 	pcb_tool_arc_draw_attached,
 	pcb_tool_arc_undo_act,
 	NULL,
-	NULL, /* escape */
+	pcb_tool_arc_escape,
 	
 	pcb_false
 };

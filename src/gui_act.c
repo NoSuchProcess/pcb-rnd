@@ -428,69 +428,13 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		break;
 	case F_Escape:
 		{
-			switch (pcbhl_conf.editor.mode) {
-			case PCB_MODE_VIA:
-			case PCB_MODE_PASTE_BUFFER:
-			case PCB_MODE_TEXT:
-			case PCB_MODE_ROTATE:
-			case PCB_MODE_REMOVE:
-			case PCB_MODE_MOVE:
-			case PCB_MODE_COPY:
-			case PCB_MODE_INSERT_POINT:
-			case PCB_MODE_RUBBERBAND_MOVE:
-			case PCB_MODE_THERMAL:
-			case PCB_MODE_LOCK:
-				pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
+			pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
+			if ((t == NULL) || (t->escape == NULL)) {
+				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
 				pcb_tool_note.Hit = pcb_tool_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
-				break;
-
-			case PCB_MODE_LINE:
-				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST) {
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
-				}
-				else {
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_LINE);
-				}
-				break;
-
-			case PCB_MODE_RECTANGLE:
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
-				else {
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_RECTANGLE);
-				}
-				break;
-
-			case PCB_MODE_POLYGON:
-				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
-				else {
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_POLYGON);
-				}
-				break;
-
-			case PCB_MODE_POLYGON_HOLE:
-				if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
-				else {
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_POLYGON_HOLE);
-				}
-				break;
-
-			case PCB_MODE_ARC:
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
-				else {
-					pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARC);
-				}
-				break;
-
-			case PCB_MODE_ARROW:
-				break;
-
-			default:
-				break;
 			}
+			else
+				t->escape(PCB_ACT_HIDLIB);
 		}
 		break;
 

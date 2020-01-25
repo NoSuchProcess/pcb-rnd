@@ -114,6 +114,14 @@ pcb_bool pcb_tool_rectangle_anydo_act(pcb_hidlib_t *hl)
 	return pcb_true;
 }
 
+pcb_bool pcb_tool_rectangle_escape(pcb_hidlib_t *hl)
+{
+	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+		pcb_tool_select_by_name(hl, "arrow");
+	else
+		pcb_tool_select_by_name(hl, "rectangle");
+}
+
 /* XPM */
 static const char *rect_icon[] = {
 /* columns rows colors chars-per-pixel */
@@ -156,7 +164,7 @@ pcb_tool_t pcb_tool_rectangle = {
 	NULL,
 	pcb_tool_rectangle_anydo_act,
 	pcb_tool_rectangle_anydo_act,
-	NULL, /* escape */
+	pcb_tool_rectangle_escape,
 	
 	pcb_false
 };
