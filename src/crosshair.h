@@ -43,8 +43,8 @@ typedef struct {              /* currently marked block */
 } pcb_attached_box_t;
 
 typedef struct {              /* currently attached object */
-	pcb_coord_t X, Y;           /* saved position when PCB_MODE_MOVE */
-	pcb_coord_t tx, ty;         /* target position when PCB_MODE_MOVE */
+	pcb_coord_t X, Y;           /* saved position when tool is move */
+	pcb_coord_t tx, ty;         /* target position when tool is move */
 	pcb_box_t BoundingBox;
 	long int Type;              /* object type */
 	long int State;
@@ -79,6 +79,9 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	long int *drags;
 	int drags_len, drags_current;
 	pcb_coord_t dragx, dragy;              /* the point where drag started */
+
+	/* cached tool IDs */
+	int tool_arrow, tool_line, tool_move, tool_arc, tool_poly, tool_poly_hole;
 } pcb_crosshair_t;
 
 

@@ -240,7 +240,7 @@ void pcb_xordraw_insert_pt_obj(void)
 }
 
 /* ---------------------------------------------------------------------------
- * draws the attached object while in PCB_MODE_MOVE or PCB_MODE_COPY
+ * draws the attached object while in tool mode move or copy
  */
 void pcb_xordraw_movecopy(void)
 {
@@ -758,7 +758,7 @@ static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_co
 	double sq_dist;
 
 	/* avoid snapping to an object if it is in the same subc */
-	if ((snapo != NULL) && (pcbhl_conf.editor.mode == PCB_MODE_MOVE) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
+	if ((snapo != NULL) && (pcbhl_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
 		pcb_any_obj_t *parent = (pcb_any_obj_t *)pcb_obj_parent_subc(snapo);
 		int n;
 		pcb_cardinal_t parent_id = snapo->ID;
@@ -785,8 +785,8 @@ static pcb_bool should_snap_offgrid_line(pcb_board_t *pcb, pcb_layer_t *layer, p
 	 * the same layer), and when moving a line end-point
 	 * (but don't snap to the same line)
 	 */
-	if ((pcbhl_conf.editor.mode == PCB_MODE_LINE && PCB_CURRLAYER(pcb) == layer) ||
-			(pcbhl_conf.editor.mode == PCB_MODE_MOVE
+	if ((pcbhl_conf.editor.mode == pcb_crosshair.tool_line && PCB_CURRLAYER(pcb) == layer) ||
+			(pcbhl_conf.editor.mode == pcb_crosshair.tool_move
 			 && pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT
 			 && pcb_crosshair.AttachedObject.Ptr1 == layer
 			 && pcb_crosshair.AttachedObject.Ptr2 != line))
@@ -923,7 +923,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping padstack to any other padstack */
-	if (pcbhl_conf.editor.mode == PCB_MODE_MOVE && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
+	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_move && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
 		ans = PCB_OBJ_VOID;
 
 	if (ans != PCB_OBJ_VOID) {
@@ -985,7 +985,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
 
-	if (pcbhl_conf.editor.mode == PCB_MODE_ARROW) {
+	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_arrow) {
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_OBJ_VOID) {
 			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
@@ -997,7 +997,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		}
 	}
 
-	if (pcbhl_conf.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
+	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		pcb_line_enforce_drc(PCB);
 
 	pcb_gui->set_crosshair(pcb_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
@@ -1076,6 +1076,8 @@ void pcb_crosshair_init(void)
 	/* Initialise Line Route */
 	pcb_route_init(&pcb_crosshair.Route);
 
+	pcb_crosshair.tool_arrow = pcb_crosshair.tool_move = pcb_crosshair.tool_line = -1;
+	pcb_crosshair.tool_arc = pcb_crosshair.tool_poly = pcb_crosshair.tool_poly_hole = -1;
 }
 
 void pcb_crosshair_uninit(void)

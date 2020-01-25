@@ -246,7 +246,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_ToggleAutoDRC:
 			pcb_notify_crosshair_change(pcb_false);
 			conf_toggle_editor(auto_drc);
-			if (conf_core.editor.auto_drc && pcbhl_conf.editor.mode == PCB_MODE_LINE) {
+			if (conf_core.editor.auto_drc && pcbhl_conf.editor.mode == pcb_crosshair.tool_line) {
 				if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -803,7 +803,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_notify_crosshair_change(pcb_false);
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
-		if (pcbhl_conf.editor.mode != PCB_MODE_LINE)
+		if (pcbhl_conf.editor.mode != pcb_crosshair.tool_line)
 			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "line");
 		pcb_notify_crosshair_change(pcb_true);
 		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
@@ -813,7 +813,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_notify_crosshair_change(pcb_false);
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
-		if (pcbhl_conf.editor.mode != PCB_MODE_ARC)
+		if (pcbhl_conf.editor.mode != pcb_crosshair.tool_arc)
 			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
 		pcb_notify_crosshair_change(pcb_true);
 		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);

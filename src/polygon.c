@@ -1090,7 +1090,7 @@ void pcb_polygon_go_to_prev_point(void)
 	case 0:
 		break;
 
-		/* reset number of points and 'PCB_MODE_LINE' state */
+		/* reset number of points line tool state */
 	case 1:
 		pcb_crosshair.AttachedPolygon.PointN = 0;
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;

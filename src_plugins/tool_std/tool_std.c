@@ -32,6 +32,7 @@
 
 #include <librnd/core/plugins.h>
 #include "tool.h"
+#include "crosshair.h"
 
 #include "tool_arc.h"
 #include "tool_arrow.h"
@@ -63,16 +64,16 @@ int pplg_init_tool_std(void)
 {
 	PCB_API_CHK_VER;
 
-	pcb_tool_reg(&pcb_tool_arc, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_arrow, pcb_tool_std_cookie);
+	pcb_crosshair.tool_arc = pcb_tool_reg(&pcb_tool_arc, pcb_tool_std_cookie);
+	pcb_crosshair.tool_arrow = pcb_tool_reg(&pcb_tool_arrow, pcb_tool_std_cookie);
 	pcb_tool_reg(&pcb_tool_buffer, pcb_tool_std_cookie);
 	pcb_tool_reg(&pcb_tool_copy, pcb_tool_std_cookie);
 	pcb_tool_reg(&pcb_tool_insert, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_line, pcb_tool_std_cookie);
+	pcb_crosshair.tool_line = pcb_tool_reg(&pcb_tool_line, pcb_tool_std_cookie);
 	pcb_tool_reg(&pcb_tool_lock, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_move, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_poly, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_polyhole, pcb_tool_std_cookie);
+	pcb_crosshair.tool_move = pcb_tool_reg(&pcb_tool_move, pcb_tool_std_cookie);
+	pcb_crosshair.tool_poly = pcb_tool_reg(&pcb_tool_poly, pcb_tool_std_cookie);
+	pcb_crosshair.tool_poly_hole = pcb_tool_reg(&pcb_tool_polyhole, pcb_tool_std_cookie);
 	pcb_tool_reg(&pcb_tool_rectangle, pcb_tool_std_cookie);
 	pcb_tool_reg(&pcb_tool_remove, pcb_tool_std_cookie);
 	pcb_tool_reg(&pcb_tool_rotate, pcb_tool_std_cookie);
