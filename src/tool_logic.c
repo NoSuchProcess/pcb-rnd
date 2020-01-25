@@ -41,7 +41,7 @@
 
 #include "tool_logic.h"
 
-static void tool_logic_chg_layer(conf_native_t *cfg, int arr_idx);
+static void tool_logic_chg_layer(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 
 /*** Generic part, all rnd apps should do something like this ***/
 
@@ -90,7 +90,7 @@ void pcb_tool_logic_uninit(void)
 /*** pcb-rnd-specific parts ***/
 
 
-static void tool_logic_chg_layer(conf_native_t *cfg, int arr_idx)
+static void tool_logic_chg_layer(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	static int was_rat;
 	if (PCB->RatDraw && !was_rat && !(pcb_tool_get(pcbhl_conf.editor.mode)->user_flags & PCB_TLF_RAT))
