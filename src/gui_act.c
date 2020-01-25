@@ -427,6 +427,7 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		break;
 	case F_Escape:
+		escape:;
 		{
 			pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
 			if ((t == NULL) || (t->escape == NULL)) {
@@ -475,23 +476,9 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_stub_stroke_start();
 			break;
 		}
-		/* Handle middle mouse button restarts of drawing mode.
-		   If not in a drawing mode, middle mouse button will select objects. */
-		if (pcbhl_conf.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "line");
-		else if (pcbhl_conf.editor.mode == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
-		else if (pcbhl_conf.editor.mode == PCB_MODE_RECTANGLE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "rectangle");
-		else if (pcbhl_conf.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "polygon");
-		else {
-			pcb_tool_save(PCB_ACT_HIDLIB);
-			pcb_tool_is_saved = pcb_true;
-			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
-			pcb_notify_mode(PCB_ACT_HIDLIB);
-		}
-		break;
+
+		/* Right mouse button restarts drawing mode. */
+		goto escape;
 	case F_Text:
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "text");
 		break;
