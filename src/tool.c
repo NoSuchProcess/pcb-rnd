@@ -35,7 +35,6 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/conf_hid.h>
 
-#include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"
 
@@ -50,30 +49,11 @@ static int save_stack[PCB_MAX_MODESTACK_DEPTH];
 static void init_current_tool(void);
 static void uninit_current_tool(void);
 
-static conf_hid_id_t tool_conf_id;
-static const char *pcb_tool_cookie = "default tools";
 static int tool_select_lock = 0;
-
-void tool_chg_mode(conf_native_t *cfg, int arr_idx)
-{
-	if ((PCB != NULL) && (!tool_select_lock))
-		pcb_tool_select_by_id(&PCB->hidlib, pcbhl_conf.editor.mode);
-}
 
 void pcb_tool_init(void)
 {
-	static conf_hid_callbacks_t cbs_mode;
-	conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
-
 	vtp0_init(&pcb_tools);
-
-	tool_conf_id = pcb_conf_hid_reg(pcb_tool_cookie, NULL);
-
-	if (n_mode != NULL) {
-		memset(&cbs_mode, 0, sizeof(conf_hid_callbacks_t));
-		cbs_mode.val_change_post = tool_chg_mode;
-		pcb_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
-	}
 }
 
 void pcb_tool_uninit(void)
@@ -86,11 +66,11 @@ void pcb_tool_uninit(void)
 	vtp0_uninit(&pcb_tools);
 }
 
-void pcb_tool_uninit_conf(void)
+void pcb_tool_chg_mode(pcb_hidlib_t *hl)
 {
-	pcb_conf_hid_unreg(pcb_tool_cookie);
+	if ((hl != NULL) && (!tool_select_lock))
+		pcb_tool_select_by_id(hl, pcbhl_conf.editor.mode);
 }
-
 
 pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 {
@@ -286,6 +266,10 @@ pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
 
 /**** tool helper functions ****/
 
+#include "board.h"
+#include "data.h"
+#include "draw.h"
+
 pcb_bool pcb_tool_is_saved = pcb_false;
 
 static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
@@ -368,8 +352,6 @@ void pcb_tool_notify_block(void)
 }
 
 /*** old helpers ***/
-#include "data.h"
-#include "draw.h"
 
 void pcb_release_mode(pcb_hidlib_t *hidlib)
 {

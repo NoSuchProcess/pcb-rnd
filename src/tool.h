@@ -76,7 +76,9 @@ extern vtp0_t pcb_tools;
 /* (un)initialize the tool subsystem */
 void pcb_tool_init(void);
 void pcb_tool_uninit(void);
-void pcb_tool_uninit_conf(void); /* call this one before hidlib uninit for conf uninit */
+
+/* call this when the mode (tool) config node changes */
+void pcb_tool_chg_mode(pcb_hidlib_t *hl);
 
 /* Insert a new tool in pcb_tools; returns -1 on failure */
 pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie);
