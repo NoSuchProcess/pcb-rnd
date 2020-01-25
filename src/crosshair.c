@@ -63,6 +63,8 @@ typedef struct {
 	int x, y;
 } point;
 
+static char crosshair_cookie[] = "crosshair";
+
 pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
 pcb_mark_t pcb_marked;
 pcb_mark_t pcb_grabbed;
@@ -1053,11 +1055,8 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 	PCB->hidlib.grid = save_grid;
 }
 
-/* ---------------------------------------------------------------------------
- * initializes crosshair stuff
- * clears the struct, allocates to graphical contexts
- */
-void pcb_crosshair_init(void)
+/* allocate GC only when the GUI is already up and running */
+static void pcb_crosshair_gui_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_crosshair.GC = pcb_hid_make_gc();
 
@@ -1065,7 +1064,15 @@ void pcb_crosshair_init(void)
 	pcb_hid_set_draw_xor(pcb_crosshair.GC, 1);
 	pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
+}
 
+
+/* ---------------------------------------------------------------------------
+ * initializes crosshair stuff
+ * clears the struct
+ */
+void pcb_crosshair_init(void)
+{
 	/* Initialize the onpoint data. */
 	memset(&pcb_crosshair.onpoint_objs, 0, sizeof(vtop_t));
 	memset(&pcb_crosshair.old_onpoint_objs, 0, sizeof(vtop_t));
@@ -1078,7 +1085,10 @@ void pcb_crosshair_init(void)
 
 	pcb_crosshair.tool_arrow = pcb_crosshair.tool_move = pcb_crosshair.tool_line = -1;
 	pcb_crosshair.tool_arc = pcb_crosshair.tool_poly = pcb_crosshair.tool_poly_hole = -1;
+
+	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_crosshair_gui_init, NULL, crosshair_cookie);
 }
+
 
 void pcb_crosshair_uninit(void)
 {

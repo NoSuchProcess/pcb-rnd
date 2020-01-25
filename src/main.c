@@ -504,6 +504,7 @@ int main(int argc, char *argv[])
 	/* main loop */
 	if (PCB_HAVE_GUI_ATTR_DLG)
 		gui_support_plugins(1);
+
 	if (EXPERIMENTAL != NULL) {
 		pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 		pcb_message(PCB_MSG_ERROR, "This revision of pcb-rnd is experimental, unstable, do NOT attempt to use\n");
@@ -513,7 +514,6 @@ int main(int argc, char *argv[])
 	}
 	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
 	pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
-	pcb_crosshair_init();
 	pcbhl_mainloop_interactive(&ga, &PCB->hidlib);
 
 	pcb_main_uninit();
