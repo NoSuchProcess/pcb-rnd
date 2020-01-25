@@ -47,7 +47,7 @@ static void tool_logic_chg_layer(conf_native_t *cfg, int arr_idx);
 
 static char tool_logic_cookie[] = "tool_logic";
 
-static void tool_logics_chg_tool(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void tool_logic_chg_tool(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int *ok = argv[1].d.p;
 	int id = argv[2].d.i;
@@ -77,7 +77,7 @@ void pcb_tool_logic_init(void)
 		pcb_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
 	}
 
-	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, tool_logic_chg_mode, NULL, tool_logic_cookie);
+	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, tool_logic_chg_tool, NULL, tool_logic_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, tool_logic_chg_layer, NULL, tool_logic_cookie);
 }
 
