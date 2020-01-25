@@ -149,10 +149,6 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 
 	recursing = pcb_false;
 
-	/* force a crosshair grid update because the valid range may have changed */
-	pcb_hid_notify_crosshair_change(hidlib, pcb_false);
-	pcb_crosshair_move_relative(0, 0);
-	pcb_hid_notify_crosshair_change(hidlib, pcb_true);
 	if (pcb_gui != NULL)
 		pcb_gui->set_mouse_cursor(pcb_gui, id);
 	return 0;
