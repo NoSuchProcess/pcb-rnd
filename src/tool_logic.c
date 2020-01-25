@@ -41,6 +41,8 @@
 
 #include "tool_logic.h"
 
+static void tool_logic_chg_layer(conf_native_t *cfg, int arr_idx);
+
 /*** Generic part, all rnd apps should do something like this ***/
 
 static char tool_logic_cookie[] = "tool_logic";
@@ -76,6 +78,7 @@ void pcb_tool_logic_init(void)
 	}
 
 	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, tool_logic_chg_mode, NULL, tool_logic_cookie);
+	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, tool_logic_chg_layer, NULL, tool_logic_cookie);
 }
 
 void pcb_tool_logic_uninit(void)
@@ -86,6 +89,12 @@ void pcb_tool_logic_uninit(void)
 
 /*** pcb-rnd-specific parts ***/
 
+
+static void tool_logic_chg_layer(conf_native_t *cfg, int arr_idx)
+{
+	if (PCB->RatDraw && !pcb_tool_get(pcbhl_conf.editor.mode)->allow_when_drawing_ratlines)
+		pcb_tool_select_by_name(&PCB->hidlib, "line");
+}
 
 pcb_bool pcb_tool_is_saved = pcb_false;
 

@@ -50,6 +50,7 @@ typedef enum {
 	PCB_EVENT_LAYERS_CHANGED,         /* called after layers or layer groups change (used to be the LayersChanged action) */
 	PCB_EVENT_LAYER_CHANGED_GRP,      /* called after a layer changed its group; argument: layer pointer */
 	PCB_EVENT_LAYERVIS_CHANGED,       /* called after the visibility of layers has changed */
+	PCB_EVENT_LAYERSEL_CHANGED,       /* called after the layer selection (which is the current layer) has changed */
 	PCB_EVENT_LIBRARY_CHANGED,        /* called after a change in the footprint lib (used to be the LibraryChanged action) */
 	PCB_EVENT_FONT_CHANGED,           /* called when a font has changed; argument is the font ID */
 
