@@ -72,6 +72,9 @@ typedef struct pcb_tool_s {
 } pcb_tool_t;
 
 extern vtp0_t pcb_tools;
+extern pcb_bool pcb_tool_is_saved;
+extern pcb_toolid_t pcb_tool_prev_id;
+extern pcb_toolid_t pcb_tool_next_id;
 
 /* (un)initialize the tool subsystem */
 void pcb_tool_init(void);
@@ -106,30 +109,11 @@ void pcb_tool_gui_init(void);
       as defined in pcbhl_conf.editor.mode ****/
 
 void pcb_tool_notify_mode(pcb_hidlib_t *hidlib);
+void pcb_tool_release_mode(pcb_hidlib_t *hidlib);
 void pcb_tool_adjust_attached_objects(pcb_hidlib_t *hl);
 void pcb_tool_draw_attached(pcb_hidlib_t *hl);
 pcb_bool pcb_tool_undo_act(pcb_hidlib_t *hl);
 pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl);
-
-
-/**** tool helper functions ****/
-
-extern pcb_bool pcb_tool_is_saved;
-extern pcb_toolid_t pcb_tool_prev_id;
-extern pcb_toolid_t pcb_tool_next_id;
-
-void pcb_tool_attach_for_copy(pcb_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband);
-void pcb_tool_notify_block(void);	/* create first or second corner of a marked block (when clicked) */
-
-
-/**** old helpers ****/
-
-/* does what's appropriate for the current mode setting (when clicked). This
-   normally means creation of an object at the current crosshair location.
-   new created objects are added to the create undo list of course */
-void pcb_notify_mode(pcb_hidlib_t *hidlib);
-
-void pcb_release_mode(pcb_hidlib_t *hidlib);
 
 
 /**** Low level, for internal use ****/
