@@ -69,7 +69,6 @@
 #define PCB_MAX_LINE_POINT_DISTANCE     0   /* maximum distance when searching line points; same for arc point */
 #define PCB_MAX_POLYGON_POINT_DISTANCE  0   /* maximum distance when searching polygon points */
 #define PCB_MAX_NETLIST_LINE_LENGTH     255 /* maximum line length for netlist files */
-#define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
 #define PCB_MIN_GRID_DISTANCE           4   /* minimum distance between point to enable grid drawing */
 #define PCB_EMARK_SIZE                  PCB_MIL_TO_COORD(10) 	/* size of diamond element mark */
 #define PCB_SUBC_AUX_UNIT               PCB_MM_TO_COORD(1) /* size of the unit vector for the subc-aux layer */

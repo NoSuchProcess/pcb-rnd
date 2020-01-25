@@ -35,9 +35,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/conf_hid.h>
 
-#include "conf_core.h"
-#include "crosshair.h"
-
+#define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
 
 vtp0_t pcb_tools;
 
@@ -267,6 +265,8 @@ pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
 /**** tool helper functions ****/
 
 #include "board.h"
+#include "conf_core.h"
+#include "crosshair.h"
 #include "data.h"
 #include "draw.h"
 
