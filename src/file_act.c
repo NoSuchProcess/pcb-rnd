@@ -78,14 +78,14 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Footprint:
 			pcb_notify_crosshair_change(pcb_false);
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
-				pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_PASTE_BUFFER);
+				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 
 		case F_LayoutToBuffer:
 			pcb_notify_crosshair_change(pcb_false);
 			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
-				pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_PASTE_BUFFER);
+				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
 			pcb_notify_crosshair_change(pcb_true);
 			break;
 

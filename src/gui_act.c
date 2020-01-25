@@ -399,26 +399,26 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_notify_crosshair_change(pcb_false);
 	switch(fgw_keyword(&argv[1])) {
 	case F_Arc:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARC);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
 		break;
 	case F_Arrow:
 	case F_None:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
 		break;
 	case F_Copy:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_COPY);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "copy");
 		break;
 	case F_InsertPoint:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_INSERT_POINT);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "insert");
 		break;
 	case F_Line:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_LINE);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "line");
 		break;
 	case F_Lock:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_LOCK);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "lock");
 		break;
 	case F_Move:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_MOVE);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "move");
 		break;
 	case F_Cancel:
 		{
@@ -498,13 +498,13 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_notify_mode(PCB_ACT_HIDLIB);
 		break;
 	case F_PasteBuffer:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_PASTE_BUFFER);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
 		break;
 	case F_Polygon:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_POLYGON);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "poly");
 		break;
 	case F_PolygonHole:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_POLYGON_HOLE);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "polyhole");
 		break;
 	case F_Release:
 		if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish(PCB_ACT_HIDLIB) == 0)) {
@@ -518,13 +518,13 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_release_mode(PCB_ACT_HIDLIB);
 		break;
 	case F_Remove:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_REMOVE);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "remove");
 		break;
 	case F_Rectangle:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_RECTANGLE);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "rectangle");
 		break;
 	case F_Rotate:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ROTATE);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "rotate");
 		break;
 	case F_Stroke:
 		if (conf_core.editor.enable_stroke) {
@@ -534,28 +534,28 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* Handle middle mouse button restarts of drawing mode.
 		   If not in a drawing mode, middle mouse button will select objects. */
 		if (pcbhl_conf.editor.mode == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_LINE);
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "line");
 		else if (pcbhl_conf.editor.mode == PCB_MODE_ARC && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARC);
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
 		else if (pcbhl_conf.editor.mode == PCB_MODE_RECTANGLE && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_RECTANGLE);
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "rectangle");
 		else if (pcbhl_conf.editor.mode == PCB_MODE_POLYGON && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_POLYGON);
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "polygon");
 		else {
 			pcb_tool_save(PCB_ACT_HIDLIB);
 			pcb_tool_is_saved = pcb_true;
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARROW);
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
 			pcb_notify_mode(PCB_ACT_HIDLIB);
 		}
 		break;
 	case F_Text:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_TEXT);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "text");
 		break;
 	case F_Thermal:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_THERMAL);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "thermal");
 		break;
 	case F_Via:
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_VIA);
+		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "via");
 		break;
 
 	case F_Restore: /* restore the last saved tool */
@@ -873,7 +873,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (pcbhl_conf.editor.mode != PCB_MODE_LINE)
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_LINE);
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "line");
 		pcb_notify_crosshair_change(pcb_true);
 		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
@@ -883,7 +883,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (pcbhl_conf.editor.mode != PCB_MODE_ARC)
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_ARC);
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
 		pcb_notify_crosshair_change(pcb_true);
 		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;

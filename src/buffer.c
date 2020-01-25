@@ -1088,7 +1088,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				PCB_ACT_IRES(-1);
 			}
 			else
-				pcb_tool_select_by_id(PCB_ACT_HIDLIB, PCB_MODE_PASTE_BUFFER);
+				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
 			break;
 
 		case F_Save:

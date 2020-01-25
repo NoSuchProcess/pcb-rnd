@@ -461,7 +461,7 @@ int main(int argc, char *argv[])
 	main_sighand_init();
 	pcb_init_buffers(PCB);
 
-	pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
+	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
 
 	if (ga.hid_argc > 0)
 		command_line_pcb = ga.hid_argv[0];
@@ -511,7 +511,7 @@ int main(int argc, char *argv[])
 		pcb_message(PCB_MSG_ERROR, "%s\n", EXPERIMENTAL);
 		pcb_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 	}
-	pcb_tool_select_by_id(&PCB->hidlib, PCB_MODE_ARROW);
+	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
 	pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 	pcb_crosshair_init();
 	pcbhl_mainloop_interactive(&ga, &PCB->hidlib);
