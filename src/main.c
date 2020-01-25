@@ -286,6 +286,7 @@ void pcb_main_uninit(void)
 	gui_support_plugins(0);
 	pcb_render = pcb_gui = NULL;
 	pcb_tool_uninit_conf();
+	pcb_crosshair_uninit();
 	pcb_hidlib_uninit(); /* plugin unload */
 
 	if (PCB != NULL) {

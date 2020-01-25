@@ -1094,7 +1094,9 @@ void pcb_crosshair_uninit(void)
 {
 	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
 	pcb_route_destroy(&pcb_crosshair.Route);
-	pcb_hid_destroy_gc(pcb_crosshair.GC);
+	if (pcb_render != NULL)
+		pcb_hid_destroy_gc(pcb_crosshair.GC);
+	pcb_event_unbind_allcookie(crosshair_cookie);
 }
 
 void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
