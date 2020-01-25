@@ -72,7 +72,6 @@ typedef struct pcb_tool_s {
 } pcb_tool_t;
 
 extern vtp0_t pcb_tools;
-extern pcb_bool pcb_tool_is_saved;
 extern pcb_toolid_t pcb_tool_prev_id;
 extern pcb_toolid_t pcb_tool_next_id;
 

@@ -47,6 +47,7 @@
 #include <librnd/core/tool.h>
 #include "undo.h"
 #include "extobj.h"
+#include "tool_logic.h"
 
 
 void pcb_tool_arrow_uninit(void)

@@ -33,6 +33,7 @@ void pcb_tool_logic_uninit(void);
 void pcb_tool_attach_for_copy(pcb_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband);
 void pcb_tool_notify_block(void); /* create first or second corner of a marked block (when clicked) */
 
+extern pcb_bool pcb_tool_is_saved;
 
 /**** old helpers ****/
 
