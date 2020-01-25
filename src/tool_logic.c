@@ -92,8 +92,10 @@ void pcb_tool_logic_uninit(void)
 
 static void tool_logic_chg_layer(conf_native_t *cfg, int arr_idx)
 {
-	if (PCB->RatDraw && !pcb_tool_get(pcbhl_conf.editor.mode)->allow_when_drawing_ratlines)
+	static int was_rat;
+	if (PCB->RatDraw && !was_rat && !pcb_tool_get(pcbhl_conf.editor.mode)->allow_when_drawing_ratlines)
 		pcb_tool_select_by_name(&PCB->hidlib, "line");
+	was_rat = PCB->RatDraw;
 }
 
 pcb_bool pcb_tool_is_saved = pcb_false;
