@@ -52,7 +52,7 @@
 void pcb_tool_arc_init(void)
 {
 	pcb_notify_crosshair_change(pcb_false);
-	if (pcb_tool_prev_id == PCB_MODE_LINE && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+	if (pcb_tool_prev_id == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
@@ -66,7 +66,7 @@ void pcb_tool_arc_uninit(void)
 {
 	pcb_notify_crosshair_change(pcb_false);
 	pcb_added_lines = 0;
-	if (pcb_tool_next_id != PCB_MODE_LINE) {
+	if (pcb_tool_next_id != pcb_crosshair.tool_line) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 		if (!pcb_marked.user_placed)
 			pcb_crosshair_set_local_ref(0, 0, pcb_false);
