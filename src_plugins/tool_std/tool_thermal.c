@@ -95,7 +95,7 @@ void pcb_tool_thermal_notify_mode(pcb_hidlib_t *hl)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	if (((type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+	if (((type = pcb_search_screen(pcb_crosshair_note.X, pcb_crosshair_note.Y, PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
 		if (type == PCB_OBJ_PSTK)
 			pcb_tool_thermal_on_pstk((pcb_pstk_t *)ptr2, PCB_CURRLID(pcb));

@@ -288,7 +288,6 @@ pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
 
 /**** tool helper functions ****/
 
-pcb_tool_note_t pcb_tool_note;
 pcb_bool pcb_tool_is_saved = pcb_false;
 
 static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)

@@ -1025,7 +1025,7 @@ static void tool_skline_notify_mode(pcb_hidlib_t *hl)
 
 	switch (pcb_crosshair.AttachedObject.State) {
 	case PCB_CH_STATE_FIRST:
-		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
+		type = pcb_search_screen(pcb_crosshair_note.X, pcb_crosshair_note.Y, PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
 		/* TODO: check if an object is on the current layer */
 		if (type != PCB_OBJ_VOID) {
 			term_obj = ptr2;
@@ -1042,7 +1042,7 @@ static void tool_skline_notify_mode(pcb_hidlib_t *hl)
 		break;
 
 	case PCB_CH_STATE_SECOND:
-		type = pcb_search_screen(pcb_tool_note.X, pcb_tool_note.Y, PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
+		type = pcb_search_screen(pcb_crosshair_note.X, pcb_crosshair_note.Y, PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3);
 		/* TODO: check if an object is on the current layer */
 		if (type != PCB_OBJ_VOID) {
 			term_obj = ptr2;

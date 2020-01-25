@@ -77,13 +77,13 @@ void pcb_tool_buffer_release_mode(pcb_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
-	if (pcb_tool_note.Moving) {
+	if (pcb_crosshair_note.Moving) {
 		pcb_undo_restore_serial();
 		pcb_tool_buffer_notify_mode_(hl, pcb_true);
 		pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
-		pcb_buffer_set_number(pcb_tool_note.Buffer);
-		pcb_tool_note.Moving = pcb_false;
-		pcb_tool_note.Hit = 0;
+		pcb_buffer_set_number(pcb_crosshair_note.Buffer);
+		pcb_crosshair_note.Moving = pcb_false;
+		pcb_crosshair_note.Hit = 0;
 	}
 }
 

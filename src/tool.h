@@ -112,18 +112,6 @@ pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl);
 
 /**** tool helper functions ****/
 
-typedef struct {
-	pcb_coord_t X, Y;
-	pcb_cardinal_t Buffer;	/* buffer number */
-	pcb_bool Click;		/* true if clicked somewhere with the arrow tool */
-	pcb_bool Moving;	/* true if clicked on an object of PCB_SELECT_TYPES */
-	int Hit;					/* type of a hit object of PCB_MOVE_TYPES; 0 if there was no PCB_MOVE_TYPES object under the crosshair */
-	void *ptr1;
-	void *ptr2;
-	void *ptr3;
-} pcb_tool_note_t;
-
-extern pcb_tool_note_t pcb_tool_note;
 extern pcb_bool pcb_tool_is_saved;
 extern pcb_toolid_t pcb_tool_prev_id;
 extern pcb_toolid_t pcb_tool_next_id;

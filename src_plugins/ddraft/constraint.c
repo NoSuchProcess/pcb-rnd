@@ -177,7 +177,7 @@ static void cnst_enforce(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 		cnst_line2(&cons);
 	else if (pcb_crosshair.AttachedObject.State == PCB_CH_STATE_SECOND) /* normal d&d move or copy */
 		cnst_move(&cons);
-	else if (pcb_tool_note.Moving) /* selected copy (buffer mode) */
+	else if (pcb_crosshair_note.Moving) /* selected copy (buffer mode) */
 		cnst_move(&cons);
 
 }

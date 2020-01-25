@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_ConvertSubc:
 			{
 				pcb_coord_t x, y;
-				pcb_tool_note.Buffer = conf_core.editor.buffer_number;
+				pcb_crosshair_note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 				pcb_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
@@ -160,7 +160,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
 				pcb_buffer_copy_to_layout(PCB, x, y, pcb_false);
-				pcb_buffer_set_number(pcb_tool_note.Buffer);
+				pcb_buffer_set_number(pcb_crosshair_note.Buffer);
 			}
 			break;
 

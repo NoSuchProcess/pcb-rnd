@@ -68,6 +68,8 @@ static char crosshair_cookie[] = "crosshair";
 pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
 pcb_mark_t pcb_marked;
 pcb_mark_t pcb_grabbed;
+pcb_crosshair_note_t pcb_crosshair_note;
+
 
 static void thindraw_moved_ps(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y)
 {
