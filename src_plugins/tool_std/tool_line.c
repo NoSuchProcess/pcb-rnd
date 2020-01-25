@@ -157,7 +157,7 @@ void pcb_tool_line_notify_mode(pcb_hidlib_t *hl)
 	 * the file after saving.
 	 */
 	if (pcb_crosshair.X == pcb_crosshair.AttachedLine.Point1.X && pcb_crosshair.Y == pcb_crosshair.AttachedLine.Point1.Y) {
-		pcb_tool_select_by_id(hl, PCB_MODE_LINE);
+		pcb_tool_select_by_name(hl, "line");
 		return;
 	}
 
