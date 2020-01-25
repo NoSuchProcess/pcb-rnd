@@ -143,6 +143,7 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	char id_s[32];
 	static pcb_bool recursing = pcb_false;
+	int ok = 1;
 	
 	if ((id < 0) || (id > vtp0_len(&pcb_tools)))
 		return -1;
@@ -153,13 +154,14 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	 */
 	if (recursing)
 		return -1;
+
+	/* check if the UI logic allows picking that tool */
+	pcb_event(hidlib, PCB_EVENT_TOOL_SELECT_PRE, "pi", &ok, id);
+	if (ok == 0)
+		id = pcbhl_conf.editor.mode;
+
 	recursing = pcb_true;
-	
-	if (pcb->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
-		pcb_message(PCB_MSG_WARNING, "That mode is NOT allowed when drawing ratlines!\n");
-		id = PCB_MODE_ARROW;
-	}
-	
+
 	pcb_tool_prev_id = pcbhl_conf.editor.mode;
 	pcb_tool_next_id = id;
 	uninit_current_tool();

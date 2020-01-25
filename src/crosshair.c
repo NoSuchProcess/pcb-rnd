@@ -1055,6 +1055,17 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 	PCB->hidlib.grid = save_grid;
 }
 
+static void pcb_crosshair_tool_logics(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int *ok = argv[1].d.p;
+	int id = argv[2].d.i;
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
+	if (pcb->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
+		pcb_message(PCB_MSG_WARNING, "That tool can not be used on the rat layer!\n");
+		*ok = 0;
+	}
+}
+
 /* allocate GC only when the GUI is already up and running */
 static void pcb_crosshair_gui_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -1065,7 +1076,6 @@ static void pcb_crosshair_gui_init(pcb_hidlib_t *hidlib, void *user_data, int ar
 	pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
 }
-
 
 /* ---------------------------------------------------------------------------
  * initializes crosshair stuff
@@ -1087,6 +1097,7 @@ void pcb_crosshair_init(void)
 	pcb_crosshair.tool_arc = pcb_crosshair.tool_poly = pcb_crosshair.tool_poly_hole = -1;
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_crosshair_gui_init, NULL, crosshair_cookie);
+	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, pcb_crosshair_tool_logics, NULL, crosshair_cookie);
 }
 
 
