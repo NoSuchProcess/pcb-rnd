@@ -38,7 +38,7 @@
 #include <librnd/core/actions.h>
 #include "board.h"
 #include "rotate.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "crosshair.h"
 
 

@@ -39,7 +39,7 @@
 #include "insert.h"
 #include "polygon.h"
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 
 static struct {

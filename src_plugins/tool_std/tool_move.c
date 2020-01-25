@@ -38,7 +38,7 @@
 #include "move.h"
 #include "crosshair.h"
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "extobj.h"
 
 

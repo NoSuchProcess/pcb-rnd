@@ -30,7 +30,7 @@
 #include <librnd/core/event.h>
 #include <librnd/core/grid.h>
 #include <librnd/core/actions.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 #include "board.h"
 #include "conf_core.h"

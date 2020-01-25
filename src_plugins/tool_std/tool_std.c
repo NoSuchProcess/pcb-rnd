@@ -31,7 +31,7 @@
 #include "conf_core.h"
 
 #include <librnd/core/plugins.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "crosshair.h"
 
 #include "tool_arc.h"

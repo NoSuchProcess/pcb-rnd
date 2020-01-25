@@ -57,7 +57,7 @@
 #include <librnd/core/event.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/actions.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "extobj.h"
 #include <librnd/core/hid_dad.h>
 

@@ -27,7 +27,7 @@
 #include <librnd/config.h>
 
 #include <librnd/core/hidlib_conf.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hid.h>
 

@@ -45,7 +45,7 @@
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
 #include "layer_vis.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 #include "wt_preview.h"
 #include "dlg_fileselect.h"

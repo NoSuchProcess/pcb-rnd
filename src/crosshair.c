@@ -59,7 +59,7 @@
 #include "obj_arc_ui.h"
 #include "obj_subc_parent.h"
 
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 typedef struct {
 	int x, y;

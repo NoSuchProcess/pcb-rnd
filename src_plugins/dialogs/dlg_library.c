@@ -41,7 +41,7 @@
 #include <librnd/core/event.h>
 #include "obj_subc.h"
 #include "plug_footprint.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "undo.h"
 
 #include <librnd/core/hid.h>

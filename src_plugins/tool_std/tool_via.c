@@ -42,7 +42,7 @@
 #include <librnd/core/hid_inlines.h>
 #include "data.h"
 #include "draw.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "tool_thermal.h"
 #include "undo.h"
 

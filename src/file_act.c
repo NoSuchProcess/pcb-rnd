@@ -52,7 +52,7 @@
 #include <librnd/core/hid_init.h>
 #include "layer_vis.h"
 #include <librnd/core/safe_fs.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "netlist.h"
 #include "plug_io.h"
 

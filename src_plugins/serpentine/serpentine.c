@@ -35,7 +35,7 @@
 #include "data_it.h"
 #include <librnd/core/error.h>
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include <librnd/poly/rtree.h>
 #include "flag_str.h"
 #include "undo.h"

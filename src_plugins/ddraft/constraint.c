@@ -28,7 +28,7 @@
 
 #include "crosshair.h"
 #include "obj_line.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 typedef struct {
 	double line_angle[32], move_angle[32];

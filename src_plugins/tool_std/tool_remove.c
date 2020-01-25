@@ -41,7 +41,7 @@
 #include "remove.h"
 #include "search.h"
 #include "obj_rat.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "crosshair.h"
 
 

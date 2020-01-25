@@ -38,7 +38,7 @@
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include "data.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include <librnd/core/grid.h>
 #include <librnd/core/error.h>
 #include "undo.h"
@@ -61,7 +61,7 @@
 #include <librnd/core/hid_attrib.h>
 #include "operation.h"
 #include "obj_subc_op.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "route_style.h"
 
 #define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY

@@ -64,7 +64,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "layer_ui.h"
 #include "obj_text.h"
 #include "pcb_minuid.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include <librnd/core/color.h>
 #include "netlist.h"
 #include "extobj.h"

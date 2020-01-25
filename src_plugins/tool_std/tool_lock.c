@@ -40,7 +40,7 @@
 #include "draw.h"
 #include <librnd/core/actions.h>
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "tool_lock.h"
 
 #define PCB_OBJ_CLASS_LOCK (PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_LOCKED)

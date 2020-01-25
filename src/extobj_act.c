@@ -31,7 +31,7 @@
 #include "funchash_core.h"
 #include <librnd/core/hid_dad.h>
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 #include "extobj.h"
 

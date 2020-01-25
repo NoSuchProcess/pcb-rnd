@@ -25,7 +25,7 @@
  */
 
 #include "board.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl)
 {

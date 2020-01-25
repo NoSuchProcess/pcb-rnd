@@ -39,7 +39,7 @@
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/actions.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "undo.h"
 
 #include "obj_text_draw.h"

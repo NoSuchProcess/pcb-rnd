@@ -40,7 +40,7 @@
 #include <librnd/core/actions.h>
 #include "polygon.h"
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 
 void pcb_tool_polyhole_uninit(void)

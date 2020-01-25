@@ -44,7 +44,7 @@
 #include "move.h"
 #include "search.h"
 #include "select.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "undo.h"
 #include "extobj.h"
 

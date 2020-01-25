@@ -46,7 +46,7 @@
 #include "obj_line.h"
 #include "obj_subc.h"
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "undo.h"
 #include "netlist.h"
 

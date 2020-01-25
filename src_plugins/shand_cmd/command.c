@@ -45,7 +45,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/misc_util.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 static const char pcb_acts_Help[] = "h";
 static const char pcb_acth_Help[] = "Print a help message for commands.";

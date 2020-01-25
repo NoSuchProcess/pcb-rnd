@@ -44,7 +44,7 @@
 #include "draw.h"
 #include "search.h"
 #include "crosshair.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include <librnd/core/actions.h>
 
 #include "obj_poly.h"

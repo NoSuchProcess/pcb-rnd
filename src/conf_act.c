@@ -32,7 +32,7 @@
 #include "funchash_core.h"
 #include "route_style.h"
 #include <librnd/core/error.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 static const char pcb_acts_Conf[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting to an absolute value\n"

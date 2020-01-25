@@ -40,7 +40,7 @@
 #include "undo.h"
 #include "funchash_core.h"
 
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "select.h"
 #include "draw.h"
 #include "remove.h"

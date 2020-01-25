@@ -38,7 +38,7 @@
 #include "move.h"
 #include "crosshair.h"
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 void pcb_tool_copy_uninit(void)
 {

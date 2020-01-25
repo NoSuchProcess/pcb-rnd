@@ -39,7 +39,7 @@
 
 #include "data.h"
 #include "board.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "change.h"
 #include <librnd/core/error.h>
 #include "undo.h"

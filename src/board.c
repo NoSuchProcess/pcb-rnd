@@ -39,7 +39,7 @@
 #include "draw.h"
 #include <librnd/core/event.h>
 #include <librnd/core/safe_fs.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "layer.h"
 #include "netlist.h"
 

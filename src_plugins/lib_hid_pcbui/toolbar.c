@@ -32,7 +32,7 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_dad.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "board.h"
 #include <librnd/core/hidlib_conf.h>
 

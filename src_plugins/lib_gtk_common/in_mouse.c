@@ -39,7 +39,7 @@
 #include "board.h"
 #include "crosshair.h"
 #include "conf_core.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 #define GVT_DONT_UNDEF
 #include "in_mouse.h"

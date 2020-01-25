@@ -45,7 +45,7 @@
 #include "obj_subc_parent.h"
 #include <librnd/core/pcb-printf.h>
 #include "search.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 #include "layer_ui.h"
 #include "netlist.h"
 

@@ -48,7 +48,7 @@
 
 #include "obj_line_draw.h"
 
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 static const char pcb_acts_Atomic[] = "Atomic(Save|Restore|Close|Block)";
 static const char pcb_acth_Atomic[] = "Save or restore the undo serial number.";

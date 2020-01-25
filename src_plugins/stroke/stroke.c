@@ -39,7 +39,7 @@
 #include <librnd/core/plugins.h>
 #include "stub_stroke.h"
 #include <librnd/core/compat_misc.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 #include "../src_plugins/stroke/conf_internal.c"
 #include "stroke_conf.h"

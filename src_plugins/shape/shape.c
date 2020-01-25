@@ -43,7 +43,7 @@
 #include "obj_poly.h"
 #include "obj_poly_draw.h"
 #include "rotate.h"
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 const char *pcb_shape_corner_name[] = {"Rn", "Ch", "Sq", NULL};
 

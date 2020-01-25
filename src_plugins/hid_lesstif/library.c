@@ -19,7 +19,7 @@
 #include "lesstif.h"
 #include "ltf_stdarg.h"
 #include <librnd/core/event.h>
-#include "tool.h"
+#include <librnd/core/tool.h>
 
 extern pcb_hidlib_t *ltf_hidlib;
 
