@@ -63,8 +63,15 @@ void pcb_tool_uninit(void)
 
 void pcb_tool_chg_mode(pcb_hidlib_t *hl)
 {
+	static int lock;
+
+	if (lock)
+		return;
+
+	lock = 1;
 	if ((hl != NULL) && (!tool_select_lock))
 		pcb_tool_select_by_id(hl, pcbhl_conf.editor.mode);
+	lock = 0;
 }
 
 pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
