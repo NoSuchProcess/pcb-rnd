@@ -74,6 +74,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "actions_pcb.h"
 #include <librnd/core/hid_init.h>
 #include <librnd/core/compat_misc.h>
+#include "tool_logic.h"
 
 const char *pcbhl_menu_file_paths[4];
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
@@ -286,6 +287,7 @@ void pcb_main_uninit(void)
 	gui_support_plugins(0);
 	pcb_render = pcb_gui = NULL;
 	pcb_crosshair_uninit();
+	pcb_tool_logic_uninit();
 	pcb_hidlib_uninit(); /* plugin unload */
 
 	if (PCB != NULL) {
@@ -386,8 +388,8 @@ int main(int argc, char *argv[])
 		/* optionally: handle extra arguments, not processed by the hidlib, here */
 		n += pcbhl_main_args_add(&ga, argv[n], argv[n+1]);
 	}
-	pcb_tool_init(); /* init before the plugins so that the static tools have the lowest index */
-
+	pcb_tool_init();
+	pcb_tool_logic_init();
 
 	pcb_hidlib_init2(pup_buildins, NULL);
 	pcb_actions_init_pcb_only();

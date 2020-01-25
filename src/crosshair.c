@@ -43,7 +43,6 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_inlines.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/conf_hid.h>
 #include "vtonpoint.h"
 #include "find.h"
 #include "undo.h"
@@ -1037,36 +1036,6 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 	PCB->hidlib.grid = save_grid;
 }
 
-static void pcb_crosshair_tool_logics(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
-{
-	int *ok = argv[1].d.p;
-	int id = argv[2].d.i;
-	pcb_board_t *pcb = (pcb_board_t *)hidlib;
-	if (pcb->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
-		pcb_message(PCB_MSG_WARNING, "That tool can not be used on the rat layer!\n");
-		*ok = 0;
-	}
-}
-
-static void crosshair_chg_mode(conf_native_t *cfg, int arr_idx)
-{
-	pcb_tool_chg_mode(&PCB->hidlib);
-}
-
-static void pcb_crosshair_mode_init(void)
-{
-	static conf_hid_callbacks_t cbs_mode;
-	static conf_hid_id_t tool_conf_id;
-	conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
-	tool_conf_id = pcb_conf_hid_reg(crosshair_cookie, NULL);
-
-	if (n_mode != NULL) {
-		memset(&cbs_mode, 0, sizeof(conf_hid_callbacks_t));
-		cbs_mode.val_change_post = crosshair_chg_mode;
-		pcb_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
-	}
-}
-
 /* allocate GC only when the GUI is already up and running */
 static void pcb_crosshair_gui_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -1098,8 +1067,6 @@ void pcb_crosshair_init(void)
 	pcb_crosshair.tool_arc = pcb_crosshair.tool_poly = pcb_crosshair.tool_poly_hole = -1;
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_crosshair_gui_init, NULL, crosshair_cookie);
-	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, pcb_crosshair_tool_logics, NULL, crosshair_cookie);
-	pcb_crosshair_mode_init();
 }
 
 
@@ -1110,7 +1077,6 @@ void pcb_crosshair_uninit(void)
 	if (pcb_render != NULL)
 		pcb_hid_destroy_gc(pcb_crosshair.GC);
 	pcb_event_unbind_allcookie(crosshair_cookie);
-	pcb_conf_hid_unreg(crosshair_cookie);
 }
 
 void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)

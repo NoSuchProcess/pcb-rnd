@@ -31,6 +31,7 @@
 #include <librnd/core/grid.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/tool.h>
+#include <librnd/core/conf_hid.h>
 
 #include "board.h"
 #include "conf_core.h"
@@ -39,6 +40,52 @@
 #include "draw.h"
 
 #include "tool_logic.h"
+
+/*** Generic part, all rnd apps should do something like this ***/
+
+static char tool_logic_cookie[] = "tool_logic";
+
+static void tool_logics_chg_tool(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	int *ok = argv[1].d.p;
+	int id = argv[2].d.i;
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
+	if (pcb->RatDraw && !pcb_tool_get(id)->allow_when_drawing_ratlines) {
+		pcb_message(PCB_MSG_WARNING, "That tool can not be used on the rat layer!\n");
+		*ok = 0;
+	}
+}
+
+static void tool_logic_chg_mode(conf_native_t *cfg, int arr_idx)
+{
+	pcb_tool_chg_mode(&PCB->hidlib);
+}
+
+
+void pcb_tool_logic_init(void)
+{
+	static conf_hid_callbacks_t cbs_mode;
+	static conf_hid_id_t tool_conf_id;
+	conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
+	tool_conf_id = pcb_conf_hid_reg(tool_logic_cookie, NULL);
+
+	if (n_mode != NULL) {
+		memset(&cbs_mode, 0, sizeof(conf_hid_callbacks_t));
+		cbs_mode.val_change_post = tool_logic_chg_mode;
+		pcb_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
+	}
+
+	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, tool_logic_chg_mode, NULL, tool_logic_cookie);
+}
+
+void pcb_tool_logic_uninit(void)
+{
+	pcb_event_unbind_allcookie(tool_logic_cookie);
+	pcb_conf_hid_unreg(tool_logic_cookie);
+}
+
+/*** pcb-rnd-specific parts ***/
+
 
 pcb_bool pcb_tool_is_saved = pcb_false;
 
