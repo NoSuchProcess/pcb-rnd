@@ -7556,7 +7556,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  librnd/core/error.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  undo.h ../src_3rd/libuundo/uundo.h undo_old.h remove.h search.h \
- obj_rat.h idpath.h tool.h ../src_3rd/genvector/vtp0.h
+ obj_rat.h idpath.h tool.h ../src_3rd/genvector/vtp0.h crosshair.h \
+ vtonpoint.h route.h
 ../src_plugins/tool_std/tool_rotate.o: \
  ../src_plugins/tool_std/tool_rotate.c ../config.h librnd/config.h \
  conf_core.h librnd/core/conf.h librnd/core/global_typedefs.h \
@@ -7578,7 +7579,7 @@
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
  obj_text.h font.h ../src_3rd/genht/htip.h layer_grp.h rats_patch.h \
  board.h librnd/core/hidlib.h rotate.h librnd/core/rotate.h \
- librnd/core/compat_misc.h tool.h
+ librnd/core/compat_misc.h tool.h crosshair.h vtonpoint.h route.h
 ../src_plugins/tool_std/tool_std.o: ../src_plugins/tool_std/tool_std.c \
  ../config.h librnd/config.h conf_core.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
