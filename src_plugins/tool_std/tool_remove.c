@@ -53,7 +53,7 @@ void pcb_tool_remove_notify_mode(pcb_hidlib_t *hl)
 	pcb_any_obj_t *obj;
 	int type;
 	
-	if ((type = pcb_search_screen(pcb_crosshair_note.X, pcb_crosshair_note.Y, PCB_REMOVE_TYPES | PCB_LOOSE_SUBC(PCB) | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+	if ((type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_REMOVE_TYPES | PCB_LOOSE_SUBC(PCB) | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		obj = (pcb_any_obj_t *)ptr2;
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
 			pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));

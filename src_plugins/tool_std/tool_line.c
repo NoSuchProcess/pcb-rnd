@@ -241,12 +241,12 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 				pcb_crosshair.AttachedLine.Point2.X
 				&& pcb_crosshair.AttachedLine.Point1.Y ==
 				pcb_crosshair.AttachedLine.Point2.Y
-				&& (pcb_crosshair.AttachedLine.Point2.X != pcb_crosshair_note.X || pcb_crosshair.AttachedLine.Point2.Y != pcb_crosshair_note.Y)) {
+				&& (pcb_crosshair.AttachedLine.Point2.X != hl->tool_x || pcb_crosshair.AttachedLine.Point2.Y != hl->tool_y)) {
 			/* We will only need to paint the second line segment.
 				 Since we only check for vias on the first segment,
 				 swap them so the non-empty segment is the first segment. */
-			pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair_note.X;
-			pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair_note.Y;
+			pcb_crosshair.AttachedLine.Point2.X = hl->tool_x;
+			pcb_crosshair.AttachedLine.Point2.Y = hl->tool_y;
 		}
 
 		if (conf_core.editor.auto_drc
@@ -302,12 +302,12 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			last_layer = PCB_CURRLAYER(pcb);
 			pcb_subc_as_board_update(PCB);
 		}
-		if (conf_core.editor.line_refraction && (pcb_crosshair_note.X != pcb_crosshair.AttachedLine.Point2.X || pcb_crosshair_note.Y != pcb_crosshair.AttachedLine.Point2.Y)
+		if (conf_core.editor.line_refraction && (hl->tool_x != pcb_crosshair.AttachedLine.Point2.X || hl->tool_y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
 						pcb_line_new_merge(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true),
 																	 pcb_crosshair.AttachedLine.Point2.X,
 																	 pcb_crosshair.AttachedLine.Point2.Y,
-																	 pcb_crosshair_note.X, pcb_crosshair_note.Y,
+																	 hl->tool_x, hl->tool_y,
 																	 conf_core.design.line_thickness,
 																	 2 * conf_core.design.clearance,
 																	 pcb_flag_make((conf_core.editor.auto_drc ? PCB_FLAG_FOUND : 0) |
@@ -318,10 +318,10 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			pcb_undo_inc_serial();
 			pcb_line_invalidate_draw(PCB_CURRLAYER(pcb), line);
 			/* move to new start point */
-			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair_note.X;
-			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair_note.Y;
-			pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair_note.X;
-			pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair_note.Y;
+			pcb_crosshair.AttachedLine.Point1.X = hl->tool_x;
+			pcb_crosshair.AttachedLine.Point1.Y = hl->tool_y;
+			pcb_crosshair.AttachedLine.Point2.X = hl->tool_x;
+			pcb_crosshair.AttachedLine.Point2.Y = hl->tool_y;
 
 
 			if (conf_core.editor.swap_start_direction) {
@@ -331,8 +331,8 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		}
 		if (conf_core.editor.orthogonal_moves) {
 			/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
-			pcb_marked.X = pcb_crosshair_note.X;
-			pcb_marked.Y = pcb_crosshair_note.Y;
+			pcb_marked.X = hl->tool_x;
+			pcb_marked.Y = hl->tool_y;
 		}
 		pcb_draw();
 	}

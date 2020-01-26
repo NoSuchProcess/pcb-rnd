@@ -80,8 +80,8 @@ void pcb_tool_arc_notify_mode(pcb_hidlib_t *hl)
 
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:
-		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair_note.X;
-		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair_note.Y;
+		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = hl->tool_x;
+		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = hl->tool_y;
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 		break;
 
@@ -92,8 +92,8 @@ void pcb_tool_arc_notify_mode(pcb_hidlib_t *hl)
 			pcb_coord_t wx, wy;
 			pcb_angle_t sa, dir;
 
-			wx = pcb_crosshair_note.X - pcb_crosshair.AttachedBox.Point1.X;
-			wy = pcb_crosshair_note.Y - pcb_crosshair.AttachedBox.Point1.Y;
+			wx = hl->tool_x - pcb_crosshair.AttachedBox.Point1.X;
+			wy = hl->tool_y - pcb_crosshair.AttachedBox.Point1.Y;
 			if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
 				pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
 				sa = (wx >= 0) ? 0 : 180;

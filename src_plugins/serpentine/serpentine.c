@@ -304,13 +304,13 @@ static void tool_serpentine_notify_mode(void)
 
 	switch (pcb_crosshair.AttachedObject.State) {
 	case PCB_CH_STATE_FIRST:
-		pcb_crosshair.AttachedObject.Type = pcb_search_screen(pcb_crosshair_note.X, pcb_crosshair_note.Y, PCB_OBJ_LINE, 
+		pcb_crosshair.AttachedObject.Type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_LINE, 
 						&pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 		/* TODO: check if an object is on the current layer */
 		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE) {
 			pcb_line_t * p_line = (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2;
 			
-			double t = point_on_line(	pcb_crosshair_note.X,pcb_crosshair_note.Y,
+			double t = point_on_line(	hl->tool_x,hl->tool_y,
 																p_line->Point1.X,p_line->Point1.Y,
 																p_line->Point2.X,p_line->Point2.Y,
 																&pcb_crosshair.AttachedObject.X,

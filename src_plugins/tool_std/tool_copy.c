@@ -60,10 +60,10 @@ void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
 			int types = PCB_COPY_TYPES;
 
 			pcb_crosshair.AttachedObject.Type =
-				pcb_search_screen(pcb_crosshair_note.X, pcb_crosshair_note.Y, types,
+				pcb_search_screen(hl->tool_x, hl->tool_y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 			if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
-				pcb_tool_attach_for_copy(hl, pcb_crosshair_note.X, pcb_crosshair_note.Y, pcb_false);
+				pcb_tool_attach_for_copy(hl, hl->tool_x, hl->tool_y, pcb_false);
 			}
 			break;
 		}
@@ -93,9 +93,9 @@ void pcb_tool_copy_notify_mode(pcb_hidlib_t *hl)
 
 void pcb_tool_copy_release_mode(pcb_hidlib_t *hl)
 {
-	if (pcb_crosshair_note.Hit) {
+	if (hl->tool_hit) {
 		pcb_tool_copy_notify_mode(hl);
-		pcb_crosshair_note.Hit = 0;
+		hl->tool_hit = 0;
 	}
 }
 

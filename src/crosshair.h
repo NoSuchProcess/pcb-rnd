@@ -86,11 +86,8 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 } pcb_crosshair_t;
 
 typedef struct {
-	pcb_coord_t X, Y;
 	pcb_cardinal_t Buffer; /* buffer number */
-	pcb_bool Click;        /* true if clicked somewhere with the arrow tool */
 	pcb_bool Moving;       /* true if clicked on an object of PCB_SELECT_TYPES */
-	int Hit;               /* type of a hit object of PCB_MOVE_TYPES; 0 if there was no PCB_MOVE_TYPES object under the crosshair */
 	void *ptr1, *ptr2, *ptr3;
 } pcb_crosshair_note_t;
 

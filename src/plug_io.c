@@ -542,8 +542,8 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		pcb_board_new_postproc(PCB, 0);
 		if (how == 0) {
 			/* update cursor location */
-			pcb_crosshair.X = PCB->hidlib.size_x/2;
-			pcb_crosshair.Y = PCB->hidlib.size_y/2;
+			PCB->hidlib.ch_x = pcb_crosshair.X = PCB->hidlib.size_x/2;
+			PCB->hidlib.ch_y = pcb_crosshair.Y = PCB->hidlib.size_y/2;
 
 			/* update cursor confinement and output area (scrollbars) */
 			pcb_board_resize(PCB->hidlib.size_x, PCB->hidlib.size_y, 0);

@@ -83,7 +83,7 @@ void pcb_tool_buffer_release_mode(pcb_hidlib_t *hl)
 		pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
 		pcb_buffer_set_number(pcb_crosshair_note.Buffer);
 		pcb_crosshair_note.Moving = pcb_false;
-		pcb_crosshair_note.Hit = 0;
+		hl->tool_hit = 0;
 	}
 }
 

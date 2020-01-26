@@ -860,8 +860,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	struct snap_data snap_data;
 	int ans;
 
-	pcb_crosshair.X = PCB_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
-	pcb_crosshair.Y = PCB_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
+	PCB->hidlib.ch_x = pcb_crosshair.X = PCB_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
+	PCB->hidlib.ch_y = pcb_crosshair.Y = PCB_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
 
 	if (PCB->RatDraw) {
 		nearest_grid_x = -PCB_MIL_TO_COORD(6);
@@ -961,8 +961,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true, NULL);
 	}
 
-	pcb_crosshair.X = snap_data.x;
-	pcb_crosshair.Y = snap_data.y;
+	PCB->hidlib.ch_x = pcb_crosshair.X = snap_data.x;
+	PCB->hidlib.ch_x = pcb_crosshair.Y = snap_data.y;
 
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
@@ -1009,14 +1009,14 @@ pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 		/* back up to old position to notify the GUI
 		 * (which might want to erase the old crosshair) */
 		z = pcb_crosshair.X;
-		pcb_crosshair.X = x;
+		PCB->hidlib.ch_x = pcb_crosshair.X = x;
 		x = z;
 		z = pcb_crosshair.Y;
-		pcb_crosshair.Y = y;
+		PCB->hidlib.ch_y = pcb_crosshair.Y = y;
 		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false); /* Our caller notifies when it has done */
 		/* now move forward again */
-		pcb_crosshair.X = x;
-		pcb_crosshair.Y = z;
+		PCB->hidlib.ch_x = pcb_crosshair.X = x;
+		PCB->hidlib.ch_y = pcb_crosshair.Y = z;
 		return pcb_true;
 	}
 	return pcb_false;

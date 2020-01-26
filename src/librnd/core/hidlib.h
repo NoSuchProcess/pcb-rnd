@@ -36,6 +36,12 @@ struct pcb_hidlib_s {
 	char *name;                        /* name of the design */
 	char *filename;                    /* name of the file (from load) */
 
+	/* tool state */
+	pcb_coord_t ch_x, ch_y, tool_x, tool_y; /* ch is crosshair */
+	unsigned int tool_hit;                  /* optional: type of a hit object of PCB_MOVE_TYPES; 0 if there was no PCB_MOVE_TYPES object under the crosshair */
+	unsigned int tool_click:1;              /* optional: true if clicked somewhere with the arrow tool */
+
+
 	/* internal */
 	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */
 };

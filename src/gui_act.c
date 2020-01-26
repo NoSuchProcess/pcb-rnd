@@ -390,13 +390,14 @@ static const char pcb_acth_Tool[] = "Change or use the tool mode.";
 /* DOC: tool.html */
 static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
 	const char *cmd;
 	PCB_ACT_IRES(0);
 	PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
 
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
-	pcb_crosshair_note.X = pcb_crosshair.X;
-	pcb_crosshair_note.Y = pcb_crosshair.Y;
+	hidlib->tool_x = hidlib->ch_x;
+	hidlib->tool_y = hidlib->ch_y;
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 	switch(pcb_funchash_get(cmd, NULL)) {
 		case F_Cancel:
@@ -408,7 +409,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				const pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
 				if ((t == NULL) || (t->escape == NULL)) {
 					pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
-					pcb_crosshair_note.Hit = pcb_crosshair_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
+					hidlib->tool_hit = hidlib->tool_click = 0; /* if the mouse button is still pressed, don't start selecting a box */
 				}
 				else
 					t->escape(PCB_ACT_HIDLIB);
@@ -436,7 +437,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case F_Stroke:
 			if (conf_core.editor.enable_stroke) {
-				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", pcb_crosshair.X, pcb_crosshair.Y);
+				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
 				break;
 			}
 
@@ -466,6 +467,7 @@ static const char pcb_acth_CycleDrag[] = "Cycle through which object is being dr
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (PCB_SLOP * pcb_pixel_slop)) : ((a)-(b) > -(PCB_SLOP * pcb_pixel_slop)))
 static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
 
@@ -483,14 +485,14 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_OBJ_LINE) != PCB_OBJ_VOID) {
 			/* line has two endpoints, check which one is close to the original x;y */
 			pcb_line_t *l = ptr2;
-			if (close_enough(pcb_crosshair_note.X, l->Point1.X) && close_enough(pcb_crosshair_note.Y, l->Point1.Y)) {
+			if (close_enough(hidlib->tool_x, l->Point1.X) && close_enough(hidlib->tool_y, l->Point1.Y)) {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
 				pcb_crosshair.AttachedObject.Ptr3 = &l->Point1;
 				goto switched;
 			}
-			if (close_enough(pcb_crosshair_note.X, l->Point2.X) && close_enough(pcb_crosshair_note.Y, l->Point2.Y)) {
+			if (close_enough(hidlib->tool_x, l->Point2.X) && close_enough(hidlib->tool_y, l->Point2.Y)) {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -501,7 +503,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_OBJ_ARC_POINT) != PCB_OBJ_VOID) {
 			pcb_coord_t ex, ey;
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 0, &ex, &ey);
-			if (close_enough(pcb_crosshair_note.X, ex) && close_enough(pcb_crosshair_note.Y, ey)) {
+			if (close_enough(hidlib->tool_x, ex) && close_enough(hidlib->tool_y, ey)) {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -509,7 +511,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				goto switched;
 			}
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 1, &ex, &ey);
-			if (close_enough(pcb_crosshair_note.X, ex) && close_enough(pcb_crosshair_note.Y, ey)) {
+			if (close_enough(hidlib->tool_x, ex) && close_enough(hidlib->tool_y, ey)) {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;

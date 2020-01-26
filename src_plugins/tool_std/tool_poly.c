@@ -92,8 +92,8 @@ void pcb_tool_poly_notify_mode(pcb_hidlib_t *hl)
 
 	if (conf_core.editor.orthogonal_moves) {
 		/* set the mark to the new starting point so ortho works */
-		pcb_grabbed.X = pcb_crosshair_note.X;
-		pcb_grabbed.Y = pcb_crosshair_note.Y;
+		pcb_grabbed.X = hl->tool_x;
+		pcb_grabbed.Y = hl->tool_y;
 		pcb_grabbed.status = pcb_true;
 	}
 }

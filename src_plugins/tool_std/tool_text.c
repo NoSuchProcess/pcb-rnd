@@ -57,8 +57,8 @@ void pcb_tool_text_notify_mode(pcb_hidlib_t *hl)
 
 			if (pcb_layer_flags(pcb, PCB_CURRLID(pcb)) & PCB_LYT_BOTTOM)
 				flag |= PCB_FLAG_ONSOLDER;
-			if ((text = pcb_text_new(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true), pcb_font(pcb, conf_core.design.text_font_id, 1), pcb_crosshair_note.X,
-																pcb_crosshair_note.Y, 0, conf_core.design.text_scale, conf_core.design.text_thickness, string, pcb_flag_make(flag))) != NULL) {
+			if ((text = pcb_text_new(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true), pcb_font(pcb, conf_core.design.text_font_id, 1), hl->tool_x,
+																hl->tool_y, 0, conf_core.design.text_scale, conf_core.design.text_thickness, string, pcb_flag_make(flag))) != NULL) {
 				pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, PCB_CURRLAYER(pcb), text, text);
 				pcb_undo_inc_serial();
 				pcb_text_invalidate_draw(PCB_CURRLAYER(pcb), text);

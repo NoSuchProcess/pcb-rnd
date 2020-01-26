@@ -67,7 +67,7 @@ void pcb_tool_via_notify_mode(pcb_hidlib_t *hl)
 
 TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 	{
-		pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, -1, pcb_crosshair_note.X, pcb_crosshair_note.Y,
+		pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, -1, hl->tool_x, hl->tool_y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, pcb_true);
 		if (ps == NULL)
