@@ -60,7 +60,7 @@ void pcb_tool_arrow_uninit(void)
 }
 
 /* Called some time after the click if there was a release but no second click
-	 a.k.a. finalize single click (some things are already done in pcb_notify_mode
+	 a.k.a. finalize single click (some things are already done in pcb_press_mode
 	 at the initial click event) */
 static void click_timer_cb(pcb_hidval_t hv)
 {

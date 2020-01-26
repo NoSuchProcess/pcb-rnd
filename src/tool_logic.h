@@ -44,7 +44,7 @@ extern pcb_bool pcb_tool_is_saved;
 /* does what's appropriate for the current mode setting (when clicked). This
    normally means creation of an object at the current crosshair location.
    new created objects are added to the create undo list of course */
-void pcb_notify_mode(pcb_hidlib_t *hidlib);
+void pcb_press_mode(pcb_hidlib_t *hidlib);
 
 void pcb_release_mode(pcb_hidlib_t *hidlib);
 

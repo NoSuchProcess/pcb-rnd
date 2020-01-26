@@ -224,19 +224,19 @@ static void uninit_current_tool(void)
 	wrap_void(uninit, ());
 }
 
-void pcb_tool_notify_mode(pcb_hidlib_t *hidlib)
+void pcb_tool_press(pcb_hidlib_t *hidlib)
 {
-	wrap_void(notify_mode, (hidlib));
+	wrap_void(press, (hidlib));
 }
 
-void pcb_tool_release_mode(pcb_hidlib_t *hidlib)
+void pcb_tool_release(pcb_hidlib_t *hidlib)
 {
-	wrap_void(release_mode, (hidlib));
+	wrap_void(release, (hidlib));
 }
 
-void pcb_tool_adjust_attached_objects(pcb_hidlib_t *hl)
+void pcb_tool_adjust_attached(pcb_hidlib_t *hl)
 {
-	wrap_void(adjust_attached_objects, (hl));
+	wrap_void(adjust_attached, (hl));
 }
 
 void pcb_tool_draw_attached(pcb_hidlib_t *hl)

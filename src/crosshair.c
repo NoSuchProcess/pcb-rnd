@@ -1108,7 +1108,7 @@ static void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 		pcb_stub_stroke_record(ev_x, ev_y);
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
-		pcb_tool_adjust_attached_objects(&PCB->hidlib);
+		pcb_tool_adjust_attached(&PCB->hidlib);
 		pcb_event(&PCB->hidlib, PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
 		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	}

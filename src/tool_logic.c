@@ -187,7 +187,7 @@ void pcb_release_mode(pcb_hidlib_t *hidlib)
 		return;
 
 	pcb_grabbed.status = pcb_false;
-	pcb_tool_release_mode(hidlib);
+	pcb_tool_release(hidlib);
 
 	if (pcb_tool_is_saved)
 		pcb_tool_restore(hidlib);
@@ -195,7 +195,7 @@ void pcb_release_mode(pcb_hidlib_t *hidlib)
 	pcb_draw();
 }
 
-void pcb_notify_mode(pcb_hidlib_t *hidlib)
+void pcb_press_mode(pcb_hidlib_t *hidlib)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 
@@ -209,6 +209,6 @@ void pcb_notify_mode(pcb_hidlib_t *hidlib)
 		if (pcb_data_clear_flag(pcb->Data, PCB_FLAG_WARN, 1, 0) > 0)
 			pcb_board_set_changed_flag(pcb_true);
 	}
-	pcb_tool_notify_mode(hidlib);
+	pcb_tool_press(hidlib);
 	pcb_draw();
 }

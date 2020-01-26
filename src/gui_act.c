@@ -144,7 +144,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* toggle line-adjust flag */
 		case F_ToggleAllDirections:
 			conf_toggle_editor(all_direction_lines);
-			pcb_tool_adjust_attached_objects(PCB_ACT_HIDLIB);
+			pcb_tool_adjust_attached(PCB_ACT_HIDLIB);
 			break;
 
 		case F_CycleClip:
@@ -156,7 +156,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else {
 				pcb_conf_setf(CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
-			pcb_tool_adjust_attached_objects(PCB_ACT_HIDLIB);
+			pcb_tool_adjust_attached(PCB_ACT_HIDLIB);
 			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 			break;
 
@@ -439,8 +439,9 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		break;
 
+	case F_Press:
 	case F_Notify:
-		pcb_notify_mode(PCB_ACT_HIDLIB);
+		pcb_press_mode(PCB_ACT_HIDLIB);
 		break;
 	case F_PasteBuffer:
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
