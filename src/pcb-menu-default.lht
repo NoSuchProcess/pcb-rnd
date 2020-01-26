@@ -129,9 +129,9 @@ ha:{
 				ha:Redo last undone operation   = { li:a={{<key>u; <Key>r}; {Ctrl<Key>y};};   action=Redo() }
 				ha:Clear undo-buffer            = { a={<key>u; <Key>c}; action=Undo(ClearList) }
 				-
-				ha:Cut selection to buffer      = { li:a={{<key>e; <Key>x}; a=Ctrl<Key>x;};   li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(MoveSelected); Tool(PasteBuffer) } }
-				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};};  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(PasteBuffer) } }
-				ha:Paste buffer to layout       = { li:a={{<key>e; <Key>v}; a=Ctrl<Key>v;};   action=Tool(PasteBuffer) }
+				ha:Cut selection to buffer      = { li:a={{<key>e; <Key>x}; a=Ctrl<Key>x;};   li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(MoveSelected); Tool(buffer) } }
+				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};};  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
+				ha:Paste buffer to layout       = { li:a={{<key>e; <Key>v}; a=Ctrl<Key>v;};   action=Tool(buffer) }
 				-
 				ha:Remove object                = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
 				ha:Change object {
@@ -409,7 +409,7 @@ ha:{
 				ha:Move selected objects to current layer = { a={<key>s; <key>l;} action=MoveToCurrentLayer(Selected) }
 				ha:Remove selected objects                = { a={<key>s; <key>r;} action=RemoveSelected() }
 				ha:Convert selection to subcircuit        = { a={<key>s; <key>c; <key>s;} action=Select(ConvertSubc) }
-				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Tool(PasteBuffer);} }
+				ha:Convert selection to padstack          = { a={<key>s; <key>c; <key>p;} li:action={PadstackConvert(selected); Tool(buffer);} }
 				ha:Convert selection to extended object...= { a={<key>s; <key>c; <key>e;} action=ExtobjConvFrom(Selected, @gui); }
 				ha:Break selection subcircuits to pieces  = { a={<key>s; <key>b; <key>s}; li:action={PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop);} }
 				ha:Break selection padstack to pieces     = { a={<key>s; <key>b; <key>p}; action=PadstackBreakup(selected) }
@@ -434,21 +434,21 @@ ha:{
 
 		ha:Buffer {
 			li:submenu {
-				ha:Rotate buffer 90 deg CCW (left)  = { li:a={{<key>b;<key>r;<key>l}; {Shift<Key>F7};}; li:action={Tool(PasteBuffer); PasteBuffer(Rotate,1)} }
-				ha:Rotate buffer 90 deg CW (right)  = { a={<key>b;<key>r;<key>r}; li:action={Tool(PasteBuffer); PasteBuffer(Rotate,3)} }
-				ha:Arbitrarily Rotate Buffer  = { a={<key>b;<key>r;<key>a}; li:action={Tool(PasteBuffer); FreeRotateBuffer()} }
-				ha:Mirror buffer (up/down)    = { a={<key>b;<key>m;<key>u}; li:action={Tool(PasteBuffer); PasteBuffer(Mirror)} }
-				ha:Mirror buffer (left/right) = { a={<key>b;<key>m;<key>l}; li:action={Tool(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
+				ha:Rotate buffer 90 deg CCW (left)  = { li:a={{<key>b;<key>r;<key>l}; {Shift<Key>F7};}; li:action={Tool(buffer); PasteBuffer(Rotate,1)} }
+				ha:Rotate buffer 90 deg CW (right)  = { a={<key>b;<key>r;<key>r}; li:action={Tool(buffer); PasteBuffer(Rotate,3)} }
+				ha:Arbitrarily Rotate Buffer  = { a={<key>b;<key>r;<key>a}; li:action={Tool(buffer); FreeRotateBuffer()} }
+				ha:Mirror buffer (up/down)    = { a={<key>b;<key>m;<key>u}; li:action={Tool(buffer); PasteBuffer(Mirror)} }
+				ha:Mirror buffer (left/right) = { a={<key>b;<key>m;<key>l}; li:action={Tool(buffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)} }
 				ha:Scale                      = { action=ScaleBuffer(); }
-				ha:Normalize                  = { a={<key>b;<key>n}; li:action={Tool(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Normalize);} }
+				ha:Normalize                  = { a={<key>b;<key>n}; li:action={Tool(buffer); PasteBuffer(Rotate,1); PasteBuffer(Normalize);} }
 				-
 				ha:Clear buffer                    = { a={<key>b;<key>c;<key>c;}; action=PasteBuffer(Clear) }
 				ha:Save buffer content to file     = { a={<key>b;<key>f;<key>s;}; action=PasteBuffer(SaveAll) }
 				ha:Load buffer content from file   = { a={<key>b;<key>f;<key>l;}; action=PasteBuffer(LoadAll) }
 				-
 				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
-				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Tool(PasteBuffer);} }
-				ha:Convert buffer to extended object... = { a={<key>b;<key>c;<key>e}; li:action={ExtobjConvFrom(buffer, @gui); Tool(PasteBuffer);} }
+				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Tool(buffer);} }
+				ha:Convert buffer to extended object... = { a={<key>b;<key>c;<key>e}; li:action={ExtobjConvFrom(buffer, @gui); Tool(buffer);} }
 				ha:Break buffer subcircuits to pieces = { a={<key>b;<key>s;<key>b};  action=PasteBuffer(Restore) }
 				ha:Break buffer padstacks to pieces = { a={<key>b;<key>s;<key>p};  action=PadstackBreakup(buffer) }
 				ha:Save buffer subcircuit to file   = { a={<key>b;<key>s;<key>s}; action=Save(PasteBuffer); tip={save one subcircuits from the buffer as a footprint file} }
@@ -660,7 +660,7 @@ ha:{
 				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove line            { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
-				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(PasteBuffer) } }
+				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
 		}
@@ -672,7 +672,7 @@ ha:{
 				ha:Set Same Style         { action=SetSame() }
 				-
 				ha:Remove arc             { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
-				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(PasteBuffer) } }
+				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
 		}
@@ -683,7 +683,7 @@ ha:{
 				ha:Edit flags...          { action=FlagEdit() }
 				-
 				ha:Remove polygon         { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
-				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(PasteBuffer) } }
+				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
 		}
@@ -697,7 +697,7 @@ ha:{
 				ha:Change font...         { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 				-
 				ha:Remove text            { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
-				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(PasteBuffer) } }
+				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
 		}
@@ -711,7 +711,7 @@ ha:{
 				-
 				ha:Remove padstack        { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
 				ha:Break up padstack      { action=PadstackBreakup(object) }
-				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(PasteBuffer) } }
+				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 			}
 		}
 
@@ -735,7 +735,7 @@ ha:{
 #TODO: replace from lib
 				-
 				ha:Remove subcircuit      { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
-				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(PasteBuffer) } }
+				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to other side     { action=Flip(object) }
 			}
 		}
@@ -755,14 +755,14 @@ ha:{
 					li:submenu {
 						ha:Unselect all objects               = { action=Unselect(All) }
 						ha:Remove selected objects            = { action=RemoveSelected() }
-						ha:Copy selection to buffer           = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Tool(PasteBuffer)} }
-						ha:Cut selection to buffer            = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Tool(PasteBuffer)} }
+						ha:Copy selection to buffer           = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Tool(buffer)} }
+						ha:Cut selection to buffer            = { li:action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Tool(buffer)} }
 						ha:Convert selection to subcircuit    = { action=Select(ConvertSubc) }
 						ha:Convert selection to extended object... = { action=ExtobjConvFrom(selected, @gui) }
 						ha:Auto place selected subcircuits    = { action=AutoPlaceSelected() }
 						ha:Autoroute selected subcircuits     = { action=AutoRoute(SelectedRats) }
 						ha:Rip up selected auto-routed tracks = { action=RipUp(Selected) }
-						ha:Rotate selected                    = { action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Tool(PasteBuffer) FreeRotateBuffer(); Tool(PasteBuffer); PasteBuffer(Tolayout, crosshair); } }
+						ha:Rotate selected                    = { action={GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Tool(buffer) FreeRotateBuffer(); Tool(buffer); PasteBuffer(Tolayout, crosshair); } }
 					}
 				}
 				ha:Operations on this location {
