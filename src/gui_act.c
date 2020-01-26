@@ -400,10 +400,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 	switch(pcb_funchash_get(cmd, NULL)) {
 		case F_Cancel:
-			{
-				int saved_mode = pcbhl_conf.editor.mode;
-				pcb_tool_select_by_id(PCB_ACT_HIDLIB, saved_mode);
-			}
+			pcb_tool_select_by_id(PCB_ACT_HIDLIB, pcbhl_conf.editor.mode);
 			break;
 		case F_Escape:
 			escape:;
