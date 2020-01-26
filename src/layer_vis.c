@@ -118,6 +118,8 @@ int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On
 
 	done:;
 	/* update control panel and exit */
+	if (ChangeStackOrder)
+		PCB->RatDraw = 0; /* any layer selection here means we can not be in rat mode */
 	pcb_event(hl, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return changed;
 }
