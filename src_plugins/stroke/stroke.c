@@ -160,6 +160,7 @@ int pplg_uninit_stroke(void)
 	pcb_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
 	pcb_conf_unreg_fields("plugins/stroke/");
 	pcb_remove_actions_by_cookie(pcb_stroke_cookie);
+	pcb_event_unbind_allcookie(pcb_stroke_cookie);
 	return 0;
 }
 
