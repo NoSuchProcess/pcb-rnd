@@ -390,14 +390,15 @@ static const char pcb_acth_Tool[] = "Change or use the tool mode.";
 /* DOC: tool.html */
 static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *cmd;
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Tool, ;);
+	PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
 
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	pcb_crosshair_note.X = pcb_crosshair.X;
 	pcb_crosshair_note.Y = pcb_crosshair.Y;
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
-	switch(fgw_keyword(&argv[1])) {
+	switch(pcb_funchash_get(cmd, NULL)) {
 	case F_Arc:
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
 		break;
@@ -496,6 +497,10 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case F_Save: /* save currently selected tool */
 		pcb_tool_save(PCB_ACT_HIDLIB);
 		break;
+
+	default:
+		if (pcb_tool_select_by_name(PCB_ACT_HIDLIB, cmd) != 0)
+			pcb_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 	return 0;
