@@ -71,7 +71,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 		hl->tool_click = pcb_false;
 		if (pcb_crosshair_note.Moving && !pcb_gui->shift_is_pressed(pcb_gui)) {
-			pcb_grabbed.status = pcb_true;
+			hl->tool_grabbed.status = pcb_true;
 			pcb_crosshair_note.Buffer = conf_core.editor.buffer_number;
 			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
@@ -85,7 +85,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 		else if (hl->tool_hit && !pcb_gui->shift_is_pressed(pcb_gui)) {
 			pcb_box_t box;
 
-			pcb_grabbed.status = pcb_true;
+			hl->tool_grabbed.status = pcb_true;
 			pcb_tool_save(hl);
 			pcb_tool_is_saved = pcb_true;
 			pcb_tool_select_by_name(hl, pcb_gui->control_is_pressed(pcb_gui)? "copy" : "move");

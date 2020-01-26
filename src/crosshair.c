@@ -502,7 +502,7 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
 	pcb_coord_t ms = conf_core.appearance.mark_size, ms2 = ms / 2;
 
-	if ((pcb_marked.status) || (pcb_grabbed.status)) {
+	if ((pcb_marked.status) || (hidlib->tool_grabbed.status)) {
 		if (!inhibit_drawing_mode) {
 			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
 			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, NULL);
@@ -515,12 +515,12 @@ void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 		pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
 	}
 
-	if (pcb_grabbed.status) {
-		pcb_render->draw_line(pcb_crosshair.GC, pcb_grabbed.X - ms, pcb_grabbed.Y - ms2, pcb_grabbed.X + ms, pcb_grabbed.Y + ms2);
-		pcb_render->draw_line(pcb_crosshair.GC, pcb_grabbed.X + ms2, pcb_grabbed.Y - ms, pcb_grabbed.X - ms2, pcb_grabbed.Y + ms);
+	if (hidlib->tool_grabbed.status) {
+		pcb_render->draw_line(pcb_crosshair.GC, hidlib->tool_grabbed.X - ms, hidlib->tool_grabbed.Y - ms2, hidlib->tool_grabbed.X + ms, hidlib->tool_grabbed.Y + ms2);
+		pcb_render->draw_line(pcb_crosshair.GC, hidlib->tool_grabbed.X + ms2, hidlib->tool_grabbed.Y - ms, hidlib->tool_grabbed.X - ms2, hidlib->tool_grabbed.Y + ms);
 	}
 
-	if ((pcb_marked.status) || (pcb_grabbed.status))
+	if ((pcb_marked.status) || (hidlib->tool_grabbed.status))
 		if (!inhibit_drawing_mode)
 			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, 1, NULL);
 }
@@ -854,6 +854,7 @@ static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_dat
  */
 void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 {
+	pcb_hidlib_t *hidlib = &PCB->hidlib;
 	pcb_coord_t nearest_grid_x, nearest_grid_y;
 	void *ptr1, *ptr2, *ptr3;
 	struct snap_data snap_data;
@@ -871,12 +872,12 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 		nearest_grid_y = pcb_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 		if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
-			pcb_coord_t dx = pcb_crosshair.X - pcb_grabbed.X;
-			pcb_coord_t dy = pcb_crosshair.Y - pcb_grabbed.Y;
+			pcb_coord_t dx = pcb_crosshair.X - hidlib->tool_grabbed.X;
+			pcb_coord_t dy = pcb_crosshair.Y - hidlib->tool_grabbed.Y;
 			if (PCB_ABS(dx) > PCB_ABS(dy))
-				nearest_grid_y = pcb_grabbed.Y;
+				nearest_grid_y = hidlib->tool_grabbed.Y;
 			else
-				nearest_grid_x = pcb_grabbed.X;
+				nearest_grid_x = hidlib->tool_grabbed.X;
 		}
 
 	}

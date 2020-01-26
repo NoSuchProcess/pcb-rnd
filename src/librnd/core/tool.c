@@ -260,13 +260,12 @@ pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
 	wrap_retv(redo_act, return pcb_true, (hl));
 }
 
-pcb_mark_t pcb_grabbed; /* TEMPORARY */
 static void do_release(pcb_hidlib_t *hidlib)
 {
 	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 0) == 0))
 		return;
 
-	pcb_grabbed.status = pcb_false;
+	hidlib->tool_grabbed.status = pcb_false;
 
 	pcb_tool_release(hidlib);
 
@@ -281,8 +280,8 @@ void pcb_tool_do_press(pcb_hidlib_t *hidlib)
 	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 1) == 0))
 		return;
 
-	pcb_grabbed.X = hidlib->tool_x;
-	pcb_grabbed.Y = hidlib->tool_y;
+	hidlib->tool_grabbed.X = hidlib->tool_x;
+	hidlib->tool_grabbed.Y = hidlib->tool_y;
 
 	pcb_tool_press(hidlib);
 	pcb_event(hidlib, PCB_EVENT_TOOL_PRESS, NULL);
