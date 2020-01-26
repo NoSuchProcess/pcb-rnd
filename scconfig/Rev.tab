@@ -1,4 +1,4 @@
-29403	configure	move generic actions from core to librnd
+29405	configure	move generic actions from core to librnd
 29385	configure	remove build system special casing: generated lists for action registration
 29375	configure	librnd separation: stroke plugin API conversion from stub to event
 29340	configure	librnd separation: tool code
