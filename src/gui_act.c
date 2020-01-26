@@ -399,60 +399,60 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_crosshair_note.Y = pcb_crosshair.Y;
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 	switch(pcb_funchash_get(cmd, NULL)) {
-	case F_Cancel:
-		{
-			int saved_mode = pcbhl_conf.editor.mode;
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, saved_mode);
-		}
-		break;
-	case F_Escape:
-		escape:;
-		{
-			pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
-			if ((t == NULL) || (t->escape == NULL)) {
-				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
-				pcb_crosshair_note.Hit = pcb_crosshair_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
+		case F_Cancel:
+			{
+				int saved_mode = pcbhl_conf.editor.mode;
+				pcb_tool_select_by_id(PCB_ACT_HIDLIB, saved_mode);
 			}
-			else
-				t->escape(PCB_ACT_HIDLIB);
-		}
-		break;
-
-	case F_Press:
-	case F_Notify:
-		pcb_press_mode(PCB_ACT_HIDLIB);
-		break;
-	case F_Release:
-		if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish(PCB_ACT_HIDLIB) == 0)) {
-			/* Ugly hack: returning 1 here will break execution of the
-			   action script, so actions after this one could do things
-			   that would be executed only after non-recognized gestures */
-			pcb_release_mode(PCB_ACT_HIDLIB);
-			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
-			return 1;
-		}
-		pcb_release_mode(PCB_ACT_HIDLIB);
-		break;
-	case F_Stroke:
-		if (conf_core.editor.enable_stroke) {
-			pcb_stub_stroke_start();
 			break;
-		}
+		case F_Escape:
+			escape:;
+			{
+				pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
+				if ((t == NULL) || (t->escape == NULL)) {
+					pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
+					pcb_crosshair_note.Hit = pcb_crosshair_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
+				}
+				else
+					t->escape(PCB_ACT_HIDLIB);
+			}
+			break;
 
-		/* Right mouse button restarts drawing mode. */
-		goto escape;
+		case F_Press:
+		case F_Notify:
+			pcb_press_mode(PCB_ACT_HIDLIB);
+			break;
+		case F_Release:
+			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish(PCB_ACT_HIDLIB) == 0)) {
+				/* Ugly hack: returning 1 here will break execution of the
+				   action script, so actions after this one could do things
+				   that would be executed only after non-recognized gestures */
+				pcb_release_mode(PCB_ACT_HIDLIB);
+				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+				return 1;
+			}
+			pcb_release_mode(PCB_ACT_HIDLIB);
+			break;
+		case F_Stroke:
+			if (conf_core.editor.enable_stroke) {
+				pcb_stub_stroke_start();
+				break;
+			}
 
-	case F_Restore: /* restore the last saved tool */
-		pcb_tool_restore(PCB_ACT_HIDLIB);
-		break;
+			/* Right mouse button restarts drawing mode. */
+			goto escape;
 
-	case F_Save: /* save currently selected tool */
-		pcb_tool_save(PCB_ACT_HIDLIB);
-		break;
+		case F_Restore: /* restore the last saved tool */
+			pcb_tool_restore(PCB_ACT_HIDLIB);
+			break;
 
-	default:
-		if (pcb_tool_select_by_name(PCB_ACT_HIDLIB, cmd) != 0)
-			pcb_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
+		case F_Save: /* save currently selected tool */
+			pcb_tool_save(PCB_ACT_HIDLIB);
+			break;
+
+		default:
+			if (pcb_tool_select_by_name(PCB_ACT_HIDLIB, cmd) != 0)
+				pcb_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 	return 0;
