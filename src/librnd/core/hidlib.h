@@ -44,6 +44,12 @@ struct pcb_hidlib_s {
 
 	/* internal */
 	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */
+
+	/* spare - sacrifice these when increasing struct size without breaking API binary compatibility */
+	int ispare[8];
+	double dspare[8];
+	pcb_coord_t cspare[8];
+	void *pspare[8];
 };
 
 void pcb_hidlib_event_uninit(void);
