@@ -421,7 +421,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_press_mode(PCB_ACT_HIDLIB);
 			break;
 		case F_Release:
-			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke)) {
+			if (conf_core.editor.enable_stroke) {
 				int handled = 0;
 				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
 				if (handled) {

@@ -24,5 +24,5 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-extern pcb_bool pcb_mid_stroke;
+extern pcb_bool pcb_mid_stroke_removed;
 

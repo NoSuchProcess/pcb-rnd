@@ -55,6 +55,7 @@ conf_stroke_t conf_stroke;
 static const char *pcb_stroke_cookie = "stroke plugin";
 
 static pcb_coord_t stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y;
+static pcb_bool pcb_mid_stroke = pcb_false;
 
 static int pcb_stroke_exec(pcb_hidlib_t *hl, const char *seq)
 {
@@ -75,6 +76,9 @@ static void pcb_stroke_finish(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 	char msg[255];
 	int *handled = argv[1].d.p;
 
+	if (!pcb_mid_stroke)
+		return;
+
 	pcb_mid_stroke = pcb_false;
 	if (stroke_trans(msg))
 		*handled = pcb_stroke_exec(hidlib, msg);
@@ -83,6 +87,9 @@ static void pcb_stroke_finish(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 static void pcb_stroke_record(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
+
+	if (!pcb_mid_stroke)
+		return;
 
 	stroke_last_x = ev_x;
 	stroke_last_y = ev_y;

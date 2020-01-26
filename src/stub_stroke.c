@@ -27,5 +27,5 @@
 #include "config.h"
 #include <librnd/core/pcb_bool.h>
 
-pcb_bool pcb_mid_stroke = pcb_false;
+pcb_bool pcb_mid_stroke_removed = pcb_false;
 
