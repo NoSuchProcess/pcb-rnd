@@ -378,8 +378,8 @@ ha:{
 						ha:Arc            = { checked=ChkMode(arc);         li:a={{<key>t;<key>a};{<Key>F3};}; action=Mode(Arc); update_on={editor/mode} }
 						ha:Text           = { checked=ChkMode(text);        li:a={{<key>t;<key>t};{<Key>F4};}; action=Mode(Text); update_on={editor/mode} }
 						ha:Rectangle      = { checked=ChkMode(rectangle);   li:a={{<key>t;<key>r};{<Key>F5};}; action=Mode(Rectangle); update_on={editor/mode} }
-						ha:Polygon        = { checked=ChkMode(poly);        li:a={{<key>t;<key>p};{<Key>F6};}; action=Mode(Polygon); update_on={editor/mode} }
-						ha:Polygon Hole   = { checked=ChkMode(polyhole);    a={<key>t;<key>h}; action=Mode(PolygonHole); update_on={editor/mode} }
+						ha:Polygon        = { checked=ChkMode(poly);        li:a={{<key>t;<key>p};{<Key>F6};}; action=Mode(Poly); update_on={editor/mode} }
+						ha:Polygon Hole   = { checked=ChkMode(polyhole);    a={<key>t;<key>h}; action=Mode(PolyHole); update_on={editor/mode} }
 						ha:Buffer         = { checked=ChkMode(buffer);      li:a={{<key>t;<key>b};{<Key>F7};}; action=Mode(PasteBuffer); update_on={editor/mode} }
 						ha:Del/Remove     = { checked=ChkMode(remove);      li:a={{<key>t;<key>d};{<Key>F8};}; action=Mode(Remove); update_on={editor/mode} }
 						ha:Rotate         = { checked=ChkMode(rotate);      li:a={{<key>t;<key>o};{<Key>F9};}; action=Mode(Rotate); update_on={editor/mode} }

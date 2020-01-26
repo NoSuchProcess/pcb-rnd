@@ -384,7 +384,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_Mode[] =
 	"Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)\n"
-	"Mode(Polygon|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Mode(Notify|Release|Cancel|Stroke)\n" "Mode(Save|Restore)";
+	"Mode(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Mode(Press|Release|Cancel|Stroke)\n" "Mode(Save|Restore)";
 
 static const char pcb_acth_Mode[] = "Change or use the tool mode.";
 /* DOC: mode.html */
@@ -445,10 +445,10 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case F_PasteBuffer:
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
 		break;
-	case F_Polygon:
+	case F_Poly:
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "poly");
 		break;
-	case F_PolygonHole:
+	case F_PolyHole:
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "polyhole");
 		break;
 	case F_Release:
