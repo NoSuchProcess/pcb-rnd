@@ -911,10 +911,10 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (ans != PCB_OBJ_VOID) {
 		pcb_pstk_t *ps = (pcb_pstk_t *) ptr2;
 		check_snap_object(&snap_data, ps->x, ps->y, pcb_true, (pcb_any_obj_t *)ps);
-		pcb_crosshair.snapped_pstk = ps;
+		hidlib->tool_snapped_obj_bbox = &ps->BoundingBox;
 	}
 	else
-		pcb_crosshair.snapped_pstk = NULL;
+		hidlib->tool_snapped_obj_bbox = NULL;
 
 	/*** arc ***/
 	ans = PCB_OBJ_VOID;
