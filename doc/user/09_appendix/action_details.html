@@ -2178,104 +2178,18 @@ Checks all specified objects, and increases the polygon clearance if needed to e
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)
-Mode(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)
-Mode(Press|Release|Cancel|Stroke)
-Mode(Save|Restore)
+Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)
+Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)
+Tool(Press|Release|Cancel|Stroke)
+Tool(Save|Restore)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Change or use the tool mode.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
-Selects the tool or changes tool related global states. 
-<p>
- 
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- Arc 
-<br>
- Arrow 
-<br>
- Copy 
-<br>
- InsertPoint 
-<br>
- Line 
-<br>
- Lock           
-<br>
- Move 
-<br>
- None 
-<br>
- PasteBuffer 
-<br>
- Poly 
-<br>
- PolyHole 
-<br>
- Rectangle           
-<br>
- Remove 
-<br>
- Rotate 
-<br>
- Text 
-<br>
- Thermal 
-<br>
- Via 
-<br>
- ...  
-<td>
- Select the indicated tool.   
-<tr>
-
-<th>
- Press  
-<td>
- Called when you press the mouse button, or move the mouse.   
-<tr>
-
-<th>
- Release  
-<td>
- Called when you release the mouse button.   
-<tr>
-
-<th>
- Cancel  
-<td>
- Cancels any pending tool activity, allowing you to restart elsewhere.       For example, this allows you to start a new line rather than attach a       line to the previous line.   
-<tr>
-
-<th>
- Escape  
-<td>
- Similar to Cancel but calling this action a second time will return       to the Arrow tool.   
-<tr>
-
-<th>
- Stroke  
-<td>
- If pcb-rnd was built with libstroke, this invokes the stroke       input method.  If not, this will restart a drawing mode if you were       drawing, else it will select objects.   
-<tr>
-
-<th>
- Save  
-<td>
- Remembers the current tool.   
-<tr>
-
-<th>
- Restore  
-<td>
- Restores the tool to the last saved tool.  
-</table>
- 
+This command is a compatibility alias to 
+<a href="#tool">tool</a>
+. 
 </dd></dl>
 
 <h2 id="morphpolygon">MorphPolygon</h2>
@@ -3849,6 +3763,111 @@ If you pass an integer, that layer is specified by index (the first layer is
 , etc).  If you pass a layer name, that layer is specified by name.  When a layer is specified, the visibility of the layer group containing that layer is toggled. 
 <p>
  If you pass a special layer name, the visibility of those components (silk, rats, etc) is toggled.  Note that if you have a layer named the same as a special layer, the layer is chosen over the special layer. 
+</dd></dl>
+
+<h2 id="tool">Tool</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)
+Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)
+Tool(Press|Release|Cancel|Stroke)
+Tool(Save|Restore)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Change or use the tool mode.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Selects the tool or changes tool related global states. 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Arc 
+<br>
+ Arrow 
+<br>
+ Copy 
+<br>
+ InsertPoint 
+<br>
+ Line 
+<br>
+ Lock           
+<br>
+ Move 
+<br>
+ None 
+<br>
+ PasteBuffer 
+<br>
+ Poly 
+<br>
+ PolyHole 
+<br>
+ Rectangle           
+<br>
+ Remove 
+<br>
+ Rotate 
+<br>
+ Text 
+<br>
+ Thermal 
+<br>
+ Via 
+<br>
+ ...  
+<td>
+ Select the indicated tool.   
+<tr>
+
+<th>
+ Press  
+<td>
+ Called when you press the mouse button, or move the mouse.   
+<tr>
+
+<th>
+ Release  
+<td>
+ Called when you release the mouse button.   
+<tr>
+
+<th>
+ Cancel  
+<td>
+ Cancels any pending tool activity, allowing you to restart elsewhere.       For example, this allows you to start a new line rather than attach a       line to the previous line.   
+<tr>
+
+<th>
+ Escape  
+<td>
+ Similar to Cancel but calling this action a second time will return       to the Arrow tool.   
+<tr>
+
+<th>
+ Stroke  
+<td>
+ If pcb-rnd was built with libstroke, this invokes the stroke       input method.  If not, this will restart a drawing mode if you were       drawing, else it will select objects.   
+<tr>
+
+<th>
+ Save  
+<td>
+ Remembers the current tool.   
+<tr>
+
+<th>
+ Restore  
+<td>
+ Restores the tool to the last saved tool.  
+</table>
+ 
 </dd></dl>
 
 <h2 id="undo">Undo</h2>

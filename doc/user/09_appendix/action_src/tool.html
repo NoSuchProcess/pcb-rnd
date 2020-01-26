@@ -1,0 +1,35 @@
+Selects the tool or changes tool related global states.
+<p>
+<table border=1 cellspacing=0>
+	<tr><th> Arc <br> Arrow <br> Copy <br> InsertPoint <br> Line <br> Lock
+	         <br> Move <br> None <br> PasteBuffer <br> Poly <br> PolyHole <br> Rectangle
+	         <br> Remove <br> Rotate <br> Text <br> Thermal <br> Via <br> ...
+	<td> Select the indicated tool.
+
+	<tr><th> Press
+	<td> Called when you press the mouse button, or move the mouse.
+
+	<tr><th> Release
+	<td> Called when you release the mouse button.
+
+	<tr><th> Cancel
+	<td> Cancels any pending tool activity, allowing you to restart elsewhere.
+	     For example, this allows you to start a new line rather than attach a
+	     line to the previous line.
+
+	<tr><th> Escape
+	<td> Similar to Cancel but calling this action a second time will return
+	     to the Arrow tool.
+
+	<tr><th> Stroke
+	<td> If pcb-rnd was built with libstroke, this invokes the stroke
+	     input method.  If not, this will restart a drawing mode if you were
+	     drawing, else it will select objects.
+
+	<tr><th> Save
+	<td> Remembers the current tool.
+
+	<tr><th> Restore
+	<td> Restores the tool to the last saved tool.
+
+</table>

@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.0 (svn r29339) an interactive printed circuit board editor ,  Revision: 29361
+This is pcb-rnd 2.2.0 (svn r29339) an interactive printed circuit board editor ,  Revision: 29362
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -214,7 +214,7 @@ This is pcb-rnd 2.2.0 (svn r29339) an interactive printed circuit board editor ,
 <tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill([script])</td><td>millpath plugin</td>
 <tr><td><a href="action_details.html#mincleargap">MinClearGap</a></td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td></td>
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
-<tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Mode(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Mode(Press|Release|Cancel|Stroke)<br>Mode(Save|Restore)</td><td></td>
+<tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Tool(Press|Release|Cancel|Stroke)<br>Tool(Save|Restore)</td><td></td>
 <tr><td><a href="action_details.html#morphpolygon">MorphPolygon</a></td><td>Converts dead polygon islands into separate polygons.</td><td>pcb_poly_morph(Object|Selected)</td><td></td>
 <tr><td>MoveCursorTo</td><td>Move the cursor to absolute coords, pan the view as needed.</td><td>Cursor(x,y)</td><td></td>
 <tr><td><a href="action_details.html#movelayer">MoveLayer</a></td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)<br>MoveLayer(lid,group,gid)</td><td></td>
@@ -347,6 +347,7 @@ This is pcb-rnd 2.2.0 (svn r29339) an interactive printed circuit board editor ,
 <tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#toggleview">ToggleView</a></td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
+<tr><td><a href="action_details.html#tool">Tool</a></td><td>Change or use the tool mode.</td><td>Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Tool(Press|Release|Cancel|Stroke)<br>Tool(Save|Restore)</td><td></td>
 <tr><td>ToPoly</td><td>convert a closed loop of lines and arcs into a polygon</td><td>ToPoly()<br>ToPoly(outline)</td><td>lib_polyhelp</td>
 <tr><td>trim</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList)</td><td></td>

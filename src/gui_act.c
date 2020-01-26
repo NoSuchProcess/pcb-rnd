@@ -382,16 +382,16 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_Mode[] =
-	"Mode(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)\n"
-	"Mode(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Mode(Press|Release|Cancel|Stroke)\n" "Mode(Save|Restore)";
+static const char pcb_acts_Tool[] =
+	"Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)\n"
+	"Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Tool(Press|Release|Cancel|Stroke)\n" "Tool(Save|Restore)";
 
-static const char pcb_acth_Mode[] = "Change or use the tool mode.";
-/* DOC: mode.html */
-static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char pcb_acth_Tool[] = "Change or use the tool mode.";
+/* DOC: tool.html */
+static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Display, ;);
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, Tool, ;);
 
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	pcb_crosshair_note.X = pcb_crosshair.X;
@@ -1783,7 +1783,8 @@ pcb_action_t gui_action_list[] = {
 	{"FullScreen", pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen},
 	{"MarkCrosshair", pcb_act_MarkCrosshair, pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair},
 	{"Message", pcb_act_Message, pcb_acth_Message, pcb_acts_Message},
-	{"Mode", pcb_act_Mode, pcb_acth_Mode, pcb_acts_Mode},
+	{"Tool", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool},
+	{"Mode", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool},
 	{"SetSame", pcb_act_SetSame, pcb_acth_SetSame, pcb_acts_SetSame},
 	{"RouteStyle", pcb_act_RouteStyle, pcb_acth_RouteStyle, pcb_acts_RouteStyle},
 	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},
