@@ -100,9 +100,10 @@ static void pcb_stroke_record(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 
 static void pcb_stroke_start(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	pcb_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
 	pcb_mid_stroke = pcb_true;
-	stroke_first_x = SIDE_X(hidlib, pcb_crosshair.X);
-	stroke_first_y = SIDE_Y(hidlib, pcb_crosshair.Y);
+	stroke_first_x = SIDE_X(hidlib, ev_x);
+	stroke_first_y = SIDE_Y(hidlib, ev_y);
 }
 
 /*** action ***/

@@ -87,7 +87,7 @@ typedef enum {
 	PCB_EVENT_EXPORT_SESSION_BEGIN,   /* called before an export session (e.g. CAM script execution) starts; should not be nested; there's no guarantee that options are parsed before or after this event */
 	PCB_EVENT_EXPORT_SESSION_END,     /* called after an export session (e.g. CAM script execution) ends */
 
-	PCB_EVENT_STROKE_START,           /* parameters: none */
+	PCB_EVENT_STROKE_START,           /* parameters: pcb_coord_t x, pcb_coord_t y */
 	PCB_EVENT_STROKE_RECORD,          /* parameters: pcb_coord_t x, pcb_coord_t y */
 	PCB_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 

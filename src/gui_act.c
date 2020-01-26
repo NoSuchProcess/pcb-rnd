@@ -436,7 +436,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case F_Stroke:
 			if (conf_core.editor.enable_stroke) {
-				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, NULL);
+				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", pcb_crosshair.X, pcb_crosshair.Y);
 				break;
 			}
 
