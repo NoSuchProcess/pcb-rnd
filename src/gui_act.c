@@ -907,7 +907,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_MoveCursorTo[] = "Cursor(x,y)";
+static const char pcb_acts_MoveCursorTo[] = "MoveCursorTo(x,y)";
 static const char pcb_acth_MoveCursorTo[] = "Move the cursor to absolute coords, pan the view as needed.";
 static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
