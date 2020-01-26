@@ -33,6 +33,14 @@
 
 static const char *hidlib_cookie = "hidlib";
 
+void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+{
+	if (mouse_mot)
+		pcb_event(hidlib, PCB_EVENT_STROKE_RECORD, "cc", abs_x, abs_y);
+	pcb_hidlib_crosshair_move_to(abs_x, abs_y, mouse_mot);
+}
+
+
 static void hidlib_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_tool_gui_init();

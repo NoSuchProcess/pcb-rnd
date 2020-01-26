@@ -27,6 +27,8 @@
 #ifndef PCB_HIDLIB_H
 #define PCB_HIDLIB_H
 
+#include "global_typedefs.h"
+
 struct pcb_hidlib_s {
 	pcb_coord_t grid;                  /* grid resolution */
 	pcb_coord_t grid_ox, grid_oy;      /* grid offset */
@@ -109,5 +111,8 @@ extern const char *pcbhl_conf_sys_path;
 extern const char *pcbhl_app_package;
 extern const char *pcbhl_app_version;
 extern const char *pcbhl_app_url;
+
+/*** API wrappers from hidlib implementation to app ***/
+void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
 
 #endif

@@ -1106,7 +1106,6 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 
 static void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
 {
-	pcb_event(&PCB->hidlib, PCB_EVENT_STROKE_RECORD, "cc", ev_x, ev_y);
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
 		pcb_tool_adjust_attached(&PCB->hidlib);
