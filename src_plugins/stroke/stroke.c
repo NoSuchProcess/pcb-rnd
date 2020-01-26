@@ -130,7 +130,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return pcb_actionv_(f, res, 5, args);
 	}
 	else if (pcb_strcasecmp(cmd, "stopline") == 0)
-		pcb_actionva(PCB_ACT_HIDLIB, "Mode", "Escape", NULL);
+		pcb_actionva(PCB_ACT_HIDLIB, "Tool", "Escape", NULL);
 	else
 		PCB_ACT_FAIL(stroke);
 
