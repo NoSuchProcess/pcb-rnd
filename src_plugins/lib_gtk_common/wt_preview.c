@@ -134,7 +134,7 @@ static void preview_set_view(pcb_gtk_preview_t *preview)
 	pcb_gtk_preview_zoomto(preview, &view);
 }
 
-static void preview_set_data(pcb_gtk_preview_t *preview, pcb_any_obj_t *obj)
+static void preview_set_data(pcb_gtk_preview_t *preview, void *obj)
 {
 	preview->obj = obj;
 	if (obj == NULL) {

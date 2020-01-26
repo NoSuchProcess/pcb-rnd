@@ -82,7 +82,7 @@ struct pcb_gtk_preview_s {
 	time_t grabt;
 	long grabmot;
 
-	pcb_any_obj_t *obj; /* object being displayed in the preview */
+	void *obj; /* object being displayed in the preview */
 
 	pcb_gtk_t *ctx;
 	gdl_elem_t link; /* in the list of all previews in ->ctx->previews */
