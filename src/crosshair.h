@@ -33,6 +33,7 @@
 #include "config.h"
 #include "vtonpoint.h"
 #include <librnd/core/hid.h>
+#include <librnd/core/tool.h>
 #include "obj_line.h"
 #include "obj_poly.h"
 #include "route.h"
@@ -53,12 +54,6 @@ typedef struct {              /* currently attached object */
 	pcb_angle_t start_angle, delta_angle;
 	pcb_coord_t radius;
 } pcb_attached_object_t;
-
-typedef struct {
-	pcb_bool status;
-	pcb_coord_t X, Y;
-	unsigned user_placed:1;   /* if 1, the user has explicitly placed the mark - do not move it */
-} pcb_mark_t;
 
 typedef struct {                         /* holds crosshair, cursor and crosshair-attachment information */
 	pcb_hid_gc_t GC;                       /* GC for cursor drawing */

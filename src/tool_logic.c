@@ -42,6 +42,8 @@
 #include "tool_logic.h"
 
 static void tool_logic_chg_layer(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+static void pcb_release_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+static void pcb_press_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 
 /*** Generic part, all rnd apps should do something like this ***/
 
@@ -78,6 +80,8 @@ void pcb_tool_logic_init(void)
 	}
 
 	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, tool_logic_chg_tool, NULL, tool_logic_cookie);
+	pcb_event_bind(PCB_EVENT_TOOL_RELEASE, pcb_release_mode, NULL, tool_logic_cookie);
+	pcb_event_bind(PCB_EVENT_TOOL_PRESS, pcb_press_mode, NULL, tool_logic_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, tool_logic_chg_layer, NULL, tool_logic_cookie);
 }
 
@@ -97,8 +101,6 @@ static void tool_logic_chg_layer(pcb_hidlib_t *hidlib, void *user_data, int argc
 		pcb_tool_select_by_name(&PCB->hidlib, "line");
 	was_rat = PCB->RatDraw;
 }
-
-pcb_bool pcb_tool_is_saved = pcb_false;
 
 static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
 {
@@ -181,34 +183,18 @@ void pcb_tool_notify_block(void)
 
 /*** old helpers ***/
 
-void pcb_release_mode(pcb_hidlib_t *hidlib)
+static void pcb_release_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 0) == 0))
-		return;
-
-	pcb_grabbed.status = pcb_false;
-	pcb_tool_release(hidlib);
-
-	if (pcb_tool_is_saved)
-		pcb_tool_restore(hidlib);
-	pcb_tool_is_saved = pcb_false;
 	pcb_draw();
 }
 
-void pcb_press_mode(pcb_hidlib_t *hidlib)
+static void pcb_press_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
-
-	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 1) == 0))
-		return;
-
-	pcb_grabbed.X = pcb_crosshair.X;
-	pcb_grabbed.Y = pcb_crosshair.Y;
 
 	if (conf_core.temp.rat_warn) {
 		if (pcb_data_clear_flag(pcb->Data, PCB_FLAG_WARN, 1, 0) > 0)
 			pcb_board_set_changed_flag(pcb_true);
 	}
-	pcb_tool_press(hidlib);
 	pcb_draw();
 }

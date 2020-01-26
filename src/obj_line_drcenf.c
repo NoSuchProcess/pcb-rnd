@@ -519,7 +519,7 @@ void pcb_line_enforce_drc(pcb_board_t *pcb)
 					pcb_conf_setf(CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
 			}
 		}
-		pcb_crosshair.X = r45.X;
-		pcb_crosshair.Y = r45.Y;
+		pcb->hidlib.ch_x = pcb_crosshair.X = r45.X;
+		pcb->hidlib.ch_y = pcb_crosshair.Y = r45.Y;
 	}
 }

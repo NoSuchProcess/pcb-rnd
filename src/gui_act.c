@@ -232,7 +232,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ToggleStroke:
-			conf_toggle_editor(enable_stroke);
+			conf_toggle_heditor(enable_stroke);
 			break;
 
 		case F_ToggleShowDRC:
@@ -379,85 +379,6 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 
 	PCB_ACT_FAIL(Display);
-}
-/* --------------------------------------------------------------------------- */
-
-static const char pcb_acts_Tool[] =
-	"Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)\n"
-	"Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Tool(Press|Release|Cancel|Stroke)\n" "Tool(Save|Restore)";
-
-static const char pcb_acth_Tool[] = "Change or use the tool mode.";
-/* DOC: tool.html */
-static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
-	const char *cmd;
-	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
-
-	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
-	hidlib->tool_x = hidlib->ch_x;
-	hidlib->tool_y = hidlib->ch_y;
-	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
-	switch(pcb_funchash_get(cmd, NULL)) {
-		case F_Cancel:
-			pcb_tool_select_by_id(PCB_ACT_HIDLIB, pcbhl_conf.editor.mode);
-			break;
-		case F_Escape:
-			escape:;
-			{
-				const pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
-				if ((t == NULL) || (t->escape == NULL)) {
-					pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
-					hidlib->tool_hit = hidlib->tool_click = 0; /* if the mouse button is still pressed, don't start selecting a box */
-				}
-				else
-					t->escape(PCB_ACT_HIDLIB);
-			}
-			break;
-
-		case F_Press:
-		case F_Notify:
-			pcb_press_mode(PCB_ACT_HIDLIB);
-			break;
-		case F_Release:
-			if (conf_core.editor.enable_stroke) {
-				int handled = 0;
-				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
-				if (handled) {
-				/* Ugly hack: returning 1 here will break execution of the
-				   action script, so actions after this one could do things
-				   that would be executed only after non-recognized gestures */
-					pcb_release_mode(PCB_ACT_HIDLIB);
-					pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
-					return 1;
-				}
-			}
-			pcb_release_mode(PCB_ACT_HIDLIB);
-			break;
-		case F_Stroke:
-			if (conf_core.editor.enable_stroke) {
-				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
-				break;
-			}
-
-			/* Right mouse button restarts drawing mode. */
-			goto escape;
-
-		case F_Restore: /* restore the last saved tool */
-			pcb_tool_restore(PCB_ACT_HIDLIB);
-			break;
-
-		case F_Save: /* save currently selected tool */
-			pcb_tool_save(PCB_ACT_HIDLIB);
-			break;
-
-		default:
-			if (pcb_tool_select_by_name(PCB_ACT_HIDLIB, cmd) != 0)
-				pcb_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
-	}
-	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
-	return 0;
 }
 
 /* ---------------------------------------------------------------- */
@@ -1743,8 +1664,6 @@ static pcb_action_t gui_action_list[] = {
 	{"FullScreen", pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen},
 	{"MarkCrosshair", pcb_act_MarkCrosshair, pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair},
 	{"Message", pcb_act_Message, pcb_acth_Message, pcb_acts_Message},
-	{"Tool", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool},
-	{"Mode", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool},
 	{"SetSame", pcb_act_SetSame, pcb_acth_SetSame, pcb_acts_SetSame},
 	{"RouteStyle", pcb_act_RouteStyle, pcb_acth_RouteStyle, pcb_acts_RouteStyle},
 	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},

@@ -76,7 +76,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_hid_get_coords("Click on object to delete", &hidlib->tool_x, &hidlib->tool_y, 0);
 			pcb_tool_save(PCB_ACT_HIDLIB);
 			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "remove");
-			pcb_press_mode(PCB_ACT_HIDLIB);
+			pcb_tool_do_press(PCB_ACT_HIDLIB);
 			pcb_tool_restore(PCB_ACT_HIDLIB);
 		}
 		break;

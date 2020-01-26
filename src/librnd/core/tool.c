@@ -2,6 +2,8 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
  *  Copyright (C) 2017,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -31,8 +33,12 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hid.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 
 #define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
+
+pcb_bool pcb_tool_is_saved = pcb_false;
 
 vtp0_t pcb_tools;
 
@@ -252,6 +258,114 @@ pcb_bool pcb_tool_undo_act(pcb_hidlib_t *hl)
 pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
 {
 	wrap_retv(redo_act, return pcb_true, (hl));
+}
+
+pcb_mark_t pcb_grabbed; /* TEMPORARY */
+static void do_release(pcb_hidlib_t *hidlib)
+{
+	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 0) == 0))
+		return;
+
+	pcb_grabbed.status = pcb_false;
+
+	pcb_tool_release(hidlib);
+
+	if (pcb_tool_is_saved)
+		pcb_tool_restore(hidlib);
+	pcb_tool_is_saved = pcb_false;
+	pcb_event(hidlib, PCB_EVENT_TOOL_RELEASE, NULL);
+}
+
+void pcb_tool_do_press(pcb_hidlib_t *hidlib)
+{
+	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 1) == 0))
+		return;
+
+	pcb_grabbed.X = hidlib->tool_x;
+	pcb_grabbed.Y = hidlib->tool_y;
+
+	pcb_tool_press(hidlib);
+	pcb_event(hidlib, PCB_EVENT_TOOL_PRESS, NULL);
+}
+
+
+static const char pcb_acts_Tool[] =
+	"Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)\n"
+	"Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Tool(Press|Release|Cancel|Stroke)\n" "Tool(Save|Restore)";
+
+static const char pcb_acth_Tool[] = "Change or use the tool mode.";
+/* DOC: tool.html */
+static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
+	const char *cmd;
+	PCB_ACT_IRES(0);
+	PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
+
+	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
+	hidlib->tool_x = hidlib->ch_x;
+	hidlib->tool_y = hidlib->ch_y;
+	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+	if (pcb_strcasecmp(cmd, "Cancel") == 0) {
+		pcb_tool_select_by_id(PCB_ACT_HIDLIB, pcbhl_conf.editor.mode);
+	}
+	else if (pcb_strcasecmp(cmd, "Escape") == 0) {
+		const pcb_tool_t *t;
+		escape:;
+		t = pcb_tool_get(pcbhl_conf.editor.mode);
+		if ((t == NULL) || (t->escape == NULL)) {
+			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
+			hidlib->tool_hit = hidlib->tool_click = 0; /* if the mouse button is still pressed, don't start selecting a box */
+		}
+		else
+			t->escape(PCB_ACT_HIDLIB);
+	}
+	else if ((pcb_strcasecmp(cmd, "Press") == 0) || (pcb_strcasecmp(cmd, "Notify") == 0)) {
+		pcb_tool_do_press(PCB_ACT_HIDLIB);
+	}
+	else if (pcb_strcasecmp(cmd, "Release") == 0) {
+		if (pcbhl_conf.editor.enable_stroke) {
+			int handled = 0;
+			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
+			if (handled) {
+			/* Ugly hack: returning 1 here will break execution of the
+			   action script, so actions after this one could do things
+			   that would be executed only after non-recognized gestures */
+				do_release(PCB_ACT_HIDLIB);
+				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+				return 1;
+			}
+		}
+		do_release(PCB_ACT_HIDLIB);
+	}
+	else if (pcb_strcasecmp(cmd, "Stroke") == 0) {
+		if (pcbhl_conf.editor.enable_stroke)
+			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
+		else
+			goto escape; /* Right mouse button restarts drawing mode. */
+	}
+	else if (pcb_strcasecmp(cmd, "Restore") == 0) { /* restore the last saved tool */
+		pcb_tool_restore(PCB_ACT_HIDLIB);
+	}
+	else if (pcb_strcasecmp(cmd, "Save") == 0) { /* save currently selected tool */
+		pcb_tool_save(PCB_ACT_HIDLIB);
+	}
+	else {
+		if (pcb_tool_select_by_name(PCB_ACT_HIDLIB, cmd) != 0)
+			pcb_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
+	}
+	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+	return 0;
+}
+
+static pcb_action_t tool_action_list[] = {
+	{"Tool", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool},
+	{"Mode", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool}
+};
+
+void rnd_tool_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(tool_action_list, NULL);
 }
 
 

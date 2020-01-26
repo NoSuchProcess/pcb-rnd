@@ -71,9 +71,16 @@ typedef struct pcb_tool_s {
 	unsigned long user_flags;
 } pcb_tool_t;
 
+typedef struct pcb_mark_s {
+	pcb_bool status;
+	pcb_coord_t X, Y;
+	unsigned user_placed:1;   /* if 1, the user has explicitly placed the mark - do not move it */
+} pcb_mark_t;
+
 extern vtp0_t pcb_tools;
 extern pcb_toolid_t pcb_tool_prev_id;
 extern pcb_toolid_t pcb_tool_next_id;
+extern pcb_bool pcb_tool_is_saved;
 
 /* (un)initialize the tool subsystem */
 void pcb_tool_init(void);
@@ -114,6 +121,9 @@ void pcb_tool_draw_attached(pcb_hidlib_t *hl);
 pcb_bool pcb_tool_undo_act(pcb_hidlib_t *hl);
 pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl);
 
+
+/* fake a click */
+void pcb_tool_do_press(pcb_hidlib_t *hidlib);
 
 /**** Low level, for internal use ****/
 

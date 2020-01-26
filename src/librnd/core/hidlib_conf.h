@@ -94,6 +94,7 @@ typedef struct {
 		CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
 		CFT_INTEGER crosshair_shape_idx;   /* crosshair shape as defined in pcb_crosshair_shape_e */
+		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
 
 		const struct {
 			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */

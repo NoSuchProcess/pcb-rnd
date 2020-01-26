@@ -69,11 +69,10 @@ typedef struct {
 			CFT_BOOLEAN symmetric_negative;  /* selection box behaviour: when set, the selection direction is considered negative only if the box has negative size in the X direction */
 		} selection;
 
-		/* these two would need to be moved in the router plugin.... There are two
-		   reasons to keep them here:
-		   - the original pcb and pcb-rnd file formats already have named/numbered flags for these, so io_pcb needs these
-		   - more than one router plugin may share these */
-		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
+		/* this would need to be moved in the router plugin.... There are two
+		   reasons to keep it here:
+		   - the original pcb and pcb-rnd file formats already have named/numbered flags for it, so io_pcb needs it
+		   - more than one router plugins may share it */
 		CFT_BOOLEAN live_routing;          /* autorouter shows tracks in progress */
 
 		/* Keep it here instead of the router plugin: more than one router plugin may share these */

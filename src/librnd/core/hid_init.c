@@ -321,6 +321,7 @@ extern void pcb_hidlib_error_init2(void);
 extern void pcb_hid_dlg_init2(void);
 extern void pcb_hid_nogui_init2(void);
 extern void rnd_conf_act_init2(void);
+extern void rnd_tool_act_init2(void);
 
 void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
@@ -368,6 +369,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	pcb_hid_dlg_init2();
 	pcb_hid_nogui_init2();
 	rnd_conf_act_init2();
+	rnd_tool_act_init2();
 }
 
 

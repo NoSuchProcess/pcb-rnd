@@ -67,7 +67,6 @@ static char crosshair_cookie[] = "crosshair";
 
 pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
 pcb_mark_t pcb_marked;
-pcb_mark_t pcb_grabbed;
 pcb_crosshair_note_t pcb_crosshair_note;
 
 
@@ -962,7 +961,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	}
 
 	PCB->hidlib.ch_x = pcb_crosshair.X = snap_data.x;
-	PCB->hidlib.ch_x = pcb_crosshair.Y = snap_data.y;
+	PCB->hidlib.ch_y = pcb_crosshair.Y = snap_data.y;
 
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);

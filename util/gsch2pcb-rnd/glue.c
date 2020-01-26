@@ -35,7 +35,6 @@ const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
 const char *pcb_hidlib_default_embedded_menu = "";
 
-void pcb_tool_gui_init(void) { }
 void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot) { }
 
 
