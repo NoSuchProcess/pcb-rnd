@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <genlist/gendlist.h>
 #include <genvector/gds_char.h>
+#include "global_typedefs.h"
 #include <librnd/core/unit.h>
 #include "idpath.h"
 #include <librnd/core/box.h>

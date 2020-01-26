@@ -30,7 +30,7 @@
 #ifndef PCB_OPERATION_H
 #define PCB_OPERATION_H
 
-#include <librnd/core/global_typedefs.h>
+#include "global_typedefs.h"
 
 /* Each object operation gets an operation-context with some operation-specific
    configuration, and the board to operate on. Optionally this is the place to

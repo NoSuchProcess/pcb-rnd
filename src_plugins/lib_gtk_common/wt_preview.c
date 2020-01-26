@@ -127,10 +127,8 @@ static void preview_set_view(pcb_gtk_preview_t *preview)
 {
 	pcb_box_t view;
 
-	view.X1 = preview->obj->BoundingBox.X1;
-	view.Y1 = preview->obj->BoundingBox.Y1;
-	view.X2 = preview->obj->BoundingBox.X2;
-	view.Y2 = preview->obj->BoundingBox.Y2;
+	memcpy(&view, preview->obj, sizeof(pcb_box_t)); /* assumes the object's first field is pcb_box_t */
+
 	pcb_gtk_preview_zoomto(preview, &view);
 }
 

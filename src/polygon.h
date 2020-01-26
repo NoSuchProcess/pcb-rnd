@@ -33,6 +33,7 @@
 #define	PCB_POLYGON_H
 
 #include "config.h"
+#include "global_typedefs.h"
 #include "flag.h"
 #include <librnd/poly/rtree.h>
 #include <librnd/core/math_helper.h>

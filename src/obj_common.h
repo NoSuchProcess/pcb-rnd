@@ -33,7 +33,7 @@
 #include <string.h>
 #include "flag.h"
 #include <librnd/core/attrib.h>
-#include <librnd/core/global_typedefs.h>
+#include "global_typedefs.h"
 #include "data_parent.h"
 
 /* Real objects that have actual struct; can be used as a bitfield */

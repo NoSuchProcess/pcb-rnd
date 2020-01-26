@@ -29,6 +29,7 @@
 #ifndef	PCB_ROTATE_H
 #define	PCB_ROTATE_H
 
+#include "global_typedefs.h"
 #include <librnd/core/rotate.h>
 
 #define PCB_ROTATE_TYPES (PCB_OBJ_PSTK | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_ARC | PCB_OBJ_LINE_POINT | PCB_OBJ_LINE | PCB_OBJ_POLY | PCB_OBJ_FLOATER)
