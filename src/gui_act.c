@@ -402,7 +402,6 @@ static fgw_error_t pcb_act_Mode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
 		break;
 	case F_Arrow:
-	case F_None:
 		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
 		break;
 	case F_Copy:

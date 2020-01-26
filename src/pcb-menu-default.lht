@@ -3,7 +3,7 @@ ha:{
 		li:left {
 			li:press            = { Mode(Notify) }
 			li:press-shift      = { Mode(Notify) }
-			li:press-ctrl       = { Mode(Save); Mode(None); Mode(Restore); Mode(Notify) }
+			li:press-ctrl       = { Mode(Save); Mode(Arrow); Mode(Restore); Mode(Notify) }
 			li:release          = { Mode(Release) }
 			li:release-shift    = { Mode(Release) }
 			li:release-ctrl     = { Mode(Release) }
