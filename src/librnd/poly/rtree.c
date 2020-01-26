@@ -2,7 +2,7 @@
   *                            COPYRIGHT
   *
   *  pcb-rnd, interactive printed circuit board design
-  *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+  *  Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
   *
   *  This program is free software; you can redistribute it and/or modify
   *  it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ void pcb_r_destroy_tree(pcb_rtree_t **tree)
 
 void pcb_r_insert_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
 {
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)which; /* assumes first field is the bounding box */
+	void *obj = which; /* assumes first field is the bounding box */
 	assert(obj != NULL);
 	pcb_rtree_insert(rtree, obj, (pcb_rtree_box_t *)which);
 }
@@ -76,14 +76,14 @@ void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_card
 
 pcb_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
 {
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)which; /* assumes first field is the bounding box */
+	void *obj = which; /* assumes first field is the bounding box */
 	assert(obj != NULL);
 	return pcb_rtree_delete(rtree, obj, (pcb_rtree_box_t *)which) == 0;
 }
 
 pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, const pcb_box_t *box, void (*free_data)(void *d))
 {
-	pcb_any_obj_t *obj = (pcb_any_obj_t *)box; /* assumes first field is the bounding box */
+	void *obj = box; /* assumes first field is the bounding box */
 	assert(obj != NULL);
 	if (pcb_rtree_delete(rtree, obj, (pcb_rtree_box_t *)box) != 0)
 		return pcb_false;
