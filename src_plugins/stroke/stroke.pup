@@ -2,5 +2,6 @@ $class feature
 $short mouse gestures
 $long Configurable gesture recognition with libstroke.
 $state works
+$hidlib 1
 default buildin
 autoload 1
