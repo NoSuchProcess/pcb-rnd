@@ -3,7 +3,7 @@ ha:{
 		li:left {
 			li:press            = { Tool(Press) }
 			li:press-shift      = { Tool(Press) }
-			li:press-ctrl       = { Tool(Save); Tool(Arrow); Tool(Restore); Tool(Press) }
+			li:press-ctrl       = { Tool(Save); Tool(arrow); Tool(Restore); Tool(Press) }
 			li:release          = { Tool(Release) }
 			li:release-shift    = { Tool(Release) }
 			li:release-ctrl     = { Tool(Release) }
@@ -157,9 +157,9 @@ ha:{
 				ha:Add/place object {
 					li:submenu {
 						ha:Place mark                       = { li:a={{<key>a;<key>m}; {<key>a;<key>w}; }; action=MarkCrosshair() }
-						ha:Place via                        = { a={<key>a;<key>v}; li:action={Tool(Save); Tool(Via); Tool(Press); Tool(Restore);} }
-						ha:Start routing a line             = { a={<key>a;<key>l}; li:action={Tool(Save); Tool(Line); Tool(Press); } }
-						ha:Start routing an arc             = { a={<key>a;<key>a}; li:action={Tool(Save); Tool(Arc); Tool(Press); } }
+						ha:Place via                        = { a={<key>a;<key>v}; li:action={Tool(Save); Tool(via); Tool(Press); Tool(Restore);} }
+						ha:Start routing a line             = { a={<key>a;<key>l}; li:action={Tool(Save); Tool(line); Tool(Press); } }
+						ha:Start routing an arc             = { a={<key>a;<key>a}; li:action={Tool(Save); Tool(arc); Tool(Press); } }
 					}
 				}
 				-
