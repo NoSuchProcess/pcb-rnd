@@ -39,6 +39,7 @@
 #include <librnd/core/plugins.h>
 #include "stub_stroke.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
 #include <librnd/core/tool.h>
 
 #include "../src_plugins/stroke/conf_internal.c"
@@ -62,25 +63,27 @@ static int pcb_stroke_exec(pcb_hidlib_t *hl, const char *seq)
 
 	conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {
 		if ((strcmp(seq, item->name) == 0) && (pcb_parse_actions(hl, item->val.string[0]) == 0))
-			return 0;
+			return 1;
 	}
 	if (conf_stroke.plugins.stroke.warn4unknown)
 		pcb_message(PCB_MSG_WARNING, "Stroke: sequence '%s' is not configured.\n", seq);
-	return -1;
+	return 0;
 }
 
-static int pcb_stroke_finish(pcb_hidlib_t *hl)
+static void pcb_stroke_finish(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	char msg[255];
+	int *handled = argv[1].d.p;
 
 	pcb_mid_stroke = pcb_false;
 	if (stroke_trans(msg))
-		return pcb_stroke_exec(hl, msg);
-	return -1;
+		*handled = pcb_stroke_exec(hidlib, msg);
 }
 
-static void pcb_stroke_record(pcb_coord_t ev_x, pcb_coord_t ev_y)
+static void pcb_stroke_record(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	pcb_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
+
 	stroke_last_x = ev_x;
 	stroke_last_y = ev_y;
 	ev_x = SIDE_X(ev_x) - stroke_first_x;
@@ -89,7 +92,7 @@ static void pcb_stroke_record(pcb_coord_t ev_x, pcb_coord_t ev_y)
 	return;
 }
 
-static void pcb_stroke_start(void)
+static void pcb_stroke_start(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_mid_stroke = pcb_true;
 	stroke_first_x = SIDE_X(pcb_crosshair.X);
@@ -166,8 +169,9 @@ int pplg_init_stroke(void)
 
 	PCB_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)
 
-	pcb_stub_stroke_record = pcb_stroke_record;
-	pcb_stub_stroke_start  = pcb_stroke_start;
-	pcb_stub_stroke_finish = pcb_stroke_finish;
+	pcb_event_bind(PCB_EVENT_STROKE_START, pcb_stroke_start, NULL, pcb_stroke_cookie);
+	pcb_event_bind(PCB_EVENT_STROKE_RECORD, pcb_stroke_record, NULL, pcb_stroke_cookie);
+	pcb_event_bind(PCB_EVENT_STROKE_FINISH, pcb_stroke_finish, NULL, pcb_stroke_cookie);
+
 	return 0;
 }

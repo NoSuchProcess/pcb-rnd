@@ -63,6 +63,7 @@
 #include "obj_subc_op.h"
 #include <librnd/core/tool.h>
 #include "route_style.h"
+#include "tool_logic.h"
 
 #define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY
 
@@ -405,7 +406,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Escape:
 			escape:;
 			{
-				pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
+				const pcb_tool_t *t = pcb_tool_get(pcbhl_conf.editor.mode);
 				if ((t == NULL) || (t->escape == NULL)) {
 					pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
 					pcb_crosshair_note.Hit = pcb_crosshair_note.Click = 0; /* if the mouse button is still pressed, don't start selecting a box */
@@ -420,19 +421,23 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_press_mode(PCB_ACT_HIDLIB);
 			break;
 		case F_Release:
-			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish(PCB_ACT_HIDLIB) == 0)) {
+			if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke)) {
+				int handled = 0;
+				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
+				if (handled) {
 				/* Ugly hack: returning 1 here will break execution of the
 				   action script, so actions after this one could do things
 				   that would be executed only after non-recognized gestures */
-				pcb_release_mode(PCB_ACT_HIDLIB);
-				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
-				return 1;
+					pcb_release_mode(PCB_ACT_HIDLIB);
+					pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+					return 1;
+				}
 			}
 			pcb_release_mode(PCB_ACT_HIDLIB);
 			break;
 		case F_Stroke:
 			if (conf_core.editor.enable_stroke) {
-				pcb_stub_stroke_start();
+				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, NULL);
 				break;
 			}
 

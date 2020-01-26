@@ -25,6 +25,4 @@
  */
 
 extern pcb_bool pcb_mid_stroke;
-extern void (*pcb_stub_stroke_record)(pcb_coord_t ev_x, pcb_coord_t ev_y);
-extern void (*pcb_stub_stroke_start)(void);
-extern int (*pcb_stub_stroke_finish)(pcb_hidlib_t *hl);
+
