@@ -245,8 +245,39 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_Message[] = "message([ERROR|WARNING|INFO|DEBUG,] message)";
+static const char pcb_acth_Message[] = "Writes a message to the log window.";
+/* DOC: message.html */
+static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int i, how = PCB_MSG_INFO;
+
+	if (argc < 2)
+		PCB_ACT_FAIL(Message);
+
+	i = 1;
+	if (argc > 2) {
+		const char *hows;
+		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, hows = argv[i].val.str);
+		if (strcmp(hows, "ERROR") == 0)        { i++; how = PCB_MSG_ERROR; }
+		else if (strcmp(hows, "WARNING") == 0) { i++; how = PCB_MSG_WARNING; }
+		else if (strcmp(hows, "INFO") == 0)    { i++; how = PCB_MSG_INFO; }
+		else if (strcmp(hows, "DEBUG") == 0)   { i++; how = PCB_MSG_DEBUG; }
+	}
+
+	PCB_ACT_IRES(0);
+	for(; i < argc; i++) {
+		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, ;);
+		pcb_message(how, argv[i].val.str);
+		pcb_message(how, "\n");
+	}
+
+	return 0;
+}
+
 static pcb_action_t log_action_list[] = {
-	{"Log", pcb_act_Log, pcb_acth_Log, pcb_acts_Log}
+	{"Log", pcb_act_Log, pcb_acth_Log, pcb_acts_Log},
+	{"Message", pcb_act_Message, pcb_acth_Message, pcb_acts_Message}
 };
 
 void pcb_hidlib_error_init2(void)
