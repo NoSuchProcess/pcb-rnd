@@ -1182,9 +1182,12 @@ void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, pcb_attribute_
 
 /* ------------------------------------------------------------ */
 
-pcb_action_t lesstif_dialog_action_list[] = {
+static pcb_action_t ltf_dialog_action_list[] = {
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(lesstif_dialog_action_list, lesstif_cookie)
+void pcb_ltf_dialogs_init2(void)
+{
+	PCB_REGISTER_ACTIONS(ltf_dialog_action_list, lesstif_cookie);
+}

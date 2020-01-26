@@ -439,8 +439,11 @@ void lesstif_show_netlist()
 	XtAddEventHandler(XtParent(netlist_dialog), StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "netlist");
 }
 
-pcb_action_t lesstif_netlist_action_list[] = {
+static pcb_action_t ltf_netlist_action_list[] = {
 	{"NetlistShow", pcb_act_LesstifNetlistShow, pcb_acth_LesstifNetlistShow, pcb_acts_LesstifNetlistShow}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(lesstif_netlist_action_list, lesstif_cookie)
+void pcb_ltf_netlist_init2(void)
+{
+	PCB_REGISTER_ACTIONS(ltf_netlist_action_list, lesstif_cookie);
+}

@@ -3048,13 +3048,17 @@ static void lesstif_reg_attrs(void)
 	lesstif_attrs_regd = 1;
 }
 
+extern void pcb_ltf_library_init2(void);
+extern void pcb_ltf_dialogs_init2(void);
+extern void pcb_ltf_netlist_init2(void);
+
+
 static void lesstif_begin(void)
 {
-	PCB_REGISTER_ACTIONS_CALL(lesstif_library_action_list, lesstif_cookie)
+	pcb_ltf_library_init2();
 	lesstif_reg_attrs();
-	PCB_REGISTER_ACTIONS_CALL(lesstif_dialog_action_list, lesstif_cookie)
-	PCB_REGISTER_ACTIONS_CALL(lesstif_netlist_action_list, lesstif_cookie)
-
+	pcb_ltf_dialogs_init2();
+	pcb_ltf_netlist_init2();
 	lesstif_active = 1;
 }
 

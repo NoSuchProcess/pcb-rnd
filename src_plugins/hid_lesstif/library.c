@@ -184,8 +184,14 @@ void lesstif_show_library()
 	}
 }
 
-pcb_action_t lesstif_library_action_list[] = {
+static pcb_action_t ltf_library_action_list[] = {
 	{"LibraryShow", pcb_act_LibraryShow, pcb_acth_LibraryShow, pcb_acts_LibraryShow}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(lesstif_library_action_list, lesstif_cookie)
+void pcb_ltf_library_init2(void)
+{
+	PCB_REGISTER_ACTIONS(ltf_library_action_list, lesstif_cookie);
+}
+
+
+
