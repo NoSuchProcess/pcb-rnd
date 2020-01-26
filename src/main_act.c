@@ -420,7 +420,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t main_action_list[] = {
+static pcb_action_t main_action_list[] = {
 	{"PrintActions", pcb_act_PrintActions, pcb_acth_PrintActions, pcb_acts_PrintActions},
 	{"DumpActions", pcb_act_DumpActions, pcb_acth_DumpActions, pcb_acts_DumpActions},
 	{"PrintUsage", pcb_act_PrintUsage, pcb_acth_PrintUsage, pcb_acts_PrintUsage},
@@ -437,4 +437,7 @@ pcb_action_t main_action_list[] = {
 	{"ExecuteFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(main_action_list, NULL)
+void pcb_main_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(main_action_list, NULL);
+}

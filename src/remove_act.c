@@ -107,10 +107,13 @@ static fgw_error_t pcb_act_RemoveSelected(fgw_arg_t *res, int argc, fgw_arg_t *a
 }
 
 
-pcb_action_t remove_action_list[] = {
+static pcb_action_t remove_action_list[] = {
 	{"Delete", pcb_act_Delete, pcb_acth_Delete, pcb_acts_Delete},
 	{"PcbDelete", pcb_act_Delete, NULL, "Alias to Delete()"},
 	{"RemoveSelected", pcb_act_RemoveSelected, pcb_acth_RemoveSelected, pcb_acts_RemoveSelected}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(remove_action_list, NULL)
+void pcb_remove_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(remove_action_list, NULL);
+}

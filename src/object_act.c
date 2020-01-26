@@ -1051,7 +1051,7 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t object_action_list[] = {
+static pcb_action_t object_action_list[] = {
 	{"Attributes", pcb_act_Attributes, pcb_acth_Attributes, pcb_acts_Attributes},
 	{"DisperseElements", pcb_act_DisperseElements, pcb_acth_DisperseElements, pcb_acts_DisperseElements},
 	{"Flip", pcb_act_Flip, pcb_acth_Flip, pcb_acts_Flip},
@@ -1067,4 +1067,7 @@ pcb_action_t object_action_list[] = {
 	{"Rotate90", pcb_act_Rotate90, pcb_acth_Rotate90, pcb_acts_Rotate90}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(object_action_list, NULL)
+void pcb_object_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(object_action_list, NULL);
+}

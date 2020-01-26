@@ -1735,7 +1735,7 @@ static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t gui_action_list[] = {
+static pcb_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
 	{"FullScreen", pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen},
@@ -1769,4 +1769,7 @@ pcb_action_t gui_action_list[] = {
 	{"Redraw", pcb_act_Redraw, pcb_acth_Redraw, pcb_acts_Redraw}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(gui_action_list, NULL)
+void pcb_gui_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(gui_action_list, NULL);
+}

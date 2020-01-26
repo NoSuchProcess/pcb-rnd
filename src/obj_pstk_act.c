@@ -214,10 +214,15 @@ TODO("pstk: style default proto")
 
 /* --------------------------------------------------------------------------- */
 
-pcb_action_t padstack_action_list[] = {
+static pcb_action_t padstack_action_list[] = {
 	{"PadstackConvert", pcb_act_padstackconvert, pcb_acth_padstackconvert, pcb_acts_padstackconvert},
 	{"PadstackBreakup", pcb_act_padstackbreakup, pcb_acth_padstackbreakup, pcb_acts_padstackbreakup},
 	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(padstack_action_list, NULL)
+void pcb_pstk_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(padstack_action_list, NULL);
+}
+
+

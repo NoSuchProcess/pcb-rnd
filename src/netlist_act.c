@@ -617,10 +617,13 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-pcb_action_t netlist_action_list[] = {
+static pcb_action_t netlist_action_list[] = {
 	{"net", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"claimnet", pcb_act_ClaimNet, pcb_acth_ClaimNet, pcb_acts_ClaimNet}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(netlist_action_list, NULL)
+void pcb_netlist_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(netlist_action_list, NULL);
+}

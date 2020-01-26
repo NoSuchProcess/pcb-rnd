@@ -195,10 +195,15 @@ static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-pcb_action_t rats_action_list[] = {
+static pcb_action_t rats_action_list[] = {
 	{"AddRats", pcb_act_AddRats, pcb_acth_AddRats, pcb_acts_AddRats},
 	{"Connection", pcb_act_Connection, pcb_acth_Connection, pcb_acts_Connection},
 	{"DeleteRats", pcb_act_DeleteRats, pcb_acth_DeleteRats, pcb_acts_DeleteRats}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(rats_action_list, NULL)
+void pcb_rats_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(rats_action_list, NULL);
+}
+
+

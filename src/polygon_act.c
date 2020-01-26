@@ -123,9 +123,12 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-pcb_action_t polygon_action_list[] = {
+static pcb_action_t polygon_action_list[] = {
 	{"MorphPolygon", pcb_act_MorphPolygon, pcb_acth_MorphPolygon, pcb_acts_MorphPolygon},
 	{"Polygon", pcb_act_Polygon, pcb_acth_Polygon, pcb_acts_Polygon}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(polygon_action_list, NULL)
+void pcb_poly_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(polygon_action_list, NULL);
+}

@@ -630,9 +630,14 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t rats_patch_action_list[] = {
+static pcb_action_t rats_patch_action_list[] = {
 	{"ReplaceFootprint", pcb_act_ReplaceFootprint, pcb_acth_ReplaceFootprint, pcb_acts_ReplaceFootprint},
 	{"SavePatch", pcb_act_SavePatch, pcb_acth_SavePatch, pcb_acts_SavePatch}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(rats_patch_action_list, NULL)
+void pcb_rats_patch_init2(void)
+{
+	PCB_REGISTER_ACTIONS(rats_patch_action_list, NULL);
+}
+
+

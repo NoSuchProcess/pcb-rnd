@@ -963,7 +963,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 /* --------------------------------------------------------------------------- */
 
-pcb_action_t change_action_list[] = {
+static pcb_action_t change_action_list[] = {
 	{"ChangeAngle", pcb_act_ChangeAngle, pcb_acth_ChangeAngle, pcb_acts_ChangeAngle},
 	{"ChangeClearSize", pcb_act_ChangeClearSize, pcb_acth_ChangeClearSize, pcb_acts_ChangeClearSize},
 	{"ChangeDrillSize", pcb_act_Change2ndSize, pcb_acth_Change2ndSize, pcb_acts_Change2ndSize},
@@ -981,4 +981,11 @@ pcb_action_t change_action_list[] = {
 	{"ClrFlag", pcb_act_ClrFlag, pcb_acth_ClrFlag, pcb_acts_ClrFlag}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(change_action_list, NULL)
+void pcb_change_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(change_action_list, NULL);
+}
+
+
+
+

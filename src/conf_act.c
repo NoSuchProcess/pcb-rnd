@@ -327,7 +327,7 @@ static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t conf_action_list[] = {
+static pcb_action_t conf_action_list[] = {
 	{"conf", pcb_act_Conf, pcb_acth_Conf, pcb_acts_Conf},
 	{"GetStyle", pcb_act_GetStyle, pcb_acth_GetStyle, pcb_acts_GetStyle},
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
@@ -338,4 +338,10 @@ pcb_action_t conf_action_list[] = {
 	{"ChkBuffer", pcb_act_ChkBuffer, pcb_acth_ChkBuffer, pcb_acts_ChkBuffer}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(conf_action_list, NULL)
+void pcb_conf_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(conf_action_list, NULL);
+}
+
+
+

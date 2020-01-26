@@ -268,6 +268,51 @@ static void gui_support_plugins(int load)
 	}
 }
 
+extern void pcb_buffer_init2(void);
+extern void pcb_brave_init2(void);
+extern void pcb_change_act_init2(void);
+extern void pcb_conf_act_init2(void);
+extern void pcb_drc_act_init2(void);
+extern void pcb_extobj_act_init2(void);
+extern void pcb_file_act_init2(void);
+extern void pcb_font_act_init2(void);
+extern void pcb_gui_act_init2(void);
+extern void pcb_main_act_init2(void);
+extern void pcb_netlist_act_init2(void);
+extern void pcb_object_act_init2(void);
+extern void pcb_poly_act_init2(void);
+extern void pcb_plug_footprint_act_init2(void);
+extern void pcb_pstk_act_init2(void);
+extern void pcb_rats_act_init2(void);
+extern void pcb_rats_patch_init2(void);
+extern void pcb_remove_act_init2(void);
+extern void pcb_select_act_init2(void);
+extern void pcb_undo_act_init2(void);
+
+void pcb_main_init_actions(void)
+{
+	pcb_buffer_init2();
+	pcb_brave_init2();
+	pcb_change_act_init2();
+	pcb_conf_act_init2();
+	pcb_drc_act_init2();
+	pcb_extobj_act_init2();
+	pcb_file_act_init2();
+	pcb_font_act_init2();
+	pcb_gui_act_init2();
+	pcb_main_act_init2();
+	pcb_netlist_act_init2();
+	pcb_object_act_init2();
+	pcb_poly_act_init2();
+	pcb_plug_footprint_act_init2();
+	pcb_pstk_act_init2();
+	pcb_rats_act_init2();
+	pcb_rats_patch_init2();
+	pcb_remove_act_init2();
+	pcb_select_act_init2();
+	pcb_undo_act_init2();
+}
+
 extern void pcb_poly_uninit(void);
 
 void pcb_main_uninit(void)
@@ -435,7 +480,7 @@ int main(int argc, char *argv[])
 
 /* Initialize actions only when the gui is already known so only the right
    one is registered (there can be only one GUI). */
-#include "generated_lists.h"
+	pcb_main_init_actions();
 
 	if (pcbhl_main_args_setup2(&ga, &n) != 0) {
 		pcb_main_uninit();

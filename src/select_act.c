@@ -236,9 +236,14 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t select_action_list[] = {
+static pcb_action_t select_action_list[] = {
 	{"Select", pcb_act_Select, pcb_acth_Select, pcb_acts_Select},
 	{"Unselect", pcb_act_Unselect, pcb_acth_Unselect, pcb_acts_Unselect}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(select_action_list, NULL)
+void pcb_select_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(select_action_list, NULL);
+}
+
+

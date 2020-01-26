@@ -214,9 +214,12 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t pcb_extobj_action_list[] = {
+static pcb_action_t pcb_extobj_action_list[] = {
 	{"ExtobjConvFrom", pcb_act_ExtobjConvFrom, pcb_acth_ExtobjConvFrom, pcb_acts_ExtobjConvFrom},
 	{"ExtobjGUIPropEdit", pcb_act_ExtobjGUIPropEdit, pcb_acth_ExtobjGUIPropEdit, pcb_acts_ExtobjGUIPropEdit}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(pcb_extobj_action_list, NULL)
+void pcb_extobj_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(pcb_extobj_action_list, NULL);
+}

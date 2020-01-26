@@ -44,7 +44,7 @@ else
 end
 
 # These files are to be generated before make dep is run
-put /local/pcb/DEPDEPS { $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
+put /local/pcb/DEPDEPS { $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
 
 include {../scconfig/template/debug.tmpasm}
 
@@ -265,14 +265,6 @@ put /local/pcb/LIBS /local/pcb/LIBS_3RD
 put /local/pcb/OBJS_UTIL [@
 @]
 
-# main: action registrations
-put /local/pcb/ACTION_REG_SRC  {
-	buffer.c brave.c change_act.c conf_act.c file_act.c drc.c extobj_act.c
-	gui_act.c main_act.c netlist_act.c font_act.c
-	object_act.c obj_pstk_act.c polygon_act.c plug_footprint_act.c rats_act.c
-	rats_patch.c remove_act.c select_act.c undo_act.c
-}
-
 #---- modules ----#
 # extra rules for modules
 put /local/pcb/RULES {}
@@ -329,7 +321,6 @@ uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
 uniq /local/pcb/LIBS_PRE
 uniq /local/pcb/LIBS_3RD
-uniq /local/pcb/ACTION_REG_SRC
 uniq /local/pcb/EXEDEPS
 uniq /local/pcb/CLEANFILES
 uniq /local/pcb/DISTCLEANFILES
@@ -522,9 +513,6 @@ EXTRA_DIST= \
 
 all-local: pcbtest.sh
 
-generated_lists.h: @/local/pcb/ACTION_REG_SRC@ Makefile
-	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_core_lists.sh @/local/pcb/ACTION_REG_SRC@ > generated_lists.h
-
 conf_core_fields.h: conf_core.h $(ROOT)/doc/conf/tree/rc.html
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh  < conf_core.h > conf_core_fields.h
 
@@ -549,7 +537,7 @@ util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o ../src_3rd/genlis
 FORCE:
 
 
-DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c generated_lists.h defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)

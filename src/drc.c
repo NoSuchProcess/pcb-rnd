@@ -172,9 +172,12 @@ fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return view_dlg(res, argc, argv, dlg_type, "ioincompatlistdialog", &pcb_drc_lst, pcb_drc_all);
 }
 
-pcb_action_t find_action_list[] = {
+static pcb_action_t drc_action_list[] = {
 	{"DRC", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC},
 	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
 };
 
-PCB_REGISTER_ACTIONS_FUNC(find_action_list, NULL)
+void pcb_drc_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(drc_action_list, NULL);
+}

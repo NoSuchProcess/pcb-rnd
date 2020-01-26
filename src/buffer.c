@@ -1183,11 +1183,17 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 /* --------------------------------------------------------------------------- */
 
-pcb_action_t buffer_action_list[] = {
+static pcb_action_t buffer_action_list[] = {
 	{"FreeRotateBuffer", pcb_act_FreeRotateBuffer, pcb_acth_FreeRotateBuffer, pcb_acts_FreeRotateBuffer},
 	{"ScaleBuffer", pcb_act_ScaleBuffer, pcb_acth_ScaleBuffer, pcb_acts_ScaleBuffer},
 	{"LoadFootprint", pcb_act_LoadFootprint, pcb_acth_LoadFootprint, pcb_acts_LoadFootprint},
 	{"PasteBuffer", pcb_act_PasteBuffer, pcb_acth_PasteBuffer, pcb_acts_PasteBuffer}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(buffer_action_list, NULL)
+void pcb_buffer_init2(void)
+{
+	PCB_REGISTER_ACTIONS(buffer_action_list, NULL);
+}
+
+
+

@@ -170,9 +170,12 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-pcb_action_t font_action_list[] = {
+static pcb_action_t font_action_list[] = {
 	{"LoadFontFrom", pcb_act_load_font_from, pcb_acth_load_font_from, pcb_acts_load_font_from},
 	{"SaveFontTo", pcb_act_save_font_to, pcb_acth_save_font_to, pcb_acts_save_font_to}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(font_action_list, NULL)
+void pcb_font_act_init2(void)
+{
+	PCB_REGISTER_ACTIONS(font_action_list, NULL);
+}

@@ -8913,7 +8913,7 @@ main.o: main.c ../config.h librnd/config.h \
  librnd/core/tool.h netlist.h extobj.h obj_subc_parent.h draw.h \
  librnd/core/pixmap.h librnd/core/actions.h actions_pcb.h \
  librnd/core/hid_init.h librnd/core/compat_misc.h tool_logic.h \
- funchash_core.h funchash_core_list.h generated_lists.h
+ funchash_core.h funchash_core_list.h
 main_act.o: main_act.c ../config.h librnd/config.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h change.h board.h \
