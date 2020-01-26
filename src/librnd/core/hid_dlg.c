@@ -272,9 +272,6 @@ static pcb_action_t hid_dlg_action_list[] = {
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(hid_dlg_action_list, NULL)
-
-
 static const char *event_dlg_cookie = "hid_dlg";
 
 static void hid_dlg_log_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -290,5 +287,10 @@ void pcb_hid_dlg_uninit(void)
 void pcb_hid_dlg_init(void)
 {
 	pcb_event_bind(PCB_EVENT_GUI_INIT, hid_dlg_log_gui_init_ev, NULL, event_dlg_cookie);
+}
+
+void pcb_hid_dlg_init2(void)
+{
+	PCB_REGISTER_ACTIONS(hid_dlg_action_list, NULL);
 }
 

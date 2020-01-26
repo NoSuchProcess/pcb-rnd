@@ -245,8 +245,11 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t log_action_list[] = {
+static pcb_action_t log_action_list[] = {
 	{"Log", pcb_act_Log, pcb_acth_Log, pcb_acts_Log}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(log_action_list, NULL)
+void pcb_hidlib_error_init2(void)
+{
+	PCB_REGISTER_ACTIONS(log_action_list, NULL);
+}

@@ -551,4 +551,9 @@ static pcb_action_t cli_dlg_action_list[] = {
 	{"cli_MessageBox", pcb_act_cli_MessageBox, pcb_acth_cli, NULL}
 };
 
-PCB_REGISTER_ACTIONS_FUNC(cli_dlg_action_list, NULL)
+
+void pcb_hid_nogui_init2(void)
+{
+	PCB_REGISTER_ACTIONS(cli_dlg_action_list, NULL);
+}
+

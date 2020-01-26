@@ -317,6 +317,11 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 
 static vts0_t hidlib_conffile;
 
+extern void pcb_hidlib_error_init2(void);
+extern void pcb_hid_dlg_init2(void);
+extern void pcb_hid_nogui_init2(void);
+
+
 void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
 	pcb_actions_init();
@@ -357,6 +362,11 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	pcb_conf_load_extra(NULL, NULL);
 	pcb_units_init();
 	pcb_funchash_init();
+
+	/* actions */
+	pcb_hidlib_error_init2();
+	pcb_hid_dlg_init2();
+	pcb_hid_nogui_init2();
 }
 
 
