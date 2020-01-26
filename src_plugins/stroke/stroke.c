@@ -48,8 +48,8 @@
 
 conf_stroke_t conf_stroke;
 
-#define SIDE_X(x)  ((pcbhl_conf.editor.view.flip_x ? PCB->hidlib.size_x - (x) : (x)))
-#define SIDE_Y(y)  ((pcbhl_conf.editor.view.flip_y ? PCB->hidlib.size_y - (y) : (y)))
+#define SIDE_X(hl, x)  ((pcbhl_conf.editor.view.flip_x ? hl->size_x - (x) : (x)))
+#define SIDE_Y(hl, y)  ((pcbhl_conf.editor.view.flip_y ? hl->size_y - (y) : (y)))
 
 static const char *pcb_stroke_cookie = "stroke plugin";
 
@@ -92,8 +92,8 @@ static void pcb_stroke_record(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 
 	stroke_last_x = ev_x;
 	stroke_last_y = ev_y;
-	ev_x = SIDE_X(ev_x) - stroke_first_x;
-	ev_y = SIDE_Y(ev_y) - stroke_first_y;
+	ev_x = SIDE_X(hidlib, ev_x) - stroke_first_x;
+	ev_y = SIDE_Y(hidlib, ev_y) - stroke_first_y;
 	stroke_record(ev_x / (1 << 16), ev_y / (1 << 16));
 	return;
 }
@@ -101,8 +101,8 @@ static void pcb_stroke_record(pcb_hidlib_t *hidlib, void *user_data, int argc, p
 static void pcb_stroke_start(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_mid_stroke = pcb_true;
-	stroke_first_x = SIDE_X(pcb_crosshair.X);
-	stroke_first_y = SIDE_Y(pcb_crosshair.Y);
+	stroke_first_x = SIDE_X(hidlib, pcb_crosshair.X);
+	stroke_first_y = SIDE_Y(hidlib, pcb_crosshair.Y);
 }
 
 /*** action ***/
