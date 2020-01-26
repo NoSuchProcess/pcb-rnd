@@ -37,7 +37,6 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/unit.h>
 #include <librnd/core/plugins.h>
-#include "stub_stroke.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
 #include <librnd/core/tool.h>

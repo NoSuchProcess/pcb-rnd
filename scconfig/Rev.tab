@@ -1,3 +1,4 @@
+29375	configure	librnd separation: stroke plugin API conversion from stub to event
 29340	configure	librnd separation: tool code
 29309	distclean	librnd separation
 28871	configure	compile standard extobjs by default

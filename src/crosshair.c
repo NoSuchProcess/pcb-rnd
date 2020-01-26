@@ -48,7 +48,6 @@
 #include "undo.h"
 #include <librnd/core/event.h>
 #include <librnd/core/grid.h>
-#include "stub_stroke.h"
 
 #include "obj_line_draw.h"
 #include "obj_arc_draw.h"

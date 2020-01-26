@@ -235,7 +235,6 @@ append /local/pcb/OBJS [@
 	select.o
 	select_act.o
 	stub_draw.o
-	stub_stroke.o
 	thermal.o
 	tool_logic.o
 	undo.o

@@ -48,7 +48,6 @@
 #include "draw.h"
 #include "search.h"
 #include "find.h"
-#include "stub_stroke.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/compat_misc.h>
