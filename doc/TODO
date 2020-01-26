@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - BUG: printf %ma truncates to integer; ml=3697 [report: gpaubert]
 + CLEANUP: separate the cam export empty output warning by reason: addressed groups don't exist or only layers are empty ml=3566 [report: cuvoodoo]
-- CLEANUP: librnd separation: move Conf() action to librnd [report: igor2]
 - CLEANUP: librnd separation: move some actions from gui_act.c, main_act.c to librnd [report: igor2]
 - CLENAUP: librnd spearation: split events [report: igor2]
 - CLEANUP: remove the donut rats special casing
