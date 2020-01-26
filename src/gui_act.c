@@ -399,27 +399,6 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_crosshair_note.Y = pcb_crosshair.Y;
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 	switch(pcb_funchash_get(cmd, NULL)) {
-	case F_Arc:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arc");
-		break;
-	case F_Arrow:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
-		break;
-	case F_Copy:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "copy");
-		break;
-	case F_InsertPoint:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "insert");
-		break;
-	case F_Line:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "line");
-		break;
-	case F_Lock:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "lock");
-		break;
-	case F_Move:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "move");
-		break;
 	case F_Cancel:
 		{
 			int saved_mode = pcbhl_conf.editor.mode;
@@ -443,15 +422,6 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case F_Notify:
 		pcb_press_mode(PCB_ACT_HIDLIB);
 		break;
-	case F_PasteBuffer:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
-		break;
-	case F_Poly:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "poly");
-		break;
-	case F_PolyHole:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "polyhole");
-		break;
 	case F_Release:
 		if ((pcb_mid_stroke) && (conf_core.editor.enable_stroke) && (pcb_stub_stroke_finish(PCB_ACT_HIDLIB) == 0)) {
 			/* Ugly hack: returning 1 here will break execution of the
@@ -463,15 +433,6 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		pcb_release_mode(PCB_ACT_HIDLIB);
 		break;
-	case F_Remove:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "remove");
-		break;
-	case F_Rectangle:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "rectangle");
-		break;
-	case F_Rotate:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "rotate");
-		break;
 	case F_Stroke:
 		if (conf_core.editor.enable_stroke) {
 			pcb_stub_stroke_start();
@@ -480,15 +441,6 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* Right mouse button restarts drawing mode. */
 		goto escape;
-	case F_Text:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "text");
-		break;
-	case F_Thermal:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "thermal");
-		break;
-	case F_Via:
-		pcb_tool_select_by_name(PCB_ACT_HIDLIB, "via");
-		break;
 
 	case F_Restore: /* restore the last saved tool */
 		pcb_tool_restore(PCB_ACT_HIDLIB);
