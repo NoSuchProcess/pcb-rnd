@@ -1063,12 +1063,15 @@ void pcb_crosshair_init(void)
 	/* Initialise Line Route */
 	pcb_route_init(&pcb_crosshair.Route);
 
-	pcb_crosshair.tool_arrow = pcb_crosshair.tool_move = pcb_crosshair.tool_line = -1;
-	pcb_crosshair.tool_arc = pcb_crosshair.tool_poly = pcb_crosshair.tool_poly_hole = -1;
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_crosshair_gui_init, NULL, crosshair_cookie);
 }
 
+void pcb_crosshair_pre_init(void)
+{
+	pcb_crosshair.tool_arrow = pcb_crosshair.tool_move = pcb_crosshair.tool_line = -1;
+	pcb_crosshair.tool_arc = pcb_crosshair.tool_poly = pcb_crosshair.tool_poly_hole = -1;
+}
 
 void pcb_crosshair_uninit(void)
 {

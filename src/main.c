@@ -362,6 +362,8 @@ int main(int argc, char *argv[])
 	pcb_fix_locale_and_env();
 	exec_prefix = main_path_init(argv[0]);
 
+	pcb_crosshair_pre_init();
+
 	pcbhl_main_args_init(&ga, argc, pcb_action_args);
 
 	/* init application:

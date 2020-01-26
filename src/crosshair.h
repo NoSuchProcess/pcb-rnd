@@ -110,6 +110,7 @@ void pcb_notify_mark_change(pcb_bool changes_complete);
 void pcb_crosshair_move_relative(pcb_coord_t, pcb_coord_t);
 pcb_bool pcb_crosshair_move_absolute(pcb_coord_t, pcb_coord_t);
 void pcb_crosshair_init(void);
+void pcb_crosshair_pre_init(void);
 void pcb_crosshair_uninit(void);
 void pcb_crosshair_grid_fit(pcb_coord_t, pcb_coord_t);
 void pcb_center_display(pcb_coord_t X, pcb_coord_t Y);
