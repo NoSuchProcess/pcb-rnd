@@ -56,7 +56,7 @@ static void pcb_draw_paste(pcb_draw_info_t *info, int side)
 	cctx.info = info;
 	cctx.gid = gid;
 	cctx.color = ly != NULL ? &ly->meta.real.color : &conf_core.appearance.color.paste;
-	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
+	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || info->xform->wireframe;
 	cctx.invert = 0;
 
 	if ((cctx.grp == NULL) || (cctx.grp->len == 0)) { /* fallback: no layers -> original code: draw a single auto-add */
@@ -94,7 +94,7 @@ static void pcb_draw_mask(pcb_draw_info_t *info, int side)
 	cctx.info = info;
 	cctx.gid = gid;
 	cctx.color = ly != NULL ? &ly->meta.real.color : &conf_core.appearance.color.mask;
-	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
+	cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || info->xform->wireframe;
 	cctx.invert = pcb_render->mask_invert;
 
 	if (!cctx.invert)
@@ -173,7 +173,7 @@ static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, 
 			continue;
 		lid = cctx.grp->lid[0];
 		cctx.color = invis ? &conf_core.appearance.color.invisible_objects : &info->pcb->Data->Layer[lid].meta.real.color;
-		cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw;
+		cctx.thin = conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || info->xform->wireframe;
 		cctx.invert = 0;
 
 		if ((lyt_type & PCB_LYT_SILK) && (pcb_is_silk_old_style(&cctx, lid))) {
