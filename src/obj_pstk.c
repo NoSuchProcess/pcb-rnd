@@ -566,7 +566,7 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 			set_ps_color(ps, info->objcb.pstk.is_current, info->objcb.pstk.shape_mask, info->objcb.pstk.layer1);
 		else
 			set_ps_color(ps, info->objcb.pstk.is_current, grp->ltype, info->objcb.pstk.layer1);
-		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
+		if (conf_core.editor.thin_draw || info->xform->wireframe) {
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 			pcb_pstk_draw_shape_thin(info, pcb_draw_out.fgGC, ps, shape);
 		}
@@ -725,7 +725,7 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
 	/* actual slot */
 	shape = pcb_pstk_shape(ps, PCB_LYT_MECH, PCB_LYC_AUTO);
 	if (shape != NULL) {
-		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw) {
+		if (conf_core.editor.thin_draw || info->xform->wireframe) {
 			pcb_hid_set_line_width(pcb_draw_out.drillGC, 0);
 			pcb_pstk_draw_shape_thin(info, pcb_draw_out.drillGC, ps, shape);
 		}

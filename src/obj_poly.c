@@ -1222,7 +1222,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 		polygon = trpoly;
 	}
 
-	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || conf_core.editor.wireframe_draw))
+	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly || info->xform->wireframe))
 	{
 		pcb_dhlp_thindraw_pcb_polygon(pcb_draw_out.fgGC, polygon, info->drawn_area);
 	}

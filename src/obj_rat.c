@@ -442,6 +442,7 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
+	pcb_draw_info_t *info = cl;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, rat))
@@ -461,7 +462,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
 
-		if (conf_core.editor.thin_draw || conf_core.editor.wireframe_draw)
+		if (conf_core.editor.thin_draw || info->xform->wireframe)
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		else
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, w);

@@ -329,6 +329,7 @@ static int has_auto(pcb_layergrp_t *grp)
 
 static void draw_everything(pcb_draw_info_t *info)
 {
+	static pcb_xform_t xf_def = {0};
 	pcb_layergrp_id_t backsilk_gid;
 	pcb_layergrp_t *backsilk_grp;
 	pcb_color_t old_silk_color[PCB_MAX_LAYERGRP];
@@ -340,6 +341,12 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_bool paste_empty;
 	legacy_vlayer_t lvly;
+
+	/* no xform means we should use the default logic designed for the GUI */
+	if (info->xform_caller == NULL) {
+		info->xform = info->xform_caller = &xf_def;
+		info->xform->wireframe = conf_core.editor.wireframe_draw;
+	}
 
 	backsilk_gid = ((!conf_core.editor.show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
