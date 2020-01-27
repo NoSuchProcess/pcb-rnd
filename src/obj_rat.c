@@ -462,7 +462,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
 
-		if (conf_core.editor.thin_draw || info->xform->wireframe)
+		if (info->xform->thin_draw || info->xform->wireframe)
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		else
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, w);

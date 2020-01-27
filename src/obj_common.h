@@ -99,6 +99,8 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	unsigned partial_export:1;   /* 1 if only objects with the EXPORTSEL flag should be drawn */
 	unsigned no_slot_in_nonmech:1; /* if 1, do not draw slots on non-mechanical layers (e.g. "no slot in copper") */
 	unsigned wireframe:1;        /* when 1, draw wireframe contours instead of solid objects */
+	unsigned thin_draw:1;        /* when 1, draw thin centerline instead of solid objects (implies thin_draw_poly) */
+	unsigned thin_draw_poly:1;   /* when 1, draw thin countour instead of solid polygons */
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
@@ -114,8 +116,18 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 		__dst__->partial_export |= __src__->partial_export; \
 		__dst__->no_slot_in_nonmech |= __src__->no_slot_in_nonmech; \
 		__dst__->wireframe |= __src__->wireframe; \
+		__dst__->thin_draw |= __src__->thin_draw; \
+		__dst__->thin_draw_poly |= __src__->thin_draw_poly; \
 	} while(0)
-#define pcb_xform_is_nop(src) (((src)->bloat == 0) && ((src)->layer_faded == 0) && ((src)->omit_overlay == 0) && ((src)->partial_export == 0) && ((src)->no_slot_in_nonmech == 0) && ((src)->wireframe == 0))
+#define pcb_xform_is_nop(src) (\
+	((src)->bloat == 0) && \
+	((src)->layer_faded == 0) && \
+	((src)->omit_overlay == 0) && ((src)->partial_export == 0) && \
+	((src)->no_slot_in_nonmech == 0) && \
+	((src)->wireframe == 0) && \
+	((src)->thin_draw == 0) && \
+	((src)->thin_draw_poly == 0) \
+	)
 
 /* Returns true if overlay drawing should be omitted */
 #define pcb_xform_omit_overlay(info) \

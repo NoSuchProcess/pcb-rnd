@@ -1190,7 +1190,7 @@ PCB_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 			}
 
 			/* draw the polygons */
-			poly_thin = conf_core.editor.thin_draw || info->xform->wireframe;
+			poly_thin = info->xform->thin_draw || info->xform->wireframe;
 			for(p = polylist_first(&font->Symbol[*string].polys); p != NULL; p = polylist_next(p))
 				draw_text_poly(info, p, mx, x, xordraw, poly_thin, xordx, xordy, cb, cb_ctx);
 
@@ -1212,7 +1212,7 @@ PCB_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 			py[3] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
 
 			/* draw move on to next cursor position */
-			if ((cb == NULL) && (xordraw || (conf_core.editor.thin_draw || info->xform->wireframe))) {
+			if ((cb == NULL) && (xordraw || (info->xform->thin_draw || info->xform->wireframe))) {
 				if (xordraw) {
 					pcb_render->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
 					pcb_render->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);

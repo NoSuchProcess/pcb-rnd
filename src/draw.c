@@ -346,6 +346,8 @@ static void draw_everything(pcb_draw_info_t *info)
 	if (info->xform_caller == NULL) {
 		info->xform = info->xform_caller = &xf_def;
 		info->xform->wireframe = conf_core.editor.wireframe_draw;
+		info->xform->thin_draw = conf_core.editor.thin_draw;
+		info->xform->thin_draw_poly = conf_core.editor.thin_draw_poly;
 	}
 
 	backsilk_gid = ((!conf_core.editor.show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
