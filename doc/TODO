@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: printf %ma truncates to integer; ml=3697 [report: gpaubert]
-- CLENAUP: librnd spearation: split events [report: igor2]
 - CLEANUP: remove the donut rats special casing
 	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
