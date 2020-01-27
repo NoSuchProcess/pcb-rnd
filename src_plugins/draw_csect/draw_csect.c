@@ -64,6 +64,9 @@ static pcb_layergrp_id_t drag_gid = -1, drag_gid_subst = -1;
 
 #define GROUP_WIDTH_MM 75
 
+static pcb_xform_t def_xform;
+static pcb_draw_info_t def_info;
+
 /* Draw a text at x;y sized scale percentage */
 static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 {
@@ -78,7 +81,7 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 	t.Scale = scale;
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
-	pcb_text_draw_(NULL, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
+	pcb_text_draw_(&def_info, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 	return &t;
 }
 
@@ -96,7 +99,7 @@ static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, cons
 	t.Scale = scale;
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
-	pcb_text_draw_(NULL, &t, th, 0, PCB_TXT_TINY_ACCURATE);
+	pcb_text_draw_(&def_info, &t, th, 0, PCB_TXT_TINY_ACCURATE);
 	return &t;
 }
 
@@ -117,11 +120,11 @@ static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, c
 
 	if (pcb_gui->gui) { /* it is unreadable on black&white and on most exporters */
 		pcb_render->set_color(gc, bgcolor);
-		pcb_text_draw_(NULL, &t, 1000000, 0, PCB_TXT_TINY_ACCURATE);
+		pcb_text_draw_(&def_info, &t, 1000000, 0, PCB_TXT_TINY_ACCURATE);
 	}
 
 	pcb_render->set_color(gc, fgcolor);
-	pcb_text_draw_(NULL, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
+	pcb_text_draw_(&def_info, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 
 	return &t;
 }
@@ -138,7 +141,7 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 	l.Thickness = PCB_MM_TO_COORD(thick);
 	if (l.Thickness == 0)
 		l.Thickness = 1;
-	pcb_line_draw_(NULL, &l, 0);
+	pcb_line_draw_(&def_info, &l, 0);
 }
 
 /* draw a line of a specific thickness */
@@ -153,7 +156,7 @@ static void dline_(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y
 	l.Thickness = PCB_MM_TO_COORD(thick);
 	if (l.Thickness == 0)
 		l.Thickness = 1;
-	pcb_line_draw_(NULL, &l, 0);
+	pcb_line_draw_(&def_info, &l, 0);
 }
 
 
@@ -939,6 +942,8 @@ int pplg_init_draw_csect(void)
 {
 	PCB_API_CHK_VER;
 	PCB_REGISTER_ACTIONS(draw_csect_action_list, draw_csect_cookie)
+
+	def_info.xform = &def_xform;
 
 	pcb_color_load_str(&COLOR_ANNOT,     COLOR_ANNOT_);
 	pcb_color_load_str(&COLOR_BG,        COLOR_BG_);
