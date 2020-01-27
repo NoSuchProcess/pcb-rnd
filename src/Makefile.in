@@ -169,6 +169,7 @@ append /local/pcb/OBJS [@
 	data.o
 	draw.o
 	drc.o
+	event.o
 	extobj.o
 	extobj_act.o
 	font.o

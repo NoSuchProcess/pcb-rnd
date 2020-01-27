@@ -32,7 +32,7 @@
 #include "config.h"
 #include "board.h"
 #include "layer.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/compat_misc.h>
 #include "genvector/vtp0.h"
 #include "layer_ui.h"

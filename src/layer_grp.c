@@ -32,7 +32,7 @@
 #include "data.h"
 #include "layer_grp.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/funchash.h>
 #include "funchash_core.h"
 

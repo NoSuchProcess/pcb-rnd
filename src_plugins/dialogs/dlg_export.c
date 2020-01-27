@@ -29,7 +29,7 @@
 #include "board.h"
 #include "data.h"
 #include "layer_vis.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_unit.h>

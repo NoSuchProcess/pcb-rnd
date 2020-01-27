@@ -36,7 +36,7 @@
 #include "layer.h"
 #include "layer_ui.h"
 #include "layer_vis.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/conf_hid.h>
 

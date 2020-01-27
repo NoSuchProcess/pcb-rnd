@@ -44,7 +44,7 @@
 #include "plug_import.h"
 #include "remove.h"
 #include "draw.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "find.h"
 #include "search.h"
 #include <librnd/core/actions.h>

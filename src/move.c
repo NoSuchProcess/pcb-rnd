@@ -38,7 +38,7 @@
 #include "move.h"
 #include "select.h"
 #include "undo.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include "obj_arc_op.h"

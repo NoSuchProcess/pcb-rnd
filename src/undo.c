@@ -52,7 +52,7 @@
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/error.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "insert.h"
 #include "polygon.h"
 #include "remove.h"

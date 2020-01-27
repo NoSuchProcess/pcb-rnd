@@ -66,7 +66,7 @@
 #include "route_style.h"
 #include "obj_poly.h"
 #include "thermal.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "funchash_core.h"
 #include "netlist.h"
 

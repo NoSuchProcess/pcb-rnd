@@ -44,7 +44,7 @@
 #include "draw.h"
 #include "search.h"
 #include "undo.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/compat_misc.h>
 #include "obj_rat_draw.h"
 #include "data_it.h"

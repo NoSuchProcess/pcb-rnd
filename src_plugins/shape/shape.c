@@ -37,7 +37,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include <librnd/core/error.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "layer.h"
 #include <librnd/core/math_helper.h>
 #include "obj_poly.h"

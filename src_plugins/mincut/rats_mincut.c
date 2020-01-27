@@ -34,7 +34,7 @@
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/error.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "plug_io.h"
 #include "find.h"
 #include "polygon.h"

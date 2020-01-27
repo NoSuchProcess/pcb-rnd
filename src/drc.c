@@ -33,7 +33,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include "conf_core.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/event.h>
+#include "event.h"
 
 
 pcb_view_list_t pcb_drc_lst;

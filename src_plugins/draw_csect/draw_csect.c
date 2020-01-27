@@ -35,7 +35,7 @@
 #include "stub_draw.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "layer_vis.h"
 
 #include "obj_text_draw.h"

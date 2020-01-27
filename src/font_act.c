@@ -31,7 +31,7 @@
 #include "font.h"
 #include "conf_core.h"
 #include "plug_io.h"
-#include <librnd/core/event.h>
+#include "event.h"
 
 #define PCB (do not use PCB directly)
 

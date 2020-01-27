@@ -52,7 +52,7 @@
 #include "obj_text_draw.h"
 #include <librnd/poly/self_isc.h>
 #include <librnd/poly/polygon1_gen.h>
-#include <librnd/core/event.h>
+#include "event.h"
 
 #define UNSUBTRACT_BLOAT 10
 #define SUBTRACT_PIN_VIA_BATCH_SIZE 100

@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <librnd/core/hidlib_conf.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/grid.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/tool.h>

@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/conf_hid.h>
-#include <librnd/core/event.h>
+#include "event.h"
 
 #include "layer_menu.h"
 #include "layersel.h"

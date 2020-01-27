@@ -24,8 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_EVENT_H
-#define PCB_EVENT_H
+#ifndef RND_EVENT_H
+#define RND_EVENT_H
 #include <librnd/config.h>
 #include <librnd/core/unit.h>
 #include <librnd/core/global_typedefs.h>
@@ -61,44 +61,16 @@ typedef enum {
 	PCB_EVENT_STROKE_RECORD,          /* parameters: pcb_coord_t x, pcb_coord_t y */
 	PCB_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 
-/*** app ***/
-
-	PCB_EVENT_SAVE_PRE,               /* called before saving the design */
-	PCB_EVENT_SAVE_POST,              /* called after saving the design */
-	PCB_EVENT_LOAD_PRE,               /* called before loading a new design */
-	PCB_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not */
-
 	PCB_EVENT_BOARD_CHANGED,          /* called after the board being edited got _replaced_ (used to be the PCBChanged action) */
 	PCB_EVENT_BOARD_META_CHANGED,     /* called if the metadata of the board has changed */
 	PCB_EVENT_BOARD_FN_CHANGED,       /* called after the file name of the board has changed */
-	PCB_EVENT_ROUTE_STYLES_CHANGED,   /* called after any route style change (used to be the RouteStylesChanged action) */
-	PCB_EVENT_NETLIST_CHANGED,        /* called after any netlist change (used to be the NetlistChanged action) */
-	PCB_EVENT_LAYERS_CHANGED,         /* called after layers or layer groups change (used to be the LayersChanged action) */
-	PCB_EVENT_LAYER_CHANGED_GRP,      /* called after a layer changed its group; argument: layer pointer */
-	PCB_EVENT_LAYERVIS_CHANGED,       /* called after the visibility of layers has changed */
-	PCB_EVENT_LIBRARY_CHANGED,        /* called after a change in the footprint lib (used to be the LibraryChanged action) */
-	PCB_EVENT_FONT_CHANGED,           /* called when a font has changed; argument is the font ID */
 
-	PCB_EVENT_UNDO_POST,              /* called after an undo/redo operation; argument is an integer pcb_undo_ev_t */
+	PCB_EVENT_SAVE_PRE,               /* called before saving the design (required for window placement) */
+	PCB_EVENT_SAVE_POST,              /* called after saving the design (required for window placement) */
+	PCB_EVENT_LOAD_PRE,               /* called before loading a new design (required for window placement) */
+	PCB_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not (required for window placement) */
 
-	PCB_EVENT_NEW_PSTK,               /* called when a new padstack is created */
-
-	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */
-	PCB_EVENT_RUBBER_MOVE,            /* rubber band: object moved */
-	PCB_EVENT_RUBBER_MOVE_DRAW,       /* rubber band: draw crosshair-attached rubber band objects after a move or copy */
-	PCB_EVENT_RUBBER_ROTATE90,        /* rubber band: crosshair object rotated by 90 degrees */
-	PCB_EVENT_RUBBER_ROTATE,          /* rubber band: crosshair object rotated by arbitrary angle */
-	PCB_EVENT_RUBBER_LOOKUP_LINES,    /* rubber band: attach rubber banded line objects to crosshair */
-	PCB_EVENT_RUBBER_LOOKUP_RATS,     /* rubber band: attach rubber banded rat lines objects to crosshair */
-	PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, /* rubber band: adapt main line to keep rubberband lines direction */
-
-	PCB_EVENT_DRAW_CROSSHAIR_CHATT,   /* called from crosshair code upon attached object recalculation; event handlers can use this hook to enforce various geometric restrictions */
-
-	PCB_EVENT_DRC_RUN,                /* called from core to run all configured DRCs (implemented in plugins) */
-
-	PCB_EVENT_NET_INDICATE_SHORT,     /* called by core to get a shortcircuit indicated (e.g. by mincut). Args: (pcb_net_t *net, pcb_any_obj_t *offending_term, pcb_net_t *offending_net, int *handled, int *cancel) - if *handled is non-zero, the short is already indicated; if *cancel is non-zero the whole process is cancelled, no more advanced short checking should take place in this session */
-
-	PCB_EVENT_last                    /* not a real event */
+	RND_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
 
 /* Maximum number of arguments for an event handler, auto-set argv[0] included */
@@ -159,8 +131,8 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...);
 const char *pcb_event_name(pcb_event_id_t ev);
 
 /* The application may register its events by defining an enum
-   starting from PCB_EVENT_app and calling this function */
+   starting from RND_EVENT_app and calling this function after hidlib_init1() */
 void pcb_event_app_reg(long last_event_id, const char **event_names, long sizeof_event_names);
-#define PCB_EVENT_app 100
+#define RND_EVENT_app 100
 
 #endif

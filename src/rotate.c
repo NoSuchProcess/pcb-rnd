@@ -38,7 +38,7 @@
 #include "search.h"
 #include "select.h"
 #include "undo.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "data.h"
 #include "conf_core.h"
 #include "obj_arc_op.h"

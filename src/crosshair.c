@@ -46,7 +46,7 @@
 #include "vtonpoint.h"
 #include "find.h"
 #include "undo.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/grid.h>
 
 #include "obj_line_draw.h"

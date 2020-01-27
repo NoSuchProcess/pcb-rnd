@@ -31,7 +31,7 @@
 #define GVT_DONT_UNDEF
 #include "cam_compile.h"
 #include "layer_vis.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/safe_fs.h>
 #include <genvector/genvector_impl.c>
 

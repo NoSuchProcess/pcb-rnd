@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include <librnd/core/event.h>
+#include "event.h"
 #include "netlist.h"
 #include <genvector/vtp0.h>
 

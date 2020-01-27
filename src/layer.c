@@ -34,7 +34,7 @@
 #include "layer.h"
 #include <librnd/core/compat_misc.h>
 #include "undo.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "layer_ui.h"
 #include "layer_vis.h"
 #include "funchash_core.h"

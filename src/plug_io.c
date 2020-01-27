@@ -60,7 +60,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/compat_misc.h>
 #include "route_style.h"
 #include <librnd/core/compat_fs.h>

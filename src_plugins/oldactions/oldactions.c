@@ -34,7 +34,7 @@
 #include "config.h"
 #include <librnd/core/conf.h>
 #include "data.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "change.h"
 #include <librnd/core/error.h>
 #include "undo.h"

@@ -54,7 +54,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "polygon.h"
 #include "obj_poly_draw.h"
 

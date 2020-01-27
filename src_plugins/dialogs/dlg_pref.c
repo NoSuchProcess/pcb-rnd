@@ -34,7 +34,7 @@
 #include "build_run.h"
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/error.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/hid_dad.h>

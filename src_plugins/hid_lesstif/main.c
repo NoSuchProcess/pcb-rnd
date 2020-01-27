@@ -25,7 +25,7 @@
 #include <librnd/core/conf_hid.h>
 #include "layer.h"
 #include <librnd/core/pcb-printf.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/error.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>

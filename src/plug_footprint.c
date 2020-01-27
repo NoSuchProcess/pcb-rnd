@@ -36,7 +36,7 @@
 #include "conf_core.h"
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/event.h>
+#include "event.h"
 
 FILE PCB_FP_FOPEN_IN_DST_, *PCB_FP_FOPEN_IN_DST = &PCB_FP_FOPEN_IN_DST_;
 

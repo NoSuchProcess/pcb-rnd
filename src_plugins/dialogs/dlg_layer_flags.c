@@ -27,7 +27,7 @@
 #include "config.h"
 #include "board.h"
 #include <librnd/core/actions.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/hid_dad.h>
 #include "dlg_layer_binding.h"
 #include "dlg_layer_flags.h"

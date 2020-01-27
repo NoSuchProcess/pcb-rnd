@@ -33,7 +33,7 @@
 #include "board.h"
 #include "data.h"
 #include <librnd/core/hid_dad.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/pcb-printf.h>
 

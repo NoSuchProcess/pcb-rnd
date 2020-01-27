@@ -37,7 +37,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "list_common.h"
 #include "obj_line_list.h"
 #include "obj_pstk.h"

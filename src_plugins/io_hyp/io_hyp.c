@@ -38,7 +38,7 @@
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "plug_io.h"
 #include "parser.h"
 #include "board.h"

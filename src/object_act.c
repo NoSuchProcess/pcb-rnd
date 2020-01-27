@@ -43,7 +43,7 @@
 #include "change.h"
 #include <librnd/core/error.h>
 #include "undo.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "funchash_core.h"
 
 #include "search.h"

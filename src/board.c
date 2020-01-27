@@ -37,7 +37,7 @@
 #include <librnd/poly/rtree.h>
 #include "undo.h"
 #include "draw.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/tool.h>
 #include "layer.h"

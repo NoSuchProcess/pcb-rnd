@@ -36,7 +36,7 @@
 #include <librnd/core/actions.h>
 #include "board.h"
 #include "data.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "layer.h"
 #include "layer_grp.h"
 #include "layer_ui.h"

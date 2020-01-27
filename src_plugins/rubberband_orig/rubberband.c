@@ -41,7 +41,7 @@
 #include "data_it.h"
 #include "data_list.h"
 #include <librnd/core/error.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "undo.h"
 #include "operation.h"
 #include "rotate.h"

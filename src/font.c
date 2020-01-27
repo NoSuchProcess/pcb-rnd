@@ -41,7 +41,7 @@
 #include "plug_io.h"
 #include <librnd/core/paths.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/file_loaded.h>
 
 #define STEP_SYMBOLLINE 10

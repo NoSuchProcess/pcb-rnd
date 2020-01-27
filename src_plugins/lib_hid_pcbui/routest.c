@@ -30,7 +30,7 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include "route_style.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_dad.h>

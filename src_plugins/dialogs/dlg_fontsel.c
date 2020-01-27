@@ -29,7 +29,7 @@
 #include "board.h"
 #include "change.h"
 #include "conf_core.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/hid_dad.h>
 #include "stub_draw.h"
 #include "idpath.h"

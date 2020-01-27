@@ -54,7 +54,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <librnd/core/plugins.h>
 #include "plug_footprint.h"
 #include "plug_import.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/funchash.h>
 #include <librnd/core/conf.h>
 #include "conf_core.h"
@@ -424,6 +424,7 @@ int main(int argc, char *argv[])
 	pcb_extobj_init();
 
 	pcb_hidlib_init1(conf_core_init);
+	pcb_event_init_app();
 	pcb_conf_set(CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, POL_OVERWRITE);
 	free(exec_prefix);
 

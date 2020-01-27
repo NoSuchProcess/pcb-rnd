@@ -36,7 +36,7 @@
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include <librnd/core/actions.h>
 #include "funchash_core.h"
 #include "search.h"

@@ -39,7 +39,7 @@
 #include "undo.h"
 #include "polygon.h"
 #include <librnd/poly/offset.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "layer.h"
 
 #include "obj_text.h"

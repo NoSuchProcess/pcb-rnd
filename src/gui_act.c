@@ -51,7 +51,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "layer.h"
 #include "layer_ui.h"
 #include "layer_grp.h"

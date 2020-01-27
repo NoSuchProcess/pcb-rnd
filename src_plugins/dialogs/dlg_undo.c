@@ -25,7 +25,7 @@
  */
 
 #include <libuundo/uundo.h>
-#include <librnd/core/event.h>
+#include "event.h"
 #include "undo.h"
 
 const char *dlg_undo_cookie = "undo dialog";

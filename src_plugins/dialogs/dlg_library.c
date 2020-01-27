@@ -38,7 +38,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include "draw.h"
-#include <librnd/core/event.h>
+#include "event.h"
 #include "obj_subc.h"
 #include "plug_footprint.h"
 #include <librnd/core/tool.h>
