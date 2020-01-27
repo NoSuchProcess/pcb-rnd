@@ -158,4 +158,9 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...);
 /* Return the name of an event as seen on regisrtation */
 const char *pcb_event_name(pcb_event_id_t ev);
 
+/* The application may register its events by defining an enum
+   starting from PCB_EVENT_app and calling this function */
+void pcb_event_app_reg(long last_event_id, const char **event_names, long sizeof_event_names);
+#define PCB_EVENT_app 100
+
 #endif

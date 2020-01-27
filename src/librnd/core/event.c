@@ -33,7 +33,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/fptr_cast.h>
 
-static const char *pcb_fgw_evnames[] = {
+static const char *rnd_evnames_lib[] = {
 	"pcbev_gui_init",
 	"pcbev_cli_enter",
 	"pcbeb_new_tool",
@@ -86,6 +86,9 @@ static const char *pcb_fgw_evnames[] = {
 	"pcbev_net_indicate_short"
 };
 
+static const char **rnd_evnames_app = NULL;
+static long rnd_event_app_last = 0;
+
 typedef struct event_s event_t;
 
 struct event_s {
@@ -96,10 +99,27 @@ struct event_s {
 };
 
 static event_t *rnd_events_lib[PCB_EVENT_last];
+static event_t **rnd_events_app = NULL;
 
 #define EVENT_SETUP(ev, err) \
+	pcb_event_id_t evid = ev; \
+	const char **evnames = rnd_evnames_lib; \
 	event_t **events = rnd_events_lib; \
-	if (!(((ev) >= 0) && ((ev) < PCB_EVENT_last))) { err; }
+	if ((ev >= PCB_EVENT_app) && (rnd_event_app_last > 0)) { \
+		if ((ev) > rnd_event_app_last) { err; } \
+		evnames = rnd_evnames_app; \
+		events = rnd_events_app; \
+		ev -= PCB_EVENT_app; \
+	} \
+	else if (!(((ev) >= 0) && ((ev) < PCB_EVENT_last))) { err; }
+
+void pcb_event_app_reg(long last_event_id, const char **event_names, long sizeof_event_names)
+{
+	rnd_event_app_last = last_event_id;
+	rnd_evnames_app = event_names;
+	assert((sizeof_event_names / sizeof(char *)) == last_event_id - PCB_EVENT_app);
+	rnd_events_app = calloc(sizeof(event_t), last_event_id - PCB_EVENT_app + 1);
+}
 
 void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t *handler, void *user_data, const char *cookie)
 {
@@ -170,7 +190,7 @@ void pcb_event_unbind_allcookie(const char *cookie)
 const char *pcb_event_name(pcb_event_id_t ev)
 {
 	EVENT_SETUP(ev, return "<invalid event>");
-	return pcb_fgw_evnames[ev];
+	return rnd_evnames_lib[ev];
 }
 
 void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
@@ -184,7 +204,7 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 
 	a = argv;
 	a->type = PCB_EVARG_INT;
-	a->d.i = ev;
+	a->d.i = evid;
 
 	fa = fargv;
 	fa->type = FGW_INVALID; /* first argument will be the function, as filed in by fungw; we are not passing the event number as it is impossible to bind multiple events to the same function this way */
@@ -251,16 +271,16 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 
 void pcb_events_init(void)
 {
-	if ((sizeof(pcb_fgw_evnames) / sizeof(pcb_fgw_evnames[0])) != PCB_EVENT_last) {
-		fprintf(stderr, "INTERNAL ERROR: event.c: pcb_fgw_evnames and pcb_event_id_t are out of sync\n");
+	if ((sizeof(rnd_evnames_lib) / sizeof(rnd_evnames_lib[0])) != PCB_EVENT_last) {
+		fprintf(stderr, "INTERNAL ERROR: event.c: rnd_evnames_lib and pcb_event_id_t are out of sync\n");
 		exit(1);
 	}
 }
 
-void pcb_events_uninit_(event_t **events)
+void pcb_events_uninit_(event_t **events, long last)
 {
 	int ev;
-	for(ev = 0; ev < PCB_EVENT_last; ev++) {
+	for(ev = 0; ev < last; ev++) {
 		event_t *e, *next;
 		for(e = events[ev]; e != NULL; e = next) {
 			next = e->next;
@@ -273,6 +293,9 @@ void pcb_events_uninit_(event_t **events)
 
 void pcb_events_uninit(void)
 {
-	pcb_events_uninit_(rnd_events_lib);
+	pcb_events_uninit_(rnd_events_lib, PCB_EVENT_last);
+	if (rnd_event_app_last > 0)
+		pcb_events_uninit_(rnd_events_app, rnd_event_app_last - PCB_EVENT_app);
+	free(rnd_events_app);
 }
 
