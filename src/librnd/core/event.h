@@ -149,4 +149,8 @@ void pcb_event_unbind_allcookie(const char *cookie);
 /* Event trigger: call all handlers for an event. Fmt is a list of
    format characters (e.g. i for PCB_EVARG_INT). */
 void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...);
+
+/* Return the name of an event as seen on regisrtation */
+const char *pcb_event_name(pcb_event_id_t ev);
+
 #endif

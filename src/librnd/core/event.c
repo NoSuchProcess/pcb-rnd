@@ -165,6 +165,13 @@ void pcb_event_unbind_allcookie(const char *cookie)
 		pcb_event_unbind_cookie(n, cookie);
 }
 
+const char *pcb_event_name(pcb_event_id_t ev)
+{
+	if (!(event_valid(ev)))
+		return "<invalid event>";
+	return pcb_fgw_evnames[ev];
+}
+
 void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 {
 	va_list ap;
@@ -240,7 +247,7 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 	for (e = events[ev]; e != NULL; e = e->next)
 		e->handler(hidlib, e->user_data, argc, argv);
 
-	fgw_ucall_all(&pcb_fgw, hidlib, pcb_fgw_evnames[ev], argc, fargv);
+	fgw_ucall_all(&pcb_fgw, hidlib, pcb_event_name(ev), argc, fargv);
 }
 
 void pcb_events_init(void)
