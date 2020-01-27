@@ -95,16 +95,16 @@ struct event_s {
 	event_t *next;
 };
 
-event_t *events[PCB_EVENT_last];
+static event_t *rnd_events_lib[PCB_EVENT_last];
 
-#define event_valid(ev) (((ev) >= 0) && ((ev) < PCB_EVENT_last))
+#define EVENT_SETUP(ev, err) \
+	event_t **events = rnd_events_lib; \
+	if (!(((ev) >= 0) && ((ev) < PCB_EVENT_last))) { err; }
 
 void pcb_event_bind(pcb_event_id_t ev, pcb_event_handler_t *handler, void *user_data, const char *cookie)
 {
 	event_t *e;
-
-	if (!(event_valid(ev)))
-		return;
+	EVENT_SETUP(ev, return);
 
 	e = malloc(sizeof(event_t));
 	e->handler = handler;
@@ -124,8 +124,8 @@ static void event_destroy(event_t *ev)
 void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t *handler)
 {
 	event_t *prev = NULL, *e, *next;
-	if (!(event_valid(ev)))
-		return;
+	EVENT_SETUP(ev, return);
+
 	for (e = events[ev]; e != NULL; e = next) {
 		next = e->next;
 		if (e->handler == handler) {
@@ -143,8 +143,8 @@ void pcb_event_unbind(pcb_event_id_t ev, pcb_event_handler_t *handler)
 void pcb_event_unbind_cookie(pcb_event_id_t ev, const char *cookie)
 {
 	event_t *prev = NULL, *e, *next;
-	if (!(event_valid(ev)))
-		return;
+	EVENT_SETUP(ev, return);
+
 	for (e = events[ev]; e != NULL; e = next) {
 		next = e->next;
 		if (e->cookie == cookie) {
@@ -169,8 +169,7 @@ void pcb_event_unbind_allcookie(const char *cookie)
 
 const char *pcb_event_name(pcb_event_id_t ev)
 {
-	if (!(event_valid(ev)))
-		return "<invalid event>";
+	EVENT_SETUP(ev, return "<invalid event>");
 	return pcb_fgw_evnames[ev];
 }
 
@@ -181,9 +180,7 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 	fgw_arg_t fargv[EVENT_MAX_ARG+1], *fa;
 	event_t *e;
 	int argc;
-
-	if (ev >= PCB_EVENT_last)
-		return;
+	EVENT_SETUP(ev, return);
 
 	a = argv;
 	a->type = PCB_EVARG_INT;
@@ -260,7 +257,7 @@ void pcb_events_init(void)
 	}
 }
 
-void pcb_events_uninit(void)
+void pcb_events_uninit_(event_t **events)
 {
 	int ev;
 	for(ev = 0; ev < PCB_EVENT_last; ev++) {
@@ -271,5 +268,11 @@ void pcb_events_uninit(void)
 			free(e);
 		}
 	}
+}
+
+
+void pcb_events_uninit(void)
+{
+	pcb_events_uninit_(rnd_events_lib);
 }
 
