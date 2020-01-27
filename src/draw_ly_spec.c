@@ -45,6 +45,9 @@ static void pcb_draw_paste(pcb_draw_info_t *info, int side)
 	pcb_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
 	pcb_layer_t *ly = NULL;
+	pcb_xform_t tmp;
+
+	xform_setup(info, &tmp, NULL);
 
 	pcb_layergrp_list(info->pcb, PCB_LYT_PASTE | side_lyt, &gid, 1);
 
@@ -83,6 +86,9 @@ static void pcb_draw_mask(pcb_draw_info_t *info, int side)
 	pcb_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
 	pcb_layer_t *ly = NULL;
+	pcb_xform_t tmp;
+
+	xform_setup(info, &tmp, NULL);
 
 	pcb_layergrp_list(PCB, PCB_LYT_MASK | side_lyt, &gid, 1);
 

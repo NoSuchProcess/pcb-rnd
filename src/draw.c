@@ -198,25 +198,30 @@ static int set_vlayer(pcb_draw_info_t *info, pcb_layergrp_id_t gid, int enable, 
 static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lvly_drawn)
 {
 	pcb_hid_expose_ctx_t hid_exp;
+	pcb_xform_t tmp;
 
 	hid_exp.view = *info->drawn_area;
 
 	if (set_vlayer(info, lvly_drawn->top_assy, lvly_drawn->top_assy_enable, PCB_VLY_TOP_ASSY)) {
+		xform_setup(info, &tmp, NULL);
 		pcb_draw_assembly(info, PCB_LYT_TOP);
 		pcb_render->end_layer(pcb_render);
 	}
 
 	if (set_vlayer(info, lvly_drawn->bot_assy, lvly_drawn->bot_assy_enable, PCB_VLY_BOTTOM_ASSY)) {
+		xform_setup(info, &tmp, NULL);
 		pcb_draw_assembly(info, PCB_LYT_BOTTOM);
 		pcb_render->end_layer(pcb_render);
 	}
 
 	if (set_vlayer(info, lvly_drawn->top_fab, lvly_drawn->top_fab_enable, PCB_VLY_FAB)) {
+		xform_setup(info, &tmp, NULL);
 		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
 		pcb_render->end_layer(pcb_render);
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0, &info->xform_exporter)) {
+		xform_setup(info, &tmp, NULL);
 		pcb_stub_draw_csect(pcb_draw_out.fgGC, &hid_exp);
 		pcb_render->end_layer(pcb_render);
 	}
@@ -329,7 +334,6 @@ static int has_auto(pcb_layergrp_t *grp)
 
 static void draw_everything(pcb_draw_info_t *info)
 {
-	static pcb_xform_t xf_def = {0};
 	pcb_layergrp_id_t backsilk_gid;
 	pcb_layergrp_t *backsilk_grp;
 	pcb_color_t old_silk_color[PCB_MAX_LAYERGRP];
@@ -341,14 +345,6 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_bool paste_empty;
 	legacy_vlayer_t lvly;
-
-	/* no xform means we should use the default logic designed for the GUI */
-	if (info->xform_caller == NULL) {
-		info->xform = info->xform_caller = &xf_def;
-		info->xform->wireframe = conf_core.editor.wireframe_draw;
-		info->xform->thin_draw = conf_core.editor.thin_draw;
-		info->xform->thin_draw_poly = conf_core.editor.thin_draw_poly;
-	}
 
 	backsilk_gid = ((!conf_core.editor.show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
@@ -576,12 +572,17 @@ static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, 
 
 static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
 {
+	pcb_xform_t tmp;
+
 	if (!PCB->hole_on)
 		return;
 
+	xform_setup(info, &tmp, NULL);
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
 	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_slot_callback, info, NULL);
+	info->xform = NULL;
+	info->layer = NULL;
 }
 
 /* ---------------------------------------------------------------------------
@@ -926,6 +927,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 	if (!pcb_render->gui)
 		pcb_draw_ppv(info, group);
 
+
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
@@ -1081,12 +1083,35 @@ static void expose_end(pcb_output_t *save)
 	pcb_render = pcb_draw_out.hid;
 }
 
+void pcb_draw_setup_default_xform(pcb_hid_t *hid, pcb_draw_info_t *info)
+{
+	static pcb_xform_t xf_def = {0};
+	static pcb_xform_t xform_main_exp;
+
+	if (info->xform_caller == NULL) {
+		if (hid->exporter) {
+			/* exporters without xform should automatically inherit the default xform for exporting, which differs from what GUI does */
+			memset(&xform_main_exp, 0, sizeof(xform_main_exp));
+			info->xform = info->xform_exporter = &xform_main_exp;
+
+			xform_main_exp.omit_overlay = 1; /* normally exporters shouldn't draw overlays */
+			info->xform_caller = &xform_main_exp;
+		}
+		else if (hid->gui) {
+			/* no xform means we should use the default logic designed for the GUI */
+			info->xform = info->xform_exporter = &xf_def;
+			xf_def.wireframe = conf_core.editor.wireframe_draw;
+			xf_def.thin_draw = conf_core.editor.thin_draw;
+			xf_def.thin_draw_poly = conf_core.editor.thin_draw_poly;
+		}
+	}
+}
+
 void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
 		pcb_draw_info_t info;
-		pcb_xform_t xform_main_exp;
 
 		expose_begin(&save, hid);
 		pcb_draw_info_setup(&info, PCB);
@@ -1095,14 +1120,7 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 		info.xform = info.xform_exporter = NULL;
 		info.layer = NULL;
 
-		if ((hid->exporter) && (xform_caller == NULL)) {
-			/* exporters without xform should automatically inherit the default xform for exporting, which differs from what GUI does */
-			memset(&xform_main_exp, 0, sizeof(xform_main_exp));
-			info.xform = info.xform_exporter = &xform_main_exp;
-
-			xform_main_exp.omit_overlay = 1; /* normally exporters shouldn't draw overlays */
-			info.xform_caller = &xform_main_exp;
-		}
+		pcb_draw_setup_default_xform(hid, &info);
 
 		draw_everything(&info);
 		expose_end(&save);

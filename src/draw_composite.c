@@ -180,16 +180,20 @@ static void pcb_draw_groups_auto(comp_ctx_t *ctx, void *lym)
 		pcb_draw_pstks(ctx->info, ctx->gid, 0, *pstk_lyt_match);
 }
 
-void pcb_draw_groups(pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const pcb_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
+void pcb_draw_groups(pcb_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const pcb_box_t *screen, const pcb_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
 {
 	pcb_draw_info_t info;
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	comp_ctx_t cctx;
+	pcb_xform_t tmp;
 
 	memset(&info, 0, sizeof(info));
 	info.pcb = pcb;
 	info.drawn_area = screen;
+
+	pcb_draw_setup_default_xform(hid, &info);
+	xform_setup(&info, &tmp, NULL);
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
 		pcb_layer_t *ly = NULL;
