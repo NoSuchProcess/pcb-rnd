@@ -34,15 +34,39 @@
 typedef enum {
 	PCB_EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
 	PCB_EVENT_CLI_ENTER,              /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
-	PCB_EVENT_SAVE_PRE,               /* called before saving the design */
-	PCB_EVENT_SAVE_POST,              /* called after saving the design */
-	PCB_EVENT_LOAD_PRE,               /* called before loading a new design */
-	PCB_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not */
 
 	PCB_EVENT_TOOL_REG,               /* called after a new tool has been registered; arg is (pcb_tool_t *) of the new tool */
 	PCB_EVENT_TOOL_SELECT_PRE,        /* called before a tool is selected; arg is (int *ok, int toolid); if ok is non-zero if the selection is accepted */
 	PCB_EVENT_TOOL_RELEASE,           /* no arg */
 	PCB_EVENT_TOOL_PRESS,             /* no arg */
+
+	PCB_EVENT_BUSY,                   /* called before/after CPU-intensive task begins; argument is an integer: 1 is before, 0 is after */
+	PCB_EVENT_LOG_APPEND,             /* called after a new log line is appended; arg is a pointer to the log line */
+	PCB_EVENT_LOG_CLEAR,              /* called after a clear; args: two pointers; unsigned long "from" and "to" */
+
+	PCB_EVENT_GUI_LEAD_USER,          /* GUI aid to lead the user attention to a specific location on the board in the main drawing area; args: (coord x, coord y, int enabled) */
+	PCB_EVENT_GUI_DRAW_OVERLAY_XOR,   /* called in board draw after finished drawing the xor marks, still in xor draw mode; argument is a pointer to the GC to use for drawing */
+	PCB_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
+	PCB_EVENT_USER_INPUT_KEY,         /* generated any time a keypress is registered by the hid_cfg_key code (may be one key stroke of a multi-stroke sequence) */
+
+	PCB_EVENT_CROSSHAIR_MOVE,         /* called when the crosshair changed coord; arg is an integer which is zero if more to come */
+
+	PCB_EVENT_DAD_NEW_DIALOG,         /* called by the GUI after a new DAD dialog is open; args are pointer hid_ctx,  string dialog id and a pointer to int[4] for getting back preferre {x,y,w,h} (-1 means unknown) */
+	PCB_EVENT_DAD_NEW_GEO,            /* called by the GUI after the window geometry got reconfigured; args are: void *hid_ctx, const char *dialog id, int x1, int y1, int width, int height */
+
+	PCB_EVENT_EXPORT_SESSION_BEGIN,   /* called before an export session (e.g. CAM script execution) starts; should not be nested; there's no guarantee that options are parsed before or after this event */
+	PCB_EVENT_EXPORT_SESSION_END,     /* called after an export session (e.g. CAM script execution) ends */
+
+	PCB_EVENT_STROKE_START,           /* parameters: pcb_coord_t x, pcb_coord_t y */
+	PCB_EVENT_STROKE_RECORD,          /* parameters: pcb_coord_t x, pcb_coord_t y */
+	PCB_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
+
+/*** app ***/
+
+	PCB_EVENT_SAVE_PRE,               /* called before saving the design */
+	PCB_EVENT_SAVE_POST,              /* called after saving the design */
+	PCB_EVENT_LOAD_PRE,               /* called before loading a new design */
+	PCB_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not */
 
 	PCB_EVENT_BOARD_CHANGED,          /* called after the board being edited got _replaced_ (used to be the PCBChanged action) */
 	PCB_EVENT_BOARD_META_CHANGED,     /* called if the metadata of the board has changed */
@@ -59,10 +83,6 @@ typedef enum {
 
 	PCB_EVENT_NEW_PSTK,               /* called when a new padstack is created */
 
-	PCB_EVENT_BUSY,                   /* called before/after CPU-intensive task begins; argument is an integer: 1 is before, 0 is after */
-	PCB_EVENT_LOG_APPEND,             /* called after a new log line is appended; arg is a pointer to the log line */
-	PCB_EVENT_LOG_CLEAR,              /* called after a clear; args: two pointers; unsigned long "from" and "to" */
-
 	PCB_EVENT_RUBBER_RESET,           /* rubber band: reset attached */
 	PCB_EVENT_RUBBER_MOVE,            /* rubber band: object moved */
 	PCB_EVENT_RUBBER_MOVE_DRAW,       /* rubber band: draw crosshair-attached rubber band objects after a move or copy */
@@ -72,26 +92,11 @@ typedef enum {
 	PCB_EVENT_RUBBER_LOOKUP_RATS,     /* rubber band: attach rubber banded rat lines objects to crosshair */
 	PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, /* rubber band: adapt main line to keep rubberband lines direction */
 
-	PCB_EVENT_GUI_LEAD_USER,          /* GUI aid to lead the user attention to a specific location on the board in the main drawing area; args: (coord x, coord y, int enabled) */
-	PCB_EVENT_GUI_DRAW_OVERLAY_XOR,   /* called in board draw after finished drawing the xor marks, still in xor draw mode; argument is a pointer to the GC to use for drawing */
-	PCB_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
-	PCB_EVENT_USER_INPUT_KEY,         /* generated any time a keypress is registered by the hid_cfg_key code (may be one key stroke of a multi-stroke sequence) */
-
 	PCB_EVENT_DRAW_CROSSHAIR_CHATT,   /* called from crosshair code upon attached object recalculation; event handlers can use this hook to enforce various geometric restrictions */
-	PCB_EVENT_CROSSHAIR_MOVE,         /* called when the crosshair changed coord; arg is an integer which is zero if more to come */
 
 	PCB_EVENT_DRC_RUN,                /* called from core to run all configured DRCs (implemented in plugins) */
-	PCB_EVENT_DAD_NEW_DIALOG,         /* called by the GUI after a new DAD dialog is open; args are pointer hid_ctx,  string dialog id and a pointer to int[4] for getting back preferre {x,y,w,h} (-1 means unknown) */
-	PCB_EVENT_DAD_NEW_GEO,            /* called by the GUI after the window geometry got reconfigured; args are: void *hid_ctx, const char *dialog id, int x1, int y1, int width, int height */
 
 	PCB_EVENT_NET_INDICATE_SHORT,     /* called by core to get a shortcircuit indicated (e.g. by mincut). Args: (pcb_net_t *net, pcb_any_obj_t *offending_term, pcb_net_t *offending_net, int *handled, int *cancel) - if *handled is non-zero, the short is already indicated; if *cancel is non-zero the whole process is cancelled, no more advanced short checking should take place in this session */
-
-	PCB_EVENT_EXPORT_SESSION_BEGIN,   /* called before an export session (e.g. CAM script execution) starts; should not be nested; there's no guarantee that options are parsed before or after this event */
-	PCB_EVENT_EXPORT_SESSION_END,     /* called after an export session (e.g. CAM script execution) ends */
-
-	PCB_EVENT_STROKE_START,           /* parameters: pcb_coord_t x, pcb_coord_t y */
-	PCB_EVENT_STROKE_RECORD,          /* parameters: pcb_coord_t x, pcb_coord_t y */
-	PCB_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 
 	PCB_EVENT_last                    /* not a real event */
 } pcb_event_id_t;
