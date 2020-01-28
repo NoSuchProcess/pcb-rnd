@@ -1158,9 +1158,9 @@ static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_ter
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = line->parent.layer;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_WARN, line))
+	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_WARN, line))
 		color = &conf_core.appearance.color.warn;
-	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
+	else if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, line)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
 			if (layer->is_bound)
 				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
@@ -1178,7 +1178,7 @@ static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_ter
 	else
 		color = &layer->meta.real.color;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, line)) {
+	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_ONPOINT, line)) {
 		pcb_lighten_color(color, &buf, 1.75);
 		color = &buf;
 	}

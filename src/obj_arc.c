@@ -1044,9 +1044,9 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = arc->parent.layer;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
+	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_WARN, arc))
 		color = &conf_core.appearance.color.warn;
-	else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
+	else if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, arc)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc)) {
 			if (layer->is_bound)
 				PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
@@ -1064,7 +1064,7 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 	else
 		color = &layer->meta.real.color;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, arc)) {
+	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_ONPOINT, arc)) {
 		pcb_lighten_color(color, &buf, 1.75);
 		color = &buf;
 	}

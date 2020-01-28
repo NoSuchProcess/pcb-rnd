@@ -1344,7 +1344,7 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 	if (layer == NULL) /* if the layer is inbound, e.g. in preview, fall back using the layer recipe */
 		layer = text->parent.layer;
 
-	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
+	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
 		if (layer->is_bound) {
 			const pcb_color_t *color;
 			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
@@ -1353,7 +1353,7 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 		else
 			pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
 	}
-	else if (PCB_HAS_COLOROVERRIDE(text)) {
+	else if (info->xform->flag_color && PCB_HAS_COLOROVERRIDE(text)) {
 		pcb_render->set_color(pcb_draw_out.fgGC, text->override_color);
 	}
 	else if (layer->is_bound) {
