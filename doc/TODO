@@ -10,7 +10,7 @@
 	- png exports selection (even in not-as-shown), others don't
 	- extend png hid attribs with a flag for this, maybe do the same for others
 	- document the decision in "hacking"
-	- CLEANUP: wireframe mode shouldn't affect export; draw code shouldn't depend directly on the config settings but they should be applied through transformations [report: Gabriel]
+	+ CLEANUP: wireframe mode shouldn't affect export; draw code shouldn't depend directly on the config settings but they should be applied through transformations [report: Gabriel]
 - CLEANUP/FEATURE: undo: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
