@@ -166,6 +166,26 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 			if (xf_ != NULL) xf_->partial_export = 1;
 			if (xf != NULL) *xf = xf_;
 		}
+		else if (strcmp(key, "wireframe") == 0) {
+			if (xf_ != NULL) xf_->wireframe = 1;
+			if (xf != NULL) *xf = xf_;
+		}
+		else if (strcmp(key, "thin_draw") == 0) {
+			if (xf_ != NULL) xf_->thin_draw = 1;
+			if (xf != NULL) *xf = xf_;
+		}
+		else if (strcmp(key, "thin_draw_poly") == 0) {
+			if (xf_ != NULL) xf_->thin_draw_poly = 1;
+			if (xf != NULL) *xf = xf_;
+		}
+		else if (strcmp(key, "check_planes") == 0) {
+			if (xf_ != NULL) xf_->check_planes = 1;
+			if (xf != NULL) *xf = xf_;
+		}
+		else if (strcmp(key, "flag_color") == 0) {
+			if (xf_ != NULL) xf_->flag_color = 1;
+			if (xf != NULL) *xf = xf_;
+		}
 		else
 			pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
 	}
