@@ -545,6 +545,8 @@ void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xfo
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
 	as_shown = options[HA_as_shown].lng;
+	if (options[HA_as_shown].lng)
+		pcb_draw_setup_default_gui_xform(xform);
 	if (!options[HA_as_shown].lng) {
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
