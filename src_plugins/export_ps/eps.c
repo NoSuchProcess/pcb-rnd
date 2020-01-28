@@ -222,8 +222,6 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 
 	options_ = options;
 
-	conf_force_set_bool(conf_core.editor.thin_draw, 0);
-	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
 	f = the_file;

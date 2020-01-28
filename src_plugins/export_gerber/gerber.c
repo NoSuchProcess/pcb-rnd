@@ -543,8 +543,6 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	gerber_ovr = 0;
 
-	conf_force_set_bool(conf_core.editor.thin_draw, 0);
-	conf_force_set_bool(conf_core.editor.thin_draw_poly, 0);
 	conf_force_set_bool(conf_core.editor.check_planes, 0);
 
 
