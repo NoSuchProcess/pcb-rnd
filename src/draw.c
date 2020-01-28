@@ -206,24 +206,28 @@ static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lv
 		xform_setup(info, &tmp, NULL);
 		pcb_draw_assembly(info, PCB_LYT_TOP);
 		pcb_render->end_layer(pcb_render);
+		info->xform = NULL; info->layer = NULL;
 	}
 
 	if (set_vlayer(info, lvly_drawn->bot_assy, lvly_drawn->bot_assy_enable, PCB_VLY_BOTTOM_ASSY)) {
 		xform_setup(info, &tmp, NULL);
 		pcb_draw_assembly(info, PCB_LYT_BOTTOM);
 		pcb_render->end_layer(pcb_render);
+		info->xform = NULL; info->layer = NULL;
 	}
 
 	if (set_vlayer(info, lvly_drawn->top_fab, lvly_drawn->top_fab_enable, PCB_VLY_FAB)) {
 		xform_setup(info, &tmp, NULL);
 		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
 		pcb_render->end_layer(pcb_render);
+		info->xform = NULL; info->layer = NULL;
 	}
 
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_CSECT, 0, &info->xform_exporter)) {
 		xform_setup(info, &tmp, NULL);
 		pcb_stub_draw_csect(pcb_draw_out.fgGC, &hid_exp);
 		pcb_render->end_layer(pcb_render);
+		info->xform = NULL; info->layer = NULL;
 	}
 }
 
@@ -568,8 +572,7 @@ static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, 
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
 	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_hole_callback, info, NULL);
-	info->xform = NULL;
-	info->layer = NULL;
+	info->xform = NULL; info->layer = NULL; 
 }
 
 static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
@@ -583,8 +586,7 @@ static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, 
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
 	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_slot_callback, info, NULL);
-	info->xform = NULL;
-	info->layer = NULL;
+	info->xform = NULL; info->layer = NULL;
 }
 
 /* ---------------------------------------------------------------------------
@@ -760,8 +762,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	if (restore_color)
 		Layer->meta.real.color = orig_color;
 
-	info->layer = NULL;
-	info->xform = NULL;
+	info->xform = NULL; info->layer = NULL;
 }
 
 static void pcb_draw_info_setup(pcb_draw_info_t *info, pcb_board_t *pcb)
@@ -883,8 +884,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 	out:;
 		pcb_draw_out.active_padGC = NULL;
 
-	info.layer = NULL;
-	info.xform = NULL;
+	info.layer = NULL; info.xform = NULL;
 }
 
 /* ---------------------------------------------------------------------------
@@ -921,8 +921,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 
 		xform_setup(info, &tmp, ly1);
 		pcb_draw_pstks(info, group, (PCB_CURRLAYER(PCB)->meta.real.grp == group), 0);
-		info->xform = NULL;
-		info->layer = NULL;
+		info->xform = NULL; info->layer = NULL;
 	}
 
 	/* this draws the holes - must be the last, so holes are drawn over everything else */
