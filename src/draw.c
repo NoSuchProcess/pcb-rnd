@@ -1099,7 +1099,7 @@ void pcb_draw_setup_default_xform(pcb_hid_t *hid, pcb_draw_info_t *info)
 		}
 		else if (hid->gui) {
 			/* no xform means we should use the default logic designed for the GUI */
-			info->xform = info->xform_exporter = &xf_def;
+			info->xform = info->xform_exporter = info->xform_caller = &xf_def;
 			xf_def.wireframe = conf_core.editor.wireframe_draw;
 			xf_def.thin_draw = conf_core.editor.thin_draw;
 			xf_def.thin_draw_poly = conf_core.editor.thin_draw_poly;
