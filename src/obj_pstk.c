@@ -336,7 +336,7 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 /*** draw ***/
 
-static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, const pcb_layer_t *ly1)
+static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, const pcb_layer_t *ly1, pcb_xform_t *xform)
 {
 	const pcb_color_t *color, *layer_color = NULL;
 	pcb_color_t buf;
@@ -356,7 +356,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 	}
 	else if (ps->term == NULL) {
 		/* normal via, not a terminal */
-		if (!pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
+		if (xform->flag_color && !pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
 				color = &conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
@@ -382,7 +382,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 	}
 	else {
 		/* terminal */
-		if (!pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
+		if (xform->flag_color && !pcb_draw_force_termlab && PCB_FLAG_TEST(PCB_FLAG_WARN | PCB_FLAG_SELECTED | PCB_FLAG_FOUND, ps)) {
 			if (PCB_FLAG_TEST(PCB_FLAG_WARN, ps))
 				color = &conf_core.appearance.color.warn;
 			else if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps))
@@ -563,9 +563,9 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 
 	if (shape != NULL) {
 		if (grp == NULL)
-			set_ps_color(ps, info->objcb.pstk.is_current, info->objcb.pstk.shape_mask, info->objcb.pstk.layer1);
+			set_ps_color(ps, info->objcb.pstk.is_current, info->objcb.pstk.shape_mask, info->objcb.pstk.layer1, info->xform);
 		else
-			set_ps_color(ps, info->objcb.pstk.is_current, grp->ltype, info->objcb.pstk.layer1);
+			set_ps_color(ps, info->objcb.pstk.is_current, grp->ltype, info->objcb.pstk.layer1, info->xform);
 		if (info->xform->thin_draw || info->xform->wireframe) {
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 			pcb_pstk_draw_shape_thin(info, pcb_draw_out.fgGC, ps, shape);
