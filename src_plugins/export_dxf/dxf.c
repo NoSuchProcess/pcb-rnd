@@ -333,6 +333,8 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
 	fclose(dxf_ctx.f);
 
+	if (!dxf_cam.active) dxf_cam.okempty_content = 1; /* never warn in direct export */
+
 	if (pcb_cam_end(&dxf_cam) == 0) {
 		if (!dxf_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);

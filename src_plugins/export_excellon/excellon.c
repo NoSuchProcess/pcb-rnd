@@ -283,6 +283,8 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_drill_export_excellon(PCB, &udrills, conf_excellon.plugins.export_excellon.unplated_g85_slot, options[HA_excellonfile_coordfmt].lng, fn);
 	}
 
+	if (!excellon_cam.active) excellon_cam.okempty_content = 1; /* never warn in direct export */
+
 	if (pcb_cam_end(&excellon_cam) == 0) {
 		if (!excellon_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);

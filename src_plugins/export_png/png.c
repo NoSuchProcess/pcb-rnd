@@ -777,6 +777,8 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	free(white);
 	free(black);
 
+	if (!png_cam.active) png_cam.okempty_content = 1; /* never warn in direct export */
+
 	if (pcb_cam_end(&png_cam) == 0) {
 		if (!png_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);

@@ -681,6 +681,8 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, 0, filename);
 	}
 
+	if (!gerber_cam.active) gerber_cam.okempty_content = 1; /* never warn in direct export */
+
 	if (pcb_cam_end(&gerber_cam) == 0) {
 		if (!gerber_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);

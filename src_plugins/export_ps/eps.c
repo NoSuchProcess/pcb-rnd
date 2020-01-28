@@ -343,6 +343,8 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	fclose(f);
 
+	if (!eps_cam.active) eps_cam.okempty_content = 1; /* never warn in direct export */
+
 	if (pcb_cam_end(&eps_cam) == 0) {
 		if (!eps_cam.okempty_group)
 			pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
