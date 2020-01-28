@@ -1090,6 +1090,7 @@ void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
 	dst->thin_draw = conf_core.editor.thin_draw;
 	dst->thin_draw_poly = conf_core.editor.thin_draw_poly;
 	dst->check_planes = conf_core.editor.check_planes;
+	dst->flag_color = 1;
 }
 
 void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info)

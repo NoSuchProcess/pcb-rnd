@@ -102,6 +102,7 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	unsigned thin_draw:1;        /* when 1, draw thin centerline instead of solid objects (implies thin_draw_poly) */
 	unsigned thin_draw_poly:1;   /* when 1, draw thin countour instead of solid polygons */
 	unsigned check_planes:1;     /* when 1, draw polygons only */
+	unsigned flag_color:1;       /* when zero, ignore colors that would be derived from object flags (i.e. selection, warn, found) */
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
@@ -120,6 +121,7 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 		__dst__->thin_draw |= __src__->thin_draw; \
 		__dst__->thin_draw_poly |= __src__->thin_draw_poly; \
 		__dst__->check_planes |= __src__->check_planes; \
+		__dst__->flag_color |= __src__->flag_color; \
 	} while(0)
 #define pcb_xform_is_nop(src) (\
 	((src)->bloat == 0) && \
@@ -129,7 +131,8 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	((src)->wireframe == 0) && \
 	((src)->thin_draw == 0) && \
 	((src)->thin_draw_poly == 0) && \
-	((src)->check_planes == 0) \
+	((src)->check_planes == 0) && \
+	((src)->flag_color == 0) \
 	)
 
 /* Returns true if overlay drawing should be omitted */
