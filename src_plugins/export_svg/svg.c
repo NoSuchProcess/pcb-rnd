@@ -250,6 +250,8 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_x
 	gds_init(&snormal);
 
 	if (options[HA_as_shown].lng) {
+		pcb_draw_setup_default_gui_xform(xform);
+
 		/* disable (exporter default) hiding overlay in as_shown */
 		xform->omit_overlay = 0;
 	}
