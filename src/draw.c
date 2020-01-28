@@ -541,7 +541,9 @@ static void pcb_draw_pstks(pcb_draw_info_t *info, pcb_layergrp_id_t group, int i
 		info->objcb.pstk.layer1 = pcb_get_layer(info->pcb->Data, g->lid[0]);
 	else
 		info->objcb.pstk.layer1 = NULL;
-	pcb_r_search(info->pcb->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
+
+	if ((info->xform == NULL) || (!info->xform->check_planes))
+		pcb_r_search(info->pcb->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info)
