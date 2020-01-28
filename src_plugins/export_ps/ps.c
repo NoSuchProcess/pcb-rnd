@@ -524,8 +524,6 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xf
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 
-	conf_force_set_bool(conf_core.editor.check_planes, 0);
-
 	global.f = the_file;
 	global.drill_helper = options[HA_drillhelper].lng;
 	global.drill_helper_size = options[HA_drillhelpersize].crd;
@@ -601,7 +599,6 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xf
 		fprintf(the_file, "showpage\n");
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
-	pcb_conf_update(NULL, -1); /* restore forced sets */
 }
 
 static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)

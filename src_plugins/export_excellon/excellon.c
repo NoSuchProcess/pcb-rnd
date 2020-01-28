@@ -221,9 +221,6 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_hid_expose_ctx_t ctx;
 	pcb_xform_t xform;
 
-	conf_force_set_bool(conf_core.editor.check_planes, 0);
-
-
 	if (!options) {
 		excellon_get_export_options(hid, NULL);
 		for (i = 0; i < NUM_OPTIONS; i++)

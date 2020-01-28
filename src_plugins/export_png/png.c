@@ -546,7 +546,6 @@ void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xfo
 
 	as_shown = options[HA_as_shown].lng;
 	if (!options[HA_as_shown].lng) {
-/*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 		qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);

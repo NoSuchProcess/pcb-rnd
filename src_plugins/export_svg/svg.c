@@ -222,7 +222,6 @@ void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_x
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
 	{
-/*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 		conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 		if (options[HA_photo_mode].lng) {

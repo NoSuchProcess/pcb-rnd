@@ -609,7 +609,6 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim
 
 	f = the_file;
 
-/*		conf_force_set_bool(conf_core.editor.check_planes, 0);*/
 	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 	find_origin(&wctx);

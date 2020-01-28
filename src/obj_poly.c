@@ -1250,7 +1250,7 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 	}
 
 	/* If checking planes, thin-draw any pieces which have been clipped away */
-	if (conf_core.editor.check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
+	if (info->xform->check_planes && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon)) {
 		pcb_poly_t poly = *polygon;
 
 		for (poly.Clipped = polygon->Clipped->f; poly.Clipped != polygon->Clipped; poly.Clipped = poly.Clipped->f)

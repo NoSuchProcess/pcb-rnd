@@ -407,7 +407,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	/*
 	 * first draw all 'invisible' stuff
 	 */
-	if (!conf_core.editor.check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
+	if ((info->xform_exporter != NULL) && !info->xform_exporter->check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
 		pcb_layer_type_t side = PCB_LYT_INVISIBLE_SIDE();
 		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 0, 1);
 		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 0, 1);
@@ -730,7 +730,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_callback, info, NULL);
 	}
 
-	if (conf_core.editor.check_planes)
+	if (info->xform->check_planes)
 		goto out;
 
 	/* draw all visible layer objects (with terminal gfx on copper) */
@@ -845,7 +845,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 		}
 	}
 
-	if (conf_core.editor.check_planes)
+	if (info.xform->check_planes)
 		goto out;
 
 	/* draw all visible layer objects (with terminal gfx on copper) */
@@ -1088,6 +1088,7 @@ void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
 	dst->wireframe = conf_core.editor.wireframe_draw;
 	dst->thin_draw = conf_core.editor.thin_draw;
 	dst->thin_draw_poly = conf_core.editor.thin_draw_poly;
+	dst->check_planes = conf_core.editor.check_planes;
 }
 
 void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info)

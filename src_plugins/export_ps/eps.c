@@ -222,8 +222,6 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 
 	options_ = options;
 
-	conf_force_set_bool(conf_core.editor.check_planes, 0);
-
 	f = the_file;
 
 	region.X1 = 0;
@@ -304,7 +302,6 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 	eps_print_footer(f);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
-	pcb_conf_update(NULL, -1); /* restore forced sets */
 	options_ = NULL;
 }
 
