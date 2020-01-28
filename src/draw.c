@@ -1083,7 +1083,14 @@ static void expose_end(pcb_output_t *save)
 	pcb_render = pcb_draw_out.hid;
 }
 
-void pcb_draw_setup_default_xform(pcb_hid_t *hid, pcb_draw_info_t *info)
+void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
+{
+	dst->wireframe = conf_core.editor.wireframe_draw;
+	dst->thin_draw = conf_core.editor.thin_draw;
+	dst->thin_draw_poly = conf_core.editor.thin_draw_poly;
+}
+
+void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info)
 {
 	static pcb_xform_t xf_def = {0};
 	static pcb_xform_t xform_main_exp;
@@ -1100,9 +1107,7 @@ void pcb_draw_setup_default_xform(pcb_hid_t *hid, pcb_draw_info_t *info)
 		else if (hid->gui) {
 			/* no xform means we should use the default logic designed for the GUI */
 			info->xform = info->xform_exporter = info->xform_caller = &xf_def;
-			xf_def.wireframe = conf_core.editor.wireframe_draw;
-			xf_def.thin_draw = conf_core.editor.thin_draw;
-			xf_def.thin_draw_poly = conf_core.editor.thin_draw_poly;
+			pcb_draw_setup_default_gui_xform(&xf_def);
 		}
 	}
 }
@@ -1120,7 +1125,7 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 		info.xform = info.xform_exporter = NULL;
 		info.layer = NULL;
 
-		pcb_draw_setup_default_xform(hid, &info);
+		pcb_draw_setup_default_xform_info(hid, &info);
 
 		draw_everything(&info);
 		expose_end(&save);

@@ -192,7 +192,7 @@ void pcb_draw_groups(pcb_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int
 	info.pcb = pcb;
 	info.drawn_area = screen;
 
-	pcb_draw_setup_default_xform(hid, &info);
+	pcb_draw_setup_default_xform_info(hid, &info);
 	xform_setup(&info, &tmp, NULL);
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {

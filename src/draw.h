@@ -170,7 +170,9 @@ void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double 
 void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label);
 
 
-void pcb_draw_setup_default_xform(pcb_hid_t *hid, pcb_draw_info_t *info);
+void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info);
+void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst);
+
 
 /* Schedule an object to be called again at the end for drawing its labels 
    on top of everything. */
