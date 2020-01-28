@@ -71,6 +71,7 @@ static void pcb_draw_paste(pcb_draw_info_t *info, int side)
 		comp_draw_layer(&cctx, pcb_draw_paste_auto_, &side);
 		comp_finish(&cctx);
 	}
+	info->xform = NULL; info->layer = NULL;
 }
 
 /******** mask ********/
@@ -115,6 +116,7 @@ static void pcb_draw_mask(pcb_draw_info_t *info, int side)
 	else
 		comp_draw_layer(&cctx, pcb_draw_mask_auto, &side);
 	comp_finish(&cctx);
+	info->xform = NULL; info->layer = NULL;
 }
 
 /******** silk ********/
