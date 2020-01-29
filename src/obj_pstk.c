@@ -348,10 +348,10 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			layer_color = &ly1->meta.real.color;
 	}
 
-	if (conf_core.appearance.invis_other_groups && !is_current) {
+	if (xform->invis_other_groups && !is_current) {
 		color = &conf_core.appearance.color.invisible_objects;
 	}
-	else if (conf_core.appearance.black_current_group && is_current) {
+	else if (xform->black_current_group && is_current) {
 		color = pcb_color_black;
 	}
 	else if (ps->term == NULL) {

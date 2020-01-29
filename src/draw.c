@@ -718,13 +718,13 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		pcb_lighten_color(&orig_color, &Layer->meta.real.color, 0.5);
 		restore_color = 1;
 	}
-	else if (conf_core.appearance.invis_other_groups && !current_grp) {
+	else if (info->xform->invis_other_groups && !current_grp) {
 		orig_color = Layer->meta.real.color;
 		Layer->meta.real.color = conf_core.appearance.color.invisible_objects;
 		restore_color = 1;
 	}
 
-	if (conf_core.appearance.black_current_group && current_grp) {
+	if (info->xform->black_current_group && current_grp) {
 		if (!restore_color) {
 			orig_color = Layer->meta.real.color;
 			restore_color = 1;
@@ -1109,6 +1109,8 @@ void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
 	dst->check_planes = conf_core.editor.check_planes;
 	dst->hide_floaters = conf_core.editor.hide_names;
 	dst->show_solder_side = conf_core.editor.show_solder_side;
+	dst->invis_other_groups = conf_core.appearance.invis_other_groups;
+	dst->black_current_group = conf_core.appearance.black_current_group;
 	dst->flag_color = 1;
 }
 
