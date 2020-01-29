@@ -321,7 +321,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t componen
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 		pcb_draw_pstk_labels(info);
 	}
-	pcb_draw_pstk_names(info, conf_core.editor.show_solder_side ? solder : component, info->drawn_area);
+	pcb_draw_pstk_names(info, info->xform->show_solder_side ? solder : component, info->drawn_area);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
@@ -349,8 +349,10 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	pcb_bool paste_empty;
 	legacy_vlayer_t lvly;
+	pcb_xform_t tmp;
 
-	backsilk_gid = ((!conf_core.editor.show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
+	xform_setup(info, &tmp, NULL);
+	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
 	if (backsilk_grp != NULL) {
 		pcb_cardinal_t n;
@@ -405,7 +407,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	solder = component = -1;
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &component, 1);
-	side_copper_grp = conf_core.editor.show_solder_side ? solder : component;
+	side_copper_grp = info->xform->show_solder_side ? solder : component;
 
 
 	/*
@@ -461,8 +463,12 @@ static void draw_everything(pcb_draw_info_t *info)
 	/* Draw padstacks below silk */
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-	if (pcb_render->gui)
-		pcb_draw_ppv(info, conf_core.editor.show_solder_side ? solder : component);
+	if (pcb_render->gui) {
+		pcb_xform_t tmp;
+		xform_setup(info, &tmp, NULL);
+		pcb_draw_ppv(info, info->xform->show_solder_side ? solder : component);
+		info->xform = NULL; info->layer = NULL;
+	}
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 
 	/* Draw the solder mask if turned on */
@@ -1102,6 +1108,7 @@ void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
 	dst->thin_draw_poly = conf_core.editor.thin_draw_poly;
 	dst->check_planes = conf_core.editor.check_planes;
 	dst->hide_floaters = conf_core.editor.hide_names;
+	dst->show_solder_side = conf_core.editor.show_solder_side;
 	dst->flag_color = 1;
 }
 

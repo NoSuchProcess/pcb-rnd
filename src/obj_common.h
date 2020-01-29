@@ -104,6 +104,7 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	unsigned check_planes:1;     /* when 1, draw polygons only */
 	unsigned flag_color:1;       /* when zero, ignore colors that would be derived from object flags (i.e. selection, warn, found) */
 	unsigned hide_floaters:1;    /* when 1 omit drawing floaters (typically refdes text on silk) */
+	unsigned show_solder_side:1;
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
@@ -124,6 +125,7 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 		__dst__->check_planes |= __src__->check_planes; \
 		__dst__->flag_color |= __src__->flag_color; \
 		__dst__->hide_floaters |= __src__->hide_floaters; \
+		__dst__->show_solder_side |= __src__->show_solder_side; \
 	} while(0)
 #define pcb_xform_is_nop(src) (\
 	((src)->bloat == 0) && \
@@ -135,7 +137,8 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	((src)->thin_draw_poly == 0) && \
 	((src)->check_planes == 0) && \
 	((src)->flag_color == 0) && \
-	((src)->hide_floaters == 0) \
+	((src)->hide_floaters == 0) && \
+	((src)->show_solder_side == 0) \
 	)
 
 /* Returns true if overlay drawing should be omitted */
