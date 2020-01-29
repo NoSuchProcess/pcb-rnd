@@ -7,7 +7,6 @@
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 	- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - CLEANUP: decide about exporter policy:
-	- more flags to xform: conf_core.editor.hide_names, conf_core.appearance.invis_other_groups, conf_core.appearance.black_current_group, conf_core.editor.show_solder_side
 	- document the decision in "hacking"
 	+ CLEANUP: wireframe mode shouldn't affect export; draw code shouldn't depend directly on the config settings but they should be applied through transformations [report: Gabriel]
 - CLEANUP/FEATURE: undo: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
