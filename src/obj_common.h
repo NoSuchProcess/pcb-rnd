@@ -313,7 +313,8 @@ do { \
 /* set const char *dst to a color, depending on the bound layer type:
    top silk and copper get the color of the first crresponding layer
    from current PCB, the rest get the far-side color;
-   set the selected color if sel is true */
+   set the selected color if sel is true.
+   NOTE: caller needs to make sure sel is 0 in case of xform->flag_colors == 0 */
 #define PCB_OBJ_COLOR_ON_BOUND_LAYER(dst, layer, sel) \
 do { \
 	if (layer->meta.bound.type & PCB_LYT_TOP) { \
