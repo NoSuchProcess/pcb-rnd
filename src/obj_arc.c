@@ -1077,7 +1077,7 @@ pcb_r_dir_t pcb_arc_draw_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *)b;
 	pcb_draw_info_t *info = cl;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b) || pcb_partial_export((pcb_any_obj_t*)b, info))
+	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))
@@ -1092,7 +1092,7 @@ pcb_r_dir_t pcb_arc_draw_term_callback(const pcb_box_t * b, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *)b;
 	pcb_draw_info_t *info = cl;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b) || pcb_partial_export((pcb_any_obj_t*)b, info))
+	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(arc->parent_type, &arc->parent))

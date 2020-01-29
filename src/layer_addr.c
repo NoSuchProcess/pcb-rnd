@@ -186,6 +186,10 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 			if (xf_ != NULL) xf_->flag_color = 1;
 			if (xf != NULL) *xf = xf_;
 		}
+		else if (strcmp(key, "hide_floaters") == 0) {
+			if (xf_ != NULL) xf_->hide_floaters = 1;
+			if (xf != NULL) *xf = xf_;
+		}
 		else
 			pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
 	}

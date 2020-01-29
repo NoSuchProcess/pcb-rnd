@@ -103,6 +103,7 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	unsigned thin_draw_poly:1;   /* when 1, draw thin countour instead of solid polygons */
 	unsigned check_planes:1;     /* when 1, draw polygons only */
 	unsigned flag_color:1;       /* when zero, ignore colors that would be derived from object flags (i.e. selection, warn, found) */
+	unsigned hide_floaters:1;    /* when 1 omit drawing floaters (typically refdes text on silk) */
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
@@ -122,6 +123,7 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 		__dst__->thin_draw_poly |= __src__->thin_draw_poly; \
 		__dst__->check_planes |= __src__->check_planes; \
 		__dst__->flag_color |= __src__->flag_color; \
+		__dst__->hide_floaters |= __src__->hide_floaters; \
 	} while(0)
 #define pcb_xform_is_nop(src) (\
 	((src)->bloat == 0) && \
@@ -132,7 +134,8 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	((src)->thin_draw == 0) && \
 	((src)->thin_draw_poly == 0) && \
 	((src)->check_planes == 0) && \
-	((src)->flag_color == 0) \
+	((src)->flag_color == 0) && \
+	((src)->hide_floaters == 0) \
 	)
 
 /* Returns true if overlay drawing should be omitted */
@@ -303,7 +306,8 @@ do { \
 	pcb_render->draw_line(pcb_draw_out.fgGC, cx+radius, cy-radius, cx-radius, cy+radius); \
 } while(0)
 
-#define pcb_hidden_floater(obj) (conf_core.editor.hide_names && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
+#define pcb_hidden_floater(obj,info) ((info)->xform->hide_floaters &&  PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
+#define pcb_hidden_floater_gui(obj) (conf_core.editor.hide_names &&  PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 #define pcb_partial_export(obj,info) (((info)->xform != NULL) && (info)->xform->partial_export && (!PCB_FLAG_TEST(PCB_FLAG_EXPORTSEL, (obj))))
 
 /* Returns whether a subc part object is editable (not under the subc lock) */

@@ -413,6 +413,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	 */
 	if ((info->xform_exporter != NULL) && !info->xform_exporter->check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
 		pcb_layer_type_t side = PCB_LYT_INVISIBLE_SIDE();
+
 		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 0, 1);
 		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 0, 1);
 
@@ -542,6 +543,9 @@ static void draw_everything(pcb_draw_info_t *info)
 static void pcb_draw_pstks(pcb_draw_info_t *info, pcb_layergrp_id_t group, int is_current, pcb_layer_combining_t comb)
 {
 	pcb_layergrp_t *g = PCB->LayerGroups.grp + group;
+	pcb_xform_t tmp;
+
+	xform_setup(info, &tmp, NULL);
 
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.is_current = is_current;
@@ -551,8 +555,10 @@ static void pcb_draw_pstks(pcb_draw_info_t *info, pcb_layergrp_id_t group, int i
 	else
 		info->objcb.pstk.layer1 = NULL;
 
-	if ((info->xform == NULL) || (!info->xform->check_planes))
+	if (!info->xform->check_planes)
 		pcb_r_search(info->pcb->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
+
+	info->xform = NULL; info->layer = NULL;
 }
 
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info)
@@ -939,7 +945,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 
 void pcb_erase_obj(int type, void *lptr, void *ptr)
 {
-	if (pcb_hidden_floater((pcb_any_obj_t *)ptr))
+	if (pcb_hidden_floater_gui((pcb_any_obj_t *)ptr))
 		return;
 
 	switch (type) {
@@ -971,7 +977,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 
 void pcb_draw_obj(pcb_any_obj_t *obj)
 {
-	if (pcb_hidden_floater(obj))
+	if (pcb_hidden_floater_gui(obj))
 		return;
 
 	switch (obj->type) {
@@ -1011,7 +1017,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 
 static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb_any_obj_t *obj)
 {
-	if (pcb_hidden_floater(obj))
+	if (pcb_hidden_floater(obj, info))
 		return;
 
 	/* do not show layer-object labels of the other side on non-pinout views */
@@ -1095,6 +1101,7 @@ void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
 	dst->thin_draw = conf_core.editor.thin_draw;
 	dst->thin_draw_poly = conf_core.editor.thin_draw_poly;
 	dst->check_planes = conf_core.editor.check_planes;
+	dst->hide_floaters = conf_core.editor.hide_names;
 	dst->flag_color = 1;
 }
 

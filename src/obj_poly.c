@@ -1308,7 +1308,7 @@ pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl)
 	pcb_draw_info_t *i = cl;
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b) || pcb_partial_export((pcb_any_obj_t*)b, i))
+	if (pcb_hidden_floater((pcb_any_obj_t*)b, i) || pcb_partial_export((pcb_any_obj_t*)b, i))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (!polygon->Clipped)
@@ -1327,7 +1327,7 @@ pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl)
 	pcb_draw_info_t *i = cl;
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b) || pcb_partial_export((pcb_any_obj_t*)b, i))
+	if (pcb_hidden_floater((pcb_any_obj_t*)b, i) || pcb_partial_export((pcb_any_obj_t*)b, i))
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	if (polygon->Clipped == NULL) {
