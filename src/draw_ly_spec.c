@@ -328,11 +328,11 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 
 /******** misc ********/
 
-static void pcb_draw_rats(const pcb_box_t *drawn_area)
+static void pcb_draw_rats(pcb_draw_info_t *info, const pcb_box_t *drawn_area)
 {
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, pcb_rat_draw_callback, NULL, NULL);
+	pcb_r_search(PCB->Data->rat_tree, drawn_area, NULL, pcb_rat_draw_callback, info, NULL);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 }
 

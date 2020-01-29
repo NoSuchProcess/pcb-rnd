@@ -469,7 +469,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const pcb_box_t * b, void *cl)
 		pcb_render->draw_arc(pcb_draw_out.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else
-		pcb_line_draw_(NULL, (pcb_line_t *) rat, 0);
+		pcb_line_draw_(info, (pcb_line_t *) rat, 0);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 

@@ -78,7 +78,7 @@ static void pcb_draw_paste(pcb_draw_info_t *info, int side);
 static void pcb_draw_mask(pcb_draw_info_t *info, int side);
 static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, pcb_layer_type_t lyt_type, int setgrp, int invis);
 static void pcb_draw_boundary_mech(pcb_draw_info_t *info);
-static void pcb_draw_rats(const pcb_box_t *);
+static void pcb_draw_rats(pcb_draw_info_t *info, const pcb_box_t *);
 static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side);
 
 
@@ -293,12 +293,12 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
-static void draw_rats(const pcb_box_t *drawn_area)
+static void draw_rats(pcb_draw_info_t *info, const pcb_box_t *drawn_area)
 {
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0, NULL)) {
 		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);
-		pcb_draw_rats(drawn_area);
+		pcb_draw_rats(info, drawn_area);
 		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, drawn_area);
 		pcb_render->end_layer(pcb_render);
 	}
@@ -517,7 +517,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	if ((pcb_render->gui) || (!info->xform_caller->omit_overlay)) {
 		pcb_xform_t tmp;
 		xform_setup(info, &tmp, NULL);
-		draw_rats(info->drawn_area);
+		draw_rats(info, info->drawn_area);
 		draw_pins_and_pads(info, component, solder);
 	}
 	draw_ui_layers(info);
