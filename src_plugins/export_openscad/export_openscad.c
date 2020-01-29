@@ -549,10 +549,12 @@ static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 		ly = y;
 		first = 0;
 	}
-	x = (double)cx + cos((180 - end_angle) / PCB_RAD_TO_DEG) * (double)width;
-	y = (double)cy + sin((180 - end_angle) / PCB_RAD_TO_DEG) * (double)height;
-	fprintf(f, "\t");
-	openscad_draw_line(gc, lx, ly, x, y);
+	if (!first) {
+		x = (double)cx + cos((180 - end_angle) / PCB_RAD_TO_DEG) * (double)width;
+		y = (double)cy + sin((180 - end_angle) / PCB_RAD_TO_DEG) * (double)height;
+		fprintf(f, "\t");
+		openscad_draw_line(gc, lx, ly, x, y);
+	}
 }
 
 static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
