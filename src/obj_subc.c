@@ -1882,18 +1882,20 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	pcb_draw_info_t info;
 	pcb_rtree_it_t it;
 	pcb_any_obj_t *o;
+	pcb_xform_t xf = {0};
+	pcb_draw_setup_default_gui_xform(&xf);
 
 	/* draw copper only first - order doesn't matter */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
 		if (layer->meta.bound.type & PCB_LYT_COPPER)
-			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data);
+			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data, &xf);
 	}
 
 	/* draw padstacks */
 	info.pcb = PCB;
 	info.drawn_area = drawn_area;
-	info.xform_caller = info.xform_exporter = info.xform = NULL;
+	info.xform_caller = info.xform_exporter = info.xform = &xf;
 	info.layer = NULL;
 	info.objcb.pstk.gid = -1;
 	info.objcb.pstk.is_current = 1;
@@ -1914,7 +1916,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area)
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
 		if (layer->meta.bound.type & (PCB_LYT_SILK | PCB_LYT_BOUNDARY | PCB_LYT_MECH | PCB_LYT_DOC))
-			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data);
+			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data, &xf);
 	}
 
 	/* padstack mark goes on top */
