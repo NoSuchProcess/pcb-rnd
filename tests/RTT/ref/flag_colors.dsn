@@ -1,0 +1,176 @@
+(pcb notnamed
+  (parser
+    (string_quote ")
+    (space_in_quoted_tokens on)
+    (host_cad "pcb-rnd")
+    (host_version "<version>")
+  )
+  (resolution mm 1000000)
+  (structure
+    (layer "3__top_copper"
+      (type signal)
+    )
+    (layer "5__Intern"
+      (type signal)
+    )
+    (layer "7__Intern"
+      (type signal)
+    )
+    (layer "10__bottom_copper"
+      (type signal)
+    )
+    (boundary
+      (rect pcb 0.0 0.0 16.510000 15.875000)
+    )
+    (via via_685800_381000)
+    (rule
+      (width 0.2032)
+      (clear 0.2032)
+      (clear 0.2032 (type wire_area))
+      (clear 0.2032 (type via_smd via_pin))
+      (clear 0.2032 (type smd_smd))
+      (clear 0.2032 (type default_smd))
+    )
+  )
+  (placement
+    (component 274
+      (place "null" 5.715000 1.270000 front 0 (PN 0))
+    )
+    (component 291
+      (place "null" 8.255000 1.270000 front 0 (PN 0))
+    )
+    (component 308
+      (place "null" 10.795000 1.270000 front 0 (PN 0))
+    )
+    (component 325
+      (place "null" 13.335000 1.270000 front 0 (PN 0))
+    )
+    (component 95
+      (place 95 2.540000 13.335000 front 0 (PN 0))
+    )
+    (component 96
+      (place 96 6.350000 13.335000 front 0 (PN 0))
+    )
+    (component 97
+      (place 97 2.540000 10.160000 front 0 (PN 0))
+    )
+    (component 173
+      (place 173 6.350000 10.160000 front 0 (PN 0))
+    )
+  )
+  (library
+    (image 274
+      (pin Pstk_shape_288 "1" -0.399796 0.000000)
+      (pin Pstk_shape_289 "2" 0.399796 0.000000)
+    )
+    (image 291
+      (pin Pstk_shape_305 "1" -0.399796 0.000000)
+      (pin Pstk_shape_306 "2" 0.399796 0.000000)
+    )
+    (image 308
+      (pin Pstk_shape_322 "1" -0.399796 0.000000)
+      (pin Pstk_shape_323 "2" 0.399796 0.000000)
+    )
+    (image 325
+      (pin Pstk_shape_339 "1" -0.399796 0.000000)
+      (pin Pstk_shape_340 "2" 0.399796 0.000000)
+    )
+    (padstack Pstk_shape_288
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_289
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_305
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_306
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_322
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_323
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_339
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+    (padstack Pstk_shape_340
+      (shape
+        (polygon "3__top_copper" 0
+        0.249936 0.349758 -0.249936 0.349758 -0.249936 -0.349758
+        0.249936 -0.349758
+        )
+      )
+      (attach off)
+    )
+  )
+  (network
+    (class pcb_rnd_default
+      (circuit
+        (use_via via_685800_381000)
+      )
+      (rule (width 0.203200))
+    )
+  )
+    (wiring
+        (wire (path 3__top_copper 0.254000 4.445000 10.160000 6.350000 10.160000)
+            (type protect))
+        (wire (path 3__top_copper 0.254000 6.350000 10.160000 6.985000 10.795000)
+            (type protect))
+        (wire (path 3__top_copper 0.254000 6.985000 10.795000 6.985000 11.430000)
+            (type protect))
+        (wire (path 3__top_copper 0.254000 8.890000 15.240000 13.970000 15.240000)
+            (type protect))
+        (wire (path 3__top_copper 0.254000 8.890000 13.970000 13.970000 13.970000)
+            (type protect))
+        (wire (path 3__top_copper 0.254000 8.890000 12.700000 13.970000 12.700000)
+            (type protect))
+        (wire (path 3__top_copper 0.254000 8.890000 11.430000 13.970000 11.430000)
+            (type protect))
+
+    )
+)

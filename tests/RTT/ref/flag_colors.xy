@@ -1,0 +1,12 @@
+# $Id$
+# PcbXY Version 1.0
+# Date: <date>
+# Author: TEST
+# Title: (unknown) - PCB X-Y
+# RefDes, Description, Value, X, Y, rotation, top/bottom
+# X,Y in mil.  rotation in degrees.
+# --------------------------------------------
+(unknown),"0402 Standard SMT resistor, capacitor etc","(unknown)",225.00,50.00,0,top
+(unknown),"0402 Standard SMT resistor, capacitor etc","(unknown)",325.00,50.00,0,top
+(unknown),"0402 Standard SMT resistor, capacitor etc","(unknown)",425.00,50.00,0,top
+(unknown),"0402 Standard SMT resistor, capacitor etc","(unknown)",525.00,50.00,0,top
