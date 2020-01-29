@@ -133,7 +133,7 @@ ha:{
 				ha:Copy selection to buffer     = { li:a={{<key>e; <key>c}; {Ctrl<Key>c;};};  li:action={ GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Paste buffer to layout       = { li:a={{<key>e; <Key>v}; a=Ctrl<Key>v;};   action=Tool(buffer) }
 				-
-				ha:Remove object                = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
+				ha:Remove object                = { li:a={{<key>e;<key>d};{<Key>Delete};}; li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Change object {
 					li:submenu {
 						ha:Set Same Style           = { a={<key>e; <key>s; <key>s}; action=SetSame() }
@@ -659,7 +659,7 @@ ha:{
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
-				ha:Remove line            { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
+				ha:Remove line            { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
@@ -671,7 +671,7 @@ ha:{
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
-				ha:Remove arc             { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
+				ha:Remove arc             { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
@@ -682,7 +682,7 @@ ha:{
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				-
-				ha:Remove polygon         { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
+				ha:Remove polygon         { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
@@ -696,7 +696,7 @@ ha:{
 				ha:Set Same Style         { action=SetSame() }
 				ha:Change font...         { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 				-
-				ha:Remove text            { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
+				ha:Remove text            { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
 			}
@@ -709,7 +709,7 @@ ha:{
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
 				-
-				ha:Remove padstack        { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
+				ha:Remove padstack        { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Break up padstack      { action=PadstackBreakup(object) }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 			}
@@ -734,7 +734,7 @@ ha:{
 
 #TODO: replace from lib
 				-
-				ha:Remove subcircuit      { li:action={Tool(Save); Tool(Remove); Tool(Press); Tool(Restore)} }
+				ha:Remove subcircuit      { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to other side     { action=Flip(object) }
 			}
