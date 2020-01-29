@@ -515,13 +515,18 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	draw_virtual_layers(info, &lvly);
 	if ((pcb_render->gui) || (!info->xform_caller->omit_overlay)) {
+		pcb_xform_t tmp;
+		xform_setup(info, &tmp, NULL);
 		draw_rats(info->drawn_area);
 		draw_pins_and_pads(info, component, solder);
 	}
 	draw_ui_layers(info);
 
-	if (pcb_render->gui)
+	if (pcb_render->gui) {
+		pcb_xform_t tmp;
+		xform_setup(info, &tmp, NULL);
 		draw_xor_marks(info);
+	}
 
 	finish:;
 	if (backsilk_grp != NULL) {
