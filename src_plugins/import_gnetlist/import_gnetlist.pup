@@ -1,0 +1,9 @@
+$class import
+$short sch import: run gnetlist
+$long Import gEDA/gschem schematics running gnetlist
+$state works
+$fmt-native no
+$fmt-feature-r import gEDA/gschem schematics running gnetlist
+$package import-net
+default buildin
+autoload 1

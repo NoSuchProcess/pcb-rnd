@@ -1,0 +1,10 @@
+$class import
+$short sch/net import: run custom cmd
+$long Import schematics/netlist by running a commandline
+$state works
+$fmt-native no
+$fmt-feature-r Import schematics by running a commandline
+$fmt-feature-r Import netlist by running a commandline
+$package import-net
+default buildin
+autoload 1

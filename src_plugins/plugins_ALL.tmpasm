@@ -55,11 +55,13 @@ include {../src_plugins/import_calay/Plug.tmpasm}
 include {../src_plugins/import_dsn/Plug.tmpasm}
 include {../src_plugins/import_edif/Plug.tmpasm}
 include {../src_plugins/import_fpcb_nl/Plug.tmpasm}
+include {../src_plugins/import_gnetlist/Plug.tmpasm}
 include {../src_plugins/import_hpgl/Plug.tmpasm}
 include {../src_plugins/import_ipcd356/Plug.tmpasm}
 include {../src_plugins/import_ltspice/Plug.tmpasm}
 include {../src_plugins/import_mentor_sch/Plug.tmpasm}
 include {../src_plugins/import_mucs/Plug.tmpasm}
+include {../src_plugins/import_net_cmd/Plug.tmpasm}
 include {../src_plugins/import_netlist/Plug.tmpasm}
 include {../src_plugins/import_pxm_gd/Plug.tmpasm}
 include {../src_plugins/import_pxm_pnm/Plug.tmpasm}
