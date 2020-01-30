@@ -5,5 +5,5 @@ $state WIP
 $fmt-native no
 $fmt-feature-r import netlist and footprint info from schematics or netlist
 $package import-net
-default disable
+default buildin
 autoload 1

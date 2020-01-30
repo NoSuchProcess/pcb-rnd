@@ -3766,9 +3766,9 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/paths.h \
  librnd/core/compat_fs.h remove.h librnd/core/actions.h \
- ../src_plugins/import_sch/import_sch_conf.h librnd/core/compat_misc.h \
+ ../src_plugins/import_sch2/import_sch_conf.h librnd/core/compat_misc.h \
  obj_rat.h librnd/core/safe_fs.h librnd/core/hid_init.h \
- ../src_plugins/import_sch/import_sch_conf_fields.h
+ ../src_plugins/import_sch2/import_sch_conf_fields.h
 ../src_plugins/import_sch2/import_sch.o: \
  ../src_plugins/import_sch2/import_sch.c ../config.h librnd/config.h \
  librnd/core/error.h librnd/core/global_typedefs.h librnd/core/pcb_bool.h \

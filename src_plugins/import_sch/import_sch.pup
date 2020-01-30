@@ -6,5 +6,6 @@ $fmt-native no
 $fmt-feature-r import netlist and footprint info from gEDA schematics using gnetlist
 $fmt-feature-r import netlist and footprint produced by an external command
 $package import-net
+$dep import_sch2
 default buildin
 autoload 1

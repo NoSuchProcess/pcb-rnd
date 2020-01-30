@@ -46,7 +46,7 @@
 #include <librnd/core/pcb-printf.h>
 #include "remove.h"
 #include <librnd/core/actions.h>
-#include "import_sch_conf.h"
+#include "../src_plugins/import_sch2/import_sch_conf.h"
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
 #include "obj_rat.h"
@@ -397,7 +397,7 @@ int pplg_init_import_sch(void)
 	PCB_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(conf_import_sch, field,isarray,type_name,cpath,cname,desc,flags);
-#include "import_sch_conf_fields.h"
+#include "../src_plugins/import_sch2/import_sch_conf_fields.h"
 
 	/* Compatibility: get some settings from the env */
 	tmp = getenv ("PCB_MAKE_PROGRAM");
