@@ -191,8 +191,8 @@ int pplg_init_import_netlist(void)
 	import_netlist.fmt_support_prio = netlist_support_prio;
 	import_netlist.import           = netlist_import;
 	import_netlist.name             = "gEDA netlist";
-	import_netlist.single_file      = 1;
-
+	import_netlist.single_arg       = 1;
+	import_netlist.all_filenames    = 1;
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
 
 	return 0;

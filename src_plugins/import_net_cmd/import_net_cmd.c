@@ -67,7 +67,8 @@ int pplg_init_import_net_cmd(void)
 	import_net_cmd.fmt_support_prio = net_cmd_support_prio;
 	import_net_cmd.import           = net_cmd_import;
 	import_net_cmd.name             = "sch/netlist by cmd";
-	import_net_cmd.single_file      = 0;
+	import_net_cmd.single_arg       = 0;
+	import_net_cmd.all_filenames    = 0;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_net_cmd);
 
