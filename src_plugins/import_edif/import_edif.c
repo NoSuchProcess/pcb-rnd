@@ -90,6 +90,7 @@ int pplg_init_import_edif(void)
 
 	import_edif.fmt_support_prio = edif_support_prio;
 	import_edif.import           = edif_import;
+	import_edif.name             = "EDIF netlist (flat)";
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
 

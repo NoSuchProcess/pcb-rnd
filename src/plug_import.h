@@ -44,6 +44,8 @@ struct pcb_plug_import_s {
 	pcb_plug_import_t *next;
 	void *plugin_data;
 
+	const char *name;      /* name of the importer */
+
 	/* Check if the plugin supports format fmt. Return 0 if not supported or
 	   an integer priority if supported. The higher the prio is the more likely
 	   the plugin gets the next operation on the file. Base prio should be 100

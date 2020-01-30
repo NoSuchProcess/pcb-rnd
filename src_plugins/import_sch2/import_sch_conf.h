@@ -6,7 +6,8 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_STRING netlister;           /* netlist generator program (command line) */
+			CFT_STRING netlist_cmd;         /* netlist generator program (command line) */
+			CFT_STRING netlist_act;         /* netlist import action to execute */
 			CFT_BOOLEAN verbose;            /* verbose logging of the import code */
 		} import_sch;
 	} plugins;
