@@ -4,9 +4,6 @@
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
  *
- *  This module, dialogs, was written and is Copyright (C) 2017 by Tibor Palinkas
- *  this module is also subject to the GNU GPL as described below
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
