@@ -66,9 +66,16 @@ int edif_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, co
 
 
 extern int ReadEdifNetlist(char *filename);
-static int edif_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
+static int edif_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
-	int ret = ReadEdifNetlist((char *)fn);
+	int ret;
+
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_edif: requires exactly 1 input file name\n");
+		return -1;
+	}
+
+	ret = ReadEdifNetlist((char *)fns[0]);
 	if (ret == 0)
 		pcb_ratspatch_make_edited(PCB);
 	return ret;
@@ -91,6 +98,7 @@ int pplg_init_import_edif(void)
 	import_edif.fmt_support_prio = edif_support_prio;
 	import_edif.import           = edif_import;
 	import_edif.name             = "EDIF netlist (flat)";
+	import_edif.single_file      = 1;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
 

@@ -114,7 +114,7 @@ int pcb_import(pcb_hidlib_t *hidlib, char *filename, unsigned int aspect)
 	if (fp != NULL)
 		fclose(fp);
 
-	return plug->import(plug, aspect, filename);
+	return plug->import(plug, aspect, &filename, 1);
 }
 
 int pcb_import_netlist(pcb_hidlib_t *hidlib, char *filename)

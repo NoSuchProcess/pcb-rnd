@@ -45,7 +45,7 @@ int net_cmd_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp,
 }
 
 
-static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
+static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	return -1;
 }
@@ -67,6 +67,7 @@ int pplg_init_import_net_cmd(void)
 	import_net_cmd.fmt_support_prio = net_cmd_support_prio;
 	import_net_cmd.import           = net_cmd_import;
 	import_net_cmd.name             = "sch/netlist by cmd";
+	import_net_cmd.single_file      = 0;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_net_cmd);
 

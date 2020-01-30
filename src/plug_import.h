@@ -53,7 +53,9 @@ struct pcb_plug_import_s {
 	int (*fmt_support_prio)(pcb_plug_import_t *ctx, unsigned int aspects, FILE *f, const char *filename);
 
 	/* Perform the import; return 0 on success */
-	int (*import)(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn);
+	int (*import)(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns);
+
+	unsigned single_file:1; /* accepts only one file in each ->import() call */
 };
 
 extern pcb_plug_import_t *pcb_plug_import_chain;

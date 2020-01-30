@@ -165,9 +165,13 @@ int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp,
 }
 
 
-static int netlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
+static int netlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
-	return ReadNetlist(fn);
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_netlist: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return ReadNetlist(fns[0]);
 }
 
 int pplg_check_ver_import_netlist(int ver_needed) { return 0; }
@@ -187,6 +191,7 @@ int pplg_init_import_netlist(void)
 	import_netlist.fmt_support_prio = netlist_support_prio;
 	import_netlist.import           = netlist_import;
 	import_netlist.name             = "gEDA netlist";
+	import_netlist.single_file      = 1;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
 

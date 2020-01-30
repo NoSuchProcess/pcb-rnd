@@ -53,7 +53,7 @@ int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp
 	return 100;
 }
 
-static int gnetlist_import_files(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	char **cmd;
 	int n, res, verbose;
@@ -100,11 +100,6 @@ static int gnetlist_import_files(pcb_plug_import_t *ctx, unsigned int aspects, c
 	return res;
 }
 
-static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
-{
-	return gnetlist_import_files(ctx, aspects, &fn, 1);
-}
-
 int pplg_check_ver_import_gnetlist(int ver_needed) { return 0; }
 
 void pplg_uninit_import_gnetlist(void)
@@ -123,6 +118,7 @@ int pplg_init_import_gnetlist(void)
 	import_gnetlist.fmt_support_prio = gnetlist_support_prio;
 	import_gnetlist.import           = gnetlist_import;
 	import_gnetlist.name             = "gEDA sch using gnetlist";
+	import_gnetlist.single_file      = 0;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
 
