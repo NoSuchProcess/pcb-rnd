@@ -6,6 +6,7 @@
 	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 	- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
+	- FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a view list
 - CLEANUP/FEATURE: undo: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
@@ -46,7 +47,6 @@
 - FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Majenko]
 - FEATURE: fontsel: ttf import?
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
-- FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a drc list
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
