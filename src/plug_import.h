@@ -57,6 +57,7 @@ struct pcb_plug_import_s {
 
 	unsigned single_arg:1;     /* accepts only one arg in each ->import() call */
 	unsigned all_filenames:1;  /* if set, all arguments are filenames */
+	unsigned ext_exec:1;       /* if set, import will execute external commands specified by the user (dangerous) */
 };
 
 extern pcb_plug_import_t *pcb_plug_import_chain;

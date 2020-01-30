@@ -107,6 +107,7 @@ int pplg_init_import_net_cmd(void)
 	import_net_cmd.name             = "sch/netlist by cmd";
 	import_net_cmd.single_arg       = 0;
 	import_net_cmd.all_filenames    = 0;
+	import_net_cmd.ext_exec         = 1;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_net_cmd);
 

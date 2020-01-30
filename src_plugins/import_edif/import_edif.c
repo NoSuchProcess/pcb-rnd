@@ -100,6 +100,7 @@ int pplg_init_import_edif(void)
 	import_edif.name             = "EDIF netlist (flat)";
 	import_edif.single_arg       = 1;
 	import_edif.all_filenames    = 1;
+	import_edif.ext_exec         = 0;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
 

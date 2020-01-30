@@ -121,6 +121,7 @@ int pplg_init_import_gnetlist(void)
 	import_gnetlist.name             = "gEDA sch using gnetlist";
 	import_gnetlist.single_arg       = 0;
 	import_gnetlist.all_filenames    = 1;
+	import_gnetlist.ext_exec         = 0;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
 
