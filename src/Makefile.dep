@@ -3769,6 +3769,26 @@
  ../src_plugins/import_sch/import_sch_conf.h librnd/core/compat_misc.h \
  obj_rat.h librnd/core/safe_fs.h librnd/core/hid_init.h \
  ../src_plugins/import_sch/import_sch_conf_fields.h
+../src_plugins/import_sch2/import_sch.o: \
+ ../src_plugins/import_sch2/import_sch.c ../config.h librnd/config.h \
+ librnd/core/error.h librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h librnd/core/actions.h librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h librnd/core/attrib.h librnd/core/box.h \
+ librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ librnd/core/safe_fs.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h \
+ ../src_plugins/import_sch2/import_sch_conf.h \
+ ../src_plugins/import_sch2/import_sch_conf_fields.h
 ../src_plugins/import_tinycad/tinycad.o: \
  ../src_plugins/import_tinycad/tinycad.c ../config.h librnd/config.h \
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
