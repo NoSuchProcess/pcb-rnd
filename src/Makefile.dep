@@ -3484,6 +3484,22 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+../src_plugins/import_gnetlist/import_gnetlist.o: \
+ ../src_plugins/import_gnetlist/import_gnetlist.c ../config.h \
+ librnd/config.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h librnd/core/error.h \
+ librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
+ librnd/core/safe_fs.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h plug_import.h
 ../src_plugins/import_hpgl/hpgl.o: ../src_plugins/import_hpgl/hpgl.c \
  ../config.h librnd/config.h ../src_3rd/libuhpgl/libuhpgl.h \
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/libuhpgl.h board.h \
@@ -3670,6 +3686,22 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h layer.h conf_core.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
+../src_plugins/import_net_cmd/import_net_cmd.o: \
+ ../src_plugins/import_net_cmd/import_net_cmd.c ../config.h \
+ librnd/config.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h librnd/core/error.h \
+ librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
+ librnd/core/safe_fs.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h plug_import.h
 ../src_plugins/import_netlist/import_netlist.o: \
  ../src_plugins/import_netlist/import_netlist.c ../config.h \
  librnd/config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
