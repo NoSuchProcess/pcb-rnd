@@ -38,6 +38,10 @@
 #include "board.h"
 #include "plug_import.h"
 
+#include "import_gnetlist_conf.h"
+
+conf_import_gnetlist_t conf_import_gnetlist;
+
 static pcb_plug_import_t import_gnetlist;
 
 
@@ -65,8 +69,7 @@ static int gnetlist_import_files(pcb_plug_import_t *ctx, unsigned int aspects, c
 
 
 	cmd = malloc((numfns+9) * sizeof(char *));
-TODO("local conf");
-	cmd[0] = "conf_import_sch.plugins.import_sch.gnetlist_program";
+	cmd[0] = conf_import_gnetlist.plugins.import_gnetlist.gnetlist_program;
 	cmd[1] = "-L";
 	cmd[2] = PCBLIBDIR;
 	cmd[3] = "-g";
@@ -107,6 +110,7 @@ int pplg_check_ver_import_gnetlist(int ver_needed) { return 0; }
 void pplg_uninit_import_gnetlist(void)
 {
 	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
+	pcb_conf_unreg_fields("plugins/import_gnetlist/");
 }
 
 int pplg_init_import_gnetlist(void)
@@ -121,6 +125,10 @@ int pplg_init_import_gnetlist(void)
 	import_gnetlist.name             = "gEDA sch using gnetlist";
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	pcb_conf_reg_field(conf_import_gnetlist, field,isarray,type_name,cpath,cname,desc,flags);
+#include "import_gnetlist_conf_fields.h"
 
 	return 0;
 }

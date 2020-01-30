@@ -1,5 +1,7 @@
 put /local/pcb/mod {import_gnetlist}
 append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_gnetlist/import_gnetlist.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/import_gnetlist/import_gnetlist_conf.h}
+
 
 switch /local/pcb/import_gnetlist/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
