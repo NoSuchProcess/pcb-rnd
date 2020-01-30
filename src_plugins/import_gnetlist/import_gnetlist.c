@@ -69,7 +69,7 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 
 
 	cmd = malloc((numfns+9) * sizeof(char *));
-	cmd[0] = conf_import_gnetlist.plugins.import_gnetlist.gnetlist_program;
+	cmd[0] = (char *)conf_import_gnetlist.plugins.import_gnetlist.gnetlist_program; /* won't be free'd */
 	cmd[1] = "-L";
 	cmd[2] = PCBLIBDIR;
 	cmd[3] = "-g";
