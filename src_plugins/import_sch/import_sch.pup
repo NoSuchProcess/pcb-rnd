@@ -1,5 +1,5 @@
 $class import
-$short import sch
+$short import sch v1
 $long Imports footprints and netlist data from the schematics (or some other source).
 $state works
 $fmt-native no

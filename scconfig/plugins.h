@@ -82,7 +82,8 @@ plugin_def("import_mucs",      "import mucs routing",             sbuildin, 1, 0
 plugin_def("import_netlist",   "import netlist",                  sbuildin, 1, 0)
 plugin_def("import_pxm_gd",    "import pixmaps from png/gif/jpg", sbuildin, 1, 0)
 plugin_def("import_pxm_pnm",   "import pixmaps from pnm ",        sbuildin, 1, 0)
-plugin_def("import_sch",       "import sch",                      sbuildin, 1, 0)
+plugin_def("import_sch2",      "import sch v2",                   sdisable, 1, 0)
+plugin_def("import_sch",       "import sch v1",                   sbuildin, 1, 0)
 plugin_def("import_tinycad",   "import tinycad .net",             sbuildin, 1, 0)
 plugin_def("import_ttf",       "import ttf glyphs",               sbuildin, 1, 0)
 

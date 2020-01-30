@@ -1,0 +1,9 @@
+$class import
+$short import sch v2
+$long Imports footprints and netlist data from the schematics (or some other source).
+$state WIP
+$fmt-native no
+$fmt-feature-r import netlist and footprint info from schematics or netlist
+$package import-net
+default disable
+autoload 1
