@@ -30,7 +30,10 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/actions.h>
 
+#include "board.h"
 #include "plug_import.h"
 
 static pcb_plug_import_t import_net_cmd;
@@ -47,6 +50,41 @@ int net_cmd_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp,
 
 static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
+	const char **cmd;
+	int n, res, verbose;
+	fgw_arg_t rs;
+	char *tmpfn = pcb_tempfile_name_new("gnetlist_output");
+
+	PCB_IMPORT_SCH_VERBOSE(verbose);
+
+	if (tmpfn == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Could not create temp file for gnetlist output");
+		return -1;
+	}
+
+
+	cmd = malloc((numfns+1) * sizeof(char *));
+	for(n = 0; n < numfns; n++)
+		cmd[n] = fns[n];
+	cmd[numfns+1] = NULL;
+
+	if (verbose) {
+		pcb_message(PCB_MSG_DEBUG, "import_net_cmd:  running cmd:\n");
+		for(n = 0; n < numfns; n++)
+			pcb_message(PCB_MSG_DEBUG, " %s", cmd[n]);
+		pcb_message(PCB_MSG_DEBUG, "\n");
+	}
+
+	res = pcb_spawnvp(cmd);
+	if (res == 0) {
+		if (verbose)
+			pcb_message(PCB_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
+		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfile, 0);
+	}
+	pcb_unlink(&PCB->hidlib, tmpfn);
+	free(cmd);
+	return res;
+
 	return -1;
 }
 
