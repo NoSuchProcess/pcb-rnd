@@ -65,16 +65,19 @@ ha:{
 				-
 				ha:Import {
 					li:submenu {
-						ha:Import gschem schematics          = {                             action=Import() }
+						ha:Import gschem schematics... (old) = {                             action=Import() }
+						ha:Import gschem schematics... (new) = {                             action=ImportSch() }
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
 						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = {                             action=LoadMentorFrom() }
+						-
 						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
-						ha:Load netlist file                 = {                             action=Load(Netlist) }
-						ha:Load IPC-D-356 netlist            = {                             action=LoadIpc356From() }
 						ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
 						ha:Load routed dsn or ses file       = {                             action=LoadDsnFrom() }
+						-
+						ha:Load netlist file                 = {                             action=Load(Netlist) }
+						ha:Load IPC-D-356 netlist            = {                             action=LoadIpc356From() }
 						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load TinyCAD .net file            = {                             action=LoadTinyCADFrom() }
 						ha:Load Calay .net+.cmp files        = {                             action=LoadCalayFrom() }
