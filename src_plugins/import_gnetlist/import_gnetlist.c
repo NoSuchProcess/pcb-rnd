@@ -30,7 +30,12 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_fs.h>
+#include <librnd/core/conf.h>
+#include <librnd/core/paths.h>
+#include <librnd/core/actions.h>
 
+#include "board.h"
 #include "plug_import.h"
 
 static pcb_plug_import_t import_gnetlist;
@@ -44,10 +49,57 @@ int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp
 	return 100;
 }
 
+static int gnetlist_import_files(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	char **cmd;
+	int n, res, verbose;
+	fgw_arg_t rs;
+	char *tmpfn = pcb_tempfile_name_new("gnetlist_output");
+
+	PCB_IMPORT_SCH_VERBOSE(verbose);
+
+	if (tmpfn == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Could not create temp file for gnetlist output");
+		return -1;
+	}
+
+
+	cmd = malloc((numfns+9) * sizeof(char *));
+TODO("local conf");
+	cmd[0] = "conf_import_sch.plugins.import_sch.gnetlist_program";
+	cmd[1] = "-L";
+	cmd[2] = PCBLIBDIR;
+	cmd[3] = "-g";
+	cmd[4] = "pcbrndfwd";
+	cmd[5] = "-o";
+	cmd[6] = tmpfn;
+	cmd[7] = "--";
+	for(n = 0; n < numfns; n++)
+		cmd[n+8] = pcb_build_fn(&PCB->hidlib, fns[n]);
+	cmd[numfns+8] = NULL;
+
+	if (verbose) {
+		pcb_message(PCB_MSG_DEBUG, "import_gnetlist:  running gnetlist:\n");
+		for(n = 0; n < numfns+8; n++)
+			pcb_message(PCB_MSG_DEBUG, " %s", cmd[n]);
+		pcb_message(PCB_MSG_DEBUG, "\n");
+	}
+
+	res = pcb_spawnvp((const char **)cmd);
+	if (res == 0) {
+		if (verbose)
+			pcb_message(PCB_MSG_DEBUG, "pcb_gnetlist:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
+		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfile, 0);
+	}
+	for(n = 0; n < numfns; n++)
+		free(cmd[n+8]);
+	pcb_unlink(&PCB->hidlib, tmpfn);
+	return res;
+}
 
 static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char *fn)
 {
-	return -1;
+	return gnetlist_import_files(ctx, aspects, &fn, 1);
 }
 
 int pplg_check_ver_import_gnetlist(int ver_needed) { return 0; }

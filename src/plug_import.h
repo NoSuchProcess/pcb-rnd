@@ -64,5 +64,17 @@ void pcb_import_uninit(void);
 int pcb_import(pcb_hidlib_t *hidlib, char *filename, unsigned int aspect);
 int pcb_import_netlist(pcb_hidlib_t *, char *);
 
+/*** macros used by import plugins ***/
+
+/* cross-query import_sch verbose setting without introducing plugin dependency;
+   sets the value in verbose if conf node present, else sets it ti 0 */
+#define PCB_IMPORT_SCH_VERBOSE(verbose) \
+do { \
+	conf_native_t *vn; \
+	verbose = 0; \
+	vn = pcb_conf_get_field("plugins/import_sch/verbose"); \
+	if ((vn != NULL) && (vn->type == CFN_BOOLEAN)) \
+		verbose = *(vn->val.boolean); \
+} while(0)
 
 #endif
