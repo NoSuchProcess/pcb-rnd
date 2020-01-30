@@ -97,6 +97,7 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	for(n = 0; n < numfns; n++)
 		free(cmd[n+8]);
 	pcb_unlink(&PCB->hidlib, tmpfn);
+	free(cmd);
 	return res;
 }
 
