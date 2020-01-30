@@ -3499,7 +3499,19 @@
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h plug_import.h
+ ../src_3rd/genlist/gendlist.h librnd/core/compat_fs.h \
+ librnd/core/paths.h librnd/core/actions.h librnd/core/hid.h \
+ librnd/core/attrib.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer.h \
+ librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
+ global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
+ obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h layer_grp.h rats_patch.h board.h \
+ librnd/core/hidlib.h librnd/core/global_typedefs.h plug_import.h \
+ ../src_plugins/import_gnetlist/import_gnetlist_conf.h \
+ ../src_plugins/import_gnetlist/import_gnetlist_conf_fields.h
 ../src_plugins/import_hpgl/hpgl.o: ../src_plugins/import_hpgl/hpgl.c \
  ../config.h librnd/config.h ../src_3rd/libuhpgl/libuhpgl.h \
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/libuhpgl.h board.h \
