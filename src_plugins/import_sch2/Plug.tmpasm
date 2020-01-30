@@ -2,7 +2,7 @@ put /local/pcb/mod {import_sch2}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_sch2/import_sch.o @]
 put /local/pcb/mod/CONF {$(PLUGDIR)/import_sch2/import_sch_conf.h}
 
-switch /local/pcb/import_sch/controls
+switch /local/pcb/import_sch2/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;
