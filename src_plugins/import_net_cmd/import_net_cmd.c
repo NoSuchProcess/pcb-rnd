@@ -53,7 +53,7 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	const char **cmd;
 	int n, res, verbose;
 	fgw_arg_t rs;
-	char *tmpfn = pcb_tempfile_name_new("gnetlist_output");
+	char *outfile, *tmpfn = pcb_tempfile_name_new("gnetlist_output");
 
 	PCB_IMPORT_SCH_VERBOSE(verbose);
 
@@ -62,6 +62,7 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 		return -1;
 	}
 
+	outfile = tmpfn;
 
 	cmd = malloc((numfns+1) * sizeof(char *));
 	for(n = 0; n < numfns; n++)
@@ -75,13 +76,17 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 		pcb_message(PCB_MSG_DEBUG, "\n");
 	}
 
+
+	pcb_setenv("IMPORT_NET_CMD_PCB", PCB->hidlib.filename, 1);
+	pcb_setenv("IMPORT_NET_CMD_OUT", outfile, 1);
 	res = pcb_spawnvp(cmd);
 	if (res == 0) {
 		if (verbose)
 			pcb_message(PCB_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
 		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfile, 0);
 	}
-	pcb_unlink(&PCB->hidlib, tmpfn);
+	if (tmpfn != NULL)
+		pcb_unlink(&PCB->hidlib, tmpfn);
 	free(cmd);
 	return res;
 
