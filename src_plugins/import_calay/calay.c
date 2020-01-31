@@ -34,6 +34,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
@@ -224,6 +225,25 @@ fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static int calay_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+{
+	if (aspects != IMPORT_ASPECT_NETLIST)
+		return 0; /* only pure netlist import is supported */
+	return 20;
+}
+
+
+static int calay_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_calay: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return pcb_actionva(&PCB->hidlib, "LoadCalayFrom", fns[0], NULL);
+}
+
+static pcb_plug_import_t import_calay;
+
 pcb_action_t calay_action_list[] = {
 	{"LoadCalayFrom", pcb_act_LoadCalayFrom, pcb_acth_LoadCalayFrom, pcb_acts_LoadCalayFrom}
 };
@@ -233,11 +253,27 @@ int pplg_check_ver_import_calay(int ver_needed) { return 0; }
 void pplg_uninit_import_calay(void)
 {
 	pcb_remove_actions_by_cookie(calay_cookie);
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
 }
 
 int pplg_init_import_calay(void)
 {
 	PCB_API_CHK_VER;
+
+	/* register the IO hook */
+	import_calay.plugin_data = NULL;
+
+	import_calay.fmt_support_prio = calay_support_prio;
+	import_calay.import           = calay_import;
+	import_calay.name             = "calay";
+	import_calay.desc             = "schamtics from calay";
+	import_calay.single_arg       = 1;
+	import_calay.all_filenames    = 1;
+	import_calay.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
+
+
 	PCB_REGISTER_ACTIONS(calay_action_list, calay_cookie)
 	return 0;
 }
