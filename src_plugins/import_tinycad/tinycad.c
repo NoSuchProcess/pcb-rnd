@@ -213,11 +213,11 @@ static int tinycad_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	return tinycad_load(fns[0]);
 }
 
+static pcb_plug_import_t import_tinycad;
+
 pcb_action_t tinycad_action_list[] = {
 	{"LoadTinycadFrom", pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
 };
-
-static pcb_plug_import_t import_tinycad;
 
 int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
 
