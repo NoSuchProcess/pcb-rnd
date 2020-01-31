@@ -53,21 +53,30 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	const char **cmd;
 	int n, res, verbose;
 	fgw_arg_t rs;
-	char *outfile, *tmpfn = pcb_tempfile_name_new("gnetlist_output");
+	char *outfn, *tmpfn = NULL;
 
 	PCB_IMPORT_SCH_VERBOSE(verbose);
 
-	if (tmpfn == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Could not create temp file for gnetlist output");
+	if (numfns < 1) {
+		pcb_message(PCB_MSG_ERROR, "net_cmd_import: the first argument must be the output file name or -");
 		return -1;
 	}
-
-	outfile = tmpfn;
 
 	cmd = malloc((numfns+1) * sizeof(char *));
 	for(n = 0; n < numfns; n++)
 		cmd[n] = fns[n];
 	cmd[numfns+1] = NULL;
+
+	outfn = cmd[0];
+	if ((outfn == NULL) || (*outfn == '\0')) {
+		pcb_message(PCB_MSG_ERROR, "net_cmd_import: Could not create temp file for the netlist output");
+		return -1;
+	}
+	if ((outfn[0] == '-') && (outfn[1] == '\0')) {
+		tmpfn = pcb_tempfile_name_new("net_cmd_output");
+		outfn = tmpfn;
+	}
+
 
 	if (verbose) {
 		pcb_message(PCB_MSG_DEBUG, "import_net_cmd:  running cmd:\n");
@@ -78,19 +87,17 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 
 
 	pcb_setenv("IMPORT_NET_CMD_PCB", PCB->hidlib.filename, 1);
-	pcb_setenv("IMPORT_NET_CMD_OUT", outfile, 1);
-	res = pcb_spawnvp(cmd);
+	pcb_setenv("IMPORT_NET_CMD_OUT", outfn, 1);
+	res = pcb_spawnvp(cmd+1);
 	if (res == 0) {
 		if (verbose)
-			pcb_message(PCB_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
-		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfile, 0);
+			pcb_message(PCB_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, outfn='%s'\n", outfn);
+		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, outfn, 0);
 	}
 	if (tmpfn != NULL)
-		pcb_unlink(&PCB->hidlib, tmpfn);
+		pcb_tempfile_unlink(tmpfn);
 	free(cmd);
 	return res;
-
-	return -1;
 }
 
 int pplg_check_ver_import_net_cmd(int ver_needed) { return 0; }
