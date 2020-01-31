@@ -106,14 +106,25 @@ static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 static void isch_pcb2dlg(void)
 {
-	int n, len;
+	int n, len, tab = 0;
 	pcb_conf_listitem_t *ci;
+	const char *tname = conf_import_sch.plugins.import_sch.import_fmt;
+
+	if (tname != NULL) {
+		for(n = 0; n < isch_ctx.len; n++) {
+			if (pcb_strcasecmp(isch_ctx.inames[n], tname) == 0) {
+				tab = n;
+				break;
+			}
+		}
+	}
 
 	len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
 	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
 		PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
 
-	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng);
+	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wfmt, lng, tab);
+	isch_switch_fmt(tab);
 }
 
 static void isch_add_tab(pcb_plug_import_t *p)
