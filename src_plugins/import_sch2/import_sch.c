@@ -69,8 +69,9 @@ static int do_import(void)
 static const char pcb_acts_ImportSch[] =
 	"ImportSch()\n"
 	"ImportSch(reimport)\n";
-static const char pcb_acth_ImportSch[] = "Import schematics.";
-/* DOC: import.html */
+static const char pcb_acth_ImportSch[] = "Import schematics/netlist.";
+TODO("Write doc:")
+/* DOC: importsch.html */
 static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = "reimport";
