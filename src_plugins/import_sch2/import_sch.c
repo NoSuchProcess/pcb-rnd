@@ -65,10 +65,49 @@ static int do_import(void)
 	return res;
 }
 
+static int do_setup(int argc, fgw_arg_t *argv)
+{
+	int n;
+	pcb_plug_import_t *p;
+
+	if (argc < 1) {
+		pcb_message(PCB_MSG_ERROR, "ImportSch: setup needs importer name\n");
+		return -1;
+	}
+
+	for(n = 0; n < argc; n++) {
+		if (fgw_arg_conv(&pcb_fgw, &argv[n], FGW_STR) != 0) {
+			pcb_message(PCB_MSG_ERROR, "ImportSch: failed to convert argument %d to string\n", n+1);
+			return -1;
+		}
+	}
+
+	p = pcb_lookup_importer(argv[0].val.str);
+	if (p == NULL) {
+		pcb_message(PCB_MSG_ERROR, "ImportSch: importer not found: '%s'\n", argv[0].val.str);
+		return -1;
+	}
+
+	if (p->single_arg && (argc != 2)) {
+		pcb_message(PCB_MSG_ERROR, "ImportSch: importer '%s' requires exactly one file name argument\n", argv[0].val.str);
+		return -1;
+	}
+	else if (p->all_filenames && (argc < 2)) {
+		pcb_message(PCB_MSG_ERROR, "ImportSch: importer '%s' requires at least one file name argument\n", argv[0].val.str);
+		return -1;
+	}
+
+	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, argv[0].val.str, POL_OVERWRITE);
+	for(n = 1; n < argc; n++)
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", n-1, argv[n].val.str, POL_OVERWRITE);
+
+	return 0;
+}
 
 static const char pcb_acts_ImportSch[] =
 	"ImportSch()\n"
-	"ImportSch(reimport)\n";
+	"ImportSch(reimport)\n"
+	"ImportSch(setup, importer, [args...])\n";
 static const char pcb_acth_ImportSch[] = "Import schematics/netlist.";
 TODO("Write doc:")
 /* DOC: importsch.html */
@@ -80,6 +119,10 @@ static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (strcmp(cmd, "reimport") == 0) {
 		PCB_ACT_IRES(do_import());
+		return 0;
+	}
+	if (strcmp(cmd, "setup") == 0) {
+		PCB_ACT_IRES(do_setup(argc-2, argv+2));
 		return 0;
 	}
 
