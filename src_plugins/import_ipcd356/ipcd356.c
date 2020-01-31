@@ -441,9 +441,33 @@ pcb_action_t import_ipcd356_action_list[] = {
 
 static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
-	if (aspects != IMPORT_ASPECT_NETLIST)
+	FILE *f;
+
+	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported */
-	return 20;
+
+	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	if (f == NULL)
+		return 0;
+
+	while(!feof(f)) {
+		char *s, line[1024];
+		s = fgets(line, sizeof(line), f);
+
+		if ((strncmp(s, "999", 3) == 0) && (isspace(s[3]))) {
+			fclose(f);
+			return 100;
+		}
+		if ((strncmp(s, "327", 3) != 0) && (strncmp(s, "317", 3) != 0))
+			continue;
+		if (s[19] == ' ') {
+			fclose(f);
+			return 100;
+		}
+	}
+
+	fclose(f);
+	return 0;
 }
 
 
