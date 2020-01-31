@@ -318,6 +318,4 @@ int pplg_init_cam(void)
 
 	pcb_hid_register_hid(&export_cam_hid);
 	return 0;
-
-	return 0;
 }
