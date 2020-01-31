@@ -118,7 +118,8 @@ int pplg_init_import_gnetlist(void)
 
 	import_gnetlist.fmt_support_prio = gnetlist_support_prio;
 	import_gnetlist.import           = gnetlist_import;
-	import_gnetlist.name             = "gEDA sch using gnetlist";
+	import_gnetlist.name             = "gnetlist";
+	import_gnetlist.desc             = "gEDA sch using gnetlist";
 	import_gnetlist.single_arg       = 0;
 	import_gnetlist.all_filenames    = 1;
 	import_gnetlist.ext_exec         = 0;

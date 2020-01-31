@@ -31,6 +31,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
 
+#include "plug_import.h"
 #include "import_sch_conf.h"
 
 conf_import_sch_t conf_import_sch;
@@ -41,6 +42,19 @@ static const char pcb_acth_ImportSch[] = "Import schematics.";
 /* DOC: import.html */
 static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	if (argc == 1) {
+		const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
+		pcb_plug_import_t *p;
+
+		if ((imp_name == NULL) || (*imp_name == '\0')) {
+			TODO("invoke the GUI instead\n");
+			pcb_message(PCB_MSG_ERROR, "import_sch2: missing conf\n");
+			PCB_ACT_IRES(1);
+			return 0;
+		}
+		p = pcb_lookup_importer(imp_name);
+		pcb_message(PCB_MSG_ERROR, "import_sch2: reimport with %s -> %p\n", imp_name, p);
+	}
 	pcb_message(PCB_MSG_ERROR, "import_sch2: not yet implemented\n");
 	PCB_ACT_IRES(0);
 	return 0;

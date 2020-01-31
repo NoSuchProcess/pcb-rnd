@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,2005,2006 Thomas Nau
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@ struct pcb_plug_import_s {
 	pcb_plug_import_t *next;
 	void *plugin_data;
 
-	const char *name;      /* name of the importer */
+	const char *name;      /* short name of the importer, also identifies the importer in import_sch */
+	const char *desc;      /* long, human readable description of the importer */
 
 	/* Check if the plugin supports format fmt. Return 0 if not supported or
 	   an integer priority if supported. The higher the prio is the more likely
