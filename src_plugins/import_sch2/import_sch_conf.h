@@ -7,6 +7,7 @@ typedef struct {
 	const struct {
 		const struct {
 			CFT_STRING import_fmt;          /* name of the input format */
+			CFT_LIST args;                  /* import_fmt arguments, typically file names */
 			CFT_BOOLEAN verbose;            /* verbose logging of the import code */
 
 			/* obsolete: temporary compatibility with import_sch for the transition period */
