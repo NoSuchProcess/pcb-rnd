@@ -50,8 +50,32 @@ static pcb_plug_import_t import_gnetlist;
 
 int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
-	if (aspects != IMPORT_ASPECT_NETLIST)
-		return 0; /* only pure netlist import is supported */
+	FILE *f;
+	char line[128], *s;
+	int spc = 0;
+
+	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs < 1))
+		return 0; /* only pure netlist import is supported, only if there are files */
+
+	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	if (f == NULL)
+		return 0;
+
+	line[0] = '\0';
+	fgets(line, sizeof(line), f);
+	fclose(f);
+
+	/* must start with "v ", followed by digits and one space */
+	if ((line[0] != 'v') || (line[1] != ' '))
+		return 0;
+	for(s = line+2; *s != '\0'; s++) {
+		if ((*s == '\r') || (*s == '\n')) break;
+		else if (*s == ' ') spc++;
+		else if (!isdigit(*s))
+			return 0;
+	}
+	if (spc != 1)
+		return 0;
 
 	return 100;
 }
