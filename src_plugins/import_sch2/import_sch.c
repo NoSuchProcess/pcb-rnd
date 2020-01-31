@@ -67,18 +67,23 @@ static int do_import(void)
 
 
 static const char pcb_acts_ImportSch[] =
-	"ImportSch()\n";
+	"ImportSch()\n"
+	"ImportSch(reimport)\n";
 static const char pcb_acth_ImportSch[] = "Import schematics.";
 /* DOC: import.html */
 static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (argc == 1) { /* no arg means: shorthand for re-import from stored conf */
+	const char *cmd = "reimport";
+
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, ImportSch, cmd = argv[1].val.str);
+
+	if (strcmp(cmd, "reimport") == 0) {
 		PCB_ACT_IRES(do_import());
 		return 0;
 	}
 
-	pcb_message(PCB_MSG_ERROR, "import_sch2: not yet implemented\n");
-	PCB_ACT_IRES(0);
+	PCB_ACT_FAIL(ImportSch);
+	PCB_ACT_IRES(1);
 	return 0;
 }
 
