@@ -48,7 +48,7 @@ conf_import_gnetlist_t conf_import_gnetlist;
 static pcb_plug_import_t import_gnetlist;
 
 
-int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */

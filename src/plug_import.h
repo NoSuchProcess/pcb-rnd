@@ -51,7 +51,7 @@ struct pcb_plug_import_s {
 	   an integer priority if supported. The higher the prio is the more likely
 	   the plugin gets the next operation on the file. Base prio should be 100
 	   for native formats. Return non-0 only if all aspects are supported. */
-	int (*fmt_support_prio)(pcb_plug_import_t *ctx, unsigned int aspects, FILE *f, const char *filename);
+	int (*fmt_support_prio)(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs);
 
 	/* Perform the import; return 0 on success */
 	int (*import)(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs);

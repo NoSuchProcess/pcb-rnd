@@ -40,15 +40,17 @@
 
 static pcb_plug_import_t import_edif;
 
-int edif_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+int edif_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	char buf[65];
 	int len;
 	char *p;
+	FILE *fp;
 
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */
 
+	fp = pcb_fopen(args[0], "r");
 	if (fp == NULL)
 		return 0; /* only importing from a file is supported */
 
@@ -57,9 +59,12 @@ int edif_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, co
 	buf[len] = '\0';
 	for(p = buf; *p != '\0'; p++)
 		*p = tolower((int) *p);
-	if (strstr(buf, "edif") != NULL)
+	if (strstr(buf, "edif") != NULL) {
+		fclose(fp);
 		return 100;
+	}
 
+	fclose(fp);
 	/* Else don't even attempt to load it */
 	return 0;
 }

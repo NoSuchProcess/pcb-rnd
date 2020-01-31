@@ -155,7 +155,7 @@ static int ReadNetlist(const char *filename)
 	return 0;
 }
 
-static int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+static int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */

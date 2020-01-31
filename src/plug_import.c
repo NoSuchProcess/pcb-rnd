@@ -42,6 +42,7 @@
 #include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_fs.h>
 
 
 pcb_plug_import_t *pcb_plug_import_chain = NULL;
@@ -52,14 +53,13 @@ typedef struct {
 } find_t;
 
 /* Find the plugin that offers the highest write prio for the format */
-static pcb_plug_import_t *find_importer(unsigned int aspects, FILE *f, const char *filename)
+static pcb_plug_import_t *find_importer(unsigned int aspects, const char **args, int numargs)
 {
 	find_t available[32]; /* wish we had more than 32 import plugins... */
 	int n, len = 0, best = 0, bestidx = -1;
 
 #define cb_append(pl, pr) \
 	do { \
-		rewind(f); \
 		if (pr > 0) { \
 			assert(len < sizeof(available)/sizeof(available[0])); \
 			available[len].plug = pl; \
@@ -67,10 +67,8 @@ static pcb_plug_import_t *find_importer(unsigned int aspects, FILE *f, const cha
 		} \
 	} while(0)
 
-	if (f == NULL)
-		return NULL;
 
-	PCB_HOOK_CALL_ALL(pcb_plug_import_t, pcb_plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, f, filename));
+	PCB_HOOK_CALL_ALL(pcb_plug_import_t, pcb_plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, args, numargs));
 	if (len == 0)
 		return NULL;
 
@@ -103,27 +101,22 @@ pcb_plug_import_t *pcb_lookup_importer(const char *name)
 int pcb_import(pcb_hidlib_t *hidlib, const char *filename, unsigned int aspect)
 {
 	pcb_plug_import_t *plug;
-	FILE *fp;
+
+	if (!pcb_file_readable(filename)) {
+		pcb_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s - might be related: can't open %s for reading\n", filename, filename);
+		return 1;
+	}
 
 	if (!filename) {
 		pcb_message(PCB_MSG_ERROR, "Error: need a file name for pcb_import_netlist()\n");
 		return 1; /* nothing to do */
 	}
-	fp = pcb_fopen(hidlib, filename, "r");
 
-	plug = find_importer(aspect, fp, filename);
+	plug = find_importer(aspect, &filename, 1);
 	if (plug == NULL) {
-		if (fp != NULL) {
-			pcb_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s\n", filename);
-			fclose(fp);
-		}
-		else
-			pcb_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s - might be related: can't open %s for reading\n", filename, filename);
+		pcb_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s\n", filename);
 		return 1;
 	}
-
-	if (fp != NULL)
-		fclose(fp);
 
 	return plug->import(plug, aspect, &filename, 1);
 }

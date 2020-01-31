@@ -439,7 +439,7 @@ pcb_action_t import_ipcd356_action_list[] = {
 	{"LoadIpc356From", pcb_act_LoadIpc356From, pcb_acth_LoadIpc356From, pcb_acts_LoadIpc356From}
 };
 
-static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */
