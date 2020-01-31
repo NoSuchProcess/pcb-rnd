@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  LTSpice import HID
- *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
  *  Copyright (C) 2017 Erich Heinzle (non passive footprint parsing)
  *
  *  This program is free software; you can redistribute it and/or modify
