@@ -36,6 +36,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
@@ -238,3 +239,43 @@ fgw_error_t pcb_act_LoadeeschemaFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+static int eeschema_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+{
+	if (aspects != IMPORT_ASPECT_NETLIST)
+		return 0; /* only pure netlist import is supported */
+	return 20;
+}
+
+
+static int eeschema_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_eeschema: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return eeschema_load(fns[0]);
+}
+
+static pcb_plug_import_t import_eeschema;
+
+void pcb_eeschema_uninit(void)
+{
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_eeschema);
+}
+
+void pcb_eeschema_init(void)
+{
+	/* register the IO hook */
+	import_eeschema.plugin_data = NULL;
+
+	import_eeschema.fmt_support_prio = eeschema_support_prio;
+	import_eeschema.import           = eeschema_import;
+	import_eeschema.name             = "KiCAD/eeschema";
+	import_eeschema.desc             = "schamtics from KiCAD's eeschema";
+	import_eeschema.single_arg       = 1;
+	import_eeschema.all_filenames    = 1;
+	import_eeschema.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_eeschema);
+}
