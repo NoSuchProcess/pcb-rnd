@@ -39,12 +39,12 @@
 
 conf_import_sch_t conf_import_sch;
 
-
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	char **inames;
 	int len;
 	int wfmt, wtab;
+	int warg[MAX_ARGS], warg_box[MAX_ARGS], warg_button[MAX_ARGS];
 	int active; /* already open - allow only one instance */
 } isch_ctx_t;
 
@@ -78,36 +78,10 @@ static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 }
 
 
-static void isch_add_arg(int slot, int file)
-{
-	if (file) {
-		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
-			PCB_DAD_STRING(isch_ctx.dlg);
-			PCB_DAD_BUTTON(isch_ctx.dlg, "browse");
-		PCB_DAD_END(isch_ctx.dlg);
-	}
-	else
-		PCB_DAD_STRING(isch_ctx.dlg);
-}
-
 static void isch_add_tab(pcb_plug_import_t *p)
 {
-	int n, len;
-
-	if (!p->single_arg) {
-		len = MAX_ARGS;
-		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
-			PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
-	}
-	else {
-		len = 1;
-		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
-	}
-
-	PCB_DAD_LABEL(isch_ctx.dlg, p->desc);
-	for(n = 0; n < len; n++)
-		isch_add_arg(n, p->all_filenames);
-
+	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
+		PCB_DAD_LABEL(isch_ctx.dlg, p->desc);
 	PCB_DAD_END(isch_ctx.dlg);
 }
 
@@ -139,7 +113,7 @@ static int do_dialog(void)
 		PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
 
 		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* format box */
-			PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+			PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
 				PCB_DAD_LABEL(isch_ctx.dlg, "Format:");
 				PCB_DAD_ENUM(isch_ctx.dlg, isch_ctx.inames);
@@ -147,15 +121,26 @@ static int do_dialog(void)
 					PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_fmt_chg_cb);
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BEGIN_TABBED(isch_ctx.dlg, isch_ctx.inames);
-				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
+				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_HIDE_TABLAB);
 				isch_ctx.wtab = PCB_DAD_CURRENT(isch_ctx.dlg);
 				for(n = 0; n < len; n++)
 					isch_add_tab(pa[n]);
 			PCB_DAD_END(isch_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
+				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				for(n = 0; n < len; n++) {
+					PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
+						isch_ctx.warg_box[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
+						PCB_DAD_STRING(isch_ctx.dlg);
+							isch_ctx.warg[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
+						PCB_DAD_BUTTON(isch_ctx.dlg, "browse");
+							isch_ctx.warg_button[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
+					PCB_DAD_END(isch_ctx.dlg);
+				}
+			PCB_DAD_END(isch_ctx.dlg);
 		PCB_DAD_END(isch_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* generic settings */
-			PCB_DAD_LABEL(isch_ctx.dlg, "Generic settings");
 		PCB_DAD_END(isch_ctx.dlg);
 		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg); /* bottom buttons */
 			PCB_DAD_BUTTON(isch_ctx.dlg, "Import!");
