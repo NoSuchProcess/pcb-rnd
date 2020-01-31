@@ -224,6 +224,7 @@ int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
 void pplg_uninit_import_tinycad(void)
 {
 	pcb_remove_actions_by_cookie(tinycad_cookie);
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
 }
 
 int pplg_init_import_tinycad(void)
