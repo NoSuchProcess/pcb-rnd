@@ -9,5 +9,16 @@ file (on the <i>design</i> role of the conf system) and consists of:
 	<li> a list of arguments to the importer (strings, most often input file names)
 	<li> misc settings, e.g. verbosity of the import
 </ul>
-
+<p>
+When called without argument, or with the <arg>reimport</arg> the action will
+read the config and perform an import.
+<p>
+When called with <arg>setup</arg>, the action will store the configuration
+read from the rest of the arguments:
+<pre>
+	<act>ImportSch</act>(setup, <arg>importer</arg>, <arg>args...</arg>)
+</pre>
+<p>
+There can be zero or more arguments following the importer. The syntax and
+meaning of those arguments are specific to the importer.
 
