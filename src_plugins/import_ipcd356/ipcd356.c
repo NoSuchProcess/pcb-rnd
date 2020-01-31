@@ -44,6 +44,8 @@
 
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 
+#include "plug_import.h"
+
 static const char *ipcd356_cookie = "ipcd356 importer";
 
 static void set_src(pcb_attribute_list_t *a, const char *fn, long lineno)
@@ -437,16 +439,52 @@ pcb_action_t import_ipcd356_action_list[] = {
 	{"LoadIpc356From", pcb_act_LoadIpc356From, pcb_acth_LoadIpc356From, pcb_acts_LoadIpc356From}
 };
 
+static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+{
+	if (aspects != IMPORT_ASPECT_NETLIST)
+		return 0; /* only pure netlist import is supported */
+	return 20;
+}
+
+
+static int ipcd356_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_ipcd356: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return pcb_actionva(&PCB->hidlib, "LoadIpc356From", fns[0], NULL);
+}
+
+static pcb_plug_import_t import_ipcd356;
+
+
 int pplg_check_ver_import_ipcd356(int ver_needed) { return 0; }
 
 void pplg_uninit_import_ipcd356(void)
 {
 	pcb_remove_actions_by_cookie(ipcd356_cookie);
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
 }
 
 int pplg_init_import_ipcd356(void)
 {
 	PCB_API_CHK_VER;
+
+	/* register the IO hook */
+	import_ipcd356.plugin_data = NULL;
+
+	import_ipcd356.fmt_support_prio = ipcd356_support_prio;
+	import_ipcd356.import           = ipcd356_import;
+	import_ipcd356.name             = "IPC-D-356";
+	import_ipcd356.desc             = "nets and pads from an IPC-D-356 test file";
+	import_ipcd356.single_arg       = 1;
+	import_ipcd356.all_filenames    = 1;
+	import_ipcd356.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
+
+
 	PCB_REGISTER_ACTIONS(import_ipcd356_action_list, ipcd356_cookie);
 	return 0;
 }
