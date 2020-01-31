@@ -227,9 +227,24 @@ fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static int calay_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
+	FILE *f;
+
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */
-	return 20;
+
+	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	if (f == NULL)
+		return 0;
+
+	{
+		char *s, line[16];
+
+		s = fgets(line, sizeof(line), f);
+		fclose(f);
+		if ((s != NULL) && (s[0] == '/') && (s[7] == ' '))
+			return 100;
+	}
+	return 0;
 }
 
 
