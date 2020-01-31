@@ -35,6 +35,8 @@
 
 #include "board.h"
 #include "data.h"
+#include "plug_import.h"
+
 #include <librnd/core/error.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
@@ -194,9 +196,28 @@ fgw_error_t pcb_act_LoadtinycadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return tinycad_load(fname);
 }
 
+static int tinycad_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+{
+	if (aspects != IMPORT_ASPECT_NETLIST)
+		return 0; /* only pure netlist import is supported */
+	return 20;
+}
+
+
+static int tinycad_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_tinycad: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return tinycad_load(fns[0]);
+}
+
 pcb_action_t tinycad_action_list[] = {
 	{"LoadTinycadFrom", pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
 };
+
+static pcb_plug_import_t import_tinycad;
 
 int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
 
@@ -208,6 +229,20 @@ void pplg_uninit_import_tinycad(void)
 int pplg_init_import_tinycad(void)
 {
 	PCB_API_CHK_VER;
+
+	/* register the IO hook */
+	import_tinycad.plugin_data = NULL;
+
+	import_tinycad.fmt_support_prio = tinycad_support_prio;
+	import_tinycad.import           = tinycad_import;
+	import_tinycad.name             = "tinycad";
+	import_tinycad.desc             = "schamtics from tinycad";
+	import_tinycad.single_arg       = 1;
+	import_tinycad.all_filenames    = 1;
+	import_tinycad.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
+
 	PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
 	return 0;
 }
