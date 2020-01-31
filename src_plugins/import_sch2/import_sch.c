@@ -39,7 +39,7 @@ conf_import_sch_t conf_import_sch;
 static int do_import(void)
 {
 	const char **a = NULL;
-	int len, n;
+	int len, n, res;
 	pcb_conf_listitem_t *ci;
 	const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 	pcb_plug_import_t *p;
@@ -60,9 +60,9 @@ static int do_import(void)
 	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
 		a[n] = ci->val.string[0];
 	pcb_message(PCB_MSG_ERROR, "import_sch2: reimport with %s -> %p\n", imp_name, p);
-	p->import(p, IMPORT_ASPECT_NETLIST, a, len);
+	res = p->import(p, IMPORT_ASPECT_NETLIST, a, len);
 	free(a);
-	return 0;
+	return res;
 }
 
 
