@@ -203,7 +203,7 @@ int io_tedax_fp_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f)
 	return 0;
 }
 
-static int io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
+int pcb_io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	char line[515], *s;
 	int n;
@@ -250,6 +250,7 @@ void pplg_uninit_io_tedax(void)
 	pcb_remove_actions_by_cookie(tedax_cookie);
 	tedax_etest_uninit();
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
+	pcb_tedax_net_uninit();
 }
 
 int pplg_init_io_tedax(void)
@@ -259,7 +260,7 @@ int pplg_init_io_tedax(void)
 	/* register the IO hook */
 	io_tedax.plugin_data = NULL;
 	io_tedax.fmt_support_prio = io_tedax_fmt;
-	io_tedax.test_parse = io_tedax_test_parse;
+	io_tedax.test_parse = pcb_io_tedax_test_parse;
 	io_tedax.parse_pcb = io_tedax_parse_pcb;
 	io_tedax.parse_footprint = io_tedax_parse_element;
 	io_tedax.parse_font = NULL;
@@ -280,5 +281,7 @@ int pplg_init_io_tedax(void)
 	tedax_etest_init();
 
 	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
+	pcb_tedax_net_init();
+
 	return 0;
 }

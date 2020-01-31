@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  tedax IO plugin - netlist import
- *  pcb-rnd Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,10 @@
 
 #include "board.h"
 #include "data.h"
+#include "plug_import.h"
+#include "plug_io.h"
 #include <librnd/core/error.h>
+#include <librnd/core/plugins.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
@@ -240,3 +243,56 @@ int tedax_net_save(pcb_board_t *pcb, const char *netlistid, const char *fn)
 	return res;
 }
 
+
+extern int pcb_io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f);
+
+static int tedaxnet_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
+{
+	FILE *f;
+	int res;
+
+	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
+		return 0; /* only pure netlist import is supported from a single file*/
+
+
+	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	if (f == NULL)
+		return 0;
+
+	res = pcb_io_tedax_test_parse(NULL, 0, args[0], f);
+	fclose(f);
+	return res ? 100 : 0;
+}
+
+
+static int tedaxnet_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
+{
+	if (numargs != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_tedaxnet: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return tedax_net_load(args[0], 1, NULL, 0);
+}
+
+static pcb_plug_import_t import_tedaxnet;
+
+void pcb_tedax_net_uninit(void)
+{
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tedaxnet);
+}
+
+void pcb_tedax_net_init(void)
+{
+	/* register the IO hook */
+	import_tedaxnet.plugin_data = NULL;
+
+	import_tedaxnet.fmt_support_prio = tedaxnet_support_prio;
+	import_tedaxnet.import           = tedaxnet_import;
+	import_tedaxnet.name             = "tEDAx netlist";
+	import_tedaxnet.desc             = "netlist+footprints from tEDAx";
+	import_tedaxnet.single_arg       = 1;
+	import_tedaxnet.all_filenames    = 1;
+	import_tedaxnet.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tedaxnet);
+}
