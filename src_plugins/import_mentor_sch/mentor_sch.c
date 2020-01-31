@@ -34,6 +34,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
@@ -279,6 +280,26 @@ fgw_error_t pcb_act_LoadMentorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return mentor_sch_load(fname);
 }
 
+static int mentor_sch_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+{
+	if (aspects != IMPORT_ASPECT_NETLIST)
+		return 0; /* only pure netlist import is supported */
+	return 20;
+}
+
+
+static int mentor_sch_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_mentor_sch: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return mentor_sch_load(fns[0]);
+}
+
+static pcb_plug_import_t import_mentor_sch;
+
+
 pcb_action_t mentor_sch_action_list[] = {
 	{"LoadMentorFrom", pcb_act_LoadMentorFrom, pcb_acth_Loadmentor_schFrom, pcb_acts_Loadmentor_schFrom}
 };
@@ -289,6 +310,7 @@ void pplg_uninit_import_mentor_sch(void)
 {
 	pcb_remove_actions_by_cookie(mentor_sch_cookie);
 	pcb_conf_unreg_fields("plugins/import_mentor_sch/");
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
 }
 
 int pplg_init_import_mentor_sch(void)
@@ -298,6 +320,19 @@ int pplg_init_import_mentor_sch(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(conf_mentor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "mentor_sch_conf_fields.h"
+
+	/* register the IO hook */
+	import_mentor_sch.plugin_data = NULL;
+
+	import_mentor_sch.fmt_support_prio = mentor_sch_support_prio;
+	import_mentor_sch.import           = mentor_sch_import;
+	import_mentor_sch.name             = "Mentor Graphics schematics";
+	import_mentor_sch.desc             = "schamtics: Mentor Graphics Design Design Caputre";
+	import_mentor_sch.single_arg       = 1;
+	import_mentor_sch.all_filenames    = 1;
+	import_mentor_sch.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
 
 	PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
 	return 0;
