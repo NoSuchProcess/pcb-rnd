@@ -450,10 +450,11 @@ static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 	if (f == NULL)
 		return 0;
 
-	while(!feof(f)) {
+	for(;;) {
 		char *s, line[1024];
 		s = fgets(line, sizeof(line), f);
-
+		if (s == NULL)
+			break;
 		if ((strncmp(s, "999", 3) == 0) && (isspace(s[3]))) {
 			fclose(f);
 			return 100;
