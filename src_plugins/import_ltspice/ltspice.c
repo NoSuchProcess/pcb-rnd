@@ -268,7 +268,7 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 static gen_filenames(const char *fname, char **fname_net, char **fname_asc)
 {
 	const char *end;
-	char *fname_base;
+	char *fname_base = NULL;
 
 	end = strrchr(fname, '.');
 	if (end != NULL) {
@@ -277,7 +277,7 @@ static gen_filenames(const char *fname, char **fname_net, char **fname_asc)
 		else if (strcmp(end, ".asc") == 0)
 			fname_base = pcb_strndup(fname, end - fname);
 	}
-	else
+	if (fname_base == NULL)
 		fname_base = pcb_strdup(fname);
 
 	*fname_net = pcb_strdup_printf("%s.net", fname_base);
@@ -290,7 +290,7 @@ static const char pcb_acth_LoadLtspiceFrom[] = "Loads the specified ltspice .net
 fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL, *end;
-	char *fname_asc, *fname_net, *fname_base;
+	char *fname_asc, *fname_net;
 	static char *default_file = NULL;
 	int rs;
 
