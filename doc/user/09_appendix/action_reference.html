@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.0 (svn r29339) an interactive printed circuit board editor ,  Revision: 29362
+This is pcb-rnd 2.2.0 (svn r29487) an interactive printed circuit board editor ,  Revision: 29495
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -164,6 +164,7 @@ This is pcb-rnd 2.2.0 (svn r29339) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#importsch">ImportSch</a></td><td>Import schematics/netlist.</td><td>ImportSch()<br>ImportSch(reimport)<br>ImportSch(setup, importer, [args...])</td><td>import_sch2 plugin</td>
 <tr><td>Info</td><td></td><td></td><td>report plugin</td>
 <tr><td>InfoBarFileChanged</td><td>Present the "file changed" warning info bar with buttons to reload or cancel</td><td>InfoBarFileChanged(open|close)</td><td>dialogs plugin</td>
 <tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
@@ -216,7 +217,7 @@ This is pcb-rnd 2.2.0 (svn r29339) an interactive printed circuit board editor ,
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Tool(Press|Release|Cancel|Stroke)<br>Tool(Save|Restore)</td><td></td>
 <tr><td><a href="action_details.html#morphpolygon">MorphPolygon</a></td><td>Converts dead polygon islands into separate polygons.</td><td>pcb_poly_morph(Object|Selected)</td><td></td>
-<tr><td>MoveCursorTo</td><td>Move the cursor to absolute coords, pan the view as needed.</td><td>Cursor(x,y)</td><td></td>
+<tr><td>MoveCursorTo</td><td>Move the cursor to absolute coords, pan the view as needed.</td><td>MoveCursorTo(x,y)</td><td></td>
 <tr><td><a href="action_details.html#movelayer">MoveLayer</a></td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)<br>MoveLayer(lid,group,gid)</td><td></td>
 <tr><td><a href="action_details.html#moveobject">MoveObject</a></td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td><a href="action_details.html#movetocurrentlayer">MoveToCurrentLayer</a></td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>

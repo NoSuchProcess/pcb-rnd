@@ -1,0 +1,13 @@
+Imports netlist (and optionally footprint references) from schematic(s) or
+netlist(s). Works from one or multiple input files. This action does not
+do file operations on its own, it is merely a dispatched to import plugins.
+<p>
+The import configuration is normally stored in the config tree of the board
+file (on the <i>design</i> role of the conf system) and consists of:
+<ul>
+	<li> the name of the importer that will load the input files
+	<li> a list of arguments to the importer (strings, most often input file names)
+	<li> misc settings, e.g. verbosity of the import
+</ul>
+
+
