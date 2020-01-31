@@ -107,6 +107,8 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			if (!pcb_import_netlist(PCB_ACT_HIDLIB, PCB->Netlistname))
 				pcb_netlist_changed(1);
+			else
+				pcb_message(PCB_MSG_ERROR, "None of the netlist import plugins could handle that file (unknown or broken file format?)\n");
 			break;
 
 		case F_Revert:
