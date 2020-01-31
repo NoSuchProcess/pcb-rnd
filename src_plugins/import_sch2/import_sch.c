@@ -104,6 +104,17 @@ static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng);
 }
 
+static void isch_pcb2dlg(void)
+{
+	int n, len;
+	pcb_conf_listitem_t *ci;
+
+	len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
+		PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
+
+	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng);
+}
 
 static void isch_add_tab(pcb_plug_import_t *p)
 {
@@ -190,7 +201,7 @@ static int do_dialog(void)
 
 	PCB_DAD_DEFSIZE(isch_ctx.dlg, 360, 400);
 	PCB_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
-	isch_switch_fmt(0);
+	isch_pcb2dlg();
 	return 0;
 }
 
