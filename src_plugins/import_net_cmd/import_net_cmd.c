@@ -50,24 +50,21 @@ int net_cmd_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp,
 
 static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
-	const char **cmd;
 	int n, res, verbose;
 	fgw_arg_t rs;
-	char *outfn, *tmpfn = NULL;
+	const char *cmdline, *outfn;
+	char *tmpfn = NULL;
 
 	PCB_IMPORT_SCH_VERBOSE(verbose);
 
-	if (numfns < 1) {
-		pcb_message(PCB_MSG_ERROR, "net_cmd_import: the first argument must be the output file name or -");
+	if (numfns != 2) {
+		pcb_message(PCB_MSG_ERROR, "net_cmd_import: requires exactly two arguments:\nfirst argument must be the output file name or -\nsecond argument must be a full command line");
 		return -1;
 	}
 
-	cmd = malloc((numfns+1) * sizeof(char *));
-	for(n = 0; n < numfns; n++)
-		cmd[n] = fns[n];
-	cmd[numfns+1] = NULL;
+	outfn = fns[0];
+	cmdline = fns[1];
 
-	outfn = cmd[0];
 	if ((outfn == NULL) || (*outfn == '\0')) {
 		pcb_message(PCB_MSG_ERROR, "net_cmd_import: Could not create temp file for the netlist output");
 		return -1;
@@ -77,26 +74,19 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 		outfn = tmpfn;
 	}
 
-
-	if (verbose) {
-		pcb_message(PCB_MSG_DEBUG, "import_net_cmd:  running cmd:\n");
-		for(n = 0; n < numfns; n++)
-			pcb_message(PCB_MSG_DEBUG, " %s", cmd[n]);
-		pcb_message(PCB_MSG_DEBUG, "\n");
-	}
-
+	if (verbose)
+		pcb_message(PCB_MSG_DEBUG, "import_net_cmd:  running cmd: '%s' outfn='%s'\n", cmdline, outfn);
 
 	pcb_setenv("IMPORT_NET_CMD_PCB", PCB->hidlib.filename, 1);
 	pcb_setenv("IMPORT_NET_CMD_OUT", outfn, 1);
-	res = pcb_spawnvp(cmd+1);
+	res = pcb_system(&PCB->hidlib, cmdline);
 	if (res == 0) {
 		if (verbose)
 			pcb_message(PCB_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, outfn='%s'\n", outfn);
-		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, outfn, 0);
+		pcb_import_netlist(&PCB->hidlib, outfn);
 	}
 	if (tmpfn != NULL)
 		pcb_tempfile_unlink(tmpfn);
-	free(cmd);
 	return res;
 }
 
@@ -116,7 +106,7 @@ int pplg_init_import_net_cmd(void)
 
 	import_net_cmd.fmt_support_prio = net_cmd_support_prio;
 	import_net_cmd.import           = net_cmd_import;
-	import_net_cmd.name             = "cmdline";
+	import_net_cmd.name             = "cmd";
 	import_net_cmd.desc             = "sch/netlist by command line";
 	import_net_cmd.single_arg       = 0;
 	import_net_cmd.all_filenames    = 0;
