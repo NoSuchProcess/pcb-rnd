@@ -70,8 +70,8 @@ void pcb_import_uninit(void);
 pcb_plug_import_t *pcb_lookup_importer(const char *name);
 
 /********** hook wrappers **********/
-int pcb_import(pcb_hidlib_t *hidlib, char *filename, unsigned int aspect);
-int pcb_import_netlist(pcb_hidlib_t *, char *);
+int pcb_import(pcb_hidlib_t *hidlib, const char *filename, unsigned int aspect);
+int pcb_import_netlist(pcb_hidlib_t *hidlib, const char *fn);
 
 /*** macros used by import plugins ***/
 
