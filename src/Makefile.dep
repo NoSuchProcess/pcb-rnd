@@ -3352,12 +3352,13 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h librnd/core/pcb-printf.h librnd/core/compat_misc.h \
- librnd/core/safe_fs.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
- librnd/core/list_conf.h librnd/core/actions.h librnd/core/plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+ vtpadstack_t.h plug_import.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h librnd/core/safe_fs.h librnd/core/actions.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
  ../config.h librnd/config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
@@ -3478,12 +3479,13 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h librnd/core/pcb-printf.h librnd/core/compat_misc.h \
- librnd/core/safe_fs.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
- librnd/core/list_conf.h librnd/core/actions.h librnd/core/plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+ vtpadstack_t.h plug_import.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h librnd/core/safe_fs.h librnd/core/actions.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
 ../src_plugins/import_gnetlist/import_gnetlist.o: \
  ../src_plugins/import_gnetlist/import_gnetlist.c ../config.h \
  librnd/config.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -3577,7 +3579,7 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h
+ ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h plug_import.h
 ../src_plugins/import_ltspice/ltspice.o: \
  ../src_plugins/import_ltspice/ltspice.c ../config.h librnd/config.h \
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
@@ -3603,12 +3605,13 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h librnd/core/pcb-printf.h librnd/core/compat_misc.h \
- librnd/core/safe_fs.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
- librnd/core/list_conf.h librnd/core/actions.h librnd/core/plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+ vtpadstack_t.h plug_import.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h librnd/core/safe_fs.h librnd/core/compat_fs.h \
+ librnd/core/actions.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
 ../src_plugins/import_mentor_sch/mentor_sch.o: \
  ../src_plugins/import_mentor_sch/mentor_sch.c ../config.h \
  librnd/config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
@@ -3634,17 +3637,16 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h librnd/core/pcb-printf.h librnd/core/compat_misc.h \
- ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
- ../src_3rd/gensexpr/gsx_parse.h librnd/core/actions.h \
- librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ vtpadstack_t.h plug_import.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h ../src_3rd/gensexpr/gsxl.h \
+ ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
+ librnd/core/actions.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h \
- ../src_plugins/import_mentor_sch/mentor_sch_conf.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
- librnd/core/paths.h librnd/core/safe_fs.h \
- ../src_plugins/import_mentor_sch/netlist_helper.h \
+ ../src_plugins/import_mentor_sch/mentor_sch_conf.h librnd/core/paths.h \
+ librnd/core/safe_fs.h ../src_plugins/import_mentor_sch/netlist_helper.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h \
  ../src_plugins/import_mentor_sch/mentor_sch_conf_fields.h
@@ -3839,7 +3841,10 @@
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h plug_import.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/hid_dad.h \
+ librnd/core/compat_misc.h librnd/core/hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/color.h \
+ librnd/core/hid_dad_spin.h plug_import.h \
  ../src_plugins/import_sch2/import_sch_conf.h \
  ../src_plugins/import_sch2/import_sch_conf_fields.h
 ../src_plugins/import_tinycad/tinycad.o: \
@@ -3867,12 +3872,13 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h librnd/core/pcb-printf.h librnd/core/compat_misc.h \
- librnd/core/safe_fs.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
- librnd/core/list_conf.h librnd/core/actions.h librnd/core/plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+ vtpadstack_t.h plug_import.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h librnd/core/safe_fs.h librnd/core/actions.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
 ../src_plugins/import_ttf/str_approx.o: \
  ../src_plugins/import_ttf/str_approx.c \
  ../src_plugins/import_ttf/ttf_load.h \
@@ -4428,12 +4434,13 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h librnd/core/pcb-printf.h librnd/core/compat_misc.h \
- librnd/core/safe_fs.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
- librnd/core/list_conf.h librnd/core/actions.h librnd/core/plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h
+ vtpadstack_t.h plug_import.h librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h librnd/core/safe_fs.h librnd/core/actions.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
 ../src_plugins/io_kicad/uniq_name.o: ../src_plugins/io_kicad/uniq_name.c \
  ../src_3rd/genht/hash.h ../config.h librnd/config.h \
  ../src_plugins/io_kicad/uniq_name.h ../src_3rd/genht/htsp.h \
