@@ -36,40 +36,47 @@
 
 conf_import_sch_t conf_import_sch;
 
+static int do_import(void)
+{
+	const char **a = NULL;
+	int len, n;
+	pcb_conf_listitem_t *ci;
+	const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
+	pcb_plug_import_t *p;
+
+	if ((imp_name == NULL) || (*imp_name == '\0')) {
+		TODO("invoke the GUI instead\n");
+		pcb_message(PCB_MSG_ERROR, "import_sch2: missing conf\n");
+		return 1;
+	}
+	p = pcb_lookup_importer(imp_name);
+	if (p == NULL) {
+		pcb_message(PCB_MSG_ERROR, "import_sch2: can not find importer called '%s'\nIs the corresponding plugin compiled?\n", imp_name);
+		return 1;
+	}
+
+	len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	a = malloc((len+1) * sizeof(char *));
+	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
+		a[n] = ci->val.string[0];
+	pcb_message(PCB_MSG_ERROR, "import_sch2: reimport with %s -> %p\n", imp_name, p);
+	p->import(p, IMPORT_ASPECT_NETLIST, a, len);
+	free(a);
+	return 0;
+}
+
+
 static const char pcb_acts_ImportSch[] =
 	"ImportSch()\n";
 static const char pcb_acth_ImportSch[] = "Import schematics.";
 /* DOC: import.html */
 static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (argc == 1) {
-		const char **a = NULL;
-		int len, n;
-		pcb_conf_listitem_t *ci;
-		const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
-		pcb_plug_import_t *p;
-
-		if ((imp_name == NULL) || (*imp_name == '\0')) {
-			TODO("invoke the GUI instead\n");
-			pcb_message(PCB_MSG_ERROR, "import_sch2: missing conf\n");
-			PCB_ACT_IRES(1);
-			return 0;
-		}
-		p = pcb_lookup_importer(imp_name);
-		if (p == NULL) {
-			pcb_message(PCB_MSG_ERROR, "import_sch2: can not find importer called '%s'\nIs the corresponding plugin compiled?\n", imp_name);
-			PCB_ACT_IRES(1);
-			return 0;
-		}
-
-		len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
-		a = malloc((len+1) * sizeof(char *));
-		for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
-			a[n] = ci->val.string[0];
-		pcb_message(PCB_MSG_ERROR, "import_sch2: reimport with %s -> %p\n", imp_name, p);
-		p->import(p, IMPORT_ASPECT_NETLIST, a, len);
-		free(a);
+	if (argc == 1) { /* no arg means: shorthand for re-import from stored conf */
+		PCB_ACT_IRES(do_import());
+		return 0;
 	}
+
 	pcb_message(PCB_MSG_ERROR, "import_sch2: not yet implemented\n");
 	PCB_ACT_IRES(0);
 	return 0;
