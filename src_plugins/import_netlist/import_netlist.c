@@ -161,7 +161,7 @@ static int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 		return 0; /* only pure netlist import is supported */
 
 	/* we are sort of a low prio fallback without any chance to check the file format in advance */
-	return 10;
+	return 11;
 }
 
 
