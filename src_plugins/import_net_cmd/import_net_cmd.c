@@ -41,10 +41,7 @@ static pcb_plug_import_t import_net_cmd;
 
 int net_cmd_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
-	if (aspects != IMPORT_ASPECT_NETLIST)
-		return 0; /* only pure netlist import is supported */
-
-	return 100;
+	return 0; /* autodetect should always fail to avoid accidental command execution - the import shall work only directly */
 }
 
 
