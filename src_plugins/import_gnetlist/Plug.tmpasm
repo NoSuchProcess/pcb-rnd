@@ -1,6 +1,8 @@
 put /local/pcb/mod {import_gnetlist}
 append /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_gnetlist/import_gnetlist.o @]
 put /local/pcb/mod/CONF {$(PLUGDIR)/import_gnetlist/import_gnetlist_conf.h}
+put /local/pcb/mod/CONFFILE {import_gnetlist.conf}
+put /local/pcb/mod/CONFVAR {import_gnetlist_conf_internal}
 
 
 switch /local/pcb/import_gnetlist/controls

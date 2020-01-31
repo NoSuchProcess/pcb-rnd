@@ -39,6 +39,9 @@
 #include "plug_import.h"
 
 #include "import_gnetlist_conf.h"
+#include "../src_plugins/import_gnetlist/conf_internal.c"
+
+#define IMPORT_GNETLIST_CONF_FN "import_gnetlist.conf"
 
 conf_import_gnetlist_t conf_import_gnetlist;
 
@@ -106,6 +109,7 @@ int pplg_check_ver_import_gnetlist(int ver_needed) { return 0; }
 void pplg_uninit_import_gnetlist(void)
 {
 	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
+	pcb_conf_unreg_file(IMPORT_GNETLIST_CONF_FN, import_gnetlist_conf_internal);
 	pcb_conf_unreg_fields("plugins/import_gnetlist/");
 }
 
@@ -125,6 +129,8 @@ int pplg_init_import_gnetlist(void)
 	import_gnetlist.ext_exec         = 0;
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
+
+	pcb_conf_reg_file(IMPORT_GNETLIST_CONF_FN, import_gnetlist_conf_internal);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(conf_import_gnetlist, field,isarray,type_name,cpath,cname,desc,flags);
