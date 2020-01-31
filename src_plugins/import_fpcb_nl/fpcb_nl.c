@@ -188,9 +188,27 @@ fgw_error_t pcb_act_LoadFpcbnlFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static int fpcb_nl_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
-	if (aspects != IMPORT_ASPECT_NETLIST)
+	FILE *f;
+	int n;
+
+	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported */
-	return 20;
+
+	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	if (f == NULL)
+		return 0;
+
+	for(n = 0; n < 32; n++) {
+		char line[1024];
+		fgets(line, sizeof(line), f);
+		if (strncmp(line, "*PADS-PCB*", 10) == 0) {
+			fclose(f);
+			return 100;
+		}
+	}
+
+	fclose(f);
+	return 0;
 }
 
 
