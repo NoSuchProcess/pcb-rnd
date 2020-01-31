@@ -43,7 +43,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	char **inames;
 	int len;
-	int wfmt, wtab;
+	int wfmt, wtab, warg_ctrl;
 	int warg[MAX_ARGS], warg_box[MAX_ARGS], warg_button[MAX_ARGS];
 	int active; /* already open - allow only one instance */
 } isch_ctx_t;
@@ -72,9 +72,36 @@ static int isch_cmp(void *a_, void *b_)
 	return strcmp((*a)->name, (*b)->name) > 0 ? 1 : -1;
 }
 
+static void isch_switch_fmt(int target)
+{
+	const pcb_plug_import_t *p = pcb_lookup_importer(isch_ctx.inames[target]);
+	int len, n, controllable;
+
+	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wtab, lng, target);
+	if (p == NULL) {
+		len = 0;
+		controllable = 0;
+	}
+	else if (p->single_arg) {
+		len = 1;
+		controllable = 0;
+	}
+	else {
+		len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+		controllable = 1;
+	}
+
+	for(n = 0; n < MAX_ARGS; n++) {
+		pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_box[n], n >= len);
+		pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_button[n], !((p != NULL) && (p->all_filenames)));
+	}
+
+	pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_ctrl, !controllable);
+}
+
 static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	PCB_DAD_SET_VALUE(hid_ctx, isch_ctx.wtab, lng, isch_ctx.dlg[isch_ctx.wfmt].val.lng);
+	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng);
 }
 
 
@@ -128,7 +155,7 @@ static int do_dialog(void)
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
 				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
-				for(n = 0; n < len; n++) {
+				for(n = 0; n < MAX_ARGS; n++) {
 					PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
 						isch_ctx.warg_box[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
 						PCB_DAD_STRING(isch_ctx.dlg);
@@ -137,6 +164,11 @@ static int do_dialog(void)
 							isch_ctx.warg_button[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
 					PCB_DAD_END(isch_ctx.dlg);
 				}
+				PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
+					isch_ctx.warg_ctrl = PCB_DAD_CURRENT(isch_ctx.dlg);
+					PCB_DAD_BUTTON(isch_ctx.dlg, "Del last");
+					PCB_DAD_BUTTON(isch_ctx.dlg, "One more");
+				PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_END(isch_ctx.dlg);
 		PCB_DAD_END(isch_ctx.dlg);
 
@@ -158,6 +190,7 @@ static int do_dialog(void)
 
 	PCB_DAD_DEFSIZE(isch_ctx.dlg, 360, 400);
 	PCB_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
+	isch_switch_fmt(0);
 	return 0;
 }
 
