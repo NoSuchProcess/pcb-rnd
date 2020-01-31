@@ -68,8 +68,6 @@ ha:{
 						ha:Import gschem schematics... (old) = {                             action=Import() }
 						ha:Import gschem schematics... (new) = {                             action=ImportSch() }
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
-						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
-						ha:Import mentor graphics schematics = {                             action=LoadMentorFrom() }
 						-
 						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
@@ -79,6 +77,8 @@ ha:{
 						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
 						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
 						-
+						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
+						ha:Import mentor graphics schematics = {                             action=LoadMentorFrom() }
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
 						ha:Load IPC-D-356 netlist            = {                             action=LoadIpc356From() }
 						ha:Load TinyCAD .net file            = {                             action=LoadTinyCADFrom() }
