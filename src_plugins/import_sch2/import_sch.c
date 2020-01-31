@@ -30,11 +30,66 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/hid_dad.h>
 
 #include "plug_import.h"
 #include "import_sch_conf.h"
 
 conf_import_sch_t conf_import_sch;
+
+
+typedef struct{
+	PCB_DAD_DECL_NOINIT(dlg)
+	char **inames;
+	int active; /* already open - allow only one instance */
+} isch_ctx_t;
+
+static isch_ctx_t isch_ctx;
+
+static void isch_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	isch_ctx_t *ctx = caller_data;
+	PCB_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(isch_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
+static int do_dialog(void)
+{
+	int len, n;
+	pcb_plug_import_t *p;
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	if (isch_ctx.active)
+		return; /* do not open another */
+
+	len = 1; /* for the NULL */
+	for(p = pcb_plug_import_chain; p != NULL; p = p->next) len++;
+
+	isch_ctx.inames = malloc(len * sizeof(char *));
+	for(n = 0, p = pcb_plug_import_chain; p != NULL; p = p->next, n++)
+		isch_ctx.inames[n] = pcb_strdup(p->name);
+	isch_ctx.inames[n] = NULL;
+
+	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
+		PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
+			PCB_DAD_LABEL(isch_ctx.dlg, "Format:");
+			PCB_DAD_ENUM(isch_ctx.dlg, isch_ctx.inames);
+		PCB_DAD_END(isch_ctx.dlg);
+
+		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
+			PCB_DAD_BUTTON(isch_ctx.dlg, "Import!");
+			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
+				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_END(isch_ctx.dlg);
+			PCB_DAD_BUTTON_CLOSES(isch_ctx.dlg, clbtn);
+		PCB_DAD_END(isch_ctx.dlg);
+	PCB_DAD_END(isch_ctx.dlg);
+
+	/* set up the context */
+	isch_ctx.active = 1;
+
+	PCB_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
+}
 
 static int do_import(void)
 {
@@ -44,11 +99,9 @@ static int do_import(void)
 	const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 	pcb_plug_import_t *p;
 
-	if ((imp_name == NULL) || (*imp_name == '\0')) {
-		TODO("invoke the GUI instead\n");
-		pcb_message(PCB_MSG_ERROR, "import_sch2: missing conf\n");
-		return 1;
-	}
+	if ((imp_name == NULL) || (*imp_name == '\0'))
+		return do_dialog();
+
 	p = pcb_lookup_importer(imp_name);
 	if (p == NULL) {
 		pcb_message(PCB_MSG_ERROR, "import_sch2: can not find importer called '%s'\nIs the corresponding plugin compiled?\n", imp_name);
@@ -122,6 +175,10 @@ static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	if (strcmp(cmd, "setup") == 0) {
 		PCB_ACT_IRES(do_setup(argc-2, argv+2));
+		return 0;
+	}
+	if (strcmp(cmd, "dialog") == 0) {
+		PCB_ACT_IRES(do_dialog());
 		return 0;
 	}
 
