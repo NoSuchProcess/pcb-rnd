@@ -208,9 +208,11 @@ static int tinycad_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 	if (f == NULL)
 		return 0;
 
-	while(!feof(f)) {
+	for(;;) {
 		char *s, line[1024];
 		s = fgets(line, sizeof(line), f);
+		if (s == NULL)
+			break;
 		while(isspace(*s)) s++;
 		if (strncmp(s, "COMPONENT", 9) == 0)
 			good |= 1;
