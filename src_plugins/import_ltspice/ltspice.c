@@ -41,6 +41,7 @@
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_fs.h>
 
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
@@ -264,6 +265,26 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 	goto quit;
 }
 
+static gen_filenames(const char *fname, char **fname_net, char **fname_asc)
+{
+	const char *end;
+	char *fname_base;
+
+	end = strrchr(fname, '.');
+	if (end != NULL) {
+		if (strcmp(end, ".net") == 0)
+			fname_base = pcb_strndup(fname, end - fname);
+		else if (strcmp(end, ".asc") == 0)
+			fname_base = pcb_strndup(fname, end - fname);
+	}
+	else
+		fname_base = pcb_strdup(fname);
+
+	*fname_net = pcb_strdup_printf("%s.net", fname_base);
+	*fname_asc = pcb_strdup_printf("%s.asc", fname_base);
+	free(fname_base);
+}
+
 static const char pcb_acts_LoadLtspiceFrom[] = "LoadLtspiceFrom(filename)";
 static const char pcb_acth_LoadLtspiceFrom[] = "Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.";
 fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -287,19 +308,7 @@ fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	end = strrchr(fname, '.');
-	if (end != NULL) {
-		if (strcmp(end, ".net") == 0)
-			fname_base = pcb_strndup(fname, end - fname);
-		else if (strcmp(end, ".asc") == 0)
-			fname_base = pcb_strndup(fname, end - fname);
-	}
-	else
-		fname_base = pcb_strdup(fname);
-
-	fname_net = pcb_strdup_printf("%s.net", fname_base);
-	fname_asc = pcb_strdup_printf("%s.asc", fname_base);
-	free(fname_base);
+	gen_filenames(fname, &fname_net, &fname_asc);
 
 	rs = ltspice_load(fname_net, fname_asc);
 
@@ -312,9 +321,45 @@ fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static int ltspice_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
-	if (aspects != IMPORT_ASPECT_NETLIST)
+	int res = 0;
+	FILE *f = NULL;
+	unsigned int good = 0;
+	char *fname_asc, *fname_net;
+
+	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported */
-	return 20;
+
+	gen_filenames(args[0], &fname_net, &fname_asc);
+	if (!pcb_file_readable(fname_net))
+		goto quit;
+
+	f = pcb_fopen(&PCB->hidlib, fname_asc, "r");
+	if (f == NULL)
+		goto quit;
+
+	for(;;) {
+		char *s, line[1024];
+		s = fgets(line, sizeof(line), f);
+		if (s == NULL)
+			break;
+		while(isspace(*s)) s++;
+		if (strncmp(s, "SHEET", 5) == 0)
+			good |= 1;
+		else if (strncmp(s, "WIRE", 4) == 0)
+			good |= 2;
+		if (good == (1|2)) {
+			res = 100;
+			goto quit;
+		}
+	}
+
+
+	quit:;
+	if (f != NULL)
+		fclose(f);
+	free(fname_asc);
+	free(fname_net);
+	return res;
 }
 
 
