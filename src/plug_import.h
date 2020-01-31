@@ -64,6 +64,10 @@ extern pcb_plug_import_t *pcb_plug_import_chain;
 
 void pcb_import_uninit(void);
 
+/* Return an importer by it's ->name, or return NULL if not found;
+   slow linear search */
+pcb_plug_import_t *pcb_lookup_importer(const char *name);
+
 /********** hook wrappers **********/
 int pcb_import(pcb_hidlib_t *hidlib, char *filename, unsigned int aspect);
 int pcb_import_netlist(pcb_hidlib_t *, char *);

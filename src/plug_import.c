@@ -88,6 +88,17 @@ static pcb_plug_import_t *find_importer(unsigned int aspects, FILE *f, const cha
 #undef cb_append
 }
 
+pcb_plug_import_t *pcb_lookup_importer(const char *name)
+{
+	pcb_plug_import_t *p;
+
+	for(p = pcb_plug_import_chain; p != NULL; p = p->next)
+		if (strcmp(p->name, name) == 0)
+			return p;
+
+	return NULL;
+}
+
 
 int pcb_import(pcb_hidlib_t *hidlib, char *filename, unsigned int aspect)
 {
