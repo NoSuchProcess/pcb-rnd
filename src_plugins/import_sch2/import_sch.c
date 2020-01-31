@@ -35,6 +35,8 @@
 #include "plug_import.h"
 #include "import_sch_conf.h"
 
+#define MAX_ARGS 16
+
 conf_import_sch_t conf_import_sch;
 
 
@@ -42,6 +44,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	char **inames;
 	int len;
+	int wfmt, wtab;
 	int active; /* already open - allow only one instance */
 } isch_ctx_t;
 
@@ -69,6 +72,12 @@ static int isch_cmp(void *a_, void *b_)
 	return strcmp((*a)->name, (*b)->name) > 0 ? 1 : -1;
 }
 
+static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	PCB_DAD_SET_VALUE(hid_ctx, isch_ctx.wtab, lng, isch_ctx.dlg[isch_ctx.wfmt].val.lng);
+}
+
+
 static void isch_add_arg(int slot, int file)
 {
 	if (file) {
@@ -86,7 +95,7 @@ static void isch_add_tab(pcb_plug_import_t *p)
 	int n, len;
 
 	if (!p->single_arg) {
-		len = 16;
+		len = MAX_ARGS;
 		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
 			PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 	}
@@ -108,7 +117,7 @@ static int do_dialog(void)
 	const pcb_plug_import_t *p, **pa;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (isch_ctx.active)
-		return; /* do not open another */
+		return 0; /* do not open another */
 
 	len = 0;
 	for(p = pcb_plug_import_chain; p != NULL; p = p->next) len++;
@@ -134,9 +143,12 @@ static int do_dialog(void)
 			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
 				PCB_DAD_LABEL(isch_ctx.dlg, "Format:");
 				PCB_DAD_ENUM(isch_ctx.dlg, isch_ctx.inames);
+					isch_ctx.wfmt = PCB_DAD_CURRENT(isch_ctx.dlg);
+					PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_fmt_chg_cb);
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BEGIN_TABBED(isch_ctx.dlg, isch_ctx.inames);
 				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
+				isch_ctx.wtab = PCB_DAD_CURRENT(isch_ctx.dlg);
 				for(n = 0; n < len; n++)
 					isch_add_tab(pa[n]);
 			PCB_DAD_END(isch_ctx.dlg);
@@ -161,6 +173,7 @@ static int do_dialog(void)
 
 	PCB_DAD_DEFSIZE(isch_ctx.dlg, 360, 400);
 	PCB_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
+	return 0;
 }
 
 static int do_import(void)
