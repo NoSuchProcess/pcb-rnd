@@ -94,8 +94,8 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	res = pcb_spawnvp((const char **)cmd);
 	if (res == 0) {
 		if (verbose)
-			pcb_message(PCB_MSG_DEBUG, "pcb_gnetlist:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfile);
-		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfile, 0);
+			pcb_message(PCB_MSG_DEBUG, "pcb_gnetlist:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfn);
+		fgw_uvcall(&pcb_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfn, 0);
 	}
 	for(n = 0; n < numfns; n++)
 		free(cmd[n+8]);
