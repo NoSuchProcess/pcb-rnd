@@ -75,15 +75,15 @@ ha:{
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 						ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
 						ha:Load routed dsn or ses file       = {                             action=LoadDsnFrom() }
+						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
+						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
+						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
 						-
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
 						ha:Load IPC-D-356 netlist            = {                             action=LoadIpc356From() }
-						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load TinyCAD .net file            = {                             action=LoadTinyCADFrom() }
 						ha:Load Calay .net+.cmp files        = {                             action=LoadCalayFrom() }
 						ha:Load LTSpice .net and .asc files  = {                             action=LoadLTSpiceFrom() }
-						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
-						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
 						ha:Load FreePCB netlist (EasyEDA)    = {                             action=LoadFpcbnlFrom() }
 					}
 				}
