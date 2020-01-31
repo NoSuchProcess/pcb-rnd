@@ -452,6 +452,7 @@ static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 
 	for(;;) {
 		char *s, line[1024];
+		line[19] = '!'; /* make sure we have a space there because of fgets */
 		s = fgets(line, sizeof(line), f);
 		if (s == NULL)
 			break;
