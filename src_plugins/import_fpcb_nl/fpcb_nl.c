@@ -35,6 +35,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
@@ -185,6 +186,25 @@ fgw_error_t pcb_act_LoadFpcbnlFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static int fpcb_nl_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+{
+	if (aspects != IMPORT_ASPECT_NETLIST)
+		return 0; /* only pure netlist import is supported */
+	return 20;
+}
+
+
+static int fpcb_nl_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_fpcb_nl: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return fpcb_nl_load(fns[0]);
+}
+
+static pcb_plug_import_t import_fpcb_nl;
+
 pcb_action_t fpcb_nl_action_list[] = {
 	{"LoadFpcbnlFrom", pcb_act_LoadFpcbnlFrom, pcb_acth_LoadFpcbnlFrom, pcb_acts_LoadFpcbnlFrom}
 };
@@ -194,11 +214,27 @@ int pplg_check_ver_import_fpcb_nl(int ver_needed) { return 0; }
 void pplg_uninit_import_fpcb_nl(void)
 {
 	pcb_remove_actions_by_cookie(fpcb_nl_cookie);
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
 }
 
 int pplg_init_import_fpcb_nl(void)
 {
 	PCB_API_CHK_VER;
+
+	/* register the IO hook */
+	import_fpcb_nl.plugin_data = NULL;
+
+	import_fpcb_nl.fmt_support_prio = fpcb_nl_support_prio;
+	import_fpcb_nl.import           = fpcb_nl_import;
+	import_fpcb_nl.name             = "FreePCB/EasyCAD";
+	import_fpcb_nl.desc             = "FreePCB/EasyCAD schematics";
+	import_fpcb_nl.single_arg       = 1;
+	import_fpcb_nl.all_filenames    = 1;
+	import_fpcb_nl.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
+
+
 	PCB_REGISTER_ACTIONS(fpcb_nl_action_list, fpcb_nl_cookie)
 	return 0;
 }
