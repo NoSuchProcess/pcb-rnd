@@ -284,7 +284,7 @@ static int mentor_sch_support_prio(pcb_plug_import_t *ctx, unsigned int aspects,
 {
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */
-	return 10; /* can't tell apart from normal edif; best if the user selects format explicitly */
+	return 0; /* can't tell apart from normal edif; best if the user selects format explicitly */
 }
 
 
