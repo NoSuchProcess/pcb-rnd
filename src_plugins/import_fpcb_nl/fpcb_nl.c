@@ -158,7 +158,7 @@ static int fpcb_nl_load(const char *fn)
 	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 
 	fclose(f);
-	return -1;
+	return 0;
 }
 
 static const char pcb_acts_LoadFpcbnlFrom[] = "LoadFpcbnlFrom(filename)";
