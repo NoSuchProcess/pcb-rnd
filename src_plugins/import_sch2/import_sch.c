@@ -53,20 +53,38 @@ static void isch_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(isch_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static int isch_cmp(void *a_, void *b_)
+{
+	pcb_plug_import_t **a = a_, **b = b_;
+
+	if ((*a)->ui_prio < (*b)->ui_prio)
+		return 1;
+	if ((*a)->ui_prio > (*b)->ui_prio)
+		return -1;
+	return strcmp((*a)->name, (*b)->name) > 0 ? 1 : -1;
+}
+
 static int do_dialog(void)
 {
 	int len, n;
-	pcb_plug_import_t *p;
+	const pcb_plug_import_t *p, **pa;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (isch_ctx.active)
 		return; /* do not open another */
 
-	len = 1; /* for the NULL */
+	len = 0;
 	for(p = pcb_plug_import_chain; p != NULL; p = p->next) len++;
 
-	isch_ctx.inames = malloc(len * sizeof(char *));
+	isch_ctx.inames = malloc((len+1) * sizeof(char *));
+	pa = malloc(len * sizeof(pcb_plug_import_t *));
+
 	for(n = 0, p = pcb_plug_import_chain; p != NULL; p = p->next, n++)
-		isch_ctx.inames[n] = pcb_strdup(p->name);
+		pa[n] = p;
+
+	qsort(pa, len, sizeof(pcb_plug_import_t *), isch_cmp);
+
+	for(n = 0; n < len; n++)
+		isch_ctx.inames[n] = pcb_strdup(pa[n]->name);
 	isch_ctx.inames[n] = NULL;
 
 	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
@@ -84,6 +102,8 @@ static int do_dialog(void)
 			PCB_DAD_BUTTON_CLOSES(isch_ctx.dlg, clbtn);
 		PCB_DAD_END(isch_ctx.dlg);
 	PCB_DAD_END(isch_ctx.dlg);
+
+	free(pa);
 
 	/* set up the context */
 	isch_ctx.active = 1;

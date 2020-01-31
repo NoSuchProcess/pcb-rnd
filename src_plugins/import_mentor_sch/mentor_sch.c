@@ -328,6 +328,7 @@ int pplg_init_import_mentor_sch(void)
 	import_mentor_sch.import           = mentor_sch_import;
 	import_mentor_sch.name             = "Mentor Graphics schematics";
 	import_mentor_sch.desc             = "schamtics: Mentor Graphics Design Design Caputre";
+	import_mentor_sch.ui_prio          = 40;
 	import_mentor_sch.single_arg       = 1;
 	import_mentor_sch.all_filenames    = 1;
 	import_mentor_sch.ext_exec         = 0;

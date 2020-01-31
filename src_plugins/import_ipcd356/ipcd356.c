@@ -504,6 +504,7 @@ int pplg_init_import_ipcd356(void)
 	import_ipcd356.import           = ipcd356_import;
 	import_ipcd356.name             = "IPC-D-356";
 	import_ipcd356.desc             = "nets and pads from an IPC-D-356 test file";
+	import_ipcd356.ui_prio          = 30;
 	import_ipcd356.single_arg       = 1;
 	import_ipcd356.all_filenames    = 1;
 	import_ipcd356.ext_exec         = 0;

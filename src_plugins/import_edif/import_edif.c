@@ -104,6 +104,7 @@ int pplg_init_import_edif(void)
 	import_edif.import           = edif_import;
 	import_edif.name             = "edif";
 	import_edif.desc             = "EDIF netlist (flat)";
+	import_edif.ui_prio          = 50;
 	import_edif.single_arg       = 1;
 	import_edif.all_filenames    = 1;
 	import_edif.ext_exec         = 0;

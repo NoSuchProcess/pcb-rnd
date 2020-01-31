@@ -105,6 +105,7 @@ int pplg_init_import_net_cmd(void)
 	import_net_cmd.import           = net_cmd_import;
 	import_net_cmd.name             = "cmd";
 	import_net_cmd.desc             = "sch/netlist by command line";
+	import_net_cmd.ui_prio          = 90;
 	import_net_cmd.single_arg       = 0;
 	import_net_cmd.all_filenames    = 0;
 	import_net_cmd.ext_exec         = 1;

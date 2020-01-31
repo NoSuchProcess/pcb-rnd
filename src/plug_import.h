@@ -56,6 +56,7 @@ struct pcb_plug_import_s {
 	/* Perform the import; return 0 on success */
 	int (*import)(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs);
 
+	int ui_prio;               /* priority for plugin listing on the user interface; 100 is highest (top), 0 is lowest */
 	unsigned single_arg:1;     /* accepts only one arg in each ->import() call */
 	unsigned all_filenames:1;  /* if set, all arguments are filenames */
 	unsigned ext_exec:1;       /* if set, import will execute external commands specified by the user (dangerous) */

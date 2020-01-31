@@ -298,6 +298,7 @@ void pcb_eeschema_init(void)
 	import_eeschema.import           = eeschema_import;
 	import_eeschema.name             = "KiCAD/eeschema";
 	import_eeschema.desc             = "schamtics from KiCAD's eeschema";
+	import_eeschema.ui_prio          = 50;
 	import_eeschema.single_arg       = 1;
 	import_eeschema.all_filenames    = 1;
 	import_eeschema.ext_exec         = 0;

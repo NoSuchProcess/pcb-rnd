@@ -282,6 +282,7 @@ int pplg_init_import_calay(void)
 	import_calay.import           = calay_import;
 	import_calay.name             = "calay";
 	import_calay.desc             = "schamtics from calay";
+	import_calay.ui_prio          = 20;
 	import_calay.single_arg       = 1;
 	import_calay.all_filenames    = 1;
 	import_calay.ext_exec         = 0;

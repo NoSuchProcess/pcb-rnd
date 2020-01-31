@@ -397,6 +397,7 @@ int pplg_init_import_ltspice(void)
 	import_ltspice.import           = ltspice_import;
 	import_ltspice.name             = "LTSpice";
 	import_ltspice.desc             = "schamtics from LTSpice";
+	import_ltspice.ui_prio          = 50;
 	import_ltspice.single_arg       = 1;
 	import_ltspice.all_filenames    = 1;
 	import_ltspice.ext_exec         = 0;

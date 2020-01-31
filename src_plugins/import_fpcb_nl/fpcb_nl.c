@@ -246,6 +246,7 @@ int pplg_init_import_fpcb_nl(void)
 	import_fpcb_nl.import           = fpcb_nl_import;
 	import_fpcb_nl.name             = "FreePCB/EasyCAD";
 	import_fpcb_nl.desc             = "FreePCB/EasyCAD schematics";
+	import_fpcb_nl.ui_prio          = 50;
 	import_fpcb_nl.single_arg       = 1;
 	import_fpcb_nl.all_filenames    = 1;
 	import_fpcb_nl.ext_exec         = 0;

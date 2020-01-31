@@ -290,6 +290,7 @@ void pcb_tedax_net_init(void)
 	import_tedaxnet.import           = tedaxnet_import;
 	import_tedaxnet.name             = "tEDAx netlist";
 	import_tedaxnet.desc             = "netlist+footprints from tEDAx";
+	import_tedaxnet.ui_prio          = 100;
 	import_tedaxnet.single_arg       = 1;
 	import_tedaxnet.all_filenames    = 1;
 	import_tedaxnet.ext_exec         = 0;
