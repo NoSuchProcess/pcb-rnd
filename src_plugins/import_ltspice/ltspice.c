@@ -36,6 +36,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/pcb-printf.h>
 #include <librnd/core/compat_misc.h>
@@ -309,6 +310,25 @@ fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static int ltspice_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, FILE *fp, const char *filename)
+{
+	if (aspects != IMPORT_ASPECT_NETLIST)
+		return 0; /* only pure netlist import is supported */
+	return 20;
+}
+
+
+static int ltspice_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
+{
+	if (numfns != 1) {
+		pcb_message(PCB_MSG_ERROR, "import_ltspice: requires exactly 1 input file name\n");
+		return -1;
+	}
+	return pcb_actionva(&PCB->hidlib, "LoadLtspiceFrom", fns[0], NULL);
+}
+
+static pcb_plug_import_t import_ltspice;
+
 pcb_action_t ltspice_action_list[] = {
 	{"LoadLtspiceFrom", pcb_act_LoadLtspiceFrom, pcb_acth_LoadLtspiceFrom, pcb_acts_LoadLtspiceFrom}
 };
@@ -318,11 +338,26 @@ int pplg_check_ver_import_ltspice(int ver_needed) { return 0; }
 void pplg_uninit_import_ltspice(void)
 {
 	pcb_remove_actions_by_cookie(ltspice_cookie);
+	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
 }
 
 int pplg_init_import_ltspice(void)
 {
 	PCB_API_CHK_VER;
+
+	/* register the IO hook */
+	import_ltspice.plugin_data = NULL;
+
+	import_ltspice.fmt_support_prio = ltspice_support_prio;
+	import_ltspice.import           = ltspice_import;
+	import_ltspice.name             = "LTSpice";
+	import_ltspice.desc             = "schamtics from LTSpice";
+	import_ltspice.single_arg       = 1;
+	import_ltspice.all_filenames    = 1;
+	import_ltspice.ext_exec         = 0;
+
+	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
+
 	PCB_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
 	return 0;
 }
