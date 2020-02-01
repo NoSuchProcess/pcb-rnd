@@ -90,6 +90,9 @@ pcb_plug_import_t *pcb_lookup_importer(const char *name)
 {
 	pcb_plug_import_t *p;
 
+	if (name == NULL)
+		return NULL;
+
 	for(p = pcb_plug_import_chain; p != NULL; p = p->next)
 		if (strcmp(p->name, name) == 0)
 			return p;
