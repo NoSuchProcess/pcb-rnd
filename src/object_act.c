@@ -616,7 +616,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, subc)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, subc);
 			}
-			else if (!PCB_EMPTY_STRING_P(subc->refdes)) {
+			else if (!PCB_EMPTY_STRING_P(subc->refdes) && (!PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc))) {
 				/* Unnamed elements should remain untouched */
 				plc_remove(&plc, subc);
 			}
