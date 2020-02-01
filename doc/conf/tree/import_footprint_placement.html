@@ -1,0 +1,11 @@
+<html><body>
+<h1>pcb-rnd conf tree</h1>
+<h2>subtree: import/footprint_placement</h2>
+<table border=1>
+<tr><th>node name <th> type <td> flags <td> description
+<tr><td> method <td><a href="CFN_STRING.html"> string </a><td> 0 <td> method/strategy of placement; one of: disperse, frame, fit
+<tr><td> location <td><a href="CFN_STRING.html"> string </a><td> 0 <td> placement coordinate for methods that require it; if empty, use fixed coordinates at x,y; if non-empty, it may be: mark, center
+<tr><td> x <td><a href="CFN_COORD.html"> coord </a><td> 0 <td> for some methods if location is empty, X coordinate of placement
+<tr><td> y <td><a href="CFN_COORD.html"> coord </a><td> 0 <td> for some methods if location is empty, Y coordinate of placement
+<tr><td> disperse <td><a href="CFN_COORD.html"> coord </a><td> 0 <td> dispersion distance for the disperse method
+</table></body></html>
