@@ -57,13 +57,14 @@ static void isch_arg2pcb(void)
 	int n;
 	pcb_conf_listitem_t *ci;
 
+	restart:;
 	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++) {
 		const char *newval = isch_ctx.dlg[isch_ctx.warg[n]].val.str;
 		if (newval == NULL)
 			newval = "";
 		if (strcmp(ci->val.string[0], newval) != 0) {
 			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", n, newval, POL_OVERWRITE);
-pcb_trace("over: %d '%s'\n", n, newval);
+			goto restart; /* elements may be deleted and added with different pointers... */
 		}
 	}
 
