@@ -245,6 +245,11 @@ static void isch_generic_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	isch_conf_lock--;
 }
 
+static void isch_plc_cfg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionva(&PCB->hidlib, "preferences", "config", "footprint_", NULL);
+}
+
 
 static void isch_add_tab(pcb_plug_import_t *p)
 {
@@ -325,6 +330,8 @@ static int do_dialog(void)
 					isch_ctx.wverbose = PCB_DAD_CURRENT(isch_ctx.dlg);
 					PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_generic_chg_cb);
 			PCB_DAD_END(isch_ctx.dlg);
+			PCB_DAD_BUTTON(isch_ctx.dlg, "Placement config...");
+				PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_plc_cfg_cb);
 		PCB_DAD_END(isch_ctx.dlg);
 
 		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg); /* bottom buttons */
