@@ -418,7 +418,7 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 }
 
 typedef struct {
-	enum { PLC_DISPERSE, PLC_FRAME, PLC_FIT } method;
+	enum { PLC_DISPERSE, PLC_FRAME, PLC_FIT } plc_method;
 	enum { PLC_AT, PLC_MARK, PLC_CENTER } location;
 	pcb_coord_t lx, ly, dd;
 	pcb_board_t *pcb;
@@ -433,12 +433,12 @@ typedef struct {
 
 static void plc_init(pcb_board_t *pcb, placer_t *plc)
 {
-	const char *confmet = conf_core.import.footprint_placement.method;
+	const char *conf_plc_met = conf_core.import.footprint_placement.method;
 	const char *conf_rem_met = conf_core.import.footprint_removal.method;
 
 	/* fallback: compatible with the original defaults */
 	plc->pcb = pcb;
-	plc->method = PLC_DISPERSE;
+	plc->plc_method = PLC_DISPERSE;
 	plc->rem_method = PLC_SELECT;
 	plc->location = PLC_AT;
 	plc->lx = pcb->hidlib.size_x / 2;
@@ -446,17 +446,17 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 	plc->dd = MIN(pcb->hidlib.size_x, pcb->hidlib.size_y) / 10;
 	plc->c = plc->cx = plc->cy = 0;
 
-	if ((confmet != NULL) && (*confmet != '\0')) {
+	if ((conf_plc_met != NULL) && (*conf_plc_met != '\0')) {
 		const char *s;
 
 		plc->lx = conf_core.import.footprint_placement.x;
 		plc->ly = conf_core.import.footprint_placement.y;
 		plc->dd = conf_core.import.footprint_placement.disperse;
 
-		if (pcb_strcasecmp(confmet, "disperse") == 0) plc->method = PLC_DISPERSE;
-		else if (pcb_strcasecmp(confmet, "frame") == 0) plc->method = PLC_FRAME;
-		else if (pcb_strcasecmp(confmet, "fit") == 0) plc->method = PLC_FIT;
-		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", confmet);
+		if (pcb_strcasecmp(conf_plc_met, "disperse") == 0) plc->plc_method = PLC_DISPERSE;
+		else if (pcb_strcasecmp(conf_plc_met, "frame") == 0) plc->plc_method = PLC_FRAME;
+		else if (pcb_strcasecmp(conf_plc_met, "fit") == 0) plc->plc_method = PLC_FIT;
+		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", conf_plc_met);
 
 		s = conf_core.import.footprint_placement.location;
 		if ((s == NULL) || (*s == '\0')) plc->location = PLC_AT;
@@ -476,7 +476,7 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		if (pcb_strcasecmp(conf_rem_met, "select") == 0) plc->rem_method = PLC_SELECT;
 		else if (pcb_strcasecmp(conf_rem_met, "remove") == 0) plc->rem_method = PLC_REMOVE;
 		else if (pcb_strcasecmp(conf_rem_met, "list") == 0) plc->rem_method = PLC_LIST;
-		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", confmet);
+		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", conf_plc_met);
 	}
 
 	switch(plc->location) {
@@ -500,7 +500,7 @@ static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
 	pcb_coord_t px = plc->lx, py = plc->ly;
 	pcb_box_t bbx;
 
-	switch(plc->method) {
+	switch(plc->plc_method) {
 		case PLC_FIT:
 			/* not yet implemented */
 		case PLC_DISPERSE:
