@@ -118,8 +118,14 @@ static int do_import(void)
 			pcb_message(PCB_MSG_ERROR, "Had to convert import:: attributes to import_sch config\nNOTE: changes done to import settings will not change the old attribute values.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0001.html\n");
 			imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 		}
-		else
-			return do_dialog();
+		else {
+			if (!PCB_HAVE_GUI_ATTR_DLG) {
+				pcb_message(PCB_MSG_ERROR, "import_sch not configured; please use ImportSch(setup, ...)\n");
+				return 1;
+			}
+			else
+				return do_dialog();
+		}
 	}
 
 	p = pcb_lookup_importer(imp_name);
