@@ -40,6 +40,8 @@
 
 static conf_import_sch_t conf_import_sch;
 
+static int do_import(void);
+
 #include "import_sch_dlg.c"
 
 static int do_import(void)

@@ -211,6 +211,7 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 static void isch_import_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	isch_flush_timer();
+	do_import();
 }
 
 static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
