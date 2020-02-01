@@ -72,12 +72,15 @@ static int isch_cmp(void *a_, void *b_)
 	return strcmp((*a)->name, (*b)->name) > 0 ? 1 : -1;
 }
 
-static void isch_switch_fmt(int target)
+static void isch_switch_fmt(int target, int setconf)
 {
 	const pcb_plug_import_t *p = pcb_lookup_importer(isch_ctx.inames[target]);
 	int len, n, controllable;
 
 	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wtab, lng, target);
+	if (setconf && (p != NULL))
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, p->name, POL_OVERWRITE);
+
 	if (p == NULL) {
 		len = 0;
 		controllable = 0;
@@ -120,12 +123,12 @@ static void isch_pcb2dlg(void)
 		PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
 
 	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wfmt, lng, tab);
-	isch_switch_fmt(tab);
+	isch_switch_fmt(tab, 0);
 }
 
 static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng);
+	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng, 1);
 }
 
 static void isch_arg_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
