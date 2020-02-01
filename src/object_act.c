@@ -419,7 +419,7 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 
 typedef struct {
 	enum { PLC_DISPERSE, PLC_FRAME, PLC_FIT } method;
-	enum { PLC_AT, PLC_MARK } location;
+	enum { PLC_AT, PLC_MARK, PLC_CENTER } location;
 	pcb_coord_t lx, ly, dd;
 	pcb_board_t *pcb;
 
@@ -430,6 +430,8 @@ typedef struct {
 
 static void plc_init(pcb_board_t *pcb, placer_t *plc)
 {
+	const char *confmet = conf_core.import.footprint_placement.method;
+
 	/* fallback: compatible with the original defaults */
 	plc->pcb = pcb;
 	plc->method = PLC_DISPERSE;
@@ -439,10 +441,46 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 	plc->dd = MIN(pcb->hidlib.size_x, pcb->hidlib.size_y) / 10;
 	plc->c = plc->cx = plc->cy = 0;
 
-	/* use the old import attributes */
-	plc->lx = parse_layout_attribute_units(pcb, "import::newX", plc->lx);
-	plc->ly = parse_layout_attribute_units(pcb, "import::newY", plc->ly);
-	plc->dd = parse_layout_attribute_units(pcb, "import::disperse", plc->dd);
+	if ((confmet != NULL) && (*confmet != '\0')) {
+		const char *s;
+
+		plc->lx = conf_core.import.footprint_placement.x;
+		plc->ly = conf_core.import.footprint_placement.y;
+		plc->dd = conf_core.import.footprint_placement.disperse;
+
+		if (pcb_strcasecmp(confmet, "disperse") == 0) plc->method = PLC_DISPERSE;
+		else if (pcb_strcasecmp(confmet, "frame") == 0) plc->method = PLC_FRAME;
+		else if (pcb_strcasecmp(confmet, "fit") == 0) plc->method = PLC_FIT;
+		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", confmet);
+
+		s = conf_core.import.footprint_placement.location;
+		if ((s == NULL) || (*s == '\0')) plc->location = PLC_AT;
+		else if (pcb_strcasecmp(s, "mark") == 0) plc->location = PLC_MARK;
+		else if (pcb_strcasecmp(s, "center") == 0) plc->location = PLC_CENTER;
+		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/location '%s', falling back to coordinates\n", s);
+
+	}
+	else {
+		/* use the old import attributes */
+		plc->lx = parse_layout_attribute_units(pcb, "import::newX", plc->lx);
+		plc->ly = parse_layout_attribute_units(pcb, "import::newY", plc->ly);
+		plc->dd = parse_layout_attribute_units(pcb, "import::disperse", plc->dd);
+	}
+
+	switch(plc->location) {
+		case PLC_AT: break;
+		case PLC_MARK:
+			if (pcb_marked.status) {
+				plc->lx = pcb_marked.X;
+				plc->ly = pcb_marked.Y;
+				break;
+			}
+		case PLC_CENTER:
+			plc->lx = pcb->hidlib.size_x / 2;
+			plc->ly = pcb->hidlib.size_y / 2;
+			break;
+	}
+
 }
 
 static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
