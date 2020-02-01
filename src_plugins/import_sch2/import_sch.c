@@ -34,6 +34,7 @@
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/globalconst.h>
 
+#include "board.h"
 #include "plug_import.h"
 #include "import_sch_conf.h"
 
@@ -46,6 +47,64 @@ static const char *import_sch_cookie = "import_sch2 plugin";
 
 #include "import_sch_dlg.c"
 
+static int convert_attribs(void)
+{
+	const char *mode = pcb_attrib_get(PCB, "import::mode");
+	const char *src0 = pcb_attrib_get(PCB, "import::src0");
+	char tmp[32];
+	int n, idx;
+
+	if ((mode == NULL) && (src0 == NULL))
+		return 0;
+
+	for(n = 0, idx = 0; n < MAX_ARGS; n++) {
+		const char *src;
+		
+		sprintf(tmp, "import::src%d", n);
+		src = pcb_attrib_get(PCB, tmp);
+		if (src != NULL) {
+			pcb_conf_grow("plugins/import_sch/args", idx+1);
+			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", idx, src, POL_OVERWRITE);
+			idx++;
+		}
+	}
+
+	if (mode == NULL)
+		mode = "gnetlist";
+	else if (strcmp(mode, "make") == 0)
+		mode = "cmd";
+	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, mode, POL_OVERWRITE);
+
+
+	if (strcmp(mode, "cmd") == 0) {
+		const char *outfile = pcb_attrib_get(PCB, "import::outfile");
+		const char *makefile = pcb_attrib_get(PCB, "import::makefile");
+		const char *target = pcb_attrib_get(PCB, "import::target");
+		gds_t cmdline;
+
+		if (outfile == NULL) outfile = "-";
+		if (target == NULL) target = "pcb_import";
+
+		gds_init(&cmdline);
+		gds_append_str(&cmdline, "make");
+		if (makefile != NULL) {
+			gds_append_str(&cmdline, " -f \"");
+			gds_append_str(&cmdline, makefile);
+			gds_append(&cmdline, '"');
+		}
+		gds_append(&cmdline, ' ');
+		gds_append_str(&cmdline, target);
+
+		pcb_conf_grow("plugins/import_sch/args", 2);
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 0, outfile, POL_OVERWRITE);
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 1, cmdline.array, POL_OVERWRITE);
+
+		gds_uninit(&cmdline);
+	}
+
+	return 1;
+}
+
 static int do_import(void)
 {
 	const char **a = NULL;
@@ -54,8 +113,14 @@ static int do_import(void)
 	const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 	pcb_plug_import_t *p;
 
-	if ((imp_name == NULL) || (*imp_name == '\0'))
-		return do_dialog();
+	if ((imp_name == NULL) || (*imp_name == '\0')) {
+		if (convert_attribs()) {
+			pcb_message(PCB_MSG_ERROR, "Had to convert import:: attributes to import_sch config\nNOTE: changes done to import settings will not change the old attribute values.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0001.html\n");
+			imp_name = conf_import_sch.plugins.import_sch.import_fmt;
+		}
+		else
+			return do_dialog();
+	}
 
 	p = pcb_lookup_importer(imp_name);
 	if (p == NULL) {
