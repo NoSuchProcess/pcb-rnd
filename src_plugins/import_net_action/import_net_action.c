@@ -75,7 +75,7 @@ static int net_action_support_prio(pcb_plug_import_t *ctx, unsigned int aspects,
 		}
 		if (good == (1|2)) {
 			fclose(f);
-			return 95;
+			return 100;
 		}
 	}
 
@@ -114,7 +114,7 @@ int pplg_init_import_net_action(void)
 	import_net_action.import           = net_action_import;
 	import_net_action.name             = "action";
 	import_net_action.desc             = "schamtics from pcb-rnd action script";
-	import_net_action.ui_prio          = 100;
+	import_net_action.ui_prio          = 95;
 	import_net_action.single_arg       = 1;
 	import_net_action.all_filenames    = 1;
 	import_net_action.ext_exec         = 0;
