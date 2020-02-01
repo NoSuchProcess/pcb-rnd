@@ -69,6 +69,15 @@ typedef struct {
 			CFT_BOOLEAN symmetric_negative;  /* selection box behaviour: when set, the selection direction is considered negative only if the box has negative size in the X direction */
 		} selection;
 
+		struct {
+			struct {
+				CFT_STRING method;             /* method/strategy of placement; one of: disperse, frame, fit */
+				CFT_STRING location;           /* placement coordinate for methods that require it; if empty, use fixed coordinates at x,y; if non-empty, it may be: mark, center */
+				CFT_COORD x;                   /* for some methods if location is empty, X coordinate of placement */
+				CFT_COORD y;                   /* for some methods if location is empty, Y coordinate of placement */
+			} footprint_placement;
+		} import;
+
 		/* this would need to be moved in the router plugin.... There are two
 		   reasons to keep it here:
 		   - the original pcb and pcb-rnd file formats already have named/numbered flags for it, so io_pcb needs it
