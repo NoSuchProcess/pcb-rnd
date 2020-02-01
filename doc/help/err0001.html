@@ -1,0 +1,34 @@
+<html>
+<body>
+
+<H1> Had to convert import:: attributes to import_sch config </H1>
+
+<H2> What it is </H2>
+<p>
+The old schematics import code used board attributes to remember the name
+of the schematics files and method of import. These attributes had names
+starting with <i>import::</i>.
+<p>
+The new import code does not use those attributes to store its configuration
+but uses the configuration subtree <i>plugins/import_sch</i>. The names
+and meaning of the settings changed too.
+<p>
+This error message is generated once, when you first run import schematics
+using the new code on a board file that still has the old, attribute based
+configuration. By the time the error message is printed, the code has already
+converted the old attributes to the new config.
+
+<H2> What you need to do </H2>
+<p>
+Normally: nothing.
+<p>
+There is only one special case: if you plan to use the same board file with
+older versions of pcb-rnd in parallel to a new version of pcb-rnd <b>and</b>
+you have to change the import configuration on any version, you will also need
+to do the same changes on the other version. This is because the new code
+will change only the import_sch config version, while the old code will change
+only the attributes.
+
+
+</body>
+</html>
