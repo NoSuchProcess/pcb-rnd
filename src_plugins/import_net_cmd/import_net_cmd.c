@@ -55,7 +55,7 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	PCB_IMPORT_SCH_VERBOSE(verbose);
 
 	if (numfns != 2) {
-		pcb_message(PCB_MSG_ERROR, "net_cmd_import: requires exactly two arguments:\nfirst argument must be the output file name or -\nsecond argument must be a full command line");
+		pcb_message(PCB_MSG_ERROR, "net_cmd_import: requires exactly two arguments:\nfirst argument must be the output file name or -\nsecond argument must be a full command line\n");
 		return -1;
 	}
 
