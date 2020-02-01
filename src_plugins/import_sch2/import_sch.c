@@ -259,6 +259,8 @@ static int do_import(void)
 	}
 
 	len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	if ((p->single_arg) && (len > 1))
+		len = 1;
 	a = malloc((len+1) * sizeof(char *));
 	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
 		a[n] = ci->val.string[0];
