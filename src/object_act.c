@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,12 +50,14 @@
 #include "draw.h"
 #include "move.h"
 #include "remove.h"
+#include "actions_pcb.h"
 #include <librnd/core/compat_misc.h>
 #include "layer_vis.h"
 #include "operation.h"
 #include "obj_pstk.h"
 #include "rotate.h"
 #include <librnd/core/actions.h>
+#include "view.h"
 
 static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
 static const char pcb_acth_Attributes[] =
@@ -429,6 +431,7 @@ typedef struct {
 
 	/* removal */
 	enum { PLC_SELECT, PLC_REMOVE, PLC_LIST } rem_method;
+	pcb_view_list_t *remlst;
 } placer_t;
 
 static void plc_init(pcb_board_t *pcb, placer_t *plc)
@@ -445,6 +448,7 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 	plc->ly = pcb->hidlib.size_y / 2;
 	plc->dd = MIN(pcb->hidlib.size_x, pcb->hidlib.size_y) / 10;
 	plc->c = plc->cx = plc->cy = 0;
+	plc->remlst = NULL;
 
 	if ((conf_plc_met != NULL) && (*conf_plc_met != '\0')) {
 		const char *s;
@@ -493,6 +497,8 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 			break;
 	}
 
+	if (plc->rem_method == PLC_LIST)
+		plc->remlst = calloc(sizeof(pcb_view_list_t), 1);
 }
 
 static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
@@ -544,16 +550,38 @@ static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
 static void plc_remove(placer_t *plc, pcb_subc_t *sc)
 {
 	switch(plc->rem_method) {
-		case PLC_LIST:
-			/* not yet implemented */
 		case PLC_SELECT:
 			PCB_FLAG_SET(PCB_FLAG_SELECTED, sc);
 			break;
 		case PLC_REMOVE:
 			pcb_remove_object(sc->type, sc->parent.data, sc, sc);
 			break;
+		case PLC_LIST:
+			{
+				pcb_view_t *v = pcb_view_new(&plc->pcb->hidlib, "removal", "Remove part", "This part is not present on the new netlist");
+				pcb_view_append_obj(v, 0, (pcb_any_obj_t *)sc);
+				pcb_view_set_bbox_by_objs(plc->pcb->Data, v);
+				pcb_view_list_append(plc->remlst, v);
+			}
+			break;
 	}
 }
+
+static void plc_end(placer_t *plc)
+{
+	if (plc->rem_method == PLC_LIST) {
+		fgw_arg_t res;
+		fgw_arg_t args[4];
+		args[1].type = FGW_STR; args[1].val.str = "import_removal";
+		args[2].type = FGW_STR; args[2].val.str = "import part removal";
+		fgw_ptr_reg(&pcb_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, plc->remlst);
+		pcb_actionv_bin(&plc->pcb->hidlib, "viewlist", &res, 4, args);
+		plc->remlst = NULL;
+	}
+	if ((number_of_footprints_not_found > 0) && (!pcbhl_conf.rc.quiet))
+		pcb_message(PCB_MSG_ERROR, "Footprint import: not all requested footprints were found.\nSee the message log above for details\n");
+}
+
 
 static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -594,8 +622,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			}
 		}
 		PCB_END_LOOP;
-		if ((number_of_footprints_not_found > 0) && (!pcbhl_conf.rc.quiet))
-			pcb_message(PCB_MSG_ERROR, "Footprint import: not all requested footprints were found.\nSee the message log above for details\n");
+		plc_end(&plc);
 		return 0;
 	}
 
