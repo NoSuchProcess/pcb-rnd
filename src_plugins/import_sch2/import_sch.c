@@ -122,6 +122,11 @@ static void isch_switch_fmt(int target, int setconf)
 		controllable = 0;
 	}
 	else if (p->single_arg) {
+		len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+		if (len < 1) {
+			pcb_conf_grow("plugins/import_sch/args", 1);
+			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 0, "", POL_OVERWRITE);
+		}
 		len = 1;
 		controllable = 0;
 	}
@@ -129,6 +134,7 @@ static void isch_switch_fmt(int target, int setconf)
 		len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
 		controllable = 1;
 	}
+
 
 	for(n = 0; n < MAX_ARGS; n++) {
 		pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_box[n], n >= len);
