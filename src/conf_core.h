@@ -75,6 +75,7 @@ typedef struct {
 				CFT_STRING location;           /* placement coordinate for methods that require it; if empty, use fixed coordinates at x,y; if non-empty, it may be: mark, center */
 				CFT_COORD x;                   /* for some methods if location is empty, X coordinate of placement */
 				CFT_COORD y;                   /* for some methods if location is empty, Y coordinate of placement */
+				CFT_COORD disperse;            /* dispersion distance for the disperse method */
 			} footprint_placement;
 		} import;
 
