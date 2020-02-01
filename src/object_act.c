@@ -417,6 +417,49 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 	return strcmp(got_name, expect_name);
 }
 
+typedef struct {
+	enum { PLC_DISPERSE, PLC_FRAME, PLC_FIT } method;
+	enum { PLC_AT, PLC_MARK } location;
+	pcb_coord_t lx, ly, dd;
+	pcb_board_t *pcb;
+} placer_t;
+
+static void plc_init(pcb_board_t *pcb, placer_t *plc)
+{
+	/* fallback: compatible with the original defaults */
+	plc->pcb = pcb;
+	plc->method = PLC_DISPERSE;
+	plc->location = PLC_AT;
+	plc->lx = pcb->hidlib.size_x / 2;
+	plc->ly = pcb->hidlib.size_y / 2;
+	plc->dd = MIN(pcb->hidlib.size_x, pcb->hidlib.size_y) / 10;
+
+	/* use the old import attributes */
+	plc->lx = parse_layout_attribute_units(pcb, "import::newX", plc->lx);
+	plc->ly = parse_layout_attribute_units(pcb, "import::newY", plc->ly);
+	plc->dd = parse_layout_attribute_units(pcb, "import::disperse", plc->dd);
+}
+
+static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
+{
+	pcb_coord_t px = plc->lx, py = plc->ly;
+
+	switch(plc->method) {
+		case PLC_DISPERSE:
+			if (plc->dd > 0) {
+				px += pcb_rand() % (plc->dd * 2) - plc->dd;
+				py += pcb_rand() % (plc->dd * 2) - plc->dd;
+			}
+			break;
+		case PLC_FRAME:
+		case PLC_FIT:
+			break;
+	}
+
+	*ox = px;
+	*oy = py;
+}
+
 static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
@@ -425,6 +468,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	const char *refdes, *value, *footprint;
 	fgw_arg_t rs, args[4];
 	int fx, fy, fs;
+	static placer_t plc;
 
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, ElementList, op = fgw_keyword(&argv[1]));
 
@@ -439,6 +483,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		}
 		PCB_END_LOOP;
 		number_of_footprints_not_found = 0;
+		plc_init(pcb, &plc);
 		return 0;
 	}
 
@@ -491,7 +536,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
 
 	if (sc == NULL) {
-		pcb_coord_t nx, ny, d;
+		pcb_coord_t px, py;
 
 #ifdef DEBUG
 		printf("  ... Footprint not on board, need to add it.\n");
@@ -503,31 +548,12 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			return 0;
 		}
 
-		nx = PCB_ACT_HIDLIB->size_x / 2;
-		ny = PCB_ACT_HIDLIB->size_y / 2;
-		d = MIN(PCB_ACT_HIDLIB->size_x, PCB_ACT_HIDLIB->size_y) / 10;
+		plc_place(&plc, &px, &py);
 
-		nx = parse_layout_attribute_units(pcb, "import::newX", nx);
-		ny = parse_layout_attribute_units(pcb, "import::newY", ny);
-		d = parse_layout_attribute_units(pcb, "import::disperse", d);
-
-		if (d > 0) {
-			nx += pcb_rand() % (d * 2) - d;
-			ny += pcb_rand() % (d * 2) - d;
-		}
-
-		if (nx < 0)
-			nx = 0;
-		if (nx >= PCB_ACT_HIDLIB->size_x)
-			nx = PCB_ACT_HIDLIB->size_x - 1;
-		if (ny < 0)
-			ny = 0;
-		if (ny >= PCB_ACT_HIDLIB->size_y)
-			ny = PCB_ACT_HIDLIB->size_y - 1;
 
 		/* Place components onto center of board. */
-		pcb_crosshair.Y = ny; /* flipping side depends on the crosshair unfortunately */
-		if (pcb_buffer_copy_to_layout(pcb, nx, ny, pcb_false))
+		pcb_crosshair.Y = py; /* flipping side depends on the crosshair unfortunately */
+		if (pcb_buffer_copy_to_layout(pcb, px, py, pcb_false))
 			pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (sc && subc_differs(sc, footprint)) {
