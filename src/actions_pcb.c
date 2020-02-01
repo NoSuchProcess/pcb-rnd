@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@
 #include <librnd/core/compat_misc.h>
 #include "layer.h"
 #include "layer_addr.h"
+#include "undo.h"
+#include "change.h"
 #include <librnd/core/pcb-printf.h>
 #include "conf_core.h"
 
@@ -280,4 +282,22 @@ void pcb_actions_init_pcb_only(void)
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_DATA\n");
 		abort();
 	}
+}
+
+int pcb_act_execute_file(pcb_hidlib_t *hidlib, const char *fn)
+{
+	int res;
+
+	defer_updates = 1;
+	defer_needs_update = 0;
+
+	res = rnd_act_execute_file(hidlib, fn);
+
+	defer_updates = 0;
+	if (defer_needs_update) {
+		pcb_undo_inc_serial();
+		pcb_gui->invalidate_all(pcb_gui);
+	}
+
+	return res;
 }
