@@ -69,15 +69,6 @@ typedef struct {
 			CFT_BOOLEAN symmetric_negative;  /* selection box behaviour: when set, the selection direction is considered negative only if the box has negative size in the X direction */
 		} selection;
 
-		struct {
-			struct {
-				CFT_STRING method;             /* method/strategy of placement; one of: disperse, frame, fit */
-				CFT_STRING location;           /* placement coordinate for methods that require it; if empty, use fixed coordinates at x,y; if non-empty, it may be: mark, center */
-				CFT_COORD x;                   /* for some methods if location is empty, X coordinate of placement */
-				CFT_COORD y;                   /* for some methods if location is empty, Y coordinate of placement */
-				CFT_COORD disperse;            /* dispersion distance for the disperse method */
-			} footprint_placement;
-		} import;
 
 		/* this would need to be moved in the router plugin.... There are two
 		   reasons to keep it here:
@@ -92,6 +83,16 @@ typedef struct {
 
 		CFT_STRING subc_conv_refdes;       /* automatic refdes value assigned to new subcircuits on conversion from objects - if empty, no refdes text or attribute is added; if the value is <?>, the refdes text object is added but no refdes attribute is created */
 	} editor;
+
+	struct {
+		struct {
+			CFT_STRING method;             /* method/strategy of placement; one of: disperse, frame, fit */
+			CFT_STRING location;           /* placement coordinate for methods that require it; if empty, use fixed coordinates at x,y; if non-empty, it may be: mark, center */
+			CFT_COORD x;                   /* for some methods if location is empty, X coordinate of placement */
+			CFT_COORD y;                   /* for some methods if location is empty, Y coordinate of placement */
+			CFT_COORD disperse;            /* dispersion distance for the disperse method */
+		} footprint_placement;
+	} import;
 
 	const struct {                       /* rc */
 		CFT_REAL file_changed_interval;    /* how often to check if the file has changed on the disk (in seconds); 0 or negative means no check at all */
