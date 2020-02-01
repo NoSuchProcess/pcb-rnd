@@ -80,6 +80,7 @@ plugin_def("import_ipcd356",   "import IPC-D-356 Netlist",        sbuildin, 1, 0
 plugin_def("import_ltspice",   "import ltspice .net+.asc",        sbuildin, 1, 0)
 plugin_def("import_mentor_sch","import mentor graphics sch",      sbuildin, 1, 0)
 plugin_def("import_mucs",      "import mucs routing",             sbuildin, 1, 0)
+plugin_def("import_net_action","import net: action script",       sbuildin, 1, 0)
 plugin_def("import_net_cmd",   "sch/net import: run custom cmd",  sbuildin, 1, 0)
 plugin_def("import_netlist",   "import netlist",                  sbuildin, 1, 0)
 plugin_def("import_pxm_gd",    "import pixmaps from png/gif/jpg", sbuildin, 1, 0)
