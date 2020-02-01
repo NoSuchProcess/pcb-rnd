@@ -181,6 +181,33 @@ static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
+static void isch_browse_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int n, idx = -1, wid = attr - isch_ctx.dlg;
+	char *name;
+	static char cwd[PCB_PATH_MAX + 1];
+
+	for(n = 0; n < MAX_ARGS; n++) {
+		if (isch_ctx.warg_button[n] == wid) {
+			idx = n;
+			break;
+		}
+	}
+	if (idx < 0)
+		return;
+
+	if (*cwd == '\0')
+		pcb_get_wd(cwd);
+
+	name = pcb_gui->fileselect(pcb_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+	if (name == NULL)
+		return;
+	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", idx, name, POL_OVERWRITE);
+	isch_pcb2dlg();
+	free(name);
+}
+
+
 static void isch_import_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	isch_flush_timer();
@@ -256,6 +283,7 @@ static int do_dialog(void)
 							isch_ctx.warg[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
 							PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_chg_cb);
 						PCB_DAD_BUTTON(isch_ctx.dlg, "browse");
+							PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_browse_cb);
 							isch_ctx.warg_button[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
 					PCB_DAD_END(isch_ctx.dlg);
 				}

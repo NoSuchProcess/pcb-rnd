@@ -31,6 +31,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/globalconst.h>
 
 #include "plug_import.h"
 #include "import_sch_conf.h"
