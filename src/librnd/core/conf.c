@@ -1247,6 +1247,26 @@ void pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, c
 	htsp_set(pcb_conf_fields, (char *)path, node);
 }
 
+int pcb_conf_grow_list_(conf_native_t *node, int new_size)
+{
+	void *v;
+	int old_size = node->array_size;
+
+	if (new_size == old_size)
+		return 0;
+	if (new_size < old_size)
+		return -1;
+
+	v = realloc(node->prop, sizeof(confprop_t) * new_size);
+	if (v == NULL)
+		return -1;
+
+	node->array_size = new_size;
+	node->prop = v;
+	memset(node->prop + old_size, 0, sizeof(confprop_t) * (new_size - old_size));
+	return 0;
+}
+
 void pcb_conf_free_native(conf_native_t *node)
 {
 	if (node->type == CFN_LIST) {
@@ -1524,6 +1544,13 @@ int pcb_conf_del(conf_role_t target, const char *path, int arr_idx)
 	return 0;
 }
 
+int pcb_conf_grow(const char *path, int new_size)
+{
+	conf_native_t *nat = pcb_conf_get_field(path);
+	if (nat == NULL)
+		return -1;
+	return pcb_conf_grow_list_(nat, new_size);
+}
 
 int pcb_conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
 {

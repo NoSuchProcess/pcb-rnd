@@ -192,6 +192,9 @@ int pcb_conf_set(conf_role_t target, const char *path, int arr_idx, const char *
    considerations as in pcb_conf_set. */
 int pcb_conf_del(conf_role_t target, const char *path, int arr_idx);
 
+/* Increase the size of a list (array) to new_size; returns 0 on success */
+int pcb_conf_grow(const char *path, int new_size);
+
 /* Same as pcb_conf_set, but without updating the binary - useful for multiple
    pcb_conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions.
    If mkdirp is non-zero, automatically create the policy subtree if it doesn't exist. */
