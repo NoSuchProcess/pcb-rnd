@@ -7,6 +7,7 @@
 - CLEANUP: move import_sch to import_sch_old and start a new, generic plugin
 	- FEATURE: revise the importer; http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 	- FEATURE: view list: import sch. shouldn't select elements to be removed but put them on a view list
+	- when removing import_sch, also remove ImportGUI()
 - CLEANUP/FEATURE: undo: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
