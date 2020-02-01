@@ -161,7 +161,7 @@
 	<td> <I>Next grid</I><br>Grid(up) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>a<br>&nbsp;a
-	<td> <I>Start routing an arc</I><br>Mode(Save); Mode(Arc); Mode(Notify)
+	<td> <I>Start routing an arc</I><br>Tool(Save); Tool(arc); Tool(Press)
 <tr bgcolor="#DDFFFF">
 	<th align=left>a<br>&nbsp;b<br>&nbsp;&nbsp;f<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Replace footprint</I><br>ReplaceFootprint() 
@@ -179,7 +179,7 @@
 	<td> <I>Disperse selected subcircuits</I><br>DisperseElements(Selected) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>a<br>&nbsp;l
-	<td> <I>Start routing a line</I><br>Mode(Save); Mode(Line); Mode(Notify)
+	<td> <I>Start routing a line</I><br>Tool(Save); Tool(line); Tool(Press)
 <tr bgcolor="#DDFFFF">
 	<th align=left>a<br>&nbsp;m
 	<td> <I>Place mark</I><br>MarkCrosshair() 
@@ -227,7 +227,7 @@
 	<td> <I>Rip up selected auto-routed tracks</I><br>RipUp(Selected) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>a<br>&nbsp;v
-	<td> <I>Place via</I><br>Mode(Save); Mode(Via); Mode(Notify); Mode(Restore)
+	<td> <I>Place via</I><br>Tool(Save); Tool(via); Tool(Press); Tool(Restore)
 <tr bgcolor="#DDFFFF">
 	<th align=left>a<br>&nbsp;w
 	<td> <I>Place mark</I><br>MarkCrosshair() 
@@ -256,200 +256,206 @@
 	<th align=left>b<br>&nbsp;c<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Clear buffer</I><br>PasteBuffer(Clear) 
 <tr bgcolor="#FFFFFF">
-	<th align=left>b<br>&nbsp;c<br>&nbsp;&nbsp;p
-	<td> <I>Convert buffer to padstack</I><br>PadstackConvert(buffer); Mode(PasteBuffer)
+	<th align=left>b<br>&nbsp;c<br>&nbsp;&nbsp;e
+	<td> <I>Convert buffer to extended object...</I><br>ExtobjConvFrom(buffer, @gui); Tool(buffer)
 <tr bgcolor="#DDFFFF">
+	<th align=left>b<br>&nbsp;c<br>&nbsp;&nbsp;p
+	<td> <I>Convert buffer to padstack</I><br>PadstackConvert(buffer); Tool(buffer)
+<tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;c<br>&nbsp;&nbsp;s
 	<td> <I>Convert buffer to subcircuit</I><br>PasteBuffer(ConvertSubc) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;f<br>&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Load buffer content from file</I><br>PasteBuffer(LoadAll) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;f<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Save buffer content to file</I><br>PasteBuffer(SaveAll) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;m<br>&nbsp;&nbsp;l
-	<td> <I>Mirror buffer (left/right)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Mirror buffer (left/right)</I><br>Tool(buffer); PasteBuffer(Rotate,1); PasteBuffer(Mirror); PasteBuffer(Rotate,3)
+<tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;m<br>&nbsp;&nbsp;u
-	<td> <I>Mirror buffer (up/down)</I><br>Mode(PasteBuffer); PasteBuffer(Mirror)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Mirror buffer (up/down)</I><br>Tool(buffer); PasteBuffer(Mirror)
+<tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;n
-	<td> <I>Normalize</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1); PasteBuffer(Normalize)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Normalize</I><br>Tool(buffer); PasteBuffer(Rotate,1); PasteBuffer(Normalize)
+<tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;a
-	<td> <I>Arbitrarily Rotate Buffer</I><br>Mode(PasteBuffer); FreeRotateBuffer()
-<tr bgcolor="#FFFFFF">
-	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;l
-	<td> <I>Rotate buffer 90 deg CCW (left)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1)
+	<td> <I>Arbitrarily Rotate Buffer</I><br>Tool(buffer); FreeRotateBuffer()
 <tr bgcolor="#DDFFFF">
-	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;r
-	<td> <I>Rotate buffer 90 deg CW (right)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,3)
+	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;l
+	<td> <I>Rotate buffer 90 deg CCW (left)</I><br>Tool(buffer); PasteBuffer(Rotate,1)
 <tr bgcolor="#FFFFFF">
+	<th align=left>b<br>&nbsp;r<br>&nbsp;&nbsp;r
+	<td> <I>Rotate buffer 90 deg CW (right)</I><br>Tool(buffer); PasteBuffer(Rotate,3)
+<tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;b
 	<td> <I>Break buffer subcircuits to pieces</I><br>PasteBuffer(Restore) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;d
 	<td> <I>in multiple footprint files</I><br>SaveLib(dir, buffer)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;l<br>&nbsp;&nbsp;&nbsp;f
 	<td> <I>in a single lib file</I><br>SaveLib(file, buffer)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;p
 	<td> <I>Break buffer padstacks to pieces</I><br>PadstackBreakup(buffer) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>b<br>&nbsp;s<br>&nbsp;&nbsp;s
 	<td> <I>Save buffer subcircuit to file</I><br>Save(PasteBuffer)
-<tr bgcolor="#DDFFFF">
-	<th align=left>c-ctrl<br>&nbsp;
-	<td> <I>Copy selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer)
 <tr bgcolor="#FFFFFF">
+	<th align=left>c-ctrl<br>&nbsp;
+	<td> <I>Copy selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer)
+<tr bgcolor="#DDFFFF">
 	<th align=left>c<br>&nbsp;c<br>&nbsp;&nbsp;
 	<td> <I>Clear/reset lookup</I><br>Connection(Reset); Display(Redraw)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>c<br>&nbsp;d<br>&nbsp;&nbsp;
 	<td> <I>Del/Remove Connected</I><br>Atomic(Save); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Restore); Connection(Find); Atomic(Restore); Select(Connection); Atomic(Restore); RemoveSelected(); Atomic(Restore); Connection(Reset); Atomic(Restore); Unselect(All); Atomic(Block)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>c<br>&nbsp;e<br>&nbsp;&nbsp;
 	<td> <I>Erase rats nest</I><br>DeleteRats(AllRats) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>c<br>&nbsp;f<br>&nbsp;&nbsp;
 	<td> <I>Find Connections</I><br>Connection(Reset); Connection(Find)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>c<br>&nbsp;r<br>&nbsp;&nbsp;
 	<td> <I>Optimize rats nest</I><br>Atomic(Save); DeleteRats(AllRats); Atomic(Restore); AddRats(AllRats); Atomic(Close)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>c<br>&nbsp;s<br>&nbsp;&nbsp;
 	<td> <I>Select shortest rat</I><br>AddRats(Close) 
-<tr bgcolor="#FFFFFF">
-	<th align=left>delete
-	<td> <I>Remove object</I><br>Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)
 <tr bgcolor="#DDFFFF">
+	<th align=left>delete
+	<td> <I>Remove object</I><br>Tool(Save); Tool(remove); Tool(Press); Tool(Restore)
+<tr bgcolor="#FFFFFF">
 	<th align=left>down
 	<td> <I>Step Down</I><br>Cursor(Warp,0,-1,grid) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>down-ctrl
 	<td> <I>Scroll Down</I><br>Scroll(down) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>down-shift
 	<td> <I>Step +Down</I><br>Cursor(Pan,0,-50,view) 
-<tr bgcolor="#FFFFFF">
-	<th align=left>e<br>&nbsp;c
-	<td> <I>Copy selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Mode(PasteBuffer)
 <tr bgcolor="#DDFFFF">
-	<th align=left>e<br>&nbsp;d
-	<td> <I>Remove object</I><br>Mode(Save); Mode(Remove); Mode(Notify); Mode(Restore)
+	<th align=left>e<br>&nbsp;c
+	<td> <I>Copy selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer)
 <tr bgcolor="#FFFFFF">
+	<th align=left>e<br>&nbsp;d
+	<td> <I>Remove object</I><br>Tool(Save); Tool(remove); Tool(Press); Tool(Restore)
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;f
 	<td> <I>Object flags...</I><br>FlagEdit() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;c
 	<td> <I>Clearance +2 mil</I><br>ChangeClearSize(Object,+2,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;c-shift
 	<td> <I>Clearance -2 mil</I><br>ChangeClearSize(Object,-2,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;d
 	<td> <I>ChangeDrill +5 mil</I><br>ChangeDrillSize(Object,+5,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;d-shift
 	<td> <I>ChangeDrill -5 mil</I><br>ChangeDrillSize(Object,-5,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;s
 	<td> <I>ChangeSize +5 mil</I><br>ChangeSize(Object,+5,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;s-shift
 	<td> <I>ChangeSize -5 mil</I><br>ChangeSize(Object,-5,mil) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;g<br>&nbsp;&nbsp;y
 	<td> <I>ChangeSizes to Route style</I><br>ChangeSizes(Object,style,mil) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;i
 	<td> <I>Flip Object</I><br>Flip(Object) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;j
 	<td> <I>ChangeJoin Object</I><br>ChangeJoin(Object) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;l
 	<td> <I>Move to current layer</I><br>MoveToCurrentLayer(Object) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;o
 	<td> <I>Change font...</I><br>FontSel(Object) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;p
 	<td> <I>Object Properties...</I><br>PropEdit(selection) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;r
 	<td> <I>Change refdes</I><br>ChangeName(Refdes) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;b
 	<td> <I>Layer bindings...</I><br>LayerBinding() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;e
 	<td> <I>External editor...</I><br>GetXY(Click on the subcircuit to edit); extedit(object)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;r
 	<td> <I>Refdes</I><br>ChangeName(Subc) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;s
 	<td> <I>Set Same Style</I><br>SetSame() 
+<tr bgcolor="#DDFFFF">
+	<th align=left>e<br>&nbsp;s<br>&nbsp;&nbsp;x
+	<td> <I>Convert to extended object...</I><br>ExtobjConvFrom(Object, @gui) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;t
 	<td> <I>Edit text...</I><br>ChangeName(Object) 
 <tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;v
-	<td> <I>Paste buffer to layout</I><br>Mode(PasteBuffer) 
+	<td> <I>Paste buffer to layout</I><br>Tool(buffer) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>e<br>&nbsp;x
-	<td> <I>Cut selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); Unselect(All); Mode(PasteBuffer)
+	<td> <I>Cut selection to buffer</I><br>GetXY(Click to set the snap point for this buffer); PasteBuffer(Clear); PasteBuffer(MoveSelected); Tool(buffer)
 <tr bgcolor="#DDFFFF">
 	<th align=left>e<br>&nbsp;y<br>&nbsp;&nbsp;
 	<td> <I>Cycle object being dragged</I><br>CycleDrag() 
 <tr bgcolor="#FFFFFF">
 	<th align=left>enter
-	<td> <I>Click (left)</I><br>Mode(Notify); Mode(Release)
+	<td> <I>Click (left)</I><br>Tool(Press); Tool(Release)
 <tr bgcolor="#DDFFFF">
 	<th align=left>escape
-	<td> <I>Cancel</I><br>Mode(Escape) 
+	<td> <I>Cancel</I><br>Tool(Escape) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>f1
-	<td> <I>Via</I><br>Mode(Via)
+	<td> <I>Via</I><br>Tool(via)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f10
-	<td> <I>Thermal</I><br>Mode(Thermal)
+	<td> <I>Thermal</I><br>Tool(thermal)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f11
-	<td> <I>Arrow</I><br>Mode(Arrow)
+	<td> <I>Arrow</I><br>Tool(arrow)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f12
-	<td> <I>Lock</I><br>Mode(Lock)
+	<td> <I>Lock</I><br>Tool(lock)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f2
-	<td> <I>Line</I><br>Mode(Line)
+	<td> <I>Line</I><br>Tool(line)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f3
-	<td> <I>Arc</I><br>Mode(Arc)
+	<td> <I>Arc</I><br>Tool(arc)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f4
-	<td> <I>Text</I><br>Mode(Text)
+	<td> <I>Text</I><br>Tool(text)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f5
-	<td> <I>Rectangle</I><br>Mode(Rectangle)
+	<td> <I>Rectangle</I><br>Tool(rectangle)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f6
-	<td> <I>Polygon</I><br>Mode(Polygon)
+	<td> <I>Polygon</I><br>Tool(poly)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f7
-	<td> <I>Buffer</I><br>Mode(PasteBuffer)
+	<td> <I>Buffer</I><br>Tool(buffer)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f7-shift
-	<td> <I>Rotate buffer 90 deg CCW (left)</I><br>Mode(PasteBuffer); PasteBuffer(Rotate,1)
+	<td> <I>Rotate buffer 90 deg CCW (left)</I><br>Tool(buffer); PasteBuffer(Rotate,1)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f8
-	<td> <I>Del/Remove</I><br>Mode(Remove)
+	<td> <I>Del/Remove</I><br>Tool(remove)
 <tr bgcolor="#FFFFFF">
 	<th align=left>f9
-	<td> <I>Rotate</I><br>Mode(Rotate)
+	<td> <I>Rotate</I><br>Tool(rotate)
 <tr bgcolor="#DDFFFF">
 	<th align=left>f<br>&nbsp;a
 	<td> <I>Save Layout As...</I><br>Save(LayoutAs)
@@ -536,7 +542,7 @@
 	<td> <I>Generate object report</I><br>ReportObject() 
 <tr bgcolor="#DDFFFF">
 	<th align=left>insert
-	<td> <I>Insert Point</I><br>Mode(InsertPoint)
+	<td> <I>Insert Point</I><br>Tool(insert)
 <tr bgcolor="#FFFFFF">
 	<th align=left>j<br>&nbsp;h
 	<td> <I>Scroll Left</I><br>Scroll(left) 
@@ -563,10 +569,10 @@
 	<td> <I>Step Right</I><br>Cursor(Warp,1,0,grid) 
 <tr bgcolor="#FFFFFF">
 	<th align=left>k<br>&nbsp;r
-	<td> <I>Click (right)</I><br>Mode(Release); Popup(popup-obj, obj-type)
+	<td> <I>Click (right)</I><br>Tool(Release); Popup(popup-obj, obj-type)
 <tr bgcolor="#DDFFFF">
 	<th align=left>k<br>&nbsp;space
-	<td> <I>Click (left)</I><br>Mode(Notify); Mode(Release)
+	<td> <I>Click (left)</I><br>Tool(Press); Tool(Release)
 <tr bgcolor="#FFFFFF">
 	<th align=left>left
 	<td> <I>Step Left</I><br>Cursor(Warp,-1,0,grid) 
@@ -727,195 +733,198 @@
 	<th align=left>s<br>&nbsp;b<br>&nbsp;&nbsp;s
 	<td> <I>Break selection subcircuits to pieces</I><br>PasteBuffer(Push); PasteBuffer(5); PasteBuffer(Clear); PasteBuffer(AddSelected); RemoveSelected(); PasteBuffer(Restore); PasteBuffer(ToLayout, crosshair); PasteBuffer(Clear); PasteBuffer(Pop)
 <tr bgcolor="#DDFFFF">
-	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp;
-	<td> <I>Convert selection to padstack</I><br>PadstackConvert(selected); Mode(PasteBuffer)
+	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;e<br>&nbsp;&nbsp;&nbsp;
+	<td> <I>Convert selection to extended object...</I><br>ExtobjConvFrom(Selected, @gui)
 <tr bgcolor="#FFFFFF">
+	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;p<br>&nbsp;&nbsp;&nbsp;
+	<td> <I>Convert selection to padstack</I><br>PadstackConvert(selected); Tool(buffer)
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;c<br>&nbsp;&nbsp;s<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Convert selection to subcircuit</I><br>Select(ConvertSubc) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;f<br>&nbsp;&nbsp;
 	<td> <I>Move selected subcircuits to other side</I><br>Flip(SelectedElements) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;i<br>&nbsp;&nbsp;
 	<td> <I>Invert selection</I><br>Select(Invert) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;l<br>&nbsp;&nbsp;
 	<td> <I>Move selected objects to current layer</I><br>MoveToCurrentLayer(Selected) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;r<br>&nbsp;&nbsp;
 	<td> <I>Remove selected objects</I><br>RemoveSelected() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;s<br>&nbsp;&nbsp;
 	<td> <I>Advanced search and select</I><br>SearchDialog() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>s<br>&nbsp;u<br>&nbsp;&nbsp;a<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Unselect all objects</I><br>Unselect(All) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>s<br>&nbsp;u<br>&nbsp;&nbsp;c<br>&nbsp;&nbsp;&nbsp;
 	<td> <I>Unselect all found objects</I><br>Unselect(Connection)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>space
-	<td> <I>Arrow</I><br>Mode(Arrow)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Arrow</I><br>Tool(arrow)
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;a
-	<td> <I>Arc</I><br>Mode(Arc)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Arc</I><br>Tool(arc)
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;b
-	<td> <I>Buffer</I><br>Mode(PasteBuffer)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Buffer</I><br>Tool(buffer)
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;c
-	<td> <I>Copy</I><br>Mode(Copy)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Copy</I><br>Tool(copy)
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;d
-	<td> <I>Del/Remove</I><br>Mode(Remove)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Del/Remove</I><br>Tool(remove)
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;e
-	<td> <I>Thermal</I><br>Mode(Thermal)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Thermal</I><br>Tool(thermal)
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;h
-	<td> <I>Polygon Hole</I><br>Mode(PolygonHole)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Polygon Hole</I><br>Tool(polyhole)
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;i
-	<td> <I>Insert Point</I><br>Mode(InsertPoint)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Insert Point</I><br>Tool(insert)
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;k
-	<td> <I>Lock</I><br>Mode(Lock)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Lock</I><br>Tool(lock)
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;l
-	<td> <I>Line</I><br>Mode(Line)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Line</I><br>Tool(line)
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;m
-	<td> <I>Move</I><br>Mode(Move)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Move</I><br>Tool(move)
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;n
-	<td> <I>Arrow</I><br>Mode(Arrow)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Arrow</I><br>Tool(arrow)
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;o
-	<td> <I>Rotate</I><br>Mode(Rotate)
-<tr bgcolor="#DDFFFF">
+	<td> <I>Rotate</I><br>Tool(rotate)
+<tr bgcolor="#FFFFFF">
 	<th align=left>t<br>&nbsp;p
-	<td> <I>Polygon</I><br>Mode(Polygon)
-<tr bgcolor="#FFFFFF">
+	<td> <I>Polygon</I><br>Tool(poly)
+<tr bgcolor="#DDFFFF">
 	<th align=left>t<br>&nbsp;r
-	<td> <I>Rectangle</I><br>Mode(Rectangle)
-<tr bgcolor="#DDFFFF">
-	<th align=left>t<br>&nbsp;t
-	<td> <I>Text</I><br>Mode(Text)
+	<td> <I>Rectangle</I><br>Tool(rectangle)
 <tr bgcolor="#FFFFFF">
-	<th align=left>t<br>&nbsp;v
-	<td> <I>Via</I><br>Mode(Via)
+	<th align=left>t<br>&nbsp;t
+	<td> <I>Text</I><br>Tool(text)
 <tr bgcolor="#DDFFFF">
+	<th align=left>t<br>&nbsp;v
+	<td> <I>Via</I><br>Tool(via)
+<tr bgcolor="#FFFFFF">
 	<th align=left>tab
 	<td> <I>Flip up/down</I><br>SwapSides(V) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>tab-ctrl
 	<td> <I>Spin 180 degrees</I><br>SwapSides(R) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>tab-ctrl-shift
 	<td> <I>Swap Sides</I><br>SwapSides() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>tab-shift
 	<td> <I>Flip left/right</I><br>SwapSides(H) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>u<br>&nbsp;c
 	<td> <I>Clear undo-buffer</I><br>Undo(ClearList) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>u<br>&nbsp;d<br>&nbsp;&nbsp;
 	<td> <I>Undo dialog (for debugging)</I><br>UndoDialog() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>u<br>&nbsp;r
 	<td> <I>Redo last undone operation</I><br>Redo() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>u<br>&nbsp;u
 	<td> <I>Undo last operation</I><br>Undo() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>up
 	<td> <I>Step Up</I><br>Cursor(Warp,0,1,grid) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>up-ctrl
 	<td> <I>Scroll Up</I><br>Scroll(up) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>up-shift
 	<td> <I>Step +Up</I><br>Cursor(Pan,0,50,view) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;c
 	<td> <I>Center cursor</I><br>Center() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;f
 	<td> <I>Zoom Extents</I><br>Zoom() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;n
 	<td> <I>Show padstack numbers in a subc</I><br>Display(PinOrPadName) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;c
 	<td> <I>user configured</I><br>Display(SubcID)
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;f
 	<td> <I>footprint</I><br>Display(SubcID,"%a.footprint%")
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;r
 	<td> <I>refdes</I><br>Display(SubcID, "%a.refdes%")
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;s
 	<td> <I>refdes+value</I><br>Display(SubcID,"%a.refdes%\\n%a.value%")
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;s<br>&nbsp;&nbsp;v
 	<td> <I>value</I><br>Display(SubcID,"%a.value%")
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;t<br>&nbsp;&nbsp;c
 	<td> <I>user configured</I><br>Display(TermID)
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;t<br>&nbsp;&nbsp;n
 	<td> <I>name</I><br>Display(TermID, "%a.name%")
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>v<br>&nbsp;t<br>&nbsp;&nbsp;s
 	<td> <I>term+name</I><br>Display(TermID, "%a.term%,%a.name%")
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>v<br>&nbsp;t<br>&nbsp;&nbsp;t
 	<td> <I>term</I><br>Display(TermID, "%a.term%")
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;a
 	<td> <I>About...</I><br>About() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;d
 	<td> <I>DRC Check</I><br>DRC() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;f
 	<td> <I>Font selector</I><br>FontSel() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;l
 	<td> <I>Library</I><br>LibraryDialog() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;m
 	<td> <I>Message Log</I><br>LogDialog() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>w<br>&nbsp;n
 	<td> <I>Netlist</I><br>NetlistDialog() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>w<br>&nbsp;p
 	<td> <I>Pinout</I><br>Display(Pinout) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>y-ctrl
 	<td> <I>Redo last undone operation</I><br>Redo() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>z-ctrl
 	<td> <I>Undo last operation</I><br>Undo() 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>z<br>&nbsp;e<br>&nbsp;&nbsp;
 	<td> <I>Zoom Extents</I><br>Zoom() 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>z<br>&nbsp;f<br>&nbsp;&nbsp;
 	<td> <I>Zoom to found</I><br>ZoomTo(found) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>z<br>&nbsp;s<br>&nbsp;&nbsp;
 	<td> <I>Zoom to selection</I><br>ZoomTo(selected) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>z<br>&nbsp;x<br>&nbsp;&nbsp;
 	<td> <I>Zoom Out 20%</I><br>Zoom(+1.2) 
-<tr bgcolor="#DDFFFF">
+<tr bgcolor="#FFFFFF">
 	<th align=left>z<br>&nbsp;z<br>&nbsp;&nbsp;
 	<td> <I>Zoom In 20%</I><br>Zoom(-1.2) 
-<tr bgcolor="#FFFFFF">
+<tr bgcolor="#DDFFFF">
 	<th align=left>|
 	<td> <I>Wireframe draw</I><br>conf(toggle, editor/wireframe_draw, design) 
 </table>

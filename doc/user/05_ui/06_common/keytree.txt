@@ -47,13 +47,13 @@
 \	pcb-menu-default.lht	fullscreen(toggle) 	Full screen
 \057	pcb-menu-default.lht	Display(CycleClip) 	Cycle line clip\057refraction
 ]	pcb-menu-default.lht	Grid(up) 	Next grid
-a;a	pcb-menu-default.lht	Mode(Save);Mode(Arc);Mode(Notify)	Start routing an arc
+a;a	pcb-menu-default.lht	Tool(Save);Tool(arc);Tool(Press)	Start routing an arc
 a;b;f;	pcb-menu-default.lht	ReplaceFootprint() 	Replace footprint
 a;b;s;	pcb-menu-default.lht	net(swap) 	Swap nets on two selected pins
 a;b;x	pcb-menu-default.lht	SavePatch() 	netlist patch for back annotation
 a;d;a;	pcb-menu-default.lht	DisperseElements(All) 	Disperse all subcircuits
 a;d;s;	pcb-menu-default.lht	DisperseElements(Selected) 	Disperse selected subcircuits
-a;l	pcb-menu-default.lht	Mode(Save);Mode(Line);Mode(Notify)	Start routing a line
+a;l	pcb-menu-default.lht	Tool(Save);Tool(line);Tool(Press)	Start routing a line
 a;m	pcb-menu-default.lht	MarkCrosshair() 	Place mark
 a;o;a;	pcb-menu-default.lht	djopt(auto) 	Auto-Optimize
 a;o;d;	pcb-menu-default.lht	djopt(debumpify) 	Debumpify
@@ -69,7 +69,7 @@ a;r;a;	pcb-menu-default.lht	AutoRoute(AllRats) 	Auto-route all rats
 a;r;r;	pcb-menu-default.lht	RipUp(All) 	Rip up all auto-routed tracks
 a;r;s;	pcb-menu-default.lht	AutoRoute(SelectedRats) 	Auto-route selected rats
 a;r;t;	pcb-menu-default.lht	RipUp(Selected) 	Rip up selected auto-routed tracks
-a;v	pcb-menu-default.lht	Mode(Save);Mode(Via);Mode(Notify);Mode(Restore)	Place via
+a;v	pcb-menu-default.lht	Tool(Save);Tool(via);Tool(Press);Tool(Restore)	Place via
 a;w	pcb-menu-default.lht	MarkCrosshair() 	Place mark
 a;x;	pcb-menu-default.lht	DRC() 	Design Rule Checker
 b;1;	pcb-menu-default.lht	PasteBuffer(1)	Select Buffer #1
@@ -79,34 +79,35 @@ b;4;	pcb-menu-default.lht	PasteBuffer(4)	Select Buffer #4
 b;5;	pcb-menu-default.lht	PasteBuffer(5)	Select scratchpad
 b;b;	pcb-menu-default.lht	LayerBinding(buffer) 	Layer bindings...
 b;c;c;	pcb-menu-default.lht	PasteBuffer(Clear) 	Clear buffer
-b;c;p	pcb-menu-default.lht	PadstackConvert(buffer);Mode(PasteBuffer)	Convert buffer to padstack
+b;c;e	pcb-menu-default.lht	ExtobjConvFrom(buffer, @gui);Tool(buffer)	Convert buffer to extended object...
+b;c;p	pcb-menu-default.lht	PadstackConvert(buffer);Tool(buffer)	Convert buffer to padstack
 b;c;s	pcb-menu-default.lht	PasteBuffer(ConvertSubc) 	Convert buffer to subcircuit
 b;f;l;	pcb-menu-default.lht	PasteBuffer(LoadAll) 	Load buffer content from file
 b;f;s;	pcb-menu-default.lht	PasteBuffer(SaveAll) 	Save buffer content to file
-b;m;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Mirror);PasteBuffer(Rotate,3)	Mirror buffer (left\057right)
-b;m;u	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Mirror)	Mirror buffer (up\057down)
-b;n	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1);PasteBuffer(Normalize)	Normalize
-b;r;a	pcb-menu-default.lht	Mode(PasteBuffer);FreeRotateBuffer()	Arbitrarily Rotate Buffer
-b;r;l	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
-b;r;r	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW (right)
+b;m;l	pcb-menu-default.lht	Tool(buffer);PasteBuffer(Rotate,1);PasteBuffer(Mirror);PasteBuffer(Rotate,3)	Mirror buffer (left\057right)
+b;m;u	pcb-menu-default.lht	Tool(buffer);PasteBuffer(Mirror)	Mirror buffer (up\057down)
+b;n	pcb-menu-default.lht	Tool(buffer);PasteBuffer(Rotate,1);PasteBuffer(Normalize)	Normalize
+b;r;a	pcb-menu-default.lht	Tool(buffer);FreeRotateBuffer()	Arbitrarily Rotate Buffer
+b;r;l	pcb-menu-default.lht	Tool(buffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
+b;r;r	pcb-menu-default.lht	Tool(buffer);PasteBuffer(Rotate,3)	Rotate buffer 90 deg CW (right)
 b;s;b	pcb-menu-default.lht	PasteBuffer(Restore) 	Break buffer subcircuits to pieces
 b;s;l;d	pcb-menu-default.lht	SaveLib(dir, buffer)	in multiple footprint files
 b;s;l;f	pcb-menu-default.lht	SaveLib(file, buffer)	in a single lib file
 b;s;p	pcb-menu-default.lht	PadstackBreakup(buffer) 	Break buffer padstacks to pieces
 b;s;s	pcb-menu-default.lht	Save(PasteBuffer)	Save buffer subcircuit to file
-c-ctrl;	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Mode(PasteBuffer)	Copy selection to buffer
+c-ctrl;	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Tool(buffer)	Copy selection to buffer
 c;c;	pcb-menu-default.lht	Connection(Reset);Display(Redraw)	Clear\057reset lookup
 c;d;	pcb-menu-default.lht	Atomic(Save);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Restore);Connection(Find);Atomic(Restore);Select(Connection);Atomic(Restore);RemoveSelected();Atomic(Restore);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Block)	Del\057Remove Connected
 c;e;	pcb-menu-default.lht	DeleteRats(AllRats) 	Erase rats nest
 c;f;	pcb-menu-default.lht	Connection(Reset);Connection(Find)	Find Connections
 c;r;	pcb-menu-default.lht	Atomic(Save);DeleteRats(AllRats);Atomic(Restore);AddRats(AllRats);Atomic(Close)	Optimize rats nest
 c;s;	pcb-menu-default.lht	AddRats(Close) 	Select shortest rat
-delete	pcb-menu-default.lht	Mode(Save);Mode(Remove);Mode(Notify);Mode(Restore)	Remove object
+delete	pcb-menu-default.lht	Tool(Save);Tool(remove);Tool(Press);Tool(Restore)	Remove object
 down	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
 down-ctrl	pcb-menu-default.lht	Scroll(down) 	Scroll Down
 down-shift	pcb-menu-default.lht	Cursor(Pan,0,-50,view) 	Step +Down
-e;c	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Mode(PasteBuffer)	Copy selection to buffer
-e;d	pcb-menu-default.lht	Mode(Save);Mode(Remove);Mode(Notify);Mode(Restore)	Remove object
+e;c	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Tool(buffer)	Copy selection to buffer
+e;d	pcb-menu-default.lht	Tool(Save);Tool(remove);Tool(Press);Tool(Restore)	Remove object
 e;f	pcb-menu-default.lht	FlagEdit() 	Object flags...
 e;g;c	pcb-menu-default.lht	ChangeClearSize(Object,+2,mil) 	Clearance +2 mil
 e;g;c-shift	pcb-menu-default.lht	ChangeClearSize(Object,-2,mil) 	Clearance -2 mil
@@ -125,25 +126,26 @@ e;s;b	pcb-menu-default.lht	LayerBinding() 	Layer bindings...
 e;s;e	pcb-menu-default.lht	GetXY(Click on the subcircuit to edit);extedit(object)	External editor...
 e;s;r	pcb-menu-default.lht	ChangeName(Subc) 	Refdes
 e;s;s	pcb-menu-default.lht	SetSame() 	Set Same Style
+e;s;x	pcb-menu-default.lht	ExtobjConvFrom(Object, @gui) 	Convert to extended object...
 e;t	pcb-menu-default.lht	ChangeName(Object) 	Edit text...
-e;v	pcb-menu-default.lht	Mode(PasteBuffer) 	Paste buffer to layout
-e;x	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);RemoveSelected();Unselect(All);Mode(PasteBuffer)	Cut selection to buffer
+e;v	pcb-menu-default.lht	Tool(buffer) 	Paste buffer to layout
+e;x	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(MoveSelected);Tool(buffer)	Cut selection to buffer
 e;y;	pcb-menu-default.lht	CycleDrag() 	Cycle object being dragged
-enter	pcb-menu-default.lht	Mode(Notify);Mode(Release)	Click (left)
-escape	pcb-menu-default.lht	Mode(Escape) 	Cancel
-f1	pcb-menu-default.lht	Mode(Via)	Via
-f10	pcb-menu-default.lht	Mode(Thermal)	Thermal
-f11	pcb-menu-default.lht	Mode(Arrow)	Arrow
-f12	pcb-menu-default.lht	Mode(Lock)	Lock
-f2	pcb-menu-default.lht	Mode(Line)	Line
-f3	pcb-menu-default.lht	Mode(Arc)	Arc
-f4	pcb-menu-default.lht	Mode(Text)	Text
-f5	pcb-menu-default.lht	Mode(Rectangle)	Rectangle
-f6	pcb-menu-default.lht	Mode(Polygon)	Polygon
-f7	pcb-menu-default.lht	Mode(PasteBuffer)	Buffer
-f7-shift	pcb-menu-default.lht	Mode(PasteBuffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
-f8	pcb-menu-default.lht	Mode(Remove)	Del\057Remove
-f9	pcb-menu-default.lht	Mode(Rotate)	Rotate
+enter	pcb-menu-default.lht	Tool(Press);Tool(Release)	Click (left)
+escape	pcb-menu-default.lht	Tool(Escape) 	Cancel
+f1	pcb-menu-default.lht	Tool(via)	Via
+f10	pcb-menu-default.lht	Tool(thermal)	Thermal
+f11	pcb-menu-default.lht	Tool(arrow)	Arrow
+f12	pcb-menu-default.lht	Tool(lock)	Lock
+f2	pcb-menu-default.lht	Tool(line)	Line
+f3	pcb-menu-default.lht	Tool(arc)	Arc
+f4	pcb-menu-default.lht	Tool(text)	Text
+f5	pcb-menu-default.lht	Tool(rectangle)	Rectangle
+f6	pcb-menu-default.lht	Tool(poly)	Polygon
+f7	pcb-menu-default.lht	Tool(buffer)	Buffer
+f7-shift	pcb-menu-default.lht	Tool(buffer);PasteBuffer(Rotate,1)	Rotate buffer 90 deg CCW (left)
+f8	pcb-menu-default.lht	Tool(remove)	Del\057Remove
+f9	pcb-menu-default.lht	Tool(rotate)	Rotate
 f;a	pcb-menu-default.lht	Save(LayoutAs)	Save Layout As...
 f;c	pcb-menu-default.lht	cam()	Export with CAM job...
 f;e	pcb-menu-default.lht	ExportGUI()	Export layout...
@@ -172,7 +174,7 @@ i;c;r	pcb-menu-default.lht	fp_rehash() 	Re-scan the footprint library
 i;d	pcb-menu-default.lht	Report(DrillReport) 	Generate drill summary
 i;f	pcb-menu-default.lht	Report(FoundPins) 	Report found padstacks
 i;r	pcb-menu-default.lht	ReportObject() 	Generate object report
-insert	pcb-menu-default.lht	Mode(InsertPoint)	Insert Point
+insert	pcb-menu-default.lht	Tool(insert)	Insert Point
 j;h	pcb-menu-default.lht	Scroll(left) 	Scroll Left
 j;j	pcb-menu-default.lht	Scroll(down) 	Scroll Down
 j;k	pcb-menu-default.lht	Scroll(up) 	Scroll Up
@@ -181,8 +183,8 @@ k;h	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
 k;j	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
 k;k	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
 k;l	pcb-menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
-k;r	pcb-menu-default.lht	Mode(Release);Popup(popup-obj, obj-type)	Click (right)
-k;space	pcb-menu-default.lht	Mode(Notify);Mode(Release)	Click (left)
+k;r	pcb-menu-default.lht	Tool(Release);Popup(popup-obj, obj-type)	Click (right)
+k;space	pcb-menu-default.lht	Tool(Press);Tool(Release)	Click (left)
 left	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
 left-ctrl	pcb-menu-default.lht	Scroll(left) 	Scroll Left
 left-shift	pcb-menu-default.lht	Cursor(Pan,-50,0,view) 	Step +Left
@@ -236,7 +238,8 @@ s;a;a;	pcb-menu-default.lht	Select(All) 	Select all visible objects
 s;a;c;	pcb-menu-default.lht	Select(Connection)	Select all found objects
 s;b;p	pcb-menu-default.lht	PadstackBreakup(selected) 	Break selection padstack to pieces
 s;b;s	pcb-menu-default.lht	PasteBuffer(Push);PasteBuffer(5);PasteBuffer(Clear);PasteBuffer(AddSelected);RemoveSelected();PasteBuffer(Restore);PasteBuffer(ToLayout, crosshair);PasteBuffer(Clear);PasteBuffer(Pop)	Break selection subcircuits to pieces
-s;c;p;	pcb-menu-default.lht	PadstackConvert(selected);Mode(PasteBuffer)	Convert selection to padstack
+s;c;e;	pcb-menu-default.lht	ExtobjConvFrom(Selected, @gui)	Convert selection to extended object...
+s;c;p;	pcb-menu-default.lht	PadstackConvert(selected);Tool(buffer)	Convert selection to padstack
 s;c;s;	pcb-menu-default.lht	Select(ConvertSubc) 	Convert selection to subcircuit
 s;f;	pcb-menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to other side
 s;i;	pcb-menu-default.lht	Select(Invert) 	Invert selection
@@ -245,23 +248,23 @@ s;r;	pcb-menu-default.lht	RemoveSelected() 	Remove selected objects
 s;s;	pcb-menu-default.lht	SearchDialog() 	Advanced search and select
 s;u;a;	pcb-menu-default.lht	Unselect(All) 	Unselect all objects
 s;u;c;	pcb-menu-default.lht	Unselect(Connection)	Unselect all found objects
-space	pcb-menu-default.lht	Mode(Arrow)	Arrow
-t;a	pcb-menu-default.lht	Mode(Arc)	Arc
-t;b	pcb-menu-default.lht	Mode(PasteBuffer)	Buffer
-t;c	pcb-menu-default.lht	Mode(Copy)	Copy
-t;d	pcb-menu-default.lht	Mode(Remove)	Del\057Remove
-t;e	pcb-menu-default.lht	Mode(Thermal)	Thermal
-t;h	pcb-menu-default.lht	Mode(PolygonHole)	Polygon Hole
-t;i	pcb-menu-default.lht	Mode(InsertPoint)	Insert Point
-t;k	pcb-menu-default.lht	Mode(Lock)	Lock
-t;l	pcb-menu-default.lht	Mode(Line)	Line
-t;m	pcb-menu-default.lht	Mode(Move)	Move
-t;n	pcb-menu-default.lht	Mode(Arrow)	Arrow
-t;o	pcb-menu-default.lht	Mode(Rotate)	Rotate
-t;p	pcb-menu-default.lht	Mode(Polygon)	Polygon
-t;r	pcb-menu-default.lht	Mode(Rectangle)	Rectangle
-t;t	pcb-menu-default.lht	Mode(Text)	Text
-t;v	pcb-menu-default.lht	Mode(Via)	Via
+space	pcb-menu-default.lht	Tool(arrow)	Arrow
+t;a	pcb-menu-default.lht	Tool(arc)	Arc
+t;b	pcb-menu-default.lht	Tool(buffer)	Buffer
+t;c	pcb-menu-default.lht	Tool(copy)	Copy
+t;d	pcb-menu-default.lht	Tool(remove)	Del\057Remove
+t;e	pcb-menu-default.lht	Tool(thermal)	Thermal
+t;h	pcb-menu-default.lht	Tool(polyhole)	Polygon Hole
+t;i	pcb-menu-default.lht	Tool(insert)	Insert Point
+t;k	pcb-menu-default.lht	Tool(lock)	Lock
+t;l	pcb-menu-default.lht	Tool(line)	Line
+t;m	pcb-menu-default.lht	Tool(move)	Move
+t;n	pcb-menu-default.lht	Tool(arrow)	Arrow
+t;o	pcb-menu-default.lht	Tool(rotate)	Rotate
+t;p	pcb-menu-default.lht	Tool(poly)	Polygon
+t;r	pcb-menu-default.lht	Tool(rectangle)	Rectangle
+t;t	pcb-menu-default.lht	Tool(text)	Text
+t;v	pcb-menu-default.lht	Tool(via)	Via
 tab	pcb-menu-default.lht	SwapSides(V) 	Flip up\057down
 tab-ctrl	pcb-menu-default.lht	SwapSides(R) 	Spin 180 degrees
 tab-ctrl-shift	pcb-menu-default.lht	SwapSides() 	Swap Sides
