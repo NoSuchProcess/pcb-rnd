@@ -422,6 +422,10 @@ typedef struct {
 	enum { PLC_AT, PLC_MARK } location;
 	pcb_coord_t lx, ly, dd;
 	pcb_board_t *pcb;
+
+	/* cursor for some placement methods */
+	pcb_coord_t c, cx, cy;
+	int side;
 } placer_t;
 
 static void plc_init(pcb_board_t *pcb, placer_t *plc)
@@ -433,6 +437,7 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 	plc->lx = pcb->hidlib.size_x / 2;
 	plc->ly = pcb->hidlib.size_y / 2;
 	plc->dd = MIN(pcb->hidlib.size_x, pcb->hidlib.size_y) / 10;
+	plc->c = plc->cx = plc->cy = 0;
 
 	/* use the old import attributes */
 	plc->lx = parse_layout_attribute_units(pcb, "import::newX", plc->lx);
@@ -443,8 +448,11 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
 {
 	pcb_coord_t px = plc->lx, py = plc->ly;
+	pcb_box_t bbx;
 
 	switch(plc->method) {
+		case PLC_FIT:
+			/* not yet implemented */
 		case PLC_DISPERSE:
 			if (plc->dd > 0) {
 				px += pcb_rand() % (plc->dd * 2) - plc->dd;
@@ -452,7 +460,30 @@ static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
 			}
 			break;
 		case PLC_FRAME:
-		case PLC_FIT:
+			pcb_data_bbox(&bbx, PCB_PASTEBUFFER->Data, 0);
+			{
+				pcb_coord_t bx = bbx.X2 - bbx.X1, by = bbx.Y2 - bbx.Y1;
+				pcb_coord_t xo = PCB_PASTEBUFFER->X/2, yo = PCB_PASTEBUFFER->Y/2;
+				pcb_coord_t max = (plc->side % 2) ? plc->pcb->hidlib.size_y : plc->pcb->hidlib.size_x;
+				pcb_coord_t mdim = (plc->side % 2) ? by : bx;
+				pcb_coord_t adim = (plc->side % 2) ? bx : by;
+
+				plc->c += (double)mdim * 0.6;
+				switch(plc->side) {
+					case 0: px = xo + plc->c; py = yo - (double)(adim) * 0.6; break; /* top */
+					case 1: py = yo + plc->c; px = xo + plc->pcb->hidlib.size_x + (double)(adim) * 0.6; break; /* right */
+					case 2: px = xo + plc->pcb->hidlib.size_x - plc->c; py = yo + plc->pcb->hidlib.size_y + (double)(adim) * 0.6; break; /* bottom, from right to left */
+					case 3: py = yo + plc->pcb->hidlib.size_y - plc->c; px = xo - (double)(adim) * 0.6; break; /* left, from bottom to top */
+				}
+
+				plc->c += (double)mdim * 0.6;
+				if (plc->c > max) {
+					plc->side++;
+					if (plc->side > 3)
+						plc->side = 0;
+					plc->c = 0;
+				}
+			}
 			break;
 	}
 
@@ -549,7 +580,6 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		}
 
 		plc_place(&plc, &px, &py);
-
 
 		/* Place components onto center of board. */
 		pcb_crosshair.Y = py; /* flipping side depends on the crosshair unfortunately */
