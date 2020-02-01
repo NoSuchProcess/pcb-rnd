@@ -99,10 +99,6 @@ static void isch_switch_fmt(int target)
 	pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_ctrl, !controllable);
 }
 
-static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
-{
-	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng);
-}
 
 static void isch_pcb2dlg(void)
 {
@@ -125,6 +121,30 @@ static void isch_pcb2dlg(void)
 
 	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wfmt, lng, tab);
 	isch_switch_fmt(tab);
+}
+
+static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng);
+}
+
+static void isch_arg_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	if (len > 0) {
+		pcb_conf_del(CFR_DESIGN, "plugins/import_sch/args", len-1);
+		isch_pcb2dlg();
+	}
+}
+
+static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	int len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	if (len < MAX_ARGS+1) {
+		pcb_conf_grow("plugins/import_sch/args", len+1);
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", len, "", POL_OVERWRITE);
+		isch_pcb2dlg();
+	}
 }
 
 static void isch_add_tab(pcb_plug_import_t *p)
@@ -189,7 +209,9 @@ static int do_dialog(void)
 				PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
 					isch_ctx.warg_ctrl = PCB_DAD_CURRENT(isch_ctx.dlg);
 					PCB_DAD_BUTTON(isch_ctx.dlg, "Del last");
+						PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_del_cb);
 					PCB_DAD_BUTTON(isch_ctx.dlg, "One more");
+						PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_add_cb);
 				PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_END(isch_ctx.dlg);
 		PCB_DAD_END(isch_ctx.dlg);
