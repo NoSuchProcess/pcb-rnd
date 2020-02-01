@@ -558,7 +558,7 @@ static void plc_remove(placer_t *plc, pcb_subc_t *sc)
 			break;
 		case PLC_LIST:
 			{
-				pcb_view_t *v = pcb_view_new(&plc->pcb->hidlib, "removal", "Remove part", "This part is not present on the new netlist");
+				pcb_view_t *v = pcb_view_new(&plc->pcb->hidlib, "removal", PCB_UNKNOWN(sc->refdes), "This part is not present on the new netlist");
 				pcb_view_append_obj(v, 0, (pcb_any_obj_t *)sc);
 				pcb_view_set_bbox_by_objs(plc->pcb->Data, v);
 				pcb_view_list_append(plc->remlst, v);
