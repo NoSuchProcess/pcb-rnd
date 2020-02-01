@@ -426,15 +426,20 @@ typedef struct {
 	/* cursor for some placement methods */
 	pcb_coord_t c, cx, cy;
 	int side;
+
+	/* removal */
+	enum { PLC_SELECT, PLC_REMOVE, PLC_LIST } rem_method;
 } placer_t;
 
 static void plc_init(pcb_board_t *pcb, placer_t *plc)
 {
 	const char *confmet = conf_core.import.footprint_placement.method;
+	const char *conf_rem_met = conf_core.import.footprint_removal.method;
 
 	/* fallback: compatible with the original defaults */
 	plc->pcb = pcb;
 	plc->method = PLC_DISPERSE;
+	plc->rem_method = PLC_SELECT;
 	plc->location = PLC_AT;
 	plc->lx = pcb->hidlib.size_x / 2;
 	plc->ly = pcb->hidlib.size_y / 2;
@@ -465,6 +470,13 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		plc->lx = parse_layout_attribute_units(pcb, "import::newX", plc->lx);
 		plc->ly = parse_layout_attribute_units(pcb, "import::newY", plc->ly);
 		plc->dd = parse_layout_attribute_units(pcb, "import::disperse", plc->dd);
+	}
+
+	if ((conf_rem_met != NULL) && (*conf_rem_met != '\0')) {
+		if (pcb_strcasecmp(conf_rem_met, "select") == 0) plc->rem_method = PLC_SELECT;
+		else if (pcb_strcasecmp(conf_rem_met, "remove") == 0) plc->rem_method = PLC_REMOVE;
+		else if (pcb_strcasecmp(conf_rem_met, "list") == 0) plc->rem_method = PLC_LIST;
+		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", confmet);
 	}
 
 	switch(plc->location) {
@@ -529,6 +541,20 @@ static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
 	*oy = py;
 }
 
+static void plc_remove(placer_t *plc, pcb_subc_t *sc)
+{
+	switch(plc->rem_method) {
+		case PLC_LIST:
+			/* not yet implemented */
+		case PLC_SELECT:
+			PCB_FLAG_SET(PCB_FLAG_SELECTED, sc);
+			break;
+		case PLC_REMOVE:
+			pcb_remove_object(sc->type, sc->parent.data, sc, sc);
+			break;
+	}
+}
+
 static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
@@ -564,7 +590,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			}
 			else if (!PCB_EMPTY_STRING_P(subc->refdes)) {
 				/* Unnamed elements should remain untouched */
-				PCB_FLAG_SET(PCB_FLAG_SELECTED, subc);
+				plc_remove(&plc, subc);
 			}
 		}
 		PCB_END_LOOP;

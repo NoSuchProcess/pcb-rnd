@@ -92,6 +92,10 @@ typedef struct {
 			CFT_COORD y;                   /* for some methods if location is empty, Y coordinate of placement */
 			CFT_COORD disperse;            /* dispersion distance for the disperse method */
 		} footprint_placement;
+
+		struct {
+			CFT_STRING method;             /* method/strategy of removal; one of:  */
+		} footprint_removal;
 	} import;
 
 	const struct {                       /* rc */
