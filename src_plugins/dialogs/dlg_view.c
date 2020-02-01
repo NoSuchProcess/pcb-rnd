@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
 #include "view.h"
 #include "draw.h"
 #include "drc.h"
+#include "actions_pcb.h"
 #include <librnd/core/event.h>
 #include <librnd/core/hid_inlines.h>
 #include <librnd/core/hid_dad.h>
@@ -779,17 +780,30 @@ fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-const char pcb_acts_ViewList[] = "viewlist([name, [winid]])\n";
+const char pcb_acts_ViewList[] = "viewlist([name, [winid, [listptr]]])\n";
 const char pcb_acth_ViewList[] = "Present a new empty view list";
 fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	view_ctx_t *ctx = calloc(sizeof(view_ctx_t), 1);
+	view_ctx_t *ctx;
+	void *lst = NULL;
 	const char *name = "view list", *winid = "viewlist";
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, ViewList, name = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, ViewList, winid = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_PTR, ViewList, lst = argv[3].val.ptr_void);
 
+	if ((lst != NULL) && (!fgw_ptr_in_domain(&pcb_fgw, &argv[3], PCB_PTR_DOMAIN_VIEWLIST))) {
+		pcb_message(PCB_MSG_ERROR, "invalid list pointer");
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+
+	PCB_ACT_IRES(0);
+	ctx = calloc(sizeof(view_ctx_t), 1);
 	ctx->pcb = PCB;
-	ctx->lst = calloc(sizeof(pcb_view_list_t), 1);
+	if (lst != NULL)
+		ctx->lst = lst;
+	else
+		ctx->lst = calloc(sizeof(pcb_view_list_t), 1);
 	ctx->refresh = NULL;
 	pcb_dlg_view_full(winid, ctx, name);
 	view2dlg(ctx);
