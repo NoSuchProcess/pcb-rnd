@@ -138,6 +138,9 @@ void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int for
 
 #define PCB_ACTION_MAX_ARGS 16
 
+/* Read and execute an action script from a file; return 0 if all actions returned 0 */
+int rnd_act_execute_file(pcb_hidlib_t *hidlib, const char *fn);
+
 /* low level action function lookup */
 fgw_func_t *pcb_act_lookup(const char *aname);
 

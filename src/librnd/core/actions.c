@@ -41,6 +41,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/funchash.h>
 #include <librnd/core/hidlib_conf.h>
+#include <librnd/core/safe_fs.h>
 
 const pcb_action_t *pcb_current_action = NULL;
 
@@ -884,6 +885,39 @@ static int coords_arg_free(fgw_ctx_t *ctx, fgw_arg_t *arg)
 static void pcb_action_err(fgw_obj_t *obj, const char *msg)
 {
 	pcb_message(PCB_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
+}
+
+int rnd_act_execute_file(pcb_hidlib_t *hidlib, const char *fn)
+{
+	FILE *f;
+	char *s, line[4096];
+	int res = 0;
+
+	f = pcb_fopen(hidlib, fn, "r");
+	if (f == NULL) {
+		pcb_message(PCB_MSG_ERROR, "rnd_act_execute_file(): Could not open actions file \"%s\".\n", fn);
+		return 1;
+	}
+
+	while(fgets(line, sizeof(line), f) != NULL) {
+		s = line;
+
+		/* remove trailing newline */
+		while((*s != '\0') && (*s != '\r') && (*s != '\n'))
+			s++;
+		*s = '\0';
+
+		/* remove leading spaces and tabs */
+		s = line;
+		while(isspace(*s))
+			s++;
+
+		if ((*s != '\0') && (*s != '#'))
+			res |= pcb_parse_actions(hidlib, s);
+	}
+
+	fclose(f);
+	return res;
 }
 
 void pcb_actions_init(void)
