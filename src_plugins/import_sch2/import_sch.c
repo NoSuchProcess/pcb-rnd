@@ -31,6 +31,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/conf_hid.h>
 #include <librnd/core/globalconst.h>
 
 #include "plug_import.h"
@@ -41,6 +42,7 @@
 static conf_import_sch_t conf_import_sch;
 
 static int do_import(void);
+static const char *import_sch_cookie = "import_sch2 plugin";
 
 #include "import_sch_dlg.c"
 
@@ -142,7 +144,6 @@ static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char *import_sch_cookie = "import_sch2 plugin";
 
 static pcb_action_t import_sch_action_list[] = {
 	{"ImportSch", pcb_act_ImportSch, pcb_acth_ImportSch, pcb_acts_ImportSch}
@@ -154,6 +155,7 @@ void pplg_uninit_import_sch2(void)
 {
 	pcb_remove_actions_by_cookie(import_sch_cookie);
 	pcb_conf_unreg_fields("plugins/import_sch/");
+	isch_dlg_uninit();
 }
 
 int pplg_init_import_sch2(void)
@@ -165,6 +167,7 @@ int pplg_init_import_sch2(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(conf_import_sch, field,isarray,type_name,cpath,cname,desc,flags);
 #include "import_sch_conf_fields.h"
+	isch_dlg_init();
 
 	return 0;
 }

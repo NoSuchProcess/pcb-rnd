@@ -38,12 +38,14 @@ typedef struct{
 } isch_ctx_t;
 
 static isch_ctx_t isch_ctx;
+static int isch_conf_lock = 0;
 
 static void isch_arg2pcb(void)
 {
 	int n;
 	pcb_conf_listitem_t *ci;
 
+	isch_conf_lock++;
 	restart:;
 	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++) {
 		const char *newval = isch_ctx.dlg[isch_ctx.warg[n]].val.str;
@@ -54,6 +56,7 @@ static void isch_arg2pcb(void)
 			goto restart; /* elements may be deleted and added with different pointers... */
 		}
 	}
+	isch_conf_lock--;
 
 	isch_ctx.arg_dirty = 0;
 }
@@ -100,6 +103,7 @@ static void isch_switch_fmt(int target, int setconf)
 	const pcb_plug_import_t *p = pcb_lookup_importer(isch_ctx.inames[target]);
 	int len, n, controllable;
 
+	isch_conf_lock++;
 	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wtab, lng, target);
 	if (setconf && (p != NULL))
 		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, p->name, POL_OVERWRITE);
@@ -129,6 +133,7 @@ static void isch_switch_fmt(int target, int setconf)
 	}
 
 	pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_ctrl, !controllable);
+	isch_conf_lock--;
 }
 
 
@@ -175,9 +180,11 @@ static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 {
 	int len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
 	if (len < MAX_ARGS+1) {
+		isch_conf_lock++;
 		pcb_conf_grow("plugins/import_sch/args", len+1);
 		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", len, "", POL_OVERWRITE);
 		isch_pcb2dlg();
+		isch_conf_lock--;
 	}
 }
 
@@ -202,9 +209,12 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	name = pcb_gui->fileselect(pcb_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (name == NULL)
 		return;
+
+	isch_conf_lock++;
 	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", idx, name, POL_OVERWRITE);
 	isch_pcb2dlg();
 	free(name);
+	isch_conf_lock--;
 }
 
 
@@ -319,4 +329,29 @@ static int do_dialog(void)
 	PCB_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
 	isch_pcb2dlg();
 	return 0;
+}
+
+static isch_cfg_chg(conf_native_t *cfg, int arr_idx)
+{
+	if ((isch_conf_lock == 0) && isch_ctx.active)
+		isch_pcb2dlg();
+}
+
+static conf_hid_id_t cfgid;
+
+static void isch_dlg_uninit(void)
+{
+	pcb_conf_hid_unreg(import_sch_cookie);
+}
+
+static void isch_dlg_init(void)
+{
+	static conf_hid_callbacks_t cbs;
+	cfgid = pcb_conf_hid_reg(import_sch_cookie, NULL);
+
+	cbs.val_change_post = isch_cfg_chg;
+
+	pcb_conf_hid_set_cb(pcb_conf_get_field("plugins/import_sch/args"), cfgid, &cbs);
+	pcb_conf_hid_set_cb(pcb_conf_get_field("plugins/import_sch/import_fmt"), cfgid, &cbs);
+	pcb_conf_hid_set_cb(pcb_conf_get_field("plugins/import_sch/verbose"), cfgid, &cbs);
 }
