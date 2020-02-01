@@ -30,7 +30,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	char **inames;
 	int len;
-	int wfmt, wtab, warg_ctrl;
+	int wfmt, wtab, warg_ctrl, wverbose;
 	int warg[MAX_ARGS], warg_box[MAX_ARGS], warg_button[MAX_ARGS];
 	pcb_hidval_t timer;
 	int arg_dirty;
@@ -159,6 +159,7 @@ static void isch_pcb2dlg(void)
 		PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
 
 	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wfmt, lng, tab);
+	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wverbose, lng, conf_import_sch.plugins.import_sch.verbose);
 	isch_switch_fmt(tab, 0);
 }
 
@@ -236,6 +237,15 @@ static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	isch_ctx.arg_dirty = 1;
 }
 
+static void isch_generic_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	const char *nv = isch_ctx.dlg[isch_ctx.wverbose].val.lng ? "1" : "0";
+	isch_conf_lock++;
+	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/verbose", 0, nv, POL_OVERWRITE);
+	isch_conf_lock--;
+}
+
+
 static void isch_add_tab(pcb_plug_import_t *p)
 {
 	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
@@ -285,7 +295,7 @@ static int do_dialog(void)
 				for(n = 0; n < len; n++)
 					isch_add_tab(pa[n]);
 			PCB_DAD_END(isch_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
+			PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* scrollable arg list */
 				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 				for(n = 0; n < MAX_ARGS; n++) {
 					PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
@@ -309,7 +319,14 @@ static int do_dialog(void)
 		PCB_DAD_END(isch_ctx.dlg);
 
 		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* generic settings */
+			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
+				PCB_DAD_LABEL(isch_ctx.dlg, "Verbose import:");
+				PCB_DAD_BOOL(isch_ctx.dlg, "");
+					isch_ctx.wverbose = PCB_DAD_CURRENT(isch_ctx.dlg);
+					PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_generic_chg_cb);
+			PCB_DAD_END(isch_ctx.dlg);
 		PCB_DAD_END(isch_ctx.dlg);
+
 		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg); /* bottom buttons */
 			PCB_DAD_BUTTON(isch_ctx.dlg, "Import!");
 				PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_import_cb);
