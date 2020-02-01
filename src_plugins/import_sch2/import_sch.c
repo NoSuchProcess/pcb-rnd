@@ -45,15 +45,50 @@ typedef struct{
 	int len;
 	int wfmt, wtab, warg_ctrl;
 	int warg[MAX_ARGS], warg_box[MAX_ARGS], warg_button[MAX_ARGS];
+	pcb_hidval_t timer;
+	int arg_dirty;
 	int active; /* already open - allow only one instance */
 } isch_ctx_t;
 
 static isch_ctx_t isch_ctx;
 
+static void isch_arg2pcb(void)
+{
+	int n;
+	pcb_conf_listitem_t *ci;
+
+	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++) {
+		const char *newval = isch_ctx.dlg[isch_ctx.warg[n]].val.str;
+		if (newval == NULL)
+			newval = "";
+		if (strcmp(ci->val.string[0], newval) != 0) {
+			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", n, newval, POL_OVERWRITE);
+pcb_trace("over: %d '%s'\n", n, newval);
+		}
+	}
+
+	isch_ctx.arg_dirty = 0;
+}
+
+static void isch_timed_update_cb(pcb_hidval_t user_data)
+{
+	isch_arg2pcb();
+}
+
+static void isch_flush_timer(void)
+{
+	if (isch_ctx.arg_dirty) {
+		pcb_gui->stop_timer(pcb_gui, isch_ctx.timer);
+		isch_arg2pcb();
+	}
+}
+
 static void isch_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	int n;
 	isch_ctx_t *ctx = caller_data;
+
+	isch_flush_timer();
 	PCB_DAD_FREE(ctx->dlg);
 	for(n = 0; n < isch_ctx.len; n++)
 		free(isch_ctx.inames[n]);
@@ -109,6 +144,8 @@ static void isch_pcb2dlg(void)
 	pcb_conf_listitem_t *ci;
 	const char *tname = conf_import_sch.plugins.import_sch.import_fmt;
 
+	isch_flush_timer();
+
 	if (tname != NULL) {
 		for(n = 0; n < isch_ctx.len; n++) {
 			if (pcb_strcasecmp(isch_ctx.inames[n], tname) == 0) {
@@ -150,6 +187,23 @@ static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
+static void isch_import_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	isch_flush_timer();
+}
+
+static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_hidval_t user_data;
+
+	if (isch_ctx.arg_dirty)
+		pcb_gui->stop_timer(pcb_gui, isch_ctx.timer);
+
+	user_data.ptr = NULL;
+	isch_ctx.timer = pcb_gui->add_timer(pcb_gui, isch_timed_update_cb, 1000, user_data);
+	isch_ctx.arg_dirty = 1;
+}
+
 static void isch_add_tab(pcb_plug_import_t *p)
 {
 	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
@@ -168,6 +222,7 @@ static int do_dialog(void)
 	len = 0;
 	for(p = pcb_plug_import_chain; p != NULL; p = p->next) len++;
 
+	isch_ctx.arg_dirty = 0;
 	isch_ctx.inames = malloc((len+1) * sizeof(char *));
 	pa = malloc(len * sizeof(pcb_plug_import_t *));
 
@@ -205,6 +260,7 @@ static int do_dialog(void)
 						isch_ctx.warg_box[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
 						PCB_DAD_STRING(isch_ctx.dlg);
 							isch_ctx.warg[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
+							PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_chg_cb);
 						PCB_DAD_BUTTON(isch_ctx.dlg, "browse");
 							isch_ctx.warg_button[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
 					PCB_DAD_END(isch_ctx.dlg);
@@ -223,6 +279,7 @@ static int do_dialog(void)
 		PCB_DAD_END(isch_ctx.dlg);
 		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg); /* bottom buttons */
 			PCB_DAD_BUTTON(isch_ctx.dlg, "Import!");
+				PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_import_cb);
 			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
 				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(isch_ctx.dlg);
