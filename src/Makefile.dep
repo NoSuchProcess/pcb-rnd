@@ -3846,6 +3846,7 @@
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  librnd/core/hid_dad_spin.h plug_import.h \
  ../src_plugins/import_sch2/import_sch_conf.h \
+ ../src_plugins/import_sch2/import_sch_dlg.c \
  ../src_plugins/import_sch2/import_sch_conf_fields.h
 ../src_plugins/import_tinycad/tinycad.o: \
  ../src_plugins/import_tinycad/tinycad.c ../config.h librnd/config.h \
