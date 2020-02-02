@@ -131,7 +131,7 @@ extern const char *pcbhl_app_package;
 extern const char *pcbhl_app_version;
 extern const char *pcbhl_app_url;
 
-/*** API wrappers from hidlib implementation to app ***/
+/*** API wrappers provided for plugins (these are translated into calls to the app within the hidlib) ***/
 void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
 
 #endif
