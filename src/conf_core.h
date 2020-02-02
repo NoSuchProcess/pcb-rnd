@@ -118,6 +118,8 @@ typedef struct {
 		CFT_LIST default_font_file;        /* name of default font file (list of names to search) */
 		CFT_LIST default_pcb_file;
 
+		CFT_BOOLEAN silently_create_on_load; /* do not generate an error message if the board does not exist on load from command line argument, silently create it in memory */
+
 		CFT_STRING script_filename;        /* PCB Actions script to execute on startup */
 		CFT_STRING action_string;          /* PCB Actions string to execute on startup */
 		CFT_STRING rat_path;
