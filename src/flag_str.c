@@ -49,13 +49,12 @@ typedef struct {
 } FlagHolder;
 
 /* Be careful to list more specific flags first, followed by general
- * flags, when two flags use the same bit.  For example, "onsolder" is
- * for elements only, while "auto" is for everything else.  They use
- * the same bit, but onsolder is listed first so that elements will
- * use it and not auto.
- *
- * Thermals are handled separately, as they're layer-selective.
- */
+   flags, when two flags use the same bit.  For example, "onsolder" is
+   for elements only, while "auto" is for everything else.  They use
+   the same bit, but onsolder is listed first so that elements will
+   use it and not auto.
+
+   Thermals are handled separately, as they're layer-selective. */
 
 #define N(x) x, sizeof(x)-1
 #define FN(x) x, #x
@@ -98,12 +97,10 @@ const int pcb_object_flagbits_len = PCB_ENTRIES(pcb_object_flagbits);
 /* List of old/obsolete flags to silently ignore on load */
 static const char *old_flag_ignore[] = { "connected", NULL };
 
-/*
- * This helper function maintains a small list of buffers which are
- * used by pcb_strflg_f2s().  Each buffer is allocated from the heap,
- * but the caller must not free them (they get realloced when they're
- * reused, but never completely freed).
- */
+/* This helper function maintains a small list of buffers which are
+   used by pcb_strflg_f2s().  Each buffer is allocated from the heap,
+   but the caller must not free them (they get realloced when they're
+   reused, but never completely freed). */
 
 static struct {
 	char *ptr;
@@ -137,12 +134,10 @@ void pcb_strflg_uninit_buf(void)
 	}
 }
 
-/*
- * This set of routines manages a list of layer-specific flags.
- * Callers should call grow_layer_list(0) to reset the list, and
- * set_layer_list(layer,1) to set bits in the layer list.  The results
- * are stored in layers[], which has num_layers valid entries.
- */
+/* This set of routines manages a list of layer-specific flags.
+   Callers should call grow_layer_list(0) to reset the list, and
+   set_layer_list(layer,1) to set bits in the layer list. The results
+   are stored in layers[], which has num_layers valid entries. */
 
 static char *layers = 0;
 static int max_layers = 0, num_layers = 0;
@@ -179,21 +174,18 @@ static inline void set_layer_list(int layer, int v)
 	layers[layer] = v;
 }
 
-/*
- * These next two convert between layer lists and strings.
- * parse_layer_list() is passed a pointer to a string, and parses a
- * list of integer which reflect layers to be flagged.  It returns a
- * pointer to the first character following the list.  The syntax of
- * the list is a paren-surrounded, comma-separated list of integers
- * and/or pairs of integers separated by a dash (like "(1,2,3-7)").
- * Spaces and other punctuation are not allowed.  The results are
- * stored in layers[] defined above.
- *
- * print_layer_list() does the opposite - it uses the flags set in
- * layers[] to build a string that represents them, using the syntax
- * above.
- *
- */
+/* These next two convert between layer lists and strings.
+   parse_layer_list() is passed a pointer to a string, and parses a
+   list of integer which reflect layers to be flagged.  It returns a
+   pointer to the first character following the list.  The syntax of
+   the list is a paren-surrounded, comma-separated list of integers
+   and/or pairs of integers separated by a dash (like "(1,2,3-7)").
+   Spaces and other punctuation are not allowed.  The results are
+   stored in layers[] defined above.
+
+   print_layer_list() does the opposite - it uses the flags set in
+   layers[] to build a string that represents them, using the syntax
+   above. */
 
 /* Returns a pointer to the first character past the list. */
 static const char *parse_layer_list(const char *bp, int (*error) (const char *))
@@ -325,7 +317,7 @@ static int error_ignore(const char *msg)
 
 static pcb_flag_t empty_flags;
 
-pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn, int compat)
+pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const char *msg), pcb_flag_bits_t *flagbits, int n_flagbits, unsigned char *intconn, int compat)
 {
 	const char *fp, *ep;
 	int flen;
@@ -429,7 +421,7 @@ pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg)
 	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits), intconn, compat);
 }
 
-char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t * flagbits, int n_flagbits, unsigned char *intconn, int compat)
+char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *flagbits, int n_flagbits, unsigned char *intconn, int compat)
 {
 	int len;
 	int i;
@@ -449,7 +441,7 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 
 	savef = fh;
 
-	len = 3;											/* for "()\0" */
+	len = 3; /* for "()\0" */
 
 	for (i = 0; i < n_flagbits; i++) {
 		long my_obj_typs = flagbits[i].object_types | (compat ? flagbits[i].compat_types : 0);
@@ -618,7 +610,7 @@ char *pcb_strflg_board_f2s(pcb_flag_t flags)
 	return pcb_strflg_common_f2s(flags, PCB_OBJ_ANY, pcb_flagbits, PCB_ENTRIES(pcb_flagbits), NULL, 0);
 }
 
-pcb_flag_t pcb_strflg_board_s2f(const char *flagstring, int (*error) (const char *msg))
+pcb_flag_t pcb_strflg_board_s2f(const char *flagstring, int (*error)(const char *msg))
 {
 	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, PCB_ENTRIES(pcb_flagbits), NULL, 0);
 }
