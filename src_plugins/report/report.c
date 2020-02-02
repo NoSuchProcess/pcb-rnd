@@ -545,17 +545,14 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (term != NULL) {
 			char buf[50];
-			const char *units_name;
+			const char *units_name = pcbhl_conf.editor.grid_unit->suffix;
 			pcb_coord_t length;
 			pcb_coord_t x = 0, y = 0;
 			gds_t err;
 
-			PCB_ACT_CONVARG(1, FGW_STR, Report, units_name = argv[2].val.str);
+			PCB_ACT_MAY_CONVARG(2, FGW_STR, Report, units_name = argv[2].val.str);
 
 			pcb_obj_center(term, &x, &y);
-
-			if (argc < 1)
-				units_name = pcbhl_conf.editor.grid_unit->suffix;
 
 			gds_init(&err);
 			length = xy_to_net_length(x, y, &found, &err);
