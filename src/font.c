@@ -94,8 +94,8 @@ static int pcb_parse_font_default(pcb_font_t *ptr, const char *filename)
 }
 
 /* parses a file with font information and installs it into the provided PCB
- * checks directories given as colon separated list by resource fontPath
- * if the fonts filename doesn't contain a directory component */
+   checks directories given as colon separated list by resource fontPath
+   if the fonts filename doesn't contain a directory component */
 void pcb_font_create_default(pcb_board_t *pcb)
 {
 	int res = -1;
@@ -115,7 +115,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 }
 
 /* transforms symbol coordinates so that the left edge of each symbol
- * is at the zero position. The y coordinates are moved so that min(y) = 0 */
+   is at the zero position. The y coordinates are moved so that min(y) = 0 */
 void pcb_font_set_info(pcb_font_t *Ptr)
 {
 	pcb_cardinal_t i, j;
@@ -126,9 +126,8 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	pcb_coord_t totalminy = PCB_MAX_COORD;
 
 	/* calculate cell with and height (is at least PCB_DEFAULT_CELLSIZE)
-	 * maximum cell width and height
-	 * minimum x and y position of all lines
-	 */
+	   maximum cell width and height
+	   minimum x and y position of all lines */
 	Ptr->MaxWidth = PCB_DEFAULT_CELLSIZE;
 	Ptr->MaxHeight = PCB_DEFAULT_CELLSIZE;
 	for (i = 0, symbol = Ptr->Symbol; i <= PCB_MAX_FONTPOSITION; i++, symbol++) {
