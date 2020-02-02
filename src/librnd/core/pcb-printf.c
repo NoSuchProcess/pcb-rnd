@@ -696,7 +696,7 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 				case 'a':
 					if (safe & PCB_SAFEPRINT_COORD_ONLY)
 						return -1;
-					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
+					if (gds_append_len(&spec, ".06f", 4) != 0) goto err;
 					if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;
 					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, pcb_angle_t));
