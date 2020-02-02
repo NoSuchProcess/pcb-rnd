@@ -3220,7 +3220,10 @@ dumb
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])
+Report([DrillReport|FoundPins|NetLengthTo])
+Report(NetLength, [netname])
+Report(Object|Subc, [log])
+Report(AllNetLengths, [unit])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Produce various report.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
@@ -3255,13 +3258,13 @@ Arguments:
 <th>
  NetLength  
 <td>
- The name and length of the net under the crosshair will be reported to       the message log.   
+ The name and length of the net under the crosshair will be reported to       the message log. An optional parameter specifies the netname; when present       the length of the named network is printed, else the net under the cursor       is used.   
 <tr>
 
 <th>
  AllNetLengths  
 <td>
- The name and length of the net under the crosshair will be reported to       the message log.  An optional parameter specifies mm, mil, pcb, or in       units  
+ The name and length of the net under the crosshair will be reported to       the message log.  An optional parameter specifies the unit name (e.g. mm)  
 </table>
   
 </dd></dl>

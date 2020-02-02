@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.0 (svn r29554) an interactive printed circuit board editor ,  Revision: 29589
+This is pcb-rnd 2.2.0 (svn r29554) an interactive printed circuit board editor ,  Revision: 29601
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -302,7 +302,7 @@ This is pcb-rnd 2.2.0 (svn r29554) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#renumberblock">RenumberBlock</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
 <tr><td><a href="action_details.html#renumberbuffer">RenumberBuffer</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
 <tr><td><a href="action_details.html#replacefootprint">ReplaceFootprint</a></td><td>Replace the footprint of the selected components with the footprint specified.</td><td>ReplaceFootprint([Selected|Object], [footprint], [dumb])</td><td></td>
-<tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])</td><td>report plugin</td>
+<tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report([DrillReport|FoundPins|NetLengthTo])<br>Report(NetLength, [netname])<br>Report(Object|Subc, [log])<br>Report(AllNetLengths, [unit])</td><td>report plugin</td>
 <tr><td>ReportObject</td><td>Report on the object under the crosshair</td><td>ReportObject()</td><td>report plugin</td>
 <tr><td><a href="action_details.html#ripup">RipUp</a></td><td>Ripup auto-routed tracks</td><td>RipUp(All|Selected|Element)</td><td></td>
 <tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>

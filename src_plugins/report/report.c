@@ -70,7 +70,11 @@
 
 conf_report_t conf_report;
 
-static const char pcb_acts_Report[] = "Report(Object|DrillReport|FoundPins|NetLength|NetLengthTo|AllNetLengths|[,name])";
+static const char pcb_acts_Report[] =
+	"Report([DrillReport|FoundPins|NetLengthTo])\n"
+	"Report(NetLength, [netname])\n"
+	"Report(Object|Subc, [log])\n"
+	"Report(AllNetLengths, [unit])";
 static const char pcb_acth_Report[] = "Produce various report.";
 
 #define USER_UNITMASK (pcbhl_conf.editor.grid_unit->allow)
