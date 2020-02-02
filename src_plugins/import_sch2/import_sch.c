@@ -179,6 +179,7 @@ static int do_setup(int argc, fgw_arg_t *argv)
 	}
 
 	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, argv[0].val.str, POL_OVERWRITE);
+	pcb_conf_grow("plugins/import_sch/args", argc-1);
 	for(n = 1; n < argc; n++)
 		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", n-1, argv[n].val.str, POL_OVERWRITE);
 
