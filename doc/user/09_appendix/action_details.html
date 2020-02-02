@@ -1431,9 +1431,91 @@ Arguments:
 <td>
  Compares the list of subcircuits needed since the most recent           
 <i>Start</i>
- with the list of subcircuits actually on the           board. Any subcircuits that weren't listed are selected, so           that the user may delete them.  
+ with the list of subcircuits actually on the           board. Any subcircuits that weren't listed are selected, so           that the user may delete them. 
 </table>
+ 
+<p>
+ Placement of new subcircuits depends on conf node  import/footprint_placement/method, which is a string containing a one word instruction that is one of: 
+<p>
+ 
+<table border=1 cellspacing=0>
    
+<tr>
+
+<th>
+ disperse      
+<td>
+ place all new subcircuits at randomized coordinates around           
+<i>
+location
+</i>
+, within a distance configured in           import/footprint_placement/disperse   
+<tr>
+
+<th>
+ frame      
+<td>
+ place all new subcircuits close outside of the drawing area,           "framing" the design  
+</table>
+  
+<p>
+ 
+<i>
+Location
+</i>
+ is a string instruction specified by import/footprint_placement/location, the value is one of: 
+<p>
+ 
+<table border=1 cellspacing=0>
+   
+<tr>
+
+<th>
+ (empty, no value)      
+<td>
+ place around the coordinates specified in coords           import/footprint_placement/x and import/footprint_placement/y   
+<tr>
+
+<th>
+ center      
+<td>
+ place around the center of the drawing area   
+<tr>
+
+<th>
+ mark      
+<td>
+ place around the mark (or center of the drawing area if no mark present           at the moment of import)  
+</table>
+  
+<p>
+ Removal of excess subcircuits (the ones present on the board but not in the new netlist) depends on conf node import/footprint_removalt/method, which is a string containing a one word instruction that is one of: 
+<p>
+ 
+<table border=1 cellspacing=0>
+   
+<tr>
+
+<th>
+ select (or empty)      
+<td>
+ select excess subcircuits (an {s r} after the import removes them)   
+<tr>
+
+<th>
+ remove      
+<td>
+ automatically remove excess subcircuits   
+<tr>
+
+<th>
+ list      
+<td>
+ no change on excess subcircuit data on the board, but           open a view list dialog enumerating them  
+</table>
+  
+<p>
+ Note: subcircuits with the nonetlist flag set or empty/missing refdes will not be taken as excess even if they are not present on the netlist.   
 </dd></dl>
 
 <h2 id="elementsetattr">ElementSetAttr</h2>
