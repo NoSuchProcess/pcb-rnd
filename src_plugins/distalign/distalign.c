@@ -237,7 +237,7 @@ static const char pcb_acts_align[] = "Align(X/Y, [Lefts/Rights/Tops/Bottoms/Cent
 /* DOC: align.html */
 static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *a0, *a1, *a2, *a3;
+	const char *a0, *a1 = NULL, *a2 = NULL, *a3 = NULL;
 	int dir;
 	int point;
 	int reference;
@@ -250,9 +250,9 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	PCB_ACT_CONVARG(1, FGW_STR, align, a0 = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, align, a1 = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, align, a2 = argv[3].val.str);
-	PCB_ACT_CONVARG(4, FGW_STR, align, a3 = argv[4].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, align, a1 = argv[2].val.str);
+	PCB_ACT_MAY_CONVARG(3, FGW_STR, align, a2 = argv[3].val.str);
+	PCB_ACT_MAY_CONVARG(4, FGW_STR, align, a3 = argv[4].val.str);
 
 	/* parse direction arg */
 	switch ((dir = keyword(a0))) {
