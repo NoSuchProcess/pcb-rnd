@@ -162,9 +162,7 @@ static char *main_path_init(char *argv0)
 			*t2 = '\0';
 	}
 	else {
-		/* we have failed to find out anything from argv[0] so fall back to the original
-		 * install prefix
-		 */
+		/* we have failed to find out anything from argv[0] so fall back to the original install prefix */
 		bindir = pcb_strdup(BINDIR);
 	}
 
