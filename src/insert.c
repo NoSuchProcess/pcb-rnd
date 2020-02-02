@@ -27,8 +27,7 @@
  */
 
 
-/* functions used to insert points into objects
- */
+/* functions used to insert points into objects */
 
 #include "config.h"
 #include "conf_core.h"
@@ -59,7 +58,7 @@ static pcb_opfunc_t InsertFunctions = {
 	0 /* extobj_inhibit_regen */
 };
 
-void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t * Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last)
+void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t *Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last)
 {
 	void *ptr;
 	pcb_opctx_t ctx;
@@ -107,7 +106,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 		return &InsertedPoint;
 	}
 	if (pcb_crosshair.X == line->Point1.X)
-		m1 = 2;											/* 2 signals infinite slope */
+		m1 = 2; /* 2 signals infinite slope */
 	else {
 		m = (double) (pcb_crosshair.Y - line->Point1.Y) / (pcb_crosshair.X - line->Point1.X);
 		m1 = 0;
@@ -117,7 +116,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 			m1 = (m < -PCB_TAN_60_DEGREE) ? 2 : -1;
 	}
 	if (pcb_crosshair.X == line->Point2.X)
-		m2 = 2;											/* 2 signals infinite slope */
+		m2 = 2; /* 2 signals infinite slope */
 	else {
 		m = (double) (pcb_crosshair.Y - line->Point2.Y) / (pcb_crosshair.X - line->Point2.X);
 		m2 = 0;
