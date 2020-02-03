@@ -83,6 +83,9 @@ static event_t **rnd_events_app = NULL;
 	pcb_event_id_t evid = ev; \
 	const char **evnames = rnd_evnames_lib; \
 	event_t **events = rnd_events_lib; \
+	(void)evnames; \
+	(void)evid; \
+	(void)events; \
 	if ((ev >= RND_EVENT_app) && (rnd_event_app_last > 0)) { \
 		if ((ev) > rnd_event_app_last) { err; } \
 		evnames = rnd_evnames_app; \
