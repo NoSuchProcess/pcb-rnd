@@ -193,7 +193,7 @@ pcb_bool pcb_tool_arc_undo_act(pcb_hidlib_t *hl)
 	return pcb_true;
 }
 
-pcb_bool pcb_tool_arc_escape(pcb_hidlib_t *hl)
+void pcb_tool_arc_escape(pcb_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		pcb_tool_select_by_name(hl, "arrow");

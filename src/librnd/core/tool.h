@@ -66,7 +66,7 @@ typedef struct pcb_tool_s {
 	void     (*draw_attached)(pcb_hidlib_t *hl);
 	pcb_bool (*undo_act)(pcb_hidlib_t *hl);
 	pcb_bool (*redo_act)(pcb_hidlib_t *hl);
-	pcb_bool (*escape)(pcb_hidlib_t *hl);
+	void     (*escape)(pcb_hidlib_t *hl);
 	
 	unsigned long user_flags;
 } pcb_tool_t;
