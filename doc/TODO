@@ -10,7 +10,6 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: rewrite layer undo; take it out from old_undo; layer del breaks on undo: can't save where it was added before. Consider the whole layer move and -1 business obsolete and rather add a separate insert and remove call?
 	- BUG: add new layer in main window, pcb-rnd issues pcb_warning yet action is placed on undo stack [report: Miloh]
-+ BUG: distalign broken, align(x) gives syntax error, used work on a set of parts with some default setting [report: Miloh]
 - BUG: footprint library window tree not refreshing properly after changing filter criteria. repro: type '1206' into filter to filter for 1206.fp part, add a char to the filter criteria '1206x' that removes the match, then delete single char to get '1206' again, and library subdirs refresh closed instead of open. behavior changed sometime between 2.1.2(good) and 2.1.3(bad) [report: Miloh]
 
 2. For later releases ===============================================================================
