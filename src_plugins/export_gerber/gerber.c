@@ -38,6 +38,7 @@ TODO("Remove this when sleep(8) is removed:")
 #include <librnd/core/hid_dad.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
+#include <librnd/core/actions.h>
 
 #include "../src_plugins/export_excellon/aperture.h"
 #include "../src_plugins/export_excellon/excellon.h"
@@ -1342,7 +1343,7 @@ static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 {
 	pcb_dad_retovr_t retovr;
 	pcb_hid_dad_close(hid_ctx, &retovr, -1);
-	pcb_actionl("cam", NULL);
+	pcb_actionva(&PCB->hidlib, "cam", NULL);
 }
 
 
