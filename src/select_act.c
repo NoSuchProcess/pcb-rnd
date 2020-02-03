@@ -45,6 +45,7 @@
 #include "draw.h"
 #include "remove.h"
 #include "move.h"
+#include "tool_logic.h"
 #include <librnd/core/grid.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/compat_misc.h>
