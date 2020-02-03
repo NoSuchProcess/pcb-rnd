@@ -139,7 +139,7 @@ static void isch_switch_fmt(int target, int setconf)
 
 static void isch_pcb2dlg(void)
 {
-	int n, len, tab = 0;
+	int n, tab = 0;
 	pcb_conf_listitem_t *ci;
 	const char *tname = conf_import_sch.plugins.import_sch.import_fmt;
 
@@ -154,7 +154,6 @@ static void isch_pcb2dlg(void)
 		}
 	}
 
-	len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	for(n = 0, ci = pcb_conflist_first((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
 		PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
 
