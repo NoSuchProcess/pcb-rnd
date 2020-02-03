@@ -786,6 +786,7 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, (pcb_any_obj_t *)ps);
 }
 
+static pcb_xform_t dummy_xform;
 void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, pcb_bool mark, pcb_bool label, const pcb_box_t *drawn_area)
 {
 	pcb_draw_info_t info;
@@ -794,7 +795,7 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 
 	info.pcb = pcb;
 	info.drawn_area = drawn_area;
-	info.xform_caller = info.xform_exporter = info.xform = NULL;
+	info.xform_caller = info.xform_exporter = info.xform = &dummy_xform;
 	info.layer = NULL;
 	info.objcb.pstk.gid = -1;
 	info.objcb.pstk.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;
