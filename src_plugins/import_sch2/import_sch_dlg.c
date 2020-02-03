@@ -87,9 +87,9 @@ static void isch_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(isch_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
-static int isch_cmp(void *a_, void *b_)
+static int isch_cmp(const void *a_, const void *b_)
 {
-	pcb_plug_import_t **a = a_, **b = b_;
+	pcb_plug_import_t * const *a = a_, * const *b = b_;
 
 	if ((*a)->ui_prio < (*b)->ui_prio)
 		return 1;
@@ -250,7 +250,7 @@ static void isch_plc_cfg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 }
 
 
-static void isch_add_tab(pcb_plug_import_t *p)
+static void isch_add_tab(const pcb_plug_import_t *p)
 {
 	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
 		PCB_DAD_LABEL(isch_ctx.dlg, p->desc);
