@@ -134,11 +134,11 @@ static int do_import(void)
 		return 1;
 	}
 
-	len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if ((p->single_arg) && (len > 1))
 		len = 1;
 	a = malloc((len+1) * sizeof(char *));
-	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
+	for(n = 0, ci = pcb_conflist_first((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
 		a[n] = ci->val.string[0];
 	pcb_message(PCB_MSG_ERROR, "import_sch2: reimport with %s -> %p\n", imp_name, p);
 	res = p->import(p, IMPORT_ASPECT_NETLIST, a, len);

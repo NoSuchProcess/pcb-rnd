@@ -47,7 +47,7 @@ static void isch_arg2pcb(void)
 
 	isch_conf_lock++;
 	restart:;
-	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++) {
+	for(n = 0, ci = pcb_conflist_first((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++) {
 		const char *newval = isch_ctx.dlg[isch_ctx.warg[n]].val.str;
 		if (newval == NULL)
 			newval = "";
@@ -113,7 +113,7 @@ static void isch_switch_fmt(int target, int setconf)
 		controllable = 0;
 	}
 	else if (p->single_arg) {
-		len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+		len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 		if (len < 1) {
 			pcb_conf_grow("plugins/import_sch/args", 1);
 			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 0, "", POL_OVERWRITE);
@@ -122,7 +122,7 @@ static void isch_switch_fmt(int target, int setconf)
 		controllable = 0;
 	}
 	else {
-		len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+		len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 		controllable = 1;
 	}
 
@@ -154,8 +154,8 @@ static void isch_pcb2dlg(void)
 		}
 	}
 
-	len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
-	for(n = 0, ci = pcb_conflist_first(&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
+	len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
+	for(n = 0, ci = pcb_conflist_first((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
 		PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
 
 	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wfmt, lng, tab);
@@ -170,7 +170,7 @@ static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 static void isch_arg_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	int len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	int len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if (len > 0) {
 		pcb_conf_del(CFR_DESIGN, "plugins/import_sch/args", len-1);
 		isch_pcb2dlg();
@@ -179,7 +179,7 @@ static void isch_arg_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	int len = pcb_conflist_length(&conf_import_sch.plugins.import_sch.args);
+	int len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if (len < MAX_ARGS+1) {
 		isch_conf_lock++;
 		pcb_conf_grow("plugins/import_sch/args", len+1);
