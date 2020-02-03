@@ -55,7 +55,7 @@ static void ltf_reg_mouse_cursor(pcb_hid_t *hid, int idx, const char *name, cons
 
 		if (name == NULL) {
 			mc->named_shape = XC_man;
-			mc->cursor = XCreateFontCursor(display, c->shape);
+			mc->cursor = XCreateFontCursor(display, XC_man);
 			return;
 		}
 
