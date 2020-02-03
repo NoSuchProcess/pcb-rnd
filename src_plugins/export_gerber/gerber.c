@@ -9,6 +9,9 @@
 
 #include <time.h>
 
+TODO("Remove this when sleep(8) is removed:")
+#include <unistd.h>
+
 #include <librnd/core/math_helper.h>
 #include "board.h"
 #include "build_run.h"
