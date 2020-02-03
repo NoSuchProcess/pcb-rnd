@@ -289,7 +289,7 @@ static const char pcb_acts_LoadLtspiceFrom[] = "LoadLtspiceFrom(filename)";
 static const char pcb_acth_LoadLtspiceFrom[] = "Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.";
 fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fname = NULL, *end;
+	const char *fname = NULL;
 	char *fname_asc, *fname_net;
 	static char *default_file = NULL;
 	int rs;
