@@ -48,8 +48,7 @@ int net_cmd_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const cha
 
 static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
-	int n, res, verbose;
-	fgw_arg_t rs;
+	int res, verbose;
 	const char *cmdline, *outfn;
 	char *tmpfn = NULL;
 
