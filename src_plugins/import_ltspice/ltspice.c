@@ -265,7 +265,7 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 	goto quit;
 }
 
-static gen_filenames(const char *fname, char **fname_net, char **fname_asc)
+static void gen_filenames(const char *fname, char **fname_net, char **fname_asc)
 {
 	const char *end;
 	char *fname_base = NULL;
