@@ -59,6 +59,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf.h>
+#include <librnd/core/funchash.h>
 
 char *pcbhl_conf_dot_dir = ".librnd";
 char *pcbhl_conf_lib_dir = "/usr/lib/librnd";
