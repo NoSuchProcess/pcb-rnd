@@ -56,9 +56,8 @@ void pcb_r_destroy_tree(pcb_rtree_t **tree)
 
 void pcb_r_insert_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
 {
-	void *obj = which; /* assumes first field is the bounding box */
-	assert(obj != NULL);
-	pcb_rtree_insert(rtree, obj, (pcb_rtree_box_t *)which);
+	assert(which != NULL);
+	pcb_rtree_insert(rtree, (void *)which, (pcb_rtree_box_t *)which); /* assumes first field is the bounding box */
 }
 
 void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_cardinal_t len)
@@ -76,12 +75,11 @@ void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_card
 
 pcb_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
 {
-	void *obj = which; /* assumes first field is the bounding box */
-	assert(obj != NULL);
-	return pcb_rtree_delete(rtree, obj, (pcb_rtree_box_t *)which) == 0;
+	assert(which != NULL);
+	return pcb_rtree_delete(rtree, (void *)which, (pcb_rtree_box_t *)which) == 0; /* assumes first field is the bounding box */
 }
 
-pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, const pcb_box_t *box, void (*free_data)(void *d))
+pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (*free_data)(void *d))
 {
 	void *obj = box; /* assumes first field is the bounding box */
 	assert(obj != NULL);
