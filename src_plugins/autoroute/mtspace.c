@@ -142,7 +142,7 @@ static pcb_r_dir_t mts_remove_one(const pcb_box_t * b, void *cl)
 	/* the info box is pre-bloated, so just check equality */
 	if (b->X1 == info->box.X1 && b->X2 == info->box.X2 &&
 			b->Y1 == info->box.Y1 && b->Y2 == info->box.Y2 && box->clearance == info->clearance) {
-		pcb_r_delete_entry_free_data(info->tree, b, free);
+		pcb_r_delete_entry_free_data(info->tree, (pcb_box_t *)b, free);
 		longjmp(info->env, 1);
 	}
 	return PCB_R_DIR_NOT_FOUND;
