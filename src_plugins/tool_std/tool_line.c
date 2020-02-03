@@ -270,7 +270,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			pcb_pstk_t *ps = NULL;
 
 			pcb_added_lines++;
-			pcb_obj_add_attribs(line, pcb->pen_attr, NULL);
+			pcb_obj_add_attribs((pcb_any_obj_t *)line, pcb->pen_attr, NULL);
 			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, PCB_CURRLAYER(pcb), line, line);
 			pcb_line_invalidate_draw(PCB_CURRLAYER(pcb), line);
 			/* place a via if vias are visible, the layer is
@@ -291,7 +291,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 															pcb_crosshair.AttachedLine.Point1.Y,
 															conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 															0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
-				pcb_obj_add_attribs(ps, pcb->pen_attr, NULL);
+				pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
 				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 				pcb_pstk_invalidate_draw(ps);
 			}
