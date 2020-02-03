@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
+#include "tool_logic.h"
 #include <librnd/core/tool.h>
 #include "undo.h"
 
