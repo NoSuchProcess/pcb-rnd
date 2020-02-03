@@ -45,8 +45,6 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
 
-static const char *net_action_cookie = "net_action importer";
-
 static int net_action_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	FILE *f;
