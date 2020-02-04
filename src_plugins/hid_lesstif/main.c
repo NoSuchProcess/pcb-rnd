@@ -3029,6 +3029,8 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.usage = lesstif_usage;
 
+	lesstif_hid.get_dad_hidlib = ltf_attr_get_dad_hidlib;
+
 	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
 	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
 

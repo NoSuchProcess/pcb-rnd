@@ -1180,6 +1180,12 @@ void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, pcb_attribute_
 	return;
 }
 
+pcb_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
+{
+	return ltf_hidlib;
+}
+
+
 /* ------------------------------------------------------------ */
 
 static pcb_action_t ltf_dialog_action_list[] = {
