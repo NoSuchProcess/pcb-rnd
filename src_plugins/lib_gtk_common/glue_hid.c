@@ -613,7 +613,6 @@ static int ghid_mod1_is_pressed(pcb_hid_t *hid)
 #endif
 }
 
-
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -687,6 +686,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->busy = ghid_busy;
 
 	dst->set_hidlib = ghid_set_hidlib;
+	dst->get_dad_hidlib = ghid_attr_get_dad_hidlib;
 
 	dst->key_state = &ghid_keymap;
 

@@ -1001,3 +1001,9 @@ int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 
 	return 0;
 }
+
+pcb_hidlib_t *ghid_attr_get_dad_hidlib(void *hid_ctx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	return ctx->gctx->hidlib;
+}

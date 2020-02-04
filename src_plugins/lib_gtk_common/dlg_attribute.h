@@ -25,3 +25,6 @@ void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color);
 /* Report new window coords to the central window placement code
    emitting an event */
 int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id);
+
+pcb_hidlib_t *ghid_attr_get_dad_hidlib(void *hid_ctx);
+
