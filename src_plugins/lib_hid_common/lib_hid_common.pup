@@ -3,4 +3,5 @@ $short all-gui-hid common code
 $long hidlib common helper functions for non-PCB GUI
 $state works
 $package lib-gui
+$hidlib 1
 default disable-all
