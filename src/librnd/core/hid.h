@@ -555,6 +555,9 @@ struct pcb_hid_s {
 
 	/* this field is used by that HID implementation to store its data */
 	void *hid_data;
+
+	/* convert hid_ctx into hidlib ptr; only valid within a DAD callback */
+	pcb_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
 };
 
 typedef void (*pcb_hid_expose_cb_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
