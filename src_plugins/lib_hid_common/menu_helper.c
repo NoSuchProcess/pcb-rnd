@@ -26,15 +26,13 @@
  *
  */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 #include "genht/hash.h"
 #include "genht/htsp.h"
 
-#include "data.h"
-#include "board.h"
 #include <librnd/core/conf.h>
 #include <librnd/core/error.h>
 #include <librnd/core/actions.h>

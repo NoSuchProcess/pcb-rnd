@@ -24,12 +24,11 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/event.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
-#include "board.h"
 #include <librnd/core/safe_fs.h>
 
 static const char *place_cookie = "dialogs/place";

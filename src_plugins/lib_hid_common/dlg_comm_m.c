@@ -28,13 +28,11 @@
    Even the core will run some of these, through a dispatcher (e.g.
    action). */
 
-#include "config.h"
+#include <librnd/config.h>
 #include <librnd/core/actions.h>
-#include "board.h"
 #include <librnd/core/hid_dad.h>
 #include "xpm.h"
 #include "dlg_comm_m.h"
-#include "plug_io.h"
 #include "lib_hid_common.h"
 
 static const char nope[] = "Do not use.";
