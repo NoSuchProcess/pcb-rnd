@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "config.h"
+#include <librnd/config.h>
 
 #include <genvector/vti0.h>
 #include <liblihata/tree.h>
@@ -33,7 +33,6 @@
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/tool.h>
-#include "board.h"
 #include <librnd/core/hidlib_conf.h>
 
 #include "toolbar.h"
@@ -73,7 +72,7 @@ static void toolbar_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		return;
 
 	tid = (ptrdiff_t)attr->user_data;
-	pcb_tool_select_by_id(&PCB->hidlib, tid);
+	pcb_tool_select_by_id(pcb_gui->get_dad_hidlib(hid_ctx), tid);
 }
 
 static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool, const char *menufile_help)
