@@ -9,6 +9,7 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_common/act_dad.o
   $(PLUGDIR)/lib_hid_common/dlg_comm_m.o
   $(PLUGDIR)/lib_hid_common/dlg_log.o
+  $(PLUGDIR)/lib_hid_common/toolbar.o
   $(PLUGDIR)/lib_hid_common/xpm.o
 @]
 

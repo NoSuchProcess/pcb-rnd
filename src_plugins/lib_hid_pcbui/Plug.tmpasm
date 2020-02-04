@@ -3,7 +3,6 @@ put /local/pcb/mod/OBJS [@
   $(PLUGDIR)/lib_hid_pcbui/lib_hid_pcbui.o
   $(PLUGDIR)/lib_hid_pcbui/layer_menu.o
   $(PLUGDIR)/lib_hid_pcbui/routest.o
-  $(PLUGDIR)/lib_hid_pcbui/toolbar.o
   $(PLUGDIR)/lib_hid_pcbui/status.o
   $(PLUGDIR)/lib_hid_pcbui/act.o
   $(PLUGDIR)/lib_hid_pcbui/layersel.o

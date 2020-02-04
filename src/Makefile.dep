@@ -6143,7 +6143,7 @@
  librnd/core/hid.h librnd/core/attrib.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- ../src_plugins/lib_hid_pcbui/toolbar.h \
+ ../src_plugins/lib_hid_common/toolbar.h \
  ../src_plugins/lib_hid_pcbui/status.h ../src_plugins/lib_hid_pcbui/act.h \
  ../src_plugins/lib_hid_pcbui/util.c ../src_plugins/lib_hid_pcbui/util.h \
  data.h librnd/core/globalconst.h layer.h librnd/core/color.h \
@@ -6244,7 +6244,7 @@
  board.h librnd/core/hidlib.h librnd/core/global_typedefs.h \
  librnd/core/hidlib_conf.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
- ../src_plugins/lib_hid_pcbui/toolbar.h librnd/core/event.h
+ ../src_plugins/lib_hid_common/toolbar.h librnd/core/event.h
 ../src_plugins/lib_netmap/netmap.o: ../src_plugins/lib_netmap/netmap.c \
  ../config.h librnd/config.h ../src_3rd/genht/htpp.h \
  ../src_3rd/genht/ht.h ../src_plugins/lib_netmap/netmap.h board.h \

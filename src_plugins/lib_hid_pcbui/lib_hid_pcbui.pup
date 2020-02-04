@@ -3,4 +3,5 @@ $short common PCB-related GUI elements
 $long PCB related helper functions for GUI HIDs
 $state works
 $package lib-gui
+dep lib_hid_common
 default disable-all
