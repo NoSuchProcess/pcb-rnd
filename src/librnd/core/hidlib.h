@@ -70,19 +70,21 @@ void pcbhl_log_print_uninit_errs(const char *title);
 
 /* update crosshair-attached object because crosshair coords likely changed */
 void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl);
+
+/* This indicates that the API has hidlib first argument in every crosshair related call */
 #define PCB_HIDLIB_ADJUST_ATTACHED_OBJECTS_HAS_HL 1
 
 /* Suspend the crosshair: save all crosshair states in a newly allocated
    and returned temp buffer, then reset the crosshair to initial state;
    the returned buffer is used to restore the crosshair states later on.
    Used in the get location loop. */
-void *pcb_hidlib_crosshair_suspend(void);
-void pcb_hidlib_crosshair_restore(void *susp_data);
+void *pcb_hidlib_crosshair_suspend(pcb_hidlib_t *hl);
+void pcb_hidlib_crosshair_restore(pcb_hidlib_t *hl, void *susp_data);
 
 /* Move the crosshair to an absolute x;y coord on the board and update the GUI;
    if mouse_mot is non-zero, the request is a direct result of a mouse motion
    event */
-void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
+void pcb_hidlib_crosshair_move_to(pcb_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
 
 /* The whole default menu file embedded in the executable; NULL if not present */
 extern const char *pcb_hidlib_default_embedded_menu;

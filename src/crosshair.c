@@ -1119,42 +1119,42 @@ typedef struct {
 	int obj, line, box;
 } old_crosshair_t;
 
-void *pcb_hidlib_crosshair_suspend(void)
+void *pcb_hidlib_crosshair_suspend(pcb_hidlib_t *hl)
 {
 	old_crosshair_t *buf = malloc(sizeof(old_crosshair_t));
 
 	buf->obj = pcb_crosshair.AttachedObject.State;
 	buf->line = pcb_crosshair.AttachedLine.State;
 	buf->box = pcb_crosshair.AttachedBox.State;
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(hl, pcb_false);
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(hl, pcb_true);
 	return buf;
 }
 
-void pcb_hidlib_crosshair_restore(void *susp_data)
+void pcb_hidlib_crosshair_restore(pcb_hidlib_t *hl, void *susp_data)
 {
 	old_crosshair_t *buf = susp_data;
 
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	pcb_hid_notify_crosshair_change(hl, pcb_false);
 	pcb_crosshair.AttachedObject.State = buf->obj;
 	pcb_crosshair.AttachedLine.State = buf->line;
 	pcb_crosshair.AttachedBox.State = buf->box;
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	pcb_hid_notify_crosshair_change(hl, pcb_true);
 
 	free(buf);
 }
 
 
-void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(pcb_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
 {
 	if (!mouse_mot) {
-		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+		pcb_hid_notify_crosshair_change(hl, pcb_false);
 		if (pcb_crosshair_move_absolute(abs_x, abs_y))
-			pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
-		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+			pcb_hid_notify_crosshair_change(hl, pcb_true);
+		pcb_hid_notify_crosshair_change(hl, pcb_true);
 	}
 	else
 		pcb_event_move_crosshair(abs_x, abs_y);

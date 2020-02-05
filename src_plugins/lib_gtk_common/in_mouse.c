@@ -176,7 +176,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	pcb_actionva(ctx->hidlib, "StatusSetText", message, NULL);
 
 	
-	chst = pcb_hidlib_crosshair_suspend();
+	chst = pcb_hidlib_crosshair_suspend(ctx->hidlib);
 	ghid_hand_cursor(ctx);
 
 	/*  Stop the top level GMainLoop from getting user input from keyboard
@@ -206,7 +206,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	pcb_gtk_interface_input_signals_connect(); /* return to normal */
 	pcb_gtk_interface_set_sensitive(TRUE);
 
-	pcb_hidlib_crosshair_restore(chst);
+	pcb_hidlib_crosshair_restore(ctx->hidlib, chst);
 	ghid_restore_cursor(ctx);
 
 	pcb_actionva(ctx->hidlib, "StatusSetText", NULL);

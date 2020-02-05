@@ -37,7 +37,7 @@ void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_
 {
 	if (mouse_mot)
 		pcb_event(hidlib, PCB_EVENT_STROKE_RECORD, "cc", abs_x, abs_y);
-	pcb_hidlib_crosshair_move_to(abs_x, abs_y, mouse_mot);
+	pcb_hidlib_crosshair_move_to(hidlib, abs_x, abs_y, mouse_mot);
 }
 
 
