@@ -50,16 +50,16 @@ void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl)
 {
 }
 
-void *pcb_hidlib_crosshair_suspend(void)
+void *pcb_hidlib_crosshair_suspend(pcb_hidlib_t *hl)
 {
 	return NULL;
 }
 
-void pcb_hidlib_crosshair_restore(void *susp_data)
+void pcb_hidlib_crosshair_restore(pcb_hidlib_t *hl, void *susp_data)
 {
 }
 
-void pcb_hidlib_crosshair_move_to(pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(pcb_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
 {
 }
 
