@@ -120,10 +120,10 @@ const pcb_unit_t *get_unit_by_suffix(const char *suffix);
 double pcb_coord_to_unit(const pcb_unit_t *unit, pcb_coord_t x);
 
 /* Return how many PCB-internal-Coord-unit a unit translates to */
-double pcb_unit_to_factor(const pcb_unit_t * unit);
+double pcb_unit_to_factor(const pcb_unit_t *unit);
 
 /* Convert a given unit to pcb coords; clamp at the end of the ranges */
-pcb_coord_t pcb_unit_to_coord(const pcb_unit_t * unit, double x);
+pcb_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x);
 
 /* Bring an angle into [0, 360) range */
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
