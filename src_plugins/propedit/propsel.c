@@ -415,7 +415,7 @@ static int layer_recolor(pcb_layer_t *layer, const char *clr)
 	pcb_color_t c;
 	if (pcb_color_load_str(&c, clr) != 0)
 		return -1;
-	return pcb_layer_recolor_(layer, &c);
+	return pcb_layer_recolor_(layer, &c, 1);
 }
 
 static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
@@ -429,7 +429,7 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 
 	if (strncmp(st->name, "p/layer/", 8) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
-		    (pcb_layer_rename_(layer, pcb_strdup(st->s)) == 0)) DONE0;
+		    (pcb_layer_rename_(layer, pcb_strdup(st->s), 1) == 0)) DONE0;
 
 		if ((strcmp(pn, "color") == 0) &&
 		    (layer_recolor(layer, st->color.str) == 0)) DONE0;

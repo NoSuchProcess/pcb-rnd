@@ -540,7 +540,7 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	return id;
 }
 
-int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
+int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, pcb_bool undoable)
 {
 	free((char*)Layer->name);
 	Layer->name = Name;
@@ -551,12 +551,12 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name)
 	return 0;
 }
 
-int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname)
+int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, pcb_bool undoable)
 {
-	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname));
+	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname), undoable);
 }
 
-int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color)
+int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, pcb_bool undoable)
 {
 	if (Layer->is_bound)
 		return -1;
@@ -568,11 +568,11 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color)
 	return 0;
 }
 
-int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color)
+int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color, pcb_bool undoable)
 {
 	pcb_color_t clr;
 	pcb_color_load_str(&clr, color);
-	return pcb_layer_recolor_(&data->Layer[layer], &clr);
+	return pcb_layer_recolor_(&data->Layer[layer], &clr, undoable);
 }
 
 #undef APPEND

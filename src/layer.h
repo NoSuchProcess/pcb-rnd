@@ -283,14 +283,14 @@ const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
 const pcb_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
 
 /* Rename/recolor an existing layer by idx */
-int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname);
-int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor);
+int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, pcb_bool undoable);
+int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor, pcb_bool undoable);
 
 /* changes the color of a layer; string has to be allocated by the caller (pcb_strdup) */
-int pcb_layer_rename_(pcb_layer_t *Layer, char *Name);
+int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, pcb_bool undoable);
 
 /* Low level layer color change, parsed color must be available */
-int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color);
+int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, pcb_bool undoable);
 
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is

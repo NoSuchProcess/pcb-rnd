@@ -74,7 +74,7 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (failed == 0) {
 		pcb_layer_combining_t comb = 0;
 		if (strcmp(ly->name, dlg[wname].val.str) != 0) {
-			ar |= pcb_layer_rename_(ly, (char *)dlg[wname].val.str);
+			ar |= pcb_layer_rename_(ly, (char *)dlg[wname].val.str, 1);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		if (dlg[wsub].val.lng) comb |= PCB_LYC_SUB;

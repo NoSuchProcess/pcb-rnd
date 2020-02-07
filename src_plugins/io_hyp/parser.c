@@ -885,13 +885,13 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 	switch (layer_count) {
 	case 1:
 		/* rename top copper and return */
-		pcb_layer_rename(PCB->Data, top_layer_id, lname);
+		pcb_layer_rename(PCB->Data, top_layer_id, lname, 0);
 		return top_layer_id;
 		break;
 
 	case 2:
 		/* rename bottom copper and return */
-		pcb_layer_rename(PCB->Data, bottom_layer_id, lname);
+		pcb_layer_rename(PCB->Data, bottom_layer_id, lname, 0);
 		return bottom_layer_id;
 		break;
 

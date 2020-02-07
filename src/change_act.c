@@ -525,7 +525,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Layer:
 			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layer name:", PCB_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
-			if (name && (pcb_layer_rename_(PCB_CURRLAYER(PCB_ACT_BOARD), name) == 0))
+			if (name && (pcb_layer_rename_(PCB_CURRLAYER(PCB_ACT_BOARD), name, 1) == 0))
 				pcb_board_set_changed_flag(pcb_true);
 			else
 				free(name);

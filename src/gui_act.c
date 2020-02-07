@@ -645,7 +645,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
-			ret |= pcb_layer_rename_(ly, pcb_strdup(arg+5));
+			ret |= pcb_layer_rename_(ly, pcb_strdup(arg+5), 1);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(arg, "auto=", 5) == 0) {
