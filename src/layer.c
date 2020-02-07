@@ -797,10 +797,11 @@ static int undo_layer_move_swap(void *udata)
 		l->name = NULL;
 		pcb_layer_move_delete_(pcb, m->lid);
 	}
-	else { /* undo a delete by appending */
+	else { /* undo a delete by inserting it back in its place */
 		pcb_layer_t *l = pcb_layer_move_insert_(pcb, m->lid, m->grp, m->in_grp_idx);
 		l->name = m->name;
 		m->name = NULL;
+		l->meta.real.color = m->color;
 		pcb_layergrp_notify_chg(pcb);
 		pcb_layervis_change_group_vis(&pcb->hidlib, m->lid, 1, 1);
 		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
@@ -863,6 +864,7 @@ static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb
 		m->pcb = pcb;
 		m->lid = l - pcb->Data->Layer;
 		m->grp = l->meta.real.grp;
+		m->color = l->meta.real.color;
 		m->in_grp_idx = layer_idx_in_grp(pcb, l);
 		m->append = 1;
 		pcb_undo_inc_serial();
@@ -885,6 +887,7 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int
 	m->lid = old_index;
 	m->name = l->name;
 	m->grp = l->meta.real.grp;
+	m->color = l->meta.real.color;
 	m->in_grp_idx = layer_idx_in_grp(pcb, l);
 	l->name = NULL;
 	m->append = 0;
