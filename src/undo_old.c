@@ -769,37 +769,6 @@ static pcb_bool UndoInsertContour(UndoListTypePtr Entry)
 	return UndoSwapCopiedObject(Entry);
 }
 
-/* ---------------------------------------------------------------------------
- * undo a layer change
- * returns pcb_true on success
- */
-static pcb_bool UndoLayerMove(UndoListTypePtr Entry)
-{
-	LayerChangeTypePtr l = &Entry->Data.LayerChange;
-	int tmp;
-
-	if (l->old_index == -1) { /* was creating new */
-		l->old_index = l->at;
-		l->at = l->new_index;
-		l->new_index = -1;
-	}
-	else if (l->new_index == -1) { /* was deleting existing */
-		l->new_index = l->at;
-		l->at = l->old_index;
-		l->old_index = -1;
-	}
-	else {
-		tmp = l->new_index;
-		l->new_index = l->old_index;
-		l->old_index = tmp;
-	}
-
-	if (pcb_layer_move(PCB, l->old_index, l->new_index, -1))
-		return pcb_false;
-	else
-		return pcb_true;
-}
-
 static int pcb_undo_old_undo(void *ptr_)
 {
 	UndoListTypePtr ptr = ptr_;
@@ -896,11 +865,6 @@ static int pcb_undo_old_undo(void *ptr_)
 
 	case PCB_UNDO_CHANGERADII:
 		if (UndoChangeRadii(ptr))
-			return 0;
-		break;
-
-	case PCB_UNDO_LAYERMOVE:
-		if (UndoLayerMove(ptr))
 			return 0;
 		break;
 
@@ -1278,21 +1242,6 @@ void pcb_undo_add_obj_to_change_radii(int Type, void *Ptr1, void *Ptr2, void *Pt
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds a layer change (new, delete, move) to the undo list.
- */
-void pcb_undo_add_layer_move(int old_index, int new_index, int at)
-{
-	UndoListTypePtr undo;
-
-	if (!Locked) {
-		undo = GetUndoSlot(PCB_UNDO_LAYERMOVE, 0, 0);
-		undo->Data.LayerChange.old_index = old_index;
-		undo->Data.LayerChange.new_index = new_index;
-		undo->Data.LayerChange.at = at;
-	}
-}
-
 #ifndef NDEBUG
 const char *undo_type2str(int type)
 {
@@ -1316,7 +1265,6 @@ const char *undo_type2str(int type)
 		case PCB_UNDO_CHANGECLEARSIZE: return "chngeclearsize";
 		case PCB_UNDO_CHANGEANGLES: return "changeangles";
 		case PCB_UNDO_CHANGERADII: return "changeradii";
-		case PCB_UNDO_LAYERMOVE: return "layermove";
 		case PCB_UNDO_CLEAR: return "clear";
 	}
 	sprintf(buff, "Unknown %d", type);

@@ -674,6 +674,9 @@ static void pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pc
 	pcb_layergrp_notify_chg(pcb);
 	pcb_layervis_change_group_vis(&pcb->hidlib, new_lid, 1, 1);
 	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+
+	pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
+/*		pcb_undo_inc_serial();*/
 }
 
 static void pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layergrp_id_t new_in_grp)
@@ -724,6 +727,8 @@ static void pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pc
 			pcb_layer_stack[l]--;
 
 	pcb_layergrp_notify_chg(pcb);
+	pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
+/*		pcb_undo_inc_serial();*/
 }
 
 
@@ -765,14 +770,8 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		   The new layer design presents the layers by groups to preserve physical
 		   order. In this system the index of the logical layer on the logical
 		   layer list is insignificant, thus we shouldn't try to change it. */
+		return 1;
 	}
-
-	if (at >= 0) {
-		pcb_undo_add_layer_move(old_index, new_index, at);
-		pcb_undo_inc_serial();
-	}
-	else
-		pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
 
 	return 0;
 }

@@ -29,12 +29,6 @@ typedef struct {								/* information about moves between layers */
 	pcb_cardinal_t OriginalLayer;				/* the index of the original layer */
 } MoveToLayer;
 
-typedef struct {								/* information about layer changes */
-	int old_index;
-	int new_index;
-	int at;
-} LayerChangeType, *LayerChangeTypePtr;
-
 typedef struct {								/* information about poly clear/restore */
 	pcb_bool Clear;										/* pcb_true was clear, pcb_false was restore */
 	pcb_layer_t *Layer;
@@ -63,7 +57,6 @@ typedef struct {								/* holds information about an operation */
 		MoveToLayer MoveToLayer;
 		pcb_flag_t Flags;
 		pcb_coord_t Size;
-		LayerChangeType LayerChange;
 		ClearPolyType ClearPoly;
 		NetlistChangeType NetlistChange;
 		long int CopyID;
