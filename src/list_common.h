@@ -30,10 +30,11 @@
 /* iterate over all items of list and call func(item) */
 #define list_map0(list, itemtype, func) \
 		do { \
+			void (*__f__)(void *) = (func); \
 			itemtype *__item__; \
 			gdl_iterator_t it; \
 			linelist_foreach((list), &it, __item__) \
-				func(__item__); \
+				__f__(__item__); \
 		} while(0)
 
 #endif
