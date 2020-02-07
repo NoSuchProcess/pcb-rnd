@@ -640,7 +640,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->type = PCB_OBJ_LAYER;
 }
 
-static void pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
+static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
 {
 	pcb_layergrp_t *g;
 	pcb_layer_t *lp;
@@ -677,9 +677,10 @@ static void pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pc
 
 	pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
 /*		pcb_undo_inc_serial();*/
+	return 0;
 }
 
-static void pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layergrp_id_t new_in_grp)
+static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layergrp_id_t new_in_grp)
 {
 	pcb_layer_id_t l;
 	pcb_layergrp_id_t gid;
@@ -729,6 +730,7 @@ static void pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pc
 	pcb_layergrp_notify_chg(pcb);
 	pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
 /*		pcb_undo_inc_serial();*/
+	return 0;
 }
 
 
@@ -758,22 +760,18 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 	}
 
 
-	if (old_index == -1) { /* append new layer at the end of the logical layer list, put it in the current group */
-		pcb_layer_move_append(pcb, new_index, new_in_grp);
-	}
-	else if (new_index == -1) { /* Delete the layer at old_index */
-		pcb_layer_move_delete(pcb, old_index, new_in_grp);
-	}
-	else {
-		pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
-		/* Removed r8686:
-		   The new layer design presents the layers by groups to preserve physical
-		   order. In this system the index of the logical layer on the logical
-		   layer list is insignificant, thus we shouldn't try to change it. */
-		return 1;
-	}
+	if (old_index == -1) /* append new layer at the end of the logical layer list, put it in the current group */
+		return pcb_layer_move_append(pcb, new_index, new_in_grp);
+	if (new_index == -1) /* Delete the layer at old_index */
+		return pcb_layer_move_delete(pcb, old_index, new_in_grp);
 
-	return 0;
+
+	pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
+	/* Removed r8686:
+	   The new layer design presents the layers by groups to preserve physical
+	   order. In this system the index of the logical layer on the logical
+	   layer list is insignificant, thus we shouldn't try to change it. */
+	return 1;
 }
 
 const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id)
