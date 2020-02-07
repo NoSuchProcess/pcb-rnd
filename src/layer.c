@@ -640,33 +640,8 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->type = PCB_OBJ_LAYER;
 }
 
-int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
+static void pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
 {
-	pcb_layer_id_t l, at = -1;
-
-	/* sanity checks */
-	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
-		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
-		return 1;
-	}
-
-	if (new_index < -1 || new_index > pcb->Data->LayerN || new_index >= PCB_MAX_LAYER) {
-		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
-		return 1;
-	}
-
-	if (new_index == -1 && is_last_top_copper_layer(pcb, old_index)) {
-		pcb_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last top-side layer\n", "cancel", 0, NULL);
-		return 1;
-	}
-
-	if (new_index == -1 && is_last_bottom_copper_layer(pcb, old_index)) {
-		pcb_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last bottom-side layer\n", "cancel", 0, NULL);
-		return 1;
-	}
-
-
-	if (old_index == -1) { /* append new layer at the end of the logical layer list, put it in the current group */
 		pcb_layergrp_t *g;
 		pcb_layer_t *lp;
 		pcb_layer_id_t new_lid = pcb->Data->LayerN++;
@@ -699,9 +674,11 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		pcb_layergrp_notify_chg(pcb);
 		pcb_layervis_change_group_vis(&pcb->hidlib, new_lid, 1, 1);
 		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
-		at = new_lid;
-	}
-	else if (new_index == -1) { /* Delete the layer at old_index */
+}
+
+static void pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layergrp_id_t new_in_grp)
+{
+	pcb_layer_id_t l;
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_t *g;
 		int grp_idx, remaining;
@@ -747,6 +724,40 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 				pcb_layer_stack[l]--;
 
 		pcb_layergrp_notify_chg(pcb);
+}
+
+
+int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
+{
+	pcb_layer_id_t l, at = -1;
+
+	/* sanity checks */
+	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
+		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
+		return 1;
+	}
+
+	if (new_index < -1 || new_index > pcb->Data->LayerN || new_index >= PCB_MAX_LAYER) {
+		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
+		return 1;
+	}
+
+	if (new_index == -1 && is_last_top_copper_layer(pcb, old_index)) {
+		pcb_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last top-side layer\n", "cancel", 0, NULL);
+		return 1;
+	}
+
+	if (new_index == -1 && is_last_bottom_copper_layer(pcb, old_index)) {
+		pcb_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last bottom-side layer\n", "cancel", 0, NULL);
+		return 1;
+	}
+
+
+	if (old_index == -1) { /* append new layer at the end of the logical layer list, put it in the current group */
+		pcb_layer_move_append(pcb, new_index, new_in_grp);
+	}
+	else if (new_index == -1) { /* Delete the layer at old_index */
+		pcb_layer_move_delete(pcb, old_index, new_in_grp);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
