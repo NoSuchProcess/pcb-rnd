@@ -611,15 +611,63 @@ int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, 
 	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname), undoable);
 }
 
+/*** undoable layer recolor ***/
+typedef struct {
+	pcb_layer_t *layer;
+	pcb_color_t color;
+} undo_layer_recolor_t;
+
+
+static int undo_layer_recolor_swap(void *udata)
+{
+	pcb_color_t old;
+	undo_layer_recolor_t *r = udata;
+
+	old = r->layer->meta.real.color;
+	r->layer->meta.real.color = r->color;
+	r->color = old;
+	if (!r->layer->is_bound) {
+		assert((r->layer->parent_type == PCB_PARENT_DATA) && (r->layer->parent.data->parent_type == PCB_PARENT_BOARD));
+		pcb_layergrp_notify_chg(r->layer->parent.data->parent.board);
+	}
+	return 0;
+}
+
+static void undo_layer_recolor_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layer_recolor_t *r = udata;
+	pcb_snprintf(dst, dst_len, "recolor layer: '%s' -> '%s'", r->layer->meta.real.color.str, r->color.str);
+}
+
+static const uundo_oper_t undo_layer_recolor = {
+	core_layer_cookie,
+	NULL,
+	undo_layer_recolor_swap,
+	undo_layer_recolor_swap,
+	undo_layer_recolor_print
+};
+
+
 int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, pcb_bool undoable)
 {
+	undo_layer_recolor_t rtmp, *r = &rtmp;
+
 	if (Layer->is_bound)
 		return -1;
-	Layer->meta.real.color = *color;
-	if (!Layer->is_bound) {
-		assert((Layer->parent_type == PCB_PARENT_DATA) && (Layer->parent.data->parent_type == PCB_PARENT_BOARD));
-		pcb_layergrp_notify_chg(Layer->parent.data->parent.board);
+
+	if (undoable) {
+		pcb_board_t *pcb = pcb_data_get_top(Layer->parent.data);
+		if (pcb != NULL)
+			r = pcb_undo_alloc(pcb, &undo_layer_recolor, sizeof(undo_layer_recolor_t));
 	}
+
+	r->layer = Layer;
+	r->color = *color;
+
+	undo_layer_recolor_swap(r);
+	if (undoable)
+		pcb_undo_inc_serial();
+
 	return 0;
 }
 
