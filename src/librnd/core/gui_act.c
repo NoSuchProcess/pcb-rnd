@@ -269,16 +269,31 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_GetXY[] = "GetXY()";
-static const char pcb_acth_GetXY[] = "Get a coordinate.";
+static const char pcb_acts_GetXY[] = "GetXY([x|y])";
+static const char pcb_acth_GetXY[] = "Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.";
 /* DOC: getxy.html */
 static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
-	const char *msg = "Click to enter a coordinate.";
+	const char *op = NULL, *msg = "Click to enter a coordinate.";
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
-	PCB_ACT_IRES(0);
 	pcb_hid_get_coords(msg, &x, &y, 0);
+
+	PCB_ACT_IRES(0);
+	PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, op = argv[1].val.str);
+	if (op != NULL) {
+		if (((op[0] == 'x') || (op[0] == 'X')) && op[1] == '\0') {
+			res->type = FGW_COORD;
+			fgw_coord(res) = x;
+		}
+		else if (((op[0] == 'y') || (op[0] == 'Y')) && op[1] == '\0') {
+			res->type = FGW_COORD;
+			fgw_coord(res) = y;
+		}
+		else
+			PCB_ACT_FAIL(GetXY);
+	}
+
 	return 0;
 }
 
