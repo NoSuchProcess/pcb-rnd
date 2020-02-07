@@ -1585,12 +1585,12 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			if (rdver < 6)
 				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.\n");
 			if (npurp->type == LHT_TEXT)
-				pcb_layergrp_set_purpose__(g, pcb_strdup(npurp->data.text.value));
+				pcb_layergrp_set_purpose__(g, pcb_strdup(npurp->data.text.value), 0);
 			else
 				iolht_warn(npurp, -1, "Group purpose shall be text - ignoring this field\n");
 		}
 		else if (prp != NULL) /* or the implicit one returned by parse_layer_type() */
-			pcb_layergrp_set_purpose__(g, pcb_strdup(prp));
+			pcb_layergrp_set_purpose__(g, pcb_strdup(prp), 0);
 
 		/* load attributes */
 		nattr = lht_dom_hash_get(grp, "attributes");

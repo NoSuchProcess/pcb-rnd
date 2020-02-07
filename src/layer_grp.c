@@ -598,7 +598,7 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 	g->ltype &= ~(PCB_LYT_ANYWHERE);
 	free(g->name);
 	g->name = pcb_strdup("global_outline");
-	pcb_layergrp_set_purpose__(g, pcb_strdup("uroute"));
+	pcb_layergrp_set_purpose__(g, pcb_strdup("uroute"), 0);
 }
 
 
@@ -830,7 +830,7 @@ void pcb_layer_group_setup_silks(pcb_board_t *pcb)
 			pcb_layer_create(pcb, gid, "silk");
 }
 
-int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name)
+int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, pcb_bool undoable)
 {
 	free(grp->name);
 	grp->name = name;
@@ -840,14 +840,14 @@ int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name)
 	return 0;
 }
 
-int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *name)
+int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *name, pcb_bool undoable)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 	if (grp == NULL) return -1;
-	return pcb_layergrp_rename_(grp, pcb_strdup(name));
+	return pcb_layergrp_rename_(grp, pcb_strdup(name), undoable);
 }
 
-int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose)
+int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable)
 {
 	free(lg->purpose);
 	if (purpose == NULL) {
@@ -863,17 +863,17 @@ int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose)
 	return 0;
 }
 
-int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose)
+int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable)
 {
-	int ret = pcb_layergrp_set_purpose__(lg, purpose);
+	int ret = pcb_layergrp_set_purpose__(lg, purpose, undoable);
 	assert(lg->parent_type == PCB_PARENT_BOARD);
 	pcb_event(&lg->parent.board->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return ret;
 }
 
-int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose)
+int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, pcb_bool undoable)
 {
-	return pcb_layergrp_set_purpose_(lg, pcb_strdup(purpose));
+	return pcb_layergrp_set_purpose_(lg, pcb_strdup(purpose), undoable);
 }
 
 pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name)
@@ -986,7 +986,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			grp->ltype = PCB_LYT_BOUNDARY;
 			grp->name = pcb_strdup("outline");
 			if (ly->meta.bound.purpose != NULL)
-				pcb_layergrp_set_purpose__(grp, pcb_strdup(ly->meta.bound.purpose));
+				pcb_layergrp_set_purpose__(grp, pcb_strdup(ly->meta.bound.purpose), 0);
 			nlid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
 			nly = pcb_get_layer(pcb->Data, nlid);
 			if (nly != NULL)
@@ -1159,7 +1159,7 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 	free(grp->purpose);
 	grp->purpose = NULL;
 	if (src->purpose != NULL)
-		pcb_layergrp_set_purpose__(grp, pcb_strdup(src->purpose));
+		pcb_layergrp_set_purpose__(grp, pcb_strdup(src->purpose), 1);
 
 	if (grp->len == 0) {
 		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, lyname);

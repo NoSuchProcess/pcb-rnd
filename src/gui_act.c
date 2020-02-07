@@ -751,7 +751,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
-			ret |= pcb_layergrp_rename_(g, pcb_strdup(arg+5));
+			ret |= pcb_layergrp_rename_(g, pcb_strdup(arg+5), 1);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(arg, "type=", 5) == 0) {
@@ -905,7 +905,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_layer_id_t lid;
 
 		if (spurp != NULL)
-			pcb_layergrp_set_purpose__(g, pcb_strdup(spurp));
+			pcb_layergrp_set_purpose__(g, pcb_strdup(spurp), 1);
 
 		free(g->name);
 		if (name != NULL)

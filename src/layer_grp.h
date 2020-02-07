@@ -168,15 +168,15 @@ void pcb_layergrp_notify_chg(pcb_board_t *pcb);
 void pcb_layergrp_notify(pcb_board_t *pcb);
 
 /* Rename an existing layer by idx */
-int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname);
+int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname, pcb_bool undoable);
 
 /* changes the name of a layer; memory has to be already allocated */
-int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name);
+int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, pcb_bool undoable);
 
 /* Change the purpose field and recalc purpi (not undoable) */
-int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose); /* no strdup, no event */
-int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose); /* no strdup, send layer change event */
-int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose); /* strdup, send event */
+int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable); /* no strdup, no event */
+int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable); /* no strdup, send layer change event */
+int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, pcb_bool undoable); /* strdup, send event */
 
 
 /* Slow linear search for a layer group by name */

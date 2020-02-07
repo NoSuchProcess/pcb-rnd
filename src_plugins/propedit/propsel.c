@@ -450,10 +450,10 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 
 	if (strncmp(st->name, "p/layer_group/", 14) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
-		    (pcb_layergrp_rename_(grp, pcb_strdup(st->s)) == 0)) DONE;
+		    (pcb_layergrp_rename_(grp, pcb_strdup(st->s), 1) == 0)) DONE;
 
 		if ((strcmp(pn, "purpose") == 0) &&
-		    (pcb_layergrp_set_purpose(grp, st->s) == 0)) DONE;
+		    (pcb_layergrp_set_purpose(grp, st->s, 1) == 0)) DONE;
 	}
 }
 

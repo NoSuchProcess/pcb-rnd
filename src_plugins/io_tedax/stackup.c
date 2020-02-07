@@ -264,7 +264,7 @@ static int tedax_layer_set_by_str(pcb_board_t *pcb, pcb_layergrp_t *grp, const c
 			grp->ltype |= t->type;
 			grp->purpose = NULL;
 			if (t->purpose != NULL)
-				pcb_layergrp_set_purpose(grp, t->purpose);
+				pcb_layergrp_set_purpose(grp, t->purpose, 0);
 			return 0;
 		}
 	}

@@ -166,7 +166,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_DAD_AUTORUN("layer_grp_prop", dlg, "Edit the properties of a layer group (physical layer)", NULL, failed);
 	if (failed == 0) {
 		if (strcmp(g->name, dlg[wname].val.str) != 0) {
-			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].val.str);
+			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].val.str, 1);
 			dlg[wname].val.str = NULL;
 			pcb_board_set_changed_flag(pcb_true);
 		}
@@ -192,15 +192,15 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (dlg[wpurp].val.str == NULL) {
 			if (g->purpose != NULL) {
-				pcb_layergrp_set_purpose__(g, NULL);
+				pcb_layergrp_set_purpose__(g, NULL, 1);
 				changed = 1;
 			}
 		}
 		else if ((g->purpose == NULL) || (strcmp(g->purpose, dlg[wpurp].val.str) != 0)) {
 			if (*dlg[wpurp].val.str == '\0')
-				pcb_layergrp_set_purpose__(g, NULL);
+				pcb_layergrp_set_purpose__(g, NULL, 1);
 			else
-				pcb_layergrp_set_purpose__(g, pcb_strdup(dlg[wpurp].val.str));
+				pcb_layergrp_set_purpose__(g, pcb_strdup(dlg[wpurp].val.str), 1);
 			changed = 1;
 		}
 
