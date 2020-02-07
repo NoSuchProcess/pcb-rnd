@@ -885,11 +885,11 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int
 	memset(m, 0, sizeof(undo_layer_move_t));
 	m->pcb = pcb;
 	m->lid = old_index;
-	m->name = l->name;
+	m->name = (char *)l->name;
+	l->name = NULL;
 	m->grp = l->meta.real.grp;
 	m->color = l->meta.real.color;
 	m->in_grp_idx = layer_idx_in_grp(pcb, l);
-	l->name = NULL;
 	m->append = 0;
 	pcb_undo_inc_serial();
 
