@@ -32,9 +32,13 @@
 #include "data.h"
 #include "layer_grp.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/pcb-printf.h>
 #include "event.h"
 #include <librnd/core/funchash.h>
 #include "funchash_core.h"
+#include "undo.h"
+
+static const char core_layergrp_cookie[] = "core-layergrp";
 
 /* notify the rest of the code after layer group changes so that the GUI
    and other parts sync up */
@@ -830,13 +834,66 @@ void pcb_layer_group_setup_silks(pcb_board_t *pcb)
 			pcb_layer_create(pcb, gid, "silk");
 }
 
+/*** undoable rename ***/
+
+typedef struct {
+	pcb_layergrp_t *grp;
+	char *name;
+} undo_layergrp_rename_t;
+
+static int undo_layergrp_rename_swap(void *udata)
+{
+	char *old;
+	undo_layergrp_rename_t *r = udata;
+
+	old = (char *)r->grp->name;
+	r->grp->name = r->name;
+	r->name = old;
+
+	pcb_event(&r->grp->parent.board->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	return 0;
+}
+
+static void undo_layergrp_rename_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layergrp_rename_t *r = udata;
+	pcb_snprintf(dst, dst_len, "rename layergrp: '%s' -> '%s'", r->grp->name, r->name);
+}
+
+static void undo_layergrp_rename_free(void *udata)
+{
+	undo_layergrp_rename_t *r = udata;
+	free(r->name);
+}
+
+
+static const uundo_oper_t undo_layergrp_rename = {
+	core_layergrp_cookie,
+	undo_layergrp_rename_free,
+	undo_layergrp_rename_swap,
+	undo_layergrp_rename_swap,
+	undo_layergrp_rename_print
+};
+
+
 int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, pcb_bool undoable)
 {
-	free(grp->name);
-	grp->name = name;
+	undo_layergrp_rename_t rtmp, *r = &rtmp;
 
 	assert(grp->parent_type == PCB_PARENT_BOARD);
-	pcb_event(&grp->parent.board->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+
+	if (undoable)
+		r = pcb_undo_alloc(grp->parent.board, &undo_layergrp_rename, sizeof(undo_layergrp_rename_t));
+
+	r->grp = grp;
+	r->name = name;
+
+	undo_layergrp_rename_swap(r);
+	if (undoable)
+		pcb_undo_inc_serial();
+	else
+		undo_layergrp_rename_free(r);
+
 	return 0;
 }
 
