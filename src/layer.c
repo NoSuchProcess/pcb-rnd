@@ -680,7 +680,7 @@ static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb
 	return 0;
 }
 
-static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layergrp_id_t new_in_grp)
+static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index)
 {
 	pcb_layer_id_t l;
 	pcb_layergrp_id_t gid;
@@ -736,8 +736,6 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb
 
 int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
 {
-	pcb_layer_id_t l, at = -1;
-
 	/* sanity checks */
 	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
 		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
@@ -763,7 +761,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 	if (old_index == -1) /* append new layer at the end of the logical layer list, put it in the current group */
 		return pcb_layer_move_append(pcb, new_index, new_in_grp);
 	if (new_index == -1) /* Delete the layer at old_index */
-		return pcb_layer_move_delete(pcb, old_index, new_in_grp);
+		return pcb_layer_move_delete(pcb, old_index);
 
 
 	pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
