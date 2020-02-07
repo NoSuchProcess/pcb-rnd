@@ -147,6 +147,7 @@
 - BUG: lesstif main window doesn't show parts selected after running select all. { s a a } on parts in lesstif gui, main window doesn't show any parts selected unless zoom is changed. [report: Miloh]
 - BUG: in lesstif gui, running { s s } issues 94 lines to stderr Warning: Null child found in argument list to unmanage [report: Miloh]
 - BUG: error in pcb_search_obj_by_id() after attempting to { u u } an object that is removed by selecting and using ctl-x [report: Miloh]
+- FEATURE: any reason distalign actions align() and distribute() shouldn't work with vias? [report: Miloh]
 
 3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
