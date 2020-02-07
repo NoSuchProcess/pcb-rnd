@@ -904,19 +904,77 @@ int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *nam
 	return pcb_layergrp_rename_(grp, pcb_strdup(name), undoable);
 }
 
-int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable)
+/*** undoable set-purpose ***/
+
+typedef struct {
+	pcb_layergrp_t *grp;
+	char *purps;
+	int purpi;
+} undo_layergrp_repurp_t;
+
+static int undo_layergrp_repurp_swap(void *udata)
 {
-	free(lg->purpose);
+	char *olds;
+	int oldi;
+	undo_layergrp_repurp_t *r = udata;
+
+	olds = (char *)r->grp->purpose;
+	oldi = r->grp->purpi;
+	r->grp->purpose = r->purps;
+	r->grp->purpi = r->purpi;
+	r->purps = olds;
+	r->purpi = oldi;
+
+	return 0;
+}
+
+static void undo_layergrp_repurp_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layergrp_repurp_t *r = udata;
+	pcb_snprintf(dst, dst_len, "repurpose layergrp: '%s' -> '%s'", r->grp->purpose, r->purps);
+}
+
+static void undo_layergrp_repurp_free(void *udata)
+{
+	undo_layergrp_repurp_t *r = udata;
+	free(r->purps);
+}
+
+
+static const uundo_oper_t undo_layergrp_repurp = {
+	core_layergrp_cookie,
+	undo_layergrp_repurp_free,
+	undo_layergrp_repurp_swap,
+	undo_layergrp_repurp_swap,
+	undo_layergrp_repurp_print
+};
+
+
+int pcb_layergrp_set_purpose__(pcb_layergrp_t *grp, char *purpose, pcb_bool undoable)
+{
+	undo_layergrp_repurp_t rtmp, *r = &rtmp;
+
+	if (undoable)
+		r = pcb_undo_alloc(grp->parent.board, &undo_layergrp_repurp, sizeof(undo_layergrp_repurp_t));
+
+	r->grp = grp;
 	if (purpose == NULL) {
-		lg->purpose = NULL;
-		lg->purpi = F_user;
+		r->purps = NULL;
+		r->purpi = F_user;
 	}
 	else {
-		lg->purpose = purpose;
-		lg->purpi = pcb_funchash_get(purpose, NULL);
-		if (lg->purpi < 0)
-			lg->purpi = F_user;
+		r->purps = purpose;
+		r->purpi = pcb_funchash_get(purpose, NULL);
+		if (r->purpi < 0)
+			r->purpi = F_user;
 	}
+
+	undo_layergrp_repurp_swap(r);
+	if (undoable)
+		pcb_undo_inc_serial();
+	else
+		undo_layergrp_repurp_free(r);
+
 	return 0;
 }
 
