@@ -42,6 +42,8 @@
 #include "obj_pstk_inlines.h"
 #include "list_common.h"
 
+static const char core_layer_cookie[] = "core-layer";
+
 pcb_virt_layer_t pcb_virt_layers[] = {
 	{"invisible",      PCB_LYT_VIRTUAL + 1, PCB_LYT_VIRTUAL | PCB_LYT_INVIS, NULL, -1 },
 	{"rats",           PCB_LYT_VIRTUAL + 2, PCB_LYT_VIRTUAL | PCB_LYT_RAT, NULL, -1 },
@@ -640,7 +642,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	lp->type = PCB_OBJ_LAYER;
 }
 
-static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
+static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
 {
 	pcb_layergrp_t *g;
 	pcb_layer_t *lp;
@@ -675,12 +677,10 @@ static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb
 	pcb_layervis_change_group_vis(&pcb->hidlib, new_lid, 1, 1);
 	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 
-	pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
-/*		pcb_undo_inc_serial();*/
-	return 0;
+	return lp;
 }
 
-static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index)
+static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index)
 {
 	pcb_layer_id_t l;
 	pcb_layergrp_id_t gid;
@@ -728,9 +728,102 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index)
 			pcb_layer_stack[l]--;
 
 	pcb_layergrp_notify_chg(pcb);
-	pcb_message(PCB_MSG_WARNING, "this operation is not undoable.\n");
-/*		pcb_undo_inc_serial();*/
 	return 0;
+}
+
+typedef struct {
+	pcb_board_t *pcb;
+	unsigned append:1;
+	pcb_layer_id_t lid;
+
+	/* fields */
+	char *name;
+	pcb_layer_combining_t comb;
+	pcb_layergrp_id_t grp;
+	pcb_color_t color;
+} undo_layer_move_t;
+
+static int undo_layer_move_swap(void *udata)
+{
+	undo_layer_move_t *m = udata;
+	pcb_board_t *pcb = m->pcb;
+
+	if (m->append) { /* undo an append by deleting */
+		pcb_layer_t *l = &pcb->Data->Layer[m->lid];
+		m->name = (char *)l->name;
+		l->name = NULL;
+		pcb_layer_move_delete_(pcb, m->lid);
+	}
+	else { /* undo a delete by appending */
+		pcb_layer_t *l = pcb_layer_move_append_(pcb, m->lid, m->grp);
+		l->name = m->name;
+		m->name = NULL;
+	}
+
+	m->append = !m->append;
+	return 0;
+}
+
+static void undo_layer_move_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layer_move_t *m = udata;
+	pcb_snprintf(dst, dst_len, "layer_move: %s %s lid=%ld grp=%ld", m->append ? "append" : "delete", m->name, m->lid, m->grp);
+}
+
+static void undo_layer_move_free(void *udata)
+{
+	undo_layer_move_t *m = udata;
+	free(m->name);
+}
+
+
+static const uundo_oper_t undo_layer_move = {
+	core_layer_cookie,
+	undo_layer_move_free,
+	undo_layer_move_swap,
+	undo_layer_move_swap,
+	undo_layer_move_print
+};
+
+
+static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, int undoable)
+{
+	pcb_layer_t *l;
+
+	l = pcb_layer_move_append_(pcb, new_index, new_in_grp);
+	if (l == NULL)
+		return 1;
+
+	if (undoable) {
+		undo_layer_move_t *m = pcb_undo_alloc(pcb, &undo_layer_move, sizeof(undo_layer_move_t));
+		memset(m, 0, sizeof(undo_layer_move_t));
+		m->pcb = pcb;
+		m->lid = l - pcb->Data->Layer;
+		m->grp = l->meta.real.grp;
+		m->append = 1;
+		pcb_undo_inc_serial();
+	}
+	return 0;
+}
+
+static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int undoable)
+{
+	undo_layer_move_t *m;
+	pcb_layer_t *l;
+
+	if (!undoable)
+		return pcb_layer_move_delete_(pcb, old_index);
+
+	l = &pcb->Data->Layer[old_index];
+	m = pcb_undo_alloc(pcb, &undo_layer_move, sizeof(undo_layer_move_t));
+	memset(m, 0, sizeof(undo_layer_move_t));
+	m->pcb = pcb;
+	m->lid = old_index;
+	m->grp = l->meta.real.grp;
+	m->append = 0;
+	pcb_undo_inc_serial();
+
+	return pcb_layer_move_delete_(pcb, old_index);
 }
 
 
@@ -759,9 +852,9 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 
 
 	if (old_index == -1) /* append new layer at the end of the logical layer list, put it in the current group */
-		return pcb_layer_move_append(pcb, new_index, new_in_grp);
+		return pcb_layer_move_append(pcb, new_index, new_in_grp, 1);
 	if (new_index == -1) /* Delete the layer at old_index */
-		return pcb_layer_move_delete(pcb, old_index);
+		return pcb_layer_move_delete(pcb, old_index, 1);
 
 
 	pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
