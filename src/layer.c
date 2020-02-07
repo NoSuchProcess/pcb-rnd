@@ -666,7 +666,7 @@ static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_
 	else
 		grp_idx = pcb_layergrp_index_in_grp(g, new_index);
 
-	/* shift group members up and insert the new group */
+	/* shift group members up and insert the new layer in group */
 	if ((g->len > grp_idx) && (grp_idx >= 0))
 		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(pcb_layer_id_t));
 	if (grp_idx < 0)
@@ -676,6 +676,48 @@ static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_
 	pcb_layergrp_notify_chg(pcb);
 	pcb_layervis_change_group_vis(&pcb->hidlib, new_lid, 1, 1);
 	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+
+	return lp;
+}
+
+static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, pcb_layer_id_t new_lid, pcb_layergrp_id_t new_in_grp, int grp_idx)
+{
+	pcb_layergrp_t *g;
+	pcb_layer_t *lp;
+	pcb_layergrp_id_t gid;
+	pcb_layer_id_t lid;
+
+
+	/* update lids in all groups (shifting down idx) */
+	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
+		int n;
+		g = &pcb->LayerGroups.grp[gid];
+		for(n = 0; n < g->len; n++)
+			if (g->lid[n] >= new_lid)
+				g->lid[n]++;
+	}
+
+	/* shift the layer array to make room */
+	for(lid = pcb->Data->LayerN-1; lid >= new_lid ; lid--) {
+		layer_clear(&pcb->Data->Layer[lid+1]);
+		pcb_layer_move_(&pcb->Data->Layer[lid+1], &pcb->Data->Layer[lid]);
+	}
+
+	/* do not update the stack - rendering order is not that important */
+
+	/* remove layer from the logical layer array */
+	pcb_max_layer(PCB)++;
+
+	/* shift target group members up and insert the new layer in group */
+	g = pcb_get_layergrp(pcb, new_in_grp);
+	if ((g->len > grp_idx) && (grp_idx >= 0))
+		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(pcb_layer_id_t));
+	g->lid[grp_idx] = new_lid;
+	g->len++;
+
+	lp = &pcb->Data->Layer[new_lid];
+	layer_clear(lp);
+	layer_init(pcb, lp, new_lid, new_in_grp, pcb->Data);
 
 	return lp;
 }
@@ -735,6 +777,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	unsigned append:1;
 	pcb_layer_id_t lid;
+	long in_grp_idx;
 
 	/* fields */
 	char *name;
@@ -755,9 +798,12 @@ static int undo_layer_move_swap(void *udata)
 		pcb_layer_move_delete_(pcb, m->lid);
 	}
 	else { /* undo a delete by appending */
-		pcb_layer_t *l = pcb_layer_move_append_(pcb, m->lid, m->grp);
+		pcb_layer_t *l = pcb_layer_move_insert_(pcb, m->lid, m->grp, m->in_grp_idx);
 		l->name = m->name;
 		m->name = NULL;
+		pcb_layergrp_notify_chg(pcb);
+		pcb_layervis_change_group_vis(&pcb->hidlib, m->lid, 1, 1);
+		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 
 	m->append = !m->append;
@@ -785,6 +831,23 @@ static const uundo_oper_t undo_layer_move = {
 	undo_layer_move_print
 };
 
+static long layer_idx_in_grp(pcb_board_t *pcb, pcb_layer_t *l)
+{
+	pcb_layer_id_t lid = l - pcb->Data->Layer;
+	pcb_layergrp_t *g;
+
+	if ((lid < 0) || (lid >= pcb->Data->LayerN))
+		return 0;
+
+	g = pcb_get_layergrp(pcb, l->meta.real.grp);
+	if (g != NULL) {
+		long n;
+		for(n = 0; n < g->len; n++)
+			if (g->lid[n] == lid)
+				return n;
+	}
+	return 0;
+}
 
 static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, int undoable)
 {
@@ -800,6 +863,7 @@ static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb
 		m->pcb = pcb;
 		m->lid = l - pcb->Data->Layer;
 		m->grp = l->meta.real.grp;
+		m->in_grp_idx = layer_idx_in_grp(pcb, l);
 		m->append = 1;
 		pcb_undo_inc_serial();
 	}
@@ -819,7 +883,10 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int
 	memset(m, 0, sizeof(undo_layer_move_t));
 	m->pcb = pcb;
 	m->lid = old_index;
+	m->name = l->name;
 	m->grp = l->meta.real.grp;
+	m->in_grp_idx = layer_idx_in_grp(pcb, l);
+	l->name = NULL;
 	m->append = 0;
 	pcb_undo_inc_serial();
 
