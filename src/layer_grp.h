@@ -178,6 +178,8 @@ int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose, pcb_bool undoa
 int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable); /* no strdup, send layer change event */
 int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, pcb_bool undoable); /* strdup, send event */
 
+/* Change layer group flags (layer-type) */
+int pcb_layergrp_set_ltype(pcb_layergrp_t *g, pcb_layer_type_t lyt, pcb_bool undoable);
 
 /* Slow linear search for a layer group by name */
 pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);

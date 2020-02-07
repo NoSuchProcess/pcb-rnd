@@ -991,6 +991,59 @@ int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, pcb_bool u
 	return pcb_layergrp_set_purpose_(lg, pcb_strdup(purpose), undoable);
 }
 
+/*** undoable flags/type set ***/
+
+typedef struct {
+	pcb_layergrp_t *grp;
+	pcb_layer_type_t ltype;
+} undo_layergrp_ltype_t;
+
+static int undo_layergrp_ltype_swap(void *udata)
+{
+	pcb_layer_type_t old;
+	undo_layergrp_ltype_t *r = udata;
+
+	old = r->grp->ltype;
+	r->grp->ltype = r->ltype;
+	r->ltype = old;
+
+	return 0;
+}
+
+static void undo_layergrp_ltype_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layergrp_ltype_t *r = udata;
+	pcb_snprintf(dst, dst_len, "layergrp type: '%lx' -> '%lx'", r->grp->ltype, r->ltype);
+}
+
+static const uundo_oper_t undo_layergrp_ltype = {
+	core_layergrp_cookie,
+	NULL,
+	undo_layergrp_ltype_swap,
+	undo_layergrp_ltype_swap,
+	undo_layergrp_ltype_print
+};
+
+
+
+int pcb_layergrp_set_ltype(pcb_layergrp_t *grp, pcb_layer_type_t lyt, pcb_bool undoable)
+{
+	undo_layergrp_ltype_t rtmp, *r = &rtmp;
+
+	if (undoable)
+		r = pcb_undo_alloc(grp->parent.board, &undo_layergrp_ltype, sizeof(undo_layergrp_ltype_t));
+
+	r->grp = grp;
+	r->ltype = lyt;
+
+	undo_layergrp_ltype_swap(r);
+	if (undoable)
+		pcb_undo_inc_serial();
+
+	return 0;
+
+}
+
 pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name)
 {
 	pcb_layergrp_id_t n;

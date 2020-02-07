@@ -172,18 +172,20 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		if (dlg[wtype].val.lng != orig_type) {
-			pcb_layer_type_t lyt = 0;
-			pcb_get_ly_type_(dlg[wtype].val.lng, &lyt);
-			g->ltype &= ~PCB_LYT_ANYTHING;
-			g->ltype |= lyt;
+			pcb_layer_type_t lyt = g->ltype, olyt = 0;
+			pcb_get_ly_type_(dlg[wtype].val.lng, &olyt);
+			lyt &= ~PCB_LYT_ANYTHING;
+			lyt |= olyt;
+			pcb_layergrp_set_ltype(g, lyt, 1);
 			changed = 1;
 		}
 
 		if ((!omit_loc) && (dlg[wloc].val.lng != orig_loc)) {
 			if (PCB_LAYER_SIDED(g->ltype)) {
-				g->ltype &= ~PCB_LYT_ANYWHERE;
+				pcb_layer_type_t lyt = (g->ltype & ~PCB_LYT_ANYWHERE);
 				if (dlg[wloc].val.lng >= 0)
-					g->ltype |= ltype_bits[dlg[wloc].val.lng];
+					lyt |= ltype_bits[dlg[wloc].val.lng];
+				pcb_layergrp_set_ltype(g, lyt, 1);
 				changed = 1;
 			}
 			else
