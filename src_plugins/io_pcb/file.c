@@ -1147,7 +1147,7 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 	/* remove empty layer groups */
 	for(n = 0; n < pcb->LayerGroups.len; n++) {
 		if (pcb->LayerGroups.grp[n].len == 0) {
-			pcb_layergrp_del(pcb, n, 0);
+			pcb_layergrp_del(pcb, n, 0, 0);
 			n--;
 		}
 	}

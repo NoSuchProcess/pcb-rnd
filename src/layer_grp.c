@@ -517,7 +517,7 @@ int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_
 	return 0;
 }
 
-int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
+int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable)
 {
 	int n;
 	pcb_layer_stack_t *stk = &pcb->LayerGroups;
@@ -529,7 +529,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers)
 		pcb_layer_t *l = pcb_get_layer(pcb->Data, stk->grp[gid].lid[n]);
 		if (l != NULL) {
 			if (del_layers) {
-				pcb_layer_move(pcb, stk->grp[gid].lid[n], -1, -1);
+				pcb_layer_move(pcb, stk->grp[gid].lid[n], -1, -1, undoable);
 				n = -1; /* restart counting because the layer remove code may have changed the order */
 			}
 			else {
@@ -591,7 +591,7 @@ void pcb_layergrp_fix_old_outline(pcb_board_t *pcb)
 	pcb_layergrp_t *g = pcb_get_grp(LayerGroup, PCB_LYT_ANYWHERE, PCB_LYT_BOUNDARY);
 	if ((g != NULL) && (g[1].ltype & PCB_LYT_SUBSTRATE)) {
 		pcb_layergrp_id_t gid = g - LayerGroup->grp + 1;
-		pcb_layergrp_del(pcb, gid, 0);
+		pcb_layergrp_del(pcb, gid, 0, 0);
 	}
 }
 

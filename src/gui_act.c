@@ -856,7 +856,7 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		gid = pcb_layergrp_id(PCB, g);
 	}
 
-	PCB_ACT_IRES(pcb_layergrp_del(PCB, gid, 1));
+	PCB_ACT_IRES(pcb_layergrp_del(PCB, gid, 1, 1));
 	return 0;
 }
 

@@ -295,7 +295,7 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, pcb_bool un
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is
    deleted.  Returns non-zero on error, zero if OK.  */
-int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp);
+int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, pcb_bool undoable);
 
 
 /* set up dst to be a bound layer with the right offset in the stack; src_pcb

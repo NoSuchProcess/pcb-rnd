@@ -1181,7 +1181,7 @@ static int parse_layout_globals(hkp_ctx_t *ctx, hkp_tree_t *tree)
 		const pcb_dflgmap_t *m;
 
 		while(ctx->pcb->LayerGroups.len > 0)
-			pcb_layergrp_del(ctx->pcb, 0, 1);
+			pcb_layergrp_del(ctx->pcb, 0, 1, 0);
 
 		for(m = pcb_dflg_top_noncop; m->name != NULL; m++) map[len++] = *m;
 

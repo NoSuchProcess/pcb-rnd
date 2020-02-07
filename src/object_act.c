@@ -974,11 +974,11 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			new_index = 0;
 	}
 	else if (strcmp(a1, "gi") == 0) {
-		PCB_ACT_IRES(pcb_layer_move(pcb, -1, 0, pcb_actd_EditGroup_gid));
+		PCB_ACT_IRES(pcb_layer_move(pcb, -1, 0, pcb_actd_EditGroup_gid, 1));
 		return 0;
 	}
 	else if (strcmp(a1, "ga") == 0) {
-		PCB_ACT_IRES(pcb_layer_move(pcb, -1, 1, pcb_actd_EditGroup_gid));
+		PCB_ACT_IRES(pcb_layer_move(pcb, -1, 1, pcb_actd_EditGroup_gid, 1));
 		return 0;
 	}
 	else if (strcmp(a1, "group") == 0) {
@@ -1033,7 +1033,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	PCB_ACT_IRES(pcb_layer_move(pcb, old_index, new_index, -1));
+	PCB_ACT_IRES(pcb_layer_move(pcb, old_index, new_index, -1, 1));
 	return 0;
 }
 

@@ -114,7 +114,7 @@ int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layergrp_
 
 /* Remove a layer group; if del_layers is zero, layers are kept but detached
    (.grp = -1), else layers are deleted too */
-int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers);
+int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable);
 
 /* Remove a layer from a group */
 int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id_t lid);
