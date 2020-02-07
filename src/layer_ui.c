@@ -74,7 +74,7 @@ found:;
 
 static void pcb_uilayer_free_(pcb_layer_t *l, long idx)
 {
-	pcb_layer_free_fields(l);
+	pcb_layer_free_fields(l, 0);
 	free(l);
 	pcb_uilayers.array[idx] = NULL;
 }

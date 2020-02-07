@@ -121,20 +121,29 @@ do { \
 
 #define PURP_MATCH(ps, pi) (((purpi == -1) || (purpi == pi)) && ((purpose == NULL) || ((ps != NULL) && (strcmp(purpose, ps) == 0))))
 
-void pcb_layer_free_fields(pcb_layer_t *layer)
+static void obj_free_undoable(pcb_any_obj_t *obj)
+{
+	pcb_undo_move_obj_to_remove(obj->type, obj->parent.any, obj, obj);
+}
+
+
+#define UFC(f) ((void (*)(void *))(f))
+void pcb_layer_free_fields(pcb_layer_t *layer, pcb_bool undoable)
 {
 	if (!layer->is_bound)
 		pcb_attribute_free(&layer->Attributes);
 
-	list_map0(&layer->Line, pcb_line_t, pcb_line_free);
-	list_map0(&layer->Arc,  pcb_arc_t,  pcb_arc_free);
-	list_map0(&layer->Text, pcb_text_t, pcb_text_free);
-	PCB_POLY_LOOP(layer);
-	{
-		pcb_poly_free_fields(polygon);
+	list_map0(&layer->Line, pcb_line_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_line_free));
+	list_map0(&layer->Arc,  pcb_arc_t,  undoable ? UFC(obj_free_undoable) : UFC(pcb_arc_free));
+	list_map0(&layer->Text, pcb_text_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_text_free));
+	if (!undoable) {
+		PCB_POLY_LOOP(layer);
+		{
+			pcb_poly_free_fields(polygon);
+		}
+		PCB_END_LOOP;
 	}
-	PCB_END_LOOP;
-	list_map0(&layer->Polygon, pcb_poly_t, pcb_poly_free);
+	list_map0(&layer->Polygon, pcb_poly_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_poly_free));
 	if (!layer->is_bound) {
 		if (layer->line_tree)
 			pcb_r_destroy_tree(&layer->line_tree);
@@ -722,7 +731,7 @@ static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, pcb_layer_id_t new_
 	return lp;
 }
 
-static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index)
+static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_bool undoable)
 {
 	pcb_layer_id_t l;
 	pcb_layergrp_id_t gid;
@@ -737,7 +746,7 @@ static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index)
 		return -1;
 	}
 
-	pcb_layer_free_fields(&pcb->Data->Layer[old_index]);
+	pcb_layer_free_fields(&pcb->Data->Layer[old_index], undoable);
 
 	remaining = (g->len - grp_idx - 1);
 	if (remaining > 0)
@@ -795,7 +804,7 @@ static int undo_layer_move_swap(void *udata)
 		pcb_layer_t *l = &pcb->Data->Layer[m->lid];
 		m->name = (char *)l->name;
 		l->name = NULL;
-		pcb_layer_move_delete_(pcb, m->lid);
+		pcb_layer_move_delete_(pcb, m->lid, 0);
 	}
 	else { /* undo a delete by inserting it back in its place */
 		pcb_layer_t *l = pcb_layer_move_insert_(pcb, m->lid, m->grp, m->in_grp_idx);
@@ -874,26 +883,30 @@ static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb
 
 static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int undoable)
 {
-	undo_layer_move_t *m;
+	undo_layer_move_t *m, mtmp;
 	pcb_layer_t *l;
+	int res;
 
 	if (!undoable)
-		return pcb_layer_move_delete_(pcb, old_index);
+		return pcb_layer_move_delete_(pcb, old_index, undoable);
 
 	l = &pcb->Data->Layer[old_index];
-	m = pcb_undo_alloc(pcb, &undo_layer_move, sizeof(undo_layer_move_t));
-	memset(m, 0, sizeof(undo_layer_move_t));
-	m->pcb = pcb;
-	m->lid = old_index;
-	m->name = (char *)l->name;
+	memset(&mtmp, 0, sizeof(undo_layer_move_t));
+	mtmp.pcb = pcb;
+	mtmp.lid = old_index;
+	mtmp.name = (char *)l->name;
 	l->name = NULL;
-	m->grp = l->meta.real.grp;
-	m->color = l->meta.real.color;
-	m->in_grp_idx = layer_idx_in_grp(pcb, l);
-	m->append = 0;
+	mtmp.grp = l->meta.real.grp;
+	mtmp.color = l->meta.real.color;
+	mtmp.in_grp_idx = layer_idx_in_grp(pcb, l);
+	mtmp.append = 0;
+	res = pcb_layer_move_delete_(pcb, old_index, undoable);
+
+	m = pcb_undo_alloc(pcb, &undo_layer_move, sizeof(undo_layer_move_t));
+	memcpy(m, &mtmp, sizeof(undo_layer_move_t));
 	pcb_undo_inc_serial();
 
-	return pcb_layer_move_delete_(pcb, old_index);
+	return res;
 }
 
 
