@@ -540,14 +540,69 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	return id;
 }
 
+/*** undoable layer rename ***/
+typedef struct {
+	pcb_layer_t *layer;
+	char *name;
+} undo_layer_rename_t;
+
+static int undo_layer_rename_swap(void *udata)
+{
+	char *old;
+	undo_layer_rename_t *r = udata;
+
+	old = (char *)r->layer->name;
+	r->layer->name = r->name;
+	r->name = old;
+	if (!r->layer->is_bound) {
+		assert((r->layer->parent_type == PCB_PARENT_DATA) && (r->layer->parent.data->parent_type == PCB_PARENT_BOARD));
+		pcb_layergrp_notify_chg(r->layer->parent.data->parent.board);
+	}
+	return 0;
+}
+
+static void undo_layer_rename_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layer_rename_t *r = udata;
+	pcb_snprintf(dst, dst_len, "rename layer: '%s' -> '%s'", r->layer->name, r->name);
+}
+
+static void undo_layer_rename_free(void *udata)
+{
+	undo_layer_rename_t *r = udata;
+	free(r->name);
+}
+
+
+static const uundo_oper_t undo_layer_rename = {
+	core_layer_cookie,
+	undo_layer_rename_free,
+	undo_layer_rename_swap,
+	undo_layer_rename_swap,
+	undo_layer_rename_print
+};
+
+
+
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, pcb_bool undoable)
 {
-	free((char*)Layer->name);
-	Layer->name = Name;
-	if (!Layer->is_bound) {
-		assert((Layer->parent_type == PCB_PARENT_DATA) && (Layer->parent.data->parent_type == PCB_PARENT_BOARD));
-		pcb_layergrp_notify_chg(Layer->parent.data->parent.board);
+	undo_layer_rename_t rtmp, *r = &rtmp;
+
+	if (undoable) {
+		pcb_board_t *pcb = pcb_data_get_top(Layer->parent.data);
+		if (pcb != NULL)
+			r = pcb_undo_alloc(pcb, &undo_layer_rename, sizeof(undo_layer_rename_t));
 	}
+
+	r->layer = Layer;
+	r->name = Name;
+
+	undo_layer_rename_swap(r);
+	if (undoable)
+		pcb_undo_inc_serial();
+	else
+		undo_layer_rename_free(r);
+
 	return 0;
 }
 
