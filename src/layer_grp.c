@@ -598,7 +598,7 @@ static void undo_layergrp_del_free(void *udata)
 static void undo_layergrp_del_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layergrp_del_t *r = udata;
-	pcb_snprintf(dst, dst_len, "layergrp %s:", r->del ? "delete" : "insert");
+	pcb_snprintf(dst, dst_len, "layergrp %s: '%s'", r->del ? "delete" : "insert", r->del ? r->save.name : pcb_layergrp_name(r->pcb, r->gid));
 }
 
 static const uundo_oper_t undo_layergrp_del = {
