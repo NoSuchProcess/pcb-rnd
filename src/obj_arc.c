@@ -644,9 +644,10 @@ void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_arc_t *arc;
 
-	arc = pcb_arc_new(Layer, Arc->X + ctx->copy.DeltaX,
-														Arc->Y + ctx->copy.DeltaY, Arc->Width, Arc->Height, Arc->StartAngle,
-														Arc->Delta, Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND), pcb_true);
+	arc = pcb_arc_new(Layer, Arc->X + ctx->copy.DeltaX, Arc->Y + ctx->copy.DeltaY,
+		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
+		Arc->Thickness, Arc->Clearance,
+		pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND), pcb_true);
 	if (!arc)
 		return arc;
 	if (ctx->copy.keep_id)
