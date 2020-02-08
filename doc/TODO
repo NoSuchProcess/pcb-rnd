@@ -13,6 +13,7 @@
 - BUG: selection lost after running align(x) and then undo { u u } on a set of parts. [report: Miloh]
 + BUG: layer order changes after undo/redo sequence: open pcb-rnd, right-click on top-sig layer in layer controller and select 'insert new layer after this layer', { u u } undo and then { u r } redo and new layer is now re-added before top-sig [report:Miloh]
 - BUG: autoplaceselected() bugs in bug_files/autoplaceselected.txt [report: Miloh]
+- BUG: undo: draw a line; select; ctrl+x it; undo -> hace [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP: (TT) propedit revamp:
