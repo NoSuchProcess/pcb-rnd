@@ -709,14 +709,22 @@ void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src)
 	memcpy(dst, src, sizeof(pcb_layer_t));
 
 	/* reparent all the lists: each list item has a ->parent pointer that needs to point to the new place */
-	for(li = linelist_first(&dst->Line); li != NULL; li = linelist_next(li))
+	for(li = linelist_first(&dst->Line); li != NULL; li = linelist_next(li)) {
+		li->parent.layer = dst;
 		li->link.parent = &dst->Line.lst;
-	for(te = textlist_first(&dst->Text); te != NULL; te = textlist_next(te))
+	}
+	for(te = textlist_first(&dst->Text); te != NULL; te = textlist_next(te)) {
+		te->parent.layer = dst;
 		te->link.parent = &dst->Text.lst;
-	for(po = polylist_first(&dst->Polygon); po != NULL; po = polylist_next(po))
+	}
+	for(po = polylist_first(&dst->Polygon); po != NULL; po = polylist_next(po)) {
+		po->parent.layer = dst;
 		po->link.parent = &dst->Polygon.lst;
-	for(ar = arclist_first(&dst->Arc); ar != NULL; ar = arclist_next(ar))
+	}
+	for(ar = arclist_first(&dst->Arc); ar != NULL; ar = arclist_next(ar)) {
+		ar->parent.layer = dst;
 		ar->link.parent = &dst->Arc.lst;
+	}
 }
 
 const pcb_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt)
