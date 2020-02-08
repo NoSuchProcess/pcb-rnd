@@ -1009,12 +1009,13 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_ERROR, "Invalid layer group\n");
 			return 1;
 		}
-		switch(a1[4]) {
-			case '+': return pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), +1); break;
-			case '-': return pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), -1); break;
-		}
-		pcb_message(PCB_MSG_ERROR, "Invalid step direction\n");
+
 		PCB_ACT_IRES(1);
+		switch(a1[4]) {
+			case '+': PCB_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), +1)); break;
+			case '-': PCB_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), -1)); break;
+			default: pcb_message(PCB_MSG_ERROR, "Invalid step direction\n");
+		}
 		return 0;
 	}
 
