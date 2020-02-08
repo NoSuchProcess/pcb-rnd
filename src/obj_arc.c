@@ -377,6 +377,55 @@ void pcb_arc_post(pcb_arc_t *arc)
 
 /***** operations *****/
 
+static const char core_arc_cookie[] = "core-arc";
+
+typedef struct {
+	pcb_arc_t *arc;
+	pcb_coord_t Thickness, Clearance;
+	pcb_coord_t Width, Height;
+	pcb_coord_t X, Y;
+	pcb_angle_t StartAngle, Delta;
+
+} undo_arc_geo_t;
+
+static int undo_arc_geo_swap(void *udata)
+{
+	undo_arc_geo_t *g = udata;
+	pcb_layer_t *layer = g->arc->parent.layer;
+
+	if (layer->arc_tree != NULL)
+		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *)g->arc);
+
+	rnd_swap(pcb_coord_t, g->Thickness, g->arc->Thickness);
+	rnd_swap(pcb_coord_t, g->Clearance, g->arc->Clearance);
+	rnd_swap(pcb_coord_t, g->Width, g->arc->Width);
+	rnd_swap(pcb_coord_t, g->Height, g->arc->Height);
+	rnd_swap(pcb_coord_t, g->X, g->arc->X);
+	rnd_swap(pcb_coord_t, g->Y, g->arc->Y);
+	rnd_swap(pcb_angle_t, g->StartAngle, g->arc->StartAngle);
+	rnd_swap(pcb_angle_t, g->Delta, g->arc->Delta);
+
+	pcb_arc_bbox(g->arc);
+	if (layer->arc_tree != NULL)
+		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *)g->arc);
+
+	return 0;
+}
+
+static void undo_arc_geo_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_arc_geo_t *g = udata;
+	pcb_snprintf(dst, dst_len, "arc geo");
+}
+
+static const uundo_oper_t undo_arc_geo = {
+	core_arc_cookie,
+	NULL,
+	undo_arc_geo_swap,
+	undo_arc_geo_swap,
+	undo_arc_geo_print
+};
+
 /* copies an arc to buffer */
 void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
@@ -752,17 +801,24 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
 }
 
-void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t y_offs, pcb_bool undoable)
+void pcb_arc_mirror(pcb_arc_t *arc, pcb_coord_t y_offs, pcb_bool undoable)
 {
-	if (layer->arc_tree != NULL)
-		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
-	arc->X = PCB_SWAP_X(arc->X);
-	arc->Y = PCB_SWAP_Y(arc->Y) + y_offs;
-	arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
-	arc->Delta = PCB_SWAP_DELTA(arc->Delta);
-	pcb_arc_bbox(arc);
-	if (layer->arc_tree != NULL)
-		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
+	undo_arc_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(arc->parent.layer->parent.data), &undo_arc_geo, sizeof(undo_arc_geo_t));
+
+	g->arc = arc;
+	g->Thickness = arc->Thickness;
+	g->Clearance = arc->Clearance;
+	g->Width = arc->Width;
+	g->Height = arc->Height;
+	g->X = PCB_SWAP_X(arc->X);
+	g->Y = PCB_SWAP_Y(arc->Y) + y_offs;
+	g->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
+	g->Delta = PCB_SWAP_DELTA(arc->Delta);
+
+	undo_arc_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
 }
 
 void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
