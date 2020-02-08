@@ -698,7 +698,7 @@ static int is_last_bottom_copper_layer(pcb_board_t *pcb, int layer)
 	return 0;
 }
 
-/* Safe move of a layer within a layer array, updaging all fields (list->parents) */
+/* Safe move of a layer within a layer array, updating all fields (list->parents) */
 void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	pcb_line_t *li;
