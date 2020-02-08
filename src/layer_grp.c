@@ -489,7 +489,9 @@ int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, pcb_layer_id_t lid)
 	return -1;
 }
 
-int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta)
+/*** undoable step within the group ***/
+
+static int pcb_layergrp_step_layer_(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta)
 {
 	int idx, idx2;
 	pcb_layer_id_t tmp;
@@ -521,6 +523,54 @@ int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_
 	NOTIFY(pcb);
 	return 0;
 }
+
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_layergrp_id_t gid;
+	pcb_layer_id_t lid;
+	int delta;
+} undo_layergrp_steply_t;
+
+static int undo_layergrp_steply_swap(void *udata)
+{
+	undo_layergrp_steply_t *s = udata;
+	int res;
+	pcb_layergrp_t *grp = pcb_get_layergrp(s->pcb, s->gid);
+	if (grp == NULL) return -1;
+	res = pcb_layergrp_step_layer_(s->pcb, grp, s->lid, s->delta);
+	if (res == 0)
+		s->delta = -s->delta;
+	return res;
+}
+
+static void undo_layergrp_steply_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layergrp_steply_t *s = udata;
+	pcb_snprintf(dst, dst_len, "step layer in grp: #%ld/#%ld: %+d", s->gid, s->lid, s->delta);
+}
+
+static const uundo_oper_t undo_layergrp_steply = {
+	core_layergrp_cookie,
+	NULL,
+	undo_layergrp_steply_swap,
+	undo_layergrp_steply_swap,
+	undo_layergrp_steply_print
+};
+
+int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta)
+{
+	undo_layergrp_steply_t *s = pcb_undo_alloc(pcb, &undo_layergrp_steply, sizeof(undo_layergrp_steply_t));
+	int res;
+
+	s->pcb = pcb;
+	s->gid = grp - pcb->LayerGroups.grp;
+	s->lid = lid;
+	s->delta = delta;
+	res = undo_layergrp_steply_swap(s);
+	pcb_undo_inc_serial();
+	return res;
+}
+
 
 static void grp_move_struct(pcb_layergrp_t *dst, pcb_layergrp_t *src)
 {
