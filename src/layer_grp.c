@@ -163,7 +163,7 @@ pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int 
 		return -1;
 
 	inhibit_notify++;
-	if (auto_substrate && (og->ltype & PCB_LYT_COPPER)&& !(og->ltype & PCB_LYT_BOTTOM)) {
+	if (auto_substrate && (og->ltype & PCB_LYT_COPPER) && !(og->ltype & PCB_LYT_BOTTOM)) {
 		ng = pcb_layergrp_insert_after(pcb, gid);
 		make_substrate(pcb, ng);
 		after = ng - pcb->LayerGroups.grp;
