@@ -76,4 +76,11 @@ char *pcb_str_strip(char *s);
 #define PCB_EMPTY_STRING_P(a)  ((a) ? (a)[0]==0 : 1)
 #define PCB_XOR(a,b)           (((a) && !(b)) || (!(a) && (b)))
 
+#define rnd_swap(type,a,b) \
+do { \
+	type __tmp__ = a; \
+	a = b; \
+	b = __tmp__; \
+} while(0)
+
 #endif
