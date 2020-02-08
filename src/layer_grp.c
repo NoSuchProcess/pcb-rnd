@@ -328,6 +328,7 @@ pcb_layergrp_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_
 pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t where)
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
+	pcb_layergrp_t *g;
 	int n;
 	if ((where <= 0) || (where >= stack->len))
 		return NULL;
@@ -336,8 +337,10 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 		pcb_layergrp_move_onto(pcb, n+1, n);
 
 	stack->len++;
+	g = stack->grp+where+1;
+	PCB_SET_PARENT(g, board, pcb);
 	NOTIFY(pcb);
-	return stack->grp+where+1;
+	return g;
 }
 
 static void layergrp_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
