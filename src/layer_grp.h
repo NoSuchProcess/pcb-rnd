@@ -121,7 +121,7 @@ int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id
 
 /* Duplicate a layer group (with no layers); if auto_substrate is set, insert
    a substrate layer automatically if needed */
-pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate);
+pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate, pcb_bool undoable);
 
 /* Move gfrom to to_before and shift the stack as necessary. Return -1 on range error */
 int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t gfrom, pcb_layergrp_id_t to_before);
@@ -196,6 +196,9 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb);
 /* Compatibility helper: insert a substrate group in between any two adjacent
    copper groups. */
 void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb);
+
+/* Call this after creating grp to add the creation to the undo list */
+void pcb_layergrp_undoable_create(pcb_layergrp_t *grp);
 
 
 /********* OBSOLETE functions, do not use in new code *********/

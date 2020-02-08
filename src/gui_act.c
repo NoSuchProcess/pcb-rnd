@@ -999,7 +999,7 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_layergrp_inhibit_inc();
-	ng = pcb_layergrp_dup(PCB, gid, 1);
+	ng = pcb_layergrp_dup(PCB, gid, 1, 1);
 	if (ng >= 0) {
 		pcb_layer_id_t lid = pcb_layer_create(PCB, ng, g->name);
 		if (lid >= 0) {

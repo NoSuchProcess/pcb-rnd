@@ -154,7 +154,7 @@ static void make_substrate(pcb_board_t *pcb, pcb_layergrp_t *g)
 	pcb_layergrp_setup(g, pcb);
 }
 
-pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate)
+pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate, pcb_bool undoable)
 {
 	pcb_layergrp_t *ng, *og = pcb_get_layergrp(pcb, gid);
 	pcb_layergrp_id_t after;
@@ -167,6 +167,7 @@ pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int 
 		ng = pcb_layergrp_insert_after(pcb, gid);
 		make_substrate(pcb, ng);
 		after = ng - pcb->LayerGroups.grp;
+		if (undoable) pcb_layergrp_undoable_create(ng);
 	}
 	else
 		after = gid;
@@ -180,6 +181,7 @@ pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int 
 	ng->purpi = og->purpi;
 	ng->valid = ng->open = ng->vis = 1;
 	pcb_layergrp_setup(ng, pcb);
+	if (undoable) pcb_layergrp_undoable_create(ng);
 
 	inhibit_notify--;
 	NOTIFY(pcb);
@@ -579,7 +581,7 @@ static int undo_layergrp_del_swap(void *udata)
 		pcb_layergrp_ins(r->pcb, r->gid, &r->save);
 	}
 	else { /* redo delete */
-		pcb_layergrp_del_1(r->pcb, r->gid, 1, 1);
+		pcb_layergrp_del_1(r->pcb, r->gid, 1, 0);
 		grp_move_struct(&r->save, &stk->grp[r->gid]);
 		pcb_layergrp_del_2(r->pcb, r->gid);
 	}
@@ -636,6 +638,20 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pc
 	pcb_undo_unfreeze_serial();
 	pcb_undo_inc_serial();
 	return 0;
+}
+
+void pcb_layergrp_undoable_create(pcb_layergrp_t *grp)
+{
+	pcb_board_t *pcb = grp->parent.board;
+	undo_layergrp_del_t *r;
+
+	assert(grp->parent_type == PCB_PARENT_BOARD);
+	r = pcb_undo_alloc(pcb, &undo_layergrp_del, sizeof(undo_layergrp_del_t));
+	memset(r, 0, sizeof(undo_layergrp_del_t));
+	r->pcb = pcb;
+	r->gid = grp - pcb->LayerGroups.grp;
+	r->del = 0;
+	pcb_undo_inc_serial();
 }
 
 int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t from, pcb_layergrp_id_t to_before)
