@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -113,6 +113,55 @@ void pcb_text_free(pcb_text_t *text)
 }
 
 /*** utility ***/
+
+static const char core_text_cookie[] = "core-text";
+
+typedef struct {
+	pcb_text_t *text; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
+	int Scale;
+	pcb_coord_t X, Y;
+	pcb_coord_t thickness;
+	pcb_coord_t clearance;
+	double rot;
+} undo_text_geo_t;
+
+static int undo_text_geo_swap(void *udata)
+{
+	undo_text_geo_t *g = udata;
+	pcb_layer_t *layer = g->text->parent.layer;
+	pcb_board_t *pcb = pcb_data_get_top(layer->parent.data);
+
+	if (layer->text_tree != NULL)
+		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *)g->text);
+
+	rnd_swap(int, g->Scale, g->text->Scale);
+	rnd_swap(pcb_coord_t, g->X, g->text->X);
+	rnd_swap(pcb_coord_t, g->Y, g->text->Y);
+	rnd_swap(pcb_coord_t, g->thickness, g->text->thickness);
+	rnd_swap(pcb_coord_t, g->clearance, g->text->clearance);
+	rnd_swap(double, g->rot, g->text->rot);
+
+	pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
+	if (layer->text_tree != NULL)
+		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *)g->text);
+
+	return 0;
+}
+
+static void undo_text_geo_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_text_geo_t *g = udata;
+	pcb_snprintf(dst, dst_len, "text geo");
+}
+
+static const uundo_oper_t undo_text_geo = {
+	core_text_cookie,
+	NULL,
+	undo_text_geo_swap,
+	undo_text_geo_swap,
+	undo_text_geo_print
+};
+
 
 /* creates a new text on a layer */
 pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, double rot, int Scale, pcb_coord_t thickness, const char *TextString, pcb_flag_t Flags)
@@ -794,15 +843,22 @@ void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs
 		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text);
 }
 
-void pcb_text_mirror_coords(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs, pcb_bool undoable)
+void pcb_text_mirror_coords(pcb_text_t *text, pcb_coord_t y_offs, pcb_bool undoable)
 {
-	if (layer->text_tree != NULL)
-		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
-	text->X = PCB_SWAP_X(text->X);
-	text->Y = PCB_SWAP_Y(text->Y) + y_offs;
-	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
-	if (layer->text_tree != NULL)
-		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text);
+	undo_text_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(text->parent.layer->parent.data), &undo_text_geo, sizeof(undo_text_geo_t));
+
+	g->text = text;
+	g->X = PCB_SWAP_X(text->X);
+	g->Y = PCB_SWAP_Y(text->Y) + y_offs;
+	g->Scale = text->Scale;
+	g->thickness = text->thickness;
+	g->clearance = text->clearance;
+	g->rot = text->rot;
+
+	undo_text_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
 }
 
 void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)

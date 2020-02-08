@@ -438,7 +438,7 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 		case PCB_TXM_COORD:
 			PCB_TEXT_ALL_LOOP(data);
 			{
-				pcb_text_mirror_coords(layer, text, y_offs, undoable);
+				pcb_text_mirror_coords(text, y_offs, undoable);
 			}
 			PCB_ENDALL_LOOP;
 			break;
