@@ -625,6 +625,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pc
 	}
 
 	/* undoable */
+	pcb_undo_freeze_serial();
 	pcb_layergrp_del_1(pcb, gid, 1, 1);
 	r = pcb_undo_alloc(pcb, &undo_layergrp_del, sizeof(undo_layergrp_del_t));
 	r->pcb = pcb;
@@ -632,7 +633,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pc
 	r->del = 1;
 	grp_move_struct(&r->save, &stk->grp[gid]);
 	pcb_layergrp_del_2(pcb, gid);
-
+	pcb_undo_unfreeze_serial();
 	pcb_undo_inc_serial();
 	return 0;
 }
