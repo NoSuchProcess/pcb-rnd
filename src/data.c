@@ -398,6 +398,7 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 
 void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror, pcb_bool undoable)
 {
+	pcb_undo_freeze_serial();
 	PCB_PADSTACK_LOOP(data);
 	{
 		pcb_pstk_mirror(padstack, y_offs, pstk_smirror, 0, undoable);
@@ -442,6 +443,8 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 			PCB_ENDALL_LOOP;
 			break;
 	}
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 }
 
 void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recurse)
