@@ -73,7 +73,6 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
-- FEATURE: undo on new layer from right-click menu in gtk layersel doesn't work
 - FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - FEATURE: {v n} on subc should set subc PCB_FLAG_TERMNAME too; when more terminals are created (named) within the subc, they should inherit the subc's PCB_FLAG_TERMNAME flag (probably in the attribute change callback) [report: Majenko]
