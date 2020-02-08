@@ -916,6 +916,9 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		g->vis = 1;
 		g->open = 1;
 
+		pcb_undo_freeze_serial();
+		pcb_layergrp_undoable_created(g);
+
 		if (attr != NULL) {
 			char *attrs = pcb_strdup(attr), *curr, *next, *val;
 			for(curr = attrs; curr != NULL; curr = next) {
@@ -938,6 +941,8 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, stype, 1);
+		pcb_undo_unfreeze_serial();
+		pcb_undo_inc_serial();
 		if (lid >= 0) {
 			pcb_layer_t *ly;
 			PCB_ACT_IRES(0);

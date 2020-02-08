@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 #include "event.h"
+#include "undo.h"
 #include "layer_vis.h"
 
 #include "obj_text_draw.h"
@@ -737,14 +738,19 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 			if (drag_addoutline) {
 				if (is_button(x, y, &btn_addoutline)) {
 					pcb_layergrp_t *g = pcb_get_grp_new_misc(PCB);
+
+					pcb_undo_freeze_serial();
 					g->name = pcb_strdup("global_outline");
 					g->ltype = PCB_LYT_BOUNDARY;
 					g->purpose = pcb_strdup("uroute");
 					g->valid = 1;
 					g->open = 1;
+					pcb_layergrp_undoable_created(g);
 
 					outline_gactive = pcb_layergrp_id(PCB, g);
 					pcb_layer_create(PCB, outline_gactive, "outline", 1);
+					pcb_undo_unfreeze_serial();
+					pcb_undo_inc_serial();
 					pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				drag_addoutline = 0;
@@ -754,14 +760,19 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 			else if (drag_addgrp) {
 				if (gactive >= 0) {
 					pcb_layergrp_t *g;
+					pcb_undo_freeze_serial();
 					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = NULL;
 					g->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
 					g->valid = 1;
+					pcb_layergrp_undoable_created(g);
 					g = pcb_layergrp_insert_after(PCB, gactive);
 					g->name = pcb_strdup("Intern");
 					g->ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
 					g->valid = 1;
+					pcb_layergrp_undoable_created(g);
+					pcb_undo_unfreeze_serial();
+					pcb_undo_inc_serial();
 				}
 				drag_addgrp = 0;
 				gactive = -1;
