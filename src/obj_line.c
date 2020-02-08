@@ -896,7 +896,7 @@ void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_co
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line);
 }
 
-void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t y_offs)
+void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t y_offs, pcb_bool undoable)
 {
 	if (layer->line_tree != NULL)
 		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);

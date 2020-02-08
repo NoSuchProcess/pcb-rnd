@@ -782,7 +782,7 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	return Text;
 }
 
-void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs)
+void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs, pcb_bool undoable)
 {
 	if (layer->text_tree != NULL)
 		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
@@ -794,7 +794,7 @@ void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs
 		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text);
 }
 
-void pcb_text_mirror_coords(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs)
+void pcb_text_mirror_coords(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs, pcb_bool undoable)
 {
 	if (layer->text_tree != NULL)
 		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);

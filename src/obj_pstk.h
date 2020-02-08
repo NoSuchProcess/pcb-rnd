@@ -227,7 +227,7 @@ void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx);
    are already mirrored so they represent the other-side geometry (e.g. when
    importing from old pcb formats). If y_offs is PCB_PSTK_DONT_MIRROR_COORDS,
    do not change the y coord */
-void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror);
+void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror, pcb_bool undoable);
 
 /* Create a new proto and scale it for the padstack; center x and y are scaled too */
 void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy);

@@ -752,7 +752,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
 }
 
-void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t y_offs)
+void pcb_arc_mirror(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t y_offs, pcb_bool undoable)
 {
 	if (layer->arc_tree != NULL)
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);

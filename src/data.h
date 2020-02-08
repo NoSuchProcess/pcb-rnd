@@ -170,7 +170,7 @@ typedef enum pcb_data_mirror_text_e {
 	PCB_TXM_SIDE = 1, /* mirror text, changing side */
 	PCB_TXM_COORD    /* mirror text base coords only */
 } pcb_data_mirror_text_t;
-void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror);
+void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror, pcb_bool undoable);
 
 void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy, int undoable);
 

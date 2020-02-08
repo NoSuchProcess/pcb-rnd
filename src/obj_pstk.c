@@ -1171,7 +1171,7 @@ TODO("slot: check if slot breaks other shapes")
 		*err_minhole = proto->hdia;
 }
 
-void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror)
+void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror, pcb_bool undoable)
 {
 	int xmirror = !ps->xmirror, smirror = (swap_side ? (!ps->smirror) : ps->smirror);
 

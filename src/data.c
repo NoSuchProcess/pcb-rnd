@@ -396,31 +396,31 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 	return NULL;
 }
 
-void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror)
+void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror, pcb_bool undoable)
 {
 	PCB_PADSTACK_LOOP(data);
 	{
-		pcb_pstk_mirror(padstack, y_offs, pstk_smirror, 0);
+		pcb_pstk_mirror(padstack, y_offs, pstk_smirror, 0, undoable);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(data);
 	{
-		pcb_subc_mirror(data, subc, y_offs, pstk_smirror);
+		pcb_subc_mirror(data, subc, y_offs, pstk_smirror, undoable);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(data);
 	{
-		pcb_line_mirror(layer, line, y_offs);
+		pcb_line_mirror(layer, line, y_offs, undoable);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(data);
 	{
-		pcb_arc_mirror(layer, arc, y_offs);
+		pcb_arc_mirror(layer, arc, y_offs, undoable);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(data);
 	{
-		pcb_poly_mirror(layer, polygon, y_offs);
+		pcb_poly_mirror(layer, polygon, y_offs, undoable);
 	}
 	PCB_ENDALL_LOOP;
 
@@ -430,14 +430,14 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 		case PCB_TXM_SIDE:
 			PCB_TEXT_ALL_LOOP(data);
 			{
-				pcb_text_flip_side(layer, text, y_offs);
+				pcb_text_flip_side(layer, text, y_offs, undoable);
 			}
 			PCB_ENDALL_LOOP;
 			break;
 		case PCB_TXM_COORD:
 			PCB_TEXT_ALL_LOOP(data);
 			{
-				pcb_text_mirror_coords(layer, text, y_offs);
+				pcb_text_mirror_coords(layer, text, y_offs, undoable);
 			}
 			PCB_ENDALL_LOOP;
 			break;

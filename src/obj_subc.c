@@ -1766,13 +1766,13 @@ void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 }
 
 /* mirrors the coordinates of a subcircuit; an additional offset is passed */
-void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror)
+void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror, pcb_bool undoable)
 {
 	if ((data != NULL) && (data->subc_tree != NULL))
 		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
 
 	pcb_undo_freeze_add();
-	pcb_data_mirror(subc->data, y_offs, smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, smirror);
+	pcb_data_mirror(subc->data, y_offs, smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, smirror, 0);
 	pcb_undo_unfreeze_add();
 	pcb_subc_bbox(subc);
 
@@ -1814,7 +1814,7 @@ pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
 		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
 
 	pcb_undo_freeze_add();
-	pcb_data_mirror(subc->data, yoff, PCB_TXM_SIDE, 1);
+	pcb_data_mirror(subc->data, yoff, PCB_TXM_SIDE, 1, 0);
 	pcb_undo_unfreeze_add();
 
 	for(n = 0; n < subc->data->LayerN; n++) {

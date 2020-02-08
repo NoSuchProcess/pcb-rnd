@@ -1481,7 +1481,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 	}
 
 	if (back)
-		pcb_pstk_mirror(ps, PCB_PSTK_DONT_MIRROR_COORDS, 1, 1);
+		pcb_pstk_mirror(ps, PCB_PSTK_DONT_MIRROR_COORDS, 1, 1, 0);
 
 
 	return 0;

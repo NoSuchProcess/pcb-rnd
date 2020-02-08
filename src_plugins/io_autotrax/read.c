@@ -1169,7 +1169,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 
 	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */
 	pcb_undo_freeze_add();
-	pcb_data_mirror(Ptr->Data, 0, PCB_TXM_COORD, 0);
+	pcb_data_mirror(Ptr->Data, 0, PCB_TXM_COORD, 0, 0);
 	pcb_undo_unfreeze_add();
 
 	/* still not sure if this is required: */

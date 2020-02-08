@@ -625,7 +625,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 	pcb_undo_freeze_add();
-	pcb_data_mirror(Buffer->Data, 0, PCB_TXM_COORD, pcb_false);
+	pcb_data_mirror(Buffer->Data, 0, PCB_TXM_COORD, pcb_false, 0);
 	pcb_undo_unfreeze_add();
 	pcb_set_buffer_bbox(Buffer);
 }
@@ -660,7 +660,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 
 	PCB_PADSTACK_LOOP(Buffer->Data);
 	{
-		pcb_pstk_mirror(padstack, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0);
+		pcb_pstk_mirror(padstack, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0, 0);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Buffer->Data);
@@ -680,7 +680,7 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
-		pcb_text_flip_side(layer, text, 0);
+		pcb_text_flip_side(layer, text, 0, 0);
 	}
 	PCB_ENDALL_LOOP;
 

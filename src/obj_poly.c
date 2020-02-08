@@ -203,7 +203,7 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 }
 
-void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs)
+void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs, pcb_bool undoable)
 {
 	if (layer->polygon_tree != NULL)
 		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *)polygon);

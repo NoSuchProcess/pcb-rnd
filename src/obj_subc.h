@@ -76,7 +76,7 @@ void pcb_subc_bbox(pcb_subc_t *sc);
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
 pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff);
 
-void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror);
+void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror, pcb_bool undoable);
 
 /* Scale coords/pos of a subc by sx,sy with thickness factor sth;
    if recurse is non-zero, descend in subc-in-subc */
