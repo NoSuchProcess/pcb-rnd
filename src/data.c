@@ -27,8 +27,6 @@
  *
  */
 
-/* just defines common identifiers
- */
 #include "config.h"
 
 #include <time.h>
