@@ -1637,8 +1637,9 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h stub_draw.h draw.h librnd/core/compat_misc.h \
- librnd/core/actions.h event.h librnd/core/event.h layer_vis.h \
- obj_text_draw.h obj_line_draw.h
+ librnd/core/actions.h event.h librnd/core/event.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h layer_vis.h obj_text_draw.h \
+ obj_line_draw.h
 ../src_plugins/draw_fab/draw_fab.o: ../src_plugins/draw_fab/draw_fab.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
@@ -8546,11 +8547,11 @@ data.o: data.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h data_list.h data_it.h list_common.h \
- librnd/core/compat_misc.h layer_it.h operation.h undo_old.h \
- obj_pstk_draw.h draw.h obj_text_draw.h obj_poly_draw.h obj_arc_draw.h \
- obj_line_draw.h conf_core.h librnd/core/conf.h librnd/core/pcb-printf.h \
- ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h undo.h \
- ../src_3rd/libuundo/uundo.h
+ librnd/core/compat_misc.h layer_it.h operation.h undo_old.h undo.h \
+ ../src_3rd/libuundo/uundo.h obj_pstk_draw.h draw.h obj_text_draw.h \
+ obj_poly_draw.h obj_arc_draw.h obj_line_draw.h conf_core.h \
+ librnd/core/conf.h librnd/core/pcb-printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h
 draw.o: draw.c ../config.h librnd/config.h conf_core.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
  librnd/core/pcb-printf.h ../src_3rd/genvector/gds_char.h \
