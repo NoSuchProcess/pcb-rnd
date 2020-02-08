@@ -1014,6 +1014,8 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int
 	if (!undoable)
 		return pcb_layer_move_delete_(pcb, old_index, undoable);
 
+	pcb_undo_freeze_serial();
+
 	l = &pcb->Data->Layer[old_index];
 	memset(&mtmp, 0, sizeof(undo_layer_move_t));
 	mtmp.pcb = pcb;
@@ -1028,6 +1030,7 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int
 
 	m = pcb_undo_alloc(pcb, &undo_layer_move, sizeof(undo_layer_move_t));
 	memcpy(m, &mtmp, sizeof(undo_layer_move_t));
+	pcb_undo_unfreeze_serial();
 	pcb_undo_inc_serial();
 
 	return res;
