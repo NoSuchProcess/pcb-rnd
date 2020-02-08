@@ -150,7 +150,6 @@ static int undo_text_geo_swap(void *udata)
 
 static void undo_text_geo_print(void *udata, char *dst, size_t dst_len)
 {
-	undo_text_geo_t *g = udata;
 	pcb_snprintf(dst, dst_len, "text geo");
 }
 

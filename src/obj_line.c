@@ -148,7 +148,6 @@ static int undo_line_geo_swap(void *udata)
 
 static void undo_line_geo_print(void *udata, char *dst, size_t dst_len)
 {
-	undo_line_geo_t *g = udata;
 	pcb_snprintf(dst, dst_len, "line geo");
 }
 
