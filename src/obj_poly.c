@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -203,21 +204,63 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 }
 
-void pcb_poly_mirror(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t y_offs, pcb_bool undoable)
+/*** undoable mirror ***/
+
+static const char core_poly_cookie[] = "core-poly";
+
+typedef struct {
+	pcb_poly_t *poly; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
+	pcb_coord_t y_offs;
+} undo_poly_mirror_t;
+
+static int undo_poly_mirror(void *udata)
 {
+	undo_poly_mirror_t *g = udata;
+	pcb_layer_t *layer = g->poly->parent.layer;
+
 	if (layer->polygon_tree != NULL)
-		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *)polygon);
-	PCB_POLY_POINT_LOOP(polygon);
+		pcb_r_delete_entry(layer->polygon_tree, (pcb_box_t *)g->poly);
+	PCB_POLY_POINT_LOOP(g->poly);
 	{
 		point->X = PCB_SWAP_X(point->X);
-		point->Y = PCB_SWAP_Y(point->Y) + y_offs;
+		point->Y = PCB_SWAP_Y(point->Y) + g->y_offs;
 	}
 	PCB_END_LOOP;
 	if (layer->parent_type == PCB_PARENT_DATA)
-		pcb_poly_init_clip(layer->parent.data, layer, polygon);
-	pcb_poly_bbox(polygon);
+		pcb_poly_init_clip(layer->parent.data, layer, g->poly);
+	pcb_poly_bbox(g->poly);
 	if (layer->polygon_tree != NULL)
-		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *)polygon);
+		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *)g->poly);
+
+	return 0;
+}
+
+static void undo_poly_geo_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_poly_mirror_t *g = udata;
+	pcb_snprintf(dst, dst_len, "poly mirror y=%$mm", g->y_offs);
+}
+
+static const uundo_oper_t undo_poly_geo = {
+	core_poly_cookie,
+	NULL,
+	undo_poly_mirror,
+	undo_poly_mirror,
+	undo_poly_geo_print
+};
+
+
+void pcb_poly_mirror(pcb_poly_t *poly, pcb_coord_t y_offs, pcb_bool undoable)
+{
+	undo_poly_mirror_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(poly->parent.layer->parent.data), &undo_poly_geo, sizeof(undo_poly_mirror_t));
+
+	g->poly = poly;
+	g->y_offs = y_offs;
+
+	undo_poly_mirror(g);
+	if (undoable) pcb_undo_inc_serial();
 }
 
 void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon)

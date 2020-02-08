@@ -421,7 +421,7 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(data);
 	{
-		pcb_poly_mirror(layer, polygon, y_offs, undoable);
+		pcb_poly_mirror(polygon, y_offs, undoable);
 	}
 	PCB_ENDALL_LOOP;
 
