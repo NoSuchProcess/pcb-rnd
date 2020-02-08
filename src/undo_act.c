@@ -92,7 +92,7 @@ fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_Undo[] = "undo()\n" "undo(ClearList)";
+static const char pcb_acts_Undo[] = "undo()\n" "undo(ClearList|FreezeSerial|UnfreezeSerial|IncSerial)";
 
 static const char pcb_acth_Undo[] = "Undo recent changes.";
 
@@ -112,6 +112,12 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
 		if (pcb_strcasecmp(function, "ClearList") == 0)
 			pcb_undo_clear_list(pcb_false);
+		else if (pcb_strcasecmp(function, "FreezeSerial") == 0)
+			pcb_undo_freeze_serial();
+		else if (pcb_strcasecmp(function, "UnFreezeSerial") == 0)
+			pcb_undo_unfreeze_serial();
+		else if (pcb_strcasecmp(function, "IncSerial") == 0)
+			pcb_undo_inc_serial();
 	}
 	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 	PCB_ACT_IRES(0);
