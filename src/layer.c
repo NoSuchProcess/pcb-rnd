@@ -853,6 +853,9 @@ static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, pc
 	pcb_layergrp_t *g;
 	int grp_idx, remaining;
 
+	/* make sure subcircuits don't reference this layer any more */
+	pcb_subc_unbind_all(pcb, &pcb->Data->Layer[old_index], undoable);
+
 	/* remove the current lid from its group */
 	g = pcb_get_layergrp(pcb, pcb->Data->Layer[old_index].meta.real.grp);
 	grp_idx = pcb_layergrp_index_in_grp(g, old_index);
