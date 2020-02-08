@@ -120,7 +120,7 @@ void pcb_line_free(pcb_line_t *line)
 static const char core_line_cookie[] = "core-line";
 
 typedef struct {
-	pcb_line_t *line;
+	pcb_line_t *line; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
 	pcb_coord_t Thickness, Clearance;
 	pcb_point_t Point1, Point2;
 } undo_line_geo_t;

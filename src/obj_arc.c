@@ -380,7 +380,7 @@ void pcb_arc_post(pcb_arc_t *arc)
 static const char core_arc_cookie[] = "core-arc";
 
 typedef struct {
-	pcb_arc_t *arc;
+	pcb_arc_t *arc; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
 	pcb_coord_t Thickness, Clearance;
 	pcb_coord_t Width, Height;
 	pcb_coord_t X, Y;
