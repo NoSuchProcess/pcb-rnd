@@ -744,7 +744,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 					g->open = 1;
 
 					outline_gactive = pcb_layergrp_id(PCB, g);
-					pcb_layer_create(PCB, outline_gactive, "outline");
+					pcb_layer_create(PCB, outline_gactive, "outline", 1);
 					pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				drag_addoutline = 0;
@@ -781,11 +781,11 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 			}
 			else if (drag_addlayer) {
 				if (gactive >= 0) {
-					pcb_layer_create(PCB, gactive, "New Layer");
+					pcb_layer_create(PCB, gactive, "New Layer", 1);
 					pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				else if (outline_gactive >= 0 && PCB->LayerGroups.grp[outline_gactive].len == 0) {
-					pcb_layer_create(PCB, outline_gactive, "outline");
+					pcb_layer_create(PCB, outline_gactive, "outline", 1);
 					pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 				}
 				drag_addlayer = 0;

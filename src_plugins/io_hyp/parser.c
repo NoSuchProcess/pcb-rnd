@@ -807,25 +807,25 @@ void hyp_reset_layers()
 
 	id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1) == 1)
-		id = pcb_layer_create(PCB, gid, "top silk");
+		id = pcb_layer_create(PCB, gid, "top silk", 0);
 	if (id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create top silk\n");
 
 	id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_BOTTOM, &gid, 1) == 1)
-		id = pcb_layer_create(PCB, gid, "bottom silk");
+		id = pcb_layer_create(PCB, gid, "bottom silk", 0);
 	if (id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create bottom silk\n");
 
 	top_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
-		top_layer_id = pcb_layer_create(PCB, gid, "");
+		top_layer_id = pcb_layer_create(PCB, gid, "", 0);
 	if (top_layer_id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create top copper\n");
 
 	bottom_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
-		bottom_layer_id = pcb_layer_create(PCB, gid, "");
+		bottom_layer_id = pcb_layer_create(PCB, gid, "", 0);
 	if (bottom_layer_id < 0)
 		pcb_message(PCB_MSG_ERROR, "failed to create bottom copper\n");
 
@@ -834,7 +834,7 @@ void hyp_reset_layers()
 	id = -1;
 	grp = pcb_get_grp_new_intern(PCB, -1);
 	if (grp != NULL) {
-		id = pcb_layer_create(PCB, grp - PCB->LayerGroups.grp, "outline");
+		id = pcb_layer_create(PCB, grp - PCB->LayerGroups.grp, "outline", 0);
 		pcb_layergrp_fix_turn_to_outline(grp);
 	}
 	if (id < 0)
@@ -899,7 +899,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 
 		/* create new bottom layer */
 		pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1);
-		layer_id = pcb_layer_create(PCB, gid, lname);
+		layer_id = pcb_layer_create(PCB, gid, lname, 0);
 
 		/* check if new bottom layer valid */
 		if (layer_id < 0) {

@@ -344,7 +344,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					break;
 				case 20: /*199:   20 is dimension, 199 is contour */
 					grp = pcb_get_grp_new_intern(st->pcb, -1);
-					ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name);
+					ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
 					pcb_layergrp_fix_turn_to_outline(grp);
 					break;
 
@@ -352,14 +352,14 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					if ((id > 1) && (id < 16)) {
 						/* new internal layer */
 						grp = pcb_get_grp_new_intern(st->pcb, -1);
-						ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name);
+						ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
 					}
 			}
 			if (typ != 0) {
 				if (reuse)
 					pcb_layer_list(st->pcb, typ, &ly->lid, 1);
 				if ((ly->lid < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
-					ly->lid = pcb_layer_create(st->pcb, gid, ly->name);
+					ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
 			}
 		}
 	}
@@ -406,7 +406,7 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 			ly->visible = 0;
 			ly->active  = 1;
 			pcb_layergrp_list(st->pcb, typ, &gid, 1);
-			ly->lid = pcb_layer_create(st->pcb, gid, ly->name);	
+			ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
 		}
 		else
 			return NULL; /* not found and not supported */

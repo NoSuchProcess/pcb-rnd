@@ -937,7 +937,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			free(attrs);
 		}
 
-		lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, stype);
+		lid = pcb_layer_create(PCB, g - PCB->LayerGroups.grp, stype, 1);
 		if (lid >= 0) {
 			pcb_layer_t *ly;
 			PCB_ACT_IRES(0);
@@ -1001,7 +1001,7 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_inhibit_inc();
 	ng = pcb_layergrp_dup(PCB, gid, 1, 1);
 	if (ng >= 0) {
-		pcb_layer_id_t lid = pcb_layer_create(PCB, ng, g->name);
+		pcb_layer_id_t lid = pcb_layer_create(PCB, ng, g->name, 1);
 		if (lid >= 0) {
 			PCB_ACT_IRES(0);
 			PCB->Data->Layer[lid].meta.real.vis = 1;

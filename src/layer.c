@@ -505,7 +505,7 @@ static void layer_clear(pcb_layer_t *dst)
 	dst->meta.real.grp = -1;
 }
 
-pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname)
+pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, pcb_bool undoable)
 {
 	pcb_layer_id_t id;
 

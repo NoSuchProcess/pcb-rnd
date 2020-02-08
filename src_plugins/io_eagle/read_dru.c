@@ -216,14 +216,14 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	/* set up layers */
 	pcb_layer_group_setup_default(pcb);
 	if (pcb_layergrp_list(pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1))
-		pcb_layer_create(pcb, gid, "top_copper");
+		pcb_layer_create(pcb, gid, "top_copper", 0);
 	if (pcb_layergrp_list(pcb, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1))
-		pcb_layer_create(pcb, gid, "bottom_copper");
+		pcb_layer_create(pcb, gid, "bottom_copper", 0);
 	num_layers--;
 	for(n = 0; n < num_layers; n++) {
 		pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
 		sprintf(tmp, "signal_%d", n);
-		pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, tmp);
+		pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, tmp, 0);
 	}
 	pcb_layer_group_setup_silks(pcb);
 

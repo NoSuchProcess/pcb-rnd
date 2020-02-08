@@ -795,10 +795,10 @@ void PostLoadElementPCB()
 		
 		res = pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
 		assert(res == 1);
-		pcb_layer_create(PCB, gid, "top copper");
+		pcb_layer_create(PCB, gid, "top copper", 0);
 		res = pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &gid, 1);
 		assert(res == 1);
-		pcb_layer_create(PCB, gid, "bottom copper");
+		pcb_layer_create(PCB, gid, "bottom copper", 0);
 	}
 
 	pcb_layergrp_upgrade_to_pstk(yyPCB);

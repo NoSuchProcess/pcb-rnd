@@ -939,7 +939,7 @@ void pcb_layer_group_setup_silks(pcb_board_t *pcb)
 	pcb_layergrp_id_t gid;
 	for(gid = 0; gid < pcb->LayerGroups.len; gid++)
 		if ((pcb->LayerGroups.grp[gid].ltype & PCB_LYT_SILK) && (pcb->LayerGroups.grp[gid].len == 0))
-			pcb_layer_create(pcb, gid, "silk");
+			pcb_layer_create(pcb, gid, "silk", 0);
 }
 
 /*** undoable rename ***/
@@ -1263,7 +1263,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			grp->name = pcb_strdup("outline");
 			if (ly->meta.bound.purpose != NULL)
 				pcb_layergrp_set_purpose__(grp, pcb_strdup(ly->meta.bound.purpose), 0);
-			nlid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
+			nlid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name, 0);
 			nly = pcb_get_layer(pcb->Data, nlid);
 			if (nly != NULL)
 				nly->comb = ly->comb;
@@ -1274,14 +1274,14 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		if (ly->meta.bound.type & PCB_LYT_COPPER) { /* top or bottom copper */
 			grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, PCB_LYT_COPPER);
 			if (grp != NULL) {
-				pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
+				pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name, 0);
 				continue;
 			}
 		}
 
 		grp = pcb_get_grp(&pcb->LayerGroups, ly->meta.bound.type & PCB_LYT_ANYWHERE, ly->meta.bound.type & PCB_LYT_ANYTHING);
 		if (grp != NULL) {
-			pcb_layer_id_t lid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
+			pcb_layer_id_t lid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name, 0);
 			pcb_layer_t *nly = pcb_get_layer(pcb->Data, lid);
 			nly->comb = ly->comb;
 			continue;
@@ -1314,7 +1314,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 							offs = existing_intern + offs + 1;
 						if ((offs == int_ofs) && (ly->name != NULL)) {
 							pcb->LayerGroups.grp[n].name = pcb_strdup("internal");
-							pcb_layer_create(pcb, n, ly->name);
+							pcb_layer_create(pcb, n, ly->name, 0);
 							goto found;
 						}
 					}
@@ -1335,7 +1335,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			if (grp != NULL) {
 				grp->ltype = ly->meta.bound.type;
 				grp->name = pcb_strdup(ly->name);
-				pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name);
+				pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name, 0);
 				pcb_layer_resolve_binding(pcb, ly);
 			}
 		}
@@ -1438,7 +1438,7 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 		pcb_layergrp_set_purpose__(grp, pcb_strdup(src->purpose), 1);
 
 	if (grp->len == 0) {
-		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, lyname);
+		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, lyname, 0);
 		if (lid >= 0) {
 			pcb->Data->Layer[lid].comb = src->comb;
 		}

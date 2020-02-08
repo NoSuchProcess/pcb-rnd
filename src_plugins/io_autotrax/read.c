@@ -768,7 +768,7 @@ static pcb_layer_id_t autotrax_reg_layer(read_state_t *st, const char *autotrax_
 	if (pcb_layer_list(st->pcb, mask, &id, 1) != 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, mask, &gid, 1);
-		id = pcb_layer_create(st->pcb, gid, autotrax_layer);
+		id = pcb_layer_create(st->pcb, gid, autotrax_layer, 0);
 	}
 	return id;
 }
@@ -791,31 +791,31 @@ static int autotrax_create_layers(read_state_t *st)
 	if (pcb_layer_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
-		st->protel_to_stackup[11] = pcb_layer_create(st->pcb, gid, "Board"); /* != outline, cutouts */
+		st->protel_to_stackup[11] = pcb_layer_create(st->pcb, gid, "Board", 0); /* != outline, cutouts */
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
-		st->protel_to_stackup[13] = pcb_layer_create(st->pcb, gid, "Multi");
+		st->protel_to_stackup[13] = pcb_layer_create(st->pcb, gid, "Multi", 0);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Unable to create Keepout, Multi layers in default top silk group\n");
 	}
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	st->protel_to_stackup[2] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid1");
+	st->protel_to_stackup[2] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid1", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	st->protel_to_stackup[3] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid2");
+	st->protel_to_stackup[3] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid2", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	st->protel_to_stackup[4] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid3");
+	st->protel_to_stackup[4] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid3", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	st->protel_to_stackup[5] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid4");
+	st->protel_to_stackup[5] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Mid4", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	st->protel_to_stackup[9] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "GND");
+	st->protel_to_stackup[9] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "GND", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	st->protel_to_stackup[10] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Power");
+	st->protel_to_stackup[10] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Power", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
 	g->name = pcb_strdup("outline"); /* equivalent to keepout = layer 12 in autotrax */

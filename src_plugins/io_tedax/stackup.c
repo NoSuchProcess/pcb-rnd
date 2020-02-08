@@ -373,7 +373,7 @@ int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *b
 			grp = get_grp_by_name(ctx, pcb, argv[1]);
 			tedax_layer_set_by_str(pcb, grp, argv[2], argv[3]);
 			if (!(grp->ltype & PCB_LYT_SUBSTRATE))
-				pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, pcb_strdup(argv[1]));
+				pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, pcb_strdup(argv[1]), 0);
 
 		}
 		else if (strcmp(argv[0], "lprop") == 0) {

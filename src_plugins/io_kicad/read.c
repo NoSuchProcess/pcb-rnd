@@ -234,7 +234,7 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_create_copper_layer_(read_state_t *st, pcb_layergrp_id_t gid, const char *lname, const char *ltype, gsxl_node_t *subtree)
 {
 	pcb_layer_id_t id;
-	id = pcb_layer_create(st->pcb, gid, lname);
+	id = pcb_layer_create(st->pcb, gid, lname, 0);
 	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
 	if (ltype != NULL) {
 		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, id);
@@ -343,7 +343,7 @@ static int kicad_create_misc_layer(read_state_t *st, int lnum, const char *lname
 		case LYACT_EXISTING:
 			gid = -1;
 			pcb_layergrp_list(st->pcb, best->type, &gid, 1);
-			lid = pcb_layer_create(st->pcb, gid, lname);
+			lid = pcb_layer_create(st->pcb, gid, lname, 0);
 			new_grp = NULL;
 			break;
 
@@ -351,14 +351,14 @@ static int kicad_create_misc_layer(read_state_t *st, int lnum, const char *lname
 			grp = pcb_get_grp_new_misc(st->pcb);
 			grp->name = pcb_strdup(lname);
 			grp->ltype = best->type;
-			lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
+			lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname, 0);
 			new_grp = grp;
 			break;
 
 		case LYACT_NEW_OUTLINE:
 			grp = pcb_get_grp_new_intern(PCB, -1);
 			pcb_layergrp_fix_turn_to_outline(grp);
-			lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname);
+			lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname, 0);
 			new_grp = grp;
 			break;
 	}
@@ -395,7 +395,7 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 		if (pcb_layer_listp(st->pcb, mask, &id, 1, -1, purpose) != 1) {
 			pcb_layergrp_id_t gid;
 			pcb_layergrp_listp(PCB, mask, &gid, 1, -1, purpose);
-			id = pcb_layer_create(st->pcb, gid, kicad_name);
+			id = pcb_layer_create(st->pcb, gid, kicad_name, 0);
 		}
 	}
 	else {
@@ -472,7 +472,7 @@ static void kicad_create_fp_layers(read_state_t *st, gsxl_node_t *subtree)
 
 	/* one intern copper */
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Inner1.Cu");
+	pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Inner1.Cu", 0);
 
 	kicad_create_layer(st, 0,           "F.Cu",      "signal", subtree, last_copper);
 	kicad_create_layer(st, 1,           "Inner1.Cu", "signal", subtree, last_copper);
@@ -2689,7 +2689,7 @@ static int kicad_parse_pcb(read_state_t *st)
 	/* create an extra layer for plated slots so they show up properly */
 	{
 		pcb_layergrp_t *g = pcb_get_grp_new_misc(st->pcb);
-		pcb_layer_id_t lid = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "plated_slots");
+		pcb_layer_id_t lid = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "plated_slots", 0);
 		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, lid);
 		g->ltype = PCB_LYT_MECH;
 		pcb_layergrp_set_purpose(g, "proute", 0);
