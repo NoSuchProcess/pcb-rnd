@@ -517,13 +517,16 @@ int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_
 	return 0;
 }
 
-int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable)
+static void grp_move_struct(pcb_layergrp_t *dst, pcb_layergrp_t *src)
+{
+	*dst = *src;
+	memset(src, 0, sizeof(pcb_layergrp_t));
+}
+
+static void pcb_layergrp_del_1(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable)
 {
 	int n;
 	pcb_layer_stack_t *stk = &pcb->LayerGroups;
-
-	if ((gid < 0) || (gid >= stk->len))
-		return -1;
 
 	for(n = 0; n < stk->grp[gid].len; n++) {
 		pcb_layer_t *l = pcb_get_layer(pcb->Data, stk->grp[gid].lid[n]);
@@ -538,11 +541,99 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pc
 			}
 		}
 	}
+}
+
+static void pcb_layergrp_del_2(pcb_board_t *pcb, pcb_layergrp_id_t gid)
+{
+	pcb_layer_stack_t *stk = &pcb->LayerGroups;
 
 	pcb_layergrp_free(pcb, gid);
 	move_grps(pcb, stk, gid+1, stk->len-1, -1);
 	stk->len--;
 	NOTIFY(pcb);
+}
+
+static void pcb_layergrp_ins(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layergrp_t *src)
+{
+	pcb_layer_stack_t *stk = &pcb->LayerGroups;
+	move_grps(pcb, stk, gid+1, stk->len-1, +1);
+	stk->len++;
+	grp_move_struct(&stk->grp[gid], src);
+	NOTIFY(pcb);
+}
+
+
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_layergrp_id_t gid;
+	unsigned int del:1;
+	pcb_layergrp_t save;
+} undo_layergrp_del_t;
+
+static int undo_layergrp_del_swap(void *udata)
+{
+	undo_layergrp_del_t *r = udata;
+	pcb_layer_stack_t *stk = &r->pcb->LayerGroups;
+
+	if (r->del) { /* undo a delete by inserting the group back at its place */
+		pcb_layergrp_ins(r->pcb, r->gid, &r->save);
+	}
+	else { /* redo delete */
+		pcb_layergrp_del_1(r->pcb, r->gid, 1, 1);
+		grp_move_struct(&r->save, &stk->grp[r->gid]);
+		pcb_layergrp_del_2(r->pcb, r->gid);
+	}
+
+	r->del = !r->del;
+	return 0;
+}
+
+static void undo_layergrp_del_free(void *udata)
+{
+	undo_layergrp_del_t *r = udata;
+	pcb_layergrp_free_fields(&r->save);
+}
+
+
+static void undo_layergrp_del_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layergrp_del_t *r = udata;
+	pcb_snprintf(dst, dst_len, "layergrp %s:", r->del ? "delete" : "insert");
+}
+
+static const uundo_oper_t undo_layergrp_del = {
+	core_layergrp_cookie,
+	undo_layergrp_del_free,
+	undo_layergrp_del_swap,
+	undo_layergrp_del_swap,
+	undo_layergrp_del_print
+};
+
+
+int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable)
+{
+	undo_layergrp_del_t *r;
+	pcb_layer_stack_t *stk = &pcb->LayerGroups;
+
+	if ((gid < 0) || (gid >= stk->len))
+		return -1;
+
+	if (!undoable || !del_layers) {
+		pcb_layergrp_del_1(pcb, gid, del_layers, undoable);
+		pcb_layergrp_del_2(pcb, gid);
+		return 0;
+	}
+
+	/* undoable */
+	pcb_layergrp_del_1(pcb, gid, 1, 1);
+	r = pcb_undo_alloc(pcb, &undo_layergrp_del, sizeof(undo_layergrp_del_t));
+	r->pcb = pcb;
+	r->gid = gid;
+	r->del = 1;
+	grp_move_struct(&r->save, &stk->grp[gid]);
+	pcb_layergrp_del_2(pcb, gid);
+
+	pcb_undo_inc_serial();
 	return 0;
 }
 
