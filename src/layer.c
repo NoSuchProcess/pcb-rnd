@@ -505,6 +505,7 @@ static void layer_clear(pcb_layer_t *dst)
 	dst->meta.real.grp = -1;
 }
 
+static void pcb_layer_undoable_created(pcb_board_t *pcb, pcb_layer_t *l);
 pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, pcb_bool undoable)
 {
 	pcb_layer_id_t id;
@@ -536,6 +537,9 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 
 	if (pcb == PCB)
 		pcb_board_set_changed_flag(1);
+
+	if (undoable)
+		pcb_layer_undoable_created(pcb, &pcb->Data->Layer[id]);
 
 	return id;
 }
@@ -970,6 +974,21 @@ static long layer_idx_in_grp(pcb_board_t *pcb, pcb_layer_t *l)
 	return 0;
 }
 
+/* Call this after creating grp to add the creation to the undo list */
+static void pcb_layer_undoable_created(pcb_board_t *pcb, pcb_layer_t *l)
+{
+	undo_layer_move_t *m = pcb_undo_alloc(pcb, &undo_layer_move, sizeof(undo_layer_move_t));
+	memset(m, 0, sizeof(undo_layer_move_t));
+	m->pcb = pcb;
+	m->lid = l - pcb->Data->Layer;
+	m->grp = l->meta.real.grp;
+	m->color = l->meta.real.color;
+	m->in_grp_idx = layer_idx_in_grp(pcb, l);
+	m->append = 1;
+	pcb_undo_inc_serial();
+}
+
+
 static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, int undoable)
 {
 	pcb_layer_t *l;
@@ -978,17 +997,8 @@ static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb
 	if (l == NULL)
 		return 1;
 
-	if (undoable) {
-		undo_layer_move_t *m = pcb_undo_alloc(pcb, &undo_layer_move, sizeof(undo_layer_move_t));
-		memset(m, 0, sizeof(undo_layer_move_t));
-		m->pcb = pcb;
-		m->lid = l - pcb->Data->Layer;
-		m->grp = l->meta.real.grp;
-		m->color = l->meta.real.color;
-		m->in_grp_idx = layer_idx_in_grp(pcb, l);
-		m->append = 1;
-		pcb_undo_inc_serial();
-	}
+	if (undoable)
+		pcb_layer_undoable_created(pcb, l);
 	return 0;
 }
 
