@@ -41,6 +41,7 @@
 #include <librnd/core/compat_misc.h>
 #include "rotate.h"
 #include <librnd/core/hid_inlines.h>
+#include <librnd/core/misc_util.h>
 
 #include "obj_line.h"
 #include "obj_line_op.h"
@@ -115,6 +116,51 @@ void pcb_line_free(pcb_line_t *line)
 
 
 /**** utility ****/
+
+static const char core_line_cookie[] = "core-line";
+
+typedef struct {
+	pcb_line_t *line;
+	pcb_coord_t Thickness, Clearance;
+	pcb_point_t Point1, Point2;
+} undo_line_geo_t;
+
+static int undo_line_geo_swap(void *udata)
+{
+	undo_line_geo_t *g = udata;
+	pcb_layer_t *layer = g->line->parent.layer;
+
+	if (layer->line_tree != NULL)
+		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *)g->line);
+
+	rnd_swap(pcb_point_t, g->Point1, g->line->Point1);
+	rnd_swap(pcb_point_t, g->Point2, g->line->Point2);
+	rnd_swap(pcb_coord_t, g->Thickness, g->line->Thickness);
+	rnd_swap(pcb_coord_t, g->Clearance, g->line->Clearance);
+
+	pcb_line_bbox(g->line);
+	if (layer->line_tree != NULL)
+		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *)g->line);
+
+	return 0;
+}
+
+static void undo_line_geo_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_line_geo_t *g = udata;
+	pcb_snprintf(dst, dst_len, "line geo");
+}
+
+static const uundo_oper_t undo_line_geo = {
+	core_line_cookie,
+	NULL,
+	undo_line_geo_swap,
+	undo_line_geo_swap,
+	undo_line_geo_print
+};
+
+
+
 struct line_info {
 	pcb_coord_t X1, X2, Y1, Y2;
 	pcb_coord_t Thickness, Clearance;
@@ -896,17 +942,22 @@ void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_co
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line);
 }
 
-void pcb_line_mirror(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t y_offs, pcb_bool undoable)
+void pcb_line_mirror(pcb_line_t *line, pcb_coord_t y_offs, pcb_bool undoable)
 {
-	if (layer->line_tree != NULL)
-		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
-	line->Point1.X = PCB_SWAP_X(line->Point1.X);
-	line->Point1.Y = PCB_SWAP_Y(line->Point1.Y) + y_offs;
-	line->Point2.X = PCB_SWAP_X(line->Point2.X);
-	line->Point2.Y = PCB_SWAP_Y(line->Point2.Y) + y_offs;
-	pcb_line_bbox(line);
-	if (layer->line_tree != NULL)
-		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line);
+	undo_line_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(line->parent.layer->parent.data), &undo_line_geo, sizeof(undo_line_geo_t));
+
+	g->line = line;
+	g->Point1.X = PCB_SWAP_X(line->Point1.X);
+	g->Point1.Y = PCB_SWAP_Y(line->Point1.Y) + y_offs;
+	g->Point2.X = PCB_SWAP_X(line->Point2.X);
+	g->Point2.Y = PCB_SWAP_Y(line->Point2.Y) + y_offs;
+	g->Thickness = line->Thickness;
+	g->Clearance = line->Clearance;
+
+	undo_line_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
 }
 
 void pcb_line_scale(pcb_line_t *line, double sx, double sy, double sth)

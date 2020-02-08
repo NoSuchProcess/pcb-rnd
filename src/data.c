@@ -410,7 +410,7 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(data);
 	{
-		pcb_line_mirror(layer, line, y_offs, undoable);
+		pcb_line_mirror(line, y_offs, undoable);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(data);
