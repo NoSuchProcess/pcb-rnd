@@ -6,6 +6,9 @@
 + FEATURE: http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - CLEANUP: when removing import_sch, also remove ImportGUI()
 - CLEANUP/FEATURE: undo: boardflip doesn't function properly with undo -- repro: open pcb-rnd, place 1206, boardflip(), { u u } removes placed part instead of boardflip   [report: Miloh]
+	- pstk mirror
+	- subc mirror
+	- check why poly clipping is not done
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - FEATURE/BUG: fungw: call getxy("x", "x") from fawk - the result is coord and is not converted because custom args are converted to NIL [report: Igor2]
