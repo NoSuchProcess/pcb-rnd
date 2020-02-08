@@ -1565,6 +1565,43 @@ void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
 TODO("subc: subc-in-subc: bind subc rtree")
 }
 
+static void pcb_subc_unbind_(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_t *brdly, int slot, int undoable)
+{
+	pcb_layer_id_t brdlid = brdly - pcb->Data->Layer;
+	subc_relocate_layer_objs(NULL, pcb->Data, &sc->data->Layer[slot], 1, 0, 0);
+	sc->data->Layer[slot].meta.bound.real = NULL;
+}
+
+int pcb_subc_unbind(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_t *brdly, int undoable)
+{
+	int n, res = 0;
+
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *sl = sc->data->Layer + n;
+		if (sl->meta.bound.real == brdly) {
+			pcb_subc_unbind_(pcb, sc, brdly, n, undoable);
+			res++;
+		}
+	}
+	if (undoable && (res > 0))
+		pcb_undo_inc_serial();
+	return res;
+}
+
+long pcb_subc_unbind_all(pcb_board_t *pcb, pcb_layer_t *brdly, int undoable)
+{
+	long res = 0;
+	pcb_subc_t *sc;
+	gdl_iterator_t it;
+	subclist_foreach(&pcb->Data->subc, &it, sc) {
+		int r = pcb_subc_unbind(pcb, sc, brdly, undoable);
+		if (r > 0)
+			res += r;
+	}
+	return res;
+}
+
+
 void *pcb_subcop_change_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_op(ctx->chgsize.pcb->Data, sc, &ChangeSizeFunctions, ctx, PCB_SUBCOP_UNDO_BATCH);

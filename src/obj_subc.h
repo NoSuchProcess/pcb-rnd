@@ -105,6 +105,12 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc);
 /* Do the initial global bindings of subc to pcb (rtree links) */
 void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc);
 
+/* Unbind board layer from subc; useful when layer is deleted; returns
+   the number of unbinds or -1 on error */
+int pcb_subc_unbind(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_t *brdly, int undoable);
+long pcb_subc_unbind_all(pcb_board_t *pcb, pcb_layer_t *brdly, int undoable);
+
+
 /* Look up a layer by lyt and comb (and name, if req_name_match is true);
    if not found and alloc is true, allocate a new layer with the given name.
    Return NULL on error. */
