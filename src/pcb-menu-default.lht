@@ -791,7 +791,7 @@ ha:{
 				-
 				ha:Remove layer                     = { action=MoveLayer(c, -1) }
 				ha:Insert new, before this layer    = { action={ MoveLayer(-1, c); EditLayer() } }
-				ha:Insert new, after this layer     = { action={ MoveLayer(-1, c); MoveLayer(c, step+); EditLayer() } }
+				ha:Insert new, after this layer     = { action={ Undo(FreezeSerial); MoveLayer(-1, c); MoveLayer(c, step+); Undo(UnFreezeSerial); Undo(IncSerial); EditLayer() } }
 				-
 				ha:all layers on                    = { action=ToggleView(all, vis, set) }
 				ha:all layers off                   = { action=ToggleView(all, vis, clear) }
