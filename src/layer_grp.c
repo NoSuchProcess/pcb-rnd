@@ -167,7 +167,7 @@ pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int 
 		ng = pcb_layergrp_insert_after(pcb, gid);
 		make_substrate(pcb, ng);
 		after = ng - pcb->LayerGroups.grp;
-		if (undoable) pcb_layergrp_undoable_create(ng);
+		if (undoable) pcb_layergrp_undoable_created(ng);
 	}
 	else
 		after = gid;
@@ -181,7 +181,7 @@ pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int 
 	ng->purpi = og->purpi;
 	ng->valid = ng->open = ng->vis = 1;
 	pcb_layergrp_setup(ng, pcb);
-	if (undoable) pcb_layergrp_undoable_create(ng);
+	if (undoable) pcb_layergrp_undoable_created(ng);
 
 	inhibit_notify--;
 	NOTIFY(pcb);
@@ -640,7 +640,7 @@ int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pc
 	return 0;
 }
 
-void pcb_layergrp_undoable_create(pcb_layergrp_t *grp)
+void pcb_layergrp_undoable_created(pcb_layergrp_t *grp)
 {
 	pcb_board_t *pcb = grp->parent.board;
 	undo_layergrp_del_t *r;

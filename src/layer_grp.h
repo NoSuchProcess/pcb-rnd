@@ -198,7 +198,7 @@ void pcb_layergrp_upgrade_to_pstk(pcb_board_t *pcb);
 void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb);
 
 /* Call this after creating grp to add the creation to the undo list */
-void pcb_layergrp_undoable_create(pcb_layergrp_t *grp);
+void pcb_layergrp_undoable_created(pcb_layergrp_t *grp);
 
 
 /********* OBSOLETE functions, do not use in new code *********/
