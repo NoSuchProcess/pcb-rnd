@@ -556,7 +556,7 @@ static void pcb_layergrp_del_2(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 static void pcb_layergrp_ins(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layergrp_t *src)
 {
 	pcb_layer_stack_t *stk = &pcb->LayerGroups;
-	move_grps(pcb, stk, gid+1, stk->len-1, +1);
+	move_grps(pcb, stk, gid, stk->len-1, +1);
 	stk->len++;
 	grp_move_struct(&stk->grp[gid], src);
 	NOTIFY(pcb);
