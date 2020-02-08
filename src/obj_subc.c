@@ -61,6 +61,8 @@
 
 #define SUBC_AUX_NAME "subc-aux"
 
+static const char core_subc_cookie[] = "core-subc";
+
 void pcb_subc_reg(pcb_data_t *data, pcb_subc_t *subc)
 {
 	pcb_subclist_append(&data->subc, subc);
@@ -1565,11 +1567,62 @@ void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
 TODO("subc: subc-in-subc: bind subc rtree")
 }
 
-static void pcb_subc_unbind_(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_t *brdly, int slot, int undoable)
+/*** undoable unbind ***/
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_subc_t *sc;
+	pcb_layer_id_t lid;
+	int slot; /* layer index within the subc */
+	unsigned int unbind:1;
+} undo_subc_unbind_t;
+
+static int undo_subc_unbind_swap(void *udata)
 {
-	pcb_layer_id_t brdlid = brdly - pcb->Data->Layer;
-	subc_relocate_layer_objs(NULL, pcb->Data, &sc->data->Layer[slot], 1, 0, 0);
-	sc->data->Layer[slot].meta.bound.real = NULL;
+	undo_subc_unbind_t *u = udata;
+
+	if (u->unbind)
+		subc_relocate_layer_objs(NULL, u->pcb->Data, &u->sc->data->Layer[u->slot], 1, 0, 0);
+	else {
+		pcb_layer_t *ly = pcb_get_layer(u->pcb->Data, u->lid);
+		pcb_layer_link_trees(&u->sc->data->Layer[u->slot], ly);
+		subc_relocate_layer_objs(ly, u->pcb->Data, &u->sc->data->Layer[u->slot], 0, 1, 0);
+	}
+	u->unbind = !u->unbind;
+
+	return 0;
+}
+
+static void undo_subc_unbind_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_subc_unbind_t *u = udata;
+	pcb_snprintf(dst, dst_len, "subc unbind layer: %s #%ld:%ld", u->unbind ? "unbind" : "rebind", u->sc->ID, u->slot);
+}
+
+static const uundo_oper_t undo_subc_unbind = {
+	core_subc_cookie,
+	NULL,
+	undo_subc_unbind_swap,
+	undo_subc_unbind_swap,
+	undo_subc_unbind_print
+};
+
+
+static void pcb_subc_unbind_(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_id_t brdlid, int slot, int undoable)
+{
+	undo_subc_unbind_t utmp, *u = &utmp;
+
+	if (undoable)
+		u = pcb_undo_alloc(pcb, &undo_subc_unbind, sizeof(undo_subc_unbind_t));
+
+	u->pcb = pcb;
+	u->sc = sc;
+	u->lid = brdlid;
+	u->slot = slot;
+	u->unbind = 1;
+
+	undo_subc_unbind_swap(u);
+	if (undoable)
+		pcb_undo_inc_serial();
 }
 
 int pcb_subc_unbind(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_t *brdly, int undoable)
@@ -1579,7 +1632,7 @@ int pcb_subc_unbind(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_t *brdly, int un
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *sl = sc->data->Layer + n;
 		if (sl->meta.bound.real == brdly) {
-			pcb_subc_unbind_(pcb, sc, brdly, n, undoable);
+			pcb_subc_unbind_(pcb, sc, brdly - pcb->Data->Layer, n, undoable);
 			res++;
 		}
 	}
