@@ -37,10 +37,10 @@
 struct pcb_arc_s {       /* holds information about arcs */
 	PCB_ANY_PRIMITIVE_FIELDS;
 	pcb_coord_t Thickness, Clearance;
-	pcb_coord_t Width, Height,					/* length of axis */
-	  X, Y;												/* center coordinates */
-	pcb_angle_t StartAngle, Delta;			/* the two limiting angles in degrees */
-	gdl_elem_t link;              /* an arc is in a list: either on a layer or in an element or in a font */
+	pcb_coord_t Width, Height;     /* length of axis */
+	pcb_coord_t X, Y;              /* center coordinates */
+	pcb_angle_t StartAngle, Delta; /* the two limiting angles in degrees */
+	gdl_elem_t link;               /* an arc is in a list: either on a layer or in an element or in a font */
 };
 
 /*** Memory ***/
