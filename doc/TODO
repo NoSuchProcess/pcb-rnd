@@ -12,6 +12,7 @@
 - BUG: undo: draw a line; select; ctrl+x it; undo -> hace [report: Igor2]
 - BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 - BUG: propedit: coord row edit: when abs is checked, disable the apply button; when abs is unchecked, do not auto-apply, wait for the button [report: Igor2]
+- BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
