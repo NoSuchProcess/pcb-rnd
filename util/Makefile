@@ -16,7 +16,6 @@ install_all:
 	$(SCCBOX) mkdir -p  "$(BINDIR)" "$(LIBDIR)"
 	$(SCCBOX) $(HOW) "fp2preview" "$(BINDIR)/fp2preview"
 	$(SCCBOX) $(HOW) "fp2subc" "$(BINDIR)/fp2subc"
-	$(SCCBOX) $(HOW) "pcb-strip" "$(BINDIR)/pcb-strip"
 	$(SCCBOX) $(HOW) "pcb-prj2lht" "$(BINDIR)/pcb-prj2lht"
 	$(SCCBOX) $(HOW) "gnet-pcbrndfwd.scm" "$(LIBDIR)/gnet-pcbrndfwd.scm"
 	$(SCCBOX) $(HOW) "gnet-pcbrndfwd_elem.scm" "$(LIBDIR)/gnet-pcbrndfwd_elem.scm"
