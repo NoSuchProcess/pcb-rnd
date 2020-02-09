@@ -457,7 +457,16 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		goto skip_filter;
 
 	/* hide or unhide everything */
-	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
+
+	if (have_filter_text) {
+		/* need to unhide for expand to work */
+		pcb_dad_tree_hide_all(tree, &tree->rows, 0);
+		pcb_dad_tree_update_hide(attr);
+		pcb_dad_tree_expcoll(attr, NULL, 1, 1);
+		pcb_dad_tree_hide_all(tree, &tree->rows, 1);
+	}
+	else
+		pcb_dad_tree_hide_all(tree, &tree->rows, 0);
 
 	if (have_filter_text) { /* unhide hits and all their parents */
 		char *tag, *next, *tags = NULL;
@@ -502,7 +511,6 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		free(tags);
 	}
 
-	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
 	pcb_dad_tree_update_hide(attr);
 
 	skip_filter:;
