@@ -7,7 +7,7 @@
 - CLEANUP: when removing import_sch, also remove ImportGUI()
 - FEATURE/BUG: fungw: call getxy("x", "x") from fawk - the result is coord and is not converted because custom args are converted to NIL [report: Igor2]
 - BUG: footprint library window tree not refreshing properly after changing filter criteria. repro: type '1206' into filter to filter for 1206.fp part, add a char to the filter criteria '1206x' that removes the match, then delete single char to get '1206' again, and library subdirs refresh closed instead of open. behavior changed sometime between 2.1.2(good) and 2.1.3(bad) [report: Miloh]
-- BUG: selection lost after running align(x) and then undo { u u } on a set of parts. [report: Miloh]
++ BUG: selection lost after running align(x) and then undo { u u } on a set of parts. [report: Miloh]
 - BUG: autoplaceselected() bugs in bug_files/autoplaceselected.txt [report: Miloh]
 - BUG: undo: draw a line; select; ctrl+x it; undo -> hace [report: Igor2]
 
