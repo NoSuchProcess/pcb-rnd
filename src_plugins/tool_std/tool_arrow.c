@@ -219,8 +219,10 @@ void pcb_tool_arrow_release_mode(pcb_hidlib_t *hl)
 		box.Y2 = pcb_crosshair.AttachedBox.Point2.Y;
 
 		pcb_undo_restore_serial();
-		if (pcb_select_block(pcb, &box, pcb_true, pcb_true, pcb_false))
+		if (pcb_select_block(pcb, &box, pcb_true, pcb_true, pcb_false)) {
 			pcb_board_set_changed_flag(pcb_true);
+			pcb_undo_inc_serial();
+		}
 		else if (pcb_bumped)
 			pcb_undo_inc_serial();
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
