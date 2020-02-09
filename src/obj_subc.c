@@ -1765,19 +1765,61 @@ void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 		DrawSubc(sc);
 }
 
+/*** undoable mirror ***/
+
+typedef struct {
+	pcb_subc_t *subc; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
+	pcb_coord_t y_offs;
+	pcb_bool smirror;
+} undo_subc_mirror_t;
+
+static int undo_subc_mirror_swap(void *udata)
+{
+	undo_subc_mirror_t *g = udata;
+	pcb_data_t *data = g->subc->parent.data;
+
+	if ((data != NULL) && (data->subc_tree != NULL))
+		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)g->subc);
+
+	pcb_undo_freeze_add();
+	pcb_data_mirror(g->subc->data, g->y_offs, g->smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, g->smirror, 0);
+	pcb_undo_unfreeze_add();
+	pcb_subc_bbox(g->subc);
+
+	if ((data != NULL) && (data->subc_tree != NULL))
+		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)g->subc);
+
+	return 0;
+}
+
+static void undo_subc_mirror_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_subc_mirror_t *g = udata;
+	pcb_snprintf(dst, dst_len, "subc mirror y_offs=%$mm smirror=%d", g->y_offs, g->smirror);
+}
+
+static const uundo_oper_t undo_subc_mirror = {
+	core_subc_cookie,
+	NULL,
+	undo_subc_mirror_swap,
+	undo_subc_mirror_swap,
+	undo_subc_mirror_print
+};
+
+
 /* mirrors the coordinates of a subcircuit; an additional offset is passed */
 void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror, pcb_bool undoable)
 {
-	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
+	undo_subc_mirror_t gtmp, *g = &gtmp;
 
-	pcb_undo_freeze_add();
-	pcb_data_mirror(subc->data, y_offs, smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, smirror, 0);
-	pcb_undo_unfreeze_add();
-	pcb_subc_bbox(subc);
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(subc->parent.data), &undo_subc_mirror, sizeof(undo_subc_mirror_t));
 
-	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
+	g->subc = subc;
+	g->y_offs = y_offs;
+	g->smirror = smirror;
+
+	undo_subc_mirror_swap(g);
+	if (undoable) pcb_undo_inc_serial();
 }
 
 void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, double sth, int recurse)
