@@ -213,7 +213,7 @@ typedef struct {
 	pcb_coord_t y_offs;
 } undo_poly_mirror_t;
 
-static int undo_poly_mirror(void *udata)
+static int undo_poly_mirror_swap(void *udata)
 {
 	undo_poly_mirror_t *g = udata;
 	pcb_layer_t *layer = g->poly->parent.layer;
@@ -235,18 +235,18 @@ static int undo_poly_mirror(void *udata)
 	return 0;
 }
 
-static void undo_poly_geo_print(void *udata, char *dst, size_t dst_len)
+static void undo_poly_mirror_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_poly_mirror_t *g = udata;
 	pcb_snprintf(dst, dst_len, "poly mirror y=%$mm", g->y_offs);
 }
 
-static const uundo_oper_t undo_poly_geo = {
+static const uundo_oper_t undo_poly_mirror = {
 	core_poly_cookie,
 	NULL,
-	undo_poly_mirror,
-	undo_poly_mirror,
-	undo_poly_geo_print
+	undo_poly_mirror_swap,
+	undo_poly_mirror_swap,
+	undo_poly_mirror_print
 };
 
 
@@ -254,12 +254,12 @@ void pcb_poly_mirror(pcb_poly_t *poly, pcb_coord_t y_offs, pcb_bool undoable)
 {
 	undo_poly_mirror_t gtmp, *g = &gtmp;
 
-	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(poly->parent.layer->parent.data), &undo_poly_geo, sizeof(undo_poly_mirror_t));
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(poly->parent.layer->parent.data), &undo_poly_mirror, sizeof(undo_poly_mirror_t));
 
 	g->poly = poly;
 	g->y_offs = y_offs;
 
-	undo_poly_mirror(g);
+	undo_poly_mirror_swap(g);
 	if (undoable) pcb_undo_inc_serial();
 }
 
