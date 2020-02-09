@@ -1171,27 +1171,37 @@ TODO("slot: check if slot breaks other shapes")
 		*err_minhole = proto->hdia;
 }
 
-void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror, pcb_bool undoable)
-{
-	int xmirror = !ps->xmirror, smirror = (swap_side ? (!ps->smirror) : ps->smirror);
+/*** undoable mirror ***/
 
+typedef struct {
+	pcb_pstk_t *pstk; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
+	pcb_coord_t y_offs;
+	int swap_side;
+	int disable_xmirror;
+} undo_pstk_mirror_t;
+
+static int undo_pstk_mirror_swap(void *udata)
+{
+	undo_pstk_mirror_t *g = udata;
+	pcb_pstk_t *ps = g->pstk;
+	int xmirror = !ps->xmirror, smirror = (g->swap_side ? (!ps->smirror) : ps->smirror);
 
 	/* change the mirror flag - this will automatically cause mirroring in
 	   every aspect */
-	if (disable_xmirror)
+	if (g->disable_xmirror)
 		pcb_pstk_change_instance(ps, NULL, NULL, NULL, NULL, &smirror);
 	else
 		pcb_pstk_change_instance(ps, NULL, NULL, NULL, &xmirror, &smirror);
 
 	/* if mirror center is not 0, also move, to emulate that the mirror took
 	   place around that point */
-	if (((y_offs != 0) || (ps->y != 0)) && (y_offs != PCB_PSTK_DONT_MIRROR_COORDS)) {
+	if (((g->y_offs != 0) || (ps->y != 0)) && (g->y_offs != PCB_PSTK_DONT_MIRROR_COORDS)) {
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
 		if (ps->parent.data->padstack_tree != NULL)
 			pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
-		ps->y = PCB_SWAP_Y(ps->y) + y_offs;
+		ps->y = PCB_SWAP_Y(ps->y) + g->y_offs;
 		pcb_pstk_bbox(ps);
 
 		if (ps->parent.data->padstack_tree != NULL)
@@ -1199,6 +1209,40 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disa
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 	}
+
+
+	return 0;
+}
+
+static void undo_pstk_mirror_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_pstk_mirror_t *g = udata;
+	pcb_snprintf(dst, dst_len, "pstk mirror y_offs=%$mm swap_side=%d disable_xmirror=%d", g->y_offs, g->swap_side, g->disable_xmirror);
+}
+
+static const uundo_oper_t undo_pstk_mirror = {
+	core_pstk_cookie,
+	NULL,
+	undo_pstk_mirror_swap,
+	undo_pstk_mirror_swap,
+	undo_pstk_mirror_print
+};
+
+
+
+void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror, pcb_bool undoable)
+{
+	undo_pstk_mirror_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(ps->parent.data), &undo_pstk_mirror, sizeof(undo_pstk_mirror_t));
+
+	g->pstk = ps;
+	g->y_offs = y_offs;
+	g->swap_side = swap_side;
+	g->disable_xmirror = disable_xmirror;
+
+	undo_pstk_mirror_swap(g);
+	if (undoable) pcb_undo_inc_serial();
 }
 
 void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy)
