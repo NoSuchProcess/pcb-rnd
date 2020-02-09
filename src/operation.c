@@ -124,7 +124,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	pcb_bool changed = pcb_false;
 	pcb_any_obj_t *exto;
 
-	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (data != NULL))
+	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (data != NULL))
 		pcb_data_clip_inhibit_inc(data);
 
 
@@ -311,7 +311,7 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 	if (Reset && changed)
 		pcb_undo_inc_serial();
 
-	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (data != NULL))
+	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (data != NULL))
 		pcb_data_clip_inhibit_dec(data, 0);
 
 	return changed;

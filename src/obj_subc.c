@@ -1019,7 +1019,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 {
 	int n;
 
-	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (Data != NULL))
+	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (Data != NULL))
 		pcb_data_clip_inhibit_inc(Data);
 	pcb_subc_part_changed_inhibit_inc(sc);
 
@@ -1125,7 +1125,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		case PCB_SUBCOP_UNDO_NORMAL: break;
 	}
 
-	if ((pcb_brave & PCB_BRAVE_CLIPBATCH) && (Data != NULL))
+	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (Data != NULL))
 		pcb_data_clip_inhibit_dec(Data, 0);
 
 	return sc;

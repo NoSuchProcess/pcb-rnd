@@ -565,7 +565,7 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 	pcb_data_t *data = PCB->Data;
 	pcb_subc_t *subc = NULL;
 
-	if (pcb_brave & PCB_BRAVE_CLIPBATCH)
+	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH))
 		pcb_data_clip_inhibit_inc(PCB->Data);
 
 	/* lookup entry by it's ID */
@@ -583,13 +583,13 @@ static pcb_bool UndoRemove(UndoListTypePtr Entry)
 			pcb_extobj_float_geo(o);
 		}
 
-		if (pcb_brave & PCB_BRAVE_CLIPBATCH)
+		if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH))
 			pcb_data_clip_inhibit_dec(PCB->Data, 1);
 
 		return pcb_true;
 	}
 
-	if (pcb_brave & PCB_BRAVE_CLIPBATCH)
+	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH))
 		pcb_data_clip_inhibit_dec(PCB->Data, 1);
 
 	return pcb_false;
