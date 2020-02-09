@@ -133,6 +133,7 @@ static int undo_line_geo_swap(void *udata)
 
 	if (layer->line_tree != NULL)
 		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *)g->line);
+	pcb_poly_restore_to_poly(layer->parent.data, PCB_OBJ_LINE, layer, g->line);
 
 	rnd_swap(pcb_point_t, g->Point1, g->line->Point1);
 	rnd_swap(pcb_point_t, g->Point2, g->line->Point2);
@@ -142,6 +143,7 @@ static int undo_line_geo_swap(void *udata)
 	pcb_line_bbox(g->line);
 	if (layer->line_tree != NULL)
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *)g->line);
+	pcb_poly_clear_from_poly(layer->parent.data, PCB_OBJ_LINE, layer, g->line);
 
 	return 0;
 }

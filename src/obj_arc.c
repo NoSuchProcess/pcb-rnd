@@ -396,6 +396,7 @@ static int undo_arc_geo_swap(void *udata)
 
 	if (layer->arc_tree != NULL)
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *)g->arc);
+	pcb_poly_restore_to_poly(layer->parent.data, PCB_OBJ_ARC, layer, g->arc);
 
 	rnd_swap(pcb_coord_t, g->Thickness, g->arc->Thickness);
 	rnd_swap(pcb_coord_t, g->Clearance, g->arc->Clearance);
@@ -409,6 +410,7 @@ static int undo_arc_geo_swap(void *udata)
 	pcb_arc_bbox(g->arc);
 	if (layer->arc_tree != NULL)
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *)g->arc);
+	pcb_poly_clear_from_poly(layer->parent.data, PCB_OBJ_ARC, layer, g->arc);
 
 	return 0;
 }

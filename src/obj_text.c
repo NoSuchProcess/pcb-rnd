@@ -133,6 +133,7 @@ static int undo_text_geo_swap(void *udata)
 
 	if (layer->text_tree != NULL)
 		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *)g->text);
+	pcb_poly_restore_to_poly(layer->parent.data, PCB_OBJ_TEXT, layer, g->text);
 
 	rnd_swap(int, g->Scale, g->text->Scale);
 	rnd_swap(pcb_coord_t, g->X, g->text->X);
@@ -144,6 +145,7 @@ static int undo_text_geo_swap(void *udata)
 	pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
 	if (layer->text_tree != NULL)
 		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *)g->text);
+	pcb_poly_clear_from_poly(layer->parent.data, PCB_OBJ_TEXT, layer, g->text);
 
 	return 0;
 }
