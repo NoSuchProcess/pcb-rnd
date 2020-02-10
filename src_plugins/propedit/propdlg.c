@@ -316,7 +316,7 @@ static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_
 }
 
 
-static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr, int force_update)
 {
 	propdlg_t *ctx = caller_data;
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
@@ -363,9 +363,21 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 			break;
 	}
 
-	pcb_propsel_set(&ctx->pe, r->user_data, &sctx);
-	prop_refresh(ctx);
-	pcb_gui->invalidate_all(pcb_gui);
+	if (force_update || ctx->dlg[ctx->wabs[p->type]].val.lng) {
+		pcb_propsel_set(&ctx->pe, r->user_data, &sctx);
+		prop_refresh(ctx);
+		pcb_gui->invalidate_all(pcb_gui);
+	}
+}
+
+static void prop_data_auto_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	prop_data_cb(hid_ctx, caller_data, attr, 0);
+}
+
+static void prop_data_force_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	prop_data_cb(hid_ctx, caller_data, attr, 1);
 }
 
 
@@ -470,14 +482,14 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
 			PCB_DAD_STRING(ctx->dlg);
 				ctx->wedit[1] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_cb);
+				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[1] = 0;
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -485,7 +497,7 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_COORD(ctx->dlg, "");
 				ctx->wedit[2] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -PCB_MAX_COORD, PCB_MAX_COORD);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_cb);
+				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "abs");
 				PCB_DAD_BOOL(ctx->dlg, "");
@@ -495,7 +507,7 @@ static void build_propval(propdlg_t *ctx)
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -503,7 +515,7 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_REAL(ctx->dlg, "");
 				ctx->wedit[3] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -360.0, +360.0);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_cb);
+				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "abs");
 				PCB_DAD_BOOL(ctx->dlg, "");
@@ -513,7 +525,7 @@ static void build_propval(propdlg_t *ctx)
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
@@ -521,7 +533,7 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_LABEL(ctx->dlg, "Data type: int");
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				ctx->wedit[4] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_cb);
+				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			PCB_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "abs");
@@ -532,7 +544,7 @@ static void build_propval(propdlg_t *ctx)
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
@@ -546,7 +558,7 @@ static void build_propval(propdlg_t *ctx)
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
@@ -560,7 +572,7 @@ static void build_propval(propdlg_t *ctx)
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_cb);
+					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
 			PCB_DAD_END(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 
