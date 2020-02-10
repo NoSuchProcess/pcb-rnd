@@ -121,6 +121,7 @@ do { \
 	curr = -1; \
 	vtp0_init(&curr_enum); \
 	vtp0_append(&curr_enum, pcb_strdup("")); \
+	numrows++; \
 } while(0)
 
 #define append() \
@@ -164,12 +165,12 @@ do { \
 	post_append(); \
 } while(0)
 
-static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
+static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
 	char line[1024];
 	char *name = NULL, *help = NULL, *help_def = NULL;
 	vtp0_t curr_enum;
-	int curr, examples = 0;
+	int curr, examples = 0, numrows = 0;
 	pcb_hid_attr_type_t curr_type = PCB_HATT_END;
 
 	curr = -1;
@@ -265,6 +266,7 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 		}
 	}
 	append();
+	return numrows;
 }
 
 static char *gen_cmd(library_ctx_t *ctx)
@@ -497,9 +499,10 @@ void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	timed_update_preview(ctx, 1);
 }
 
-static void library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
+static int library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	int w, oversized = 0;
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.pdlg);
 		PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
@@ -507,10 +510,15 @@ static void library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 			ctx->pwdesc = PCB_DAD_CURRENT(library_ctx.pdlg);
 		PCB_DAD_BEGIN_TABLE(library_ctx.pdlg, 2);
 			PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
-			library_param_build(ctx, l, f);
+			w = PCB_DAD_CURRENT(library_ctx.pdlg);
+			if (library_param_build(ctx, l, f) > 16) {
+				library_ctx.pdlg[w].pcb_hatt_flags |= PCB_HATF_SCROLL;
+				oversized = 1;
+			}
 		PCB_DAD_END(library_ctx.pdlg);
 		PCB_DAD_BUTTON_CLOSES(library_ctx.pdlg, clbtn);
 	PCB_DAD_END(library_ctx.pdlg);
+	return oversized;
 }
 
 static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
@@ -568,7 +576,12 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 
 
 	ctx->pactive = 1;
-	library_param_open(ctx, l, f);
+	if (library_param_open(ctx, l, f)) {
+		/* oversized dialog got the scroll bar, which would make it small;
+		   set preferred size so it opens in reasonable area even when win size
+		   not persistent (window palcement code) */
+		PCB_DAD_DEFSIZE(library_ctx.pdlg, 700, 500);
+	}
 	pcb_pclose(f);
 
 	PCB_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, pcb_false, library_param_close_cb);
