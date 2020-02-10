@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -251,8 +251,14 @@ static void library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 
 			curr_type = PCB_HATT_ENUM;
 			colsplit(); colsplit();
-			if (arg != NULL)
-				evl = pcb_strdup_printf("%s (%s)", col, arg);
+			if (arg != NULL) {
+				if (strlen(arg) > 32) {
+					arg[32] = '\0';
+					evl = pcb_strdup_printf("%s (%s...)", col, arg);
+				}
+				else
+					evl = pcb_strdup_printf("%s (%s)", col, arg);
+			}
 			else
 				evl = pcb_strdup(col);
 			vtp0_append(&curr_enum, evl);
