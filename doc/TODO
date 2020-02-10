@@ -12,6 +12,14 @@
 - BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 - BUG: propedit: coord row edit: when abs is checked, disable the apply button; when abs is unchecked, do not auto-apply, wait for the button [report: Igor2]
 - BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
+- FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
+- FEATURE: new breadboard
+	- FEATURE: hidlib: render pixmap
+	- FEATURE: optional subc pixmaps from attributes
+	- DOC: pool node on how to use pixmap for breadboading
+- FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Majenko]
+- FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
+- FEATURE: {v n} on subc should set subc PCB_FLAG_TERMNAME too; when more terminals are created (named) within the subc, they should inherit the subc's PCB_FLAG_TERMNAME flag (probably in the attribute change callback) [report: Majenko]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
@@ -27,8 +35,8 @@
 - CLEANUP: layer order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
+	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
-- FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
 - FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
@@ -41,12 +49,6 @@
 	- load/import from buffer and file
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
-- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- FEATURE: new breadboard
-	- FEATURE: hidlib: render pixmap
-	- FEATURE: optional subc pixmaps from attributes
-	- DOC: pool node on how to use pixmap for breadboading
-- FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Majenko]
 - FEATURE: fontsel: ttf import?
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
@@ -74,9 +76,7 @@
 	- for <char> (punctuation): learn key for non-US users
 	- lesstif code upgrade for the new API
 	- menu file fixup on punctuation in lesstif
-- FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
-- FEATURE: {v n} on subc should set subc PCB_FLAG_TERMNAME too; when more terminals are created (named) within the subc, they should inherit the subc's PCB_FLAG_TERMNAME flag (probably in the attribute change callback) [report: Majenko]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
@@ -86,7 +86,7 @@
 		- low level reload code (re-add the dynamic menus too!)
 		- action to reload if file name is known
 		- gui load dialog with tags listed
-- FEATURE: project specific menus from extra lihata files - maybe from project.lht
+	- FEATURE: project specific menus from extra lihata files - maybe from project.lht
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
@@ -103,7 +103,6 @@
 		- eval speed (a simple @ with a lot of constants in an expr)
 		- geo speed
 		- regex and string cmp match speed vs. select by name
-- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - BUG: I/O bugs:
 	- eagle:
 		- BUG: xml: arc angles in aux/curve_trace/broken_curve [report: vuokko]
@@ -130,6 +129,7 @@
 	- tabbed: redisplay bug in the about box
 	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
+- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - BUG: win32: gsch2pcb-rnd doesn't compile (because of non-const paths) [report: Igor2]
 - BUG: padstack proto edit dialog gets confused on s-mirrored instances ml=3678 [report: gpaubert]
 - BUG/FEATURE: changing padstack prototypes from the padstack editor dialog won't set the board change flag and is not unodable [report: Gabriel]
