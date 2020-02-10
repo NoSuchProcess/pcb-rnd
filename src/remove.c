@@ -44,7 +44,7 @@
 
 static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3);
 
-static pcb_opfunc_t RemoveFunctions = {
+pcb_opfunc_t pcb_RemoveFunctions = {
 	remove_pre,
 	NULL, /* common_post */
 		pcb_lineop_remove,
@@ -94,7 +94,7 @@ pcb_bool pcb_remove_selected(pcb_bool locked_too)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
-	if (pcb_selected_operation(PCB, PCB->Data, &RemoveFunctions, &ctx, pcb_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), locked_too)) {
+	if (pcb_selected_operation(PCB, PCB->Data, &pcb_RemoveFunctions, &ctx, pcb_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), locked_too)) {
 		pcb_undo_inc_serial();
 		pcb_draw();
 		return pcb_true;
@@ -114,7 +114,7 @@ void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
-	ptr = pcb_object_operation(&RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+	ptr = pcb_object_operation(&pcb_RemoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
 	pcb_draw();
 	return ptr;
 }

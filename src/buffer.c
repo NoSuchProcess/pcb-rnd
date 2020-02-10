@@ -222,9 +222,12 @@ void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t
 	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
 }
 
+extern pcb_opfunc_t pcb_RemoveFunctions;
 void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool keep_id)
 {
-	pcb_buffer_toss_selected(&MoveBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
+	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
+	pcb_buffer_toss_selected(&pcb_RemoveFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
+	pcb_undo_inc_serial();
 }
 
 static const char pcb_acts_LoadFootprint[] = "pcb_load_footprint(filename[,refdes,value])";
