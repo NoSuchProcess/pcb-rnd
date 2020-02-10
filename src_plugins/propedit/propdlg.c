@@ -230,7 +230,6 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_COORD:
 		case PCB_PROPT_ANGLE:
 		case PCB_PROPT_INT:
-		case PCB_PROPT_BOOL:
 			if (!ctx->dlg[ctx->wabs[p->type]].val.lng)
 				return;
 		default: break;
