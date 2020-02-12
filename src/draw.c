@@ -888,7 +888,7 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 		if (Layer->gfx_tree != NULL)
 			for(o = pcb_rtree_first(&it, Layer->gfx_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_gfx_draw((pcb_box_t *)o, &info);
+					pcb_gfx_draw((pcb_box_t *)o, &info, 0);
 	}
 	else {
 		if (Layer->line_tree != NULL)
