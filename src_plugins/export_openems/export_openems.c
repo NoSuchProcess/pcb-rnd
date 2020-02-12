@@ -194,7 +194,7 @@ static void find_origin_bump(void *ctx_, pcb_board_t *pcb, pcb_layer_t *layer, p
 
 static void find_origin(wctx_t *ctx)
 {
-	pcb_loop_layers(ctx->pcb, ctx, NULL, find_origin_bump, NULL, NULL, NULL);
+	pcb_loop_layers(ctx->pcb, ctx, NULL, find_origin_bump, NULL, NULL, NULL, NULL);
 }
 
 static void openems_write_tunables(wctx_t *ctx)

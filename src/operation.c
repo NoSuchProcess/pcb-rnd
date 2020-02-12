@@ -63,6 +63,11 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 				res = F->Arc(ctx, (pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2);
 			break;
 
+		case PCB_OBJ_GFX:
+			if (F->Gfx)
+				res = F->Gfx(ctx, (pcb_layer_t *)Ptr1, (pcb_gfx_t *)Ptr2);
+			break;
+
 		case PCB_OBJ_LINE_POINT:
 			if (F->LinePoint)
 				res = F->LinePoint(ctx, (pcb_layer_t *)Ptr1, (pcb_line_t *)Ptr2, (pcb_point_t *)Ptr3);
@@ -227,6 +232,32 @@ pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			F->Polygon(ctx, layer, polygon);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)polygon, NULL);
+			changed = pcb_true;
+		}
+		PCB_ENDALL_LOOP;
+	}
+
+	/* check gfx */
+	if (type & PCB_OBJ_GFX && F->Gfx) {
+		PCB_GFX_VISIBLE_LOOP(data);
+		{
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, gfx))
+				continue;
+			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, gfx))
+				continue;
+			if (Reset) {
+				pcb_undo_add_obj_to_flag(gfx);
+				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, gfx);
+			}
+			if (F->common_pre != NULL)
+				if (F->common_pre(ctx, (pcb_any_obj_t *)gfx, NULL) == 1) continue;
+			if (F->extobj_inhibit_regen)
+				exto = NULL;
+			else
+				exto = pcb_extobj_float_pre((pcb_any_obj_t *)gfx);
+			F->Gfx(ctx, layer, gfx);
+			if (exto != NULL) pcb_extobj_float_geo(exto);
+			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)gfx, NULL);
 			changed = pcb_true;
 		}
 		PCB_ENDALL_LOOP;

@@ -96,6 +96,7 @@ typedef void (*pcb_line_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, p
 typedef void (*pcb_arc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_arc_t *arc);
 typedef void (*pcb_text_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_text_t *text);
 typedef void (*pcb_poly_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_poly_t *poly);
+typedef void (*pcb_gfx_cb_t)(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_gfx_t *gfx);
 
 /* subc callbacks */
 typedef int (*pcb_subc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter);
@@ -104,14 +105,14 @@ typedef int (*pcb_subc_cb_t)(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int 
 typedef void (*pcb_pstk_cb_t)(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps);
 
 /* Loop over all layer objects on each layer. Layer is the outer loop. */
-void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb);
+void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb, pcb_gfx_cb_t gcb);
 
 /* Loop over all subcircuits. */
 void pcb_loop_subc(pcb_board_t *pcb, void *ctx, pcb_subc_cb_t scb);
 
 /* Loop over all design objects. (So all the above three in one call.) */
 void pcb_loop_all(pcb_board_t *pcb, void *ctx,
-	pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb,
+	pcb_layer_cb_t lacb, pcb_line_cb_t lcb, pcb_arc_cb_t acb, pcb_text_cb_t tcb, pcb_poly_cb_t pocb, pcb_gfx_cb_t gcb,
 	pcb_subc_cb_t scb,
 	pcb_pstk_cb_t pscb
 );

@@ -153,6 +153,8 @@ void pcb_layer_free_fields(pcb_layer_t *layer, pcb_bool undoable)
 			pcb_r_destroy_tree(&layer->text_tree);
 		if (layer->polygon_tree)
 			pcb_r_destroy_tree(&layer->polygon_tree);
+		if (layer->gfx_tree)
+			pcb_r_destroy_tree(&layer->gfx_tree);
 	}
 	free((char *)layer->name);
 	memset(layer, 0, sizeof(pcb_layer_t));
@@ -171,6 +173,7 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 	return
 		PCB_RTREE_EMPTY(layer->line_tree) && 
 		PCB_RTREE_EMPTY(layer->arc_tree) && 
+		PCB_RTREE_EMPTY(layer->gfx_tree) && 
 		PCB_RTREE_EMPTY(layer->polygon_tree) && 
 		PCB_RTREE_EMPTY(layer->text_tree);
 }
@@ -1102,11 +1105,13 @@ void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 	if (src->arc_tree == NULL) src->arc_tree = pcb_r_create_tree();
 	if (src->text_tree == NULL) src->text_tree = pcb_r_create_tree();
 	if (src->polygon_tree == NULL) src->polygon_tree = pcb_r_create_tree();
+	if (src->gfx_tree == NULL) src->gfx_tree = pcb_r_create_tree();
 
 	dst->line_tree = src->line_tree;
 	dst->arc_tree = src->arc_tree;
 	dst->text_tree = src->text_tree;
 	dst->polygon_tree = src->polygon_tree;
+	dst->gfx_tree = src->gfx_tree;
 }
 
 

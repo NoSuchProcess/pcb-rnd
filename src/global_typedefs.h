@@ -44,6 +44,7 @@ typedef struct pcb_font_s pcb_font_t;
 typedef struct pcb_fontkit_s pcb_fontkit_t;
 typedef struct pcb_line_s pcb_line_t;
 typedef struct pcb_arc_s pcb_arc_t;
+typedef struct pcb_gfx_s pcb_gfx_t;
 typedef struct pcb_rat_line_s pcb_rat_t;
 
 typedef struct pcb_poly_s pcb_poly_t;

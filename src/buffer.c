@@ -51,6 +51,7 @@
 #include "obj_subc_op.h"
 #include "obj_poly_op.h"
 #include "obj_pstk_op.h"
+#include "obj_gfx_op.h"
 #include "obj_rat_op.h"
 #include "obj_pstk.h"
 #include "layer_grp.h"
@@ -74,6 +75,7 @@ static pcb_opfunc_t AddBufferFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_add_to_buffer,
+	pcb_gfxop_add_to_buffer,
 	pcb_ratop_add_to_buffer,
 	NULL,
 	pcb_subcop_add_to_buffer,
@@ -90,6 +92,7 @@ static pcb_opfunc_t MoveBufferFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_move_buffer,
+	pcb_gfxop_move_buffer,
 	pcb_ratop_move_buffer,
 	NULL,
 	pcb_subcop_move_buffer,

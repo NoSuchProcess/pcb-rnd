@@ -959,6 +959,7 @@ void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 		case PCB_OBJ_ARC:
 		case PCB_OBJ_TEXT:
 		case PCB_OBJ_POLY:
+		case PCB_OBJ_GFX:
 			subc = pcb_obj_parent_subc(Ptr3);
 			if (subc != NULL) {
 				pcb_term_del(&subc->terminals, o->term, o);

@@ -340,6 +340,14 @@ void pcb_xordraw_movecopy(void)
 			break;
 		}
 
+	case PCB_OBJ_GFX:
+		{
+			pcb_gfx_t *gfx = (pcb_gfx_t *)pcb_crosshair.AttachedObject.Ptr2;
+			pcb_gfx_draw_xor(gfx, dx, dy);
+			break;
+		}
+
+
 	case PCB_OBJ_LINE_POINT:
 		{
 			pcb_line_t *line;
@@ -946,6 +954,15 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 			if (pcb_poly_is_point_in_p(cx, cy, 1, p))
 				check_snap_object(&snap_data, cx, cy, pcb_true, (pcb_any_obj_t *)p);
 		}
+	}
+
+	/*** gfx ***/
+	ans = PCB_OBJ_VOID;
+	if (conf_core.editor.snap_pin)
+		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_GFX | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+
+	if (ans == PCB_OBJ_GFX) {
+		TODO("gfx");
 	}
 
 	/* Snap to offgrid points on lines. */

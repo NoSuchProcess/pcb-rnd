@@ -32,7 +32,7 @@
 #include "global_typedefs.h"
 #include <librnd/core/rotate.h>
 
-#define PCB_ROTATE_TYPES (PCB_OBJ_PSTK | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_ARC | PCB_OBJ_LINE_POINT | PCB_OBJ_LINE | PCB_OBJ_POLY | PCB_OBJ_FLOATER)
+#define PCB_ROTATE_TYPES (PCB_OBJ_PSTK | PCB_OBJ_SUBC | PCB_OBJ_TEXT | PCB_OBJ_ARC | PCB_OBJ_LINE_POINT | PCB_OBJ_LINE | PCB_OBJ_POLY | PCB_OBJ_GFX | PCB_OBJ_FLOATER)
 
 /* rotates an object passed; pcb is the parent board or associated board (in
    case of buffer) */

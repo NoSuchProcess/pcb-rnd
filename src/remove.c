@@ -41,6 +41,7 @@
 #include "obj_rat_op.h"
 #include "obj_subc_op.h"
 #include "obj_pstk_op.h"
+#include "obj_gfx_op.h"
 
 static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3);
 
@@ -53,6 +54,7 @@ pcb_opfunc_t pcb_RemoveFunctions = {
 	pcb_lineop_remove_point,
 	pcb_polyop_remove_point,
 	pcb_arcop_remove,
+	pcb_gfxop_remove,
 	pcb_ratop_remove,
 	pcb_arcop_remove_point,
 	pcb_subcop_remove,
@@ -69,6 +71,7 @@ static pcb_opfunc_t DestroyFunctions = {
 	NULL,
 	pcb_polyop_destroy_point,
 	pcb_arcop_destroy,
+	pcb_gfxop_destroy,
 	pcb_ratop_destroy,
 	NULL,
 	pcb_subcop_destroy,

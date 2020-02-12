@@ -1058,6 +1058,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		pcb_text_t *text;
 		pcb_poly_t *poly;
 		pcb_arc_t *arc;
+		pcb_gfx_t *gfx;
 		gdl_iterator_t it;
 
 
@@ -1090,6 +1091,14 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, poly)) {
 				pcb_box_bump_box_noflt(&sc->BoundingBox, &poly->BoundingBox);
 				pcb_box_bump_box_noflt(&sc->bbox_naked, &poly->bbox_naked);
+			}
+		}
+
+		gfxlist_foreach(&sl->Gfx, &it, gfx) {
+			pcb_object_operation(opfunc, ctx, PCB_OBJ_GFX, sl, gfx, gfx);
+			if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, gfx)) {
+				pcb_box_bump_box_noflt(&sc->BoundingBox, &gfx->BoundingBox);
+				pcb_box_bump_box_noflt(&sc->bbox_naked, &gfx->bbox_naked);
 			}
 		}
 
@@ -1254,6 +1263,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	pcb_text_t *text;
 	pcb_poly_t *poly;
 	pcb_arc_t *arc;
+	pcb_gfx_t *gfx;
 	gdl_iterator_t it;
 	int chg = 0;
 	pcb_data_t *dst_data = dl == NULL ? NULL : dl->parent.data;
@@ -1332,6 +1342,22 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 		}
 		if (dst_is_pcb && (dl != NULL))
 			pcb_poly_ppclear_at(poly, dl);
+	}
+
+	gfxlist_foreach(&sl->Gfx, &it, gfx) {
+		if (src_has_real_layer) {
+			pcb_r_delete_entry(sl->gfx_tree, (pcb_box_t *)gfx);
+			chg++;
+		}
+		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, gfx);
+		if ((move_obj) && (dl != NULL)) {
+			pcb_gfx_unreg(gfx);
+			pcb_gfx_reg(dl, gfx);
+		}
+		if ((dl != NULL) && (dl->gfx_tree != NULL)) {
+			pcb_r_insert_entry(dl->gfx_tree, (pcb_box_t *)gfx);
+			chg++;
+		}
 	}
 
 	if (!dst_is_pcb) {
@@ -1442,6 +1468,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 				if (sl->arc_tree == NULL) sl->arc_tree = pcb_r_create_tree();
 				if (sl->text_tree == NULL) sl->text_tree = pcb_r_create_tree();
 				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree();
+				if (sl->gfx_tree == NULL) sl->gfx_tree = pcb_r_create_tree();
 				if (!(sl->meta.bound.type & PCB_LYT_VIRTUAL))
 					pcb_message(PCB_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
 			}
@@ -1547,6 +1574,7 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 			if (dl->arc_tree == NULL) dl->arc_tree = pcb_r_create_tree();
 			if (dl->text_tree == NULL) dl->text_tree = pcb_r_create_tree();
 			if (dl->polygon_tree == NULL) dl->polygon_tree = pcb_r_create_tree();
+			if (dl->gfx_tree == NULL) dl->gfx_tree = pcb_r_create_tree();
 		}
 
 		if (subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1, 0) > 0)

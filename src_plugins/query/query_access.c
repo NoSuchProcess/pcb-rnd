@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -72,6 +72,11 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	APPEND(ctx, ps);
 }
 
+static void list_gfx_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_gfx_t *gfx)
+{
+	APPEND(ctx, gfx);
+}
+
 static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter);
 
 static int list_data(void *ctx, pcb_board_t *pcb, pcb_data_t *data, int enter, pcb_objtype_t mask)
@@ -96,6 +101,14 @@ static int list_data(void *ctx, pcb_board_t *pcb, pcb_data_t *data, int enter, p
 		PCB_ARC_ALL_LOOP(data);
 		{
 			list_arc_cb(ctx, pcb, layer, arc);
+		}
+		PCB_ENDALL_LOOP;
+	}
+
+	if (mask & PCB_OBJ_GFX) {
+		PCB_GFX_ALL_LOOP(data);
+		{
+			list_gfx_cb(ctx, pcb, layer, gfx);
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -146,6 +159,7 @@ TODO(": rather do rtree search here to avoid recursion")
 		(mask & PCB_OBJ_ARC) ? list_arc_cb : NULL,
 		(mask & PCB_OBJ_TEXT) ? list_text_cb : NULL,
 		(mask & PCB_OBJ_POLY) ? list_poly_cb : NULL,
+		(mask & PCB_OBJ_GFX) ? list_gfx_cb : NULL,
 		(mask & PCB_OBJ_SUBC) ? list_subc_cb : NULL,
 		(mask & PCB_OBJ_PSTK) ? list_pstk_cb : NULL
 	);
@@ -488,6 +502,54 @@ static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	PCB_QRY_RET_INV(res);
 }
 
+static int field_gfx(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_gfx_t *g = (pcb_gfx_t *)obj;
+	query_fields_keys_t fh1, fh2;
+
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&g->Attributes, s2));
+	}
+
+	if (fh1 == query_fields_layer) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+TODO("gfx");
+#if 0
+	switch(fh1) {
+		case query_fields_length:
+			PCB_QRY_RET_INT(res, ((pcb_coord_t)pcb_round(pcb_arc_len(a))));
+			break;
+		case query_fields_length2:
+			{
+				double l = pcb_arc_len(a);
+				PCB_QRY_RET_DBL(res, l*l);
+			}
+			break;
+		case query_fields_area:
+			{
+				double th = a->Thickness;
+				double len = pcb_arc_len(a);
+				PCB_QRY_RET_DBL(res, len * th + th*th/4*M_PI); /* approx */
+			}
+			break;
+		default:;
+	}
+#endif
+	PCB_QRY_RET_INV(res);
+}
+
 static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_text_t *t = (pcb_text_t *)obj;
@@ -750,6 +812,7 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 		case PCB_OBJ_TEXT:     return field_text(obj, fld, res);
 		case PCB_OBJ_POLY:     return field_polygon(obj, fld, res);
 		case PCB_OBJ_ARC:      return field_arc(obj, fld, res);
+		case PCB_OBJ_GFX:      return field_gfx(obj, fld, res);
 		case PCB_OBJ_RAT:      return field_rat(obj, fld, res);
 		case PCB_OBJ_PSTK:     return field_pstk(obj, fld, res);
 		case PCB_OBJ_SUBC:     return field_subc(obj, fld, res);

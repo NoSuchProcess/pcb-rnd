@@ -34,7 +34,7 @@
 
 #define PCB_SELECT_TYPES	\
 	(PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_POLY | PCB_OBJ_SUBC | \
-	 PCB_OBJ_PSTK | PCB_OBJ_RAT | PCB_OBJ_ARC)
+	 PCB_OBJ_PSTK | PCB_OBJ_RAT | PCB_OBJ_ARC | PCB_OBJ_GFX)
 
 pcb_bool pcb_select_object(pcb_board_t *pcb);
 pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_bool vis_only, pcb_bool invert);

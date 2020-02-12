@@ -33,10 +33,10 @@
 
 /*** move ***/
 #define	PCB_MOVE_TYPES \
-	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_SUBC | \
+	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_GFX | PCB_OBJ_SUBC | \
 	PCB_OBJ_POLY | PCB_OBJ_POLY_POINT | PCB_OBJ_LINE_POINT | PCB_OBJ_ARC | PCB_OBJ_ARC_POINT)
 #define	PCB_MOVETOLAYER_TYPES \
-	(PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_POLY | PCB_OBJ_RAT | PCB_OBJ_ARC)
+	(PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_POLY | PCB_OBJ_RAT | PCB_OBJ_ARC | PCB_OBJ_GFX)
 
 
 /* undoably moves an object by relative DX and DY. Doesn't bump
@@ -54,7 +54,7 @@ pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target);
 /*** copy ***/
 #define	PCB_COPY_TYPES              \
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_TEXT | \
-	PCB_OBJ_SUBC | PCB_OBJ_POLY | PCB_OBJ_ARC)
+	PCB_OBJ_SUBC | PCB_OBJ_POLY | PCB_OBJ_ARC | PCB_OBJ_GFX)
 
 /* Undoably copies (duplicates) an object; the new objects is moved by DX,DY
    (operation wrapper) */

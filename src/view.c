@@ -146,6 +146,7 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 		case PCB_OBJ_POLY:
 		case PCB_OBJ_PSTK:
 		case PCB_OBJ_RAT:
+		case PCB_OBJ_GFX:
 			idp = pcb_obj2idpath(obj);
 			if (idp == NULL)
 				pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: can not resolve object id path\n");

@@ -136,6 +136,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		NULL, /* arc */
 		NULL, /* text */
 		NULL, /* poly */
+		NULL, /* gfx */
 		list_subc_cb, /* subc */
 		NULL /* pstk */
 	);
@@ -147,6 +148,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
 		list_arc_cb,
 		NULL, /* text */
 		list_poly_cb,
+		NULL, /* gfx */
 		NULL, /* subc */
 		list_pstk_cb
 	);

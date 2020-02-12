@@ -354,6 +354,8 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int
 			ty = PCB_OBJ_TEXT;
 		else if ((strncmp(path, "arc/", 4) == 0) || (strcmp(path, "arc") == 0))
 			ty = PCB_OBJ_ARC;
+		else if ((strncmp(path, "gfx/", 4) == 0) || (strcmp(path, "gfx") == 0))
+			ty = PCB_OBJ_GFX;
 		else
 			return -1;
 

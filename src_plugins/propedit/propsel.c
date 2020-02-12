@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016,2018,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2018,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -200,6 +200,19 @@ static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
 	}
 }
 
+static void map_gfx(pcb_propedit_t *ctx, pcb_gfx_t *gfx)
+{
+	map_add_prop(ctx, "p/gfx/rot",     pcb_angle_t, gfx->rot);
+	map_common(ctx, (pcb_any_obj_t *)gfx);
+	map_attr(ctx, &gfx->Attributes);
+	if (ctx->geo) {
+		map_add_prop(ctx, "p/gfx/cx",      pcb_coord_t, gfx->cx);
+		map_add_prop(ctx, "p/gfx/cy",      pcb_coord_t, gfx->cy);
+		map_add_prop(ctx, "p/gfx/sx",      pcb_coord_t, gfx->sx);
+		map_add_prop(ctx, "p/gfx/sy",      pcb_coord_t, gfx->sy);
+	}
+}
+
 static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 {
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
@@ -291,6 +304,7 @@ static void map_any(pcb_propedit_t *ctx, pcb_any_obj_t *o)
 		return;
 	switch(o->type) {
 		case PCB_OBJ_ARC:  map_arc(ctx, (pcb_arc_t *)o); break;
+		case PCB_OBJ_GFX:  map_gfx(ctx, (pcb_gfx_t *)o); break;
 		case PCB_OBJ_LINE: map_line(ctx, (pcb_line_t *)o); break;
 		case PCB_OBJ_POLY: map_poly(ctx, (pcb_poly_t *)o); break;
 		case PCB_OBJ_TEXT: map_text(ctx, (pcb_text_t *)o); break;
@@ -581,6 +595,18 @@ static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
 	}
 }
 
+static void set_gfx(pcb_propset_ctx_t *st, pcb_gfx_t *gfx)
+{
+	const char *pn = st->name + 8;
+
+	if (st->is_attr) {
+		set_attr_obj(st, (pcb_any_obj_t *)gfx);
+		return;
+	}
+
+	if (set_common(st, (pcb_any_obj_t *)gfx)) return;
+}
+
 static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 {
 	const char *pn = st->name + 7;
@@ -781,6 +807,7 @@ static void set_any(pcb_propset_ctx_t *ctx, pcb_any_obj_t *o)
 		return;
 	switch(o->type) {
 		case PCB_OBJ_ARC:  set_arc(ctx, (pcb_arc_t *)o); break;
+		case PCB_OBJ_GFX:  set_gfx(ctx, (pcb_gfx_t *)o); break;
 		case PCB_OBJ_LINE: set_line(ctx, (pcb_line_t *)o); break;
 		case PCB_OBJ_POLY: set_poly(ctx, (pcb_poly_t *)o); break;
 		case PCB_OBJ_TEXT: set_text(ctx, (pcb_text_t *)o); break;

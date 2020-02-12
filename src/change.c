@@ -47,6 +47,7 @@
 #include "obj_poly_op.h"
 #include "obj_text_op.h"
 #include "obj_subc_op.h"
+#include "obj_gfx_op.h"
 #include "extobj.h"
 
 static const char core_chg_cookie[] = "core: change.c";
@@ -63,6 +64,7 @@ pcb_opfunc_t ChangeSizeFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_change_size,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	pcb_subcop_change_size,
@@ -79,6 +81,7 @@ pcb_opfunc_t Change1stSizeFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_change_size,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	pcb_subcop_change_1st_size,
@@ -95,6 +98,7 @@ pcb_opfunc_t Change2ndSizeFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	pcb_subcop_change_2nd_size,
@@ -111,6 +115,7 @@ pcb_opfunc_t ChangeRotFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL,
@@ -127,6 +132,7 @@ static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -143,6 +149,7 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_change_clear_size,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	pcb_subcop_change_clear_size,
@@ -159,6 +166,7 @@ static pcb_opfunc_t ChangeNameFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	pcb_subcop_change_name,
@@ -175,6 +183,7 @@ static pcb_opfunc_t ChangeNonetlistFunctions = {
 	NULL,
 	NULL,
 	NULL,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	pcb_subcop_change_nonetlist,
@@ -191,6 +200,7 @@ static pcb_opfunc_t ChangeJoinFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_change_join,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -207,6 +217,7 @@ static pcb_opfunc_t SetJoinFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_set_join,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -223,6 +234,7 @@ static pcb_opfunc_t ClrJoinFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_clear_join,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -239,6 +251,7 @@ static pcb_opfunc_t ChangeRadiusFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_change_radius,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -255,6 +268,7 @@ static pcb_opfunc_t ChangeAngleFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_change_angle,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -271,6 +285,7 @@ pcb_opfunc_t ChgFlagFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_change_flag,
+	pcb_gfxop_change_flag,
 	NULL,
 	NULL,
 	pcb_subcop_change_flag,
@@ -287,6 +302,7 @@ static pcb_opfunc_t InvalLabelFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_invalidate_label,
+	pcb_gfxop_invalidate_label,
 	NULL,
 	NULL,
 	/*pcb_subcop_invalidate_flag*/ NULL,

@@ -1,3 +1,4 @@
+29778	configure	new object type: gfx
 29655	configure	librnd separation: scconfig hooks code
 29647	configure	generalize the toolbar code so it can be reused in camv-rnd and sch-rnd
 29567	configure	import_sch conf changes, new netlist import formats

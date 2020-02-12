@@ -13,6 +13,12 @@
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 - FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
 - FEATURE: new breadboard
+	- FEATURE: PCB_OBJ_GFX
+		- operations
+		- TODO("gfx")
+		- act_draw() binding
+		- report plugin
+		- tool_arrow (resize & move)
 	- FEATURE: hidlib: render pixmap
 	- FEATURE: optional subc pixmaps from attributes
 	- DOC: pool node on how to use pixmap for breadboading

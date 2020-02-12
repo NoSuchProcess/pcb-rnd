@@ -116,6 +116,7 @@ typedef enum { /* bitfield */
 #include "obj_line_list.h"
 #include "obj_poly_list.h"
 #include "obj_text_list.h"
+#include "obj_gfx_list.h"
 
 struct pcb_layer_s {              /* holds information about one layer */
 	PCB_ANY_OBJ_FIELDS;
@@ -124,13 +125,14 @@ struct pcb_layer_s {              /* holds information about one layer */
 	textlist_t Text;
 	polylist_t Polygon;
 	arclist_t Arc;
+	gfxlist_t Gfx;
 
 	const char *name;              /* layer name */
 
 	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
 
 	/* for bound layers these point to the board layer's*/
-	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree;
+	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree, *gfx_tree;
 
 	union {
 		struct { /* A real board layer */

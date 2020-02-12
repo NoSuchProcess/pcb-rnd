@@ -53,6 +53,7 @@
 #include "obj_text_draw.h"
 #include "obj_rat_draw.h"
 #include "obj_pstk_draw.h"
+#include "obj_gfx_draw.h"
 
 #include <genregex/regex_sei.h>
 
@@ -133,6 +134,18 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			/* changing memory order no longer effects draw order */
 			break;
 		}
+
+	case PCB_OBJ_GFX:
+		{
+			pcb_gfx_t *gfx = (pcb_gfx_t *)ptr2;
+
+			layer = (pcb_layer_t *)ptr1;
+			pcb_undo_add_obj_to_flag(ptr2);
+			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, gfx);
+			pcb_gfx_invalidate_draw(layer, gfx);
+			break;
+		}
+
 
 	case PCB_OBJ_SUBC:
 		pcb_subc_select(pcb, (pcb_subc_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
@@ -301,6 +314,17 @@ do { \
 			}
 		}
 		PCB_END_LOOP;
+		PCB_GFX_LOOP(layer);
+		{
+			if (PCB_GFX_NEAR_BOX(gfx, Box)
+					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, gfx)
+					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, gfx) != Flag) {
+				append(PCB_OBJ_GFX, layer, gfx);
+				if (layer->meta.real.vis)
+					pcb_gfx_invalidate_draw(layer, gfx);
+			}
+		}
+		PCB_END_LOOP;
 	}
 	PCB_END_LOOP;
 
@@ -369,6 +393,7 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 		case PCB_OBJ_TEXT: return PCB_TEXT_NEAR_BOX((pcb_text_t *)obj, box);
 		case PCB_OBJ_POLY: return PCB_POLYGON_NEAR_BOX((pcb_poly_t *)obj, box);
 		case PCB_OBJ_ARC:  return PCB_ARC_NEAR_BOX((pcb_arc_t *)obj, box);
+		case PCB_OBJ_GFX:  return PCB_GFX_NEAR_BOX((pcb_gfx_t *)obj, box);
 		case PCB_OBJ_PSTK: return pcb_pstk_near_box((pcb_pstk_t *)obj, box, NULL);
 		case PCB_OBJ_SUBC: return PCB_SUBC_NEAR_BOX((pcb_subc_t *)obj, box);
 		default: return 0;

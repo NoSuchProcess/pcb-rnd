@@ -45,8 +45,8 @@ typedef struct pcb_data_it_s {
 } pcb_data_it_t;
 
 #define PCB_DATA_IT_TYPES \
-	(PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_POLY | PCB_OBJ_ARC | PCB_OBJ_PSTK | \
-	PCB_OBJ_SUBC | PCB_OBJ_RAT)
+	(PCB_OBJ_LINE | PCB_OBJ_TEXT | PCB_OBJ_POLY | PCB_OBJ_ARC | PCB_OBJ_GFX | \
+	PCB_OBJ_PSTK | PCB_OBJ_SUBC | PCB_OBJ_RAT)
 
 /* Start an iteration on data, looking for any object type listed in mask;
    returns NULL if nothing is found. The iteration is non-recursive to subcircuits */
@@ -110,6 +110,7 @@ PCB_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it)
 		case PCB_OBJ_PSTK: PCB_DATA_IT_GOBJ(it, pcb_pstk_t, padstacklist, padstack); break;
 		case PCB_OBJ_SUBC: PCB_DATA_IT_GOBJ(it, pcb_subc_t, pcb_subclist, subc); break;
 		case PCB_OBJ_RAT:  PCB_DATA_IT_GOBJ(it, pcb_rat_t,  ratlist, Rat); break;
+		case PCB_OBJ_GFX:  PCB_DATA_IT_LOBJ(it, pcb_gfx_t,  gfxlist, Gfx); break;
 		default:
 			assert(!"iterating on invalid type");
 			return NULL;

@@ -947,6 +947,7 @@ static pcb_layergrp_id_t get_side_group(pcb_board_t *pcb, pcb_any_obj_t *obj)
 		case PCB_OBJ_LINE:
 		case PCB_OBJ_POLY:
 		case PCB_OBJ_TEXT:
+		case PCB_OBJ_GFX:
 			return pcb_layer_get_group_(obj->parent.layer);
 		case PCB_OBJ_PSTK:
 			if (pcb_pstk_shape((pcb_pstk_t *)obj, PCB_LYT_COPPER | PCB_LYT_TOP, 0) != NULL)

@@ -200,6 +200,8 @@ append /local/pcb/OBJS [@
 	obj_arc.o
 	obj_arc_list.o
 	obj_arc_ui.o
+	obj_gfx.o
+	obj_gfx_list.o
 	obj_line.o
 	obj_line_drcenf.o
 	obj_line_list.o

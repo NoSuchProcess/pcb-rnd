@@ -57,6 +57,7 @@ static pcb_layer_t *SearchLayer;
  */
 static pcb_bool SearchLineByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_line_t **, pcb_line_t **);
 static pcb_bool SearchArcByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_arc_t **, pcb_arc_t **);
+static pcb_bool SearchGfxByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_gfx_t **, pcb_gfx_t **);
 static pcb_bool SearchRatLineByLocation(unsigned long, unsigned long, pcb_rat_t **, pcb_rat_t **, pcb_rat_t **);
 static pcb_bool SearchTextByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_text_t **, pcb_text_t **);
 static pcb_bool SearchPolygonByLocation(unsigned long, unsigned long, pcb_layer_t **, pcb_poly_t **, pcb_poly_t **);
@@ -252,6 +253,44 @@ static pcb_bool SearchArcByLocation(unsigned long objst, unsigned long req_flag,
 
 	*Layer = SearchLayer;
 	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+		return pcb_true;
+	return pcb_false;
+}
+
+/* ---------------------------------------------------------------------------
+ * searches gfx on the SearchLayer
+ */
+struct gfx_info {
+	pcb_gfx_t **Gfx, **Dummy;
+	unsigned long objst, req_flag;
+	double least;
+};
+
+static pcb_r_dir_t gfx_callback(const pcb_box_t *box, void *cl)
+{
+	struct gfx_info *i = (struct gfx_info *)cl;
+	pcb_gfx_t *g = (pcb_gfx_t *)box;
+
+	TEST_OBJST(i->objst, i->req_flag, l, g, g);
+
+	if (!pcb_is_point_in_gfx(PosX, PosY, SearchRadius, g))
+		return 0;
+	*i->Gfx = g;
+	*i->Dummy = g;
+	return PCB_R_DIR_CANCEL; /* found */
+}
+
+static pcb_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag, pcb_layer_t **Layer, pcb_gfx_t **gfx, pcb_gfx_t **Dummy)
+{
+	struct gfx_info info;
+
+	info.Gfx = gfx;
+	info.Dummy = Dummy;
+	info.objst = objst;
+	info.req_flag = req_flag;
+
+	*Layer = SearchLayer;
+	if (pcb_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfx_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
 		return pcb_true;
 	return pcb_false;
 }
@@ -862,6 +901,15 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,
 }
 
 /* ---------------------------------------------------------------------------
+ * checks if an gfx crosses a rectangle (or gfx is within the rectangle)
+ */
+pcb_bool pcb_is_gfx_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_gfx_t *gfx)
+{
+	TODO("gfx");
+	return pcb_false;
+}
+
+/* ---------------------------------------------------------------------------
  * Check if a circle of Radius with center at (X, Y) intersects a line.
  * Written to enable arbitrary line directions; for rounded/square lines, too.
  */
@@ -983,6 +1031,12 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b)
 	return PCB_BOX_IN_BOX(&ab, b);
 }
 
+pcb_bool pcb_gfx_in_box(pcb_gfx_t *gfx, pcb_box_t *b)
+{
+	pcb_box_t gb = pcb_arc_mini_bbox(gfx);
+	return PCB_BOX_IN_BOX(&gb, b);
+}
+
 /* TODO: this code is BROKEN in the case of non-circular arcs,
  *       and in the case that the arc thickness is greater than
  *       the radius.
@@ -1058,6 +1112,13 @@ TODO(": elliptical arc: rewrite this, as it does not work properly on extreme ca
 	}
 #undef angle_in_range
 }
+
+pcb_bool pcb_is_point_in_gfx(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_gfx_t *gfx)
+{
+	TODO("gfx");
+	return pcb_false;
+}
+
 
 pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_coord_t y, pcb_angle_t *ang, pcb_bool no_subc_part, pcb_bool no_term)
 {
@@ -1136,6 +1197,11 @@ static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void 
 			else
 				return PCB_OBJ_POLY;
 		}
+
+		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_GFX &&
+				SearchGfxByLocation(objst, req_flag, (pcb_layer_t **)Result1, (pcb_gfx_t **)Result2, (pcb_gfx_t **)Result3))
+			return PCB_OBJ_ARC;
+
 	}
 	return 0;
 }
@@ -1428,6 +1494,18 @@ int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void
 		PCB_ENDALL_LOOP;
 	}
 
+	if (type == PCB_OBJ_GFX) {
+		PCB_GFX_ALL_LOOP(Base);
+		{
+			if (gfx->ID == ID) {
+				*Result1 = (void *)layer;
+				*Result2 = *Result3 = (void *)gfx;
+				return PCB_OBJ_GFX;
+			}
+		}
+		PCB_ENDALL_LOOP;
+	}
+
 	if (type == PCB_OBJ_PSTK) {
 		PCB_PADSTACK_LOOP(Base);
 		{
@@ -1641,6 +1719,11 @@ pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const p
 		}
 		if ((type & PCB_OBJ_TEXT) && (ly->text_tree != NULL)) {
 			res = pcb_rtree_search_any(ly->text_tree, query, NULL, cb, closure, NULL);
+			if (res & pcb_RTREE_DIR_STOP)
+				return res;
+		}
+		if ((type & PCB_OBJ_GFX) && (ly->gfx_tree != NULL)) {
+			res = pcb_rtree_search_any(ly->gfx_tree, query, NULL, cb, closure, NULL);
 			if (res & pcb_RTREE_DIR_STOP)
 				return res;
 		}

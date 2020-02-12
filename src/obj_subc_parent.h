@@ -74,6 +74,7 @@ PCB_INLINE pcb_subc_t *pcb_obj_parent_subc(const pcb_any_obj_t *obj)
 		case PCB_OBJ_POLY:
 		case PCB_OBJ_TEXT:
 		case PCB_OBJ_ARC:
+		case PCB_OBJ_GFX:
 			return pcb_lobj_parent_subc(obj->parent_type, &obj->parent);
 
 		default:

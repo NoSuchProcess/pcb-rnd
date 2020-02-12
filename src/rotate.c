@@ -47,6 +47,7 @@
 #include "obj_text_op.h"
 #include "obj_subc_op.h"
 #include "obj_pstk_op.h"
+#include "obj_gfx_op.h"
 
 #include "obj_line_draw.h"
 #include "obj_rat_draw.h"
@@ -60,6 +61,7 @@ pcb_opfunc_t Rotate90Functions = {
 	pcb_lineop_rotate90_point,
 	NULL,
 	pcb_arcop_rotate90,
+	pcb_gfxop_rotate90,
 	NULL,
 	NULL,
 	pcb_subcop_rotate90,
@@ -76,6 +78,7 @@ pcb_opfunc_t RotateFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_rotate,
+	pcb_gfxop_rotate,
 	NULL,
 	NULL,
 	pcb_subcop_rotate,

@@ -56,6 +56,7 @@ flag[.]         { return T_FLD_FLAG; }
 "TEXT"          { qry_lval.n = make_constant(yytext, PCB_OBJ_TEXT); return T_CONST; }
 "POLYGON"       { qry_lval.n = make_constant(yytext, PCB_OBJ_POLY); return T_CONST; }
 "ARC"           { qry_lval.n = make_constant(yytext, PCB_OBJ_ARC); return T_CONST; }
+"GFX"           { qry_lval.n = make_constant(yytext, PCB_OBJ_GFX); return T_CONST; }
 "RAT"           { qry_lval.n = make_constant(yytext, PCB_OBJ_RAT); return T_CONST; }
 "PADSTACK"      { qry_lval.n = make_constant(yytext, PCB_OBJ_PSTK); return T_CONST; }
 "PSTK"          { qry_lval.n = make_constant(yytext, PCB_OBJ_PSTK); return T_CONST; }

@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996, 2003, 2004 Thomas Nau
- *  Copyright (C) 2017,2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2018,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@
 #include "obj_poly_draw.h"
 #include "obj_text_draw.h"
 #include "obj_subc_parent.h"
+#include "obj_gfx_draw.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -760,6 +761,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		pcb_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_term_callback, info, NULL);
 		pcb_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_term_callback, info, NULL);
 		pcb_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
+		pcb_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_callback, info, NULL);
 		delayed_terms_enabled = pcb_false;
 		may_have_delayed = 1;
 	}
@@ -767,6 +769,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		pcb_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_callback, info, NULL);
 		pcb_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_callback, info, NULL);
 		pcb_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_callback, info, NULL);
+		pcb_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_callback, info, NULL);
 	}
 
 	if (may_have_delayed)
@@ -882,6 +885,10 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 			for(o = pcb_rtree_first(&it, Layer->text_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
 					pcb_text_draw_term_callback((pcb_box_t *)o, &info);
+		if (Layer->gfx_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->gfx_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_gfx_draw((pcb_box_t *)o, &info);
 	}
 	else {
 		if (Layer->line_tree != NULL)
@@ -896,6 +903,10 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const pcb_
 			for(o = pcb_rtree_first(&it, Layer->text_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
 					pcb_text_draw_callback((pcb_box_t *)o, &info);
+		if (Layer->gfx_tree != NULL)
+			for(o = pcb_rtree_first(&it, Layer->gfx_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+				if (pcb_obj_is_under(o, data))
+					pcb_gfx_draw_callback((pcb_box_t *)o, &info);
 	}
 
 	out:;
@@ -975,6 +986,9 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 	case PCB_OBJ_ARC:
 		pcb_arc_invalidate_erase((pcb_arc_t *) ptr);
 		break;
+	case PCB_OBJ_GFX:
+		pcb_gfx_invalidate_erase((pcb_gfx_t *)ptr);
+		break;
 	default:
 		pcb_message(PCB_MSG_ERROR, "hace: Internal ERROR, trying to erase an unknown type\n");
 	}
@@ -998,6 +1012,10 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 	case PCB_OBJ_ARC:
 		if (obj->parent.layer->meta.real.vis)
 			pcb_arc_invalidate_draw(obj->parent.layer, (pcb_arc_t *)obj);
+		break;
+	case PCB_OBJ_GFX:
+		if (obj->parent.layer->meta.real.vis)
+			pcb_gfx_invalidate_draw(obj->parent.layer, (pcb_gfx_t *)obj);
 		break;
 	case PCB_OBJ_TEXT:
 		if (obj->parent.layer->meta.real.vis)
@@ -1036,6 +1054,7 @@ static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb
 	switch(obj->type) {
 		case PCB_OBJ_LINE:    pcb_line_draw_label(info, (pcb_line_t *)obj); return;
 		case PCB_OBJ_ARC:     pcb_arc_draw_label(info, (pcb_arc_t *)obj); return;
+		case PCB_OBJ_GFX:     pcb_gfx_draw_label(info, (pcb_gfx_t *)obj); return;
 		case PCB_OBJ_POLY:    pcb_poly_draw_label(info, (pcb_poly_t *)obj); return;
 		case PCB_OBJ_TEXT:    pcb_text_draw_label(info, (pcb_text_t *)obj); return;
 		case PCB_OBJ_PSTK:    pcb_pstk_draw_label(info, (pcb_pstk_t *)obj); return;

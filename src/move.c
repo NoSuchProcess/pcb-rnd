@@ -48,6 +48,7 @@
 #include "obj_poly_op.h"
 #include "obj_pstk_op.h"
 #include "obj_rat_op.h"
+#include "obj_gfx_op.h"
 
 pcb_opfunc_t MoveFunctions = {
 	NULL, /* common_pre */
@@ -58,6 +59,7 @@ pcb_opfunc_t MoveFunctions = {
 	pcb_lineop_move_point,
 	pcb_polyop_move_point,
 	pcb_arcop_move,
+	pcb_gfxop_move,
 	NULL,
 	NULL,
 	pcb_subcop_move,
@@ -74,6 +76,7 @@ pcb_opfunc_t MoveFunctions_noclip = {
 	NULL,
 	NULL,
 	pcb_arcop_move_noclip,
+	pcb_gfxop_move_noclip,
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -90,6 +93,7 @@ pcb_opfunc_t ClipFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_clip,
+	NULL, /* gfx */
 	NULL,
 	NULL,
 	NULL, /* subc */
@@ -106,6 +110,7 @@ static pcb_opfunc_t MoveToLayerFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_move_to_layer,
+	pcb_gfxop_move_to_layer,
 	pcb_ratop_move_to_layer,
 	NULL,
 	NULL, /* subc */
@@ -122,6 +127,7 @@ static pcb_opfunc_t CopyFunctions = {
 	NULL,
 	NULL,
 	pcb_arcop_copy,
+	pcb_gfxop_copy,
 	NULL,
 	NULL,
 	pcb_subcop_copy,

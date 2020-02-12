@@ -47,7 +47,7 @@ typedef enum pcb_objtype_e {
 	PCB_OBJ_SUBC       = 0x0000010,
 	PCB_OBJ_PSTK       = 0x0000020,
 	PCB_OBJ_RAT        = 0x0000040,
-
+	PCB_OBJ_GFX        = 0x0000080,
 
 	/* more abstract objects */
 	PCB_OBJ_NET        = 0x0001000,

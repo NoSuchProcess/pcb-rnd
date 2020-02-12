@@ -36,6 +36,7 @@
 
 int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
 pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
+pcb_bool pcb_gfx_in_box(pcb_gfx_t *gfx, pcb_box_t *b);
 
 #define PCB_SLOP 5
 
@@ -80,6 +81,9 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
    it is worth doing the expensive precise calculations */
 #define PCB_ARC_IN_BOX(a,b) \
 	((PCB_BOX_TOUCHES_BOX(&((a)->BoundingBox), (b))) && (pcb_arc_in_box(a,b)))
+
+#define PCB_GFX_IN_BOX(g,b) \
+	((PCB_BOX_TOUCHES_BOX(&((g)->BoundingBox), (b))) && (pcb_gfx_in_box(g,b)))
 
 /* == the same but accept if any part of the object touches the box == */
 #define PCB_POINT_IN_CIRCLE(x, y, cx, cy, r) \
@@ -130,6 +134,9 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 #define PCB_ARC_TOUCHES_BOX(a,b) \
 	(pcb_is_arc_in_rectangle((b)->X2, (b)->Y2, (b)->X1, (b)->Y1, (a)))
 
+#define PCB_GFX_TOUCHES_BOX(a,b) \
+	(pcb_is_gfx_in_rectangle((b)->X2, (b)->Y2, (b)->X1, (b)->Y1, (a)))
+
 
 /* == the combination of *_IN_* and *_TOUCHES_*: use IN for positive boxes == */
 #define PCB_IS_BOX_NEGATIVE(b) (((b)->X2 < (b)->X1) || ((b)->Y2 < (b)->Y1))
@@ -161,13 +168,18 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
 #define PCB_ARC_NEAR_BOX(a,b) \
 	(PCB_IS_BOX_NEGATIVE(b) ? PCB_ARC_TOUCHES_BOX(a,b) : PCB_ARC_IN_BOX(a,b))
 
+#define PCB_GFX_NEAR_BOX(a,b) \
+	(PCB_IS_BOX_NEGATIVE(b) ? PCB_GFX_TOUCHES_BOX(a,b) : PCB_GFX_IN_BOX(a,b))
+
 pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line);
 pcb_bool pcb_is_point_on_thinline( pcb_coord_t X, pcb_coord_t Y, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,pcb_coord_t Y2 );
 pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line);
 pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_t *Arc);
+pcb_bool pcb_is_point_in_gfx(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_gfx_t *gfx);
 pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_line_t *Line);
 pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line);
 pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_arc_t *Arc);
+pcb_bool pcb_is_gfx_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_gfx_t *gfx);
 pcb_bool pcb_is_point_in_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_any_line_t *Pad);
 pcb_bool pcb_is_point_in_box(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t Radius);
 

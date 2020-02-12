@@ -50,6 +50,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_POLY:        return "polygon";
 		case PCB_OBJ_ARC:         return "arc";
 		case PCB_OBJ_RAT:         return "ratline";
+		case PCB_OBJ_GFX:         return "gfx";
 		case PCB_OBJ_PSTK:        return "padstack";
 		case PCB_OBJ_SUBC:        return "subcircuit";
 		case PCB_OBJ_NET:         return "net";
@@ -79,6 +80,7 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box
 	case PCB_OBJ_TEXT:
 	case PCB_OBJ_POLY:
 	case PCB_OBJ_PSTK:
+	case PCB_OBJ_GFX:
 		*res = ((pcb_any_obj_t *)Ptr2)->bbox_naked;
 		return 0;
 	case PCB_OBJ_SUBC:
@@ -388,6 +390,7 @@ void pcb_obj_pre(pcb_any_obj_t *o)
 		case PCB_OBJ_TEXT: pcb_text_pre((pcb_text_t *)o); break;
 		case PCB_OBJ_POLY: pcb_poly_pre((pcb_poly_t *)o); break;
 		case PCB_OBJ_ARC:  pcb_arc_pre((pcb_arc_t *)o); break;
+		case PCB_OBJ_GFX:  pcb_gfx_pre((pcb_gfx_t *)o); break;
 		case PCB_OBJ_PSTK: pcb_pstk_pre((pcb_pstk_t *)o); break;
 		default: break;
 	}
@@ -400,6 +403,7 @@ void pcb_obj_post(pcb_any_obj_t *o)
 		case PCB_OBJ_TEXT: pcb_text_post((pcb_text_t *)o); break;
 		case PCB_OBJ_POLY: pcb_poly_post((pcb_poly_t *)o); break;
 		case PCB_OBJ_ARC:  pcb_arc_post((pcb_arc_t *)o); break;
+		case PCB_OBJ_GFX:  pcb_arc_post((pcb_gfx_t *)o); break;
 		case PCB_OBJ_PSTK: pcb_pstk_post((pcb_pstk_t *)o); break;
 		default: break;
 	}
