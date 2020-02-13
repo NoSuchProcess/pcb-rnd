@@ -114,10 +114,10 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 	int n;
 	double a, da, rx, ry;
 
-	a = gfx->rot * PCB_RAD_TO_DEG;
-	da = 90.0 * PCB_RAD_TO_DEG;
+	a = gfx->rot / PCB_RAD_TO_DEG;
+	da = 90.0 / PCB_RAD_TO_DEG;
 	rx = (double)gfx->sx / 2.0;
-	ry = (double)gfx->sx / 2.0;
+	ry = (double)gfx->sy / 2.0;
 	for(n = 0; n < 4; n++, a+=da) {
 		gfx->cox[n] = pcb_round((double)gfx->cx + cos(a) * rx);
 		gfx->coy[n] = pcb_round((double)gfx->cy + sin(a) * ry);
@@ -135,9 +135,9 @@ pcb_gfx_t *pcb_gfx_new(pcb_layer_t *layer, pcb_coord_t cx, pcb_coord_t cy, pcb_c
 
 	gfx->Flags = Flags;
 	gfx->cx = cx;
-	gfx->cx = cx;
+	gfx->cy = cy;
 	gfx->sx = sx;
-	gfx->sx = sx;
+	gfx->sy = sy;
 	gfx->rot = rot;
 	pcb_gfx_update(gfx);
 	pcb_add_gfx_on_layer(layer, gfx);
