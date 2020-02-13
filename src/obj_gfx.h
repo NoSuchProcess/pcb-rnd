@@ -38,6 +38,10 @@ struct pcb_gfx_s {       /* holds information about gfxs */
 	pcb_coord_t cx, cy;            /* center coordinates */
 	pcb_coord_t sx, sy;            /* size x and y on board (net box size before rotation) */
 	pcb_angle_t rot;
+
+	/* calculated/cached fields */
+	pcb_coord_t cox[4], coy[4];    /* the 4 corners */
+
 	gdl_elem_t link;               /* an gfx is in a list on a layer */
 };
 
@@ -59,6 +63,7 @@ void pcb_add_gfx_on_layer(pcb_layer_t *layer, pcb_gfx_t *gfx);
 
 
 /*** Utility ***/
+void pcb_gfx_update(pcb_gfx_t *gfx); /* update corner cache: call this after any geometry change */
 void pcb_gfx_bbox(pcb_gfx_t *gfx);
 void pcb_gfx_rotate90(pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
 void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle);

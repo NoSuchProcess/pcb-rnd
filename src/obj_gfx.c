@@ -109,6 +109,20 @@ void pcb_gfx_bbox(pcb_gfx_t *gfx)
 	gfx->bbox_naked = gfx->BoundingBox = pcb_gfx_bbox_(gfx);
 }
 
+void pcb_gfx_update(pcb_gfx_t *gfx)
+{
+	int n;
+	double a, da, rx, ry;
+
+	a = gfx->rot * PCB_RAD_TO_DEG;
+	da = 90.0 * PCB_RAD_TO_DEG;
+	rx = (double)gfx->sx / 2.0;
+	ry = (double)gfx->sx / 2.0;
+	for(n = 0; n < 4; n++, a+=da) {
+		gfx->cox[n] = pcb_round(cos(a) * rx);
+		gfx->coy[n] = pcb_round(sin(a) * ry);
+	}
+}
 
 /* creates a new gfx on a layer */
 pcb_gfx_t *pcb_gfx_new(pcb_layer_t *layer, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, pcb_angle_t rot, pcb_flag_t Flags)
@@ -125,6 +139,7 @@ pcb_gfx_t *pcb_gfx_new(pcb_layer_t *layer, pcb_coord_t cx, pcb_coord_t cy, pcb_c
 	gfx->sx = sx;
 	gfx->sx = sx;
 	gfx->rot = rot;
+	pcb_gfx_update(gfx);
 	pcb_add_gfx_on_layer(layer, gfx);
 	return gfx;
 }
@@ -219,6 +234,7 @@ void pcb_gfx_pre(pcb_gfx_t *gfx)
 void pcb_gfx_post(pcb_gfx_t *gfx)
 {
 	pcb_layer_t *ly = pcb_layer_get_real(gfx->parent.layer);
+	pcb_gfx_update(gfx);
 	if (ly == NULL)
 		return;
 	if (ly->gfx_tree != NULL)
@@ -249,6 +265,7 @@ static int undo_gfx_geo_swap(void *udata)
 	rnd_swap(pcb_coord_t, g->sy, g->gfx->sy);
 	rnd_swap(pcb_angle_t, g->rot, g->gfx->rot);
 
+	pcb_gfx_update(g->gfx);
 	pcb_gfx_bbox(g->gfx);
 	if (layer->gfx_tree != NULL)
 		pcb_r_insert_entry(layer->gfx_tree, (pcb_box_t *)g->gfx);
@@ -343,6 +360,7 @@ void *pcb_gfxop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
 		PCB_MOVE_POINT((__g__)->cx, (__g__)->cy,__dx__,__dy__);          \
 		PCB_BOX_MOVE_LOWLEVEL(&((__g__)->BoundingBox),__dx__,__dy__); \
 		PCB_BOX_MOVE_LOWLEVEL(&((__g__)->bbox_naked),__dx__,__dy__); \
+		pcb_gfx_update(__g__); \
 	} while(0)
 
 void *pcb_gfxop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
@@ -441,6 +459,7 @@ void pcb_gfx_rotate90(pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 {
 	gfx->rot = pcb_normalize_angle(gfx->rot + Number * 90);
 	TODO("rotate content")
+	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 }
 
@@ -451,6 +470,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord
 
 	gfx->rot = pcb_normalize_angle(gfx->rot + angle);
 	TODO("rotate content")
+	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 
 	if (layer->gfx_tree != NULL)
@@ -471,6 +491,7 @@ void pcb_gfx_mirror(pcb_gfx_t *gfx, pcb_coord_t y_offs, pcb_bool undoable)
 	g->rot = gfx->rot;
 TODO("implement a mirror bit")
 
+	pcb_gfx_update(gfx);
 	undo_gfx_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
 }
@@ -481,6 +502,7 @@ void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx)
 	gfx->cx = PCB_SWAP_X(gfx->cx);
 	gfx->cy = PCB_SWAP_Y(gfx->cy);
 	gfx->rot = PCB_SWAP_ANGLE(gfx->rot);
+	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 	pcb_r_insert_entry(layer->gfx_tree, (pcb_box_t *)gfx);
 }
@@ -498,6 +520,8 @@ void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth)
 	pcb_gfx_bbox(gfx);
 	if (onbrd)
 		pcb_gfx_post(gfx);
+	else
+		pcb_gfx_update(gfx);
 }
 
 /* rotates a gfx */
@@ -535,6 +559,7 @@ void *pcb_gfxop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx
 
 	PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, gfx);
 
+	pcb_gfx_update(gfx);
 	return gfx;
 }
 
