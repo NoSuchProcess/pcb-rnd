@@ -119,8 +119,8 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 	rx = (double)gfx->sx / 2.0;
 	ry = (double)gfx->sx / 2.0;
 	for(n = 0; n < 4; n++, a+=da) {
-		gfx->cox[n] = pcb_round(cos(a) * rx);
-		gfx->coy[n] = pcb_round(sin(a) * ry);
+		gfx->cox[n] = pcb_round((double)gfx->cx + cos(a) * rx);
+		gfx->coy[n] = pcb_round((double)gfx->cy + sin(a) * ry);
 	}
 }
 
