@@ -115,15 +115,21 @@ void pcb_gfx_bbox(pcb_gfx_t *gfx)
 void pcb_gfx_update(pcb_gfx_t *gfx)
 {
 	int n;
-	double a, da, rx, ry;
+	double a, rx, ry, cosa, sina;
 
-	a = gfx->rot / PCB_RAD_TO_DEG;
-	da = 90.0 / PCB_RAD_TO_DEG;
 	rx = (double)gfx->sx / 2.0;
 	ry = (double)gfx->sy / 2.0;
-	for(n = 0; n < 4; n++, a+=da) {
-		gfx->cox[n] = pcb_round((double)gfx->cx + cos(a) * rx);
-		gfx->coy[n] = pcb_round((double)gfx->cy + sin(a) * ry);
+
+	gfx->cox[0] = pcb_round((double)gfx->cx + rx); gfx->coy[0] = pcb_round((double)gfx->cy + ry);
+	gfx->cox[1] = pcb_round((double)gfx->cx - rx); gfx->coy[1] = pcb_round((double)gfx->cy + ry);
+	gfx->cox[2] = pcb_round((double)gfx->cx - rx); gfx->coy[2] = pcb_round((double)gfx->cy - ry);
+	gfx->cox[3] = pcb_round((double)gfx->cx + rx); gfx->coy[3] = pcb_round((double)gfx->cy - ry);
+	if (gfx->rot != 0.0) {
+		a = gfx->rot / PCB_RAD_TO_DEG;
+		cosa = cos(a);
+		sina = sin(a);
+		for(n = 0; n < 4; n++)
+			pcb_rotate(&gfx->cox[n], &gfx->coy[n], gfx->cx, gfx->cy, cosa, sina);
 	}
 }
 
