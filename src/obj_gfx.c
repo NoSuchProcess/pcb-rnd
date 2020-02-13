@@ -587,6 +587,15 @@ void pcb_gfx_draw_label(pcb_draw_info_t *info, pcb_gfx_t *gfx)
 void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 {
 	PCB_DRAW_BBOX(gfx);
+
+/* temporary */
+	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.1));
+	pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
+	pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
+
+
 	TODO("gfx draw");
 }
 
@@ -633,6 +642,8 @@ void pcb_gfx_invalidate_draw(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 
 void pcb_gfx_draw_xor(pcb_gfx_t *gfx, pcb_coord_t x, pcb_coord_t y)
 {
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cx + gfx->BoundingBox.X1, gfx->cy + gfx->BoundingBox.Y1, gfx->cx + gfx->BoundingBox.X2, gfx->cy + gfx->BoundingBox.Y2);
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cx + gfx->BoundingBox.X2, gfx->cy + gfx->BoundingBox.Y1, gfx->cx + gfx->BoundingBox.X1, gfx->cy + gfx->BoundingBox.Y2);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[3], gfx->coy[3], gfx->cox[4], gfx->coy[4]);
 }
