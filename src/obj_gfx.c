@@ -100,6 +100,9 @@ pcb_gfx_t *pcb_gfx_alloc(pcb_layer_t *layer)
 static pcb_box_t pcb_gfx_bbox_(const pcb_gfx_t *gfx)
 {
 	pcb_box_t res = {0};
+	int n;
+	for(n = 0; n < 4; n++)
+		pcb_box_bump_point(&res, gfx->cox[n], gfx->coy[n]);
 	return res;
 }
 
