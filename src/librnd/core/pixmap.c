@@ -147,3 +147,13 @@ int pcb_pixmap_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 	return -1;
 }
 
+void rnd_pixmap_free_fields(pcb_pixmap_t *pxm)
+{
+	free(pxm->p);
+}
+
+void rnd_pixmap_free(pcb_pixmap_t *pxm)
+{
+	rnd_pixmap_free_fields(pxm);
+	free(pxm);
+}

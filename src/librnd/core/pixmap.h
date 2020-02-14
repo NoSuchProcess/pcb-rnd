@@ -77,4 +77,7 @@ unsigned int pcb_pixmap_hash_pixels(const void *key);
 int pcb_pixmap_eq_meta(const void *keya, const void *keyb);
 int pcb_pixmap_eq_pixels(const void *keya, const void *keyb);
 
+void rnd_pixmap_free_fields(pcb_pixmap_t *pxm);
+void rnd_pixmap_free(pcb_pixmap_t *pxm);
+
 #endif
