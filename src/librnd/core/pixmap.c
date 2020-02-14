@@ -131,7 +131,7 @@ void pcb_pixmap_unreg_import_all(const char *cookie)
 	}
 }
 
-void pcb_pixmap_uninit(void)
+void rnd_pixmap_uninit(void)
 {
 	pcb_pixmap_import_t *i;
 	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
