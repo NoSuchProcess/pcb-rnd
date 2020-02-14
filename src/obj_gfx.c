@@ -500,7 +500,6 @@ void pcb_gfx_mirror(pcb_gfx_t *gfx, pcb_coord_t y_offs, pcb_bool undoable)
 	g->rot = gfx->rot;
 TODO("implement a mirror bit")
 
-	pcb_gfx_update(gfx);
 	undo_gfx_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
 }
