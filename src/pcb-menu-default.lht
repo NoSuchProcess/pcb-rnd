@@ -753,6 +753,18 @@ ha:{
 			}
 		}
 
+		ha:popup-obj-gfx {
+			li:submenu {
+				ha:Edit properties        { action=propedit(object) }
+				ha:Edit flags...          { action=FlagEdit() }
+				-
+				ha:Remove gfx             { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
+				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
+				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
+			}
+		}
+
+
 		ha:popup-obj-misc {
 			li:submenu {
 				ha:Operations on selections {
