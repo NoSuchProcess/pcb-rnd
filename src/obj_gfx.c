@@ -41,6 +41,7 @@
 #include "move.h"
 #include "conf_core.h"
 #include "draw_wireframe.h"
+#include "pixmap_pcb.h"
 
 #include "obj_gfx.h"
 #include "obj_gfx_op.h"
@@ -592,6 +593,15 @@ void *pcb_gfxop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_gfx_t
 {
 	pcb_gfx_name_invalidate_draw(gfx);
 	return gfx;
+}
+
+void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, pcb_pixmap_t *pxm, pcb_bool undoable)
+{
+	TODO("gfx: undoable pixmap assign");
+	gfx->pxm_neutral = pcb_pixmap_insert_neutral_or_free(&pcb_pixmaps, pxm);
+
+	TODO("gfx: calculate transformed");
+	gfx->pxm_xformed = gfx->pxm_neutral;
 }
 
 

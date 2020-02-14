@@ -31,6 +31,7 @@
 #define PCB_OBJ_GFX_H
 
 #include <genlist/gendlist.h>
+#include <librnd/core/global_typedefs.h>
 #include "obj_common.h"
 
 struct pcb_gfx_s {       /* holds information about gfxs */
@@ -39,9 +40,11 @@ struct pcb_gfx_s {       /* holds information about gfxs */
 	pcb_coord_t sx, sy;            /* size x and y on board (net box size before rotation) */
 	pcb_angle_t rot;
 
+	pcb_pixmap_t *pxm_neutral;     /* graphics is a pixmap, if not NULL - in neutral scale/rot */
+	pcb_pixmap_t *pxm_xformed;     /* transformed version from the cache */
+
 	/* calculated/cached fields */
 	pcb_coord_t cox[4], coy[4];    /* the 4 corners */
-
 	gdl_elem_t link;               /* an gfx is in a list on a layer */
 };
 
@@ -71,6 +74,9 @@ void pcb_gfx_mirror(pcb_gfx_t *gfx, pcb_coord_t y_offs, pcb_bool undoable);
 void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx);
 void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth);
 void pcb_gfx_chg_geo(pcb_gfx_t *gfx, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy,  pcb_angle_t rot, pcb_bool undoable);
+
+/* assings pxm to gfx and free pxm (if needed) */
+void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, pcb_pixmap_t *pxm, pcb_bool undoable);
 
 /*** hash and eq ***/
 int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *g1, const pcb_host_trans_t *tr2, const pcb_gfx_t *g2);
