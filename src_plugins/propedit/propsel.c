@@ -597,7 +597,7 @@ static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
 
 static void set_gfx(pcb_propset_ctx_t *st, pcb_gfx_t *gfx)
 {
-	const char *pn = st->name + 8;
+	const char *pn = st->name + 6;
 
 	if (st->is_attr) {
 		set_attr_obj(st, (pcb_any_obj_t *)gfx);
@@ -605,6 +605,19 @@ static void set_gfx(pcb_propset_ctx_t *st, pcb_gfx_t *gfx)
 	}
 
 	if (set_common(st, (pcb_any_obj_t *)gfx)) return;
+
+
+	if (strncmp(st->name, "p/gfx/", 6) == 0) {
+		if (st->c_valid && (strcmp(pn, "sx") == 0)) {
+			pcb_gfx_chg_geo(gfx, gfx->cx, gfx->cy, st->c, gfx->sy, gfx->rot, 1); DONE;
+		}
+		if (st->c_valid && (strcmp(pn, "sy") == 0)) {
+			pcb_gfx_chg_geo(gfx, gfx->cx, gfx->cy, gfx->sx, st->c, gfx->rot, 1); DONE;
+		}
+		if (st->d_valid && (strcmp(pn, "rot") == 0)) {
+			pcb_gfx_chg_geo(gfx, gfx->cx, gfx->cy, gfx->sx, gfx->sy, st->d, 1); DONE;
+		}
+	}
 }
 
 static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
