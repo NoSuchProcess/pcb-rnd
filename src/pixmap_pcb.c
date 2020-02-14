@@ -48,9 +48,21 @@ void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash)
 
 pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm)
 {
+	pcb_pixmap_t *r;
+
 	if ((pm->tr_rot != 0) || pm->tr_xmirror || pm->tr_ymirror)
 		return NULL;
-	return NULL;
+
+	r = htpp_get(&pmhash->pixels, pm);
+	if (r != NULL) {
+		rnd_pixmap_free(pm);
+		return r;
+	}
+
+	htpp_set(&pmhash->meta, pm, pm);
+	htpp_set(&pmhash->pixels, pm, pm);
+
+	return pm;
 }
 
 
