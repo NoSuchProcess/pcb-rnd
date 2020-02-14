@@ -650,7 +650,7 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
 	}
 	else {
-		pcb_render->draw_pixmap(pcb_render, gfx->cx, gfx->cy, gfx->pxm_neutral);
+		pcb_render->draw_pixmap(pcb_render, gfx->cx, gfx->cy, gfx->sx, gfx->sy, gfx->pxm_neutral);
 	}
 }
 
