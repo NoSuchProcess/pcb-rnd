@@ -1135,6 +1135,7 @@ TODO(": elliptical arc: rewrite this, as it does not work properly on extreme ca
 pcb_bool pcb_is_point_in_gfx(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_gfx_t *gfx)
 {
 	pcb_vector_t pt, a, b, c;
+	int n, m;
 
 	pt[0] = X; pt[1] = Y;
 	a[0] = gfx->cox[0]; a[1] = gfx->coy[0];
@@ -1148,6 +1149,18 @@ pcb_bool pcb_is_point_in_gfx(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, p
 	if (rnd_point_in_triangle(a, b, c, pt))
 		return pcb_true;
 
+	/* the above triangle checks will miss points that are exactly on the triangle edges */
+	for(n = 0; n < 4; n++) {
+		m = n+1;
+		if (m == 4)
+			m = 0;
+		if (pcb_is_point_on_thinline(X, Y, gfx->cox[n], gfx->coy[n], gfx->cox[m], gfx->coy[m]))
+			return pcb_true;
+	}
+	if (pcb_is_point_on_thinline(X, Y, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]))
+		return pcb_true;
+	if (pcb_is_point_on_thinline(X, Y, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]))
+		return pcb_true;
 
 	return pcb_false;
 }
