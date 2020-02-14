@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -154,6 +154,13 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.a.refdes",        "refdes",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.a.footprint",     "footprint",        &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.a.value",         "value",            &op_tab[OPS_STR], RIGHT_STR, NULL},
+
+	{NULL,                "gfx",              NULL,             0, NULL},
+	{"@.cx",              "center X",         &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.cy",              "center Y",         &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.sx",              "size X (width)",   &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.sy",              "size Y (height)",  &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.rot",             "rotation angle",   &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
 
 	{NULL,                "host layer's",     NULL,             0, NULL},
 	{"@.layer.name",      "name",             &op_tab[OPS_STR], RIGHT_STR, NULL},
