@@ -403,7 +403,7 @@ void pcb_obj_post(pcb_any_obj_t *o)
 		case PCB_OBJ_TEXT: pcb_text_post((pcb_text_t *)o); break;
 		case PCB_OBJ_POLY: pcb_poly_post((pcb_poly_t *)o); break;
 		case PCB_OBJ_ARC:  pcb_arc_post((pcb_arc_t *)o); break;
-		case PCB_OBJ_GFX:  pcb_arc_post((pcb_gfx_t *)o); break;
+		case PCB_OBJ_GFX:  pcb_gfx_post((pcb_gfx_t *)o); break;
 		case PCB_OBJ_PSTK: pcb_pstk_post((pcb_pstk_t *)o); break;
 		default: break;
 	}
