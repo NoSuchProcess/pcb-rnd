@@ -233,6 +233,7 @@ static void cpcb_print_pads(pcb_board_t *pcb, FILE *f, pcb_any_obj_t *o, cpcb_la
 			break;
 		case PCB_OBJ_TEXT:
 		case PCB_OBJ_ARC:
+		case PCB_OBJ_GFX:
 			break;
 
 TODO("subc-in-subc: subc as terminal")

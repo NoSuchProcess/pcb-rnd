@@ -526,6 +526,7 @@ static int write_nets(hyp_wr_t * wr)
 			case PCB_OBJ_LAYER:
 			case PCB_OBJ_LAYERGRP:
 			case PCB_OBJ_VOID:
+			case PCB_OBJ_GFX:
 				break;									/* silently ignore these */
 			}
 		}

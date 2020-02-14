@@ -1006,6 +1006,7 @@ static routebox_t *crd_add_misc(routedata_t *rd, vtp0_t *layergroupboxes, pcb_an
 			rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
 		break;
 
+	case PCB_OBJ_GFX:
 	case PCB_OBJ_RAT:
 	case PCB_OBJ_SUBC:
 	case PCB_OBJ_NET:
