@@ -525,28 +525,15 @@ static int field_gfx(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
-TODO("gfx");
-#if 0
 	switch(fh1) {
-		case query_fields_length:
-			PCB_QRY_RET_INT(res, ((pcb_coord_t)pcb_round(pcb_arc_len(a))));
-			break;
-		case query_fields_length2:
-			{
-				double l = pcb_arc_len(a);
-				PCB_QRY_RET_DBL(res, l*l);
-			}
-			break;
-		case query_fields_area:
-			{
-				double th = a->Thickness;
-				double len = pcb_arc_len(a);
-				PCB_QRY_RET_DBL(res, len * th + th*th/4*M_PI); /* approx */
-			}
-			break;
+		case query_fields_area: PCB_QRY_RET_DBL(res, (double)g->sx * (double)g->sy); break;
+		case query_fields_sx: PCB_QRY_RET_INT(res, g->sx); break;
+		case query_fields_sy: PCB_QRY_RET_INT(res, g->sy); break;
+		case query_fields_cx: PCB_QRY_RET_INT(res, g->cx); break;
+		case query_fields_cy: PCB_QRY_RET_INT(res, g->cy); break;
+		case query_fields_rot: PCB_QRY_RET_DBL(res, g->rot); break;
 		default:;
 	}
-#endif
 	PCB_QRY_RET_INV(res);
 }
 
