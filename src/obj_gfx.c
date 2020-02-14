@@ -649,10 +649,10 @@ void pcb_gfx_invalidate_draw(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 	pcb_draw_invalidate(gfx);
 }
 
-void pcb_gfx_draw_xor(pcb_gfx_t *gfx, pcb_coord_t x, pcb_coord_t y)
+void pcb_gfx_draw_xor(pcb_gfx_t *gfx, pcb_coord_t dx, pcb_coord_t dy)
 {
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[3], gfx->coy[3], gfx->cox[4], gfx->coy[4]);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[0]+dx, gfx->coy[0]+dy, gfx->cox[1]+dx, gfx->coy[1]+dy);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[1]+dx, gfx->coy[1]+dy, gfx->cox[2]+dx, gfx->coy[2]+dy);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[2]+dx, gfx->coy[2]+dy, gfx->cox[3]+dx, gfx->coy[3]+dy);
+	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[3]+dx, gfx->coy[3]+dy, gfx->cox[0]+dx, gfx->coy[0]+dy);
 }
