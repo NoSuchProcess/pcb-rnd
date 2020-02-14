@@ -8,6 +8,7 @@
 #include "glue_hid.h"
 #include <librnd/core/hid_nogui.h>
 #include <librnd/core/hid_attrib.h>
+#include <librnd/core/pixmap.h>
 #include "coord_conv.h"
 
 #include "in_keyboard.h"
@@ -613,6 +614,13 @@ static int ghid_mod1_is_pressed(pcb_hid_t *hid)
 #endif
 }
 
+static void ghid_draw_pixmap(pcb_hid_t *hid, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, const pcb_pixmap_t *pixmap)
+{
+	pcb_gtk_t *gctx = hid->hid_data;
+TODO("gfx: this use of sx/sy ignores rotation");
+	gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - sx/2, cy - sy/2, sx, sy);
+}
+
 void ghid_glue_hid_init(pcb_hid_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_hid_t));
@@ -691,6 +699,8 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->key_state = &ghid_keymap;
 
 	dst->usage = ghid_usage;
+
+	dst->draw_pixmap = ghid_draw_pixmap;
 
 	dst->hid_data = ghidgui;
 }

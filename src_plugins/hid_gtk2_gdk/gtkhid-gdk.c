@@ -1526,6 +1526,7 @@ void ghid_gdk_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
 		impl->shutdown_renderer = ghid_gdk_shutdown_renderer;
 		impl->get_color_name = get_color_name;
 		impl->map_color = map_color;
+		impl->draw_pixmap = ghid_gdk_draw_pixmap;
 	}
 
 	if (hid != NULL) {

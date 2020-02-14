@@ -36,6 +36,8 @@ typedef struct pcb_gtk_s pcb_gtk_t;
 typedef struct pcb_gtk_mouse_s pcb_gtk_mouse_t;
 typedef struct pcb_gtk_topwin_s pcb_gtk_topwin_t;
 typedef struct pcb_gtk_impl_s pcb_gtk_impl_t;
+typedef struct pcb_gtk_pixmap_s pcb_gtk_pixmap_t;
+
 
 extern pcb_gtk_t _ghidgui, *ghidgui;
 
@@ -69,6 +71,7 @@ struct pcb_gtk_impl_s {
 	const gchar *(*get_color_name)(pcb_gtk_color_t *color);
 
 	void (*set_special_colors)(conf_native_t *cfg);
+	void (*draw_pixmap)(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh);
 };
 
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
@@ -137,7 +140,7 @@ struct pcb_gtk_topwin_s {
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/pcb_bool.h>
 
-typedef struct pcb_gtk_pixmap_s {
+struct pcb_gtk_pixmap_s {
 	pcb_pixmap_t *pxm;        /* core-side pixmap (raw input image) */
 	GdkPixbuf *image;         /* input image converted to gdk */
 
@@ -147,7 +150,7 @@ typedef struct pcb_gtk_pixmap_s {
 		GdkPixbuf *pb;         /* for gdk */
 		unsigned long int lng; /* for opengl */
 	} cache;
-} pcb_gtk_pixmap_t;
+};
 
 /* The output viewport */
 struct pcb_gtk_port_s {
