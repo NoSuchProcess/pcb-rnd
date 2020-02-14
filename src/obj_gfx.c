@@ -611,7 +611,26 @@ void pcb_gfx_draw_label(pcb_draw_info_t *info, pcb_gfx_t *gfx)
 
 void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 {
+	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(gfx->parent.layer);
+
 	PCB_DRAW_BBOX(gfx);
+
+	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, gfx)) {
+		const pcb_color_t *color;
+		if (layer->is_bound)
+			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
+		else
+			color = &conf_core.appearance.color.selected;
+
+		pcb_render->set_color(pcb_draw_out.fgGC, color);
+		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, -2);
+		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
+		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
+		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
+		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[3], gfx->coy[3], gfx->cox[0], gfx->coy[0]);
+	}
+
 
 /* temporary */
 	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
@@ -619,7 +638,6 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.1));
 	pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
 	pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
-
 
 	TODO("gfx draw");
 }
