@@ -70,6 +70,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord
 void pcb_gfx_mirror(pcb_gfx_t *gfx, pcb_coord_t y_offs, pcb_bool undoable);
 void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx);
 void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth);
+void pcb_gfx_chg_geo(pcb_gfx_t *gfx, pcb_coord_t sx, pcb_coord_t sy,  pcb_angle_t rot, pcb_bool undoable);
 
 /*** hash and eq ***/
 int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *g1, const pcb_host_trans_t *tr2, const pcb_gfx_t *g2);

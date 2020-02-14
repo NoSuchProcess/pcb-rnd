@@ -516,6 +516,23 @@ void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx)
 	pcb_r_insert_entry(layer->gfx_tree, (pcb_box_t *)gfx);
 }
 
+void pcb_gfx_chg_geo(pcb_gfx_t *gfx, pcb_coord_t sx, pcb_coord_t sy,  pcb_angle_t rot, pcb_bool undoable)
+{
+	undo_gfx_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(gfx->parent.layer->parent.data), &undo_gfx_geo, sizeof(undo_gfx_geo_t));
+
+	g->gfx = gfx;
+	g->cx = gfx->cx;
+	g->cy = gfx->cy;
+	g->sx = sx;
+	g->sy = sy;
+	g->rot = rot;
+
+	undo_gfx_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+}
+
 void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth)
 {
 	int onbrd = (gfx->parent.layer != NULL) && (!gfx->parent.layer->is_bound);
