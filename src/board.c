@@ -446,9 +446,3 @@ pcb_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 	}
 	return total;
 }
-
-pcb_pixmap_t *pcb_pixmap_insert_or_free(pcb_board_t *pcb, pcb_pixmap_t *pm)
-{
-	return NULL;
-}
-
