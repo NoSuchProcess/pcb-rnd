@@ -39,6 +39,7 @@
 #include "board.h"
 #include "data.h"
 #include <librnd/core/error.h>
+#include <librnd/poly/polyarea.h>
 #include "find.h"
 #include "polygon.h"
 #include "search.h"
@@ -1128,7 +1129,21 @@ TODO(": elliptical arc: rewrite this, as it does not work properly on extreme ca
 
 pcb_bool pcb_is_point_in_gfx(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_gfx_t *gfx)
 {
-	TODO("gfx");
+	pcb_vector_t pt, a, b, c;
+
+	pt[0] = X; pt[1] = Y;
+	a[0] = gfx->cox[0]; a[1] = gfx->coy[0];
+	b[0] = gfx->cox[2]; b[1] = gfx->coy[2];
+
+	c[0] = gfx->cox[1]; c[1] = gfx->coy[1];
+	if (rnd_point_in_triangle(a, b, c, pt))
+		return pcb_true;
+
+	c[0] = gfx->cox[3]; c[1] = gfx->coy[3];
+	if (rnd_point_in_triangle(a, b, c, pt))
+		return pcb_true;
+
+
 	return pcb_false;
 }
 
