@@ -202,14 +202,14 @@ static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
 
 static void map_gfx(pcb_propedit_t *ctx, pcb_gfx_t *gfx)
 {
+	map_add_prop(ctx, "p/gfx/sx",      pcb_coord_t, gfx->sx);
+	map_add_prop(ctx, "p/gfx/sy",      pcb_coord_t, gfx->sy);
 	map_add_prop(ctx, "p/gfx/rot",     pcb_angle_t, gfx->rot);
 	map_common(ctx, (pcb_any_obj_t *)gfx);
 	map_attr(ctx, &gfx->Attributes);
 	if (ctx->geo) {
 		map_add_prop(ctx, "p/gfx/cx",      pcb_coord_t, gfx->cx);
 		map_add_prop(ctx, "p/gfx/cy",      pcb_coord_t, gfx->cy);
-		map_add_prop(ctx, "p/gfx/sx",      pcb_coord_t, gfx->sx);
-		map_add_prop(ctx, "p/gfx/sy",      pcb_coord_t, gfx->sy);
 	}
 }
 
