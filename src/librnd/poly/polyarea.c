@@ -2698,6 +2698,12 @@ static int point_in_triangle(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb
 	return (u > 0.0) && (v > 0.0) && (u + v < 1.0);
 }
 
+/* wrapper to keep the original name short and original function inline */
+int rnd_point_in_triangle(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t P)
+{
+	return point_in_triangle(A, B, C, P);
+}
+
 
 /* Returns the dot product of pcb_vector_t A->B, and a vector
  * orthogonal to pcb_vector_t C->D. The result is not normalised, so will be

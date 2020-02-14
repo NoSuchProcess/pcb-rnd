@@ -208,4 +208,7 @@ void *pcb_poly_make_edge_tree(pcb_pline_t *src);
    spikes. Accept at most 10 nanometer of such intersection */
 #define PCB_POLY_ENDP_EPSILON 100
 
+/*** generic geo ***/
+int rnd_point_in_triangle(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t P);
+
 #endif /* PCB_POLYAREA_H */
