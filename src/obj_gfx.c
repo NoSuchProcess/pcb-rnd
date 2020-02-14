@@ -610,8 +610,6 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 
 void pcb_gfx_draw(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 {
-	const pcb_color_t *color;
-	pcb_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(gfx->parent.layer);
 
 	pcb_obj_noexport(info, gfx, return);
