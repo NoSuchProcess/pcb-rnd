@@ -1246,7 +1246,7 @@ static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void 
 
 		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 && Type & PCB_OBJ_GFX &&
 				SearchGfxByLocation(objst, req_flag, (pcb_layer_t **)Result1, (pcb_gfx_t **)Result2, (pcb_gfx_t **)Result3))
-			return PCB_OBJ_ARC;
+			return PCB_OBJ_GFX;
 
 	}
 	return 0;
