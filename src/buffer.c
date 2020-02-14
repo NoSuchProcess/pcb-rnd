@@ -835,6 +835,16 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 				}
 			}
 			PCB_END_LOOP;
+			PCB_GFX_LOOP(sourcelayer);
+			{
+				pcb_gfx_t *ngfx = pcb_gfxop_copy(&ctx, destlayer, gfx);
+				if (ngfx != NULL) {
+					if (keep_id)
+						pcb_extobj_float_geo((pcb_any_obj_t *)ngfx);
+					changed = 1;
+				}
+			}
+			PCB_END_LOOP;
 		}
 	}
 

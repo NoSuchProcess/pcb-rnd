@@ -210,6 +210,11 @@ void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 				pcb_xordraw_poly(polygon, x, y, 0);
 			}
 			PCB_END_LOOP;
+			PCB_GFX_LOOP(layer);
+			{
+				pcb_gfx_draw_xor(gfx, x, y);
+			}
+			PCB_END_LOOP;
 		}
 
 	/* draw subcircuit */
