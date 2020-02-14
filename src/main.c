@@ -75,6 +75,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <librnd/core/hid_init.h>
 #include <librnd/core/compat_misc.h>
 #include "tool_logic.h"
+#include "pixmap_pcb.h"
 
 const char *pcbhl_menu_file_paths[4];
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
@@ -428,6 +429,7 @@ int main(int argc, char *argv[])
 
 	pcb_layer_vis_init();
 	pcb_brave_init();
+	pcb_pixmap_init();
 
 	/* process arguments */
 	for(n = 1; n < argc; n++) {

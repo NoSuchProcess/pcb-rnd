@@ -32,6 +32,8 @@
 #include <librnd/core/pixmap.h>
 #include "pixmap_pcb.h"
 
+pcb_pixmap_hash_t pcb_pixmaps;
+
 void pcb_pixmap_hash_init(pcb_pixmap_hash_t *pmhash)
 {
 	htpp_init(&pmhash->meta, pcb_pixmap_hash_meta, pcb_pixmap_eq_meta);
@@ -51,3 +53,14 @@ pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_p
 	return NULL;
 }
 
+
+void pcb_pixmap_init(void)
+{
+	pcb_pixmap_hash_init(&pcb_pixmaps);
+}
+
+void pcb_pixmap_uninit(void)
+{
+	pcb_pixmap_hash_uninit(&pcb_pixmaps);
+	rnd_pixmap_uninit();
+}

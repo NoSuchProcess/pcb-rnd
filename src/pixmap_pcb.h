@@ -39,7 +39,6 @@ typedef struct pcb_pixmap_hash_s {
 	htpp_t pixels;    /* all pixmaps, hashed and compared by the pixels (but not natural_oid) - used to look up a specific pixel array */
 } pcb_pixmap_hash_t;
 
-
 void pcb_pixmap_hash_init(pcb_pixmap_hash_t *pmhash);
 void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash);
 
@@ -47,5 +46,15 @@ void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash);
    pm and returns the matching pixmap from the board's pixmap hash. pm must
    be in neutral position (no rotation, no mirror). Returns NULL on error. */
 pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm);
+
+
+/*** global state ***/
+
+void pcb_pixmap_init(void);
+void pcb_pixmap_uninit(void);
+
+/* global pixmap hash: buffers may reference the same pixmaps so keep a common
+   cache */
+extern pcb_pixmap_hash_t pcb_pixmaps;
 
 #endif
