@@ -903,9 +903,22 @@ pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,
 /* ---------------------------------------------------------------------------
  * checks if an gfx crosses a rectangle (or gfx is within the rectangle)
  */
-pcb_bool pcb_is_gfx_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_gfx_t *gfx)
+pcb_bool pcb_is_gfx_in_rectangle(const pcb_box_t *b, const pcb_gfx_t *gfx)
 {
-	TODO("gfx");
+	pcb_line_t l;
+	int n, m;
+
+	l.Thickness = 1;
+	for(n = 0; n < 4; n++) {
+		m = n+1;
+		if (m == 4)
+			m = 0;
+		l.Point1.X = gfx->cox[n]; l.Point1.Y = gfx->coy[n];
+		l.Point2.X = gfx->cox[m]; l.Point2.Y = gfx->coy[m];
+		if (PCB_LINE_TOUCHES_BOX(&l, b))
+			return pcb_true;
+	}
+
 	return pcb_false;
 }
 
