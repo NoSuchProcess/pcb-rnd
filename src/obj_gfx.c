@@ -642,14 +642,16 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 	}
 
 
-/* temporary */
-	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
-	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.1));
-	pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
-	pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
-
-	TODO("gfx draw");
+	if ((gfx->pxm_neutral == NULL) || (pcb_render->draw_pixmap == NULL)) {
+		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
+		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+		pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.1));
+		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
+		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
+	}
+	else {
+		pcb_render->draw_pixmap(pcb_render, gfx->cx, gfx->cy, gfx->pxm_neutral);
+	}
 }
 
 void pcb_gfx_draw(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
