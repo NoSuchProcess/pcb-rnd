@@ -1047,8 +1047,13 @@ pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b)
 
 pcb_bool pcb_gfx_in_box(pcb_gfx_t *gfx, pcb_box_t *b)
 {
-	pcb_box_t gb = pcb_arc_mini_bbox(gfx);
-	return PCB_BOX_IN_BOX(&gb, b);
+	int n;
+
+	for(n = 0; n < 4; n++)
+		if (!PCB_POINT_IN_BOX(gfx->cox[n], gfx->coy[n], b))
+			return pcb_false;
+
+	return pcb_true;
 }
 
 /* TODO: this code is BROKEN in the case of non-circular arcs,
