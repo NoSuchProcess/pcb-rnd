@@ -31,6 +31,7 @@
 
 #include <librnd/core/pixmap.h>
 #include "pixmap_pcb.h"
+#include "obj_common.h"
 
 pcb_pixmap_hash_t pcb_pixmaps;
 
@@ -65,11 +66,67 @@ pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_p
 	return pm;
 }
 
-pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm, pcb_angle_t rot, int xmirror, int ymirror)
+pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *ipm, pcb_angle_t rot, int xmirror, int ymirror)
 {
-	if ((rot == 0) && !xmirror && !ymirror)
-		return pm; /* xformed == neutral */
+	pcb_pixmap_t *pm;
+	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
+	long n, len;
+	int x, y, ix, iy, ox, oy;
+	unsigned char *ip, *op;
 
+	if ((rot == 0) && !xmirror && !ymirror)
+		return ipm; /* xformed == neutral */
+
+	pm = calloc(sizeof(pcb_pixmap_t), 1);
+	if (ipm->has_transp) {
+		pm->tr = ipm->tr;
+		pm->tg = ipm->tg;
+		pm->tb = ipm->tb;
+	}
+	else
+		pm->tr = pm->tg = pm->tb = 127;
+	pm->neutral_oid = ipm->neutral_oid;
+	pm->tr_rot = rot;
+	pm->tr_xmirror = xmirror;
+	pm->tr_ymirror = ymirror;
+	pm->tr_xscale = 1.0;
+	pm->tr_yscale = 1.0;
+	pm->has_transp = 1;
+
+
+	TODO("gfx: apply mirrors");
+	pcb_xform_mx_rotate(mx, rot);
+
+
+	pm->sx = pcb_xform_x(mx, (ipm->sx/2)+1, (ipm->sy/2)+1) * 2;
+	pm->sy = pcb_xform_y(mx, -(ipm->sx/2)-1, (ipm->sy/2)-1) * 2;
+
+	/* alloc and fill with transparent */
+	len = pm->sx * pm->sy * 3;
+	pm->p = malloc(len);
+	for(n = 0; n < len; n += 3) {
+		pm->p[n+0] = pm->tr;
+		pm->p[n+1] = pm->tg;
+		pm->p[n+2] = pm->tb;
+	}
+
+	ip = ipm->p;
+	for(y = 0; y < ipm->sy; y++) {
+		iy = y - ipm->sy/2;
+		for(x = 0; x < ipm->sx; x++, ip+=3) {
+			ix = x - ipm->sx/2;
+			ox = pcb_xform_x(mx, ix, iy) + pm->sx/2;
+			oy = pcb_xform_y(mx, ix, iy) + pm->sy/2;
+			if ((ox < 0) || (ox >= pm->sx) || (oy < 0) || (oy >= pm->sy))
+				continue;
+			op = pm->p + (oy * pm->sx + ox) * 3;
+			op[0] = ip[0];
+			op[1] = ip[1];
+			op[2] = ip[2];
+		}
+	}
+
+	pcb_trace("sx;sy: %ld %ld -> %ld %ld\n", ipm->sx, ipm->sy, pm->sx, pm->sy);
 TODO("create the transformed version if not in the cache already (by headers)");
 
 	return pm;
