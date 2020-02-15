@@ -714,7 +714,6 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->usage = ghid_usage;
 
 	dst->draw_pixmap = ghid_draw_pixmap;
-	dst->init_pixmap = ghid_init_pixmap;
 
 	dst->hid_data = ghidgui;
 }
