@@ -255,7 +255,7 @@ void pcb_gtk_interface_input_signals_disconnect(void)
 /*** misc ***/
 
 /* import a core pixmap into a gdk pixmap */
-static void ghid_init_pixmap_(pcb_gtk_pixmap_t *gpm)
+void ghid_init_pixmap_(pcb_gtk_pixmap_t *gpm)
 {
 	int rowstd, nch, x, y;
 	unsigned char *dst, *dst_row, *src = gpm->pxm->p;

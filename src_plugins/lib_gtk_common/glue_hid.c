@@ -614,11 +614,24 @@ static int ghid_mod1_is_pressed(pcb_hid_t *hid)
 #endif
 }
 
+static void ghid_init_pixmap(pcb_hid_t *hid, pcb_pixmap_t *pxm)
+{
+	pcb_gtk_pixmap_t *gtk_px = calloc(sizeof(pcb_gtk_pixmap_t), 1);
+
+	gtk_px->pxm = pxm;
+	pxm->hid_data = gtk_px;
+	ghid_init_pixmap_(gtk_px);
+}
+
 static void ghid_draw_pixmap(pcb_hid_t *hid, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, const pcb_pixmap_t *pixmap)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 TODO("gfx: this use of sx/sy ignores rotation");
-	gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - sx/2, cy - sy/2, sx, sy);
+
+	if (pixmap->hid_data == NULL)
+		ghid_init_pixmap(hid, pixmap);
+	if (pixmap->hid_data != NULL)
+		gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - sx/2, cy - sy/2, sx, sy);
 }
 
 void ghid_glue_hid_init(pcb_hid_t *dst)
@@ -701,6 +714,7 @@ void ghid_glue_hid_init(pcb_hid_t *dst)
 	dst->usage = ghid_usage;
 
 	dst->draw_pixmap = ghid_draw_pixmap;
+	dst->init_pixmap = ghid_init_pixmap;
 
 	dst->hid_data = ghidgui;
 }
