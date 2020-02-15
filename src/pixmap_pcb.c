@@ -65,6 +65,15 @@ pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_p
 	return pm;
 }
 
+pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm, pcb_angle_t rot, int xmirror, int ymirror)
+{
+	if ((rot == 0) && !xmirror && !ymirror)
+		return pm; /* xformed == neutral */
+
+TODO("create the transformed version if not in the cache already (by headers)");
+
+	return pm;
+}
 
 void pcb_pixmap_init(void)
 {

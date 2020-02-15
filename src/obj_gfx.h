@@ -39,6 +39,7 @@ struct pcb_gfx_s {       /* holds information about gfxs */
 	pcb_coord_t cx, cy;            /* center coordinates */
 	pcb_coord_t sx, sy;            /* size x and y on board (net box size before rotation) */
 	pcb_angle_t rot;
+	unsigned int xmirror:1, ymirror:1;
 
 	pcb_pixmap_t *pxm_neutral;     /* graphics is a pixmap, if not NULL - in neutral scale/rot */
 	pcb_pixmap_t *pxm_xformed;     /* transformed version from the cache */

@@ -275,6 +275,9 @@ static int undo_gfx_geo_swap(void *udata)
 	rnd_swap(pcb_coord_t, g->sy, g->gfx->sy);
 	rnd_swap(pcb_angle_t, g->rot, g->gfx->rot);
 
+	if (g->rot != g->gfx->rot)
+		g->gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, g->gfx->pxm_neutral, g->gfx->rot, g->gfx->xmirror, g->gfx->ymirror);
+
 	pcb_gfx_update(g->gfx);
 	pcb_gfx_bbox(g->gfx);
 	if (layer->gfx_tree != NULL)
@@ -599,9 +602,7 @@ void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, pcb_pixmap_t *pxm, pcb_bool undoabl
 {
 	TODO("gfx: undoable pixmap assign");
 	gfx->pxm_neutral = pcb_pixmap_insert_neutral_or_free(&pcb_pixmaps, pxm);
-
-	TODO("gfx: calculate transformed");
-	gfx->pxm_xformed = gfx->pxm_neutral;
+	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
 }
 
 
@@ -650,7 +651,7 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
 	}
 	else {
-		pcb_render->draw_pixmap(pcb_render, gfx->cx, gfx->cy, gfx->sx, gfx->sy, gfx->pxm_neutral);
+		pcb_render->draw_pixmap(pcb_render, gfx->cx, gfx->cy, gfx->sx, gfx->sy, gfx->pxm_xformed);
 	}
 }
 
