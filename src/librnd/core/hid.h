@@ -314,7 +314,6 @@ struct pcb_hid_s {
 	void (*fill_rect)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
 
 	void (*draw_pixmap)(pcb_hid_t *hid, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, const pcb_pixmap_t *pixmap);
-	void (*init_pixmap)(pcb_hid_t *hid, const pcb_pixmap_t *pixmap);
 	void (*uninit_pixmap)(pcb_hid_t *hid, const pcb_pixmap_t *pixmap);
 
 	/* This is for the printer. If xval_ and yval_ are
