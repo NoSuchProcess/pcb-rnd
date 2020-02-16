@@ -405,13 +405,21 @@ static void ev_ui_post(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_even
 	}
 }
 
+#include <librnd/core/pixmap.h>
 static const char pcb_acts_d1[] = "d1()\n";
 static const char pcb_acth_d1[] = "debug action for development";
 static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
+	pcb_pixmap_t *pxm;
 	pcb_gfx_t *g = pcb_gfx_new(PCB_CURRLAYER(pcb),
-		PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(200), PCB_MIL_TO_COORD(100), 0, pcb_flag_make(0));
+		PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(200), PCB_MIL_TO_COORD(200), 15, pcb_flag_make(0));
+
+	pxm = rnd_pixmap_load(PCB_ACT_HIDLIB, "A.pnm");
+pcb_trace("pxm=%p\n", pxm);
+
+	pcb_gfx_set_pixmap_free(g, pxm, 1);
+
 	PCB_ACT_IRES(0);
 	return 0;
 }
