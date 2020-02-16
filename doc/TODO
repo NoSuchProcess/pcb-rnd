@@ -13,7 +13,9 @@
 		- TODO("gfx")
 		- act_draw() binding
 		- tool_arrow: resize
-	- FEATURE: hidlib: render pixmap: test in lesstif and gl
+		- rotated pixmap scale adjustment
+		- document the new object in the data model
+	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Majenko]
 - FEATURE: {v n} on subc should set subc PCB_FLAG_TERMNAME too; when more terminals are created (named) within the subc, they should inherit the subc's PCB_FLAG_TERMNAME flag (probably in the attribute change callback) [report: Majenko]
