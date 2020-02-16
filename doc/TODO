@@ -12,7 +12,6 @@
 	- FEATURE: PCB_OBJ_GFX
 		- TODO("gfx")
 		- act_draw() binding
-		- report plugin
 		- tool_arrow: resize
 	- FEATURE: hidlib: render pixmap: test in lesstif and gl
 	- DOC: pool node on how to use pixmap for breadboading
