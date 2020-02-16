@@ -1,8 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: remove the donut rats special casing
-	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
 + FEATURE: http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
 - CLEANUP: when removing import_sch, also remove ImportGUI()
 - FEATURE/BUG: fungw: call getxy("x", "x") from fawk - the result is coord and is not converted because custom args are converted to NIL [report: Igor2]
@@ -24,6 +22,8 @@
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 
 2. For later releases ===============================================================================
+- CLEANUP: remove the donut rats special casing
+	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: (TT) propedit revamp:
