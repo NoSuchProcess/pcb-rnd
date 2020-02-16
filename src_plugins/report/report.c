@@ -325,8 +325,15 @@ static char *report_text(pcb_text_t *text)
 		if (pcb_gui->shift_is_pressed(pcb_gui))
 			pcb_r_dump_tree(text->parent.layer->text_tree, 0);
 #endif
-TODO("report text");
-	return NULL;
+
+	return pcb_strdup_printf("%m+TEXT ID# %ld;  Flags:%s\n"
+		"BoundingBox %$mD %$mD.\n"
+		"Font id %d\nclearance %$mS\nthickness %$mS\nrotation %f\n"
+		, USER_UNITMASK,
+		text->ID, pcb_strflg_f2s(text->Flags, PCB_OBJ_TEXT, NULL, 0),
+		text->BoundingBox.X1, text->BoundingBox.Y1,
+		text->BoundingBox.X2, text->BoundingBox.Y2,
+		text->fid, text->clearance, text->thickness, text->rot);
 }
 
 static char *report_point(int type, pcb_layer_t *layer, pcb_point_t *point)
