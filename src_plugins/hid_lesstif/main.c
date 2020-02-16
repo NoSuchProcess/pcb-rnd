@@ -623,7 +623,7 @@ typedef struct {
 	unsigned inited:1;
 } pcb_ltf_pixmap_t;
 
-static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
+static void pcb_ltf_draw_pixmap_(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
 {
 	int w, h, sx3, done = 0;
 
@@ -772,6 +772,18 @@ static void pcb_ltf_draw_pixmap(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb
 	}
 }
 
+static void pcb_ltf_draw_pixmap(pcb_hid_t *hid, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, pcb_pixmap_t *pixmap)
+{
+	if (pixmap->hid_data == NULL) {
+		pcb_ltf_pixmap_t *lpm = calloc(sizeof(pcb_ltf_pixmap_t), 1);
+		lpm->pxm = pixmap;
+		pixmap->hid_data = lpm;
+	}
+	if (pixmap->hid_data != NULL)
+		pcb_ltf_draw_pixmap_(ltf_hidlib, pixmap->hid_data, cx - sx/2, cy - sy/2, sx, sy);
+}
+
+
 static pcb_pixmap_t ltf_bg_img;
 static void DrawBackgroundImage()
 {
@@ -782,7 +794,7 @@ static void DrawBackgroundImage()
 
 	if (lpm.pxm == NULL)
 		lpm.pxm = &ltf_bg_img;
-	pcb_ltf_draw_pixmap(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->size_x, ltf_hidlib->size_y);
+	pcb_ltf_draw_pixmap_(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->size_x, ltf_hidlib->size_y);
 }
 
 static void LoadBackgroundImage(const char *fn)
@@ -3024,6 +3036,8 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.set_top_title = ltf_set_top_title;
 	lesstif_hid.dock_enter = ltf_dock_enter;
 	lesstif_hid.busy = ltf_busy;
+
+	lesstif_hid.draw_pixmap = pcb_ltf_draw_pixmap;
 
 	lesstif_hid.set_hidlib = ltf_set_hidlib;
 
