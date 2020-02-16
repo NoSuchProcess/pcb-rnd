@@ -336,6 +336,23 @@ static char *report_text(pcb_text_t *text)
 		text->fid, text->clearance, text->thickness, text->rot);
 }
 
+static char *report_gfx(pcb_gfx_t *gfx)
+{
+#ifndef NDEBUG
+		if (pcb_gui->shift_is_pressed(pcb_gui))
+			pcb_r_dump_tree(gfx->parent.layer->gfx_tree, 0);
+#endif
+
+	return pcb_strdup_printf("%m+GFX ID# %ld;  Flags:%s\n"
+		"BoundingBox %$mD %$mD.\n"
+		"Center %$mD\nSize %$mD\nrotation %f\n"
+		, USER_UNITMASK,
+		gfx->ID, pcb_strflg_f2s(gfx->Flags, PCB_OBJ_GFX, NULL, 0),
+		gfx->BoundingBox.X1, gfx->BoundingBox.Y1,
+		gfx->BoundingBox.X2, gfx->BoundingBox.Y2,
+		gfx->cx, gfx->cy, gfx->sx, gfx->sx, gfx->rot);
+}
+
 static char *report_point(int type, pcb_layer_t *layer, pcb_point_t *point)
 {
 	return pcb_strdup_printf("%m+POINT ID# %ld.\n"
@@ -374,6 +391,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		case PCB_OBJ_POLY: report = report_poly(ptr2); break;
 		case PCB_OBJ_SUBC: report = report_subc(ptr2); break;
 		case PCB_OBJ_TEXT: report = report_text(ptr2); break;
+		case PCB_OBJ_GFX:  report = report_gfx(ptr2); break;
 		case PCB_OBJ_LINE_POINT:
 		case PCB_OBJ_POLY_POINT: report = report_point(type, ptr1, ptr2); break;
 		case PCB_OBJ_VOID: report = NULL; break;
