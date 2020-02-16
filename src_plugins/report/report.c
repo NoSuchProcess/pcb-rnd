@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,1999 Thomas Nau
- *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This module, report.c, was written and is Copyright (C) 1997 harry eaton
  *
@@ -34,7 +34,6 @@
 
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-
 
 #include <math.h>
 
@@ -124,8 +123,7 @@ static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	stringlist = (char *) malloc(512L + AllDrills->DrillN * 64L);
 
 	/* Use tabs for formatting since can't count on a fixed font anymore.
-	   |  And even that probably isn't going to work in all cases.
-	 */
+	   And even that probably isn't going to work in all cases. */
 	sprintf(stringlist,
 					"There are %d different drill sizes used in this layout, %d holes total\n\n"
 					"Drill Diam. (%s)\t# of Pins\t# of Vias\t# of Elements\t# Unplated\n",
