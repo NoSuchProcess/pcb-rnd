@@ -173,6 +173,172 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
+static char *report_pstk(pcb_pstk_t *ps)
+{
+	pcb_pstk_proto_t *proto;
+	gds_t tmp;
+
+#ifndef NDEBUG
+	if (pcb_gui->shift_is_pressed(pcb_gui))
+		pcb_r_dump_tree(PCB->Data->padstack_tree, 0);
+#endif
+	proto = pcb_pstk_get_proto(ps);
+	gds_init(&tmp);
+
+	pcb_append_printf(&tmp, "%m+PADSTACK ID# %ld; Flags:%s\n"
+		"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_OBJ_PSTK, NULL, 0),
+		ps->x, ps->y);
+
+	if ((proto != NULL) && (proto->hdia > 0))
+		pcb_append_printf(&tmp, "%m+Hole diameter: %$mS", USER_UNITMASK, proto->hdia);
+
+	pcb_append_printf(&tmp, "\n%s%s%s", gen_locked(ps), gen_term(ps));
+
+	return tmp.array;
+}
+
+static char *report_line(pcb_line_t *line)
+{
+#ifndef NDEBUG
+	if (pcb_gui->shift_is_pressed(pcb_gui))
+		pcb_r_dump_tree(line->parent.layer->line_tree, 0);
+#endif
+	return pcb_strdup_printf("%m+LINE ID# %ld;  Flags:%s\n"
+		"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
+		"SecondPoint(X,Y) = %$mD, ID = %ld.\n"
+		"Width = %$mS.\nClearance = %$mS.\n"
+		"It is on layer %d\n"
+		"and has name \"%s\".\n"
+		"%s"
+		"%s%s", USER_UNITMASK,
+		line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
+		line->Point1.X, line->Point1.Y, line->Point1.ID,
+		line->Point2.X, line->Point2.Y, line->Point2.ID,
+		line->Thickness, line->Clearance / 2,
+		pcb_layer_id(PCB->Data, line->parent.layer),
+		gen_locked(line), gen_term(line));
+}
+
+static char *report_rat(pcb_rat_t *line)
+{
+#ifndef NDEBUG
+	if (pcb_gui->shift_is_pressed(pcb_gui))
+		pcb_r_dump_tree(PCB->Data->rat_tree, 0);
+#endif
+	return pcb_strdup_printf("%m+RAT-LINE ID# %ld;  Flags:%s\n"
+		"FirstPoint(X,Y)  = %$mD; ID = %ld; "
+		"connects to layer group #%d (%s).\n"
+		"SecondPoint(X,Y) = %$mD; ID = %ld; "
+		"connects to layer group #%d (%s).\n",
+		USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
+		line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
+		line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
+}
+
+static char *report_arc(pcb_arc_t *arc)
+{
+	pcb_box_t box;
+#ifndef NDEBUG
+	if (pcb_gui->shift_is_pressed(pcb_gui))
+		pcb_r_dump_tree(arc->parent.layer->arc_tree, 0);
+#endif
+	pcb_arc_get_end(arc, 0, &box.X1, &box.Y1);
+	pcb_arc_get_end(arc, 1, &box.X2, &box.Y2);
+
+	return pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
+		"CenterPoint(X,Y) = %$mD.\n"
+		"Width = %$mS.\nClearance = %$mS.\n"
+		"Radius = %$mS, StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
+		"Bounding Box is %$mD, %$mD.\n"
+		"That makes the end points at %$mD and %$mD.\n"
+		"It is on layer %d.\n"
+		"%s"
+		"%s%s%s", USER_UNITMASK, arc->ID, pcb_strflg_f2s(arc->Flags, PCB_OBJ_ARC, NULL, 0),
+		arc->X, arc->Y,
+		arc->Thickness, arc->Clearance / 2,
+		arc->Width, arc->StartAngle, arc->Delta,
+		arc->BoundingBox.X1, arc->BoundingBox.Y1,
+		arc->BoundingBox.X2, arc->BoundingBox.Y2,
+		box.X1, box.Y1,
+		box.X2, box.Y2,
+		pcb_layer_id(PCB->Data, arc->parent.layer), gen_locked(arc), gen_term(arc));
+}
+
+static char *report_poly(pcb_poly_t *poly)
+{
+	const char *aunit;
+	double area, u;
+
+#ifndef NDEBUG
+	if (pcb_gui->shift_is_pressed(pcb_gui))
+		pcb_r_dump_tree(poly->parent.layer->polygon_tree, 0);
+#endif
+
+	aunit = pcbhl_conf.editor.grid_unit->suffix;
+	if (aunit[1] == 'm')
+		u = PCB_MM_TO_COORD(1);
+	else
+		u = PCB_MIL_TO_COORD(1);
+
+	area = pcb_poly_area(poly);
+	area = area / u;
+	area = area / u;
+
+	return pcb_strdup_printf("%m+POLYGON ID# %ld;  Flags:%s\n"
+		"Its bounding box is %$mD %$mD.\n"
+		"It has %d points and could store %d more\n"
+		"  without using more memory.\n"
+		"It has %d holes and resides on layer %d.\n"
+		"Its unclipped area is %f square %s.\n"
+		"%s"
+		"%s%s%s", USER_UNITMASK, poly->ID,
+		pcb_strflg_f2s(poly->Flags, PCB_OBJ_POLY, NULL, 0),
+		poly->BoundingBox.X1, poly->BoundingBox.Y1,
+		poly->BoundingBox.X2, poly->BoundingBox.Y2,
+		poly->PointN, poly->PointMax - poly->PointN,
+		poly->HoleIndexN,
+		pcb_layer_id(PCB->Data, poly->parent.layer),
+		area, aunit,
+		gen_locked(poly), gen_term(poly));
+}
+
+static char *report_subc(pcb_subc_t *subc)
+{
+#ifndef NDEBUG
+	if (pcb_gui->shift_is_pressed(pcb_gui))
+		pcb_r_dump_tree(PCB->Data->subc_tree, 0);
+#endif
+	return pcb_strdup_printf("%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
+		"BoundingBox %$mD %$mD.\n"
+		"Refdes \"%s\".\n"
+		"%s", USER_UNITMASK,
+		subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL, 0),
+		subc->BoundingBox.X1, subc->BoundingBox.Y1,
+		subc->BoundingBox.X2, subc->BoundingBox.Y2,
+		PCB_EMPTY(subc->refdes),
+		gen_locked(subc));
+}
+
+static char *report_text(pcb_text_t *text)
+{
+#ifndef NDEBUG
+		if (pcb_gui->shift_is_pressed(pcb_gui))
+			pcb_r_dump_tree(text->parent.layer->text_tree, 0);
+#endif
+TODO("report text");
+	return NULL;
+}
+
+static char *report_point(int type, pcb_layer_t *layer, pcb_point_t *point)
+{
+	return pcb_strdup_printf("%m+POINT ID# %ld.\n"
+		"Located at (X,Y) = %$mD.\n"
+		"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
+		point->X, point->Y,
+		(type == PCB_OBJ_LINE_POINT) ? "line" : "polygon", pcb_layer_id(PCB->Data, layer));
+}
+
+
 static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -194,212 +360,17 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_OBJ_LOCKED, &ptr1, &ptr2, &ptr3);
 
 	switch (type) {
-	case PCB_OBJ_PSTK:
-		{
-			pcb_pstk_t *ps;
-			pcb_pstk_proto_t *proto;
-			gds_t tmp;
-
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed(pcb_gui)) {
-				pcb_r_dump_tree(PCB->Data->padstack_tree, 0);
-				PCB_ACT_IRES(0);
-				return 0;
-			}
-#endif
-			ps = (pcb_pstk_t *)ptr2;
-			proto = pcb_pstk_get_proto(ps);
-			gds_init(&tmp);
-
-			pcb_append_printf(&tmp, "%m+PADSTACK ID# %ld; Flags:%s\n"
-				"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_OBJ_PSTK, NULL, 0),
-				ps->x, ps->y);
-
-			if ((proto != NULL) && (proto->hdia > 0))
-				pcb_append_printf(&tmp, "%m+Hole diameter: %$mS", USER_UNITMASK, proto->hdia);
-
-			pcb_append_printf(&tmp, "\n%s%s%s", gen_locked(ps), gen_term(ps));
-
-			report = tmp.array;
-			break;
-		}
-
-	case PCB_OBJ_LINE:
-		{
-			pcb_line_t *line;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed(pcb_gui)) {
-				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-				pcb_r_dump_tree(layer->line_tree, 0);
-				PCB_ACT_IRES(0);
-				return 0;
-			}
-#endif
-			line = (pcb_line_t *) ptr2;
-			report = pcb_strdup_printf("%m+LINE ID# %ld;  Flags:%s\n"
-				"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
-				"SecondPoint(X,Y) = %$mD, ID = %ld.\n"
-				"Width = %$mS.\nClearance = %$mS.\n"
-				"It is on layer %d\n"
-				"and has name \"%s\".\n"
-				"%s"
-				"%s%s", USER_UNITMASK,
-				line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
-				line->Point1.X, line->Point1.Y, line->Point1.ID,
-				line->Point2.X, line->Point2.Y, line->Point2.ID,
-				line->Thickness, line->Clearance / 2,
-				pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-				gen_locked(line), gen_term(line));
-			break;
-		}
-	case PCB_OBJ_RAT:
-		{
-			pcb_rat_t *line;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed(pcb_gui)) {
-				pcb_r_dump_tree(PCB->Data->rat_tree, 0);
-				PCB_ACT_IRES(0);
-				return 0;
-			}
-#endif
-			line = (pcb_rat_t *) ptr2;
-			report = pcb_strdup_printf("%m+RAT-LINE ID# %ld;  Flags:%s\n"
-				"FirstPoint(X,Y)  = %$mD; ID = %ld; "
-				"connects to layer group #%d (%s).\n"
-				"SecondPoint(X,Y) = %$mD; ID = %ld; "
-				"connects to layer group #%d (%s).\n",
-				USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
-				line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
-				line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
-			break;
-		}
-	case PCB_OBJ_ARC:
-		{
-			pcb_arc_t *Arc;
-			pcb_box_t box;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed(pcb_gui)) {
-				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-				pcb_r_dump_tree(layer->arc_tree, 0);
-				return 0;
-			}
-#endif
-		Arc = (pcb_arc_t *)ptr2;
-		pcb_arc_get_end(Arc, 0, &box.X1, &box.Y1);
-		pcb_arc_get_end(Arc, 1, &box.X2, &box.Y2);
-
-		report = pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
-			"CenterPoint(X,Y) = %$mD.\n"
-			"Width = %$mS.\nClearance = %$mS.\n"
-			"Radius = %$mS, StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
-			"Bounding Box is %$mD, %$mD.\n"
-			"That makes the end points at %$mD and %$mD.\n"
-			"It is on layer %d.\n"
-			"%s"
-			"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_OBJ_ARC, NULL, 0),
-			Arc->X, Arc->Y,
-			Arc->Thickness, Arc->Clearance / 2,
-			Arc->Width, Arc->StartAngle, Arc->Delta,
-			Arc->BoundingBox.X1, Arc->BoundingBox.Y1,
-			Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
-			box.X1, box.Y1,
-			box.X2, box.Y2,
-			pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc), gen_term(Arc));
-			break;
-		}
-	case PCB_OBJ_POLY:
-		{
-			pcb_poly_t *Polygon;
-			const char *aunit;
-			double area, u;
-
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed(pcb_gui)) {
-				pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-				pcb_r_dump_tree(layer->polygon_tree, 0);
-				PCB_ACT_IRES(0);
-				return 0;
-			}
-#endif
-			Polygon = (pcb_poly_t *) ptr2;
-
-			aunit = pcbhl_conf.editor.grid_unit->suffix;
-			if (aunit[1] == 'm')
-				u = PCB_MM_TO_COORD(1);
-			else
-				u = PCB_MIL_TO_COORD(1);
-
-			area = pcb_poly_area(Polygon);
-			area = area / u;
-			area = area / u;
-
-			report = pcb_strdup_printf("%m+POLYGON ID# %ld;  Flags:%s\n"
-				"Its bounding box is %$mD %$mD.\n"
-				"It has %d points and could store %d more\n"
-				"  without using more memory.\n"
-				"It has %d holes and resides on layer %d.\n"
-				"Its unclipped area is %f square %s.\n"
-				"%s"
-				"%s%s%s", USER_UNITMASK, Polygon->ID,
-				pcb_strflg_f2s(Polygon->Flags, PCB_OBJ_POLY, NULL, 0),
-				Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
-				Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
-				Polygon->PointN, Polygon->PointMax - Polygon->PointN,
-				Polygon->HoleIndexN,
-				pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-				area, aunit,
-				gen_locked(Polygon), gen_term(Polygon));
-			break;
-		}
-	case PCB_OBJ_SUBC:
-		{
-			pcb_subc_t *subc;
-#ifndef NDEBUG
-			if (pcb_gui->shift_is_pressed(pcb_gui)) {
-				pcb_r_dump_tree(PCB->Data->subc_tree, 0);
-				PCB_ACT_IRES(0);
-				return 0;
-			}
-#endif
-			subc = (pcb_subc_t *)ptr2;
-			report = pcb_strdup_printf("%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
-				"BoundingBox %$mD %$mD.\n"
-				"Refdes \"%s\".\n"
-				"%s", USER_UNITMASK,
-				subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL, 0),
-				subc->BoundingBox.X1, subc->BoundingBox.Y1,
-				subc->BoundingBox.X2, subc->BoundingBox.Y2,
-				PCB_EMPTY(subc->refdes),
-				gen_locked(subc));
-			break;
-		}
-	case PCB_OBJ_TEXT:
-#ifndef NDEBUG
-		if (pcb_gui->shift_is_pressed(pcb_gui)) {
-			pcb_layer_t *layer = (pcb_layer_t *) ptr1;
-			pcb_r_dump_tree(layer->text_tree, 0);
-			PCB_ACT_IRES(0);
-			return 0;
-		}
-#endif
-	case PCB_OBJ_LINE_POINT:
-	case PCB_OBJ_POLY_POINT:
-		{
-			pcb_point_t *point = (pcb_point_t *) ptr2;
-			report = pcb_strdup_printf("%m+POINT ID# %ld.\n"
-				"Located at (X,Y) = %$mD.\n"
-				"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
-				point->X, point->Y,
-				(type == PCB_OBJ_LINE_POINT) ? "line" : "polygon", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
-			break;
-		}
-	case PCB_OBJ_VOID:
-		report = NULL;
-		break;
-
-	default:
-		report = pcb_strdup_printf("Unknown\n");
-		break;
+		case PCB_OBJ_PSTK: report = report_pstk(ptr2); break;
+		case PCB_OBJ_LINE: report = report_line(ptr2); break;
+		case PCB_OBJ_RAT:  report = report_rat(ptr2); break;
+		case PCB_OBJ_ARC:  report = report_arc(ptr2); break;
+		case PCB_OBJ_POLY: report = report_poly(ptr2); break;
+		case PCB_OBJ_SUBC: report = report_subc(ptr2); break;
+		case PCB_OBJ_TEXT: report = report_text(ptr2); break;
+		case PCB_OBJ_LINE_POINT:
+		case PCB_OBJ_POLY_POINT: report = report_point(type, ptr1, ptr2); break;
+		case PCB_OBJ_VOID: report = NULL; break;
+		default: report = pcb_strdup_printf("Unknown\n"); break;
 	}
 
 	if ((report == NULL) || (*report == '\0')) {
