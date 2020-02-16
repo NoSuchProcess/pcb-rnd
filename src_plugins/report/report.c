@@ -237,19 +237,19 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 #endif
 			line = (pcb_line_t *) ptr2;
 			report = pcb_strdup_printf("%m+LINE ID# %ld;  Flags:%s\n"
-									"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
-									"SecondPoint(X,Y) = %$mD, ID = %ld.\n"
-									"Width = %$mS.\nClearance = %$mS.\n"
-									"It is on layer %d\n"
-									"and has name \"%s\".\n"
-									"%s"
-									"%s%s", USER_UNITMASK,
-									line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
-									line->Point1.X, line->Point1.Y, line->Point1.ID,
-									line->Point2.X, line->Point2.Y, line->Point2.ID,
-									line->Thickness, line->Clearance / 2,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-									gen_locked(line), gen_term(line));
+				"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
+				"SecondPoint(X,Y) = %$mD, ID = %ld.\n"
+				"Width = %$mS.\nClearance = %$mS.\n"
+				"It is on layer %d\n"
+				"and has name \"%s\".\n"
+				"%s"
+				"%s%s", USER_UNITMASK,
+				line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
+				line->Point1.X, line->Point1.Y, line->Point1.ID,
+				line->Point2.X, line->Point2.Y, line->Point2.ID,
+				line->Thickness, line->Clearance / 2,
+				pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
+				gen_locked(line), gen_term(line));
 			break;
 		}
 	case PCB_OBJ_RAT:
@@ -264,13 +264,13 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 #endif
 			line = (pcb_rat_t *) ptr2;
 			report = pcb_strdup_printf("%m+RAT-LINE ID# %ld;  Flags:%s\n"
-									"FirstPoint(X,Y)  = %$mD; ID = %ld; "
-									"connects to layer group #%d (%s).\n"
-									"SecondPoint(X,Y) = %$mD; ID = %ld; "
-									"connects to layer group #%d (%s).\n",
-									USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
-									line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
-									line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
+				"FirstPoint(X,Y)  = %$mD; ID = %ld; "
+				"connects to layer group #%d (%s).\n"
+				"SecondPoint(X,Y) = %$mD; ID = %ld; "
+				"connects to layer group #%d (%s).\n",
+				USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
+				line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
+				line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
 			break;
 		}
 	case PCB_OBJ_ARC:
@@ -284,27 +284,27 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				return 0;
 			}
 #endif
-			Arc = (pcb_arc_t *) ptr2;
+		Arc = (pcb_arc_t *)ptr2;
 		pcb_arc_get_end(Arc, 0, &box.X1, &box.Y1);
 		pcb_arc_get_end(Arc, 1, &box.X2, &box.Y2);
 
-			report = pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
-									"CenterPoint(X,Y) = %$mD.\n"
-									"Width = %$mS.\nClearance = %$mS.\n"
-									"Radius = %$mS, StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
-									"Bounding Box is %$mD, %$mD.\n"
-									"That makes the end points at %$mD and %$mD.\n"
-									"It is on layer %d.\n"
-									"%s"
-									"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_OBJ_ARC, NULL, 0),
-									Arc->X, Arc->Y,
-									Arc->Thickness, Arc->Clearance / 2,
-									Arc->Width, Arc->StartAngle, Arc->Delta,
-									Arc->BoundingBox.X1, Arc->BoundingBox.Y1,
-									Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
-									box.X1, box.Y1,
-									box.X2, box.Y2,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc), gen_term(Arc));
+		report = pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
+			"CenterPoint(X,Y) = %$mD.\n"
+			"Width = %$mS.\nClearance = %$mS.\n"
+			"Radius = %$mS, StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
+			"Bounding Box is %$mD, %$mD.\n"
+			"That makes the end points at %$mD and %$mD.\n"
+			"It is on layer %d.\n"
+			"%s"
+			"%s%s%s", USER_UNITMASK, Arc->ID, pcb_strflg_f2s(Arc->Flags, PCB_OBJ_ARC, NULL, 0),
+			Arc->X, Arc->Y,
+			Arc->Thickness, Arc->Clearance / 2,
+			Arc->Width, Arc->StartAngle, Arc->Delta,
+			Arc->BoundingBox.X1, Arc->BoundingBox.Y1,
+			Arc->BoundingBox.X2, Arc->BoundingBox.Y2,
+			box.X1, box.Y1,
+			box.X2, box.Y2,
+			pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1), gen_locked(Arc), gen_term(Arc));
 			break;
 		}
 	case PCB_OBJ_POLY:
@@ -334,21 +334,21 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			area = area / u;
 
 			report = pcb_strdup_printf("%m+POLYGON ID# %ld;  Flags:%s\n"
-									"Its bounding box is %$mD %$mD.\n"
-									"It has %d points and could store %d more\n"
-									"  without using more memory.\n"
-									"It has %d holes and resides on layer %d.\n"
-									"Its unclipped area is %f square %s.\n"
-									"%s"
-									"%s%s%s", USER_UNITMASK, Polygon->ID,
-									pcb_strflg_f2s(Polygon->Flags, PCB_OBJ_POLY, NULL, 0),
-									Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
-									Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
-									Polygon->PointN, Polygon->PointMax - Polygon->PointN,
-									Polygon->HoleIndexN,
-									pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
-									area, aunit,
-									gen_locked(Polygon), gen_term(Polygon));
+				"Its bounding box is %$mD %$mD.\n"
+				"It has %d points and could store %d more\n"
+				"  without using more memory.\n"
+				"It has %d holes and resides on layer %d.\n"
+				"Its unclipped area is %f square %s.\n"
+				"%s"
+				"%s%s%s", USER_UNITMASK, Polygon->ID,
+				pcb_strflg_f2s(Polygon->Flags, PCB_OBJ_POLY, NULL, 0),
+				Polygon->BoundingBox.X1, Polygon->BoundingBox.Y1,
+				Polygon->BoundingBox.X2, Polygon->BoundingBox.Y2,
+				Polygon->PointN, Polygon->PointMax - Polygon->PointN,
+				Polygon->HoleIndexN,
+				pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1),
+				area, aunit,
+				gen_locked(Polygon), gen_term(Polygon));
 			break;
 		}
 	case PCB_OBJ_SUBC:
@@ -363,14 +363,14 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 #endif
 			subc = (pcb_subc_t *)ptr2;
 			report = pcb_strdup_printf("%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
-									"BoundingBox %$mD %$mD.\n"
-									"Refdes \"%s\".\n"
-									"%s", USER_UNITMASK,
-									subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL, 0),
-									subc->BoundingBox.X1, subc->BoundingBox.Y1,
-									subc->BoundingBox.X2, subc->BoundingBox.Y2,
-									PCB_EMPTY(subc->refdes),
-									gen_locked(subc));
+				"BoundingBox %$mD %$mD.\n"
+				"Refdes \"%s\".\n"
+				"%s", USER_UNITMASK,
+				subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL, 0),
+				subc->BoundingBox.X1, subc->BoundingBox.Y1,
+				subc->BoundingBox.X2, subc->BoundingBox.Y2,
+				PCB_EMPTY(subc->refdes),
+				gen_locked(subc));
 			break;
 		}
 	case PCB_OBJ_TEXT:
@@ -387,10 +387,10 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		{
 			pcb_point_t *point = (pcb_point_t *) ptr2;
 			report = pcb_strdup_printf("%m+POINT ID# %ld.\n"
-									"Located at (X,Y) = %$mD.\n"
-									"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
-									point->X, point->Y,
-									(type == PCB_OBJ_LINE_POINT) ? "line" : "polygon", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
+				"Located at (X,Y) = %$mD.\n"
+				"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
+				point->X, point->Y,
+				(type == PCB_OBJ_LINE_POINT) ? "line" : "polygon", pcb_layer_id(PCB->Data, (pcb_layer_t *) ptr1));
 			break;
 		}
 	case PCB_OBJ_VOID:
