@@ -12,13 +12,11 @@
 - FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
 - FEATURE: new breadboard
 	- FEATURE: PCB_OBJ_GFX
-		- operations
 		- TODO("gfx")
 		- act_draw() binding
 		- report plugin
-		- tool_arrow (resize & move)
-	- FEATURE: hidlib: render pixmap
-	- FEATURE: optional subc pixmaps from attributes
+		- tool_arrow: resize
+	- FEATURE: hidlib: render pixmap: test in lesstif and gl
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Majenko]
 - FEATURE: layersel: consider to provide a config setting for making open-group-name horizontal [report: istankovic]
@@ -168,6 +166,7 @@
 	- FEATURE: add round down
 - FEATURE: lesstif: implement/enable local grid in lesstif (menu option is disabled)
 - FEATURE: lihata v7
+	- FEATURE: data model: new object type GFX- save and load
 	- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 	- FEATURE: data model: TODO("v7textclr"): clearance field of text objects; plus invent a flag or attrib to choose between bbox clear or detailed clear [report: Igor2]
 	- remove via geometry from route style
