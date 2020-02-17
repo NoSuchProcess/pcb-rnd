@@ -107,7 +107,7 @@ pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb
 	for(n = 0; n < len; n += 3) {
 		pm->p[n+0] = pm->tr;
 		pm->p[n+1] = pm->tg;
-		pm->p[n+2] = pm->tb;
+		pm->p[n+2] = pm->tb+1;
 	}
 
 	ip = ipm->p;

@@ -43,45 +43,6 @@ fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_ChkMode[] = "ChkMode(expected_mode)" ;
-static const char pcb_acth_ChkMode[] = "Return 1 if the currently selected mode is the expected_mode";
-static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *dst;
-	pcb_toolid_t id;
-
-	PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
-
-	id = pcb_tool_lookup(dst);
-	if (id >= 0) {
-		PCB_ACT_IRES(pcbhl_conf.editor.mode == id);
-		return 0;
-	}
-	PCB_ACT_IRES(-1);
-	return 0;
-}
-
-
-static const char pcb_acts_ChkGridSize[] =
-	"ChkGridSize(expected_size)\n"
-	"ChkGridSize(none)\n"
-	;
-static const char pcb_acth_ChkGridSize[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
-static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *dst;
-
-	PCB_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
-
-	if (strcmp(dst, "none") == 0) {
-		PCB_ACT_IRES(PCB_ACT_HIDLIB->grid <= 300);
-		return 0;
-	}
-
-	PCB_ACT_IRES(PCB_ACT_HIDLIB->grid == pcb_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
-	return 0;
-}
-
 static const char pcb_acts_ChkSubcID[] = "ChkSubcID(pattern)\n";
 static const char pcb_acth_ChkSubcID[] = "Return 1 if currently shown subc ID matches the requested pattern";
 static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -110,16 +71,6 @@ static fgw_error_t pcb_act_ChkTermID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_ChkGridUnits[] = "ChkGridUnits(expected)";
-static const char pcb_acth_ChkGridUnits[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
-static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *expected;
-	PCB_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
-	PCB_ACT_IRES(strcmp(pcbhl_conf.editor.grid_unit->suffix, expected) == 0);
-	return 0;
-}
-
 static const char pcb_acts_ChkBuffer[] = "ChkBuffer(idx)";
 static const char pcb_acth_ChkBuffer[] = "Return 1 if currently selected buffer's index matches idx";
 static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -132,11 +83,8 @@ static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static pcb_action_t conf_action_list[] = {
 	{"GetStyle", pcb_act_GetStyle, pcb_acth_GetStyle, pcb_acts_GetStyle},
-	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
-	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
 	{"ChkSubcID", pcb_act_ChkSubcID, pcb_acth_ChkSubcID, pcb_acts_ChkSubcID},
 	{"ChkTermID", pcb_act_ChkTermID, pcb_acth_ChkTermID, pcb_acts_ChkTermID},
-	{"ChkGridUnits", pcb_act_ChkGridUnits, pcb_acth_ChkGridUnits, pcb_acts_ChkGridUnits},
 	{"ChkBuffer", pcb_act_ChkBuffer, pcb_acth_ChkBuffer, pcb_acts_ChkBuffer}
 };
 

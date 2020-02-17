@@ -1253,24 +1253,6 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-
-static const char pcb_acts_setunits[] = "SetUnits(mm|mil)";
-static const char pcb_acth_setunits[] = "Set the default measurement units.";
-/* DOC: setunits.html */
-static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const pcb_unit_t *new_unit;
-	const char *name;
-
-	PCB_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
-	PCB_ACT_IRES(0);
-
-	new_unit = get_unit_struct(name);
-	pcb_hidlib_set_unit(PCB_ACT_HIDLIB, new_unit);
-
-	return 0;
-}
-
 const char pcb_acts_chkrst[] = "ChkRst(route_style_id)\n";
 const char pcb_acth_chkrst[] = "Return 1 if route_style_id matches pen.";
 /* DOC: chkrst.html */
@@ -1373,7 +1355,6 @@ static pcb_action_t gui_action_list[] = {
 	{"DelGroup",  pcb_act_DelGroup, pcb_acth_DelGroup, pcb_acts_DelGroup},
 	{"DupGroup",  pcb_act_DupGroup, pcb_acth_DupGroup, pcb_acts_DupGroup},
 	{"NewGroup",  pcb_act_NewGroup, pcb_acth_NewGroup, pcb_acts_NewGroup},
-	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
 	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit}
