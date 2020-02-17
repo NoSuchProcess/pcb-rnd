@@ -55,6 +55,8 @@ enum {
 typedef struct {
 	GLfloat x;
 	GLfloat y;
+	GLfloat u;
+	GLfloat v;
 	GLfloat r;
 	GLfloat g;
 	GLfloat b;
@@ -77,6 +79,7 @@ typedef struct {
 	int type; /* The type of the primitive, eg. GL_LINES, GL_TRIANGLES, GL_TRIANGLE_FAN */
 	GLint first; /* The index of the first vertex in the vertex buffer. */
 	GLsizei count; /* The number of vertices */
+	GLuint texture_id; /* The id of a texture to use, or 0 for no texture */
 } primitive_t;
 
 typedef struct {
@@ -181,6 +184,21 @@ static inline void vertex_buffer_add(GLfloat x, GLfloat y)
 	}
 }
 
+static inline void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
+{
+	vertex_t *p_vert = vertex_buffer_allocate(1);
+	if (p_vert) {
+		p_vert->x = x;
+		p_vert->y = y;
+		p_vert->u = u;
+		p_vert->v = v;		
+		p_vert->r = 1.0;
+		p_vert->g = 1.0;
+		p_vert->b = 1.0;
+		p_vert->a = 1.0;
+	}
+}
+
 static inline void primitive_buffer_clear()
 {
 	primitive_buffer.size = 0;
@@ -254,7 +272,7 @@ static inline int primitive_dirty_count()
 	return primitive_buffer.size - primitive_buffer.dirty_index;
 }
 
-static void primitive_buffer_add(int type, GLint first, GLsizei count)
+static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint texture_id)
 {
 	primitive_t *last = primitive_buffer_back();
 
@@ -270,6 +288,7 @@ static void primitive_buffer_add(int type, GLint first, GLsizei count)
 		p_prim->type = type;
 		p_prim->first = first;
 		p_prim->count = count;
+		p_prim->texture_id = texture_id;
 	}
 }
 
@@ -296,7 +315,7 @@ PCB_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat 
 	   vertex_buffer_add(x3,y3);  vertex_buffer_add(x1,y1);
 	 */
 
-	primitive_buffer_add(GL_TRIANGLES, vertex_buffer.size, 3);
+	primitive_buffer_add(GL_TRIANGLES, vertex_buffer.size, 3, 0);
 	vertex_buffer_reserve_extra(3);
 	vertex_buffer_add(x1, y1);
 	vertex_buffer_add(x2, y2);
@@ -304,9 +323,23 @@ PCB_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat 
 
 }
 
+PCB_INLINE void drawgl_add_texture_quad(	GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
+																					GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
+																					GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
+																					GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
+																					GLuint texture_id )
+{
+	primitive_buffer_add(GL_QUADS, vertex_buffer.size, 4, texture_id);
+	vertex_buffer_reserve_extra(4);
+	vertex_buffer_add_xyuv(x1, y1, u1, v1);
+	vertex_buffer_add_xyuv(x2, y2, u2, v2);
+	vertex_buffer_add_xyuv(x3, y3, u3, v3);
+	vertex_buffer_add_xyuv(x4, y4, u4, v4);
+}
+
 PCB_INLINE void drawgl_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	primitive_buffer_add(GL_LINES, vertex_buffer.size, 2);
+	primitive_buffer_add(GL_LINES, vertex_buffer.size, 2, 0);
 	vertex_buffer_reserve_extra(2);
 	vertex_buffer_add(x1, y1);
 	vertex_buffer_add(x2, y2);
@@ -314,7 +347,7 @@ PCB_INLINE void drawgl_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 
 PCB_INLINE void drawgl_add_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	primitive_buffer_add(GL_LINE_LOOP, vertex_buffer.size, 4);
+	primitive_buffer_add(GL_LINE_LOOP, vertex_buffer.size, 4, 0);
 	vertex_buffer_reserve_extra(4);
 	vertex_buffer_add(x1, y1);
 	vertex_buffer_add(x2, y1);
@@ -324,17 +357,17 @@ PCB_INLINE void drawgl_add_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat
 
 PCB_INLINE void drawgl_add_mask_create()
 {
-	primitive_buffer_add(PRIM_MASK_CREATE, 0, 0);
+	primitive_buffer_add(PRIM_MASK_CREATE, 0, 0, 0);
 }
 
 PCB_INLINE void drawgl_add_mask_destroy()
 {
-	primitive_buffer_add(PRIM_MASK_DESTROY, 0, 0);
+	primitive_buffer_add(PRIM_MASK_DESTROY, 0, 0, 0);
 }
 
 PCB_INLINE void drawgl_add_mask_use()
 {
-	primitive_buffer_add(PRIM_MASK_USE, 0, 0);
+	primitive_buffer_add(PRIM_MASK_USE, 0, 0, 0);
 }
 
 PCB_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
@@ -402,7 +435,17 @@ static inline void drawgl_draw_primtive(primitive_t *prim)
 			break;
 
 		default:
+			if(prim->texture_id > 0) {
+				glBindTexture(GL_TEXTURE_2D, prim->texture_id);
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glEnable(GL_TEXTURE_2D);
+			}
 			glDrawArrays(prim->type, prim->first, prim->count);
+			glDisable(GL_TEXTURE_2D);
 			break;
 	}
 }
@@ -415,8 +458,10 @@ void drawgl_flush()
 
 	/* Setup the vertex buffer */
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].x);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].u);
 	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].r);
 
 	/* draw the primitives */
@@ -450,8 +495,10 @@ PCB_INLINE void drawgl_draw_all(int stencil_bits)
 
 	/* Setup the vertex buffer */
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].x);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].u);
 	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].r);
 
 	/* draw the primitives */
@@ -534,7 +581,17 @@ PCB_INLINE void drawgl_draw_all(int stencil_bits)
 				break;
 
 			default:
+				if(prim->texture_id > 0) {
+					glBindTexture(GL_TEXTURE_2D, prim->texture_id);
+					glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+					glEnable(GL_TEXTURE_2D);
+				}
 				glDrawArrays(prim->type, prim->first, prim->count);
+				glDisable(GL_TEXTURE_2D);
 				break;
 		}
 

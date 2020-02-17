@@ -210,31 +210,7 @@ static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
 
 static void pcb_gl_draw_texture(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t bw, pcb_coord_t bh)
 {
-	GLuint texture_handle = gpm->cache.lng;
-
-	glBindTexture(GL_TEXTURE_2D, texture_handle);
-
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glEnable(GL_TEXTURE_2D);
-
-	/* Render a quad with the background as a texture */
-
-	glBegin(GL_QUADS);
-	glTexCoord2d(0., 0.);
-	glVertex3i(ox, oy, 0);
-	glTexCoord2d(1., 0.);
-	glVertex3i(bw+ox, oy, 0);
-	glTexCoord2d(1., 1.);
-	glVertex3i(bw+ox, bh+oy, 0);
-	glTexCoord2d(0., 1.);
-	glVertex3i(ox, bh+oy, 0);
-	glEnd();
-
-	glDisable(GL_TEXTURE_2D);
+	hidgl_draw_texture_rect(	ox,oy,ox+bw,oy+bh, gpm->cache.lng );
 }
 
 static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t bw, pcb_coord_t bh)

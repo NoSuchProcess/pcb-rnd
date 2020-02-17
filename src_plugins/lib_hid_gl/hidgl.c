@@ -466,6 +466,11 @@ void hidgl_draw_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t
 	drawgl_add_rectangle(x1, y1, x2, y2);
 }
 
+void hidgl_draw_texture_rect(	pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned long texture_id )
+{
+	drawgl_add_texture_quad(x1,y1,0.0,0.0, x2,y1,1.0,0.0, x2,y2,1.0,1.0, x1,y2,0.0,1.0, texture_id);
+}
+
 void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale)
 {
 #define MIN_TRIANGLES_PER_CIRCLE 6
