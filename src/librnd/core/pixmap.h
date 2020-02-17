@@ -72,6 +72,7 @@ void rnd_pixmap_uninit(void);
 
 int pcb_pixmap_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
 pcb_pixmap_t *rnd_pixmap_load(pcb_hidlib_t *hidlib, const char *fn);
+pcb_pixmap_t *rnd_pixmap_alloc(pcb_hidlib_t *hidlib, long sx, long sy);
 
 unsigned int pcb_pixmap_hash_meta(const void *key);
 unsigned int pcb_pixmap_hash_pixels(const void *key);

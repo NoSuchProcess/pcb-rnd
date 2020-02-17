@@ -156,6 +156,16 @@ pcb_pixmap_t *rnd_pixmap_load(pcb_hidlib_t *hidlib, const char *fn)
 	return NULL;
 }
 
+pcb_pixmap_t *rnd_pixmap_alloc(pcb_hidlib_t *hidlib, long sx, long sy)
+{
+	pcb_pixmap_t *p = calloc(sizeof(pcb_pixmap_t), 1);
+	p->sx = sx;
+	p->sy = sy;
+	p->size = sx * sy * 3;
+	p->p = malloc(p->size);
+	return p;
+}
+
 void rnd_pixmap_free_fields(pcb_pixmap_t *pxm)
 {
 	free(pxm->p);
