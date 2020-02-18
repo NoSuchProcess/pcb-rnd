@@ -747,7 +747,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int fnc_id;
 	const char *val;
 	const char *units = NULL;
-	pcb_bool absolute;								/* flag for 'absolute' value */
+	pcb_bool absolute; /* flag for 'absolute' value */
 	double value;
 	int err = 0;
 
