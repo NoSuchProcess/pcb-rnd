@@ -56,9 +56,18 @@ static unsigned fh_hash(const void *key)
 	return strhash_case((char *)k->key) ^ ptrhash((void *)k->cookie);
 }
 
+#include <librnd/core/funchash_core.h>
+#define action_entry(x) { #x, F_ ## x},
+static pcb_funchash_table_t rnd_functions[] = {
+#include <librnd/core/funchash_core_list.h>
+	{"F_RND_END", F_RND_END}
+};
+
+
 void pcb_funchash_init(void)
 {
 	funchash = htpi_alloc(fh_hash, keyeq);
+	pcb_funchash_set_table(rnd_functions, PCB_ENTRIES(rnd_functions), NULL);
 }
 
 void pcb_funchash_uninit(void)

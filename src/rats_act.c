@@ -43,6 +43,7 @@
 #include "funchash_core.h"
 #include "obj_rat.h"
 #include <librnd/core/actions.h>
+#include <librnd/core/funchash_core.h>
 #include "netlist.h"
 #include "draw.h"
 

@@ -45,6 +45,7 @@
 #include "undo.h"
 #include "event.h"
 #include "funchash_core.h"
+#include <librnd/core/funchash_core.h>
 
 #include "search.h"
 #include "draw.h"

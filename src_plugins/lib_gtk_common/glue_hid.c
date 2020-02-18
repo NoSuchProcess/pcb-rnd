@@ -630,8 +630,13 @@ TODO("gfx: this use of sx/sy ignores rotation");
 
 	if (pixmap->hid_data == NULL)
 		ghid_init_pixmap(hid, pixmap);
-	if (pixmap->hid_data != NULL)
-		gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - sx/2, cy - sy/2, sx, sy);
+	if (pixmap->hid_data != NULL) {
+		double rsx, rsy, ca = cos(pixmap->tr_rot / PCB_RAD_TO_DEG), sa = sin(pixmap->tr_rot / PCB_RAD_TO_DEG);
+		rsx = (double)sx * ca + (double)sy * sa;
+		rsy = (double)sy * ca + (double)sx * sa;
+pcb_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (pcb_coord_t)rsx, (pcb_coord_t)rsy);
+		gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - rsx/2.0, cy - rsy/2.0, rsx, rsy);
+	}
 }
 
 void ghid_glue_hid_init(pcb_hid_t *dst)
