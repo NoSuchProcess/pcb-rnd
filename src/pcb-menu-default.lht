@@ -209,19 +209,19 @@ ha:{
 					}
 					ha:Grid size = {
 						li:submenu {
-							ha:No Grid                = { checked=ChkGridSize(none); action=SetValue(Grid,1); update_on={editor/grid} }
+							ha:No Grid                = { checked=ChkGridSize(none); action=SetGrid(1); update_on={editor/grid} }
 							-
 							@grid
 							-
 							ha:Previous grid          = { li:a={{<key>g; <key>b};{<char>[};}; action=Grid(down) }
 							ha:Next grid              = { li:a={{<key>g; <key>f};{<char>]};}; action=Grid(up) }
 							-
-							ha:Grid *2                = { a={<key>g; <key>d}; action=SetValue(Grid,*2) }
-							ha:Grid /2                = { a={<key>g; <key>h}; action=SetValue(Grid,/2) }
-							ha:Grid -5mil             = { action=SetValue(Grid,-5,mil) }
-							ha:Grid +5mil             = { action=SetValue(Grid,+5,mil) }
-							ha:Grid -0.05mm           = { action=SetValue(Grid,-0.05,mm) }
-							ha:Grid +0.05mm           = { action=SetValue(Grid,+0.05,mm) }
+							ha:Grid *2                = { a={<key>g; <key>d}; action=SetGrid(*2) }
+							ha:Grid /2                = { a={<key>g; <key>h}; action=SetGrid(/2) }
+							ha:Grid -5mil             = { action=SetGrid(-5,mil) }
+							ha:Grid +5mil             = { action=SetGrid(+5,mil) }
+							ha:Grid -0.05mm           = { action=SetGrid(-0.05,mm) }
+							ha:Grid +0.05mm           = { action=SetGrid(+0.05,mm) }
 						}
 					}
 					ha:Grid properties = {
