@@ -25,14 +25,13 @@
  */
 
 #include "config.h"
-#include "board.h"
 #include <librnd/core/actions.h>
-#include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-#include "funchash_core.h"
-#include "route_style.h"
+#include <librnd/core/funchash_core.h>
+/*#include "route_style.h"*/
 #include <librnd/core/error.h>
 #include <librnd/core/tool.h>
+#include <librnd/core/hidlib.h>
 
 static const char pcb_acts_Conf[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting to an absolute value\n"
