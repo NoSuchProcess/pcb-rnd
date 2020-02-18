@@ -28,10 +28,11 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/funchash_core.h>
-/*#include "route_style.h"*/
 #include <librnd/core/error.h>
 #include <librnd/core/tool.h>
 #include <librnd/core/hidlib.h>
+#include <librnd/core/grid.h>
+#include <librnd/core/compat_misc.h>
 
 static const char pcb_acts_Conf[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting to an absolute value\n"
@@ -280,6 +281,55 @@ static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
+static const char pcb_acts_SetGrid[] = "SetGrid(delta|*mult|/div, [unit])";
+static const char pcb_acth_SetGrid[] = "Change various board-wide values and sizes.";
+/* for doc: copy from SetValue(grid,...) */
+static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *val, *units = NULL;
+	pcb_bool absolute;
+	double value;
+
+	PCB_ACT_CONVARG(1, FGW_STR, SetGrid, val = argv[1].val.str);
+	PCB_ACT_MAY_CONVARG(2, FGW_STR, SetGrid, units = argv[2].val.str);
+
+	PCB_ACT_IRES(0);
+
+	/* special case: can't convert with pcb_get_value() */
+	if ((val[0] == '*') || (val[0] == '/')) {
+		double d;
+		char *end;
+
+		d = strtod(val+1, &end);
+		if ((*end != '\0') || (d <= 0)) {
+			pcb_message(PCB_MSG_ERROR, "SetGrid: Invalid multiplier/divider for grid set: needs to be a positive number\n");
+			return 1;
+		}
+		pcb_grid_inval();
+		if (val[0] == '*')
+			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
+		else
+			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
+		return 0;
+	}
+
+	value = pcb_get_value(val, units, &absolute, NULL);
+
+	pcb_grid_inval();
+	if (absolute)
+		pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
+	else {
+		/* On the way down, until the minimum unit (1) */
+		if ((value + PCB_ACT_HIDLIB->grid) < 1)
+			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, 1, pcb_false, 0, 0);
+		else if (PCB_ACT_HIDLIB->grid == 1)
+			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
+		else
+			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value + PCB_ACT_HIDLIB->grid, pcb_false, 0, 0);
+	}
+}
+
+
 static const char pcb_acts_setunits[] = "SetUnits(mm|mil)";
 static const char pcb_acth_setunits[] = "Set the default measurement units.";
 /* DOC: setunits.html */
@@ -303,6 +353,7 @@ static pcb_action_t rnd_conf_action_list[] = {
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
 	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
 	{"ChkGridUnits", pcb_act_ChkGridUnits, pcb_acth_ChkGridUnits, pcb_acts_ChkGridUnits},
+	{"SetGrid", pcb_act_SetGrid, pcb_acth_SetGrid, pcb_acts_SetGrid},
 	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits}
 };
 

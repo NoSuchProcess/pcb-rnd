@@ -745,52 +745,22 @@ static const char pcb_acth_SetValue[] = "Change various board-wide values and si
 static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int fnc_id;
-	const char *val;
-	const char *units = NULL;
+	const char *val, *units = NULL;
 	pcb_bool absolute; /* flag for 'absolute' value */
 	double value;
 	int err = 0;
 
 	PCB_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
+
+	if (fnc_id == F_Grid)
+		return pcb_actionv_bin(PCB_ACT_HIDLIB, "setgrid", res, argc-1, argv+1);
+
 	PCB_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
-
-	/* special case: can't convert with pcb_get_value() */
-	if ((fnc_id == F_Grid) && ((val[0] == '*') || (val[0] == '/'))) {
-		double d;
-		char *end;
-
-		d = strtod(val+1, &end);
-		if ((*end != '\0') || (d <= 0)) {
-			pcb_message(PCB_MSG_ERROR, "SetValue: Invalid multiplier/divider for grid set: needs to be a positive number\n");
-			return 1;
-		}
-		pcb_grid_inval();
-		if (val[0] == '*')
-			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
-		else
-			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
-	}
 
 	value = pcb_get_value(val, units, &absolute, NULL);
 
 	switch(fnc_id) {
-		case F_Grid:
-			pcb_grid_inval();
-			if (absolute)
-				pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
-			else {
-				/* On the way down, short against the minimum
-				 * PCB drawing unit */
-				if ((value + PCB_ACT_HIDLIB->grid) < 1)
-					pcb_hidlib_set_grid(PCB_ACT_HIDLIB, 1, pcb_false, 0, 0);
-				else if (PCB_ACT_HIDLIB->grid == 1)
-					pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
-				else
-					pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value + PCB_ACT_HIDLIB->grid, pcb_false, 0, 0);
-			}
-			break;
-
 		case F_LineSize:
 		case F_Line:
 			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
