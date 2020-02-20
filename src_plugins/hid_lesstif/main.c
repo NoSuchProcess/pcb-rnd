@@ -1783,7 +1783,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	err = setjmp(lesstif_err_jmp);
 	if (err != 0)
 		return err;
-	appwidget = XtAppInitialize(&app_context, "pcb-rnd", new_options, amax, argc, *argv, 0, stdarg_args, stdarg_n);
+	appwidget = XtAppInitialize(&app_context, pcbhl_app_package, new_options, amax, argc, *argv, 0, stdarg_args, stdarg_n);
 	if (appwidget == NULL)
 		return 1;
 	XtSetErrorMsgHandler(NULL); /* restore the default handler */
