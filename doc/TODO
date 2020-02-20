@@ -137,7 +137,7 @@
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - BUG: in poly lib rewrite: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
-- FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
+- FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough ; alternative: net name caching and display when zoomed in [report: Majenko]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
@@ -188,7 +188,6 @@
 	move; the new point should be marked somehow (e.g. green-find one half of the
 	object, like arc split does) lines can be inserted mostly only in all-dir-line
 	which is strange
-- FEATURE: display net names on pins, vias (and maybe tracks?) when zoomed in enough
 - FEATURE: DRC should warn for thin poly hair
 - FEATURE: trace length calculator:
 	- click a line or arc or via
