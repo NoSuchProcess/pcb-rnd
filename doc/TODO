@@ -39,9 +39,7 @@
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
-- FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
-- FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
@@ -53,31 +51,14 @@
 	- add text font, update the pool node text_edit [report: Igor2]
 - FEATURE: fontsel: ttf import?
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
-- FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
-- FEATURE: padstack bbox:
-	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
-	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
-- FEATURE: depth controlled mech layers (routed) for internal cavities: http://www.saturnelectronics.com/products_capabilities/internal-cavity_boards.html -> user script, similar to on_every_layer: convert lines into bbvia slot padstacks; only when we already export bbvia in excellon; alternative: layer attribute on mech layers
-- XOR rendering upgrade:
-		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
-		- if worked: allow padstack xor draw to draw all shapes on all layers
 - export_dsn/new io_dsn (with King Kevin and celem):
 	- missing global padstack (via) export:
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
-- FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
-	- need to precalculate and cache clearance shape in crosshair (polyarea!) because recalculating these for padstacks would be expensive (also rewrite lines and arcs)
-	- padstack
-	- clearing polygon
-	- text
-- FEATURE: key rewrite: (base key swap bug (q<->a, y<->z))
-	- for <char> (punctuation): learn key for non-US users
-	- lesstif code upgrade for the new API
-	- menu file fixup on punctuation in lesstif
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - res/menu:
 	- FEATURE: load/swap menus (TODO#1)
@@ -156,6 +137,25 @@
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - BUG: in poly lib rewrite: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
+- FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough [report: Majenko]
+- FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
+- FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
+- FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
+	- need to precalculate and cache clearance shape in crosshair (polyarea!) because recalculating these for padstacks would be expensive (also rewrite lines and arcs)
+	- padstack
+	- clearing polygon
+	- text
+- FEATURE: padstack bbox:
+	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
+	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
+- FEATURE: depth controlled mech layers (routed) for internal cavities: http://www.saturnelectronics.com/products_capabilities/internal-cavity_boards.html -> user script, similar to on_every_layer: convert lines into bbvia slot padstacks; only when we already export bbvia in excellon; alternative: layer attribute on mech layers
+- FEATURE: key rewrite: (base key swap bug (q<->a, y<->z))
+	- for <char> (punctuation): learn key for non-US users
+	- lesstif code upgrade for the new API
+	- menu file fixup on punctuation in lesstif
+- XOR rendering upgrade:
+		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
+		- if worked: allow padstack xor draw to draw all shapes on all layers
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic
 - CLEANUP: reduce: get rid of autorouter/vector.[ch]
 - vendor drill plugin:
