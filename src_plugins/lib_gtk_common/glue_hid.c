@@ -238,7 +238,7 @@ int gtkhid_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	gctx->wtop_window = window = gctx->port.top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 	pcb_gtk_topwinplace(gctx->hidlib, window, "top");
-	gtk_window_set_title(GTK_WINDOW(window), "pcb-rnd");
+	gtk_window_set_title(GTK_WINDOW(window), pcbhl_app_package);
 
 	gtk_widget_show_all(gctx->port.top_window);
 	return 0;
