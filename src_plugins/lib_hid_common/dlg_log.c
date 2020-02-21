@@ -134,6 +134,7 @@ static void log_window_create(pcb_hidlib_t *hidlib)
 {
 	log_ctx_t *ctx = &log_ctx;
 	pcb_hid_attr_val_t hv;
+	char *title;
 
 	if (ctx->active)
 		return;
@@ -167,7 +168,9 @@ static void log_window_create(pcb_hidlib_t *hidlib)
 	ctx->active = 1;
 	ctx->last_added = -1;
 	PCB_DAD_DEFSIZE(ctx->dlg, 200, 300);
-	PCB_DAD_NEW("log", ctx->dlg, "pcb-rnd message log", ctx, pcb_false, log_close_cb);
+	title = pcb_concat(pcbhl_app_package, " message log", NULL);
+	PCB_DAD_NEW("log", ctx->dlg, title, ctx, pcb_false, log_close_cb);
+	free(title);
 
 	{
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];

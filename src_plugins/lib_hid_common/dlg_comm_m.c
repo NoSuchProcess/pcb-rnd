@@ -31,6 +31,7 @@
 #include <librnd/config.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/hidlib.h>
 #include "xpm.h"
 #include "dlg_comm_m.h"
 #include "lib_hid_common.h"
@@ -45,9 +46,10 @@ static void prompt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *label, *default_str = "", *title = "pcb-rnd user input";
+	const char *label, *default_str = "";
 	const char *pcb_acts_gui_PromptFor =  nope;
-	int ws;
+	char *title = NULL;
+	int ws, ft = 0;
 	pcb_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
@@ -65,7 +67,14 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
+	if (title == NULL) {
+		title = pcb_concat(pcbhl_app_package, " user input", NULL);
+		ft = 1;
+	}
 	PCB_DAD_NEW("prompt_for", dlg, title, NULL, pcb_true, NULL);
+	if (ft)
+		free(title);
+
 	if (PCB_DAD_RUN(dlg) != 0) {
 		PCB_DAD_FREE(dlg);
 		return -1;
