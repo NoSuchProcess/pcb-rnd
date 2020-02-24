@@ -816,7 +816,7 @@ PCB_INLINE pcb_bool_t pcb_isc_line_polyline(pcb_pline_t *pl, pcb_coord_t x1, pcb
 
 static pcb_bool_t pcb_isc_pstk_line_shp(pcb_pstk_t *ps, pcb_line_t *line, pcb_pstk_shape_t *shape)
 {
-	if (shape == NULL) return pcb_false;
+	if (shape == NULL) goto noshape;
 
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
@@ -842,6 +842,7 @@ static pcb_bool_t pcb_isc_pstk_line_shp(pcb_pstk_t *ps, pcb_line_t *line, pcb_ps
 		}
 		case PCB_PSSH_HSHADOW:
 			/* if the line reaches the plated hole or slot, there's connection */
+		noshape:;
 		{
 			pcb_pstk_shape_t *slshape, sltmp;
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
@@ -879,7 +880,8 @@ pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line)
 
 PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(pcb_pstk_t *ps, pcb_arc_t *arc, pcb_pstk_shape_t *shape)
 {
-	if (shape == NULL) return pcb_false;
+	if (shape == NULL) goto noshape;
+
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
 			{
@@ -910,6 +912,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(pcb_pstk_t *ps, pcb_arc_t *arc, pcb_p
 			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, arc);
 		case PCB_PSSH_HSHADOW:
 			/* if the arc reaches the plated hole or slot, there's connection */
+		noshape:;
 		{
 			pcb_pstk_shape_t *slshape, sltmp;
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
