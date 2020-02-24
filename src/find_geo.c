@@ -845,6 +845,9 @@ static pcb_bool_t pcb_isc_pstk_line_shp(pcb_pstk_t *ps, pcb_line_t *line, pcb_ps
 		{
 			pcb_any_line_t tmp;
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			if (!proto->hplated)
+				return 0;
+
 			tmp.Point1.X = line->Point1.X;
 			tmp.Point1.Y = line->Point1.Y;
 			tmp.Point2.X = line->Point2.X;
@@ -911,6 +914,8 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(pcb_pstk_t *ps, pcb_arc_t *arc, pcb_p
 		case PCB_PSSH_HSHADOW:
 		{
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			if (!proto->hplated)
+				return 0;
 			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, proto->hdia/2, arc);
 		}
 	}
