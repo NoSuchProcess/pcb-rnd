@@ -841,10 +841,11 @@ static pcb_bool_t pcb_isc_pstk_line_shp(pcb_pstk_t *ps, pcb_line_t *line, pcb_ps
 			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2 + Bloat, &tmp);
 		}
 		case PCB_PSSH_HSHADOW:
-			/* if the line reaches the hole, there's connection */
+			/* if the line reaches the plated hole or slot, there's connection */
 		{
 			pcb_any_line_t tmp;
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			pcb_pstk_shape_t *slot;
 			if (!proto->hplated)
 				return 0;
 
@@ -854,8 +855,13 @@ static pcb_bool_t pcb_isc_pstk_line_shp(pcb_pstk_t *ps, pcb_line_t *line, pcb_ps
 			tmp.Point2.Y = line->Point2.Y;
 			tmp.Thickness = line->Thickness;
 			tmp.Flags = pcb_no_flags();
-			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, proto->hdia/2 + Bloat, &tmp);
+			if (proto->hdia != 0)
+				return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, proto->hdia/2 + Bloat, &tmp);
+			slot = pcb_pstk_shape_mech_at(PCB, ps, line->parent.layer);
+			if (slot != 0)
+				return pcb_isc_pstk_line_shp(ps, line, slot);
 		}
+		break;
 	}
 	return pcb_false;
 }
@@ -912,11 +918,17 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(pcb_pstk_t *ps, pcb_arc_t *arc, pcb_p
 		case PCB_PSSH_CIRC:
 			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, arc);
 		case PCB_PSSH_HSHADOW:
+			/* if the arc reaches the plated hole or slot, there's connection */
 		{
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			pcb_pstk_shape_t *slot;
 			if (!proto->hplated)
 				return 0;
-			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, proto->hdia/2, arc);
+			if (proto->hdia != 0)
+				return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, proto->hdia/2, arc);
+			slot = pcb_pstk_shape_mech_at(PCB, ps, arc->parent.layer);
+			if (slot != 0)
+				return pcb_isc_pstk_line_shp(ps, arc, slot);
 		}
 	}
 	return pcb_false;
