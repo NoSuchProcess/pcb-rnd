@@ -840,7 +840,18 @@ static pcb_bool_t pcb_isc_pstk_line_shp(pcb_pstk_t *ps, pcb_line_t *line, pcb_ps
 			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2 + Bloat, &tmp);
 		}
 		case PCB_PSSH_HSHADOW:
-			return 0; /* non-object won't intersect */
+			/* if the line reaches the hole, there's connection */
+		{
+			pcb_any_line_t tmp;
+			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			tmp.Point1.X = line->Point1.X;
+			tmp.Point1.Y = line->Point1.Y;
+			tmp.Point2.X = line->Point2.X;
+			tmp.Point2.Y = line->Point2.Y;
+			tmp.Thickness = line->Thickness;
+			tmp.Flags = pcb_no_flags();
+			return pcb_is_point_in_line(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, proto->hdia/2 + Bloat, &tmp);
+		}
 	}
 	return pcb_false;
 }
@@ -896,9 +907,11 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(pcb_pstk_t *ps, pcb_arc_t *arc, pcb_p
 		}
 		case PCB_PSSH_CIRC:
 			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, shape->data.circ.dia/2, arc);
-			break;
 		case PCB_PSSH_HSHADOW:
-			return 0; /* non-object won't intersect */
+		{
+			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			return pcb_is_point_on_arc(shape->data.circ.x + ps->x, shape->data.circ.y + ps->y, proto->hdia/2, arc);
+		}
 	}
 	return pcb_false;
 }
