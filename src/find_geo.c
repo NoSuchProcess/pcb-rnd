@@ -1136,8 +1136,8 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_pstk(pcb_pstk_t *ps1, pcb_pstk_t *ps2)
 	proto2 = pcb_pstk_get_proto(ps2);
 
 	for(n = 0, ly = PCB->Data->Layer; n < PCB->Data->LayerN; n++,ly++) {
-		pcb_pstk_shape_t *shape1, *slshape1 = NULL;
-		pcb_pstk_shape_t *shape2, *slshape2 = NULL;
+		pcb_pstk_shape_t *shape1, *slshape1 = NULL, sltmp1;
+		pcb_pstk_shape_t *shape2, *slshape2 = NULL, sltmp2;
 		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
 
 		if (!(lyt & PCB_LYT_COPPER)) /* consider only copper for connections */
@@ -1149,9 +1149,9 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_pstk(pcb_pstk_t *ps1, pcb_pstk_t *ps2)
 		if ((shape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ps1, shape1, ps2, shape2)) return pcb_true;
 
 		if (proto1->hplated)
-			slshape1 = pcb_pstk_shape_mech_at(PCB, ps1, ly);
+			slshape1 = pcb_pstk_shape_mech_or_hole_at(PCB, ps1, ly, &sltmp1);
 		if (proto2->hplated)
-			slshape2 = pcb_pstk_shape_mech_at(PCB, ps2, ly);
+			slshape2 = pcb_pstk_shape_mech_or_hole_at(PCB, ps2, ly, &sltmp2);
 
 		if ((slshape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ps1, slshape1, ps2, shape2)) return pcb_true;
 		if ((slshape2 != NULL) && (shape1 != NULL) && pcb_pstk_shape_intersect(ps2, slshape2, ps1, shape1)) return pcb_true;
