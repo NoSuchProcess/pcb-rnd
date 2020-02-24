@@ -1003,7 +1003,19 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(pcb_pstk_t *ps, pcb_poly_t *poly, pc
 			return pcb_isc_line_poly(&tmp, poly);
 		}
 		case PCB_PSSH_HSHADOW:
-			return 0; /* non-object won't intersect */
+			/* if the poly reaches the plated hole or slot, there's connection */
+		{
+			pcb_pstk_shape_t *slshape, sltmp;
+			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+			if (!proto->hplated)
+				return 0;
+
+			slshape = pcb_pstk_shape_mech_or_hole_at(PCB, ps, poly->parent.layer, &sltmp);
+			if (slshape == NULL)
+				return pcb_false;
+			return pcb_isc_pstk_poly_shp(ps, poly, slshape);
+		}
+
 	}
 	return pcb_false;
 }
