@@ -975,7 +975,7 @@ PCB_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape
 
 PCB_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(pcb_pstk_t *ps, pcb_poly_t *poly, pcb_pstk_shape_t *shape)
 {
-	if (shape == NULL) return pcb_false;
+	if (shape == NULL) goto noshape;
 
 	switch(shape->shape) {
 		case PCB_PSSH_POLY:
@@ -1007,6 +1007,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(pcb_pstk_t *ps, pcb_poly_t *poly, pc
 		}
 		case PCB_PSSH_HSHADOW:
 			/* if the poly reaches the plated hole or slot, there's connection */
+			noshape:;
 		{
 			pcb_pstk_shape_t *slshape, sltmp;
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
