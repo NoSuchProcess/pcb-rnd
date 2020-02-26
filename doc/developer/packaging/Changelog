@@ -5,6 +5,8 @@ How to get a release candidate tarball in /tmp:
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
+TODO: package deps and plugins
+
 Packaging changes between 2.2.0 and 2.2.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
@@ -13,6 +15,21 @@ A. changes that probably don't need action
    Distributions are free to use either name; if there's no ditribution
    dictated preference, please use librnd-dev. Please note: the binary
    package, librnd2, still should have the '2' in its name.
+
+2. Missing data files from pcb-rnd-core
+   Previous versions missed a few data files, which are now all added in
+   package pcb-rnd-core. Pleasre revise the installed files for pcb-rnd-core
+   in your packaging. A short list of files affected:
+   - default boards (default*.lht)
+   - default font file (default_font)
+   - pcblib (the footprint library)
+
+3. Missing utilities from librnd-dev
+   Please revise the file listing, puplug and gen_conf got added
+
+4. The meta-package pcb-rnd should depend on import-net as it is
+   used in the most common workflow
+
 
 B. changes that probably DO need action
 
