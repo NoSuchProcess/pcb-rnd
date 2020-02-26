@@ -9,12 +9,12 @@
 <tr><th>pcb-rnd-export<td> pcb-rnd-core<td> cam export_bom export_dxf export_excellon export_gcode export_gerber export_openscad export_png export_ps export_stat export_svg export_xy millpath
 <tr><th>pcb-rnd-doc<td><td>&nbsp;
 <tr><th>pcb-rnd-export-sim<td> pcb-rnd-core<td> export_openems
-<tr><th>librnd2-dev<td> librnd2 pcb-rnd-core<td><i>n/a</i>
 <tr><th>pcb-rnd-lib-gl<td> pcb-rnd-core<td> lib_hid_gl
 <tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_pxm_gd import_pxm_pnm import_ttf
 <tr><th>pcb-rnd-hid-gtk2-gl<td> pcb-rnd-core pcb-rnd-lib-gtk pcb-rnd-lib-gl<td> hid_gtk2_gl
 <tr><th>pcb-rnd-import-net<td> pcb-rnd-core pcb-rnd-lib-io<td> import_calay import_edif import_fpcb_nl import_gnetlist import_ipcd356 import_ltspice import_mentor_sch import_net_action import_net_cmd import_netlist import_sch import_sch2 import_tinycad
 <tr><th>pcb-rnd<td>pcb-rnd-core pcb-rnd-io-standard pcb-rnd-io-alien pcb-rnd-hid-gtk2-gl pcb-rnd-hid-gtk2-gdk pcb-rnd-export pcb-rnd-export-sim pcb-rnd-export-extra pcb-rnd-auto pcb-rnd-extra pcb-rnd-cloud pcb-rnd-doc pcb-rnd-import-net<td>&lt;metapackage&gt;
+<tr><th>librnd-dev<td> pcb-rnd-core<td><i>n/a</i>
 <tr><th>pcb-rnd-auto<td> pcb-rnd-core pcb-rnd-lib-io<td> ar_cpcb asm autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
 <tr><th>pcb-rnd-lib-io<td> pcb-rnd-core<td> lib_gensexpr lib_netmap
 <tr><th>pcb-rnd-io-standard<td> pcb-rnd-core pcb-rnd-lib-io<td> io_pcb io_tedax
@@ -36,12 +36,12 @@
 <tr><th>pcb-rnd-export<td> $P/cam.pup $P/cam.so $P/export_bom.pup $P/export_bom.so $P/export_dxf.pup $P/export_dxf.so $P/export_excellon.pup $P/export_excellon.so $P/export_gcode.pup $P/export_gcode.so $P/export_gerber.pup $P/export_gerber.so $P/export_openscad.pup $P/export_openscad.so $P/export_png.pup $P/export_png.so $P/export_ps.pup $P/export_ps.so $P/export_stat.pup $P/export_stat.so $P/export_svg.pup $P/export_svg.so $P/export_xy.pup $P/export_xy.so $P/millpath.pup $P/millpath.so <i>$C/cam.conf $C/export_xy.conf</i><td>	Common export plugins.<td> 	Export the board in vector graphics (svg, ps, eps), raster graphics 	(png, jpeg, etc.), gerber, 3d model in openscad, xy for pick and place, 	BoM, etc.  
 <tr><th>pcb-rnd-doc<td>/usr/share/doc/* <i></i><td>	Documentation for pcb-rnd<td>	 	User manual (html) and manual pages.  
 <tr><th>pcb-rnd-export-sim<td> $P/export_openems.pup $P/export_openems.so <i></i><td>	Export plugins to simulators<td> 	Export the board in formats that can be used for simulation: openems.  
-<tr><th>librnd2-dev<td>$PREFIX/include/librnd/* $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd $PREFIX/lib/*.so $PREFIX/lib/librnd/gen_conf $PREFIX/lib/librnd/puplug <i></i><td>	pcb-rnd library, headers.<td> 	HID, polygons, infrastructure for 3rd party applications. 
 <tr><th>pcb-rnd-lib-gl<td> $P/lib_hid_gl.pup $P/lib_hid_gl.so <i></i><td>	Support library for rendering with opengl.<td> 	Provides plugins for driving an opengl output, rendering pcb-rnd 	views on opengl.  
 <tr><th>pcb-rnd-import-geo<td> $P/import_hpgl.pup $P/import_hpgl.so $P/import_pxm_gd.pup $P/import_pxm_gd.so $P/import_pxm_pnm.pup $P/import_pxm_pnm.so $P/import_ttf.pup $P/import_ttf.so <i></i><td>	Geometry import plugins.<td> 	Import geometry from HPGL plots. HPGL can be produced (plotted) with 	most mechanical cads.  
 <tr><th>pcb-rnd-hid-gtk2-gl<td> $P/hid_gtk2_gl.pup $P/hid_gtk2_gl.so <i></i><td>	GUI: gtk2, opengl<td> 	Hardware accelerated (opengl) rendering on gtk2.  
 <tr><th>pcb-rnd-import-net<td> $P/import_calay.pup $P/import_calay.so $P/import_edif.pup $P/import_edif.so $P/import_fpcb_nl.pup $P/import_fpcb_nl.so $P/import_gnetlist.pup $P/import_gnetlist.so $P/import_ipcd356.pup $P/import_ipcd356.so $P/import_ltspice.pup $P/import_ltspice.so $P/import_mentor_sch.pup $P/import_mentor_sch.so $P/import_net_action.pup $P/import_net_action.so $P/import_net_cmd.pup $P/import_net_cmd.so $P/import_netlist.pup $P/import_netlist.so $P/import_sch.pup $P/import_sch.so $P/import_sch2.pup $P/import_sch2.so $P/import_tinycad.pup $P/import_tinycad.so $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1 <i>$C/import_gnetlist.conf</i><td>	Netlist/schematics import plugins.<td> 	Import netlist and footprint information from edif, ltspice, mentor graphics, 	gschem and tinycad.  
 <tr><th>pcb-rnd<td> <i></i><td>	Standard installation of pcb-rnd<td> 	Install pcb-rnd core and the most commonly used plugins.  
+<tr><th>librnd-dev<td>$PREFIX/include/librnd/* <i></i><td>&nbsp;<td>&nbsp;
 <tr><th>pcb-rnd-auto<td> $P/ar_cpcb.pup $P/ar_cpcb.so $P/asm.pup $P/asm.so $P/autoplace.pup $P/autoplace.so $P/autoroute.pup $P/autoroute.so $P/export_dsn.pup $P/export_dsn.so $P/import_dsn.pup $P/import_dsn.so $P/import_mucs.pup $P/import_mucs.so $P/smartdisperse.pup $P/smartdisperse.so <i>$C/asm.conf</i><td>	Autoroute and autoplace.<td> 	Feature plugins for automated component placing and track routing  
 <tr><th>pcb-rnd-lib-io<td> $P/lib_gensexpr.pup $P/lib_gensexpr.so $P/lib_netmap.pup $P/lib_netmap.so <i></i><td>	Support library for alien file formats.<td> 	Provides generic, low level parsers (such as s-expression 	parser) for I/O plugins that need to deal with alien file formats.  
 <tr><th>pcb-rnd-io-standard<td> $P/io_pcb.pup $P/io_pcb.so $P/io_tedax.pup $P/io_tedax.so <i></i><td>	Commonly used non-native board and footprint file formats<td> 	Plugins for tEDAx footprint format and the gEDA/PCB file formats 	(footprint and board).  

@@ -5,6 +5,18 @@ How to get a release candidate tarball in /tmp:
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
+Packaging changes between 2.2.0 and 2.2.1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+1. Renamed librnd2-dev to librnd-dev in the doc (Debian recommendation)
+   Distributions are free to use either name; if there's no ditribution
+   dictated preference, please use librnd-dev. Please note: the binary
+   package, librnd2, still should have the '2' in its name.
+
+B. changes that probably DO need action
+
+
 Packaging changes between 2.1.4 and 2.2.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action

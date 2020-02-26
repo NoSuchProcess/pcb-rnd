@@ -121,7 +121,7 @@
 	
 	HID, polygons, infrastructure for 3rd party applications.
 
-@librnd2-dev
+@librnd-dev
 	pcb-rnd library, headers.
 
 	HID, polygons, infrastructure for 3rd party applications.
