@@ -126,6 +126,8 @@ int pcb_hid_cfg_keys_add_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc,
 int pcb_hid_cfg_keys_add_by_strdesc_(pcb_hid_cfg_keys_t *km, const char *keydesc, const lht_node_t *action_node, pcb_hid_cfg_keyseq_t **out_seq, int out_seq_len);
 
 
+int pcb_hid_cfg_keys_del_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydesc);
+
 /* Allocate a new string and generate a human readable accel-text; mask determines
    which keys on the list are generated (when multiple key sequences are
    specified for the same action; from LSB to MSB, at most 32 keys)

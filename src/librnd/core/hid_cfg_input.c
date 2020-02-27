@@ -419,6 +419,61 @@ int pcb_hid_cfg_keys_add_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keyde
 	return pcb_hid_cfg_keys_add_by_desc_(km, keydescn, action_node, NULL, 0);
 }
 
+int pcb_hid_cfg_keys_del_by_strdesc(pcb_hid_cfg_keys_t *km, const char *keydesc)
+{
+	pcb_hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_raws[HIDCFG_MAX_KEYSEQ_LEN];
+	unsigned short int key_trs[HIDCFG_MAX_KEYSEQ_LEN];
+	int slen, n;
+	htpp_t *phash = &km->keys;
+	pcb_hid_cfg_keyseq_t *ns;
+	hid_cfg_keyhash_t addr;
+
+	slen = parse_keydesc(km, keydesc, mods, key_raws, key_trs, HIDCFG_MAX_KEYSEQ_LEN, NULL);
+	if (slen <= 0)
+		return slen;
+
+	for(n = 0; n < slen; n++) {
+		int terminal = (n == slen-1);
+
+		addr.mods = mods[n];
+		addr.key_raw = key_raws[n];
+		addr.key_tr = key_trs[n];
+
+		ns = htpp_get(phash, &addr);
+		if (ns == NULL)
+			return -1;
+
+		if (!terminal)
+			phash = &ns->seq_next;
+	}
+
+	htpp_pop(phash, &addr);
+
+	return 0;
+}
+
+int pcb_hid_cfg_keys_del_by_desc(pcb_hid_cfg_keys_t *km, const lht_node_t *keydescn)
+{
+	switch(keydescn->type) {
+		case LHT_TEXT: return pcb_hid_cfg_keys_del_by_strdesc(km, keydescn->data.text.value);
+		case LHT_LIST:
+		{
+			int ret = 0;
+			lht_node_t *n;
+			for(n = keydescn->data.list.first; n != NULL; n = n->next) {
+				if (n->type != LHT_TEXT)
+					break;
+				ret |= pcb_hid_cfg_keys_del_by_strdesc(km, n->data.text.value);
+			}
+			return ret;
+		}
+		default:;
+	}
+	return -1;
+}
+
+
 static void gen_accel(gds_t *s, pcb_hid_cfg_keys_t *km, const char *keydesc, int *cnt, const char *sep, const lht_node_t *loc)
 {
 	pcb_hid_cfg_mod_t mods[HIDCFG_MAX_KEYSEQ_LEN];
