@@ -602,7 +602,12 @@ ha:{
 								ha:Click (right)                = { a={<Key>k;<Key>r}; li:action={Tool(Release); Popup(popup-obj, obj-type)} }
 							}
 						}
-						ha:layer keys {
+						ha:attribute layer keys {
+							li:submenu {
+								anon3=@layerkeys
+							}
+						}
+						ha:generic layer keys {
 							li:submenu {
 								ha:Select Layer 1           = { a=<Key>1; action=SelectLayer(1) }
 								ha:Select Layer 2           = { a=<Key>2; action=SelectLayer(2) }
