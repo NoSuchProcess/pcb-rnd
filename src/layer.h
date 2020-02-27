@@ -272,6 +272,9 @@ int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_
 
 /**** layer creation (for load/import code) ****/
 
+/* Set parent and attribute change callback */
+void pcb_layer_setup(pcb_layer_t *ly, pcb_data_t *parent_data);
+
 /* Reset layers and layer groups to empty */
 void pcb_layers_reset(pcb_board_t *pcb);
 

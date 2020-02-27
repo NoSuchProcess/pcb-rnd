@@ -47,7 +47,8 @@ static const char *pcb_evnames[] = {
 	"pcbev_rubber_constrain_main_line",
 	"pcbev_draw_crosshair_chatt",
 	"pcbev_drc_run",
-	"pcbev_net_indicate_short"
+	"pcbev_net_indicate_short",
+	"pcbev_layer_key_change"
 };
 
 void pcb_event_init_app(void)

@@ -325,10 +325,8 @@ pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore
 void pcb_data_set_layer_parents(pcb_data_t *data)
 {
 	pcb_layer_id_t n;
-	for(n = 0; n < PCB_MAX_LAYER; n++) {
-		data->Layer[n].parent.data = data;
-		data->Layer[n].parent_type = PCB_PARENT_DATA;
-	}
+	for(n = 0; n < PCB_MAX_LAYER; n++)
+		pcb_layer_setup(&data->Layer[n], data);
 }
 
 void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rtrees)

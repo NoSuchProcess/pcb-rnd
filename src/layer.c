@@ -127,6 +127,13 @@ static void obj_free_undoable(pcb_any_obj_t *obj)
 }
 
 
+static void layer_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+{
+	if (strncmp(name, "pcb-rnd::key::", 14) == 0)
+		pcb_event(&PCB->hidlib, PCB_EVENT_LAYER_KEY_CHANGE, NULL);
+}
+
+
 #define UFC(f) ((void (*)(void *))(f))
 void pcb_layer_free_fields(pcb_layer_t *layer, pcb_bool undoable)
 {
@@ -158,6 +165,7 @@ void pcb_layer_free_fields(pcb_layer_t *layer, pcb_bool undoable)
 	}
 	free((char *)layer->name);
 	memset(layer, 0, sizeof(pcb_layer_t));
+	layer->Attributes.post_change = layer_post_change;
 }
 
 pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
@@ -489,6 +497,7 @@ void pcb_layers_reset(pcb_board_t *pcb)
 			free((char *)pcb->Data->Layer[n].name);
 		pcb->Data->Layer[n].name = pcb_strdup("<pcb_layers_reset>");
 		pcb->Data->Layer[n].meta.real.grp = -1;
+		pcb->Data->Layer[n].Attributes.post_change = layer_post_change;
 	}
 
 	/* reset layer groups */
@@ -506,6 +515,7 @@ static void layer_clear(pcb_layer_t *dst)
 {
 	memset(dst, 0, sizeof(pcb_layer_t));
 	dst->meta.real.grp = -1;
+	dst->Attributes.post_change = layer_post_change;
 }
 
 static void pcb_layer_undoable_created(pcb_board_t *pcb, pcb_layer_t *l);
@@ -537,6 +547,7 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	pcb->Data->Layer[id].parent_type = PCB_PARENT_DATA;
 	pcb->Data->Layer[id].parent.data = pcb->Data;
 	pcb->Data->Layer[id].type = PCB_OBJ_LAYER;
+	pcb->Data->Layer[id].Attributes.post_change = layer_post_change;
 
 	if (pcb == PCB)
 		pcb_board_set_changed_flag(1);
@@ -748,6 +759,14 @@ const pcb_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt)
 	return &conf_core.appearance.color.layer[idx % clrs];
 }
 
+void pcb_layer_setup(pcb_layer_t *ly, pcb_data_t *parent_data)
+{
+	ly->Attributes.post_change = layer_post_change;
+	ly->parent.data = parent_data;
+	ly->parent_type = PCB_PARENT_DATA;
+	ly->type = PCB_OBJ_LAYER;
+}
+
 /* Initialize a new layer with safe initial values */
 static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gid, pcb_data_t *parent)
 {
@@ -764,9 +783,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 			default: break;
 		}
 	}
-	lp->parent.data = parent;
-	lp->parent_type = PCB_PARENT_DATA;
-	lp->type = PCB_OBJ_LAYER;
+	pcb_layer_setup(lp, parent);
 }
 
 static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
