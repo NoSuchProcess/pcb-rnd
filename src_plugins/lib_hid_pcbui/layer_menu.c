@@ -166,6 +166,47 @@ static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node
 	*end = '\0';
 }
 
+static void custom_layer_attr_key(pcb_layer_t *l, pcb_layer_id_t lid, const char *attrname, const char *menu_prefix, const char *action_prefix, pcb_menu_prop_t *keyprops, char *path, char *end, int len_avail)
+{
+	char *key = pcb_attribute_get(&l->Attributes, attrname);
+	if (key != NULL) {
+		keyprops->accel = key;
+		pcb_snprintf(end, len_avail, "%s %ld:%s", menu_prefix, lid+1, l->name);
+		sprintf((char *)keyprops->action, "%s(%ld)", action_prefix, lid+1);
+		pcb_gui->create_menu(pcb_gui, path, keyprops);
+	}
+}
+
+
+static void layer_install_menu_key(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+{
+	ly_ctx_t *ctx = ctx_;
+	int plen = strlen(path);
+	int len_avail = 125;
+	char *end = path + plen;
+	char act[256];
+	pcb_layer_id_t lid;
+	pcb_layer_t *l;
+	pcb_menu_prop_t keyprops;
+
+	pcb_hid_cfg_del_anchor_menus(node, ctx->anch);
+
+	/* prepare for appending the strings at the end of the path, "under" the anchor */
+	*end = '/';
+	end++;
+
+	memset(&keyprops, 0, sizeof(keyprops));
+	keyprops.action = act;
+	keyprops.update_on = "";
+	keyprops.cookie = ctx->anch;
+	
+
+	for(lid = 0, l = PCB->Data->Layer; lid < PCB->Data->LayerN; lid++,l++) {
+		custom_layer_attr_key(l, lid, "pcb-rnd::key::select", "select", "SelectLayer", &keyprops, path, end, len_avail);
+		custom_layer_attr_key(l, lid, "pcb-rnd::key::vis",    "vis",    "ToggleView", &keyprops, path, end, len_avail);
+	}
+
+}
 
 static void layer_install_menu(void)
 {
@@ -178,6 +219,10 @@ static void layer_install_menu(void)
 	ctx.view = 0;
 	ctx.anch = "@layerpick";
 	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
+
+
+	ctx.anch = "@layerkeys";
+	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu_key, &ctx);
 }
 
 void pcb_layer_menu_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
