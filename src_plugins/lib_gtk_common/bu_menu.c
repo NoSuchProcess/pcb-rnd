@@ -416,7 +416,10 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 	menu_handle_t *h = nd->user_data;
 	if (h != NULL) {
 		GHidMainMenu *menu = (GHidMainMenu *)ctx;
+		lht_node_t *n_keydesc = pcb_hid_cfg_menu_field(nd, PCB_MF_ACCELERATOR, NULL);
 		menu->actions = g_list_remove(menu->actions, h->action);
+		if (n_keydesc != NULL)
+			pcb_hid_cfg_keys_del_by_desc(&ghid_keymap, n_keydesc);
 		gtk_widget_destroy(h->destroy);
 		free(h);
 		nd->user_data = NULL;
