@@ -263,14 +263,42 @@ void pcb_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 {
 	for(;;) {
 		char *cname, *cval;
-		lht_node_t *t;
+		lht_node_t *t, *li;
 
 		cname = va_arg(ap, char *);
 		if (cname == NULL)
 			break;
 		cval = va_arg(ap, char *);
 
-		if (cval != NULL) {
+		if (cval == NULL)
+			continue;
+
+		if (strncmp(cname, "li:", 3) == 0) {
+			char *start, *s, *tmp = pcb_strdup(cval);
+			li = lht_dom_node_alloc(LHT_LIST, cname+3);
+
+			for(s = start = tmp; *s != '\0'; s++) {
+				if (*s == '\\') {
+					s++;
+					if (*s == '\0')
+						break;
+				}
+				if (*s == ';') {
+					*s = '\0';
+					t = lht_dom_node_alloc(LHT_TEXT, "");
+					t->data.text.value = pcb_strdup(start);
+					lht_dom_list_append(li, t);
+					start = s+1;
+				}
+			}
+			if (*start != '\0') {
+				t = lht_dom_node_alloc(LHT_TEXT, "");
+				t->data.text.value = pcb_strdup(start);
+				lht_dom_list_append(li, t);
+			}
+			free(tmp);
+		}
+		else {
 			t = lht_dom_node_alloc(LHT_TEXT, cname);
 			t->data.text.value = pcb_strdup(cval);
 			lht_dom_hash_put(node, t);
