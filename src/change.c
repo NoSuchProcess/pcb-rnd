@@ -917,6 +917,8 @@ static int undo_chg_attr_swap(void *udata)
 		}
 		*slot = ca->value;
 		new_val = ca->value;
+		if (ca->obj->Attributes.post_change != NULL)
+			ca->obj->Attributes.post_change(&ca->obj->Attributes, ca->key, ca->value);
 	}
 	else {
 		*slot = NULL;
