@@ -322,9 +322,15 @@ menu_data_t *menu_data_alloc(void)
 static int del_menu(void *ctx, lht_node_t *node)
 {
 	menu_data_t *md = node->user_data;
+	lht_node_t *knode;
 
 	if (md == NULL)
 		return 0;
+
+	knode = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
+	if (knode != NULL)
+		pcb_hid_cfg_keys_del_by_desc(&lesstif_keymap, knode);
+
 
 	if (md->wflag_idx >= 0)
 		del_widget_flag(md->wflag_idx);
