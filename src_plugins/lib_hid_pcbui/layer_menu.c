@@ -208,6 +208,15 @@ static void layer_install_menu_key(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *n
 
 }
 
+static void layer_install_menu_keys(void)
+{
+	ly_ctx_t ctx;
+
+	ctx.view = 0;
+	ctx.anch = "@layerkeys";
+	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu_key, &ctx);
+}
+
 static void layer_install_menu(void)
 {
 	ly_ctx_t ctx;
@@ -220,9 +229,7 @@ static void layer_install_menu(void)
 	ctx.anch = "@layerpick";
 	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
 
-
-	ctx.anch = "@layerkeys";
-	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu_key, &ctx);
+	layer_install_menu_keys();
 }
 
 void pcb_layer_menu_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -238,3 +245,30 @@ void pcb_layer_menu_vis_update_ev(pcb_hidlib_t *hidlib, void *user_data, int arg
 		pcb_gui->update_menu_checkbox(pcb_gui, NULL);
 }
 
+
+static int layer_menu_key_timer_active = 0;
+static pcb_hidval_t layer_menu_key_timer;
+
+static void timed_layer_menu_key_update_cb(pcb_hidval_t user_data)
+{
+/*	pcb_trace("************ layer key update timer!\n");*/
+	layer_install_menu_keys();
+	layer_menu_key_timer_active = 0;
+}
+
+
+void pcb_layer_menu_key_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_hidval_t timerdata;
+
+/*	pcb_trace("************ layer key update ev!\n");*/
+
+	if (layer_menu_key_timer_active) {
+		pcb_gui->stop_timer(pcb_gui, layer_menu_key_timer);
+		layer_menu_key_timer_active = 0;
+	}
+
+	timerdata.ptr = NULL;
+	layer_menu_key_timer = pcb_gui->add_timer(pcb_gui, timed_layer_menu_key_update_cb, 500, timerdata);
+	layer_menu_key_timer_active = 1;
+}
