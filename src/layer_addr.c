@@ -287,7 +287,7 @@ int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_i
 	return 0;
 }
 
-static pcb_layer_id_t layer_str2id_data(pcb_data_t *data, const char *str)
+static pcb_layer_id_t layer_str2id_data(pcb_board_t *pcb, pcb_data_t *data, const char *str)
 {
 	char *end;
 	pcb_layer_id_t id;
@@ -304,6 +304,11 @@ static pcb_layer_id_t layer_str2id_data(pcb_data_t *data, const char *str)
 			if (strcmp(ly->name, str+1) == 0)
 				return id;
 		}
+	}
+	if (*str == '&') {
+		str++;
+		if (pcb_strcasecmp(str, "current") == 0)
+			return PCB_CURRLID(pcb);
 	}
 	return -1;
 }
@@ -371,7 +376,7 @@ pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
 		return layer_str2id_grp(pcb, grp, sep+1);
 	}
 
-	return layer_str2id_data(data, str);
+	return layer_str2id_data(pcb, data, str);
 }
 
 pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
