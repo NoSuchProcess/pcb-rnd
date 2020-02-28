@@ -1253,6 +1253,109 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+static int layer_get_curr_pos(pcb_board_t *pcb, pcb_layer_id_t *lidout, pcb_layergrp_id_t *gid, pcb_layergrp_t **grp, int *glidx)
+{
+	pcb_layergrp_t *g;
+	pcb_layer_id_t lid;
+	int n;
+
+	lid = PCB_CURRLID(pcb);
+	if (lid == -1)
+		return -1;
+
+	*gid = pcb_layer_get_group(pcb, lid);
+	g = pcb_get_layergrp(pcb, *gid);
+	if (g == NULL)
+		return -1;
+
+	for(n = 0; n < g->len; n++) {
+		if (g->lid[n] == lid) {
+			*lidout = lid;
+			*glidx = n;
+			*grp = g;
+			return 0;
+		}
+	}
+
+	return -1;
+}
+
+static int layer_select_delta(pcb_board_t *pcb, int d)
+{
+	pcb_layergrp_t *g;
+	pcb_layer_id_t lid;
+	pcb_layergrp_id_t gid;
+	int glidx;
+
+	if (layer_get_curr_pos(pcb, &lid, &gid, &g, &glidx) < 0)
+		return -1;
+
+	if (d > 0) {
+		while(d > 0) {
+			glidx++;
+			while(glidx >= g->len) {
+				gid++;
+				g = pcb_get_layergrp(pcb, gid);
+				if (g == NULL)
+					return -1;
+				glidx = 0;
+			}
+			lid = g->lid[glidx];
+			d--;
+		}
+	}
+	else if (d < 0) {
+		while(d < 0) {
+			glidx--;
+			while(glidx < 0) {
+				gid--;
+				g = pcb_get_layergrp(pcb, gid);
+				if (g == NULL)
+					return -1;
+				glidx = g->len-1;
+			}
+			lid = g->lid[glidx];
+			d++;
+		}
+	}
+	else
+		return 0; /* 0 means: stay where we are */
+
+	pcb->RatDraw = 0;
+	pcb_layervis_change_group_vis(&pcb->hidlib, lid, 1, 1);
+	pcb_gui->invalidate_all(pcb_gui);
+	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+
+	return 0;
+}
+
+static const char pcb_acts_LayerByStack[] = "LayerByStack(select, prev|next)";
+static const char pcb_acth_LayerByStack[] = "Layer operations based on physical layer stacking";
+/* DOC: layerbystack.html */
+static fgw_error_t pcb_act_LayerByStack(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op1, op2;
+
+	PCB_ACT_CONVARG(1, FGW_KEYWORD, LayerByStack, op1 = fgw_keyword(&argv[1]));
+	PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, LayerByStack, op2 = fgw_keyword(&argv[2]));
+	PCB_ACT_IRES(0);
+
+	switch(op1) {
+		case F_Select:
+			switch(op2) {
+				case F_Prev: PCB_ACT_IRES(layer_select_delta(PCB_ACT_BOARD, -1)); return 0;
+				case F_Next: PCB_ACT_IRES(layer_select_delta(PCB_ACT_BOARD, +1)); return 0;
+			}
+	}
+
+	PCB_ACT_FAIL(LayerByStack);
+	PCB_ACT_IRES(1);
+	return 0;
+}
+
+
+
 const char pcb_acts_chkrst[] = "ChkRst(route_style_id)\n";
 const char pcb_acth_chkrst[] = "Return 1 if route_style_id matches pen.";
 /* DOC: chkrst.html */
@@ -1350,6 +1453,7 @@ static pcb_action_t gui_action_list[] = {
 	{"ChkLayer", pcb_act_ChkLayer, pcb_acth_chklayer, pcb_acts_chklayer},
 	{"ToggleView", pcb_act_ToggleView, pcb_acth_toggleview, pcb_acts_toggleview},
 	{"ChkView", pcb_act_ChkView, pcb_acth_chkview, pcb_acts_chkview},
+	{"LayerByStack", pcb_act_LayerByStack, pcb_acth_LayerByStack, pcb_acts_LayerByStack},
 	{"EditLayer", pcb_act_EditLayer, pcb_acth_EditLayer, pcb_acts_EditLayer},
 	{"EditGroup", pcb_act_EditGroup, pcb_acth_EditGroup, pcb_acts_EditGroup},
 	{"DelGroup",  pcb_act_DelGroup, pcb_acth_DelGroup, pcb_acts_DelGroup},
