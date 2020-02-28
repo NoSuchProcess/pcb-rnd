@@ -243,6 +243,9 @@ static void layer_install_menu(void)
 {
 	pcb_hidval_t timerdata;
 
+	if ((pcb_gui == NULL) || (!pcb_gui->gui))
+		return;
+
 	if (layer_menu_install_timer_active) {
 		pcb_gui->stop_timer(pcb_gui, layer_menu_install_timer);
 		layer_menu_install_timer_active = 0;
@@ -284,6 +287,9 @@ void pcb_layer_menu_key_update_ev(pcb_hidlib_t *hidlib, void *user_data, int arg
 	pcb_hidval_t timerdata;
 
 /*	pcb_trace("************ layer key update ev!\n");*/
+
+	if ((pcb_gui == NULL) || (!pcb_gui->gui))
+		return;
 
 	if (layer_menu_key_timer_active) {
 		pcb_gui->stop_timer(pcb_gui, layer_menu_key_timer);
