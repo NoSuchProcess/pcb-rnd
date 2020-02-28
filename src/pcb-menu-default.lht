@@ -610,6 +610,9 @@ ha:{
 						}
 						ha:generic layer keys {
 							li:submenu {
+								ha:Select previous layer    = { a={<Key>l; <Key>k}; action=LayerByStack(Select, Prev); }
+								ha:Select next layer        = { a={<Key>l; <Key>l}; action=LayerByStack(Select, Next); }
+								-
 								ha:Select Layer 1           = { a=<Key>1; action=SelectLayer(1) }
 								ha:Select Layer 2           = { a=<Key>2; action=SelectLayer(2) }
 								ha:Select Layer 3           = { a=<Key>3; action=SelectLayer(3) }
