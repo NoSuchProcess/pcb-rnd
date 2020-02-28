@@ -806,6 +806,12 @@ ha:{
 				ha:Layer name and flags...          = { action=EditLayer() }
 				ha:Layer properties...              = { action=Propedit(layer) }
 				ha:Grouping... (layer preferences)  = { action=Preferences("layers") }
+				ha:Hotkey {
+					li:submenu {
+						ha:Selection...                 = { action=LayerHotkey("&current", select) }
+						ha:Visibility...                = { action=LayerHotkey("&current", vis) }
+					}
+				}
 				-
 				ha:Move up (within group)           = { action=MoveLayer(c, step-) }
 				ha:Move down (within group)         = { action=MoveLayer(c, step+) }
