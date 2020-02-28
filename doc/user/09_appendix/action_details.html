@@ -1624,9 +1624,9 @@ Rotates the contents of the pastebuffer by an arbitrary angle.  If no angle is g
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-GetXY()
+GetXY([message, [x|y]])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Get a coordinate.
+Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
@@ -4018,7 +4018,7 @@ Selects the tool or changes tool related global states.
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 undo()
-undo(ClearList)
+undo(ClearList|FreezeSerial|UnfreezeSerial|IncSerial)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Undo recent changes.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
