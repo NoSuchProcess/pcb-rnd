@@ -158,9 +158,9 @@ f;r	pcb-menu-default.lht	Load(Revert,none)	Revert
 f;s	pcb-menu-default.lht	Save(Layout)	Save Layout
 f;x;p	pcb-menu-default.lht	SavePatch() 	netlist patch for back annotation
 g;b	pcb-menu-default.lht	Grid(down) 	Previous grid
-g;d	pcb-menu-default.lht	SetValue(Grid,*2) 	Grid *2
+g;d	pcb-menu-default.lht	SetGrid(*2) 	Grid *2
 g;f	pcb-menu-default.lht	Grid(up) 	Next grid
-g;h	pcb-menu-default.lht	SetValue(Grid,\0572) 	Grid \0572
+g;h	pcb-menu-default.lht	SetGrid(\0572) 	Grid \0572
 g;i	pcb-menu-default.lht	SetUnits(mil)	mil
 g;l	pcb-menu-default.lht	conf(toggle, plugins\057hid_gtk\057local_grid\057enable, design) 	Enable local grid
 g;m	pcb-menu-default.lht	SetUnits(mm)	mm
@@ -185,6 +185,8 @@ k;k	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
 k;l	pcb-menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
 k;r	pcb-menu-default.lht	Tool(Release);Popup(popup-obj, obj-type)	Click (right)
 k;space	pcb-menu-default.lht	Tool(Press);Tool(Release)	Click (left)
+l;k	pcb-menu-default.lht	LayerByStack(Select, Prev)	Select previous layer
+l;l	pcb-menu-default.lht	LayerByStack(Select, Next)	Select next layer
 left	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
 left-ctrl	pcb-menu-default.lht	Scroll(left) 	Scroll Left
 left-shift	pcb-menu-default.lht	Cursor(Pan,-50,0,view) 	Step +Left
