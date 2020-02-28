@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,  Revision: 29899
+This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,  Revision: 29900
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -176,7 +176,7 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td>jostle</td><td>Make room by moving wires away.</td><td>Jostle(diameter)</td><td>jostle plugin</td>
 <tr><td><a href="action_details.html#l">l</a></td><td>Loads layout data.</td><td>l [name] [format]</td><td>shand_cmd plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
-<tr><td>LayerByStack</td><td>Layer operations based on physical layer stacking</td><td>LayerByStack(select, prev|next)</td><td></td>
+<tr><td><a href="action_details.html#layerbystack">LayerByStack</a></td><td>Layer operations based on physical layer stacking</td><td>LayerByStack(select, prev|next)</td><td></td>
 <tr><td>LayerObjDup</td><td>Duplicate srcobj on a layer. Srcobj is specified by an idpath. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>LayerObjDup([noundo,] data, layer, srcobj)</td><td>act_draw</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
