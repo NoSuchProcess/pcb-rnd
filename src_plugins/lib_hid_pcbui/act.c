@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017..2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017..2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include "draw.h"
 #include <librnd/core/hid.h>
+#include "layer.h"
 #include "layer_vis.h"
 #include "search.h"
 #include "obj_subc_parent.h"
@@ -400,5 +401,52 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		r = pcb_gui->open_popup(pcb_gui, name2);
 
 	PCB_ACT_IRES(r);
+	return 0;
+}
+
+const char pcb_acts_LayerHotkey[] = "LayerHotkey(layer, select|vis)";
+const char pcb_acth_LayerHotkey[] = "Change the key binding for a layer";
+/* DOC: layerhotkey.html */
+fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_layer_t *ly;
+	char *op;
+	const char *key, *val, *title, *msg;
+	fgw_error_t er;
+	fgw_arg_t r, args[4];
+
+	PCB_ACT_CONVARG(1, FGW_LAYER, LayerHotkey, ly = fgw_layer(&argv[1]));
+	PCB_ACT_CONVARG(2, FGW_STR, LayerHotkey, op = argv[2].val.str);
+
+	if (pcb_strcasecmp(op, "select") == 0)   { key = "pcb-rnd::key::select"; title = "set layer selection hotkey"; }
+	else if (pcb_strcasecmp(op, "vis") == 0) { key = "pcb-rnd::key::vis"; title = "set layer visibility hotkey"; }
+	else PCB_ACT_FAIL(LayerHotkey);
+
+	msg =
+		"Layer hotkey syntax is the same as\n"
+		"the 'a' field in the menu file: it is\n"
+		"a semicolon separated sequence of keys,\n"
+		"each is specified as modifier<Key>k,\n"
+		"where modifier is empty, Alt, Ctrl, Shift\n"
+		"and k is the name of the key. For example\n"
+		"{l shift-t} is written as:\n"
+		"<Key>l; Shift<Key>t\n";
+
+	val = pcb_attribute_get(&ly->Attributes, key);
+	args[1].type = FGW_STR; args[1].val.str = msg;
+	args[2].type = FGW_STR; args[2].val.str = val;
+	args[3].type = FGW_STR; args[3].val.str = title;
+	er = pcb_actionv_bin(PCB_ACT_HIDLIB, "promptfor", &r, 4, args);
+
+	if ((er != NULL) || ((r.type & FGW_STR) != FGW_STR)) {
+		fgw_arg_free(&pcb_fgw, &r);
+		PCB_ACT_IRES(1);
+		return 0;
+	}
+	
+	pcb_attribute_put(&ly->Attributes, key, r.val.str);
+	fgw_arg_free(&pcb_fgw, &r);
+
+	PCB_ACT_IRES(0);
 	return 0;
 }
