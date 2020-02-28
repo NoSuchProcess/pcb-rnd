@@ -361,7 +361,7 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 	/* At the moment the layer selector displays only board layers which are always real */
 	assert(!PCB_CURRLAYER(PCB)->is_bound);
 
-	/* look for the next one to enable, group-vise */
+	/* look for the next one to enable, group-wise */
 	for(gid = PCB_CURRLAYER(PCB)->meta.real.grp + 1; gid != PCB_CURRLAYER(PCB)->meta.real.grp; gid++) {
 		pcb_layergrp_t *g;
 		if (gid >= pcb_max_group(PCB)) {
