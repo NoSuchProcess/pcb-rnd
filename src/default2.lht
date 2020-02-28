@@ -50,8 +50,8 @@ ha:pcb-rnd-board-v6 {
      ha:top-vcc         { lid=4; group=3; }
      ha:bottom-vcc      { lid=5; group=6; }
      ha:outline         { lid=6; group=5; }
-     ha:bottom-silk     { lid=7; group=8; ha:combining { auto=1; } }
-     ha:top-silk        { lid=8; group=1; ha:combining { auto=1; } }
+     ha:bottom-silk     { lid=7; group=8; ha:combining { auto=1; }; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>x}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>x} } }
+     ha:top-silk        { lid=8; group=1; ha:combining { auto=1; }; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>s}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>s} } }
      ha:top-paste       { lid=9; group=0; ha:combining { auto=1; } }
      ha:top-mask        { lid=10; group=2; ha:combining { sub=1; auto=1; } }
      ha:bottom-mask     { lid=11; group=7; ha:combining { sub=1; auto=1; } }
