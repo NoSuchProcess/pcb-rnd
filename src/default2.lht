@@ -43,8 +43,8 @@ ha:pcb-rnd-board-v6 {
 
  ha:data {
    li:layers {
-     ha:top-sig         { lid=0; group=3; }
-     ha:bottom-sig      { lid=1; group=6; }
+     ha:top-sig         { lid=0; group=3; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>t}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>t} }}
+     ha:bottom-sig      { lid=1; group=6; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>b}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>b} }}
      ha:top-gnd         { lid=2; group=3; }
      ha:bottom-gnd      { lid=3; group=6; }
      ha:top-vcc         { lid=4; group=3; }

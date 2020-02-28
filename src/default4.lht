@@ -43,12 +43,12 @@ ha:pcb-rnd-board-v6 {
 
  ha:data {
    li:layers {
-     ha:top-sig         { lid=0; group=3; }
-     ha:bottom-sig      { lid=1; group=10; }
+     ha:top-sig         { lid=0; group=3;  ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>t}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>t} }}
+     ha:bottom-sig      { lid=1; group=10; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>b}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>b} }}
      ha:top-gnd         { lid=2; group=3; }
      ha:bottom-gnd      { lid=3; group=10; }
-     ha:int-sig2        { lid=4; group=7; }
-     ha:int-sig1        { lid=5; group=5; }
+     ha:int-sig2        { lid=4; group=7; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>i}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>i} }}
+     ha:int-sig1        { lid=5; group=5; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>o}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>o} }}
      ha:outline         { lid=6; group=9; }
      ha:bottom-silk     { lid=7; group=12; ha:combining { auto=1; } }
      ha:top-silk        { lid=8; group=1; ha:combining { auto=1; } }
