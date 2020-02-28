@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017, 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017, 2018, 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,9 @@
 #include <librnd/core/hid.h>
 
 #include "layer_menu.h"
+
+/* How much to wait to batch menu refresh events */
+#define MENU_REFRESH_TIME_MS 200
 
 typedef struct {
 	const char *anch;
@@ -217,7 +220,10 @@ static void layer_install_menu_keys(void)
 	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu_key, &ctx);
 }
 
-static void layer_install_menu(void)
+static int layer_menu_install_timer_active = 0;
+static pcb_hidval_t layer_menu_install_timer;
+
+static void layer_install_menu_cb(pcb_hidval_t user_data)
 {
 	ly_ctx_t ctx;
 
@@ -230,6 +236,22 @@ static void layer_install_menu(void)
 	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
 
 	layer_install_menu_keys();
+	layer_menu_install_timer_active = 0;
+}
+
+static void layer_install_menu(void)
+{
+	pcb_hidval_t timerdata;
+
+	if (layer_menu_install_timer_active) {
+		pcb_gui->stop_timer(pcb_gui, layer_menu_install_timer);
+		layer_menu_install_timer_active = 0;
+	}
+
+	timerdata.ptr = NULL;
+	layer_menu_install_timer = pcb_gui->add_timer(pcb_gui, layer_install_menu_cb, MENU_REFRESH_TIME_MS, timerdata);
+	layer_menu_install_timer_active = 1;
+
 }
 
 void pcb_layer_menu_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -269,6 +291,6 @@ void pcb_layer_menu_key_update_ev(pcb_hidlib_t *hidlib, void *user_data, int arg
 	}
 
 	timerdata.ptr = NULL;
-	layer_menu_key_timer = pcb_gui->add_timer(pcb_gui, timed_layer_menu_key_update_cb, 500, timerdata);
+	layer_menu_key_timer = pcb_gui->add_timer(pcb_gui, timed_layer_menu_key_update_cb, MENU_REFRESH_TIME_MS, timerdata);
 	layer_menu_key_timer_active = 1;
 }
