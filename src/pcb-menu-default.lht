@@ -605,7 +605,6 @@ ha:{
 						ha:attribute layer keys {
 							li:submenu {
 								anon3=@layerkeys
-								-
 							}
 						}
 						ha:generic layer keys {
