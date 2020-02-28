@@ -8,7 +8,6 @@
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
-	- remove the dummy '-' after the @layerkeys anchor from the menu file -> crash with second key/menu appended: the ->last field is wrong
 - FEATURE: new breadboard
 	- FEATURE: PCB_OBJ_GFX
 		- TODO("gfx")
