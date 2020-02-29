@@ -3,7 +3,7 @@
 #@@enum:silkmark:externalx a little triangle placed outside of the box pointing in line with the first x row
 #@@enum:silkmark:externaly a little triangle placed outside of the box pointing in line with the first y row
 #@@enum:silkmark:external45 a little triangle placed outside of the box pointing at the corner in 45 degree
-#@@enum:silkmark:external shorthand for external
+#@@enum:silkmark:external shorthand for externalx
 #@@enum:silkmark:angled an angled line in the corner
 #@@enum:silkmark:arc an external 270 degree arc
 #@@enum:silkmark:circle a circle, 270 degrees external
