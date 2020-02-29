@@ -57,7 +57,7 @@ static const char *library_cookie = "dlg_library";
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	int wtree, wpreview, wtags, wfilt, wpend, wedit;
+	int wtree, wpreview, wtags, wfilt, wpend, wnopend, wedit;
 
 	int active; /* already open - allow only one instance */
 
@@ -190,6 +190,7 @@ static void timed_update_preview_(library_ctx_t *ctx, const char *otext)
 	}
 	ctx->timer_active = 0;
 	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
+	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
 }
 
 static void timed_update_preview_cb(pcb_hidval_t user_data)
@@ -205,6 +206,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 		pcb_gui->stop_timer(pcb_gui, ctx->timer);
 		ctx->timer_active = 0;
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
+		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
 	}
 
 	if (active) {
@@ -213,6 +215,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 		ctx->timer = pcb_gui->add_timer(pcb_gui, timed_update_preview_cb, 500, user_data);
 		ctx->timer_active = 1;
 		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
+		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 1);
 	}
 }
 
@@ -686,9 +689,12 @@ static void pcb_dlg_library(void)
 
 				/* right bottom */
 				PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
-					PCB_DAD_LABEL(library_ctx.dlg, "Pending refresh...");
+					PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_LABEL(library_ctx.dlg, "Refreshing");
 						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_HIDE);
 						library_ctx.wpend = PCB_DAD_CURRENT(library_ctx.dlg);
+					PCB_DAD_LABEL(library_ctx.dlg, " ");
+						library_ctx.wnopend = PCB_DAD_CURRENT(library_ctx.dlg);
 					TODO("rich text label");
 					PCB_DAD_LABEL(library_ctx.dlg, "");
 						library_ctx.wtags = PCB_DAD_CURRENT(library_ctx.dlg);
