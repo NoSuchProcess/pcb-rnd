@@ -84,6 +84,13 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 		case PCB_HATT_STRING:
 			hv.str = val;
 			break;
+		case PCB_HATT_BOOL:
+			if ((val == NULL) || (*val == '\0'))
+				return;
+			hv.lng = \
+				(*val == '1') || (*val == 't') || (*val == 'T') || (*val == 'y') || (*val == 'Y') || \
+				(((val[0] == 'o') || (val[0] == 'O')) && ((val[1] == 'n') || (val[1] == 'N')));
+			break;
 		case PCB_HATT_COORD:
 		case PCB_HATT_END: /* compound widget for the spinbox! */
 			hv.crd = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
@@ -146,6 +153,11 @@ do { \
 			break; \
 		case PCB_HATT_STRING: \
 			PCB_DAD_STRING(library_ctx.pdlg); \
+				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
+				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
+			break; \
+		case PCB_HATT_BOOL: \
+			PCB_DAD_BOOL(library_ctx.pdlg, ""); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
@@ -247,6 +259,9 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 		else if (strncmp(cmd, "dim:", 4) == 0) {
 			curr_type = PCB_HATT_COORD;
 		}
+		else if (strncmp(cmd, "bool:", 5) == 0) {
+			curr_type = PCB_HATT_BOOL;
+		}
 		else if (strncmp(cmd, "enum:", 5) == 0) {
 			char *evl;
 
@@ -312,6 +327,9 @@ static char *gen_cmd(library_ctx_t *ctx)
 				break;
 			case PCB_HATT_STRING:
 				val = a->val.str;
+				break;
+			case PCB_HATT_BOOL:
+				val = a->val.lng ? "yes" : "no";
 				break;
 			case PCB_HATT_COORD:
 			case PCB_HATT_END:
