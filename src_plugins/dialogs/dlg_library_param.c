@@ -478,7 +478,14 @@ void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str;
 
 	if (filter_txt != NULL) {
-		if (strncmp(filter_txt, l->name, strlen(l->name)) != 0) {
+		char *sep;
+		int len;
+		sep = strchr(l->name, '(');
+		if (sep != NULL)
+			len = sep - l->name;
+		else
+			len = strlen(l->name);
+		if (strncmp(filter_txt, l->name, len) != 0) {
 			/* clicked away from the previous parametric, but the filter text is still for that one; replace it */
 			filter_txt = NULL;
 		}
