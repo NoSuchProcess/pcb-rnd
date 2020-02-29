@@ -17,7 +17,7 @@
 		- document the new object in the data model
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
-- FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window [report: Majenko]
++ FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window; e.g. connector()'s etrunc [report: Majenko]
 - FEATURE: {v n} on subc should set subc PCB_FLAG_TERMNAME too; when more terminals are created (named) within the subc, they should inherit the subc's PCB_FLAG_TERMNAME flag (probably in the attribute change callback) [report: Majenko]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 
