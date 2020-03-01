@@ -18,7 +18,7 @@
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 + FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window; e.g. connector()'s etrunc [report: Majenko]
-- FEATURE: {v n} on subc should set subc PCB_FLAG_TERMNAME too; when more terminals are created (named) within the subc, they should inherit the subc's PCB_FLAG_TERMNAME flag (probably in the attribute change callback) [report: Majenko]
++ FEATURE: {v n} on subc: when more terminals are created (named) within the subc, they should show termname (plus a little L is drawn on the origin when this is enabled on a subc) NOTE: this is a hidden property, not saved [report: Majenko]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 
 2. For later releases ===============================================================================
