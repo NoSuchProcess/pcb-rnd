@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@
 #include <librnd/core/grid.h>
 #include "route_style.h"
 #include <librnd/core/hidlib_conf.h>
+#include "obj_subc_parent.h"
 
 #define PCB (do not use PCB directly)
 
@@ -508,6 +509,16 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						pcb_hid_redraw(PCB);
 						pcb_board_set_changed_flag(pcb_true);
 						pcb_actionva(PCB_ACT_HIDLIB, "DeleteRats", "AllRats", NULL);
+					}
+				}
+				if (op == F_Object) {
+					pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
+					if (subc->auto_termname_display) {
+						pcb_undo_add_obj_to_flag(ptr2);
+						PCB_FLAG_SET(PCB_FLAG_TERMNAME, (pcb_any_obj_t *)ptr2);
+						pcb_board_set_changed_flag(pcb_true);
+						pcb_undo_inc_serial();
+						pcb_draw();
 					}
 				}
 				break;

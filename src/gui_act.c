@@ -328,6 +328,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 							opctx.chgflag.how = PCB_CHGFLG_TOGGLE;
 							opctx.chgflag.flag = PCB_FLAG_TERMNAME;
 							pcb_subc_op(PCB->Data, (pcb_subc_t *)obj, &ChgFlagFunctions, &opctx, 0);
+							((pcb_subc_t *)obj)->auto_termname_display = !((pcb_subc_t *)obj)->auto_termname_display;
 							pcb_undo_inc_serial();
 							return 0;
 							break;

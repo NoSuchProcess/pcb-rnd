@@ -56,6 +56,7 @@ struct pcb_subc_s {
 	const char *refdes; /* cached from attributes for fast lookup */
 	int part_changed_inhibit;
 	unsigned part_changed_bbox_dirty:1; /* part_changed_inhibit_dec() should recalculate the bbox */
+	unsigned auto_termname_display:1; /* display bit, not saved or loaded, only toggled by Display() on subc */
 	gdl_elem_t link;
 };
 
