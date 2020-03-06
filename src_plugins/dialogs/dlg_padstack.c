@@ -861,6 +861,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								PCB_DAD_MINVAL(dlg, 1);
 								PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 								PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
+								PCB_DAD_WIDTH_CHR(dlg, 10);
 								PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
 							free(layname_tmp);
 						}
@@ -869,22 +870,22 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 					PCB_DAD_LABEL(dlg, "Hole properties:");
 						pse->hole_header = PCB_DAD_CURRENT(dlg);
 
-					PCB_DAD_BEGIN_TABLE(dlg, 3);
-
+					PCB_DAD_BEGIN_TABLE(dlg, 4);
+						/* table row 1 */
 						PCB_DAD_LABEL(dlg, "Diameter:");
 						PCB_DAD_COORD(dlg, "");
 							pse->hdia = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_MINVAL(dlg, 0);
 							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-						PCB_DAD_BEGIN_HBOX(dlg);
-							PCB_DAD_LABEL(dlg, "Hole/slot plating:");
-							PCB_DAD_BOOL(dlg, "");
-								pse->hplated = PCB_DAD_CURRENT(dlg);
-								PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
-								PCB_DAD_HELP(dlg, "A plated hole galvanically connects layers");
-						PCB_DAD_END(dlg);
+							PCB_DAD_WIDTH_CHR(dlg, 10);
+						PCB_DAD_LABEL(dlg, "Hole/slot plating:");
+						PCB_DAD_BOOL(dlg, "");
+							pse->hplated = PCB_DAD_CURRENT(dlg);
+							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
+							PCB_DAD_HELP(dlg, "A plated hole galvanically connects layers");
 
+						/* table row 2 */
 						PCB_DAD_LABEL(dlg, "Hole/slot top:");
 						PCB_DAD_INTEGER(dlg, "");
 							pse->htop_val = PCB_DAD_CURRENT(dlg);
@@ -892,14 +893,13 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							PCB_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 							PCB_DAD_HELP(dlg, "Blind/buried via/slot: top end of the hole");
-						PCB_DAD_BEGIN_HBOX(dlg);
-							PCB_DAD_LABEL(dlg, "<text>");
-								pse->htop_text = PCB_DAD_CURRENT(dlg);
-							spring(dlg);
-							PCB_DAD_LABEL(dlg, "<layer>");
-								pse->htop_layer = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_END(dlg);
+							PCB_DAD_WIDTH_CHR(dlg, 6);
+						PCB_DAD_LABEL(dlg, "<text>");
+							pse->htop_text = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "<layer>");
+							pse->htop_layer = PCB_DAD_CURRENT(dlg);
 
+						/* table row 3 */
 						PCB_DAD_LABEL(dlg, "Hole/slot bottom:");
 						PCB_DAD_INTEGER(dlg, "");
 							pse->hbot_val = PCB_DAD_CURRENT(dlg);
@@ -907,13 +907,12 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							PCB_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 							PCB_DAD_HELP(dlg, "Blind/buried via/slot: bottom end of the hole");
-						PCB_DAD_BEGIN_HBOX(dlg);
-							PCB_DAD_LABEL(dlg, "<text>");
-								pse->hbot_text = PCB_DAD_CURRENT(dlg);
-							spring(dlg);
-							PCB_DAD_LABEL(dlg, "<layer>");
-								pse->hbot_layer = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_END(dlg);
+							PCB_DAD_WIDTH_CHR(dlg, 6);
+						PCB_DAD_LABEL(dlg, "<text>");
+							pse->hbot_text = PCB_DAD_CURRENT(dlg);
+						PCB_DAD_LABEL(dlg, "<layer>");
+							pse->hbot_layer = PCB_DAD_CURRENT(dlg);
+
 					PCB_DAD_END(dlg);
 				PCB_DAD_END(dlg);
 			PCB_DAD_END(dlg);
