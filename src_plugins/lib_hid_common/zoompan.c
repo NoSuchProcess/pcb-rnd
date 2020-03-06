@@ -34,7 +34,7 @@
 
 #include "zoompan.h"
 
-extern const char *pcb_acts_Zoom;
+const char *pcb_acts_Zoom;
 fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
