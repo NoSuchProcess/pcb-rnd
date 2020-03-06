@@ -2664,7 +2664,8 @@
  undo_old.h conf_core.h ../src_plugins/exto_std/line_of_vias.c \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/exto_std/dimension.c search.h \
- ../src_plugins/exto_std/cord.c data_parent.h
+ ../src_plugins/exto_std/cord.c data_parent.h \
+ ../src_plugins/exto_std/bus.c
 ../src_plugins/fontmode/fontmode.o: ../src_plugins/fontmode/fontmode.c \
  ../config.h librnd/config.h conf_core.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
@@ -5974,6 +5975,7 @@
  ../src_plugins/lib_hid_common/dlg_comm_m.h \
  ../src_plugins/lib_hid_common/dlg_log.h \
  ../src_plugins/lib_hid_common/act_dad.h \
+ ../src_plugins/lib_hid_common/zoompan.h \
  ../src_plugins/lib_hid_common/conf_internal.c \
  ../src_plugins/lib_hid_common/dialogs_conf_fields.h
 ../src_plugins/lib_hid_common/menu_helper.o: \
@@ -6034,6 +6036,16 @@
  ../config.h librnd/config.h \
  ../src_plugins/lib_hid_common/xpm/question.xpm \
  ../src_plugins/lib_hid_common/xpm/warning.xpm
+../src_plugins/lib_hid_common/zoompan.o: \
+ ../src_plugins/lib_hid_common/zoompan.c ../config.h librnd/config.h \
+ librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
+ librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
+ librnd/core/attrib.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h librnd/core/compat_misc.h librnd/core/hidlib.h \
+ librnd/core/global_typedefs.h ../src_plugins/lib_hid_common/zoompan.h
 ../src_plugins/lib_hid_gl/hidgl.o: ../src_plugins/lib_hid_gl/hidgl.c \
  ../config.h librnd/config.h librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
@@ -6091,6 +6103,7 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h \
+ ../src_plugins/lib_hid_common/zoompan.h \
  ../src_plugins/lib_hid_pcbui/util.h data.h \
  ../src_plugins/lib_hid_pcbui/act.h
 ../src_plugins/lib_hid_pcbui/layer_menu.o: \
