@@ -183,17 +183,6 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-const char pcb_acts_Command[] = "Command()";
-const char pcb_acth_Command[] = "Displays the command line input in the status area.";
-/* DOC: command */
-fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	PCB_GUI_NOGUI();
-	pcb_gui->open_command(pcb_gui);
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
 const char pcb_acts_Popup[] = "Popup(MenuName, [obj-type])";
 const char pcb_acth_Popup[] = "Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.\n";
 /* DOC: popup.html */

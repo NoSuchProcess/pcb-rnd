@@ -59,6 +59,17 @@ static void grid_unit_chg_ev(conf_native_t *cfg, int arr_idx)
 	pcb_dad_spin_update_global_coords();
 }
 
+const char pcb_acts_Command[] = "Command()";
+const char pcb_acth_Command[] = "Displays the command line input in the status area.";
+/* DOC: command */
+fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	PCB_GUI_NOGUI();
+	pcb_gui->open_command(pcb_gui);
+	PCB_ACT_IRES(0);
+	return 0;
+}
+
 static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 
 pcb_action_t hid_common_action_list[] = {
@@ -67,6 +78,7 @@ pcb_action_t hid_common_action_list[] = {
 	{"Center", pcb_act_Center, pcb_acth_Center, pcb_acts_Center},
 	{"Scroll", pcb_act_Scroll, pcb_acth_Scroll, pcb_acts_Scroll},
 	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
+	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
 	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL},
