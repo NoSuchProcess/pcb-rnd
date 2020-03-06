@@ -880,11 +880,11 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						}
 					PCB_DAD_END(dlg);
 
-					PCB_DAD_LABEL(dlg, "Hole properties:");
-						pse->hole_header = PCB_DAD_CURRENT(dlg);
 
-					PCB_DAD_BEGIN_TABLE(dlg, 4);
-						/* table row 1 */
+					PCB_DAD_BEGIN_HBOX(dlg);
+						PCB_DAD_LABEL(dlg, "Hole properties:");
+							pse->hole_header = PCB_DAD_CURRENT(dlg);
+						spring(dlg);
 						PCB_DAD_LABEL(dlg, "Hole diameter:");
 						PCB_DAD_COORD(dlg, "");
 							pse->hdia = PCB_DAD_CURRENT(dlg);
@@ -892,13 +892,17 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 							PCB_DAD_WIDTH_CHR(dlg, 10);
+						spring(dlg);
 						PCB_DAD_LABEL(dlg, "Hole/slot plating:");
 						PCB_DAD_BOOL(dlg, "");
 							pse->hplated = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_CHANGE_CB(dlg, pse_chg_hole);
 							PCB_DAD_HELP(dlg, "A plated hole galvanically connects layers");
 
-						/* table row 2 */
+					PCB_DAD_END(dlg);
+
+					PCB_DAD_BEGIN_TABLE(dlg, 4);
+						/* table row 1 */
 						PCB_DAD_LABEL(dlg, "Hole/slot top:");
 						PCB_DAD_INTEGER(dlg, "");
 							pse->htop_val = PCB_DAD_CURRENT(dlg);
@@ -912,7 +916,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						PCB_DAD_LABEL(dlg, "<layer>");
 							pse->htop_layer = PCB_DAD_CURRENT(dlg);
 
-						/* table row 3 */
+						/* table row 2 */
 						PCB_DAD_LABEL(dlg, "Hole/slot bottom:");
 						PCB_DAD_INTEGER(dlg, "");
 							pse->hbot_val = PCB_DAD_CURRENT(dlg);
