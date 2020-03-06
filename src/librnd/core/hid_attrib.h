@@ -31,7 +31,9 @@ typedef enum pcb_hatt_compflags_e {
 	PCB_HATF_TOGGLE      = 256,/* for buttons and picbuttons: use a toggle button instead of a push button */
 	PCB_HATF_TEXT_TRUNCATED = 512, /* label: do not set widget size for text, truncate text if widget is smaller */
 	PCB_HATF_TEXT_VERTICAL  = 1024,/* label: rotate text 90 degrees so it can be read from the right */
-	PCB_HATF_PRV_BOARD   = 2048/* indicates that a preview widget is showing a section of the board so it needs to be redrawn when the board is redrawn */
+	PCB_HATF_PRV_BOARD   = 2048,   /* indicates that a preview widget is showing a section of the board so it needs to be redrawn when the board is redrawn */
+	PCB_HATF_WIDTH_CHR   = 4096,   /* ->geo_width is specified in charactes */
+	PCB_HATF_HEIGHT_CHR  = 8192    /* ->geo_width is specified in charactes */
 } pcb_hatt_compflags_t;
 
 typedef enum pcb_hid_attr_type_e {
@@ -94,6 +96,10 @@ struct pcb_hid_attribute_s {
 	void (*enter_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);  /* called upon the user pressed enter in a widget that handles keys */
 	void *user_data; /* ignored; the caller is free to use it */
 	unsigned int hatt_flags;
+
+	/* geometry */
+	int geo_width; /* when PCB_HATF_WIDTH_CHR is set, width of the widget in characters, on creation-time */
+	int geo_height;
 };
 
 struct pcb_export_opt_s {

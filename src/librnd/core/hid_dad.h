@@ -570,6 +570,9 @@ do { \
 #define PCB_DAD_SET_ATTR_FIELD(table, field, value) \
 	table[table ## _len - 1].field = (value)
 
+#define PCB_DAD_OR_ATTR_FIELD(table, field, value) \
+	table[table ## _len - 1].field |= (value)
+
 #define PCB_DAD_SET_ATTR_FIELD_VAL(table, field, val) \
 do { \
 	switch(table[table ## _len - 1].type) { \
@@ -778,6 +781,12 @@ do { \
 		case PCB_HATT_BEGIN_TABBED: \
 			break; \
 	} \
+} while(0)
+
+#define PCB_DAD_WIDTH_CHR(table, width) \
+do { \
+	PCB_DAD_OR_ATTR_FIELD(table, hatt_flags, PCB_HATF_HEIGHT_CHR); \
+	PCB_DAD_SET_ATTR_FIELD(table, geo_width, width); \
 } while(0)
 
 /* Internal: free all rows and caches and the tree itself */
