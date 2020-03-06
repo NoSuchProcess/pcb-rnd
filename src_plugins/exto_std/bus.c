@@ -95,11 +95,22 @@ static void bus_clear(pcb_subc_t *subc)
 		ny = vx; \
 	} while(0)
 
+static int close_enough(pcb_point_t a, pcb_point_t b)
+{
+	pcb_coord_t dx = a.X - b.X, dy = a.Y - b.Y;
+
+	if (dx < -1) return 0;
+	if (dx > +1) return 0;
+	if (dy < -1) return 0;
+	if (dy > +1) return 0;
+	return 1;
+}
+
 /* create all new padstacks */
 static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	bus_t *bus = subc->extobj_data;
-	pcb_line_t *l1 = NULL, *l, *tr;
+	pcb_line_t *l1 = NULL, *l, *tr, *ltmp;
 	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
 	pcb_layer_t *tly = &subc->data->Layer[LID_TARGET];
 	double o0;
@@ -112,21 +123,77 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 	o0 = ((bus->width - 1) * bus->pitch)/2;
 	for(l = linelist_first(&ly->Line); l != NULL; l = linelist_next(l)) {
+		pcb_rtree_box_t sb;
+		pcb_rtree_it_t it;
 		bus_seg_def;
-		double o = o0;
-		int n;
+		double o = o0, a, a1 = 0, a2 = 0, tune1, tune2;
+		int n, c1 = 0, c2 = 0;
 
 		if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* gen only for floater */
 
 		l->Thickness = bus->vthickness;
 		if (l1 == NULL) l1 = l;
 
+		pcb_trace("line\n");
+		sb.x1 = l->Point1.X-1; sb.y1 = l->Point1.Y-1;
+		sb.x2 = l->Point1.X+1; sb.y2 = l->Point1.Y+1;
+		for(ltmp = pcb_rtree_first(&it, ly->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
+		{
+			if (ltmp == l) continue;
+			if (close_enough(l->Point1, ltmp->Point1)) {
+				a1 = atan2(ltmp->Point2.Y - ltmp->Point1.Y, ltmp->Point2.X - ltmp->Point1.X);
+				c1 = 1;
+/*				pcb_trace(" conn1 2-1 %f\n", a1);*/
+				break;
+			}
+			else if (close_enough(l->Point1, ltmp->Point2)) {
+				a1 = atan2(ltmp->Point1.Y - ltmp->Point2.Y, ltmp->Point1.X - ltmp->Point2.X);
+				c1 = 1;
+/*				pcb_trace(" conn1 1-2 %f\n", a1);*/
+				break;
+			}
+		}
+		sb.x1 = l->Point2.X-1; sb.y1 = l->Point2.Y-1;
+		sb.x2 = l->Point2.X+1; sb.y2 = l->Point2.Y+1;
+		for(ltmp = pcb_rtree_first(&it, ly->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
+		{
+			if (ltmp == l) continue;
+			if (close_enough(l->Point2, ltmp->Point1)) {
+				a2 = atan2(ltmp->Point2.Y - ltmp->Point1.Y, ltmp->Point2.X - ltmp->Point1.X);
+				c2 = 1;
+/*				pcb_trace(" conn2 2-1 %f\n", a1);*/
+				break;
+			}
+			if (close_enough(l->Point2, ltmp->Point2)) {
+				a2 = atan2(ltmp->Point1.Y - ltmp->Point2.Y, ltmp->Point1.X - ltmp->Point2.X);
+				c2 = 1;
+/*				pcb_trace(" conn2 2-1 %f\n", a1);*/
+				break;
+			}
+		}
+
 		bus_seg_calc(l);
-TODO("Gen lines");
+
+		if (c1) {
+			a1 = M_PI - a1 - atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X);
+			tune1 = tan(a1);
+		}
+		else
+			tune1 = 0;
+	
+		if (c2) {
+			a2 = M_PI - a2 - atan2(l->Point1.Y - l->Point2.Y, l->Point1.X - l->Point2.X);
+			tune2 = tan(a2);
+		}
+		else
+			tune2 = 0;
+
+/*		pcb_trace("a12: %f %f\n", a1, a2);*/
+
 		for(n = 0; n < bus->width; n++,o-=bus->pitch) {
 			tr = pcb_line_new(tly,
-				l->Point1.X + nx * o, l->Point1.Y + ny * o,
-				l->Point2.X + nx * o, l->Point2.Y + ny * o,
+				l->Point1.X + nx * o + vx * tune1 * o, l->Point1.Y + ny * o + vy * tune1 * o,
+				l->Point2.X + nx * o + vx * tune2 * o, l->Point2.Y + ny * o + vy * tune2 * o,
 				bus->thickness, bus->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 		}
 
