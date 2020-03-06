@@ -1006,6 +1006,9 @@ TODO("TODO")
 				pcb_polo_t *p, p_st[32];
 				double vl = pcb_round(val/2);
 
+				if (shp->data.poly.inverted)
+					vl = -vl;
+
 				if (shp->data.poly.len >= sizeof(p_st) / sizeof(p_st[0]))
 					p = malloc(sizeof(pcb_polo_t) * shp->data.poly.len);
 				else
