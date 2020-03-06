@@ -51,23 +51,18 @@ do { \
 	PCB_ACT_IRES(0); \
 } while(0)
 
-const char pcb_acts_Zoom[] =
-	"Zoom()\n"
-	"Zoom([+|-|=]factor)\n"
-	"Zoom(x1, y1, x2, y2)\n"
-	"Zoom(selected)\n"
-	"Zoom(?)\n"
-	"Zoom(get)\n"
-	"Zoom(found)\n";
-const char pcb_acth_Zoom[] = "GUI zoom";
-/* DOC: zoom.html */
-fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+#define pcb_gui_acts_zoom \
+	"Zoom()\n" \
+	"Zoom([+|-|=]factor)\n" \
+	"Zoom(x1, y1, x2, y2)\n" \
+	"Zoom(?)\n" \
+	"Zoom(get)\n" \
+
+fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *vp, *ovp;
 	double v;
 	pcb_coord_t x = 0, y = 0;
-
-	NOGUI();
 
 	if (argc < 2) {
 		pcb_gui->zoom_win(pcb_gui, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 1);
@@ -89,25 +84,6 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2)
 		PCB_ACT_FAIL(Zoom);
 
-	PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
-
-	if (pcb_strcasecmp(vp, "selected") == 0) {
-		pcb_box_t sb;
-		if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
-			pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
-		else
-			pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
-		return 0;
-	}
-
-	if (pcb_strcasecmp(vp, "found") == 0) {
-		pcb_box_t sb;
-		if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
-			pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
-		else
-			pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
-		return 0;
-	}
 
 	if (*vp == '?') {
 		pcb_message(PCB_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", pcb_gui->coord_per_pix);
@@ -142,6 +118,46 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_IRES(0);
 	return 0;
+}
+
+
+
+const char pcb_acts_Zoom[] =
+	pcb_gui_acts_zoom
+	"Zoom(found|selected)\n";
+const char pcb_acth_Zoom[] = "GUI zoom";
+/* DOC: zoom.html */
+fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *vp, *ovp;
+	double v;
+	pcb_coord_t x = 0, y = 0;
+
+	NOGUI();
+
+	if (argc == 2) {
+		PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
+
+		if (pcb_strcasecmp(vp, "selected") == 0) {
+			pcb_box_t sb;
+			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
+				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+			else
+				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
+			return 0;
+		}
+
+		if (pcb_strcasecmp(vp, "found") == 0) {
+			pcb_box_t sb;
+			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
+				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+			else
+				pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
+			return 0;
+		}
+	}
+
+	return pcb_gui_act_zoom(res, argc, argv);
 }
 
 const char pcb_acts_Pan[] = "Pan(Mode)";
