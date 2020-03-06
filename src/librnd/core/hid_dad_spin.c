@@ -613,3 +613,14 @@ void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin)
 	else
 		do_step(hid_ctx, spin, &dlg[spin->wstr], &dlg[spin->cmp.wend], 0); /* cheap conversion*/
 }
+
+void pcb_dad_spin_set_geo(pcb_hid_attribute_t *end, pcb_hatt_compflags_t flg, int geo)
+{
+	pcb_hid_dad_spin_t *spin = end->wdata;
+	pcb_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
+
+	if (flg == PCB_HATF_HEIGHT_CHR) {
+		str->hatt_flags |= PCB_HATF_HEIGHT_CHR;
+		str->geo_width = geo;
+	}
+}

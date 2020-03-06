@@ -117,6 +117,7 @@ do { \
 	spin->cmp.widget_hide = pcb_dad_spin_widget_hide; \
 	spin->cmp.set_value = pcb_dad_spin_set_value; \
 	spin->cmp.set_help = pcb_dad_spin_set_help; \
+	spin->cmp.set_geo = pcb_dad_spin_set_geo; \
 	spin->type = typ; \
 	spin->wtype = wtyp; \
 	spin->attrs = &table; \
@@ -147,6 +148,7 @@ int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, 
 int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide);
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 void pcb_dad_spin_set_help(pcb_hid_attribute_t *end, const char *help);
+void pcb_dad_spin_set_geo(pcb_hid_attribute_t *end, pcb_hatt_compflags_t flg, int geo);
 
 void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin); /* update the widget from spin, before or after the dialog is realized */
 

@@ -142,6 +142,7 @@ typedef struct {
 	void (*set_help)(pcb_hid_attribute_t *attr, const char *text); /* set the tooltip help; attr is the END */
 	void (*set_field_num)(pcb_hid_attribute_t *attr, const char *fieldname, long l, double d, pcb_coord_t c); /* set value during creation; attr is the END */
 	void (*set_field_ptr)(pcb_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
+	void (*set_geo)(pcb_hid_attribute_t *attr, pcb_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
 	void (*free)(pcb_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
 } pcb_hid_compound_t;
 
@@ -785,8 +786,15 @@ do { \
 
 #define PCB_DAD_WIDTH_CHR(table, width) \
 do { \
-	PCB_DAD_OR_ATTR_FIELD(table, hatt_flags, PCB_HATF_HEIGHT_CHR); \
-	PCB_DAD_SET_ATTR_FIELD(table, geo_width, width); \
+	if ((table[table ## _len - 1].type) == PCB_HATT_END) { \
+		pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+		if (cmp->set_geo != NULL) \
+			cmp->set_geo(&table[table ## _len - 1], PCB_HATF_HEIGHT_CHR, (width)); \
+	} \
+	else { \
+		PCB_DAD_OR_ATTR_FIELD(table, hatt_flags, PCB_HATF_HEIGHT_CHR); \
+		PCB_DAD_SET_ATTR_FIELD(table, geo_width, (width)); \
+	} \
 } while(0)
 
 /* Internal: free all rows and caches and the tree itself */
