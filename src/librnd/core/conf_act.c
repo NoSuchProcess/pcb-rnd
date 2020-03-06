@@ -327,6 +327,7 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value + PCB_ACT_HIDLIB->grid, pcb_false, 0, 0);
 	}
+	return 0;
 }
 
 
