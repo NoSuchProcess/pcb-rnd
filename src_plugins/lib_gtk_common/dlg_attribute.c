@@ -436,6 +436,10 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
 				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
+
+				if (ctx->attrs[j].hatt_flags & PCB_HATF_HEIGHT_CHR)
+					gtk_entry_set_width_chars(entry, ctx->attrs[j].geo_width);
+
 				break;
 
 			case PCB_HATT_BOOL:
