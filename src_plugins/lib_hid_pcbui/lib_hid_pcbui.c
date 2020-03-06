@@ -66,9 +66,6 @@ static pcb_action_t status_action_list[] = {
 static pcb_action_t act_action_list[] = {
 	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
 	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom},
-	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
-	{"Center", pcb_act_Center, pcb_acth_Center, pcb_acts_Center},
-	{"Scroll", pcb_act_Scroll, pcb_acth_Scroll, pcb_acts_Scroll},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
 	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
 	{"Popup", pcb_act_Popup, pcb_acth_Popup, pcb_acts_Popup},

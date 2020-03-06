@@ -42,6 +42,7 @@
 #include "dlg_comm_m.h"
 #include "dlg_log.h"
 #include "act_dad.h"
+#include "../src_plugins/lib_hid_common/zoompan.h"
 #include "../src_plugins/lib_hid_common/conf_internal.c"
 
 const conf_dialogs_t dialogs_conf;
@@ -62,6 +63,9 @@ static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use dir
 
 pcb_action_t hid_common_action_list[] = {
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
+	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
+	{"Center", pcb_act_Center, pcb_acth_Center, pcb_acts_Center},
+	{"Scroll", pcb_act_Scroll, pcb_acth_Scroll, pcb_acts_Scroll},
 	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
