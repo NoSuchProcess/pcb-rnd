@@ -35,6 +35,7 @@
 
 /* Convert an attribute to coord, return 0 on success */
 PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, pcb_coord_t *res, const char *name);
+PCB_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char *name);
 
 /* Wrap the update/re-generation of an extobject-subc in this begin/end to
    make sure bbox and undo are updated properly. The end() call always returns
@@ -52,6 +53,21 @@ PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, pcb_coord_t *res, 
 		v = pcb_get_value(s, NULL, NULL, &succ);
 		if (succ) {
 			*res = v;
+			return 0;
+		}
+	}
+	return -1;
+}
+
+PCB_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char *name)
+{
+	long l;
+	char *end;
+	const char *s = pcb_attribute_get(&obj->Attributes, name);
+	if (s != NULL) {
+		l = strtol(s, &end, 10);
+		if (*end == '\0') {
+			*res = l;
 			return 0;
 		}
 	}
@@ -204,4 +220,38 @@ do { \
 		wid = PCB_DAD_CURRENT(dlg); \
 		dlg[wid].user_data = (void *)attr_name; \
 		PCB_DAD_DEFAULT_PTR(dlg, currval); \
+} while(0)
+
+PCB_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_subc_t *subc = caller_data;
+	char tmp[128];
+
+	pcb_snprintf(tmp, sizeof(tmp), "%d", attr->val.lng);
+	pcb_exto_dlg_gui_chg_attr(subc, attr, tmp);
+}
+
+#define pcb_exto_dlg_int(dlg, subc, vis_name, attr_name, help) \
+do { \
+	pcb_hid_dad_spin_t *spin; \
+	double d; \
+	pcb_coord_t currval = 0; \
+	const pcb_unit_t *unit_out = NULL; \
+	int wid; \
+	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
+	if (sval != NULL) \
+		pcb_get_value_unit(sval, NULL, 0, &d, &unit_out); \
+	currval = d; \
+	PCB_DAD_LABEL(dlg, vis_name); \
+		if (help != NULL) PCB_DAD_HELP(dlg, help); \
+	PCB_DAD_INTEGER(dlg, ""); \
+		if (help != NULL) PCB_DAD_HELP(dlg, help); \
+		PCB_DAD_CHANGE_CB(dlg, pcb_exto_dlg_coord_cb); \
+		wid = PCB_DAD_CURRENT(dlg); \
+		dlg[wid].user_data = (void *)attr_name; \
+		PCB_DAD_DEFAULT_NUM(dlg, currval); \
+		spin = dlg[wid].wdata; \
+		spin->unit = unit_out; \
+		spin->no_unit_chg = 1; \
+		pcb_dad_spin_update_internal(spin); \
 } while(0)
