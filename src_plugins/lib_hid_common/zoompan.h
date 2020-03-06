@@ -48,6 +48,7 @@ do { \
 	"Zoom(get)\n" \
 
 extern const char *pcb_acts_Zoom;
+extern const char pcb_acts_Zoom_default[];
 fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 
