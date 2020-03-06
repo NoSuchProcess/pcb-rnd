@@ -821,9 +821,19 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 					PCB_DAD_END(dlg);
 
 					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
-					PCB_DAD_LABEL(dlg, "Pad geometry per layer type:");
 					PCB_DAD_BEGIN_TABLE(dlg, 3);
 						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+
+						/* header */
+						PCB_DAD_LABEL(dlg, "Per layer-type shape");
+						PCB_DAD_LABEL(dlg, "Shape geometry");
+						PCB_DAD_BEGIN_HBOX(dlg);
+							PCB_DAD_LABEL(dlg, "Change shape");
+							spring(dlg);
+							PCB_DAD_LABEL(dlg, "Local clearance");
+						PCB_DAD_END(dlg);
+
+						/* content */
 						for(n = 0; n < pcb_proto_num_layers; n++) {
 							const char *layname = pcb_proto_layers[n].name;
 							char *layname_tmp = NULL;
@@ -853,16 +863,17 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 
 							/* col 3 */
 							PCB_DAD_BEGIN_HBOX(dlg);
-								PCB_DAD_BUTTON(dlg, "change");
+								PCB_DAD_BUTTON(dlg, "Change");
 									pse->proto_change[n] = PCB_DAD_CURRENT(dlg);
 									PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
 									PCB_DAD_HELP(dlg, "Change the shape on this layer type");
+								PCB_DAD_LABEL(dlg, "      ");
 								PCB_DAD_COORD(dlg, "");
 									pse->proto_clr[n] = PCB_DAD_CURRENT(dlg);
 									PCB_DAD_MINVAL(dlg, 1);
 									PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
 									PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
-									PCB_DAD_WIDTH_CHR(dlg, 10);
+									PCB_DAD_WIDTH_CHR(dlg, 8);
 									PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
 								free(layname_tmp);
 							PCB_DAD_END(dlg);
@@ -874,7 +885,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 
 					PCB_DAD_BEGIN_TABLE(dlg, 4);
 						/* table row 1 */
-						PCB_DAD_LABEL(dlg, "Diameter:");
+						PCB_DAD_LABEL(dlg, "Hole diameter:");
 						PCB_DAD_COORD(dlg, "");
 							pse->hdia = PCB_DAD_CURRENT(dlg);
 							PCB_DAD_MINVAL(dlg, 0);
