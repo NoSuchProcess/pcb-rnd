@@ -39,6 +39,8 @@
 #include "search.h"
 #include "obj_subc_parent.h"
 
+#include "../src_plugins/lib_hid_common/zoompan.h"
+
 #include "util.h"
 #include "act.h"
 
@@ -51,77 +53,6 @@ do { \
 	PCB_ACT_IRES(0); \
 } while(0)
 
-#define pcb_gui_acts_zoom \
-	"Zoom()\n" \
-	"Zoom([+|-|=]factor)\n" \
-	"Zoom(x1, y1, x2, y2)\n" \
-	"Zoom(?)\n" \
-	"Zoom(get)\n" \
-
-fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const char *vp, *ovp;
-	double v;
-	pcb_coord_t x = 0, y = 0;
-
-	if (argc < 2) {
-		pcb_gui->zoom_win(pcb_gui, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, 1);
-		return 0;
-	}
-
-	if (argc == 5) {
-		pcb_coord_t x1, y1, x2, y2;
-
-		PCB_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
-		PCB_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
-		PCB_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
-		PCB_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
-
-		pcb_gui->zoom_win(pcb_gui, x1, y1, x2, y2, 1);
-		return 0;
-	}
-
-	if (argc > 2)
-		PCB_ACT_FAIL(Zoom);
-
-
-	if (*vp == '?') {
-		pcb_message(PCB_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", pcb_gui->coord_per_pix);
-		return 0;
-	}
-
-	if (pcb_strcasecmp(argv[1].val.str, "get") == 0) {
-		res->type = FGW_DOUBLE;
-		res->val.nat_double = pcb_gui->coord_per_pix;
-		return 0;
-	}
-
-	if (*vp == '+' || *vp == '-' || *vp == '=')
-		vp++;
-	v = strtod(vp, NULL);
-	if (v <= 0)
-		return FGW_ERR_ARG_CONV;
-
-	pcb_hid_get_coords("Select zoom center", &x, &y, 0);
-	switch (ovp[0]) {
-	case '-':
-		pcb_gui->zoom(pcb_gui, x, y, 1 / v, 1);
-		break;
-	default:
-	case '+':
-		pcb_gui->zoom(pcb_gui, x, y, v, 1);
-		break;
-	case '=':
-		pcb_gui->zoom(pcb_gui, x, y, v, 0);
-		break;
-	}
-
-	PCB_ACT_IRES(0);
-	return 0;
-}
-
-
-
 const char pcb_acts_Zoom[] =
 	pcb_gui_acts_zoom
 	"Zoom(found|selected)\n";
@@ -129,14 +60,12 @@ const char pcb_acth_Zoom[] = "GUI zoom";
 /* DOC: zoom.html */
 fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *vp, *ovp;
-	double v;
-	pcb_coord_t x = 0, y = 0;
-
 	NOGUI();
 
 	if (argc == 2) {
-		PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
+		const char *vp;
+
+		PCB_ACT_CONVARG(1, FGW_STR, Zoom, vp = argv[1].val.str);
 
 		if (pcb_strcasecmp(vp, "selected") == 0) {
 			pcb_box_t sb;
