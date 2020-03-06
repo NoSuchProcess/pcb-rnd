@@ -44,15 +44,6 @@
 #include "util.h"
 #include "act.h"
 
-#define NOGUI() \
-do { \
-	if ((pcb_gui == NULL) || (!pcb_gui->gui)) { \
-		PCB_ACT_IRES(1); \
-		return 0; \
-	} \
-	PCB_ACT_IRES(0); \
-} while(0)
-
 const char pcb_acts_Zoom[] =
 	pcb_gui_acts_zoom
 	"Zoom(found|selected)\n";
@@ -60,7 +51,7 @@ const char pcb_acth_Zoom[] = "GUI zoom";
 /* DOC: zoom.html */
 fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	NOGUI();
+	PCB_GUI_NOGUI();
 
 	if (argc == 2) {
 		const char *vp;
@@ -97,7 +88,7 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int mode;
 	pcb_coord_t x, y;
 
-	NOGUI();
+	PCB_GUI_NOGUI();
 
 	pcb_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
@@ -114,7 +105,7 @@ const char pcb_acth_Center[] = "Moves the pointer to the center of the window.";
 fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t x, y;
-	NOGUI();
+	PCB_GUI_NOGUI();
 
 	pcb_hid_get_coords("Click to center", &x, &y, 0);
 
@@ -168,7 +159,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	double xcent, ycent, xoffs, yoffs;
 
-	NOGUI();
+	PCB_GUI_NOGUI();
 
 	pcb_hid_get_coords("Click to center of flip", &x, &y, 0);
 
@@ -264,7 +255,7 @@ const char pcb_acth_Command[] = "Displays the command line input in the status a
 /* DOC: command */
 fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	NOGUI();
+	PCB_GUI_NOGUI();
 	pcb_gui->open_command(pcb_gui);
 	PCB_ACT_IRES(0);
 	return 0;
@@ -283,7 +274,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		CTX_OBJ_TYPE
 	} ctx_sens = CTX_NONE;
 
-	NOGUI();
+	PCB_GUI_NOGUI();
 
 	if (argc != 2 && argc != 3)
 		PCB_ACT_FAIL(Popup);
