@@ -335,6 +335,7 @@ static void search_window_create(void)
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_LABEL(ctx->dlg, "Query expression:");
 		PCB_DAD_STRING(ctx->dlg);
+			PCB_DAD_WIDTH_CHR(ctx->dlg, 64);
 			ctx->wexpr_str = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Action on the results:");
