@@ -405,7 +405,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
 		case PCB_HATT_STRING:
-			stdarg(XmNcolumns, 40);
+			stdarg(XmNcolumns, ((ctx->attrs[i].hatt_flags & PCB_HATF_HEIGHT_CHR) ? ctx->attrs[i].geo_width : 40));
 			stdarg(XmNresizeWidth, True);
 			stdarg(XmNvalue, ctx->attrs[i].val.str);
 			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
