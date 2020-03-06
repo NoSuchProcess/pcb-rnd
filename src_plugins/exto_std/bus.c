@@ -81,6 +81,20 @@ static void bus_clear(pcb_subc_t *subc)
 	}
 }
 
+#define bus_seg_def \
+	double vx, vy, nx, ny, len
+
+#define bus_seg_calc(l) \
+	do { \
+		vx = l->Point2.X - l->Point1.X; \
+		vy = l->Point2.Y - l->Point1.Y; \
+		len = sqrt(vx*vx + vy *vy); \
+		vx /= len; \
+		vy /= len; \
+		nx = -vy; \
+		ny = vx; \
+	} while(0)
+
 /* create all new padstacks */
 static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
@@ -98,8 +112,8 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 	o0 = ((bus->width - 1) * bus->pitch)/2;
 	for(l = linelist_first(&ly->Line); l != NULL; l = linelist_next(l)) {
+		bus_seg_def;
 		double o = o0;
-		double vx, vy, nx, ny, len;
 		int n;
 
 		if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* gen only for floater */
@@ -107,13 +121,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		l->Thickness = bus->vthickness;
 		if (l1 == NULL) l1 = l;
 
-		vx = l->Point2.X - l->Point1.X;
-		vy = l->Point2.Y - l->Point1.Y;
-		len = sqrt(vx*vx + vy *vy);
-		vx /= len;
-		vy /= len;
-		nx = -vy;
-		ny = vx;
+		bus_seg_calc(l);
 TODO("Gen lines");
 		for(n = 0; n < bus->width; n++,o-=bus->pitch) {
 			tr = pcb_line_new(tly,
@@ -133,15 +141,33 @@ pcb_trace("bus origin at %mm %mm\n", l1->Point1.X, l1->Point1.Y);
 
 static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
-TODO("draw bus marks");
-/*
+	bus_t *bus = subc->extobj_data;
+	pcb_line_t *l;
+	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
+
+	if (subc->extobj_data == NULL) {
+		bus_unpack(subc);
+		bus = subc->extobj_data;
+	}
+
+	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
+	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+
 	for(l = linelist_first(&ly->Line); l != NULL; l = linelist_next(l)) {
-		double vx, vy, nx, ny, len;
+		pcb_coord_t x, y;
+		double o;
+		bus_seg_def;
+
 		if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue;
 
-		draw_mark_line(info, subc, line);
+		bus_seg_calc(l);
+
+		x = l->Point1.X; y = l->Point1.Y;
+		for(o = 0; o < len; o += PCB_MM_TO_COORD(5), x += vx*PCB_MM_TO_COORD(5), y += vy*PCB_MM_TO_COORD(5))
+			pcb_render->draw_line(pcb_draw_out.fgGC,
+				x + nx * bus->vthickness/2, y + ny * bus->vthickness/2,
+				x - nx * bus->vthickness/2, y - ny * bus->vthickness/2);
 	}
-*/
 
 	pcb_exto_draw_makr(info, subc);
 }
