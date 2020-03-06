@@ -809,7 +809,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 
 					PCB_DAD_BEGIN_HBOX(dlg);
 						PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
-						PCB_DAD_LABEL(dlg, "Settings that affect all padstacks with the same prototype");
+						PCB_DAD_LABEL(dlg, "Settings for all padstacks with this prototype");
 						spring(dlg);
 						PCB_DAD_BEGIN_HBOX(dlg);
 							PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
