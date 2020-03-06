@@ -849,21 +849,23 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								PCB_DAD_BEGIN_VBOX(dlg);
 									PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
 								PCB_DAD_END(dlg);
+							PCB_DAD_END(dlg);
+
+							/* col 3 */
+							PCB_DAD_BEGIN_HBOX(dlg);
 								PCB_DAD_BUTTON(dlg, "change");
 									pse->proto_change[n] = PCB_DAD_CURRENT(dlg);
 									PCB_DAD_CHANGE_CB(dlg, pse_chg_shape);
 									PCB_DAD_HELP(dlg, "Change the shape on this layer type");
+								PCB_DAD_COORD(dlg, "");
+									pse->proto_clr[n] = PCB_DAD_CURRENT(dlg);
+									PCB_DAD_MINVAL(dlg, 1);
+									PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+									PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
+									PCB_DAD_WIDTH_CHR(dlg, 10);
+									PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
+								free(layname_tmp);
 							PCB_DAD_END(dlg);
-
-							/* col 3 */
-							PCB_DAD_COORD(dlg, "");
-								pse->proto_clr[n] = PCB_DAD_CURRENT(dlg);
-								PCB_DAD_MINVAL(dlg, 1);
-								PCB_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
-								PCB_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
-								PCB_DAD_WIDTH_CHR(dlg, 10);
-								PCB_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
-							free(layname_tmp);
 						}
 					PCB_DAD_END(dlg);
 
