@@ -292,9 +292,9 @@ fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		"<Key>l; Shift<Key>t\n";
 
 	val = pcb_attribute_get(&ly->Attributes, key);
-	args[1].type = FGW_STR; args[1].val.str = msg;
-	args[2].type = FGW_STR; args[2].val.str = val;
-	args[3].type = FGW_STR; args[3].val.str = title;
+	args[1].type = FGW_STR; args[1].val.cstr = msg;
+	args[2].type = FGW_STR; args[2].val.cstr = val;
+	args[3].type = FGW_STR; args[3].val.cstr = title;
 	er = pcb_actionv_bin(PCB_ACT_HIDLIB, "promptfor", &r, 4, args);
 
 	if ((er != NULL) || ((r.type & FGW_STR) != FGW_STR)) {
