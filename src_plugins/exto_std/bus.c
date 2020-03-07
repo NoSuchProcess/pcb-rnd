@@ -176,21 +176,23 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 		if (c1) {
 			a1 = M_PI - a1 - atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X);
-			tune1 = tan(a1);
+			a1 = -a1;
+			tune1 = tan(a1/2.0);
 		}
 		else
 			tune1 = 0;
 	
 		if (c2) {
 			a2 = M_PI - a2 - atan2(l->Point1.Y - l->Point2.Y, l->Point1.X - l->Point2.X);
-			tune2 = tan(a2);
+			tune2 = tan(a2/2.0);
 		}
 		else
 			tune2 = 0;
 
-/*		pcb_trace("a12: %f %f\n", a1, a2);*/
+		pcb_trace("tune: %f:%f  %f:%f\n", a1 * PCB_RAD_TO_DEG, tune1, a2 * PCB_RAD_TO_DEG, tune2);
 
 		for(n = 0; n < bus->width; n++,o-=bus->pitch) {
+			pcb_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (pcb_coord_t)o, (pcb_coord_t)(vx * tune2 * o));
 			tr = pcb_line_new(tly,
 				l->Point1.X + nx * o + vx * tune1 * o, l->Point1.Y + ny * o + vy * tune1 * o,
 				l->Point2.X + nx * o + vx * tune2 * o, l->Point2.Y + ny * o + vy * tune2 * o,
