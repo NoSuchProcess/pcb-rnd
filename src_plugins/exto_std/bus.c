@@ -72,9 +72,9 @@ static void bus_unpack(pcb_subc_t *obj)
 static void bus_clear(pcb_subc_t *subc)
 {
 	pcb_line_t *l, *next;
-	pcb_layer_t *ly = &subc->data->Layer[LID_TARGET];
+	pcb_layer_t *ely = &subc->data->Layer[LID_TARGET];
 
-	for(l = linelist_first(&ly->Line); l != NULL; l = next) {
+	for(l = linelist_first(&ely->Line); l != NULL; l = next) {
 		next = linelist_next(l);
 		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* do not free the floater */
 		pcb_line_free(l);
@@ -111,7 +111,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	bus_t *bus = subc->extobj_data;
 	pcb_line_t *l1 = NULL, *l, *tr, *ltmp;
-	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
+	pcb_layer_t *ely = &subc->data->Layer[LID_EDIT];
 	pcb_layer_t *tly = &subc->data->Layer[LID_TARGET];
 	double o0;
 
@@ -122,7 +122,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 
 	o0 = ((bus->width - 1) * bus->pitch)/2;
-	for(l = linelist_first(&ly->Line); l != NULL; l = linelist_next(l)) {
+	for(l = linelist_first(&ely->Line); l != NULL; l = linelist_next(l)) {
 		pcb_rtree_box_t sb;
 		pcb_rtree_it_t it;
 		bus_seg_def;
@@ -137,7 +137,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 /*		pcb_trace("line\n");*/
 		sb.x1 = l->Point1.X-1; sb.y1 = l->Point1.Y-1;
 		sb.x2 = l->Point1.X+1; sb.y2 = l->Point1.Y+1;
-		for(ltmp = pcb_rtree_first(&it, ly->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
+		for(ltmp = pcb_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
 		{
 			if (ltmp == l) continue;
 			if (close_enough(l->Point1, ltmp->Point1)) {
@@ -155,7 +155,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		}
 		sb.x1 = l->Point2.X-1; sb.y1 = l->Point2.Y-1;
 		sb.x2 = l->Point2.X+1; sb.y2 = l->Point2.Y+1;
-		for(ltmp = pcb_rtree_first(&it, ly->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
+		for(ltmp = pcb_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
 		{
 			if (ltmp == l) continue;
 			if (close_enough(l->Point2, ltmp->Point1)) {
