@@ -109,16 +109,15 @@ static int close_enough(pcb_point_t a, pcb_point_t b)
 /* create all new padstacks */
 static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	bus_t *bus = subc->extobj_data;
+	bus_t *bus;
 	pcb_line_t *l1 = NULL, *l, *tr, *ltmp;
 	pcb_layer_t *ely = &subc->data->Layer[LID_EDIT];
 	pcb_layer_t *tly = &subc->data->Layer[LID_TARGET];
 	double o0;
 
-	if (subc->extobj_data == NULL) {
+	if (subc->extobj_data == NULL)
 		bus_unpack(subc);
-		bus = subc->extobj_data;
-	}
+	bus = subc->extobj_data;
 
 
 	o0 = ((bus->width - 1) * bus->pitch)/2;
