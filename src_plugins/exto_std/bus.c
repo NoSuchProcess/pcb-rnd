@@ -215,14 +215,13 @@ pcb_trace("bus origin at %mm %mm\n", l1->Point1.X, l1->Point1.Y);
 
 static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
-	bus_t *bus = subc->extobj_data;
+	bus_t *bus;
 	pcb_line_t *l;
 	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
 
-	if (subc->extobj_data == NULL) {
+	if (subc->extobj_data == NULL)
 		bus_unpack(subc);
-		bus = subc->extobj_data;
-	}
+	bus = subc->extobj_data;
 
 	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
