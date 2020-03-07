@@ -134,7 +134,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		l->Thickness = bus->vthickness;
 		if (l1 == NULL) l1 = l;
 
-		pcb_trace("line\n");
+/*		pcb_trace("line\n");*/
 		sb.x1 = l->Point1.X-1; sb.y1 = l->Point1.Y-1;
 		sb.x2 = l->Point1.X+1; sb.y2 = l->Point1.Y+1;
 		for(ltmp = pcb_rtree_first(&it, ly->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
@@ -175,32 +175,32 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		bus_seg_calc(l);
 
 		if (c1) {
-			double a0 = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X);
-pcb_trace("c1 a0=%f a1=%f\n", a0 * PCB_RAD_TO_DEG, a1 * PCB_RAD_TO_DEG);
-			a1 = M_PI - a1 - a0;
-			a1 = -a1;
+			double a0 = atan2(l->Point1.Y - l->Point2.Y, l->Point1.X - l->Point2.X);
+/*pcb_trace("c1 a0=%f a1=%f\n", a0 * PCB_RAD_TO_DEG, a1 * PCB_RAD_TO_DEG);*/
+			a1 = a1 - a0;
 			tune1 = tan(a1/2.0);
 		}
 		else
 			tune1 = 0;
 	
 		if (c2) {
-			double a0 = atan2(l->Point1.Y - l->Point2.Y, l->Point1.X - l->Point2.X);
-pcb_trace("c1 a0=%f a2=%f\n", a0 * PCB_RAD_TO_DEG, a2 * PCB_RAD_TO_DEG);
-			a2 = M_PI - a2 - a0;
+			double a0 = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X);
+/*pcb_trace("c1 a0=%f a2=%f\n", a0 * PCB_RAD_TO_DEG, a2 * PCB_RAD_TO_DEG);*/
+			a2 = a2 - a0;
 			tune2 = tan(a2/2.0);
 		}
 		else
 			tune2 = 0;
 
-		pcb_trace("tune: %f:%f  %f:%f\n", a1 * PCB_RAD_TO_DEG, tune1, a2 * PCB_RAD_TO_DEG, tune2);
+/*		pcb_trace("tune: %f:%f  %f:%f\n", a1 * PCB_RAD_TO_DEG, tune1, a2 * PCB_RAD_TO_DEG, tune2);*/
 
 		for(n = 0; n < bus->width; n++,o-=bus->pitch) {
-			pcb_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (pcb_coord_t)o, (pcb_coord_t)(vx * tune1 * o));
-			pcb_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (pcb_coord_t)o, (pcb_coord_t)(vx * tune2 * o));
+			double o2 = -o;
+/*			pcb_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (pcb_coord_t)o, (pcb_coord_t)(vx * tune1 * o));
+			pcb_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (pcb_coord_t)o, (pcb_coord_t)(vx * tune2 * o));*/
 			tr = pcb_line_new(tly,
-				l->Point1.X + nx * o + vx * tune1 * o, l->Point1.Y + ny * o + vy * tune1 * o,
-				l->Point2.X + nx * o + vx * tune2 * o, l->Point2.Y + ny * o + vy * tune2 * o,
+				l->Point1.X + nx * o + vx * tune1 * o2, l->Point1.Y + ny * o + vy * tune1 * o2,
+				l->Point2.X + nx * o + vx * tune2 * o2, l->Point2.Y + ny * o + vy * tune2 * o2,
 				bus->thickness, bus->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 		}
 
