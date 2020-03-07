@@ -119,6 +119,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		bus_unpack(subc);
 	bus = subc->extobj_data;
 
+	pcb_exto_regen_begin(subc);
 
 	o0 = ((bus->width - 1) * bus->pitch)/2;
 	for(l = linelist_first(&ely->Line); l != NULL; l = linelist_next(l)) {
