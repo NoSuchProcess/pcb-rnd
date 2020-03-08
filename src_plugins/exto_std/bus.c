@@ -320,10 +320,14 @@ static pcb_subc_t *pcb_bus_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *
 
 	subc = pcb_exto_create(dst, "bus", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
 	if (copy_from == NULL) {
+		char tmp[32];
 		pcb_attribute_put(&subc->Attributes, "extobj::width", "2");
-		pcb_attribute_put(&subc->Attributes, "extobj::pitch", "1mm");
-		pcb_attribute_put(&subc->Attributes, "extobj::thickness", "0.25mm");
-		pcb_attribute_put(&subc->Attributes, "extobj::clearance", "0.2mm");
+		pcb_sprintf(tmp, "%$$mH", conf_core.design.line_thickness + conf_core.design.clearance);
+		pcb_attribute_put(&subc->Attributes, "extobj::pitch", tmp);
+		pcb_sprintf(tmp, "%$$mH", conf_core.design.line_thickness);
+		pcb_attribute_put(&subc->Attributes, "extobj::thickness", tmp);
+		pcb_sprintf(tmp, "%$$mH", conf_core.design.clearance);
+		pcb_attribute_put(&subc->Attributes, "extobj::clearance", tmp);
 	}
 
 	if (layers[1].lyt & PCB_LYT_INTERN) {
