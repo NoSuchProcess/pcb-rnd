@@ -409,6 +409,7 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 }
 
 typedef struct {
+	pcb_board_t *pcb;
 	pcb_box_t box;
 	pcb_bool flag;
 	pcb_bool invert;
@@ -435,6 +436,7 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, obj);
 	else
 		PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, ctx->flag, obj);
+	pcb_extobj_sync_floater_flags(ctx->pcb, obj, 1, 1);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -449,6 +451,7 @@ pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_b
 
 	fix_box_dir(Box, 0);
 
+	ctx.pcb = pcb;
 	ctx.box = *Box;
 	ctx.flag = flag;
 	ctx.invert = invert;
