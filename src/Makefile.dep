@@ -8701,9 +8701,9 @@ extobj.o: extobj.c ../config.h librnd/config.h \
  ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h data_list.h remove.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h extobj.h board.h vtroutestyle.h \
- rats_patch.h obj_subc_parent.h draw.h
+ obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data_list.h remove.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h extobj.h board.h \
+ vtroutestyle.h rats_patch.h obj_subc_parent.h draw.h
 extobj_act.o: extobj_act.c ../config.h librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -10280,10 +10280,11 @@ select.o: select.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h draw.h \
  search.h select.h operation.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h find.h librnd/core/compat_misc.h obj_arc_draw.h \
- obj_line_draw.h obj_poly_draw.h obj_text_draw.h obj_rat_draw.h \
- obj_pstk_draw.h obj_gfx_draw.h ../src_3rd/genregex/regex_sei.h \
- ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h
+ undo_old.h find.h extobj.h obj_subc_parent.h librnd/core/compat_misc.h \
+ obj_arc_draw.h obj_line_draw.h obj_poly_draw.h obj_text_draw.h \
+ obj_rat_draw.h obj_pstk_draw.h obj_gfx_draw.h \
+ ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h
 select_act.o: select_act.c ../config.h librnd/config.h conf_core.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
  librnd/core/pcb-printf.h ../src_3rd/genvector/gds_char.h \
