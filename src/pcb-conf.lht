@@ -9,7 +9,7 @@ li:pcb-rnd-conf-v1 {
 			}
 			grids_idx = 4
 			zoom = 1
-			mode = 1
+			mode = -1
 			buffer_number = 0
 			clear_line = 1
 			clear_polypoly = 0
