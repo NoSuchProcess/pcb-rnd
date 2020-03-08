@@ -242,7 +242,7 @@ static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 				x - nx * bus->vthickness/2, y - ny * bus->vthickness/2);
 	}
 
-	pcb_exto_draw_makr(info, subc);
+	pcb_exto_draw_mark(info, subc);
 }
 
 

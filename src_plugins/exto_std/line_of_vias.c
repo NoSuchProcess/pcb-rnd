@@ -196,7 +196,7 @@ static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	for(line = linelist_first(&ly->Line); line != NULL; line = linelist_next(line))
 		draw_mark_line(info, subc, line);
 
-	pcb_exto_draw_makr(info, subc);
+	pcb_exto_draw_mark(info, subc);
 }
 
 

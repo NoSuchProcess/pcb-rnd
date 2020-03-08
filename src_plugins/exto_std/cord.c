@@ -172,7 +172,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 static void pcb_cord_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
-	pcb_exto_draw_makr(info, subc);
+	pcb_exto_draw_mark(info, subc);
 	if (subc->extobj_data == cord_footprint)
 		pcb_draw_subc_mark((const pcb_box_t *)subc, info);
 }

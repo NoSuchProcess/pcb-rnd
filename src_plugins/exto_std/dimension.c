@@ -247,7 +247,7 @@ static int dimension_gen(pcb_subc_t *subc)
 
 static void pcb_dimension_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
-	pcb_exto_draw_makr(info, subc);
+	pcb_exto_draw_mark(info, subc);
 }
 
 static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
