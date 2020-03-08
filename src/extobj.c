@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <genht/hash.h>
 
 #include "data.h"
+#include "data_it.h"
 #include "data_list.h"
 #include "remove.h"
 #include "undo.h"
@@ -192,4 +193,42 @@ pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, 
 pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove)
 {
 	return pcb_extobj_conv_obj_using(pcb, eo, dst, src, remove, NULL);
+}
+
+pcb_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj_t *flt, int undoable, int draw)
+{
+	pcb_subc_t *subc;
+	pcb_extobj_t *eo;
+	pcb_data_it_t it;
+	pcb_any_obj_t *o;
+	int sel;
+	pcb_cardinal_t cnt = 0;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
+		return;
+
+	subc = pcb_obj_parent_subc(flt);
+	if (subc == NULL)
+		return;
+
+	eo = pcb_extobj_get(subc);
+	if (eo == NULL)
+		return;
+
+	sel = PCB_FLAG_TEST(PCB_FLAG_SELECTED, flt);
+
+	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		/* sync selection */
+		if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, o))
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o) != sel) {
+			if (undoable)
+				pcb_undo_add_obj_to_flag(o);
+			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, sel, o);
+			if (draw)
+				pcb_draw_obj(o);
+			cnt++;
+		}
+	}
+	return cnt;
 }

@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -96,6 +96,11 @@ pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, 
 /* for internal use: when an extobj needs to be cloned becase a new floater
    is added */
 void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc, pcb_any_obj_t *flt);
+
+
+/* Call this after selection changes on a floater - this makes sure all floaters
+   are selected or unselected at once; returns the number of objects changed */
+pcb_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj_t *flt, int undoable, int draw);
 
 
 int pcb_extobj_lookup_idx(const char *name);
