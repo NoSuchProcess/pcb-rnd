@@ -133,6 +133,13 @@ static int add_buffer_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 
 	/* when an edit-object is moved to buffer, the corresponding subc obj needs to be moved too */
 	if (subc != NULL) {
+		/* make sure the same subc is not copied twice by detecting a copy already done from the same subc to the same buffer */
+		pcb_subc_t *bsc;
+		gdl_iterator_t it;
+		subclist_foreach(&ctx->buffer.dst->subc, &it, bsc) {
+			if (bsc->copied_from_ID == subc->ID)
+				return 1;
+		}
 		pcb_subcop_add_to_buffer(ctx, subc);
 		return 1;
 	}

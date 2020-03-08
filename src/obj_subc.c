@@ -838,6 +838,8 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	else
 		sc->ID = pcb_create_ID_get();
 
+	sc->copied_from_ID = src->ID;
+
 	minuid_cpy(sc->uid, src->uid);
 	pcb_subc_reg(dst, sc);
 

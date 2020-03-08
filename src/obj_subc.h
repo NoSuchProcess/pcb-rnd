@@ -57,6 +57,7 @@ struct pcb_subc_s {
 	int part_changed_inhibit;
 	unsigned part_changed_bbox_dirty:1; /* part_changed_inhibit_dec() should recalculate the bbox */
 	unsigned auto_termname_display:1; /* display bit, not saved or loaded, only toggled by Display() on subc */
+	long int copied_from_ID; /* temporary storage during operation: if a subc is a copy of another subc in the same operation, keep the ID of the original subc to avoid duplicate copies */
 	gdl_elem_t link;
 };
 
