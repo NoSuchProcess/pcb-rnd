@@ -139,7 +139,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		sb.x2 = l->Point1.X+1; sb.y2 = l->Point1.Y+1;
 		for(ltmp = pcb_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
 		{
-			if (ltmp == l) continue;
+			if ((ltmp == l) || (ltmp->parent.any != l->parent.any)) continue;
 			if (close_enough(l->Point1, ltmp->Point1)) {
 				a1 = atan2(ltmp->Point2.Y - ltmp->Point1.Y, ltmp->Point2.X - ltmp->Point1.X);
 				c1 = 1;
@@ -157,7 +157,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		sb.x2 = l->Point2.X+1; sb.y2 = l->Point2.Y+1;
 		for(ltmp = pcb_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
 		{
-			if (ltmp == l) continue;
+			if ((ltmp == l) || (ltmp->parent.any != l->parent.any)) continue;
 			if (close_enough(l->Point2, ltmp->Point1)) {
 				a2 = atan2(ltmp->Point2.Y - ltmp->Point1.Y, ltmp->Point2.X - ltmp->Point1.X);
 				c2 = 1;
