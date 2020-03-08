@@ -5,7 +5,6 @@
 - CLEANUP: when removing import_sch, also remove ImportGUI()
 - FEATURE/BUG: fungw: call getxy("x", "x") from fawk - the result is coord and is not converted because custom args are converted to NIL [report: Igor2]
 - BUG: autoplaceselected() bugs in bug_files/autoplaceselected.txt [report: Miloh]
-- BUG: extobj: double click a bus or other exto with multiple floaters -> some floaters are duplicated, subc ID kept [report: Igor2]
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
