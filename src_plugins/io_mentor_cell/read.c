@@ -604,13 +604,28 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
 	if (tmp != NULL) {
 		if (strcmp(tmp->argv[1], "Left") == 0) {
-			x1 = tx; x2 = tx+width;
+			x1 = tx; 
+			if (mirrored == 0) {
+				x2 = tx+width;
+			} else {
+				x2 = tx-width;
+			}
 		}
 		else if (strcmp(tmp->argv[1], "Center") == 0) {
-			x1 = tx - (width >> 1); x2 = tx + (width >> 1);
+			x1 = tx - (width >> 1);
+			if (mirrored == 0) {
+				x2 = tx + (width >> 1);
+			} else {
+				x2 = tx - (width >> 1);
+			}
 		}
 		else if (strcmp(tmp->argv[1], "Right") == 0) {
-			x1=tx-width; x2=tx;
+			x2=tx;
+			if (mirrored == 0) {
+				x1=tx-width;
+			} else {
+				x1=tx+width;
+			}
 		}
 		else 
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
