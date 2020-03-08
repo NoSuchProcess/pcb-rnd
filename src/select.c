@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,6 +46,7 @@
 #include "select.h"
 #include "undo.h"
 #include "find.h"
+#include "extobj.h"
 #include <librnd/core/compat_misc.h>
 
 #include "obj_arc_draw.h"
@@ -78,6 +80,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 		pcb_undo_add_obj_to_flag(ptr1);
 		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pstk_t *) ptr1);
 		pcb_pstk_invalidate_draw((pcb_pstk_t *) ptr1);
+		pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)ptr1, 1, 1);
 		break;
 
 	case PCB_OBJ_LINE:
@@ -88,6 +91,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, line);
 			pcb_line_invalidate_draw(layer, line);
+			pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)line, 1, 1);
 			break;
 		}
 
@@ -109,6 +113,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, arc);
 			pcb_arc_invalidate_draw(layer, arc);
+			pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)arc, 1, 1);
 			break;
 		}
 
@@ -120,6 +125,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, text);
 			pcb_text_invalidate_draw(layer, text);
+			pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)text, 1, 1);
 			break;
 		}
 
@@ -131,6 +137,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, poly);
 			pcb_poly_invalidate_draw(layer, poly);
+			pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)poly, 1, 1);
 			/* changing memory order no longer effects draw order */
 			break;
 		}
@@ -143,6 +150,7 @@ pcb_bool pcb_select_object(pcb_board_t *pcb)
 			pcb_undo_add_obj_to_flag(ptr2);
 			PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, gfx);
 			pcb_gfx_invalidate_draw(layer, gfx);
+			pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)gfx, 1, 1);
 			break;
 		}
 
