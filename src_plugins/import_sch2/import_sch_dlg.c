@@ -306,6 +306,7 @@ static int do_dialog(void)
 						isch_ctx.warg_box[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
 						PCB_DAD_STRING(isch_ctx.dlg);
 							isch_ctx.warg[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
+							PCB_DAD_WIDTH_CHR(isch_ctx.dlg, 32);
 							PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_chg_cb);
 						PCB_DAD_BUTTON(isch_ctx.dlg, "browse");
 							PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_browse_cb);
