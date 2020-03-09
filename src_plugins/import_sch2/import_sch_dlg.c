@@ -292,6 +292,7 @@ static int do_dialog(void)
 				PCB_DAD_ENUM(isch_ctx.dlg, isch_ctx.inames);
 					isch_ctx.wfmt = PCB_DAD_CURRENT(isch_ctx.dlg);
 					PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_fmt_chg_cb);
+					PCB_DAD_HELP(isch_ctx.dlg, "Import file format (or plugin)");
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BEGIN_TABBED(isch_ctx.dlg, isch_ctx.inames);
 				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_HIDE_TABLAB);
@@ -317,8 +318,10 @@ static int do_dialog(void)
 					isch_ctx.warg_ctrl = PCB_DAD_CURRENT(isch_ctx.dlg);
 					PCB_DAD_BUTTON(isch_ctx.dlg, "Del last");
 						PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_del_cb);
+						PCB_DAD_HELP(isch_ctx.dlg, "Remove the last option from the end of the list");
 					PCB_DAD_BUTTON(isch_ctx.dlg, "One more");
 						PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_add_cb);
+						PCB_DAD_HELP(isch_ctx.dlg, "Append one more option to the end of the list");
 				PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_END(isch_ctx.dlg);
 		PCB_DAD_END(isch_ctx.dlg);
@@ -332,6 +335,7 @@ static int do_dialog(void)
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BUTTON(isch_ctx.dlg, "Placement config...");
 				PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_plc_cfg_cb);
+				PCB_DAD_HELP(isch_ctx.dlg, "Configure how/where newly imported subcircuits\nare placed on the board");
 		PCB_DAD_END(isch_ctx.dlg);
 
 		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg); /* bottom buttons */
