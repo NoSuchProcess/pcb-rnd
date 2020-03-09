@@ -84,8 +84,6 @@ ha:{
 						ha:Load Calay .net+.cmp files        = {                             action=LoadCalayFrom() }
 						ha:Load LTSpice .net and .asc files  = {                             action=LoadLTSpiceFrom() }
 						ha:Load FreePCB netlist (EasyEDA)    = {                             action=LoadFpcbnlFrom() }
-						-
-						ha:Import gschem schematics... (DEPRECATED) = {                             action=Import() }
 					}
 				}
 				-
