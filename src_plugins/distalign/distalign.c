@@ -22,6 +22,7 @@
 #include "board.h"
 #include "config.h"
 #include "data.h"
+#include "data_it.h"
 #include <librnd/core/hid.h>
 #include <librnd/poly/rtree.h>
 #include "undo.h"
@@ -116,16 +117,16 @@ COORD(X)
 COORD(Y)
 
 /* return the subcircuit coordinate associated with the given internal point */
-static pcb_coord_t coord(pcb_subc_t *subc, int dir, int point)
+static pcb_coord_t coord(pcb_any_obj_t *obj, int dir, int point)
 {
 	if (dir == K_X)
-		return coordX(subc, point);
+		return coordX(obj, point);
 	else
-		return coordY(subc, point);
+		return coordY(obj, point);
 }
 
 static struct subc_by_pos {
-	pcb_subc_t *subc;
+	pcb_any_obj_t *obj;
 	pcb_coord_t pos;
 	pcb_coord_t width;
 } *subcs_by_pos;
@@ -154,31 +155,35 @@ static int cmp_ebp(const void *a, const void *b)
 static int sort_subcs_by_pos(int op, int dir, int point)
 {
 	int nsel = 0;
+	pcb_data_it_t it;
+	pcb_any_obj_t *obj;
 
 	if (nsubcs_by_pos)
 		return nsubcs_by_pos;
 	if (op == K_align)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
-	PCB_SUBC_LOOP(PCB->Data);
+
+	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj))
 			continue;
 		nsel++;
 	}
-	PCB_END_LOOP;
+
 	if (!nsel)
 		return 0;
 	subcs_by_pos = malloc(nsel * sizeof(*subcs_by_pos));
 	nsubcs_by_pos = nsel;
 	nsel = 0;
-	PCB_SUBC_LOOP(PCB->Data);
+
+	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj))
 			continue;
-		subcs_by_pos[nsel].subc = subc;
-		subcs_by_pos[nsel++].pos = coord(subc, dir, point);
+		subcs_by_pos[nsel].obj = obj;
+		subcs_by_pos[nsel++].pos = coord(obj, dir, point);
 	}
-	PCB_END_LOOP;
+
 	qsort(subcs_by_pos, nsubcs_by_pos, sizeof(*subcs_by_pos), cmp_ebp);
 	return nsubcs_by_pos;
 }
@@ -198,6 +203,8 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 {
 	pcb_coord_t q;
 	int nsel;
+	pcb_data_it_t it;
+	pcb_any_obj_t *obj;
 
 	q = 0;
 	switch (reference) {
@@ -210,14 +217,14 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 	case K_Average:							/* the average among selected subcircuits */
 		nsel = 0;
 		q = 0;
-		PCB_SUBC_LOOP(PCB->Data);
+		for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 		{
-			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
+			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj))
 				continue;
-			q += coord(subc, dir, point);
+			q += coord(obj, dir, point);
 			nsel++;
 		}
-		PCB_END_LOOP;
+
 		if (nsel)
 			q /= nsel;
 		break;
@@ -228,10 +235,10 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 			break;
 		}
 		if (reference == K_First) {
-			q = coord(subcs_by_pos[0].subc, dir, point);
+			q = coord(subcs_by_pos[0].obj, dir, point);
 		}
 		else {
-			q = coord(subcs_by_pos[nsubcs_by_pos - 1].subc, dir, point);
+			q = coord(subcs_by_pos[nsubcs_by_pos - 1].obj, dir, point);
 		}
 		break;
 	}
@@ -249,6 +256,8 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int gridless;
 	pcb_coord_t q;
 	int changed = 0;
+	pcb_data_it_t it;
+	pcb_any_obj_t *obj;
 
 	if (argc < 2 || argc > 5) {
 		PCB_ACT_FAIL(align);
@@ -317,18 +326,18 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_align, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
 	/* move all selected subcircuits to the new coordinate */
-	PCB_SUBC_LOOP(PCB->Data);
+	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
 		pcb_coord_t p, dp, dx, dy;
 
-		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))
+		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj))
 			continue;
 		/* find delta from reference point to reference point */
-		p = coord(subc, dir, point);
+		p = coord(obj, dir, point);
 		dp = q - p;
 		/* ...but if we're gridful, keep the mark on the grid */
 		if (!gridless) {
-			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
+			dp -= (coord(obj, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
 		}
 		if (dp) {
 			/* move from generic to X or Y */
@@ -337,12 +346,12 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				dy = 0;
 			else
 				dx = 0;
-			pcb_subc_move(subc, dx, dy, 1);
-			pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, NULL, NULL, subc, dx, dy);
+			pcb_move_obj(obj->type, obj->parent.any, obj, obj, dx, dy);
+			pcb_undo_add_obj_to_move(obj->type, obj->parent.any, obj, obj, dx, dy);
 			changed = 1;
 		}
 	}
-	PCB_END_LOOP;
+
 	if (changed) {
 		pcb_undo_inc_serial();
 		pcb_hid_redraw(PCB);
@@ -466,7 +475,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* subtract all the "widths" from the slack */
 		for (i = 0; i < nsubcs_by_pos; ++i) {
-			pcb_subc_t *subc = subcs_by_pos[i].subc;
+			pcb_any_obj_t *subc = subcs_by_pos[i].obj;
 			/* coord doesn't care if I mix Lefts/Tops */
 			w = subcs_by_pos[i].width = coord(subc, dir, K_Rights) - coord(subc, dir, K_Lefts);
 			/* Gaps distribution is on centers, so half of
@@ -480,17 +489,17 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	/* move all selected subcircuits to the new coordinate */
 	for (i = 0; i < nsubcs_by_pos; ++i) {
-		pcb_subc_t *subc = subcs_by_pos[i].subc;
+		pcb_any_obj_t *obj = subcs_by_pos[i].obj;
 		pcb_coord_t p, q, dp, dx, dy;
 
 		/* find reference point for this subcircuit */
 		q = s + slack * i / divisor;
 		/* find delta from reference point to reference point */
-		p = coord(subc, dir, point);
+		p = coord(obj, dir, point);
 		dp = q - p;
 		/* ...but if we're gridful, keep the mark on the grid */
 		if (!gridless) {
-			dp -= (coord(subc, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
+			dp -= (coord(obj, dir, K_Marks) + dp) % (long) (PCB->hidlib.grid);
 		}
 		if (dp) {
 			/* move from generic to X or Y */
@@ -499,8 +508,8 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				dy = 0;
 			else
 				dx = 0;
-			pcb_subc_move(subc, dx, dy, 1);
-			pcb_undo_add_obj_to_move(PCB_OBJ_SUBC, NULL, NULL, subc, dx, dy);
+			pcb_move_obj(obj->type, obj->parent.any, obj, obj, dx, dy);
+			pcb_undo_add_obj_to_move(obj->type, obj->parent.any, obj, obj, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */
@@ -523,8 +532,8 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static pcb_action_t distalign_action_list[] = {
-	{"distribute", pcb_act_distribute, "Distribute subcircuits", pcb_acts_distribute},
-	{"align", pcb_act_align, "Align subcircuits", pcb_acts_align}
+	{"distribute", pcb_act_distribute, "Distribute objects", pcb_acts_distribute},
+	{"align", pcb_act_align, "Align objects", pcb_acts_align}
 };
 
 static char *distalign_cookie = "distalign plugin";
