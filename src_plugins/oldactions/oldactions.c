@@ -284,6 +284,16 @@ static fgw_error_t pcb_act_LibraryChanged(fgw_arg_t *res, int argc, fgw_arg_t *a
 	return 0;
 }
 
+static const char pcb_acts_ImportGUI[] = "ImportGUI()";
+static const char pcb_acth_ImportGUI[] = "Asks user which schematics to import into PCB.\n";
+/* DOC: importgui.html */
+static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\n");
+	PCB_ACT_IRES(pcb_actionva(PCB_ACT_HIDLIB, "ImportSch", NULL));
+	return 0;
+}
+
 /*** deprecated ***/
 
 static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -360,6 +370,7 @@ pcb_action_t oldactions_action_list[] = {
 	{"NetlistChanged", pcb_act_NetlistChanged, pcb_acth_NetlistChanged, pcb_acts_NetlistChanged},
 	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
 	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
+	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
 
 	/* deprecated actions */
 	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0},
