@@ -72,7 +72,12 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int nsources = 0;
 	fgw_arg_t rs;
 
-	pcb_message(PCB_MSG_ERROR, "Import() is the old, deprecated import netlist/schematics action that is going to be removed\nPlease switch over to using the new action, ImportSch().\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
+	pcb_message(PCB_MSG_ERROR, "\n**************************************************************************\n");
+	pcb_message(PCB_MSG_ERROR, "DeprecatedImport() is the old, deprecated import netlist/schematics action that is going to be removed\nPlease switch over to using the new action, ImportSch().\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
+	pcb_message(PCB_MSG_ERROR, "**************************************************************************\n\n");
+	pcbhl_log_print_uninit_errs("DeprecatedImport() warning:");
+	sleep(8);
+
 
 	if (conf_import_sch.plugins.import_sch.verbose)
 		pcb_message(PCB_MSG_DEBUG, "pcb_act_Import:  ===  Entering pcb_act_Import  ===\n");
