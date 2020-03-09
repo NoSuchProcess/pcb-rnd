@@ -1906,7 +1906,15 @@ design
 </pre>
  
 <p>
- There can be zero or more arguments following the importer. The syntax and meaning of those arguments are specific to the importer. 
+ There can be zero or more arguments following the importer. The syntax and meaning of those arguments are specific to the importer, but is most usually the file name(s) to import from, e.g. 
+<pre>
+ ImportSch(setup, tEDAx, foo.tdx) 
+</pre>
+ 
+<pre>
+ ImportSch(setup, gnetlist, sheet1.sch, sheet2.sch) 
+</pre>
+ 
 <p>
  When called with 
 <i>dialog</i>
