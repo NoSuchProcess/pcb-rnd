@@ -233,9 +233,7 @@ PCB_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, pcb_hid_at
 
 #define pcb_exto_dlg_int(dlg, subc, vis_name, attr_name, help) \
 do { \
-	double d; \
 	pcb_coord_t currval = 0; \
-	const pcb_unit_t *unit_out = NULL; \
 	int wid; \
 	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
 	if (sval != NULL) \
