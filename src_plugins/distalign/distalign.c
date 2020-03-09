@@ -91,26 +91,25 @@ static inline pcb_coord_t		        			\
 coord ## DIR(pcb_any_obj_t *obj, int point)			\
 {								\
 	pcb_coord_t oX, oY; \
-	switch (point) {					\
-	case K_Marks:						\
+	switch (point) { \
+	case K_Marks: \
 		oX = oY = 0; \
 		if (obj->type == PCB_OBJ_SUBC) \
 			pcb_subc_get_origin((pcb_subc_t *)obj, &oX, &oY); \
 		else \
 			pcb_obj_center(obj, &oX, &oY); \
-		return o ## DIR;			\
-	case K_Lefts:						\
-	case K_Tops:						\
-		return obj->BoundingBox.DIR ## 1;		\
-	case K_Rights:						\
-	case K_Bottoms:						\
-		return obj->BoundingBox.DIR ## 2;		\
-	case K_Centers:						\
-	case K_Gaps:						\
-		return (obj->BoundingBox.DIR ## 1 +		\
-		       obj->BoundingBox.DIR ## 2) / 2;	\
-	}							\
-	return 0;						\
+		return o ## DIR; \
+	case K_Lefts: \
+	case K_Tops: \
+		return obj->BoundingBox.DIR ## 1; \
+	case K_Rights: \
+	case K_Bottoms: \
+		return obj->BoundingBox.DIR ## 2; \
+	case K_Centers: \
+	case K_Gaps: \
+		return (obj->BoundingBox.DIR ## 1 + obj->BoundingBox.DIR ## 2) / 2; \
+	} \
+	return 0; \
 }
 
 COORD(X)
@@ -161,7 +160,7 @@ static int sort_objs_by_pos(int op, int dir, int point)
 	if (nobjs_by_pos)
 		return nobjs_by_pos;
 	if (op == K_align)
-		dir = dir == K_X ? K_Y : K_X;	/* see above */
+		dir = dir == K_X ? K_Y : K_X; /* see above */
 
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
@@ -213,7 +212,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		else
 			q = y;
 		break;
-	case K_Average:							/* the average among selected objects */
+	case K_Average: /* the average among selected objects */
 		nsel = 0;
 		q = 0;
 		for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
@@ -227,7 +226,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		if (nsel)
 			q /= nsel;
 		break;
-	case K_First:								/* first or last in the orthogonal direction */
+	case K_First: /* first or last in the orthogonal direction */
 	case K_Last:
 		if (!sort_objs_by_pos(op, dir, point)) {
 			q = 0;
@@ -293,7 +292,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		break;
 	case K_none:
-		point = K_Marks;						/* default value */
+		point = K_Marks; /* default value */
 		break;
 	default:
 		PCB_ACT_FAIL(align);
@@ -306,7 +305,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case K_Crosshair:
 		break;
 	case K_none:
-		reference = K_First;				/* default value */
+		reference = K_First; /* default value */
 		break;
 	default:
 		PCB_ACT_FAIL(align);
@@ -414,7 +413,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		break;
 	case K_none:
-		point = K_Marks;						/* default value */
+		point = K_Marks; /* default value */
 		break;
 	default:
 		PCB_ACT_FAIL(distribute);
@@ -427,7 +426,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case K_Crosshair:
 		break;
 	case K_none:
-		refa = K_First;							/* default value */
+		refa = K_First; /* default value */
 		break;
 	default:
 		PCB_ACT_FAIL(distribute);
@@ -440,7 +439,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case K_Crosshair:
 		break;
 	case K_none:
-		refb = K_Last;							/* default value */
+		refb = K_Last; /* default value */
 		break;
 	default:
 		PCB_ACT_FAIL(distribute);
