@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + FEATURE: http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
-- CLEANUP: when removing import_sch, also remove ImportGUI()
 - BUG: autoplaceselected() bugs in bug_files/autoplaceselected.txt [report: Miloh]
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
@@ -21,6 +20,7 @@
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 
 2. For later releases ===============================================================================
+- CLEANUP: remove import_sch, rename DeprecatedImport() to Import() in oldactions [report: Igor2]
 - CLEANUP: remove the donut rats special casing
 	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
