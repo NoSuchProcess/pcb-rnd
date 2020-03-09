@@ -637,12 +637,12 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "VERT_JUST", 0);
 	if (tmp != NULL) {
+		pcb_coord_t ymax = height+ymin;
 		TODO(
 			"Consider rotation, using:"
 			"  pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)"
 			"Maybe:"
 			"  double sina = sin(-(double)rot / PCB_RAD_TO_DEG), cosa = cos(-(double)rot / PCB_RAD_TO_DEG);");
-		pcb_coord_t ymax = height+ymin;
 		if (strcmp(tmp->argv[1], "Top") == 0) {
 			y1 = ty+height; y2 = ty;
 		}
