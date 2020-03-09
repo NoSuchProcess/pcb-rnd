@@ -1,11 +1,13 @@
 /* Functions to distribute (evenly spread out) and align PCB subcircuits.
  *
  * Copyright (C) 2007 Ben Jackson <ben@ben.com>
+ * Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
  * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
+ * Major feature extension by Tibor 'Igor2' Palinkas in 2020: work on any object type.
  *
  * Original source was:  http://ad7gd.net/geda/distalign.c
  *
