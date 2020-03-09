@@ -205,15 +205,15 @@ pcb_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj
 	pcb_cardinal_t cnt = 0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
-		return;
+		return 0;
 
 	subc = pcb_obj_parent_subc(flt);
 	if (subc == NULL)
-		return;
+		return 0;
 
 	eo = pcb_extobj_get(subc);
 	if (eo == NULL)
-		return;
+		return 0;
 
 	sel = PCB_FLAG_TEST(PCB_FLAG_SELECTED, flt);
 
