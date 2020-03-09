@@ -34,6 +34,8 @@
 #include "config.h"
 #include "conf_core.h"
 
+#include <unistd.h>
+
 #include "board.h"
 #include "data.h"
 #include "change.h"
