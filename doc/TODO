@@ -18,6 +18,7 @@
 + FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window; e.g. connector()'s etrunc [report: Majenko]
 + FEATURE: {v n} on subc: when more terminals are created (named) within the subc, they should show termname (plus a little L is drawn on the origin when this is enabled on a subc) NOTE: this is a hidden property, not saved [report: Majenko]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
+- BUG: kicad save component side and type; ml=3790,3794 [report: cnieves]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove import_sch, rename DeprecatedImport() to Import() in oldactions [report: Igor2]
