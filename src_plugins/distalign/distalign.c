@@ -1,4 +1,4 @@
-/* Functions to distribute (evenly spread out) and align PCB subcircuits.
+/* Functions to distribute (evenly spread out) and align PCB objects.
  *
  * Copyright (C) 2007 Ben Jackson <ben@ben.com>
  * Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
@@ -116,7 +116,7 @@ coord ## DIR(pcb_any_obj_t *obj, int point)			\
 COORD(X)
 COORD(Y)
 
-/* return the subcircuit coordinate associated with the given internal point */
+/* return the object coordinate associated with the given internal point */
 static pcb_coord_t coord(pcb_any_obj_t *obj, int dir, int point)
 {
 	if (dir == K_X)
@@ -125,25 +125,25 @@ static pcb_coord_t coord(pcb_any_obj_t *obj, int dir, int point)
 		return coordY(obj, point);
 }
 
-static struct subc_by_pos {
+static struct obj_by_pos {
 	pcb_any_obj_t *obj;
 	pcb_coord_t pos;
 	pcb_coord_t width;
-} *subcs_by_pos;
+} *objs_by_pos;
 
-static int nsubcs_by_pos;
+static int nobjs_by_pos;
 
 static int cmp_ebp(const void *a, const void *b)
 {
-	const struct subc_by_pos *ea = a;
-	const struct subc_by_pos *eb = b;
+	const struct obj_by_pos *ea = a;
+	const struct obj_by_pos *eb = b;
 
 	return ea->pos - eb->pos;
 }
 
 /*
  * Find all selected objects, then order them in order by coordinate in
- * the 'dir' axis. This is used to find the "First" and "Last" subcircuits
+ * the 'dir' axis. This is used to find the "First" and "Last" object
  * and also to choose the distribution order.
  *
  * For alignment, first and last are in the orthogonal axis (imagine if
@@ -152,14 +152,14 @@ static int cmp_ebp(const void *a, const void *b)
  *
  * For distribution, first and last are in the distribution axis.
  */
-static int sort_subcs_by_pos(int op, int dir, int point)
+static int sort_objs_by_pos(int op, int dir, int point)
 {
 	int nsel = 0;
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
 
-	if (nsubcs_by_pos)
-		return nsubcs_by_pos;
+	if (nobjs_by_pos)
+		return nobjs_by_pos;
 	if (op == K_align)
 		dir = dir == K_X ? K_Y : K_X;	/* see above */
 
@@ -172,33 +172,32 @@ static int sort_subcs_by_pos(int op, int dir, int point)
 
 	if (!nsel)
 		return 0;
-	subcs_by_pos = malloc(nsel * sizeof(*subcs_by_pos));
-	nsubcs_by_pos = nsel;
+	objs_by_pos = malloc(nsel * sizeof(*objs_by_pos));
+	nobjs_by_pos = nsel;
 	nsel = 0;
 
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj))
 			continue;
-		subcs_by_pos[nsel].obj = obj;
-		subcs_by_pos[nsel++].pos = coord(obj, dir, point);
+		objs_by_pos[nsel].obj = obj;
+		objs_by_pos[nsel++].pos = coord(obj, dir, point);
 	}
 
-	qsort(subcs_by_pos, nsubcs_by_pos, sizeof(*subcs_by_pos), cmp_ebp);
-	return nsubcs_by_pos;
+	qsort(objs_by_pos, nobjs_by_pos, sizeof(*objs_by_pos), cmp_ebp);
+	return nobjs_by_pos;
 }
 
-static void free_subcs_by_pos(void)
+static void free_objs_by_pos(void)
 {
-	if (nsubcs_by_pos) {
-		free(subcs_by_pos);
-		subcs_by_pos = NULL;
-		nsubcs_by_pos = 0;
+	if (nobjs_by_pos) {
+		free(objs_by_pos);
+		objs_by_pos = NULL;
+		nobjs_by_pos = 0;
 	}
 }
 
-/* Find the reference coordinate from the specified points of all
- * selected subcircuits. */
+/* Find the reference coordinate from the specified points of all selected objects. */
 static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
 {
 	pcb_coord_t q;
@@ -214,7 +213,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		else
 			q = y;
 		break;
-	case K_Average:							/* the average among selected subcircuits */
+	case K_Average:							/* the average among selected objects */
 		nsel = 0;
 		q = 0;
 		for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
@@ -230,15 +229,15 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		break;
 	case K_First:								/* first or last in the orthogonal direction */
 	case K_Last:
-		if (!sort_subcs_by_pos(op, dir, point)) {
+		if (!sort_objs_by_pos(op, dir, point)) {
 			q = 0;
 			break;
 		}
 		if (reference == K_First) {
-			q = coord(subcs_by_pos[0].obj, dir, point);
+			q = coord(objs_by_pos[0].obj, dir, point);
 		}
 		else {
-			q = coord(subcs_by_pos[nsubcs_by_pos - 1].obj, dir, point);
+			q = coord(objs_by_pos[nobjs_by_pos - 1].obj, dir, point);
 		}
 		break;
 	}
@@ -276,7 +275,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	default:
 		PCB_ACT_FAIL(align);
 	}
-	/* parse point (within each subcircuit) which will be aligned */
+	/* parse point (within each object) which will be aligned */
 	switch ((point = keyword(a1))) {
 	case K_Centers:
 	case K_Marks:
@@ -325,7 +324,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_align, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
-	/* move all selected subcircuits to the new coordinate */
+	/* move all selected objects to the new coordinate */
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
 		pcb_coord_t p, dp, dx, dy;
@@ -357,7 +356,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_hid_redraw(PCB);
 		pcb_board_set_changed_flag(1);
 	}
-	free_subcs_by_pos();
+	free_objs_by_pos();
 
 	PCB_ACT_IRES(0);
 	return 0;
@@ -396,7 +395,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	default:
 		PCB_ACT_FAIL(distribute);
 	}
-	/* parse point (within each subcircuit) which will be distributed */
+	/* parse point (within each objects) which will be distributed */
 	switch ((point = keyword(a1))) {
 	case K_Centers:
 	case K_Marks:
@@ -460,39 +459,39 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	default:
 		PCB_ACT_FAIL(distribute);
 	}
-	/* build list of subcircuitss in orthogonal axis order */
-	sort_subcs_by_pos(K_distribute, dir, point);
+	/* build list of objects in orthogonal axis order */
+	sort_objs_by_pos(K_distribute, dir, point);
 	/* find the endpoints given the above options */
 	s = reference_coord(K_distribute, pcb_crosshair.X, pcb_crosshair.Y, dir, point, refa);
 	e = reference_coord(K_distribute, pcb_crosshair.X, pcb_crosshair.Y, dir, point, refb);
 	slack = e - s;
 	/* use this divisor to calculate spacing (for 1 elt, avoid 1/0) */
-	divisor = (nsubcs_by_pos > 1) ? (nsubcs_by_pos - 1) : 1;
+	divisor = (nobjs_by_pos > 1) ? (nobjs_by_pos - 1) : 1;
 	/* even the gaps instead of the edges or whatnot */
 	/* find the "slack" in the row */
 	if (point == K_Gaps) {
 		pcb_coord_t w;
 
 		/* subtract all the "widths" from the slack */
-		for (i = 0; i < nsubcs_by_pos; ++i) {
-			pcb_any_obj_t *subc = subcs_by_pos[i].obj;
+		for (i = 0; i < nobjs_by_pos; ++i) {
+			pcb_any_obj_t *o = objs_by_pos[i].obj;
 			/* coord doesn't care if I mix Lefts/Tops */
-			w = subcs_by_pos[i].width = coord(subc, dir, K_Rights) - coord(subc, dir, K_Lefts);
+			w = objs_by_pos[i].width = coord(o, dir, K_Rights) - coord(o, dir, K_Lefts);
 			/* Gaps distribution is on centers, so half of
 			 * first and last subcircuit don't count */
-			if (i == 0 || i == nsubcs_by_pos - 1) {
+			if (i == 0 || i == nobjs_by_pos - 1) {
 				w /= 2;
 			}
 			slack -= w;
 		}
 		/* slack could be negative */
 	}
-	/* move all selected subcircuits to the new coordinate */
-	for (i = 0; i < nsubcs_by_pos; ++i) {
-		pcb_any_obj_t *obj = subcs_by_pos[i].obj;
+	/* move all selected objects to the new coordinate */
+	for (i = 0; i < nobjs_by_pos; ++i) {
+		pcb_any_obj_t *obj = objs_by_pos[i].obj;
 		pcb_coord_t p, q, dp, dx, dy;
 
-		/* find reference point for this subcircuit */
+		/* find reference point for this object */
 		q = s + slack * i / divisor;
 		/* find delta from reference point to reference point */
 		p = coord(obj, dir, point);
@@ -514,11 +513,11 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		/* in gaps mode, accumulate part widths */
 		if (point == K_Gaps) {
-			/* move remaining half of our subcircuits */
-			s += subcs_by_pos[i].width / 2;
-			/* move half of next subcircuits */
-			if (i < nsubcs_by_pos - 1)
-				s += subcs_by_pos[i + 1].width / 2;
+			/* move remaining half of our objects */
+			s += objs_by_pos[i].width / 2;
+			/* move half of next objects */
+			if (i < nobjs_by_pos - 1)
+				s += objs_by_pos[i + 1].width / 2;
 		}
 	}
 	if (changed) {
@@ -526,7 +525,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_hid_redraw(PCB);
 		pcb_board_set_changed_flag(1);
 	}
-	free_subcs_by_pos();
+	free_objs_by_pos();
 	PCB_ACT_IRES(0);
 	return 0;
 }
