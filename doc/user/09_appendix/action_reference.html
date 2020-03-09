@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,  Revision: 29991
+This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,  Revision: 30018
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -21,7 +21,7 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#addrats">AddRats</a></td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close)</td><td></td>
 <tr><td><a href="action_details.html#addtimer">AddTimer</a></td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#adjuststyle">AdjustStyle</a></td><td>Open the dialog box for editing the route styles.</td><td>AdjustStyle([routestyle_idx])</td><td>lib_hid_pcbui/route_style</td>
-<tr><td><a href="action_details.html#align">align</a></td><td>Align subcircuits</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
+<tr><td><a href="action_details.html#align">align</a></td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
@@ -89,11 +89,12 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td>Delete</td><td>Delete stuff.</td><td>Delete(Object [,idpath])<br>Delete(Selected)<br>Delete(AllRats|SelectedRats)</td><td></td>
 <tr><td>DeleteRats</td><td>Delete rat lines.</td><td>DeleteRats(AllRats|Selected|SelectedRats)</td><td></td>
 <tr><td>DelGroup</td><td>Remove a layer group; if the first argument is not specified, the current group is removed</td><td>DelGroup([@group])</td><td></td>
+<tr><td>DeprecatedImport</td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>oldactions plugin</td>
 <tr><td>DescribeLocation</td><td>Return a string constant (valud until the next call) containing a short description at x;y (object, net, etc.)</td><td>DescribeLocation(x, y)</td><td>lib_hid_pcbui/status</td>
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#disperseelements">DisperseElements</a></td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
 <tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
-<tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute subcircuits</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
+<tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#distributetext">distributetext</a></td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
 <tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
 <tr><td>dlg_test</td><td>test the attribute dialog</td><td>dlg_test()</td><td>dialogs plugin</td>
@@ -161,7 +162,7 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td>Help</td><td>On-line action help</td><td>Help()</td><td></td>
 <tr><td>IDP</td><td>Basic idpath manipulation.</td><td>IDP([print|free|dup], idpath)</td><td>act_read</td>
 <tr><td>IDPList</td><td>Basic idpath list manipulation.</td><td>IDPList(alloc)<br>IDPList(free|clear|print|dup|length, list)<br>IDPList(get|pop|remove, list, idx)<br>IDPList(prepend|append|push, list, idpath)</td><td>act_read</td>
-<tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>oldactions plugin</td>
+<tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#importsch">ImportSch</a></td><td>Import schematics/netlist.</td><td>ImportSch()<br>ImportSch(reimport)<br>ImportSch(setup, importer, [args...])</td><td>import_sch2 plugin</td>

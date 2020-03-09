@@ -124,7 +124,7 @@ With no argument or negative argument, operate on the currently selected style (
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Align subcircuits
+Align objects
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
 distalign plugin
 </table>
@@ -153,7 +153,7 @@ Select which axis will move, other is untouched.
 <th>
  Lefts, Rights, Tops, Bottoms, Centers, Marks  
 <td>
- Pick alignment point within each subcircuit   
+ Pick alignment point within each object   
 <tr>
 
 <th>
@@ -1092,7 +1092,7 @@ Toggles whether the names of terminals will be      displayed. If the cursor is 
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Distribute subcircuits
+Distribute objects
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
 distalign plugin
 </table>
@@ -1131,7 +1131,7 @@ Example: Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crossha
 <p>
  Defaults are Marks, First, Last 
 <p>
- Distributed subcircuits always retain the same relative order they had before they were distributed. 
+ Distributed objects always retain the same relative order they had before they were distributed. 
 </dd></dl>
 
 <h2 id="distributetext">distributetext</h2>
@@ -1645,7 +1645,7 @@ Import(setdisperse,D,units)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Import schematics.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-oldactions plugin
+import_sch plugin
 </table>
 <p>
 Deprecated. Please use 
