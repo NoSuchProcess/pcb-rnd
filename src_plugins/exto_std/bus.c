@@ -110,7 +110,7 @@ static int close_enough(pcb_point_t a, pcb_point_t b)
 static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
 	bus_t *bus;
-	pcb_line_t *l1 = NULL, *l, *tr, *ltmp;
+	pcb_line_t *l1 = NULL, *l, *ltmp;
 	pcb_layer_t *ely = &subc->data->Layer[LID_EDIT];
 	pcb_layer_t *tly = &subc->data->Layer[LID_TARGET];
 	double o0;
@@ -126,7 +126,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		pcb_rtree_box_t sb;
 		pcb_rtree_it_t it;
 		bus_seg_def;
-		double o = o0, a, a1 = 0, a2 = 0, tune1, tune2;
+		double o = o0, a1 = 0, a2 = 0, tune1, tune2;
 		int n, c1 = 0, c2 = 0;
 
 		if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* gen only for floater */
@@ -198,7 +198,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 			double o2 = -o;
 /*			pcb_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (pcb_coord_t)o, (pcb_coord_t)(vx * tune1 * o));
 			pcb_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (pcb_coord_t)o, (pcb_coord_t)(vx * tune2 * o));*/
-			tr = pcb_line_new(tly,
+			pcb_line_new(tly,
 				l->Point1.X + nx * o + vx * tune1 * o2, l->Point1.Y + ny * o + vy * tune1 * o2,
 				l->Point2.X + nx * o + vx * tune2 * o2, l->Point2.Y + ny * o + vy * tune2 * o2,
 				bus->thickness, bus->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
