@@ -6,7 +6,7 @@
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
-- FEATURE: any reason distalign actions align() and distribute() shouldn't work with vias? [report: Miloh]
++ FEATURE: distalign actions align() and distribute() should work with any object (e.g. via, not only subc) [report: Miloh]
 - FEATURE: new breadboard
 	- FEATURE: PCB_OBJ_GFX
 		- TODO("gfx")
