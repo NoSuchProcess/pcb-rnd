@@ -590,7 +590,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	}
 
 	result = font_text_nominal_size(font_id, nt->argv[1], &width, &height, &ymin);
-	if (result == FSR_INVALID_GLYPH_ID) 
+	if (result == FSR_INVALID_GLYPH_ID)
 			hkp_error(tmp, "Invalid glyph ID. Text will be rendered, but it may not have a correct size.\n");
 	else if (result == FSR_INVALID_FONT_ID) {
 		hkp_error(tmp, "Invalid font ID. Text will be NOT rendered.\n");
@@ -604,7 +604,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
 	if (tmp != NULL) {
 		if (strcmp(tmp->argv[1], "Left") == 0) {
-			x1 = tx; 
+			x1 = tx;
 			if (mirrored == 0) {
 				x2 = tx+width;
 			} else {
@@ -627,7 +627,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 				x1=tx+width;
 			}
 		}
-		else 
+		else
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
 	else {
@@ -652,7 +652,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		else if (strcmp(tmp->argv[1], "Bottom") == 0) {
 			y1=ty-ymin; y2=ty-ymin-height; /* ymin is negative */
 		}
-		else 
+		else
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
 	else {
@@ -858,7 +858,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 		type = PCB_LYT_SILK;
 		lyc = PCB_LYC_AUTO;
 		if (parse_side(n, subc, &side, lyname, "top-silk", "bot-silk") != 1)
-			hkp_error(n, "Error parsing silkscreen side.\n"); 
+			hkp_error(n, "Error parsing silkscreen side.\n");
 	}
 	else if (strcmp(n->argv[0], "SOLDER_MASK") == 0) {
 		type = PCB_LYT_MASK;
