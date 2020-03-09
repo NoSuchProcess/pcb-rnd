@@ -6,6 +6,7 @@
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
+- FEATURE: any reason distalign actions align() and distribute() shouldn't work with vias? [report: Miloh]
 - FEATURE: new breadboard
 	- FEATURE: PCB_OBJ_GFX
 		- TODO("gfx")
@@ -18,7 +19,16 @@
 + FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window; e.g. connector()'s etrunc [report: Majenko]
 + FEATURE: {v n} on subc: when more terminals are created (named) within the subc, they should show termname (plus a little L is drawn on the origin when this is enabled on a subc) NOTE: this is a hidden property, not saved [report: Majenko]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
+- BUG: win32: gsch2pcb-rnd doesn't compile (because of non-const paths) [report: Igor2]
+- BUG: padstack proto edit dialog gets confused on s-mirrored instances ml=3678 [report: gpaubert]
+- BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
 - BUG: kicad save component side and type; ml=3790,3794 [report: cnieves]
+- BUG: aligntext() fails if first arg is Y and should not require 4 arguments, only 1 (missing _MAY_) [report: cuvoodoo]
+- BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert]
+- BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1 [report: igor2]
+- BUG: bug_files/arcedit.lht - grab the lower endpoint for move and it turns the arc into 360 deg [report: gpaubert]
+- BUG: lesstif main window doesn't show parts selected after running select all. { s a a } on parts in lesstif gui, main window doesn't show any parts selected unless zoom is changed. [report: Miloh]
+- BUG: error in pcb_search_obj_by_id() after attempting to { u u } an object that is removed by selecting and using ctl-x [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove import_sch, rename DeprecatedImport() to Import() in oldactions [report: Igor2]
@@ -112,27 +122,17 @@
 	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- BUG: win32: gsch2pcb-rnd doesn't compile (because of non-const paths) [report: Igor2]
-- BUG: padstack proto edit dialog gets confused on s-mirrored instances ml=3678 [report: gpaubert]
-- BUG/FEATURE: changing padstack prototypes from the padstack editor dialog won't set the board change flag and is not unodable [report: Gabriel]
-- BUG: aligntext() fails if first arg is Y and should not require 4 arguments, only 1 (missing _MAY_) [report: cuvoodoo]
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
-- BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert]
-- BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1 [report: igor2]
-- BUG: bug_files/arcedit.lht - grab the lower endpoint for move and it turns the arc into 360 deg [report: gpaubert]
+- BUG: in lesstif gui, running { s s } issues 94 lines to stderr Warning: Null child found in argument list to unmanage [report: Miloh]
+
+3. Long term ===============================================================================
 - version 3.0.0:
 	- maybe rename pcblib? dir rename trunk/pcblib/tru-hole should handle make correctly and not walk on existing web services or user installs
 	- ./configure --config should default to /etc
-- BUG: lesstif main window doesn't show parts selected after running select all. { s a a } on parts in lesstif gui, main window doesn't show any parts selected unless zoom is changed. [report: Miloh]
-- BUG: in lesstif gui, running { s s } issues 94 lines to stderr Warning: Null child found in argument list to unmanage [report: Miloh]
-- BUG: error in pcb_search_obj_by_id() after attempting to { u u } an object that is removed by selecting and using ctl-x [report: Miloh]
-- FEATURE: any reason distalign actions align() and distribute() shouldn't work with vias? [report: Miloh]
-
-3. Long term ===============================================================================
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - BUG: in poly lib rewrite: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
