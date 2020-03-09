@@ -85,24 +85,27 @@ static int keyword(const char *s)
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
 static inline pcb_coord_t		        			\
-coord ## DIR(pcb_subc_t *subc, int point)			\
+coord ## DIR(pcb_any_obj_t *obj, int point)			\
 {								\
 	pcb_coord_t oX, oY; \
 	switch (point) {					\
 	case K_Marks:						\
 		oX = oY = 0; \
-		pcb_subc_get_origin(subc, &oX, &oY); \
+		if (obj->type == PCB_OBJ_SUBC) \
+			pcb_subc_get_origin((pcb_subc_t *)obj, &oX, &oY); \
+		else \
+			pcb_obj_center(obj, &oX, &oY); \
 		return o ## DIR;			\
 	case K_Lefts:						\
 	case K_Tops:						\
-		return subc->BoundingBox.DIR ## 1;		\
+		return obj->BoundingBox.DIR ## 1;		\
 	case K_Rights:						\
 	case K_Bottoms:						\
-		return subc->BoundingBox.DIR ## 2;		\
+		return obj->BoundingBox.DIR ## 2;		\
 	case K_Centers:						\
 	case K_Gaps:						\
-		return (subc->BoundingBox.DIR ## 1 +		\
-		       subc->BoundingBox.DIR ## 2) / 2;	\
+		return (obj->BoundingBox.DIR ## 1 +		\
+		       obj->BoundingBox.DIR ## 2) / 2;	\
 	}							\
 	return 0;						\
 }
