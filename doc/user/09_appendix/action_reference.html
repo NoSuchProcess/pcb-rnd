@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,  Revision: 29900
+This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,  Revision: 29985
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -39,7 +39,7 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td>Brave</td><td>Changes brave settings.</td><td>Brave()<br>Brave(setting, on|off)</td><td></td>
 <tr><td>BrowseScripts</td><td>Present a dialog box for browsing scripts</td><td>BrowseScripts()</td><td>script plugin</td>
 <tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script, [options])<br>cam(call, jobname, [options])<br>cam([gui])</td><td>cam exporter</td>
-<tr><td><a href="action_details.html#center">Center</a></td><td>Moves the pointer to the center of the window.</td><td>Center()</td><td>lib_hid_pcbui/actions</td>
+<tr><td><a href="action_details.html#center">Center</a></td><td>Moves the pointer to the center of the window.</td><td>Center()</td><td>lib_hid_common plugin</td>
 <tr><td>ChangeAngle</td><td>Changes the start angle, delta angle or both angles of an arc.</td><td>ChangeAngle(Object, start|delta|both, delta)<br>ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)<br>ChangeAngle(SelectedArcs, start|delta|both, delta)</td><td></td>
 <tr><td><a href="action_details.html#changeclearsize">ChangeClearSize</a></td><td>Changes the clearance size of objects.</td><td>ChangeClearSize(Object, delta|style)<br>ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)<br>ChangeClearSize(SelectedLines|SelectedArcs, delta|style)<br>ChangeClearSize(Selected|SelectedObjects, delta|style)</td><td></td>
 <tr><td>ChangeDrillSize</td><td>Changes the drilling hole size of objects.</td><td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td><td></td>
@@ -72,7 +72,7 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td>cli_MessageBox</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td>cli_PromptFor</td><td>Intenal: CLI frontend action. Do not use directly.</td><td></td><td></td>
 <tr><td><a href="action_details.html#clrflag">ClrFlag</a></td><td>Clears flags on objects.</td><td>ClrFlag(Object|Selected|SelectedObjects, flag)<br>ClrFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>ClrFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>ClrFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
-<tr><td><a href="action_details.html#command">Command</a></td><td>Displays the command line input in the status area.</td><td>Command()</td><td>lib_hid_pcbui/actions</td>
+<tr><td><a href="action_details.html#command">Command</a></td><td>Displays the command line input in the status area.</td><td>Command()</td><td>lib_hid_common plugin</td>
 <tr><td>conf</td><td>Perform various operations on the configuration tree.</td><td>conf(set, path, value, [role], [policy]) - change a config setting to an absolute value<br>conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)<br>conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config<br>conf(reset, role) - reset the in-memory lihata of a role<br>conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)</td><td></td>
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
 <tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
@@ -163,7 +163,7 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td>IDPList</td><td>Basic idpath list manipulation.</td><td>IDPList(alloc)<br>IDPList(free|clear|print|dup|length, list)<br>IDPList(get|pop|remove, list, idx)<br>IDPList(prepend|append|push, list, idpath)</td><td>act_read</td>
 <tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
-<tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#importsch">ImportSch</a></td><td>Import schematics/netlist.</td><td>ImportSch()<br>ImportSch(reimport)<br>ImportSch(setup, importer, [args...])</td><td>import_sch2 plugin</td>
 <tr><td>Info</td><td></td><td></td><td>report plugin</td>
 <tr><td>InfoBarFileChanged</td><td>Present the "file changed" warning info bar with buttons to reload or cancel</td><td>InfoBarFileChanged(open|close)</td><td>dialogs plugin</td>
@@ -177,6 +177,7 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#l">l</a></td><td>Loads layout data.</td><td>l [name] [format]</td><td>shand_cmd plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(selected)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#layerbystack">LayerByStack</a></td><td>Layer operations based on physical layer stacking</td><td>LayerByStack(select, prev|next)</td><td></td>
+<tr><td>LayerHotkey</td><td>Change the key binding for a layer</td><td>LayerHotkey(layer, select|vis)</td><td>lib_hid_pcbui/actions</td>
 <tr><td>LayerObjDup</td><td>Duplicate srcobj on a layer. Srcobj is specified by an idpath. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>LayerObjDup([noundo,] data, layer, srcobj)</td><td>act_draw</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
@@ -237,7 +238,7 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td>PadstackConvert</td><td>Convert selection or current buffer to padstack</td><td>PadstackConvert(buffer|selected, [originx, originy])</td><td></td>
 <tr><td>PadstackEdit</td><td>interactive pad stack editor</td><td>PadstackEdit(object, [tab])</td><td>dialogs plugin</td>
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
-<tr><td><a href="action_details.html#pan">Pan</a></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_pcbui/actions</td>
+<tr><td><a href="action_details.html#pan">Pan</a></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_common plugin</td>
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>pas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|MoveSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(SaveAll, Filename, [format])<br>PasteBuffer(LoadAll, Filename)<br>PasteBuffer(Push)<br>PasteBuffer(Pop)<br>PasteBuffer(GetSource, [1..PCB_MAX_BUFFER])</td><td></td>
@@ -321,7 +322,7 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
 <tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
-<tr><td><a href="action_details.html#scroll">Scroll</a></td><td>Scroll the viewport.</td><td>Scroll(up|down|left|right, [pixels])</td><td>lib_hid_pcbui/actions</td>
+<tr><td><a href="action_details.html#scroll">Scroll</a></td><td>Scroll the viewport.</td><td>Scroll(up|down|left|right, [pixels])</td><td>lib_hid_common plugin</td>
 <tr><td>SearchDialog</td><td>Open the log dialog.</td><td>SearchDialog()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object, [idpath])<br>Select(ToggleObject)<br>Select(All|Block|Connection|Invert)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
@@ -361,8 +362,8 @@ This is pcb-rnd 2.2.0 (svn r29779) an interactive printed circuit board editor ,
 <tr><td>ViewList</td><td>Present a new empty view list</td><td>viewlist([name, [winid, [listptr]]])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#w">w</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#wq">wq</a></td><td>Saves the layout data and quits.</td><td>wq</td><td>shand_cmd plugin</td>
-<tr><td><a href="action_details.html#zoom">Zoom</a></td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
-<tr><td>ZoomTo</td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(selected)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found)</td><td>lib_hid_pcbui/actions</td>
+<tr><td><a href="action_details.html#zoom">Zoom</a></td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found|selected)</td><td>lib_hid_pcbui/actions</td>
+<tr><td>ZoomTo</td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found|selected)</td><td>lib_hid_pcbui/actions</td>
 </table>
 </body>
 </html>
