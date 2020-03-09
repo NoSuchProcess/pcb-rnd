@@ -65,7 +65,6 @@ static const char pcb_acts_Import[] =
 	"Import(setnewpoint[,(mark|center|X,Y)])\n"
 	"Import(setdisperse,D,units)\n";
 static const char pcb_acth_Import[] = "Import schematics.";
-/* DOC: import.html */
 static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *mode = NULL;
@@ -380,7 +379,7 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char *import_sch_cookie = "import_sch plugin";
 
 pcb_action_t import_sch_action_list[] = {
-	{"Import", pcb_act_Import, pcb_acth_Import, pcb_acts_Import}
+	{"DeprecatedImport", pcb_act_Import, pcb_acth_Import, pcb_acts_Import}
 };
 
 int pplg_check_ver_import_sch(int ver_needed) { return 0; }

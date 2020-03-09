@@ -289,8 +289,22 @@ static const char pcb_acth_ImportGUI[] = "Asks user which schematics to import i
 /* DOC: importgui.html */
 static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\n");
+	pcb_message(PCB_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
 	PCB_ACT_IRES(pcb_actionva(PCB_ACT_HIDLIB, "ImportSch", NULL));
+	return 0;
+}
+
+static const char pcb_acts_Import[] =
+	"Import()\n"
+	"Import([gnetlist|make[,source,source,...]])\n"
+	"Import(setnewpoint[,(mark|center|X,Y)])\n"
+	"Import(setdisperse,D,units)\n";
+static const char pcb_acth_Import[] = "Import schematics.";
+/* DOC: import.html */
+static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_message(PCB_MSG_ERROR, "Import() is the old, deprecated import netlist/schematics action that got removed\nPlease switch over to using the new action, ImportSch().\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
+	PCB_ACT_IRES(1);
 	return 0;
 }
 
@@ -371,6 +385,7 @@ pcb_action_t oldactions_action_list[] = {
 	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
 	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
+	{"Import", pcb_act_Import, pcb_acth_Import, pcb_acts_Import},
 
 	/* deprecated actions */
 	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0},
