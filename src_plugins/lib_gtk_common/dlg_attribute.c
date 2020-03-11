@@ -384,21 +384,39 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case PCB_HATT_LABEL:
-				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED)
-					widget = gtkc_trunctext_new(ctx->attrs[j].name);
-				else
+				{
+				GtkRequisition req;
+				int theight;
+
+				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED) {
+					/* workaround: need to get the real height - create a temporary, non-truncated label */
 					widget = gtk_label_new(ctx->attrs[j].name);
+					gtk_widget_size_request(widget, &req);
+					gtk_widget_destroy(widget);
+
+					widget = gtkc_trunctext_new(ctx->attrs[j].name);
+				}
+				else {
+					widget = gtk_label_new(ctx->attrs[j].name);
+					gtk_widget_size_request(widget, &req);
+				}
+				theight = req.height;
+				if (theight < 12)
+					theight = 12;
+				else if (theight > 128)
+					theight = 128;
+
 				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_VERTICAL)
 					gtk_label_set_angle(GTK_LABEL(widget), 90);
 
 				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED) {
 					if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_VERTICAL) {
 						gtk_misc_set_alignment(GTK_MISC(widget), 0, 1);
-						gtk_widget_set_size_request(widget, 16, 1);
+						gtk_widget_set_size_request(widget, theight, 1);
 					}
 					else {
 						gtk_misc_set_alignment(GTK_MISC(widget), 1, 0);
-						gtk_widget_set_size_request(widget, 1, 16);
+						gtk_widget_set_size_request(widget, 1, theight);
 					}
 				}
 
@@ -412,6 +430,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				if (!(ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED))
 					gtk_misc_set_alignment(GTK_MISC(widget), 0., 0.5);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
+				}
 				break;
 
 			case PCB_HATT_INTEGER:
