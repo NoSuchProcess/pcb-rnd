@@ -367,6 +367,8 @@ ha:{
 								ha:black current group              = { a={<key>m; <key>o; <key>b}; checked=appearance/black_current_group; action=conf(toggle, appearance/black_current_group, design) }
 							}
 						}
+						-
+						ha:Reset                           = { a={<key>m; <key>d; <key>r}; sy:action={/scripts/mode_reset}; tip={Reset all the above drawing modes to make sure objects are visible} }
 					}
 				}
 				ha:Mincut on shorts                 = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
@@ -901,9 +903,9 @@ ha:{
 
 	ha:scripts {
 
-		# set all visibility related states to safe defaults that makes sure
-		# everything is visible
-		view_reset {
+		# set all visibility related conf nodes (view/mode/drawing in the menu)
+		# to safe defaults that makes sure everything is visible
+		mode_reset {
 			conf(set, editor/live_routing, 0, design);
 			conf(set, editor/wireframe_draw, 0, design);
 			conf(set, editor/wireframe_draw, 0, design);
@@ -916,6 +918,12 @@ ha:{
 			conf(set, editor/hide_names, 0, design);
 			conf(set, appearance/invis_other_groups, 0, design);
 			conf(set, appearance/black_current_group, 0, design);
+		}
+
+		# set all visibility related states to safe defaults that makes sure
+		# everything is visible
+		li:view_reset {
+			sy:mdr = {/scripts/mode_reset}
 			LayerVisReset();
 			zoom();
 		}
