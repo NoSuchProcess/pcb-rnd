@@ -8,6 +8,8 @@ Requirements:
     Some Linux distributions already have this packaged, please check your
     repositries (and install the development version)
     NOTE: version 1.0.1 is too old, please get a newer one (e.g. svn version)
+    NOTE: you need to install genht under /usr or /usr/local - non-standard
+    installation will NOT work for now.
  2. recommended, non-standard, optional dependency for runing mawk scripts:
     install libmawk - svn://repo.hu/libmawk/trunk
     (Many of the example scripts are written in awk)
