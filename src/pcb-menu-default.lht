@@ -309,6 +309,7 @@ ha:{
 				}
 				ha:Show padstack numbers in a subc = { a={<key>v; <key>n} action=Display(PinOrPadName) }
 				ha:Full screen                     = { checked=editor/fullscreen; a=<char>\\;  action=fullscreen(toggle) }
+				ha:Reset                           = { a={<key>v; <key>r}; sy:action={/scripts/view_reset}; tip={Reset all visibility related states to make sure all objects are visible} }
 			}
 		} # View
 
@@ -897,4 +898,26 @@ ha:{
 		} # group
 
 	} # popups
+
+	ha:scripts {
+
+		# set all visibility related states to safe defaults that makes sure
+		# everything is visible
+		view_reset {
+			conf(set, editor/live_routing, 0, design);
+			conf(set, editor/wireframe_draw, 0, design);
+			conf(set, editor/wireframe_draw, 0, design);
+			conf(set, editor/thin_draw, 0, design);
+			conf(set, editor/thin_draw_poly, 0, design);
+			conf(set, editor/as_drawn_poly, 0, design);
+			conf(set, editor/check_planes, 0, design);
+			conf(set, editor/lock_names, 0, design);
+			conf(set, editor/only_names, 0, design);
+			conf(set, editor/hide_names, 0, design);
+			conf(set, appearance/invis_other_groups, 0, design);
+			conf(set, appearance/black_current_group, 0, design);
+			LayerVisReset();
+			zoom();
+		}
+	}
 } # root
