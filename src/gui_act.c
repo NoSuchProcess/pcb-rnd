@@ -1443,6 +1443,14 @@ static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char pcb_acts_LayerVisReset[] = "LayerVisReset()";
+static const char pcb_acth_LayerVisReset[] = "Reset layer visibility to safe defaults.";
+static fgw_error_t pcb_act_LayerVisReset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_layervis_reset_stack(&PCB->hidlib);
+	PCB_ACT_IRES(0);
+	return 0;
+}
 
 static pcb_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
@@ -1462,7 +1470,8 @@ static pcb_action_t gui_action_list[] = {
 	{"NewGroup",  pcb_act_NewGroup, pcb_acth_NewGroup, pcb_acts_NewGroup},
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
-	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit}
+	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit},
+	{"LayerVisReset", pcb_act_LayerVisReset, pcb_acth_LayerVisReset, pcb_acts_LayerVisReset}
 };
 
 void pcb_gui_act_init2(void)
