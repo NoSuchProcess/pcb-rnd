@@ -41,6 +41,10 @@ int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On
 /* resets the layer visibility stack setting */
 void pcb_layervis_reset_stack(pcb_hidlib_t *hl);
 
+/* for historical reasons mask and paste are hidden by default (and this
+   is hardwired in code); this function hides them */
+void pcb_layer_vis_historical_hides(pcb_board_t *pcb);
+
 /* saves the layerstack setting */
 void pcb_layervis_save_stack(void);
 

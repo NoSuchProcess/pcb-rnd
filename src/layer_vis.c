@@ -265,14 +265,12 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 	/* do NOT generate an event: some callers want to handle that */
 }
 
-static void layer_vis_grp_defaults(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
 
-	pcb_layer_vis_change_all(PCB, PCB_BOOL_SET, PCB_BOOL_PRESERVE);
-
 	/* do not show paste and mask by default - they are distractive */
-	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
+	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		if ((g->ltype & PCB_LYT_MASK) || (g->ltype & PCB_LYT_PASTE)) {
 			int n;
@@ -286,6 +284,13 @@ static void layer_vis_grp_defaults(pcb_hidlib_t *hidlib, void *user_data, int ar
 			}
 		}
 	}
+}
+
+static void layer_vis_grp_defaults(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+{
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
+	pcb_layer_vis_change_all(pcb, PCB_BOOL_SET, PCB_BOOL_PRESERVE);
+	pcb_layer_vis_historical_hides(pcb);
 
 	pcb_event(hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
