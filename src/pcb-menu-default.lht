@@ -309,7 +309,8 @@ ha:{
 				}
 				ha:Show padstack numbers in a subc = { a={<key>v; <key>n} action=Display(PinOrPadName) }
 				ha:Full screen                     = { checked=editor/fullscreen; a=<char>\\;  action=fullscreen(toggle) }
-				ha:Reset                           = { a={<key>v; <key>r}; sy:action={/scripts/view_reset}; tip={Reset all visibility related states to make sure all objects are visible} }
+				ha:Reset View                      = { a={<key>v; <key>r; <key>v}; sy:action={/scripts/view_reset}; tip={Reset all visibility related states to make sure all objects are visible} }
+				ha:Reset GUI                       = { a={<key>v; <key>r; <key>g}; sy:action={/scripts/gui_reset}; tip={Reset all GUI related states } }
 			}
 		} # View
 
@@ -926,6 +927,26 @@ ha:{
 			sy:mdr = {/scripts/mode_reset}
 			LayerVisReset();
 			zoom();
+		}
+
+		# set all GUI states to safe defaults to get the UI to a known state
+		li:gui_reset {
+			sy:vr = {/scripts/view_reset}
+			fullscreen(off);
+			conf(set, editor/draw_grid, 1, design);
+			conf(set, plugins/hid_gtk/local_grid/enable, 0, design);
+			Display(SubcID, "%a.refdes%");
+			Display(TermID, "%a.term%");
+			conf(set, editor/all_direction_lines, 0, design);
+			conf(set, editor/auto_drc, 0, design);
+			conf(set, editor/rubber_band_mode, 0, design);
+			conf(set, editor/orthogonal_moves, 0, design);
+			conf(set, editor/snap_pin, 1, design);
+			conf(set, editor/snap_offgrid_line, 1, design);
+			conf(set, editor/show_drc, 0, design);
+			conf(set, editor/highlight_on_point, 0, design);
+			subc(loose, off);
+			Tool(arrow);
 		}
 	}
 } # root
