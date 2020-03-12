@@ -309,8 +309,12 @@ ha:{
 				}
 				ha:Show padstack numbers in a subc = { a={<key>v; <key>n} action=Display(PinOrPadName) }
 				ha:Full screen                     = { checked=editor/fullscreen; a=<char>\\;  action=fullscreen(toggle) }
-				ha:Reset View                      = { a={<key>v; <key>r; <key>v}; sy:action={/scripts/view_reset}; tip={Reset all visibility related states to make sure all objects are visible} }
-				ha:Reset GUI                       = { a={<key>v; <key>r; <key>g}; sy:action={/scripts/gui_reset}; tip={Reset all GUI related states } }
+				ha:Reset {
+					li:submenu {
+						ha:Reset View                      = { a={<key>v; <key>r; <key>v}; sy:action={/scripts/view_reset}; tip={Reset all visibility related states to make sure all objects are visible} }
+						ha:Reset GUI                       = { a={<key>v; <key>r; <key>g}; sy:action={/scripts/gui_reset}; tip={Reset all GUI related states } }
+					}
+				}
 			}
 		} # View
 
