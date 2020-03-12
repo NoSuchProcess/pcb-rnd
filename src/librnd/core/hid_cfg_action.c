@@ -27,11 +27,20 @@
 #include <librnd/config.h>
 #include <librnd/core/hid_cfg_action.h>
 #include <librnd/core/actions.h>
+#include <liblihata/tree.h>
 
 int pcb_hid_cfg_action(pcb_hidlib_t *hl, const lht_node_t *node)
 {
 	if (node == NULL)
 		return -1;
+
+	if (node->type == LHT_SYMLINK) { /* in case a li:action {} contains symlink refs to separate/detached script nodes */
+		lht_err_t err;
+		node = lht_tree_path_(node->doc, node->parent, node->data.symlink.value, 1, 1, &err);
+		if (node == NULL)
+			return -1;
+	}
+
 	switch(node->type) {
 		case LHT_TEXT:
 			return pcb_parse_actions(hl, node->data.text.value);
@@ -39,6 +48,10 @@ int pcb_hid_cfg_action(pcb_hidlib_t *hl, const lht_node_t *node)
 			for(node = node->data.list.first; node != NULL; node = node->next) {
 				if (node->type == LHT_TEXT) {
 					if (pcb_parse_actions(hl, node->data.text.value) != 0)
+						return -1;
+				}
+				else if ((node->type == LHT_LIST) || (node->type == LHT_SYMLINK)) {
+					if (pcb_hid_cfg_action(hl, node) != 0)
 						return -1;
 				}
 				else
