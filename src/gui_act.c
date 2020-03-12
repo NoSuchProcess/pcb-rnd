@@ -1447,7 +1447,9 @@ static const char pcb_acts_LayerVisReset[] = "LayerVisReset()";
 static const char pcb_acth_LayerVisReset[] = "Reset layer visibility to safe defaults.";
 static fgw_error_t pcb_act_LayerVisReset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layervis_reset_stack(&PCB->hidlib);
+	pcb_layervis_reset_stack(PCB_ACT_HIDLIB);
+	pcb_layer_vis_historical_hides(PCB_ACT_BOARD);
+	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	PCB_ACT_IRES(0);
 	return 0;
 }
