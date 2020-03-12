@@ -123,6 +123,7 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		PCB_ACT_FAIL(FullScreen);
 
+	PCB_ACT_IRES(0);
 	return 0;
 }
 
