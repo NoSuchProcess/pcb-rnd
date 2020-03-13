@@ -6,11 +6,11 @@ Note: if you need only fawk, fbas and fpascal scripting, there is no
 Requirements:
  1. download and install genht - svn://repo.hu/genht/trunk
     Some Linux distributions already have this packaged, please check your
-    repositries (and install the development version)
+    repositories (and install the development version)
     NOTE: version 1.0.1 is too old, please get a newer one (e.g. svn version)
     NOTE: you need to install genht under /usr or /usr/local - non-standard
     installation will NOT work for now.
- 2. recommended, non-standard, optional dependency for runing mawk scripts:
+ 2. recommended, non-standard, optional dependency for running mawk scripts:
     install libmawk - svn://repo.hu/libmawk/trunk
     (Many of the example scripts are written in awk)
     At least version 1.0.2 is required.
