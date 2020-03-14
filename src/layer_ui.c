@@ -116,6 +116,17 @@ pcb_layer_t *pcb_uilayer_get(long ui_ly_id)
 	return (pcb_layer_t *)(*p);
 }
 
+pcb_layer_t *pcb_uilayer_by_name(const char *name)
+{
+	int n;
+	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
+		pcb_layer_t *l = pcb_uilayers.array[n];
+		if ((l != NULL) && (strcmp(l->name, name) == 0))
+			return l;
+	}
+	return NULL;
+}
+
 long pcb_uilayer_get_id(const pcb_layer_t *ly)
 {
 	int n;
