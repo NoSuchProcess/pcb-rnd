@@ -176,8 +176,8 @@ void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly);
    ID, else dup it and insert it. The forcedup variant always dups.
    WARNING: make sure pcb_pstk_proto_update() was called on proto some point
    in time before this call, esle the hash is invalid. */
-pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet);
-pcb_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet);
+pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable);
+pcb_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable);
 
 /* Change the non-NULL hole properties of a padstack proto; undoable.
    Returns 0 on success. */

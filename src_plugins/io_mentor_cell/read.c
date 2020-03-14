@@ -722,7 +722,7 @@ static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
 		return;
 	}
 
-	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, &hps->proto, 1);
+	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, &hps->proto, 1, 0);
 	ps = pcb_pstk_alloc(ctx->pcb->Data);
 	ps->Flags = DEFAULT_OBJ_FLAG;
 	ps->x = vx;

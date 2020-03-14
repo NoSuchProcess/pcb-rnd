@@ -35,7 +35,7 @@ void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (proto == NULL)
 		return NULL;
 
-	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
+	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1, 0);
 	p = pcb_pstk_new_tr(ctx->buffer.dst, -1, npid, ps->x, ps->y, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), ps->rot, ps->xmirror, ps->smirror);
 	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)p, ps->ID);
 	return pcb_pstk_copy_meta(p, ps);
@@ -49,7 +49,7 @@ void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if (proto == NULL)
 		return NULL;
 
-	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1);
+	npid = pcb_pstk_proto_insert_dup(ctx->buffer.dst, proto, 1, 0);
 
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_PSTK, NULL, ps);
 	pcb_r_delete_entry(ctx->buffer.src->padstack_tree, (pcb_box_t *)ps);
@@ -79,7 +79,7 @@ void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 	if (proto == NULL)
 		return NULL;
-	npid = pcb_pstk_proto_insert_dup(data, proto, 1);
+	npid = pcb_pstk_proto_insert_dup(data, proto, 1, 0);
 
 	nps = pcb_pstk_new_tr(data, -1, npid, ps->x + ctx->copy.DeltaX, ps->y + ctx->copy.DeltaY, ps->Clearance, pcb_flag_mask(ps->Flags, PCB_FLAG_FOUND), ps->rot, ps->xmirror, ps->smirror);
 	if (nps == NULL)
@@ -257,7 +257,7 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	/* create the new prototype and insert it */
 	pcb_pstk_proto_copy(&proto, pcb_pstk_get_proto(ps));
 	pcb_pstk_proto_grow(&proto, ctx->chgsize.is_absolute, ctx->chgsize.value);
-	nproto = pcb_pstk_proto_insert_dup(ps->parent.data, &proto, 1);
+	nproto = pcb_pstk_proto_insert_dup(ps->parent.data, &proto, 1, 0);
 	pcb_pstk_proto_free_fields(&proto);
 
 	if (nproto == PCB_PADSTACK_INVALID)
@@ -311,7 +311,7 @@ void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	}
 	else
 		proto.hdia = ctx->chgsize.value;
-	nproto = pcb_pstk_proto_insert_dup(ps->parent.data, &proto, 1);
+	nproto = pcb_pstk_proto_insert_dup(ps->parent.data, &proto, 1, 0);
 	pcb_pstk_proto_free_fields(&proto);
 
 	if (nproto == PCB_PADSTACK_INVALID)

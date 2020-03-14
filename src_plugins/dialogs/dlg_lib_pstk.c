@@ -345,14 +345,14 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, pcb_hid_attribu
 		if (row == NULL)
 			return;
 		proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
-		ctx->proto_id = pcb_pstk_proto_insert_forcedup(data, proto, 0);
+		ctx->proto_id = pcb_pstk_proto_insert_forcedup(data, proto, 0, (pcb_data_get_top(data) == ctx->pcb));
 		tab = 1;
 	}
 	else {
 		memset(&proto_, 0, sizeof(proto_));
 		pcb_pstk_proto_update(&proto_);
 		proto = &proto_;
-		ctx->proto_id = pcb_pstk_proto_insert_dup(data, proto, 1);
+		ctx->proto_id = pcb_pstk_proto_insert_dup(data, proto, 1, (pcb_data_get_top(data) == ctx->pcb));
 		tab = 2;
 	}
 

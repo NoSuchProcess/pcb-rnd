@@ -674,9 +674,59 @@ static pcb_cardinal_t pcb_pstk_proto_insert_try(pcb_data_t *data, const pcb_pstk
 	return PCB_PADSTACK_INVALID;
 }
 
+/*** undoable prototype creation ***/
+typedef struct {
+	pcb_data_t *data;
+	pcb_pstk_proto_t proto;
+	long pid;
+	int in_data;
+} undo_proto_set_t;
+
+static int undo_proto_set_swap(void *udata)
+{
+	undo_proto_set_t *a = udata;
+	pcb_pstk_proto_t *np;
+
+	if (a->in_data) { /* move from data proto vector to undo struct */
+		int n = pcb_vtpadstack_proto_len(&a->data->ps_protos);
+		if (n < a->pid) {
+			pcb_message(PCB_MSG_ERROR, "undo_proto_set_swap(): not enough proto in data\n save and exit ASAP and report this bug!\n");
+			return -1;
+		}
+		a->proto = a->data->ps_protos.array[a->pid];
+		a->data->ps_protos.array[a->pid].in_use = 0;
+	}
+	else { /* move from undo struct to data proto vector */
+		pcb_vtpadstack_proto_enlarge(&a->data->ps_protos, a->pid);
+		a->data->ps_protos.array[a->pid] = a->proto;
+	}
+	a->in_data = !a->in_data;
+
+	np = pcb_vtpadstack_proto_get(&a->data->ps_protos, a->pid, 0);
+	pcb_pstk_proto_update(np);
+
+	return 0;
+}
+
+static void undo_proto_set_print(void *udata, char *dst, size_t dst_len)
+{
+	pcb_snprintf(dst, dst_len, "proto set");
+}
+
+static const uundo_oper_t undo_proto_set = {
+	core_proto_cookie,
+	NULL,
+	undo_proto_set_swap,
+	undo_proto_set_swap,
+	undo_proto_set_print
+};
+
+
+
 pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet)
 {
-	pcb_cardinal_t n, first_free;
+	pcb_cardinal_t id, n, first_free;
+	int undoable = 1;
 
 	n = pcb_pstk_proto_insert_try(data, proto, &first_free);
 	if (n != PCB_PADSTACK_INVALID) {
@@ -687,7 +737,7 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 	/* no match, have to register a new one */
 	if (first_free == PCB_PADSTACK_INVALID) {
 		pcb_pstk_proto_t *np;
-		n = pcb_vtpadstack_proto_len(&data->ps_protos);
+		id = n = pcb_vtpadstack_proto_len(&data->ps_protos);
 		pcb_vtpadstack_proto_append(&data->ps_protos, *proto);
 		np = pcb_vtpadstack_proto_get(&data->ps_protos, n, 0);
 		np->parent = data;
@@ -698,15 +748,24 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 		data->ps_protos.array[first_free].in_use = 1;
 		data->ps_protos.array[first_free].parent = data;
 		pcb_pstk_proto_update(data->ps_protos.array+first_free);
-		n = first_free;
+		id = first_free;
 	}
 	memset(proto, 0, sizeof(pcb_pstk_proto_t)); /* make sure a subsequent free() won't do any harm */
-	return n;
+
+	if (undoable) {
+		undo_proto_set_t *a = pcb_undo_alloc(pcb_data_get_top(data), &undo_proto_set, sizeof(undo_proto_set_t));
+		a->data = data;
+		a->pid = id;
+		a->in_data = 1;
+	}
+
+	return id;
 }
 
-static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int forcedup)
+static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int forcedup, int undoable)
 {
-	pcb_cardinal_t n, first_free = PCB_PADSTACK_INVALID;
+	pcb_cardinal_t id, n, first_free = PCB_PADSTACK_INVALID;
+	undo_proto_set_t *a;
 
 	n = pcb_pstk_proto_insert_try(data, proto, &first_free);
 	if ((n != PCB_PADSTACK_INVALID) && (!forcedup))
@@ -720,25 +779,34 @@ static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pst
 		pcb_pstk_proto_copy(nproto, proto);
 		nproto->parent = data;
 		pcb_pstk_proto_update(nproto);
+		id = n;
 	}
 	else {
 		pcb_pstk_proto_copy(data->ps_protos.array+first_free, proto);
 		data->ps_protos.array[first_free].in_use = 1;
 		data->ps_protos.array[first_free].parent = data;
 		pcb_pstk_proto_update(data->ps_protos.array+first_free);
-		return first_free;
+		id = first_free;
 	}
-	return n;
+
+	if (undoable) {
+		undo_proto_set_t *a = pcb_undo_alloc(pcb_data_get_top(data), &undo_proto_set, sizeof(undo_proto_set_t));
+		a->data = data;
+		a->pid = id;
+		a->in_data = 1;
+	}
+
+	return id;
 }
 
-pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet)
+pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable)
 {
-	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 0);
+	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 0, undoable);
 }
 
-pcb_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet)
+pcb_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable)
 {
-	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 1);
+	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 1, undoable);
 }
 
 

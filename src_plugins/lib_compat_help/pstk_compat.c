@@ -179,7 +179,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, pcb_c
 	proto.hplated = plated;
 
 	pcb_pstk_proto_update(&proto);
-	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
+	pid = pcb_pstk_proto_insert_dup(data, &proto, 1, 0);
 	if (pid == PCB_PADSTACK_INVALID) {
 		compat_shape_free(&copper_master);
 		return NULL;
@@ -513,7 +513,7 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, pcb_coord_t x
 	}
 
 	pcb_pstk_proto_update(&proto);
-	pid = pcb_pstk_proto_insert_dup(data, &proto, 1);
+	pid = pcb_pstk_proto_insert_dup(data, &proto, 1, 0);
 
 	for(n = 0; n < tshp.len; n++)
 		compat_shape_free(&shape[n]);

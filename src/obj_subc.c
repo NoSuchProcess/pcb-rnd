@@ -654,7 +654,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			pcb_pstk_unreg(ps);
 			pcb_pstk_reg(sc->data, ps);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
-			ps->proto = pcb_pstk_proto_insert_dup(sc->data, proto, 1);
+			ps->proto = pcb_pstk_proto_insert_dup(sc->data, proto, 1, 0);
 			ps->protoi = -1;
 		}
 	}
@@ -832,6 +832,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	pcb_board_t *src_pcb;
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
+	int dst_is_pcb = pcb_data_get_top(dst) == pcb;
 
 	if (keep_ids)
 		sc->ID = src->ID;
@@ -950,7 +951,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		gdl_iterator_t it;
 
 		padstacklist_foreach(&src->data->padstack, &it, ps) {
-			pcb_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1);
+			pcb_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1, dst_is_pcb);
 			nps = pcb_pstk_new_tr(sc->data, -1, pid, ps->x+dx, ps->y+dy, ps->Clearance, ps->Flags, ps->rot, ps->xmirror, ps->smirror);
 			pcb_pstk_copy_meta(nps, ps);
 			MAYBE_KEEP_ID(nps, ps);
@@ -1402,7 +1403,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 			pcb_pstk_reg(dst, ps);
 		}
 		if (dst != NULL)
-			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1);
+			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1, dst_is_pcb);
 		ps->protoi = -1;
 		ps->parent.data = new_parent;
 		if (dst_is_pcb)

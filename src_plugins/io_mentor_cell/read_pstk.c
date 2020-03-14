@@ -376,7 +376,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc
 		return;
 	}
 
-	pid = pcb_pstk_proto_insert_dup(subc->data, &hpstk->proto, 1);
+	pid = pcb_pstk_proto_insert_dup(subc->data, &hpstk->proto, 1, 0);
 	ps = pcb_pstk_alloc(subc->data);
 	ps->Flags = DEFAULT_OBJ_FLAG;
 	ps->x = px;

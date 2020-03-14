@@ -125,9 +125,9 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			}
 			res->type = FGW_LONG;
 			if (cmdi == act_draw_keywords_insert_dup)
-				res->val.nat_long = pcb_pstk_proto_insert_forcedup(data, proto, 1);
+				res->val.nat_long = pcb_pstk_proto_insert_forcedup(data, proto, 1, !noundo);
 			else
-				res->val.nat_long = pcb_pstk_proto_insert_dup(data, proto, 1);
+				res->val.nat_long = pcb_pstk_proto_insert_dup(data, proto, 1, !noundo);
 			return 0;
 
 		case act_draw_keywords_free:

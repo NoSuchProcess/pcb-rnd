@@ -241,7 +241,7 @@ static void pse_chg_protodup(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		pcb_message(PCB_MSG_ERROR, "Internal error: can't determine prototype\n");
 		return;
 	}
-	proto_id = pcb_pstk_proto_insert_forcedup(pse->ps->parent.data, proto, 0);
+	proto_id = pcb_pstk_proto_insert_forcedup(pse->ps->parent.data, proto, 0, pcb_data_get_top(pse->ps->parent.data) == pse->pcb);
 	pcb_pstk_change_instance(pse->ps, &proto_id, NULL, NULL, NULL, NULL);
 	pse_ps2dlg(hid_ctx, pse);
 	pse_changed(pse);
@@ -727,7 +727,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 			pcb_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to raplace padstack prototype\n");
 	}
 	else {
-		pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1);
+		pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1, 1);
 		if (pid == PCB_PADSTACK_INVALID)
 			pcb_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to insert padstack prototype\n");
 		else

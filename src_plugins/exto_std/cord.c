@@ -270,7 +270,7 @@ static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 	proto.hplated = 0;
 
 	pcb_pstk_proto_update(&proto);
-	return pcb_pstk_proto_insert_dup(data, &proto, 1);
+	return pcb_pstk_proto_insert_dup(data, &proto, 1, 0);
 }
 
 static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, pcb_coord_t ox, pcb_coord_t oy, const char *term, const char *grp, int floater)
