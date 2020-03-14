@@ -185,7 +185,7 @@ int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, cons
 
 /* Change the name of a padstack proto; not yet undoable.
    Returns 0 on success. */
-int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name);
+int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name, int undoable);
 
 /* Find or create a new transformed version of an existing proto */
 pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *proto, double rot, int xmirror, int smirror, int *out_protoi);

@@ -964,14 +964,86 @@ int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, cons
 	return 0;
 }
 
-int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name)
+/*** undoable proto name change ***/
+
+typedef struct {
+	long int parent_ID; /* -1 for pcb, positive for a subc */
+	pcb_cardinal_t proto;
+
+	char *name;
+} padstack_proto_change_name_t;
+
+static int undo_change_name_swap(void *udata)
 {
-TODO("undo: make this undoable (check how pcb_pstk_proto_change_hole() does it)")
-	free(proto->name);
+	padstack_proto_change_name_t *u = udata;
+	pcb_data_t *data;
+	pcb_pstk_proto_t *proto;
+
+	if (u->parent_ID != -1) {
+		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
+		if (subc == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: parent subc #%ld is not found\n", u->parent_ID);
+			return -1;
+		}
+		data = subc->data;
+	}
+	else
+		data = PCB->Data;
+
+	proto = pcb_pstk_get_proto_(data, u->proto);
+	if (proto == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: proto ID #%ld is not available\n", u->parent_ID);
+		return -1;
+	}
+
+	swap(proto->name, u->name, char *);
+	return 0;
+}
+
+static void undo_change_name_print(void *udata, char *dst, size_t dst_len)
+{
+	padstack_proto_change_name_t *u = udata;
+	pcb_snprintf(dst, dst_len, "padstack proto name change to: '%s'\n", u->name);
+}
+
+static const uundo_oper_t undo_pstk_proto_change_name = {
+	core_proto_cookie,
+	NULL, /* free */
+	undo_change_name_swap,
+	undo_change_name_swap,
+	undo_change_name_print
+};
+
+int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name, int undoable)
+{
+	char *old_name;
+	long int parent_ID;
+
+	if (undoable) {
+		old_name = proto->name;
+		switch(proto->parent->parent_type) {
+			case PCB_PARENT_BOARD: parent_ID = -1; break;
+			case PCB_PARENT_SUBC: parent_ID = proto->parent->parent.subc->ID; break;
+			default: return -1;
+		}
+	}
+	else
+		free(proto->name);
+
 	if ((new_name == NULL) || (*new_name == '\0'))
 		proto->name = NULL;
 	else
 		proto->name = pcb_strdup(new_name);
+
+	if (undoable) {
+		padstack_proto_change_name_t *u = pcb_undo_alloc(PCB, &undo_pstk_proto_change_name, sizeof(padstack_proto_change_name_t));
+		u->parent_ID = parent_ID;
+		u->proto = pcb_pstk_get_proto_id(proto);
+		u->name = old_name;
+		pcb_undo_inc_serial();
+	}
+
+
 	return 0;
 }
 

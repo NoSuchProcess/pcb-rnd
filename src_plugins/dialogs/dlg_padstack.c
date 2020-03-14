@@ -294,7 +294,7 @@ static void pse_chg_prname(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 			return;
 	}
 
-	pcb_pstk_proto_change_name(proto, new_name);
+	pcb_pstk_proto_change_name(proto, new_name, 1);
 
 	lock++;
 	pse_ps2dlg(hid_ctx, pse); /* to get calculated text fields updated */
