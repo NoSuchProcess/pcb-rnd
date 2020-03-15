@@ -832,7 +832,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	pcb_board_t *src_pcb;
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
-	int dst_is_pcb = pcb_data_get_top(dst) == pcb;
+	int undoable_psproto = dst->parent_type == PCB_PARENT_BOARD;
 
 	if (keep_ids)
 		sc->ID = src->ID;
@@ -951,7 +951,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		gdl_iterator_t it;
 
 		padstacklist_foreach(&src->data->padstack, &it, ps) {
-			pcb_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1, dst_is_pcb);
+			pcb_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1, undoable_psproto);
 			nps = pcb_pstk_new_tr(sc->data, -1, pid, ps->x+dx, ps->y+dy, ps->Clearance, ps->Flags, ps->rot, ps->xmirror, ps->smirror);
 			pcb_pstk_copy_meta(nps, ps);
 			MAYBE_KEEP_ID(nps, ps);
@@ -1391,6 +1391,8 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 
 	padstacklist_foreach(&sc->data->padstack, &it, ps) {
 		const pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		int undoable_psproto = ps->parent.data->parent_type == PCB_PARENT_BOARD;
+
 		assert(proto != NULL); /* the prototype must be accessible at the source else we can't add it in the dest */
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		if (sc->data->padstack_tree != NULL)
@@ -1403,7 +1405,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 			pcb_pstk_reg(dst, ps);
 		}
 		if (dst != NULL)
-			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1, dst_is_pcb);
+			ps->proto = pcb_pstk_proto_insert_dup(ps->parent.data, proto, 1, undoable_psproto);
 		ps->protoi = -1;
 		ps->parent.data = new_parent;
 		if (dst_is_pcb)
