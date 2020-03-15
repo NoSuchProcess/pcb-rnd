@@ -111,7 +111,9 @@ int pcb_undo(pcb_bool draw)
 	}
 
 	pcb_undo_lock(); /* lock undo module to prevent from loops */
+	pcb_data_clip_inhibit_inc(PCB->Data);
 	res = uundo_undo(&pcb_uundo);
+	pcb_data_clip_inhibit_dec(PCB->Data, 1);
 	pcb_undo_unlock();
 
 	if (res != 0)
