@@ -458,12 +458,14 @@ void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_
 
 void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recurse)
 {
+	int undoable = 0;
+
 	if ((sx == 1.0) && (sy == 1.0) && (sth == 1.0))
 		return;
 
 	PCB_PADSTACK_LOOP(data);
 	{
-		pcb_pstk_scale(padstack, sx, sy);
+		pcb_pstk_scale(padstack, sx, sy, undoable);
 	}
 	PCB_END_LOOP;
 	if (recurse) {

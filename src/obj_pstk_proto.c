@@ -1173,7 +1173,7 @@ TODO("TODO")
 	}
 }
 
-void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy)
+void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy, int undoable)
 {
 	pcb_coord_t cx, cy;
 	int n;

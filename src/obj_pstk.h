@@ -201,7 +201,7 @@ void pcb_pstk_shape_free(pcb_pstk_shape_t *s);
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val);
 void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val);
 void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val, int undoable);
-void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy);
+void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy, int undoable);
 
 /* Derive (copy and bloat) the shape at dst_idx from src_idx; set the mask and comb
    for the new shape. If dst_idx is -1, allocate the new shape */
@@ -230,7 +230,7 @@ void pcb_pstk_proto_del_shape_idx(pcb_pstk_proto_t *proto, int idx);
 void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror, pcb_bool undoable);
 
 /* Create a new proto and scale it for the padstack; center x and y are scaled too */
-void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy);
+void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy, int undoable);
 
 
 /* Rotate in place (op wrapper) */
