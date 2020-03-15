@@ -1216,6 +1216,62 @@ void pcb_pstk_shape_clr_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_c
 }
 
 
+typedef struct {
+	pcb_data_t *data;
+	int proto_id, tridx, shpidx;
+
+	pcb_pstk_shape_t shp;
+	pcb_coord_t clr;
+
+	unsigned shp_valid:1;
+	unsigned clr_valid:1;
+} undo_shape_geo_t;
+
+static int undo_shape_geo_swap(void *udata)
+{
+	undo_shape_geo_t *g = udata;
+	return 0;
+}
+
+static void undo_shape_geo_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_shape_geo_t *g = udata;
+	pcb_snprintf(dst, dst_len, "pstk shape geo proto=%d %d/%d shape=%d clearance=%d", g->proto_id, g->tridx, g->shpidx, g->shp_valid, g->clr_valid);
+}
+
+static const char core_shape_cookie[] = "core-pstk-proto-shape";
+
+static const uundo_oper_t undo_shape_geo = {
+	core_shape_cookie,
+	NULL,
+	undo_shape_geo_swap,
+	undo_shape_geo_swap,
+	undo_shape_geo_print
+};
+
+
+static undo_shape_geo_t *pstk_shape_geo_undo_init(pcb_pstk_proto_t *proto, int tridx, int shpidx)
+{
+	pcb_data_t *data = proto->parent;
+	long pid;
+	undo_shape_geo_t *g;
+
+	if ((data == NULL) || (data->parent_type != PCB_PARENT_BOARD) || (!proto->in_use))
+		return NULL;
+
+	pid = proto - data->ps_protos.array;
+	if ((pid < 0) || (pid >= data->ps_protos.used))
+		return NULL;
+
+	g = pcb_undo_alloc(data->parent.board, &undo_shape_geo, sizeof(undo_shape_geo_t));
+	g->data = data;
+	g->proto_id = pid;
+	g->tridx = tridx;
+	g->shpidx = shpidx;
+
+	g->shp_valid = g->clr_valid = 0;
+	return g;
+}
 
 void pcb_pstk_shape_clr_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable)
 {
