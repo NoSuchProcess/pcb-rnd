@@ -1212,7 +1212,7 @@ TODO("padstack: undo")
 	}
 }
 
-void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
+void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val, int undoable)
 {
 TODO("padstack: undo")
 	if (is_absolute)

@@ -361,7 +361,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_pstkop_clip(&ctx, pse->ps);
 
 		for(n = 0; n < proto->tr.used; n++)
-			pcb_pstk_shape_clr_grow(&proto->tr.array[n].shape[sidx], pcb_true, pse->attrs[pse->proto_clr[idx]].val.crd);
+			pcb_pstk_shape_clr_grow(&proto->tr.array[n].shape[sidx], pcb_true, pse->attrs[pse->proto_clr[idx]].val.crd, 1);
 
 		ctx.clip.clear = 1;
 		ctx.clip.restore = 0;
