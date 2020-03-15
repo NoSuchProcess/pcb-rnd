@@ -1108,12 +1108,10 @@ static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, pcb_coord_t *cx, p
 	*cy = pcb_round(y);
 }
 
-void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
+void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
 {
 	pcb_coord_t cx, cy;
 	int n;
-
-TODO("padstack: undo")
 
 	switch(shp->shape) {
 		case PCB_PSSH_LINE:
@@ -1171,12 +1169,19 @@ TODO("TODO")
 	}
 }
 
-void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy, int undoable)
+void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable)
+{
+	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
+	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
+
+	TODO("undo");
+	pcb_pstk_shape_grow_(shp, is_absolute, val);
+}
+
+static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 {
 	pcb_coord_t cx, cy;
 	int n;
-
-TODO("padstack: undo")
 
 	switch(shp->shape) {
 		case PCB_PSSH_LINE:
@@ -1210,6 +1215,16 @@ TODO("padstack: undo")
 	}
 }
 
+void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double sx, double sy, int undoable)
+{
+	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
+	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
+
+	TODO("padstack: undo")
+
+	pcb_pstk_shape_scale_(shp, sx, sy);
+}
+
 void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val, int undoable)
 {
 TODO("padstack: undo")
@@ -1221,12 +1236,12 @@ TODO("padstack: undo")
 
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val)
 {
-	int n, i;
+	int n, i, undoable = 0;;
 
 	/* do the same growth on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++)
 		for(i = 0; i < proto->tr.array[n].len; i++)
-			pcb_pstk_shape_grow(&proto->tr.array[n].shape[i], is_absolute, val);
+			pcb_pstk_shape_grow(proto, n, i, is_absolute, val, undoable);
 	pcb_pstk_proto_update(proto);
 }
 
@@ -1240,7 +1255,7 @@ int pcb_pstk_alloc_shape_idx(pcb_pstk_proto_t *proto, int tr_idx)
 
 void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pcb_coord_t bloat, pcb_layer_type_t mask, pcb_layer_combining_t comb)
 {
-	int n;
+	int n, undoable = 0;
 
 	/* do the same copy on all shapes of all transformed variants */
 	for(n = 0; n < proto->tr.used; n++) {
@@ -1253,7 +1268,7 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pc
 		proto->tr.array[n].shape[d].layer_mask = mask;
 		proto->tr.array[n].shape[d].comb = comb;
 		if (bloat != 0)
-			pcb_pstk_shape_grow(&proto->tr.array[n].shape[d], pcb_false, bloat);
+			pcb_pstk_shape_grow(proto, n, d, pcb_false, bloat, undoable);
 	}
 	pcb_pstk_proto_update(proto);
 }

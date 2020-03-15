@@ -619,7 +619,7 @@ int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t
 
 	aper = COORD(ctx, ap);
 	if (aper > 0)
-		pcb_pstk_shape_grow(shp, 0, aper);
+		pcb_pstk_shape_grow_(shp, 0, aper);
 
 	pcb_pstk_shape_update_pa(&shp->data.poly);
 

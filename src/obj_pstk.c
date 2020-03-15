@@ -1248,7 +1248,6 @@ void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disa
 void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy, int undoable)
 {
 	pcb_pstk_proto_t *prt;
-	pcb_pstk_tshape_t *tshp;
 	int n;
 
 	if ((sx == 1.0) && (sy == 1.0))
@@ -1260,9 +1259,8 @@ void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy, int undoable)
 	pcb_pstk_proto_copy(prt, pcb_pstk_get_proto(ps));
 
 	/* after the copy we have the canonical transformed shape only; scale each shape in it */
-	tshp = &prt->tr.array[0];
-	for(n = 0; n < tshp->len; n++)
-		pcb_pstk_shape_scale(&tshp->shape[n], sx, sy, undoable);
+	for(n = 0; n < prt->tr.array[0].len; n++)
+		pcb_pstk_shape_scale(prt, 0, n, sx, sy, undoable);
 
 	if (prt->hdia > 0.0)
 		prt->hdia = pcb_round((double)prt->hdia * ((sx+sy)/2.0));

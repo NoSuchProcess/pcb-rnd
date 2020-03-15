@@ -199,9 +199,10 @@ void pcb_pstk_shape_free(pcb_pstk_shape_t *s);
 
 /* grow (or shrink) a prototype to or by val - change the proto in place */
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val);
-void pcb_pstk_shape_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val);
+void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val);
+void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable);
 void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val, int undoable);
-void pcb_pstk_shape_scale(pcb_pstk_shape_t *shp, double sx, double sy, int undoable);
+void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double sx, double sy, int undoable);
 
 /* Derive (copy and bloat) the shape at dst_idx from src_idx; set the mask and comb
    for the new shape. If dst_idx is -1, allocate the new shape */
