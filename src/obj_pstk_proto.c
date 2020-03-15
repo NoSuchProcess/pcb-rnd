@@ -1169,14 +1169,6 @@ TODO("TODO")
 	}
 }
 
-void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable)
-{
-	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
-	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
-
-	TODO("undo");
-	pcb_pstk_shape_grow_(shp, is_absolute, val);
-}
 
 static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 {
@@ -1215,6 +1207,35 @@ static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 	}
 }
 
+void pcb_pstk_shape_clr_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
+{
+	if (is_absolute)
+		shp->clearance = val;
+	else
+		shp->clearance += val;
+}
+
+
+
+void pcb_pstk_shape_clr_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable)
+{
+	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
+	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
+
+TODO("padstack: undo")
+
+	pcb_pstk_shape_clr_grow_(shp, is_absolute, val);
+}
+
+void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable)
+{
+	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
+	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
+
+	TODO("undo");
+	pcb_pstk_shape_grow_(shp, is_absolute, val);
+}
+
 void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double sx, double sy, int undoable)
 {
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
@@ -1225,14 +1246,6 @@ void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double
 	pcb_pstk_shape_scale_(shp, sx, sy);
 }
 
-void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val, int undoable)
-{
-TODO("padstack: undo")
-	if (is_absolute)
-		shp->clearance = val;
-	else
-		shp->clearance += val;
-}
 
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val)
 {

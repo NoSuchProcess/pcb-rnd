@@ -201,7 +201,8 @@ void pcb_pstk_shape_free(pcb_pstk_shape_t *s);
 void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val);
 void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val);
 void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable);
-void pcb_pstk_shape_clr_grow(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val, int undoable);
+void pcb_pstk_shape_clr_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val);
+void pcb_pstk_shape_clr_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable);
 void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double sx, double sy, int undoable);
 
 /* Derive (copy and bloat) the shape at dst_idx from src_idx; set the mask and comb
