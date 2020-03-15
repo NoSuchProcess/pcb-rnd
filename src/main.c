@@ -511,8 +511,6 @@ int main(int argc, char *argv[])
 	main_sighand_init();
 	pcb_init_buffers(PCB);
 
-	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
-
 	if (ga.hid_argc > 0)
 		command_line_pcb = ga.hid_argv[0];
 	if (command_line_pcb) {

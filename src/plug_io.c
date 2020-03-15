@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,2005,2006 Thomas Nau
- *  Copyright (C) 2015,2016,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2015,2016,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@
 #include <librnd/core/safe_fs.h>
 #include "plug_footprint.h"
 #include <librnd/core/file_loaded.h>
+#include <librnd/core/tool.h>
 #include "view.h"
 
 pcb_plug_io_t *pcb_plug_io_chain = NULL;
@@ -600,6 +601,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 #endif
 
 		conf_core.temp.rat_warn = pcb_true; /* make sure the first click can remove warnings */
+		pcb_tool_select_by_name(&PCB->hidlib, "arrow");
 
 		return 0;
 	}
