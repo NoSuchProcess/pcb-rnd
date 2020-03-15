@@ -764,7 +764,6 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int forcedup, int undoable)
 {
 	pcb_cardinal_t id, n, first_free = PCB_PADSTACK_INVALID;
-	undo_proto_set_t *a;
 
 	n = pcb_pstk_proto_insert_try(data, proto, &first_free);
 	if ((n != PCB_PADSTACK_INVALID) && (!forcedup))
