@@ -723,10 +723,9 @@ static const uundo_oper_t undo_proto_set = {
 
 
 
-pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet)
+pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet, int undoable)
 {
 	pcb_cardinal_t id, n, first_free;
-	int undoable = 1;
 
 	n = pcb_pstk_proto_insert_try(data, proto, &first_free);
 	if (n != PCB_PADSTACK_INVALID) {
@@ -834,7 +833,7 @@ pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, pcb_coord_t 
 	if (pcb_pstk_proto_conv_selection(pcb, &proto, quiet, ox, oy) != 0)
 		return -1;
 
-	return pcb_pstk_proto_insert_or_free(pcb->Data, &proto, quiet);
+	return pcb_pstk_proto_insert_or_free(pcb->Data, &proto, quiet, 1);
 }
 
 pcb_cardinal_t pcb_pstk_conv_buffer(int quiet)
@@ -844,7 +843,7 @@ pcb_cardinal_t pcb_pstk_conv_buffer(int quiet)
 	if (pcb_pstk_proto_conv_buffer(&proto, quiet) != 0)
 		return -1;
 
-	return pcb_pstk_proto_insert_or_free(PCB_PASTEBUFFER->Data, &proto, quiet);
+	return pcb_pstk_proto_insert_or_free(PCB_PASTEBUFFER->Data, &proto, quiet, 0);
 }
 
 

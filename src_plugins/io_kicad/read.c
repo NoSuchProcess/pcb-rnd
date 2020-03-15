@@ -1400,7 +1400,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 
 		new_proto->htop = MIN(ot1, ot2);
 		new_proto->hbottom = MIN(ob1, ob2);
-		new_pid = pcb_pstk_proto_insert_or_free(st->pcb->Data, new_proto, 0);
+		new_pid = pcb_pstk_proto_insert_or_free(st->pcb->Data, new_proto, 0, 0);
 		ps->proto = new_pid;
 		pcb_pstk_post(ps);
 	}

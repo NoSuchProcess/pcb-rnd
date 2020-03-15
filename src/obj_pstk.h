@@ -249,7 +249,7 @@ extern pcb_data_t *pcb_pstk_data_hack;
 /* Insert a proto in data and return the proto-id. If the proto is already
    in data, the fields of the caller's version are free'd, else they are
    copied into data. In any case, the caller should not free proto. */
-pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet);
+pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet, int undoable);
 
 /* Update caches and hash - must be called after any change to the prototype */
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst);

@@ -1268,7 +1268,7 @@ void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy, int undoable)
 		prt->hdia = pcb_round((double)prt->hdia * ((sx+sy)/2.0));
 
 	pcb_pstk_proto_update(prt);
-	ps->proto = pcb_pstk_proto_insert_or_free(ps->parent.data, prt, 1);
+	ps->proto = pcb_pstk_proto_insert_or_free(ps->parent.data, prt, 1, undoable);
 
 	if (sx != 1.0)
 		ps->x = pcb_round((double)ps->x * sx);
