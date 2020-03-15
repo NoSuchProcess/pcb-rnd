@@ -29,6 +29,7 @@
 - BUG: bug_files/arcedit.lht - grab the lower endpoint for move and it turns the arc into 360 deg [report: gpaubert]
 - BUG: lesstif main window doesn't show parts selected after running select all. { s a a } on parts in lesstif gui, main window doesn't show any parts selected unless zoom is changed. [report: Miloh]
 ? BUG: error in pcb_search_obj_by_id() after attempting to { u u } an object that is removed by selecting and using ctl-x [report: Miloh] -> can not reproduce; description too vague, need exact object type
+- BUG: run align(x,centers,first,gridless) on a randomly dropped and selected acy(300) and rcy(300) from parametric library, then {u u}undo, and objects are shifted back to different position than originally found (sign error in calculated shift delta to restore position after undo) [report: Miloh] 
 
 2. For later releases ===============================================================================
 - CLEANUP: remove import_sch, rename DeprecatedImport() to Import() in oldactions [report: Igor2]
