@@ -926,7 +926,7 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_poly_t * p)
 
 static pcb_bool inhibit = pcb_false;
 
-int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx)
+int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx, int force)
 {
 	pcb_board_t *pcb;
 	pcb_bool need_full;
@@ -936,7 +936,7 @@ int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p,
 	if (inhibit)
 		return 0;
 
-	if (Data->clip_inhibit > 0) {
+	if ((!force) && (Data->clip_inhibit > 0)) {
 		p->clip_dirty = 1;
 		return 0;
 	}
@@ -952,6 +952,8 @@ int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p,
 		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, p);
 	}
 	pcb_poly_contours_free(&p->NoHoles);
+
+	p->clip_dirty = 0;
 
 	if (layer == NULL)
 		return 0;
@@ -982,7 +984,12 @@ int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p,
 
 int pcb_poly_init_clip(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p)
 {
-	return pcb_poly_init_clip_prog(Data, layer, p, NULL, NULL);
+	return pcb_poly_init_clip_prog(Data, layer, p, NULL, NULL, 0);
+}
+
+int pcb_poly_init_clip_force(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p)
+{
+	return pcb_poly_init_clip_prog(Data, layer, p, NULL, NULL, 1);
 }
 
 pcb_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon)

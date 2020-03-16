@@ -71,6 +71,7 @@ pcb_polyarea_t *pcb_poly_from_box_bloated(pcb_box_t * box, pcb_coord_t radius);
 pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, pcb_coord_t *clr_override); /* clearance shape for when clearpolypoly is set */
 
 int pcb_poly_init_clip(pcb_data_t * d, pcb_layer_t * l, pcb_poly_t * p);
+int pcb_poly_init_clip_force(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p); /* bypasses clip inhibit */
 void pcb_poly_restore_to_poly(pcb_data_t *, int, void *, void *);
 void pcb_poly_clear_from_poly(pcb_data_t *, int, void *, void *);
 
@@ -79,7 +80,7 @@ pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, pcb_bool *need_full);
 
 /* Same as pcb_poly_init_clip() but also call cb before each operation,
    giving the caller a chance to draw a progress bar */
-int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx);
+int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx, int force);
 
 /* Return the number of subtractions that have to be executed by a
    pcb_poly_init_clip() on the given polygon */

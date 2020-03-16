@@ -790,12 +790,12 @@ void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool 
 	   calculated, the clearing poly has a contour */
 	PCB_POLY_ALL_LOOP(data); {
 		if ((force_all || polygon->clip_dirty) && (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
-			pcb_poly_init_clip_prog(data, layer, polygon, (enable_progbar ? data_clip_all_cb : NULL), &ctx);
+			pcb_poly_init_clip_prog(data, layer, polygon, (enable_progbar ? data_clip_all_cb : NULL), &ctx, 0);
 	} PCB_ENDALL_LOOP;
 
 	PCB_POLY_ALL_LOOP(data); {
 		if ((force_all || polygon->clip_dirty) && (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon)))
-			pcb_poly_init_clip_prog(data, layer, polygon, (enable_progbar ? data_clip_all_cb : NULL), &ctx);
+			pcb_poly_init_clip_prog(data, layer, polygon, (enable_progbar ? data_clip_all_cb : NULL), &ctx, 0);
 	} PCB_ENDALL_LOOP;
 
 	if (enable_progbar)
