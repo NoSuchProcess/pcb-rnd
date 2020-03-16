@@ -183,6 +183,8 @@ static pcb_bool rat_meets_poly(pcb_poly_t *poly, pcb_coord_t x, pcb_coord_t y, p
 		if ((ly == NULL) || (ly->meta.real.grp != gid))
 			return 0;
 	}
+	if ((poly->Clipped == NULL) && (poly->parent.layer != NULL))
+		pcb_poly_init_clip_force(poly->parent.layer->parent.data, poly->parent.layer, poly);
 	return pcb_poly_is_point_in_p(x, y, 1, poly);
 }
 
