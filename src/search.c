@@ -335,6 +335,9 @@ static pcb_r_dir_t polygon_callback(const pcb_box_t * box, void *cl)
 
 	TEST_OBJST(i->objst, i->req_flag, l, polygon, polygon);
 
+	if (polygon->Clipped == NULL)
+		return PCB_R_DIR_NOT_FOUND; /* polygon cleared out of existence */
+
 	if (pcb_poly_is_point_in_p(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
 		return PCB_R_DIR_CANCEL; /* found */
