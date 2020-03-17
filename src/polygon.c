@@ -333,8 +333,8 @@ static int Subtract(pcb_polyarea_t * np1, pcb_poly_t * p, pcb_bool fnp)
 	p->Clipped = biggest(merged);
 	assert(!p->Clipped || pcb_poly_valid(p->Clipped));
 	if (!p->Clipped)
-		pcb_message(PCB_MSG_WARNING, "Polygon cleared out of existence near (%$mm, %$mm)\n",
-						(p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
+		pcb_message(PCB_MSG_WARNING, "Polygon #%ld cleared out of existence near (%$mm, %$mm)\n",
+						p->ID, (p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
 	return 1;
 }
 
