@@ -32,7 +32,7 @@
 - BUG: segfault: open pcb-rnd and type in { e t } segfault, cannot repro in 2.2.0 [report: Miloh]
 - BUG: query(select) causes segfault [report: Miloh]
 - BUG: cursor(warp,50,50,board) cursor moves to point off the board instead of moving halfway across the board [report: Miloh] 
-- BUG: align(y,bottoms,first,gridless) in align.lht from distalign pool node uses wrong y reference and outputs erroneous result [repot: Miloh]
+- BUG: align(y,bottoms,first,gridless) in align.lht from distalign pool node uses wrong y reference for 'first', and outputs erroneous result [repot: Miloh]
 
 
 2. For later releases ===============================================================================
