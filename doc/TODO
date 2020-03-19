@@ -20,6 +20,7 @@
 + FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window; e.g. connector()'s etrunc [report: Majenko]
 + FEATURE: {v n} on subc: when more terminals are created (named) within the subc, they should show termname (plus a little L is drawn on the origin when this is enabled on a subc) NOTE: this is a hidden property, not saved [report: Majenko]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
+- BUG: execute file bug, reported in r30069 [report: Evan]
 - BUG: win32: gsch2pcb-rnd doesn't compile (because of non-const paths) [report: Igor2]
 - BUG: padstack proto edit dialog gets confused on s-mirrored instances ml=3678 [report: gpaubert]
 - BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
