@@ -232,7 +232,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 
 	if ((nat->type == CFN_LIST) || (nat->type == CFN_HLIST)) {
 		/* non-default: lists are manually loaded */
-		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[CFN_LIST]];
+		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[nat->type]];
 		pcb_hid_tree_t *tree = attr->wdata;
 		pcb_conf_listitem_t *n;
 		char *cell[4];
