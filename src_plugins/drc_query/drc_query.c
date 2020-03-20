@@ -32,6 +32,8 @@
 
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
+#include <librnd/core/conf.h>
+#include <librnd/core/list_conf.h>
 
 #include "drc.h"
 #include "view.h"
@@ -48,9 +50,51 @@ static const char *drc_query_cookie = "drc_query";
 const conf_drc_query_t conf_drc_query;
 #define DRC_QUERY_CONF_FN "drc_query.conf"
 
+static long drc_qry_exec(pcb_board_t *pcb, pcb_conf_listitem_t *i, const char *type, const char *title, const char *desc, const char *query)
+{
+	if (query == NULL) {
+		pcb_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", i->name);
+		return 0;
+	}
+	if (type == NULL) type = "DRC violation";
+	if (title == NULL) title = "Unspecified error";
+	if (desc == NULL) desc = "n/a";
+
+	TODO("call query() here");
+
+	return 0;
+}
+
+static const char *load_str(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name)
+{
+	lht_node_t *n = lht_dom_hash_get(rule, name);
+	if (n == NULL)
+		return NULL;
+	if (n->type != LHT_TEXT) {
+		pcb_message(PCB_MSG_ERROR, "drc_query: igoring non-text node %s of rule %s \n", name, i->name);
+		return NULL;
+	}
+	return n->data.text.value;
+}
+
 static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	gdl_iterator_t it;
+	pcb_conf_listitem_t *i;
+	long cnt = 0;
+
 	pcb_message(PCB_MSG_ERROR, "drc_query: not yet implemented\n");
+	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+		lht_node_t *rule = i->prop.src;
+		if (rule->type != LHT_HASH) {
+			pcb_message(PCB_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
+			continue;
+		}
+		cnt += drc_qry_exec((pcb_board_t *)hidlib, i,
+			load_str(rule, i, "type"), load_str(rule, i, "title"), load_str(rule, i, "desc"),
+			load_str(rule, i, "query")
+		);
+	}
 }
 
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
