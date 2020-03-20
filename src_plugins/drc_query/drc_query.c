@@ -39,8 +39,14 @@
 #include "find.h"
 #include "event.h"
 
+#include "drc_query_conf.h"
+#include "../src_plugins/drc_query/conf_internal.c"
+
 
 static const char *drc_query_cookie = "drc_query";
+
+const conf_drc_query_t conf_drc_query;
+#define DRC_QUERY_CONF_FN "drc_query.conf"
 
 static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
@@ -52,12 +58,20 @@ int pplg_check_ver_drc_query(int ver_needed) { return 0; }
 void pplg_uninit_drc_query(void)
 {
 	pcb_event_unbind_allcookie(drc_query_cookie);
+	pcb_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
+	pcb_conf_unreg_fields("plugins/drc_query/");
 }
 
 int pplg_init_drc_query(void)
 {
 	PCB_API_CHK_VER;
 	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_query, NULL, drc_query_cookie);
+
+	pcb_conf_reg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	pcb_conf_reg_field(conf_drc_query, field,isarray,type_name,cpath,cname,desc,flags);
+#include "drc_query_conf_fields.h"
+
 	return 0;
 }
 
