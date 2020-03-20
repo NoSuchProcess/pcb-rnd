@@ -5,7 +5,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
- *  (Supported by NLnet NGI0 PET in 2020)
+ *  (Supported by NLnet NGI0 PET Fund in 2020)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
