@@ -1982,6 +1982,10 @@ conf_role_t pcb_conf_lookup_role(const lht_node_t *nd)
 		if (pcb_conf_main_root[r] == nd->doc)
 			return r;
 
+	for(r = 0; r < CFR_max_real; r++)
+		if (pcb_conf_plug_root[r] == nd->doc)
+			return r;
+
 	return CFR_invalid;
 }
 
