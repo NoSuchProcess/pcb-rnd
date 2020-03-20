@@ -109,8 +109,11 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			}
 			break;
 		case CFN_HLIST:
+			pcb_message(PCB_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
+			break;
 		case CFN_max:
-			PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
+			pcb_message(PCB_MSG_ERROR, "ERROR: invalid conf node type\n");
+			break;
 	}
 }
 
