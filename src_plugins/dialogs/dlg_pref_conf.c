@@ -242,7 +242,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 			const char *strval;
 			rolename = pcb_conf_role_name(pcb_conf_lookup_role(n->prop.src));
 			if (nat->type == CFN_HLIST)
-				strval = "<opaque hash subtree>";
+				strval = n->name;
 			else
 				strval = print_conf_val(n->type, &n->val, buf, sizeof(buf));
 
