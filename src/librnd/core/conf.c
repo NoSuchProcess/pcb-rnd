@@ -679,16 +679,25 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					for(prev = src_lst->data.list.first; prev->next != s; prev = prev->next);
 				else
 					prev = NULL;
-				if (s->type == LHT_TEXT) {
+
+				if ((s->type == LHT_TEXT) || (s->type == LHT_HASH)) {
 					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
 					i->prop.prio = prio;
 					i->prop.src  = s;
+				}
+
+				if (s->type == LHT_TEXT) {
 					if (pcb_conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
 						free(i);
 						continue;
 					}
+					pcb_conflist_insert(dest->val.list, i);
+					dest->used |= 1;
+				}
+				else if (s->type == LHT_HASH) {
+					i->val.any = NULL;
 					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 				}
@@ -707,17 +716,24 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 			/* fall through */
 		case POL_APPEND:
 			for(s = src_lst->data.list.first; s != NULL; s = s->next) {
-				if (s->type == LHT_TEXT) {
+				if ((s->type == LHT_TEXT) || (s->type == LHT_HASH)) {
 					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
 					i->prop.prio = prio;
 					i->prop.src  = s;
+				}
+				if (s->type == LHT_TEXT) {
 					if (pcb_conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
 						free(i);
 						continue;
 					}
 					pcb_conflist_append(dest->val.list, i);
+					dest->used |= 1;
+				}
+				else if (s->type == LHT_HASH) {
+					pcb_conflist_append(dest->val.list, i);
+					i->val.any = NULL;
 					dest->used |= 1;
 				}
 				else {
