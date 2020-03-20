@@ -129,5 +129,19 @@ Config sources (ordered by priority):
 	<tr><td> 3.   <td> apply <i>project</i><td> X,Y,Z,A,B,C,D,E <td> &nbsp;
 </table>
 
+
+<h3> list and hlist </h3>
+<p>
+There are two kinds of lists: string list (simply called list) and hash-list
+(called hlist).
+<p>
+Each element of a hlist is a hash node in the lihata conf file. These hash
+nodes are opaque to the conf system and must be processed by the plugin that
+uses the hlist. Normal merging still works on hlists: opaque elements can be
+prepended or appended and the whole list can be overwritten.
+<p>
+Each element of a plain (string) list is a text node in the lihata conf file,
+which is stored as a string in the memory by the conf system.
+
 </body>
 </html>
