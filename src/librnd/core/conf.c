@@ -596,6 +596,7 @@ static void conf_insert_arr(conf_native_t *dest, int offs)
 			CASE_PCB_MOVE(CFN_UNIT, unit);
 			CASE_PCB_MOVE(CFN_COLOR, color);
 			CASE_PCB_MOVE(CFN_LIST, list);
+			CASE_PCB_MOVE(CFN_HLIST, list);
 			case CFN_max: break;
 		}
 	}
@@ -680,7 +681,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 				else
 					prev = NULL;
 
-				if ((s->type == LHT_TEXT) || (s->type == LHT_HASH)) {
+				if ((s->type == LHT_TEXT) || ((s->type == LHT_HASH) && (dest->type == CFN_HLIST))) {
 					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
@@ -696,7 +697,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 				}
-				else if (s->type == LHT_HASH) {
+				else if ((s->type == LHT_HASH) && (dest->type == CFN_HLIST)) {
 					i->val.any = NULL;
 					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
@@ -716,7 +717,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 			/* fall through */
 		case POL_APPEND:
 			for(s = src_lst->data.list.first; s != NULL; s = s->next) {
-				if ((s->type == LHT_TEXT) || (s->type == LHT_HASH)) {
+				if ((s->type == LHT_TEXT) || ((s->type == LHT_HASH) && (dest->type == CFN_HLIST))) {
 					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
@@ -731,7 +732,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					pcb_conflist_append(dest->val.list, i);
 					dest->used |= 1;
 				}
-				else if (s->type == LHT_HASH) {
+				else if ((s->type == LHT_HASH) && (dest->type == CFN_HLIST)) {
 					pcb_conflist_append(dest->val.list, i);
 					i->val.any = NULL;
 					dest->used |= 1;
@@ -841,7 +842,7 @@ int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, conf_role_t role,
 		case LHT_LIST:
 			if (target == NULL)
 				conf_warn_unknown_paths(path, n);
-			else if (target->type == CFN_LIST)
+			else if ((target->type == CFN_LIST) || (target->type == CFN_HLIST))
 				res |= pcb_conf_merge_patch_list(target, n, default_prio, default_policy);
 			else if (target->array_size > 1)
 				res |= pcb_conf_merge_patch_array(target, n, default_prio, default_policy);
@@ -1013,6 +1014,7 @@ static void conf_field_clear(conf_native_t *f)
 			case CFN_UNIT:        clr(unit); break;
 			case CFN_COLOR:       clr(color); break;
 			case CFN_LIST:
+			case CFN_HLIST:
 				while(pcb_conflist_first(f->val.list)) { /* need to free all items of a list before clearing the main struct */
 					pcb_conf_listitem_t *i = pcb_conflist_first(f->val.list);
 					pcb_conflist_remove(i);
@@ -1285,7 +1287,7 @@ int pcb_conf_grow_list_(conf_native_t *node, int new_size)
 
 void pcb_conf_free_native(conf_native_t *node)
 {
-	if (node->type == CFN_LIST) {
+	if ((node->type == CFN_LIST) || (node->type == CFN_HLIST)) {
 		while(pcb_conflist_first(node->val.list) != NULL) {
 			pcb_conf_listitem_t *first = pcb_conflist_first(node->val.list);
 			pcb_conflist_remove(first);
@@ -1425,7 +1427,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 	} while(next != NULL);
 
 	/* add the last part of the path, which is either a list or a text node */
-	if ((nat->array_size > 1) || (nat->type == CFN_LIST))
+	if ((nat->array_size > 1) || (nat->type == CFN_LIST) || (nat->type == CFN_HLIST))
 		ty = LHT_LIST;
 	else
 		ty = LHT_TEXT;
@@ -1709,6 +1711,7 @@ void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const ch
 					case CFN_UNIT:    strcpy(s, " unit"); break;
 					case CFN_COLOR:   strcpy(s, " color"); break;
 					case CFN_LIST:    strcpy(s, " <list>"); break;
+					case CFN_HLIST:   strcpy(s, " <hlist>"); break;
 					case CFN_max:     break;
 				}
 				print(name, n->description);
@@ -1743,7 +1746,7 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 			gds_t s;
 
 			gds_init(&s);
-			if (n->type == CFN_LIST) {
+			if ((n->type == CFN_LIST) || (n->type == CFN_HLIST)) {
 				pcb_conf_listitem_t *it;
 				ch = lht_dom_node_alloc(LHT_LIST, name+1);
 				for(it = pcb_conflist_first(n->val.list); it != NULL; it = pcb_conflist_next(it)) {
@@ -2034,6 +2037,7 @@ int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, confitem_t
 		case CFN_UNIT:    print_str_or_null(pfn, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
 		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx].str, val->color[idx].str); break;
 		case CFN_LIST:
+		case CFN_HLIST:
 			{
 				pcb_conf_listitem_t *n;
 				if (pcb_conflist_length(val->list) > 0) {

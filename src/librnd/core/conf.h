@@ -62,6 +62,7 @@ typedef pcb_coord_t   CFT_COORD;
 typedef pcb_unit_t *  CFT_UNIT;
 typedef pcb_color_t   CFT_COLOR;
 typedef pcb_conflist_t    CFT_LIST;
+typedef pcb_conflist_t    CFT_HLIST;
 
 typedef enum {
 	CFN_STRING,
@@ -72,6 +73,7 @@ typedef enum {
 	CFN_UNIT,
 	CFN_COLOR,
 	CFN_LIST,
+	CFN_HLIST,
 	CFN_max
 } conf_native_type_t;
 
