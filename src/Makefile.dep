@@ -1748,6 +1748,30 @@
  ../src_3rd/puplug/error.h layer_vis.h obj_arc_draw.h draw.h \
  obj_rat_draw.h obj_line_draw.h obj_text_draw.h obj_poly_draw.h \
  obj_pstk_draw.h board.h vtroutestyle.h rats_patch.h obj_subc_list.h
+../src_plugins/drc_query/drc_query.o: \
+ ../src_plugins/drc_query/drc_query.c ../config.h librnd/config.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h librnd/core/error.h \
+ librnd/core/global_typedefs.h librnd/core/pcb_bool.h drc.h view.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h global_typedefs.h \
+ librnd/core/unit.h idpath.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_common.h flag.h librnd/core/globalconst.h librnd/core/attrib.h \
+ data_parent.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h view.h conf_core.h librnd/core/conf.h \
+ librnd/core/pcb-printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/list_conf.h librnd/core/color.h find.h event.h \
+ librnd/core/event.h librnd/core/hidlib.h librnd/core/global_typedefs.h \
+ ../src_plugins/drc_query/drc_query_conf.h \
+ ../src_plugins/drc_query/conf_internal.c \
+ ../src_plugins/drc_query/drc_query_conf_fields.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h librnd/config.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
