@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_LIST rules;         /* inline rules */
+			CFT_HLIST rules;         /* inline rules */
 		} drc_query;
 	} plugins;
 } conf_drc_query_t;
