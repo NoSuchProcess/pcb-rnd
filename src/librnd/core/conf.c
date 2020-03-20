@@ -1137,6 +1137,16 @@ lht_node_t *pcb_conf_lht_get_first(conf_role_t target, int create)
 	return conf_lht_get_first_(pcb_conf_main_root[target]->root, POL_ANY, create);
 }
 
+lht_node_t *pcb_conf_lht_get_first_plug(conf_role_t target, int create)
+{
+	assert(target != CFR_invalid);
+	assert(target >= 0);
+	assert(target < CFR_max_alloc);
+	if (pcb_conf_plug_root[target] == NULL)
+		return NULL;
+	return conf_lht_get_first_(pcb_conf_plug_root[target]->root, POL_ANY, create);
+}
+
 lht_node_t *pcb_conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, int create)
 {
 	assert(target != CFR_invalid);
@@ -1147,21 +1157,33 @@ lht_node_t *pcb_conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, in
 	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create);
 }
 
-static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int create)
+static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)
 {
 	lht_node_t *n, *r = NULL;
+	int retry;
+
 	n = pcb_conf_lht_get_first(target, create);
 	if (n == NULL)
 		return NULL;
+
 	r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 	if ((r == NULL) && (create)) {
 		pcb_conf_set_dry(target, conf_path, -1, "", POL_OVERWRITE, 0);
 		r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 	}
+
+	if ((r == NULL) && (allow_plug) && (pcb_conf_plug_root[target] != NULL)) {
+		for(n = pcb_conf_plug_root[target]->root->data.list.first; n != NULL; n = n->next) {
+			r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
+			if (r != NULL)
+				return r;
+		}
+	}
+
 	return r;
 }
 
-lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create)
+lht_node_t *pcb_conf_lht_get_at_mainplug(conf_role_t target, const char *path, int allow_plug, int create)
 {
 	lht_node_t *r;
 	char *pc, *end;
@@ -1172,7 +1194,7 @@ lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create
 	}
 	end = strchr(path, '[');
 	if (end == NULL) {
-		r = conf_lht_get_at_(target, path, path, create);
+		r = conf_lht_get_at_(target, path, path, allow_plug, create);
 	}
 	else {
 		/* lihata syntax differs from conf syntax in array indexing */
@@ -1181,10 +1203,15 @@ lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create
 		end = strchr(pc+(end-path), ']');
 		if (end != NULL)
 			*end = '\0';
-		r = conf_lht_get_at_(target, path, pc, create);
+		r = conf_lht_get_at_(target, path, pc, allow_plug, create);
 		free(pc);
 	}
 	return r;
+}
+
+lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create)
+{
+	return pcb_conf_lht_get_at_mainplug(target, path, 0, create);
 }
 
 

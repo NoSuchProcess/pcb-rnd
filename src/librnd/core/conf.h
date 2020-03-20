@@ -372,8 +372,10 @@ void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const ch
 /* Determine under which role a node is */
 conf_role_t pcb_conf_lookup_role(const lht_node_t *nd);
 
-/* Return the lihata node of a path in target, optionally creating it with the right type */
+/* Return the lihata node of a path in target, optionally creating it with the right type;
+   if allow_plug is 1, fall back returning node from plugin conf */
 lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create);
+lht_node_t *pcb_conf_lht_get_at_mainplug(conf_role_t target, const char *path, int allow_plug, int create);
 
 /* Write an existing conf subtree to a file */
 int pcb_conf_export_to_file(pcb_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path);
