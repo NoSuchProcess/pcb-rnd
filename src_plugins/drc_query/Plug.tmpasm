@@ -1,0 +1,8 @@
+put /local/pcb/mod {drc_query}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/drc_query/drc_query.o @]
+
+switch /local/pcb/drc_query/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

@@ -34,6 +34,7 @@ plugin_def("draw_csect",       "draw cross-section (layers)",     sdisable, 1, 0
 plugin_def("draw_fab",         "fab layer in some exports",       sbuildin, 1, 0)
 plugin_def("draw_fontsel",     "font selection GUI",              sdisable, 1, 0)
 plugin_def("drc_orig",         "the original DRC code",           sbuildin, 1, 0)
+plugin_def("drc_query",        "query() based DRC",               sbuildin, 1, 0)
 plugin_def("expfeat",          "experimental features",           sdisable, 1, 0)
 plugin_def("extedit",          "edit with external program",      sbuildin, 1, 0)
 plugin_def("exto_std",         "standard extended objects",       sbuildin, 1, 0)
