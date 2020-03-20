@@ -262,6 +262,11 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		return;
 	}
 
+	if (pctx->conf.selected_nat->type == CFN_HLIST) {
+		pcb_message(PCB_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
+		return;
+	}
+
 	ctx = calloc(sizeof(confedit_ctx_t), 1);
 	ctx->nat = pctx->conf.selected_nat;
 	ctx->idx = pctx->conf.selected_idx;
