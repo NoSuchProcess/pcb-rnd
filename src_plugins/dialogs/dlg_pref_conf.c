@@ -180,6 +180,7 @@ static const char *print_conf_val(conf_native_type_t type, const confitem_t *val
 		case CFN_UNIT:     strcpy(buf, (*val->unit)->suffix); break;
 		case CFN_COLOR:    strcpy(buf, val->color->str); break;
 		case CFN_LIST:     strcpy(buf, "<list>"); break;
+		case CFN_HLIST:    strcpy(buf, "<hlist>"); break;
 		case CFN_max:      strcpy(buf, "<invalid-type>"); break;
 	}
 	return ret;
@@ -229,7 +230,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	hv.lng = nat->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
-	if (nat->type == CFN_LIST) {
+	if ((nat->type == CFN_LIST) || (nat->type == CFN_HLIST)) {
 		/* non-default: lists are manually loaded */
 		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[CFN_LIST]];
 		pcb_hid_tree_t *tree = attr->wdata;

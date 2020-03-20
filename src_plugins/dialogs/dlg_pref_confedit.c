@@ -108,6 +108,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 				}
 			}
 			break;
+		case CFN_HLIST:
 		case CFN_max:
 			PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
 	}
@@ -167,6 +168,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 				pcb_conf_update(ctx->nat->hash_path, ctx->idx);
 			}
 			return;
+		case CFN_HLIST:
 		case CFN_max:
 			return;
 	}
@@ -335,6 +337,9 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 							b[3] = ctx->winsa = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
+				break;
+			case CFN_HLIST:
+				PCB_DAD_LABEL(ctx->dlg, "hash-lists are not supported yet");
 				break;
 			case CFN_max:
 				PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
