@@ -406,8 +406,16 @@ static void build_natval(pref_ctx_t *ctx)
 				ctx->conf.wnatval[7] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_LABEL(ctx->dlg, "Data type: list of hash subtrees");
+			ctx->conf.wsrc[8] = -1;
+			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				ctx->conf.wnatval[8] = PCB_DAD_CURRENT(ctx->dlg);
+		PCB_DAD_END(ctx->dlg);
+		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(no conf node selected)");
-			ctx->conf.wnatval[8] = PCB_DAD_CURRENT(ctx->dlg);
+			ctx->conf.wnatval[9] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 }
