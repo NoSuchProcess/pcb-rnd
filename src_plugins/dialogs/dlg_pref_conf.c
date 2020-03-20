@@ -239,10 +239,16 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 
 		pcb_dad_tree_clear(tree);
 		for (n = pcb_conflist_first(&nat->val.list[idx]); n != NULL; n = pcb_conflist_next(n)) {
+			const char *strval;
 			rolename = pcb_conf_role_name(pcb_conf_lookup_role(n->prop.src));
+			if (nat->type == CFN_HLIST)
+				strval = "<opaque hash subtree>";
+			else
+				strval = print_conf_val(n->type, &n->val, buf, sizeof(buf));
+
 			cell[0] = rolename == NULL ? pcb_strdup("") : pcb_strdup(rolename);
 			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);
-			cell[2] = pcb_strdup(print_conf_val(n->type, &n->val, buf, sizeof(buf)));
+			cell[2] = pcb_strdup(strval);
 			cell[3] = 0;
 			pcb_dad_tree_append(attr, NULL, cell);
 		}
