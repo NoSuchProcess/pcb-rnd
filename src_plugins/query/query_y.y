@@ -181,11 +181,14 @@ rule:
 	T_RULE words T_NL
 	{ iter_ctx = pcb_qry_iter_alloc(); }
 	rule_item {
-		pcb_qry_node_t *nd;
+		pcb_qry_node_t *nd, *tmp;
 		$$ = pcb_qry_n_alloc(PCBQ_RULE);
 
-		if ($5 != NULL)
+		if ($5 != NULL) {
+			tmp = $5->next; /* assume $$ has no children, keep $5's original children */
 			pcb_qry_n_insert($$, $5);
+			$5->next = tmp;
+		}
 
 		pcb_qry_n_insert($$, $2);
 
@@ -198,8 +201,8 @@ rule:
 
 rule_item:
 	  /* empty */                      { $$ = NULL; }
-	| rule_item T_ASSERT expr T_NL     { if ($1 == NULL) $$ = $3; else { $$ = $1; $1->next = $3; } }
-	| rule_item let T_NL               { if ($1 == NULL) $$ = $2; else { $$ = $1; $1->next = $2; } }
+	| T_ASSERT expr T_NL rule_item     { $$ = $2; $2->next = $4; }
+	| let T_NL rule_item               { $$ = $1; $1->next = $3; }
 	;
 
 expr:
