@@ -174,7 +174,7 @@ program_expr:
 /* The program is a collection of rules - useful for the DRC */
 program_rules:
 	  /* empty */            { $$ = NULL; }
-	| rule program_rules     { $$ = $1; $1->next = $2; }
+	| rule program_rules     { if ($1 != NULL) { $$ = $1; $1->next = $2; } else { $$ = $2; } }
 	;
 
 rule:
@@ -186,14 +186,18 @@ rule:
 		$2->parent = $$;
 		$$->data.children->next = pcb_qry_n_alloc(PCBQ_ITER_CTX);
 		$$->data.children->next->data.iter_ctx = iter_ctx;
-		$$->data.children->next->next = $5;
-		$5->parent = $$;
+		if ($5 != NULL) {
+			$$->data.children->next->next = $5;
+			$5->parent = $$;
 		}
+		else
+			$$->data.children->next->next = NULL;
+	}
 	;
 
 exprs:
 	  /* empty */            { $$ = NULL; }
-	| exprs expr T_NL        { $$ = $1; $1->next = $2; }
+	| exprs expr T_NL        { if ($1 != NULL) { $$ = $1; $1->next = $2; } else { $$ = $2; } }
 	;
 
 expr:

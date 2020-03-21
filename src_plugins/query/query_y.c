@@ -569,12 +569,12 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   157,   157,   158,   163,   163,   176,   177,   182,   181,
-     195,   196,   200,   201,   202,   203,   204,   205,   206,   207,
-     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   235,   236,   237,   238,
-     242,   246,   247,   251,   252,   253,   254,   255,   259,   260,
-     261,   265,   266,   267,   271,   272,   276,   290,   291,   295,
-     296
+     199,   200,   204,   205,   206,   207,   208,   209,   210,   211,
+     212,   213,   214,   215,   216,   217,   218,   219,   220,   221,
+     222,   223,   224,   225,   226,   227,   239,   240,   241,   242,
+     246,   250,   251,   255,   256,   257,   258,   259,   263,   264,
+     265,   269,   270,   271,   275,   276,   280,   294,   295,   299,
+     300
 };
 #endif
 
@@ -1491,7 +1491,7 @@ yyreduce:
 
   case 7:
 #line 177 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = (yyvsp[-1].n); (yyvsp[-1].n)->next = (yyvsp[0].n); }
+    { if ((yyvsp[-1].n) != NULL) { (yyval.n) = (yyvsp[-1].n); (yyvsp[-1].n)->next = (yyvsp[0].n); } else { (yyval.n) = (yyvsp[0].n); } }
 #line 1496 "query_y.c" /* yacc.c:1652  */
     break;
 
@@ -1509,164 +1509,168 @@ yyreduce:
 		(yyvsp[-3].n)->parent = (yyval.n);
 		(yyval.n)->data.children->next = pcb_qry_n_alloc(PCBQ_ITER_CTX);
 		(yyval.n)->data.children->next->data.iter_ctx = iter_ctx;
-		(yyval.n)->data.children->next->next = (yyvsp[0].n);
-		(yyvsp[0].n)->parent = (yyval.n);
+		if ((yyvsp[0].n) != NULL) {
+			(yyval.n)->data.children->next->next = (yyvsp[0].n);
+			(yyvsp[0].n)->parent = (yyval.n);
 		}
-#line 1516 "query_y.c" /* yacc.c:1652  */
+		else
+			(yyval.n)->data.children->next->next = NULL;
+	}
+#line 1520 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 10:
-#line 195 "query_y.y" /* yacc.c:1652  */
+#line 199 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = NULL; }
-#line 1522 "query_y.c" /* yacc.c:1652  */
+#line 1526 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 11:
-#line 196 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = (yyvsp[-2].n); (yyvsp[-2].n)->next = (yyvsp[-1].n); }
-#line 1528 "query_y.c" /* yacc.c:1652  */
+#line 200 "query_y.y" /* yacc.c:1652  */
+    { if ((yyvsp[-2].n) != NULL) { (yyval.n) = (yyvsp[-2].n); (yyvsp[-2].n)->next = (yyvsp[-1].n); } else { (yyval.n) = (yyvsp[-1].n); } }
+#line 1532 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 12:
-#line 200 "query_y.y" /* yacc.c:1652  */
+#line 204 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[0].n); }
-#line 1534 "query_y.c" /* yacc.c:1652  */
+#line 1538 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 13:
-#line 201 "query_y.y" /* yacc.c:1652  */
+#line 205 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[0].n); }
-#line 1540 "query_y.c" /* yacc.c:1652  */
+#line 1544 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 14:
-#line 202 "query_y.y" /* yacc.c:1652  */
+#line 206 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[0].n); }
-#line 1546 "query_y.c" /* yacc.c:1652  */
+#line 1550 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 15:
-#line 203 "query_y.y" /* yacc.c:1652  */
+#line 207 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_DATA_INVALID); }
-#line 1552 "query_y.c" /* yacc.c:1652  */
+#line 1556 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 16:
-#line 204 "query_y.y" /* yacc.c:1652  */
+#line 208 "query_y.y" /* yacc.c:1652  */
     { UNOP((yyval.n), PCBQ_OP_NOT, (yyvsp[0].n)); }
-#line 1558 "query_y.c" /* yacc.c:1652  */
+#line 1562 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 17:
-#line 205 "query_y.y" /* yacc.c:1652  */
+#line 209 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[-1].n); }
-#line 1564 "query_y.c" /* yacc.c:1652  */
+#line 1568 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 18:
-#line 206 "query_y.y" /* yacc.c:1652  */
+#line 210 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_THUS, (yyvsp[0].n)); }
-#line 1570 "query_y.c" /* yacc.c:1652  */
+#line 1574 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 19:
-#line 207 "query_y.y" /* yacc.c:1652  */
+#line 211 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_AND, (yyvsp[0].n)); }
-#line 1576 "query_y.c" /* yacc.c:1652  */
+#line 1580 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 20:
-#line 208 "query_y.y" /* yacc.c:1652  */
+#line 212 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_OR, (yyvsp[0].n)); }
-#line 1582 "query_y.c" /* yacc.c:1652  */
+#line 1586 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 21:
-#line 209 "query_y.y" /* yacc.c:1652  */
+#line 213 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_EQ, (yyvsp[0].n)); }
-#line 1588 "query_y.c" /* yacc.c:1652  */
+#line 1592 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 22:
-#line 210 "query_y.y" /* yacc.c:1652  */
+#line 214 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_NEQ, (yyvsp[0].n)); }
-#line 1594 "query_y.c" /* yacc.c:1652  */
+#line 1598 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 23:
-#line 211 "query_y.y" /* yacc.c:1652  */
+#line 215 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_GTEQ, (yyvsp[0].n)); }
-#line 1600 "query_y.c" /* yacc.c:1652  */
+#line 1604 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 24:
-#line 212 "query_y.y" /* yacc.c:1652  */
+#line 216 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_LTEQ, (yyvsp[0].n)); }
-#line 1606 "query_y.c" /* yacc.c:1652  */
+#line 1610 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 25:
-#line 213 "query_y.y" /* yacc.c:1652  */
+#line 217 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_GT, (yyvsp[0].n)); }
-#line 1612 "query_y.c" /* yacc.c:1652  */
+#line 1616 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 26:
-#line 214 "query_y.y" /* yacc.c:1652  */
+#line 218 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_LT, (yyvsp[0].n)); }
-#line 1618 "query_y.c" /* yacc.c:1652  */
+#line 1622 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 27:
-#line 215 "query_y.y" /* yacc.c:1652  */
+#line 219 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_ADD, (yyvsp[0].n)); }
-#line 1624 "query_y.c" /* yacc.c:1652  */
+#line 1628 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 28:
-#line 216 "query_y.y" /* yacc.c:1652  */
+#line 220 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_SUB, (yyvsp[0].n)); }
-#line 1630 "query_y.c" /* yacc.c:1652  */
+#line 1634 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 29:
-#line 217 "query_y.y" /* yacc.c:1652  */
+#line 221 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_MUL, (yyvsp[0].n)); }
-#line 1636 "query_y.c" /* yacc.c:1652  */
+#line 1640 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 30:
-#line 218 "query_y.y" /* yacc.c:1652  */
+#line 222 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_DIV, (yyvsp[0].n)); }
-#line 1642 "query_y.c" /* yacc.c:1652  */
+#line 1646 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 31:
-#line 219 "query_y.y" /* yacc.c:1652  */
+#line 223 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_MATCH, make_regex_free((yyvsp[0].s))); }
-#line 1648 "query_y.c" /* yacc.c:1652  */
+#line 1652 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 32:
-#line 220 "query_y.y" /* yacc.c:1652  */
+#line 224 "query_y.y" /* yacc.c:1652  */
     { BINOP((yyval.n), (yyvsp[-2].n), PCBQ_OP_MATCH, make_regex_free((yyvsp[0].s))); }
-#line 1654 "query_y.c" /* yacc.c:1652  */
+#line 1658 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 33:
-#line 221 "query_y.y" /* yacc.c:1652  */
+#line 225 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[0].n); }
-#line 1660 "query_y.c" /* yacc.c:1652  */
+#line 1664 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 34:
-#line 222 "query_y.y" /* yacc.c:1652  */
+#line 226 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[0].n); }
-#line 1666 "query_y.c" /* yacc.c:1652  */
+#line 1670 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 35:
-#line 223 "query_y.y" /* yacc.c:1652  */
+#line 227 "query_y.y" /* yacc.c:1652  */
     {
 		pcb_qry_node_t *n;
 		(yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD_OF);
@@ -1676,131 +1680,131 @@ yyreduce:
 		for(n = (yyvsp[0].n); n != NULL; n = n->next)
 			n->parent = (yyval.n);
 		}
-#line 1680 "query_y.c" /* yacc.c:1652  */
+#line 1684 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 36:
-#line 235 "query_y.y" /* yacc.c:1652  */
+#line 239 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV((yyval.n)->data.crd, 0, (yyvsp[-1].c), (yyvsp[0].u)); }
-#line 1686 "query_y.c" /* yacc.c:1652  */
+#line 1690 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 37:
-#line 236 "query_y.y" /* yacc.c:1652  */
+#line 240 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV((yyval.n)->data.dbl, 0, (yyvsp[-1].d), (yyvsp[0].u)); }
-#line 1692 "query_y.c" /* yacc.c:1652  */
+#line 1696 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 38:
-#line 237 "query_y.y" /* yacc.c:1652  */
+#line 241 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_DATA_COORD);  UNIT_CONV((yyval.n)->data.crd, 1, (yyvsp[-1].c), (yyvsp[0].u)); }
-#line 1698 "query_y.c" /* yacc.c:1652  */
+#line 1702 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 39:
-#line 238 "query_y.y" /* yacc.c:1652  */
+#line 242 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_DATA_DOUBLE); UNIT_CONV((yyval.n)->data.dbl, 1, (yyvsp[-1].d), (yyvsp[0].u)); }
-#line 1704 "query_y.c" /* yacc.c:1652  */
+#line 1708 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 40:
-#line 242 "query_y.y" /* yacc.c:1652  */
+#line 246 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_DATA_STRING);  (yyval.n)->data.str = (yyvsp[0].s); }
-#line 1710 "query_y.c" /* yacc.c:1652  */
+#line 1714 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 41:
-#line 246 "query_y.y" /* yacc.c:1652  */
+#line 250 "query_y.y" /* yacc.c:1652  */
     { (yyval.u) = NULL; }
-#line 1716 "query_y.c" /* yacc.c:1652  */
+#line 1720 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 42:
-#line 247 "query_y.y" /* yacc.c:1652  */
+#line 251 "query_y.y" /* yacc.c:1652  */
     { (yyval.u) = (yyvsp[0].u); }
-#line 1722 "query_y.c" /* yacc.c:1652  */
+#line 1726 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 43:
-#line 251 "query_y.y" /* yacc.c:1652  */
+#line 255 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[0].s); (yyval.n)->precomp.fld = query_fields_sphash((yyvsp[0].s)); }
-#line 1728 "query_y.c" /* yacc.c:1652  */
+#line 1732 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 44:
-#line 252 "query_y.y" /* yacc.c:1652  */
+#line 256 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[-2].s); (yyval.n)->precomp.fld = query_fields_sphash((yyvsp[-2].s)); (yyval.n)->next = (yyvsp[0].n); }
-#line 1734 "query_y.c" /* yacc.c:1652  */
+#line 1738 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 45:
-#line 253 "query_y.y" /* yacc.c:1652  */
+#line 257 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[0].n); /* just ignore .p. */ }
-#line 1740 "query_y.c" /* yacc.c:1652  */
+#line 1744 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 46:
-#line 254 "query_y.y" /* yacc.c:1652  */
+#line 258 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = make_flag_free((yyvsp[0].s)); }
-#line 1746 "query_y.c" /* yacc.c:1652  */
+#line 1750 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 47:
-#line 255 "query_y.y" /* yacc.c:1652  */
+#line 259 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = pcb_strdup("a"); (yyval.n)->precomp.fld = query_fields_sphash("a"); (yyval.n)->next = (yyvsp[0].n); }
-#line 1752 "query_y.c" /* yacc.c:1652  */
+#line 1756 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 48:
-#line 259 "query_y.y" /* yacc.c:1652  */
+#line 263 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[0].s); }
-#line 1758 "query_y.c" /* yacc.c:1652  */
+#line 1762 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 49:
-#line 260 "query_y.y" /* yacc.c:1652  */
+#line 264 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = attrib_prepend_free((char *)(yyvsp[0].n)->data.str, (yyvsp[-2].s), '.'); }
-#line 1764 "query_y.c" /* yacc.c:1652  */
+#line 1768 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 50:
-#line 261 "query_y.y" /* yacc.c:1652  */
+#line 265 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = (yyvsp[0].s); }
-#line 1770 "query_y.c" /* yacc.c:1652  */
+#line 1774 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 51:
-#line 265 "query_y.y" /* yacc.c:1652  */
+#line 269 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_VAR); (yyval.n)->data.crd = pcb_qry_iter_var(iter_ctx, (yyvsp[0].s), 1); free((yyvsp[0].s)); }
-#line 1776 "query_y.c" /* yacc.c:1652  */
+#line 1780 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 52:
-#line 266 "query_y.y" /* yacc.c:1652  */
+#line 270 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_LISTVAR); (yyval.n)->data.str = pcb_strdup("@"); }
-#line 1782 "query_y.c" /* yacc.c:1652  */
+#line 1786 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 53:
-#line 267 "query_y.y" /* yacc.c:1652  */
+#line 271 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_VAR); (yyval.n)->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); }
-#line 1788 "query_y.c" /* yacc.c:1652  */
+#line 1792 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 54:
-#line 271 "query_y.y" /* yacc.c:1652  */
+#line 275 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FCALL); (yyval.n)->data.children = (yyvsp[-3].n); (yyval.n)->data.children->next = (yyvsp[-1].n); (yyvsp[-3].n)->parent = (yyvsp[-1].n)->parent = (yyval.n); }
-#line 1794 "query_y.c" /* yacc.c:1652  */
+#line 1798 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 55:
-#line 272 "query_y.y" /* yacc.c:1652  */
+#line 276 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_FCALL); (yyval.n)->data.children = (yyvsp[-2].n); (yyvsp[-2].n)->parent = (yyval.n); }
-#line 1800 "query_y.c" /* yacc.c:1652  */
+#line 1804 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 56:
-#line 276 "query_y.y" /* yacc.c:1652  */
+#line 280 "query_y.y" /* yacc.c:1652  */
     {
 		(yyval.n) = pcb_qry_n_alloc(PCBQ_FNAME);
 		(yyval.n)->data.fnc = pcb_qry_fnc_lookup((yyvsp[0].s));
@@ -1811,29 +1815,29 @@ yyreduce:
 		}
 		free((yyvsp[0].s));
 	}
-#line 1815 "query_y.c" /* yacc.c:1652  */
+#line 1819 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 57:
-#line 290 "query_y.y" /* yacc.c:1652  */
+#line 294 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[0].n); }
-#line 1821 "query_y.c" /* yacc.c:1652  */
+#line 1825 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 58:
-#line 291 "query_y.y" /* yacc.c:1652  */
+#line 295 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = (yyvsp[-2].n); (yyval.n)->next = (yyvsp[0].n); }
-#line 1827 "query_y.c" /* yacc.c:1652  */
+#line 1831 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 59:
-#line 295 "query_y.y" /* yacc.c:1652  */
+#line 299 "query_y.y" /* yacc.c:1652  */
     { (yyval.n) = pcb_qry_n_alloc(PCBQ_RNAME); (yyval.n)->data.str = (const char *)pcb_strdup(""); }
-#line 1833 "query_y.c" /* yacc.c:1652  */
+#line 1837 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 60:
-#line 296 "query_y.y" /* yacc.c:1652  */
+#line 300 "query_y.y" /* yacc.c:1652  */
     {
 			int l1 = strlen((yyvsp[0].n)->data.str), l2 = strlen((yyvsp[-1].s));
 			
@@ -1841,11 +1845,11 @@ yyreduce:
 			memcpy((char *)(yyvsp[0].n)->data.str+l1, (yyvsp[-1].s), l2+1);
 			free((yyvsp[-1].s));
 		}
-#line 1845 "query_y.c" /* yacc.c:1652  */
+#line 1849 "query_y.c" /* yacc.c:1652  */
     break;
 
 
-#line 1849 "query_y.c" /* yacc.c:1652  */
+#line 1853 "query_y.c" /* yacc.c:1652  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
