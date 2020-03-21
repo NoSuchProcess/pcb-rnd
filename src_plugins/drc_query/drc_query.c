@@ -127,7 +127,6 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	pcb_conf_listitem_t *i;
 	long cnt = 0;
 
-	pcb_message(PCB_MSG_ERROR, "drc_query: not yet implemented\n");
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;
 		if (rule->type != LHT_HASH) {
