@@ -180,18 +180,19 @@ program_rules:
 rule:
 	T_RULE words T_NL
 	{ iter_ctx = pcb_qry_iter_alloc(); }
-	rule_item  {
+	rule_item {
+		pcb_qry_node_t *nd;
 		$$ = pcb_qry_n_alloc(PCBQ_RULE);
-		$$->data.children = $2;
-		$2->parent = $$;
-		$$->data.children->next = pcb_qry_n_alloc(PCBQ_ITER_CTX);
-		$$->data.children->next->data.iter_ctx = iter_ctx;
-		if ($5 != NULL) {
-			$$->data.children->next->next = $5;
-			$5->parent = $$;
-		}
-		else
-			$$->data.children->next->next = NULL;
+
+		if ($5 != NULL)
+			pcb_qry_n_insert($$, $5);
+
+		pcb_qry_n_insert($$, $2);
+
+		nd = pcb_qry_n_alloc(PCBQ_ITER_CTX);
+		nd->data.iter_ctx = iter_ctx;
+		pcb_qry_n_insert($$, nd);
+
 	}
 	;
 
@@ -312,10 +313,10 @@ fargs:
 words:
 	  /* empty */            { $$ = pcb_qry_n_alloc(PCBQ_RNAME); $$->data.str = (const char *)pcb_strdup(""); }
 	| T_STR words            {
-			int l1 = strlen($2->data.str), l2 = strlen($1);
-			
-			$2->data.str = (const char *)realloc((void *)$2->data.str, l1+l2+2);
-			memcpy((char *)$2->data.str+l1, $1, l2+1);
+			char *old = $2->data.str, *sep = ((*old != '\0') ? " " : "");
+			$2->data.str = pcb_concat($1, sep, old, NULL);
+			free(old);
 			free($1);
+			$$ = $2;
 		}
 	;

@@ -150,6 +150,14 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 					pcb_printf("%s%s %s()\n", prefix, ind, name);
 			}
 			break;
+		case PCBQ_RULE:
+			pcb_printf("%s%s%s\n", prefix, ind, nd->data.children->next->data.str);
+			n = nd->data.children->next->next;
+			if (n == NULL)
+				pcb_printf("%s%s<empty>\n", prefix, ind);
+			else
+				pcb_qry_dump_tree_(prefix, level+1, n, it_ctx);
+			break;
 		case PCBQ_FIELD:
 		case PCBQ_LISTVAR:
 		case PCBQ_DATA_REGEX:
