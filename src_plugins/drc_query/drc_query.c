@@ -43,6 +43,7 @@
 
 #include "drc_query_conf.h"
 #include "../src_plugins/drc_query/conf_internal.c"
+#include "../src_plugins/query/query.h"
 
 
 static const char *drc_query_cookie = "drc_query";
@@ -50,8 +51,35 @@ static const char *drc_query_cookie = "drc_query";
 const conf_drc_query_t conf_drc_query;
 #define DRC_QUERY_CONF_FN "drc_query.conf"
 
+typedef struct {
+	const char *type;
+	const char *title;
+	const char *desc;
+} drc_qry_ctx_t;
+
+void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
+{
+	int bv;
+	drc_qry_ctx_t *qctx = user_ctx;
+
+	if (res->type == PCBQ_VT_COORD)
+		bv = res->data.crd != 0;
+	else if (res->type == PCBQ_VT_LONG)
+		bv = res->data.lng != 0;
+	else
+		return;
+
+	if (!bv)
+		return;
+
+	printf("drc found %s\n", qctx->desc);
+}
+
 static long drc_qry_exec(pcb_board_t *pcb, pcb_conf_listitem_t *i, const char *type, const char *title, const char *desc, const char *query)
 {
+	const char *scope = NULL;
+	drc_qry_ctx_t qctx;
+
 	if (query == NULL) {
 		pcb_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", i->name);
 		return 0;
@@ -60,7 +88,11 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_conf_listitem_t *i, const char *t
 	if (title == NULL) title = "Unspecified error";
 	if (desc == NULL) desc = "n/a";
 
-	TODO("call query() here");
+	qctx.type = type;
+	qctx.title = title;
+	qctx.desc = desc;
+
+	pcb_qry_run_script(query, scope, drc_qry_exec_cb, &qctx);
 
 	return 0;
 }
