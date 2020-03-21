@@ -198,8 +198,8 @@ rule:
 
 rule_item:
 	  /* empty */                      { $$ = NULL; }
-	| rule_item T_ASSERT expr T_NL     { $$ = $1; $1->next = $3; }
-	| rule_item let T_NL               { $$ = $1; }
+	| rule_item T_ASSERT expr T_NL     { if ($1 == NULL) $$ = $3; else { $$ = $1; $1->next = $3; } }
+	| rule_item let T_NL               { if ($1 == NULL) $$ = $2; else { $$ = $1; $1->next = $2; } }
 	;
 
 expr:

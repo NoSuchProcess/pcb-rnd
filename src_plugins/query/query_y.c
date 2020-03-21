@@ -1531,13 +1531,13 @@ yyreduce:
 
   case 11:
 #line 201 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = (yyvsp[-3].n); (yyvsp[-3].n)->next = (yyvsp[-1].n); }
+    { if ((yyvsp[-3].n) == NULL) (yyval.n) = (yyvsp[-1].n); else { (yyval.n) = (yyvsp[-3].n); (yyvsp[-3].n)->next = (yyvsp[-1].n); } }
 #line 1536 "query_y.c" /* yacc.c:1652  */
     break;
 
   case 12:
 #line 202 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = (yyvsp[-2].n); }
+    { if ((yyvsp[-2].n) == NULL) (yyval.n) = (yyvsp[-1].n); else { (yyval.n) = (yyvsp[-2].n); (yyvsp[-2].n)->next = (yyvsp[-1].n); } }
 #line 1542 "query_y.c" /* yacc.c:1652  */
     break;
 
