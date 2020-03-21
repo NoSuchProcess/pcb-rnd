@@ -53,21 +53,20 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 TODO(": free the iterator")
 }
 
-int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
-	pcb_qry_exec_t ec;
+	;
 	pcb_qry_val_t res;
 	int errs = 0;
 
-	pcb_qry_init(&ec, prg, bufno);
-	if (pcb_qry_it_reset(&ec, prg) != 0)
+	if (pcb_qry_it_reset(ec, prg) != 0)
 		return -1;
 
 	do {
-		if (pcb_qry_eval(&ec, prg, &res) == 0) {
+		if (pcb_qry_eval(ec, prg, &res) == 0) {
 			pcb_any_obj_t **tmp, *current = NULL;
-			if (ec.iter->all_idx >= 0) {
-				tmp = (pcb_any_obj_t **)vtp0_get(ec.iter->vects[ec.iter->all_idx], ec.iter->idx[ec.iter->all_idx], 0);
+			if (ec->iter->all_idx >= 0) {
+				tmp = (pcb_any_obj_t **)vtp0_get(ec->iter->vects[ec->iter->all_idx], ec->iter->idx[ec->iter->all_idx], 0);
 				if (tmp != NULL)
 					current = *tmp;
 				else
@@ -78,11 +77,41 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 		}
 		else
 			errs++;
-	} while(pcb_qry_it_next(&ec));
-	pcb_qry_uninit(&ec);
+	} while(pcb_qry_it_next(ec));
 	return errs;
 }
 
+
+int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+{
+	int ret = 0, r;
+	pcb_qry_exec_t ec;
+
+	if (prg->type == PCBQ_EXPR_PROG) {
+		pcb_qry_init(&ec, prg, bufno);
+		ret = pcb_qry_run_(&ec, prg, bufno, cb, user_ctx);
+		pcb_qry_uninit(&ec);
+		return ret;
+	}
+
+	if (prg->type == PCBQ_RULE) {
+		pcb_qry_node_t *n;
+
+		pcb_qry_init(&ec, prg, bufno);
+
+		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
+			r = pcb_qry_run_(&ec, n, bufno, cb, user_ctx);
+			if (r < 0)
+				ret = r;
+			else if (ret >= 0)
+				ret += r;
+		}
+		pcb_qry_uninit(&ec);
+		return ret;
+	}
+
+	return -1;
+}
 
 /* load unary operand to o1 */
 #define UNOP() \
