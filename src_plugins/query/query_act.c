@@ -127,7 +127,7 @@ static void append_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current
 int pcb_qry_run_script(const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
-	int bufno = -1;
+	int bufno = -1; /* empty scope means board */
 
 	pcb_qry_set_input(script);
 	qry_parse(&prg);
