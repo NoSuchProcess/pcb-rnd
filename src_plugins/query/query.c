@@ -178,11 +178,7 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node)
 {
 	for(; node != NULL;node = node->parent) {
-		if (node->type == PCBQ_EXPR_PROG) {
-			if (node->data.children->type == PCBQ_ITER_CTX)
-				return node->data.children->data.iter_ctx;
-		}
-		if (node->type == PCBQ_EXPR_PROG) {
+		if ((node->type == PCBQ_EXPR_PROG) || (node->type == PCBQ_RULE)) {
 			if (node->data.children->type == PCBQ_ITER_CTX)
 				return node->data.children->data.iter_ctx;
 		}
