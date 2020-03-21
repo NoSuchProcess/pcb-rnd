@@ -171,5 +171,11 @@ const char *pcb_qry_fnc_name(pcb_qry_fnc_t fnc);
 /* parser */
 void qry_error(void *prog, const char *err);
 
+/* external entry points for convenience */
+
+/* Compile and execute a script, calling cb for each object. Returns the number
+   of evaluation errors or -1 if evaluation couldn't start */
+int pcb_qry_run_script(const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
+
 
 #endif
