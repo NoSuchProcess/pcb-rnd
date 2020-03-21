@@ -188,6 +188,10 @@ rule:
 			tmp = $5->next; /* assume $$ has no children, keep $5's original children */
 			pcb_qry_n_insert($$, $5);
 			$5->next = tmp;
+			
+			/* set parent of all nodes */
+			for(tmp = $5; tmp != NULL; tmp = tmp->next)
+				tmp->parent = $$;
 		}
 
 		pcb_qry_n_insert($$, $2);
