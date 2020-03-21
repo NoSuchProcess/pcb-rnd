@@ -196,14 +196,13 @@ rule:
 	;
 
 rule_item:
-	  /* empty */            { $$ = NULL; }
-	| rule_item expr T_NL    { if ($1 != NULL) { $$ = $1; $1->next = $2; } else { $$ = $2; } }
-	| rule_item let T_NL     { $$ = $1; }
+	  /* empty */                      { $$ = NULL; }
+	| rule_item T_ASSERT expr T_NL     { $$ = $1; $1->next = $3; }
+	| rule_item let T_NL               { $$ = $1; }
 	;
 
 expr:
-	  T_ASSERT expr          { $$ = $2; $$->flags.is_assert = 1; }
-	| fcall                  { $$ = $1; }
+	  fcall                  { $$ = $1; }
 	| number                 { $$ = $1; }
 	| string_literal         { $$ = $1; }
 	| T_INVALID              { $$ = pcb_qry_n_alloc(PCBQ_DATA_INVALID); }

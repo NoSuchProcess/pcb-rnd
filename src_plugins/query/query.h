@@ -132,9 +132,6 @@ struct pcb_qry_node_s {
 		long cnst;                  /* named constant */
 		const pcb_flag_bits_t *flg;
 	} precomp;
-	struct {
-		unsigned int is_assert:1;
-	} flags;
 };
 
 
