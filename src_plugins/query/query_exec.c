@@ -53,7 +53,7 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 TODO(": free the iterator")
 }
 
-static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	;
 	pcb_qry_val_t res;
@@ -89,7 +89,7 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 
 	if (prg->type == PCBQ_EXPR_PROG) {
 		pcb_qry_init(&ec, prg, bufno);
-		ret = pcb_qry_run_(&ec, prg, bufno, cb, user_ctx);
+		ret = pcb_qry_run_(&ec, prg, cb, user_ctx);
 		pcb_qry_uninit(&ec);
 		return ret;
 	}
@@ -100,7 +100,7 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 		pcb_qry_init(&ec, prg, bufno);
 		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
 			ec.root = n;
-			r = pcb_qry_run_(&ec, n, bufno, cb, user_ctx);
+			r = pcb_qry_run_(&ec, n, cb, user_ctx);
 			if (r < 0)
 				ret = r;
 			else if (ret >= 0)
