@@ -208,6 +208,12 @@ pcb_query_iter_t *pcb_qry_iter_alloc(void)
 	return it;
 }
 
+void pcb_qry_iter_free(pcb_query_iter_t *it)
+{
+	htsi_uninit(&it->names);
+	free(it);
+}
+
 
 int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname, int alloc)
 {
