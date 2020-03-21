@@ -201,7 +201,8 @@ exprs:
 	;
 
 expr:
-	  fcall                  { $$ = $1; }
+	  T_ASSERT expr          { $$ = $2; $$->flags.is_assert = 1; }
+	| fcall                  { $$ = $1; }
 	| number                 { $$ = $1; }
 	| string_literal         { $$ = $1; }
 	| T_INVALID              { $$ = pcb_qry_n_alloc(PCBQ_DATA_INVALID); }
