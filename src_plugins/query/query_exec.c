@@ -98,8 +98,8 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 		pcb_qry_node_t *n;
 
 		pcb_qry_init(&ec, prg, bufno);
-
 		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
+			ec.root = n;
 			r = pcb_qry_run_(&ec, n, bufno, cb, user_ctx);
 			if (r < 0)
 				ret = r;
