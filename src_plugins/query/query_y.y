@@ -198,7 +198,7 @@ rule:
 rule_item:
 	  /* empty */            { $$ = NULL; }
 	| rule_item expr T_NL    { if ($1 != NULL) { $$ = $1; $1->next = $2; } else { $$ = $2; } }
-	| let T_NL               { $$ = $1; }
+	| rule_item let T_NL     { $$ = $1; }
 	;
 
 expr:
