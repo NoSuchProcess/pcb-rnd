@@ -67,6 +67,7 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_FIELD",
 	"PCBQ_FIELD_OF",
 	"PCBQ_LISTVAR",
+	"PCBQ_LET",
 	"PCBQ_VAR",
 	"PCBQ_FNAME",
 	"PCBQ_FCALL",

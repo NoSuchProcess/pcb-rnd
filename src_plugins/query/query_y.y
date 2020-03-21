@@ -147,8 +147,8 @@ static pcb_qry_node_t *make_flag_free(char *str)
 
 %left '('
 
-%type <n> number fields attribs var fname fcall fargs words string_literal
-%type <n> expr exprs program_expr program_rules rule flg
+%type <n> number fields attribs let var fname fcall fargs words string_literal
+%type <n> expr rule_item program_expr program_rules rule flg
 %type <u> maybe_unit
 
 %%
@@ -180,7 +180,7 @@ program_rules:
 rule:
 	T_RULE words T_NL
 	{ iter_ctx = pcb_qry_iter_alloc(); }
-	exprs  {
+	rule_item  {
 		$$ = pcb_qry_n_alloc(PCBQ_RULE);
 		$$->data.children = $2;
 		$2->parent = $$;
@@ -195,9 +195,10 @@ rule:
 	}
 	;
 
-exprs:
+rule_item:
 	  /* empty */            { $$ = NULL; }
-	| exprs expr T_NL        { if ($1 != NULL) { $$ = $1; $1->next = $2; } else { $$ = $2; } }
+	| rule_item expr T_NL    { if ($1 != NULL) { $$ = $1; $1->next = $2; } else { $$ = $2; } }
+	| let T_NL               { $$ = $1; }
 	;
 
 expr:
@@ -265,6 +266,19 @@ attribs:
 	| T_STR '.' attribs      { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = attrib_prepend_free((char *)$3->data.str, $1, '.'); }
 	| T_QSTR                 { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; }
 	;
+
+let:
+		T_LET T_STR expr
+			{
+				pcb_qry_node_t *nd;
+				$$ = pcb_qry_n_alloc(PCBQ_LET);
+				pcb_qry_n_insert($$, $3);
+				nd = pcb_qry_n_alloc(PCBQ_VAR);
+				nd->data.crd = pcb_qry_iter_var(iter_ctx, $2, 1);
+				pcb_qry_n_insert($$, nd);
+				free($2);
+			}
+		;
 
 var:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); free($1); }

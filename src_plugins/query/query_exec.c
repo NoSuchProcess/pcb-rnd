@@ -478,6 +478,10 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				return -1;
 			return pcb_qry_obj_field(&o1, node->data.children->next, res);
 
+		case PCBQ_LET:
+			assert(!"let not yet implemented");
+			return -1;
+
 		case PCBQ_VAR:
 			assert((node->data.crd >= 0) && (node->data.crd < ctx->iter->num_vars));
 			res->type = PCBQ_VT_VOID;
