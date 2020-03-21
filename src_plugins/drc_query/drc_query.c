@@ -35,6 +35,7 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/list_conf.h>
 
+#include "board.h"
 #include "drc.h"
 #include "view.h"
 #include "conf_core.h"
@@ -52,6 +53,8 @@ const conf_drc_query_t conf_drc_query;
 #define DRC_QUERY_CONF_FN "drc_query.conf"
 
 typedef struct {
+	pcb_board_t *pcb;
+	pcb_view_list_t *lst;
 	const char *type;
 	const char *title;
 	const char *desc;
@@ -59,8 +62,9 @@ typedef struct {
 
 void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
-	int bv;
 	drc_qry_ctx_t *qctx = user_ctx;
+	pcb_view_t *violation;
+	int bv;
 
 	if (res->type == PCBQ_VT_COORD)
 		bv = res->data.crd != 0;
@@ -73,9 +77,15 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 		return;
 
 	printf("drc found %s\n", qctx->desc);
+
+
+	violation = pcb_view_new(&qctx->pcb->hidlib, qctx->type, qctx->title, qctx->desc);
+	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)current);
+	pcb_view_set_bbox_by_objs(qctx->pcb->Data, violation);
+	pcb_view_list_append(qctx->lst, violation);
 }
 
-static long drc_qry_exec(pcb_board_t *pcb, pcb_conf_listitem_t *i, const char *type, const char *title, const char *desc, const char *query)
+static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_conf_listitem_t *i, const char *type, const char *title, const char *desc, const char *query)
 {
 	const char *scope = NULL;
 	drc_qry_ctx_t qctx;
@@ -88,6 +98,8 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_conf_listitem_t *i, const char *t
 	if (title == NULL) title = "Unspecified error";
 	if (desc == NULL) desc = "n/a";
 
+	qctx.pcb = pcb;
+	qctx.lst = lst;
 	qctx.type = type;
 	qctx.title = title;
 	qctx.desc = desc;
@@ -122,7 +134,8 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 			pcb_message(PCB_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
 			continue;
 		}
-		cnt += drc_qry_exec((pcb_board_t *)hidlib, i,
+
+		cnt += drc_qry_exec((pcb_board_t *)hidlib, &pcb_drc_lst, i,
 			load_str(rule, i, "type"), load_str(rule, i, "title"), load_str(rule, i, "desc"),
 			load_str(rule, i, "query")
 		);
