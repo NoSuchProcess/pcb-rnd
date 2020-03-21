@@ -178,14 +178,16 @@ program_rules:
 	;
 
 rule:
-	T_RULE words T_NL exprs  {
+	T_RULE words T_NL
+	{ iter_ctx = pcb_qry_iter_alloc(); }
+	exprs  {
 		$$ = pcb_qry_n_alloc(PCBQ_RULE);
 		$$->data.children = $2;
 		$2->parent = $$;
 		$$->data.children->next = pcb_qry_n_alloc(PCBQ_ITER_CTX);
 		$$->data.children->next->data.iter_ctx = iter_ctx;
-		$$->data.children->next->next = $4;
-		$4->parent = $$;
+		$$->data.children->next->next = $5;
+		$5->parent = $$;
 		}
 	;
 
