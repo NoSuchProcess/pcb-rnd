@@ -70,6 +70,8 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 		bv = res->data.crd != 0;
 	else if (res->type == PCBQ_VT_LONG)
 		bv = res->data.lng != 0;
+	else if (res->type == PCBQ_VT_LST)
+		bv = res->data.lst.used > 0;
 	else
 		return;
 
@@ -80,7 +82,14 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 
 
 	violation = pcb_view_new(&qctx->pcb->hidlib, qctx->type, qctx->title, qctx->desc);
-	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)current);
+	if (res->type == PCBQ_VT_LST) {
+		if (res->data.lst.used > 0)
+			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)res->data.lst.array[0]);
+		if (res->data.lst.used > 1)
+			pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)res->data.lst.array[1]);
+	}
+	else
+		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)current);
 	pcb_view_set_bbox_by_objs(qctx->pcb->Data, violation);
 	pcb_view_list_append(qctx->lst, violation);
 }
