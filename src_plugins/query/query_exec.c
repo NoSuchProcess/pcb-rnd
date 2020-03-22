@@ -110,7 +110,9 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 
 	/* evaluate 'let' the expression, filling up the list */
 	pcb_qry_it_reset_(lctx.ctx);
+	ctx->iter->it_active = node->precomp.it_active;
 	pcb_qry_run_(lctx.ctx, expr, 0, let_cb, &lctx);
+	ctx->iter->it_active = NULL;
 
 	/* initialize the iterator */
 	ctx->iter->vects[vi] = &ctx->iter->lst[vi].data.lst;

@@ -276,15 +276,21 @@ attribs:
 	;
 
 let:
-		T_LET T_STR expr
+		T_LET
+			{
+				iter_active_ctx = calloc(sizeof(vts0_t), 1);
+			}
+			T_STR expr
 			{
 				pcb_qry_node_t *nd;
 				$$ = pcb_qry_n_alloc(PCBQ_LET);
-				pcb_qry_n_insert($$, $3);
+				$$->precomp.it_active = iter_active_ctx;
+				iter_active_ctx = NULL;
+				pcb_qry_n_insert($$, $4);
 				nd = pcb_qry_n_alloc(PCBQ_VAR);
-				nd->data.crd = pcb_qry_iter_var(iter_ctx, $2, 1);
+				nd->data.crd = pcb_qry_iter_var(iter_ctx, $3, 1);
 				pcb_qry_n_insert($$, nd);
-				free($2);
+				free($3);
 			}
 		;
 
