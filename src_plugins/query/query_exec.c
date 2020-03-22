@@ -121,7 +121,6 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 
 	if (prg->type == PCBQ_EXPR_PROG) {
 		pcb_qry_init(&ec, prg, bufno);
-		ec.iter->it_active = NULL;
 		ret = pcb_qry_run_(&ec, prg, 1, cb, user_ctx);
 		pcb_qry_uninit(&ec);
 		return ret;
