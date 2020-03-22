@@ -157,7 +157,7 @@ struct pcb_query_iter_s {
 	vtp0_t **vects;
 	pcb_cardinal_t *idx;
 
-	int all_idx;          /* index of the "@" variable or -1 */
+	pcb_any_obj_t *last_obj; /* last object retrieved by the expression */
 };
 
 pcb_query_iter_t *pcb_qry_iter_alloc(void);

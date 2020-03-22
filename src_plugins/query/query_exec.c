@@ -63,16 +63,8 @@ static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, v
 
 	do {
 		if (pcb_qry_eval(ec, prg, &res) == 0) {
-			pcb_any_obj_t **tmp, *current = NULL;
-			if (ec->iter->all_idx >= 0) {
-				tmp = (pcb_any_obj_t **)vtp0_get(ec->iter->vects[ec->iter->all_idx], ec->iter->idx[ec->iter->all_idx], 0);
-				if (tmp != NULL)
-					current = *tmp;
-				else
-					current = NULL;
-			}
-			if (current != NULL)
-				cb(user_ctx, &res, current);
+			if (ec->iter->last_obj != NULL)
+				cb(user_ctx, &res, ec->iter->last_obj);
 		}
 		else
 			errs++;
@@ -283,7 +275,7 @@ static int pcb_qry_it_reset_(pcb_qry_exec_t *ctx)
 	for(n = 0; n < ctx->iter->num_vars; n++) {
 		if (strcmp(ctx->iter->vn[n], "@") == 0) {
 			setup_iter_list(ctx, n, &ctx->all);
-			ctx->iter->all_idx = n;
+			ctx->iter->last_obj = NULL;
 			break;
 		}
 	}
@@ -588,7 +580,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if ((tmp == NULL) || (*tmp == NULL))
 				return -1;
 			res->type = PCBQ_VT_OBJ;
-			res->data.obj = *tmp;
+			res->data.obj = ctx->iter->last_obj = *tmp;
 			return 0;
 
 		case PCBQ_LISTVAR: {
