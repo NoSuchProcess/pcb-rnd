@@ -90,6 +90,9 @@ static void let_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
 	let_ctx_t *lctx = user_ctx;
 
+	if (res->type == PCBQ_VT_OBJ) /* result overwrites last checked node */
+		current = res->data.obj;
+
 	if (pcb_qry_is_true(res))
 		vtp0_append(lctx->vt, current);
 }
