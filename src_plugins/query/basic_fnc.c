@@ -45,9 +45,21 @@ static int fnc_distance(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 	PCB_QRY_RET_INV(res);
 }
 
+static int fnc_mklist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	int n;
+	res->type = PCBQ_VT_LST;
+	vtp0_init(&res->data.lst);
+	for(n = 0; n < argc; n++) {
+		if (argv[n].type == PCBQ_VT_OBJ)
+			vtp0_append(&res->data.lst, argv[n].data.obj);
+	}
+	return 0;
+}
 
 void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
 	pcb_qry_fnc_reg("distance", fnc_distance);
+	pcb_qry_fnc_reg("mklist", fnc_mklist);
 }
