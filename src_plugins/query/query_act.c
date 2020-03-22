@@ -129,6 +129,7 @@ int pcb_qry_run_script(const char *script, const char *scope, void (*cb)(void *u
 	pcb_qry_node_t *prg = NULL;
 	int bufno = -1; /* empty scope means board */
 
+	while(isspace(*script)) script++;
 	pcb_qry_set_input(script);
 	qry_parse(&prg);
 

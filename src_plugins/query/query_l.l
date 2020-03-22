@@ -113,7 +113,7 @@ thus            { return T_THUS; }
 
 [@().,<>!*+/~-] { return *yytext; }
 
-[;\r\n]         { return T_NL; }
+[;\r\n]*        { return T_NL; }
 [ \t]           { continue; }
 
 %%
