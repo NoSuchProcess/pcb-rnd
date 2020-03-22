@@ -90,7 +90,7 @@ char *pcb_query_sprint_val(pcb_qry_val_t *val)
 		case PCBQ_VT_LONG:   return pcb_strdup_printf("%ld", val->data.lng, val->data.lng);
 		case PCBQ_VT_DOUBLE: return pcb_strdup_printf("%f", val->data.dbl);
 		case PCBQ_VT_STRING: return pcb_strdup_printf("\"%s\"", val->data.str);
-		case PCBQ_VT_OBJ:    return pcb_strdup("<obj>");
+		case PCBQ_VT_OBJ:    return pcb_strdup_printf("<obj ID=%ld>", val->data.obj->ID);
 		case PCBQ_VT_LST:    return pcb_strdup("<lst>");
 	}
 	return pcb_strdup("<invalid>");
