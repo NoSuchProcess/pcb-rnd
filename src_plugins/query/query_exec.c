@@ -294,11 +294,18 @@ int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	return pcb_qry_it_reset_(ctx);
 }
 
+static int pcb_qry_it_active(pcb_query_iter_t *iter, int i)
+{
+	if (iter->it_active == NULL) return 1; /* no activity map: all iterators are active */
+	if (i >= iter->it_active->used) return 0;
+	return iter->it_active->array[i];
+}
+
 int pcb_qry_it_next(pcb_qry_exec_t *ctx)
 {
 	int i;
 	for(i = 0; i < ctx->iter->num_vars; i++) {
-		if (ctx->iter->vects[i] != NULL) {
+		if ((ctx->iter->vects[i] != NULL) && pcb_qry_it_active(ctx->iter, i)) {
 			ctx->iter->idx[i]++;
 			if (ctx->iter->idx[i] < vtp0_len(ctx->iter->vects[i]))
 				return 1;
