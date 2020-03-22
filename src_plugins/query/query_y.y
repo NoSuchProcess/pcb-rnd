@@ -67,6 +67,7 @@ do { \
 } while(0)
 
 static pcb_query_iter_t *iter_ctx;
+static vts0_t *iter_active_ctx;
 
 static char *attrib_prepend_free(char *orig, char *prep, char sep)
 {
@@ -288,16 +289,21 @@ let:
 		;
 
 assert:
-	T_ASSERT expr
+	T_ASSERT
+		{
+			iter_active_ctx = calloc(sizeof(vts0_t), 1);
+		}
+		expr
 		{
 			$$ = pcb_qry_n_alloc(PCBQ_ASSERT);
-			pcb_qry_n_insert($$, $2);
-			$$->precomp.it_active = calloc(sizeof(vts0_t), 1);
+			$$->precomp.it_active = iter_active_ctx;
+			iter_active_ctx = NULL;
+			pcb_qry_n_insert($$, $3);
 		}
 	;
 
 var:
-	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); free($1); }
+	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); if (iter_active_ctx != NULL) vts0_set(iter_active_ctx, $$->data.crd, 1); free($1); }
 	| T_LIST '(' '@' ')'     { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = pcb_strdup("@"); }
 	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); }
 	;
