@@ -619,7 +619,6 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				pcb_message(PCB_MSG_ERROR, "too many function arguments\n");
 				return -1;
 			}
-			printf("CALL n=%d\n", n);
 			return fname->data.fnc(n, args, res);
 		}
 
