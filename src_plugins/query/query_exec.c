@@ -124,6 +124,7 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 
 	if (prg->type == PCBQ_EXPR_PROG) {
 		pcb_qry_init(&ec, prg, bufno);
+		ec.iter->it_active = NULL;
 		ret = pcb_qry_run_(&ec, prg, 1, cb, user_ctx);
 		pcb_qry_uninit(&ec);
 		return ret;
@@ -141,14 +142,20 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 		}
 
 		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
-			if (n->type == PCBQ_LET)
-				continue;
-			ec.root = n;
-			r = pcb_qry_run_(&ec, n, 1, cb, user_ctx);
-			if (r < 0)
-				ret = r;
-			else if (ret >= 0)
-				ret += r;
+			switch(n->type) {
+				case PCBQ_LET: break;
+				case PCBQ_ASSERT:
+					ec.root = n;
+					ec.iter->it_active = n->precomp.it_active;
+					r = pcb_qry_run_(&ec, n->data.children, 1, cb, user_ctx);
+					ec.iter->it_active = NULL;
+					if (r < 0)
+						ret = r;
+					else if (ret >= 0)
+						ret += r;
+					break;
+				default:;
+			}
 		}
 		pcb_qry_uninit(&ec);
 		return ret;

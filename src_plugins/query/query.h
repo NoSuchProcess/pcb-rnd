@@ -28,6 +28,7 @@
 #define PCB_QUERY_H
 
 #include <genvector/vtp0.h>
+#include <genvector/vts0.h>
 #include <genht/htsi.h>
 #include <genregex/regex_se.h>
 #include "fields_sphash.h"
@@ -70,6 +71,7 @@ typedef enum {
 	PCBQ_RNAME,
 	PCBQ_EXPR_PROG,
 	PCBQ_EXPR,
+	PCBQ_ASSERT,
 	PCBQ_ITER_CTX,
 
 	PCBQ_OP_THUS,
@@ -131,6 +133,7 @@ struct pcb_qry_node_s {
 		re_se_t *regex;
 		long cnst;                  /* named constant */
 		const pcb_flag_bits_t *flg;
+		const vts0_t *it_active;
 	} precomp;
 };
 
@@ -148,6 +151,7 @@ struct pcb_query_iter_s {
 
 	const char **vn;      /* pointers to the hash names so they can be indexed */
 	pcb_qry_val_t *lst;
+	vts0_t *it_active;    /* points to a char array of which iterators are active */
 
 	/* iterator state for each variable - point into the correspoinding lst[] */
 	vtp0_t **vects;

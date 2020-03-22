@@ -147,8 +147,8 @@ static pcb_qry_node_t *make_flag_free(char *str)
 
 %left '('
 
-%type <n> number fields attribs let var fname fcall fargs words string_literal
-%type <n> expr rule_item program_expr program_rules rule flg
+%type <n> number fields attribs let assert  var fname fcall fargs words
+%type <n> string_literal expr rule_item program_expr program_rules rule flg
 %type <u> maybe_unit
 
 %%
@@ -205,7 +205,7 @@ rule:
 
 rule_item:
 	  /* empty */                      { $$ = NULL; }
-	| T_ASSERT expr T_NL rule_item     { $$ = $2; $2->next = $4; }
+	| assert T_NL rule_item            { $$ = $1; $1->next = $3; }
 	| let T_NL rule_item               { $$ = $1; $1->next = $3; }
 	;
 
@@ -286,6 +286,15 @@ let:
 				free($2);
 			}
 		;
+
+assert:
+	T_ASSERT expr
+		{
+			$$ = pcb_qry_n_alloc(PCBQ_ASSERT);
+			pcb_qry_n_insert($$, $2);
+			$$->precomp.it_active = calloc(sizeof(vts0_t), 1);
+		}
+	;
 
 var:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); free($1); }

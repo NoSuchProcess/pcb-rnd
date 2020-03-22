@@ -48,6 +48,7 @@ const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_RNAME",
 	"PCBQ_EXPR_PROG",
 	"PCBQ_EXPR",
+	"PCBQ_ASSERT",
 	"PCBQ_ITER_CTX",
 	"PCBQ_OP_THUS",
 	"PCBQ_OP_AND",
