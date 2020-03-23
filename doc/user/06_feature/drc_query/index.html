@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2> drc_query: query() based, scriptable Design Rule Checker </h2>
+<p>
+The drc_query plugin is a glue layer between the
+<a href="../query">query plugin</a> and the DRC infrastructure. It allows the
+user (and sch import flows) to script DRC checks and use these script as part
+of the normal DRC workflow. This chapter describes the
+<a href="#config">how to configure and use query()</a> based DRC scripts
+and offers a <a href="#tutor">tutorial on developing DRC scripts</a>.
+
+<h3 id="config">Configuration</h3>
+<p>
+DRC rules are specified as a list of hash nodes under the plugins/drc_query/rules
+config path, from the config source of the user's choice. Commonly used config
+sources:
+<ul>
+	<li> internal or system config: generic DRC rules
+	<li> user config: generic, user maintained rules (extra default checks)
+	<li> board file: board-specific rules, e.g. imported from the schematics
+</ul>
+<p>
+Example 1: a full example of an user config, saved as ~/.pcb-rnd/drc_query.conf:
+<per>
+li:pcb-rnd-conf-v1 {
+  ha:overwrite {
+    ha:plugins {
+      ha:drc_query {
+        li:rules {
+          ha:hole_dia {
+            type = single hole
+            title = hole too small
+            desc = padstack hole diameter is too small
+            disable = 0
+            query = {@.hole &lt 0.2mm}
+          }
+        }
+      }
+    }
+  }
+}
+</pre>
+<p>
+Text fields type, tilte and desc are optional user readable strings
+that will be presented in the DRC report. The type::title pair serves
+as an unique identifier for the rule. If optional disable is 'yes' or
+'true' or a non-zero integer value, the rule is temporarily disabled.
+<p>
+Note: since drc errors are presented on a per type basis, and drc rules
+are executed each in its own, independent context, the order of the hash
+node within the <i>rules</i> list (merged from different config sources)
+does not matter.
+<p>
+Query text may consists of multiple lines. The format is as described
+<a href="../query">at the query plugin</a>. There are two alternate forms:
+<ul>
+	<li> a single expression (like in the example above); if the expression is
+	     true, the last evaluated object (typically @) is marked as the DRC error
+	<li> one or more <b>rule</b> constructs, each containing <b>let</b> and <b>assert</b>
+	     statements; when an assert is true, the object(s) in the return value or
+	     if that is not available, the last evaluated object is marked as the
+	     DRC error.
+</ul>
+<p>
+Example 2: a <b>rule</b> based query script example is finding overlapping drilled holes:
+<pre>
+query = {
+  rule overlap
+  let A @.type==PSTK
+  let B A
+  assert (A.ID &gt; B.ID) &amp;&amp; (distance(A.x, A.y, B.x, B.y) &lt; (A.hole + B.hole)/2) thus mklist(A, B)
+}
+</pre>
+<p>
+Note: since drc errors are presented on a per type basis, and drc rules
+are executed each in its own, independent context, the order of rules does not
+matter.
+
+<h3 id="tutor">Tutorial</h3>
+<p>
