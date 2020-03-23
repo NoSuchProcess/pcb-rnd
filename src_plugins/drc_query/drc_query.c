@@ -30,6 +30,7 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
@@ -58,6 +59,7 @@ typedef struct {
 	const char *type;
 	const char *title;
 	const char *desc;
+	unsigned disable:1;
 } drc_qry_ctx_t;
 
 void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
@@ -130,11 +132,41 @@ static const char *load_str(lht_node_t *rule, pcb_conf_listitem_t *i, const char
 	return n->data.text.value;
 }
 
+static long load_int(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name, long invalid)
+{
+	lht_node_t *n = lht_dom_hash_get(rule, name);
+	long l;
+	const char *val;
+	char *end;
+
+	if (n == NULL)
+		return invalid;
+	if (n->type != LHT_TEXT) {
+		pcb_message(PCB_MSG_ERROR, "drc_query: igoring non-text node %s of rule %s \n", name, i->name);
+		return invalid;
+	}
+
+	val = n->data.text.value;
+
+	if ((pcb_strcasecmp(val, "yes") == 0) || (pcb_strcasecmp(val, "true") == 0))
+		return 1;
+	if ((pcb_strcasecmp(val, "no") == 0) || (pcb_strcasecmp(val, "false") == 0))
+		return 0;
+
+	l = strtol(val, &end, 10);
+	if (*end != '\0') {
+		pcb_message(PCB_MSG_ERROR, "drc_query: ignoring invalid value '%s' for %s of rule %s \n", val, name, i->name);
+		return invalid;
+	}
+
+	return l;
+}
+
 static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	gdl_iterator_t it;
 	pcb_conf_listitem_t *i;
-	long cnt = 0;
+	long cnt = 0, disable;
 
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;
@@ -142,6 +174,10 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 			pcb_message(PCB_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
 			continue;
 		}
+
+		disable = load_int(rule, i, "disable", 0);
+		if (disable)
+			continue;
 
 		cnt += drc_qry_exec((pcb_board_t *)hidlib, &pcb_drc_lst, i,
 			load_str(rule, i, "type"), load_str(rule, i, "title"), load_str(rule, i, "desc"),
