@@ -105,3 +105,84 @@ can be checked separately from any other object and the outcome of
 a check depends only on properties of the single padstack object and constants.
 There is only one iterator used, @, which iterates on all objects of the board.
 
+<h4> Rule scripts </h4>
+<p>
+However, in some situations a DRC violation depends on two or more objects,
+thus iterations need to be done on pairs (or tuplets) of objects. It is
+done by:
+<ul>
+	<li> announcing a multi-statement <b>rule</b>
+	<li> creating named lists of selected objects using the <b>let</b> statement
+	<li> writing one or more <b>assert</b> statements with expression using @ and/or the lists
+</ul>
+<p>
+Example 2 demonstrates a simple case of pair-wise iteration: first a list called
+<i>A</i> is set up; it will contain all objects of the board whose type is PSTK.
+Then list <i>A</i> is copied to <i>B</i> in the second <b>let</b>.
+<p>
+Note: the second argument of a <b>let</b> is always an expression. In
+the first case it is more trivial: (@.type==PSTK). When this expression is
+true, the last evaluated object (the current iteration with @) is appended
+to the destination list (specified in the first argument). The second
+<b>let</b> "copies" the list by expression (A). It really means:
+having the iterator run on each item of <i>A</i>, evaluating each; they
+will all be true (since they are existing objects); once an item is true,
+the last evaluated object (the same that caused the expression to be true)
+is appended to the left side-list <i>B</i>. The part that may be confusing
+is this: on the left side, there's a <b>list name</b>, on the right side
+there is an <b>expression</b>. Referencing a list within an expression
+will always result in iteration and is always substituted by a single item
+of the list.
+<p>
+Once the lists are set up, an <b>assert</b> is specified with an expression
+that uses both <i>A</i> and <i>B</i>. This makes the query engine iterate
+in nested loops for items of <i>A</i> and <i>B</i>, which means the expression
+is evaluated to every possible pair of items in list <i>A</i> and list <i>B</i>.
+<p>
+Or in other words, any possible pair of padstacks on the board - including
+the case of a virtual pair of the same padstack twice (since every padstack
+is present on both lists). For example if the board has three padstacks
+p1, p2 and p3, then <i>A</i> is [p1, p2, p3] and <i>B</i> is [p1, p2, p3]
+too. The first iteration will take the first item of <i>A</i> and the
+first item of <i>B</i>, so the pairing is p1 vs. p1. Avoiding such
+false checks is easy by starting the <b>assert</b> expession by (A != B),
+which will make the whole expression false for the virtual pair case.
+<p>
+Note: query has lazy evaluation so when the left side of an &amp;&amp; if
+false, the right side is not evaluated. This it makes execution more
+efficient to add such simple checks that limit the number of objects or
+combinations to deal with as early as possible in the expression.
+<p>
+With that, we would be checking the same pairs twice still: p1 vs. p2
+and then p2 vs. p1. The easiest way to avoid that is to consider
+that each object has an unique integer ID that can be compared, which
+allows us to write (A.ID > B.ID) instead od (A != B). This ensures
+only 'ordered pairs' are considered, at about the same low cost of
+check.
+<p>
+The left side of the &amp;&amp; filters duplicates and self-overlaps. The
+right side is the actual check: it calculates the distance of the hole
+centers using the distance() builtin function and compares the result
+to the expected minimum distance which is the sum of the radii of the two
+holes. Since a hole is always at the origin of the padstack, the hole's
+center coordinate matches the padstack's coordinate. When A.x is written
+in the expression, that really means: "take the object from list <i>A</i>
+for the current iteration and extract its <i>x</i> property", which for
+a padstack means the x coordinate of the padstack placement.
+<p>
+When both the left side and the right side of the &amp;&amp; evaluates to
+true, that means the pair is valid and unique and the holes overlap. At
+this point drc_query could already indicate the DRC violation, but it would
+use the last evaulated object for indicating the location. Which means
+the indication would mark only one of the two padstacks participating in the
+overlap.
+<p>
+The <b>thus</b> keyword changes this: when the left side of <b>thus</b>
+evaluates to true, instead of returning true, the right side is evaluated
+and returned. The right side is a function call to the builtin function
+<b>mklist</b>, which will create a new list of objects, inserting the current
+iteration object from list <i>A</i> and list <i>B</i>. In other words, it's
+a list of the two padstack objects participating in the overlap. When a
+list-of-two-objects is returned, drc_query will automatically put the two
+objects in the two offender group for marking (red and blue groups).
+
