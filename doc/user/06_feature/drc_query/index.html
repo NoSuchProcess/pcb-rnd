@@ -83,4 +83,25 @@ are executed each in its own, independent context, the order of rules does not
 matter.
 
 <h3 id="tutor">Tutorial</h3>
+
+<h4> Single expression scripts </h4>
 <p>
+In Example 1, a single query() expression is used: it iterates through all
+objects available (@) and evaluates whether the object's hole property is
+smaller than a predefined value. This expression can result in three
+different outcome for any object:
+<ul>
+	<li> invalid: e.g. when the object has no hole property because it is not
+	     a padstack (this happens to all lines for example); in this case, no DRC
+	     violation is reported
+	<li> valid, false: no DRC violation is reported
+	<li> valid, true: a DRC violation is reported
+</ul>
+<p>
+Such simple, single-expression DRC rules are common for checks that need
+to decide whether every single object matching some criteria passes a test
+on its properties. It works for Example 1 because each padstack object
+can be checked separately from any other object and the outcome of
+a check depends only on properties of the single padstack object and constants.
+There is only one iterator used, @, which iterates on all objects of the board.
+
