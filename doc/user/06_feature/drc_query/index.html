@@ -38,7 +38,7 @@ li:pcb-rnd-conf-v1 {
             title = hole too small
             desc = padstack hole diameter is too small
             disable = 0
-            query = {@.hole &lt 0.2mm}
+            query = {(@.hole &gt; 0) &amp;&amp; (@.hole &lt; 0.2mm)}
           }
         }
       }
@@ -104,6 +104,10 @@ on its properties. It works for Example 1 because each padstack object
 can be checked separately from any other object and the outcome of
 a check depends only on properties of the single padstack object and constants.
 There is only one iterator used, @, which iterates on all objects of the board.
+<p>
+Note: the left-side check of &amp;&amp; for hole diameter greater than zero
+is needed because of the pcb-rnd data model: hole diameter zero means no hole
+(e.g. smd pads) - no warning should be issued for that.
 
 <h4> Rule scripts </h4>
 <p>
