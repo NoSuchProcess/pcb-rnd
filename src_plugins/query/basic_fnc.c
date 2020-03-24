@@ -33,6 +33,8 @@
 #include "query_access.h"
 #include "query_exec.h"
 
+#define PCB dontuse
+
 /* Query language - basic functions */
 static int fnc_llen(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
@@ -66,7 +68,7 @@ static int fnc_netlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 {
 	long n;
 	htsp_entry_t *e;
-	pcb_netlist_t *nl = &PCB->netlist[PCB_NETLIST_EDITED];
+	pcb_netlist_t *nl = &ectx->pcb->netlist[PCB_NETLIST_EDITED];
 
 	res->type = PCBQ_VT_LST;
 	vtp0_init(&res->data.lst);
@@ -91,7 +93,7 @@ static int fnc_netterms(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 
 	net = (pcb_net_t *)argv[0].data.obj;
 	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
-		pcb_any_obj_t *o = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
+		pcb_any_obj_t *o = pcb_term_find_name(ectx->pcb, ectx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 		if (o != NULL)
 			vtp0_append(&res->data.lst, o);
 	}

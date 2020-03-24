@@ -34,6 +34,8 @@
 #include "query_access.h"
 #include <librnd/core/pcb-printf.h>
 
+#define PCB dontuse
+
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, int bufno)
 {
 	memset(ctx, 0, sizeof(pcb_qry_exec_t));

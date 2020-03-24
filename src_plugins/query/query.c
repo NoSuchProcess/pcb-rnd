@@ -41,6 +41,8 @@
 #include "query.h"
 #include <librnd/core/fptr_cast.h>
 
+#define PCB dontuse
+
 /******** tree helper ********/
 
 const char *type_name[PCBQ_nodetype_max] = {
