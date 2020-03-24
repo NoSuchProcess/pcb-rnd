@@ -168,7 +168,6 @@ TODO(": rather do rtree search here to avoid recursion")
 
 void pcb_qry_list_all_data(pcb_qry_val_t *lst, pcb_data_t *data, pcb_objtype_t mask)
 {
-TODO("buffer layers are not listed here");
 	list_data(&lst->data.lst, PCB, data, 1, mask);
 }
 
