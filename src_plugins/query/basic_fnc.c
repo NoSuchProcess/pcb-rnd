@@ -138,6 +138,18 @@ static int fnc_netobjs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 }
 
 
+static int fnc_subcobjs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	if ((argv[0].type != PCBQ_VT_OBJ) || (argv[0].data.obj->type != PCB_OBJ_SUBC))
+		return -1;
+
+	res->type = PCBQ_VT_LST;
+	vtp0_init(&res->data.lst);
+	pcb_qry_list_all_subc(res, (pcb_subc_t *)argv[0].data.obj, PCB_OBJ_ANY & (~PCB_OBJ_LAYER));
+
+	return 0;
+}
+
 void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
@@ -146,4 +158,5 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("netlist", fnc_netlist);
 	pcb_qry_fnc_reg("netterms", fnc_netterms);
 	pcb_qry_fnc_reg("netobjs", fnc_netobjs);
+	pcb_qry_fnc_reg("subcobjs", fnc_subcobjs);
 }

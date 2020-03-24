@@ -172,6 +172,11 @@ TODO("buffer layers are not listed here");
 	list_data(&lst->data.lst, PCB, data, 1, mask);
 }
 
+void pcb_qry_list_all_subc(pcb_qry_val_t *lst, pcb_subc_t *sc, pcb_objtype_t mask)
+{
+	list_data(&lst->data.lst, PCB, sc->data, 1, mask);
+}
+
 
 void pcb_qry_list_free(pcb_qry_val_t *lst_)
 {
