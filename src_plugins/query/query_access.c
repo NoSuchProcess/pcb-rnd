@@ -34,6 +34,7 @@
 #include "query_access.h"
 #include "query_exec.h"
 #include "layer.h"
+#include "netlist.h"
 #include "fields_sphash.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
@@ -688,12 +689,27 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 
 static int field_net(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-/*	const char *s1, *s2;
+	pcb_net_t *net = (pcb_net_t *)obj;
+	query_fields_keys_t fh1;
 
-	fld2str_req(s1, fld, 0);
-	fld2str_opt(s2, fld, 1);*/
-TODO("TODO")
+	fld2hash_req(fh1, fld, 0);
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&net->Attributes, s2));
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_name:     PCB_QRY_RET_STR(res, net->name);
+		default:;
+	}
+
 	PCB_QRY_RET_INV(res);
+
 }
 
 static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
