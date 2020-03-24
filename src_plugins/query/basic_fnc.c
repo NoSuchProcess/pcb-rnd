@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 #include "config.h"
+
+#include "board.h"
 #include "data.h"
 #include "query_access.h"
 #include "query_exec.h"
@@ -57,9 +59,26 @@ static int fnc_mklist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 	return 0;
 }
 
+static int fnc_netlist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	long n;
+	htsp_entry_t *e;
+	pcb_netlist_t *nl = &PCB->netlist[PCB_NETLIST_EDITED];
+
+	res->type = PCBQ_VT_LST;
+	vtp0_init(&res->data.lst);
+
+	if (nl->used != 0)
+		for(e = htsp_first(nl), n = 0; e != NULL; e = htsp_next(nl, e), n++)
+			vtp0_append(&res->data.lst, e->key);
+
+	return 0;
+}
+
 void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
 	pcb_qry_fnc_reg("distance", fnc_distance);
 	pcb_qry_fnc_reg("mklist", fnc_mklist);
+	pcb_qry_fnc_reg("netlist", fnc_netlist);
 }
