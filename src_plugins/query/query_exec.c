@@ -63,8 +63,17 @@ static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, v
 
 	do {
 		if (pcb_qry_eval(ec, prg, &res) == 0) {
-			if (ec->iter->last_obj != NULL)
+			if (ec->iter->last_obj != NULL) {
 				cb(user_ctx, &res, ec->iter->last_obj);
+			}
+			else if (res.type == PCBQ_VT_LST) {
+				long n;
+
+				/* special case: result is a list, need to return each object so 'let' gets it */
+				for(n = 0; n < res.data.lst.used; n++)
+					cb(user_ctx, &res, res.data.lst.array[n]);
+			}
+
 		}
 		else
 			errs++;
