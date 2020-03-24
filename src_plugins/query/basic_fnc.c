@@ -27,6 +27,9 @@
 
 #include "board.h"
 #include "data.h"
+#include "obj_term.h"
+#include "netlist.h"
+
 #include "query_access.h"
 #include "query_exec.h"
 
@@ -75,10 +78,32 @@ static int fnc_netlist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 	return 0;
 }
 
+static int fnc_netterms(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	pcb_net_t *net;
+	pcb_net_term_t *t;
+
+	if ((argv[0].type != PCBQ_VT_OBJ) || (argv[0].data.obj->type != PCB_OBJ_NET))
+		return -1;
+
+	res->type = PCBQ_VT_LST;
+	vtp0_init(&res->data.lst);
+
+	net = (pcb_net_t *)argv[0].data.obj;
+	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+		pcb_any_obj_t *o = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
+		if (o != NULL)
+			vtp0_append(&res->data.lst, o);
+	}
+
+	return 0;
+}
+
 void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
 	pcb_qry_fnc_reg("distance", fnc_distance);
 	pcb_qry_fnc_reg("mklist", fnc_mklist);
 	pcb_qry_fnc_reg("netlist", fnc_netlist);
+	pcb_qry_fnc_reg("netterms", fnc_netterms);
 }
