@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include "query_exec.h"
 
 /* Query language - basic functions */
-static int fnc_llen(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int fnc_llen(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	if (argc != 1)
 		return -1;
@@ -43,14 +43,14 @@ static int fnc_llen(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 	PCB_QRY_RET_INT(res, vtp0_len(&argv[0].data.lst));
 }
 
-static int fnc_distance(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int fnc_distance(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	if ((argc == 4) && (argv[0].type == PCBQ_VT_COORD) && (argv[1].type == PCBQ_VT_COORD) && (argv[2].type == PCBQ_VT_COORD) && (argv[3].type == PCBQ_VT_COORD))
 		PCB_QRY_RET_DBL(res, pcb_distance(argv[0].data.crd, argv[1].data.crd, argv[2].data.crd, argv[3].data.crd));
 	PCB_QRY_RET_INV(res);
 }
 
-static int fnc_mklist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int fnc_mklist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	int n;
 	res->type = PCBQ_VT_LST;
@@ -62,7 +62,7 @@ static int fnc_mklist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 	return 0;
 }
 
-static int fnc_netlist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int fnc_netlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	long n;
 	htsp_entry_t *e;
@@ -78,7 +78,7 @@ static int fnc_netlist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 	return 0;
 }
 
-static int fnc_netterms(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int fnc_netterms(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	pcb_net_t *net;
 	pcb_net_term_t *t;

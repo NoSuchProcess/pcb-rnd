@@ -38,8 +38,9 @@
 
 typedef struct pcb_qry_val_s pcb_qry_val_t;
 typedef struct pcb_query_iter_s  pcb_query_iter_t;
+typedef struct pcb_qry_exec_s pcb_qry_exec_t;
 
-typedef int (*pcb_qry_fnc_t)(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res);
+typedef int (*pcb_qry_fnc_t)(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res);
 
 /* value of an expression */
 typedef enum pcb_qry_valtype_e {

@@ -29,11 +29,13 @@
 #ifndef PCB_QUERY_EXEC_H
 #define PCB_QUERY_EXEC_H
 
-typedef struct pcb_qry_exec_s {
+#include "query.h"
+
+struct pcb_qry_exec_s {
 	pcb_qry_node_t *root;
 	pcb_qry_val_t all;       /* a list of all objects */
 	pcb_query_iter_t *iter;  /* current iterator */
-} pcb_qry_exec_t;
+};
 
 /* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root, int bufno);
