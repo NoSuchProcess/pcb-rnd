@@ -78,11 +78,12 @@ struct pcb_find_s {
 };
 
 
-unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from);
 unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y);
 
-/* Same as pcb_find_from_obj but assumes ctx already seen a pcb_find_from_obj()
-   and continues from that state */
+/* Find connections starting from an object. The obj() variant initializes the
+   search; if from is NULL, don't do the initial search. The obj_next() variant
+   assumes ctx is already initialized (by an obj()) and continues from that state */
+unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from);
 unsigned long pcb_find_from_obj_next(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from);
 
 void pcb_find_free(pcb_find_t *ctx);

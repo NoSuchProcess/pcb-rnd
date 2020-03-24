@@ -347,8 +347,11 @@ unsigned long pcb_find_from_obj(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t
 		return -1;
 
 	pcb_data_dynflag_clear(data, ctx->mark);
-	pcb_find_addobj(ctx, from, NULL, PCB_FCT_START, 1); /* add the starting object with no 'arrived_from' */
-	return pcb_find_exec(ctx);
+	if (from != NULL) {
+		pcb_find_addobj(ctx, from, NULL, PCB_FCT_START, 1); /* add the starting object with no 'arrived_from' */
+		return pcb_find_exec(ctx);
+	}
+	return 0;
 }
 
 unsigned long pcb_find_from_obj_next(pcb_find_t *ctx, pcb_data_t *data, pcb_any_obj_t *from)
