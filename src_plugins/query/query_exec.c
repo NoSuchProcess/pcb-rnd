@@ -53,7 +53,7 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 TODO(": free the iterator")
 }
 
-static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, int eval_list, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_val_t res;
 	int errs = 0;
@@ -63,15 +63,15 @@ static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, v
 
 	do {
 		if (pcb_qry_eval(ec, prg, &res) == 0) {
-			if (ec->iter->last_obj != NULL) {
-				cb(user_ctx, &res, ec->iter->last_obj);
-			}
-			else if (res.type == PCBQ_VT_LST) {
+			if ((eval_list) && (res.type == PCBQ_VT_LST)) {
 				long n;
 
 				/* special case: result is a list, need to return each object so 'let' gets it */
 				for(n = 0; n < res.data.lst.used; n++)
 					cb(user_ctx, &res, res.data.lst.array[n]);
+			}
+			else if (ec->iter->last_obj != NULL) {
+				cb(user_ctx, &res, ec->iter->last_obj);
 			}
 
 		}
@@ -115,7 +115,7 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	/* evaluate 'let' the expression, filling up the list */
 	pcb_qry_it_reset_(lctx.ctx);
 	ctx->iter->it_active = node->precomp.it_active;
-	pcb_qry_run_(lctx.ctx, expr, 0, let_cb, &lctx);
+	pcb_qry_run_(lctx.ctx, expr, 0, 1,let_cb, &lctx);
 	ctx->iter->it_active = NULL;
 
 	/* initialize the iterator */
@@ -130,7 +130,7 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 
 	if (prg->type == PCBQ_EXPR_PROG) {
 		pcb_qry_init(&ec, prg, bufno);
-		ret = pcb_qry_run_(&ec, prg, 1, cb, user_ctx);
+		ret = pcb_qry_run_(&ec, prg, 1, 0, cb, user_ctx);
 		pcb_qry_uninit(&ec);
 		return ret;
 	}
@@ -152,7 +152,7 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 				case PCBQ_ASSERT:
 					ec.root = n;
 					ec.iter->it_active = n->precomp.it_active;
-					r = pcb_qry_run_(&ec, n->data.children, 1, cb, user_ctx);
+					r = pcb_qry_run_(&ec, n->data.children, 1, 0, cb, user_ctx);
 					ec.iter->it_active = NULL;
 					if (r < 0)
 						ret = r;
