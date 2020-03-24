@@ -6956,12 +6956,12 @@
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h ../src_plugins/query/query_access.h \
- ../src_plugins/query/query.h ../src_3rd/genvector/vts0.h \
- ../src_3rd/genht/htsi.h ../src_3rd/genregex/regex_se.h \
- ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
- ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
- ../src_plugins/query/query_exec.h
+ vtpadstack_t.h find.h obj_term.h netlist.h \
+ ../src_plugins/query/query_access.h ../src_plugins/query/query.h \
+ ../src_3rd/genvector/vts0.h ../src_3rd/genht/htsi.h \
+ ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
+ obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h
 ../src_plugins/query/fields_sphash.o: \
  ../src_plugins/query/fields_sphash.c
 ../src_plugins/query/query.o: ../src_plugins/query/query.c ../config.h \
