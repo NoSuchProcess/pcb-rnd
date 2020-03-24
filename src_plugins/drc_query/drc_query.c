@@ -115,7 +115,7 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_conf_listit
 	qctx.title = title;
 	qctx.desc = desc;
 
-	pcb_qry_run_script(query, scope, drc_qry_exec_cb, &qctx);
+	pcb_qry_run_script(pcb, query, scope, drc_qry_exec_cb, &qctx);
 
 	return 0;
 }

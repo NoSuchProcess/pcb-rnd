@@ -34,7 +34,7 @@
 #include "query_access.h"
 #include <librnd/core/pcb-printf.h>
 
-void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root, int bufno)
+void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, int bufno)
 {
 	memset(ctx, 0, sizeof(pcb_qry_exec_t));
 	ctx->all.type = PCBQ_VT_LST;
@@ -43,6 +43,7 @@ void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root, int bufno)
 	else
 		pcb_qry_list_all_data(&ctx->all, pcb_buffers[bufno].Data, PCB_OBJ_ANY & (~PCB_OBJ_LAYER));
 
+	ctx->pcb = pcb;
 	ctx->root = root;
 	ctx->iter = NULL;
 }
@@ -123,13 +124,13 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	ctx->iter->idx[vi] = 0;
 }
 
-int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+int pcb_qry_run(pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	int ret = 0, r;
 	pcb_qry_exec_t ec;
 
 	if (prg->type == PCBQ_EXPR_PROG) {
-		pcb_qry_init(&ec, prg, bufno);
+		pcb_qry_init(&ec, pcb, prg, bufno);
 		ret = pcb_qry_run_(&ec, prg, 1, 0, cb, user_ctx);
 		pcb_qry_uninit(&ec);
 		return ret;
@@ -138,7 +139,7 @@ int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_q
 	if (prg->type == PCBQ_RULE) {
 		pcb_qry_node_t *n;
 
-		pcb_qry_init(&ec, prg, bufno);
+		pcb_qry_init(&ec, pcb, prg, bufno);
 
 		/* execute 'let' statements first */
 		for(n = prg->data.children->next->next; n != NULL; n = n->next) {

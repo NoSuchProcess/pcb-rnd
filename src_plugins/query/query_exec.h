@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,17 +32,18 @@
 #include "query.h"
 
 struct pcb_qry_exec_s {
+	pcb_board_t *pcb;
 	pcb_qry_node_t *root;
 	pcb_qry_val_t all;       /* a list of all objects */
 	pcb_query_iter_t *iter;  /* current iterator */
 };
 
 /* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */
-void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_qry_node_t *root, int bufno);
+void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, int bufno);
 void pcb_qry_uninit(pcb_qry_exec_t *ctx);
 
 /* Execute an expression or a rule */
-int pcb_qry_run(pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
+int pcb_qry_run(pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
 int pcb_qry_is_true(pcb_qry_val_t *val);
 
