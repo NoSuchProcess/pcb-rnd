@@ -84,7 +84,6 @@ static int fnc_netlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 static int fnc_net_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	vtp0_t *v = fctx->user_data;
-/*printf(" append %ld %d\n", new_obj->ID, PCB_DFLAG_TEST(&new_obj->Flags, fctx->mark));*/
 	vtp0_append(v, new_obj);
 	return 0;
 }
@@ -110,7 +109,7 @@ static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 
 	res->type = PCBQ_VT_LST;
 	vtp0_init(&res->data.lst);
-printf("net any\n");
+
 	net = (pcb_net_t *)argv[0].data.obj;
 	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 		pcb_any_obj_t *o = pcb_term_find_name(ectx->pcb, ectx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
