@@ -27,6 +27,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "find.h"
 #include "obj_term.h"
 #include "netlist.h"
 
@@ -80,26 +81,62 @@ static int fnc_netlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 	return 0;
 }
 
-static int fnc_netterms(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int fnc_net_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	vtp0_t *v = fctx->user_data;
+/*printf(" append %ld %d\n", new_obj->ID, PCB_DFLAG_TEST(&new_obj->Flags, fctx->mark));*/
+	vtp0_append(v, new_obj);
+	return 0;
+}
+
+
+static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, int find_all)
 {
 	pcb_net_t *net;
 	pcb_net_term_t *t;
+	pcb_find_t fctx;
+
 
 	if ((argv[0].type != PCBQ_VT_OBJ) || (argv[0].data.obj->type != PCB_OBJ_NET))
 		return -1;
 
+	if (find_all) {
+		memset(&fctx, 0, sizeof(fctx));
+		fctx.consider_rats = 1;
+		fctx.found_cb = fnc_net_cb;
+		fctx.user_data = &res->data.lst;
+		pcb_find_from_obj(&fctx, ectx->pcb->Data, NULL);
+	}
+
 	res->type = PCBQ_VT_LST;
 	vtp0_init(&res->data.lst);
-
+printf("net any\n");
 	net = (pcb_net_t *)argv[0].data.obj;
 	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 		pcb_any_obj_t *o = pcb_term_find_name(ectx->pcb, ectx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
-		if (o != NULL)
-			vtp0_append(&res->data.lst, o);
+		if (o != NULL) {
+			if (find_all) {
+				if (!PCB_FIND_IS_MARKED(&fctx, o))
+					pcb_find_from_obj_next(&fctx, ectx->pcb->Data, o);
+			}
+			else
+				vtp0_append(&res->data.lst, o);
+		}
 	}
 
 	return 0;
 }
+
+static int fnc_netterms(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, int find)
+{
+	return fnc_net_any(ectx, argc, argv, res, 0);
+}
+
+static int fnc_netobjs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, int find)
+{
+	return fnc_net_any(ectx, argc, argv, res, 1);
+}
+
 
 void pcb_qry_basic_fnc_init(void)
 {
@@ -108,4 +145,5 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("mklist", fnc_mklist);
 	pcb_qry_fnc_reg("netlist", fnc_netlist);
 	pcb_qry_fnc_reg("netterms", fnc_netterms);
+	pcb_qry_fnc_reg("netobjs", fnc_netobjs);
 }
