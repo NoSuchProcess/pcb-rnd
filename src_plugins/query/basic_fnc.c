@@ -70,7 +70,7 @@ static int fnc_netlist(int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 
 	if (nl->used != 0)
 		for(e = htsp_first(nl), n = 0; e != NULL; e = htsp_next(nl, e), n++)
-			vtp0_append(&res->data.lst, e->key);
+			vtp0_append(&res->data.lst, e->value);
 
 	return 0;
 }
