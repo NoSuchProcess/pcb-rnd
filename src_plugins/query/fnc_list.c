@@ -105,6 +105,9 @@ static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 		}
 	}
 
+	if (find_all)
+		pcb_find_free(&fctx);
+
 	return 0;
 }
 
