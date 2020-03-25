@@ -48,10 +48,9 @@
 
 #include "obj_subc_list.h"
 
-static const char *drc_orig_cookie = "drc_orig";
+#include "drc_net_int.h"
 
-TODO("find: get rid of this global state")
-extern pcb_coord_t Bloat;
+static const char *drc_orig_cookie = "drc_orig";
 
 /* DRC clearance callback */
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
@@ -115,92 +114,6 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 	return 0;
 }
 
-typedef struct {
-	pcb_find_t fa, fb;
-	pcb_data_t *data;
-	pcb_view_list_t *lst;
-	unsigned fast:1;
-	unsigned shrunk:1;
-} drc_ctx_t;
-
-/* evaluates to true if obj was marked on list (fa or fb) */
-#define IS_FOUND(obj, list) (PCB_DFLAG_TEST(&(obj->Flags), ctx->list.mark))
-
-static int drc_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
-{
-	pcb_view_t *violation;
-	drc_ctx_t *ctx = fctx->user_data;
-
-	if (arrived_from == NULL) /* ingore the starting object - it must be marked as we started from the same object in the first search */
-		return 0;
-
-	/* broken if new object is not marked in the shrunk search (fa) but
-	   the arrived_from object was marked (so we notify direct breaks only) */
-	if (!IS_FOUND(new_obj, fa) && IS_FOUND(arrived_from, fa)) {
-
-		if (ctx->shrunk) {
-			violation = pcb_view_new(&PCB->hidlib, "broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
-			pcb_drc_set_data(violation, NULL, conf_core.design.shrink);
-		}
-		else {
-			violation = pcb_view_new(&PCB->hidlib, "short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
-			pcb_drc_set_data(violation, NULL, conf_core.design.bloat);
-		}
-		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)new_obj);
-		pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)arrived_from);
-		pcb_view_set_bbox_by_objs(ctx->data, violation);
-		pcb_view_list_append(ctx->lst, violation);
-		return ctx->fast; /* if fast is 1, we are aborting the search, returning the first hit only */
-	}
-	return 0;
-}
-
-/* Check for DRC violations on a single net starting from the pad or pin
-   sees if the connectivity changes when everything is bloated, or shrunk */
-static pcb_bool DRCFind(pcb_view_list_t *lst, pcb_any_obj_t *from)
-{
-	drc_ctx_t ctx;
-
-	ctx.fast = 1;
-	ctx.data = PCB->Data;
-	ctx.lst = lst;
-
-	memset(&ctx.fa, 0, sizeof(ctx.fa));
-	memset(&ctx.fb, 0, sizeof(ctx.fb));
-	ctx.fa.user_data = ctx.fb.user_data = &ctx;
-	ctx.fb.found_cb = drc_broken_cb;
-
-	/* Check for minimal overlap: shrink mark all objects on the net in fa;
-	   restart the search without shrink in fb: if anything new is found, it did
-	   not have enough overlap and shrink disconnected it. */
-	if (conf_core.design.shrink != 0) {
-		ctx.shrunk = 1;
-		Bloat = -conf_core.design.shrink;
-		pcb_find_from_obj(&ctx.fa, PCB->Data, from);
-		Bloat = 0;
-		pcb_find_from_obj(&ctx.fb, PCB->Data, from);
-		pcb_find_free(&ctx.fa);
-		pcb_find_free(&ctx.fb);
-	}
-
-	/* Check for minimal distance: bloat mark all objects on the net in fa;
-	   restart the search without bloat in fb: if anything new is found, it did
-	   not have a connection without the bloat. */
-	if (conf_core.design.bloat != 0) {
-		ctx.shrunk = 0;
-		Bloat = 0;
-		pcb_find_from_obj(&ctx.fa, PCB->Data, from);
-		Bloat = conf_core.design.bloat;
-		pcb_find_from_obj(&ctx.fb, PCB->Data, from);
-		pcb_find_free(&ctx.fa);
-		pcb_find_free(&ctx.fb);
-	}
-
-	Bloat = 0;
-
-	return pcb_false;
-}
-
 /* search short/breaks from subcircuit terminals; returns non-zero for cancel */
 static int drc_nets_from_subc_term(pcb_view_list_t *lst)
 {
@@ -221,7 +134,7 @@ static int drc_nets_from_subc_term(pcb_view_list_t *lst)
 				if (!(lyt & PCB_LYT_COPPER))
 					continue;
 			}
-			DRCFind(lst, o);
+			pcb_net_integrity(PCB, lst, o, conf_core.design.shrink, conf_core.design.bloat);
 		}
 		sofar++;
 	}
@@ -239,7 +152,7 @@ static int drc_nets_from_pstk(pcb_view_list_t *lst)
 		if (pcb_hid_progress(sofar, total, "drc_orig: Checking nets from subc non-terminals...") != 0)
 			return 1;
 
-		if ((padstack->term == NULL) && DRCFind(lst, (pcb_any_obj_t *)padstack))
+		if ((padstack->term == NULL) && pcb_net_integrity(PCB, lst, (pcb_any_obj_t *)padstack, conf_core.design.shrink, conf_core.design.bloat))
 			break;
 		sofar++;
 	}
