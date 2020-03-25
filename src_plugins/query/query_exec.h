@@ -31,6 +31,8 @@
 
 #include "query.h"
 
+#define PCB_QRY_MAX_FUNC_ARGS 64
+
 struct pcb_qry_exec_s {
 	pcb_board_t *pcb;
 	pcb_qry_node_t *root;

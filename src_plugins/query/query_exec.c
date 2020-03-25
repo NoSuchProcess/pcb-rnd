@@ -613,7 +613,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			return -1; /* shall not eval such a node */
 
 		case PCBQ_FCALL: {
-			pcb_qry_val_t args[64];
+			pcb_qry_val_t args[PCB_QRY_MAX_FUNC_ARGS];
 			int n;
 			pcb_qry_node_t *farg, *fname = node->data.children;
 			if (fname == NULL)
@@ -622,7 +622,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if ((fname->type !=  PCBQ_FNAME) || (fname->data.fnc == NULL))
 				return -1;
 			memset(args, 0, sizeof(args));
-			for(n = 0; (n < 64) && (farg != NULL); n++, farg = farg->next)
+			for(n = 0; (n < PCB_QRY_MAX_FUNC_ARGS) && (farg != NULL); n++, farg = farg->next)
 				if (pcb_qry_eval(ctx, farg, &args[n]) < 0)
 					return -1;
 

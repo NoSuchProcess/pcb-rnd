@@ -25,6 +25,8 @@
  */
 #include "config.h"
 
+#include <librnd/core/actions.h>
+
 #include "board.h"
 #include "data.h"
 #include "find.h"
@@ -149,6 +151,66 @@ static int fnc_subcobjs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 	return 0;
 }
 
+static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	int n;
+	fgw_arg_t resa, arga[PCB_QRY_MAX_FUNC_ARGS];
+	fgw_error_t e;
+
+	if (argv[0].type != PCBQ_VT_STRING) {
+		pcb_message(PCB_MSG_ERROR, "query: action() first argument must be a string\n");
+		return -1;
+	}
+
+	/* convert query arguments to action arguments */
+	for(n = 1; n < argc; n++) {
+		switch(argv[n].type) {
+			case PCBQ_VT_VOID:
+				arga[n].type = FGW_PTR;
+				arga[n].val.ptr_void = 0;
+			case PCBQ_VT_LST:
+				{
+					long i;
+					pcb_idpath_list_t *list = calloc(sizeof(pcb_idpath_list_t), 1);
+					for(i = 0; i < argv[n].data.lst.used; i++) {
+						fgw_arg_t tmp;
+						fgw_ptr_reg(&pcb_fgw, &tmp, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, pcb_obj2idpath(argv[n].data.lst.array[i]));
+						pcb_idpath_list_append(list, fgw_idpath(&tmp));
+					}
+					fgw_ptr_reg(&pcb_fgw, &(arga[n]), PCB_PTR_DOMAIN_IDPATH_LIST, FGW_PTR | FGW_STRUCT, list);
+				}
+				break;
+			case PCBQ_VT_OBJ:
+				fgw_ptr_reg(&pcb_fgw, &(arga[n]), PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, pcb_obj2idpath(argv[n].data.obj));
+				break;
+			case PCBQ_VT_COORD:
+				arga[n].type = FGW_COORD;
+				fgw_coord(&arga[n]) = argv[n].data.crd;
+				break;
+			case PCBQ_VT_LONG:
+				arga[n].type = FGW_LONG;
+				arga[n].val.nat_long = argv[n].data.lng;
+				break;
+			case PCBQ_VT_DOUBLE:
+				arga[n].type = FGW_DOUBLE;
+				arga[n].val.nat_double = argv[n].data.dbl;
+				break;
+			case PCBQ_VT_STRING:
+				arga[n].type = FGW_STR;
+				arga[n].val.cstr = argv[n].data.str;
+				break;
+		}
+	}
+
+	if (pcb_actionv_bin(&ectx->pcb->hidlib, argv[0].data.str, &res, argc, &arga) != 0)
+		return -1;
+
+	/* convert action result to query result */
+
+	return 0;
+}
+
+
 void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
@@ -158,4 +220,5 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("netterms", fnc_netterms);
 	pcb_qry_fnc_reg("netobjs", fnc_netobjs);
 	pcb_qry_fnc_reg("subcobjs", fnc_subcobjs);
+	pcb_qry_fnc_reg("action", fnc_action);
 }
