@@ -6932,7 +6932,7 @@
  librnd/core/compat_misc.h obj_pstk_inlines.h data.h thermal.h \
  librnd/poly/polygon1_gen.h funchash_core.h librnd/core/funchash.h \
  funchash_core_list.h search.h find.h
-../src_plugins/query/basic_fnc.o: ../src_plugins/query/basic_fnc.c \
+../src_plugins/query/fnc.o: ../src_plugins/query/fnc.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/pcb_bool.h vtroutestyle.h librnd/core/unit.h \
