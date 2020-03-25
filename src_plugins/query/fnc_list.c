@@ -89,7 +89,7 @@ static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 		return -1;
 
 	if (find_all)
-		fnc_find_init(ectx, &fctx, &res->data.lst, 1);
+		fnc_find_init(ectx, &fctx, &res->data.lst, 0);
 
 	res->type = PCBQ_VT_LST;
 	vtp0_init(&res->data.lst);
