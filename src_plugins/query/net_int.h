@@ -1,4 +1,4 @@
-#include "view.h"
+#include "find.h"
 #include "obj_common.h"
 
 typedef struct pcb_net_int_s pcb_net_int_t;
