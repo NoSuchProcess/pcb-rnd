@@ -1748,7 +1748,10 @@
  ../src_3rd/puplug/error.h layer_vis.h obj_arc_draw.h draw.h \
  obj_rat_draw.h obj_line_draw.h obj_text_draw.h obj_poly_draw.h \
  obj_pstk_draw.h board.h vtroutestyle.h rats_patch.h obj_subc_list.h \
- ../src_plugins/query/net_int.h obj_common.h
+ ../src_plugins/query/net_int.h obj_common.h \
+ ../src_plugins/drc_orig/drc_orig_conf.h \
+ ../src_plugins/drc_orig/conf_internal.c \
+ ../src_plugins/drc_orig/drc_orig_conf_fields.h
 ../src_plugins/drc_query/drc_query.o: \
  ../src_plugins/drc_query/drc_query.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -6961,11 +6964,12 @@
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h find.h obj_term.h netlist.h \
+ ../src_plugins/query/net_int.h obj_common.h \
  ../src_plugins/query/query_access.h ../src_plugins/query/query.h \
  ../src_3rd/genvector/vts0.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
- ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
+ ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h layer.h \
+ flag_str.h ../src_plugins/query/query_exec.h \
  ../src_plugins/query/fnc_glue.c ../src_plugins/query/fnc_list.c
 ../src_plugins/query/net_int.o: ../src_plugins/query/net_int.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
@@ -6982,8 +6986,8 @@
  librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/genvector/gds_char.h obj_gfx_list.h obj_gfx.h layer_grp.h \
  rats_patch.h board.h librnd/core/hidlib.h librnd/core/global_typedefs.h \
- find.h ../src_3rd/genvector/vtp0.h ../src_plugins/query/net_int.h view.h \
- idpath.h obj_common.h drc.h view.h
+ find.h ../src_3rd/genvector/vtp0.h ../src_plugins/query/net_int.h \
+ obj_common.h
 ../src_plugins/query/query.o: ../src_plugins/query/query.c ../config.h \
  librnd/config.h ../src_3rd/genht/hash.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genht/ht.h librnd/core/conf.h librnd/core/global_typedefs.h \
