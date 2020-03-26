@@ -33,9 +33,6 @@
 #include "find.h"
 #include "net_int.h"
 
-TODO("remove:")
-#include "drc.h"
-
 #define PCB dontuse
 
 TODO("find: get rid of this global state")
