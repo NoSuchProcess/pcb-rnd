@@ -138,3 +138,52 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	fgw_arg_free(&pcb_fgw, &resa);
 	return 0;
 }
+
+/*** net integrity ***/
+
+typedef struct {
+	pcb_qry_exec_t *ectx;
+	pcb_qry_val_t *res;
+} fnc_netint_t;
+
+static int fnc_netint_cb(pcb_net_int_t *nictx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	fnc_netint_t *ctx = nictx->cb_data;
+
+	ctx->res->type = PCBQ_VT_LST;
+	vtp0_init(&ctx->res->data.lst);
+	vtp0_append(&ctx->res->data.lst, new_obj);
+	vtp0_append(&ctx->res->data.lst, arrived_from);
+
+	return 1; /*can return only one pair at the moment so break the search */
+}
+
+static int fnc_netint_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, int is_shrink)
+{
+	pcb_coord_t shrink = 0, bloat = 0;
+	fnc_netint_t ctx;
+
+	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || ((argv[1].type != PCBQ_VT_COORD) && (argv[1].type != PCBQ_VT_LONG)))
+		return -1;
+
+	if (is_shrink)
+		shrink = argv[1].data.crd;
+	else
+		bloat = argv[1].data.crd;
+
+	ctx.ectx = ectx;
+	ctx.res = res;
+	res->type = PCBQ_VT_VOID;
+	pcb_net_integrity(ectx->pcb, argv[0].data.obj, shrink, bloat, fnc_netint_cb, &ctx);
+	return 0;
+}
+
+static int fnc_netbreak(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	return fnc_netint_any(ectx, argc, argv, res, 1);
+}
+
+static int fnc_netshort(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	return fnc_netint_any(ectx, argc, argv, res, 0);
+}

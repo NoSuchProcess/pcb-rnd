@@ -36,6 +36,7 @@
 #include "find.h"
 #include "obj_term.h"
 #include "netlist.h"
+#include "net_int.h"
 
 #include "query_access.h"
 #include "query_exec.h"
@@ -70,6 +71,8 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("netterms", fnc_netterms);
 	pcb_qry_fnc_reg("netobjs", fnc_netobjs);
 	pcb_qry_fnc_reg("netsegs", fnc_netsegs);
+	pcb_qry_fnc_reg("netbreak", fnc_netbreak);
+	pcb_qry_fnc_reg("netshort", fnc_netshort);
 	pcb_qry_fnc_reg("subcobjs", fnc_subcobjs);
 	pcb_qry_fnc_reg("action", fnc_action);
 }
