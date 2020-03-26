@@ -1,10 +1,10 @@
 #include "view.h"
 #include "obj_common.h"
 
-typedef struct drc_ctx_s drc_ctx_t;
-typedef int (pcb_int_broken_cb_t)(drc_ctx_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype);
+typedef struct pcb_net_int_s pcb_net_int_t;
+typedef int (pcb_int_broken_cb_t)(pcb_net_int_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype);
 
-struct drc_ctx_s {
+struct pcb_net_int_s {
 	pcb_board_t *pcb;
 	pcb_find_t fa, fb;
 	pcb_data_t *data;

@@ -47,7 +47,7 @@ extern pcb_coord_t Bloat;
 
 static int pcb_int_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
-	drc_ctx_t *ctx = fctx->user_data;
+	pcb_net_int_t *ctx = fctx->user_data;
 
 	if (arrived_from == NULL) /* ingore the starting object - it must be marked as we started from the same object in the first search */
 		return 0;
@@ -64,7 +64,7 @@ static int pcb_int_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_o
 
 pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data)
 {
-	drc_ctx_t ctx;
+	pcb_net_int_t ctx;
 
 	ctx.pcb = pcb;
 	ctx.fast = 1;
