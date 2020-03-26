@@ -168,6 +168,9 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	pcb_conf_listitem_t *i;
 	long cnt = 0, disable;
 
+	if (conf_drc_query.plugins.drc_query.disable)
+		return;
+
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;
 		if (rule->type != LHT_HASH) {
