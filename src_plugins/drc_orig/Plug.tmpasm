@@ -1,4 +1,7 @@
 put /local/pcb/mod {drc_orig}
+put /local/pcb/mod/CONF {$(PLUGDIR)/drc_orig/drc_orig_conf.h}
+put /local/pcb/mod/CONFFILE {drc_orig.conf}
+put /local/pcb/mod/CONFVAR {drc_orig_conf_internal}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/drc_orig/drc_orig.o
 @]

@@ -50,7 +50,13 @@
 
 #include "../src_plugins/query/net_int.h"
 
+#include "drc_orig_conf.h"
+#include "../src_plugins/drc_orig/conf_internal.c"
+
 static const char *drc_orig_cookie = "drc_orig";
+
+const conf_drc_orig_t conf_drc_orig;
+#define DRC_ORIG_CONF_FN "drc_orig.conf"
 
 /* DRC clearance callback */
 static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
@@ -338,6 +344,9 @@ static void pcb_drc_orig(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 {
 	pcb_view_list_t *lst = &pcb_drc_lst;
 
+	if (conf_drc_orig.plugins.drc_orig.disable)
+		return;
+
 	pcb_layervis_save_stack();
 	pcb_layervis_reset_stack(&PCB->hidlib);
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
@@ -381,12 +390,20 @@ int pplg_check_ver_drc_orig(int ver_needed) { return 0; }
 void pplg_uninit_drc_orig(void)
 {
 	pcb_event_unbind_allcookie(drc_orig_cookie);
+	pcb_conf_unreg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
+	pcb_conf_unreg_fields("plugins/drc_orig/");
 }
 
 int pplg_init_drc_orig(void)
 {
 	PCB_API_CHK_VER;
 	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_orig, NULL, drc_orig_cookie);
+
+	pcb_conf_reg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	pcb_conf_reg_field(conf_drc_orig, field,isarray,type_name,cpath,cname,desc,flags);
+#include "drc_orig_conf_fields.h"
+
 	return 0;
 }
 
