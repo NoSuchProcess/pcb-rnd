@@ -8,7 +8,6 @@ struct pcb_net_int_s {
 	pcb_board_t *pcb;
 	pcb_find_t fa, fb;
 	pcb_data_t *data;
-	pcb_view_list_t *lst;
 	pcb_coord_t bloat, shrink;
 	unsigned fast:1;
 	unsigned shrunk:1;
@@ -24,5 +23,5 @@ struct pcb_net_int_s {
 /* Check for DRC violations on a single net starting from the pad or pin
    sees if the connectivity changes when everything is bloated, or shrunk.
    If shrink or bloat is 0, that side of the test is skipped */
-pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data);
+pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data);
 

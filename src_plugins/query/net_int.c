@@ -62,14 +62,13 @@ static int pcb_int_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_o
 	return 0;
 }
 
-pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data)
+pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data)
 {
 	pcb_net_int_t ctx;
 
 	ctx.pcb = pcb;
 	ctx.fast = 1;
 	ctx.data = pcb->Data;
-	ctx.lst = lst;
 	ctx.bloat = bloat;
 	ctx.shrink = shrink;
 	ctx.broken_cb = cb;
