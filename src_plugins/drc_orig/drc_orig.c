@@ -114,6 +114,26 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 	return 0;
 }
 
+/* announce shorted or broken net */
+static int drc_broken_cb(drc_ctx_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	pcb_view_t *violation;
+
+	if (ctx->shrunk) {
+		violation = pcb_view_new(&ctx->pcb->hidlib, "broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
+		pcb_drc_set_data(violation, NULL, ctx->shrink);
+	}
+	else {
+		violation = pcb_view_new(&ctx->pcb->hidlib, "short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
+		pcb_drc_set_data(violation, NULL, ctx->bloat);
+	}
+	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)new_obj);
+	pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)arrived_from);
+	pcb_view_set_bbox_by_objs(ctx->data, violation);
+	pcb_view_list_append(ctx->lst, violation);
+	return 0;
+}
+
 /* search short/breaks from subcircuit terminals; returns non-zero for cancel */
 static int drc_nets_from_subc_term(pcb_view_list_t *lst)
 {
@@ -134,7 +154,7 @@ static int drc_nets_from_subc_term(pcb_view_list_t *lst)
 				if (!(lyt & PCB_LYT_COPPER))
 					continue;
 			}
-			pcb_net_integrity(PCB, lst, o, conf_core.design.shrink, conf_core.design.bloat);
+			pcb_net_integrity(PCB, lst, o, conf_core.design.shrink, conf_core.design.bloat, drc_broken_cb, NULL);
 		}
 		sofar++;
 	}
@@ -152,7 +172,7 @@ static int drc_nets_from_pstk(pcb_view_list_t *lst)
 		if (pcb_hid_progress(sofar, total, "drc_orig: Checking nets from subc non-terminals...") != 0)
 			return 1;
 
-		if ((padstack->term == NULL) && pcb_net_integrity(PCB, lst, (pcb_any_obj_t *)padstack, conf_core.design.shrink, conf_core.design.bloat))
+		if ((padstack->term == NULL) && pcb_net_integrity(PCB, lst, (pcb_any_obj_t *)padstack, conf_core.design.shrink, conf_core.design.bloat, drc_broken_cb, NULL))
 			break;
 		sofar++;
 	}

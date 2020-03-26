@@ -41,22 +41,12 @@ TODO("remove:")
 TODO("find: get rid of this global state")
 extern pcb_coord_t Bloat;
 
-typedef struct {
-	pcb_board_t *pcb;
-	pcb_find_t fa, fb;
-	pcb_data_t *data;
-	pcb_view_list_t *lst;
-	pcb_coord_t bloat, shrink;
-	unsigned fast:1;
-	unsigned shrunk:1;
-} drc_ctx_t;
 
 /* evaluates to true if obj was marked on list (fa or fb) */
 #define IS_FOUND(obj, list) (PCB_DFLAG_TEST(&(obj->Flags), ctx->list.mark))
 
-static int drc_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+static int pcb_int_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
-	pcb_view_t *violation;
 	drc_ctx_t *ctx = fctx->user_data;
 
 	if (arrived_from == NULL) /* ingore the starting object - it must be marked as we started from the same object in the first search */
@@ -65,25 +55,14 @@ static int drc_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t
 	/* broken if new object is not marked in the shrunk search (fa) but
 	   the arrived_from object was marked (so we notify direct breaks only) */
 	if (!IS_FOUND(new_obj, fa) && IS_FOUND(arrived_from, fa)) {
-
-		if (ctx->shrunk) {
-			violation = pcb_view_new(&ctx->pcb->hidlib, "broken", "Potential for broken trace", "Insufficient overlap between objects can lead to broken tracks\ndue to registration errors with old wheel style photo-plotters.");
-			pcb_drc_set_data(violation, NULL, ctx->shrink);
-		}
-		else {
-			violation = pcb_view_new(&ctx->pcb->hidlib, "short", "Copper areas too close", "Circuits that are too close may bridge during imaging, etching,\nplating, or soldering processes resulting in a direct short.");
-			pcb_drc_set_data(violation, NULL, ctx->bloat);
-		}
-		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)new_obj);
-		pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)arrived_from);
-		pcb_view_set_bbox_by_objs(ctx->data, violation);
-		pcb_view_list_append(ctx->lst, violation);
+		int r = ctx->broken_cb(ctx, new_obj, arrived_from, ctype);
+		if (r != 0) return r;
 		return ctx->fast; /* if fast is 1, we are aborting the search, returning the first hit only */
 	}
 	return 0;
 }
 
-pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat)
+pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data)
 {
 	drc_ctx_t ctx;
 
@@ -93,11 +72,13 @@ pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_any_obj_t
 	ctx.lst = lst;
 	ctx.bloat = bloat;
 	ctx.shrink = shrink;
+	ctx.broken_cb = cb;
+	ctx.cb_data = cb_data;
 
 	memset(&ctx.fa, 0, sizeof(ctx.fa));
 	memset(&ctx.fb, 0, sizeof(ctx.fb));
 	ctx.fa.user_data = ctx.fb.user_data = &ctx;
-	ctx.fb.found_cb = drc_broken_cb;
+	ctx.fb.found_cb = pcb_int_broken_cb;
 
 	/* Check for minimal overlap: shrink mark all objects on the net in fa;
 	   restart the search without shrink in fb: if anything new is found, it did
