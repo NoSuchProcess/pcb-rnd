@@ -67,8 +67,10 @@ static void fnc_find_init(pcb_qry_exec_t *ectx, pcb_find_t *fctx, vtp0_t *resvt,
 {
 	memset(fctx, 0, sizeof(pcb_find_t));
 	fctx->consider_rats = rats;
-	fctx->found_cb = fnc_net_cb;
-	fctx->user_data = resvt;
+	if (resvt != NULL) {
+		fctx->found_cb = fnc_net_cb;
+		fctx->user_data = resvt;
+	}
 	pcb_find_from_obj(fctx, ectx->pcb->Data, NULL);
 }
 
@@ -78,7 +80,7 @@ static void fnc_find_from(pcb_qry_exec_t *ectx, pcb_find_t *fctx, pcb_any_obj_t 
 		pcb_find_from_obj_next(fctx, ectx->pcb->Data, from);
 }
 
-static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, int find_all)
+static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, int find_all, int netseg)
 {
 	pcb_net_t *net;
 	pcb_net_term_t *t;
@@ -89,7 +91,7 @@ static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 		return -1;
 
 	if (find_all)
-		fnc_find_init(ectx, &fctx, &res->data.lst, 0);
+		fnc_find_init(ectx, &fctx, netseg ? NULL : &res->data.lst, 0);
 
 	res->type = PCBQ_VT_LST;
 	vtp0_init(&res->data.lst);
@@ -98,10 +100,13 @@ static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 		pcb_any_obj_t *o = pcb_term_find_name(ectx->pcb, ectx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 		if (o != NULL) {
-			if (find_all)
-				fnc_find_from(ectx, &fctx, o);
+			if (find_all) {
+				if (netseg && !PCB_FIND_IS_MARKED(&fctx, o)) /* report first (unmarked) object of the seg */
+					vtp0_append(&res->data.lst, o);
+				fnc_find_from(ectx, &fctx, o); /* mark all objects on this seg, potentiall also reporting them */
+			}
 			else
-				vtp0_append(&res->data.lst, o);
+				vtp0_append(&res->data.lst, o); /* no search required, just report all terminals */
 		}
 	}
 
@@ -113,12 +118,17 @@ static int fnc_net_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 
 static int fnc_netterms(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	return fnc_net_any(ectx, argc, argv, res, 0);
+	return fnc_net_any(ectx, argc, argv, res, 0, 0);
 }
 
 static int fnc_netobjs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	return fnc_net_any(ectx, argc, argv, res, 1);
+	return fnc_net_any(ectx, argc, argv, res, 1, 0);
+}
+
+static int fnc_netsegs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	return fnc_net_any(ectx, argc, argv, res, 1, 1);
 }
 
 

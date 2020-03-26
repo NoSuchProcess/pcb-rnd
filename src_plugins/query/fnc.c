@@ -69,6 +69,7 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("netlist", fnc_netlist);
 	pcb_qry_fnc_reg("netterms", fnc_netterms);
 	pcb_qry_fnc_reg("netobjs", fnc_netobjs);
+	pcb_qry_fnc_reg("netsegs", fnc_netsegs);
 	pcb_qry_fnc_reg("subcobjs", fnc_subcobjs);
 	pcb_qry_fnc_reg("action", fnc_action);
 }
