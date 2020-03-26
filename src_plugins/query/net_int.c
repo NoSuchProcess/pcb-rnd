@@ -31,7 +31,7 @@
 
 #include "board.h"
 #include "find.h"
-#include "drc_net_int.h"
+#include "net_int.h"
 
 TODO("remove:")
 #include "drc.h"

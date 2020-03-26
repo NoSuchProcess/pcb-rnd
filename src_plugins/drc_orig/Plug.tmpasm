@@ -1,7 +1,6 @@
 put /local/pcb/mod {drc_orig}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/drc_orig/drc_orig.o
-	$(PLUGDIR)/drc_orig/drc_net_int.o
 @]
 
 switch /local/pcb/drc_orig/controls

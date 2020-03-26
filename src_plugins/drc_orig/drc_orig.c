@@ -48,7 +48,7 @@
 
 #include "obj_subc_list.h"
 
-#include "drc_net_int.h"
+#include "../src_plugins/query/net_int.h"
 
 static const char *drc_orig_cookie = "drc_orig";
 
@@ -115,7 +115,7 @@ static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, 
 }
 
 /* announce shorted or broken net */
-static int drc_broken_cb(drc_ctx_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+static int drc_broken_cb(pcb_net_int_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	pcb_view_t *violation;
 

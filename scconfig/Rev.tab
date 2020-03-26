@@ -1,4 +1,4 @@
-30175	configure	query plugin: make bloat/shrink net drc loop reusable
+30181	configure	query plugin: make bloat/shrink net drc loop reusable
 30169	configure	query plugin: function implementation/split
 29927	configure	generalizing zoom and pan actions for ringdove
 29778	configure	new object type: gfx
