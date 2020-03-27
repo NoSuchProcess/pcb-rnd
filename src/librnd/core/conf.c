@@ -1290,6 +1290,7 @@ void pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, c
 	vtp0_init(&(node->hid_callbacks));
 
 	htsp_set(pcb_conf_fields, (char *)path, node);
+	conf_hid_global_cb(node, -1, new_item_post);
 }
 
 int pcb_conf_grow_list_(conf_native_t *node, int new_size)
