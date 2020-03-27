@@ -321,6 +321,24 @@ static int conf_load_plug_interns(conf_role_t role)
 	return cnt;
 }
 
+conf_native_type_t pcb_conf_native_type_parse(const char *s)
+{
+	if (pcb_strcasecmp(s, "string") == 0)     return  CFN_STRING;
+	if (pcb_strcasecmp(s, "str") == 0)        return  CFN_STRING;
+	if (pcb_strcasecmp(s, "boolean") == 0)    return  CFN_BOOLEAN;
+	if (pcb_strcasecmp(s, "bool") == 0)       return  CFN_BOOLEAN;
+	if (pcb_strcasecmp(s, "integer") == 0)    return  CFN_INTEGER;
+	if (pcb_strcasecmp(s, "real") == 0)       return  CFN_REAL;
+	if (pcb_strcasecmp(s, "coord") == 0)      return  CFN_COORD;
+	if (pcb_strcasecmp(s, "unit") == 0)       return  CFN_UNIT;
+	if (pcb_strcasecmp(s, "color") == 0)      return  CFN_COLOR;
+	if (pcb_strcasecmp(s, "list") == 0)       return  CFN_LIST;
+	if (pcb_strcasecmp(s, "hlist") == 0)      return  CFN_HLIST;
+
+	return CFN_max;
+}
+
+
 conf_policy_t pcb_conf_policy_parse(const char *s)
 {
 	if (pcb_strcasecmp(s, "overwrite") == 0)  return  POL_OVERWRITE;

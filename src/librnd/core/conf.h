@@ -227,6 +227,9 @@ int pcb_conf_parse_arguments(const char *prefix, int *argc, char ***argv);
 #define pcb_conf_reg_field(globvar,   field,isarray,type_name,cpath,cname, desc, flags) \
 	pcb_conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname, desc, flags)
 
+/* convert type name t type - return CFN_max on error */
+conf_native_type_t pcb_conf_native_type_parse(const char *s);
+
 /* convert a policy text to policy value - return POL_invalid on error */
 conf_policy_t pcb_conf_policy_parse(const char *s);
 
