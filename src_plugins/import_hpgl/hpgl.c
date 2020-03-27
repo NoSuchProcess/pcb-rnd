@@ -136,7 +136,7 @@ static int hpgl_load(const char *fname)
 			pcb_message(PCB_MSG_ERROR, "Error loading HP-GL: could not load any object from %s\n", fname);
 			return 0;
 		}
-		pcb_actionva(&PCB->hidlib, "mode", "pastebuffer", NULL);
+		pcb_actionva(&PCB->hidlib, "mode", "buffer", NULL);
 		return 0;
 	}
 
