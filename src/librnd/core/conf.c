@@ -702,7 +702,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 					if ((dest->type == CFN_HLIST) || (s->user_data == NULL)) {
-						conf_hid_global_cb_ptr(dest, s, new_hlist_item_post);
+						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
 						s->user_data = (void *)pcb_conf_merge_patch_list;
 					}
 				}
@@ -741,7 +741,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					i->val.any = NULL;
 					dest->used |= 1;
 					if ((dest->type == CFN_HLIST) && (s->user_data == NULL)) {
-						conf_hid_global_cb_ptr(dest, s, new_hlist_item_post);
+						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
 						s->user_data = (void *)pcb_conf_merge_patch_list;
 					}
 				}
