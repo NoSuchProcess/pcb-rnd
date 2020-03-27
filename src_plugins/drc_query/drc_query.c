@@ -31,7 +31,6 @@
 #include "config.h"
 
 #include <stdlib.h>
-#include <genvector/gds_char.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
@@ -192,22 +191,6 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	}
 }
 
-static void drc_legacy(const char *dst_path, const char *legacy_path)
-{
-	conf_native_t *nl = pcb_conf_get_field(legacy_path);
-	if (nl != NULL) {
-		gds_t tmp;
-
-		gds_init(&tmp);
-		pcb_conf_print_native_field((conf_pfn)pcb_append_printf, &tmp, 0, &nl->val, nl->type, nl->prop, 0);
-		if (tmp.used > 0)
-			pcb_conf_set(CFR_INTERNAL, dst_path, -1, tmp.array, POL_OVERWRITE);
-		gds_uninit(&tmp);
-	}
-	else
-		pcb_message(PCB_MSG_ERROR, "drc_query: invalid legacy path '%s' for %s\n", legacy_path, dst_path);
-}
-
 static conf_native_t *nat_defs = NULL;
 static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 {
@@ -249,7 +232,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 
 			pcb_conf_reg_field_(&c, 1, type, path, pcb_strdup(sdesc), 0);
 			if (slegacy != NULL)
-				drc_legacy(path, slegacy);
+				pcb_conf_legacy(path, slegacy);
 			else if (sdefault != NULL)
 				pcb_conf_set(CFR_INTERNAL, path, -1, sdefault, POL_OVERWRITE);
 			path = NULL; /* hash key shall not be free'd */

@@ -223,4 +223,6 @@ typedef struct {
 
 extern conf_core_t conf_core;
 void conf_core_init();
+void pcb_conf_legacy(const char *dst_path, const char *legacy_path);
+
 #endif
