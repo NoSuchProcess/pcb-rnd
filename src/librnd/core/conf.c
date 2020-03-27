@@ -701,6 +701,10 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					i->val.any = NULL;
 					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
+					if ((dest->type == CFN_HLIST) || (s->user_data == NULL)) {
+						conf_hid_global_cb_ptr(dest, s, new_hlist_item_post);
+						s->user_data = (void *)pcb_conf_merge_patch_list;
+					}
 				}
 				else {
 					pcb_hid_cfg_error(s, "List item (on a list, prepend) must be text\n");
@@ -736,6 +740,10 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					pcb_conflist_append(dest->val.list, i);
 					i->val.any = NULL;
 					dest->used |= 1;
+					if ((dest->type == CFN_HLIST) && (s->user_data == NULL)) {
+						conf_hid_global_cb_ptr(dest, s, new_hlist_item_post);
+						s->user_data = (void *)pcb_conf_merge_patch_list;
+					}
 				}
 				else {
 					pcb_hid_cfg_error(s, "List item (on a list) must be text\n");

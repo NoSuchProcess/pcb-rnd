@@ -11,6 +11,7 @@ typedef struct conf_hid_callbacks_s {
 
 	/* Called when a new config item is added to the database; global-only */
 	void (*new_item_post)(conf_native_t *cfg, int arr_idx);
+	void (*new_hlist_item_post)(conf_native_t *cfg, lht_node_t *nd);
 
 	/* Called during pcb_conf_hid_unreg to get hid-data cleaned up */
 	void (*unreg_item)(conf_native_t *cfg, int arr_idx);
@@ -60,7 +61,14 @@ do { \
 do { \
 	conf_hid_callbacks_t __cbs__; \
 	int __offs__ = ((char *)&(__cbs__.cb)) - ((char *)&(__cbs__)); \
-	pcb_conf_hid_global_cb_(native, arr_idx, __offs__); \
+	pcb_conf_hid_global_cb_int(native, arr_idx, __offs__); \
+} while(0)
+
+#define conf_hid_global_cb_ptr(native, ptr, cb) \
+do { \
+	conf_hid_callbacks_t __cbs__; \
+	int __offs__ = ((char *)&(__cbs__.cb)) - ((char *)&(__cbs__)); \
+	pcb_conf_hid_global_cb_ptr(native, ptr, __offs__); \
 } while(0)
 
 /****** Utility/helper functions  ******/
@@ -69,6 +77,7 @@ do { \
 void pcb_conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup);
 
 /****** Internal  ******/
-void pcb_conf_hid_global_cb_(conf_native_t *item, int arr_idx, int offs);
+void pcb_conf_hid_global_cb_int(conf_native_t *item, int arr_idx, int offs);
+void pcb_conf_hid_global_cb_ptr(conf_native_t *item, void *ptr, int offs);
 
 #endif

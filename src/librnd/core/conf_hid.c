@@ -114,8 +114,8 @@ void pcb_conf_hid_unreg(const char *cookie)
 	free(h);
 }
 
-typedef void (*cb_t)(conf_native_t *cfg, int arr_idx);
-void pcb_conf_hid_global_cb_(conf_native_t *item, int arr_idx, int offs)
+typedef void (*cbi_t)(conf_native_t *cfg, int arr_idx);
+void pcb_conf_hid_global_cb_int(conf_native_t *item, int arr_idx, int offs)
 {
 	htpp_entry_t *e;
 	if (conf_hid_ids == NULL)
@@ -125,9 +125,27 @@ void pcb_conf_hid_global_cb_(conf_native_t *item, int arr_idx, int offs)
 		const conf_hid_callbacks_t *cbs = h->cb;
 		if (cbs != NULL) {
 			char *s = (char *)&cbs->val_change_pre;
-			cb_t *cb = (cb_t *)(s + offs);
+			cbi_t *cb = (cbi_t *)(s + offs);
 			if ((*cb) != NULL)
 				(*cb)(item, arr_idx);
+		}
+	}
+}
+
+typedef void (*cbp_t)(conf_native_t *cfg, void *ptr);
+void pcb_conf_hid_global_cb_ptr(conf_native_t *item, void *ptr, int offs)
+{
+	htpp_entry_t *e;
+	if (conf_hid_ids == NULL)
+		return;
+	for (e = htpp_first(conf_hid_ids); e; e = htpp_next(conf_hid_ids, e)) {
+		conf_hid_t *h = e->value;
+		const conf_hid_callbacks_t *cbs = h->cb;
+		if (cbs != NULL) {
+			char *s = (char *)&cbs->val_change_pre;
+			cbp_t *cb = (cbp_t *)(s + offs);
+			if ((*cb) != NULL)
+				(*cb)(item, ptr);
 		}
 	}
 }
