@@ -363,6 +363,7 @@ void pcb_main_uninit(void)
 	pcbhl_log_print_uninit_errs("Log produced during uninitialization");
 	pcb_log_uninit();
 	main_path_uninit();
+	conf_core_uninit();
 }
 
 /* action table number of columns for a single action */
