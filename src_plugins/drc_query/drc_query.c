@@ -31,6 +31,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <genvector/gds_char.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
@@ -200,21 +201,27 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 		nat_defs = cfg;
 	}
 
+
 	if (nat_defs == cfg) {
 		lht_node_t *nd = i->prop.src;
 		char *path = pcb_concat("design/drc/", nd->name, NULL);
 		static pcb_coord_t c;
+		gds_t tmp;
+
+		gds_init(&tmp);
 
 		if (pcb_conf_get_field(path) == NULL) {
 			lht_node_t *ndesc = lht_dom_hash_get(nd, "desc");
 			lht_node_t *ntype = lht_dom_hash_get(nd, "type");
 			lht_node_t *ndefault = lht_dom_hash_get(nd, "default");
-			const char *sdesc = "n/a", *stype = NULL, *sdefault = NULL;
+			lht_node_t *nlegacy = lht_dom_hash_get(nd, "legacy");
+			const char *sdesc = "n/a", *stype = NULL, *sdefault = NULL, *slegacy = NULL;
 			conf_native_type_t type;
-
 			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
 			if ((ntype != NULL) && (ntype->type == LHT_TEXT)) stype = ntype->data.text.value;
 			if ((ndefault != NULL) && (ndefault->type == LHT_TEXT)) sdefault = ndefault->data.text.value;
+			if ((nlegacy != NULL) && (nlegacy->type == LHT_TEXT)) slegacy = nlegacy->data.text.value;
+
 
 			if (stype == NULL) {
 				pcb_message(PCB_MSG_ERROR, "query_drc: missing type field for constant %s\n", nd->name);
@@ -228,12 +235,23 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			}
 
 			pcb_conf_reg_field_(&c, 1, type, path, pcb_strdup(sdesc), 0);
+			if (slegacy != NULL) {
+				conf_native_t *nl = pcb_conf_get_field(slegacy);
+				if (nl != NULL) {
+					pcb_conf_print_native_field((conf_pfn)pcb_append_printf, &tmp, 0, &nl->val, nl->type, nl->prop, 0);
+					if (tmp.used > 0)
+						sdefault = tmp.array;
+				}
+				else
+					pcb_message(PCB_MSG_ERROR, "query_drc: invalid legacy path '%s' for %s\n", slegacy, nd->name);
+			}
 			if (sdefault != NULL)
 				pcb_conf_set(CFR_INTERNAL, path, -1, sdefault, POL_OVERWRITE);
 			path = NULL; /* hash key shall not be free'd */
 		}
 		fail:;
 		free(path);
+		gds_uninit(&tmp);
 	}
 }
 
