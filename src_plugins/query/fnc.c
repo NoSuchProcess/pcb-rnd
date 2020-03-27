@@ -29,6 +29,8 @@
 #include "config.h"
 
 #include <librnd/core/actions.h>
+#include <librnd/core/conf.h>
+#include <librnd/core/compat_misc.h>
 #include <libfungw/fungw_conv.h>
 
 #include "board.h"
@@ -75,4 +77,5 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("netshort", fnc_netshort);
 	pcb_qry_fnc_reg("subcobjs", fnc_subcobjs);
 	pcb_qry_fnc_reg("action", fnc_action);
+	pcb_qry_fnc_reg("getconf", fnc_getconf);
 }

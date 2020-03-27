@@ -187,3 +187,41 @@ static int fnc_netshort(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 {
 	return fnc_netint_any(ectx, argc, argv, res, 0);
 }
+
+static int fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	conf_native_t *nat;
+
+	if (argc != 1)
+		return -1;
+	if (argv[0].type != PCBQ_VT_STRING)
+		return -1;
+
+	nat = pcb_conf_get_field(argv[0].data.str);
+	if (nat == NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(nat->type) {
+		case CFN_STRING:   PCB_QRY_RET_STR(res, nat->val.string[0]);
+		case CFN_BOOLEAN:  PCB_QRY_RET_INT(res, nat->val.boolean[0]);
+		case CFN_INTEGER:  PCB_QRY_RET_INT(res, nat->val.integer[0]);
+		case CFN_REAL:     PCB_QRY_RET_DBL(res, nat->val.real[0]);
+		case CFN_COORD:    PCB_QRY_RET_COORD(res, nat->val.coord[0]);
+		
+		case CFN_COLOR:  PCB_QRY_RET_STR(res, nat->val.color[0].str);
+
+		case CFN_UNIT:
+			if (nat->val.unit[0] == NULL)
+				PCB_QRY_RET_INV(res);
+			else
+				PCB_QRY_RET_STR(res, nat->val.unit[0]->suffix);
+			break;
+
+		case CFN_LIST:
+		case CFN_HLIST:
+		case CFN_max:
+			PCB_QRY_RET_INV(res);
+	}
+	return 0;
+}
+
