@@ -34,7 +34,9 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
+#include <librnd/core/conf_hid.h>
 #include <librnd/core/list_conf.h>
+#include <librnd/core/compat_misc.h>
 
 #include "board.h"
 #include "drc.h"
@@ -189,6 +191,53 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	}
 }
 
+static conf_native_t *nat_defs = NULL;
+static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
+{
+	if (nat_defs == NULL) {
+		if (strncmp(cfg->hash_path, "plugins/drc_query/definitions", 29) != 0)
+			return;
+		nat_defs = cfg;
+	}
+
+	if (nat_defs == cfg) {
+		lht_node_t *nd = i->prop.src;
+		char *path = pcb_concat("design/drc/", nd->name, NULL);
+		static pcb_coord_t c;
+
+		if (pcb_conf_get_field(path) == NULL) {
+			lht_node_t *ndesc = lht_dom_hash_get(nd, "desc");
+			lht_node_t *ntype = lht_dom_hash_get(nd, "type");
+			lht_node_t *ndefault = lht_dom_hash_get(nd, "default");
+			const char *sdesc = "n/a", *stype = NULL, *sdefault = NULL;
+			conf_native_type_t type;
+
+			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
+			if ((ntype != NULL) && (ntype->type == LHT_TEXT)) stype = ntype->data.text.value;
+			if ((ndefault != NULL) && (ndefault->type == LHT_TEXT)) sdefault = ndefault->data.text.value;
+
+			if (stype == NULL) {
+				pcb_message(PCB_MSG_ERROR, "query_drc: missing type field for constant %s\n", nd->name);
+				goto fail;
+			}
+
+			type = pcb_conf_native_type_parse(stype);
+			if (type >= CFN_LIST) {
+				pcb_message(PCB_MSG_ERROR, "query_drc: invalid type '%s' for %s\n", stype, nd->name);
+				goto fail;
+			}
+
+			pcb_conf_reg_field_(&c, 1, type, path, pcb_strdup(sdesc), 0);
+			if (sdefault != NULL)
+				pcb_conf_set(CFR_INTERNAL, path, -1, sdefault, POL_OVERWRITE);
+			path = NULL; /* hash key shall not be free'd */
+		}
+		fail:;
+		free(path);
+	}
+}
+
+
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
 
 void pplg_uninit_drc_query(void)
@@ -196,12 +245,18 @@ void pplg_uninit_drc_query(void)
 	pcb_event_unbind_allcookie(drc_query_cookie);
 	pcb_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 	pcb_conf_unreg_fields("plugins/drc_query/");
+	pcb_conf_hid_unreg(drc_query_cookie);
 }
+
+static conf_hid_callbacks_t cbs;
 
 int pplg_init_drc_query(void)
 {
 	PCB_API_CHK_VER;
 	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_query, NULL, drc_query_cookie);
+
+	cbs.new_hlist_item_post = drc_query_newconf;
+	printf("REG: %d\n", pcb_conf_hid_reg(drc_query_cookie, &cbs));
 
 	pcb_conf_reg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
