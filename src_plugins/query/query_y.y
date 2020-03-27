@@ -148,7 +148,7 @@ static pcb_qry_node_t *make_flag_free(char *str)
 
 %left '('
 
-%type <n> number fields attribs let assert  var fname fcall fargs words
+%type <n> number fields attribs let assert var constant fname fcall fargs words
 %type <n> string_literal expr rule_item program_expr program_rules rule flg
 %type <u> maybe_unit
 
@@ -234,6 +234,7 @@ expr:
 	| expr '~' T_QSTR        { BINOP($$, $1, PCBQ_OP_MATCH, make_regex_free($3)); }
 	| T_CONST                { $$ = $1; }
 	| var                    { $$ = $1; }
+	| constant               { $$ = $1; }
 	| var '.' fields         {
 		pcb_qry_node_t *n;
 		$$ = pcb_qry_n_alloc(PCBQ_FIELD_OF);
@@ -312,6 +313,26 @@ var:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); if (iter_active_ctx != NULL) vts0_set(iter_active_ctx, $$->data.crd, 1); free($1); }
 	| T_LIST '(' '@' ')'     { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = pcb_strdup("@"); /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
 	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); if (iter_active_ctx != NULL) vts0_set(iter_active_ctx, $$->data.crd, 1); }
+	;
+
+/* $foo is shorthand for getconf("design/drc/foo") */
+constant:
+	'$' T_STR
+		{
+			pcb_qry_node_t *fname, *nname;
+
+			nname = pcb_qry_n_alloc(PCBQ_DATA_STRING);
+			nname->data.str = pcb_concat("design/drc/", $2, NULL);
+			free($2);
+
+			fname = pcb_qry_n_alloc(PCBQ_FNAME);
+			fname->data.fnc = pcb_qry_fnc_lookup("getconf");
+
+			$$ = pcb_qry_n_alloc(PCBQ_FCALL);
+			fname->parent = nname->parent = $$;
+			$$->data.children = fname;
+			$$->data.children->next = nname;
+		}
 	;
 
 fcall:

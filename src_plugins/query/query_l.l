@@ -111,7 +111,7 @@ thus            { return T_THUS; }
 [0-9]+[.][0-9]*           { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
 [A-Za-z_][0-9A-Za-z_]*    { qry_lval.s = pcb_strdup(yytext); return T_STR; }
 
-[@().,<>!*+/~-] { return *yytext; }
+[$@().,<>!*+/~-] { return *yytext; }
 
 [;\r\n]*        { return T_NL; }
 [ \t]           { continue; }
