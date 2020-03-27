@@ -146,12 +146,19 @@ typedef struct {
 		CFT_COORD line_thickness;
 		CFT_COORD clearance;
 
+		/* old drc settings */
 		CFT_COORD bloat;                   /* minimum space between copper features on different networks */
 		CFT_COORD shrink;                  /* minimum overlap between connected copper features */
 		CFT_COORD min_wid;                 /* minimum copper width */
 		CFT_COORD min_slk;                 /* minimum silk width */
 		CFT_COORD min_drill;               /* minimum drill diameter */
 		CFT_COORD min_ring;                /* minimum annular ring */
+
+		struct {                           /* drc: new, flexible drc settings */
+			CFT_COORD min_copper_clearance;  /* minimum space between copper features on different networks (default when the net attributes or other settings don't specify a different value) */
+			CFT_COORD min_copper_overlap;    /* minimum overlap between connected copper features (default when the net attributes or other settings don't specify a different value)*/
+		} drc;
+
 		CFT_INTEGER text_scale;            /* text scaling in % */
 		CFT_COORD text_thickness;          /* override stroke font text thickness */
 		CFT_INTEGER text_font_id;
