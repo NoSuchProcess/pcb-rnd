@@ -224,13 +224,13 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 
 
 			if (stype == NULL) {
-				pcb_message(PCB_MSG_ERROR, "query_drc: missing type field for constant %s\n", nd->name);
+				pcb_message(PCB_MSG_ERROR, "drc_query: missing type field for constant %s\n", nd->name);
 				goto fail;
 			}
 
 			type = pcb_conf_native_type_parse(stype);
 			if (type >= CFN_LIST) {
-				pcb_message(PCB_MSG_ERROR, "query_drc: invalid type '%s' for %s\n", stype, nd->name);
+				pcb_message(PCB_MSG_ERROR, "drc_query: invalid type '%s' for %s\n", stype, nd->name);
 				goto fail;
 			}
 
@@ -243,7 +243,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 						sdefault = tmp.array;
 				}
 				else
-					pcb_message(PCB_MSG_ERROR, "query_drc: invalid legacy path '%s' for %s\n", slegacy, nd->name);
+					pcb_message(PCB_MSG_ERROR, "drc_query: invalid legacy path '%s' for %s\n", slegacy, nd->name);
 			}
 			if (sdefault != NULL)
 				pcb_conf_set(CFR_INTERNAL, path, -1, sdefault, POL_OVERWRITE);
