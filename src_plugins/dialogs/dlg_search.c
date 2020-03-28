@@ -38,7 +38,7 @@
 #define MAX_ROW 8
 #define MAX_COL 4
 
-static const char *search_acts[] = { "select", "unselect", NULL };
+static const char *search_acts[] = { "select", "unselect", "view", NULL };
 
 #define NEW_EXPR_LAB "<edit me>"
 
