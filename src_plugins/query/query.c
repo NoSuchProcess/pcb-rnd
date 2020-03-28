@@ -143,13 +143,13 @@ void pcb_qry_n_free(pcb_qry_node_t *nd)
 		case PCBQ_DATA_DOUBLE:
 		case PCBQ_DATA_INVALID:
 		case PCBQ_DATA_LYTC:
+		case PCBQ_VAR:
 			/* no allocated field */
 			break;
 
 		case PCBQ_OP_NOT:
 		case PCBQ_FIELD_OF:
 		case PCBQ_LET:
-		case PCBQ_VAR:
 		case PCBQ_FCALL:
 		case PCBQ_OP_THUS:
 		case PCBQ_OP_AND:
