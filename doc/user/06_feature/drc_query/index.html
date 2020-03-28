@@ -32,13 +32,20 @@ li:pcb-rnd-conf-v1 {
   ha:overwrite {
     ha:plugins {
       ha:drc_query {
+        li:definitions {
+          ha:min_drill {
+            type = coord
+            desc = {minimum drill diameter}
+            default = 0
+          }
+        }
         li:rules {
           ha:hole_dia {
             type = single hole
             title = hole too small
             desc = padstack hole diameter is too small
             disable = 0
-            query = {(@.hole &gt; 0) &amp;&amp; (@.hole &lt; 0.2mm)}
+            query = {(@.hole &gt; 0) &amp;&amp; (@.hole &lt; $min_drill)}
           }
         }
       }
@@ -46,6 +53,30 @@ li:pcb-rnd-conf-v1 {
   }
 }
 </pre>
+<p>
+There are two main subtrees below ha:drc_query: definitions and rules.
+<h4> Definitions </h4>
+<p>
+Definitions create new config nodes under design/drc. These config nodes
+can be used to configure parameters of the drc check. The order of
+definitions does not matter but the name of each definition must be unique.
+<p>
+A definition is a named hash subtree with the following fields:
+<table border=1 cellspacing=0>
+<tr><th>name    <th> mandatory <th> meaning
+<tr><td>type    <td> yes       <td> data type of the configuration; one of: coord, boolean, integer, real, unit, color
+<tr><td>desc    <td> no        <td> human readable description
+<tr><td>default <td> no        <td> low priority default value (format depends on <i>type</i>) for the case the configuration node is not set
+<tr><td>legacy  <td> no        <td> reserved for stock rules for compatibility with the old DRC, do not use in new rules
+</table>
+<p>
+The definition in the above example creates config node <i>design/drc/min_drill</i>.
+This new config node is accessible through the config system normally, through
+the conf() action or the GUI (preferences dialog). From query(), it can
+be referenced using the shorthand <i>$min_dirll</i> form.
+
+
+<h4> Rules </h4>
 <p>
 Text fields type, tilte and desc are optional user readable strings
 that will be presented in the DRC report. The type::title pair serves
