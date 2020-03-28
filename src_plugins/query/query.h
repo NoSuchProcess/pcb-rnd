@@ -105,6 +105,7 @@ typedef enum {
 	PCBQ_DATA_STRING,  /* leaf */
 	PCBQ_DATA_REGEX,   /* leaf */
 	PCBQ_DATA_CONST,   /* leaf */
+	PCBQ_DATA_OBJ,     /* leaf */
 	PCBQ_DATA_INVALID, /* leaf */
 	PCBQ_DATA_LYTC,    /* leaf */
 
@@ -133,6 +134,7 @@ struct pcb_qry_node_s {
 		pcb_qry_val_t result;       /* of pure functions and subtrees */
 		re_se_t *regex;
 		long cnst;                  /* named constant */
+		pcb_any_obj_t *obj;
 		const pcb_flag_bits_t *flg;
 		const vts0_t *it_active;
 	} precomp;
@@ -183,6 +185,32 @@ void qry_error(void *prog, const char *err);
 /* Compile and execute a script, calling cb for each object. Returns the number
    of evaluation errors or -1 if evaluation couldn't start */
 int pcb_qry_run_script(pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
+
+/*** drc list-reports ***/
+
+/* dynamic alloced fake objects that store constants */
+
+#define PCB_OBJ_QRY_CONST  0x0100000
+typedef struct pcb_obj_qry_const_s {
+	PCB_ANY_OBJ_FIELDS;
+	pcb_qry_val_t val;
+} pcb_obj_qry_const_t;
+
+/* static alloced marker fake objects */
+typedef enum {
+	PCB_QRY_DRC_GRP1,
+	PCB_QRY_DRC_GRP2,
+	PCB_QRY_DRC_EXPECT,
+	PCB_QRY_DRC_MEASURE,
+	PCB_QRY_DRC_invalid
+} pcb_qry_drc_ctrl_t;
+
+pcb_any_obj_t pcb_qry_drc_ctrl[PCB_QRY_DRC_invalid];
+
+#define pcb_qry_drc_ctrl_decode(obj) \
+((((obj) >= &pcb_qry_drc_ctrl[0]) && ((obj) < &pcb_qry_drc_ctrl[PCB_QRY_DRC_invalid])) \
+	? ((obj) - &pcb_qry_drc_ctrl[0]) : PCB_QRY_DRC_invalid)
+
 
 
 #endif
