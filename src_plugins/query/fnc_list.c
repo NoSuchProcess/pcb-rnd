@@ -40,6 +40,57 @@ static int fnc_mklist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	return 0;
 }
 
+static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	int n;
+
+	if ((argc < 2) || (argc % 2 != 0))
+		return -1;
+
+	/* argument sanity checks */
+	for(n = 0; n < argc; n+=2) {
+		pcb_qry_val_t *val = &argv[n+1];
+		pcb_qry_drc_ctrl_t ctrl = pcb_qry_drc_ctrl_decode(argv[n].data.obj);
+		switch(ctrl) {
+			case PCB_QRY_DRC_GRP1:
+			case PCB_QRY_DRC_GRP2:
+				if (val->type != PCBQ_VT_OBJ)
+					return -1;
+				break;
+			case PCB_QRY_DRC_EXPECT:
+			case PCB_QRY_DRC_MEASURE:
+				if ((val->type != PCBQ_VT_COORD) && (val->type != PCBQ_VT_LONG) && (val->type != PCBQ_VT_DOUBLE))
+					return -1;
+				break;
+			default:
+				return -1;
+		}
+	}
+
+	res->type = PCBQ_VT_LST;
+	vtp0_init(&res->data.lst);
+	for(n = 0; n < argc; n+=2) {
+		pcb_qry_val_t *val = &argv[n+1];
+		pcb_obj_qry_const_t *tmp;
+		pcb_qry_drc_ctrl_t ctrl = pcb_qry_drc_ctrl_decode(argv[n].data.obj);
+
+		switch(val->type) {
+			case PCBQ_VT_OBJ:
+				vtp0_append(&res->data.lst, argv[n].data.obj);
+				break;
+			case PCBQ_VT_COORD:
+			case PCBQ_VT_LONG:
+			case PCBQ_VT_DOUBLE:
+				tmp = malloc(sizeof(pcb_obj_qry_const_t));
+				memcpy(&tmp->val, val, sizeof(pcb_qry_val_t));
+				vtp0_append(&res->data.lst, tmp);
+				vtp0_append(&ectx->autofree, tmp);
+				break;
+		}
+	}
+	return 0;
+}
+
 static int fnc_netlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	long n;
