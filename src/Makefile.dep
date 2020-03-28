@@ -7084,7 +7084,7 @@
  ../src_plugins/query/query_exec.h ../src_plugins/query/query_access.h \
  draw.h layer.h select.h operation.h board.h vtroutestyle.h layer_grp.h \
  rats_patch.h board.h librnd/core/hidlib.h librnd/core/global_typedefs.h \
- idpath.h librnd/core/compat_misc.h
+ idpath.h view.h idpath.h actions_pcb.h librnd/core/compat_misc.h
 ../src_plugins/query/query_exec.o: ../src_plugins/query/query_exec.c \
  ../config.h librnd/config.h data.h librnd/core/globalconst.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h layer.h \
