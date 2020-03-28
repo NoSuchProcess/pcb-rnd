@@ -54,8 +54,9 @@ as an unique identifier for the rule. If optional disable is 'yes' or
 <p>
 Note: since drc errors are presented on a per type basis, and drc rules
 are executed each in its own, independent context, the order of the hash
-node within the <i>rules</i> list (merged from different config sources)
-does not matter.
+nodes within the <i>rules</i> list (merged from different config sources)
+determines the order in which tests are performed, but otherwise does not
+matter (as tests are independent).
 <p>
 Query text may consists of multiple lines. The format is as described
 <a href="../query">at the query plugin</a>. There are two alternate forms:
