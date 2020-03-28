@@ -148,6 +148,7 @@ void pcb_qry_n_free(pcb_qry_node_t *nd)
 			break;
 
 		case PCBQ_LET:
+		case PCBQ_ASSERT:
 			if (nd->precomp.it_active != NULL) {
 				vts0_uninit(nd->precomp.it_active);
 				free(nd->precomp.it_active);
@@ -174,7 +175,6 @@ void pcb_qry_n_free(pcb_qry_node_t *nd)
 		case PCBQ_RULE:
 		case PCBQ_EXPR_PROG:
 		case PCBQ_EXPR:
-		case PCBQ_ASSERT:
 			free_children:;
 			for(ch = nd->data.children; ch != NULL; ch = chn) {
 				chn = ch->next;
