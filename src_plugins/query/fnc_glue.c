@@ -30,7 +30,7 @@
 
 static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	int n;
+	int n, retv = 0;
 	fgw_arg_t tmp, resa, arga[PCB_QRY_MAX_FUNC_ARGS], *arg;
 	fgw_error_t e;
 
@@ -45,6 +45,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 			case PCBQ_VT_VOID:
 				arga[n].type = FGW_PTR;
 				arga[n].val.ptr_void = 0;
+				break;
 			case PCBQ_VT_LST:
 				{
 					long i;
@@ -78,8 +79,10 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 		}
 	}
 
-	if (pcb_actionv_bin(&ectx->pcb->hidlib, argv[0].data.str, &resa, argc, arga) != 0)
-		return -1;
+	if (pcb_actionv_bin(&ectx->pcb->hidlib, argv[0].data.str, &resa, argc, arga) != 0) {
+		retv = -1;
+		goto fin;
+	}
 
 	/* convert action result to query result */
 
@@ -135,8 +138,21 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	}
 
 	fin:;
+	for(n = 1; n < argc; n++) {
+		switch(argv[n].type) {
+			case PCBQ_VT_LST:
+				{
+					pcb_idpath_list_t *list = arga[n].val.ptr_void;
+					pcb_idpath_list_clear(list);
+					free(list);
+					arga[n].val.ptr_void = NULL;
+				}
+				break;
+		}
+	}
+
 	fgw_arg_free(&pcb_fgw, &resa);
-	return 0;
+	return retv;
 }
 
 /*** net integrity ***/
