@@ -319,6 +319,7 @@ void pplg_uninit_query(void)
 {
 	pcb_remove_actions_by_cookie(query_cookie);
 	pcb_qry_fnc_destroy();
+	qry_lex_destroy();
 }
 
 void pcb_qry_basic_fnc_init(void);
