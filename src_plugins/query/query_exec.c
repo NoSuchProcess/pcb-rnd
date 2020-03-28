@@ -65,6 +65,24 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 	ctx->iter = NULL; /* no need to free the iterator: ctx->root free handled that as it was allocated in one of the nodes */
 }
 
+static void val_free_fields(pcb_qry_val_t *val)
+{
+	switch(val->type) {
+		case PCBQ_VT_LST:
+			pcb_qry_list_free(val);
+			break;
+		case PCBQ_VT_STRING:
+			TODO("decide if strings are strdup'd; action return may need to, ther est not; maybe introduce DSTR for dynamic string?");
+			break;
+		case PCBQ_VT_VOID:
+		case PCBQ_VT_OBJ:
+		case PCBQ_VT_COORD:
+		case PCBQ_VT_LONG:
+		case PCBQ_VT_DOUBLE:
+			break;
+	}
+}
+
 static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, int eval_list, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_val_t res;
@@ -86,6 +104,7 @@ static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, i
 				cb(user_ctx, &res, ec->iter->last_obj);
 			}
 
+			val_free_fields(&res);
 		}
 		else
 			errs++;
