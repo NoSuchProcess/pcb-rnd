@@ -38,6 +38,7 @@ struct pcb_qry_exec_s {
 	pcb_qry_node_t *root;
 	pcb_qry_val_t all;       /* a list of all objects */
 	pcb_query_iter_t *iter;  /* current iterator */
+	vtp0_t autofree;
 };
 
 /* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */
@@ -63,6 +64,13 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx);
 do { \
 	o->type = PCBQ_VT_LONG; \
 	o->data.lng = value; \
+	return 0; \
+} while(0)
+
+#define PCB_QRY_RET_OBJ(o, value) \
+do { \
+	o->type = PCBQ_VT_OBJ; \
+	o->data.obj = value; \
 	return 0; \
 } while(0)
 

@@ -52,7 +52,13 @@ void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, i
 
 void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 {
+	long l;
+
 	pcb_qry_list_free(&ctx->all);
+
+	for(l = 0; l < ctx->autofree.used; l++)
+		free(ctx->autofree.array[l]);
+	vtp0_uninit(&ctx->autofree);
 TODO(": free the iterator")
 }
 
@@ -637,6 +643,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_DATA_DOUBLE:      PCB_QRY_RET_DBL(res, node->data.dbl);
 		case PCBQ_DATA_STRING:      PCB_QRY_RET_STR(res, node->data.str);
 		case PCBQ_DATA_CONST:       PCB_QRY_RET_INT(res, node->precomp.cnst);
+		case PCBQ_DATA_OBJ:         PCB_QRY_RET_OBJ(res, node->precomp.obj);
 		case PCBQ_DATA_INVALID:     PCB_QRY_RET_INV(res);
 
 		/* not yet implemented: */
