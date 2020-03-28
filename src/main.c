@@ -332,7 +332,6 @@ void pcb_main_uninit(void)
 	pcb_render = pcb_gui = NULL;
 	pcb_crosshair_uninit();
 	pcb_tool_logic_uninit();
-	pcb_hidlib_uninit(); /* plugin unload */
 
 	if (PCB != NULL) {
 		pcb_uninit_buffers(PCB);
@@ -344,6 +343,8 @@ void pcb_main_uninit(void)
 		free(PCB);
 	}
 	PCB = NULL;
+
+	pcb_hidlib_uninit(); /* plugin unload */
 
 	pcb_funchash_uninit();
 	pcb_file_loaded_uninit();
