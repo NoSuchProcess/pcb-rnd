@@ -283,6 +283,7 @@ int pplg_init_drc_query(void)
 	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_query, NULL, drc_query_cookie);
 
 	cbs.new_hlist_item_post = drc_query_newconf;
+	pcb_conf_hid_reg(drc_query_cookie, &cbs);
 
 	pcb_conf_reg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
