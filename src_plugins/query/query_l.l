@@ -32,6 +32,7 @@
 static const char *pcb_qry_program, *pcb_qry_program_ptr;
 static int qry_yy_input(char *buf, int buflen);
 static pcb_qry_node_t *make_constant(char *str, long val);
+static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *obj);
 #define YY_INPUT(buf, res, buflen) (res = qry_yy_input(buf, buflen))
 %}
 
@@ -88,7 +89,10 @@ flag[.]         { return T_FLD_FLAG; }
 "DOC"           { qry_lval.n = make_constant(yytext, PCB_LYT_DOC); return T_CONST; }
 "BOUNDARY"      { qry_lval.n = make_constant(yytext, PCB_LYT_BOUNDARY); return T_CONST; }
 
-
+"DRCGRP1"       { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_GRP1]); return T_CONST; }
+"DRCGRP2"       { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_GRP2]); return T_CONST; }
+"DRCEXPECT"     { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_EXPECT]); return T_CONST; }
+"DRCMEASURE"    { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_MEASURE]); return T_CONST; }
 
 mm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MM); return T_UNIT; }
 m               { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_M); return T_UNIT; }
@@ -140,5 +144,13 @@ static pcb_qry_node_t *make_constant(char *str, long val)
 	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_CONST);
 	res->data.str = pcb_strdup(str);
 	res->precomp.cnst = val;
+	return res;
+}
+
+static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *o)
+{
+	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_OBJ);
+	res->data.str = pcb_strdup(str);
+	res->precomp.obj = o;
 	return res;
 }
