@@ -40,12 +40,14 @@
 #include "select.h"
 #include "board.h"
 #include "idpath.h"
+#include "view.h"
+#include "actions_pcb.h"
 #include <librnd/core/compat_misc.h>
 
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
 	"query(eval, expr) - compile and evaluate an expression and print a list of results on stdout\n"
-	"query(select|unselect, expr) - select or unselect objects matching an expression\n"
+	"query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression\n"
 	"query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression\n"
 	"query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist\n"
 	;
@@ -122,6 +124,22 @@ static void append_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current
 
 	idp = pcb_obj2idpath(current);
 	pcb_idpath_list_append(list, idp);
+}
+
+static void view_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
+{
+	pcb_view_list_t *view = user_ctx;
+	pcb_view_t *v;
+
+	if (!pcb_qry_is_true(res))
+		return;
+	if (!PCB_OBJ_IS_CLASS(current->type, PCB_OBJ_CLASS_OBJ))
+		return;
+
+	v = pcb_view_new(&PCB->hidlib, "search result", NULL, NULL);
+	pcb_view_append_obj(v, 0, current);
+	pcb_view_set_bbox_by_objs(PCB->Data, v);
+	pcb_view_list_append(view, v);
 }
 
 int pcb_qry_run_script(pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
@@ -285,6 +303,25 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_IRES(0);
 		return 0;
 	}
+
+	if (strcmp(cmd, "view") == 0) {
+		fgw_arg_t args[4], ares;
+		pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
+		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		if (pcb_qry_run_script(PCB_ACT_BOARD, arg, scope, view_cb, view) >= 0) {
+			args[1].type = FGW_STR; args[1].val.str = "advanced search results";
+			args[2].type = FGW_STR; args[2].val.str = "search_res";
+			fgw_ptr_reg(&pcb_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
+			pcb_actionv_bin(PCB_ACT_HIDLIB, "viewlist", &ares, 4, args);
+			PCB_ACT_IRES(0);
+		}
+		else {
+			free(view);
+			PCB_ACT_IRES(1);
+		}
+		return 0;
+	}
+
 
 	PCB_ACT_IRES(-1);
 	return 0;
