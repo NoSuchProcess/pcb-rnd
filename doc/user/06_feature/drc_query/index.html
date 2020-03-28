@@ -74,7 +74,7 @@ query = {
   rule overlap
   let A @.type==PSTK
   let B A
-  assert (A.ID &gt; B.ID) &amp;&amp; (distance(A.x, A.y, B.x, B.y) &lt; (A.hole + B.hole)/2) thus mklist(A, B)
+  assert (A.ID &gt; B.ID) &amp;&amp; (distance(A.x, A.y, B.x, B.y) &lt; (A.hole + B.hole)/2) thus violation(DRCGRP1, A, DRCGRP2, B)
 }
 </pre>
 <p>
@@ -184,9 +184,29 @@ overlap.
 The <b>thus</b> keyword changes this: when the left side of <b>thus</b>
 evaluates to true, instead of returning true, the right side is evaluated
 and returned. The right side is a function call to the builtin function
-<b>mklist</b>, which will create a new list of objects, inserting the current
-iteration object from list <i>A</i> and list <i>B</i>. In other words, it's
-a list of the two padstack objects participating in the overlap. When a
-list-of-two-objects is returned, drc_query will automatically put the two
-objects in the two offender group for marking (red and blue groups).
-
+<b>violation</b>, which will create a new list of instruction-objects pairs,
+inserting the current iteration object from list <i>A</i> as group-1 object
+and list <i>B</i> as group-2 object. In other words, it's
+a list of the two padstack objects participating in the overlap, sorted into
+two groups (red and blue on screen).
+<p>
+Call arguments for violation() are always pairs of a DRC* constant and an
+object or numeric value. There can be 1 or more pairs.
+The following DRC* constants can be used:
+<table border=1 cellspacing=0>
+<tr><th> name                    <th> meaning
+<tr><td> DRCGRP1        <td> following object is in group-1 of offending objects
+<tr><td> DRCGRP2        <td> following object is in group-2 of offending objects
+<tr><td> DRCEXPECT      <td> following numeric constant is DRC-expected value (e.g. minimum or maximum)
+<tr><td> DRCMEASURE     <td> following numeric constant is the measured value (that contradicts the expected value)
+</table>
+<p>
+Using any of the above instructions is optional, with the following considerations:
+<ul>
+	<li> if a DRC rule is related to any drawing object, at least one
+	     object should be listed as DRCGRP1 so that the user can identify
+	     the location of the problem
+	<li> if DRCMEASURE is specified, DRCEXPECT must also be specified, else
+	     DRCMEASURE is ignored
+	<li> order of instructions does not matter
+</ul>
