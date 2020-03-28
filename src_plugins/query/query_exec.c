@@ -148,7 +148,7 @@ int pcb_qry_run(pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(voi
 	}
 
 	if (prg->type == PCBQ_RULE) {
-		pcb_qry_node_t *n;
+		pcb_qry_node_t *n, *orig_root;
 
 		pcb_qry_init(&ec, pcb, prg, bufno);
 
@@ -162,6 +162,7 @@ int pcb_qry_run(pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(voi
 			switch(n->type) {
 				case PCBQ_LET: break;
 				case PCBQ_ASSERT:
+					orig_root = ec.root;
 					ec.root = n;
 					if (ec.iter != NULL)
 						ec.iter->it_active = n->precomp.it_active;
@@ -172,6 +173,7 @@ int pcb_qry_run(pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(voi
 						ret = r;
 					else if (ret >= 0)
 						ret += r;
+					ec.root = orig_root;
 					break;
 				default:;
 			}
