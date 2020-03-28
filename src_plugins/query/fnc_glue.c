@@ -152,7 +152,9 @@ static int fnc_netint_cb(pcb_net_int_t *nictx, pcb_any_obj_t *new_obj, pcb_any_o
 
 	ctx->res->type = PCBQ_VT_LST;
 	vtp0_init(&ctx->res->data.lst);
+	vtp0_append(&ctx->res->data.lst, &pcb_qry_drc_ctrl[PCB_QRY_DRC_GRP1]);
 	vtp0_append(&ctx->res->data.lst, new_obj);
+	vtp0_append(&ctx->res->data.lst, &pcb_qry_drc_ctrl[PCB_QRY_DRC_GRP2]);
 	vtp0_append(&ctx->res->data.lst, arrived_from);
 
 	return 1; /*can return only one pair at the moment so break the search */
