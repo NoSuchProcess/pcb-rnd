@@ -59,6 +59,9 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 	for(l = 0; l < ctx->autofree.used; l++)
 		free(ctx->autofree.array[l]);
 	vtp0_uninit(&ctx->autofree);
+
+	pcb_qry_n_free(ctx->root);
+	ctx->root = NULL;
 TODO(": free the iterator")
 }
 

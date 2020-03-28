@@ -114,6 +114,73 @@ pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype)
 	return nd;
 }
 
+void pcb_qry_n_free(pcb_qry_node_t *nd)
+{
+	pcb_qry_node_t *ch, *chn;
+
+	switch(nd->type) {
+		case PCBQ_RNAME:
+		case PCBQ_FIELD:
+		case PCBQ_LISTVAR:
+		case PCBQ_DATA_STRING:
+		case PCBQ_DATA_CONST:
+		case PCBQ_DATA_OBJ:
+			free((char *)nd->data.str);
+			break;
+
+		case PCBQ_DATA_REGEX:
+			free((char *)nd->data.str);
+			re_se_free(nd->precomp.regex);
+			break;
+
+		case PCBQ_ITER_CTX:
+			pcb_qry_iter_free(nd->data.iter_ctx);
+			break;
+
+		case PCBQ_FNAME:
+		case PCBQ_FLAG:
+		case PCBQ_DATA_COORD:
+		case PCBQ_DATA_DOUBLE:
+		case PCBQ_DATA_INVALID:
+		case PCBQ_DATA_LYTC:
+			/* no allocated field */
+			break;
+
+		case PCBQ_OP_NOT:
+		case PCBQ_FIELD_OF:
+		case PCBQ_LET:
+		case PCBQ_VAR:
+		case PCBQ_FCALL:
+		case PCBQ_OP_THUS:
+		case PCBQ_OP_AND:
+		case PCBQ_OP_OR:
+		case PCBQ_OP_EQ:
+		case PCBQ_OP_NEQ:
+		case PCBQ_OP_GTEQ:
+		case PCBQ_OP_LTEQ:
+		case PCBQ_OP_GT:
+		case PCBQ_OP_LT:
+		case PCBQ_OP_ADD:
+		case PCBQ_OP_SUB:
+		case PCBQ_OP_MUL:
+		case PCBQ_OP_DIV:
+		case PCBQ_OP_MATCH:
+		case PCBQ_RULE:
+		case PCBQ_EXPR_PROG:
+		case PCBQ_EXPR:
+		case PCBQ_ASSERT:
+			for(ch = nd->data.children; ch != NULL; ch = chn) {
+				chn = ch->next;
+				pcb_qry_n_free(ch);
+			}
+			break;
+
+		case PCBQ_nodetype_max: break;
+	}
+	free(nd);
+}
+
+
 pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch)
 {
 	ch->next = parent->data.children;

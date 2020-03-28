@@ -208,6 +208,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_qry_set_input(arg);
 		qry_parse(&prg);
 		pcb_qry_dump_tree(" ", prg);
+		pcb_qry_n_free(prg);
 		PCB_ACT_IRES(0);
 		return 0;
 	}
