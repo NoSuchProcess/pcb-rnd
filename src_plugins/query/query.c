@@ -282,6 +282,9 @@ pcb_query_iter_t *pcb_qry_iter_alloc(void)
 
 void pcb_qry_iter_free(pcb_query_iter_t *it)
 {
+	htsi_entry_t *e;
+	for(e = htsi_first(&it->names); e != NULL; e = htsi_next(&it->names, e))
+		free(e->key);
 	htsi_uninit(&it->names);
 	free(it->vects);
 	free(it->idx);
