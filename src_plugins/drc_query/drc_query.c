@@ -64,6 +64,16 @@ typedef struct {
 	unsigned disable:1;
 } drc_qry_ctx_t;
 
+pcb_coord_t load_obj_const(pcb_obj_qry_const_t *cnst)
+{
+	switch(cnst->val.type) {
+		case PCBQ_VT_COORD: return cnst->val.data.crd;
+		case PCBQ_VT_LONG: return cnst->val.data.lng;
+		case PCBQ_VT_DOUBLE: return cnst->val.data.dbl;
+	}
+	return 0;
+}
+
 void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
 	drc_qry_ctx_t *qctx = user_ctx;
@@ -84,10 +94,25 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 
 	violation = pcb_view_new(&qctx->pcb->hidlib, qctx->type, qctx->title, qctx->desc);
 	if (res->type == PCBQ_VT_LST) {
-		if (res->data.lst.used > 0)
-			pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)res->data.lst.array[0]);
-		if (res->data.lst.used > 1)
-			pcb_view_append_obj(violation, 1, (pcb_any_obj_t *)res->data.lst.array[1]);
+		int i;
+		pcb_coord_t *expv = NULL, expv_, *mesv = NULL, mesv_;
+		for(i = 0; i < res->data.lst.used-1; i+=2) {
+			pcb_any_obj_t *cmd = res->data.lst.array[i], *obj = res->data.lst.array[i+1];
+			pcb_qry_drc_ctrl_t ctrl = pcb_qry_drc_ctrl_decode(cmd);
+			pcb_obj_qry_const_t *cnst = res->data.lst.array[i+1];
+			
+			switch(ctrl) {
+				case PCB_QRY_DRC_GRP1:     pcb_view_append_obj(violation, 0, obj); break;
+				case PCB_QRY_DRC_GRP2:     pcb_view_append_obj(violation, 2, obj); break;
+				case PCB_QRY_DRC_EXPECT:   expv = &expv_; expv_ = load_obj_const(cnst); break;
+				case PCB_QRY_DRC_MEASURE:  mesv = &mesv_; mesv_ = load_obj_const(cnst); break;
+				case PCB_QRY_DRC_invalid:
+					break;
+			}
+		}
+
+		if (expv != NULL)
+			pcb_drc_set_data(violation, mesv, *expv);
 	}
 	else
 		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)current);
