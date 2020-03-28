@@ -77,12 +77,14 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 		switch(val->type) {
 			case PCBQ_VT_OBJ:
 				vtp0_append(&res->data.lst, argv[n].data.obj);
+				vtp0_append(&res->data.lst, argv[n+1].data.obj);
 				break;
 			case PCBQ_VT_COORD:
 			case PCBQ_VT_LONG:
 			case PCBQ_VT_DOUBLE:
 				tmp = malloc(sizeof(pcb_obj_qry_const_t));
 				memcpy(&tmp->val, val, sizeof(pcb_qry_val_t));
+				vtp0_append(&res->data.lst, argv[n].data.obj);
 				vtp0_append(&res->data.lst, tmp);
 				vtp0_append(&ectx->autofree, tmp);
 				break;
