@@ -163,9 +163,11 @@ int pcb_qry_run(pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(voi
 				case PCBQ_LET: break;
 				case PCBQ_ASSERT:
 					ec.root = n;
-					ec.iter->it_active = n->precomp.it_active;
+					if (ec.iter != NULL)
+						ec.iter->it_active = n->precomp.it_active;
 					r = pcb_qry_run_(&ec, n->data.children, 1, 0, cb, user_ctx);
-					ec.iter->it_active = NULL;
+					if (ec.iter != NULL)
+						ec.iter->it_active = NULL;
 					if (r < 0)
 						ret = r;
 					else if (ret >= 0)
