@@ -267,8 +267,10 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_IRES(0);
 	for(; i < argc; i++) {
-		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, ;);
-		pcb_message(how, argv[i].val.str);
+		char *s = NULL;
+		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, s = argv[i].val.str);
+		if ((s != NULL) && (*s != '\0'))
+			pcb_message(how, s);
 		pcb_message(how, "\n");
 	}
 
