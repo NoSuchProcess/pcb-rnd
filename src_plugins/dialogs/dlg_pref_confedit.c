@@ -109,7 +109,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			}
 			break;
 		case CFN_HLIST:
-			pcb_message(PCB_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
+			pcb_message(PCB_MSG_ERROR, "ERROR: can not import hash lists on GUI\n");
 			break;
 		case CFN_max:
 			pcb_message(PCB_MSG_ERROR, "ERROR: invalid conf node type\n");
@@ -237,6 +237,14 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_a
 		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
 }
 
+static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+{
+	confedit_ctx_t *ctx = caller_data;
+	pcb_actionva(&PCB->hidlib, ctx->nat->gui_edit_act,
+		pcb_conf_role_name(ctx->role), ctx->nat->hash_path, trigger_attr->val.str,
+		NULL);
+}
+
 
 static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
@@ -263,8 +271,10 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	}
 
 	if (pctx->conf.selected_nat->type == CFN_HLIST) {
-		pcb_message(PCB_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
-		return;
+		if (pctx->conf.selected_nat->gui_edit_act == NULL) {
+			pcb_message(PCB_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
+			return;
+		}
 	}
 
 	ctx = calloc(sizeof(confedit_ctx_t), 1);
@@ -347,7 +357,15 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 				PCB_DAD_END(ctx->dlg);
 				break;
 			case CFN_HLIST:
-				PCB_DAD_LABEL(ctx->dlg, "hash-lists are not supported yet");
+				{
+					gdl_iterator_t it;
+					pcb_conf_listitem_t *i;
+					pcb_conflist_foreach(pctx->conf.selected_nat->val.list, &it, i) {
+						lht_node_t *rule = i->prop.src;
+						PCB_DAD_BUTTON(ctx->dlg, rule->name);
+							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_hlist_cb);
+					}
+				}
 				break;
 			case CFN_max:
 				PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
