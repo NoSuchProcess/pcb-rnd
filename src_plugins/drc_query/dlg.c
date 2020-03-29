@@ -33,8 +33,8 @@
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	conf_role_t role;
-	char *rule;
-	int wtype, wtitle, wdisable, wdesc, wrule;
+	char *rule, *path;
+	int wtype, wtitle, wdisable, wdesc, wquery;
 } rule_edit_ctx_t;
 
 rule_edit_ctx_t rule_edit_ctx;
@@ -43,24 +43,68 @@ static void rule_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	rule_edit_ctx_t *ctx = caller_data;
 
+	free(ctx->path);
 	free(ctx->rule);
 	PCB_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
 
+static const char *textval(lht_node_t *nd, const char *fname)
+{
+	lht_node_t *nt = lht_dom_hash_get(nd, fname);
+
+	if ((nt == NULL) || (nt->type != LHT_TEXT))
+		return "";
+
+	return nt->data.text.value;
+}
+
+static int boolval(lht_node_t *nd, const char *fname)
+{
+	return str2bool(textval(nd, fname));
+}
+
 static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 {
+	pcb_dad_retovr_t retovr;
+	lht_node_t *nd = pcb_conf_lht_get_at_mainplug(ctx->role, ctx->path, 1, 0);
+	if (nd != NULL) {
+		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
+		pcb_hid_text_t *txt = atxt->wdata;
 
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtype,    str, textval(nd, "type"));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtitle,   str, textval(nd, "title"));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdisable, str, boolval(nd, "disable"));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdesc,    str, textval(nd, "desc"));
+
+		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_REPLACE, textval(nd, "query"));
+	}
+	else {
+		pcb_message(PCB_MSG_ERROR, "Rule %s disappeared from the config tree.\n", ctx->rule);
+		pcb_hid_dad_close(ctx->dlg_hid_ctx, &retovr, -1);
+	}
 }
 
 static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	char *info;
-	rule_edit_ctx_t *ctx = calloc(sizeof(rule_edit_ctx_t), 1);
+	char *info, *path;
+	rule_edit_ctx_t *ctx;
+	lht_node_t *nd;
 
+	path = pcb_concat("plugins/drc_query/rules/", rule, ":0", NULL);
+	nd = pcb_conf_lht_get_at_mainplug(role, path, 1, 0);
+	if (nd == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Rule %s not found on this role.\n", rule);
+		return -1;
+	}
+
+	ctx = calloc(sizeof(rule_edit_ctx_t), 1);
 	ctx->role = role;
 	ctx->rule = pcb_strdup(rule);
+	ctx->path = path;
+
+
 
 	info = pcb_strdup_printf("DRC rule edit: %s on role %s", rule, pcb_conf_role_name(role));
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -92,7 +136,7 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 		PCB_DAD_TEXT(ctx->dlg, ctx);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 			/*PCB_DAD_CHANGE_CB(ctx->dlg, rule_chg_cb);*/
-			ctx->wrule = PCB_DAD_CURRENT(ctx->dlg);
+			ctx->wquery = PCB_DAD_CURRENT(ctx->dlg);
 
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
@@ -106,14 +150,14 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 	free(info);
 
 	PCB_DAD_DEFSIZE(ctx->dlg, 200, 400);
+	PCB_DAD_NEW("drc_query_rule_edit", ctx->dlg, "drc_query: rule editor", ctx, pcb_false, rule_edit_close_cb);
 
 	drc_rule_pcb2dlg(ctx);
 
-	PCB_DAD_NEW("drc_query_rule_edit", ctx->dlg, "drc_query: rule editor", ctx, pcb_false, rule_edit_close_cb);
 	return 0;
 }
 
-static const char pcb_acts_DrcQueryEditRule[] = "DrcQueryEditRule(role, path, rule)\nDrcQueryEditRule(role, path, rule)\n";
+static const char pcb_acts_DrcQueryEditRule[] = "DrcQueryEditRule(role, path, rule)\nDrcQueryEditRule(role, rule)\n";
 static const char pcb_acth_DrcQueryEditRule[] = "Interactive, GUI based DRC rule editor";
 static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {

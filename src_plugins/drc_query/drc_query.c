@@ -157,6 +157,20 @@ static const char *load_str(lht_node_t *rule, pcb_conf_listitem_t *i, const char
 	return n->data.text.value;
 }
 
+static int str2bool(const char *val)
+{
+	while(isspace(*val)) val++;
+	if ((val[0] == '0') && (val[1] == '\0'))
+		return 0;
+	if ((val[0] == '1') && (val[1] == '\0'))
+		return 0;
+	if ((pcb_strcasecmp(val, "yes") == 0) || (pcb_strcasecmp(val, "true") == 0))
+		return 1;
+	if ((pcb_strcasecmp(val, "no") == 0) || (pcb_strcasecmp(val, "false") == 0))
+		return 0;
+	return -1;
+}
+
 static long load_int(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name, long invalid)
 {
 	lht_node_t *n = lht_dom_hash_get(rule, name);
@@ -173,10 +187,9 @@ static long load_int(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name,
 
 	val = n->data.text.value;
 
-	if ((pcb_strcasecmp(val, "yes") == 0) || (pcb_strcasecmp(val, "true") == 0))
-		return 1;
-	if ((pcb_strcasecmp(val, "no") == 0) || (pcb_strcasecmp(val, "false") == 0))
-		return 0;
+	l = str2bool(val);
+	if (l >= 0)
+		return l;
 
 	l = strtol(val, &end, 10);
 	if (*end != '\0') {
