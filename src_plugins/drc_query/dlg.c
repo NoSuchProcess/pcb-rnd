@@ -27,3 +27,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
+
+#include <librnd/core/hid_dad.h>
+
