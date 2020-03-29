@@ -1782,7 +1782,9 @@
  ../src_3rd/genvector/vts0.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h \
+ obj_common.h layer.h flag_str.h ../src_plugins/drc_query/dlg.c \
+ librnd/core/hid_dad.h librnd/core/hid_attrib.h librnd/core/hid.h \
+ librnd/core/hid_dad_spin.h \
  ../src_plugins/drc_query/drc_query_conf_fields.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h librnd/config.h librnd/core/conf.h \
