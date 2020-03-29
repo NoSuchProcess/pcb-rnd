@@ -141,8 +141,10 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Run");
+			PCB_DAD_BUTTON(ctx->dlg, "Save");
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 		PCB_DAD_END(ctx->dlg);
