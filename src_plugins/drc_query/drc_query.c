@@ -283,6 +283,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 	}
 }
 
+#include "dlg.c"
 
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
 
