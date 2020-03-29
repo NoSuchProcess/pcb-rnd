@@ -85,6 +85,23 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 	}
 }
 
+static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	rule_edit_ctx_t *ctx = caller_data;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
+	pcb_hid_text_t *txt = atxt->wdata;
+	char *s;
+	s = txt->hid_get_text(atxt, hid_ctx);
+	pcb_actionva(&PCB->hidlib, "query", "view", s, NULL);
+	free(s);
+}
+
+static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	rule_edit_ctx_t *ctx = caller_data;
+	
+}
+
 static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -135,13 +152,14 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 		PCB_DAD_LABEL(ctx->dlg, "DRC rule query script:");
 		PCB_DAD_TEXT(ctx->dlg, ctx);
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
-			/*PCB_DAD_CHANGE_CB(ctx->dlg, rule_chg_cb);*/
 			ctx->wquery = PCB_DAD_CURRENT(ctx->dlg);
 
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Run");
+				PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_run_cb);
 			PCB_DAD_BUTTON(ctx->dlg, "Save");
+				PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_save_cb);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
