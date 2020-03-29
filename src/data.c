@@ -175,6 +175,12 @@ void pcb_data_uninit(pcb_data_t *data)
 	}
 	PCB_END_LOOP;
 
+	PCB_PADSTACK_LOOP(data);
+	{
+		pcb_pstk_free(padstack);
+	}
+	PCB_END_LOOP;
+
 	list_map0(&data->Rat, pcb_rat_t, pcb_rat_free);
 
 	for (layer = data->Layer, i = 0; i < data->LayerN; layer++, i++)
