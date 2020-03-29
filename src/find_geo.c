@@ -997,6 +997,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(pcb_pstk_t *ps, pcb_poly_t *poly, pc
 		case PCB_PSSH_CIRC:
 		{
 			pcb_line_t tmp;
+			tmp.type = PCB_OBJ_LINE;
 			tmp.Point1.X = tmp.Point2.X = shape->data.circ.x + ps->x;
 			tmp.Point1.Y = tmp.Point2.Y = shape->data.circ.y + ps->y;
 			tmp.Clearance = 0;
