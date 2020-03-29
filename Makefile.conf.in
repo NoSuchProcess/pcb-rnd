@@ -1,3 +1,11 @@
+put /tmpasm/OFS { }
+put /local/pcb/CFLAGS_GENERIC cc/cflags
+append /local/pcb/CFLAGS_GENERIC cc/fpic
+append /local/pcb/CFLAGS_GENERIC ?/local/pcb/cflags_profile
+put /local/pcb/CFLAGS /local/pcb/CFLAGS_GENERIC
+uniq /local/pcb/CFLAGS
+uniq /local/pcb/CFLAGS_GENERIC
+
 # calculate the /local/confdir: either specified conf-time or compatibility fallback
 switch /local/confdir
 	case {^$}  put /local/confdir_final_m [@@/local/prefix@/share/pcb-rnd@]; end
@@ -26,6 +34,9 @@ EXE=@/target/sys/ext_exe@
 PCB_RND_HOST_CC=@/host/cc/cc@
 PCB_RND_VER=@/local/version@
 PCB_RND_VER_MAJOR=@/local/version_major@
+
+PCB_RND_CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
+PCB_RND_C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@

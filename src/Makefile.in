@@ -1,8 +1,3 @@
-# TODO default compiler flags
-put /local/pcb/CFLAGS_GENERIC cc/cflags
-append /local/pcb/CFLAGS_GENERIC cc/fpic
-append /local/pcb/CFLAGS_GENERIC ?/local/pcb/cflags_profile
-put /local/pcb/CFLAGS /local/pcb/CFLAGS_GENERIC
 append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src -I../src_3rd/liblihata }
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
@@ -13,7 +8,6 @@ put /local/pcb/OBJS_HIDLIB {}
 put /local/pcb/OBJS_HIDLIB_ONLY {}
 put /local/pcb/OBJS_C99_HIDLIB_PLG {}
 put /local/pcb/OBJS_HIDLIB_PLG {}
-put /tmpasm/OFS { }
 
 if ?libs/script/fungw/presents
 then
