@@ -31,6 +31,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <genht/hash.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
@@ -300,7 +301,8 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 #include "dlg.c"
 
 static pcb_action_t drc_query_action_list[] = {
-	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule},
+	{"DrcQueryListRules", pcb_act_DrcQueryListRules, pcb_acth_DrcQueryListRules, pcb_acts_DrcQueryListRules},
+	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule}
 };
 
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }

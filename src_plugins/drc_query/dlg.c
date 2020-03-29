@@ -29,6 +29,7 @@
  */
 
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -196,5 +197,134 @@ static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t 
 		PCB_ACT_FAIL(DrcQueryEditRule);
 
 	PCB_ACT_IRES(pcb_dlg_rule_edit(role, srule));
+	return 0;
+}
+
+
+
+typedef struct{
+	PCB_DAD_DECL_NOINIT(dlg)
+	int active; /* already open - allow only one instance */
+	int wlist, wrule, wtype, wtitle, wdesc;
+} drc_rlist_ctx_t;
+
+static drc_rlist_ctx_t drc_rlist_ctx;
+
+static void drc_rlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+{
+	drc_rlist_ctx_t *ctx = caller_data;
+	PCB_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(drc_rlist_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
+static void drc_rlist_pcb2dlg(void)
+{
+	drc_rlist_ctx_t *ctx = &drc_rlist_ctx;
+	pcb_hid_attribute_t *attr;
+	pcb_hid_tree_t *tree;
+	pcb_hid_row_t *r;
+	char *cell[4], *cursor_path = NULL;
+	gdl_iterator_t it;
+	pcb_conf_listitem_t *i;
+
+
+	attr = &ctx->dlg[ctx->wlist];
+	tree = attr->wdata;
+
+	/* remember cursor */
+	r = pcb_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = pcb_strdup(r->cell[0]);
+
+	/* remove existing items */
+	pcb_dad_tree_clear(tree);
+
+	cell[3] = NULL;
+
+	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+		conf_role_t role;
+		lht_node_t *rule = i->prop.src;
+		if (rule->type != LHT_HASH)
+			continue;
+
+		role = pcb_conf_lookup_role(rule);
+		cell[0] = pcb_conf_role_name(role);
+		cell[1] = load_int(rule, i, "disable", 0) ? "YES" : "no";
+		cell[2] = rule->name;
+		pcb_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		pcb_hid_attr_val_t hv;
+		hv.str = cursor_path;
+		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		free(cursor_path);
+	}
+
+}
+
+static int pcb_dlg_drc_rlist(void)
+{
+	const char *lst_hdr[] = {"role", "disabled", "rule name", NULL};
+	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	int wpane;
+
+	if (drc_rlist_ctx.active)
+		return 0; /* do not open another */
+
+	PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
+		PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
+			wpane = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+
+			PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
+				PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Rules available:");
+				PCB_DAD_TREE(drc_rlist_ctx.dlg, 3, 0, lst_hdr);
+					PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					drc_rlist_ctx.wlist = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+				PCB_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
+					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Run");
+					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Edit...");
+					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
+				PCB_DAD_END(drc_rlist_ctx.dlg);
+			PCB_DAD_END(drc_rlist_ctx.dlg);
+
+			PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* right */
+				PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "<no rule selected>");
+					drc_rlist_ctx.wrule = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Type/group:");
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wtype = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Title:");
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wtitle = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Description:");
+				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wdesc = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+			PCB_DAD_END(drc_rlist_ctx.dlg);
+
+		PCB_DAD_END(drc_rlist_ctx.dlg);
+		PCB_DAD_BUTTON_CLOSES(drc_rlist_ctx.dlg, clbtn);
+	PCB_DAD_END(drc_rlist_ctx.dlg);
+
+	/* set up the context */
+	drc_rlist_ctx.active = 1;
+
+	PCB_DAD_DEFSIZE(drc_rlist_ctx.dlg, 400, 400);
+	PCB_DAD_NEW("drc_query_list", drc_rlist_ctx.dlg, "drc_query: list of rules", &drc_rlist_ctx, pcb_false, drc_rlist_close_cb);
+	PCB_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpane,    dbl, 0.7);
+	drc_rlist_pcb2dlg();
+	return 0;
+}
+
+
+static const char pcb_acts_DrcQueryListRules[] = "DrcQueryListRules()\n";
+static const char pcb_acth_DrcQueryListRules[] = "List all drc rules implemented in drc_query";
+static fgw_error_t pcb_act_DrcQueryListRules(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	PCB_ACT_IRES(pcb_dlg_drc_rlist());
 	return 0;
 }
