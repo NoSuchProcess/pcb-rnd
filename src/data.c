@@ -165,6 +165,7 @@ void pcb_data_uninit(pcb_data_t *data)
 {
 	pcb_layer_t *layer;
 	int i, is_subc;
+	long l;
 
 	is_subc = (data->parent_type == PCB_PARENT_SUBC);
 
@@ -192,6 +193,10 @@ void pcb_data_uninit(pcb_data_t *data)
 		free((char *)layer->name);
 
 	htip_uninit(&data->id2obj);
+
+	for(l = 0; l < data->ps_protos.used; l++)
+		pcb_pstk_proto_free_fields(&data->ps_protos.array[l]);
+	pcb_vtpadstack_proto_uninit(&data->ps_protos);
 
 	memset(data, 0, sizeof(pcb_data_t));
 }
