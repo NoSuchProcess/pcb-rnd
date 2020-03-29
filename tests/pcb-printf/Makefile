@@ -1,17 +1,19 @@
 TRUNK = ../..
-SRC=$(TRUNK)/src
-LIBRND=$(SRC)/librnd
-CFLAGS_OP = -O3
-CFLAGS = -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
-LDLIBS = -lm
-
-GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
-LIBPCB_BASE= $(LIBRND)/core/unit.o $(LIBRND)/core/compat_misc.o
 
 all: tester tester_spd prcli prclimq
 
 ROOT=../..
 include $(ROOT)/Makefile.conf
+
+SRC=$(TRUNK)/src
+LIBRND=$(SRC)/librnd
+CFLAGS_OP = -O3
+CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
+LDLIBS = -lm
+
+GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
+LIBPCB_BASE= $(LIBRND)/core/unit.o $(LIBRND)/core/compat_misc.o
+
 
 test: tester.diff
 	@echo "pcb-printf:          *** QC PASS ***"

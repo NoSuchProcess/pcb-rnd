@@ -4,7 +4,7 @@ LIBRND_ROOT=include/$(HL_LIBDIR)/..
 include $(TRUNK)/Makefile.conf
 include $(TRUNK)/src/librnd/core/librnd.mak
 
-CFLAGS = $(CFLAGS_LIBRND)
+CFLAGS = $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND)
 LDFLAGS = $(LDFLAGS_LIBRND)
 LIBRND = include/$(HL_LIBDIR)/librnd-poly.a include/$(HL_LIBDIR)/librnd-hid.a include/$(HL_LIBDIR)/librnd-3rd.a
 

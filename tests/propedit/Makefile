@@ -1,10 +1,14 @@
+all: tester
+
 ROOT=../..
+include $(ROOT)/Makefile.conf
+
 PED=$(ROOT)/src_plugins/propedit
 LHT=$(ROOT)/src_3rd
 SRC=$(ROOT)/src
 LIBRND=$(SRC)/librnd
 
-CFLAGS = -g -Wall -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
+CFLAGS = $(PCB_RND_C89FLAGS) -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
 LDLIBS = -lm
 LIB_OBJS = \
  $(LHT)/genht/htsp.o \
@@ -17,10 +21,6 @@ LIB_OBJS = \
 
 OBJS = tester.o $(PED)/props.o
 
-all: tester
-
-ROOT=../..
-include $(ROOT)/Makefile.conf
 
 test: tester.diff
 	@echo "propedit:            *** QC PASS ***"
