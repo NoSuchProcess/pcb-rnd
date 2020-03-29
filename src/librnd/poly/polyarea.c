@@ -2278,7 +2278,7 @@ pcb_pline_t *pcb_poly_contour_new(const pcb_vector_t v)
 	pcb_poly_contour_init(res);
 
 	if (v != NULL) {
-		res->head = calloc(sizeof(pcb_vnode_t), 1);
+/*		res->head = calloc(sizeof(pcb_vnode_t), 1); - no need to alloc, countour_init() did so */
 		res->head->next = res->head->prev = res->head;
 		Vcopy(res->head->point, v);
 		cntrbox_adjust(res, v);
