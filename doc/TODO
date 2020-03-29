@@ -36,6 +36,7 @@
 	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
+- CLEANUP: run drc on 7805 with valgrind from the batch GUI and clean up the memleaks [report: Igor2]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
