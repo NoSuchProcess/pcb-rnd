@@ -215,8 +215,16 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 
 static vtp0_t free_drc_conf_nodes;
 static conf_native_t *nat_defs = NULL;
+static conf_native_t *nat_rules = NULL;
 static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 {
+	if (nat_rules == NULL) {
+		if (strncmp(cfg->hash_path, "plugins/drc_query/rules", 23) == 0) {
+			nat_rules = cfg;
+			nat_rules->gui_edit_act = "drc_query_edit_rules";
+		}
+	}
+
 	if (nat_defs == NULL) {
 		if (strncmp(cfg->hash_path, "plugins/drc_query/definitions", 29) != 0)
 			return;
