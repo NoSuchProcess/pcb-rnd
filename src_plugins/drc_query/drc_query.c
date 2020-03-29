@@ -213,6 +213,7 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	}
 }
 
+static vtp0_t free_drc_conf_nodes;
 static conf_native_t *nat_defs = NULL;
 static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 {
@@ -258,7 +259,11 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 				pcb_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
 				goto fail;
 			}
-			
+
+			nat->random_flags.dyn_hash_path = 1;
+			nat->random_flags.dyn_desc = 1;
+			vtp0_append(&free_drc_conf_nodes, nat);
+
 			if (slegacy != NULL)
 				pcb_conf_legacy(path, slegacy);
 			else if (sdefault != NULL)
@@ -275,10 +280,16 @@ int pplg_check_ver_drc_query(int ver_needed) { return 0; }
 
 void pplg_uninit_drc_query(void)
 {
+	long n;
+
 	pcb_event_unbind_allcookie(drc_query_cookie);
 	pcb_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 	pcb_conf_unreg_fields("plugins/drc_query/");
 	pcb_conf_hid_unreg(drc_query_cookie);
+
+	for(n = 0; n < free_drc_conf_nodes.used; n++)
+		pcb_conf_unreg_field(free_drc_conf_nodes.array[n]);
+	vtp0_uninit(&free_drc_conf_nodes);
 }
 
 static conf_hid_callbacks_t cbs;
@@ -288,6 +299,7 @@ int pplg_init_drc_query(void)
 	PCB_API_CHK_VER;
 	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_query, NULL, drc_query_cookie);
 
+	vtp0_init(&free_drc_conf_nodes);
 	cbs.new_hlist_item_post = drc_query_newconf;
 	pcb_conf_hid_reg(drc_query_cookie, &cbs);
 
