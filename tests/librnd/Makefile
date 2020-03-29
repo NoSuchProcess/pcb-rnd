@@ -30,4 +30,4 @@ $(LIBRND) includes: ../../src/Makefile ../../src/pcb-rnd
 
 clean:
 	-rm librnd_test librnd_test.o librnd_includes librnd_includes.o
-	TDIR=`pwd` && cd ../../src && $(MAKE) install_librnd HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
+	TDIR=`pwd` && cd ../../src && $(MAKE) install_librnd_ HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
