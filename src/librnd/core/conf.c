@@ -1351,6 +1351,12 @@ void pcb_conf_free_native(conf_native_t *node)
 		}
 	}
 
+	if (node->random_flags.dyn_hash_path)
+		free((char *)node->hash_path);
+
+	if (node->random_flags.dyn_desc)
+		free((char *)node->description);
+
 	vtp0_uninit(&(node->hid_data));
 	vtp0_uninit(&(node->hid_callbacks));
 	free(node->prop);

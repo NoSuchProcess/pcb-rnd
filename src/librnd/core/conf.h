@@ -104,6 +104,8 @@ typedef struct {
 	struct {
 		unsigned io_pcb_no_attrib:1;
 		unsigned read_only:1;         /* set by conf_core, has no lihata, should not be overwritten */
+		unsigned dyn_hash_path:1;     /* free(->hash_path) on node destroy */
+		unsigned dyn_desc:1;          /* free(->description) on node destroy */
 	} random_flags;  /* hack... persistent flags attached by various plugins */
 
 	/* dynamic fields loaded from lihata */
