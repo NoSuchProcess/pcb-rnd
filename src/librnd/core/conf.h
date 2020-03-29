@@ -182,6 +182,7 @@ void pcb_conf_update(const char *path, int arr_idx);
 conf_native_t *pcb_conf_get_field(const char *path);
 void pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags);
 
+void pcb_conf_unreg_field(conf_native_t *field);
 void pcb_conf_unreg_fields(const char *prefix);
 
 /* Set the value of path[arr_idx] in memory-lht role target to new_val using

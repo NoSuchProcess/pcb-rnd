@@ -1370,6 +1370,13 @@ void pcb_conf_unreg_fields(const char *prefix)
 	}
 }
 
+void pcb_conf_unreg_field(conf_native_t *field)
+{
+	htsp_pop(pcb_conf_fields, field->hash_path);
+	pcb_conf_free_native(field);
+}
+
+
 conf_native_t *pcb_conf_get_field(const char *path)
 {
 	return htsp_get(pcb_conf_fields, path);
