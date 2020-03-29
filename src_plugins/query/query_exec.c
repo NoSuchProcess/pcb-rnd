@@ -54,6 +54,11 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 {
 	long l;
 
+	for(l = 0; l < ctx->iter->num_vars; l++) {
+		if (ctx->iter->lst[l].data.lst.array != ctx->all.data.lst.array) /* some lists are just aluas to ->all, do not free them */
+			pcb_qry_list_free(&ctx->iter->lst[l]);
+	}
+
 	pcb_qry_list_free(&ctx->all);
 
 	for(l = 0; l < ctx->autofree.used; l++)
