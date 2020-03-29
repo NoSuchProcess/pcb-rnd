@@ -117,6 +117,8 @@ typedef struct {
 	/* dynamic fields for HIDs storing their data */
 	vtp0_t hid_data;
 	vtp0_t hid_callbacks; /* vector of (const conf_hid_callbacks_t *) */
+
+	const char *gui_edit_act; /* if non-zero, run this action for GUI editing; args: role_name, full_list_conf_path, item_name */
 } conf_native_t;
 
 
