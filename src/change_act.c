@@ -513,7 +513,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				if (op == F_Object) {
 					pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
-					if (subc->auto_termname_display) {
+					if ((subc != NULL) && subc->auto_termname_display) {
 						pcb_undo_add_obj_to_flag(ptr2);
 						PCB_FLAG_SET(PCB_FLAG_TERMNAME, (pcb_any_obj_t *)ptr2);
 						pcb_board_set_changed_flag(pcb_true);
