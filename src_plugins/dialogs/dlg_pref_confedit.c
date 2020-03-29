@@ -360,11 +360,15 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 				{
 					gdl_iterator_t it;
 					pcb_conf_listitem_t *i;
-					pcb_conflist_foreach(pctx->conf.selected_nat->val.list, &it, i) {
-						lht_node_t *rule = i->prop.src;
-						PCB_DAD_BUTTON(ctx->dlg, rule->name);
-							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_hlist_cb);
-					}
+
+					PCB_DAD_BEGIN_VBOX(ctx->dlg);
+						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+						pcb_conflist_foreach(pctx->conf.selected_nat->val.list, &it, i) {
+							lht_node_t *rule = i->prop.src;
+							PCB_DAD_BUTTON(ctx->dlg, rule->name);
+								PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_hlist_cb);
+						}
+					PCB_DAD_END(ctx->dlg);
 				}
 				break;
 			case CFN_max:
