@@ -229,6 +229,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 		static pcb_coord_t c;
 
 		if (pcb_conf_get_field(path) == NULL) {
+			conf_native_t *nat;
 			lht_node_t *ndesc = lht_dom_hash_get(nd, "desc");
 			lht_node_t *ntype = lht_dom_hash_get(nd, "type");
 			lht_node_t *ndefault = lht_dom_hash_get(nd, "default");
@@ -252,7 +253,12 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 				goto fail;
 			}
 
-			pcb_conf_reg_field_(&c, 1, type, path, pcb_strdup(sdesc), 0);
+			nat = pcb_conf_reg_field_(&c, 1, type, path, pcb_strdup(sdesc), 0);
+			if (nat == NULL) {
+				pcb_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
+				goto fail;
+			}
+			
 			if (slegacy != NULL)
 				pcb_conf_legacy(path, slegacy);
 			else if (sdefault != NULL)
