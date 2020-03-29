@@ -31,6 +31,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
@@ -221,7 +222,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 	if (nat_rules == NULL) {
 		if (strncmp(cfg->hash_path, "plugins/drc_query/rules", 23) == 0) {
 			nat_rules = cfg;
-			nat_rules->gui_edit_act = "drc_query_edit_rules";
+			nat_rules->gui_edit_act = "DrcQueryEditRule";
 		}
 	}
 
@@ -285,6 +286,10 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 
 #include "dlg.c"
 
+static pcb_action_t drc_query_action_list[] = {
+	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule},
+};
+
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
 
 void pplg_uninit_drc_query(void)
@@ -299,6 +304,8 @@ void pplg_uninit_drc_query(void)
 	for(n = 0; n < free_drc_conf_nodes.used; n++)
 		pcb_conf_unreg_field(free_drc_conf_nodes.array[n]);
 	vtp0_uninit(&free_drc_conf_nodes);
+
+	pcb_remove_actions_by_cookie(drc_query_cookie);
 }
 
 static conf_hid_callbacks_t cbs;
@@ -316,6 +323,8 @@ int pplg_init_drc_query(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(conf_drc_query, field,isarray,type_name,cpath,cname,desc,flags);
 #include "drc_query_conf_fields.h"
+
+	PCB_REGISTER_ACTIONS(drc_query_action_list, drc_query_cookie)
 
 	return 0;
 }
