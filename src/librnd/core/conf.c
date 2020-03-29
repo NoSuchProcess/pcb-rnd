@@ -1292,7 +1292,7 @@ void pcb_conf_load_project(const char *project_fn, const char *pcb_fn)
 	pcb_conf_update(NULL, -1);
 }
 
-void pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags)
+conf_native_t *pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, conf_flag_t flags)
 {
 	conf_native_t *node;
 
@@ -1317,6 +1317,8 @@ void pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, c
 
 	htsp_set(pcb_conf_fields, (char *)path, node);
 	conf_hid_global_cb(node, -1, new_item_post);
+
+	return node;
 }
 
 int pcb_conf_grow_list_(conf_native_t *node, int new_size)
