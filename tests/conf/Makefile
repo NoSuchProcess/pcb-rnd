@@ -1,5 +1,6 @@
-include ../../src/librnd/core/librnd.mak
-include ../../Makefile.conf
+ROOT=../..
+include $(ROOT)/src/librnd/core/librnd.mak
+include $(ROOT)/Makefile.conf
 
 CFLAGS = $(PCB_RND_C89FLAGS) -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND_FUNGW)
 LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW)
@@ -30,9 +31,6 @@ DEPH = \
 OBJS = conftest.o help.o
 
 all: conftest
-
-ROOT=../..
-include $(ROOT)/Makefile.conf
 
 conftest: $(OBJS) $(LIB_HIDLIB) $(LIB_PCBRND_OBJS) $(LIBGENHT)
 	$(CC) $(LDFLAGS) $(OBJS) $(LIB_PCBRND_OBJS) $(LIB_HIDLIB)  $(LIBGENHT) $(LDLIBS) -o conftest
