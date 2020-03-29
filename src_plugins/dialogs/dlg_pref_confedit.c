@@ -109,7 +109,8 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			}
 			break;
 		case CFN_HLIST:
-			pcb_message(PCB_MSG_ERROR, "ERROR: can not import hash lists on GUI\n");
+/*			pcb_message(PCB_MSG_ERROR, "ERROR: can not import hash lists on GUI\n");*/
+			/* Nothing to do, for now it's just a bunch of buttons */
 			break;
 		case CFN_max:
 			pcb_message(PCB_MSG_ERROR, "ERROR: invalid conf node type\n");
