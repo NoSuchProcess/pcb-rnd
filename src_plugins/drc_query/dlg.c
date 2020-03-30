@@ -271,7 +271,27 @@ static void drc_rlist_pcb2dlg(void)
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 	}
+}
 
+static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	drc_rlist_ctx_t *ctx = caller_data;
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	int *dis;
+
+	if (row == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Select a rule first!\n");
+		return;
+	}
+
+	dis = drc_get_disable(row->cell[2]);
+	if (dis == NULL) {
+		pcb_message(PCB_MSG_ERROR, "internal error: no disable conf node for %s\n", row->cell[2]);
+		return;
+	}
+
+	*dis = !*dis;
+	drc_rlist_pcb2dlg();
 }
 
 static int pcb_dlg_drc_rlist(void)
@@ -298,6 +318,7 @@ static int pcb_dlg_drc_rlist(void)
 					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Run");
 					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Edit...");
 					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
+						PCB_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_toggle_cb);
 				PCB_DAD_END(drc_rlist_ctx.dlg);
 			PCB_DAD_END(drc_rlist_ctx.dlg);
 
