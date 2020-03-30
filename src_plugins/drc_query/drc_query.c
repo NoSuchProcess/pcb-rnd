@@ -253,20 +253,23 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 		if (pcb_conf_get_field(path) == NULL) {
 			const char *sdesc;
 			conf_native_t *nat;
-			static pcb_bool_t b;
+			pcb_bool_t *b;
 			lht_node_t *ndesc;
 
 			ndesc = lht_dom_hash_get(nd, "desc");
 			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
 
-			nat = pcb_conf_reg_field_(&b, 1, CFN_BOOLEAN, path, pcb_strdup(sdesc), 0);
+			b = calloc(sizeof(pcb_bool_t), 1);
+			nat = pcb_conf_reg_field_(b, 1, CFN_BOOLEAN, path, pcb_strdup(sdesc), 0);
 			if (nat == NULL) {
+				free(b);
 				pcb_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
 				goto fail;
 			}
 
 			nat->random_flags.dyn_hash_path = 1;
 			nat->random_flags.dyn_desc = 1;
+			nat->random_flags.dyn_val = 1;
 			vtp0_append(&free_drc_conf_nodes, nat);
 		}
 		else
@@ -275,9 +278,15 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 	else if (nat_defs == cfg) {
 		lht_node_t *nd = i->prop.src;
 		char *path = pcb_concat("design/drc/", nd->name, NULL);
-		static pcb_coord_t c;
+		pcb_coord_t *c;
 
 		if (pcb_conf_get_field(path) == NULL) {
+			union {
+				pcb_coord_t c;
+				double d;
+				void *ptr;
+				char *str;
+			} anyval;
 			conf_native_t *nat;
 			lht_node_t *ndesc = lht_dom_hash_get(nd, "desc");
 			lht_node_t *ntype = lht_dom_hash_get(nd, "type");
@@ -302,14 +311,17 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 				goto fail;
 			}
 
-			nat = pcb_conf_reg_field_(&c, 1, type, path, pcb_strdup(sdesc), 0);
+			c = calloc(sizeof(anyval), 1);
+			nat = pcb_conf_reg_field_(c, 1, type, path, pcb_strdup(sdesc), 0);
 			if (nat == NULL) {
+				free(c);
 				pcb_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
 				goto fail;
 			}
 
 			nat->random_flags.dyn_hash_path = 1;
 			nat->random_flags.dyn_desc = 1;
+			nat->random_flags.dyn_val = 1;
 			vtp0_append(&free_drc_conf_nodes, nat);
 
 			if (slegacy != NULL)
