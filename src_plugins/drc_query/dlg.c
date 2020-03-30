@@ -72,10 +72,15 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 	if (nd != NULL) {
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 		pcb_hid_text_t *txt = atxt->wdata;
+		int *dis, dis_ = 0;
+
+		dis = drc_get_disable(ctx->rule);
+		if (dis == NULL)
+			dis = &dis_;
 
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtype,    str, textval(nd, "type"));
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtitle,   str, textval(nd, "title"));
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdisable, str, boolval(nd, "disable"));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdisable, str, *dis);
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdesc,    str, textval(nd, "desc"));
 
 		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_REPLACE, textval(nd, "query"));
@@ -242,14 +247,19 @@ static void drc_rlist_pcb2dlg(void)
 	cell[3] = NULL;
 
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+		int *dis, dis_ = 0;
 		conf_role_t role;
 		lht_node_t *rule = i->prop.src;
 		if (rule->type != LHT_HASH)
 			continue;
 
+		dis = drc_get_disable(rule->name);
+		if (dis == NULL)
+			dis = &dis_;
+
 		role = pcb_conf_lookup_role(rule);
 		cell[0] = pcb_conf_role_name(role);
-		cell[1] = load_int(rule, i, "disable", 0) ? "YES" : "no";
+		cell[1] = *dis ? "YES" : "no";
 		cell[2] = rule->name;
 		pcb_dad_tree_append(attr, NULL, cell);
 	}

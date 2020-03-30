@@ -63,7 +63,6 @@ typedef struct {
 	const char *type;
 	const char *title;
 	const char *desc;
-	unsigned disable:1;
 } drc_qry_ctx_t;
 
 pcb_coord_t load_obj_const(pcb_obj_qry_const_t *cnst)
@@ -201,24 +200,35 @@ static long load_int(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name,
 	return l;
 }
 
+static int *drc_get_disable(const char *name)
+{
+	char *path = pcb_concat("design/drc_disable/", name, NULL);
+	conf_native_t *nat = pcb_conf_get_field(path);
+	free(path);
+	if ((nat == NULL) || (nat->type != CFN_BOOLEAN))
+		return NULL;
+	return nat->val.boolean;
+}
+
 static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	gdl_iterator_t it;
 	pcb_conf_listitem_t *i;
-	long cnt = 0, disable;
+	long cnt = 0;
 
 	if (conf_drc_query.plugins.drc_query.disable)
 		return;
 
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;
+		int *dis;
 		if (rule->type != LHT_HASH) {
 			pcb_message(PCB_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
 			continue;
 		}
 
-		disable = load_int(rule, i, "disable", 0);
-		if (disable)
+		dis = drc_get_disable(i->name);
+		if ((dis != NULL) && (*dis == 0))
 			continue;
 
 		cnt += drc_qry_exec((pcb_board_t *)hidlib, &pcb_drc_lst, i,
