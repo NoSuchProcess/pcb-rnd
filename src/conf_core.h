@@ -159,6 +159,10 @@ typedef struct {
 			CFT_COORD min_copper_overlap;    /* minimum overlap between connected copper features (default when the net attributes or other settings don't specify a different value)*/
 		} drc;
 
+		struct {                           /* disable drc checks on a per rule basis */
+			CFT_BOOLEAN dummy;               /* placeholder, not used */
+		} drc_disable;
+
 		CFT_INTEGER text_scale;            /* text scaling in % */
 		CFT_COORD text_thickness;          /* override stroke font text thickness */
 		CFT_INTEGER text_font_id;
