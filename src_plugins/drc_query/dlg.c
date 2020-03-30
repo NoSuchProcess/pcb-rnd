@@ -30,19 +30,23 @@
 
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
+#include <genlist/gendlist.h>
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	conf_role_t role;
 	char *rule, *path;
 	int wtype, wtitle, wdisable, wdesc, wquery;
+	gdl_elem_t link;
 } rule_edit_ctx_t;
 
-rule_edit_ctx_t rule_edit_ctx;
+gdl_list_t rule_edit_dialogs;
 
 static void rule_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
 	rule_edit_ctx_t *ctx = caller_data;
+
+	gdl_remove(&rule_edit_dialogs, ctx, link);
 
 	free(ctx->path);
 	free(ctx->rule);
@@ -115,6 +119,14 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 	rule_edit_ctx_t *ctx;
 	lht_node_t *nd;
 
+	for(ctx = gdl_first(&rule_edit_dialogs); ctx != NULL; ctx = gdl_next(&rule_edit_dialogs, ctx))
+	{
+		if (strcmp(rule, ctx->rule) == 0) {
+			pcb_message(PCB_MSG_ERROR, "An edit dialog for rule %s is already open.\n", rule);
+			return 0;
+		}
+	}
+
 	path = pcb_concat("plugins/drc_query/rules/", rule, ":0", NULL);
 	nd = pcb_conf_lht_get_at_mainplug(role, path, 1, 0);
 	if (nd == NULL) {
@@ -127,6 +139,7 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 	ctx->rule = pcb_strdup(rule);
 	ctx->path = path;
 
+	gdl_insert(&rule_edit_dialogs, ctx, link);
 
 
 	info = pcb_strdup_printf("DRC rule edit: %s on role %s", rule, pcb_conf_role_name(role));
