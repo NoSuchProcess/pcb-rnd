@@ -246,8 +246,33 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 		nat_defs = cfg;
 	}
 
+	if (nat_rules == cfg) {
+		lht_node_t *nd = i->prop.src;
+		char *path = pcb_concat("design/drc_disable/", nd->name, NULL);
 
-	if (nat_defs == cfg) {
+		if (pcb_conf_get_field(path) == NULL) {
+			const char *sdesc;
+			conf_native_t *nat;
+			static pcb_bool_t b;
+			lht_node_t *ndesc;
+
+			ndesc = lht_dom_hash_get(nd, "desc");
+			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
+
+			nat = pcb_conf_reg_field_(&b, 1, CFN_BOOLEAN, path, pcb_strdup(sdesc), 0);
+			if (nat == NULL) {
+				pcb_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
+				goto fail;
+			}
+
+			nat->random_flags.dyn_hash_path = 1;
+			nat->random_flags.dyn_desc = 1;
+			vtp0_append(&free_drc_conf_nodes, nat);
+		}
+		else
+			free(path);
+	}
+	else if (nat_defs == cfg) {
 		lht_node_t *nd = i->prop.src;
 		char *path = pcb_concat("design/drc/", nd->name, NULL);
 		static pcb_coord_t c;
