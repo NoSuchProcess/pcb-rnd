@@ -300,6 +300,11 @@ static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	conf_role_t role;
 
+	if (row == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Select a rule first!\n");
+		return;
+	}
+
 	role = pcb_conf_role_parse(row->cell[1]);
 	if (role == CFR_invalid) {
 		pcb_message(PCB_MSG_ERROR, "internal error: invalid role %s\n", row->cell[0]);
@@ -307,6 +312,43 @@ static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	}
 
 	pcb_dlg_rule_edit(role, row->cell[0]);
+}
+
+static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+{
+	drc_rlist_ctx_t *ctx = caller_data;
+	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	lht_node_t *nd;
+	char *path;
+	const char *s;
+	conf_role_t role;
+
+	if (row == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Select a rule first!\n");
+		return;
+	}
+
+	role = pcb_conf_role_parse(row->cell[1]);
+	if (role == CFR_invalid) {
+		pcb_message(PCB_MSG_ERROR, "internal error: invalid role %s\n", row->cell[0]);
+		return;
+	}
+
+	path = pcb_concat("plugins/drc_query/rules/", row->cell[0], ":0", NULL);
+	nd = pcb_conf_lht_get_at_mainplug(role, path, 1, 0);
+	if (nd == NULL) {
+		pcb_message(PCB_MSG_ERROR, "internal error: rule not found at %s\n", path);
+		return;
+	}
+	free(path);
+
+	s = textval(nd, "query");
+	if (s == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Can not run rule %s: no query specified\n", row->cell[0]);
+		return;
+	}
+
+	pcb_actionva(&PCB->hidlib, "query", "view", s, NULL);
 }
 
 static int pcb_dlg_drc_rlist(void)
@@ -331,6 +373,7 @@ static int pcb_dlg_drc_rlist(void)
 					drc_rlist_ctx.wlist = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
 				PCB_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
 					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Run");
+						PCB_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_run_cb);
 					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Edit...");
 						PCB_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_edit_cb);
 					PCB_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
