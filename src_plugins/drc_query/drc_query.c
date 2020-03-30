@@ -348,6 +348,8 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 
 #include "dlg.c"
 
+static pcb_drc_impl_t drc_query_impl = {"drc_query", "query() based DRC", "drcquerylistrules"};
+
 static pcb_action_t drc_query_action_list[] = {
 	{"DrcQueryListRules", pcb_act_DrcQueryListRules, pcb_acth_DrcQueryListRules, pcb_acts_DrcQueryListRules},
 	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule}
@@ -359,6 +361,7 @@ void pplg_uninit_drc_query(void)
 {
 	long n;
 
+	pcb_drc_impl_unreg(&drc_query_impl);
 	pcb_event_unbind_allcookie(drc_query_cookie);
 	pcb_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 	pcb_conf_unreg_fields("plugins/drc_query/");
@@ -388,6 +391,7 @@ int pplg_init_drc_query(void)
 #include "drc_query_conf_fields.h"
 
 	PCB_REGISTER_ACTIONS(drc_query_action_list, drc_query_cookie)
+	pcb_drc_impl_reg(&drc_query_impl);
 
 	return 0;
 }
