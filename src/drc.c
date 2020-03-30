@@ -37,6 +37,19 @@
 
 
 pcb_view_list_t pcb_drc_lst;
+gdl_list_t pcb_drc_impls;
+
+void pcb_drc_impl_reg(pcb_drc_impl_t *impl)
+{
+	gdl_insert(&pcb_drc_impls, impl, link);
+}
+
+void pcb_drc_impl_unreg(pcb_drc_impl_t *impl)
+{
+	gdl_remove(&pcb_drc_impls, impl, link);
+}
+
+
 
 void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value)
 {

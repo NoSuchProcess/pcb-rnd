@@ -34,6 +34,15 @@
 
 #include "view.h"
 
+#include <genlist/gendlist.h>
+
+typedef struct pcb_drc_impl_s {
+	const char *name;
+	const char *desc;
+	const char *list_rules_action;
+	gdl_elem_t link;
+} pcb_drc_impl_t;
+
 /* Load drc-specific fields of a view; if measured_value is NULL, it is not available */
 void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value);
 
@@ -41,6 +50,12 @@ extern pcb_view_list_t pcb_drc_lst;
 
 /* run all configured DRCs */
 void pcb_drc_all(void);
+
+/* DRC implementation plugins can register/unregister a helper */
+void pcb_drc_impl_reg(pcb_drc_impl_t *impl);
+void pcb_drc_impl_unreg(pcb_drc_impl_t *impl);
+extern gdl_list_t pcb_drc_impls; /* the full list of currently registered implementations */
+
 
 #endif
 
