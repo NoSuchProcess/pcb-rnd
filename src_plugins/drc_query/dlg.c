@@ -258,9 +258,9 @@ static void drc_rlist_pcb2dlg(void)
 			dis = &dis_;
 
 		role = pcb_conf_lookup_role(rule);
-		cell[0] = pcb_conf_role_name(role);
-		cell[1] = *dis ? "YES" : "no";
-		cell[2] = rule->name;
+		cell[0] = rule->name;
+		cell[1] = pcb_conf_role_name(role);
+		cell[2] = *dis ? "YES" : "no";
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
@@ -284,7 +284,7 @@ static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 		return;
 	}
 
-	dis = drc_get_disable(row->cell[2]);
+	dis = drc_get_disable(row->cell[0]);
 	if (dis == NULL) {
 		pcb_message(PCB_MSG_ERROR, "internal error: no disable conf node for %s\n", row->cell[2]);
 		return;
@@ -296,7 +296,7 @@ static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 
 static int pcb_dlg_drc_rlist(void)
 {
-	const char *lst_hdr[] = {"role", "disabled", "rule name", NULL};
+	const char *lst_hdr[] = {"rule name", "role", "disabled", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int wpane;
 
