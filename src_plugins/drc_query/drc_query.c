@@ -281,6 +281,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			nat->random_flags.dyn_desc = 1;
 			nat->random_flags.dyn_val = 1;
 			vtp0_append(&free_drc_conf_nodes, nat);
+			pcb_conf_set(CFR_INTERNAL, path, -1, "0", POL_OVERWRITE);
 		}
 		else
 			free(path);
