@@ -36,7 +36,7 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	conf_role_t role;
 	char *rule, *path;
-	int wtype, wtitle, wdisable, wdesc, wquery;
+	int wtype, wtitle, wdisable, wdesc, wquery, wsave;
 	gdl_elem_t link;
 } rule_edit_ctx_t;
 
@@ -93,6 +93,8 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 		pcb_message(PCB_MSG_ERROR, "Rule %s disappeared from the config tree.\n", ctx->rule);
 		pcb_hid_dad_close(ctx->dlg_hid_ctx, &retovr, -1);
 	}
+
+	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wsave, 0 && !rnd_conf_is_read_only(ctx->role));
 }
 
 static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
@@ -179,6 +181,7 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 				PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_run_cb);
 			PCB_DAD_BUTTON(ctx->dlg, "Save");
 				PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_save_cb);
+				ctx->wsave = PCB_DAD_CURRENT(ctx->dlg);;
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
