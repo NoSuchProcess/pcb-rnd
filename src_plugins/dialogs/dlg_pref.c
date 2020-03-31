@@ -213,6 +213,7 @@ static void pref_role_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 
 static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 {
+	long n;
 	pref_ctx_t *ctx = caller_data;
 
 	pcb_dlg_pref_sizes_close(ctx);
@@ -221,6 +222,10 @@ static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	pcb_dlg_pref_lib_close(ctx);
 	pcb_dlg_pref_color_close(ctx);
 	pcb_dlg_pref_win_close(ctx);
+
+	for(n = 0; n < ctx->auto_free.used; n++)
+		free(ctx->auto_free.array[n]);
+	vtp0_uninit(&ctx->auto_free);
 
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */

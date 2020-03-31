@@ -133,11 +133,12 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Configure DRC rules:");
 		for(di = gdl_first(&pcb_drc_impls); di != NULL; di = di->link.next) {
+			char *ra = pcb_strdup(di->list_rules_action); /* need to strdup it just in case the plugin is unloaded while the preferences dialog is open */
+			vtp0_append(&ctx->auto_free, ra);
 			PCB_DAD_BUTTON(ctx->dlg, di->name);
 				PCB_DAD_HELP(ctx->dlg, di->desc);
-				PCB_DAD_SET_ATTR_FIELD(ctx->dlg, user_data, pcb_strdup(di->list_rules_action));
+				PCB_DAD_SET_ATTR_FIELD(ctx->dlg, user_data, ra);
 				PCB_DAD_CHANGE_CB(ctx->dlg, drc_rules_cb);
-TODO("^this string is leaked; make a vtp0 of auto-free for when the dialog is closed");
 		}
 	PCB_DAD_END(ctx->dlg);
 
