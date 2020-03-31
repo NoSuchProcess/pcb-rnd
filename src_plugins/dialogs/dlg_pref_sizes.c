@@ -108,14 +108,22 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 				PCB_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_y);
 				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 		PCB_DAD_END(ctx->dlg);
-
 	PCB_DAD_END(ctx->dlg);
+
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "DRC sizes");
+		PCB_DAD_LABEL(ctx->dlg, "*OBSOLETE* DRC; do not use; details:");
+		PCB_DAD_STRING(ctx->dlg);
+		PCB_DAD_DEFAULT_PTR(ctx->dlg, "http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=deprecation#olddrc");
+		PCB_DAD_WIDTH_CHR(ctx->dlg, 64);
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, drc_sizes, pref_sizes_drc_dlg2conf);
 		PCB_DAD_END(ctx->dlg);
+	PCB_DAD_END(ctx->dlg);
+
+	PCB_DAD_BEGIN_HBOX(ctx->dlg);
+		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_LABEL(ctx->dlg, "DRC rules:");
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
