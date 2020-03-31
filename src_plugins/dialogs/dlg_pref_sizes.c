@@ -30,6 +30,7 @@
 #include "dlg_pref.h"
 #include <librnd/core/conf.h>
 #include "conf_core.h"
+#include "drc.h"
 
 /* Actual board size to dialog box */
 static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
@@ -49,6 +50,11 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	if ((PCB->hidlib.size_x != ctx->dlg[ctx->sizes.wwidth].val.crd) || (PCB->hidlib.size_y != ctx->dlg[ctx->sizes.wheight].val.crd))
 		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].val.crd, ctx->dlg[ctx->sizes.wheight].val.crd, 0);
 	ctx->sizes.lock--;
+}
+
+static void drc_rules_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+{
+	pcb_actionva(&PCB->hidlib, attr->user_data, NULL);
 }
 
 static pref_confitem_t drc_sizes[] = {
@@ -91,6 +97,8 @@ void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 {
+	pcb_drc_impl_t *di;
+
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Board size");
@@ -123,7 +131,14 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "DRC rules:");
+		PCB_DAD_LABEL(ctx->dlg, "Configure DRC rules:");
+		for(di = gdl_first(&pcb_drc_impls); di != NULL; di = di->link.next) {
+			PCB_DAD_BUTTON(ctx->dlg, di->name);
+				PCB_DAD_HELP(ctx->dlg, di->desc);
+				PCB_DAD_SET_ATTR_FIELD(ctx->dlg, user_data, pcb_strdup(di->list_rules_action));
+				PCB_DAD_CHANGE_CB(ctx->dlg, drc_rules_cb);
+TODO("^this string is leaked; make a vtp0 of auto-free for when the dialog is closed");
+		}
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
