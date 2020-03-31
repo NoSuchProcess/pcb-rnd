@@ -28,8 +28,7 @@
 
 #include <librnd/core/hid_dad_unit.h>
 
-#define is_read_only_(role) ((role == CFR_INTERNAL) || (role == CFR_SYSTEM) || (role == CFR_DEFAULTPCB))
-#define is_read_only(ctx)   is_read_only_(ctx->role)
+#define is_read_only(ctx)   rnd_conf_is_read_only(ctx->role)
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -414,7 +413,7 @@ static void pref_conf_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		return;
 	}
 
-	if (is_read_only_(r->user_data2.lng)) {
+	if (rnd_conf_is_read_only(r->user_data2.lng)) {
 		pcb_message(PCB_MSG_ERROR, "Role is read-only, can not remove item\n");
 		return;
 	}

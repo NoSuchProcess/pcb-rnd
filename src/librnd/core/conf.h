@@ -299,6 +299,9 @@ void pcb_conf_ro(const char *path);
 
 /****** utility ******/
 
+#define rnd_conf_is_read_only(role) \
+	(((role) == CFR_INTERNAL) || ((role) == CFR_SYSTEM) || ((role) == CFR_DEFAULTPCB))
+
 void pcb_conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
 #define conf_list_foreach_path_first(hidlib, res, conf_list, call) \
