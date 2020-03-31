@@ -233,7 +233,7 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		}
 
 		dis = drc_get_disable(i->name);
-		if ((dis != NULL) && (*dis == 0))
+		if ((dis != NULL) && (*dis != 0))
 			continue;
 
 		cnt += drc_qry_exec((pcb_board_t *)hidlib, &pcb_drc_lst, i,
