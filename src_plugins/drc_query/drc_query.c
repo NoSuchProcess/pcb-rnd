@@ -57,6 +57,11 @@ static const char *drc_query_cookie = "drc_query";
 const conf_drc_query_t conf_drc_query;
 #define DRC_QUERY_CONF_FN "drc_query.conf"
 
+#define DRC_CONF_PATH_DISABLE "design/drc_disable/"
+#define DRC_CONF_PATH_CONST "design/drc/"
+#define DRC_CONF_PATH_RULES "plugins/drc_query/rules/"
+#define DRC_CONF_PATH_DEFS "plugins/drc_query/definitions/"
+
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_view_list_t *lst;
@@ -202,7 +207,7 @@ static long load_int(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name,
 
 static int *drc_get_disable(const char *name)
 {
-	char *path = pcb_concat("design/drc_disable/", name, NULL);
+	char *path = pcb_concat(DRC_CONF_PATH_DISABLE, name, NULL);
 	conf_native_t *nat = pcb_conf_get_field(path);
 	free(path);
 	if ((nat == NULL) || (nat->type != CFN_BOOLEAN))
@@ -244,21 +249,21 @@ static conf_native_t *nat_rules = NULL;
 static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 {
 	if (nat_rules == NULL) {
-		if (strncmp(cfg->hash_path, "plugins/drc_query/rules", 23) == 0) {
+		if (strncmp(cfg->hash_path, DRC_CONF_PATH_RULES, strlen(DRC_CONF_PATH_RULES)-1) == 0) {
 			nat_rules = cfg;
 			nat_rules->gui_edit_act = "DrcQueryEditRule";
 		}
 	}
 
 	if (nat_defs == NULL) {
-		if (strncmp(cfg->hash_path, "plugins/drc_query/definitions", 29) != 0)
+		if (strncmp(cfg->hash_path, DRC_CONF_PATH_DEFS, strlen(DRC_CONF_PATH_DEFS)-1) != 0)
 			return;
 		nat_defs = cfg;
 	}
 
 	if (nat_rules == cfg) {
 		lht_node_t *nd = i->prop.src;
-		char *path = pcb_concat("design/drc_disable/", nd->name, NULL);
+		char *path = pcb_concat(DRC_CONF_PATH_DISABLE, nd->name, NULL);
 
 		if (pcb_conf_get_field(path) == NULL) {
 			const char *sdesc;
@@ -288,7 +293,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 	}
 	else if (nat_defs == cfg) {
 		lht_node_t *nd = i->prop.src;
-		char *path = pcb_concat("design/drc/", nd->name, NULL);
+		char *path = pcb_concat(DRC_CONF_PATH_CONST, nd->name, NULL);
 		pcb_coord_t *c;
 
 		if (pcb_conf_get_field(path) == NULL) {

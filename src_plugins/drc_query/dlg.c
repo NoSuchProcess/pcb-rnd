@@ -127,7 +127,7 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 		}
 	}
 
-	path = pcb_concat("plugins/drc_query/rules/", rule, ":0", NULL);
+	path = pcb_concat(DRC_CONF_PATH_RULES, rule, ":0", NULL);
 	nd = pcb_conf_lht_get_at_mainplug(role, path, 1, 0);
 	if (nd == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Rule %s not found on this role.\n", rule);
@@ -347,7 +347,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		return;
 	}
 
-	path = pcb_concat("plugins/drc_query/rules/", row->cell[0], ":0", NULL);
+	path = pcb_concat(DRC_CONF_PATH_RULES, row->cell[0], ":0", NULL);
 	nd = pcb_conf_lht_get_at_mainplug(role, path, 1, 0);
 	if (nd == NULL) {
 		pcb_message(PCB_MSG_ERROR, "internal error: rule not found at %s\n", path);
