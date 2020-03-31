@@ -46,9 +46,15 @@
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
 
+static pcb_draw_info_t dinfo;
+static pcb_xform_t dxform;
+
+
 static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char *txt)
 {
 	static pcb_text_t t;
+
+	if (dinfo.xform == NULL) dinfo.xform = &dxform;
 
 	t.X = PCB_MM_TO_COORD(x);
 	t.Y = PCB_MM_TO_COORD(y);
@@ -57,7 +63,7 @@ static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char 
 	t.Scale = scale;
 	t.fid = fid;
 	t.Flags = pcb_no_flags();
-	pcb_text_draw_(NULL, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
+	pcb_text_draw_(&dinfo, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 	return &t;
 }
 
@@ -65,12 +71,15 @@ static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char 
 static void dline(int x1, int y1, int x2, int y2, float thick)
 {
 	pcb_line_t l;
+
+	if (dinfo.xform == NULL) dinfo.xform = &dxform;
+
 	l.Point1.X = PCB_MM_TO_COORD(x1);
 	l.Point1.Y = PCB_MM_TO_COORD(y1);
 	l.Point2.X = PCB_MM_TO_COORD(x2);
 	l.Point2.Y = PCB_MM_TO_COORD(y2);
 	l.Thickness = PCB_MM_TO_COORD(thick);
-	pcb_line_draw_(NULL, &l, 0);
+	pcb_line_draw_(&dinfo, &l, 0);
 }
 
 static void dchkbox(pcb_hid_gc_t gc, int x0, int y0, int checked)
