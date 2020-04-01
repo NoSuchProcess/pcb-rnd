@@ -709,10 +709,19 @@ static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t DX
 }
 
 /* Draw a small lock on the bottom right corner at lx;ly */
-static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t lx, pcb_coord_t ly)
+static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t lx, pcb_coord_t ly, int on_bottom)
 {
-	lx -= PCB_EMARK_SIZE*1.5;
-	ly -= PCB_EMARK_SIZE*1.5;
+	pcb_coord_t s = on_bottom ? -PCB_EMARK_SIZE : PCB_EMARK_SIZE;
+
+	if (pcbhl_conf.editor.view.flip_x)
+		lx += PCB_EMARK_SIZE*1.5;
+	else
+		lx -= PCB_EMARK_SIZE*1.5;
+
+	if (on_bottom)
+		ly += PCB_EMARK_SIZE*1.5;
+	else
+		ly -= PCB_EMARK_SIZE*1.5;
 
 	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
 	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE);
@@ -720,7 +729,7 @@ static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t lx
 	pcb_render->draw_line(GC, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
 	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3);
 	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3);
-	pcb_render->draw_arc(GC,  lx, ly-PCB_EMARK_SIZE, PCB_EMARK_SIZE*2/3, PCB_EMARK_SIZE*2/3, 180, 180);
+	pcb_render->draw_arc(GC,  lx, ly-s, PCB_EMARK_SIZE*2/3, PCB_EMARK_SIZE*2/3, 180, on_bottom ? -180 : 180);
 }
 
 void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
@@ -1976,8 +1985,13 @@ pcb_r_dir_t pcb_draw_subc_mark(const pcb_box_t *b, void *cl)
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
 
-	if (locked)
-		pcb_subc_draw_locked(pcb_draw_out.fgGC, subc, bb->X2, bb->Y2);
+	if (locked) {
+		int on_bottom = 0;
+		pcb_subc_get_side(subc, &on_bottom);
+		if (pcbhl_conf.editor.view.flip_x)
+			on_bottom = !on_bottom;
+		pcb_subc_draw_locked(pcb_draw_out.fgGC, subc, pcbhl_conf.editor.view.flip_x ? bb->X1 : bb->X2, on_bottom ? bb->Y1 : bb->Y2, on_bottom);
+	}
 
 	if (freq >= 0) {
 		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, freq, pcb_true);
