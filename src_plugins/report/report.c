@@ -309,11 +309,13 @@ static char *report_subc(pcb_subc_t *subc)
 	return pcb_strdup_printf("%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Refdes \"%s\".\n"
+		"Footprint \"%s\".\n"
 		"%s", USER_UNITMASK,
 		subc->ID, pcb_strflg_f2s(subc->Flags, PCB_OBJ_SUBC, NULL, 0),
 		subc->BoundingBox.X1, subc->BoundingBox.Y1,
 		subc->BoundingBox.X2, subc->BoundingBox.Y2,
 		PCB_EMPTY(subc->refdes),
+		PCB_EMPTY(pcb_attribute_get(&subc->Attributes, "footprint")),
 		gen_locked(subc));
 }
 
