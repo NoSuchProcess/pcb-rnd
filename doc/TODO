@@ -37,6 +37,7 @@
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: run drc on 7805 with valgrind from the batch GUI and clean up the memleaks [report: Igor2]
+- CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, suff]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
@@ -138,7 +139,6 @@
 - BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
 - BUG: in lesstif gui, running { s s } issues 94 lines to stderr Warning: Null child found in argument list to unmanage [report: Miloh]
 
 3. Long term ===============================================================================
