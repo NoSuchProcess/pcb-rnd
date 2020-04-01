@@ -708,6 +708,21 @@ static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t DX
 	}
 }
 
+/* Draw a small lock on the bottom right corner at lx;ly */
+static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t lx, pcb_coord_t ly)
+{
+	lx -= PCB_EMARK_SIZE*1.5;
+	ly -= PCB_EMARK_SIZE*1.5;
+
+	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
+	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3);
+	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3);
+	pcb_render->draw_arc(GC,  lx, ly-PCB_EMARK_SIZE, PCB_EMARK_SIZE*2/3, PCB_EMARK_SIZE*2/3, 180, 180);
+}
+
 void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
 {
 	int n, mirr;
@@ -1944,11 +1959,12 @@ pcb_r_dir_t pcb_draw_subc_mark(const pcb_box_t *b, void *cl)
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
-	int selected;
+	int selected, locked;
 	int freq = conf_core.appearance.subc.dash_freq;
 	const pcb_color_t *nnclr;
 
 	selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
+	locked = PCB_FLAG_TEST(PCB_FLAG_LOCK, subc);
 
 	draw_subc_per_layer();
 
@@ -1959,6 +1975,9 @@ pcb_r_dir_t pcb_draw_subc_mark(const pcb_box_t *b, void *cl)
 	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : nnclr);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
+
+	if (locked)
+		pcb_subc_draw_locked(pcb_draw_out.fgGC, subc, bb->X2, bb->Y2);
 
 	if (freq >= 0) {
 		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, freq, pcb_true);
