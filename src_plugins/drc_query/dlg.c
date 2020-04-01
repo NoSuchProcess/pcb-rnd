@@ -36,9 +36,13 @@ typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	conf_role_t role;
 	char *rule, *path;
-	int wtype, wtitle, wdisable, wdesc, wquery, wsave;
+	int wtype, wtitle, wdisable, wdesc, wquery, wsave, wsaveroles;
 	gdl_elem_t link;
 } rule_edit_ctx_t;
+
+static const char *save_roles[] = {"user", "project", "design", "cli", NULL};
+static conf_role_t save_rolee[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI, CFR_invalid};
+#define save_role_defaulti 2
 
 gdl_list_t rule_edit_dialogs;
 
@@ -93,8 +97,6 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 		pcb_message(PCB_MSG_ERROR, "Rule %s disappeared from the config tree.\n", ctx->rule);
 		pcb_hid_dad_close(ctx->dlg_hid_ctx, &retovr, -1);
 	}
-
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wsave, 0 && !rnd_conf_is_read_only(ctx->role));
 }
 
 static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
@@ -111,7 +113,7 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
 {
 	rule_edit_ctx_t *ctx = caller_data;
-	
+	pcb_message(PCB_MSG_ERROR, "DRC RULE SAVE NOT YET IMPLEMENTED\n");
 }
 
 static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
@@ -120,6 +122,7 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 	char *info, *path;
 	rule_edit_ctx_t *ctx;
 	lht_node_t *nd;
+	int n, srolei = save_role_defaulti;
 
 	for(ctx = gdl_first(&rule_edit_dialogs); ctx != NULL; ctx = gdl_next(&rule_edit_dialogs, ctx))
 	{
@@ -143,6 +146,13 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 
 	gdl_insert(&rule_edit_dialogs, ctx, link);
 
+	/* attempt to set save role to input role, if input role is not read-only */
+	for(n = 0; n < sizeof(save_rolee)/sizeof(save_rolee[0]); n++) {
+		if (save_rolee[n] == role) {
+			srolei = n;
+			break;
+		}
+	}
 
 	info = pcb_strdup_printf("DRC rule edit: %s on role %s", rule, pcb_conf_role_name(role));
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -179,9 +189,17 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Run");
 				PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_run_cb);
-			PCB_DAD_BUTTON(ctx->dlg, "Save");
-				PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_save_cb);
-				ctx->wsave = PCB_DAD_CURRENT(ctx->dlg);;
+
+			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME | PCB_HATF_TIGHT);
+				PCB_DAD_BUTTON(ctx->dlg, "Save");
+					PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_save_cb);
+					ctx->wsave = PCB_DAD_CURRENT(ctx->dlg);
+				PCB_DAD_ENUM(ctx->dlg, save_roles);
+					ctx->wsaveroles = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_DEFAULT_NUM(ctx->dlg, srolei);
+			PCB_DAD_END(ctx->dlg);
+
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
