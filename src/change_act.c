@@ -503,22 +503,23 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_hid_get_coords("Select an Object", &x, &y, 0);
 				type = op == F_Refdes ? PCB_OBJ_SUBC : PCB_CHANGENAME_TYPES;
 				do_chg_name:;
-				if ((type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+				type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3);
+				if (type != PCB_OBJ_VOID) {
 					pcb_undo_save_serial();
 					if (pcb_chg_obj_name_query(ptr2)) {
 						pcb_hid_redraw(PCB);
 						pcb_board_set_changed_flag(pcb_true);
 						pcb_actionva(PCB_ACT_HIDLIB, "DeleteRats", "AllRats", NULL);
 					}
-				}
-				if (op == F_Object) {
-					pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
-					if ((subc != NULL) && subc->auto_termname_display) {
-						pcb_undo_add_obj_to_flag(ptr2);
-						PCB_FLAG_SET(PCB_FLAG_TERMNAME, (pcb_any_obj_t *)ptr2);
-						pcb_board_set_changed_flag(pcb_true);
-						pcb_undo_inc_serial();
-						pcb_draw();
+					if (op == F_Object) {
+						pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
+						if ((subc != NULL) && subc->auto_termname_display) {
+							pcb_undo_add_obj_to_flag(ptr2);
+							PCB_FLAG_SET(PCB_FLAG_TERMNAME, (pcb_any_obj_t *)ptr2);
+							pcb_board_set_changed_flag(pcb_true);
+							pcb_undo_inc_serial();
+							pcb_draw();
+						}
 					}
 				}
 				break;
