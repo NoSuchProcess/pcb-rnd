@@ -373,6 +373,7 @@ EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
 CC=@/target/cc/cc@
+AR=@/target/fstools/ar@
 HOSTCC=@/host/cc/cc@
 CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
