@@ -491,7 +491,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		{
 			pcb_coord_t x, y;
 			pcb_hid_get_coords("Select a subcircuit", &x, &y, 0);
-			type = PCB_OBJ_SUBC;
+			type = op = PCB_OBJ_SUBC;
 			goto do_chg_name;
 		}
 			/* change the name of an object */
