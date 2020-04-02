@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 + FEATURE: http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=make_import ; should work without an existing file [report: TwisteR]
-- BUG: autoplaceselected() bugs in bug_files/autoplaceselected.txt [report: Miloh]
++ BUG: autoplaceselected() bugs in bug_files/autoplaceselected.txt [report: Miloh]
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
