@@ -76,7 +76,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 	{FN(PCB_FLAG_RUBBEREND),     N("rubberend"),     PCB_OBJ_LINE | PCB_OBJ_ARC, "For lines, used internally for rubber band moves: indicates one end already rubber banding.", 0, 0},
 	{FN(PCB_FLAG_WARN),          N("warn"),          PCB_OBJ_CLASS_PIN, "For pins, vias, and pads, set to indicate a warning.", 0, 0},
 	{FN(PCB_FLAG_USETHERMAL),    N("usetherm"),      PCB_OBJ_CLASS_PIN | PCB_OBJ_LINE | PCB_OBJ_ARC, "Obsolete, indicates that pins/vias should be drawn with thermal fingers.", 0, 1},
-	{FN(PCB_FLAG_OCTAGON),       N("octagon"),       0, "Draw pins and vias as octagons.", 0, 0},
+	{FN(PCB_FLAG_OCTAGON),       N("octagon"),       0, "Draw pins and vias as octagons.", PCB_OBJ_PSTK, 0},
 	{FN(PCB_FLAG_DRC),           N("drc"),           PCB_OBJ_ANY, "Set for objects that fail DRC: flag like FOUND flag for DRC checking.", 0},
 	{FN(PCB_FLAG_EXPORTSEL),     N("exportsel"),     PCB_OBJ_ANY, "Set for objects that should be exported in a partial export.", 1},
 	{FN(PCB_FLAG_LOCK),          N("lock"),          PCB_OBJ_ANY, "Set for locked objects.", 0, 0},
