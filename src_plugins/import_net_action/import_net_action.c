@@ -60,6 +60,8 @@ static int net_action_support_prio(pcb_plug_import_t *ctx, unsigned int aspects,
 	for(l = 0; l < 32; l++) {
 		char *s, *n, line[1024];
 		s = fgets(line, sizeof(line), f);
+		if (s == NULL)
+			break;
 		for(n = s; *n != '\0'; n++)
 			*n = tolower(*n);
 		if (strstr(s, "netlist") != NULL) {
