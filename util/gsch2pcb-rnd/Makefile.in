@@ -73,6 +73,12 @@ $(HASHOBJ) $(QPARSE) \
 ../../src_3rd/genlist/genlistalloc.o:
 	cd ../../src && $(MAKE) util_deps
 
+$(ROOT)/src/librnd-hid.a:
+	cd $(ROOT)/src && make librnd-hid.a
+
+$(ROOT)/src/librnd-3rd.a:
+	cd $(ROOT)/src && make librnd-3rd.a
+
 ##### module rules begin #####
 @/local/pcb/RULES@
 ##### module rules end #####
