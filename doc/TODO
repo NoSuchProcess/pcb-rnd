@@ -7,7 +7,6 @@
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + FEATURE: configurable layer keys plus {l l} and {l k} for next and previous layer ml=3411 [report: Gabriel]
 + FEATURE: distalign actions align() and distribute() should work with any object (e.g. via, not only subc) [report: Miloh]
-- FEATURE: query(ideval) should print idpath for each object
 + FEATURE: parametric footprint: bool parameter should display as checkbox in the library/parametric window; e.g. connector()'s etrunc [report: Majenko]
 + FEATURE: {v n} on subc: when more terminals are created (named) within the subc, they should show termname (plus a little L is drawn on the origin when this is enabled on a subc) NOTE: this is a hidden property, not saved [report: Majenko]
 - BUG: padstack proto edit dialog gets confused on s-mirrored instances ml=3678 [report: gpaubert]
