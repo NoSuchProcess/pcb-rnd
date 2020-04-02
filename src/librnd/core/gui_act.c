@@ -190,10 +190,20 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		dy = pcb_get_value_ex(a2, a3, NULL, extra_units_y, "", NULL);
 	}
 
-	if (pcbhl_conf.editor.view.flip_x)
-		dx = -dx;
-	if (!pcbhl_conf.editor.view.flip_y)
-		dy = -dy;
+	if (pcb_strcasecmp(a3, "view") == 0) {
+		if ((pcb_gui != NULL) && (pcb_gui->view_get != NULL)) {
+			pcb_box_t viewbox;
+			pcb_gui->view_get(pcb_gui, &viewbox);
+			if (pcbhl_conf.editor.view.flip_x)
+				dx = viewbox.X2 - dx;
+			else
+				dx += viewbox.X1;
+			if (pcbhl_conf.editor.view.flip_y)
+				dy = viewbox.Y2 - dy;
+			else
+				dy += viewbox.Y1;
+		}
+	}
 
 	/* Allow leaving snapped pin/pad/padstack */
 	if (hidlib->tool_snapped_obj_bbox) {
@@ -209,7 +219,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			dy += radius;
 	}
 
-	pcb_hidcore_crosshair_move_to(hidlib, hidlib->ch_x + dx, hidlib->ch_y + dy, 1);
+	pcb_hidcore_crosshair_move_to(hidlib, dx, dy, 1);
 	pcb_gui->set_crosshair(pcb_gui, hidlib->ch_x, hidlib->ch_y, pan_warp);
 
 	PCB_ACT_IRES(0);
