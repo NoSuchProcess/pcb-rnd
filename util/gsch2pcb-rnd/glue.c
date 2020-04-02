@@ -30,7 +30,7 @@
 
 /* glue for pcb-rnd core */
 
-const char *pcbhl_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
+const char *pcbhl_menu_file_paths[4];
 const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
 
 const char *pcb_hidlib_default_embedded_menu = "";

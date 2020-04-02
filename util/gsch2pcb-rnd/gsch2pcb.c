@@ -1,7 +1,7 @@
 /* gsch2pcb-rnd
  *
  *  Original version: Bill Wilson    billw@wt.net
- *  rnd-version: (C) 2015..2016, Tibor 'Igor2' Palinkas
+ *  rnd-version: (C) 2015..2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software which I release under the GNU General Public
  *  License. You may redistribute and/or modify this program under the terms
@@ -46,6 +46,7 @@
 #include <librnd/core/misc_util.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/file_loaded.h>
+#include <librnd/core/hid_init.h>
 #include "method.h"
 #include "help.h"
 #include "gsch2pcb_rnd_conf.h"
@@ -55,10 +56,10 @@
 static const char *want_method_default = "import";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *pcbhl_conf_userdir_path = CONF_USER_DIR;
-const char *pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
-const char *pcbhl_conf_sysdir_path = PCBSHAREDIR;
-const char *pcbhl_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
+const char *pcbhl_conf_userdir_path;
+const char *pcphl_conf_user_path;
+const char *pcbhl_conf_sysdir_path;
+const char *pcbhl_conf_sys_path;
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
@@ -387,6 +388,15 @@ int main(int argc, char ** argv)
 	const char *want_method;
 
 	method_import_register();
+
+	pcbhl_conf_userdir_path = CONF_USER_DIR;
+	pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	pcbhl_conf_sysdir_path = PCBCONFDIR;
+	pcbhl_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	pcbhl_menu_file_paths[0] = "./";
+	pcbhl_menu_file_paths[1] = "~/.pcb-rnd/";
+	pcbhl_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
+	pcbhl_menu_file_paths[3] = NULL;
 
 	pcb_file_loaded_init();
 	pcb_conf_init();

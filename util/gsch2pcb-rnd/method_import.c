@@ -1,7 +1,7 @@
 /* gsch2pcb-rnd
  *
  *  Original version: Bill Wilson    billw@wt.net
- *  rnd-version: (C) 2015..2016, Tibor 'Igor2' Palinkas
+ *  rnd-version: (C) 2015..2016,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software which I release under the GNU General Public
  *  License. You may redistribute and/or modify this program under the terms
@@ -33,6 +33,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/misc_util.h>
+#include <librnd/core/hid_init.h>
 
 char *cmd_file_name;
 char *pcb_file_name;
