@@ -311,7 +311,7 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure *ev, 
 }
 
 
-static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
+static gboolean button_press_(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	pcb_coord_t cx, cy;
@@ -352,6 +352,24 @@ do_zoom:;
 	gtk_widget_queue_draw(w);
 
 	return FALSE;
+}
+
+static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
+{
+	int save_fx, save_fy;
+	gboolean r;
+
+	save_fx = pcbhl_conf.editor.view.flip_x;
+	save_fy = pcbhl_conf.editor.view.flip_y;
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+
+	r = button_press_(w, btn);
+
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
+	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
+
+	return r;
 }
 
 static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton *ev, gpointer data)
