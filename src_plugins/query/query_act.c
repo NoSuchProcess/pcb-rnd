@@ -46,7 +46,7 @@
 
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
-	"query(eval, expr) - compile and evaluate an expression and print a list of results on stdout\n"
+	"query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout\n"
 	"query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression\n"
 	"query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression\n"
 	"query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist\n"
@@ -55,6 +55,7 @@ static const char pcb_acth_query[] = "Perform various queries on PCB data.";
 
 typedef struct {
 	int trues, falses;
+	unsigned print_idpath:1;
 } eval_stat_t;
 
 static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
@@ -66,6 +67,16 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	if (res->type == PCBQ_VT_VOID) {
 		printf(" <void>\n");
 		st->falses++;
+		return;
+	}
+
+	if (st->print_idpath && (res->type == PCBQ_VT_OBJ)) {
+		pcb_idpath_t *idp = pcb_obj2idpath(res->data.obj);
+		char *idps = pcb_idpath2str(idp, 0);
+		st->trues++;
+		printf(" <obj %s>\n", idps);
+		free(idps);
+		pcb_idpath_destroy(idp);
 		return;
 	}
 
@@ -218,7 +229,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (strcmp(cmd, "eval") == 0) {
+	if ((strcmp(cmd, "eval") == 0) || (strcmp(cmd, "evalidp") == 0)) {
 		int errs;
 		eval_stat_t st;
 
@@ -226,6 +237,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
 		memset(&st, 0, sizeof(st));
+		st.print_idpath = (cmd[4] != '\0');
 		printf("Script eval: '%s' scope='%s'\n", arg, scope == NULL ? "" : scope);
 		errs = pcb_qry_run_script(PCB_ACT_BOARD, arg, scope, eval_cb, &st);
 
