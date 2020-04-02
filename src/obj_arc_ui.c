@@ -89,6 +89,11 @@ static void pcb_arc_ui_move_or_copy_angle(pcb_crosshair_t *ch)
 		delta = new_delta;
 	}
 
+	if (delta > 360.0)
+		delta -= 360.0;
+	if (delta < -360.0)
+		delta += 360.0;
+
 	/* remember the result of the calculation so the actual move code can reuse them */
 	ch->AttachedObject.start_angle = start;
 	ch->AttachedObject.delta_angle = delta;
