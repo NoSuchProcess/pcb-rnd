@@ -432,7 +432,7 @@ static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool 
 	sprintf(buff, "%s.%ld", is_via ? "via" : "pin", ps->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
-	flg = pcb_pstk_compat_pinvia_flag(ps, cshape);
+	flg = pcb_pstk_compat_pinvia_flag(ps, cshape, 0);
 
 	obj_attr_flag_warn((pcb_any_obj_t *)ps);
 

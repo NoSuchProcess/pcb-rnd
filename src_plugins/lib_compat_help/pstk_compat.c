@@ -691,7 +691,7 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 	return pcb_true;
 }
 
-pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape)
+pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape, pcb_pstk_compat_t compat)
 {
 	pcb_flag_t flg;
 	int n;
@@ -710,11 +710,17 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 			break;
 		default:
 			if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
-				flg.f |= PCB_FLAG_SQUARE;
 				cshape -= PCB_PSTK_COMPAT_SHAPED;
 				if (cshape == 1)
 					cshape = 17;
-				flg.q = cshape;
+				if ((cshape == 17) && (compat & PCB_PSTKCOMP_OLD_OCTAGON)) {
+					cshape = 0;
+					flg.f |= PCB_FLAG_OCTAGON;
+				}
+				else {
+					flg.q = cshape;
+					flg.f |= PCB_FLAG_SQUARE;
+				}
 			}
 			else
 				pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-shape", "Failed to convert shape to old-style pin/via", "Old pin/via format is very much restricted; try to use a simpler shape (e.g. circle)");

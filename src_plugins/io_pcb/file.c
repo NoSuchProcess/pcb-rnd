@@ -361,7 +361,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
 			pad_dia, clearance*2, mask, drill_dia);
 		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(name));
-		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_VIA, NULL, 1));
+		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON), PCB_OBJ_VIA, NULL, 1));
 	}
 }
 
@@ -485,7 +485,7 @@ TODO("textrot: incompatibility warning")
 				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
 				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
-				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape), PCB_OBJ_PIN, &ic, 1));
+				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON), PCB_OBJ_PIN, &ic, 1));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0) | (on_bot ? PCB_FLAG_ONSOLDER : 0);
