@@ -15,7 +15,7 @@
 + BUG: changing padstack prototypes from the padstack editor dialog won't set the board change flag [report: Gabriel]
 - BUG: kicad save component side and type; ml=3790,3794 [report: cnieves]
 + BUG: aligntext() fails if first arg is Y and should not require 4 arguments, only 1 (missing _MAY_) [report: cuvoodoo]
-- BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert]
++ BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert] -> in the new drc at most 2 hits per short are possible: from the two directions (two networks), because clearance requirements may be different per net
 - BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1 [report: igor2]
 - BUG: bug_files/arcedit.lht - grab the lower endpoint for move and it turns the arc into 360 deg [report: gpaubert]
 - BUG: lesstif main window doesn't show parts selected after running select all. { s a a } on parts in lesstif gui, main window doesn't show any parts selected unless zoom is changed. [report: Miloh]
