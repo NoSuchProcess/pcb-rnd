@@ -561,7 +561,21 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 
 static pcb_bool is_smd(const pcb_any_obj_t *obj)
 {
-	return padstacklist_length(&(((pcb_subc_t *)obj)->data->padstack)) != 0;
+	pcb_subc_t *sc = (pcb_subc_t *)obj;
+	pcb_pstk_t *ps;
+
+
+	for(ps = padstacklist_first(&sc->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+		pcb_pstk_proto_t *pr = pcb_pstk_get_proto(ps);
+
+		if (pr == NULL)
+			continue;
+
+		if ((pr->hdia > 0) || (pr->mech_idx >= 0)) /* a hole or slot means non-smd */
+			return 0;
+	}
+
+	return 1;
 }
 
 static pcb_bool on_bottom(const pcb_any_obj_t *obj)
