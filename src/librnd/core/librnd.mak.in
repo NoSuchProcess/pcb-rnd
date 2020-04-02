@@ -47,3 +47,7 @@ LDFLAGS_LIBRND_FUNGW=
 @]
 end
 
+
+print [@
+LIBRND_EXE=@/target/sys/ext_exe@
+@]
