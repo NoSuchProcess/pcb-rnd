@@ -35,6 +35,9 @@
 #include <librnd/core/paths.h>
 #include <librnd/core/actions.h>
 
+/* for win32 paths: */
+#include <librnd/core/hid_init.h>
+
 #include "board.h"
 #include "plug_import.h"
 
