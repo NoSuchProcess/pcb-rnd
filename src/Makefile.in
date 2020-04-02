@@ -454,7 +454,7 @@ $(SPHASH): $(SPHASH_PATH)/sphash.c
 
 # needed by gsch2pcb-rnd
 ../src_3rd/genlist/genadlist.o ../src_3rd/genlist/genlistalloc.o:
-	cd ../src_3rd/genlist && $(MAKE) GENLIST_CFLAGS="$(GENLIST_CFLAGS)" GENLIST_LDFLAGS="$(GENLIST_LDFLAGS)"
+	cd ../src_3rd/genlist && $(MAKE) GENLIST_CFLAGS="$(GENLIST_CFLAGS)" GENLIST_LDFLAGS="$(GENLIST_LDFLAGS)" CC=$(CC)
 
 buildin.c: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 	cd $(PLUGDIR) && $(PUPLUG) buildin.c "-" < $(PLUGDIR)/.builtin.pups > $(ROOT)/src/buildin.c
