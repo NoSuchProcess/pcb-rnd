@@ -26,7 +26,7 @@
 ? BUG: {s s } pcb-rnd search expression dialog doesn't include ~ regex operator for string object [report: Miloh] -> it generally does! Need more details: if you find any field where it doesn't, I will need the exact field name to fix that one.
 - BUG: Britton's full poly case vs. find: find.c should consider all islands, not just the first [report: Britton]
 + BUG: cross section: black button not visible on black background [report: Majenko] -> changed text and button bg/fg color to configured bg color and grid color, that combo should always be valid (maintained by the user)
-- BUG: cross section: view gets fooled when open with board looked at from the bottom - kills drag&drop coords and fools zooming [report: Majenko]
++ BUG: cross section: view gets fooled when open with board looked at from the bottom - kills drag&drop coords and fools zooming [report: Majenko]
 
 
 2. For later releases ===============================================================================
