@@ -147,6 +147,11 @@ int pcb_qry_run_script(pcb_board_t *pcb, const char *script, const char *scope, 
 	pcb_qry_node_t *prg = NULL;
 	int bufno = -1; /* empty scope means board */
 
+	if (script == NULL) {
+		pcb_message(PCB_MSG_ERROR, "Compilation error: no script specified.\n");
+		return -1;
+	}
+
 	while(isspace(*script)) script++;
 	pcb_qry_set_input(script);
 	qry_parse(&prg);
