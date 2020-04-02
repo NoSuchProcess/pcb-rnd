@@ -328,9 +328,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-
-	PCB_ACT_IRES(-1);
-	return 0;
+	PCB_ACT_FAIL(query);
 }
 
 static const char *PTR_DOMAIN_PCFIELD = "ptr_domain_query_precompiled_field";
