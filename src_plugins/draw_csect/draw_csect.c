@@ -35,17 +35,16 @@
 #include "stub_draw.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/hidlib_conf.h>
 #include "event.h"
 #include "undo.h"
 #include "layer_vis.h"
+#include "conf_core.h"
 
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
 
 extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
-
-static const char *COLOR_ANNOT_ = "#000000";
-static const char *COLOR_BG_ = "#f0f0f0";
 
 static const char *COLOR_COPPER_ = "#C05020";
 static const char *COLOR_SUBSTRATE_ = "#E0D090";
@@ -55,9 +54,11 @@ static const char *COLOR_PASTE_ = "#60e0e0";
 static const char *COLOR_MISC_ = "#e0e000";
 static const char *COLOR_OUTLINE_ = "#000000";
 
+#define COLOR_ANNOT  pcbhl_conf.appearance.color.grid
+#define COLOR_BG     pcbhl_conf.appearance.color.background
 
 static pcb_color_t
-	COLOR_ANNOT, COLOR_BG, COLOR_COPPER, COLOR_SUBSTRATE, COLOR_SILK, COLOR_MASK,
+	COLOR_COPPER, COLOR_SUBSTRATE, COLOR_SILK, COLOR_MASK,
 	COLOR_PASTE, COLOR_MISC, COLOR_OUTLINE;
 
 static pcb_layer_id_t drag_lid = -1;
@@ -956,8 +957,6 @@ int pplg_init_draw_csect(void)
 
 	def_info.xform = &def_xform;
 
-	pcb_color_load_str(&COLOR_ANNOT,     COLOR_ANNOT_);
-	pcb_color_load_str(&COLOR_BG,        COLOR_BG_);
 	pcb_color_load_str(&COLOR_COPPER,    COLOR_COPPER_);
 	pcb_color_load_str(&COLOR_SUBSTRATE, COLOR_SUBSTRATE_);
 	pcb_color_load_str(&COLOR_SILK,      COLOR_SILK_);
