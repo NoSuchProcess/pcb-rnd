@@ -1,0 +1,110 @@
+ha:pcb-rnd-board-v6 {
+
+ li:styles {
+ }
+
+ ha:meta {
+   ha:size {
+    thermal_scale = 0.500000
+    x = 375.0mil
+    y = 150.0mil
+   }
+   ha:grid {
+    spacing = 25.0mil
+   }
+ }
+
+ ha:data {
+  li:padstack_prototypes {
+  }
+
+   li:objects {
+   }
+   li:layers {
+
+    ha:top-sig {
+     lid=0
+     group=0
+     ha:combining {     }
+
+      ha:attributes {
+        {pcb-rnd::key::vis}={<Key>l; Shift<Key>t}
+        {pcb-rnd::key::select}={<Key>l; <Key>t}
+      }
+
+      li:objects {
+       ha:line.5 {
+        x1=150.0mil; y1=-75.0mil; x2=200.0mil; y2=-75.0mil; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+       ha:line.11 {
+        x1=-175.0mil; y1=75.0mil; x2=-125.0mil; y2=75.0mil; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+       ha:line.14 {
+        x1=150.0mil; y1=225.0mil; x2=200.0mil; y2=225.0mil; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+       ha:line.17 {
+        x1=525.0mil; y1=75.0mil; x2=575.0mil; y2=75.0mil; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+       ha:line.23 {
+        x1=0.0; y1=0.0; x2=50.0mil; y2=0.0; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+       ha:line.26 {
+        x1=325.0mil; y1=150.0mil; x2=375.0mil; y2=150.0mil; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+       ha:line.29 {
+        x1=0.0; y1=150.0mil; x2=50.0mil; y2=150.0mil; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+       ha:line.32 {
+        x1=325.0mil; y1=0.0; x2=375.0mil; y2=0.0; thickness=10.0mil; clearance=40.0mil;
+        ha:flags {
+         clearline=1
+        }
+       }
+      }
+      color = {#8b2323}
+    }
+   }
+ }
+ ha:layer_stack {
+  li:groups {
+   ha:0 {
+    name = top_copper
+    ha:type { copper=1; top=1;    }
+    li:layers { 0;    }
+   }
+  }
+ }
+ li:pcb-rnd-conf-v1 {
+  ha:overwrite {
+   ha:design {
+    text_font_id = 0
+   }
+   ha:plugins {
+    ha:drc_orig {
+     disable = 1
+    }
+   }
+  }
+ }
+}
