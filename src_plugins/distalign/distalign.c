@@ -345,7 +345,6 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				dx = 0;
 			pcb_move_obj(obj->type, obj->parent.any, obj, obj, dx, dy);
-			pcb_undo_add_obj_to_move(obj->type, obj->parent.any, obj, obj, dx, dy);
 			changed = 1;
 		}
 	}
@@ -507,7 +506,6 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				dx = 0;
 			pcb_move_obj(obj->type, obj->parent.any, obj, obj, dx, dy);
-			pcb_undo_add_obj_to_move(obj->type, obj->parent.any, obj, obj, dx, dy);
 			changed = 1;
 		}
 		/* in gaps mode, accumulate part widths */
