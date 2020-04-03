@@ -57,6 +57,7 @@ static const char *drc_query_cookie = "drc_query";
 const conf_drc_query_t conf_drc_query;
 #define DRC_QUERY_CONF_FN "drc_query.conf"
 
+#define DRC_CONF_PATH_PLUGIN "plugins/drc_query/"
 #define DRC_CONF_PATH_DISABLE "design/drc_disable/"
 #define DRC_CONF_PATH_CONST "design/drc/"
 #define DRC_CONF_PATH_RULES "plugins/drc_query/rules/"
@@ -369,7 +370,7 @@ void pplg_uninit_drc_query(void)
 	pcb_drc_impl_unreg(&drc_query_impl);
 	pcb_event_unbind_allcookie(drc_query_cookie);
 	pcb_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
-	pcb_conf_unreg_fields("plugins/drc_query/");
+	pcb_conf_unreg_fields(DRC_CONF_PATH_PLUGIN);
 	pcb_conf_hid_unreg(drc_query_cookie);
 
 	for(n = 0; n < free_drc_conf_nodes.used; n++)
