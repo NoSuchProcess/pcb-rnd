@@ -4,7 +4,10 @@ SRC=$(ROOT)/src
 TDIR=../tests/drc_query
 PCBRND=./pcb-rnd
 
-all: thickness.diff
+TESTS = \
+thickness.diff overlap.diff
+
+all: $(TESTS)
 
 thickness.diff: thickness.out
 	@diff -u thickness.out thickness.ref && rm thickness.out
