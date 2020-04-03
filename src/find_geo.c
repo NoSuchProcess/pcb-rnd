@@ -57,7 +57,7 @@
 /* This is required for fullpoly: whether an object bbox intersects a poly
    bbox can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj bbox intersects any island's bbox */
-PCB_INLINE int box_isc_poly_any_island(const pcb_box_t *box, const pcb_poly_t *poly)
+PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_box_t *box, const pcb_poly_t *poly)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -70,6 +70,27 @@ PCB_INLINE int box_isc_poly_any_island(const pcb_box_t *box, const pcb_poly_t *p
 	}
 
 	return 0;
+}
+
+
+/* This is required for fullpoly: whether an object intersects a poly
+   can't be determined by a single contour check because there might be
+   multiple contours. Returns 1 if obj's poly intersects any island's.
+   Frees objpoly at the end. */
+PCB_INLINE int box_isc_poly_any_island_free(const pcb_poly_t *objpoly, const pcb_poly_t *poly)
+{
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+	int ans;
+
+	/* first, iterate over all islands of a polygon */
+	for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		ans = pcb_polyarea_touching(objpoly, pa);
+		if (ans)
+			break;
+	}
+	pcb_polyarea_free(&objpoly);
+	return ans;
 }
 
 /* reduce arc start angle and delta to 0..360 */
@@ -632,12 +653,12 @@ pcb_bool pcb_isc_arc_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 		return pcb_false;
 	if (!Polygon->Clipped)
 		return pcb_false;
-	if (box_isc_poly_any_island(Box, Polygon)) {
+	if (box_isc_poly_any_island_bbox(Box, Polygon)) {
 		pcb_polyarea_t *ap;
 
 		if (!(ap = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false;							/* error */
-		return pcb_poly_isects_poly(ap, Polygon, pcb_true);
+		return box_isc_poly_any_island_free(ap, Polygon);
 	}
 	return pcb_false;
 }
@@ -689,10 +710,10 @@ pcb_bool pcb_isc_line_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
 		y2 = MAX(Line->Point1.Y, Line->Point2.Y) + wid;
 		return pcb_poly_is_rect_in_p(x1, y1, x2, y2, Polygon);
 	}
-	if (box_isc_poly_any_island(Box, Polygon)) {
+	if (box_isc_poly_any_island_bbox(Box, Polygon)) {
 		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + Bloat)))
 			return pcb_false;							/* error */
-		return pcb_poly_isects_poly(lp, Polygon, pcb_true);
+		return box_isc_poly_any_island_free(lp, Polygon);
 	}
 	return pcb_false;
 }
