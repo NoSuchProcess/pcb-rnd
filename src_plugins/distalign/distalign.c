@@ -151,7 +151,7 @@ static int cmp_ebp(const void *a, const void *b)
  *
  * For distribution, first and last are in the distribution axis.
  */
-static int sort_objs_by_pos(int op, int dir, int point)
+static int sort_objs_by_pos(int op, int dir, int point, int reference)
 {
 	int nsel = 0;
 	pcb_data_it_t it;
@@ -159,8 +159,14 @@ static int sort_objs_by_pos(int op, int dir, int point)
 
 	if (nobjs_by_pos)
 		return nobjs_by_pos;
-	if (op == K_align)
+
+	if (op == K_align) {
 		dir = dir == K_X ? K_Y : K_X; /* see above */
+		switch(reference) {
+			case K_First: point = K_Lefts; break;
+			case K_Last: point = K_Rights; break;
+		}
+	}
 
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
@@ -228,7 +234,7 @@ static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int
 		break;
 	case K_First: /* first or last in the orthogonal direction */
 	case K_Last:
-		if (!sort_objs_by_pos(op, dir, point)) {
+		if (!sort_objs_by_pos(op, dir, point, reference)) {
 			q = 0;
 			break;
 		}
@@ -458,7 +464,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_FAIL(distribute);
 	}
 	/* build list of objects in orthogonal axis order */
-	sort_objs_by_pos(K_distribute, dir, point);
+	sort_objs_by_pos(K_distribute, dir, point, refb);
 	/* find the endpoints given the above options */
 	s = reference_coord(K_distribute, pcb_crosshair.X, pcb_crosshair.Y, dir, point, refa);
 	e = reference_coord(K_distribute, pcb_crosshair.X, pcb_crosshair.Y, dir, point, refb);
