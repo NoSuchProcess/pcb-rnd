@@ -58,6 +58,8 @@
 		- document the new object in the data model
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
+- FEATURE: netlist dialog: double click on a net should disable rats [report: suff]
+- FEATURE: netlist dialog: button for disable all or enable all [report: suff]
 - FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
