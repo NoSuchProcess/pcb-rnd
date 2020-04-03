@@ -1,0 +1,30 @@
+1: thin copper: copper object too thin
+within (44.28, 322.41, 105.72, 602.59) mil
+required value 0.00
+Copper object thickness is below the required value. Copper objects too thin may break or peel off during board fabriaction.
+
+2: thin copper: copper object too thin
+within (125.01, 350.01, 374.99, 599.99) mil
+required value 0.00
+Copper object thickness is below the required value. Copper objects too thin may break or peel off during board fabriaction.
+
+3: thin copper: copper object too thin
+within (346.00, 413.75, 716.00, 556.25) mil
+required value 0.00
+Copper object thickness is below the required value. Copper objects too thin may break or peel off during board fabriaction.
+
+4: thin silk: silk object too thin
+within (896.16, 324.29, 953.84, 600.71) mil
+required value 0.00
+Silk object thickness is below the required value. Silk objects too thin may disappear during board fabrication.
+
+5: thin silk: silk object too thin
+within (976.92, 351.93, 1223.08, 598.08) mil
+required value 0.00
+Silk object thickness is below the required value. Silk objects too thin may disappear during board fabrication.
+
+6: thin silk: silk object too thin
+within (1196.00, 413.75, 1566.00, 556.25) mil
+required value 0.00
+Silk object thickness is below the required value. Silk objects too thin may disappear during board fabrication.
+
