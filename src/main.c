@@ -319,6 +319,7 @@ void pcb_main_uninit(void)
 	if (pcb_log_last != NULL)
 		pcb_log_last->seen = 1; /* ignore anything unseen before the uninit */
 
+	conf_core_uninit_pre();
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
 

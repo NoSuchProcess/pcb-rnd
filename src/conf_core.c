@@ -2,6 +2,7 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
+#include <librnd/core/conf_hid.h>
 #include <genvector/gds_char.h>
 #include <genht/htpp.h>
 #include <genht/hash.h>
@@ -11,7 +12,8 @@ TODO("win32: remove this once the w32_ dir workaround is removed")
 
 conf_core_t conf_core;
 
-static htpp_t legacy_hash;
+static  const char conf_core_cookie[] = "conf_core";
+static htpp_t legacy_new2old, legacy_old2new;
 
 #define conf_clamp_to(type, var, min, max, safe_val) \
 do { \
@@ -52,7 +54,8 @@ void pcb_conf_legacy(const char *dst_path, const char *legacy_path)
 		return;
 	}
 	pcb_conf_legacy_(ndst, nlegacy);
-	htpp_set(&legacy_hash, ndst, nlegacy);
+	htpp_set(&legacy_new2old, ndst, nlegacy);
+	htpp_set(&legacy_old2new, nlegacy, ndst);
 }
 
 
@@ -69,27 +72,59 @@ static void conf_core_postproc(void)
 	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          pcb_conf_ro("rc/path/bin");
 	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   pcb_conf_ro("rc/path/share");
 
-	for(e = htpp_first(&legacy_hash); e != NULL; e = htpp_next(&legacy_hash, e)) {
+	for(e = htpp_first(&legacy_new2old); e != NULL; e = htpp_next(&legacy_new2old, e)) {
 		conf_native_t *nlegacy = e->value, *ndst = e->key;
 		if (nlegacy->pcb_conf_rev > ndst->pcb_conf_rev)
 			pcb_conf_legacy_(ndst, nlegacy);
 	}
 }
 
+static void conf_legacy_chg(conf_native_t *ndst, int arr_idx)
+{
+ /* check if a legacy nde changes so we need to update a new node */
+	conf_native_t *nlegacy;
+	static int lock = 0;
+
+	if (lock)
+		return;
+
+	nlegacy = htpp_get(&legacy_old2new, ndst);
+	if (nlegacy == NULL)
+		return;
+
+	lock++;
+	pcb_trace("LEGACY change: ndst=%s nlegacy=%s\n", ndst->hash_path, nlegacy->hash_path);
+	pcb_conf_legacy_(ndst, nlegacy); /* overwrite content on role INTERNAL */
+	lock--;
+}
+
+static conf_hid_callbacks_t cbs;
+
+
+void conf_core_uninit_pre(void)
+{
+	pcb_conf_hid_unreg(conf_core_cookie);
+}
+
 void conf_core_uninit(void)
 {
-	htpp_uninit(&legacy_hash);
+	htpp_uninit(&legacy_new2old);
+	htpp_uninit(&legacy_old2new);
 }
 
 void conf_core_init(void)
 {
-	htpp_init(&legacy_hash, ptrhash, ptrkeyeq);
+	htpp_init(&legacy_new2old, ptrhash, ptrkeyeq);
+	htpp_init(&legacy_old2new, ptrhash, ptrkeyeq);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
 #include "conf_core_fields.h"
 	pcb_conf_core_postproc = conf_core_postproc;
 	conf_core_postproc();
+
+	cbs.val_change_post = conf_legacy_chg;
+	pcb_conf_hid_reg(conf_core_cookie, &cbs);
 
 	/* these old drc settings from editor/ are copied over to editor/drc
 	   because various core and tool code depend on the values being at the
