@@ -1,0 +1,3 @@
+Script eval: '@ thus getconf("editor/grid_unit")' scope=''
+ "mil"
+eval statistics: true=1 false=0 errors=0
