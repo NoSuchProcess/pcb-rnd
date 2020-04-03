@@ -171,6 +171,17 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		MKDIR_ND(nd, nd, LHT_HASH, "plugins");
 		MKDIR_ND(nd, nd, LHT_HASH, "drc_query");
 		MKDIR_ND(nd, nd, LHT_LIST, "rules");
+		if ((nd->data.list.first == NULL) && (role != CFR_USER)) {
+			gdl_iterator_t it;
+			pcb_conf_listitem_t *i;
+
+			/* need to copy all rules! */
+			pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+				lht_node_t *nnew = lht_dom_duptree(i->prop.src);
+				lht_dom_list_append(nd, nnew);
+			}
+			pcb_message(PCB_MSG_WARNING, "NOTE: Copying ALL drc rule to config role %s\n", ctx->rule, save_roles[ri]);
+		}
 		MKDIR_ND(nd, nd, LHT_HASH, ctx->rule);
 		pcb_message(PCB_MSG_INFO, "NOTE: Copying drc rule '%s' to config role %s\n", ctx->rule, save_roles[ri]);
 	}
@@ -265,9 +276,11 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 				PCB_DAD_BUTTON(ctx->dlg, "Save");
 					PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_save_cb);
 					ctx->wsave = PCB_DAD_CURRENT(ctx->dlg);
+					PCB_DAD_HELP(ctx->dlg, "Save rule at the selected conf role\nFor roles other than 'user', a full copy of all drc rules are saved!\n");
 				PCB_DAD_ENUM(ctx->dlg, save_roles);
 					ctx->wsaveroles = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_DEFAULT_NUM(ctx->dlg, srolei);
+					PCB_DAD_HELP(ctx->dlg, "Save rule at the selected conf role\nFor roles other than 'user', a full copy of all drc rules are saved!\n");
 			PCB_DAD_END(ctx->dlg);
 
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
