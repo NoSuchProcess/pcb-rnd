@@ -1147,7 +1147,7 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 	return neck < min;
 }
 
-void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole)
+void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole, pcb_coord_t minring, pcb_coord_t mindrill)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 
@@ -1158,7 +1158,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 		for(n = 0; n < ts->len; n++) {
 			if (!(ts->shape[n].layer_mask & PCB_LYT_COPPER))
 				continue; /* only copper shapes can break */
-			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, conf_core.design.min_ring)) {
+			if (pcb_pstk_shape_hole_break(&ts->shape[n], proto->hdia, minring)) {
 				(*err_minring)++;
 				break;
 			}
@@ -1167,7 +1167,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_c
 
 TODO("slot: check if slot breaks other shapes")
 
-	if ((proto->hdia > 0) && (proto->hdia < conf_core.design.min_drill))
+	if ((mindrill > 0) && (proto->hdia > 0) && (proto->hdia < mindrill))
 		*err_minhole = proto->hdia;
 }
 

@@ -167,7 +167,7 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_
    depend only on the padstack, not on other objects. load err_minring and
    err_minhole with the relevant data for the report when ring or hole rules
    are violated */
-void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole);
+void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole, pcb_coord_t minring, pcb_coord_t mindrill);
 
 /* Generate poly->pa (which should be NULL at the time of call) */
 void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly);

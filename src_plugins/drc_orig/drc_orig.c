@@ -256,7 +256,7 @@ void drc_global_pstks(pcb_view_list_t *lst)
 	{
 		pcb_coord_t ring = 0, hole = 0;
 		pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback, lst);
-		pcb_pstk_drc_check_and_warn(padstack, &ring, &hole);
+		pcb_pstk_drc_check_and_warn(padstack, &ring, &hole, conf_core.design.min_ring, conf_core.design.min_drill);
 		if ((ring > 0) || (hole > 0)) {
 			pcb_pstk_invalidate_draw(padstack);
 			if (ring) {
