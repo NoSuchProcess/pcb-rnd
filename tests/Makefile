@@ -11,6 +11,8 @@ test:
 # This uses make instead of $(MAKE) on purpose as a "portbale" -j1 to work aroudn GNU make
 	cd librnd && make all && make test
 #	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
+	cd drc_query && $(MAKE) test
+	cd query && $(MAKE) test
 	@echo " "
 	@echo "+-------------------------------------------------+"
 	@echo "+  All tests passed, pcb-rnd is safe to install.  +"
@@ -28,4 +30,6 @@ clean:
 	cd drc_pstk_hbrk && $(MAKE) clean
 	cd librnd && $(MAKE) clean
 #	cd gsch2pcb-rnd && $(MAKE) clean
+	cd drc_query && $(MAKE) clean
+	cd query && $(MAKE) clean
 

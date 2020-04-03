@@ -7,7 +7,9 @@ PCBRND=./pcb-rnd
 TESTS = \
 	action.diff getconf.diff getconf2.diff
 
-all: $(TESTS)
+test: $(TESTS)
+
+all:
 
 action.diff: action.out
 	@diff -u action.out action.ref && rm action.out

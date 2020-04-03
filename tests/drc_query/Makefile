@@ -7,7 +7,9 @@ PCBRND=./pcb-rnd
 TESTS = \
 thickness.diff overlap.diff
 
-all: $(TESTS)
+test: $(TESTS)
+
+all:
 
 thickness.diff: thickness.out
 	@diff -u thickness.out thickness.ref && rm thickness.out
