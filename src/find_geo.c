@@ -728,19 +728,26 @@ pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 {
 	int pcp_cnt = 0;
 	pcb_coord_t pcp_gap;
+	pcb_poly_it_t it1, it2;
+	pcb_polyarea_t *pa1, *pa2;
 
 	if (!P1->Clipped || !P2->Clipped)
 		return pcb_false;
 	assert(P1->Clipped->contours);
 	assert(P2->Clipped->contours);
 
+	/* first, iterate over all island pairs of the polygons to find if any of them has overlapping bbox */
+	for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
+		pcb_pline_t *c1 = pcb_poly_contour(&it1);
+		for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
+			pcb_pline_t *c2 = pcb_poly_contour(&it2);
+			if ((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) &&
+				  (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat)) { goto do_check; }
+		}
+	}
+	return pcb_false;
 
-	/* first check if both bounding boxes intersect. If not, return quickly */
-	if (P1->Clipped->contours->xmin - Bloat > P2->Clipped->contours->xmax ||
-			P1->Clipped->contours->xmax + Bloat < P2->Clipped->contours->xmin ||
-			P1->Clipped->contours->ymin - Bloat > P2->Clipped->contours->ymax ||
-			P1->Clipped->contours->ymax + Bloat < P2->Clipped->contours->ymin)
-		return pcb_false;
+	do_check:;
 
 	/* cheat: poly-clear-poly means we did generate the clearance; this
 	   shall happen only if there's exactly one poly that is clearing the other */
@@ -758,33 +765,44 @@ pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 		return pcb_true;
 	}
 
-	/* first check un-bloated case */
-	if (pcb_poly_isects_poly(P1->Clipped, P2, pcb_false))
-		return pcb_true;
+	/* first check un-bloated case (most common) */
+	if (Bloat == 0) {
+		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1))
+			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2))
+				if (pcb_polyarea_touching(pa1, pa2))
+					return pcb_true;
+	}
 
-	/* now the difficult case of bloated */
+	/* now the difficult case of bloated for each island vs. island */
 	if (Bloat > 0) {
-		pcb_pline_t *c;
-		for (c = P1->Clipped->contours; c; c = c->next) {
-			pcb_line_t line;
-			pcb_vnode_t *v = c->head;
-			if (c->xmin - Bloat <= P2->Clipped->contours->xmax &&
-					c->xmax + Bloat >= P2->Clipped->contours->xmin &&
-					c->ymin - Bloat <= P2->Clipped->contours->ymax && c->ymax + Bloat >= P2->Clipped->contours->ymin) {
+		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
+			pcb_pline_t *c1 = pcb_poly_contour(&it1);
+			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
+				pcb_pline_t *c, *c2 = pcb_poly_contour(&it2);
 
-				line.Point1.X = v->point[0];
-				line.Point1.Y = v->point[1];
-				line.Thickness = 2 * Bloat;
-				line.Clearance = 0;
-				line.Flags = pcb_no_flags();
-				for (v = v->next; v != c->head; v = v->next) {
-					line.Point2.X = v->point[0];
-					line.Point2.Y = v->point[1];
-					pcb_line_bbox(&line);
-					if (pcb_isc_line_poly(&line, P2))
-						return pcb_true;
-					line.Point1.X = line.Point2.X;
-					line.Point1.Y = line.Point2.Y;
+				if (!((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) &&
+					  (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat))) continue;
+				for (c = c1; c; c = c->next) {
+					pcb_line_t line;
+					pcb_vnode_t *v = c->head;
+					if (c->xmin - Bloat <= c2->xmax && c->xmax + Bloat >= c2->xmin &&
+							c->ymin - Bloat <= c2->ymax && c->ymax + Bloat >= c2->ymin) {
+
+						line.Point1.X = v->point[0];
+						line.Point1.Y = v->point[1];
+						line.Thickness = 2 * Bloat;
+						line.Clearance = 0;
+						line.Flags = pcb_no_flags();
+						for (v = v->next; v != c->head; v = v->next) {
+							line.Point2.X = v->point[0];
+							line.Point2.Y = v->point[1];
+							pcb_line_bbox(&line);
+							if (pcb_isc_line_poly(&line, P2))
+								return pcb_true;
+							line.Point1.X = line.Point2.X;
+							line.Point1.Y = line.Point2.Y;
+						}
+					}
 				}
 			}
 		}
