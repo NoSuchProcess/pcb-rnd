@@ -13,13 +13,13 @@ test: $(TESTS)
 all:
 
 thickness.diff: thickness.out
-	@diff -u thickness.out thickness.ref && rm thickness.out
+	@diff -u thickness.ref thickness.out && rm thickness.out
 
 thickness.out: FORCE
 	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/thickness.lht --gui batch > $(TDIR)/thickness.out
 
 overlap.diff: overlap.out
-	@diff -u overlap.out overlap.ref && rm overlap.out
+	@diff -u overlap.ref overlap.out && rm overlap.out
 
 overlap.out: FORCE
 	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/overlap.lht --gui batch > $(TDIR)/overlap.out
