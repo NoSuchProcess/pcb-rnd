@@ -402,6 +402,7 @@ int main()
 			pcb_message(PCB_MSG_ERROR, "unknown command '%s'", cmd);
 	}
 
+	conf_core_uninit_pre();
 	pcb_conf_hid_unreg(hid_cookie);
 	pcb_conf_uninit();
 	return 0;
