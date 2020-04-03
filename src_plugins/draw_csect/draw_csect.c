@@ -429,9 +429,10 @@ static void mark_layer_order(pcb_coord_t x)
 	lactive_idx++;
 }
 
-static void draw_hover_label(const char *str)
+static void draw_hover_label(pcb_hid_gc_t gc, const char *str)
 {
 	int x0 = PCB_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
+	pcb_render->set_color(gc, &COLOR_ANNOT);
 	dtext_(cx+x0, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
 }
 
@@ -584,24 +585,24 @@ TODO("layer: handle multiple outline layers")
 		/* draw the actual operation */
 		if (drag_addgrp) {
 			mark_grp(cy, PCB_LYT_SUBSTRATE, MARK_GRP_MIDDLE);
-			draw_hover_label("INSERT GRP");
+			draw_hover_label(gc, "INSERT GRP");
 		}
 		if (drag_delgrp) {
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_FRAME);
-			draw_hover_label("DEL GROUP");
+			draw_hover_label(gc, "DEL GROUP");
 		}
 		if (drag_addlayer) {
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK, MARK_GRP_FRAME);
 			mark_outline_grp(cx, cy, outline_gid);
-			draw_hover_label("ADD LAYER");
+			draw_hover_label(gc, "ADD LAYER");
 		}
 		if (drag_dellayer) {
 			mark_layer(cx, cy);
-			draw_hover_label("DEL LAYER");
+			draw_hover_label(gc, "DEL LAYER");
 		}
 		else if (drag_lid >= 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
-			draw_hover_label(l->name);
+			draw_hover_label(gc, l->name);
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK, MARK_GRP_FRAME);
 			mark_outline_grp(cx, cy, outline_gid);
 			mark_layer_order(cx);
@@ -609,7 +610,7 @@ TODO("layer: handle multiple outline layers")
 		else if (drag_gid >= 0) {
 			pcb_layergrp_t *g = &PCB->LayerGroups.grp[drag_gid];
 			const char *name = g->name == NULL ? "<unnamed group>" : g->name;
-			draw_hover_label(name);
+			draw_hover_label(gc, name);
 			mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_INTERN, MARK_GRP_TOP);
 			if (gactive < 0)
 				mark_grp(cy, PCB_LYT_COPPER | PCB_LYT_BOTTOM, MARK_GRP_TOP);
