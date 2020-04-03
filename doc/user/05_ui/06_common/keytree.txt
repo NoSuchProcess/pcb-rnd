@@ -199,6 +199,7 @@ m;d;c	pcb-menu-default.lht	conf(toggle, editor\057check_planes, design) 	Check p
 m;d;d	pcb-menu-default.lht	conf(toggle, editor\057as_drawn_poly, design)	poly as-drawn frame annotation
 m;d;h	pcb-menu-default.lht	conf(toggle, editor\057highlight_on_point, design) 	Highlighting on line, arc points
 m;d;p	pcb-menu-default.lht	conf(toggle, editor\057thin_draw_poly, design)	Thin draw poly
+m;d;r	pcb-menu-default.lht		Reset
 m;d;t	pcb-menu-default.lht	conf(toggle, editor\057thin_draw, design) 	Thin draw
 m;d;w	pcb-menu-default.lht	conf(toggle, editor\057wireframe_draw, design) 	Wireframe draw
 m;f;h	pcb-menu-default.lht	conf(toggle, editor\057hide_names, design) 	Hide floaters
@@ -281,6 +282,8 @@ up-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Up
 v;c	pcb-menu-default.lht	Center() 	Center cursor
 v;f	pcb-menu-default.lht	Zoom() 	Zoom Extents
 v;n	pcb-menu-default.lht	Display(PinOrPadName) 	Show padstack numbers in a subc
+v;r;g	pcb-menu-default.lht		Reset GUI
+v;r;v	pcb-menu-default.lht		Reset View
 v;s;c	pcb-menu-default.lht	Display(SubcID)	user configured
 v;s;f	pcb-menu-default.lht	Display(SubcID,"%a.footprint%")	footprint
 v;s;r	pcb-menu-default.lht	Display(SubcID, "%a.refdes%")	refdes
