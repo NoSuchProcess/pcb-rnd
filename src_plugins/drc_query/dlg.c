@@ -34,6 +34,10 @@
 #include <liblihata/dom.h>
 #include <liblihata/tree.h>
 
+static void drc_rlist_pcb2dlg(void);
+static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+
+
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	conf_role_t role;
@@ -195,6 +199,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	MKDIR_ND_SET_TEXT(nd, "query", txt->hid_get_text(atxt, hid_ctx));
 
 	pcb_conf_update(NULL, -1);
+	drc_rlist_pcb2dlg();
 }
 
 #undef MKDIR_ND
@@ -351,6 +356,8 @@ static void drc_rlist_pcb2dlg(void)
 	gdl_iterator_t it;
 	pcb_conf_listitem_t *i;
 
+	if (!ctx->active)
+		return;
 
 	attr = &ctx->dlg[ctx->wlist];
 	tree = attr->wdata;
@@ -389,6 +396,9 @@ static void drc_rlist_pcb2dlg(void)
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
+
+		r = pcb_dad_tree_get_selected(attr);
+		rlist_select(&ctx->dlg[ctx->wlist], ctx->dlg_hid_ctx, r);
 	}
 }
 
