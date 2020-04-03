@@ -243,3 +243,20 @@ static int fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 	return 0;
 }
 
+
+static int fnc_pstkring(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	pcb_coord_t cnt = 0;
+	pcb_pstk_t *ps;
+
+	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || ((argv[1].type != PCBQ_VT_COORD) && (argv[1].type != PCBQ_VT_LONG)))
+		return -1;
+
+	ps = (pcb_pstk_t *)argv[0].data.obj;
+	if (ps->type != PCB_OBJ_PSTK)
+			PCB_QRY_RET_INV(res);
+
+	pcb_pstk_drc_check_and_warn(ps, &cnt, NULL, argv[1].data.crd, 0);
+
+	PCB_QRY_RET_INT(res, cnt);
+}
