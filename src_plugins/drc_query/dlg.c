@@ -191,7 +191,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	MKDIR_ND_SET_TEXT(nd, "title", ctx->dlg[ctx->wtitle].val.str);
 	MKDIR_ND_SET_TEXT(nd, "query", txt->hid_get_text(atxt, hid_ctx));
 
-	pcb_conf_update(DRC_CONF_PATH_PLUGIN, 0);
+	pcb_conf_update(NULL, -1);
 }
 
 #undef MKDIR_ND
