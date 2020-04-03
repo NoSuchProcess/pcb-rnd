@@ -19,4 +19,8 @@ overlap.out: FORCE
 	@cd $(SRC) && echo "drc()" | ./$(PCBRND) $(TDIR)/overlap.lht --gui batch > $(TDIR)/overlap.out
 
 
+clean:
+	@echo "a" > dummy.out
+	rm *.out
+
 FORCE:

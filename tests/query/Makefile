@@ -27,5 +27,8 @@ getconf2.diff: getconf2.out
 getconf2.out: FORCE
 	@cd $(SRC) && echo 'query(eval, "@ thus $$min_drill")' | ./$(PCBRND) $(TDIR)/1obj.lht --gui batch > $(TDIR)/getconf2.out
 
+clean:
+	@echo "a" > dummy.out
+	rm *.out
 
 FORCE:
