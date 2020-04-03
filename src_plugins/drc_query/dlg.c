@@ -116,7 +116,10 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 do { \
 	lht_node_t *nnew; \
 	lht_err_t err; \
-	nnew = lht_tree_path_(parent->doc, parent, nname, 1, 1, &err); \
+	char *nname0 = nname; \
+	if (parent->type == LHT_LIST) nname0 = pcb_concat(nname, ":0", NULL); \
+	nnew = lht_tree_path_(parent->doc, parent, nname0, 1, 1, &err); \
+	if (parent->type == LHT_LIST) free(nname0); \
 	if ((nnew != NULL) && (nnew->type != ntype)) { \
 		pcb_message(PCB_MSG_ERROR, "Internal error: invalid existing node type for %s: %d, rule is NOT saved\n", nname, nnew->type); \
 		return; \
