@@ -77,7 +77,7 @@ PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_box_t *box, const pcb_poly
    can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj's poly intersects any island's.
    Frees objpoly at the end. */
-PCB_INLINE int box_isc_poly_any_island_free(const pcb_poly_t *objpoly, const pcb_poly_t *poly)
+PCB_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_poly_t *poly)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
