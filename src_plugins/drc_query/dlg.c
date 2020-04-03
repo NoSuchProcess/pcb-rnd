@@ -31,6 +31,8 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
 #include <genlist/gendlist.h>
+#include <liblihata/dom.h>
+#include <liblihata/tree.h>
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -41,7 +43,7 @@ typedef struct{
 } rule_edit_ctx_t;
 
 static const char *save_roles[] = {"user", "project", "design", "cli", NULL};
-static conf_role_t save_rolee[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI, CFR_invalid};
+static conf_role_t save_rolee[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI};
 #define save_role_defaulti 2
 
 gdl_list_t rule_edit_dialogs;
@@ -110,11 +112,79 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	free(s);
 }
 
+#define MKDIR_ND(outnode, parent, ntype, nname) \
+do { \
+	lht_node_t *nnew; \
+	lht_err_t err; \
+	nnew = lht_tree_path_(parent->doc, parent, nname, 1, 1, &err); \
+	if ((nnew != NULL) && (nnew->type != ntype)) { \
+		pcb_message(PCB_MSG_ERROR, "Internal error: invalid existing node type for %s: %d, rule is NOT saved\n", nname, nnew->type); \
+		return; \
+	} \
+	else if (nnew == NULL) { \
+		nnew = lht_dom_node_alloc(ntype, nname); \
+		switch(parent->type) { \
+			case LHT_HASH: err = lht_dom_hash_put(parent, nnew); break; \
+			case LHT_LIST: err = lht_dom_list_append(parent, nnew); break; \
+			default: \
+				pcb_message(PCB_MSG_ERROR, "Internal error: invalid parent node type for %s: %d, rule is NOT saved\n", parent->name, parent->type); \
+				return; \
+		} \
+	} \
+	outnode = nnew; \
+} while(0)
+
+#define MKDIR_ND_SET_TEXT(parent, nname, nval) \
+do { \
+	lht_node_t *ntxt; \
+	MKDIR_ND(ntxt, parent, LHT_TEXT, nname); \
+	if (ntxt == NULL) { \
+		pcb_message(PCB_MSG_ERROR, "Internal error: new text node for %s is NULL, rule is NOT saved\n", nname); \
+		return; \
+	} \
+	free(ntxt->data.text.value); \
+	ntxt->data.text.value = pcb_strdup(nval == NULL ? "" : nval); \
+} while(0)
+
 static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
 {
 	rule_edit_ctx_t *ctx = caller_data;
-	pcb_message(PCB_MSG_ERROR, "DRC RULE SAVE NOT YET IMPLEMENTED\n");
+	int ri = ctx->dlg[ctx->wsaveroles].val.lng;
+	lht_node_t *nd;
+	conf_role_t role;
+	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
+	pcb_hid_text_t *txt = atxt->wdata;
+
+	if ((ri < 0) || (ri >= sizeof(save_rolee)/sizeof(save_rolee[0]))) {
+		pcb_message(PCB_MSG_ERROR, "Internal error: role out of range, rule is NOT saved\n");
+		return;
+	}
+
+	role = save_rolee[ri];
+	nd = pcb_conf_lht_get_at_mainplug(role, ctx->path, 1, 0);
+	if (nd == NULL) {
+		nd = pcb_conf_lht_get_first(role, 1);
+		if (nd == NULL) {
+			pcb_message(PCB_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n");
+			return;
+		}
+		MKDIR_ND(nd, nd, LHT_HASH, "plugins");
+		MKDIR_ND(nd, nd, LHT_HASH, "drc_query");
+		MKDIR_ND(nd, nd, LHT_LIST, "rules");
+		MKDIR_ND(nd, nd, LHT_HASH, ctx->rule);
+		pcb_message(PCB_MSG_INFO, "NOTE: Copying drc rule '%s' to config role %s\n", ctx->rule, save_roles[ri]);
+	}
+
+	MKDIR_ND_SET_TEXT(nd, "type", ctx->dlg[ctx->wtype].val.str);
+	MKDIR_ND_SET_TEXT(nd, "desc", ctx->dlg[ctx->wdesc].val.str);
+	MKDIR_ND_SET_TEXT(nd, "title", ctx->dlg[ctx->wtitle].val.str);
+	MKDIR_ND_SET_TEXT(nd, "query", txt->hid_get_text(atxt, hid_ctx));
+
+	pcb_message(PCB_MSG_ERROR, "DRC RULE SAVE\n");
+	pcb_conf_update(DRC_CONF_PATH_PLUGIN, 0);
 }
+
+#undef MKDIR_ND
 
 static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 {
