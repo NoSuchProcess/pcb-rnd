@@ -1,0 +1,5 @@
+Script eval: 'action("message", "hello", @.x)' scope=''
+I: hello
+I: 
+ false
+eval statistics: true=0 false=1 errors=0
