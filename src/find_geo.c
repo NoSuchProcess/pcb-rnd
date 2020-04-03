@@ -45,6 +45,7 @@
 
 #include "obj_arc_ui.h"
 #include "obj_pstk_inlines.h"
+#include "obj_poly.h"
 #include "search.h"
 
 #define EXPAND_BOUNDS(p) if (Bloat > 0) {\
@@ -52,6 +53,24 @@
        (p)->BoundingBox.X2 += Bloat; \
        (p)->BoundingBox.Y1 -= Bloat; \
        (p)->BoundingBox.Y2 += Bloat;}
+
+/* This is required for fullpoly: whether an object bbox intersects a poly
+   bbox can't be determined by a single contour check because there might be
+   multiple contours. Returns 1 if obj bbox intersects any island's bbox */
+PCB_INLINE int box_isc_poly_any_island(const pcb_box_t *box, const pcb_poly_t *poly)
+{
+	pcb_poly_it_t it;
+	pcb_polyarea_t *pa;
+
+	/* first, iterate over all islands of a polygon */
+	for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
+		pcb_pline_t *c = pcb_poly_contour(&it);
+		if ((box->X1 <= c->xmax + Bloat) && (box->X2 >= c->xmin - Bloat) &&
+			  (box->Y1 <= c->ymax + Bloat) && (box->Y2 >= c->ymin - Bloat)) { return 1; }
+	}
+
+	return 0;
+}
 
 /* reduce arc start angle and delta to 0..360 */
 static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
@@ -613,9 +632,7 @@ pcb_bool pcb_isc_arc_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 		return pcb_false;
 	if (!Polygon->Clipped)
 		return pcb_false;
-	if (Box->X1 <= Polygon->Clipped->contours->xmax + Bloat
-			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
-			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
+	if (box_isc_poly_any_island(Box, Polygon)) {
 		pcb_polyarea_t *ap;
 
 		if (!(ap = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
@@ -672,9 +689,7 @@ pcb_bool pcb_isc_line_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
 		y2 = MAX(Line->Point1.Y, Line->Point2.Y) + wid;
 		return pcb_poly_is_rect_in_p(x1, y1, x2, y2, Polygon);
 	}
-	if (Box->X1 <= Polygon->Clipped->contours->xmax + Bloat
-			&& Box->X2 >= Polygon->Clipped->contours->xmin - Bloat
-			&& Box->Y1 <= Polygon->Clipped->contours->ymax + Bloat && Box->Y2 >= Polygon->Clipped->contours->ymin - Bloat) {
+	if (box_isc_poly_any_island(Box, Polygon)) {
 		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + Bloat)))
 			return pcb_false;							/* error */
 		return pcb_poly_isects_poly(lp, Polygon, pcb_true);
