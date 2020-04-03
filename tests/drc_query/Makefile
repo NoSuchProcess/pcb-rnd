@@ -6,7 +6,7 @@ PCBRND=./pcb-rnd
 GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1
 
 TESTS = \
-thickness.diff overlap.diff
+thickness.diff overlap.diff netint.diff
 
 test: $(TESTS)
 
@@ -23,6 +23,12 @@ overlap.diff: overlap.out
 
 overlap.out: FORCE
 	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/overlap.lht --gui batch > $(TDIR)/overlap.out
+
+netint.diff: netint.out
+	@diff -u netint.ref netint.out && rm netint.out
+
+netint.out: FORCE
+	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/netint.lht --gui batch > $(TDIR)/netint.out
 
 
 clean:
