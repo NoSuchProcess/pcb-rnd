@@ -93,7 +93,6 @@ static void conf_legacy_chg(conf_native_t *ndst, int arr_idx)
 		return;
 
 	lock++;
-	pcb_trace("LEGACY change: ndst=%s nlegacy=%s\n", ndst->hash_path, nlegacy->hash_path);
 	pcb_conf_legacy_(ndst, nlegacy); /* overwrite content on role INTERNAL */
 	lock--;
 }
