@@ -21,7 +21,7 @@
 + BUG: align(y,bottoms,first,gridless) in align.lht from distalign pool node uses wrong y reference for 'first', and outputs erroneous result [repot: Miloh]
 ? BUG: {s s } pcb-rnd search expression dialog doesn't include ~ regex operator for string object [report: Miloh] -> it generally does! Need more details: if you find any field where it doesn't, I will need the exact field name to fix that one.
 + BUG: Britton's full poly case vs. find: find.c should consider all islands, not just the first [report: Britton]
-- BUG: cross section: black button not visible on black background while moving [report: Majenko] -> changed text and button bg/fg color to configured bg color and grid color, that combo should always be valid (maintained by the user)
++ BUG: cross section: black button not visible on black background while moving [report: Majenko] -> changed text and button bg/fg color to configured bg color and grid color, that combo should always be valid (maintained by the user)
 - BUG: cross section: view gets fooled when open with board looked at from the bottom: drag&drop coords [report: Majenko]
 
 
