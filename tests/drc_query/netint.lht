@@ -588,6 +588,9 @@ ha:pcb-rnd-board-v6 {
  }
  li:pcb-rnd-conf-v1 {
   ha:overwrite {
+   ha:design {
+    min_ring=0mil
+   }
    ha:plugins {
     ha:drc_orig {
      disable = 1
