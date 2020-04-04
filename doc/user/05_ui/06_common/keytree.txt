@@ -227,6 +227,8 @@ n;c;o;	pcb-menu-default.lht	ClaimNet(object) 	claim net by object
 n;c;s;	pcb-menu-default.lht	ClaimNet(selected) 	claim net on selected
 p;m;p;	pcb-menu-default.lht	ManagePlugins() 	Manage plugins...
 p;m;s;	pcb-menu-default.lht	BrowseScripts() 	Manage scripts...
+p;p;c	pcb-menu-default.lht	Polygon(Close) 	Polygon Close
+p;p;p	pcb-menu-default.lht	Polygon(PreviousPoint) 	Polygon PreviousPoint
 q-ctrl	pcb-menu-default.lht	Quit() 	Quit Program
 r;r;+	pcb-menu-default.lht	conf(delta, editor\057route_radius, +0.5, design)	Route radius +0.5
 r;r;-	pcb-menu-default.lht	conf(delta, editor\057route_radius, -0.5, design)	Route radius -0.5
