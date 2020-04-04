@@ -6,14 +6,14 @@
 	<link rel="stylesheet" type="text/css" href="../../default.css">
 </head>
 <body>
-<h2> CAM support </h2>
+<h2 autotoc="yes"> CAM support </h2>
 <p>
 The purpose of the CAM support is to provide a unified interface to export a
 board in different file formats using different exporter plugins. The
 interface consists of a CLI layer (each export plugin's "cam" option) and
 an optional GUI (the CAM plugin).
 
-<h3> CAM export support in multi-layer plugins with '-x plugin --cam' </h3>
+<h3 autotoc="yes"> CAM export support in multi-layer plugins with '-x plugin --cam' </h3>
 <p>
 This section is about the syntax used by the exporters that export
 multiple layers (e.g. gerber, ps, png).
@@ -87,7 +87,7 @@ layer groups in multiple files. For example:
 	     <td> export all copper layers to numbered copper-<i>N</i>.gbr files where <i>N</i> is the full name of the group being exported
 </table>
 
-<h3 id="nolayer"> CAM export support in no-layer plugins with '-x plugin --cam' </h3>
+<h3 id="nolayer" autotoc="yes"> CAM export support in no-layer plugins with '-x plugin --cam' </h3>
 <p>
 This section is about the syntax used by the exporters export global digest
 of the board and not layers (e.g. XY).
@@ -110,7 +110,7 @@ The --cam option in these exporters are implemented for two reasons:
 	<li> to allow a CAM job to use these exporters
 </ul>
 
-<h3 id="partial"> partial export </h3>
+<h3 id="partial" autotoc="yes"> partial export </h3>
 <p>
 In partial exporting the rendering code in core will draw only those object
 that have the EXPORTSEL flag set. The flag is normally set by a query() action
@@ -119,7 +119,7 @@ using an expression.
 A typical use of this feature is to export plugged/filled vias into a
 separate file, assuming the padstacks have a specific attribute set.
 
-<h3> CAM plugin (CAM jobs) with '-x cam' </h3>
+<h3 autotoc="yes"> CAM plugin (CAM jobs) with '-x cam' </h3>
 <p>
 The CAM plugin is a way to manage output "jobs": collections of cam export
 settings for reproducing export packages in various formats. 
@@ -211,7 +211,7 @@ Note: the first <i>full</i> command is used to cancel the effect of the first
 all the "filled" vias would still be marked and unfilled.exc would contain
 both filled and unfilled vias.
 
-<h3> Tips for using with various exporters </h3>
+<h3 autotoc="yes"> Tips for using with various exporters </h3>
 <p>
 When exporting to ps, consider using the --no-show-toc. It is
 possible to combine multiple layers (e.g. top silk and top copper, which

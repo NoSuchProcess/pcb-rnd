@@ -6,11 +6,11 @@
 	<link rel="stylesheet" type="text/css" href="../../default.css">
 </head>
 <body>
-<h2 id=""> The vendordrill plugin - Apply Vendor Drills and DRC </h2>
+<h2 id="" autotoc="yes"> The vendordrill plugin - Apply Vendor Drills and DRC </h2>
 <p>
 Load and Apply vendor file to the current design.
 
-<h2 id="description"> Description </h2>
+<h3 id="description" autotoc="yes"> Description </h3>
 <p>
 Footprint holes are predefined within each footprint and layer
 characteristics are predefined in the layout file. Consequentially, hole
@@ -45,7 +45,7 @@ any subsequent Design Rule Checks (DRC).  Some critical parts where you
 may not want to change the drill size can be identified to be left alone
 - "skipped".
 
-<h2 id="vendor-file-requirements"> Vendor File Requirements </h2>
+<h3 id="vendor-file-requirements" autotoc="yes"> Vendor File Requirements </h3>
 <ul>
 
 	<li> The vendor file is a text file in lihata format. It expects a
@@ -72,9 +72,7 @@ may not want to change the drill size can be identified to be left alone
 		</ul>
 	</ul>
 
-<h3 id="example-minimal-vendor-file">
-	Example Minimal Vendor File
-</h3>
+<h3 id="example-minimal-vendor-file" autotoc="yes"> Example Minimal Vendor File </h3>
 <pre><code>    ha:vendor_drill_map {
   vendor = oshpark  # Optional and can be omitted
   units = mil      # mil|mils|inch|inches|mm - mil is default

@@ -6,7 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="../../default.css">
 </head>
 <body>
-<h2> drc_query: query() based, scriptable Design Rule Checker </h2>
+<h2 autotoc="yes"> drc_query: query() based, scriptable Design Rule Checker </h2>
 <p>
 The drc_query plugin is a glue layer between the
 <a href="../query">query plugin</a> and the DRC infrastructure. It allows the
@@ -15,7 +15,7 @@ of the normal DRC workflow. This chapter describes the
 <a href="#config">how to configure and use query()</a> based DRC scripts
 and offers a <a href="#tutor">tutorial on developing DRC scripts</a>.
 
-<h3 id="config">Configuration</h3>
+<h3 id="config" autotoc="yes">Configuration</h3>
 <p>
 DRC rules are specified as a list of hash nodes under the plugins/drc_query/rules
 config path, from the config source of the user's choice. Commonly used config
@@ -55,7 +55,7 @@ li:pcb-rnd-conf-v1 {
 </pre>
 <p>
 There are two main subtrees below ha:drc_query: definitions and rules.
-<h4> Definitions </h4>
+<h4 autotoc="yes"> Definitions </h4>
 <p>
 Definitions create new config nodes under design/drc. These config nodes
 can be used to configure parameters of the drc check. The order of
@@ -76,7 +76,7 @@ the conf() action or the GUI (preferences dialog). From query(), it can
 be referenced using the shorthand <i>$min_dirll</i> form.
 
 
-<h4> Rules </h4>
+<h4 autotoc="yes"> Rules </h4>
 <p>
 Text fields type, tilte and desc are optional user readable strings
 that will be presented in the DRC report. The type::title pair serves
@@ -114,9 +114,9 @@ Note: since drc errors are presented on a per type basis, and drc rules
 are executed each in its own, independent context, the order of rules does not
 matter.
 
-<h3 id="tutor">Tutorial</h3>
+<h3 id="tutor" autotoc="yes">Tutorial</h3>
 
-<h4> Single expression scripts </h4>
+<h4 autotoc="yes"> Single expression scripts </h4>
 <p>
 In Example 1, a single query() expression is used: it iterates through all
 objects available (@) and evaluates whether the object's hole property is
@@ -141,7 +141,7 @@ Note: the left-side check of &amp;&amp; for hole diameter greater than zero
 is needed because of the pcb-rnd data model: hole diameter zero means no hole
 (e.g. smd pads) - no warning should be issued for that.
 
-<h4> Rule scripts </h4>
+<h4 autotoc="yes"> Rule scripts </h4>
 <p>
 However, in some situations a DRC violation depends on two or more objects,
 thus iterations need to be done on pairs (or tuplets) of objects. It is

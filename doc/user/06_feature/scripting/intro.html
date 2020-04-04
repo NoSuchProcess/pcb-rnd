@@ -6,12 +6,12 @@
 </head>
 <body>
 
-<H1> Scripting - User Intro </H1>
+<H2 autotoc="yes"> Scripting - User Intro </H2>
 This document is an introduction to fungw for pcb-rnd users. It focuses on
 scripting pcb-rnd and doesn't discuss fungw deeper than the minimum necessary.
 Fungw is more generic than shown here.
 
-<H2> 1.1. Stored scripts </H2>
+<h3 autotoc="yes"> Stored scripts </h3>
 <p>
 Stored scripts are typically larger piece of works that register actions,
 may create menus, GUI dialog boxes. Their role is to introduce new
@@ -65,7 +65,7 @@ li:pcb-rnd-perma-script-v1 {
 which will then load ~/.pcb-rnd/scripts/foo.awk using the mawk scripting
 engine with the script id <i>bar</i>.
 
-<H2> 1.2. Oneliners </H2>
+<h3 autotoc="yes"> Oneliners </h3>
 <p>
 Note: examples in this section assume pcb-rnd is configured and compiled
 with system <a href="install.txt">installed</a> fungw, and libmawk is also installed
@@ -115,7 +115,7 @@ script states (e.g. variables) preserved between lines entered. Actions
 defined in one-liners are also discarded after the one-liner finished. For
 such use cases, stored script shall be written.
 
-<H2> 1.3. Live Scripting </H2>
+<h3 autotoc="yes"> Live Scripting </h3>
 <p>
 Action LiveScript() pops up the Live Scripting window. The script
 entered here can be executed, saved or loaded.
@@ -133,10 +133,10 @@ A <a href="http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=live_script">
 Live Scripting Tutorial</a> is available in the knowledge pool.
 
 
-<H1> Scripting - Developer Intro </H1>
+<H2 autotoc="yes"> Scripting - Developer Intro </H2>
 <p>
 
-<H2> 2.1. The big picture </H2>
+<h3 autotoc="yes"> The big picture </h3>
 <p>
 The main interface between pcb-rnd internals and the outside world
 (e.g. user interface, scripts) is called actions. An action is typically
@@ -157,7 +157,7 @@ Thus the two main aspects of pcb-rnd scripting are:
 	     task
 </ul>
 
-<H2> 2.2. Defining actions </H2>
+<h3 autotoc="yes"> Defining actions </h3>
 <p>
 With fungw, every action is just a native function - the syntax varies
 from scripting language to scripting language (see
@@ -177,7 +177,7 @@ scalar native data type the scripting language supports. If the action
 is not called to get a value but to perform some changes, the return
 value should be an integer: 0 means success, anything else means error.
 
-<H2> 2.3. Calling actions </H2>
+<h3 autotoc="yes"> Calling actions </h3>
 <p>
 The script may call any action available at a given time, independently
 of whether the action is defined in pcb-rnd core, in plugins or in other
@@ -188,7 +188,7 @@ are all single threaded, blocking calls. The script may use any scalar native
 data type for action arguments without conversion, fungw will take care of
 the conversions automatically.
 
-<H2> 2.4. Action names </H2>
+<h3 autotoc="yes"> Action names </h3>
 <p>
 All action names are registered in lowercase version. The script shall
 register lower case function names and action (function) calls should be

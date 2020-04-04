@@ -1,12 +1,14 @@
 <html>
 <body>
 
-<H2> Query: advanced search, command line: function calls available </H2>
+<H1> 6. jajj </H1>
+
+<H2 autotoc="yes"> Query: advanced search, command line: function calls available </H2>
 
 <p>
 Functions listed below can be called from a query expression.
 
-<h3> llen(lst) </h3>
+<h3 autotoc="yes"> llen(lst) </h3>
 <p>
 Determine length of a list.
 <p>
@@ -17,7 +19,7 @@ Arguments:
 <p>
 Return value: integer length of the list.
 
-<h3> mklist(args...) </h3>
+<h3 autotoc="yes"> mklist(args...) </h3>
 <p>
 Determine length of a list.
 <p>
@@ -27,7 +29,7 @@ Variable number of objects.
 <p>
 Return value: a list built of the objects passed.
 
-<h3> distance(x1, y1, x2, y2) </h3>
+<h3 autotoc="yes"> distance(x1, y1, x2, y2) </h3>
 <p>
 Calculate the distance of two points.
 <p>
@@ -42,7 +44,7 @@ Arguments:
 Return value: floating point distance value in nanometers.
 
 
-<h3> violation(i1, v1, ..., iN, vN) </h3>
+<h3 autotoc="yes"> violation(i1, v1, ..., iN, vN) </h3>
 <p>
 Build a DRC violation report.
 <p>
@@ -62,7 +64,7 @@ Instruction is one of the following constants:
 <p>
 Return value: a list suitable for the drc_query to process.
 
-<h3> netlist() </h3>
+<h3 autotoc="yes"> netlist() </h3>
 <p>
 Return the netlist.
 <p>
@@ -73,7 +75,7 @@ Return value: an unordered list of all networks specified on the
 using). Each item of the list is a net.
 
 
-<h3> netterms(net) </h3>
+<h3 autotoc="yes"> netterms(net) </h3>
 <p>
 Return terminals of a network.
 <p>
@@ -86,7 +88,7 @@ Return value: an unordered list of objects (each terminal of the network
 as described by the <i>edited</i> netlist).
 
 
-<h3> netobjs(net) </h3>
+<h3 autotoc="yes"> netobjs(net) </h3>
 <p>
 Return terminals and all copper objects galvanically connected to a network.
 <p>
@@ -98,7 +100,7 @@ Arguments:
 Return value: an unordered list of copper objects connected to the network.
 
 
-<h3> netsegs(net) </h3>
+<h3 autotoc="yes"> netsegs(net) </h3>
 <p>
 Return a list of objects, one terminal object per disconnecte segment of
 the network.
@@ -112,7 +114,7 @@ Return value: an unordered list of terminal objects, one picked randomly
 from each disconnected segment of the net.
 
 
-<h3> netbreak(obj, minimum_overlap) </h3>
+<h3 autotoc="yes"> netbreak(obj, minimum_overlap) </h3>
 <p>
 Start a search on a galvanically connected network segment starting from
 an object (typically returned by netsegs()) and generate a DRC violation
@@ -126,7 +128,7 @@ Arguments:
 <p>
 Return value: a list that represents a DRC violation (or empty list).
 
-<h3> netshort(obj, minimum_distance) </h3>
+<h3 autotoc="yes"> netshort(obj, minimum_distance) </h3>
 <p>
 Start a search on a galvanically connected network segment starting from
 an object (typically returned by netsegs()) and generate a DRC violation
@@ -141,7 +143,7 @@ Arguments:
 <p>
 Return value: a list that represents a DRC violation (or empty list).
 
-<h3> subcobjs(subc) </h3>
+<h3 autotoc="yes"> subcobjs(subc) </h3>
 <p>
 Return a list of objects that are within the subc.
 <p>
@@ -152,7 +154,7 @@ Arguments:
 <p>
 Return value: an unordered list of objects.
 
-<h3> action(args...) </h3>
+<h3 autotoc="yes"> action(args...) </h3>
 <p>
 Execute a pcb-rnd action.
 <p>
@@ -160,7 +162,7 @@ Arguments: variable nunmber of objects and constants.
 <p>
 Return value: invalid on error, or the return value of the action.
 
-<h3> getconf(path) </h3>
+<h3 autotoc="yes"> getconf(path) </h3>
 <p>
 Fetch the value of a config node
 <p>
@@ -173,7 +175,7 @@ Return value: invalid if the config node doesn't exist, else the value of
 the config node (converted to the most appropriate data type).
 
 
-<h3> pstkring(pstk, minimum_ring_thickness) </h3>
+<h3 autotoc="yes"> pstkring(pstk, minimum_ring_thickness) </h3>
 <p>
 Return the number of layers on which the ring of a padstack is too thin.
 <p>
@@ -187,7 +189,7 @@ Return value: negative on wrong arguments, 0 if the padstack does not violate
 the minimum_ring_thickness requirement, positive integer (number of violations)
 otherwise.
 
-<h3> poly_num_islands(poly) </h3>
+<h3 autotoc="yes"> poly_num_islands(poly) </h3>
 <p>
 Return the number of visible polygon islands.
 <p>
@@ -202,7 +204,7 @@ flag and is sliced into multiple parts not naturally connected by the polygon
 itself.
 
 
-<h3> overlap(obj1, obj2) </h3>
+<h3 autotoc="yes"> overlap(obj1, obj2) </h3>
 <p>
 Returns 1 if obj1 and obj2 overlap (even if they are on different layers)
 <p>
