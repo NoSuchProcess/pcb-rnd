@@ -19,8 +19,10 @@
 ? BUG: {s s } pcb-rnd search expression dialog doesn't include ~ regex operator for string object [report: Miloh] -> it generally does! Need more details: if you find any field where it doesn't, I will need the exact field name to fix that one.
 + BUG: Britton's full poly case vs. find: find.c should consider all islands, not just the first [report: Britton]
 - BUG: arc endpoint GUI edit, then undo: polygon clipping around the arc is not redone after the undo [report: Gabriel]
+- pre-release: turn off the new drc
 
 2. For later releases ===============================================================================
+- CLENAUP: disable the old drc by default
 - CLEANUP: remove import_sch, rename DeprecatedImport() to Import() in oldactions [report: Igor2]
 - CLEANUP: remove the donut rats special casing
 	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
