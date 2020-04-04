@@ -661,6 +661,13 @@ ha:{
 								ha:Toggle Layer 20          = { a=Ctrl-Alt<Key>0; action=ToggleView(20) }
 							}
 						} # layer keys
+
+						ha:polygon drawing {
+							li:submenu {
+								ha:Polygon PreviousPoint        = { a={<Key>p; <Key>p; <Key>p}; action=Polygon(PreviousPoint) }
+								ha:Polygon Close                = { a={<Key>p; <Key>p; <Key>c}; action=Polygon(Close) }
+							}
+						}
 					}
 				}
 				ha:About...       = { li:a={{<Key>w;<Key>a}; {<key>i;<key>a};}; action=About() }
