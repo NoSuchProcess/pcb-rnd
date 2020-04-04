@@ -15,8 +15,8 @@ user.pdf: user.ps
 
 ps.lst: */*.html */*.png
 	echo "title.html" > ps.lst
-	echo "index.html" >> ps.lst
-	ls */*.html 06_feature/*/*.html | grep -v "06_feature/index.html\|Pre.html\|Post.html" | sort | awk '/^06_/ && (!seen) { print "06_feature/index.html"; seen=1} { print $0}' >> ps.lst
+	echo "index_ps.html" >> ps.lst
+	ls */*.html 06_feature/*/*.html | grep -v "06_feature/index.html\|09_appendix/index.html\|Pre.html\|Post.html" | sort | awk '/^06_/ && (!seen) { print "06_feature/index.html"; seen=1} { print $0}' >> ps.lst
 
 include Makefile.inst
 
