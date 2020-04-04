@@ -354,7 +354,7 @@ static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
-	int wlist, wrule, wtype, wtitle, wdesc;
+	int wlist, wrule, wtype, wtitle, wdesc, wstat;
 } drc_rlist_ctx_t;
 
 static drc_rlist_ctx_t drc_rlist_ctx;
@@ -513,7 +513,9 @@ static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 	pcb_hid_tree_t *tree = attrib->wdata;
 	drc_rlist_ctx_t *ctx = tree->user_ctx;
 	lht_node_t *nd;
+	gds_t tmp;
 	conf_role_t role;
+	pcb_drcq_stat_t *st;
 
 	rlist_fetch();
 	rlist_fetch_nd();
@@ -533,6 +535,18 @@ static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 	hv.str = textval(nd, "desc");
 	if (hv.str == NULL) hv.str = "<n/a>";
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdesc, &hv);
+
+	gds_init(&tmp);
+	st = pcb_drcq_stat_get(nd->name);
+	pcb_append_printf(&tmp, "Ran %ld times", st->run_cnt);
+	if (st->run_cnt > 0) {
+		pcb_append_printf(&tmp, "\nLast run took: %.6f s", st->last_run_time);
+		pcb_append_printf(&tmp, "\nTotal run time: %.6f s", st->sum_run_time);
+		pcb_append_printf(&tmp, "\nAverage run time: %.6f s", st->sum_run_time / (double)st->run_cnt);
+	}
+	hv.str = tmp.array;
+	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wstat, &hv);
+	gds_uninit(&tmp);
 }
 
 
@@ -589,6 +603,9 @@ static int pcb_dlg_drc_rlist(void)
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Description:");
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
 						drc_rlist_ctx.wdesc = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Statistics:");
+					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+						drc_rlist_ctx.wstat = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
 				PCB_DAD_END(drc_rlist_ctx.dlg);
 			PCB_DAD_END(drc_rlist_ctx.dlg);
 
