@@ -6978,7 +6978,8 @@
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h layer.h \
  flag_str.h ../src_plugins/query/query_exec.h \
- ../src_plugins/query/fnc_glue.c ../src_plugins/query/fnc_list.c
+ ../src_plugins/query/fnc_glue.c ../src_plugins/query/fnc_list.c \
+ ../src_plugins/query/fnc_geo.c obj_poly.h
 ../src_plugins/query/net_int.o: ../src_plugins/query/net_int.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
