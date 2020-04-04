@@ -1,0 +1,142 @@
+<html>
+<body>
+
+<H2> Query: advanced search, command line: function calls available </H2>
+
+<p>
+Functions listed below can be called from a query expression.
+
+<h3> llen(lst) </h3>
+<p>
+Determine length of a list.
+<p>
+Arguments:
+<ul>
+	<li> lst is the list (should be written as list(lst) to make sure no iteration is done)
+</ul>
+<p>
+Return value: integer length of the list.
+
+<h3> mklist(args...) </h3>
+<p>
+Determine length of a list.
+<p>
+Arguments:
+<p>
+Variable number of objects.
+<p>
+Return value: a list built of the objects passed.
+
+<h3> distance(x1, y1, x2, y2) </h3>
+<p>
+Calculate the distance of two points.
+<p>
+Arguments:
+<ul>
+	<li> x1: first point, X coordinate
+	<li> y1: first point, Y coordinate
+	<li> x2: second point, X coordinate
+	<li> y2: second point, Y coordinate
+</ul>
+<p>
+Return value: floating point distance value in nanometers.
+
+
+<h3> violation(i1, v1, ..., iN, vN) </h3>
+<p>
+Build a DRC violation report.
+<p>
+Arguments (a variable number of pairs of instruction and value):
+<ul>
+	<li> i is an instruction, see below.
+	<li> v is a value (a constant or an object)
+</ul>
+<p>
+Instruction is one of the following constants:
+<ul>
+	<li> DRCGRP1 - the following v is an object, part of group 1 of offending objects
+	<li> DRCGRP2 - the following v is an object, part of group 2 of offending objects
+	<li> DRCEXPECT - the following v is a numeric value that represent the expected value
+	<li> DRCMEASURE - the following v is a numeric value that represent the measured value that mismatches the expected value
+</ul>
+<p>
+Return value: a list suitable for the drc_query to process.
+
+<h3> netlist() </h3>
+<p>
+Return the netlist.
+<p>
+Arguments: None.
+<p>
+Return value: an unordered list of all networks specified on the
+<i>edited<i> netlist (which is the netlist the board is currently
+using). Each item of the list is a net.
+
+
+<h3> netterms(net) </h3>
+<p>
+Return terminals of a network.
+<p>
+Arguments:
+<ul>
+	<li> net is a network of the netlist of the current board.
+</ul>
+<p>
+Return value: an unordered list of objects (each terminal of the network
+as described by the <i>edited<i> netlist).
+
+
+<h3> netobjs(net) </h3>
+<p>
+Return terminals and all copper objects galvanically connected to a network.
+<p>
+Arguments:
+<ul>
+	<li> net is a network of the netlist of the current board.
+</ul>
+<p>
+Return value: an unordered list of copper objects connected to the network.
+
+
+<h3> netsegs(net) </h3>
+<p>
+Return a list of objects, one terminal object per disconnecte segment of
+the network.
+<p>
+Arguments:
+<ul>
+	<li> net is a network of the netlist of the current board.
+</ul>
+<p>
+Return value: an unordered list of terminal objects, one picked randomly
+from each disconnected segment of the net.
+
+
+<h3> netbreak(obj, minimum_overlap) </h3>
+<p>
+Start a search on a galvanically connected network segment starting from
+an object (typically returned by netsegs()) and generate a DRC violation
+if there are copper objects with overlap smaller than the minimum_overlap.
+<p>
+Arguments:
+<ul>
+	<li> obj is the starting object of the search
+	<li> minimum_overlap is the coordinate value that represents the minimum required ovlerap between copper objects (e.g. 0.5mm)
+</ul>
+<p>
+Return value: a list that represents a DRC violation (or empty list).
+
+<h3> netshort(obj, minimum_distance) </h3>
+<p>
+Start a search on a galvanically connected network segment starting from
+an object (typically returned by netsegs()) and generate a DRC violation
+if there are disconnected copper objects with distance smaller than
+the minimum_distance from the network.
+<p>
+Arguments:
+<ul>
+	<li> obj is the starting object of the search
+	<li> minimum_distance is the coordinate value that represents the minimum required distance from any non-connected copper objects (e.g. 0.5mm)
+</ul>
+<p>
+Return value: a list that represents a DRC violation (or empty list).
