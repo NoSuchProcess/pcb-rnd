@@ -140,3 +140,76 @@ Arguments:
 </ul>
 <p>
 Return value: a list that represents a DRC violation (or empty list).
+
+<h3> subcobjs(subc) </h3>
+<p>
+Return a list of objects that are within the subc.
+<p>
+Arguments:
+<ul>
+	<li> subc is an object of type subcircuit
+</ul>
+<p>
+Return value: an unordered list of objects.
+
+<h3> action(args...) </h3>
+<p>
+Execute a pcb-rnd action.
+<p>
+Arguments: variable nunmber of objects and constants.
+<p>
+Return value: invalid on error, or the return value of the action.
+
+<h3> getconf(path) </h3>
+<p>
+Fetch the value of a config node
+<p>
+Arguments:
+<ul>
+	<li> path is a conf node path, e.g. editor/grid
+</ul>
+<p>
+Return value: invalid if the config node doesn't exist, else the value of
+the config node (converted to the most appropriate data type).
+
+
+<h3> pstkring(pstk, minimum_ring_thickness) </h3>
+<p>
+Return the number of layers on which the ring of a padstack is too thin.
+<p>
+Arguments:
+<ul>
+	<li> pstk is the padstack object
+	<li> minimum_ring_thickness is a coordinate value of the minimum ring thickness
+</ul>
+<p>
+Return value: negative on wrong arguments, 0 if the padstack does not violate
+the minimum_ring_thickness requirement, positive integer (number of violations)
+otherwise.
+
+<h3> poly_num_islands(poly) </h3>
+<p>
+Return the number of visible polygon islands.
+<p>
+Arguments:
+<ul>
+	<li> poly is the polygon object
+</ul>
+<p>
+Return value: 0 if the polygon has been cleared out of existnece, 1 for normal
+polygons and a positive integer higher than 1 if the polygon has the FULLPOLY
+flag and is sliced into multiple parts not naturally connected by the polygon
+itself.
+
+
+<h3> overlap(obj1, obj2) </h3>
+<p>
+Returns 1 if obj1 and obj2 overlap (even if they are on different layers)
+<p>
+Arguments:
+<ul>
+	<li> obj1 and obj2 are objects.
+</ul>
+<p>
+Return value: 1 for overlap, 0 for no overlap.
+
