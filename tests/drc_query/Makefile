@@ -6,7 +6,7 @@ PCBRND=./pcb-rnd
 GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1
 
 TESTS = \
-thickness.diff overlap.diff netint.diff dwg_area.diff
+thickness.diff overlap.diff netint.diff dwg_area.diff fullpoly.diff
 
 test: $(TESTS)
 
@@ -36,6 +36,11 @@ dwg_area.diff: dwg_area.out
 dwg_area.out: FORCE
 	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/dwg_area.lht --gui batch > $(TDIR)/dwg_area.out
 
+fullpoly.diff: fullpoly.out
+	@diff -u fullpoly.ref fullpoly.out && rm fullpoly.out
+
+fullpoly.out: FORCE
+	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/fullpoly.lht --gui batch > $(TDIR)/fullpoly.out
 
 clean:
 	@echo "a" > dummy.out
