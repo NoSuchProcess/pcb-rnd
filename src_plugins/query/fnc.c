@@ -63,6 +63,7 @@ static int fnc_distance(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 
 #include "fnc_glue.c"
 #include "fnc_list.c"
+#include "fnc_geo.c"
 
 void pcb_qry_basic_fnc_init(void)
 {
@@ -80,4 +81,6 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("action", fnc_action);
 	pcb_qry_fnc_reg("getconf", fnc_getconf);
 	pcb_qry_fnc_reg("pstkring", fnc_pstkring);
+
+	pcb_qry_fnc_reg("poly_num_islands", fnc_poly_num_islands);
 }
