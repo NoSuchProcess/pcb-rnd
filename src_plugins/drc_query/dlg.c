@@ -546,6 +546,9 @@ static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 		pcb_append_printf(&tmp, "\nLast run took: %.6f s", st->last_run_time);
 		pcb_append_printf(&tmp, "\nTotal run time: %.6f s", st->sum_run_time);
 		pcb_append_printf(&tmp, "\nAverage run time: %.6f s", st->sum_run_time / (double)st->run_cnt);
+		pcb_append_printf(&tmp, "\nLast run violations: %ld", st->last_hit_cnt);
+		pcb_append_printf(&tmp, "\nTotal violations: %ld", st->sum_hit_cnt);
+		pcb_append_printf(&tmp, "\nAverage violations: %.2f", (double)st->sum_hit_cnt / (double)st->run_cnt);
 	}
 	hv.str = tmp.array;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wstat, &hv);

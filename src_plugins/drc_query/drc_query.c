@@ -73,6 +73,7 @@ typedef struct {
 	const char *type;
 	const char *title;
 	const char *desc;
+	long hit_cnt;
 } drc_qry_ctx_t;
 
 pcb_coord_t load_obj_const(pcb_obj_qry_const_t *cnst)
@@ -129,6 +130,7 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 		pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)current);
 	pcb_view_set_bbox_by_objs(qctx->pcb->Data, violation);
 	pcb_view_list_append(qctx->lst, violation);
+	qctx->hit_cnt++;
 }
 
 static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *name, const char *type, const char *title, const char *desc, const char *query)
@@ -151,6 +153,7 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *nam
 	qctx.type = type;
 	qctx.title = title;
 	qctx.desc = desc;
+	qctx.hit_cnt = 0;
 
 	st = pcb_drcq_stat_get(name);
 
@@ -161,6 +164,8 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *nam
 	st->last_run_time = te - ts;
 	st->sum_run_time += te - ts;
 	st->run_cnt++;
+	st->last_hit_cnt = qctx.hit_cnt;
+	st->sum_hit_cnt += qctx.hit_cnt;
 
 	return 0;
 }

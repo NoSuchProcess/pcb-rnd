@@ -3,6 +3,8 @@ typedef struct {
 	double last_run_time;
 	double sum_run_time;
 	long run_cnt;
+	long last_hit_cnt;
+	long sum_hit_cnt;
 } pcb_drcq_stat_t;
 
 static htsp_t pcb_drcq_stat;
