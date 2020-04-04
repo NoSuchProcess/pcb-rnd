@@ -29,6 +29,7 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: run drc on 7805 with valgrind from the batch GUI and clean up the memleaks [report: Igor2]
 - CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, suff]
+- CLEANUP/BUG: add config options on how gtk transient-for and (a new) raise should work [report: suff, Bdale]
 - CLEANUP: (TT) propedit revamp:
 	- test under lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
