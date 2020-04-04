@@ -51,6 +51,7 @@
 #include "../src_plugins/drc_query/conf_internal.c"
 #include "../src_plugins/query/query.h"
 
+#include "drc_query_stat.c"
 
 static const char *drc_query_cookie = "drc_query";
 
@@ -131,6 +132,8 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *nam
 {
 	const char *scope = NULL;
 	drc_qry_ctx_t qctx;
+	pcb_drcq_stat_t *st;
+	double ts, te;
 
 	if (query == NULL) {
 		pcb_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", name);
@@ -146,7 +149,14 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *nam
 	qctx.title = title;
 	qctx.desc = desc;
 
+	st = pcb_drcq_stat_get(name);
+
+	ts = pcb_dtime();
 	pcb_qry_run_script(pcb, query, scope, drc_qry_exec_cb, &qctx);
+	te = pcb_dtime();
+
+	st->last_run_time = te - ts;
+	st->sum_run_time += te - ts;
 
 	return 0;
 }
@@ -378,6 +388,7 @@ void pplg_uninit_drc_query(void)
 	vtp0_uninit(&free_drc_conf_nodes);
 
 	pcb_remove_actions_by_cookie(drc_query_cookie);
+	pcb_drcq_stat_uninit();
 }
 
 static conf_hid_callbacks_t cbs;
@@ -385,6 +396,9 @@ static conf_hid_callbacks_t cbs;
 int pplg_init_drc_query(void)
 {
 	PCB_API_CHK_VER;
+
+	pcb_drcq_stat_init();
+
 	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_query, NULL, drc_query_cookie);
 
 	vtp0_init(&free_drc_conf_nodes);

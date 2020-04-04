@@ -35,6 +35,8 @@
 #include <liblihata/tree.h>
 #include "actions_pcb.h"
 
+#define PCB dont_use
+
 static void drc_rlist_pcb2dlg(void);
 static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 
@@ -123,13 +125,14 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_hid_text_t *txt = atxt->wdata;
 	char *script = txt->hid_get_text(atxt, hid_ctx);
 	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
+	pcb_board_t *pcb = (pcb_board_t *)pcb_gui->get_dad_hidlib(hid_ctx);
 
-	drc_qry_exec(PCB, view, ctx->rule,
+	drc_qry_exec(pcb, view, ctx->rule,
 		ctx->dlg[ctx->wtype].val.str,
 		ctx->dlg[ctx->wtitle].val.str,
 		ctx->dlg[ctx->wdesc].val.str,
 		script);
-	drcq_open_view_win(&PCB->hidlib, view);
+	drcq_open_view_win(&pcb->hidlib, view);
 
 	free(script);
 }
@@ -484,6 +487,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	const char *script;
 	conf_role_t role;
 	pcb_view_list_t *view;
+	pcb_board_t *pcb = (pcb_board_t *)pcb_gui->get_dad_hidlib(hid_ctx);
 
 	rlist_fetch();
 	rlist_fetch_nd();
@@ -495,8 +499,8 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	}
 
 	view = calloc(sizeof(pcb_view_list_t), 1);
-	drc_qry_exec(PCB, view, row->cell[0], textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
-	drcq_open_view_win(&PCB->hidlib, view);
+	drc_qry_exec(pcb, view, row->cell[0], textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
+	drcq_open_view_win(&pcb->hidlib, view);
 }
 
 static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
