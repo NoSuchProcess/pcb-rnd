@@ -1785,9 +1785,11 @@
  ../src_3rd/genvector/vts0.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h ../src_plugins/drc_query/dlg.c \
+ obj_common.h layer.h flag_str.h \
+ ../src_plugins/drc_query/drc_query_stat.c ../src_plugins/drc_query/dlg.c \
  librnd/core/hid_dad.h librnd/core/hid_attrib.h \
  librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
+ ../src_3rd/liblihata/tree.h actions_pcb.h \
  ../src_plugins/drc_query/drc_query_conf_fields.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h librnd/config.h librnd/core/conf.h \
@@ -7137,7 +7139,9 @@
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/genvector/gds_char.h obj_gfx_list.h obj_gfx.h flag_str.h \
- ../src_plugins/query/query_y.h librnd/core/compat_misc.h
+ ../src_plugins/query/query_y.h librnd/core/compat_misc.h board.h \
+ ../src_3rd/genht/htsp.h vtroutestyle.h layer.h layer_grp.h rats_patch.h \
+ board.h librnd/core/hidlib.h librnd/core/global_typedefs.h
 ../src_plugins/query/query_y.o: ../src_plugins/query/query_y.c \
  librnd/core/unit.h librnd/core/global_typedefs.h librnd/config.h \
  librnd/core/pcb_bool.h ../src_plugins/query/query.h \
@@ -8619,11 +8623,11 @@ conf_core.o: conf_core.c ../config.h librnd/config.h librnd/core/conf.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h conf_core.h librnd/core/globalconst.h \
- librnd/core/color.h librnd/core/hidlib_conf.h ../src_3rd/genht/htpp.h \
- ../src_3rd/genht/hash.h librnd/core/hid_init.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h librnd/core/hid.h librnd/core/error.h \
+ librnd/core/color.h librnd/core/hidlib_conf.h librnd/core/conf_hid.h \
+ librnd/core/error.h ../src_3rd/genht/htpp.h ../src_3rd/genht/hash.h \
+ librnd/core/hid_init.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h librnd/core/hid.h \
  librnd/core/attrib.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h conf_core_fields.h
 conf_internal.o: conf_internal.c
