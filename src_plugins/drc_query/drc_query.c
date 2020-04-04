@@ -51,6 +51,9 @@
 #include "../src_plugins/drc_query/conf_internal.c"
 #include "../src_plugins/query/query.h"
 
+
+static void drc_rlist_pcb2dlg(void);
+
 #include "drc_query_stat.c"
 
 static const char *drc_query_cookie = "drc_query";
@@ -252,6 +255,8 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 			load_str(rule, i, "query")
 		);
 	}
+
+	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
 static vtp0_t free_drc_conf_nodes;

@@ -37,9 +37,7 @@
 
 #define PCB dont_use
 
-static void drc_rlist_pcb2dlg(void);
 static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
