@@ -609,6 +609,7 @@ static int pcb_dlg_drc_rlist(void)
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Description:");
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
 						drc_rlist_ctx.wdesc = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
+					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "");
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Statistics:");
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
 						drc_rlist_ctx.wstat = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
