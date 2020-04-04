@@ -52,6 +52,7 @@
 		- document the new object in the data model
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
+- FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
 - FEATURE: netlist dialog: double click on a net should disable rats [report: suff]
 - FEATURE: netlist dialog: button for disable all or enable all [report: suff]
 - FEATURE: padstack prototype edit dialog: geometry column in tab 2 (plain labels) do not respect glboal units [report: suff]
