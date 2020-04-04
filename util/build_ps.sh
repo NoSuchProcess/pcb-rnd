@@ -16,6 +16,9 @@ awk '
 		return s
 	}
 
+	/<head/, /<.head/ { next }
+	/nopdf=.yes./ { next }
+
 	(match($0, "<[Hh][1-9][^>]*[>]")) {
 		h=substr($0, RSTART, RLENGTH)
 
