@@ -135,6 +135,7 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	drcq_open_view_win(&pcb->hidlib, view);
 
 	free(script);
+	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
 #define MKDIR_ND(outnode, parent, ntype, nname) \
@@ -505,6 +506,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	view = calloc(sizeof(pcb_view_list_t), 1);
 	drc_qry_exec(pcb, view, row->cell[0], textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
 	drcq_open_view_win(&pcb->hidlib, view);
+	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
 static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
