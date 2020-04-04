@@ -1,9 +1,9 @@
 <html>
 <body>
 
-<H1> advanced search, command line tutorial: query language </H1>
+<H2> advanced search, command line tutorial: query language </H2>
 
-<h2> scope </h2>
+<h3> scope </h3>
 
 pcb-rnd from version 1.1.3 features a flexible advanced search that helps
 the user selecting/unselecting objects that match a given logical expression.
@@ -19,7 +19,7 @@ A limited version of the functionality is accessible through a GUI
 wizard when using the GTK HID. A  <a href="tutor_gtk.html">separate
 tutorial</a> is dealing with that feature.
 
-<h2> Actions </h2>
+<h3> Actions </h3>
 The query(act, expr) action creates the list called "@", which contains all
 objects of the design. Then it iterates over this list (if needed) and
 evaluates the query expression on each object. For each evaluation "act"
@@ -60,7 +60,7 @@ to include the result of an eval than of a selection. Most examples will
 specify the query expression only, without quotes - the reader should
 add the <i>query(eval, ' ')</i> part.
 
-<H2> iteration vs. evaluate once </h2>
+<H3> iteration vs. evaluate once </h3>
 If an expression does not reference the @ object, no iteration is performed
 and the expression is ran only once:
 <pre>
@@ -75,7 +75,7 @@ one loop over all objects. When evaluating the expression for a given object,
 all instances of @ are substituted with the same object in that iteration.
 
 
-<H2> grammar: arithmetics and logics </h2>
+<H3> grammar: arithmetics and logics </h3>
 For example the integer and floating point numbers and the usual
 arithmetic and logical operators work as expected:
 
@@ -95,7 +95,7 @@ arithmetic and logical operators work as expected:
 	<tr><td>4 > 2      <td> 1      <td> because four is greater than two; all the usual relational operators work: == is equal, != is not-equal, &lt;, &lt=,  &gt; and &gt=.
 </table>
 
-<H2> grammar: object properties </h2>
+<H3> grammar: object properties </h3>
 Object have named properties, e.g. the thickness of a line (or arc, or
 trace in general) is called <i>".thickness"</i>, so the thickness of
 the current object is:
@@ -124,7 +124,7 @@ or traces that don't match our preferred 8, 10 and 15 mil thickness values:
 	(@.thickness != 8 mil) &amp;&amp; (@.thickness != 10 mil) &amp;&amp; (@.thickness != 15 mil)
 </pre>
 
-<H2> grammar: invalid value </h2>
+<H3> grammar: invalid value </h3>
 But how comes an expression like '@.thickness &gt; 10 mil' works while
 @ iterates over non-trace objects, like layers, nets or subcircuits that
 clearly have no thickness?
@@ -145,7 +145,7 @@ The invalid value is generated only when the expression is valid but the
 actual object doesn't have the feature needed. If the expression is wrong,
 an error is generated and the expression stops evaluating immediately.
 
-<H2> grammar: more properties </h2>
+<H3> grammar: more properties </h3>
 Some properties are a single numeric value, like thickness, or the
 <i>.name</i> of a layer (which is a string) but others are objects. For
 example the <i>.layer</i> property of a line or arc refers to the layer
