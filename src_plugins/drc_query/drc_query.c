@@ -160,6 +160,7 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *nam
 
 	st->last_run_time = te - ts;
 	st->sum_run_time += te - ts;
+	st->run_cnt++;
 
 	return 0;
 }
