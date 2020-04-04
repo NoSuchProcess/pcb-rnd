@@ -54,3 +54,11 @@ static int fnc_poly_num_islands(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *a
 
 	PCB_QRY_RET_INT(res, cnt);
 }
+
+static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_OBJ))
+		return -1;
+
+	PCB_QRY_RET_INT(res, pcb_intersect_obj_obj(argv[0].data.obj, argv[1].data.obj));
+}
