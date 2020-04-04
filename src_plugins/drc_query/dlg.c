@@ -373,9 +373,10 @@ static void drc_rlist_pcb2dlg(void)
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
-	char *cell[4], *cursor_path = NULL;
+	char *cell[5], *cursor_path = NULL;
 	gdl_iterator_t it;
 	pcb_conf_listitem_t *i;
+	pcb_drcq_stat_t *st;
 
 	if (!ctx->active)
 		return;
@@ -391,12 +392,14 @@ static void drc_rlist_pcb2dlg(void)
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
 
-	cell[3] = NULL;
+	cell[4] = NULL;
 
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		int *dis, dis_ = 0;
 		conf_role_t role;
 		lht_node_t *rule = i->prop.src;
+		st = pcb_drcq_stat_get(rule->name);
+
 		if (rule->type != LHT_HASH)
 			continue;
 
@@ -408,6 +411,7 @@ static void drc_rlist_pcb2dlg(void)
 		cell[0] = rule->name;
 		cell[1] = pcb_strdup(pcb_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
+		cell[3] = pcb_strdup_printf("%.3fs", st->last_run_time);
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
@@ -534,7 +538,7 @@ static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 
 static int pcb_dlg_drc_rlist(void)
 {
-	const char *lst_hdr[] = {"rule name", "role", "disabled", NULL};
+	const char *lst_hdr[] = {"rule name", "role", "disabled", "cost", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int wpane;
 
@@ -549,7 +553,7 @@ static int pcb_dlg_drc_rlist(void)
 			PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
 				PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL);
 				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Rules available:");
-				PCB_DAD_TREE(drc_rlist_ctx.dlg, 3, 0, lst_hdr);
+				PCB_DAD_TREE(drc_rlist_ctx.dlg, 4, 0, lst_hdr);
 					PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 					drc_rlist_ctx.wlist = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
 					PCB_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
