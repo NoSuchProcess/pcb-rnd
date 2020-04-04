@@ -410,7 +410,10 @@ static void drc_rlist_pcb2dlg(void)
 		cell[0] = rule->name;
 		cell[1] = pcb_strdup(pcb_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
-		cell[3] = pcb_strdup_printf("%.3fs", st->last_run_time);
+		if (st->run_cnt > 0)
+			cell[3] = pcb_strdup_printf("%.3fs", st->last_run_time);
+		else
+			cell[3] = "-";
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
