@@ -33,6 +33,7 @@
 #include <genlist/gendlist.h>
 #include <liblihata/dom.h>
 #include <liblihata/tree.h>
+#include "actions_pcb.h"
 
 static void drc_rlist_pcb2dlg(void);
 static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
@@ -105,15 +106,32 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 	}
 }
 
+static void drcq_open_view_win(pcb_hidlib_t *hidlib, pcb_view_list_t *view)
+{
+	fgw_arg_t args[4], ares;
+	args[1].type = FGW_STR; args[1].val.str = "drc_query: manual run";
+	args[2].type = FGW_STR; args[2].val.str = "drc_query_run";
+	fgw_ptr_reg(&pcb_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
+	pcb_actionv_bin(hidlib, "viewlist", &ares, 4, args);
+
+}
+
 static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
 {
 	rule_edit_ctx_t *ctx = caller_data;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 	pcb_hid_text_t *txt = atxt->wdata;
-	char *s;
-	s = txt->hid_get_text(atxt, hid_ctx);
-	pcb_actionva(&PCB->hidlib, "query", "view", s, NULL);
-	free(s);
+	char *script = txt->hid_get_text(atxt, hid_ctx);
+	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
+
+	drc_qry_exec(PCB, view, ctx->rule,
+		ctx->dlg[ctx->wtype].val.str,
+		ctx->dlg[ctx->wtitle].val.str,
+		ctx->dlg[ctx->wdesc].val.str,
+		script);
+	drcq_open_view_win(&PCB->hidlib, view);
+
+	free(script);
 }
 
 #define MKDIR_ND(outnode, parent, ntype, nname) \
@@ -463,19 +481,22 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	drc_rlist_ctx_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	lht_node_t *nd;
-	const char *s;
+	const char *script;
 	conf_role_t role;
+	pcb_view_list_t *view;
 
 	rlist_fetch();
 	rlist_fetch_nd();
 
-	s = textval(nd, "query");
-	if (s == NULL) {
+	script = textval(nd, "query");
+	if (script == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not run rule %s: no query specified\n", row->cell[0]);
 		return;
 	}
 
-	pcb_actionva(&PCB->hidlib, "query", "view", s, NULL);
+	view = calloc(sizeof(pcb_view_list_t), 1);
+	drc_qry_exec(PCB, view, row->cell[0], textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
+	drcq_open_view_win(&PCB->hidlib, view);
 }
 
 static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
