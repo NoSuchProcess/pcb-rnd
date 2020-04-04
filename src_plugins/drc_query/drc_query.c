@@ -127,13 +127,13 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	pcb_view_list_append(qctx->lst, violation);
 }
 
-static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, pcb_conf_listitem_t *i, const char *type, const char *title, const char *desc, const char *query)
+static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *name, const char *type, const char *title, const char *desc, const char *query)
 {
 	const char *scope = NULL;
 	drc_qry_ctx_t qctx;
 
 	if (query == NULL) {
-		pcb_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", i->name);
+		pcb_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", name);
 		return 0;
 	}
 	if (type == NULL) type = "DRC violation";
@@ -237,7 +237,7 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		if ((dis != NULL) && (*dis != 0))
 			continue;
 
-		cnt += drc_qry_exec((pcb_board_t *)hidlib, &pcb_drc_lst, i,
+		cnt += drc_qry_exec((pcb_board_t *)hidlib, &pcb_drc_lst, i->name,
 			load_str(rule, i, "type"), load_str(rule, i, "title"), load_str(rule, i, "desc"),
 			load_str(rule, i, "query")
 		);
