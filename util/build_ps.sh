@@ -42,6 +42,8 @@ awk '
 				}
 				for(n = 1; n <= v; n++)
 					NUM[n] = A[n]
+				for(n = v+1; n < 9; n++)
+					NUM[n] = ""
 			}
 			else {
 				print "WARNING: unnumbered section", $0 > "/dev/stderr"
