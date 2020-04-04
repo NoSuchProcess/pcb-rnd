@@ -18,7 +18,7 @@
 + BUG: align(y,bottoms,first,gridless) in align.lht from distalign pool node uses wrong y reference for 'first', and outputs erroneous result [repot: Miloh]
 ? BUG: {s s } pcb-rnd search expression dialog doesn't include ~ regex operator for string object [report: Miloh] -> it generally does! Need more details: if you find any field where it doesn't, I will need the exact field name to fix that one.
 + BUG: Britton's full poly case vs. find: find.c should consider all islands, not just the first [report: Britton]
-
+- BUG: arc endpoint GUI edit, then undo: polygon clipping around the arc is not redone after the undo [report: Gabriel]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove import_sch, rename DeprecatedImport() to Import() in oldactions [report: Igor2]
