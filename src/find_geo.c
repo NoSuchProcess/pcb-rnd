@@ -57,7 +57,7 @@
 /* This is required for fullpoly: whether an object bbox intersects a poly
    bbox can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj bbox intersects any island's bbox */
-PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_box_t *box, const pcb_poly_t *poly)
+PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_box_t *box, const pcb_poly_t *poly, int first_only)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -67,6 +67,8 @@ PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_box_t *box, const pcb_poly
 		pcb_pline_t *c = pcb_poly_contour(&it);
 		if ((box->X1 <= c->xmax + Bloat) && (box->X2 >= c->xmin - Bloat) &&
 			  (box->Y1 <= c->ymax + Bloat) && (box->Y2 >= c->ymin - Bloat)) { return 1; }
+		if (first_only)
+			break;
 	}
 
 	return 0;
@@ -77,7 +79,7 @@ PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_box_t *box, const pcb_poly
    can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj's poly intersects any island's.
    Frees objpoly at the end. */
-PCB_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_poly_t *poly)
+PCB_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_poly_t *poly, int first_only)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -87,6 +89,8 @@ PCB_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_p
 	for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		ans = pcb_polyarea_touching(objpoly, pa);
 		if (ans)
+			break;
+		if (first_only)
 			break;
 	}
 	pcb_polyarea_free(&objpoly);
@@ -376,6 +380,8 @@ static pcb_bool pcb_isc_ratp_poly(pcb_point_t *Point, pcb_poly_t *polygon, int d
 					if ((Point->X == x) && (Point->Y == y))
 						return pcb_true;
 		}
+		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon))
+			break;
 	}
 
 	return pcb_false;
@@ -653,12 +659,12 @@ pcb_bool pcb_isc_arc_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon)
 		return pcb_false;
 	if (!Polygon->Clipped)
 		return pcb_false;
-	if (box_isc_poly_any_island_bbox(Box, Polygon)) {
+	if (box_isc_poly_any_island_bbox(Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
 		pcb_polyarea_t *ap;
 
 		if (!(ap = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false;							/* error */
-		return box_isc_poly_any_island_free(ap, Polygon);
+		return box_isc_poly_any_island_free(ap, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
 	return pcb_false;
 }
@@ -710,10 +716,10 @@ pcb_bool pcb_isc_line_poly(pcb_line_t *Line, pcb_poly_t *Polygon)
 		y2 = MAX(Line->Point1.Y, Line->Point2.Y) + wid;
 		return pcb_poly_is_rect_in_p(x1, y1, x2, y2, Polygon);
 	}
-	if (box_isc_poly_any_island_bbox(Box, Polygon)) {
+	if (box_isc_poly_any_island_bbox(Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
 		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + Bloat)))
 			return pcb_false;							/* error */
-		return box_isc_poly_any_island_free(lp, Polygon);
+		return box_isc_poly_any_island_free(lp, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
 	return pcb_false;
 }
@@ -743,7 +749,11 @@ pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 			pcb_pline_t *c2 = pcb_poly_contour(&it2);
 			if ((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) &&
 				  (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat)) { goto do_check; }
+			if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P2))
+				break;
 		}
+		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P1))
+			break;
 	}
 	return pcb_false;
 
@@ -767,10 +777,16 @@ pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 
 	/* first check un-bloated case (most common) */
 	if (Bloat == 0) {
-		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1))
-			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2))
+		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
+			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
 				if (pcb_polyarea_touching(pa1, pa2))
 					return pcb_true;
+				if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P2))
+					break;
+			}
+			if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P1))
+				break;
+		}
 	}
 
 	/* now the difficult case of bloated for each island vs. island */
@@ -804,7 +820,11 @@ pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2)
 						}
 					}
 				}
+				if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P2))
+					break;
 			}
+			if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P1))
+				break;
 		}
 	}
 
