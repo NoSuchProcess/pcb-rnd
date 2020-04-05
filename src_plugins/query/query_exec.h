@@ -49,7 +49,14 @@ struct pcb_qry_exec_s {
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, int bufno);
 void pcb_qry_uninit(pcb_qry_exec_t *ctx);
 
-/* Execute an expression or a rule */
+/* parts of init/uninit for the case a single pcb_qry_exec_t is used for
+   multiple queries for sharing the cache */
+void pcb_qry_setup(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root);
+void pcb_qry_autofree(pcb_qry_exec_t *ctx);
+
+/* Execute an expression or a rule; if ec is NULL, use a temporary context and
+   free it before returning; else ec is the shared context for multiple queries
+   with persistent cache */
 int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
 int pcb_qry_is_true(pcb_qry_val_t *val);

@@ -36,6 +36,13 @@
 
 #define PCB dontuse
 
+void pcb_qry_setup(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root)
+{
+	ctx->pcb = pcb;
+	ctx->root = root;
+	ctx->iter = NULL;
+}
+
 void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, int bufno)
 {
 	memset(ctx, 0, sizeof(pcb_qry_exec_t));
@@ -45,29 +52,37 @@ void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, i
 	else
 		pcb_qry_list_all_data(&ctx->all, pcb_buffers[bufno].Data, PCB_OBJ_ANY & (~PCB_OBJ_LAYER));
 
-	ctx->pcb = pcb;
-	ctx->root = root;
-	ctx->iter = NULL;
+	pcb_qry_setup(ctx, pcb, root);
 }
 
-void pcb_qry_uninit(pcb_qry_exec_t *ctx)
+void pcb_qry_autofree(pcb_qry_exec_t *ctx)
 {
 	long l;
 
-	for(l = 0; l < ctx->iter->num_vars; l++) {
-		if (ctx->iter->lst[l].data.lst.array != ctx->all.data.lst.array) /* some lists are just aluas to ->all, do not free them */
-			pcb_qry_list_free(&ctx->iter->lst[l]);
+	if (ctx->iter != NULL) {
+		for(l = 0; l < ctx->iter->num_vars; l++) {
+			if (ctx->iter->lst[l].data.lst.array != ctx->all.data.lst.array) /* some lists are just alias to ->all, do not free them */
+				pcb_qry_list_free(&ctx->iter->lst[l]);
+		}
 	}
-
-	pcb_qry_list_free(&ctx->all);
 
 	for(l = 0; l < ctx->autofree.used; l++)
 		free(ctx->autofree.array[l]);
 	vtp0_uninit(&ctx->autofree);
 
-	pcb_qry_n_free(ctx->root);
-	ctx->root = NULL;
 	ctx->iter = NULL; /* no need to free the iterator: ctx->root free handled that as it was allocated in one of the nodes */
+}
+
+void pcb_qry_uninit(pcb_qry_exec_t *ctx)
+{
+	pcb_qry_autofree(ctx);
+
+	pcb_qry_list_free(&ctx->all);
+
+	if (ctx->root != NULL) {
+		pcb_qry_n_free(ctx->root);
+		ctx->root = NULL;
+	}
 }
 
 static void val_free_fields(pcb_qry_val_t *val)
@@ -159,54 +174,62 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	ctx->iter->idx[vi] = 0;
 }
 
-int pcb_qry_run(pcb_qry_exec_t *ec_in, pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
-	int ret = 0, r;
-	pcb_qry_exec_t ec;
+	int ret = 0, r, ec_uninit = 0;
+	pcb_qry_exec_t ec_local;
 
-	if (prg->type == PCBQ_EXPR_PROG) {
-		pcb_qry_init(&ec, pcb, prg, bufno);
-		ret = pcb_qry_run_(&ec, prg, 1, 0, cb, user_ctx);
-		pcb_qry_uninit(&ec);
-		return ret;
+	if (ec == NULL) {
+		ec = &ec_local;
+		ec_uninit = 1;
+		pcb_qry_init(ec, pcb, prg, bufno);
+	}
+	else {
+		if (ec->pcb != pcb)
+			return -1;
+		pcb_qry_setup(ec, pcb, prg);
 	}
 
-	if (prg->type == PCBQ_RULE) {
-		pcb_qry_node_t *n, *orig_root;
-
-		pcb_qry_init(&ec, pcb, prg, bufno);
+	if (prg->type == PCBQ_EXPR_PROG) {
+		ret = pcb_qry_run_(ec, prg, 1, 0, cb, user_ctx);
+	}
+	else if (prg->type == PCBQ_RULE) {
+		pcb_qry_node_t *n;
 
 		/* execute 'let' statements first */
 		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
 			if (n->type == PCBQ_LET)
-				pcb_qry_let(&ec, n);
+				pcb_qry_let(ec, n);
 		}
 
 		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
 			switch(n->type) {
 				case PCBQ_LET: break;
 				case PCBQ_ASSERT:
-					orig_root = ec.root;
-					ec.root = n;
-					if (ec.iter != NULL)
-						ec.iter->it_active = n->precomp.it_active;
-					r = pcb_qry_run_(&ec, n->data.children, 1, 0, cb, user_ctx);
-					if (ec.iter != NULL)
-						ec.iter->it_active = NULL;
+					ec->root = n;
+					if (ec->iter != NULL)
+						ec->iter->it_active = n->precomp.it_active;
+					r = pcb_qry_run_(ec, n->data.children, 1, 0, cb, user_ctx);
+					if (ec->iter != NULL)
+						ec->iter->it_active = NULL;
 					if (r < 0)
 						ret = r;
 					else if (ret >= 0)
 						ret += r;
-					ec.root = orig_root;
+					ec->root = NULL;
 					break;
 				default:;
 			}
 		}
-		pcb_qry_uninit(&ec);
-		return ret;
 	}
+	else
+		ret = -1;
 
-	return -1;
+	if (ec_uninit)
+		pcb_qry_uninit(&ec_local);
+	else
+		pcb_qry_autofree(ec);
+	return ret;
 }
 
 /* load unary operand to o1 */
