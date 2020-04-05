@@ -50,6 +50,7 @@
 #include "drc_query_conf.h"
 #include "../src_plugins/drc_query/conf_internal.c"
 #include "../src_plugins/query/query.h"
+#include "../src_plugins/query/query_exec.h"
 
 
 static void drc_rlist_pcb2dlg(void);
@@ -237,12 +238,18 @@ static int *drc_get_disable(const char *name)
 
 static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	gdl_iterator_t it;
 	pcb_conf_listitem_t *i;
 	long cnt = 0;
+	int bufno = -1;
+	pcb_qry_exec_t ec;
+
 
 	if (conf_drc_query.plugins.drc_query.disable)
 		return;
+
+	pcb_qry_init(&ec, pcb, NULL, bufno);
 
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;
@@ -256,12 +263,13 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		if ((dis != NULL) && (*dis != 0))
 			continue;
 
-		cnt += drc_qry_exec(NULL, (pcb_board_t *)hidlib, &pcb_drc_lst, i->name,
+		cnt += drc_qry_exec(&ec, pcb, &pcb_drc_lst, i->name,
 			load_str(rule, i, "type"), load_str(rule, i, "title"), load_str(rule, i, "desc"),
 			load_str(rule, i, "query")
 		);
 	}
 
+	pcb_qry_uninit(&ec);
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
