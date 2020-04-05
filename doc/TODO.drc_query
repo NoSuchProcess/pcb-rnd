@@ -7,6 +7,7 @@ Tests for compatibility with drc_orig:
 
 User requested (accepted):
 	- silk over mask or paste [Vuokko]
+	- zone poly based short/broken test; ml=3926 [Vuokko]
 
 Cheap tests, need custom func:
 	- text containing non-render chars
