@@ -93,6 +93,15 @@ PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
 	return pcb_pstk_get_tshape_(ps->parent.data, ps->proto, ps->protoi);
 }
 
+/* return the padstack *untransformed* prototype for a padstack reference - returns NULL if not found */
+PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_untshape(pcb_pstk_t *ps)
+{
+	pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
+	if (pr == NULL)
+		return NULL;
+	return &pr->tr.array[0];
+}
+
 /* return the type of drill and optionally fill in group IDs of drill ends ;
    if proto_out is not NULL, also load it with the proto */
 PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
@@ -192,6 +201,26 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, pcb_layer_type_t lyt
 {
 	int n;
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
+	if (ts == NULL)
+		return NULL;
+
+	lyt &= (PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE);
+	for(n = 0; n < ts->len; n++)
+		if ((lyt == ts->shape[n].layer_mask) && (comb == ts->shape[n].comb))
+			return ts->shape+n;
+
+	return 0;
+}
+
+/* returns the shape the non-transformed padstack has on the given layer group;
+   Useful for GUI dialogs only, for presenting the prototype (not the actual ps transformed reality)
+   WARNING: does not respect the NOSHAPE thermal, should NOT be
+   called directly; use pcb_pstk_shape_*() instead. */
+PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_notransform(pcb_pstk_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
+{
+	int n;
+	pcb_pstk_tshape_t *ts = pcb_pstk_get_untshape(ps);
+
 	if (ts == NULL)
 		return NULL;
 
