@@ -237,6 +237,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 	if (type == PCB_OBJ_ARC) {
 		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
 		pcb_arc_t *a = (pcb_arc_t *) ptr2;
+		pcb_poly_restore_to_poly(PCB->Data, a->type, ptr1, ptr2);
 		pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
 		old_sa = a->StartAngle;
 		old_da = a->Delta;
@@ -246,6 +247,7 @@ static pcb_bool UndoChangeAngles(UndoListTypePtr Entry)
 		a->Delta = Entry->Data.AngleChange.angle[1];
 		pcb_arc_bbox(a);
 		pcb_r_insert_entry(Layer->arc_tree, (pcb_box_t *) a);
+		pcb_poly_clear_from_poly(PCB->Data, a->type, ptr1, ptr2);
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
 		pcb_draw_obj((pcb_any_obj_t *)a);
