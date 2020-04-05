@@ -70,7 +70,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	pcb_layergrp_t *top_grp, *bottom_grp;
 	pcb_bb_type_t htype;
 	char shp_found[32];
-	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(pse->ps);
+	pcb_pstk_tshape_t *ts = pcb_pstk_get_untshape(pse->ps);
 
 	if (ts == NULL)
 		return;
@@ -92,7 +92,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	/* proto - layers */
 	memset(shp_found, 0, sizeof(shp_found));
 	for(n = 0; n < pcb_proto_num_layers; n++) {
-		pcb_pstk_shape_t *shape = pcb_pstk_shape(pse->ps, pcb_proto_layers[n].mask, pcb_proto_layers[n].comb);
+		pcb_pstk_shape_t *shape = pcb_pstk_shape_notransform(pse->ps, pcb_proto_layers[n].mask, pcb_proto_layers[n].comb);
 
 		if (shape != NULL) {
 			int shape_idx = shape - ts->shape;
