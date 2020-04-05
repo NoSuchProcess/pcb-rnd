@@ -75,6 +75,8 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	if (ts == NULL)
 		return;
 
+	pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->prsmirror, !pse->ps->smirror);
+
 	htype = pcb_pstk_bbspan(pse->pcb, pse->ps, &top_gid, &bottom_gid, &proto);
 	top_grp = pcb_get_layergrp(pse->pcb, top_gid);
 	bottom_grp = pcb_get_layergrp(pse->pcb, bottom_gid);
@@ -812,7 +814,10 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 
 					PCB_DAD_BEGIN_HBOX(dlg);
 						PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
-						PCB_DAD_LABEL(dlg, "Settings for all padstacks with this prototype");
+						PCB_DAD_LABEL(dlg, "Geometry of all padstacks with this proto");
+						PCB_DAD_LABEL(dlg, "[SMIRROR]");
+							PCB_DAD_HELP(dlg, "The layer stack of this specific padstack is mirrored.\nEditing the prototype will have mirrored effect,\ne.g. editing top side will affect the bottom side\nof this padstack instance.");
+							pse->prsmirror = PCB_DAD_CURRENT(dlg);
 						spring(dlg);
 						PCB_DAD_BEGIN_HBOX(dlg);
 							PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);

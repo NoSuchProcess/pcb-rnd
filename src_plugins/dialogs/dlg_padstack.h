@@ -23,7 +23,7 @@ struct pse_s {
 	int proto_info[pcb_proto_num_layers];
 	int proto_change[pcb_proto_num_layers];
 	pcb_coord_t proto_clr[pcb_proto_num_layers];
-	int prname;
+	int prname, prsmirror;
 	int hole_header;
 	int hdia, hplated;
 	int htop_val, htop_text, htop_layer;
