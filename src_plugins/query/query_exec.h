@@ -30,6 +30,7 @@
 #define PCB_QUERY_EXEC_H
 
 #include "query.h"
+#include <genht/htpp.h>
 
 #define PCB_QRY_MAX_FUNC_ARGS 64
 
@@ -39,6 +40,9 @@ struct pcb_qry_exec_s {
 	pcb_qry_val_t all;       /* a list of all objects */
 	pcb_query_iter_t *iter;  /* current iterator */
 	vtp0_t autofree;
+
+	/* data/call cache */
+	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment */
 };
 
 /* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */
