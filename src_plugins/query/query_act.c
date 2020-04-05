@@ -156,7 +156,7 @@ static void view_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
-	int bufno = -1; /* empty scope means board */
+	int res, bufno = -1; /* empty scope means board */
 
 	if (script == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Compilation error: no script specified.\n");
@@ -182,11 +182,13 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 				bufno = strtol(scope, &end, 10);
 				if (*end != '\0') {
 					pcb_message(PCB_MSG_ERROR, "Invalid buffer number: '%s': not an integer\n", scope);
+					pcb_qry_n_free(prg);
 					return -1;
 				}
 				bufno--;
 				if ((bufno < 0) || (bufno >= PCB_MAX_BUFFER)) {
 					pcb_message(PCB_MSG_ERROR, "Invalid buffer number: '%d' out of range 1..%d\n", bufno+1, PCB_MAX_BUFFER);
+					pcb_qry_n_free(prg);
 					return -1;
 				}
 			}
@@ -195,10 +197,14 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid scope: '%s': must be board or buffer or bufferN\n", scope);
+			pcb_qry_n_free(prg);
 			return -1;
 		}
 	}
-	return pcb_qry_run(ec, pcb, prg, bufno, cb, user_ctx);
+	
+	res = pcb_qry_run(ec, pcb, prg, bufno, cb, user_ctx);
+	pcb_qry_n_free(prg);
+	return res;
 }
 
 static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)

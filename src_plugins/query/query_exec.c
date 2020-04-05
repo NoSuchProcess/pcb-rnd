@@ -78,11 +78,6 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 	pcb_qry_autofree(ctx);
 
 	pcb_qry_list_free(&ctx->all);
-
-	if (ctx->root != NULL) {
-		pcb_qry_n_free(ctx->root);
-		ctx->root = NULL;
-	}
 }
 
 static void val_free_fields(pcb_qry_val_t *val)
