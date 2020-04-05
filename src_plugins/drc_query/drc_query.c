@@ -133,7 +133,7 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	qctx->hit_cnt++;
 }
 
-static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *name, const char *type, const char *title, const char *desc, const char *query)
+static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *lst, const char *name, const char *type, const char *title, const char *desc, const char *query)
 {
 	const char *scope = NULL;
 	drc_qry_ctx_t qctx;
@@ -158,7 +158,7 @@ static long drc_qry_exec(pcb_board_t *pcb, pcb_view_list_t *lst, const char *nam
 	st = pcb_drcq_stat_get(name);
 
 	ts = pcb_dtime();
-	pcb_qry_run_script(pcb, query, scope, drc_qry_exec_cb, &qctx);
+	pcb_qry_run_script(ec, pcb, query, scope, drc_qry_exec_cb, &qctx);
 	te = pcb_dtime();
 
 	st->last_run_time = te - ts;
@@ -256,7 +256,7 @@ static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		if ((dis != NULL) && (*dis != 0))
 			continue;
 
-		cnt += drc_qry_exec((pcb_board_t *)hidlib, &pcb_drc_lst, i->name,
+		cnt += drc_qry_exec(NULL, (pcb_board_t *)hidlib, &pcb_drc_lst, i->name,
 			load_str(rule, i, "type"), load_str(rule, i, "title"), load_str(rule, i, "desc"),
 			load_str(rule, i, "query")
 		);

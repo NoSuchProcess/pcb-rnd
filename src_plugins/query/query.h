@@ -184,7 +184,7 @@ void qry_error(void *prog, const char *err);
 
 /* Compile and execute a script, calling cb for each object. Returns the number
    of evaluation errors or -1 if evaluation couldn't start */
-int pcb_qry_run_script(pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
+int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
 /*** drc list-reports ***/
 

@@ -153,7 +153,7 @@ static void view_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	pcb_view_list_append(view, v);
 }
 
-int pcb_qry_run_script(pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
 	int bufno = -1; /* empty scope means board */
@@ -198,7 +198,7 @@ int pcb_qry_run_script(pcb_board_t *pcb, const char *script, const char *scope, 
 			return -1;
 		}
 	}
-	return pcb_qry_run(pcb, prg, bufno, cb, user_ctx);
+	return pcb_qry_run(ec, pcb, prg, bufno, cb, user_ctx);
 }
 
 static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -239,7 +239,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		memset(&st, 0, sizeof(st));
 		st.print_idpath = (cmd[4] != '\0');
 		printf("Script eval: '%s' scope='%s'\n", arg, scope == NULL ? "" : scope);
-		errs = pcb_qry_run_script(PCB_ACT_BOARD, arg, scope, eval_cb, &st);
+		errs = pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, eval_cb, &st);
 
 		if (errs < 0)
 			printf("Failed to run the query\n");
@@ -266,7 +266,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
-		if (pcb_qry_run_script(PCB_ACT_BOARD, arg, scope, flagop_cb, &sel) < 0)
+		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, flagop_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
@@ -294,7 +294,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
-		if (pcb_qry_run_script(PCB_ACT_BOARD, arg, scope, flagop_cb, &sel) < 0)
+		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, flagop_cb, &sel) < 0)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
@@ -315,7 +315,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH_LIST))
 			return FGW_ERR_PTR_DOMAIN;
 
-		if (pcb_qry_run_script(PCB_ACT_BOARD, arg, scope, append_cb, list) < 0)
+		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, append_cb, list) < 0)
 			PCB_ACT_IRES(1);
 		else
 			PCB_ACT_IRES(0);
@@ -326,7 +326,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		fgw_arg_t args[4], ares;
 		pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
 		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
-		if (pcb_qry_run_script(PCB_ACT_BOARD, arg, scope, view_cb, view) >= 0) {
+		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, view_cb, view) >= 0) {
 			args[1].type = FGW_STR; args[1].val.str = "advanced search results";
 			args[2].type = FGW_STR; args[2].val.str = "search_res";
 			fgw_ptr_reg(&pcb_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);

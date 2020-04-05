@@ -125,7 +125,7 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
 	pcb_board_t *pcb = (pcb_board_t *)pcb_gui->get_dad_hidlib(hid_ctx);
 
-	drc_qry_exec(pcb, view, ctx->rule,
+	drc_qry_exec(NULL, pcb, view, ctx->rule,
 		ctx->dlg[ctx->wtype].val.str,
 		ctx->dlg[ctx->wtitle].val.str,
 		ctx->dlg[ctx->wdesc].val.str,
@@ -505,7 +505,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	}
 
 	view = calloc(sizeof(pcb_view_list_t), 1);
-	drc_qry_exec(pcb, view, row->cell[0], textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
+	drc_qry_exec(NULL, pcb, view, row->cell[0], textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
 	drcq_open_view_win(&pcb->hidlib, view);
 	drc_rlist_pcb2dlg(); /* for the run time */
 }

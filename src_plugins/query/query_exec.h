@@ -50,7 +50,7 @@ void pcb_qry_init(pcb_qry_exec_t *ctx, pcb_board_t *pcb, pcb_qry_node_t *root, i
 void pcb_qry_uninit(pcb_qry_exec_t *ctx);
 
 /* Execute an expression or a rule */
-int pcb_qry_run(pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
+int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
 int pcb_qry_is_true(pcb_qry_val_t *val);
 
