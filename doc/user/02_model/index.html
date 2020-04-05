@@ -631,12 +631,12 @@ will always have at least one padstack.
 	<caption><b>Pcb-rnd Terminology</b>
 	<tr><th> Physical board            <th> pcb-rnd                                                   <th> Description
 	<tr><td> Layer                     <td> Layer Group                                               <td> enables the user to design complex physical constructions
-	<tr><td> Copper layer              <td> Layer group with copper layers                            <td> designed with one to many pcb-rnd layers
-	<tr><td> Component/Top copper layer<td> Layer group with copper layers                            <td> any group of copper layers defined as the 'top' of a board
-	<tr><td> Solder/bottom copper layer<td> Layer group with copper layers                            <td> any group of copper layers defined as the 'bottom' of a board
-	<tr><td> Substrate                 <td> Layer group marked as substrate, hosting no logical layers<td> pcb-rnd does not yet handle properties of physical substrate information
-	<tr><td> Contour of the board      <td> Outline layer                                             <td> designed using standard pcb-rnd objects
-	<tr><td> Outline routing path      <td> Outline layer                                             <td> designed using standard pcb-rnd objects
+	<tr><td> Copper layer              <td> Layer group of type copper                                <td> &nbsp;
+	<tr><td> Component/Top copper layer<td> Layer group of type copper, location top                  <td> &nbsp;
+	<tr><td> Solder/bottom copper layer<td> Layer group of type copper, location bottom               <td> &nbsp;
+	<tr><td> Substrate, prepreg, core  <td> Layer group marked as substrate, hosting no logical layers<td> pcb-rnd does not yet handle properties of physical substrate information
+	<tr><td> Contour of the board      <td> Boundary layer                                            <td> designed using standard pcb-rnd objects
+	<tr><td> Outline routing path      <td> Boundary layer                                            <td> designed using standard pcb-rnd objects
 	<tr><td> Polygon pour              <td> Polygon                                                   <td> an object available for design in any layer group
 	<tr><td> Plane                     <td> Polygon                                                   <td> see above 
 	<tr><td> Mask (solder mask)        <td> Layer group with implicit and potential explicit content  <td> design layers available: automatic, additive, subtractive
