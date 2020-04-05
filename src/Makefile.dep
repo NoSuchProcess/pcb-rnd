@@ -1751,7 +1751,11 @@
  obj_rat_draw.h obj_line_draw.h obj_text_draw.h obj_poly_draw.h \
  obj_pstk_draw.h board.h vtroutestyle.h rats_patch.h obj_subc_list.h \
  ../src_plugins/query/net_int.h obj_common.h \
- ../src_plugins/drc_orig/drc_orig_conf.h \
+ ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
+ ../src_3rd/genvector/vts0.h ../src_3rd/genht/htsi.h \
+ ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h layer.h \
+ flag_str.h ../src_plugins/drc_orig/drc_orig_conf.h \
  ../src_plugins/drc_orig/conf_internal.c \
  ../src_plugins/drc_orig/drc_orig_conf_fields.h
 ../src_plugins/drc_query/drc_query.o: \
@@ -1785,11 +1789,11 @@
  ../src_3rd/genvector/vts0.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h \
- ../src_plugins/drc_query/drc_query_stat.c ../src_plugins/drc_query/dlg.c \
- librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
- ../src_3rd/liblihata/tree.h actions_pcb.h \
+ obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
+ ../src_plugins/query/query.h ../src_plugins/drc_query/drc_query_stat.c \
+ ../src_plugins/drc_query/dlg.c librnd/core/hid_dad.h \
+ librnd/core/hid_attrib.h librnd/core/hid_dad_spin.h \
+ librnd/core/hid_dad_tree.h ../src_3rd/liblihata/tree.h actions_pcb.h \
  ../src_plugins/drc_query/drc_query_conf_fields.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h librnd/config.h librnd/core/conf.h \
@@ -6973,16 +6977,17 @@
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h find.h obj_term.h netlist.h \
  ../src_plugins/query/net_int.h obj_common.h \
- ../src_plugins/query/query_access.h ../src_plugins/query/query.h \
+ ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
  ../src_3rd/genvector/vts0.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h layer.h \
- flag_str.h ../src_plugins/query/query_exec.h \
+ flag_str.h ../src_plugins/query/query_access.h \
  ../src_plugins/query/fnc_glue.c ../src_plugins/query/fnc_list.c \
  ../src_plugins/query/fnc_geo.c obj_poly.h
 ../src_plugins/query/net_int.o: ../src_plugins/query/net_int.c \
- ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
+ ../config.h librnd/config.h ../src_3rd/genht/htpp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h \
+ ../src_3rd/genht/htsp.h librnd/core/global_typedefs.h \
  librnd/core/pcb_bool.h vtroutestyle.h librnd/core/unit.h \
  librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h librnd/core/globalconst.h \
@@ -6996,7 +7001,11 @@
  ../src_3rd/genvector/gds_char.h obj_gfx_list.h obj_gfx.h layer_grp.h \
  rats_patch.h board.h librnd/core/hidlib.h librnd/core/global_typedefs.h \
  find.h ../src_3rd/genvector/vtp0.h ../src_plugins/query/net_int.h \
- obj_common.h
+ obj_common.h ../src_plugins/query/query_exec.h \
+ ../src_plugins/query/query.h ../src_3rd/genvector/vts0.h \
+ ../src_3rd/genht/htsi.h ../src_3rd/genregex/regex_se.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h layer.h flag_str.h
 ../src_plugins/query/query.o: ../src_plugins/query/query.c ../config.h \
  librnd/config.h ../src_3rd/genht/hash.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genht/ht.h librnd/core/conf.h librnd/core/global_typedefs.h \
