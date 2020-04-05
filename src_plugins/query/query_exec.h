@@ -42,7 +42,9 @@ struct pcb_qry_exec_s {
 	vtp0_t autofree;
 
 	/* data/call cache */
-	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment */
+	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment; for floating segments any object with the lowest ID will be accepted */
+
+	unsigned obj2netterm_inited:1;
 };
 
 /* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */

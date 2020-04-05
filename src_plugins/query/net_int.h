@@ -1,5 +1,6 @@
 #include "find.h"
 #include "obj_common.h"
+#include "query_exec.h"
 
 typedef struct pcb_net_int_s pcb_net_int_t;
 typedef int (pcb_int_broken_cb_t)(pcb_net_int_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype);
@@ -25,3 +26,10 @@ struct pcb_net_int_s {
    If shrink or bloat is 0, that side of the test is skipped */
 pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data);
 
+
+/* Map the network of the from object. If it's a segment of a netlisted net,
+   return the terminal object with the lowest ID from that segment. If it's
+   an unlisted (floating) net, return the lowest ID copper object. (Worst
+   case it is a floating net with only this one object - then the object
+   is returned). The search is cached. */
+pcb_any_obj_t *pcb_qry_parent_net_term(pcb_qry_exec_t *ec, pcb_any_obj_t *from);

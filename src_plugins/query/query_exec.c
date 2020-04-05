@@ -78,6 +78,9 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 	pcb_qry_autofree(ctx);
 
 	pcb_qry_list_free(&ctx->all);
+
+	if (ctx->obj2netterm_inited)
+		htpp_uninit(&ctx->obj2netterm);
 }
 
 static void val_free_fields(pcb_qry_val_t *val)

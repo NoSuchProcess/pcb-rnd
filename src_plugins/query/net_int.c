@@ -29,6 +29,9 @@
 
 #include "config.h"
 
+#include <genht/htpp.h>
+#include <genht/hash.h>
+
 #include "board.h"
 #include "find.h"
 #include "net_int.h"
@@ -106,3 +109,65 @@ pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, pcb_coord_t sh
 
 	return pcb_false;
 }
+
+
+/*** cached object -> network-terminal ***/
+
+typedef struct {
+	pcb_qry_exec_t *ec;
+	pcb_any_obj_t *best_term;
+	pcb_any_obj_t *best_nonterm;
+} parent_net_term_t;
+
+static int parent_net_term_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	parent_net_term_t *ctx = fctx->user_data;
+	if (new_obj->term != NULL) {
+		if (new_obj->ID < ctx->best_term->ID)
+			ctx->best_term = new_obj;
+	}
+	else {
+		if (new_obj->ID < ctx->best_nonterm->ID)
+			ctx->best_nonterm = new_obj;
+	}
+}
+
+
+PCB_INLINE pcb_any_obj_t *pcb_qry_parent_net_term_(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
+{
+	pcb_find_t fctx;
+	parent_net_term_t ctx;
+
+	ctx.ec = ec;
+	ctx.best_term = NULL;
+	ctx.best_nonterm = from; /* worst case: floating segment with only this object */
+
+	memset(&fctx, 0, sizeof(fctx));
+	fctx.user_data = &ctx;
+	fctx.found_cb = parent_net_term_found_cb;
+	pcb_find_from_obj(&fctx, ec->pcb->Data, from);
+	pcb_find_free(&fctx);
+
+	return ctx.best_term != NULL ? ctx.best_term : ctx.best_nonterm;
+}
+
+
+pcb_any_obj_t *pcb_qry_parent_net_term(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
+{
+	pcb_any_obj_t *res;
+	if (!ec->obj2netterm_inited) {
+		htpp_init(&ec->obj2netterm, ptrhash, ptrkeyeq);
+		ec->obj2netterm_inited = 1;
+		res = NULL;
+	}
+	else
+		res = htpp_get(&ec->obj2netterm, from);
+
+	if (res == NULL) {
+		res = pcb_qry_parent_net_term_(ec, from);
+		htpp_set(&ec->obj2netterm, from, res);
+	}
+
+	return res;
+}
+
