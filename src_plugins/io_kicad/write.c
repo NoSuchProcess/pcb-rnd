@@ -2,7 +2,7 @@
  *														COPYRIGHT
  *
  *	pcb-rnd, interactive printed circuit board design
- *	Copyright (C) 2016,2018,2019 Tibor 'Igor2' Palinkas
+ *	Copyright (C) 2016,2018..2020 Tibor 'Igor2' Palinkas
  *	Copyright (C) 2016 Erich S. Heinzle
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -675,7 +675,7 @@ static int kicad_print_subc(wctx_t *ctx, pcb_subc_t *subc, pcb_cardinal_t ind, p
 
 TODO(": get this from data table (see also #1)")
 	int silkLayer = 21; /* hard coded default, 20 is bottom silk */
-	int copperLayer = 15; /* hard coded default, 0 is bottom copper */
+	int copperLayer;
 
 		if (pcb_subc_get_origin(subc, &sox, &soy) != 0) {
 			pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
@@ -691,6 +691,10 @@ TODO(": get this from data table (see also #1)")
 
 		if (on_bottom) {
 			silkLayer = 20;
+			copperLayer = 15;
+		}
+		else {
+			silkLayer = 21;
 			copperLayer = 0;
 		}
 
@@ -718,6 +722,7 @@ TODO(": the unique name makes no sense if we override it with unknown - if the u
 
 TODO(": why the heck do we hardwire timestamps?!!?!?!")
 		fprintf(ctx->f, "%*s", ind, "");
+pcb_trace("copper layer=\n", copperLayer);
 		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(ctx, copperLayer));
 		fprintf(ctx->f, "%*s", ind + 2, "");
 		pcb_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
