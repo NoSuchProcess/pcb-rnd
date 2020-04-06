@@ -640,6 +640,10 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			/* no-op: present only in rules and are executed before any assert expression */
 			return 0;
 
+		case PCBQ_ASSERT:
+			/* no-op: present only in rules and are executed manually */
+			return 0;
+
 		case PCBQ_VAR:
 			assert((node->data.crd >= 0) && (node->data.crd < ctx->iter->num_vars));
 			res->type = PCBQ_VT_VOID;
