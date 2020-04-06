@@ -130,6 +130,7 @@ static int parent_net_term_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pc
 		if (new_obj->ID < ctx->best_nonterm->ID)
 			ctx->best_nonterm = new_obj;
 	}
+	return 0;
 }
 
 
