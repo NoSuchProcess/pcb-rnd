@@ -72,7 +72,6 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 	for(n = 0; n < argc; n+=2) {
 		pcb_qry_val_t *val = &argv[n+1];
 		pcb_obj_qry_const_t *tmp;
-		pcb_qry_drc_ctrl_t ctrl = pcb_qry_drc_ctrl_decode(argv[n].data.obj);
 
 		switch(val->type) {
 			case PCBQ_VT_OBJ:

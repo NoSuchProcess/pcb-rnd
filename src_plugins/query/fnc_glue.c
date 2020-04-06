@@ -32,7 +32,6 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 {
 	int n, retv = 0;
 	fgw_arg_t tmp, resa, arga[PCB_QRY_MAX_FUNC_ARGS], *arg;
-	fgw_error_t e;
 
 	if (argv[0].type != PCBQ_VT_STRING) {
 		pcb_message(PCB_MSG_ERROR, "query: action() first argument must be a string\n");
