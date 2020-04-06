@@ -215,10 +215,16 @@ static unsigned long int bitswap(unsigned int i)
 int pcb_bxl_decode_char(hdecode_t *ctx, int inchr)
 {
 	if (ctx->hdr_pos < 4) {
-		/* read the header; the header is A B C D, where A is the LSB and
+		/* Read the header; the header is A B C D, where A is the LSB and
 		   D is the MSB of uncompressed file length in bytes; each header
 		   byte is binary mirrored for some very good but unfortunately
-		   undocumented reason. */
+		   undocumented reason.
+		   
+		   Yet another twist: the input binary file often (always?) ends in
+		   \r\n. Thus the plain text output must be truncated at the length
+		   extracted from the header, else there would be noise causing syntax
+		   error at the end of the decoded file.
+		*/
 		ctx->hdr[ctx->hdr_pos] = inchr;
 		ctx->hdr_pos++;
 		if (ctx->hdr_pos == 4)
