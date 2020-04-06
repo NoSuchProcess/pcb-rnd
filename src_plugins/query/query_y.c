@@ -144,7 +144,7 @@ do { \
 } while(0)
 
 static pcb_query_iter_t *iter_ctx;
-static vts0_t *iter_active_ctx;
+static vti0_t *iter_active_ctx;
 
 static char *attrib_prepend_free(char *orig, char *prep, char sep)
 {
@@ -1802,7 +1802,7 @@ yyreduce:
   case 53:
 #line 281 "query_y.y" /* yacc.c:1652  */
     {
-				iter_active_ctx = calloc(sizeof(vts0_t), 1);
+				iter_active_ctx = calloc(sizeof(vti0_t), 1);
 			}
 #line 1808 "query_y.c" /* yacc.c:1652  */
     break;
@@ -1826,7 +1826,7 @@ yyreduce:
   case 55:
 #line 300 "query_y.y" /* yacc.c:1652  */
     {
-			iter_active_ctx = calloc(sizeof(vts0_t), 1);
+			iter_active_ctx = calloc(sizeof(vti0_t), 1);
 		}
 #line 1832 "query_y.c" /* yacc.c:1652  */
     break;
@@ -1844,7 +1844,7 @@ yyreduce:
 
   case 57:
 #line 313 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_VAR); (yyval.n)->data.crd = pcb_qry_iter_var(iter_ctx, (yyvsp[0].s), 1); if (iter_active_ctx != NULL) vts0_set(iter_active_ctx, (yyval.n)->data.crd, 1); free((yyvsp[0].s)); }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_VAR); (yyval.n)->data.crd = pcb_qry_iter_var(iter_ctx, (yyvsp[0].s), 1); if (iter_active_ctx != NULL) vti0_set(iter_active_ctx, (yyval.n)->data.crd, 1); free((yyvsp[0].s)); }
 #line 1849 "query_y.c" /* yacc.c:1652  */
     break;
 
@@ -1856,7 +1856,7 @@ yyreduce:
 
   case 59:
 #line 315 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_VAR); (yyval.n)->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); if (iter_active_ctx != NULL) vts0_set(iter_active_ctx, (yyval.n)->data.crd, 1); }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_VAR); (yyval.n)->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); if (iter_active_ctx != NULL) vti0_set(iter_active_ctx, (yyval.n)->data.crd, 1); }
 #line 1861 "query_y.c" /* yacc.c:1652  */
     break;
 
