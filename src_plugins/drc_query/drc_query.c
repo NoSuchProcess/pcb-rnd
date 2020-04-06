@@ -83,6 +83,12 @@ pcb_coord_t load_obj_const(pcb_obj_qry_const_t *cnst)
 		case PCBQ_VT_COORD: return cnst->val.data.crd;
 		case PCBQ_VT_LONG: return cnst->val.data.lng;
 		case PCBQ_VT_DOUBLE: return cnst->val.data.dbl;
+		
+		case PCBQ_VT_VOID:
+		case PCBQ_VT_OBJ:
+		case PCBQ_VT_LST:
+		case PCBQ_VT_STRING:
+			break;
 	}
 	return 0;
 }
