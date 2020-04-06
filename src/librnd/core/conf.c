@@ -45,6 +45,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/hidlib.h>
+#include <librnd/core/fptr_cast.h>
 
 /* conf list node's name */
 const char *pcb_conf_list_name = "pcb-rnd-conf-v1";
@@ -721,7 +722,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					dest->used |= 1;
 					if ((dest->type == CFN_HLIST) || (s->user_data == NULL)) {
 						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
-						s->user_data = (void *)pcb_conf_merge_patch_list;
+						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
 					}
 				}
 				else {
@@ -760,7 +761,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					dest->used |= 1;
 					if ((dest->type == CFN_HLIST) && (s->user_data == NULL)) {
 						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
-						s->user_data = (void *)pcb_conf_merge_patch_list;
+						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
 					}
 				}
 				else {
