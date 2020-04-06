@@ -6,7 +6,6 @@
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + FEATURE: distalign actions align() and distribute() should work with any object (e.g. via, not only subc) [report: Miloh]
-+ BUG: padstack proto edit dialog gets confused on s-mirrored instances ml=3678 [report: gpaubert]
 + BUG: kicad save component side and type; ml=3790,3794 [report: cnieves]
 + BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert] -> in the new drc at most 2 hits per short are possible: from the two directions (two networks), because clearance requirements may be different per net
 + BUG: lesstif main window doesn't show parts selected after running select all. { s a a } on parts in lesstif gui, main window doesn't show any parts selected unless zoom is changed. [report: Miloh]
