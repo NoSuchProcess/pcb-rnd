@@ -189,49 +189,6 @@ static const char *load_str(lht_node_t *rule, pcb_conf_listitem_t *i, const char
 	return n->data.text.value;
 }
 
-static int str2bool(const char *val)
-{
-	while(isspace(*val)) val++;
-	if ((val[0] == '0') && (val[1] == '\0'))
-		return 0;
-	if ((val[0] == '1') && (val[1] == '\0'))
-		return 0;
-	if ((pcb_strcasecmp(val, "yes") == 0) || (pcb_strcasecmp(val, "true") == 0))
-		return 1;
-	if ((pcb_strcasecmp(val, "no") == 0) || (pcb_strcasecmp(val, "false") == 0))
-		return 0;
-	return -1;
-}
-
-static long load_int(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name, long invalid)
-{
-	lht_node_t *n = lht_dom_hash_get(rule, name);
-	long l;
-	const char *val;
-	char *end;
-
-	if (n == NULL)
-		return invalid;
-	if (n->type != LHT_TEXT) {
-		pcb_message(PCB_MSG_ERROR, "drc_query: igoring non-text node %s of rule %s \n", name, i->name);
-		return invalid;
-	}
-
-	val = n->data.text.value;
-
-	l = str2bool(val);
-	if (l >= 0)
-		return l;
-
-	l = strtol(val, &end, 10);
-	if (*end != '\0') {
-		pcb_message(PCB_MSG_ERROR, "drc_query: ignoring invalid value '%s' for %s of rule %s \n", val, name, i->name);
-		return invalid;
-	}
-
-	return l;
-}
-
 static int *drc_get_disable(const char *name)
 {
 	char *path = pcb_concat(DRC_CONF_PATH_DISABLE, name, NULL);

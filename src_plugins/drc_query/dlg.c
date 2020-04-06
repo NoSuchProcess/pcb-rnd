@@ -75,11 +75,6 @@ static const char *textval(lht_node_t *nd, const char *fname)
 	return nt->data.text.value;
 }
 
-static int boolval(lht_node_t *nd, const char *fname)
-{
-	return str2bool(textval(nd, fname));
-}
-
 static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 {
 	pcb_dad_retovr_t retovr;
