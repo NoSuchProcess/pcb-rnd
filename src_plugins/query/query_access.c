@@ -38,6 +38,7 @@
 #include "fields_sphash.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
+#include "net_int.h"
 
 #define APPEND(_lst_, _obj_) vtp0_append((vtp0_t *)_lst_, _obj_)
 
@@ -323,6 +324,37 @@ do { \
  \
 } while(0)
 
+#define NETNAME_FIELDS() \
+do { \
+	pcb_qry_exec_t *ec = NULL; \
+	\
+	if (fh1 == query_fields_netname) { \
+		if (ec != NULL) { \
+			pcb_any_obj_t *term = pcb_qry_parent_net_term(ec, obj); \
+			pcb_net_t *net; \
+			if ((term == NULL) || (term->type != PCB_OBJ_NET_TERM)) \
+				PCB_QRY_RET_INV(res); \
+			net = term->parent.net; \
+			if ((net == NULL) || (net->type != PCB_OBJ_NET)) \
+				PCB_QRY_RET_INV(res); \
+			PCB_QRY_RET_STR(res, net->name); \
+		} \
+		else \
+			PCB_QRY_RET_INV(res); \
+	} \
+	if (fh1 == query_fields_netseg) { \
+		if (ec != NULL) { \
+			pcb_any_obj_t *term = pcb_qry_parent_net_term(ec, obj); \
+			pcb_net_t *net; \
+			if (term == NULL) \
+				PCB_QRY_RET_INV(res); \
+			PCB_QRY_RET_INT(res, term->ID); \
+		} \
+		else \
+			PCB_QRY_RET_INV(res); \
+	} \
+} while(0)
+
 static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_layer_t *l = (pcb_layer_t *)obj;
@@ -406,6 +438,8 @@ static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 			PCB_QRY_RET_INV(res);
 	}
 
+	NETNAME_FIELDS();
+
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
@@ -474,6 +508,8 @@ static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 		else
 			PCB_QRY_RET_INV(res);
 	}
+
+	NETNAME_FIELDS();
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -562,6 +598,8 @@ static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 			PCB_QRY_RET_INV(res);
 	}
 
+	NETNAME_FIELDS();
+
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
@@ -599,6 +637,8 @@ static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t 
 		else
 			PCB_QRY_RET_INV(res);
 	}
+
+	NETNAME_FIELDS();
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -670,6 +710,8 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		}
 		PCB_QRY_RET_STR(res, "");
 	}
+
+	NETNAME_FIELDS();
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);

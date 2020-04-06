@@ -49,3 +49,5 @@ shape
 subc
 side
 proto
+netname
+netseg
