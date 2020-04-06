@@ -148,6 +148,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 					arga[n].val.ptr_void = NULL;
 				}
 				break;
+			default: break;
 		}
 	}
 

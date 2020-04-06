@@ -88,6 +88,11 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 				vtp0_append(&res->data.lst, tmp);
 				vtp0_append(&ectx->autofree, tmp);
 				break;
+			case PCBQ_VT_VOID:
+			case PCBQ_VT_LST:
+			case PCBQ_VT_STRING:
+				/* can't be on a violation list at the moment */
+				break;
 		}
 	}
 	return 0;
