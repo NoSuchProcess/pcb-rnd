@@ -9,12 +9,12 @@ typedef struct {
 
 static htsp_t pcb_drcq_stat;
 
-static pcb_drcq_stat_init(void)
+static void pcb_drcq_stat_init(void)
 {
 	htsp_init(&pcb_drcq_stat, strhash, strkeyeq);
 }
 
-static pcb_drcq_stat_uninit(void)
+static void pcb_drcq_stat_uninit(void)
 {
 	htsp_entry_t *e;
 	for(e = htsp_first(&pcb_drcq_stat); e != NULL; e = htsp_next(&pcb_drcq_stat, e)) {
