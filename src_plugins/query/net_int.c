@@ -149,7 +149,14 @@ PCB_INLINE pcb_any_obj_t *pcb_qry_parent_net_term_(pcb_qry_exec_t *ec, pcb_any_o
 	pcb_find_from_obj(&fctx, ec->pcb->Data, from);
 	pcb_find_free(&fctx);
 
-	return ctx.best_term != NULL ? ctx.best_term : ctx.best_nonterm;
+	/* for terminals do the expensive lookup and return the PCB_OBJ_NET_TERM object */
+	if (ctx.best_term != NULL) {
+		pcb_net_term_t *t;
+		t = pcb_net_term_get_by_obj(ec->pcb->netlist[PCB_NETLIST_EDITED], ctx.best_term);
+		return (t == NULL) ? ctx.best_term : t;
+	}
+
+	return ctx.best_nonterm;
 }
 
 
