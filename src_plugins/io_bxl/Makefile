@@ -1,4 +1,4 @@
-CFLAGS = -Wall -g -std=c89
+CFLAGS = -Wall -g -std=c89 -pedantic
 
 bxl2txt: bxl2txt.o bxl_decode.o
 
