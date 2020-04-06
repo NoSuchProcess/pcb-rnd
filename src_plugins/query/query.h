@@ -136,7 +136,7 @@ struct pcb_qry_node_s {
 		long cnst;                  /* named constant */
 		pcb_any_obj_t *obj;
 		const pcb_flag_bits_t *flg;
-		const vts0_t *it_active;
+		vts0_t *it_active;
 	} precomp;
 };
 
