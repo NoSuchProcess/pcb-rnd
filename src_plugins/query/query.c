@@ -39,6 +39,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include "query.h"
+#include "query_l.h"
 #include <librnd/core/fptr_cast.h>
 
 #define PCB dontuse
