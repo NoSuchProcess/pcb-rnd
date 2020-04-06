@@ -188,7 +188,9 @@ static void decode_run(hdecode_t *ctx)
 		}
 
 		/* produce the next output byte */
-		ctx->out[ctx->out_len++] = ctx->node->symbol;
+		if (ctx->opos < ctx->plain_len)
+			ctx->out[ctx->out_len++] = ctx->node->symbol;
+		ctx->opos++;
 		inc_weight(ctx->node);
 		htree_update(ctx->node);
 		ctx->node = ctx->tree->root;
@@ -224,6 +226,8 @@ int pcb_bxl_decode_char(hdecode_t *ctx, int inchr)
 		return 0;
 	}
 
+	if (ctx->opos >= ctx->plain_len)
+		return 0;
 
 	ctx->out_len = 0;
 	ctx->chr = inchr;

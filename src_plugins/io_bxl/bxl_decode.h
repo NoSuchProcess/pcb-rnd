@@ -46,7 +46,7 @@ typedef struct hdecode_s {
 	int out_len;
 	int hdr_pos;
 	int hdr[4];
-	unsigned long int plain_len, ipos;
+	unsigned long int plain_len, opos;
 } hdecode_t;
 
 void pcb_bxl_decode_init(hdecode_t *ctx);

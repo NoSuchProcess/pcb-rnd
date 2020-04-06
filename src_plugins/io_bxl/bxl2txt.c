@@ -48,7 +48,7 @@ int main()
 			printf("%c", ctx.out[n]);
 	}
 
-fprintf(stderr, "plain len=%ld\n", ctx.plain_len);
+/*fprintf(stderr, "plain len=%lu %lu\n", ctx.plain_len, ctx.ipos);*/
 
 	pcb_bxl_decode_uninit(&ctx);
 	return 0;
