@@ -19,7 +19,7 @@ static void pcb_drcq_stat_uninit(void)
 	htsp_entry_t *e;
 	for(e = htsp_first(&pcb_drcq_stat); e != NULL; e = htsp_next(&pcb_drcq_stat, e)) {
 		pcb_drcq_stat_t *st = e->value;
-		free(st->name);
+		free((char *)st->name);
 		free(st);
 	}
 	htsp_uninit(&pcb_drcq_stat);
@@ -34,6 +34,6 @@ static pcb_drcq_stat_t *pcb_drcq_stat_get(const char *name)
 
 	st = calloc(sizeof(pcb_drcq_stat_t), 1);
 	st->name = pcb_strdup(name);
-	htsp_set(&pcb_drcq_stat, st->name, st);
+	htsp_set(&pcb_drcq_stat, (char *)st->name, st);
 	return st;
 }
