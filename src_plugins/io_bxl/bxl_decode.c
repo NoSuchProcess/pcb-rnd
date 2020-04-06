@@ -195,8 +195,37 @@ static void decode_run(hdecode_t *ctx)
 	}
 }
 
+/* Swap the bits in a byte */
+static unsigned long int bitswap(unsigned int i)
+{
+	int n;
+	unsigned long int o = 0;
+
+	for(n = 0; n < 8; n++) {
+		o <<= 1;
+		o |= (i & 1);
+		i >>= 1;
+	}
+
+	return o;
+}
+
 int pcb_bxl_decode_char(hdecode_t *ctx, int inchr)
 {
+	if (ctx->hdr_pos < 4) {
+		/* read the header; the header is A B C D, where A is the LSB and
+		   D is the MSB of uncompressed file length in bytes; each header
+		   byte is binary mirrored for some very good but unfortunately
+		   undocumented reason. */
+		ctx->hdr[ctx->hdr_pos] = inchr;
+		ctx->hdr_pos++;
+		if (ctx->hdr_pos == 4) {
+			ctx->plain_len = bitswap(ctx->hdr[3]) << 24 | bitswap(ctx->hdr[2]) << 16 | bitswap(ctx->hdr[1]) << 8 | bitswap(ctx->hdr[0]);
+		}
+		return 0;
+	}
+
+
 	ctx->out_len = 0;
 	ctx->chr = inchr;
 	decode_run(ctx);

@@ -39,11 +39,6 @@ int main()
 
 	pcb_bxl_decode_init(&ctx);
 
-fgetc(stdin);
-fgetc(stdin);
-fgetc(stdin);
-fgetc(stdin);
-
 	while((inch = fgetc(stdin)) != EOF) {
 		int n, len;
 		len = pcb_bxl_decode_char(&ctx, inch);
@@ -52,6 +47,8 @@ fgetc(stdin);
 		for(n = 0; n < len; n++)
 			printf("%c", ctx.out[n]);
 	}
+
+fprintf(stderr, "plain len=%ld\n", ctx.plain_len);
 
 	pcb_bxl_decode_uninit(&ctx);
 	return 0;
