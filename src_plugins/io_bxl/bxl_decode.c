@@ -36,9 +36,6 @@
 #include <assert.h>
 #include "bxl_decode.h"
 
-/* Frees a whole subtree: no-op because of static allocation */
-static void hnode_free(hnode_t *n) { }
-
 /* Allocates a new node under parent (parent is NULL for root) */
 static hnode_t *hnode_alloc(htree_t *tree, hnode_t *parent, int symbol)
 {
@@ -124,19 +121,12 @@ static void hnode_swap(hnode_t *n1, hnode_t *n2, hnode_t *n3)
 		n1->left = n3;
 }
 
-
-static void htree_free(htree_t *t)
-{
-	hnode_free(t->root);
-	free(t);
-}
-
-static htree_t *htree_alloc(void)
+static htree_t *htree_init(htree_t *t)
 {
 	int leaf_count = 0;
-	htree_t *t = calloc(sizeof(htree_t), 1);
 	hnode_t *node;
 
+	t->pool_used = 0;
 	node = t->root = hnode_alloc(t, NULL, 0);
 
 	/* fill levels */
@@ -198,7 +188,7 @@ static void decode_run(hdecode_t *ctx)
 		ctx->opos++;
 		inc_weight(ctx->node);
 		htree_update(ctx->node);
-		ctx->node = ctx->tree->root;
+		ctx->node = ctx->tree.root;
 	}
 }
 
@@ -249,14 +239,7 @@ int pcb_bxl_decode_char(hdecode_t *ctx, int inchr)
 void pcb_bxl_decode_init(hdecode_t *ctx)
 {
 	memset(ctx, 0, sizeof(hdecode_t));
-	ctx->tree = htree_alloc();
-	ctx->node = ctx->tree->root;
+	htree_init(&ctx->tree);
+	ctx->node = ctx->tree.root;
 	decode_run(ctx);
 }
-
-void pcb_bxl_decode_uninit(hdecode_t *ctx)
-{
-	htree_free(ctx->tree);
-	ctx->tree = NULL;
-}
-

@@ -42,7 +42,7 @@ typedef struct htree_s {
 
 typedef struct hdecode_s {
 	int chr, bitpos;
-	htree_t *tree;
+	htree_t tree;
 	hnode_t *node;
 	int out[10];
 	int out_len;
@@ -52,8 +52,6 @@ typedef struct hdecode_s {
 } hdecode_t;
 
 void pcb_bxl_decode_init(hdecode_t *ctx);
-void pcb_bxl_decode_uninit(hdecode_t *ctx);
-
 
 /* Feed the state machine with an input character. Returns the number of
    output characters available in ctx->out[]; these must be saved before
