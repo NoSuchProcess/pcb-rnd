@@ -4,7 +4,7 @@ ROOT=../..
 PLUGDIR=$(ROOT)/src_plugins
 LIBRND=$(ROOT)/src/librnd
 PLUG=$(PLUGDIR)/io_bxl
-CFLAGS = @/local/pcb/c89flags@ @/local/pcb/CFLAGS@ -I$(PLUG) -I$(ROOT)
+CFLAGS = @/local/pcb/c89flags@ @/local/pcb/CFLAGS@ -I$(PLUG) -I$(ROOT) -I$(ROOT)/src -I$(ROOT)/src_3rd
 LDFLAGS = @/local/pcb/LDFLAGS@
 CC=@cc/cc@
 

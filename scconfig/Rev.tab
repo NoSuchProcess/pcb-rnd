@@ -1,4 +1,4 @@
-30494	configure	new util: bxl2txt
+30497	configure	new util: bxl2txt
 30191	configure	drc_orig: plugin configuration so the checks can be disabled
 30181	configure	query plugin: make bloat/shrink net drc loop reusable
 30169	configure	query plugin: function implementation/split
