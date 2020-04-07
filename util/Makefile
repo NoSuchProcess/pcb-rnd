@@ -3,11 +3,13 @@ ROOT=..
 
 all:
 	cd gsch2pcb-rnd && $(MAKE) all
+	cd bxl2txt && $(MAKE) all
 
 include $(ROOT)/Makefile.conf
 
 clean:
 	cd gsch2pcb-rnd && $(MAKE) clean
+	cd bxl2txt && $(MAKE) clean
 
 distclean:
 	cd gsch2pcb-rnd && $(MAKE) distclean
@@ -23,12 +25,15 @@ install_all:
 install:
 	$(MAKE) install_all HOW="install -f"
 	cd gsch2pcb-rnd && $(MAKE) install
+	cd bxl2txt && $(MAKE) install
 
 linstall:
 	$(MAKE) install_all HOW="linstall -f"
 	cd gsch2pcb-rnd && $(MAKE) linstall
+	cd bxl2txt && $(MAKE) linstall
 
 uninstall:
 	$(MAKE) install_all HOW="uninstall"
 	cd gsch2pcb-rnd && $(MAKE) uninstall
+	cd bxl2txt && $(MAKE) uninstall
 
