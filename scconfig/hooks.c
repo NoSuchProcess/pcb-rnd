@@ -673,6 +673,7 @@ int hook_generate()
 	printf("Generating librnd.mak (%d)\n", generr |= tmpasm("../src/librnd/core", "librnd.mak.in", "librnd.mak"));
 
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
+	printf("Generating util/bxl2txt/Makefile (%d)\n", generr |= tmpasm("../util", "bxl2txt/Makefile.in", "bxl2txt/Makefile"));
 
 	printf("Generating librnd config.h (%d)\n", generr |= tmpasm("../src/librnd", "config.h.in", "config.h"));
 	printf("Generating pcb-rnd config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
