@@ -49,6 +49,7 @@ int main()
 	}
 
 /*fprintf(stderr, "plain len=%lu %lu\n", ctx.plain_len, ctx.ipos);*/
+/*fprintf(stderr, "pool used: %d\n", ctx.tree->pool_used);*/
 
 	pcb_bxl_decode_uninit(&ctx);
 	return 0;

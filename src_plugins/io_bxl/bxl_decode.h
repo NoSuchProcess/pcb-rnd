@@ -36,6 +36,8 @@ struct hnode_s {
 
 typedef struct htree_s {
 	hnode_t *root;
+	hnode_t pool[512];
+	int pool_used;
 } htree_t;
 
 typedef struct hdecode_s {

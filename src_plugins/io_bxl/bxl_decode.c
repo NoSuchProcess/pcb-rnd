@@ -33,27 +33,32 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "bxl_decode.h"
 
-/* Frees a whole subtree */
-static void hnode_free(hnode_t *n)
-{
-	if (n->left != NULL)
-		hnode_free(n->left);
-	if (n->right != NULL)
-		hnode_free(n->right);
-	free(n);
-}
+/* Frees a whole subtree: no-op because of static allocation */
+static void hnode_free(hnode_t *n) { }
 
 /* Allocates a new node under parent (parent is NULL for root) */
-static hnode_t *hnode_alloc(hnode_t *parent, int symbol)
+static hnode_t *hnode_alloc(htree_t *tree, hnode_t *parent, int symbol)
 {
-	hnode_t *n = calloc(sizeof(hnode_t), 1);
+	hnode_t *n;
+
+	assert(tree->pool_used < sizeof(tree->pool) / sizeof(tree->pool[0]));
+
+	n = &tree->pool[tree->pool_used++];
+
+	n->weight = 0;
 
 	if (parent != NULL) {
 		n->parent = parent;
 		n->level = parent->level+1;
 	}
+	else {
+		n->parent = NULL;
+		n->level = 0;
+	}
+
 	if (n->level > 7)
 		n->symbol = symbol;
 	else
@@ -61,38 +66,38 @@ static hnode_t *hnode_alloc(hnode_t *parent, int symbol)
 	return n;
 }
 
-static hnode_t *hnode_add_child(hnode_t *n, int symbol)
+static hnode_t *hnode_add_child(htree_t *tree, hnode_t *n, int symbol)
 {
 	hnode_t *ret;
 
 	if (n->level < 7) {
 		if (n->right != NULL) {
-			ret = hnode_add_child(n->right, symbol);
+			ret = hnode_add_child(tree, n->right, symbol);
 			if (ret != NULL)
 				return ret;
 		}
 		if (n->left != NULL) {
-			ret = hnode_add_child(n->left, symbol);
+			ret = hnode_add_child(tree, n->left, symbol);
 			if (ret != NULL)
 				return ret;
 		}
 		if (n->right == NULL) { /* fill from the right side */
-			n->right = hnode_alloc(n, -1);
+			n->right = hnode_alloc(tree, n, -1);
 			return n->right;
 		}
 		if (n->left == NULL) {
-			n->left = hnode_alloc(n, -1);
+			n->left = hnode_alloc(tree, n, -1);
 			return n->left;
 		}
 		return NULL;
 	}
 
 	if (n->right == NULL) {
-		n->right = hnode_alloc(n, symbol);
+		n->right = hnode_alloc(tree, n, symbol);
 		return n->right;
 	}
 	if (n->left == NULL) {
-		n->left = hnode_alloc(n, symbol);
+		n->left = hnode_alloc(tree, n, symbol);
 		return n->left;
 	}
 
@@ -132,11 +137,11 @@ static htree_t *htree_alloc(void)
 	htree_t *t = calloc(sizeof(htree_t), 1);
 	hnode_t *node;
 
-	node = t->root = hnode_alloc(NULL, 0);
+	node = t->root = hnode_alloc(t, NULL, 0);
 
 	/* fill levels */
 	while(node != NULL) {
-		node = hnode_add_child(t->root, leaf_count);
+		node = hnode_add_child(t, t->root, leaf_count);
 		if ((node != NULL) && (is_leaf(node)))
 			leaf_count++;
 	}
