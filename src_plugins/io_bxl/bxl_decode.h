@@ -51,6 +51,8 @@ typedef struct hdecode_s {
 	unsigned long int plain_len, opos;
 } hdecode_t;
 
+/* Initialize a decode context, before the first input byte is pushed.
+   No dynamic allocation is done during decoding so no uninit required. */
 void pcb_bxl_decode_init(hdecode_t *ctx);
 
 /* Feed the state machine with an input character. Returns the number of
