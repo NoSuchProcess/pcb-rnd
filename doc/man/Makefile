@@ -2,10 +2,10 @@
 # are included from $(ROOT)/Makefile.conf which is scconfig generated
 ROOT=../..
 
-IN=pcb-rnd.1.mml pcb-prj2lht.1.mml fp2preview.1.mml fp2subc.1.mml
-OUT_HTML = pcb-rnd.1.html pcb-prj2lht.1.html fp2preview.1.html fp2subc.1.html
-OUT_MAN1 = pcb-rnd.1 pcb-prj2lht.1 fp2preview.1  fp2subc.1
-OUT_LINT = pcb-rnd.1.lint pcb-prj2lht.1.lint fp2preview.1.lint fp2subc.1.lint
+IN=pcb-rnd.1.mml pcb-prj2lht.1.mml fp2preview.1.mml fp2subc.1.mml bxl2txt.1.mml
+OUT_HTML = pcb-rnd.1.html pcb-prj2lht.1.html fp2preview.1.html fp2subc.1.html bxl2txt.1.html
+OUT_MAN1 = pcb-rnd.1 pcb-prj2lht.1 fp2preview.1 fp2subc.1 bxl2txt.1
+OUT_LINT = pcb-rnd.1.lint pcb-prj2lht.1.lint fp2preview.1.lint fp2subc.1.lint bxl2txt.1.lint
 
 OUTPUT = $(OUT_HTML) $(OUT_MAN1) index.html
 MML = /usr/bin/mml

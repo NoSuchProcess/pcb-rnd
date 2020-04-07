@@ -1,0 +1,10 @@
+<title>bxl2txt</title>
+<sect>1</sect>
+<date>2020-04-07</date>
+
+<name> bxl2txt - decode a binary BXL file and dump the plain text content </name>
+<syn> <call>bxl2txt</call> &lt; <arg>infile.bxl</arg> &gt; <arg>outfile.txt</arg> </syn>
+
+<description>
+<call>bxl2txt</call> reads and decodes a binary bxl file in its standard
+input and prints the plain text content on its standard output.
