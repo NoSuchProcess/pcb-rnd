@@ -25,8 +25,8 @@
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: run drc on 7805 with valgrind from the batch GUI and clean up the memleaks [report: Igor2]
-- CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, suff]
-- CLEANUP/BUG: add config options on how gtk transient-for and (a new) raise should work [report: suff, Bdale]
+- CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, Joe]
+- CLEANUP/BUG: add config options on how gtk transient-for and (a new) raise should work [report: Joe, Bdale]
 - CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
 - CLEANUP/BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - CLEANUP: (TT) propedit revamp:
@@ -52,9 +52,9 @@
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
-- FEATURE: netlist dialog: double click on a net should disable rats [report: suff]
-- FEATURE: netlist dialog: button for disable all or enable all [report: suff]
-- FEATURE: padstack prototype edit dialog: geometry column in tab 2 (plain labels) do not respect glboal units [report: suff]
+- FEATURE: netlist dialog: double click on a net should disable rats [report: Joe]
+- FEATURE: netlist dialog: button for disable all or enable all [report: Joe]
+- FEATURE: padstack prototype edit dialog: geometry column in tab 2 (plain labels) do not respect glboal units [report: Joe]
 - FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
