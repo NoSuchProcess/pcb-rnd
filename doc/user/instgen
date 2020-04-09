@@ -13,6 +13,15 @@ BEGIN {
 
 ($0 ~ "/") {
 	path = $0
+
+	# don not list temp files
+	st=""
+	cmd="svn stat " path
+	cmd | getline st
+	close(cmd)
+	if (st ~ "[^?]")
+		next
+
 	sub("/[^/]*$", "", path)
 	if (!(path in PATHS)) {
 		print "	$(SCCBOX) mkdir -p $(USERDIR)/" path

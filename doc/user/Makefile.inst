@@ -2,10 +2,7 @@
 install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/01_intro
 	$(SCCBOX) $(HOW) 01_intro/Makefile $(USERDIR)/01_intro/Makefile
-	$(SCCBOX) $(HOW) 01_intro/flow.png $(USERDIR)/01_intro/flow.png
 	$(SCCBOX) $(HOW) 01_intro/flow.svg $(USERDIR)/01_intro/flow.svg
-	$(SCCBOX) $(HOW) 01_intro/flow.svg.pg $(USERDIR)/01_intro/flow.svg.pg
-	$(SCCBOX) $(HOW) 01_intro/flow.svg.png $(USERDIR)/01_intro/flow.svg.png
 	$(SCCBOX) $(HOW) 01_intro/history.html $(USERDIR)/01_intro/history.html
 	$(SCCBOX) $(HOW) 01_intro/index.html $(USERDIR)/01_intro/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/02_model
@@ -40,7 +37,6 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/06_common
 	$(SCCBOX) $(HOW) 05_ui/06_common/grid_menu.png $(USERDIR)/05_ui/06_common/grid_menu.png
 	$(SCCBOX) $(HOW) 05_ui/06_common/index.html $(USERDIR)/05_ui/06_common/index.html
-	$(SCCBOX) $(HOW) 05_ui/06_common/keytree.dot $(USERDIR)/05_ui/06_common/keytree.dot
 	$(SCCBOX) $(HOW) 05_ui/06_common/keytree.svg $(USERDIR)/05_ui/06_common/keytree.svg
 	$(SCCBOX) $(HOW) 05_ui/06_common/keytree.txt $(USERDIR)/05_ui/06_common/keytree.txt
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui
@@ -56,15 +52,8 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/autoroute
 	$(SCCBOX) $(HOW) 06_feature/autoroute/index.html $(USERDIR)/06_feature/autoroute/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/cam
-	$(SCCBOX) $(HOW) 06_feature/cam/A.lht $(USERDIR)/06_feature/cam/A.lht
-	$(SCCBOX) $(HOW) 06_feature/cam/PREFIX $(USERDIR)/06_feature/cam/PREFIX
-	$(SCCBOX) $(HOW) 06_feature/cam/a $(USERDIR)/06_feature/cam/a
-	$(SCCBOX) $(HOW) 06_feature/cam/foo1.png $(USERDIR)/06_feature/cam/foo1.png
 	$(SCCBOX) $(HOW) 06_feature/cam/index.html $(USERDIR)/06_feature/cam/index.html
-	$(SCCBOX) $(HOW) 06_feature/cam/unknown.png $(USERDIR)/06_feature/cam/unknown.png
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/ddraft
-	$(SCCBOX) $(HOW) 06_feature/ddraft/A.pcb $(USERDIR)/06_feature/ddraft/A.pcb
-	$(SCCBOX) $(HOW) 06_feature/ddraft/PCB.15720.save $(USERDIR)/06_feature/ddraft/PCB.15720.save
 	$(SCCBOX) $(HOW) 06_feature/ddraft/coord_seq.png $(USERDIR)/06_feature/ddraft/coord_seq.png
 	$(SCCBOX) $(HOW) 06_feature/ddraft/coord_sys.png $(USERDIR)/06_feature/ddraft/coord_sys.png
 	$(SCCBOX) $(HOW) 06_feature/ddraft/index.html $(USERDIR)/06_feature/ddraft/index.html
@@ -127,7 +116,6 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/polystitch
 	$(SCCBOX) $(HOW) 06_feature/polystitch/index.html $(USERDIR)/06_feature/polystitch/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/query
-	$(SCCBOX) $(HOW) 06_feature/query/autotoc.sh $(USERDIR)/06_feature/query/autotoc.sh
 	$(SCCBOX) $(HOW) 06_feature/query/index.html $(USERDIR)/06_feature/query/index.html
 	$(SCCBOX) $(HOW) 06_feature/query/z1_functions.html $(USERDIR)/06_feature/query/z1_functions.html
 	$(SCCBOX) $(HOW) 06_feature/query/z2_tutor_cli.html $(USERDIR)/06_feature/query/z2_tutor_cli.html
@@ -136,12 +124,8 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/scripting/install.txt $(USERDIR)/06_feature/scripting/install.txt
 	$(SCCBOX) $(HOW) 06_feature/scripting/intro.html $(USERDIR)/06_feature/scripting/intro.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/rosetta/10_hello
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/A $(USERDIR)/06_feature/scripting/rosetta/10_hello/A
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/ID.desc $(USERDIR)/06_feature/scripting/rosetta/10_hello/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/ID.name $(USERDIR)/06_feature/scripting/rosetta/10_hello/ID.name
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/rosetta/10_hello/OLD
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/OLD/ex.php $(USERDIR)/06_feature/scripting/rosetta/10_hello/OLD/ex.php
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/a $(USERDIR)/06_feature/scripting/rosetta/10_hello/a
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/ex.awk $(USERDIR)/06_feature/scripting/rosetta/10_hello/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/ex.bas $(USERDIR)/06_feature/scripting/rosetta/10_hello/ex.bas
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/10_hello/ex.fawk $(USERDIR)/06_feature/scripting/rosetta/10_hello/ex.fawk
@@ -160,7 +144,6 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/rosetta/11_hello_menu
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/11_hello_menu/ID.desc $(USERDIR)/06_feature/scripting/rosetta/11_hello_menu/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/11_hello_menu/ID.name $(USERDIR)/06_feature/scripting/rosetta/11_hello_menu/ID.name
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/11_hello_menu/a $(USERDIR)/06_feature/scripting/rosetta/11_hello_menu/a
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/11_hello_menu/ex.awk $(USERDIR)/06_feature/scripting/rosetta/11_hello_menu/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/11_hello_menu/ex.bas $(USERDIR)/06_feature/scripting/rosetta/11_hello_menu/ex.bas
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/11_hello_menu/ex.fawk $(USERDIR)/06_feature/scripting/rosetta/11_hello_menu/ex.fawk
@@ -173,7 +156,6 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ID.desc $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ID.name $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ID.name
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/a $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/a
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.awk $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.bas $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.bas
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.fawk $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.fawk
@@ -182,13 +164,11 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.pas $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.pas
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.pl $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.pl
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.py $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.py
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.pyc $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.pyc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/ex.tcl $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/ex.tcl
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/12_hello_dad/index.html $(USERDIR)/06_feature/scripting/rosetta/12_hello_dad/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ID.desc $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ID.name $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ID.name
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/a $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/a
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.awk $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.bas $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.bas
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.fawk $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.fawk
@@ -197,13 +177,11 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.pas $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.pas
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.pl $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.pl
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.py $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.py
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.pyc $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.pyc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/ex.tcl $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/ex.tcl
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/13_hello_dad/index.html $(USERDIR)/06_feature/scripting/rosetta/13_hello_dad/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/rosetta/21_timer
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/21_timer/ID.desc $(USERDIR)/06_feature/scripting/rosetta/21_timer/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/21_timer/ID.name $(USERDIR)/06_feature/scripting/rosetta/21_timer/ID.name
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/21_timer/a $(USERDIR)/06_feature/scripting/rosetta/21_timer/a
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/21_timer/ex.awk $(USERDIR)/06_feature/scripting/rosetta/21_timer/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/21_timer/ex.bas $(USERDIR)/06_feature/scripting/rosetta/21_timer/ex.bas
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/21_timer/ex.fawk $(USERDIR)/06_feature/scripting/rosetta/21_timer/ex.fawk
@@ -217,7 +195,6 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/rosetta/72_dad_unitconv
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/72_dad_unitconv/ID.desc $(USERDIR)/06_feature/scripting/rosetta/72_dad_unitconv/ID.desc
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/72_dad_unitconv/ID.name $(USERDIR)/06_feature/scripting/rosetta/72_dad_unitconv/ID.name
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/72_dad_unitconv/a $(USERDIR)/06_feature/scripting/rosetta/72_dad_unitconv/a
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/72_dad_unitconv/ex.awk $(USERDIR)/06_feature/scripting/rosetta/72_dad_unitconv/ex.awk
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/72_dad_unitconv/ex.fawk $(USERDIR)/06_feature/scripting/rosetta/72_dad_unitconv/ex.fawk
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/72_dad_unitconv/ex.html $(USERDIR)/06_feature/scripting/rosetta/72_dad_unitconv/ex.html
@@ -236,7 +213,6 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/Makefile $(USERDIR)/06_feature/scripting/rosetta/Makefile
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/index.html $(USERDIR)/06_feature/scripting/rosetta/index.html
 	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/index.templ.html $(USERDIR)/06_feature/scripting/rosetta/index.templ.html
-	$(SCCBOX) $(HOW) 06_feature/scripting/rosetta/q $(USERDIR)/06_feature/scripting/rosetta/q
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting/util
 	$(SCCBOX) $(HOW) 06_feature/scripting/util/Makefile $(USERDIR)/06_feature/scripting/util/Makefile
 	$(SCCBOX) $(HOW) 06_feature/scripting/util/rosetta_genpages.sh $(USERDIR)/06_feature/scripting/util/rosetta_genpages.sh
@@ -244,54 +220,19 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/smartdisperse
 	$(SCCBOX) $(HOW) 06_feature/smartdisperse/index.html $(USERDIR)/06_feature/smartdisperse/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/stroke
-	$(SCCBOX) $(HOW) 06_feature/stroke/arrow.png $(USERDIR)/06_feature/stroke/arrow.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/arrow.svg $(USERDIR)/06_feature/stroke/arrow.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/arrow.svg.pg $(USERDIR)/06_feature/stroke/arrow.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/arrow.svg.png $(USERDIR)/06_feature/stroke/arrow.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/drawing.png $(USERDIR)/06_feature/stroke/drawing.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/drawing.svg $(USERDIR)/06_feature/stroke/drawing.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/drawing.svg.pg $(USERDIR)/06_feature/stroke/drawing.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/drawing.svg.png $(USERDIR)/06_feature/stroke/drawing.svg.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/index.html $(USERDIR)/06_feature/stroke/index.html
-	$(SCCBOX) $(HOW) 06_feature/stroke/line.png $(USERDIR)/06_feature/stroke/line.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/line.svg $(USERDIR)/06_feature/stroke/line.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/line.svg.pg $(USERDIR)/06_feature/stroke/line.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/line.svg.png $(USERDIR)/06_feature/stroke/line.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/redo.png $(USERDIR)/06_feature/stroke/redo.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/redo.svg $(USERDIR)/06_feature/stroke/redo.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/redo.svg.pg $(USERDIR)/06_feature/stroke/redo.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/redo.svg.png $(USERDIR)/06_feature/stroke/redo.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/rotccw.png $(USERDIR)/06_feature/stroke/rotccw.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/rotccw.svg $(USERDIR)/06_feature/stroke/rotccw.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/rotccw.svg.pg $(USERDIR)/06_feature/stroke/rotccw.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/rotccw.svg.png $(USERDIR)/06_feature/stroke/rotccw.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/rotcw.png $(USERDIR)/06_feature/stroke/rotcw.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/rotcw.svg $(USERDIR)/06_feature/stroke/rotcw.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/rotcw.svg.pg $(USERDIR)/06_feature/stroke/rotcw.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/rotcw.svg.png $(USERDIR)/06_feature/stroke/rotcw.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/stopline.png $(USERDIR)/06_feature/stroke/stopline.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/stopline.svg $(USERDIR)/06_feature/stroke/stopline.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/stopline.svg.pg $(USERDIR)/06_feature/stroke/stopline.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/stopline.svg.png $(USERDIR)/06_feature/stroke/stopline.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/undo.png $(USERDIR)/06_feature/stroke/undo.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/undo.svg $(USERDIR)/06_feature/stroke/undo.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/undo.svg.pg $(USERDIR)/06_feature/stroke/undo.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/undo.svg.png $(USERDIR)/06_feature/stroke/undo.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/via.png $(USERDIR)/06_feature/stroke/via.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/via.svg $(USERDIR)/06_feature/stroke/via.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/via.svg.pg $(USERDIR)/06_feature/stroke/via.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/via.svg.png $(USERDIR)/06_feature/stroke/via.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_ext.png $(USERDIR)/06_feature/stroke/zoom_ext.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_ext.svg $(USERDIR)/06_feature/stroke/zoom_ext.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_ext.svg.pg $(USERDIR)/06_feature/stroke/zoom_ext.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_ext.svg.png $(USERDIR)/06_feature/stroke/zoom_ext.svg.png
-	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_in.png $(USERDIR)/06_feature/stroke/zoom_in.png
 	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_in.svg $(USERDIR)/06_feature/stroke/zoom_in.svg
-	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_in.svg.pg $(USERDIR)/06_feature/stroke/zoom_in.svg.pg
-	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_in.svg.png $(USERDIR)/06_feature/stroke/zoom_in.svg.png
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/vendordrill
 	$(SCCBOX) $(HOW) 06_feature/vendordrill/index.html $(USERDIR)/06_feature/vendordrill/index.html
-	$(SCCBOX) $(HOW) 06_feature/vendordrill/res.lht $(USERDIR)/06_feature/vendordrill/res.lht
 	$(SCCBOX) mkdir -p $(USERDIR)/07_io/export_openscad
 	$(SCCBOX) $(HOW) 07_io/export_openscad/1206.scad $(USERDIR)/07_io/export_openscad/1206.scad
 	$(SCCBOX) $(HOW) 07_io/export_openscad/preliminary.txt $(USERDIR)/07_io/export_openscad/preliminary.txt
@@ -303,12 +244,9 @@ install_all:
 	$(SCCBOX) $(HOW) 08_util/01_gsch2pcb-rnd.htm $(USERDIR)/08_util/01_gsch2pcb-rnd.htm
 	$(SCCBOX) $(HOW) 08_util/install_cgi.html $(USERDIR)/08_util/install_cgi.html
 	$(SCCBOX) mkdir -p $(USERDIR)/09_appendix
-	$(SCCBOX) $(HOW) 09_appendix/A $(USERDIR)/09_appendix/A
-	$(SCCBOX) $(HOW) 09_appendix/aa_index_for_pdf.html $(USERDIR)/09_appendix/aa_index_for_pdf.html
 	$(SCCBOX) $(HOW) 09_appendix/action_details.html $(USERDIR)/09_appendix/action_details.html
 	$(SCCBOX) $(HOW) 09_appendix/action_reference.html $(USERDIR)/09_appendix/action_reference.html
 	$(SCCBOX) mkdir -p $(USERDIR)/09_appendix/action_src
-	$(SCCBOX) $(HOW) 09_appendix/action_src/Makefile $(USERDIR)/09_appendix/action_src/Makefile
 	$(SCCBOX) $(HOW) 09_appendix/action_src/addrats.html $(USERDIR)/09_appendix/action_src/addrats.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/addtimer.html $(USERDIR)/09_appendix/action_src/addtimer.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/adjuststyle.html $(USERDIR)/09_appendix/action_src/adjuststyle.html
@@ -417,7 +355,6 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/setvalue.html $(USERDIR)/09_appendix/action_src/setvalue.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/smartdisperse.html $(USERDIR)/09_appendix/action_src/smartdisperse.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/swapsides.html $(USERDIR)/09_appendix/action_src/swapsides.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/table $(USERDIR)/09_appendix/action_src/table
 	$(SCCBOX) $(HOW) 09_appendix/action_src/toggleview.html $(USERDIR)/09_appendix/action_src/toggleview.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/tool.html $(USERDIR)/09_appendix/action_src/tool.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/undo.html $(USERDIR)/09_appendix/action_src/undo.html
@@ -427,10 +364,7 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/wq.html $(USERDIR)/09_appendix/action_src/wq.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/zoom.html $(USERDIR)/09_appendix/action_src/zoom.html
 	$(SCCBOX) $(HOW) 09_appendix/attributes.html $(USERDIR)/09_appendix/attributes.html
-	$(SCCBOX) $(HOW) 09_appendix/bridges.png $(USERDIR)/09_appendix/bridges.png
 	$(SCCBOX) $(HOW) 09_appendix/bridges.svg $(USERDIR)/09_appendix/bridges.svg
-	$(SCCBOX) $(HOW) 09_appendix/bridges.svg.pg $(USERDIR)/09_appendix/bridges.svg.pg
-	$(SCCBOX) $(HOW) 09_appendix/bridges.svg.png $(USERDIR)/09_appendix/bridges.svg.png
 	$(SCCBOX) $(HOW) 09_appendix/combined_glossary.html $(USERDIR)/09_appendix/combined_glossary.html
 	$(SCCBOX) $(HOW) 09_appendix/dialogs.html $(USERDIR)/09_appendix/dialogs.html
 	$(SCCBOX) $(HOW) 09_appendix/external_resources.html $(USERDIR)/09_appendix/external_resources.html
