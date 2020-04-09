@@ -11,15 +11,19 @@ BEGIN {
 /[.]backup$/ { next }
 /~$/ { next }
 
+function get_svn_st(path,  st,cmd)
+{
+	cmd="svn stat " path
+	cmd | getline st
+	close(cmd)
+	return st;
+}
+
 ($0 ~ "/") {
 	path = $0
 
 	# don not list temp files
-	st=""
-	cmd="svn stat " path
-	cmd | getline st
-	close(cmd)
-	if (st ~ "[^?]")
+	if (get_svn_st(path) ~ "[^?]")
 		next
 
 	sub("/[^/]*$", "", path)
@@ -30,6 +34,10 @@ BEGIN {
 }
 
 {
+	# don not list temp files
+	if (get_svn_st($0) ~ "[^?]")
+		next
+
 	print "	$(SCCBOX) $(HOW) " $0 " $(USERDIR)/" $0
 }
 ' > Makefile.inst

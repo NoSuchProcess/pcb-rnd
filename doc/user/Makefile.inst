@@ -372,7 +372,6 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/index.html $(USERDIR)/09_appendix/index.html
 	$(SCCBOX) $(HOW) 09_appendix/layer_addr.html $(USERDIR)/09_appendix/layer_addr.html
 	$(SCCBOX) $(HOW) 09_appendix/layer_colors.html $(USERDIR)/09_appendix/layer_colors.html
-	$(SCCBOX) $(HOW) HTML2PS.html $(USERDIR)/HTML2PS.html
 	$(SCCBOX) $(HOW) default.css $(USERDIR)/default.css
 	$(SCCBOX) $(HOW) index.html $(USERDIR)/index.html
 	$(SCCBOX) $(HOW) index_ps.html $(USERDIR)/index_ps.html
