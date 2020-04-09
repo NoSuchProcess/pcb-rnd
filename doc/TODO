@@ -6,7 +6,6 @@
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert] -> in the new drc at most 2 hits per short are possible: from the two directions (two networks), because clearance requirements may be different per net
-+ BUG: cursor(warp,50,50,board) cursor moves to point off the board instead of moving halfway across the board [report: Miloh] 
 + BUG: align(y,bottoms,first,gridless) in align.lht from distalign pool node uses wrong y reference for 'first', and outputs erroneous result [repot: Miloh]
 ? BUG: {s s } pcb-rnd search expression dialog doesn't include ~ regex operator for string object [report: Miloh] -> it generally does! Need more details: if you find any field where it doesn't, I will need the exact field name to fix that one.
 - BUG: kicad paste pattern export: kicad won't load zones in modules ml=3939 [report: cnieves]
