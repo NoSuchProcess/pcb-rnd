@@ -17,7 +17,7 @@
 - BUG: kicad paste pattern export: kicad won't load zones in modules ml=3939 [report: cnieves]
 - BUG: doc: expected io incompatibility: alien formats won't have layer colors [report: Joe]
 - pre-release: turn off the new drc
-- BUG: segfault when import schematics dialog is set to load trunk/doc/tutorials/7805_gschem.sch as edif file
+- BUG: segfault when import schematics dialog is set to load trunk/doc/tutorials/7805_gschem.sch as edif file [report: Miloh]
 - BUG: File>Import>Import schematics dialog does not open after starting new layout and clearing data.  Import schematic from file at trunk/doc/tutorials/7805_gschem.sch as genlist, start new layout { f n }, File>Import>Import schematics imports above file but does not open import dialog to allow user to choose a different file. [report: Miloh]
 
 2. For later releases ===============================================================================
