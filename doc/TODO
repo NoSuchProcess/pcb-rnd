@@ -17,6 +17,7 @@
 - BUG: kicad paste pattern export: kicad won't load zones in modules ml=3939 [report: cnieves]
 - BUG: doc: expected io incompatibility: alien formats won't have layer colors [report: Joe]
 - pre-release: turn off the new drc
+- BUG: segfault when import schematics dialog is set to load trunk/doc/tutorials/7805_gschem.sch as edif file
 
 2. For later releases ===============================================================================
 - CLENAUP: disable the old drc plugin by default
