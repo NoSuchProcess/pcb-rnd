@@ -6,7 +6,6 @@
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert] -> in the new drc at most 2 hits per short are possible: from the two directions (two networks), because clearance requirements may be different per net
-+ BUG: run align(x,centers,first,gridless) on a randomly dropped and selected acy(300) and rcy(300) from parametric library, then {u u}undo, and objects are shifted back to different position than originally found (sign error in calculated shift delta to restore position after undo) [report: Miloh]
 + BUG: segfault: open pcb-rnd and type in { e t } segfault, cannot repro in 2.2.0 [report: Miloh]
 + BUG: query(select) causes segfault [report: Miloh]
 + BUG: cursor(warp,50,50,board) cursor moves to point off the board instead of moving halfway across the board [report: Miloh] 
