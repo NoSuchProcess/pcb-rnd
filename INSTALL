@@ -48,7 +48,7 @@ cd src && ./pcb-rnd
 (Note: it is important to cd to src to run pcb-rnd from source; src/pcb-rnd
 won't work unless pcb-rnd is installed).
 
-If this doesn't work, please refer to doc/UNIX.txt or doc-rnd/mac.txt
+If this doesn't work, please refer to doc/UNIX.txt or doc/mac.txt
 
 
 4. Installation
