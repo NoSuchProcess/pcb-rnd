@@ -3984,7 +3984,7 @@ static void yyerror(const char *ers)
 #ifdef	DEBUG
   DumpStack();
 #endif	/* DEBUG */
-  fprintf(Error,"%s, line %ld: %s\n",InFile,LineNumber,ers);
+  pcb_message(PCB_MSG_ERROR, "EDIF import error: %s, line %ld: %s\n",InFile,LineNumber,ers);
 }
 /*
  *	String bucket definitions.
