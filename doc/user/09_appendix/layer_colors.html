@@ -43,6 +43,12 @@ When a composite layer group is rendered with the first layer being negative
 (typical for mask), the rendering code needs to apply a fill that covers
 the whole board, so the negative layer objects can cut out from that fill. The
 color of this fill is the color of the first layer.
+<p>
+<b>Limitation:</b> per board per layer custom color is supported by pcb-rnd but
+is not supported by many of the other PCB editors and file formats. Thus
+saving the board to an alien format (or to a lihata board version v4 or lower),
+the layer color info is lost. There is no explicit warning is generated
+about this.
 
 </body>
 </html>
