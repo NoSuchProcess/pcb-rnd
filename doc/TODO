@@ -8,7 +8,6 @@
 + BUG: kicad paste pattern export: kicad won't load zones in modules ml=3939 [report: cnieves]
 - BUG: doc: expected io incompatibility: alien formats won't have layer colors [report: Joe]
 - pre-release: turn off the new drc
-- BUG: File>Import>Import schematics dialog does not open after starting new layout and clearing data.  Import schematic from file at trunk/doc/tutorials/7805_gschem.sch as genlist, start new layout { f n }, File>Import>Import schematics imports above file but does not open import dialog to allow user to choose a different file. [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLENAUP: disable the old drc plugin by default
@@ -18,6 +17,7 @@
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: run drc on 7805 with valgrind from the batch GUI and clean up the memleaks [report: Igor2]
+- CLEANUP/BUG: new board should delete the design subtree from the config; File>Import>Import schematics dialog does not open after starting new layout and clearing data.  Import schematic from file at trunk/doc/tutorials/7805_gschem.sch as genlist, start new layout { f n }, File>Import>Import schematics imports above file but does not open import dialog to allow user to choose a different file. [report: Miloh] 
 - CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, Joe]
 - CLEANUP/BUG: add config options on how gtk transient-for and (a new) raise should work [report: Joe, Bdale]
 - CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
