@@ -398,10 +398,10 @@ TODO("subc: this ignores the possibility of other-side pads; need to do this on 
 			otherside = &solderside;
 		}
 		box = pcb_box_new(thisside);
-		/* initialize box so that it will take the dimensions of the first pin/pad */
-		box->X1 = box->Y1 = PCB_MAX_COORD;
-		box->X2 = box->Y2 = -PCB_MAX_COORD;
+		/* initialize box so that it will take the dimensions of the first pin/pad outside of the normal bounding subc box */
+		*box = subc->BoundingBox;
 		for(o = pcb_data_first(&it, subc->data, PCB_TERM_OBJ_TYPES); o != NULL; o = pcb_data_next(&it)) {
+TODO("Revise this: why only terminals?! any copper or silk can collide");
 			if (o->term == NULL)
 				continue; /* we are interested in terminals only */
 
