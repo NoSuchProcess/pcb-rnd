@@ -400,7 +400,7 @@ TODO("textrot: use the degrees instead of 90 deg steps")
 	fprintf(ctx->f, ")\n%*s)\n", ind, "");
 }
 
-static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_poly_zone(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy)
 {
 	int i, j;
 
@@ -436,6 +436,46 @@ TODO(": do not hardwire thicknesses and gaps and hatch values!")
 	fprintf(ctx->f, "%*s)\n", ind, "");
 }
 
+static void kicad_print_poly_fp_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy)
+{
+	int i, j;
+
+	if (polygon->HoleIndexN != 0) {
+TODO(": does kicad suppor holes? of so, use them; else (and only else) there is a polygon.h call that can split up a holed poly into a set of hole-free polygons")
+		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)polygon, "poly-hole", "can't export polygon with holes", NULL);
+		return;
+	}
+
+	/* preliminaries for zone settings */
+TODO(": never hardwire tstamp")
+TODO(": do not hardwire thicknesses and gaps and hatch values!")
+	fprintf(ctx->f, "%*s(fp_poly\n%*s(pts\n", ind, "", ind+2, "");
+
+	/* now the zone outline is defined */
+	for(i = 0; i < polygon->PointN; i = i + 5) { /* kicad exports five coords per line in s-expr files */
+		fprintf(ctx->f, "%*s", ind + 4, ""); /* pcb_fprintf does not support %*s   */
+		for(j = 0; (j < polygon->PointN) && (j < 5); j++) {
+			pcb_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + dx, polygon->Points[i + j].Y + dy);
+			if ((j < 4) && ((i + j) < (polygon->PointN - 1))) {
+				fputs(" ", ctx->f);
+			}
+		}
+		fputs("\n", ctx->f);
+	}
+	fprintf(ctx->f, "%*s) (layer %s) (width 0))\n", ind + 2, "", kly->name);
+}
+
+
+
+static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy, int in_module)
+{
+	if (in_module)
+		kicad_print_poly_fp_poly(ctx, kly, polygon, ind, dx, dy);
+	else
+		kicad_print_poly_zone(ctx, kly, polygon, ind, dx, dy);
+}
+
+
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
 static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind, pcb_coord_t dx, pcb_coord_t dy)
@@ -445,6 +485,7 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 	pcb_text_t *text;
 	pcb_poly_t *poly;
 	pcb_arc_t *arc;
+	int in_subc = (ly->parent.data->parent_type == PCB_PARENT_SUBC);
 
 	linelist_foreach(&ly->Line, &it, line)
 		if ((line->term == NULL) || !kly->skip_term)
@@ -469,7 +510,7 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 
 	polylist_foreach(&ly->Polygon, &it, poly)
 		if ((poly->term == NULL) || !kly->skip_term)
-			kicad_print_poly(ctx, kly, poly, ind, dx, dy);
+			kicad_print_poly(ctx, kly, poly, ind, dx, dy, in_subc);
 }
 
 /* writes kicad format via data
