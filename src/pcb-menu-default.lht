@@ -66,6 +66,7 @@ ha:{
 				ha:Import {
 					li:submenu {
 						ha:Import schematics...              = {                             action=ImportSch() }
+						ha:Configure import schematics...    = {                             action=ImportSch(dialog) }
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
 						-
 						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
