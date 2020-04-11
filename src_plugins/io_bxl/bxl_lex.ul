@@ -83,3 +83,5 @@ rulestring Arc               return T_ARC;
 rulestring Radius            return T_RADIUS;
 rulestring StartAngle        return T_STARTANGLE;
 rulestring SweepAngle        return T_SWEEPANGLE;
+rulestring Text              return T_TEXT;
+rulestring IsVisible         return T_ISVISIBLE;

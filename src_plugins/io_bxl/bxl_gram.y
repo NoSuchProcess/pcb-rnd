@@ -29,7 +29,7 @@
 %token T_DATA T_ENDDATA T_ORIGINPOINT T_PICKPOINT T_GLUEPOINT T_PAD T_NUMBER
 %token T_PINNAME T_PADSTYLE T_ORIGINALPADSTYLE T_ORIGIN T_ORIGINALPINNUMBER
 %token T_ROTATE T_POLY T_LINE T_ENDPOINT T_WIDTH T_ATTRIBUTE T_ATTR T_JUSTIFY
-%token T_ARC T_RADIUS T_STARTANGLE T_SWEEPANGLE
+%token T_ARC T_RADIUS T_STARTANGLE T_SWEEPANGLE T_TEXT T_ISVISIBLE
 
 %%
 
@@ -160,6 +160,7 @@ data_chld:
 	| line
 	| attribute
 	| arc
+	| text
 	;
 
 /*** Pad ***/
@@ -232,6 +233,7 @@ attribute_attr:
 	| T_ATTR T_QSTR T_QSTR
 	| T_JUSTIFY T_ID
 	| T_TEXTSTYLE T_QSTR
+	| T_ISVISIBLE boolean
 	;
 
 /*** Line ***/
@@ -251,4 +253,23 @@ arc_attr:
 	| T_RADIUS coord
 	| T_STARTANGLE real
 	| T_SWEEPANGLE real
+	;
+
+/*** Text ***/
+text:
+	T_TEXT text_attrs
+	;
+
+text_attrs:
+	  /* empty */
+	| '(' text_attr ')' text_attrs
+	;
+
+text_attr:
+	  T_LAYER T_ID
+	| T_ORIGIN coord ',' coord
+	| T_TEXT T_QSTR
+	| T_ISVISIBLE boolean
+	| T_JUSTIFY T_ID
+	| T_TEXTSTYLE T_QSTR
 	;
