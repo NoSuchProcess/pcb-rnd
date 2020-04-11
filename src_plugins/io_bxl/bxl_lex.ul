@@ -3,6 +3,7 @@ by_score
 
 top_code
 	#include <stdio.h>
+	#include "bxl.h"
 
 rule integer
 regex [-]?[0-9]+
