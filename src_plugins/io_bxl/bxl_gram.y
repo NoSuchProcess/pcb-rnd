@@ -68,7 +68,7 @@ text_attr:
 
 pad_stack:
 	T_PADSTAC T_QSTR pstk_attrs '\n'
-	T_SHAPES ':' T_INT
+	T_SHAPES ':' T_INTEGER
 	pad_shapes
 	T_ENDPADSTACK
 	;
@@ -101,6 +101,6 @@ pad_attrs:
 pad_attr:
 	  T_WIDTH T_REAL
 	| T_HEIGHT T_REAL
-	| T_PADTYPE T_INT
+	| T_PADTYPE T_INTEGER
 	| T_LAYER T_ID
 	;
