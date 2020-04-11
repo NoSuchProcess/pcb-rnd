@@ -9,7 +9,7 @@ int verbose = 0;
 
 void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s)
 {
-	fprintf(stderr, "%s\n", s);
+	fprintf(stderr, "%s at %ld:%ld\n", s, tok.line, tok.first_col);
 }
 
 
@@ -32,8 +32,12 @@ int main(int argc, char *argv[])
 			pcb_bxl_res_t yres;
 
 			printf("token: %d ", res);
+			lval.line = lctx.loc_line[0];
+			lval.first_col = lctx.loc_col[0];
 			yres = pcb_bxl_parse(&yyctx, &bctx, res, &lval);
 			printf("yres=%d\n", yres);
+			if (yres != 0)
+				break;
 		}
 		if ((res >= 0) && verbose) {
 			int n;
