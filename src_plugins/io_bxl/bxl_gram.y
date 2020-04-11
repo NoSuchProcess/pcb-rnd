@@ -98,7 +98,7 @@ pstk_attr:
 
 pad_shapes:
 	  /* empty */
-	pad_shape pad_shapes
+	| pad_shape pad_shapes
 	;
 
 pad_shape:
