@@ -16,7 +16,7 @@ rule real
 regex [-]?[0-9]+[.][0-9]*
 code
 	lval->un.d = strtod(ULX_BUF, NULL);
-	return T_REAL;
+	return T_REAL_ONLY;
 
 rule id
 regex [a-zA-Z][a-zA-Z0-9_-]*

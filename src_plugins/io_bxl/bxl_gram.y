@@ -20,7 +20,7 @@
 %}
 
 /* Generic */
-%token T_ID T_INTEGER T_REAL T_QSTR
+%token T_ID T_INTEGER T_REAL_ONLY T_QSTR
 
 /* Keyword */
 %token T_TRUE T_FALSE T_TEXTSTYLE T_FONTWIDTH T_FONTCHARWIDTH T_FONTHEIGHT
@@ -41,6 +41,8 @@ statement:
 	| pattern
 	;
 
+/*** common and misc ***/
+
 boolean:
 	  T_TRUE
 	| T_FALSE
@@ -49,6 +51,11 @@ boolean:
 nl:
 	  '\n'
 	| '\n' nl
+	;
+
+real:
+	  T_INTEGER
+	| T_REAL_ONLY
 	;
 
 /*** TextStyle ***/
@@ -104,8 +111,8 @@ pad_attrs:
 	;
 
 pad_attr:
-	  T_WIDTH T_REAL
-	| T_HEIGHT T_REAL
+	  T_WIDTH real
+	| T_HEIGHT real
 	| T_PADTYPE T_INTEGER
 	| T_LAYER T_ID
 	;
