@@ -73,3 +73,7 @@ rulestring Origin            return T_ORIGIN;
 rulestring OriginalPinNumber return T_ORIGINALPINNUMBER;
 rulestring Rotate            return T_ROTATE;
 rulestring Poly              return T_POLY;
+rulestring Line              return T_LINE;
+rulestring EndPoint          return T_ENDPOINT;
+rulestring Width             return T_WIDTH;
+

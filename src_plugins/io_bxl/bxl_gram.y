@@ -28,7 +28,7 @@
 %token T_PLATED T_WIDTH T_HEIGHT T_PADTYPE T_LAYER T_PATTERN T_ENDPATTERN
 %token T_DATA T_ENDDATA T_ORIGINPOINT T_PICKPOINT T_GLUEPOINT T_PAD T_NUMBER
 %token T_PINNAME T_PADSTYLE T_ORIGINALPADSTYLE T_ORIGIN T_ORIGINALPINNUMBER
-%token T_ROTATE T_POLY
+%token T_ROTATE T_POLY T_LINE T_ENDPOINT T_WIDTH
 
 
 
@@ -158,6 +158,7 @@ data_chldrn:
 data_chld:
 	  pad
 	| poly
+	| line
 	;
 
 /*** Pad ***/
@@ -193,5 +194,23 @@ poly_attrs:
 poly_attr:
 	  T_LAYER T_ID
 	| T_ORIGIN coord ',' coord
+	| T_WIDTH coord
 	| coord ',' coord
+	;
+
+/*** Line ***/
+line:
+	T_LINE line_attrs
+	;
+
+line_attrs:
+	  /* empty */
+	| '(' line_attr ')' line_attrs
+	;
+
+line_attr:
+	  T_LAYER T_ID
+	| T_ORIGIN coord ',' coord
+	| T_ENDPOINT coord ',' coord
+	| T_WIDTH coord
 	;
