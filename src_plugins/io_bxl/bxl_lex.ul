@@ -2,39 +2,38 @@ prefix pcb_bxl
 by_score
 
 top_code
-	#include <stdio.h>
-	#include "bxl.h"
+	#include <stdlib.h>
 	#include "bxl_gram.h"
+	#define lval  ((pcb_bxl_STYPE *)(user_ctx))
 
 rule integer
 regex [-]?[0-9]+
 code
-	printf("int: '%s'\n", ULX_BUF);
-	return 1;
+	lval->un.i = atoi(ULX_BUF);
+	return T_INT;
 
 rule real
 regex [-]?[0-9]+[.][0-9]*
 code
-	printf("real: '%s'\n", ULX_BUF);
-	return 1;
+	lval->un.d = strtod(ULX_BUF, NULL);
+	return T_REAL;
 
 rule id
 regex [a-zA-Z][a-zA-Z0-9_-]*
 code
-	printf("id: '%s'\n", ULX_BUF);
-	return 1;
+	lval->un.s = strdup(ULX_BUF);
+	return T_ID;
 
 rule quoted string
 regex "\([^"]*\)"
 code
-	printf("qstr: '%s'\n", ULX_TAGP(1));
-	return 1;
+	lval->un.s = strdup(ULX_TAGP(1));
+	return T_QSTR;
 
 rule chars
 regex [():,\n]
 code
-	printf("chr: '%c'\n", *ULX_BUF);
-	return 1;
+	return *ULX_BUF;
 
 rule blank
 regex [ \t\r]+

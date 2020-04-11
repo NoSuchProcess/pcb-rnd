@@ -16,23 +16,34 @@ void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s)
 int main(int argc, char *argv[])
 {
 	int chr;
-	pcb_bxl_ureglex_t ctx;
+	pcb_bxl_ureglex_t lctx;
+	pcb_bxl_yyctx_t yyctx;
+	pcb_bxl_ctx_t bctx;
 
-	pcb_bxl_lex_init(&ctx, pcb_bxl_rules);
+	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
+	pcb_bxl_parse_init(&yyctx);
 
 	while((chr = fgetc(stdin)) > 0) {
-		int res = pcb_bxl_lex_char(&ctx, NULL, chr);
+		pcb_bxl_STYPE lval;
+		int res = pcb_bxl_lex_char(&lctx, &lval, chr);
 		if (res == UREGLEX_MORE)
 			continue;
+		if (res >= 0) {
+			pcb_bxl_res_t yres;
+
+			printf("token: %d ", res);
+			yres = pcb_bxl_parse(&yyctx, &bctx, res, &lval);
+			printf("yres=%d\n", yres);
+		}
 		if ((res >= 0) && verbose) {
 			int n;
 			printf("TOKEN: rule %d\n", res);
-			for(n = 0; n < ctx.num_rules; n++) {
-				ureglex_t *s = &ctx.state[n];
+			for(n = 0; n < lctx.num_rules; n++) {
+				ureglex_t *s = &lctx.state[n];
 				printf(" %sres=%d", res == n ? "*" : " ", s->exec_state);
 				if (s->exec_state > 0) {
 					printf(" '%s' '%s'", s->bopat[0], s->eopat[0]);
-					printf(" at %ld:%ld\n", ctx.loc_line[0], ctx.loc_col[0]);
+					printf(" at %ld:%ld\n", lctx.loc_line[0], lctx.loc_col[0]);
 				}
 				else
 					printf("\n");
@@ -41,7 +52,7 @@ int main(int argc, char *argv[])
 		}
 		else if (res < 0)
 			printf("ERROR %d\n", res);
-		pcb_bxl_lex_reset(&ctx);
+		pcb_bxl_lex_reset(&lctx);
 	}
 
 	return 0;
