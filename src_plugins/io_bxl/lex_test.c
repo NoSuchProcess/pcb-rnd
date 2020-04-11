@@ -10,10 +10,10 @@ int main(int argc, char *argv[])
 	int chr;
 	pcb_bxl_ureglex_t ctx;
 
-	pcb_bxl_parse_init(&ctx, pcb_bxl_rules);
+	pcb_bxl_lex_init(&ctx, pcb_bxl_rules);
 
 	while((chr = fgetc(stdin)) > 0) {
-		int res = pcb_bxl_parse_char(&ctx, NULL, chr);
+		int res = pcb_bxl_lex_char(&ctx, NULL, chr);
 		if (res == UREGLEX_MORE)
 			continue;
 		if ((res >= 0) && verbose) {
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 		}
 		else if (res < 0)
 			printf("ERROR %d\n", res);
-		pcb_bxl_parse_reset(&ctx);
+		pcb_bxl_lex_reset(&ctx);
 	}
 
 	return 0;
