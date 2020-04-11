@@ -72,3 +72,4 @@ rulestring OriginalPadStyle  return T_ORIGINALPADSTYLE;
 rulestring Origin            return T_ORIGIN;
 rulestring OriginalPinNumber return T_ORIGINALPINNUMBER;
 rulestring Rotate            return T_ROTATE;
+rulestring Poly              return T_POLY;
