@@ -5,7 +5,13 @@
 #include "bxl.h"
 %}
 
+/* Generic */
 %token T_ID T_INTEGER T_REAL T_QSTR
+
+/* Keyword */
+%token T_TRUE T_FALSE T_TEXTSTYLE T_FONTWIDTH T_FONTCHARWIDTH T_FONTHEIGHT
+%token T_PADSTACK T_ENDPADSTACK T_SHAPES T_PADSHAPE T_HOLEDIAM T_SURFACE
+%token T_PLATED T_WIDTH T_HEIGHT T_PADTYPE T_LAYER
 
 %%
 
@@ -20,14 +26,14 @@ statement:
 	;
 
 boolean:
-	  "True"
-	| "False"
+	  T_TRUE
+	| T_FALSE
 	;
 
 /*** TextStyle ***/
 
 text_style:
-	"TextStyle" T_QSTR text_attrs '\n'
+	T_TEXTSTYLE T_QSTR text_attrs '\n'
 	;
 
 text_attrs:
@@ -36,19 +42,19 @@ text_attrs:
 	;
 
 text_attr:
-	  '(' "FontWidth" T_INTEGER ')'
-	| '(' "FontCharWidth" T_INTEGER ')'
-	| '(' "FontHeight" T_INTEGER ')'
+	  '(' T_FONTWIDTH T_INTEGER ')'
+	| '(' T_FONTCHARWIDTH T_INTEGER ')'
+	| '(' T_FONTHEIGHT T_INTEGER ')'
 	;
 
 
 /*** PadStack ***/
 
 pad_stack:
-	"PadStack" T_QSTR pstk_attrs '\n'
-	"Shapes" ':' T_INT
+	T_PADSTAC T_QSTR pstk_attrs '\n'
+	T_SHAPES ':' T_INT
 	pad_shapes
-	"EndPadStack"
+	T_ENDPADSTACK
 	;
 
 pstk_attrs:
@@ -57,9 +63,9 @@ pstk_attrs:
 	;
 
 pstk_attr:
-	  '(' "HoleDiam" T_INTEGER ')'
-	| '(' "Surface" boolean ')'
-	| '(' "Plated" boolean ')'
+	  '(' T_HOLEDIAM T_INTEGER ')'
+	| '(' T_SURFACE boolean ')'
+	| '(' T_PLATED boolean ')'
 	;
 
 pad_shapes:
@@ -68,7 +74,7 @@ pad_shapes:
 	;
 
 pad_shape:
-	"PadShape" T_QSTR pad_attrs '\n'
+	T_PADSHAPE T_QSTR pad_attrs '\n'
 
 
 pad_attrs:
@@ -77,8 +83,8 @@ pad_attrs:
 	;
 
 pad_attr:
-	  '(' "Width" T_REAL ')'
-	| '(' "Height" T_REAL ')'
-	| '(' "PadType" T_INT ')'
-	| '(' "Layer" T_ID ')'
+	  '(' T_WIDTH T_REAL ')'
+	| '(' T_HEIGHT T_REAL ')'
+	| '(' T_PADTYPE T_INT ')'
+	| '(' T_LAYER T_ID ')'
 	;

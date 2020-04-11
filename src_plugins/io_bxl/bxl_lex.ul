@@ -4,6 +4,7 @@ by_score
 top_code
 	#include <stdio.h>
 	#include "bxl.h"
+	#include "bxl_gram.h"
 
 rule integer
 regex [-]?[0-9]+
@@ -34,3 +35,27 @@ regex [():,\n]
 code
 	printf("chr: '%c'\n", *ULX_BUF);
 	return 1;
+
+rule blank
+regex [ \t\r]+
+code
+	ULX_IGNORE;
+
+rulestring True              return T_TRUE;
+rulestring False             return T_FALSE;
+rulestring TextStyle         return T_TEXTSTYLE;
+rulestring FontWidth         return T_FONTWIDTH;
+rulestring FontCharWidth     return T_FONTCHARWIDTH;
+rulestring FontHeight        return T_FONTHEIGHT;
+rulestring PadStack          return T_PADSTACK;
+rulestring EndPadStack       return T_ENDPADSTACK;
+rulestring Shapes            return T_SHAPES;
+rulestring PadShape          return T_PADSHAPE;
+rulestring HoleDiam          return T_HOLEDIAM;
+rulestring Surface           return T_SURFACE;
+rulestring Plated            return T_PLATED;
+rulestring Width             return T_WIDTH;
+rulestring Height            return T_HEIGHT;
+rulestring PadType           return T_PADTYPE;
+rulestring Layer             return T_LAYER;
+

@@ -1,9 +1,17 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "bxl.h"
 #include "bxl_lex.h"
+#include "bxl_gram.h"
 
 int verbose = 0;
+
+void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s)
+{
+	fprintf(stderr, "%s\n", s);
+}
+
 
 int main(int argc, char *argv[])
 {
