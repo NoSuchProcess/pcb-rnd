@@ -40,6 +40,8 @@ regex [ \t\r]+
 code
 	ULX_IGNORE;
 
+rulestring 3D_DXF            lval->un.s = strdup(ULX_BUF); return T_ID;
+
 rulestring True              return T_TRUE;
 rulestring False             return T_FALSE;
 rulestring TextStyle         return T_TEXTSTYLE;
@@ -85,3 +87,4 @@ rulestring StartAngle        return T_STARTANGLE;
 rulestring SweepAngle        return T_SWEEPANGLE;
 rulestring Text              return T_TEXT;
 rulestring IsVisible         return T_ISVISIBLE;
+rulestring Property          return T_PROPERTY;
