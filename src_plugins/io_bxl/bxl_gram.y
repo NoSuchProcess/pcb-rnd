@@ -147,7 +147,7 @@ pattern_chld:
 data:
 	T_DATA ':' T_INTEGER nl
 	data_chldrn
-	T_ENDDATA nl
+	T_ENDDATA
 	;
 
 data_chldrn:
