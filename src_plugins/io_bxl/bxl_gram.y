@@ -36,7 +36,7 @@
 
 file:
 	/* empty */
-	| file statement
+	|statement nl file
 	;
 
 statement:
@@ -69,7 +69,7 @@ coord:
 /*** TextStyle ***/
 
 text_style:
-	T_TEXTSTYLE T_QSTR text_attrs nl
+	T_TEXTSTYLE T_QSTR text_attrs
 	;
 
 text_attrs:
@@ -90,7 +90,7 @@ pad_stack:
 	T_PADSTACK T_QSTR pstk_attrs nl
 	T_SHAPES ':' T_INTEGER nl
 	pad_shapes
-	T_ENDPADSTACK nl
+	T_ENDPADSTACK
 	;
 
 pstk_attrs:
@@ -129,7 +129,7 @@ pad_attr:
 pattern:
 	T_PATTERN T_QSTR nl
 	pattern_chldrn
-	T_ENDPATTERN nl
+	T_ENDPATTERN
 	;
 
 pattern_chldrn:
