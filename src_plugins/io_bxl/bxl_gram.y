@@ -30,6 +30,7 @@
 %token T_PINNAME T_PADSTYLE T_ORIGINALPADSTYLE T_ORIGIN T_ORIGINALPINNUMBER
 %token T_ROTATE T_POLY T_LINE T_ENDPOINT T_WIDTH T_ATTRIBUTE T_ATTR T_JUSTIFY
 %token T_ARC T_RADIUS T_STARTANGLE T_SWEEPANGLE T_TEXT T_ISVISIBLE T_PROPERTY
+%token T_WIZARD T_VARNAME T_VARDATA
 
 %%
 
@@ -161,6 +162,7 @@ data_chld:
 	| attribute
 	| arc
 	| text
+	| wizard
 	;
 
 /*** Pad ***/
@@ -273,4 +275,20 @@ text_attr:
 	| T_ISVISIBLE boolean
 	| T_JUSTIFY T_ID
 	| T_TEXTSTYLE T_QSTR
+	;
+
+/*** Wizard ***/
+wizard:
+	T_WIZARD wizard_attrs
+	;
+
+wizard_attrs:
+	  /* empty */
+	| '(' wizard_attr ')' wizard_attrs
+	;
+
+wizard_attr:
+	  T_ORIGIN coord ',' coord
+	| T_VARNAME T_QSTR
+	| T_VARDATA T_QSTR
 	;
