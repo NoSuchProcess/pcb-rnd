@@ -57,4 +57,7 @@ rulestring Width             return T_WIDTH;
 rulestring Height            return T_HEIGHT;
 rulestring PadType           return T_PADTYPE;
 rulestring Layer             return T_LAYER;
+rulestring Pattern           return T_PATTERN;
+rulestring EndPattern        return T_ENDPATTERN;
+rulestring Data              return T_DATA;
 
