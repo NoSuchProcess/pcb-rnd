@@ -8,7 +8,6 @@
 + BUG: kicad paste pattern export: kicad won't load zones in modules ml=3939 [report: cnieves]
 + BUG: doc: expected io incompatibility: alien formats won't have layer colors [report: Joe]
 - pre-release: turn off the new drc
-+ BUG: import schematic (use doc/tutorials/17_sch/7805_gschem.sch) using menu option/dialog using action, eeschema or edif type options, import fails and user cannot reopen the import from import schematic menu opiton [report: Miloh] -> introduced a menu item for the direct configuration
 
 2. For later releases ===============================================================================
 - CLENAUP: disable the old drc plugin by default
