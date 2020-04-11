@@ -79,3 +79,7 @@ rulestring Width             return T_WIDTH;
 rulestring Attribute         return T_ATTRIBUTE;
 rulestring Attr              return T_ATTR;
 rulestring Justify           return T_JUSTIFY;
+rulestring Arc               return T_ARC;
+rulestring Radius            return T_RADIUS;
+rulestring StartAngle        return T_STARTANGLE;
+rulestring SweepAngle        return T_SWEEPANGLE;
