@@ -76,4 +76,6 @@ rulestring Poly              return T_POLY;
 rulestring Line              return T_LINE;
 rulestring EndPoint          return T_ENDPOINT;
 rulestring Width             return T_WIDTH;
-
+rulestring Attribute         return T_ATTRIBUTE;
+rulestring Attr              return T_ATTR;
+rulestring Justify           return T_JUSTIFY;
