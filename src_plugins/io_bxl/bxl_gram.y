@@ -26,7 +26,11 @@
 %token T_TRUE T_FALSE T_TEXTSTYLE T_FONTWIDTH T_FONTCHARWIDTH T_FONTHEIGHT
 %token T_PADSTACK T_ENDPADSTACK T_SHAPES T_PADSHAPE T_HOLEDIAM T_SURFACE
 %token T_PLATED T_WIDTH T_HEIGHT T_PADTYPE T_LAYER T_PATTERN T_ENDPATTERN
-%token T_DATA
+%token T_DATA T_ENDDATA T_ORIGINPOINT T_PICKPOINT T_GLUEPOINT T_PAD T_NUMBER
+%token T_PINNAME T_PADSTYLE T_ORIGINALPADSTYLE T_ORIGIN T_ORIGINALPINNUMBER
+%token T_ROTATE
+
+
 
 %%
 
@@ -56,6 +60,10 @@ nl:
 real:
 	  T_INTEGER
 	| T_REAL_ONLY
+	;
+
+coord:
+	real
 	;
 
 /*** TextStyle ***/
@@ -120,11 +128,53 @@ pad_attr:
 /*** Pattern ***/
 pattern:
 	T_PATTERN T_QSTR nl
-	pad_shapes
+	pattern_chldrn
 	T_ENDPATTERN nl
+	;
+
+pattern_chldrn:
+	  /* empty */
+	| pattern_chld nl pattern_chldrn
+	;
+
+pattern_chld:
+	  data
+	| T_ORIGINPOINT '(' coord ',' coord ')'
+	| T_PICKPOINT   '(' coord ',' coord ')'
+	| T_GLUEPOINT   '(' coord ',' coord ')'
 	;
 
 data:
 	T_DATA ':' T_INTEGER nl
+	data_chldrn
+	T_ENDDATA nl
 	;
 
+data_chldrn:
+	  /* empty */
+	| data_chld nl data_chldrn
+	;
+
+data_chld:
+	  pad
+	;
+
+/*** pad ***/
+pad:
+	T_PAD pad_attrs
+	;
+
+pad_attrs:
+	  /* empty */
+	| '(' pad_attr ')' pad_attrs
+	;
+
+pad_attr:
+	  T_NUMBER T_INTEGER
+	| T_PINNAME T_QSTR
+	| T_PADSTYLE T_QSTR
+	| T_ORIGINALPADSTYLE T_QSTR
+	| T_ORIGIN coord ',' coord
+	| T_ORIGINALPINNUMBER T_INTEGER
+	| T_ROTATE real
+	;

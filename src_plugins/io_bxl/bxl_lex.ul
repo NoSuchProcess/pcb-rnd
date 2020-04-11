@@ -60,4 +60,15 @@ rulestring Layer             return T_LAYER;
 rulestring Pattern           return T_PATTERN;
 rulestring EndPattern        return T_ENDPATTERN;
 rulestring Data              return T_DATA;
-
+rulestring EndData           return T_ENDDATA;
+rulestring OriginPoint       return T_ORIGINPOINT;
+rulestring PickPoint         return T_PICKPOINT;
+rulestring GluePoint         return T_GLUEPOINT;
+rulestring Pad               return T_PAD;
+rulestring Number            return T_NUMBER;
+rulestring PinName           return T_PINNAME;
+rulestring PadStyle          return T_PADSTYLE;
+rulestring OriginalPadStyle  return T_ORIGINALPADSTYLE;
+rulestring Origin            return T_ORIGIN;
+rulestring OriginalPinNumber return T_ORIGINALPINNUMBER;
+rulestring Rotate            return T_ROTATE;
