@@ -1,6 +1,9 @@
 put /local/pcb/mod {io_bxl}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_bxl/io_bxl.o
+	$(PLUGDIR)/io_bxl/bxl_decode.o
+	$(PLUGDIR)/io_bxl/bxl_gram.o
+	$(PLUGDIR)/io_bxl/bxl_lex.o
 	$(PLUGDIR)/io_bxl/read.o
 @]
 
