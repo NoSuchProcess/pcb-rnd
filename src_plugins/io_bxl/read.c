@@ -39,14 +39,61 @@
 #include "bxl_lex.h"
 #include "bxl_gram.h"
 
-void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s)
-{
-}
+/* Error is handled on the push side */
+void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s) { }
 
-int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *fn)
+int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *filename)
 {
-	pcb_trace("bxl parse fp\n");
-	return -1;
+	pcb_hidlib_t *hl = NULL;
+	FILE *f;
+	int chr, tok, yres, ret = 0;
+	hdecode_t hctx;
+	pcb_bxl_ureglex_t lctx;
+	pcb_bxl_yyctx_t yyctx;
+	pcb_bxl_ctx_t bctx;
+
+	f = pcb_fopen(hl, filename, "rb");
+	if (f == NULL)
+		return -1;
+
+	memset(&bctx, 0, sizeof(bctx));
+	pcb_bxl_decode_init(&hctx);
+	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
+	pcb_bxl_parse_init(&yyctx);
+
+	/* read all bytes of the binary file */
+	while((chr = fgetc(f)) != EOF) {
+		int n, ilen;
+
+		/* feed the binary decoding */
+		ilen = pcb_bxl_decode_char(&hctx, chr);
+		assert(ilen >= 0);
+		if (ilen == 0)
+			continue;
+
+		/* feed the lexer */
+		for(n = 0; n < ilen; n++) {
+			pcb_bxl_STYPE lval;
+			tok = pcb_bxl_lex_char(&lctx, &lval, hctx.out[n]);
+			if (tok == UREGLEX_MORE)
+				continue;
+
+			/* feed the grammar */
+			lval.line = lctx.loc_line[0];
+			lval.first_col = lctx.loc_col[0];
+			yres = pcb_bxl_parse(&yyctx, &bctx, tok, &lval);
+			printf("yres=%d\n", yres);
+			if (yres != 0) {
+				printf("Syntax error at %ld:%ld\n", lval.line, lval.first_col);
+				ret = -1;
+				break;
+			}
+			pcb_bxl_lex_reset(&lctx); /* prepare for the next token */
+		}
+	}
+
+	fclose(f);
+	return ret;
 }
 
 int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *filename, FILE *f_ignore)
