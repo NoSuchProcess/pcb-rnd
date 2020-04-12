@@ -31,7 +31,16 @@
 
 #include "read.h"
 
+int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *fn)
+{
+	pcb_trace("bxl parse fp\n");
+	return -1;
+}
+
 int io_bxl_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
+	pcb_trace("bxl test parse\n");
 	return 0;
 }
+
+
