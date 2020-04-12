@@ -91,3 +91,7 @@ rulestring Property          return T_PROPERTY;
 rulestring Wizard            return T_WIZARD;
 rulestring VarName           return T_VARNAME;
 rulestring VarData           return T_VARDATA;
+rulestring Symbol            return T_SYMBOL;
+rulestring EndSymbol         return T_ENDSYMBOL;
+rulestring Component         return T_COMPONENT;
+rulestring EndComponent      return T_ENDCOMPONENT;

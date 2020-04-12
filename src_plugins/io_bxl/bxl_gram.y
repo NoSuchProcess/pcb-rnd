@@ -22,7 +22,7 @@
 /* Generic */
 %token T_ID T_INTEGER T_REAL_ONLY T_QSTR
 
-/* Keyword */
+/* Keywords for footprints */
 %token T_TRUE T_FALSE T_TEXTSTYLE T_FONTWIDTH T_FONTCHARWIDTH T_FONTHEIGHT
 %token T_PADSTACK T_ENDPADSTACK T_SHAPES T_PADSHAPE T_HOLEDIAM T_SURFACE
 %token T_PLATED T_WIDTH T_HEIGHT T_PADTYPE T_LAYER T_PATTERN T_ENDPATTERN
@@ -31,6 +31,9 @@
 %token T_ROTATE T_POLY T_LINE T_ENDPOINT T_WIDTH T_ATTRIBUTE T_ATTR T_JUSTIFY
 %token T_ARC T_RADIUS T_STARTANGLE T_SWEEPANGLE T_TEXT T_ISVISIBLE T_PROPERTY
 %token T_WIZARD T_VARNAME T_VARDATA
+
+/* Sections that are to be ignored (non-footprint data) */
+%token T_SYMBOL T_ENDSYMBOL T_COMPONENT T_ENDCOMPONENT
 
 %%
 
@@ -48,6 +51,7 @@ statement:
 	  text_style
 	| pad_stack
 	| pattern
+	| boring_section
 	;
 
 /*** common and misc ***/
@@ -173,6 +177,7 @@ data_chld:
 	| arc
 	| text
 	| wizard
+
 	;
 
 /*** Pad ***/
@@ -301,4 +306,10 @@ wizard_attr:
 	  T_ORIGIN coord ',' coord
 	| T_VARNAME T_QSTR
 	| T_VARDATA T_QSTR
+	;
+
+/*** Sections not interesting for pcb-rnd ***/
+boring_section:
+	T_SYMBOL error T_ENDSYMBOL
+	T_COMPONENT error T_ENDCOMPONENT
 	;
