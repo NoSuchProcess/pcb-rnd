@@ -55,6 +55,7 @@ rulestring PadShape          return T_PADSHAPE;
 rulestring HoleDiam          return T_HOLEDIAM;
 rulestring Surface           return T_SURFACE;
 rulestring Plated            return T_PLATED;
+rulestring NoPaste           return T_NOPASTE;
 rulestring Width             return T_WIDTH;
 rulestring Height            return T_HEIGHT;
 rulestring PadType           return T_PADTYPE;
