@@ -72,6 +72,7 @@ include {../src_plugins/import_sch2/Plug.tmpasm}
 include {../src_plugins/import_tinycad/Plug.tmpasm}
 include {../src_plugins/import_ttf/Plug.tmpasm}
 include {../src_plugins/io_autotrax/Plug.tmpasm}
+include {../src_plugins/io_bxl/Plug.tmpasm}
 include {../src_plugins/io_dsn/Plug.tmpasm}
 include {../src_plugins/io_eagle/Plug.tmpasm}
 include {../src_plugins/io_hyp/Plug.tmpasm}

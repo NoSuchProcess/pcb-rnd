@@ -118,6 +118,7 @@ plugin_def("export_xy",        "xy (centroid) pcb_exporter",      sbuildin, 1, 0
 
 plugin_header("\nIO plugins (file formats):\n")
 plugin_def("io_autotrax",      "autotrax (freeware PCB CAD)",     sbuildin, 1, 0)
+plugin_def("io_bxl",           "BXL footprint",                   sdisable, 0, 0)
 plugin_def("io_dsn",           "specctra .dsn",                   sdisable, 1, 0)
 plugin_def("io_eagle",         "Eagle's xml and binary formats",  sbuildin, 1, 0)
 plugin_def("io_hyp",           "hyperlynx .hyp loader",           sbuildin, 1, 0)
