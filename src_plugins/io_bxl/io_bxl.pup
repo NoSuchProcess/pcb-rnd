@@ -1,0 +1,9 @@
+$class io
+$short BXL footprint
+$long load footprints from the BXL format.
+$state WIP
+$fmt-native no
+$fmt-feature-r BXL footprints
+$package io-alien
+default disable-all
+autoload 1

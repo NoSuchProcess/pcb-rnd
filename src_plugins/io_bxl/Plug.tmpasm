@@ -1,0 +1,11 @@
+put /local/pcb/mod {io_bxl}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/io_bxl/io_bxl.o
+	$(PLUGDIR)/io_bxl/read.o
+@]
+
+switch /local/pcb/io_bxl/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
