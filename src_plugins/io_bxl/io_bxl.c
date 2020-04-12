@@ -43,14 +43,13 @@ static const char *bxl_cookie = "bxl IO";
 
 int io_bxl_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
-	if (wr && (typ & PCB_IOT_FOOTPRINT)) /* no footprint write */
+	if ((strcmp(ctx->description, fmt) != 0) && (pcb_strcasecmp(fmt, "bxl") != 0)) /* format name mismatch */
 		return 0;
 
-	if (strcmp(ctx->description, fmt) == 0)
-		return 200;
+	if ((typ & (~(PCB_IOT_FOOTPRINT))) != 0) /* support only footprints */
+		return 0;
 
-	if ((pcb_strcasecmp(fmt, "bxl") != 0) ||
-		((typ & (~(PCB_IOT_FOOTPRINT))) != 0))
+	if (wr) /* no footprint write yet */
 		return 0;
 
 	return 100;
@@ -72,7 +71,7 @@ int pplg_init_io_bxl(void)
 	io_bxl.fmt_support_prio = io_bxl_fmt;
 	io_bxl.test_parse = io_bxl_test_parse;
 	io_bxl.parse_pcb = NULL;
-	io_bxl.parse_footprint = NULL;
+	io_bxl.parse_footprint = io_bxl_parse_footprint;
 	io_bxl.parse_font = NULL;
 	io_bxl.write_buffer = NULL;
 	io_bxl.write_pcb = NULL;
