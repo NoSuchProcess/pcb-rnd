@@ -13,7 +13,7 @@ typedef short pcb_bxl_int_t;
 #define pcb_bxl_yyn yyctx->yyn
 #define pcb_bxl_yym yyctx->yym
 #define pcb_bxl_jump yyctx->jump
-#line 17 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 18 "../../src_plugins/io_bxl/bxl_gram.y"
 /*
  *                            COPYRIGHT
  *
@@ -45,12 +45,17 @@ typedef short pcb_bxl_int_t;
 #include <stdio.h>
 #include "bxl_gram.h"
 #include "bxl.h"
+
+TODO("Can remove this once the coord unit is converted with getvalue")
+#include <librnd/core/unit.h>
+
 #line 8 "../../src_plugins/io_bxl/bxl_gram.y"
 typedef union
 {
 	double d;
 	int i;
 	char *s;
+	pcb_coord_t c;
 } pcb_bxl_tokunion_t;
 #line 3 "../../src_plugins/io_bxl/bxl_gram.y"
 typedef struct

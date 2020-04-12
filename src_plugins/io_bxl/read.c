@@ -39,10 +39,42 @@
 #include "bxl_lex.h"
 #include "bxl_gram.h"
 
+void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name)
+{
+	TODO("implement");
+}
+
+void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx)
+{
+	ctx->in_target_fp = 0;
+}
+
+void pcb_bxl_reset(pcb_bxl_ctx_t *ctx)
+{
+	memset(&ctx->state, 0, sizeof(ctx->state));
+	ctx->state.layer = -1;
+}
+
+void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
+{
+	ctx->state.layer = 0;
+}
+
+void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val)
+{
+	ctx->state.coord[idx] = val;
+}
+
+void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
+{
+	printf("Line!\n");
+}
+
+
 /* Error is handled on the push side */
 void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s) { }
 
-int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *filename)
+int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename)
 {
 	pcb_hidlib_t *hl = NULL;
 	FILE *f;
@@ -57,6 +89,8 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *file
 		return -1;
 
 	memset(&bctx, 0, sizeof(bctx));
+	bctx.subc = pcb_subc_new();
+
 	pcb_bxl_decode_init(&hctx);
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
 	pcb_bxl_parse_init(&yyctx);
@@ -82,7 +116,6 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *file
 			lval.line = lctx.loc_line[0];
 			lval.first_col = lctx.loc_col[0];
 			yres = pcb_bxl_parse(&yyctx, &bctx, tok, &lval);
-			printf("yres=%d\n", yres);
 			if (yres != 0) {
 				printf("Syntax error at %ld:%ld\n", lval.line, lval.first_col);
 				ret = -1;
@@ -92,6 +125,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *file
 		}
 	}
 
+	pcb_subc_reg(data, bctx.subc);
 	fclose(f);
 	return ret;
 }

@@ -10,6 +10,7 @@
 	double d;
 	int i;
 	char *s;
+	pcb_coord_t c;
 }
 
 
@@ -45,6 +46,10 @@
 #include <stdio.h>
 #include "bxl_gram.h"
 #include "bxl.h"
+
+TODO("Can remove this once the coord unit is converted with getvalue")
+#include <librnd/core/unit.h>
+
 %}
 
 /* Generic */
@@ -62,6 +67,13 @@
 
 /* Sections that are to be ignored (non-footprint data) */
 %token T_SYMBOL T_ENDSYMBOL T_COMPONENT T_ENDCOMPONENT
+
+%type <s> T_QSTR
+%type <s> T_ID
+%type <i> T_INTEGER
+%type <d> T_REAL_ONLY
+%type <d> real
+%type <c> coord
 
 %%
 
@@ -105,7 +117,7 @@ real:
 	;
 
 coord:
-	real
+	real    { $$ = PCB_MIL_TO_COORD($1); }
 	;
 
 /*** TextStyle ***/
@@ -170,9 +182,9 @@ padshape_attr:
 
 /*** Pattern ***/
 pattern:
-	T_PATTERN T_QSTR nl
+	T_PATTERN T_QSTR nl     { pcb_bxl_pattern_begin(ctx, $2); free($2); }
 	pattern_chldrn
-	T_ENDPATTERN
+	T_ENDPATTERN            { pcb_bxl_pattern_end(ctx); }
 	;
 
 pattern_chldrn:
@@ -250,7 +262,8 @@ poly_attr:
 
 /*** Line ***/
 line:
-	T_LINE line_attrs
+	T_LINE                        { pcb_bxl_reset(ctx); }
+		line_attrs                  { pcb_bxl_add_line(ctx); pcb_bxl_reset(ctx); }
 	;
 
 line_attrs:
@@ -259,10 +272,10 @@ line_attrs:
 	;
 
 line_attr:
-	  T_LAYER T_ID
-	| T_ORIGIN coord ',' coord
-	| T_ENDPOINT coord ',' coord
-	| T_WIDTH coord
+	  T_LAYER T_ID                 { pcb_bxl_set_layer(ctx, $2); free($2); }
+	| T_ORIGIN coord ',' coord     { pcb_bxl_set_coord(ctx, BXL_ORIGIN_X, $2); pcb_bxl_set_coord(ctx, BXL_ORIGIN_Y, $4); }
+	| T_ENDPOINT coord ',' coord   { pcb_bxl_set_coord(ctx, BXL_ENDP_X, $2); pcb_bxl_set_coord(ctx, BXL_ENDP_Y, $4); }
+	| T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
 	;
 
 /*** Attribute ***/
