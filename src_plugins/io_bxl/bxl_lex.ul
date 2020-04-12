@@ -31,6 +31,7 @@ top_code
 	 *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
 	 */
 	#include <stdlib.h>
+	#include <librnd/core/compat_misc.h>
 	#include "bxl_gram.h"
 	#define lval  ((pcb_bxl_STYPE *)(user_ctx))
 
@@ -49,13 +50,13 @@ code
 rule id
 regex [a-zA-Z][a-zA-Z0-9_-]*
 code
-	lval->un.s = strdup(ULX_BUF);
+	lval->un.s = pcb_strdup(ULX_BUF);
 	return T_ID;
 
 rule quoted string
 regex "\([^"]*\)"
 code
-	lval->un.s = strdup(ULX_TAGP(1));
+	lval->un.s = pcb_strdup(ULX_TAGP(1));
 	return T_QSTR;
 
 rule chars
@@ -68,7 +69,7 @@ regex [ \t\r]+
 code
 	ULX_IGNORE;
 
-rulestring 3D_DXF            lval->un.s = strdup(ULX_BUF); return T_ID;
+rulestring 3D_DXF            lval->un.s = pcb_strdup(ULX_BUF); return T_ID;
 
 rulestring True              return T_TRUE;
 rulestring False             return T_FALSE;
