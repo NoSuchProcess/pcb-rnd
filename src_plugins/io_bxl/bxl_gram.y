@@ -2,7 +2,7 @@
 
 %struct
 {
-	int line, first_col, last_col;
+	long line, first_col, last_col;
 }
 
 %union
@@ -30,7 +30,7 @@
 %token T_PINNAME T_PADSTYLE T_ORIGINALPADSTYLE T_ORIGIN T_ORIGINALPINNUMBER
 %token T_ROTATE T_POLY T_LINE T_ENDPOINT T_WIDTH T_ATTRIBUTE T_ATTR T_JUSTIFY
 %token T_ARC T_RADIUS T_STARTANGLE T_SWEEPANGLE T_TEXT T_ISVISIBLE T_PROPERTY
-%token T_WIZARD T_VARNAME T_VARDATA
+%token T_WIZARD T_VARNAME T_VARDATA T_TEMPLATEDATA
 
 /* Sections that are to be ignored (non-footprint data) */
 %token T_SYMBOL T_ENDSYMBOL T_COMPONENT T_ENDCOMPONENT
@@ -174,6 +174,7 @@ data_chld:
 	| poly
 	| line
 	| attribute
+	| templatedata
 	| arc
 	| text
 	| wizard
@@ -292,9 +293,13 @@ text_attr:
 	| T_TEXTSTYLE T_QSTR
 	;
 
-/*** Wizard ***/
+/*** Wizard & template ***/
 wizard:
 	T_WIZARD wizard_attrs
+	;
+
+templatedata:
+	T_TEMPLATEDATA wizard_attrs
 	;
 
 wizard_attrs:

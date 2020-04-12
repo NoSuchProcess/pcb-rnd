@@ -89,6 +89,7 @@ rulestring Text              return T_TEXT;
 rulestring IsVisible         return T_ISVISIBLE;
 rulestring Property          return T_PROPERTY;
 rulestring Wizard            return T_WIZARD;
+rulestring Templatedata      return T_TEMPLATEDATA;
 rulestring VarName           return T_VARNAME;
 rulestring VarData           return T_VARDATA;
 rulestring Symbol            return T_SYMBOL;
