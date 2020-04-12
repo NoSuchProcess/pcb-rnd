@@ -39,6 +39,8 @@
 #include "bxl_lex.h"
 #include "bxl_gram.h"
 
+#define SKIP if (!ctx->in_target_fp) return
+
 void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name)
 {
 	TODO("implement");
@@ -51,22 +53,26 @@ void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx)
 
 void pcb_bxl_reset(pcb_bxl_ctx_t *ctx)
 {
+	SKIP;
 	memset(&ctx->state, 0, sizeof(ctx->state));
 	ctx->state.layer = -1;
 }
 
 void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 {
+	SKIP;
 	ctx->state.layer = 0;
 }
 
 void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val)
 {
+	SKIP;
 	ctx->state.coord[idx] = val;
 }
 
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 {
+	SKIP;
 	printf("Line!\n");
 }
 
@@ -90,6 +96,8 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 
 	memset(&bctx, 0, sizeof(bctx));
 	bctx.subc = pcb_subc_new();
+TODO("This reads the first footprint only:");
+	bctx.in_target_fp = 1;
 
 	pcb_bxl_decode_init(&hctx);
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
