@@ -34,6 +34,11 @@
 
 %%
 
+full_file:
+	maybe_nl
+	file
+	;
+
 file:
 	/* empty */
 	|statement nl file
@@ -55,6 +60,11 @@ boolean:
 nl:
 	  '\n'
 	| '\n' nl
+	;
+
+maybe_nl:
+	  /* empty */
+	| nl
 	;
 
 real:
