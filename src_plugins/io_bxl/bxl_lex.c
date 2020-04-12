@@ -6,63 +6,6 @@ static const unsigned char pcb_bxl_nfa_2[] = {4,3,0,0,0,0,0,0,0,0,254,255,255,7,
 static const unsigned char pcb_bxl_nfa_3[] = {4,1,34,6,1,11,3,255,255,255,255,251,255,255,255,255,255,255,255,255,255,255,255,0,7,1,1,34,0,0};
 static const unsigned char pcb_bxl_nfa_4[] = {4,3,0,4,0,0,0,19,0,4,0,0,0,0,0,0,0,0,0};
 static const unsigned char pcb_bxl_nfa_5[] = {4,3,0,34,0,0,1,0,0,0,0,0,0,0,0,0,0,0,11,3,0,34,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-static const unsigned char pcb_bxl_nfa_6[] = {};
-static const unsigned char pcb_bxl_nfa_7[] = {};
-static const unsigned char pcb_bxl_nfa_8[] = {};
-static const unsigned char pcb_bxl_nfa_9[] = {};
-static const unsigned char pcb_bxl_nfa_10[] = {};
-static const unsigned char pcb_bxl_nfa_11[] = {};
-static const unsigned char pcb_bxl_nfa_12[] = {};
-static const unsigned char pcb_bxl_nfa_13[] = {};
-static const unsigned char pcb_bxl_nfa_14[] = {};
-static const unsigned char pcb_bxl_nfa_15[] = {};
-static const unsigned char pcb_bxl_nfa_16[] = {};
-static const unsigned char pcb_bxl_nfa_17[] = {};
-static const unsigned char pcb_bxl_nfa_18[] = {};
-static const unsigned char pcb_bxl_nfa_19[] = {};
-static const unsigned char pcb_bxl_nfa_20[] = {};
-static const unsigned char pcb_bxl_nfa_21[] = {};
-static const unsigned char pcb_bxl_nfa_22[] = {};
-static const unsigned char pcb_bxl_nfa_23[] = {};
-static const unsigned char pcb_bxl_nfa_24[] = {};
-static const unsigned char pcb_bxl_nfa_25[] = {};
-static const unsigned char pcb_bxl_nfa_26[] = {};
-static const unsigned char pcb_bxl_nfa_27[] = {};
-static const unsigned char pcb_bxl_nfa_28[] = {};
-static const unsigned char pcb_bxl_nfa_29[] = {};
-static const unsigned char pcb_bxl_nfa_30[] = {};
-static const unsigned char pcb_bxl_nfa_31[] = {};
-static const unsigned char pcb_bxl_nfa_32[] = {};
-static const unsigned char pcb_bxl_nfa_33[] = {};
-static const unsigned char pcb_bxl_nfa_34[] = {};
-static const unsigned char pcb_bxl_nfa_35[] = {};
-static const unsigned char pcb_bxl_nfa_36[] = {};
-static const unsigned char pcb_bxl_nfa_37[] = {};
-static const unsigned char pcb_bxl_nfa_38[] = {};
-static const unsigned char pcb_bxl_nfa_39[] = {};
-static const unsigned char pcb_bxl_nfa_40[] = {};
-static const unsigned char pcb_bxl_nfa_41[] = {};
-static const unsigned char pcb_bxl_nfa_42[] = {};
-static const unsigned char pcb_bxl_nfa_43[] = {};
-static const unsigned char pcb_bxl_nfa_44[] = {};
-static const unsigned char pcb_bxl_nfa_45[] = {};
-static const unsigned char pcb_bxl_nfa_46[] = {};
-static const unsigned char pcb_bxl_nfa_47[] = {};
-static const unsigned char pcb_bxl_nfa_48[] = {};
-static const unsigned char pcb_bxl_nfa_49[] = {};
-static const unsigned char pcb_bxl_nfa_50[] = {};
-static const unsigned char pcb_bxl_nfa_51[] = {};
-static const unsigned char pcb_bxl_nfa_52[] = {};
-static const unsigned char pcb_bxl_nfa_53[] = {};
-static const unsigned char pcb_bxl_nfa_54[] = {};
-static const unsigned char pcb_bxl_nfa_55[] = {};
-static const unsigned char pcb_bxl_nfa_56[] = {};
-static const unsigned char pcb_bxl_nfa_57[] = {};
-static const unsigned char pcb_bxl_nfa_58[] = {};
-static const unsigned char pcb_bxl_nfa_59[] = {};
-static const unsigned char pcb_bxl_nfa_60[] = {};
-static const unsigned char pcb_bxl_nfa_61[] = {};
-static const unsigned char pcb_bxl_nfa_62[] = {};
 /* strtree.h BEGIN { */
 #ifndef UREGLEX_STRTREE_H
 #define UREGLEX_STRTREE_H 
@@ -138,6 +81,7 @@ typedef enum {
  UREGLEX_NO_MATCH = -3,
  UREGLEX_NOP = -4
 } ureglex_error_t;
+extern const unsigned char ureglex_nfa_str[];
 #define ULX_BUF ctx->buff
 #define ULX_TAGP(n) (ctx->state[ruleid].bopat[(n)])
 #define ULX_TAGL(n) (ctx->state[ruleid].eopat[(n)] - ctx->state[ruleid].bopat[(n)])
@@ -177,6 +121,7 @@ enum ureglex_opcode_e {
 static unsigned char ureglex_bitarr[] = {1,2,4,8,16,32,64,128};
 #define inascii(x) (0177&(x))
 #define isinset(x,y) ((x)[((y)&BLKIND)>>3] & ureglex_bitarr[(y)&BITIND])
+const unsigned char ureglex_nfa_str[] = {0};
 #define ANYSKIP 2
 #define CHRSKIP 3
 #define CCLSKIP 18
@@ -439,63 +384,63 @@ ureglex_precomp_t pcb_bxl_rules[] = {
 	{pcb_bxl_nfa_3, pcb_bxl_bittab_0, pcb_bxl_chrtyp_0, 1.000000},
 	{pcb_bxl_nfa_4, pcb_bxl_bittab_0, pcb_bxl_chrtyp_0, 1.000000},
 	{pcb_bxl_nfa_5, pcb_bxl_bittab_0, pcb_bxl_chrtyp_0, 1.000000},
-	{pcb_bxl_nfa_6, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_7, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_8, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_9, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_10, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_11, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_12, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_13, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_14, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_15, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_16, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_17, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_18, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_19, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_20, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_21, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_22, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_23, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_24, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_25, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_26, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_27, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_28, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_29, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_30, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_31, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_32, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_33, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_34, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_35, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_36, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_37, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_38, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_39, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_40, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_41, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_42, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_43, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_44, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_45, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_46, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_47, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_48, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_49, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_50, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_51, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_52, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_53, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_54, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_55, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_56, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_57, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_58, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_59, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_60, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_61, NULL, NULL, 1.000000},
-	{pcb_bxl_nfa_62, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
+	{ureglex_nfa_str, NULL, NULL, 1.000000},
 	{NULL, NULL, NULL, 0.0}
 };
 #define pcb_bxl_num_rules 63
@@ -541,6 +486,7 @@ typedef struct pcb_bxl_ureglex_s {
 	 *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
 	 */
 	#include <stdlib.h>
+	#include <librnd/core/compat_misc.h>
 	#include "bxl_gram.h"
 	#define lval  ((pcb_bxl_STYPE *)(user_ctx))
 /* TOP CODE END } */
@@ -556,47 +502,47 @@ static int pcb_bxl_user_code(pcb_bxl_ureglex_t *ctx, void * user_ctx, int ruleid
 	(void)rule;
 	switch(ruleid) {
 		case 0:{
-#line  40 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  41 "../../src_plugins/io_bxl/bxl_lex.ul"
 	lval->un.i = atoi(ULX_BUF);
 	return T_INTEGER;
 
 		}
 		return UREGLEX_NOP;
 		case 1:{
-#line  46 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  47 "../../src_plugins/io_bxl/bxl_lex.ul"
 	lval->un.d = strtod(ULX_BUF, NULL);
 	return T_REAL_ONLY;
 
 		}
 		return UREGLEX_NOP;
 		case 2:{
-#line  52 "../../src_plugins/io_bxl/bxl_lex.ul"
-	lval->un.s = strdup(ULX_BUF);
+#line  53 "../../src_plugins/io_bxl/bxl_lex.ul"
+	lval->un.s = pcb_strdup(ULX_BUF);
 	return T_ID;
 
 		}
 		return UREGLEX_NOP;
 		case 3:{
-#line  58 "../../src_plugins/io_bxl/bxl_lex.ul"
-	lval->un.s = strdup(ULX_TAGP(1));
+#line  59 "../../src_plugins/io_bxl/bxl_lex.ul"
+	lval->un.s = pcb_strdup(ULX_TAGP(1));
 	return T_QSTR;
 
 		}
 		return UREGLEX_NOP;
 		case 4:{
-#line  64 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  65 "../../src_plugins/io_bxl/bxl_lex.ul"
 	return *ULX_BUF;
 
 		}
 		return UREGLEX_NOP;
 		case 5:{
-#line  69 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  70 "../../src_plugins/io_bxl/bxl_lex.ul"
 	ULX_IGNORE;
 
 		}
 		return UREGLEX_NOP;
 		case 6:{
-           lval->un.s = strdup(ULX_BUF); return T_ID;
+           lval->un.s = pcb_strdup(ULX_BUF); return T_ID;
 		}
 		return UREGLEX_NOP;
 		case 7:{

@@ -44,6 +44,7 @@ typedef enum {
  UREGLEX_NO_MATCH = -3,
  UREGLEX_NOP = -4
 } ureglex_error_t;
+extern const unsigned char ureglex_nfa_str[];
 #define ULX_BUF ctx->buff
 #define ULX_TAGP(n) (ctx->state[ruleid].bopat[(n)])
 #define ULX_TAGL(n) (ctx->state[ruleid].eopat[(n)] - ctx->state[ruleid].bopat[(n)])
