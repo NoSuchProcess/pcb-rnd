@@ -512,6 +512,34 @@ typedef struct pcb_bxl_ureglex_s {
 
 /* TOP CODE BEGIN { */
 #line  5 "../../src_plugins/io_bxl/bxl_lex.ul"
+	/*
+	 *                            COPYRIGHT
+	 *
+	 *  pcb-rnd, interactive printed circuit board design
+	 *
+	 *  BXL IO plugin - bxl lexer
+	 *  pcb-rnd Copyright (C) 2020 Tibor 'Igor2' Palinkas
+	 *  (Supported by NLnet NGI0 PET Fund in 2020)
+	 *
+	 *  This program is free software; you can redistribute it and/or modify
+	 *  it under the terms of the GNU General Public License as published by
+	 *  the Free Software Foundation; either version 2 of the License, or
+	 *  (at your option) any later version.
+	 *
+	 *  This program is distributed in the hope that it will be useful,
+	 *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 *  GNU General Public License for more details.
+	 *
+	 *  You should have received a copy of the GNU General Public License
+	 *  along with this program; if not, write to the Free Software
+	 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+	 *
+	 *  Contact:
+	 *    Project page: http://repo.hu/projects/pcb-rnd
+	 *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
+	 *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+	 */
 	#include <stdlib.h>
 	#include "bxl_gram.h"
 	#define lval  ((pcb_bxl_STYPE *)(user_ctx))
@@ -528,41 +556,41 @@ static int pcb_bxl_user_code(pcb_bxl_ureglex_t *ctx, void * user_ctx, int ruleid
 	(void)rule;
 	switch(ruleid) {
 		case 0:{
-#line  12 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  40 "../../src_plugins/io_bxl/bxl_lex.ul"
 	lval->un.i = atoi(ULX_BUF);
 	return T_INTEGER;
 
 		}
 		return UREGLEX_NOP;
 		case 1:{
-#line  18 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  46 "../../src_plugins/io_bxl/bxl_lex.ul"
 	lval->un.d = strtod(ULX_BUF, NULL);
 	return T_REAL_ONLY;
 
 		}
 		return UREGLEX_NOP;
 		case 2:{
-#line  24 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  52 "../../src_plugins/io_bxl/bxl_lex.ul"
 	lval->un.s = strdup(ULX_BUF);
 	return T_ID;
 
 		}
 		return UREGLEX_NOP;
 		case 3:{
-#line  30 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  58 "../../src_plugins/io_bxl/bxl_lex.ul"
 	lval->un.s = strdup(ULX_TAGP(1));
 	return T_QSTR;
 
 		}
 		return UREGLEX_NOP;
 		case 4:{
-#line  36 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  64 "../../src_plugins/io_bxl/bxl_lex.ul"
 	return *ULX_BUF;
 
 		}
 		return UREGLEX_NOP;
 		case 5:{
-#line  41 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  69 "../../src_plugins/io_bxl/bxl_lex.ul"
 	ULX_IGNORE;
 
 		}

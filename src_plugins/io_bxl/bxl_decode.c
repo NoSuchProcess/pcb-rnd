@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  BXL IO plugin - file format read, parser
+ *  BXL IO plugin - file format read, binary decoder
  *  pcb-rnd Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *  (Supported by NLnet NGI0 PET Fund in 2020)
  *
