@@ -83,15 +83,15 @@ coord:
 /*** TextStyle ***/
 
 text_style:
-	T_TEXTSTYLE T_QSTR text_attrs
+	T_TEXTSTYLE T_QSTR text_style_attrs
 	;
 
-text_attrs:
+text_style_attrs:
 	  /* empty */
-	| '(' text_attr ')' text_attrs
+	| '(' text_style_attr ')' text_style_attrs
 	;
 
-text_attr:
+text_style_attr:
 	  T_FONTWIDTH T_INTEGER
 	| T_FONTCHARWIDTH T_INTEGER
 	| T_FONTHEIGHT T_INTEGER
@@ -125,15 +125,15 @@ pad_shapes:
 	;
 
 pad_shape:
-	T_PADSHAPE T_QSTR pad_attrs nl
+	T_PADSHAPE T_QSTR padshape_attrs nl
 	;
 
-pad_attrs:
+padshape_attrs:
 	  /* empty */
-	| '(' pad_attr ')' pad_attrs
+	| '(' padshape_attr ')' padshape_attrs
 	;
 
-pad_attr:
+padshape_attr:
 	  T_WIDTH real
 	| T_HEIGHT real
 	| T_PADTYPE T_INTEGER
