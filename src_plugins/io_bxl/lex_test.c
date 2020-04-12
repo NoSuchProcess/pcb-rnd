@@ -36,8 +36,10 @@ int main(int argc, char *argv[])
 			lval.first_col = lctx.loc_col[0];
 			yres = pcb_bxl_parse(&yyctx, &bctx, res, &lval);
 			printf("yres=%d\n", yres);
-			if (yres != 0)
+			if (yres != 0) {
+				printf("Stopped at %ld:%ld\n", lval.line, lval.first_col);
 				break;
+			}
 		}
 		if ((res >= 0) && verbose) {
 			int n;
