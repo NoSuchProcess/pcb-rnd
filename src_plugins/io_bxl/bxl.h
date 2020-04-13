@@ -30,10 +30,12 @@ typedef struct pcb_bxl_ctx_s {
 
 	struct {
 		pcb_layer_t *layer;
-		pcb_coord_t origin_x, origin_y, endp_x, endp_y, width, radius;
+		pcb_coord_t origin_x, origin_y, endp_x, endp_y, width, height, radius;
+		pcb_coord_t hole;
 		pcb_poly_t *poly;
 		double arc_start, arc_delta;
 		double rot;
+		int num_shapes, pad_type;
 		pcb_bxl_just_t hjust, vjust;
 		pcb_bxl_test_style_t *text_style;
 		char *text_str;
@@ -73,5 +75,10 @@ void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y);
 
 void pcb_bxl_text_style_begin(pcb_bxl_ctx_t *ctx, char *name);
 void pcb_bxl_text_style_end(pcb_bxl_ctx_t *ctx);
+
+void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name);
+void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx);
+void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name);
+void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx);
 
 #endif

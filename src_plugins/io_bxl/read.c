@@ -183,6 +183,26 @@ void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *ke
 	free(tmp);
 }
 
+void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name)
+{
+
+}
+
+void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
+{
+
+}
+
+void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)
+{
+
+}
+
+void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
+{
+
+}
+
 
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 {

@@ -161,10 +161,11 @@ text_style_attr:
 /*** PadStack ***/
 
 pad_stack:
-	T_PADSTACK T_QSTR pstk_attrs nl
-	T_SHAPES ':' T_INTEGER nl
-	pad_shapes
-	T_ENDPADSTACK
+	T_PADSTACK T_QSTR               { pcb_bxl_padstack_begin(ctx, $2); /* $2 is taken over */ }
+		pstk_attrs nl
+		T_SHAPES ':' T_INTEGER nl     { ctx->state.num_shapes = $8; }
+		pad_shapes
+		T_ENDPADSTACK                 { pcb_bxl_padstack_end(ctx); }
 	;
 
 pstk_attrs:
@@ -173,7 +174,7 @@ pstk_attrs:
 	;
 
 pstk_attr:
-	  T_HOLEDIAM T_INTEGER
+	  T_HOLEDIAM coord             { ctx->state.hole = $2; }
 	| T_SURFACE boolean            { ctx->state.surface = $2; }
 	| T_PLATED boolean             { ctx->state.plated = $2; }
 	| T_NOPASTE boolean            { ctx->state.nopaste = $2; }
@@ -185,7 +186,8 @@ pad_shapes:
 	;
 
 pad_shape:
-	T_PADSHAPE T_QSTR padshape_attrs nl
+	T_PADSHAPE T_QSTR              { pcb_bxl_padstack_begin_shape(ctx, $2); free($2); }
+		padshape_attrs nl            { pcb_bxl_padstack_end_shape(ctx); }
 	;
 
 padshape_attrs:
@@ -194,8 +196,8 @@ padshape_attrs:
 	;
 
 padshape_attr:
-	  T_HEIGHT real
-	| T_PADTYPE T_INTEGER
+	  T_HEIGHT coord               { ctx->state.height = $2; }
+	| T_PADTYPE T_INTEGER          { ctx->state.pad_type = $2; }
 	| common_layer
 	| common_width
 	;
