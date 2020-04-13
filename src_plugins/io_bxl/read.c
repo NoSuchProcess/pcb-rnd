@@ -138,7 +138,6 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 	if (ctx->state.delayed_poly) {
 		ctx->state.poly = pcb_poly_new(ctx->state.layer, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
 		ctx->state.delayed_poly = 0;
-printf("delayed poly: %p\n", ctx->state.poly);
 	}
 }
 
@@ -155,7 +154,6 @@ void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 	width = ctx->state.coord[BXL_WIDTH];
 	if (width == 0)
 		width = 1;
-	pcb_trace("bxl Line: %mm;%mm %mm;%mm %mm\n",
 		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
 		ctx->state.coord[BXL_ENDP_X], ctx->state.coord[BXL_ENDP_Y],
 		width);
@@ -169,13 +167,11 @@ void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx)
 {
 	SKIP;
 	ctx->state.delayed_poly = 1;
-	printf("delaying poly\n");
 }
 
 void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y)
 {
 	SKIP;
-	pcb_printf("poly vertex %mm %mm\n", x + ctx->state.coord[BXL_ORIGIN_X], y + ctx->state.coord[BXL_ORIGIN_Y]);
 	assert(ctx->state.poly != NULL);
 	pcb_poly_point_new(ctx->state.poly, x + ctx->state.coord[BXL_ORIGIN_X], y + ctx->state.coord[BXL_ORIGIN_Y]);
 }
