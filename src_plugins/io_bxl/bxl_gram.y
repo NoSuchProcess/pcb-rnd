@@ -61,7 +61,7 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 %token T_PLATED T_WIDTH T_HEIGHT T_PADTYPE T_LAYER T_PATTERN T_ENDPATTERN
 %token T_DATA T_ENDDATA T_ORIGINPOINT T_PICKPOINT T_GLUEPOINT T_PAD T_NUMBER
 %token T_PINNAME T_PADSTYLE T_ORIGINALPADSTYLE T_ORIGIN T_ORIGINALPINNUMBER
-%token T_ROTATE T_POLY T_LINE T_ENDPOINT T_WIDTH T_ATTRIBUTE T_ATTR T_JUSTIFY
+%token T_ROTATE T_POLY T_LINE T_ENDPOINT T_ATTRIBUTE T_ATTR T_JUSTIFY
 %token T_ARC T_RADIUS T_STARTANGLE T_SWEEPANGLE T_TEXT T_ISVISIBLE T_PROPERTY
 %token T_WIZARD T_VARNAME T_VARDATA T_TEMPLATEDATA T_ISFLIPPED T_NOPASTE
 
@@ -134,6 +134,10 @@ common_layer:
 	T_LAYER T_ID                 { pcb_bxl_set_layer(ctx, $2); free($2); }
 	;
 
+common_width:
+	T_WIDTH coord                { ctx->state.width = $2; }
+	;
+
 /*** TextStyle ***/
 
 text_style:
@@ -188,10 +192,10 @@ padshape_attrs:
 	;
 
 padshape_attr:
-	  T_WIDTH real
-	| T_HEIGHT real
+	  T_HEIGHT real
 	| T_PADTYPE T_INTEGER
 	| common_layer
+	| common_width
 	;
 
 /*** Pattern ***/
@@ -268,11 +272,12 @@ poly_attrs:
 	;
 
 poly_attr:
-	  T_WIDTH coord                { ctx->state.width = $2; }
-	| T_PROPERTY T_QSTR            { pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, $2); free($2); }
+
+	  T_PROPERTY T_QSTR            { pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, $2); free($2); }
 	| coord ',' coord              { pcb_bxl_poly_add_vertex(ctx, $1, $3); }
 	| common_origin
 	| common_layer
+	| common_width
 	;
 
 /*** Line ***/
@@ -288,9 +293,9 @@ line_attrs:
 
 line_attr:
 	  T_ENDPOINT coord ',' coord   { ctx->state.endp_x = $2; ctx->state.endp_y = $4; }
-	| T_WIDTH coord                { ctx->state.width = $2; }
 	| common_origin
 	| common_layer
+	| common_width
 	;
 
 /*** Attribute ***/
@@ -323,12 +328,12 @@ arc_attrs:
 	;
 
 arc_attr:
-	  T_WIDTH coord
-	| T_RADIUS coord        { ctx->state.radius = $2;  }
+	  T_RADIUS coord        { ctx->state.radius = $2;  }
 	| T_STARTANGLE real     { ctx->state.arc_start = $2; }
 	| T_SWEEPANGLE real     { ctx->state.arc_delta = $2; }
 	| common_origin
 	| common_layer
+	| common_width
 	;
 
 /*** Text ***/
