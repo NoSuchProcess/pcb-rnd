@@ -112,8 +112,8 @@ maybe_nl:
 	;
 
 real:
-	  T_INTEGER
-	| T_REAL_ONLY
+	  T_INTEGER            { $$ = $1; }
+	| T_REAL_ONLY          { $$ = $1; }
 	;
 
 coord:

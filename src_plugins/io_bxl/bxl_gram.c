@@ -570,6 +570,14 @@ yyreduce:
 		memset(&yyctx->val, 0, sizeof yyctx->val);
 
 	switch (yyctx->yyn) {
+case 14:
+#line 115 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ yyctx->val.un.d = yyctx->stack.l_mark[0].un.i; }
+break;
+case 15:
+#line 116 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ yyctx->val.un.d = yyctx->stack.l_mark[0].un.d; }
+break;
 case 16:
 #line 120 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ yyctx->val.un.c = PCB_MIL_TO_COORD(yyctx->stack.l_mark[0].un.d); }
@@ -606,7 +614,7 @@ case 83:
 #line 278 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_set_coord(ctx, BXL_WIDTH, yyctx->stack.l_mark[0].un.c); }
 break;
-#line 622 "../../src_plugins/io_bxl/bxl_gram.c"
+#line 630 "../../src_plugins/io_bxl/bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;
