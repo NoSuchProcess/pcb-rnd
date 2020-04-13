@@ -56,7 +56,7 @@ code
 rule quoted string
 regex "\([^"]*\)"
 code
-	lval->un.s = pcb_strdup(ULX_TAGP(1));
+	lval->un.s = pcb_strndup(ULX_TAGP(1), ULX_TAGL(1));
 	return T_QSTR;
 
 rule chars

@@ -524,7 +524,7 @@ static int pcb_bxl_user_code(pcb_bxl_ureglex_t *ctx, void * user_ctx, int ruleid
 		return UREGLEX_NOP;
 		case 3:{
 #line  59 "../../src_plugins/io_bxl/bxl_lex.ul"
-	lval->un.s = pcb_strdup(ULX_TAGP(1));
+	lval->un.s = pcb_strndup(ULX_TAGP(1), ULX_TAGL(1));
 	return T_QSTR;
 
 		}
