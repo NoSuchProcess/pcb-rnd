@@ -39,7 +39,8 @@ typedef struct pcb_bxl_ctx_s {
 		pcb_poly_t *poly;
 		double arc_start, arc_delta;
 		double rot;
-		int num_shapes, pad_type, shape_type;
+		int num_shapes, pad_type, shape_type, pin_number;
+		char *pin_name;
 		pcb_bxl_just_t hjust, vjust;
 		pcb_bxl_test_style_t *text_style;
 		char *text_str;
@@ -86,4 +87,7 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name);
 void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx);
 
+void pcb_bxl_pad_begin(pcb_bxl_ctx_t *ctx);
+void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx);
+void pcb_bxl_pad_set_style(pcb_bxl_ctx_t *ctx, const char *pstkname);
 #endif

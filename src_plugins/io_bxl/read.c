@@ -200,8 +200,7 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 	pcb_cardinal_t i = pcb_pstk_proto_insert_forcedup(ctx->subc->data, &ctx->state.proto, 0, 0);
 	if (ctx->proto_id-1 != i)
 		pcb_message(PCB_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
-	free(ctx->state.proto.name);
-	ctx->state.proto.name = NULL;
+	ctx->state.proto.name = NULL; /* do not free it as it is the hash key */
 }
 
 void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)
@@ -248,6 +247,39 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 	}
 
 }
+
+void pcb_bxl_pad_begin(pcb_bxl_ctx_t *ctx)
+{
+	SKIP;
+}
+
+void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
+{
+	SKIP;
+
+	free(ctx->state.pin_name);
+	ctx->state.pin_name = NULL;
+}
+
+void pcb_bxl_pad_set_style(pcb_bxl_ctx_t *ctx, const char *pstkname)
+{
+	htsi_entry_t *e;
+	int xmirror = 0, smirror = 0;
+
+	SKIP;
+
+	e = htsi_getentry(&ctx->proto_name2id, pstkname);
+	if (e == NULL) {
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: invalid padstack reference '%s' - pad will not be created\n", pstkname);
+		return;
+	}
+
+	pcb_pstk_new_tr(ctx->subc->data, -1, e->value,
+		ctx->state.origin_x, ctx->state.origin_y,
+		PCB_MM_TO_COORD(0.2), pcb_flag_make(PCB_FLAG_CLEARLINE),
+		ctx->state.rot, xmirror, smirror);
+}
+
 
 
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
@@ -474,6 +506,8 @@ static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
 	}
 	htsp_uninit(&bctx->text_name2style);
 
+	for(e = htsp_first(&bctx->proto_name2id); e != NULL; e = htsp_next(&bctx->proto_name2id, e))
+		free(e->key);
 	htsi_uninit(&bctx->proto_name2id);
 }
 

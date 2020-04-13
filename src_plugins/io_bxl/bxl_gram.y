@@ -246,7 +246,8 @@ data_chld:
 
 /*** Pad ***/
 pad:
-	T_PAD pad_attrs
+	T_PAD                                { pcb_bxl_pad_begin(ctx); }
+		pad_attrs                          { pcb_bxl_pad_end(ctx); }
 	;
 
 pad_attrs:
@@ -255,12 +256,12 @@ pad_attrs:
 	;
 
 pad_attr:
-	  T_NUMBER T_INTEGER
-	| T_PINNAME T_QSTR
-	| T_PADSTYLE T_QSTR
-	| T_ORIGINALPADSTYLE T_QSTR
-	| T_ORIGINALPINNUMBER T_INTEGER
-	| T_ROTATE real
+	  T_NUMBER T_INTEGER                 { ctx->state.pin_number = $2; }
+	| T_PINNAME T_QSTR                   { ctx->state.pin_name = $2; /* takes over $2 */ }
+	| T_PADSTYLE T_QSTR                  { pcb_bxl_pad_set_style(ctx, $2); free($2); }
+	| T_ORIGINALPADSTYLE T_QSTR          { /* what's this?! */ free($2); }
+	| T_ORIGINALPINNUMBER T_INTEGER      { /* what's this?! */ }
+	| T_ROTATE real                      { ctx->state.rot = $2; }
 	| common_origin
 	;
 
