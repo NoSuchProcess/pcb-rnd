@@ -152,6 +152,8 @@ void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *ke
 	char *tmp, *val;
 	const char *sep;
 
+	SKIP;
+
 	if (obj == NULL) {
 		ctx->warn.property_null_obj++;
 		return;
