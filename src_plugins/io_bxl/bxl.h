@@ -40,6 +40,7 @@ typedef struct pcb_bxl_ctx_s {
 		double arc_start, arc_delta;
 		double rot;
 		int num_shapes, pad_type, shape_type, pin_number;
+		long pstk_proto_id;
 		char *pin_name;
 		pcb_bxl_just_t hjust, vjust;
 		pcb_bxl_test_style_t *text_style;

@@ -251,33 +251,44 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 void pcb_bxl_pad_begin(pcb_bxl_ctx_t *ctx)
 {
 	SKIP;
+	ctx->state.pstk_proto_id = -1;
 }
 
 void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
 {
-	SKIP;
+	int xmirror = 0, smirror = 0;
+	pcb_pstk_t *ps;
 
-	free(ctx->state.pin_name);
+	SKIP_FREE(ctx->state.pin_name);
+
+	if (ctx->state.pstk_proto_id < 0) {
+		free(ctx->state.pin_name);
+		return;
+	}
+
+	ps = pcb_pstk_new_tr(ctx->subc->data, -1, ctx->state.pstk_proto_id,
+		ctx->state.origin_x, ctx->state.origin_y,
+		PCB_MM_TO_COORD(0.2), pcb_flag_make(PCB_FLAG_CLEARLINE),
+		ctx->state.rot, xmirror, smirror);
+
+TODO("pin number and name");
+/*	ps->name = ctx->state.pin_name;*/
 	ctx->state.pin_name = NULL;
 }
 
 void pcb_bxl_pad_set_style(pcb_bxl_ctx_t *ctx, const char *pstkname)
 {
 	htsi_entry_t *e;
-	int xmirror = 0, smirror = 0;
 
 	SKIP;
 
 	e = htsi_getentry(&ctx->proto_name2id, pstkname);
 	if (e == NULL) {
+		ctx->state.pstk_proto_id = -1;
 		pcb_message(PCB_MSG_WARNING, "bxl footprint error: invalid padstack reference '%s' - pad will not be created\n", pstkname);
 		return;
 	}
-
-	pcb_pstk_new_tr(ctx->subc->data, -1, e->value,
-		ctx->state.origin_x, ctx->state.origin_y,
-		PCB_MM_TO_COORD(0.2), pcb_flag_make(PCB_FLAG_CLEARLINE),
-		ctx->state.rot, xmirror, smirror);
+	ctx->state.pstk_proto_id = e->value;
 }
 
 
@@ -489,6 +500,7 @@ TODO("This reads the first footprint only:");
 static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
 {
 	htsp_entry_t *e;
+	htsi_entry_t *ei;
 
 	/* emit all accumulated warnings */
 	WARN_CNT(poly_broken,        (PCB_MSG_WARNING, "footprint contains %ld invalid polygons (polygons ignored)\n", cnt));
@@ -506,8 +518,8 @@ static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
 	}
 	htsp_uninit(&bctx->text_name2style);
 
-	for(e = htsp_first(&bctx->proto_name2id); e != NULL; e = htsp_next(&bctx->proto_name2id, e))
-		free(e->key);
+	for(ei = htsi_first(&bctx->proto_name2id); ei != NULL; ei = htsi_next(&bctx->proto_name2id, ei))
+		free(ei->key);
 	htsi_uninit(&bctx->proto_name2id);
 }
 
