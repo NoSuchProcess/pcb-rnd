@@ -276,7 +276,7 @@ void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
 		if (ctx->state.pin_name != NULL)
 			pcb_attribute_put(&ps->Attributes, "name", ctx->state.pin_name);
 
-		if (ctx->state.pin_number != NULL) {
+		if (ctx->state.pin_number >= 0) {
 			char tmp[32];
 			sprintf(tmp, "%d", ctx->state.pin_number);
 			pcb_attribute_put(&ps->Attributes, "term", tmp);
