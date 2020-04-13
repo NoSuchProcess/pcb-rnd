@@ -74,6 +74,7 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 %type <d> T_REAL_ONLY
 %type <d> real
 %type <c> coord
+%type <i> boolean
 
 %%
 
@@ -97,8 +98,8 @@ statement:
 /*** common and misc ***/
 
 boolean:
-	  T_TRUE
-	| T_FALSE
+	  T_TRUE       { $$ = 1; }
+	| T_FALSE      { $$ = 0; }
 	;
 
 nl:

@@ -14,11 +14,11 @@
 #line 16 "../../src_plugins/io_bxl/bxl_gram.c"
 #include "../../src_plugins/io_bxl/bxl_gram.h"
 static const pcb_bxl_int_t pcb_bxl_lhs[] = {                     -1,
-    0,    4,    4,    5,    5,    5,    5,   11,   11,    6,
-    6,    3,    3,    1,    1,    2,   12,   12,   12,   13,
-   14,   15,    7,   16,   16,   17,   17,   17,    8,   18,
+    0,    5,    5,    6,    6,    6,    6,    3,    3,    7,
+    7,    4,    4,    1,    1,    2,   12,   12,   12,   13,
+   14,   15,    8,   16,   16,   17,   17,   17,    9,   18,
    18,   20,   20,   20,   20,   19,   19,   21,   22,   22,
-   23,   23,   23,   23,   25,    9,   24,   24,   26,   26,
+   23,   23,   23,   23,   25,   10,   24,   24,   26,   26,
    26,   26,   27,   28,   28,   29,   29,   29,   29,   29,
    29,   29,   29,   30,   38,   38,   39,   39,   39,   39,
    39,   39,   39,   41,   31,   40,   40,   42,   42,   42,
@@ -26,7 +26,7 @@ static const pcb_bxl_int_t pcb_bxl_lhs[] = {                     -1,
    33,   46,   46,   47,   47,   47,   47,   49,   35,   48,
    48,   50,   50,   50,   50,   50,   50,   36,   51,   51,
    52,   52,   52,   52,   52,   52,   37,   34,   53,   53,
-   54,   54,   54,   10,
+   54,   54,   54,   11,
 };
 static const pcb_bxl_int_t pcb_bxl_len[] = {                      2,
     2,    0,    3,    1,    1,    1,    1,    1,    1,    1,
@@ -70,8 +70,8 @@ static const pcb_bxl_int_t pcb_bxl_defred[] = {                   0,
    40,   20,   79,   77,    0,   86,  101,   87,
 };
 static const pcb_bxl_int_t pcb_bxl_dgoto[] = {                    2,
-   74,   75,    3,   10,   11,    4,   12,   13,   14,   15,
-   47,  148,  137,  150,  170,   22,   31,   24,   85,   36,
+   74,   75,   47,    3,   10,   11,    4,   12,   13,   14,
+   15,  148,  137,  150,  170,   22,   31,   24,   85,   36,
    86,  129,  171,   56,   38,   57,   58,   95,   96,   97,
    98,   99,  100,  101,  102,  103,  104,  112,  138,  140,
   113,  186,  142,  114,  191,  116,  151,  153,  117,  204,
@@ -130,8 +130,8 @@ static const pcb_bxl_int_t pcb_bxl_rindex[] = {                   9,
     0,    0,    0,    0,    0,    0,    0,    0,
 };
 static const pcb_bxl_int_t pcb_bxl_gindex[] = {                   0,
- -125,  -63,    0,  172,    0,   -1,    0,    0,    0,    0,
-  -30,   88,  -52,  -51,  -79,  162,    0,  157,  123,    0,
+ -125,  -63,  -30,    0,  172,    0,   -1,    0,    0,    0,
+    0,   88,  -52,  -51,  -79,  162,    0,  157,  123,    0,
     0,   -7,    0,  142,    0,    0,    0,   90,    0,    0,
     0,    0,    0,    0,    0,    0,    0,   31,    0,   -8,
     0,    0,   -9,    0,    0,   18,    0,  -12,    0,    0,
@@ -569,87 +569,95 @@ yyreduce:
 		memset(&yyctx->val, 0, sizeof yyctx->val);
 
 	switch (yyctx->yyn) {
+case 8:
+#line 101 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ yyctx->val.un.i = 1; }
+break;
+case 9:
+#line 102 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ yyctx->val.un.i = 0; }
+break;
 case 14:
-#line 115 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 116 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ yyctx->val.un.d = yyctx->stack.l_mark[0].un.i; }
 break;
 case 15:
-#line 116 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 117 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ yyctx->val.un.d = yyctx->stack.l_mark[0].un.d; }
 break;
 case 16:
-#line 120 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 121 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ yyctx->val.un.c = PCB_MIL_TO_COORD(yyctx->stack.l_mark[0].un.d); }
 break;
 case 20:
-#line 130 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 131 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.origin_x = yyctx->stack.l_mark[-2].un.c; ctx->state.origin_y = yyctx->stack.l_mark[0].un.c; }
 break;
 case 21:
-#line 134 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 135 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_set_layer(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 22:
-#line 138 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 139 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.width = yyctx->stack.l_mark[0].un.c; }
 break;
 case 45:
-#line 203 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 204 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_pattern_begin(ctx, yyctx->stack.l_mark[-1].un.s); free(yyctx->stack.l_mark[-1].un.s); }
 break;
 case 46:
-#line 205 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 206 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_pattern_end(ctx); }
 break;
 case 74:
-#line 265 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 266 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_poly_begin(ctx); }
 break;
 case 75:
-#line 266 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 267 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_poly_end(ctx); }
 break;
 case 78:
-#line 276 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 277 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 79:
-#line 277 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 278 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_poly_add_vertex(ctx, yyctx->stack.l_mark[-2].un.c, yyctx->stack.l_mark[0].un.c); }
 break;
 case 83:
-#line 285 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 286 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_reset(ctx); }
 break;
 case 84:
-#line 286 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 287 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_add_line(ctx); pcb_bxl_reset(ctx); }
 break;
 case 87:
-#line 295 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 296 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.endp_x = yyctx->stack.l_mark[-2].un.c; ctx->state.endp_y = yyctx->stack.l_mark[0].un.c; }
 break;
 case 98:
-#line 321 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 322 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_reset(ctx); }
 break;
 case 99:
-#line 322 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 323 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_add_arc(ctx); pcb_bxl_reset(ctx); }
 break;
 case 102:
-#line 331 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 332 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.radius = yyctx->stack.l_mark[0].un.c;  }
 break;
 case 103:
-#line 332 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 333 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.arc_start = yyctx->stack.l_mark[0].un.d; }
 break;
 case 104:
-#line 333 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 334 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.arc_delta = yyctx->stack.l_mark[0].un.d; }
 break;
-#line 665 "../../src_plugins/io_bxl/bxl_gram.c"
+#line 673 "../../src_plugins/io_bxl/bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;
