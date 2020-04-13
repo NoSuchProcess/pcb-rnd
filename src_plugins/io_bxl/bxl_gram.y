@@ -123,7 +123,7 @@ coord:
 
 common_attr_text:
 	  T_JUSTIFY T_ID             { pcb_bxl_set_justify(ctx, $2); free($2); }
-	| T_TEXTSTYLE T_QSTR
+	| T_TEXTSTYLE T_QSTR         { pcb_bxl_set_text_style(ctx, $2); free($2); }
 	| T_ISVISIBLE boolean        { ctx->state.invis = $2; }
 	;
 
@@ -152,9 +152,9 @@ text_style_attrs:
 	;
 
 text_style_attr:
-	  T_FONTWIDTH coord            { ctx->state.text_style->width = $2; }
-	| T_FONTCHARWIDTH coord        { ctx->state.text_style->char_width = $2; }
-	| T_FONTHEIGHT coord           { ctx->state.text_style->height = $2; }
+	  T_FONTWIDTH real             { ctx->state.text_style->width = $2; }
+	| T_FONTCHARWIDTH real         { ctx->state.text_style->char_width = $2; }
+	| T_FONTHEIGHT real            { ctx->state.text_style->height = $2; }
 	;
 
 
@@ -340,7 +340,8 @@ arc_attr:
 
 /*** Text ***/
 text:
-	T_TEXT text_attrs
+	T_TEXT                        { pcb_bxl_reset(ctx); }
+		text_attrs                  { pcb_bxl_add_text(ctx); pcb_bxl_reset(ctx); }
 	;
 
 text_attrs:
@@ -349,9 +350,9 @@ text_attrs:
 	;
 
 text_attr:
-	  T_TEXT T_QSTR
+	  T_TEXT T_QSTR               { pcb_bxl_set_text_str(ctx, $2); /* $2 is taken over */ }
 	| T_ISFLIPPED boolean         { ctx->state.flipped = $2; }
-	| T_ROTATE real
+	| T_ROTATE real               { ctx->state.rot = $2; }
 	| common_attr_text
 	| common_origin
 	| common_layer

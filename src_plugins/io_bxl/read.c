@@ -35,12 +35,15 @@
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
+#include "board.h"
+
 #include "read.h"
 #include "bxl_decode.h"
 #include "bxl_lex.h"
 #include "bxl_gram.h"
 
-#define SKIP if (!ctx->in_target_fp) return
+#define SKIP             if (!ctx->in_target_fp) return
+#define SKIP_FREE(ptr)   if (!ctx->in_target_fp) { free(ptr); return; }
 
 static const pcb_dflgmap_t bxl_layer_names[] = {
 	/* name                 layer type                        purpose     comb         flags */
@@ -208,6 +211,39 @@ void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx)
 		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 }
 
+void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
+{
+	int scale;
+	pcb_coord_t thickness;
+	SKIP;
+
+	if (ctx->state.text_style != NULL) {
+TODO("need to figure how text is scaled and justified in bxl");
+		scale = ctx->state.text_style->height;
+		thickness = PCB_MIL_TO_COORD(ctx->state.text_style->width);
+	}
+	else {
+		scale = 100;
+		thickness = 0;
+	}
+
+
+	pcb_text_new(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
+		ctx->state.origin_x, ctx->state.origin_y,
+		ctx->state.rot, scale, thickness, ctx->state.text_str,
+		pcb_flag_make(PCB_FLAG_CLEARLINE));
+	free(ctx->state.text_str);
+	ctx->state.text_str = NULL;
+}
+
+void pcb_bxl_set_text_str(pcb_bxl_ctx_t *ctx, char *str)
+{
+	SKIP_FREE(str);
+	free(ctx->state.text_str);
+	ctx->state.text_str = str;
+}
+
+
 void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx)
 {
 	SKIP;
@@ -325,6 +361,13 @@ void pcb_bxl_text_style_end(pcb_bxl_ctx_t *ctx)
 	ctx->state.text_style = NULL;
 }
 
+void pcb_bxl_set_text_style(pcb_bxl_ctx_t *ctx, const char *name)
+{
+	ctx->state.text_style = htsp_get(&ctx->text_name2style, name);
+	if (ctx->state.text_style == NULL)
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' not defined (using default style)\n", name);
+}
+
 
 #define WARN_CNT(_count_, args) \
 do { \
@@ -333,14 +376,15 @@ do { \
 } while(0)
 
 
-static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, const char *fpname)
+static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, pcb_board_t *pcb, const char *fpname)
 {
 	memset(bctx, 0, sizeof(pcb_bxl_ctx_t));
+	bctx->pcb = pcb;
 	bctx->subc = pcb_subc_new();
 TODO("This reads the first footprint only:");
 	bctx->in_target_fp = 1;
 	htsp_init(&bctx->layer_name2ly, strhash, strkeyeq);
-	htsp_init(&bctx->text_name2style, strhash, strkeyeq);
+	htsp_init(&bctx->text_name2style, strhash_case, strkeyeq_case);
 }
 
 static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
@@ -371,7 +415,7 @@ void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s) { }
 
 int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename)
 {
-	pcb_hidlib_t *hl = NULL;
+	pcb_hidlib_t *hl = &PCB->hidlib;
 	FILE *f;
 	int chr, tok, yres, ret = 0;
 	hdecode_t hctx;
@@ -383,7 +427,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	if (f == NULL)
 		return -1;
 
-	pcb_bxl_init(&bctx, NULL);
+	pcb_bxl_init(&bctx, (pcb_board_t *)hl, NULL);
 
 	pcb_bxl_decode_init(&hctx);
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
