@@ -311,11 +311,36 @@ void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx)
 
 #define WARN_CNT(_count_, args) \
 do { \
-	long cnt = (bctx.warn._count_); \
+	long cnt = (bctx->warn._count_); \
 	if (cnt > 0) pcb_message args; \
 } while(0)
 
 
+static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, const char *fpname)
+{
+	memset(bctx, 0, sizeof(pcb_bxl_ctx_t));
+	bctx->subc = pcb_subc_new();
+TODO("This reads the first footprint only:");
+	bctx->in_target_fp = 1;
+	htsp_init(&bctx->layer_name2ly, strhash, strkeyeq);
+}
+
+static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
+{
+	htsp_entry_t *e;
+
+	/* emit all accumulated warnings */
+	WARN_CNT(poly_broken,        (PCB_MSG_WARNING, "footprint contains %ld invalid polygons (polygons ignored)\n", cnt));
+	WARN_CNT(property_null_obj,  (PCB_MSG_WARNING, "footprint contains %ld properties that could not be attached to any object\n", cnt));
+	WARN_CNT(property_nosep,     (PCB_MSG_WARNING, "footprint contains %ld properties without separator between key and value\n", cnt));
+
+
+	for(e = htsp_first(&bctx->layer_name2ly); e != NULL; e = htsp_next(&bctx->layer_name2ly, e))
+		free(e->key);
+	htsp_uninit(&bctx->layer_name2ly);
+}
+
+#undef WARN_CNT
 
 /* Error is handled on the push side */
 void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s) { }
@@ -329,17 +354,12 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	pcb_bxl_ureglex_t lctx;
 	pcb_bxl_yyctx_t yyctx;
 	pcb_bxl_ctx_t bctx;
-	htsp_entry_t *e;
 
 	f = pcb_fopen(hl, filename, "rb");
 	if (f == NULL)
 		return -1;
 
-	memset(&bctx, 0, sizeof(bctx));
-	bctx.subc = pcb_subc_new();
-TODO("This reads the first footprint only:");
-	bctx.in_target_fp = 1;
-	htsp_init(&bctx.layer_name2ly, strhash, strkeyeq);
+	pcb_bxl_init(&bctx, NULL);
 
 	pcb_bxl_decode_init(&hctx);
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
@@ -375,16 +395,9 @@ TODO("This reads the first footprint only:");
 		}
 	}
 
-	/* emit all accumulated warnings */
-	WARN_CNT(poly_broken,        (PCB_MSG_WARNING, "footprint contains %ld invalid polygons (polygons ignored)\n", cnt));
-	WARN_CNT(property_null_obj,  (PCB_MSG_WARNING, "footprint contains %ld properties that could not be attached to any object\n", cnt));
-	WARN_CNT(property_nosep,     (PCB_MSG_WARNING, "footprint contains %ld properties without separator between key and value\n", cnt));
-
-
-	for(e = htsp_first(&bctx.layer_name2ly); e != NULL; e = htsp_next(&bctx.layer_name2ly, e))
-		free(e->key);
-	htsp_uninit(&bctx.layer_name2ly);
 	pcb_subc_reg(data, bctx.subc);
+
+	pcb_bxl_uninit(&bctx);
 	fclose(f);
 	return ret;
 }
