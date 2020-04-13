@@ -127,7 +127,7 @@ common_attr_text:
 	;
 
 common_origin:
-	T_ORIGIN coord ',' coord     { pcb_bxl_set_coord(ctx, BXL_ORIGIN_X, $2); pcb_bxl_set_coord(ctx, BXL_ORIGIN_Y, $4); }
+	T_ORIGIN coord ',' coord     { ctx->state.origin_x = $2; ctx->state.origin_y = $4; }
 	;
 
 common_layer:
@@ -268,7 +268,7 @@ poly_attrs:
 	;
 
 poly_attr:
-	  T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
+	  T_WIDTH coord                { ctx->state.width = $2; }
 	| T_PROPERTY T_QSTR            { pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, $2); free($2); }
 	| coord ',' coord              { pcb_bxl_poly_add_vertex(ctx, $1, $3); }
 	| common_origin
@@ -287,8 +287,8 @@ line_attrs:
 	;
 
 line_attr:
-	  T_ENDPOINT coord ',' coord   { pcb_bxl_set_coord(ctx, BXL_ENDP_X, $2); pcb_bxl_set_coord(ctx, BXL_ENDP_Y, $4); }
-	| T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
+	  T_ENDPOINT coord ',' coord   { ctx->state.endp_x = $2; ctx->state.endp_y = $4; }
+	| T_WIDTH coord                { ctx->state.width = $2; }
 	| common_origin
 	| common_layer
 	;
@@ -324,7 +324,7 @@ arc_attrs:
 
 arc_attr:
 	  T_WIDTH coord
-	| T_RADIUS coord        { pcb_bxl_set_coord(ctx, BXL_RADIUS, $2); }
+	| T_RADIUS coord        { ctx->state.radius = $2;  }
 	| T_STARTANGLE real     { ctx->state.arc_start = $2; }
 	| T_SWEEPANGLE real     { ctx->state.arc_delta = $2; }
 	| common_origin

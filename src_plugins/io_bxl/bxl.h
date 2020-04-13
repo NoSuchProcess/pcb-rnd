@@ -7,16 +7,6 @@
 #include "obj_poly.h"
 #include <genht/htsp.h>
 
-enum {
-	BXL_ORIGIN_X,
-	BXL_ORIGIN_Y,
-	BXL_ENDP_X,
-	BXL_ENDP_Y,
-	BXL_WIDTH,
-	BXL_RADIUS,
-	BXL_coord_max
-};
-
 typedef struct pcb_bxl_ctx_s {
 	pcb_subc_t *subc;
 	char in_target_fp; /* 1 if we are parsing the target footprint; else skip */
@@ -26,7 +16,7 @@ typedef struct pcb_bxl_ctx_s {
 
 	struct {
 		pcb_layer_t *layer;
-		pcb_coord_t coord[BXL_coord_max];
+		pcb_coord_t origin_x, origin_y, endp_x, endp_y, width, radius;
 		pcb_poly_t *poly;
 		double arc_start, arc_delta;
 		unsigned delayed_poly:1;
@@ -43,7 +33,6 @@ void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name);
 void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_reset(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name);
-void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val);
 
 void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval);
 

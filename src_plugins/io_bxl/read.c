@@ -141,12 +141,6 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 	}
 }
 
-void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val)
-{
-	SKIP;
-	ctx->state.coord[idx] = val;
-}
-
 void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval)
 {
 	char *tmp, *val;
@@ -177,12 +171,12 @@ void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 {
 	pcb_coord_t width;
 	SKIP;
-	width = ctx->state.coord[BXL_WIDTH];
+	width = ctx->state.width;
 	if (width == 0)
 		width = 1;
 	pcb_line_new(ctx->state.layer, 
-		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
-		ctx->state.coord[BXL_ENDP_X], ctx->state.coord[BXL_ENDP_Y],
+		ctx->state.origin_x, ctx->state.origin_y,
+		ctx->state.endp_x, ctx->state.endp_y,
 		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
@@ -190,12 +184,12 @@ void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx)
 {
 	pcb_coord_t width;
 	SKIP;
-	width = ctx->state.coord[BXL_WIDTH];
+	width = ctx->state.width;
 	if (width == 0)
 		width = 1;
 	pcb_arc_new(ctx->state.layer, 
-		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
-		ctx->state.coord[BXL_RADIUS], ctx->state.coord[BXL_RADIUS],
+		ctx->state.origin_x, ctx->state.origin_y,
+		ctx->state.radius, ctx->state.radius,
 		ctx->state.arc_start, ctx->state.arc_delta,
 		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 }
@@ -210,7 +204,7 @@ void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y)
 {
 	SKIP;
 	assert(ctx->state.poly != NULL);
-	pcb_poly_point_new(ctx->state.poly, x + ctx->state.coord[BXL_ORIGIN_X], y + ctx->state.coord[BXL_ORIGIN_Y]);
+	pcb_poly_point_new(ctx->state.poly, x + ctx->state.origin_x, y + ctx->state.origin_y);
 }
 
 static int poly_is_valid(pcb_poly_t *p)

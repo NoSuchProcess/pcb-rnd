@@ -582,7 +582,7 @@ case 16:
 break;
 case 20:
 #line 130 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_set_coord(ctx, BXL_ORIGIN_X, yyctx->stack.l_mark[-2].un.c); pcb_bxl_set_coord(ctx, BXL_ORIGIN_Y, yyctx->stack.l_mark[0].un.c); }
+	{ ctx->state.origin_x = yyctx->stack.l_mark[-2].un.c; ctx->state.origin_y = yyctx->stack.l_mark[0].un.c; }
 break;
 case 21:
 #line 134 "../../src_plugins/io_bxl/bxl_gram.y"
@@ -606,7 +606,7 @@ case 74:
 break;
 case 77:
 #line 271 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_set_coord(ctx, BXL_WIDTH, yyctx->stack.l_mark[0].un.c); }
+	{ ctx->state.width = yyctx->stack.l_mark[0].un.c; }
 break;
 case 78:
 #line 272 "../../src_plugins/io_bxl/bxl_gram.y"
@@ -626,11 +626,11 @@ case 83:
 break;
 case 86:
 #line 290 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_set_coord(ctx, BXL_ENDP_X, yyctx->stack.l_mark[-2].un.c); pcb_bxl_set_coord(ctx, BXL_ENDP_Y, yyctx->stack.l_mark[0].un.c); }
+	{ ctx->state.endp_x = yyctx->stack.l_mark[-2].un.c; ctx->state.endp_y = yyctx->stack.l_mark[0].un.c; }
 break;
 case 87:
 #line 291 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_set_coord(ctx, BXL_WIDTH, yyctx->stack.l_mark[0].un.c); }
+	{ ctx->state.width = yyctx->stack.l_mark[0].un.c; }
 break;
 case 97:
 #line 316 "../../src_plugins/io_bxl/bxl_gram.y"
@@ -642,7 +642,7 @@ case 98:
 break;
 case 102:
 #line 327 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_set_coord(ctx, BXL_RADIUS, yyctx->stack.l_mark[0].un.c); }
+	{ ctx->state.radius = yyctx->stack.l_mark[0].un.c;  }
 break;
 case 103:
 #line 328 "../../src_plugins/io_bxl/bxl_gram.y"
