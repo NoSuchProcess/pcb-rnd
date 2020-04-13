@@ -389,7 +389,9 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 			if (yres != 0) {
 				printf("Syntax error at %ld:%ld\n", lval.line, lval.first_col);
 				ret = -1;
-				break;
+				if (bctx.subc != NULL)
+					pcb_subc_free(bctx.subc);
+				goto error;
 			}
 			pcb_bxl_lex_reset(&lctx); /* prepare for the next token */
 		}
@@ -397,6 +399,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 
 	pcb_subc_reg(data, bctx.subc);
 
+	error:;
 	pcb_bxl_uninit(&bctx);
 	fclose(f);
 	return ret;
