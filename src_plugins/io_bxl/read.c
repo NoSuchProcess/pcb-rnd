@@ -416,7 +416,7 @@ static int poly_is_valid(pcb_poly_t *p)
 
 			{ /* count number of not-on-the-same-line vertices to make sure there's more than 2*/
 				pcb_vnode_t *cur;
-				int r;
+				int r = 0;
 
 				cur = contour->head;
 				do {
