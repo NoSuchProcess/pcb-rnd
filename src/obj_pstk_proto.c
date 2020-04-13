@@ -634,6 +634,8 @@ void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
 	pcb_pstk_tshape_t *ts_dst, *ts_src;
 
 	memcpy(dst, src, sizeof(pcb_pstk_proto_t));
+	if (src->name != NULL)
+		dst->name = pcb_strdup(src->name);
 	pcb_vtpadstack_tshape_init(&dst->tr);
 
 	if (src->tr.used > 0) {
