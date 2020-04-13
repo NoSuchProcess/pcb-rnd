@@ -185,21 +185,67 @@ void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *ke
 
 void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name)
 {
+	htsi_entry_t *e = htsi_getentry(&ctx->proto_name2id, name);
+	if (e != NULL)
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' redefined\n", name);
 
+	ctx->state.proto.name = name;
+	ctx->state.proto.in_use = 1;
+	if (e == NULL)
+		htsi_set(&ctx->proto_name2id, name, ctx->proto_id++);
 }
 
 void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 {
-
+	pcb_cardinal_t i = pcb_pstk_proto_insert_forcedup(ctx->subc->data, &ctx->state.proto, 0, 0);
+	if (ctx->proto_id-1 != i)
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
+	free(ctx->state.proto.name);
+	ctx->state.proto.name = NULL;
 }
 
 void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)
 {
-
+	if (pcb_strcasecmp(name, "rectangle") == 0)    ctx->state.shape_type = 1;
+	else if (pcb_strcasecmp(name, "square") == 0)  ctx->state.shape_type = 1;
+	else if (pcb_strcasecmp(name, "round") == 0)   ctx->state.shape_type = 2;
+	else {
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: unknown padstack shape '%s' in '%s' - omitting shape\n", name, ctx->state.proto.name);
+		return;
+	}
 }
 
 void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 {
+	pcb_pstk_tshape_t *ts;
+	pcb_pstk_shape_t *sh;
+
+	ts = pcb_vtpadstack_tshape_alloc_append(&ctx->state.proto.tr, 1);
+	sh = pcb_pstk_alloc_append_shape(ts);
+
+	sh->layer_mask = ctx->state.layer->meta.bound.type;
+	sh->comb = ctx->state.layer->comb;
+	switch(ctx->state.shape_type) {
+		case 1: /* rectangle, square */
+			{
+				pcb_coord_t w2 = (ctx->state.width/2)+1, h2 = (ctx->state.height/2)+1;
+				sh->shape = PCB_PSSH_POLY;
+				pcb_pstk_shape_alloc_poly(&sh->data.poly, 4);
+				sh->data.poly.x[0] = -w2; sh->data.poly.y[0] = -h2;
+				sh->data.poly.x[1] = +w2; sh->data.poly.y[1] = -h2;
+				sh->data.poly.x[2] = +w2; sh->data.poly.y[2] = +h2;
+				sh->data.poly.x[3] = -w2; sh->data.poly.y[3] = +h2;
+			}
+			break;
+
+		case 2: /* round */
+			sh->shape = PCB_PSSH_CIRC;
+			sh->data.circ.x = sh->data.circ.y = 0;
+			sh->data.circ.dia = (ctx->state.width + ctx->state.height)/2;
+			if (ctx->state.width != ctx->state.height)
+				pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack: asymmetric round shape - probably a typo, using real round shape in '%s'\n", ctx->state.proto.name);
+			break;
+	}
 
 }
 
@@ -405,6 +451,7 @@ TODO("This reads the first footprint only:");
 	bctx->in_target_fp = 1;
 	htsp_init(&bctx->layer_name2ly, strhash, strkeyeq);
 	htsp_init(&bctx->text_name2style, strhash_case, strkeyeq_case);
+	htsi_init(&bctx->proto_name2id, strhash, strkeyeq);
 }
 
 static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
@@ -426,6 +473,8 @@ static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
 		free(e->value);
 	}
 	htsp_uninit(&bctx->text_name2style);
+
+	htsi_uninit(&bctx->proto_name2id);
 }
 
 #undef WARN_CNT

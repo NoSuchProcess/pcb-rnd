@@ -5,7 +5,9 @@
 #include "layer.h"
 #include "obj_subc.h"
 #include "obj_poly.h"
+#include "obj_pstk.h"
 #include <genht/htsp.h>
+#include <genht/htsi.h>
 
 typedef enum {
 	PCB_BXL_JUST_TOP    = 1,
@@ -27,6 +29,8 @@ typedef struct pcb_bxl_ctx_s {
 	/* cache */
 	htsp_t layer_name2ly;
 	htsp_t text_name2style;
+	htsi_t proto_name2id;
+	int proto_id;
 
 	struct {
 		pcb_layer_t *layer;
@@ -35,10 +39,11 @@ typedef struct pcb_bxl_ctx_s {
 		pcb_poly_t *poly;
 		double arc_start, arc_delta;
 		double rot;
-		int num_shapes, pad_type;
+		int num_shapes, pad_type, shape_type;
 		pcb_bxl_just_t hjust, vjust;
 		pcb_bxl_test_style_t *text_style;
 		char *text_str;
+		pcb_pstk_proto_t proto;
 		unsigned flipped:1;
 		unsigned invis:1;
 		unsigned plated:1;
