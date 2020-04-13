@@ -308,6 +308,23 @@ void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx)
 	ctx->state.delayed_poly = 0;
 }
 
+void pcb_bxl_text_style_begin(pcb_bxl_ctx_t *ctx, char *name)
+{
+	pcb_bxl_test_style_t *ts = htsp_get(&ctx->text_name2style, name);
+	if (ts == NULL) {
+		ts = calloc(sizeof(pcb_bxl_test_style_t), 1);
+		htsp_set(&ctx->text_name2style, name, ts); /* name is not free'd at the caller */
+	}
+	else
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' is redefined; second definition will override first\n", name);
+	ctx->state.text_style = ts;
+}
+
+void pcb_bxl_text_style_end(pcb_bxl_ctx_t *ctx)
+{
+	ctx->state.text_style = NULL;
+}
+
 
 #define WARN_CNT(_count_, args) \
 do { \
@@ -323,6 +340,7 @@ static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, const char *fpname)
 TODO("This reads the first footprint only:");
 	bctx->in_target_fp = 1;
 	htsp_init(&bctx->layer_name2ly, strhash, strkeyeq);
+	htsp_init(&bctx->text_name2style, strhash, strkeyeq);
 }
 
 static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
@@ -338,6 +356,12 @@ static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
 	for(e = htsp_first(&bctx->layer_name2ly); e != NULL; e = htsp_next(&bctx->layer_name2ly, e))
 		free(e->key);
 	htsp_uninit(&bctx->layer_name2ly);
+
+	for(e = htsp_first(&bctx->text_name2style); e != NULL; e = htsp_next(&bctx->text_name2style, e)) {
+		free(e->key);
+		free(e->value);
+	}
+	htsp_uninit(&bctx->text_name2style);
 }
 
 #undef WARN_CNT

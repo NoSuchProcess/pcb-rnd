@@ -15,12 +15,17 @@ typedef enum {
 	PCB_BXL_JUST_RIGHT  = 4
 } pcb_bxl_just_t;
 
+typedef struct {
+	pcb_coord_t width, height, char_width;
+} pcb_bxl_test_style_t;
+
 typedef struct pcb_bxl_ctx_s {
 	pcb_subc_t *subc;
 	char in_target_fp; /* 1 if we are parsing the target footprint; else skip */
 
 	/* cache */
 	htsp_t layer_name2ly;
+	htsp_t text_name2style;
 
 	struct {
 		pcb_layer_t *layer;
@@ -28,6 +33,7 @@ typedef struct pcb_bxl_ctx_s {
 		pcb_poly_t *poly;
 		double arc_start, arc_delta;
 		pcb_bxl_just_t hjust, vjust;
+		pcb_bxl_test_style_t *text_style;
 		unsigned flipped:1;
 		unsigned invis:1;
 		unsigned plated:1;
@@ -58,5 +64,8 @@ void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y);
+
+void pcb_bxl_text_style_begin(pcb_bxl_ctx_t *ctx, char *name);
+void pcb_bxl_text_style_end(pcb_bxl_ctx_t *ctx);
 
 #endif

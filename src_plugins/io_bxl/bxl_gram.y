@@ -142,7 +142,8 @@ common_width:
 /*** TextStyle ***/
 
 text_style:
-	T_TEXTSTYLE T_QSTR text_style_attrs
+	T_TEXTSTYLE T_QSTR             { pcb_bxl_text_style_begin(ctx, $2); /* $2 is taken over */ }
+		text_style_attrs             { pcb_bxl_text_style_end(ctx); }
 	;
 
 text_style_attrs:
@@ -151,9 +152,9 @@ text_style_attrs:
 	;
 
 text_style_attr:
-	  T_FONTWIDTH T_INTEGER
-	| T_FONTCHARWIDTH T_INTEGER
-	| T_FONTHEIGHT T_INTEGER
+	  T_FONTWIDTH coord            { ctx->state.text_style->width = $2; }
+	| T_FONTCHARWIDTH coord        { ctx->state.text_style->char_width = $2; }
+	| T_FONTHEIGHT coord           { ctx->state.text_style->height = $2; }
 	;
 
 
