@@ -54,6 +54,19 @@ static const pcb_dflgmap_t bxl_layer_names[] = {
 	{"BOTTOM_SOLDER_MASK",  PCB_LYT_BOTTOM | PCB_LYT_MASK,    NULL,       PCB_LYC_SUB, 0},
 	{"TOP_SOLDER_PASTE",    PCB_LYT_TOP | PCB_LYT_PASTE,      NULL,       0,           0},
 	{"BOTTOM_SOLDER_PASTE", PCB_LYT_BOTTOM | PCB_LYT_PASTE,   NULL,       0,           0},
+
+	/* these are better not drawn by default */
+	{"3D_DXF",              PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"PIN_DETAIL",          PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"TOP_NO-PROBE",        PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"BOTTOM_NO-PROBE",     PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"TOP_VALOR",           PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"BOTTOM_VALOR",        PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"TOP_PLACE_BOUND",     PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"BOTTOM_PLACE_BOUND",  PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"TOP_PLACEBOUND_3",    PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"BOTTOM_PLACEBOUND_3", PCB_LYT_VIRTUAL,                  NULL,       0,           0},
+	{"PLACEMENT_BODY",      PCB_LYT_VIRTUAL,                  NULL,       0,           0},
 	{NULL, 0, 0, 0, 0}
 };
 
