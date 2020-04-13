@@ -252,6 +252,7 @@ void pcb_bxl_pad_begin(pcb_bxl_ctx_t *ctx)
 {
 	SKIP;
 	ctx->state.pstk_proto_id = -1;
+	ctx->state.pin_number = -1;
 }
 
 void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
@@ -271,8 +272,20 @@ void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
 		PCB_MM_TO_COORD(0.2), pcb_flag_make(PCB_FLAG_CLEARLINE),
 		ctx->state.rot, xmirror, smirror);
 
-TODO("pin number and name");
-/*	ps->name = ctx->state.pin_name;*/
+	if (ps != NULL) {
+		if (ctx->state.pin_name != NULL)
+			pcb_attribute_put(&ps->Attributes, "name", ctx->state.pin_name);
+
+		if (ctx->state.pin_number != NULL) {
+			char tmp[32];
+			sprintf(tmp, "%d", ctx->state.pin_number);
+			pcb_attribute_put(&ps->Attributes, "term", tmp);
+		}
+	}
+	else
+		pcb_message(PCB_MSG_ERROR, "bxl footprint: internal error: failed to create padstack - expect missing padstacks\n");
+
+	free(ctx->state.pin_name);
 	ctx->state.pin_name = NULL;
 }
 
