@@ -277,13 +277,19 @@ void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx)
 /*		pcb_poly_init_clip(ctx->subc->data, ctx->state.layer, ctx->state.poly);*/
 	}
 	else {
-		pcb_message(PCB_MSG_WARNING, "footprint contains invalid polygon (polygon ignored)\n");
+		ctx->warn.poly_broken++;
 		pcb_poly_free(ctx->state.poly);
 	}
 	ctx->state.poly = NULL;
 	ctx->state.delayed_poly = 0;
 }
 
+
+#define WARN_CNT(_count_, args) \
+do { \
+	long cnt = (bctx.warn._count_); \
+	if (cnt > 0) pcb_message args; \
+} while(0)
 
 
 
@@ -344,6 +350,12 @@ TODO("This reads the first footprint only:");
 			pcb_bxl_lex_reset(&lctx); /* prepare for the next token */
 		}
 	}
+
+	/* emit all accumulated warnings */
+	WARN_CNT(poly_broken,        (PCB_MSG_WARNING, "footprint contains %ld invalid polygons (polygons ignored)\n", cnt));
+	WARN_CNT(property_null_obj,  (PCB_MSG_WARNING, "footprint contains %ld properties that could not be attached to any object\n", cnt));
+	WARN_CNT(property_nosep,     (PCB_MSG_WARNING, "footprint contains %ld properties without separator between key and value\n", cnt));
+
 
 	for(e = htsp_first(&bctx.layer_name2ly); e != NULL; e = htsp_next(&bctx.layer_name2ly, e))
 		free(e->key);

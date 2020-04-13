@@ -31,6 +31,7 @@ typedef struct pcb_bxl_ctx_s {
 	} state;
 
 	struct {
+		long poly_broken;
 		long property_null_obj;
 		long property_nosep;
 	} warn;
