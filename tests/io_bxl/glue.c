@@ -25,3 +25,7 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx) { }
 void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name) {}
 void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx) {}
 
+
+void pcb_bxl_pad_begin(pcb_bxl_ctx_t *ctx) {}
+void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx) { free(ctx->state.pin_name); }
+void pcb_bxl_pad_set_style(pcb_bxl_ctx_t *ctx, const char *pstkname) { }
