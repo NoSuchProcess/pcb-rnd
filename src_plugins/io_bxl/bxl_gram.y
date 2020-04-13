@@ -130,6 +130,10 @@ common_origin:
 	T_ORIGIN coord ',' coord     { pcb_bxl_set_coord(ctx, BXL_ORIGIN_X, $2); pcb_bxl_set_coord(ctx, BXL_ORIGIN_Y, $4); }
 	;
 
+common_layer:
+	T_LAYER T_ID                 { pcb_bxl_set_layer(ctx, $2); free($2); }
+	;
+
 /*** TextStyle ***/
 
 text_style:
@@ -187,7 +191,7 @@ padshape_attr:
 	  T_WIDTH real
 	| T_HEIGHT real
 	| T_PADTYPE T_INTEGER
-	| T_LAYER T_ID
+	| common_layer
 	;
 
 /*** Pattern ***/
@@ -264,11 +268,11 @@ poly_attrs:
 	;
 
 poly_attr:
-	  T_LAYER T_ID                 { pcb_bxl_set_layer(ctx, $2); free($2); }
-	| T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
+	  T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
 	| T_PROPERTY T_QSTR            { pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, $2); free($2); }
 	| coord ',' coord              { pcb_bxl_poly_add_vertex(ctx, $1, $3); }
 	| common_origin
+	| common_layer
 	;
 
 /*** Line ***/
@@ -283,10 +287,10 @@ line_attrs:
 	;
 
 line_attr:
-	  T_LAYER T_ID                 { pcb_bxl_set_layer(ctx, $2); free($2); }
-	| T_ENDPOINT coord ',' coord   { pcb_bxl_set_coord(ctx, BXL_ENDP_X, $2); pcb_bxl_set_coord(ctx, BXL_ENDP_Y, $4); }
+	  T_ENDPOINT coord ',' coord   { pcb_bxl_set_coord(ctx, BXL_ENDP_X, $2); pcb_bxl_set_coord(ctx, BXL_ENDP_Y, $4); }
 	| T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
 	| common_origin
+	| common_layer
 	;
 
 /*** Attribute ***/
@@ -300,10 +304,10 @@ attribute_attrs:
 	;
 
 attribute_attr:
-	  T_LAYER T_ID
-	| T_ATTR T_QSTR T_QSTR
+	  T_ATTR T_QSTR T_QSTR
 	| common_attr_text
 	| common_origin
+	| common_layer
 	;
 
 
@@ -318,12 +322,12 @@ arc_attrs:
 	;
 
 arc_attr:
-	  T_LAYER T_ID
-	| T_WIDTH coord
+	  T_WIDTH coord
 	| T_RADIUS coord
 	| T_STARTANGLE real
 	| T_SWEEPANGLE real
 	| common_origin
+	| common_layer
 	;
 
 /*** Text ***/
@@ -337,12 +341,12 @@ text_attrs:
 	;
 
 text_attr:
-	  T_LAYER T_ID
-	| T_TEXT T_QSTR
+	  T_TEXT T_QSTR
 	| T_ISFLIPPED boolean
 	| T_ROTATE real
 	| common_attr_text
 	| common_origin
+	| common_layer
 	;
 
 /*** Wizard & template ***/
