@@ -440,7 +440,6 @@ void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx)
 	SKIP;
 	assert(ctx->state.poly != NULL);
 
-	printf("poly end\n");
 	if (poly_is_valid(ctx->state.poly)) {
 		pcb_add_poly_on_layer(ctx->state.layer, ctx->state.poly);
 /*		pcb_poly_init_clip(ctx->subc->data, ctx->state.layer, ctx->state.poly);*/
