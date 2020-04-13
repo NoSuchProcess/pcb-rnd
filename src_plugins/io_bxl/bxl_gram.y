@@ -257,7 +257,7 @@ poly_attr:
 	  T_LAYER T_ID                 { pcb_bxl_set_layer(ctx, $2); free($2); }
 	| T_ORIGIN coord ',' coord     { pcb_bxl_set_coord(ctx, BXL_ORIGIN_X, $2); pcb_bxl_set_coord(ctx, BXL_ORIGIN_Y, $4); }
 	| T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
-	| T_PROPERTY T_QSTR
+	| T_PROPERTY T_QSTR            { pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, $2); free($2); }
 	| coord ',' coord              { pcb_bxl_poly_add_vertex(ctx, $1, $3); }
 	;
 

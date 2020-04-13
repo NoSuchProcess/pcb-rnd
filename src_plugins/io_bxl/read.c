@@ -147,6 +147,30 @@ void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val)
 	ctx->state.coord[idx] = val;
 }
 
+void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval)
+{
+	char *tmp, *val;
+	const char *sep;
+
+	if (obj == NULL) {
+		ctx->warn.property_null_obj++;
+		return;
+	}
+
+	sep = strchr(keyval, '=');
+	if (sep == NULL) {
+		ctx->warn.property_nosep++;
+		return;
+	}
+
+	tmp = pcb_strdup(keyval);
+	tmp[sep-keyval] = '\0';
+	val = tmp+(sep-keyval)+1;
+	pcb_attribute_put(&obj->Attributes, tmp, val);
+	free(tmp);
+}
+
+
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 {
 	pcb_coord_t width;
@@ -154,9 +178,6 @@ void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 	width = ctx->state.coord[BXL_WIDTH];
 	if (width == 0)
 		width = 1;
-		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
-		ctx->state.coord[BXL_ENDP_X], ctx->state.coord[BXL_ENDP_Y],
-		width);
 	pcb_line_new(ctx->state.layer, 
 		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
 		ctx->state.coord[BXL_ENDP_X], ctx->state.coord[BXL_ENDP_Y],

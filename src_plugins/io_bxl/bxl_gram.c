@@ -613,6 +613,10 @@ case 74:
 #line 259 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_set_coord(ctx, BXL_WIDTH, yyctx->stack.l_mark[0].un.c); }
 break;
+case 75:
+#line 260 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
+break;
 case 76:
 #line 261 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_poly_add_vertex(ctx, yyctx->stack.l_mark[-2].un.c, yyctx->stack.l_mark[0].un.c); }
@@ -641,7 +645,7 @@ case 84:
 #line 279 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_set_coord(ctx, BXL_WIDTH, yyctx->stack.l_mark[0].un.c); }
 break;
-#line 657 "../../src_plugins/io_bxl/bxl_gram.c"
+#line 661 "../../src_plugins/io_bxl/bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;
