@@ -124,7 +124,7 @@ coord:
 common_attr_text:
 	  T_JUSTIFY T_ID             { pcb_bxl_set_justify(ctx, $2); free($2); }
 	| T_TEXTSTYLE T_QSTR
-	| T_ISVISIBLE boolean
+	| T_ISVISIBLE boolean        { ctx->state.invis = $2; }
 	;
 
 common_origin:
@@ -173,9 +173,9 @@ pstk_attrs:
 
 pstk_attr:
 	  T_HOLEDIAM T_INTEGER
-	| T_SURFACE boolean
-	| T_PLATED boolean
-	| T_NOPASTE boolean
+	| T_SURFACE boolean            { ctx->state.surface = $2; }
+	| T_PLATED boolean             { ctx->state.plated = $2; }
+	| T_NOPASTE boolean            { ctx->state.nopaste = $2; }
 	;
 
 pad_shapes:
@@ -349,7 +349,7 @@ text_attrs:
 
 text_attr:
 	  T_TEXT T_QSTR
-	| T_ISFLIPPED boolean
+	| T_ISFLIPPED boolean         { ctx->state.flipped = $2; }
 	| T_ROTATE real
 	| common_attr_text
 	| common_origin

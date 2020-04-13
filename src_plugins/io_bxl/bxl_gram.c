@@ -593,6 +593,10 @@ case 17:
 #line 125 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ pcb_bxl_set_justify(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
+case 19:
+#line 127 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->state.invis = yyctx->stack.l_mark[0].un.i; }
+break;
 case 20:
 #line 131 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.origin_x = yyctx->stack.l_mark[-2].un.c; ctx->state.origin_y = yyctx->stack.l_mark[0].un.c; }
@@ -604,6 +608,18 @@ break;
 case 22:
 #line 139 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.width = yyctx->stack.l_mark[0].un.c; }
+break;
+case 33:
+#line 176 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->state.surface = yyctx->stack.l_mark[0].un.i; }
+break;
+case 34:
+#line 177 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->state.plated = yyctx->stack.l_mark[0].un.i; }
+break;
+case 35:
+#line 178 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->state.nopaste = yyctx->stack.l_mark[0].un.i; }
 break;
 case 45:
 #line 204 "../../src_plugins/io_bxl/bxl_gram.y"
@@ -661,7 +677,11 @@ case 104:
 #line 334 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.arc_delta = yyctx->stack.l_mark[0].un.d; }
 break;
-#line 677 "../../src_plugins/io_bxl/bxl_gram.c"
+case 112:
+#line 352 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->state.flipped = yyctx->stack.l_mark[0].un.i; }
+break;
+#line 697 "../../src_plugins/io_bxl/bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;

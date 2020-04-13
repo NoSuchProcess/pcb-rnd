@@ -28,6 +28,12 @@ typedef struct pcb_bxl_ctx_s {
 		pcb_poly_t *poly;
 		double arc_start, arc_delta;
 		pcb_bxl_just_t hjust, vjust;
+		unsigned flipped:1;
+		unsigned invis:1;
+		unsigned plated:1;
+		unsigned nopaste:1;
+		unsigned surface:1;
+
 		unsigned delayed_poly:1;
 	} state;
 
