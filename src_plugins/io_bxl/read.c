@@ -224,6 +224,7 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 
 	sh->layer_mask = ctx->state.layer->meta.bound.type;
 	sh->comb = ctx->state.layer->comb;
+	sh->clearance = 0;
 	switch(ctx->state.shape_type) {
 		case 1: /* rectangle, square */
 			{
