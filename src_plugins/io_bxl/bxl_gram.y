@@ -244,7 +244,8 @@ pad_attr:
 
 /*** Poly ***/
 poly:
-	T_POLY poly_attrs
+	T_POLY                { pcb_bxl_poly_begin(ctx); }
+		poly_attrs          { pcb_bxl_poly_end(ctx); }
 	;
 
 poly_attrs:
@@ -253,11 +254,11 @@ poly_attrs:
 	;
 
 poly_attr:
-	  T_LAYER T_ID
-	| T_ORIGIN coord ',' coord
-	| T_WIDTH coord
+	  T_LAYER T_ID                 { pcb_bxl_set_layer(ctx, $2); free($2); }
+	| T_ORIGIN coord ',' coord     { pcb_bxl_set_coord(ctx, BXL_ORIGIN_X, $2); pcb_bxl_set_coord(ctx, BXL_ORIGIN_Y, $4); }
+	| T_WIDTH coord                { pcb_bxl_set_coord(ctx, BXL_WIDTH, $2); }
 	| T_PROPERTY T_QSTR
-	| coord ',' coord
+	| coord ',' coord              { pcb_bxl_poly_add_vertex(ctx, $1, $3); }
 	;
 
 /*** Line ***/

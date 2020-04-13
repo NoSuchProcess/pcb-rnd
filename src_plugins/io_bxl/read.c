@@ -121,6 +121,12 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 	}
 	else
 		ctx->state.layer = e->value;
+
+	if (ctx->state.delayed_poly) {
+		ctx->state.poly = pcb_poly_new(ctx->state.layer, 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
+		ctx->state.delayed_poly = 0;
+printf("delayed poly: %p\n", ctx->state.poly);
+	}
 }
 
 void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val)
@@ -145,6 +151,110 @@ void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 		ctx->state.coord[BXL_ENDP_X], ctx->state.coord[BXL_ENDP_Y],
 		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
+
+void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx)
+{
+	SKIP;
+	ctx->state.delayed_poly = 1;
+	printf("delaying poly\n");
+}
+
+void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y)
+{
+	SKIP;
+	pcb_printf("poly vertex %mm %mm\n", x + ctx->state.coord[BXL_ORIGIN_X], y + ctx->state.coord[BXL_ORIGIN_Y]);
+	assert(ctx->state.poly != NULL);
+	pcb_poly_point_new(ctx->state.poly, x + ctx->state.coord[BXL_ORIGIN_X], y + ctx->state.coord[BXL_ORIGIN_Y]);
+}
+
+static int poly_is_valid(pcb_poly_t *p)
+{
+	pcb_pline_t *contour = NULL;
+	pcb_polyarea_t *np1 = NULL, *np = NULL;
+	pcb_cardinal_t n;
+	pcb_vector_t v;
+	int res = 1;
+
+	np1 = np = pcb_polyarea_create();
+	if (np == NULL)
+		return 0;
+
+	/* first make initial polygon contour */
+	for (n = 0; n < p->PointN; n++) {
+		/* No current contour? Make a new one starting at point */
+		/*   (or) Add point to existing contour */
+
+		v[0] = p->Points[n].X;
+		v[1] = p->Points[n].Y;
+		if (contour == NULL) {
+			if ((contour = pcb_poly_contour_new(v)) == NULL)
+				goto err;
+		}
+		else {
+			pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+		}
+
+		/* Is current point last in contour? If so process it. */
+		if (n == p->PointN - 1) {
+			pcb_poly_contour_pre(contour, pcb_true);
+
+			if (contour->Count == 0)
+				return 0;
+
+			{ /* count number of not-on-the-same-line vertices to make sure there's more than 2*/
+				pcb_vnode_t *cur;
+				int r;
+
+				cur = contour->head;
+				do {
+					r++;
+				} while ((cur = cur->next) != contour->head);
+				if (r < 3)
+					goto err;
+			}
+
+			/* make sure it is a positive contour (outer) or negative (hole) */
+			if (contour->Flags.orient != PCB_PLF_DIR) {
+				pcb_poly_contour_inv(contour);
+			}
+
+			pcb_polyarea_contour_include(np, contour);
+			if (contour->Count == 0)
+				return 0;
+			contour = NULL;
+
+			if (!pcb_poly_valid(np))
+				res = 0;
+		}
+	}
+	pcb_polyarea_free(&np1);
+	return res;
+
+	err:;
+	pcb_polyarea_free(&np1);
+	return 0;
+}
+
+
+void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx)
+{
+	SKIP;
+	assert(ctx->state.poly != NULL);
+
+	printf("poly end\n");
+	if (poly_is_valid(ctx->state.poly)) {
+		pcb_add_poly_on_layer(ctx->state.layer, ctx->state.poly);
+/*		pcb_poly_init_clip(ctx->subc->data, ctx->state.layer, ctx->state.poly);*/
+	}
+	else {
+		pcb_message(PCB_MSG_WARNING, "footprint contains invalid polygon (polygon ignored)\n");
+		pcb_poly_free(ctx->state.poly);
+	}
+	ctx->state.poly = NULL;
+	ctx->state.delayed_poly = 0;
+}
+
+
 
 
 /* Error is handled on the push side */

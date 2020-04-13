@@ -4,6 +4,7 @@
 #include "data.h"
 #include "layer.h"
 #include "obj_subc.h"
+#include "obj_poly.h"
 #include <genht/htsp.h>
 
 enum {
@@ -25,6 +26,8 @@ typedef struct pcb_bxl_ctx_s {
 	struct {
 		pcb_layer_t *layer;
 		pcb_coord_t coord[BXL_coord_max];
+		pcb_poly_t *poly;
+		unsigned delayed_poly:1;
 	} state;
 } pcb_bxl_ctx_t;
 
@@ -35,5 +38,9 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name);
 void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val);
 
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx);
+
+void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx);
+void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx);
+void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y);
 
 #endif
