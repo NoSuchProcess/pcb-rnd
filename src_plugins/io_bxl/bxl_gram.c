@@ -589,6 +589,10 @@ case 16:
 #line 121 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ yyctx->val.un.c = PCB_MIL_TO_COORD(yyctx->stack.l_mark[0].un.d); }
 break;
+case 17:
+#line 125 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ pcb_bxl_set_justify(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
+break;
 case 20:
 #line 131 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.origin_x = yyctx->stack.l_mark[-2].un.c; ctx->state.origin_y = yyctx->stack.l_mark[0].un.c; }
@@ -657,7 +661,7 @@ case 104:
 #line 334 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.arc_delta = yyctx->stack.l_mark[0].un.d; }
 break;
-#line 673 "../../src_plugins/io_bxl/bxl_gram.c"
+#line 677 "../../src_plugins/io_bxl/bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;

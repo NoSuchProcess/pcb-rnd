@@ -141,6 +141,20 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 	}
 }
 
+void pcb_bxl_set_justify(pcb_bxl_ctx_t *ctx, const char *str)
+{
+	/* special case for single center */
+	if (pcb_strcasecmp(str, "center") == 0) { ctx->state.hjust = ctx->state.vjust = PCB_BXL_JUST_CENTER; return; }
+
+	if (pcb_strncasecmp(str, "lower", 5) == 0)       { ctx->state.vjust = PCB_BXL_JUST_BOTTOM; str+=5; }
+	else if (pcb_strncasecmp(str, "upper", 5) == 0)  { ctx->state.vjust = PCB_BXL_JUST_TOP; str+=5; }
+	else if (pcb_strncasecmp(str, "center", 6) == 0) { ctx->state.vjust = PCB_BXL_JUST_CENTER; str+=6; }
+
+	if (pcb_strncasecmp(str, "left", 4) == 0)        ctx->state.hjust = PCB_BXL_JUST_LEFT;
+	else if (pcb_strncasecmp(str, "right", 5) == 0)  ctx->state.hjust = PCB_BXL_JUST_RIGHT;
+	else if (pcb_strncasecmp(str, "center", 6) == 0) ctx->state.hjust = PCB_BXL_JUST_CENTER;
+}
+
 void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval)
 {
 	char *tmp, *val;

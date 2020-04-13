@@ -122,7 +122,7 @@ coord:
 	;
 
 common_attr_text:
-	  T_JUSTIFY T_ID
+	  T_JUSTIFY T_ID             { pcb_bxl_set_justify(ctx, $2); free($2); }
 	| T_TEXTSTYLE T_QSTR
 	| T_ISVISIBLE boolean
 	;
