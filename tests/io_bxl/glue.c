@@ -9,3 +9,5 @@ void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx) {}
 void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx) {}
 void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx) {}
 void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y) {}
+void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval) {}
+
