@@ -13,6 +13,7 @@ enum {
 	BXL_ENDP_X,
 	BXL_ENDP_Y,
 	BXL_WIDTH,
+	BXL_RADIUS,
 	BXL_coord_max
 };
 
@@ -27,6 +28,7 @@ typedef struct pcb_bxl_ctx_s {
 		pcb_layer_t *layer;
 		pcb_coord_t coord[BXL_coord_max];
 		pcb_poly_t *poly;
+		double arc_start, arc_delta;
 		unsigned delayed_poly:1;
 	} state;
 
@@ -46,6 +48,7 @@ void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val);
 void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval);
 
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx);
+void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx);
 
 void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx);

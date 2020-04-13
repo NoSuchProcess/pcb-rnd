@@ -186,6 +186,20 @@ void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
+void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx)
+{
+	pcb_coord_t width;
+	SKIP;
+	width = ctx->state.coord[BXL_WIDTH];
+	if (width == 0)
+		width = 1;
+	pcb_arc_new(ctx->state.layer, 
+		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
+		ctx->state.coord[BXL_RADIUS], ctx->state.coord[BXL_RADIUS],
+		ctx->state.arc_start, ctx->state.arc_delta,
+		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+}
+
 void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx)
 {
 	SKIP;

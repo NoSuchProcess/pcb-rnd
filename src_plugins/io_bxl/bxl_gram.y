@@ -311,9 +311,10 @@ attribute_attr:
 	;
 
 
-/*** Line ***/
+/*** Arc ***/
 arc:
-	T_ARC arc_attrs
+	T_ARC                   { pcb_bxl_reset(ctx); }
+		arc_attrs             { pcb_bxl_add_arc(ctx); pcb_bxl_reset(ctx); }
 	;
 
 arc_attrs:
@@ -323,9 +324,9 @@ arc_attrs:
 
 arc_attr:
 	  T_WIDTH coord
-	| T_RADIUS coord
-	| T_STARTANGLE real
-	| T_SWEEPANGLE real
+	| T_RADIUS coord        { pcb_bxl_set_coord(ctx, BXL_RADIUS, $2); }
+	| T_STARTANGLE real     { ctx->state.arc_start = $2; }
+	| T_SWEEPANGLE real     { ctx->state.arc_delta = $2; }
 	| common_origin
 	| common_layer
 	;
