@@ -34,12 +34,61 @@
 
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_misc.h>
 #include "read.h"
 #include "bxl_decode.h"
 #include "bxl_lex.h"
 #include "bxl_gram.h"
 
 #define SKIP if (!ctx->in_target_fp) return
+
+static const pcb_dflgmap_t bxl_layer_names[] = {
+	/* name                 layer type                        purpose     comb         flags */
+	{"TOP",                 PCB_LYT_TOP | PCB_LYT_COPPER,     NULL,       0,           0},
+	{"BOTTOM",              PCB_LYT_BOTTOM | PCB_LYT_COPPER,  NULL,       0,           0},
+	{"TOP_SILKSCREEN",      PCB_LYT_TOP | PCB_LYT_SILK,       NULL,       0,           0},
+	{"BOTTOM_SILKSCREEN",   PCB_LYT_BOTTOM | PCB_LYT_SILK,    NULL,       0,           0},
+	{"TOP_ASSEMBLY",        PCB_LYT_TOP | PCB_LYT_DOC,        "assy",     0,           0},
+	{"BOTTOM_ASSEMBLY",     PCB_LYT_BOTTOM | PCB_LYT_DOC,     "assy",     0,           0},
+	{"TOP_SOLDER_MASK",     PCB_LYT_TOP | PCB_LYT_MASK,       NULL,       PCB_LYC_SUB, 0},
+	{"BOTTOM_SOLDER_MASK",  PCB_LYT_BOTTOM | PCB_LYT_MASK,    NULL,       PCB_LYC_SUB, 0},
+	{"TOP_SOLDER_PASTE",    PCB_LYT_TOP | PCB_LYT_PASTE,      NULL,       0,           0},
+	{"BOTTOM_SOLDER_PASTE", PCB_LYT_BOTTOM | PCB_LYT_PASTE,   NULL,       0,           0},
+	{NULL, 0, 0, 0, 0}
+};
+
+static const pcb_dflgmap_t bxl_layer_fragments[] = {
+	{"TOP_",                PCB_LYT_TOP,                      NULL,       0,           0},
+	{"BOTTOM_",             PCB_LYT_BOTTOM,                   NULL,       0,           0},
+	{NULL, 0, 0, 0, 0}
+};
+
+
+static const pcb_dflgmap_t *bcl_layer_resolve_name(const char *name)
+{
+	static pcb_dflgmap_t tmp;
+	const pcb_dflgmap_t *n;
+
+	for(n = bxl_layer_names; n->name != NULL; n++)
+		if (strcmp(name, n->name) == 0)
+			return n;
+
+	memset(&tmp, 0, sizeof(tmp));
+	for(n = bxl_layer_fragments; n->name != NULL; n++) {
+		if (strstr(name, n->name) != NULL) {
+			tmp.lyt |= n->lyt;
+			tmp.comb |= n->comb;
+			if (n->purpose != NULL)
+				tmp.purpose = n->purpose;
+		}
+	}
+	tmp.name = name;
+
+	if ((tmp.lyt & PCB_LYT_ANYTHING) == 0)
+		tmp.lyt |= PCB_LYT_DOC;
+
+	return &tmp;
+}
 
 void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name)
 {
@@ -55,13 +104,23 @@ void pcb_bxl_reset(pcb_bxl_ctx_t *ctx)
 {
 	SKIP;
 	memset(&ctx->state, 0, sizeof(ctx->state));
-	ctx->state.layer = -1;
 }
 
 void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 {
+	htsp_entry_t *e;
 	SKIP;
-	ctx->state.layer = 0;
+	e = htsp_getentry(&ctx->layer_name2ly, layer_name);
+	if (e == NULL) {
+		const pcb_dflgmap_t *lm = bcl_layer_resolve_name(layer_name);
+		pcb_layer_t *ly;
+
+		ly = pcb_subc_get_layer(ctx->subc, lm->lyt, lm->comb, 1, layer_name, pcb_true);
+		htsp_set(&ctx->layer_name2ly, pcb_strdup(layer_name), ly);
+		ctx->state.layer = ly;
+	}
+	else
+		ctx->state.layer = e->value;
 }
 
 void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val)
@@ -72,8 +131,19 @@ void pcb_bxl_set_coord(pcb_bxl_ctx_t *ctx, int idx, pcb_coord_t val)
 
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 {
+	pcb_coord_t width;
 	SKIP;
-	printf("Line!\n");
+	width = ctx->state.coord[BXL_WIDTH];
+	if (width == 0)
+		width = 1;
+	pcb_trace("bxl Line: %mm;%mm %mm;%mm %mm\n",
+		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
+		ctx->state.coord[BXL_ENDP_X], ctx->state.coord[BXL_ENDP_Y],
+		width);
+	pcb_line_new(ctx->state.layer, 
+		ctx->state.coord[BXL_ORIGIN_X], ctx->state.coord[BXL_ORIGIN_Y],
+		ctx->state.coord[BXL_ENDP_X], ctx->state.coord[BXL_ENDP_Y],
+		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
 
@@ -89,6 +159,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	pcb_bxl_ureglex_t lctx;
 	pcb_bxl_yyctx_t yyctx;
 	pcb_bxl_ctx_t bctx;
+	htsp_entry_t *e;
 
 	f = pcb_fopen(hl, filename, "rb");
 	if (f == NULL)
@@ -98,6 +169,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	bctx.subc = pcb_subc_new();
 TODO("This reads the first footprint only:");
 	bctx.in_target_fp = 1;
+	htsp_init(&bctx.layer_name2ly, strhash, strkeyeq);
 
 	pcb_bxl_decode_init(&hctx);
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
@@ -133,6 +205,9 @@ TODO("This reads the first footprint only:");
 		}
 	}
 
+	for(e = htsp_first(&bctx.layer_name2ly); e != NULL; e = htsp_next(&bctx.layer_name2ly, e))
+		free(e->key);
+	htsp_uninit(&bctx.layer_name2ly);
 	pcb_subc_reg(data, bctx.subc);
 	fclose(f);
 	return ret;

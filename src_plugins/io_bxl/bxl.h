@@ -4,6 +4,7 @@
 #include "data.h"
 #include "layer.h"
 #include "obj_subc.h"
+#include <genht/htsp.h>
 
 enum {
 	BXL_ORIGIN_X,
@@ -18,8 +19,11 @@ typedef struct pcb_bxl_ctx_s {
 	pcb_subc_t *subc;
 	char in_target_fp; /* 1 if we are parsing the target footprint; else skip */
 
+	/* cache */
+	htsp_t layer_name2ly;
+
 	struct {
-		pcb_layer_id_t layer;
+		pcb_layer_t *layer;
 		pcb_coord_t coord[BXL_coord_max];
 	} state;
 } pcb_bxl_ctx_t;
