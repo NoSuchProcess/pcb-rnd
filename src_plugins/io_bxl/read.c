@@ -464,8 +464,10 @@ static int poly_is_valid(pcb_poly_t *p)
 		if (n == p->PointN - 1) {
 			pcb_poly_contour_pre(contour, pcb_true);
 
-			if (contour->Count == 0)
+			if (contour->Count == 0) {
+				pcb_poly_contours_free(&contour);
 				return 0;
+			}
 
 			{ /* count number of not-on-the-same-line vertices to make sure there's more than 2*/
 				pcb_vnode_t *cur;
@@ -475,8 +477,10 @@ static int poly_is_valid(pcb_poly_t *p)
 				do {
 					r++;
 				} while ((cur = cur->next) != contour->head);
-				if (r < 3)
+				if (r < 3) {
+					pcb_poly_contours_free(&contour);
 					goto err;
+				}
 			}
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
