@@ -731,6 +731,11 @@ int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 					}
 					break;
 			}
+
+			/* fix memory leak */
+			if ((tok == T_ID) || (tok == T_QSTR))
+				free(lval.un.s);
+
 			pcb_bxl_lex_reset(&lctx); /* prepare for the next token */
 		}
 	}
