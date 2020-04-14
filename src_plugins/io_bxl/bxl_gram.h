@@ -49,6 +49,9 @@ typedef short pcb_bxl_int_t;
 TODO("Can remove this once the coord unit is converted with getvalue")
 #include <librnd/core/unit.h>
 
+#define XCRD(c) pcb_bxl_coord_x(c)
+#define YCRD(c) pcb_bxl_coord_y(c)
+
 #line 8 "../../src_plugins/io_bxl/bxl_gram.y"
 typedef union
 {

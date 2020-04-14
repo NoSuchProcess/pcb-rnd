@@ -50,6 +50,9 @@
 TODO("Can remove this once the coord unit is converted with getvalue")
 #include <librnd/core/unit.h>
 
+#define XCRD(c) pcb_bxl_coord_x(c)
+#define YCRD(c) pcb_bxl_coord_y(c)
+
 %}
 
 /* Generic */
@@ -128,7 +131,7 @@ common_attr_text:
 	;
 
 common_origin:
-	T_ORIGIN coord ',' coord     { ctx->state.origin_x = $2; ctx->state.origin_y = $4; }
+	T_ORIGIN coord ',' coord     { ctx->state.origin_x = XCRD($2); ctx->state.origin_y = YCRD($4); }
 	;
 
 common_layer:
@@ -279,7 +282,7 @@ poly_attrs:
 poly_attr:
 
 	  T_PROPERTY T_QSTR            { pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, $2); free($2); }
-	| coord ',' coord              { pcb_bxl_poly_add_vertex(ctx, $1, $3); }
+	| coord ',' coord              { pcb_bxl_poly_add_vertex(ctx, XCRD($1), YCRD($3)); }
 	| common_origin
 	| common_layer
 	| common_width
@@ -297,7 +300,7 @@ line_attrs:
 	;
 
 line_attr:
-	  T_ENDPOINT coord ',' coord   { ctx->state.endp_x = $2; ctx->state.endp_y = $4; }
+	  T_ENDPOINT coord ',' coord   { ctx->state.endp_x = XCRD($2); ctx->state.endp_y = YCRD($4); }
 	| common_origin
 	| common_layer
 	| common_width

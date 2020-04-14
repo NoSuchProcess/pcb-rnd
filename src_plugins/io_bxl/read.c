@@ -106,6 +106,9 @@ static const pcb_dflgmap_t *bcl_layer_resolve_name(const char *name)
 	return &tmp;
 }
 
+pcb_coord_t pcb_bxl_coord_x(pcb_coord_t c) { return c; }
+pcb_coord_t pcb_bxl_coord_y(pcb_coord_t c) { return -c; }
+
 void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name)
 {
 	TODO("implement");
