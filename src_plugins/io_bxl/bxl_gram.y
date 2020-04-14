@@ -380,8 +380,8 @@ wizard_attrs:
 	;
 
 wizard_attr:
-	  T_VARNAME T_QSTR
-	| T_VARDATA T_QSTR
+	  T_VARNAME T_QSTR      { free($2); }
+	| T_VARDATA T_QSTR      { free($2); }
 	| common_origin
 	;
 

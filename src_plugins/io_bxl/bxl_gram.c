@@ -823,7 +823,15 @@ case 120:
 #line 362 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.rot = yyctx->stack.l_mark[0].un.d; }
 break;
-#line 839 "../../src_plugins/io_bxl/bxl_gram.c"
+case 128:
+#line 383 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ free(yyctx->stack.l_mark[0].un.s); }
+break;
+case 129:
+#line 384 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ free(yyctx->stack.l_mark[0].un.s); }
+break;
+#line 847 "../../src_plugins/io_bxl/bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;
