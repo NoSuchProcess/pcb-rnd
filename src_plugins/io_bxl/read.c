@@ -222,7 +222,10 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 	pcb_pstk_tshape_t *ts;
 	pcb_pstk_shape_t *sh;
 
-	ts = pcb_vtpadstack_tshape_alloc_append(&ctx->state.proto.tr, 1);
+	if (ctx->state.proto.tr.used == 0)
+		ts = pcb_vtpadstack_tshape_alloc_append(&ctx->state.proto.tr, 1);
+	else
+		ts = &ctx->state.proto.tr.array[0];
 	sh = pcb_pstk_alloc_append_shape(ts);
 
 	sh->layer_mask = ctx->state.layer->meta.bound.type;
