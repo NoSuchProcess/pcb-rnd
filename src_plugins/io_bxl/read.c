@@ -635,6 +635,10 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 			lval.line = lctx.loc_line[0];
 			lval.first_col = lctx.loc_col[0];
 			yres = pcb_bxl_parse(&yyctx, &bctx, tok, &lval);
+
+			if ((bctx.in_error) && ((tok == T_ID) || (tok == T_QSTR)))
+				free(lval.un.s);
+
 			if (yres != 0) {
 				printf("Syntax error at %ld:%ld\n", lval.line, lval.first_col);
 				ret = -1;

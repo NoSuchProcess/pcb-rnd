@@ -387,6 +387,6 @@ wizard_attr:
 
 /*** Sections not interesting for pcb-rnd ***/
 boring_section:
-	T_SYMBOL error T_ENDSYMBOL
-	T_COMPONENT error T_ENDCOMPONENT
+	  { ctx->in_error = 1; } T_SYMBOL     error  T_ENDSYMBOL    { ctx->in_error = 0; }
+	| { ctx->in_error = 1; } T_COMPONENT  error  T_ENDCOMPONENT { ctx->in_error = 0; }
 	;

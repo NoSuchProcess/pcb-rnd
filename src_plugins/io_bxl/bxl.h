@@ -26,6 +26,8 @@ typedef struct pcb_bxl_ctx_s {
 	pcb_subc_t *subc;
 	char in_target_fp; /* 1 if we are parsing the target footprint; else skip */
 
+	int in_error;
+
 	/* cache */
 	htsp_t layer_name2ly;
 	htsp_t text_name2style;
