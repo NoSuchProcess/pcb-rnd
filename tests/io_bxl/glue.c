@@ -1,5 +1,8 @@
 #include "bxl.h"
 
+pcb_coord_t pcb_bxl_coord_x(pcb_coord_t c) { return c; }
+pcb_coord_t pcb_bxl_coord_y(pcb_coord_t c) { return -c; }
+
 void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name) {}
 void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx) {}
 void pcb_bxl_reset(pcb_bxl_ctx_t *ctx) {}
