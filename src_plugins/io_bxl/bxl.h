@@ -44,15 +44,16 @@ typedef struct pcb_bxl_ctx_s {
 		char *pin_name;
 		pcb_bxl_just_t hjust, vjust;
 		pcb_bxl_test_style_t *text_style;
-		char *text_str;
+		char *text_str, *attr_key, *attr_val;
 		pcb_pstk_proto_t proto;
 		unsigned flipped:1;
-		unsigned invis:1;
+		unsigned is_visible:1;
 		unsigned plated:1;
 		unsigned nopaste:1;
 		unsigned surface:1;
 
 		unsigned delayed_poly:1;
+		unsigned is_text:1;
 	} state;
 
 	struct {
@@ -72,6 +73,7 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name);
 void pcb_bxl_set_justify(pcb_bxl_ctx_t *ctx, const char *str);
 void pcb_bxl_set_text_str(pcb_bxl_ctx_t *ctx, char *str);
 void pcb_bxl_set_text_style(pcb_bxl_ctx_t *ctx, const char *name);
+void pcb_bxl_set_attr_val(pcb_bxl_ctx_t *ctx, char *key, char *val);
 
 void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval);
 

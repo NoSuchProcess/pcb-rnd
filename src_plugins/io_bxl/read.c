@@ -122,6 +122,8 @@ void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx)
 void pcb_bxl_reset(pcb_bxl_ctx_t *ctx)
 {
 	SKIP;
+	free(ctx->state.attr_key);
+	free(ctx->state.attr_val);
 	memset(&ctx->state, 0, sizeof(ctx->state));
 }
 
@@ -185,6 +187,16 @@ void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *ke
 	pcb_attribute_put(&obj->Attributes, tmp, val);
 	free(tmp);
 }
+
+void pcb_bxl_set_attr_val(pcb_bxl_ctx_t *ctx, char *key, char *val)
+{
+	free(ctx->state.attr_key);
+	free(ctx->state.attr_val);
+
+	ctx->state.attr_key = key;
+	ctx->state.attr_val = val;
+}
+
 
 void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name)
 {
@@ -350,25 +362,42 @@ void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx)
 
 void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 {
+	pcb_flag_values_t flg = 0;
 	int scale;
 	pcb_coord_t thickness;
 	SKIP;
 
-	if (ctx->state.text_style != NULL) {
+	if (!ctx->state.is_text && (ctx->state.attr_key != NULL)) {
+		int is_refdes = (pcb_strcasecmp(ctx->state.attr_key, "refdes") == 0);
+
+		if (is_refdes) {
+			strcpy(ctx->state.attr_key, "refdes");
+
+			/* make sure the text object is created properly */
+			flg = PCB_FLAG_FLOATER | PCB_FLAG_DYNTEXT;
+			free(ctx->state.text_str);
+			ctx->state.text_str = pcb_strdup("%a.parent.refdes%");
+			ctx->state.is_visible = 1;
+		}
+		pcb_attribute_put(&ctx->subc->Attributes, ctx->state.attr_key, ctx->state.attr_val);
+	}
+
+	if ((ctx->state.text_str != NULL) && (ctx->state.is_visible)) {
+		if (ctx->state.text_style != NULL) {
 TODO("need to figure how text is scaled and justified in bxl");
-		scale = ctx->state.text_style->height;
-		thickness = PCB_MIL_TO_COORD(ctx->state.text_style->width);
-	}
-	else {
-		scale = 100;
-		thickness = 0;
-	}
+			scale = ctx->state.text_style->height;
+			thickness = PCB_MIL_TO_COORD(ctx->state.text_style->width);
+		}
+		else {
+			scale = 100;
+			thickness = 0;
+		}
 
-
-	pcb_text_new(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
-		ctx->state.origin_x, ctx->state.origin_y,
-		ctx->state.rot, scale, thickness, ctx->state.text_str,
-		pcb_flag_make(PCB_FLAG_CLEARLINE));
+		pcb_text_new(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
+			ctx->state.origin_x, ctx->state.origin_y,
+			ctx->state.rot, scale, thickness, ctx->state.text_str,
+			pcb_flag_make(PCB_FLAG_CLEARLINE | flg));
+	}
 	free(ctx->state.text_str);
 	ctx->state.text_str = NULL;
 }

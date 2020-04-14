@@ -127,7 +127,7 @@ coord:
 common_attr_text:
 	  T_JUSTIFY T_ID             { pcb_bxl_set_justify(ctx, $2); free($2); }
 	| T_TEXTSTYLE T_QSTR         { pcb_bxl_set_text_style(ctx, $2); free($2); }
-	| T_ISVISIBLE boolean        { ctx->state.invis = $2; }
+	| T_ISVISIBLE boolean        { ctx->state.is_visible = $2; }
 	;
 
 common_origin:
@@ -308,7 +308,8 @@ line_attr:
 
 /*** Attribute ***/
 attribute:
-	T_ATTRIBUTE attribute_attrs
+	T_ATTRIBUTE                         { pcb_bxl_reset(ctx); ctx->state.is_text = 0; }
+		attribute_attrs                   { pcb_bxl_add_text(ctx); pcb_bxl_reset(ctx); }
 	;
 
 attribute_attrs:
@@ -317,7 +318,7 @@ attribute_attrs:
 	;
 
 attribute_attr:
-	  T_ATTR T_QSTR T_QSTR
+	  T_ATTR T_QSTR T_QSTR      { pcb_bxl_set_attr_val(ctx, $2, $3); /* $2 and $3 are taken over */ }
 	| common_attr_text
 	| common_origin
 	| common_layer
@@ -346,7 +347,7 @@ arc_attr:
 
 /*** Text ***/
 text:
-	T_TEXT                        { pcb_bxl_reset(ctx); }
+	T_TEXT                        { pcb_bxl_reset(ctx); ctx->state.is_text = 1; }
 		text_attrs                  { pcb_bxl_add_text(ctx); pcb_bxl_reset(ctx); }
 	;
 
