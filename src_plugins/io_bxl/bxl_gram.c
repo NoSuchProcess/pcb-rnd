@@ -644,7 +644,7 @@ case 29:
 break;
 case 30:
 #line 164 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_padstack_begin(ctx, yyctx->stack.l_mark[0].un.s); /* $2 is taken over */ }
+	{ pcb_bxl_reset(ctx); pcb_bxl_padstack_begin(ctx, yyctx->stack.l_mark[0].un.s); /* $2 is taken over */ }
 break;
 case 31:
 #line 166 "../../src_plugins/io_bxl/bxl_gram.y"

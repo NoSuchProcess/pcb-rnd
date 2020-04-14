@@ -201,6 +201,9 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 	if (ctx->proto_id-1 != i)
 		pcb_message(PCB_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
 	ctx->state.proto.name = NULL; /* do not free it as it is the hash key */
+
+	pcb_pstk_proto_free_fields(&ctx->state.proto);
+	ctx->state.proto.tr.used = 0;
 }
 
 void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)

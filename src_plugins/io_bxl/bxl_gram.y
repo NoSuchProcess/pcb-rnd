@@ -161,7 +161,7 @@ text_style_attr:
 /*** PadStack ***/
 
 pad_stack:
-	T_PADSTACK T_QSTR               { pcb_bxl_padstack_begin(ctx, $2); /* $2 is taken over */ }
+	T_PADSTACK T_QSTR               { pcb_bxl_reset(ctx); pcb_bxl_padstack_begin(ctx, $2); /* $2 is taken over */ }
 		pstk_attrs nl
 		T_SHAPES ':' T_INTEGER nl     { ctx->state.num_shapes = $8; }
 		pad_shapes
