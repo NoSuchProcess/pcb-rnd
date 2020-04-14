@@ -200,7 +200,12 @@ void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name)
 
 void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 {
-	pcb_cardinal_t i = pcb_pstk_proto_insert_forcedup(ctx->subc->data, &ctx->state.proto, 0, 0);
+	pcb_cardinal_t i;
+
+	ctx->state.proto.hdia = ctx->state.hole;
+	ctx->state.proto.hplated = ctx->state.plated;
+
+	i = pcb_pstk_proto_insert_forcedup(ctx->subc->data, &ctx->state.proto, 0, 0);
 	if (ctx->proto_id-1 != i)
 		pcb_message(PCB_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
 	ctx->state.proto.name = NULL; /* do not free it as it is the hash key */
