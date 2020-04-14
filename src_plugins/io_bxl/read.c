@@ -55,8 +55,8 @@ static const pcb_dflgmap_t bxl_layer_names[] = {
 	{"BOTTOM_ASSEMBLY",     PCB_LYT_BOTTOM | PCB_LYT_DOC,     "assy",     0,           0},
 	{"TOP_SOLDER_MASK",     PCB_LYT_TOP | PCB_LYT_MASK,       NULL,       PCB_LYC_SUB, 0},
 	{"BOTTOM_SOLDER_MASK",  PCB_LYT_BOTTOM | PCB_LYT_MASK,    NULL,       PCB_LYC_SUB, 0},
-	{"TOP_SOLDER_PASTE",    PCB_LYT_TOP | PCB_LYT_PASTE,      NULL,       0,           0},
-	{"BOTTOM_SOLDER_PASTE", PCB_LYT_BOTTOM | PCB_LYT_PASTE,   NULL,       0,           0},
+	{"TOP_SOLDER_PASTE",    PCB_LYT_TOP | PCB_LYT_PASTE,      NULL,       PCB_LYC_AUTO,0},
+	{"BOTTOM_SOLDER_PASTE", PCB_LYT_BOTTOM | PCB_LYT_PASTE,   NULL,       PCB_LYC_AUTO,0},
 
 	/* these are better not drawn by default */
 	{"3D_DXF",              PCB_LYT_VIRTUAL,                  NULL,       0,           0},
