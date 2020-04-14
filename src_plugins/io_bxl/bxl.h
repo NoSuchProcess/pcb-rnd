@@ -33,6 +33,10 @@ typedef struct pcb_bxl_ctx_s {
 	int proto_id;
 
 	struct {
+		pcb_coord_t origin_x, origin_y, pick_x, pick_y, glue_x, glue_y;
+	} pat_state;
+
+	struct {
 		pcb_layer_t *layer;
 		pcb_coord_t origin_x, origin_y, endp_x, endp_y, width, height, radius;
 		pcb_coord_t hole;
@@ -69,6 +73,7 @@ pcb_coord_t pcb_bxl_coord_y(pcb_coord_t c);
 void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name);
 void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_reset(pcb_bxl_ctx_t *ctx);
+void pcb_bxl_reset_pattern(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name);
 void pcb_bxl_set_justify(pcb_bxl_ctx_t *ctx, const char *str);
 void pcb_bxl_set_text_str(pcb_bxl_ctx_t *ctx, char *str);

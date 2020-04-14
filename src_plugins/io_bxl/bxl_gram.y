@@ -207,9 +207,9 @@ padshape_attr:
 
 /*** Pattern ***/
 pattern:
-	T_PATTERN T_QSTR nl     { pcb_bxl_pattern_begin(ctx, $2); free($2); }
+	T_PATTERN T_QSTR nl     { pcb_bxl_reset_pattern(ctx); pcb_bxl_pattern_begin(ctx, $2); free($2); }
 	pattern_chldrn
-	T_ENDPATTERN            { pcb_bxl_pattern_end(ctx); }
+	T_ENDPATTERN            { pcb_bxl_pattern_end(ctx); pcb_bxl_reset_pattern(ctx); }
 	;
 
 pattern_chldrn:
@@ -219,9 +219,9 @@ pattern_chldrn:
 
 pattern_chld:
 	  data
-	| T_ORIGINPOINT '(' coord ',' coord ')'
-	| T_PICKPOINT   '(' coord ',' coord ')'
-	| T_GLUEPOINT   '(' coord ',' coord ')'
+	| T_ORIGINPOINT '(' coord ',' coord ')'   { ctx->pat_state.origin_x = XCRD($3); ctx->pat_state.origin_y = YCRD($5); }
+	| T_PICKPOINT   '(' coord ',' coord ')'   { ctx->pat_state.pick_x = XCRD($3); ctx->pat_state.pick_y = YCRD($5); }
+	| T_GLUEPOINT   '(' coord ',' coord ')'   { ctx->pat_state.glue_x = XCRD($3); ctx->pat_state.glue_y = YCRD($5); }
 	;
 
 data:

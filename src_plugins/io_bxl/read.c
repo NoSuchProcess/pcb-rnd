@@ -116,6 +116,10 @@ void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name)
 
 void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx)
 {
+	pcb_subc_create_aux(ctx->subc, ctx->pat_state.origin_x, ctx->pat_state.origin_y, 0, 0);
+	pcb_subc_create_aux_point(ctx->subc, ctx->pat_state.pick_x, ctx->pat_state.pick_y, "pnp-origin");
+	pcb_subc_create_aux_point(ctx->subc, ctx->pat_state.glue_x, ctx->pat_state.glue_y, "glue-origin");
+
 	ctx->in_target_fp = 0;
 }
 
@@ -125,6 +129,12 @@ void pcb_bxl_reset(pcb_bxl_ctx_t *ctx)
 	free(ctx->state.attr_key);
 	free(ctx->state.attr_val);
 	memset(&ctx->state, 0, sizeof(ctx->state));
+}
+
+void pcb_bxl_reset_pattern(pcb_bxl_ctx_t *ctx)
+{
+	SKIP;
+	memset(&ctx->pat_state, 0, sizeof(ctx->pat_state));
 }
 
 void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)

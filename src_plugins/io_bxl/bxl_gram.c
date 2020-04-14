@@ -693,11 +693,23 @@ case 46:
 break;
 case 49:
 #line 210 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_pattern_begin(ctx, yyctx->stack.l_mark[-1].un.s); free(yyctx->stack.l_mark[-1].un.s); }
+	{ pcb_bxl_reset_pattern(ctx); pcb_bxl_pattern_begin(ctx, yyctx->stack.l_mark[-1].un.s); free(yyctx->stack.l_mark[-1].un.s); }
 break;
 case 50:
 #line 212 "../../src_plugins/io_bxl/bxl_gram.y"
-	{ pcb_bxl_pattern_end(ctx); }
+	{ pcb_bxl_pattern_end(ctx); pcb_bxl_reset_pattern(ctx); }
+break;
+case 54:
+#line 222 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->pat_state.origin_x = XCRD(yyctx->stack.l_mark[-3].un.c); ctx->pat_state.origin_y = YCRD(yyctx->stack.l_mark[-1].un.c); }
+break;
+case 55:
+#line 223 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->pat_state.pick_x = XCRD(yyctx->stack.l_mark[-3].un.c); ctx->pat_state.pick_y = YCRD(yyctx->stack.l_mark[-1].un.c); }
+break;
+case 56:
+#line 224 "../../src_plugins/io_bxl/bxl_gram.y"
+	{ ctx->pat_state.glue_x = XCRD(yyctx->stack.l_mark[-3].un.c); ctx->pat_state.glue_y = YCRD(yyctx->stack.l_mark[-1].un.c); }
 break;
 case 68:
 #line 252 "../../src_plugins/io_bxl/bxl_gram.y"
@@ -811,7 +823,7 @@ case 120:
 #line 362 "../../src_plugins/io_bxl/bxl_gram.y"
 	{ ctx->state.rot = yyctx->stack.l_mark[0].un.d; }
 break;
-#line 827 "../../src_plugins/io_bxl/bxl_gram.c"
+#line 839 "../../src_plugins/io_bxl/bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;
