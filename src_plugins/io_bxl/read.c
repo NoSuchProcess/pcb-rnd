@@ -466,7 +466,7 @@ static int poly_is_valid(pcb_poly_t *p)
 
 			if (contour->Count == 0) {
 				pcb_poly_contours_free(&contour);
-				return 0;
+				goto err;
 			}
 
 			{ /* count number of not-on-the-same-line vertices to make sure there's more than 2*/
@@ -490,7 +490,7 @@ static int poly_is_valid(pcb_poly_t *p)
 
 			pcb_polyarea_contour_include(np, contour);
 			if (contour->Count == 0)
-				return 0;
+				goto err;
 			contour = NULL;
 
 			if (!pcb_poly_valid(np))
