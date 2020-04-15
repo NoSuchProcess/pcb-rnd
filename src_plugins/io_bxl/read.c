@@ -252,6 +252,13 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 	pcb_pstk_tshape_t *ts;
 	pcb_pstk_shape_t *sh;
 
+	if ((ctx->state.width == 0) || (ctx->state.height == 0)) {
+		/* 0 sizes shape should not appear on the output */
+		if (ctx->state.layer->meta.bound.type & PCB_LYT_COPPER)
+			pcb_message(PCB_MSG_WARNING, "bxl footprint error: 0 sized copper shape in padstack '%s'\n", ctx->state.proto.name);
+		return 0;
+	}
+
 	if (ctx->state.proto.tr.used == 0)
 		ts = pcb_vtpadstack_tshape_alloc_append(&ctx->state.proto.tr, 1);
 	else
