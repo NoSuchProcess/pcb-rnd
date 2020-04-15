@@ -8,7 +8,9 @@
 <body>
 <h1 nopdf="yes"> pcb-rnd - user manual </h1>
 
-<h2> 6.1. keyboard bindings </h2>
+<h2> 5.4. pcb-rnd GUI (common) </h2>
+
+<h3> 5.4.1. keyboard bindings </h3>
 <p>
 The same default menu file is used in all GUI HIDs. It comes with multi-stroke
 key bindings, plus only a very few, alternative keys that use modifiers
@@ -41,7 +43,7 @@ action within the subchapter. The <a href="keytree.svg">current key tree</a> is
 accessible in a large svg drawing or in a script-digestable
 <a href="keytree.txt">flat list</a>.
 
-<h2> 6.2. Grid </h2>
+<h3> 5.4.2 Grid </h3>
 <p id="grid">
 The grid is an imaginary set of points over the drawing. The crosshair
 can snap to the grid, helping the user to keep coordinates of objects
@@ -55,7 +57,7 @@ and vertical rows. The grid also has an optional offset in x and y directions
 The grid spacing (distance between grid points) is user configurable. There
 are two methods managing the grid.
 
-<h3> 6.2.1. Preset grid </h3>
+<h3> 5.4.3. Preset grid </h3>
 
 <p>
 The configuration system has a node called editor/grids, which is an ordered
@@ -101,7 +103,7 @@ Examples:
 	<tr><td> <pre>leds:1mm@0.5mm;-0.1mm!mm</pre> <td> all the above features, combined
 </table>
 
-<h3> 6.2.2. Custom grid </h3>
+<h3> 5.4.4. Custom grid </h3>
 <p>
 The current grid is stored as grid distance and x;y offset. Regardless of
 the configured presets, these properties of the current grid can be changed
