@@ -42,7 +42,7 @@ code
 	return T_INTEGER;
 
 rule real
-regex [-]?[0-9]+[.][0-9Ee+-]*
+regex [-]?[0-9]*[.][0-9Ee+-]*
 code
 	lval->un.d = strtod(ULX_BUF, NULL);
 	return T_REAL_ONLY;
