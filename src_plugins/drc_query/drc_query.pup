@@ -2,6 +2,6 @@ $class feature
 $short query() based DRC
 $long Scriptable DRC based on query()
 $package (core)
-default buildin
+default disable
 dep query
 autoload 1
