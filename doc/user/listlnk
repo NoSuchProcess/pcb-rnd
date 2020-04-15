@@ -1,0 +1,92 @@
+#!/bin/sh
+
+echo "index.html" | awk '
+	BEGIN {
+		nopen=0
+		dsq = "[\"'\'']"
+
+	}
+
+	function append(path)
+	{
+		if (path == "")
+			return 0
+		if (path in SEEN)
+			return 0
+		SEEN[path]= 1
+		print path
+		return 1
+	}
+
+	function mkpath(cwd, path,   P,v,n,m,found)
+	{
+		if (path ~ "://")
+			return ""
+		sub("#.*$", "", path)
+		if (path == "")
+			return ""
+
+		path = cwd "/" path
+		gsub("//*", "/", path)
+		v = split(path, P, "/")
+		for(n = 2; n < v; n++) {
+			if (P[n] == "..") {
+				found=0
+				for(m = n-1; m >= 0; m--) {
+					if (P[m] != "") {
+						P[m] = ""
+						P[n] = ""
+						found=1
+						break;
+					}
+				}
+				# ponting to parent of root
+				if (!found)
+					return ""
+			}
+		}
+		path=""
+		for(n = 1; n < v; n++)
+			if (P[n] != "")
+				path = path P[n] "/"
+		path = path P[v]
+
+		m = "^" cwd
+		if ((cwd != "") && !(path ~ m)) {
+			# pointing to parent from the current search
+			return ""
+		}
+
+		return path
+	}
+
+	function dump_links(cwd, fn   , ors, line, path)
+	{
+		ors = RS
+		RS="[<]"
+		while((getline < fn) == 1) {
+			if ((($1 == "a") || ($1 == "A")) && ($0 ~ "href=")) {
+				line=$0
+				gsub("\n", " ", line)
+				sub(".*href=" dsq, "", line)
+				sub(dsq ".*", "", line)
+				path = mkpath(cwd, line)
+				if (append(path))
+					process(path)
+			}
+		}
+		RS=ors
+	}
+
+	function process(fn)
+	{
+		if (fn == "")
+			return
+		cwd=fn
+		sub("[^/]*$", "", cwd)
+		dump_links(cwd, fn)
+	}
+
+	{ process(mkpath("", $0)); }
+
+'
