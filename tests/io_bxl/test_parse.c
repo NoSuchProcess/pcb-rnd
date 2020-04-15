@@ -9,13 +9,13 @@ int verbose = 0;
 
 void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s)
 {
-	fprintf(stderr, "%s at %ld:%ld\n", s, tok.line, tok.first_col);
+	fprintf(stderr, "(ignored) %s at %ld:%ld\n", s, tok.line, tok.first_col);
 }
 
 
 int main(int argc, char *argv[])
 {
-	int chr;
+	int chr, bad = 0;
 	pcb_bxl_ureglex_t lctx;
 	pcb_bxl_yyctx_t yyctx;
 	pcb_bxl_ctx_t bctx;
@@ -35,9 +35,13 @@ int main(int argc, char *argv[])
 			lval.line = lctx.loc_line[0];
 			lval.first_col = lctx.loc_col[0];
 			yres = pcb_bxl_parse(&yyctx, &bctx, res, &lval);
+			if ((bctx.in_error) && ((res == T_ID) || (res == T_QSTR)))
+				free(lval.un.s);
+			
 			printf("yres=%d\n", yres);
 			if (yres != 0) {
 				printf("Stopped at %ld:%ld\n", lval.line, lval.first_col);
+				bad = 1;
 				break;
 			}
 		}
@@ -60,6 +64,9 @@ int main(int argc, char *argv[])
 			printf("ERROR %d\n", res);
 		pcb_bxl_lex_reset(&lctx);
 	}
+
+	if (bad)
+		printf("Parse failed.\n");
 
 	return 0;
 }
