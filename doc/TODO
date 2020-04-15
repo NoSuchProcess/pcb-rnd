@@ -3,7 +3,6 @@
 + BUG: propedit: when a row with a boolean is clicked, the checkbox value should be updated with the current value [report: barjac]
 + BUG: parametric footprint editor for connector() too big: limit enum text length [report: barjac]
 + BUG: bug_files/drc/ - redundant drc hits, see README there [report: gpaubert] -> in the new drc at most 2 hits per short are possible: from the two directions (two networks), because clearance requirements may be different per net
-+ BUG: kicad paste pattern export: kicad won't load zones in modules ml=3939 [report: cnieves]
 
 1. For the upcoming release ===============================================================================
 
