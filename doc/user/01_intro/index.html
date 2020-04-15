@@ -8,63 +8,16 @@
 <body>
 <h1 nopdf="yes"> pcb-rnd - user manual </h1>
 
-<h2> 1. Introduction </h2>
+<h2> 1. About pcb-rnd  </h2>
 <p>
-pcb-rnd is a highly modular, interactive <i>Printed Circuit Board</i> editor
-with a <a href="history.html"> very long history </a>.
-
-
-<h3> 1.1. Place in the workflow </h3>
+pcb-rnd is an interactive (or scripted) graphical (or command line)
+Printed Circuit Board editor. Besides editing it offers converting
+between formats, running DRC checks, generating previews.
 <p>
-The main purpose of pcb-rnd is to edit the geometry of the board. This
-includes board shape, copper shape, layer stackup, holes drilled, slots
-routed.
-<p>
-The <b>input</b> of the layout process is usually a netlist derived from
-schematics, and occasionally layouts drawn from scratch or created from
-schematic without importable netlist. Pcb-rnd can read different netlist
-formats and it can help the user to realize the given netlist in copper or to
-change the netlist and back annotate the changes. Pcb-rnd, however, does not
-display or edit schematics directly.
-<p>
-The <b>output</b> of pcb-rnd is most often a vector format (e.g. gerber
-RS274D), that is sent to a pcb fab house for manufacturing or is utilized for
-auto-fabrication. Pcb-rnd supports a variety of vector and raster output
-formats making it easy to print boards, publish them on web pages, and include
-them in documentation.
-<p>
-The typical workflows are:
-<p>
-<img src="flow.svg" alt="[workflow diagram showing pcb-rnd interacting with schematics editor, fabrication, and others]">
-<p>
-Black flows are the most commonly used; grey flows are possible, fully
-supported but less often used in practice.
-
-<h3> 1.2. What pcb-rnd is and is not </h3>
-<p>
-Pcb-rnd is a versatile tool for PCB layout design. It is geared to be
-a tool for users with the UNIX mind set:
-<ul>
-	<li> it is small, easy to compile and run, has low resource footprint
-	<li> it is modular - most features are in plugins, the user can chose which plugins to use
-	<li> it is portable - also runs on systems that are not hyped today
-	<li> it works well from both CLI (automation, e.g. called from a Makefile or even using with an interactive action command <i>shell</i>) and GUI
-	<li> it is designed to communicate with other software:
-	<ul>
-		<li> it is easy to remote control
-		<li> it speaks many file formats
-	</ul>
-	<li> it doesn't outsmart the user, it doesn't block the user from doing unusual things; it has support for checking the result and generate warnings
+<ul class="toc">
+	<li><a href="intro.html"> 1.1. Introduction </a>
+	<li><a href="history.html"> 1.2. IHistory </a>
 </ul>
-<p>
-There are a few things that are out of scope for pcb-rnd:
-<ul>
-	<li> 3d editing: pcb-rnd is 2.5d, that means it's basically 2d and understands the 3rd dimension partially; it does load, handle and export 3d data (e.g. subcircuit part models for an openscad export) but it does not edit 3d data
-	<li> embedded &lt;whatever-non-pcb-editing&gt;: as a UNIX tool, pcb-rnd focuses on one thing, pcb edition, and relies on (and maintains close cooperation with) other tools for:
-	<ul>
-		<li> circuit schematics edition
-		<li> 3d rendering
-		<li> simulation
-	</ul>
-	<li> autorouting - there's a basic built-in autorouter, but it's recommended to use external autorouters (various file formats are supported)
-</ul>
+
+</body>
+</html>
