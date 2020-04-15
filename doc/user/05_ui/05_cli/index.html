@@ -10,6 +10,11 @@
 
 <h2> 5.2 Actions and Command Line Interface </h2>
 <p>
+Each user accessible operation and functionality is implemented in an action.
+Menu items and hotkeys all invoke actions. An action is like a function call:
+it has parameters and a return value.
+
+<p>
 pcb-rnd actions can be listed
 
 <p>
@@ -18,12 +23,13 @@ pcb-rnd actions can be listed
 </code>
 
 <p>
-Uses for CLI:
-<ul>
-<li>format translation (with additional plugins active)
-<li>export (with additional plugins)
-<li>agnostic version control (use with git/mercurial/svn)
-</ul>
+A full list of actions can be found in the
+<a href="../../09_appendix/action_reference.html"> appendix </a> with
+detailed desciption of parameters and operations they perform.
 <p>
+Actions are entered on the GUI (typically using the ':' key for getting
+a command line) and on the stdin using the batch GUI. User scripts call
+actions with all-lowercase function names.
+
 </body>
 </html>
