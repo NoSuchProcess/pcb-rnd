@@ -216,8 +216,42 @@ void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name)
 
 	ctx->state.proto.name = name;
 	ctx->state.proto.in_use = 1;
+	ctx->state.copper_shape_idx = -1;
 	if (e == NULL)
 		htsi_set(&ctx->proto_name2id, name, ctx->proto_id++);
+}
+
+
+	/* create mask shapes for thru-hole */
+static void pcb_bxl_padstack_end_automask(pcb_bxl_ctx_t *ctx)
+{
+	const pcb_proto_layer_t *n;
+	int i, dst;
+
+	if (ctx->state.surface)
+		return;
+
+	if (ctx->state.proto.hdia <= 0)
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' marked as non-surface-mounted yet there is no hole in it\n", ctx->state.proto.name);
+	if (ctx->state.has_mask_shape)
+		return; /* do not override user's mask */
+
+	if (ctx->state.copper_shape_idx < 0) {
+		pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' is thru-hole, does not have mask or copper\n", ctx->state.proto.name);
+		return;
+	}
+
+	for(n = pcb_proto_layers, i = 0; i < pcb_proto_num_layers; i++,n++) {
+		pcb_pstk_tshape_t *ts;
+
+		if ((n->mask & PCB_LYT_MASK) == 0)
+			continue;
+
+		ts = &ctx->state.proto.tr.array[0];
+		pcb_pstk_alloc_append_shape(ts);
+		dst = ts->len-1;
+		pcb_pstk_shape_derive(&ctx->state.proto, dst, ctx->state.copper_shape_idx, n->auto_bloat, n->mask, n->comb);
+	}
 }
 
 void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
@@ -226,6 +260,8 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 
 	ctx->state.proto.hdia = ctx->state.hole;
 	ctx->state.proto.hplated = ctx->state.plated;
+
+	pcb_bxl_padstack_end_automask(ctx);
 
 	i = pcb_pstk_proto_insert_forcedup(ctx->subc->data, &ctx->state.proto, 0, 0);
 	if (ctx->proto_id-1 != i)
@@ -264,6 +300,12 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 	else
 		ts = &ctx->state.proto.tr.array[0];
 	sh = pcb_pstk_alloc_append_shape(ts);
+
+	if (ctx->state.layer->meta.bound.type & PCB_LYT_MASK)
+		ctx->state.has_mask_shape = 1;
+
+	if (ctx->state.layer->meta.bound.type & PCB_LYT_COPPER)
+		ctx->state.copper_shape_idx = ts->len-1;
 
 	sh->layer_mask = ctx->state.layer->meta.bound.type;
 	sh->comb = ctx->state.layer->comb;

@@ -60,6 +60,8 @@ typedef struct pcb_bxl_ctx_s {
 
 		unsigned delayed_poly:1;
 		unsigned is_text:1;
+		unsigned has_mask_shape:1;
+		int copper_shape_idx;
 	} state;
 
 	struct {
