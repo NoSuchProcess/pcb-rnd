@@ -11,12 +11,27 @@ Packaging changes between 2.2.0 and 2.2.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
 
-1. Renamed librnd2-dev to librnd-dev in the doc (Debian recommendation)
+1. New plugins in existing packages: the import_sch splitup & rewrite
+   - import_gnetlist in pcb-rnd-import-net (imports running gnetlist)
+   - import_net_action in pcb-rnd-import-net (imports by running an action script)
+   - import_net_cmd in pcb-rnd-import-net (imports by running an arbitrary command, e.g. make)
+   - import_sch2 in pcb-rnd-import-net (the rewrite of import_sch)
+   - new config file: $C/import_gnetlist.conf
+
+2. New plugins in existing packages
+   - drc_query in pcb-rnd-core; new conf files: $C/drc_query.conf and $C/drc_orig.conf
+   - tool_std in pcb-rnd-core
+
+B. changes that probably DO need action
+
+1. ./configure options changed (for the new plugins)
+
+2. Renamed librnd2-dev to librnd-dev in the doc (Debian recommendation)
    Distributions are free to use either name; if there's no ditribution
    dictated preference, please use librnd-dev. Please note: the binary
    package, librnd2, still should have the '2' in its name.
 
-2. Missing data files from pcb-rnd-core
+3. Missing data files from pcb-rnd-core
    Previous versions missed a few data files, which are now all added in
    package pcb-rnd-core. Pleasre revise the installed files for pcb-rnd-core
    in your packaging. A short list of files affected:
@@ -24,25 +39,11 @@ A. changes that probably don't need action
    - default font file (default_font)
    - pcblib (the footprint library)
 
-3. Missing utilities from librnd-dev
+4. Missing utilities from librnd-dev
    Please revise the file listing, puplug and gen_conf got added
 
-4. The meta-package pcb-rnd should depend on import-net as it is
+5. The meta-package pcb-rnd should depend on import-net as it is
    used in the most common workflow
-
-5. New plugins in existing packages: the import_sch splitup & rewrite
-   - import_gnetlist in pcb-rnd-import-net (imports running gnetlist)
-   - import_net_action in pcb-rnd-import-net (imports by running an action script)
-   - import_net_cmd in pcb-rnd-import-net (imports by running an arbitrary command, e.g. make)
-   - import_sch2 in pcb-rnd-import-net (the rewrite of import_sch)
-
-6. New plugins in existing packages
-   - drc_query in pcb-rnd-core
-   - tool_std in pcb-rnd-core
-
-B. changes that probably DO need action
-
-1. ./configure options changed (for the new plugins)
 
 
 Packaging changes between 2.1.4 and 2.2.0
