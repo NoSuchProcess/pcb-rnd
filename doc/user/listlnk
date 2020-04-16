@@ -11,15 +11,22 @@ unlinked_ignores='
 /Makefile$/                 { next }
 /\/ID[.]desc$/              { next }
 /\/ID[.]name$/              { next }
+/[.]templ[.]html$/          { next }
 /[.]dot$/                   { next }
 /09_appendix\/action_src/   { next }
 
+/06_feature\/djopt\/.*\.txt$/           { next }
+/06_feature\/djopt\/Pre.html$/          { next }
+/06_feature\/djopt\/Post.html$/         { next }
+/06_feature\/scripting\/.*\/ex.html$/   { next }
+
 # tmp/backup leftover
-/[.]svg[.]png$/             { next }
-/[.]out[.]png$/             { next }
-/PCB\.[^\/.]*\.save/        { next }
-/PCB\.[^\/.]*\.backup/      { next }
-/[.]pyc$/                   { next }
+/[.]svg[.]png$/                { next }
+/[.]out[.]png$/                { next }
+/06_feature\/stroke\/.*\.png$/ { next }
+/PCB\.[^\/.]*\.save$/          { next }
+/PCB\.[^\/.]*\.backup$/        { next }
+/[.]pyc$/                      { next }
 '
 
 build_list()
