@@ -2,6 +2,24 @@
 
 volmap="vol.map"
 
+unlinked_ignores='
+# care only about subdirs
+!($0 ~ "/")                 { next }
+
+/\/src\//                   { next }
+/Makefile$/                 { next }
+/\/ID[.]desc$/              { next }
+/\/ID[.]name$/              { next }
+/[.]pyc$/                   { next }
+/09_appendix\/action_src/   { next }
+
+# tmp/backup leftover
+/[.]svg[.]png$/             { next }
+/[.]out[.]png$/             { next }
+/PCB\.[^\/.]*\.save/        { next }
+/PCB\.[^\/.]*\.backup/      { next }
+'
+
 build_list()
 {
 	local vol=0
@@ -117,6 +135,29 @@ echo "index.html" | awk -v "vol=$vol" -v "volmap=$volmap" '
 '
 }
 
+unlinked()
+{
+	local sep="@@@"
+	(
+		build_list
+		echo "$sep"
+		find . -type f -print
+	) | awk -v "sep=$sep" '
+	
+	($0 == sep) { after_sep=1; next; }
+	(!after_sep) { FOUND[$0]++ }
+
+	{ sub("^./", "", $0) }
+
+	'"$unlinked_ignores"'
+
+	(after_sep) {
+		if (!($0 in FOUND))
+			print $0
+	}
+	'
+}
+
 ### main ###
 
 cmd="$1"
@@ -127,6 +168,7 @@ fi
 
 case "$cmd"
 in
+	unlinked) unlinked "$@" ;;
 	""|list) build_list "$@" ;;
 	*) echo "unknown command $cmd" >&2; exit 1;;
 esac
