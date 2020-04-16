@@ -1,6 +1,6 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.2.0
+  ver=2.2.1
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
@@ -30,8 +30,19 @@ A. changes that probably don't need action
 4. The meta-package pcb-rnd should depend on import-net as it is
    used in the most common workflow
 
+5. New plugins in existing packages: the import_sch splitup & rewrite
+   - import_gnetlist in pcb-rnd-import-net (imports running gnetlist)
+   - import_net_action in pcb-rnd-import-net (imports by running an action script)
+   - import_net_cmd in pcb-rnd-import-net (imports by running an arbitrary command, e.g. make)
+   - import_sch2 in pcb-rnd-import-net (the rewrite of import_sch)
+
+6. New plugins in existing packages
+   - drc_query in pcb-rnd-core
+   - tool_std in pcb-rnd-core
 
 B. changes that probably DO need action
+
+1. ./configure options changed (for the new plugins)
 
 
 Packaging changes between 2.1.4 and 2.2.0
