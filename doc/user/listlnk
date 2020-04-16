@@ -154,7 +154,7 @@ unlinked()
 {
 	local sep="@@@"
 	(
-		build_list
+		build_list -i
 		echo "$sep"
 		find . -type f -print
 	) | awk -v "sep=$sep" '
