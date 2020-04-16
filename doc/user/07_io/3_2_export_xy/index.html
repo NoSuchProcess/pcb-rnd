@@ -7,8 +7,8 @@
 </head>
 <body>
 <h1 nopdf="yes"> pcb-rnd - user manual </h1>
-
-<h2> 7.x export_xy </h2>
+<h2 nopdf="yes"> 7.3 Export plugins </h2>
+<h3> 7.3.2 export_xy </h3>
 <p>
 Export_xy is a configurable template based export plugin that prints
 text files. The output contains an optional header, then an optional block
@@ -27,7 +27,7 @@ foreach <i>subc</i> in subcircuits {
 Templates can reference to the current <i>term</i>, the current
 <i>subc</i> and global properties (such as board properties).
 
-<h3> 7.x.1. Template configuration </h3>
+<h4> 7.3.2.1 Template configuration </h4>
 <p>
 Each xy export format has an user assigned <i>ID</i> (which is the short name of the format).
 There is a list of strings in the config tree under plugins/export_xy/templates;
@@ -43,7 +43,7 @@ Templates are text strings; they are printed as is, keeping all newlines and
 whitespace. Portions in between % signs are substituted, depending on the
 context.
 
-<h2> Substitution keywords </h2>
+<h4> 7.3.2.2. Substitution keywords </h4>
 <p>
 <table border=1>
 	<tr><th> keyword                   <th> description

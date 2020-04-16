@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../default.css">
+</head>
+<body>
+
+<h1> 7. File format support</h1>
+Besides its native file format (lihata), pcb-rnd supports various
+alien file formats. Support for each file format is implemented in
+a separate plugin.
+<p>
+There are three types of file format plugins:
+import plugins for partial load, export plugins for partial save and
+io plugins for complete and/or bidirectional load/save. Partial in this
+context means not the whole board, but only a few aspects of it are
+handled.
+<p>
+
+<ul class="toc">
+	<li> 7.1. IO plugins
+		<ul class="toc">
+			<li><a href="1_1_io_hkp/index.html"> io_hkp: Mentor Graphics Expedition PCB </a>
+		</ul>
+	<li> 7.2. Import plugins
+	<li> 7.3. Export plugins
+		<ul class="toc">
+			<li><a href="3_1_export_openscad/index.html"> export_openscad: OpenSCAD 3d models </a>
+			<li><a href="3_2_export_xy/index.html"> export_xy: XY files for pick-and-place </a>
+		</ul>
+</ul>
+
+</body>
+</html>
