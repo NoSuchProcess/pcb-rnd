@@ -1,20 +1,45 @@
 #!/bin/sh
 
-echo "index.html" | awk '
+volmap="vol.map"
+
+build_list()
+{
+	local vol=0
+
+	while test $# -gt 0
+	do
+		case "$1" in
+			-v|--vol) vol=1;;
+			*) echo "unknown list parameter $1" >&2; exit 1;;
+		esac
+		shift 1
+	done
+
+echo "index.html" | awk -v "vol=$vol" -v "volmap=$volmap" '
 	BEGIN {
 		nopen=0
 		dsq = "[\"'\'']"
-
+		if (vol) {
+			while((getline < volmap) == 1)
+				if (NF == 2)
+					VOL[$1] = $2
+		}
 	}
 
-	function append(path)
+	function append(path, vp)
 	{
 		if (path == "")
 			return 0
 		if (path in SEEN)
 			return 0
 		SEEN[path]= 1
-		print path
+		if (vol) {
+			vp = path
+			sub("/.*", "", vp)
+			print path, int(VOL[vp])
+		}
+		else
+			print path
 		return 1
 	}
 
@@ -90,3 +115,19 @@ echo "index.html" | awk '
 	{ process(mkpath("", $0)); }
 
 '
+}
+
+### main ###
+
+cmd="$1"
+if test $# -gt 0
+then
+	shift 1
+fi
+
+case "$cmd"
+in
+	""|list) build_list "$@" ;;
+	*) echo "unknown command $cmd" >&2; exit 1;;
+esac
+
