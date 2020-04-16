@@ -22,18 +22,19 @@ unlinked_ignores='
 
 build_list()
 {
-	local vol=0
+	local vol=0 img=0
 
 	while test $# -gt 0
 	do
 		case "$1" in
 			-v|--vol) vol=1;;
+			-i|--img) img=1;;
 			*) echo "unknown list parameter $1" >&2; exit 1;;
 		esac
 		shift 1
 	done
 
-echo "index.html" | awk -v "vol=$vol" -v "volmap=$volmap" '
+echo "index.html" | awk -v "vol=$vol" -v "volmap=$volmap" -v "img=$img" '
 	BEGIN {
 		nopen=0
 		dsq = "[\"'\'']"
@@ -103,16 +104,30 @@ echo "index.html" | awk -v "vol=$vol" -v "volmap=$volmap" '
 		return path
 	}
 
-	function dump_links(cwd, fn   , ors, line, path)
+	function dump_links(cwd, fn   , ors, line, path, found)
 	{
 		ors = RS
 		RS="[<]"
 		while((getline < fn) == 1) {
+			found = 0
+
 			if ((($1 == "a") || ($1 == "A")) && ($0 ~ "href=")) {
 				line=$0
 				gsub("\n", " ", line)
 				sub(".*href=" dsq, "", line)
 				sub(dsq ".*", "", line)
+				found=1
+			}
+
+			if (img && (tolower($1) == "img") && ($0 ~ "src=")) {
+				line=$0
+				gsub("\n", " ", line)
+				sub(".*src=" dsq, "", line)
+				sub(dsq ".*", "", line)
+				found=1
+			}
+
+			if (found) {
 				path = mkpath(cwd, line)
 				if (append(path))
 					process(path)
