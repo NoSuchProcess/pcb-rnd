@@ -6,11 +6,12 @@ unlinked_ignores='
 # care only about subdirs
 !($0 ~ "/")                 { next }
 
+# sources
 /\/src\//                   { next }
 /Makefile$/                 { next }
 /\/ID[.]desc$/              { next }
 /\/ID[.]name$/              { next }
-/[.]pyc$/                   { next }
+/[.]dot$/                   { next }
 /09_appendix\/action_src/   { next }
 
 # tmp/backup leftover
@@ -18,6 +19,7 @@ unlinked_ignores='
 /[.]out[.]png$/             { next }
 /PCB\.[^\/.]*\.save/        { next }
 /PCB\.[^\/.]*\.backup/      { next }
+/[.]pyc$/                   { next }
 '
 
 build_list()
