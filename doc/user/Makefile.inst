@@ -5,6 +5,7 @@ install_all:
 	$(SCCBOX) $(HOW) 01_intro/flow.svg $(USERDIR)/01_intro/flow.svg
 	$(SCCBOX) $(HOW) 01_intro/history.html $(USERDIR)/01_intro/history.html
 	$(SCCBOX) $(HOW) 01_intro/index.html $(USERDIR)/01_intro/index.html
+	$(SCCBOX) $(HOW) 01_intro/intro.html $(USERDIR)/01_intro/intro.html
 	$(SCCBOX) mkdir -p $(USERDIR)/02_model
 	$(SCCBOX) $(HOW) 02_model/index.html $(USERDIR)/02_model/index.html
 	$(SCCBOX) $(HOW) 02_model/obj_arc.png $(USERDIR)/02_model/obj_arc.png
@@ -30,15 +31,15 @@ install_all:
 	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_routestyle.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_routestyle.png
 	$(SCCBOX) $(HOW) 05_ui/01_gtk/base_window_highlight_workops.png $(USERDIR)/05_ui/01_gtk/base_window_highlight_workops.png
 	$(SCCBOX) $(HOW) 05_ui/01_gtk/index.html $(USERDIR)/05_ui/01_gtk/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/02_cli
-	$(SCCBOX) $(HOW) 05_ui/02_cli/index.html $(USERDIR)/05_ui/02_cli/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/05_batch
-	$(SCCBOX) $(HOW) 05_ui/05_batch/index.html $(USERDIR)/05_ui/05_batch/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/06_common
-	$(SCCBOX) $(HOW) 05_ui/06_common/grid_menu.png $(USERDIR)/05_ui/06_common/grid_menu.png
-	$(SCCBOX) $(HOW) 05_ui/06_common/index.html $(USERDIR)/05_ui/06_common/index.html
-	$(SCCBOX) $(HOW) 05_ui/06_common/keytree.svg $(USERDIR)/05_ui/06_common/keytree.svg
-	$(SCCBOX) $(HOW) 05_ui/06_common/keytree.txt $(USERDIR)/05_ui/06_common/keytree.txt
+	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/03_batch
+	$(SCCBOX) $(HOW) 05_ui/03_batch/index.html $(USERDIR)/05_ui/03_batch/index.html
+	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/04_common
+	$(SCCBOX) $(HOW) 05_ui/04_common/grid_menu.png $(USERDIR)/05_ui/04_common/grid_menu.png
+	$(SCCBOX) $(HOW) 05_ui/04_common/index.html $(USERDIR)/05_ui/04_common/index.html
+	$(SCCBOX) $(HOW) 05_ui/04_common/keytree.svg $(USERDIR)/05_ui/04_common/keytree.svg
+	$(SCCBOX) $(HOW) 05_ui/04_common/keytree.txt $(USERDIR)/05_ui/04_common/keytree.txt
+	$(SCCBOX) mkdir -p $(USERDIR)/05_ui/05_cli
+	$(SCCBOX) $(HOW) 05_ui/05_cli/index.html $(USERDIR)/05_ui/05_cli/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui
 	$(SCCBOX) $(HOW) 05_ui/index.html $(USERDIR)/05_ui/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/acompnet
@@ -233,16 +234,20 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/stroke/zoom_in.svg $(USERDIR)/06_feature/stroke/zoom_in.svg
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/vendordrill
 	$(SCCBOX) $(HOW) 06_feature/vendordrill/index.html $(USERDIR)/06_feature/vendordrill/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/07_io/export_openscad
-	$(SCCBOX) $(HOW) 07_io/export_openscad/1206.scad $(USERDIR)/07_io/export_openscad/1206.scad
-	$(SCCBOX) $(HOW) 07_io/export_openscad/preliminary.txt $(USERDIR)/07_io/export_openscad/preliminary.txt
-	$(SCCBOX) mkdir -p $(USERDIR)/07_io/export_xy
-	$(SCCBOX) $(HOW) 07_io/export_xy/index.html $(USERDIR)/07_io/export_xy/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/07_io/io_hkp
-	$(SCCBOX) $(HOW) 07_io/io_hkp/index.html $(USERDIR)/07_io/io_hkp/index.html
+	$(SCCBOX) mkdir -p $(USERDIR)/07_io/1_1_io_hkp
+	$(SCCBOX) $(HOW) 07_io/1_1_io_hkp/index.html $(USERDIR)/07_io/1_1_io_hkp/index.html
+	$(SCCBOX) mkdir -p $(USERDIR)/07_io/3_1_export_openscad
+	$(SCCBOX) $(HOW) 07_io/3_1_export_openscad/1206.scad $(USERDIR)/07_io/3_1_export_openscad/1206.scad
+	$(SCCBOX) $(HOW) 07_io/3_1_export_openscad/index.html $(USERDIR)/07_io/3_1_export_openscad/index.html
+	$(SCCBOX) $(HOW) 07_io/3_1_export_openscad/preliminary.txt $(USERDIR)/07_io/3_1_export_openscad/preliminary.txt
+	$(SCCBOX) mkdir -p $(USERDIR)/07_io/3_2_export_xy
+	$(SCCBOX) $(HOW) 07_io/3_2_export_xy/index.html $(USERDIR)/07_io/3_2_export_xy/index.html
+	$(SCCBOX) mkdir -p $(USERDIR)/07_io
+	$(SCCBOX) $(HOW) 07_io/index.html $(USERDIR)/07_io/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/08_util
-	$(SCCBOX) $(HOW) 08_util/01_gsch2pcb-rnd.htm $(USERDIR)/08_util/01_gsch2pcb-rnd.htm
-	$(SCCBOX) $(HOW) 08_util/install_cgi.html $(USERDIR)/08_util/install_cgi.html
+	$(SCCBOX) $(HOW) 08_util/01_gsch2pcb-rnd.html $(USERDIR)/08_util/01_gsch2pcb-rnd.html
+	$(SCCBOX) $(HOW) 08_util/02_cgi.html $(USERDIR)/08_util/02_cgi.html
+	$(SCCBOX) $(HOW) 08_util/index.html $(USERDIR)/08_util/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/09_appendix
 	$(SCCBOX) $(HOW) 09_appendix/action_details.html $(USERDIR)/09_appendix/action_details.html
 	$(SCCBOX) $(HOW) 09_appendix/action_reference.html $(USERDIR)/09_appendix/action_reference.html
