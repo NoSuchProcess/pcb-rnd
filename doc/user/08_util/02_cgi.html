@@ -3,10 +3,13 @@
 <head>
 	<title> pcb-rnd user manual </title>
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../default.css">
 </head>
 <body>
-<h1> Installation of the footprint CGIs </h1>
-<h2> system requirements, 3rd party software </h2>
+<h1 nopdf="yes"> pcb-rnd - user manual </h1>
+
+<h2> 8.2. Installation of the footprint CGIs </h2>
+<h3> 8.2.1. system requirements, 3rd party software </h3>
 	The following software needs to be installed on the system
 	that will host the scripts:
 	<ul>
@@ -18,7 +21,7 @@
 		<li> a full checkout of pcb-rnd/trunk from svn://repo.hu/pcb-rnd/trunk
 	</ul>
 
-<h2> Installation </h2>
+<h3> 8.2.2. Installation </h3>
 Since the CGIs are just demo scripts for repo.hu and are not really installed
 anywhere else normally, there is no install script but a manual installation
 process. For both the parametric and the static footprint CGI:
@@ -36,8 +39,8 @@ For the static footprint CGI (set up the map cache):
 	<li> set sdir to the absolute path of the web-accessible copy in /etc/pcblib.cgi.conf
 </ol>
 
-<h2> Tips and tricks </h2>
-<h3> cgi wrapping </h3>
+<h3> 8.2.3. Tips and tricks </h3>
+<h4> 8.2.3.1. cgi wrapping </h4>
 Making the checkout directly into the cgi-bin dir is not a good idea. Using
 a hard link on each CGI between the checkout and the cgi-bin dir is better,
 but an svn up will silently break the link leaving the old version live.
