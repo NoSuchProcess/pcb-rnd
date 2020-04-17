@@ -119,6 +119,7 @@
 	- re-test HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
 	- preferences dialog: library, layers tabs are unusable [report: Igor2]
 	- BUG: in lesstif gui, running { s s } issues 94 lines to stderr Warning: Null child found in argument list to unmanage [report: Miloh]
+- BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
