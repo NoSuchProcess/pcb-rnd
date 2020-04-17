@@ -53,7 +53,7 @@ struct pcb_ratspatch_line_s {
 
 
 /* Single-word netlist class names */
-const char *pcb_netlist_names[PCB_NUM_NETLISTS];
+extern const char *pcb_netlist_names[PCB_NUM_NETLISTS];
 
 /* Allocate and append a patch line to the patch list */
 void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *id, const char *a1, const char *a2, int undoable);
