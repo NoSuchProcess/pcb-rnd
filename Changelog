@@ -1,3 +1,515 @@
+pcb-rnd 2.2.1 (r30680)
+~~~~~~~~~~~~~~~~~~~~~~
+	[autoplace]
+		-Fix: replace the totally broken code for "smd vs. thru-hole" query
+		-Fix: do not allow overlap of subc bbox on the primary layer (fixes the problem that was caused by not allowing padstack/term overlap only)
+
+	[brave]
+		-Change: invert clipbatch - Gabriel probably would have reported already if anything broke, consider bacth clipping safe
+
+	[build]
+		-Fix: do not compile librnd for make clean
+		-Fix: use target CC for genlist aux object compilation
+		-Del: build system special casing for core action registration with auto-generated lists - since core actions are only a small part of all actions by now, there is no point in special casing; remove PCB_REGISTER_ACTIONS_FUNC() and PCB_REGISTER_ACTIONS_CALL() (split API for semi-automated action registration) - there is only one, manual API now
+		-Split: hooks for librnd to make common infra reusable for sch-rnd
+		-Move: calculate generic cflags before src/Makefile, so they can be included in Makefile.conf
+
+	[cam]
+		-Cleanup: make the error message of 'failed to produce any content' more clear about the reason (no layer group)
+		-Add: separate global option for okempty-content and okempty-group
+
+	[conf]
+		-Add: new drc const subtree
+		-Add: make sure centrally defined new drc consts are kept in sync with the legacy version unless they are overdefined
+
+	[core]
+		-Fix: undo: batch poly clipping to speed things up
+		-Fix: wireframe_draw, thin_draw, thin_draw_poly and check_planes is communicated to the draw code through xform instead of global conf - export doesn't have to automatically reproduce GUI behavior on this
+		-Fix: do not draw padstack shapes in check_planes mode - padstacks are not considered "planes", not even if they are of polygon shape
+		-Fix: hide_names, show_solder_side, invis_other_groups, black_current_group  draw is communicated to the draw code through xform instead of global conf - export doesn't have to automatically reproduce GUI behavior on this
+		-Fix: loadfrom(netlist, ...) prints an error message if none of the import plugins could handle the file
+		-Fix: do not try to remove unlisted subcircuits on import that have the NONETLIST flag set
+		-Fix: data_mirror batches all low level undo into a single serial
+		-Fix: cut-to-buffer object removal is undoable
+		-Fix: rat anchor resolver on polygon shall use forced poly clipping to make sure the endpoint geometry calculation can be done
+		-Fix: don't crash on search if it ends up on a polygon that got cleared out of existnece
+		-Fix: message action: don't do invalid memory reads when argument can not be converted to string
+		-Fix: ChangeName() shouldn't crash if there's no parent subc on the object being changed
+		-Fix: in compat mode flag conversion accepts octagon flag on padstacks
+		-Fix: potentially uninitialized variable in ChangeName()
+		-Fix: segfault on {e t} on no-object
+		-Fix: Select() redraws the objects that changed flags (or the whole screen)
+		-Fix: arc angles edit: final/output delta sanitization so it's never larger than 360 deg
+		-Fix: arc angles undo shall reclip sorrunding polygon
+		-Fix: configure default mode (tool id) to -1 for invalid; any other tool id is unsafe as tool IDs are dynamically allocated on plugin load in random order
+		-Fix: tool: arrow tool selects copy/move/line tool by name instead of hardwired tool IDs
+		-Fix: tool: arrow selection: increase undo serial after new selection is made so it is not undone together with the operation that follows
+		-Del: crosshair range - do not try to restrict objects into the drawing area
+		-Cleanup: move standard tools out to a (core) plugin called tool_std
+		-Cleanup: reference tools by name, not ID, where possible, in preparation of fixed tool ID removal
+		-Cleanup: rat layer tool enforcement is event based so the tool code does not need to know anything about the application specific tool logics
+		-Cleanup: move tool logic from crosshair to tool_logic.c
+		-Cleanup: generalize action execution from file, using librnd's new call instead of local implementation
+		-Cleanup: remove static tool IDs from standard tools
+		-Move: tool_note is really crosshair_note - it is application specific, move it from generic tool infra to crosshair
+		-Move: hid crosshair notify function to librnd - it is a generic hid API + event wrapper
+		-Change: API CHANGE: plug_import support_prio can not have a FILE * argument because the meaning of args[] is implementation-specific - do not open the first arg as file centrally either
+		-Add: object implementation: gfx
+		-Add: tool API: escape() callback so each tool can handle escape locally
+		-Add: API CHANGE: extend the import plug API for multiple file names
+		-Add: API CHANGE: split plug import api's new single_file and the idea of "all arguments are filenames" so the API is generic enough for external commands (e.g. make)
+		-Add: plug_import API: mark plugins that execute user specified external commands (import_net_cmd)
+		-Add: plug_import: utility call to look up importer by name
+		-Add: new conf nodes for the footprint import placement, dispersion and footprint removal
+		-Add: import excess part removal option: view list
+		-Add: conf setting for silently creating boards that are named on the command line (useful in batch/scripting to create initial boards)
+		-Add: Undo() commands: FreezeSerial, UnFreezeSerial and IncSerial so scripts can batch undo operations
+		-Add: make line, arc, text, poly, padstack, subcircuit mirroring undoable
+		-Add: xform: flag_color bit to indicate whether selected/found/warn color should be drawn; pstk, arc, line, poly, text rendering ignores flag colors when intructed
+		-Add: {v n} on subc toggles a hidden internal flag; when the flag is set, any terminal name change will turn on name visibility on the subc-part object
+		-Add: LayerVisReset() action to expose the internal call
+		-Add: when polygon clears out of existnce, the error message should include #id so it's easier to find it
+		-Add: new conf subtree drc_disable, for separating per rule disable bools from the rule specifications (disable flags typically need to be in an editable role while rules may be in read-only roles)
+		-Add: draw a small padlock symbol on locked subcircuits
+
+	[dad]
+		-Add: support for optional creation-time widget geometry: character width
+		-Add: spin compound can set character width (geo)
+
+	[dialogs]
+		-Fix: preferences shouldn't crash on printing hlists
+		-Fix: preferences/conf tree: don't crash when hashlist item edit is attempted
+		-Fix: library filter: unhide all before expanding all, gtk doesn't like to expand hidden nodes
+		-Fix: parametric edit: truncate enum desc if longer than 32 chars
+		-Fix: parametric edit: if there are more than 16 parameters, make the window scrollable
+		-Fix: parametric edit: do not overwrite filter text with example when footprint name is valid but dialog footprint name had () suffix
+		-Fix: library window: make preview less jumpy when the refreshing announcement is shown or hidden
+		-Fix: advanced search: query expression should be wide by default because expressions tend to be long
+		-Fix: preferences/conf don't let a broken content editor dialog pop up for hash lists, they are just not editable on GUI
+		-Fix: advanced search dialog: text string (@.string) operator should be string match not generic numeric ops
+		-Fix: padstack geo edit dialog: changing a shape should mark the parent board changed
+		-Fix: padstack editor dialog: proto edit operates on the non-transformed prototype of the padstack to avoid top/bottom confusion on smirror
+		-Optimize: shave off ~70 pixels horizontally from the padstack proto dialog
+		-Optimize: make the padstack dialog more compact horizontally
+		-Optimize: rearrange hole entry fields so the padstack dialog is within the 800x600 limit
+		-Add: export dialog: composite export attribute triggers function callback so the exorter can build that part of the dialog dynamically
+		-Add: viewlist optionally takes a 3rd argument for an existing list pointer (takes over list ownership)
+		-Add: advanced search GUI entry for gfx fields
+		-Add: use checkbox for parametric dialog boolean parameter
+		-Add: more detailed table header in padstack proto edit
+		-Add: HLIST handling in the config dialog (for the new drc_query rule config)
+		-Add: advanced search offers view list as action to perform on objects found
+		-Add: mark the old drc settings obsolete and include an url with the details; create a frame for the new drc dispatch; drc rule button calls the implementations rule list action
+		-Add: padstack proto editor: indicate smirrored padstack
+
+	[distalign]
+		-Fix: distribute() and align() arguments from the second are optional
+		-Fix: excess undo on move caused doubled displacement of object in an undo after align() or distribute()
+		-Fix: in align(), when the reference is first or last, make sure to pick the left/top or bottom/right coordinate for reference, independently from the align target
+		-Add: do not assume object is a subcircuit, operate on any object type
+
+	[distaligntext]
+		-Fix: aligntext() arguments from the 2nd are optional
+
+	[doc]
+		-Fix: typo in user manual / invocation: --gui ddoesn't take '='
+		-Fix: typo: doc-rnd is long gone
+		-Cleanup: reoder sections in 05_ui so it reflects importance of different UIs better
+		-Cleanup: replace the CLI documentation and explain what actions are
+		-Del: the old details on Import() from the action ref; replace with a help page to switch to ImportSch()
+		-Del: links to other EDA does not belong in the user manual
+		-Del: links to generic pcb fabbing techniques - out of scope for an user doc
+		-Split: intro section into hierarchical
+		-Update: Mode() for the new parameters
+		-Update: new netlist format (action)
+		-Update: keys for the latest menu changes
+		-Update: GetXY() optional arg
+		-Update: action ref for align() and distribute(): they work on objects, not only subcircuits by now
+		-Update: pcb-rnd is part of ringdove
+		-Add: note on how custom layer colors are lost in alien formats
+		-Add: cam: okempty-group and okempty-content
+		-Add: help: detailed explanation for an import config error message
+		-Add: document the new placement/removal methods of ElementList
+		-Add: err0002 for the Import() -> ImportSch() transition
+		-Add: motivation: 2020 is about ringdove
+		-Add: document &current as valid layer syntax
+		-Add: scripting: system-installed fungw requires system-installed genht on standard path for now
+		-Add: link layer addressing in appendix index
+		-Add: document the hlist conf type
+		-Add: drc_query: document the config side; single-expression tutorial for drc_query
+		-Add: link drc_query/ from feature index
+		-Add: explain the no-hole case when checking for padstack overlapping holes
+		-Add: specify the drc_query tEDAx block
+		-Add: manual page for bxl2txt(1)
+		-Add: history: data model rewrite
+		-Add: utility to list all html links recursively, down
+		-Add: 08_util: section numbering, index.html with toc
+		-Add: 07_io: section numbering, index.html with toc
+		-Add: link bridges.svg
+
+	[draw_csect]
+		-Fix: do not use hardwired colors for background and buttons - rather use configured background color and grid color for foreground, that combination should be visible on both dark and light bakcground
+		-Fix: draw hover-text with the annotation color so it is visible over any background
+
+	[drc]
+		-Fix: reset the drc list centrally, not from drc_orig, to allow alternative drc implementations
+		-Add: infra for registering drc implementations
+
+	[drc_orig]
+		-Split: net bloat/shrink logics from the hardwired C drc code for reuse
+		-Move: net integrity check from drc_orig to query - it is required by a query function and drc_orig will be removed long term
+		-Change: simplify net integrity check API by removing the hardwired view list used only by drc_orig (which can use cb_data to pass it instead)
+		-Add: plugin config so the original drc engine can be disabled
+
+	[drc_query]
+		-Add: plugin for the query() programmable/scriptable DRC
+		-Add: rewrite all old DRC rules as query scripts
+		-Add: gui to control and edit DRC rules one by one
+
+	[export_dxf]
+		-Add: separate warning for no-content, suppress with [okempty-content]
+
+	[export_excellon]
+		-Add: separate warning for no-content, suppress with [okempty-content]
+
+	[export_gcode]
+		-Add: separate warning for no-content, suppress with [okempty-content]
+
+	[export_gerber]
+		-Cleanup: remove long unused, disabled code for the old LPC/LPD support
+		-Add: separate warning for no-content, suppress with [okempty-content]
+		-Add: naming style penalty: 8 seconds wait
+		-Add: large warning that tries to redirect users from direct gerber export to cam
+		-Add: GUI export warning more bold with a button to switch to the cam export dialog quickly
+
+	[export_openscad]
+		-Fix: don't print arc approx closing line from uninitialized variable if arc could not be drawn
+		-Fix: arc approximation for negative delta angles
+
+	[export_png]
+		-Add: separate tracking of empty output due to no objects on existing layer groups
+		-Add: enable flag colors only when as-shown is set
+
+	[export_ps]
+		-Add: separate warning for no-content, suppress with [okempty-content]
+		-Add: eps: enable flag colors only when as-shown is set
+
+	[export_svg]
+		-Add: separate warning for no-content, suppress with [okempty-content]
+		-Add: enable flag colors only when as-shown is set
+
+	[extobj]
+		-Fix: typo in API: makr instead of mark
+		-Fix: single click selection: select all floaters of the same extobj
+		-Fix: block selection selects or unselects all floater of an extobj at once
+		-Fix: when copying subcircuits to buffer from extobj-floater side effect, make sure each subc is copied only once even if multiple floaters would trigger the copy
+		-Fix: return 0 when no floater flag sync happened (missing return value)
+		-Add: dialog and unpack helpers for the int type
+		-Add: the bus extended object
+		-Add: floater flag sync call so selection flag can be applied to all floaters at once
+
+	[find]
+		-Fix: hshadow hole vs. line/arc intersection (always returned false instead of checking for intersection)
+		-Fix: unplated hshadow shouldn't indicate galvanic connection to lines and arc ever
+		-Fix: hshadow slot vs. line/arc intersection (always returned false instead of checking for intersection)
+		-Fix: pstk-pstk intersection for the hshadow case
+		-Fix: hshadow hole/slot vs. polygon (with or without thermal) intersection (always returned false instead of checking for intersection)
+		-Fix: no-shape hole/slot vs. line/arc intersection (always returned false instead of checking for intersection)
+		-Fix: no-shape hole/slot vs. poly (with all thermals) intersection (always returned false instead of checking for intersection)
+		-Fix: uninitialized object type for pstk vs. polygon padstack connection check
+		-Fix: line/arc/poly vs. full poly intersect checks on all polygon islands
+		-Add: find from obj can start with empty find (NULL obj) for easier loop searches
+
+	[gtk]
+		-Fix: draw crosshair even when x < 0
+		-Fix: gl: draw full screen crosshair, even on coords outside of the drawing area
+		-Fix: don't hardwire pcb-rnd in window title
+		-Fix: determine text height properly even for truncated text (matters on high res screen)
+		-Fix: uninitialized memory in color widget temp color
+		-Fix: the preview widget shall ignore board flip for buttons (since it is ignoring it for drawing too)
+		-Fix: wt_preview: mouse motion and button release should also ignore board flip
+		-Change: allow rendering objects outside of the drawing area
+		-Cleanup: replace pcb_any_obj_t * dep with void * - the GUI needs to be portable among apps
+		-Add: implement get_dad_hidlib()
+		-Add: pixmap API binding
+		-Add: remove hotkey when removing menu item
+		-Add: apply DAD character width on string input
+
+	[import_calay]
+		-Add: plug_import registration so it works with the import_sch2 plugin
+		-Add: support_prio does a test-parse before saying yes to a file
+
+	[import_edif]
+		-Fix: wrong use of pcb_fopen() (leaked in due to missing #include)
+		-Fix: proper error reporting using pcb_message() instead of fprintf
+
+	[import_fpcb_nl]
+		-Fix: don't return error after succesfully loading the netlist
+		-Add: plug_import registration so it works with the import_sch2 plugin
+		-Add: support_prio reads the header
+
+	[import_gnetlist]
+		-Add: reimplement gnetlist import as a small plugin
+		-Add: local config for gnetlist name
+
+	[import_hpgl]
+		-Fix: wrong action arg when switching to the buffer tool
+
+	[import_ipcd356]
+		-Add: plug_import registration so it works with the import_sch2 plugin
+		-Add: support_prio does a test parse before saying yes
+		-Fix: don't crash on mismatching format
+		-Fix: don't accept a leftover-space from a previous line
+
+	[import_ltspice]
+		-Add: plug_import registration so it works with the import_sch2 plugin
+		-Add: support_prio does a test-parse before saying yes
+		-Fix: always render base name properly, even if the file name is wrong
+
+	[import_mentor_sch]
+		-Add: plug_import registration so it works with the import_sch2 plugin
+		-Add: make mentor_sch a low prio fallback because we can't tell it apart from edif by a test-parse
+		-Tune: never accept mentor sch in autodetect because the edif problem
+
+	[import_net_action]
+		-Add: netlist import plugin for pcb-rnd action scripts (useful for scripts/programs generating the netlist in action script, e.g. gsch2pcb-rnd or gnetlist -g pcbfwd)
+
+	[import_net_cmd]
+		-Add: initial implementation (system() wrapper) with env var sets
+		-Fix: support_prio is always 0 to avoid autodetected command execution
+
+	[import_sch]
+		-Del: do not initialize own config, fully rely on import_sch2's (avoids double registration of conf nodes)
+		-Del: ImportGUI() - replace it with a dummy implementation that warns and calls ImportSch()
+		-Del: remove the old gnetlist-only import schematics from the menu
+		-Change: make using DeprecatedImport() more painful with a sleep(8)
+		-Add: print a bold warning about feature removal, direct the user to err0002 for full description and links
+		-Add: Import() placeholder in oldactions to tell users how to upgrade
+
+	[import_sch2]
+		-Add: format-neutral import plugin with a better GUI and input file names and format stored in config
+	
+	[import_tinycad]
+		-Fix: do not crash when read fails on test-parse
+		-Add: plug_import registration so it works with the import_sch2 plugin
+		-Add: support_prio loads the netlist to make sure it's valid
+
+	[io_kicad]
+		-Fix: kicad save: subc main layer should be F.cu for subcircuits placed on the top
+		-Fix: save polygons in subc as fp_poly instead of zone - modules don't have zones
+		-Add: plug_import registration (of the eeschema schematics load) so it works with the import_sch2 plugin
+		-Add: read_net's support_prio does a test-parse before saying yes to a file
+
+	[io_mentor_cell]
+		-Add: Consider text mirrored flag when calculating bounds.
+		-Add: Consider text thickness when calculating bounds.
+
+	[io_pcb]
+		-Fix: when saving special shaped pin (old pin shape patch), shape 1 or 17 are plain octagons, save them with the octagon flag instead of square+shape for better comaptibility
+
+	[io_tedax]
+		-Add: plug_import registration so it works with the import_sch2 plugin
+
+	[layer]
+		-Fix: layer delete undo: insert the layer back using its original lid at its original group position
+		-Fix: when layer IDs are moved, update layer objects' ->parent field as well
+		-Fix: MoveLayer() return value is 0 for a succesful step+ or step- so it doesn't break script execution
+		-Fix: 'insert layer after' menu: batch insert and move so it is undone at once
+		-Fix: unbind subcircuits from board layer before removing it
+		-Add: replace the old layer move undo code with new one that works for create/remove
+		-Add: new undo code for layer append and remove
+		-Add: layer rename/recolor undo
+		-Add: make layergroup name and purpose string changes undoable
+		-Add: undoable layer group type (location & material) change
+		-Add: undoable layer group del
+		-Add: make pcb_layergrp_dup() undoable
+		-Add: make pcb_layer_create() undoable
+		-Add: make pcb_layergrp_step_layer() always undoable
+		-Add: new action: LayerByStack(select, next|prev)
+		-Add: standard layer addressing: &current means the currently selected layer
+		-Add: default board file copper and silk layer key bindings
+		-Add: the LayerVisReset() action does the historical mask and paste hiding
+		-Split: layer move code core into a separate append and delete function because it was too large and they are really unrelated
+		-Split: layer vis function for hiding paste and mask (for historical reasons) into a separate, public function since actions will need to access it
+
+	[lesstif]
+		-Fix: don't hardwire pcb-rnd in window title
+		-Add: pixmap draw binding
+		-Add: remove hotkey when removing menu item
+		-Add: DAD: apply optional character width on string input widget on creation
+		-Add: mouse cursor reg/set from tool
+		-Add: implement get_dad_hidlib()
+
+	[lib_hid_common]
+		-Fix: prompt-for and log window gets the app name from hidlib instead of hardwiring "pcb-rnd"
+		-Cleanup: remove pcb-specific #includes to make sure the plugin is hidlib-usable
+		-Move: toolbar code from lib_hid_pcbui to lib_hid_common so other ringdove apps can use it (optional)
+		-Add: API: macro-free variant of Zoom()'s help for ringdove apps
+
+	[gl]
+		-Fix: always draw crosshair end-to-end of screen view area
+		-Add: pixmap: Enable Alpha test when rendering textures
+
+	[lib_hid_pcbui]
+		-Fix: Zoom() generalization: define action syntax in lib_hid_common, overload it from lib_hid_pcbui
+		-Cleanup: make toolbar code independet of pcb-rnd internals, depending only on librnd
+		-Split: zoom code to pcb-rnd-specific and generic so the generic part can be moved; move zoom core to lib_hid_common so it can be reused by other ringdove apps
+		-Move: NOGUI to PCB_GUI_NOGUI in lib_hid_common for reuse in generalized zoom/pan actions
+		-Move: Center(), Pan() and Scroll() to lib_hid_common - they are hidlib-generic, reusable in other ringdove apps
+		-Move: Command() to lib_hid_common - depends only on hidlib, needed by all ringdove apps
+		-Add: create custom layer keys at the @layerkeys anchor in the menu system, reading key config from layer attributes
+		-Add: timed update of layer attr key menu after attribute change
+		-Add: LayerHotkey() action for interactively set the hotkeys of a layer
+		-Add: use a timer to batch layer menu rebuild requests
+
+	[librnd]
+		-Fix: tool: mode change callback: avoid infinite recursion by locking
+		-Fix: printf %ma prints degrees to at most 6 digits, not truncating them to integer
+		-Fix: make sure the Fullscreen() action returns 0 on success
+		-Fix: polyarea: memory leak on head item in contour include
+		-Fix: Cursor(): calculate coordinates correctly both for board and view cases, for all variants of flips in view
+		-Fix: strict c89 violation: don't cast function pointer to void * without the central wrapper
+		-Cleanup: #include safety: use <librnd/core>
+		-Cleanup: rename tool API calls to remove some historical confusion and simplfy names: notify->press, remove _objects suffix
+		-Cleanup: remove Mode(None) in favor of Mode(Arrow) to unify tool invocation conventions (address tools by their native name so the 1:1 translation can be removed)
+		-Cleanup: remove 1:1 tool name translation table from Tool()
+		-Cleanup: rtree doesn't depend on pcb_any_obj_t *, uses void * instead
+		-Cleanup: split global_typedefs so librnd doesn't contain PCB-specific types
+		-Cleanup: decouple "note" coordinates and states from crosshair - these are really tool states and should be in the hidlib struct to be reentrant
+		-Cleanup: make 'grabbed' mark reentrant by moving it into the hidlib struct as tool_grabbed
+		-Cleanup: const correctness in rtree compat
+		-Del: get rid of macro.h - merge into librnd/core/misc_util.h
+		-Split: separate librnd code from pcb-rnd code
+		-Split: move generic actions from gui_act.c and main_act.c to librnd
+		-Split: SetGrid() from SetValue() so that it can be used by other ringdove apps from menu
+		-Change: remove hardwired rat layer drawing flag from the tool code in favor of an unsigned long bitfield each app can use differently
+		-Rename: Mode() to Tool() for clarity, keep Mode() as an alias for backward compatibility
+		-Move: Conf() from core to librnd
+		-Move: Message() to librnd
+		-Move: grid related actions from core to librnd because menu files of other apps will also depend on it
+		-Add: Tool(): if parameter is not a command, select tool by name
+		-Add: spare pcb_hidlib_t fields for binary compatibility
+		-Add: API for registering app events
+		-Add: pcb_conf_grow() to allow dynamically growing lists
+		-Add: hid API: function to retrieve current hidlib from the GUI within a DAD callback
+		-Add: pcb_hidlib_t * as first arg in crosshair callbacks to make them reentrant
+		-Add: GetXY() optionally returns x or y coord; first arg is an optional message
+		-Add: expose point-in-triangle function in the public API
+		-Add: more convenient pixmap API for loading pixmaps for the cache (for gfx)
+		-Add: hid_cfg lihata insertion: allow inserting lists under hashes, not only text nodes
+		-Add: menu key helper: remove a hotkey from the tree
+		-Add: convert from custom fungw types to FGW_STR when called with FGW_AUTO
+		-Add: stand-alone menu script subtrees: menu action execution: if an action list child is a symlink, follow it; if an action list child is a list, recurse and execute each action there too
+		-Add: introduce the HLIST conf type, for list-of-opaque-hash-nodes for specialized plugin subtrees
+		-Add: conf: a variant of the get_at() API that returns the node from the merged plugin conf tree
+		-Add: call conf callback new_item_post() when creating new native nodes
+		-Add: conf: conf change callback on inserting new lht nodes in a hlist for the first time
+		-Add: conf: function to convert string to native config type
+		-Add: conf: call for unregistering a single conf field
+		-Add: conf: low level field registration returns the new field so the caller doesn't need to look it up
+		-Add: conf: flags to auto-free description and hash_path of nodes (useful for dynamically registered nodes)
+		-Add: conf native: action name for GUI editing (useful for hlists)
+		-Add: flag for auto-free dynamic alocated value (for dynamic conf fields)
+
+	[propedit]
+		-Fix: dialog: bool is never relative - always copy the value to the right side on row selection
+		-Fix: do not auto-apply relative changes, but auto-apply absolute changes
+		-Add: propsel set for all numeric fields of the gfx object
+
+	[pstk]
+		-Fix: poly shape grow/shrink (offset): negate value if polygon is inverted so grow always results in polygon bigger than the original
+		-Fix: when copying a padstack prototype, strdup the name so names are detached
+		-Add: function pcb_pstk_shape_mech_or_hole_at() that returns a shape for the hole to remove special casing on caller side
+		-Add: padstack proto dup and proto name change and some of the shape geometry changes made undoable
+		-Add: low level accessors for exposing untransformed padstack shapes (for editing prototypes)
+
+	[query]
+		-Fix: parser survives empty expression
+		-Fix: access: make sure coord type is returned (instead of int) for querying coord fields
+		-Fix: be tolerant for excess newlines in the script
+		-Fix: free find context after a netlist-object listing
+		-Fix: query(): print proper error message on invalid or missing first arg
+		-Add: support for gfx fields: cx, cy, sx, sy, rot and derived field area
+		-Add: support for rule, let and assert
+		-Add: iterator activity map: run only those iterators that are referenced in an expression
+		-Add: query function: distance() for the case of 4 coords
+		-Add: when printing <obj> in eval, also include the object ID, like <obj ID=%ld> to make the print useful
+		-Add: query function: mklist(): user scripts can create and even return lists
+		-Add: query function: netlist() - returns an unordered list of nets
+		-Add: special case iterator: when a function returns a list, it must be iterated locally
+		-Add: net accessor for .name and attributes
+		-Add: netterms() to return the terminals of a net
+		-Add: query functions get execute context so they can access the cache (and pcb later)
+		-Add: require and pass on (pcb_board_t *) so the code doesn't have to depend on PCB
+		-Add: query function: netobjs(): return all objects of a net
+		-Add: query function: subcobjs() returns a list of direct subc objects
+		-Add: query function: action(): convert arguments and call the action
+		-Add: query function to return one (terminal) object of each net segment
+		-Add: query functions for searching for breaks and shorts on a given net specified by an object
+		-Add: query function: getconf(): expose config settings (so that a drc const subtree will be accessible later)
+		-Add: $name shorthand for accessing drc constants
+		-Add: query funnction violation(): creates a list with metadata for drc presentation
+		-Add: query(view, ...) to collect results in a view list
+		-Add: query(evalidp, ...) for eval with idpaths printed (useful for debugging and external script processing)
+		-Add: $dwg_area_x and $dwg_area_y for easy/quick access of board drawing area extents
+		-Add: query functions: glue function for padstack neck check
+		-Add: query function: poly_num_islands(): zero for clipped-out-of-existence polygons, >1 for fullpoly with multiple islands
+		-Add: persistent/shared execution cache concept
+		-Add: look up and save PCB_OBJ_NET_TERM for netlist cache to make queries cheaper
+
+	[report]
+		-Fix: Report(AllNetLengths) unit parameter handling bug caused crash on uninitialized variable
+		-Cleanup: make the documentation on various syntax options more clear
+		-Cleanup: split report content per object type into separate functions because the switch grew unbearably large
+		-Add: report on text and gfx objects
+		-Add: object report should print the footprint attribute for subcircuits
+
+	[res/menu]
+		-Fix: re-add polygon close and polygon previous point that got removed in the 2.0.0 menu upgrade
+		-Fix: Tool() calls shall use lowercase tool names
+		-Cleanup: split the import menu into sections using separators (it grew too big) to make room for the new sch import
+		-Cleanup: regroup import menu file formats so netlists are in a separate block
+		-Change: use lower case tool names because this API is switching to case sensitive
+		-Change: use the new, shorter tool names, as registered by tool_std
+		-Change: make the new ImportSch() based import schematics the default, top entry in the import menu, remove the old gschem-only importer menu
+		-Rename: Mode() to Tool() for clarity
+		-Rename: Tool(PasteBuffer) to Tool(buffer) for the unified by-tool-name invocation
+		-Add: @layerkeys anchor for attribute defined layer keys
+		-Add: menu/key binding for previous/next layers
+		-Add: layer context popup: hotkey set
+		-Add: view and GUI reset menu items
+
+	[stroke]
+		-Fix: remove static tool ID referencing - use Mode(Escape) for stopping line drawing
+		-Cleanup: convert the stroke API from stub to event based
+		-Cleanup: move pcb_mid_stroke state from core to the plugin - the core should only notify the plugin using events, but all states must be stored in the plugin
+		-Cleanup: don't depend on PCB
+		-Cleanup: do not directly use crosshair X and Y, that is app-dependent - get these through event args
+		-Change: the stroke plugin is now part of the hidlib
+
+	[tests]
+		-Fix: librnd test: need to use source vesion of librnd.mak, it is not available before the first (local) install
+		-Fix: tests implemeted in C shall use the same cflags as src/ so objects are linkable
+		-Fix: librnd: the includes-test requires the same glue layer as the main test
+		-Fix: make clean from conf test needs to remove diag obj as it may have been compiled by this dir
+		-Add: RTT: new test case for making sure flag colors and wireframe don't leak in to graphical exports
+		-Add: drc_query tests
+		-Add: query test: getconf()
+
+	[util]
+		-Del: code change statistics: with librnd and tool move, chgstat lost its remaining validity
+		-Del: workarounds/unwarn* - we are not using #warnings anymore
+		-Del: pcb-strip: the old/obsolete .pcb format is not ours, we shouldn't keep utils to edit it
+		-Add: bxl2txt for low level conversion of bxl binary files to bxl text files for debug
+
+	[win32]
+		-Fix: explicit dependency on librnd .a files (gsch2pcb-rnd is linked against them)
+		-Update: gsch2pcb-rnd uses LIBRND_EXE instead of non-existent $(EXE)
+		-Update: gsch2pcb-rnd shouldn't depend on constant paths, that wouldn't work on win32
+		-Add: missing include for the win32 path hacks in import_gnetlist
+		-Add: librnd.mak should have LIBRND_EXE, the .exe suffix on windows (all ringdove apps will need this for cross-compilation)
+		-Add: detect and use target ar for building .a files
+
 pcb-rnd 2.2.0 (r29205)
 ~~~~~~~~~~~~~~~~~~~~~~
 
