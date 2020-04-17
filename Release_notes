@@ -1,34 +1,47 @@
-pcb-rnd 2.2.0
+pcb-rnd 2.2.1
 ~~~~~~~~~~~~~
 
-This version of pcb-rnd is mainly a cleanup/bugfix version with 3
-notable new features. One of the new features is the extended object
-infrastructure, that provides a sustainable way to extend pcb-rnd features
-with new tools and objects without having to complicate the data model.
+This version is a feature release. On the infrastructural side the next big
+step of the separation gets us closer to ringdove and the new drc_query plugin
+gives a flexible frame for complex DRC implementations contrlled by users.
+On the feature side the most important new features are the
+new import_sch code and bus extended object.
 
-With this release the second digit of the version bumped because pcb-rnd
-is entering a new era. librnd (including the hidlib) is already installed
-and being used by external applications. The new 2.2.x era is about
-starting to separate librnd from pcb-rnd. This effort will take multiple
-development cycles.
 
 Feature highlight:
 
-1. extended objects (line-of-vias and dimension lines)
+1. bus extended object: draw parallel buses (and differential pairs) as
+   if they were single, thick lines
 
-2. OpenEMS export: suitable for microwave filter and antenna simulation
+2. drc_query: query() language based, user programmable/scriptable DRC system
+   plus a many upgrades to the query() functionality
 
-3. STL export: yet another path to 3D
+3. import_sch rewrite: support any file format and input source instead of
+   being specialzed to gschem; replace the Makefile based input method with
+   a generic "execute this command" method; give better control to the user
+   about how new footprints are placed and footprints are removed by the import
 
-4. io_eagle: various bugfixes and improvements in the loader allows more
-   eagle boards to be loaded with less glitches
+4. librnd separation: librnd code is moved out from src/ to src/librnd so it
+   will be easier to split off to a separate repository later
 
-5. scripting: action code upgrade allows delivering the hidlib/PCB pointer
-   to actions as argument (in argv[0]) which long term makes the code
-   reentrant; centralized and unified layer and layer group addressing
-   (using the syntax and experiences from cam)
 
-6. windows port: the cross compilation setup got smoother and the startup code
-   more robust, removing all known windows-port-specific bugs - locales and
-   parametric footprint dialog work well now
+5. tool implementations (such as the line draw tool, via tool, etc) are moved
+   out to the new tool_std plugin; this removes more GUI-only code from code
+   but also allows new, advanced tools to be implemented in new tool_* plugins
+
+6. configurable layer keys: the user can set the key binding for selecting
+   or hiding/showing each layer; the key bindings are saved with the board
+   as layer attribute
+
+7. export code cleanup: decouple screen-visible effects such as selection or
+   found color from export object color (this helps reproducible exports);
+   refined okempty mechanism for CAM; provide a set of new layer supplements
+   to CAM for drawing any layer e.g. in wireframe or with screen colors
+
+8. the distalign plugin (distribute() and align() actions) now work on any
+   object type, not only on subcircuits
+
+9. relaxed drawing area limits: objects are not constrained to be within the
+   drawing area and the cursor is willing to move outside of the drawing area
+   by a wide margin
 
