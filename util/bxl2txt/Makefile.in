@@ -30,6 +30,7 @@ bxl_decode.o: $(PLUG)/bxl_decode.c $(PLUG)/bxl_decode.h
 install_all:
 	$(SCCBOX) mkdir -p "$(BINDIR)"
 	$(SCCBOX) $(HOW) "bxl2txt$(LIBRND_EXE)" "$(BINDIR)/bxl2txt$(LIBRND_EXE)"
+	$(SCCBOX) $(HOW) "txt2bxl$(LIBRND_EXE)" "$(BINDIR)/txt2bxl$(LIBRND_EXE)"
 
 install:
 	$(MAKE) install_all HOW="install"
