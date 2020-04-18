@@ -10,4 +10,51 @@
 <h2 nopdf="yes"> 7.2 Export plugins </h2>
 <h3> 7.2.1 export_openscad </h3>
 <p>
-<a href="preliminary.txt">TODO</a>
+The openscad exporter generates the 3D model of the board in form of 
+an openscad script.
+<p>
+The main entry point of the script is pcb_board(). All coordinates are in
+mm. The in x and y directions the 0;0 point of the board is the 0;0 point on
+screen in pcb-rnd, to make it easy to wrap the board in a translate() after
+measuring the coords of a point in pcb-rnd. The vertical origin is the middle
+of the board's FR4.
+<p>
+Supported features:
+<ul>
+	<li> arbitrary shaped outline
+	<li> top/bottom copper (optional)
+	<li> top/bottom mask (optional)
+	<li> top/bottom silk (optional)
+	<li> holes (optional)
+	<li> subcircuit (3d) models (optional)
+</ul>
+
+<p>
+Subcircuit models are loaded from external files referenced from the subcircuit
+in the pcb-rnd board file. Model files are searched recursively under the
+footprint library search path.
+<p>
+The subcircuit (footprint instance) can have the following openscad related
+attributes, all optional:
+<p>
+<table border=1 cellspacing=0>
+	<tr><th>attrib                         <th> meaning
+	<tr><td>openscad=filename              <td> file name of the .scad script (3d subcircuit model)
+	<tr><td>openscad-transformation=script <td> apply the specified transformation on the model instance
+	<tr><td>openscad-param=p1,p2,p3...     <td> parameters to pass on to the model
+</table>
+<p>
+If the openscad attribute is not present, no 3d model is inserted.
+<p>
+If openscad-transformation is specified, it is inserted before the model
+call; it typically contains a transform() and/or a rotate() to modify the
+placement of the model. The 0;0;0 point of the placement is the origin of
+the subcircuit in pcb-rnd, on the surface of the board.
+<p>
+If openscad-param is specified, the module is called with this parameter
+list, else the model is called with empty parameter list.
+<p>
+A model file shall contain a single module, with "module" and the arbitrary
+module name in the same line, { in the following line. One instance of
+each model is copied into the output file so that the resulting openscad
+script has no external reference and is self-contained.
