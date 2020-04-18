@@ -302,9 +302,24 @@ int pcb_bxl_encode_eof(hdecode_t *ctx)
 		/* pad the last byte */
 		while(ctx->out_len == 0)
 			append(ctx, 0);
+		ctx->plain_len++;
 	}
 	ctx->out[ctx->out_len++] = '\r';
 	ctx->out[ctx->out_len++] = '\n';
+	return ctx->out_len;
+}
+
+int pcb_bxl_encode_len(hdecode_t *ctx)
+{
+	unsigned long int len = ctx->plain_len-1;
+	int n;
+
+	ctx->bitpos = ctx->out_len = 0;
+
+	for(n = 0; n < 32; n++) {
+		append(ctx, len & 1);
+		len >>= 1;
+	}
 	return ctx->out_len;
 }
 

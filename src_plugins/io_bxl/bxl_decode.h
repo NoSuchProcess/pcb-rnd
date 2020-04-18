@@ -73,6 +73,10 @@ void pcb_bxl_encode_init(hdecode_t *ctx);
 int pcb_bxl_encode_char(hdecode_t *ctx, int inchr);
 
 /* Call this at the end of the output stream to flush the last incomplete
-   output byte */
+   output byte. Same return as pcb_bxl_encode_char. */
 int pcb_bxl_encode_eof(hdecode_t *ctx);
+
+/* Call this after pcb_bxl_encode_eof() to generate the "length header" that
+   shall be written at the beginning of the stream. */
+int pcb_bxl_encode_len(hdecode_t *ctx);
 
