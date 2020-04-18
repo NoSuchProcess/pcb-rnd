@@ -64,7 +64,7 @@ echo "index.html" | awk -v "vol=$vol" -v "volmap=$volmap" -v "img=$img" '
 		if (vol) {
 			vp = path
 			sub("/.*", "", vp)
-			print path, int(VOL[vp])
+			print path "\t" int(VOL[vp])
 		}
 		else
 			print path

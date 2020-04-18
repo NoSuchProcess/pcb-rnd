@@ -14,7 +14,7 @@ user.pdf: user.ps
 	ps2pdf user.ps
 
 ps.lst.vols: */*.html */*.png ./listlnk Makefile
-	./listlnk list -v | grep "[.]html " | grep -v "^index.html " >> ps.lst.vols
+	./listlnk list -v | grep "[.]html	" | grep -v "^index.html	" > ps.lst.vols
 
 ps.lst: */*.html */*.png ps.lst.vols
 	echo "title.html" > ps.lst
