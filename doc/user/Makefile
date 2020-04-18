@@ -7,16 +7,18 @@ INSTD = 02_model 03_data 04_invoc 05_ui 06_feature 07_io \
 
 all: pdf
 
+include $(ROOT)/Makefile.conf
+
 pdf: user1.pdf user2.pdf user3.pdf
 
 user1.ps: ps1.lst $(BUILD) default.css Makefile
-	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="" $(BUILD) `cat ps1.lst` > user1.ps
+	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^%%%ver%%%^Version $(PCB_RND_VER)^g" $(BUILD) `cat ps1.lst` > user1.ps
 
 user2.ps: ps2.lst $(BUILD) default.css Makefile
-	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="" $(BUILD) `cat ps2.lst` > user2.ps
+	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^%%%ver%%%^Version $(PCB_RND_VER)^g" $(BUILD) `cat ps2.lst` > user2.ps
 
 user3.ps: ps3.lst $(BUILD) default.css Makefile
-	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="" $(BUILD) `cat ps3.lst` > user3.ps
+	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^%%%ver%%%^Version $(PCB_RND_VER)^g" $(BUILD) `cat ps3.lst` > user3.ps
 
 user1.pdf: user1.ps
 	ps2pdf user1.ps
@@ -28,7 +30,7 @@ user3.pdf: user3.ps
 	ps2pdf user3.ps
 
 ps.lst.vols: */*.html */*.png ./listlnk Makefile
-	./listlnk list -v | grep "[.]html	" | grep -v "^index.html	" > ps.lst.vols
+	./listlnk list -v | grep -v "^index.html	\|[.]png	\|[.]svg	\|[.]pcb\|	[.]lht" > ps.lst.vols
 
 ps1.lst: */*.html */*.png ps.lst.vols
 	echo "ps_title1.html" > ps1.lst
