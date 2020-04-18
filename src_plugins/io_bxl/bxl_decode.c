@@ -298,14 +298,14 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 int pcb_bxl_encode_eof(hdecode_t *ctx)
 {
 	ctx->out_len = 0;
-	if (ctx->bitpos == 0)
-		return 0;
-
-	/* pad the last byte */
-	while(ctx->out_len == 0)
-		append(ctx, 0);
-
-	return 1;
+	if (ctx->bitpos != 0) {
+		/* pad the last byte */
+		while(ctx->out_len == 0)
+			append(ctx, 0);
+	}
+	ctx->out[ctx->out_len++] = '\r';
+	ctx->out[ctx->out_len++] = '\n';
+	return ctx->out_len;
 }
 
 
