@@ -33,7 +33,7 @@ user3.pdf: user3.ps
 	ps2pdf user3.ps
 
 ps.lst.vols: */*.html */*.png ./listlnk Makefile
-	./listlnk list -v | grep -v "^index.html	\|[.]png	\|[.]svg	\|[.]pcb\|	[.]lht" > ps.lst.vols
+	./listlnk list -v | grep -v "^index.html	\|[.]png	\|[.]svg	\|[.]pcb\|	[.]lht\|keytree.txt" > ps.lst.vols
 
 ps1.lst: */*.html */*.png ps.lst.vols
 	echo "ps_title.html" > ps1.lst
