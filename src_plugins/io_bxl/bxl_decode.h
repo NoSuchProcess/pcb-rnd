@@ -50,6 +50,7 @@ typedef struct hdecode_s {
 	int hdr_pos;
 	int hdr[4];
 	unsigned long int plain_len, opos;
+	unsigned after_first_bit:1;
 } hdecode_t;
 
 /* Initialize a decode context, before the first input byte is pushed.

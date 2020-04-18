@@ -265,11 +265,15 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 	}
 
 	for(; depth > 0; depth--) {
-		if (encoded[257-depth])
-			printf("1");
-		else
-			printf("0");
+		if (ctx->after_first_bit) {
+			if (encoded[257-depth])
+				printf("1");
+			else
+				printf("0");
+		}
+		ctx->after_first_bit = 1;
 	}
+
 	htree_update(ctx->tree.nodeList[inchr]);
 	return 0;
 }
