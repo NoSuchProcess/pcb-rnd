@@ -9,6 +9,7 @@ BEGIN {
 ($0 ~ "[/]src[/]") { next }
 /[.]bak$/ { next }
 /[.]backup$/ { next }
+/^ps_title/ { next }
 /~$/ { next }
 
 function get_svn_st(path,  st,cmd)
