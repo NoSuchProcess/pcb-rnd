@@ -295,6 +295,20 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 	return ctx->out_len;
 }
 
+int pcb_bxl_encode_eof(hdecode_t *ctx)
+{
+	ctx->out_len = 0;
+	if (ctx->bitpos == 0)
+		return 0;
+
+	/* pad the last byte */
+	while(ctx->out_len == 0)
+		append(ctx, 0);
+
+	return 1;
+}
+
+
 void pcb_bxl_encode_init(hdecode_t *ctx)
 {
 	pcb_bxl_decode_init(ctx);
