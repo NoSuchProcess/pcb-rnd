@@ -11,7 +11,10 @@ include $(ROOT)/Makefile.conf
 
 pdf: user1.pdf user2.pdf user3.pdf
 
-user1.ps: ps1.lst $(BUILD) default.css Makefile
+ps_logo.png: ../resources/logo32.png
+	cp ../resources/logo32.png ps_logo.png
+
+user1.ps: ps1.lst $(BUILD) default.css Makefile ps_logo.png
 	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^%%%ver%%%^Version $(PCB_RND_VER)^g" $(BUILD) `cat ps1.lst` > user1.ps
 
 user2.ps: ps2.lst $(BUILD) default.css Makefile
