@@ -28,7 +28,7 @@ awk '
 
 		if (h ~ "autotoc=.yes.") {
 			sect=inclev(level)
-			print substr($0, 0, RSTART+RLENGTH), sect, substr($0, RSTART+RLENGTH+1)
+			print substr($0, 0, RSTART+RLENGTH-1), sect, substr($0, RSTART+RLENGTH)
 			next
 		}
 		else {
