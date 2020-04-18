@@ -1,0 +1,11 @@
+<title>txt2bxl</title>
+<sect>1</sect>
+<date>2020-04-18</date>
+
+<name> txt2bxl - encode a BXL file provided in plain text and save binary </name>
+<syn> <call>txt2bxl</call> <arg>outfile.bxl</arg> &lt; <arg>infile.txt</arg> </syn>
+
+<description>
+<call>txt2bxl</call> reads and encodes a text bxl file in its standard
+input and saves the resulting binary bxl file on the file name specified in
+the command line argument.
