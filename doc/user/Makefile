@@ -13,10 +13,13 @@ user.ps: ps.lst $(BUILD) default.css Makefile
 user.pdf: user.ps
 	ps2pdf user.ps
 
-ps.lst: */*.html */*.png
+ps.lst.vols: */*.html */*.png ./listlnk Makefile
+	./listlnk list -v | grep "[.]html " | grep -v "^index.html " >> ps.lst.vols
+
+ps.lst: */*.html */*.png ps.lst.vols
 	echo "title.html" > ps.lst
 	echo "index_ps.html" >> ps.lst
-	ls */*.html 06_feature/*/*.html | grep -v "06_feature/index.html\|09_appendix/index.html\|Pre.html\|Post.html" | sort | awk '/^06_/ && (!seen) { print "06_feature/index.html"; seen=1} { print $0}' >> ps.lst
+	awk '{print $1}' < ps.lst.vols > ps.lst
 
 include Makefile.inst
 
