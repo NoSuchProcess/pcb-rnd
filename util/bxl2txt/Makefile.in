@@ -10,17 +10,22 @@ CC=@cc/cc@
 
 include $(LIBRND)/core/librnd.mak
 
-all: bxl2txt$(LIBRND_EXE)
+all: bxl2txt$(LIBRND_EXE) txt2bxl$(LIBRND_EXE)
 
 include ../../Makefile.conf
 
 bxl2txt$(LIBRND_EXE): bxl2txt.o bxl_decode.o
 
-bxl_decode.o: $(PLUG)/bxl_decode.c $(PLUG)/bxl_decode.h
-	$(CC) -c $(CFLAGS) $(PLUG)/bxl_decode.c -o bxl_decode.o
+txt2bxl$(LIBRND_EXE): txt2bxl.o bxl_decode.o
+
+txt2bxl.o: txt2bxl.c $(PLUG)/bxl_decode.h
+	$(CC) -c $(CFLAGS) txt2bxl.c -o txt2bxl.o
 
 bxl2txt.o: bxl2txt.c $(PLUG)/bxl_decode.h
 	$(CC) -c $(CFLAGS) bxl2txt.c -o bxl2txt.o
+
+bxl_decode.o: $(PLUG)/bxl_decode.c $(PLUG)/bxl_decode.h
+	$(CC) -c $(CFLAGS) $(PLUG)/bxl_decode.c -o bxl_decode.o
 
 install_all:
 	$(SCCBOX) mkdir -p "$(BINDIR)"
