@@ -27,23 +27,43 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* test program: read plain text on stdin, encode to bxl on stdout (without the length header) */
+/* test program: read plain text on stdin, encode to bxl to the named file */
 
 #include <stdio.h>
 #include "bxl_decode.h"
 
-int main()
+void out(FILE *f, hdecode_t *ctx, int len)
+{
+	int n;
+	for(n = 0; n < len; n++)
+		fputc(ctx->out[n], f);
+}
+
+int main(int argc, char *argv[])
 {
 	hdecode_t ctx;
-	int inch;
+	int inch, len, fd;
+	FILE *f;
+
+	if (argc < 2) {
+		fprintf(stderr, "Need an output file name\n");
+		return 1;
+	}
+
+	f = fopen(argv[1], "wb");
+	if (f == NULL) {
+		fprintf(stderr, "Failed to open %s for write\n", argv[1]);
+		return 1;
+	}
 
 	pcb_bxl_encode_init(&ctx);
 
-	while((inch = fgetc(stdin)) != EOF) {
-		int n, len;
-		len = pcb_bxl_encode_char(&ctx, inch);
-		for(n = 0; n < len; n++)
-			printf("%c", ctx.out[n]);
-	}
+	while((inch = fgetc(stdin)) != EOF)
+		out(f, &ctx, pcb_bxl_encode_char(&ctx, inch));
+	out(f, &ctx, pcb_bxl_encode_eof(&ctx));
+
+	fseek(f, 0, SEEK_SET);
+	out(f, &ctx, pcb_bxl_encode_len(&ctx));
+
 	return 0;
 }
