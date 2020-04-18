@@ -35,11 +35,11 @@ ps1.lst: */*.html */*.png ps.lst.vols
 	awk -F "	" '($$2 == 1) {print $$1}' < ps.lst.vols >> ps1.lst
 
 ps2.lst: */*.html */*.png ps.lst.vols
-	echo "ps_title2.html" > ps1.lst
+	echo "ps_title2.html" > ps2.lst
 	awk -F "	" '($$2 == 2) {print $$1}' < ps.lst.vols >> ps2.lst
 
 ps3.lst: */*.html */*.png ps.lst.vols
-	echo "ps_title3.html" > ps1.lst
+	echo "ps_title3.html" > ps3.lst
 	awk -F "	" '($$2 == 3) {print $$1}' < ps.lst.vols >> ps3.lst
 
 include Makefile.inst
