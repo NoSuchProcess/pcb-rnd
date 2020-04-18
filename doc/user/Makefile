@@ -31,18 +31,15 @@ ps.lst.vols: */*.html */*.png ./listlnk Makefile
 	./listlnk list -v | grep "[.]html	" | grep -v "^index.html	" > ps.lst.vols
 
 ps1.lst: */*.html */*.png ps.lst.vols
-	echo "title.html" > ps1.lst
-	echo "index_ps.html" >> ps1.lst
+	echo "ps_title1.html" > ps1.lst
 	awk -F "	" '($$2 == 1) {print $$1}' < ps.lst.vols >> ps1.lst
 
 ps2.lst: */*.html */*.png ps.lst.vols
-	echo "title.html" > ps2.lst
-	echo "index_ps.html" >> ps2.lst
+	echo "ps_title2.html" > ps1.lst
 	awk -F "	" '($$2 == 2) {print $$1}' < ps.lst.vols >> ps2.lst
 
 ps3.lst: */*.html */*.png ps.lst.vols
-	echo "title.html" > ps3.lst
-	echo "index_ps.html" >> ps3.lst
+	echo "ps_title3.html" > ps1.lst
 	awk -F "	" '($$2 == 3) {print $$1}' < ps.lst.vols >> ps3.lst
 
 include Makefile.inst
