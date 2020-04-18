@@ -132,8 +132,10 @@ static htree_t *htree_init(htree_t *t)
 	/* fill levels */
 	while(node != NULL) {
 		node = hnode_add_child(t, t->root, leaf_count);
-		if ((node != NULL) && (is_leaf(node)))
+		if ((node != NULL) && (is_leaf(node))) {
+			t->nodeList[leaf_count] = node;
 			leaf_count++;
+		}
 	}
 	return t;
 }
@@ -242,4 +244,32 @@ void pcb_bxl_decode_init(hdecode_t *ctx)
 	htree_init(&ctx->tree);
 	ctx->node = ctx->tree.root;
 	decode_run(ctx);
+}
+
+int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
+{
+	int depth = 0;
+	int encoded[257]; /* we need to account for very asymmetric tree topologies */
+	hnode_t *node = ctx->tree.nodeList[inchr];
+
+	inc_weight(node);
+
+	while (node->level != 0) {
+		if (node == node->parent->left)
+			encoded[256-depth] = 1; /* left of parent */
+		else
+			encoded[256-depth] = 0; /* right of parent */
+		depth++;
+		node = node->parent;
+/*		out_file_length_in_bits++;*/
+	}
+
+	for(; depth > 0; depth--) {
+		if (encoded[257-depth])
+			printf("1");
+		else
+			printf("0");
+	}
+	htree_update(ctx->tree.nodeList[inchr]);
+	return 0;
 }

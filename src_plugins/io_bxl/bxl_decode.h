@@ -37,6 +37,7 @@ struct hnode_s {
 typedef struct htree_s {
 	hnode_t *root;
 	hnode_t pool[512];
+	hnode_t *nodeList[256];
 	int pool_used;
 } htree_t;
 
@@ -59,3 +60,14 @@ void pcb_bxl_decode_init(hdecode_t *ctx);
    output characters available in ctx->out[]; these must be saved before
    the next call. */
 int pcb_bxl_decode_char(hdecode_t *ctx, int inchr);
+
+
+/* Initialize an encode context, before the first output byte is pushed.
+   No dynamic allocation is done during encoding so no uninit required. */
+#define pcb_bxl_encode_init(ctx) pcb_bxl_decode_init(ctx)
+
+/* Feed the state machine with an output character. Returns the number of
+   encoded characters available in ctx->out[]; these must be saved before
+   the next call. */
+int pcb_bxl_encode_char(hdecode_t *ctx, int inchr);
+
