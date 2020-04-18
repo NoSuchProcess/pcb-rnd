@@ -10,13 +10,13 @@ all: pdf
 pdf: user1.pdf user2.pdf user3.pdf
 
 user1.ps: ps1.lst $(BUILD) default.css Makefile
-	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^<[hH]1>.*</[hH]1>^^g" $(BUILD) `cat ps1.lst` > user1.ps
+	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="" $(BUILD) `cat ps1.lst` > user1.ps
 
 user2.ps: ps2.lst $(BUILD) default.css Makefile
-	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^<[hH]1>.*</[hH]1>^^g" $(BUILD) `cat ps2.lst` > user2.ps
+	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="" $(BUILD) `cat ps2.lst` > user2.ps
 
 user3.ps: ps3.lst $(BUILD) default.css Makefile
-	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^<[hH]1>.*</[hH]1>^^g" $(BUILD) `cat ps3.lst` > user3.ps
+	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="" $(BUILD) `cat ps3.lst` > user3.ps
 
 user1.pdf: user1.ps
 	ps2pdf user1.ps
