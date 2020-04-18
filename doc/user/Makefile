@@ -14,13 +14,16 @@ pdf: user1.pdf user2.pdf user3.pdf
 ps_logo.png: ../resources/logo32.png
 	cp ../resources/logo32.png ps_logo.png
 
-user1.ps: ps1.lst $(BUILD) default.css Makefile ps_logo.png
+ps_header.png: ../resources/header_600.png
+	cp ../resources/header_600.png ps_header.png
+
+user1.ps: ps1.lst $(BUILD) default.css Makefile ps_logo.png ps_header.png
 	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^%%%volume%%%^Volume 1: Core functionality^;s^%%%ver%%%^Version $(PCB_RND_VER)^g" $(BUILD) `cat ps1.lst` > user1.ps
 
-user2.ps: ps2.lst $(BUILD) default.css Makefile
+user2.ps: ps2.lst $(BUILD) default.css Makefile ps_logo.png ps_header.png
 	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^%%%volume%%%^Volume 2: Plugins and utilities^;s^%%%ver%%%^Version $(PCB_RND_VER)^g" $(BUILD) `cat ps2.lst` > user2.ps
 
-user3.ps: ps3.lst $(BUILD) default.css Makefile
+user3.ps: ps3.lst $(BUILD) default.css Makefile ps_logo.png ps_header.png
 	HTML2PS_OPTS="-f default.css --toc h" HTML2PS_SED="s^%%%volume%%%^Volume 3: Appendix and misc^;s^%%%ver%%%^Version $(PCB_RND_VER)^g" $(BUILD) `cat ps3.lst` > user3.ps
 
 user1.pdf: user1.ps
