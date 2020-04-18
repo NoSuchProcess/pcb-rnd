@@ -263,7 +263,13 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 	int encoded[257]; /* we need to account for very asymmetric tree topologies */
 	hnode_t *node = ctx->tree.nodeList[inchr];
 
+	ctx->plain_len++;
 	ctx->out_len = 0;
+
+	/* output 4 dummy bytes that will be the length "header" */
+	if (!ctx->after_first_bit)
+		ctx->out_len = 4;
+
 	inc_weight(node);
 
 	while (node->level != 0) {
