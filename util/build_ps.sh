@@ -72,20 +72,23 @@ do
 			convert $svg $png
 		fi
 	done
-	case $n in
-		*.html)
-			echo "<!--NewPage-->";
-			sed "$HMTL2PS_SED;s/\.svg/.png/g;s@src=\"@src=\"$bn1/@g" $n
-			;;
-		*.png|*.svg) ;;
-		*)
-			echo "<table border=1 cellspacing=0><tr><td>"
-			echo "<p>$n:"
-			echo "<pre>"
-			cat $n
-			echo "</pre>"
-			echo "</table>"
-	esac
+	if test -f "$n"
+	then
+		case "$n" in
+			*.html)
+				echo "<!--NewPage-->";
+				sed "$HTML2PS_SED;s/\.svg/.png/g;s@src=\"@src=\"$bn1/@g" "$n"
+				;;
+			*.png|*.svg) ;;
+			*)
+				echo "<table border=1 cellspacing=0><tr><td>"
+				echo "<p>$n:"
+				echo "<pre>"
+				cat $n
+				echo "</pre>"
+				echo "</table>"
+		esac
+	fi
 done) | autotoc | tee HTML2PS.html | html2ps $HTML2PS_OPTS --colour
 
 echo html2ps $HTML2PS_OPTS --colour >&2
