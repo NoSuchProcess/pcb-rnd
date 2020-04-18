@@ -133,7 +133,7 @@ static htree_t *htree_init(htree_t *t)
 	while(node != NULL) {
 		node = hnode_add_child(t, t->root, leaf_count);
 		if ((node != NULL) && (is_leaf(node))) {
-			t->nodeList[leaf_count] = node;
+			t->node_linear[leaf_count] = node;
 			leaf_count++;
 		}
 	}
@@ -261,7 +261,7 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 {
 	int depth = 0;
 	int encoded[257]; /* we need to account for very asymmetric tree topologies */
-	hnode_t *node = ctx->tree.nodeList[inchr];
+	hnode_t *node = ctx->tree.node_linear[inchr];
 
 	ctx->plain_len++;
 	ctx->out_len = 0;
@@ -291,7 +291,7 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 		ctx->after_first_bit = 1;
 	}
 
-	htree_update(ctx->tree.nodeList[inchr]);
+	htree_update(ctx->tree.node_linear[inchr]);
 	return ctx->out_len;
 }
 
