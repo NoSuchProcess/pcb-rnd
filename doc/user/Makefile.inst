@@ -42,8 +42,6 @@ install_all:
 	$(SCCBOX) $(HOW) 05_ui/05_cli/index.html $(USERDIR)/05_ui/05_cli/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/05_ui
 	$(SCCBOX) $(HOW) 05_ui/index.html $(USERDIR)/05_ui/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/acompnet
-	$(SCCBOX) $(HOW) 06_feature/acompnet/index.html $(USERDIR)/06_feature/acompnet/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/asm
 	$(SCCBOX) $(HOW) 06_feature/asm/index.html $(USERDIR)/06_feature/asm/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/autocrop
@@ -117,9 +115,9 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/polystitch
 	$(SCCBOX) $(HOW) 06_feature/polystitch/index.html $(USERDIR)/06_feature/polystitch/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/query
+	$(SCCBOX) $(HOW) 06_feature/query/functions.html $(USERDIR)/06_feature/query/functions.html
 	$(SCCBOX) $(HOW) 06_feature/query/index.html $(USERDIR)/06_feature/query/index.html
-	$(SCCBOX) $(HOW) 06_feature/query/z1_functions.html $(USERDIR)/06_feature/query/z1_functions.html
-	$(SCCBOX) $(HOW) 06_feature/query/z2_tutor_cli.html $(USERDIR)/06_feature/query/z2_tutor_cli.html
+	$(SCCBOX) $(HOW) 06_feature/query/tutor_cli.html $(USERDIR)/06_feature/query/tutor_cli.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/scripting
 	$(SCCBOX) $(HOW) 06_feature/scripting/index.html $(USERDIR)/06_feature/scripting/index.html
 	$(SCCBOX) $(HOW) 06_feature/scripting/install.txt $(USERDIR)/06_feature/scripting/install.txt
@@ -379,5 +377,3 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/layer_colors.html $(USERDIR)/09_appendix/layer_colors.html
 	$(SCCBOX) $(HOW) default.css $(USERDIR)/default.css
 	$(SCCBOX) $(HOW) index.html $(USERDIR)/index.html
-	$(SCCBOX) $(HOW) index_ps.html $(USERDIR)/index_ps.html
-	$(SCCBOX) $(HOW) title.html $(USERDIR)/title.html
