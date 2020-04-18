@@ -19,12 +19,13 @@ Each design pcb-rnd handles is a <i>board</i>. The board has global properties a
 layers. Most drawing primitives (objects) are on layers. This section describes
 the most important global properties.
 <p>
-<b>Board size</b> is given as a width and a height. For rectangular boards
-this can be the real board size, but more commonly it is used to simply
-determine the on-screen drawing area and the final board dimensions are
-specified using boundary layer groups. If the board is not rectangular, the
-contour must be specified on boundary layers and the board size must be
-large enough that the outline fits in it.
+Raw <b>board size</b> is given as a width and a height. This is the size
+of the preferred drawing area on screen, but for rectangular boards this
+can be the real board size. More often final board dimensions are
+specified by drawing objects drawn on boundary layer groups within this
+area. If the board is not rectangular, the contour must be specified on
+boundary layers and the board size must be large enough that the outline
+fits in it.
 <p>
 <b>Netlist</b> is the list of logical connections to be realized in copper.
 A netlist is a list of named <i>nets</i>. Each net consists of a list of
