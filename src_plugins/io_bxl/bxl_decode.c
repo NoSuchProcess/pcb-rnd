@@ -246,12 +246,24 @@ void pcb_bxl_decode_init(hdecode_t *ctx)
 	decode_run(ctx);
 }
 
+static void append(hdecode_t *ctx, int bitval)
+{
+	ctx->chr <<= 1;
+	ctx->chr |= bitval;
+	ctx->bitpos++;
+	if (ctx->bitpos == 8) {
+		ctx->out[ctx->out_len++] = ctx->chr;
+		ctx->chr = ctx->bitpos = 0;
+	}
+}
+
 int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 {
 	int depth = 0;
 	int encoded[257]; /* we need to account for very asymmetric tree topologies */
 	hnode_t *node = ctx->tree.nodeList[inchr];
 
+	ctx->out_len = 0;
 	inc_weight(node);
 
 	while (node->level != 0) {
@@ -261,19 +273,25 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 			encoded[256-depth] = 0; /* right of parent */
 		depth++;
 		node = node->parent;
-/*		out_file_length_in_bits++;*/
 	}
 
 	for(; depth > 0; depth--) {
 		if (ctx->after_first_bit) {
 			if (encoded[257-depth])
-				printf("1");
+				append(ctx, 1);
 			else
-				printf("0");
+				append(ctx, 0);
 		}
 		ctx->after_first_bit = 1;
 	}
 
 	htree_update(ctx->tree.nodeList[inchr]);
-	return 0;
+	return ctx->out_len;
 }
+
+void pcb_bxl_encode_init(hdecode_t *ctx)
+{
+	pcb_bxl_decode_init(ctx);
+	ctx->bitpos = 0;
+}
+

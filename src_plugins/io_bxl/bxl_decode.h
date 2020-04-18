@@ -65,7 +65,7 @@ int pcb_bxl_decode_char(hdecode_t *ctx, int inchr);
 
 /* Initialize an encode context, before the first output byte is pushed.
    No dynamic allocation is done during encoding so no uninit required. */
-#define pcb_bxl_encode_init(ctx) pcb_bxl_decode_init(ctx)
+void pcb_bxl_encode_init(hdecode_t *ctx);
 
 /* Feed the state machine with an output character. Returns the number of
    encoded characters available in ctx->out[]; these must be saved before
