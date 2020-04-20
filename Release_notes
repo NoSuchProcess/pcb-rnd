@@ -3,7 +3,7 @@ pcb-rnd 2.2.1
 
 This version is a feature release. On the infrastructural side the next big
 step of the separation gets us closer to ringdove and the new drc_query plugin
-gives a flexible frame for complex DRC implementations contrlled by users.
+gives a flexible frame for complex DRC implementations controlled by users.
 On the feature side the most important new features are the
 new import_sch code and bus extended object.
 
@@ -17,7 +17,7 @@ Feature highlight:
    plus a many upgrades to the query() functionality
 
 3. import_sch rewrite: support any file format and input source instead of
-   being specialzed to gschem; replace the Makefile based input method with
+   being specialized to gschem; replace the Makefile based input method with
    a generic "execute this command" method; give better control to the user
    about how new footprints are placed and footprints are removed by the import
 
