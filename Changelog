@@ -44,6 +44,8 @@ pcb-rnd 2.2.1 (r30680)
 		-Fix: configure default mode (tool id) to -1 for invalid; any other tool id is unsafe as tool IDs are dynamically allocated on plugin load in random order
 		-Fix: tool: arrow tool selects copy/move/line tool by name instead of hardwired tool IDs
 		-Fix: tool: arrow selection: increase undo serial after new selection is made so it is not undone together with the operation that follows
+		-Fix: rats_patch API bug: global var declaration shall be extern (potential compilation error)
+		-Fix: rat line drawing shouldn't snap to -6;-6 mil as a special case, it should use the normal grid snapping as per default
 		-Del: crosshair range - do not try to restrict objects into the drawing area
 		-Cleanup: move standard tools out to a (core) plugin called tool_std
 		-Cleanup: reference tools by name, not ID, where possible, in preparation of fixed tool ID removal
@@ -114,18 +116,31 @@ pcb-rnd 2.2.1 (r30680)
 	[doc]
 		-Fix: typo in user manual / invocation: --gui ddoesn't take '='
 		-Fix: typo: doc-rnd is long gone
+		-Fix: distalign plugin doc: wrong header level
+		-Fix: headers in scripting rosetta
+		-Fix: rats are not circuits on the phsyical board: those are nets
 		-Cleanup: reoder sections in 05_ui so it reflects importance of different UIs better
 		-Cleanup: replace the CLI documentation and explain what actions are
 		-Del: the old details on Import() from the action ref; replace with a help page to switch to ImportSch()
 		-Del: links to other EDA does not belong in the user manual
 		-Del: links to generic pcb fabbing techniques - out of scope for an user doc
+		-Del: local toc for gtk dialogs - we need content, not placeholders
+		-Del: don't document acompnet - it is not yet released
 		-Split: intro section into hierarchical
+		-Split: user manual into 3 volumes
 		-Update: Mode() for the new parameters
 		-Update: new netlist format (action)
 		-Update: keys for the latest menu changes
 		-Update: GetXY() optional arg
 		-Update: action ref for align() and distribute(): they work on objects, not only subcircuits by now
 		-Update: pcb-rnd is part of ringdove
+		-Update: openscad doc terminology from element to subcircuit
+		-Update: model objects drawing for padstack
+		-Update: model: board size is really only the drawing area size
+		-Update: model: board font is optional
+		-Update: model: board includes generic configuration
+		-Tune: better alignment of the thermal table, make it less vertical by cutting it in half and use a horizontal layout
+		-Tune: make oversized model/object images smaller on the web render
 		-Add: note on how custom layer colors are lost in alien formats
 		-Add: cam: okempty-group and okempty-content
 		-Add: help: detailed explanation for an import config error message
@@ -146,6 +161,8 @@ pcb-rnd 2.2.1 (r30680)
 		-Add: 08_util: section numbering, index.html with toc
 		-Add: 07_io: section numbering, index.html with toc
 		-Add: link bridges.svg
+		-Add: convert openscad plain text description to html
+		-Add: model: board also includes route styles
 
 	[draw_csect]
 		-Fix: do not use hardwired colors for background and buttons - rather use configured background color and grid color for foreground, that combination should be visible on both dark and light bakcground
@@ -500,7 +517,8 @@ pcb-rnd 2.2.1 (r30680)
 		-Del: code change statistics: with librnd and tool move, chgstat lost its remaining validity
 		-Del: workarounds/unwarn* - we are not using #warnings anymore
 		-Del: pcb-strip: the old/obsolete .pcb format is not ours, we shouldn't keep utils to edit it
-		-Add: bxl2txt for low level conversion of bxl binary files to bxl text files for debug
+		-Add: bxl2txt and txt2bxl for low level conversion of bxl binary files to bxl text files for debug
+		-Add: script to verify a downloaded signed file
 
 	[win32]
 		-Fix: explicit dependency on librnd .a files (gsch2pcb-rnd is linked against them)
