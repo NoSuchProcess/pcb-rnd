@@ -237,7 +237,6 @@ install_all:
 	$(SCCBOX) mkdir -p $(USERDIR)/07_io/3_1_export_openscad
 	$(SCCBOX) $(HOW) 07_io/3_1_export_openscad/1206.scad $(USERDIR)/07_io/3_1_export_openscad/1206.scad
 	$(SCCBOX) $(HOW) 07_io/3_1_export_openscad/index.html $(USERDIR)/07_io/3_1_export_openscad/index.html
-	$(SCCBOX) $(HOW) 07_io/3_1_export_openscad/preliminary.txt $(USERDIR)/07_io/3_1_export_openscad/preliminary.txt
 	$(SCCBOX) mkdir -p $(USERDIR)/07_io/3_2_export_xy
 	$(SCCBOX) $(HOW) 07_io/3_2_export_xy/index.html $(USERDIR)/07_io/3_2_export_xy/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/07_io

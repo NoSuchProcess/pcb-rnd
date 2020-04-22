@@ -10,6 +10,7 @@ BEGIN {
 /[.]bak$/ { next }
 /[.]backup$/ { next }
 /^ps_title/ { next }
+/^index_pdf.html/ { next }
 /~$/ { next }
 
 function get_svn_st(path,  st,cmd)
