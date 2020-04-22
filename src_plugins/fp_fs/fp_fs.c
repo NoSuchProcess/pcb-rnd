@@ -48,7 +48,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 
-static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags);
+static pcb_plug_fp_map_t *pcb_fp_file_type(pcb_plug_fp_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 
 /* ---------------------------------------------------------------------------
  * Parse the directory tree where newlib footprints are found
@@ -185,17 +185,25 @@ TODO("fp: make this a configurable list")
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_fptype_t ty;
-				void **tags = NULL;
-				ty = pcb_fp_file_type(subdirentry->d_name, (need_tags ? &tags : NULL));
-				if ((ty == PCB_FP_FILE) || (ty == PCB_FP_PARAMETRIC)) {
-					n_footprints++;
-					if (cb(cookie, new_subdir, subdirentry->d_name, ty, tags))
-						break;
-					continue;
+				pcb_plug_fp_map_t head = {0}, *res;
+				FILE *f;
+				f = pcb_fopen(&PCB->hidlib, subdirentry->d_name, "r");
+				if (f != NULL) {
+					rewind(f);
+					res = pcb_fp_file_type(NULL, f, subdirentry->d_name, &head, need_tags);
+					if ((res != NULL) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
+						n_footprints++;
+						if (cb(cookie, new_subdir, subdirentry->d_name, res->type, res->tags)) {
+							fclose(f);
+							break;
+						}
+						continue;
+					}
+					else
+						if (head.tags != NULL)
+							free(head.tags);
 				}
-				else
-					if (tags != NULL)
-						free(tags);
+				fclose(f);
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
@@ -354,11 +362,10 @@ TODO("subc: should be handled in io_*")
    - if a line of a file element starts with ## and doesn't contain @, it's a tag
    - if tags is not NULL, it's a pointer to a void *tags[] - an array of tag IDs
 */
-static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
+pcb_plug_fp_map_t *pcb_fp_file_type(pcb_plug_fp_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
 {
 	int c, comment_len;
 	int first_element = 1;
-	FILE *f;
 	enum {
 		ST_WS,
 		ST_COMMENT,
@@ -368,23 +375,15 @@ static pcb_fptype_t pcb_fp_file_type(const char *fn, void ***tags)
 	char *tag = NULL;
 	int talloced = 0, tused = 0;
 	int Talloced = 0, Tused = 0;
-	pcb_fptype_t ret = PCB_FP_INVALID;
 
-TODO("fp: rather call plug_io if it is not parametric")
-	if (tags != NULL)
-		*tags = NULL;
-
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
-	if (f == NULL)
-		return PCB_FP_INVALID;
-
+	head->type = PCB_FP_INVALID;
 	while ((c = fgetc(f)) != EOF) {
 		switch (state) {
 		case ST_ELEMENT:
 			if (isspace(c))
 				break;
 			if ((c == '(') || (c == '[')) {
-				ret = PCB_FP_FILE;
+				head->type = PCB_FP_FILE;
 				goto out;
 			}
 		case ST_WS:
@@ -402,7 +401,7 @@ TODO("fp: rather call plug_io if it is not parametric")
 				fgets(s, 21, f);
 				s[20] = '\0';
 				if (strcmp(s, "i:pcb-rnd-subcircuit") == 0) {
-					ret = PCB_FP_FILE;
+					head->type = PCB_FP_FILE;
 					goto out;
 				}
 			}
@@ -443,22 +442,22 @@ TODO("fp: rather call plug_io if it is not parametric")
 				fgets(s, 9, f);
 				s[8] = '\0';
 				if (strcmp(s, "@purpose") == 0) {
-					ret = PCB_FP_PARAMETRIC;
+					head->type = PCB_FP_PARAMETRIC;
 					goto out;
 				}
 			}
 			break;
 		case ST_TAG:
 			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
-				if ((tags != NULL) && (tag != NULL)) {
+				if (need_tags && (tag != NULL)) {
 					tag[tused] = '\0';
 					if (Tused >= Talloced) {
 						Talloced += 8;
-						*tags = realloc(*tags, (Talloced + 1) * sizeof(void *));
+						head->tags = realloc(head->tags, (Talloced + 1) * sizeof(void *));
 					}
-					(*tags)[Tused] = (void *) pcb_fp_tag(tag, 1);
+					head->tags[Tused] = (void *) pcb_fp_tag(tag, 1);
 					Tused++;
-					(*tags)[Tused] = NULL;
+					head->tags[Tused] = NULL;
 				}
 
 				tused = 0;
@@ -479,8 +478,7 @@ TODO("fp: rather call plug_io if it is not parametric")
 out:;
 	if (tag != NULL)
 		free(tag);
-	fclose(f);
-	return ret;
+	return head;
 }
 
 #define F_IS_PARAMETRIC 0
