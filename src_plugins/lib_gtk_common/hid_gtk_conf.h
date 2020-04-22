@@ -66,6 +66,12 @@ typedef struct {
 				CFT_INTEGER pinout_height;                /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 				CFT_INTEGER pinout_width;                 /* OBSOLETE: use plugins/dialogs/window_geometry/ instead */
 			} window_geometry;
+
+			const struct {
+				CFT_BOOLEAN transient_modal;              /* modal dialogs are transient to the main window */
+				CFT_BOOLEAN transient_modeless;           /* modeless dialogs are transient to the main window */
+				CFT_BOOLEAN auto_present;                 /* present (pop up to the top) new dialogs automatically */
+			} dialog;
 		} hid_gtk;
 	} plugins;
 } conf_hid_gtk_t;

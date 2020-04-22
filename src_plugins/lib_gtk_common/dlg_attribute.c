@@ -44,6 +44,8 @@
 #include <librnd/core/event.h>
 
 #include "compat.h"
+#include "hid_gtk_conf.h"
+
 
 #define PCB_OBJ_PROP "pcb-rnd_context"
 
@@ -795,7 +797,8 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	pcb_event(gctx->hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
 	ctx->dialog = gtk_dialog_new();
-	gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
+	if ((modal && pcb_conf_hid_gtk.plugins.hid_gtk.dialog.transient_modal) || (!modal && pcb_conf_hid_gtk.plugins.hid_gtk.dialog.transient_modeless))
+		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
 
 	gtk_window_set_title(GTK_WINDOW(ctx->dialog), title);
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), id);
@@ -823,6 +826,10 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	gtk_widget_show_all(ctx->dialog);
 
 	ghid_initial_wstates(ctx);
+
+	if (pcb_conf_hid_gtk.plugins.hid_gtk.dialog.auto_present)
+		gtk_window_present(GTK_WINDOW(ctx->dialog));
+
 	return ctx;
 }
 
