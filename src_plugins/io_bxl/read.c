@@ -292,7 +292,7 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 		/* 0 sizes shape should not appear on the output */
 		if (ctx->state.layer->meta.bound.type & PCB_LYT_COPPER)
 			pcb_message(PCB_MSG_WARNING, "bxl footprint error: 0 sized copper shape in padstack '%s'\n", ctx->state.proto.name);
-		return 0;
+		return;
 	}
 
 	if (ctx->state.proto.tr.used == 0)
