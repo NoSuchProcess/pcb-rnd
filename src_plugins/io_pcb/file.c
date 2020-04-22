@@ -1205,3 +1205,116 @@ void pcb_tmp_data_remove(void)
 }
 #endif
 
+
+TODO("subc: should be split up to multiple plugins")
+/* Decide about the type of a footprint file:
+   - it is a file element if the first non-comment is "Element(" or "Element["
+   - else it is a parametric element (footprint generator) if it contains
+     "@@" "purpose"
+   - else it's not an element.
+   - if a line of a file element starts with ## and doesn't contain @, it's a tag
+   - if tags is not NULL, it's a pointer to a void *tags[] - an array of tag IDs
+*/
+pcb_plug_fp_map_t *io_pcb_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	int c, comment_len;
+	int first_element = 1;
+	enum {
+		ST_WS,
+		ST_COMMENT,
+		ST_ELEMENT,
+		ST_TAG
+	} state = ST_WS;
+	gds_t tag;
+
+	gds_init(&tag);
+	head->type = PCB_FP_INVALID;
+	while ((c = fgetc(f)) != EOF) {
+		switch (state) {
+		case ST_ELEMENT:
+			if (isspace(c))
+				break;
+			if ((c == '(') || (c == '[')) {
+				head->type = PCB_FP_FILE;
+				goto out;
+			}
+		case ST_WS:
+			if (isspace(c))
+				break;
+			if (c == '#') {
+				comment_len = 0;
+				state = ST_COMMENT;
+				break;
+			}
+			else if ((first_element) && (c == 'l')) {
+TODO("fp: rather call plug_io if it is not parametric")
+				char s[23];
+				/* li:pcb-rnd-subcircuit */
+				fgets(s, 21, f);
+				s[20] = '\0';
+				if (strcmp(s, "i:pcb-rnd-subcircuit") == 0) {
+					head->type = PCB_FP_FILE;
+					goto out;
+				}
+			}
+			else if ((first_element) && (c == 'E')) {
+				char s[8];
+				/* Element */
+				fgets(s, 7, f);
+				s[6] = '\0';
+				if (strcmp(s, "lement") == 0) {
+					state = ST_ELEMENT;
+					break;
+				}
+			}
+			else if ((first_element) && (c == '(')) {
+				char s[8];
+				/* module */
+				fgets(s, 7, f);
+				s[6] = '\0';
+				if (strcmp(s, "module") == 0) {
+					state = ST_ELEMENT;
+					break;
+				}
+			}
+			first_element = 0;
+			/* fall-thru for detecting @ */
+		case ST_COMMENT:
+			comment_len++;
+			if ((c == '#') && (comment_len == 1)) {
+				state = ST_TAG;
+				break;
+			}
+			if ((c == '\r') || (c == '\n'))
+				state = ST_WS;
+			if (c == '@') {
+				char s[10];
+			maybe_purpose:;
+				/* "@@" "purpose" */
+				fgets(s, 9, f);
+				s[8] = '\0';
+				if (strcmp(s, "@purpose") == 0) {
+					head->type = PCB_FP_PARAMETRIC;
+					goto out;
+				}
+			}
+			break;
+		case ST_TAG:
+			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
+				if (need_tags && (tag.used != 0))
+					vts0_append(&head->tags, (char *)pcb_fp_tag(tag.array, 1));
+
+				tag.used = 0;
+				state = ST_WS;
+				break;
+			}
+			if (c == '@')
+				goto maybe_purpose;
+			gds_append(&tag, c);
+		}
+	}
+
+out:;
+	gds_uninit(&tag);
+	return head;
+}

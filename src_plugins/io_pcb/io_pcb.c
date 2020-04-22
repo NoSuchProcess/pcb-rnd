@@ -73,6 +73,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[0].test_parse = io_pcb_test_parse;
 	io_pcb[0].parse_pcb = io_pcb_ParsePCB;
 	io_pcb[0].parse_footprint = io_pcb_ParseElement;
+	io_pcb[0].map_footprint = io_pcb_map_footprint; /* it is enough to have this in [0] so the same checks are not done multiple times, per version */
 	io_pcb[0].parse_font = io_pcb_ParseFont;
 	io_pcb[0].write_buffer = NULL;
 	io_pcb[0].write_subcs_head = io_pcb_write_subcs_head;

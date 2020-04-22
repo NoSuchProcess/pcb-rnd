@@ -31,6 +31,7 @@
 #define PCB_PLUG_IO_H
 
 #include "global_typedefs.h"
+#include "plug_footprint.h"
 #include <librnd/core/conf.h>
 
 typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not all formats support all things */
@@ -72,6 +73,13 @@ struct pcb_plug_io_s {
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
 	int (*parse_footprint)(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
+
+	/* Scan as little as possible from the file to decide what the file is and extract tags;
+	   For a single file, load head and return it. For a library-type file, load
+	   head with the first footprint then allocate further footprints in a singly
+	   linked list. If need_tags is 0, do not parse for tags */
+	pcb_plug_fp_map_t *(*map_footprint)(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
+
 
 	/* Attempt to load fonts from a file. Return 0 on success. */
 	int (*parse_font)(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename);
@@ -129,6 +137,9 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *name, const char *fmt);
 int pcb_parse_font(pcb_font_t *Ptr, const char *Filename);
 int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx);
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
+
+/* map a footprint file: always returns head with 0 or 1 or more mapping results */
+pcb_plug_fp_map_t *pcb_io_map_footprint_file(pcb_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 
 /********** common function used to be part of file.[ch] and friends **********/
 int pcb_save_pcb(const char *, const char *fmt);
@@ -203,5 +214,7 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 void pcb_io_uninit(void);
 
 void pcb_plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename);
+
+
 
 #endif

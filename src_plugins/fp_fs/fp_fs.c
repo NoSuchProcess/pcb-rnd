@@ -39,6 +39,7 @@
 #include <librnd/core/paths.h>
 #include <librnd/core/plugins.h>
 #include "plug_footprint.h"
+#include "plug_io.h"
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
@@ -101,29 +102,6 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	}
 
 	return 0;
-}
-
-pcb_plug_fp_map_t *pcb_fp_map_fp_file(pcb_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
-{
-	FILE *f = pcb_fopen(hl, fn, "r");
-	pcb_plug_fp_map_t *res;
-
-	if (f == NULL) {
-		head->type = PCB_FP_INVALID;
-		return head;
-	}
-
-	{ /* run this for all plugins */
-		rewind(f);
-		res = pcb_fp_file_type(NULL, f, fn, head, need_tags);
-	}
-
-	fclose(f);
-	if (res == NULL) {
-		res = head;
-		head->type = PCB_FP_INVALID;
-	}
-	return res;
 }
 
 static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
@@ -209,7 +187,7 @@ TODO("fp: make this a configurable list")
 			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_plug_fp_map_t head = {0}, *res;
 
-				res = pcb_fp_map_fp_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
+				res = pcb_io_map_footprint_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
 				if ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC)) {
 					n_footprints++;
 					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array))
@@ -369,119 +347,6 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 			break;
 	}
 	return NULL;
-}
-
-TODO("subc: should be handled in io_*")
-/* Decide about the type of a footprint file:
-   - it is a file element if the first non-comment is "Element(" or "Element["
-   - else it is a parametric element (footprint generator) if it contains
-     "@@" "purpose"
-   - else it's not an element.
-   - if a line of a file element starts with ## and doesn't contain @, it's a tag
-   - if tags is not NULL, it's a pointer to a void *tags[] - an array of tag IDs
-*/
-pcb_plug_fp_map_t *pcb_fp_file_type(pcb_plug_fp_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
-{
-	int c, comment_len;
-	int first_element = 1;
-	enum {
-		ST_WS,
-		ST_COMMENT,
-		ST_ELEMENT,
-		ST_TAG
-	} state = ST_WS;
-	gds_t tag;
-
-	gds_init(&tag);
-	head->type = PCB_FP_INVALID;
-	while ((c = fgetc(f)) != EOF) {
-		switch (state) {
-		case ST_ELEMENT:
-			if (isspace(c))
-				break;
-			if ((c == '(') || (c == '[')) {
-				head->type = PCB_FP_FILE;
-				goto out;
-			}
-		case ST_WS:
-			if (isspace(c))
-				break;
-			if (c == '#') {
-				comment_len = 0;
-				state = ST_COMMENT;
-				break;
-			}
-			else if ((first_element) && (c == 'l')) {
-TODO("fp: rather call plug_io if it is not parametric")
-				char s[23];
-				/* li:pcb-rnd-subcircuit */
-				fgets(s, 21, f);
-				s[20] = '\0';
-				if (strcmp(s, "i:pcb-rnd-subcircuit") == 0) {
-					head->type = PCB_FP_FILE;
-					goto out;
-				}
-			}
-			else if ((first_element) && (c == 'E')) {
-				char s[8];
-				/* Element */
-				fgets(s, 7, f);
-				s[6] = '\0';
-				if (strcmp(s, "lement") == 0) {
-					state = ST_ELEMENT;
-					break;
-				}
-			}
-			else if ((first_element) && (c == '(')) {
-				char s[8];
-				/* module */
-				fgets(s, 7, f);
-				s[6] = '\0';
-				if (strcmp(s, "module") == 0) {
-					state = ST_ELEMENT;
-					break;
-				}
-			}
-			first_element = 0;
-			/* fall-thru for detecting @ */
-		case ST_COMMENT:
-			comment_len++;
-			if ((c == '#') && (comment_len == 1)) {
-				state = ST_TAG;
-				break;
-			}
-			if ((c == '\r') || (c == '\n'))
-				state = ST_WS;
-			if (c == '@') {
-				char s[10];
-			maybe_purpose:;
-				/* "@@" "purpose" */
-				fgets(s, 9, f);
-				s[8] = '\0';
-				if (strcmp(s, "@purpose") == 0) {
-					head->type = PCB_FP_PARAMETRIC;
-					goto out;
-				}
-			}
-			break;
-		case ST_TAG:
-			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
-				if (need_tags && (tag.used != 0))
-					vts0_append(&head->tags, (char *)pcb_fp_tag(tag.array, 1));
-
-				tag.used = 0;
-				state = ST_WS;
-				break;
-			}
-			if (c == '@')
-				goto maybe_purpose;
-			gds_append(&tag, c);
-		}
-	}
-
-out:;
-	gds_uninit(&tag);
-	return head;
 }
 
 #define F_IS_PARAMETRIC 0

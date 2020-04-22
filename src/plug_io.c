@@ -1003,6 +1003,37 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 	return 0;
 }
 
+pcb_plug_fp_map_t *pcb_io_map_footprint_file(pcb_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	FILE *f = pcb_fopen(hl, fn, "r");
+	pcb_plug_fp_map_t *res = NULL;
+	pcb_plug_io_t *plug;
+
+	if (f == NULL) {
+		head->type = PCB_FP_INVALID;
+		return head;
+	}
+
+	for(plug = pcb_plug_io_chain; plug != NULL; plug = plug->next) {
+		if (plug->map_footprint == NULL) continue;
+
+		rewind(f);
+		res = plug->map_footprint(NULL, f, fn, head, need_tags);
+		if (res == NULL) continue;
+		if (res->type != PCB_FP_INVALID)
+			break; /* success */
+		vts0_uninit(&res->tags);
+	}
+
+
+	fclose(f);
+	if (res == NULL) {
+		res = head;
+		head->type = PCB_FP_INVALID;
+	}
+	return res;
+}
+
 
 void pcb_io_uninit(void)
 {
