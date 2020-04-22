@@ -2594,6 +2594,7 @@ pcb_plug_fp_map_t *io_lihata_map_footprint(pcb_plug_io_t *ctx, FILE *f, const ch
 	gds_init(&tag);
 	while ((c = fgetc(f)) != EOF) {
 		pos++;
+		if (pos > 1024) break; /* header must be in the first kilobyte */
 		switch (state) {
 		case ST_WS:
 			if (isspace(c))

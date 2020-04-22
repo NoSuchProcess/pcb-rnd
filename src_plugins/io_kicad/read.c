@@ -2878,6 +2878,7 @@ pcb_plug_fp_map_t *io_kicad_map_footprint(pcb_plug_io_t *ctx, FILE *f, const cha
 {
 	int c, comment_len;
 	int first_module = 1;
+	long pos = 0;
 	enum {
 		ST_WS,
 		ST_COMMENT,
@@ -2885,6 +2886,7 @@ pcb_plug_fp_map_t *io_kicad_map_footprint(pcb_plug_io_t *ctx, FILE *f, const cha
 	} state = ST_WS;
 
 	while ((c = fgetc(f)) != EOF) {
+		if (pos++ > 1024) break; /* header must be in the first kilobyte */
 		switch (state) {
 		case ST_MODULE:
 			if (isspace(c))

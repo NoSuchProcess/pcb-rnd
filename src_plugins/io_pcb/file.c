@@ -1216,6 +1216,7 @@ pcb_plug_fp_map_t *io_pcb_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char 
 {
 	int c, comment_len;
 	int first_element = 1;
+	long pos = 0;
 	enum {
 		ST_WS,
 		ST_COMMENT,
@@ -1226,6 +1227,7 @@ pcb_plug_fp_map_t *io_pcb_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char 
 
 	gds_init(&tag);
 	while ((c = fgetc(f)) != EOF) {
+		if (pos++ > 1024) break; /* header must be in the first kilobyte */
 		switch (state) {
 		case ST_ELEMENT:
 			if (isspace(c))
