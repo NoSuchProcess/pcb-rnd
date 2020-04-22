@@ -24,9 +24,32 @@
 
 <br>
 <!--content-->
-<h1> read-only svn mirrors </h1>
+
+<h1> Master read-write repository </h1>
 <p>
-Master repository: svn://repo.hu/pcb-rnd
+svn://repo.hu/pcb-rnd
+<p>
+Use only this one for commiting changes.
+
+<h1> Real-time read-only svn mirrors </h1>
+<p>
+These repositories are mirroring the master repo in real-time. That means
+seconds after a commit to the master repository the synchronization takes
+place and the mirror should be up to date. Use these mirrors if you
+never commit and the master repository feels slow.
+<p>
+<table border=1 cellspacing=0>
+<tr> <th> url
+     <th> location
+<tr> <td> svn://us.repo.hu/pcb-rnd
+     <td> U.S., west coast
+</table>
+
+<h1> Periodic read-only svn mirrors </h1>
+<p>
+These mirrors upgrade periodically, thus they are lagging behind the main
+repositories above. Do not use them unless none of the above repositries
+are accessible.
 <p>
 <table border=1 cellspacing=0>
 <tr> <th> url
