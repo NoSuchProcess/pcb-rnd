@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,  Revision: 30018
+This is pcb-rnd 2.2.1 (svn r30753) an interactive printed circuit board editor ,  Revision: 30780
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -22,7 +22,7 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#addtimer">AddTimer</a></td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#adjuststyle">AdjustStyle</a></td><td>Open the dialog box for editing the route styles.</td><td>AdjustStyle([routestyle_idx])</td><td>lib_hid_pcbui/route_style</td>
 <tr><td><a href="action_details.html#align">align</a></td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
-<tr><td><a href="action_details.html#aligntext">aligntext</a></td><td>Align Text Elements</td><td>AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distaligntext plugin</td>
+<tr><td>aligntext</td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
@@ -89,17 +89,18 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td>Delete</td><td>Delete stuff.</td><td>Delete(Object [,idpath])<br>Delete(Selected)<br>Delete(AllRats|SelectedRats)</td><td></td>
 <tr><td>DeleteRats</td><td>Delete rat lines.</td><td>DeleteRats(AllRats|Selected|SelectedRats)</td><td></td>
 <tr><td>DelGroup</td><td>Remove a layer group; if the first argument is not specified, the current group is removed</td><td>DelGroup([@group])</td><td></td>
-<tr><td>DeprecatedImport</td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>oldactions plugin</td>
 <tr><td>DescribeLocation</td><td>Return a string constant (valud until the next call) containing a short description at x;y (object, net, etc.)</td><td>DescribeLocation(x, y)</td><td>lib_hid_pcbui/status</td>
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#disperseelements">DisperseElements</a></td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
 <tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
 <tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
-<tr><td><a href="action_details.html#distributetext">distributetext</a></td><td>Distribute Text Elements</td><td>DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distaligntext plugin</td>
+<tr><td>distributetext</td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
 <tr><td>dlg_test</td><td>test the attribute dialog</td><td>dlg_test()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check. Results are presented as the argument requests.</td><td>DRC([list|simple|print|log|dump])</td><td></td>
 <tr><td>DrcDialog</td><td>Execute drc checks and invoke a view list dialog box for presenting the results</td><td>DrcDialog([list|simple])</td><td>dialogs plugin</td>
+<tr><td>DrcQueryEditRule</td><td>Interactive, GUI based DRC rule editor</td><td>DrcQueryEditRule(role, path, rule)<br>DrcQueryEditRule(role, rule)</td><td>drc_query</td>
+<tr><td>DrcQueryListRules</td><td>List all drc rules implemented in drc_query</td><td>DrcQueryListRules()</td><td>drc_query</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
@@ -162,7 +163,7 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td>Help</td><td>On-line action help</td><td>Help()</td><td></td>
 <tr><td>IDP</td><td>Basic idpath manipulation.</td><td>IDP([print|free|dup], idpath)</td><td>act_read</td>
 <tr><td>IDPList</td><td>Basic idpath list manipulation.</td><td>IDPList(alloc)<br>IDPList(free|clear|print|dup|length, list)<br>IDPList(get|pop|remove, list, idx)<br>IDPList(prepend|append|push, list, idpath)</td><td>act_read</td>
-<tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>import_sch plugin</td>
+<tr><td><a href="action_details.html#import">Import</a></td><td>Import schematics.</td><td>Import()<br>Import([gnetlist|make[,source,source,...]])<br>Import(setnewpoint[,(mark|center|X,Y)])<br>Import(setdisperse,D,units)</td><td>oldactions plugin</td>
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#importsch">ImportSch</a></td><td>Import schematics/netlist.</td><td>ImportSch()<br>ImportSch(reimport)<br>ImportSch(setup, importer, [args...])</td><td>import_sch2 plugin</td>
@@ -181,6 +182,7 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td>LayerHotkey</td><td>Change the key binding for a layer</td><td>LayerHotkey(layer, select|vis)</td><td>lib_hid_pcbui/actions</td>
 <tr><td>LayerObjDup</td><td>Duplicate srcobj on a layer. Srcobj is specified by an idpath. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>LayerObjDup([noundo,] data, layer, srcobj)</td><td>act_draw</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
+<tr><td>LayerVisReset</td><td>Reset layer visibility to safe defaults.</td><td>LayerVisReset()</td><td></td>
 <tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
 <tr><td>LibraryChanged</td><td>Tells the GUI that the libraries have changed.</td><td>LibraryChanged()</td><td>oldactions plugin</td>
 <tr><td>LibraryDialog</td><td>Open the library dialog.</td><td>libraryDialog()</td><td>dialogs plugin</td>
@@ -290,7 +292,7 @@ This is pcb-rnd 2.2.0 (svn r29914) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#puller">Puller</a></td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
-<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval, expr) - compile and evaluate an expression and print a list of results on stdout<br>query(select|unselect, expr) - select or unselect objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
+<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout<br>query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
 <tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td>query plugin</td>
 <tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td>query plugin</td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>

@@ -169,66 +169,9 @@ Select which axis will move, other is untouched.
 </table>
  
 <p>
- Defaults are Marks, First.  
-</dd></dl>
-
-<h2 id="aligntext">aligntext</h2>
-<dl><dd>
+ Defaults are Marks, First. 
 <p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-AlignText(X/Y, [Lefts/Rights/Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Align Text Elements
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-distaligntext plugin
-</table>
-<p>
-
-<p>
- 
-Example: AlignText(X, [Lefts/Rights/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]]) <br>
- 
-<p>
- 
-Example: AlignText(Y, [Tops/Bottoms/Centers, [First/Last/pcb_crosshair/Average[, Gridless]]]) <br>
- 
-<p>
- Arguments: 
-<p>
- 
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- X or Y  
-<td>
- Select which axis will move, other is untouched.   
-<tr>
-
-<th>
-Lefts, Rights, Tops, Bottoms, Centers   
-<td>
- Pick alignment point within each element. 
-<br>
- NB: text objects have no Mark.   
-<tr>
-
-<th>
- First, Last, pcb_crosshair, Average   
-<td>
- Alignment reference, First=Topmost/Leftmost, Last=Bottommost/Rightmost, Average or pcb_crosshair point \n   
-<tr>
-
-<th>
- Gridless   
-<td>
- Do not force results to align to prevailing grid. \n 
-</table>
- 
-<p>
- Defaults are Lefts/Tops, First 
+ For non-subcircuit objects: using Marks is not recommended, using Gridless is recommended.  
 </dd></dl>
 
 <h2 id="applyvendor">ApplyVendor</h2>
@@ -1132,53 +1075,8 @@ Example: Distribute(Y, [Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crossha
  Defaults are Marks, First, Last 
 <p>
  Distributed objects always retain the same relative order they had before they were distributed. 
-</dd></dl>
-
-<h2 id="distributetext">distributetext</h2>
-<dl><dd>
 <p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-DistributeText(Y, [Lefts/Rights/Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Distribute Text Elements
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-distaligntext plugin
-</table>
-<p>
-
-<p>
- 
-Example: DistributeText(X, [Lefts/Rights/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) <br>
- 
-<p>
- 
-Example: DistributeText(Y, [Tops/Bottoms/Centers/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]]) <br>
- 
-<p>
- As with align, plus: 
-<p>
- 
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- Gaps  
-<td>
- Make gaps even rather than spreading points evenly.   
-<tr>
-
-<th>
- First, Last, pcb_crosshair   
-<td>
- Two arguments specifying both ends of the distribution, they can't both be the same.  
-</table>
- 
-<p>
- Defaults are Lefts/Tops, First, Last  
-<p>
- Distributed texts always retain the same relative order they had before they were distributed. 
+ For non-subcircuit objects: using Marks is not recommended, using Gridless is recommended. 
 </dd></dl>
 
 <h2 id="djopt">djopt</h2>
@@ -1645,7 +1543,7 @@ Import(setdisperse,D,units)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Import schematics.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-import_sch plugin
+oldactions plugin
 </table>
 <p>
 Deprecated. Please use 
