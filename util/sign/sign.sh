@@ -7,7 +7,7 @@ fi
 
 key="$1"
 cert="$2"
-shift 1
+shift 2
 
 for fn in "$@"
 do
