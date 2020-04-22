@@ -72,6 +72,7 @@ int pplg_init_io_bxl(void)
 	io_bxl.test_parse = io_bxl_test_parse;
 	io_bxl.parse_pcb = NULL;
 	io_bxl.parse_footprint = io_bxl_parse_footprint;
+	io_bxl.map_footprint = io_bxl_map_footprint;
 	io_bxl.parse_font = NULL;
 	io_bxl.write_buffer = NULL;
 	io_bxl.write_pcb = NULL;

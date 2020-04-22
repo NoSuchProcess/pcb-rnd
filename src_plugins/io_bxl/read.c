@@ -711,7 +711,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	return ret;
 }
 
-int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *filename, FILE *f_ignore)
+int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *filename, FILE *f_ignore, void *cbctx, void (*pat_cb)(void *cbctx, const char *name))
 {
 	FILE *f;
 	int chr, tok, found_tok = 0, ret = 0;
@@ -742,10 +742,14 @@ int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 			if (tok == UREGLEX_MORE)
 				continue;
 
+			if ((tok == UREGLEX_NO_MATCH) || (tok == UREGLEX_TOO_LONG))
+				return -1; /* error - stop fast, don't read through the whole file */
+
 			/* simplified "grammar": find opening tokens, save the next token
 			   as ID and don't do anything until finding the closing token */
 
 			switch(found_tok) {
+				
 				/* found an opening token, tok is the ID */
 				case T_PADSTACK:
 					pcb_trace("BXL testparse; padstack '%s'\n", lval.un.s);
@@ -753,6 +757,8 @@ int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 					break;
 				case T_PATTERN:
 					pcb_trace("BXL testparse; footprint '%s'\n", lval.un.s);
+					if (pat_cb != NULL)
+						pat_cb(cbctx, lval.un.s);
 					if (typ & PCB_IOT_FOOTPRINT)
 						ret++;
 					found_tok = T_ENDPATTERN;
@@ -799,5 +805,30 @@ int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 
 int io_bxl_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *filename, FILE *f)
 {
-	return io_bxl_test_parse2(NULL, ctx, typ, filename, f);
+	return io_bxl_test_parse2(NULL, ctx, typ, filename, f, NULL, NULL);
+}
+
+typedef struct {
+	int has_fp;
+} bxl_fp_map_ctx_t;
+
+static void pat_cb(void *cbctx_, const char *name)
+{
+	bxl_fp_map_ctx_t *cbctx = cbctx_;
+	cbctx->has_fp++;
+}
+
+pcb_plug_fp_map_t *io_bxl_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	int res;
+	bxl_fp_map_ctx_t cbctx;
+
+	cbctx.has_fp = 0;
+
+	res = io_bxl_test_parse2(NULL, ctx, PCB_IOT_FOOTPRINT, fn, f, &cbctx, pat_cb);
+	if ((res <= 0) || (cbctx.has_fp == 0))
+		return NULL;
+
+	head->type = PCB_FP_FILE;
+	return head;
 }
