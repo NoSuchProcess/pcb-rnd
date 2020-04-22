@@ -467,7 +467,7 @@ TODO("fp: rather call plug_io if it is not parametric")
 		case ST_TAG:
 			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
 				if (need_tags && (tag.used != 0))
-					vts0_append(&head->tags, (const char *)pcb_fp_tag(tag.array, 1));
+					vts0_append(&head->tags, (char *)pcb_fp_tag(tag.array, 1));
 
 				tag.used = 0;
 				state = ST_WS;
