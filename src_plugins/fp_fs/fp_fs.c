@@ -49,8 +49,6 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 
-static pcb_plug_fp_map_t *pcb_fp_file_type(pcb_plug_fp_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
-
 /* ---------------------------------------------------------------------------
  * Parse the directory tree where newlib footprints are found
  */
