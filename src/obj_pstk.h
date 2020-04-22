@@ -286,7 +286,7 @@ typedef struct pcb_proto_layer_s {
 #define PCB_PROTO_MASK_BLOAT PCB_MIL_TO_COORD(2*3)
 
 #define pcb_proto_num_layers 8
-const pcb_proto_layer_t pcb_proto_layers[pcb_proto_num_layers];
+extern const pcb_proto_layer_t pcb_proto_layers[pcb_proto_num_layers];
 
 
 /* Return the id of a board layer that matches a mask:comb pair or invalid if
