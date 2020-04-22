@@ -27,7 +27,6 @@ plugin_def("autoplace",        "auto place components",           sbuildin, 1, 0
 plugin_def("autoroute",        "the original autorouter",         sbuildin, 1, 0)
 plugin_def("diag",             "diagnostic acts. for devs",       sdisable, 1, 0)
 plugin_def("dialogs",          "HID-independent GUI dialogs",     sdisable, 1, 0)
-plugin_def("distaligntext",    "distribute and align text",       sbuildin, 1, 0)
 plugin_def("distalign",        "distribute and align objs",       sbuildin, 1, 0)
 plugin_def("djopt",            "djopt board optimization",        sbuildin, 1, 0)
 plugin_def("draw_csect",       "draw cross-section (layers)",     sdisable, 1, 0)

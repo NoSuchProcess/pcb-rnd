@@ -1,7 +1,0 @@
-$class feature
-$short distribute and align text
-$long Same as distalign, operates on text objects.
-$package extra
-$state works
-default buildin
-autoload 1

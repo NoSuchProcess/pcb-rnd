@@ -535,7 +535,9 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static pcb_action_t distalign_action_list[] = {
 	{"distribute", pcb_act_distribute, "Distribute objects", pcb_acts_distribute},
-	{"align", pcb_act_align, "Align objects", pcb_acts_align}
+	{"distributetext", pcb_act_distribute, "Distribute objects", pcb_acts_distribute},
+	{"align", pcb_act_align, "Align objects", pcb_acts_align},
+	{"aligntext", pcb_act_align, "Align objects", pcb_acts_align}
 };
 
 static char *distalign_cookie = "distalign plugin";

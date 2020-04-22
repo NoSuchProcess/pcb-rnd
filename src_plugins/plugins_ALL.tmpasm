@@ -12,7 +12,6 @@ include {../src_plugins/ddraft/Plug.tmpasm}
 include {../src_plugins/diag/Plug.tmpasm}
 include {../src_plugins/dialogs/Plug.tmpasm}
 include {../src_plugins/distalign/Plug.tmpasm}
-include {../src_plugins/distaligntext/Plug.tmpasm}
 include {../src_plugins/djopt/Plug.tmpasm}
 include {../src_plugins/draw_csect/Plug.tmpasm}
 include {../src_plugins/draw_fab/Plug.tmpasm}

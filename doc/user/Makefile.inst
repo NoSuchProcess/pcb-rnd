@@ -68,11 +68,6 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/distalign/import_parts.png $(USERDIR)/06_feature/distalign/import_parts.png
 	$(SCCBOX) $(HOW) 06_feature/distalign/index.html $(USERDIR)/06_feature/distalign/index.html
 	$(SCCBOX) $(HOW) 06_feature/distalign/result.png $(USERDIR)/06_feature/distalign/result.png
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/distaligntext
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_1.png $(USERDIR)/06_feature/distaligntext/distaligntext_1.png
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_2.png $(USERDIR)/06_feature/distaligntext/distaligntext_2.png
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/distaligntext_3.png $(USERDIR)/06_feature/distaligntext/distaligntext_3.png
-	$(SCCBOX) $(HOW) 06_feature/distaligntext/index.html $(USERDIR)/06_feature/distaligntext/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/djopt
 	$(SCCBOX) $(HOW) 06_feature/djopt/Makefile $(USERDIR)/06_feature/djopt/Makefile
 	$(SCCBOX) $(HOW) 06_feature/djopt/Post.html $(USERDIR)/06_feature/djopt/Post.html
@@ -110,8 +105,6 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.txt $(USERDIR)/06_feature/djopt/viatrim.txt
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/drc_query
 	$(SCCBOX) $(HOW) 06_feature/drc_query/index.html $(USERDIR)/06_feature/drc_query/index.html
-	$(SCCBOX) mkdir -p $(USERDIR)/06_feature
-	$(SCCBOX) $(HOW) 06_feature/index.html $(USERDIR)/06_feature/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/polystitch
 	$(SCCBOX) $(HOW) 06_feature/polystitch/index.html $(USERDIR)/06_feature/polystitch/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/query
@@ -253,7 +246,6 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/addtimer.html $(USERDIR)/09_appendix/action_src/addtimer.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/adjuststyle.html $(USERDIR)/09_appendix/action_src/adjuststyle.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/align.html $(USERDIR)/09_appendix/action_src/align.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/aligntext.html $(USERDIR)/09_appendix/action_src/aligntext.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/applyvendor.html $(USERDIR)/09_appendix/action_src/applyvendor.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/atomic.html $(USERDIR)/09_appendix/action_src/atomic.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/attributes.html $(USERDIR)/09_appendix/action_src/attributes.html
@@ -281,7 +273,6 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/disperseelements.html $(USERDIR)/09_appendix/action_src/disperseelements.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/display.html $(USERDIR)/09_appendix/action_src/display.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/distribute.html $(USERDIR)/09_appendix/action_src/distribute.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/distributetext.html $(USERDIR)/09_appendix/action_src/distributetext.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/djopt.html $(USERDIR)/09_appendix/action_src/djopt.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/dowindows.html $(USERDIR)/09_appendix/action_src/dowindows.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/drc.html $(USERDIR)/09_appendix/action_src/drc.html
