@@ -9,9 +9,6 @@
 
 #include <time.h>
 
-TODO("Remove this when sleep(8) is removed:")
-#include <unistd.h>
-
 #include <librnd/core/math_helper.h>
 #include "board.h"
 #include "build_run.h"
@@ -73,7 +70,6 @@ static int is_drill, is_plated;
 static pcb_composite_op_t gerber_drawing_mode, drawing_mode_issued;
 static int flash_drills, line_slots;
 static int copy_outline_mode;
-static int name_style;
 static int want_cross_sect;
 static int want_per_file_apertures;
 static int has_outline;
@@ -178,24 +174,6 @@ static const char *copy_outline_names[] = {
 	NULL
 };
 
-static const char *name_style_names[] = {
-#define NAME_STYLE_PCB_RND 0
-	"pcb-rnd",
-#define NAME_STYLE_FIXED 1
-	"fixed",
-#define NAME_STYLE_SINGLE 2
-	"single",
-#define NAME_STYLE_FIRST 3
-	"first",
-#define NAME_STYLE_EAGLE 4
-	"eagle",
-#define NAME_STYLE_HACKVANA 5
-	"hackvana",
-#define NAME_STYLE_UNIVERSAL 6
-	"universal",
-	NULL
-};
-
 typedef struct {
 	const char *hdr1;
 	const char *cfmt; /* drawing coordinate format */
@@ -260,24 +238,21 @@ Print file names and aperture counts on stdout.
 	{"copy-outline", "Copy outline onto other layers",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names, 0},
 #define HA_copy_outline 4
-	{"name-style", "DEPRECATED: Naming style for individual gerber files - please use the CAM export instead",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, name_style_names, 0},
-#define HA_name_style 5
 	{"cross-sect", "Export the cross section layer",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cross_sect 6
+#define HA_cross_sect 5
 
 	{"coord-format", "Coordinate format (resolution)",
 	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
-#define HA_coord_format 7
+#define HA_coord_format 6
 
 	{"aperture-per-file", "Restart aperture numbering in each new file",
 	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_apeture_per_file 8
+#define HA_apeture_per_file 7
 
 	{"cam", "CAM instruction",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 9
+#define HA_cam 8
 };
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
@@ -328,196 +303,15 @@ static void maybe_close_f(FILE * f)
 
 static pcb_box_t region;
 
-#define fmatch(flags, bits) (((flags) & (bits)) == (bits))
-
-/* Very similar to pcb_layer_to_file_name() but appends only a
-   three-character suffix compatible with Eagle's defaults.  */
-static void assign_eagle_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags, int purpi)
-{
-	const char *suff = "out";
-
-	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
-		suff = "cmp";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
-		suff = "sol";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
-		suff = "plc";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
-		suff = "pls";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_MASK))
-		suff = "stc";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
-		suff = "sts";
-	else if (PCB_LAYER_IS_PDRILL(flags, purpi))
-		suff = "drd";
-	else if (PCB_LAYER_IS_UDRILL(flags, purpi))
-		suff = "dru";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
-		suff = "crc";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_PASTE))
-		suff = "crs";
-	else if (fmatch(flags, PCB_LYT_INVIS))
-		suff = "inv";
-	else if (PCB_LAYER_IS_FAB(flags, purpi))
-		suff = "fab";
-	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
-		suff = "ast";
-	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
-		suff = "asb";
-	else if (PCB_LAYER_IS_ROUTE(flags, purpi))
-		suff = "oln";
-	else {
-		static char buf[20];
-		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, lid);
-		sprintf(buf, "ly%ld", group);
-		suff = buf;
-	}
-	strcpy(dest, suff);
-}
-
-/* Very similar to layer_type_to_file_name() but appends only a
-   three-character suffix compatible with Hackvana's naming requirements  */
-static void assign_hackvana_file_suffix(char *dest, pcb_layer_id_t lid, unsigned int flags, int purpi)
-{
-	char *suff;
-
-	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
-		suff = "gtl";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
-		suff = "gbl";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
-		suff = "gto";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
-		suff = "gbo";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_MASK))
-		suff = "gts";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
-		suff = "gbs";
-	else if (PCB_LAYER_IS_PDRILL(flags, purpi))
-		suff = "cnc";
-	else if (PCB_LAYER_IS_UDRILL(flags, purpi))
-		suff = "_NPTH.drl";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
-		suff = "gtp";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_PASTE))
-		suff = "gbp";
-	else if (fmatch(flags, PCB_LYT_INVIS))
-		suff = "inv";
-	else if (PCB_LAYER_IS_FAB(flags, purpi))
-		suff = "fab";
-	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
-		suff = "ast";
-	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
-		suff = "asb";
-	else if (PCB_LAYER_IS_ROUTE(flags, purpi))
-		suff = "gm1";
-	else {
-		static char buf[20];
-		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, lid);
-		sprintf(buf, "g%ld", group);
-		suff = buf;
-	}
-	strcpy(dest, suff);
-}
-
-/* Very similar to layer_type_to_file_name() but appends the group name _and_ the magic suffix */
-static void assign_universal_file_suffix(char *dest, pcb_layergrp_id_t gid, unsigned int flags, int purpi)
-{
-	char *suff;
-	int name_len;
-	pcb_layergrp_t *g;
-
-	if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_COPPER))
-		suff = "gtl";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_COPPER))
-		suff = "gbl";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_SILK))
-		suff = "gto";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_SILK))
-		suff = "gbo";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_MASK))
-		suff = "gts";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_MASK))
-		suff = "gbs";
-	else if (PCB_LAYER_IS_PDRILL(flags, purpi))
-		suff = "drl";
-	else if (PCB_LAYER_IS_UDRILL(flags, purpi))
-		suff = "_NPTH.drl";
-	else if (fmatch(flags, PCB_LYT_TOP | PCB_LYT_PASTE))
-		suff = "gtp";
-	else if (fmatch(flags, PCB_LYT_BOTTOM | PCB_LYT_PASTE))
-		suff = "gbp";
-	else if (fmatch(flags, PCB_LYT_INVIS))
-		suff = "inv";
-	else if (PCB_LAYER_IS_FAB(flags, purpi))
-		suff = "fab";
-	else if (fmatch(flags, PCB_LYT_TOP) && PCB_LAYER_IS_ASSY(flags, purpi))
-		suff = "ast";
-	else if (fmatch(flags, PCB_LYT_BOTTOM) && PCB_LAYER_IS_ASSY(flags, purpi))
-		suff = "asb";
-	else if (PCB_LAYER_IS_ROUTE(flags, purpi))
-		suff = "gko";
-	else {
-		static char buf[20];
-		sprintf(buf, "g%ld", gid);
-		suff = buf;
-	}
-
-	/* insert group name if available */
-	g = pcb_get_layergrp(PCB, gid);
-	if (g != NULL) {
-		name_len = strlen(g->name);
-		if (name_len >= SUFF_LEN-5)
-			name_len = SUFF_LEN-5; /* truncate group name */
-		memcpy(dest, g->name, name_len);
-		dest += name_len;
-		*dest = '.';
-		dest++;
-	}
-	strcpy(dest, suff);
-}
-
-
-#undef fmatch
-
 static int assign_file_suffix_(gds_t *dest, char *direct, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
 {
-	int fns_style;
 	const char *sext = ".gbr";
 
 	if (merge_same != NULL) *merge_same = 0;
 
-	switch (name_style) {
-	default:
-	case NAME_STYLE_PCB_RND:
-		fns_style = PCB_FNS_pcb_rnd;
-		break;
-	case NAME_STYLE_FIXED:
-		fns_style = PCB_FNS_fixed;
-		break;
-	case NAME_STYLE_SINGLE:
-		fns_style = PCB_FNS_single;
-		break;
-	case NAME_STYLE_FIRST:
-		fns_style = PCB_FNS_first;
-		break;
-	case NAME_STYLE_EAGLE:
-		assign_eagle_file_suffix(direct, lid, flags, purpi);
-		if (merge_same != NULL) *merge_same = 1;
-		return 1;
-	case NAME_STYLE_HACKVANA:
-		assign_hackvana_file_suffix(direct, lid, flags, purpi);
-		if (merge_same != NULL) *merge_same = 1;
-		return 1;
-	case NAME_STYLE_UNIVERSAL:
-		assign_universal_file_suffix(direct, gid, flags, purpi);
-		if (merge_same != NULL) *merge_same = 1;
-		return 1;
-	}
-
 	if (drill && PCB_LAYER_IS_DRILL(flags, purpi))
 		sext = ".cnc";
-	pcb_layer_to_file_name(dest, lid, flags, purpose, purpi, fns_style);
+	pcb_layer_to_file_name(dest, lid, flags, purpose, purpi, PCB_FNS_pcb_rnd);
 	gds_append_str(dest, sext);
 	return 0;
 }
@@ -580,7 +374,6 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	all_layers = options[HA_all_layers].lng;
 
 	copy_outline_mode = options[HA_copy_outline].lng;
-	name_style = options[HA_name_style].lng;
 
 	want_cross_sect = options[HA_cross_sect].lng;
 	want_per_file_apertures = options[HA_apeture_per_file].lng;
@@ -630,60 +423,6 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!gerber_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
 	pcb_conf_update(NULL, -1); /* resotre forced sets */
-
-	if ((!gerber_cam.active) && (name_style != NAME_STYLE_PCB_RND)) {
-		int purpi;
-		const pcb_virt_layer_t *vl;
-
-		maybe_close_f(f);
-		f = NULL;
-
-		pcb_message(PCB_MSG_ERROR,
-			"\n"
-			"**************************************************\n"
-			"* Gerber direct export: please stop using gerber  \n"
-			"* name styles and switch to CAM export.           \n"
-			"* Gerber name styles will be removed soon.        \n"
-			"**************************************************\n"
-			"\n"
-			);
-
-		pcb_message(PCB_MSG_ERROR,
-			"\n"
-			"***********************************************************\n"
-			"* Gerber direct export: exporting excellon drill files as  \n"
-			"* well. Writing excellon while doing a gerber export will  \n"
-			"* be removed soon, please switch to CAM export if          \n"
-			"* you want both gerbers and excellon drill files.          \n"
-			"***********************************************************\n"
-			"\n"
-			);
-
-		pcb_message(PCB_MSG_ERROR,
-			"Hints:\n"
-			"For direct gerber-only export please use the pcb-rnd name-style.\n"
-			"For more info please read:\n"
-			"http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=cam_switch\n"
-			);
-
-		pcb_message(PCB_MSG_ERROR, "\n\nplease read the above (waiting for 8 seconds)\n\n");
-		pcbhl_log_print_uninit_errs("Gerber naming style warnings:");
-		sleep(8);
-
-		pagecount++;
-		purpi = F_pdrill;
-		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, "pdrill", purpi);
-		assert(vl != NULL);
-		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, "pdrill", purpi, 1, NULL);
-		pcb_drill_export_excellon(PCB, &pdrills, conf_gerber.plugins.export_gerber.plated_g85_slot, 0, filename);
-
-		pagecount++;
-		purpi = F_udrill;
-		vl = pcb_vlayer_get_first(PCB_LYT_VIRTUAL, "udrill", purpi);
-		assert(vl != NULL);
-		assign_file_suffix(filesuff, -1, vl->new_id, vl->type, "udrill", purpi, 1, NULL);
-		pcb_drill_export_excellon(PCB, &udrills, conf_gerber.plugins.export_gerber.unplated_g85_slot, 0, filename);
-	}
 
 	if (!gerber_cam.active) gerber_cam.okempty_content = 1; /* never warn in direct export */
 

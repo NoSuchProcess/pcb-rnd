@@ -78,13 +78,8 @@ void pcb_cam_set_var(void *ctx, char *key, char *val);
 typedef enum pcb_file_name_style_e {
 	/* The only style that will be available long term: native */
 	PCB_FNS_pcb_rnd,
-	/* Files for copper layers are named top, groupN, bottom.  */
-	PCB_FNS_fixed,
-	/* Groups with multiple layers are named as above, else the single
-	   layer name is used.  */
-	PCB_FNS_single,
-	/* The name of the first layer in each group is used.  */
-	PCB_FNS_first
+	/* Files for copper layers are named top, groupN, bottom, used by some exporters like ps and gcode  */
+	PCB_FNS_fixed
 } pcb_file_name_style_t;
 
 /* Returns a filename base that can be used to output the layer. The file

@@ -69,8 +69,7 @@ char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned in
 {
 	const pcb_virt_layer_t *v;
 	pcb_layergrp_id_t group;
-	int nlayers;
-	const char *single_name, *res = NULL;
+	const char *res = NULL;
 	static char buf[PCB_DERIVE_FN_SUFF_LEN];
 
 	if (flags == 0)
@@ -106,14 +105,9 @@ char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned in
 		return dest->array;
 	}
 
-
 	group = pcb_layer_get_group(PCB, lid);
-	nlayers = PCB->LayerGroups.grp[group].len;
-	single_name = pcb_layer_name(PCB->Data, lid);
 
 	if (flags & PCB_LYT_TOP) {
-		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
-			res = single_name;
 		if (flags & PCB_LYT_SILK)
 			res = "topsilk";
 		else if (flags & PCB_LYT_MASK)
@@ -128,8 +122,6 @@ char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned in
 			res = "top";
 	}
 	else if (flags & PCB_LYT_BOTTOM) {
-		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 2))
-			res = single_name;
 		if (flags & PCB_LYT_SILK)
 			res = "bottomsilk";
 		else if (flags & PCB_LYT_MASK)
@@ -145,8 +137,6 @@ char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned in
 	}
 	else {
 		static char buf[PCB_DERIVE_FN_SUFF_LEN];
-		if (style == PCB_FNS_first || (style == PCB_FNS_single && nlayers == 1))
-			res = single_name;
 		sprintf(buf, "group%ld", group);
 		res = buf;
 	}
