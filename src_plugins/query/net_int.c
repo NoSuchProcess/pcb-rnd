@@ -154,7 +154,7 @@ PCB_INLINE pcb_any_obj_t *pcb_qry_parent_net_term_(pcb_qry_exec_t *ec, pcb_any_o
 	if (ctx.best_term != NULL) {
 		pcb_net_term_t *t;
 		t = pcb_net_find_by_obj(&ec->pcb->netlist[PCB_NETLIST_EDITED], ctx.best_term);
-		return (t == NULL) ? ctx.best_term : t;
+		return (t == NULL) ? ctx.best_term : (pcb_any_obj_t *)t;
 	}
 
 	return ctx.best_nonterm;
