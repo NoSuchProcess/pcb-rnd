@@ -41,6 +41,15 @@ void pcb_fp_uninit();
 /**************************** API definition *********************************/
 extern FILE *PCB_FP_FOPEN_IN_DST;
 
+typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
+
+struct pcb_plug_fp_map_s {
+	pcb_fptype_t type;
+	void **tags;
+	char *name; /* strdup'd */
+	pcb_plug_fp_map_t *next;
+};
+
 struct pcb_plug_fp_s {
 	pcb_plug_fp_t *next;
 	void *plugin_data;
@@ -59,6 +68,12 @@ struct pcb_plug_fp_s {
    loaded footprint in dst and return PCB_FP_FOPEN_IN_DST.
  */
 	FILE *(*fp_fopen)(pcb_plug_fp_t *ctx, const char *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
+
+	/* Scan as little as possible from the file to decide what the file is and extract tags;
+	   For a single file, load head and return it. For a library-type file, load
+	   head with the first footprint then allocate further footprints in a singly
+	   linked list. If need_tags is 0, do not parse for tags */
+	pcb_plug_fp_map_t *(*fp_map)(pcb_plug_fp_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 
 /* Close the footprint file opened by pcb_pcb_fp_fopen(). */
 	void (*fp_fclose)(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx);
