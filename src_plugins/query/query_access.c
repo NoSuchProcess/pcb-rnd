@@ -345,7 +345,6 @@ do { \
 	if (fh1 == query_fields_netseg) { \
 		if (ec != NULL) { \
 			pcb_any_obj_t *term = pcb_qry_parent_net_term(ec, obj); \
-			pcb_net_t *net; \
 			if (term == NULL) \
 				PCB_QRY_RET_INV(res); \
 			PCB_QRY_RET_INT(res, term->ID); \
