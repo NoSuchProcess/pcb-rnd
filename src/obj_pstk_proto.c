@@ -1231,7 +1231,8 @@ typedef struct {
 
 static int undo_shape_geo_swap(void *udata)
 {
-	undo_shape_geo_t *g = udata;
+/*	undo_shape_geo_t *g = udata; */
+	TODO("unfinished undo");
 	return 0;
 }
 
