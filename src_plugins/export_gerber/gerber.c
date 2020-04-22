@@ -38,7 +38,6 @@
 #include <librnd/core/actions.h>
 
 #include "../src_plugins/export_excellon/aperture.h"
-#include "../src_plugins/export_excellon/excellon.h"
 
 #include "../src_plugins/lib_hid_common/xpm.h"
 
@@ -75,15 +74,13 @@ static int want_per_file_apertures;
 static int has_outline;
 static int gerber_debug;
 static int gerber_ovr;
-static int gerber_global_aperture_cnt, gerber_global_exc_aperture_cnt;
+static int gerber_global_aperture_cnt;
 static long gerber_drawn_objs;
 
 static aperture_list_t *layer_aptr_list;
 static aperture_list_t *curr_aptr_list;
 static int layer_list_max;
 static int layer_list_idx;
-
-static pcb_drill_ctx_t pdrills, udrills;
 
 static void reset_apertures(void)
 {
@@ -292,13 +289,7 @@ static int layer_sort(const void *va, const void *vb)
 static void maybe_close_f(FILE * f)
 {
 	if (f) {
-		if ((was_drill) && (!gerber_cam.active)) {
-			TODO("excellon split");
-			/* Leftover from when we generate excellon from gerber. Remove this. */
-			fprintf(f, "M30\r\n");
-		}
-		else
-			fprintf(f, "M02*\r\n");
+		fprintf(f, "M02*\r\n");
 		fclose(f);
 	}
 }
@@ -312,9 +303,6 @@ static void append_file_suffix(gds_t *dst, pcb_layergrp_id_t gid, pcb_layer_id_t
 	fn_gds.used = fn_baselen;
 	if (merge_same != NULL) *merge_same = 0;
 
-TODO("excellon?");
-	if (drill && PCB_LAYER_IS_DRILL(flags, purpi))
-		sext = ".cnc";
 	pcb_layer_to_file_name_append(dst, lid, flags, purpose, purpi, PCB_FNS_pcb_rnd);
 	gds_append_str(dst, sext);
 
@@ -351,9 +339,6 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	gerber_cfmt = &coord_format[i];
 	pcb_printf_slot[4] = gerber_cfmt->cfmt;
 	pcb_printf_slot[5] = gerber_cfmt->afmt;
-
-	pcb_drill_init(&pdrills, options[HA_apeture_per_file].lng ? NULL : &gerber_global_exc_aperture_cnt);
-	pcb_drill_init(&udrills, options[HA_apeture_per_file].lng ? NULL : &gerber_global_exc_aperture_cnt);
 
 	gerber_drawn_objs = 0;
 	pcb_cam_begin(PCB, &gerber_cam, &xform, options[HA_cam].str, gerber_options, NUM_OPTIONS, options);
@@ -427,9 +412,6 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		if (!gerber_cam.okempty_content)
 			pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
-
-	pcb_drill_uninit(&pdrills);
-	pcb_drill_uninit(&udrills);
 
 	/* in cam mode we have f still open */
 	maybe_close_f(f);
@@ -705,19 +687,8 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 			aperture_t *aptr = find_aperture(curr_aptr_list, radius, ROUND);
 			if (aptr == NULL)
 				pcb_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
-			else if (f != NULL) {
-				if (gerber_cam.active) {
-					fprintf(f, "G54D%d*", aptr->dCode);
-				}
-				else {
-					TODO("excellon split");
-					/* remove this else part once excellon is removed: when exporting
-					   drill in gerber, we shall always use the above code and generate
-					   G54 */
-					if (!is_drill || allow_gerb_drill)
-						fprintf(f, "G54D%d*", aptr->dCode);
-				}
-			}
+			else if (f != NULL)
+				fprintf(f, "G54D%d*", aptr->dCode);
 			linewidth = radius;
 			lastcap = pcb_cap_round;
 		}
@@ -753,11 +724,6 @@ static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t 
 	int i;
 	int firstTime = 1;
 	pcb_coord_t startX = 0, startY = 0;
-
-	if (line_slots) {
-		pcb_message(PCB_MSG_ERROR, "Can't export polygon as G85 slot in excellon cnc files;\nplease use lines for slotting if you export gerber\n");
-		return;
-	}
 
 	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
 		return;
@@ -814,22 +780,10 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 
 	if (line_slots) {
 		pcb_coord_t dia = gc->width/2;
-		find_aperture((is_plated ? &pdrills.apr : &udrills.apr), dia*2, ROUND);
 		find_aperture(curr_aptr_list, dia*2, ROUND); /* for a real gerber export of the BOUNDARY group: place aperture on the per layer aperture list */
 
-		if (!gerber_cam.active) {
-			TODO("excellon split");
-			/* This is the old, excellon-in-gerber behavior - remove this once the split
-			   is complete: excellon should do new_pending, not gerber */
-			if (!finding_apertures)
-				pcb_drill_new_pending(is_plated ? &pdrills : &udrills, x1, y1, x2, y2, dia*2);
-			if (!allow_gerb_drill || finding_apertures)
-				return;
-		}
-		else {
-			if (finding_apertures)
-				return;
-		}
+		if (finding_apertures)
+			return;
 	}
 
 	if (x1 != x2 && y1 != y2 && gc->cap == pcb_cap_square) {
@@ -1009,18 +963,8 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	if (!f)
 		return;
 	if (is_drill) {
-		if (!gerber_cam.active) {
-			TODO("excellon split");
-			/* This is the old, excellon-in-gerber behavior - remove this once the split
-			   is complete: excellon should do new_pending, not gerber */
-			pcb_drill_new_pending(is_plated ? &pdrills : &udrills, cx, cy, cx, cy, radius * 2);
-			if (!allow_gerb_drill || finding_apertures)
-				return;
-		}
-		else {
-			if (finding_apertures)
-				return;
-		}
+		if (finding_apertures)
+			return;
 	}
 	else if (gc->drill && !flash_drills)
 		return;
@@ -1113,7 +1057,7 @@ static void gerber_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, i
 
 static void gerber_session_begin(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	gerber_global_aperture_cnt = gerber_global_exc_aperture_cnt = 0;
+	gerber_global_aperture_cnt = 0;
 }
 
 int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
