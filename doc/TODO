@@ -26,7 +26,6 @@
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
-
 - FEATURE: new breadboard
 	- FEATURE: PCB_OBJ_GFX
 		- TODO("gfx")
