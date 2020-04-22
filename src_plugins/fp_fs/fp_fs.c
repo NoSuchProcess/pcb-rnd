@@ -193,15 +193,18 @@ TODO("fp: make this a configurable list")
 					res = pcb_fp_file_type(NULL, f, subdirentry->d_name, &head, need_tags);
 					if ((res != NULL) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 						n_footprints++;
-						if (cb(cookie, new_subdir, subdirentry->d_name, res->type, res->tags)) {
+						if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array)) {
 							fclose(f);
 							break;
 						}
 						continue;
 					}
-					else
-						if (head.tags != NULL)
-							free(head.tags);
+					else {
+						if (head.tags.array != NULL) {
+							free(head.tags.array);
+							head.tags.alloced = head.tags.used = 0;
+						}
+					}
 				}
 				fclose(f);
 			}
@@ -373,7 +376,6 @@ pcb_plug_fp_map_t *pcb_fp_file_type(pcb_plug_fp_t *ctx, FILE *f, const char *fn,
 		ST_TAG
 	} state = ST_WS;
 	gds_t tag;
-	int Talloced = 0, Tused = 0;
 
 	gds_init(&tag);
 	head->type = PCB_FP_INVALID;
@@ -449,15 +451,8 @@ TODO("fp: rather call plug_io if it is not parametric")
 			break;
 		case ST_TAG:
 			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
-				if (need_tags && (tag.used != 0)) {
-					if (Tused >= Talloced) {
-						Talloced += 8;
-						head->tags = realloc(head->tags, (Talloced + 1) * sizeof(void *));
-					}
-					head->tags[Tused] = (void *) pcb_fp_tag(tag.array, 1);
-					Tused++;
-					head->tags[Tused] = NULL;
-				}
+				if (need_tags && (tag.used != 0))
+					vts0_append(&head->tags, (const char *)pcb_fp_tag(tag.array, 1));
 
 				tag.used = 0;
 				state = ST_WS;
