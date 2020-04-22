@@ -149,6 +149,8 @@ typedef struct hid_gc_s {
 } hid_gc_s;
 
 static FILE *f = NULL;
+static gds_t fn_gds;
+static int fn_baselen = 0;
 static char *filename = NULL;
 static char *filesuff = NULL;
 static char *layername = NULL;
@@ -303,31 +305,21 @@ static void maybe_close_f(FILE * f)
 
 static pcb_box_t region;
 
-static int assign_file_suffix_(gds_t *dest, char *direct, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
+static void append_file_suffix(gds_t *dst, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
 {
 	const char *sext = ".gbr";
 
+	fn_gds.used = fn_baselen;
 	if (merge_same != NULL) *merge_same = 0;
 
+TODO("excellon?");
 	if (drill && PCB_LAYER_IS_DRILL(flags, purpi))
 		sext = ".cnc";
-	pcb_layer_to_file_name(dest, lid, flags, purpose, purpi, PCB_FNS_pcb_rnd);
-	gds_append_str(dest, sext);
-	return 0;
-}
+	pcb_layer_to_file_name_append(dst, lid, flags, purpose, purpi, PCB_FNS_pcb_rnd);
+	gds_append_str(dst, sext);
 
-TODO("Once file naming styles are gone, this should be gone too and we should use the gds version only, without fixed length file buffers")
-static void assign_file_suffix(char *dest, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
-{
-	gds_t tmp;
-
-	gds_init(&tmp);
-	if (assign_file_suffix_(&tmp, dest, gid, lid, flags, purpose, purpi, drill, merge_same)) {
-		gds_uninit(&tmp);
-		return;
-	}
-	strncpy(dest, tmp.array, SUFF_LEN);
-	gds_uninit(&tmp);
+	filename = fn_gds.array;
+	filesuff = fn_gds.array + fn_baselen;
 }
 
 static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
@@ -381,10 +373,11 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	has_outline = pcb_has_explicit_outline(PCB);
 
 	i = strlen(fnbase);
-	filename = (char *) realloc(filename, i + SUFF_LEN + 1); /* +1 for the terminator \0 */
-	strcpy(filename, fnbase);
-	strcat(filename, ".");
-	filesuff = filename + strlen(filename);
+	gds_init(&fn_gds);
+	gds_append_str(&fn_gds, fnbase);
+	gds_append(&fn_gds, '.');
+	fn_baselen = fn_gds.used;
+	filename = fn_gds.array;
 
 	if (!gerber_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
@@ -441,6 +434,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	/* in cam mode we have f still open */
 	maybe_close_f(f);
 	f = NULL;
+	gds_uninit(&fn_gds);
 }
 
 static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
@@ -540,15 +534,6 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		if (aptr_list->count == 0 && !all_layers && !is_drill)
 			return 0;
 
-		/* If two adjacent groups end up with the same file name, they are really one group */
-		if ((!gerber_cam.active && (f != NULL))) {
-			char tmp[256];
-			int merge_same;
-			assign_file_suffix(tmp, group, layer, flags, purpose, purpi, 0, &merge_same);
-			if (merge_same && (strcmp(tmp, filesuff) == 0))
-				return 1;
-		}
-
 		if ((!gerber_cam.active) || (gerber_cam.fn_changed)) {
 			/* in cam mode we reuse f */
 			maybe_close_f(f);
@@ -556,7 +541,7 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		}
 
 		pagecount++;
-		assign_file_suffix(filesuff, group, layer, flags, purpose, purpi, 0, NULL);
+		append_file_suffix(&fn_gds, group, layer, flags, purpose, purpi, 0, NULL);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
 			f = pcb_fopen_askovr(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb", &gerber_ovr); /* Binary needed to force CR-LF */
 			if (f == NULL) {
