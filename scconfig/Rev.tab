@@ -1,3 +1,4 @@
+30754	configure	remove the old import_sch plugin (in favor of import_sch2)
 30753	configure	disable the old drc, enable the new drc
 30497	configure	new util: bxl2txt
 30191	configure	drc_orig: plugin configuration so the checks can be disabled
