@@ -263,6 +263,7 @@ int pplg_init_io_tedax(void)
 	io_tedax.test_parse = pcb_io_tedax_test_parse;
 	io_tedax.parse_pcb = io_tedax_parse_pcb;
 	io_tedax.parse_footprint = io_tedax_parse_element;
+	io_tedax.map_footprint = tedax_fp_map;
 	io_tedax.parse_font = NULL;
 	io_tedax.write_buffer = NULL;
 	io_tedax.write_subcs_head = io_tedax_fp_write_subcs_head;

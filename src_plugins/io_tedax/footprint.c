@@ -656,3 +656,42 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_i
 	fclose(f);
 	return ret;
 }
+
+pcb_plug_fp_map_t *tedax_fp_map(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	char *s, line[515];
+	int n;
+
+	/* find tEDAx main header */
+	for(n = 0; ;n++) {
+		if (n > 128) return NULL;
+		s = fgets(line, sizeof(line), f);
+		if (s == NULL) return NULL;
+		while(isspace(*s)) s++;
+		if ((*s == '\0') || (*s == '#')) continue; /* empty line or comment */
+		if (strncmp(s, "tEDAx v", 7) == 0) break; /* accept */
+		/* non-tedax content */
+		return NULL;
+	}
+
+	/* pick up all footprints */
+	while((s = fgets(line, sizeof(line), f)) != NULL) {
+		while(isspace(*s)) s++;
+		if ((*s == '\0') || (*s == '#')) continue; /* empty line or comment */
+		if (strncmp(s, "begin", 5) == 0) {
+			s += 5;
+			while(isspace(*s)) s++;
+			if (strncmp(s, "footprint", 9) == 0) {
+				s += 9;
+				while(isspace(*s)) s++;
+				/* footprint name is in s */
+				TODO("don't return the first only");
+				head->type = PCB_FP_FILE;
+				return head;
+			}
+		}
+	}
+
+	/* no footprint found in the file */
+	return NULL;
+}
