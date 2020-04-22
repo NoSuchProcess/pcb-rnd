@@ -24,7 +24,6 @@ Feature highlight:
 4. librnd separation: librnd code is moved out from src/ to src/librnd so it
    will be easier to split off to a separate repository later
 
-
 5. tool implementations (such as the line draw tool, via tool, etc) are moved
    out to the new tool_std plugin; this removes more GUI-only code from code
    but also allows new, advanced tools to be implemented in new tool_* plugins
