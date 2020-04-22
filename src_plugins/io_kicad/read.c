@@ -2884,7 +2884,6 @@ pcb_plug_fp_map_t *io_kicad_map_footprint(pcb_plug_io_t *ctx, FILE *f, const cha
 		ST_MODULE
 	} state = ST_WS;
 
-	head->type = PCB_FP_INVALID;
 	while ((c = fgetc(f)) != EOF) {
 		switch (state) {
 		case ST_MODULE:

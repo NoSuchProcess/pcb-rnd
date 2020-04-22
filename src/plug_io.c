@@ -1018,6 +1018,7 @@ pcb_plug_fp_map_t *pcb_io_map_footprint_file(pcb_hidlib_t *hl, const char *fn, p
 		if (plug->map_footprint == NULL) continue;
 
 		rewind(f);
+		head->type = PCB_FP_INVALID;
 		res = plug->map_footprint(NULL, f, fn, head, need_tags);
 		if (res == NULL) continue;
 		if (res->type != PCB_FP_INVALID)

@@ -1225,7 +1225,6 @@ pcb_plug_fp_map_t *io_pcb_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char 
 	gds_t tag;
 
 	gds_init(&tag);
-	head->type = PCB_FP_INVALID;
 	while ((c = fgetc(f)) != EOF) {
 		switch (state) {
 		case ST_ELEMENT:
