@@ -74,6 +74,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_xml.test_parse = io_eagle_test_parse_xml;
 	io_eagle_xml.parse_pcb = io_eagle_read_pcb_xml;
 /*	io_eagle_xml.parse_footprint = NULL;
+	io_eagle_xml.map_footprint = NULL;
 	io_eagle_xml.parse_font = NULL;
 	io_eagle_xml.write_buffer = io_eagle_write_buffer;
 	io_eagle_xml.write_pcb = io_eagle_write_pcb;*/
@@ -92,6 +93,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_bin.test_parse = io_eagle_test_parse_bin;
 	io_eagle_bin.parse_pcb = io_eagle_read_pcb_bin;
 /*	io_eagle_bin.parse_footprint = NULL;
+	io_eagle_bin.map_footprint = NULL;
 	io_eagle_bin.parse_font = NULL;
 	io_eagle_bin.write_buffer = io_eagle_write_buffer;
 	io_eagle_bin.write_pcb = io_eagle_write_pcb;*/
@@ -110,6 +112,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_dru.test_parse = io_eagle_test_parse_dru;
 	io_eagle_dru.parse_pcb = io_eagle_read_pcb_dru;
 	io_eagle_dru.parse_footprint = NULL;
+	io_eagle_dru.map_footprint = NULL;
 	io_eagle_dru.parse_font = NULL;
 	io_eagle_dru.write_buffer = NULL;
 	io_eagle_dru.write_pcb = /*io_eagle_write_pcb_dru*/ NULL;

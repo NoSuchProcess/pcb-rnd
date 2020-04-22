@@ -80,6 +80,7 @@ int pplg_init_io_autotrax(void)
 	io_autotrax.test_parse = io_autotrax_test_parse;
 	io_autotrax.parse_pcb = io_autotrax_read_pcb;
 	io_autotrax.parse_footprint = NULL;
+	io_autotrax.map_footprint = NULL;
 	io_autotrax.parse_font = NULL;
 	io_autotrax.write_buffer = NULL;
 	io_autotrax.write_pcb = io_autotrax_write_pcb;

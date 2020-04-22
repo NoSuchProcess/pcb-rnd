@@ -76,6 +76,7 @@ int pplg_init_io_dsn(void)
 	io_dsn.test_parse = io_dsn_test_parse;
 	io_dsn.parse_pcb = io_dsn_parse_pcb;
 	io_dsn.parse_footprint = NULL;
+	io_dsn.map_footprint = NULL;
 	io_dsn.parse_font = NULL;
 	io_dsn.write_buffer = NULL;
 	io_dsn.write_pcb = io_dsn_write_pcb;

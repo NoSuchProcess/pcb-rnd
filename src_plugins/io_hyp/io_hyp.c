@@ -175,6 +175,7 @@ int pplg_init_io_hyp(void)
 	io_hyp.test_parse = io_hyp_test_parse;
 	io_hyp.parse_pcb = io_hyp_read_pcb;
 /*	io_hyp.parse_footprint = NULL;
+	io_hyp.map_footprint = NULL;
 	io_hyp.parse_font = NULL;
 	io_hyp.write_buffer = io_hyp_write_buffer;*/
 	io_hyp.write_pcb = io_hyp_write_pcb;

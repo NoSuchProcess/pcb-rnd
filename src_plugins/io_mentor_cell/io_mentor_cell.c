@@ -69,6 +69,7 @@ int pplg_init_io_mentor_cell(void)
 	io_mentor_cell.test_parse = io_mentor_cell_test_parse;
 	io_mentor_cell.parse_pcb = io_mentor_cell_read_pcb;
 	io_mentor_cell.parse_footprint = NULL;
+	io_mentor_cell.map_footprint = NULL;
 	io_mentor_cell.parse_font = NULL;
 	io_mentor_cell.write_buffer = NULL;
 	io_mentor_cell.write_pcb = NULL;

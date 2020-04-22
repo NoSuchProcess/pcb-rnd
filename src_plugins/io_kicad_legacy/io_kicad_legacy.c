@@ -64,6 +64,7 @@ int pplg_init_io_kicad_legacy(void)
 	io_kicad_legacy.fmt_support_prio = io_kicad_legacy_fmt;
 	io_kicad_legacy.parse_pcb = NULL;
 	io_kicad_legacy.parse_footprint = NULL;
+	io_kicad_legacy.map_footprint = NULL;
 	io_kicad_legacy.parse_font = NULL;
 	io_kicad_legacy.write_buffer = NULL;
 	io_kicad_legacy.write_subcs_head = io_kicad_legacy_write_subcs_head;
