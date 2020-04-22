@@ -64,7 +64,7 @@ static pcb_cam_t gerber_cam;
 
 static int verbose;
 static int all_layers;
-static int is_mask, was_drill, allow_gerb_drill = 1;
+static int is_mask, was_drill;
 static int is_drill, is_plated;
 static pcb_composite_op_t gerber_drawing_mode, drawing_mode_issued;
 static int flash_drills, line_slots;
