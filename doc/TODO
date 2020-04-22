@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
++ CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 
 2. For later releases ===============================================================================
 - CLEANUP: remove the donut rats special casing
@@ -25,7 +26,7 @@
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
-- CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
+
 - FEATURE: new breadboard
 	- FEATURE: PCB_OBJ_GFX
 		- TODO("gfx")
