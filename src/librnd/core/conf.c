@@ -1187,7 +1187,6 @@ lht_node_t *pcb_conf_lht_get_first_pol(conf_role_t target, conf_policy_t pol, in
 static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)
 {
 	lht_node_t *n, *r = NULL;
-	int retry;
 
 	n = pcb_conf_lht_get_first(target, create);
 	if (n == NULL)
