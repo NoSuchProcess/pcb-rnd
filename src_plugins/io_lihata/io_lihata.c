@@ -208,6 +208,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v1.test_parse = io_lihata_test_parse;
 	plug_io_lihata_v1.parse_pcb = io_lihata_parse_pcb;
 	plug_io_lihata_v1.parse_footprint = NULL;
+	plug_io_lihata_v1.map_footprint = io_lihata_map_footprint; /* it is enough to have this for one version so the check is done only once */
 	plug_io_lihata_v1.parse_font = io_lihata_parse_font;
 	plug_io_lihata_v1.parse_font = NULL;
 	plug_io_lihata_v1.write_font = io_lihata_write_font;
