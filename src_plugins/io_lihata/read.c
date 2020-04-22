@@ -2586,7 +2586,6 @@ pcb_plug_fp_map_t *io_lihata_map_footprint(pcb_plug_io_t *ctx, FILE *f, const ch
 	enum {
 		ST_WS,
 		ST_COMMENT,
-		ST_SUBC,
 		ST_TAG
 	} state = ST_WS;
 	gds_t tag;
@@ -2612,16 +2611,6 @@ pcb_plug_fp_map_t *io_lihata_map_footprint(pcb_plug_io_t *ctx, FILE *f, const ch
 				if (strcmp(s, "i:pcb-rnd-subcircuit") == 0) {
 					head->type = PCB_FP_FILE;
 					goto out;
-				}
-			}
-			else if ((first_subc) && (c == 'E')) {
-				char s[8];
-				/* Element */
-				fgets(s, 7, f);
-				s[6] = '\0';
-				if (strcmp(s, "lement") == 0) {
-					state = ST_SUBC;
-					break;
 				}
 			}
 			first_subc = 0;
