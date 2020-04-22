@@ -1,4 +1,4 @@
-pcb-rnd 2.2.1 (r30680)
+pcb-rnd 2.2.1 (r30749)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[autoplace]
 		-Fix: replace the totally broken code for "smd vs. thru-hole" query
