@@ -372,10 +372,10 @@ pcb_plug_fp_map_t *pcb_fp_file_type(pcb_plug_fp_t *ctx, FILE *f, const char *fn,
 		ST_ELEMENT,
 		ST_TAG
 	} state = ST_WS;
-	char *tag = NULL;
-	int talloced = 0, tused = 0;
+	gds_t tag;
 	int Talloced = 0, Tused = 0;
 
+	gds_init(&tag);
 	head->type = PCB_FP_INVALID;
 	while ((c = fgetc(f)) != EOF) {
 		switch (state) {
@@ -449,35 +449,28 @@ TODO("fp: rather call plug_io if it is not parametric")
 			break;
 		case ST_TAG:
 			if ((c == '\r') || (c == '\n')) {	/* end of a tag */
-				if (need_tags && (tag != NULL)) {
-					tag[tused] = '\0';
+				if (need_tags && (tag.used != 0)) {
 					if (Tused >= Talloced) {
 						Talloced += 8;
 						head->tags = realloc(head->tags, (Talloced + 1) * sizeof(void *));
 					}
-					head->tags[Tused] = (void *) pcb_fp_tag(tag, 1);
+					head->tags[Tused] = (void *) pcb_fp_tag(tag.array, 1);
 					Tused++;
 					head->tags[Tused] = NULL;
 				}
 
-				tused = 0;
+				tag.used = 0;
 				state = ST_WS;
 				break;
 			}
 			if (c == '@')
 				goto maybe_purpose;
-			if (tused >= talloced) {
-				talloced += 64;
-				tag = realloc(tag, talloced + 1);	/* always make room for an extra \0 */
-			}
-			tag[tused] = c;
-			tused++;
+			gds_append(&tag, c);
 		}
 	}
 
 out:;
-	if (tag != NULL)
-		free(tag);
+	gds_uninit(&tag);
 	return head;
 }
 
