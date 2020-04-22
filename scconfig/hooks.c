@@ -10,7 +10,7 @@
 #include "util/arg_auto_set.h"
 #include "Rev.h"
 
-#define version "2.2.0"
+#define version "2.2.1"
 
 #include "../src_3rd/puplug/scconfig_hooks.h"
 #include "../src_3rd/libfungw/scconfig_hooks.h"
