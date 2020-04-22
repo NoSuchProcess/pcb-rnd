@@ -103,6 +103,29 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	return 0;
 }
 
+pcb_plug_fp_map_t *pcb_fp_map_fp_file(pcb_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	FILE *f = pcb_fopen(hl, fn, "r");
+	pcb_plug_fp_map_t *res;
+
+	if (f == NULL) {
+		head->type = PCB_FP_INVALID;
+		return head;
+	}
+
+	{ /* run this for all plugins */
+		rewind(f);
+		res = pcb_fp_file_type(NULL, f, fn, head, need_tags);
+	}
+
+	fclose(f);
+	if (res == NULL) {
+		res = head;
+		head->type = PCB_FP_INVALID;
+	}
+	return res;
+}
+
 static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[]), void *cookie,
 								int subdir_may_not_exist, int need_tags)
@@ -184,29 +207,21 @@ TODO("fp: make this a configurable list")
 #endif
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
-				pcb_fptype_t ty;
 				pcb_plug_fp_map_t head = {0}, *res;
-				FILE *f;
-				f = pcb_fopen(&PCB->hidlib, subdirentry->d_name, "r");
-				if (f != NULL) {
-					rewind(f);
-					res = pcb_fp_file_type(NULL, f, subdirentry->d_name, &head, need_tags);
-					if ((res != NULL) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
-						n_footprints++;
-						if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array)) {
-							fclose(f);
-							break;
-						}
-						continue;
-					}
-					else {
-						if (head.tags.array != NULL) {
-							free(head.tags.array);
-							head.tags.alloced = head.tags.used = 0;
-						}
+
+				res = pcb_fp_map_fp_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
+				if ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC)) {
+					n_footprints++;
+					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array))
+						break;
+					continue;
+				}
+				else {
+					if (head.tags.array != NULL) {
+						free(head.tags.array);
+						head.tags.alloced = head.tags.used = 0;
 					}
 				}
-				fclose(f);
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
