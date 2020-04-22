@@ -385,7 +385,7 @@ pcb_action_t oldactions_action_list[] = {
 	{"RouteStylesChanged", pcb_act_RouteStylesChanged, pcb_acth_RouteStylesChanged, pcb_acts_RouteStylesChanged},
 	{"LibraryChanged", pcb_act_LibraryChanged, pcb_acth_LibraryChanged, pcb_acts_LibraryChanged},
 	{"ImportGUI", pcb_act_ImportGUI, pcb_acth_ImportGUI, pcb_acts_ImportGUI},
-	{"DeprecatedImport", pcb_act_Import, pcb_acth_Import, pcb_acts_Import},
+	{"Import", pcb_act_Import, pcb_acth_Import, pcb_acts_Import},
 
 	/* deprecated actions */
 	{"ToggleHideName", pcb_act_ToggleHideName, 0, 0},
