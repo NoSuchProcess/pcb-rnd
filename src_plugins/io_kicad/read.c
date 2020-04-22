@@ -2869,3 +2869,58 @@ int io_kicad_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *File
 	/* hit eof before seeing a valid root -> bad */
 	return 0;
 }
+
+/* Decide about the type of a footprint file:
+   it is a kicad mdoule if the first non-comment is "(module"
+   No tags are saved.
+*/
+pcb_plug_fp_map_t *io_kicad_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	int c, comment_len;
+	int first_module = 1;
+	enum {
+		ST_WS,
+		ST_COMMENT,
+		ST_MODULE
+	} state = ST_WS;
+
+	head->type = PCB_FP_INVALID;
+	while ((c = fgetc(f)) != EOF) {
+		switch (state) {
+		case ST_MODULE:
+			if (isspace(c))
+				break;
+			if (c == '(') {
+				head->type = PCB_FP_FILE;
+				goto out;
+			}
+		case ST_WS:
+			if (isspace(c))
+				break;
+			if (c == '#') {
+				comment_len = 0;
+				state = ST_COMMENT;
+				break;
+			}
+			else if ((first_module) && (c == '(')) {
+				char s[8];
+				fgets(s, 7, f);
+				s[6] = '\0';
+				if (strcmp(s, "module") == 0) {
+					state = ST_MODULE;
+					break;
+				}
+			}
+			first_module = 0;
+			/* fall-thru for detecting @ */
+		case ST_COMMENT:
+			comment_len++;
+			if ((c == '\r') || (c == '\n'))
+				state = ST_WS;
+			break;
+		}
+	}
+
+out:;
+	return head;
+}

@@ -1253,16 +1253,6 @@ pcb_plug_fp_map_t *io_pcb_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char 
 					break;
 				}
 			}
-			else if ((first_element) && (c == '(')) {
-				char s[8];
-				/* module */
-				fgets(s, 7, f);
-				s[6] = '\0';
-				if (strcmp(s, "module") == 0) {
-					state = ST_ELEMENT;
-					break;
-				}
-			}
 			first_element = 0;
 			/* fall-thru for detecting @ */
 		case ST_COMMENT:
