@@ -2582,7 +2582,7 @@ pcb_plug_fp_map_t *io_lihata_map_footprint(pcb_plug_io_t *ctx, FILE *f, const ch
 {
 	int c, comment_len;
 	int first_subc = 1;
-	long pos = -1;
+	long pos = 0;
 	enum {
 		ST_WS,
 		ST_COMMENT,
@@ -2592,7 +2592,6 @@ pcb_plug_fp_map_t *io_lihata_map_footprint(pcb_plug_io_t *ctx, FILE *f, const ch
 	gds_t tag;
 
 	gds_init(&tag);
-	head->type = PCB_FP_INVALID;
 	while ((c = fgetc(f)) != EOF) {
 		pos++;
 		switch (state) {
@@ -2628,6 +2627,12 @@ pcb_plug_fp_map_t *io_lihata_map_footprint(pcb_plug_io_t *ctx, FILE *f, const ch
 			/* fall-thru for detecting @ */
 		case ST_COMMENT:
 			comment_len++;
+			if ((c == '!') && (pos == 2)) {
+				/* must be a shebang -> parametric footprint */
+				head->type = PCB_FP_PARAMETRIC;
+				goto out;
+			}
+
 			if ((c == '#') && (comment_len == 1)) {
 				state = ST_TAG;
 				break;
