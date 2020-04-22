@@ -129,10 +129,7 @@ long int pcb_create_ID_get(void)
 
 static void pcb_attribute_copy_all_smart(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, pcb_any_obj_t *dstobj, pcb_any_obj_t *copy_from_any)
 {
-	int i, exto = 0;
-	pcb_subc_t *copy_from = NULL;
-
-
+	int i;
 	for (i = 0; i < src->Number; i++)
 		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
 }
