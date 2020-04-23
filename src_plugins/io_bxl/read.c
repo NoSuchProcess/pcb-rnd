@@ -693,7 +693,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 				free(lval.un.s);
 
 			if (yres != 0) {
-				printf("Syntax error at %ld:%ld\n", lval.line, lval.first_col);
+				fprintf(stderr, "BXL syntax error at %ld:%ld\n", lval.line, lval.first_col);
 				ret = -1;
 				if (bctx.subc != NULL)
 					pcb_subc_free(bctx.subc);
