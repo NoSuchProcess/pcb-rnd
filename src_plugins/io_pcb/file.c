@@ -69,6 +69,7 @@
 #include "event.h"
 #include "funchash_core.h"
 #include "netlist.h"
+#include "plug_footprint.h"
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
