@@ -137,7 +137,8 @@ void pcb_subc_free(pcb_subc_t *sc)
 	if ((sc->parent.data != NULL) && (sc->parent.data->subc_tree != NULL))
 		pcb_r_delete_entry(sc->parent.data->subc_tree, (pcb_box_t *)sc);
 	pcb_attribute_free(&sc->Attributes);
-	pcb_subc_unreg(sc);
+	if (sc->parent_type != PCB_PARENT_INVALID)
+		pcb_subc_unreg(sc);
 	pcb_data_free(sc->data);
 	pcb_term_uninit(&sc->terminals);
 	free(sc);
