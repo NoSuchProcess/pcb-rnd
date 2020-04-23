@@ -186,7 +186,7 @@ TODO("fp: make this a configurable list")
 				pcb_plug_fp_map_t head = {0}, *res;
 
 				res = pcb_io_map_footprint_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
-				if ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC)) {
+				if ((res->libtype == LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 					n_footprints++;
 					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array))
 						break;

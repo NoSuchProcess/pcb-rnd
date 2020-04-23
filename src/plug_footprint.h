@@ -46,6 +46,7 @@ typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
 
 struct pcb_plug_fp_map_s {
 	pcb_fptype_t type;
+	pcb_fplibrary_type_t libtype; /* normally LIB_FOOTPRINT */
 	vts0_t tags;
 	char *name; /* strdup'd */
 	pcb_plug_fp_map_t *next;
