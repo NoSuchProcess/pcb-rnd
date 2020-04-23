@@ -4,9 +4,9 @@
 #include <string.h>
 
 typedef enum {
-	LIB_INVALID,
-	LIB_DIR,
-	LIB_FOOTPRINT
+	PCB_LIB_INVALID,
+	PCB_LIB_DIR,
+	PCB_LIB_FOOTPRINT
 } pcb_fplibrary_type_t;
 
 typedef enum {

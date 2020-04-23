@@ -101,9 +101,9 @@ static void dump_lib_fp(int level, pcb_fplibrary_t *l)
 static void dump_lib_any(int level, pcb_fplibrary_t *l)
 {
 	switch(l->type) {
-		case LIB_INVALID:     printf("??\n"); break;
-		case LIB_DIR:         dump_lib_dir(level, l); break;
-		case LIB_FOOTPRINT:   dump_lib_fp(level, l); break;
+		case PCB_LIB_INVALID:     printf("??\n"); break;
+		case PCB_LIB_DIR:         dump_lib_dir(level, l); break;
+		case PCB_LIB_FOOTPRINT:   dump_lib_fp(level, l); break;
 	}
 }
 

@@ -186,7 +186,7 @@ TODO("fp: make this a configurable list")
 				pcb_plug_fp_map_t head = {0}, *res;
 
 				res = pcb_io_map_footprint_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
-				if ((res->libtype == LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
+				if ((res->libtype == PCB_LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 					n_footprints++;
 					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array))
 						break;
@@ -272,7 +272,7 @@ static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	res = fp_fs_load_dir_(&pcb_library, ".", path, 1);
 	if (res >= 0) {
 		pcb_fplibrary_t *l = pcb_fp_lib_search(&pcb_library, path);
-		if ((l != NULL) && (l->type == LIB_DIR))
+		if ((l != NULL) && (l->type == PCB_LIB_DIR))
 			l->data.dir.backend = ctx;
 	}
 	return res;

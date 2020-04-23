@@ -54,7 +54,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (l->type != LIB_DIR) {
+	if (l->type != PCB_LIB_DIR) {
 		pcb_message(PCB_MSG_ERROR, "Library path %s is not a directory\n", name);
 		PCB_ACT_IRES(1);
 		return 0;

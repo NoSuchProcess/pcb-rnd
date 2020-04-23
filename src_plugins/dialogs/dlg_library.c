@@ -227,7 +227,7 @@ static void update_edit_button(library_ctx_t *ctx)
 
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
-		param_selected = (l != NULL) && (l->type == LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC);
+		param_selected = (l != NULL) && (l->type == PCB_LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC);
 	}
 
 	param_entered = !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL);
@@ -265,7 +265,7 @@ static void create_lib_tree_model_recurse(pcb_hid_attribute_t *attr, pcb_fplibra
 		cell[0] = pcb_strdup(l->name);
 		row = pcb_dad_tree_append_under(attr, parent_row, cell);
 		row->user_data = l;
-		if (l->type == LIB_DIR)
+		if (l->type == PCB_LIB_DIR)
 			create_lib_tree_model_recurse(attr, l, row);
 	}
 }
@@ -344,7 +344,7 @@ static void library_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	library_update_preview(ctx, NULL, NULL);
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
-		if ((l != NULL) && (l->type == LIB_FOOTPRINT)) {
+		if ((l != NULL) && (l->type == PCB_LIB_FOOTPRINT)) {
 			if ((l->data.fp.type == PCB_FP_PARAMETRIC)) {
 				if (last != l) { /* first click */
 					library_select_show_param_example(ctx, l);
@@ -533,7 +533,7 @@ static pcb_hid_row_t *find_fp_prefix_(pcb_hid_tree_t *tree, gdl_list_t *rowlist,
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		pcb_fplibrary_t *l = r->user_data;
-		if ((pcb_strncasecmp(r->cell[0], name, namelen) == 0) && (l->type == LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC))
+		if ((pcb_strncasecmp(r->cell[0], name, namelen) == 0) && (l->type == PCB_LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC))
 			return r;
 		pr = find_fp_prefix_(tree, &r->children, name, namelen);
 		if (pr != NULL)

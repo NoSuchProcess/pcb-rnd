@@ -87,7 +87,7 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 
 void pcb_fp_init()
 {
-	pcb_library.type = LIB_DIR;
+	pcb_library.type = PCB_LIB_DIR;
 	pcb_library.name = pcb_strdup("/");  /* All names are eventually free()'d */
 }
 
@@ -138,7 +138,7 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 {
 	pcb_fplibrary_t *entry;   /* Pointer to individual menu entry */
 
-	assert(parent->type == LIB_DIR);
+	assert(parent->type == PCB_LIB_DIR);
 	entry = pcb_get_library_memory(parent);
 	if (entry == NULL)
 		return NULL;
@@ -154,7 +154,7 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 	else
 		entry->name = pcb_strdup(name);
 
-	entry->type = LIB_FOOTPRINT;
+	entry->type = PCB_LIB_FOOTPRINT;
 	entry->data.fp.type = type;
 	entry->data.fp.tags = tags;
 	entry->data.fp.loc_info = NULL;
@@ -167,7 +167,7 @@ pcb_fplibrary_t *fp_lib_search_len(pcb_fplibrary_t *dir, const char *name, int n
 	pcb_fplibrary_t *l;
 	int n;
 
-	if (dir->type != LIB_DIR)
+	if (dir->type != PCB_LIB_DIR)
 		return NULL;
 
 	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++)
@@ -182,7 +182,7 @@ pcb_fplibrary_t *pcb_fp_lib_search(pcb_fplibrary_t *dir, const char *name)
 	pcb_fplibrary_t *l;
 	int n;
 
-	if (dir->type != LIB_DIR)
+	if (dir->type != PCB_LIB_DIR)
 		return NULL;
 
 	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++)
@@ -202,7 +202,7 @@ pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int
 	else
 		l->name = pcb_strdup(name);
 	l->parent = parent;
-	l->type = LIB_DIR;
+	l->type = PCB_LIB_DIR;
 	l->data.dir.backend = NULL;
 	vtlib_init(&l->data.dir.children);
 	return l;
@@ -267,7 +267,7 @@ void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 	vtlib_t *v;
 	int n;
 
-	if (parent->type != LIB_DIR)
+	if (parent->type != PCB_LIB_DIR)
 		return;
 
 	v = &parent->data.dir.children;
@@ -280,23 +280,23 @@ void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 void fp_free_entry(pcb_fplibrary_t *l)
 {
 	switch(l->type) {
-		case LIB_DIR:
+		case PCB_LIB_DIR:
 			pcb_fp_free_children(l);
 			vtlib_uninit(&(l->data.dir.children));
 			break;
-		case LIB_FOOTPRINT:
+		case PCB_LIB_FOOTPRINT:
 			if (l->data.fp.loc_info != NULL)
 				free(l->data.fp.loc_info);
 			if (l->data.fp.tags != NULL)
 				free(l->data.fp.tags);
 			break;
-		case LIB_INVALID: break; /* suppress compiler warning */
+		case PCB_LIB_INVALID: break; /* suppress compiler warning */
 	}
 	if (l->name != NULL) {
 		free(l->name);
 		l->name = NULL;
 	}
-	l->type = LIB_INVALID;
+	l->type = PCB_LIB_INVALID;
 }
 
 void pcb_fp_free_children(pcb_fplibrary_t *parent)
@@ -304,7 +304,7 @@ void pcb_fp_free_children(pcb_fplibrary_t *parent)
 	int n;
 	pcb_fplibrary_t *l;
 
-	assert(parent->type == LIB_DIR);
+	assert(parent->type == PCB_LIB_DIR);
 
 	for(n = 0, l = parent->data.dir.children.array; n < parent->data.dir.children.used; n++, l++)
 		fp_free_entry(l);
@@ -337,11 +337,11 @@ void fp_dump_dir(pcb_fplibrary_t *dir, int level)
 	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++) {
 		for(p = 0; p < level; p++)
 			putchar(' ');
-		if (l->type == LIB_DIR) {
+		if (l->type == PCB_LIB_DIR) {
 			printf("%s/\n", l->name);
 			fp_dump_dir(l, level+1);
 		}
-		else if (l->type == LIB_FOOTPRINT)
+		else if (l->type == PCB_LIB_FOOTPRINT)
 			printf("%s\n", l->name);
 		else
 			printf("*INVALID*\n");
@@ -440,7 +440,7 @@ int pcb_fp_rehash(pcb_hidlib_t *hidlib, pcb_fplibrary_t *l)
 		pcb_event(hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 		return res;
 	}
-	if (l->type != LIB_DIR)
+	if (l->type != PCB_LIB_DIR)
 		return -1;
 
 	be = l->data.dir.backend;

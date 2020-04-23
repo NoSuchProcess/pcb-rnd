@@ -47,7 +47,7 @@ static void pick_net(int pick)
 
 	libnode_strings = (XmString *) malloc(menu->data.dir.children.used * sizeof(XmString));
 	for (found = 0, i = 0; i < menu->data.dir.children.used; i++) {
-		if (menu->data.dir.children.array[i].type == LIB_FOOTPRINT) {
+		if (menu->data.dir.children.array[i].type == PCB_LIB_FOOTPRINT) {
 			libnode_strings[i] = XmStringCreatePCB(menu->data.dir.children.array[i].name);
 			found++;
 		}
@@ -112,7 +112,7 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 	char *s;
 	int n, len;
 
-	if (parent->type != LIB_DIR)
+	if (parent->type != PCB_LIB_DIR)
 		return;
 
 	if (parent->name != NULL) {
