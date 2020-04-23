@@ -57,6 +57,7 @@ typedef struct list_dir_s list_dir_t;
 struct list_dir_s {
 	char *parent;
 	char *subdir;
+	int dontlist;
 	list_dir_t *next;
 };
 
@@ -71,7 +72,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	list_st_t *l = (list_st_t *) cookie;
 	pcb_fplibrary_t *e;
 
-	if (type == PCB_FP_DIR) {
+	if ((type == PCB_FP_DIR) || (type == PCB_FP_FILEDIR)) {
 		list_dir_t *d;
 		/* can not recurse directly from here because that would ruin the menu
 		   pointer: pcb_lib_menu_new(&Library) calls realloc()!
@@ -80,6 +81,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 		d->subdir = pcb_strdup(name);
 		d->parent = pcb_strdup(subdir);
 		d->next = l->subdirs;
+		d->dontlist = (type == PCB_FP_FILEDIR);
 		l->subdirs = d;
 		return 0;
 	}
@@ -184,9 +186,20 @@ TODO("fp: make this a configurable list")
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_plug_fp_map_t head = {0}, *res;
-
 				res = pcb_io_map_footprint_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
-				if ((res->libtype == PCB_LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
+				if (res->libtype == PCB_LIB_DIR) {
+					char *local_subdir;
+					cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_FILEDIR, NULL);
+					local_subdir = pcb_concat(new_subdir, "/", subdirentry->d_name, NULL);
+pcb_trace("local_subdir='%s'\n", local_subdir);
+					for(res = res->next; res != NULL; res = res->next) {
+						n_footprints++;
+pcb_trace(" append='%s' type=%d\n", res->name, res->type);
+						cb(cookie, local_subdir, res->name, res->type, (void **)res->tags.array);
+					}
+					free(local_subdir);
+				}
+				else if ((res->libtype == PCB_LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 					n_footprints++;
 					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array))
 						break;
@@ -252,7 +265,13 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in pcb_lib_menu_new() */
 	for (d = l.subdirs; d != NULL; d = nextd) {
-		l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0);
+		if (d->dontlist) {
+			l.menu = pcb_fp_mkdir_len(l.menu, "d->subdir", -1);
+			l.children++;
+		}
+		else
+			l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0);
+
 		nextd = d->next;
 		free(d->subdir);
 		free(d->parent);

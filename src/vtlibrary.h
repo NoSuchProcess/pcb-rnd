@@ -12,6 +12,7 @@ typedef enum {
 typedef enum {
 	PCB_FP_INVALID,
 	PCB_FP_DIR,       /* used temporarily during the mapping - a finalized tree wouldn't have this */
+	PCB_FP_FILEDIR,   /* used temporarily during the mapping - a finalized tree wouldn't have this */
 	PCB_FP_FILE,
 	PCB_FP_PARAMETRIC
 } pcb_fptype_t;
