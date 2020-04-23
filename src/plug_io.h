@@ -31,7 +31,8 @@
 #define PCB_PLUG_IO_H
 
 #include "global_typedefs.h"
-#include "plug_footprint.h"
+#include "vtlibrary.h"
+#include <genvector/vts0.h>
 #include <librnd/core/conf.h>
 
 typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not all formats support all things */
@@ -40,6 +41,16 @@ typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not a
 	PCB_IOT_FONT       = 4,
 	PCB_IOT_BUFFER     = 8
 } pcb_plug_iot_t;
+
+/* Returned by map_footprint() to tell what type of footprint(s) a file contains */
+typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
+struct pcb_plug_fp_map_s {
+	pcb_fptype_t type;
+	pcb_fplibrary_type_t libtype; /* normally LIB_FOOTPRINT */
+	vts0_t tags;
+	char *name; /* strdup'd */
+	pcb_plug_fp_map_t *next;
+};
 
 /**************************** API definition *********************************/
 struct pcb_plug_io_s {

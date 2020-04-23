@@ -2,7 +2,6 @@
 #define PCB_PLUG_FOOTPRINT_H
 
 #include <stdio.h>
-#include <genvector/vts0.h>
 #include "vtlibrary.h"
 #include "data.h"
 #include <librnd/core/conf.h>
@@ -41,16 +40,6 @@ void pcb_fp_uninit();
 
 /**************************** API definition *********************************/
 extern FILE *PCB_FP_FOPEN_IN_DST;
-
-typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
-
-struct pcb_plug_fp_map_s {
-	pcb_fptype_t type;
-	pcb_fplibrary_type_t libtype; /* normally LIB_FOOTPRINT */
-	vts0_t tags;
-	char *name; /* strdup'd */
-	pcb_plug_fp_map_t *next;
-};
 
 struct pcb_plug_fp_s {
 	pcb_plug_fp_t *next;
