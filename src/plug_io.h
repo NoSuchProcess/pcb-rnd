@@ -83,7 +83,7 @@ struct pcb_plug_io_s {
 	int (*parse_pcb)(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
-	int (*parse_footprint)(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name);
+	int (*parse_footprint)(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname);
 
 	/* Scan as little as possible from the file to decide what the file is and extract tags;
 	   For a single file, load head and return it. For a library-type file, load

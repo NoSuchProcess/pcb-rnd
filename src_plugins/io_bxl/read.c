@@ -647,7 +647,7 @@ static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
 /* Error is handled on the push side */
 void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s) { }
 
-int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename)
+int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
 {
 	pcb_hidlib_t *hl = &PCB->hidlib;
 	FILE *f;

@@ -270,7 +270,7 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 	for(n = 0; n < len; n++) {
 		if ((available[n].plug->parse_footprint == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
 			continue;
-		res = available[n].plug->parse_footprint(available[n].plug, Ptr, fctx.filename);
+		res = available[n].plug->parse_footprint(available[n].plug, Ptr, fctx.filename, fctx.subfpname);
 		if (res == 0) {
 			if (Ptr->loader == NULL) /* if the loader didn't set this (to some more fine grained, e.g. depending on file format version) */
 				Ptr->loader = available[n].plug;

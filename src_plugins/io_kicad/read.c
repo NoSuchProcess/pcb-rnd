@@ -2794,7 +2794,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	return readres;
 }
 
-int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
+int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname)
 {
 	int mres;
 	pcb_fp_fopen_ctx_t fpst;

@@ -2518,7 +2518,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 }
 
 
-int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
+int io_lihata_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname)
 {
 	int res;
 	char *errmsg = NULL;
