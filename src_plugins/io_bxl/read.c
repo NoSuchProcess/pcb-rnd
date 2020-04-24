@@ -270,7 +270,6 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 	ctx->state.proto.name = NULL; /* do not free it as it is the hash key */
 
 	pcb_pstk_proto_free_fields(&ctx->state.proto);
-	ctx->state.proto.tr.used = 0;
 }
 
 void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)
