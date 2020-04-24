@@ -19,12 +19,12 @@ int main(int argc, char *argv[])
 	pcb_bxl_ureglex_t lctx;
 	pcb_bxl_yyctx_t yyctx;
 	pcb_bxl_ctx_t bctx;
+	pcb_bxl_STYPE lval;
 
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
 	pcb_bxl_parse_init(&yyctx);
 
 	while((chr = fgetc(stdin)) > 0) {
-		pcb_bxl_STYPE lval;
 		int res = pcb_bxl_lex_char(&lctx, &lval, chr);
 		if (res == UREGLEX_MORE)
 			continue;
@@ -67,6 +67,8 @@ int main(int argc, char *argv[])
 
 	if (bad)
 		printf("Parse failed.\n");
+
+	pcb_bxl_parse(&yyctx, &bctx, 0, &lval);
 
 	return 0;
 }

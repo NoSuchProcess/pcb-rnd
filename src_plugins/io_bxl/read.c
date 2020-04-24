@@ -657,6 +657,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	pcb_bxl_ureglex_t lctx;
 	pcb_bxl_yyctx_t yyctx;
 	pcb_bxl_ctx_t bctx;
+	pcb_bxl_STYPE lval;
 
 	f = pcb_fopen(hl, filename, "rb");
 	if (f == NULL)
@@ -680,7 +681,6 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 
 		/* feed the lexer */
 		for(n = 0; n < ilen; n++) {
-			pcb_bxl_STYPE lval;
 			tok = pcb_bxl_lex_char(&lctx, &lval, hctx.out[n]);
 			if (tok == UREGLEX_MORE)
 				continue;
@@ -707,6 +707,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	pcb_subc_reg(data, bctx.subc);
 
 	error:;
+	pcb_bxl_parse(&yyctx, &bctx, 0, &lval);
 	pcb_bxl_uninit(&bctx);
 	fclose(f);
 	return ret;
