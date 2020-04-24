@@ -1037,6 +1037,40 @@ pcb_plug_fp_map_t *pcb_io_map_footprint_file(pcb_hidlib_t *hl, const char *fn, p
 	return res;
 }
 
+void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, const char *filename, const char *fpname)
+{
+	pcb_plug_fp_map_t *m;
+
+	switch(head->type) {
+		case PCB_FP_INVALID: /* first append */
+			(*tail)->type = PCB_FP_FILE;
+			(*tail)->name = pcb_strdup(fpname);
+			break;
+		case PCB_FP_FILE: /* second append */
+			/* clone the existing head */
+			m = calloc(sizeof(pcb_plug_fp_map_t), 1);
+			m->type = PCB_FP_FILE;
+			m->libtype = PCB_LIB_FOOTPRINT;
+			m->name = head->name;
+
+			head->type = PCB_FP_DIR;
+			head->libtype = PCB_LIB_DIR;
+			head->name = pcb_strdup(filename);
+			head->next = m;
+
+			*tail = m;
+			/* fall through adding the second */
+		case PCB_FP_DIR: /* third append */
+			m = calloc(sizeof(pcb_plug_fp_map_t), 1);
+			m->type = PCB_FP_FILE;
+			m->libtype = PCB_LIB_FOOTPRINT;
+			m->name = pcb_strdup(fpname);
+			
+			(*tail)->next = m;
+			*tail = m;
+			break;
+	}
+}
 
 void pcb_io_uninit(void)
 {

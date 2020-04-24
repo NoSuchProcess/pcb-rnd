@@ -152,6 +152,12 @@ int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 /* map a footprint file: always returns head with 0 or 1 or more mapping results */
 pcb_plug_fp_map_t *pcb_io_map_footprint_file(pcb_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 
+/* Append a file name to the footprint map at tail; the first item is appended
+   assuming there would be only one footprint in the file; from the second item
+   the head item is converted into a footprint library */
+void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, const char *filename, const char *fpname);
+
+
 /********** common function used to be part of file.[ch] and friends **********/
 int pcb_save_pcb(const char *, const char *fmt);
 #define PCB_INHIBIT_BOARD_CHANGED 0x20

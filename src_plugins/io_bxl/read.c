@@ -810,45 +810,6 @@ int io_bxl_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *filena
 	return io_bxl_test_parse2(NULL, ctx, typ, filename, f, NULL, NULL);
 }
 
-/* Append a file name to the footprint map at tail; the first item is appended
-   assuming there would be only one footprint in the file; from the second item
-   the head item is converted into a footprint library */
-void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, const char *filename, const char *fpname)
-{
-	pcb_plug_fp_map_t *m;
-
-	switch(head->type) {
-		case PCB_FP_INVALID: /* first append */
-			(*tail)->type = PCB_FP_FILE;
-			(*tail)->name = pcb_strdup(fpname);
-			break;
-		case PCB_FP_FILE: /* second append */
-			/* clone the existing head */
-			m = calloc(sizeof(pcb_plug_fp_map_t), 1);
-			m->type = PCB_FP_FILE;
-			m->libtype = PCB_LIB_FOOTPRINT;
-			m->name = head->name;
-
-			head->type = PCB_FP_DIR;
-			head->libtype = PCB_LIB_DIR;
-			head->name = pcb_strdup(filename);
-			head->next = m;
-
-			*tail = m;
-			/* fall through adding the second */
-		case PCB_FP_DIR: /* third append */
-			m = calloc(sizeof(pcb_plug_fp_map_t), 1);
-			m->type = PCB_FP_FILE;
-			m->libtype = PCB_LIB_FOOTPRINT;
-			m->name = pcb_strdup(fpname);
-			
-			(*tail)->next = m;
-			*tail = m;
-			break;
-	}
-}
-
-
 typedef struct {
 	int has_fp;
 	const char *fn;
