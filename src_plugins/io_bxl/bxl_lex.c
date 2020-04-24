@@ -456,7 +456,7 @@ typedef struct pcb_bxl_ureglex_s {
 } pcb_bxl_ureglex_t;
 
 /* TOP CODE BEGIN { */
-#line  5 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  5 "bxl_lex.ul"
 	/*
 	 *                            COPYRIGHT
 	 *
@@ -502,41 +502,41 @@ static int pcb_bxl_user_code(pcb_bxl_ureglex_t *ctx, void * user_ctx, int ruleid
 	(void)rule;
 	switch(ruleid) {
 		case 0:{
-#line  41 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  41 "bxl_lex.ul"
 	lval->un.i = atoi(ULX_BUF);
 	return T_INTEGER;
 
 		}
 		return UREGLEX_NOP;
 		case 1:{
-#line  47 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  47 "bxl_lex.ul"
 	lval->un.d = strtod(ULX_BUF, NULL);
 	return T_REAL_ONLY;
 
 		}
 		return UREGLEX_NOP;
 		case 2:{
-#line  53 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  53 "bxl_lex.ul"
 	lval->un.s = pcb_strdup(ULX_BUF);
 	return T_ID;
 
 		}
 		return UREGLEX_NOP;
 		case 3:{
-#line  59 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  59 "bxl_lex.ul"
 	lval->un.s = pcb_strndup(ULX_TAGP(1), ULX_TAGL(1));
 	return T_QSTR;
 
 		}
 		return UREGLEX_NOP;
 		case 4:{
-#line  65 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  65 "bxl_lex.ul"
 	return *ULX_BUF;
 
 		}
 		return UREGLEX_NOP;
 		case 5:{
-#line  70 "../../src_plugins/io_bxl/bxl_lex.ul"
+#line  70 "bxl_lex.ul"
 	ULX_IGNORE;
 
 		}

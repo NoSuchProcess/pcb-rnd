@@ -73,9 +73,9 @@ switch /local/pcb/mod/BYACCIC
 			if /local/pcb/want_parsgen_byaccic
 			then
 				append /local/pcb/RULES [@
-# yacc for @/local/pcb/mod@
+# byaccic for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.y
-	cd @/local/dn@ && byaccic -o @ /local/bn@.c -H @/local/bn@.h -v @/local/bn@.desc -d @/local/bn@.y
+	cd @/local/dn@ && byaccic -o @/local/bn@.c -H @/local/bn@.h -v @/local/bn@.desc @/local/bn@.y
 @]
 			else
 				append /local/pcb/RULES [@
@@ -102,8 +102,8 @@ switch /local/pcb/mod/UREGLEX
 
 				append /local/pcb/RULES [@
 # lex for @/local/pcb/mod@
-@/local/n@.c @/local/n@.h: @/local/n@.l
-	cd @/local/dn@ && ureglex -c @/local/bn@.c -h @/local/bn@.h -l @/local/bn@.l
+@/local/n@.c @/local/n@.h: @/local/n@.ul
+	cd @/local/dn@ && ureglex -c @/local/bn@.c -h @/local/bn@.h -l @/local/bn@.ul
 @]
 			else
 				append /local/pcb/RULES [@

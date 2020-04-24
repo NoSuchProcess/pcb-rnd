@@ -11,8 +11,8 @@
 #define pcb_bxl_RECOVERING() (pcb_bxl_errflag != 0)
 #define pcb_bxl_ENOMEM       (-2)
 #define pcb_bxl_EOF          0
-#line 16 "../../src_plugins/io_bxl/bxl_gram.c"
-#include "../../src_plugins/io_bxl/bxl_gram.h"
+#line 16 "bxl_gram.c"
+#include "bxl_gram.h"
 static const pcb_bxl_int_t pcb_bxl_lhs[] = {                     -1,
     0,    5,    5,    6,    6,    6,    6,    3,    3,    7,
     7,    4,    4,    1,    1,    2,   12,   12,   12,   13,
@@ -587,270 +587,270 @@ yyreduce:
 
 	switch (yyctx->yyn) {
 case 8:
-#line 104 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 104 "bxl_gram.y"
 	{ yyctx->val.un.i = 1; }
 break;
 case 9:
-#line 105 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 105 "bxl_gram.y"
 	{ yyctx->val.un.i = 0; }
 break;
 case 14:
-#line 119 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 119 "bxl_gram.y"
 	{ yyctx->val.un.d = yyctx->stack.l_mark[0].un.i; }
 break;
 case 15:
-#line 120 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 120 "bxl_gram.y"
 	{ yyctx->val.un.d = yyctx->stack.l_mark[0].un.d; }
 break;
 case 16:
-#line 124 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 124 "bxl_gram.y"
 	{ yyctx->val.un.c = PCB_MIL_TO_COORD(yyctx->stack.l_mark[0].un.d); }
 break;
 case 17:
-#line 128 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 128 "bxl_gram.y"
 	{ pcb_bxl_set_justify(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 18:
-#line 129 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 129 "bxl_gram.y"
 	{ pcb_bxl_set_text_style(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 19:
-#line 130 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 130 "bxl_gram.y"
 	{ ctx->state.is_visible = yyctx->stack.l_mark[0].un.i; }
 break;
 case 20:
-#line 134 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 134 "bxl_gram.y"
 	{ ctx->state.origin_x = XCRD(yyctx->stack.l_mark[-2].un.c); ctx->state.origin_y = YCRD(yyctx->stack.l_mark[0].un.c); }
 break;
 case 21:
-#line 138 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 138 "bxl_gram.y"
 	{ pcb_bxl_set_layer(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 22:
-#line 142 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 142 "bxl_gram.y"
 	{ ctx->state.width = yyctx->stack.l_mark[0].un.c; }
 break;
 case 23:
-#line 148 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 148 "bxl_gram.y"
 	{ pcb_bxl_text_style_begin(ctx, yyctx->stack.l_mark[0].un.s); /* $2 is taken over */ }
 break;
 case 24:
-#line 149 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 149 "bxl_gram.y"
 	{ pcb_bxl_text_style_end(ctx); }
 break;
 case 27:
-#line 158 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 158 "bxl_gram.y"
 	{ ctx->state.text_style->width = yyctx->stack.l_mark[0].un.d; }
 break;
 case 28:
-#line 159 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 159 "bxl_gram.y"
 	{ ctx->state.text_style->char_width = yyctx->stack.l_mark[0].un.d; }
 break;
 case 29:
-#line 160 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 160 "bxl_gram.y"
 	{ ctx->state.text_style->height = yyctx->stack.l_mark[0].un.d; }
 break;
 case 30:
-#line 167 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 167 "bxl_gram.y"
 	{ pcb_bxl_reset(ctx); pcb_bxl_padstack_begin(ctx, yyctx->stack.l_mark[0].un.s); /* $2 is taken over */ }
 break;
 case 31:
-#line 169 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 169 "bxl_gram.y"
 	{ ctx->state.num_shapes = yyctx->stack.l_mark[-1].un.i; }
 break;
 case 32:
-#line 171 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 171 "bxl_gram.y"
 	{ pcb_bxl_padstack_end(ctx); }
 break;
 case 35:
-#line 180 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 180 "bxl_gram.y"
 	{ ctx->state.hole = yyctx->stack.l_mark[0].un.c; }
 break;
 case 36:
-#line 181 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 181 "bxl_gram.y"
 	{ ctx->state.surface = yyctx->stack.l_mark[0].un.i; }
 break;
 case 37:
-#line 182 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 182 "bxl_gram.y"
 	{ ctx->state.plated = yyctx->stack.l_mark[0].un.i; }
 break;
 case 38:
-#line 183 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 183 "bxl_gram.y"
 	{ ctx->state.nopaste = yyctx->stack.l_mark[0].un.i; }
 break;
 case 41:
-#line 192 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 192 "bxl_gram.y"
 	{ pcb_bxl_padstack_begin_shape(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 42:
-#line 193 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 193 "bxl_gram.y"
 	{ pcb_bxl_padstack_end_shape(ctx); }
 break;
 case 45:
-#line 202 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 202 "bxl_gram.y"
 	{ ctx->state.height = yyctx->stack.l_mark[0].un.c; }
 break;
 case 46:
-#line 203 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 203 "bxl_gram.y"
 	{ ctx->state.pad_type = yyctx->stack.l_mark[0].un.i; }
 break;
 case 49:
-#line 210 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 210 "bxl_gram.y"
 	{ pcb_bxl_reset_pattern(ctx); pcb_bxl_pattern_begin(ctx, yyctx->stack.l_mark[-1].un.s); free(yyctx->stack.l_mark[-1].un.s); }
 break;
 case 50:
-#line 212 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 212 "bxl_gram.y"
 	{ pcb_bxl_pattern_end(ctx); pcb_bxl_reset_pattern(ctx); }
 break;
 case 54:
-#line 222 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 222 "bxl_gram.y"
 	{ ctx->pat_state.origin_x = XCRD(yyctx->stack.l_mark[-3].un.c); ctx->pat_state.origin_y = YCRD(yyctx->stack.l_mark[-1].un.c); }
 break;
 case 55:
-#line 223 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 223 "bxl_gram.y"
 	{ ctx->pat_state.pick_x = XCRD(yyctx->stack.l_mark[-3].un.c); ctx->pat_state.pick_y = YCRD(yyctx->stack.l_mark[-1].un.c); }
 break;
 case 56:
-#line 224 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 224 "bxl_gram.y"
 	{ ctx->pat_state.glue_x = XCRD(yyctx->stack.l_mark[-3].un.c); ctx->pat_state.glue_y = YCRD(yyctx->stack.l_mark[-1].un.c); }
 break;
 case 68:
-#line 252 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 252 "bxl_gram.y"
 	{ pcb_bxl_pad_begin(ctx); }
 break;
 case 69:
-#line 253 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 253 "bxl_gram.y"
 	{ pcb_bxl_pad_end(ctx); }
 break;
 case 72:
-#line 262 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 262 "bxl_gram.y"
 	{ ctx->state.pin_number = yyctx->stack.l_mark[0].un.i; }
 break;
 case 73:
-#line 263 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 263 "bxl_gram.y"
 	{ ctx->state.pin_name = yyctx->stack.l_mark[0].un.s; /* takes over $2 */ }
 break;
 case 74:
-#line 264 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 264 "bxl_gram.y"
 	{ pcb_bxl_pad_set_style(ctx, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 75:
-#line 265 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 265 "bxl_gram.y"
 	{ /* what's this?! */ free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 76:
-#line 266 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 266 "bxl_gram.y"
 	{ /* what's this?! */ }
 break;
 case 77:
-#line 267 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 267 "bxl_gram.y"
 	{ ctx->state.rot = yyctx->stack.l_mark[0].un.d; }
 break;
 case 79:
-#line 273 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 273 "bxl_gram.y"
 	{ pcb_bxl_poly_begin(ctx); }
 break;
 case 80:
-#line 274 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 274 "bxl_gram.y"
 	{ pcb_bxl_poly_end(ctx); }
 break;
 case 83:
-#line 284 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 284 "bxl_gram.y"
 	{ pcb_bxl_add_property(ctx, (pcb_any_obj_t *)ctx->state.poly, yyctx->stack.l_mark[0].un.s); free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 84:
-#line 285 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 285 "bxl_gram.y"
 	{ pcb_bxl_poly_add_vertex(ctx, XCRD(yyctx->stack.l_mark[-2].un.c), YCRD(yyctx->stack.l_mark[0].un.c)); }
 break;
 case 88:
-#line 293 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 293 "bxl_gram.y"
 	{ pcb_bxl_reset(ctx); }
 break;
 case 89:
-#line 294 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 294 "bxl_gram.y"
 	{ pcb_bxl_add_line(ctx); pcb_bxl_reset(ctx); }
 break;
 case 92:
-#line 303 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 303 "bxl_gram.y"
 	{ ctx->state.endp_x = XCRD(yyctx->stack.l_mark[-2].un.c); ctx->state.endp_y = YCRD(yyctx->stack.l_mark[0].un.c); }
 break;
 case 96:
-#line 311 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 311 "bxl_gram.y"
 	{ pcb_bxl_reset(ctx); ctx->state.is_text = 0; }
 break;
 case 97:
-#line 312 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 312 "bxl_gram.y"
 	{ pcb_bxl_add_text(ctx); pcb_bxl_reset(ctx); }
 break;
 case 100:
-#line 321 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 321 "bxl_gram.y"
 	{ pcb_bxl_set_attr_val(ctx, yyctx->stack.l_mark[-1].un.s, yyctx->stack.l_mark[0].un.s); /* $2 and $3 are taken over */ }
 break;
 case 104:
-#line 330 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 330 "bxl_gram.y"
 	{ pcb_bxl_reset(ctx); }
 break;
 case 105:
-#line 331 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 331 "bxl_gram.y"
 	{ pcb_bxl_add_arc(ctx); pcb_bxl_reset(ctx); }
 break;
 case 108:
-#line 340 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 340 "bxl_gram.y"
 	{ ctx->state.radius = yyctx->stack.l_mark[0].un.c;  }
 break;
 case 109:
-#line 341 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 341 "bxl_gram.y"
 	{ ctx->state.arc_start = yyctx->stack.l_mark[0].un.d; }
 break;
 case 110:
-#line 342 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 342 "bxl_gram.y"
 	{ ctx->state.arc_delta = yyctx->stack.l_mark[0].un.d; }
 break;
 case 114:
-#line 350 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 350 "bxl_gram.y"
 	{ pcb_bxl_reset(ctx); ctx->state.is_text = 1; }
 break;
 case 115:
-#line 351 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 351 "bxl_gram.y"
 	{ pcb_bxl_add_text(ctx); pcb_bxl_reset(ctx); }
 break;
 case 118:
-#line 360 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 360 "bxl_gram.y"
 	{ pcb_bxl_set_text_str(ctx, yyctx->stack.l_mark[0].un.s); /* $2 is taken over */ }
 break;
 case 119:
-#line 361 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 361 "bxl_gram.y"
 	{ ctx->state.flipped = yyctx->stack.l_mark[0].un.i; }
 break;
 case 120:
-#line 362 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 362 "bxl_gram.y"
 	{ ctx->state.rot = yyctx->stack.l_mark[0].un.d; }
 break;
 case 128:
-#line 383 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 383 "bxl_gram.y"
 	{ free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 129:
-#line 384 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 384 "bxl_gram.y"
 	{ free(yyctx->stack.l_mark[0].un.s); }
 break;
 case 131:
-#line 390 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 390 "bxl_gram.y"
 	{ ctx->in_error = 1; }
 break;
 case 132:
-#line 390 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 390 "bxl_gram.y"
 	{ ctx->in_error = 0; }
 break;
 case 133:
-#line 391 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 391 "bxl_gram.y"
 	{ ctx->in_error = 1; }
 break;
 case 134:
-#line 391 "../../src_plugins/io_bxl/bxl_gram.y"
+#line 391 "bxl_gram.y"
 	{ ctx->in_error = 0; }
 break;
-#line 866 "../../src_plugins/io_bxl/bxl_gram.c"
+#line 866 "bxl_gram.c"
 	}
 	yyctx->stack.s_mark -= yyctx->yym;
 	yyctx->state = *yyctx->stack.s_mark;

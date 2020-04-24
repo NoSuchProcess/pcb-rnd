@@ -7,6 +7,9 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_bxl/read.o
 @]
 
+put /local/pcb/mod/BYACCIC  {$(PLUGDIR)/io_bxl/bxl_gram}
+put /local/pcb/mod/UREGLEX  {$(PLUGDIR)/io_bxl/bxl_lex}
+
 switch /local/pcb/io_bxl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
