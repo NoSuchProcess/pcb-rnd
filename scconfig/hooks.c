@@ -38,8 +38,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png pcb_exporter"},
 	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png pcb_exporter"},
 	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png pcb_exporter"},
-	{"enable-bison",      "/local/pcb/want_bison",        arg_true,      "$enable generating language files"},
-	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files"},
+	{"enable-bison",      "/local/pcb/want_bison",        arg_true,      "$enable generating language files using bison/flex"},
+	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files using bison/flex"},
+	{"enable-byaccic",    "/local/pcb/want_byaccic",      arg_true,      "$enable generating language files using byaccic/ureglex"},
+	{"disable-byaccic",   "/local/pcb/want_byaccic",      arg_false,     "$disable generating language files byaccic/ureglex"},
 	{"enable-dmalloc",    "/local/pcb/want_dmalloc",      arg_true,      "$compile with lib dmalloc"},
 	{"disable-dmalloc",   "/local/pcb/want_dmalloc",      arg_false,     "$compile without lib dmalloc"},
 
@@ -121,6 +123,7 @@ int hook_postinit()
 	hook_postinit_common();
 
 	put("/local/pcb/want_bison", sfalse);
+	put("/local/pcb/want_byaccic", sfalse);
 	put("/local/pcb/coord_bits", "32");
 	want_coord_bits = 32;
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
@@ -532,6 +535,19 @@ int hook_detect_target()
 		put("/local/pcb/want_parsgen", sfalse);
 	}
 
+	/* byaccoc - are we able to regenerate languages? */
+	if (istrue(get("/local/pcb/want_byaccic"))) {
+		require("parsgen/byaccic/*", 0, 0);
+		require("parsgen/ureglex/*", 0, 0);
+		if (!istrue(get("parsgen/byaccic/presents")) || !istrue(get("parsgen/ureglex/presents")))
+			put("/local/pcb/want_byaccic", sfalse);
+		else
+			put("/local/pcb/want_byaccic", strue);
+	}
+	else {
+		report("byaccic/ureglex are disabled, among with parser generation.\n");
+		put("/local/pcb/want_byaccic", sfalse);
+	}
 
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
