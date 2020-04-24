@@ -182,7 +182,7 @@ pcb_action_t tedax_action_list[] = {
 	{"SaveTedax", pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
 };
 
-static int io_tedax_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname)
+static int io_tedax_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname)
 {
 	return tedax_fp_load(Ptr, name, 0, NULL, 0);
 }
@@ -262,7 +262,7 @@ int pplg_init_io_tedax(void)
 	io_tedax.fmt_support_prio = io_tedax_fmt;
 	io_tedax.test_parse = pcb_io_tedax_test_parse;
 	io_tedax.parse_pcb = io_tedax_parse_pcb;
-	io_tedax.parse_footprint = io_tedax_parse_element;
+	io_tedax.parse_footprint = io_tedax_parse_footprint;
 	io_tedax.map_footprint = tedax_fp_map;
 	io_tedax.parse_font = NULL;
 	io_tedax.write_buffer = NULL;
