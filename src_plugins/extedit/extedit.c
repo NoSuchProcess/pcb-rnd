@@ -302,7 +302,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_buffer_set_number(bn);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 
-				if (io_lihata_parse_element(plug_io_lihata_default, pcb_buffers[bn].Data, tmp_fn, NULL) != 0) {
+				if (io_lihata_parse_subc(plug_io_lihata_default, pcb_buffers[bn].Data, tmp_fn, NULL) != 0) {
 					pcb_message(PCB_MSG_ERROR, "Failed to load the edited footprint. File left at '%s'.\n", tmp_fn);
 					ret = 1;
 					goto quit1;
