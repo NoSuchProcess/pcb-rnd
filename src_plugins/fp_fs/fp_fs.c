@@ -57,7 +57,7 @@ typedef struct list_dir_s list_dir_t;
 struct list_dir_s {
 	char *parent;
 	char *subdir;
-	int dontlist;
+	pcb_plug_fp_map_t *children;
 	list_dir_t *next;
 };
 
@@ -67,7 +67,7 @@ typedef struct {
 	int children;
 } list_st_t;
 
-static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[])
+static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children)
 {
 	list_st_t *l = (list_st_t *) cookie;
 	pcb_fplibrary_t *e;
@@ -81,7 +81,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 		d->subdir = pcb_strdup(name);
 		d->parent = pcb_strdup(subdir);
 		d->next = l->subdirs;
-		d->dontlist = (type == PCB_FP_FILEDIR);
+		d->children = children;
 		l->subdirs = d;
 		return 0;
 	}
@@ -105,8 +105,8 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 }
 
 static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
-								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[]), void *cookie,
-								int subdir_may_not_exist, int need_tags)
+								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children),
+								void *cookie, int subdir_may_not_exist, int need_tags)
 {
 	char olddir[PCB_PATH_MAX + 1];	/* The directory we start out in (cwd) */
 	char new_subdir[PCB_PATH_MAX + 1];
@@ -188,20 +188,12 @@ TODO("fp: make this a configurable list")
 				pcb_plug_fp_map_t head = {0}, *res;
 				res = pcb_io_map_footprint_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
 				if (res->libtype == PCB_LIB_DIR) {
-					char *local_subdir;
-					cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_FILEDIR, NULL);
-					local_subdir = pcb_concat(new_subdir, "/", subdirentry->d_name, NULL);
-pcb_trace("local_subdir='%s'\n", local_subdir);
-					for(res = res->next; res != NULL; res = res->next) {
-						n_footprints++;
-pcb_trace(" append='%s' type=%d\n", res->name, res->type);
-						cb(cookie, local_subdir, res->name, res->type, (void **)res->tags.array);
-					}
-					free(local_subdir);
+					cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_FILEDIR, NULL, res->next);
+					res->next = NULL;
 				}
 				else if ((res->libtype == PCB_LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 					n_footprints++;
-					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array))
+					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array, NULL))
 						break;
 					continue;
 				}
@@ -214,7 +206,7 @@ pcb_trace(" append='%s' type=%d\n", res->name, res->type);
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
-				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR, NULL);
+				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR, NULL, NULL);
 				if (recurse) {
 					n_footprints += fp_fs_list(pl, fn, recurse, cb, cookie, 0, need_tags);
 				}
@@ -230,15 +222,13 @@ pcb_trace(" append='%s' type=%d\n", res->name, res->type);
 	return n_footprints;
 }
 
-static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *toppath, int is_root)
+static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *toppath, int is_root, pcb_plug_fp_map_t *children)
 {
 	list_st_t l;
 	list_dir_t *d, *nextd;
 	char working_[PCB_PATH_MAX + 1];
 	const char *visible_subdir;
 	char *working;								/* String holding abs path to working dir */
-
-
 
 	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
 	pcb_path_resolve(&PCB->hidlib, working_, &working, 0, pcb_false);
@@ -260,18 +250,23 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	l.subdirs = NULL;
 	l.children = 0;
 
+	if (children != NULL) {
+		pcb_plug_fp_map_t *n, *next;
+		for(n = children; n != NULL; n = next) {
+			list_cb(&l, subdir, n->name, n->type, (void **)n->tags.array, NULL);
+			next = n->next;
+			free(n);
+			l.children++;
+		}
+		return l.children;
+	}
+
 	fp_fs_list(l.menu, working, 0, list_cb, &l, is_root, 1);
 
 	/* now recurse to each subdirectory mapped in the previous call;
 	   by now we don't care if menu is ruined by the realloc() in pcb_lib_menu_new() */
 	for (d = l.subdirs; d != NULL; d = nextd) {
-		if (d->dontlist) {
-			l.menu = pcb_fp_mkdir_len(l.menu, "d->subdir", -1);
-			l.children++;
-		}
-		else
-			l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0);
-
+		l.children += fp_fs_load_dir_(l.menu, d->subdir, d->parent, 0, d->children);
 		nextd = d->next;
 		free(d->subdir);
 		free(d->parent);
@@ -288,7 +283,7 @@ static int fp_fs_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 {
 	int res;
 
-	res = fp_fs_load_dir_(&pcb_library, ".", path, 1);
+	res = fp_fs_load_dir_(&pcb_library, ".", path, 1, NULL);
 	if (res >= 0) {
 		pcb_fplibrary_t *l = pcb_fp_lib_search(&pcb_library, path);
 		if ((l != NULL) && (l->type == PCB_LIB_DIR))
@@ -305,7 +300,7 @@ typedef struct {
 	char *real_name;
 } fp_search_t;
 
-static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[])
+static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children)
 {
 	fp_search_t *ctx = (fp_search_t *) cookie;
 	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((! !ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
