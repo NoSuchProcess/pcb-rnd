@@ -65,6 +65,7 @@ typedef struct {
 	pcb_fplibrary_t *menu;
 	list_dir_t *subdirs;
 	int children;
+	int is_virtual_dir;
 } list_st_t;
 
 static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children)
@@ -95,9 +96,15 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 		int nl = strlen(name);
 		char *end;
 
-		end = e->data.fp.loc_info = malloc(sl+nl+3);
+		end = e->data.fp.loc_info = malloc(sl+nl+4);
 		memcpy(end, subdir, sl); end += sl;
-		*end = PCB_DIR_SEPARATOR_C; end++;
+		if (l->is_virtual_dir) {
+			*end = ':'; end++;
+			*end = ':'; end++;
+		}
+		else {
+			*end = PCB_DIR_SEPARATOR_C; end++;
+		}
 		memcpy(end, name, nl+1); end += nl;
 	}
 
@@ -249,11 +256,13 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 		l.menu = pcb_fp_mkdir_len(pl, visible_subdir, -1);
 	l.subdirs = NULL;
 	l.children = 0;
+	l.is_virtual_dir = 0;
 
 	if (children != NULL) {
 		pcb_plug_fp_map_t *n, *next;
+		l.is_virtual_dir = 1;
 		for(n = children; n != NULL; n = next) {
-			list_cb(&l, subdir, n->name, n->type, (void **)n->tags.array, NULL);
+			list_cb(&l, working, n->name, n->type, (void **)n->tags.array, NULL);
 			next = n->next;
 			free(n);
 			l.children++;
