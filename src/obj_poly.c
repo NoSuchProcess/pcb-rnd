@@ -204,6 +204,78 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, pcb_coord_t X, pcb
 		pcb_r_insert_entry(layer->polygon_tree, (pcb_box_t *) polygon);
 }
 
+int pcb_poly_is_valid(pcb_poly_t *p)
+{
+	pcb_pline_t *contour = NULL;
+	pcb_polyarea_t *np1 = NULL, *np = NULL;
+	pcb_cardinal_t n;
+	pcb_vector_t v;
+	int res = 1;
+
+	np1 = np = pcb_polyarea_create();
+	if (np == NULL)
+		return 0;
+
+	/* first make initial polygon contour */
+	for (n = 0; n < p->PointN; n++) {
+		/* No current contour? Make a new one starting at point */
+		/*   (or) Add point to existing contour */
+
+		v[0] = p->Points[n].X;
+		v[1] = p->Points[n].Y;
+		if (contour == NULL) {
+			if ((contour = pcb_poly_contour_new(v)) == NULL)
+				goto err;
+		}
+		else {
+			pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+		}
+
+		/* Is current point last in contour? If so process it. */
+		if (n == p->PointN - 1) {
+			pcb_poly_contour_pre(contour, pcb_true);
+
+			if (contour->Count == 0) {
+				pcb_poly_contours_free(&contour);
+				goto err;
+			}
+
+			{ /* count number of not-on-the-same-line vertices to make sure there's more than 2*/
+				pcb_vnode_t *cur;
+				int r = 0;
+
+				cur = contour->head;
+				do {
+					r++;
+				} while ((cur = cur->next) != contour->head);
+				if (r < 3) {
+					pcb_poly_contours_free(&contour);
+					goto err;
+				}
+			}
+
+			/* make sure it is a positive contour (outer) or negative (hole) */
+			if (contour->Flags.orient != PCB_PLF_DIR) {
+				pcb_poly_contour_inv(contour);
+			}
+
+			pcb_polyarea_contour_include(np, contour);
+			if (contour->Count == 0)
+				goto err;
+			contour = NULL;
+
+			if (!pcb_poly_valid(np))
+				res = 0;
+		}
+	}
+	pcb_polyarea_free(&np1);
+	return res;
+
+	err:;
+	pcb_polyarea_free(&np1);
+	return 0;
+}
+
 /*** undoable mirror ***/
 
 static const char core_poly_cookie[] = "core-poly";

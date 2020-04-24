@@ -95,6 +95,10 @@ void pcb_add_poly_on_layer(pcb_layer_t *Layer, pcb_poly_t *polygon);
 
 double pcb_poly_area(const pcb_poly_t *poly);
 
+/* Returns whether p is valid, without ever asserting */
+int pcb_poly_is_valid(pcb_poly_t *p);
+
+
 /* called from main.c to free some caches */
 void pcb_poly_uninit(void);
 
