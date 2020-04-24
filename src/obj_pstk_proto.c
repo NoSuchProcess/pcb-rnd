@@ -48,8 +48,18 @@ static const char core_proto_cookie[] = "padstack prototypes";
 
 void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 {
-TODO("do a full field free here")
-	dst->in_use = 0;
+	int n, i;
+	pcb_pstk_tshape_t *ts;
+
+	for(n = 0, ts = &dst->tr.array[0]; n < dst->tr.used; n++,ts++) {
+		for(i = 0; i < ts->len; i++)
+			pcb_pstk_shape_free(&ts->shape[i]);
+		ts->len = 0;
+		free(ts->shape);
+	}
+	free(dst->name);
+	free(dst->tr.array);
+	memset(dst, 0, sizeof(pcb_pstk_proto_t));
 }
 
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
