@@ -521,7 +521,7 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		/* print exrtas */
 		if (want_bbox || want_origin) {
 			pcb_buffer_clear(PCB, &SCRATCH);
-			if (!pcb_buffer_load_footprint(&SCRATCH, fpn, NULL)) {
+			if (!pcb_buffer_load_footprint(&SCRATCH, fctx.filename, NULL)) {
 				PCB_ACT_IRES(1);
 				return 0;
 			}
@@ -535,6 +535,7 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		PCB_ACT_IRES(0);
 	}
 	else {
+		pcb_fp_fclose(f, &fctx);
 		printf(DLF_PREFIX "error file not found\n");
 		PCB_ACT_IRES(1);
 	}

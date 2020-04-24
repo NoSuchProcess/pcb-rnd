@@ -2805,6 +2805,7 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, name, &fpst, NULL);
 
 	if (f == NULL) {
+		pcb_fp_fclose(f, &fpst);
 		return -1;
 	}
 
@@ -2812,7 +2813,7 @@ int io_kicad_parse_element(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name
 	memset(&st, 0, sizeof(st));
 	st.pcb = NULL;
 	st.fp_data = Ptr;
-	st.Filename = name;
+	st.Filename = fpst.filename;
 	st.settings_dest = CFR_invalid;
 	st.auto_layers = 1;
 

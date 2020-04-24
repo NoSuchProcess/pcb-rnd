@@ -14,9 +14,13 @@ typedef struct {
 		int i;
 		void *p;
 	} field[4];
+
+	const char *filename;    /* basename of the footprint file, with possible sub footprint name truncated from "::" */
+	const char *subfpname;   /* if the file contains multiple footprints, this holds the footprint name to open */
+	int free_filename;       /* internal */
 } pcb_fp_fopen_ctx_t;
 
-/* hook bindings, see below */
+/* hook bindings, see below;  pcb_fp_fclose() must be called even if pcb_fp_fopen() returned NULL! */
 FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
 void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
 

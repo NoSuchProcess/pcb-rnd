@@ -118,13 +118,31 @@ FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ct
 {
 	pcb_conf_listitem_t *ci;
 	FILE *res = NULL;
+	char *sep = strstr(name, "::");
+
+	if (sep != NULL) {
+		long offs = sep - name;
+		fctx->filename = pcb_strdup(name);
+		sep = (char *)fctx->filename + offs;
+		*sep = '\0';
+		fctx->free_filename = 0;
+		fctx->subfpname = sep+2;
+		fctx->free_filename = 1;
+	}
+	else {
+		fctx->filename = name;
+		fctx->subfpname = NULL;
+		fctx->free_filename = 0;
+	}
 
 	for(ci = pcb_conflist_first((pcb_conflist_t *)path); ci != NULL; ci = pcb_conflist_next(ci)) {
 		const char *curr = ci->val.string[0];
-		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, name, fctx, dst));
+		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, fctx->filename, fctx, dst));
 		if (res != NULL)
 			return res;
 	}
+
+	fctx->backend = NULL;
 	return NULL;
 }
 
@@ -132,6 +150,10 @@ void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	if ((fctx->backend != NULL) && (fctx->backend->fp_fclose != NULL))
 		fctx->backend->fp_fclose(fctx->backend, f, fctx);
+	if (fctx->free_filename)
+		free((char *)fctx->filename);
+	fctx->filename = NULL;
+	fctx->free_filename = 0;
 }
 
 pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[])

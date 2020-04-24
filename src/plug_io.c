@@ -258,11 +258,11 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, Filename, &fctx, Ptr);
 	if (f == PCB_FP_FOPEN_IN_DST)
 		return 0;
-	len = pcb_test_parse_all(f, Filename, fmt, PCB_IOT_FOOTPRINT, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
-	if (f != NULL)
+	len = pcb_test_parse_all(f, fctx.filename, fmt, PCB_IOT_FOOTPRINT, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
+	if (len < 0) {
 		pcb_fp_fclose(f, &fctx);
-	if (len < 0)
 		return -1;
+	}
 
 	Ptr->loader = NULL;
 
@@ -270,7 +270,7 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 	for(n = 0; n < len; n++) {
 		if ((available[n].plug->parse_footprint == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
 			continue;
-		res = available[n].plug->parse_footprint(available[n].plug, Ptr, Filename);
+		res = available[n].plug->parse_footprint(available[n].plug, Ptr, fctx.filename);
 		if (res == 0) {
 			if (Ptr->loader == NULL) /* if the loader didn't set this (to some more fine grained, e.g. depending on file format version) */
 				Ptr->loader = available[n].plug;
@@ -283,6 +283,7 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 		pcb_data_flag_change(Ptr, PCB_OBJ_CLASS_REAL, PCB_CHGFLG_CLEAR, PCB_FLAG_FOUND | PCB_FLAG_SELECTED);
 
 	pcb_plug_io_err(&PCB->hidlib, res, "load footprint", Filename);
+	pcb_fp_fclose(f, &fctx);
 	return res;
 }
 

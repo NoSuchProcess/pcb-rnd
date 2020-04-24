@@ -2715,8 +2715,10 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
 	yyElemFixLayers = 1;
 
 
-	if (f == NULL)
+	if (f == NULL) {
+		pcb_fp_fclose(f, &st);
 		return -1;
+	}
 
 	ret = Parse(f, NULL,NULL,NULL);
 
