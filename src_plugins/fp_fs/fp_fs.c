@@ -415,11 +415,11 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 #endif
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
 			fctx->field[F_TMPNAME].p = pcb_tempfile_name_new("pcb-rnd-pfp");
-			f = pcb_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "w+");
+			f = pcb_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "wb+");
 			if (f != NULL) {
 				char buff[4096];
 				int len;
-				fp = pcb_popen(&PCB->hidlib, cmd, "r");
+				fp = pcb_popen(&PCB->hidlib, cmd, "rb");
 				while((len = fread(buff, 1, sizeof(buff), fp)) > 0)
 					fwrite(buff, 1, len, f);
 				pcb_pclose(fp);
@@ -428,7 +428,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			free(cmd);
 		}
 		else
-			f = pcb_fopen(&PCB->hidlib, fullname, "r");
+			f = pcb_fopen(&PCB->hidlib, fullname, "rb");
 		free(fullname);
 	}
 

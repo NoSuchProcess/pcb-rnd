@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 + CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Joe, Bdale]
+- TEST: footprints are open as binary file now (fopen's "b") - check on win32 if this breaks anything with any of our footprint formats
 
 2. For later releases ===============================================================================
 - CLEANUP: remove the donut rats special casing

@@ -103,7 +103,7 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 		}
 		if (f != NULL) {
 			sprintf(cmd, "%s/%s", cache_path, cdir);
-			*f = pcb_fopen(NULL, cmd, "r");
+			*f = pcb_fopen(NULL, cmd, "rb");
 			if (*f == NULL)
 				goto error;
 			*fctx = FCTX_FOPEN;
