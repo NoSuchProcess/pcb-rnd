@@ -284,6 +284,8 @@ put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
 put /local/pcb/mod/YACC {}
 put /local/pcb/mod/LEX {}
+put /local/pcb/mod/BYACCIC {}
+put /local/pcb/mod/UREGLEX {}
 
 put /local/pcb/tmpasm/buildin         {../src_plugins/Buildin.tmpasm}
 put /local/pcb/tmpasm/plugin          {../src_plugins/Plugin.tmpasm}

@@ -540,13 +540,13 @@ int hook_detect_target()
 		require("parsgen/byaccic/*", 0, 0);
 		require("parsgen/ureglex/*", 0, 0);
 		if (!istrue(get("parsgen/byaccic/presents")) || !istrue(get("parsgen/ureglex/presents")))
-			put("/local/pcb/want_byaccic", sfalse);
+			put("/local/pcb/want_parsgen_byaccic", sfalse);
 		else
-			put("/local/pcb/want_byaccic", strue);
+			put("/local/pcb/want_parsgen_byaccic", strue);
 	}
 	else {
 		report("byaccic/ureglex are disabled, among with parser generation.\n");
-		put("/local/pcb/want_byaccic", sfalse);
+		put("/local/pcb/want_parsgen_byaccic", sfalse);
 	}
 
 	if (get("cc/rdynamic") == NULL)

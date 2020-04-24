@@ -1,4 +1,4 @@
-# explicit rules: .y -> .c
+# explicit rules: .y -> .c (bison)
 #  do not assume old yacc to work to different file names, do the generation
 #  in a separate directory to allow parallel compilation with -j
 switch /local/pcb/mod/YACC
@@ -28,7 +28,7 @@ switch /local/pcb/mod/YACC
 	end
 end
 
-# explicit rules: .l -> .c
+# explicit rules: .l -> .c (flex)
 #  do not assume old lex to work to different file names, do the generation
 #  in a separate directory to allow parallel compilation with -j
 switch /local/pcb/mod/LEX
@@ -58,6 +58,65 @@ switch /local/pcb/mod/LEX
 	end
 end
 
+
+
+# explicit rules: .y -> .c (byaccic)
+switch /local/pcb/mod/BYACCIC
+	case {^$} end
+	default
+		foreach /local/n in /local/pcb/mod/BYACCIC
+			put /local/bn /local/n
+			sub {/local/bn} {^.*/} {}
+			put /local/dn /local/n
+			sub {/local/dn} {/[^/]*$} {}
+
+			if /local/pcb/want_parsgen_byaccic
+			then
+				append /local/pcb/RULES [@
+# yacc for @/local/pcb/mod@
+@/local/n@.c @/local/n@.h: @/local/n@.y
+	cd @/local/dn@ && byaccic -o @ /local/bn@.c -H @/local/bn@.h -v @/local/bn@.desc -d @/local/bn@.y
+@]
+			else
+				append /local/pcb/RULES [@
+# dummy byaccic for @/local/pcb/mod@
+@/local/n@.c @/local/n@.h:
+	echo "skipping byaccic..."
+@]
+			end
+		end
+	end
+end
+
+# explicit rules: .l -> .c (ureglex)
+switch /local/pcb/mod/UREGLEX
+	case {^$} end
+	default
+		foreach /local/n in /local/pcb/mod/UREGLEX
+			if /local/pcb/want_parsgen_byaccic
+			then
+				put /local/bn /local/n
+				sub {/local/bn} {^.*/} {}
+				put /local/dn /local/n
+				sub {/local/dn} {/[^/]*$} {}
+
+				append /local/pcb/RULES [@
+# lex for @/local/pcb/mod@
+@/local/n@.c @/local/n@.h: @/local/n@.l
+	cd @/local/dn@ && ureglex -c @/local/bn@.c -h @/local/bn@.h -l @/local/bn@.l
+@]
+			else
+				append /local/pcb/RULES [@
+# dummy ureglex for @/local/pcb/mod@
+@/local/n@.c:
+	echo "skipping ureglex..."
+@]
+			end
+		end
+	end
+end
+
+
 put /local/pcb/mod/enabled {1}
 
 include  /local/pcb/tmpasm/plugin_conf
@@ -74,6 +133,8 @@ put /local/pcb/mod/LDFLAGS {}
 put /local/pcb/mod/CFLAGS {}
 put /local/pcb/mod/YACC {}
 put /local/pcb/mod/LEX {}
+put /local/pcb/mod/BYACCIC {}
+put /local/pcb/mod/UREGLEX {}
 put /local/pcb/mod/SPHASH {}
 put /local/pcb/mod/CLEANFILES {}
 put /local/pcb/mod/DISTCLEANFILES {}
