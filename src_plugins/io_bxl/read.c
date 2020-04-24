@@ -109,9 +109,11 @@ static const pcb_dflgmap_t *bcl_layer_resolve_name(const char *name)
 pcb_coord_t pcb_bxl_coord_x(pcb_coord_t c) { return c; }
 pcb_coord_t pcb_bxl_coord_y(pcb_coord_t c) { return -c; }
 
-void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name)
+void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *bctx, const char *name)
 {
-	TODO("implement");
+	if (bctx->subfpname != NULL)
+		bctx->in_target_fp = (strcmp(name, bctx->subfpname) == 0);
+	/* if it is NULL, we are reading the first and bctx->in_target_fp is already set to 1 by the init call */
 }
 
 void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx)
@@ -125,7 +127,6 @@ void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx)
 
 void pcb_bxl_reset(pcb_bxl_ctx_t *ctx)
 {
-	SKIP;
 	free(ctx->state.attr_key);
 	free(ctx->state.attr_val);
 	memset(&ctx->state, 0, sizeof(ctx->state));
@@ -140,7 +141,7 @@ void pcb_bxl_reset_pattern(pcb_bxl_ctx_t *ctx)
 void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 {
 	htsp_entry_t *e;
-	SKIP;
+
 	e = htsp_getentry(&ctx->layer_name2ly, layer_name);
 	if (e == NULL) {
 		const pcb_dflgmap_t *lm = bcl_layer_resolve_name(layer_name);
@@ -604,13 +605,14 @@ do { \
 } while(0)
 
 
-static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, pcb_board_t *pcb, const char *fpname)
+static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, pcb_board_t *pcb, const char *subfpname)
 {
 	memset(bctx, 0, sizeof(pcb_bxl_ctx_t));
 	bctx->pcb = pcb;
 	bctx->subc = pcb_subc_new();
-TODO("This reads the first footprint only:");
-	bctx->in_target_fp = 1;
+	if (subfpname == NULL)
+		bctx->in_target_fp = 1; /* read the first one if the user didn't name any */
+	bctx->subfpname = subfpname;
 	htsp_init(&bctx->layer_name2ly, strhash, strkeyeq);
 	htsp_init(&bctx->text_name2style, strhash_case, strkeyeq_case);
 	htsi_init(&bctx->proto_name2id, strhash, strkeyeq);
@@ -661,7 +663,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	if (f == NULL)
 		return -1;
 
-	pcb_bxl_init(&bctx, (pcb_board_t *)hl, NULL);
+	pcb_bxl_init(&bctx, (pcb_board_t *)hl, subfpname);
 
 	pcb_bxl_decode_init(&hctx);
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);

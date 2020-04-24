@@ -25,6 +25,7 @@ typedef struct pcb_bxl_ctx_s {
 	pcb_board_t *pcb;
 	pcb_subc_t *subc;
 	char in_target_fp; /* 1 if we are parsing the target footprint; else skip */
+	const char *subfpname; /* target footprint name to load */
 
 	int in_error;
 
