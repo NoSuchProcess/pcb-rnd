@@ -63,5 +63,6 @@ static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 		return -1;
 
 	fctx.ignore_clearance = 1;
+	fctx.allow_noncopper_pstk = 1;
 	PCB_QRY_RET_INT(res, pcb_intersect_obj_obj(&fctx, argv[0].data.obj, argv[1].data.obj));
 }
