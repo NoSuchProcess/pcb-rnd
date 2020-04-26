@@ -1218,7 +1218,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 		pcb_pstk_shape_t *shape2, *slshape2 = NULL, sltmp2;
 		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
 
-		if (!(lyt & PCB_LYT_COPPER)) /* consider only copper for connections */
+		if (!ctx->allow_noncopper_pstk && !(lyt & PCB_LYT_COPPER)) /* consider only copper for connections */
 			continue;
 
 		shape1 = pcb_pstk_shape_at(PCB, ps1, ly);

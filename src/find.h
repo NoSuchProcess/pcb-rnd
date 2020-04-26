@@ -46,6 +46,7 @@ struct pcb_find_s {
 	/* low level (will work with isc calls): */
 	pcb_coord_t bloat;              /* perform intersection tests with one object bloated up by this amount (can be negative for shrinking) */
 	unsigned ignore_clearance:1;    /* a flag dictated clearance is no excuse for intersection - useful for overlap calculation between objects on different layers */
+	unsigned allow_noncopper_pstk:1;/* when 1, even non-copper shapes of padstacks will "conduct" in a pstk-pstk check (useful for the drc) */
 
 	/* high level (ignored by isc calls): */
 	unsigned stay_layergrp:1;       /* do not leave the layer (no padstack hop) */
