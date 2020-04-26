@@ -48,12 +48,6 @@
 #include "obj_poly.h"
 #include "search.h"
 
-#define EXPAND_BOUNDS(p) if (Bloat > 0) {\
-       (p)->BoundingBox.X1 -= Bloat; \
-       (p)->BoundingBox.X2 += Bloat; \
-       (p)->BoundingBox.Y1 -= Bloat; \
-       (p)->BoundingBox.Y2 += Bloat;}
-
 #define Bloat ctx->bloat
 
 /* This is required for fullpoly: whether an object bbox intersects a poly
