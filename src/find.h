@@ -43,7 +43,11 @@ typedef enum {
 typedef struct pcb_find_s pcb_find_t;
 struct pcb_find_s {
 	/* public config - all-zero uses the original method, except for flag set */
+	/* low level (will work with isc calls): */
 	pcb_coord_t bloat;              /* perform intersection tests with one object bloated up by this amount (can be negative for shrinking) */
+	unsigned ignore_clearance:1;    /* a flag dictated clearance is no excuse for intersection - useful for overlap calculation between objects on different layers */
+
+	/* high level (ignored by isc calls): */
 	unsigned stay_layergrp:1;       /* do not leave the layer (no padstack hop) */
 	unsigned allow_noncopper:1;     /* also run on non-copper objects */
 	unsigned list_found:1;          /* allow adding objects in the ->found vector */
