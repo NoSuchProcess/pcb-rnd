@@ -53,7 +53,12 @@ void pcb_view_free(pcb_view_t *item)
 	pcb_idpath_list_clear(&item->objs[0]);
 	pcb_idpath_list_clear(&item->objs[1]);
 	free(item->title);
-	free(item->description);
+
+	if (item->long_desc.used == 0)
+		free(item->description);
+	else
+		gds_uninit(&item->long_desc);
+
 	free(item);
 }
 
@@ -521,3 +526,14 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	return dst;
 }
 
+
+void pcb_view_append_text(pcb_view_t *view, const char *txt)
+{
+	if (view->long_desc.used == 0) {
+		gds_append_str(&view->long_desc, view->description);
+		gds_append_str(&view->long_desc, " Details: ");
+		free(view->description);
+	}
+	gds_append_str(&view->long_desc, txt);
+	view->description = view->long_desc.array;
+}

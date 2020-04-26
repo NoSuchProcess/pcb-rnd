@@ -63,6 +63,8 @@ struct pcb_view_s {
 	pcb_coord_t x, y;             /* optional: a coord to mark on the preview  */
 	pcb_idpath_list_t objs[2];    /* optional: two groups of objects to highlight on preview */
 
+	gds_t long_desc;              /* optional: if non-empty, description shall point to long_desc.array */
+
 	pcb_view_type_t data_type;
 	union {
 		struct {
@@ -142,5 +144,11 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst);
 
 /* call after the last item or to cancel the load */
 void pcb_view_load_end(void *load_ctx);
+
+/*** utility ***/
+
+/* append txt to description */
+void pcb_drc_append_text(pcb_view_t *view, const char *txt);
+
 
 #endif
