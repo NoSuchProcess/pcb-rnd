@@ -310,7 +310,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 /* ---------------------------------------------------------------------------
  * initializes LEX and calls parser for a single element file
  */
-int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name)
+int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname)
 {
 	FILE *f;
 	int ret;
