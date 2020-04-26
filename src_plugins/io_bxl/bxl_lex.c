@@ -138,7 +138,7 @@ do { \
 static const char *pmatch(ureglex_t *r)
 {
  register int op, c, n;
- register const char *e;
+ register const char *e = NULL;
  switch(r->pm_loop) {
   case 1: r->pm_loop = 0; goto loop1;
   case 2: r->pm_loop = 0; goto loop2;
@@ -273,11 +273,9 @@ static const char *pmatch(ureglex_t *r)
 }
 void ureglex_exec_init(ureglex_t *r, const char *lp, int buff_used)
 {
- int n;
  r->bol = lp;
  r->score = 1;
- for(n = 0; n < 10; n++)
-  r->bopat[n] = r->eopat[n] = 0;
+ memset(r->bopat, 0, (char *)&r->eopat[MAXTAG] - (char *)&r->bopat[0]);
  r->pmsp = 0;
  r->ex_lp = lp;
  r->endp = lp + buff_used;
