@@ -671,8 +671,10 @@ int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 			if (tok == UREGLEX_MORE)
 				continue;
 
-			if ((tok == UREGLEX_NO_MATCH) || (tok == UREGLEX_TOO_LONG))
+			if ((tok == UREGLEX_NO_MATCH) || (tok == UREGLEX_TOO_LONG)) {
+				fclose(f);
 				return -1; /* error - stop fast, don't read through the whole file */
+			}
 
 			/* simplified "grammar": find opening tokens, save the next token
 			   as ID and don't do anything until finding the closing token */
