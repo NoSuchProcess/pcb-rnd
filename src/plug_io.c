@@ -1069,6 +1069,10 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 			(*tail)->next = m;
 			*tail = m;
 			break;
+		case PCB_FP_FILEDIR:
+		case PCB_FP_PARAMETRIC:
+			assert(!"broken format plugin: shouldn't do PCB_FP_FILDIR or PCB_FP_PARAMETRIC");
+			break;
 	}
 }
 
