@@ -356,9 +356,16 @@ do { \
 
 static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	pcb_layer_t *l = (pcb_layer_t *)obj;
+	pcb_layer_t *rl, *l = (pcb_layer_t *)obj;
 	query_fields_keys_t fh1;
 	const char *prp;
+
+	if (l->is_bound) {
+		rl = pcb_layer_get_real(l);
+		if (rl != NULL)
+			l = rl;
+	}
+
 
 	fld2hash_req(fh1, fld, 0);
 
