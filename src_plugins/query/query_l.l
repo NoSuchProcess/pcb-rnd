@@ -121,6 +121,7 @@ thus            { return T_THUS; }
 
 [$@().,<>!*+/~-] { return *yytext; }
 
+[\\][\r\n]      { continue; /* multiline rules */}
 [;\r\n]*        { return T_NL; }
 [ \t]           { continue; }
 
