@@ -54,6 +54,8 @@
        (p)->BoundingBox.Y1 -= Bloat; \
        (p)->BoundingBox.Y2 += Bloat;}
 
+#define Bloat ctx->bloat
+
 /* This is required for fullpoly: whether an object bbox intersects a poly
    bbox can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj bbox intersects any island's bbox */

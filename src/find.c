@@ -31,9 +31,6 @@
 #include "undo.h"
 #include "obj_subc_parent.h"
 
-TODO("find: this is the only non-reentrant part - pass it on!")
-pcb_coord_t Bloat = 0;
-
 const pcb_find_t pcb_find0_, *pcb_find0 = &pcb_find0_;
 
 #include "find_geo.c"

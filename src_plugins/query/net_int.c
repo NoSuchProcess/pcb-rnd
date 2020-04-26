@@ -85,9 +85,9 @@ pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, pcb_coord_t sh
 	   not have enough overlap and shrink disconnected it. */
 	if (shrink != 0) {
 		ctx.shrunk = 1;
-		Bloat = -shrink;
+		ctx.fa.bloat = -shrink;
 		pcb_find_from_obj(&ctx.fa, pcb->Data, from);
-		Bloat = 0;
+		ctx.fa.bloat = 0;
 		pcb_find_from_obj(&ctx.fb, pcb->Data, from);
 		pcb_find_free(&ctx.fa);
 		pcb_find_free(&ctx.fb);
@@ -98,15 +98,13 @@ pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, pcb_coord_t sh
 	   not have a connection without the bloat. */
 	if (bloat != 0) {
 		ctx.shrunk = 0;
-		Bloat = 0;
+		ctx.fa.bloat = 0;
 		pcb_find_from_obj(&ctx.fa, pcb->Data, from);
-		Bloat = bloat;
+		ctx.fb.bloat = bloat;
 		pcb_find_from_obj(&ctx.fb, pcb->Data, from);
 		pcb_find_free(&ctx.fa);
 		pcb_find_free(&ctx.fb);
 	}
-
-	Bloat = 0;
 
 	return pcb_false;
 }
