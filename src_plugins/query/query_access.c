@@ -362,6 +362,12 @@ static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *r
 
 	fld2hash_req(fh1, fld, 0);
 
+	/* in some cases .type will do the wrong thing at the caller; the escape is .layer.type; drop the redundant .layer */
+	if (fh1 == query_fields_layer) { 
+		fld = fld->next;
+		fld2hash_req(fh1, fld, 0);
+	}
+
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
