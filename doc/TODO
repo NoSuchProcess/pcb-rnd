@@ -1,18 +1,19 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- TEST: footprints are open as binary file now (fopen's "b") - check on win32 if this breaks anything with any of our footprint formats
 + CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Joe, Bdale]
-- TEST: footprints are open as binary file now (fopen's "b") - check on win32 if this breaks anything with any of our footprint formats
-
-2. For later releases ===============================================================================
+- CLEANUP/BUG: new board should delete the design subtree from the config; File>Import>Import schematics dialog does not open after starting new layout and clearing data.  Import schematic from file at trunk/doc/tutorials/7805_gschem.sch as genlist, start new layout { f n }, File>Import>Import schematics imports above file but does not open import dialog to allow user to choose a different file. [report: Miloh] 
+- CLEANUP: split up scconfig/hooks.c for a reusable infra for the hidlib separation
+- CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, Joe]
 - CLEANUP: remove the donut rats special casing
 	- CLEANUP/BUG: bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
+- CLEANUP: run drc on 7805 with valgrind from the batch GUI and clean up the memleaks [report: Igor2]
+
+2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- CLEANUP: run drc on 7805 with valgrind from the batch GUI and clean up the memleaks [report: Igor2]
-- CLEANUP/BUG: new board should delete the design subtree from the config; File>Import>Import schematics dialog does not open after starting new layout and clearing data.  Import schematic from file at trunk/doc/tutorials/7805_gschem.sch as genlist, start new layout { f n }, File>Import>Import schematics imports above file but does not open import dialog to allow user to choose a different file. [report: Miloh] 
-- CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, Joe]
 - CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
 - CLEANUP/BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - CLEANUP: (TT) propedit revamp:
