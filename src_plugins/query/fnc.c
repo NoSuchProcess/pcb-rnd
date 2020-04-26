@@ -71,6 +71,7 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("distance", fnc_distance);
 	pcb_qry_fnc_reg("mklist", fnc_mklist);
 	pcb_qry_fnc_reg("violation", fnc_violation);
+	pcb_qry_fnc_reg("layerlist", fnc_layerlist);
 	pcb_qry_fnc_reg("netlist", fnc_netlist);
 	pcb_qry_fnc_reg("netterms", fnc_netterms);
 	pcb_qry_fnc_reg("netobjs", fnc_netobjs);

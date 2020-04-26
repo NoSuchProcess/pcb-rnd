@@ -113,6 +113,19 @@ static int fnc_netlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 	return 0;
 }
 
+static int fnc_layerlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	long n;
+	htsp_entry_t *e;
+
+	res->type = PCBQ_VT_LST;
+	vtp0_init(&res->data.lst);
+	for(n = 0; n < ectx->pcb->Data->LayerN; n++)
+		vtp0_append(&res->data.lst, &ectx->pcb->Data->Layer[n]);
+
+	return 0;
+}
+
 static int fnc_net_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	vtp0_t *v = fctx->user_data;
