@@ -204,10 +204,11 @@ typedef enum {
 	PCB_QRY_DRC_GRP2,
 	PCB_QRY_DRC_EXPECT,
 	PCB_QRY_DRC_MEASURE,
+	PCB_QRY_DRC_TEXT,
 	PCB_QRY_DRC_invalid
 } pcb_qry_drc_ctrl_t;
 
-pcb_any_obj_t pcb_qry_drc_ctrl[PCB_QRY_DRC_invalid];
+extern pcb_any_obj_t pcb_qry_drc_ctrl[PCB_QRY_DRC_invalid];
 
 #define pcb_qry_drc_ctrl_decode(obj) \
 ((((obj) >= &pcb_qry_drc_ctrl[0]) && ((obj) < &pcb_qry_drc_ctrl[PCB_QRY_DRC_invalid])) \

@@ -46,6 +46,8 @@
 
 /******** tree helper ********/
 
+pcb_any_obj_t pcb_qry_drc_ctrl[PCB_QRY_DRC_invalid];
+
 const char *type_name[PCBQ_nodetype_max] = {
 	"PCBQ_RULE",
 	"PCBQ_RNAME",

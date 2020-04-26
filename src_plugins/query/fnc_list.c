@@ -62,6 +62,8 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 				if ((val->type != PCBQ_VT_COORD) && (val->type != PCBQ_VT_LONG) && (val->type != PCBQ_VT_DOUBLE))
 					return -1;
 				break;
+			case PCB_QRY_DRC_TEXT:
+				break; /* accept anything */
 			default:
 				return -1;
 		}
@@ -70,10 +72,27 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 	res->type = PCBQ_VT_LST;
 	vtp0_init(&res->data.lst);
 	for(n = 0; n < argc; n+=2) {
+		pcb_qry_drc_ctrl_t ctrl = pcb_qry_drc_ctrl_decode(argv[n].data.obj);
 		pcb_qry_val_t *val = &argv[n+1];
 		pcb_obj_qry_const_t *tmp;
 
-		switch(val->type) {
+		if (ctrl == PCB_QRY_DRC_TEXT) {
+			char *str = "<invalid node>", buff[128];
+			switch(val->type) {
+				case PCBQ_VT_VOID:   str = "<void>"; break;
+				case PCBQ_VT_OBJ:    str = "<obj>"; break;
+				case PCBQ_VT_LST:    str = "<list>"; break;
+				case PCBQ_VT_COORD:  pcb_snprintf(buff, sizeof(buff), "%mH$", argv[n+1].data.crd); break;
+				case PCBQ_VT_LONG:   pcb_snprintf(buff, sizeof(buff), "%ld", argv[n+1].data.lng); break;
+				case PCBQ_VT_DOUBLE: pcb_snprintf(buff, sizeof(buff), "%f", argv[n+1].data.dbl); break;
+				case PCBQ_VT_STRING: str = (char *)argv[n+1].data.str; break;
+			}
+			str = pcb_strdup(str == NULL ? "" : str);
+			vtp0_append(&res->data.lst, argv[n].data.obj);
+			vtp0_append(&res->data.lst, str);
+			vtp0_append(&ectx->autofree, str);
+		}
+		else switch(val->type) {
 			case PCBQ_VT_OBJ:
 				vtp0_append(&res->data.lst, argv[n].data.obj);
 				vtp0_append(&res->data.lst, argv[n+1].data.obj);

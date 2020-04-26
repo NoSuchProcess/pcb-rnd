@@ -94,6 +94,7 @@ flag[.]         { return T_FLD_FLAG; }
 "DRCGRP2"       { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_GRP2]); return T_CONST; }
 "DRCEXPECT"     { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_EXPECT]); return T_CONST; }
 "DRCMEASURE"    { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_MEASURE]); return T_CONST; }
+"DRCTEXT"       { qry_lval.n = make_const_obj(yytext, &pcb_qry_drc_ctrl[PCB_QRY_DRC_TEXT]); return T_CONST; }
 
 "$dwg_area_x"   { qry_lval.c = PCB->hidlib.size_x; return T_INT; }
 "$dwg_area_y"   { qry_lval.c = PCB->hidlib.size_y; return T_INT; }

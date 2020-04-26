@@ -125,6 +125,7 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 				case PCB_QRY_DRC_GRP2:     pcb_view_append_obj(violation, 1, obj); break;
 				case PCB_QRY_DRC_EXPECT:   expv = &expv_; expv_ = load_obj_const(cnst); break;
 				case PCB_QRY_DRC_MEASURE:  mesv = &mesv_; mesv_ = load_obj_const(cnst); break;
+				case PCB_QRY_DRC_TEXT:     pcb_view_append_text(violation, (char *)cnst);
 				case PCB_QRY_DRC_invalid:
 					break;
 			}
