@@ -77,6 +77,7 @@ struct pcb_find_s {
 	unsigned aborted:1;
 };
 
+extern const pcb_find_t *pcb_find0; /* nop-configuration for calling isc functions */
 
 unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y);
 
@@ -89,16 +90,16 @@ unsigned long pcb_find_from_obj_next(pcb_find_t *ctx, pcb_data_t *data, pcb_any_
 void pcb_find_free(pcb_find_t *ctx);
 
 /* High level intersection function: returns if a and b intersect (overlap) */
-pcb_bool pcb_intersect_obj_obj(pcb_any_obj_t *a, pcb_any_obj_t *b);
+pcb_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_obj_t *b);
 
 /* Low level intersection functions: */
-pcb_bool pcb_isc_line_line(pcb_line_t *Line1, pcb_line_t *Line2);
-pcb_bool pcb_isc_line_arc(pcb_line_t *Line, pcb_arc_t *Arc);
-pcb_bool pcb_isc_arc_poly(pcb_arc_t *Arc, pcb_poly_t *Polygon);
-pcb_bool pcb_isc_arc_polyarea(pcb_arc_t *Arc, pcb_polyarea_t *pa);
-pcb_bool pcb_isc_line_poly(pcb_line_t *Line, pcb_poly_t *Polygon);
-pcb_bool pcb_isc_poly_poly(pcb_poly_t *P1, pcb_poly_t *P2);
-pcb_bool_t pcb_isc_pstk_line(pcb_pstk_t *ps, pcb_line_t *line);
+pcb_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t *Line2);
+pcb_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Arc);
+pcb_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Polygon);
+pcb_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyarea_t *pa);
+pcb_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon);
+pcb_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2);
+pcb_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line);
 
 /* Return whether obj is marked as already visited by the current search context */
 #define PCB_FIND_IS_MARKED(ctx, obj) PCB_DFLAG_TEST(&((obj)->Flags), (ctx)->mark)

@@ -98,7 +98,7 @@ static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *
 	if ((obj1 == NULL) || ((obj1->type & PCB_OBJ_CLASS_REAL) == 0) || (obj2 == NULL) || ((obj2->type & PCB_OBJ_CLASS_REAL) == 0))
 		return FGW_ERR_ARG_CONV;
 
-	PCB_ACT_IRES(pcb_intersect_obj_obj(obj1, obj2));
+	PCB_ACT_IRES(pcb_intersect_obj_obj(pcb_find0, obj1, obj2));
 	return 0;
 }
 

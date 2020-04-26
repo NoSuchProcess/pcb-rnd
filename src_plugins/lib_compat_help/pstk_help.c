@@ -250,7 +250,7 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 				if (!((lyt & (PCB_LYT_MASK | PCB_LYT_PASTE))))
 					continue; /* care for mask and paste objects */
 
-				if (!pcb_intersect_obj_obj(o, c))
+				if (!pcb_intersect_obj_obj(pcb_find0, o, c))
 					continue; /* only if intersects with the original copper pad */
 
 				for(l = 0; l < NUM_LYTS; l++) {

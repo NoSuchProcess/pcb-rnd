@@ -34,6 +34,8 @@
 TODO("find: this is the only non-reentrant part - pass it on!")
 pcb_coord_t Bloat = 0;
 
+const pcb_find_t pcb_find0_, *pcb_find0 = &pcb_find0_;
+
 #include "find_geo.c"
 #include "find_any_isect.c"
 
@@ -161,7 +163,7 @@ static pcb_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
-			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
+			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(ctx, curr, __obj__))) {\
 				if (pcb_find_addobj(ctx, __obj__, curr, ctype, 1) != 0) { retstmt; } \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
 					find_int_conn(ctx, __obj__); \
@@ -173,7 +175,7 @@ static pcb_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
 		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
-			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(curr, __obj__))) {\
+			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(ctx, curr, __obj__))) {\
 				if (pcb_find_addobj(ctx, __obj__, curr, ctype, ctx->consider_rats) != 0) { retstmt; } \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
 					find_int_conn(ctx, __obj__); \
