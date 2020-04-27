@@ -57,12 +57,12 @@ typedef enum {
 extern const char *PCB_PTR_DOMAIN_IDPATH;
 extern const char *PCB_PTR_DOMAIN_IDPATH_LIST;
 
-void pcb_register_action(const pcb_action_t *a, const char *cookie);
-void pcb_register_actions(const pcb_action_t *a, int, const char *cookie);
+void rnd_register_action(const pcb_action_t *a, const char *cookie);
+void rnd_register_actions(const pcb_action_t *a, int, const char *cookie);
 
 /* shorthand for registering all actions from an action table */
-#define PCB_REGISTER_ACTIONS(a, cookie) \
-	pcb_register_actions(a, sizeof(a)/sizeof(a[0]), cookie);
+#define RND_REGISTER_ACTIONS(a, cookie) \
+	rnd_register_actions(a, sizeof(a)/sizeof(a[0]), cookie);
 
 /* Inits and uninits the whole action framework */
 void pcb_actions_init(void);

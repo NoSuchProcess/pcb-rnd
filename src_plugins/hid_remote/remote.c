@@ -48,7 +48,7 @@ static void ev_pcb_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_
 /*pcb_action_t remote_action_list[] = {
 };
 
-PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
+RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
 
 static void remote_send_all_layers()
@@ -441,7 +441,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.attr_dlg_property = remote_attr_dlg_property;
 	remote_hid.create_menu = remote_create_menu;
 
-/*	PCB_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
+/*	RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
 	pcb_hid_register_hid(&remote_hid);
 

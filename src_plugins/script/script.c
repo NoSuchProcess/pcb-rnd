@@ -447,7 +447,7 @@ void pplg_uninit_script(void)
 int pplg_init_script(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(script_action_list, script_cookie);
+	RND_REGISTER_ACTIONS(script_action_list, script_cookie);
 
 #ifndef PCB_HAVE_SYS_FUNGW
 	pplg_init_fungw_fawk();

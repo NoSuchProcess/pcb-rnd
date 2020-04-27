@@ -244,5 +244,9 @@ typedef @/local/pcb/long64@    pcb_long64_t;
 
 #endif
 
+#ifdef RND_PCB_COMPAT
+#include <librnd/pcb_compat.h>
+#endif
+
 #endif
 @]

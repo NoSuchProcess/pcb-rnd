@@ -291,6 +291,6 @@ void pcb_hid_dlg_init(void)
 
 void pcb_hid_dlg_init2(void)
 {
-	PCB_REGISTER_ACTIONS(hid_dlg_action_list, NULL);
+	RND_REGISTER_ACTIONS(hid_dlg_action_list, NULL);
 }
 

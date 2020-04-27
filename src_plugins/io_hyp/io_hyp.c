@@ -190,7 +190,7 @@ TODO(": look these up")
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
 
 
-	PCB_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
+	RND_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
 		return 0;
 }
 

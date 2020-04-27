@@ -82,5 +82,5 @@ static pcb_action_t plug_footprint_list[] = {
 
 void pcb_plug_footprint_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(plug_footprint_list, NULL);
+	RND_REGISTER_ACTIONS(plug_footprint_list, NULL);
 }

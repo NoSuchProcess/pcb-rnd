@@ -554,7 +554,7 @@ int pplg_init_ddraft(void)
 
 	PCB_API_CHK_VER;
 
-	PCB_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
+	RND_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 	pcb_event_bind(PCB_EVENT_DRAW_CROSSHAIR_CHATT, cnst_enforce, NULL, ddraft_cookie);
 
 	pcb_ddraft_tool = pcb_tool_reg(&tool_ddraft, ddraft_cookie);

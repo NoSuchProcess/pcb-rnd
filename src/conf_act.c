@@ -90,7 +90,7 @@ static pcb_action_t conf_action_list[] = {
 
 void pcb_conf_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(conf_action_list, NULL);
+	RND_REGISTER_ACTIONS(conf_action_list, NULL);
 }
 
 

@@ -512,6 +512,6 @@ int pplg_init_import_ipcd356(void)
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
 
 
-	PCB_REGISTER_ACTIONS(import_ipcd356_action_list, ipcd356_cookie);
+	RND_REGISTER_ACTIONS(import_ipcd356_action_list, ipcd356_cookie);
 	return 0;
 }

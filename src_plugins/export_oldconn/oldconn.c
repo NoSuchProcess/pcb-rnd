@@ -318,7 +318,7 @@ int pplg_init_export_oldconn(void)
 {
 	PCB_API_CHK_VER;
 
-	PCB_REGISTER_ACTIONS(oldconn_action_list, oldconn_cookie)
+	RND_REGISTER_ACTIONS(oldconn_action_list, oldconn_cookie)
 
 	return 0;
 }

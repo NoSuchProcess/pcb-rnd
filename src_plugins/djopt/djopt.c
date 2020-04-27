@@ -2580,6 +2580,6 @@ int pplg_init_djopt(void)
 	pcb_conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc,flags);
 #include "djopt_conf_fields.h"
 
-	PCB_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
+	RND_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
 	return 0;
 }

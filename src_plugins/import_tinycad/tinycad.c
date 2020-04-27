@@ -273,6 +273,6 @@ int pplg_init_import_tinycad(void)
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
 
-	PCB_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
+	RND_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
 	return 0;
 }

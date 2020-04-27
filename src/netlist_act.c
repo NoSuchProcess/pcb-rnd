@@ -625,5 +625,5 @@ static pcb_action_t netlist_action_list[] = {
 
 void pcb_netlist_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(netlist_action_list, NULL);
+	RND_REGISTER_ACTIONS(netlist_action_list, NULL);
 }

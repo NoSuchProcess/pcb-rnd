@@ -1478,5 +1478,5 @@ static pcb_action_t gui_action_list[] = {
 
 void pcb_gui_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(gui_action_list, NULL);
+	RND_REGISTER_ACTIONS(gui_action_list, NULL);
 }

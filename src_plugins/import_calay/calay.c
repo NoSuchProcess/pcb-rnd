@@ -290,6 +290,6 @@ int pplg_init_import_calay(void)
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
 
 
-	PCB_REGISTER_ACTIONS(calay_action_list, calay_cookie)
+	RND_REGISTER_ACTIONS(calay_action_list, calay_cookie)
 	return 0;
 }

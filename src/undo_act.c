@@ -152,7 +152,7 @@ static pcb_action_t undo_action_list[] = {
 
 void pcb_undo_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(undo_action_list, NULL);
+	RND_REGISTER_ACTIONS(undo_action_list, NULL);
 }
 
 

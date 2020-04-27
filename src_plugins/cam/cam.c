@@ -298,7 +298,7 @@ int pplg_init_cam(void)
 	pcb_conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);
 #include "cam_conf_fields.h"
 
-	PCB_REGISTER_ACTIONS(cam_action_list, cam_cookie)
+	RND_REGISTER_ACTIONS(cam_action_list, cam_cookie)
 
 	memset(&export_cam_hid, 0, sizeof(pcb_hid_t));
 

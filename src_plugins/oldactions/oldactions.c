@@ -413,6 +413,6 @@ void pplg_uninit_oldactions(void)
 int pplg_init_oldactions(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
+	RND_REGISTER_ACTIONS(oldactions_action_list, oldactions_cookie)
 	return 0;
 }

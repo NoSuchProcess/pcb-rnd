@@ -965,7 +965,7 @@ static pcb_action_t change_action_list[] = {
 
 void pcb_change_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(change_action_list, NULL);
+	RND_REGISTER_ACTIONS(change_action_list, NULL);
 }
 
 

@@ -284,5 +284,5 @@ static pcb_action_t log_action_list[] = {
 
 void pcb_hidlib_error_init2(void)
 {
-	PCB_REGISTER_ACTIONS(log_action_list, NULL);
+	RND_REGISTER_ACTIONS(log_action_list, NULL);
 }

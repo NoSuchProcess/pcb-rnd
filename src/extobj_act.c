@@ -221,5 +221,5 @@ static pcb_action_t pcb_extobj_action_list[] = {
 
 void pcb_extobj_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(pcb_extobj_action_list, NULL);
+	RND_REGISTER_ACTIONS(pcb_extobj_action_list, NULL);
 }

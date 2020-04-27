@@ -116,5 +116,5 @@ static pcb_action_t remove_action_list[] = {
 
 void pcb_remove_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(remove_action_list, NULL);
+	RND_REGISTER_ACTIONS(remove_action_list, NULL);
 }

@@ -646,7 +646,7 @@ int pplg_init_asm(void)
 	pcb_conf_reg_field(conf_asm, field,isarray,type_name,cpath,cname,desc,flags);
 #include "asm_conf_fields.h"
 
-	PCB_REGISTER_ACTIONS(asm_action_list, asm_cookie)
+	RND_REGISTER_ACTIONS(asm_action_list, asm_cookie)
 
 	return 0;
 }

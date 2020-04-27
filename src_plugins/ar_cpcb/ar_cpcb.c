@@ -419,7 +419,7 @@ int pplg_init_ar_cpcb(void)
 {
 	PCB_API_CHK_VER;
 
-	PCB_REGISTER_ACTIONS(cpcb_action_list, cpcb_cookie)
+	RND_REGISTER_ACTIONS(cpcb_action_list, cpcb_cookie)
 
 	return 0;
 }

@@ -78,6 +78,6 @@ int pplg_init_millpath(void)
 {
 	PCB_API_CHK_VER;
 
-	PCB_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
+	RND_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
 	return 0;
 }

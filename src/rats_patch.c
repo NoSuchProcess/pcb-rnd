@@ -637,7 +637,7 @@ static pcb_action_t rats_patch_action_list[] = {
 
 void pcb_rats_patch_init2(void)
 {
-	PCB_REGISTER_ACTIONS(rats_patch_action_list, NULL);
+	RND_REGISTER_ACTIONS(rats_patch_action_list, NULL);
 }
 
 

@@ -1454,7 +1454,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	hid->calibrate = ps_calibrate;
 	hid->set_crosshair = ps_set_crosshair;
 
-	PCB_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
+	RND_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 
 	ps_inited = 1;
 }

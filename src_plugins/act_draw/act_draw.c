@@ -485,6 +485,6 @@ void pplg_uninit_act_draw(void)
 int pplg_init_act_draw(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(act_draw_action_list, act_draw_cookie)
+	RND_REGISTER_ACTIONS(act_draw_action_list, act_draw_cookie)
 	return 0;
 }

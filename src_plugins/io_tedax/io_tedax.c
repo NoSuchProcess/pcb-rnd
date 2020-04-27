@@ -281,7 +281,7 @@ int pplg_init_io_tedax(void)
 
 	tedax_etest_init();
 
-	PCB_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
+	RND_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
 	pcb_tedax_net_init();
 
 	return 0;

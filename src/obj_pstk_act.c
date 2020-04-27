@@ -222,7 +222,7 @@ static pcb_action_t padstack_action_list[] = {
 
 void pcb_pstk_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(padstack_action_list, NULL);
+	RND_REGISTER_ACTIONS(padstack_action_list, NULL);
 }
 
 

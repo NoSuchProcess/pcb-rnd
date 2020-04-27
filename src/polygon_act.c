@@ -130,5 +130,5 @@ static pcb_action_t polygon_action_list[] = {
 
 void pcb_poly_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(polygon_action_list, NULL);
+	RND_REGISTER_ACTIONS(polygon_action_list, NULL);
 }

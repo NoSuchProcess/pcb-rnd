@@ -112,7 +112,7 @@ int pplg_init_dialogs(void)
 {
 	PCB_API_CHK_VER;
 
-	PCB_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
+	RND_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_dlg_pref_init();
 	pcb_dlg_pstklib_init();
 	pcb_dlg_undo_init();

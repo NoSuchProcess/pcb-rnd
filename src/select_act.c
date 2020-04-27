@@ -252,7 +252,7 @@ static pcb_action_t select_action_list[] = {
 
 void pcb_select_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(select_action_list, NULL);
+	RND_REGISTER_ACTIONS(select_action_list, NULL);
 }
 
 

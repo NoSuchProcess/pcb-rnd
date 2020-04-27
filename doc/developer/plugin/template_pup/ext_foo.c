@@ -58,7 +58,7 @@ int pplg_init_ext_foo(void)
 {
 	PCB_API_CHK_VER; /* for external plugins this is CRITICAL */
 
-	PCB_REGISTER_ACTIONS(ext_foo_action_list, ext_foo_cookie);
+	RND_REGISTER_ACTIONS(ext_foo_action_list, ext_foo_cookie);
 
 	fprintf(stderr, "EXT FOO init\n");
 	return 0;

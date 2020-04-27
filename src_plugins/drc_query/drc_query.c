@@ -393,7 +393,7 @@ int pplg_init_drc_query(void)
 	pcb_conf_reg_field(conf_drc_query, field,isarray,type_name,cpath,cname,desc,flags);
 #include "drc_query_conf_fields.h"
 
-	PCB_REGISTER_ACTIONS(drc_query_action_list, drc_query_cookie)
+	RND_REGISTER_ACTIONS(drc_query_action_list, drc_query_cookie)
 	pcb_drc_impl_reg(&drc_query_impl);
 
 	return 0;

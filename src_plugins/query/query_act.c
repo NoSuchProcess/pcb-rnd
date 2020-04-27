@@ -555,5 +555,5 @@ pcb_action_t query_action_list[] = {
 
 void query_action_reg(const char *cookie)
 {
-	PCB_REGISTER_ACTIONS(query_action_list, cookie)
+	RND_REGISTER_ACTIONS(query_action_list, cookie)
 }

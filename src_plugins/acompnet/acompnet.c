@@ -232,7 +232,7 @@ int pplg_init_acompnet(void)
 	if (clr.str[0] != '#')
 		pcb_color_load_str(&clr, "#c09920");
 
-	PCB_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
+	RND_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
 	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", &clr);
 
 	return 0;

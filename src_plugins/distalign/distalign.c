@@ -552,6 +552,6 @@ void pplg_uninit_distalign(void)
 int pplg_init_distalign(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(distalign_action_list, distalign_cookie);
+	RND_REGISTER_ACTIONS(distalign_action_list, distalign_cookie);
 	return 0;
 }

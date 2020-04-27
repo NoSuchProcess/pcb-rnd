@@ -543,6 +543,6 @@ int pplg_init_lib_polyhelp(void)
 {
 	PCB_API_CHK_VER;
 
-	PCB_REGISTER_ACTIONS(polyhelp_action_list, polyhelp_cookie);
+	RND_REGISTER_ACTIONS(polyhelp_action_list, polyhelp_cookie);
 	return 0;
 }

@@ -364,7 +364,7 @@ static pcb_action_t tool_action_list[] = {
 
 void rnd_tool_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(tool_action_list, NULL);
+	RND_REGISTER_ACTIONS(tool_action_list, NULL);
 }
 
 

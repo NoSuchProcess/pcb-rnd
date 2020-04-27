@@ -119,7 +119,7 @@ int pplg_init_lib_hid_common(void)
 #include "dialogs_conf_fields.h"
 
 	pcb_dlg_log_init();
-	PCB_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
+	RND_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
 	pcb_act_dad_init();
 
 	pcb_conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);

@@ -127,6 +127,6 @@ void pplg_uninit_act_read(void)
 int pplg_init_act_read(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(act_read_action_list, act_read_cookie)
+	RND_REGISTER_ACTIONS(act_read_action_list, act_read_cookie)
 	return 0;
 }

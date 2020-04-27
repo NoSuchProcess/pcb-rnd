@@ -175,7 +175,7 @@ int pplg_init_stroke(void)
 	pcb_conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);
 #include "stroke_conf_fields.h"
 
-	PCB_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)
+	RND_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)
 
 	pcb_event_bind(PCB_EVENT_STROKE_START, pcb_stroke_start, NULL, pcb_stroke_cookie);
 	pcb_event_bind(PCB_EVENT_STROKE_RECORD, pcb_stroke_record, NULL, pcb_stroke_cookie);

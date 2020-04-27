@@ -222,6 +222,6 @@ void pplg_uninit_shand_cmd(void)
 int pplg_init_shand_cmd(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
+	RND_REGISTER_ACTIONS(shand_cmd_action_list, shand_cmd_cookie)
 	return 0;
 }

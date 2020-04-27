@@ -876,7 +876,7 @@ int pplg_init_export_openems(void)
 
 	pcb_hid_register_hid(&openems_hid);
 
-	PCB_REGISTER_ACTIONS(openems_action_list, openems_cookie);
+	RND_REGISTER_ACTIONS(openems_action_list, openems_cookie);
 
 	pcb_openems_excitation_init();
 

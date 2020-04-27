@@ -554,6 +554,6 @@ static pcb_action_t cli_dlg_action_list[] = {
 
 void pcb_hid_nogui_init2(void)
 {
-	PCB_REGISTER_ACTIONS(cli_dlg_action_list, NULL);
+	RND_REGISTER_ACTIONS(cli_dlg_action_list, NULL);
 }
 

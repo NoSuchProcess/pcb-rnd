@@ -281,7 +281,7 @@ static pcb_action_t brave_action_list[] = {
 
 void pcb_brave_init2(void)
 {
-	PCB_REGISTER_ACTIONS(brave_action_list, NULL);
+	RND_REGISTER_ACTIONS(brave_action_list, NULL);
 }
 
 void pcb_brave_init(void)

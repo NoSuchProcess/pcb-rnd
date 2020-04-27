@@ -1215,7 +1215,7 @@ static pcb_action_t buffer_action_list[] = {
 
 void pcb_buffer_init2(void)
 {
-	PCB_REGISTER_ACTIONS(buffer_action_list, NULL);
+	RND_REGISTER_ACTIONS(buffer_action_list, NULL);
 }
 
 

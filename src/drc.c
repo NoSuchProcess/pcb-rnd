@@ -193,5 +193,5 @@ static pcb_action_t drc_action_list[] = {
 
 void pcb_drc_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(drc_action_list, NULL);
+	RND_REGISTER_ACTIONS(drc_action_list, NULL);
 }

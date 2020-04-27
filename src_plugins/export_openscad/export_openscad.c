@@ -703,7 +703,7 @@ int pplg_init_export_openscad(void)
 
 	pcb_hid_register_hid(&openscad_hid);
 
-	PCB_REGISTER_ACTIONS(scad_action_list, openscad_cookie)
+	RND_REGISTER_ACTIONS(scad_action_list, openscad_cookie)
 
 	return 0;
 }

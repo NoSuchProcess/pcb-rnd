@@ -1195,5 +1195,5 @@ static pcb_action_t ltf_dialog_action_list[] = {
 
 void pcb_ltf_dialogs_init2(void)
 {
-	PCB_REGISTER_ACTIONS(ltf_dialog_action_list, lesstif_cookie);
+	RND_REGISTER_ACTIONS(ltf_dialog_action_list, lesstif_cookie);
 }

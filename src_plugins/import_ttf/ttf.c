@@ -64,6 +64,6 @@ void pplg_uninit_import_ttf(void)
 int pplg_init_import_ttf(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(ttf_action_list, ttf_cookie)
+	RND_REGISTER_ACTIONS(ttf_action_list, ttf_cookie)
 	return 0;
 }

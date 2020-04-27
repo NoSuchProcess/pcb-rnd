@@ -837,7 +837,7 @@ void pplg_uninit_report(void)
 int pplg_init_report(void)
 {
 	PCB_API_CHK_VER;
-	PCB_REGISTER_ACTIONS(report_action_list, report_cookie)
+	RND_REGISTER_ACTIONS(report_action_list, report_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	pcb_conf_reg_field(conf_report, field,isarray,type_name,cpath,cname,desc,flags);
 #include "report_conf_fields.h"

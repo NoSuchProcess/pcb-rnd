@@ -126,9 +126,9 @@ TODO("padstack: remove some paths when route style has proto")
 
 	PCB_API_CHK_VER;
 
-	PCB_REGISTER_ACTIONS(rst_action_list, rst_cookie);
-	PCB_REGISTER_ACTIONS(status_action_list, status_cookie);
-	PCB_REGISTER_ACTIONS(act_action_list, act_cookie);
+	RND_REGISTER_ACTIONS(rst_action_list, rst_cookie);
+	RND_REGISTER_ACTIONS(status_action_list, status_cookie);
+	RND_REGISTER_ACTIONS(act_action_list, act_cookie);
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);
 	pcb_event_bind(PCB_EVENT_LAYERS_CHANGED, pcb_layer_menu_update_ev, NULL, layer_cookie);

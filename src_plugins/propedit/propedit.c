@@ -364,7 +364,7 @@ int pplg_init_propedit(void)
 		return -1;
 	}
 
-	PCB_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
+	RND_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
 	pcb_propdlg_init();
 	return 0;
 }

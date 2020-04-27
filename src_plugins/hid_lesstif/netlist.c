@@ -445,5 +445,5 @@ static pcb_action_t ltf_netlist_action_list[] = {
 
 void pcb_ltf_netlist_init2(void)
 {
-	PCB_REGISTER_ACTIONS(ltf_netlist_action_list, lesstif_cookie);
+	RND_REGISTER_ACTIONS(ltf_netlist_action_list, lesstif_cookie);
 }

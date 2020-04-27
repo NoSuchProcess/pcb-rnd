@@ -91,7 +91,7 @@ int pplg_init_io_kicad(void)
 
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 
-	PCB_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie);
+	RND_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie);
 
 	pcb_eeschema_init();
 

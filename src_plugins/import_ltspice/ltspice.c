@@ -404,6 +404,6 @@ int pplg_init_import_ltspice(void)
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
 
-	PCB_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
+	RND_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
 	return 0;
 }

@@ -670,6 +670,6 @@ int pplg_init_vendordrill(void)
 #include "vendor_conf_fields.h"
 
 	pcb_event_bind(PCB_EVENT_NEW_PSTK, vendor_new_pstk, NULL, vendor_cookie);
-	PCB_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
+	RND_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	return 0;
 }

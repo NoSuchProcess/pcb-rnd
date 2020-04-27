@@ -217,7 +217,7 @@ int pplg_init_order(void)
 	pcb_conf_reg_field(conf_order, field,isarray,type_name,cpath,cname,desc,flags);
 #include "order_conf_fields.h"
 
-	PCB_REGISTER_ACTIONS(order_action_list, order_cookie)
+	RND_REGISTER_ACTIONS(order_action_list, order_cookie)
 	pcb_event_bind(PCB_EVENT_GUI_INIT, order_menu_init, NULL, order_cookie);
 	return 0;
 }

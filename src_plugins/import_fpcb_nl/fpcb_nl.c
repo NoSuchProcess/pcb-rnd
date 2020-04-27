@@ -254,6 +254,6 @@ int pplg_init_import_fpcb_nl(void)
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
 
 
-	PCB_REGISTER_ACTIONS(fpcb_nl_action_list, fpcb_nl_cookie)
+	RND_REGISTER_ACTIONS(fpcb_nl_action_list, fpcb_nl_cookie)
 	return 0;
 }

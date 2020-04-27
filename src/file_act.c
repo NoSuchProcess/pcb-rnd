@@ -545,5 +545,5 @@ pcb_action_t file_action_list[] = {
 
 void pcb_file_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(file_action_list, NULL);
+	RND_REGISTER_ACTIONS(file_action_list, NULL);
 }

@@ -335,6 +335,6 @@ int pplg_init_import_mentor_sch(void)
 
 	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
 
-	PCB_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
+	RND_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
 	return 0;
 }

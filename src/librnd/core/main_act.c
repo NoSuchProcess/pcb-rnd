@@ -130,5 +130,5 @@ static pcb_action_t rnd_main_action_list[] = {
 
 void rnd_main_act_init2(void)
 {
-	PCB_REGISTER_ACTIONS(rnd_main_action_list, NULL);
+	RND_REGISTER_ACTIONS(rnd_main_action_list, NULL);
 }
