@@ -404,6 +404,13 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	if (subc != NULL)
 		pcb_append_printf(&tmp, "\nPart of subcircuit #%ld\n", subc->ID);
 
+	{
+		pcb_idpath_t *idp = pcb_obj2idpath((pcb_any_obj_t *)ptr2);
+		gds_append_str(&tmp, "\nidpath: ");
+		pcb_append_idpath(&tmp, idp);
+		pcb_idpath_destroy(idp);
+	}
+
 	/* create dialog box */
 	if ((how != NULL) && (strcmp(how, "log") == 0))
 		pcb_message(PCB_MSG_INFO, "--- Report ---\n%s---\n", tmp.array);
