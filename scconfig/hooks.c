@@ -158,10 +158,6 @@ static void calc_dialog_deps(void)
 int hook_detect_target()
 {
 	int want_gd, want_stroke, want_xml2, want_freetype2, want_fuse;
-	int can_live_without_dynlib = 0; /* special optional exception for windows cross compilation for now */
-
-	if (istrue(get("/target/pcb/can_live_without_dynlib")))
-		can_live_without_dynlib = 1;
 
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd");
 	want_stroke = plug_is_enabled("stroke");
@@ -175,76 +171,8 @@ int hook_detect_target()
 	plugin_db_hidlib();
 
 	rnd_hook_detect_cc();
-
-	pup_hook_detect_target();
-
-	require("signal/names/*",  0, 0);
-	require("libs/env/setenv/*",  0, 0);
-	if (!istrue(get("libs/env/setenv/presents")))
-		require("libs/env/putenv/*",  0, 0);
-	require("libs/fs/mkdtemp/*",  0, 0);
-	require("libs/fs/realpath/*",  0, 0);
-	require("libs/fs/readdir/*",  0, 1);
-	require("libs/io/fileno/*",  0, 1);
-	require("libs/io/popen/*",  0, 1);
-	require("libs/math/rint/*",  0, 0);
-	require("libs/math/round/*",  0, 0);
-	require("libs/userpass/getpwuid/*",  0, 0);
-	require("libs/script/fungw/*",  0, 0);
-
-	if (istrue(get("libs/script/fungw/presents"))) {
-		require("libs/script/fungw/user_call_ctx/*",  0, 0);
-		if (!istrue(get("libs/script/fungw/user_call_ctx/presents"))) {
-			put("libs/script/fungw/presents", sfalse);
-			report_repeat("\nWARNING: system installed fungw is too old, can not use it, please install a newer version (falling back to minimal fungw shipped with pcb-rnd).\n\n");
-		}
-	}
-
-	if (!istrue(get("libs/script/fungw/presents")))
-		fungw_hook_detect_target();
-
-	{
-		int miss_select = require("libs/socket/select/*",  0, 0);
-		if (require("libs/time/usleep/*",  0, 0) && require("libs/time/Sleep/*",  0, 0) && miss_select) {
-			report_repeat("\nERROR: can not find usleep() or Sleep() or select() - no idea how to sleep ms.\n\n");
-			return 1;
-		}
-	}
-
-	require("libs/time/gettimeofday/*",  0, 1);
-
-	if (require("libs/ldl",  0, 0) != 0) {
-		if (require("libs/LoadLibrary",  0, 0) != 0) {
-			if (can_live_without_dynlib) {
-				report_repeat("\nWARNING: no dynamic linking found on your system. Dynamic plugin loading will fail.\n\n");
-			}
-			else {
-				report_repeat("\nERROR: no dynamic linking found on your system. Can not compile pcb-rnd.\n\n");
-				return 1;
-			}
-		}
-	}
-
-	if (require("libs/proc/wait",  0, 0) != 0) {
-		if (require("libs/proc/_spawnvp",  0, 0) != 0) {
-			report_repeat("\nERROR: no fork or _spawnvp. Can not compile pcb-rnd.\n\n");
-			return 1;
-		}
-	}
-
-	if (require("libs/fs/_mkdir",  0, 0) != 0) {
-		if (require("libs/fs/mkdir",  0, 0) != 0) {
-			report_repeat("\nERROR: no mkdir() or _mkdir(). Can not compile pcb-rnd.\n\n");
-			return 1;
-		}
-	}
-
-	if (require("libs/fs/getcwd/*",  0, 0) != 0)
-		if (require("libs/fs/_getcwd/*",  0, 0) != 0)
-			if (require("libs/fs/getwd/*",  0, 0) != 0) {
-				report_repeat("\nERROR: Can not find any getcwd() variant.\n\n");
-				return 1;
-			}
+	if (rnd_hook_detect_sys() != 0)
+		return 1;
 
 	if (want_fuse) {
 		require("libs/sul/fuse/*", 0, 0);
@@ -317,29 +245,6 @@ int hook_detect_target()
 		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
 	}
 
-	if (!istrue(get("libs/script/fungw/presents"))) {
-		if (plug_is_enabled("script"))
-			report_repeat("WARNING: Since there's no suitable system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure.\n");
-		put("/local/pcb/fungw_system", sfalse);
-	}
-	else
-		put("/local/pcb/fungw_system", strue);
-
-	/* generic utils for Makefiles */
-	require("sys/ext_exe", 0, 1);
-	require("sys/sysid", 0, 1);
-
-	/* options for config.h */
-	require("sys/path_sep", 0, 1);
-	require("sys/types/size/*", 0, 1);
-	require("cc/rdynamic", 0, 0);
-	require("cc/soname", 0, 0);
-	require("cc/so_undefined", 0, 0);
-	require("libs/snprintf", 0, 0);
-	require("libs/vsnprintf", 0, 0);
-	require("libs/fs/getcwd", 0, 0);
-	require("libs/fs/stat/macros/*", 0, 0);
-
 	if (istrue(get("/local/pcb/want_dmalloc"))) {
 		require("libs/sul/dmalloc/*", 0, 1);
 	}
@@ -376,9 +281,6 @@ int hook_detect_target()
 		report("byaccic/ureglex are disabled, among with parser generation.\n");
 		put("/local/pcb/want_parsgen_byaccic", sfalse);
 	}
-
-	if (get("cc/rdynamic") == NULL)
-		put("cc/rdynamic", "");
 
 	/* plugin dependencies */
 	plugin_deps(1);
