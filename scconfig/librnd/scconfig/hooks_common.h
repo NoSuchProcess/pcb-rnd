@@ -8,7 +8,7 @@ int hook_custom_arg(const char *key, const char *value);
 /*** implementation ***/
 static void all_plugin_select(const char *state, int force);
 
-static void help1_common(const char *progname)
+static void rnd_help1(const char *progname)
 {
 	printf("./configure: configure %s.\n", progname);
 	printf("\n");
@@ -49,7 +49,7 @@ do { \
 		repeat = strclone(msg); \
 } while(0)
 
-static int hook_custom_arg_common_(const char *key, const char *value)
+static int rnd_hook_custom_arg_(const char *key, const char *value)
 {
 	if (strcmp(key, "prefix") == 0) {
 		report("Setting prefix to '%s'\n", value);
@@ -101,9 +101,9 @@ static int hook_custom_arg_common_(const char *key, const char *value)
 	return 0;
 }
 
-#define hook_custom_arg_common(key, value) \
+#define rnd_hook_custom_arg(key, value) \
 do { \
-	if (hook_custom_arg_common_(key, value)) \
+	if (rnd_hook_custom_arg_(key, value)) \
 		return 1; \
 } while(0)
 
@@ -215,7 +215,7 @@ int plugin_deps(int require)
 }
 
 
-void hook_postinit_common()
+void rnd_hook_postinit()
 {
 	/* DEFAULTS */
 	put("/local/prefix", "/usr/local");
@@ -265,7 +265,7 @@ static int all_plugin_check_explicit(void)
 
 
 /* Runs after all arguments are read and parsed */
-int hook_postarg_common()
+int rnd_hook_postarg()
 {
 	int limit = 128;
 

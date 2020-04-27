@@ -49,7 +49,7 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 
 static void help1(void)
 {
-	help1_common("pcb-rnd");
+	rnd_help1("pcb-rnd");
 
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --dot_pcb_rnd=path         .pcb-rnd config path under $HOME/\n");
@@ -60,7 +60,7 @@ static void help1(void)
  returns true if no further argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
-	hook_custom_arg_common(key, value);
+	rnd_hook_custom_arg(key, value);
 	if (strncmp(key, "workaround-", 11) == 0) {
 		const char *what = key+11;
 		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define PCB_WORKAROUND_GTK_CTRL 1");
@@ -111,7 +111,7 @@ int hook_postinit()
 	pup_hook_postinit();
 	fungw_hook_postinit();
 
-	hook_postinit_common();
+	rnd_hook_postinit();
 
 	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/want_byaccic", sfalse);
@@ -125,7 +125,7 @@ int hook_postinit()
 /* Runs after all arguments are read and parsed */
 int hook_postarg()
 {
-	return hook_postarg_common();
+	return rnd_hook_postarg();
 }
 
 
