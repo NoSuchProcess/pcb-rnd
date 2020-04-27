@@ -158,22 +158,28 @@ pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 }
 
 
+void pcb_append_idpath(gds_t *dst, const pcb_idpath_t *idp)
+{
+	int n;
+
+	for(n = 0; n < idp->len; n++)
+		pcb_append_printf(dst, "/%ld", idp->id[n]);
+}
+
 char *pcb_idpath2str(const pcb_idpath_t *idp, pcb_bool relative)
 {
 	gds_t tmp;
-	int n;
 
 	gds_init(&tmp);
 	gds_enlarge(&tmp, 32);
-
 	if (!relative)
 		tmp.used = strlen(pcb_data_name_by_addr(idp->data_addr, tmp.array));
 
-	for(n = 0; n < idp->len; n++)
-		pcb_append_printf(&tmp, "/%ld", idp->id[n]);
+	pcb_append_idpath(&tmp, idp);
 
 	return tmp.array;
 }
+
 
 static pcb_any_obj_t *idpath2obj(pcb_data_t *data, const pcb_idpath_t *path, int level)
 {
