@@ -310,8 +310,8 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 				/* layer objects need to be checked against objects in the same layer group only */
 				assert(curr->parent_type == PCB_PARENT_LAYER);
 				g = pcb_get_layergrp(PCB, pcb_layer_get_group_(curr->parent.layer));
-				assert(g != NULL);
-				pcb_find_on_layergrp(ctx, g, curr, sb, ctype);
+				if (g != NULL) /* g==NULL for inbound subc layers */
+					pcb_find_on_layergrp(ctx, g, curr, sb, ctype);
 			}
 		}
 	}
