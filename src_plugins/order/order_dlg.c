@@ -17,7 +17,7 @@ static int order_dialog(void)
 		return -1; /* do not open another */
 
 	if (pcb_order_imps.used == 0) {
-		pcb_message(PCB_MSG_ERROR, "OrderPCB(): there are no ordering plugins compiled/loaded\n");
+		rnd_message(PCB_MSG_ERROR, "OrderPCB(): there are no ordering plugins compiled/loaded\n");
 		return -1;
 	}
 

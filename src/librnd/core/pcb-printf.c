@@ -141,7 +141,7 @@ static int inline append_suffix(gds_t *dest, enum pcb_suffix_e suffix_type, cons
  *
  * return 0 on success, -1 on error
  */
-static int CoordsToString(gds_t *dest, pcb_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum pcb_allow_e allow,
+static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum pcb_allow_e allow,
 														 enum pcb_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
@@ -285,7 +285,7 @@ static human_coord_t human_coord[] = {
 };
 #define NUM_HUMAN_COORD (sizeof(human_coord) / sizeof(human_coord[0]))
 
-static inline int try_human_coord(pcb_coord_t coord, const pcb_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
+static inline int try_human_coord(rnd_coord_t coord, const pcb_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
 {
 	double v, frac, save;
 	long int digs, zeros;
@@ -329,7 +329,7 @@ static inline int try_human_coord(pcb_coord_t coord, const pcb_unit_t *unit, dou
 }
 
 /* Same as CoordsToString but take only one coord and print it in human readable format */
-static int CoordsToHumanString(gds_t *dest, pcb_coord_t coord, const gds_t *printf_spec_, enum pcb_suffix_e suffix_type)
+static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *printf_spec_, enum pcb_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
@@ -443,7 +443,7 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 
 		if (*fmt == '%') {
 			const char *ext_unit = "";
-			pcb_coord_t value[10];
+			rnd_coord_t value[10];
 			int count, i;
 
 			gds_truncate(&spec, 0);
@@ -611,7 +611,7 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 				if (*fmt == '*')
 					ext_unit = va_arg(args, const char *);
 				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q')
-					value[0] = va_arg(args, pcb_coord_t);
+					value[0] = va_arg(args, rnd_coord_t);
 				count = 1;
 				switch (*fmt) {
 				case 'q':
@@ -653,30 +653,30 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					break;
 					/* All these fallthroughs are deliberate */
 				case '9':
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 				case '8':
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 				case '7':
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 				case '6':
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 				case '5':
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 				case '4':
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 				case '3':
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 				case '2':
 				case 'D':
 					if (safe & PCB_SAFEPRINT_COORD_ONLY)
 						return -1;
-					value[count++] = va_arg(args, pcb_coord_t);
+					value[count++] = va_arg(args, rnd_coord_t);
 					if (CoordsToString(string, value, count, &spec, mask & PCB_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 					break;
 				case 'd':
 					if (safe & PCB_SAFEPRINT_COORD_ONLY)
 						return -1;
-					value[1] = va_arg(args, pcb_coord_t);
+					value[1] = va_arg(args, rnd_coord_t);
 					if (CoordsToString(string, value, 2, &spec, PCB_UNIT_ALLOW_MM | PCB_UNIT_ALLOW_MIL, suffix) != 0) goto err;
 					break;
 				case '*':

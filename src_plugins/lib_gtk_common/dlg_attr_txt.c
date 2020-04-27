@@ -195,7 +195,7 @@ static char *txt_get_text(pcb_hid_attribute_t *attrib, void *hid_ctx)
 	return gtk_text_buffer_get_text(b, &it, &it2, 0);
 }
 
-static void txt_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool readonly)
+static void txt_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;

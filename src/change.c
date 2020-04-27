@@ -315,9 +315,9 @@ static pcb_opfunc_t InvalLabelFunctions = {
  * changes the thermals on all selected and visible padstacks.
  * Returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid)
+rnd_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgtherm.pcb = PCB;
@@ -336,9 +336,9 @@ pcb_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid
  * changes the size of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_selected_size(int types, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -358,9 +358,9 @@ pcb_bool pcb_chg_selected_size(int types, pcb_coord_t Difference, pcb_bool fixIt
  * changes the clearance size of all selected and visible objects
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_selected_clear_size(int types, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -380,9 +380,9 @@ pcb_bool pcb_chg_selected_clear_size(int types, pcb_coord_t Difference, pcb_bool
  * changes the 2nd size (drilling hole) of all selected and visible objects
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_selected_2nd_size(int types, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -402,9 +402,9 @@ pcb_bool pcb_chg_selected_2nd_size(int types, pcb_coord_t Difference, pcb_bool f
  * changes the internal/self rotation all selected and visible objects
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_rot(int types, double Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_selected_rot(int types, double Difference, rnd_bool fixIt)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -424,9 +424,9 @@ pcb_bool pcb_chg_selected_rot(int types, double Difference, pcb_bool fixIt)
  * changes the clearance flag (join) of all selected and visible lines
  * and/or arcs. Returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_join(int types)
+rnd_bool pcb_chg_selected_join(int types)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -443,9 +443,9 @@ pcb_bool pcb_chg_selected_join(int types)
  * changes the clearance flag (join) of all selected and visible lines
  * and/or arcs. Returns pcb_true if anything has changed
  */
-pcb_bool pcb_set_selected_join(int types)
+rnd_bool pcb_set_selected_join(int types)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -462,9 +462,9 @@ pcb_bool pcb_set_selected_join(int types)
  * changes the clearance flag (join) of all selected and visible lines
  * and/or arcs. Returns pcb_true if anything has changed
  */
-pcb_bool pcb_clr_selected_join(int types)
+rnd_bool pcb_clr_selected_join(int types)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -481,9 +481,9 @@ pcb_bool pcb_clr_selected_join(int types)
  * changes the nonetlist-flag of all selected and visible subcircuits
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_nonetlist(int types)
+rnd_bool pcb_chg_selected_nonetlist(int types)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -500,9 +500,9 @@ pcb_bool pcb_chg_selected_nonetlist(int types)
  * changes the angle of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgangle.pcb = PCB;
@@ -522,9 +522,9 @@ pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference,
  * changes the radius of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -545,9 +545,9 @@ TODO("subc: check if it is true:")
  * changes the size of the passed object; subc size is silk size (TODO: check if it is true)
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -568,9 +568,9 @@ TODO("subc: check if it is true:")
  * changes the size of the passed object; element size is pin ring sizes
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -590,9 +590,9 @@ pcb_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
  * changes the radius of the passed object (e.g. arc width/height)
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, pcb_coord_t r, pcb_bool fixIt)
+rnd_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, rnd_coord_t r, rnd_bool fixIt)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -612,9 +612,9 @@ pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
  * changes the angles of the passed object (e.g. arc start/ctx->chgsize.value)
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool fixIt)
+rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, rnd_bool fixIt)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgangle.pcb = PCB;
@@ -635,9 +635,9 @@ pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
  * changes the clearance size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt)
+rnd_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -658,9 +658,9 @@ pcb_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pc
  * Returns pcb_true if anything is changed
  *
  */
-pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid)
+rnd_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgtherm.pcb = PCB;
@@ -679,9 +679,9 @@ pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
  * changes the 2nd size of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t Difference, pcb_bool fixIt, pcb_bool incundo)
+rnd_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt, rnd_bool incundo)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -702,9 +702,9 @@ pcb_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
  * changes the internal/self rotation of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_rot(int Type, void *Ptr1, void *Ptr2, void *Ptr3, double Difference, pcb_bool fixIt, pcb_bool incundo)
+rnd_bool pcb_chg_obj_rot(int Type, void *Ptr1, void *Ptr2, void *Ptr3, double Difference, rnd_bool fixIt, rnd_bool incundo)
 {
-	pcb_bool change;
+	rnd_bool change;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -745,7 +745,7 @@ void *pcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
  * changes the clearance-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+rnd_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -763,7 +763,7 @@ pcb_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * sets the clearance-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+rnd_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -781,7 +781,7 @@ pcb_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * clears the clearance-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+rnd_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 
@@ -799,7 +799,7 @@ pcb_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
  * changes the square-flag of the passed object
  * Returns pcb_true if anything is changed
  */
-pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+rnd_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
 

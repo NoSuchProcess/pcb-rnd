@@ -38,26 +38,26 @@
 struct pcb_text_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
 	int Scale;                    /* text scaling in percent */
-	pcb_coord_t X, Y;             /* origin */
+	rnd_coord_t X, Y;             /* origin */
 	pcb_font_id_t fid;
 	char *TextString;             /* string */
-	pcb_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
-	pcb_coord_t clearance;        /* clearance around the object in polygon if flags have PCB_FLAG_CLEARLINE */
+	rnd_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
+	rnd_coord_t clearance;        /* clearance around the object in polygon if flags have PCB_FLAG_CLEARLINE */
 	double rot;                   /* used when Direction is PCB_TEXT_FREEROT */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */
-#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)pcb_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
-#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((pcb_coord_t)pcb_round((COORD) * (100.0 / (double)(TEXTSCALE))))
+#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)pcb_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
+#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)pcb_round((COORD) * (100.0 / (double)(TEXTSCALE))))
 
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 pcb_text_t *pcb_text_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_text_free(pcb_text_t * data);
-pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, pcb_coord_t X, pcb_coord_t Y, double rot, int Scale, pcb_coord_t thickness, const char *TextString, pcb_flag_t Flags);
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src);
-pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, pcb_coord_t dx, pcb_coord_t dy);
+pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, rnd_coord_t dx, rnd_coord_t dy);
 void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);
 
 
@@ -65,11 +65,11 @@ void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont);
 
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text);
-void pcb_text_rotate90(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
-void pcb_text_rotate(pcb_text_t *Text, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, double rotdeg);
+void pcb_text_rotate90(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
+void pcb_text_rotate(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, double rotdeg);
 void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth);
-void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t y_offs, pcb_bool undoable);
-void pcb_text_mirror_coords(pcb_text_t *text, pcb_coord_t y_offs, pcb_bool undoable); /* mirror the coords but do not mirror the text itself (no on-solder) */
+void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, rnd_coord_t y_offs, rnd_bool undoable);
+void pcb_text_mirror_coords(pcb_text_t *text, rnd_coord_t y_offs, rnd_bool undoable); /* mirror the coords but do not mirror the text itself (no on-solder) */
 void pcb_text_set_font(pcb_text_t *text, pcb_font_id_t fid);
 void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text);
 
@@ -87,7 +87,7 @@ void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save)
 void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **save);
 
 /* Low level draw call for direct rendering on preview */
-void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy);
+void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, int scale, double rotdeg, int mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
 
 /* Recalculate the bounding box of all dynamic text objects that are
    directly under data - useful e.g. on parent attr change */
@@ -95,7 +95,7 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data);
 
 /* Return the old direction value (n*90 deg rotation) for text rotation value.
    Returns false if has a rounding error greater than 0.5 deg */
-pcb_bool pcb_text_old_direction(int *dir_out, double rot);
+rnd_bool pcb_text_old_direction(int *dir_out, double rot);
 
 /* hash and eq */
 int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_host_trans_t *tr2, const pcb_text_t *t2);
@@ -109,7 +109,7 @@ void pcb_text_uninit(void);
 
 #define pcb_text_move(t,dx,dy)                                       \
 	do {                                                               \
-		pcb_coord_t __dx__ = (dx), __dy__ = (dy);                        \
+		rnd_coord_t __dx__ = (dx), __dy__ = (dy);                        \
 		pcb_text_t *__t__ = (t);                                         \
 		PCB_BOX_MOVE_LOWLEVEL(&((__t__)->BoundingBox), __dx__, __dy__);  \
 		PCB_BOX_MOVE_LOWLEVEL(&((__t__)->bbox_naked), __dx__, __dy__);  \

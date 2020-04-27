@@ -37,17 +37,17 @@
 #include "funchash_core.h"
 
 #define GAP 10000
-static pcb_coord_t minx;
-static pcb_coord_t miny;
-static pcb_coord_t maxx;
-static pcb_coord_t maxy;
+static rnd_coord_t minx;
+static rnd_coord_t miny;
+static rnd_coord_t maxx;
+static rnd_coord_t maxy;
 
 /* the same for subcircuits
    Must initialize statics above before calling for the first time.
    This was taken almost entirely from pcb_act_DisperseElements, with cleanup */
 static void place_subc(pcb_subc_t *sc)
 {
-	pcb_coord_t dx, dy, ox = 0, oy = 0;
+	rnd_coord_t dx, dy, ox = 0, oy = 0;
 
 	pcb_subc_get_origin(sc, &ox, &oy);
 
@@ -85,7 +85,7 @@ static void place_subc(pcb_subc_t *sc)
 /* Return true if term1,term2 would be the best order, else term2,term1, based on pad loc. */
 static int padorder(pcb_subc_t *parent1, pcb_any_obj_t *term1, pcb_subc_t *parent2, pcb_any_obj_t *term2)
 {
-	pcb_coord_t x1, x2;
+	rnd_coord_t x1, x2;
 
 	x1 = term1->BoundingBox.X1 - (parent1->BoundingBox.X1 + parent1->BoundingBox.X2) / 2;
 	x2 = term2->BoundingBox.X1 - (parent2->BoundingBox.X1 + parent2->BoundingBox.X2) / 2;
@@ -120,7 +120,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	}
 
 	if (nl->used == 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't use SmartDisperse because no netlist is loaded.\n");
+		rnd_message(PCB_MSG_ERROR, "Can't use SmartDisperse because no netlist is loaded.\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}

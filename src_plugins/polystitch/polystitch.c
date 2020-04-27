@@ -30,7 +30,7 @@
 #include "obj_poly_draw.h"
 
 /* Given the X,Y, find the inmost (closest) polygon */
-static pcb_poly_t *find_crosshair_poly(pcb_coord_t x, pcb_coord_t y)
+static pcb_poly_t *find_crosshair_poly(rnd_coord_t x, rnd_coord_t y)
 {
 	double best = 0, dist;
 	pcb_poly_t *res = NULL;
@@ -41,8 +41,8 @@ static pcb_poly_t *find_crosshair_poly(pcb_coord_t x, pcb_coord_t y)
 		PCB_POLY_POINT_LOOP(polygon);
 		{
 			/* point */
-			pcb_coord_t dx = x - point->X;
-			pcb_coord_t dy = y - point->Y;
+			rnd_coord_t dx = x - point->X;
+			rnd_coord_t dy = y - point->Y;
 			dist = (double)dx * dx + (double)dy * dy;
 			if ((dist < best) || (res == NULL)) {
 				res = polygon;
@@ -54,7 +54,7 @@ static pcb_poly_t *find_crosshair_poly(pcb_coord_t x, pcb_coord_t y)
 	PCB_ENDALL_LOOP;
 
 	if (res == NULL)
-		pcb_message(PCB_MSG_ERROR, "Cannot find any polygons");
+		rnd_message(PCB_MSG_ERROR, "Cannot find any polygons");
 
 	return res;
 }
@@ -76,14 +76,14 @@ static pcb_poly_t *find_enclosing_poly(pcb_poly_t *inner_poly)
 	}
 	PCB_END_LOOP;
 
-	pcb_message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
+	rnd_message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
 	return NULL;
 }
 
 
 static fgw_error_t pcb_act_polystitch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_poly_t *inner_poly, *outer_poly;
 
 	rnd_hid_get_coords("Select a corner on the inner polygon", &x, &y, 0);

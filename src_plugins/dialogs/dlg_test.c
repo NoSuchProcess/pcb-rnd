@@ -64,7 +64,7 @@ static void cb_text_offs(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 static void cb_text_ro(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
-static pcb_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
+static rnd_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 
 static const char * test_xpm[] = {
 "8 8 4 1",
@@ -277,7 +277,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_DAD_AUTORUN("dlg_test", ctx.dlg, "attribute dialog test", &ctx, failed);
 
 	if (failed != 0)
-		pcb_message(PCB_MSG_WARNING, "Test dialog cancelled");
+		rnd_message(PCB_MSG_WARNING, "Test dialog cancelled");
 
 	PCB_DAD_FREE(ctx.dlg);
 
@@ -288,7 +288,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	static pcb_hid_attr_val_t val;
-	static pcb_bool st;
+	static rnd_bool st;
 	printf("Chg\n");
 
 	st = !st;
@@ -517,7 +517,7 @@ static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_
 }
 
 
-static pcb_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static rnd_bool prv_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	pcb_printf("Mouse %d %mm %mm\n", kind, x, y);
 	return (kind == PCB_HID_MOUSE_PRESS) || (kind == PCB_HID_MOUSE_RELEASE);

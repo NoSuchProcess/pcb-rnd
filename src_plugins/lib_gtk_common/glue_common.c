@@ -291,7 +291,7 @@ static void ghid_load_bg_image(void)
 	ghidgui->bg_pixmap.image = NULL;
 	if (pcb_conf_hid_gtk.plugins.hid_gtk.bg_image != NULL) {
 		if (pcb_pixmap_load(ghidgui->hidlib, &pxm, pcb_conf_hid_gtk.plugins.hid_gtk.bg_image) != 0) {
-			pcb_message(PCB_MSG_ERROR, "Failed to load pixmap %s for background image\n", pcb_conf_hid_gtk.plugins.hid_gtk.bg_image);
+			rnd_message(PCB_MSG_ERROR, "Failed to load pixmap %s for background image\n", pcb_conf_hid_gtk.plugins.hid_gtk.bg_image);
 			return;
 		}
 		ghidgui->bg_pixmap.pxm = &pxm;
@@ -304,7 +304,7 @@ void ghid_draw_area_update(pcb_gtk_port_t *port, GdkRectangle *rect)
 	gdk_window_invalidate_rect(gtkc_widget_get_window(port->drawing_area), rect, FALSE);
 }
 
-void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+void pcb_gtk_previews_invalidate_lr(rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
 	pcb_box_t screen;
 	screen.X1 = left; screen.X2 = right;

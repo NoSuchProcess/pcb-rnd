@@ -35,7 +35,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	/* load file */
 	memset(&buff, 0, sizeof(buff));
 	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != pcb_true) {
-		pcb_message(PCB_MSG_ERROR, "Warning: failed to load %s\n", fpath);
+		rnd_message(PCB_MSG_ERROR, "Warning: failed to load %s\n", fpath);
 		return -1;
 	}
 
@@ -107,7 +107,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 	/* load file */
 	memset(&buff, 0, sizeof(buff));
 	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != pcb_true) {
-		pcb_message(PCB_MSG_ERROR, "Warning: failed to load %s\n", fpath);
+		rnd_message(PCB_MSG_ERROR, "Warning: failed to load %s\n", fpath);
 		goto err;
 	}
 
@@ -138,7 +138,7 @@ err:;
 
 static void fp_board_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
-	pcb_message(PCB_MSG_ERROR, "Internal error: fp_board_fclose() shouldn't have been called. Please report this bug.\n");
+	rnd_message(PCB_MSG_ERROR, "Internal error: fp_board_fclose() shouldn't have been called. Please report this bug.\n");
 }
 
 

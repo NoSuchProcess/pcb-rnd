@@ -92,9 +92,9 @@ const struct {
 	double m;											/* annealing stage cutoff constant */
 	double gamma;									/* annealing schedule constant */
 	int good_ratio;								/* ratio of moves to good moves for halting */
-	pcb_bool fast;										/* ignore SMD/pin conflicts */
-	pcb_coord_t large_grid_size;				/* snap perturbations to this grid when T is high */
-	pcb_coord_t small_grid_size;				/* snap to this grid when T is small. */
+	rnd_bool fast;										/* ignore SMD/pin conflicts */
+	rnd_coord_t large_grid_size;				/* snap perturbations to this grid when T is high */
+	rnd_coord_t small_grid_size;				/* snap to this grid when T is small. */
 }
 /* wire cost is manhattan distance (in mils), thus 1 inch = 1000 */ CostParameter =
 {
@@ -120,7 +120,7 @@ enum ewhich { SHIFT, ROTATE, EXCHANGE };
 typedef struct {
 	pcb_any_obj_t *comp;
 	enum ewhich which;
-	pcb_coord_t DX, DY;									/* for shift */
+	rnd_coord_t DX, DY;									/* for shift */
 	unsigned rotate;							/* for rotate/flip */
 	pcb_any_obj_t *other;					/* for exchange */
 } PerturbationType;
@@ -174,7 +174,7 @@ static pcb_layergrp_id_t obj_layergrp(const pcb_any_obj_t *obj)
 				return layer->meta.real.grp;
 			return SLayer;  /* any layer will do */
 		default:
-			pcb_message(PCB_MSG_ERROR, "Odd terminal type encountered in obj_layergrp()\n");
+			rnd_message(PCB_MSG_ERROR, "Odd terminal type encountered in obj_layergrp()\n");
 	}
 	return -1;
 }
@@ -224,7 +224,7 @@ struct r_neighbor_info {
 	pcb_box_t trap;
 	pcb_direction_t search_dir;
 };
-#define ROTATEBOX(box) { pcb_coord_t t;\
+#define ROTATEBOX(box) { rnd_coord_t t;\
     t = (box).X1; (box).X1 = - (box).Y1; (box).Y1 = t;\
     t = (box).X2; (box).X2 = - (box).Y2; (box).Y2 = t;\
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
@@ -317,8 +317,8 @@ static double ComputeCost(double T0, double T)
 	double delta4 = 0;						/* alignment bonus */
 	double delta5 = 0;						/* total area penalty */
 	pcb_cardinal_t i;
-	pcb_coord_t minx, maxx, miny, maxy;
-	pcb_bool allpads, allsameside;
+	rnd_coord_t minx, maxx, miny, maxy;
+	rnd_bool allpads, allsameside;
 	pcb_cardinal_t thegroup;
 	pcb_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
 	pcb_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
@@ -350,7 +350,7 @@ static double ComputeCost(double T0, double T)
 			allsameside = pcb_true;
 
 			for(t = pcb_termlist_next(t); t != NULL; t = pcb_termlist_next(t)) {
-				pcb_coord_t X, Y;
+				rnd_coord_t X, Y;
 				obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 				pcb_obj_center(obj, &X, &Y);
 				PCB_MAKE_MIN(minx, X);
@@ -382,7 +382,7 @@ static double ComputeCost(double T0, double T)
 	{
 		pcb_box_list_t *thisside, *otherside;
 		pcb_box_t *box, *lastbox = NULL;
-		pcb_coord_t clearance;
+		rnd_coord_t clearance;
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 		int onbtm = 0;
@@ -537,8 +537,8 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 	}
 	/* penalize total area used by this layout */
 	{
-		pcb_coord_t minX = PCB_MAX_COORD, minY = PCB_MAX_COORD;
-		pcb_coord_t maxX = -PCB_MAX_COORD, maxY = -PCB_MAX_COORD;
+		rnd_coord_t minX = PCB_MAX_COORD, minY = PCB_MAX_COORD;
+		rnd_coord_t maxX = -PCB_MAX_COORD, maxY = -PCB_MAX_COORD;
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			PCB_MAKE_MIN(minX, subc->BoundingBox.X1);
@@ -559,7 +559,7 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 	return W + (delta1 + delta2 + delta3 - delta4 + delta5);
 }
 
-static pcb_bool is_smd(const pcb_any_obj_t *obj)
+static rnd_bool is_smd(const pcb_any_obj_t *obj)
 {
 	pcb_subc_t *sc = (pcb_subc_t *)obj;
 	pcb_pstk_t *ps;
@@ -578,7 +578,7 @@ static pcb_bool is_smd(const pcb_any_obj_t *obj)
 	return 1;
 }
 
-static pcb_bool on_bottom(const pcb_any_obj_t *obj)
+static rnd_bool on_bottom(const pcb_any_obj_t *obj)
 {
 	int onbtm = 0;
 	pcb_subc_get_side((pcb_subc_t *)obj, &onbtm);
@@ -602,7 +602,7 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 	switch (pcb_rand() % ((vtp0_len(selected) > 1) ? 3 : 2)) {
 	case 0:
 		{														/* shift! */
-			pcb_coord_t grid;
+			rnd_coord_t grid;
 			double scaleX = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_x / 3);
 			double scaleY = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_y / 3);
 			pt.which = SHIFT;
@@ -627,7 +627,7 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 	case 1:
 		{														/* flip/rotate! */
 			/* only flip if it's an SMD component */
-			pcb_bool isSMD = is_smd(pt.comp);
+			rnd_bool isSMD = is_smd(pt.comp);
 
 			pt.which = ROTATE;
 			pt.rotate = isSMD ? (pcb_rand() & 3) : (1 + (pcb_rand() % 3));
@@ -653,10 +653,10 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 	return pt;
 }
 
-void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
+void doPerturb(vtp0_t *selected, PerturbationType *pt, rnd_bool undo)
 {
 	pcb_box_t *bb;
-	pcb_coord_t bbcx, bbcy;
+	rnd_coord_t bbcx, bbcy;
 	pcb_subc_t *subc = (pcb_subc_t *)pt->comp;
 	/* compute center of element bounding box */
 
@@ -667,7 +667,7 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 	switch (pt->which) {
 	case SHIFT:
 		{
-			pcb_coord_t DX = pt->DX, DY = pt->DY;
+			rnd_coord_t DX = pt->DX, DY = pt->DY;
 			if (undo) {
 				DX = -DX;
 				DY = -DY;
@@ -686,7 +686,7 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 			}
 			else {
 				pcb_cardinal_t n;
-				pcb_coord_t y = bb->Y1;
+				rnd_coord_t y = bb->Y1;
 				pcb_subc_change_side(subc, (bb->Y1+bb->Y2)/2);
 				/* mirroring moves the subc.  move it back. */
 				pcb_subc_move(subc, 0, y - subc->BoundingBox.Y1, 1);
@@ -700,10 +700,10 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 	case EXCHANGE:
 		{
 			/* first exchange positions */
-			pcb_coord_t x1 = bb->X1;
-			pcb_coord_t y1 = bb->Y1;
-			pcb_coord_t x2 = pt->other->BoundingBox.X1;
-			pcb_coord_t y2 = pt->other->BoundingBox.Y1;
+			rnd_coord_t x1 = bb->X1;
+			rnd_coord_t y1 = bb->Y1;
+			rnd_coord_t x2 = pt->other->BoundingBox.X1;
+			rnd_coord_t y2 = pt->other->BoundingBox.Y1;
 
 			pcb_subc_move(subc, x2 - x1, y2 - y1, 1);
 			pcb_subc_move((pcb_subc_t *)pt->other, x1 - x2, y1 - y2, 1);
@@ -731,18 +731,18 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, pcb_bool undo)
 /* ---------------------------------------------------------------------------
  * Auto-place selected components.
  */
-pcb_bool AutoPlaceSelected(void)
+rnd_bool AutoPlaceSelected(void)
 {
 	vtp0_t Selected;
 	PerturbationType pt;
 	double C00, C0, T0;
-	pcb_bool changed = pcb_false;
+	rnd_bool changed = pcb_false;
 
 	vtp0_init(&Selected);
 
 	Selected = collectSelectedSubcircuits();
 	if (vtp0_len(&Selected) == 0) {
-		pcb_message(PCB_MSG_ERROR, "No subcircuits selected to autoplace.\n");
+		rnd_message(PCB_MSG_ERROR, "No subcircuits selected to autoplace.\n");
 		goto done;
 	}
 

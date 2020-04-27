@@ -194,7 +194,7 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		rot = 0;
 
 	if (pcb_pstk_change_instance(ps, NULL, NULL, &rot, NULL, NULL) == 0) {
-		pcb_coord_t nx = ps->x, ny = ps->y;
+		rnd_coord_t nx = ps->x, ny = ps->y;
 
 
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
@@ -273,7 +273,7 @@ void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 
 void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
-	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value / 2 : ps->Clearance + ctx->chgsize.value / 2;
+	rnd_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value / 2 : ps->Clearance + ctx->chgsize.value / 2;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
 		return NULL;

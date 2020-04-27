@@ -198,7 +198,7 @@ void pcb_event(rnd_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 		va_start(ap, fmt);
 		for (a++, fa++; *fmt != '\0'; fmt++, a++, fa++, argc++) {
 			if (argc >= EVENT_MAX_ARG) {
-				pcb_message(PCB_MSG_ERROR, "pcb_event(): too many arguments\n");
+				rnd_message(PCB_MSG_ERROR, "pcb_event(): too many arguments\n");
 				break;
 			}
 			switch (*fmt) {
@@ -225,7 +225,7 @@ void pcb_event(rnd_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 				break;
 			case 'c':
 				a->type = PCB_EVARG_COORD;
-				a->d.c = va_arg(ap, pcb_coord_t);
+				a->d.c = va_arg(ap, rnd_coord_t);
 				fa->type = FGW_LONG;
 				fa->val.nat_long = a->d.c;
 				fgw_arg_conv(&rnd_fgw, fa, FGW_COORD_);
@@ -239,7 +239,7 @@ void pcb_event(rnd_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 				a->type = PCB_EVARG_INT;
 				a->d.i = 0;
 				fa->type = FGW_INVALID;
-				pcb_message(PCB_MSG_ERROR, "pcb_event(): invalid argument type '%c'\n", *fmt);
+				rnd_message(PCB_MSG_ERROR, "pcb_event(): invalid argument type '%c'\n", *fmt);
 				break;
 			}
 		}

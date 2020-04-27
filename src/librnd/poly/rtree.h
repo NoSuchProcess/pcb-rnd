@@ -30,7 +30,7 @@
 #include <librnd/core/global_typedefs.h>
 
 typedef long int pcb_rtree_cardinal_t;
-typedef pcb_coord_t pcb_rtree_coord_t;
+typedef rnd_coord_t pcb_rtree_coord_t;
 
 /* Instantiate an rtree */
 #define RTR(n)  pcb_rtree_ ## n

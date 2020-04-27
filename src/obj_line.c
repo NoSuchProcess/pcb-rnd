@@ -122,7 +122,7 @@ static const char core_line_cookie[] = "core-line";
 
 typedef struct {
 	pcb_line_t *line; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
-	pcb_coord_t Thickness, Clearance;
+	rnd_coord_t Thickness, Clearance;
 	pcb_point_t Point1, Point2;
 } undo_line_geo_t;
 
@@ -137,8 +137,8 @@ static int undo_line_geo_swap(void *udata)
 
 	rnd_swap(pcb_point_t, g->Point1, g->line->Point1);
 	rnd_swap(pcb_point_t, g->Point2, g->line->Point2);
-	rnd_swap(pcb_coord_t, g->Thickness, g->line->Thickness);
-	rnd_swap(pcb_coord_t, g->Clearance, g->line->Clearance);
+	rnd_swap(rnd_coord_t, g->Thickness, g->line->Thickness);
+	rnd_swap(rnd_coord_t, g->Clearance, g->line->Clearance);
 
 	pcb_line_bbox(g->line);
 	if (layer->line_tree != NULL)
@@ -164,8 +164,8 @@ static const uundo_oper_t undo_line_geo = {
 
 
 struct line_info {
-	pcb_coord_t X1, X2, Y1, Y2;
-	pcb_coord_t Thickness, Clearance;
+	rnd_coord_t X1, X2, Y1, Y2;
+	rnd_coord_t Thickness, Clearance;
 	pcb_flag_t Flags;
 	pcb_line_t test, *ans;
 	jmp_buf env;
@@ -244,7 +244,7 @@ static pcb_r_dir_t line_callback(const pcb_box_t * b, void *cl)
 
 
 /* creates a new line on a layer and checks for overlap and extension */
-pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness, rnd_coord_t Clearance, pcb_flag_t Flags)
 {
 	struct line_info info;
 	pcb_box_t search;
@@ -290,7 +290,7 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y
 	return pcb_line_new(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 }
 
-pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags)
+pcb_line_t *pcb_line_new(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness, rnd_coord_t Clearance, pcb_flag_t Flags)
 {
 	pcb_line_t *Line;
 
@@ -326,7 +326,7 @@ pcb_line_t *pcb_line_dup(pcb_layer_t *dst, pcb_line_t *src)
 	return pcb_line_copy_meta(l, src);
 }
 
-pcb_line_t *pcb_line_dup_at(pcb_layer_t *dst, pcb_line_t *src, pcb_coord_t dx, pcb_coord_t dy)
+pcb_line_t *pcb_line_dup_at(pcb_layer_t *dst, pcb_line_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_line_t *l = pcb_line_new(dst, src->Point1.X + dx, src->Point1.Y + dy, src->Point2.X + dx, src->Point2.Y + dy, src->Thickness, src->Clearance, src->Flags);
 	return pcb_line_copy_meta(l, src);
@@ -344,7 +344,7 @@ void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line)
 
 static void pcb_line_bbox_(const pcb_line_t *Line, pcb_box_t *dst, int mini)
 {
-	pcb_coord_t width = mini ? (Line->Thickness + 1) / 2 : (Line->Thickness + Line->Clearance + 1) / 2;
+	rnd_coord_t width = mini ? (Line->Thickness + 1) / 2 : (Line->Thickness + Line->Clearance + 1) / 2;
 
 	/* Adjust for our discrete polygon approximation */
 	width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
@@ -387,7 +387,7 @@ unsigned int pcb_line_hash(const pcb_host_trans_t *tr, const pcb_line_t *l)
 	unsigned int crd = 0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) {
-		pcb_coord_t x1, y1, x2, y2;
+		rnd_coord_t x1, y1, x2, y2;
 		pcb_hash_tr_coords(tr, &x1, &y1, l->Point1.X, l->Point1.Y);
 		pcb_hash_tr_coords(tr, &x2, &y2, l->Point2.X, l->Point2.Y);
 		crd = pcb_hash_coord(x1) ^ pcb_hash_coord(y1) ^ pcb_hash_coord(x2) ^ pcb_hash_coord(y2);
@@ -398,10 +398,10 @@ unsigned int pcb_line_hash(const pcb_host_trans_t *tr, const pcb_line_t *l)
 }
 
 
-pcb_coord_t pcb_line_length(const pcb_line_t *line)
+rnd_coord_t pcb_line_length(const pcb_line_t *line)
 {
-	pcb_coord_t dx = line->Point1.X - line->Point2.X;
-	pcb_coord_t dy = line->Point1.Y - line->Point2.Y;
+	rnd_coord_t dx = line->Point1.X - line->Point2.X;
+	rnd_coord_t dy = line->Point1.Y - line->Point2.Y;
 TODO(": use the distance func instead")
 	return pcb_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
 }
@@ -413,7 +413,7 @@ double pcb_line_area(const pcb_line_t *line)
 		+ (double)line->Thickness * (double)line->Thickness * M_PI; /* cap circles */
 }
 
-void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y)
+void pcb_sqline_to_rect(const pcb_line_t *line, rnd_coord_t *x, rnd_coord_t *y)
 {
 	double l, vx, vy, nx, ny, width, x1, y1, x2, y2, dx, dy;
 
@@ -436,14 +436,14 @@ void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y)
 	nx = -vy;
 	ny = vx;
 
-	x[0] = (pcb_coord_t)pcb_round(x1 - vx * width + nx * width);
-	y[0] = (pcb_coord_t)pcb_round(y1 - vy * width + ny * width);
-	x[1] = (pcb_coord_t)pcb_round(x1 - vx * width - nx * width);
-	y[1] = (pcb_coord_t)pcb_round(y1 - vy * width - ny * width);
-	x[2] = (pcb_coord_t)pcb_round(x2 + vx * width - nx * width);
-	y[2] = (pcb_coord_t)pcb_round(y2 + vy * width - ny * width);
-	x[3] = (pcb_coord_t)pcb_round(x2 + vx * width + nx * width);
-	y[3] = (pcb_coord_t)pcb_round(y2 + vy * width + ny * width);
+	x[0] = (rnd_coord_t)pcb_round(x1 - vx * width + nx * width);
+	y[0] = (rnd_coord_t)pcb_round(y1 - vy * width + ny * width);
+	x[1] = (rnd_coord_t)pcb_round(x1 - vx * width - nx * width);
+	y[1] = (rnd_coord_t)pcb_round(y1 - vy * width - ny * width);
+	x[2] = (rnd_coord_t)pcb_round(x2 + vx * width - nx * width);
+	y[2] = (rnd_coord_t)pcb_round(y2 + vy * width - ny * width);
+	x[3] = (rnd_coord_t)pcb_round(x2 + vx * width + nx * width);
+	y[3] = (rnd_coord_t)pcb_round(y2 + vy * width + ny * width);
 }
 
 void pcb_line_pre(pcb_line_t *line)
@@ -496,7 +496,7 @@ void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_line_t *l
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
 		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
-			pcb_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_lineop_move_buffer\n");
+			rnd_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_lineop_move_buffer\n");
 			return NULL;
 		}
 		dstly = &ctx->buffer.dst->Layer[lid];
@@ -521,7 +521,7 @@ void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_line_t *l
 /* changes the size of a line */
 void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Thickness + ctx->chgsize.value;
+	rnd_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line))
 		return NULL;
@@ -543,7 +543,7 @@ void *pcb_lineop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 /*changes the clearance size of a line */
 void *pcb_lineop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Clearance + ctx->chgsize.value;
+	rnd_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Line->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line))
 		return NULL;
@@ -756,7 +756,7 @@ void *pcb_lineop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_l
  * moves a line between layers
  */
 struct via_info {
-	pcb_coord_t X, Y;
+	rnd_coord_t X, Y;
 	jmp_buf env;
 };
 
@@ -781,7 +781,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	void *ptr1, *ptr2, *ptr3;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line)) {
-		pcb_message(PCB_MSG_WARNING, "Sorry, line object is locked\n");
+		rnd_message(PCB_MSG_WARNING, "Sorry, line object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)
@@ -908,14 +908,14 @@ void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line)
 }
 
 /* rotates a line in 90 degree steps */
-void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_line_rotate90(pcb_line_t *Line, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	PCB_COORD_ROTATE90(Line->Point1.X, Line->Point1.Y, X, Y, Number);
 	PCB_COORD_ROTATE90(Line->Point2.X, Line->Point2.Y, X, Y, Number);
 	/* keep horizontal, vertical Point2 > Point1 */
 	if (Line->Point1.X == Line->Point2.X) {
 		if (Line->Point1.Y > Line->Point2.Y) {
-			pcb_coord_t t;
+			rnd_coord_t t;
 			t = Line->Point1.Y;
 			Line->Point1.Y = Line->Point2.Y;
 			Line->Point2.Y = t;
@@ -923,7 +923,7 @@ void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	}
 	else if (Line->Point1.Y == Line->Point2.Y) {
 		if (Line->Point1.X > Line->Point2.X) {
-			pcb_coord_t t;
+			rnd_coord_t t;
 			t = Line->Point1.X;
 			Line->Point1.X = Line->Point2.X;
 			Line->Point2.X = t;
@@ -933,7 +933,7 @@ void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned 
 	pcb_line_bbox(Line);
 }
 
-void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina)
+void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina)
 {
 	if (layer->line_tree != NULL)
 		pcb_r_delete_entry(layer->line_tree, (pcb_box_t *) line);
@@ -944,7 +944,7 @@ void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_co
 		pcb_r_insert_entry(layer->line_tree, (pcb_box_t *) line);
 }
 
-void pcb_line_mirror(pcb_line_t *line, pcb_coord_t y_offs, pcb_bool undoable)
+void pcb_line_mirror(pcb_line_t *line, rnd_coord_t y_offs, rnd_bool undoable)
 {
 	undo_line_geo_t gtmp, *g = &gtmp;
 
@@ -1059,7 +1059,7 @@ void *pcb_lineop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line)
 {
 	pcb_line_t *line;
-	pcb_coord_t X, Y;
+	rnd_coord_t X, Y;
 
 	if (((Line->Point1.X == ctx->insert.x) && (Line->Point1.Y == ctx->insert.y)) ||
 			((Line->Point2.X == ctx->insert.x) && (Line->Point2.Y == ctx->insert.y)))
@@ -1121,9 +1121,9 @@ void *pcb_lineop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_line
 
 /*** draw ***/
 
-static pcb_bool is_line_term_vert(const pcb_line_t *line)
+static rnd_bool is_line_term_vert(const pcb_line_t *line)
 {
-	pcb_coord_t dx, dy;
+	rnd_coord_t dx, dy;
 
 	dx = line->Point1.X - line->Point2.X;
 	if (dx < 0)
@@ -1156,7 +1156,7 @@ void pcb_line_draw_label(pcb_draw_info_t *info, pcb_line_t *line)
 
 void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 {
-	pcb_coord_t thickness = line->Thickness;
+	rnd_coord_t thickness = line->Thickness;
 
 	if (delayed_terms_enabled && (line->term != NULL)) {
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)line);

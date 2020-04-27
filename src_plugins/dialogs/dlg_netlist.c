@@ -179,7 +179,7 @@ static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pc
 		term++;
 		obj = pcb_term_find_name(ctx->pcb, ctx->pcb->Data, PCB_LYT_COPPER, refdes, term, NULL, NULL);
 		if (obj != NULL) {
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			pcb_obj_center(obj, &x, &y);
 			pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", x, y, 1);
 		}
@@ -229,7 +229,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		free(tmp);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
+		rnd_message(PCB_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
 		return;
 	}
 	pcb_gui->invalidate_all(pcb_gui);
@@ -302,7 +302,7 @@ static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	}
 }
 
-static pcb_bool netlist_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static rnd_bool netlist_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false;
 }

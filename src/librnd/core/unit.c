@@ -152,7 +152,7 @@ int pcb_get_n_units(int aliases_too)
 	return num_base;
 }
 
-double pcb_coord_to_unit(const pcb_unit_t *unit, pcb_coord_t x)
+double pcb_coord_to_unit(const pcb_unit_t *unit, rnd_coord_t x)
 {
 	double base;
 	if (unit == NULL)
@@ -165,7 +165,7 @@ double pcb_coord_to_unit(const pcb_unit_t *unit, pcb_coord_t x)
 	return x * unit->scale_factor * base;
 }
 
-pcb_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x)
+rnd_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x)
 {
 	double base, res;
 

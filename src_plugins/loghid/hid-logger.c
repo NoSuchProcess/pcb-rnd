@@ -37,7 +37,7 @@ static int log_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return delegatee_->parse_arguments(delegatee_, argc, argv);
 }
 
-static void log_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void log_invalidate_lr(pcb_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
 	pcb_fprintf(out_, "invalidate_lr(%mm, %mm, %mm, %mm)\n", left, right, top, bottom);
 	delegatee_->invalidate_lr(hid, left, right, top, bottom);
@@ -49,13 +49,13 @@ static void log_invalidate_all(pcb_hid_t *hid)
 	delegatee_->invalidate_all(hid);
 }
 
-static void log_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_complete)
+static void log_notify_crosshair_change(pcb_hid_t *hid, rnd_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_hid_notify_crosshair_change(%s)\n", changes_complete ? "true" : "false");
 	delegatee_->notify_crosshair_change(hid, changes_complete);
 }
 
-static void log_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete)
+static void log_notify_mark_change(pcb_hid_t *hid, rnd_bool changes_complete)
 {
 	pcb_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
 	delegatee_->notify_mark_change(hid, changes_complete);
@@ -85,7 +85,7 @@ static void log_destroy_gc(pcb_hid_gc_t gc)
 	delegatee_->destroy_gc(gc);
 }
 
-static void log_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void log_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	if (screen != NULL)
 		pcb_fprintf(out_, "set_drawing_mode(%d,%d,[%mm;%mm,%mm;%mm])\n", op, direct, screen->X1, screen->Y1, screen->X2, screen->Y2);
@@ -120,7 +120,7 @@ static void log_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	delegatee_->set_line_cap(gc, style);
 }
 
-static void log_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void log_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	pcb_fprintf(out_, "set_line_width(gc, %d)\n", width);
 	delegatee_->set_line_width(gc, width);
@@ -138,32 +138,32 @@ static void log_set_draw_faded(pcb_hid_gc_t gc, int faded)
 	delegatee_->set_draw_faded(gc, faded);
 }
 
-static void log_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void log_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_fprintf(out_, "draw_line(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
 	delegatee_->draw_line(gc, x1, y1, x2, y2);
 }
 
-static void log_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void log_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_fprintf(out_, "draw_arc(gc, %mm, %mm, rx=%mm, ry=%mm, start_angle=%.1f, delta_a=%.1f)\n",
 		cx, cy, xradius, yradius, start_angle, delta_angle);
 	delegatee_->draw_arc(gc, cx, cy, xradius, yradius, start_angle, delta_angle);
 }
 
-static void log_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void log_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_fprintf(out_, "draw_rect(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
 	delegatee_->draw_rect(gc, x1, y1, x2, y2);
 }
 
-static void log_fill_circle(pcb_hid_gc_t gc, pcb_coord_t x, pcb_coord_t y, pcb_coord_t r)
+static void log_fill_circle(pcb_hid_gc_t gc, rnd_coord_t x, rnd_coord_t y, rnd_coord_t r)
 {
 	pcb_fprintf(out_, "fill_circle(gc, %mm, %mm, %mm)\n", x, y, r);
 	delegatee_->fill_circle(gc, x, y, r);
 }
 
-static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	int i;
 	pcb_fprintf(out_, "fill_polygon(gc, %d", n_coords);
@@ -174,7 +174,7 @@ static void log_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 	delegatee_->fill_polygon(gc, n_coords, x, y);
 }
 
-static void log_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void log_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	pcb_fprintf(out_, "fill_polygon_offs(gc, %d", n_coords);
@@ -185,7 +185,7 @@ static void log_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 	delegatee_->fill_polygon_offs(gc, n_coords, x, y, dx, dy);
 }
 
-static void log_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void log_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_fprintf(out_, "fill_rect(gc, %mm, %mm, %mm, %mm)\n", x1, y1, x2, y2);
 	delegatee_->fill_rect(gc, x1, y1, x2, y2);
@@ -203,7 +203,7 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	delegatee_ = delegatee;
 
 	if (delegatee == NULL) {
-		pcb_message(PCB_MSG_ERROR, "loghid: Invalid target HID.\n");
+		rnd_message(PCB_MSG_ERROR, "loghid: Invalid target HID.\n");
 		exit(1);
 	}
 

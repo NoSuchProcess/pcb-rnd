@@ -38,7 +38,7 @@
 #define sqr(o) ((double)(o)*(double)(o))
 
 /* emulate old pcb-rnd "pin shape" feature */
-static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb_coord_t rx, pcb_coord_t ry, int style)
+static void octa_shape(pcb_pstk_poly_t *dst, rnd_coord_t x0, rnd_coord_t y0, rnd_coord_t rx, rnd_coord_t ry, int style)
 {
 	double xm[8], ym[8];
 
@@ -65,9 +65,9 @@ static void octa_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb
 }
 
 /* emulate the old 'square flag' feature */
-static void square_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, pcb_coord_t radius, int style)
+static void square_shape(pcb_pstk_poly_t *dst, rnd_coord_t x0, rnd_coord_t y0, rnd_coord_t radius, int style)
 {
-	pcb_coord_t r2 = pcb_round(radius * 0.5);
+	rnd_coord_t r2 = pcb_round(radius * 0.5);
 
 	pcb_pstk_shape_alloc_poly(dst, 4);
 
@@ -78,7 +78,7 @@ static void square_shape(pcb_pstk_poly_t *dst, pcb_coord_t x0, pcb_coord_t y0, p
 }
 
 
-static int compat_via_shape_gen(pcb_pstk_shape_t *dst, pcb_pstk_compshape_t cshape, pcb_coord_t pad_dia)
+static int compat_via_shape_gen(pcb_pstk_shape_t *dst, pcb_pstk_compshape_t cshape, rnd_coord_t pad_dia)
 {
 	if ((cshape >= PCB_PSTK_COMPAT_SHAPED) && (cshape <= PCB_PSTK_COMPAT_SHAPED_END)) {
 		dst->shape = PCB_PSSH_POLY;
@@ -113,7 +113,7 @@ static void compat_shape_free(pcb_pstk_shape_t *shp)
 		free(shp->data.poly.x);
 }
 
-static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_coord_t pad_dia, pcb_coord_t clearance, pcb_coord_t mask, pcb_pstk_compshape_t cshape, pcb_bool plated, pcb_bool hole_clearance_hack)
+static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack)
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[5]; /* max number of shapes: 3 coppers, 2 masks */
@@ -193,13 +193,13 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, pcb_c
 	return pcb_pstk_new(data, -1, pid, x, y, clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
-pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_coord_t pad_dia, pcb_coord_t clearance, pcb_coord_t mask, pcb_pstk_compshape_t cshape, pcb_bool plated)
+pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated)
 {
 	return pcb_pstk_new_compat_via_(data, id, x, y, drill_dia, pad_dia, clearance, mask, cshape, plated, 0);
 }
 
 
-static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
+static pcb_pstk_compshape_t get_old_shape_square(rnd_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
 	double sq, len2, l, a;
 	int n;
@@ -229,7 +229,7 @@ static pcb_pstk_compshape_t get_old_shape_square(pcb_coord_t *dia, const pcb_pst
 }
 
 
-static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
+static pcb_pstk_compshape_t get_old_shape_octa(rnd_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
 	double x[8], y[8], xm[8], ym[8], minx = 0.0, miny = 0.0, tmp;
 	int shi, n, found;
@@ -313,7 +313,7 @@ static pcb_pstk_compshape_t get_old_shape_octa(pcb_coord_t *dia, const pcb_pstk_
 	return PCB_PSTK_COMPAT_INVALID;
 }
 
-static pcb_pstk_compshape_t get_old_shape(pcb_coord_t *dia, const pcb_pstk_shape_t *shp)
+static pcb_pstk_compshape_t get_old_shape(rnd_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
 	switch(shp->shape) {
 		case PCB_PSSH_LINE:
@@ -335,13 +335,13 @@ static pcb_pstk_compshape_t get_old_shape(pcb_coord_t *dia, const pcb_pstk_shape
 	return PCB_PSTK_COMPAT_INVALID;
 }
 
-pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t *drill_dia, pcb_coord_t *pad_dia, pcb_coord_t *clearance, pcb_coord_t *mask, pcb_pstk_compshape_t *cshape, pcb_bool *plated)
+rnd_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *drill_dia, rnd_coord_t *pad_dia, rnd_coord_t *clearance, rnd_coord_t *mask, pcb_pstk_compshape_t *cshape, rnd_bool *plated)
 {
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_tshape_t *tshp;
 	int n, coppern = -1, maskn = -1;
 	pcb_pstk_compshape_t old_shape[5];
-	pcb_coord_t old_dia[5];
+	rnd_coord_t old_dia[5];
 
 	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 	if ((proto == NULL) || (proto->tr.used < 1))
@@ -414,11 +414,11 @@ pcb_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, pcb_coord_t *x, pcb_coord_t 
 }
 
 /* emulate the old 'square flag' pad */
-static void pad_shape(pcb_pstk_poly_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness)
+static void pad_shape(pcb_pstk_poly_t *dst, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness)
 {
 	double d, dx, dy;
-	pcb_coord_t nx, ny;
-	pcb_coord_t halfthick = (thickness + 1) / 2;
+	rnd_coord_t nx, ny;
+	rnd_coord_t halfthick = (thickness + 1) / 2;
 
 	dx = x2 - x1;
 	dy = y2 - y1;
@@ -450,7 +450,7 @@ static void pad_shape(pcb_pstk_poly_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_
 }
 
 /* Generate a square or round pad of a given thickness - typically mask or copper */
-static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_bool square)
+static void gen_pad(pcb_pstk_shape_t *dst, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness, rnd_bool square)
 {
 	if (square) {
 		dst->shape = PCB_PSSH_POLY;
@@ -473,7 +473,7 @@ static void gen_pad(pcb_pstk_shape_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	}
 }
 
-pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thickness, pcb_coord_t clearance, pcb_coord_t mask, pcb_bool square, pcb_bool nopaste, pcb_bool onotherside)
+pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness, rnd_coord_t clearance, rnd_coord_t mask, rnd_bool square, rnd_bool nopaste, rnd_bool onotherside)
 {
 	pcb_layer_type_t side;
 	pcb_pstk_proto_t proto;
@@ -481,7 +481,7 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, pcb_coord_t x
 	pcb_cardinal_t pid;
 	pcb_pstk_tshape_t tshp;
 	int n;
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 
 	assert(thickness >= 0);
 	assert(clearance >= 0);
@@ -525,13 +525,13 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, pcb_coord_t x
 }
 
 
-pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t *y1, pcb_coord_t *x2, pcb_coord_t *y2, pcb_coord_t *thickness, pcb_coord_t *clearance, pcb_coord_t *mask, pcb_bool *square, pcb_bool *nopaste)
+rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2, rnd_coord_t *thickness, rnd_coord_t *clearance, rnd_coord_t *mask, rnd_bool *square, rnd_bool *nopaste)
 {
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_tshape_t *tshp;
 	int n, coppern = -1, maskn = -1, pasten = -1;
 	pcb_layer_type_t side;
-	pcb_coord_t lx1[3], ly1[3], lx2[3], ly2[3], lt[3]; /* poly->line conversion cache */
+	rnd_coord_t lx1[3], ly1[3], lx2[3], ly2[3], lt[3]; /* poly->line conversion cache */
 
 	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 	if ((proto == NULL) || (proto->tr.used < 1))
@@ -576,7 +576,7 @@ pcb_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, pcb_coord_t *x1, pcb_coord_t
 	/* if the shape is poly, convert to line to make the rest of the code simpler */
 	if (tshp->shape[0].shape == PCB_PSSH_POLY) {
 		for(n = 0; n < tshp->len; n++) {
-			pcb_coord_t w, h, x1, x2, y1, y2;
+			rnd_coord_t w, h, x1, x2, y1, y2;
 			double stepd, step2;
 			int step;
 
@@ -745,7 +745,7 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
 }
 
 
-pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
+pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
 	pcb_pstk_compshape_t shp;
@@ -783,7 +783,7 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, pcb_coord_t X, pcb_co
 	return p;
 }
 
-void pcb_shape_octagon(pcb_pstk_shape_t *dst, pcb_coord_t radiusx, pcb_coord_t radiusy)
+void pcb_shape_octagon(pcb_pstk_shape_t *dst, rnd_coord_t radiusx, rnd_coord_t radiusy)
 {
 	dst->shape = PCB_PSSH_POLY;
 	octa_shape(&dst->data.poly, 0, 0, radiusx, radiusy, 0);

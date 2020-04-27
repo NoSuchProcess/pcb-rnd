@@ -18,7 +18,7 @@ extern fgw_ctx_t rnd_fgw;
 
 typedef struct fgw_coords_s {
 	int len;
-	pcb_coord_t c[4];
+	rnd_coord_t c[4];
 	char absolute[4];
 } fgw_coords_t;
 
@@ -34,7 +34,7 @@ typedef enum {
 	FGW_IDPATH_
 } rnd_fgw_types_e;
 #define fgw_keyword(arg) ((arg)->val.nat_int)
-#define fgw_coord(arg) (*(pcb_coord_t *)(&((arg)->val.custom.c)))
+#define fgw_coord(arg) (*(rnd_coord_t *)(&((arg)->val.custom.c)))
 #define fgw_coords(arg) ((arg)->val.ptr_void)
 #define fgw_layerid(arg) ((arg)->val.nat_long)
 #define fgw_layer(arg) ((arg)->val.ptr_void)
@@ -97,7 +97,7 @@ fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, 
    action in the later case. If force_action_mode is true, str
    is interpreted as pcb-rnd action despite of the cli mode.
    Returns nonzero if the action handler(s) return nonzero. */
-int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, pcb_bool force_action_mode);
+int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_mode);
 
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only
@@ -125,7 +125,7 @@ int rnd_cli_edit(rnd_hidlib_t *hl);
 /* Mouse event while the command line is open; returns zero if
    normal event processing shall be inhibited; notify is true if
    called in notify mode, false if called in release mode */
-int rnd_cli_mouse(rnd_hidlib_t *hl, pcb_bool notify);
+int rnd_cli_mouse(rnd_hidlib_t *hl, rnd_bool notify);
 
 /* Discard the cli mode stack */
 void rnd_cli_uninit(void);
@@ -135,7 +135,7 @@ void rnd_cli_uninit(void);
    non-zero and msg is non-NULL, discard the cache and force querying a
    new coord. This mode must NOT be used unless action arguments explictly
    requested it. */
-void rnd_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
+void rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
 #define RND_ACTION_MAX_ARGS 16
 
@@ -211,7 +211,7 @@ do { \
 	res->val.nat_double = v; \
 } while(0)
 
-#define RND_ACT_FAIL(x) { pcb_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (pcb_acts_ ## x)); return FGW_ERR_ARG_CONV; }
+#define RND_ACT_FAIL(x) { rnd_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (pcb_acts_ ## x)); return FGW_ERR_ARG_CONV; }
 
 /*** The default unit to use when a coord value doesn't have its own unit ***/
 extern char *fgw_str2coord_unit; /* saved is char * too */

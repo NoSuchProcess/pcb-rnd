@@ -73,7 +73,7 @@ void pcb_tool_copy_notify_mode(rnd_hidlib_t *hl)
 	case PCB_CH_STATE_SECOND:
 
 		if ((pcb->is_footprint) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
-			pcb_message(PCB_MSG_WARNING, "Can not copy subcircuit in the footprint edit mode\n");
+			rnd_message(PCB_MSG_WARNING, "Can not copy subcircuit in the footprint edit mode\n");
 		}
 		else {
 			pcb_copy_obj(pcb_crosshair.AttachedObject.Type,
@@ -111,7 +111,7 @@ void pcb_tool_copy_draw_attached(rnd_hidlib_t *hl)
 	pcb_xordraw_movecopy();
 }
 
-pcb_bool pcb_tool_copy_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_copy_undo_act(rnd_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)

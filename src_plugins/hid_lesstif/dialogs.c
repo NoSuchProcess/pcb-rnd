@@ -632,7 +632,7 @@ static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
 			XtUnmanageChild(ctx->wltop[n]);
 }
 
-void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	Widget topform, main_tbl;
 	lesstif_attr_dlg_t *ctx;
@@ -796,7 +796,7 @@ int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 	return 0;
 }
 
-int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, pcb_bool hide)
+int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 
@@ -874,7 +874,7 @@ static const char pcb_acts_AdjustSizes[] = "AdjustSizes()";
 static const char pcb_acth_AdjustSizes[] = "not supported, please use Preferences() instead";
 static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_ERROR, "AdjustSizes() is not supported anymore, please use the Preferences() action\n");
+	rnd_message(PCB_MSG_ERROR, "AdjustSizes() is not supported anymore, please use the Preferences() action\n");
 	RND_ACT_IRES(1);
 	return 0;
 }

@@ -234,7 +234,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	pcb_bool key_handled, arrow_key, enter_key, force_activate = pcb_false;
+	rnd_bool key_handled, arrow_key, enter_key, force_activate = pcb_false;
 	GtkClipboard *clipboard;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 

@@ -184,7 +184,7 @@ static int parse_config(char * config, char * arg)
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
 		static int warned = 0;
 		if (!warned) {
-			pcb_message(PCB_MSG_WARNING, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
+			rnd_message(PCB_MSG_WARNING, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
 			warned = 1;
 		}
 		pcb_conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, POL_PREPEND);
@@ -253,7 +253,7 @@ static void load_project(char * path)
 lihata_prj:;
 	fclose(f);
 	if (pcb_conf_load_as(CFR_PROJECT, path, 0) != 0) {
-		pcb_message(PCB_MSG_ERROR, "Failed to parse project file %s.\n", path);
+		rnd_message(PCB_MSG_ERROR, "Failed to parse project file %s.\n", path);
 		exit(1);
 	}
 	pcb_conf_update(NULL, -1); /* because of our new project file */
@@ -303,7 +303,7 @@ static void get_args(int argc, char ** argv)
 			}
 			else if (!strcmp(opt, "m") || !strcmp(opt, "method")) {
 				if (method_find(arg) == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Error: can't use unknown method '%s'; try --help\n", arg);
+					rnd_message(PCB_MSG_ERROR, "Error: can't use unknown method '%s'; try --help\n", arg);
 					exit(1);
 				}
 				pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/method", -1, arg, POL_OVERWRITE);
@@ -345,7 +345,7 @@ static void get_args(int argc, char ** argv)
 		else {
 			if (loc_str_has_suffix(argv[i], ".sch", 4) == NULL) {
 				if (have_cli_project_file) {
-					pcb_message(PCB_MSG_ERROR, "ERROR: multiple project files specified on the command line (last one: %s). Either use multiple schematics or a single project file. Try %s --help\n", argv[i], argv[0]);
+					rnd_message(PCB_MSG_ERROR, "ERROR: multiple project files specified on the command line (last one: %s). Either use multiple schematics or a single project file. Try %s --help\n", argv[i], argv[0]);
 					exit(1);
 				}
 				load_extra_project_files();
@@ -375,7 +375,7 @@ void require_gnetlist_backend(const char *dir, const char *backend)
 {
 	char *path = pcb_strdup_printf("%s/gnet-%s.scm", dir, backend);
 	if (!pcb_file_readable(path))
-		pcb_message(PCB_MSG_WARNING, "WARNING: %s is not found, gnetlist will probably fail; please check your pcb-rnd installation!\n", path);
+		rnd_message(PCB_MSG_WARNING, "WARNING: %s is not found, gnetlist will probably fail; please check your pcb-rnd installation!\n", path);
 	free(path);
 }
 
@@ -421,11 +421,11 @@ int main(int argc, char ** argv)
 
 	if (!have_cli_project_file && !have_cli_schematics) {
 		if (!pcb_file_readable(LOCAL_PROJECT_FILE)) {
-			pcb_message(PCB_MSG_ERROR, "Don't know what to do: no project or schematics given, no local project file %s found. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
+			rnd_message(PCB_MSG_ERROR, "Don't know what to do: no project or schematics given, no local project file %s found. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
 			exit(1);
 		}
 		if (pcb_conf_load_as(CFR_PROJECT, LOCAL_PROJECT_FILE, 0) != 0) {
-			pcb_message(PCB_MSG_ERROR, "Failed to load project file %s. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
+			rnd_message(PCB_MSG_ERROR, "Failed to load project file %s. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
 			exit(1);
 		}
 		pcb_conf_update(NULL, -1); /* because of our new project file */
@@ -445,13 +445,13 @@ int main(int argc, char ** argv)
 			}
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "No schematics specified on the cli or in project files. Try %s --help\n", argv[0]);
+			rnd_message(PCB_MSG_ERROR, "No schematics specified on the cli or in project files. Try %s --help\n", argv[0]);
 			exit(1);
 		}
 	}
 
 	if (gadl_length(&schematics) == 0) {
-		pcb_message(PCB_MSG_ERROR, "No schematics specified on the cli; can't find any in the project files/configs either. Try %s --help\n", argv[0]);
+		rnd_message(PCB_MSG_ERROR, "No schematics specified on the cli; can't find any in the project files/configs either. Try %s --help\n", argv[0]);
 		exit(1);
 	}
 
@@ -471,14 +471,14 @@ int main(int argc, char ** argv)
 		if (current_method == NULL) {
 			want_method = want_method_default;
 			if (!conf_g2pr.utils.gsch2pcb_rnd.quiet_mode)
-				pcb_message(PCB_MSG_WARNING, "Warning: method not specified for a project (that has no board or project file yet); defaulting to -m %s. This warning is harmless if you are running gsch2pcb-rnd for the first time on this project and you are fine with this method.", want_method);
+				rnd_message(PCB_MSG_WARNING, "Warning: method not specified for a project (that has no board or project file yet); defaulting to -m %s. This warning is harmless if you are running gsch2pcb-rnd for the first time on this project and you are fine with this method.", want_method);
 		}
 	}
 
 	if (current_method == NULL) {
 		current_method = method_find(want_method);
 		if (current_method == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Error: can't find method %s\n", want_method);
+			rnd_message(PCB_MSG_ERROR, "Error: can't find method %s\n", want_method);
 			exit(1);
 		}
 	}

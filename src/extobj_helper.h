@@ -34,7 +34,7 @@
 /*** API ***/
 
 /* Convert an attribute to coord, return 0 on success */
-PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, pcb_coord_t *res, const char *name);
+PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, const char *name);
 PCB_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char *name);
 
 /* Wrap the update/re-generation of an extobject-subc in this begin/end to
@@ -44,10 +44,10 @@ PCB_INLINE void pcb_exto_regen_begin(pcb_subc_t *subc);
 PCB_INLINE int pcb_exto_regen_end(pcb_subc_t *subc);
 
 /*** implementation ***/
-PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, pcb_coord_t *res, const char *name)
+PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, const char *name)
 {
 	double v;
-	pcb_bool succ;
+	rnd_bool succ;
 	const char *s = pcb_attribute_get(&obj->Attributes, name);
 	if (s != NULL) {
 		v = pcb_get_value(s, NULL, NULL, &succ);
@@ -94,7 +94,7 @@ PCB_INLINE int pcb_exto_regen_end(pcb_subc_t *subc)
 	return 0;
 }
 
-PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, const pcb_dflgmap_t *layers, pcb_coord_t ox, pcb_coord_t oy, pcb_bool on_bottom, pcb_subc_t *copy_from)
+PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, const pcb_dflgmap_t *layers, rnd_coord_t ox, rnd_coord_t oy, rnd_bool on_bottom, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *subc = pcb_subc_alloc();
 	pcb_board_t *pcb = NULL;
@@ -130,7 +130,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 
 PCB_INLINE void pcb_exto_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
-	pcb_coord_t x, y, unit = PCB_SUBC_AUX_UNIT;
+	rnd_coord_t x, y, unit = PCB_SUBC_AUX_UNIT;
 
 	if (pcb_subc_get_origin(subc, &x, &y) != 0)
 		return;
@@ -175,7 +175,7 @@ PCB_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_
 do { \
 	pcb_hid_dad_spin_t *spin; \
 	double d; \
-	pcb_coord_t currval = 0; \
+	rnd_coord_t currval = 0; \
 	const pcb_unit_t *unit_out = NULL; \
 	int wid; \
 	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
@@ -233,7 +233,7 @@ PCB_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, pcb_hid_at
 
 #define pcb_exto_dlg_int(dlg, subc, vis_name, attr_name, help) \
 do { \
-	pcb_coord_t currval = 0; \
+	rnd_coord_t currval = 0; \
 	int wid; \
 	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
 	if (sval != NULL) \

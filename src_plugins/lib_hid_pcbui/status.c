@@ -196,9 +196,9 @@ static void status_rd_pcb2dlg(void)
 
 	status.buf.used = 0;
 	if (pcb_marked.status) {
-		pcb_coord_t dx = pcb_crosshair.X - pcb_marked.X;
-		pcb_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
-		pcb_coord_t r = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
+		rnd_coord_t dx = pcb_crosshair.X - pcb_marked.X;
+		rnd_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
+		rnd_coord_t r = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
 		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 		s1 = status.buf.array;
@@ -377,7 +377,7 @@ const char pcb_acts_DescribeLocation[] = "DescribeLocation(x, y)\n";
 const char pcb_acth_DescribeLocation[] = "Return a string constant (valud until the next call) containing a short description at x;y (object, net, etc.)";
 fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_any_obj_t *obj;
 	int type;

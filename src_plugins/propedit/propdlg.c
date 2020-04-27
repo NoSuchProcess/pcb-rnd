@@ -216,7 +216,7 @@ static void prop_prv_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *p
 }
 
 
-static pcb_bool prop_prv_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static rnd_bool prop_prv_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false; /* don't redraw */
 }
@@ -421,15 +421,15 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	propdlg_t *ctx = caller_data;
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
 	if (r == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can not delete: no attribute selected\n");
+		rnd_message(PCB_MSG_ERROR, "can not delete: no attribute selected\n");
 		return;
 	}
 	if (r->path[0] != 'a') {
-		pcb_message(PCB_MSG_ERROR, "Only atributes (a/ subtree) can be deleted.\n");
+		rnd_message(PCB_MSG_ERROR, "Only atributes (a/ subtree) can be deleted.\n");
 		return;
 	}
 	if (pcb_propsel_del(&ctx->pe, r->path) < 1) {
-		pcb_message(PCB_MSG_ERROR, "Failed to remove the attribute from any object.\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to remove the attribute from any object.\n");
 		return;
 	}
 	prop_refresh(ctx);

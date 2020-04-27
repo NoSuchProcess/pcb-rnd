@@ -135,7 +135,7 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 }
 
 /* creates a new gfx on a layer */
-pcb_gfx_t *pcb_gfx_new(pcb_layer_t *layer, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, pcb_angle_t rot, pcb_flag_t Flags)
+pcb_gfx_t *pcb_gfx_new(pcb_layer_t *layer, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, pcb_angle_t rot, pcb_flag_t Flags)
 {
 	pcb_gfx_t *gfx;
 
@@ -171,7 +171,7 @@ pcb_gfx_t *pcb_gfx_dup(pcb_layer_t *dst, pcb_gfx_t *src)
 	return a;
 }
 
-pcb_gfx_t *pcb_gfx_dup_at(pcb_layer_t *dst, pcb_gfx_t *src, pcb_coord_t dx, pcb_coord_t dy)
+pcb_gfx_t *pcb_gfx_dup_at(pcb_layer_t *dst, pcb_gfx_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_gfx_t *a = pcb_gfx_new(dst, src->cx+dx, src->cy+dy, src->sx, src->sy, src->rot, src->Flags);
 	TODO("copy the pixmap too");
@@ -221,7 +221,7 @@ unsigned int pcb_gfx_hash(const pcb_host_trans_t *tr, const pcb_gfx_t *a)
 	double sgn = tr->on_bottom ? -1 : +1;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, a)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		pcb_hash_tr_coords(tr, &x, &y, a->cx, a->cy);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^ pcb_hash_coord(a->sx) ^ pcb_hash_coord(a->sy) ^
 			pcb_hash_coord(pcb_normalize_angle(pcb_round(a->rot*sgn + tr->rot*sgn)));
@@ -257,7 +257,7 @@ static const char core_gfx_cookie[] = "core-gfx";
 
 typedef struct {
 	pcb_gfx_t *gfx; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
-	pcb_coord_t cx, cy, sx, sy;
+	rnd_coord_t cx, cy, sx, sy;
 	pcb_angle_t rot;
 } undo_gfx_geo_t;
 
@@ -269,10 +269,10 @@ static int undo_gfx_geo_swap(void *udata)
 	if (layer->gfx_tree != NULL)
 		pcb_r_delete_entry(layer->gfx_tree, (pcb_box_t *)g->gfx);
 
-	rnd_swap(pcb_coord_t, g->cx, g->gfx->cx);
-	rnd_swap(pcb_coord_t, g->cy, g->gfx->cy);
-	rnd_swap(pcb_coord_t, g->sx, g->gfx->sx);
-	rnd_swap(pcb_coord_t, g->sy, g->gfx->sy);
+	rnd_swap(rnd_coord_t, g->cx, g->gfx->cx);
+	rnd_swap(rnd_coord_t, g->cy, g->gfx->cy);
+	rnd_swap(rnd_coord_t, g->sx, g->gfx->sx);
+	rnd_swap(rnd_coord_t, g->sy, g->gfx->sy);
 	rnd_swap(pcb_angle_t, g->rot, g->gfx->rot);
 
 	if (g->rot != g->gfx->rot)
@@ -328,7 +328,7 @@ void *pcb_gfxop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_gfx_t *gfx
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
 		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
-			pcb_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_gfxop_move_buffer\n");
+			rnd_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_gfxop_move_buffer\n");
 			return NULL;
 		}
 		dstly = &ctx->buffer.dst->Layer[lid];
@@ -368,7 +368,7 @@ void *pcb_gfxop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
 
 #define pcb_gfx_move(g,dx,dy)                                     \
 	do {                                                            \
-		pcb_coord_t __dx__ = (dx), __dy__ = (dy);                     \
+		rnd_coord_t __dx__ = (dx), __dy__ = (dy);                     \
 		pcb_gfx_t *__g__ = (g);                                       \
 		PCB_MOVE_POINT((__g__)->cx, (__g__)->cy,__dx__,__dy__);          \
 		PCB_BOX_MOVE_LOWLEVEL(&((__g__)->BoundingBox),__dx__,__dy__); \
@@ -419,7 +419,7 @@ void *pcb_gfxop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_gfx_t *
 	pcb_gfx_t *newone;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, gfx)) {
-		pcb_message(PCB_MSG_WARNING, "Sorry, gfx object is locked\n");
+		rnd_message(PCB_MSG_WARNING, "Sorry, gfx object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)
@@ -468,7 +468,7 @@ void *pcb_gfx_destroy(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 }
 
 /* rotates a gfx */
-void pcb_gfx_rotate90(pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_gfx_rotate90(pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	gfx->rot = pcb_normalize_angle(gfx->rot + Number * 90);
 	TODO("rotate content")
@@ -476,7 +476,7 @@ void pcb_gfx_rotate90(pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 	pcb_gfx_bbox(gfx);
 }
 
-void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
+void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, pcb_angle_t angle)
 {
 	if (layer->gfx_tree != NULL)
 		pcb_r_delete_entry(layer->gfx_tree, (pcb_box_t *) gfx);
@@ -490,7 +490,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, pcb_coord_t X, pcb_coord
 		pcb_r_insert_entry(layer->gfx_tree, (pcb_box_t *) gfx);
 }
 
-void pcb_gfx_mirror(pcb_gfx_t *gfx, pcb_coord_t y_offs, pcb_bool undoable)
+void pcb_gfx_mirror(pcb_gfx_t *gfx, rnd_coord_t y_offs, rnd_bool undoable)
 {
 	undo_gfx_geo_t gtmp, *g = &gtmp;
 
@@ -519,7 +519,7 @@ void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx)
 	pcb_r_insert_entry(layer->gfx_tree, (pcb_box_t *)gfx);
 }
 
-void pcb_gfx_chg_geo(pcb_gfx_t *gfx, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy,  pcb_angle_t rot, pcb_bool undoable)
+void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy,  pcb_angle_t rot, rnd_bool undoable)
 {
 	undo_gfx_geo_t gtmp, *g = &gtmp;
 
@@ -598,7 +598,7 @@ void *pcb_gfxop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_gfx_t
 	return gfx;
 }
 
-void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, pcb_pixmap_t *pxm, pcb_bool undoable)
+void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, pcb_pixmap_t *pxm, rnd_bool undoable)
 {
 	TODO("gfx: undoable pixmap assign");
 	gfx->pxm_neutral = pcb_pixmap_insert_neutral_or_free(&pcb_pixmaps, pxm);
@@ -694,7 +694,7 @@ void pcb_gfx_invalidate_draw(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 	pcb_draw_invalidate(gfx);
 }
 
-void pcb_gfx_draw_xor(pcb_gfx_t *gfx, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_gfx_draw_xor(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[0]+dx, gfx->coy[0]+dy, gfx->cox[1]+dx, gfx->coy[1]+dy);
 	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[1]+dx, gfx->coy[1]+dy, gfx->cox[2]+dx, gfx->coy[2]+dy);

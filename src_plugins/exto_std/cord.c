@@ -110,7 +110,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 	cord_get_ends(subc, group, &e1, &a1, &e2, &a2);
 	if ((e1 == NULL) || (e2 == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "extended object cord: failed to generate cord for #%ld group %s: missing endpoint\n", subc->ID, group);
+		rnd_message(PCB_MSG_ERROR, "extended object cord: failed to generate cord for #%ld group %s: missing endpoint\n", subc->ID, group);
 		return -1;
 	}
 
@@ -133,7 +133,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 	if ((a1 != NULL) && (a2 != NULL)) {
 		double t, it, t2, t3, it2, it3, step = 1.0/25.0;
-		pcb_coord_t lx, ly, x, y;
+		rnd_coord_t lx, ly, x, y;
 
 		lx = e1->x; ly = e1->y;
 		for(t = step; t <= 1.0+step/2.0; t += step) {
@@ -273,10 +273,10 @@ static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 	return pcb_pstk_proto_insert_dup(data, &proto, 1, 0);
 }
 
-static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, pcb_cardinal_t pid, pcb_coord_t x, pcb_coord_t y, pcb_coord_t ox, pcb_coord_t oy, const char *term, const char *grp, int floater)
+static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, pcb_cardinal_t pid, rnd_coord_t x, rnd_coord_t y, rnd_coord_t ox, rnd_coord_t oy, const char *term, const char *grp, int floater)
 {
 	pcb_pstk_t *ps;
-	pcb_coord_t dx = ox-x, dy = oy-y,  cpx = x+dx/4, cpy = y+dy/4, cpr = PCB_MM_TO_COORD(0.5);
+	rnd_coord_t dx = ox-x, dy = oy-y,  cpx = x+dx/4, cpy = y+dy/4, cpr = PCB_MM_TO_COORD(0.5);
 	pcb_layer_t *ely = &subc->data->Layer[LID_EDIT];
 
 
@@ -310,7 +310,7 @@ static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, pcb_cardinal_
 static void conv_pstk(pcb_subc_t *subc, pcb_pstk_t *ps, long *grp, long *term, int *has_origin)
 {
 	char sgrp[16], sterm[16];
-	pcb_coord_t d = PCB_MM_TO_COORD(0.75);
+	rnd_coord_t d = PCB_MM_TO_COORD(0.75);
 
 	sprintf(sgrp, "%ld", (*grp)++);
 
@@ -331,7 +331,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 {
 	pcb_subc_t *subc;
 	long n, grp = 1, term = 0; /* for intconn grp needs to start from 1 */
-	pcb_coord_t ox = 0, oy = 0, has_origin = 0, has_subc = 0;
+	rnd_coord_t ox = 0, oy = 0, has_origin = 0, has_subc = 0;
 	pcb_dflgmap_t layers[] = {
 		{"edit", PCB_LYT_DOC, "extobj", 0, 0},
 		{"target", PCB_LYT_SILK | PCB_LYT_TOP, NULL, 0, 0},
@@ -371,9 +371,9 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 	/* create padstack prototypes */
 	if (endpt_pstk_proto(subc->data, PCB_LYT_COPPER | PCB_LYT_TOP) != COPPER_END)
-		pcb_message(PCB_MSG_WARNING, "extended object cord: wrong pstk proto ID for copper end\n");
+		rnd_message(PCB_MSG_WARNING, "extended object cord: wrong pstk proto ID for copper end\n");
 	if (endpt_pstk_proto(subc->data, PCB_LYT_SILK | PCB_LYT_TOP) != SILK_END)
-		pcb_message(PCB_MSG_WARNING, "extended object cord: wrong pstk proto ID for silk end\n");
+		rnd_message(PCB_MSG_WARNING, "extended object cord: wrong pstk proto ID for silk end\n");
 
 	/* convert lines into 2-ended cords */
 	for(n = 0; n < objs->used; n++) {

@@ -42,13 +42,13 @@
   "!" means to switch the UI to the unit specified. */
 typedef struct {
 	char *name;
-	pcb_coord_t size;
-	pcb_coord_t ox, oy;
+	rnd_coord_t size;
+	rnd_coord_t ox, oy;
 	const pcb_unit_t *unit; /* force switching to unit if not NULL */
 } pcb_grid_t;
 
 /* Returns the nearest grid-point to the given coord x */
-pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset);
+rnd_coord_t pcb_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset);
 
 /* Parse packed string format src into dst; allocat dst->name on success */
 pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src);

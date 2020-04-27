@@ -38,7 +38,7 @@
 static void pcbo_trace(char *fmt, ...) {}
 #endif
 
-void pcb_polo_norm(double *nx, double *ny, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+void pcb_polo_norm(double *nx, double *ny, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
 	*nx = -dy / len;
@@ -136,7 +136,7 @@ double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts)
 	return a;
 }
 
-void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, pcb_coord_t offs)
+void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
 {
 	const pcb_vnode_t *v;
 	pcb_vector_t tmp;
@@ -192,7 +192,7 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, pcb_coord_t offs
 	}
 }
 
-pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, pcb_coord_t offs)
+pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs)
 {
 	vtp0_t selfi;
 	pcb_pline_t *res = NULL;
@@ -257,7 +257,7 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 /* Modify v, pulling it back toward vp so that the distance to line ldx;ldy is increased by tune */
 PCB_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy, int inside)
 {
-	pcb_coord_t ox, oy;
+	rnd_coord_t ox, oy;
 	double c, vx, vy, vlen, prx, pry, prlen;
 
 	vx = v->point[0] - vp->point[0];
@@ -285,8 +285,8 @@ PCB_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, dou
 	c = tune * ((-pry * ldx + prx * ldy) / c);
 
 	pcbo_trace("   vect: vp=%mm;%mm v=%mm;%mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
-	pcbo_trace("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (pcb_coord_t)tune);
-	pcbo_trace("   MOVE: c=%.012mm (%f) %mm;%mm\n", (pcb_coord_t)c, c, (pcb_coord_t)(v->point[0] + c * vx), (pcb_coord_t)(v->point[1] + c * vy));
+	pcbo_trace("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (rnd_coord_t)tune);
+	pcbo_trace("   MOVE: c=%.012mm (%f) %mm;%mm\n", (rnd_coord_t)c, c, (rnd_coord_t)(v->point[0] + c * vx), (rnd_coord_t)(v->point[1] + c * vy));
 
 	if (c < 0) {
 		v->point[0] = vp->point[0];
@@ -306,7 +306,7 @@ PCB_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, dou
 	return 0;
 }
 
-void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_t offs)
+void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
 {
 	pcb_vnode_t *v;
 	double offs2 = (double)offs * (double)offs;
@@ -336,7 +336,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 			inside = pcb_poly_contour_inside(src, v->point);
 
 		for(seg = pcb_rtree_first(&it, src->tree, &pb); seg != NULL; seg = pcb_rtree_next(&it)) {
-			pcb_coord_t x1, y1, x2, y2;
+			rnd_coord_t x1, y1, x2, y2;
 			double dist, tune, prjx, prjy, dx, dy, ax, ay, dotp, prevx, prevy, prevl;
 
 			pcb_polyarea_get_tree_seg(seg, &x1, &y1, &x2, &y2);
@@ -351,7 +351,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				dotp = ax * dx + ay * dy;
 				prjx = x1 + dx * dotp;
 				prjy = y1 + dy * dotp;
-				pcbo_trace("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (pcb_coord_t)prjx, (pcb_coord_t)prjy, inside);
+				pcbo_trace("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (rnd_coord_t)prjx, (rnd_coord_t)prjy, inside);
 
 				/* this is how much the point needs to be moved away from the line */
 				if (inside)
@@ -361,8 +361,8 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, pcb_coord_
 				if (tune < 5)
 					continue;
 
-				pcbo_trace("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (pcb_coord_t)tune, (pcb_coord_t)prjx, (pcb_coord_t)prjy);
-				pcbo_trace(" tune=%.012mm dist=%.012mm\n", (pcb_coord_t)tune, (pcb_coord_t)sqrt(dist));
+				pcbo_trace("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (rnd_coord_t)tune, (rnd_coord_t)prjx, (rnd_coord_t)prjy);
+				pcbo_trace(" tune=%.012mm dist=%.012mm\n", (rnd_coord_t)tune, (rnd_coord_t)sqrt(dist));
 
 
 				/* corner case: if next segment is parallel to what we are compesing to

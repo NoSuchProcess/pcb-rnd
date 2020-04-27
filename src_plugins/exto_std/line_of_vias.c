@@ -33,8 +33,8 @@
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int gui_active;
-	pcb_coord_t pitch;
-	pcb_coord_t clearance;
+	rnd_coord_t pitch;
+	rnd_coord_t clearance;
 } line_of_vias;
 
 static void pcb_line_of_vias_del_pre(pcb_subc_t *subc)
@@ -100,7 +100,7 @@ static void line_of_vias_gen_line(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t
 		pcb_rtree_box_t qbox;
 		pcb_pstk_t *cl;
 		int skip = 0;
-		pcb_coord_t rx = pcb_round(x), ry = pcb_round(y);
+		rnd_coord_t rx = pcb_round(x), ry = pcb_round(y);
 
 		/* skip if there's a via too close */
 		qbox.x1 = pcb_round(rx - qbox_bloat); qbox.y1 = pcb_round(ry - qbox_bloat);
@@ -135,7 +135,7 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 	lov = subc->extobj_data;
 	if (lov->pitch < PCB_MM_TO_COORD(0.001)) {
-		pcb_message(PCB_MSG_ERROR, "line_of_vias_gen(): can not generate line-of-vias, pitch value is too small\n");
+		rnd_message(PCB_MSG_ERROR, "line_of_vias_gen(): can not generate line-of-vias, pitch value is too small\n");
 		return -1;
 	}
 
@@ -162,7 +162,7 @@ static void draw_mark_line(pcb_draw_info_t *info, pcb_subc_t *subc, pcb_line_t *
 	double arrow = PCB_MM_TO_COORD(0.2);
 	double ax, ay, ax1, ay1, ax2, ay2;
 	line_geo_def;
-	pcb_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
+	rnd_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
 /*	line_of_vias *lov = subc->extobj_data;*/
 
 	line_geo_calc(line);

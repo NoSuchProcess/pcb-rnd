@@ -60,10 +60,10 @@ static const char *or_empty(const char *s)
 
 static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_bool changed = pcb_false;
+	rnd_bool changed = pcb_false;
 	pcb_subc_t **subc_list;
 	pcb_subc_t **locked_subc_list;
-	pcb_coord_t *ox_list, *oy_list;
+	rnd_coord_t *ox_list, *oy_list;
 	unsigned int i, j, k, cnt, lock_cnt;
 	unsigned int tmpi;
 	size_t sz;
@@ -79,7 +79,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char **was, **is;
 	unsigned int c_cnt = 0, numsubc;
 	int ok;
-	pcb_bool free_name = pcb_false;
+	rnd_bool free_name = pcb_false;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Renumber, name = argv[1].val.str);
 
@@ -116,7 +116,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((out = pcb_fopen_askovr(&PCB->hidlib, name, "w", NULL)) == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Could not open %s\n", name);
+		rnd_message(PCB_MSG_ERROR, "Could not open %s\n", name);
 		if (free_name && name)
 			free((char*)name);
 		RND_ACT_IRES(1);
@@ -138,8 +138,8 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	 */
 	numsubc = pcb_subclist_length(&PCB->Data->subc);
 	subc_list = calloc(numsubc, sizeof(pcb_subc_t *));
-	ox_list = calloc(numsubc, sizeof(pcb_coord_t));
-	oy_list = calloc(numsubc, sizeof(pcb_coord_t));
+	ox_list = calloc(numsubc, sizeof(rnd_coord_t));
+	oy_list = calloc(numsubc, sizeof(rnd_coord_t));
 	locked_subc_list =  calloc(numsubc, sizeof(pcb_subc_t *));
 	was = calloc(numsubc, sizeof(char *));
 	is = calloc(numsubc, sizeof(char *));
@@ -154,7 +154,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_coord_t ox, oy;
+		rnd_coord_t ox, oy;
 		
 		if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
 			ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2)/2;

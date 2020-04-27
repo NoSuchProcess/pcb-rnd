@@ -95,7 +95,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case PCB_HATT_COORD:
 				if (a->value)
-					*(pcb_coord_t *) a->value = a->default_val.crd;
+					*(rnd_coord_t *) a->value = a->default_val.crd;
 				break;
 			case PCB_HATT_BOOL:
 				if (a->value)
@@ -120,7 +120,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 			default:
 				if (PCB_HATT_IS_COMPOSITE(a->type)) /* function callback */
 					break;
-				pcb_message(PCB_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
+				rnd_message(PCB_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
 				abort();
 			}
 		}
@@ -152,7 +152,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case PCB_HATT_COORD:
 						if (a->value)
-							*(pcb_coord_t *) a->value = pcb_get_value((*argv)[1], NULL, NULL, NULL);
+							*(rnd_coord_t *) a->value = pcb_get_value((*argv)[1], NULL, NULL, NULL);
 						else
 							a->default_val.crd = pcb_get_value((*argv)[1], NULL, NULL, NULL);
 						(*argc)--;
@@ -234,7 +234,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 			(*argv)++;
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename, (*argv)[0]);
+			rnd_message(PCB_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename, (*argv)[0]);
 			return -1;
 		}
 	}

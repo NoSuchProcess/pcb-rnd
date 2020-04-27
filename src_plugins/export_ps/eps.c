@@ -31,7 +31,7 @@ static pcb_cam_t eps_cam;
 typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_cap_style_t cap;
-	pcb_coord_t width;
+	rnd_coord_t width;
 	unsigned long color;
 	int erase;
 } hid_gc_s;
@@ -39,7 +39,7 @@ typedef struct hid_gc_s {
 static pcb_hid_t eps_hid;
 
 static FILE *f = 0;
-static pcb_coord_t linewidth = -1;
+static rnd_coord_t linewidth = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
 static int print_group[PCB_MAX_LAYERGRP];
@@ -188,7 +188,7 @@ static void eps_print_header(FILE *f, const char *outfn)
 	if (options_[HA_as_shown].lng && conf_core.editor.show_solder_side)
 		pcb_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
 
-#define Q (pcb_coord_t) PCB_MIL_TO_COORD(10)
+#define Q (rnd_coord_t) PCB_MIL_TO_COORD(10)
 	pcb_fprintf(f,
 							"/nclip { %mi %mi moveto %mi %mi lineto %mi %mi lineto %mi %mi lineto %mi %mi lineto eoclip newpath } def\n",
 							bounds->X1 - Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y2 + Q,
@@ -349,11 +349,11 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&eps_cam) == 0) {
 		if (!eps_cam.okempty_group)
-			pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (eps_drawn_objs == 0) {
 		if (!eps_cam.okempty_content)
-			pcb_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 
@@ -443,7 +443,7 @@ static void eps_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	if (direct)
 		return;
@@ -492,7 +492,7 @@ static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void eps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void eps_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
@@ -533,18 +533,18 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+static void eps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+static void eps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
-static void eps_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void eps_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void eps_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_coord_t w = gc->width / 2;
+	rnd_coord_t w = gc->width / 2;
 	if (x1 == x2 && y1 == y2) {
 		if (gc->cap == pcb_cap_square)
 			eps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
@@ -558,8 +558,8 @@ static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 		double dx = w * sin(ang);
 		double dy = -w * cos(ang);
 		double deg = ang * 180.0 / M_PI;
-		pcb_coord_t vx1 = x1 + dx;
-		pcb_coord_t vy1 = y1 + dy;
+		rnd_coord_t vx1 = x1 + dx;
+		rnd_coord_t vy1 = y1 + dy;
 
 		pcb_fprintf(f, "%mi %mi moveto ", vx1, vy1);
 		pcb_fprintf(f, "%mi %mi %mi %g %g arc\n", x2, y2, w, deg - 90, deg + 90);
@@ -571,7 +571,7 @@ static void eps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	pcb_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
-static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void eps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 	double w;
@@ -600,13 +600,13 @@ static void eps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	pcb_fprintf(f, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double) linewidth / w);
 }
 
-static void eps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void eps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
-static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	const char *op = "moveto";
@@ -619,13 +619,13 @@ static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 	fprintf(f, "fill\n");
 }
 
-static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	eps_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 
-static void eps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void eps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
@@ -636,7 +636,7 @@ static void eps_calibrate(pcb_hid_t *hid, double xval, double yval)
 	CRASH("eps_calibrate");
 }
 
-static void eps_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void eps_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 

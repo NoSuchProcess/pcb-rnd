@@ -38,7 +38,7 @@
 
 #define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
 
-pcb_bool pcb_tool_is_saved = pcb_false;
+rnd_bool pcb_tool_is_saved = pcb_false;
 
 vtp0_t pcb_tools;
 
@@ -61,7 +61,7 @@ void pcb_tool_uninit(void)
 {
 	while(vtp0_len(&pcb_tools) != 0) {
 		const pcb_tool_t *tool = pcb_tool_get(0);
-		pcb_message(PCB_MSG_WARNING, "Unregistered tool: %s of %s; check your plugins, fix them to unregister their tools!\n", tool->name, tool->cookie);
+		rnd_message(PCB_MSG_WARNING, "Unregistered tool: %s of %s; check your plugins, fix them to unregister their tools!\n", tool->name, tool->cookie);
 		pcb_tool_unreg_by_cookie(tool->cookie);
 	}
 	vtp0_uninit(&pcb_tools);
@@ -121,7 +121,7 @@ int pcb_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name)
 int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 {
 	char id_s[32];
-	static pcb_bool recursing = pcb_false;
+	static rnd_bool recursing = pcb_false;
 	int ok = 1;
 	
 	if ((id < 0) || (id > vtp0_len(&pcb_tools)))
@@ -186,7 +186,7 @@ int pcb_tool_save(rnd_hidlib_t *hidlib)
 int pcb_tool_restore(rnd_hidlib_t *hidlib)
 {
 	if (save_position == 0) {
-		pcb_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
+		rnd_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
 		return -1;
 	}
 	return pcb_tool_select_by_id(hidlib, save_stack[--save_position]);
@@ -250,12 +250,12 @@ void pcb_tool_draw_attached(rnd_hidlib_t *hl)
 	wrap_void(draw_attached, (hl));
 }
 
-pcb_bool pcb_tool_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_undo_act(rnd_hidlib_t *hl)
 {
 	wrap_retv(undo_act, return pcb_true, (hl));
 }
 
-pcb_bool pcb_tool_redo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_redo_act(rnd_hidlib_t *hl)
 {
 	wrap_retv(redo_act, return pcb_true, (hl));
 }
@@ -351,7 +351,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		if (pcb_tool_select_by_name(RND_ACT_HIDLIB, cmd) != 0)
-			pcb_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
+			rnd_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
 	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 	return 0;

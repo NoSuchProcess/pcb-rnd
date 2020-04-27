@@ -32,16 +32,16 @@
 
 typedef struct {
 	double line_angle[32], move_angle[32];
-	pcb_coord_t line_length[32], move_length[32];
+	rnd_coord_t line_length[32], move_length[32];
 	double line_angle_mod, move_angle_mod;
-	pcb_coord_t line_length_mod, move_length_mod;
+	rnd_coord_t line_length_mod, move_length_mod;
 	
 	int line_angle_len, line_length_len, move_angle_len, move_length_len;
 } ddraft_cnst_t;
 
 static ddraft_cnst_t cons;
 
-static int find_best_angle(double *out_ang, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, double *angles, int anglen, double angle_mod)
+static int find_best_angle(double *out_ang, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, double *angles, int anglen, double angle_mod)
 {
 	double diff, ang, best_diff, target_ang;
 	int n, best;
@@ -78,7 +78,7 @@ static int find_best_angle(double *out_ang, pcb_coord_t x1, pcb_coord_t y1, pcb_
 	return 0;
 }
 
-static int find_best_length(double *out_len, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t *lengths, int lengthlen, pcb_coord_t length_mod)
+static int find_best_length(double *out_len, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t *lengths, int lengthlen, rnd_coord_t length_mod)
 {
 	double len, best_diff, diff, target_len;
 	int n, best;

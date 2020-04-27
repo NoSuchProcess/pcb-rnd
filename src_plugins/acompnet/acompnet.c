@@ -43,8 +43,8 @@
 static pcb_layer_t *ly;
 
 typedef struct {
-	pcb_coord_t x, y;
-	pcb_coord_t r;
+	rnd_coord_t x, y;
+	rnd_coord_t r;
 } overlap_t;
 
 static pcb_r_dir_t overlap(const pcb_box_t *box, void *closure)

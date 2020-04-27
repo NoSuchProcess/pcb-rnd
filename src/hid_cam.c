@@ -250,7 +250,7 @@ static void read_out_params(pcb_cam_t *dst, char **str)
 			else if (strcmp(curr, "okempty-content") == 0)
 				dst->okempty_content = 1;
 			else
-				pcb_message(PCB_MSG_ERROR, "CAM: ignoring unknown global parameter [%s]\n", curr);
+				rnd_message(PCB_MSG_ERROR, "CAM: ignoring unknown global parameter [%s]\n", curr);
 		}
 		else
 			*str = NULL;
@@ -278,7 +278,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 	/* parse: get file name name */
 	next = strchr(dst->inst, '=');
 	if (next == NULL) {
-		pcb_message(PCB_MSG_ERROR, "CAM rule missing '='\n");
+		rnd_message(PCB_MSG_ERROR, "CAM rule missing '='\n");
 		goto err;
 	}
 	read_out_params(dst, &next);
@@ -303,7 +303,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 
 		next = pcb_parse_layergrp_address(curr, spk, spv, &spc);
 		if (next == pcb_parse_layergrp_err) {
-			pcb_message(PCB_MSG_ERROR, "CAM rule: invalid layer transformation\n");
+			rnd_message(PCB_MSG_ERROR, "CAM rule: invalid layer transformation\n");
 			goto err;
 		}
 
@@ -374,7 +374,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 			read_out_params(dst, &eq);
 			start = strchr(src, '(');
 			if ((start != eq) || (start == NULL))  {
-				pcb_message(PCB_MSG_ERROR, "global exporter --cam doesn't take layers, only a file name and optionally global supplements\n");
+				rnd_message(PCB_MSG_ERROR, "global exporter --cam doesn't take layers, only a file name and optionally global supplements\n");
 			}
 			if (start != NULL) { /* parse supplements for global xform */
 				char *tmp;
@@ -385,10 +385,10 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 				tmp = pcb_strdup(start);
 				end = pcb_parse_layergrp_address(start, spk, spv, &spc);
 				if ((end != NULL) && (*end != '\0'))
-					pcb_message(PCB_MSG_ERROR, "global exporter --cam takes only one set of global supplements\n");
+					rnd_message(PCB_MSG_ERROR, "global exporter --cam takes only one set of global supplements\n");
 				pcb_parse_layer_supplements(spk, spv, spc, &purpose, &dummy, dst_xform);
 				if (purpose != NULL)
-					pcb_message(PCB_MSG_ERROR, "global exporter --cam ignores layer purpose\n");
+					rnd_message(PCB_MSG_ERROR, "global exporter --cam ignores layer purpose\n");
 				free(tmp);
 			}
 		}
@@ -478,7 +478,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 					gds_append_str(s, val);
 			}
 			else
-				pcb_message(PCB_MSG_ERROR, "cam job error: %%%% variable name too long at: '%%%s' - did not substitute\n", *input);
+				rnd_message(PCB_MSG_ERROR, "cam job error: %%%% variable name too long at: '%%%s' - did not substitute\n", *input);
 		}
 
 		*input = end+1;

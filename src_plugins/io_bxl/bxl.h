@@ -36,13 +36,13 @@ typedef struct pcb_bxl_ctx_s {
 	int proto_id;
 
 	struct {
-		pcb_coord_t origin_x, origin_y, pick_x, pick_y, glue_x, glue_y;
+		rnd_coord_t origin_x, origin_y, pick_x, pick_y, glue_x, glue_y;
 	} pat_state;
 
 	struct {
 		pcb_layer_t *layer;
-		pcb_coord_t origin_x, origin_y, endp_x, endp_y, width, height, radius;
-		pcb_coord_t hole;
+		rnd_coord_t origin_x, origin_y, endp_x, endp_y, width, height, radius;
+		rnd_coord_t hole;
 		pcb_poly_t *poly;
 		double arc_start, arc_delta;
 		double rot;
@@ -72,8 +72,8 @@ typedef struct pcb_bxl_ctx_s {
 	} warn;
 } pcb_bxl_ctx_t;
 
-pcb_coord_t pcb_bxl_coord_x(pcb_coord_t c);
-pcb_coord_t pcb_bxl_coord_y(pcb_coord_t c);
+rnd_coord_t pcb_bxl_coord_x(rnd_coord_t c);
+rnd_coord_t pcb_bxl_coord_y(rnd_coord_t c);
 
 void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *ctx, const char *name);
 void pcb_bxl_pattern_end(pcb_bxl_ctx_t *ctx);
@@ -93,7 +93,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx);
 
 void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx);
 void pcb_bxl_poly_end(pcb_bxl_ctx_t *ctx);
-void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y);
+void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y);
 
 void pcb_bxl_text_style_begin(pcb_bxl_ctx_t *ctx, char *name);
 void pcb_bxl_text_style_end(pcb_bxl_ctx_t *ctx);

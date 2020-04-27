@@ -137,7 +137,7 @@ static void get_ly_type(int combo_type, int combo_side, int dlg_offs, pcb_layer_
 static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 {
 	int n;
-	pcb_bool enable;
+	rnd_bool enable;
 
 	for(n = 0; n < ctx->data->LayerN; n++) {
 		lb_widx_t *w = ctx->widx + n;
@@ -264,13 +264,13 @@ fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, LayerBinding, op = fgw_keyword(&argv[1]));
 
 	if (op == F_Object) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		int type;
 		void *ptr1, *ptr2, *ptr3;
 		rnd_hid_get_coords("Click on subc to change the layer binding of", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_SUBC) {
-			pcb_message(PCB_MSG_ERROR, "No subc under the cursor\n");
+			rnd_message(PCB_MSG_ERROR, "No subc under the cursor\n");
 			return -1;
 		}
 		ctx.subc = ptr2;
@@ -278,7 +278,7 @@ fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (op == F_Selected) {
 TODO("subc TODO")
-		pcb_message(PCB_MSG_ERROR, "TODO\n");
+		rnd_message(PCB_MSG_ERROR, "TODO\n");
 		return 1;
 	}
 	else if (op == F_Buffer) {

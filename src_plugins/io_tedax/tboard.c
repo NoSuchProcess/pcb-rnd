@@ -130,7 +130,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 
 	fputc('\n', f);
 	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
-		pcb_message(PCB_MSG_ERROR, "internal error: failed to save the stackup\n");
+		rnd_message(PCB_MSG_ERROR, "internal error: failed to save the stackup\n");
 		goto error;
 	}
 
@@ -258,7 +258,7 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "tedax_board_save(): can't open %s for writing\n", fn);
+		rnd_message(PCB_MSG_ERROR, "tedax_board_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
@@ -270,7 +270,7 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 #define errexit(msg) \
 do { \
 	if (!silent) \
-		pcb_message(PCB_MSG_ERROR, msg); \
+		rnd_message(PCB_MSG_ERROR, msg); \
 	res = -1; \
 	goto error; \
 } while(0)
@@ -309,7 +309,7 @@ struct tdx_text_s {
 
 struct tdx_plc_s {
 	char *block;
-	pcb_coord_t ox, oy;
+	rnd_coord_t ox, oy;
 	double rot;
 	char swapside;
 	char role; /* 'v' for via, 'c' for comp or 'm' for misc */
@@ -359,14 +359,14 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 	tedax_stackup_t ctx;
 	tdx_plc_t *p;
 	htsp_t plc;
-	pcb_bool succ;
+	rnd_bool succ;
 	pcb_data_t *scdata = NULL;
 
 	htsp_init(&plc, strhash, strkeyeq);
 	tedax_stackup_init(&ctx);
 	while((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) >= 0) {
 		if (strcmp(argv[0], "drawing_area") == 0) {
-			pcb_coord_t x1, y1, x2, y2;
+			rnd_coord_t x1, y1, x2, y2;
 
 			reqarg("drawing_area", 5);
 			x1 = pcb_get_value(argv[1], "mm", NULL, &succ);
@@ -378,7 +378,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			y2 = pcb_get_value(argv[4], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid y2 coord in drawing_area\n");
 			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area\n");
-			if ((x1 < 0) || (y1 < 0)) pcb_message(PCB_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
+			if ((x1 < 0) || (y1 < 0)) rnd_message(PCB_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
 			PCB->hidlib.size_x = x2 - x1;
 			PCB->hidlib.size_y = y2 - y1;
 		}
@@ -396,7 +396,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			remember(drc);
 		}
 		else if (strcmp(argv[0], "place") == 0) {
-			pcb_coord_t ox, oy;
+			rnd_coord_t ox, oy;
 			double rot;
 			char *end;
 			char swapside, role;
@@ -435,7 +435,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			p->attr = a;
 		}
 		else if (strcmp(argv[0], "place_text") == 0) {
-			pcb_coord_t x1, y1, x2, y2;
+			rnd_coord_t x1, y1, x2, y2;
 			tdx_text_t *t;
 			char *end;
 			double rot;
@@ -545,7 +545,7 @@ int tedax_board_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int s
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "tedax_board_load(): can't open %s for reading\n", fn);
+		rnd_message(PCB_MSG_ERROR, "tedax_board_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
 	res = tedax_board_fload(pcb, f, blk_id, silent);

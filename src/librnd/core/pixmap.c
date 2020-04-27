@@ -135,7 +135,7 @@ void rnd_pixmap_uninit(void)
 {
 	pcb_pixmap_import_t *i;
 	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
-		pcb_message(PCB_MSG_ERROR, "pcb_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
+		rnd_message(PCB_MSG_ERROR, "pcb_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
 }
 
 int pcb_pixmap_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)

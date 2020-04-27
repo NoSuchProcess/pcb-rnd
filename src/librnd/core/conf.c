@@ -142,18 +142,18 @@ static lht_doc_t *conf_load_plug_file(const char *fn, int fn_is_text)
 	}
 
 	if (d == NULL) {
-		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (can't open the file or syntax error)\n", ifn);
+		rnd_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (can't open the file or syntax error)\n", ifn);
 		return NULL;
 	}
 
 	if (d->root == NULL) {
-		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (no root)\n", ifn);
+		rnd_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (no root)\n", ifn);
 		lht_dom_uninit(d);
 		return NULL;
 	}
 
 	if ((d->root->type != LHT_LIST) || (strcmp(d->root->name, "pcb-rnd-conf-v1") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (not a pcb-rnd-conf-v1)\n", ifn);
+		rnd_message(PCB_MSG_ERROR, "error: failed to load lht plugin config: %s (not a pcb-rnd-conf-v1)\n", ifn);
 		lht_dom_uninit(d);
 		return NULL;
 	}
@@ -189,7 +189,7 @@ int pcb_conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 
 		f = pcb_fopen_fn(NULL, fn, "r", &efn);
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
-			pcb_message(PCB_MSG_ERROR, "error: failed to load lht config: %s (%s)\n", fn, efn);
+			rnd_message(PCB_MSG_ERROR, "error: failed to load lht config: %s (%s)\n", fn, efn);
 			fclose(f);
 		}
 		free(efn);
@@ -256,7 +256,7 @@ static int conf_merge_plug(lht_doc_t *d, conf_role_t role, const char *path)
 	err = lht_tree_merge(pcb_conf_plug_root[role]->root, d->root);
 	lht_dom_uninit(d);
 	if (err != 0) {
-		pcb_message(PCB_MSG_ERROR, "Failed to lihata-merge plugin config %s: %s\n", path, lht_err_str(err));
+		rnd_message(PCB_MSG_ERROR, "Failed to lihata-merge plugin config %s: %s\n", path, lht_err_str(err));
 		return 0;
 	}
 	return 1;
@@ -554,7 +554,7 @@ int pcb_conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const
 			return -1;
 		case CFN_COORD:
 			{
-				pcb_bool succ;
+				rnd_bool succ;
 				dst->coord[idx] = pcb_get_value(text, NULL, NULL, &succ);
 				if (!succ)
 					pcb_hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
@@ -898,7 +898,7 @@ int pcb_conf_merge_patch_recurse(lht_node_t *sect, conf_role_t role, int default
 	int nl, ppl = strlen(path_prefix), res = 0;
 
 	if (ppl >= sizeof(path)) {
-		pcb_message(PCB_MSG_ERROR, "Can not merge conf patch: name too long: '%s'\n", path_prefix);
+		rnd_message(PCB_MSG_ERROR, "Can not merge conf patch: name too long: '%s'\n", path_prefix);
 		return -1;
 	}
 
@@ -909,7 +909,7 @@ int pcb_conf_merge_patch_recurse(lht_node_t *sect, conf_role_t role, int default
 	for(n = lht_dom_first(&it, sect); n != NULL; n = lht_dom_next(&it)) {
 		nl = strlen(n->name);
 		if (nl >= (sizeof(path) - (pathe - path))) {
-			pcb_message(PCB_MSG_ERROR, "Can not merge conf patch: name too long: '%s'\n", n->name);
+			rnd_message(PCB_MSG_ERROR, "Can not merge conf patch: name too long: '%s'\n", n->name);
 			return -1;
 		}
 		memcpy(pathe, n->name, nl);
@@ -1454,7 +1454,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 	}
 
 	if (idx >= nat->array_size) {
-		pcb_message(PCB_MSG_ERROR, "Error: can't pcb_conf_set() %s[%d]: %d is beyond the end of the array (%d)\n", path, idx, idx, nat->array_size);
+		rnd_message(PCB_MSG_ERROR, "Error: can't pcb_conf_set() %s[%d]: %d is beyond the end of the array (%d)\n", path, idx, idx, nat->array_size);
 		free(path);
 		return -1;
 	}
@@ -1481,7 +1481,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 				return 0;
 			}
 			if (pcb_conf_main_root_lock[target]) {
-				pcb_message(PCB_MSG_WARNING, "WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
+				rnd_message(PCB_MSG_WARNING, "WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
 				free(path);
 				return -1;
 			}
@@ -1512,7 +1512,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 		}
 		nn = lht_dom_node_alloc(ty, basename);
 		if (cwd->type != LHT_HASH) {
-			pcb_message(PCB_MSG_ERROR, "Expected HASH conf subtree '%s' (in path '%s'); cleaning up broken conf, check your config sources!\n", cwd->name, path);
+			rnd_message(PCB_MSG_ERROR, "Expected HASH conf subtree '%s' (in path '%s'); cleaning up broken conf, check your config sources!\n", cwd->name, path);
 			lht_tree_del(cwd);
 			free(path);
 			return -1;
@@ -1895,7 +1895,7 @@ int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 			case CFR_PROJECT:
 				fn = pcb_conf_get_project_conf_name(project_fn, pcb_fn, &try);
 				if (fn == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
+					rnd_message(PCB_MSG_ERROR, "Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
 					return -1;
 				}
 				break;
@@ -1917,7 +1917,7 @@ int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 				path = pcb_build_fn(hidlib, fn);
 
 			if (path == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Error: failed to calculate the project file name (board file name or allocation error)\n");
+				rnd_message(PCB_MSG_ERROR, "Error: failed to calculate the project file name (board file name or allocation error)\n");
 				fclose(f);
 				return -1;
 			}
@@ -1926,12 +1926,12 @@ int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 			if (end != NULL) {
 				*end = '\0';
 				if (pcb_mkdir(NULL, path, 0755) == 0) {
-					pcb_message(PCB_MSG_INFO, "Created directory %s for saving %s\n", path, fn);
+					rnd_message(PCB_MSG_INFO, "Created directory %s for saving %s\n", path, fn);
 					*end = '/';
 					f = pcb_fopen(hidlib, path, "w");
 				}
 				else
-					pcb_message(PCB_MSG_ERROR, "Error: failed to create directory %s for saving %s\n", path, efn);
+					rnd_message(PCB_MSG_ERROR, "Error: failed to create directory %s for saving %s\n", path, efn);
 			}
 			free(path);
 		}
@@ -1944,7 +1944,7 @@ TODO("CONF: a project file needs to be loaded, merged, then written (to preserve
 			fclose(f);
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, "Error: can't save config to %s - can't open the file for write\n", fn);
+			rnd_message(PCB_MSG_ERROR, "Error: can't save config to %s - can't open the file for write\n", fn);
 	}
 
 	free(efn);

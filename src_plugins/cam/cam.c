@@ -106,7 +106,7 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 		return cam_exec(ctx);
 	}
 
-	pcb_message(PCB_MSG_ERROR, "cam: can not find job configuration '%s'\n", job);
+	rnd_message(PCB_MSG_ERROR, "cam: can not find job configuration '%s'\n", job);
 	return -1;
 }
 
@@ -169,7 +169,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 3; n < argc; n++) {
 		RND_PCB_ACT_CONVARG(n, FGW_STR, cam, opt = argv[n].val.str);
 		if (cam_parse_opt(&ctx, opt) != 0) {
-			pcb_message(PCB_MSG_ERROR, "cam: invalid action option '%s'\n", opt);
+			rnd_message(PCB_MSG_ERROR, "cam: invalid action option '%s'\n", opt);
 			cam_uninit_inst(&ctx);
 			RND_ACT_IRES(1);
 			return 0;
@@ -181,7 +181,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		if (arg == NULL) {
-			pcb_message(PCB_MSG_ERROR, "cam: need one more argument for '%s'\n", cmd);
+			rnd_message(PCB_MSG_ERROR, "cam: need one more argument for '%s'\n", cmd);
 			cam_uninit_inst(&ctx);
 			RND_ACT_IRES(1);
 			return 0;
@@ -228,7 +228,7 @@ static int export_cam_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 {
 	int d, s, oargc;
 	if (*argc < 1) {
-		pcb_message(PCB_MSG_ERROR, "-x cam needs a job name\n");
+		rnd_message(PCB_MSG_ERROR, "-x cam needs a job name\n");
 		return -1;
 	}
 
@@ -247,7 +247,7 @@ static int export_cam_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 		else if (strcmp(opt, "-o") == 0) {
 			s++; (*argc)--;
 			if (cam_parse_set_var(&cam_export_ctx, (*argv)[s]) != 0) {
-				pcb_message(PCB_MSG_ERROR, "cam -o requires a key=value argument\n");
+				rnd_message(PCB_MSG_ERROR, "cam -o requires a key=value argument\n");
 				goto err;
 			}
 		}
@@ -271,7 +271,7 @@ static void export_cam_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		cam_init_inst_fn(&cam_export_ctx);
 
 	if (cam_call(cam_export_job, &cam_export_ctx) != 0)
-		pcb_message(PCB_MSG_ERROR, "CAM job %s failed\n", cam_export_job);
+		rnd_message(PCB_MSG_ERROR, "CAM job %s failed\n", cam_export_job);
 
 	cam_uninit_inst(&cam_export_ctx);
 	free(cam_export_job);

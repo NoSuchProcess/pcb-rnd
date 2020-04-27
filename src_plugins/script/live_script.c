@@ -189,7 +189,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	else if (w == lvs->wload) arg = "load";
 	else if (w == lvs->wsave) arg = "save";
 	else {
-		pcb_message(PCB_MSG_ERROR, "lvs_button_cb(): internal error: unhandled switch case\n");
+		rnd_message(PCB_MSG_ERROR, "lvs_button_cb(): internal error: unhandled switch case\n");
 		return;
 	}
 
@@ -205,7 +205,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	if (lvs_list_langs(NULL, lvs) < 1) {
 		lvs_free_langs(lvs);
 		free(lvs);
-		pcb_message(PCB_MSG_ERROR, "live_script: no scripting language engines found\nPlease compile and install fungw from source, then\nreconfigure and recompile pcb-rnd.\n");
+		rnd_message(PCB_MSG_ERROR, "live_script: no scripting language engines found\nPlease compile and install fungw from source, then\nreconfigure and recompile pcb-rnd.\n");
 		return NULL;
 	}
 
@@ -291,7 +291,7 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 	f = pcb_fopen(hl, fn, "w");
 	if (f == NULL) {
 		pcb_tempfile_unlink(fn);
-		pcb_message(PCB_MSG_ERROR, "live_script: can't open temp file for write\n");
+		rnd_message(PCB_MSG_ERROR, "live_script: can't open temp file for write\n");
 		return -1;
 	}
 
@@ -308,7 +308,7 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 	numu = pcb_num_undo();
 
 	if (pcb_script_load(lvs->longname, fn, lang) != 0) {
-		pcb_message(PCB_MSG_ERROR, "live_script: can't load/parse the script\n");
+		rnd_message(PCB_MSG_ERROR, "live_script: can't load/parse the script\n");
 		res = -1;
 	}
 	lvs->loaded = 1;
@@ -339,7 +339,7 @@ static int live_undo(live_script_t *lvs)
 	if (lvs->undo_pre == lvs->undo_post)
 		return 0; /* the script did nothing */
 	if (lvs->undo_post < pcb_undo_serial()) {
-		pcb_message(PCB_MSG_WARNING, "Can not undo live script modifications:\nthere was user edit after script executaion.\n");
+		rnd_message(PCB_MSG_WARNING, "Can not undo live script modifications:\nthere was user edit after script executaion.\n");
 		return 1;
 	}
 	pcb_undo_above(lvs->undo_pre);
@@ -366,7 +366,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 
 	f = pcb_fopen(hl, fn, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for read\n", fn);
 		return -1;
 	}
 
@@ -412,13 +412,13 @@ static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 
 	f = pcb_fopen(hl, fn, "w");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for write\n", fn);
+		rnd_message(PCB_MSG_ERROR, "live_script: failed to open '%s' for write\n", fn);
 		return -1;
 	}
 
 	src = txt->hid_get_text(atxt, lvs->dlg_hid_ctx);
 	if (fwrite(src, strlen(src), 1, f) != 1) {
-		pcb_message(PCB_MSG_ERROR, "live_script: failed to write script source to '%s'\n", fn);
+		rnd_message(PCB_MSG_ERROR, "live_script: failed to write script source to '%s'\n", fn);
 		res = -1;
 	}
 	free(src);
@@ -447,7 +447,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (name == NULL) name = "default";
 		lvs = htsp_get(&pcb_live_scripts, name);
 		if (lvs != NULL) {
-			pcb_message(PCB_MSG_ERROR, "live script '%s' is already open\n", name);
+			rnd_message(PCB_MSG_ERROR, "live script '%s' is already open\n", name);
 			RND_ACT_IRES(1);
 			return 0;
 		}
@@ -462,14 +462,14 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (name == NULL) {
-		pcb_message(PCB_MSG_ERROR, "script name (second argument) required\n");
+		rnd_message(PCB_MSG_ERROR, "script name (second argument) required\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	lvs = htsp_get(&pcb_live_scripts, name);
 	if (lvs == NULL) {
-		pcb_message(PCB_MSG_ERROR, "script '%s' does not exist\n", name);
+		rnd_message(PCB_MSG_ERROR, "script '%s' does not exist\n", name);
 		RND_ACT_IRES(1);
 		return 0;
 	}

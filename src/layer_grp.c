@@ -154,7 +154,7 @@ static void make_substrate(pcb_board_t *pcb, pcb_layergrp_t *g)
 	pcb_layergrp_setup(g, pcb);
 }
 
-pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate, pcb_bool undoable)
+pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate, rnd_bool undoable)
 {
 	pcb_layergrp_t *ng, *og = pcb_get_layergrp(pcb, gid);
 	pcb_layergrp_id_t after;
@@ -217,7 +217,7 @@ const char *pcb_layergrp_name(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 	return pcb->LayerGroups.grp[gid].name;
 }
 
-pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
+rnd_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 {
 	int i;
 	pcb_layergrp_t *g = &pcb->LayerGroups.grp[num];
@@ -235,7 +235,7 @@ pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 	return pcb_true;
 }
 
-pcb_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
+rnd_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, pcb_layergrp_id_t num)
 {
 	int i;
 	pcb_layergrp_t *g = &pcb->LayerGroups.grp[num];
@@ -354,7 +354,7 @@ static void layergrp_post_change(pcb_attribute_list_t *list, const char *name, c
 		if ((pcb_strcasecmp(value, "true") == 0) || (pcb_strcasecmp(value, "yes") == 0) || (pcb_strcasecmp(value, "on") == 0) || (strcmp(value, "1") == 0)) newv = 1;
 		else if ((pcb_strcasecmp(value, "false") == 0) || (pcb_strcasecmp(value, "no") == 0) || (pcb_strcasecmp(value, "off") == 0) || (strcmp(value, "0") == 0)) newv = 0;
 		else {
-			pcb_message(PCB_MSG_ERROR, "unrecognized value '%s' of layer group %s's init-invis attribute", value, g->name == NULL ? "" : g->name);
+			rnd_message(PCB_MSG_ERROR, "unrecognized value '%s' of layer group %s's init-invis attribute", value, g->name == NULL ? "" : g->name);
 			return;
 		}
 		g->init_invis = newv;
@@ -578,7 +578,7 @@ static void grp_move_struct(pcb_layergrp_t *dst, pcb_layergrp_t *src)
 	memset(src, 0, sizeof(pcb_layergrp_t));
 }
 
-static void pcb_layergrp_del_1(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable)
+static void pcb_layergrp_del_1(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, rnd_bool undoable)
 {
 	int n;
 	pcb_layer_stack_t *stk = &pcb->LayerGroups;
@@ -665,7 +665,7 @@ static const uundo_oper_t undo_layergrp_del = {
 };
 
 
-int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable)
+int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, rnd_bool undoable)
 {
 	undo_layergrp_del_t *r;
 	pcb_layer_stack_t *stk = &pcb->LayerGroups;
@@ -832,7 +832,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 							pcb->Data->Layer[lids[n]].comb |= PCB_LYC_AUTO;
 						}
 						else
-							pcb_message(PCB_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
+							rnd_message(PCB_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
 					}
 					pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, lids[n]);
 				}
@@ -1037,7 +1037,7 @@ static const uundo_oper_t undo_layergrp_rename = {
 };
 
 
-int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, pcb_bool undoable)
+int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, rnd_bool undoable)
 {
 	undo_layergrp_rename_t rtmp, *r = &rtmp;
 
@@ -1058,7 +1058,7 @@ int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, pcb_bool undoable)
 	return 0;
 }
 
-int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *name, pcb_bool undoable)
+int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *name, rnd_bool undoable)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 	if (grp == NULL) return -1;
@@ -1111,7 +1111,7 @@ static const uundo_oper_t undo_layergrp_repurp = {
 };
 
 
-int pcb_layergrp_set_purpose__(pcb_layergrp_t *grp, char *purpose, pcb_bool undoable)
+int pcb_layergrp_set_purpose__(pcb_layergrp_t *grp, char *purpose, rnd_bool undoable)
 {
 	undo_layergrp_repurp_t rtmp, *r = &rtmp;
 
@@ -1139,7 +1139,7 @@ int pcb_layergrp_set_purpose__(pcb_layergrp_t *grp, char *purpose, pcb_bool undo
 	return 0;
 }
 
-int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable)
+int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, rnd_bool undoable)
 {
 	int ret = pcb_layergrp_set_purpose__(lg, purpose, undoable);
 	assert(lg->parent_type == PCB_PARENT_BOARD);
@@ -1147,7 +1147,7 @@ int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, pcb_bool undoab
 	return ret;
 }
 
-int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, pcb_bool undoable)
+int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, rnd_bool undoable)
 {
 	return pcb_layergrp_set_purpose_(lg, pcb_strdup(purpose), undoable);
 }
@@ -1187,7 +1187,7 @@ static const uundo_oper_t undo_layergrp_ltype = {
 
 
 
-int pcb_layergrp_set_ltype(pcb_layergrp_t *grp, pcb_layer_type_t lyt, pcb_bool undoable)
+int pcb_layergrp_set_ltype(pcb_layergrp_t *grp, pcb_layer_type_t lyt, rnd_bool undoable)
 {
 	undo_layergrp_ltype_t rtmp, *r = &rtmp;
 
@@ -1341,7 +1341,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		}
 
 		if (!((ly->meta.bound.type & PCB_LYT_DOC) || (ly->meta.bound.type & PCB_LYT_MECH))) /* doc layers are created later */
-			pcb_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->name);
+			rnd_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->name);
 	}
 
 	if (want_intern > existing_intern) {
@@ -1668,7 +1668,7 @@ void pcb_layergrp_copper_cache_update(pcb_layer_stack_t *st)
 	st->cache.copper_valid = 1;
 }
 
-pcb_bool pcb_has_explicit_outline(pcb_board_t *pcb)
+rnd_bool pcb_has_explicit_outline(pcb_board_t *pcb)
 {
 	int i;
 	pcb_layergrp_t *g;

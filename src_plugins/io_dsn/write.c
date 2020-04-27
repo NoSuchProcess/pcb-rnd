@@ -127,7 +127,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	int res = 0;
 
 	if (pcb_netmap_init(&wctx->nmap, wctx->pcb) != 0) {
-		pcb_message(PCB_MSG_ERROR, "Can not set up net map\n");
+		rnd_message(PCB_MSG_ERROR, "Can not set up net map\n");
 		return -1;
 	}
 
@@ -166,7 +166,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 }
 
 
-int io_dsn_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_dsn_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	dsn_write_t wctx;
 

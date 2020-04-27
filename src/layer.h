@@ -137,7 +137,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 	union {
 		struct { /* A real board layer */
 			pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
-			pcb_bool vis;                  /* visible flag */
+			rnd_bool vis;                  /* visible flag */
 			pcb_color_t color;             /* copied */
 			int no_drc;                    /* whether to ignore the layer when checking the design rules */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
@@ -201,7 +201,7 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
 #define PCB_CURRLID(pcb)         (pcb_layer_stack[0])
 
 /* Free all metadata and objects of a layer; does not free(layer) */
-void pcb_layer_free_fields(pcb_layer_t *layer, pcb_bool undoable);
+void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable);
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
 pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id);
@@ -212,11 +212,11 @@ pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id);
 pcb_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name);
 
 /* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
-pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *ly);
-pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t ly);
+rnd_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *ly);
+rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t ly);
 
 /* Returns pcb_true if the given layer is empty - non-recursive variant (doesn't deal with side effects) */
-pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer);
+rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer);
 
 
 /* call the gui to set a virtual layer or the UI layer group */
@@ -248,7 +248,7 @@ pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name);
    The string is separated by any non-alpha character and is case insensitive.
    If allow_implicit_lyc is true, improvise the value of *lyc using *lyt if
    no comb flag was explicitly specified in the string. */
-int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_layer_combining_t *lyc, pcb_bool allow_implicit_lyc);
+int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_layer_combining_t *lyc, rnd_bool allow_implicit_lyc);
 
 /* return the name of a type bit; type should have only one bit set */
 const char *pcb_layer_type_bit2str(pcb_layer_type_t type);
@@ -279,7 +279,7 @@ void pcb_layer_setup(pcb_layer_t *ly, pcb_data_t *parent_data);
 void pcb_layers_reset(pcb_board_t *pcb);
 
 /* Create a new layer and put it in an existing group (if grp is not -1). */
-pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, pcb_bool undoable);
+pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, rnd_bool undoable);
 
 /* Return the name of a layer (resolving the true name of virtual layers too) */
 const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
@@ -288,19 +288,19 @@ const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
 const pcb_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
 
 /* Rename/recolor an existing layer by idx */
-int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, pcb_bool undoable);
-int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor, pcb_bool undoable);
+int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, rnd_bool undoable);
+int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor, rnd_bool undoable);
 
 /* changes the color of a layer; string has to be allocated by the caller (pcb_strdup) */
-int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, pcb_bool undoable);
+int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, rnd_bool undoable);
 
 /* Low level layer color change, parsed color must be available */
-int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, pcb_bool undoable);
+int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, rnd_bool undoable);
 
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is
    deleted.  Returns non-zero on error, zero if OK.  */
-int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, pcb_bool undoable);
+int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, rnd_bool undoable);
 
 
 /* set up dst to be a bound layer with the right offset in the stack; src_pcb
@@ -318,7 +318,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src);
 pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const char *name, const char *purpose);
 
 /* Calculate a hash of a bound layer (ingoring its name) */
-unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, pcb_bool smirror);
+unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, rnd_bool smirror);
 
 /* Calculate mirrored version of some (bound) layer properties */
 pcb_layer_type_t pcb_layer_mirror_type(pcb_layer_type_t lyt);

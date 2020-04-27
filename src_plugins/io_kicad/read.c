@@ -106,13 +106,13 @@ typedef struct {
 	pcb_layer_t *primitive_ly;  /* for gr_ objects: if not NULL, use this layer and expect no layer specified in the file */
 	pcb_subc_t *primitive_subc; /* for gr_ objects: if not NULL, object is being added under this subc (apply offs) */
 
-	pcb_coord_t width[DIM_max];
-	pcb_coord_t height[DIM_max];
-	pcb_coord_t dim_valid[DIM_max];
+	rnd_coord_t width[DIM_max];
+	rnd_coord_t height[DIM_max];
+	rnd_coord_t dim_valid[DIM_max];
 
 	/* setup */
-	pcb_coord_t pad_to_mask_clearance;
-	pcb_coord_t zone_clearance;
+	rnd_coord_t pad_to_mask_clearance;
+	rnd_coord_t zone_clearance;
 
 	/* delayed actions */
 	zone_connect_t *zc_head;
@@ -148,7 +148,7 @@ static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
 
 	gds_append(&str, '\n');
 
-	pcb_message(PCB_MSG_ERROR, "%s", str.array);
+	rnd_message(PCB_MSG_ERROR, "%s", str.array);
 
 	gds_uninit(&str);
 	return -1;
@@ -168,7 +168,7 @@ static int kicad_warning(gsxl_node_t *subtree, char *fmt, ...)
 
 	gds_append(&str, '\n');
 
-	pcb_message(PCB_MSG_WARNING, "%s", str.array);
+	rnd_message(PCB_MSG_WARNING, "%s", str.array);
 
 	gds_uninit(&str);
 	return 0;
@@ -503,7 +503,7 @@ static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, con
 		pcb_idx = kicad_get_layeridx(st, layer_name);
 		lnm = layer_name;
 		if (pcb_idx < 0) {
-			pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
+			rnd_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
 			lyt = PCB_LYT_VIRTUAL;
 			comb = 0;
 			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
@@ -515,7 +515,7 @@ static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, con
 		if (lid >= 0)
 			return &subc->data->Layer[lid];
 
-		pcb_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
+		rnd_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
 		pcb_idx = kicad_get_layeridx(st, default_layer_name);
 		if (pcb_idx < 0)
 			return NULL;
@@ -670,7 +670,7 @@ do { \
 		return kicad_error(missnode, "Missing child node for " errmsg); \
 } while(0) \
 
-/* same as PARSE_DOUBLE() but res is a pcb_coord_t, input string is in mm */
+/* same as PARSE_DOUBLE() but res is a rnd_coord_t, input string is in mm */
 #define PARSE_COORD(res, missnode, node, errmsg) \
 do { \
 	double __dtmp__; \
@@ -718,7 +718,7 @@ static int kicad_autoload(read_state_t *st, gsxl_node_t *subtree, void *dst_stru
 					break;
 				case KICAD_COORD:
 					{
-						pcb_coord_t *d = (pcb_coord_t *)dst;
+						rnd_coord_t *d = (rnd_coord_t *)dst;
 						PARSE_COORD(*d, NULL, subtree->children, "");
 					}
 					break;
@@ -810,7 +810,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	int i;
 	unsigned long tally = 0, required;
 	double rotdeg = 0.0;  /* default is horizontal */
-	pcb_coord_t X, Y, thickness = 0;
+	rnd_coord_t X, Y, thickness = 0;
 	int scaling = 100;
 	int mirrored = 0;
 	int align = 0; /* -1 for left, 0 for center and +1 for right */
@@ -832,7 +832,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "text rotation");
 			rotdeg -= mod_rot;
 			if (subc != NULL) {
-				pcb_coord_t sx, sy;
+				rnd_coord_t sx, sy;
 				if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
 					X += sx;
 					Y += sy;
@@ -911,7 +911,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		return kicad_error(subtree, "failed to create text due to missing fields");
 
 	{
-		pcb_coord_t mx, my, xalign, tw, th;
+		rnd_coord_t mx, my, xalign, tw, th;
 		int swap;
 		pcb_text_t txt;
 
@@ -993,7 +993,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_target(read_state_t *st, gsxl_node_t *subtree)
 {
 	unsigned long tally = 0, required;
-	pcb_coord_t x, y, thick = PCB_MM_TO_COORD(0.15);
+	rnd_coord_t x, y, thick = PCB_MM_TO_COORD(0.15);
 	double size = 5.0;
 	pcb_layer_t *ly = NULL;
 	pcb_subc_t *subc;
@@ -1076,7 +1076,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
-	pcb_coord_t x1, y1, x2, y2, thickness, clearance;
+	rnd_coord_t x1, y1, x2, y2, thickness, clearance;
 	pcb_flag_t flg = pcb_flag_make(flag);
 	pcb_layer_t *ly = NULL;
 	pcb_line_t *line;
@@ -1159,7 +1159,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		subc = st->primitive_subc;
 
 	if (subc != NULL) {
-		pcb_coord_t sx, sy;
+		rnd_coord_t sx, sy;
 		if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
 			x1 += sx;
 			y1 += sy;
@@ -1184,7 +1184,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 {
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
-	pcb_coord_t cx, cy, endx, endy, thickness, clearance, deltax, deltay;
+	rnd_coord_t cx, cy, endx, endy, thickness, clearance, deltax, deltay;
 	pcb_angle_t end_angle = 0.0, delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly = NULL;
@@ -1249,7 +1249,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 
 	{
 		pcb_angle_t start_angle;
-		pcb_coord_t width, height;
+		rnd_coord_t width, height;
 
 		width = height = pcb_distance(cx, cy, endx, endy); /* calculate radius of arc */
 		deltax = endx - cx;
@@ -1274,7 +1274,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 			subc = st->primitive_subc;
 
 		if (subc != NULL) {
-			pcb_coord_t sx, sy;
+			rnd_coord_t sx, sy;
 			if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
 				cx += sx;
 				cy += sy;
@@ -1300,7 +1300,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	gsxl_node_t *n, *nly1, *nly2;
 	unsigned long tally = 0, required;
 	int blind_cnt = 0;
-	pcb_coord_t x, y, thickness, clearance, mask, drill; /* not sure what to do with mask */
+	rnd_coord_t x, y, thickness, clearance, mask, drill; /* not sure what to do with mask */
 	pcb_layer_t *ly1, *ly2; /* blind/buried: from-to layers */
 	pcb_pstk_t *ps;
 
@@ -1619,7 +1619,7 @@ typedef struct {
 
 
 
-static void kicad_slot_shape(pcb_pstk_shape_t *shape, pcb_coord_t sx, pcb_coord_t sy)
+static void kicad_slot_shape(pcb_pstk_shape_t *shape, rnd_coord_t sx, rnd_coord_t sy)
 {
 	shape->shape = PCB_PSSH_LINE;
 	if (sx > sy) { /* horizontal */
@@ -1645,10 +1645,10 @@ static void kicad_slot_shape(pcb_pstk_shape_t *shape, pcb_coord_t sx, pcb_coord_
 /* check if shape is wanted on a given layer - SMD version */
 #define LYSHS(loc, typ) ((layers->want[loc] & (PCB_LYT_ ## typ)))
 
-static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, pcb_coord_t mask, pcb_coord_t paste, double paste_ratio, pcb_coord_t drillx, pcb_coord_t drilly, const char *pad_shape, int plated, kicad_padly_t *layers, double shape_arg, double shape_arg2)
+static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t padXsize, rnd_coord_t padYsize, rnd_coord_t clearance, rnd_coord_t mask, rnd_coord_t paste, double paste_ratio, rnd_coord_t drillx, rnd_coord_t drilly, const char *pad_shape, int plated, kicad_padly_t *layers, double shape_arg, double shape_arg2)
 {
 	int len = 0, slot = (drillx != drilly);
-	pcb_coord_t drill = 0;
+	rnd_coord_t drill = 0;
 
 	if (pad_shape == NULL) {
 		kicad_error(subtree, "pin with no shape");
@@ -1665,7 +1665,7 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 		   padstack and add the custom shapes as heavy terminal together with the
 		   padstack */
 		pcb_pstk_shape_t sh[9];
-		pcb_coord_t dy = PCB_MM_TO_COORD(shape_arg), dx = PCB_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
+		rnd_coord_t dy = PCB_MM_TO_COORD(shape_arg), dx = PCB_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
 		memset(sh, 0, sizeof(sh));
 		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize+mask*2, padYsize+mask*2, dx, dy);}
 		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize+mask*2, padYsize+mask*2, dx, dy);}
@@ -1724,7 +1724,7 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 	return NULL;
 }
 
-static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, pcb_coord_t clearance, pcb_coord_t mask, pcb_coord_t paste, double paste_ratio, const char *pad_shape, pcb_layer_type_t side, kicad_padly_t *layers, double shape_arg, double shape_arg2)
+static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t padXsize, rnd_coord_t padYsize, rnd_coord_t clearance, rnd_coord_t mask, rnd_coord_t paste, double paste_ratio, const char *pad_shape, pcb_layer_type_t side, kicad_padly_t *layers, double shape_arg, double shape_arg2)
 {
 	int len = 0;
 
@@ -1743,7 +1743,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	if ((strcmp(pad_shape, "rect") == 0) || (strcmp(pad_shape, "trapezoid") == 0) || (strcmp(pad_shape, "custom") == 0)) {
 		/* "custom" pads: see comment in kicad_make_pad_thr() */
 		pcb_pstk_shape_t sh[4];
-		pcb_coord_t dy = PCB_MM_TO_COORD(shape_arg), dx = PCB_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
+		rnd_coord_t dy = PCB_MM_TO_COORD(shape_arg), dx = PCB_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
 		memset(sh, 0, sizeof(sh));
 		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize+mask*2, padYsize+mask*2, dx, dy);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2, dx, dy);}
@@ -1790,7 +1790,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 #undef LYSHT
 #undef LYSHS
 
-static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, int plated, pcb_coord_t moduleX, pcb_coord_t moduleY, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t padXsize, pcb_coord_t padYsize, double pad_rot, unsigned int moduleRotation, pcb_coord_t clearance, pcb_coord_t mask, pcb_coord_t paste, double paste_ratio, int zone_connect, pcb_coord_t drillx, pcb_coord_t drilly, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers, double shape_arg, double shape_arg2)
+static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, const char *netname, int throughHole, int plated, rnd_coord_t moduleX, rnd_coord_t moduleY, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t padXsize, rnd_coord_t padYsize, double pad_rot, unsigned int moduleRotation, rnd_coord_t clearance, rnd_coord_t mask, rnd_coord_t paste, double paste_ratio, int zone_connect, rnd_coord_t drillx, rnd_coord_t drilly, const char *pin_name, const char *pad_shape, unsigned long *featureTally, int *moduleEmpty, pcb_layer_type_t smd_side, kicad_padly_t *layers, double shape_arg, double shape_arg2)
 {
 	pcb_pstk_t *ps;
 	unsigned long required;
@@ -2018,11 +2018,11 @@ static int kicad_parse_pad_options(read_state_t *st, gsxl_node_t *subtree)
 }
 
 TODO("eliminate this forward declaration by reordering the code")
-static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody);
+static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, rnd_coord_t modx, rnd_coord_t mody);
 
 static int kicad_parse_gr_poly(read_state_t *st, gsxl_node_t *subtree)
 {
-	pcb_coord_t sx = 0, sy = 0;
+	rnd_coord_t sx = 0, sy = 0;
 	pcb_subc_get_origin(st->primitive_subc, &sx, &sy);
 	return kicad_parse_any_poly(st, subtree, st->primitive_subc, sx, sy);
 }
@@ -2082,10 +2082,10 @@ static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, pcb
 }
 
 
-static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, pcb_coord_t moduleX, pcb_coord_t moduleY, unsigned int moduleRotation, pcb_coord_t mod_clr, pcb_coord_t mod_mask, pcb_coord_t mod_paste, double mod_paste_ratio, int mod_zone_connect, int *moduleEmpty)
+static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, rnd_coord_t moduleX, rnd_coord_t moduleY, unsigned int moduleRotation, rnd_coord_t mod_clr, rnd_coord_t mod_mask, rnd_coord_t mod_paste, double mod_paste_ratio, int mod_zone_connect, int *moduleEmpty)
 {
 	gsxl_node_t *m;
-	pcb_coord_t x, y, drillx, drilly, sx, sy, clearance, mask = st->pad_to_mask_clearance*2, paste = 0;
+	rnd_coord_t x, y, drillx, drilly, sx, sy, clearance, mask = st->pad_to_mask_clearance*2, paste = 0;
 	const char *netname = NULL;
 	char *pin_name = NULL, *pad_shape = NULL;
 	unsigned long feature_tally = 0;
@@ -2247,10 +2247,10 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	return 0;
 }
 
-static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly_t *polygon, pcb_coord_t xo, pcb_coord_t yo)
+static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly_t *polygon, rnd_coord_t xo, rnd_coord_t yo)
 {
 	gsxl_node_t *m;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	if ((subtree == NULL) || (subtree->str == NULL))
 		return kicad_error(subtree, "error parsing empty polygon.");
@@ -2269,11 +2269,11 @@ static int kicad_parse_poly_pts(read_state_t *st, gsxl_node_t *subtree, pcb_poly
 	return 0;
 }
 
-static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody)
+static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, rnd_coord_t modx, rnd_coord_t mody)
 {
 	gsxl_node_t *n, *npts = NULL;
 	pcb_layer_t *ly = NULL;
-	pcb_coord_t width = 0;
+	rnd_coord_t width = 0;
 	unsigned long tally = 0;
 	pcb_poly_t *poly;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
@@ -2330,7 +2330,7 @@ static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	return 0;
 }
 
-static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, pcb_coord_t modx, pcb_coord_t mody)
+static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *subc, rnd_coord_t modx, rnd_coord_t mody)
 {
 	return kicad_parse_any_poly(st, subtree, subc, modx, mody);
 }
@@ -2344,7 +2344,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	int mod_zone_connect = 1; /* default seems to be connect; see CUCP#57, case labeled "-1" */
 	double mod_rot = 0, mod_paste_ratio = 0;
 	unsigned long tally = 0;
-	pcb_coord_t mod_x = 0, mod_y = 0, mod_clr = UNSPECIFIED, mod_mask = UNSPECIFIED, mod_paste = UNSPECIFIED;
+	rnd_coord_t mod_x = 0, mod_y = 0, mod_clr = UNSPECIFIED, mod_mask = UNSPECIFIED, mod_paste = UNSPECIFIED;
 	char *mod_name;
 	pcb_subc_t *subc = NULL;
 
@@ -2777,7 +2777,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	pcb_layer_auto_fixup(Ptr);
 
 	if (pcb_board_normalize(Ptr) > 0)
-		pcb_message(PCB_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
+		rnd_message(PCB_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
 	pcb_layer_colors_from_conf(Ptr, 1);
 
 	{ /* free layer hack */
@@ -2822,13 +2822,13 @@ int io_kicad_parse_module(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name,
 
 	if (res != GSX_RES_EOE) {
 		if (!pcb_io_err_inhibit)
-			pcb_message(PCB_MSG_ERROR, "Error parsing s-expression '%s'\n", name);
+			rnd_message(PCB_MSG_ERROR, "Error parsing s-expression '%s'\n", name);
 		gsxl_uninit(&st.dom);
 		return -1;
 	}
 
 	if ((st.dom.root->str == NULL) || (strcmp(st.dom.root->str, "module") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "Wrong root node '%s', expected 'module'\n", st.dom.root->str);
+		rnd_message(PCB_MSG_ERROR, "Wrong root node '%s', expected 'module'\n", st.dom.root->str);
 		gsxl_uninit(&st.dom);
 		return -1;
 	}

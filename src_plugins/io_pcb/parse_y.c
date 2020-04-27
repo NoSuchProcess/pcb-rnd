@@ -141,7 +141,7 @@ static	pcb_poly_t *Polygon;
 static	pcb_symbol_t *Symbol;
 static	int		pin_num;
 static pcb_net_t *currnet;
-static	pcb_bool			LayerFlag[PCB_MAX_LAYER + 2];
+static	rnd_bool			LayerFlag[PCB_MAX_LAYER + 2];
 static	int	old_fmt; /* 1 if we are reading a PCB(), 0 if PCB[] */
 static	unsigned char yy_intconn;
 
@@ -149,9 +149,9 @@ extern	char			*yytext;		/* defined by LEX */
 extern	pcb_board_t *	yyPCB;
 extern	pcb_data_t *	yyData;
 extern	pcb_subc_t *yysubc;
-extern	pcb_coord_t yysubc_ox, yysubc_oy;
+extern	rnd_coord_t yysubc_ox, yysubc_oy;
 extern	pcb_font_t *	yyFont;
-extern	pcb_bool	yyFontReset;
+extern	rnd_bool	yyFontReset;
 extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
 extern	conf_role_t yy_settings_dest;
@@ -167,7 +167,7 @@ int yyerror(const char *s);
 int yylex();
 static int check_file_version (int);
 
-static void do_measure (PLMeasure *m, pcb_coord_t i, double d, int u);
+static void do_measure (PLMeasure *m, rnd_coord_t i, double d, int u);
 #define M(r,f,d) do_measure (&(r), f, d, 1)
 
 /* Macros for interpreting what "measure" means - integer value only,
@@ -177,10 +177,10 @@ static void do_measure (PLMeasure *m, pcb_coord_t i, double d, int u);
 #define NU(m) new_units (m)
 
 static int integer_value (PLMeasure m);
-static pcb_coord_t old_units (PLMeasure m);
-static pcb_coord_t new_units (PLMeasure m);
+static rnd_coord_t old_units (PLMeasure m);
+static rnd_coord_t new_units (PLMeasure m);
 static pcb_flag_t pcb_flag_old(unsigned int flags);
-static void load_meta_coord(const char *path, pcb_coord_t crd);
+static void load_meta_coord(const char *path, rnd_coord_t crd);
 static void load_meta_float(const char *path, double val);
 
 #define YYDEBUG 1
@@ -1821,7 +1821,7 @@ yyreduce:
 
 				if (!yyPCB)
 				{
-					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
+					rnd_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
@@ -1847,20 +1847,20 @@ yyreduce:
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (layer_group_string == NULL) {
 			     if (pcb_layer_improvise(yyPCB, pcb_true) != 0) {
-			        pcb_message(PCB_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
+			        rnd_message(PCB_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
 			        YYABORT;
 			     }
-			     pcb_message(PCB_MSG_ERROR, "missing layer-group string: invalid input file, had to improvise, the layer stack is most probably broken\n");
+			     rnd_message(PCB_MSG_ERROR, "missing layer-group string: invalid input file, had to improvise, the layer stack is most probably broken\n");
 			  }
 			  else {
 			    if (pcb_layer_parse_group_string(yyPCB, layer_group_string, yyData->LayerN, old_fmt))
 			    {
-			      pcb_message(PCB_MSG_ERROR, "illegal layer-group string\n");
+			      rnd_message(PCB_MSG_ERROR, "illegal layer-group string\n");
 			      YYABORT;
 			    }
 			    else {
 			     if (pcb_layer_improvise(yyPCB, pcb_false) != 0) {
-			        pcb_message(PCB_MSG_ERROR, "failed to extend-improvise the groups\n");
+			        rnd_message(PCB_MSG_ERROR, "failed to extend-improvise the groups\n");
 			        YYABORT;
 			     }
 			    }
@@ -1921,7 +1921,7 @@ yyreduce:
 
 				if (!yyData || !yyFont)
 				{
-					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
+					rnd_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
@@ -1937,7 +1937,7 @@ yyreduce:
 					/* mark all symbols invalid */
 				if (!yyFont)
 				{
-					pcb_message(PCB_MSG_ERROR, "illegal fileformat\n");
+					rnd_message(PCB_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				if (yyFontReset) {
@@ -2143,7 +2143,7 @@ yyreduce:
     {
 				if (pcb_route_string_parse((yyvsp[-1].string), &yyPCB->RouteStyle, "mil"))
 				{
-					pcb_message(PCB_MSG_ERROR, "illegal route-style string\n");
+					rnd_message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free((yyvsp[-1].string));
@@ -2156,7 +2156,7 @@ yyreduce:
     {
 				if (pcb_route_string_parse(((yyvsp[-1].string) == NULL ? "" : (yyvsp[-1].string)), &yyPCB->RouteStyle, "cmil"))
 				{
-					pcb_message(PCB_MSG_ERROR, "illegal route-style string\n");
+					rnd_message(PCB_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free((yyvsp[-1].string));
@@ -2230,7 +2230,7 @@ yyreduce:
   case 70:
 #line 567 "parse_y.y" /* yacc.c:1652  */
     {
-				pcb_coord_t	hole = (OU((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE);
+				rnd_coord_t	hole = (OU((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE);
 
 					/* make sure that there's enough copper left */
 				if (OU((yyvsp[-3].measure)) - hole < PCB_MIN_PINORVIACOPPER &&
@@ -2429,7 +2429,7 @@ yyreduce:
 #line 771 "parse_y.y" /* yacc.c:1652  */
     {
 				pcb_cardinal_t contour, contour_start, contour_end;
-				pcb_bool bad_contour_found = pcb_false;
+				rnd_bool bad_contour_found = pcb_false;
 				/* ignore junk */
 				for (contour = 0; contour <= Polygon->HoleIndexN; contour++)
 				  {
@@ -2444,7 +2444,7 @@ yyreduce:
 
 				if (bad_contour_found)
 				  {
-				    pcb_message(PCB_MSG_WARNING, "WARNING parsing file '%s'\n"
+				    rnd_message(PCB_MSG_WARNING, "WARNING parsing file '%s'\n"
 					    "    line:        %i\n"
 					    "    description: 'ignored polygon (< 3 points in a contour)'\n",
 					    yyfilename, pcb_lineno);
@@ -2751,7 +2751,7 @@ yyreduce:
   case 157:
 #line 1085 "parse_y.y" /* yacc.c:1652  */
     {
-				pcb_coord_t	hole = OU ((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE;
+				rnd_coord_t	hole = OU ((yyvsp[-3].measure)) * PCB_DEFAULT_DRILLINGHOLE;
 				char	p_number[8];
 
 					/* make sure that there's enough copper left */
@@ -2932,7 +2932,7 @@ yyreduce:
 				char *old_val, *key = (yyvsp[-2].string), *val = (yyvsp[-1].string) ? (yyvsp[-1].string) : (char *)"";
 				old_val = pcb_attribute_get(attr_list, key);
 				if (old_val != NULL)
-					pcb_message(PCB_MSG_ERROR, "mutliple values for attribute %s: '%s' and '%s' - ignoring '%s'\n", key, old_val, val, val);
+					rnd_message(PCB_MSG_ERROR, "mutliple values for attribute %s: '%s' and '%s' - ignoring '%s'\n", key, old_val, val, val);
 				else
 					pcb_attribute_put(attr_list, key, val);
 				free(key);
@@ -3265,7 +3265,7 @@ yyreturn:
  */
 int yyerror(const char * s)
 {
-	pcb_message(PCB_MSG_ERROR, "ERROR parsing file '%s'\n"
+	rnd_message(PCB_MSG_ERROR, "ERROR parsing file '%s'\n"
 		"    line:        %i\n"
 		"    description: '%s'\n",
 		yyfilename, pcb_lineno, s);
@@ -3281,7 +3281,7 @@ static int
 check_file_version (int ver)
 {
   if ( ver > PCB_FILE_VERSION ) {
-    pcb_message(PCB_MSG_ERROR, "ERROR:  The file you are attempting to load is in a format\n"
+    rnd_message(PCB_MSG_ERROR, "ERROR:  The file you are attempting to load is in a format\n"
 	     "which is too new for this version of pcb.  To load this file\n"
 	     "you need a version of pcb which is >= %d.  If you are\n"
 	     "using a version built from git source, the source date\n"
@@ -3294,7 +3294,7 @@ check_file_version (int ver)
 }
 
 static void
-do_measure (PLMeasure *m, pcb_coord_t i, double d, int u)
+do_measure (PLMeasure *m, rnd_coord_t i, double d, int u)
 {
   m->ival = i;
   m->bval = pcb_round (d);
@@ -3310,7 +3310,7 @@ integer_value (PLMeasure m)
   return m.ival;
 }
 
-static pcb_coord_t
+static rnd_coord_t
 old_units (PLMeasure m)
 {
   if (m.has_units)
@@ -3320,7 +3320,7 @@ old_units (PLMeasure m)
   return pcb_round (PCB_MIL_TO_COORD (m.ival));
 }
 
-static pcb_coord_t
+static rnd_coord_t
 new_units (PLMeasure m)
 {
   if (m.has_units)
@@ -3350,7 +3350,7 @@ static pcb_flag_t pcb_flag_old(unsigned int flags)
 }
 
 /* load a board metadata into conf_core */
-static void load_meta_coord(const char *path, pcb_coord_t crd)
+static void load_meta_coord(const char *path, rnd_coord_t crd)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%$mm", crd);

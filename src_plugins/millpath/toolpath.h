@@ -40,11 +40,11 @@ typedef enum pcb_tlp_segtype_s {
 
 struct pcb_tlp_tools_s {
 	int used;          /* number of tools */
-	pcb_coord_t *dia;  /* tool diameters */
+	rnd_coord_t *dia;  /* tool diameters */
 };
 
 struct pcb_tlp_line_s {
-	pcb_coord_t x1, y1, x2, y2;
+	rnd_coord_t x1, y1, x2, y2;
 };
 
 struct pcb_tlp_seg_s {
@@ -57,7 +57,7 @@ struct pcb_tlp_seg_s {
 
 struct pcb_tlp_session_s {
 	const pcb_tlp_tools_t *tools;
-	pcb_coord_t edge_clearance; /* when milling copper, keep this clearance from the edges */
+	rnd_coord_t edge_clearance; /* when milling copper, keep this clearance from the edges */
 
 	/* temp data */
 	pcb_layer_t *res_ply;    /* resulting "remove" polygon */

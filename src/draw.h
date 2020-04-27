@@ -94,7 +94,7 @@ do { \
 /* When true, do not draw terminals but put them on the obj delay list
    using pcb_draw_delay_obj_add() - used to delay heavy terminal drawing
    to get proper overlaps */
-extern pcb_bool delayed_terms_enabled;
+extern rnd_bool delayed_terms_enabled;
 void pcb_draw_delay_obj_add(pcb_any_obj_t *obj);
 
 /* Append an object to the annotatation list; annotations are drawn at the
@@ -116,7 +116,7 @@ do { \
 } while(0)
 
 extern int pcb_draw_force_termlab; /* force drawing terminal lables - useful for pinout previews */
-extern pcb_bool pcb_draw_doing_assy;
+extern rnd_bool pcb_draw_doing_assy;
 
 void pcb_lighten_color(const pcb_color_t *orig, pcb_color_t *dst, double factor);
 
@@ -124,7 +124,7 @@ void pcb_lighten_color(const pcb_color_t *orig, pcb_color_t *dst, double factor)
    the number of on/off segment pairs. It is guaranteed that the line starts
    and ends with an "on" line segment. If cheap is true, allow drawing less
    segments if the line is short */
-void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap);
+void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap);
 
 
 void pcb_draw(void);
@@ -164,10 +164,10 @@ int pcb_draw_layer_is_comp(pcb_layer_id_t lay_id);
 int pcb_draw_layergrp_is_comp(const pcb_layergrp_t *g);
 
 /* Draw (render) or invalidate a terminal label */
-void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj);
-void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj);
-void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label);
-void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label);
+void pcb_term_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const pcb_any_obj_t *obj);
+void pcb_term_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const pcb_any_obj_t *obj);
+void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label);
+void pcb_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label);
 
 
 void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info);

@@ -29,7 +29,7 @@
 
 typedef struct {
 	pcb_any_obj_t *o1, *o2;
-	pcb_coord_t o1x, o1y, o2x, o2y;
+	rnd_coord_t o1x, o1y, o2x, o2y;
 	pcb_layergrp_id_t o1g, o2g;
 	double dist2;
 } pcb_subnet_dist_t;
@@ -69,7 +69,7 @@ do { \
 static pcb_subnet_dist_t pcb_dist_arc_arc(pcb_arc_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	pcb_subnet_dist_t best, curr;
-	pcb_coord_t o1x1, o1y1, o1x2, o1y2, o2x1, o2y1, o2x2, o2y2;
+	rnd_coord_t o1x1, o1y1, o1x2, o1y2, o2x1, o2y1, o2x2, o2y2;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
@@ -105,7 +105,7 @@ static pcb_subnet_dist_t pcb_dist_line_line(pcb_line_t *o1, pcb_line_t *o2, pcb_
 static pcb_subnet_dist_t pcb_dist_line_arc(pcb_line_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	pcb_subnet_dist_t best, curr;
-	pcb_coord_t o2x1, o2y1, o2x2, o2y2;
+	rnd_coord_t o2x1, o2y1, o2x2, o2y2;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
@@ -133,7 +133,7 @@ do { \
 	} \
 } while(0)
 
-static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_t o2x, pcb_coord_t o2y, pcb_coord_t radius)
+static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, rnd_coord_t o2x, rnd_coord_t o2y, rnd_coord_t radius)
 {
 	pcb_subnet_dist_t best;
 	pcb_poly_it_t it;
@@ -158,7 +158,7 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_
 	}
 
 	for(pa = pcb_poly_island_first(o1, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		pcb_pline_t *pl;
 		int go;
 
@@ -180,7 +180,7 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, pcb_coord_
 static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	pcb_subnet_dist_t best, curr;
-	pcb_coord_t o2x1, o2y1, o2x2, o2y2, radius;
+	rnd_coord_t o2x1, o2y1, o2x2, o2y2, radius;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
@@ -200,7 +200,7 @@ static pcb_subnet_dist_t pcb_dist_poly_arc(pcb_poly_t *o1, pcb_arc_t *o2, pcb_ra
 static pcb_subnet_dist_t pcb_dist_poly_line(pcb_poly_t *o1, pcb_line_t *o2, pcb_rat_accuracy_t acc)
 {
 	pcb_subnet_dist_t best, curr;
-	pcb_coord_t radius;
+	rnd_coord_t radius;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
@@ -236,7 +236,7 @@ static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_
 	best.dist2 = HUGE_VAL;
 
 	for(pa = pcb_poly_island_first(o2, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		pcb_pline_t *pl;
 		int go;
 
@@ -259,7 +259,7 @@ static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_
 static pcb_subnet_dist_t pcb_dist_pstk_arc(pcb_pstk_t *o1, pcb_arc_t *o2, pcb_rat_accuracy_t acc)
 {
 	pcb_subnet_dist_t best, curr;
-	pcb_coord_t o2x1, o2y1, o2x2, o2y2;
+	rnd_coord_t o2x1, o2y1, o2x2, o2y2;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;
@@ -402,7 +402,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 
 			if (curr.dist2 < HUGE_VAL) {
 				pcb_any_obj_t *o_in_poly = NULL, *poly;
-				pcb_coord_t x, y, farx, fary;
+				rnd_coord_t x, y, farx, fary;
 
 				/* if object needs to connect to sorrunding polygon, use a special rat
 				   to indicate "in-place" connection */

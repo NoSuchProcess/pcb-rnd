@@ -57,8 +57,8 @@ void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr));
 void pcb_r_insert_entry(pcb_rtree_t *rtree, const pcb_box_t *which);
 void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_cardinal_t len);
 
-pcb_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which);
-pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (*free_data)(void *d));
+rnd_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which);
+rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (*free_data)(void *d));
 
 /* generic search routine */
 /* region_in_search should return pcb_true if "what you're looking for" is

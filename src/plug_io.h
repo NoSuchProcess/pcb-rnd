@@ -116,7 +116,7 @@ struct pcb_plug_io_s {
 	   into a pipe. If emergency is true, do the safest save possible,
 	   don't mind formatting and extras.
 	   Return 0 on success. */
-	int (*write_pcb)(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
+	int (*write_pcb)(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency);
 
 	/* Attempt to write the font to file. Return 0 on success. */
 	int (*write_font)(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename);
@@ -128,7 +128,7 @@ struct pcb_plug_io_s {
 	   only one, shared format-setting-tab is created for them. If apply is
 	   true, the dialog box was closed with okay on this format selected. */
 	void *(*save_as_subd_init)(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
-	void (*save_as_subd_uninit)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, pcb_bool apply);
+	void (*save_as_subd_uninit)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, rnd_bool apply);
 	void (*save_as_fmt_changed)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub);
 
 	const char *default_fmt;
@@ -161,7 +161,7 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 /********** common function used to be part of file.[ch] and friends **********/
 int pcb_save_pcb(const char *, const char *fmt);
 #define PCB_INHIBIT_BOARD_CHANGED 0x20
-int pcb_load_pcb(const char *name, const char *fmt, pcb_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) | 0x10: ignore missing file, | PCB_INHIBIT_BOARD_CHANGED: do not send a board changed event */
+int pcb_load_pcb(const char *name, const char *fmt, rnd_bool, int how); /* how: 0=normal pcb; 1=default.pcb, 2=misc (do not load settings) | 0x10: ignore missing file, | PCB_INHIBIT_BOARD_CHANGED: do not send a board changed event */
 void pcb_enable_autosave(void);
 void pcb_backup(void);
 void pcb_save_in_tmp(void);
@@ -172,7 +172,7 @@ int pcb_save_buffer_subcs(const char *, const char *fmt, long subc_idx);
 int pcb_save_buffer(const char *Filename, const char *fmt);
 void pcb_print_quoted_string_(FILE *, const char *); /* without wrapping in "" */
 void pcb_print_quoted_string(FILE *, const char *); /* with wrapping in "" */
-int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool subc_only, long subc_idx, int askovr);
+int pcb_write_pcb_file(const char *Filename, rnd_bool thePcb, const char *fmt, rnd_bool emergency, rnd_bool subc_only, long subc_idx, int askovr);
 void pcb_set_design_dir(const char *fn);
 int pcb_load_buffer(rnd_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt);
 

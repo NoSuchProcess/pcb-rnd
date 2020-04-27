@@ -86,7 +86,7 @@ pcb_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *contour)
 
 
 #define ARC_ANGLE 5
-static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, pcb_coord_t thick, int end_caps)
+static pcb_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, rnd_coord_t thick, int end_caps)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -95,7 +95,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	double ang, da, rx, ry;
 	long half;
 	double radius_adj;
-	pcb_coord_t edx, edy, endx1, endx2, endy1, endy2;
+	rnd_coord_t edx, edy, endx1, endx2, endy1, endy2;
 
 	if (thick <= 0)
 		return NULL;
@@ -172,7 +172,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	return np;
 }
 
-pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2)
+pcb_polyarea_t *pcb_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -197,7 +197,7 @@ pcb_polyarea_t *pcb_poly_from_rect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y
 	return pcb_poly_from_contour(contour);
 }
 
-pcb_polyarea_t *pcb_poly_from_octagon(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, int style)
+pcb_polyarea_t *pcb_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, int style)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -242,7 +242,7 @@ TODO(": rewrite this to use the same table as the square/oct pin draw function")
 	return pcb_poly_from_contour(contour);
 }
 
-static void pcb_poly_frac_circle_(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range, int add_last)
+static void pcb_poly_frac_circle_(pcb_pline_t * c, rnd_coord_t X, rnd_coord_t Y, pcb_vector_t v, int range, int add_last)
 {
 	double oe1, oe2, e1, e2, t1;
 	int i, orange = range;
@@ -285,20 +285,20 @@ static void pcb_poly_frac_circle_(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y,
  * 2 for a half circle
  * or 4 for a quarter circle
  */
-void pcb_poly_frac_circle(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range)
+void pcb_poly_frac_circle(pcb_pline_t * c, rnd_coord_t X, rnd_coord_t Y, pcb_vector_t v, int range)
 {
 	pcb_poly_frac_circle_(c, X, Y, v, range, 0);
 }
 
 /* same but adds the last vertex */
-void pcb_poly_frac_circle_end(pcb_pline_t * c, pcb_coord_t X, pcb_coord_t Y, pcb_vector_t v, int range)
+void pcb_poly_frac_circle_end(pcb_pline_t * c, rnd_coord_t X, rnd_coord_t Y, pcb_vector_t v, int range)
 {
 	pcb_poly_frac_circle_(c, X, Y, v, range, 1);
 }
 
 
 /* create a circle approximation from lines */
-pcb_polyarea_t *pcb_poly_from_circle(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius)
+pcb_polyarea_t *pcb_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius)
 {
 	pcb_pline_t *contour;
 	pcb_vector_t v;
@@ -318,7 +318,7 @@ pcb_polyarea_t *pcb_poly_from_circle(pcb_coord_t x, pcb_coord_t y, pcb_coord_t r
 }
 
 /* make a rounded-corner rectangle with radius t beyond x1,x2,y1,y2 rectangle */
-pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_coord_t y2, pcb_coord_t t)
+pcb_polyarea_t *RoundRect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -346,7 +346,7 @@ pcb_polyarea_t *RoundRect(pcb_coord_t x1, pcb_coord_t x2, pcb_coord_t y1, pcb_co
 }
 
 
-pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick, pcb_bool square)
+pcb_polyarea_t *pcb_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, rnd_bool square)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -402,10 +402,10 @@ pcb_polyarea_t *pcb_poly_from_line(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x
 }
 
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
-pcb_polyarea_t *pcb_poly_from_arc(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, pcb_coord_t thick)
+pcb_polyarea_t *pcb_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, rnd_coord_t thick)
 {
 	double delta;
-	pcb_coord_t half;
+	rnd_coord_t half;
 
 	delta = (adelta < 0) ? -adelta : adelta;
 
@@ -414,7 +414,7 @@ pcb_polyarea_t *pcb_poly_from_arc(pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t wi
 	/* corner case: can't even calculate the end cap properly because radius
 	   is so small that there's no inner arc of the clearance */
 	if ((width - half <= 0) || (height - half <= 0)) {
-		pcb_coord_t lx1, ly1;
+		rnd_coord_t lx1, ly1;
 		pcb_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
 
 		tmp_arc = ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 0);
@@ -515,7 +515,7 @@ static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t
 	}
 }
 
-void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, pcb_coord_t clipX1, pcb_coord_t clipY1, pcb_coord_t clipX2, pcb_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data)
+void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data)
 {
 	pcb_polyarea_t *cur, *next;
 

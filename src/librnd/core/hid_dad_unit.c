@@ -48,7 +48,7 @@ void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		end->change_cb(hid_ctx, caller_data, end);
 }
 
-void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long unit_id, double unused1, pcb_coord_t unused2)
+void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long unit_id, double unused1, rnd_coord_t unused2)
 {
 	int l;
 	pcb_hid_dad_unit_t *unit = attr->wdata;
@@ -78,13 +78,13 @@ void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
 	}
 }
 
-int pcb_dad_unit_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled)
+int pcb_dad_unit_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
 	return pcb_gui->attr_dlg_widget_state(hid_ctx, unit->wenum, enabled);
 }
 
-int pcb_dad_unit_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide)
+int pcb_dad_unit_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
 	return pcb_gui->attr_dlg_widget_hide(hid_ctx, unit->wenum, hide);

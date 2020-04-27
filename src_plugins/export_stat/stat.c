@@ -123,7 +123,7 @@ static pcb_export_opt_t *stat_get_export_options(pcb_hid_t *hid, int *n)
 }
 
 typedef struct layer_stat_s {
-	pcb_coord_t trace_len;
+	rnd_coord_t trace_len;
 	double copper_area;
 	unsigned long int lines, arcs, polys, elements;
 } layer_stat_t;
@@ -138,7 +138,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
 	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0, num_slots = 0;
-	pcb_coord_t width, height;
+	rnd_coord_t width, height;
 	pcb_cam_t cam;
 
 	memset(lgss, 0, sizeof(lgss));
@@ -199,7 +199,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			memset(&ls, 0, sizeof(ls));
 
 			PCB_LINE_LOOP(l) {
-				pcb_coord_t v;
+				rnd_coord_t v;
 				double d;
 				lgs->lines++;
 				ls.lines++;
@@ -214,7 +214,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 			PCB_END_LOOP;
 
 			PCB_ARC_LOOP(l) {
-				pcb_coord_t v;
+				rnd_coord_t v;
 				double d;
 				lgs->arcs++;
 				ls.arcs++;

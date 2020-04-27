@@ -56,7 +56,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 		pcb_objtype_t type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
 		if (type == 0) {
 			if (!quiet)
-				pcb_message(PCB_MSG_ERROR, "No object under the cursor\n");
+				rnd_message(PCB_MSG_ERROR, "No object under the cursor\n");
 			return FGW_ERR_ARG_CONV;
 		}
 		goto object_scope;
@@ -66,7 +66,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			idp = pcb_str2idpath(pe->pcb, cmd+7);
 			if (idp == NULL) {
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Failed to convert object ID: '%s'\n", cmd+7);
+					rnd_message(PCB_MSG_ERROR, "Failed to convert object ID: '%s'\n", cmd+7);
 				return FGW_ERR_ARG_CONV;
 			}
 			pcb_idpath_list_append(&pe->objs, idp);
@@ -80,14 +80,14 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 				type = pcb_search_obj_by_location(PCB_OBJ_CLASS_REAL, &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
 			if (type == 0) {
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "No object under the cursor\n");
+					rnd_message(PCB_MSG_ERROR, "No object under the cursor\n");
 				return FGW_ERR_ARG_CONV;
 			}
 			object_scope:;
 			idp = pcb_obj2idpath(o2);
 			if (idp == NULL) {
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Object under the cursor has no idpath\n");
+					rnd_message(PCB_MSG_ERROR, "Object under the cursor has no idpath\n");
 				return FGW_ERR_ARG_CONV;
 			}
 			pcb_idpath_list_append(&pe->objs, idp);
@@ -99,7 +99,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 				id = pcb_layergrp_str2id(pe->pcb, cmd+9);
 				if (id < 0) {
 					if (!quiet)
-						pcb_message(PCB_MSG_ERROR, "Invalid layergrp ID '%s'\n", cmd+9);
+						rnd_message(PCB_MSG_ERROR, "Invalid layergrp ID '%s'\n", cmd+9);
 					return FGW_ERR_ARG_CONV;
 				}
 			}
@@ -116,7 +116,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			id = pcb_layer_str2id(pe->data, cmd+6);
 			if (id < 0) {
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Invalid layer ID '%s'\n", cmd+6);
+					rnd_message(PCB_MSG_ERROR, "Invalid layer ID '%s'\n", cmd+6);
 				return FGW_ERR_ARG_CONV;
 			}
 			vtl0_append(&pe->layers, id);
@@ -147,7 +147,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 			return 0;
 		}
 		if (!quiet)
-			pcb_message(PCB_MSG_ERROR, "Invalid scope: %s\n", cmd);
+			rnd_message(PCB_MSG_ERROR, "Invalid scope: %s\n", cmd);
 		return FGW_ERR_ARG_CONV;
 	}
 	return 0;
@@ -355,12 +355,12 @@ int pplg_init_propedit(void)
 	PCB_API_CHK_VER;
 
 	if (sizeof(long) < sizeof(pcb_layer_id_t)) {
-		pcb_message(PCB_MSG_ERROR, "can't load propedig: layer id type wider than long\n");
+		rnd_message(PCB_MSG_ERROR, "can't load propedig: layer id type wider than long\n");
 		return -1;
 	}
 
 	if (sizeof(long) < sizeof(pcb_layergrp_id_t)) {
-		pcb_message(PCB_MSG_ERROR, "can't load propedig: layergrp id type wider than long\n");
+		rnd_message(PCB_MSG_ERROR, "can't load propedig: layergrp id type wider than long\n");
 		return -1;
 	}
 

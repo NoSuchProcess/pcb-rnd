@@ -65,7 +65,7 @@ static void tedax_etest_fsave_pstk(FILE *f, pcb_pstk_t *ps, const char *netname,
 	pcb_pstk_tshape_t *ts;
 	pcb_layer_type_t copper = 0, exposed = 0, side;
 	pcb_pstk_shape_t *shp, *minshp = NULL;
-	pcb_coord_t shx, shy, dia, mindia;
+	rnd_coord_t shx, shy, dia, mindia;
 
 	if (proto == NULL)
 		return;
@@ -161,7 +161,7 @@ int tedax_etest_save(pcb_board_t *pcb, const char *etestid, const char *fn)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "tedax_etest_save(): can't open %s for writing\n", fn);
+		rnd_message(PCB_MSG_ERROR, "tedax_etest_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");

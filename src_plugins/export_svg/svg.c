@@ -117,7 +117,7 @@ static struct {
 	const char *bright;
 	const char *normal;
 	const char *dark;
-	pcb_coord_t offs;
+	rnd_coord_t offs;
 } photo_palette[] = {
 	/* MASK */   { "#00ff00", "#00ff00", "#00ff00", PCB_MM_TO_COORD(0) },
 	/* SILK */   { "#ffffff", "#eeeeee", "#aaaaaa", PCB_MM_TO_COORD(0) },
@@ -288,7 +288,7 @@ static void group_close()
 
 static void svg_header(void)
 {
-	pcb_coord_t w, h, x1, y1, x2, y2;
+	rnd_coord_t w, h, x1, y1, x2, y2;
 
 	fprintf(f, "<?xml version=\"1.0\"?>\n");
 	w = PCB->hidlib.size_x;
@@ -369,11 +369,11 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&svg_cam) == 0) {
 		if (!svg_cam.okempty_group)
-			pcb_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (svg_drawn_objs == 0) {
 		if (!svg_cam.okempty_content)
-			pcb_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 
@@ -486,7 +486,7 @@ static void svg_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	drawing_mode = op;
 
@@ -561,7 +561,7 @@ static void svg_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void svg_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void svg_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width < PCB_MM_TO_COORD(0.01) ? PCB_MM_TO_COORD(0.01) : width;
 }
@@ -592,17 +592,17 @@ static void svg_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 #define fix_rect_coords() \
 	if (x1 > x2) {\
-		pcb_coord_t t = x1; \
+		rnd_coord_t t = x1; \
 		x1 = x2; \
 		x2 = t; \
 	} \
 	if (y1 > y2) { \
-		pcb_coord_t t = y1; \
+		rnd_coord_t t = y1; \
 		y1 = y2; \
 		y2 = t; \
 	}
 
-static void draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t w, pcb_coord_t h, pcb_coord_t stroke)
+static void draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h, rnd_coord_t stroke)
 {
 	const char *clip_color = svg_clip_color(gc);
 
@@ -616,18 +616,18 @@ static void draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord
 	}
 }
 
-static void svg_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void svg_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	svg_drawn_objs++;
 	fix_rect_coords();
 	draw_rect(gc, x1, y1, x2-x1, y2-y1, gc->width);
 }
 
-static void draw_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t w, pcb_coord_t h)
+static void draw_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if ((photo_mode) && (clip_color == NULL)) {
-		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
+		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sdark);
 			pcb_append_printf(&sdark, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
@@ -650,7 +650,7 @@ static void draw_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_
 	}
 }
 
-static void svg_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void svg_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	svg_drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
@@ -658,11 +658,11 @@ static void svg_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	draw_fill_rect(gc, x1, y1, x2-x1, y2-y1);
 }
 
-static void pcb_line_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void pcb_line_draw(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if ((photo_mode) && (clip_color == NULL)) {
-		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
+		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
 			pcb_append_printf(&sbright, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
@@ -686,18 +686,18 @@ static void pcb_line_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	}
 }
 
-static void svg_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void svg_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	svg_drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	pcb_line_draw(gc, x1, y1, x2, y2);
 }
 
-static void pcb_arc_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t r, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t stroke, int large, int sweep)
+static void pcb_arc_draw(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t r, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t stroke, int large, int sweep)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if ((photo_mode) && (clip_color == NULL)) {
-		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
+		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
 			pcb_append_printf(&sbright, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
@@ -720,9 +720,9 @@ static void pcb_arc_draw(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	}
 }
 
-static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void svg_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	pcb_coord_t x1, y1, x2, y2, diff = 0, diff2, maxdiff;
+	rnd_coord_t x1, y1, x2, y2, diff = 0, diff2, maxdiff;
 	pcb_angle_t sa, ea;
 
 	svg_drawn_objs++;
@@ -742,7 +742,7 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 		maxdiff = height;
 	if (diff2 > maxdiff / 1000) {
 		if (!gc->warned_elliptical) {
-			pcb_message(PCB_MSG_ERROR, "Can't draw elliptical arc on svg; object omitted; expect BROKEN TRACE\n");
+			rnd_message(PCB_MSG_ERROR, "Can't draw elliptical arc on svg; object omitted; expect BROKEN TRACE\n");
 			gc->warned_elliptical = 1;
 		}
 		return;
@@ -779,7 +779,7 @@ static void svg_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	pcb_arc_draw(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
 
-static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_coord_t stroke)
+static void draw_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_coord_t stroke)
 {
 	const char *clip_color = svg_clip_color(gc);
 
@@ -787,7 +787,7 @@ static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 
 	if ((photo_mode) && (clip_color == NULL)) {
 		if (!drawing_hole) {
-			pcb_coord_t photo_offs = photo_palette[photo_color].offs;
+			rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 			if ((!gc->drill) && (photo_offs != 0)) {
 				indent(&sbright);
 				pcb_append_printf(&sbright, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
@@ -817,14 +817,14 @@ static void draw_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pc
 	}
 }
 
-static void svg_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void svg_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	svg_drawn_objs++;
 	TRX(cx); TRY(cy);
 	draw_fill_circle(gc, cx, cy, radius, 0);
 }
 
-static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t dx, pcb_coord_t dy, const char *clr)
+static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t dx, rnd_coord_t dy, const char *clr)
 {
 	int i;
 	float poly_bloat = 0.01;
@@ -832,19 +832,19 @@ static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, 
 	indent(s);
 	gds_append_str(s, "<polygon points=\"");
 	for (i = 0; i < n_coords; i++) {
-		pcb_coord_t px = x[i], py = y[i];
+		rnd_coord_t px = x[i], py = y[i];
 		TRX(px); TRY(py);
 		pcb_append_printf(s, "%mm,%mm ", px+dx, py+dy);
 	}
 	pcb_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
 }
 
-static void svg_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void svg_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	const char *clip_color = svg_clip_color(gc);
 	svg_drawn_objs++;
 	if ((photo_mode) && (clip_color == NULL)) {
-		pcb_coord_t photo_offs = photo_palette[photo_color].offs;
+		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			draw_poly(&sbright, gc, n_coords, x, y, dx-photo_offs, dy-photo_offs, photo_palette[photo_color].bright);
 			draw_poly(&sdark, gc, n_coords, x, y, dx+photo_offs, dy+photo_offs, photo_palette[photo_color].dark);
@@ -858,7 +858,7 @@ static void svg_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 	}
 }
 
-static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	svg_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
@@ -866,11 +866,11 @@ static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_
 
 static void svg_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	pcb_message(PCB_MSG_ERROR, "svg_calibrate() not implemented");
+	rnd_message(PCB_MSG_ERROR, "svg_calibrate() not implemented");
 	return;
 }
 
-static void svg_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int a)
+static void svg_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 

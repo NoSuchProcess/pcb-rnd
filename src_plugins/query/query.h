@@ -58,7 +58,7 @@ struct pcb_qry_val_s {
 	union {
 		pcb_any_obj_t *obj;
 		vtp0_t lst;
-		pcb_coord_t crd;
+		rnd_coord_t crd;
 		double dbl;
 		long lng;
 		const char *str;
@@ -118,7 +118,7 @@ struct pcb_qry_node_s {
 	pcb_qry_node_t *next;         /* sibling on this level of the tree (or NULL) */
 	pcb_qry_node_t *parent;
 	union {                       /* field selection depends on ->type */
-		pcb_coord_t crd;
+		rnd_coord_t crd;
 		double dbl;
 		const char *str;
 		pcb_query_iter_t *iter_ctx;

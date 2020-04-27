@@ -46,10 +46,10 @@ typedef enum pcb_message_level {
 /*** central log write API ***/
 
 /* printf-like logger to the log dialog and stderr */
-void pcb_message(enum pcb_message_level level, const char *Format, ...);
+void rnd_message(enum pcb_message_level level, const char *Format, ...);
 
-/* shorthands for indicating common errors using pcb_message() */
-#define pcb_FS_error_message(filename, func) pcb_message(PCB_MSG_ERROR, "Can't open file\n   '%s'\n" func "() returned: '%s'\n", filename, strerror(errno))
+/* shorthands for indicating common errors using rnd_message() */
+#define pcb_FS_error_message(filename, func) rnd_message(PCB_MSG_ERROR, "Can't open file\n   '%s'\n" func "() returned: '%s'\n", filename, strerror(errno))
 
 #define pcb_open_error_message(filename)     pcb_FS_error_message(filename, "open")
 #define pcb_popen_error_message(filename)    pcb_FS_error_message(filename, "popen")

@@ -45,7 +45,7 @@ void dummy_draw_text(pcb_draw_info_t *info, pcb_hid_gc_t gc, const char *str)
 	pcb_text_draw_(info, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 }
 
-static pcb_bool dummy_mouse(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static rnd_bool dummy_mouse(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return 0;
 }
@@ -77,7 +77,7 @@ static void dummy_draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 
 
 void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_draw_csect;
-pcb_bool (*pcb_stub_draw_csect_mouse_ev)(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y) = dummy_mouse;
+rnd_bool (*pcb_stub_draw_csect_mouse_ev)(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y) = dummy_mouse;
 
 
 /****** font selector GUI ******/
@@ -86,11 +86,11 @@ static void dummy_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, p
 	dummy_draw_text(NULL, gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
 
-static pcb_bool dummy_mouse_fontsel(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y, pcb_text_t *txt)
+static rnd_bool dummy_mouse_fontsel(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt)
 {
 	return 0;
 }
 
 void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, pcb_text_t *txt) = dummy_draw_fontsel;
-pcb_bool (*pcb_stub_draw_fontsel_mouse_ev)(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y, pcb_text_t *txt) = dummy_mouse_fontsel;
+rnd_bool (*pcb_stub_draw_fontsel_mouse_ev)(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt) = dummy_mouse_fontsel;
 

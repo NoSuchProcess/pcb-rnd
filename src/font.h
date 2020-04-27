@@ -43,10 +43,10 @@
  */
 typedef struct symbol_s {     /* a single symbol */
 	pcb_line_t *Line;
-	pcb_bool Valid;
+	rnd_bool Valid;
 	pcb_cardinal_t LineN;       /* number of lines */
 	pcb_cardinal_t LineMax;     /* lines allocated */
-	pcb_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
+	rnd_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
 	polylist_t polys;           /* simple (non-clipped) polygons */
 	arclist_t arcs;
 } pcb_symbol_t;
@@ -54,7 +54,7 @@ typedef struct symbol_s {     /* a single symbol */
 typedef long int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
 
 struct pcb_font_s {          /* complete set of symbols */
-	pcb_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
+	rnd_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
 	pcb_box_t DefaultSymbol;     /* the default symbol is a filled box */
 	pcb_symbol_t Symbol[PCB_MAX_FONTPOSITION + 1];
 	char *name;
@@ -64,7 +64,7 @@ struct pcb_font_s {          /* complete set of symbols */
 struct pcb_fontkit_s {          /* a set of unrelated fonts */
 	pcb_font_t dflt;              /* default, fallback font, also the sysfont */
 	htip_t fonts;
-	pcb_bool valid, hash_inited;
+	rnd_bool valid, hash_inited;
 	pcb_font_id_t last_id;        /* highest font id ever seen in this kit */
 };
 
@@ -75,8 +75,8 @@ pcb_font_t *pcb_font(pcb_board_t *pcb, pcb_font_id_t id, int fallback);
 void pcb_font_create_default(pcb_board_t *pcb);
 void pcb_font_set_info(pcb_font_t *Ptr);
 
-pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
-pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_angle_t start, pcb_angle_t delta, pcb_coord_t thickness);
+pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness);
+pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, pcb_angle_t start, pcb_angle_t delta, rnd_coord_t thickness);
 pcb_poly_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points);
 
 void pcb_font_free(pcb_font_t *f);

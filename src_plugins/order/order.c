@@ -72,7 +72,7 @@ fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	
-	pcb_message(PCB_MSG_ERROR, "CLI version of OrderPCB() not yet implemented\n");
+	rnd_message(PCB_MSG_ERROR, "CLI version of OrderPCB() not yet implemented\n");
 	RND_ACT_IRES(-1);
 	return 0;
 }
@@ -116,7 +116,7 @@ void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f)
 	}
 }
 
-static void autoload_field_crd(order_ctx_t *octx, pcb_order_field_t *f, pcb_coord_t c)
+static void autoload_field_crd(order_ctx_t *octx, pcb_order_field_t *f, rnd_coord_t c)
 {
 	switch(f->type) {
 		case PCB_HATT_INTEGER: f->val.lng = c; break;

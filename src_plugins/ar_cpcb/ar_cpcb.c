@@ -133,7 +133,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	for(rn = gsxl_children(dom.root); rn != NULL; rn = gsxl_next(rn)) {
 		int numch = 0;
 		gsxl_node_t *p, *nid, *ntr, *nvr, *ngap, *npads, *npaths, *nx, *ny, *nl;
-		pcb_coord_t thick, clear, via_dia;
+		rnd_coord_t thick, clear, via_dia;
 		char *end;
 
 		for(n = gsxl_children(rn); n != NULL; n = gsxl_next(n)) numch++;
@@ -153,7 +153,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 				npaths = gsxl_next(npads);
 
 				for(n = gsxl_children(npaths); n != NULL; n = gsxl_next(n)) { /* iterate over all paths of the track */
-					pcb_coord_t lx, ly, x, y;
+					rnd_coord_t lx, ly, x, y;
 					int len = 0, lidx, llidx;
 
 					for(p = gsxl_children(n); p != NULL; p = gsxl_next(p)) { /* iterate over all points of the path */
@@ -164,11 +164,11 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 						
 						lidx = strtol(nl->str, &end, 10);
 						if (*end != '\0') {
-							pcb_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (not an integer) in line %ld\n", nl->str, (long)nl->line);
+							rnd_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (not an integer) in line %ld\n", nl->str, (long)nl->line);
 							continue;
 						}
 						if ((lidx < 0) || (lidx >= stack->maxlayer)) {
-							pcb_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (out of range) in line %ld\n", nl->str, (long)nl->line);
+							rnd_message(PCB_MSG_ERROR, "Ignoring invalid layer index '%s' (out of range) in line %ld\n", nl->str, (long)nl->line);
 							continue;
 						}
 
@@ -180,7 +180,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 										0, PCB_PSTK_COMPAT_ROUND, pcb_true);
 								}
 								else
-									pcb_message(PCB_MSG_ERROR, "Invalid via: not vertical, in line %ld:%ld\n", (long)nl->line, (long)nl->col);
+									rnd_message(PCB_MSG_ERROR, "Invalid via: not vertical, in line %ld:%ld\n", (long)nl->line, (long)nl->col);
 							}
 							else
 								line = pcb_line_new(stack->copper[lidx], lx, ly, x, y, thick, clear, pcb_flag_make(PCB_FLAG_CLEARLINE));
@@ -296,7 +296,7 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can not open %s for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Can not open %s for read\n", fn);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -323,14 +323,14 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can not open %s for write\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Can not open %s for write\n", fn);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if (cpcb_map_nets(PCB, &nmap) != 0) {
 		fclose(f);
-		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to map nets\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -359,21 +359,21 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, cpcb, cmd = argv[2].val.str);
 
 	if (strcmp(scope, "board") != 0) {
-		pcb_message(PCB_MSG_ERROR, "Only board routing is supported at the moment\n");
+		rnd_message(PCB_MSG_ERROR, "Only board routing is supported at the moment\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	f = pcb_fopen(&PCB->hidlib, tmpfn, "w");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can not open temp file %s for write\n", tmpfn);
+		rnd_message(PCB_MSG_ERROR, "Can not open temp file %s for write\n", tmpfn);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if (cpcb_map_nets(PCB, &nmap) != 0) {
 		fclose(f);
-		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to map nets\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -390,7 +390,7 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(0);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Failed to execute c-pcb\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to execute c-pcb\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}

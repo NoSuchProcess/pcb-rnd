@@ -30,14 +30,14 @@
 #include <librnd/config.h>
 
 struct pcb_box_s {        /* a bounding box */
-	pcb_coord_t X1, Y1;     /* upper left */
-	pcb_coord_t X2, Y2;     /* and lower right corner */
+	rnd_coord_t X1, Y1;     /* upper left */
+	rnd_coord_t X2, Y2;     /* and lower right corner */
 };
 
 typedef struct pcb_hidlib_s rnd_hidlib_t;
 
 
-/* typedef ... pcb_coord_t; pcb base unit, typedef'd in config.h */
+/* typedef ... rnd_coord_t; pcb base unit, typedef'd in config.h */
 typedef double pcb_angle_t; /* degrees */
 typedef struct pcb_unit_s pcb_unit_t;
 

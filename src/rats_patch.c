@@ -327,7 +327,7 @@ void pcb_ratspatch_make_edited(pcb_board_t *pcb)
 		pcb_ratspatch_apply(pcb, n);
 }
 
-int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, pcb_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
+int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool need_info_lines, void (*cb)(void *ctx, pcb_rats_patch_export_ev_t ev, const char *netn, const char *key, const char *val), void *ctx)
 {
 	pcb_ratspatch_line_t *n;
 
@@ -445,7 +445,7 @@ static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 			PCB_END_LOOP;
 
 			if (!(found)) {
-				pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Selected) called with no selection\n");
+				rnd_message(PCB_MSG_ERROR, "ReplaceFootprint(Selected) called with no selection\n");
 				return 1;
 			}
 			break;
@@ -454,7 +454,7 @@ static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 				void *ptr1, *ptr2, *ptr3;
 				pcb_objtype_t type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 				if ((type != PCB_OBJ_SUBC) || (ptr1 == NULL)) {
-					pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(Object): no subc under cursor\n");
+					rnd_message(PCB_MSG_ERROR, "ReplaceFootprint(Object): no subc under cursor\n");
 					return 1;
 				}
 				*olds = ptr1;
@@ -462,7 +462,7 @@ static int act_replace_footprint_dst(int op, pcb_subc_t **olds)
 			break;
 
 		default:
-			pcb_message(PCB_MSG_ERROR, "ReplaceFootprint(): invalid first argument\n");
+			rnd_message(PCB_MSG_ERROR, "ReplaceFootprint(): invalid first argument\n");
 			return 1;
 	}
 	return 0;
@@ -476,7 +476,7 @@ static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 	if (fpname == NULL) {
 		fpname = pcb_hid_prompt_for(&PCB->hidlib, "Footprint name to use for replacement:", "", "Footprint");
 		if (fpname == NULL) {
-			pcb_message(PCB_MSG_ERROR, "No footprint name supplied\n");
+			rnd_message(PCB_MSG_ERROR, "No footprint name supplied\n");
 			return 1;
 		}
 	}
@@ -498,12 +498,12 @@ static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 
 	len = pcb_subclist_length(&pcb_buffers[bidx].Data->subc);
 	if (len == 0) {
-		pcb_message(PCB_MSG_ERROR, "%s%s contains no subcircuits\n", what, what2);
+		rnd_message(PCB_MSG_ERROR, "%s%s contains no subcircuits\n", what, what2);
 		return 1;
 	}
 
 	if (len > 1) {
-		pcb_message(PCB_MSG_ERROR, "%s%s contains multiple subcircuits\n", what, what2);
+		rnd_message(PCB_MSG_ERROR, "%s%s contains multiple subcircuits\n", what, what2);
 		return 1;
 	}
 	*news = pcb_subclist_first(&pcb_buffers[bidx].Data->subc);
@@ -619,7 +619,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't open netlist patch file %s for writing\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Can't open netlist patch file %s for writing\n", fn);
 		RND_ACT_IRES(-1);
 		return 0;
 	}

@@ -60,7 +60,7 @@ struct pcb_view_s {
 
 	pcb_box_t bbox;               /* bounding box of all error objects (in both groups) */
 
-	pcb_coord_t x, y;             /* optional: a coord to mark on the preview  */
+	rnd_coord_t x, y;             /* optional: a coord to mark on the preview  */
 	pcb_idpath_list_t objs[2];    /* optional: two groups of objects to highlight on preview */
 
 	gds_t long_desc;              /* optional: if non-empty, description shall point to long_desc.array */
@@ -69,8 +69,8 @@ struct pcb_view_s {
 	union {
 		struct {
 			unsigned have_measured:1;
-			pcb_coord_t measured_value;
-			pcb_coord_t required_value;
+			rnd_coord_t measured_value;
+			rnd_coord_t required_value;
 		} drc;
 	} data;
 

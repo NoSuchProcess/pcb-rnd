@@ -77,7 +77,7 @@ extern pcb_buffer_t pcb_buffers[PCB_MAX_BUFFER];
 extern int pcb_added_lines;
 extern int pcb_layer_stack[PCB_MAX_LAYER];
 
-extern pcb_bool pcb_bumped;
+extern rnd_bool pcb_bumped;
 
 /****** callback based loops *****/
 
@@ -129,12 +129,12 @@ void pcb_data_uninit(pcb_data_t *data);
 /* Calls pcb_data_uninit() and free data */
 void pcb_data_free(pcb_data_t *data);
 
-pcb_bool pcb_data_is_empty(pcb_data_t *);
+rnd_bool pcb_data_is_empty(pcb_data_t *);
 
 /* gets minimum and maximum coordinates
  * returns NULL if layout is empty */
-pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters);
-pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters);
+pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
+pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
 
 /* Make sure all layers of data has their .parent field pointing to the data */
 void pcb_data_set_layer_parents(pcb_data_t *data);
@@ -171,9 +171,9 @@ typedef enum pcb_data_mirror_text_e {
 	PCB_TXM_SIDE = 1, /* mirror text, changing side */
 	PCB_TXM_COORD    /* mirror text base coords only */
 } pcb_data_mirror_text_t;
-void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror, pcb_bool undoable);
+void pcb_data_mirror(pcb_data_t *data, rnd_coord_t y_offs, pcb_data_mirror_text_t mtxt, rnd_bool pstk_smirror, rnd_bool undoable);
 
-void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy, int undoable);
+void pcb_data_move(pcb_data_t *data, rnd_coord_t dx, rnd_coord_t dy, int undoable);
 
 /* Multiply x and y coords by sx and sy and thickness by sth (where applicable).
    If recurse is non-zero, also modify subcircuits */
@@ -187,7 +187,7 @@ void pcb_data_clip_polys(pcb_data_t *data);
 pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
 						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
 						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
-						 void *closure, int *num_found, pcb_bool vis_only);
+						 void *closure, int *num_found, rnd_bool vis_only);
 
 /* Either pcb->data or the subcircuit's data if PCB is a subc (footprint edit mode) */
 #define PCB_REAL_DATA(pcb) \
@@ -202,15 +202,15 @@ void pcb_data_clip_inhibit_inc(pcb_data_t *data);
 /* decrease the inhibit counter - if it's zero, reclip all dirty polygons;
    enable_progbar controls whether a progress bar is drawn for reclips
    that take longer than a few seconds. */
-void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar);
+void pcb_data_clip_inhibit_dec(pcb_data_t *data, rnd_bool enable_progbar);
 
 /* attempt to reclip all dirty polygons; normally called by
    pcb_data_clip_inhibit_dec(). */
-void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar);
+void pcb_data_clip_dirty(pcb_data_t *data, rnd_bool enable_progbar);
 
 /* Force reclip all polygons; useful after a move-everything kind
    of operation (e.g. autocrop()) */
-void pcb_data_clip_all(pcb_data_t *data, pcb_bool enable_progbar);
+void pcb_data_clip_all(pcb_data_t *data, rnd_bool enable_progbar);
 
 
 /* Recursively change flags of data; how is one of pcb_change_flag_t */

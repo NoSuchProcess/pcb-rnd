@@ -93,7 +93,7 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box
 	case PCB_OBJ_ARC_POINT:
 		return pcb_obj_ui_arc_point_bbox(Type, Ptr1, Ptr2, Ptr3, res);
 	default:
-		pcb_message(PCB_MSG_ERROR, "Request for bounding box of unsupported type %d\n", Type);
+		rnd_message(PCB_MSG_ERROR, "Request for bounding box of unsupported type %d\n", Type);
 		*res = *(pcb_box_t *)Ptr2;
 		return -1;
 	}
@@ -104,9 +104,9 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box
 /* current object ID; incremented after each creation of an object */
 long int ID = 1;
 
-pcb_bool pcb_create_being_lenient = pcb_false;
+rnd_bool pcb_create_being_lenient = pcb_false;
 
-void pcb_create_be_lenient(pcb_bool v)
+void pcb_create_be_lenient(rnd_bool v)
 {
 	pcb_create_being_lenient = v;
 }
@@ -145,7 +145,7 @@ void pcb_obj_add_attribs(pcb_any_obj_t *o, const pcb_attribute_list_t *src, pcb_
 		pcb_attribute_copy_all(&o->Attributes, src);
 }
 
-void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y)
+void pcb_obj_center(const pcb_any_obj_t *obj, rnd_coord_t *x, rnd_coord_t *y)
 {
 	switch (obj->type) {
 		case PCB_OBJ_PSTK:
@@ -175,7 +175,7 @@ void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, co
 			pcb_term_add(&subc->terminals, obj);
 		inv = pcb_obj_id_invalid(obj->term);
 		if (inv != NULL)
-			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
+			rnd_message(PCB_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
 	}
 	else if (strcmp(name, "intconn") == 0) {
 		long cid = 0;
@@ -254,7 +254,7 @@ pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype)
 	return res;
 }
 
-pcb_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_layer_t *at)
+rnd_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_layer_t *at)
 {
 	switch(o->type) {
 		case PCB_OBJ_POLY:

@@ -39,7 +39,7 @@ typedef struct {
 } pcb_hid_cfg_mouse_t;
 
 int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse);
-void hid_cfg_mouse_action(rnd_hidlib_t *hl, pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active);
+void hid_cfg_mouse_action(rnd_hidlib_t *hl, pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active);
 
 
 /************************** KEYBOARD ***************************/

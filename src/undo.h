@@ -43,18 +43,18 @@ typedef enum pcb_undo_ev_e {
 } pcb_undo_ev_t;
 
 void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len);
-int pcb_undo(pcb_bool);
-int pcb_redo(pcb_bool);
+int pcb_undo(rnd_bool);
+int pcb_redo(rnd_bool);
 int pcb_undo_above(uundo_serial_t s_min);
 
 void pcb_undo_inc_serial(void);
 void pcb_undo_save_serial(void);
 void pcb_undo_restore_serial(void);
-void pcb_undo_clear_list(pcb_bool);
+void pcb_undo_clear_list(rnd_bool);
 
 void pcb_undo_lock(void);
 void pcb_undo_unlock(void);
-pcb_bool pcb_undoing(void);
+rnd_bool pcb_undoing(void);
 
 uundo_serial_t pcb_undo_serial(void);
 void pcb_undo_truncate_from(uundo_serial_t sfirst);
@@ -75,6 +75,6 @@ void undo_dump(void);
 /* temporary */
 #include <librnd/core/pcb_bool.h>
 extern pcb_data_t *pcb_removelist;
-extern pcb_bool pcb_undo_and_draw;
+extern rnd_bool pcb_undo_and_draw;
 
 #endif

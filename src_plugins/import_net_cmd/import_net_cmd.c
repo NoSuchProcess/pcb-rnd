@@ -55,7 +55,7 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	PCB_IMPORT_SCH_VERBOSE(verbose);
 
 	if (numfns != 2) {
-		pcb_message(PCB_MSG_ERROR, "net_cmd_import: requires exactly two arguments:\nfirst argument must be the output file name or -\nsecond argument must be a full command line\n");
+		rnd_message(PCB_MSG_ERROR, "net_cmd_import: requires exactly two arguments:\nfirst argument must be the output file name or -\nsecond argument must be a full command line\n");
 		return -1;
 	}
 
@@ -63,7 +63,7 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	cmdline = fns[1];
 
 	if ((outfn == NULL) || (*outfn == '\0')) {
-		pcb_message(PCB_MSG_ERROR, "net_cmd_import: Could not create temp file for the netlist output");
+		rnd_message(PCB_MSG_ERROR, "net_cmd_import: Could not create temp file for the netlist output");
 		return -1;
 	}
 	if ((outfn[0] == '-') && (outfn[1] == '\0')) {
@@ -72,14 +72,14 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	}
 
 	if (verbose)
-		pcb_message(PCB_MSG_DEBUG, "import_net_cmd:  running cmd: '%s' outfn='%s'\n", cmdline, outfn);
+		rnd_message(PCB_MSG_DEBUG, "import_net_cmd:  running cmd: '%s' outfn='%s'\n", cmdline, outfn);
 
 	pcb_setenv("IMPORT_NET_CMD_PCB", PCB->hidlib.filename, 1);
 	pcb_setenv("IMPORT_NET_CMD_OUT", outfn, 1);
 	res = pcb_system(&PCB->hidlib, cmdline);
 	if (res == 0) {
 		if (verbose)
-			pcb_message(PCB_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, outfn='%s'\n", outfn);
+			rnd_message(PCB_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, outfn='%s'\n", outfn);
 		pcb_import_netlist(&PCB->hidlib, outfn);
 	}
 	if (tmpfn != NULL)

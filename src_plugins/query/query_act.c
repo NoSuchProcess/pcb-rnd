@@ -159,7 +159,7 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 	int res, bufno = -1; /* empty scope means board */
 
 	if (script == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Compilation error: no script specified.\n");
+		rnd_message(PCB_MSG_ERROR, "Compilation error: no script specified.\n");
 		return -1;
 	}
 
@@ -168,7 +168,7 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 	qry_parse(&prg);
 
 	if (prg == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Compilation error.\n");
+		rnd_message(PCB_MSG_ERROR, "Compilation error.\n");
 		return -1;
 	}
 
@@ -181,13 +181,13 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 				char *end;
 				bufno = strtol(scope, &end, 10);
 				if (*end != '\0') {
-					pcb_message(PCB_MSG_ERROR, "Invalid buffer number: '%s': not an integer\n", scope);
+					rnd_message(PCB_MSG_ERROR, "Invalid buffer number: '%s': not an integer\n", scope);
 					pcb_qry_n_free(prg);
 					return -1;
 				}
 				bufno--;
 				if ((bufno < 0) || (bufno >= PCB_MAX_BUFFER)) {
-					pcb_message(PCB_MSG_ERROR, "Invalid buffer number: '%d' out of range 1..%d\n", bufno+1, PCB_MAX_BUFFER);
+					rnd_message(PCB_MSG_ERROR, "Invalid buffer number: '%d' out of range 1..%d\n", bufno+1, PCB_MAX_BUFFER);
 					pcb_qry_n_free(prg);
 					return -1;
 				}
@@ -196,7 +196,7 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 				bufno = conf_core.editor.buffer_number;
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Invalid scope: '%s': must be board or buffer or bufferN\n", scope);
+			rnd_message(PCB_MSG_ERROR, "Invalid scope: '%s': must be board or buffer or bufferN\n", scope);
 			pcb_qry_n_free(prg);
 			return -1;
 		}
@@ -263,7 +263,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_flag_t flg = pcb_strflg_s2f(cmd + 8, NULL, NULL, 0);
 			sel.what = flg.f;
 			if (sel.what == 0) {
-				pcb_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
+				rnd_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
 				RND_ACT_IRES(0);
 				return 0;
 			}
@@ -291,7 +291,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_flag_t flg = pcb_strflg_s2f(cmd + 10, NULL, NULL, 0);
 			sel.what = flg.f;
 			if (sel.what == 0) {
-				pcb_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
+				rnd_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
 				RND_ACT_IRES(0);
 				return 0;
 			}

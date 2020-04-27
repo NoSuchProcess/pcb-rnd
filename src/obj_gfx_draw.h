@@ -41,4 +41,4 @@ void pcb_gfx_invalidate_draw(pcb_layer_t *Layer, pcb_gfx_t *gfx);
 void pcb_gfx_name_invalidate_draw(pcb_gfx_t *gfx);
 void pcb_gfx_draw_label(pcb_draw_info_t *info, pcb_gfx_t *gfx);
 
-void pcb_gfx_draw_xor(pcb_gfx_t *gfx, pcb_coord_t x, pcb_coord_t y);
+void pcb_gfx_draw_xor(pcb_gfx_t *gfx, rnd_coord_t x, rnd_coord_t y);

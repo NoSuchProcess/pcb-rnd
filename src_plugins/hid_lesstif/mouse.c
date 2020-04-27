@@ -66,7 +66,7 @@ static void ltf_reg_mouse_cursor(pcb_hid_t *hid, int idx, const char *name, cons
 				return;
 			}
 		}
-		pcb_message(PCB_MSG_ERROR, "Failed to register named mouse cursor for tool: '%s' is unknown name\n", name);
+		rnd_message(PCB_MSG_ERROR, "Failed to register named mouse cursor for tool: '%s' is unknown name\n", name);
 	}
 	else {
 		XColor fg, bg;

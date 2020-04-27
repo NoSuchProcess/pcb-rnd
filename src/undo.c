@@ -66,12 +66,12 @@
 
 #include "obj_poly_draw.h"
 
-static pcb_bool between_increment_and_restore = pcb_false;
-static pcb_bool added_undo_between_increment_and_restore = pcb_false;
+static rnd_bool between_increment_and_restore = pcb_false;
+static rnd_bool added_undo_between_increment_and_restore = pcb_false;
 
 pcb_data_t *pcb_removelist = NULL; /* lists of removed objects */
-static pcb_bool Locked = pcb_false; /* do not add entries if */
-pcb_bool pcb_undo_and_draw = pcb_true; /* flag is set; prevents from infinite loops */
+static rnd_bool Locked = pcb_false; /* do not add entries if */
+rnd_bool pcb_undo_and_draw = pcb_true; /* flag is set; prevents from infinite loops */
 uundo_list_t pcb_uundo; /* only the undo dialog box should have access to it */
 
 void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len)
@@ -79,24 +79,24 @@ void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len
 	return uundo_append(&pcb_uundo, oper, data_len);
 }
 
-int pcb_undo(pcb_bool draw)
+int pcb_undo(rnd_bool draw)
 {
 	int res;
 
 	pcb_undo_and_draw = draw;
 
 	if (pcb_uundo.num_undo == 0) {
-		pcb_message(PCB_MSG_INFO, "Nothing to undo - buffer is empty\n");
+		rnd_message(PCB_MSG_INFO, "Nothing to undo - buffer is empty\n");
 		return -1;
 	}
 
 	if (pcb_uundo.serial == 0) {
-		pcb_message(PCB_MSG_ERROR, "ERROR: Attempt to pcb_undo() with Serial == 0\n       Please save your work and report this bug.\n");
+		rnd_message(PCB_MSG_ERROR, "ERROR: Attempt to pcb_undo() with Serial == 0\n       Please save your work and report this bug.\n");
 		return -1;
 	}
 
 	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial > pcb_uundo.serial)) {
-		pcb_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
+		rnd_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
 							"       Please save your work and report this bug.\n", pcb_uundo.tail->serial, pcb_uundo.serial);
 
 	/* It is likely that the serial number got corrupted through some bad
@@ -117,7 +117,7 @@ int pcb_undo(pcb_bool draw)
 	pcb_undo_unlock();
 
 	if (res != 0)
-		pcb_message(PCB_MSG_ERROR, "ERROR: Failed to undo some operations\n");
+		rnd_message(PCB_MSG_ERROR, "ERROR: Failed to undo some operations\n");
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
@@ -131,20 +131,20 @@ int pcb_undo_above(uundo_serial_t s_min)
 	return uundo_undo_above(&pcb_uundo, s_min);
 }
 
-int pcb_redo(pcb_bool draw)
+int pcb_redo(rnd_bool draw)
 {
 	int res;
 
 	pcb_undo_and_draw = draw;
 
 	if (pcb_uundo.num_redo == 0) {
-		pcb_message(PCB_MSG_INFO, "Nothing to redo. Perhaps changes have been made since last undo\n");
+		rnd_message(PCB_MSG_INFO, "Nothing to redo. Perhaps changes have been made since last undo\n");
 		return 0;
 	}
 
 	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->next != NULL) && (pcb_uundo.tail->next->serial > pcb_uundo.serial)) {
 
-		pcb_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
+		rnd_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
 							"       Please save your work and report this bug.\n", pcb_uundo.tail->next->serial, pcb_uundo.serial);
 
 		/* It is likely that the serial number got corrupted through some bad
@@ -166,7 +166,7 @@ int pcb_redo(pcb_bool draw)
 	pcb_undo_unlock();
 
 	if (res != 0)
-		pcb_message(PCB_MSG_ERROR, "ERROR: Failed to redo some operations\n");
+		rnd_message(PCB_MSG_ERROR, "ERROR: Failed to redo some operations\n");
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
@@ -181,7 +181,7 @@ int pcb_redo(pcb_bool draw)
 void pcb_undo_restore_serial(void)
 {
 	if (added_undo_between_increment_and_restore)
-		pcb_message(PCB_MSG_ERROR, "ERROR: Operations were added to the Undo stack with an incorrect serial number\n");
+		rnd_message(PCB_MSG_ERROR, "ERROR: Operations were added to the Undo stack with an incorrect serial number\n");
 	between_increment_and_restore = pcb_false;
 	added_undo_between_increment_and_restore = pcb_false;
 	uundo_restore_serial(&pcb_uundo);
@@ -219,7 +219,7 @@ void pcb_undo_inc_serial(void)
 /* ---------------------------------------------------------------------------
  * releases memory of the undo- and remove list
  */
-void pcb_undo_clear_list(pcb_bool Force)
+void pcb_undo_clear_list(rnd_bool Force)
 {
 	if (pcb_uundo.num_undo && (Force || pcb_hid_message_box(&PCB->hidlib, "warning", "clear undo buffer", "Do you reall want to clear 'undo' buffer?", "yes", 1, "no", 0, NULL) == 1)) {
 		uundo_list_clear(&pcb_uundo);
@@ -246,7 +246,7 @@ void pcb_undo_unlock(void)
 /* ---------------------------------------------------------------------------
  * return undo lock state
  */
-pcb_bool pcb_undoing(void)
+rnd_bool pcb_undoing(void)
 {
 	return Locked;
 }

@@ -36,7 +36,7 @@ typedef struct {
 	int gui_active;
 
 	int style;
-	pcb_coord_t displace;
+	rnd_coord_t displace;
 	const char *fmt;
 
 	unsigned int valid:1;
@@ -133,7 +133,7 @@ static void dimension_clear(pcb_subc_t *subc)
 	}
 }
 
-static void draw_arrow(dimension *dim, pcb_data_t *data, pcb_layer_t *ly, pcb_coord_t x1, pcb_coord_t y1, double arrx, double arry)
+static void draw_arrow(dimension *dim, pcb_data_t *data, pcb_layer_t *ly, rnd_coord_t x1, rnd_coord_t y1, double arrx, double arry)
 {
 	pcb_poly_t *p = pcb_poly_new(ly, 0, pcb_flag_make(0));
 	pcb_poly_point_new(p, x1, y1);
@@ -151,7 +151,7 @@ static int dimension_gen(pcb_subc_t *subc)
 	pcb_line_t *flt;
 	double ang, deg, dispe, rotsign;
 	double arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
-	pcb_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y, ex, ey;
+	rnd_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y, ex, ey;
 	pcb_text_t *t;
 	char ttmp[128];
 	pcb_any_obj_t *edit_obj;
@@ -214,7 +214,7 @@ static int dimension_gen(pcb_subc_t *subc)
 	draw_arrow(dim, subc->data, ly, x2, y2, -arrx, arry);
 
 	/* text */
-	if (pcb_safe_snprintf(ttmp, sizeof(ttmp), PCB_SAFEPRINT_COORD_ONLY | 1, dim->fmt, (pcb_coord_t)dim->len) < 0)
+	if (pcb_safe_snprintf(ttmp, sizeof(ttmp), PCB_SAFEPRINT_COORD_ONLY | 1, dim->fmt, (rnd_coord_t)dim->len) < 0)
 		strcpy(ttmp, "<invalid format>");
 	t = pcb_text_new(ly, pcb_font(PCB, 0, 0), 0, 0, 0, 100, 0, ttmp, pcb_flag_make(0));
 	tx = t->BoundingBox.X2 - t->BoundingBox.X1;
@@ -262,7 +262,7 @@ static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	dimension *dim;
 	pcb_line_t *fline = (pcb_line_t *)floater, bline;
-	pcb_coord_t fx, fy;
+	rnd_coord_t fx, fy;
 	double d;
 	char tmp[128];
 
@@ -288,7 +288,7 @@ static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 			d = -d;
 	}
 
-pcb_trace("new disp: %mm f=%mm;%mm\n", (pcb_coord_t)d, fx, fy);
+pcb_trace("new disp: %mm f=%mm;%mm\n", (rnd_coord_t)d, fx, fy);
 
 	if ((d > -PCB_MM_TO_COORD(0.1)) && (d < PCB_MM_TO_COORD(0.1)))
 		return;
@@ -297,7 +297,7 @@ pcb_trace("let's do it!\n");
 
 	dimension_clear(subc);
 	dim->displace = d;
-	pcb_snprintf(tmp, sizeof(tmp), "%.08$mH", (pcb_coord_t)d);
+	pcb_snprintf(tmp, sizeof(tmp), "%.08$mH", (rnd_coord_t)d);
 	pcb_attribute_put(&subc->Attributes, "extobj::displace", tmp);
 	dimension_gen(subc);
 }

@@ -29,7 +29,7 @@ void uninit_aperture_list(aperture_list_t *list)
 	init_aperture_list(list);
 }
 
-aperture_t *add_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shape_t shape)
+aperture_t *add_aperture(aperture_list_t *list, rnd_coord_t width, aperture_shape_t shape)
 {
 	aperture_t *app = (aperture_t *) malloc(sizeof *app);
 	if (app == NULL)
@@ -46,7 +46,7 @@ aperture_t *add_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shap
 	return app;
 }
 
-aperture_t *find_aperture(aperture_list_t *list, pcb_coord_t width, aperture_shape_t shape)
+aperture_t *find_aperture(aperture_list_t *list, rnd_coord_t width, aperture_shape_t shape)
 {
 	aperture_t *search;
 
@@ -80,7 +80,7 @@ void pcb_drill_uninit(pcb_drill_ctx_t *ctx)
 	uninit_aperture_list(&ctx->apr);
 }
 
-pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t diam)
+pcb_pending_drill_t *pcb_drill_new_pending(pcb_drill_ctx_t *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t diam)
 {
 	pcb_pending_drill_t *pd = vtpdr_alloc_append(&ctx->obj, 1);
 

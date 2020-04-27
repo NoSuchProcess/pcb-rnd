@@ -32,7 +32,7 @@
 #define remo_is_valid(v) ((v) > REMO_INVALID)
 
 /* Move a line endpoint to a new absoltue coord in an undoable way */
-static void move_lp(pcb_line_t *line, int pt_idx, pcb_coord_t x, pcb_coord_t y)
+static void move_lp(pcb_line_t *line, int pt_idx, rnd_coord_t x, rnd_coord_t y)
 {
 	pcb_point_t *pt;
 
@@ -59,12 +59,12 @@ static void move_lp(pcb_line_t *line, int pt_idx, pcb_coord_t x, pcb_coord_t y)
 			mino = 1.0; \
 	} while(0)
 
-static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static int pcb_trim_line(vtp0_t *cut_edges, pcb_line_t *line, double remo_in, rnd_coord_t rem_x, rnd_coord_t rem_y)
 {
 	int p, n;
 	double io[2];
 	double mino = 0.0, maxo = 1.0, remo = remo_in;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	if (!remo_is_valid(remo))
 		remo = pcb_cline_pt_offs(line, rem_x, rem_y);
@@ -158,7 +158,7 @@ static void move_arc_angs(pcb_arc_t *arc, int ep, double offs)
 }
 
 
-static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, double remo_in, rnd_coord_t rem_x, rnd_coord_t rem_y)
 {
 	int p, n;
 	double io[2];
@@ -233,7 +233,7 @@ static int pcb_trim_arc(vtp0_t *cut_edges, pcb_arc_t *arc, double remo_in, pcb_c
 /* Split a line in two lines at a specific offset (undoable) */
 static pcb_line_t *split_lp(pcb_line_t *line, double offs)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_line_t *new_line = pcb_line_dup(line->parent.layer, line);
 
 	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, new_line->parent.layer, new_line, new_line);
@@ -265,7 +265,7 @@ static int near(double v1, double v2)
 	return (v1 < 0.0001);
 }
 
-static int pcb_split_line(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_line_t *line, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static int pcb_split_line(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_line_t *line, double remo_in, rnd_coord_t rem_x, rnd_coord_t rem_y)
 {
 	int p, n, numsplt = 0, res;
 	double io[2];
@@ -313,7 +313,7 @@ static int pcb_split_line(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_line_t *line,
 	return numsplt;
 }
 
-static int pcb_split_arc(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_arc_t *arc, double remo_in, pcb_coord_t rem_x, pcb_coord_t rem_y)
+static int pcb_split_arc(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_arc_t *arc, double remo_in, rnd_coord_t rem_x, rnd_coord_t rem_y)
 {
 	int p, n, numsplt = 0, res;
 	double io[2];
@@ -361,7 +361,7 @@ static int pcb_split_arc(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_arc_t *arc, do
 	return numsplt;
 }
 
-int pcb_trim_split(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_any_obj_t *obj, double remo, pcb_coord_t rem_x, pcb_coord_t rem_y, int trim)
+int pcb_trim_split(vtp0_t *cut_edges, vtp0_t *new_objs, pcb_any_obj_t *obj, double remo, rnd_coord_t rem_x, rnd_coord_t rem_y, int trim)
 {
 	int res = 0;
 	switch(obj->type) {

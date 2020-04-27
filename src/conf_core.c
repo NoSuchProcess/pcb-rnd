@@ -46,11 +46,11 @@ void pcb_conf_legacy(const char *dst_path, const char *legacy_path)
 	conf_native_t *nlegacy = pcb_conf_get_field(legacy_path);
 	conf_native_t *ndst = pcb_conf_get_field(dst_path);
 	if (nlegacy == NULL) {
-		pcb_message(PCB_MSG_ERROR, "pcb_conf_legacy: invalid legacy path '%s' for %s\n", legacy_path, dst_path);
+		rnd_message(PCB_MSG_ERROR, "pcb_conf_legacy: invalid legacy path '%s' for %s\n", legacy_path, dst_path);
 		return;
 	}
 	if (ndst == NULL) {
-		pcb_message(PCB_MSG_ERROR, "pcb_conf_legacy: invalid new path %s\n", dst_path);
+		rnd_message(PCB_MSG_ERROR, "pcb_conf_legacy: invalid new path %s\n", dst_path);
 		return;
 	}
 	pcb_conf_legacy_(ndst, nlegacy);

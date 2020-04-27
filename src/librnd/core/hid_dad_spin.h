@@ -44,7 +44,7 @@ typedef struct {
 	pcb_hid_attribute_t **attrs;
 	void **hid_ctx;
 	int set_writeback_lock;
-	pcb_coord_t last_good_crd;
+	rnd_coord_t last_good_crd;
 	enum {
 		PCB_DAD_SPIN_INT,
 		PCB_DAD_SPIN_DOUBLE,
@@ -143,9 +143,9 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
 
 void pcb_dad_spin_free(pcb_hid_attribute_t *attrib);
-void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c);
-int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled);
-int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide);
+void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, rnd_coord_t c);
+int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
+int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
 int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
 void pcb_dad_spin_set_help(pcb_hid_attribute_t *end, const char *help);
 void pcb_dad_spin_set_geo(pcb_hid_attribute_t *end, pcb_hatt_compflags_t flg, int geo);

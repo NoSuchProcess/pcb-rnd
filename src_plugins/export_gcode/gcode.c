@@ -156,9 +156,9 @@ static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int
 
 static void gcode_print_header(void)
 {
-	pcb_coord_t step = gcode_values[HA_cutdepth].crd;
-	pcb_coord_t total = gcode_values[HA_totalcutdepth].crd;
-	pcb_coord_t at = gcode_values[HA_layerdepth].crd;
+	rnd_coord_t step = gcode_values[HA_cutdepth].crd;
+	rnd_coord_t total = gcode_values[HA_totalcutdepth].crd;
+	rnd_coord_t at = gcode_values[HA_layerdepth].crd;
 
 	pcb_fprintf(gctx.f, "#100=%mm  (safe Z for travels above the board)\n", gcode_values[HA_safeZ].crd);
 	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_layerdepth].crd);
@@ -167,7 +167,7 @@ static void gcode_print_header(void)
 	if (step > 0)
 		step = -step;
 	else if (step == 0) {
-		pcb_message(PCB_MSG_ERROR, "export_gcode: cut increment not configured - not exporting thru-cut layer\n");
+		rnd_message(PCB_MSG_ERROR, "export_gcode: cut increment not configured - not exporting thru-cut layer\n");
 		return;
 	}
 
@@ -175,7 +175,7 @@ static void gcode_print_header(void)
 	if (total == 0) {
 		total = pcb_board_thickness(gctx.pcb, "gcode", PCB_BRDTHICK_PRINT_ERROR);
 		if (total == 0) {
-			pcb_message(PCB_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
+			rnd_message(PCB_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
 			return;
 		}
 	}
@@ -212,7 +212,7 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 {
 	pcb_line_t *from = NULL, *to, *last_to = NULL;
 	gdl_iterator_t it;
-	pcb_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
+	rnd_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
 	int start_depth, passes;
 
 	if (tctx->res_path->Line.lst.length == 0) {
@@ -233,7 +233,7 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 	lastx = TX(from->Point2.X);
 	lasty = TY(from->Point2.Y);
 	linelist_foreach(&tctx->res_path->Line, &it, to) {
-		pcb_coord_t x1 = TX(to->Point1.X), y1 = TY(to->Point1.Y), x2 = TX(to->Point2.X), y2 = TY(to->Point2.Y);
+		rnd_coord_t x1 = TX(to->Point1.X), y1 = TY(to->Point1.Y), x2 = TX(to->Point2.X), y2 = TY(to->Point2.Y);
 		if ((lastx != x1) && (lasty != y1)) {
 			if (to->link.prev == NULL)
 				gcode_print_lines_(from, from, passes, start_depth); /* corner case: first line is a stand-alone segment */
@@ -255,7 +255,7 @@ static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose
 	const char *script;
 	pcb_layergrp_t *grp = &gctx.pcb->LayerGroups.grp[group];
 	static pcb_tlp_session_t tctx;
-	static pcb_coord_t tool_dias[] = {
+	static rnd_coord_t tool_dias[] = {
 		PCB_MM_TO_COORD(0.2),
 		PCB_MM_TO_COORD(3)
 	};
@@ -369,11 +369,11 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&gctx.cam) == 0) {
 		if (!gctx.cam.okempty_group)
-			pcb_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (gctx.drawn_objs == 0) {
 		if (!gctx.cam.okempty_content)
-			pcb_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 

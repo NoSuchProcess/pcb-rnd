@@ -249,7 +249,7 @@ static void ghid_calibrate(pcb_hid_t *hid, double xval, double yval)
 	printf("ghid_calibrate() -- not implemented\n");
 }
 
-static void ghid_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void ghid_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	int offset_x, offset_y;
@@ -262,7 +262,7 @@ static void ghid_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gctx->port.view);
 }
 
-static void ghid_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+static void ghid_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	pcb_gtk_get_coords(gctx, &gctx->port.view, msg, x, y, force);
@@ -274,7 +274,7 @@ pcb_hidval_t ghid_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data)
 }
 
 static pcb_hidval_t ghid_watch_file(pcb_hid_t *hid, int fd, unsigned int condition,
-	pcb_bool (*func)(pcb_hidval_t, int, unsigned int, pcb_hidval_t), pcb_hidval_t user_data)
+	rnd_bool (*func)(pcb_hidval_t, int, unsigned int, pcb_hidval_t), pcb_hidval_t user_data)
 {
 	return pcb_gtk_watch_file((pcb_gtk_t *)hid->hid_data, fd, condition, func, user_data);
 }
@@ -284,7 +284,7 @@ static char *ghid_fileselect(pcb_hid_t *hid, const char *title, const char *desc
 	return pcb_gtk_fileselect((pcb_gtk_t *)hid->hid_data, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
-static void *ghid_attr_dlg_new_(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void *ghid_attr_dlg_new_(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	return ghid_attr_dlg_new((pcb_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
@@ -300,7 +300,7 @@ static void ghid_attributes(pcb_hid_t *hid, const char *owner, pcb_attribute_lis
 	pcb_gtk_dlg_attributes(gctx->port.top_window, owner, attrs);
 }
 
-static void PointCursor(pcb_hid_t *hid, pcb_bool grabbed)
+static void PointCursor(pcb_hid_t *hid, rnd_bool grabbed)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 
@@ -444,13 +444,13 @@ static void ghid_dock_leave(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub)
 	pcb_gtk_tw_dock_leave(&gctx->topwin, sub);
 }
 
-static void ghid_zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+static void ghid_zoom_win(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	pcb_gtk_zoom_view_win_side(&gctx->port.view, x1, y1, x2, y2, set_crosshair);
 }
 
-static void ghid_zoom(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+static void ghid_zoom(pcb_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	if (relative)
@@ -459,7 +459,7 @@ static void ghid_zoom(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y
 		pcb_gtk_zoom_view_abs(&gctx->port.view, center_x, center_y, factor);
 }
 
-static void ghid_pan(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative)
+static void ghid_pan(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	if (relative)
@@ -468,7 +468,7 @@ static void ghid_pan(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative)
 		pcb_gtk_pan_view_abs(&gctx->port.view, x, y, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
 }
 
-static void ghid_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+static void ghid_pan_mode(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	gctx->port.view.panning = mode;
@@ -500,7 +500,7 @@ static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)
 
 	menu = pcb_gtk_menu_widget(menu_node);
 	if (!GTK_IS_MENU(menu)) {
-		pcb_message(PCB_MSG_ERROR, "The specified popup menu \"%s\" has not been defined.\n", menupath);
+		rnd_message(PCB_MSG_ERROR, "The specified popup menu \"%s\" has not been defined.\n", menupath);
 		return 1;
 	}
 
@@ -548,7 +548,7 @@ static void ghid_set_top_title(pcb_hid_t *hid, const char *title)
 	pcb_gtk_tw_set_title(&gctx->topwin, title);
 }
 
-static void ghid_busy(pcb_hid_t *hid, pcb_bool busy)
+static void ghid_busy(pcb_hid_t *hid, rnd_bool busy)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	if ((gctx == NULL) || (!gctx->hid_active))
@@ -623,7 +623,7 @@ static void ghid_init_pixmap(pcb_hid_t *hid, pcb_pixmap_t *pxm)
 	ghid_init_pixmap_(gtk_px);
 }
 
-static void ghid_draw_pixmap(pcb_hid_t *hid, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, const pcb_pixmap_t *pixmap)
+static void ghid_draw_pixmap(pcb_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const pcb_pixmap_t *pixmap)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 TODO("gfx: this use of sx/sy ignores rotation");
@@ -634,7 +634,7 @@ TODO("gfx: this use of sx/sy ignores rotation");
 		double rsx, rsy, ca = cos(pixmap->tr_rot / PCB_RAD_TO_DEG), sa = sin(pixmap->tr_rot / PCB_RAD_TO_DEG);
 		rsx = (double)sx * ca + (double)sy * sa;
 		rsy = (double)sy * ca + (double)sx * sa;
-pcb_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (pcb_coord_t)rsx, (pcb_coord_t)rsy);
+pcb_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);
 		gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - rsx/2.0, cy - rsy/2.0, rsx, rsy);
 	}
 }

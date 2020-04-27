@@ -113,7 +113,7 @@ void pcb_pstk_free(pcb_pstk_t *ps)
 	free(ps);
 }
 
-pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror)
+pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror)
 {
 	pcb_pstk_t *ps;
 
@@ -140,7 +140,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto,
 	return ps;
 }
 
-pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, pcb_cardinal_t proto, pcb_coord_t x, pcb_coord_t y, pcb_coord_t clearance, pcb_flag_t Flags)
+pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, pcb_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags)
 {
 	return pcb_pstk_new_tr(data, id, proto, x, y, clearance, Flags, 0, 0, 0);
 }
@@ -155,7 +155,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	PCB_SET_PARENT(ps, data, data);
 }
 
-static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, pcb_bool copper_only)
+static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 {
 	int n, sn;
 	pcb_line_t line;
@@ -233,7 +233,7 @@ TODO("padstack: should compare shape by shape: a 180 deg rotated or mirrored rec
 	if (floor(fmod((p1->rot * rotdir1) + tr1->rot, 360.0)*10000) != floor(fmod((p2->rot * rotdir2) + tr2->rot, 360.0)*10000)) return 0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, p2)) {
-		pcb_coord_t x1, y1, x2, y2;
+		rnd_coord_t x1, y1, x2, y2;
 		
 		pcb_hash_tr_coords(tr1, &x1, &y1, p1->x, p1->y);
 		pcb_hash_tr_coords(tr2, &x2, &y2, p2->x, p2->y);
@@ -250,7 +250,7 @@ unsigned int pcb_pstk_hash(const pcb_host_trans_t *tr, const pcb_pstk_t *p)
 	double rotdir = tr->on_bottom ? -1.0 : 1.0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		
 		pcb_hash_tr_coords(tr, &x, &y, p->x, p->y);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y);
@@ -291,7 +291,7 @@ pcb_pstk_t *pcb_pstk_copy_orient(pcb_pstk_t *dst, pcb_pstk_t *src)
 	return dst;
 }
 
-void pcb_pstk_move_(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_pstk_move_(pcb_pstk_t *ps, rnd_coord_t dx, rnd_coord_t dy)
 {
 	ps->x += dx;
 	ps->y += dy;
@@ -305,7 +305,7 @@ void pcb_pstk_move_(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
 	ps->bbox_naked.Y2 += dy;
 }
 
-void pcb_pstk_move(pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come)
+void pcb_pstk_move(pcb_pstk_t *ps, rnd_coord_t dx, rnd_coord_t dy, rnd_bool more_to_come)
 {
 	pcb_opctx_t ctx;
 	ctx.move.pcb = NULL;
@@ -416,7 +416,7 @@ static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
 		&conf_core.appearance.color.selected : &conf_core.appearance.color.padstackmark);
 }
 
-static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape, int fill, pcb_coord_t dthick)
+static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape, int fill, rnd_coord_t dthick)
 {
 	long n;
 
@@ -426,7 +426,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 	if (dthick != 0) {
 		/* slow - but would be used on export mostly, not on-screen drawing */
 		pcb_polo_t *p, p_st[32];
-		pcb_coord_t *x, *y, xy_st[64];
+		rnd_coord_t *x, *y, xy_st[64];
 		double vl = pcb_round(-dthick/2);
 		long n;
 
@@ -436,7 +436,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 		
 		if (shape->data.poly.len >= sizeof(p_st) / sizeof(p_st[0])) {
 			p = malloc(sizeof(pcb_polo_t) * shape->data.poly.len);
-			x = malloc(sizeof(pcb_coord_t) * shape->data.poly.len);
+			x = malloc(sizeof(rnd_coord_t) * shape->data.poly.len);
 		}
 		else {
 			p = p_st;
@@ -481,7 +481,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 
 static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
-	pcb_coord_t r, dthick = 0;
+	rnd_coord_t r, dthick = 0;
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0))
 		dthick = info->xform->bloat;
 
@@ -506,7 +506,7 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pc
 
 static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
-	pcb_coord_t r, dthick = 0;
+	rnd_coord_t r, dthick = 0;
 	pcb_hid_set_line_cap(gc, pcb_cap_round);
 
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0))
@@ -581,7 +581,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
-	pcb_coord_t mark, mark2;
+	rnd_coord_t mark, mark2;
 
 	/* mark is a cross in the middle, right on the hole;
 	   cross size should extend beyond the hole */
@@ -672,7 +672,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	/* indicate unplated holes with an arc; unplated holes are more rare
 	   than plated holes, thus unplated holes are indicated */
 	if (!proto->hplated && !pcb_xform_omit_overlay(info)) {
-		pcb_coord_t r = proto->hdia / 2;
+		rnd_coord_t r = proto->hdia / 2;
 		r -= r/8; /* +12.5% */
 		pcb_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
@@ -760,8 +760,8 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps)
 
 void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 {
-	pcb_bool vert;
-	pcb_coord_t dx, dy;
+	rnd_bool vert;
+	rnd_coord_t dx, dy;
 
 	if (ps->term == NULL)
 		return;
@@ -776,7 +776,7 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 
 	vert = dx < dy;
 #ifdef PCB_PSTK_LABEL_OFFCENTER
-	pcb_coord_t offs = 0;
+	rnd_coord_t offs = 0;
 	pcb_pstk_proto_t *proto;
 	proto = pcb_pstk_get_proto(ps);
 	if ((proto != NULL) && (proto->hdia > 0))
@@ -787,7 +787,7 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 }
 
 static pcb_xform_t dummy_xform;
-void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, pcb_bool mark, pcb_bool label, const pcb_box_t *drawn_area)
+void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, rnd_bool mark, rnd_bool label, const pcb_box_t *drawn_area)
 {
 	pcb_draw_info_t info;
 	int n, draw_hole = 0;
@@ -1006,7 +1006,7 @@ int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
 	return pcb_pstk_near_box_(ps, box, shp);
 }
 
-static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_shape_t *shape)
+static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, pcb_pstk_shape_t *shape)
 {
 	pcb_any_line_t pad;
 	pcb_vector_t v;
@@ -1036,7 +1036,7 @@ static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y, p
 	return 0;
 }
 
-int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer)
+int pcb_is_point_in_pstk(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 	pcb_pstk_shape_t *shp;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
@@ -1069,7 +1069,7 @@ int pcb_is_point_in_pstk(pcb_coord_t x, pcb_coord_t y, pcb_coord_t radius, pcb_p
 	return pcb_is_point_in_pstk_(ps, x, y, radius, shp);
 }
 
-int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_t min_clr)
+int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, rnd_coord_t min_clr)
 {
 	int n;
 	pcb_pstk_tshape_t *ts;
@@ -1090,7 +1090,7 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, pcb_coord_
 
 /* Check the minimum distance between a hole's edge and a shape's edge and
    indicate error if it's smaller than min */
-static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdia, pcb_coord_t min)
+static rnd_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, rnd_coord_t hdia, rnd_coord_t min)
 {
 	double dist, neck, mindist2, dist2;
 	pcb_line_t line;
@@ -1147,7 +1147,7 @@ static pcb_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, pcb_coord_t hdi
 	return neck < min;
 }
 
-void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, pcb_coord_t *err_minring, pcb_coord_t *err_minhole, pcb_coord_t minring, pcb_coord_t mindrill)
+void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, rnd_coord_t *err_minring, rnd_coord_t *err_minhole, rnd_coord_t minring, rnd_coord_t mindrill)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 
@@ -1175,7 +1175,7 @@ TODO("slot: check if slot breaks other shapes")
 
 typedef struct {
 	pcb_pstk_t *pstk; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
-	pcb_coord_t y_offs;
+	rnd_coord_t y_offs;
 	int swap_side;
 	int disable_xmirror;
 } undo_pstk_mirror_t;
@@ -1230,7 +1230,7 @@ static const uundo_oper_t undo_pstk_mirror = {
 
 
 
-void pcb_pstk_mirror(pcb_pstk_t *ps, pcb_coord_t y_offs, int swap_side, int disable_xmirror, pcb_bool undoable)
+void pcb_pstk_mirror(pcb_pstk_t *ps, rnd_coord_t y_offs, int swap_side, int disable_xmirror, rnd_bool undoable)
 {
 	undo_pstk_mirror_t gtmp, *g = &gtmp;
 
@@ -1365,7 +1365,7 @@ typedef struct {
 	long int ID;        /* ID of the padstack */
 
 	pcb_cardinal_t proto;
-	pcb_coord_t clearance;
+	rnd_coord_t clearance;
 	double rot;
 	int xmirror, smirror;
 } padstack_change_instance_t;
@@ -1397,7 +1397,7 @@ static int undo_change_instance_swap(void *udata)
 		for(n = 0; (subc == NULL) && (n < PCB_MAX_BUFFER); n++)
 			subc = pcb_subc_by_id(pcb_buffers[n].Data, u->parent_ID);
 		if (subc == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Can't undo padstack change: parent subc #%ld is not found\n", u->parent_ID);
+			rnd_message(PCB_MSG_ERROR, "Can't undo padstack change: parent subc #%ld is not found\n", u->parent_ID);
 			return -1;
 		}
 		data = subc->data;
@@ -1407,7 +1407,7 @@ static int undo_change_instance_swap(void *udata)
 
 	ps = pcb_pstk_by_id(data, u->ID);
 	if (ps == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't undo padstack change: padstack ID #%ld is not available\n", u->ID);
+		rnd_message(PCB_MSG_ERROR, "Can't undo padstack change: padstack ID #%ld is not available\n", u->ID);
 		return -1;
 	}
 
@@ -1417,7 +1417,7 @@ static int undo_change_instance_swap(void *udata)
 		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
 
 	swap(ps->proto,      u->proto,     pcb_cardinal_t);
-	swap(ps->Clearance,  u->clearance, pcb_coord_t);
+	swap(ps->Clearance,  u->clearance, rnd_coord_t);
 	swap(ps->rot,        u->rot,       double);
 	swap(ps->xmirror,    u->xmirror,   int);
 	swap(ps->smirror,    u->smirror,   int);
@@ -1449,7 +1449,7 @@ static const uundo_oper_t undo_pstk_change_instance = {
 	undo_change_instance_print
 };
 
-int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_coord_t *clearance, double *rot, int *xmirror, int *smirror)
+int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const rnd_coord_t *clearance, double *rot, int *xmirror, int *smirror)
 {
 	padstack_change_instance_t *u;
 	long int parent_ID;
@@ -1508,7 +1508,7 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const pcb_co
 	return 0;
 }
 
-pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid)
+rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 {
 	pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
 
@@ -1525,7 +1525,7 @@ pcb_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 
 #include "obj_pstk_op.c"
 
-void pcb_pstk_rotate90(pcb_pstk_t *pstk, pcb_coord_t cx, pcb_coord_t cy, int steps)
+void pcb_pstk_rotate90(pcb_pstk_t *pstk, rnd_coord_t cx, rnd_coord_t cy, int steps)
 {
 	pcb_opctx_t ctx;
 
@@ -1535,7 +1535,7 @@ void pcb_pstk_rotate90(pcb_pstk_t *pstk, pcb_coord_t cx, pcb_coord_t cy, int ste
 	pcb_pstkop_rotate90(&ctx, pstk);
 }
 
-void pcb_pstk_rotate(pcb_pstk_t *pstk, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle)
+void pcb_pstk_rotate(pcb_pstk_t *pstk, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina, double angle)
 {
 	pcb_opctx_t ctx;
 
@@ -1547,7 +1547,7 @@ void pcb_pstk_rotate(pcb_pstk_t *pstk, pcb_coord_t cx, pcb_coord_t cy, double co
 	pcb_pstkop_rotate(&ctx, pstk);
 }
 
-pcb_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
+rnd_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 	pcb_pstk_shape_t *shp;
 

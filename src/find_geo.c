@@ -118,7 +118,7 @@ static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 	return (sa + d - 360) >= alpha;
 }
 
-static void get_arc_ends(pcb_coord_t * box, pcb_arc_t *arc)
+static void get_arc_ends(rnd_coord_t * box, pcb_arc_t *arc)
 {
 	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
 	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
@@ -151,11 +151,11 @@ static void get_arc_ends(pcb_coord_t * box, pcb_arc_t *arc)
  *
  *
  */
-static pcb_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_t *Arc2)
+static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_t *Arc2)
 {
 	double x, y, dx, dy, r1, r2, a, d, l, t, t1, t2, dl;
-	pcb_coord_t pdx, pdy;
-	pcb_coord_t box[8];
+	rnd_coord_t pdx, pdy;
+	rnd_coord_t box[8];
 
 	t = 0.5 * Arc1->Thickness + Bloat;
 	t2 = 0.5 * Arc2->Thickness;
@@ -262,9 +262,9 @@ static pcb_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point or center point
  */
-static pcb_bool pcb_isc_ratp_line(const pcb_find_t *ctx, pcb_point_t *Point, pcb_line_t *Line)
+static rnd_bool pcb_isc_ratp_line(const pcb_find_t *ctx, pcb_point_t *Point, pcb_line_t *Line)
 {
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 
 	/* either end */
 	if ((Point->X == Line->Point1.X && Point->Y == Line->Point1.Y)
@@ -280,7 +280,7 @@ static pcb_bool pcb_isc_ratp_line(const pcb_find_t *ctx, pcb_point_t *Point, pcb
 }
 
 /* Tests any end of a rat line is on the line */
-static pcb_bool pcb_isc_rat_line(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_line_t *line)
+static rnd_bool pcb_isc_rat_line(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_line_t *line)
 {
 	pcb_layergrp_id_t gid = pcb_layer_get_group_(line->parent.layer);
 
@@ -295,9 +295,9 @@ static pcb_bool pcb_isc_rat_line(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_line
 /* ---------------------------------------------------------------------------
  * Tests if point is same as arc end point or center point
  */
-static pcb_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, pcb_point_t *Point, pcb_arc_t *arc)
+static rnd_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, pcb_point_t *Point, pcb_arc_t *arc)
 {
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 
 	/* either end */
 	pcb_arc_get_end(arc, 0, &cx, &cy);
@@ -317,7 +317,7 @@ static pcb_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, pcb_point_t *Point, pcb_
 }
 
 /* Tests any end of a rat line is on the arc */
-static pcb_bool pcb_isc_rat_arc(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_arc_t *arc)
+static rnd_bool pcb_isc_rat_arc(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_arc_t *arc)
 {
 	pcb_layergrp_id_t gid = pcb_layer_get_group_(arc->parent.layer);
 
@@ -332,9 +332,9 @@ static pcb_bool pcb_isc_rat_arc(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_arc_t
 /* ---------------------------------------------------------------------------
  * Tests if rat line point is connected to a polygon
  */
-static pcb_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, pcb_point_t *Point, pcb_poly_t *polygon, int donut)
+static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, pcb_point_t *Point, pcb_poly_t *polygon, int donut)
 {
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
 
@@ -359,7 +359,7 @@ static pcb_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, pcb_point_t *Point, pcb
 
 	/* expensive test: the rat can end on any contour point */
 	for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		pcb_pline_t *pl;
 		int go;
 
@@ -384,7 +384,7 @@ static pcb_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, pcb_point_t *Point, pcb
 }
 
 /* Tests any end of a rat line is on the poly */
-static pcb_bool pcb_isc_rat_poly(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_poly_t *poly)
+static rnd_bool pcb_isc_rat_poly(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_poly_t *poly)
 {
 	pcb_layergrp_id_t gid = pcb_layer_get_group_(poly->parent.layer);
 	int donut = PCB_FLAG_TEST(PCB_FLAG_VIA, rat);
@@ -398,7 +398,7 @@ static pcb_bool pcb_isc_rat_poly(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_poly
 }
 
 /* Tests any end of a rat line is on the other rat */
-static pcb_bool pcb_isc_rat_rat(const pcb_find_t *ctx, pcb_rat_t *r1, pcb_rat_t *r2)
+static rnd_bool pcb_isc_rat_rat(const pcb_find_t *ctx, pcb_rat_t *r1, pcb_rat_t *r2)
 {
 	if ((r1->group1 == r2->group1) && (r1->Point1.X == r2->Point1.X) && (r1->Point1.Y == r2->Point1.Y))
 		return pcb_true;
@@ -420,8 +420,8 @@ static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
 	else if (l->Point1.X == l->Point2.X)
 		dwy = l->Thickness / 2.0;
 	else {
-		pcb_coord_t dX = l->Point2.X - l->Point1.X;
-		pcb_coord_t dY = l->Point2.Y - l->Point1.Y;
+		rnd_coord_t dX = l->Point2.X - l->Point1.X;
+		rnd_coord_t dY = l->Point2.Y - l->Point1.Y;
 		double r = pcb_distance(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
 		dwx = l->Thickness / 2.0 / r * dX;
 		dwy = l->Thickness / 2.0 / r * dY;
@@ -491,7 +491,7 @@ static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
  *  Also note that the denominators of eqn 1 & 2 are identical.
  *
  */
-pcb_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t *Line2)
+rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t *Line2)
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
@@ -588,10 +588,10 @@ pcb_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t 
  *
  * The end points are hell so they are checked individually
  */
-pcb_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Arc)
+rnd_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Arc)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
-	pcb_coord_t ex, ey;
+	rnd_coord_t ex, ey;
 
 	dx = Line->Point2.X - Line->Point1.X;
 	dy = Line->Point2.Y - Line->Point1.Y;
@@ -646,7 +646,7 @@ pcb_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Ar
  * - check the two end points of the arc. If none of them matches
  * - check all segments of the polygon against the arc.
  */
-pcb_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Polygon)
+rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
 
@@ -665,10 +665,10 @@ pcb_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Pol
 	return pcb_false;
 }
 
-pcb_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyarea_t *pa)
+rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyarea_t *pa)
 {
 	pcb_box_t *Box = (pcb_box_t *) Arc;
-	pcb_bool res = pcb_false;
+	rnd_bool res = pcb_false;
 
 	/* arcs with clearance never touch polys */
 	if ((Box->X1 <= pa->contours->xmax + Bloat) && (Box->X2 >= pa->contours->xmin - Bloat)
@@ -692,7 +692,7 @@ pcb_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyare
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-pcb_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon)
+rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon)
 {
 	pcb_box_t *Box = (pcb_box_t *) Line;
 	pcb_polyarea_t *lp;
@@ -703,8 +703,8 @@ pcb_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
 	if (!Polygon->Clipped)
 		return pcb_false;
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
-		pcb_coord_t wid = (Line->Thickness + Bloat + 1) / 2;
-		pcb_coord_t x1, x2, y1, y2;
+		rnd_coord_t wid = (Line->Thickness + Bloat + 1) / 2;
+		rnd_coord_t x1, x2, y1, y2;
 
 		x1 = MIN(Line->Point1.X, Line->Point2.X) - wid;
 		y1 = MIN(Line->Point1.Y, Line->Point2.Y) - wid;
@@ -726,10 +726,10 @@ pcb_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
  * First check all points out of P1 against P2 and vice versa.
  * If both fail check all lines of P1 against the ones of P2
  */
-pcb_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2)
+rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2)
 {
 	int pcp_cnt = 0;
-	pcb_coord_t pcp_gap;
+	rnd_coord_t pcp_gap;
 	pcb_poly_it_t it1, it2;
 	pcb_polyarea_t *pa1, *pa2;
 
@@ -829,9 +829,9 @@ pcb_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 
 /* returns whether a round-cap pcb line touches a polygon; assumes bounding
    boxes do touch */
-PCB_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *pl, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick)
+PCB_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *pl, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
 {
-	pcb_coord_t ox, oy, vx, vy;
+	rnd_coord_t ox, oy, vx, vy;
 	double dx, dy, h, l;
 
 	thick += Bloat*2;
@@ -1051,7 +1051,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 		case PCB_PSSH_POLY:
 		{
 			/* convert the shape poly to a new poly so that it can be intersected */
-			pcb_bool res;
+			rnd_bool res;
 			pcb_polyarea_t *shp = pcb_pstk_shp_poly2area(ps, shape);
 			res = pcb_polyarea_touching(shp, poly->Clipped);
 			pcb_polyarea_free(&shp);
@@ -1117,8 +1117,8 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 
 PCB_INLINE pcb_bool_t pstk_shape_isc_circ_poly(const pcb_find_t *ctx, pcb_pstk_t *p, pcb_pstk_shape_t *sp, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
 {
-	pcb_coord_t px = sc->data.circ.x + c->x - p->x;
-	pcb_coord_t py = sc->data.circ.y + c->y - p->y;
+	rnd_coord_t px = sc->data.circ.x + c->x - p->x;
+	rnd_coord_t py = sc->data.circ.y + c->y - p->y;
 	return pcb_isc_line_polyline(ctx, sp->data.poly.pa->contours,  px, py, px, py, sc->data.circ.dia);
 }
 
@@ -1146,7 +1146,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 			switch(shape2->shape) {
 				case PCB_PSSH_POLY:
 				{
-					pcb_bool res;
+					rnd_bool res;
 					pcb_polyarea_t *shp1 = pcb_pstk_shp_poly2area(ps1, shape1);
 					pcb_polyarea_t *shp2 = pcb_pstk_shp_poly2area(ps2, shape2);
 					res = pcb_polyarea_touching(shp1, shp2);

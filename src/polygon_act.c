@@ -61,7 +61,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	switch(op) {
 		case F_Object:
 			{
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 

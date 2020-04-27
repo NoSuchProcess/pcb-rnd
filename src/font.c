@@ -70,11 +70,11 @@ static void pcb_font_load_internal(pcb_font_t *font)
 			embf_line_t *lines = embf_font[n].lines;
 
 			for(l = 0; l < embf_font[n].num_lines; l++) {
-				pcb_coord_t x1 = PCB_MIL_TO_COORD(lines[l].x1);
-				pcb_coord_t y1 = PCB_MIL_TO_COORD(lines[l].y1);
-				pcb_coord_t x2 = PCB_MIL_TO_COORD(lines[l].x2);
-				pcb_coord_t y2 = PCB_MIL_TO_COORD(lines[l].y2);
-				pcb_coord_t th = PCB_MIL_TO_COORD(lines[l].th);
+				rnd_coord_t x1 = PCB_MIL_TO_COORD(lines[l].x1);
+				rnd_coord_t y1 = PCB_MIL_TO_COORD(lines[l].y1);
+				rnd_coord_t x2 = PCB_MIL_TO_COORD(lines[l].x2);
+				rnd_coord_t y2 = PCB_MIL_TO_COORD(lines[l].y2);
+				rnd_coord_t th = PCB_MIL_TO_COORD(lines[l].th);
 				pcb_font_new_line_in_sym(s, x1, y1, x2, y2, th);
 			}
 
@@ -107,7 +107,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		const char *s;
 		gds_t buff;
 		s = pcb_conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
-		pcb_message(PCB_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
+		rnd_message(PCB_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
 		pcb_font_load_internal(&pcb->fontkit.dflt);
 		pcb_file_loaded_set_at("font", "default", "<internal>", "original default font");
 		gds_uninit(&buff);
@@ -123,7 +123,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_poly_t *poly;
-	pcb_coord_t totalminy = PCB_MAX_COORD;
+	rnd_coord_t totalminy = PCB_MAX_COORD;
 
 	/* calculate cell with and height (is at least PCB_DEFAULT_CELLSIZE)
 	   maximum cell width and height
@@ -131,7 +131,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	Ptr->MaxWidth = PCB_DEFAULT_CELLSIZE;
 	Ptr->MaxHeight = PCB_DEFAULT_CELLSIZE;
 	for (i = 0, symbol = Ptr->Symbol; i <= PCB_MAX_FONTPOSITION; i++, symbol++) {
-		pcb_coord_t minx, miny, maxx, maxy;
+		rnd_coord_t minx, miny, maxx, maxy;
 
 		/* next one if the index isn't used or symbol is empty (SPACE) */
 		if (!symbol->Valid || !symbol->LineN)
@@ -209,7 +209,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 }
 
 /* creates a new line in a symbol */
-pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
+pcb_line_t *pcb_font_new_line_in_sym(pcb_symbol_t *Symbol, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness)
 {
 	pcb_line_t *line = Symbol->Line;
 
@@ -242,7 +242,7 @@ pcb_poly_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points)
 	return p;
 }
 
-pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t r, pcb_angle_t start, pcb_angle_t delta, pcb_coord_t thickness)
+pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, pcb_angle_t start, pcb_angle_t delta, rnd_coord_t thickness)
 {
 	pcb_arc_t *a = calloc(sizeof(pcb_arc_t), 1);
 	a->X = cx;

@@ -65,11 +65,11 @@ typedef enum {
 
 /* rotates box 90-degrees cw */
 /* that's a strange rotation! */
-#define PCB_BOX_ROTATE_CW(box) { pcb_coord_t t;\
+#define PCB_BOX_ROTATE_CW(box) { rnd_coord_t t;\
     t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
     (box).X2 = -(box).Y1; (box).Y1 = t;\
 }
-#define PCB_BOX_ROTATE_TO_NORTH(box, dir) do { pcb_coord_t t;\
+#define PCB_BOX_ROTATE_TO_NORTH(box, dir) do { rnd_coord_t t;\
   switch(dir) {\
   case PCB_EAST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -84,7 +84,7 @@ typedef enum {
   default: assert(0);\
   }\
   } while (0)
-#define PCB_BOX_ROTATE_FROM_NORTH(box, dir) do { pcb_coord_t t;\
+#define PCB_BOX_ROTATE_FROM_NORTH(box, dir) do { rnd_coord_t t;\
   switch(dir) {\
   case PCB_WEST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -118,29 +118,29 @@ typedef enum {
 
 
 typedef struct pcb_cheap_point_s {
-	pcb_coord_t X, Y;
+	rnd_coord_t X, Y;
 } pcb_cheap_point_t;
 
 
 /* note that boxes are closed on top and left and open on bottom and right. */
 /* this means that top-left corner is in box, *but bottom-right corner is
  * not*.  */
-PCB_INLINE pcb_bool pcb_point_in_box(const pcb_box_t * box, pcb_coord_t X, pcb_coord_t Y) 
+PCB_INLINE rnd_bool pcb_point_in_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y) 
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
 
-PCB_INLINE pcb_bool pcb_point_in_closed_box(const pcb_box_t * box, pcb_coord_t X, pcb_coord_t Y)
+PCB_INLINE rnd_bool pcb_point_in_closed_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X <= box->X2) && (Y <= box->Y2);
 }
 
-PCB_INLINE pcb_bool pcb_box_is_good(const pcb_box_t * b)
+PCB_INLINE rnd_bool pcb_box_is_good(const pcb_box_t * b)
 {
 	return (b->X1 < b->X2) && (b->Y1 < b->Y2);
 }
 
-PCB_INLINE pcb_bool pcb_box_intersect(const pcb_box_t * a, const pcb_box_t * b)
+PCB_INLINE rnd_bool pcb_box_intersect(const pcb_box_t * a, const pcb_box_t * b)
 {
 	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
 }
@@ -155,7 +155,7 @@ PCB_INLINE pcb_cheap_point_t pcb_closest_pcb_point_in_box(const pcb_cheap_point_
 	return r;
 }
 
-PCB_INLINE pcb_bool pcb_box_in_box(const pcb_box_t * outer, const pcb_box_t * inner)
+PCB_INLINE rnd_bool pcb_box_in_box(const pcb_box_t * outer, const pcb_box_t * inner)
 {
 	return (outer->X1 <= inner->X1) && (inner->X2 <= outer->X2) && (outer->Y1 <= inner->Y1) && (inner->Y2 <= outer->Y2);
 }
@@ -172,7 +172,7 @@ PCB_INLINE pcb_box_t pcb_clip_box(const pcb_box_t * box, const pcb_box_t * clipb
 	return r;
 }
 
-PCB_INLINE pcb_box_t pcb_shrink_box(const pcb_box_t * box, pcb_coord_t amount)
+PCB_INLINE pcb_box_t pcb_shrink_box(const pcb_box_t * box, rnd_coord_t amount)
 {
 	pcb_box_t r = *box;
 	r.X1 += amount;
@@ -182,7 +182,7 @@ PCB_INLINE pcb_box_t pcb_shrink_box(const pcb_box_t * box, pcb_coord_t amount)
 	return r;
 }
 
-PCB_INLINE pcb_box_t pcb_bloat_box(const pcb_box_t * box, pcb_coord_t amount)
+PCB_INLINE pcb_box_t pcb_bloat_box(const pcb_box_t * box, rnd_coord_t amount)
 {
 	return pcb_shrink_box(box, -amount);
 }
@@ -210,7 +210,7 @@ PCB_INLINE pcb_box_t pcb_box_corner(const pcb_box_t * box)
 }
 
 /* construct a box that holds a single point */
-PCB_INLINE pcb_box_t pcb_point_box(pcb_coord_t X, pcb_coord_t Y)
+PCB_INLINE pcb_box_t pcb_point_box(rnd_coord_t X, rnd_coord_t Y)
 {
 	pcb_box_t r;
 	r.X1 = X;
@@ -247,7 +247,7 @@ PCB_INLINE void pcb_box_bump_box(pcb_box_t *dst, const pcb_box_t *src)
 }
 
 /* Modify dst to include src */
-PCB_INLINE void pcb_box_bump_point(pcb_box_t *dst, pcb_coord_t x, pcb_coord_t y)
+PCB_INLINE void pcb_box_bump_point(pcb_box_t *dst, rnd_coord_t x, rnd_coord_t y)
 {
 	if (x < dst->X1) dst->X1 = x;
 	if (y < dst->Y1) dst->Y1 = y;
@@ -256,7 +256,7 @@ PCB_INLINE void pcb_box_bump_point(pcb_box_t *dst, pcb_coord_t x, pcb_coord_t y)
 }
 
 /* rotates a box in 90 degree steps */
-void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
+void pcb_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
 
 /* Enlarge a box by adding current width,height multiplied by xfactor,yfactor */
 void pcb_box_enlarge(pcb_box_t *box, double xfactor, double yfactor);

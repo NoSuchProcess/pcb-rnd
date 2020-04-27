@@ -117,7 +117,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(op) {
 		case F_Find:
 			{
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 					unsigned long res;
 					pcb_find_t fctx;
 				rnd_hid_get_coords("Click on a connection", &x, &y, 0);
@@ -126,7 +126,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				fctx.flag_chg_undoable = 1;
 				fctx.consider_rats = !!conf_core.editor.conn_find_rat;
 				res = pcb_find_from_xy(&fctx, PCB->Data, x, y);
-				pcb_message(PCB_MSG_INFO, "found %ld objects\n", res);
+				rnd_message(PCB_MSG_INFO, "found %ld objects\n", res);
 				pcb_find_free(&fctx);
 				break;
 			}

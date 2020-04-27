@@ -101,10 +101,10 @@ static int calay_parse_net(FILE *fn)
 				if (curr != NULL)
 					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  curr, s, NULL);
 				else
-					pcb_message(PCB_MSG_ERROR, "Calay syntax error: %s is after a ;, not in any net\n", s);
+					rnd_message(PCB_MSG_ERROR, "Calay syntax error: %s is after a ;, not in any net\n", s);
 			}
 			else
-				pcb_message(PCB_MSG_ERROR, "Calay syntax error: %s should have been refdes(pin)\n", s);
+				rnd_message(PCB_MSG_ERROR, "Calay syntax error: %s should have been refdes(pin)\n", s);
 
 			if ((next == NULL) || (*next == '\0'))
 				break;
@@ -114,7 +114,7 @@ static int calay_parse_net(FILE *fn)
 				case ',': next++; break;
 				case ';': next++; free(curr); curr = NULL; next++; break;
 				default:
-					pcb_message(PCB_MSG_ERROR, "Calay syntax error: invalid separator: %s %d (expected , or ;)\n", next, *next);
+					rnd_message(PCB_MSG_ERROR, "Calay syntax error: invalid separator: %s %d (expected , or ;)\n", next, *next);
 			}
 			s = next;
 		}
@@ -137,7 +137,7 @@ static int calay_parse_comp(FILE *f)
 	while(fgets(line, sizeof(line), f) != NULL) {
 		len = strlen(line);
 		if ((len > 2) && (len < 54)) {
-			pcb_message(PCB_MSG_ERROR, "Calay component syntax error: short line: '%s'\n", line);
+			rnd_message(PCB_MSG_ERROR, "Calay component syntax error: short line: '%s'\n", line);
 			continue;
 		}
 		val = line;
@@ -174,7 +174,7 @@ static int calay_load(const char *fname_net, const char *fname_cmp)
 
 	f = pcb_fopen(&PCB->hidlib, fname_net, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open calay netlist file '%s' for read\n", fname_net);
+		rnd_message(PCB_MSG_ERROR, "can't open calay netlist file '%s' for read\n", fname_net);
 		return -1;
 	}
 	ret = calay_parse_net(f);
@@ -182,7 +182,7 @@ static int calay_load(const char *fname_net, const char *fname_cmp)
 
 	f = pcb_fopen(&PCB->hidlib, fname_cmp, "r");
 	if (f == NULL)
-		pcb_message(PCB_MSG_ERROR, "can't open calay component file '%s' for read\n(non-fatal, but footprints will not be placed)\n", fname_cmp);
+		rnd_message(PCB_MSG_ERROR, "can't open calay component file '%s' for read\n(non-fatal, but footprints will not be placed)\n", fname_cmp);
 
 	ret = calay_parse_comp(f);
 
@@ -251,7 +251,7 @@ static int calay_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, cons
 static int calay_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	if (numfns != 1) {
-		pcb_message(PCB_MSG_ERROR, "import_calay: requires exactly 1 input file name\n");
+		rnd_message(PCB_MSG_ERROR, "import_calay: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return rnd_actionva(&PCB->hidlib, "LoadCalayFrom", fns[0], NULL);

@@ -40,7 +40,7 @@
 #define PCB dontuse
 
 TODO("find: get rid of this global state")
-extern pcb_coord_t Bloat;
+extern rnd_coord_t Bloat;
 
 
 /* evaluates to true if obj was marked on list (fa or fb) */
@@ -63,7 +63,7 @@ static int pcb_int_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_o
 	return 0;
 }
 
-pcb_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, pcb_coord_t shrink, pcb_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data)
+rnd_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, rnd_coord_t shrink, rnd_coord_t bloat, pcb_int_broken_cb_t *cb, void *cb_data)
 {
 	pcb_net_int_t ctx;
 

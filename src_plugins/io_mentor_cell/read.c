@@ -85,8 +85,8 @@ typedef struct {
 	node_t *subtree;
 	unsigned valid:1; /* whether it's already parsed */
 	unsigned plated:1;
-	pcb_coord_t dia; /* Should be zero when defining w,h slot */
-	pcb_coord_t w,h; /* Slot width and height */
+	rnd_coord_t dia; /* Should be zero when defining w,h slot */
+	rnd_coord_t w,h; /* Slot width and height */
 } hkp_hole_t;
 
 typedef struct {
@@ -105,7 +105,7 @@ typedef enum {
 } hkp_clearance_type_t;
 
 typedef struct {
-	pcb_coord_t clearance[PCB_MAX_LAYER][HKP_CLR_max];
+	rnd_coord_t clearance[PCB_MAX_LAYER][HKP_CLR_max];
 } hkp_netclass_t;
 
 typedef struct {
@@ -130,7 +130,7 @@ static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps);
 static void set_pstk_clearance(hkp_ctx_t *ctx, const hkp_netclass_t *nc, pcb_pstk_t *ps, node_t *errnd);
 
 /*** read_net.c ***/
-static pcb_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode);
+static rnd_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode);
 
 /*** local ***/
 static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln, int user, node_t *err_node);
@@ -153,7 +153,7 @@ static int hkp_error(node_t *nd, char *fmt, ...)
 	pcb_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
-	pcb_message(PCB_MSG_ERROR, "%s", str.array);
+	rnd_message(PCB_MSG_ERROR, "%s", str.array);
 
 	gds_uninit(&str);
 	return -1;
@@ -173,10 +173,10 @@ static node_t *find_nth(node_t *nd, char *name, int idx)
 }
 
 /* parse a string it into a coord - modifies s; returns 0 on success */
-static int parse_coord(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
+static int parse_coord(hkp_ctx_t *ctx, char *s, rnd_coord_t *crd)
 {
 	char *end;
-	pcb_bool suc;
+	rnd_bool suc;
 
 	end = strchr(s, ',');
 	if (end != NULL)
@@ -186,15 +186,15 @@ static int parse_coord(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
 	return !suc;
 }
 
-static int parse_x(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
+static int parse_x(hkp_ctx_t *ctx, char *s, rnd_coord_t *crd)
 {
 	return parse_coord(ctx, s, crd);
 }
 
 
-static int parse_y(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
+static int parse_y(hkp_ctx_t *ctx, char *s, rnd_coord_t *crd)
 {
-	pcb_coord_t tmp;
+	rnd_coord_t tmp;
 	if (parse_coord(ctx, s, &tmp) != 0)
 		return -1;
 	*crd = -tmp;
@@ -203,11 +203,11 @@ static int parse_y(hkp_ctx_t *ctx, char *s, pcb_coord_t *crd)
 
 
 /* split s and parse  it into (x,y) - modifies s */
-static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int xform)
+static int parse_xy(hkp_ctx_t *ctx, char *s, rnd_coord_t *x, rnd_coord_t *y, int xform)
 {
 	char *sy;
-	pcb_coord_t xx, yy;
-	pcb_bool suc1, suc2;
+	rnd_coord_t xx, yy;
+	rnd_bool suc1, suc2;
 
         if (s == NULL)
                 return -1;
@@ -232,11 +232,11 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, int
 }
 
 /* split s and parse  it into (x,y,r) - modifies s */
-static int parse_xyr(hkp_ctx_t *ctx, char *s, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t *r, int xform)
+static int parse_xyr(hkp_ctx_t *ctx, char *s, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *r, int xform)
 {
 	char *sy, *sr;
-	pcb_coord_t xx, yy, rr;
-	pcb_bool suc1, suc2, suc3;
+	rnd_coord_t xx, yy, rr;
+	rnd_bool suc1, suc2, suc3;
 
 	if (s == NULL)
 		return -1;
@@ -327,7 +327,7 @@ static int parse_rot(hkp_ctx_t *ctx, node_t *nd, double *rot_out, int on_bottom)
 static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *pp, int is_shape)
 {
 	node_t *tmp;
-	pcb_coord_t th = 1, px, py, x, y;
+	rnd_coord_t th = 1, px, py, x, y;
 	int n, filled = 0;
 
 	DWG_REQ_LY(pp);
@@ -362,7 +362,7 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 			pcb_poly_init_clip(ctx->pcb->Data, ly, poly);
 	}
 	else { /* "polyline" = a bunch of line objects */
-		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
+		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 		if (parse_xy(ctx, tmp->argv[1], &px, &py, 1) != 0)
 			return hkp_error(pp, "Failed to parse polyline start point (%s), can't place polygon\n", tmp->argv[1]);
 		for(n = 2; n < tmp->argc; n++) {
@@ -377,13 +377,13 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 	return 0;
 }
 
-static void convert_arc(pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t ex, pcb_coord_t ey, pcb_coord_t *r, double *sa, double *da)
+static void convert_arc(rnd_coord_t sx, rnd_coord_t sy, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t ex, rnd_coord_t ey, rnd_coord_t *r, double *sa, double *da)
 {
 	/* In pcb-rnd, start angle 0 is towards the left of the screen (-x direction)*/
 	/* da > 0 is counterclockwise */
 	/* In HKP format, r<0 means counterclockwise, r>0 means clockwise */
 	double ea;
-	pcb_coord_t srx, sry, erx, ery; /* relative x;y from the center for start and end */
+	rnd_coord_t srx, sry, erx, ery; /* relative x;y from the center for start and end */
 
 	srx = -(sx - cx); sry = sy - cy; /* Since angle = 0 is towards -x, change sign to x part */
 	erx = -(ex - cx); ery = ey - cy; /* Since angle = 0 is towards -x, change sign to x part */
@@ -413,10 +413,10 @@ static void convert_arc(pcb_coord_t sx, pcb_coord_t sy, pcb_coord_t cx, pcb_coor
 static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *pp, int is_shape)
 {
 	node_t *tmp;
-	pcb_coord_t th = 1, r, ex, ey, dummy, x, y, px, py;
+	rnd_coord_t th = 1, r, ex, ey, dummy, x, y, px, py;
 	double sa, da;
 	int n, filled = 0;
-	pcb_coord_t cl;
+	rnd_coord_t cl;
 
 	DWG_REQ_LY(pp);
 
@@ -475,7 +475,7 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *rp, int is_shape)
 {
 	node_t *tmp;
-	pcb_coord_t th = 1, x1, y1, x2, y2;
+	rnd_coord_t th = 1, x1, y1, x2, y2;
 	int filled = 0;
 
 	DWG_REQ_LY(rp);
@@ -497,12 +497,12 @@ static int parse_dwg_rect(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, con
 	if (parse_xy(ctx, tmp->argv[2], &x2, &y2, 1) != 0)
 		return hkp_error(tmp, "Failed to parse rect end point (%s), can't place rectangle\n", tmp->argv[2]);
 	if (filled) {
-		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2POLY, tmp) * 2;
+		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2POLY, tmp) * 2;
 TODO("when to generate a rounded corner?");
 		pcb_poly_new_from_rectangle(ly, x1, y1, x2, y2, cl, DEFAULT_POLY_FLAG);
 	}
 	else {
-		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
+		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 		pcb_line_new(ly, x1, y1, x2, y1, th, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y1, x2, y2, th, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y2, x1, y2, th, cl, DEFAULT_OBJ_FLAG);
@@ -514,8 +514,8 @@ TODO("when to generate a rounded corner?");
 static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
 {
 	node_t *attr, *tmp;
-	pcb_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
-	pcb_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+	rnd_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
+	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 
 	double rot = 0;
 	unsigned long mirrored = 0;
@@ -634,10 +634,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "VERT_JUST", 0);
 	if (tmp != NULL) {
-		pcb_coord_t ymax = height+ymin;
+		rnd_coord_t ymax = height+ymin;
 		TODO(
 			"Consider rotation, using:"
-			"  pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)"
+			"  pcb_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)"
 			"Maybe:"
 			"  double sina = sin(-(double)rot / PCB_RAD_TO_DEG), cosa = cos(-(double)rot / PCB_RAD_TO_DEG);");
 		if (strcmp(tmp->argv[1], "Top") == 0) {
@@ -660,7 +660,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	{
 		TODO("Remove this block after checking text bounding box calculations");
 		TODO("Use an UI layer for this.  UI layer API in src/layer_ui.h");
-		pcb_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
+		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 		pcb_line_new(ly, x1, y1, x2, y1, thickness, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y1, x2, y2, thickness, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y2, x1, y2, thickness, cl, DEFAULT_OBJ_FLAG);
@@ -684,7 +684,7 @@ TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what i
 
 static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
 {
-	pcb_coord_t vx, vy;
+	rnd_coord_t vx, vy;
 	node_t *tmp;
 	hkp_pstk_t *hps;
 	pcb_cardinal_t pid;
@@ -1042,7 +1042,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 {
 	pcb_subc_t *subc;
 	node_t *n;
-	pcb_coord_t ox, oy;
+	rnd_coord_t ox, oy;
 	double rot = 0;
 	int on_bottom = 0, seen_oxy = 0;
 	const hkp_netclass_t *nc = NULL;
@@ -1408,7 +1408,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	flay = pcb_fopen(&pcb->hidlib, fn, "r");
 	if (flay == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open layout hkp '%s' for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "can't open layout hkp '%s' for read\n", fn);
 		goto err;
 	}
 

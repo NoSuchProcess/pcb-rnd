@@ -125,7 +125,7 @@ do { \
 static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	char *end, buff[1024];
-	pcb_bool succ;
+	rnd_bool succ;
 
 	g2c_array(line_angle, strtod(curr, &end));
 	g2c_scalar(line_angle_mod, dbl);

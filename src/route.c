@@ -120,7 +120,7 @@ void pcb_route_add_line(pcb_route_t *p_route, pcb_point_t *point1, pcb_point_t *
 	p_route->end_point = *point2;
 }
 
-void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t start_angle, pcb_angle_t delta, pcb_coord_t radius, pcb_layer_id_t layer)
+void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t start_angle, pcb_angle_t delta, rnd_coord_t radius, pcb_layer_id_t layer)
 {
 	pcb_route_object_t *p_object = pcb_route_alloc_object(p_route);
 	if (p_object == NULL)
@@ -138,7 +138,7 @@ void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t st
 }
 
 
-void pcb_route_direct(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+void pcb_route_direct(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
 	pcb_route_reset(route);
 	route->start_point = *point1;
@@ -160,10 +160,10 @@ void pcb_route_calculate_corner_arc(const pcb_point_t *point1, const pcb_point_t
 {
 	const double r_min = 10.0;
 
-	const pcb_coord_t dx1 = point1->X - point2->X;
-	const pcb_coord_t dy1 = point1->Y - point2->Y;
-	const pcb_coord_t dx2 = point3->X - point2->X;
-	const pcb_coord_t dy2 = point3->Y - point2->Y;
+	const rnd_coord_t dx1 = point1->X - point2->X;
+	const rnd_coord_t dy1 = point1->Y - point2->Y;
+	const rnd_coord_t dx2 = point3->X - point2->X;
+	const rnd_coord_t dy2 = point3->Y - point2->Y;
 
 	const double angle1 = atan2(dy1, dx1);
 	const double angle2 = atan2(dy2, dx2);
@@ -191,8 +191,8 @@ void pcb_route_calculate_corner_arc(const pcb_point_t *point1, const pcb_point_t
 	if (r >= r_min) {
 		/* Calculate arc center coordinates. */
 		const double sh = sin(hangle);
-		const pcb_coord_t xc = point2->X + (pcb_coord_t) ((cos(angle3) * r) / sh);
-		const pcb_coord_t yc = point2->Y + (pcb_coord_t) ((sin(angle3) * r) / sh);
+		const rnd_coord_t xc = point2->X + (rnd_coord_t) ((cos(angle3) * r) / sh);
+		const rnd_coord_t yc = point2->Y + (rnd_coord_t) ((sin(angle3) * r) / sh);
 
 		/* Calculate arc start and delta angles. */
 		const double delta = d < 0 ? -(M_PI + d) : M_PI - d;
@@ -205,13 +205,13 @@ void pcb_route_calculate_corner_arc(const pcb_point_t *point1, const pcb_point_t
 		p_out_obj->radius = r;
 
 		if (p_endpoint1) {
-			p_endpoint1->X = xc - (pcb_coord_t) (r * cos(start));
-			p_endpoint1->Y = yc + (pcb_coord_t) (r * sin(start));
+			p_endpoint1->X = xc - (rnd_coord_t) (r * cos(start));
+			p_endpoint1->Y = yc + (rnd_coord_t) (r * sin(start));
 		}
 
 		if (p_endpoint1) {
-			p_endpoint2->X = xc - (pcb_coord_t) (r * cos(start + delta));
-			p_endpoint2->Y = yc + (pcb_coord_t) (r * sin(start + delta));
+			p_endpoint2->X = xc - (rnd_coord_t) (r * cos(start + delta));
+			p_endpoint2->Y = yc + (rnd_coord_t) (r * sin(start + delta));
 		}
 	}
 	else {
@@ -226,7 +226,7 @@ void pcb_route_calculate_corner_arc(const pcb_point_t *point1, const pcb_point_t
 void pcb_route_calculate_45(pcb_point_t *start_point, pcb_point_t *target_point)
 {
 
-	pcb_coord_t dx, dy, min;
+	rnd_coord_t dx, dy, min;
 	unsigned direction = 0;
 	double m;
 
@@ -291,7 +291,7 @@ void pcb_route_calculate_45(pcb_point_t *start_point, pcb_point_t *target_point)
 	}
 }
 
-void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point, pcb_layer_id_t layer_id, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
 	/* Restart the route */
 	pcb_route_reset(route);
@@ -315,7 +315,7 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 	pcb_layer_id_t layer_id = route->end_layer;
 
 	/* Set radius to 0 for standard 45/90 operation */
-	const pcb_coord_t radius = route->thickness * conf_core.editor.route_radius;
+	const rnd_coord_t radius = route->thickness * conf_core.editor.route_radius;
 
 	/* If the start point is the same as the end point then add a single 0-length line. 
 	 * If a 0-length line is not added then some operations such as moving a line point
@@ -336,9 +336,9 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 	}
 	else {
 		/* Refraction is non-zero so add multiple lines (horizontal, vertical and/or 45 degrees). */
-		pcb_coord_t dx, dy;
+		rnd_coord_t dx, dy;
 		pcb_point_t target;
-		pcb_bool way = (conf_core.editor.line_refraction == 1 ? pcb_false : pcb_true);
+		rnd_bool way = (conf_core.editor.line_refraction == 1 ? pcb_false : pcb_true);
 
 		/* swap the 'way' if mod1 is set (typically the shift key) */
 		if (mod1)
@@ -398,10 +398,10 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 }
 
 TODO("Pass in other required information such as object flags")
-void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer_id, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags, int mod1, int mod2)
+void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer_id, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, int mod1, int mod2)
 {
 	/* Set radius to 0 for standard 45/90 operation */
-/*	const pcb_coord_t radius = thickness * conf_core.editor.route_radius; - TODO: remove this if not needed */
+/*	const rnd_coord_t radius = thickness * conf_core.editor.route_radius; - TODO: remove this if not needed */
 
 	pcb_route_start(PCB, route, point1, layer_id, thickness, clearance, flags);
 
@@ -698,7 +698,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  *---------------------------------------------------------*/
-void pcb_route_draw_arc(pcb_hid_gc_t GC, pcb_coord_t x, pcb_coord_t y, pcb_angle_t start_angle, pcb_angle_t delta, pcb_coord_t radius, pcb_coord_t thickness)
+void pcb_route_draw_arc(pcb_hid_gc_t GC, rnd_coord_t x, rnd_coord_t y, pcb_angle_t start_angle, pcb_angle_t delta, rnd_coord_t radius, rnd_coord_t thickness)
 {
 	double x1, y1, x2, y2, wid = thickness / 2;
 
@@ -754,7 +754,7 @@ void pcb_route_draw(pcb_route_t *p_route, pcb_hid_gc_t GC)
  *---------------------------------------------------------*/
 void pcb_route_draw_drc(pcb_route_t *p_route, pcb_hid_gc_t GC)
 {
-	pcb_coord_t thickness = p_route->thickness + 2 * conf_core.design.bloat;
+	rnd_coord_t thickness = p_route->thickness + 2 * conf_core.design.bloat;
 	int i;
 
 	pcb_render->set_color(GC, &conf_core.appearance.color.drc);

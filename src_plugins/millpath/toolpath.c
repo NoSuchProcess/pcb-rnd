@@ -114,7 +114,7 @@ static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
 {
 	sub_layer_text_t *ctx = ctx_;
 	pcb_poly_t *poly = (pcb_poly_t *)obj;
-	pcb_bool dummy;
+	rnd_bool dummy;
 
 	switch(obj->type) {
 		case PCB_OBJ_LINE: sub_layer_line(ctx->pcb, ctx->result, ctx->layer, (pcb_line_t *)obj, ctx->centerline); break;
@@ -124,7 +124,7 @@ static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
 			sub_layer_poly(ctx->pcb, ctx->result, ctx->layer, poly, ctx->centerline);
 			pcb_polyarea_free(&poly->Clipped);
 			break;
-		default:           pcb_message(PCB_MSG_ERROR, "Internal error: toolpath sub_layer_text() invalid object type %ld\n", obj->type);
+		default:           rnd_message(PCB_MSG_ERROR, "Internal error: toolpath sub_layer_text() invalid object type %ld\n", obj->type);
 	}
 }
 
@@ -305,11 +305,11 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	}
 }
 
-static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs)
+static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, rnd_coord_t extra_offs)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
-	pcb_coord_t tool_dia = result->tools->dia[tool_idx];
+	rnd_coord_t tool_dia = result->tools->dia[tool_idx];
 	pcb_cardinal_t cnt = 0;
 	
 	for(pa = pcb_poly_island_first(result->fill, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
@@ -326,10 +326,10 @@ static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result,
 	return cnt;
 }
 
-static long trace_spiral(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, pcb_coord_t extra_offs, long passes)
+static long trace_spiral(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, rnd_coord_t extra_offs, long passes)
 {
 	long pass = 0;
-	pcb_coord_t tool_dia = result->tools->dia[tool_idx];
+	rnd_coord_t tool_dia = result->tools->dia[tool_idx];
 
 	for(;;) {
 		if ((passes > 0) && (pass >= passes))
@@ -430,7 +430,7 @@ static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 			}
 			else {  /* check endpoints only if side didn't intersect */
 				pcb_polyarea_t *c;
-				pcb_coord_t r = (line->Thickness-1)/2 - 1000;
+				rnd_coord_t r = (line->Thickness-1)/2 - 1000;
 				int within = 0;
 
 				c = pcb_poly_from_circle(line->Point1.X, line->Point1.Y, r);
@@ -471,7 +471,7 @@ int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 
 	rem = fix_overcuts(pcb, result);
 	if (rem != 0)
-		pcb_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
+		rnd_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 
 	return 0;
 }
@@ -479,9 +479,9 @@ int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 #define req_setup(target) \
 	if (setup != target) { \
 		if (target) \
-			pcb_message(PCB_MSG_ERROR, "millpath script: need to call a setup_* function before milling"); \
+			rnd_message(PCB_MSG_ERROR, "millpath script: need to call a setup_* function before milling"); \
 		else \
-			pcb_message(PCB_MSG_ERROR, "millpath script: can not call multiple setup_* functions"); \
+			rnd_message(PCB_MSG_ERROR, "millpath script: can not call multiple setup_* functions"); \
 		continue; \
 	}
 
@@ -512,7 +512,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		}
 		else if (strcmp(argv[0], "trace_contour") == 0) {
 			int tool = 0;
-			pcb_coord_t extra = 1000;
+			rnd_coord_t extra = 1000;
 			req_setup(1);
 			if (argc > 1) tool = atoi(argv[1]);
 			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
@@ -521,7 +521,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 		else if (strcmp(argv[0], "trace_spiral") == 0) {
 			long passes = -1;
 			int tool = 0;
-			pcb_coord_t extra = 1000;
+			rnd_coord_t extra = 1000;
 			req_setup(1);
 			if (argc > 1) tool = atoi(argv[1]);
 			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
@@ -532,7 +532,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 			long rem = fix_overcuts(pcb, result);
 			req_setup(1);
 			if (rem != 0)
-				pcb_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
+				rnd_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 		}
 
 		qparse_free(argc, &argv);

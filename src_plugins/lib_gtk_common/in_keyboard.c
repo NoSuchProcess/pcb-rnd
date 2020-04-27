@@ -140,7 +140,7 @@ unsigned short int ghid_translate_key(const char *desc, int len)
 
 	key = gdk_keyval_from_name(desc);
 	if (key > 0xffff) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid/exotic key sym: '%s'\n", desc);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid/exotic key sym: '%s'\n", desc);
 		return 0;
 	}
 	return key;

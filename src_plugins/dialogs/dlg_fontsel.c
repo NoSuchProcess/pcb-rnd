@@ -88,7 +88,7 @@ void fontsel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_
 	}
 }
 
-pcb_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+rnd_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
 
@@ -134,7 +134,7 @@ static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	if (conf_core.design.text_font_id == 0) {
-		pcb_message(PCB_MSG_ERROR, "Can not remove the default font.\n");
+		rnd_message(PCB_MSG_ERROR, "Can not remove the default font.\n");
 		return;
 	}
 	pcb_del_font(&PCB->fontkit, conf_core.design.text_font_id);
@@ -159,7 +159,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 		for(c = gdl_first(&fontsels); c != NULL; c = gdl_next(&fontsels, c)) {
 			pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj_in(c->pcb->Data, c->txt_id);
 			if (txt == txt_obj) {
-				pcb_message(PCB_MSG_ERROR, "There is already an active fontedit dialog for that object,\nnot going to open a second dialog.\n");
+				rnd_message(PCB_MSG_ERROR, "There is already an active fontedit dialog for that object,\nnot going to open a second dialog.\n");
 				return;
 			}
 		}
@@ -212,7 +212,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (op != NULL) {
 		if (pcb_strcasecmp(op, "Object") == 0) {
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;
 			rnd_hid_get_coords("Select an Object", &x, &y, 0);

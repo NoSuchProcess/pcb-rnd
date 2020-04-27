@@ -113,10 +113,10 @@ void pcb_gtk_conf_init(void)
 		if ((nat == NULL) || (nat->prop->src == NULL))
 			continue;
 		if (!warned) {
-			pcb_message(PCB_MSG_WARNING, "Some of your config sources contain old, gtk-only window placement nodes.\nThose settings got removed from pcb-rnd - your nodes just got converted\ninto the new config, but you will need to remove the\nold config nodes manually from the following places:\n");
+			rnd_message(PCB_MSG_WARNING, "Some of your config sources contain old, gtk-only window placement nodes.\nThose settings got removed from pcb-rnd - your nodes just got converted\ninto the new config, but you will need to remove the\nold config nodes manually from the following places:\n");
 			warned = 1;
 		}
-		pcb_message(PCB_MSG_WARNING, "%s from %s:%d\n", nat->hash_path, nat->prop->src->file_name, nat->prop->src->line);
+		rnd_message(PCB_MSG_WARNING, "%s from %s:%d\n", nat->hash_path, nat->prop->src->file_name, nat->prop->src->line);
 
 		strcpy(dirname, p[1]);
 		end = strrchr(dirname, '/');

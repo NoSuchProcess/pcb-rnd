@@ -34,8 +34,8 @@
 
 static pcb_pstk_t *pstk;
 static int layer;
-static pcb_coord_t px, py;
-static pcb_coord_t thickness;
+static rnd_coord_t px, py;
+static rnd_coord_t thickness;
 
 static int new_arcs = 0;
 

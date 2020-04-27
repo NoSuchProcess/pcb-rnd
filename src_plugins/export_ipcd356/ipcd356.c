@@ -66,7 +66,7 @@ typedef struct {
 	pcb_any_obj_t *o;
 	const char *netname, *refdes, *term;
 	int is_plated, access_top, access_bottom, rot, masked_top, masked_bottom;
-	pcb_coord_t hole, width, height, cx, cy;
+	rnd_coord_t hole, width, height, cx, cy;
 } test_feature_t;
 
 static int getattr(pcb_any_obj_t *o, const char *key)
@@ -92,10 +92,10 @@ static void fill_field(char *dst, int start, int end, const char *data, const ch
 			dst[n] = ' ';
 	}
 	if (*d != '\0')
-		pcb_message(PCB_MSG_WARNING, "Data '%s' is too long for a(n) %s, truncated\n", data, name);
+		rnd_message(PCB_MSG_WARNING, "Data '%s' is too long for a(n) %s, truncated\n", data, name);
 }
 
-static void fill_field_coord(write_ctx_t *ctx, char *dst, int start, int end, pcb_coord_t crd, int sign, const char *name)
+static void fill_field_coord(write_ctx_t *ctx, char *dst, int start, int end, rnd_coord_t crd, int sign, const char *name)
 {
 	int len = end-start+1;
 	char tmp[32], fmt[16];
@@ -217,7 +217,7 @@ static void ipcd356_write_feature(write_ctx_t *ctx, test_feature_t *t)
 static void ipcd356_pstk_shape(test_feature_t *t, pcb_pstk_shape_t *sh)
 {
 	int n;
-	pcb_coord_t x1, y1, x2, y2;
+	rnd_coord_t x1, y1, x2, y2;
 	switch(sh->shape) {
 		case PCB_PSSH_HSHADOW:
 			break;
@@ -463,7 +463,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
 		return;
 	}
 	ipcd356_write(PCB, f);

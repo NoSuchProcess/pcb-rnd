@@ -44,7 +44,7 @@ static void rstdlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	{ /* can be safely removed when route style switches over to padstacks */
 		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, ctx->curr, 0);
 		if (rst->Diameter <= rst->Hole) {
-			pcb_message(PCB_MSG_ERROR, "had to increase the via ring diameter - can not be smaller than the hole");
+			rnd_message(PCB_MSG_ERROR, "had to increase the via ring diameter - can not be smaller than the hole");
 			rst->Diameter = rst->Hole+PCB_MIL_TO_COORD(1);
 		}
 	}
@@ -121,7 +121,7 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	pcb_hid_attr_val_t hv;
 
 	if (rst == NULL) {
-		pcb_message(PCB_MSG_ERROR, "route style does not exist");
+		rnd_message(PCB_MSG_ERROR, "route style does not exist");
 		return;
 	}
 
@@ -158,7 +158,7 @@ TODO("This change is not undoable");
 
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Internal error: route style field does not exist");
+		rnd_message(PCB_MSG_ERROR, "Internal error: route style field does not exist");
 		return;
 	}
 
@@ -342,7 +342,7 @@ fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, AdjustStyle, idx = argv[1].val.nat_long);
 
 	if (idx >= (long)vtroutestyle_len(&PCB->RouteStyle)) {
-		pcb_message(PCB_MSG_ERROR, "Invalid route style %ld index; max value: %ld\n", idx, vtroutestyle_len(&PCB->RouteStyle)-1);
+		rnd_message(PCB_MSG_ERROR, "Invalid route style %ld index; max value: %ld\n", idx, vtroutestyle_len(&PCB->RouteStyle)-1);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -350,7 +350,7 @@ fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (idx < 0) {
 		idx = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 		if (idx < 0) {
-			pcb_message(PCB_MSG_ERROR, "No style selected\n");
+			rnd_message(PCB_MSG_ERROR, "No style selected\n");
 			RND_ACT_IRES(-1);
 		}
 	}

@@ -114,7 +114,7 @@ static const pcb_layer_type_name_t pcb_layer_comb_names[] = {
 #define layer_if_too_many(pcb, fail_cmd) \
 do { \
 	if (pcb->Data->LayerN >= PCB_MAX_LAYER) { \
-		pcb_message(PCB_MSG_ERROR, "Too many layers - can't have more than %d\n", PCB_MAX_LAYER); \
+		rnd_message(PCB_MSG_ERROR, "Too many layers - can't have more than %d\n", PCB_MAX_LAYER); \
 		fail_cmd; \
 	} \
 } while(0)
@@ -135,7 +135,7 @@ static void layer_post_change(pcb_attribute_list_t *list, const char *name, cons
 
 
 #define UFC(f) ((void (*)(void *))(f))
-void pcb_layer_free_fields(pcb_layer_t *layer, pcb_bool undoable)
+void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 {
 	if (!layer->is_bound)
 		pcb_attribute_free(&layer->Attributes);
@@ -168,7 +168,7 @@ void pcb_layer_free_fields(pcb_layer_t *layer, pcb_bool undoable)
 	layer->Attributes.post_change = layer_post_change;
 }
 
-pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
+rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 {
 	/* if any local list is non-empty, the layer is non-empty */
 	if (layer->Line.lst.length > 0) return pcb_false;
@@ -186,7 +186,7 @@ pcb_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 		PCB_RTREE_EMPTY(layer->text_tree);
 }
 
-static pcb_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer)
+static rnd_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer)
 {
 	/* if any padstack has a shape on this layer, it is not empty */
 	PCB_PADSTACK_LOOP(data);
@@ -218,7 +218,7 @@ static pcb_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_
 	return 1;
 }
 
-pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
+rnd_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 {
 	pcb_layer_type_t flags = pcb_layer_flags_(layer);
 	if (flags == 0)
@@ -235,7 +235,7 @@ pcb_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 	return 1;
 }
 
-pcb_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
+rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
 {
 	if ((num >= 0) && (num < pcb->Data->LayerN))
 		return pcb_layer_is_empty_(pcb, pcb->Data->Layer + num);
@@ -519,7 +519,7 @@ static void layer_clear(pcb_layer_t *dst)
 }
 
 static void pcb_layer_undoable_created(pcb_board_t *pcb, pcb_layer_t *l);
-pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, pcb_bool undoable)
+pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, rnd_bool undoable)
 {
 	pcb_layer_id_t id;
 
@@ -602,7 +602,7 @@ static const uundo_oper_t undo_layer_rename = {
 
 
 
-int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, pcb_bool undoable)
+int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, rnd_bool undoable)
 {
 	undo_layer_rename_t rtmp, *r = &rtmp;
 
@@ -624,7 +624,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, pcb_bool undoable)
 	return 0;
 }
 
-int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, pcb_bool undoable)
+int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, rnd_bool undoable)
 {
 	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname), undoable);
 }
@@ -666,7 +666,7 @@ static const uundo_oper_t undo_layer_recolor = {
 };
 
 
-int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, pcb_bool undoable)
+int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, rnd_bool undoable)
 {
 	undo_layer_recolor_t rtmp, *r = &rtmp;
 
@@ -689,7 +689,7 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, pcb_bool un
 	return 0;
 }
 
-int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color, pcb_bool undoable)
+int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color, rnd_bool undoable)
 {
 	pcb_color_t clr;
 	pcb_color_load_str(&clr, color);
@@ -866,7 +866,7 @@ static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, pcb_layer_id_t new_
 	return lp;
 }
 
-static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_bool undoable)
+static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, rnd_bool undoable)
 {
 	pcb_layer_id_t l;
 	pcb_layergrp_id_t gid;
@@ -880,7 +880,7 @@ static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, pc
 	g = pcb_get_layergrp(pcb, pcb->Data->Layer[old_index].meta.real.grp);
 	grp_idx = pcb_layergrp_index_in_grp(g, old_index);
 	if (grp_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Internal error; layer not in group\n");
+		rnd_message(PCB_MSG_ERROR, "Internal error; layer not in group\n");
 		return -1;
 	}
 
@@ -1057,16 +1057,16 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int
 }
 
 
-int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, pcb_bool undoable)
+int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, rnd_bool undoable)
 {
 	/* sanity checks */
 	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
-		pcb_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
+		rnd_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
 		return 1;
 	}
 
 	if (new_index < -1 || new_index > pcb->Data->LayerN || new_index >= PCB_MAX_LAYER) {
-		pcb_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
+		rnd_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
 		return 1;
 	}
 
@@ -1087,7 +1087,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		return pcb_layer_move_delete(pcb, old_index, undoable);
 
 
-	pcb_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
+	rnd_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
 	/* Removed r8686:
 	   The new layer design presents the layers by groups to preserve physical
 	   order. In this system the index of the logical layer on the logical
@@ -1152,7 +1152,7 @@ void pcb_layer_real2bound_offs(pcb_layer_t *dst, pcb_board_t *src_pcb, pcb_layer
 				dst->meta.bound.stack_offs = -from_bottom;
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, "Internal error: can't figure the inter copper\nlayer offset for %s\n", src->name);
+			rnd_message(PCB_MSG_ERROR, "Internal error: can't figure the inter copper\nlayer offset for %s\n", src->name);
 	}
 	else
 		dst->meta.bound.stack_offs = 0;
@@ -1253,7 +1253,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		pcb_layer_type_t lyt = src->meta.bound.type;
 		if ((lyt & PCB_LYT_BOUNDARY) && (lyt & PCB_LYT_ANYWHERE)) {
 			lyt = PCB_LYT_BOUNDARY;
-			pcb_message(PCB_MSG_WARNING, "Ignoring invalid layer flag combination for %s: boundary layer must be global\n(fixed up by removing location specifier bits)\n", src->name);
+			rnd_message(PCB_MSG_WARNING, "Ignoring invalid layer flag combination for %s: boundary layer must be global\n(fixed up by removing location specifier bits)\n", src->name);
 		}
 		for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++)
 			if ((grp->ltype & lyt) == lyt)
@@ -1281,7 +1281,7 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 	return lay;
 }
 
-unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, pcb_bool smirror)
+unsigned int pcb_layer_hash_bound(pcb_layer_t *ly, rnd_bool smirror)
 {
 	unsigned int hash;
 	pcb_layer_type_t lyt;
@@ -1382,7 +1382,7 @@ pcb_layer_combining_t pcb_layer_comb_str2bit(const char *name)
 }
 
 
-int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_layer_combining_t *lyc, pcb_bool allow_implicit_lyc)
+int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_layer_combining_t *lyc, rnd_bool allow_implicit_lyc)
 {
 	const char *curr, *next;
 	int res = 0, got_lyc = 0;

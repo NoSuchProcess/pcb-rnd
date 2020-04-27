@@ -24,7 +24,7 @@ void ghid_port_reg_mouse_cursor(pcb_gtk_t *ctx, int idx, const char *name, const
 void ghid_port_set_mouse_cursor(pcb_gtk_t *ctx, int idx);
 
 void ghid_watch_cursor(pcb_gtk_t *ctx); /* Override the cursor appearance to signifies a wait state */
-void ghid_point_cursor(pcb_gtk_t *ctx, pcb_bool grabbed); /* Override the cursor appearance to signifies a point is found */
+void ghid_point_cursor(pcb_gtk_t *ctx, rnd_bool grabbed); /* Override the cursor appearance to signifies a point is found */
 void ghid_mode_cursor(pcb_gtk_t *ctx); /* Changes the normal cursor appearance according to last set mode, but respect override */
 void ghid_restore_cursor(pcb_gtk_t *ctx); /* Remove override and restore the mode cursor */
 

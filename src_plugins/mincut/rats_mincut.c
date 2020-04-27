@@ -111,7 +111,7 @@ static int proc_short_cb(pcb_find_t *fctx, pcb_any_obj_t *curr, pcb_any_obj_t *f
 /* returns 0 on succes */
 static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int *cancel)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	short_conn_t *n, **lut_by_oid, **lut_by_gid, *next;
 	int gids;
 	gr_t *g;
@@ -240,7 +240,7 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int
 					}
 				}
 				else
-					pcb_message(PCB_MSG_WARNING, "Ignoring subcircuit %ld connecting to a net because it has no refdes;\nplease use the nonetlist flag on the subcircuit to suppress this warning\n", sc->ID);
+					rnd_message(PCB_MSG_WARNING, "Ignoring subcircuit %ld connecting to a net because it has no refdes;\nplease use the nonetlist flag on the subcircuit to suppress this warning\n", sc->ID);
 			}
 		}
 

@@ -89,12 +89,12 @@ pcb_opfunc_t RotateFunctions = {
 /* ---------------------------------------------------------------------------
  * rotates a point in 90 degree steps
  */
-void pcb_point_rotate90(pcb_point_t *Point, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_point_rotate90(pcb_point_t *Point, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	PCB_COORD_ROTATE90(Point->X, Point->Y, X, Y, Number);
 }
 
-pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
+pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t X, rnd_coord_t Y, unsigned Steps)
 {
 	int changed = 0;
 	pcb_opctx_t ctx;
@@ -121,7 +121,7 @@ pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_
 	return obj;
 }
 
-pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
+pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t X, rnd_coord_t Y, pcb_angle_t angle)
 {
 	int changed = 0;
 	pcb_opctx_t ctx;
@@ -148,14 +148,14 @@ pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t 
 	return obj;
 }
 
-void pcb_screen_obj_rotate90(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, unsigned Steps)
+void pcb_screen_obj_rotate90(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, unsigned Steps)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
-			pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+			rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
 		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
@@ -168,14 +168,14 @@ void pcb_screen_obj_rotate90(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, uns
 	}
 }
 
-void pcb_screen_obj_rotate(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_angle_t angle)
+void pcb_screen_obj_rotate(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, pcb_angle_t angle)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
-			pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+			rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
 		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);

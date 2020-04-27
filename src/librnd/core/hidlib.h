@@ -30,20 +30,20 @@
 #include "global_typedefs.h"
 
 typedef struct pcb_mark_s {
-	pcb_bool status;
-	pcb_coord_t X, Y;
+	rnd_bool status;
+	rnd_coord_t X, Y;
 	unsigned user_placed:1;   /* if 1, the user has explicitly placed the mark - do not move it */
 } pcb_mark_t;
 
 struct pcb_hidlib_s {
-	pcb_coord_t grid;                  /* grid resolution */
-	pcb_coord_t grid_ox, grid_oy;      /* grid offset */
-	pcb_coord_t size_x, size_y;        /* drawing area extents (or board dimensions) */
+	rnd_coord_t grid;                  /* grid resolution */
+	rnd_coord_t grid_ox, grid_oy;      /* grid offset */
+	rnd_coord_t size_x, size_y;        /* drawing area extents (or board dimensions) */
 	char *name;                        /* name of the design */
 	char *filename;                    /* name of the file (from load) */
 
 	/* tool state */
-	pcb_coord_t ch_x, ch_y, tool_x, tool_y; /* ch is crosshair */
+	rnd_coord_t ch_x, ch_y, tool_x, tool_y; /* ch is crosshair */
 	unsigned int tool_hit;                  /* optional: type of a hit object of PCB_MOVE_TYPES; 0 if there was no PCB_MOVE_TYPES object under the crosshair */
 	unsigned int tool_click:1;              /* optional: true if clicked somewhere with the arrow tool */
 	pcb_mark_t tool_grabbed;                /* point where a drag&drop operation started */
@@ -55,7 +55,7 @@ struct pcb_hidlib_s {
 	/* spare - sacrifice these when increasing struct size without breaking API binary compatibility */
 	int ispare[8];
 	double dspare[8];
-	pcb_coord_t cspare[8];
+	rnd_coord_t cspare[8];
 	void *pspare[8];
 };
 
@@ -84,16 +84,16 @@ void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
 /* Move the crosshair to an absolute x;y coord on the board and update the GUI;
    if mouse_mot is non-zero, the request is a direct result of a mouse motion
    event */
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
 /* The whole default menu file embedded in the executable; NULL if not present */
 extern const char *pcb_hidlib_default_embedded_menu;
 
 /* Draw any fixed mark on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void pcbhl_draw_marks(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
+void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 /* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
+void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 /*** One of these two functions will be called whenever (parts of) the screen
      needs redrawing (on screen, print or export, board or preview). The expose
@@ -134,6 +134,6 @@ extern const char *pcbhl_app_version;
 extern const char *pcbhl_app_url;
 
 /*** API wrappers provided for plugins (these are translated into calls to the app within the hidlib) ***/
-void pcb_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
+void pcb_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
 #endif

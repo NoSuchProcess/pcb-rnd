@@ -67,14 +67,14 @@ struct pcb_board_s {
 	char *PrintFilename;                            /* from print dialog */
 	char *Netlistname;                              /* name of netlist file */
 
-	pcb_bool Changed;                               /* layout has been changed */
+	rnd_bool Changed;                               /* layout has been changed */
 
-	pcb_bool pstk_on, RatOn, InvisibleObjectsOn,
+	rnd_bool pstk_on, RatOn, InvisibleObjectsOn,
 	         SubcOn, SubcPartsOn,
 	         padstack_mark_on, hole_on;             /* visibility flags */
-	pcb_bool RatDraw;                               /* we're drawing rats */
+	rnd_bool RatDraw;                               /* we're drawing rats */
 
-	pcb_bool loose_subc;                            /* when set, subc parts are not locked into the subc */
+	rnd_bool loose_subc;                            /* when set, subc parts are not locked into the subc */
 
 	double ThermScale;                              /* scale factor used with thermals */
 
@@ -87,7 +87,7 @@ struct pcb_board_s {
 	pcb_attribute_list_t Attributes;
 
 	pcb_data_t *Data;                               /* entire database */
-	pcb_bool is_footprint;                          /* If set, the user has loaded a footprint, not a pcb. */
+	rnd_bool is_footprint;                          /* If set, the user has loaded a footprint, not a pcb. */
 
 	const pcb_attribute_list_t *pen_attr;
 
@@ -102,7 +102,7 @@ extern pcb_board_t *PCB; /* the board being edited */
 void pcb_board_free(pcb_board_t *pcb);
 
 /* creates a new PCB - low level */
-pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames);
+pcb_board_t *pcb_board_new_(rnd_bool SetDefaultNames);
 
 /* creates a new PCB - high level (uses a template board); does not generate
    new board event if inhibit_events is set */
@@ -132,27 +132,27 @@ void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const p
 
 
 /* changes the name of a layout; Name is allocated by the caller (no strdup() is made) */
-pcb_bool pcb_board_change_name(char *Name);
+rnd_bool pcb_board_change_name(char *Name);
 
 /* changes the maximum size of a layout, notifies the GUI
  * and adjusts the cursor confinement box */
-void pcb_board_resize(pcb_coord_t Width, pcb_coord_t Height, int undoable);
+void pcb_board_resize(rnd_coord_t Width, rnd_coord_t Height, int undoable);
 
 
 /* free the board and remove its undo list */
 void pcb_board_remove(pcb_board_t *Ptr);
 
 /* sets a new line thickness */
-void pcb_board_set_line_width(pcb_coord_t Size);
+void pcb_board_set_line_width(rnd_coord_t Size);
 
 /* sets a new via thickness */
-void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force);
+void pcb_board_set_via_size(rnd_coord_t Size, rnd_bool Force);
 
 /* sets a new via drilling hole */
-void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force);
+void pcb_board_set_via_drilling_hole(rnd_coord_t Size, rnd_bool Force);
 
 /* sets a clearance width */
-void pcb_board_set_clearance(pcb_coord_t Width);
+void pcb_board_set_clearance(rnd_coord_t Width);
 
 /* sets a text scaling */
 void pcb_board_set_text_scale(int Scale);
@@ -162,7 +162,7 @@ void pcb_board_set_text_scale(int Scale);
 int pcb_board_normalize(pcb_board_t *pcb);
 
 /* sets or resets changed flag and redraws status */
-void pcb_board_set_changed_flag(pcb_bool New);
+void pcb_board_set_changed_flag(rnd_bool New);
 
 /* Shorthand for emitting a board changed event (PCB_EVENT_BOARD_CHANGED) */
 void pcb_board_changed(int reverted);
@@ -183,7 +183,7 @@ typedef enum pcb_board_thickness_flags_e { /* bitfield */
 } pcb_board_thickness_flags_t;
 
 /* Return the board thickness or -1 on error */
-pcb_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags);
+rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags);
 
 
 #define PCB_ACT_BOARD ((pcb_board_t *)argv[0].val.argv0.user_call_ctx)

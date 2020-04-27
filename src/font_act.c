@@ -53,7 +53,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *end;
 		fid = strtol(sid, &end, 10);
 		if (*end != '\0') {
-			pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): when second argument is present, it must be an integer\n");
+			rnd_message(PCB_MSG_ERROR, "LoadFontFrom(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
 		if (pcb_font(PCB_ACT_BOARD, fid, 0) != NULL) { /* font already exists */
@@ -89,14 +89,14 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fnt = pcb_new_font(&PCB_ACT_BOARD->fontkit, fid, NULL);
 	if (fnt == NULL) {
-		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): unable to allocate font\n");
+		rnd_message(PCB_MSG_ERROR, "LoadFontFrom(): unable to allocate font\n");
 		return 1;
 	}
 	
 	r = pcb_parse_font(fnt, fname);
 	pcb_event(RND_ACT_HIDLIB, PCB_EVENT_FONT_CHANGED, "i", fnt->id);
 	if (r != 0) {
-		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
+		rnd_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
 		pcb_del_font(&PCB_ACT_BOARD->fontkit, fnt->id);
 		return 1;
 	}
@@ -106,7 +106,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	
 	fid = dst_fid == 0 ? 0 : fnt->id;
-	pcb_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fid, fname);
+	rnd_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fid, fname);
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -130,11 +130,11 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *end;
 		fid = strtol(sid, &end, 10);
 		if (*end != '\0') {
-			pcb_message(PCB_MSG_ERROR, "SaveFontTo(): when second argument is present, it must be an integer\n");
+			rnd_message(PCB_MSG_ERROR, "SaveFontTo(): when second argument is present, it must be an integer\n");
 			return 1;
 		}
 		if (pcb_font(PCB_ACT_BOARD, fid, 0) == NULL) {
-			pcb_message(PCB_MSG_ERROR, "SaveFontTo(): can not fetch font ID %d\n", fid);
+			rnd_message(PCB_MSG_ERROR, "SaveFontTo(): can not fetch font ID %d\n", fid);
 			return 1;
 		}
 	}
@@ -143,7 +143,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fnt = pcb_font(PCB_ACT_BOARD, fid, 0);
 	if (fnt == NULL) {
-		pcb_message(PCB_MSG_ERROR, "SaveFontTo(): failed to fetch font %d\n", fid);
+		rnd_message(PCB_MSG_ERROR, "SaveFontTo(): failed to fetch font %d\n", fid);
 		return 1;
 	}
 
@@ -161,7 +161,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	r = pcb_write_font(fnt, fname, "lihata");
 	if (r != 0) {
-		pcb_message(PCB_MSG_ERROR, "SaveFontTo(): failed to save font to %s\n", fname);
+		rnd_message(PCB_MSG_ERROR, "SaveFontTo(): failed to save font to %s\n", fname);
 		return 1;
 	}
 

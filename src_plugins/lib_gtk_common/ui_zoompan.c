@@ -42,7 +42,7 @@ double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 
 	min_zoom = 200;
 
-	/* max zoom is calculated so that zoom * canvas_size * 2 doesn't overflow pcb_coord_t */
+	/* max zoom is calculated so that zoom * canvas_size * 2 doesn't overflow rnd_coord_t */
 	max_zoom_w = (double)COORD_MAX / (double)vw->canvas_width;
 	max_zoom_h = (double)COORD_MAX / (double)vw->canvas_height;
 	max_zoom = MIN(max_zoom_w, max_zoom_h) / 2.0;
@@ -89,7 +89,7 @@ static void uiz_pan_common(pcb_gtk_view_t *v)
 		pcb_gtk_pan_common();
 }
 
-pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y)
+rnd_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, int *event_x, int *event_y)
 {
 	*event_x = DRAW_X(v, pcb_x);
 	*event_y = DRAW_Y(v, pcb_y);
@@ -97,7 +97,7 @@ pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pc
 	return pcb_true;
 }
 
-pcb_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y)
+rnd_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * pcb_x, rnd_coord_t * pcb_y)
 {
 	*pcb_x = pcb_round(EVENT_TO_PCB_X(v, event_x));
 	*pcb_y = pcb_round(EVENT_TO_PCB_Y(v, event_y));
@@ -118,11 +118,11 @@ void pcb_gtk_zoom_post(pcb_gtk_view_t *v)
  *
  * gport->view_width and gport->view_height are in PCB coordinates
  */
-void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom)
+void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t center_y, double new_zoom)
 {
 	double clamped_zoom;
 	double xtmp, ytmp;
-	pcb_coord_t cmaxx, cmaxy;
+	rnd_coord_t cmaxx, cmaxy;
 
 	clamped_zoom = pcb_gtk_clamp_zoom(v, new_zoom);
 	if (clamped_zoom != new_zoom)
@@ -153,13 +153,13 @@ void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t 
 
 
 
-void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor)
+void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t center_y, double factor)
 {
 	pcb_gtk_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
 TODO(": remove this and make the side-correct version the default (rename that to this short name); check when looking from the bottom: library window, drc window")
-void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double xf, yf;
 
@@ -177,7 +177,7 @@ void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pc
 }
 
 /* Side-correct version - long term this will be kept and the other is removed */
-void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch)
+void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch)
 {
 	double xf, yf;
 
@@ -199,7 +199,7 @@ void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y
 	}
 }
 
-void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, double widget_x, double widget_y)
+void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, double widget_x, double widget_y)
 {
 	v->x0 = pcb_round((double)SIDE_X(v, pcb_x) - (double)widget_x * v->coord_per_px);
 	v->y0 = pcb_round((double)SIDE_Y(v, pcb_y) - (double)widget_y * v->coord_per_px);
@@ -207,7 +207,7 @@ void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_
 	uiz_pan_common(v);
 }
 
-void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, rnd_coord_t dx, rnd_coord_t dy)
 {
 	v->x0 += dx;
 	v->y0 += dy;
@@ -215,7 +215,7 @@ void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy)
 	uiz_pan_common(v);
 }
 
-void pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+void pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	if ((force || !vw->has_entered) && msg)
 		if (!ghid_get_user_xy(ctx, msg))

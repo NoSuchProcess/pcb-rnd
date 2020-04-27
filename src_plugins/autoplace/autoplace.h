@@ -40,6 +40,6 @@
 
 #include <librnd/core/global_typedefs.h>
 
-pcb_bool AutoPlaceSelected(void);
+rnd_bool AutoPlaceSelected(void);
 
 #endif

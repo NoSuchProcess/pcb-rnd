@@ -161,7 +161,7 @@ static int batch_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void batch_invalidate_lr(pcb_hid_t *hid, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
+static void batch_invalidate_lr(pcb_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
 {
 }
 
@@ -192,7 +192,7 @@ static void batch_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 {
 }
 
-static void batch_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void batch_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 }
 
@@ -200,31 +200,31 @@ static void batch_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
 {
 }
 
-static void batch_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void batch_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
-static void batch_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void batch_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 }
 
-static void batch_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void batch_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
-static void batch_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void batch_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 }
 
-static void batch_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void batch_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
 {
 }
 
-static void batch_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void batch_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 }
 
-static void batch_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void batch_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
@@ -247,11 +247,11 @@ static int batch_mod1_is_pressed(pcb_hid_t *hid)
 	return 0;
 }
 
-static void batch_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+static void batch_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 }
 
-static void batch_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void batch_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
@@ -267,7 +267,7 @@ static void batch_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
 }
 
 pcb_hidval_t
-batch_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+batch_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								 pcb_hidval_t user_data)
 {
 	pcb_hidval_t ret;
@@ -283,19 +283,19 @@ static void batch_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_m
 {
 }
 
-static void batch_zoom_win(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair)
+static void batch_zoom_win(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
 {
 }
 
-static void batch_zoom(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative)
+static void batch_zoom(pcb_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
 {
 }
 
-static void batch_pan(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative)
+static void batch_pan(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
 {
 }
 
-static void batch_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode)
+static void batch_pan_mode(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
 {
 }
 

@@ -6,10 +6,10 @@
 #include <string.h>
 
 typedef struct pcb_range_s {
-	pcb_coord_t begin, end;
+	rnd_coord_t begin, end;
 	union {
 		long l;
-		pcb_coord_t c;
+		rnd_coord_t c;
 		double d;
 		void *ptr;
 	} data[4];

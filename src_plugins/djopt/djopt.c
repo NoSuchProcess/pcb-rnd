@@ -236,7 +236,7 @@ static void check2(int srcline, corner_s * c, line_s * l)
 
 #define SWAP(a,b) { a^=b; b^=a; a^=b; }
 
-static int gridsnap(pcb_coord_t n)
+static int gridsnap(rnd_coord_t n)
 {
 	if (n <= 0)
 		return 0;
@@ -2219,7 +2219,7 @@ static void pinsnap()
 			got_one = 0;
 			for (c2 = corners; c2; c2 = c2->next) {
 				int lt;
-				pcb_coord_t thick;
+				rnd_coord_t thick;
 
 				if (DELETED(c2))
 					continue;
@@ -2328,8 +2328,8 @@ static void pinsnap()
 
 static int pstk_orient(pcb_pstk_t *p)
 {
-	pcb_coord_t dx = p->BoundingBox.X2 - p->BoundingBox.X1;
-	pcb_coord_t dy = p->BoundingBox.Y2 - p->BoundingBox.Y1;
+	rnd_coord_t dx = p->BoundingBox.X2 - p->BoundingBox.X1;
+	rnd_coord_t dy = p->BoundingBox.Y2 - p->BoundingBox.Y1;
 	if (dx < dy * 3)
 		return O_VERT;
 	if (dx > dy * 3)

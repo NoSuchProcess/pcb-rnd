@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	if (!pcb_gui->edit_attributes) {
-		pcb_message(PCB_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
+		rnd_message(PCB_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
 		return FGW_ERR_UNKNOWN;
 	}
 
@@ -100,7 +100,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						break;
 					}
 				if (layer == NULL) {
-					pcb_message(PCB_MSG_ERROR, "No layer named %s\n", layername);
+					rnd_message(PCB_MSG_ERROR, "No layer named %s\n", layername);
 					return 1;
 				}
 			}
@@ -122,17 +122,17 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			PCB_END_LOOP;
 			if (n_found > 1) {
-				pcb_message(PCB_MSG_ERROR, "Too many subcircuits selected\n");
+				rnd_message(PCB_MSG_ERROR, "Too many subcircuits selected\n");
 				return 1;
 			}
 			if (n_found == 0) {
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				void *ptrtmp;
 				rnd_hid_get_coords("Click on a subcircuit", &x, &y, 0);
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
-					pcb_message(PCB_MSG_ERROR, "No subcircuit found there\n");
+					rnd_message(PCB_MSG_ERROR, "No subcircuit found there\n");
 					RND_ACT_IRES(-1);
 					return 0;
 				}
@@ -162,9 +162,9 @@ static const char pcb_acth_DisperseElements[] = "Disperses subcircuits.";
 
 /* DOC: disperseelements.html */
 
-static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t *dx, pcb_coord_t *dy, pcb_coord_t *minx, pcb_coord_t *miny, pcb_coord_t *maxy)
+static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t *dx, rnd_coord_t *dy, rnd_coord_t *minx, rnd_coord_t *miny, rnd_coord_t *maxy)
 {
-	pcb_coord_t newx2, newy2;
+	rnd_coord_t newx2, newy2;
 
 	/* If we want to disperse selected objects, maybe we need smarter
 	   code here to avoid putting components on top of others which
@@ -207,7 +207,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 		*maxy = newy2;
 		if (*maxy > pcb->hidlib.size_y - GAP) {
 			*maxy = GAP;
-			pcb_message(PCB_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
+			rnd_message(PCB_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
 		}
 	}
 }
@@ -215,7 +215,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_coord_t ox, p
 static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
+	rnd_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, id;
 
 	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = fgw_keyword(&argv[1]));
@@ -231,7 +231,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	PCB_SUBC_LOOP(pcb->Data);
 	{
 		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, subc) && (all || PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc))) {
-			pcb_coord_t ox, oy;
+			rnd_coord_t ox, oy;
 			if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
 				ox = (subc->BoundingBox.X1 + subc->BoundingBox.X2)/2;
 				oy = (subc->BoundingBox.Y1 + subc->BoundingBox.Y2)/2;
@@ -259,7 +259,7 @@ static const char pcb_acth_Flip[] = "Flip a subcircuit to the opposite side of t
 /* DOC: flip.html */
 static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	int id;
 	void *ptrtmp;
 
@@ -300,7 +300,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *units = NULL, *saved;
 	fgw_coords_t *nx, *ny;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
@@ -315,7 +315,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID) {
-		pcb_message(PCB_MSG_ERROR, "Nothing found under crosshair\n");
+		rnd_message(PCB_MSG_ERROR, "Nothing found under crosshair\n");
 		return 1;
 	}
 
@@ -350,7 +350,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 	switch(id) {
 		case F_Object:
 			{
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
@@ -369,7 +369,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 						int old_len = subc->data->LayerN;
 						target = pcb_subc_get_layer(subc, lyt, PCB_CURRLAYER(pcb)->comb, 1, PCB_CURRLAYER(pcb)->name, 0);
 						if (target == NULL) {
-							pcb_message(PCB_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
+							rnd_message(PCB_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
 							break;
 						}
 						if (old_len != subc->data->LayerN)
@@ -423,11 +423,11 @@ static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 typedef struct {
 	enum { PLC_DISPERSE, PLC_FRAME, PLC_FIT } plc_method;
 	enum { PLC_AT, PLC_MARK, PLC_CENTER } location;
-	pcb_coord_t lx, ly, dd;
+	rnd_coord_t lx, ly, dd;
 	pcb_board_t *pcb;
 
 	/* cursor for some placement methods */
-	pcb_coord_t c, cx, cy;
+	rnd_coord_t c, cx, cy;
 	int side;
 
 	/* removal */
@@ -461,13 +461,13 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		if (pcb_strcasecmp(conf_plc_met, "disperse") == 0) plc->plc_method = PLC_DISPERSE;
 		else if (pcb_strcasecmp(conf_plc_met, "frame") == 0) plc->plc_method = PLC_FRAME;
 		else if (pcb_strcasecmp(conf_plc_met, "fit") == 0) plc->plc_method = PLC_FIT;
-		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", conf_plc_met);
+		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", conf_plc_met);
 
 		s = conf_core.import.footprint_placement.location;
 		if ((s == NULL) || (*s == '\0')) plc->location = PLC_AT;
 		else if (pcb_strcasecmp(s, "mark") == 0) plc->location = PLC_MARK;
 		else if (pcb_strcasecmp(s, "center") == 0) plc->location = PLC_CENTER;
-		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/location '%s', falling back to coordinates\n", s);
+		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/location '%s', falling back to coordinates\n", s);
 
 	}
 	else {
@@ -481,7 +481,7 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		if (pcb_strcasecmp(conf_rem_met, "select") == 0) plc->rem_method = PLC_SELECT;
 		else if (pcb_strcasecmp(conf_rem_met, "remove") == 0) plc->rem_method = PLC_REMOVE;
 		else if (pcb_strcasecmp(conf_rem_met, "list") == 0) plc->rem_method = PLC_LIST;
-		else pcb_message(PCB_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", conf_plc_met);
+		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", conf_plc_met);
 	}
 
 	switch(plc->location) {
@@ -502,9 +502,9 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		plc->remlst = calloc(sizeof(pcb_view_list_t), 1);
 }
 
-static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
+static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 {
-	pcb_coord_t px = plc->lx, py = plc->ly;
+	rnd_coord_t px = plc->lx, py = plc->ly;
 	pcb_box_t bbx;
 
 	switch(plc->plc_method) {
@@ -519,11 +519,11 @@ static void plc_place(placer_t *plc, pcb_coord_t *ox,  pcb_coord_t *oy)
 		case PLC_FRAME:
 			pcb_data_bbox(&bbx, PCB_PASTEBUFFER->Data, 0);
 			{
-				pcb_coord_t bx = bbx.X2 - bbx.X1, by = bbx.Y2 - bbx.Y1;
-				pcb_coord_t xo = PCB_PASTEBUFFER->X/2, yo = PCB_PASTEBUFFER->Y/2;
-				pcb_coord_t max = (plc->side % 2) ? plc->pcb->hidlib.size_y : plc->pcb->hidlib.size_x;
-				pcb_coord_t mdim = (plc->side % 2) ? by : bx;
-				pcb_coord_t adim = (plc->side % 2) ? bx : by;
+				rnd_coord_t bx = bbx.X2 - bbx.X1, by = bbx.Y2 - bbx.Y1;
+				rnd_coord_t xo = PCB_PASTEBUFFER->X/2, yo = PCB_PASTEBUFFER->Y/2;
+				rnd_coord_t max = (plc->side % 2) ? plc->pcb->hidlib.size_y : plc->pcb->hidlib.size_x;
+				rnd_coord_t mdim = (plc->side % 2) ? by : bx;
+				rnd_coord_t adim = (plc->side % 2) ? bx : by;
 
 				plc->c += (double)mdim * 0.6;
 				switch(plc->side) {
@@ -580,7 +580,7 @@ static void plc_end(placer_t *plc)
 		plc->remlst = NULL;
 	}
 	if ((number_of_footprints_not_found > 0) && (!pcbhl_conf.rc.quiet))
-		pcb_message(PCB_MSG_ERROR, "Footprint import: not all requested footprints were found.\nSee the message log above for details\n");
+		rnd_message(PCB_MSG_ERROR, "Footprint import: not all requested footprints were found.\nSee the message log above for details\n");
 }
 
 
@@ -659,7 +659,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
 
 	if (sc == NULL) {
-		pcb_coord_t px, py;
+		rnd_coord_t px, py;
 
 #ifdef DEBUG
 		printf("  ... Footprint not on board, need to add it.\n");
@@ -683,7 +683,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		printf("  ... Footprint on board, but different from footprint loaded.\n");
 #endif
 		int orig_on_top, paste_ok = 0;
-		pcb_coord_t orig_cx, orig_cy;
+		rnd_coord_t orig_cx, orig_cy;
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
@@ -709,7 +709,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			pcb_subc_t *psc;
 			psc = pcb_subclist_first(&(PCB_PASTEBUFFER->Data->subc));
 			if (psc != NULL) {
-				pcb_coord_t pcx = 0, pcy = 0;
+				rnd_coord_t pcx = 0, pcy = 0;
 				pcb_subc_get_origin(psc, &pcx, &pcy);
 				if (!orig_on_top)
 					pcb_subc_change_side(psc, pcy * 2 - RND_ACT_HIDLIB->size_y);
@@ -776,7 +776,7 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
 	if (sc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
+		rnd_message(PCB_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -797,7 +797,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
-	pcb_bool changed = pcb_false;
+	rnd_bool changed = pcb_false;
 
 	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, RipUp, op = fgw_keyword(&argv[1]));
 
@@ -867,7 +867,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
 static const char pcb_acth_MinClearGap[] = "Ensures that polygons are a minimum distance from objects.";
 /* DOC: mincleargap.html */
-static void minclr(pcb_data_t *data, pcb_coord_t value, int flags)
+static void minclr(pcb_data_t *data, rnd_coord_t value, int flags)
 {
 	PCB_SUBC_LOOP(data);
 	{
@@ -926,8 +926,8 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	const char *function;
 	const char *delta = NULL;
 	const char *units = NULL;
-	pcb_bool absolute;
-	pcb_coord_t value;
+	rnd_bool absolute;
+	rnd_coord_t value;
 	int flags;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, MinClearGap, function = argv[1].val.str);
@@ -1007,7 +1007,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_layer_t *l = PCB_CURRLAYER(pcb);
 		pcb_layergrp_t *g = pcb_get_layergrp(pcb, l->meta.real.grp);
 		if (g == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Invalid layer group\n");
+			rnd_message(PCB_MSG_ERROR, "Invalid layer group\n");
 			return 1;
 		}
 
@@ -1015,7 +1015,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(a1[4]) {
 			case '+': RND_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), +1)); break;
 			case '-': RND_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), -1)); break;
-			default: pcb_message(PCB_MSG_ERROR, "Invalid step direction\n");
+			default: rnd_message(PCB_MSG_ERROR, "Invalid step direction\n");
 		}
 		return 0;
 	}
@@ -1028,7 +1028,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_layer_t *l = pcb_get_layer(pcb->Data, old_index);
 			pcb_layergrp_t *g = pcb_get_layergrp(pcb, l->meta.real.grp);
 			if (g->len == 1) {
-				pcb_message(PCB_MSG_ERROR, "Removing this layer would result in an empty top or bottom silk group, which is not possible at the moment.\n");
+				rnd_message(PCB_MSG_ERROR, "Removing this layer would result in an empty top or bottom silk group, which is not possible at the moment.\n");
 				RND_ACT_IRES(1);
 				return 0;
 			}
@@ -1045,7 +1045,7 @@ static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *txt;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_layer_t *ly;
 	int fid, dir, scale;
 	pcb_text_t *t;
@@ -1059,12 +1059,12 @@ static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
 
 	if (scale < 1) {
-		pcb_message(PCB_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
+		rnd_message(PCB_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
 		return 1;
 	}
 
 	if ((dir < 0) || (dir > 3)) {
-		pcb_message(PCB_MSG_ERROR, "Invalid direction (must be 0, 1, 2 or 3)\n");
+		rnd_message(PCB_MSG_ERROR, "Invalid direction (must be 0, 1, 2 or 3)\n");
 		return 1;
 	}
 
@@ -1117,7 +1117,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				polylist_foreach(&pcb->Data->subc, &it, sc) {
 					if (selected_only && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, sc))
 						continue;
-					pcb_message(PCB_MSG_INFO, "subc #%ld (%s): %u\n", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_hash(sc));
+					rnd_message(PCB_MSG_INFO, "subc #%ld (%s): %u\n", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_hash(sc));
 				}
 			}
 			break;
@@ -1162,7 +1162,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						sc = (pcb_subc_t *)vt->array[n];
 						pcb_append_printf(&str, " #%ld(%s):%d", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_eq(sc, (pcb_subc_t*)vt->array[0]));
 					}
-					pcb_message(PCB_MSG_INFO, "%s\n", str.array);
+					rnd_message(PCB_MSG_INFO, "%s\n", str.array);
 					vtp0_uninit(vt);
 					free(vt);
 				}
@@ -1181,7 +1181,7 @@ static const char pcb_acth_Rotate90[] = "Rotates the object under the crosshair 
 static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int steps;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	RND_PCB_ACT_CONVARG(1, FGW_INT, Rotate90, steps = argv[1].val.nat_int);
 	RND_ACT_IRES(0);

@@ -36,21 +36,21 @@ PCB_INLINE int pcb_neqs(const char *s1, const char *s2)
 	return strcmp(s1, s2) != 0;
 }
 
-PCB_INLINE unsigned pcb_hash_coord(pcb_coord_t c)
+PCB_INLINE unsigned pcb_hash_coord(rnd_coord_t c)
 {
-	return murmurhash(&(c), sizeof(pcb_coord_t));
+	return murmurhash(&(c), sizeof(rnd_coord_t));
 }
 
 /* cheat: round with a tolerance of a few nanometers to overcome the usual
    +-1 nanometer rounding error */
-PCB_INLINE pcb_coord_t pcb_round_tol(double v, int tol)
+PCB_INLINE rnd_coord_t pcb_round_tol(double v, int tol)
 {
 	return pcb_round(v/(double)tol)*tol;
 }
 
-PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, pcb_coord_t *dstx, pcb_coord_t *dsty, pcb_coord_t srcx, pcb_coord_t srcy)
+PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, rnd_coord_t *dstx, rnd_coord_t *dsty, rnd_coord_t srcx, rnd_coord_t srcy)
 {
-	pcb_coord_t px, py;
+	rnd_coord_t px, py;
 
 	px = srcx + tr->ox;
 	py = srcy + tr->oy;
@@ -86,7 +86,7 @@ PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
 #define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 
 /* retruns if two sets of tr;x;y mismatches */
-PCB_INLINE pcb_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, pcb_coord_t x1, pcb_coord_t y1, const pcb_host_trans_t *tr2, pcb_coord_t x2, pcb_coord_t y2)
+PCB_INLINE rnd_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, rnd_coord_t x1, rnd_coord_t y1, const pcb_host_trans_t *tr2, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_hash_tr_coords(tr1, &x1, &y1, x1, y1);
 	pcb_hash_tr_coords(tr2, &x2, &y2, x2, y2);

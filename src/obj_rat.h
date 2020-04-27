@@ -51,12 +51,12 @@ void pcb_rat_reg(pcb_data_t *data, pcb_rat_t *rat);
 void pcb_rat_unreg(pcb_rat_t *rat);
 
 /* if id is <= 0, allocate a new id */
-pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, pcb_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2);
-pcb_bool pcb_rats_destroy(pcb_bool selected);
+pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, rnd_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2);
+rnd_bool pcb_rats_destroy(rnd_bool selected);
 
 /* Look up the anchor object (object the rat is connected to) for end 0 or
    end 1. If update is true, also update rat's field */
-pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, pcb_bool update);
+pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, rnd_bool update);
 
 /* Call pcb_rat_anchor_guess() on all rats of data, with update=true */
 void pcb_rat_all_anchor_guess(pcb_data_t *data);

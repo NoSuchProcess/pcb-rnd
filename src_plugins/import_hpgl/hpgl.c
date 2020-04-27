@@ -105,7 +105,7 @@ static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 static int load_poly(uhpgl_ctx_t *ctx, uhpgl_poly_t *poly)
 {
 /*	pcb_data_t *data = (pcb_data_t *)ctx->user_data;*/
-	pcb_message(PCB_MSG_ERROR, "HPGL: polygons are not yet supported\n");
+	rnd_message(PCB_MSG_ERROR, "HPGL: polygons are not yet supported\n");
 	return 0;
 }
 
@@ -122,7 +122,7 @@ static int hpgl_load(const char *fname)
 
 	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error opening HP-GL %s for read\n", fname);
+		rnd_message(PCB_MSG_ERROR, "Error opening HP-GL %s for read\n", fname);
 		return 1;
 	}
 
@@ -133,7 +133,7 @@ static int hpgl_load(const char *fname)
 	if ((uhpgl_parse_open(&ctx) == 0) && (uhpgl_parse_file(&ctx, f) == 0) && (uhpgl_parse_close(&ctx) == 0)) {
 		fclose(f);
 		if (PCB_PASTEBUFFER->Data->LayerN == 0) {
-			pcb_message(PCB_MSG_ERROR, "Error loading HP-GL: could not load any object from %s\n", fname);
+			rnd_message(PCB_MSG_ERROR, "Error loading HP-GL: could not load any object from %s\n", fname);
 			return 0;
 		}
 		rnd_actionva(&PCB->hidlib, "mode", "buffer", NULL);
@@ -141,7 +141,7 @@ static int hpgl_load(const char *fname)
 	}
 
 	fclose(f);
-	pcb_message(PCB_MSG_ERROR, "Error loading HP-GL at %s:%d.%d: %s\n", fname, ctx.error.line, ctx.error.col, ctx.error.msg);
+	rnd_message(PCB_MSG_ERROR, "Error loading HP-GL at %s:%d.%d: %s\n", fname, ctx.error.line, ctx.error.col, ctx.error.msg);
 
 	return 1;
 }

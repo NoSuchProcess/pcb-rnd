@@ -79,7 +79,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(function, "Layout") == 0)
 		name = pcb_gui->fileselect(pcb_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
 	else {
-		pcb_message(PCB_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
+		rnd_message(PCB_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -251,7 +251,7 @@ static void save_timer(pcb_hidval_t user_data)
 	}
 }
 
-static void save_on_close(pcb_hid_dad_subdialog_t *sub, pcb_bool ok)
+static void save_on_close(pcb_hid_dad_subdialog_t *sub, rnd_bool ok)
 {
 	save_t *save = sub->sub_ctx;
 	int n, i;
@@ -481,7 +481,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (fmt < 0) {
 					static int warned = 0;
 					if (!warned)
-						pcb_message(PCB_MSG_WARNING, "Could not find an io_ plugin for the preferred footprint save format (configured in rc/save_fp_fmt): '%s'\n", default_pattern);
+						rnd_message(PCB_MSG_WARNING, "Could not find an io_ plugin for the preferred footprint save format (configured in rc/save_fp_fmt): '%s'\n", default_pattern);
 					warned = 1;
 				}
 			}
@@ -494,7 +494,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			name_in = pcb_concat("unnamed", avail.plug[fmt]->fp_extension, NULL);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
+			rnd_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -518,7 +518,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			fmtsub = &fmtsub_local;
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
+			rnd_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
 			RND_ACT_IRES(-1);
 			return 0;
 		}

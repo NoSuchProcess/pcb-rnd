@@ -50,14 +50,14 @@
 
 /*********** map ***********/
 #define type2field_String string
-#define type2field_pcb_coord_t coord
+#define type2field_rnd_coord_t coord
 #define type2field_pcb_angle_t angle
 #define type2field_int i
 #define type2field_bool i
 #define type2field_color clr
 
 #define type2TYPE_String PCB_PROPT_STRING
-#define type2TYPE_pcb_coord_t PCB_PROPT_COORD
+#define type2TYPE_rnd_coord_t PCB_PROPT_COORD
 #define type2TYPE_pcb_angle_t PCB_PROPT_ANGLE
 #define type2TYPE_int PCB_PROPT_INT
 #define type2TYPE_bool PCB_PROPT_BOOL
@@ -125,8 +125,8 @@ static void map_board(pcb_propedit_t *ctx, pcb_board_t *pcb)
 {
 	map_add_prop(ctx, "p/board/name",   String, pcb->hidlib.name);
 	map_add_prop(ctx, "p/board/filename",   String, pcb->hidlib.filename);
-	map_add_prop(ctx, "p/board/width", pcb_coord_t, pcb->hidlib.size_x);
-	map_add_prop(ctx, "p/board/height", pcb_coord_t, pcb->hidlib.size_y);
+	map_add_prop(ctx, "p/board/width", rnd_coord_t, pcb->hidlib.size_x);
+	map_add_prop(ctx, "p/board/height", rnd_coord_t, pcb->hidlib.size_y);
 	map_attr(ctx, &pcb->Attributes);
 }
 
@@ -172,44 +172,44 @@ static void map_net(pcb_propedit_t *ctx, const char *netname)
 
 static void map_line(pcb_propedit_t *ctx, pcb_line_t *line)
 {
-	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, line->Thickness);
-	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, line->Clearance/2);
+	map_add_prop(ctx, "p/trace/thickness", rnd_coord_t, line->Thickness);
+	map_add_prop(ctx, "p/trace/clearance", rnd_coord_t, line->Clearance/2);
 	map_common(ctx, (pcb_any_obj_t *)line);
 	map_attr(ctx, &line->Attributes);
 	if (ctx->geo) {
-		map_add_prop(ctx, "p/line/x1", pcb_coord_t, line->Point1.X);
-		map_add_prop(ctx, "p/line/y1", pcb_coord_t, line->Point1.Y);
-		map_add_prop(ctx, "p/line/x2", pcb_coord_t, line->Point2.X);
-		map_add_prop(ctx, "p/line/y2", pcb_coord_t, line->Point2.Y);
+		map_add_prop(ctx, "p/line/x1", rnd_coord_t, line->Point1.X);
+		map_add_prop(ctx, "p/line/y1", rnd_coord_t, line->Point1.Y);
+		map_add_prop(ctx, "p/line/x2", rnd_coord_t, line->Point2.X);
+		map_add_prop(ctx, "p/line/y2", rnd_coord_t, line->Point2.Y);
 	}
 }
 
 static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
 {
-	map_add_prop(ctx, "p/trace/thickness", pcb_coord_t, arc->Thickness);
-	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, arc->Clearance/2);
-	map_add_prop(ctx, "p/arc/width",       pcb_coord_t, arc->Width);
-	map_add_prop(ctx, "p/arc/height",      pcb_coord_t, arc->Height);
+	map_add_prop(ctx, "p/trace/thickness", rnd_coord_t, arc->Thickness);
+	map_add_prop(ctx, "p/trace/clearance", rnd_coord_t, arc->Clearance/2);
+	map_add_prop(ctx, "p/arc/width",       rnd_coord_t, arc->Width);
+	map_add_prop(ctx, "p/arc/height",      rnd_coord_t, arc->Height);
 	map_add_prop(ctx, "p/arc/angle/start", pcb_angle_t, arc->StartAngle);
 	map_add_prop(ctx, "p/arc/angle/delta", pcb_angle_t, arc->Delta);
 	map_common(ctx, (pcb_any_obj_t *)arc);
 	map_attr(ctx, &arc->Attributes);
 	if (ctx->geo) {
-		map_add_prop(ctx, "p/arc/x", pcb_coord_t, arc->X);
-		map_add_prop(ctx, "p/arc/y", pcb_coord_t, arc->Y);
+		map_add_prop(ctx, "p/arc/x", rnd_coord_t, arc->X);
+		map_add_prop(ctx, "p/arc/y", rnd_coord_t, arc->Y);
 	}
 }
 
 static void map_gfx(pcb_propedit_t *ctx, pcb_gfx_t *gfx)
 {
-	map_add_prop(ctx, "p/gfx/sx",      pcb_coord_t, gfx->sx);
-	map_add_prop(ctx, "p/gfx/sy",      pcb_coord_t, gfx->sy);
+	map_add_prop(ctx, "p/gfx/sx",      rnd_coord_t, gfx->sx);
+	map_add_prop(ctx, "p/gfx/sy",      rnd_coord_t, gfx->sy);
 	map_add_prop(ctx, "p/gfx/rot",     pcb_angle_t, gfx->rot);
 	map_common(ctx, (pcb_any_obj_t *)gfx);
 	map_attr(ctx, &gfx->Attributes);
 	if (ctx->geo) {
-		map_add_prop(ctx, "p/gfx/cx",      pcb_coord_t, gfx->cx);
-		map_add_prop(ctx, "p/gfx/cy",      pcb_coord_t, gfx->cy);
+		map_add_prop(ctx, "p/gfx/cx",      rnd_coord_t, gfx->cx);
+		map_add_prop(ctx, "p/gfx/cy",      rnd_coord_t, gfx->cy);
 	}
 }
 
@@ -218,13 +218,13 @@ static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
 	map_add_prop(ctx, "p/text/fid", int, text->fid);
 	map_add_prop(ctx, "p/text/rotation",  pcb_angle_t, text->rot);
-	map_add_prop(ctx, "p/text/thickness", pcb_coord_t, text->thickness);
+	map_add_prop(ctx, "p/text/thickness", rnd_coord_t, text->thickness);
 	map_add_prop(ctx, "p/text/string", String, text->TextString);
 	map_common(ctx, (pcb_any_obj_t *)text);
 	map_attr(ctx, &text->Attributes);
 	if (ctx->geo) {
-		map_add_prop(ctx, "p/text/x", pcb_coord_t, text->X);
-		map_add_prop(ctx, "p/text/y", pcb_coord_t, text->Y);
+		map_add_prop(ctx, "p/text/x", rnd_coord_t, text->X);
+		map_add_prop(ctx, "p/text/y", rnd_coord_t, text->Y);
 	}
 }
 
@@ -232,21 +232,21 @@ static void map_poly(pcb_propedit_t *ctx, pcb_poly_t *poly)
 {
 	map_attr(ctx, &poly->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)poly);
-	map_add_prop(ctx, "p/trace/clearance", pcb_coord_t, poly->Clearance/2);
+	map_add_prop(ctx, "p/trace/clearance", rnd_coord_t, poly->Clearance/2);
 }
 
 static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto;
 
-	map_add_prop(ctx, "p/padstack/xmirror", pcb_coord_t, ps->xmirror);
-	map_add_prop(ctx, "p/padstack/smirror", pcb_coord_t, ps->smirror);
+	map_add_prop(ctx, "p/padstack/xmirror", rnd_coord_t, ps->xmirror);
+	map_add_prop(ctx, "p/padstack/smirror", rnd_coord_t, ps->smirror);
 	map_add_prop(ctx, "p/padstack/rotation", pcb_angle_t, ps->rot);
-	map_add_prop(ctx, "p/padstack/proto", pcb_coord_t, ps->proto);
+	map_add_prop(ctx, "p/padstack/proto", rnd_coord_t, ps->proto);
 
 	proto = pcb_pstk_get_proto(ps);
-	map_add_prop(ctx, "p/padstack/clearance", pcb_coord_t, ps->Clearance);
-	map_add_prop(ctx, "p/padstack/hole", pcb_coord_t, proto->hdia);
+	map_add_prop(ctx, "p/padstack/clearance", rnd_coord_t, ps->Clearance);
+	map_add_prop(ctx, "p/padstack/hole", rnd_coord_t, proto->hdia);
 	map_add_prop(ctx, "p/padstack/plated", int, proto->hplated);
 	map_add_prop(ctx, "p/padstack/htop", int, proto->htop);
 	map_add_prop(ctx, "p/padstack/hbottom", int, proto->hbottom);
@@ -255,8 +255,8 @@ static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 	map_common(ctx, (pcb_any_obj_t *)ps);
 
 	if (ctx->geo) {
-		map_add_prop(ctx, "p/padstack/x", pcb_coord_t, ps->x);
-		map_add_prop(ctx, "p/padstack/y", pcb_coord_t, ps->y);
+		map_add_prop(ctx, "p/padstack/x", rnd_coord_t, ps->x);
+		map_add_prop(ctx, "p/padstack/y", rnd_coord_t, ps->y);
 	}
 }
 
@@ -290,10 +290,10 @@ static void map_subc(pcb_propedit_t *ctx, pcb_subc_t *msubc)
 	map_common(ctx, (pcb_any_obj_t *)msubc);
 
 	if (ctx->geo) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		if (pcb_subc_get_origin(msubc, &x, &y) == 0) {
-			map_add_prop(ctx, "p/subcircuit/x", pcb_coord_t, x);
-			map_add_prop(ctx, "p/subcircuit/y", pcb_coord_t, y);
+			map_add_prop(ctx, "p/subcircuit/x", rnd_coord_t, x);
+			map_add_prop(ctx, "p/subcircuit/y", rnd_coord_t, y);
 		}
 	}
 }
@@ -391,7 +391,7 @@ static int set_common(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 	return 0;
 }
 
-static int brd_resize(pcb_coord_t w, pcb_coord_t h)
+static int brd_resize(rnd_coord_t w, rnd_coord_t h)
 {
 	pcb_board_resize(w, h, 0);
 	return 1;
@@ -792,7 +792,7 @@ static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
 
 	if (strncmp(st->name, "p/subcircuit/", 13) == 0) {
 		pcb_opctx_t op;
-		pcb_coord_t x = 0, y = 0;
+		rnd_coord_t x = 0, y = 0;
 		const char *pn = st->name + 13;
 
 		pcb_subc_get_origin(ssubc, &x, &y);

@@ -9,8 +9,8 @@
 typedef struct pcb_cam_s {
 	/* public */
 	char *fn;
-	pcb_bool fn_changed;           /* true if last call changed the ->fn field */
-	pcb_bool active;
+	rnd_bool fn_changed;           /* true if last call changed the ->fn field */
+	rnd_bool active;
 	int grp_vis[PCB_MAX_LAYERGRP]; /* whether a real layer group should be rendered */
 	int vgrp_vis[PCB_VLY_end];     /* whether a virtual layer group should be rendered */
 

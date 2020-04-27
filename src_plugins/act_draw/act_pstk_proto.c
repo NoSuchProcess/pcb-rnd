@@ -119,7 +119,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			}
 			RND_PCB_ACT_CONVARG(3+ao, FGW_PTR, PstkProtoTmp, proto = argv[3+ao].val.ptr_void);
 			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
-				pcb_message(PCB_MSG_ERROR, "PstkProtoTmp: invalid proto pointer\n");
+				rnd_message(PCB_MSG_ERROR, "PstkProtoTmp: invalid proto pointer\n");
 				RND_ACT_IRES(-1);
 				return 0;
 			}
@@ -156,14 +156,14 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_layer_combining_t slyc, dlyc;
 	int src_idx, dst_idx, n;
 	pcb_pstk_tshape_t *ts;
-	pcb_coord_t crd;
+	rnd_coord_t crd;
 	DRAWOPTARG;
 
 	RND_PCB_ACT_CONVARG(1+ao, FGW_PTR, PstkProtoEdit, proto = argv[1+ao].val.ptr_void);
 	RND_PCB_ACT_CONVARG(2+ao, FGW_STR, PstkProtoEdit, cmd = argv[2+ao].val.str);
 
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
+		rnd_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -214,7 +214,7 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 		case act_draw_keywords_shape_line:
 			{
-				pcb_coord_t x1, y1, x2, y2, th;
+				rnd_coord_t x1, y1, x2, y2, th;
 				int sq = 0;
 
 				RND_PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);

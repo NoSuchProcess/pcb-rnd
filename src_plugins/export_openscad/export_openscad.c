@@ -429,7 +429,7 @@ static void openscad_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void openscad_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void openscad_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	switch(op) {
 		case PCB_HID_COMP_RESET:
@@ -458,7 +458,7 @@ static void openscad_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void openscad_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void openscad_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
@@ -471,18 +471,18 @@ static void openscad_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 
 #define fix_rect_coords() \
 	if (x1 > x2) {\
-		pcb_coord_t t = x1; \
+		rnd_coord_t t = x1; \
 		x1 = x2; \
 		x2 = t; \
 	} \
 	if (y1 > y2) { \
-		pcb_coord_t t = y1; \
+		rnd_coord_t t = y1; \
 		y1 = y2; \
 		y2 = t; \
 	}
 
 
-static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void openscad_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	TRX(x1); TRY(y1);
 	TRX(x2); TRY(y2);
@@ -492,7 +492,7 @@ static void openscad_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		x1, y1, x2, y2, 0.0, effective_layer_thickness);
 }
 
-static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void openscad_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double length, angle;
 	const char *cap_style;
@@ -509,10 +509,10 @@ static void openscad_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		cap_style = "rc";
 
 	pcb_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
-		x1, y1, (pcb_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, effective_layer_thickness);
+		x1, y1, (rnd_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, effective_layer_thickness);
 }
 
-static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void openscad_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	TRX(x1); TRY(y1);
 	TRX(x2); TRY(y2);
@@ -524,11 +524,11 @@ static void openscad_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	openscad_draw_line(gc, x1, y2, x1, y1);
 }
 
-static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void openscad_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	double a, step = delta_angle/10.0, end_angle = start_angle + delta_angle;
 	int first;
-	pcb_coord_t lx, ly, x, y;
+	rnd_coord_t lx, ly, x, y;
 
 	if (step >= 0) {
 		if (step < 1) step = 1;
@@ -562,14 +562,14 @@ static void openscad_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 	}
 }
 
-static void openscad_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void openscad_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	TRX(cx); TRY(cy);
 
 	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, effective_layer_thickness);
 }
 
-static void openscad_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void openscad_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int n;
 	fprintf(f, "			pcb_fill_poly([");
@@ -578,18 +578,18 @@ static void openscad_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]+dx), TRY_(y[n]+dy), effective_layer_thickness);
 }
 
-static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	openscad_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 static void openscad_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	pcb_message(PCB_MSG_ERROR, "openscad_calibrate() not implemented");
+	rnd_message(PCB_MSG_ERROR, "openscad_calibrate() not implemented");
 	return;
 }
 
-static void openscad_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int a)
+static void openscad_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 
@@ -613,7 +613,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 
 	f = pcb_fopen_askovr(&PCB->hidlib, name, "w", NULL);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", name);
+		rnd_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", name);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -628,7 +628,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 
 		/* iterate over all islands of a polygon */
 		for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			pcb_pline_t *pl;
 			int go;
 

@@ -109,7 +109,7 @@ static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 		return;
 
 	if (pcb_wplc_save_to_file(fname) != 0)
-		pcb_message(PCB_MSG_ERROR, "Error saving window geometry to '%s'\n", fname);
+		rnd_message(PCB_MSG_ERROR, "Error saving window geometry to '%s'\n", fname);
 }
 
 

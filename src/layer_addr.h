@@ -37,7 +37,7 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
    - in case of a virtual group is addressed, return 0 and load vid if *vid is non-NULL
    - load xf_in fields if there are transformations requested (if xf_in is not NULL)
    - load *xf with xf_in if there are transformations requested (if xf is not NULL)
-   - if err_prefix is not NULL, use pcb_message() with this prefix to priont detailed error
+   - if err_prefix is not NULL, use rnd_message() with this prefix to priont detailed error
   Input:
    - the address, without supplements or other suffixes, in addr
    - parsed supplement key/value pairs are expected in spk/spv (at most spc items)

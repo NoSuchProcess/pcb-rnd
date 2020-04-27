@@ -160,7 +160,7 @@ pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 }
 
 
-void pcb_append_idpath(gds_t *dst, const pcb_idpath_t *idp, pcb_bool relative)
+void pcb_append_idpath(gds_t *dst, const pcb_idpath_t *idp, rnd_bool relative)
 {
 	int n;
 
@@ -176,7 +176,7 @@ void pcb_append_idpath(gds_t *dst, const pcb_idpath_t *idp, pcb_bool relative)
 		pcb_append_printf(dst, "/%ld", idp->id[n]);
 }
 
-char *pcb_idpath2str(const pcb_idpath_t *idp, pcb_bool relative)
+char *pcb_idpath2str(const pcb_idpath_t *idp, rnd_bool relative)
 {
 	gds_t tmp;
 

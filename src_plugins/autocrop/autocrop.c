@@ -43,7 +43,7 @@ static const char pcb_acts_autocrop[] = "autocrop()";
 static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_box_t box;
-	pcb_coord_t dx, dy, w, h;
+	rnd_coord_t dx, dy, w, h;
 
 	if (pcb_data_is_empty(PCB->Data))
 		return 0;

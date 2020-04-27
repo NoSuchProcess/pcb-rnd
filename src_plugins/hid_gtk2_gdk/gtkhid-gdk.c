@@ -38,8 +38,8 @@ typedef struct render_priv_s {
 	GdkGC *clear_gc, *copy_gc;
 	GdkColor grid_color;
 	GdkRectangle clip_rect;
-	pcb_bool clip_rect_valid;
-	pcb_bool direct;
+	rnd_bool clip_rect_valid;
+	rnd_bool direct;
 	int attached_invalidate_depth;
 	int mark_invalidate_depth;
 
@@ -65,7 +65,7 @@ typedef struct hid_gc_s {
 	GdkGC *clip_gc;
 
 	pcb_color_t pcolor;
-	pcb_coord_t width;
+	rnd_coord_t width;
 	gint cap, join;
 	gchar xor_mask;
 	gint sketch_seq;
@@ -83,7 +83,7 @@ static const gchar *get_color_name(pcb_gtk_color_t *color)
 }
 
 /* Returns TRUE only if color_string has been allocated to color. */
-static pcb_bool map_color(const pcb_color_t *inclr, pcb_gtk_color_t *color)
+static rnd_bool map_color(const pcb_color_t *inclr, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
 
@@ -141,7 +141,7 @@ static void set_clip(render_priv_t *priv, GdkGC *gc)
 static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
-	pcb_coord_t x, y, x1, y1, x2, y2, grd;
+	rnd_coord_t x, y, x1, y1, x2, y2, grd;
 	int n, i;
 	static GdkPoint *points = NULL;
 	static int npoints = 0;
@@ -162,12 +162,12 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	}
 
 	if (x1 > x2) {
-		pcb_coord_t tmp = x1;
+		rnd_coord_t tmp = x1;
 		x1 = x2;
 		x2 = tmp;
 	}
 	if (y1 > y2) {
-		pcb_coord_t tmp = y1;
+		rnd_coord_t tmp = y1;
 		y1 = y2;
 		y2 = tmp;
 	}
@@ -203,15 +203,15 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	}
 }
 
-static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
+static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	static GdkPoint *points_base = NULL;
 	static GdkPoint *points_abs = NULL;
 	static int apoints = 0, npoints = 0, old_radius = 0;
-	static pcb_coord_t last_grid = 0;
+	static rnd_coord_t last_grid = 0;
 	int recalc = 0, n, r2;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	/* PI is approximated with 3.25 here - allows a minimal overallocation, speeds up calculations */
 	r2 = radius * radius;
@@ -259,9 +259,9 @@ static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_
 
 
 static int grid_local_have_old = 0, grid_local_old_r = 0;
-static pcb_coord_t grid_local_old_x, grid_local_old_y;
+static rnd_coord_t grid_local_old_x, grid_local_old_y;
 
-static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
+static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy)
 {
 	if (grid_local_have_old) {
 		ghid_gdk_draw_grid_local_(hidlib, grid_local_old_x, grid_local_old_y, grid_local_old_r);
@@ -320,7 +320,7 @@ static void ghid_gdk_draw_grid(rnd_hidlib_t *hidlib)
 }
 
 /* ------------------------------------------------------------ */
-static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
+static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
 {
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
@@ -374,7 +374,7 @@ static void ghid_sketch_setup(render_priv_t *priv)
 	priv->out_clip = priv->sketch_clip;
 }
 
-static void ghid_gdk_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void ghid_gdk_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -547,7 +547,7 @@ static void ghid_gdk_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 		gdk_gc_set_line_attributes(gc->pixel_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
-static void ghid_gdk_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void ghid_gdk_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	/* If width is negative then treat it as pixel width, otherwise it is world coordinates. */
 	if(width < 0) {
@@ -632,7 +632,7 @@ static int use_gc(pcb_hid_gc_t gc, int need_pen)
 	return 1;
 }
 
-static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ghid_gdk_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -666,7 +666,7 @@ static void ghid_gdk_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		gdk_draw_line(priv->out_clip, priv->clip_gc, dx1, dy1, dx2, dy2);
 }
 
-static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	gint vrx2, vry2;
 	double w, h, radius;
@@ -717,7 +717,7 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, p
 							 (start_angle + 180) * 64, delta_angle * 64);
 }
 
-static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	gint w, h, lw, sx1, sy1;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -770,7 +770,7 @@ static void ghid_gdk_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 }
 
 
-static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	gint w, h, vr;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -789,7 +789,7 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 
 	/* optimization: draw a single dot if object is too small */
 	if (pcb_gtk_1dot(radius*2, cx, cy, cx, cy)) {
-		pcb_coord_t sx1 = Vx(cx), sy1 = Vy(cy);
+		rnd_coord_t sx1 = Vx(cx), sy1 = Vy(cy);
 		if (pcb_gtk_dot_in_canvas(radius*2, sx1, sy1)) {
 			USE_GC(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
@@ -806,7 +806,7 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 
 /* Decide if a polygon is an axis aligned rectangle; if so, return non-zero
    and save the corners in b */
-static int poly_is_aligned_rect(pcb_box_t *b, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static int poly_is_aligned_rect(pcb_box_t *b, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	int n, xi1 = 0, yi1 = 0, xi2 = 0, yi2 = 0, xs1 = 0, ys1 = 0, xs2 = 0, ys2 = 0;
 	if (n_coords != 4)
@@ -848,13 +848,13 @@ static int poly_is_aligned_rect(pcb_box_t *b, int n_coords, pcb_coord_t *x, pcb_
 }
 
 /* Intentional code duplication for performance */
-static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	pcb_box_t b;
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i, len, sup = 0;
-	pcb_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
+	rnd_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
 
 	render_priv_t *priv = ghidgui->port.render_priv;
 	USE_GC_NOPEN(gc);
@@ -908,14 +908,14 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 }
 
 /* Intentional code duplication for performance */
-static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_box_t b;
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i, len, sup = 0;
 	render_priv_t *priv = ghidgui->port.render_priv;
-	pcb_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
+	rnd_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
 	USE_GC_NOPEN(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
@@ -966,7 +966,7 @@ static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_
 		gdk_draw_polygon(priv->out_clip, priv->clip_gc, 1, points, len);
 }
 
-static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	gint w, h, lw, xx, yy, sx1, sy1;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -1105,7 +1105,7 @@ static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 }
 
 static int preview_lock = 0;
-static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
+static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	int dleft, dright, dtop, dbottom;
@@ -1152,7 +1152,7 @@ static void ghid_gdk_invalidate_all(pcb_hid_t *hid)
 	}
 }
 
-static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_complete)
+static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, rnd_bool changes_complete)
 {
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -1187,7 +1187,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_co
 	}
 }
 
-static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete)
+static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, rnd_bool changes_complete)
 {
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -1450,8 +1450,8 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev,
 	int save_width, save_height;
 	double xz, yz, vw, vh;
 	render_priv_t *priv = ghidgui->port.render_priv;
-	pcb_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
-	pcb_coord_t save_cpp;
+	rnd_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
+	rnd_coord_t save_cpp;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;

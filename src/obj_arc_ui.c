@@ -37,7 +37,7 @@
 
 static void draw_mark(pcb_hid_gc_t gc, const pcb_arc_t *arc)
 {
-	const pcb_coord_t mark = PCB_MM_TO_COORD(0.2);
+	const rnd_coord_t mark = PCB_MM_TO_COORD(0.2);
 	pcb_render->draw_line(gc, arc->X-mark, arc->Y, arc->X+mark, arc->Y);
 	pcb_render->draw_line(gc, arc->X, arc->Y-mark, arc->X, arc->Y+mark);
 }
@@ -107,7 +107,7 @@ void pcb_arc_ui_move_or_copy_endp(pcb_crosshair_t *ch)
 {
 	int *end_pt = ch->AttachedObject.Ptr3;
 	pcb_arc_t arc2, *arc = (pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2;
-	pcb_coord_t ex, ey;
+	rnd_coord_t ex, ey;
 	double dx, dy, d;
 
 	pcb_arc_get_end(arc, (end_pt != NULL), &ex, &ey);
@@ -137,7 +137,7 @@ int pcb_obj_ui_arc_point_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 {
 	pcb_arc_t *arc = Ptr2;
 	int *end_pt = Ptr3;
-	pcb_coord_t ex, ey;
+	rnd_coord_t ex, ey;
 	pcb_arc_get_end(arc, (end_pt != pcb_arc_start_ptr), &ex, &ey);
 	*res = pcb_point_box(ex, ey);
 	return 0;

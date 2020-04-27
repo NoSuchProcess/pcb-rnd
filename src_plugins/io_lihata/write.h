@@ -26,12 +26,12 @@
 
 #include "plug_io.h"
 
-int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
-int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
-int io_lihata_write_pcb_v3(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
-int io_lihata_write_pcb_v4(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
-int io_lihata_write_pcb_v5(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
-int io_lihata_write_pcb_v6(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency);
+int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency);
+int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency);
+int io_lihata_write_pcb_v3(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency);
+int io_lihata_write_pcb_v4(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency);
+int io_lihata_write_pcb_v5(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency);
+int io_lihata_write_pcb_v6(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency);
 int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename);
 int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);
 int io_lihata_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs);
@@ -39,5 +39,5 @@ int io_lihata_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_su
 int io_lihata_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f);
 
 void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
-void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, pcb_bool apply);
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, rnd_bool apply);
 void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub);

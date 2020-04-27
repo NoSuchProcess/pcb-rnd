@@ -26,7 +26,7 @@
 
 #include "conf_core.h"
 
-static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, pcb_coord_t y0, double rot, int on_bottom, const char *transf, const char *param)
+static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, rnd_coord_t y0, double rot, int on_bottom, const char *transf, const char *param)
 {
 	FILE *fin;
 	char *ref;
@@ -68,7 +68,7 @@ static void scad_insert_model(htsp_t *models, const char *name, pcb_coord_t x0, 
 		}
 		else {
 			htsp_set(models, (char *)name, NULL);
-			pcb_message(PCB_MSG_WARNING, "openscad: can't find model file for %s in the footprint library\n", name);
+			rnd_message(PCB_MSG_WARNING, "openscad: can't find model file for %s in the footprint library\n", name);
 		}
 	}
 	ref = htsp_get(models, (char *)name);
@@ -111,7 +111,7 @@ static void scad_insert_models(void)
 	PCB_SUBC_LOOP(PCB->Data); {
 		mod = pcb_attribute_get(&subc->Attributes, "openscad");
 		if (mod != NULL) {
-			pcb_coord_t ox, oy;
+			rnd_coord_t ox, oy;
 			double rot = 0;
 			int on_bottom = 0;
 			

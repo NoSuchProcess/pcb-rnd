@@ -95,7 +95,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FlagEdit, op = fgw_keyword(&argv[1]));
 
 	if (op == F_Object) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		void *ptr1, *ptr2, *ptr3;
 		rnd_hid_get_coords("Click on object to change flags of", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_FLAGEDIT_TYPES | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3);
@@ -107,7 +107,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_FAIL(FlagEdit);
 
 	if ((ctx.obj_type != 0) && (PCB_FLAG_TEST(PCB_FLAG_LOCK, ctx.obj))) {
-		pcb_message(PCB_MSG_ERROR, "Can't edit the flags of a locked object, unlock first.\n");
+		rnd_message(PCB_MSG_ERROR, "Can't edit the flags of a locked object, unlock first.\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}

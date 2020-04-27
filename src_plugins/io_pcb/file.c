@@ -349,9 +349,9 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 
 	/* write information about vias */
 	padstacklist_foreach(&Data->padstack, &it, ps) {
-		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+		rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 		pcb_pstk_compshape_t cshape;
-		pcb_bool plated;
+		rnd_bool plated;
 		char *name = pcb_attribute_get(&ps->Attributes, "name");
 
 		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
@@ -426,7 +426,7 @@ static void io_pcb_print_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_subc_t *sc)
 	gdl_iterator_t it;
 	int l;
 
-		pcb_coord_t ox, oy, rx = 0, ry = 0;
+		rnd_coord_t ox, oy, rx = 0, ry = 0;
 		int rdir = 0, rscale = 100, on_bot = 0;
 		pcb_text_t *trefdes;
 		pcb_pstk_t *ps;
@@ -477,9 +477,9 @@ TODO("textrot: incompatibility warning")
 		WriteAttributeList(FP, &sc->Attributes, "\t", attr_inhibit);
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
-			pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
+			rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
 			pcb_pstk_compshape_t cshape;
-			pcb_bool plated, square, nopaste;
+			rnd_bool plated, square, nopaste;
 			unsigned char ic = ps->intconn;
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ", x - ox, y - oy, pad_dia, clearance*2, mask, drill_dia);
@@ -691,7 +691,7 @@ static void LayersFixup(void)
 	ts = pcb_layer_get_top_silk();
 
 	if ((bs < 0) || (ts < 0)) {
-		pcb_message(PCB_MSG_ERROR, "The geda/pcb file format requires top and bottom silk layers.\nExporting a board without those will not be usable in geda/pcb.\n");
+		rnd_message(PCB_MSG_ERROR, "The geda/pcb file format requires top and bottom silk layers.\nExporting a board without those will not be usable in geda/pcb.\n");
 		return;
 	}
 
@@ -730,7 +730,7 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 	}
 }
 
-int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	pcb_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description);
 
@@ -904,7 +904,7 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 	return -1;
 }
 
-int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
+int pcb_layer_improvise(pcb_board_t *pcb, rnd_bool setup)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layer_id_t lid, silk = -1;
@@ -1017,12 +1017,12 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 
 static int yysubc_bottom;
 extern	pcb_subc_t *yysubc;
-extern	pcb_coord_t yysubc_ox, yysubc_oy;
+extern	rnd_coord_t yysubc_ox, yysubc_oy;
 
 pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB,
-	char *Value, pcb_coord_t TextX, pcb_coord_t TextY, unsigned int Direction,
-	int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName)
+	char *Value, rnd_coord_t TextX, rnd_coord_t TextY, unsigned int Direction,
+	int TextScale, pcb_flag_t TextFlags, rnd_bool uniqueName)
 {
 	pcb_subc_t *sc = pcb_subc_new();
 	pcb_text_t *txt;
@@ -1083,20 +1083,20 @@ static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)
 	return pcb_subc_get_layer(subc, PCB_LYT_SILK | side, /*PCB_LYC_AUTO*/0, pcb_true, name, pcb_false);
 }
 
-pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness)
+pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness)
 {
 	pcb_layer_t *ly = subc_silk_layer(subc);
 	return pcb_line_new(ly, X1, Y1, X2, Y2, Thickness, 0, pcb_no_flags());
 }
 
-pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y,
-	pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness)
+pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y,
+	rnd_coord_t Width, rnd_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, rnd_coord_t Thickness)
 {
 	pcb_layer_t *ly = subc_silk_layer(subc);
 	return pcb_arc_new(ly, X, Y, Width, Height, angle, delta, Thickness, 0, pcb_no_flags(), pcb_true);
 }
 
-pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
+pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
 	p = pcb_old_via_new(subc->data, -1, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
@@ -1110,7 +1110,7 @@ pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t 
 	return p;
 }
 
-pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
+pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags)
 {
 	pcb_pstk_t *p;
 
@@ -1158,13 +1158,13 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 		if (PCB->Data->Layer[n].meta.real.grp == -1) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
 
-			pcb_message(PCB_MSG_WARNING, "Broken input file: layer group string doesn't contain layer %ld\n(Trying to fix it by introducing a new intern copper layer)\n", n);
+			rnd_message(PCB_MSG_WARNING, "Broken input file: layer group string doesn't contain layer %ld\n(Trying to fix it by introducing a new intern copper layer)\n", n);
 			if (grp != NULL) {
 				pcb_layergrp_id_t gid = grp - PCB->LayerGroups.grp;
 				pcb_layer_move_to_group(pcb, n, gid);
 			}
 			else
-				pcb_message(PCB_MSG_ERROR, "Failed to add a new layer group - the board in memory IS BROKEN.\n");
+				rnd_message(PCB_MSG_ERROR, "Failed to add a new layer group - the board in memory IS BROKEN.\n");
 		}
 	}
 

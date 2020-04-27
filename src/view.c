@@ -154,12 +154,12 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 		case PCB_OBJ_GFX:
 			idp = pcb_obj2idpath(obj);
 			if (idp == NULL)
-				pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: can not resolve object id path\n");
+				rnd_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: can not resolve object id path\n");
 			else
 				pcb_idpath_list_append(&view->objs[grp], idp);
 			break;
 		default:
-			pcb_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: unknown object type %i\n", obj->type);
+			rnd_message(PCB_MSG_ERROR, "Internal error in pcb_drc_append_obj: unknown object type %i\n", obj->type);
 	}
 }
 
@@ -365,7 +365,7 @@ static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
 
 			for(m = n->data.list.first, len = 0; m != NULL; m = m->next) {
 				if (m->type != LHT_TEXT) {
-					pcb_message(PCB_MSG_ERROR, LOADERR "Invalid object id (non-text)\n");
+					rnd_message(PCB_MSG_ERROR, LOADERR "Invalid object id (non-text)\n");
 					goto nope;
 				}
 				len++;
@@ -378,7 +378,7 @@ static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
 			pcb_idpath_list_append(&dst->objs[grp], i);
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid object id-path\n");
+			rnd_message(PCB_MSG_ERROR, LOADERR "Invalid object id-path\n");
 		nope:;
 	}
 }
@@ -390,7 +390,7 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	unsigned long int uid;
 	char *end;
 	pcb_view_type_t data_type;
-	pcb_bool succ;
+	rnd_bool succ;
 
 	if (ctx->next == NULL)
 		return NULL;
@@ -410,7 +410,7 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 		else if (strcmp(n->data.text.value, "plain") == 0)
 			data_type = PCB_VIEW_PLAIN;
 		else {
-			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid data type: '%s'\n", n->data.text.value);
+			rnd_message(PCB_MSG_ERROR, LOADERR "Invalid data type: '%s'\n", n->data.text.value);
 			return NULL;
 		}
 	}
@@ -467,7 +467,7 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 		if ((c == NULL) && (ok == 4))
 			dst->have_bbox = 1;
 		else
-			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid bbox values\n");
+			rnd_message(PCB_MSG_ERROR, LOADERR "Invalid bbox values\n");
 	}
 
 	n = lht_dom_hash_get(ctx->next, "xy");
@@ -488,7 +488,7 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 		if ((c == NULL) && (ok == 2))
 			dst->have_bbox = 1;
 		else
-			pcb_message(PCB_MSG_ERROR, LOADERR "Invalid xy values\n");
+			rnd_message(PCB_MSG_ERROR, LOADERR "Invalid xy values\n");
 	}
 
 	n = lht_dom_hash_get(ctx->next, "objs.0");
@@ -508,7 +508,7 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 				if ((c != NULL) && (c->type == LHT_TEXT)) {
 					dst->data.drc.required_value = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
 					if (!succ)
-						pcb_message(PCB_MSG_ERROR, LOADERR "invalid drc required value: '%s'\n", c->data.text.value);
+						rnd_message(PCB_MSG_ERROR, LOADERR "invalid drc required value: '%s'\n", c->data.text.value);
 				}
 				c = lht_dom_hash_get(n, "measured_value");
 				if ((c != NULL) && (c->type == LHT_TEXT)) {
@@ -516,7 +516,7 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 					if (succ)
 						dst->data.drc.have_measured = 1;
 					else
-						pcb_message(PCB_MSG_ERROR, LOADERR "invalid drc measured value: '%s'\n", c->data.text.value);
+						rnd_message(PCB_MSG_ERROR, LOADERR "invalid drc measured value: '%s'\n", c->data.text.value);
 				}
 			}
 			break;

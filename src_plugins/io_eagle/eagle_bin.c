@@ -1104,14 +1104,14 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 	egb_ctx->free_text_cursor = NULL;
 
 	if (fread(block, 1, 8, f) != 8) {
-		pcb_message(PCB_MSG_ERROR, "Short attempted free text section read. Text section not found.\n");
+		rnd_message(PCB_MSG_ERROR, "Short attempted free text section read. Text section not found.\n");
 		return -1;
 	}
 
 	if (load_long(block, 0, 1) == 0x13 && load_long(block, 1, 1) == 0x12) {
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Failed to find 0x1312 start of pre-DRC free text section.\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to find 0x1312 start of pre-DRC free text section.\n");
 		return -1;
 	}
 
@@ -1121,13 +1121,13 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 TODO("TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it")
 	while (text_remaining > 400) {
 		if (fread(free_text, 1, 400, f) != 400) {
-			pcb_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
+			rnd_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
 			return -1;
 		}
 		text_remaining -= 400;
 	}
 	if (fread(free_text, 1, text_remaining, f) != text_remaining) {
-		pcb_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
+		rnd_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
 		return -1;
 	}
 	return 0;
@@ -1607,10 +1607,10 @@ TODO("TODO still need to fine tune non-trivial non 90 degree arcs start and delt
 		}
 
 		if (!cxy_ok) {
-			pcb_message(PCB_MSG_ERROR, "cx and cy not set in arc/linetype: %d/%d\n", linetype, arctype);
+			rnd_message(PCB_MSG_ERROR, "cx and cy not set in arc/linetype: %d/%d\n", linetype, arctype);
 			cx = cy = 0;
 		} else if (!(x1_ok && x2_ok && y1_ok && y2_ok)) {
-			pcb_message(PCB_MSG_ERROR, "x1/2 or y1/2 not set in binary arc\n");
+			rnd_message(PCB_MSG_ERROR, "x1/2 or y1/2 not set in binary arc\n");
 		}
 		radius = (long)(pcb_distance((double)cx, (double)cy, (double)x2, (double)y2));
 		sprintf(itoa_buffer, "%ld", radius);
@@ -1633,7 +1633,7 @@ static egb_node_t *library_ref_by_idx(egb_node_t *libraries, long idx)
 	/* count children of libraries */
 	for(n = libraries->first_child; (n != NULL) && (idx > 1); n = n->next, idx--) ;
 	if (n == NULL)
-		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_library_ref_by_idx() can't find library index %ld\n", idx);
+		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_library_ref_by_idx() can't find library index %ld\n", idx);
 	return n;
 }
 
@@ -1645,11 +1645,11 @@ static egb_node_t *package_ref_by_idx(egb_node_t *library, long idx)
 	/* find library/0x1500->packages/0x1900 node */
 	for(pkgs = library->first_child; (pkgs != NULL) && ((pkgs->id & 0xFF00) != 0x1900); pkgs = pkgs->next);
 	if (pkgs == NULL)
-		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find packages node in library tree\n", idx);
+		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find packages node in library tree\n", idx);
 	/* count children of library */
 	for(n = pkgs->first_child; (n != NULL) && (idx > 1); n = n->next, idx--);
 	if (n == NULL)
-		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find package index %ld\n", idx);
+		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find package index %ld\n", idx);
 	return n;
 }
 
@@ -1661,7 +1661,7 @@ static egb_node_t *elem_ref_by_idx(egb_node_t *elements, long idx)
 	/* count children of elelements */
 	for(n = elements->first_child; (n != NULL) && (idx > 1); n = n->next, idx--) ;
 	if (n == NULL)
-		pcb_message(PCB_MSG_ERROR, "io_eagle bin: eagle_elem_ref_by_idx() can't find element placement index %ld\n", idx);
+		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_elem_ref_by_idx() can't find element placement index %ld\n", idx);
 	return n;
 }
 
@@ -2014,7 +2014,7 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 					if (strcmp(e->key, "name") == 0) {
 						if (e->value != NULL && e->value[0] == '-' && e->value[1] == '\0') {
 							egb_node_prop_set(n, "name", "HYPHEN");
-							pcb_message(PCB_MSG_WARNING, "Substituted invalid name %s in PCB_EKGW_SECT_ELEMENT with 'HYPHEN'\n", e->value);
+							rnd_message(PCB_MSG_WARNING, "Substituted invalid name %s in PCB_EKGW_SECT_ELEMENT with 'HYPHEN'\n", e->value);
 						} else {
 							egb_node_prop_set(n, "name", e->value);
 						}
@@ -2139,7 +2139,7 @@ static int postproc_libs(void *ctx, egb_ctx_t *egb_ctx)
 			break;
 
 		if (n->id != PCB_EGKW_SECT_PACKAGES) {
-			pcb_message(PCB_MSG_ERROR, "postproc_libs(): unexpected node under libraries (must be packages)\n");
+			rnd_message(PCB_MSG_ERROR, "postproc_libs(): unexpected node under libraries (must be packages)\n");
 			return -1;
 		}
 

@@ -75,7 +75,7 @@
 pcb_plug_io_t *pcb_plug_io_chain = NULL;
 int pcb_io_err_inhibit = 0;
 pcb_view_list_t pcb_io_incompat_lst;
-static pcb_bool pcb_io_incompat_lst_enable = pcb_false;
+static rnd_bool pcb_io_incompat_lst_enable = pcb_false;
 
 void pcb_plug_io_err(rnd_hidlib_t *hidlib, int res, const char *what, const char *filename)
 {
@@ -105,7 +105,7 @@ void pcb_plug_io_err(rnd_hidlib_t *hidlib, int res, const char *what, const char
 			if (filename == NULL)
 				filename = "";
 		}
-		pcb_message(PCB_MSG_ERROR, "IO error during %s: %s %s %s\n", what, reason, filename, comment);
+		rnd_message(PCB_MSG_ERROR, "IO error during %s: %s %s %s\n", what, reason, filename, comment);
 	}
 }
 
@@ -141,7 +141,7 @@ static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, p
 
 	if (ft == NULL) {
 		if (!ignore_missing)
-			pcb_message(PCB_MSG_ERROR, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
+			rnd_message(PCB_MSG_ERROR, "Error: can't open %s for reading (format is %s)\n", Filename, fmt);
 		return -1;
 	}
 
@@ -164,14 +164,14 @@ static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, p
 		}
 
 		if (*accept_total <= 0) {
-			pcb_message(PCB_MSG_ERROR, "can't find a IO_ plugin to load a PCB using format %s\n", fmt);
+			rnd_message(PCB_MSG_ERROR, "can't find a IO_ plugin to load a PCB using format %s\n", fmt);
 			return -1;
 		}
 
 		if (*accept_total > 1) {
-			pcb_message(PCB_MSG_INFO, "multiple IO_ plugins can handle format %s - I'm going to try them all, but you may want to be more specific next time; formats found:\n", fmt);
+			rnd_message(PCB_MSG_INFO, "multiple IO_ plugins can handle format %s - I'm going to try them all, but you may want to be more specific next time; formats found:\n", fmt);
 			for(n = 0; n < len; n++)
-				pcb_message(PCB_MSG_INFO, "    %s\n", available[n].plug->description);
+				rnd_message(PCB_MSG_INFO, "    %s\n", available[n].plug->description);
 		}
 	}
 	else {
@@ -191,7 +191,7 @@ static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, p
 	}
 
 	if (*accept_total == 0) {
-		pcb_message(PCB_MSG_ERROR, "none of the IO_ plugin recognized the file format of %s - it's either not a valid board file or does not match the format specified\n", Filename);
+		rnd_message(PCB_MSG_ERROR, "none of the IO_ plugin recognized the file format of %s - it's either not a valid board file or does not match the format specified\n", Filename);
 		return -1;
 	}
 	return len;
@@ -361,12 +361,12 @@ pcb_plug_io_t *pcb_io_find_writer(pcb_plug_iot_t typ, const char *fmt)
 		/* no file name or format hint, or file name not recognized: choose the ultimate default */
 		fmt = conf_core.rc.save_final_fallback_fmt;
 		if (fmt == NULL) {
-			pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, no value configured in rc/save_final_fallback_fmt - CAN NOT SAVE FILE, try save as.\n");
+			rnd_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, no value configured in rc/save_final_fallback_fmt - CAN NOT SAVE FILE, try save as.\n");
 			return NULL;
 		}
 		else {
 			if (PCB->hidlib.filename != NULL)
-				pcb_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, falling back to %s as configured in rc/save_final_fallback_fmt\n", fmt);
+				rnd_message(PCB_MSG_WARNING, "Saving a file with unknown format: failed to guess format from file name, falling back to %s as configured in rc/save_final_fallback_fmt\n", fmt);
 		}
 	}
 
@@ -385,7 +385,7 @@ static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, lon
 	int res;
 
 	if ((subc_idx >= 0) && (subc_idx >= avail)) {
-			pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: subc index out of range");
+			rnd_message(PCB_MSG_ERROR, "pcb_write_buffer: subc index out of range");
 			return -1;
 	}
 	if (subc_idx < 0) {
@@ -393,7 +393,7 @@ static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, lon
 		gdl_iterator_t sit;
 
 		if (p->write_subcs_head(p, &udata, f, (avail > 1), avail) != 0) {
-			pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
+			rnd_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
 			return -1;
 		}
 		res = 0;
@@ -404,7 +404,7 @@ static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, lon
 	}
 	else {
 		if (p->write_subcs_head(p, &udata, f, 0, 1) != 0) {
-			pcb_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
+			rnd_message(PCB_MSG_ERROR, "pcb_write_buffer: failed to write head");
 			return -1;
 		}
 		res = p->write_subcs_subc(p, &udata, f, pcb_subclist_nth(&data->subc, subc_idx));
@@ -413,7 +413,7 @@ static int pcb_write_data_subcs(pcb_plug_io_t *p, FILE *f, pcb_data_t *data, lon
 	}
 }
 
-static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, pcb_bool subc_only, long subc_idx)
+static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, rnd_bool subc_only, long subc_idx)
 {
 	int res/*, newfmt = 0*/;
 	pcb_plug_io_t *p = pcb_io_find_writer(subc_only ? PCB_IOT_FOOTPRINT : PCB_IOT_BUFFER, fmt);
@@ -473,7 +473,7 @@ int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt)
 }
 
 
-static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt, pcb_bool emergency)
+static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_filename, const char *fmt, rnd_bool emergency)
 {
 	int res, newfmt = 0;
 	pcb_plug_io_t *p = PCB->Data->loader;
@@ -490,7 +490,7 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 			pcb_event(&PCB->hidlib, PCB_EVENT_SAVE_POST, "si", fmt, res);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Can't write PCB: internal error: io plugin %s doesn't implement write_pcb()\n", p->description);
+			rnd_message(PCB_MSG_ERROR, "Can't write PCB: internal error: io plugin %s doesn't implement write_pcb()\n", p->description);
 			res = -1;
 		}
 	}
@@ -508,7 +508,7 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 /* load PCB: parse the file with enabled 'PCB mode' (see parser); if
    successful, update some other stuff. If revert is pcb_true, we pass
    "revert" as a parameter to the pcb changed event. */
-static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert, pcb_bool require_font, int how)
+static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert, rnd_bool require_font, int how)
 {
 	const char *unit_suffix;
 	char *new_filename;
@@ -558,7 +558,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* enable default font if necessary */
 		if (!PCB->fontkit.valid) {
 			if ((require_font) && (!PCB->is_footprint))
-				pcb_message(PCB_MSG_WARNING, "File '%s' has no font information, using default font\n", new_filename);
+				rnd_message(PCB_MSG_WARNING, "File '%s' has no font information, using default font\n", new_filename);
 			PCB->fontkit.valid = pcb_true;
 		}
 
@@ -598,7 +598,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 #ifdef DEBUG
 		end = clock();
 		elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;
-		pcb_message(PCB_MSG_INFO, "Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
+		rnd_message(PCB_MSG_INFO, "Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
 #endif
 
 		conf_core.temp.rat_warn = pcb_true; /* make sure the first click can remove warnings */
@@ -613,7 +613,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
 		PCB = pcb_board_new_(pcb_false);
 		if (PCB == NULL) {
-			pcb_message(PCB_MSG_ERROR, "FATAL: can't create a new empty pcb!");
+			rnd_message(PCB_MSG_ERROR, "FATAL: can't create a new empty pcb!");
 			exit(1);
 		}
 	}
@@ -628,7 +628,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, pcb_bool revert,
 }
 
 /* Write the pcb file, a footprint or a buffer */
-static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const char *new_path, const char *fmt, pcb_bool emergency, pcb_bool subc_only, long subc_idx)
+static int pcb_write_file(FILE *fp, rnd_bool thePcb, const char *old_path, const char *new_path, const char *fmt, rnd_bool emergency, rnd_bool subc_only, long subc_idx)
 {
 	if (thePcb) {
 		if (PCB->is_footprint)
@@ -640,7 +640,7 @@ static int pcb_write_file(FILE *fp, pcb_bool thePcb, const char *old_path, const
 
 /* writes to pipe using the command defined by conf_core.rc.save_command
    %f are replaced by the passed filename */
-static int pcb_write_pipe(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool subc_only, long subc_idx, int askovr)
+static int pcb_write_pipe(const char *Filename, rnd_bool thePcb, const char *fmt, rnd_bool subc_only, long subc_idx, int askovr)
 {
 	FILE *fp;
 	int result;
@@ -713,7 +713,7 @@ int pcb_save_pcb(const char *file, const char *fmt)
 	if (conf_core.editor.io_incomp_popup) {
 		long int len = pcb_view_list_length(&pcb_io_incompat_lst);
 		if (len > 0) {
-			pcb_message(PCB_MSG_ERROR, "There were %ld save incompatibility errors.\nData in memory is not affected, but the file created may be slightly broken.\nSee the popup view listing for detauls.\n", len);
+			rnd_message(PCB_MSG_ERROR, "There were %ld save incompatibility errors.\nData in memory is not affected, but the file created may be slightly broken.\nSee the popup view listing for detauls.\n", len);
 			rnd_actionva(&PCB->hidlib, "IOincompatList", conf_core.editor.io_incomp_style, "auto", NULL);
 		}
 	}
@@ -721,7 +721,7 @@ int pcb_save_pcb(const char *file, const char *fmt)
 	return retcode;
 }
 
-int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int how)
+int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int how)
 {
 	int res = real_load_pcb(file, fmt, pcb_false, require_font, how);
 	if (res == 0) {
@@ -731,7 +731,7 @@ int pcb_load_pcb(const char *file, const char *fmt, pcb_bool require_font, int h
 			/* a footprint has no board size set, need to invent one */
 			pcb_data_bbox(&b, PCB->Data, 0);
 			if ((b.X2 < b.X1) || (b.Y2 < b.Y1)) {
-				pcb_message(PCB_MSG_ERROR, "Invalid footprint file: can not determine bounding box\n");
+				rnd_message(PCB_MSG_ERROR, "Invalid footprint file: can not determine bounding box\n");
 				res = -1;
 			}
 			else
@@ -811,13 +811,13 @@ void pcb_save_in_tmp(void)
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_EMERGENCY_FMT : conf_core.rc.emergency_format;
 		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
-		pcb_message(PCB_MSG_INFO, "Trying to save your layout in '%s'\n", filename);
+		rnd_message(PCB_MSG_INFO, "Trying to save your layout in '%s'\n", filename);
 		pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false, -1, 0);
 	}
 }
 
 /* front-end for pcb_save_in_tmp() to makes sure it is only called once */
-static pcb_bool dont_save_any_more = pcb_false;
+static rnd_bool dont_save_any_more = pcb_false;
 void pcb_emergency_save(void)
 {
 
@@ -889,7 +889,7 @@ void pcb_backup(void)
 	free(filename);
 }
 
-int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool subc_only, long subc_idx, int askovr)
+int pcb_write_pcb_file(const char *Filename, rnd_bool thePcb, const char *fmt, rnd_bool emergency, rnd_bool subc_only, long subc_idx, int askovr)
 {
 	FILE *fp;
 	int result, overwrite = 0;
@@ -911,7 +911,7 @@ int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, p
 				Filename = fn_tmp;
 			}
 			else {
-				pcb_message(PCB_MSG_ERROR, "Can't rename %s to %s before save\n", Filename, fn_tmp);
+				rnd_message(PCB_MSG_ERROR, "Can't rename %s to %s before save\n", Filename, fn_tmp);
 				return -1;
 			}
 		}
@@ -992,14 +992,14 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 		pcb_view_list_append(&pcb_io_incompat_lst, violation);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "save error: %s\n", title);
+		rnd_message(PCB_MSG_ERROR, "save error: %s\n", title);
 		if (obj != NULL) {
-			pcb_coord_t x = (obj->BoundingBox.X1 + obj->BoundingBox.X2)/2;
-			pcb_coord_t y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2)/2;
-			pcb_message(PCB_MSG_ERROR, " near %$mm %$mm\n", x, y);
+			rnd_coord_t x = (obj->BoundingBox.X1 + obj->BoundingBox.X2)/2;
+			rnd_coord_t y = (obj->BoundingBox.Y1 + obj->BoundingBox.Y2)/2;
+			rnd_message(PCB_MSG_ERROR, " near %$mm %$mm\n", x, y);
 		}
 		if (description != NULL)
-			pcb_message(PCB_MSG_ERROR, " (%s)\n", description);
+			rnd_message(PCB_MSG_ERROR, " (%s)\n", description);
 	}
 	return 0;
 }
@@ -1080,8 +1080,8 @@ void pcb_io_uninit(void)
 {
 	pcb_view_list_free_fields(&pcb_io_incompat_lst);
 	if (pcb_plug_io_chain != NULL) {
-		pcb_message(PCB_MSG_ERROR, "pcb_plug_io_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
-		pcb_message(PCB_MSG_ERROR, "head: desc='%s'\n", pcb_plug_io_chain->description);
+		rnd_message(PCB_MSG_ERROR, "pcb_plug_io_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
+		rnd_message(PCB_MSG_ERROR, "head: desc='%s'\n", pcb_plug_io_chain->description);
 	}
 	free(last_design_dir);
 	last_design_dir = NULL;

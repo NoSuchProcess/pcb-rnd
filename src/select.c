@@ -63,13 +63,13 @@
  * toggles the selection of any kind of object
  * the different types are defined by search.h
  */
-pcb_bool pcb_select_object(pcb_board_t *pcb)
+rnd_bool pcb_select_object(pcb_board_t *pcb)
 {
 	void *ptr1, *ptr2, *ptr3;
 	pcb_layer_t *layer;
 	int type;
 
-	pcb_bool changed = pcb_true;
+	rnd_bool changed = pcb_true;
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB) | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
@@ -168,7 +168,7 @@ static void fix_box_dir(pcb_box_t *Box, int force_pos)
 {
 #define swap(a,b) \
 do { \
-	pcb_coord_t tmp; \
+	rnd_coord_t tmp; \
 	tmp = a; \
 	a = b; \
 	b = tmp; \
@@ -216,7 +216,7 @@ do { \
  *  length of the list. Returns NULL on no match.
  */
 TODO("cleanup: should be rewritten with generic ops and rtree")
-static long int *ListBlock_(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool Flag, int *len)
+static long int *ListBlock_(pcb_board_t *pcb, pcb_box_t *Box, rnd_bool Flag, int *len)
 {
 	int changed = 0;
 	int used = 0, alloced = 0;
@@ -411,8 +411,8 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, pcb_box_t *box)
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_box_t box;
-	pcb_bool flag;
-	pcb_bool invert;
+	rnd_bool flag;
+	rnd_bool invert;
 } select_ctx_t;
 
 static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
@@ -445,7 +445,7 @@ static pcb_r_dir_t pcb_select_block_cb(const pcb_box_t *box, void *cl)
  * Flag determines if the block is to be selected or unselected
  * returns pcb_true if the state of any object has changed
  */
-pcb_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, pcb_bool flag, pcb_bool vis_only, pcb_bool invert)
+rnd_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert)
 {
 	select_ctx_t ctx;
 
@@ -476,9 +476,9 @@ long int *pcb_list_block(pcb_board_t *pcb, pcb_box_t *Box, int *len)
  *
  * text objects and subcircuits cannot be selected by this routine
  */
-static pcb_bool pcb_select_connection_(pcb_data_t *data, pcb_bool Flag)
+static rnd_bool pcb_select_connection_(pcb_data_t *data, rnd_bool Flag)
 {
-	pcb_bool changed = pcb_false;
+	rnd_bool changed = pcb_false;
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
 
@@ -496,7 +496,7 @@ static pcb_bool pcb_select_connection_(pcb_data_t *data, pcb_bool Flag)
 	return changed;
 }
 
-pcb_bool pcb_select_connection(pcb_board_t *pcb, pcb_bool Flag)
+rnd_bool pcb_select_connection(pcb_board_t *pcb, rnd_bool Flag)
 {
 	return pcb_select_connection_(pcb->Data, Flag);
 }

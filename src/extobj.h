@@ -88,10 +88,10 @@ void pcb_extobj_del_pre(pcb_subc_t *edit_obj);
    object(s) of src. If the operation was successful and remove is true,
    remove selected objects. The "using" variant carries an existing extobj
    of the same type that is used as a source of metadata */
-pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove);
-pcb_subc_t *pcb_extobj_conv_all_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove);
-pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove);
-pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove, pcb_subc_t *copy_from);
+pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, rnd_bool remove);
+pcb_subc_t *pcb_extobj_conv_all_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, rnd_bool remove);
+pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, rnd_bool remove);
+pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, rnd_bool remove, pcb_subc_t *copy_from);
 
 /* for internal use: when an extobj needs to be cloned becase a new floater
    is added */

@@ -74,16 +74,16 @@ static void extract_field(char *dst, const char *line, int start, int end)
 	*dst = '\0';
 }
 
-static int extract_dim(pcb_coord_t *dst, const char *line, int start, int end, int has_sign, int is_mil)
+static int extract_dim(rnd_coord_t *dst, const char *line, int start, int end, int has_sign, int is_mil)
 {
 	char tmp[16];
 	const char *sign = line + start;
 	double d;
-	pcb_bool succ;
+	rnd_bool succ;
 
 	if (has_sign) {
 		if ((*sign != '+') && (*sign != '-') && (*sign != ' ')) {
-			pcb_message(PCB_MSG_WARNING, "Invalid coordinate sign: '%c':\n", *line);
+			rnd_message(PCB_MSG_WARNING, "Invalid coordinate sign: '%c':\n", *line);
 			return -1;
 		}
 	}
@@ -112,17 +112,17 @@ static int extract_int(int *dst, const char *line, int start, int end)
 
 typedef struct {
 	int is_via, is_middle, is_plated, side, rot, is_tooling, mask;
-	pcb_coord_t hole, width, height, cx, cy;
+	rnd_coord_t hole, width, height, cx, cy;
 } test_feature_t;
 
 static int parse_feature(char *line, test_feature_t *tf, const char *fn, long lineno, int is_mil, int is_rad, char *netname, char *refdes, char *term)
 {
 	if (line[2] != '7') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%ld' - does not end in 7\n", line[1], line[2], fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%ld' - does not end in 7\n", line[1], line[2], fn, lineno);
 		return -1;
 	}
 	if (line[26] != '-') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing dash between refdes and pin number\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing dash between refdes and pin number\n", fn, lineno);
 		return -1;
 	}
 	extract_field(netname, line, 3, 16);
@@ -132,7 +132,7 @@ static int parse_feature(char *line, test_feature_t *tf, const char *fn, long li
 	tf->is_middle = (line[31] == 'M');
 	if (line[32] == 'D') {
 		if (extract_dim(&tf->hole, line, 33, 36, 0, is_mil)) {
-			pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid hole dimension\n", fn, lineno);
+			rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid hole dimension\n", fn, lineno);
 			return -1;
 		}
 		if (line[37] == 'P')
@@ -140,7 +140,7 @@ static int parse_feature(char *line, test_feature_t *tf, const char *fn, long li
 		else if (line[37] == 'U')
 			tf->is_plated = 0;
 		else {
-			pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - hole is neither plated nor unplated\n", fn, lineno);
+			rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - hole is neither plated nor unplated\n", fn, lineno);
 			return -1;
 		}
 	}
@@ -149,59 +149,59 @@ static int parse_feature(char *line, test_feature_t *tf, const char *fn, long li
 		tf->is_plated = 0;
 	}
 	if (line[38] != 'A') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing 'A' for access\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing 'A' for access\n", fn, lineno);
 		return -1;
 	}
 	if (extract_int(&tf->side, line, 39, 40)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid access side\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid access side\n", fn, lineno);
 		return -1;
 	}
 	if (line[41] != 'X') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing 'X'\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing 'X'\n", fn, lineno);
 		return -1;
 	}
 	if (extract_dim(&tf->cx, line, 42, 48, 1, is_mil)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid X dimension\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid X dimension\n", fn, lineno);
 		return -1;
 	}
 	if (line[49] != 'Y') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing 'Y'\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing 'Y'\n", fn, lineno);
 		return -1;
 	}
 	if (extract_dim(&tf->cy, line, 50, 56, 1, is_mil)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid Y dimension\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid Y dimension\n", fn, lineno);
 		return -1;
 	}
 	if (line[57] != 'X') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing width 'X'\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing width 'X'\n", fn, lineno);
 		return -1;
 	}
 	if (extract_dim(&tf->width, line, 58, 61, 0, is_mil)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid width dimension\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid width dimension\n", fn, lineno);
 		return -1;
 	}
 	if (line[62] != 'Y') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing height 'Y'\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing height 'Y'\n", fn, lineno);
 		return -1;
 	}
 	if (extract_dim(&tf->height, line, 63, 66, 0, is_mil)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid height 'Y' dimension\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid height 'Y' dimension\n", fn, lineno);
 		return -1;
 	}
 	if (line[67] != 'R') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing rotation 'R'\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - missing rotation 'R'\n", fn, lineno);
 		return -1;
 	}
 	if (extract_int(&tf->rot, line, 68, 70)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid height 'Y' dimension\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid height 'Y' dimension\n", fn, lineno);
 		return -1;
 	}
 	if (line[72] != 'S') {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - solder mask marker 'S'\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - solder mask marker 'S'\n", fn, lineno);
 		return -1;
 	}
 	if (extract_int(&tf->mask, line, 73, 73)) {
-		pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid height 'Y' dimension\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - invalid height 'Y' dimension\n", fn, lineno);
 		return -1;
 	}
 	tf->is_tooling = 0;
@@ -212,18 +212,18 @@ static int parse_feature(char *line, test_feature_t *tf, const char *fn, long li
 			tf->is_tooling = 1;
 		case '1': /* through hole */
 			if (tf->hole == 0) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - thru-hole feature without hole dia\n", fn, lineno);
+				rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - thru-hole feature without hole dia\n", fn, lineno);
 				return -1;
 			}
 			break;
 		case '2': /* SMT feature */
 			if (tf->hole > 0) {
-				pcb_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - SMD feature with hole dia\n", fn, lineno);
+				rnd_message(PCB_MSG_WARNING, "Ignoring invalid test feautre in %s:%ld' - SMD feature with hole dia\n", fn, lineno);
 				break;
 			}
 			break;
 		default:
-			pcb_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%ld - unknown second digit'\n", line[1], line[2], fn, lineno);
+			rnd_message(PCB_MSG_WARNING, "Ignoring unknown test feautre '3%c%c' in %s:%ld - unknown second digit'\n", line[1], line[2], fn, lineno);
 	}
 	return 0;
 }
@@ -232,7 +232,7 @@ static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *t
 {
 	pcb_pstk_t *ps;
 	pcb_pstk_shape_t sh[6];
-	pcb_coord_t msk = PCB_MIL_TO_COORD(4), y;
+	rnd_coord_t msk = PCB_MIL_TO_COORD(4), y;
 	int i = 0, thru = (tf->hole > 0) && (tf->is_plated);
 
 	memset(sh, 0, sizeof(sh));
@@ -273,7 +273,7 @@ static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *t
 
 	y = pcb->hidlib.size_y - tf->cy;
 	if ((y < 0) || (y > pcb->hidlib.size_y) || (tf->cx < 0) || (tf->cx > pcb->hidlib.size_x))
-		pcb_message(PCB_MSG_WARNING, "Test feature ended up out of the board extents in %s:%ld - board too small please use autocrop()\n", fn, lineno);
+		rnd_message(PCB_MSG_WARNING, "Test feature ended up out of the board extents in %s:%ld - board too small please use autocrop()\n", fn, lineno);
 	ps = pcb_pstk_new_from_shape(data, tf->cx, y, tf->hole, tf->is_plated, conf_core.design.bloat, sh);
 
 	if (tf->is_middle)
@@ -308,7 +308,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 						case '2': is_mil = 1; is_rad = 1; break;
 					}
 					if (is_rad) {
-						pcb_message(PCB_MSG_ERROR, "Unimplemented unit in %s:%ld - requested radians in rotation, the code doesn't handle that\n", fn, lineno);
+						rnd_message(PCB_MSG_ERROR, "Unimplemented unit in %s:%ld - requested radians in rotation, the code doesn't handle that\n", fn, lineno);
 						return 1;
 					}
 				}
@@ -345,12 +345,12 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 			case '9': /* EOF */
 				if ((line[1] == '9') && (line[2] == '9'))
 					return 0;
-				pcb_message(PCB_MSG_ERROR, "Invalid end-of-file marker in %s:%ld - expected '999'\n", fn, lineno);
+				rnd_message(PCB_MSG_ERROR, "Invalid end-of-file marker in %s:%ld - expected '999'\n", fn, lineno);
 				return 1;
 		}
 	}
 
-	pcb_message(PCB_MSG_ERROR, "Unexpected end of file - expected '999'\n");
+	rnd_message(PCB_MSG_ERROR, "Unexpected end of file - expected '999'\n");
 	return 1;
 }
 
@@ -383,7 +383,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", fname);
+		rnd_message(PCB_MSG_ERROR, "Can't open %s for read\n", fname);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -476,7 +476,7 @@ static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 static int ipcd356_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	if (numfns != 1) {
-		pcb_message(PCB_MSG_ERROR, "import_ipcd356: requires exactly 1 input file name\n");
+		rnd_message(PCB_MSG_ERROR, "import_ipcd356: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return rnd_actionva(&PCB->hidlib, "LoadIpc356From", fns[0], NULL);

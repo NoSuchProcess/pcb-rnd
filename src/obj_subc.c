@@ -98,7 +98,7 @@ static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *
 		sc->refdes = value;
 		inv = pcb_obj_id_invalid(sc->refdes);
 		if (inv != NULL)
-			pcb_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
+			rnd_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
 	}
 	else if (strcmp(name, "extobj") == 0)
 		sc->extobj = value;
@@ -181,7 +181,7 @@ pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_t
 	return dst;
 }
 
-static pcb_line_t *add_aux_line(pcb_layer_t *aux, const char *key, const char *val, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static pcb_line_t *add_aux_line(pcb_layer_t *aux, const char *key, const char *val, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_line_t *l = pcb_line_new(aux, x1, y1, x2, y2, PCB_MM_TO_COORD(0.1), 0, pcb_no_flags());
 	pcb_attribute_put(&l->Attributes, key, val);
@@ -228,7 +228,7 @@ static int pcb_subc_cache_update(pcb_subc_t *sc)
 		return 0;
 
 	if (sc->aux_layer == NULL) {
-		pcb_message(PCB_MSG_WARNING, "Can't find subc aux layer\n");
+		rnd_message(PCB_MSG_WARNING, "Can't find subc aux layer\n");
 		return -1;
 	}
 
@@ -239,7 +239,7 @@ static int pcb_subc_cache_update(pcb_subc_t *sc)
 	return 0;
 }
 
-pcb_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, pcb_coord_t *x, pcb_coord_t *y)
+rnd_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, rnd_coord_t *x, rnd_coord_t *y)
 {
 	pcb_line_t *l;
 
@@ -258,7 +258,7 @@ pcb_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, pcb_coord_t *
 	return pcb_true;
 }
 
-int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y)
+int pcb_subc_get_origin(pcb_subc_t *sc, rnd_coord_t *x, rnd_coord_t *y)
 {
 	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_ORIGIN] == NULL))
 		return -1;
@@ -342,7 +342,7 @@ int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg)
 	return res;
 }
 
-static int pcb_subc_move_origin_(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool and_undo)
+static int pcb_subc_move_origin_(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool and_undo)
 {
 	int n;
 
@@ -359,16 +359,16 @@ static int pcb_subc_move_origin_(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy,
 	return 0;
 }
 
-int pcb_subc_move_origin(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool and_undo)
+int pcb_subc_move_origin(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool and_undo)
 {
 	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_ORIGIN] == NULL))
 		return -1;
 	return pcb_subc_move_origin_(sc, dx, dy, and_undo);
 }
 
-int pcb_subc_move_origin_to(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, pcb_bool and_undo)
+int pcb_subc_move_origin_to(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, rnd_bool and_undo)
 {
-	pcb_coord_t ox, oy;
+	rnd_coord_t ox, oy;
 
 	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_ORIGIN] == NULL))
 		return -1;
@@ -389,7 +389,7 @@ static void pcb_subc_cache_invalidate(pcb_subc_t *sc)
 static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 {
 	pcb_poly_t *poly;
-	pcb_coord_t x[4], y[4];
+	rnd_coord_t x[4], y[4];
 	int n;
 
 	pcb_sqline_to_rect(line, x, y);
@@ -406,7 +406,7 @@ static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 	return poly;
 }
 
-pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer, pcb_bool alloc)
+pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *layer, rnd_bool alloc)
 {
 	pcb_subc_t *sc;
 	int n;
@@ -450,13 +450,13 @@ void pcb_subc_as_board_update(pcb_board_t *pcb)
 	pcb_subc_bbox(sc);
 }
 
-static pcb_coord_t read_mask(pcb_any_obj_t *obj)
+static rnd_coord_t read_mask(pcb_any_obj_t *obj)
 {
 	const char *smask = pcb_attribute_get(&obj->Attributes, "elem_smash_pad_mask");
-	pcb_coord_t mask = 0;
+	rnd_coord_t mask = 0;
 
 	if (smask != NULL) {
-		pcb_bool success;
+		rnd_bool success;
 		mask = pcb_get_value_ex(smask, NULL, NULL, NULL, "mm", &success);
 		if (!success)
 			mask = 0;
@@ -471,7 +471,7 @@ static void get_aux_layer(pcb_subc_t *sc, int alloc)
 	pcb_subc_cache_update(sc);
 }
 
-void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot, pcb_bool bottom)
+void pcb_subc_create_aux(pcb_subc_t *sc, rnd_coord_t ox, rnd_coord_t oy, double rot, rnd_bool bottom)
 {
 	double unit = PCB_SUBC_AUX_UNIT;
 	double cs, sn;
@@ -499,7 +499,7 @@ void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double 
 	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, pcb_round((double)ox + sn*unit), pcb_round((double)oy + cs*unit));
 }
 
-void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, const char *role)
+void pcb_subc_create_aux_point(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, const char *role)
 {
 	get_aux_layer(sc, 1);
 	add_aux_line(sc->aux_layer, "subc-role", role, x, y, x, y);
@@ -551,7 +551,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		}
 
 		while((line = linelist_first(&src->Line)) != NULL) {
-			pcb_coord_t mask = 0;
+			rnd_coord_t mask = 0;
 			char *np, *sq, *termpad;
 			const char *term;
 
@@ -675,7 +675,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			if (dst_top_silk != NULL)
 				pcb_text_new(dst_top_silk, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
 			else
-				pcb_message(PCB_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
+				rnd_message(PCB_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
 		}
 	}
 
@@ -683,7 +683,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	return 0;
 }
 
-static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY)
+static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY)
 {
 	pcb_line_t *origin;
 	pcb_subc_cache_update(sc);
@@ -710,9 +710,9 @@ static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t DX
 }
 
 /* Draw a small lock on the bottom right corner at lx;ly */
-static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t lx, pcb_coord_t ly, int on_bottom)
+static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t lx, rnd_coord_t ly, int on_bottom)
 {
-	pcb_coord_t s = on_bottom ? -PCB_EMARK_SIZE : PCB_EMARK_SIZE;
+	rnd_coord_t s = on_bottom ? -PCB_EMARK_SIZE : PCB_EMARK_SIZE;
 
 	if (pcbhl_conf.editor.view.flip_x)
 		lx += PCB_EMARK_SIZE*1.5;
@@ -733,10 +733,10 @@ static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, pcb_coord_t lx
 	pcb_render->draw_arc(GC,  lx, ly-s, PCB_EMARK_SIZE*2/3, PCB_EMARK_SIZE*2/3, 180, on_bottom ? -180 : 180);
 }
 
-void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side)
+void pcb_xordraw_subc(pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY, int use_curr_side)
 {
 	int n, mirr;
-	pcb_coord_t w = 0, h = 0;
+	rnd_coord_t w = 0, h = 0;
 
 	mirr = use_curr_side && conf_core.editor.show_solder_side;
 
@@ -812,7 +812,7 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 		gdl_iterator_t it;
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
-			pcb_coord_t ox, oy;
+			rnd_coord_t ox, oy;
 			int oxm, pri;
 			ox = ps->x;
 			oy = ps->y;
@@ -852,7 +852,7 @@ pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src)
 }
 
 
-pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy, pcb_bool keep_ids)
+pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids)
 {
 	pcb_board_t *src_pcb;
 	int n;
@@ -909,7 +909,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 				if (!(dl->meta.bound.type & PCB_LYT_VIRTUAL)) {
 					const char *name = dl->name;
 					if (name == NULL) name = "<anonymous>";
-					pcb_message(PCB_MSG_WARNING, "Couldn't bind layer %s of subcircuit while placing it\n", name);
+					rnd_message(PCB_MSG_WARNING, "Couldn't bind layer %s of subcircuit while placing it\n", name);
 				}
 			}
 			else
@@ -1187,7 +1187,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 
 	if (ctx->copy.from_outside && conf_core.editor.show_solder_side) {
 		uundo_serial_t last;
-		pcb_coord_t w, h;
+		rnd_coord_t w, h;
 
 		/* move-to-the-other-side is not undoable: it's part of the placement */
 		pcb_undo_inc_serial();
@@ -1243,7 +1243,7 @@ void *pcb_subcop_rotate(pcb_opctx_t *ctx, pcb_subc_t *sc)
 	return pcb_subc_op(data, sc, &RotateFunctions, ctx, PCB_SUBCOP_UNDO_SUBC);
 }
 
-void pcb_subc_rotate90(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, int steps)
+void pcb_subc_rotate90(pcb_subc_t *subc, rnd_coord_t cx, rnd_coord_t cy, int steps)
 {
 	pcb_opctx_t ctx;
 
@@ -1253,7 +1253,7 @@ void pcb_subc_rotate90(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, int ste
 	pcb_subcop_rotate90(&ctx, subc);
 }
 
-void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle)
+void pcb_subc_rotate(pcb_subc_t *subc, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina, double angle)
 {
 	pcb_opctx_t ctx;
 
@@ -1265,7 +1265,7 @@ void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double co
 	pcb_subcop_rotate(&ctx, subc);
 }
 
-void pcb_subc_move(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come)
+void pcb_subc_move(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool more_to_come)
 {
 	pcb_opctx_t ctx;
 	ctx.move.pcb = NULL;
@@ -1275,9 +1275,9 @@ void pcb_subc_move(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more
 	pcb_subcop_move(&ctx, sc);
 }
 
-pcb_bool pcb_selected_subc_change_side(void)
+rnd_bool pcb_selected_subc_change_side(void)
 {
-	pcb_bool change = pcb_false;
+	rnd_bool change = pcb_false;
 
 	if (PCB->pstk_on) {
 		PCB_SUBC_LOOP(PCB->Data);
@@ -1507,7 +1507,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree();
 				if (sl->gfx_tree == NULL) sl->gfx_tree = pcb_r_create_tree();
 				if (!(sl->meta.bound.type & PCB_LYT_VIRTUAL))
-					pcb_message(PCB_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
+					rnd_message(PCB_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
 			}
 		}
 		else
@@ -1546,7 +1546,7 @@ void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 }
 
 /* break buffer subc into pieces */
-pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
+rnd_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 {
 	pcb_subc_t *subc, *next;
 	int n, bn;
@@ -1581,7 +1581,7 @@ pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 		pcb_subc_free(subc);
 	}
 	if (warn)
-		pcb_message(PCB_MSG_WARNING, "There are %ld layers that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
+		rnd_message(PCB_MSG_WARNING, "There are %ld layers that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
 	return pcb_true;
 }
 
@@ -1834,8 +1834,8 @@ void pcb_subc_select(pcb_board_t *pcb, pcb_subc_t *sc, pcb_change_flag_t how, in
 
 typedef struct {
 	pcb_subc_t *subc; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
-	pcb_coord_t y_offs;
-	pcb_bool smirror;
+	rnd_coord_t y_offs;
+	rnd_bool smirror;
 } undo_subc_mirror_t;
 
 static int undo_subc_mirror_swap(void *udata)
@@ -1873,7 +1873,7 @@ static const uundo_oper_t undo_subc_mirror = {
 
 
 /* mirrors the coordinates of a subcircuit; an additional offset is passed */
-void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror, pcb_bool undoable)
+void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, rnd_coord_t y_offs, rnd_bool smirror, rnd_bool undoable)
 {
 	undo_subc_mirror_t gtmp, *g = &gtmp;
 
@@ -1900,7 +1900,7 @@ void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, do
 }
 
 
-pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff)
+rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff)
 {
 	int n;
 	pcb_board_t *pcb;
@@ -2023,7 +2023,7 @@ pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
 	pcb_box_t *bb = &subc->BoundingBox;
-	pcb_coord_t x0, y0, dx, dy;
+	rnd_coord_t x0, y0, dx, dy;
 	pcb_font_t *font = &PCB->fontkit.dflt;
 
 	/* do not display anyting from the other-side subcs */
@@ -2054,7 +2054,7 @@ pcb_r_dir_t draw_subc_label_callback(const pcb_box_t *b, void *cl)
 		s.used = 0;
 		if (pcb_append_dyntext(&s, (pcb_any_obj_t *)subc, conf_core.editor.subc_id) == 0) {
 			char *curr, *next;
-			pcb_coord_t x = x0, y = y0;
+			rnd_coord_t x = x0, y = y0;
 
 			for(curr = s.array; curr != NULL; curr = next) {
 				int ctrl = 0;
@@ -2167,12 +2167,12 @@ TODO("subc: hierarchy")
 	return NULL;
 }
 
-pcb_bool pcb_subc_is_empty(pcb_subc_t *subc)
+rnd_bool pcb_subc_is_empty(pcb_subc_t *subc)
 {
 	return pcb_data_is_empty(subc->data);
 }
 
-pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, pcb_bool req_name_match)
+pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, rnd_bool req_name_match)
 {
 	int n;
 
@@ -2251,7 +2251,7 @@ void pcb_subc_part_changed_inhibit_dec(pcb_subc_t *sc)
 			pcb_subc_part_changed__(sc, 0);
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, "Internal error: pcb_subc_part_changed_inhibit_dec(): underflow; please reprot this bug\n");
+		rnd_message(PCB_MSG_ERROR, "Internal error: pcb_subc_part_changed_inhibit_dec(): underflow; please reprot this bug\n");
 }
 
 
@@ -2272,11 +2272,11 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 }
 
 
-pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, pcb_bool add_undo, pcb_bool dumb)
+pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, rnd_bool add_undo, rnd_bool dumb)
 {
 	pcb_data_t *data = dst->parent.data;
 	pcb_subc_t *placed;
-	pcb_coord_t ox, oy, osx, osy;
+	rnd_coord_t ox, oy, osx, osy;
 	double rot = 0;
 	long int target_id;
 	int dst_on_bottom = 0, src_on_bottom = 0;

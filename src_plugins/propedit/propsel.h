@@ -29,10 +29,10 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx);
 
 typedef struct set_ctx_s {
 	const char *s; /* only for string */
-	pcb_coord_t c; /* also int */
+	rnd_coord_t c; /* also int */
 	double d;
 	pcb_color_t color;
-	pcb_bool c_absolute, d_absolute, c_valid, d_valid, clr_valid;
+	rnd_bool c_absolute, d_absolute, c_valid, d_valid, clr_valid;
 
 	/* private */
 	unsigned is_trace:1;

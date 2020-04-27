@@ -56,11 +56,11 @@ static mesh_dlg_t ia;
 static void mesh2dlg()
 {
 	int n;
-	pcb_coord_t subst_thick;
+	rnd_coord_t subst_thick;
 
 	subst_thick = pcb_board_thickness(PCB, "openems", PCB_BRDTHICK_PRINT_ERROR);
 	if (subst_thick <= 0) {
-		pcb_message(PCB_MSG_ERROR, "Assuming 1.5mm thick substrate because of the missing thickness attributes.\nFeel free to change it in the mesh dialog or add the attributes to the substrate groups.");
+		rnd_message(PCB_MSG_ERROR, "Assuming 1.5mm thick substrate because of the missing thickness attributes.\nFeel free to change it in the mesh dialog or add the attributes to the substrate groups.");
 		subst_thick = PCB_MM_TO_COORD(1.5);
 	}
 
@@ -122,12 +122,12 @@ TODO("enum lookup");
 #endif
 
 TODO("reorder to avoid fwd decl")
-static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2);
+static void mesh_auto_add_smooth(vtc0_t *v, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t d1, rnd_coord_t d, rnd_coord_t d2);
 
 #define SAVE_INT(name) \
 	pcb_append_printf(dst, "%s  " #name" = %d\n", prefix, (int)me->dlg[me->name].val.lng);
 #define SAVE_COORD(name) \
-	pcb_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (pcb_coord_t)me->dlg[me->name].val.crd);
+	pcb_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (rnd_coord_t)me->dlg[me->name].val.crd);
 void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 {
 	int n;
@@ -186,12 +186,12 @@ do { \
 		int v; \
 		char *end; \
 		if (n->type != LHT_TEXT) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
+			rnd_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
 			return -1; \
 		} \
 		v = strtol(n->data.text.value, &end, 10); \
 		if (*end != '\0') { \
-			pcb_message(PCB_MSG_ERROR, "Invalid mesh integer: " #name "\n"); \
+			rnd_message(PCB_MSG_ERROR, "Invalid mesh integer: " #name "\n"); \
 			return -1; \
 		} \
 		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, me->name, lng, v); \
@@ -203,17 +203,17 @@ do { \
 	lht_node_t *n = lht_dom_hash_get(root, #name); \
 	if (n != NULL) { \
 		double v; \
-		pcb_bool succ; \
+		rnd_bool succ; \
 		if (n->type != LHT_TEXT) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
+			rnd_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
 			return -1; \
 		} \
 		v = pcb_get_value(n->data.text.value, NULL, NULL, &succ); \
 		if (!succ) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid mesh coord: " #name "\n"); \
+			rnd_message(PCB_MSG_ERROR, "Invalid mesh coord: " #name "\n"); \
 			return -1; \
 		} \
-		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, me->name, crd, (pcb_coord_t)v); \
+		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, me->name, crd, (rnd_coord_t)v); \
 	} \
 } while(0)
 
@@ -223,7 +223,7 @@ do { \
 		int __found__ = 0, __n__; \
 		const char **__a__; \
 		if (node->type != LHT_TEXT) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid mesh value: " #name " should be text\n"); \
+			rnd_message(PCB_MSG_ERROR, "Invalid mesh value: " #name " should be text\n"); \
 			return -1; \
 		} \
 		if (strcmp(node->data.text.value, "invalid") == 0) break; \
@@ -234,7 +234,7 @@ do { \
 			} \
 		} \
 		if (!__found__) { \
-			pcb_message(PCB_MSG_ERROR, "Invalid mesh value '%s' for " #name "\n", node->data.text.value); \
+			rnd_message(PCB_MSG_ERROR, "Invalid mesh value '%s' for " #name "\n", node->data.text.value); \
 			return -1; \
 		} \
 		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, dst, lng, __n__); \
@@ -246,7 +246,7 @@ static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 	lht_node_t *lst, *nd;
 
 	if ((root->type != LHT_HASH) || (strcmp(root->name, "pcb-rnd-mesh-v1") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "Input is not a valid mesh save - should be a ha:pcb-rnd-mesh subtree\n");
+		rnd_message(PCB_MSG_ERROR, "Input is not a valid mesh save - should be a ha:pcb-rnd-mesh subtree\n");
 		return -1;
 	}
 
@@ -271,7 +271,7 @@ static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 	if (lst != NULL) {
 		int n;
 		if (lst->type != LHT_LIST) {
-			pcb_message(PCB_MSG_ERROR, "Boundary shall be a list\n");
+			rnd_message(PCB_MSG_ERROR, "Boundary shall be a list\n");
 			return -1;
 		}
 		for(n = 0, nd = lst->data.list.first; (n < 6) && (nd != NULL); n++,nd = nd->next)
@@ -303,17 +303,17 @@ int mesh_load_file(mesh_dlg_t *me, FILE *f)
 }
 
 
-static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
+static void mesh_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t crd)
 {
 	vtc0_append(&mesh->line[dir].edge, crd);
 }
 
-static void mesh_add_result(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t crd)
+static void mesh_add_result(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t crd)
 {
 	vtc0_append(&mesh->line[dir].result, crd);
 }
 
-static void mesh_add_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t dens)
+static void mesh_add_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t dens)
 {
 	pcb_range_t *r = vtr0_alloc_append(&mesh->line[dir].dens, 1);
 	r->begin = c1;
@@ -321,7 +321,7 @@ static void mesh_add_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1,
 	r->data[0].c = dens;
 }
 
-static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t c1, pcb_coord_t c2, int aligned)
+static void mesh_add_obj(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t c1, rnd_coord_t c2, int aligned)
 {
 	if (aligned) {
 		mesh_add_edge(mesh, dir, c1 - mesh->dens_obj * 2 / 3);
@@ -353,7 +353,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_layer_t *layer, pcb_mesh_dir_t dir
 	}
 
 	linelist_foreach(&layer->Line, &it, line) {
-		pcb_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
+		rnd_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;
 		int aligned = (x1 == x2) || (y1 == y2);
 
 		switch(dir) {
@@ -389,13 +389,13 @@ TODO("mesh: text")
 		pcb_polyarea_t *pa;
 
 		for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			pcb_pline_t *pl;
 			int go;
 
 			pl = pcb_poly_contour(&it);
 			if (pl != NULL) {
-				pcb_coord_t lx, ly, minx, miny, maxx, maxy;
+				rnd_coord_t lx, ly, minx, miny, maxx, maxy;
 				
 				pcb_poly_vect_first(&it, &minx, &miny);
 				maxx = minx;
@@ -461,7 +461,7 @@ static int mesh_gen_obj_subc(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 static int cmp_coord(const void *v1, const void *v2)
 {
-	const pcb_coord_t *c1 = v1, *c2 = v2;
+	const rnd_coord_t *c1 = v1, *c2 = v2;
 	return *c1 < *c2 ? -1 : +1;
 }
 
@@ -473,15 +473,15 @@ static int cmp_range(const void *v1, const void *v2)
 
 
 typedef struct {
-	pcb_coord_t min;
-	pcb_coord_t max;
+	rnd_coord_t min;
+	rnd_coord_t max;
 	int found;
 } mesh_maybe_t;
 
 static int cmp_maybe_add(const void *k, const void *v)
 {
 	const mesh_maybe_t *ctx = k;
-	const pcb_coord_t *c = v;
+	const rnd_coord_t *c = v;
 
 	if ((*c >= ctx->min) && (*c <= ctx->max))
 		return 0;
@@ -490,19 +490,19 @@ static int cmp_maybe_add(const void *k, const void *v)
 	return -1;
 }
 
-static void mesh_maybe_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t dist)
+static void mesh_maybe_add_edge(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at, rnd_coord_t dist)
 {
 	mesh_maybe_t ctx;
-	pcb_coord_t *c;
+	rnd_coord_t *c;
 	ctx.min = at - dist;
 	ctx.max = at + dist;
 	ctx.found = 0;
 
-	c = bsearch(&ctx, mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_maybe_add);
+	c = bsearch(&ctx, mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(rnd_coord_t), cmp_maybe_add);
 	if (c == NULL) {
 TODO(": optimization: run a second bsearch and insert instead of this; testing: 45 deg line (won't have axis aligned edge for the 2/3 1/3 rule)")
 		vtc0_append(&mesh->line[dir].edge, at);
-		qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
+		qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(rnd_coord_t), cmp_coord);
 	}
 }
 
@@ -512,23 +512,23 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	pcb_range_t *r;
 
 	if (vtr0_len(&mesh->line[dir].dens) < 1) {
-		pcb_message(PCB_MSG_ERROR, "There are not enough objects to do the meshing\n");
+		rnd_message(PCB_MSG_ERROR, "There are not enough objects to do the meshing\n");
 		return -1;
 	}
 
-	qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(pcb_coord_t), cmp_coord);
+	qsort(mesh->line[dir].edge.array, vtc0_len(&mesh->line[dir].edge), sizeof(rnd_coord_t), cmp_coord);
 	qsort(mesh->line[dir].dens.array, vtr0_len(&mesh->line[dir].dens), sizeof(pcb_range_t), cmp_range);
 
 	/* warn for edges too close */
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge)-1; n++) {
-		pcb_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
+		rnd_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
 		if (c2 - c1 < mesh->min_space) {
 			if ((c2 - c1) < PCB_MM_TO_COORD(0.1)) {
 				mesh->line[dir].edge.array[n] = (c1 + c2) / 2;
 				vtc0_remove(&mesh->line[dir].edge, n+1, 1);
 			}
 			else
-				pcb_message(PCB_MSG_ERROR, "meshing error: invalid minimum spacing (%$mm) required: forced %s edges are closer than that around %$mm..%$mm; try decreasing your minimum spacing to below %$mm\n", mesh->min_space, dir == PCB_MESH_VERTICAL ? "vertical" : "horizonal", c1, c2, c2-c1);
+				rnd_message(PCB_MSG_ERROR, "meshing error: invalid minimum spacing (%$mm) required: forced %s edges are closer than that around %$mm..%$mm; try decreasing your minimum spacing to below %$mm\n", mesh->min_space, dir == PCB_MESH_VERTICAL ? "vertical" : "horizonal", c1, c2, c2-c1);
 		}
 	}
 
@@ -549,7 +549,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	for(n = 0; n < vtr0_len(&mesh->line[dir].dens)-1; n++) {
 		pcb_range_t *r1 = &mesh->line[dir].dens.array[n], *r2 = &mesh->line[dir].dens.array[n+1];
 		if (r1->end < r2->begin) {
-			pcb_coord_t my_end = r2->begin; /* the insert will change r2 pointer */
+			rnd_coord_t my_end = r2->begin; /* the insert will change r2 pointer */
 			pcb_range_t *r = vtr0_alloc_insert(&mesh->line[dir].dens, n+1, 1);
 			r->begin = r1->end;
 			r->end = my_end;
@@ -583,7 +583,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 static int cmp_range_at(const void *key_, const void *v_)
 {
-	const pcb_coord_t *key = key_;
+	const rnd_coord_t *key = key_;
 	const pcb_range_t *v = v_;
 
 	if ((*key >= v->begin) && (*key <= v->end))
@@ -592,7 +592,7 @@ static int cmp_range_at(const void *key_, const void *v_)
 	return +1;
 }
 
-static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t *dens, pcb_coord_t *dens_left, pcb_coord_t *dens_right)
+static pcb_range_t *mesh_find_range(const vtr0_t *v, rnd_coord_t at, rnd_coord_t *dens, rnd_coord_t *dens_left, rnd_coord_t *dens_right)
 {
 	pcb_range_t *r;
 	r = bsearch(&at, v->array, vtr0_len((vtr0_t *)v), sizeof(pcb_range_t), cmp_range_at);
@@ -619,7 +619,7 @@ static pcb_range_t *mesh_find_range(const vtr0_t *v, pcb_coord_t at, pcb_coord_t
 static int mesh_auto_z(pcb_mesh_t *mesh)
 {
 	pcb_layergrp_id_t gid;
-	pcb_coord_t y = 0, ytop = 0, ybottom, top_dens, bottom_dens;
+	rnd_coord_t y = 0, ytop = 0, ybottom, top_dens, bottom_dens;
 	int n, lns, first = 1;
 
 	vtc0_truncate(&mesh->line[PCB_MESH_Z].result, 0);
@@ -633,7 +633,7 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 			/* Ignore the thickness of copper layers for now: copper sheets are modelled in 2d */
 		}
 		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
-			pcb_coord_t d, t = mesh->def_subs_thick;
+			rnd_coord_t d, t = mesh->def_subs_thick;
 			double dens = (double)t/(double)lns;
 			bottom_dens = pcb_round(dens);
 			if (lns != 0) {
@@ -691,7 +691,7 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 	return 0;
 }
 
-static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at, pcb_coord_t aux1, pcb_coord_t aux2, pcb_coord_t thick)
+static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at, rnd_coord_t aux1, rnd_coord_t aux2, rnd_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
 		pcb_line_new(mesh->ui_layer_xy, aux1, at, aux2, at, thick, 0, pcb_no_flags());
@@ -699,7 +699,7 @@ static void mesh_draw_line(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at,
 		pcb_line_new(mesh->ui_layer_xy, at, aux1, at, aux2, thick, 0, pcb_no_flags());
 }
 
-static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at1, pcb_coord_t at2, pcb_coord_t aux, pcb_coord_t thick)
+static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at1, rnd_coord_t at2, rnd_coord_t aux, rnd_coord_t thick)
 {
 	if (dir == PCB_MESH_HORIZONTAL)
 		pcb_line_new(mesh->ui_layer_xy, aux, at1, aux, at2, thick, 0, pcb_no_flags());
@@ -707,7 +707,7 @@ static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t at
 		pcb_line_new(mesh->ui_layer_xy, at1, aux, at2, aux, thick, 0, pcb_no_flags());
 }
 
-static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t aux, const char *label)
+static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t aux, const char *label)
 {
 	aux -= PCB_MM_TO_COORD(0.6);
 	if (dir == PCB_MESH_HORIZONTAL)
@@ -720,7 +720,7 @@ static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, pcb_coord_t au
 static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
-	pcb_coord_t end;
+	rnd_coord_t end;
 
 	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(0.1), "object edge");
 
@@ -756,10 +756,10 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 {
 	int n;
 	pcb_layergrp_id_t gid;
-	pcb_coord_t y0 = PCB->hidlib.size_y/3, y = y0, y2;
-	pcb_coord_t xl = PCB->hidlib.size_x/5; /* board left */
-	pcb_coord_t xr = PCB->hidlib.size_x/5*3; /* board right */
-	pcb_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
+	rnd_coord_t y0 = PCB->hidlib.size_y/3, y = y0, y2;
+	rnd_coord_t xl = PCB->hidlib.size_x/5; /* board left */
+	rnd_coord_t xr = PCB->hidlib.size_x/5*3; /* board right */
+	rnd_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
 	int mag = 2;
 
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
@@ -782,7 +782,7 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 
 	mesh_trace("Z lines:\n");
 	for(n = 0; n < vtc0_len(&mesh->line[PCB_MESH_Z].result); n++) {
-		pcb_coord_t y = y0+mesh->line[PCB_MESH_Z].result.array[n]*mag;
+		rnd_coord_t y = y0+mesh->line[PCB_MESH_Z].result.array[n]*mag;
 		mesh_trace(" %mm", y);
 		pcb_line_new(mesh->ui_layer_z, 0, y, PCB->hidlib.size_x, y, mpen, 0, pcb_no_flags());
 	}
@@ -791,7 +791,7 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 }
 
 
-static void mesh_auto_add_even(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d)
+static void mesh_auto_add_even(vtc0_t *v, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t d)
 {
 	long num = (c2 - c1) / d;
 
@@ -806,7 +806,7 @@ static void mesh_auto_add_even(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_co
 	}
 }
 
-static pcb_coord_t mesh_auto_add_interp(vtc0_t *v, pcb_coord_t c, pcb_coord_t d1, pcb_coord_t d2, pcb_coord_t dd)
+static rnd_coord_t mesh_auto_add_interp(vtc0_t *v, rnd_coord_t c, rnd_coord_t d1, rnd_coord_t d2, rnd_coord_t dd)
 {
 	if (dd > 0) {
 		for(; d1 <= d2; d1 += dd) {
@@ -825,9 +825,9 @@ static pcb_coord_t mesh_auto_add_interp(vtc0_t *v, pcb_coord_t c, pcb_coord_t d1
 
 }
 
-static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_coord_t d1, pcb_coord_t d, pcb_coord_t d2)
+static void mesh_auto_add_smooth(vtc0_t *v, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t d1, rnd_coord_t d, rnd_coord_t d2)
 {
-	pcb_coord_t len = c2 - c1, begin = c1, end = c2, glen;
+	rnd_coord_t len = c2 - c1, begin = c1, end = c2, glen;
 	int lines;
 
 	/* ramp up (if there's room) */
@@ -861,8 +861,8 @@ static void mesh_auto_add_smooth(vtc0_t *v, pcb_coord_t c1, pcb_coord_t c2, pcb_
 static int mesh_auto_build(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 {
 	size_t n;
-	pcb_coord_t c1, c2;
-	pcb_coord_t d1, d, d2;
+	rnd_coord_t c1, c2;
+	rnd_coord_t d1, d, d2;
 
 	mesh_trace("build:\n");
 
@@ -982,7 +982,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fname, "w", NULL);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can not open '%s' for write\n", fname);
+		rnd_message(PCB_MSG_ERROR, "Can not open '%s' for write\n", fname);
 		return;
 	}
 
@@ -1012,11 +1012,11 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can not open '%s' for read\n", fname);
+		rnd_message(PCB_MSG_ERROR, "Can not open '%s' for read\n", fname);
 		return;
 	}
 	if (mesh_load_file(&ia, f) != 0)
-		pcb_message(PCB_MSG_ERROR, "Loading mesh settings from '%s' failed.\n", fname);
+		rnd_message(PCB_MSG_ERROR, "Loading mesh settings from '%s' failed.\n", fname);
 	fclose(f);
 }
 

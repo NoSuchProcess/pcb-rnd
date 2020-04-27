@@ -26,8 +26,8 @@ conf_excellon_t conf_excellon;
 
 static int exc_aperture_cnt;
 
-#define excellonDrX(pcb, x) ((pcb_coord_t) (x))
-#define excellonDrY(pcb, y) ((pcb_coord_t) ((pcb)->hidlib.size_y - (y)))
+#define excellonDrX(pcb, x) ((rnd_coord_t) (x))
+#define excellonDrY(pcb, y) ((rnd_coord_t) ((pcb)->hidlib.size_y - (y)))
 
 typedef struct {
 	const char *hdr1;
@@ -50,7 +50,7 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 };
 
 
-static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, pcb_coord_t *excellon_last_tool_dia)
+static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, rnd_coord_t *excellon_last_tool_dia)
 {
 	pcb_cardinal_t i, cnt = 0;
 	int first = 1;
@@ -62,7 +62,7 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 		if (i == 0 || pd->diam != *excellon_last_tool_dia) {
 			aperture_t *ap = find_aperture(&ctx->apr, pd->diam, ROUND);
 			if (ap == NULL) {
-				pcb_message(PCB_MSG_ERROR, "excellon: internal error: can't register ROUND aperture of dia %$mm\n", pd->diam);
+				rnd_message(PCB_MSG_ERROR, "excellon: internal error: can't register ROUND aperture of dia %$mm\n", pd->diam);
 				continue;
 			}
 			fprintf(f, "T%02d\r\n", ap->dCode);
@@ -95,7 +95,7 @@ static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx
 {
 	aperture_t *search;
 	pcb_cardinal_t cnt = 0;
-	pcb_coord_t excellon_last_tool_dia = 0;
+	rnd_coord_t excellon_last_tool_dia = 0;
 
 	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is
 	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
@@ -117,12 +117,12 @@ void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force
 	coord_format_t *cfmt;
 
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing the excellon file.\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing the excellon file.\n", fn);
 		return;
 	}
 
 	if ((coord_fmt_idx < 0) || (coord_fmt_idx >= NUM_COORD_FORMATS)) {
-		pcb_message(PCB_MSG_ERROR, "Error: Invalid excellon coordinate format idx %d.\n", coord_fmt_idx);
+		rnd_message(PCB_MSG_ERROR, "Error: Invalid excellon coordinate format idx %d.\n", coord_fmt_idx);
 		return;
 	}
 
@@ -147,7 +147,7 @@ static const char *excellon_cookie = "excellon drill/cnc exporter";
 static int is_plated, finding_apertures, exc_aperture_cnt;
 static pcb_drill_ctx_t pdrills, udrills;
 static pcb_cam_t excellon_cam;
-static pcb_coord_t lastwidth;
+static rnd_coord_t lastwidth;
 static char *filename = NULL;
 static struct {
 	unsigned nonround:1;
@@ -159,7 +159,7 @@ static struct {
 typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_cap_style_t style;
-	pcb_coord_t width;
+	rnd_coord_t width;
 } hid_gc_s;
 
 static long exc_drawn_objs;
@@ -287,11 +287,11 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&excellon_cam) == 0) {
 		if (!excellon_cam.okempty_group)
-			pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (exc_drawn_objs == 0) {
 		if (!excellon_cam.okempty_content)
-			pcb_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "excellon cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 
 	pcb_drill_uninit(&pdrills);
@@ -337,7 +337,7 @@ static void excellon_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *drw_screen)
 {
 	switch(op) {
 		case PCB_HID_COMP_RESET:
@@ -349,7 +349,7 @@ static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb
 		case PCB_HID_COMP_NEGATIVE:
 			if (!warn.comp) {
 				warn.comp = 1;
-				pcb_message(PCB_MSG_ERROR, "Excellon: can not draw composite layers (some features may be missing from the export)\n");
+				rnd_message(PCB_MSG_ERROR, "Excellon: can not draw composite layers (some features may be missing from the export)\n");
 			}
 	}
 }
@@ -363,7 +363,7 @@ static void excellon_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->style = style;
 }
 
-static void excellon_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void excellon_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
@@ -380,12 +380,12 @@ pcb_drill_ctx_t *get_drill_ctx(void)
 	return (is_plated ? &pdrills : &udrills);
 }
 
-static void use_gc(pcb_hid_gc_t gc, pcb_coord_t radius)
+static void use_gc(pcb_hid_gc_t gc, rnd_coord_t radius)
 {
 	exc_drawn_objs++;
 	if ((gc->style != pcb_cap_round) && (!warn.nonround)) {
 		warn.nonround = 1;
-		pcb_message(PCB_MSG_ERROR, "Excellon: can not set non-round aperture (some features may be missing from the export)\n");
+		rnd_message(PCB_MSG_ERROR, "Excellon: can not set non-round aperture (some features may be missing from the export)\n");
 	}
 
 	if (radius == 0)
@@ -402,9 +402,9 @@ static void use_gc(pcb_hid_gc_t gc, pcb_coord_t radius)
 }
 
 
-static void excellon_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void excellon_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_coord_t dia = gc->width/2;
+	rnd_coord_t dia = gc->width/2;
 
 	find_aperture(&(get_drill_ctx()->apr), dia*2, ROUND);
 
@@ -412,7 +412,7 @@ static void excellon_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		pcb_drill_new_pending(get_drill_ctx(), x1, y1, x2, y2, dia*2);
 }
 
-static void excellon_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void excellon_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	excellon_draw_line(gc, x1, y1, x1, y2);
 	excellon_draw_line(gc, x1, y1, x2, y1);
@@ -420,15 +420,15 @@ static void excellon_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 	excellon_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void excellon_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void excellon_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	if (!warn.arc) {
 		warn.arc = 1;
-		pcb_message(PCB_MSG_ERROR, "Excellon: can not export arcs (some features may be missing from the export)\n");
+		rnd_message(PCB_MSG_ERROR, "Excellon: can not export arcs (some features may be missing from the export)\n");
 	}
 }
 
-static void excellon_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void excellon_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	if (radius <= 0)
 		return;
@@ -439,28 +439,28 @@ static void excellon_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy
 		pcb_drill_new_pending(get_drill_ctx(), cx, cy, cx, cy, radius * 2);
 }
 
-static void excellon_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void excellon_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	if (!warn.poly) {
 		warn.poly = 1;
-		pcb_message(PCB_MSG_ERROR, "Excellon: can not export polygons (some features may be missing from the export)\n");
+		rnd_message(PCB_MSG_ERROR, "Excellon: can not export polygons (some features may be missing from the export)\n");
 	}
 }
 
-static void excellon_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void excellon_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	excellon_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 
-static void excellon_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void excellon_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	excellon_fill_polygon(gc, 0, NULL, NULL);
 }
 
 static void excellon_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	pcb_message(PCB_MSG_ERROR, "Excellon internal error: can not calibrate()\n");
+	rnd_message(PCB_MSG_ERROR, "Excellon internal error: can not calibrate()\n");
 }
 
 static int excellon_usage(pcb_hid_t *hid, const char *topic)
@@ -471,7 +471,7 @@ static int excellon_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static void excellon_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void excellon_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 

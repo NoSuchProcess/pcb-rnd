@@ -40,8 +40,8 @@
 #define DRAW_X(view, x)         (gint)((SIDE_X((view), x) - (view)->x0) / (view)->coord_per_px)
 #define DRAW_Y(view, y)         (gint)((SIDE_Y((view), y) - (view)->y0) / (view)->coord_per_px)
 
-#define EVENT_TO_PCB_X_(hidlib, view, x) (pcb_coord_t)pcb_round(SIDE_X_((hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
-#define EVENT_TO_PCB_Y_(hidlib, view, y) (pcb_coord_t)pcb_round(SIDE_Y_((hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
+#define EVENT_TO_PCB_X_(hidlib, view, x) (rnd_coord_t)pcb_round(SIDE_X_((hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
+#define EVENT_TO_PCB_Y_(hidlib, view, y) (rnd_coord_t)pcb_round(SIDE_Y_((hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
 
 #define EVENT_TO_PCB_X(view, x)  EVENT_TO_PCB_X_((view)->ctx->hidlib, view, (x))
 #define EVENT_TO_PCB_Y(view, y)  EVENT_TO_PCB_Y_((view)->ctx->hidlib, view, (y))
@@ -49,22 +49,22 @@
 typedef struct {
 	double coord_per_px;     /* Zoom level described as PCB units per screen pixel */
 
-	pcb_coord_t x0;
-	pcb_coord_t y0;
-	pcb_coord_t width;
-	pcb_coord_t height;
+	rnd_coord_t x0;
+	rnd_coord_t y0;
+	rnd_coord_t width;
+	rnd_coord_t height;
 
 	unsigned inhibit_pan_common:1; /* when 1, do not call pcb_gtk_pan_common() */
 	unsigned use_max_pcb:1;  /* when 1, use PCB->Max*; when 0, use the following two: */
-	pcb_coord_t max_width;
-	pcb_coord_t max_height;
+	rnd_coord_t max_width;
+	rnd_coord_t max_height;
 
 	int canvas_width, canvas_height;
 
-	pcb_bool has_entered;
-	pcb_bool panning;
-	pcb_coord_t pcb_x, pcb_y;              /* PCB coordinates of the mouse pointer */
-	pcb_coord_t crosshair_x, crosshair_y;  /* PCB coordinates of the crosshair     */
+	rnd_bool has_entered;
+	rnd_bool panning;
+	rnd_coord_t pcb_x, pcb_y;              /* PCB coordinates of the mouse pointer */
+	rnd_coord_t crosshair_x, crosshair_y;  /* PCB coordinates of the crosshair     */
 
 	struct pcb_gtk_s *ctx;
 } pcb_gtk_view_t;
@@ -75,26 +75,26 @@ typedef struct {
     coord_per_px or the clamped value if it was too small or too large. */
 double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px);
 
-void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, double widget_x, double widget_y);
-void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, pcb_coord_t dx, pcb_coord_t dy);
-void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double new_zoom);
-void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, pcb_coord_t center_x, pcb_coord_t center_y, double factor);
-void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, int setch);
+void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, double widget_x, double widget_y);
+void pcb_gtk_pan_view_rel(pcb_gtk_view_t *v, rnd_coord_t dx, rnd_coord_t dy);
+void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t center_y, double new_zoom);
+void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t center_y, double factor);
+void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch);
 
 /* obsolete, do not use (kept temporarily for preview) */
-void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 
 /* Updates width and heigth using the new zoom level; call after a call
    to pcb_gtk_zoom_*() */
 void pcb_gtk_zoom_post(pcb_gtk_view_t *v);
 
-pcb_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, pcb_coord_t pcb_x, pcb_coord_t pcb_y, int *event_x, int *event_y);
-pcb_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, pcb_coord_t * pcb_x, pcb_coord_t * pcb_y);
+rnd_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, int *event_x, int *event_y);
+rnd_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * pcb_x, rnd_coord_t * pcb_y);
 
-void pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
+void pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
 /* Update adj limits to match the current zoom level */
-static inline void pcb_gtk_zoom_adjustment(GtkAdjustment *adj, pcb_coord_t view_size, pcb_coord_t board_size)
+static inline void pcb_gtk_zoom_adjustment(GtkAdjustment *adj, rnd_coord_t view_size, rnd_coord_t board_size)
 {
 	adj->page_size = MIN(view_size, board_size);
 	adj->lower = -view_size;

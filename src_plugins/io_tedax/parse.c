@@ -94,12 +94,12 @@ int tedax_seek_hdr(FILE *f, char *buff, int buff_size, char *argv[], int argv_si
 
 	/* look for the header */
 	if ((argc = tedax_getline(f, buff, buff_size, argv, argv_size)) < 2) {
-		pcb_message(PCB_MSG_ERROR, "Can't find tEDAx header (no line)\n");
+		rnd_message(PCB_MSG_ERROR, "Can't find tEDAx header (no line)\n");
 		return -1;
 	}
 
 	if ((argv[1] == NULL) || (pcb_strcasecmp(argv[0], "tEDAx") != 0) || (pcb_strcasecmp(argv[1], "v1") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "Can't find tEDAx header (wrong line)\n");
+		rnd_message(PCB_MSG_ERROR, "Can't find tEDAx header (wrong line)\n");
 		return -1;
 	}
 
@@ -118,7 +118,7 @@ int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, const c
 
 	if (argc < 2) {
 		if (!silent)
-			pcb_message(PCB_MSG_ERROR, "Can't find %s %s block in tEDAx\n", blk_ver, blk_name);
+			rnd_message(PCB_MSG_ERROR, "Can't find %s %s block in tEDAx\n", blk_ver, blk_name);
 		return -1;
 	}
 

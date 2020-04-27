@@ -22,17 +22,17 @@ typedef struct {
 	pcb_layer_t *layer;                    /* input layer (objects are picked up from this layer) */
 	pcb_layer_t *ui_layer_xy, *ui_layer_z; /* optional UI layers to draw the mesh on */
 	char *ui_name_xy;                      /* name of the UI layer */
-	pcb_coord_t dens_obj, dens_gap;        /* target density: distance between mesh lines above objects and above gaps */
-	pcb_coord_t min_space;                 /* make sure there's always at least this much space between two mesh lines */
-	pcb_coord_t def_subs_thick;            /* default substrate thickness */
-	pcb_coord_t def_copper_thick;          /* default copper thickness */
+	rnd_coord_t dens_obj, dens_gap;        /* target density: distance between mesh lines above objects and above gaps */
+	rnd_coord_t min_space;                 /* make sure there's always at least this much space between two mesh lines */
+	rnd_coord_t def_subs_thick;            /* default substrate thickness */
+	rnd_coord_t def_copper_thick;          /* default copper thickness */
 	pcb_mesh_lines_t line[PCB_MESH_max];   /* actual lines of the mesh */
 	const char *bnd[6];                    /* temporary: boundary conditions */
-	pcb_coord_t z_bottom_copper;           /* z coordinate of the bottom copper layer, along the z-mesh (0 is the top copper) */
+	rnd_coord_t z_bottom_copper;           /* z coordinate of the bottom copper layer, along the z-mesh (0 is the top copper) */
 	int pml;                               /* add pml cells around the exterior of the existing mesh of "perfectly matched" impedance */
 	int subslines;                         /* number of mesh lines in substrate (z) */
-	pcb_coord_t dens_air;                  /* mesh line density (spacing) in air */
-	pcb_coord_t max_air;                   /* how far out to mesh in air */
+	rnd_coord_t dens_air;                  /* mesh line density (spacing) in air */
+	rnd_coord_t max_air;                   /* how far out to mesh in air */
 	unsigned hor:1;                        /* enable adding horizontal mesh lines */
 	unsigned ver:1;                        /* enable adding vertical mesh lines */
 	unsigned smooth:1;                     /* if set, avoid jumps in the meshing by gradually changing meshing distance: x and y direction */

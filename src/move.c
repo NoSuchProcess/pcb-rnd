@@ -136,7 +136,7 @@ static pcb_opfunc_t CopyFunctions = {
 };
 
 
-void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
+void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t DX, rnd_coord_t DY)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -149,7 +149,7 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX,
 	return result;
 }
 
-void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
+void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t DX, rnd_coord_t DY)
 {
 	pcb_opctx_t ctx;
 	void *ptr2;
@@ -169,8 +169,8 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			{
 				/* Get the initial arc point positions */
 				pcb_arc_t * p_arc = ((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
-				pcb_coord_t ox1,ox2,oy1,oy2;
-				pcb_coord_t nx1,nx2,ny1,ny2;
+				rnd_coord_t ox1,ox2,oy1,oy2;
+				rnd_coord_t nx1,nx2,ny1,ny2;
 
 				pcb_arc_get_end(p_arc,0, &ox1, &oy1);
 				pcb_arc_get_end(p_arc,1, &ox2, &oy2);
@@ -207,10 +207,10 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 
 		case PCB_OBJ_LINE:
 			{
-				pcb_coord_t dx1 = DX;
-				pcb_coord_t dy1 = DY;
-				pcb_coord_t dx2 = DX;
-				pcb_coord_t dy2 = DY;
+				rnd_coord_t dx1 = DX;
+				rnd_coord_t dy1 = DY;
+				rnd_coord_t dx2 = DX;
+				rnd_coord_t dy2 = DY;
 				pcb_line_t *line = (pcb_line_t*) Ptr2;
 				int constrained = 0;
 
@@ -261,7 +261,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	return ptr2;
 }
 
-void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, pcb_bool enmasse)
+void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, rnd_bool enmasse)
 {
 	void *result;
 	pcb_opctx_t ctx;
@@ -275,9 +275,9 @@ void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_la
 	return result;
 }
 
-pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
+rnd_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 {
-	pcb_bool changed;
+	rnd_bool changed;
 	pcb_opctx_t ctx;
 
 	ctx.move.pcb = PCB;
@@ -289,7 +289,7 @@ pcb_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
 	return changed;
 }
 
-void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t DX, pcb_coord_t DY)
+void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t DX, rnd_coord_t DY)
 {
 	void *ptr;
 	pcb_opctx_t ctx;

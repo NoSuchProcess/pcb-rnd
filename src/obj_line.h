@@ -43,7 +43,7 @@ struct pcb_line_s {            /* holds information about one line */
 typedef struct {              /* current marked line */
 	pcb_point_t Point1, Point2; /* start- and end-position */
 	long int State;
-	pcb_bool draw;
+	rnd_bool draw;
 } pcb_attached_line_t;
 
 
@@ -51,10 +51,10 @@ pcb_line_t *pcb_line_alloc(pcb_layer_t * layer);
 pcb_line_t *pcb_line_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_line_free(pcb_line_t * data);
 
-pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
-pcb_line_t *pcb_line_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness, rnd_coord_t Clearance, pcb_flag_t Flags);
+pcb_line_t *pcb_line_new(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness, rnd_coord_t Clearance, pcb_flag_t Flags);
 pcb_line_t *pcb_line_dup(pcb_layer_t *Layer, pcb_line_t *src);
-pcb_line_t *pcb_line_dup_at(pcb_layer_t *dst, pcb_line_t *src, pcb_coord_t dx, pcb_coord_t dy);
+pcb_line_t *pcb_line_dup_at(pcb_layer_t *dst, pcb_line_t *src, rnd_coord_t dx, rnd_coord_t dy);
 void *pcb_line_destroy(pcb_layer_t *dst, pcb_line_t *src);
 
 void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line);
@@ -64,17 +64,17 @@ void pcb_line_unreg(pcb_line_t *line);
 void pcb_add_line_on_layer(pcb_layer_t *Layer, pcb_line_t *Line);
 
 void pcb_line_bbox(pcb_line_t *Line);
-void pcb_line_rotate90(pcb_line_t *Line, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
-void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
-void pcb_line_mirror(pcb_line_t *line, pcb_coord_t y_offs, pcb_bool undoable);
+void pcb_line_rotate90(pcb_line_t *Line, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
+void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina);
+void pcb_line_mirror(pcb_line_t *line, rnd_coord_t y_offs, rnd_bool undoable);
 void pcb_line_flip_side(pcb_layer_t *layer, pcb_line_t *line);
 void pcb_line_scale(pcb_line_t *line, double sx, double sy, double sth);
 
-pcb_coord_t pcb_line_length(const pcb_line_t *line);
+rnd_coord_t pcb_line_length(const pcb_line_t *line);
 double pcb_line_area(const pcb_line_t *line);
 
 /* Convert a square cap line (e.g. a gEDA/pcb pad) to 4 corner points of a rectangle */
-void pcb_sqline_to_rect(const pcb_line_t *line, pcb_coord_t *x, pcb_coord_t *y);
+void pcb_sqline_to_rect(const pcb_line_t *line, rnd_coord_t *x, rnd_coord_t *y);
 
 /* hash and eq */
 int pcb_line_eq(const pcb_host_trans_t *tr1, const pcb_line_t *l1, const pcb_host_trans_t *tr2, const pcb_line_t *l2);
@@ -92,7 +92,7 @@ void pcb_line_post(pcb_line_t *line);
 void pcb_line_adjust_attached(void);
 
 /* adjusts the insert lines to make them 45 degrees as necessary */
-void pcb_line_adjust_attached_2lines(pcb_bool);
+void pcb_line_adjust_attached_2lines(rnd_bool);
 
 /* makes the attached line fit into a 45 degree direction */
 void pcb_line_45(pcb_attached_line_t *);
@@ -114,7 +114,7 @@ void pcb_line_enforce_drc(pcb_board_t *pcb);
    the fields of 'end' needed to find the closest point to the original target
    that still won't hit any object. Returns the straigh-line distance between
    start and the new end. */
-double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize);
+double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, rnd_bool way, rnd_bool optimize);
 
 
 /* Rather than mode the line bounding box, we set it so the point bounding
@@ -122,7 +122,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *en
  */
 #define pcb_line_move(l,dx,dy) \
 	do { \
-		pcb_coord_t __dx__ = (dx), __dy__ = (dy); \
+		rnd_coord_t __dx__ = (dx), __dy__ = (dy); \
 		pcb_line_t *__l__ = (l); \
 		PCB_MOVE_POINT((__l__)->Point1.X,(__l__)->Point1.Y,(__dx__),(__dy__)); \
 		PCB_MOVE_POINT((__l__)->Point2.X,(__l__)->Point2.Y,(__dx__),(__dy__)); \

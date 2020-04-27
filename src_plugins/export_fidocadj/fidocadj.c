@@ -100,13 +100,13 @@ static int load_lib(htsi_t *ht, const char *fn)
 	char line[1024];
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't open fidocadj PCB library file '%s' for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Can't open fidocadj PCB library file '%s' for read\n", fn);
 		return -1;
 	}
 	*line = '\0';
 	fgets(line, sizeof(line), f);
 	if (pcb_strncasecmp(line, "[FIDOLIB PCB Footprints]", 24) != 0) {
-		pcb_message(PCB_MSG_ERROR, "'%s' doesn't have the fidocadj lib header\n", fn);
+		rnd_message(PCB_MSG_ERROR, "'%s' doesn't have the fidocadj lib header\n", fn);
 		fclose(f);
 		return -1;
 	}
@@ -127,7 +127,7 @@ static int load_lib(htsi_t *ht, const char *fn)
 	return 0;
 }
 
-static long int crd(pcb_coord_t c)
+static long int crd(rnd_coord_t c)
 {
 	return pcb_round((double)PCB_COORD_TO_MIL(c) / 5.0);
 }
@@ -245,12 +245,12 @@ TODO(": fprintf() some curve using arc->*")
 			 * default_font stroke thickness = 800
 			 * giving sx = (4189+800)/(5333+800) ~= 0.813
 			 */
-			pcb_coord_t x0 = text->X;
-			/*pcb_coord_t sx = text->BoundingBox.X2 - text->BoundingBox.X1; unused */
-			pcb_coord_t y0 = text->Y;
-			/* pcb_coord_t sy = text->BoundingBox.Y2 - text->BoundingBox.Y1; unused */
-			pcb_coord_t glyphy = 5789*(text->Scale); /* (ascent+descent)*Scale */
-			pcb_coord_t glyphx = 813*(glyphy/1000); /* based on 'm' glyph dimensions */
+			rnd_coord_t x0 = text->X;
+			/*rnd_coord_t sx = text->BoundingBox.X2 - text->BoundingBox.X1; unused */
+			rnd_coord_t y0 = text->Y;
+			/* rnd_coord_t sy = text->BoundingBox.Y2 - text->BoundingBox.Y1; unused */
+			rnd_coord_t glyphy = 5789*(text->Scale); /* (ascent+descent)*Scale */
+			rnd_coord_t glyphx = 813*(glyphy/1000); /* based on 'm' glyph dimensions */
 			glyphy = 10*glyphy/7;  /* empirically determined */
 			glyphx = 10*glyphx/7;  /* scaling voodoo */
 			/*switch(text->Direction) {
@@ -284,9 +284,9 @@ TODO("textrot: can we exprot rotation with %f?")
 
 	PCB_PADSTACK_LOOP(PCB->Data) {
 		int oshape;
-		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+		rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 		pcb_pstk_compshape_t cshape;
-		pcb_bool plated;
+		rnd_bool plated;
 		if (!pcb_pstk_export_compat_via(padstack, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "padstack-uniformity", "can't export non-uniform padstacl", "use a simpler padstack - omiting this one from the export");
 			continue;
@@ -308,7 +308,7 @@ TODO("textrot: can we exprot rotation with %f?")
 	PCB_SUBC_LOOP(PCB->Data) {
 		const char *fp = pcb_attribute_get(&subc->Attributes, "footprint");
 		if ((fp != NULL) && have_lib && (htsi_get(&lib_names, fp))) {
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			double rot = 0.0;
 			int on_bottom = 0;
 			if (pcb_subc_get_origin(subc, &x, &y)) {

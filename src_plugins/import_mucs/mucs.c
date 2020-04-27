@@ -61,13 +61,13 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static char *default_file = NULL;
 	FILE *fi;
 	int c, c2;
-	pcb_coord_t x1, y1, x2, y2, r;
+	rnd_coord_t x1, y1, x2, y2, r;
 	pcb_pstk_t *ps;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadMucsFrom, fname = argv[1].val.str);
 
 	if (!(pcb_layer_flags(PCB, PCB_CURRLID(PCB)) & PCB_LYT_COPPER)) {
-		pcb_message(PCB_MSG_ERROR, "The currently active layer is not a copper layer.\n");
+		rnd_message(PCB_MSG_ERROR, "The currently active layer is not a copper layer.\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -92,7 +92,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fi = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (!fi) {
-		pcb_message(PCB_MSG_ERROR, "Can't load mucs unixplot file %s for read\n", fname);
+		rnd_message(PCB_MSG_ERROR, "Can't load mucs unixplot file %s for read\n", fname);
 		RND_ACT_IRES(1);
 		return 0;
 	}

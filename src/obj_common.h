@@ -84,7 +84,7 @@ typedef enum pcb_objmask_e {
 
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
-	pcb_coord_t X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
+	rnd_coord_t X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
 	long int ID;
 };
 
@@ -92,7 +92,7 @@ typedef double pcb_xform_mx_t[9];
 #define PCB_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
 
 struct pcb_xform_s {   /* generic object transformation; all-zero means no transformation */
-	pcb_coord_t bloat;           /* if non-zero, bloat (positive) or shrink (negative) by this value */
+	rnd_coord_t bloat;           /* if non-zero, bloat (positive) or shrink (negative) by this value */
 
 	unsigned layer_faded:1;      /* draw layer colors faded */
 	unsigned omit_overlay:1;     /* do not draw overlays (which are useful on screen but normally omitted on exports, except if --as-shown is specified */
@@ -173,7 +173,7 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box
 /* Host transformations: typically the transformations an object of a subc
    inherits from the subc */
 typedef struct pcb_host_trans_s {
-	pcb_coord_t ox, oy;
+	rnd_coord_t ox, oy;
 	int on_bottom;
 	double rot;
 	double cosa, sina; /* rot angle cache */
@@ -191,8 +191,8 @@ do { \
 /* pcb_true during file loads, for example to allow overlapping vias.
    pcb_false otherwise, to stop the user from doing normally dangerous
    things.  */
-void pcb_create_be_lenient(pcb_bool);
-extern pcb_bool pcb_create_being_lenient;
+void pcb_create_be_lenient(rnd_bool);
+extern rnd_bool pcb_create_being_lenient;
 
 void pcb_create_ID_bump(int min_id);
 void pcb_create_ID_reset(void);
@@ -236,7 +236,7 @@ void pcb_obj_add_attribs(pcb_any_obj_t *obj, const pcb_attribute_list_t *src, pc
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define PCB_ANYLINEFIELDS \
 	PCB_ANY_PRIMITIVE_FIELDS; \
-	pcb_coord_t Thickness, Clearance; \
+	rnd_coord_t Thickness, Clearance; \
 	pcb_point_t Point1, Point2
 
 /* All on-pcb objects (elements, lines, pads, vias, rats, etc) are
@@ -252,11 +252,11 @@ struct pcb_any_line_s {
 
 /* Return the geometric center of an object, as shown (center of bbox usually,
    but not for an arc) */
-void pcb_obj_center(const pcb_any_obj_t *obj, pcb_coord_t *x, pcb_coord_t *y);
+void pcb_obj_center(const pcb_any_obj_t *obj, rnd_coord_t *x, rnd_coord_t *y);
 
 /* Return the clearance value of object on the specified layer (in
    case of padstack - in case of other objects layer is ignored) */
-pcb_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_layer_t *at);
+rnd_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_layer_t *at);
 
 
 /* Update cached attributes (->term) */
@@ -316,7 +316,7 @@ do { \
 
 #define pcb_obj_noexport_mark(obj, cx, cy) \
 do { \
-	pcb_coord_t radius = PCB_MM_TO_COORD(0.2); \
+	rnd_coord_t radius = PCB_MM_TO_COORD(0.2); \
 	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj); \
 	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc); \
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round); \

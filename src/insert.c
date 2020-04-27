@@ -59,7 +59,7 @@ static pcb_opfunc_t InsertFunctions = {
 	0 /* extobj_inhibit_regen */
 };
 
-void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t *Ptr3, pcb_coord_t DX, pcb_coord_t DY, pcb_bool Force, pcb_bool insert_last)
+void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t *Ptr3, rnd_coord_t DX, rnd_coord_t DY, rnd_bool Force, rnd_bool insert_last)
 {
 	void *ptr;
 	pcb_opctx_t ctx;
@@ -82,7 +82,7 @@ pcb_point_t *pcb_adjust_insert_point(void)
 {
 	static pcb_point_t InsertedPoint;
 	double m;
-	pcb_coord_t x, y, m1, m2;
+	rnd_coord_t x, y, m1, m2;
 	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 
 	if (pcb_crosshair.AttachedObject.State == PCB_CH_STATE_FIRST)

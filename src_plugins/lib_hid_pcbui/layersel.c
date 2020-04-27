@@ -258,7 +258,7 @@ static void lys_update_vis(ls_layer_t *lys, pcb_bool_t vis)
 
 static void layer_select(ls_layer_t *lys)
 {
-	pcb_bool *vis = NULL;
+	rnd_bool *vis = NULL;
 
 	if (lys->ly != NULL) {
 		if (lys->grp_vis) {
@@ -272,7 +272,7 @@ static void layer_select(ls_layer_t *lys)
 		PCB->RatDraw = 0;
 	}
 	else if (lys->ml != NULL) {
-		vis = (pcb_bool *)((char *)PCB + lys->ml->vis_offs);
+		vis = (rnd_bool *)((char *)PCB + lys->ml->vis_offs);
 		*vis = 1;
 		rnd_actionva(&PCB->hidlib, "SelectLayer", lys->ml->select_name, NULL);
 	}
@@ -396,12 +396,12 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ls_layer_t *lys = attr->user_data;
-	pcb_bool *vis;
+	rnd_bool *vis;
 
 	if (lys->ly != NULL)
 		vis = &lys->ly->meta.real.vis;
 	else if (lys->ml != NULL)
-		vis = (pcb_bool *)((char *)PCB + lys->ml->vis_offs);
+		vis = (rnd_bool *)((char *)PCB + lys->ml->vis_offs);
 	else
 		return;
 
@@ -796,10 +796,10 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 
 	lys = (ls_layer_t **)ls->menu_layer.array;
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++,lys++) {
-		pcb_bool *b;
+		rnd_bool *b;
 		if (*lys == NULL)
 			continue;
-		b = (pcb_bool *)((char *)PCB + ml->vis_offs);
+		b = (rnd_bool *)((char *)PCB + ml->vis_offs);
 		lys_update_vis(*lys, *b);
 	}
 

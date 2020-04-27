@@ -73,13 +73,13 @@ const char			*yyfilename;	/* in this file */
 pcb_board_t *	yyPCB;			/* used by parser */
 pcb_data_t *	yyData;
 pcb_subc_t *yysubc;
-pcb_coord_t yysubc_ox, yysubc_oy;
+rnd_coord_t yysubc_ox, yysubc_oy;
 pcb_font_t *	yyFont;
 conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
 int *yyFontkitValid;
 int yy_parse_tags;
-pcb_bool yyFontReset;
+rnd_bool yyFontReset;
 int yyElemFixLayers = 0;
 
 static int parse_number (void);
@@ -218,7 +218,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	char *tmps;
 	size_t l;
 #ifdef FLEX_SCANNER
-	static pcb_bool firsttime = pcb_true;
+	static rnd_bool firsttime = pcb_true;
 #endif
 	pcb_io_pcb_usty_seen = 0;
 	if (Pipe == NULL) {
@@ -447,20 +447,20 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 			/* Loaded a file that did not have any information about preferred format */
 			switch((int)pcb_io_pcb_usty_seen) {
 				case PCB_USTY_CMIL:
-					pcb_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (guessed from consistent unitless centimil input)\n", Filename, pcb_centimil_io_pcb->description);
+					rnd_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (guessed from consistent unitless centimil input)\n", Filename, pcb_centimil_io_pcb->description);
 					PCB->Data->loader = pcb_centimil_io_pcb;
 					break;
 				case PCB_USTY_NANOMETER:
-					pcb_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (guessed from consistent nanometer input)\n", Filename, pcb_nanometer_io_pcb->description);
+					rnd_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (guessed from consistent nanometer input)\n", Filename, pcb_nanometer_io_pcb->description);
 					PCB->Data->loader = pcb_nanometer_io_pcb;
 					break;
 				case PCB_USTY_UNITS:
 				case PCB_USTY_UNITS | PCB_USTY_NANOMETER:
-					pcb_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (guessed from non-nanometer explicit unit usage)\n", Filename, pcb_preferred_io_pcb->description);
+					rnd_message(PCB_MSG_INFO, "No preferred unit format info available for '%s' - will use '%s' on save (guessed from non-nanometer explicit unit usage)\n", Filename, pcb_preferred_io_pcb->description);
 					PCB->Data->loader = pcb_preferred_io_pcb;
 					break;
 				default:
-					pcb_message(PCB_MSG_WARNING, "No preferred unit format info available and guessing failed for '%s' - will use '%s' on save\n", Filename, pcb_preferred_io_pcb->description);
+					rnd_message(PCB_MSG_WARNING, "No preferred unit format info available and guessing failed for '%s' - will use '%s' on save\n", Filename, pcb_preferred_io_pcb->description);
 					PCB->Data->loader = pcb_preferred_io_pcb;
 			}
 		}
@@ -490,7 +490,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	r = Parse(NULL, fcmd, NULL, Filename);
 	if (r == 0) {
 #ifdef DEBUG
-		pcb_message(PCB_MSG_DEBUG, "Found %s in %s\n", Filename, conf_core.rc.font_command);
+		rnd_message(PCB_MSG_DEBUG, "Found %s in %s\n", Filename, conf_core.rc.font_command);
 #endif
 	}
 	return r;

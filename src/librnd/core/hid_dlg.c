@@ -261,7 +261,7 @@ static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, "printgui") != NULL))
 		return rnd_actionv_bin(RND_ACT_HIDLIB, "printgui", res, argc, argv);
-	pcb_message(PCB_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
+	rnd_message(PCB_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
 	return FGW_ERR_NOT_FOUND;
 }
 

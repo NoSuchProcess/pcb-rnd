@@ -90,12 +90,12 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		int len;
 
 		if (check_action_name(a[i].name)) {
-			pcb_message(PCB_MSG_ERROR, "ERROR! Invalid action name, " "action \"%s\" not registered.\n", a[i].name);
+			rnd_message(PCB_MSG_ERROR, "ERROR! Invalid action name, " "action \"%s\" not registered.\n", a[i].name);
 			continue;
 		}
 		len = strlen(a[i].name);
 		if (len >= sizeof(fn)) {
-			pcb_message(PCB_MSG_ERROR, "Invalid action name: \"%s\" (too long).\n", a[i].name);
+			rnd_message(PCB_MSG_ERROR, "Invalid action name: \"%s\" (too long).\n", a[i].name);
 			continue;
 		}
 
@@ -106,7 +106,7 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		rnd_make_action_name(fn, a[i].name, len);
 		f = fgw_func_reg(pcb_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
+			rnd_message(PCB_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
 			free(ca);
 			continue;
 		}
@@ -140,7 +140,7 @@ void rnd_remove_actions(const rnd_action_t *a, int n)
 	for (i = 0; i < n; i++) {
 		fgw_func_t *f = rnd_act_lookup(a[i].name);
 		if (f == NULL) {
-			pcb_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
+			rnd_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
 			continue;
 		}
 		pcb_remove_action(f);
@@ -170,7 +170,7 @@ const rnd_action_t *rnd_find_action(const char *name, fgw_func_t **f_out)
 
 	f = rnd_act_lookup(name);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
+		rnd_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
 		return NULL;
 	}
 	ca = f->reg_data;
@@ -337,17 +337,17 @@ int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv
 		return 1;
 
 	if (argc >= RND_ACTION_MAX_ARGS) {
-		pcb_message(PCB_MSG_ERROR, "can not call action %s with this many arguments (%d >= %d)\n", name, argc, RND_ACTION_MAX_ARGS);
+		rnd_message(PCB_MSG_ERROR, "can not call action %s with this many arguments (%d >= %d)\n", name, argc, RND_ACTION_MAX_ARGS);
 		return 1;
 	}
 
 	f = rnd_act_lookup(name);
 	if (f == NULL) {
 		int i;
-		pcb_message(PCB_MSG_ERROR, "no action %s(", name);
+		rnd_message(PCB_MSG_ERROR, "no action %s(", name);
 		for (i = 0; i < argc; i++)
-			pcb_message(PCB_MSG_ERROR, "%s%s", i ? ", " : "", argsv[i]);
-		pcb_message(PCB_MSG_ERROR, ")\n");
+			rnd_message(PCB_MSG_ERROR, "%s%s", i ? ", " : "", argsv[i]);
+		rnd_message(PCB_MSG_ERROR, ")\n");
 		return 1;
 	}
 	argv[0].type = FGW_FUNC;
@@ -365,7 +365,7 @@ int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv
 	return res.val.nat_int;
 }
 
-void rnd_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+void rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	if (pcb_gui == NULL) {
 		fprintf(stderr, "pcb_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
@@ -434,8 +434,8 @@ another:
 		sp++;
 	}
 	else if (require_parens) {
-		pcb_message(PCB_MSG_ERROR, "Syntax error: %s\n", rstr);
-		pcb_message(PCB_MSG_ERROR, "    expected: Action(arg1, arg2)");
+		rnd_message(PCB_MSG_ERROR, "Syntax error: %s\n", rstr);
+		rnd_message(PCB_MSG_ERROR, "    expected: Action(arg1, arg2)");
 		retcode = 1;
 		goto cleanup;
 	}
@@ -648,7 +648,7 @@ int rnd_cli_edit(rnd_hidlib_t *hl)
 	return res.val.nat_int;
 }
 
-int rnd_cli_mouse(rnd_hidlib_t *hl, pcb_bool notify)
+int rnd_cli_mouse(rnd_hidlib_t *hl, rnd_bool notify)
 {
 	fgw_arg_t res, args[3];
 
@@ -673,7 +673,7 @@ void rnd_cli_uninit(void)
 		free(cli_pop());
 }
 
-int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, pcb_bool force_action_mode)
+int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_mode)
 {
 	fgw_arg_t res, args[2];
 	fgw_func_t *f;
@@ -689,7 +689,7 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, pcb_bool force_action_
 	/* backend: let the backend action handle it */
 	a = rnd_find_action(pcbhl_conf.rc.cli_backend, &f);
 	if (!a) {
-		pcb_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", pcbhl_conf.rc.cli_backend);
+		rnd_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", pcbhl_conf.rc.cli_backend);
 		rnd_cli_leave();
 		return -1;
 	}
@@ -770,7 +770,7 @@ static int keyword_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 char *fgw_str2coord_unit = NULL;
 #define conv_str2coord(dst, src) \
 do { \
-	pcb_bool succ; \
+	rnd_bool succ; \
 	dst = pcb_get_value_ex(src, NULL, NULL, NULL, fgw_str2coord_unit, &succ); \
 	if (!succ) \
 		return -1; \
@@ -779,7 +779,7 @@ do { \
 static int coord_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_COORD) { /* convert to coord */
-		pcb_coord_t tmp;
+		rnd_coord_t tmp;
 		switch(FGW_BASE_TYPE(arg->type)) {
 			ARG_CONV_CASE_LONG(tmp, conv_assign)
 			ARG_CONV_CASE_LLONG(tmp, conv_assign)
@@ -795,7 +795,7 @@ static int coord_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 		return 0;
 	}
 	if (arg->type == FGW_COORD) { /* convert from coord */
-		pcb_coord_t tmp = fgw_coord(arg);
+		rnd_coord_t tmp = fgw_coord(arg);
 		switch(target) {
 			ARG_CONV_CASE_LONG(tmp, conv_rev_assign)
 			ARG_CONV_CASE_LLONG(tmp, conv_rev_assign)
@@ -819,7 +819,7 @@ static int coord_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 
 #define conv_str2coords(dst, src) \
 do { \
-	pcb_bool succ, abso; \
+	rnd_bool succ, abso; \
 	dst.c[0] = pcb_get_value_ex(src, NULL, &abso, NULL, fgw_str2coord_unit, &succ); \
 	if (!succ) \
 		return -1; \
@@ -887,7 +887,7 @@ static int coords_arg_free(fgw_ctx_t *ctx, fgw_arg_t *arg)
 
 static void pcb_action_err(fgw_obj_t *obj, const char *msg)
 {
-	pcb_message(PCB_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
+	rnd_message(PCB_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
 }
 
 int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
@@ -898,7 +898,7 @@ int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
 
 	f = pcb_fopen(hidlib, fn, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "rnd_act_execute_file(): Could not open actions file \"%s\".\n", fn);
+		rnd_message(PCB_MSG_ERROR, "rnd_act_execute_file(): Could not open actions file \"%s\".\n", fn);
 		return 1;
 	}
 

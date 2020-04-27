@@ -41,7 +41,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *vp, *ovp;
 	double v;
-	pcb_coord_t x = 0, y = 0;
+	rnd_coord_t x = 0, y = 0;
 
 	PCB_GUI_NOGUI();
 
@@ -51,7 +51,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (argc == 5) {
-		pcb_coord_t x1, y1, x2, y2;
+		rnd_coord_t x1, y1, x2, y2;
 
 		RND_PCB_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
 		RND_PCB_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
@@ -68,7 +68,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
 
 	if (*vp == '?') {
-		pcb_message(PCB_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", pcb_gui->coord_per_pix);
+		rnd_message(PCB_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", pcb_gui->coord_per_pix);
 		return 0;
 	}
 
@@ -108,7 +108,7 @@ const char pcb_acth_Pan[] = "Start or stop panning (Mode = 1 to start, 0 to stop
 fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int mode;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	PCB_GUI_NOGUI();
 
@@ -126,7 +126,7 @@ const char pcb_acth_Center[] = "Moves the pointer to the center of the window.";
 /* DOC: center.html */
 fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	PCB_GUI_NOGUI();
 
 	rnd_hid_get_coords("Click to center", &x, &y, 0);

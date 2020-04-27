@@ -82,7 +82,7 @@ fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_undo_unfreeze_serial();
 		break;
 	default:
-		pcb_message(PCB_MSG_ERROR, "Invalid argument for Atomic()\n");
+		rnd_message(PCB_MSG_ERROR, "Invalid argument for Atomic()\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}

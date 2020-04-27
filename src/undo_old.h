@@ -38,13 +38,13 @@ void pcb_undo_add_obj_to_remove_point(int, void *, void *, pcb_cardinal_t);
 void pcb_undo_add_obj_to_insert_point(int, void *, void *, void *);
 void pcb_undo_add_obj_to_remove_contour(int, pcb_layer_t *, pcb_poly_t *);
 void pcb_undo_add_obj_to_insert_contour(int, pcb_layer_t *, pcb_poly_t *);
-void pcb_undo_add_obj_to_move(int, void *, void *, void *, pcb_coord_t, pcb_coord_t);
+void pcb_undo_add_obj_to_move(int, void *, void *, void *, rnd_coord_t, rnd_coord_t);
 void pcb_undo_add_obj_to_change_name(int, void *, void *, void *, char *);
 void pcb_undo_add_obj_to_change_pinnum(int, void *, void *, void *, char *);
-void pcb_undo_add_obj_to_rotate90(int, void *, void *, void *, pcb_coord_t, pcb_coord_t, unsigned int);
-void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t CenterX, pcb_coord_t CenterY, pcb_angle_t angle);
+void pcb_undo_add_obj_to_rotate90(int, void *, void *, void *, rnd_coord_t, rnd_coord_t, unsigned int);
+void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t CenterX, rnd_coord_t CenterY, pcb_angle_t angle);
 void pcb_undo_add_obj_to_create(int, void *, void *, void *);
-void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_coord_t yoff);
+void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t yoff);
 void pcb_undo_add_obj_to_move_to_layer(int, void *, void *, void *);
 void pcb_undo_add_obj_to_flag(void *obj);
 void pcb_undo_add_obj_to_size(int, void *, void *, void *);
@@ -53,7 +53,7 @@ void pcb_undo_add_obj_to_rot(int Type, void *ptr1, void *ptr2, void *ptr3);
 void pcb_undo_add_obj_to_clear_size(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_angles(int, void *, void *, void *);
 void pcb_undo_add_obj_to_change_radii(int, void *, void *, void *);
-void pcb_undo_add_obj_to_clear_poly(int, void *, void *, void *, pcb_bool);
+void pcb_undo_add_obj_to_clear_poly(int, void *, void *, void *, rnd_bool);
 
 /* ---------------------------------------------------------------------------
  * define supported types of undo operations

@@ -389,7 +389,7 @@ void pcb_tool_line_draw_attached(rnd_hidlib_t *hl)
 	}
 }
 
-pcb_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -457,7 +457,7 @@ pcb_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 	return pcb_true;
 }
 
-pcb_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 

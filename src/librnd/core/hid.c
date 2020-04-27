@@ -31,7 +31,7 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/event.h>
 
-void pcb_hid_notify_crosshair_change(rnd_hidlib_t *hl, pcb_bool changes_complete)
+void pcb_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete)
 {
 	if (pcb_gui->notify_crosshair_change)
 		pcb_gui->notify_crosshair_change(pcb_gui, changes_complete);

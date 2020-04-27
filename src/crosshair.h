@@ -41,25 +41,25 @@
 typedef struct {              /* currently marked block */
 	pcb_point_t Point1, Point2; /* start- and end-position */
 	long int State;
-	pcb_bool otherway;
+	rnd_bool otherway;
 } pcb_attached_box_t;
 
 typedef struct {              /* currently attached object */
-	pcb_coord_t X, Y;           /* saved position when tool is move */
-	pcb_coord_t tx, ty;         /* target position when tool is move */
+	rnd_coord_t X, Y;           /* saved position when tool is move */
+	rnd_coord_t tx, ty;         /* target position when tool is move */
 	pcb_box_t BoundingBox;
 	long int Type;              /* object type */
 	long int State;
 	void *Ptr1, *Ptr2, *Ptr3;   /* three pointers to data, see search.c */
 	pcb_angle_t start_angle, delta_angle;
-	pcb_coord_t radius;
+	rnd_coord_t radius;
 } pcb_attached_object_t;
 
 typedef struct {                         /* holds crosshair, cursor and crosshair-attachment information */
 	pcb_hid_gc_t GC;                       /* GC for cursor drawing */
 	pcb_hid_gc_t AttachGC;                 /* and for displaying buffer contents */
-	pcb_coord_t ptr_x, ptr_y;              /* last seen raw mouse pointer x;y coords */
-	pcb_coord_t X, Y;                      /* (snapped) crosshair position */
+	rnd_coord_t ptr_x, ptr_y;              /* last seen raw mouse pointer x;y coords */
+	rnd_coord_t X, Y;                      /* (snapped) crosshair position */
 	pcb_attached_line_t AttachedLine;      /* data of new lines... */
 	pcb_attached_box_t AttachedBox;
 	pcb_poly_t AttachedPolygon;
@@ -73,7 +73,7 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	/* list of object IDs that could have been dragged so that they can be cycled */
 	long int *drags;
 	int drags_len, drags_current;
-	pcb_coord_t dragx, dragy;              /* the point where drag started */
+	rnd_coord_t dragx, dragy;              /* the point where drag started */
 
 	/* cached tool IDs */
 	int tool_arrow, tool_line, tool_move, tool_arc, tool_poly, tool_poly_hole;
@@ -81,7 +81,7 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 
 typedef struct {
 	pcb_cardinal_t Buffer; /* buffer number */
-	pcb_bool Moving;       /* true if clicked on an object of PCB_SELECT_TYPES */
+	rnd_bool Moving;       /* true if clicked on an object of PCB_SELECT_TYPES */
 	void *ptr1, *ptr2, *ptr3;
 } pcb_crosshair_note_t;
 
@@ -96,22 +96,22 @@ extern pcb_crosshair_note_t pcb_crosshair_note;
 extern pcb_crosshair_t pcb_crosshair;
 extern pcb_mark_t pcb_marked;  /* the point the user explicitly marked, or in some operations where the operation originally started */
 
-void pcb_notify_mark_change(pcb_bool changes_complete);
-void pcb_crosshair_move_relative(pcb_coord_t, pcb_coord_t);
-pcb_bool pcb_crosshair_move_absolute(pcb_coord_t, pcb_coord_t);
+void pcb_notify_mark_change(rnd_bool changes_complete);
+void pcb_crosshair_move_relative(rnd_coord_t, rnd_coord_t);
+rnd_bool pcb_crosshair_move_absolute(rnd_coord_t, rnd_coord_t);
 void pcb_crosshair_init(void);
 void pcb_crosshair_pre_init(void);
 void pcb_crosshair_uninit(void);
-void pcb_crosshair_grid_fit(pcb_coord_t, pcb_coord_t);
-void pcb_center_display(pcb_coord_t X, pcb_coord_t Y);
+void pcb_crosshair_grid_fit(rnd_coord_t, rnd_coord_t);
+void pcb_center_display(rnd_coord_t X, rnd_coord_t Y);
 
-void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing);
+void pcb_crosshair_set_local_ref(rnd_coord_t X, rnd_coord_t Y, rnd_bool Showing);
 
 /*** utility for plugins ***/
-void pcb_xordraw_attached_line(pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t, pcb_coord_t);
-void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last);
-void pcb_xordraw_poly_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr);
-void pcb_xordraw_attached_arc(pcb_coord_t thick);
+void pcb_xordraw_attached_line(rnd_coord_t, rnd_coord_t, rnd_coord_t, rnd_coord_t, rnd_coord_t);
+void pcb_xordraw_poly(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, int dash_last);
+void pcb_xordraw_poly_subc(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, rnd_coord_t w, rnd_coord_t h, int mirr);
+void pcb_xordraw_attached_arc(rnd_coord_t thick);
 void pcb_xordraw_buffer(pcb_buffer_t *Buffer);
 void pcb_xordraw_movecopy(void);
 void pcb_xordraw_insert_pt_obj(void);

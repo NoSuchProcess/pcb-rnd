@@ -57,10 +57,10 @@ conf_gerber_t conf_gerber;
 static pcb_cam_t gerber_cam;
 
 /* These are for films */
-#define gerberX(pcb, x) ((pcb_coord_t) (x))
-#define gerberY(pcb, y) ((pcb_coord_t) ((pcb)->hidlib.size_y - (y)))
-#define gerberXOffset(pcb, x) ((pcb_coord_t) (x))
-#define gerberYOffset(pcb, y) ((pcb_coord_t) (-(y)))
+#define gerberX(pcb, x) ((rnd_coord_t) (x))
+#define gerberY(pcb, y) ((rnd_coord_t) ((pcb)->hidlib.size_y - (y)))
+#define gerberXOffset(pcb, x) ((rnd_coord_t) (x))
+#define gerberYOffset(pcb, y) ((rnd_coord_t) (-(y)))
 
 static int verbose;
 static int all_layers;
@@ -105,7 +105,7 @@ static void fprint_aperture(FILE *f, aperture_t *aptr)
 		break;
 	case OCTAGON:
 		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%[5],22.5*%%\r\n"
-								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (pcb_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
+								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (rnd_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
 		break;
 	}
 }
@@ -333,7 +333,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	/* set up the coord format */
 	i = options[HA_coord_format].lng;
 	if ((i < 0) || (i >= NUM_COORD_FORMATS)) {
-		pcb_message(PCB_MSG_ERROR, "Invalid coordinate format (out of bounds)\n");
+		rnd_message(PCB_MSG_ERROR, "Invalid coordinate format (out of bounds)\n");
 		return;
 	}
 	gerber_cfmt = &coord_format[i];
@@ -406,11 +406,11 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&gerber_cam) == 0) {
 		if (!gerber_cam.okempty_group)
-			pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (gerber_drawn_objs == 0) {
 		if (!gerber_cam.okempty_content)
-			pcb_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 
 	/* in cam mode we have f still open */
@@ -527,7 +527,7 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
 			f = pcb_fopen_askovr(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb", &gerber_ovr); /* Binary needed to force CR-LF */
 			if (f == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
+				rnd_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 				return 1;
 			}
 		}
@@ -631,7 +631,7 @@ static void gerber_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void gerber_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+static void gerber_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *drw_screen)
 {
 	gerber_drawing_mode = op;
 	if ((f != NULL) && (gerber_debug))
@@ -657,7 +657,7 @@ static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void gerber_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void gerber_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
@@ -718,12 +718,12 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 	}
 }
 
-static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_bool m = pcb_false;
+	rnd_bool m = pcb_false;
 	int i;
 	int firstTime = 1;
-	pcb_coord_t startX = 0, startY = 0;
+	rnd_coord_t startX = 0, startY = 0;
 
 	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
 		return;
@@ -769,17 +769,17 @@ static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t 
 	fprintf(f, "G37*\r\n");
 }
 
-static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	gerber_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void gerber_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_bool m = pcb_false;
+	rnd_bool m = pcb_false;
 
 	if (line_slots) {
-		pcb_coord_t dia = gc->width/2;
+		rnd_coord_t dia = gc->width/2;
 		find_aperture(curr_aptr_list, dia*2, ROUND); /* for a real gerber export of the BOUNDARY group: place aperture on the per layer aperture list */
 
 		if (finding_apertures)
@@ -787,7 +787,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	}
 
 	if (x1 != x2 && y1 != y2 && gc->cap == pcb_cap_square) {
-		pcb_coord_t x[5], y[5];
+		rnd_coord_t x[5], y[5];
 		double tx, ty, theta;
 
 		theta = atan2(y2 - y1, x2 - x1);
@@ -844,7 +844,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	}
 }
 
-static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void gerber_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	gerber_draw_line(gc, x1, y1, x1, y2);
 	gerber_draw_line(gc, x1, y1, x2, y1);
@@ -852,9 +852,9 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pc
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void gerber_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
-	pcb_bool m = pcb_false;
+	rnd_bool m = pcb_false;
 	double arcStartX, arcStopX, arcStartY, arcStopY;
 
 	/* we never draw zero-width lines */
@@ -902,10 +902,10 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	   segments.  Note that most arcs in pcb are circles anyway.  */
 	if (width != height) {
 		double step, angle;
-		pcb_coord_t max = width > height ? width : height;
-		pcb_coord_t minr = max - gc->width / 10;
+		rnd_coord_t max = width > height ? width : height;
+		rnd_coord_t minr = max - gc->width / 10;
 		int nsteps;
-		pcb_coord_t x0, y0, x1, y1;
+		rnd_coord_t x0, y0, x1, y1;
 
 		if (minr >= max)
 			minr = max - 1;
@@ -953,7 +953,7 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 	lastY = arcStopY;
 }
 
-static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void gerber_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	if (radius <= 0)
 		return;
@@ -979,10 +979,10 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, 
 	fprintf(f, "D03*\r\n");
 }
 
-static void gerber_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void gerber_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_coord_t x[5];
-	pcb_coord_t y[5];
+	rnd_coord_t x[5];
+	rnd_coord_t y[5];
 	x[0] = x[4] = x1;
 	y[0] = y[4] = y1;
 	x[1] = x1;
@@ -1051,7 +1051,7 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 }
 
 
-static void gerber_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void gerber_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 

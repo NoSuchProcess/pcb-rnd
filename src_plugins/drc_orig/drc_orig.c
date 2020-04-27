@@ -88,7 +88,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 		}
 		break;
 	default:
-		pcb_message(PCB_MSG_ERROR, "hace: Bad Plow object in callback\n");
+		rnd_message(PCB_MSG_ERROR, "hace: Bad Plow object in callback\n");
 	}
 	return PCB_R_DIR_NOT_FOUND;
 
@@ -103,7 +103,7 @@ doIsBad:
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, pcb_coord_t min_wid)
+static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, rnd_coord_t min_wid)
 {
 	pcb_view_t *violation;
 
@@ -254,7 +254,7 @@ void drc_global_pstks(pcb_view_list_t *lst)
 
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
-		pcb_coord_t ring = 0, hole = 0;
+		rnd_coord_t ring = 0, hole = 0;
 		pcb_poly_plows(PCB->Data, PCB_OBJ_PSTK, padstack, padstack, drc_callback, lst);
 		pcb_pstk_drc_check_and_warn(padstack, &ring, &hole, conf_core.design.min_ring, conf_core.design.min_drill);
 		if ((ring > 0) || (hole > 0)) {
@@ -306,7 +306,7 @@ static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
 
 	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 		const char *message = NULL;
-		pcb_coord_t measured, required;
+		rnd_coord_t measured, required;
 		
 		if (o->BoundingBox.X1 > PCB->hidlib.size_x) {
 			message = "Beyond the drawing area, to the right";

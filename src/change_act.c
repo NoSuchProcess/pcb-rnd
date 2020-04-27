@@ -73,11 +73,11 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 	const char *function;
 	const char *delta = NULL;
 	const char *units = NULL;
-	pcb_bool absolute;
-	pcb_coord_t value;
+	rnd_bool absolute;
+	rnd_coord_t value;
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	int got_coords = 0;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangeClearSize, function = argv[1].val.str);
@@ -174,8 +174,8 @@ static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static void ChangeFlag(const char *what, const char *flag_name, int value,
 											 const char *cmd_name)
 {
-	pcb_bool(*set_object) (int, void *, void *, void *);
-	pcb_bool(*set_selected) (int);
+	rnd_bool(*set_object) (int, void *, void *, void *);
+	rnd_bool(*set_selected) (int);
 
 	if (PCB_NSTRCMP(flag_name, "join") == 0) {
 		/* Note: these are backwards, because the flag is "clear" but
@@ -184,7 +184,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		set_selected = value ? pcb_clr_selected_join : pcb_set_selected_join;
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "%s():  Flag \"%s\" is not valid\n", cmd_name, flag_name);
+		rnd_message(PCB_MSG_ERROR, "%s():  Flag \"%s\" is not valid\n", cmd_name, flag_name);
 		return;
 	}
 
@@ -193,14 +193,14 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		{
 			int type;
 			void *ptr1, *ptr2, *ptr3;
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 
 			rnd_hid_get_coords("Click on object to change", &x, &y, 0);
 
 			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 				pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-					pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+					rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			}
 			if (set_object(type, ptr1, ptr2, ptr3))
 				pcb_board_set_changed_flag(pcb_true);
@@ -226,7 +226,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 
 	case F_SelectedNames:
 	case F_SelectedElements:
-		pcb_message(PCB_MSG_ERROR, "Feature not supported\n");
+		rnd_message(PCB_MSG_ERROR, "Feature not supported\n");
 		break;
 
 	case F_Selected:
@@ -275,8 +275,8 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function;
 	const char *delta;
 	const char *units = NULL;
-	pcb_bool absolute;								/* indicates if absolute size is given */
-	pcb_coord_t value;
+	rnd_bool absolute;								/* indicates if absolute size is given */
+	rnd_coord_t value;
 	int type = PCB_OBJ_VOID, tostyle = 0;
 	void *ptr1, *ptr2, *ptr3;
 
@@ -289,7 +289,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			rnd_hid_get_coords("Click on object to change size of", &x, &y, 0);
 			type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
@@ -308,7 +308,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (type != PCB_OBJ_VOID) {
 					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-						pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+						rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 				}
 				if (tostyle) {
 					if (pcb_chg_obj_1st_size(type, ptr1, ptr2, ptr3, value, absolute))
@@ -344,7 +344,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_SelectedNames:
 		case F_SelectedElements:
-			pcb_message(PCB_MSG_ERROR, "Feature not supported.\n");
+			rnd_message(PCB_MSG_ERROR, "Feature not supported.\n");
 			break;
 
 		case F_Selected:
@@ -373,8 +373,8 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *units = NULL;
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
-	pcb_bool absolute;
-	pcb_coord_t value;
+	rnd_bool absolute;
+	rnd_coord_t value;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, Change2ndSize, function = argv[1].val.str);
 	RND_PCB_ACT_CONVARG(2, FGW_STR, Change2ndSize, delta = argv[2].val.str);
@@ -384,7 +384,7 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		int funcid = pcb_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			rnd_hid_get_coords("Select an Object", &x, &y, 0);
 			type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 		}
@@ -489,7 +489,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* change the refdes of a subcircuit */
 		case F_Subc:
 		{
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			rnd_hid_get_coords("Select a subcircuit", &x, &y, 0);
 			type = op = PCB_OBJ_SUBC;
 			goto do_chg_name;
@@ -498,7 +498,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Object:
 		case F_Refdes:
 			{
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				void *ptr1, *ptr2, *ptr3;
 				rnd_hid_get_coords("Select an Object", &x, &y, 0);
 				type = op == F_Refdes ? PCB_OBJ_SUBC : PCB_CHANGENAME_TYPES;
@@ -569,7 +569,7 @@ static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_ToggleObject:
 		case F_Object:
 			{
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 
@@ -618,7 +618,7 @@ static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *
 		case F_Object:
 		case F_Element:
 			{
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 				rnd_hid_get_coords("Select an Element", &x, &y, 0);
@@ -662,13 +662,13 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptr1, *ptr2, *ptr3;
 	int type, kind;
 	int err = 0;
-	pcb_coord_t gx, gy;
+	rnd_coord_t gx, gy;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, SetThermal, function = argv[1].val.str);
 	RND_PCB_ACT_CONVARG(2, FGW_STR, SetThermal, style = argv[2].val.str);
 
 	if (function && *function && style && *style) {
-		pcb_bool absolute;
+		rnd_bool absolute;
 
 		kind = pcb_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
 		if (absolute && (kind <= 5))
@@ -758,7 +758,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int fnc_id;
 	const char *val, *units = NULL;
-	pcb_bool absolute; /* flag for 'absolute' value */
+	rnd_bool absolute; /* flag for 'absolute' value */
 	double value;
 	int err = 0;
 
@@ -807,7 +807,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 {
 	const char *prim;
 	const char *delta;
-	pcb_bool absolute;								/* indicates if absolute size is given */
+	rnd_bool absolute;								/* indicates if absolute size is given */
 	double value;
 	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
@@ -821,12 +821,12 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	else if (pcb_strcasecmp(prim, "delta") == 0) which = 1;
 	else if (pcb_strcasecmp(prim, "both") == 0) which = 2;
 	else {
-		pcb_message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
+		rnd_message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
 		return -1;
 	}
 
 	if (funcid == F_Object) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		rnd_hid_get_coords("Click on object to change angle of", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 	}
@@ -836,7 +836,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		while(isspace(*delta)) delta++;
 		value = strtod(delta, &end);
 		if (*end != '\0') {
-			pcb_message(PCB_MSG_ERROR, "Invalid numeric (in angle)\n");
+			rnd_message(PCB_MSG_ERROR, "Invalid numeric (in angle)\n");
 			return -1;
 		}
 		absolute = ((*delta != '-') && (*delta != '+'));
@@ -848,7 +848,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				if (type != PCB_OBJ_VOID) {
 					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-						pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+						rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_angle(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);
@@ -885,7 +885,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	const char *prim;
 	const char *delta;
 	const char *units;
-	pcb_bool absolute;								/* indicates if absolute size is given */
+	rnd_bool absolute;								/* indicates if absolute size is given */
 	double value;
 	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
@@ -899,12 +899,12 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	else if ((pcb_strcasecmp(prim, "height") == 0) || (pcb_strcasecmp(prim, "y") == 0)) which = 1;
 	else if (pcb_strcasecmp(prim, "both") == 0) which = 2;
 	else {
-		pcb_message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
+		rnd_message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
 		return -1;
 	}
 
 	if (funcid == F_Object) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		rnd_hid_get_coords("Click on object to change radius of", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 	}
@@ -917,7 +917,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				if (type != PCB_OBJ_VOID) {
 					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-						pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+						rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_radius(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);

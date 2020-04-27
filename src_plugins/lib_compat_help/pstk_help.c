@@ -34,7 +34,7 @@
 #include "find.h"
 
 
-pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated)
+pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_bool plated)
 {
 	pcb_pstk_proto_t proto;
 	pcb_cardinal_t pid;
@@ -67,7 +67,7 @@ pcb_layer_type_t lyts[] = {
 #define NUM_LYTS (sizeof(lyts) / sizeof(lyts[0]))
 
 
-static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet, pcb_any_obj_t **cand, int *num_cand, pcb_coord_t cx, pcb_coord_t cy, int plated, pcb_any_obj_t *extrao)
+static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet, pcb_any_obj_t **cand, int *num_cand, rnd_coord_t cx, rnd_coord_t cy, int plated, pcb_any_obj_t *extrao)
 {
 	pcb_pstk_proto_t proto;
 	int l, ci, res = -1;
@@ -121,7 +121,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
 	int l, n, plated, done = 0, ci;
 	pcb_pstk_proto_t *p;
-	pcb_coord_t cx, cy, d, r, valid;
+	rnd_coord_t cx, cy, d, r, valid;
 	pcb_any_obj_t *cand[NUM_LYTS];
 	int num_cand[NUM_LYTS];
 
@@ -206,7 +206,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 {
 	int l, n, done = 0, ci;
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 	pcb_any_obj_t *cand[NUM_LYTS];
 	int num_cand[NUM_LYTS];
 
@@ -283,7 +283,7 @@ int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 }
 
 
-pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated, pcb_coord_t glob_clearance, pcb_pstk_shape_t *shape)
+pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_bool plated, rnd_coord_t glob_clearance, pcb_pstk_shape_t *shape)
 {
 	pcb_pstk_proto_t proto;
 	pcb_cardinal_t pid;
@@ -310,7 +310,7 @@ pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t
 	return pcb_pstk_new(data, -1, pid, x, y, glob_clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
-void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height)
+void pcb_shape_rect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height)
 {
 	pcb_pstk_poly_t *dst = &shape->data.poly;
 
@@ -326,7 +326,7 @@ void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t heig
 	dst->x[3] = -width; dst->y[3] = +height;
 }
 
-void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, pcb_coord_t dx, pcb_coord_t dy)
+void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_pstk_poly_t *dst = &shape->data.poly;
 
@@ -344,7 +344,7 @@ void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coor
 	dst->x[3] = -width-dx; dst->y[3] = +height+dy;
 }
 
-void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height)
+void pcb_shape_oval(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height)
 {
 	shape->shape = PCB_PSSH_LINE;
 

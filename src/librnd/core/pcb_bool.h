@@ -27,7 +27,7 @@
 #ifndef PCB_BOOL_H
 #define PCB_BOOL_H
 /* Because stdbool is not c89 */
-typedef int pcb_bool;
+typedef int rnd_bool;
 typedef enum pcb_bool_e {
 	pcb_false = 0,
 	pcb_true = 1
@@ -43,7 +43,7 @@ typedef enum pcb_bool_op_e {
 	PCB_BOOL_INVALID = -8
 } pcb_bool_op_t;
 
-/* changes the value of pcb_bool dst as requested by pcb_bool_op_t op
+/* changes the value of rnd_bool dst as requested by pcb_bool_op_t op
    WARNING: evaluates dst multiple times */
 #define pcb_bool_op(dst, op) \
 do { \

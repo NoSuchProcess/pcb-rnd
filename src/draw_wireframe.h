@@ -34,10 +34,10 @@
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  */
-PCB_INLINE void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc, pcb_coord_t thick)
+PCB_INLINE void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc, rnd_coord_t thick)
 {
-	pcb_coord_t wid = thick / 2;
-	pcb_coord_t x1, y1, x2, y2;
+	rnd_coord_t wid = thick / 2;
+	rnd_coord_t x1, y1, x2, y2;
 
 	if ((arc->Width == 0) && (arc->Height == 0)) {
 		pcb_render->draw_arc(gc, arc->X, arc->Y, wid, wid, 0, 360);
@@ -58,14 +58,14 @@ PCB_INLINE void pcb_draw_wireframe_arc(pcb_hid_gc_t gc, pcb_arc_t *arc, pcb_coor
 /*-----------------------------------------------------------
  * Draws the outline of a line
  */
-PCB_INLINE void pcb_draw_wireframe_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t thick, int square)
+PCB_INLINE void pcb_draw_wireframe_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, int square)
 {
 	if((x1 != x2) || (y1 != y2)) {
 		double dx = x2 - x1;
 		double dy = y2 - y1;
 		double h = 0.5 * thick / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
-		pcb_coord_t ox = dy * h + 0.5 * SGN(dy);
-		pcb_coord_t oy = -(dx * h + 0.5 * SGN(dx));
+		rnd_coord_t ox = dy * h + 0.5 * SGN(dy);
+		rnd_coord_t oy = -(dx * h + 0.5 * SGN(dx));
 		if (square) {
 			/* make the line longer by cap */
 			x1 -= dx * h;
@@ -94,7 +94,7 @@ PCB_INLINE void pcb_draw_wireframe_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coo
 	else {
 		if (square) {
 			/* square cap 0 long line does not have an angle -> always draw it axis aligned */
-			pcb_coord_t cx1 = x1 - thick/2, cx2 = x1 + thick/2, cy1 = y1 - thick/2, cy2 = y1 + thick/2;
+			rnd_coord_t cx1 = x1 - thick/2, cx2 = x1 + thick/2, cy1 = y1 - thick/2, cy2 = y1 + thick/2;
 			pcb_render->draw_line(gc, cx1, cy1, cx2, cy1);
 			pcb_render->draw_line(gc, cx2, cy1, cx2, cy2);
 			pcb_render->draw_line(gc, cx2, cy2, cx1, cy2);

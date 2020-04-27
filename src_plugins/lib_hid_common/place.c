@@ -139,7 +139,7 @@ static void place_conf_load(conf_role_t role, const char *path, int *val)
 
 	nat = pcb_conf_get_field(path);
 	if ((nat == NULL) || (nat->prop->src == NULL) || (nat->prop->src->type != LHT_TEXT)) {
-		pcb_message(PCB_MSG_ERROR, "Can not load window geometry from invalid node for %s\n", path);
+		rnd_message(PCB_MSG_ERROR, "Can not load window geometry from invalid node for %s\n", path);
 		return;
 	}
 
@@ -228,7 +228,7 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, conf_role_t role, int force)
 	if (role != CFR_DESIGN) {
 		int r = pcb_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), role, NULL);
 		if (r != 0)
-			pcb_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", pcb_conf_role_name(role));
+			rnd_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", pcb_conf_role_name(role));
 	}
 }
 

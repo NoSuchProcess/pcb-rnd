@@ -25,10 +25,10 @@ void spoke_uninit(spoke_t *sp)
 	vtp0_uninit(&sp->slots);
 }
 
-static void spoke_pos(spoke_t *sp, pcb_coord_t spacing, pcb_coord_t *x, pcb_coord_t *y)
+static void spoke_pos(spoke_t *sp, rnd_coord_t spacing, rnd_coord_t *x, rnd_coord_t *y)
 {
 	pcb_box_t *obj_bbox = &((pointdata_t *) sp->p->data)->obj->bbox_naked;
-	pcb_coord_t half_obj_w, half_obj_h;
+	rnd_coord_t half_obj_w, half_obj_h;
 
 	half_obj_w = (obj_bbox->X2 - obj_bbox->X1 + 1) / 2;
 	half_obj_h = (obj_bbox->Y2 - obj_bbox->Y1 + 1) / 2;
@@ -53,11 +53,11 @@ static void spoke_pos(spoke_t *sp, pcb_coord_t spacing, pcb_coord_t *x, pcb_coor
 	}
 }
 
-void spoke_pos_at_wire_point(spoke_t *sp, wire_point_t *wp, pcb_coord_t *x, pcb_coord_t *y)
+void spoke_pos_at_wire_point(spoke_t *sp, wire_point_t *wp, rnd_coord_t *x, rnd_coord_t *y)
 {
 	pointdata_t *pd = wp->p->data;
 	wirelist_node_t *w_node = wp->wire_node;
-	pcb_coord_t spacing;
+	rnd_coord_t spacing;
 
 	assert(w_node != NULL);
 
@@ -84,9 +84,9 @@ void spoke_pos_at_wire_point(spoke_t *sp, wire_point_t *wp, pcb_coord_t *x, pcb_
 	spoke_pos(sp, spacing, x, y);
 }
 
-void spoke_pos_at_slot(spoke_t *sp, int slot, pcb_coord_t *x, pcb_coord_t *y)
+void spoke_pos_at_slot(spoke_t *sp, int slot, rnd_coord_t *x, rnd_coord_t *y)
 {
-	pcb_coord_t spacing = 0;
+	rnd_coord_t spacing = 0;
 	int i;
 
 	assert(slot < vtp0_len(&sp->slots));
@@ -101,9 +101,9 @@ void spoke_pos_at_slot(spoke_t *sp, int slot, pcb_coord_t *x, pcb_coord_t *y)
 	spoke_pos(sp, spacing, x, y);
 }
 
-void spoke_pos_at_end(spoke_t *sp, pcb_coord_t bloat, pcb_coord_t *x, pcb_coord_t *y)
+void spoke_pos_at_end(spoke_t *sp, rnd_coord_t bloat, rnd_coord_t *x, rnd_coord_t *y)
 {
-	pcb_coord_t spacing = 0;
+	rnd_coord_t spacing = 0;
 	int i;
 
 	if (vtp0_len(&sp->slots) > 0) {

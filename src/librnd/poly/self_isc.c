@@ -75,7 +75,7 @@ static pcb_vnode_t *pcb_pline_end_at(pcb_vnode_t *v, pcb_vector_t at)
 	return NULL;
 }
 
-static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, pcb_bool insert)
+static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, rnd_bool insert)
 {
 	int n, m;
 
@@ -211,7 +211,7 @@ static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 	return pline_split_off_loop_new(pl, out, h, start, cnt);
 }
 
-pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl)
+rnd_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 {
 	pcb_vnode_t *va, *vb;
 

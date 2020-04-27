@@ -48,7 +48,7 @@ do { \
    - height is the total net height from bottom to top (depends on number of lines)
    - yoffs is the vertical offset because of the baseline (does not depend on number of lines)
 */
-static font_size_res_t font_text_nominal_size(int font_id, const char *txt, pcb_coord_t *width, pcb_coord_t *height, pcb_coord_t *yoffs)
+static font_size_res_t font_text_nominal_size(int font_id, const char *txt, rnd_coord_t *width, rnd_coord_t *height, rnd_coord_t *yoffs)
 {
 	const char *s;
 	double lw = 0; /* current line width */

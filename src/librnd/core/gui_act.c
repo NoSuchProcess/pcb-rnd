@@ -50,7 +50,7 @@ static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path 
 static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
+		rnd_message(PCB_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -84,20 +84,20 @@ static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup
 static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
+		rnd_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if (pcb_gui->remove_menu == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
+		rnd_message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
 	if (pcb_gui->remove_menu(pcb_gui, argv[1].val.str) != 0) {
-		pcb_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
+		rnd_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
 		RND_ACT_IRES(-1);
 	}
 	else
@@ -147,7 +147,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	};
 	int pan_warp = HID_SC_DO_NOTHING;
 	double dx, dy;
-	pcb_coord_t view_width, view_height;
+	rnd_coord_t view_width, view_height;
 	const char *a1, *a2, *a3, *op;
 	pcb_box_t vbx;
 
@@ -208,7 +208,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* Allow leaving snapped pin/pad/padstack */
 	if (hidlib->tool_snapped_obj_bbox) {
 		pcb_box_t *bbx = hidlib->tool_snapped_obj_bbox;
-		pcb_coord_t radius = ((bbx->X2 - bbx->X1) + (bbx->Y2 - bbx->Y1))/6;
+		rnd_coord_t radius = ((bbx->X2 - bbx->X1) + (bbx->Y2 - bbx->Y1))/6;
 		if (dx < 0)
 			dx -= radius;
 		else if (dx > 0)
@@ -231,7 +231,7 @@ static const char pcb_acth_MoveCursorTo[] = "Move the cursor to absolute coords,
 static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	RND_PCB_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
 	RND_PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
@@ -285,7 +285,7 @@ static const char pcb_acth_GetXY[] = "Get a coordinate. If x or y specified, the
 /* DOC: getxy.html */
 static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	const char *op = NULL, *msg = "Click to enter a coordinate.";
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
@@ -319,10 +319,10 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((pcb_gui != NULL) && (pcb_gui->benchmark != NULL)) {
 		fps = pcb_gui->benchmark(pcb_gui);
-		pcb_message(PCB_MSG_INFO, "%f redraws per second\n", fps);
+		rnd_message(PCB_MSG_INFO, "%f redraws per second\n", fps);
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, "benchmark is not available in the current HID\n");
+		rnd_message(PCB_MSG_ERROR, "benchmark is not available in the current HID\n");
 
 	RND_ACT_DRES(fps);
 	return 0;

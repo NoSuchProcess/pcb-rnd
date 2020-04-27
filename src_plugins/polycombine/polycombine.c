@@ -31,7 +31,7 @@
 #include <librnd/core/actions.h>
 #include "obj_poly.h"
 
-static pcb_polyarea_t *original_poly(pcb_poly_t *p, pcb_bool *forward)
+static pcb_polyarea_t *original_poly(pcb_poly_t *p, rnd_bool *forward)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
@@ -86,7 +86,7 @@ typedef struct poly_tree poly_tree;
 
 struct poly_tree {
 	pcb_poly_t *polygon;
-	pcb_bool forward;
+	rnd_bool forward;
 	pcb_polyarea_t *polyarea;
 	poly_tree *parent;
 	poly_tree *child;
@@ -118,7 +118,7 @@ struct poly_tree {
  * contours can be assumed not to overlap, we can drill down in this
  * order: P1, P2, P3, P4, P5, P6.
  */
-static pcb_bool PolygonContainsPolygon(pcb_polyarea_t *outer, pcb_polyarea_t *inner)
+static rnd_bool PolygonContainsPolygon(pcb_polyarea_t *outer, pcb_polyarea_t *inner)
 {
 /*  int contours_isect;*/
 	/* Should check outer contours don't intersect? */
@@ -134,9 +134,9 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 {
 	poly_tree *cur_node, *next = NULL;
 /*  bool to_insert_isects_cur_node;    Intersection */
-	pcb_bool to_insert_contains_cur_node;	/* Containment */
-	pcb_bool cur_node_contains_to_insert;	/* Containment */
-	pcb_bool placed_to_insert = pcb_false;
+	rnd_bool to_insert_contains_cur_node;	/* Containment */
+	rnd_bool cur_node_contains_to_insert;	/* Containment */
+	rnd_bool placed_to_insert = pcb_false;
 
 	poly_tree *return_root = start_point;
 
@@ -263,7 +263,7 @@ static pcb_polyarea_t *compute_polygon_recursive(poly_tree * root, pcb_polyarea_
 static fgw_error_t pcb_act_polycombine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_polyarea_t *rs;
-	pcb_bool forward;
+	rnd_bool forward;
 	pcb_polyarea_t *np;
 /*  bool outer;
     pcb_polyarea_t *pa;

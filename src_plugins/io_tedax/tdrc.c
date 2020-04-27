@@ -79,7 +79,7 @@ int tedax_drc_save(pcb_board_t *pcb, const char *drcid, const char *fn)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "tedax_drc_save(): can't open %s for writing\n", fn);
+		rnd_message(PCB_MSG_ERROR, "tedax_drc_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
@@ -93,7 +93,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	const drc_rule_t *r;
 	char line[520], *argv[16];
 	int argc, n;
-	pcb_coord_t val[NUM_RULES] = {0};
+	rnd_coord_t val[NUM_RULES] = {0};
 
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
@@ -105,7 +105,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 		if (strcmp(argv[0], "rule") == 0) {
 			double d;
 			for(n = 0, r = rules; n < NUM_RULES; r++,n++) {
-				pcb_bool succ;
+				rnd_bool succ;
 				if ((strcmp(argv[2], r->ttype) != 0) || (strcmp(argv[3], r->tkind) != 0))
 					continue;
 				d = pcb_get_value(argv[4], "mm", NULL, &succ);
@@ -114,13 +114,13 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 						val[n] = d;
 				}
 				else
-					pcb_message(PCB_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);
+					rnd_message(PCB_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);
 			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "drc") == 0))
 			break;
 		else
-			pcb_message(PCB_MSG_ERROR, "ignoring invalid command in drc %s\n", argv[0]);
+			rnd_message(PCB_MSG_ERROR, "ignoring invalid command in drc %s\n", argv[0]);
 	}
 
 	for(n = 0, r = rules; n < NUM_RULES; r++,n++)
@@ -135,7 +135,7 @@ int tedax_drc_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int sil
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "tedax_drc_load(): can't open %s for reading\n", fn);
+		rnd_message(PCB_MSG_ERROR, "tedax_drc_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
 	res = tedax_drc_fload(pcb, f, blk_id, silent);

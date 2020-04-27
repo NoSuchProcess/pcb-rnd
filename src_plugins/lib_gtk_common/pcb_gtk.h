@@ -61,17 +61,17 @@ struct pcb_gtk_impl_s {
 	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
-	void (*draw_grid_local)(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
+	void (*draw_grid_local)(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy);
 
 	/* screen */
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 
-	pcb_bool (*map_color)(const pcb_color_t *inclr, pcb_gtk_color_t *color);
+	rnd_bool (*map_color)(const pcb_color_t *inclr, pcb_gtk_color_t *color);
 	const gchar *(*get_color_name)(pcb_gtk_color_t *color);
 
 	void (*set_special_colors)(conf_native_t *cfg);
-	void (*draw_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh);
+	void (*draw_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh);
 };
 
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
@@ -157,7 +157,7 @@ struct pcb_gtk_port_s {
 	GtkWidget *top_window,        /* toplevel widget */
 	          *drawing_area;      /* and its drawing area */
 
-	pcb_bool drawing_allowed;     /* track if a drawing area is available for rendering */
+	rnd_bool drawing_allowed;     /* track if a drawing area is available for rendering */
 
 	struct render_priv_s *render_priv;
 

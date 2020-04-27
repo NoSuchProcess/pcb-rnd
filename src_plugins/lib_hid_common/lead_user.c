@@ -38,8 +38,8 @@
 #define LEAD_ANIM_SPEED   0.6
 #define LEAD_PERIOD_MS    100
 
-static pcb_coord_t leadx, leady, step;
-static pcb_bool lead;
+static rnd_coord_t leadx, leady, step;
+static rnd_bool lead;
 static pcb_hidval_t lead_timer;
 static rnd_hidlib_t *lead_hidlib;
 
@@ -56,7 +56,7 @@ static void lead_cb(pcb_hidval_t user_data)
 		lead_timer = pcb_gui->add_timer(pcb_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, pcb_coord_t x, pcb_coord_t y, pcb_bool enabled)
+static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_coord_t y, rnd_bool enabled)
 {
 	pcb_hidval_t user_data;
 
@@ -92,7 +92,7 @@ void pcb_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_
 {
 	if (lead) {
 		pcb_hid_gc_t *gc = argv[1].d.p;
-		pcb_coord_t x = leadx + step, y = leady + step;
+		rnd_coord_t x = leadx + step, y = leady + step;
 
 		assert(argv[1].type == PCB_EVARG_PTR);
 

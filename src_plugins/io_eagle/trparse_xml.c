@@ -47,14 +47,14 @@ static int eagle_xml_load(trparse_t *pst, const char *fn)
 
 	f = pcb_fopen_fn(NULL, fn, "r", &efn);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open '%s'\n", fn);
+		rnd_message(PCB_MSG_ERROR, "can't open '%s'\n", fn);
 		return -1;
 	}
 	fclose(f);
 
 	doc = xmlReadFile(efn, NULL, 0);
 	if (doc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "xml parsing error on file %s (%s)\n", fn, efn);
+		rnd_message(PCB_MSG_ERROR, "xml parsing error on file %s (%s)\n", fn, efn);
 		free(efn);
 		return -1;
 	}
@@ -62,7 +62,7 @@ static int eagle_xml_load(trparse_t *pst, const char *fn)
 
 	root = xmlDocGetRootElement(doc);
 	if (xmlStrcmp(root->name, (xmlChar *)"eagle") != 0) {
-		pcb_message(PCB_MSG_ERROR, "xml error: root is not <eagle>\n");
+		rnd_message(PCB_MSG_ERROR, "xml error: root is not <eagle>\n");
 		xmlFreeDoc(doc);
 		return -1;
 	}

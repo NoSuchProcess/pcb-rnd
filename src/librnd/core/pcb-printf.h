@@ -33,7 +33,7 @@
  */
 
 /* This file defines a wrapper around sprintf, that
- *  defines new specifiers that take pcb_coord_t objects
+ *  defines new specifiers that take rnd_coord_t objects
  *  as input.
  *
  * There is a fair bit of nasty (repetitious) code in

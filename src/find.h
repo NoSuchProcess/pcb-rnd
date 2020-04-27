@@ -44,7 +44,7 @@ typedef struct pcb_find_s pcb_find_t;
 struct pcb_find_s {
 	/* public config - all-zero uses the original method, except for flag set */
 	/* low level (will work with isc calls): */
-	pcb_coord_t bloat;              /* perform intersection tests with one object bloated up by this amount (can be negative for shrinking) */
+	rnd_coord_t bloat;              /* perform intersection tests with one object bloated up by this amount (can be negative for shrinking) */
 	unsigned ignore_clearance:1;    /* a flag dictated clearance is no excuse for intersection - useful for overlap calculation between objects on different layers */
 	unsigned allow_noncopper_pstk:1;/* when 1, even non-copper shapes of padstacks will "conduct" in a pstk-pstk check (useful for the drc) */
 
@@ -85,7 +85,7 @@ struct pcb_find_s {
 
 extern const pcb_find_t *pcb_find0; /* nop-configuration for calling isc functions */
 
-unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y);
+unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, rnd_coord_t x, rnd_coord_t y);
 
 /* Find connections starting from an object. The obj() variant initializes the
    search; if from is NULL, don't do the initial search. The obj_next() variant
@@ -96,15 +96,15 @@ unsigned long pcb_find_from_obj_next(pcb_find_t *ctx, pcb_data_t *data, pcb_any_
 void pcb_find_free(pcb_find_t *ctx);
 
 /* High level intersection function: returns if a and b intersect (overlap) */
-pcb_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_obj_t *b);
+rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_obj_t *b);
 
 /* Low level intersection functions: */
-pcb_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t *Line2);
-pcb_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Arc);
-pcb_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Polygon);
-pcb_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyarea_t *pa);
-pcb_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon);
-pcb_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2);
+rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t *Line2);
+rnd_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Arc);
+rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Polygon);
+rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyarea_t *pa);
+rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon);
+rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2);
 pcb_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line);
 
 /* Return whether obj is marked as already visited by the current search context */

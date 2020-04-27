@@ -50,14 +50,14 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	int is_primary;  /* whether the primary parameter should be changed */
-	pcb_bool is_absolute;
-	pcb_coord_t value;     /* delta or absolute (depending on is_absoulute) */
+	rnd_bool is_absolute;
+	rnd_coord_t value;     /* delta or absolute (depending on is_absoulute) */
 } pcb_opctx_chgsize_t;
 
 typedef struct {
 	pcb_board_t *pcb;
 	int is_primary;                 /* whether the primary parameter should be changed */
-	pcb_bool is_absolute;
+	rnd_bool is_absolute;
 	pcb_angle_t value;     /* same as above, but for angles */
 } pcb_opctx_chgangle_t;
 
@@ -74,24 +74,24 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	pcb_coord_t DeltaX, DeltaY; /* movement vector */
+	rnd_coord_t DeltaX, DeltaY; /* movement vector */
 	int from_outside;
 	int keep_id;
 } pcb_opctx_copy_t;
 
 typedef struct {
 	pcb_board_t *pcb;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_cardinal_t idx; /* poly point idx */
-	pcb_bool last;
-	pcb_bool forcible;
+	rnd_bool last;
+	rnd_bool forcible;
 } pcb_opctx_insert_t;
 
 typedef struct {
 	pcb_board_t *pcb;
-	pcb_coord_t dx, dy;         /* used by local routines as offset */
+	rnd_coord_t dx, dy;         /* used by local routines as offset */
 	pcb_layer_t *dst_layer;
-	pcb_bool more_to_come;
+	rnd_bool more_to_come;
 } pcb_opctx_move_t;
 
 typedef struct {
@@ -101,7 +101,7 @@ typedef struct {
 
 typedef struct {
 	pcb_board_t *pcb;
-	pcb_coord_t center_x, center_y; /* center of rotation */
+	rnd_coord_t center_x, center_y; /* center of rotation */
 	unsigned number;                /* number of rotations, for 90 deg rotation */
 	double cosa, sina, angle;       /* for arbitrary angle rotation */
 } pcb_opctx_rotate_t;
@@ -160,6 +160,6 @@ typedef struct {
 } pcb_opfunc_t;
 
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
-pcb_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, pcb_bool Reset, int type, pcb_bool on_locked_too);
+rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too);
 
 #endif

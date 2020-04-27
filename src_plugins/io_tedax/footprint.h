@@ -13,7 +13,7 @@ pcb_subc_t *tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_siz
 /* Save a single subc, with footprint header */
 int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FILE *f);
 
-int tedax_pstk_fsave(pcb_pstk_t *padstack, pcb_coord_t ox, pcb_coord_t oy, FILE *f);
+int tedax_pstk_fsave(pcb_pstk_t *padstack, rnd_coord_t ox, rnd_coord_t oy, FILE *f);
 
 pcb_plug_fp_map_t *tedax_fp_map(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 

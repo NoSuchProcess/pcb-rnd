@@ -143,7 +143,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 			if (shp_found[n] == 0)
 				not_found++;
 		if (not_found)
-			pcb_message(PCB_MSG_ERROR, "This padstack has %d shape(s) that are not listed in the padstack editor\nFor editing all shapes, please break the padstack up\n", not_found);
+			rnd_message(PCB_MSG_ERROR, "This padstack has %d shape(s) that are not listed in the padstack editor\nFor editing all shapes, please break the padstack up\n", not_found);
 	}
 
 	/* proto - hole */
@@ -243,7 +243,7 @@ static void pse_chg_protodup(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	assert(pse->ps->parent_type == PCB_PARENT_DATA);
 	if (proto == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Internal error: can't determine prototype\n");
+		rnd_message(PCB_MSG_ERROR, "Internal error: can't determine prototype\n");
 		return;
 	}
 	proto_id = pcb_pstk_proto_insert_forcedup(pse->ps->parent.data, proto, 0, pcb_data_get_top(pse->ps->parent.data) == pse->pcb);
@@ -351,13 +351,13 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, pcb_hid_attribut
 			if (pse->proto_clr[n] == (attr - pse->attrs))
 				idx = n;
 		if (idx < 0) {
-			pcb_message(PCB_MSG_ERROR, "Can't find shape - clearance unchanged (a)\n");
+			rnd_message(PCB_MSG_ERROR, "Can't find shape - clearance unchanged (a)\n");
 			return;
 		}
 
 		sidx = pcb_pstk_get_shape_idx(&proto->tr.array[0], pcb_proto_layers[idx].mask, pcb_proto_layers[idx].comb);
 		if (sidx < 0) {
-			pcb_message(PCB_MSG_ERROR, "Can't find shape - clearance unchanged (b)\n");
+			rnd_message(PCB_MSG_ERROR, "Can't find shape - clearance unchanged (b)\n");
 			return;
 		}
 
@@ -417,7 +417,7 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 
 	if (ts == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't derive shape: no shapes (empty padstack)\n");
+		rnd_message(PCB_MSG_ERROR, "Can't derive shape: no shapes (empty padstack)\n");
 		return;
 	}
 
@@ -440,7 +440,7 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		if (end > src_shape_names)
 			end--;
 		*end = 0;
-		pcb_message(PCB_MSG_ERROR, "Can't derive shape: source shapes (%s) are empty\n", src_shape_names);
+		rnd_message(PCB_MSG_ERROR, "Can't derive shape: source shapes (%s) are empty\n", src_shape_names);
 		return;
 	}
 
@@ -461,7 +461,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	int src_idx;
 
 	if (ts == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't copy shape: no such source shape (empty padstack)\n");
+		rnd_message(PCB_MSG_ERROR, "Can't copy shape: no such source shape (empty padstack)\n");
 		return;
 	}
 
@@ -469,12 +469,12 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
 
 	if (src_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
+		rnd_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
 		return;
 	}
 
 	if (src_idx == dst_idx) {
-		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape and destination shape are the same layer type\n");
+		rnd_message(PCB_MSG_ERROR, "Can't copy shape: source shape and destination shape are the same layer type\n");
 		return;
 	}
 
@@ -495,7 +495,7 @@ static void pse_shape_swap(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	int src_idx;
 
 	if (ts == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't swap shape: no such shapes (empty padstack)\n");
+		rnd_message(PCB_MSG_ERROR, "Can't swap shape: no such shapes (empty padstack)\n");
 		return;
 	}
 
@@ -503,12 +503,12 @@ static void pse_shape_swap(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	src_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[from].mask, pcb_proto_layers[from].comb);
 
 	if (src_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't swap shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
+		rnd_message(PCB_MSG_ERROR, "Can't swap shape: source shape (%s) is empty\n", pcb_proto_layers[from].name);
 		return;
 	}
 
 	if (src_idx == dst_idx) {
-		pcb_message(PCB_MSG_ERROR, "Can't swap shape: source shape and destination shape are the same layer type\n");
+		rnd_message(PCB_MSG_ERROR, "Can't swap shape: source shape and destination shape are the same layer type\n");
 		return;
 	}
 
@@ -520,19 +520,19 @@ static void pse_shape_swap(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 }
 
 
-static void pse_shape_bloat(void *hid_ctx, void *caller_data, pcb_coord_t sign)
+static void pse_shape_bloat(void *hid_ctx, void *caller_data, rnd_coord_t sign)
 {
 	pse_t *pse = caller_data;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
 	int n, dst_idx = pcb_pstk_get_shape_idx(ts, pcb_proto_layers[pse->editing_shape].mask, pcb_proto_layers[pse->editing_shape].comb);
-	pcb_coord_t bloat = pse->shape_chg[pse->amount].val.crd;
+	rnd_coord_t bloat = pse->shape_chg[pse->amount].val.crd;
 
 	if (bloat <= 0)
 		return;
 
 	if (dst_idx < 0) {
-		pcb_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pcb_proto_layers[pse->editing_shape].name);
+		rnd_message(PCB_MSG_ERROR, "Can't copy shape: source shape (%s) is empty\n", pcb_proto_layers[pse->editing_shape].name);
 		return;
 	}
 
@@ -643,12 +643,12 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 }
 
 /* Auto gen shape on a single layer */
-static int pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape, pcb_coord_t size)
+static int pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape, rnd_coord_t size)
 {
 	int idx = ts->len;
 
 	if (size <= 0) {
-		pcb_message(PCB_MSG_ERROR, "Invalid size - has to be larger than 0\n");
+		rnd_message(PCB_MSG_ERROR, "Invalid size - has to be larger than 0\n");
 		return -1;
 	}
 
@@ -700,7 +700,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	int shape = pse->attrs[pse->gen_shp].val.lng;
 	int expose = pse->attrs[pse->gen_expose].val.lng;
 	int paste = pse->attrs[pse->gen_paste].val.lng;
-	pcb_coord_t size = pse->attrs[pse->gen_size].val.crd;
+	rnd_coord_t size = pse->attrs[pse->gen_size].val.crd;
 	pcb_layer_type_t lyt = sides_lyt[sides];
 	pcb_pstk_tshape_t *ts;
 	pcb_cardinal_t pid;
@@ -729,12 +729,12 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	pcb_pstk_proto_update(&proto);
 	if (pse->gen_shape_in_place) {
 		if (pcb_pstk_proto_replace(pse->data, pse->ps->proto, &proto) == PCB_PADSTACK_INVALID)
-			pcb_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to raplace padstack prototype\n");
+			rnd_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to raplace padstack prototype\n");
 	}
 	else {
 		pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1, 1);
 		if (pid == PCB_PADSTACK_INVALID)
-			pcb_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to insert padstack prototype\n");
+			rnd_message(PCB_MSG_ERROR, "Internal error: pse_gen() failed to insert padstack prototype\n");
 		else
 			pcb_pstk_change_instance(pse->ps, &pid, NULL, NULL, NULL, NULL);
 	}
@@ -1013,13 +1013,13 @@ fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	if (op == F_Object) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		void *ptr1, *ptr2 = NULL, *ptr3;
 		long type;
 		rnd_hid_get_coords("Click on a padstack to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_PSTK) {
-			pcb_message(PCB_MSG_ERROR, "Need a padstack.\n");
+			rnd_message(PCB_MSG_ERROR, "Need a padstack.\n");
 			RND_ACT_IRES(1);
 			return 0;
 		}

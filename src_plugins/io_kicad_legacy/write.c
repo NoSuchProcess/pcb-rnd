@@ -78,13 +78,13 @@ TODO(": need a subc dedup")
 /* via is: Position shape Xstart Ystart Xend Yend width
    Description layer 0 netcode timestamp status
    Shape parameter is set to 0 (reserved for future) */
-static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_vias(FILE *FP, pcb_data_t *Data, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_pstk_t *ps;
-	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+	rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 	pcb_pstk_compshape_t cshape;
-	pcb_bool plated;
+	rnd_bool plated;
 
 	padstacklist_foreach(&Data->padstack, &it, ps) {
 		if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
@@ -111,7 +111,7 @@ TODO(": do not hardwire this")
 	return 0;
 }
 
-static int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -140,13 +140,13 @@ static int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb
 	}
 }
 
-static int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
 	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
 	pcb_cardinal_t currentLayer = number;
-	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
+	rnd_coord_t radius, xStart, yStart, xEnd, yEnd;
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
 	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
 
@@ -200,22 +200,22 @@ static int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_l
 	}
 }
 
-static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
-	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
-	pcb_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
+	rnd_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
+	rnd_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
 	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */
 	int direction;
 
-	pcb_coord_t defaultXSize;
-	pcb_coord_t defaultYSize;
-	pcb_coord_t strokeThickness;
+	rnd_coord_t defaultXSize;
+	rnd_coord_t defaultYSize;
+	rnd_coord_t strokeThickness;
 	int rotation;
-	pcb_coord_t textOffsetX;
-	pcb_coord_t textOffsetY;
-	pcb_coord_t halfStringWidth;
-	pcb_coord_t halfStringHeight;
+	rnd_coord_t textOffsetX;
+	rnd_coord_t textOffsetY;
+	rnd_coord_t halfStringWidth;
+	rnd_coord_t halfStringHeight;
 	int localFlag;
 
 	gdl_iterator_t it;
@@ -360,10 +360,10 @@ static void print_pstk_net(FILE *FP, pcb_board_t *Layout, pcb_pstk_t *ps)
 		fprintf(FP, "Ne 0 \"\"\n"); /* unconnected pads have zero for net */
 }
 
-static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *subc, pcb_coord_t xOffset, pcb_coord_t yOffset, const char *uname)
+static int io_kicad_legacy_write_subc(FILE *FP, pcb_board_t *pcb, pcb_subc_t *subc, rnd_coord_t xOffset, rnd_coord_t yOffset, const char *uname)
 {
 	pcb_pstk_t *ps;
-	pcb_coord_t ox, oy, sox, soy;
+	rnd_coord_t ox, oy, sox, soy;
 	int on_bottom;
 	int copperLayer; /* hard coded default, 0 is bottom copper */
 	gdl_iterator_t it;
@@ -408,9 +408,9 @@ TODO(": figure how to turn off displaying these")
 
 	/* export padstacks */
 	padstacklist_foreach(&subc->data->padstack, &it, ps) {
-		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
+		rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
 		pcb_pstk_compshape_t cshape;
-		pcb_bool plated, square, nopaste;
+		rnd_bool plated, square, nopaste;
 		double psrot;
 
 		if (ps->term == NULL) {
@@ -451,7 +451,7 @@ TODO(": figure how to turn off displaying these")
 			int n, has_mask = 0, on_bottom;
 			pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(subc->data, ps->proto);
 			pcb_pstk_tshape_t *tshp = &proto->tr.array[0];
-			pcb_coord_t w, h, cx, cy;
+			rnd_coord_t w, h, cx, cy;
 			int found = 0;
 
 			fputs("$PAD\n", FP); /* start pad descriptor for an smd pad */
@@ -547,7 +547,7 @@ TODO("hshadow TODO")
 		pcb_arc_t *arc;
 		pcb_poly_t *poly;
 		pcb_text_t *text;
-		pcb_coord_t arcStartX, arcStartY, arcEndX, arcEndY;
+		rnd_coord_t arcStartX, arcStartY, arcEndX, arcEndY;
 		int silkLayer;
 
 		if (!(lyt & PCB_LYT_SILK)) {
@@ -600,7 +600,7 @@ TODO("hshadow TODO")
 	return 0;
 }
 
-static int write_kicad_legacy_layout_subcs(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_subcs(FILE *FP, pcb_board_t *Layout, pcb_data_t *Data, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	gdl_iterator_t sit;
 	pcb_subc_t *subc;
@@ -619,7 +619,7 @@ TODO(": what did we need this for?")
 	return 0;
 }
 
-static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, pcb_coord_t xOffset, pcb_coord_t yOffset)
+static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	int i, j;
 	gdl_iterator_t it;
@@ -703,7 +703,7 @@ TODO("no hardwiring of dates")
 	return 0;
 }
 
-int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	pcb_cardinal_t i;
 	int kicadLayerCount = 0;
@@ -711,7 +711,7 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 	int layer = 0;
 	int currentKicadLayer = 0;
 	int currentGroup = 0;
-	pcb_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
+	rnd_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
 
 	int bottomCount;
 	pcb_layer_id_t *bottomLayers;
@@ -726,8 +726,8 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 	int outlineCount;
 	pcb_layer_id_t *outlineLayers;
 
-	pcb_coord_t LayoutXOffset;
-	pcb_coord_t LayoutYOffset;
+	rnd_coord_t LayoutXOffset;
+	rnd_coord_t LayoutYOffset;
 
 	/* Kicad expects a layout "sheet" size to be specified in mils, and A4, A3 etc... */
 	int A4HeightMil = 8267;

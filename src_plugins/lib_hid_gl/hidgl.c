@@ -50,14 +50,14 @@ void hidgl_init(void)
 }
 
 static pcb_composite_op_t composite_op = PCB_HID_COMP_RESET;
-static pcb_bool direct_mode = pcb_true;
+static rnd_bool direct_mode = pcb_true;
 static int comp_stencil_bit = 0;
 
 static GLfloat *grid_points = NULL;
 static int grid_point_capacity = 0;
 
 
-static inline void mode_reset(pcb_bool direct, const pcb_box_t *screen)
+static inline void mode_reset(rnd_bool direct, const pcb_box_t *screen)
 {
 	drawgl_flush();
 	drawgl_reset();
@@ -67,7 +67,7 @@ static inline void mode_reset(pcb_bool direct, const pcb_box_t *screen)
 	comp_stencil_bit = 0;
 }
 
-static inline void mode_positive(pcb_bool direct, const pcb_box_t *screen)
+static inline void mode_positive(rnd_bool direct, const pcb_box_t *screen)
 {
 	if (comp_stencil_bit == 0)
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
@@ -79,7 +79,7 @@ static inline void mode_positive(pcb_bool direct, const pcb_box_t *screen)
 	stencilgl_mode_write_set(comp_stencil_bit);
 }
 
-static inline void mode_positive_xor(pcb_bool direct, const pcb_box_t *screen)
+static inline void mode_positive_xor(rnd_bool direct, const pcb_box_t *screen)
 {
 	drawgl_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -88,7 +88,7 @@ static inline void mode_positive_xor(pcb_bool direct, const pcb_box_t *screen)
 	glLogicOp(GL_XOR);
 }
 
-static inline void mode_negative(pcb_bool direct, const pcb_box_t *screen)
+static inline void mode_negative(rnd_bool direct, const pcb_box_t *screen)
 {
 	glEnable(GL_STENCIL_TEST);
 	glDisable(GL_COLOR_LOGIC_OP);
@@ -110,7 +110,7 @@ static inline void mode_negative(pcb_bool direct, const pcb_box_t *screen)
 	drawgl_set_marker();
 }
 
-static inline void mode_flush(pcb_bool direct, pcb_bool xor_mode, const pcb_box_t *screen)
+static inline void mode_flush(rnd_bool direct, rnd_bool xor_mode, const pcb_box_t *screen)
 {
 	drawgl_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -140,9 +140,9 @@ pcb_composite_op_t hidgl_get_drawing_mode()
 	return composite_op;
 }
 
-void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
-	pcb_bool xor_mode = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
+	rnd_bool xor_mode = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
 
 	/* If the previous mode was NEGATIVE then all of the primitives drawn
 	 * in that mode were used only for creating the stencil and will not be 
@@ -181,7 +181,7 @@ void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool dire
 }
 
 
-void hidgl_fill_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	drawgl_add_triangle(x1, y1, x1, y2, x2, y2);
 	drawgl_add_triangle(x2, y1, x2, y2, x1, y1);
@@ -196,10 +196,10 @@ static inline void reserve_grid_points(int n)
 	}
 }
 
-void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
+void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius)
 {
 	int npoints = 0;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	/* PI is approximated with 3.25 here - allows a minimal overallocation, speeds up calculations */
 	const int r2 = radius * radius;
@@ -227,7 +227,7 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy,
 
 void hidgl_draw_grid(rnd_hidlib_t *hidlib, pcb_box_t *drawn_area)
 {
-	pcb_coord_t x1, y1, x2, y2, n, i;
+	rnd_coord_t x1, y1, x2, y2, n, i;
 	double x, y;
 
 	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), hidlib->grid, hidlib->grid_ox);
@@ -236,13 +236,13 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, pcb_box_t *drawn_area)
 	y2 = pcb_grid_fit(MIN(hidlib->size_y, drawn_area->Y2), hidlib->grid, hidlib->grid_oy);
 
 	if (x1 > x2) {
-		pcb_coord_t tmp = x1;
+		rnd_coord_t tmp = x1;
 		x1 = x2;
 		x2 = tmp;
 	}
 
 	if (y1 > y2) {
-		pcb_coord_t tmp = y1;
+		rnd_coord_t tmp = y1;
 		y1 = y2;
 		y2 = tmp;
 	}
@@ -281,7 +281,7 @@ int calc_slices(float pix_radius, float sweep_angle)
 
 #define MIN_TRIANGLES_PER_CAP 3
 #define MAX_TRIANGLES_PER_CAP 90
-static void draw_cap(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_angle_t angle, double scale)
+static void draw_cap(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, pcb_angle_t angle, double scale)
 {
 	float last_capx, last_capy;
 	float capx, capy;
@@ -310,13 +310,13 @@ static void draw_cap(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_angle_
 
 #define NEEDS_CAP(width, coord_per_pix) (width > coord_per_pix)
 
-void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, double scale)
+void hidgl_draw_line(int cap, rnd_coord_t width, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, double scale)
 {
 	double angle;
 	float deltax, deltay, length;
 	float wdx, wdy;
 	int circular_caps = 0;
-	pcb_coord_t orig_width = width;
+	rnd_coord_t orig_width = width;
 
 	if ((width == 0) || (!NEEDS_CAP(orig_width, scale)))
 		drawgl_add_line(x1, y1, x2, y2);
@@ -380,7 +380,7 @@ void hidgl_draw_line(int cap, pcb_coord_t width, pcb_coord_t x1, pcb_coord_t y1,
 
 #define MIN_SLICES_PER_ARC 6
 #define MAX_SLICES_PER_ARC 360
-void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t rx, pcb_coord_t ry, pcb_angle_t start_angle, pcb_angle_t delta_angle, double scale)
+void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_coord_t rx, rnd_coord_t ry, pcb_angle_t start_angle, pcb_angle_t delta_angle, double scale)
 {
 	float last_inner_x, last_inner_y;
 	float last_outer_x, last_outer_y;
@@ -395,7 +395,7 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 	int slices;
 	int i;
 	int hairline = 0;
-	pcb_coord_t orig_width = width;
+	rnd_coord_t orig_width = width;
 
 	/* TODO: Draw hairlines as lines instead of triangles ? */
 
@@ -461,17 +461,17 @@ void hidgl_draw_arc(pcb_coord_t width, pcb_coord_t x, pcb_coord_t y, pcb_coord_t
 	}
 }
 
-void hidgl_draw_rect(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+void hidgl_draw_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	drawgl_add_rectangle(x1, y1, x2, y2);
 }
 
-void hidgl_draw_texture_rect(	pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned long texture_id )
+void hidgl_draw_texture_rect(	rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned long texture_id )
 {
 	drawgl_add_texture_quad(x1,y1,0.0,0.0, x2,y1,1.0,0.0, x2,y2,1.0,1.0, x1,y2,0.0,1.0, texture_id);
 }
 
-void hidgl_fill_circle(pcb_coord_t vx, pcb_coord_t vy, pcb_coord_t vr, double scale)
+void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double scale)
 {
 #define MIN_TRIANGLES_PER_CIRCLE 6
 #define MAX_TRIANGLES_PER_CIRCLE 360
@@ -598,7 +598,7 @@ static void myVertex(GLdouble *vertex_data)
 }
 
 /* Intentaional code duplication for performance */
-void hidgl_fill_polygon(int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+void hidgl_fill_polygon(int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	int i;
 	GLUtesselator *tobj;
@@ -633,7 +633,7 @@ void hidgl_fill_polygon(int n_coords, pcb_coord_t *x, pcb_coord_t *y)
 }
 
 /* Intentaional code duplication for performance */
-void hidgl_fill_polygon_offs(int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	GLUtesselator *tobj;

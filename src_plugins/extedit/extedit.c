@@ -84,7 +84,7 @@ typedef struct {
 	pcb_hidval_t wid;
 } extedit_wait_t;
 
-pcb_bool extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data)
+rnd_bool extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data)
 {
 	char tmp[128];
 	int res;
@@ -178,21 +178,21 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int bn = PCB_MAX_BUFFER - 1, load_bn = PCB_MAX_BUFFER - 1;
 	int obn = conf_core.editor.buffer_number;
 	int paste = 0, del_selected = 0;
-	pcb_coord_t pastex = 0, pastey = 0;
+	rnd_coord_t pastex = 0, pastey = 0;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, extedit, cmd = argv[1].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, extedit, method = argv[2].val.str);
 
 	/* pick up the object to edit */
 	if ((cmd == NULL) || (pcb_strcasecmp(cmd, "object") == 0)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		rnd_hid_get_coords("Click on object to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 
 		pcb_buffer_set_number(bn);
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		if (pcb_copy_obj_to_buffer(PCB, pcb_buffers[bn].Data, PCB->Data, type, ptr1, ptr2, ptr3) == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Failed to copy target objects to temporary paste buffer\n");
+			rnd_message(PCB_MSG_ERROR, "Failed to copy target objects to temporary paste buffer\n");
 			goto quit0;
 		}
 		paste = 1;
@@ -206,19 +206,19 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		del_selected = 1;
 		paste = 1;
 		if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-			pcb_message(PCB_MSG_WARNING, "Nothing is selected, can't ext-edit selection\n");
+			rnd_message(PCB_MSG_WARNING, "Nothing is selected, can't ext-edit selection\n");
 			goto quit0;
 		}
 	}
 	else if ((argc > 1) && (pcb_strcasecmp(cmd, "buffer") == 0)) {
 		load_bn = bn = conf_core.editor.buffer_number;
 		if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-			pcb_message(PCB_MSG_WARNING, "Nothing in current buffer, can't ext-edit selection\n");
+			rnd_message(PCB_MSG_WARNING, "Nothing in current buffer, can't ext-edit selection\n");
 			goto quit0;
 		}
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Wrong 1st argument '%s'\n", cmd);
+		rnd_message(PCB_MSG_ERROR, "Wrong 1st argument '%s'\n", cmd);
 		ret = 1;
 		goto quit0;
 	}
@@ -230,13 +230,13 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 		}
 		if (mth->name == NULL) {
-			pcb_message(PCB_MSG_ERROR, "unknown method '%s'; available methods:\n", method);
+			rnd_message(PCB_MSG_ERROR, "unknown method '%s'; available methods:\n", method);
 			for(mth = methods; mth->name != NULL; mth++) {
 				if (mth != methods)
-					pcb_message(PCB_MSG_ERROR, ", ", mth->name);
-				pcb_message(PCB_MSG_ERROR, "%s", mth->name);
+					rnd_message(PCB_MSG_ERROR, ", ", mth->name);
+				rnd_message(PCB_MSG_ERROR, "%s", mth->name);
 			}
-			pcb_message(PCB_MSG_ERROR, "\n");
+			rnd_message(PCB_MSG_ERROR, "\n");
 			ret = 1;
 			goto quit0;
 		}
@@ -252,7 +252,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	tmp_fn = pcb_tempfile_name_new("extedit");
 	tmp_cfg_fn = pcb_tempfile_name_new("extedit_cfg");
 	if ((tmp_fn == NULL) || (tmp_cfg_fn == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "Failed to create temporary file\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to create temporary file\n");
 		ret = 1;
 		goto quit1;
 	}
@@ -268,7 +268,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				f = pcb_fopen(&PCB->hidlib, tmp_fn, "w");
 				if (f == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Failed to open temporary file\n");
+					rnd_message(PCB_MSG_ERROR, "Failed to open temporary file\n");
 					goto quit1;
 				}
 
@@ -280,7 +280,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				if (res != 0) {
 					fclose(f);
-					pcb_message(PCB_MSG_ERROR, "Failed to export target objects to lihata footprint.\n");
+					rnd_message(PCB_MSG_ERROR, "Failed to export target objects to lihata footprint.\n");
 					goto quit1;
 				}
 				fclose(f);
@@ -303,7 +303,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 
 				if (io_lihata_parse_subc(plug_io_lihata_default, pcb_buffers[bn].Data, tmp_fn, NULL) != 0) {
-					pcb_message(PCB_MSG_ERROR, "Failed to load the edited footprint. File left at '%s'.\n", tmp_fn);
+					rnd_message(PCB_MSG_ERROR, "Failed to load the edited footprint. File left at '%s'.\n", tmp_fn);
 					ret = 1;
 					goto quit1;
 				}

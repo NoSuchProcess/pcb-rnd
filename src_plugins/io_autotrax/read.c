@@ -86,7 +86,7 @@ static void sym_flush(rnd_hidlib_t *hl, symattr_t *sattr)
 {
 	if (sattr->refdes != NULL) {
 		if (sattr->footprint == NULL)
-			pcb_message(PCB_MSG_ERROR, "protel autotrax: not importing refdes=%s: no footprint specified\n", sattr->refdes);
+			rnd_message(PCB_MSG_ERROR, "protel autotrax: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
 			rnd_actionva(hl, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
@@ -107,9 +107,9 @@ typedef struct {
 	conf_role_t settings_dest;
 	pcb_layer_id_t protel_to_stackup[14];
 	int lineno;
-	pcb_coord_t mask_clearance;
-	pcb_coord_t copper_clearance;
-	pcb_coord_t minimum_comp_pin_drill;
+	rnd_coord_t mask_clearance;
+	rnd_coord_t copper_clearance;
+	rnd_coord_t minimum_comp_pin_drill;
 	int trax_version;
 	int ignored_keepout_element;
 	int ignored_layer_zero_element;
@@ -128,14 +128,14 @@ static pcb_layer_t *autotrax_get_layer(read_state_t *st, pcb_subc_t *subc, int a
 		return NULL;
 	}
 	if (autotrax_layer == 0) {
-		pcb_message(PCB_MSG_ERROR, "Ignored '%s' on easy/autotrax layer zero, %s:%d\n", otyp, st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Ignored '%s' on easy/autotrax layer zero, %s:%d\n", otyp, st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
 		return NULL;
 	}
 
 	lid = st->protel_to_stackup[autotrax_layer];
 	if (lid < 0) {
-		pcb_message(PCB_MSG_ERROR, "Ignored '%s' on easy/autotrax unknown layer %d, %s:%d\n", otyp, autotrax_layer, st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Ignored '%s' on easy/autotrax unknown layer %d, %s:%d\n", otyp, autotrax_layer, st->Filename, st->lineno);
 		return NULL;
 	}
 
@@ -155,7 +155,7 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	char line[MAXREAD], *t;
 	int success;
 	int valid = 1;
-	pcb_coord_t X, Y, linewidth;
+	rnd_coord_t X, Y, linewidth;
 	int scaling = 100;
 	unsigned direction = 0; /* default is horizontal */
 	pcb_flag_t Flags;
@@ -189,19 +189,19 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 			qparse_free(argc, &argv);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Insufficient free string attribute fields, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Insufficient free string attribute fields, %s:%d\n", st->Filename, st->lineno);
 			qparse_free(argc, &argv);
 			return -1;
 		}
 	}
 
 	if (!valid) {
-		pcb_message(PCB_MSG_ERROR, "Failed to parse text attribute fields, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Failed to parse text attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Empty free string text field, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Empty free string text field, %s:%d\n", st->Filename, st->lineno);
 		strcpy(line, "(empty text field)");
 	} /* this helps the parser fail more gracefully if excessive newlines, or empty text field */
 
@@ -227,7 +227,7 @@ TODO("textrot: is there a real rotation angle available?")
 TODO("do not use strlen() for this, decide where to move this code")
 /*
 		if (strlen(t) == 0) {
-			pcb_message(PCB_MSG_ERROR, "Empty free string not placed on layout, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Empty free string not placed on layout, %s:%d\n", st->Filename, st->lineno);
 			return 0;
 		}
 */
@@ -237,7 +237,7 @@ TODO("do not use strlen() for this, decide where to move this code")
 static int rdax_track(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 {
 	char line[MAXREAD];
-	pcb_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
+	rnd_coord_t X1, Y1, X2, Y2, Thickness, Clearance;
 	pcb_flag_t Flags = pcb_flag_make(0);
 	int autotrax_layer = 0;
 	int success;
@@ -272,7 +272,7 @@ static int rdax_track(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 			qparse_free(argc, &argv);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Insufficient track attribute fields, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Insufficient track attribute fields, %s:%d\n", st->Filename, st->lineno);
 			qparse_free(argc, &argv);
 			return -1;
 		}
@@ -297,7 +297,7 @@ static int rdax_arc(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	int autotrax_layer = 0;
 	pcb_layer_t *ly;
 
-	pcb_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
+	rnd_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
 	pcb_angle_t start_angle = 0.0;
 	pcb_angle_t delta = 360.0;
 
@@ -333,13 +333,13 @@ static int rdax_arc(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		}
 		else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient arc attribute fields, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Insufficient arc attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (!valid) {
-		pcb_message(PCB_MSG_ERROR, "Unable to parse arc attribute fields, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Unable to parse arc attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -440,7 +440,7 @@ static int rdax_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	int valid = 1;
 	pcb_data_t *data = (subc == NULL) ? st->pcb->Data : subc->data;
 	pcb_pstk_t *ps;
-	pcb_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
+	rnd_coord_t X, Y, Thickness, Clearance, Mask, Drill; /* not sure what to do with mask */
 
 	Thickness = 0;
 	Clearance = st->copper_clearance; /* start with sane default */
@@ -469,13 +469,13 @@ static int rdax_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		}
 		else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient via attribute fields, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Insufficient via attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (!valid) {
-		pcb_message(PCB_MSG_ERROR, "Unable to parse via attribute fields, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Unable to parse via attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -498,7 +498,7 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 	int autotrax_layer = 0;
 	int valid = 1;
 	int success;
-	pcb_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill;
+	rnd_coord_t X, Y, X_size, Y_size, Thickness, Clearance, Mask, Drill;
 	pcb_data_t *data = (subc == NULL) ? st->pcb->Data : subc->data;
 	pcb_pstk_t *ps;
 
@@ -516,7 +516,7 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 		argc = qparse2(s, &argv, 0);
 		if (argc <= 6) {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 		X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
@@ -541,14 +541,14 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 	}
 
 	if (!valid) {
-		pcb_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
 /* now find name as string on next line and copy it */
 TODO("can not exit above if we need to read this line")
 	if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error parsing pad text field line, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Error parsing pad text field line, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 	s = line;
@@ -561,19 +561,19 @@ TODO("can not exit above if we need to read this line")
 	   so we warn the user is this is the case */
 	switch (Connects) {
 		case 1:
-			pcb_message(PCB_MSG_ERROR, "pin clears PWR/GND, %s:%d.\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "pin clears PWR/GND, %s:%d.\n", st->Filename, st->lineno);
 			break;
 		case 2:
-			pcb_message(PCB_MSG_ERROR, "pin requires relief to GND plane, %s:%d.\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "pin requires relief to GND plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
 		case 4:
-			pcb_message(PCB_MSG_ERROR, "pin requires relief to PWR plane, %s:%d.\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "pin requires relief to PWR plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
 		case 3:
-			pcb_message(PCB_MSG_ERROR, "pin should connect to PWR plane, %s:%d.\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "pin should connect to PWR plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
 		case 5:
-			pcb_message(PCB_MSG_ERROR, "pin should connect to GND plane, %s:%d.\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "pin should connect to GND plane, %s:%d.\n", st->Filename, st->lineno);
 			break;
 	}
 
@@ -581,7 +581,7 @@ TODO("can not exit above if we need to read this line")
 	Mask = Thickness + st->mask_clearance;
 
 	if (autotrax_layer == 0) {
-		pcb_message(PCB_MSG_ERROR, "Ignored pad on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Ignored pad on easy/autotrax layer zero, %s:%d\n", st->Filename, st->lineno);
 		st->ignored_layer_zero_element++;
 		return 0;
 	}
@@ -597,7 +597,7 @@ TODO("can not exit above if we need to read this line")
     5 Cross Hair Target
     6 Moiro Target */
 	if ((Shape == 5) || (Shape == 6)) {
-		pcb_message(PCB_MSG_ERROR, "Unsupported FP target shape %d, %s:%d.\n", Shape, st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Unsupported FP target shape %d, %s:%d.\n", Shape, st->Filename, st->lineno);
 		return 0;
 	}
 
@@ -633,14 +633,14 @@ TODO("can not exit above if we need to read this line")
 					sh[n].layer_mask |= PCB_LYT_BOTTOM;
 				break;
 			default:
-				pcb_message(PCB_MSG_ERROR, "Unsupported FP layer: %d, %s:%d.\n", autotrax_layer, st->Filename, st->lineno);
+				rnd_message(PCB_MSG_ERROR, "Unsupported FP layer: %d, %s:%d.\n", autotrax_layer, st->Filename, st->lineno);
 				return 0;
 		}
 
 		switch(Shape) {
 			case 1: /* round */
 				for(n = 0; n < 7; n++) {
-					pcb_coord_t clr = (sh[n].layer_mask & PCB_LYT_MASK) ? Clearance : 0;
+					rnd_coord_t clr = (sh[n].layer_mask & PCB_LYT_MASK) ? Clearance : 0;
 					if (sh[n].layer_mask == 0) break;
 					pcb_shape_oval(&sh[n], X_size+clr, Y_size+clr);
 				}
@@ -649,7 +649,7 @@ TODO("can not exit above if we need to read this line")
 			case 4: /* round-rect - for now */
 TODO("generate round-rect")
 				for(n = 0; n < 7; n++) {
-					pcb_coord_t clr = (sh[n].layer_mask & PCB_LYT_MASK) ? Clearance : 0;
+					rnd_coord_t clr = (sh[n].layer_mask & PCB_LYT_MASK) ? Clearance : 0;
 					if (sh[n].layer_mask == 0) break;
 					pcb_shape_rect(&sh[n], X_size+clr, Y_size+clr);
 				}
@@ -657,12 +657,12 @@ TODO("generate round-rect")
 			case 3: /* octa */
 TODO("generate octa")
 			default:
-				pcb_message(PCB_MSG_ERROR, "Unsupported FP shape: %d, %s:%d.\n", Shape, st->Filename, st->lineno);
+				rnd_message(PCB_MSG_ERROR, "Unsupported FP shape: %d, %s:%d.\n", Shape, st->Filename, st->lineno);
 				return 0;
 		}
 		ps = pcb_pstk_new_from_shape(data, X, Y, Drill, 1, Clearance, sh);
 		if (ps == NULL)
-			pcb_message(PCB_MSG_ERROR, "Failed to convert FP to padstack, %s:%d.\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Failed to convert FP to padstack, %s:%d.\n", st->Filename, st->lineno);
 
 		return (ps != NULL);
 	}
@@ -677,7 +677,7 @@ static int rdax_fill(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	char line[MAXREAD];
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
-	pcb_coord_t X1, Y1, X2, Y2, Clearance;
+	rnd_coord_t X1, Y1, X2, Y2, Clearance;
 	pcb_layer_t *ly;
 
 	Clearance = st->copper_clearance; /* start with sane default */
@@ -705,13 +705,13 @@ TODO("do not use get_value_ex for plain integers (revise the whole file for this
 		}
 		else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient fill attribute fields, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Insufficient fill attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (!valid) {
-		pcb_message(PCB_MSG_ERROR, "Fill attribute fields unable to be parsed, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Fill attribute fields unable to be parsed, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -723,7 +723,7 @@ TODO("figure if autotrax really converts layer 1 and 6 polygons to pads")
 
 		polygon = pcb_poly_new(ly, 0, flags);
 		if (polygon == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Failed to allocate polygon, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Failed to allocate polygon, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 
@@ -737,7 +737,7 @@ TODO("figure if autotrax really converts layer 1 and 6 polygons to pads")
 		return 1;
 	}
 	else {
-		pcb_coord_t w = X2-X1, h = Y2-Y1;
+		rnd_coord_t w = X2-X1, h = Y2-Y1;
 		pcb_pstk_shape_t sh[4];
 		pcb_layer_type_t side;
 		int n;
@@ -756,7 +756,7 @@ TODO("figure if autotrax really converts layer 1 and 6 polygons to pads")
 		pcb_shape_rect(&sh[2], w, h);
 		if (pcb_pstk_new_from_shape(subc->data, (X1+X2)/2, (Y1+Y2)/2, 0, 0, Clearance, sh) != NULL)
 			return 1;
-		pcb_message(PCB_MSG_ERROR, "SMD pad: filed to convert from polygon, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "SMD pad: filed to convert from polygon, %s:%d\n", st->Filename, st->lineno);
 	}
 
 	return -1;
@@ -796,7 +796,7 @@ static int autotrax_create_layers(read_state_t *st)
 		st->protel_to_stackup[13] = pcb_layer_create(st->pcb, gid, "Multi", 0);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Unable to create Keepout, Multi layers in default top silk group\n");
+		rnd_message(PCB_MSG_ERROR, "Unable to create Keepout, Multi layers in default top silk group\n");
 	}
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
@@ -853,7 +853,7 @@ static int rdax_net(read_state_t *st, FILE *FP)
 		netname = pcb_strdup(line);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "Empty netlist name found, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Empty netlist name found, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 	fgetline(line, sizeof(line), FP, st->lineno);
@@ -865,11 +865,11 @@ static int rdax_net(read_state_t *st, FILE *FP)
 			in_comp = 1;
 			while(in_comp) {
 				if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-					pcb_message(PCB_MSG_ERROR, "Empty line in netlist COMP, %s:%d\n", st->Filename, st->lineno);
+					rnd_message(PCB_MSG_ERROR, "Empty line in netlist COMP, %s:%d\n", st->Filename, st->lineno);
 				}
 				else {
 					if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-						pcb_message(PCB_MSG_ERROR, "Empty netlist REFDES, %s:%d\n", st->Filename, st->lineno);
+						rnd_message(PCB_MSG_ERROR, "Empty netlist REFDES, %s:%d\n", st->Filename, st->lineno);
 					}
 					else {
 						s = line;
@@ -879,7 +879,7 @@ static int rdax_net(read_state_t *st, FILE *FP)
 						sattr.refdes = pcb_strdup(line);
 					}
 					if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
-						pcb_message(PCB_MSG_ERROR, "Empty NETDEF package, %s:%d\n", st->Filename, st->lineno);
+						rnd_message(PCB_MSG_ERROR, "Empty NETDEF package, %s:%d\n", st->Filename, st->lineno);
 						free(sattr.footprint);
 						sattr.footprint = pcb_strdup("unknown");
 					}
@@ -934,7 +934,7 @@ static int rdax_net(read_state_t *st, FILE *FP)
 			}
 		}
 		else if (length >= 6 && strncmp(line, "ENDPCB", 6) == 0) {
-			pcb_message(PCB_MSG_ERROR, "End of protel Autotrax file found in netlist section?!, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "End of protel Autotrax file found in netlist section?!, %s:%d\n", st->Filename, st->lineno);
 			endpcb = 1; /* if we get here, something went wrong */
 		}
 	}
@@ -950,7 +950,7 @@ static int rdax_component(read_state_t *st, FILE *FP)
 	int success;
 	int valid = 1;
 	int refdes_scaling = 100;
-	pcb_coord_t module_X, module_Y;
+	rnd_coord_t module_X, module_Y;
 	unsigned direction = 0; /* default is horizontal */
 	char module_name[MAXREAD], module_refdes[MAXREAD], module_value[MAXREAD];
 	pcb_subc_t *new_module;
@@ -1004,13 +1004,13 @@ TODO("load placement status and apply PCB_FLAG_LOCK if needed")
 		}
 		else {
 			qparse_free(argc, &argv);
-			pcb_message(PCB_MSG_ERROR, "Insufficient COMP attribute fields, %s:%d\n", st->Filename, st->lineno);
+			rnd_message(PCB_MSG_ERROR, "Insufficient COMP attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
 	}
 
 	if (!valid) {
-		pcb_message(PCB_MSG_ERROR, "Unable to parse COMP attributes, %s:%d\n", st->Filename, st->lineno);
+		rnd_message(PCB_MSG_ERROR, "Unable to parse COMP attributes, %s:%d\n", st->Filename, st->lineno);
 		return -1;
 	}
 
@@ -1034,7 +1034,7 @@ TODO("load placement status and apply PCB_FLAG_LOCK if needed")
 					break;
 				}
 				else {
-					pcb_message(PCB_MSG_ERROR, "Empty module/COMP found, not added to layout, %s:%d\n", st->Filename, st->lineno);
+					rnd_message(PCB_MSG_ERROR, "Empty module/COMP found, not added to layout, %s:%d\n", st->Filename, st->lineno);
 TODO("TODO safely free new_module")
 					return 0;
 				}
@@ -1154,10 +1154,10 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	fclose(FP);
 	box = pcb_data_bbox(&board_size, Ptr->Data, pcb_false);
 	if (st.ignored_keepout_element) {
-		pcb_message(PCB_MSG_ERROR, "Ignored %d keepout track(s) on auto/easytrax layer 12\n", st.ignored_keepout_element);
+		rnd_message(PCB_MSG_ERROR, "Ignored %d keepout track(s) on auto/easytrax layer 12\n", st.ignored_keepout_element);
 	}
 	if (st.ignored_layer_zero_element) {
-		pcb_message(PCB_MSG_ERROR, "Ignored %d auto/easytrax layer zero feature(s)\n", st.ignored_layer_zero_element);
+		rnd_message(PCB_MSG_ERROR, "Ignored %d auto/easytrax layer zero feature(s)\n", st.ignored_layer_zero_element);
 	}
 
 	if (box != NULL) {
@@ -1165,7 +1165,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		Ptr->hidlib.size_y = box->Y2;
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, "Can not determine board extents - empty board?\n");
+		rnd_message(PCB_MSG_ERROR, "Can not determine board extents - empty board?\n");
 
 	/* we now flip the board about the X-axis, to invert the Y coords used by autotrax */
 	pcb_undo_freeze_add();

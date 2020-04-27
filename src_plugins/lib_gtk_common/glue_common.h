@@ -13,7 +13,7 @@ void ghid_draw_area_update(pcb_gtk_port_t *out, GdkRectangle *rect);
    be slightly larger than the original request */
 #define PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation) \
 do { \
-	pcb_coord_t nx1, ny1, nx2, ny2; \
+	rnd_coord_t nx1, ny1, nx2, ny2; \
 	nx1 = Px(0); nx2 = Px(allocation.width); \
 	ny1 = Py(0); ny2 = Py(allocation.height); \
 	if (nx1 < nx2) { \
@@ -35,7 +35,7 @@ do { \
 } while(0)
 
 /* Redraw all previews intersecting the specified screenbox (in case of lr) */
-void pcb_gtk_previews_invalidate_lr(pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
+void pcb_gtk_previews_invalidate_lr(rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom);
 void pcb_gtk_previews_invalidate_all(void);
 
 /*** Internal calls, hid implementations won't need these ***/

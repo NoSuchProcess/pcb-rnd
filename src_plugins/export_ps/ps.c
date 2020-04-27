@@ -39,7 +39,7 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	pcb_cap_style_t cap;
-	pcb_coord_t width;
+	rnd_coord_t width;
 	unsigned char r, g, b;
 	int erase;
 	int faded;
@@ -299,27 +299,27 @@ static struct {
 
 	FILE *f;
 	int pagecount;
-	pcb_coord_t linewidth;
+	rnd_coord_t linewidth;
 	double fade_ratio;
-	pcb_bool multi_file;
-	pcb_bool multi_file_cam;
-	pcb_coord_t media_width, media_height, ps_width, ps_height;
+	rnd_bool multi_file;
+	rnd_bool multi_file_cam;
+	rnd_coord_t media_width, media_height, ps_width, ps_height;
 
 	const char *filename;
-	pcb_bool drill_helper;
-	pcb_coord_t drill_helper_size;
-	pcb_bool align_marks;
-	pcb_bool outline;
-	pcb_bool mirror;
-	pcb_bool fillpage;
-	pcb_bool automirror;
-	pcb_bool incolor;
-	pcb_bool doing_toc;
-	pcb_bool invert;
+	rnd_bool drill_helper;
+	rnd_coord_t drill_helper_size;
+	rnd_bool align_marks;
+	rnd_bool outline;
+	rnd_bool mirror;
+	rnd_bool fillpage;
+	rnd_bool automirror;
+	rnd_bool incolor;
+	rnd_bool doing_toc;
+	rnd_bool invert;
 	int media_idx;
-	pcb_bool drillcopper;
-	pcb_bool legend;
-	pcb_bool single_page;
+	rnd_bool drillcopper;
+	rnd_bool legend;
+	rnd_bool single_page;
 
 	int has_outline;
 	double scale_factor;
@@ -328,11 +328,11 @@ static struct {
 
 	pcb_hid_attr_val_t ps_values[NUM_OPTIONS];
 
-	pcb_bool is_mask;
-	pcb_bool is_drill;
-	pcb_bool is_assy;
-	pcb_bool is_copper;
-	pcb_bool is_paste;
+	rnd_bool is_mask;
+	rnd_bool is_drill;
+	rnd_bool is_assy;
+	rnd_bool is_copper;
+	rnd_bool is_paste;
 
 	pcb_composite_op_t drawing_mode;
 	int ovr_all;
@@ -661,11 +661,11 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&ps_cam) == 0) {
 		if (!ps_cam.okempty_group)
-			pcb_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (global.drawn_objs == 0) {
 		if (!ps_cam.okempty_content)
-			pcb_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 
 }
@@ -676,11 +676,11 @@ static int ps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void corner(FILE * fh, pcb_coord_t x, pcb_coord_t y, int dx, int dy)
+static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
 {
-	pcb_coord_t len = PCB_MIL_TO_COORD(2000);
-	pcb_coord_t len2 = PCB_MIL_TO_COORD(200);
-	pcb_coord_t thick = 0;
+	rnd_coord_t len = PCB_MIL_TO_COORD(2000);
+	rnd_coord_t len2 = PCB_MIL_TO_COORD(200);
+	rnd_coord_t thick = 0;
 	/*
 	 * Originally 'thick' used thicker lines.  Currently is uses
 	 * Postscript's "device thin" line - i.e. zero width means one
@@ -873,8 +873,8 @@ static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const cha
 		 * If users don't want to make smaller boards, or use fewer drill
 		 * sizes, they can always ignore this sheet. */
 		if (PCB_LAYER_IS_FAB(flags, purpi)) {
-			pcb_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
-			pcb_coord_t needed = pcb_stub_draw_fab_overhang();
+			rnd_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
+			rnd_coord_t needed = pcb_stub_draw_fab_overhang();
 			pcb_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)
 				pcb_fprintf(global.f, "0 %mi translate\n", needed - natural);
@@ -922,7 +922,7 @@ static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const cha
 		if (global.drill_helper)
 			pcb_fprintf(global.f,
 									"/dh { gsave %mi setlinewidth 0 gray %mi 0 360 arc stroke grestore} bind def\n",
-									(pcb_coord_t) global.drill_helper_size, (pcb_coord_t) (global.drill_helper_size * 3 / 2));
+									(rnd_coord_t) global.drill_helper_size, (rnd_coord_t) (global.drill_helper_size * 3 / 2));
 	}
 #if 0
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting
@@ -963,7 +963,7 @@ static void ps_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void ps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void ps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	global.drawing_mode = op;
 }
@@ -996,7 +996,7 @@ static void ps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void ps_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void ps_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
@@ -1070,23 +1070,23 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void ps_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ps_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(global.f, "%mi %mi %mi %mi dr\n", x1, y1, x2, y2);
 }
 
-static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+static void ps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+static void ps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
-static void ps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ps_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 #if 0
 	/* If you're etching your own paste mask, this will reduce the
 	   amount of brass you need to etch by drawing outlines for large
 	   pads.  See also ps_fill_rect.  */
 	if (is_paste && gc->width > 2500 && gc->cap == pcb_cap_square && (x1 == x2 || y1 == y2)) {
-		pcb_coord_t t, w;
+		rnd_coord_t t, w;
 		if (x1 > x2) {
 			t = x1;
 			x1 = x2;
@@ -1103,7 +1103,7 @@ static void ps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	}
 #endif
 	if (x1 == x2 && y1 == y2) {
-		pcb_coord_t w = gc->width / 2;
+		rnd_coord_t w = gc->width / 2;
 		if (gc->cap == pcb_cap_square)
 			ps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		else
@@ -1114,7 +1114,7 @@ static void ps_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_co
 	pcb_fprintf(global.f, "%mi %mi %mi %mi t\n", x1, y1, x2, y2);
 }
 
-static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void ps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 	double w;
@@ -1144,7 +1144,7 @@ static void ps_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coo
 							sa, ea, -width, height, cx, cy, (double)(global.linewidth) / w);
 }
 
-static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void ps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	use_gc(gc);
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
@@ -1154,7 +1154,7 @@ static void ps_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_
 	}
 }
 
-static void ps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void ps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	const char *op = "moveto";
@@ -1166,18 +1166,18 @@ static void ps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, 
 	fprintf(global.f, "fill\n");
 }
 
-static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	ps_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 
 typedef struct {
-	pcb_coord_t x1, y1, x2, y2;
+	rnd_coord_t x1, y1, x2, y2;
 } lseg_t;
 
 typedef struct {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 } lpoint_t;
 
 #define minmax(val, min, max) \
@@ -1217,20 +1217,20 @@ do { \
 
 int coord_comp(const void *c1_, const void *c2_)
 {
-	const pcb_coord_t *c1 = c1_, *c2 = c2_;
+	const rnd_coord_t *c1 = c1_, *c2 = c2_;
 	return *c1 < *c2;
 }
 
-static void ps_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void ps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	if (x1 > x2) {
-		pcb_coord_t t = x1;
+		rnd_coord_t t = x1;
 		x1 = x2;
 		x2 = t;
 	}
 	if (y1 > y2) {
-		pcb_coord_t t = y1;
+		rnd_coord_t t = y1;
 		y1 = y2;
 		y2 = t;
 	}
@@ -1351,7 +1351,7 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 					if (xval < 2)
 						ps_attribute_list[HA_xcalib].default_val.dbl = global.calibration_x = xval;
 					else
-						pcb_message(PCB_MSG_ERROR, "X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
+						rnd_message(PCB_MSG_ERROR, "X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
 				}
 		if (guess(yval, 4, &global.calibration_y))
 			if (guess(yval, 20, &global.calibration_y))
@@ -1359,7 +1359,7 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 					if (yval < 2)
 						ps_attribute_list[HA_ycalib].default_val.dbl = global.calibration_y = yval;
 					else
-						pcb_message(PCB_MSG_ERROR, "Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
+						rnd_message(PCB_MSG_ERROR, "Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
 				}
 		return;
 	}
@@ -1410,7 +1410,7 @@ static void ps_calibrate(pcb_hid_t *hid, double xval, double yval)
 	ps_calibrate_1(hid, xval, yval, 0);
 }
 
-static void ps_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void ps_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 

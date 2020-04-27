@@ -58,7 +58,7 @@ struct pcb_gtk_preview_class_s {
 typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
 typedef void (*pcb_gtk_preview_config_t)(pcb_gtk_preview_t *gp, GtkWidget *widget);
 typedef gboolean(*pcb_gtk_preview_expose_t)(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx);
-typedef pcb_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y);
+typedef rnd_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 
 struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;
@@ -66,11 +66,11 @@ struct pcb_gtk_preview_s {
 	pcb_hid_expose_ctx_t expose_data;
 	pcb_gtk_view_t view;
 
-	pcb_coord_t x_min, y_min, x_max, y_max;   /* for the obj preview: bounding box */
+	rnd_coord_t x_min, y_min, x_max, y_max;   /* for the obj preview: bounding box */
 	gint w_pixels, h_pixels;                  /* natural size of object preview */
 	gint win_w, win_h;
 
-	pcb_coord_t xoffs, yoffs; /* difference between desired x0;y0 and the actual window's top left coords */
+	rnd_coord_t xoffs, yoffs; /* difference between desired x0;y0 and the actual window's top left coords */
 
 	void *gport;
 	pcb_gtk_init_drawing_widget_t init_drawing_widget;
@@ -78,7 +78,7 @@ struct pcb_gtk_preview_s {
 	pcb_gtk_preview_expose_t expose;
 	pcb_gtk_preview_mouse_ev_t mouse_cb;
 	pcb_hid_expose_t overlay_draw_cb;
-	pcb_coord_t grabx, graby;
+	rnd_coord_t grabx, graby;
 	time_t grabt;
 	long grabmot;
 

@@ -143,14 +143,14 @@ int io_eagle_test_parse_dru(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *
 	return pcb_eagle_dru_test_parse(f);
 }
 
-static void bump_up_str(const char *key, const char *val, const char *cpath, pcb_coord_t curr_val)
+static void bump_up_str(const char *key, const char *val, const char *cpath, rnd_coord_t curr_val)
 {
-	pcb_bool succ;
+	rnd_bool succ;
 	double d;
 
 	d = pcb_get_value(val, NULL, NULL, &succ);
 	if (!succ) {
-		pcb_message(PCB_MSG_ERROR, "Invalid coord value for key %s: '%s'\n", key, val);
+		rnd_message(PCB_MSG_ERROR, "Invalid coord value for key %s: '%s'\n", key, val);
 		return;
 	}
 	if (d > curr_val)

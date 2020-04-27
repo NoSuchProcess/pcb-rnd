@@ -183,7 +183,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))
-					pcb_message(PCB_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
+					rnd_message(PCB_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
 			}
 		}
 		else if (label && strcmp(label, "false") == 0) {
@@ -379,7 +379,7 @@ void ghid_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GHidMainMenu *menu
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu *menu)
 {
 	if (menu == NULL) {
-		pcb_message(PCB_MSG_ERROR, "ghid: can't initialize the menu - is your menu .lht valid?\n");
+		rnd_message(PCB_MSG_ERROR, "ghid: can't initialize the menu - is your menu .lht valid?\n");
 		exit(1);
 	}
 	return menu->accel_group;
@@ -471,7 +471,7 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, pcb_h
 
 	*cfg_out = pcb_hid_cfg_load(menu->hidlib, "gtk", 0, NULL);
 	if (*cfg_out == NULL) {
-		pcb_message(PCB_MSG_ERROR, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
+		rnd_message(PCB_MSG_ERROR, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
 		abort();
 	}
 
@@ -496,7 +496,7 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, pcb_h
 
 	mr = pcb_hid_cfg_get_menu(*cfg_out, "/mouse");
 	if (hid_cfg_mouse_init(*cfg_out, &ghid_mouse) != 0)
-		pcb_message(PCB_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
+		rnd_message(PCB_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
 
 	return menu_bar;
 }

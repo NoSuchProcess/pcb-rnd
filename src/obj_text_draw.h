@@ -43,23 +43,23 @@ typedef enum pcb_text_tiny_e { /* How to draw text that is too tiny to be readab
 	PCB_TXT_TINY_ACCURATE      /* always draw text accurately, even if it will end up unreadable */
 } pcb_text_tiny_t;
 
-void pcb_text_draw_(pcb_draw_info_t *info, pcb_text_t *Text, pcb_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny);
+void pcb_text_draw_(pcb_draw_info_t *info, pcb_text_t *Text, rnd_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny);
 void pcb_text_invalidate_erase(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text);
-void pcb_text_draw_xor(pcb_text_t *text, pcb_coord_t x, pcb_coord_t y);
+void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y);
 void pcb_text_name_invalidate_draw(pcb_text_t *txt);
 void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text);
 
 /* lowlevel drawing routine for text strings */
-void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, pcb_coord_t min_line_width, int xordraw, pcb_coord_t xordx, pcb_coord_t xordy, pcb_text_tiny_t tiny);
+void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, int scale, double rotdeg, int mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny);
 
 /* lowlevel text bounding box calculation */
-pcb_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *string);
-pcb_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *string);
+rnd_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *string);
+rnd_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *string);
 
 /* Call cb(ctx, ...) for every object in a rendered string or text; obj will
    be disacrded after the call, can be modified by the callback */
 typedef void (*pcb_draw_text_cb)(void *ctx, pcb_any_obj_t *obj);
-void pcb_text_decompose_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, pcb_coord_t x0, pcb_coord_t y0, int scale, double rotdeg, int mirror, pcb_coord_t thickness, pcb_draw_text_cb cb, void *cb_ctx);
+void pcb_text_decompose_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, int scale, double rotdeg, int mirror, rnd_coord_t thickness, pcb_draw_text_cb cb, void *cb_ctx);
 void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_text_cb cb, void *cb_ctx);
 

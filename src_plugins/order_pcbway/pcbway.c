@@ -73,18 +73,18 @@ static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const cha
 	if (update || (mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
 		if (CFG.verbose) {
 			if (update)
-				pcb_message(PCB_MSG_INFO, "pcbway: static '%s', updating it in the cache\n", path);
+				rnd_message(PCB_MSG_INFO, "pcbway: static '%s', updating it in the cache\n", path);
 			else
-				pcb_message(PCB_MSG_INFO, "pcbway: stale '%s', updating it in the cache\n", path);
+				rnd_message(PCB_MSG_INFO, "pcbway: stale '%s', updating it in the cache\n", path);
 		}
 		if (pcb_wget_disk(url, path, update, wopts) != 0) {
-			pcb_message(PCB_MSG_ERROR, "pcbway: failed to download %s\n", url);
+			rnd_message(PCB_MSG_ERROR, "pcbway: failed to download %s\n", url);
 			return -1;
 		}
 		
 	}
 	else if (CFG.verbose)
-		pcb_message(PCB_MSG_INFO, "pcbway: '%s' from cache\n", path);
+		rnd_message(PCB_MSG_INFO, "pcbway: '%s' from cache\n", path);
 	return 0;
 }
 
@@ -136,7 +136,7 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 
 	f = pcb_fopen_fn(NULL, fn, "r", &efn);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "pcbway: can't open '%s' (%s) for read\n", fn, efn);
+		rnd_message(PCB_MSG_ERROR, "pcbway: can't open '%s' (%s) for read\n", fn, efn);
 		free(efn);
 		return NULL;
 	}
@@ -144,7 +144,7 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 
 	doc = xmlReadFile(efn, NULL, 0);
 	if (doc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "xml parsing error on file %s (%s)\n", fn, efn);
+		rnd_message(PCB_MSG_ERROR, "xml parsing error on file %s (%s)\n", fn, efn);
 		free(efn);
 		return NULL;
 	}
@@ -159,18 +159,18 @@ static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 	xmlNode *root, *n, *c;
 
 	if (doc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: failed to parse the country xml\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: failed to parse the country xml\n");
 		return -1;
 	}
 	root = xmlDocGetRootElement(doc);
 	if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"Country") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: wrong root node in the country xml\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: wrong root node in the country xml\n");
 		return -1;
 	}
 
 	for(root = root->children; (root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"Countrys") != 0); root = root->next) ;
 	if (root == NULL) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: failed to find a <Countrys> node\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: failed to find a <Countrys> node\n");
 		return -1;
 	}
 
@@ -205,7 +205,7 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		dflt = (const char *)xmlGetProp(n, (const xmlChar *)"default");
 
 		if ((type != NULL && strlen(type) > 128) || (strlen((char *)n->name) > 128) || (note != NULL && strlen(note) > 256) || (dflt != NULL && strlen(dflt) > 128)) {
-			pcb_message(PCB_MSG_ERROR, "order_pcbway: invalid field description: too long\n");
+			rnd_message(PCB_MSG_ERROR, "order_pcbway: invalid field description: too long\n");
 			return -1;
 		}
 
@@ -267,7 +267,7 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 
 		vtp0_append(&form->fields, f);
 		if (form->fields.used > 128) {
-			pcb_message(PCB_MSG_ERROR, "order_pcbway: too many fields for a form\n");
+			rnd_message(PCB_MSG_ERROR, "order_pcbway: too many fields for a form\n");
 			return -1;
 		}
 	}
@@ -284,11 +284,11 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 	octx->odata = NULL;
 
 	if ((CFG.api_key == NULL) || (*CFG.api_key == '\0')) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: no api_key available.");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: no api_key available.");
 		return -1;
 	}
 	if (pcbway_cache_update(&PCB->hidlib) != 0) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: failed to update the cache.");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: failed to update the cache.");
 		return -1;
 	}
 
@@ -303,16 +303,16 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 			if (pcbway_load_countries(octx->odata, country_fn) != 0)
 				res = -1;
 			else if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
-				pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: invalid API xml\n");
+				rnd_message(PCB_MSG_ERROR, "order_pcbway: xml error: invalid API xml\n");
 				res = -1;
 			}
 			free(country_fn);
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: root is not <PCBWayAPI>\n");
+			rnd_message(PCB_MSG_ERROR, "order_pcbway: xml error: root is not <PCBWayAPI>\n");
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: xml error: failed to parse the xml\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: xml error: failed to parse the xml\n");
 
 	xmlFreeDoc(doc);
 	free(cachedir);
@@ -383,7 +383,7 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 
 	root = xmlDocGetRootElement(doc);
 	if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PcbQuotationResponse") != 0)) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: wrong root node on quote answer\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: wrong root node on quote answer\n");
 		xmlFreeDoc(doc);
 		return -1;
 	}
@@ -396,14 +396,14 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 	}
 
 	if ((status == NULL) || (status->children == NULL) || (status->children->type != XML_TEXT_NODE)) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: missing <Status> from the quote response\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: missing <Status> from the quote response\n");
 		xmlFreeDoc(doc);
 		return -1;
 	}
 	if (xmlStrcmp(status->children->content, (xmlChar *)"ok") != 0) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: server error in quote\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: server error in quote\n");
 		if ((error != NULL) && (error->children != NULL) && (error->children->type == XML_TEXT_NODE))
-			pcb_message(PCB_MSG_ERROR, "  %s\n", error->children->content);
+			rnd_message(PCB_MSG_ERROR, "  %s\n", error->children->content);
 		xmlFreeDoc(doc);
 		return -1;
 	}
@@ -460,14 +460,14 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 	tmpfn = pcb_tempfile_name_new("pcbway_quote.xml");
 	if (tmpfn == NULL) {
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: can't get temp file name\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: can't get temp file name\n");
 		return;
 	}
 
 	fx = pcb_fopen(&PCB->hidlib, tmpfn, "w");
 	if (fx == NULL) {
 		pcb_tempfile_unlink(tmpfn);
-		pcb_message(PCB_MSG_ERROR, "order_pcbway: can't open temp file\n");
+		rnd_message(PCB_MSG_ERROR, "order_pcbway: can't open temp file\n");
 		return;
 	}
 
@@ -514,7 +514,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		wopts.post_file = tmpfn;
 
 		if (pcb_wget_disk(SERVER "/api/Pcb/PcbQuotation", respfn, 0, &wopts) != 0) {
-			pcb_message(PCB_MSG_ERROR, "pcbway: failed to get a quote from the server\n");
+			rnd_message(PCB_MSG_ERROR, "pcbway: failed to get a quote from the server\n");
 			goto err;
 		}
 	}

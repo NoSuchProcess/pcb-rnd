@@ -106,8 +106,8 @@ static const pcb_dflgmap_t *bcl_layer_resolve_name(const char *name)
 	return &tmp;
 }
 
-pcb_coord_t pcb_bxl_coord_x(pcb_coord_t c) { return c; }
-pcb_coord_t pcb_bxl_coord_y(pcb_coord_t c) { return -c; }
+rnd_coord_t pcb_bxl_coord_x(rnd_coord_t c) { return c; }
+rnd_coord_t pcb_bxl_coord_y(rnd_coord_t c) { return -c; }
 
 void pcb_bxl_pattern_begin(pcb_bxl_ctx_t *bctx, const char *name)
 {
@@ -213,7 +213,7 @@ void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name)
 {
 	htsi_entry_t *e = htsi_getentry(&ctx->proto_name2id, name);
 	if (e != NULL)
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' redefined\n", name);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' redefined\n", name);
 
 	ctx->state.proto.name = name;
 	ctx->state.proto.in_use = 1;
@@ -233,12 +233,12 @@ static void pcb_bxl_padstack_end_automask(pcb_bxl_ctx_t *ctx)
 		return;
 
 	if (ctx->state.proto.hdia <= 0)
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' marked as non-surface-mounted yet there is no hole in it\n", ctx->state.proto.name);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' marked as non-surface-mounted yet there is no hole in it\n", ctx->state.proto.name);
 	if (ctx->state.has_mask_shape)
 		return; /* do not override user's mask */
 
 	if (ctx->state.copper_shape_idx < 0) {
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' is thru-hole, does not have mask or copper\n", ctx->state.proto.name);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' is thru-hole, does not have mask or copper\n", ctx->state.proto.name);
 		return;
 	}
 
@@ -266,7 +266,7 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 
 	i = pcb_pstk_proto_insert_forcedup(ctx->subc->data, &ctx->state.proto, 0, 0);
 	if (ctx->proto_id-1 != i)
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
 	ctx->state.proto.name = NULL; /* do not free it as it is the hash key */
 
 	pcb_pstk_proto_free_fields(&ctx->state.proto);
@@ -278,7 +278,7 @@ void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)
 	else if (pcb_strcasecmp(name, "square") == 0)  ctx->state.shape_type = 1;
 	else if (pcb_strcasecmp(name, "round") == 0)   ctx->state.shape_type = 2;
 	else {
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: unknown padstack shape '%s' in '%s' - omitting shape\n", name, ctx->state.proto.name);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: unknown padstack shape '%s' in '%s' - omitting shape\n", name, ctx->state.proto.name);
 		return;
 	}
 }
@@ -291,7 +291,7 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 	if ((ctx->state.width == 0) || (ctx->state.height == 0)) {
 		/* 0 sizes shape should not appear on the output */
 		if (ctx->state.layer->meta.bound.type & PCB_LYT_COPPER)
-			pcb_message(PCB_MSG_WARNING, "bxl footprint error: 0 sized copper shape in padstack '%s'\n", ctx->state.proto.name);
+			rnd_message(PCB_MSG_WARNING, "bxl footprint error: 0 sized copper shape in padstack '%s'\n", ctx->state.proto.name);
 		return;
 	}
 
@@ -313,7 +313,7 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 	switch(ctx->state.shape_type) {
 		case 1: /* rectangle, square */
 			{
-				pcb_coord_t w2 = (ctx->state.width/2)+1, h2 = (ctx->state.height/2)+1;
+				rnd_coord_t w2 = (ctx->state.width/2)+1, h2 = (ctx->state.height/2)+1;
 				sh->shape = PCB_PSSH_POLY;
 				pcb_pstk_shape_alloc_poly(&sh->data.poly, 4);
 				sh->data.poly.x[0] = -w2; sh->data.poly.y[0] = -h2;
@@ -328,7 +328,7 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 			sh->data.circ.x = sh->data.circ.y = 0;
 			sh->data.circ.dia = (ctx->state.width + ctx->state.height)/2;
 			if (ctx->state.width != ctx->state.height)
-				pcb_message(PCB_MSG_WARNING, "bxl footprint error: padstack: asymmetric round shape - probably a typo, using real round shape in '%s'\n", ctx->state.proto.name);
+				rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack: asymmetric round shape - probably a typo, using real round shape in '%s'\n", ctx->state.proto.name);
 			break;
 	}
 
@@ -369,7 +369,7 @@ void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
 		}
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, "bxl footprint: internal error: failed to create padstack - expect missing padstacks\n");
+		rnd_message(PCB_MSG_ERROR, "bxl footprint: internal error: failed to create padstack - expect missing padstacks\n");
 
 	free(ctx->state.pin_name);
 	ctx->state.pin_name = NULL;
@@ -384,7 +384,7 @@ void pcb_bxl_pad_set_style(pcb_bxl_ctx_t *ctx, const char *pstkname)
 	e = htsi_getentry(&ctx->proto_name2id, pstkname);
 	if (e == NULL) {
 		ctx->state.pstk_proto_id = -1;
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: invalid padstack reference '%s' - pad will not be created\n", pstkname);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: invalid padstack reference '%s' - pad will not be created\n", pstkname);
 		return;
 	}
 	ctx->state.pstk_proto_id = e->value;
@@ -394,7 +394,7 @@ void pcb_bxl_pad_set_style(pcb_bxl_ctx_t *ctx, const char *pstkname)
 
 void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 {
-	pcb_coord_t width;
+	rnd_coord_t width;
 	SKIP;
 	width = ctx->state.width;
 	if (width == 0)
@@ -407,7 +407,7 @@ void pcb_bxl_add_line(pcb_bxl_ctx_t *ctx)
 
 void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx)
 {
-	pcb_coord_t width;
+	rnd_coord_t width;
 	SKIP;
 	width = ctx->state.width;
 	if (width == 0)
@@ -423,7 +423,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 {
 	pcb_flag_values_t flg = 0;
 	int scale;
-	pcb_coord_t thickness;
+	rnd_coord_t thickness;
 	SKIP;
 
 	if (!ctx->state.is_text && (ctx->state.attr_key != NULL)) {
@@ -475,7 +475,7 @@ void pcb_bxl_poly_begin(pcb_bxl_ctx_t *ctx)
 	ctx->state.delayed_poly = 1;
 }
 
-void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, pcb_coord_t x, pcb_coord_t y)
+void pcb_bxl_poly_add_vertex(pcb_bxl_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
 {
 	SKIP;
 	assert(ctx->state.poly != NULL);
@@ -507,7 +507,7 @@ void pcb_bxl_text_style_begin(pcb_bxl_ctx_t *ctx, char *name)
 		htsp_set(&ctx->text_name2style, name, ts); /* name is not free'd at the caller */
 	}
 	else
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' is redefined; second definition will override first\n", name);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' is redefined; second definition will override first\n", name);
 	ctx->state.text_style = ts;
 }
 
@@ -520,14 +520,14 @@ void pcb_bxl_set_text_style(pcb_bxl_ctx_t *ctx, const char *name)
 {
 	ctx->state.text_style = htsp_get(&ctx->text_name2style, name);
 	if (ctx->state.text_style == NULL)
-		pcb_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' not defined (using default style)\n", name);
+		rnd_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' not defined (using default style)\n", name);
 }
 
 
 #define WARN_CNT(_count_, args) \
 do { \
 	long cnt = (bctx->warn._count_); \
-	if (cnt > 0) pcb_message args; \
+	if (cnt > 0) rnd_message args; \
 } while(0)
 
 

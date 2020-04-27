@@ -86,7 +86,7 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (strcmp(eoname, "@gui") != 0) {
 		eo = pcb_extobj_lookup(eoname);
 		if (eo == NULL) {
-			pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: extended object '%s' is not available\n", eoname);
+			rnd_message(PCB_MSG_ERROR, "ExtobjConvFrom: extended object '%s' is not available\n", eoname);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -111,17 +111,17 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			else { /* interactive convert */
 				void *p1, *p3;
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				rnd_hid_get_coords("Click on object to convert", &x, &y, 0);
 				obj = NULL;
 				if (pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &p1, (void **)&obj, &p3) == 0) {
-					pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found (no object under the cursor)\n");
+					rnd_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found (no object under the cursor)\n");
 					RND_ACT_IRES(-1);
 					return 0;
 				}
 			}
 			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
-				pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found\n");
+				rnd_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found\n");
 				RND_ACT_IRES(-1);
 				return 0;
 			}
@@ -141,7 +141,7 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (sc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: failed to create the extended object\n");
+		rnd_message(PCB_MSG_ERROR, "ExtobjConvFrom: failed to create the extended object\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -172,17 +172,17 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			else { /* interactive convert */
 				void *p1, *p3;
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				rnd_hid_get_coords("Click on extended object to edit", &x, &y, 0);
 				obj = NULL;
 				if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &p1, (void **)&obj, &p3) == 0) {
-					pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found (no object under the cursor)\n");
+					rnd_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found (no object under the cursor)\n");
 					RND_ACT_IRES(-1);
 					return 0;
 				}
 			}
 			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
-				pcb_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found\n");
+				rnd_message(PCB_MSG_ERROR, "ExtobjConvFrom: object not found\n");
 				RND_ACT_IRES(-1);
 				return 0;
 			}
@@ -193,14 +193,14 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((obj == NULL) || (obj->type != PCB_OBJ_SUBC) || (obj->extobj == NULL)) {
-		pcb_message(PCB_MSG_ERROR, "Object is not an extended object");
+		rnd_message(PCB_MSG_ERROR, "Object is not an extended object");
 		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	eo = pcb_extobj_get(obj);
 	if (eo == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Extended object '%s' is not available", obj->extobj);
+		rnd_message(PCB_MSG_ERROR, "Extended object '%s' is not available", obj->extobj);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -208,7 +208,7 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (eo->gui_propedit != NULL)
 		eo->gui_propedit(obj);
 	else
-		pcb_message(PCB_MSG_ERROR, "Extended object '%s' does not implement GUI property editor", obj->extobj);
+		rnd_message(PCB_MSG_ERROR, "Extended object '%s' does not implement GUI property editor", obj->extobj);
 
 	RND_ACT_IRES(0);
 	return 0;

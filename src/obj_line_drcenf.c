@@ -72,7 +72,7 @@ void pcb_line_adjust_attached(void)
  */
 void pcb_line_45(pcb_attached_line_t *Line)
 {
-	pcb_coord_t dx, dy, min;
+	rnd_coord_t dx, dy, min;
 	unsigned direction = 0;
 	double m;
 
@@ -138,9 +138,9 @@ void pcb_line_45(pcb_attached_line_t *Line)
 	}
 }
 
-void pcb_line_adjust_attached_2lines(pcb_bool way)
+void pcb_line_adjust_attached_2lines(rnd_bool way)
 {
-	pcb_coord_t dx, dy;
+	rnd_coord_t dx, dy;
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
@@ -191,7 +191,7 @@ void pcb_line_adjust_attached_2lines(pcb_bool way)
 
 struct drc_info {
 	pcb_line_t *line;
-	pcb_bool solder;
+	rnd_bool solder;
 	jmp_buf env;
 };
 
@@ -225,15 +225,15 @@ static pcb_r_dir_t drcArc_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, pcb_bool way, pcb_bool optimize)
+double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, rnd_bool way, rnd_bool optimize)
 {
 	double f, s, f2, s2, len, best;
-	pcb_coord_t dx, dy, temp, last, length;
-	pcb_coord_t temp2, last2, length2;
+	rnd_coord_t dx, dy, temp, last, length;
+	rnd_coord_t temp2, last2, length2;
 	pcb_line_t line1, line2;
 	pcb_layergrp_id_t group, comp;
 	struct drc_info info;
-	pcb_bool two_lines, x_is_long, blocker;
+	rnd_bool two_lines, x_is_long, blocker;
 	pcb_point_t ans;
 
 	f = 1.0;
@@ -461,7 +461,7 @@ static void drc_line(pcb_point_t *end)
 void pcb_line_enforce_drc(pcb_board_t *pcb)
 {
 	pcb_point_t r45, rs, start;
-	pcb_bool shift;
+	rnd_bool shift;
 	double r1, r2;
 
 	/* Silence a bogus compiler warning by storing this in a variable */

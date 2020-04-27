@@ -74,7 +74,7 @@ void pcb_board_free(pcb_board_t * pcb)
 }
 
 /* creates a new PCB */
-pcb_board_t *pcb_board_new_(pcb_bool SetDefaultNames)
+pcb_board_t *pcb_board_new_(rnd_bool SetDefaultNames)
 {
 	pcb_board_t *ptr;
 	int i;
@@ -130,9 +130,9 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 			fclose(f);
 			dpcb = pcb_load_pcb(efn, NULL, pcb_false, 1 | 0x10);
 			if (dpcb == 0)
-				pcb_message(PCB_MSG_WARNING, "Couldn't find default.pcb - using the embedded fallback\n");
+				rnd_message(PCB_MSG_WARNING, "Couldn't find default.pcb - using the embedded fallback\n");
 			else
-				pcb_message(PCB_MSG_ERROR, "Couldn't find default.pcb and failed to load the embedded fallback\n");
+				rnd_message(PCB_MSG_ERROR, "Couldn't find default.pcb and failed to load the embedded fallback\n");
 			pcb_remove(NULL, efn);
 			free(efn);
 		}
@@ -253,7 +253,7 @@ const char *pcb_board_get_name(void)
 	return PCB->hidlib.name;
 }
 
-pcb_bool pcb_board_change_name(char *Name)
+rnd_bool pcb_board_change_name(char *Name)
 {
 	free(PCB->hidlib.name);
 	PCB->hidlib.name = Name;
@@ -261,7 +261,7 @@ pcb_bool pcb_board_change_name(char *Name)
 	return pcb_true;
 }
 
-static void pcb_board_resize_(pcb_board_t *pcb, pcb_coord_t Width, pcb_coord_t Height)
+static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t Width, rnd_coord_t Height)
 {
 	pcb->hidlib.size_x = Width;
 	pcb->hidlib.size_y = Height;
@@ -274,13 +274,13 @@ static void pcb_board_resize_(pcb_board_t *pcb, pcb_coord_t Width, pcb_coord_t H
 
 typedef struct {
 	pcb_board_t *pcb;
-	pcb_coord_t w, h;
+	rnd_coord_t w, h;
 } undo_board_size_t;
 
 static int undo_board_size_swap(void *udata)
 {
 	undo_board_size_t *s = udata;
-	pcb_coord_t oldw = s->pcb->hidlib.size_x, oldh = s->pcb->hidlib.size_y;
+	rnd_coord_t oldw = s->pcb->hidlib.size_x, oldh = s->pcb->hidlib.size_y;
 	pcb_board_resize_(s->pcb, s->w, s->h);
 	s->w = oldw;
 	s->h = oldh;
@@ -301,7 +301,7 @@ static const uundo_oper_t undo_board_size = {
 	undo_board_size_print
 };
 
-void pcb_board_resize(pcb_coord_t width, pcb_coord_t height, int undoable)
+void pcb_board_resize(rnd_coord_t width, rnd_coord_t height, int undoable)
 {
 	undo_board_size_t *s;
 
@@ -326,7 +326,7 @@ void pcb_board_remove(pcb_board_t *Ptr)
 }
 
 /* sets a new line thickness */
-void pcb_board_set_line_width(pcb_coord_t Size)
+void pcb_board_set_line_width(rnd_coord_t Size)
 {
 	if (Size >= PCB_MIN_THICKNESS && Size <= PCB_MAX_THICKNESS) {
 		conf_set_design("design/line_thickness", "%$mS", Size);
@@ -336,7 +336,7 @@ void pcb_board_set_line_width(pcb_coord_t Size)
 }
 
 /* sets a new via thickness */
-void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force)
+void pcb_board_set_via_size(rnd_coord_t Size, rnd_bool Force)
 {
 	if (Force || (Size <= PCB_MAX_PINORVIASIZE && Size >= PCB_MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + PCB_MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_thickness", "%$mS", Size);
@@ -344,7 +344,7 @@ void pcb_board_set_via_size(pcb_coord_t Size, pcb_bool Force)
 }
 
 /* sets a new via drilling hole */
-void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force)
+void pcb_board_set_via_drilling_hole(rnd_coord_t Size, rnd_bool Force)
 {
 	if (Force || (Size <= PCB_MAX_PINORVIASIZE && Size >= PCB_MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - PCB_MIN_PINORVIACOPPER)) {
 		conf_set_design("design/via_drilling_hole", "%$mS", Size);
@@ -352,7 +352,7 @@ void pcb_board_set_via_drilling_hole(pcb_coord_t Size, pcb_bool Force)
 }
 
 /* sets a clearance width */
-void pcb_board_set_clearance(pcb_coord_t Width)
+void pcb_board_set_clearance(rnd_coord_t Width)
 {
 	if (Width <= PCB_MAX_THICKNESS) {
 		conf_set_design("design/clearance", "%$mS", Width);
@@ -368,9 +368,9 @@ void pcb_board_set_text_scale(int Scale)
 }
 
 /* sets or resets changed flag and redraws status */
-void pcb_board_set_changed_flag(pcb_bool New)
+void pcb_board_set_changed_flag(rnd_bool New)
 {
-	pcb_bool old = PCB->Changed;
+	rnd_bool old = PCB->Changed;
 
 	PCB->Changed = New;
 
@@ -409,11 +409,11 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	return chg;
 }
 
-pcb_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags)
+rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
-	pcb_coord_t curr, total = 0;
+	rnd_coord_t curr, total = 0;
 
 	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
 		const char *s;
@@ -432,8 +432,8 @@ pcb_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 			if (grp->ltype & PCB_LYT_SUBSTRATE) {
 				if (flags & PCB_BRDTHICK_PRINT_ERROR) {
 					if (namespace != NULL)
-						pcb_message(PCB_MSG_ERROR, "%s: ", namespace);
-					pcb_message(PCB_MSG_ERROR, "can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
+						rnd_message(PCB_MSG_ERROR, "%s: ", namespace);
+					rnd_message(PCB_MSG_ERROR, "can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
 				}
 				if (flags & PCB_BRDTHICK_TOLERANT)
 					continue;

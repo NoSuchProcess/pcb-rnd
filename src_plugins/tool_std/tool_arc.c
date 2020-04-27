@@ -89,7 +89,7 @@ void pcb_tool_arc_notify_mode(rnd_hidlib_t *hl)
 	case PCB_CH_STATE_THIRD:
 		{
 			pcb_arc_t *arc;
-			pcb_coord_t wx, wy;
+			rnd_coord_t wx, wy;
 			pcb_angle_t sa, dir;
 			wx = hl->tool_x - pcb_crosshair.AttachedBox.Point1.X;
 			wy = hl->tool_y - pcb_crosshair.AttachedBox.Point1.Y;
@@ -171,7 +171,7 @@ void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
 
 }
 
-pcb_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;

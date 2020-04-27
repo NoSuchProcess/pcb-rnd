@@ -69,9 +69,9 @@ void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd)
 	}
 }
 
-void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, pcb_coord_t *dst_x, pcb_coord_t *dst_y)
+void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, rnd_coord_t *dst_x, rnd_coord_t *dst_y)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	if (pcbhl_conf.editor.view.flip_x)
 		px = pd->v_width - px;
@@ -93,7 +93,7 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	Pixmap save_px, save_main_px, save_mask_px, save_mask_bm;
 	XGCValues gcv;
 	GC gc;
-	pcb_coord_t save_cpp;
+	rnd_coord_t save_cpp;
 
 	if (pd->expose_lock)
 		return;

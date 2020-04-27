@@ -113,7 +113,7 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 	pcb_ltf_preview_t *pd = pd_;
 	pcb_hid_attribute_t *attr = pd->attr;
 	pcb_hid_preview_t *prv = attr->wdata;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	Window root, child;
 	unsigned int keys_buttons;
 	int root_x, root_y, pos_x, pos_y;
@@ -133,7 +133,7 @@ static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCal
 	pcb_ltf_preview_t *pd = pd_;
 	pcb_hid_attribute_t *attr = pd->attr;
 	pcb_hid_preview_t *prv = attr->wdata;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_hid_mouse_ev_t kind = -1;
 
 	if (prv->user_mouse_cb == NULL)
@@ -262,7 +262,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 		return;
 
 	if (!(res.type & FGW_STR)) {
-		pcb_message(PCB_MSG_ERROR, CPACT " returned non-string\n");
+		rnd_message(PCB_MSG_ERROR, CPACT " returned non-string\n");
 		fgw_arg_free(&rnd_fgw, &res);
 		return;
 	}
@@ -270,7 +270,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 	r = pcb_color_load_str(&nclr, res.val.str);
 	fgw_arg_free(&rnd_fgw, &res);
 	if (r != 0) {
-		pcb_message(PCB_MSG_ERROR, CPACT " returned invalid color string\n");
+		rnd_message(PCB_MSG_ERROR, CPACT " returned invalid color string\n");
 		return;
 	}
 
@@ -438,7 +438,7 @@ void ltf_text_set_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y)
 	XtFree(orig);
 }
 
-void ltf_text_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool readonly)
+void ltf_text_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;

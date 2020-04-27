@@ -34,9 +34,9 @@
 #include <librnd/core/global_typedefs.h>
 #include "layer.h"
 
-int pcb_lines_intersect(pcb_coord_t ax1, pcb_coord_t ay1, pcb_coord_t ax2, pcb_coord_t ay2, pcb_coord_t bx1, pcb_coord_t by1, pcb_coord_t bx2, pcb_coord_t by2);
-pcb_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
-pcb_bool pcb_gfx_in_box(pcb_gfx_t *gfx, pcb_box_t *b);
+int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2);
+rnd_bool pcb_arc_in_box(pcb_arc_t *arc, pcb_box_t *b);
+rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, pcb_box_t *b);
 
 #define PCB_SLOP 5
 
@@ -171,31 +171,31 @@ pcb_bool pcb_gfx_in_box(pcb_gfx_t *gfx, pcb_box_t *b);
 #define PCB_GFX_NEAR_BOX(a,b) \
 	(PCB_IS_BOX_NEGATIVE(b) ? PCB_GFX_TOUCHES_BOX(a,b) : PCB_GFX_IN_BOX(a,b))
 
-pcb_bool pcb_is_point_on_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_line_t *Line);
-pcb_bool pcb_is_point_on_thinline( pcb_coord_t X, pcb_coord_t Y, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2,pcb_coord_t Y2 );
-pcb_bool pcb_is_point_on_line_end(pcb_coord_t X, pcb_coord_t Y, pcb_rat_t *Line);
-pcb_bool pcb_is_point_on_arc(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_arc_t *Arc);
-pcb_bool pcb_is_point_in_gfx(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_gfx_t *gfx);
-pcb_bool pcb_is_line_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_line_t *Line);
-pcb_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line);
-pcb_bool pcb_is_arc_in_rectangle(pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_arc_t *Arc);
-pcb_bool pcb_is_gfx_in_rectangle(const pcb_box_t *b, const pcb_gfx_t *gfx);
-pcb_bool pcb_is_point_in_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius, pcb_any_line_t *Pad);
-pcb_bool pcb_is_point_in_box(pcb_coord_t X, pcb_coord_t Y, pcb_box_t *box, pcb_coord_t Radius);
+rnd_bool pcb_is_point_on_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_line_t *Line);
+rnd_bool pcb_is_point_on_thinline( rnd_coord_t X, rnd_coord_t Y, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2,rnd_coord_t Y2 );
+rnd_bool pcb_is_point_on_line_end(rnd_coord_t X, rnd_coord_t Y, pcb_rat_t *Line);
+rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_arc_t *Arc);
+rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_gfx_t *gfx);
+rnd_bool pcb_is_line_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_line_t *Line);
+rnd_bool pcb_is_line_in_quadrangle(pcb_point_t p[4], pcb_line_t *Line);
+rnd_bool pcb_is_arc_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_arc_t *Arc);
+rnd_bool pcb_is_gfx_in_rectangle(const pcb_box_t *b, const pcb_gfx_t *gfx);
+rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_any_line_t *Pad);
+rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, pcb_box_t *box, rnd_coord_t Radius);
 
 /* Return the distance^2 between a line-center and a point */
-double pcb_point_line_dist2(pcb_coord_t X, pcb_coord_t Y, pcb_line_t *Line);
+double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line);
 
 /* Return the first line object that has its centerline crossing the point;
    if ang is not NULL, only return lines that are pointing in the right
    angle (also accept 180 degree rotation)
    if no_subc_part is true, ignore lines that are part of subcircuits;
    if no_term is true, ignore lines that are terminals */
-pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, pcb_coord_t x, pcb_coord_t y, pcb_angle_t *ang, pcb_bool no_subc_part, pcb_bool no_term);
+pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, rnd_coord_t x, rnd_coord_t y, pcb_angle_t *ang, rnd_bool no_subc_part, rnd_bool no_term);
 
-int pcb_search_screen(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
-int pcb_search_grid_slop(pcb_coord_t X, pcb_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
-int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Radius);
+int pcb_search_screen(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
+int pcb_search_grid_slop(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
+int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius);
 int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type);
 int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type); /* no-hace version */
 

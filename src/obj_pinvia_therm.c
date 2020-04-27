@@ -41,11 +41,11 @@
 #include <librnd/poly/polygon1_gen.h>
 #include "obj_pinvia_therm.h"
 
-static pcb_polyarea_t *pcb_pa_diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_t l, pcb_coord_t w, pcb_bool rt)
+static pcb_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t l, rnd_coord_t w, rnd_bool rt)
 {
 	pcb_pline_t *c;
 	pcb_vector_t v;
-	pcb_coord_t x1, x2, y1, y2;
+	rnd_coord_t x1, x2, y1, y2;
 
 	if (rt) {
 		x1 = (l - w) * M_SQRT1_2;
@@ -81,7 +81,7 @@ static pcb_polyarea_t *pcb_pa_diag_line(pcb_coord_t X, pcb_coord_t Y, pcb_coord_
  * Usually this is 4 disjoint regions.
  *
  */
-pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t thickness, pcb_coord_t clearance, pcb_cardinal_t style)
+pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t thickness, rnd_coord_t clearance, pcb_cardinal_t style)
 {
 	pcb_arc_t a;
 	pcb_polyarea_t *pa, *arc;
@@ -92,8 +92,8 @@ pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, pcb_coord_t cx, pcb_coord_t cy, pcb
 	case 2:
 		{
 			pcb_polyarea_t *m;
-			pcb_coord_t t = (thickness + clearance) / 2;
-			pcb_coord_t w = 0.5 * pcb->ThermScale * clearance;
+			rnd_coord_t t = (thickness + clearance) / 2;
+			rnd_coord_t w = 0.5 * pcb->ThermScale * clearance;
 			pa = pcb_poly_from_circle(cx, cy, t);
 			arc = pcb_poly_from_circle(cx, cy, thickness / 2);
 			/* create a thin ring */

@@ -54,7 +54,7 @@ void pcb_tool_move_uninit(void)
 
 void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 {
-	pcb_coord_t dx, dy;
+	rnd_coord_t dx, dy;
 
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
@@ -68,7 +68,7 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 			if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 				pcb_any_obj_t *obj = (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2;
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
-					pcb_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+					rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.extobj_edit = NULL;
 				}
@@ -120,7 +120,7 @@ void pcb_tool_move_draw_attached(rnd_hidlib_t *hl)
 	pcb_xordraw_movecopy();
 }
 
-pcb_bool pcb_tool_move_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_move_undo_act(rnd_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)

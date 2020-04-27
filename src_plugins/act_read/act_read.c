@@ -49,7 +49,7 @@ static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *input, *units, *def_unit;
 	int relative, a;
 	double v;
-	pcb_bool success;
+	rnd_bool success;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, GetValue, input = argv[1].val.str);
 	RND_PCB_ACT_CONVARG(2, FGW_STR, GetValue, units = argv[2].val.str);
@@ -88,7 +88,7 @@ static fgw_error_t pcb_act_GetMark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static int flg_error(const char *msg)
 {
-	pcb_message(PCB_MSG_ERROR, "act_read flag conversion error: %s\n", msg);
+	rnd_message(PCB_MSG_ERROR, "act_read flag conversion error: %s\n", msg);
 	return 0;
 }
 

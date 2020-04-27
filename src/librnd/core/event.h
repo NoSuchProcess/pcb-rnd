@@ -57,8 +57,8 @@ typedef enum {
 	PCB_EVENT_EXPORT_SESSION_BEGIN,   /* called before an export session (e.g. CAM script execution) starts; should not be nested; there's no guarantee that options are parsed before or after this event */
 	PCB_EVENT_EXPORT_SESSION_END,     /* called after an export session (e.g. CAM script execution) ends */
 
-	PCB_EVENT_STROKE_START,           /* parameters: pcb_coord_t x, pcb_coord_t y */
-	PCB_EVENT_STROKE_RECORD,          /* parameters: pcb_coord_t x, pcb_coord_t y */
+	PCB_EVENT_STROKE_START,           /* parameters: rnd_coord_t x, rnd_coord_t y */
+	PCB_EVENT_STROKE_RECORD,          /* parameters: rnd_coord_t x, rnd_coord_t y */
 	PCB_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 
 	PCB_EVENT_BOARD_CHANGED,          /* called after the board being edited got _replaced_ (used to be the PCBChanged action) */
@@ -94,7 +94,7 @@ struct pcb_event_arg_s {
 		double d;
 		const char *s;
 		void *p;
-		pcb_coord_t c;
+		rnd_coord_t c;
 		pcb_angle_t a;
 	} d;
 };

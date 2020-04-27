@@ -49,14 +49,14 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
 /* Compare supplied parameters to each style in the vector and return the index
    of the first matching style. All non-(-1) parameters need to match to accept
    a style. Return -1 on no match. */
-int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name);
+int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name);
 
 /* Return 1 if rst matches the style in supplied args. Same matching rules as
    in pcb_route_style_lookup(). */
-int pcb_route_style_match(pcb_route_style_t *rst, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name);
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name);
 
 extern pcb_route_style_t pcb_custom_route_style;
 
 /* helper: get route style size for a function and selected object type.
    size_id: 0=main size; 1=2nd size (drill); 2=clearance */
-int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id);
+int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);

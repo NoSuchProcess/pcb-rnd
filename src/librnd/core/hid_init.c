@@ -417,17 +417,17 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 		if (res == 0)
 			break; /* HID accepted, don't try anything else */
 		if (res < 0) {
-			pcb_message(PCB_MSG_ERROR, "Failed to initialize HID %s (unrecoverable, have to give up)\n", pcb_gui->name);
+			rnd_message(PCB_MSG_ERROR, "Failed to initialize HID %s (unrecoverable, have to give up)\n", pcb_gui->name);
 			return -1;
 		}
 		fprintf(stderr, "Failed to initialize HID %s (recoverable)\n", pcb_gui->name);
 		if (apg == NULL) {
 			if (pcbhl_conf.rc.hid_fallback) {
 				ran_out_of_hids:;
-				pcb_message(PCB_MSG_ERROR, "Tried all available HIDs, all failed, giving up.\n");
+				rnd_message(PCB_MSG_ERROR, "Tried all available HIDs, all failed, giving up.\n");
 			}
 			else
-				pcb_message(PCB_MSG_ERROR, "Not trying any other hid as fallback because rc/hid_fallback is disabled.\n");
+				rnd_message(PCB_MSG_ERROR, "Not trying any other hid as fallback because rc/hid_fallback is disabled.\n");
 			return -1;
 		}
 
@@ -624,7 +624,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 		case DO_GUI:
 			pcb_render = pcb_gui = pcb_hid_find_gui(ga->hid_name);
 			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_ERROR, "Can't find the gui (%s) requested.\n", ga->hid_name);
+				rnd_message(PCB_MSG_ERROR, "Can't find the gui (%s) requested.\n", ga->hid_name);
 				return 1;
 			}
 			break;
@@ -641,7 +641,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 
 			/* try anything */
 			if (pcb_gui == NULL) {
-				pcb_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
+				rnd_message(PCB_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
 				pcb_render = pcb_gui = pcb_hid_find_gui(NULL);
 			}
 		}
@@ -665,7 +665,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 	if (ga->main_action != NULL) {
 		int res = rnd_parse_command(NULL, ga->main_action, pcb_true); /* hidlib is NULL because there is no context yet */
 		if ((res != 0) && (ga->main_action_hint != NULL))
-			pcb_message(PCB_MSG_ERROR, "\nHint: %s\n", ga->main_action_hint);
+			rnd_message(PCB_MSG_ERROR, "\nHint: %s\n", ga->main_action_hint);
 		pcbhl_log_print_uninit_errs("main_action parse error");
 		*exitval = res;
 		return 1;
@@ -680,13 +680,13 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 	return 0;
 }
 
-int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, pcb_bool is_empty)
+int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_empty)
 {
 	if (!pcbhl_main_exporting)
 		return 0;
 
 	if (is_empty)
-		pcb_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
+		rnd_message(PCB_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
 	if (pcb_gui->set_hidlib != NULL)
 		pcb_gui->set_hidlib(pcb_gui, hidlib);
 	pcb_event(hidlib, PCB_EVENT_EXPORT_SESSION_BEGIN, NULL);

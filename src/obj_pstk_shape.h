@@ -33,20 +33,20 @@
 
 typedef struct pcb_pstk_poly_s {
 	unsigned int len;             /* number of points in polygon */
-	pcb_coord_t *x;               /* ordered list of points, X coord */
-	pcb_coord_t *y;               /* ordered list of points, Y coord */
+	rnd_coord_t *x;               /* ordered list of points, X coord */
+	rnd_coord_t *y;               /* ordered list of points, Y coord */
 	pcb_polyarea_t *pa;           /* cache for the poly code */
 	char inverted;                /* 1 if x;y has the opposite direction as pa */
 } pcb_pstk_poly_t;
 
 typedef struct pcb_pstk_line_s {
-	pcb_coord_t x1, y1, x2, y2, thickness;
+	rnd_coord_t x1, y1, x2, y2, thickness;
 	unsigned square:1;
 } pcb_pstk_line_t;
 
 typedef struct pcb_pstk_circ_s {
-	pcb_coord_t dia;             /* diameter of the filled circle */
-	pcb_coord_t x, y;            /* assymetric pads */
+	rnd_coord_t dia;             /* diameter of the filled circle */
+	rnd_coord_t x, y;            /* assymetric pads */
 } pcb_pstk_circ_t;
 
 typedef struct pcb_pstk_shape_s {
@@ -63,7 +63,7 @@ typedef struct pcb_pstk_shape_s {
 		PCB_PSSH_CIRC,               /* filled circle */
 		PCB_PSSH_HSHADOW             /* for clearance: pretend the shape is the same as the drill's or slot's; but do not add anything positive to the target layer */
 	} shape;
-	pcb_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
+	rnd_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
 } pcb_pstk_shape_t;
 
 /* transformed prototype */

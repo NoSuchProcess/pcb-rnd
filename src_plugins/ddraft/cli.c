@@ -96,7 +96,7 @@ struct cli_node_s {
 	int begin, end; /* cursor pos */
 	int invalid;
 
-	pcb_coord_t x, y, dist;
+	rnd_coord_t x, y, dist;
 	pcb_angle_t angle, offs;
 	pcb_cardinal_t id;
 };
@@ -151,7 +151,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 	char tmp[128];
 	char *sep, *s = strchr(line, ' '), *next; /* skip the instruction */
 	int i;
-	pcb_bool succ;
+	rnd_bool succ;
 
 	if (s == NULL)
 		return 0;
@@ -278,11 +278,11 @@ static int cli_str_insert(char *str, int from, char *ins, int enforce_space_befo
 	return from + inslen + extra;
 }
 
-static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox, pcb_coord_t *oy, int annot)
+static int cli_apply_coord(cli_node_t *argv, int start, int end, rnd_coord_t *ox, rnd_coord_t *oy, int annot)
 {
 	int n, relative = 0, have_angle = 0, have_dist = 0, len = (start > 1);
 	double angle = 0, dist = 0, lx, ly, x = *ox, y = *oy;
-	pcb_coord_t tx, ty;
+	rnd_coord_t tx, ty;
 
 	for(n = start; n < end; n++) {
 		int moved = 0;
@@ -355,13 +355,13 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 				break;
 
 			case CLI_PERP:
-				pcb_message(PCB_MSG_ERROR, "perp not yet implemented\n");
+				rnd_message(PCB_MSG_ERROR, "perp not yet implemented\n");
 				return -1;
 			case CLI_PARAL:
-				pcb_message(PCB_MSG_ERROR, "paral not yet implemented\n");
+				rnd_message(PCB_MSG_ERROR, "paral not yet implemented\n");
 				return -1;
 			case CLI_TANGENT:
-				pcb_message(PCB_MSG_ERROR, "tangent not yet implemented\n");
+				rnd_message(PCB_MSG_ERROR, "tangent not yet implemented\n");
 				return -1;
 
 			case CLI_CENTER:
@@ -425,7 +425,7 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, pcb_coord_t *ox
 
 		if (moved) {
 			if ((annot) && (len > 0)) {
-				pcb_coord_t *c = vtc0_alloc_append(&pcb_ddraft_attached.annot_lines, 4);
+				rnd_coord_t *c = vtc0_alloc_append(&pcb_ddraft_attached.annot_lines, 4);
 				c[0] = pcb_round(lx);
 				c[1] = pcb_round(ly);
 				c[2] = pcb_round(x);
@@ -550,7 +550,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	opp = find_op(op, oplen);
 	if (opp == NULL) {
 		if (strcmp(cmd, "/edit") != 0)
-			pcb_message(PCB_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
+			rnd_message(PCB_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
 		RND_ACT_IRES(-1);
 		goto ret0;
 	}

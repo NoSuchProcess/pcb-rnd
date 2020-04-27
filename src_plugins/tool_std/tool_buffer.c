@@ -53,7 +53,7 @@ void pcb_tool_buffer_uninit(void)
 {
 }
 
-static void pcb_tool_buffer_notify_mode_(rnd_hidlib_t *hl, pcb_bool keep_ids)
+static void pcb_tool_buffer_notify_mode_(rnd_hidlib_t *hl, rnd_bool keep_ids)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 

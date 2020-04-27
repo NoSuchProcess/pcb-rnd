@@ -58,7 +58,7 @@ static GtkWidget *ghid_pane_append(attr_dlg_t *ctx, ghid_attr_tb_t *ts, GtkWidge
 		case 1: gtk_paned_pack1(GTK_PANED(parent), page, TRUE, FALSE); break;
 		case 2: gtk_paned_pack2(GTK_PANED(parent), page, TRUE, FALSE); break;
 		default:
-			pcb_message(PCB_MSG_ERROR, "Wrong number of pages for a paned widget (%d): must be exactly 2\n", ts->val.pane.next);
+			rnd_message(PCB_MSG_ERROR, "Wrong number of pages for a paned widget (%d): must be exactly 2\n", ts->val.pane.next);
 	}
 	ts->val.pane.next++;
 	return page;

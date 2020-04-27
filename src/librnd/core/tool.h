@@ -64,8 +64,8 @@ typedef struct pcb_tool_s {
 	void     (*release)(rnd_hidlib_t *hl);
 	void     (*adjust_attached)(rnd_hidlib_t *hl);
 	void     (*draw_attached)(rnd_hidlib_t *hl);
-	pcb_bool (*undo_act)(rnd_hidlib_t *hl);
-	pcb_bool (*redo_act)(rnd_hidlib_t *hl);
+	rnd_bool (*undo_act)(rnd_hidlib_t *hl);
+	rnd_bool (*redo_act)(rnd_hidlib_t *hl);
 	void     (*escape)(rnd_hidlib_t *hl);
 	
 	unsigned long user_flags;
@@ -74,7 +74,7 @@ typedef struct pcb_tool_s {
 extern vtp0_t pcb_tools;
 extern pcb_toolid_t pcb_tool_prev_id;
 extern pcb_toolid_t pcb_tool_next_id;
-extern pcb_bool pcb_tool_is_saved;
+extern rnd_bool pcb_tool_is_saved;
 
 /* (un)initialize the tool subsystem */
 void pcb_tool_init(void);
@@ -112,8 +112,8 @@ void pcb_tool_press(rnd_hidlib_t *hidlib);
 void pcb_tool_release(rnd_hidlib_t *hidlib);
 void pcb_tool_adjust_attached(rnd_hidlib_t *hl);
 void pcb_tool_draw_attached(rnd_hidlib_t *hl);
-pcb_bool pcb_tool_undo_act(rnd_hidlib_t *hl);
-pcb_bool pcb_tool_redo_act(rnd_hidlib_t *hl);
+rnd_bool pcb_tool_undo_act(rnd_hidlib_t *hl);
+rnd_bool pcb_tool_redo_act(rnd_hidlib_t *hl);
 
 
 /* fake a click */

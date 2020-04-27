@@ -30,7 +30,7 @@
 #include <librnd/poly/polyarea.h>
 
 /* Returns whether a polyline is self-intersecting. O(n^2) */
-pcb_bool pcb_pline_is_selfint(pcb_pline_t *pl);
+rnd_bool pcb_pline_is_selfint(pcb_pline_t *pl);
 
 /* Assume pl is self-intersecting split it up into a list of freshly allocated
    plines in out. O(n^2) */

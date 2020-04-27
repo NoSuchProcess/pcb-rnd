@@ -112,7 +112,7 @@ extern pcbhl_conf_t pcbhl_conf;
 int pcb_hidlib_conf_init();
 
 /* sets cursor grid with respect to grid spacing, offset and unit values */
-void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_coord_t oy);
+void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
 void pcb_hidlib_set_unit(rnd_hidlib_t *hidlib, const pcb_unit_t *new_unit);
 
 

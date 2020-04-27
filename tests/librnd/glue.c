@@ -49,15 +49,15 @@ void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 {
 }
 
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 }
 
-void pcbhl_draw_marks(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 }
 
-void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 }
 

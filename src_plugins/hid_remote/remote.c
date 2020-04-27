@@ -123,7 +123,7 @@ static int remote_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void remote_invalidate_lr(pcb_hid_t *hid, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
+static void remote_invalidate_lr(pcb_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
 {
 	proto_send_invalidate(l,r, t, b);
 }
@@ -153,7 +153,7 @@ TODO("layer: remove this temporary hack for virtual layers")
 
 typedef struct {
 	unsigned long int color_packed;
-	pcb_coord_t line_width;
+	rnd_coord_t line_width;
 	char cap;
 } remote_gc_cache_t;
 static hid_gc_s remote_gc[32];
@@ -164,7 +164,7 @@ static pcb_hid_gc_t remote_make_gc(pcb_hid_t *hid)
 	int gci = proto_send_make_gc();
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
 	if (gci >= max) {
-		pcb_message(PCB_MSG_ERROR, "remote_make_gc(): GC index too high: %d >= %d\n", gci, max);
+		rnd_message(PCB_MSG_ERROR, "remote_make_gc(): GC index too high: %d >= %d\n", gci, max);
 		proto_send_del_gc(gci);
 		return NULL;
 	}
@@ -178,7 +178,7 @@ static int gc2idx(pcb_hid_gc_t gc)
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
 
 	if ((idx < 0) || (idx >= max)) {
-		pcb_message(PCB_MSG_ERROR, "GC index too high: %d >= %d\n", idx, max);
+		rnd_message(PCB_MSG_ERROR, "GC index too high: %d >= %d\n", idx, max);
 		return -1;
 	}
 	return idx;
@@ -192,12 +192,12 @@ static void remote_destroy_gc(pcb_hid_gc_t gc)
 }
 
 static const char *drawing_mode_names[] = { "reset", "positive", "negative", "flush"};
-static void remote_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *drw_screen)
+static void remote_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *drw_screen)
 {
 	if ((op >= 0) && (op < sizeof(drawing_mode_names) / sizeof(drawing_mode_names[0])))
 		proto_send_set_drawing_mode(drawing_mode_names[op], direct);
 	else
-		pcb_message(PCB_MSG_ERROR, "Invalid drawing mode %d\n", op);
+		rnd_message(PCB_MSG_ERROR, "Invalid drawing mode %d\n", op);
 }
 
 static void remote_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
@@ -220,7 +220,7 @@ static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 
 	if (style >= max) {
-		pcb_message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
+		rnd_message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
 		return;
 	}
 	if (idx >= 0) {
@@ -232,7 +232,7 @@ static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	}
 }
 
-static void remote_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void remote_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
@@ -250,49 +250,49 @@ static void remote_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
 		proto_send_set_draw_xor(idx, xor_set);
 }
 
-static void remote_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void remote_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_line(idx, x1, y1, x2, y2);
 }
 
-static void remote_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void remote_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_arc(idx, cx, cy, width, height, start_angle, delta_angle);
 }
 
-static void remote_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void remote_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_rect(idx, x1, y1, x2, y2, 0);
 }
 
-static void remote_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void remote_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_fill_circle(idx, cx, cy, radius);
 }
 
-static void remote_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void remote_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_poly(idx, n_coords, x, y, 0, 0);
 }
 
-static void remote_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void remote_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_poly(idx, n_coords, x, y, dx, dy);
 }
 
-static void remote_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void remote_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
@@ -318,11 +318,11 @@ static int remote_mod1_is_pressed(pcb_hid_t *hid)
 	return 0;
 }
 
-static void remote_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+static void remote_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 }
 
-static void remote_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void remote_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
@@ -338,7 +338,7 @@ static void remote_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
 }
 
 pcb_hidval_t
-remote_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+remote_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								 pcb_hidval_t user_data)
 {
 	pcb_hidval_t ret;
@@ -350,7 +350,7 @@ void remote_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
 {
 }
 
-static void *remote_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void *remote_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	return NULL;
 }

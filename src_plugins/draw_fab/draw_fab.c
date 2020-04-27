@@ -238,7 +238,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 		pcb_render->set_color(gc, &conf_core.appearance.color.pin);
 		for (i = 0; i < drill->PinN; i++) {
 			int unplated = 1;
-			pcb_coord_t x, y;
+			rnd_coord_t x, y;
 			assert(drill->hole[i]->type == PCB_OBJ_PSTK);
 			{
 				pcb_pstk_t *ps = (pcb_pstk_t *)drill->hole[i];

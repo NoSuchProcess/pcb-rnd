@@ -26,7 +26,7 @@
 
 #include "subc_help.h"
 
-pcb_text_t *pcb_subc_add_dyntex(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, unsigned direction, int scale, pcb_bool bottom, const char *pattern)
+pcb_text_t *pcb_subc_add_dyntex(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, unsigned direction, int scale, rnd_bool bottom, const char *pattern)
 {
 	pcb_layer_type_t side = bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 	pcb_layer_t *ly = pcb_subc_get_layer(sc, side | PCB_LYT_SILK, 0, pcb_true, "top-silk", pcb_false);
@@ -35,7 +35,7 @@ pcb_text_t *pcb_subc_add_dyntex(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, un
 	return 0;
 }
 
-pcb_text_t *pcb_subc_add_refdes_text(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, unsigned direction, int scale, pcb_bool bottom)
+pcb_text_t *pcb_subc_add_refdes_text(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, unsigned direction, int scale, rnd_bool bottom)
 {
 	return pcb_subc_add_dyntex(sc, x, y, direction, scale, bottom, "%a.parent.refdes%");
 }

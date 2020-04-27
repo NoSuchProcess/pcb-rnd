@@ -27,7 +27,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static int parse_dia(hkp_ctx_t *ctx, node_t *roundn, pcb_coord_t *dia)
+static int parse_dia(hkp_ctx_t *ctx, node_t *roundn, rnd_coord_t *dia)
 {
 	node_t *hr = roundn->first_child;
 	if ((hr == NULL) || (strcmp(hr->argv[0], "DIAMETER") != 0))
@@ -104,7 +104,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 {
 	const pcb_unit_t *old_unit;
 	node_t *n, *on, *tmp;
-	pcb_coord_t ox = 0, oy = 0;
+	rnd_coord_t ox = 0, oy = 0;
 	hkp_shape_t *s = htsp_get(&ctx->shapes, name);
 	int has_shape = 0;
 
@@ -125,7 +125,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 
 	for(n = s->subtree->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "ROUND") == 0) {
-			pcb_coord_t dia;
+			rnd_coord_t dia;
 			SHAPE_CHECK_DUP;
 			if (parse_dia(ctx, n, &dia) != 0)
 				goto error;
@@ -135,7 +135,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 			s->shp.data.circ.y = oy;
 		}
 		else if ((strcmp(n->argv[0], "RECTANGLE") == 0) || (strcmp(n->argv[0], "SQUARE") == 0)) {
-			pcb_coord_t w, h;
+			rnd_coord_t w, h;
 			SHAPE_CHECK_DUP;
 			tmp = find_nth(n->first_child, "WIDTH", 0);
 			if (parse_coord(ctx, tmp->argv[1], &w) != 0) {
@@ -160,7 +160,7 @@ static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 			s->shp.data.poly.x[3] = ox + w/2; s->shp.data.poly.y[3] = oy - h/2;
 		}
 		else if (strcmp(n->argv[0], "OBLONG") == 0) {
-			pcb_coord_t w, h;
+			rnd_coord_t w, h;
 			SHAPE_CHECK_DUP;
 			tmp = find_nth(n->first_child, "WIDTH", 0);
 			if (parse_coord(ctx, tmp->argv[1], &w) != 0) {
@@ -208,7 +208,7 @@ lyt_name_t lyt_names[] = {
 	{NULL, 0}
 };
 
-static void slot_shape(pcb_pstk_shape_t *shape, pcb_coord_t sx, pcb_coord_t sy)
+static void slot_shape(pcb_pstk_shape_t *shape, rnd_coord_t sx, rnd_coord_t sy)
 {
 	shape->shape = PCB_PSSH_LINE;
 	if (sx > sy) { /* horizontal */
@@ -230,7 +230,7 @@ static void slot_shape(pcb_pstk_shape_t *shape, pcb_coord_t sx, pcb_coord_t sy)
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
 	const pcb_unit_t *old_unit;
-	pcb_coord_t ox = 0, oy = 0;
+	rnd_coord_t ox = 0, oy = 0;
 	node_t *n, *hn, *on, *tn;
 	hkp_pstk_t *p = htsp_get(&ctx->pstks, ps);
 	int top_only = 0;
@@ -346,7 +346,7 @@ static void set_pstk_clearance(hkp_ctx_t *ctx, const hkp_netclass_t *nc, pcb_pst
 static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc, node_t *nd, int on_bottom)
 {
 	node_t *tmp;
-	pcb_coord_t px, py;
+	rnd_coord_t px, py;
 	hkp_pstk_t *hpstk;
 	pcb_cardinal_t pid;
 	pcb_pstk_t *ps;
@@ -397,7 +397,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 
 	fpstk = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fpstk == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open padstack hkp '%s' for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "can't open padstack hkp '%s' for read\n", fn);
 		return -1;
 	}
 

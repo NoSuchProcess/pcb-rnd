@@ -64,7 +64,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
-				pcb_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
+				rnd_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
 			return 0;
 		}
 
@@ -73,7 +73,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
-				pcb_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
+				rnd_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
 			return 0;
 		}
 	}
@@ -88,9 +88,9 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
-	pcb_bool comp_on = pcb_false, solder_on = pcb_false;
+	rnd_bool comp_on = pcb_false, solder_on = pcb_false;
 	pcb_box_t vb;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	double xcent, ycent, xoffs, yoffs;
 
 	PCB_GUI_NOGUI();
@@ -105,7 +105,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	ycent = (double)(vb.Y1 + vb.Y2)/2.0;
 	xoffs = xcent - x;
 	yoffs = ycent - y;
-/*	pcb_trace("SwapSides: xy=%mm;%mm cent=%mm;%mm ofs=%mm;%mm\n", x, y, (pcb_coord_t)xcent, (pcb_coord_t)ycent, (pcb_coord_t)xoffs, (pcb_coord_t)yoffs);*/
+/*	pcb_trace("SwapSides: xy=%mm;%mm cent=%mm;%mm ofs=%mm;%mm\n", x, y, (rnd_coord_t)xcent, (rnd_coord_t)ycent, (rnd_coord_t)xoffs, (rnd_coord_t)yoffs);*/
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
 		solder_on = pcb_get_layer(PCB->Data, PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
@@ -164,7 +164,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	conf_toggle_editor(show_solder_side);
 
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
-		pcb_bool new_solder_vis = conf_core.editor.show_solder_side;
+		rnd_bool new_solder_vis = conf_core.editor.show_solder_side;
 
 		if (comp_group >= 0)
 			pcb_layervis_change_group_vis(&PCB->hidlib, PCB->LayerGroups.grp[comp_group].lid[0], !new_solder_vis, !new_solder_vis);
@@ -174,7 +174,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_draw_inhibit_dec();
 
-/*pcb_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (pcb_coord_t)(x + xoffs), (pcb_coord_t)(y + yoffs));*/
+/*pcb_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (rnd_coord_t)(x + xoffs), (rnd_coord_t)(y + yoffs));*/
 	pcb_gui->pan(pcb_gui, pcb_round(x + xoffs), pcb_round(y + yoffs), 0);
 	pcb_gui->set_crosshair(pcb_gui, x, y, HID_SC_PAN_VIEWPORT);
 
@@ -216,7 +216,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(ctx_sens) {
 			case CTX_OBJ_TYPE:
 				{
-					pcb_coord_t x, y;
+					rnd_coord_t x, y;
 					pcb_objtype_t type;
 					void *o1, *o2, *o3;
 					pcb_any_obj_t *o;

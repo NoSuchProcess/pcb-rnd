@@ -51,7 +51,7 @@ void pcb_drc_impl_unreg(pcb_drc_impl_t *impl)
 
 
 
-void pcb_drc_set_data(pcb_view_t *violation, const pcb_coord_t *measured_value, pcb_coord_t required_value)
+void pcb_drc_set_data(pcb_view_t *violation, const rnd_coord_t *measured_value, rnd_coord_t required_value)
 {
 	violation->data_type = PCB_VIEW_DRC;
 	violation->data.drc.required_value = required_value;
@@ -108,15 +108,15 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	else if (pcb_strcasecmp(dlg_type, "log") == 0) {
 		pcb_view_t *v;
 		for(v = pcb_view_list_first(lst); v != NULL; v = pcb_view_list_next(v)) {
-			pcb_message(PCB_MSG_INFO, "%ld: %s: %s\n", v->uid, v->type, v->title);
+			rnd_message(PCB_MSG_INFO, "%ld: %s: %s\n", v->uid, v->type, v->title);
 			if (v->have_bbox)
-				pcb_message(PCB_MSG_INFO, "%m+within %$m4\n", pcbhl_conf.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
+				rnd_message(PCB_MSG_INFO, "%m+within %$m4\n", pcbhl_conf.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 			if (v->have_xy)
-				pcb_message(PCB_MSG_INFO, "%m+at %$m2\n", pcbhl_conf.editor.grid_unit->allow, v->x, v->y);
+				rnd_message(PCB_MSG_INFO, "%m+at %$m2\n", pcbhl_conf.editor.grid_unit->allow, v->x, v->y);
 			pcb_printf("%m+required value %$mS\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
-				pcb_message(PCB_MSG_INFO, "%m+measured value %$mS\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.measured_value);
-			pcb_message(PCB_MSG_INFO, "%s\n\n", v->description);
+				rnd_message(PCB_MSG_INFO, "%m+measured value %$mS\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.measured_value);
+			rnd_message(PCB_MSG_INFO, "%s\n\n", v->description);
 		}
 	}
 	if (pcb_strcasecmp(dlg_type, "dump") == 0) {

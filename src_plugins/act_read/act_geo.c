@@ -38,7 +38,7 @@ static const char pcb_acts_IsPointOnLine[] = "IsPointOnLine(x, y, r, idpath)";
 static const char pcb_acth_IsPointOnLine[] = "Returns 1 if point x;y with radius r is on the line addressed by idpath, 0 else.";
 static fgw_error_t pcb_act_IsPointOnLine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y, r;
+	rnd_coord_t x, y, r;
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
 
@@ -61,7 +61,7 @@ static const char pcb_acts_IsPointOnArc[] = "IsPointOnArc(x, y, r, idpath)";
 static const char pcb_acth_IsPointOnArc[] = "Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.";
 static fgw_error_t pcb_act_IsPointOnArc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y, r;
+	rnd_coord_t x, y, r;
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
 

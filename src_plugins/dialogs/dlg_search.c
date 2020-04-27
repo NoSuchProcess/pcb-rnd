@@ -275,7 +275,7 @@ static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 			return;
 		}
 	}
-	pcb_message(PCB_MSG_ERROR, "Too many expressions in the row, can not add more\n");
+	rnd_message(PCB_MSG_ERROR, "Too many expressions in the row, can not add more\n");
 }
 
 static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
@@ -292,7 +292,7 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 			return;
 		}
 	}
-	pcb_message(PCB_MSG_ERROR, "Too many expression rows, can not add more\n");
+	rnd_message(PCB_MSG_ERROR, "Too many expression rows, can not add more\n");
 }
 
 static void search_apply_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

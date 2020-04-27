@@ -55,7 +55,7 @@ static void tool_logic_chg_tool(rnd_hidlib_t *hidlib, void *user_data, int argc,
 	int id = argv[2].d.i;
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	if (pcb->RatDraw && !(pcb_tool_get(id)->user_flags & PCB_TLF_RAT)) {
-		pcb_message(PCB_MSG_WARNING, "That tool can not be used on the rat layer!\n");
+		rnd_message(PCB_MSG_WARNING, "That tool can not be used on the rat layer!\n");
 		*ok = 0;
 	}
 }
@@ -102,7 +102,7 @@ static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc
 	was_rat = PCB->RatDraw;
 }
 
-static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *ptr3, pcb_coord_t * x, pcb_coord_t * y)
+static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *ptr3, rnd_coord_t * x, rnd_coord_t * y)
 {
 	switch (type) {
 	case PCB_OBJ_LINE:
@@ -133,9 +133,9 @@ static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *pt
 	}
 }
 
-void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband)
+void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t PlaceY, rnd_bool do_rubberband)
 {
-	pcb_coord_t mx = 0, my = 0;
+	rnd_coord_t mx = 0, my = 0;
 
 	pcb_event(hl, PCB_EVENT_RUBBER_RESET, NULL);
 	if (!conf_core.editor.snap_pin) {

@@ -132,7 +132,7 @@ void pcb_extobj_del_pre(pcb_subc_t *sc)
 		eo->del_pre(sc);
 }
 
-static pcb_subc_t *pcb_extobj_conv_list(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, vtp0_t *list, pcb_bool remove, pcb_subc_t *copy_from)
+static pcb_subc_t *pcb_extobj_conv_list(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, vtp0_t *list, rnd_bool remove, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *res;
 
@@ -152,7 +152,7 @@ static pcb_subc_t *pcb_extobj_conv_list(pcb_board_t *pcb, const pcb_extobj_t *eo
 	return res;
 }
 
-static pcb_subc_t *pcb_extobj_conv_flag_objs_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove, pcb_flag_values_t flg, pcb_subc_t *copy_from)
+static pcb_subc_t *pcb_extobj_conv_flag_objs_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, rnd_bool remove, pcb_flag_values_t flg, pcb_subc_t *copy_from)
 {
 	vtp0_t list;
 	pcb_subc_t *res;
@@ -165,18 +165,18 @@ static pcb_subc_t *pcb_extobj_conv_flag_objs_using(pcb_board_t *pcb, const pcb_e
 	return res;
 }
 
-pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove)
+pcb_subc_t *pcb_extobj_conv_selected_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, rnd_bool remove)
 {
 	return pcb_extobj_conv_flag_objs_using(pcb, eo, dst, src, remove, PCB_FLAG_SELECTED, NULL);
 }
 
-pcb_subc_t *pcb_extobj_conv_all_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, pcb_bool remove)
+pcb_subc_t *pcb_extobj_conv_all_objs(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_data_t *src, rnd_bool remove)
 {
 	return pcb_extobj_conv_flag_objs_using(pcb, eo, dst, src, remove, 0, NULL);
 }
 
 
-pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove, pcb_subc_t *copy_from)
+pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, rnd_bool remove, pcb_subc_t *copy_from)
 {
 	vtp0_t list;
 	pcb_subc_t *res;
@@ -190,7 +190,7 @@ pcb_subc_t *pcb_extobj_conv_obj_using(pcb_board_t *pcb, const pcb_extobj_t *eo, 
 }
 
 
-pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, pcb_bool remove)
+pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_data_t *dst, pcb_any_obj_t *src, rnd_bool remove)
 {
 	return pcb_extobj_conv_obj_using(pcb, eo, dst, src, remove, NULL);
 }

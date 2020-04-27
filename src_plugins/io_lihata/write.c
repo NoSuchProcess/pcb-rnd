@@ -264,18 +264,18 @@ static void obj_attr_flag_warn(pcb_any_obj_t *obj)
 	if (wrver < 5) {
 		if (pcb_attribute_get(&obj->Attributes, "intnoconn") != NULL) {
 			warned = 1;
-			pcb_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v5 may ignore the intnoconn flag\n");
+			rnd_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v5 may ignore the intnoconn flag\n");
 		}
 	}
 	if (wrver < 3) {
 		if (pcb_attribute_get(&obj->Attributes, "intconn") != NULL) {
 			warned = 1;
-			pcb_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v3 may ignore the intconn flag\n");
+			rnd_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v3 may ignore the intconn flag\n");
 		}
 	}
 
 	if (warned)
-		pcb_message(PCB_MSG_WARNING, "^^^ in %s #%ld\n", pcb_obj_type_name(obj->type), obj->ID);
+		rnd_message(PCB_MSG_WARNING, "^^^ in %s #%ld\n", pcb_obj_type_name(obj->type), obj->ID);
 }
 
 /* Write the thermal list of heavy terminals; put the resulting "thermal"
@@ -303,7 +303,7 @@ void build_thermal_heavy(lht_node_t *dst, pcb_any_obj_t *o)
 }
 
 
-static lht_node_t *build_line(pcb_line_t *line, int local_id, pcb_coord_t dx, pcb_coord_t dy, int simple)
+static lht_node_t *build_line(pcb_line_t *line, int local_id, rnd_coord_t dx, rnd_coord_t dy, int simple)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -386,7 +386,7 @@ static lht_node_t *build_rat(pcb_rat_t *rat)
 	return obj;
 }
 
-static lht_node_t *build_arc(pcb_arc_t *arc, pcb_coord_t dx, pcb_coord_t dy)
+static lht_node_t *build_arc(pcb_arc_t *arc, rnd_coord_t dx, rnd_coord_t dy)
 {
 	char buff[128];
 	lht_node_t *obj;
@@ -413,13 +413,13 @@ static lht_node_t *build_arc(pcb_arc_t *arc, pcb_coord_t dx, pcb_coord_t dy)
 }
 
 /* attempt to convert a padstack to an old-style via for v1, v2 and v3 */
-static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool is_via, pcb_coord_t dx, pcb_coord_t dy)
+static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, rnd_bool is_via, rnd_coord_t dx, rnd_coord_t dy)
 {
 	char buff[128];
 	lht_node_t *obj;
-	pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask;
+	rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 	pcb_pstk_compshape_t cshape;
-	pcb_bool plated;
+	rnd_bool plated;
 	pcb_flag_t flg;
 	char *name = pcb_attribute_get(&ps->Attributes, "name");
 
@@ -450,12 +450,12 @@ static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, pcb_bool 
 }
 
 /* attempt to convert a padstack to an old-style pad for v1, v2 and v3 */
-static lht_node_t *build_pstk_pad(pcb_data_t *data, pcb_pstk_t *ps, pcb_coord_t dx, pcb_coord_t dy)
+static lht_node_t *build_pstk_pad(pcb_data_t *data, pcb_pstk_t *ps, rnd_coord_t dx, rnd_coord_t dy)
 {
 	char buff[128];
 	lht_node_t *obj;
-	pcb_coord_t x1, y1, x2, y2, thickness, clearance, mask;
-	pcb_bool square, nopaste;
+	rnd_coord_t x1, y1, x2, y2, thickness, clearance, mask;
+	rnd_bool square, nopaste;
 	char *name = pcb_attribute_get(&ps->Attributes, "name");
 	pcb_flag_t flg;
 
@@ -583,7 +583,7 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 {
 	char buff[128];
 	lht_node_t *obj, *lst;
-	pcb_coord_t ox, oy;
+	rnd_coord_t ox, oy;
 	gdl_iterator_t it;
 	int l, seen_refdes = 0;
 	pcb_pstk_t *ps;
@@ -809,7 +809,7 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 						nshapeo = build_text("ps_hshadow", "");
 					break;
 				default:
-					pcb_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
+					rnd_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
 					abort();
 			}
 			lht_dom_hash_put(nshape, nshapeo);
@@ -954,10 +954,10 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 					lht_dom_hash_put(obj, dummy_node("purpose"));
 			}
 			else if (layer->meta.bound.purpose != NULL)
-				pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layer with a purpose string - not supported in lihata board below v6. Layer binding might be broken after load.\n");
+				rnd_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layer with a purpose string - not supported in lihata board below v6. Layer binding might be broken after load.\n");
 		}
 		else
-			pcb_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
+			rnd_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
 	}
 
 	if (!layer->is_bound)
@@ -1457,8 +1457,8 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 {
 	/* for coords, preserve formatting as long as values match */
 	if (lhtpers_rule_find(io_lihata_out_coords, inmem_node) != NULL) {
-		pcb_coord_t v1, v2;
-		pcb_bool success1, success2;
+		rnd_coord_t v1, v2;
+		rnd_bool success1, success2;
 
 /*		fprintf(stderr, "SMART d='%s' m='%s'\n", ondisk_value, inmem_node->data.text.value);*/
 
@@ -1497,7 +1497,7 @@ static void clean_invalid(lht_node_t *node)
 	}
 }
 
-static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency, int ver)
+static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency, int ver)
 {
 	int res;
 	lht_doc_t *brd;
@@ -1506,7 +1506,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 	brd = build_board(PCB);
 
 	if (brd == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to build the board at that version - nothing is written\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to build the board at that version - nothing is written\n");
 		return -1;
 	}
 
@@ -1575,8 +1575,8 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 				res = lht_dom_export(brd->root, fe, "");
 				fclose(fe);
 			}
-			pcb_message(PCB_MSG_ERROR, "lhtpers_fsave_as() failed. Please include files %s and %s and %s in your bugreport\n", inf, old_filename, fe_name);
-			pcb_message(PCB_MSG_ERROR, "in case this broke your file %s, please use the emergency save %s instead.\n", old_filename, fe_name);
+			rnd_message(PCB_MSG_ERROR, "lhtpers_fsave_as() failed. Please include files %s and %s and %s in your bugreport\n", inf, old_filename, fe_name);
+			rnd_message(PCB_MSG_ERROR, "in case this broke your file %s, please use the emergency save %s instead.\n", old_filename, fe_name);
 		}
 		fflush(FP);
 		if (inf != NULL)
@@ -1587,32 +1587,32 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 	return res;
 }
 
-int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_lihata_write_pcb_v1(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 1);
 }
 
-int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_lihata_write_pcb_v2(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 2);
 }
 
-int io_lihata_write_pcb_v3(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_lihata_write_pcb_v3(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 3);
 }
 
-int io_lihata_write_pcb_v4(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_lihata_write_pcb_v4(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 4);
 }
 
-int io_lihata_write_pcb_v5(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_lihata_write_pcb_v5(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 5);
 }
 
-int io_lihata_write_pcb_v6(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_lihata_write_pcb_v6(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 6);
 }
@@ -1626,7 +1626,7 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 
 	f = pcb_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
+		rnd_message(PCB_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
 		return -1;
 	}
 
@@ -1674,7 +1674,7 @@ static int io_lihata_dump_subc(pcb_plug_io_t *ctx, FILE *f, pcb_subc_t *sc)
 TODO("subc: for subc-in-subc this should be recursive")
 	if (padstacklist_first(&sc->data->padstack) != NULL) {
 		if (wrver < 4) {
-			pcb_message(PCB_MSG_WARNING, "Had to bump lihata subc version to 4 because the subcircuit contains padstacks.\n");
+			rnd_message(PCB_MSG_WARNING, "Had to bump lihata subc version to 4 because the subcircuit contains padstacks.\n");
 			wrver = 4;
 		}
 	}
@@ -1686,7 +1686,7 @@ TODO("subc: for subc-in-subc this should be recursive")
 	else if (wrver >= 6)
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v6");
 	else {
-		pcb_message(PCB_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
+		rnd_message(PCB_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
 		return -1;
 	}
 
@@ -1703,7 +1703,7 @@ TODO("subc: for subc-in-subc this should be recursive")
 int io_lihata_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
 {
 	if ((lib) || (num_subcs != 1)) {
-		pcb_message(PCB_MSG_ERROR, "Only one subcircuit per footprint file can be written in lihata\n");
+		rnd_message(PCB_MSG_ERROR, "Only one subcircuit per footprint file can be written in lihata\n");
 		return -1;
 	}
 	return 0;
@@ -1781,7 +1781,7 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialo
 	return save;
 }
 
-void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, pcb_bool apply)
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, rnd_bool apply)
 {
 	io_lihata_save_t *save = plg_ctx;
 

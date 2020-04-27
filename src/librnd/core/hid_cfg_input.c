@@ -59,7 +59,7 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 		else if ((vlen >= 7) && (pcb_strncasecmp(value, "release", 7) == 0)) m |= PCB_M_Release;
 		else if ((vlen >= 5) && (pcb_strncasecmp(value, "press", 5) == 0))   press = 1;
 		else
-			pcb_message(PCB_MSG_ERROR, "Unknown modifier: %s\n", value);
+			rnd_message(PCB_MSG_ERROR, "Unknown modifier: %s\n", value);
 		/* skip to next word */
 		next = strpbrk(value, "<- \t");
 		if (next == NULL)
@@ -75,7 +75,7 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 		*last = value;
 
 	if (press && (m & PCB_M_Release))
-		pcb_message(PCB_MSG_ERROR, "Bogus modifier: both press and release\n");
+		rnd_message(PCB_MSG_ERROR, "Bogus modifier: both press and release\n");
 
 	return m;
 }
@@ -95,7 +95,7 @@ static pcb_hid_cfg_mod_t button_name2mask(const char *name)
 	else if (pcb_strcasecmp(name, "scroll-left") == 0)   return PCB_MB_SCROLL_UP;
 	else if (pcb_strcasecmp(name, "scroll-right") == 0)  return PCB_MB_SCROLL_DOWN;
 	else {
-		pcb_message(PCB_MSG_ERROR, "Error: unknown mouse button: %s\n", name);
+		rnd_message(PCB_MSG_ERROR, "Error: unknown mouse button: %s\n", name);
 		return 0;
 	}
 }
@@ -127,7 +127,7 @@ int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
 	mouse->mouse = pcb_hid_cfg_get_menu(hr, "/mouse");
 
 	if (mouse->mouse == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Warning: no /mouse section in the resource file - mouse is disabled\n");
+		rnd_message(PCB_MSG_ERROR, "Warning: no /mouse section in the resource file - mouse is disabled\n");
 		return -1;
 	}
 
@@ -181,7 +181,7 @@ static lht_node_t *find_best_action(pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_
 	return NULL;
 }
 
-void hid_cfg_mouse_action(rnd_hidlib_t *hl, pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, pcb_bool cmd_entry_active)
+void hid_cfg_mouse_action(rnd_hidlib_t *hl, pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active)
 {
 	pcbhl_conf.temp.click_cmd_entry_active = cmd_entry_active;
 	pcb_hid_cfg_action(hl, find_best_action(mouse, button_and_mask));
@@ -258,7 +258,7 @@ static unsigned short int translate_key(pcb_hid_cfg_keys_t *km, const char *desc
 			return *desc;
 
 	if (len > sizeof(tmp)-1) {
-		pcb_message(PCB_MSG_ERROR, "key sym name too long\n");
+		rnd_message(PCB_MSG_ERROR, "key sym name too long\n");
 		return 0;
 	}
 	strncpy(tmp, desc, len);
@@ -304,7 +304,7 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 
 		k = strchr(last, '<');
 		if (k == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Missing <key> in the key description: '%s' at %s:%ld\n", keydesc, loc->file_name, loc->line+1);
+			rnd_message(PCB_MSG_ERROR, "Missing <key> in the key description: '%s' at %s:%ld\n", keydesc, loc->file_name, loc->line+1);
 			return -1;
 		}
 		len -= k-last;
@@ -324,7 +324,7 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 			k++; len--;
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Missing <key> or <char> in the key description starting at %s at %s:%ld\n", k-1, loc->file_name, loc->line+1);
+			rnd_message(PCB_MSG_ERROR, "Missing <key> or <char> in the key description starting at %s at %s:%ld\n", k-1, loc->file_name, loc->line+1);
 			return -1;
 		}
 
@@ -333,7 +333,7 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 			s = malloc(len+1);
 			memcpy(s, k, len);
 			s[len] = '\0';
-			pcb_message(PCB_MSG_ERROR, "Unrecognised key symbol in key description: %s at %s:%ld\n", s, loc->file_name, loc->line+1);
+			rnd_message(PCB_MSG_ERROR, "Unrecognised key symbol in key description: %s at %s:%ld\n", s, loc->file_name, loc->line+1);
 			free(s);
 			return -1;
 		}
@@ -371,7 +371,7 @@ int pcb_hid_cfg_keys_add_by_strdesc_(pcb_hid_cfg_keys_t *km, const char *keydesc
 
 		s = pcb_hid_cfg_keys_add_under(km, lasts, mods[n], key_raws[n], key_trs[n], terminal, &errmsg);
 		if (s == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Failed to add hotkey binding: %s: %s\n", keydesc, errmsg);
+			rnd_message(PCB_MSG_ERROR, "Failed to add hotkey binding: %s: %s\n", keydesc, errmsg);
 TODO(": free stuff?")
 			return -1;
 		}
@@ -552,7 +552,7 @@ int pcb_hid_cfg_keys_input_(pcb_hid_cfg_keys_t *km, pcb_hid_cfg_mod_t mods, unsi
 	if (key_raw == 0) {
 		static int warned = 0;
 		if (!warned) {
-			pcb_message(PCB_MSG_ERROR, "Keyboard translation error: probably the US layout is not enabled. Some hotkeys may not work properly\n");
+			rnd_message(PCB_MSG_ERROR, "Keyboard translation error: probably the US layout is not enabled. Some hotkeys may not work properly\n");
 			warned = 1;
 		}
 		/* happens if only the translated version is available. Try to reverse

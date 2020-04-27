@@ -82,7 +82,7 @@ union YYSTYPE
 #line 119 "query_y.y" /* yacc.c:1921  */
 
 	char *s;
-	pcb_coord_t c;
+	rnd_coord_t c;
 	double d;
 	const pcb_unit_t *u;
 	pcb_qry_node_t *n;

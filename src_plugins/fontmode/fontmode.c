@@ -64,7 +64,7 @@
    should search the grid for the gridlines and use them to figure out
    where the symbols are. */
 
-#define CELL_SIZE   ((pcb_coord_t)(PCB_MIL_TO_COORD (100)))
+#define CELL_SIZE   ((rnd_coord_t)(PCB_MIL_TO_COORD (100)))
 
 #define XYtoSym(x,y) (((x) / CELL_SIZE - 1)  +  (16 * ((y) / CELL_SIZE - 1)))
 
@@ -82,7 +82,7 @@ static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
 	return &PCB->Data->Layer[lid];
 }
 
-static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy)
+static void add_poly(pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy)
 {
 	pcb_poly_t *np;
 	
@@ -108,7 +108,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
 	if (font == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
+		rnd_message(PCB_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
 		return 1;
 	}
 
@@ -150,9 +150,9 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	for (s = 0; s <= PCB_MAX_FONTPOSITION; s++) {
 		char txt[32];
-		pcb_coord_t ox = (s % 16 + 1) * CELL_SIZE;
-		pcb_coord_t oy = (s / 16 + 1) * CELL_SIZE;
-		pcb_coord_t w, miny, maxy, maxx = 0;
+		rnd_coord_t ox = (s % 16 + 1) * CELL_SIZE;
+		rnd_coord_t oy = (s / 16 + 1) * CELL_SIZE;
+		rnd_coord_t w, miny, maxy, maxx = 0;
 
 		symbol = &font->Symbol[s];
 
@@ -302,9 +302,9 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* pack polygons */
 	polylist_foreach(&lfont->Polygon, &it, p) {
-		pcb_coord_t x1 = p->Points[0].X;
-		pcb_coord_t y1 = p->Points[0].Y;
-		pcb_coord_t s, ox, oy;
+		rnd_coord_t x1 = p->Points[0].X;
+		rnd_coord_t y1 = p->Points[0].Y;
+		rnd_coord_t s, ox, oy;
 		int n;
 
 		s = XYtoSym(x1, y1);
@@ -324,9 +324,9 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* recalc delta */
 	linelist_foreach(&lwidth->Line, &it, l) {
-		pcb_coord_t x1 = l->Point1.X;
-		pcb_coord_t y1 = l->Point1.Y;
-		pcb_coord_t ox, s;
+		rnd_coord_t x1 = l->Point1.X;
+		rnd_coord_t y1 = l->Point1.Y;
+		rnd_coord_t ox, s;
 
 		s = XYtoSym(x1, y1);
 		ox = (s % 16 + 1) * CELL_SIZE;

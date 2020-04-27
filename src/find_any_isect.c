@@ -29,13 +29,13 @@
 
 
 TODO(": implement text intersections")
-pcb_bool pcb_isc_text_line(const pcb_find_t *ctx, pcb_text_t *a, pcb_line_t *b) { return pcb_false; }
-pcb_bool pcb_isc_text_text(const pcb_find_t *ctx, pcb_text_t *a, pcb_text_t *b) { return pcb_false; }
-pcb_bool pcb_isc_text_poly(const pcb_find_t *ctx, pcb_text_t *a, pcb_poly_t *b) { return pcb_false; }
-pcb_bool pcb_isc_text_arc(const pcb_find_t *ctx, pcb_text_t *a, pcb_arc_t *b) { return pcb_false; }
-pcb_bool pcb_isc_text_pstk(const pcb_find_t *ctx, pcb_text_t *a, pcb_pstk_t *b) { return pcb_false; }
+rnd_bool pcb_isc_text_line(const pcb_find_t *ctx, pcb_text_t *a, pcb_line_t *b) { return pcb_false; }
+rnd_bool pcb_isc_text_text(const pcb_find_t *ctx, pcb_text_t *a, pcb_text_t *b) { return pcb_false; }
+rnd_bool pcb_isc_text_poly(const pcb_find_t *ctx, pcb_text_t *a, pcb_poly_t *b) { return pcb_false; }
+rnd_bool pcb_isc_text_arc(const pcb_find_t *ctx, pcb_text_t *a, pcb_arc_t *b) { return pcb_false; }
+rnd_bool pcb_isc_text_pstk(const pcb_find_t *ctx, pcb_text_t *a, pcb_pstk_t *b) { return pcb_false; }
 
-pcb_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_obj_t *b)
+rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_obj_t *b)
 {
 	/* produce the clopped version for polygons to compare */
 	if ((a->type == PCB_OBJ_POLY) && (((pcb_poly_t *)a)->Clipped == NULL))

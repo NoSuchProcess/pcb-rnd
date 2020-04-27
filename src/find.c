@@ -136,7 +136,7 @@ TODO("find: no find through text yet")
 }
 
 /* return whether a and b are in the same internal-no-connection group */
-static pcb_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
+static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 {
 	pcb_subc_t *pa, *pb;
 
@@ -360,7 +360,7 @@ unsigned long pcb_find_from_obj_next(pcb_find_t *ctx, pcb_data_t *data, pcb_any_
 }
 
 
-unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, pcb_coord_t x, pcb_coord_t y)
+unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, rnd_coord_t x, rnd_coord_t y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	pcb_any_obj_t *obj;

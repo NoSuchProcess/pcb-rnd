@@ -33,9 +33,9 @@
 #include <librnd/core/rotate.h>
 #include <librnd/core/box.h>
 
-void pcb_box_rotate90(pcb_box_t *Box, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
-	pcb_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
+	rnd_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
 
 	PCB_COORD_ROTATE90(x1, y1, X, Y, Number);
 	PCB_COORD_ROTATE90(x2, y2, X, Y, Number);

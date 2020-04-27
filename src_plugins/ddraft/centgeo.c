@@ -117,7 +117,7 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *i
 	return 0;
 }
 
-void pcb_cline_offs(pcb_line_t *line, double offs, pcb_coord_t *dstx, pcb_coord_t *dsty)
+void pcb_cline_offs(pcb_line_t *line, double offs, rnd_coord_t *dstx, rnd_coord_t *dsty)
 {
 	double line_dx, line_dy;
 
@@ -128,7 +128,7 @@ void pcb_cline_offs(pcb_line_t *line, double offs, pcb_coord_t *dstx, pcb_coord_
 	*dsty = pcb_round((double)line->Point1.Y + offs * line_dy);
 }
 
-double pcb_cline_pt_offs(pcb_line_t *line, pcb_coord_t px, pcb_coord_t py)
+double pcb_cline_pt_offs(pcb_line_t *line, rnd_coord_t px, rnd_coord_t py)
 {
 	double line_dx, line_dy, pt_dx, pt_dy;
 
@@ -141,7 +141,7 @@ double pcb_cline_pt_offs(pcb_line_t *line, pcb_coord_t px, pcb_coord_t py)
 	return (line_dx * pt_dx + line_dy * pt_dy) / (line_dx*line_dx + line_dy*line_dy);
 }
 
-static int line_ep(pcb_line_t *line, pcb_coord_t x, pcb_coord_t y)
+static int line_ep(pcb_line_t *line, rnd_coord_t x, rnd_coord_t y)
 {
 	if ((line->Point1.X == x) && (line->Point1.Y == y)) return 1;
 	if ((line->Point2.X == x) && (line->Point2.Y == y)) return 1;
@@ -173,7 +173,7 @@ do { \
 static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2], int oline)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
-	pcb_coord_t ex, ey, ix, iy;
+	rnd_coord_t ex, ey, ix, iy;
 	int found = 0;
 
 	dx = Line->Point2.X - Line->Point1.X;
@@ -271,7 +271,7 @@ int pcb_intersect_carc_cline(pcb_arc_t *Arc, pcb_line_t *Line, pcb_box_t *ip, do
 }
 
 
-void pcb_carc_offs(pcb_arc_t *arc, double offs, pcb_coord_t *dstx, pcb_coord_t *dsty)
+void pcb_carc_offs(pcb_arc_t *arc, double offs, rnd_coord_t *dstx, rnd_coord_t *dsty)
 {
 	double ang = (arc->StartAngle + offs * arc->Delta) / PCB_RAD_TO_DEG;
 
@@ -279,7 +279,7 @@ void pcb_carc_offs(pcb_arc_t *arc, double offs, pcb_coord_t *dstx, pcb_coord_t *
 	*dsty = arc->Y - sin(ang) * arc->Height;
 }
 
-double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
+double pcb_carc_pt_offs(pcb_arc_t *arc, rnd_coord_t px, rnd_coord_t py)
 {
 	double dx, dy, ang, end;
 
@@ -311,7 +311,7 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, pcb_coord_t px, pcb_coord_t py)
 }
 
 
-static void get_arc_ends(pcb_coord_t *box, pcb_arc_t *arc)
+static void get_arc_ends(rnd_coord_t *box, pcb_arc_t *arc)
 {
 	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
 	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
@@ -347,8 +347,8 @@ static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, double offs[2])
 {
 	double x, y, dx, dy, r1, r2, a, d, l, dl;
-	pcb_coord_t pdx, pdy;
-	pcb_coord_t box[8];
+	rnd_coord_t pdx, pdy;
+	rnd_coord_t box[8];
 	int found = 0;
 
 	/* try the end points first */

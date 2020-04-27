@@ -131,7 +131,7 @@ void pcb_tool_poly_draw_attached(rnd_hidlib_t *hl)
 	}
 }
 
-pcb_bool pcb_tool_poly_undo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_poly_undo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_prev_point();
@@ -140,7 +140,7 @@ pcb_bool pcb_tool_poly_undo_act(rnd_hidlib_t *hl)
 	return pcb_true;
 }
 
-pcb_bool pcb_tool_poly_redo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_poly_redo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_next_point();

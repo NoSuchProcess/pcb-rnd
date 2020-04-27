@@ -37,7 +37,7 @@
 /* This is used by the lexer/parser */
 typedef struct {
 	int ival;
-	pcb_coord_t bval;
+	rnd_coord_t bval;
 	double dval;
 	char has_units;
 } PLMeasure;
@@ -56,7 +56,7 @@ typedef struct {
 
 extern pcb_plug_io_t *pcb_preferred_io_pcb, *pcb_nanometer_io_pcb, *pcb_centimil_io_pcb;
 
-int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, pcb_bool emergency);
+int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency);
 int io_pcb_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs);
 int io_pcb_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc);
 int io_pcb_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f);
@@ -79,14 +79,14 @@ int io_pcb_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filena
 int PCBFileVersionNeeded(void);
 
 /* Improvise layers and groups for a partial input file that lacks layer groups (and maybe even some layers) */
-int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup);
+int pcb_layer_improvise(pcb_board_t *pcb, rnd_bool setup);
 
-pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *Element, pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB, char *Value, pcb_coord_t TextX, pcb_coord_t TextY, unsigned int Direction, int TextScale, pcb_flag_t TextFlags, pcb_bool uniqueName);
+pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *Element, pcb_font_t *PCBFont, pcb_flag_t Flags, char *Description, char *NameOnPCB, char *Value, rnd_coord_t TextX, rnd_coord_t TextY, unsigned int Direction, int TextScale, pcb_flag_t TextFlags, rnd_bool uniqueName);
 void io_pcb_element_fin(pcb_data_t *Data);
-pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness);
-pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Width, pcb_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, pcb_coord_t Thickness);
-pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, pcb_coord_t X, pcb_coord_t Y, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, pcb_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags);
-pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags);
+pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness);
+pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Width, rnd_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, rnd_coord_t Thickness);
+pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags);
+pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, const char *Name, const char *Number, pcb_flag_t Flags);
 void io_pcb_preproc_board(pcb_board_t *pcb);
 void io_pcb_postproc_board(pcb_board_t *pcb);
 

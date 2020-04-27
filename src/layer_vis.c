@@ -45,9 +45,9 @@
  * pcb_layervis_restore_stack()
  */
 static struct {
-	pcb_bool ElementOn, InvisibleObjectsOn, pstk_on, RatOn;
+	rnd_bool ElementOn, InvisibleObjectsOn, pstk_on, RatOn;
 	int pcb_layer_stack[PCB_MAX_LAYER];
-	pcb_bool LayerOn[PCB_MAX_LAYER];
+	rnd_bool LayerOn[PCB_MAX_LAYER];
 	int cnt;
 } SavedStack;
 
@@ -73,7 +73,7 @@ static void PushOnTopOfLayerStack(int NewTop)
 	}
 }
 
-int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder)
+int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On, rnd_bool ChangeStackOrder)
 {
 	pcb_layergrp_id_t group;
 	int i, changed = 1; /* at least the current layer changes */
@@ -159,7 +159,7 @@ void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
 void pcb_layervis_save_stack(void)
 {
 	pcb_cardinal_t i;
-	static pcb_bool run = pcb_false;
+	static rnd_bool run = pcb_false;
 
 	if (run == pcb_false) {
 		SavedStack.cnt = 0;
@@ -167,7 +167,7 @@ void pcb_layervis_save_stack(void)
 	}
 
 	if (SavedStack.cnt != 0)
-		pcb_message(PCB_MSG_ERROR, "pcb_layervis_save_stack()  layerstack was already saved and not yet restored.  cnt = %d\n", SavedStack.cnt);
+		rnd_message(PCB_MSG_ERROR, "pcb_layervis_save_stack()  layerstack was already saved and not yet restored.  cnt = %d\n", SavedStack.cnt);
 
 	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
@@ -189,11 +189,11 @@ void pcb_layervis_restore_stack(void)
 	pcb_cardinal_t i;
 
 	if (SavedStack.cnt == 0) {
-		pcb_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
+		rnd_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
 		return;
 	}
 	else if (SavedStack.cnt != 1) {
-		pcb_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
+		rnd_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
 	}
 
 	for (i = 0; i < pcb_max_layer(PCB); i++) {
@@ -278,7 +278,7 @@ void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
 				if (l == NULL)
-					pcb_message(PCB_MSG_ERROR, "broken layer groups; layer group references to non-existing layer\n");
+					rnd_message(PCB_MSG_ERROR, "broken layer groups; layer group references to non-existing layer\n");
 				else
 					l->meta.real.vis = 0;
 			}

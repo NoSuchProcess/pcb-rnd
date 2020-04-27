@@ -36,7 +36,7 @@ functions in hidlib (like, board size and such), but not on anything
 in pcb-rnd core (because other, non-pcb-rnd applications are using the HID
 API as well).
 
-Coordinates are ALWAYS in pcb's internal units pcb_coord_t. Positive X is
+Coordinates are ALWAYS in pcb's internal units rnd_coord_t. Positive X is
 right, positive Y is down, unless flip is activated.  Angles are
 degrees, with 0 being right (positive X) and 90 being up (negative Y) - unless
 flip is activated. All zoom, scaling, panning, and conversions are hidden
@@ -62,7 +62,7 @@ typedef union {
 } pcb_hidval_t;
 
 typedef struct {
-	pcb_coord_t width;     /* as set by set_line_width */
+	rnd_coord_t width;     /* as set by set_line_width */
 	pcb_cap_style_t cap;   /* as set by set_line_cap */
 	int xor;               /* as set by set_draw_xor */
 	int faded;             /* as set by set_draw_faded */
@@ -249,10 +249,10 @@ struct pcb_hid_s {
 	int (*parse_arguments)(pcb_hid_t *hid, int *argc, char ***argv);
 
 	/* This may be called to ask the GUI to force a redraw of a given area */
-	void (*invalidate_lr)(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom);
+	void (*invalidate_lr)(pcb_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom);
 	void (*invalidate_all)(pcb_hid_t *hid);
-	void (*notify_crosshair_change)(pcb_hid_t *hid, pcb_bool changes_complete);
-	void (*notify_mark_change)(pcb_hid_t *hid, pcb_bool changes_complete);
+	void (*notify_crosshair_change)(pcb_hid_t *hid, rnd_bool changes_complete);
+	void (*notify_mark_change)(pcb_hid_t *hid, rnd_bool changes_complete);
 
 	/* During redraw or print/export cycles, this is called once per layer group
 	   (physical layer); pusrpose/purpi are the extracted purpose field and its
@@ -277,7 +277,7 @@ struct pcb_hid_s {
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */
-	void (*set_drawing_mode)(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen);
+	void (*set_drawing_mode)(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen);
 
 	/* Announce start/end of a render burst for a specific screen screen box;
 	   A GUI hid should set the coord_per_pix value here for proper optimization. */
@@ -296,7 +296,7 @@ struct pcb_hid_s {
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
 	void (*set_line_cap)(pcb_hid_gc_t gc, pcb_cap_style_t style);
-	void (*set_line_width)(pcb_hid_gc_t gc, pcb_coord_t width);
+	void (*set_line_width)(pcb_hid_gc_t gc, rnd_coord_t width);
 	void (*set_draw_xor)(pcb_hid_gc_t gc, int xor);
 	/* Blends 20% or so color with 80% background.  Only used for
 	   assembly drawings so far. */
@@ -305,15 +305,15 @@ struct pcb_hid_s {
 	/* The usual drawing functions.  "draw" means to use segments of the
 	   given width, whereas "fill" means to fill to a zero-width
 	   outline.  */
-	void (*draw_line)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-	void (*draw_arc)(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t xradius, pcb_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle);
-	void (*draw_rect)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
-	void (*fill_circle)(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
-	void (*fill_polygon)(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y);
-	void (*fill_polygon_offs)(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy);
-	void (*fill_rect)(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2);
+	void (*draw_line)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+	void (*draw_arc)(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle);
+	void (*draw_rect)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+	void (*fill_circle)(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
+	void (*fill_polygon)(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y);
+	void (*fill_polygon_offs)(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
+	void (*fill_rect)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 
-	void (*draw_pixmap)(pcb_hid_t *hid, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t sx, pcb_coord_t sy, const pcb_pixmap_t *pixmap);
+	void (*draw_pixmap)(pcb_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const pcb_pixmap_t *pixmap);
 	void (*uninit_pixmap)(pcb_hid_t *hid, const pcb_pixmap_t *pixmap);
 
 	/* This is for the printer. If xval_ and yval_ are
@@ -331,7 +331,7 @@ struct pcb_hid_s {
 	int (*control_is_pressed)(pcb_hid_t *hid);
 	int (*mod1_is_pressed)(pcb_hid_t *hid);
 
-	void (*get_coords)(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
+	void (*get_coords)(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
 	/* Sets the crosshair, which may differ from the pointer depending
 	   on grid and pad snap.  Note that the HID is responsible for
@@ -341,7 +341,7 @@ struct pcb_hid_s {
 	   or mils accordingly.  If cursor_action_ is set, the cursor or
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
-	void (*set_crosshair)(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int cursor_action);
+	void (*set_crosshair)(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int cursor_action);
 #define HID_SC_DO_NOTHING    0
 #define HID_SC_WARP_POINTER  1
 #define HID_SC_PAN_VIEWPORT  2
@@ -360,7 +360,7 @@ struct pcb_hid_s {
 	   hangup, and errors. user_data_ can be anything, it's just passed
 	   to func. If the watch function returns pcb_true, the watch is kept, else
 	   it is removed. */
-	pcb_hidval_t (*watch_file)(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
+	pcb_hidval_t (*watch_file)(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
 
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
 	void (*unwatch_file)(pcb_hid_t *hid, pcb_hidval_t watch);
@@ -404,7 +404,7 @@ struct pcb_hid_s {
 	   by window placement. Returns opaque hid_ctx.
 	   (Hid_ctx shall save pcb_hid_t so subsequent attr_dlg_*() calls don't have
 	   it as an argument) */
-	void *(*attr_dlg_new)(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+	void *(*attr_dlg_new)(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
 	void (*attr_dlg_close)(void *hid_ctx); /* close the GUI but do not yet free hid_ctx (results should be available) */
@@ -420,7 +420,7 @@ struct pcb_hid_s {
 	int (*attr_dlg_widget_state)(void *hid_ctx, int idx, int enabled);
 
 	/* hide or show a widget of an active attribute dialog */
-	int (*attr_dlg_widget_hide)(void *hid_ctx, int idx, pcb_bool hide);
+	int (*attr_dlg_widget_hide)(void *hid_ctx, int idx, rnd_bool hide);
 
 	/* Change the current value of a widget; same as if the user chaged it,
 	   except the value-changed callback is inhibited */
@@ -479,12 +479,12 @@ struct pcb_hid_s {
 
 
 	/* Optional: change cursor to indicate if an object is grabbed (or not) */
-	void (*point_cursor)(pcb_hid_t *hid, pcb_bool grabbed);
+	void (*point_cursor)(pcb_hid_t *hid, rnd_bool grabbed);
 
 	/* Optional: when non-zero, the core renderer may decide to draw cheaper
 	   (simplified) approximation of some objects that would end up being too
 	   small. For a GUI, this should depend on the zoom level */
-	pcb_coord_t coord_per_pix;
+	rnd_coord_t coord_per_pix;
 
 	/* If ovr is not NULL:
 	    - overwrite the command etry with ovr
@@ -516,18 +516,18 @@ struct pcb_hid_s {
 
 	/* side-correct zoom to show a window of the board. If set_crosshair
 	   is true, also update the crosshair to be on the center of the window */
-	void (*zoom_win)(pcb_hid_t *hid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_bool set_crosshair);
+	void (*zoom_win)(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair);
 
 	/* Zoom relative or absolute by factor; relative means current zoom is
 	   multiplied by factor */
-	void (*zoom)(pcb_hid_t *hid, pcb_coord_t center_x, pcb_coord_t center_y, double factor, int relative);
+	void (*zoom)(pcb_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative);
 
 	/* Pan relative/absolute by x and y; relative means x and y are added to
 	   the current pan */
-	void (*pan)(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int relative);
+	void (*pan)(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative);
 
 	/* Start or stop panning at x;y - stop is mode=0, start is mode=1 */
-	void (*pan_mode)(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_bool mode);
+	void (*pan_mode)(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode);
 
 	/* Load viewbox with the extents of visible pixels translated to board coords */
 	void (*view_get)(pcb_hid_t *hid, pcb_box_t *viewbox);
@@ -550,7 +550,7 @@ struct pcb_hid_s {
 	void (*set_top_title)(pcb_hid_t *hid, const char *title);
 
 	/* OPTIONAL: override the mouse cursor to indicate busy state */
-	void (*busy)(pcb_hid_t *hid, pcb_bool busy);
+	void (*busy)(pcb_hid_t *hid, rnd_bool busy);
 
 	/* this field is used by that HID implementation to store its data */
 	void *hid_data;
@@ -615,7 +615,7 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 /* non-zero if DAD dialogs are available currently */
 #define PCB_HAVE_GUI_ATTR_DLG \
 	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
-void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
 int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
 void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);
@@ -643,7 +643,7 @@ do { \
  * They should initiate a redraw of the crosshair attached objects - which may
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing. */
-void pcb_hid_notify_crosshair_change(rnd_hidlib_t *hl, pcb_bool changes_complete);
+void pcb_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete);
 
 
 #endif

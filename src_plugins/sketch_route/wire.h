@@ -19,8 +19,8 @@ struct wire_s {
 	int point_num;
 	int point_max;
 	wire_point_t *points;
-	pcb_coord_t thickness;
-	pcb_coord_t clearance;
+	rnd_coord_t thickness;
+	rnd_coord_t clearance;
 };
 
 typedef wire_t* wire_ptr_t;

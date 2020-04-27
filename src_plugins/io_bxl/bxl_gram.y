@@ -10,7 +10,7 @@
 	double d;
 	int i;
 	char *s;
-	pcb_coord_t c;
+	rnd_coord_t c;
 }
 
 

@@ -71,10 +71,10 @@ static const char *dsn_cookie = "dsn exporter";
 
 #define GRP_NAME(grp_) ((grp_) - PCB->LayerGroups.grp), ((grp_)->name)
 
-static pcb_coord_t trackwidth = 8;  /* user options defined in export dialog */
-static pcb_coord_t clearance = 8;
-static pcb_coord_t viawidth = 45;
-static pcb_coord_t viadrill = 25;
+static rnd_coord_t trackwidth = 8;  /* user options defined in export dialog */
+static rnd_coord_t clearance = 8;
+static rnd_coord_t viawidth = 45;
+static rnd_coord_t viadrill = 25;
 
 static pcb_hid_t dsn_hid;
 
@@ -173,7 +173,7 @@ static void print_placement(FILE * fp)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		char *ename;
-		pcb_coord_t ox, oy;
+		rnd_coord_t ox, oy;
 		char *side;
 		int res;
 		int subc_on_solder = 0;
@@ -206,7 +206,7 @@ TODO("padstack: check if real shapes are exported")
 	fprintf(fp, "  )\n");
 }
 
-static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
+static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, rnd_coord_t ox, rnd_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 	int fld;
@@ -227,11 +227,11 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, pcb_coord_
 	gds_append_str(term_shapes, "\n        )\n");
 }
 
-static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
+static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, rnd_coord_t ox, rnd_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 	int fld;
-	pcb_coord_t x[4], y[4];
+	rnd_coord_t x[4], y[4];
 	int n;
 	pcb_line_t ltmp;
 
@@ -260,7 +260,7 @@ TODO("padstack: this ignores round cap")
 	gds_append_str(term_shapes, "\n        )\n");
 }
 
-static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
+static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, rnd_coord_t ox, rnd_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 
@@ -273,11 +273,11 @@ TODO("padstack: this ignores circle center offset")
 	gds_append_str(term_shapes, tmp);
 }
 
-static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, pcb_coord_t ox, pcb_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
+static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, rnd_coord_t ox, rnd_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 	int fld;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	int go;
 
 	if (pl != NULL) {
@@ -297,7 +297,7 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 	}
 }
 
-static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_coord_t ox, pcb_coord_t oy, int term_on_bottom, int partsidesign)
+static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy, int term_on_bottom, int partsidesign)
 {
 	if (poly->term != NULL) {
 		pcb_layergrp_id_t gid = term_on_bottom ? pcb_layergrp_get_bottom_copper() : pcb_layergrp_get_top_copper();
@@ -329,7 +329,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, pcb_
 	}
 }
 
-void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_t gid, pcb_coord_t ox, pcb_coord_t oy, int partsidesign)
+void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_t gid, rnd_coord_t ox, rnd_coord_t oy, int partsidesign)
 {
 	pcb_pstk_shape_t *shp;
 	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
@@ -385,7 +385,7 @@ static void print_library(FILE * fp)
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_coord_t ox, oy;
+		rnd_coord_t ox, oy;
 		int partsidesign, subc_on_solder = 0;
 		pcb_layer_type_t lyt_side;
 
@@ -510,7 +510,7 @@ static int PrintSPECCTRA(void)
 	/* Print out the dsn .dsn file. */
 	fp = pcb_fopen_askovr(&PCB->hidlib, dsn_filename, "w", NULL);
 	if (!fp) {
-		pcb_message(PCB_MSG_WARNING, "Cannot open file %s for writing\n", dsn_filename);
+		rnd_message(PCB_MSG_WARNING, "Cannot open file %s for writing\n", dsn_filename);
 		return 1;
 	}
 

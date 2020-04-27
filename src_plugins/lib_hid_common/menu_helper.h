@@ -43,7 +43,7 @@ int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const pcb_menu_
    On error, returns -1. */
 int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name);
 
-/* Return non-zero if submenu has further submenus; generate pcb_message(PCB_MSG_ERROR, ) if
+/* Return non-zero if submenu has further submenus; generate rnd_message(PCB_MSG_ERROR, ) if
    there is a submenu field with the wrong lihata type */
 int pcb_hid_cfg_has_submenus(const lht_node_t *submenu);
 
@@ -71,7 +71,7 @@ lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufi
    just a wrapper around lht_tree_path_ */
 lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 
-/* Return a text field of a submenu; return NULL and generate a pcb_message(PCB_MSG_ERROR, ) if
+/* Return a text field of a submenu; return NULL and generate a rnd_message(PCB_MSG_ERROR, ) if
    the given field is not text */
 const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field);
 

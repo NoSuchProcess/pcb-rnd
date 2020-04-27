@@ -83,7 +83,7 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
 		role = pcb_conf_role_parse(srole);
 		if (role == CFR_invalid) {
-			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
+			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
 			RND_ACT_IRES(1);
 			return 0;
 		}
@@ -123,7 +123,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	nat = pcb_conf_get_field(path);
 	if (nat == NULL) {
-		pcb_message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
+		rnd_message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -303,7 +303,7 @@ static void dump_data(pcb_data_t *data, dd_flags what, int ind, const char *pare
 	ind++;
 	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 		const char *type = pcb_obj_type_name(o->type);
-		pcb_coord_t cx, cy;
+		rnd_coord_t cx, cy;
 
 		if ((what & DD_COPPER_ONLY) && (o->type == PCB_OBJ_SUBC))
 			goto skip;
@@ -462,7 +462,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	PCB_END_LOOP;
 
-	pcb_message(PCB_MSG_INFO, "Measuring find.c peformance for %f seconds starting from %ld pins...\n", duration, pins);
+	rnd_message(PCB_MSG_INFO, "Measuring find.c peformance for %f seconds starting from %ld pins...\n", duration, pins);
 
 	from = pcb_dtime();
 	end = from + duration;
@@ -478,7 +478,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		its++;
 		now = pcb_dtime();
 	} while(now < end);
-	pcb_message(PCB_MSG_INFO, "find2.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
+	rnd_message(PCB_MSG_INFO, "find2.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -550,12 +550,12 @@ static const char pcb_acts_forcecolor[] = "forcecolor(#RRGGBB)\n";
 static const char pcb_acth_forcecolor[] = "change selected objects' color to #RRGGBB, reset if does not start with '#'";
 static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	int type;
 	void *ptr1, *ptr2, *ptr3;
 	const char *new_color;
 
-	pcb_message(PCB_MSG_ERROR, "pcb_acth_forcecolor() is temporarily disabled.\n");
+	rnd_message(PCB_MSG_ERROR, "pcb_acth_forcecolor() is temporarily disabled.\n");
 	return -1;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);

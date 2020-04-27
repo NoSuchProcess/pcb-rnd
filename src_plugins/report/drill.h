@@ -31,7 +31,7 @@
 #define PCB_DRILL_H
 
 typedef struct {								/* holds drill information */
-	pcb_coord_t DrillSize;							/* this drill's diameter */
+	rnd_coord_t DrillSize;							/* this drill's diameter */
 	pcb_cardinal_t ElementN,						/* the number of elements using this drill size */
 	  ElementMax,									/* max number of elements from malloc() */
 	  PinCount,										/* number of pins drilled this size */

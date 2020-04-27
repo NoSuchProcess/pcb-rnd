@@ -175,7 +175,7 @@ void lesstif_get_xy(const char *message)
 	pcb_hidlib_crosshair_restore(ltf_hidlib, chst);
 }
 
-void lesstif_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *px, pcb_coord_t *py, int force)
+void lesstif_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coord_t *py, int force)
 {
 	if ((force || !have_xy) && msg) {
 		if (force) {
@@ -511,7 +511,7 @@ TODO(": remove this call")
 				}
 				else {
 					if (*uo != '\0')
-						pcb_message(PCB_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
+						rnd_message(PCB_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
 				}
 			}
 		}
@@ -569,7 +569,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	lesstif_cfg = pcb_hid_cfg_load(ltf_hidlib, "lesstif", 0, NULL);
 	lesstif_hid.hid_cfg = lesstif_cfg;
 	if (lesstif_cfg == NULL) {
-		pcb_message(PCB_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
+		rnd_message(PCB_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
 

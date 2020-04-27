@@ -33,12 +33,12 @@ typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int gui_active;
 	int width;
-	pcb_coord_t pitch;
-	pcb_coord_t thickness;
-	pcb_coord_t clearance;
+	rnd_coord_t pitch;
+	rnd_coord_t thickness;
+	rnd_coord_t clearance;
 
 	/* cache: */
-	pcb_coord_t vthickness; /* virtual thickness (edit object's) */
+	rnd_coord_t vthickness; /* virtual thickness (edit object's) */
 } bus_t;
 
 static void pcb_bus_del_pre(pcb_subc_t *subc)
@@ -97,7 +97,7 @@ static void bus_clear(pcb_subc_t *subc)
 
 static int close_enough(pcb_point_t a, pcb_point_t b)
 {
-	pcb_coord_t dx = a.X - b.X, dy = a.Y - b.Y;
+	rnd_coord_t dx = a.X - b.X, dy = a.Y - b.Y;
 
 	if (dx < -1) return 0;
 	if (dx > +1) return 0;
@@ -196,8 +196,8 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 		for(n = 0; n < bus->width; n++,o-=bus->pitch) {
 			double o2 = -o;
-/*			pcb_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (pcb_coord_t)o, (pcb_coord_t)(vx * tune1 * o));
-			pcb_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (pcb_coord_t)o, (pcb_coord_t)(vx * tune2 * o));*/
+/*			pcb_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (rnd_coord_t)o, (rnd_coord_t)(vx * tune1 * o));
+			pcb_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (rnd_coord_t)o, (rnd_coord_t)(vx * tune2 * o));*/
 			pcb_line_new(tly,
 				l->Point1.X + nx * o + vx * tune1 * o2, l->Point1.Y + ny * o + vy * tune1 * o2,
 				l->Point2.X + nx * o + vx * tune2 * o2, l->Point2.Y + ny * o + vy * tune2 * o2,
@@ -227,7 +227,7 @@ static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 
 	for(l = linelist_first(&ly->Line); l != NULL; l = linelist_next(l)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		double o;
 		bus_seg_def;
 

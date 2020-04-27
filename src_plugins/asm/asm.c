@@ -126,7 +126,7 @@ static char *templ_compile(gdl_list_t *dst, const char *src_)
 		else if (strcmp(s, "y") == 0)
 			templ_append(dst, TT_Y, NULL);
 		else
-			pcb_message(PCB_MSG_ERROR, "Ignoring unknown asm template entry: '%s'\n", s);
+			rnd_message(PCB_MSG_ERROR, "Ignoring unknown asm template entry: '%s'\n", s);
 	}
 	return src;
 }
@@ -138,7 +138,7 @@ static char *templ_exec(pcb_subc_t *subc, gdl_list_t *temp)
 	template_t *t;
 	int n, bot, have_coords = 0;
 	char *tmp;
-	pcb_coord_t x = 0, y = 0;
+	rnd_coord_t x = 0, y = 0;
 
 	gds_init(&s);
 	for(n = 0, t = gdl_first(temp); t != NULL; n++, t = gdl_next(temp, t)) {

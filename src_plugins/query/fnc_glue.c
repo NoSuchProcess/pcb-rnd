@@ -34,7 +34,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	fgw_arg_t tmp, resa, arga[PCB_QRY_MAX_FUNC_ARGS], *arg;
 
 	if (argv[0].type != PCBQ_VT_STRING) {
-		pcb_message(PCB_MSG_ERROR, "query: action() first argument must be a string\n");
+		rnd_message(PCB_MSG_ERROR, "query: action() first argument must be a string\n");
 		return -1;
 	}
 
@@ -105,12 +105,12 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 		goto fin; \
 	} \
 	else if (fgw_ptr_in_domain(&rnd_fgw, val, RND_PTR_DOMAIN_IDPATH_LIST)) { \
-		pcb_message(PCB_MSG_ERROR, "query action(): can not convert object list yet\n"); \
+		rnd_message(PCB_MSG_ERROR, "query action(): can not convert object list yet\n"); \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	} \
 	else { \
-		pcb_message(PCB_MSG_ERROR, "query action(): can not convert unknown pointer\n"); \
+		rnd_message(PCB_MSG_ERROR, "query action(): can not convert unknown pointer\n"); \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	}
@@ -178,7 +178,7 @@ static int fnc_netint_cb(pcb_net_int_t *nictx, pcb_any_obj_t *new_obj, pcb_any_o
 
 static int fnc_netint_any(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, int is_shrink)
 {
-	pcb_coord_t shrink = 0, bloat = 0;
+	rnd_coord_t shrink = 0, bloat = 0;
 	fnc_netint_t ctx;
 
 	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || ((argv[1].type != PCBQ_VT_COORD) && (argv[1].type != PCBQ_VT_LONG)))
@@ -246,7 +246,7 @@ static int fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 
 static int fnc_pstkring(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	pcb_coord_t cnt = 0;
+	rnd_coord_t cnt = 0;
 	pcb_pstk_t *ps;
 
 	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || ((argv[1].type != PCBQ_VT_COORD) && (argv[1].type != PCBQ_VT_LONG)))

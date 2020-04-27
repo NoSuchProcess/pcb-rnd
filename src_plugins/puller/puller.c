@@ -341,7 +341,7 @@ static const char pcb_acth_Puller[] = "Pull an arc-line junction tight.";
 /* DOC: puller.html */
 static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t Ux, Uy;
+	rnd_coord_t Ux, Uy;
 	double arc_angle, base_angle;
 #if TRACE1
 	double line_angle, rel_angle;
@@ -715,7 +715,7 @@ static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y,
 		}
 		case PCB_PSSH_CIRC:
 		{
-			pcb_coord_t cx = shape->data.circ.x + ps->x, cy = shape->data.circ.y + ps->y;
+			rnd_coord_t cx = shape->data.circ.x + ps->x, cy = shape->data.circ.y + ps->y;
 			double max_dist2 = ((double)shape->data.circ.dia/2.0) * ((double)shape->data.circ.dia/2.0);
 			double dist2 = pcb_distance2(cx, cy, x, y);
 			return (dist2 <= max_dist2);

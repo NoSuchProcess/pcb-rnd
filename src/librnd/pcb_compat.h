@@ -52,3 +52,6 @@
 #define PCB_ACT_FAIL RND_ACT_FAIL
 #define pcb_fgw_types_e rnd_fgw_types_e
 #define pcb_hidlib_t rnd_hidlib_t
+#define pcb_coord_t rnd_coord_t
+#define pcb_bool rnd_bool
+#define pcb_message rnd_message

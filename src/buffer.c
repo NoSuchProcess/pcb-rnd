@@ -167,7 +167,7 @@ int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 	return res;
 }
 
-static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_bool bind)
+static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_bool bind)
 {
 	if (Buffer && Buffer->Data) {
 		void *old_parent = Buffer->Data->parent.any;
@@ -191,7 +191,7 @@ void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 }
 
 /* add (or move) selected */
-static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool on_locked_too, pcb_bool keep_id)
+static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_t X, rnd_coord_t Y, rnd_bool LeaveSelected, rnd_bool on_locked_too, rnd_bool keep_id)
 {
 	rnd_hidlib_t *hidlib = (rnd_hidlib_t *)pcb;
 	pcb_opctx_t ctx;
@@ -227,13 +227,13 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	pcb_hid_notify_crosshair_change(hidlib, pcb_true);
 }
 
-void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool keep_id)
+void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_t X, rnd_coord_t Y, rnd_bool LeaveSelected, rnd_bool keep_id)
 {
 	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
 }
 
 extern pcb_opfunc_t pcb_RemoveFunctions;
-void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool keep_id)
+void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_t X, rnd_coord_t Y, rnd_bool LeaveSelected, rnd_bool keep_id)
 {
 	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
 	pcb_buffer_toss_selected(&pcb_RemoveFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
@@ -262,12 +262,12 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	len = pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
 
 	if (len == 0) {
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", name);
+		rnd_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", name);
 		RND_ACT_IRES(1);
 		return 0;
 	}
 	if (len > 1) {
-		pcb_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", name);
+		rnd_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", name);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -281,7 +281,7 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
+rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
 	pcb_board_t *orig, *newPCB = pcb_board_new_(pcb_false);
 
@@ -473,7 +473,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((ang < -360000) || (ang > +360000)) {
-		pcb_message(PCB_MSG_ERROR, "Angle too large\n");
+		rnd_message(PCB_MSG_ERROR, "Angle too large\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -630,7 +630,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
-			pcb_message(PCB_MSG_ERROR, "You can't mirror a buffer that has text!\n");
+			rnd_message(PCB_MSG_ERROR, "You can't mirror a buffer that has text!\n");
 			return;
 		}
 	}
@@ -762,10 +762,10 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 	return (pcb_object_operation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
-pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_bool keep_id)
+rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id)
 {
 	pcb_cardinal_t i;
-	pcb_bool changed = pcb_false;
+	rnd_bool changed = pcb_false;
 	pcb_opctx_t ctx;
 	int num_layers;
 
@@ -794,7 +794,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 				const char *src_name = sourcelayer->name;
 				if ((src_name == NULL) || (*src_name == '\0'))
 					src_name = "<anonymous>";
-				pcb_message(PCB_MSG_WARNING, "Couldn't resolve buffer layer #%d (%s) on the current board\n", i, src_name);
+				rnd_message(PCB_MSG_WARNING, "Couldn't resolve buffer layer #%d (%s) on the current board\n", i, src_name);
 			}
 			continue;
 		}
@@ -860,7 +860,7 @@ pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t 
 	{
 		pcb_subc_t *nsubc;
 		if (pcb->is_footprint) {
-			pcb_message(PCB_MSG_WARNING, "Can not paste subcircuit in the footprint edit mode\n");
+			rnd_message(PCB_MSG_WARNING, "Can not paste subcircuit in the footprint edit mode\n");
 			break;
 		}
 		nsubc = pcb_subcop_copy(&ctx, subc);
@@ -926,7 +926,7 @@ void pcb_buffer_set_number(int Number)
 /* loads footprint data from file/library into buffer (as subcircuit)
  * returns pcb_false on error
  * if successful, update some other stuff and reposition the pastebuffer */
-pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt)
+rnd_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt)
 {
 	pcb_buffer_clear(PCB, Buffer);
 	if (!pcb_parse_footprint(Buffer->Data, Name, fmt)) {
@@ -976,7 +976,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	int op, force;
 	const char *sbufnum = "", *fmt = NULL, *forces = NULL, *name, *tmp;
 	static char *default_file = NULL;
-	pcb_bool free_name = pcb_false;
+	rnd_bool free_name = pcb_false;
 	static int stack[32];
 	static int sp = 0;
 	int number, rv;
@@ -1001,21 +1001,21 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (sp < sizeof(stack) / sizeof(stack[0]))
 				stack[sp++] = conf_core.editor.buffer_number;
 			else
-				pcb_message(PCB_MSG_ERROR, "Paste buffer stack overflow on push.\n");
+				rnd_message(PCB_MSG_ERROR, "Paste buffer stack overflow on push.\n");
 			break;
 
 		case F_Pop:
 			if (sp > 0)
 				pcb_buffer_set_number(stack[--sp]);
 			else
-				pcb_message(PCB_MSG_ERROR, "Paste buffer stack underflow on pop.\n");
+				rnd_message(PCB_MSG_ERROR, "Paste buffer stack underflow on pop.\n");
 			break;
 
 			/* copies objects to paste buffer */
 		case F_AddSelected:
 			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing copied to the paste buffer\n");
+				rnd_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing copied to the paste buffer\n");
 				goto error;
 			}
 			break;
@@ -1024,7 +1024,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		case F_MoveSelected:
 			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-				pcb_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
+				rnd_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;
 			}
 			break;
@@ -1038,7 +1038,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			/* break up subcircuit for editing */
 		case F_Restore:
 			if (!pcb_subc_smash_buffer(PCB_PASTEBUFFER))
-				pcb_message(PCB_MSG_ERROR, "Error breaking up subcircuits - only one can be broken up at a time\n");
+				rnd_message(PCB_MSG_ERROR, "Error breaking up subcircuits - only one can be broken up at a time\n");
 			break;
 
 			/* Mirror buffer */
@@ -1108,7 +1108,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				name = sbufnum;
 
 			if (pcb_load_buffer(RND_ACT_HIDLIB, PCB_PASTEBUFFER, name, NULL) != 0) {
-				pcb_message(PCB_MSG_ERROR, "Failed to load buffer from %s\n", name);
+				rnd_message(PCB_MSG_ERROR, "Failed to load buffer from %s\n", name);
 				RND_ACT_IRES(-1);
 			}
 			else
@@ -1123,9 +1123,9 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_ToLayout:
 			{
-				static pcb_coord_t oldx = 0, oldy = 0;
-				pcb_coord_t x, y;
-				pcb_bool absolute;
+				static rnd_coord_t oldx = 0, oldy = 0;
+				rnd_coord_t x, y;
+				rnd_bool absolute;
 				if (argc == 2) {
 					x = y = 0;
 				}
@@ -1165,13 +1165,13 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				char *end;
 				number = strtol(sbufnum, &end, 10);
 				if (*end != 0) {
-					pcb_message(PCB_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
+					rnd_message(PCB_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
 					pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 					return FGW_ERR_ARG_CONV;
 				}
 				number--;
 				if ((number < 0) || (number >= PCB_MAX_BUFFER)) {
-					pcb_message(PCB_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
+					rnd_message(PCB_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
 					pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 					return FGW_ERR_ARG_CONV;
 				}

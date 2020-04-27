@@ -36,7 +36,7 @@
 const char *pcb_millpath_cookie = "millpath plugin";
 
 static pcb_tlp_session_t ctx;
-static pcb_coord_t tool_dias[] = {
+static rnd_coord_t tool_dias[] = {
 	PCB_MM_TO_COORD(0.5),
 	PCB_MM_TO_COORD(3)
 };

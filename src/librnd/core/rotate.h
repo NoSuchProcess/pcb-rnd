@@ -36,7 +36,7 @@
 /*** Transformation macros ***/
 #define	PCB_COORD_ROTATE90(x,y,x0,y0,n)							\
 	do {												\
-		pcb_coord_t	dx = (x)-(x0),					\
+		rnd_coord_t	dx = (x)-(x0),					\
 					dy = (y)-(y0);					\
 													\
 		switch(n & 0x03)									\
@@ -51,11 +51,11 @@
 		}											\
 	} while(0)
 
-PCB_INLINE void pcb_rotate(pcb_coord_t * x, pcb_coord_t * y, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina)
+PCB_INLINE void pcb_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)
 {
 	double nx, ny;
-	pcb_coord_t px = *x - cx;
-	pcb_coord_t py = *y - cy;
+	rnd_coord_t px = *x - cx;
+	rnd_coord_t py = *y - cy;
 
 	nx = pcb_round(px * cosa + py * sina + cx);
 	ny = pcb_round(py * cosa - px * sina + cy);

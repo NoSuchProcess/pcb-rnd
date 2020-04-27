@@ -34,14 +34,14 @@
 #include "obj_poly.h"
 #include <librnd/core/hid_inlines.h>
 
-static pcb_coord_t *fc_x = NULL, *fc_y = NULL;
+static rnd_coord_t *fc_x = NULL, *fc_y = NULL;
 static size_t fc_alloced = 0;
 
 
 /* call this before the loop */
 #define vert_opt_begin() \
 	{ \
-		pcb_coord_t last_x, last_y, this_x, this_y, next_x, next_y, mindist; \
+		rnd_coord_t last_x, last_y, this_x, this_y, next_x, next_y, mindist; \
 		last_x = pl->head->point[0]; \
 		last_y = pl->head->point[1]; \
 		v = pl->head->next; \
@@ -80,8 +80,8 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 	if (n > fc_alloced) {
 		free(fc_x);
 		free(fc_y);
-		fc_x = (pcb_coord_t *) malloc(n * sizeof(pcb_coord_t));
-		fc_y = (pcb_coord_t *) malloc(n * sizeof(pcb_coord_t));
+		fc_x = (rnd_coord_t *) malloc(n * sizeof(rnd_coord_t));
+		fc_y = (rnd_coord_t *) malloc(n * sizeof(rnd_coord_t));
 		fc_alloced = n;
 	}
 
@@ -184,7 +184,7 @@ static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const pcb_bo
 #define BOUNDS_INSIDE_CLIP_THRESHOLD 0.5
 static int should_compute_no_holes(pcb_poly_t * poly, const pcb_box_t * clip_box)
 {
-	pcb_coord_t x1, x2, y1, y2;
+	rnd_coord_t x1, x2, y1, y2;
 	double poly_bounding_area;
 	double clipped_poly_area;
 

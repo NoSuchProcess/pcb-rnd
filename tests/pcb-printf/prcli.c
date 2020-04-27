@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
 	const char *fmt = argv[1];
-	pcb_coord_t crd;
+	rnd_coord_t crd;
 	int n;
 
 	setlocale(LC_ALL, "C");
@@ -15,10 +15,10 @@ int main(int argc, char *argv[])
 	pcb_printf_slot[0] = "%mr";
 
 	for(n = 2; n < argc; n++) {
-		pcb_bool success;
+		rnd_bool success;
 		double val = pcb_get_value_ex(argv[n], NULL, NULL, NULL, "", &success);
 		if (!success) {
-			fprintf(stderr, "Unable to convert '%s' to pcb_coord_t\n", argv[n]);
+			fprintf(stderr, "Unable to convert '%s' to rnd_coord_t\n", argv[n]);
 			return 1;
 		}
 		crd = val;

@@ -50,7 +50,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 
 
 	if (condition & G_IO_HUP) {
-		pcb_message(PCB_MSG_ERROR, "gtk listener: Read end of pipe died!\n");
+		rnd_message(PCB_MSG_ERROR, "gtk listener: Read end of pipe died!\n");
 		return FALSE;
 	}
 
@@ -63,22 +63,22 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 			break;
 
 		case G_IO_STATUS_ERROR:
-			pcb_message(PCB_MSG_ERROR, "gtk listener: status from g_io_channel_read_line\n");
+			rnd_message(PCB_MSG_ERROR, "gtk listener: status from g_io_channel_read_line\n");
 			return FALSE;
 			break;
 
 		case G_IO_STATUS_EOF:
-			pcb_message(PCB_MSG_ERROR, "gtk listener: Input pipe returned EOF.  The --listen option is \n" "probably not running anymore in this session.\n");
+			rnd_message(PCB_MSG_ERROR, "gtk listener: Input pipe returned EOF.  The --listen option is \n" "probably not running anymore in this session.\n");
 			return FALSE;
 			break;
 
 		case G_IO_STATUS_AGAIN:
-			pcb_message(PCB_MSG_ERROR, "gtk listener: AGAIN status from g_io_channel_read_line\n");
+			rnd_message(PCB_MSG_ERROR, "gtk listener: AGAIN status from g_io_channel_read_line\n");
 			return FALSE;
 			break;
 
 		default:
-			pcb_message(PCB_MSG_ERROR, "gtk listener: unhandled error case\n");
+			rnd_message(PCB_MSG_ERROR, "gtk listener: unhandled error case\n");
 			return FALSE;
 			break;
 		}

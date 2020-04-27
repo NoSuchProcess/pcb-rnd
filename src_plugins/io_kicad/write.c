@@ -51,7 +51,7 @@ static int force_center = 0;
 typedef struct {
 	FILE *f;                     /* output file */
 	pcb_board_t *pcb;            /* board being exported */
-	pcb_coord_t ox, oy;          /* move every object by this origin */
+	rnd_coord_t ox, oy;          /* move every object by this origin */
 	struct {
 		pcb_layergrp_t *grp;
 		char name[32];             /* kicad layer name */
@@ -229,7 +229,7 @@ typedef struct {
 	int skip_term;    /* do not print terminals on this layer */
 } klayer_t;
 
-static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t *line, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t *line, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	const char *cmd[] = {"segment", "gr_line", "fp_line"};
 
@@ -243,12 +243,12 @@ static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t 
 		/* neglect (net ___ ) for now */
 }
 
-static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *arc, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_arc(const wctx_t *ctx, const klayer_t *kly, pcb_arc_t *arc, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_arc_t localArc = *arc; /* for converting ellipses to circular arcs */
 /*	int kicadArcShape;  3 = circle, and 2 = arc, 1= rectangle used in eeschema only */
-	pcb_coord_t copperStartX, copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
-	pcb_coord_t radius, xStart, yStart, xEnd, yEnd;
+	rnd_coord_t copperStartX, copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
+	rnd_coord_t radius, xStart, yStart, xEnd, yEnd;
 
 	if (arc->Width > arc->Height) {
 		radius = arc->Height;
@@ -295,20 +295,20 @@ TODO(": this should be a proper line approximation using a helper (to be written
 	}
 }
 
-static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t *text, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t *text, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
-	pcb_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
-	pcb_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
+	rnd_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
+	rnd_coord_t defaultStrokeThickness = 100 * 2540; /* use 100 mil as default 100% stroked font line thickness */
 	int kicadMirrored = 1; /* 1 is not mirrored, 0  is mirrored */
-	pcb_coord_t defaultXSize;
-	pcb_coord_t defaultYSize;
-	pcb_coord_t strokeThickness;
+	rnd_coord_t defaultXSize;
+	rnd_coord_t defaultYSize;
+	rnd_coord_t strokeThickness;
 	int rotation, direction;
-	pcb_coord_t textOffsetX;
-	pcb_coord_t textOffsetY;
-	pcb_coord_t halfStringWidth;
-	pcb_coord_t halfStringHeight;
+	rnd_coord_t textOffsetX;
+	rnd_coord_t textOffsetY;
+	rnd_coord_t halfStringWidth;
+	rnd_coord_t halfStringHeight;
 
 	if (!(kly->lyt & PCB_LYT_COPPER) && !(kly->lyt & PCB_LYT_SILK)) {
 		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "text-layer", "Kicad supports text only on copper or silk - omitting text object on misc layer", NULL);
@@ -400,7 +400,7 @@ TODO("textrot: use the degrees instead of 90 deg steps")
 	fprintf(ctx->f, ")\n%*s)\n", ind, "");
 }
 
-static void kicad_print_poly_zone(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_poly_zone(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i, j;
 
@@ -436,7 +436,7 @@ TODO(": do not hardwire thicknesses and gaps and hatch values!")
 	fprintf(ctx->f, "%*s)\n", ind, "");
 }
 
-static void kicad_print_poly_fp_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_poly_fp_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i, j;
 
@@ -467,7 +467,7 @@ TODO(": do not hardwire thicknesses and gaps and hatch values!")
 
 
 
-static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, pcb_coord_t dx, pcb_coord_t dy, int in_module)
+static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t *polygon, int ind, rnd_coord_t dx, rnd_coord_t dy, int in_module)
 {
 	if (in_module)
 		kicad_print_poly_fp_poly(ctx, kly, polygon, ind, dx, dy);
@@ -478,7 +478,7 @@ static void kicad_print_poly(const wctx_t *ctx, const klayer_t *kly, pcb_poly_t 
 
 /* Print all objects of a kicad layer; if skip_term is true, ignore the objects
    with term ID set */
-static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -516,7 +516,7 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 /* writes kicad format via data
    For a track segment: Position shape Xstart Ystart Xend Yend width
    Description layer 0 netcode timestamp status; Shape parameter is set to 0 (reserved for future) */
-static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_t dx, pcb_coord_t dy)
+static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	gdl_iterator_t it;
 	pcb_pstk_t *ps;
@@ -524,9 +524,9 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, pcb_coord_
 
 	padstacklist_foreach(&Data->padstack, &it, ps) {
 		int klayer_from = 0, klayer_to = 15;
-		pcb_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
+		rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask, x1, y1, x2, y2, thickness;
 		pcb_pstk_compshape_t cshape;
-		pcb_bool plated, square, nopaste;
+		rnd_bool plated, square, nopaste;
 		double psrot;
 
 		if (is_subc && (ps->term == NULL)) {
@@ -568,7 +568,7 @@ TODO(": handle all cshapes (throw warnings)")
 				int n, has_mask = 0, on_bottom;
 				pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(Data, ps->proto);
 				pcb_pstk_tshape_t *tshp = &proto->tr.array[0];
-				pcb_coord_t w, h;
+				rnd_coord_t w, h;
 
 				for(n = 0; n < tshp->len; n++) {
 					if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
@@ -658,7 +658,7 @@ TODO(": set klayer_from and klayer_to using bb span of ps")
 	}
 }
 
-void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, pcb_coord_t dx, pcb_coord_t dy)
+void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int n, klayer;
 
@@ -706,9 +706,9 @@ TODO(": this should be a safe lookup, merged with kicad_sexpr_layer_to_text()")
 	kicad_print_pstks(ctx, data, ind, dx, dy);
 }
 
-static int kicad_print_subc(wctx_t *ctx, pcb_subc_t *subc, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy, unm_t *group1)
+static int kicad_print_subc(wctx_t *ctx, pcb_subc_t *subc, pcb_cardinal_t ind, rnd_coord_t dx, rnd_coord_t dy, unm_t *group1)
 {
-	pcb_coord_t xPos, yPos, sox, soy;
+	rnd_coord_t xPos, yPos, sox, soy;
 	int on_bottom;
 	const char *currentElementName;
 	const char *currentElementRef;
@@ -804,7 +804,7 @@ TODO(": warn for heavy terminals")
 }
 
 
-static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, pcb_coord_t dx, pcb_coord_t dy, long subc_idx)
+static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, rnd_coord_t dx, rnd_coord_t dy, long subc_idx)
 {
 	gdl_iterator_t sit;
 	pcb_subc_t *subc;
@@ -848,7 +848,7 @@ TODO(": do not hardwire the drill size here - does kicad support only one size, 
 int io_kicad_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
 {
 	if ((lib) || (num_subcs > 1)) {
-		pcb_message(PCB_MSG_ERROR, "Can't save a library and/or multiple modules (footprints) in a single s-experssion mod file\n");
+		rnd_message(PCB_MSG_ERROR, "Can't save a library and/or multiple modules (footprints) in a single s-experssion mod file\n");
 		return -1;
 	}
 	return 0;
@@ -933,8 +933,8 @@ TODO(": rewrite this: rather have a table and a loop that hardwired calculations
 	fprintf(ctx->f, "\n%*s(page A%d)\n", ind, "", paperSize);
 
 	if (force_center) {
-		pcb_coord_t LayoutXOffset;
-		pcb_coord_t LayoutYOffset;
+		rnd_coord_t LayoutXOffset;
+		rnd_coord_t LayoutYOffset;
 
 		/* we now sort out the offsets for centring the layout in the chosen sheet size here */
 		if (sheetWidth > PCB_COORD_TO_MIL(PCB->hidlib.size_x)) { /* usually A4, bigger if needed */
@@ -961,7 +961,7 @@ TODO(": rewrite this: rather have a table and a loop that hardwired calculations
 		ctx->ox = ctx->oy = 0;
 }
 
-static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, pcb_coord_t thick, int ind)
+static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, rnd_coord_t thick, int ind)
 {
 	fprintf(ctx->f, "%*s", ind, "");
 	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
@@ -1000,11 +1000,11 @@ static void kicad_fixup_outline(wctx_t *ctx, int ind)
 		}
 	}
 
-	pcb_message(PCB_MSG_ERROR, "io_kicad: internal error: can not find output outline layer for drawing the implicit outline\n");
+	rnd_message(PCB_MSG_ERROR, "io_kicad: internal error: can not find output outline layer for drawing the implicit outline\n");
 }
 
 /* writes PCB to file in s-expression format */
-int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	wctx_t wctx;
 	int baseSExprIndent = 2;

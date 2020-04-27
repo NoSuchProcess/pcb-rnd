@@ -50,7 +50,7 @@ void pcb_trace(const char *Format, ...)
 unsigned long pcb_log_next_ID = 0;
 pcb_logline_t *pcb_log_first, *pcb_log_last;
 
-void pcb_message(enum pcb_message_level level, const char *Format, ...)
+void rnd_message(enum pcb_message_level level, const char *Format, ...)
 {
 	va_list args;
 	pcb_message_level_t min_level = PCB_MSG_INFO;
@@ -230,7 +230,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (fn != NULL) {
 			ret = pcb_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.lng == 1));
 			if (ret != 0)
-				pcb_message(PCB_MSG_ERROR, "Failed to export log to '%s'\n", fn);
+				rnd_message(PCB_MSG_ERROR, "Failed to export log to '%s'\n", fn);
 			free(fn);
 		}
 		else
@@ -270,8 +270,8 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char *s = NULL;
 		rnd_PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, s = argv[i].val.str);
 		if ((s != NULL) && (*s != '\0'))
-			pcb_message(how, s);
-		pcb_message(how, "\n");
+			rnd_message(how, s);
+		rnd_message(how, "\n");
 	}
 
 	return 0;

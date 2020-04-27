@@ -58,7 +58,7 @@ typedef union
 	double d;
 	int i;
 	char *s;
-	pcb_coord_t c;
+	rnd_coord_t c;
 } pcb_bxl_tokunion_t;
 #line 3 "bxl_gram.y"
 typedef struct

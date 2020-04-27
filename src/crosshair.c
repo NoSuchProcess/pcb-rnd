@@ -71,7 +71,7 @@ pcb_mark_t pcb_marked;
 pcb_crosshair_note_t pcb_crosshair_note;
 
 
-static void thindraw_moved_ps(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y)
+static void thindraw_moved_ps(pcb_pstk_t *ps, rnd_coord_t x, rnd_coord_t y)
 {
 	/* Make a copy of the pin structure, moved to the correct position */
 	pcb_pstk_t moved_ps = *ps;
@@ -84,7 +84,7 @@ static void thindraw_moved_ps(pcb_pstk_t *ps, pcb_coord_t x, pcb_coord_t y)
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system
  */
-void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int dash_last)
+void pcb_xordraw_poly(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, int dash_last)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
@@ -113,7 +113,7 @@ void pcb_xordraw_poly(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, int d
  * creates a tmp polygon with coordinates converted to screen system, designed
  * for subc paste xor-draw
  */
-void pcb_xordraw_poly_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, pcb_coord_t w, pcb_coord_t h, int mirr)
+void pcb_xordraw_poly_subc(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, rnd_coord_t w, rnd_coord_t h, int mirr)
 {
 	pcb_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
@@ -133,10 +133,10 @@ void pcb_xordraw_poly_subc(pcb_poly_t *polygon, pcb_coord_t dx, pcb_coord_t dy, 
 	}
 }
 
-void pcb_xordraw_attached_arc(pcb_coord_t thick)
+void pcb_xordraw_attached_arc(rnd_coord_t thick)
 {
 	pcb_arc_t arc;
-	pcb_coord_t wx, wy;
+	rnd_coord_t wx, wy;
 	pcb_angle_t sa, dir;
 
 	wx = pcb_crosshair.X - pcb_crosshair.AttachedBox.Point1.X;
@@ -171,7 +171,7 @@ void pcb_xordraw_attached_arc(pcb_coord_t thick)
 void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 {
 	pcb_cardinal_t i;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	/* set offset */
 	x = pcb_crosshair.AttachedObject.tx - Buffer->X;
@@ -253,8 +253,8 @@ void pcb_xordraw_insert_pt_obj(void)
  */
 void pcb_xordraw_movecopy(void)
 {
-	pcb_coord_t dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
-	pcb_coord_t dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
+	rnd_coord_t dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
+	rnd_coord_t dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
 	int event_sent = 0;
 	
 	switch (pcb_crosshair.AttachedObject.Type) {
@@ -274,8 +274,8 @@ void pcb_xordraw_movecopy(void)
 			int constrained = 0;
 			pcb_line_t line;
 			
-			pcb_coord_t dx1 = dx, dx2 = dx;
-			pcb_coord_t dy1 = dy, dy2 = dy;
+			rnd_coord_t dx1 = dx, dx2 = dx;
+			rnd_coord_t dy1 = dy, dy2 = dy;
 			
 			memcpy(&line, (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
 
@@ -402,8 +402,8 @@ void pcb_xordraw_movecopy(void)
 	case PCB_OBJ_ARC_POINT:
 		{
 			pcb_arc_t arc = *((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
-			pcb_coord_t ox1,ox2,oy1,oy2;
-			pcb_coord_t nx1,nx2,ny1,ny2;
+			rnd_coord_t ox1,ox2,oy1,oy2;
+			rnd_coord_t nx1,nx2,ny1,ny2;
 
 			/* Get the initial position of the arc point */
 			pcb_arc_get_end(&arc,0, &ox1, &oy1);
@@ -475,7 +475,7 @@ void pcb_xordraw_movecopy(void)
 			pcb_data_t *data = obj->parent.layer->parent.data;
 			if ((data != NULL) && (data->parent_type == PCB_PARENT_SUBC)) {
 				pcb_subc_t *sc = data->parent.subc;
-				pcb_coord_t ox, oy;
+				rnd_coord_t ox, oy;
 				if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
 					pcb_render->draw_line(pcb_crosshair.GC, ox, oy, pcb_crosshair.X, pcb_crosshair.Y);
 			}
@@ -486,7 +486,7 @@ void pcb_xordraw_movecopy(void)
 		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
-void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
 		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
@@ -498,7 +498,7 @@ void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 
 	/* an attached box does not depend on a special mode */
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND || pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {
-		pcb_coord_t x1, y1, x2, y2;
+		rnd_coord_t x1, y1, x2, y2;
 
 		x1 = pcb_crosshair.AttachedBox.Point1.X;
 		y1 = pcb_crosshair.AttachedBox.Point1.Y;
@@ -512,9 +512,9 @@ void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 }
 
 
-void pcbhl_draw_marks(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
-	pcb_coord_t ms = conf_core.appearance.mark_size, ms2 = ms / 2;
+	rnd_coord_t ms = conf_core.appearance.mark_size, ms2 = ms / 2;
 
 	if ((pcb_marked.status) || (hidlib->tool_grabbed.status)) {
 		if (!inhibit_drawing_mode) {
@@ -554,7 +554,7 @@ void pcbhl_draw_marks(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
  * They should initiate a redraw of the mark - which may (if necessary) mean
  * repainting the whole screen if the GUI hasn't tracked the mark's location.
  */
-void pcb_notify_mark_change(pcb_bool changes_complete)
+void pcb_notify_mark_change(rnd_bool changes_complete)
 {
 	if (pcb_gui->notify_mark_change)
 		pcb_gui->notify_mark_change(pcb_gui, changes_complete);
@@ -568,8 +568,8 @@ void pcb_notify_mark_change(pcb_bool changes_complete)
  */
 struct onpoint_search_info {
 	pcb_crosshair_t *crosshair;
-	pcb_coord_t X;
-	pcb_coord_t Y;
+	rnd_coord_t X;
+	rnd_coord_t Y;
 };
 
 static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
@@ -603,7 +603,7 @@ static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
 	pcb_arc_t *arc = (pcb_arc_t *) box;
-	pcb_coord_t p1x, p1y, p2x, p2y;
+	rnd_coord_t p1x, p1y, p2x, p2y;
 
 	p1x = arc->X - arc->Width * cos(PCB_TO_RADIANS(arc->StartAngle));
 	p1y = arc->Y + arc->Height * sin(PCB_TO_RADIANS(arc->StartAngle));
@@ -669,12 +669,12 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
  * at the given coordinates and adds them to the crosshair's
  * object list along with their respective type.
  */
-static void onpoint_work(pcb_crosshair_t * crosshair, pcb_coord_t X, pcb_coord_t Y)
+static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t Y)
 {
 	pcb_box_t SearchBox = pcb_point_box(X, Y);
 	struct onpoint_search_info info;
 	int i;
-	pcb_bool redraw = pcb_false;
+	rnd_bool redraw = pcb_false;
 
 	op_swap(crosshair);
 
@@ -730,7 +730,7 @@ static double square(double x)
 	return x * x;
 }
 
-static double crosshair_sq_dist(pcb_crosshair_t * crosshair, pcb_coord_t x, pcb_coord_t y)
+static double crosshair_sq_dist(pcb_crosshair_t * crosshair, rnd_coord_t x, rnd_coord_t y)
 {
 	return square(x - crosshair->X) + square(y - crosshair->Y);
 }
@@ -738,8 +738,8 @@ static double crosshair_sq_dist(pcb_crosshair_t * crosshair, pcb_coord_t x, pcb_
 struct snap_data {
 	pcb_crosshair_t *crosshair;
 	double nearest_sq_dist;
-	pcb_bool nearest_is_grid;
-	pcb_coord_t x, y;
+	rnd_bool nearest_is_grid;
+	rnd_coord_t x, y;
 };
 
 /* Snap to a given location if it is the closest thing we found so far.
@@ -748,7 +748,7 @@ struct snap_data {
  * pressing the SHIFT key. If the SHIFT key is pressed, the closest object
  * (including grid points), is always preferred.
  */
-static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_coord_t y, pcb_bool prefer_to_grid, pcb_any_obj_t *snapo)
+static void check_snap_object(struct snap_data *snap_data, rnd_coord_t x, rnd_coord_t y, rnd_bool prefer_to_grid, pcb_any_obj_t *snapo)
 {
 	double sq_dist;
 
@@ -774,7 +774,7 @@ static void check_snap_object(struct snap_data *snap_data, pcb_coord_t x, pcb_co
 	}
 }
 
-static pcb_bool should_snap_offgrid_line(pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
+static rnd_bool should_snap_offgrid_line(pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	/* Allow snapping to off-grid lines when drawing new lines (on
 	 * the same layer), and when moving a line end-point
@@ -790,12 +790,12 @@ static pcb_bool should_snap_offgrid_line(pcb_board_t *pcb, pcb_layer_t *layer, p
 		return pcb_false;
 }
 
-static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_data, pcb_coord_t nearest_grid_x, pcb_coord_t nearest_grid_y)
+static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_data, rnd_coord_t nearest_grid_x, rnd_coord_t nearest_grid_y)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int ans;
 	pcb_line_t *line;
-	pcb_coord_t try_x, try_y;
+	rnd_coord_t try_x, try_y;
 	double dx, dy;
 	double dist;
 
@@ -866,10 +866,10 @@ static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_dat
 /* ---------------------------------------------------------------------------
  * recalculates the passed coordinates to fit the current grid setting
  */
-void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
+void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 {
 	rnd_hidlib_t *hidlib = &PCB->hidlib;
-	pcb_coord_t nearest_grid_x, nearest_grid_y;
+	rnd_coord_t nearest_grid_x, nearest_grid_y;
 	void *ptr1, *ptr2, *ptr3;
 	struct snap_data snap_data;
 	int ans;
@@ -881,8 +881,8 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	nearest_grid_y = pcb_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 	if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
-		pcb_coord_t dx = pcb_crosshair.X - hidlib->tool_grabbed.X;
-		pcb_coord_t dy = pcb_crosshair.Y - hidlib->tool_grabbed.Y;
+		rnd_coord_t dx = pcb_crosshair.X - hidlib->tool_grabbed.X;
+		rnd_coord_t dy = pcb_crosshair.Y - hidlib->tool_grabbed.Y;
 		if (PCB_ABS(dx) > PCB_ABS(dy))
 			nearest_grid_y = hidlib->tool_grabbed.Y;
 		else
@@ -901,7 +901,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	if (ans & PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
-		pcb_coord_t ox, oy;
+		rnd_coord_t ox, oy;
 		if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
 			check_snap_object(&snap_data, ox, oy, pcb_false, (pcb_any_obj_t *)sc);
 	}
@@ -930,7 +930,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 
 	if (ans == PCB_OBJ_ARC_POINT) {
 		/* Arc point needs special handling as it's not a real point but has to be calculated */
-		pcb_coord_t ex, ey;
+		rnd_coord_t ex, ey;
 		pcb_arc_get_end((pcb_arc_t *)ptr2, (ptr3 != pcb_arc_start_ptr), &ex, &ey);
 		check_snap_object(&snap_data, ex, ey, pcb_true, (pcb_any_obj_t *)ptr2);
 	}
@@ -947,7 +947,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 	if (ans == PCB_OBJ_POLY) {
 		pcb_poly_t *p = ptr2;
 		if (p->term != NULL) {
-			pcb_coord_t cx, cy;
+			rnd_coord_t cx, cy;
 			cx = (p->BoundingBox.X1 + p->BoundingBox.X2)/2;
 			cy = (p->BoundingBox.Y1 + p->BoundingBox.Y2)/2;
 			if (pcb_poly_is_point_in_p(cx, cy, 1, p))
@@ -1004,7 +1004,7 @@ void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 /* ---------------------------------------------------------------------------
  * move crosshair relative (has to be switched off)
  */
-void pcb_crosshair_move_relative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
+void pcb_crosshair_move_relative(rnd_coord_t DeltaX, rnd_coord_t DeltaY)
 {
 	pcb_crosshair_grid_fit(pcb_crosshair.X + DeltaX, pcb_crosshair.Y + DeltaY);
 }
@@ -1013,9 +1013,9 @@ void pcb_crosshair_move_relative(pcb_coord_t DeltaX, pcb_coord_t DeltaY)
  * move crosshair absolute
  * return pcb_true if the crosshair was moved from its existing position
  */
-pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
+rnd_bool pcb_crosshair_move_absolute(rnd_coord_t X, rnd_coord_t Y)
 {
-	pcb_coord_t x, y, z;
+	rnd_coord_t x, y, z;
 	pcb_crosshair.ptr_x = X;
 	pcb_crosshair.ptr_y = Y;
 	x = pcb_crosshair.X;
@@ -1041,9 +1041,9 @@ pcb_bool pcb_crosshair_move_absolute(pcb_coord_t X, pcb_coord_t Y)
 /* ---------------------------------------------------------------------------
  * centers the displayed PCB around the specified point (X,Y)
  */
-void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
+void pcb_center_display(rnd_coord_t X, rnd_coord_t Y)
 {
-	pcb_coord_t save_grid = PCB->hidlib.grid;
+	rnd_coord_t save_grid = PCB->hidlib.grid;
 	PCB->hidlib.grid = 1;
 	if (pcb_crosshair_move_absolute(X, Y))
 		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
@@ -1097,7 +1097,7 @@ void pcb_crosshair_uninit(void)
 	pcb_event_unbind_allcookie(crosshair_cookie);
 }
 
-void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
+void pcb_crosshair_set_local_ref(rnd_coord_t X, rnd_coord_t Y, rnd_bool Showing)
 {
 	static pcb_mark_t old;
 	static int count = 0;
@@ -1120,7 +1120,7 @@ void pcb_crosshair_set_local_ref(pcb_coord_t X, pcb_coord_t Y, pcb_bool Showing)
 	}
 }
 
-static void pcb_event_move_crosshair(pcb_coord_t ev_x, pcb_coord_t ev_y)
+static void pcb_event_move_crosshair(rnd_coord_t ev_x, rnd_coord_t ev_y)
 {
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
@@ -1164,7 +1164,7 @@ void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 }
 
 
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 	if (!mouse_mot) {
 		pcb_hid_notify_crosshair_change(hl, pcb_false);

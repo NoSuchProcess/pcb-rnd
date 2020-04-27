@@ -49,7 +49,7 @@ static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t er
 	const char *fn;
 	int line, col;
 	lht_dom_loc_active(doc, &fn, &line, &col);
-	pcb_message(PCB_MSG_ERROR, "Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
+	rnd_message(PCB_MSG_ERROR, "Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
 	return 1;
 }
 
@@ -374,7 +374,7 @@ void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 	va_start(ap, fmt);
 	end += pcb_vsnprintf(end, maxlen, fmt, ap);
 	va_end(ap);
-	pcb_message(PCB_MSG_ERROR, hid_cfg_error_shared);
+	rnd_message(PCB_MSG_ERROR, hid_cfg_error_shared);
 }
 
 /*** minimal menu support for feature plugins - needs to stay in core ***/

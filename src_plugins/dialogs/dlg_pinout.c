@@ -105,7 +105,7 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static rnd_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	if (kind == PCB_HID_MOUSE_RELEASE) {
 		pinout_ctx_t *ctx = prv->user_ctx;
@@ -176,7 +176,7 @@ static const char pcb_acth_Pinout[] = "Present the subcircuit pinout box";
 static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	void *r1, *r2, *r3;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_objtype_t type;
 
 	rnd_hid_get_coords("Click on a subcircuit", &x, &y, 0);
@@ -187,7 +187,7 @@ static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(0);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "pinout dialog: there's no subcircuit there\n");
+		rnd_message(PCB_MSG_ERROR, "pinout dialog: there's no subcircuit there\n");
 		RND_ACT_IRES(-1);
 	}
 	return 0;

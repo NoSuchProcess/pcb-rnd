@@ -73,34 +73,34 @@ extern int defer_updates, defer_needs_update;
 #define PCB_CHANGETHERMAL_TYPES	\
 	(PCB_OBJ_SUBC_PART)
 
-pcb_bool pcb_chg_selected_size(int, pcb_coord_t, pcb_bool);
-pcb_bool pcb_chg_selected_clear_size(int, pcb_coord_t, pcb_bool);
-pcb_bool pcb_chg_selected_2nd_size(int, pcb_coord_t, pcb_bool);
-pcb_bool pcb_chg_selected_rot(int, double, pcb_bool);
-pcb_bool pcb_chg_selected_join(int);
-pcb_bool pcb_set_selected_join(int);
-pcb_bool pcb_clr_selected_join(int);
-pcb_bool pcb_chg_selected_nonetlist(int);
-pcb_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid);
-pcb_bool pcb_chg_obj_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
-pcb_bool pcb_chg_obj_1st_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
-pcb_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid);
-pcb_bool pcb_chg_obj_clear_size(int, void *, void *, void *, pcb_coord_t, pcb_bool);
-pcb_bool pcb_chg_obj_2nd_size(int, void *, void *, void *, pcb_coord_t, pcb_bool, pcb_bool);
-pcb_bool pcb_chg_obj_rot(int, void *, void *, void *, double, pcb_bool, pcb_bool);
-pcb_bool pcb_chg_obj_join(int, void *, void *, void *);
-pcb_bool pcb_set_obj_join(int, void *, void *, void *);
-pcb_bool pcb_clr_obj_join(int, void *, void *, void *);
-pcb_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
+rnd_bool pcb_chg_selected_size(int, rnd_coord_t, rnd_bool);
+rnd_bool pcb_chg_selected_clear_size(int, rnd_coord_t, rnd_bool);
+rnd_bool pcb_chg_selected_2nd_size(int, rnd_coord_t, rnd_bool);
+rnd_bool pcb_chg_selected_rot(int, double, rnd_bool);
+rnd_bool pcb_chg_selected_join(int);
+rnd_bool pcb_set_selected_join(int);
+rnd_bool pcb_clr_selected_join(int);
+rnd_bool pcb_chg_selected_nonetlist(int);
+rnd_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid);
+rnd_bool pcb_chg_obj_size(int, void *, void *, void *, rnd_coord_t, rnd_bool);
+rnd_bool pcb_chg_obj_1st_size(int, void *, void *, void *, rnd_coord_t, rnd_bool);
+rnd_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid);
+rnd_bool pcb_chg_obj_clear_size(int, void *, void *, void *, rnd_coord_t, rnd_bool);
+rnd_bool pcb_chg_obj_2nd_size(int, void *, void *, void *, rnd_coord_t, rnd_bool, rnd_bool);
+rnd_bool pcb_chg_obj_rot(int, void *, void *, void *, double, rnd_bool, rnd_bool);
+rnd_bool pcb_chg_obj_join(int, void *, void *, void *);
+rnd_bool pcb_set_obj_join(int, void *, void *, void *);
+rnd_bool pcb_clr_obj_join(int, void *, void *, void *);
+rnd_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 void *pcb_chg_obj_name(int, void *, void *, void *, char *);
 
 /* queries the user for a new object name and changes it */
 void *pcb_chg_obj_name_query(pcb_any_obj_t *obj);
 
-pcb_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, pcb_coord_t r, pcb_bool absolute);
-pcb_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, pcb_bool absolute);
-pcb_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt);
-pcb_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, pcb_bool fixIt);
+rnd_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, rnd_coord_t r, rnd_bool absolute);
+rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, rnd_bool absolute);
+rnd_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt);
+rnd_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt);
 
 /* Change flag flg of an object in a way dictated by 'how' */
 void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t flg, int Type, void *Ptr1, void *Ptr2, void *Ptr3);

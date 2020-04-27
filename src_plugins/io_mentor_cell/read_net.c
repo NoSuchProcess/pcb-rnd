@@ -28,7 +28,7 @@
  */
 
 
-static pcb_coord_t net_get_clearance_(hkp_ctx_t *ctx, pcb_layer_id_t lid, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
+static rnd_coord_t net_get_clearance_(hkp_ctx_t *ctx, pcb_layer_id_t lid, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
 {
 	if ((lid < 0) || (lid >= PCB_MAX_LAYER)) {
 		hkp_error(errnode, "failed to determine clearance, falling back to default value\n");
@@ -37,7 +37,7 @@ static pcb_coord_t net_get_clearance_(hkp_ctx_t *ctx, pcb_layer_id_t lid, const 
 	return ctx->nc_dflt.clearance[lid][type];
 }
 
-static pcb_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
+static rnd_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
 {
 	pcb_layer_id_t lid;
 
@@ -60,7 +60,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 
 	fnc = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fnc == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open netclass hkp '%s' for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "can't open netclass hkp '%s' for read\n", fn);
 		return -1;
 	}
 
@@ -91,7 +91,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 
 	if (ncrs == NULL) {
 		tree_destroy(&nc_tree);
-		pcb_message(PCB_MSG_ERROR, "netclass hkp '%s' does not contain any NET_CLASS_SCHEME/CLEARANCE_RULE_SET section\n", fn);
+		rnd_message(PCB_MSG_ERROR, "netclass hkp '%s' does not contain any NET_CLASS_SCHEME/CLEARANCE_RULE_SET section\n", fn);
 		return -1;
 	}
 
@@ -99,7 +99,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 	for(ns = ncrs->first_child; ns != NULL; ns = ns->next) {
 		pcb_layergrp_id_t gid;
 		pcb_layergrp_t *grp;
-		pcb_coord_t val;
+		rnd_coord_t val;
 		int i;
 
 		if (strcmp(ns->argv[0], "SUBRULE") != 0) continue;
@@ -144,7 +144,7 @@ static int io_mentor_cell_netlist(hkp_ctx_t *ctx, const char *fn)
 
 	fnet = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fnet == NULL) {
-		pcb_message(PCB_MSG_ERROR, "can't open netprops hkp '%s' for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "can't open netprops hkp '%s' for read\n", fn);
 		return -1;
 	}
 

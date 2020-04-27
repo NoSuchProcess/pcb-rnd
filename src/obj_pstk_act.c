@@ -42,7 +42,7 @@ static const char pcb_acth_padstackconvert[] = "Convert selection or current buf
 fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
 
@@ -89,14 +89,14 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (pid != PCB_PADSTACK_INVALID) {
-		pcb_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
+		rnd_message(PCB_MSG_INFO, "Pad stack registered with ID %d\n", pid);
 		pcb_pstk_new(PCB_PASTEBUFFER->Data, -1, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
 		PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
 		RND_ACT_IRES(0);
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "(failed to convert to padstack)\n", pid);
+		rnd_message(PCB_MSG_ERROR, "(failed to convert to padstack)\n", pid);
 		RND_ACT_IRES(1);
 	}
 
@@ -117,16 +117,16 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				void *ptr1, *ptr2, *ptr3;
 				pcb_pstk_t *ps;
 				pcb_objtype_t type;
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				
 				rnd_hid_get_coords("Select a padstack to break up", &x, &y, 0);
 				if ((type = pcb_search_screen(x, y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_PSTK) {
-					pcb_message(PCB_MSG_ERROR, "Need a padstack under the cursor\n");
+					rnd_message(PCB_MSG_ERROR, "Need a padstack under the cursor\n");
 					break;
 				}
 				ps = (pcb_pstk_t *)ptr2;
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *)ps)) {
-					pcb_message(PCB_MSG_ERROR, "Sorry, that padstack is locked\n");
+					rnd_message(PCB_MSG_ERROR, "Sorry, that padstack is locked\n");
 					break;
 				}
 				RND_ACT_IRES(pcb_pstk_proto_breakup(PCB->Data, ps, 1));
@@ -169,7 +169,7 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *pids = NULL;
 	pcb_cardinal_t pid;
 	pcb_pstk_t *ps;
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, padstackplace, pids = argv[1].val.str);
 
@@ -192,19 +192,19 @@ TODO("pstk: style default proto")
 		char *end;
 		pid = strtol(pids, &end, 10);
 		if (*end != '\0') {
-			pcb_message(PCB_MSG_ERROR, "Error in proto ID format: need an integer\n");
+			rnd_message(PCB_MSG_ERROR, "Error in proto ID format: need an integer\n");
 			return -1;
 		}
 	}
 
 	if ((pid >= PCB->Data->ps_protos.used) || (PCB->Data->ps_protos.array[pid].in_use == 0)) {
-		pcb_message(PCB_MSG_ERROR, "Invalid padstack proto %ld\n", (long)pid);
+		rnd_message(PCB_MSG_ERROR, "Invalid padstack proto %ld\n", (long)pid);
 		return -1;
 	}
 
 	ps = pcb_pstk_new(PCB->Data, -1, pid, x, y, conf_core.design.clearance, pcb_no_flags());
 	if (ps == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Failed to place padstack\n");
+		rnd_message(PCB_MSG_ERROR, "Failed to place padstack\n");
 		return -1;
 	}
 

@@ -71,7 +71,7 @@ static int nogui_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	CRASH("parse_arguments");
 }
 
-static void nogui_invalidate_lr(pcb_hid_t *hid, pcb_coord_t l, pcb_coord_t r, pcb_coord_t t, pcb_coord_t b)
+static void nogui_invalidate_lr(pcb_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
 {
 	CRASH("invalidate_lr");
 }
@@ -100,7 +100,7 @@ static void nogui_destroy_gc(pcb_hid_gc_t gc)
 {
 }
 
-static void nogui_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void nogui_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	CRASH("set_drawing_mode");
 }
@@ -120,7 +120,7 @@ static void nogui_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	CRASH("set_line_cap");
 }
 
-static void nogui_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void nogui_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	CRASH("set_line_width");
 }
@@ -134,32 +134,32 @@ static void nogui_set_draw_faded(pcb_hid_gc_t gc, int faded)
 {
 }
 
-static void nogui_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void nogui_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	CRASH("draw_line");
 }
 
-static void nogui_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void nogui_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
 {
 	CRASH("draw_arc");
 }
 
-static void nogui_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void nogui_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	CRASH("draw_rect");
 }
 
-static void nogui_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void nogui_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	CRASH("fill_circle");
 }
 
-static void nogui_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t * x, pcb_coord_t * y)
+static void nogui_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
 {
 	CRASH("fill_polygon");
 }
 
-static void nogui_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void nogui_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	CRASH("fill_rect");
 }
@@ -187,12 +187,12 @@ static int nogui_mod1_is_pressed(pcb_hid_t *hid)
 	return 0;
 }
 
-static void nogui_get_coords(pcb_hid_t *hid, const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+static void nogui_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	CRASH("get_coords");
 }
 
-static void nogui_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int action)
+static void nogui_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
@@ -209,7 +209,7 @@ static void nogui_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
 	CRASH("stop_timer");
 }
 
-static pcb_hidval_t nogui_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, pcb_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+static pcb_hidval_t nogui_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	CRASH("watch_file");
@@ -350,7 +350,7 @@ static char *nogui_fileselect(pcb_hid_t *hid, const char *title, const char *des
 		return pcb_strdup(answer);
 }
 
-void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, pcb_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	CRASH("attr_dlg_new");
 }
@@ -420,7 +420,7 @@ static int clip_warn(void)
 {
 	static int warned = 0;
 	if (!warned) {
-		pcb_message(PCB_MSG_ERROR, "The current GUI HID does not support clipboard.\nClipboard is emulated, not shared withother programs\n");
+		rnd_message(PCB_MSG_ERROR, "The current GUI HID does not support clipboard.\nClipboard is emulated, not shared withother programs\n");
 		warned = 1;
 	}
 	return 0;

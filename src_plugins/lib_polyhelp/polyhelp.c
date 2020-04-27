@@ -65,15 +65,15 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 
 #if 0
 /* debug helper */
-static void cross(FILE *f, pcb_coord_t x, pcb_coord_t y)
+static void cross(FILE *f, rnd_coord_t x, rnd_coord_t y)
 {
-	static pcb_coord_t cs = PCB_MM_TO_COORD(0.2);
+	static rnd_coord_t cs = PCB_MM_TO_COORD(0.2);
 	pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x - cs, y, x + cs, y);
 	pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x, y - cs, x, y + cs);
 }
 #endif
 
-pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
 	pcb_cardinal_t cnt = 0;
 	vtp0_t tracks;
@@ -100,7 +100,7 @@ pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_
 	return cnt;
 }
 
-pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src)
+rnd_bool pcb_pline_is_aligned(const pcb_pline_t *src)
 {
 	const pcb_vnode_t *v, *n;
 
@@ -115,7 +115,7 @@ pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src)
 }
 
 
-pcb_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p)
+rnd_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p)
 {
 	if (p->Clipped->f != p->Clipped)
 		return pcb_false; /* more than one islands */
@@ -145,7 +145,7 @@ pcb_cardinal_t pcb_cpoly_num_corners(const pcb_poly_t *src)
 	return res;
 }
 
-static void add_track_seg(pcb_cpoly_edgetree_t *dst, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void add_track_seg(pcb_cpoly_edgetree_t *dst, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_cpoly_edge_t *e = &dst->edges[dst->used++];
 	pcb_box_t *b = &e->bbox;
@@ -179,7 +179,7 @@ static void add_track_seg(pcb_cpoly_edgetree_t *dst, pcb_coord_t x1, pcb_coord_t
 static void add_track(pcb_cpoly_edgetree_t *dst, pcb_pline_t *track)
 {
 	int go, first = 1;
-	pcb_coord_t x, y, px, py;
+	rnd_coord_t x, y, px, py;
 	pcb_poly_it_t it;
 
 	it.cntr = track;
@@ -197,7 +197,7 @@ static void add_track(pcb_cpoly_edgetree_t *dst, pcb_pline_t *track)
 
 
 /* collect all edge lines (contour and holes) in an rtree, calculate the bbox */
-pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, pcb_coord_t offs)
+pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord_t offs)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -240,8 +240,8 @@ void pcb_cpoly_edgetree_destroy(pcb_cpoly_edgetree_t *etr)
 
 typedef struct {
 	int used;
-	pcb_coord_t at;
-	pcb_coord_t coord[1];
+	rnd_coord_t at;
+	rnd_coord_t coord[1];
 } intersect_t;
 
 static pcb_r_dir_t pcb_cploy_hatch_edge_hor(const pcb_box_t *region, void *cl)
@@ -284,14 +284,14 @@ static pcb_r_dir_t pcb_cploy_hatch_edge_ver(const pcb_box_t *region, void *cl)
 
 static int coord_cmp(const void *p1, const void *p2)
 {
-	const pcb_coord_t *c1 = p1, *c2 = p2;
+	const rnd_coord_t *c1 = p1, *c2 = p2;
 	if (*c1 < *c2)
 		return -1;
 	return 1;
 }
 
 
-void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t offs, pcb_coord_t period, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2))
+void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t offs, rnd_coord_t period, void *ctx, void (*cb)(void *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2))
 {
 	pcb_cpoly_edgetree_t *etr;
 	pcb_box_t scan;
@@ -303,10 +303,10 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_
 
 	etr = pcb_cpoly_edgetree_create(src, offs);
 
-	is = malloc(sizeof(intersect_t) + sizeof(pcb_coord_t) * etr->alloced);
+	is = malloc(sizeof(intersect_t) + sizeof(rnd_coord_t) * etr->alloced);
 
 	if (dir & PCB_CPOLY_HATCH_HORIZONTAL) {
-		pcb_coord_t y;
+		rnd_coord_t y;
 
 		for(y = etr->bbox.Y1; y <= etr->bbox.Y2; y += period) {
 			scan.X1 = -PCB_MAX_COORD;
@@ -317,14 +317,14 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_
 			is->used = 0;
 			is->at = y;
 			pcb_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_hor, is, NULL);
-			qsort(is->coord, is->used, sizeof(pcb_coord_t), coord_cmp);
+			qsort(is->coord, is->used, sizeof(rnd_coord_t), coord_cmp);
 			for(n = 1; n < is->used; n+=2) /* call the callback for the odd scan lines */
 				cb(ctx, is->coord[n-1], y, is->coord[n], y);
 		}
 	}
 
 	if (dir & PCB_CPOLY_HATCH_VERTICAL) {
-		pcb_coord_t x;
+		rnd_coord_t x;
 
 		for(x = etr->bbox.X1; x <= etr->bbox.X2; x += period) {
 			scan.Y1 = -PCB_MAX_COORD;
@@ -335,7 +335,7 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_
 			is->used = 0;
 			is->at = x;
 			pcb_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_ver, is, NULL);
-			qsort(is->coord, is->used, sizeof(pcb_coord_t), coord_cmp);
+			qsort(is->coord, is->used, sizeof(rnd_coord_t), coord_cmp);
 			for(n = 1; n < is->used; n+=2) /* call the callback for the odd scan lines */
 				cb(ctx, x, is->coord[n-1], x, is->coord[n]);
 		}
@@ -348,17 +348,17 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_
 
 typedef struct {
 	pcb_layer_t *dst;
-	pcb_coord_t thickness, clearance;
+	rnd_coord_t thickness, clearance;
 	pcb_flag_t flags;
 } hatch_ctx_t;
 
-static void hatch_cb(void *ctx_, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void hatch_cb(void *ctx_, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	hatch_ctx_t *ctx = (hatch_ctx_t *)ctx_;
 	pcb_line_new(ctx->dst, x1, y1, x2, y2, ctx->thickness, ctx->clearance, ctx->flags);
 }
 
-void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags)
+void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
 	hatch_ctx_t ctx;
 
@@ -371,7 +371,7 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_ha
 	pcb_cpoly_hatch(src, dir, (thickness/2)+1, period, &ctx, hatch_cb);
 }
 
-static int polyhatch_gui(pcb_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_flag_t *flg, int *want_contour)
+static int polyhatch_gui(rnd_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_flag_t *flg, int *want_contour)
 {
 	int wspc, wcont, whor, wver, wclr;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
@@ -436,7 +436,7 @@ static const char pcb_acth_PolyHatch[] = "hatch the selected polygon(s) with lin
 static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op, *arg = NULL;
-	pcb_coord_t period = 0;
+	rnd_coord_t period = 0;
 	pcb_cpoly_hatchdir_t dir = 0;
 	pcb_flag_t flg;
 	int want_contour = 0, want_poly = 0, cont_specd = 0;
@@ -452,10 +452,10 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		if (op != NULL) {
-			pcb_bool succ;
+			rnd_bool succ;
 			period = pcb_get_value(op, NULL, NULL, &succ);
 			if (!succ) {
-				pcb_message(PCB_MSG_ERROR, "Invalid spacing value - must be a coordinate\n");
+				rnd_message(PCB_MSG_ERROR, "Invalid spacing value - must be a coordinate\n");
 				return -1;
 			}
 		}
@@ -508,7 +508,7 @@ static const char pcb_acts_PolyOffs[] = "PolyOffs(offset)\n";
 static const char pcb_acth_PolyOffs[] = "replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer";
 static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t offs;
+	rnd_coord_t offs;
 
 	RND_PCB_ACT_CONVARG(1, FGW_COORD, PolyOffs, offs = fgw_coord(&argv[1]));
 

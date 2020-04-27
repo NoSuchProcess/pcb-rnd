@@ -68,43 +68,43 @@ static pcb_layer_id_t ses_layer_by_name(pcb_board_t *pcb, const char *name)
 		return -1;
 
 	if (strcmp(end+2, grp->name) != 0) {
-		pcb_message(PCB_MSG_ERROR, "layer (group) name mismatch: group %ld should be '%s' but is '%s'\nses file not for this board?\n", gid, grp->name, end+2);
+		rnd_message(PCB_MSG_ERROR, "layer (group) name mismatch: group %ld should be '%s' but is '%s'\nses file not for this board?\n", gid, grp->name, end+2);
 		return -1;
 	}
 
 	if (grp->len <= 0) {
-		pcb_message(PCB_MSG_ERROR, "layer (group) '%s' has no layers\nses file not for this board?\n", name);
+		rnd_message(PCB_MSG_ERROR, "layer (group) '%s' has no layers\nses file not for this board?\n", name);
 		return -1;
 	}
 
 	if (!(grp->ltype & PCB_LYT_COPPER)) {
-		pcb_message(PCB_MSG_ERROR, "layer (group) type %s should a copper layer group\nses file not for this board?\n", name);
+		rnd_message(PCB_MSG_ERROR, "layer (group) type %s should a copper layer group\nses file not for this board?\n", name);
 		return -1;
 	}
 
 	return grp->lid[0];
 }
 
-static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_t *n, const char *unit, int workaround0)
+static void parse_polyline(long int *nlines, rnd_coord_t clear, const gsxl_node_t *n, const char *unit, int workaround0)
 {
 	const gsxl_node_t *c;
-	pcb_coord_t x, y, lx, ly, thick;
+	rnd_coord_t x, y, lx, ly, thick;
 	long pn;
 	const char *slayer = n->children->str;
 	const char *sthick = n->children->next->str;
-	pcb_bool succ;
+	rnd_bool succ;
 	pcb_layer_id_t lid;
 	pcb_layer_t *layer;
 
 	thick = pcb_get_value(sthick, unit, NULL, &succ);
 	if (!succ) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because thickness is invalid: %s\n", sthick);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because thickness is invalid: %s\n", sthick);
 		return;
 	}
 
 	lid = ses_layer_by_name(PCB, slayer);
 	if (lid < 0) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because layer name is invalid: %s\n", slayer);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: skipping polyline because layer name is invalid: %s\n", slayer);
 		return;
 	}
 	layer = PCB->Data->Layer+lid;
@@ -115,12 +115,12 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 		const char *sy = c->next->str;
 		x = pcb_get_value(sx, unit, NULL, &succ);
 		if (!succ) {
-			pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sx);
+			rnd_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sx);
 			return;
 		}
 		y = pcb_get_value(sy, unit, NULL, &succ);
 		if (!succ) {
-			pcb_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
+			rnd_message(PCB_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
 			return;
 		}
 		if (workaround0 && ((y < PCB_MM_TO_COORD(0.01)) || (x < PCB_MM_TO_COORD(0.01)))) /* workaround for broken polyline coords */
@@ -137,7 +137,7 @@ static void parse_polyline(long int *nlines, pcb_coord_t clear, const gsxl_node_
 	}
 }
 
-static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *wire, dsn_type_t type)
+static void parse_wire(long int *nlines, rnd_coord_t clear, const gsxl_node_t *wire, dsn_type_t type)
 {
 	const gsxl_node_t *n;
 	for(n = wire->children; n != NULL; n = n->next) {
@@ -155,29 +155,29 @@ static void parse_wire(long int *nlines, pcb_coord_t clear, const gsxl_node_t *w
 			/* ignore */
 		}
 		else
-			pcb_message(PCB_MSG_WARNING, "import_dsn: ignoring unknown wire directive %s\n", n->str);
+			rnd_message(PCB_MSG_WARNING, "import_dsn: ignoring unknown wire directive %s\n", n->str);
 	}
 }
 
-static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type)
+static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type)
 {
 	const gsxl_node_t *c = via->children->next;
 	const char *name = via->children->str;
 	const char *sx = c->str;
 	const char *sy = c->next->str;
-	pcb_bool succ;
-	pcb_coord_t x, y, dia, drill;
+	rnd_bool succ;
+	rnd_coord_t x, y, dia, drill;
 	long l1, l2;
 	const char *unit = (type == TYPE_PCB) ? "mm" : "nm";
 
 	if (strncmp(name, "via_", 4) != 0) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (prefix): %s\n", name);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (prefix): %s\n", name);
 		return;
 	}
 
 	name += 4;
 	if (sscanf(name, "%ld_%ld", &l1, &l2) != 2) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (diameters): %s\n", name);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: skipping via with invalid name (diameters): %s\n", name);
 		return;
 	}
 
@@ -186,12 +186,12 @@ static void parse_via(pcb_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 
 	x = pcb_get_value(sx, unit, NULL, &succ);
 	if (!succ) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sx);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sx);
 		return;
 	}
 	y = pcb_get_value(sy, unit, NULL, &succ);
 	if (!succ) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sy);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sy);
 		return;
 	}
 
@@ -207,7 +207,7 @@ static const char pcb_acth_LoadDsnFrom[] = "Loads the specified routed dsn file.
 fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
-	pcb_coord_t clear;
+	rnd_coord_t clear;
 	FILE *f;
 	gsxl_dom_t dom;
 	int c, seek_quote = 1;
@@ -231,7 +231,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* load and parse the file into a dom tree */
 	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: can't open %s for read\n", fname);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: can't open %s for read\n", fname);
 		return 1;
 	}
 	gsxl_init(&dom, gsxl_node_t);
@@ -252,7 +252,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	fclose(f);
 
 	if (rs != GSX_RES_EOE) {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: parse error in %s at %d:%d\n", fname, dom.parse.line, dom.parse.col);
+		rnd_message(PCB_MSG_ERROR, "import_dsn: parse error in %s at %d:%d\n", fname, dom.parse.line, dom.parse.col);
 		goto error;
 	}
 	gsxl_compact_tree(&dom);
@@ -265,7 +265,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (strcmp(dom.root->str, "session") == 0)
 		type = TYPE_SESSION;
 	else {
-		pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr is not a PCB or session\n");
+		rnd_message(PCB_MSG_ERROR, "import_dsn: s-expr is not a PCB or session\n");
 		goto error;
 	}
 
@@ -276,7 +276,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					break;
 
 			if (wiring == NULL) {
-				pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a wiring section\n");
+				rnd_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a wiring section\n");
 				goto error;
 			}
 
@@ -296,7 +296,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					break;
 
 			if (routes == NULL) {
-				pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a routes section\n");
+				rnd_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a routes section\n");
 				goto error;
 			}
 
@@ -305,7 +305,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					break;
 
 			if (nout == NULL) {
-				pcb_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a network_out section\n");
+				rnd_message(PCB_MSG_ERROR, "import_dsn: s-expr does not have a network_out section\n");
 				goto error;
 			}
 
@@ -322,7 +322,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 	}
 
-	pcb_message(PCB_MSG_INFO, "import_dsn: loaded %ld wires and %ld vias\n", nlines, nvias);
+	rnd_message(PCB_MSG_INFO, "import_dsn: loaded %ld wires and %ld vias\n", nlines, nvias);
 
 	gsxl_uninit(&dom);
 	RND_ACT_IRES(0);

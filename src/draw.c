@@ -60,10 +60,10 @@ pcb_output_t pcb_draw_out; /* global context used for drawing */
 pcb_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX };
 
 int pcb_draw_force_termlab = 0;
-pcb_bool pcb_draw_doing_assy = pcb_false;
+rnd_bool pcb_draw_doing_assy = pcb_false;
 static vtp0_t delayed_labels, delayed_objs, annot_objs;
-pcb_bool delayed_labels_enabled = pcb_false;
-pcb_bool delayed_terms_enabled = pcb_false;
+rnd_bool delayed_labels_enabled = pcb_false;
+rnd_bool delayed_terms_enabled = pcb_false;
 
 static void draw_everything(pcb_draw_info_t *info);
 static void pcb_draw_layer_grp(pcb_draw_info_t *info, int, int);
@@ -106,13 +106,13 @@ void pcb_lighten_color(const pcb_color_t *orig, pcb_color_t *dst, double factor)
 	pcb_color_load_int(dst, MIN(255, orig->r * factor), MIN(255, orig->g * factor), MIN(255, orig->b * factor), 255);
 }
 
-void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, unsigned int segs, pcb_bool_t cheap)
+void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
 	double len_mnt = PCB_ABS(dx) + PCB_ABS(dy);
 	int n;
-	pcb_coord_t minlen = pcb_render->coord_per_pix * 8;
+	rnd_coord_t minlen = pcb_render->coord_per_pix * 8;
 
 	/* Ignore info->xform->bloat because a dashed line is always thin */
 
@@ -348,7 +348,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	char do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
 	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
-	pcb_bool paste_empty;
+	rnd_bool paste_empty;
 	legacy_vlayer_t lvly;
 	pcb_xform_t tmp;
 
@@ -990,7 +990,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		pcb_gfx_invalidate_erase((pcb_gfx_t *)ptr);
 		break;
 	default:
-		pcb_message(PCB_MSG_ERROR, "hace: Internal ERROR, trying to erase an unknown type\n");
+		rnd_message(PCB_MSG_ERROR, "hace: Internal ERROR, trying to erase an unknown type\n");
 	}
 }
 
@@ -1212,10 +1212,10 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 
 /* vert flip magic: make sure the offset is in-line with the flip and our sick y coords for vertical */
 #define PCB_TERM_LABEL_SETUP(label) \
-	pcb_bool flip_x = pcbhl_conf.editor.view.flip_x; \
-	pcb_bool flip_y = pcbhl_conf.editor.view.flip_y; \
+	rnd_bool flip_x = pcbhl_conf.editor.view.flip_x; \
+	rnd_bool flip_y = pcbhl_conf.editor.view.flip_y; \
 	pcb_font_t *font = pcb_font(PCB, 0, 0); \
-	pcb_coord_t w, h, dx, dy; \
+	rnd_coord_t w, h, dx, dy; \
 	if (vert) { \
 		h = pcb_text_width(font, scale, label); \
 		w = pcb_text_height(font, scale, label); \
@@ -1238,7 +1238,7 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	}
 
 
-void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label)
+void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label)
 {
 	int mirror, direction;
 	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
@@ -1255,9 +1255,9 @@ void pcb_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double 
 		pcb_draw_force_termlab--;
 }
 
-void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const char *label)
+void pcb_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label)
 {
-	pcb_coord_t ox = x, oy = y, margin = 0;
+	rnd_coord_t ox = x, oy = y, margin = 0;
 	pcb_box_t b;
 	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
@@ -1271,14 +1271,14 @@ void pcb_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool v
 	pcb_draw_invalidate(&b);
 }
 
-void pcb_term_label_draw(pcb_draw_info_t *info, pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
+void pcb_term_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const pcb_any_obj_t *obj)
 {
 	char buff[128];
 	const char *label = lab_with_intconn(obj, obj->intconn, obj->term, buff, sizeof(buff));
 	pcb_label_draw(info, x, y, scale, vert, centered, label);
 }
 
-void pcb_term_label_invalidate(pcb_coord_t x, pcb_coord_t y, double scale, pcb_bool vert, pcb_bool centered, const pcb_any_obj_t *obj)
+void pcb_term_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const pcb_any_obj_t *obj)
 {
 	char buff[128];
 	const char *label = lab_with_intconn(obj, obj->intconn, obj->term, buff, sizeof(buff));

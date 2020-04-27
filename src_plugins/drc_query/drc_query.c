@@ -77,7 +77,7 @@ typedef struct {
 	long hit_cnt;
 } drc_qry_ctx_t;
 
-pcb_coord_t load_obj_const(pcb_obj_qry_const_t *cnst)
+rnd_coord_t load_obj_const(pcb_obj_qry_const_t *cnst)
 {
 	switch(cnst->val.type) {
 		case PCBQ_VT_COORD: return cnst->val.data.crd;
@@ -114,7 +114,7 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	violation = pcb_view_new(&qctx->pcb->hidlib, qctx->type, qctx->title, qctx->desc);
 	if (res->type == PCBQ_VT_LST) {
 		int i;
-		pcb_coord_t *expv = NULL, expv_, *mesv = NULL, mesv_;
+		rnd_coord_t *expv = NULL, expv_, *mesv = NULL, mesv_;
 		for(i = 0; i < res->data.lst.used-1; i+=2) {
 			pcb_any_obj_t *cmd = res->data.lst.array[i], *obj = res->data.lst.array[i+1];
 			pcb_qry_drc_ctrl_t ctrl = pcb_qry_drc_ctrl_decode(cmd);
@@ -149,7 +149,7 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	double ts, te;
 
 	if (query == NULL) {
-		pcb_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", name);
+		rnd_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", name);
 		return 0;
 	}
 	if (type == NULL) type = "DRC violation";
@@ -184,7 +184,7 @@ static const char *load_str(lht_node_t *rule, pcb_conf_listitem_t *i, const char
 	if (n == NULL)
 		return NULL;
 	if (n->type != LHT_TEXT) {
-		pcb_message(PCB_MSG_ERROR, "drc_query: igoring non-text node %s of rule %s \n", name, i->name);
+		rnd_message(PCB_MSG_ERROR, "drc_query: igoring non-text node %s of rule %s \n", name, i->name);
 		return NULL;
 	}
 	return n->data.text.value;
@@ -219,7 +219,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		lht_node_t *rule = i->prop.src;
 		int *dis;
 		if (rule->type != LHT_HASH) {
-			pcb_message(PCB_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
+			rnd_message(PCB_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
 			continue;
 		}
 
@@ -272,7 +272,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			nat = pcb_conf_reg_field_(b, 1, CFN_BOOLEAN, path, pcb_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(b);
-				pcb_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
+				rnd_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
 				goto fail;
 			}
 
@@ -288,11 +288,11 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 	else if (nat_defs == cfg) {
 		lht_node_t *nd = i->prop.src;
 		char *path = pcb_concat(DRC_CONF_PATH_CONST, nd->name, NULL);
-		pcb_coord_t *c;
+		rnd_coord_t *c;
 
 		if (pcb_conf_get_field(path) == NULL) {
 			union {
-				pcb_coord_t c;
+				rnd_coord_t c;
 				double d;
 				void *ptr;
 				char *str;
@@ -311,13 +311,13 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 
 
 			if (stype == NULL) {
-				pcb_message(PCB_MSG_ERROR, "drc_query: missing type field for constant %s\n", nd->name);
+				rnd_message(PCB_MSG_ERROR, "drc_query: missing type field for constant %s\n", nd->name);
 				goto fail;
 			}
 
 			type = pcb_conf_native_type_parse(stype);
 			if (type >= CFN_LIST) {
-				pcb_message(PCB_MSG_ERROR, "drc_query: invalid type '%s' for %s\n", stype, nd->name);
+				rnd_message(PCB_MSG_ERROR, "drc_query: invalid type '%s' for %s\n", stype, nd->name);
 				goto fail;
 			}
 
@@ -325,7 +325,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			nat = pcb_conf_reg_field_(c, 1, type, path, pcb_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(c);
-				pcb_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
+				rnd_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
 				goto fail;
 			}
 

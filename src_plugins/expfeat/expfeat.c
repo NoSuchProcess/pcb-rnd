@@ -42,7 +42,7 @@ static const char pcb_acth_ExpFeatTmp[] = "Experimental Feature Template.";
    doc/user/09_appendix/action_src/) */
 static fgw_error_t pcb_act_ExpFeatTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_message(PCB_MSG_INFO, "Hello world from expfeat!\n");
+	rnd_message(PCB_MSG_INFO, "Hello world from expfeat!\n");
 	RND_ACT_IRES(0);
 	return 0;
 }

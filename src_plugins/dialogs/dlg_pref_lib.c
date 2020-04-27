@@ -322,7 +322,7 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 		switch(pos) {
 			case 0: /* replace */
-				pcb_message(PCB_MSG_ERROR, "need to select a library path row first\n");
+				rnd_message(PCB_MSG_ERROR, "need to select a library path row first\n");
 				return;
 
 			case -1: /* before */

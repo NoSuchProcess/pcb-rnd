@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define GVT(x) vtc0_ ## x
-#define GVT_ELEM_TYPE pcb_coord_t
+#define GVT_ELEM_TYPE rnd_coord_t
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 4096
 #define GVT_START_SIZE 32

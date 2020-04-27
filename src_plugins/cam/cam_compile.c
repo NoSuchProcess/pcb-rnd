@@ -93,7 +93,7 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 
 		case PCB_CAM_WRITE:
 			if (ctx->exporter == NULL) {
-				pcb_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
+				rnd_message(PCB_MSG_ERROR, "cam: no exporter selected before write\n");
 				return -1;
 			}
 
@@ -108,7 +108,7 @@ static int cam_exec_inst(cam_ctx_t *ctx, pcb_cam_code_t *code)
 			argc = ctx->argc;
 			argv = ctx->argv;
 			if (ctx->exporter->parse_arguments(ctx->exporter, &argc, &argv) != 0) {
-				pcb_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", code->op.write.arg);
+				rnd_message(PCB_MSG_ERROR, "cam: exporter '%s' refused the arguments\n", code->op.write.arg);
 				ctx->argv[0] = NULL;
 				ctx->argv[1] = NULL;
 				return -1;
@@ -217,7 +217,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 		}
 		code->op.plugin.exporter = pcb_hid_find_exporter(arg);
 		if (code->op.plugin.exporter == NULL) {
-			pcb_message(PCB_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
+			rnd_message(PCB_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
 			return -1;
 		}
 		free(ctx->args);
@@ -249,7 +249,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 		code->op.plugin.argv[ctx->argc] = NULL;
 	}
 	else {
-		pcb_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
+		rnd_message(PCB_MSG_ERROR, "cam: syntax error (unknown instruction): '%s'\n", cmd);
 		return -1;
 	}
 	return 0;

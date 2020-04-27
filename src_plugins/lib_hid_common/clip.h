@@ -35,7 +35,7 @@
 
 /* Clip X,Y to the given bounding box, plus a margin.  Returns pcb_true if
    there is something left to be drawn.  */
-PCB_INLINE pcb_bool pcb_line_clip(double minx, double miny, double maxx, double maxy, double *x1, double *y1, double *x2, double *y2, double margin)
+PCB_INLINE rnd_bool pcb_line_clip(double minx, double miny, double maxx, double maxy, double *x1, double *y1, double *x2, double *y2, double margin)
 {
 	double d, r;
 

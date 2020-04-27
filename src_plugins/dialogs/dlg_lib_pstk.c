@@ -55,7 +55,7 @@ typedef struct pstk_lib_ctx_s {
 	pcb_cardinal_t proto_id;
 	pcb_cardinal_t *stat; /* temporary usage stat */
 	pcb_box_t drawbox;
-	pcb_bool modal;
+	rnd_bool modal;
 } pstk_lib_ctx_t;
 
 static pcb_cardinal_t pstklib_last_proto_id; /* set on close to preserve the id after free'ing the context; useful only for modal windows because of blocking calls */
@@ -156,7 +156,7 @@ static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pcb_pstk_t ps;
 	char layers[pcb_proto_num_layers];
 	int n;
-	pcb_coord_t x1, y1, x2, y2, x, y, grid;
+	rnd_coord_t x1, y1, x2, y2, x, y, grid;
 
 	if (data == NULL) {
 		return;
@@ -483,7 +483,7 @@ static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	ctx->stat = NULL;
 }
 
-pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, const char *hint)
+pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, const char *hint)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
@@ -572,7 +572,7 @@ pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, pcb_bool modal, c
 					PCB_DAD_COORD(ctx->dlg, "");
 						ctx->wgrid = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
-						PCB_DAD_DEFAULT_NUM(ctx->dlg, (pcb_coord_t)PCB_MM_TO_COORD(1));
+						PCB_DAD_DEFAULT_NUM(ctx->dlg, (rnd_coord_t)PCB_MM_TO_COORD(1));
 						PCB_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
 
 					PCB_DAD_LABEL(ctx->dlg, "");
@@ -633,7 +633,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *cmd = NULL;
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
 	if ((cmd != NULL) && (strcmp(cmd, "object") == 0)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		void *r1, *r2, *r3;
 		pcb_subc_t *sc;
 		int type;

@@ -41,6 +41,6 @@
 #include "config.h"
 #include "board.h"
 
-pcb_bool AutoRoute(pcb_bool);
+rnd_bool AutoRoute(rnd_bool);
 
 #endif

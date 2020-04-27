@@ -85,8 +85,8 @@ static int brush_cache_inited = 0;
 
 static double bloat = 0;
 static double scale = 1;
-static pcb_coord_t x_shift = 0;
-static pcb_coord_t y_shift = 0;
+static rnd_coord_t x_shift = 0;
+static rnd_coord_t y_shift = 0;
 static int show_solder_side;
 static long png_drawn_objs = 0;
 #define SCALE(w)   ((int)pcb_round((w)/scale))
@@ -99,7 +99,7 @@ static long png_drawn_objs = 0;
 #define NOT_EDGE_Y(y) ((y) != 0 && (y) != PCB->hidlib.size_y)
 #define NOT_EDGE(x,y) (NOT_EDGE_X(x) || NOT_EDGE_Y(y))
 
-static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius);
+static void png_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
 /* The result of a failed gdImageColorAllocate() call */
 #define BADC -1
@@ -488,7 +488,7 @@ static void png_head(void)
 static void png_foot(void)
 {
 	const char *fmt;
-	pcb_bool format_error = pcb_false;
+	rnd_bool format_error = pcb_false;
 
 	if (photo_mode)
 		png_photo_foot();
@@ -703,7 +703,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	im = gdImageCreate(w, h);
 	if (im == NULL) {
-		pcb_message(PCB_MSG_ERROR, "png_do_export():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", w, h);
+		rnd_message(PCB_MSG_ERROR, "png_do_export():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", w, h);
 		return;
 	}
 
@@ -724,7 +724,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		white->a = 0;
 	white->c = gdImageColorAllocateAlpha(im, white->r, white->g, white->b, white->a);
 	if (white->c == BADC) {
-		pcb_message(PCB_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		rnd_message(PCB_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return;
 	}
 
@@ -733,7 +733,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	black->r = black->g = black->b = black->a = 0;
 	black->c = gdImageColorAllocate(im, black->r, black->g, black->b);
 	if (black->c == BADC) {
-		pcb_message(PCB_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		rnd_message(PCB_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return;
 	}
 
@@ -783,11 +783,11 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&png_cam) == 0) {
 		if (!png_cam.okempty_group)
-			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (png_drawn_objs == 0) {
 		if (!png_cam.okempty_content)
-			pcb_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(PCB_MSG_ERROR, "png cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 
@@ -873,7 +873,7 @@ static void png_destroy_gc(pcb_hid_gc_t gc)
 }
 
 static pcb_composite_op_t drawing_mode;
-static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool direct, const pcb_box_t *screen)
+static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	drawing_mode = op;
@@ -886,7 +886,7 @@ static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool
 			if (comp_im == NULL) {
 				comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 				if (!comp_im) {
-					pcb_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on comp_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					rnd_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on comp_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 					return;
 				}
 			}
@@ -897,7 +897,7 @@ static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, pcb_bool
 			if (erase_im == NULL) {
 				erase_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
 				if (!erase_im) {
-					pcb_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on erase_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					rnd_message(PCB_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on erase_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 					return;
 				}
 			}
@@ -973,7 +973,7 @@ static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 		gc->color->b = color->b;
 		gc->color->c = gdImageColorAllocate(im, gc->color->r, gc->color->g, gc->color->b);
 		if (gc->color->c == BADC) {
-			pcb_message(PCB_MSG_ERROR, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+			rnd_message(PCB_MSG_ERROR, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return;
 		}
 	}
@@ -988,7 +988,7 @@ static void png_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	gc->cap = style;
 }
 
-static void png_set_line_width(pcb_hid_gc_t gc, pcb_coord_t width)
+static void png_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
@@ -1082,13 +1082,13 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 			int bg, fg;
 			agc->brush = gdImageCreate(r, r);
 			if (agc->brush == NULL) {
-				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", r, r);
+				rnd_message(PCB_MSG_ERROR, "use_gc():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", r, r);
 				return;
 			}
 
 			bg = gdImageColorAllocate(agc->brush, 255, 255, 255);
 			if (bg == BADC) {
-				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				rnd_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
 			if (unerase_override)
@@ -1096,7 +1096,7 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 			else
 				fg = gdImageColorAllocateAlpha(agc->brush, agc->r, agc->g, agc->b, 0);
 			if (fg == BADC) {
-				pcb_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				rnd_message(PCB_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
 			gdImageColorTransparent(agc->brush, bg);
@@ -1128,19 +1128,19 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 }
 
 
-static void png_fill_rect_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_fill_rect_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(im, gc);
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
 
 	if (x1 > x2) {
-		pcb_coord_t t = x1;
+		rnd_coord_t t = x1;
 		x2 = x2;
 		x2 = t;
 	}
 	if (y1 > y2) {
-		pcb_coord_t t = y1;
+		rnd_coord_t t = y1;
 		y2 = y2;
 		y2 = t;
 	}
@@ -1152,7 +1152,7 @@ static void png_fill_rect_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 	have_outline |= doing_outline;
 }
 
-static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_fill_rect_(im, gc, x1, y1, x2, y2);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1163,11 +1163,11 @@ static void png_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 }
 
 
-static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int x1o = 0, y1o = 0, x2o = 0, y2o = 0;
 	if (x1 == x2 && y1 == y2 && !photo_mode) {
-		pcb_coord_t w = gc->width / 2;
+		rnd_coord_t w = gc->width / 2;
 		if (gc->cap != pcb_cap_square)
 			png_fill_circle(gc, x1, y1, w);
 		else
@@ -1225,7 +1225,7 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t x1, pcb_c
 	}
 }
 
-static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_draw_line_(im, gc, x1, y1, x2, y2);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1235,7 +1235,7 @@ static void png_draw_line(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 	}
 }
 
-static void png_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void png_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_draw_line(gc, x1, y1, x2, y1);
 	png_draw_line(gc, x2, y1, x2, y2);
@@ -1244,7 +1244,7 @@ static void png_draw_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, pcb_c
 }
 
 
-static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	pcb_angle_t sa, ea;
 
@@ -1255,8 +1255,8 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_co
 	/* zero angle arcs need special handling as gd will output either
 	   nothing at all or a full circle when passed delta angle of 0 or 360. */
 	if (delta_angle == 0) {
-		pcb_coord_t x = (width * cos(start_angle * M_PI / 180));
-		pcb_coord_t y = (width * sin(start_angle * M_PI / 180));
+		rnd_coord_t x = (width * cos(start_angle * M_PI / 180));
+		rnd_coord_t y = (width * sin(start_angle * M_PI / 180));
 		x = cx - x;
 		y = cy + y;
 		png_fill_circle(gc, x, y, gc->width / 2);
@@ -1302,7 +1302,7 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_co
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
-static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t width, pcb_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void png_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
 {
 	png_draw_arc_(im, gc, cx, cy, width, height, start_angle, delta_angle);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1312,9 +1312,9 @@ static void png_draw_arc(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_co
 	}
 }
 
-static void png_fill_circle_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void png_fill_circle_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
-	pcb_coord_t my_bloat;
+	rnd_coord_t my_bloat;
 
 	use_gc(im, gc);
 
@@ -1330,7 +1330,7 @@ static void png_fill_circle_(gdImagePtr im, pcb_hid_gc_t gc, pcb_coord_t cx, pcb
 	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? white->c : gc->color->c);
 }
 
-static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb_coord_t radius)
+static void png_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	png_fill_circle_(im, gc, cx, cy, radius);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1341,7 +1341,7 @@ static void png_fill_circle(pcb_hid_gc_t gc, pcb_coord_t cx, pcb_coord_t cy, pcb
 }
 
 
-static void png_fill_polygon_offs_(gdImagePtr im, pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void png_fill_polygon_offs_(gdImagePtr im, pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	gdPoint *points;
@@ -1365,7 +1365,7 @@ static void png_fill_polygon_offs_(gdImagePtr im, pcb_hid_gc_t gc, int n_coords,
 	free(points);
 }
 
-static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y, pcb_coord_t dx, pcb_coord_t dy)
+static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	png_fill_polygon_offs_(im, gc, n_coords, x, y, dx, dy);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1376,7 +1376,7 @@ static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x,
 }
 
 
-static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, pcb_coord_t *x, pcb_coord_t *y)
+static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	png_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
@@ -1387,7 +1387,7 @@ static void png_calibrate(pcb_hid_t *hid, double xval, double yval)
 	CRASH("png_calibrate");
 }
 
-static void png_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, int a)
+static void png_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 

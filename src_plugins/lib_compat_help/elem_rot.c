@@ -41,7 +41,7 @@ static const int verbose_rot = 0;
 #define MAXREFPINS 32 /* max length of following list */
 static char *reference_pin_names[] = {"1", "2", "A1", "A2", "B1", "B2", 0};
 
-static double xyToAngle(double x, double y, pcb_bool morethan2pins)
+static double xyToAngle(double x, double y, rnd_bool morethan2pins)
 {
 	double d = atan2(-y, x) * 180.0 / M_PI;
 
@@ -85,7 +85,7 @@ static double xyToAngle(double x, double y, pcb_bool morethan2pins)
 	}
 }
 
-void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double *theta, double *xray_theta, pcb_bool autodetect)
+void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double *theta, double *xray_theta, rnd_bool autodetect)
 {
 	double centroidx, centroidy;
 	int found_any_not_at_centroid, found_any, rpindex;
@@ -96,7 +96,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double 
 	double pinx[MAXREFPINS];
 	double piny[MAXREFPINS];
 	const char *fixed_rotation;
-	pcb_coord_t ox = 0, oy = 0;
+	rnd_coord_t ox = 0, oy = 0;
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
 
@@ -104,10 +104,10 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double 
 
 	if (!autodetect) {
 		if (pcb_subc_get_origin(subc, &ox, &oy) != 0)
-			pcb_message(PCB_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc origin for %s\n", subc->refdes);
+			rnd_message(PCB_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc origin for %s\n", subc->refdes);
 
 		if (pcb_subc_get_side(subc, &bott) != 0)
-			pcb_message(PCB_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc side for %s\n", subc->refdes);
+			rnd_message(PCB_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc side for %s\n", subc->refdes);
 	}
 
 	/* initialize our pin count and our totals for finding the
@@ -124,7 +124,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double 
 	 * we can find them
 	 */
 	for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-		pcb_coord_t px, py;
+		rnd_coord_t px, py;
 
 		if (o->term == NULL)
 			continue;
@@ -212,13 +212,13 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double 
 			}
 
 			if (!found_any) {
-				pcb_message
+				rnd_message
 					(PCB_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle because I could\n"
 					 "     not find a suitable reference pin of element %s\n"
 					 "     Setting to %g degrees\n", PCB_UNKNOWN(subc->refdes), *theta);
 			}
 			else if (!found_any_not_at_centroid) {
-				pcb_message
+				rnd_message
 					(PCB_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle of element\n"
 					 "     %s because the reference pin(s) are at the centroid of the part.\n"
 					 "     Setting to %g degrees\n", PCB_UNKNOWN(subc->refdes), *theta);
@@ -227,9 +227,9 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, pcb_coord_t *cx, pcb_coord_t *cy, double 
 	}
 }
 
-void pcb_subc_xy_rot_pnp(pcb_subc_t *subc, pcb_coord_t subc_ox, pcb_coord_t subc_oy, pcb_bool on_bottom)
+void pcb_subc_xy_rot_pnp(pcb_subc_t *subc, rnd_coord_t subc_ox, rnd_coord_t subc_oy, rnd_bool on_bottom)
 {
-	pcb_coord_t cx = subc_ox, cy = subc_oy;
+	rnd_coord_t cx = subc_ox, cy = subc_oy;
 	double rot = 0.0, tmp;
 	const char *cent;
 

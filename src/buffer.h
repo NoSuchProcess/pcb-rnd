@@ -35,7 +35,7 @@
 #include <libfungw/fungw.h>
 
 struct pcb_buffer_s {     /* information about the paste buffer */
-	pcb_coord_t X, Y;       /* offset */
+	rnd_coord_t X, Y;       /* offset */
 	pcb_box_t BoundingBox;
 	pcb_box_t bbox_naked;
 	pcb_data_t *Data;       /* data; not all members of pcb_board_t */
@@ -50,10 +50,10 @@ int pcb_set_buffer_bbox(pcb_buffer_t *);
 void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer);
 
 /* adds (copies) all selected and visible objects to the paste buffer */
-void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, pcb_coord_t X, pcb_coord_t Y, pcb_bool LeaveSelected, pcb_bool keep_id);
+void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_t X, rnd_coord_t Y, rnd_bool LeaveSelected, rnd_bool keep_id);
 
 /* load a board into buffer parse the file with enabled 'PCB mode' */
-pcb_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
+rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt);
 
 /* rotates the contents of the pastebuffer by Number * 90 degrees or free angle*/
 void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number);
@@ -94,13 +94,13 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int oargc, fgw_arg_t *oargv);
    If keep_id is true, do not change object IDs - this should be used only
    in one specific case, when selected objects are moved using the buffer
    (which means exactly 1 copy is made and the original version is removed). */
-pcb_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, pcb_coord_t X, pcb_coord_t Y, pcb_bool keep_id);
+rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id);
 
 /* change the side of all objects in the buffer */
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer);
 
 /* Load a footprint by name into a buffer; fmt is optional (may be NULL). */
-pcb_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt);
+rnd_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt);
 
 /* sets currently active buffer */
 void pcb_buffer_set_number(int Number);

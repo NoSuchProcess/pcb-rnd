@@ -82,27 +82,27 @@ static pcb_export_opt_t *stl_get_export_options(pcb_hid_t *hid, int *n)
 	return stl_attribute_list;
 }
 
-static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up, pcb_coord_t z)
+static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up, rnd_coord_t z)
 {
 	fprintf(f, "	facet normal 0 0 %d\n", up ? 1 : -1);
 	fprintf(f, "		outer loop\n");
 
 	if (up) {
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
 	}
 	else {
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[2]->X, (pcb_coord_t)t->Points[2]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[1]->X, (pcb_coord_t)t->Points[1]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (pcb_coord_t)t->Points[0]->X, (pcb_coord_t)t->Points[0]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
+		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
 	}
 
 	fprintf(f, "		endloop\n");
 	fprintf(f, "	endfacet\n");
 }
 
-static void stl_print_vert_tri(FILE *f, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, pcb_coord_t z0, pcb_coord_t z1)
+static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t z0, rnd_coord_t z1)
 {
 	double vx, vy, nx, ny, len;
 
@@ -129,7 +129,7 @@ static void stl_print_vert_tri(FILE *f, pcb_coord_t x1, pcb_coord_t y1, pcb_coor
 	fprintf(f, "	endfacet\n");
 }
 
-int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, pcb_coord_t maxy, pcb_coord_t z0, pcb_coord_t z1)
+int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
 	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
 	size_t mem_req = fp2t_memory_required(poly->PointN);
@@ -187,7 +187,7 @@ static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	int i;
 	pcb_cam_t cam;
 	FILE *f;
-	pcb_coord_t thick;
+	rnd_coord_t thick;
 
 	if (!options) {
 		stl_get_export_options(hid, 0);
@@ -212,7 +212,7 @@ static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (options[HA_ovrthick].crd > 0) thick = options[HA_ovrthick].crd;
 	else thick = pcb_board_thickness(PCB, "stl", PCB_BRDTHICK_PRINT_ERROR);
 	if (thick <= 0) {
-		pcb_message(PCB_MSG_WARNING, "STL: can not determine board thickness - falling back to hardwired 1.6mm\n");
+		rnd_message(PCB_MSG_WARNING, "STL: can not determine board thickness - falling back to hardwired 1.6mm\n");
 		thick = PCB_MM_TO_COORD(1.6);
 	}
 

@@ -34,7 +34,7 @@
 /* special layer: when used, the shape is always placed on the current layer */
 extern pcb_layer_t *pcb_shape_current_layer;
 
-void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pcb_bool modal);
+void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rnd_bool modal);
 
 typedef enum {
 	PCB_CORN_ROUND,
@@ -43,10 +43,10 @@ typedef enum {
 } pcb_shape_corner_t;
 extern const char *pcb_shape_corner_name[];
 
-pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, pcb_coord_t w, pcb_coord_t h, pcb_coord_t rx, pcb_coord_t ry, double rot_deg, pcb_coord_t cx, pcb_coord_t cy, pcb_shape_corner_t corner[4], double roundres);
+pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres);
 
 /* shorthand rounded rectangle: rounding radius is roundness * smaller_size */
-void pcb_shape_roundrect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, double roundness);
+void pcb_shape_roundrect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height, double roundness);
 
 #endif
 

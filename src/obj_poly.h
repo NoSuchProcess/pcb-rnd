@@ -38,7 +38,7 @@
 
 struct pcb_poly_s  {           /* holds information about a polygon */
 	PCB_ANY_PRIMITIVE_FIELDS;
-	pcb_coord_t Clearance;
+	rnd_coord_t Clearance;
 	pcb_cardinal_t PointN;       /* number of points in polygon */
 	pcb_cardinal_t PointMax;     /* max number from malloc() */
 	pcb_polyarea_t *Clipped;     /* the clipped region of this polygon */
@@ -65,23 +65,23 @@ void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly);
 void pcb_poly_unreg(pcb_poly_t *poly);
 
 void pcb_poly_bbox(pcb_poly_t *Polygon);
-pcb_poly_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t X2, pcb_coord_t Y2, pcb_coord_t Clearance, pcb_flag_t Flags);
-pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, pcb_coord_t offs, pcb_coord_t Clearance, pcb_flag_t Flags);
-pcb_poly_t *pcb_poly_new(pcb_layer_t *Layer, pcb_coord_t Clearance, pcb_flag_t Flags);
+pcb_poly_t *pcb_poly_new_from_rectangle(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Clearance, pcb_flag_t Flags);
+pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, rnd_coord_t offs, rnd_coord_t Clearance, pcb_flag_t Flags);
+pcb_poly_t *pcb_poly_new(pcb_layer_t *Layer, rnd_coord_t Clearance, pcb_flag_t Flags);
 pcb_poly_t *pcb_poly_dup(pcb_layer_t *dst, pcb_poly_t *src);
-pcb_poly_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_poly_t *src, pcb_coord_t dx, pcb_coord_t dy);
-pcb_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y);
+pcb_poly_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_poly_t *src, rnd_coord_t dx, rnd_coord_t dy);
+pcb_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y);
 pcb_poly_t *pcb_poly_hole_new(pcb_poly_t * Polygon);
 void *pcb_poly_remove(pcb_layer_t *Layer, pcb_poly_t *Polygon);
 
-void pcb_poly_rotate90(pcb_poly_t *Polygon, pcb_coord_t X, pcb_coord_t Y, unsigned Number);
-void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *poly, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina);
-void pcb_poly_mirror(pcb_poly_t *polygon, pcb_coord_t y_offs, pcb_bool undoable);
+void pcb_poly_rotate90(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
+void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *poly, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina);
+void pcb_poly_mirror(pcb_poly_t *polygon, rnd_coord_t y_offs, rnd_bool undoable);
 void pcb_poly_flip_side(pcb_layer_t *layer, pcb_poly_t *polygon);
 void pcb_poly_scale(pcb_poly_t *poly, double sx, double sy);
 
-void pcb_poly_move(pcb_poly_t *Polygon, pcb_coord_t DX, pcb_coord_t DY);
-pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, pcb_coord_t dx, pcb_coord_t dy);
+void pcb_poly_move(pcb_poly_t *Polygon, rnd_coord_t DX, rnd_coord_t DY);
+pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, rnd_coord_t dx, rnd_coord_t dy);
 
 void pcb_poly_pre(pcb_poly_t *poly);
 void pcb_poly_post(pcb_poly_t *poly);
@@ -116,7 +116,7 @@ typedef enum {
 } pcb_poly_event_t;
 
 /* return non-zero to quit mapping immediatley */
-typedef int pcb_poly_map_cb_t(pcb_poly_t *p, void *ctx, pcb_poly_event_t ev, pcb_coord_t x, pcb_coord_t y);
+typedef int pcb_poly_map_cb_t(pcb_poly_t *p, void *ctx, pcb_poly_event_t ev, rnd_coord_t x, rnd_coord_t y);
 
 /* call cb for each point of each island and cutout */
 void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb);
@@ -172,7 +172,7 @@ PCB_INLINE pcb_pline_t *pcb_poly_hole_next(pcb_poly_it_t *it)
 
 /* Set the iterator to the first point of the last selected contour or hole;
    read the coords into x,y; returns 1 on success, 0 if there are no points */
-PCB_INLINE int pcb_poly_vect_first(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE int pcb_poly_vect_first(pcb_poly_it_t *it, rnd_coord_t *x, rnd_coord_t *y)
 {
 	it->v = it->cntr->head->next;
 	if (it->v == NULL)
@@ -185,7 +185,7 @@ PCB_INLINE int pcb_poly_vect_first(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_
 
 /* Set the iterator to the next point of the last selected contour or hole;
    read the coords into x,y; returns 1 on success, 0 if there are were more points */
-PCB_INLINE int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE int pcb_poly_vect_next(pcb_poly_it_t *it, rnd_coord_t *x, rnd_coord_t *y)
 {
 	it->v = it->v->next;
 	if (it->v == it->cntr->head->next)
@@ -196,14 +196,14 @@ PCB_INLINE int pcb_poly_vect_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t
 }
 
 /* read the previous contour/hole coords into x,y, without bumping the iterator */
-PCB_INLINE void pcb_poly_vect_peek_prev(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE void pcb_poly_vect_peek_prev(pcb_poly_it_t *it, rnd_coord_t *x, rnd_coord_t *y)
 {
 	*x = it->v->prev->point[0];
 	*y = it->v->prev->point[1];
 }
 
 /* read the next contour/hole coords into x,y, without bumping the iterator */
-PCB_INLINE void pcb_poly_vect_peek_next(pcb_poly_it_t *it, pcb_coord_t *x, pcb_coord_t *y)
+PCB_INLINE void pcb_poly_vect_peek_next(pcb_poly_it_t *it, rnd_coord_t *x, rnd_coord_t *y)
 {
 	*x = it->v->next->point[0];
 	*y = it->v->next->point[1];
@@ -221,7 +221,7 @@ PCB_INLINE pcb_polyarea_t *pcb_poly_iterate_polyarea(pcb_polyarea_t *pa, pcb_pol
 
 /* construct the full poly clearance cutout for the pa in the iterator and add
    it to dst - implemented in polygon.c */
-void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, pcb_coord_t clearance);
+void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, rnd_coord_t clearance);
 
 
 #define pcb_poly_ppclear_at(poly, layer) \

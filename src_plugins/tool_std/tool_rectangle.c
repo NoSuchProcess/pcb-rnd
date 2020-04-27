@@ -107,7 +107,7 @@ void pcb_tool_rectangle_adjust_attached_objects(rnd_hidlib_t *hl)
 	}
 }
 
-pcb_bool pcb_tool_rectangle_anydo_act(rnd_hidlib_t *hl)
+rnd_bool pcb_tool_rectangle_anydo_act(rnd_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)

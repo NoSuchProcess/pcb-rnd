@@ -181,7 +181,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ToggleUniqueNames:
-			pcb_message(PCB_MSG_ERROR, "Unique names/refdes is not supported any more - please use the renumber plugin\n");
+			rnd_message(PCB_MSG_ERROR, "Unique names/refdes is not supported any more - please use the renumber plugin\n");
 			break;
 
 		case F_ToggleSnapPin:
@@ -288,7 +288,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* shift grid alignment */
 		case F_ToggleGrid:
 			{
-				pcb_coord_t oldGrid = RND_ACT_HIDLIB->grid;
+				rnd_coord_t oldGrid = RND_ACT_HIDLIB->grid;
 
 				RND_ACT_HIDLIB->grid = 1;
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
@@ -313,7 +313,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				int type;
 				void *ptr1, *ptr2, *ptr3;
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				rnd_hid_get_coords("Click on a subcircuit", &x, &y, 0);
 
 				/* toggle terminal ID print for subcircuit parts */
@@ -423,7 +423,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_OBJ_ARC_POINT) != PCB_OBJ_VOID) {
-			pcb_coord_t ex, ey;
+			rnd_coord_t ex, ey;
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 0, &ex, &ey);
 			if (close_enough(hidlib->tool_x, ex) && close_enough(hidlib->tool_y, ey)) {
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC_POINT;
@@ -549,7 +549,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		RND_ACT_IRES(-1);
-		pcb_message(PCB_MSG_ERROR, "Error: invalid route style name or index\n");
+		rnd_message(PCB_MSG_ERROR, "Error: invalid route style name or index\n");
 	}
 	return 0;
 }
@@ -559,7 +559,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_SetSame[] = "SetSame()";
 static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match indicated item.";
 /* DOC: setsame.html */
-static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
+static void set_same_(rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name)
 {
 	int known;
 	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
@@ -577,7 +577,7 @@ static void set_same_(pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole,
 
 static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	pcb_layer_t *layer = PCB_CURRLAYER(PCB_ACT_BOARD);
@@ -638,7 +638,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (!explicit && (*arg == '@')) {
 			pcb_layer_id_t lid = pcb_layer_by_name(PCB->Data, arg+1);
 			if (lid < 0) {
-				pcb_message(PCB_MSG_ERROR, "Can't find layer named %s\n", arg+1);
+				rnd_message(PCB_MSG_ERROR, "Can't find layer named %s\n", arg+1);
 				return 1;
 			}
 			ly = pcb_get_layer(PCB->Data, lid);
@@ -670,7 +670,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			interactive = 0;
 			n++;
 			if (n >= argc) {
-				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", arg+1);
+				rnd_message(PCB_MSG_ERROR, "Need an attribute name=value\n", arg+1);
 				return 1;
 			}
 			key = pcb_strdup(arg);
@@ -689,7 +689,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Invalid EditLayer() command: %s\n", arg);
+			rnd_message(PCB_MSG_ERROR, "Invalid EditLayer() command: %s\n", arg);
 			RND_ACT_FAIL(EditLayer);
 		}
 	}
@@ -725,7 +725,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_t *g = NULL;
 
 	if (PCB_CURRLAYER(PCB_ACT_BOARD)->is_bound) {
-		pcb_message(PCB_MSG_ERROR, "Can't edit bound layers yet\n");
+		rnd_message(PCB_MSG_ERROR, "Can't edit bound layers yet\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -743,7 +743,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				gid = pcb_layergrp_by_name(PCB, arg+1);
 			if (gid < 0) {
-				pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", arg+1);
+				rnd_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", arg+1);
 				RND_ACT_IRES(1);
 				return 0;
 			}
@@ -763,7 +763,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				else if (strcmp(sbit+1, "anywhere") == 0) bit = PCB_LYT_ANYWHERE;
 			}
 			if (bit == 0) {
-				pcb_message(PCB_MSG_ERROR, "Unknown type bit %s\n", sbit+1);
+				rnd_message(PCB_MSG_ERROR, "Unknown type bit %s\n", sbit+1);
 				RND_ACT_IRES(1);
 				return 0;
 			}
@@ -779,7 +779,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			interactive = 0;
 			n++;
 			if (n >= argc) {
-				pcb_message(PCB_MSG_ERROR, "Need an attribute name=value\n", arg+1);
+				rnd_message(PCB_MSG_ERROR, "Need an attribute name=value\n", arg+1);
 				RND_ACT_IRES(1);
 				return 0;
 			}
@@ -798,7 +798,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			free(key);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Invalid EditGroup() command: %s\n", arg);
+			rnd_message(PCB_MSG_ERROR, "Invalid EditGroup() command: %s\n", arg);
 			RND_ACT_FAIL(EditLayer);
 		}
 	}
@@ -843,14 +843,14 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (name[1] != '\0')
 			gid = pcb_layergrp_by_name(PCB, name+1);
 		if (gid < 0) {
-			pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", name+1);
+			rnd_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", name+1);
 			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
 	else {
 		if (g == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Can't find layer group\n");
+			rnd_message(PCB_MSG_ERROR, "Can't find layer group\n");
 			RND_ACT_IRES(1);
 			return 0;
 		}
@@ -878,13 +878,13 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
 	if (ltype == 0) {
-		pcb_message(PCB_MSG_ERROR, "Invalid type: '%s'\n", sloc);
+		rnd_message(PCB_MSG_ERROR, "Invalid type: '%s'\n", sloc);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if ((ltype == PCB_LYT_COPPER) || (ltype == PCB_LYT_SUBSTRATE)) {
-		pcb_message(PCB_MSG_ERROR, "Can not create this type of layer group: '%s'\n", sloc);
+		rnd_message(PCB_MSG_ERROR, "Can not create this type of layer group: '%s'\n", sloc);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -893,7 +893,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (strcmp(sloc, "global") != 0) {
 			lloc = pcb_layer_type_str2bit(sloc) & PCB_LYT_ANYWHERE;
 			if (lloc == 0) {
-				pcb_message(PCB_MSG_ERROR, "Invalid location: '%s'\n", sloc);
+				rnd_message(PCB_MSG_ERROR, "Invalid location: '%s'\n", sloc);
 				RND_ACT_IRES(-1);
 				return 0;
 			}
@@ -990,14 +990,14 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (name[1] != '\0')
 			gid = pcb_layergrp_by_name(PCB, name+1);
 		if (gid < 0) {
-			pcb_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", name+1);
+			rnd_message(PCB_MSG_ERROR, "Can't find layer group named %s\n", name+1);
 			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
 	else {
 		if (g == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Can't find layer group\n");
+			rnd_message(PCB_MSG_ERROR, "Can't find layer group\n");
 			RND_ACT_IRES(1);
 			return 0;
 		}
@@ -1046,7 +1046,7 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			pcb_layervis_change_group_vis(RND_ACT_HIDLIB, lid, 1, 1);
 		}
 		else {
-			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
+			rnd_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 			RND_ACT_IRES(-1);
 		}
 		return 0;
@@ -1054,10 +1054,10 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	ml = pcb_menu_layer_find(name);
 	if (ml != NULL) {
-		pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
-		pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
+		rnd_bool *v = (rnd_bool *)((char *)PCB + ml->vis_offs);
+		rnd_bool *s = (rnd_bool *)((char *)PCB + ml->sel_offs);
 		if (ml->sel_offs == 0) {
-			pcb_message(PCB_MSG_ERROR, "Virtual layer '%s' (%s) can not be selected\n", ml->name, ml->abbrev);
+			rnd_message(PCB_MSG_ERROR, "Virtual layer '%s' (%s) can not be selected\n", ml->name, ml->abbrev);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -1091,21 +1091,21 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ml = pcb_menu_layer_find(name);
 		if (ml != NULL) {
 			if (ml->sel_offs != 0) {
-				pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
+				rnd_bool *s = (rnd_bool *)((char *)PCB + ml->sel_offs);
 				RND_ACT_IRES(*s);
 			}
 			else
 				RND_ACT_IRES(-1);
 			return 0;
 		}
-		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkLayer: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
+		rnd_message(PCB_MSG_ERROR, "pcb_act_ChkLayer: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	/* if any virtual is selected, do not accept PCB_CURRLAYER(PCB_ACT_BOARD) as selected */
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++) {
-		pcb_bool *s = (pcb_bool *)((char *)PCB + ml->sel_offs);
+		rnd_bool *s = (rnd_bool *)((char *)PCB + ml->sel_offs);
 		if ((ml->sel_offs != 0) && (*s)) {
 			RND_ACT_IRES(0);
 			return 0;
@@ -1157,7 +1157,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
 			pcb_layervis_change_group_vis(RND_ACT_HIDLIB, lid, -1, 0);
 		else
-			pcb_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
+			rnd_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
 	else if ((pcb_strcasecmp(name, "padstacks") == 0) || (pcb_strcasecmp(name, "vias") == 0) || (pcb_strcasecmp(name, "pins") == 0) || (pcb_strcasecmp(name, "pads") == 0)) {
 		PCB->pstk_on = !PCB->pstk_on;
@@ -1172,7 +1172,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (strncmp(name, "ui:", 3) == 0) {
 		pcb_layer_t *ly = pcb_uilayer_get(atoi(name+3));
 		if (ly == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Invalid ui layer id: '%s'\n", name);
+			rnd_message(PCB_MSG_ERROR, "Invalid ui layer id: '%s'\n", name);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -1192,13 +1192,13 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else { /* virtual menu layer */
 			const pcb_menu_layers_t *ml = pcb_menu_layer_find(name);
 			if (ml != NULL) {
-				pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
+				rnd_bool *v = (rnd_bool *)((char *)PCB + ml->vis_offs);
 				*v = !(*v);
 				pcb_gui->invalidate_all(pcb_gui);
 				pcb_event(RND_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 				return 0;
 			}
-			pcb_message(PCB_MSG_ERROR, "Invalid layer id: '%s'\n", name);
+			rnd_message(PCB_MSG_ERROR, "Invalid layer id: '%s'\n", name);
 		}
 	}
 
@@ -1234,12 +1234,12 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const pcb_menu_layers_t *ml = pcb_menu_layer_find(name);
 
 		if (ml != NULL) {
-			pcb_bool *v = (pcb_bool *)((char *)PCB + ml->vis_offs);
+			rnd_bool *v = (rnd_bool *)((char *)PCB + ml->vis_offs);
 			RND_ACT_IRES(*v);
 			return 0;
 		}
 
-		pcb_message(PCB_MSG_ERROR, "pcb_act_ChkView: '%s' is not a valid layer ID - check your menu file!\n", name);
+		rnd_message(PCB_MSG_ERROR, "pcb_act_ChkView: '%s' is not a valid layer ID - check your menu file!\n", name);
 		return FGW_ERR_ARGV_TYPE;
 	}
 
@@ -1381,7 +1381,7 @@ static const char pcb_acth_boardflip[] = "Mirror the board over the x axis, opti
 static fgw_error_t pcb_act_boardflip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2;
-	pcb_bool smirror;
+	rnd_bool smirror;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, boardflip, op = fgw_keyword(&argv[1]));
 

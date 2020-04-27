@@ -57,7 +57,7 @@ typedef struct hyp_wr_s {
 } hyp_wr_t;
 
 /* pcb-rnd y-axis points down; hyperlynx y-axis points up */
-static pcb_coord_t flip(pcb_coord_t y)
+static rnd_coord_t flip(rnd_coord_t y)
 {
 	return (PCB->hidlib.size_y - y);
 }
@@ -161,7 +161,7 @@ static const char *get_layer_name(hyp_wr_t * wr, pcb_parenttype_t pt, pcb_layer_
 	return g->name;
 }
 
-static void write_pr_line(hyp_wr_t * wr, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void write_pr_line(hyp_wr_t * wr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, flip(y1), x2, flip(y2));
 }
@@ -179,7 +179,7 @@ static void hyp_pstk_uninit(hyp_wr_t *wr)
 
 void hyp_pstk_shape(hyp_wr_t *wr, const char *lynam, const pcb_pstk_shape_t *shp)
 {
-	pcb_coord_t sx, sy, minx, miny, maxx, maxy;
+	rnd_coord_t sx, sy, minx, miny, maxx, maxy;
 	int shnum = 0, n;
 TODO(": this ignores rotation")
 	switch(shp->shape) {
@@ -231,7 +231,7 @@ static const char *hyp_pstk_cache(hyp_wr_t *wr, pcb_pstk_proto_t *proto, int pri
 			htpi_set(&wr->pstk_cache, proto, id);
 		}
 		else
-			pcb_message(PCB_MSG_ERROR, "Internal error: unknown padstack prototype\n");
+			rnd_message(PCB_MSG_ERROR, "Internal error: unknown padstack prototype\n");
 	}
 
 	sprintf(name, "proto_%ld", id);
@@ -321,11 +321,11 @@ static void write_line(hyp_wr_t * wr, pcb_line_t * line)
 
 static void write_arc_(hyp_wr_t * wr, const char *cmd, pcb_arc_t * arc, const char *layer)
 {
-	pcb_coord_t x1, y1, x2, y2;
+	rnd_coord_t x1, y1, x2, y2;
 
 	if (arc->Width != arc->Height) {
 		if (!wr->warn.elliptic) {
-			pcb_message(PCB_MSG_WARNING, "Elliptic arcs are not supported - omitting all elliptic arcs\n");
+			rnd_message(PCB_MSG_WARNING, "Elliptic arcs are not supported - omitting all elliptic arcs\n");
 			wr->warn.elliptic = 1;
 		}
 		return;
@@ -465,7 +465,7 @@ static int write_devices(hyp_wr_t * wr)
 	}
 
 	if (cnt == 0)
-		pcb_message(PCB_MSG_WARNING,
+		rnd_message(PCB_MSG_WARNING,
 								"There is no element on the board - this limites the use of the resulting .hyp file, as it won't be able to connect to a simulation\n");
 
 	fprintf(wr->f, "}\n");
@@ -537,7 +537,7 @@ static int write_nets(hyp_wr_t * wr)
 	return 0;
 }
 
-int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, const char *new_filename, pcb_bool emergency)
+int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	hyp_wr_t wr;
 

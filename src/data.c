@@ -53,7 +53,7 @@
 int pcb_layer_stack[PCB_MAX_LAYER];			/* determines the layer draw order */
 
 pcb_buffer_t pcb_buffers[PCB_MAX_BUFFER]; /* my buffers */
-pcb_bool pcb_bumped;                /* if the undo serial number has changed */
+rnd_bool pcb_bumped;                /* if the undo serial number has changed */
 
 int pcb_added_lines;
 
@@ -216,7 +216,7 @@ void pcb_data_free(pcb_data_t *data)
 	free(data);
 }
 
-pcb_bool pcb_data_is_empty(pcb_data_t *Data)
+rnd_bool pcb_data_is_empty(pcb_data_t *Data)
 {
 	pcb_cardinal_t i;
 
@@ -229,7 +229,7 @@ pcb_bool pcb_data_is_empty(pcb_data_t *Data)
 	return pcb_true;
 }
 
-pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters)
+pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
 {
 	/* preset identifiers with highest and lowest possible values */
 	out->X1 = out->Y1 = PCB_MAX_COORD;
@@ -281,7 +281,7 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_float
 	return (pcb_data_is_empty(Data) ? NULL : out);
 }
 
-pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, pcb_bool ignore_floaters)
+pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
 {
 	/* preset identifiers with highest and lowest possible values */
 	out->X1 = out->Y1 = PCB_MAX_COORD;
@@ -414,7 +414,7 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data)
 	return NULL;
 }
 
-void pcb_data_mirror(pcb_data_t *data, pcb_coord_t y_offs, pcb_data_mirror_text_t mtxt, pcb_bool pstk_smirror, pcb_bool undoable)
+void pcb_data_mirror(pcb_data_t *data, rnd_coord_t y_offs, pcb_data_mirror_text_t mtxt, rnd_bool pstk_smirror, rnd_bool undoable)
 {
 	pcb_undo_freeze_serial();
 	pcb_data_clip_inhibit_inc(data);
@@ -490,7 +490,7 @@ void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recu
 		/* when not scaled recursively, position still needs to be scaled */
 		PCB_SUBC_LOOP(data);
 		{
-			pcb_coord_t ox, oy, nx, ny;
+			rnd_coord_t ox, oy, nx, ny;
 			if (pcb_subc_get_origin(subc, &ox, &oy) == 0) {
 				nx = pcb_round((double)ox * sx);
 				ny = pcb_round((double)oy * sy);
@@ -525,7 +525,7 @@ void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recu
 int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox)
 {
 	pcb_box_t tmp;
-	pcb_coord_t dx = 0, dy = 0;
+	rnd_coord_t dx = 0, dy = 0;
 
 	if (data_bbox == NULL) {
 		data_bbox = &tmp;
@@ -569,7 +569,7 @@ void pcb_data_set_parent_globals(pcb_data_t *data, pcb_data_t *new_parent)
 
 
 extern pcb_opfunc_t MoveFunctions;
-void pcb_data_move(pcb_data_t *data, pcb_coord_t dx, pcb_coord_t dy, int undoable)
+void pcb_data_move(pcb_data_t *data, rnd_coord_t dx, rnd_coord_t dy, int undoable)
 {
 	pcb_opctx_t ctx;
 
@@ -685,7 +685,7 @@ void pcb_data_clip_polys(pcb_data_t *data)
 pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
 						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
 						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
-						 void *closure, int *num_found, pcb_bool vis_only)
+						 void *closure, int *num_found, rnd_bool vis_only)
 {
 	pcb_layer_id_t lid;
 	pcb_r_dir_t res = 0;
@@ -722,15 +722,15 @@ void pcb_data_clip_inhibit_inc(pcb_data_t *data)
 	data->clip_inhibit++;
 
 	if (old > data->clip_inhibit) {
-		pcb_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
+		rnd_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
 		abort();
 	}
 }
 
-void pcb_data_clip_inhibit_dec(pcb_data_t *data, pcb_bool enable_progbar)
+void pcb_data_clip_inhibit_dec(pcb_data_t *data, rnd_bool enable_progbar)
 {
 	if (data->clip_inhibit == 0) {
-		pcb_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
+		rnd_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
 		assert(!"clip_inhibit underflow");
 		return;
 	}
@@ -778,7 +778,7 @@ static void data_clip_all_cb(void *ctx_)
 	}
 }
 
-void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool force_all)
+void pcb_data_clip_all_poly(pcb_data_t *data, rnd_bool enable_progbar, rnd_bool force_all)
 {
 	data_clip_all_t ctx;
 
@@ -813,12 +813,12 @@ void pcb_data_clip_all_poly(pcb_data_t *data, pcb_bool enable_progbar, pcb_bool 
 		pcb_hid_progress(0, 0, NULL);
 }
 
-void pcb_data_clip_dirty(pcb_data_t *data, pcb_bool enable_progbar)
+void pcb_data_clip_dirty(pcb_data_t *data, rnd_bool enable_progbar)
 {
 	pcb_data_clip_all_poly(data, enable_progbar, pcb_false);
 }
 
-void pcb_data_clip_all(pcb_data_t *data, pcb_bool enable_progbar)
+void pcb_data_clip_all(pcb_data_t *data, rnd_bool enable_progbar)
 {
 	pcb_data_clip_all_poly(data, enable_progbar, pcb_true);
 }

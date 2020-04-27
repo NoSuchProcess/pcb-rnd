@@ -156,7 +156,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Convert:
 		case F_ConvertSubc:
 			{
-				pcb_coord_t x, y;
+				rnd_coord_t x, y;
 				pcb_crosshair_note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);

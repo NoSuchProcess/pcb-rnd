@@ -105,7 +105,7 @@ static pcb_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 	double ca1, ca2, sa1, sa2;
 	double minx, maxx, miny, maxy, delta;
 	pcb_angle_t ang1, ang2;
-	pcb_coord_t width;
+	rnd_coord_t width;
 	pcb_box_t res;
 
 	/* first put angles into standard form:
@@ -176,7 +176,7 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 	Arc->bbox_naked  = pcb_arc_bbox_(Arc, 1);
 }
 
-void pcb_arc_get_end(pcb_arc_t *arc, int which, pcb_coord_t *x, pcb_coord_t *y)
+void pcb_arc_get_end(pcb_arc_t *arc, int which, rnd_coord_t *x, rnd_coord_t *y)
 {
 	pcb_arc_get_endpt(arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, which, x, y);
 }
@@ -199,7 +199,7 @@ void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, pcb_angle_t new_sa, pc
 }
 
 
-void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, pcb_coord_t new_height)
+void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, rnd_coord_t new_width, rnd_coord_t new_height)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_ARC, Layer, a);
 	pcb_r_delete_entry(Layer->arc_tree, (pcb_box_t *) a);
@@ -213,7 +213,7 @@ void pcb_arc_set_radii(pcb_layer_t *Layer, pcb_arc_t *a, pcb_coord_t new_width, 
 
 
 /* creates a new arc on a layer */
-pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, pcb_coord_t X1, pcb_coord_t Y1, pcb_coord_t width, pcb_coord_t height, pcb_angle_t sa, pcb_angle_t dir, pcb_coord_t Thickness, pcb_coord_t Clearance, pcb_flag_t Flags, pcb_bool prevent_dups)
+pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t width, rnd_coord_t height, pcb_angle_t sa, pcb_angle_t dir, rnd_coord_t Thickness, rnd_coord_t Clearance, pcb_flag_t Flags, rnd_bool prevent_dups)
 {
 	pcb_arc_t *Arc;
 
@@ -268,7 +268,7 @@ pcb_arc_t *pcb_arc_dup(pcb_layer_t *dst, pcb_arc_t *src)
 	return a;
 }
 
-pcb_arc_t *pcb_arc_dup_at(pcb_layer_t *dst, pcb_arc_t *src, pcb_coord_t dx, pcb_coord_t dy)
+pcb_arc_t *pcb_arc_dup_at(pcb_layer_t *dst, pcb_arc_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_arc_t *a = pcb_arc_new(dst, src->X+dx, src->Y+dy, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags, pcb_false);
 	pcb_arc_copy_meta(a, src);
@@ -321,7 +321,7 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 	double sgn = tr->on_bottom ? -1 : +1;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, a)) {
-		pcb_coord_t x, y;
+		rnd_coord_t x, y;
 		pcb_hash_tr_coords(tr, &x, &y, a->X, a->Y);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^
 			pcb_hash_coord(pcb_normalize_angle(pcb_round(a->StartAngle*sgn + tr->rot*sgn))) ^ pcb_hash_coord(pcb_round(a->Delta * sgn));
@@ -332,7 +332,7 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 		pcb_hash_coord(a->Width) ^ pcb_hash_coord(a->Height) ^ crd;
 }
 
-pcb_coord_t pcb_arc_length(const pcb_arc_t *arc)
+rnd_coord_t pcb_arc_length(const pcb_arc_t *arc)
 {
 	double da = arc->Delta;
 	double r = ((double)arc->Width + (double)arc->Height) / 2.0; /* TODO: lame approximation */
@@ -382,9 +382,9 @@ static const char core_arc_cookie[] = "core-arc";
 
 typedef struct {
 	pcb_arc_t *arc; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
-	pcb_coord_t Thickness, Clearance;
-	pcb_coord_t Width, Height;
-	pcb_coord_t X, Y;
+	rnd_coord_t Thickness, Clearance;
+	rnd_coord_t Width, Height;
+	rnd_coord_t X, Y;
 	pcb_angle_t StartAngle, Delta;
 
 } undo_arc_geo_t;
@@ -398,12 +398,12 @@ static int undo_arc_geo_swap(void *udata)
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *)g->arc);
 	pcb_poly_restore_to_poly(layer->parent.data, PCB_OBJ_ARC, layer, g->arc);
 
-	rnd_swap(pcb_coord_t, g->Thickness, g->arc->Thickness);
-	rnd_swap(pcb_coord_t, g->Clearance, g->arc->Clearance);
-	rnd_swap(pcb_coord_t, g->Width, g->arc->Width);
-	rnd_swap(pcb_coord_t, g->Height, g->arc->Height);
-	rnd_swap(pcb_coord_t, g->X, g->arc->X);
-	rnd_swap(pcb_coord_t, g->Y, g->arc->Y);
+	rnd_swap(rnd_coord_t, g->Thickness, g->arc->Thickness);
+	rnd_swap(rnd_coord_t, g->Clearance, g->arc->Clearance);
+	rnd_swap(rnd_coord_t, g->Width, g->arc->Width);
+	rnd_swap(rnd_coord_t, g->Height, g->arc->Height);
+	rnd_swap(rnd_coord_t, g->X, g->arc->X);
+	rnd_swap(rnd_coord_t, g->Y, g->arc->Y);
 	rnd_swap(pcb_angle_t, g->StartAngle, g->arc->StartAngle);
 	rnd_swap(pcb_angle_t, g->Delta, g->arc->Delta);
 
@@ -458,7 +458,7 @@ void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
 		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
-			pcb_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_arcop_move_buffer\n");
+			rnd_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_arcop_move_buffer\n");
 			return NULL;
 		}
 		dstly = &ctx->buffer.dst->Layer[lid];
@@ -483,7 +483,7 @@ void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc
 /* changes the size of an arc */
 void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Thickness + ctx->chgsize.value;
+	rnd_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Thickness + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
 		return NULL;
@@ -505,7 +505,7 @@ void *pcb_arcop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 /* changes the clearance size of an arc */
 void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Clearance + ctx->chgsize.value;
+	rnd_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : Arc->Clearance + ctx->chgsize.value;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc))
 		return NULL;
@@ -532,7 +532,7 @@ void *pcb_arcop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_
 /* changes the radius of an arc (is_primary 0=width or 1=height or 2=both) */
 void *pcb_arcop_change_radius(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
-	pcb_coord_t value, *dst;
+	rnd_coord_t value, *dst;
 	void *a0, *a1;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc))
@@ -719,7 +719,7 @@ void *pcb_arcop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_arc_t *
 	pcb_arc_t *newone;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Arc)) {
-		pcb_message(PCB_MSG_WARNING, "Sorry, arc object is locked\n");
+		rnd_message(PCB_MSG_WARNING, "Sorry, arc object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)
@@ -775,9 +775,9 @@ void *pcb_arc_destroy(pcb_layer_t *Layer, pcb_arc_t *Arc)
 }
 
 /* rotates an arc */
-void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Number)
+void pcb_arc_rotate90(pcb_arc_t *Arc, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
-	pcb_coord_t save;
+	rnd_coord_t save;
 
 	/* add Number*90 degrees (i.e., Number quarter-turns) */
 	Arc->StartAngle = pcb_normalize_angle(Arc->StartAngle + Number * 90);
@@ -794,7 +794,7 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, pcb_coord_t X, pcb_coord_t Y, unsigned Num
 	pcb_arc_bbox(Arc);
 }
 
-void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord_t Y, double cosa, double sina, pcb_angle_t angle)
+void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, pcb_angle_t angle)
 {
 	if (layer->arc_tree != NULL)
 		pcb_r_delete_entry(layer->arc_tree, (pcb_box_t *) arc);
@@ -804,7 +804,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, pcb_coord_t X, pcb_coord
 		pcb_r_insert_entry(layer->arc_tree, (pcb_box_t *) arc);
 }
 
-void pcb_arc_mirror(pcb_arc_t *arc, pcb_coord_t y_offs, pcb_bool undoable)
+void pcb_arc_mirror(pcb_arc_t *arc, rnd_coord_t y_offs, rnd_bool undoable)
 {
 	undo_arc_geo_t gtmp, *g = &gtmp;
 
@@ -888,7 +888,7 @@ void *pcb_arcop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 {
 	pcb_angle_t end_ang = arc->StartAngle + arc->Delta;
-	pcb_coord_t x = pcb_crosshair.X, y = pcb_crosshair.Y;
+	rnd_coord_t x = pcb_crosshair.X, y = pcb_crosshair.Y;
 	pcb_angle_t angle = atan2(-(y - arc->Y), (x - arc->X)) * 180.0 / M_PI + 180.0;
 	pcb_arc_t *new_arc;
 
@@ -945,7 +945,7 @@ void *pcb_arcop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_arc_t
 
 /*** draw ***/
 
-static void arc_label_pos(const pcb_arc_t *arc, pcb_coord_t *x0, pcb_coord_t *y0, pcb_bool_t *vert)
+static void arc_label_pos(const pcb_arc_t *arc, rnd_coord_t *x0, rnd_coord_t *y0, pcb_bool_t *vert)
 {
 	double da, ea, la;
 
@@ -961,13 +961,13 @@ static void arc_label_pos(const pcb_arc_t *arc, pcb_coord_t *x0, pcb_coord_t *y0
 	*vert = (((la < 45) && (la > -45)) || ((la > 135) && (la < 225)));
 }
 
-void pcb_arc_middle(const pcb_arc_t *arc, pcb_coord_t *x, pcb_coord_t *y)
+void pcb_arc_middle(const pcb_arc_t *arc, rnd_coord_t *x, rnd_coord_t *y)
 {
 	pcb_bool_t waste;
 	arc_label_pos(arc, x, y, &waste);
 }
 
-void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, int (*cb)(void *uctx, pcb_coord_t x, pcb_coord_t y))
+void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, int (*cb)(void *uctx, rnd_coord_t x, rnd_coord_t y))
 {
 	double a, da = arc->Delta, sa, ea, ea2, step;
 
@@ -1018,7 +1018,7 @@ void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, i
 void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 {
 	if (arc->term != NULL) {
-		pcb_coord_t x0, y0;
+		rnd_coord_t x0, y0;
 		pcb_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
@@ -1029,14 +1029,14 @@ void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 void pcb_arc_draw_label(pcb_draw_info_t *info, pcb_arc_t *arc)
 {
 	if (arc->term != NULL) {
-		pcb_coord_t x0, y0;
+		rnd_coord_t x0, y0;
 		pcb_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
 		pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size, vert, pcb_true, (pcb_any_obj_t *)arc);
 	}
 	if (arc->noexport) {
-		pcb_coord_t cx, cy;
+		rnd_coord_t cx, cy;
 		pcb_arc_middle(arc, &cx, &cy);
 		pcb_obj_noexport_mark(arc, cx, cy);
 	}
@@ -1044,7 +1044,7 @@ void pcb_arc_draw_label(pcb_draw_info_t *info, pcb_arc_t *arc)
 
 void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 {
-	pcb_coord_t thickness = arc->Thickness;
+	rnd_coord_t thickness = arc->Thickness;
 
 	if (arc->Thickness < 0)
 		return;

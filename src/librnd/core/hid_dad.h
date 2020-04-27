@@ -54,7 +54,7 @@ typedef struct {
 	void (*hid_scroll_to_bottom)(pcb_hid_attribute_t *attrib, void *hid_ctx);
 	void (*hid_set_text)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt);
 	char *(*hid_get_text)(pcb_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
-	void (*hid_set_readonly)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_bool readonly); /* by default text views are not read-only */
+	void (*hid_set_readonly)(pcb_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly); /* by default text views are not read-only */
 
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
@@ -122,7 +122,7 @@ struct pcb_hid_preview_s {
 	void *user_ctx;
 	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
 	void (*user_expose_cb)(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
-	pcb_bool (*user_mouse_cb)(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y); /* returns true if redraw is needed */
+	rnd_bool (*user_mouse_cb)(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
@@ -134,13 +134,13 @@ typedef struct {
 	int wbegin, wend; /* widget index to the correspoding PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END */
 
 	/* compound implementation callbacks */
-	int (*widget_state)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled);
-	int (*widget_hide)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide);
+	int (*widget_state)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
+	int (*widget_hide)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
 	int (*set_value)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val); /* set value runtime */
-	void (*set_val_num)(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c); /* set value during creation; attr is the END */
+	void (*set_val_num)(pcb_hid_attribute_t *attr, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
 	void (*set_val_ptr)(pcb_hid_attribute_t *attr, void *ptr); /* set value during creation; attr is the END */
 	void (*set_help)(pcb_hid_attribute_t *attr, const char *text); /* set the tooltip help; attr is the END */
-	void (*set_field_num)(pcb_hid_attribute_t *attr, const char *fieldname, long l, double d, pcb_coord_t c); /* set value during creation; attr is the END */
+	void (*set_field_num)(pcb_hid_attribute_t *attr, const char *fieldname, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
 	void (*set_field_ptr)(pcb_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
 	void (*set_geo)(pcb_hid_attribute_t *attr, pcb_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
 	void (*free)(pcb_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
@@ -510,7 +510,7 @@ do { \
 				{ \
 					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_val_num != NULL)) \
-						cmp->set_val_num(&table[table ## _len - 1], (long)(val_), (double)(val_), (pcb_coord_t)(val_)); \
+						cmp->set_val_num(&table[table ## _len - 1], (long)(val_), (double)(val_), (rnd_coord_t)(val_)); \
 					else \
 						assert(0); \
 				} \
@@ -588,7 +588,7 @@ do { \
 			table[table ## _len - 1].field.lng = (int)val; \
 			break; \
 		case PCB_HATT_COORD: \
-			table[table ## _len - 1].field.crd = (pcb_coord_t)val; \
+			table[table ## _len - 1].field.crd = (rnd_coord_t)val; \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
@@ -630,7 +630,7 @@ do { \
 			table[table ## _len - 1].field.lng = (int)val_; \
 			break; \
 		case PCB_HATT_COORD: \
-			table[table ## _len - 1].field.crd = (pcb_coord_t)val_; \
+			table[table ## _len - 1].field.crd = (rnd_coord_t)val_; \
 			break; \
 		case PCB_HATT_REAL: \
 		case PCB_HATT_PROGRESS: \
@@ -658,7 +658,7 @@ do { \
 			{ \
 				pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
-					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val_), (double)(val_), (pcb_coord_t)(val_)); \
+					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val_), (double)(val_), (rnd_coord_t)(val_)); \
 				else \
 					assert(0); \
 			} \
@@ -832,7 +832,7 @@ struct pcb_hid_dad_subdialog_s {
 	/* OPTIONAL: filled in by the sub-dialog's creator: called by the
 	   sub-dialog's parent while the parent dialog is being closed. If
 	   ok is false, the dialog was cancelled */
-	void (*on_close)(pcb_hid_dad_subdialog_t *sub, pcb_bool ok);
+	void (*on_close)(pcb_hid_dad_subdialog_t *sub, rnd_bool ok);
 
 	void *parent_ctx; /* used by the parent dialog code */
 	void *sub_ctx;    /* used by the sub-dialog's creator */

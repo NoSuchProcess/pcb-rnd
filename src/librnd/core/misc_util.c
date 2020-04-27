@@ -60,12 +60,12 @@ double pcb_distance2(double x1, double y1, double x2, double y2)
 	return delta_x * delta_x + delta_y * delta_y;
 }
 
-double pcb_get_value(const char *val, const char *units, pcb_bool * absolute, pcb_bool *success)
+double pcb_get_value(const char *val, const char *units, rnd_bool * absolute, rnd_bool *success)
 {
 	return pcb_get_value_ex(val, units, absolute, NULL, "cmil", success);
 }
 
-pcb_bool pcb_get_value_unit(const char *val, pcb_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out)
+rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out)
 {
 	int ul, ulo = 0;
 	const char *start;
@@ -99,7 +99,7 @@ pcb_bool pcb_get_value_unit(const char *val, pcb_bool *absolute, int unit_strict
 
 		u = get_unit_struct_(unit, unit_strict);
 		if (u != NULL) {
-			pcb_bool succ;
+			rnd_bool succ;
 			double crd;
 
 			crd = pcb_get_value(val, unit, NULL, &succ);
@@ -118,12 +118,12 @@ pcb_bool pcb_get_value_unit(const char *val, pcb_bool *absolute, int unit_strict
 }
 
 
-double pcb_get_value_ex(const char *val, const char *units, pcb_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, pcb_bool *success)
+double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, rnd_bool *success)
 {
 	double value;
 	int n = -1;
-	pcb_bool scaled = 0;
-	pcb_bool dummy;
+	rnd_bool scaled = 0;
+	rnd_bool dummy;
 
 	/* Allow NULL to be passed for absolute */
 	if (absolute == NULL)

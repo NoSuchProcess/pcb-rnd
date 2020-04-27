@@ -256,7 +256,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 }
 
 
-static pcb_bool view_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static rnd_bool view_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false; /* don't redraw */
 }
@@ -447,7 +447,7 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
 		return;
 	}
 
@@ -476,13 +476,13 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Can't open %s for read\n", fn);
 		return;
 	}
 
 	load_ctx = pcb_view_load_start_file(f);
 	if (load_ctx == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Error parsing %s - is it a view list?\n", fn);
+		rnd_message(PCB_MSG_ERROR, "Error parsing %s - is it a view list?\n", fn);
 		fclose(f);
 		return;
 	}
@@ -792,7 +792,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_PTR, ViewList, lst = argv[3].val.ptr_void);
 
 	if ((lst != NULL) && (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], PCB_PTR_DOMAIN_VIEWLIST))) {
-		pcb_message(PCB_MSG_ERROR, "invalid list pointer");
+		rnd_message(PCB_MSG_ERROR, "invalid list pointer");
 		RND_ACT_IRES(1);
 		return 0;
 	}

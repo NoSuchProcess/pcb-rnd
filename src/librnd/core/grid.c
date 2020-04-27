@@ -45,7 +45,7 @@
 #include <librnd/core/pcb_bool.h>
 #include <librnd/core/pcb-printf.h>
 
-pcb_coord_t pcb_grid_fit(pcb_coord_t x, pcb_coord_t grid_spacing, pcb_coord_t grid_offset)
+rnd_coord_t pcb_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset)
 {
 	x -= grid_offset;
 	x = grid_spacing * pcb_round((double) x / grid_spacing);
@@ -57,7 +57,7 @@ pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src)
 {
 	const char *nsep;
 	char *sep3, *sep2, *sep, *tmp, *size, *ox = NULL, *oy = NULL, *unit = NULL;
-	pcb_bool succ;
+	rnd_bool succ;
 
 	nsep = strchr(src, ':');
 	if (nsep != NULL)

@@ -108,7 +108,7 @@ static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute
 		pcb_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
 }
 
-static char *gen_str_coord(pcb_hid_dad_spin_t *spin, pcb_coord_t c, char *buf, int buflen)
+static char *gen_str_coord(pcb_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, int buflen)
 {
 	const pcb_unit_t *unit;
 	if (spin->unit != NULL)
@@ -271,7 +271,7 @@ static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_h
 			break;
 		case PCB_DAD_SPIN_COORD:
 			if (spin->unit == NULL) {
-				pcb_bool succ = 0;
+				rnd_bool succ = 0;
 				if (str->val.str != NULL)
 					succ = pcb_get_value_unit(str->val.str, NULL, 0, &v, &unit);
 				if (!succ) {
@@ -370,7 +370,7 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	char *ends, *warn = NULL;
 	long l;
 	double d;
-	pcb_bool succ, absolute;
+	rnd_bool succ, absolute;
 	const pcb_unit_t *unit;
 
 	if (spin->set_writeback_lock)
@@ -421,7 +421,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_att
 	char *ends, *warn = NULL;
 	int changed = 0;
 	double d;
-	pcb_bool succ, absolute;
+	rnd_bool succ, absolute;
 	const pcb_unit_t *unit;
 
 	if (spin->set_writeback_lock)
@@ -494,7 +494,7 @@ void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	spin_unit_dialog(hid_ctx, spin, end, str);
 }
 
-void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, pcb_coord_t c)
+void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, rnd_coord_t c)
 {
 	pcb_hid_dad_spin_t *spin = attr->wdata;
 	pcb_hid_attribute_t *str = attr - spin->cmp.wend + spin->wstr;
@@ -531,13 +531,13 @@ void pcb_dad_spin_free(pcb_hid_attribute_t *attr)
 	}
 }
 
-int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool enabled)
+int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
 {
 	pcb_hid_dad_spin_t *spin = end->wdata;
 	return pcb_gui->attr_dlg_widget_state(hid_ctx, spin->wall, enabled);
 }
 
-int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, pcb_bool hide)
+int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
 {
 	pcb_hid_dad_spin_t *spin = end->wdata;
 	return pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wall, hide);

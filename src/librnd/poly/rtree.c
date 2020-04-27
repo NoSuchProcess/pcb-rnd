@@ -73,13 +73,13 @@ void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_card
 		pcb_r_insert_entry(rtree, boxlist[n]);
 }
 
-pcb_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
+rnd_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
 {
 	assert(which != NULL);
 	return pcb_rtree_delete(rtree, (void *)which, (pcb_rtree_box_t *)which) == 0; /* assumes first field is the bounding box */
 }
 
-pcb_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (*free_data)(void *d))
+rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (*free_data)(void *d))
 {
 	void *obj = box; /* assumes first field is the bounding box */
 	assert(obj != NULL);

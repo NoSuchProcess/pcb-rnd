@@ -121,7 +121,7 @@ pcb_pstk_shape_t *pcb_pstk_alloc_append_shape(pcb_pstk_tshape_t *ts)
 	return &ts->shape[idx];
 }
 
-static void append_circle(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_coord_t dia)
+static void append_circle(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, pcb_layer_combining_t comb, rnd_coord_t dia)
 {
 	int idx = ts->len;
 
@@ -154,7 +154,7 @@ static void append_tshape(pcb_pstk_tshape_t *ts, pcb_pstk_tshape_t *src, int src
 	}
 }
 
-int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, pcb_coord_t ox, pcb_coord_t oy)
+int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0_t *objs, rnd_coord_t ox, rnd_coord_t oy)
 {
 	int ret = -1, n, m, i, extra_obj = 0, has_slot = 0, has_hole = 0;
 	pcb_any_obj_t **o;
@@ -182,7 +182,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			int purpi;
 			if (has_slot) {
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple mechanical objects (slots) are not allowed\n");
+					rnd_message(PCB_MSG_ERROR, "Padstack conversion: multiple mechanical objects (slots) are not allowed\n");
 				goto quit;
 			}
 			has_slot++;
@@ -198,14 +198,14 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			case PCB_OBJ_PSTK:
 				if (pstk != NULL) {
 					if (!quiet)
-						pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias/padstacks\n");
+						rnd_message(PCB_MSG_ERROR, "Padstack conversion: multiple vias/padstacks\n");
 					goto quit;
 				}
 				pstk = *(pcb_pstk_t **)o;
 				prt = pcb_pstk_get_proto(pstk);
 				if (prt == NULL) {
 					if (!quiet)
-						pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid input padstacks proto\n");
+						rnd_message(PCB_MSG_ERROR, "Padstack conversion: invalid input padstacks proto\n");
 					goto quit;
 				}
 				if (prt->hdia > 0)
@@ -213,7 +213,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				dst->hdia = prt->hdia;
 				dst->hplated = prt->hplated;
 				if ((ox != pstk->x) || (oy != pstk->y)) {
-					pcb_message(PCB_MSG_INFO, "Padstack conversion: adjusting origin to padstack hole\n");
+					rnd_message(PCB_MSG_INFO, "Padstack conversion: adjusting origin to padstack hole\n");
 					ox = pstk->x;
 					oy = pstk->y;
 				}
@@ -221,20 +221,20 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				break;
 			default:;
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, padstack, line or polygon\n", (*o)->type);
+					rnd_message(PCB_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, padstack, line or polygon\n", (*o)->type);
 				goto quit;
 		}
 	}
 
 	if ((vtp0_len(objs) - extra_obj) > data->LayerN) {
 		if (!quiet)
-			pcb_message(PCB_MSG_ERROR, "Padstack conversion: too many objects selected\n");
+			rnd_message(PCB_MSG_ERROR, "Padstack conversion: too many objects selected\n");
 		goto quit;
 	}
 
 	if ((ts->len == 0) && (pstk == NULL)) {
 		if (!quiet)
-			pcb_message(PCB_MSG_ERROR, "Padstack conversion: there are no shapes and there is no via/padstack participating in the conversion; can not create empty padstack\n");
+			rnd_message(PCB_MSG_ERROR, "Padstack conversion: there are no shapes and there is no via/padstack participating in the conversion; can not create empty padstack\n");
 		goto quit;
 	}
 
@@ -276,12 +276,12 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 					n++;
 					if (poly->HoleIndexN != 0) {
 						if (!quiet)
-							pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not convert polygon with holes\n");
+							rnd_message(PCB_MSG_ERROR, "Padstack conversion: can not convert polygon with holes\n");
 						goto quit;
 					}
 					if (len >= maxlen) {
 						if (!quiet)
-							pcb_message(PCB_MSG_ERROR, "Padstack conversion: polygon has too many points (%ld >= %ld)\n", (long)len, (long)maxlen);
+							rnd_message(PCB_MSG_ERROR, "Padstack conversion: polygon has too many points (%ld >= %ld)\n", (long)len, (long)maxlen);
 						goto quit;
 					}
 					pcb_pstk_shape_alloc_poly(&ts->shape[n].data.poly, len);
@@ -311,20 +311,20 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 		for(m = 0; m < n; m++) {
 			if ((ts->shape[n].layer_mask == ts->shape[m].layer_mask) && (ts->shape[n].comb == ts->shape[m].comb)) {
 				if (!quiet)
-					pcb_message(PCB_MSG_ERROR, "Padstack conversion: multiple objects on the same layer\n");
+					rnd_message(PCB_MSG_ERROR, "Padstack conversion: multiple objects on the same layer\n");
 				goto quit;
 			}
 		}
 		if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && (ts->shape[n].layer_mask & PCB_LYT_INTERN) && (!has_hole) && (!has_slot)) {
 			if (!quiet)
-				pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
+				rnd_message(PCB_MSG_ERROR, "Padstack conversion: can not have internal copper shape if there is no hole\n");
 			goto quit;
 		}
 	}
 
 	if (has_hole && has_slot) {
 		if (!quiet)
-			pcb_message(PCB_MSG_ERROR, "Padstack conversion: can not have both hole (padstack) and slot \n");
+			rnd_message(PCB_MSG_ERROR, "Padstack conversion: can not have both hole (padstack) and slot \n");
 		goto quit;
 	}
 
@@ -358,7 +358,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	return ret;
 }
 
-int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src)
+int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, rnd_bool remove_src)
 {
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(src);
 	int n, i;
@@ -373,11 +373,11 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, pcb_bool remove_src
 		pcb_pstk_shape_t *shp = &ts->shape[n];
 		pcb_layer_id_t lid;
 		pcb_layer_t *ly, *ly1 = NULL, *ly2 = NULL, *ly3 = NULL;
-		pcb_coord_t clr;
+		rnd_coord_t clr;
 		pcb_poly_t *p;
 
 		if ((shp->layer_mask & PCB_LYT_ANYTHING) == 0)
-			pcb_message(PCB_MSG_ERROR, "ERROR: breaking up padstack prototype: shape %d has invalid layer type, placing it on a random layer\nTHIS PADSTACK PROTOTYPE MUST BE FIXED.\n");
+			rnd_message(PCB_MSG_ERROR, "ERROR: breaking up padstack prototype: shape %d has invalid layer type, placing it on a random layer\nTHIS PADSTACK PROTOTYPE MUST BE FIXED.\n");
 
 		/* look up the best layer type */
 		for(lid = 0; lid < dst->LayerN; lid++) {
@@ -421,7 +421,7 @@ TODO("layer: make a real scoring mechanism here instead of ly1, ly2, ly3")
 			mats = pcb_layer_type_bit2str(lyt & PCB_LYT_ANYTHING);
 			if (locs == NULL) locs = "<unknown loc>";
 			if (mats == NULL) mats = "<unknown material>";
-			pcb_message(PCB_MSG_WARNING, "Can not create shape on %s %s\n", locs, mats);
+			rnd_message(PCB_MSG_WARNING, "Can not create shape on %s %s\n", locs, mats);
 			continue;
 		}
 
@@ -463,7 +463,7 @@ TODO("layer: make a real scoring mechanism here instead of ly1, ly2, ly3")
 	return -1;
 }
 
-int pcb_pstk_proto_conv_selection(pcb_board_t *pcb, pcb_pstk_proto_t *dst, int quiet, pcb_coord_t ox, pcb_coord_t oy)
+int pcb_pstk_proto_conv_selection(pcb_board_t *pcb, pcb_pstk_proto_t *dst, int quiet, rnd_coord_t ox, rnd_coord_t oy)
 {
 	int ret;
 	vtp0_t objs;
@@ -481,7 +481,7 @@ int pcb_pstk_proto_conv_buffer(pcb_pstk_proto_t *dst, int quiet)
 {
 	int ret;
 	vtp0_t objs;
-	pcb_coord_t ox, oy;
+	rnd_coord_t ox, oy;
 	pcb_box_t bb;
 
 	pcb_data_bbox(&bb, PCB_PASTEBUFFER->Data, 0);
@@ -607,7 +607,7 @@ void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
 
 				/* reverse order of data to keep normals pointing out */
 				for(i = 0; i < sh->data.poly.len/2; i++) {
-					pcb_coord_t tx, ty;
+					rnd_coord_t tx, ty;
 					int other = sh->data.poly.len-1-i;
 					tx = sh->data.poly.x[i];
 					ty = sh->data.poly.y[i];
@@ -702,7 +702,7 @@ static int undo_proto_set_swap(void *udata)
 	if (a->in_data) { /* move from data proto vector to undo struct */
 		int n = pcb_vtpadstack_proto_len(&a->data->ps_protos);
 		if (n < a->pid) {
-			pcb_message(PCB_MSG_ERROR, "undo_proto_set_swap(): not enough proto in data\n save and exit ASAP and report this bug!\n");
+			rnd_message(PCB_MSG_ERROR, "undo_proto_set_swap(): not enough proto in data\n save and exit ASAP and report this bug!\n");
 			return -1;
 		}
 		a->proto = a->data->ps_protos.array[a->pid];
@@ -837,7 +837,7 @@ pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id,
 }
 
 
-pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, pcb_coord_t ox, pcb_coord_t oy)
+pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, rnd_coord_t ox, rnd_coord_t oy)
 {
 	pcb_pstk_proto_t proto;
 
@@ -895,7 +895,7 @@ typedef struct {
 	pcb_cardinal_t proto;
 
 	int hplated;
-	pcb_coord_t hdia;
+	rnd_coord_t hdia;
 	int htop, hbottom;
 } padstack_proto_change_hole_t;
 
@@ -915,7 +915,7 @@ static int undo_change_hole_swap(void *udata)
 	if (u->parent_ID != -1) {
 		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
 		if (subc == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: parent subc #%ld is not found\n", u->parent_ID);
+			rnd_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: parent subc #%ld is not found\n", u->parent_ID);
 			return -1;
 		}
 		data = subc->data;
@@ -925,12 +925,12 @@ static int undo_change_hole_swap(void *udata)
 
 	proto = pcb_pstk_get_proto_(data, u->proto);
 	if (proto == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: proto ID #%ld is not available\n", u->parent_ID);
+		rnd_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: proto ID #%ld is not available\n", u->parent_ID);
 		return -1;
 	}
 
 	swap(proto->hplated, u->hplated, int);
-	swap(proto->hdia,    u->hdia,    pcb_coord_t);
+	swap(proto->hdia,    u->hdia,    rnd_coord_t);
 	swap(proto->htop,    u->htop,    int);
 	swap(proto->hbottom, u->hbottom, int);
 	return 0;
@@ -950,7 +950,7 @@ static const uundo_oper_t undo_pstk_proto_change_hole = {
 	undo_change_hole_print
 };
 
-int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, const pcb_coord_t *hdia, const int *htop, const int *hbottom)
+int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, const rnd_coord_t *hdia, const int *htop, const int *hbottom)
 {
 	padstack_proto_change_hole_t *u;
 	long int parent_ID;
@@ -992,7 +992,7 @@ static int undo_change_name_swap(void *udata)
 	if (u->parent_ID != -1) {
 		pcb_subc_t *subc = pcb_subc_by_id(PCB->Data, u->parent_ID);
 		if (subc == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: parent subc #%ld is not found\n", u->parent_ID);
+			rnd_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: parent subc #%ld is not found\n", u->parent_ID);
 			return -1;
 		}
 		data = subc->data;
@@ -1002,7 +1002,7 @@ static int undo_change_name_swap(void *udata)
 
 	proto = pcb_pstk_get_proto_(data, u->proto);
 	if (proto == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: proto ID #%ld is not available\n", u->parent_ID);
+		rnd_message(PCB_MSG_ERROR, "Can't undo padstack prototype hole change: proto ID #%ld is not available\n", u->parent_ID);
 		return -1;
 	}
 
@@ -1105,7 +1105,7 @@ pcb_pstk_tshape_t *pcb_pstk_make_tshape(pcb_data_t *data, pcb_pstk_proto_t *prot
 	return ts;
 }
 
-static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, pcb_coord_t *cx, pcb_coord_t *cy)
+static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, rnd_coord_t *cx, rnd_coord_t *cy)
 {
 	double x = 0.0, y = 0.0;
 	int n;
@@ -1120,9 +1120,9 @@ static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, pcb_coord_t *cx, p
 	*cy = pcb_round(y);
 }
 
-void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
+void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord_t val)
 {
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 	int n;
 
 	switch(shp->shape) {
@@ -1184,7 +1184,7 @@ TODO("TODO")
 
 static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 {
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 	int n;
 
 	switch(shp->shape) {
@@ -1219,7 +1219,7 @@ static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 	}
 }
 
-void pcb_pstk_shape_clr_grow_(pcb_pstk_shape_t *shp, pcb_bool is_absolute, pcb_coord_t val)
+void pcb_pstk_shape_clr_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord_t val)
 {
 	if (is_absolute)
 		shp->clearance = val;
@@ -1233,7 +1233,7 @@ typedef struct {
 	int proto_id, tridx, shpidx;
 
 	pcb_pstk_shape_t shp;
-	pcb_coord_t clr;
+	rnd_coord_t clr;
 
 	unsigned shp_valid:1;
 	unsigned clr_valid:1;
@@ -1286,7 +1286,7 @@ static undo_shape_geo_t *pstk_shape_geo_undo_init(pcb_pstk_proto_t *proto, int t
 	return g;
 }
 
-void pcb_pstk_shape_clr_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable)
+void pcb_pstk_shape_clr_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_bool is_absolute, rnd_coord_t val, int undoable)
 {
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
 	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
@@ -1296,7 +1296,7 @@ TODO("padstack: undo")
 	pcb_pstk_shape_clr_grow_(shp, is_absolute, val);
 }
 
-void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, pcb_bool is_absolute, pcb_coord_t val, int undoable)
+void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_bool is_absolute, rnd_coord_t val, int undoable)
 {
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
 	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
@@ -1316,7 +1316,7 @@ void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double
 }
 
 
-void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, pcb_bool is_absolute, pcb_coord_t val)
+void pcb_pstk_proto_grow(pcb_pstk_proto_t *proto, rnd_bool is_absolute, rnd_coord_t val)
 {
 	int n, i, undoable = 0;;
 
@@ -1335,7 +1335,7 @@ int pcb_pstk_alloc_shape_idx(pcb_pstk_proto_t *proto, int tr_idx)
 	return d;
 }
 
-void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, pcb_coord_t bloat, pcb_layer_type_t mask, pcb_layer_combining_t comb)
+void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, rnd_coord_t bloat, pcb_layer_type_t mask, pcb_layer_combining_t comb)
 {
 	int n, undoable = 0;
 

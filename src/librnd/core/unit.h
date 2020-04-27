@@ -117,13 +117,13 @@ const pcb_unit_t *get_unit_by_idx(int idx);
 const pcb_unit_t *get_unit_by_suffix(const char *suffix);
 
 /* Convert x to the given unit */
-double pcb_coord_to_unit(const pcb_unit_t *unit, pcb_coord_t x);
+double pcb_coord_to_unit(const pcb_unit_t *unit, rnd_coord_t x);
 
 /* Return how many PCB-internal-Coord-unit a unit translates to */
 double pcb_unit_to_factor(const pcb_unit_t *unit);
 
 /* Convert a given unit to pcb coords; clamp at the end of the ranges */
-pcb_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x);
+rnd_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x);
 
 /* Bring an angle into [0, 360) range */
 pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
@@ -145,7 +145,7 @@ void pcb_units_init(void);
 #define PCB_SWAP_ANGLE(a)        (-(a))
 #define PCB_SWAP_DELTA(d)        (-(d))
 
-PCB_INLINE pcb_coord_t pcb_coord_abs(pcb_coord_t c)
+PCB_INLINE rnd_coord_t pcb_coord_abs(rnd_coord_t c)
 {
 	if (c < 0) return -c;
 	return c;

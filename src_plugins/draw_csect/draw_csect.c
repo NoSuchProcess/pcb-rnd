@@ -88,7 +88,7 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 }
 
 /* Draw a text at x;y sized scale percentage */
-static pcb_text_t *dtext_(pcb_coord_t x, pcb_coord_t y, int scale, int dir, const char *txt, pcb_coord_t th)
+static pcb_text_t *dtext_(rnd_coord_t x, rnd_coord_t y, int scale, int dir, const char *txt, rnd_coord_t th)
 {
 	static pcb_text_t t;
 
@@ -147,7 +147,7 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 }
 
 /* draw a line of a specific thickness */
-static void dline_(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2, float thick)
+static void dline_(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, float thick)
 {
 	pcb_line_t l;
 	memset(&l, 0, sizeof(l));
@@ -253,7 +253,7 @@ static char layer_valid[PCB_MAX_LAYER];
 static char group_valid[PCB_MAX_LAYERGRP];
 static char outline_valid;
 
-static void reg_layer_coords(pcb_layer_id_t lid, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void reg_layer_coords(pcb_layer_id_t lid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	if ((lid < 0) || (lid >= PCB_MAX_LAYER))
 		return;
@@ -264,7 +264,7 @@ static void reg_layer_coords(pcb_layer_id_t lid, pcb_coord_t x1, pcb_coord_t y1,
 	layer_valid[lid] = 1;
 }
 
-static void reg_group_coords(pcb_layergrp_id_t gid, pcb_coord_t y1, pcb_coord_t y2)
+static void reg_group_coords(pcb_layergrp_id_t gid, rnd_coord_t y1, rnd_coord_t y2)
 {
 	if ((gid < 0) || (gid >= PCB_MAX_LAYER))
 		return;
@@ -273,7 +273,7 @@ static void reg_group_coords(pcb_layergrp_id_t gid, pcb_coord_t y1, pcb_coord_t 
 	group_valid[gid] = 1;
 }
 
-static void reg_outline_coords(pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2)
+static void reg_outline_coords(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	outline_crd.X1 = x1;
 	outline_crd.Y1 = y1;
@@ -289,7 +289,7 @@ static void reset_layer_coords(void)
 	outline_valid = 0;
 }
 
-static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
+static pcb_layer_id_t get_layer_coords(rnd_coord_t x, rnd_coord_t y)
 {
 	pcb_layer_id_t n;
 
@@ -302,7 +302,7 @@ static pcb_layer_id_t get_layer_coords(pcb_coord_t x, pcb_coord_t y)
 	return -1;
 }
 
-static pcb_layergrp_id_t get_group_coords(pcb_coord_t y, pcb_coord_t *y1, pcb_coord_t *y2)
+static pcb_layergrp_id_t get_group_coords(rnd_coord_t y, rnd_coord_t *y1, rnd_coord_t *y2)
 {
 	pcb_layergrp_id_t n;
 
@@ -317,7 +317,7 @@ static pcb_layergrp_id_t get_group_coords(pcb_coord_t y, pcb_coord_t *y1, pcb_co
 	return -1;
 }
 
-static pcb_coord_t create_button(pcb_hid_gc_t gc, int x, int y, const char *label, pcb_box_t *box)
+static rnd_coord_t create_button(pcb_hid_gc_t gc, int x, int y, const char *label, pcb_box_t *box)
 {
 	pcb_text_t *t;
 	t = dtext_bg(gc, x, y, 200, 0, label, &COLOR_BG, &COLOR_ANNOT);
@@ -337,7 +337,7 @@ static int is_button(int x, int y, const pcb_box_t *box)
 
 static pcb_hid_gc_t csect_gc;
 
-static pcb_coord_t ox, oy, cx, cy;
+static rnd_coord_t ox, oy, cx, cy;
 static int drag_addgrp, drag_delgrp, drag_addlayer, drag_dellayer, drag_addoutline;
 static pcb_layergrp_id_t gactive = -1;
 static pcb_layergrp_id_t outline_gactive = -1;
@@ -353,9 +353,9 @@ typedef enum {
 	MARK_GRP_TOP
 } mark_grp_loc_t;
 
-static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
+static void mark_grp(rnd_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
 {
-	pcb_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
+	rnd_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
 	pcb_layergrp_id_t g;
 
 	g = get_group_coords(y, &y1, &y2);
@@ -379,7 +379,7 @@ static void mark_grp(pcb_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 		gactive = -1;
 }
 
-static void mark_outline_grp(pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid)
+static void mark_outline_grp(rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
 {
 	if (outline_valid &&
 			(outline_crd.X1 <= x) && (outline_crd.Y1 <= y) &&
@@ -390,7 +390,7 @@ static void mark_outline_grp(pcb_coord_t x, pcb_coord_t y, pcb_layergrp_id_t gid
 		outline_gactive = -1;
 }
 
-static void mark_layer(pcb_coord_t x, pcb_coord_t y)
+static void mark_layer(rnd_coord_t x, rnd_coord_t y)
 {
 	lactive = get_layer_coords(x, y);
 	if (lactive >= 0) {
@@ -402,10 +402,10 @@ static void mark_layer(pcb_coord_t x, pcb_coord_t y)
 	}
 }
 
-static void mark_layer_order(pcb_coord_t x)
+static void mark_layer_order(rnd_coord_t x)
 {
 	pcb_layergrp_t *g;
-	pcb_coord_t tx, ty1, ty2;
+	rnd_coord_t tx, ty1, ty2;
 	lactive_idx = -1;
 
 	if ((gactive < 0) || (PCB->LayerGroups.grp[gactive].len < 1))
@@ -630,12 +630,12 @@ static int check_layer_del(pcb_layer_id_t lid)
 	grp = pcb_get_layergrp(PCB, pcb_layer_get_group(PCB, lid));
 
 	if (grp == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Invalid source group.\n");
+		rnd_message(PCB_MSG_ERROR, "Invalid source group.\n");
 		return -1;
 	}
 
 	if ((tflg & PCB_LYT_SILK) && (grp->len == 1)) {
-		pcb_message(PCB_MSG_ERROR, "Can not remove the last layer of this group because this group must have at least one layer.\n");
+		rnd_message(PCB_MSG_ERROR, "Can not remove the last layer of this group because this group must have at least one layer.\n");
 		return -1;
 	}
 
@@ -676,9 +676,9 @@ static void do_move_grp()
 }
 
 
-static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t y)
+static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
-	pcb_bool res = 0;
+	rnd_bool res = 0;
 	pcb_layer_id_t lid;
 
 	switch(kind) {
@@ -722,7 +722,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 			}
 			
 			if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
-				pcb_coord_t tmp;
+				rnd_coord_t tmp;
 				pcb_layergrp_id_t gid;
 				gid = get_group_coords(y, &tmp, &tmp);
 				if ((gid >= 0) && (pcb_layergrp_flags(PCB, gid) & PCB_LYT_COPPER) && (pcb_layergrp_flags(PCB, gid) & PCB_LYT_INTERN)) {
@@ -840,7 +840,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 					else if (check_layer_del(drag_lid) == 0) {
 						g = &PCB->LayerGroups.grp[gactive];
 						pcb_layer_move_to_group(PCB, drag_lid, gactive);
-						pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->name, gactive);
+						rnd_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->name, gactive);
 						move_layer_to_its_place:;
 						if (lactive_idx < g->len-1) {
 							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(pcb_layer_id_t));
@@ -852,10 +852,10 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 				else if (outline_gactive >= 0 && PCB->LayerGroups.grp[outline_gactive].len == 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 					pcb_layer_move_to_group(PCB, drag_lid, outline_gactive);
-					pcb_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->name, outline_gactive);
+					rnd_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->name, outline_gactive);
 				}
 				else
-					pcb_message(PCB_MSG_ERROR, "Can not move layer into that layer group\n");
+					rnd_message(PCB_MSG_ERROR, "Can not move layer into that layer group\n");
 				res = 1;
 				drag_lid = -1;
 				gactive = -1;
@@ -879,7 +879,7 @@ static pcb_bool mouse_csect(pcb_hid_mouse_ev_t kind, pcb_coord_t x, pcb_coord_t 
 				rnd_actionva(&PCB->hidlib, "Popup", "layer", NULL);
 			}
 			else if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
-				pcb_coord_t tmp;
+				rnd_coord_t tmp;
 				pcb_actd_EditGroup_gid = get_group_coords(y, &tmp, &tmp);
 				if (pcb_actd_EditGroup_gid >= 0)
 					rnd_actionva(&PCB->hidlib, "Popup", "group", NULL);

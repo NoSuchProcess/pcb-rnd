@@ -90,8 +90,8 @@ pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t layer, pcb_layergrp_id_t group);
 
 /* Returns pcb_true if all layers in a group are empty */
-pcb_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t lgrp);
-pcb_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, pcb_layergrp_id_t num);
+rnd_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t lgrp);
+rnd_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, pcb_layergrp_id_t num);
 
 /* call the gui to set a layer group */
 int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty, pcb_xform_t **xform);
@@ -114,14 +114,14 @@ int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layergrp_
 
 /* Remove a layer group; if del_layers is zero, layers are kept but detached
    (.grp = -1), else layers are deleted too */
-int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, pcb_bool undoable);
+int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, rnd_bool undoable);
 
 /* Remove a layer from a group */
 int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id_t lid);
 
 /* Duplicate a layer group (with no layers); if auto_substrate is set, insert
    a substrate layer automatically if needed */
-pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate, pcb_bool undoable);
+pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate, rnd_bool undoable);
 
 /* Move gfrom to to_before and shift the stack as necessary. Return -1 on range error */
 int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t gfrom, pcb_layergrp_id_t to_before);
@@ -169,18 +169,18 @@ void pcb_layergrp_notify_chg(pcb_board_t *pcb);
 void pcb_layergrp_notify(pcb_board_t *pcb);
 
 /* Rename an existing layer by idx */
-int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname, pcb_bool undoable);
+int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname, rnd_bool undoable);
 
 /* changes the name of a layer; memory has to be already allocated */
-int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, pcb_bool undoable);
+int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, rnd_bool undoable);
 
 /* Change the purpose field and recalc purpi (not undoable) */
-int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable); /* no strdup, no event */
-int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, pcb_bool undoable); /* no strdup, send layer change event */
-int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, pcb_bool undoable); /* strdup, send event */
+int pcb_layergrp_set_purpose__(pcb_layergrp_t *lg, char *purpose, rnd_bool undoable); /* no strdup, no event */
+int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, rnd_bool undoable); /* no strdup, send layer change event */
+int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, rnd_bool undoable); /* strdup, send event */
 
 /* Change layer group flags (layer-type) */
-int pcb_layergrp_set_ltype(pcb_layergrp_t *g, pcb_layer_type_t lyt, pcb_bool undoable);
+int pcb_layergrp_set_ltype(pcb_layergrp_t *g, pcb_layer_type_t lyt, rnd_bool undoable);
 
 /* Slow linear search for a layer group by name */
 pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);
@@ -307,6 +307,6 @@ void pcb_layergrp_create_by_map(pcb_board_t *pcb, const pcb_dflgmap_t *map);
 void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_dflgmap_t *src, const char *grname, const char *lyname);
 
 /* Return true if the board has an outline layer with at least one object on it */
-pcb_bool pcb_has_explicit_outline(pcb_board_t *pcb);
+rnd_bool pcb_has_explicit_outline(pcb_board_t *pcb);
 
 #endif

@@ -5,11 +5,11 @@
 #include <genvector/vtp0.h>
 
 /* create a new adstack that contains only a hole, but no shapes */
-pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated);
+pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_bool plated);
 
 /* Convert an array of shapes, terminated by a shape with layer_mask=0, into
    a padstack. */
-pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, pcb_coord_t x, pcb_coord_t y, pcb_coord_t drill_dia, pcb_bool plated, pcb_coord_t glob_clearance, pcb_pstk_shape_t *shape);
+pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_bool plated, rnd_coord_t glob_clearance, pcb_pstk_shape_t *shape);
 
 /* Convert a vector of (pcb_any_obj_t *) into zero or more padstacks. Remove
    objects that are converted  from both data and objs. New padstacks are
@@ -23,16 +23,16 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet); /*
 int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet);
 
 /*** shape generators ***/
-void pcb_shape_rect(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height);
-void pcb_shape_oval(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height);
+void pcb_shape_rect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height);
+void pcb_shape_oval(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height);
 
 /* trapezoid: deform the rectangle so that upper horizontal edge is smaller
    by dx and lower horizontal edge is larger by dx; same happens to the vertical
    edges and dy. */
-void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, pcb_coord_t width, pcb_coord_t height, pcb_coord_t dx, pcb_coord_t dy);
+void pcb_shape_rect_trdelta(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height, rnd_coord_t dx, rnd_coord_t dy);
 
 /* Create a regular octagon shape */
-void pcb_shape_octagon(pcb_pstk_shape_t *dst, pcb_coord_t radiusx, pcb_coord_t radiusy);
+void pcb_shape_octagon(pcb_pstk_shape_t *dst, rnd_coord_t radiusx, rnd_coord_t radiusy);
 
 
 #endif

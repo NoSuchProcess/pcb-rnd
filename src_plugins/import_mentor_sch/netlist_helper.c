@@ -121,13 +121,13 @@ static int part_map_parse(nethlp_ctx_t *nhctx, int argc, char *argv[], const cha
 	int prio;
 
 	if (argc != 5) {
-		pcb_message(PCB_MSG_ERROR, "Loading part map: wrong number of fields %d in %s:%d - expected 5 - ignoring this rule\n", argc, fn, lineno);
+		rnd_message(PCB_MSG_ERROR, "Loading part map: wrong number of fields %d in %s:%d - expected 5 - ignoring this rule\n", argc, fn, lineno);
 		return -1;
 	}
 	if (*argv[0] != '*') {
 		prio = strtol(argv[0], &end, 10);
 		if (*end != '\0') {
-			pcb_message(PCB_MSG_ERROR, "Loading part map: invaid priority '%s' in %s:%d - ignoring this rule\n", argv[0], fn, lineno);
+			rnd_message(PCB_MSG_ERROR, "Loading part map: invaid priority '%s' in %s:%d - ignoring this rule\n", argv[0], fn, lineno);
 			return -1;
 		}
 	}
@@ -135,13 +135,13 @@ static int part_map_parse(nethlp_ctx_t *nhctx, int argc, char *argv[], const cha
 		prio = nethlp_prio_always;
 	kr = re_se_comp(argv[1]);
 	if (kr == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Loading part map: can't compile attribute name regex in %s:%d - ignoring this rule\n", fn, lineno);
+		rnd_message(PCB_MSG_ERROR, "Loading part map: can't compile attribute name regex in %s:%d - ignoring this rule\n", fn, lineno);
 		return -1;
 	}
 	vr = re_se_comp(argv[2]);
 	if (vr == NULL) {
 		re_se_free(kr);
-		pcb_message(PCB_MSG_ERROR, "Loading part map: can't compile attribute value regex in %s:%d - ignoring this rule\n", fn, lineno);
+		rnd_message(PCB_MSG_ERROR, "Loading part map: can't compile attribute value regex in %s:%d - ignoring this rule\n", fn, lineno);
 		return -1;
 	}
 
@@ -260,7 +260,7 @@ void nethlp_elem_done(rnd_hidlib_t *hl, nethlp_elem_ctx_t *ectx)
 /*		printf("Elem '%s' -> %s:%s:%s\n", ectx->id, refdes, footprint, value);*/
 	}
 	else
-		pcb_message(PCB_MSG_ERROR, "Ignoring part %s: no refdes\n", ectx->id);
+		rnd_message(PCB_MSG_ERROR, "Ignoring part %s: no refdes\n", ectx->id);
 
 	/* free */
 	for (e = htsp_first(&ectx->attr); e; e = htsp_next(&ectx->attr, e)) {
@@ -293,7 +293,7 @@ void nethlp_net_add_term(rnd_hidlib_t *hl, nethlp_net_ctx_t *nctx, const char *p
 	char *refdes = htsp_get(&nctx->nhctx->id2refdes, part);
 	char term[256];
 	if (refdes == NULL) {
-		pcb_message(PCB_MSG_ERROR, "nethelper: can't resolve refdes of part %s\n", part);
+		rnd_message(PCB_MSG_ERROR, "nethelper: can't resolve refdes of part %s\n", part);
 	}
 	pcb_snprintf(term, sizeof(term), "%s-%s", refdes, pin);
 	rnd_actionva(hl, "Netlist", "Add",  nctx->netname, term, NULL);

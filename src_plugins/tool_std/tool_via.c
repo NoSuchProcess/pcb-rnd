@@ -56,12 +56,12 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if (!pcb->pstk_on) {
-		pcb_message(PCB_MSG_WARNING, "You must turn via visibility on before\nyou can place vias\n");
+		rnd_message(PCB_MSG_WARNING, "You must turn via visibility on before\nyou can place vias\n");
 		return;
 	}
 
 	if (conf_core.design.via_drilling_hole >= conf_core.design.via_thickness) {
-		pcb_message(PCB_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
+		rnd_message(PCB_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
 		return;
 	}
 
@@ -85,9 +85,9 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 	}
 }
 
-static void xor_draw_fake_via(pcb_coord_t x, pcb_coord_t y, pcb_coord_t dia, pcb_coord_t clearance)
+static void xor_draw_fake_via(rnd_coord_t x, rnd_coord_t y, rnd_coord_t dia, rnd_coord_t clearance)
 {
-	pcb_coord_t r = (dia/2)+clearance;
+	rnd_coord_t r = (dia/2)+clearance;
 	pcb_render->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
 }
 

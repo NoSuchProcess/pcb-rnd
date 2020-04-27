@@ -181,7 +181,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 	default:											/* diagonal case */
 		{
 			int kx, ky, minmax, dq, ckx, cky;
-			pcb_coord_t mm[2] = { PCB_MAX_COORD, -PCB_MAX_COORD };
+			rnd_coord_t mm[2] = { PCB_MAX_COORD, -PCB_MAX_COORD };
 			pcb_vector_t mmp[2];
 			pcb_vnode_t *v;
 
@@ -216,7 +216,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 				minmax = 1;
 				break;
 			default:
-				pcb_message(PCB_MSG_ERROR, "jostle: aiee, what side?");
+				rnd_message(PCB_MSG_ERROR, "jostle: aiee, what side?");
 				return;
 			}
 			v = a->contours->head;
@@ -470,7 +470,7 @@ static const char pcb_acts_jostle[] = "Jostle(diameter)";
 static const char pcb_acth_jostle[] = "Make room by moving wires away.";
 static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_coord_t x, y;
+	rnd_coord_t x, y;
 	pcb_polyarea_t *expand;
 	float value = conf_core.design.via_thickness + (conf_core.design.bloat + 1) * 2 + 50;
 	struct info info;

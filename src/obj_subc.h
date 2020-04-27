@@ -76,30 +76,30 @@ void pcb_subc_bbox(pcb_subc_t *sc);
 
 /* convert buffer contents into a subcircuit, in-place; returns 0 on success */
 int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer);
-pcb_bool pcb_subc_smash_buffer(pcb_buffer_t *buff);
+rnd_bool pcb_subc_smash_buffer(pcb_buffer_t *buff);
 
-void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, pcb_coord_t y_offs, pcb_bool smirror, pcb_bool undoable);
+void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, rnd_coord_t y_offs, rnd_bool smirror, rnd_bool undoable);
 
 /* Scale coords/pos of a subc by sx,sy with thickness factor sth;
    if recurse is non-zero, descend in subc-in-subc */
 void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, double sth, int recurse);
 
 /* changes the side of the board a subc is on; returns pcb_true if done */
-pcb_bool pcb_subc_change_side(pcb_subc_t *subc, pcb_coord_t yoff);
+rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff);
 
-void pcb_subc_rotate(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, double cosa, double sina, double angle);
-void pcb_subc_rotate90(pcb_subc_t *subc, pcb_coord_t cx, pcb_coord_t cy, int steps);
+void pcb_subc_rotate(pcb_subc_t *subc, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina, double angle);
+void pcb_subc_rotate90(pcb_subc_t *subc, rnd_coord_t cx, rnd_coord_t cy, int steps);
 
 /* High level move (op wrapper; no undo) */
-void pcb_subc_move(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool more_to_come);
+void pcb_subc_move(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool more_to_come);
 
 /* changes the side of all selected and visible subcs; returns pcb_true if anything has changed */
-pcb_bool pcb_selected_subc_change_side(void);
+rnd_bool pcb_selected_subc_change_side(void);
 
 /* Draw a subcircuit for a preview (silk, copper and outline only) */
 void pcb_subc_draw_preview(const pcb_subc_t *sc, const pcb_box_t *drawn_area);
 
-void pcb_xordraw_subc(pcb_subc_t *sc, pcb_coord_t DX, pcb_coord_t DY, int use_curr_side);
+void pcb_xordraw_subc(pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY, int use_curr_side);
 
 /* Redo the layer binding after the layer binding recipe changed in sc */
 int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc);
@@ -116,7 +116,7 @@ long pcb_subc_unbind_all(pcb_board_t *pcb, pcb_layer_t *brdly, int undoable);
 /* Look up a layer by lyt and comb (and name, if req_name_match is true);
    if not found and alloc is true, allocate a new layer with the given name.
    Return NULL on error. */
-pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, pcb_bool req_name_match);
+pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, rnd_bool req_name_match);
 
 #include <librnd/poly/rtree.h>
 pcb_r_dir_t pcb_draw_subc_mark(const pcb_box_t *b, void *cl); /* low level version, does not do extobj */
@@ -126,7 +126,7 @@ void DrawSubc(pcb_subc_t *sc);
 void EraseSubc(pcb_subc_t *sc);
 
 /* calculate geometrical properties using the aux layer; return 0 on success */
-int pcb_subc_get_origin(pcb_subc_t *sc, pcb_coord_t *x, pcb_coord_t *y);
+int pcb_subc_get_origin(pcb_subc_t *sc, rnd_coord_t *x, rnd_coord_t *y);
 int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot);
 int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom);
 
@@ -136,8 +136,8 @@ int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom);
 int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg);
 
 /* Move the origin, without moving the subcircuit itself */
-int pcb_subc_move_origin(pcb_subc_t *sc, pcb_coord_t dx, pcb_coord_t dy, pcb_bool and_undo);
-int pcb_subc_move_origin_to(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, pcb_bool and_undo);
+int pcb_subc_move_origin(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool and_undo);
+int pcb_subc_move_origin_to(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, rnd_bool and_undo);
 
 
 /* Search for the named subc; name is relative path in hierarchy. Returns
@@ -153,10 +153,10 @@ void *pcb_subc_remove(pcb_subc_t *sc);
 /* In board mode return brd_layer; in footprint edit mode, return the subcircuit
    layer that matches brd_layer. If not found, either allocate it within
    the subc (if alloc is true) or return the brd_layer. */
-pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer, pcb_bool alloc);
+pcb_layer_t *pcb_loose_subc_layer(pcb_board_t *pcb, pcb_layer_t *brd_layer, rnd_bool alloc);
 
 /* Returns whether there's no object in the subc */
-pcb_bool pcb_subc_is_empty(pcb_subc_t *subc);
+rnd_bool pcb_subc_is_empty(pcb_subc_t *subc);
 
 /* Return the footprint name; if local_name is not NULL, that attribute
    is queried first; if that doesn't exist, "visible_footprint" and then
@@ -174,14 +174,14 @@ void pcb_subc_part_changed_inhibit_dec(pcb_subc_t *sc);
 /*** subc creation helpers ***/
 
 /* Create the aux layer for a subc, set origin to ox;oy and rotation to rot */
-void pcb_subc_create_aux(pcb_subc_t *sc, pcb_coord_t ox, pcb_coord_t oy, double rot, pcb_bool bottom);
+void pcb_subc_create_aux(pcb_subc_t *sc, rnd_coord_t ox, rnd_coord_t oy, double rot, rnd_bool bottom);
 
 /* Create a new point on the aux layer using a given role string in attribute */
-void pcb_subc_create_aux_point(pcb_subc_t *sc, pcb_coord_t x, pcb_coord_t y, const char *role);
+void pcb_subc_create_aux_point(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, const char *role);
 
 /* Look up an aux point and return pcb_true if found; when found, load x and y
    with the coords of the point. */
-pcb_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, pcb_coord_t *x, pcb_coord_t *y);
+rnd_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, rnd_coord_t *x, rnd_coord_t *y);
 
 /* Find and save the aux layer in the cache, of it exists */
 void pcb_subc_cache_find_aux(pcb_subc_t *sc);
@@ -193,13 +193,13 @@ pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_t
 /* Copy non-layer, non-geometrical metadata (e.g. attributes) */
 pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src);
 
-pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, pcb_coord_t dx, pcb_coord_t dy, pcb_bool keep_ids);
+pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids);
 
 /* Replace dst with a copy of src in place (preserving location and orientation
    and attributes. If add_undo is true, add the old subc del and the new subc
    creation to the undo list. If dub is true, do not try to match rotation or
    pick up coords, just use crosshair and current loc. */
-pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, pcb_bool add_undo, pcb_bool dumb);
+pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, rnd_bool add_undo, rnd_bool dumb);
 
 /*** loops ***/
 

@@ -41,10 +41,10 @@
 pcb_route_style_t pcb_custom_route_style;
 
 
-static pcb_coord_t pcb_get_num(char **s, const char *default_unit)
+static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
 {
 	/* Read value */
-	pcb_coord_t ret_val = pcb_get_value_ex(*s, NULL, NULL, NULL, default_unit, NULL);
+	rnd_coord_t ret_val = pcb_get_value_ex(*s, NULL, NULL, NULL, default_unit, NULL);
 	/* Advance pointer */
 	while (isalnum(**s) || **s == '.')
 		(*s)++;
@@ -89,7 +89,7 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 	if (len > sizeof(routeStyle->name)-1) {
 		memcpy(routeStyle->name, Name, sizeof(routeStyle->name)-1);
 		routeStyle->name[sizeof(routeStyle->name)-1] = '\0';
-		pcb_message(PCB_MSG_WARNING, "Route style name '%s' too long, truncated to '%s'\n", Name, routeStyle->name);
+		rnd_message(PCB_MSG_WARNING, "Route style name '%s' too long, truncated to '%s'\n", Name, routeStyle->name);
 	}
 	else
 		strcpy(routeStyle->name, Name);
@@ -181,7 +181,7 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
 
 #define cmp(a,b) (((a) != -1) && (coord_abs((a)-(b)) > 32))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) != 0))
-int pcb_route_style_match(pcb_route_style_t *rst, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name)
 {
 	if (cmp(Thick, rst->Thick)) return 0;
 	if (cmp(Diameter, rst->Diameter)) return 0;
@@ -193,7 +193,7 @@ int pcb_route_style_match(pcb_route_style_t *rst, pcb_coord_t Thick, pcb_coord_t
 #undef cmp
 #undef cmps
 
-int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_t Diameter, pcb_coord_t Hole, pcb_coord_t Clearance, char *Name)
+int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name)
 {
 	int n;
 	for (n = 0; n < vtroutestyle_len(styles); n++)
@@ -203,7 +203,7 @@ int pcb_route_style_lookup(vtroutestyle_t *styles, pcb_coord_t Thick, pcb_coord_
 }
 
 
-int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
+int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id)
 {
 	switch (funcid) {
 	case F_Object:
@@ -213,7 +213,7 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 		case PCB_OBJ_ARC:
 			return pcb_get_style_size(F_SelectedArcs, out, 0, size_id);
 		}
-		pcb_message(PCB_MSG_ERROR, "Sorry, can't fetch the style of that object type (%x)\n", type);
+		rnd_message(PCB_MSG_ERROR, "Sorry, can't fetch the style of that object type (%x)\n", type);
 		return -1;
 	case F_SelectedPads:
 		if (size_id != 2)						/* don't mess with pad size */
@@ -239,7 +239,7 @@ int pcb_get_style_size(int funcid, pcb_coord_t * out, int type, int size_id)
 		return 0;
 	case F_SelectedTexts:
 	case F_SelectedNames:
-		pcb_message(PCB_MSG_ERROR, "Sorry, can't change style of every selected object\n");
+		rnd_message(PCB_MSG_ERROR, "Sorry, can't change style of every selected object\n");
 		return -1;
 	}
 	return 0;

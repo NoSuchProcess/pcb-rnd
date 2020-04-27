@@ -292,7 +292,7 @@ PCB_INLINE void pcb_dad_tree_jumpto(pcb_hid_attribute_t *attr, pcb_hid_row_t *ro
 		tree->hid_jumpto_cb(tree->attrib, tree->hid_wdata, row);
 }
 
-PCB_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, pcb_bool expanded, pcb_bool recursive)
+PCB_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
 {
 	if (recursive) {
 		pcb_hid_row_t *r;
@@ -303,7 +303,7 @@ PCB_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, 
 		tree->hid_expcoll_cb(tree->attrib, tree->hid_wdata, row, expanded);
 }
 
-PCB_INLINE void pcb_dad_tree_expcoll(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, pcb_bool expanded, pcb_bool recursive)
+PCB_INLINE void pcb_dad_tree_expcoll(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 

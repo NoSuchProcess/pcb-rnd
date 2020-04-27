@@ -44,7 +44,7 @@
 #include "draw.h"
 #include <librnd/core/compat_misc.h>
 
-static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp);
+static void get_ptr(pcb_gtk_preview_t *preview, rnd_coord_t *cx, rnd_coord_t *cy, gint *xp, gint *yp);
 
 static void perview_update_offs(pcb_gtk_preview_t *preview)
 {
@@ -54,8 +54,8 @@ static void perview_update_offs(pcb_gtk_preview_t *preview)
 	yf = (double)preview->view.height / preview->view.canvas_height;
 	preview->view.coord_per_px = (xf > yf ? xf : yf);
 
-	preview->xoffs = (pcb_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
-	preview->yoffs = (pcb_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
+	preview->xoffs = (rnd_coord_t)(preview->view.width / 2 - preview->view.canvas_width * preview->view.coord_per_px / 2);
+	preview->yoffs = (rnd_coord_t)(preview->view.height / 2 - preview->view.canvas_height * preview->view.coord_per_px / 2);
 }
 
 static void pcb_gtk_preview_update_x0y0(pcb_gtk_preview_t *preview)
@@ -89,8 +89,8 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_vi
 }
 
 /* modify the zoom level to coord_per_px (clamped), keeping window cursor
-   position wx;wy at perview pcb_coord_t position cx;cy */
-void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double coord_per_px)
+   position wx;wy at perview rnd_coord_t position cx;cy */
+void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, rnd_coord_t cx, rnd_coord_t cy, int wx, int wy, double coord_per_px)
 {
 	int orig;
 
@@ -118,7 +118,7 @@ void pcb_gtk_preview_zoom_cursor(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb
 	preview->view.inhibit_pan_common = orig;
 }
 
-void pcb_gtk_preview_zoom_cursor_rel(pcb_gtk_preview_t *preview, pcb_coord_t cx, pcb_coord_t cy, int wx, int wy, double factor)
+void pcb_gtk_preview_zoom_cursor_rel(pcb_gtk_preview_t *preview, rnd_coord_t cx, rnd_coord_t cy, int wx, int wy, double factor)
 {
 	pcb_gtk_preview_zoom_cursor(preview, cx, cy, wx, wy, preview->view.coord_per_px * factor);
 }
@@ -314,7 +314,7 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure *ev, 
 static gboolean button_press_(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 	gint wx, wy;
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 	void *draw_data = NULL;
@@ -393,7 +393,7 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	gint wx, wy;
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 	void *draw_data = NULL;
 	int save_fx, save_fy;
 
@@ -434,7 +434,7 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	int save_fx, save_fy;
-	pcb_coord_t cx, cy;
+	rnd_coord_t cx, cy;
 	gint wx, wy;
 	void *draw_data = NULL;
 
@@ -570,7 +570,7 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *he
 }
 
 /* Has to be at the end since it undef's SIDE_X */
-static void get_ptr(pcb_gtk_preview_t *preview, pcb_coord_t *cx, pcb_coord_t *cy, gint *xp, gint *yp)
+static void get_ptr(pcb_gtk_preview_t *preview, rnd_coord_t *cx, rnd_coord_t *cy, gint *xp, gint *yp)
 {
 	gdkc_window_get_pointer(GTK_WIDGET(preview), xp, yp, NULL);
 #undef SIDE_X

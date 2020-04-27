@@ -51,7 +51,7 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps);
 
 /* Draw a padstack for perview; if layers is NULL, draw all layers, else
    draw the layers where it is not zero (layers are defined in pcb_proto_layers[]) */
-void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, pcb_bool mark, pcb_bool label, const pcb_box_t *drawn_area);
+void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, rnd_bool mark, rnd_bool label, const pcb_box_t *drawn_area);
 
 
 #endif

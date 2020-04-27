@@ -100,7 +100,7 @@ static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 	ctx->command_entered = command; /* Caller will free it */
 }
 
-static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
+static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
 
@@ -118,7 +118,7 @@ static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 	return FALSE;
 }
 
-static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
+static rnd_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
 {
 	if (ctx->command_entry_status_line_active)
 		rnd_cli_edit(ghidgui->hidlib);
@@ -231,7 +231,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 }
 
 
-void ghid_handle_user_command(rnd_hidlib_t *hl, pcb_gtk_command_t *ctx, pcb_bool raise)
+void ghid_handle_user_command(rnd_hidlib_t *hl, pcb_gtk_command_t *ctx, rnd_bool raise)
 {
 	char *command;
 

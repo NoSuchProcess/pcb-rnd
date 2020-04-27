@@ -5,7 +5,7 @@ typedef struct {								/* information about a change command */
 } ChangeNameType, *ChangeNameTypePtr;
 
 typedef struct {								/* information about a move command */
-	pcb_coord_t DX, DY;									/* movement vector */
+	rnd_coord_t DX, DY;									/* movement vector */
 } MoveType, *MoveTypePtr;
 
 typedef struct {
@@ -14,14 +14,14 @@ typedef struct {
 } Removed;
 
 typedef struct {								/* information about removed polygon points */
-	pcb_coord_t X, Y;										/* data */
+	rnd_coord_t X, Y;										/* data */
 	int ID;
 	pcb_cardinal_t Index;								/* index in a polygons array of points */
-	pcb_bool last_in_contour;					/* Whether the point was the last in its contour */
+	rnd_bool last_in_contour;					/* Whether the point was the last in its contour */
 } RemovedPointType, *RemovedPointTypePtr;
 
 typedef struct {								/* information about rotation */
-	pcb_coord_t CenterX, CenterY;				/* center of rotation */
+	rnd_coord_t CenterX, CenterY;				/* center of rotation */
 	pcb_cardinal_t Steps;								/* number of steps */
 } RotateType, *RotateTypePtr;
 
@@ -30,7 +30,7 @@ typedef struct {								/* information about moves between layers */
 } MoveToLayer;
 
 typedef struct {								/* information about poly clear/restore */
-	pcb_bool Clear;										/* pcb_true was clear, pcb_false was restore */
+	rnd_bool Clear;										/* pcb_true was clear, pcb_false was restore */
 	pcb_layer_t *Layer;
 } ClearPolyType, *ClearPolyTypePtr;
 
@@ -56,7 +56,7 @@ typedef struct {								/* holds information about an operation */
 		RotateType Rotate;
 		MoveToLayer MoveToLayer;
 		pcb_flag_t Flags;
-		pcb_coord_t Size;
+		rnd_coord_t Size;
 		ClearPolyType ClearPoly;
 		NetlistChangeType NetlistChange;
 		long int CopyID;

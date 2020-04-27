@@ -32,20 +32,20 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl);
 /* Add lines on dst tracing pline from the inner side (no line will extend
    outside of the original pline, except when the original polygon has a hair
    narrower than thickness). Returns number of lines created */
-pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
+pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
 
 /* Returns whether the clipped polygon is a simple rectangle (single island,
    no-hole rectangle). */
-pcb_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p);
+rnd_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p);
 
 /* Returns whether all edges of a pline are axis aligned */
-pcb_bool pcb_pline_is_aligned(const pcb_pline_t *src);
+rnd_bool pcb_pline_is_aligned(const pcb_pline_t *src);
 
 /*** Generate an rtree of all edges if a polygon */
 
 typedef struct {
 	pcb_box_t bbox;
-	pcb_coord_t x1, y1, x2, y2;
+	rnd_coord_t x1, y1, x2, y2;
 } pcb_cpoly_edge_t;
 
 typedef struct {
@@ -55,7 +55,7 @@ typedef struct {
 	pcb_cpoly_edge_t edges[1];
 } pcb_cpoly_edgetree_t;
 
-pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, pcb_coord_t offs);
+pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord_t offs);
 void pcb_cpoly_edgetree_destroy(pcb_cpoly_edgetree_t *etr);
 
 
@@ -69,8 +69,8 @@ typedef enum {
 
 /* hatch a polygon with horizontal and/or vertical lines drawn on dst,
    one line per period */
-void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t period, pcb_coord_t thickness, pcb_coord_t clearance, pcb_flag_t flags);
+void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
 
 /* Generic hor-ver hatch with a callback */
-void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, pcb_coord_t offs, pcb_coord_t period, void *ctx, void (*cb)(void *ctx, pcb_coord_t x1, pcb_coord_t y1, pcb_coord_t x2, pcb_coord_t y2));
+void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t offs, rnd_coord_t period, void *ctx, void (*cb)(void *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2));
 

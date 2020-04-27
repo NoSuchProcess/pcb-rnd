@@ -90,7 +90,7 @@ static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
  * removes all selected and visible objects
  * returns pcb_true if any objects have been removed
  */
-pcb_bool pcb_remove_selected(pcb_bool locked_too)
+rnd_bool pcb_remove_selected(rnd_bool locked_too)
 {
 	pcb_opctx_t ctx;
 

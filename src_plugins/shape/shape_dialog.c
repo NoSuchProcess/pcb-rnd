@@ -101,10 +101,10 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
-	pcb_coord_t dia = shp->dlg[shp->dia].val.crd;
+	rnd_coord_t dia = shp->dlg[shp->dia].val.crd;
 
 	if ((dia < 1) || (dia > (PCB->hidlib.size_x + PCB->hidlib.size_y)/4)) {
-		pcb_message(PCB_MSG_ERROR, "Invalid diameter.\n");
+		rnd_message(PCB_MSG_ERROR, "Invalid diameter.\n");
 		return;
 	}
 
@@ -137,11 +137,11 @@ static void shp_chg_tab(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	shape_layer_chg(NULL, NULL, 0, NULL);
 }
 
-void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, pcb_bool modal)
+void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rnd_bool modal)
 {
 	ctx_t *shp = calloc(sizeof(ctx_t), 1);
-	pcb_coord_t mm2 = PCB_MM_TO_COORD(2);
-	pcb_coord_t maxr = PCB_MM_TO_COORD(1000);
+	rnd_coord_t mm2 = PCB_MM_TO_COORD(2);
+	rnd_coord_t maxr = PCB_MM_TO_COORD(1000);
 	const char *tabs[] = {"Regular polygon", "Round rectangle", "Filled circle", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 

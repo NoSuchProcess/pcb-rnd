@@ -101,7 +101,7 @@ static void sketch_update_cdt_layer(sketch_t *sk)
 static void sketch_update_erbs_layer(sketch_t *sk)
 {
 	pcb_layer_t *l = sk->ui_layer_erbs;
-	pcb_coord_t px, py, qx, qy;
+	rnd_coord_t px, py, qx, qy;
 	int i;
 
 	list_map0(&l->Line, pcb_line_t, pcb_line_free);
@@ -295,7 +295,7 @@ repeat_current_point:
 	}
 }
 
-static pcb_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
+static rnd_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
 {
 	/* TODO */
 	return pcb_true;
@@ -816,7 +816,7 @@ static void attached_path_next_line()
 	tool_skline_adjust_attached_objects(&PCB->hidlib);
 }
 
-static pcb_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term)
+static rnd_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term)
 {
 	pcb_attached_line_t *start_l;
 	pcb_net_term_t *term;
@@ -854,7 +854,7 @@ static void attached_path_uninit()
 	wire_uninit(&attached_path.corridor);
 }
 
-static pcb_bool line_intersects_edge(pcb_attached_line_t *line, edge_t *edge)
+static rnd_bool line_intersects_edge(pcb_attached_line_t *line, edge_t *edge)
 {
 	point_t p, q;
 	p.pos.x = line->Point1.X;
@@ -864,7 +864,7 @@ static pcb_bool line_intersects_edge(pcb_attached_line_t *line, edge_t *edge)
 	return LINES_INTERSECT(&p, &q, edge->endp[0], edge->endp[1]);
 }
 
-static pcb_bool attached_path_next_point(point_t *end_p)
+static rnd_bool attached_path_next_point(point_t *end_p)
 {
 	int last = vtp0_len(&attached_path.lines) - 1;
 	pcb_attached_line_t *attached_line = attached_path.lines.array[last];
@@ -967,9 +967,9 @@ next_triangle:
 #undef RETURN
 }
 
-static pcb_bool attached_path_finish(pcb_any_obj_t *end_term)
+static rnd_bool attached_path_finish(pcb_any_obj_t *end_term)
 {
-	pcb_bool net_valid = pcb_false;
+	rnd_bool net_valid = pcb_false;
 
 	if (check_net) {
 		if(end_term != attached_path.start_term) {
@@ -1037,7 +1037,7 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			}
 			else
-				pcb_message(PCB_MSG_WARNING, "Sketch lines can be only drawn from a terminal\n");
+				rnd_message(PCB_MSG_WARNING, "Sketch lines can be only drawn from a terminal\n");
 		}
 		break;
 
@@ -1054,14 +1054,14 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 				} else {
-					pcb_message(PCB_MSG_WARNING, "Cannot finish placing wire at this terminal\n");
-					pcb_message(PCB_MSG_WARNING, "(the terminal does not belong to the routed net or is the starting terminal)\n");
+					rnd_message(PCB_MSG_WARNING, "Cannot finish placing wire at this terminal\n");
+					rnd_message(PCB_MSG_WARNING, "(the terminal does not belong to the routed net or is the starting terminal)\n");
 				}
 				break;
 			}
 		}
 		if (attached_path_next_point(NULL) == pcb_false)
-			pcb_message(PCB_MSG_WARNING, "Cannot route the wire this way\n");
+			rnd_message(PCB_MSG_WARNING, "Cannot route the wire this way\n");
 
 		break;
 	}
@@ -1088,7 +1088,7 @@ static void tool_skline_draw_attached(rnd_hidlib_t *hl)
 	}
 }
 
-pcb_bool tool_skline_undo_act(rnd_hidlib_t *hl)
+rnd_bool tool_skline_undo_act(rnd_hidlib_t *hl)
 {
 	/* TODO */
 	return pcb_false;

@@ -87,10 +87,10 @@ static int keyword(const char *s)
 
 /* this macro produces a function in X or Y that switches on 'point' */
 #define COORD(DIR)						\
-static inline pcb_coord_t		        			\
+static inline rnd_coord_t		        			\
 coord ## DIR(pcb_any_obj_t *obj, int point)			\
 {								\
-	pcb_coord_t oX, oY; \
+	rnd_coord_t oX, oY; \
 	switch (point) { \
 	case K_Marks: \
 		oX = oY = 0; \
@@ -116,7 +116,7 @@ COORD(X)
 COORD(Y)
 
 /* return the object coordinate associated with the given internal point */
-static pcb_coord_t coord(pcb_any_obj_t *obj, int dir, int point)
+static rnd_coord_t coord(pcb_any_obj_t *obj, int dir, int point)
 {
 	if (dir == K_X)
 		return coordX(obj, point);
@@ -126,8 +126,8 @@ static pcb_coord_t coord(pcb_any_obj_t *obj, int dir, int point)
 
 static struct obj_by_pos {
 	pcb_any_obj_t *obj;
-	pcb_coord_t pos;
-	pcb_coord_t width;
+	rnd_coord_t pos;
+	rnd_coord_t width;
 } *objs_by_pos;
 
 static int nobjs_by_pos;
@@ -203,9 +203,9 @@ static void free_objs_by_pos(void)
 }
 
 /* Find the reference coordinate from the specified points of all selected objects. */
-static pcb_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
+static rnd_coord_t reference_coord(int op, int x, int y, int dir, int point, int reference)
 {
-	pcb_coord_t q;
+	rnd_coord_t q;
 	int nsel;
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
@@ -258,7 +258,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int point;
 	int reference;
 	int gridless;
-	pcb_coord_t q;
+	rnd_coord_t q;
 	int changed = 0;
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
@@ -332,7 +332,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* move all selected objects to the new coordinate */
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it))
 	{
-		pcb_coord_t p, dp, dx, dy;
+		rnd_coord_t p, dp, dx, dy;
 
 		if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj))
 			continue;
@@ -375,7 +375,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int point;
 	int refa, refb;
 	int gridless;
-	pcb_coord_t s, e, slack;
+	rnd_coord_t s, e, slack;
 	int divisor;
 	int changed = 0;
 	int i;
@@ -474,7 +474,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* even the gaps instead of the edges or whatnot */
 	/* find the "slack" in the row */
 	if (point == K_Gaps) {
-		pcb_coord_t w;
+		rnd_coord_t w;
 
 		/* subtract all the "widths" from the slack */
 		for (i = 0; i < nobjs_by_pos; ++i) {
@@ -493,7 +493,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* move all selected objects to the new coordinate */
 	for (i = 0; i < nobjs_by_pos; ++i) {
 		pcb_any_obj_t *obj = objs_by_pos[i].obj;
-		pcb_coord_t p, q, dp, dx, dy;
+		rnd_coord_t p, q, dp, dx, dy;
 
 		/* find reference point for this object */
 		q = s + slack * i / divisor;

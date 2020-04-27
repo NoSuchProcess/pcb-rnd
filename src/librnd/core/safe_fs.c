@@ -57,7 +57,7 @@ static int pcb_safe_fs_check(const char *op, const char *arg1, const char *arg2)
 #define CHECK(func, op, arg1, arg2, err_inst) \
 do { \
 	if (pcb_safe_fs_check(op, arg1, arg2) != 0) { \
-		pcb_message(PCB_MSG_ERROR, "File system operation %s(): access denied on %s(%s,%s)\n", func, op, arg1, arg2); \
+		rnd_message(PCB_MSG_ERROR, "File system operation %s(): access denied on %s(%s,%s)\n", func, op, arg1, arg2); \
 		err_inst; \
 	} \
 } while(0)

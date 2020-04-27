@@ -108,7 +108,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (!pcb_import_netlist(RND_ACT_HIDLIB, PCB->Netlistname))
 				pcb_netlist_changed(1);
 			else
-				pcb_message(PCB_MSG_ERROR, "None of the netlist import plugins could handle that file (unknown or broken file format?)\n");
+				rnd_message(PCB_MSG_ERROR, "None of the netlist import plugins could handle that file (unknown or broken file format?)\n");
 			break;
 
 		case F_Revert:
@@ -117,7 +117,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		default:
-			pcb_message(PCB_MSG_ERROR, "LoadFrom(): invalid command (first arg)\n");
+			rnd_message(PCB_MSG_ERROR, "LoadFrom(): invalid command (first arg)\n");
 			RND_ACT_IRES(1);
 			return 0;
 	}
@@ -203,12 +203,12 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (*target != '\0') {
 			bn = strtol(target, &end, 10);
 			if (*end != '\0') {
-				pcb_message(PCB_MSG_ERROR, "Expected buffer number, got '%s'\n", target);
+				rnd_message(PCB_MSG_ERROR, "Expected buffer number, got '%s'\n", target);
 				RND_ACT_IRES(-1);
 			}
 			bn--;
 			if ((bn < 0) || (bn >= PCB_MAX_BUFFER)) {
-				pcb_message(PCB_MSG_ERROR, "Buffer number out of range\n");
+				rnd_message(PCB_MSG_ERROR, "Buffer number out of range\n");
 				RND_ACT_IRES(-1);
 			}
 		}
@@ -251,7 +251,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(op) {
 		case F_Layout:
 			if (argc != 2) {
-				pcb_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
+				rnd_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
 				return FGW_ERR_ARGC;
 			}
 			if (pcb_save_pcb(RND_ACT_HIDLIB->filename, NULL) == 0)
@@ -271,11 +271,11 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_PasteBuffer:
 			if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) == 0) {
-				pcb_message(PCB_MSG_ERROR, "Can not save subcircuit: there is no subcircuit in the paste buffer.\n");
+				rnd_message(PCB_MSG_ERROR, "Can not save subcircuit: there is no subcircuit in the paste buffer.\n");
 				RND_ACT_IRES(-1);
 			}
 			else if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) > 1) {
-				pcb_message(PCB_MSG_ERROR, "Can not save subcircuit: there are more than one subcircuits in the paste buffer.\nDid you mean saving a library instead?\n");
+				rnd_message(PCB_MSG_ERROR, "Can not save subcircuit: there are more than one subcircuits in the paste buffer.\nDid you mean saving a library instead?\n");
 				RND_ACT_IRES(-1);
 			}
 			else
@@ -284,14 +284,14 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		/* shorthand kept only for compatibility reasons - do not use */
 		case F_AllConnections:
-			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
+			rnd_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
 			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "AllConnections", name, NULL);
 		case F_AllUnusedPins:
-			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
+			rnd_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
 			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "AllUnusedPins", name, NULL);
 		case F_ElementConnections:
 		case F_SubcConnections:
-			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
+			rnd_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
 			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "SubcConnections", name, NULL);
 	}
 
@@ -322,7 +322,7 @@ static int save_fmt_dialog(const char *title, const char *descr, char **default_
 		if ((err != 0) || (res.val.str == NULL)) /* cancel */
 			return -1;
 		if ((res.type & (FGW_STR | FGW_DYN)) != (FGW_STR | FGW_DYN)) {
-			pcb_message(PCB_MSG_ERROR, "Internal error: Save(DialogByPattern) did not return a dynamic string\n");
+			rnd_message(PCB_MSG_ERROR, "Internal error: Save(DialogByPattern) did not return a dynamic string\n");
 			return -1;
 		}
 		*name_out = res.val.str; /* will be free'd by the caller */
@@ -384,7 +384,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		f = pcb_fopen(RND_ACT_HIDLIB, name, "w");
 		if (f == NULL) {
-			pcb_message(PCB_MSG_ERROR, "Failed to open %s for write\n", name);
+			rnd_message(PCB_MSG_ERROR, "Failed to open %s for write\n", name);
 			free(name);
 			RND_ACT_IRES(-1);
 			return 0;
@@ -417,9 +417,9 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		p = pcb_io_find_writer(PCB_IOT_FOOTPRINT, fmt);
 		if (p == NULL) {
 			if (fmt == NULL)
-				pcb_message(PCB_MSG_ERROR, "Failed to find a plugin that can write subcircuits", fmt);
+				rnd_message(PCB_MSG_ERROR, "Failed to find a plugin that can write subcircuits", fmt);
 			else
-				pcb_message(PCB_MSG_ERROR, "Failed to find a plugin for format %s", fmt);
+				rnd_message(PCB_MSG_ERROR, "Failed to find a plugin for format %s", fmt);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -452,7 +452,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		if (ares != 0)
-			pcb_message(PCB_MSG_ERROR, "Some of the subcircuits failed to export\n");
+			rnd_message(PCB_MSG_ERROR, "Some of the subcircuits failed to export\n");
 		RND_ACT_IRES(ares);
 		free(name);
 	}
@@ -488,12 +488,12 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int n;
 
 	if (argc < 1) {
-		pcb_message(PCB_MSG_ERROR, "Export() needs at least one argument, the name of the export plugin\n");
+		rnd_message(PCB_MSG_ERROR, "Export() needs at least one argument, the name of the export plugin\n");
 		return 1;
 	}
 
 	if (argc > sizeof(args)/sizeof(args[0])) {
-		pcb_message(PCB_MSG_ERROR, "Export(): too many arguments\n");
+		rnd_message(PCB_MSG_ERROR, "Export(): too many arguments\n");
 		return 1;
 	}
 
@@ -503,7 +503,7 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_exporter = pcb_hid_find_exporter(args[0]);
 	if (pcb_exporter == NULL) {
-		pcb_message(PCB_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", args[0]);
+		rnd_message(PCB_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", args[0]);
 		return 1;
 	}
 
