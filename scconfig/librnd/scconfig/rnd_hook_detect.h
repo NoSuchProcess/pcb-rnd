@@ -42,3 +42,75 @@ static void rnd_hook_detect_coord_bits(void)
 	if (need_stdint)
 		put("/local/pcb/include_stdint", "#include <stdint.h>");
 }
+
+static void rnd_hook_detect_cc(void)
+{
+	int need_inl = 0;
+	const char *host_ansi, *host_ped, *target_ansi, *target_ped, *target_pg, *target_no_pie;
+	const char *tmp, *fpic, *debug;
+
+	require("cc/fpic",  0, 0);
+	host_ansi = get("/host/cc/argstd/ansi");
+	host_ped = get("/host/cc/argstd/pedantic");
+	target_ansi = get("/target/cc/argstd/ansi");
+	target_ped = get("/target/cc/argstd/pedantic");
+	target_pg = get("/target/cc/argstd/pg");
+	target_no_pie = get("/target/cc/argstd/no-pie");
+	require("cc/pragma_message",  0, 0);
+	require("fstools/ar",  0, 1);
+
+	/* need to set debug flags here to make sure libs are detected with the modified cflags; -ansi matters in what #defines we need for some #includes */
+	fpic = get("/target/cc/fpic");
+	if (fpic == NULL) fpic = "";
+	debug = get("/arg/debug");
+	if (debug == NULL) debug = "";
+	tmp = str_concat(" ", fpic, debug, NULL);
+	put("/local/global_cflags", tmp);
+
+	/* for --debug mode, use -ansi -pedantic for all detection */
+	put("/local/cc_flags_save", get("/target/cc/cflags"));
+	if (istrue(get("/local/pcb/debug"))) {
+		append("/target/cc/cflags", " ");
+		append("/target/cc/cflags", target_ansi);
+		append("/target/cc/cflags", " ");
+		append("/target/cc/cflags", target_ped);
+	}
+	if (istrue(get("/local/pcb/profile"))) {
+		append("/target/cc/cflags", " ");
+		append("/target/cc/cflags", target_pg);
+		append("/target/cc/cflags", " ");
+		append("/target/cc/cflags", target_no_pie);
+	}
+
+	/* set cflags for C89 */
+	put("/local/pcb/c89flags", "");
+	if (istrue(get("/local/pcb/debug"))) {
+
+		if ((target_ansi != NULL) && (*target_ansi != '\0')) {
+			append("/local/pcb/c89flags", " ");
+			append("/local/pcb/c89flags", target_ansi);
+			need_inl = 1;
+		}
+		if ((target_ped != NULL) && (*target_ped != '\0')) {
+			append("/local/pcb/c89flags", " ");
+			append("/local/pcb/c89flags", target_ped);
+			need_inl = 1;
+		}
+	}
+
+	if (istrue(get("/local/pcb/profile"))) {
+		append("/local/pcb/cflags_profile", " ");
+		append("/local/pcb/cflags_profile", target_pg);
+		append("/local/pcb/cflags_profile", " ");
+		append("/local/pcb/cflags_profile", target_no_pie);
+	}
+
+	if (!istrue(get("cc/inline")))
+		need_inl = 1;
+
+	if (need_inl) {
+		/* disable inline for C89 */
+		append("/local/pcb/c89flags", " ");
+		append("/local/pcb/c89flags", "-Dinline= ");
+	}
+}
