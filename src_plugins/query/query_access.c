@@ -266,21 +266,21 @@ do { \
 } while(0)
 
 /* convert a layer type description and cache the result (overwriting the string in the field!) */
-#define fld2lyt_req(lyt, lyc, fld, idx) \
+#define fld2lyt_req(ec, lyt, lyc, fld, idx) \
 do { \
 	pcb_qry_node_t *_f_; \
 	fld_nth_req(_f_, fld, idx); \
 	if (_f_->type != PCBQ_DATA_LYTC) { \
 		const char *_s2_; \
 		fld2str_req(_s2_, fld, 1); \
-		_f_->data.lytc = field_pstk_lyt(p, _s2_); \
+		_f_->data.lytc = field_pstk_lyt(ec, p, _s2_); \
 		_f_->type = PCBQ_DATA_LYTC; \
 	} \
 	lyt = _f_->data.lytc.lyt; \
 	lyc = _f_->data.lytc.lyc; \
 } while(0)
 
-#define COMMON_FIELDS(obj, fh1, fld, res) \
+#define COMMON_FIELDS(ec, obj, fh1, fld, res) \
 do { \
 	if (fh1 == query_fields_a) { \
 		const char *s2; \
@@ -320,14 +320,12 @@ do { \
 		PCB_QRY_RET_INT(res, obj->type); \
  \
 	if (fh1 == query_fields_subc) \
-	 return field_subc_obj(obj, fld->next, res); \
+	 return field_subc_obj(ec, obj, fld->next, res); \
  \
 } while(0)
 
-#define NETNAME_FIELDS() \
+#define NETNAME_FIELDS(ec) \
 do { \
-	pcb_qry_exec_t *ec = NULL; \
-	\
 	if (fh1 == query_fields_netname) { \
 		if (ec != NULL) { \
 			pcb_any_obj_t *term = pcb_qry_parent_net_term(ec, obj); \
@@ -354,7 +352,7 @@ do { \
 	} \
 } while(0)
 
-static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_layer(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_layer_t *rl, *l = (pcb_layer_t *)obj;
 	query_fields_keys_t fh1;
@@ -398,13 +396,13 @@ static int field_layer(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *r
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_layer_from_ptr(pcb_layer_t *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_layer_from_ptr(pcb_qry_exec_t *ec, pcb_layer_t *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
-	return field_layer((pcb_any_obj_t *)l, fld, res);
+	return field_layer(ec, (pcb_any_obj_t *)l, fld, res);
 }
 
 /* process from .layer */
-static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_t mask)
+static int layer_of_obj(pcb_qry_exec_t *ec, pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_t mask)
 {
 	pcb_layer_id_t id;
 	const char *s1;
@@ -420,7 +418,7 @@ static int layer_of_obj(pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_
 		return 0;
 	}
 
-	return field_layer_from_ptr(PCB->Data->Layer+id, fld, res);
+	return field_layer_from_ptr(ec, PCB->Data->Layer+id, fld, res);
 }
 
 static double pcb_line_len2(pcb_line_t *l)
@@ -430,7 +428,7 @@ static double pcb_line_len2(pcb_line_t *l)
 	return x*x + y*y;
 }
 
-static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_line(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_line_t *l = (pcb_line_t *)obj;
 	query_fields_keys_t fh1;
@@ -445,12 +443,12 @@ static int field_line(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
-			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
 
-	NETNAME_FIELDS();
+	NETNAME_FIELDS(ec);
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -491,7 +489,7 @@ TODO(": this breaks for elliptics; see http://tutorial.math.lamar.edu/Classes/Ca
 	return r * M_PI / 180.0 * a->Delta;
 }
 
-static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_arc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_arc_t *a = (pcb_arc_t *)obj;
 	query_fields_keys_t fh1, fh2;
@@ -516,12 +514,12 @@ static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
-			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
 
-	NETNAME_FIELDS();
+	NETNAME_FIELDS(ec);
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -555,7 +553,7 @@ static int field_arc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_gfx(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_gfx(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_gfx_t *g = (pcb_gfx_t *)obj;
 	query_fields_keys_t fh1, fh2;
@@ -570,7 +568,7 @@ static int field_gfx(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
-			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
@@ -590,7 +588,7 @@ static int field_gfx(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_text(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_text_t *t = (pcb_text_t *)obj;
 	query_fields_keys_t fh1;
@@ -605,12 +603,12 @@ static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
-			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
 
-	NETNAME_FIELDS();
+	NETNAME_FIELDS(ec);
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -630,7 +628,7 @@ static int field_text(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_polygon(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_poly_t *p = (pcb_poly_t *)obj;
 	query_fields_keys_t fh1;
@@ -645,12 +643,12 @@ static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
-			return field_layer_from_ptr(obj->parent.layer, fld->next, res);
+			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
 
-	NETNAME_FIELDS();
+	NETNAME_FIELDS(ec);
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -671,7 +669,7 @@ static int field_polygon(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t 
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_rat(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_rat(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 /*	const char *s1, *s2;
 
@@ -681,14 +679,14 @@ TODO("TODO")
 	PCB_QRY_RET_INV(res);
 }
 
-static struct pcb_qry_lytc_s field_pstk_lyt(pcb_pstk_t *ps, const char *where)
+static struct pcb_qry_lytc_s field_pstk_lyt(pcb_qry_exec_t *ec, pcb_pstk_t *ps, const char *where)
 {
 	struct pcb_qry_lytc_s lytc;
 	pcb_layer_typecomb_str2bits(where, &lytc.lyt, &lytc.lyc, 1);
 	return lytc;
 }
 
-static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_pstk(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_pstk_t *p = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(p);
@@ -707,7 +705,7 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		pcb_layer_combining_t lyc = 0;
 		pcb_pstk_shape_t *shp;
 
-		fld2lyt_req(lyt, lyc, fld, 1);
+		fld2lyt_req(ec, lyt, lyc, fld, 1);
 		if (lyt == 0)
 			PCB_QRY_RET_INV(res);
 
@@ -723,7 +721,7 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 		PCB_QRY_RET_STR(res, "");
 	}
 
-	NETNAME_FIELDS();
+	NETNAME_FIELDS(ec);
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -745,7 +743,7 @@ static int field_pstk(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_net(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_net(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_net_t *net = (pcb_net_t *)obj;
 	query_fields_keys_t fh1;
@@ -770,7 +768,7 @@ static int field_net(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res
 
 }
 
-static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_subc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_subc_t *p = (pcb_subc_t *)obj;
 	query_fields_keys_t fh1;
@@ -786,7 +784,7 @@ static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	}
 
 	if (fh1 == query_fields_layer)
-		return layer_of_obj(fld->next, res, PCB_LYT_SILK | (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+		return layer_of_obj(ec, fld->next, res, PCB_LYT_SILK | (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -803,20 +801,20 @@ static int field_subc(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *re
 	PCB_QRY_RET_INV(res);
 }
 
-static int field_subc_obj(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res);
+static int field_subc_obj(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res);
 
-static int field_subc_from_ptr(pcb_subc_t *s, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_subc_from_ptr(pcb_qry_exec_t *ec, pcb_subc_t *s, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)s;
 	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
-	COMMON_FIELDS(obj, fh1, fld, res);
+	COMMON_FIELDS(ec, obj, fh1, fld, res);
 
-	return field_subc(obj, fld, res);
+	return field_subc(ec, obj, fld, res);
 }
 
-static int field_subc_obj(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+static int field_subc_obj(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	const char *s1;
 	pcb_subc_t *parent = pcb_obj_parent_subc(obj);
@@ -834,7 +832,7 @@ static int field_subc_obj(pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t
 	}
 
 	/* return subfields of the subcircuit */
-	return field_subc_from_ptr(parent, fld, res);
+	return field_subc_from_ptr(ec, parent, fld, res);
 }
 
 /***/
@@ -851,7 +849,7 @@ static int pcb_qry_obj_flag(pcb_any_obj_t *obj, pcb_qry_node_t *nflg, pcb_qry_va
 	PCB_QRY_RET_INT(res, PCB_FLAG_TEST(nflg->precomp.flg->mask, obj));
 }
 
-int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+int pcb_qry_obj_field(pcb_qry_exec_t *ec, pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_any_obj_t *obj;
 	query_fields_keys_t fh1;
@@ -865,21 +863,21 @@ int pcb_qry_obj_field(pcb_qry_val_t *objval, pcb_qry_node_t *fld, pcb_qry_val_t 
 
 	fld2hash_req(fh1, fld, 0);
 
-	COMMON_FIELDS(obj, fh1, fld, res);
+	COMMON_FIELDS(ec, obj, fh1, fld, res);
 
 	switch(obj->type) {
-/*		case PCB_OBJ_POINT:    return field_point(obj, fld, res);*/
-		case PCB_OBJ_LINE:     return field_line(obj, fld, res);
-		case PCB_OBJ_TEXT:     return field_text(obj, fld, res);
-		case PCB_OBJ_POLY:     return field_polygon(obj, fld, res);
-		case PCB_OBJ_ARC:      return field_arc(obj, fld, res);
-		case PCB_OBJ_GFX:      return field_gfx(obj, fld, res);
-		case PCB_OBJ_RAT:      return field_rat(obj, fld, res);
-		case PCB_OBJ_PSTK:     return field_pstk(obj, fld, res);
-		case PCB_OBJ_SUBC:     return field_subc(obj, fld, res);
+/*		case PCB_OBJ_POINT:    return field_point(ec, obj, fld, res);*/
+		case PCB_OBJ_LINE:     return field_line(ec, obj, fld, res);
+		case PCB_OBJ_TEXT:     return field_text(ec, obj, fld, res);
+		case PCB_OBJ_POLY:     return field_polygon(ec, obj, fld, res);
+		case PCB_OBJ_ARC:      return field_arc(ec, obj, fld, res);
+		case PCB_OBJ_GFX:      return field_gfx(ec, obj, fld, res);
+		case PCB_OBJ_RAT:      return field_rat(ec, obj, fld, res);
+		case PCB_OBJ_PSTK:     return field_pstk(ec, obj, fld, res);
+		case PCB_OBJ_SUBC:     return field_subc(ec, obj, fld, res);
 
-		case PCB_OBJ_NET:      return field_net(obj, fld, res);
-		case PCB_OBJ_LAYER:    return field_layer(obj, fld, res);
+		case PCB_OBJ_NET:      return field_net(ec, obj, fld, res);
+		case PCB_OBJ_LAYER:    return field_layer(ec, obj, fld, res);
 TODO("layer TODO")
 		case PCB_OBJ_LAYERGRP:
 		default:;

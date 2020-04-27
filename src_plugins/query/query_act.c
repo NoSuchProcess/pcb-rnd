@@ -489,8 +489,18 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	obj.data.obj = pcb_idpath2obj_in(PCB->Data, idp);
 	if (obj.data.obj == NULL)
 		goto err;
-	if (pcb_qry_obj_field(&obj, fld, &val) != 0)
-		goto err;
+
+	{
+		int ret;
+		pcb_qry_exec_t ec;
+
+		pcb_qry_init(&ec, PCB, NULL, -1);
+		ret = pcb_qry_obj_field(NULL, &obj, fld, &val);
+		pcb_qry_uninit(&ec);
+
+		if (ret != 0)
+			goto err;
+	}
 
 	if (free_fld)
 		field_free(fld);
