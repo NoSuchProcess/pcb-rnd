@@ -243,6 +243,9 @@ int plugin_deps(int require)
 
 void rnd_hook_postinit()
 {
+	pup_hook_postinit();
+	fungw_hook_postinit();
+
 	/* DEFAULTS */
 	put("/local/prefix", "/usr/local");
 	put("/local/man1dir", "/share/man/man1");

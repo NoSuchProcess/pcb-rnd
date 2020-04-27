@@ -81,9 +81,6 @@ int hook_postinit()
 	db_mkdir("/local");
 	db_mkdir("/local/pcb");
 
-	pup_hook_postinit();
-	fungw_hook_postinit();
-
 	rnd_hook_postinit();
 
 	put("/local/pcb/want_bison", sfalse);
