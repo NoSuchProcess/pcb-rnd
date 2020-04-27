@@ -295,6 +295,11 @@ do { \
 			PCB_QRY_RET_INV(res); \
 		PCB_QRY_RET_INT(res, obj->ID); \
 	} \
+	if (fh1 == query_fields_IID) { \
+		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ)) \
+			PCB_QRY_RET_INV(res); \
+		PCB_QRY_RET_INT(res, pcb_obj_iid(obj)); \
+	} \
  \
 	if ((fh1 == query_fields_bbox) || (fh1 == query_fields_bbox_naked)) { \
 		pcb_box_t *bx = (fh1 == query_fields_bbox) ? &(obj)->BoundingBox : &(obj)->bbox_naked; \
