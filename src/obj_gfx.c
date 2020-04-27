@@ -103,7 +103,7 @@ static pcb_box_t pcb_gfx_bbox_(const pcb_gfx_t *gfx)
 	pcb_box_t res = {0};
 	int n;
 	for(n = 0; n < 4; n++)
-		pcb_box_bump_point(&res, gfx->cox[n], gfx->coy[n]);
+		rnd_box_bump_point(&res, gfx->cox[n], gfx->coy[n]);
 	return res;
 }
 
@@ -370,9 +370,9 @@ void *pcb_gfxop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
 	do {                                                            \
 		rnd_coord_t __dx__ = (dx), __dy__ = (dy);                     \
 		pcb_gfx_t *__g__ = (g);                                       \
-		PCB_MOVE_POINT((__g__)->cx, (__g__)->cy,__dx__,__dy__);          \
-		PCB_BOX_MOVE_LOWLEVEL(&((__g__)->BoundingBox),__dx__,__dy__); \
-		PCB_BOX_MOVE_LOWLEVEL(&((__g__)->bbox_naked),__dx__,__dy__); \
+		RND_MOVE_POINT((__g__)->cx, (__g__)->cy,__dx__,__dy__);          \
+		RND_BOX_MOVE_LOWLEVEL(&((__g__)->BoundingBox),__dx__,__dy__); \
+		RND_BOX_MOVE_LOWLEVEL(&((__g__)->bbox_naked),__dx__,__dy__); \
 		pcb_gfx_update(__g__); \
 	} while(0)
 

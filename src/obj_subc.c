@@ -84,7 +84,7 @@ void pcb_subc_unreg(pcb_subc_t *subc)
 static void pcb_box_bump_box_noflt(pcb_box_t *dst, pcb_box_t *src)
 {
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, ((pcb_any_obj_t *)(src))))
-		pcb_box_bump_box(dst, src);
+		rnd_box_bump_box(dst, src);
 }
 
 /* update cached values: e.g. looking up refdes in attributes each time the
@@ -1012,8 +1012,8 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 	memcpy(&sc->Flags, &src->Flags, sizeof(sc->Flags));
 
-	pcb_close_box(&sc->BoundingBox);
-	pcb_close_box(&sc->bbox_naked);
+	rnd_close_box(&sc->BoundingBox);
+	rnd_close_box(&sc->bbox_naked);
 
 	if (pcb != NULL) {
 		if (!dst->subc_tree)
@@ -1154,8 +1154,8 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 		}
 	}
 
-	pcb_close_box(&sc->BoundingBox);
-	pcb_close_box(&sc->bbox_naked);
+	rnd_close_box(&sc->BoundingBox);
+	rnd_close_box(&sc->bbox_naked);
 	if (pcb_data_get_top(Data) != NULL)
 		pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)sc);
 

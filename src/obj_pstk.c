@@ -172,7 +172,7 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
 				for(n = 0; n < shape->data.poly.len; n++)
-					pcb_box_bump_point(dst, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
+					rnd_box_bump_point(dst, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
 				break;
 			case PCB_PSSH_LINE:
 				line.Point1.X = shape->data.line.x1 + ps->x;
@@ -183,11 +183,11 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 				line.Clearance = 0;
 				line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
 				pcb_line_bbox(&line);
-				pcb_box_bump_box(dst, &line.BoundingBox);
+				rnd_box_bump_box(dst, &line.BoundingBox);
 				break;
 			case PCB_PSSH_CIRC:
-				pcb_box_bump_point(dst, ps->x - shape->data.circ.dia/2, ps->y - shape->data.circ.dia/2);
-				pcb_box_bump_point(dst, ps->x + shape->data.circ.dia/2, ps->y + shape->data.circ.dia/2);
+				rnd_box_bump_point(dst, ps->x - shape->data.circ.dia/2, ps->y - shape->data.circ.dia/2);
+				rnd_box_bump_point(dst, ps->x + shape->data.circ.dia/2, ps->y + shape->data.circ.dia/2);
 				break;
 			case PCB_PSSH_HSHADOW:
 				break;
@@ -203,11 +203,11 @@ static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 
 	if (proto->hdia != 0) {
 		/* corner case: no copper around the hole all 360 deg - let the hole stick out */
-		pcb_box_bump_point(dst, ps->x - proto->hdia/2, ps->y - proto->hdia/2);
-		pcb_box_bump_point(dst, ps->x + proto->hdia/2, ps->y + proto->hdia/2);
+		rnd_box_bump_point(dst, ps->x - proto->hdia/2, ps->y - proto->hdia/2);
+		rnd_box_bump_point(dst, ps->x + proto->hdia/2, ps->y + proto->hdia/2);
 	}
 
-	pcb_close_box(dst);
+	rnd_close_box(dst);
 }
 
 void pcb_pstk_bbox(pcb_pstk_t *ps)

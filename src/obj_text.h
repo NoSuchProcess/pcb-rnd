@@ -111,9 +111,9 @@ void pcb_text_uninit(void);
 	do {                                                               \
 		rnd_coord_t __dx__ = (dx), __dy__ = (dy);                        \
 		pcb_text_t *__t__ = (t);                                         \
-		PCB_BOX_MOVE_LOWLEVEL(&((__t__)->BoundingBox), __dx__, __dy__);  \
-		PCB_BOX_MOVE_LOWLEVEL(&((__t__)->bbox_naked), __dx__, __dy__);  \
-		PCB_MOVE_POINT((__t__)->X, (__t__)->Y, __dx__, __dy__);                \
+		RND_BOX_MOVE_LOWLEVEL(&((__t__)->BoundingBox), __dx__, __dy__);  \
+		RND_BOX_MOVE_LOWLEVEL(&((__t__)->bbox_naked), __dx__, __dy__);  \
+		RND_MOVE_POINT((__t__)->X, (__t__)->Y, __dx__, __dy__);                \
 	} while(0)
 
 /* Determines if text is actually visible */

@@ -139,7 +139,7 @@ int pcb_obj_ui_arc_point_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_
 	int *end_pt = Ptr3;
 	rnd_coord_t ex, ey;
 	pcb_arc_get_end(arc, (end_pt != pcb_arc_start_ptr), &ex, &ey);
-	*res = pcb_point_box(ex, ey);
+	*res = rnd_point_box(ex, ey);
 	return 0;
 }
 

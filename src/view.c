@@ -182,7 +182,7 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 			v->have_bbox = 1;
 			pcb_obj_center(obj, &v->x, &v->y);
 			memcpy(&v->bbox, &obj->BoundingBox, sizeof(obj->BoundingBox));
-			pcb_box_enlarge(&v->bbox, 0.25, 0.25);
+			rnd_box_enlarge(&v->bbox, 0.25, 0.25);
 			return;
 		}
 	}
@@ -194,7 +194,7 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 			obj = pcb_idpath2obj_in(data, idp);
 			if (obj != NULL) {
 				v->have_bbox = 1;
-				pcb_box_bump_box(&b, &obj->BoundingBox);
+				rnd_box_bump_box(&b, &obj->BoundingBox);
 			}
 		}
 	}
@@ -203,7 +203,7 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 		v->x = (b.X1 + b.X2)/2;
 		v->y = (b.Y1 + b.Y2)/2;
 		memcpy(&v->bbox, &b, sizeof(b));
-		pcb_box_enlarge(&v->bbox, 0.25, 0.25);
+		rnd_box_enlarge(&v->bbox, 0.25, 0.25);
 	}
 }
 

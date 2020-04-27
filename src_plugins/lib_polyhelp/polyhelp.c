@@ -172,7 +172,7 @@ static void add_track_seg(pcb_cpoly_edgetree_t *dst, rnd_coord_t x1, rnd_coord_t
 	e->x2 = x2;
 	e->y2 = y2;
 
-	pcb_box_bump_box(&dst->bbox, b);
+	rnd_box_bump_box(&dst->bbox, b);
 	pcb_r_insert_entry(dst->edge_tree, (pcb_box_t *)e);
 }
 

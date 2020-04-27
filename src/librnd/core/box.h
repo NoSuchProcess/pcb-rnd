@@ -40,8 +40,8 @@
 
 /* random box-related utilities. */
 
-#ifndef PCB_BOX_H
-#define PCB_BOX_H
+#ifndef RND_BOX_H
+#define RND_BOX_H
 
 #include <assert.h>
 #include <librnd/config.h>
@@ -49,7 +49,7 @@
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/pcb_bool.h>
 
-struct pcb_box_list_s {
+struct rnd_box_list_s {
 	pcb_cardinal_t BoxN,								/* the number of boxes contained */
 	  BoxMax;											/* max boxes from malloc */
 	pcb_box_t *Box;
@@ -65,11 +65,11 @@ typedef enum {
 
 /* rotates box 90-degrees cw */
 /* that's a strange rotation! */
-#define PCB_BOX_ROTATE_CW(box) { rnd_coord_t t;\
+#define RND_BOX_ROTATE_CW(box) { rnd_coord_t t;\
     t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
     (box).X2 = -(box).Y1; (box).Y1 = t;\
 }
-#define PCB_BOX_ROTATE_TO_NORTH(box, dir) do { rnd_coord_t t;\
+#define RND_BOX_ROTATE_TO_NORTH(box, dir) do { rnd_coord_t t;\
   switch(dir) {\
   case PCB_EAST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -84,7 +84,7 @@ typedef enum {
   default: assert(0);\
   }\
   } while (0)
-#define PCB_BOX_ROTATE_FROM_NORTH(box, dir) do { rnd_coord_t t;\
+#define RND_BOX_ROTATE_FROM_NORTH(box, dir) do { rnd_coord_t t;\
   switch(dir) {\
   case PCB_WEST: \
    t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
@@ -101,19 +101,19 @@ typedef enum {
   } while (0)
 
 /* to avoid overflow, we calculate centers this way */
-#define PCB_BOX_CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
-#define PCB_BOX_CENTER_Y(b) ((b).Y1 + ((b).Y2 - (b).Y1)/2)
+#define RND_BOX_CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
+#define RND_BOX_CENTER_Y(b) ((b).Y1 + ((b).Y2 - (b).Y1)/2)
 
-#define	PCB_MOVE_POINT(xs,ys,deltax,deltay) \
+#define	RND_MOVE_POINT(xs,ys,deltax,deltay) \
 	do { \
 		((xs) += (deltax)); \
 		((ys) += (deltay)); \
 	} while(0)
 
-#define	PCB_BOX_MOVE_LOWLEVEL(b,dx,dy)		\
+#define	RND_BOX_MOVE_LOWLEVEL(b,dx,dy)		\
 	do {									\
-		PCB_MOVE_POINT((b)->X1,(b)->Y1,(dx),(dy)); \
-		PCB_MOVE_POINT((b)->X2,(b)->Y2,(dx),(dy)); \
+		RND_MOVE_POINT((b)->X1,(b)->Y1,(dx),(dy)); \
+		RND_MOVE_POINT((b)->X2,(b)->Y2,(dx),(dy)); \
 	} while(0)
 
 
@@ -125,54 +125,54 @@ typedef struct pcb_cheap_point_s {
 /* note that boxes are closed on top and left and open on bottom and right. */
 /* this means that top-left corner is in box, *but bottom-right corner is
  * not*.  */
-PCB_INLINE rnd_bool pcb_point_in_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y) 
+PCB_INLINE rnd_bool rnd_point_in_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y) 
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
 
-PCB_INLINE rnd_bool pcb_point_in_closed_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y)
+PCB_INLINE rnd_bool rnd_point_in_closed_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X <= box->X2) && (Y <= box->Y2);
 }
 
-PCB_INLINE rnd_bool pcb_box_is_good(const pcb_box_t * b)
+PCB_INLINE rnd_bool rnd_box_is_good(const pcb_box_t * b)
 {
 	return (b->X1 < b->X2) && (b->Y1 < b->Y2);
 }
 
-PCB_INLINE rnd_bool pcb_box_intersect(const pcb_box_t * a, const pcb_box_t * b)
+PCB_INLINE rnd_bool rnd_box_intersect(const pcb_box_t * a, const pcb_box_t * b)
 {
 	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
 }
 
-PCB_INLINE pcb_cheap_point_t pcb_closest_pcb_point_in_box(const pcb_cheap_point_t * from, const pcb_box_t * box)
+PCB_INLINE pcb_cheap_point_t rnd_closest_pcb_point_in_box(const pcb_cheap_point_t * from, const pcb_box_t * box)
 {
 	pcb_cheap_point_t r;
 	assert(box->X1 < box->X2 && box->Y1 < box->Y2);
 	r.X = (from->X < box->X1) ? box->X1 : (from->X > box->X2 - 1) ? box->X2 - 1 : from->X;
 	r.Y = (from->Y < box->Y1) ? box->Y1 : (from->Y > box->Y2 - 1) ? box->Y2 - 1 : from->Y;
-	assert(pcb_point_in_box(box, r.X, r.Y));
+	assert(rnd_point_in_box(box, r.X, r.Y));
 	return r;
 }
 
-PCB_INLINE rnd_bool pcb_box_in_box(const pcb_box_t * outer, const pcb_box_t * inner)
+PCB_INLINE rnd_bool rnd_box_in_box(const pcb_box_t * outer, const pcb_box_t * inner)
 {
 	return (outer->X1 <= inner->X1) && (inner->X2 <= outer->X2) && (outer->Y1 <= inner->Y1) && (inner->Y2 <= outer->Y2);
 }
 
-PCB_INLINE pcb_box_t pcb_clip_box(const pcb_box_t * box, const pcb_box_t * clipbox)
+PCB_INLINE pcb_box_t rnd_clip_box(const pcb_box_t * box, const pcb_box_t * clipbox)
 {
 	pcb_box_t r;
-	assert(pcb_box_intersect(box, clipbox));
+	assert(rnd_box_intersect(box, clipbox));
 	r.X1 = MAX(box->X1, clipbox->X1);
 	r.X2 = MIN(box->X2, clipbox->X2);
 	r.Y1 = MAX(box->Y1, clipbox->Y1);
 	r.Y2 = MIN(box->Y2, clipbox->Y2);
-	assert(pcb_box_in_box(clipbox, &r));
+	assert(rnd_box_in_box(clipbox, &r));
 	return r;
 }
 
-PCB_INLINE pcb_box_t pcb_shrink_box(const pcb_box_t * box, rnd_coord_t amount)
+PCB_INLINE pcb_box_t rnd_shrink_box(const pcb_box_t * box, rnd_coord_t amount)
 {
 	pcb_box_t r = *box;
 	r.X1 += amount;
@@ -182,13 +182,13 @@ PCB_INLINE pcb_box_t pcb_shrink_box(const pcb_box_t * box, rnd_coord_t amount)
 	return r;
 }
 
-PCB_INLINE pcb_box_t pcb_bloat_box(const pcb_box_t * box, rnd_coord_t amount)
+PCB_INLINE pcb_box_t rnd_bloat_box(const pcb_box_t * box, rnd_coord_t amount)
 {
-	return pcb_shrink_box(box, -amount);
+	return rnd_shrink_box(box, -amount);
 }
 
 /* construct a minimum box that touches the input box at the center */
-PCB_INLINE pcb_box_t pcb_box_center(const pcb_box_t * box)
+PCB_INLINE pcb_box_t rnd_box_center(const pcb_box_t * box)
 {
 	pcb_box_t r;
 	r.X1 = box->X1 + (box->X2 - box->X1) / 2;
@@ -199,7 +199,7 @@ PCB_INLINE pcb_box_t pcb_box_center(const pcb_box_t * box)
 }
 
 /* construct a minimum box that touches the input box at the corner */
-PCB_INLINE pcb_box_t pcb_box_corner(const pcb_box_t * box)
+PCB_INLINE pcb_box_t rnd_box_corner(const pcb_box_t * box)
 {
 	pcb_box_t r;
 	r.X1 = box->X1;
@@ -210,7 +210,7 @@ PCB_INLINE pcb_box_t pcb_box_corner(const pcb_box_t * box)
 }
 
 /* construct a box that holds a single point */
-PCB_INLINE pcb_box_t pcb_point_box(rnd_coord_t X, rnd_coord_t Y)
+PCB_INLINE pcb_box_t rnd_point_box(rnd_coord_t X, rnd_coord_t Y)
 {
 	pcb_box_t r;
 	r.X1 = X;
@@ -221,7 +221,7 @@ PCB_INLINE pcb_box_t pcb_point_box(rnd_coord_t X, rnd_coord_t Y)
 }
 
 /* close a bounding box by pushing its upper right corner */
-PCB_INLINE void pcb_close_box(pcb_box_t * r)
+PCB_INLINE void rnd_close_box(pcb_box_t * r)
 {
 	r->X2++;
 	r->Y2++;
@@ -230,15 +230,15 @@ PCB_INLINE void pcb_close_box(pcb_box_t * r)
 /* return the square of the minimum distance from a point to some point
  * inside a box.  The box is half-closed!  That is, the top-left corner
  * is considered in the box, but the bottom-right corner is not. */
-PCB_INLINE double pcb_dist2_to_box(const pcb_cheap_point_t * p, const pcb_box_t * b)
+PCB_INLINE double rnd_dist2_to_box(const pcb_cheap_point_t * p, const pcb_box_t * b)
 {
-	pcb_cheap_point_t r = pcb_closest_pcb_point_in_box(p, b);
+	pcb_cheap_point_t r = rnd_closest_pcb_point_in_box(p, b);
 	return pcb_distance(r.X, r.Y, p->X, p->Y);
 }
 
 
 /* Modify dst to include src */
-PCB_INLINE void pcb_box_bump_box(pcb_box_t *dst, const pcb_box_t *src)
+PCB_INLINE void rnd_box_bump_box(pcb_box_t *dst, const pcb_box_t *src)
 {
 	if (src->X1 < dst->X1) dst->X1 = src->X1;
 	if (src->Y1 < dst->Y1) dst->Y1 = src->Y1;
@@ -247,7 +247,7 @@ PCB_INLINE void pcb_box_bump_box(pcb_box_t *dst, const pcb_box_t *src)
 }
 
 /* Modify dst to include src */
-PCB_INLINE void pcb_box_bump_point(pcb_box_t *dst, rnd_coord_t x, rnd_coord_t y)
+PCB_INLINE void rnd_box_bump_point(pcb_box_t *dst, rnd_coord_t x, rnd_coord_t y)
 {
 	if (x < dst->X1) dst->X1 = x;
 	if (y < dst->Y1) dst->Y1 = y;
@@ -256,9 +256,9 @@ PCB_INLINE void pcb_box_bump_point(pcb_box_t *dst, rnd_coord_t x, rnd_coord_t y)
 }
 
 /* rotates a box in 90 degree steps */
-void pcb_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
+void rnd_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
 
 /* Enlarge a box by adding current width,height multiplied by xfactor,yfactor */
-void pcb_box_enlarge(pcb_box_t *box, double xfactor, double yfactor);
+void rnd_box_enlarge(pcb_box_t *box, double xfactor, double yfactor);
 
 #endif /* __BOX_H_INCLUDED__ */

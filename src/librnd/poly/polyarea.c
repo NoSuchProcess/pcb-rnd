@@ -3512,7 +3512,7 @@ rnd_bool pcb_pline_overlaps_circ(pcb_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	pbx.X2 = pl->xmax; pbx.Y2 = pl->ymax;
 
 	/* if there's no overlap in bounding boxes, don't do any expensive calc */
-	if (!(pcb_box_intersect(&cbx, &pbx)))
+	if (!(rnd_box_intersect(&cbx, &pbx)))
 		return pcb_false;
 
 	if (pl->tree == NULL)

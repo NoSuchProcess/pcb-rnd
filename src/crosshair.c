@@ -671,7 +671,7 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
  */
 static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t Y)
 {
-	pcb_box_t SearchBox = pcb_point_box(X, Y);
+	pcb_box_t SearchBox = rnd_point_box(X, Y);
 	struct onpoint_search_info info;
 	int i;
 	rnd_bool redraw = pcb_false;

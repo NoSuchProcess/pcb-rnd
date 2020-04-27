@@ -381,7 +381,7 @@ void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number)
 
 	/* finally the origin and the bounding box */
 	PCB_COORD_ROTATE90(Buffer->X, Buffer->Y, Buffer->X, Buffer->Y, Number);
-	pcb_box_rotate90(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
+	rnd_box_rotate90(&Buffer->BoundingBox, Buffer->X, Buffer->Y, Number);
 
 	pcb_undo_unfreeze_add();
 	pcb_undo_unfreeze_serial();

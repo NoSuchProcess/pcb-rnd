@@ -783,10 +783,10 @@ static pcb_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t
 	info.layer = Layer;
 	info.polygon = polygon;
 	if (here)
-		region = pcb_clip_box(here, &polygon->BoundingBox);
+		region = rnd_clip_box(here, &polygon->BoundingBox);
 	else
 		region = polygon->BoundingBox;
-	region = pcb_bloat_box(&region, expand);
+	region = rnd_bloat_box(&region, expand);
 
 	if (setjmp(info.env) == 0) {
 

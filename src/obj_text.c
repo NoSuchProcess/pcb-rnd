@@ -419,9 +419,9 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	/* calculate the axis-aligned version */
 	Text->bbox_naked.X1 = Text->bbox_naked.X2 = cx[0];
 	Text->bbox_naked.Y1 = Text->bbox_naked.Y2 = cy[0];
-	pcb_box_bump_point(&Text->bbox_naked, cx[1], cy[1]);
-	pcb_box_bump_point(&Text->bbox_naked, cx[2], cy[2]);
-	pcb_box_bump_point(&Text->bbox_naked, cx[3], cy[3]);
+	rnd_box_bump_point(&Text->bbox_naked, cx[1], cy[1]);
+	rnd_box_bump_point(&Text->bbox_naked, cx[2], cy[2]);
+	rnd_box_bump_point(&Text->bbox_naked, cx[3], cy[3]);
 
 	/* the bounding box covers the extent of influence
 	 * so it must include the clearance values too
@@ -430,8 +430,8 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	Text->BoundingBox.Y1 = Text->bbox_naked.Y1 - conf_core.design.bloat;
 	Text->BoundingBox.X2 = Text->bbox_naked.X2 + conf_core.design.bloat;
 	Text->BoundingBox.Y2 = Text->bbox_naked.Y2 + conf_core.design.bloat;
-	pcb_close_box(&Text->bbox_naked);
-	pcb_close_box(&Text->BoundingBox);
+	rnd_close_box(&Text->bbox_naked);
+	rnd_close_box(&Text->BoundingBox);
 	pcb_text_free_str(Text, rendered);
 }
 

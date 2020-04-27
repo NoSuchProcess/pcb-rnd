@@ -43,7 +43,7 @@ typedef struct pcb_unit_s pcb_unit_t;
 
 typedef struct pcb_point_s pcb_point_t;
 typedef struct pcb_box_s pcb_box_t;
-typedef struct pcb_box_list_s pcb_box_list_t;
+typedef struct rnd_box_list_s rnd_box_list_t;
 typedef struct pcb_polyarea_s pcb_polyarea_t;
 
 typedef struct pcb_rtree_s pcb_rtree_t;

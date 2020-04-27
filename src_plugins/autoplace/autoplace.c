@@ -129,7 +129,7 @@ TODO("cleanup: remove this and use genvect")
 #define STEP_POINT 100
 
 /* get next slot for a box, allocates memory if necessary */
-static pcb_box_t *pcb_box_new(pcb_box_list_t *Boxes)
+static pcb_box_t *pcb_box_new(rnd_box_list_t *Boxes)
 {
 	pcb_box_t *box = Boxes->Box;
 
@@ -144,11 +144,11 @@ static pcb_box_t *pcb_box_new(pcb_box_list_t *Boxes)
 }
 
 /* frees memory used by a box list */
-static void pcb_box_free(pcb_box_list_t *Boxlist)
+static void pcb_box_free(rnd_box_list_t *Boxlist)
 {
 	if (Boxlist) {
 		free(Boxlist->Box);
-		memset(Boxlist, 0, sizeof(pcb_box_list_t));
+		memset(Boxlist, 0, sizeof(rnd_box_list_t));
 	}
 }
 
@@ -200,7 +200,7 @@ static vtp0_t collectSelectedSubcircuits()
 
 #if 0														/* only for debugging box lists */
 /* makes a line on the solder layer surrounding all boxes in blist */
-static void showboxes(pcb_box_list_t *blist)
+static void showboxes(rnd_box_list_t *blist)
 {
 	pcb_cardinal_t i;
 	pcb_layer_t *SLayer = &(PCB->Data->Layer[pcb_solder_silk_layer]);
@@ -234,7 +234,7 @@ static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	pcb_box_t query = *region;
-	PCB_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
+	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
 	 *   \__________/  __ trap.y2
@@ -251,7 +251,7 @@ static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	pcb_box_t query = *box;
 	int r;
-	PCB_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
+	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
 	 *   \__________/  __ trap.y2
@@ -283,8 +283,8 @@ static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * b
 	bbox.X2 = PCB->hidlib.size_x;
 	bbox.Y2 = PCB->hidlib.size_y;
 	/* rotate so that we can use the 'north' case for everything */
-	PCB_BOX_ROTATE_TO_NORTH(bbox, search_direction);
-	PCB_BOX_ROTATE_TO_NORTH(ni.trap, search_direction);
+	RND_BOX_ROTATE_TO_NORTH(bbox, search_direction);
+	RND_BOX_ROTATE_TO_NORTH(ni.trap, search_direction);
 	/* shift Y's such that trap contains full bounds of trapezoid */
 	ni.trap.Y2 = ni.trap.Y1;
 	ni.trap.Y1 = bbox.Y1;
@@ -320,9 +320,9 @@ static double ComputeCost(double T0, double T)
 	rnd_coord_t minx, maxx, miny, maxy;
 	rnd_bool allpads, allsameside;
 	pcb_cardinal_t thegroup;
-	pcb_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
-	pcb_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
-	pcb_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
+	rnd_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
+	rnd_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
+	rnd_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
 
 
 	{
@@ -380,7 +380,7 @@ static double ComputeCost(double T0, double T)
 	/* two lists for solder side / component side. */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		pcb_box_list_t *thisside, *otherside;
+		rnd_box_list_t *thisside, *otherside;
 		pcb_box_t *box, *lastbox = NULL;
 		rnd_coord_t clearance;
 		pcb_any_obj_t *o;

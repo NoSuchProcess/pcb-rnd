@@ -165,7 +165,7 @@ static pcb_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 	res.X2 += width;
 	res.Y1 -= width;
 	res.Y2 += width;
-	pcb_close_box(&res);
+	rnd_close_box(&res);
 	return res;
 }
 

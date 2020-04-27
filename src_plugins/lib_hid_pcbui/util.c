@@ -43,7 +43,7 @@ static pcb_cardinal_t pcb_get_bbox_by_flag(pcb_box_t *dst, const pcb_data_t *dat
 		if (!PCB_FLAG_TEST(flg, o))
 			continue;
 		cnt++;
-		pcb_box_bump_box(dst, &o->BoundingBox);
+		rnd_box_bump_box(dst, &o->BoundingBox);
 	}
 	return cnt;
 }

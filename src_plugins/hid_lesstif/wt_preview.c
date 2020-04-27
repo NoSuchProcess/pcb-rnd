@@ -181,7 +181,7 @@ void pcb_ltf_preview_invalidate(const pcb_box_t *screen)
 			pb.Y1 = prv->y1;
 			pb.X2 = prv->x2;
 			pb.Y2 = prv->y2;
-			if (pcb_box_intersect(screen, &pb))
+			if (rnd_box_intersect(screen, &pb))
 				pcb_ltf_preview_redraw(prv);
 		}
 		else

@@ -586,7 +586,7 @@ TODO(": handle all cshapes (throw warnings)")
 								bx.X1 = bx.X2 = shape->data.poly.x[0];
 								bx.Y1 = bx.Y2 = shape->data.poly.y[0];
 								for(i = 1; i < shape->data.poly.len; i++)
-									pcb_box_bump_point(&bx, shape->data.poly.x[i], shape->data.poly.y[i]);
+									rnd_box_bump_point(&bx, shape->data.poly.x[i], shape->data.poly.y[i]);
 								w = (bx.X2 - bx.X1);
 								h = (bx.Y2 - bx.Y1);
 								shape_str = "rect";

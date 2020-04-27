@@ -108,9 +108,9 @@ void pcb_arc_post(pcb_arc_t *arc);
 	do {                                                            \
 		rnd_coord_t __dx__ = (dx), __dy__ = (dy);                     \
 		pcb_arc_t *__a__ = (a);                                       \
-		PCB_MOVE_POINT((__a__)->X,(__a__)->Y,__dx__,__dy__);          \
-		PCB_BOX_MOVE_LOWLEVEL(&((__a__)->BoundingBox),__dx__,__dy__); \
-		PCB_BOX_MOVE_LOWLEVEL(&((__a__)->bbox_naked),__dx__,__dy__); \
+		RND_MOVE_POINT((__a__)->X,(__a__)->Y,__dx__,__dy__);          \
+		RND_BOX_MOVE_LOWLEVEL(&((__a__)->BoundingBox),__dx__,__dy__); \
+		RND_BOX_MOVE_LOWLEVEL(&((__a__)->bbox_naked),__dx__,__dy__); \
 	} while(0)
 
 #define PCB_ARC_LOOP(element) do {                                      \

@@ -33,7 +33,7 @@
 #include <librnd/core/rotate.h>
 #include <librnd/core/box.h>
 
-void pcb_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
+void rnd_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	rnd_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
 
@@ -45,7 +45,7 @@ void pcb_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Num
 	Box->Y2 = MAX(y1, y2);
 }
 
-void pcb_box_enlarge(pcb_box_t *box, double xfactor, double yfactor)
+void rnd_box_enlarge(pcb_box_t *box, double xfactor, double yfactor)
 {
 	double w = (double)(box->X2 - box->X1) * xfactor / 2.0;
 	double h = (double)(box->Y2 - box->Y1) * yfactor / 2.0;

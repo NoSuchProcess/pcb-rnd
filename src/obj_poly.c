@@ -394,8 +394,8 @@ void pcb_poly_bbox(pcb_poly_t *Polygon)
 	}
 
 	/* boxes don't include the lower right corner */
-	pcb_close_box(&Polygon->bbox_naked);
-	pcb_close_box(&Polygon->BoundingBox);
+	rnd_close_box(&Polygon->bbox_naked);
+	rnd_close_box(&Polygon->BoundingBox);
 }
 
 int pcb_poly_eq(const pcb_host_trans_t *tr1, const pcb_poly_t *p1, const pcb_host_trans_t *tr2, const pcb_poly_t *p2)
@@ -801,11 +801,11 @@ void pcb_poly_move(pcb_poly_t *Polygon, rnd_coord_t DX, rnd_coord_t DY)
 {
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
-		PCB_MOVE_POINT(point->X, point->Y, DX, DY);
+		RND_MOVE_POINT(point->X, point->Y, DX, DY);
 	}
 	PCB_END_LOOP;
-	PCB_BOX_MOVE_LOWLEVEL(&Polygon->BoundingBox, DX, DY);
-	PCB_BOX_MOVE_LOWLEVEL(&Polygon->bbox_naked, DX, DY);
+	RND_BOX_MOVE_LOWLEVEL(&Polygon->BoundingBox, DX, DY);
+	RND_BOX_MOVE_LOWLEVEL(&Polygon->bbox_naked, DX, DY);
 }
 
 /* moves a polygon */
@@ -851,7 +851,7 @@ void *pcb_polyop_move_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Po
 		pcb_poly_invalidate_erase(Polygon);
 	}
 	pcb_r_delete_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
-	PCB_MOVE_POINT(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
+	RND_MOVE_POINT(Point->X, Point->Y, ctx->move.dx, ctx->move.dy);
 	pcb_poly_bbox(Polygon);
 	pcb_r_insert_entry(Layer->polygon_tree, (pcb_box_t *) Polygon);
 	pcb_poly_remove_excess_points(Layer, Polygon);

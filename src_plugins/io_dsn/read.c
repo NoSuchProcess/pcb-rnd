@@ -217,7 +217,7 @@ static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src, int
 		y = COORD(ctx, src);
 	else
 		y = COORDY(ctx, src);
-	pcb_box_bump_point(dst, x, y);
+	rnd_box_bump_point(dst, x, y);
 	return 0;
 
 	err:;
@@ -288,7 +288,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 					ly = y;
 				}
 				else
-					pcb_box_bump_point(&ctx->bbox, x, y);
+					rnd_box_bump_point(&ctx->bbox, x, y);
 			}
 			if (!do_bbox && (x != fx) && (y != fy)) /* close the boundary */
 				boundary_line(oly, lx, ly, x, y, aper);
@@ -312,7 +312,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 				boundary_line(oly, box.X1, box.Y2, box.X1, box.Y1, 0);
 			}
 			else
-				pcb_box_bump_box(&ctx->bbox, &box);
+				rnd_box_bump_box(&ctx->bbox, &box);
 		}
 	}
 	return 0;

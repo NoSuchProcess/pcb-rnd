@@ -595,7 +595,7 @@ void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const pcb_box_t *screen)
 			pb.Y1 = prv->view.y0;
 			pb.X2 = prv->view.x0 + prv->view.width;
 			pb.Y2 = prv->view.y0 + prv->view.height;
-			if (pcb_box_intersect(screen, &pb)) {
+			if (rnd_box_intersect(screen, &pb)) {
 				prv->redrawing = 1;
 				ghid_preview_expose(GTK_WIDGET(prv), NULL);
 				prv->redrawing = 0;

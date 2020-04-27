@@ -89,12 +89,12 @@ struct vetting {
 mtspacebox_t *mtspace_create_box(const pcb_box_t * box, rnd_coord_t clearance)
 {
 	mtspacebox_t *mtsb;
-	assert(pcb_box_is_good(box));
+	assert(rnd_box_is_good(box));
 	mtsb = (mtspacebox_t *) malloc(sizeof(*mtsb));
 	/* the box was sent to us pre-bloated by the clearance amount */
 	*((pcb_box_t *) & mtsb->box) = *box;
 	mtsb->clearance = clearance;
-	assert(pcb_box_is_good(&mtsb->box));
+	assert(rnd_box_is_good(&mtsb->box));
 	return mtsb;
 }
 
@@ -176,7 +176,7 @@ void mtspace_remove(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t w
 	cl.clearance = clearance;
 	cl.box = *box;
 	cl.tree = which_tree(mtspace, which);
-	small_search = pcb_box_center(box);
+	small_search = rnd_box_center(box);
 	if (setjmp(cl.env) == 0) {
 		pcb_r_search(cl.tree, &small_search, NULL, mts_remove_one, &cl, NULL);
 		assert(0);									/* didn't find it?? */
@@ -197,7 +197,7 @@ static inline void heap_append(pcb_heap_t * heap, pcb_cheap_point_t * desired, p
 {
 	pcb_cheap_point_t p = *desired;
 	assert(desired);
-	pcb_closest_pcb_point_in_box(&p, newone);
+	rnd_closest_pcb_point_in_box(&p, newone);
 	pcb_heap_insert(heap, PCB_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
 }
 
@@ -225,7 +225,7 @@ static pcb_r_dir_t query_one(const pcb_box_t * box, void *cl)
 		pcb_box_t b1 = *qc->cbox, b2 = mtsb->box;
 		b1.X1--;b1.Y1--;b1.X2++;b1.Y2++;
 		b2.X1--;b2.Y1--;b2.X2++;b2.Y2++;
-		assert(pcb_box_intersect(&b1, &b2));
+		assert(rnd_box_intersect(&b1, &b2));
 	}
 #endif
 
@@ -321,7 +321,7 @@ static void qloop(struct query_closure *qc, pcb_rtree_t * tree, heap_or_vector r
 	while (!(qc->desired ? pcb_heap_is_empty(qc->checking.h) : vector_is_empty(qc->checking.v))) {
 		cbox = qc->desired ? (pcb_box_t *) pcb_heap_remove_smallest(qc->checking.h) : (pcb_box_t *) vector_remove_last(qc->checking.v);
 		if (setjmp(qc->env) == 0) {
-			assert(pcb_box_is_good(cbox));
+			assert(rnd_box_is_good(cbox));
 			qc->cbox = cbox;
 			pcb_r_search(tree, cbox, NULL, query_one, qc, &n);
 			assert(n == 0);
@@ -404,7 +404,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const pcb_box_t * region,
 	if (region) {
 		pcb_box_t *cbox;
 		assert(work == NULL);
-		assert(pcb_box_is_good(region));
+		assert(rnd_box_is_good(region));
 		assert(vector_is_empty(free_space_vec));
 		assert(vector_is_empty(lo_conflict_space_vec));
 		assert(vector_is_empty(hi_conflict_space_vec));
@@ -412,7 +412,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const pcb_box_t * region,
 		work->clearance = clearance;
 		work->radius = radius;
 		cbox = (pcb_box_t *) malloc(sizeof(pcb_box_t));
-		*cbox = pcb_bloat_box(region, clearance + radius);
+		*cbox = rnd_bloat_box(region, clearance + radius);
 		if (desired) {
 			work->untested.h = pcb_heap_create();
 			work->no_fix.h = pcb_heap_create();

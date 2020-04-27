@@ -226,7 +226,7 @@ static void calc_pad_bbox_(subst_ctx_t *ctx, rnd_coord_t *pw, rnd_coord_t *ph, r
 					if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
 						continue;
 				}
-				pcb_box_bump_box(&box, &o->bbox_naked);
+				rnd_box_bump_box(&box, &o->bbox_naked);
 			}
 		}
 	}

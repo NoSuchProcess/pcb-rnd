@@ -240,42 +240,42 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_float
 	{
 		pcb_pstk_bbox(padstack);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, padstack))
-			pcb_box_bump_box(out, &padstack->BoundingBox);
+			rnd_box_bump_box(out, &padstack->BoundingBox);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(Data);
 	{
 		pcb_subc_bbox(subc);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, subc))
-			pcb_box_bump_box(out, &subc->BoundingBox);
+			rnd_box_bump_box(out, &subc->BoundingBox);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Data);
 	{
 		pcb_line_bbox(line);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, line))
-			pcb_box_bump_box(out, &line->BoundingBox);
+			rnd_box_bump_box(out, &line->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Data);
 	{
 		pcb_arc_bbox(arc);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, arc))
-			pcb_box_bump_box(out, &arc->BoundingBox);
+			rnd_box_bump_box(out, &arc->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Data);
 	{
 		pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
-			pcb_box_bump_box(out, &text->BoundingBox);
+			rnd_box_bump_box(out, &text->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Data);
 	{
 		pcb_poly_bbox(polygon);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, polygon))
-			pcb_box_bump_box(out, &polygon->BoundingBox);
+			rnd_box_bump_box(out, &polygon->BoundingBox);
 	}
 	PCB_ENDALL_LOOP;
 	return (pcb_data_is_empty(Data) ? NULL : out);
@@ -292,42 +292,42 @@ pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore
 	{
 		pcb_pstk_bbox(padstack);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, padstack))
-			pcb_box_bump_box(out, &padstack->bbox_naked);
+			rnd_box_bump_box(out, &padstack->bbox_naked);
 	}
 	PCB_END_LOOP;
 	PCB_SUBC_LOOP(Data);
 	{
 		pcb_subc_bbox(subc);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, subc))
-			pcb_box_bump_box(out, &subc->bbox_naked);
+			rnd_box_bump_box(out, &subc->bbox_naked);
 	}
 	PCB_END_LOOP;
 	PCB_LINE_ALL_LOOP(Data);
 	{
 		pcb_line_bbox(line);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, line))
-			pcb_box_bump_box(out, &line->bbox_naked);
+			rnd_box_bump_box(out, &line->bbox_naked);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Data);
 	{
 		pcb_arc_bbox(arc);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, arc))
-			pcb_box_bump_box(out, &arc->bbox_naked);
+			rnd_box_bump_box(out, &arc->bbox_naked);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Data);
 	{
 		pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
-			pcb_box_bump_box(out, &text->bbox_naked);
+			rnd_box_bump_box(out, &text->bbox_naked);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Data);
 	{
 		pcb_poly_bbox(polygon);
 		if (!ignore_floaters || !PCB_FLAG_TEST(PCB_FLAG_FLOATER, polygon))
-			pcb_box_bump_box(out, &polygon->bbox_naked);
+			rnd_box_bump_box(out, &polygon->bbox_naked);
 	}
 	PCB_ENDALL_LOOP;
 	return (pcb_data_is_empty(Data) ? NULL : out);

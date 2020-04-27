@@ -1319,7 +1319,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		SearchBox.Y2 = Y + Radius;
 	}
 	else {
-		SearchBox = pcb_point_box(X, Y);
+		SearchBox = rnd_point_box(X, Y);
 	}
 
 	if (conf_core.editor.only_names) {

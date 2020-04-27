@@ -69,7 +69,7 @@ typedef struct {
 /* ---------------------------------------------------------------------------
  * Create a sorted list of unique y coords from a BoxList.
  */
-static LocationList createSortedYList(pcb_box_list_t *boxlist)
+static LocationList createSortedYList(rnd_box_list_t *boxlist)
 {
 	LocationList yCoords;
 	rnd_coord_t last;
@@ -164,7 +164,7 @@ void deleteSegment(SegmentTree * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
  * etc.).
  * Runs in O(N ln N) time.
  */
-double pcb_intersect_box_box(pcb_box_list_t *boxlist)
+double pcb_intersect_box_box(rnd_box_list_t *boxlist)
 {
 	pcb_cardinal_t i;
 	double area = 0.0;
@@ -179,7 +179,7 @@ double pcb_intersect_box_box(pcb_box_list_t *boxlist)
  * Compute the area of the union of the given rectangles.
  * O(N ln N) time.
  */
-double pcb_union_box_box(pcb_box_list_t *boxlist)
+double pcb_union_box_box(rnd_box_list_t *boxlist)
 {
 	pcb_box_t **rectLeft, **rectRight;
 	pcb_cardinal_t i, j;
