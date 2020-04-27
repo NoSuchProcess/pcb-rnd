@@ -345,7 +345,7 @@ do { \
 			pcb_any_obj_t *term = pcb_qry_parent_net_term(ec, obj); \
 			if (term == NULL) \
 				PCB_QRY_RET_INV(res); \
-			PCB_QRY_RET_INT(res, term->ID); \
+			PCB_QRY_RET_OBJ(res, term); \
 		} \
 		else \
 			PCB_QRY_RET_INV(res); \
