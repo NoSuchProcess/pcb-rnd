@@ -278,6 +278,16 @@ void pcb_obj_change_id(pcb_any_obj_t *o, long int new_id);
 /* sets the bounding box of a point */
 void pcb_set_point_bounding_box(pcb_point_t *Pnt);
 
+/* Determine the size class of a sub-kilobyte object: the largest 2^n that
+   is smaller than the size; size must be at least 16. */
+#define pcb_size_class(a) ((a) < 32 ? 16 : ((a) < 64 ? 32 : ((a) < 128 ? 64 : ((a) < 256 ? 128 : ((a) < 512 ? 256 : ((a) < 1024 ? 512 : 1024 ))))))
+
+/* Return an object-instance-unique integer value */
+PCB_INLINE size_t pcb_obj_iid(pcb_any_obj_t *obj)
+{
+	return (size_t)obj / pcb_size_class(sizeof(pcb_any_obj_t));
+}
+
 
 #define pcb_obj_id_reg(data, obj) \
 	do { \
