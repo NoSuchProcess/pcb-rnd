@@ -9,7 +9,7 @@
  *  this file, box.h, was written and is
  *  Copyright (c) 2001 C. Scott Ananian.
  *
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,10 +63,10 @@ typedef enum {
 /* rotates box 90-degrees cw */
 /* that's a strange rotation! */
 #define RND_BOX_ROTATE_CW(box) \
-{ rnd_coord_t t;\
+do { rnd_coord_t t;\
 	t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
 	(box).X2 = -(box).Y1; (box).Y1 = t;\
-}
+} while(0)
 
 #define RND_BOX_ROTATE_TO_NORTH(box, dir) \
 do { rnd_coord_t t;\
