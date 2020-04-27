@@ -50,8 +50,8 @@
 #include <librnd/core/pcb_bool.h>
 
 struct rnd_box_list_s {
-	pcb_cardinal_t BoxN,								/* the number of boxes contained */
-	  BoxMax;											/* max boxes from malloc */
+	pcb_cardinal_t BoxN;   /* the number of boxes contained */
+	pcb_cardinal_t BoxMax; /* max boxes from malloc */
 	pcb_box_t *Box;
 };
 
@@ -65,40 +65,45 @@ typedef enum {
 
 /* rotates box 90-degrees cw */
 /* that's a strange rotation! */
-#define RND_BOX_ROTATE_CW(box) { rnd_coord_t t;\
-    t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
-    (box).X2 = -(box).Y1; (box).Y1 = t;\
+#define RND_BOX_ROTATE_CW(box) \
+{ rnd_coord_t t;\
+	t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
+	(box).X2 = -(box).Y1; (box).Y1 = t;\
 }
-#define RND_BOX_ROTATE_TO_NORTH(box, dir) do { rnd_coord_t t;\
-  switch(dir) {\
-  case PCB_EAST: \
-   t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
-   (box).X2 = (box).Y2; (box).Y2 = -t; break;\
-  case PCB_SOUTH: \
-   t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
-   t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
-  case PCB_WEST: \
-   t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
-   (box).X2 = -(box).Y1; (box).Y1 = t; break;\
-  case PCB_NORTH: break;\
-  default: assert(0);\
-  }\
-  } while (0)
-#define RND_BOX_ROTATE_FROM_NORTH(box, dir) do { rnd_coord_t t;\
-  switch(dir) {\
-  case PCB_WEST: \
-   t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
-   (box).X2 = (box).Y2; (box).Y2 = -t; break;\
-  case PCB_SOUTH: \
-   t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
-   t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
-  case PCB_EAST: \
-   t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
-   (box).X2 = -(box).Y1; (box).Y1 = t; break;\
-  case PCB_NORTH: break;\
-  default: assert(0);\
-  }\
-  } while (0)
+
+#define RND_BOX_ROTATE_TO_NORTH(box, dir) \
+do { rnd_coord_t t;\
+	switch(dir) {\
+	case PCB_EAST: \
+		t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
+		(box).X2 = (box).Y2; (box).Y2 = -t; break;\
+	case PCB_SOUTH: \
+		t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
+		t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
+	case PCB_WEST: \
+		t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
+		(box).X2 = -(box).Y1; (box).Y1 = t; break;\
+	case PCB_NORTH: break;\
+	default: assert(0);\
+	}\
+} while (0)
+
+#define RND_BOX_ROTATE_FROM_NORTH(box, dir) \
+do { rnd_coord_t t;\
+	switch(dir) {\
+	case PCB_WEST: \
+		t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
+		(box).X2 = (box).Y2; (box).Y2 = -t; break;\
+	case PCB_SOUTH: \
+		t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
+		t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
+	case PCB_EAST: \
+		t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
+		(box).X2 = -(box).Y1; (box).Y1 = t; break;\
+	case PCB_NORTH: break;\
+	default: assert(0);\
+	}\
+} while (0)
 
 /* to avoid overflow, we calculate centers this way */
 #define RND_BOX_CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
@@ -122,10 +127,10 @@ typedef struct pcb_cheap_point_s {
 } pcb_cheap_point_t;
 
 
-/* note that boxes are closed on top and left and open on bottom and right. */
-/* this means that top-left corner is in box, *but bottom-right corner is
- * not*.  */
-PCB_INLINE rnd_bool rnd_point_in_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y) 
+/* note that boxes are closed on top and left and open on bottom and right.
+   this means that top-left corner is in box, *but bottom-right corner is
+   not*.  */
+PCB_INLINE rnd_bool rnd_point_in_box(const pcb_box_t * box, rnd_coord_t X, rnd_coord_t Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
@@ -228,8 +233,8 @@ PCB_INLINE void rnd_close_box(pcb_box_t * r)
 }
 
 /* return the square of the minimum distance from a point to some point
- * inside a box.  The box is half-closed!  That is, the top-left corner
- * is considered in the box, but the bottom-right corner is not. */
+   inside a box.  The box is half-closed!  That is, the top-left corner
+   is considered in the box, but the bottom-right corner is not. */
 PCB_INLINE double rnd_dist2_to_box(const pcb_cheap_point_t * p, const pcb_box_t * b)
 {
 	pcb_cheap_point_t r = rnd_closest_pcb_point_in_box(p, b);
