@@ -288,7 +288,8 @@ int pcb_bxl_encode_char(hdecode_t *ctx, int inchr)
 			else
 				append(ctx, 0);
 		}
-		ctx->after_first_bit = 1;
+		else
+			ctx->after_first_bit = 1;
 	}
 
 	htree_update(ctx->tree.node_linear[inchr]);
