@@ -153,6 +153,8 @@ pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 			break;
 		idp->id[n] = strtol(s, &next, 10);
 		s = (const char *)next;
+		if (*s == '\0')
+			break;
 	}
 	return idp;
 }
