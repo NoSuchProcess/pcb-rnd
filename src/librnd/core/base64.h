@@ -26,5 +26,5 @@
 
 #include <stdlib.h>
 
-size_t base64_write_right(char *buff_start, size_t buff_len, unsigned long int num);
-int base64_parse_grow(unsigned long int *num, int chr, int term);
+size_t rnd_base64_write_right(char *buff_start, size_t buff_len, unsigned long int num);
+int rnd_base64_parse_grow(unsigned long int *num, int chr, int term);

@@ -76,3 +76,5 @@
 #define pcb_attribute_copyback rnd_attribute_copyback
 #define pcb_attribute_copyback_end rnd_attribute_copyback_end
 #define pcb_attrib_compat_set_intconn rnd_attrib_compat_set_intconn
+#define base64_write_right rnd_base64_write_right
+#define base64_parse_grow rnd_base64_parse_grow

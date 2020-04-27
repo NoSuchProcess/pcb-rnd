@@ -217,7 +217,7 @@ static parse_res_t parse_char(proto_ctx_t *ctx, int c)
 		case PST_BSTR:
 			do_bstr:;
 			if (ctx->tcurr->in_len) { /* parsing length */
-				int res = base64_parse_grow(&ctx->tcurr->data.s.len, c, '=');
+				int res = rnd_base64_parse_grow(&ctx->tcurr->data.s.len, c, '=');
 				if (res < 0) /* invalid length field */
 					return -1;
 				if (res == 0) /* proceed with len parsing */

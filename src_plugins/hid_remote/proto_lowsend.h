@@ -54,7 +54,7 @@ static int sendf(proto_ctx_t *ctx, const char *fmt, ...)
 	if (ctx->bindepth > 0) {
 		size_t blen;
 		payload[-1] = '='; /* separator */
-		blen = base64_write_right(buff, PREFIX_LEN-2, len);
+		blen = rnd_base64_write_right(buff, PREFIX_LEN-2, len);
 		if (blen <= 0)
 			return -1;
 		blen++; /* for the separator */
