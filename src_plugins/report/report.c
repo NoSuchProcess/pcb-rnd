@@ -407,7 +407,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	{
 		pcb_idpath_t *idp = pcb_obj2idpath((pcb_any_obj_t *)ptr2);
 		gds_append_str(&tmp, "\nidpath: ");
-		pcb_append_idpath(&tmp, idp);
+		pcb_append_idpath(&tmp, idp, 0);
 		pcb_idpath_destroy(idp);
 	}
 
