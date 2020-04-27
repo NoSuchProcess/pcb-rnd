@@ -106,24 +106,7 @@ int hook_postarg()
 /* Runs when things should be detected for the host system */
 int hook_detect_host()
 {
-	pup_hook_detect_host();
-	fungw_hook_detect_host();
-
-	require("fstools/ar",  0, 1);
-	require("fstools/mkdir", 0, 1);
-	require("fstools/rm",  0, 1);
-	require("fstools/cp",  0, 1);
-	require("fstools/ln",  0, 1);
-
-/* until we rewrite the generators in C */
-	require("fstools/awk",  0, 1);
-
-	require("cc/argstd/*", 0, 0);
-
-	require("cc/func_attr/unused/*", 0, 0);
-	require("cc/inline", 0, 0);
-
-	return 0;
+	return rnd_hook_detect_host();
 }
 
 	/* figure if we need the dialogs plugin */
