@@ -115,7 +115,7 @@ static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 }
 
 
-static void shape_layer_chg(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void shape_layer_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	void *hid_ctx;
 	int tab;

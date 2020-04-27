@@ -335,7 +335,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
 }
 
-static void pref_ev_board_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)
@@ -347,7 +347,7 @@ static void pref_ev_board_changed(pcb_hidlib_t *hidlib, void *user_data, int arg
 	pref_win_brd2dlg(ctx);
 }
 
-static void pref_ev_board_meta_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)

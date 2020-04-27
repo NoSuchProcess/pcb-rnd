@@ -219,7 +219,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib;
+	rnd_hidlib_t *hidlib;
 	const char *fn;
 	const char *pcb_acts_gui_MayOverwriteFile = nope;
 	const char **xpm;

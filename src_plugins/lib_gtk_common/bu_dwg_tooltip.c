@@ -39,7 +39,7 @@
 #define TOOLTIP_UPDATE_DELAY 200
 
 static int tooltip_update_timeout_id = 0;
-gboolean pcb_gtk_dwg_tooltip_check_object(pcb_hidlib_t *hl, GtkWidget *drawing_area, pcb_coord_t crosshairx, pcb_coord_t crosshairy)
+gboolean pcb_gtk_dwg_tooltip_check_object(rnd_hidlib_t *hl, GtkWidget *drawing_area, pcb_coord_t crosshairx, pcb_coord_t crosshairy)
 {
 	const char *description;
 	fgw_arg_t res, argv[3];

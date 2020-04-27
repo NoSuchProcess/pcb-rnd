@@ -52,7 +52,7 @@ void pcb_tool_move_uninit(void)
 	pcb_crosshair.extobj_edit = NULL;
 }
 
-void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 {
 	pcb_coord_t dx, dy;
 
@@ -101,7 +101,7 @@ void pcb_tool_move_notify_mode(pcb_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_move_release_mode(pcb_hidlib_t *hl)
+void pcb_tool_move_release_mode(rnd_hidlib_t *hl)
 {
 	if (hl->tool_hit) {
 		pcb_tool_move_notify_mode(hl);
@@ -109,18 +109,18 @@ void pcb_tool_move_release_mode(pcb_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_move_adjust_attached_objects(pcb_hidlib_t *hl)
+void pcb_tool_move_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
 	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
 }
 
-void pcb_tool_move_draw_attached(pcb_hidlib_t *hl)
+void pcb_tool_move_draw_attached(rnd_hidlib_t *hl)
 {
 	pcb_xordraw_movecopy();
 }
 
-pcb_bool pcb_tool_move_undo_act(pcb_hidlib_t *hl)
+pcb_bool pcb_tool_move_undo_act(rnd_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)

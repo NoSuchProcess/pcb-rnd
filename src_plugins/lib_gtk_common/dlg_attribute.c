@@ -1017,7 +1017,7 @@ void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
 	}
 }
 
-int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
+int pcb_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
 {
 	GtkAllocation allocation;
 
@@ -1032,7 +1032,7 @@ int pcb_gtk_winplace_cfg(pcb_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 	return 0;
 }
 
-pcb_hidlib_t *ghid_attr_get_dad_hidlib(void *hid_ctx)
+rnd_hidlib_t *ghid_attr_get_dad_hidlib(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	return ctx->gctx->hidlib;

@@ -46,7 +46,7 @@
 #include "tool_logic.h"
 
 
-void pcb_tool_remove_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_remove_notify_mode(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 	void *ptr1, *ptr2, *ptr3;

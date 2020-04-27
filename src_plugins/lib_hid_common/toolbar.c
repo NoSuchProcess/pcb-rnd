@@ -179,13 +179,13 @@ static void toolbar_create(void)
 	}
 }
 
-void pcb_toolbar_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL))
 		toolbar_create();
 }
 
-void pcb_toolbar_reg_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((toolbar.sub_inited) && (argv[1].type == PCB_EVARG_PTR)) {
 		pcb_tool_t *tool = argv[1].d.p;

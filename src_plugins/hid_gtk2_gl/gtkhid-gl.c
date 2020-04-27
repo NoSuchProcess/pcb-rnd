@@ -137,7 +137,7 @@ static void end_subcomposite(void)
 
 int ghid_gl_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
 {
-	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	glMatrixMode(GL_MODELVIEW);
@@ -180,7 +180,7 @@ pcb_hid_gc_t ghid_gl_make_gc(pcb_hid_t *hid)
 	return rv;
 }
 
-void ghid_gl_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
+void ghid_gl_draw_grid_local(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
 {
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
 	grid_local_x = (cx / hidlib->grid) * hidlib->grid + hidlib->grid_ox;
@@ -188,7 +188,7 @@ void ghid_gl_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t c
 	grid_local_radius = pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
+static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, pcb_box_t *drawn_area)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -208,12 +208,12 @@ static void ghid_gl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
 	glDisable(GL_COLOR_LOGIC_OP);
 }
 
-static void pcb_gl_draw_texture(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t bw, pcb_coord_t bh)
+static void pcb_gl_draw_texture(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t bw, pcb_coord_t bh)
 {
 	hidgl_draw_texture_rect(	ox,oy,ox+bw,oy+bh, gpm->cache.lng );
 }
 
-static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t bw, pcb_coord_t bh)
+static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t bw, pcb_coord_t bh)
 {
 	GLuint texture_handle = gpm->cache.lng;
 	if (texture_handle == 0) {
@@ -240,7 +240,7 @@ static void ghid_gl_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb
 	pcb_gl_draw_texture(hidlib, gpm, ox, oy, bw, bh);
 }
 
-static void ghid_gl_draw_bg_image(pcb_hidlib_t *hidlib)
+static void ghid_gl_draw_bg_image(rnd_hidlib_t *hidlib)
 {
 	if (ghidgui->bg_pixmap.image != NULL)
 		ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
@@ -547,7 +547,7 @@ static void ghid_gl_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete
 	ghid_gl_invalidate_all(hid);
 }
 
-static void pcb_gl_draw_right_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
+static void pcb_gl_draw_right_cross(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
 {
 	glVertex3i(x, miny, z);
 	glVertex3i(x, maxy, z);
@@ -555,7 +555,7 @@ static void pcb_gl_draw_right_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GLin
 	glVertex3i(maxx, y, z);
 }
 
-static void pcb_gl_draw_slanted_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
+static void pcb_gl_draw_slanted_cross(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
 {
 	pcb_coord_t cmax = MAX(maxx-minx, maxy-miny);
 
@@ -566,7 +566,7 @@ static void pcb_gl_draw_slanted_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GL
 	glVertex3i(x+cmax, y-cmax, z);
 }
 
-static void pcb_gl_draw_dozen_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
+static void pcb_gl_draw_dozen_cross(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
 {
 	pcb_coord_t cmax = MAX(maxx-minx, maxy-miny);
 	double c30 = cos(M_PI/6.0), s30 = sin(M_PI/6.0);
@@ -583,7 +583,7 @@ static void pcb_gl_draw_dozen_cross(pcb_hidlib_t *hidlib, GLint x, GLint y, GLin
 	glVertex3i(x+cmax*c60, y-cmax*s60, z);
 }
 
-static void pcb_gl_draw_crosshair(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
+static void pcb_gl_draw_crosshair(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
 {
 	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
 
@@ -598,7 +598,7 @@ static void pcb_gl_draw_crosshair(pcb_hidlib_t *hidlib, GLint x, GLint y, GLint 
 	prev = pcbhl_conf.editor.crosshair_shape_idx;
 }
 
-static void ghid_gl_show_crosshair(pcb_hidlib_t *hidlib, gboolean paint_new_location, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
+static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_location, pcb_coord_t minx, pcb_coord_t miny, pcb_coord_t maxx, pcb_coord_t maxy)
 {
 	GLint x, y, z;
 	static int done_once = 0;
@@ -752,7 +752,7 @@ static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose_t *ev, void *vport)
 {
 	pcb_gtk_port_t *port = vport;
-	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	pcb_hid_expose_ctx_t ctx;
@@ -829,7 +829,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
 	render_priv_t *priv = ghidgui->port.render_priv;
-	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	pcb_gtk_view_t save_view;
 	int save_width, save_height;
 	double xz, yz, vw, vh;

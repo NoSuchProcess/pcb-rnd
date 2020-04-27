@@ -362,7 +362,7 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
    flag (maybe NULL), and its active flag (maybe NULL), to a
    callback function. It is the responsibility of the function
    to actually change the state of the action. */
-void ghid_main_menu_update_toggle_state(pcb_hidlib_t *hidlib, GHidMainMenu *menu, void (*cb)(pcb_hidlib_t *, GtkAction *, const char *toggle_flag, const char *active_flag))
+void ghid_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GHidMainMenu *menu, void (*cb)(rnd_hidlib_t *, GtkAction *, const char *toggle_flag, const char *active_flag))
 {
 	GList *list;
 	for (list = menu->actions; list; list = list->next) {
@@ -428,7 +428,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 }
 
 /* callback for ghid_main_menu_update_toggle_state() */
-void menu_toggle_update_cb(pcb_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
+void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {
 		int v = pcb_hid_get_flag(hidlib, tflag);
@@ -462,7 +462,7 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 }
 
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, pcb_hidlib_t *hidlib, pcb_hid_cfg_t **cfg_out)
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, pcb_hid_cfg_t **cfg_out)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;

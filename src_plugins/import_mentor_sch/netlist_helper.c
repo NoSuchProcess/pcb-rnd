@@ -214,7 +214,7 @@ static void elem_map_apply(nethlp_elem_ctx_t *ectx, nethlp_rule_t *r)
 	htsp_set(&ectx->attr, pcb_strdup(r->new_key), pcb_strdup(dst));
 }
 
-void nethlp_elem_done(pcb_hidlib_t *hl, nethlp_elem_ctx_t *ectx)
+void nethlp_elem_done(rnd_hidlib_t *hl, nethlp_elem_ctx_t *ectx)
 {
 	htsp_entry_t *e;
 	char *refdes, *footprint, *value;
@@ -288,7 +288,7 @@ nethlp_net_ctx_t *nethlp_net_new(nethlp_ctx_t *nhctx, nethlp_net_ctx_t *prealloc
 	return prealloc;
 }
 
-void nethlp_net_add_term(pcb_hidlib_t *hl, nethlp_net_ctx_t *nctx, const char *part, const char *pin)
+void nethlp_net_add_term(rnd_hidlib_t *hl, nethlp_net_ctx_t *nctx, const char *part, const char *pin)
 {
 	char *refdes = htsp_get(&nctx->nhctx->id2refdes, part);
 	char term[256];

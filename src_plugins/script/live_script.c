@@ -52,7 +52,7 @@ static const char *lvs_cookie = "live_script";
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	pcb_hidlib_t *hidlib;
+	rnd_hidlib_t *hidlib;
 	char *name, *longname, *fn;
 	char **langs;
 	char **lang_engines;
@@ -94,7 +94,7 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 }
 
 #ifdef PCB_HAVE_SYS_FUNGW
-static int lvs_list_langs(pcb_hidlib_t *hl, live_script_t *lvs)
+static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	const char **path;
 	vtp0_t vl, ve;
@@ -157,7 +157,7 @@ static int lvs_list_langs(pcb_hidlib_t *hl, live_script_t *lvs)
 	return vl.used;
 }
 #else
-static int lvs_list_langs(pcb_hidlib_t *hl, live_script_t *lvs)
+static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	vtp0_t vl, ve;
 
@@ -196,7 +196,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	rnd_actionva(lvs->hidlib, "livescript", arg, lvs->name, NULL);
 }
 
-static live_script_t *pcb_dlg_live_script(pcb_hidlib_t *hidlib, const char *name)
+static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *title;
@@ -278,7 +278,7 @@ static int live_stop(live_script_t *lvs)
 	return 0;
 }
 
-static int live_run(pcb_hidlib_t *hl, live_script_t *lvs)
+static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
@@ -348,7 +348,7 @@ static int live_undo(live_script_t *lvs)
 }
 
 
-static int live_load(pcb_hidlib_t *hl, live_script_t *lvs, const char *fn)
+static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
@@ -389,7 +389,7 @@ static int live_load(pcb_hidlib_t *hl, live_script_t *lvs, const char *fn)
 	return 0;
 }
 
-static int live_save(pcb_hidlib_t *hl, live_script_t *lvs, const char *fn)
+static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
 	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
@@ -521,7 +521,7 @@ static void lvs_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 }
 
 
-static void lvs_menu_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void lvs_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_hid_cfg_map_anchor_menus(ANCH, lvs_install_menu, NULL);
 }

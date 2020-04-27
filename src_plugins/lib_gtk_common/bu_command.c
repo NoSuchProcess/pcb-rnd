@@ -231,7 +231,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 }
 
 
-void ghid_handle_user_command(pcb_hidlib_t *hl, pcb_gtk_command_t *ctx, pcb_bool raise)
+void ghid_handle_user_command(rnd_hidlib_t *hl, pcb_gtk_command_t *ctx, pcb_bool raise)
 {
 	char *command;
 

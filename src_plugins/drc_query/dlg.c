@@ -101,7 +101,7 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 	}
 }
 
-static void drcq_open_view_win(pcb_hidlib_t *hidlib, pcb_view_list_t *view)
+static void drcq_open_view_win(rnd_hidlib_t *hidlib, pcb_view_list_t *view)
 {
 	fgw_arg_t args[4], ares;
 	args[1].type = FGW_STR; args[1].val.str = "drc_query: manual run";

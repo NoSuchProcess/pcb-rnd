@@ -38,7 +38,7 @@ const char *pcb_acts_Zoom;
 const char pcb_acts_Zoom_default[] = pcb_gui_acts_zoom;
 fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
+	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *vp, *ovp;
 	double v;
 	pcb_coord_t x = 0, y = 0;

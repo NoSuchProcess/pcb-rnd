@@ -198,7 +198,7 @@ static void ghid_do_exit(pcb_hid_t *hid)
 	gtk_main_quit();
 }
 
-static void pcb_gtk_topwinplace(pcb_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
+static void pcb_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
 {
 	int plc[4] = {-1, -1, -1, -1};
 
@@ -510,7 +510,7 @@ static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)
 	return 0;
 }
 
-static void ghid_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
+static void ghid_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 

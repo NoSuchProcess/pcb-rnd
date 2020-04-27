@@ -42,7 +42,7 @@
 #include "crosshair.h"
 
 
-void pcb_tool_rotate_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_rotate_notify_mode(rnd_hidlib_t *hl)
 {
 	pcb_screen_obj_rotate90((pcb_board_t *)hl, hl->tool_x, hl->tool_y,
 		pcb_gui->shift_is_pressed(pcb_gui) ? (conf_core.editor.show_solder_side ? 1 : 3) : (conf_core.editor.show_solder_side ? 3 : 1));

@@ -53,7 +53,7 @@ void pcb_tool_buffer_uninit(void)
 {
 }
 
-static void pcb_tool_buffer_notify_mode_(pcb_hidlib_t *hl, pcb_bool keep_ids)
+static void pcb_tool_buffer_notify_mode_(rnd_hidlib_t *hl, pcb_bool keep_ids)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -68,12 +68,12 @@ static void pcb_tool_buffer_notify_mode_(pcb_hidlib_t *hl, pcb_bool keep_ids)
 	}
 }
 
-void pcb_tool_buffer_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_buffer_notify_mode(rnd_hidlib_t *hl)
 {
 	pcb_tool_buffer_notify_mode_(hl, pcb_false);
 }
 
-void pcb_tool_buffer_release_mode(pcb_hidlib_t *hl)
+void pcb_tool_buffer_release_mode(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -87,13 +87,13 @@ void pcb_tool_buffer_release_mode(pcb_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_buffer_adjust_attached_objects(pcb_hidlib_t *hl)
+void pcb_tool_buffer_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	pcb_crosshair.AttachedObject.tx = pcb_crosshair.X;
 	pcb_crosshair.AttachedObject.ty = pcb_crosshair.Y;
 }
 
-void pcb_tool_buffer_draw_attached(pcb_hidlib_t *hl)
+void pcb_tool_buffer_draw_attached(rnd_hidlib_t *hl)
 {
 	pcb_xordraw_buffer(PCB_PASTEBUFFER);
 }

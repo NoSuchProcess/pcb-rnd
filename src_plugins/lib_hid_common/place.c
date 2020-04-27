@@ -78,7 +78,7 @@ static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 }
 
 
-void pcb_dialog_place(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	const char *id;
 	int *geo;
@@ -100,7 +100,7 @@ void pcb_dialog_place(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event
 /*	pcb_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
-void pcb_dialog_resize(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((argc < 7) || (argv[1].type != PCB_EVARG_PTR) || (argv[2].type != PCB_EVARG_STR))
 		return;
@@ -195,7 +195,7 @@ void pcb_wplc_load(conf_role_t role)
 }
 
 
-static void place_maybe_save(pcb_hidlib_t *hidlib, conf_role_t role, int force)
+static void place_maybe_save(rnd_hidlib_t *hidlib, conf_role_t role, int force)
 {
 	htsw_entry_t *e;
 	char path[128 + sizeof(BASEPATH)];
@@ -235,24 +235,24 @@ static void place_maybe_save(pcb_hidlib_t *hidlib, conf_role_t role, int force)
 /* event handlers that run before the current pcb is saved to save win geo
    in the board conf and after loading a new board to fetch window placement
    info. */
-static void place_save_pre(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void place_save_pre(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	place_maybe_save(hidlib, CFR_PROJECT, 0);
 	place_maybe_save(hidlib, CFR_DESIGN, 0);
 }
 
-static void place_load_post(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_wplc_load(CFR_PROJECT);
 	pcb_wplc_load(CFR_DESIGN);
 }
 
-void pcb_wplc_save_to_role(pcb_hidlib_t *hidlib, conf_role_t role)
+void pcb_wplc_save_to_role(rnd_hidlib_t *hidlib, conf_role_t role)
 {
 	place_maybe_save(hidlib, role, 1);
 }
 
-int pcb_wplc_save_to_file(pcb_hidlib_t *hidlib, const char *fn)
+int pcb_wplc_save_to_file(rnd_hidlib_t *hidlib, const char *fn)
 {
 	htsw_entry_t *e;
 	FILE *f;

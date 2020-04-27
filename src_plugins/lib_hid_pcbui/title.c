@@ -56,13 +56,13 @@ static void update_title(void)
 	pcb_gui->set_top_title(pcb_gui, title_buf.array);
 }
 
-static void pcb_title_board_changed_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_title_board_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	brd_changed = 0;
 	update_title();
 }
 
-static void pcb_title_meta_changed_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_title_meta_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (brd_changed == PCB->Changed)
 		return;
@@ -70,7 +70,7 @@ static void pcb_title_meta_changed_ev(pcb_hidlib_t *hidlib, void *user_data, int
 	update_title();
 }
 
-static void pcb_title_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_title_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	gui_inited = 1;
 	update_title();

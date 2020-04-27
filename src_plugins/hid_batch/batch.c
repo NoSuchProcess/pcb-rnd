@@ -62,7 +62,7 @@ static void uninit_batch(void)
 	}
 }
 
-static void ev_pcb_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -96,7 +96,7 @@ static void log_append(pcb_logline_t *line)
 	line->seen = 1;
 }
 
-static void ev_log_append(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_log_append(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (!batch_active)
 		return;
@@ -299,7 +299,7 @@ static void batch_pan_mode(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, pcb_boo
 {
 }
 
-static void batch_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
+static void batch_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
 {
 	hid->hid_data = hidlib;
 }
@@ -307,7 +307,7 @@ static void batch_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
 
 static void batch_view_get(pcb_hid_t *hid, pcb_box_t *viewbox)
 {
-	pcb_hidlib_t *hidlib = hid->hid_data;
+	rnd_hidlib_t *hidlib = hid->hid_data;
 	viewbox->X1 = 0;
 	viewbox->Y1 = 0;
 	viewbox->X2 = hidlib->size_x;

@@ -257,14 +257,14 @@ static void layer_install_menu(void)
 
 }
 
-void pcb_layer_menu_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_layer_menu_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	layer_install_menu();
 	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
 		pcb_gui->update_menu_checkbox(pcb_gui, NULL);
 }
 
-void pcb_layer_menu_vis_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_layer_menu_vis_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
 		pcb_gui->update_menu_checkbox(pcb_gui, NULL);
@@ -282,7 +282,7 @@ static void timed_layer_menu_key_update_cb(pcb_hidval_t user_data)
 }
 
 
-void pcb_layer_menu_key_update_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_layer_menu_key_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_hidval_t timerdata;
 

@@ -64,7 +64,7 @@ void pcb_tool_arrow_uninit(void)
 	 at the initial click event) */
 static void click_timer_cb(pcb_hidval_t hv)
 {
-	pcb_hidlib_t *hl = hv.ptr;
+	rnd_hidlib_t *hl = hv.ptr;
 	pcb_board_t *pcb = hv.ptr;
 
 	if (hl->tool_click) {
@@ -134,7 +134,7 @@ static void click_timer_cb(pcb_hidval_t hv)
 	}
 }
 
-void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_arrow_notify_mode(rnd_hidlib_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int otype, type;
@@ -177,7 +177,7 @@ void pcb_tool_arrow_notify_mode(pcb_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_arrow_release_mode(pcb_hidlib_t *hl)
+void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 {
 	pcb_box_t box;
 	pcb_board_t *pcb = (pcb_board_t *)hl;
@@ -229,7 +229,7 @@ void pcb_tool_arrow_release_mode(pcb_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_arrow_adjust_attached_objects(pcb_hidlib_t *hl)
+void pcb_tool_arrow_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State) {
 		pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;

@@ -475,7 +475,7 @@ static void excellon_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y,
 {
 }
 
-static void exc_session_begin(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void exc_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	exc_aperture_cnt = 0;
 }

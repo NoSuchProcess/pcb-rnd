@@ -257,7 +257,7 @@ static void header_label(cam_dlg_t *ctx, const char *text)
 	PCB_DAD_END(ctx->dlg);
 }
 
-static int cam_gui(pcb_hidlib_t *hidlib, const char *arg)
+static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 {
 	cam_dlg_t *ctx = calloc(sizeof(cam_dlg_t), 1);
 	const char *opt_hdr[] = {"key", "option value", NULL};

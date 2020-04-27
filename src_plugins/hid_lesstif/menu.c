@@ -30,7 +30,7 @@
 
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
-extern pcb_hidlib_t *ltf_hidlib;
+extern rnd_hidlib_t *ltf_hidlib;
 
 Widget lesstif_menubar;
 pcb_hid_cfg_t *lesstif_cfg;

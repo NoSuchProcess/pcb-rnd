@@ -60,7 +60,7 @@
 
 const char *lesstif_cookie = "lesstif HID";
 
-pcb_hidlib_t *ltf_hidlib;
+rnd_hidlib_t *ltf_hidlib;
 
 pcb_hid_cfg_mouse_t lesstif_mouse;
 pcb_hid_cfg_keys_t lesstif_keymap;
@@ -398,11 +398,11 @@ static void PointCursor(pcb_hid_t *hid, pcb_bool grabbed)
 	old_cursor_mode = -1;
 }
 
-extern void LesstifNetlistChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
-extern void LesstifLibraryChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+extern void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+extern void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 
 
-static void ltf_set_hidlib(pcb_hid_t *hid, pcb_hidlib_t *hidlib)
+static void ltf_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
 {
 	ltf_hidlib = hidlib;
 	if ((work_area == 0) || (hidlib == NULL))
@@ -623,7 +623,7 @@ typedef struct {
 	unsigned inited:1;
 } pcb_ltf_pixmap_t;
 
-static void pcb_ltf_draw_pixmap_(pcb_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
+static void pcb_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
 {
 	int w, h, sx3, done = 0;
 

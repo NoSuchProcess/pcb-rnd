@@ -297,7 +297,7 @@ static void tool_serpentine_uninit(void)
 	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
-static void tool_serpentine_notify_mode(pcb_hidlib_t *hl)
+static void tool_serpentine_notify_mode(rnd_hidlib_t *hl)
 {
 	int type;
 	pcb_any_obj_t *term_obj;

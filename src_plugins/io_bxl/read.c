@@ -577,7 +577,7 @@ void pcb_bxl_error(pcb_bxl_ctx_t *ctx, pcb_bxl_STYPE tok, const char *s) { }
 
 int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
 {
-	pcb_hidlib_t *hl = &PCB->hidlib;
+	rnd_hidlib_t *hl = &PCB->hidlib;
 	FILE *f;
 	int chr, tok, yres, ret = 0;
 	hdecode_t hctx;
@@ -640,7 +640,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	return ret;
 }
 
-int io_bxl_test_parse2(pcb_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *filename, FILE *f_ignore, void *cbctx, void (*pat_cb)(void *cbctx, const char *name))
+int io_bxl_test_parse2(rnd_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *filename, FILE *f_ignore, void *cbctx, void (*pat_cb)(void *cbctx, const char *name))
 {
 	FILE *f;
 	int chr, tok, found_tok = 0, ret = 0;

@@ -787,7 +787,7 @@ static void sketches_uninit()
 
 
 /*** sketch line tool ***/
-static void tool_skline_adjust_attached_objects(pcb_hidlib_t *hl);
+static void tool_skline_adjust_attached_objects(rnd_hidlib_t *hl);
 
 struct {
 	pcb_any_obj_t *start_term;
@@ -1017,7 +1017,7 @@ static void tool_skline_uninit(void)
 	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
-static void tool_skline_notify_mode(pcb_hidlib_t *hl)
+static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;
@@ -1067,7 +1067,7 @@ static void tool_skline_notify_mode(pcb_hidlib_t *hl)
 	}
 }
 
-static void tool_skline_adjust_attached_objects(pcb_hidlib_t *hl)
+static void tool_skline_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	int last = vtp0_len(&attached_path.lines) - 1;
 	if (last >= 0) {
@@ -1076,7 +1076,7 @@ static void tool_skline_adjust_attached_objects(pcb_hidlib_t *hl)
 	}
 }
 
-static void tool_skline_draw_attached(pcb_hidlib_t *hl)
+static void tool_skline_draw_attached(rnd_hidlib_t *hl)
 {
 	int i;
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
@@ -1088,7 +1088,7 @@ static void tool_skline_draw_attached(pcb_hidlib_t *hl)
 	}
 }
 
-pcb_bool tool_skline_undo_act(pcb_hidlib_t *hl)
+pcb_bool tool_skline_undo_act(rnd_hidlib_t *hl)
 {
 	/* TODO */
 	return pcb_false;

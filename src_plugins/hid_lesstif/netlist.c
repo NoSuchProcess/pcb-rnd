@@ -33,7 +33,7 @@ static XmString *netnode_strings = 0;
 static int n_netnode_strings;
 static char *last_pick;
 
-extern pcb_hidlib_t *ltf_hidlib;
+extern rnd_hidlib_t *ltf_hidlib;
 
 static void pick_net(XmString *name, int pick)
 {
@@ -344,7 +344,7 @@ static int build_netlist_dialog()
 	return 0;
 }
 
-void LesstifNetlistChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	htsp_entry_t *e;
 	int i;

@@ -21,7 +21,7 @@
 #include <librnd/core/event.h>
 #include <librnd/core/tool.h>
 
-extern pcb_hidlib_t *ltf_hidlib;
+extern rnd_hidlib_t *ltf_hidlib;
 
 static Widget library_dialog = 0;
 static Widget library_list, libnode_list;
@@ -132,7 +132,7 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 		lib_dfs(l, level+1);
 }
 
-void LesstifLibraryChanged(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int i;
 	if (pcb_library.data.dir.children.used == 0)

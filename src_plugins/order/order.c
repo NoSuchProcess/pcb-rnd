@@ -193,7 +193,7 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 }
 
 
-static void order_menu_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void order_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_hid_cfg_map_anchor_menus(ANCH, order_install_menu, NULL);
 }

@@ -65,7 +65,7 @@ typedef struct pcbway_form_s {
 	vts0_t country_codes;
 } pcbway_form_t;
 
-static int pcbway_cahce_update_(pcb_hidlib_t *hidlib, const char *url, const char *path, int update, pcb_wget_opts_t *wopts)
+static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, pcb_wget_opts_t *wopts)
 {
 	double mt, now = pcb_dtime();
 
@@ -88,7 +88,7 @@ static int pcbway_cahce_update_(pcb_hidlib_t *hidlib, const char *url, const cha
 	return 0;
 }
 
-static int pcbway_cache_update(pcb_hidlib_t *hidlib)
+static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 {
 	char *hdr[5];
 	pcb_wget_opts_t wopts;
@@ -186,7 +186,7 @@ static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 }
 
 
-static int pcbway_load_fields_(pcb_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
+static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order_ctx_t *octx, xmlNode *root)
 {
 	xmlNode *n, *v;
 	pcbway_form_t *form = (pcbway_form_t *)octx->odata;

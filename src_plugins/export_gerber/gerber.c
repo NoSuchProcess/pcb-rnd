@@ -1055,7 +1055,7 @@ static void gerber_set_crosshair(pcb_hid_t *hid, pcb_coord_t x, pcb_coord_t y, i
 {
 }
 
-static void gerber_session_begin(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void gerber_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	gerber_global_aperture_cnt = 0;
 }

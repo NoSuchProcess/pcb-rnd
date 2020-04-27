@@ -97,7 +97,7 @@ void pcb_tool_line_uninit(void)
 }
 
 /* creates points of a line (when clicked) */
-static void notify_line(pcb_hidlib_t *hl)
+static void notify_line(rnd_hidlib_t *hl)
 {
 	int type = PCB_OBJ_VOID;
 	void *ptr1, *ptr2, *ptr3;
@@ -142,7 +142,7 @@ TODO("subc: this should work on heavy terminals too!")
 	}
 }
 
-void pcb_tool_line_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
 	pcb_board_t *pcb = (pcb_board_t *)hl;
@@ -338,7 +338,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 	}
 }
 
-void pcb_tool_line_adjust_attached_objects(pcb_hidlib_t *hl)
+void pcb_tool_line_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	/* don't draw outline when ctrl key is pressed */
 	if (pcb_gui->control_is_pressed(pcb_gui)) {
@@ -350,7 +350,7 @@ void pcb_tool_line_adjust_attached_objects(pcb_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
+void pcb_tool_line_draw_attached(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -389,7 +389,7 @@ void pcb_tool_line_draw_attached(pcb_hidlib_t *hl)
 	}
 }
 
-pcb_bool pcb_tool_line_undo_act(pcb_hidlib_t *hl)
+pcb_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -457,7 +457,7 @@ pcb_bool pcb_tool_line_undo_act(pcb_hidlib_t *hl)
 	return pcb_true;
 }
 
-pcb_bool pcb_tool_line_redo_act(pcb_hidlib_t *hl)
+pcb_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
@@ -475,7 +475,7 @@ pcb_bool pcb_tool_line_redo_act(pcb_hidlib_t *hl)
 	return pcb_false;
 }
 
-void pcb_tool_line_escape(pcb_hidlib_t *hl)
+void pcb_tool_line_escape(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		pcb_tool_select_by_name(hl, "arrow");

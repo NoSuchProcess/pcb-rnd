@@ -31,7 +31,7 @@
 #include "plug_io.h"
 
 int pcb_ltf_ok;
-extern pcb_hidlib_t *ltf_hidlib;
+extern rnd_hidlib_t *ltf_hidlib;
 
 
 #define COMPONENT_SIDE_NAME "(top)"
@@ -1180,7 +1180,7 @@ void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, pcb_attribute_
 	return;
 }
 
-pcb_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
+rnd_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
 {
 	return ltf_hidlib;
 }

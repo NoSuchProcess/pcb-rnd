@@ -54,7 +54,7 @@ void pcb_tool_polyhole_uninit(void)
 TODO("remove this when pcb_tool_polyhole_notify_mode() loses PCB")
 #include "board.h"
 
-void pcb_tool_polyhole_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 {
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
@@ -128,7 +128,7 @@ void pcb_tool_polyhole_notify_mode(pcb_hidlib_t *hl)
 	}
 }
 
-void pcb_tool_polyhole_adjust_attached_objects(pcb_hidlib_t *hl)
+void pcb_tool_polyhole_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
@@ -147,7 +147,7 @@ void pcb_tool_polyhole_adjust_attached_objects(pcb_hidlib_t *hl)
 	pcb_line_45(line);
 }
 
-void pcb_tool_polyhole_draw_attached(pcb_hidlib_t *hl)
+void pcb_tool_polyhole_draw_attached(rnd_hidlib_t *hl)
 {
 	/* draw only if starting point is set */
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
@@ -161,7 +161,7 @@ void pcb_tool_polyhole_draw_attached(pcb_hidlib_t *hl)
 	}
 }
 
-pcb_bool pcb_tool_polyhole_undo_act(pcb_hidlib_t *hl)
+pcb_bool pcb_tool_polyhole_undo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_prev_point();
@@ -170,7 +170,7 @@ pcb_bool pcb_tool_polyhole_undo_act(pcb_hidlib_t *hl)
 	return pcb_true;
 }
 
-pcb_bool pcb_tool_polyhole_redo_act(pcb_hidlib_t *hl)
+pcb_bool pcb_tool_polyhole_redo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_next_point();
@@ -180,7 +180,7 @@ pcb_bool pcb_tool_polyhole_redo_act(pcb_hidlib_t *hl)
 		return pcb_true;
 }
 
-void pcb_tool_polyhole_escape(pcb_hidlib_t *hl)
+void pcb_tool_polyhole_escape(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
 		pcb_tool_select_by_name(hl, "arrow");

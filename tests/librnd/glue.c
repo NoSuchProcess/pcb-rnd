@@ -18,7 +18,7 @@ const char *pcbhl_app_url = "n/a";
 
 
 typedef struct design_s {
-	pcb_hidlib_t hidlib; /* shall be the first */
+	rnd_hidlib_t hidlib; /* shall be the first */
 } design_t;
 
 design_t CTX;
@@ -36,28 +36,28 @@ void conf_core_init()
 	pcb_conf_reg_field_(NULL, 1, CFN_COORD, "should_never_match", "dummy", 0);
 }
 
-void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl)
+void pcb_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 }
 
-void *pcb_hidlib_crosshair_suspend(pcb_hidlib_t *hl)
+void *pcb_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
 {
 	return NULL;
 }
 
-void pcb_hidlib_crosshair_restore(pcb_hidlib_t *hl, void *susp_data)
+void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 {
 }
 
-void pcb_hidlib_crosshair_move_to(pcb_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
 {
 }
 
-void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_marks(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
 }
 
-void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
 }
 

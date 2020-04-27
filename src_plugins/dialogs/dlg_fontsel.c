@@ -229,7 +229,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void fontsel_mchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void fontsel_mchanged_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	fontsel_ctx_t *c;
 
@@ -240,7 +240,7 @@ static void fontsel_mchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc,
 		fontsel_preview_update(c);
 }
 
-static void fontsel_bchanged_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void fontsel_bchanged_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	fontsel_ctx_t *c, *next;
 	pcb_dad_retovr_t retovr;
@@ -274,7 +274,7 @@ static void fontsel_timer_cb(pcb_hidval_t user_data)
 	fontsel_timer = pcb_gui->add_timer(pcb_gui, fontsel_timer_cb, 500, fontsel_timer);
 }
 
-static void fontsel_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void fontsel_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	fontsel_timer_cb(fontsel_timer);
 	fontsel_timer_active = 1;

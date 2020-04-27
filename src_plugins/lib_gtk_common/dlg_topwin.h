@@ -12,7 +12,7 @@
 #include "bu_menu.h"
 #include "bu_command.h"
 
-void ghid_update_toggle_flags(pcb_hidlib_t *hidlib, pcb_gtk_topwin_t *tw, const char *cookie);
+void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, pcb_gtk_topwin_t *tw, const char *cookie);
 void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw);
 void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in_top_window);

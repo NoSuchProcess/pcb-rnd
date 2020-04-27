@@ -89,7 +89,7 @@ void pcb_tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 }
 
 
-void pcb_tool_thermal_notify_mode(pcb_hidlib_t *hl)
+void pcb_tool_thermal_notify_mode(rnd_hidlib_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;

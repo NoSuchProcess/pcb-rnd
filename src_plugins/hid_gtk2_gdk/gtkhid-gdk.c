@@ -138,7 +138,7 @@ static void set_clip(render_priv_t *priv, GdkGC *gc)
 		gdk_gc_set_clip_mask(gc, NULL);
 }
 
-static inline void ghid_gdk_draw_grid_global(pcb_hidlib_t *hidlib)
+static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	pcb_coord_t x, y, x1, y1, x2, y2, grd;
@@ -203,7 +203,7 @@ static inline void ghid_gdk_draw_grid_global(pcb_hidlib_t *hidlib)
 	}
 }
 
-static void ghid_gdk_draw_grid_local_(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
+static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	static GdkPoint *points_base = NULL;
@@ -261,7 +261,7 @@ static void ghid_gdk_draw_grid_local_(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_
 static int grid_local_have_old = 0, grid_local_old_r = 0;
 static pcb_coord_t grid_local_old_x, grid_local_old_y;
 
-static void ghid_gdk_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
+static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy)
 {
 	if (grid_local_have_old) {
 		ghid_gdk_draw_grid_local_(hidlib, grid_local_old_x, grid_local_old_y, grid_local_old_r);
@@ -285,7 +285,7 @@ static void ghid_gdk_draw_grid_local(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_c
 	grid_local_old_r = pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gdk_draw_grid(pcb_hidlib_t *hidlib)
+static void ghid_gdk_draw_grid(rnd_hidlib_t *hidlib)
 {
 	static GdkColormap *colormap = NULL;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -320,7 +320,7 @@ static void ghid_gdk_draw_grid(pcb_hidlib_t *hidlib)
 }
 
 /* ------------------------------------------------------------ */
-static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
+static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh)
 {
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
@@ -354,7 +354,7 @@ static void ghid_gdk_draw_pixmap(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pc
 		gdk_pixbuf_render_to_drawable(gpm->cache.pb, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
-static void ghid_gdk_draw_bg_image(pcb_hidlib_t *hidlib)
+static void ghid_gdk_draw_bg_image(rnd_hidlib_t *hidlib)
 {
 	if (ghidgui->bg_pixmap.image != NULL)
 		ghid_gdk_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
@@ -1016,7 +1016,7 @@ static void ghid_gdk_fill_rect(pcb_hid_gc_t gc, pcb_coord_t x1, pcb_coord_t y1, 
 		gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
+static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 {
 	int eleft, eright, etop, ebottom;
 	pcb_hid_expose_ctx_t ctx;
@@ -1107,7 +1107,7 @@ static void redraw_region(pcb_hidlib_t *hidlib, GdkRectangle *rect)
 static int preview_lock = 0;
 static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t right, pcb_coord_t top, pcb_coord_t bottom)
 {
-	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;
 	GdkRectangle rect;
@@ -1140,7 +1140,7 @@ static void ghid_gdk_invalidate_lr(pcb_hid_t *hid, pcb_coord_t left, pcb_coord_t
 
 static void ghid_gdk_invalidate_all(pcb_hid_t *hid)
 {
-	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
 		if (!preview_lock) {
@@ -1154,7 +1154,7 @@ static void ghid_gdk_invalidate_all(pcb_hid_t *hid)
 
 static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
-	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
@@ -1189,7 +1189,7 @@ static void ghid_gdk_notify_crosshair_change(pcb_hid_t *hid, pcb_bool changes_co
 
 static void ghid_gdk_notify_mark_change(pcb_hid_t *hid, pcb_bool changes_complete)
 {
-	pcb_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */

@@ -196,7 +196,7 @@ static inline void reserve_grid_points(int n)
 	}
 }
 
-void hidgl_draw_local_grid(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
+void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy, int radius)
 {
 	int npoints = 0;
 	pcb_coord_t x, y;
@@ -225,7 +225,7 @@ void hidgl_draw_local_grid(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy,
 
 }
 
-void hidgl_draw_grid(pcb_hidlib_t *hidlib, pcb_box_t *drawn_area)
+void hidgl_draw_grid(rnd_hidlib_t *hidlib, pcb_box_t *drawn_area)
 {
 	pcb_coord_t x1, y1, x2, y2, n, i;
 	double x, y;

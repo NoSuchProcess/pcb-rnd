@@ -42,7 +42,7 @@ typedef struct{
 	int active;
 	int wtxt, wscroll;
 	int gui_inited;
-	pcb_hidlib_t *hidlib;
+	rnd_hidlib_t *hidlib;
 } log_ctx_t;
 
 static log_ctx_t log_ctx;
@@ -130,7 +130,7 @@ static void maybe_scroll_to_bottom()
 		txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
 }
 
-static void log_window_create(pcb_hidlib_t *hidlib)
+static void log_window_create(rnd_hidlib_t *hidlib)
 {
 	log_ctx_t *ctx = &log_ctx;
 	pcb_hid_attr_val_t hv;
@@ -193,7 +193,7 @@ fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void log_append_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_logline_t *line = argv[1].d.p;
 
@@ -213,7 +213,7 @@ static void log_append_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	}
 }
 
-static void log_clear_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void log_clear_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (log_ctx.active) {
 		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
@@ -224,7 +224,7 @@ static void log_clear_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 	}
 }
 
-static void log_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_logline_t *n;
 

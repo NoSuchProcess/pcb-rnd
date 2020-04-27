@@ -200,7 +200,7 @@ static int *drc_get_disable(const char *name)
 	return nat->val.boolean;
 }
 
-static void pcb_drc_query(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	gdl_iterator_t it;

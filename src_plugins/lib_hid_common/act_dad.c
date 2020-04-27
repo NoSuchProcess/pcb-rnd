@@ -62,7 +62,7 @@ union tmp_u {
 
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
-	pcb_hidlib_t *hidlib;
+	rnd_hidlib_t *hidlib;
 	char *name;
 	const char *row_domain;
 	int level;
@@ -73,7 +73,7 @@ typedef struct {
 
 htsp_t dads;
 
-static int dad_new(pcb_hidlib_t *hl, const char *name)
+static int dad_new(rnd_hidlib_t *hl, const char *name)
 {
 	dad_t *dad;
 

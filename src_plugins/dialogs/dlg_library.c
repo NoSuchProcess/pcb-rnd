@@ -726,7 +726,7 @@ fgw_error_t pcb_act_LibraryDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 	return 0;
 }
 
-static void library_changed_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void library_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	if (library_ctx.active)
 		library_lib2dlg(&library_ctx);

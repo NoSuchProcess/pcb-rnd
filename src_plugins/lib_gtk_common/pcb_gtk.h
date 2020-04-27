@@ -61,7 +61,7 @@ struct pcb_gtk_impl_s {
 	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
-	void (*draw_grid_local)(pcb_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
+	void (*draw_grid_local)(rnd_hidlib_t *hidlib, pcb_coord_t cx, pcb_coord_t cy);
 
 	/* screen */
 	void (*screen_update)(void);
@@ -71,7 +71,7 @@ struct pcb_gtk_impl_s {
 	const gchar *(*get_color_name)(pcb_gtk_color_t *color);
 
 	void (*set_special_colors)(conf_native_t *cfg);
-	void (*draw_pixmap)(pcb_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh);
+	void (*draw_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, pcb_coord_t ox, pcb_coord_t oy, pcb_coord_t dw, pcb_coord_t dh);
 };
 
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"
@@ -170,7 +170,7 @@ struct pcb_gtk_s {
 	pcb_gtk_impl_t impl;
 	pcb_gtk_port_t port;
 
-	pcb_hidlib_t *hidlib;
+	rnd_hidlib_t *hidlib;
 
 	GtkWidget *wtop_window;
 	GtkActionGroup *main_actions;

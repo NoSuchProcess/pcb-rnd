@@ -82,7 +82,7 @@ typedef struct {
 
 #define null_empty(s) ((s) == NULL ? "" : (s))
 
-static void sym_flush(pcb_hidlib_t *hl, symattr_t *sattr)
+static void sym_flush(rnd_hidlib_t *hl, symattr_t *sattr)
 {
 	if (sattr->refdes != NULL) {
 		if (sattr->footprint == NULL)

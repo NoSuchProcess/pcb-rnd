@@ -41,7 +41,7 @@
 
 #include "menu_helper.h"
 
-int pcb_hid_get_flag(pcb_hidlib_t *hidlib, const char *name)
+int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
 {
 	const char *cp;
 
