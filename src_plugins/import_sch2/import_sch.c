@@ -50,8 +50,8 @@ static const char *import_sch_cookie = "import_sch2 plugin";
 
 static int convert_attribs(void)
 {
-	const char *mode = pcb_attrib_get(PCB, "import::mode");
-	const char *src0 = pcb_attrib_get(PCB, "import::src0");
+	const char *mode = rnd_attrib_get(PCB, "import::mode");
+	const char *src0 = rnd_attrib_get(PCB, "import::src0");
 	char tmp[32];
 	int n, idx;
 
@@ -62,7 +62,7 @@ static int convert_attribs(void)
 		const char *src;
 		
 		sprintf(tmp, "import::src%d", n);
-		src = pcb_attrib_get(PCB, tmp);
+		src = rnd_attrib_get(PCB, tmp);
 		if (src != NULL) {
 			pcb_conf_grow("plugins/import_sch/args", idx+1);
 			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", idx, src, POL_OVERWRITE);
@@ -78,9 +78,9 @@ static int convert_attribs(void)
 
 
 	if (strcmp(mode, "cmd") == 0) {
-		const char *outfile = pcb_attrib_get(PCB, "import::outfile");
-		const char *makefile = pcb_attrib_get(PCB, "import::makefile");
-		const char *target = pcb_attrib_get(PCB, "import::target");
+		const char *outfile = rnd_attrib_get(PCB, "import::outfile");
+		const char *makefile = rnd_attrib_get(PCB, "import::makefile");
+		const char *target = rnd_attrib_get(PCB, "import::target");
 		gds_t cmdline;
 
 		if (outfile == NULL) outfile = "-";

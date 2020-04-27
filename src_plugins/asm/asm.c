@@ -146,7 +146,7 @@ static char *templ_exec(pcb_subc_t *subc, gdl_list_t *temp)
 			gds_append(&s, ',');
 		switch(t->type) {
 			case TT_ATTR:
-				tmp = pcb_attribute_get(&subc->Attributes, t->key);
+				tmp = rnd_attribute_get(&subc->Attributes, t->key);
 				if (tmp != NULL)
 					gds_append_str(&s, tmp);
 				break;
@@ -563,9 +563,9 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					if (type == PCB_OBJ_SUBC) {
 						int m;
 						row[1] = (char *)sc->refdes;
-						row[2] = pcb_attribute_get(&sc->Attributes, "footprint");
-						row[3] = pcb_attribute_get(&sc->Attributes, "value");
-						row[4] = pcb_attribute_get(&sc->Attributes, "asm::comment");
+						row[2] = rnd_attribute_get(&sc->Attributes, "footprint");
+						row[3] = rnd_attribute_get(&sc->Attributes, "value");
+						row[4] = rnd_attribute_get(&sc->Attributes, "asm::comment");
 						row[5] = "";
 						for(m = 1; m < 6; m++)
 							if (row[m] == NULL)

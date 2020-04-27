@@ -210,7 +210,7 @@ static void pcb_netlist_clear(pcb_net_t *net, pcb_net_term_t *term)
 
 static void pcb_netlist_style(pcb_net_t *new_net, const char *style)
 {
-	pcb_attribute_put(&new_net->Attributes, "style", style);
+	rnd_attribute_put(&new_net->Attributes, "style", style);
 }
 
 static void pcb_netlist_ripup(pcb_net_t *new_net, pcb_net_term_t *term)

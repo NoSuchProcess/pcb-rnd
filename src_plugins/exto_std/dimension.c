@@ -102,7 +102,7 @@ static void dimension_unpack(pcb_subc_t *obj)
 	dim = obj->extobj_data;
 
 	pcb_extobj_unpack_coord(obj, &dim->displace, "extobj::displace");
-	dim->fmt = pcb_attribute_get(&obj->Attributes, "extobj::format");
+	dim->fmt = rnd_attribute_get(&obj->Attributes, "extobj::format");
 	if (dim->fmt == NULL)
 		dim->fmt = "%.03$mm";
 
@@ -191,7 +191,7 @@ static int dimension_gen(pcb_subc_t *subc)
 			x1 + arrx * dim->dx, y1 + arrx * dim->dy,
 			x2 - arrx * dim->dx, y2 - arrx * dim->dy,
 			PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(PCB_FLAG_FLOATER));
-		pcb_attribute_put(&flt->Attributes, "extobj::role", "dimline");
+		rnd_attribute_put(&flt->Attributes, "extobj::role", "dimline");
 	}
 	else { /* modify the floater if it exists */
 		if (ly->line_tree != NULL)
@@ -298,7 +298,7 @@ pcb_trace("let's do it!\n");
 	dimension_clear(subc);
 	dim->displace = d;
 	pcb_snprintf(tmp, sizeof(tmp), "%.08$mH", (rnd_coord_t)d);
-	pcb_attribute_put(&subc->Attributes, "extobj::displace", tmp);
+	rnd_attribute_put(&subc->Attributes, "extobj::displace", tmp);
 	dimension_gen(subc);
 }
 
@@ -376,14 +376,14 @@ static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_su
 
 	subc = pcb_exto_create(dst, "dimension", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
 	if (copy_from == NULL)
-		pcb_attribute_put(&subc->Attributes, "extobj::displace", "4mm");
+		rnd_attribute_put(&subc->Attributes, "extobj::displace", "4mm");
 
 	/* create edit-objects */
 	ly = &subc->data->Layer[LID_EDIT];
 	l = pcb_line_dup(ly, objs->array[0]);
 	PCB_FLAG_SET(PCB_FLAG_FLOATER, l);
 	PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, l);
-	pcb_attribute_put(&l->Attributes, "extobj::role", "edit");
+	rnd_attribute_put(&l->Attributes, "extobj::role", "edit");
 
 	dimension_unpack(subc);
 	dimension_gen(subc);

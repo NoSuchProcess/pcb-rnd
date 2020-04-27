@@ -127,7 +127,7 @@ static void obj_free_undoable(pcb_any_obj_t *obj)
 }
 
 
-static void layer_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+static void layer_post_change(rnd_attribute_list_t *list, const char *name, const char *value)
 {
 	if (strncmp(name, "pcb-rnd::key::", 14) == 0)
 		pcb_event(&PCB->hidlib, PCB_EVENT_LAYER_KEY_CHANGE, NULL);
@@ -138,7 +138,7 @@ static void layer_post_change(pcb_attribute_list_t *list, const char *name, cons
 void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 {
 	if (!layer->is_bound)
-		pcb_attribute_free(&layer->Attributes);
+		rnd_attribute_free(&layer->Attributes);
 
 	list_map0(&layer->Line, pcb_line_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_line_free));
 	list_map0(&layer->Arc,  pcb_arc_t,  undoable ? UFC(obj_free_undoable) : UFC(pcb_arc_free));

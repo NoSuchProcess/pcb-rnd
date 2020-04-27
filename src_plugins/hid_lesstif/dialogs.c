@@ -896,7 +896,7 @@ static AttrRow *attr_row = 0;
 static int attr_num_rows = 0;
 static int attr_max_rows = 0;
 static Widget attr_dialog = NULL, f_top;
-static pcb_attribute_list_t *attributes_list;
+static rnd_attribute_list_t *attributes_list;
 
 static void attributes_delete_callback(Widget w, void *v, void *cbs);
 
@@ -1091,7 +1091,7 @@ static void attributes_revert_callback(Widget w, void *v, void *cbs)
 	lesstif_attributes_revert();
 }
 
-void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, pcb_attribute_list_t * attrs_list)
+void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, rnd_attribute_list_t * attrs_list)
 {
 	Widget bform, sw, b_ok, b_cancel, b_revert, b_new;
 	Widget sep;
@@ -1171,10 +1171,10 @@ void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, pcb_attribute_
 	if (pcb_ltf_wait_for_dialog(attr_dialog) == 0) {
 		int i;
 		/* Copy the values back */
-		pcb_attribute_copyback_begin(attributes_list);
+		rnd_attribute_copyback_begin(attributes_list);
 		for (i = 0; i < attr_num_rows; i++)
-			pcb_attribute_copyback(attributes_list, XmTextFieldGetString(attr_row[i].w_name), XmTextFieldGetString(attr_row[i].w_value));
-		pcb_attribute_copyback_end(attributes_list);
+			rnd_attribute_copyback(attributes_list, XmTextFieldGetString(attr_row[i].w_name), XmTextFieldGetString(attr_row[i].w_value));
+		rnd_attribute_copyback_end(attributes_list);
 	}
 
 	return;

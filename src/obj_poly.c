@@ -110,7 +110,7 @@ void pcb_poly_free(pcb_poly_t *poly)
 {
 	if ((poly->parent.layer != NULL) && (poly->parent.layer->polygon_tree != NULL))
 		pcb_r_delete_entry(poly->parent.layer->polygon_tree, (pcb_box_t *)poly);
-	pcb_attribute_free(&poly->Attributes);
+	rnd_attribute_free(&poly->Attributes);
 	pcb_poly_unreg(poly);
 	free(poly);
 }
@@ -504,7 +504,7 @@ static pcb_poly_t *pcb_poly_copy_meta(pcb_poly_t *dst, pcb_poly_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 

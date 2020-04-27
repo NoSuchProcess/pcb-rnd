@@ -208,7 +208,7 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 			int len = strlen(k);
 			if (len < sizeof(tmp) - sizeof(prefix)) {
 				memcpy(tmp + sizeof(prefix) - 1, k, len+1);
-				pcb_attribute_put(&pcb->Attributes, tmp, v);
+				rnd_attribute_put(&pcb->Attributes, tmp, v);
 			}
 		}
 	}

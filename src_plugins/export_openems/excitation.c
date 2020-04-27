@@ -57,16 +57,16 @@ typedef struct {
 
 static void ser_save(const char *data, const char *attrkey)
 {
-	const char *orig = pcb_attribute_get(&PCB->Attributes, attrkey);
+	const char *orig = rnd_attribute_get(&PCB->Attributes, attrkey);
 	if ((orig == NULL) || (strcmp(orig, data) != 0)) {
-		pcb_attribute_put(&PCB->Attributes, attrkey, data);
+		rnd_attribute_put(&PCB->Attributes, attrkey, data);
 		pcb_board_set_changed_flag(pcb_true);
 	}
 }
 
 static const char *ser_load(const char *attrkey)
 {
-	return pcb_attribute_get(&PCB->Attributes, attrkey);
+	return rnd_attribute_get(&PCB->Attributes, attrkey);
 }
 
 #if 0
@@ -186,10 +186,10 @@ static char *exc_gaus_get(int idx)
 {
 	double f0 = 0, fc = 0;
 
-	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::f0"), &f0))
+	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::f0"), &f0))
 		rnd_message(PCB_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::f0\n");
 
-	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc"), &fc))
+	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc"), &fc))
 		rnd_message(PCB_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::fc\n");
 
 	return pcb_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
@@ -224,7 +224,7 @@ static char *exc_sin_get(int idx)
 {
 	double f0;
 
-	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0"), &f0))
+	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0"), &f0))
 		rnd_message(PCB_MSG_ERROR, "Sinus excitation: unable to parse frequency sinusoidal::f0\n");
 
 	return pcb_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
@@ -264,13 +264,13 @@ static char *exc_cust_get(int idx)
 {
 	double f0;
 
-	if (!to_hz(pcb_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"), &f0))
+	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"), &f0))
 		rnd_message(PCB_MSG_ERROR, "Custom excitation: unable to parse frequency custom::f0\n");
 
 	return pcb_strdup_printf(
 		"FDTD = SetCustomExcite(FDTD, %f, %s)",
 		f0,
-		pcb_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
+		rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
 	);
 }
 
@@ -302,7 +302,7 @@ static void exc_user_dad(int idx)
 
 static char *exc_user_get(int idx)
 {
-	return pcb_strdup(pcb_attribute_get(&PCB->Attributes, AEPREFIX "user-defined::script"));
+	return pcb_strdup(rnd_attribute_get(&PCB->Attributes, AEPREFIX "user-defined::script"));
 }
 
 static void exc_user_ser(int idx, int save)
@@ -346,7 +346,7 @@ static void exc_load_all(void)
 
 static int load_selector(void)
 {
-	const char *type = pcb_attribute_get(&PCB->Attributes, AEPREFIX "type");
+	const char *type = rnd_attribute_get(&PCB->Attributes, AEPREFIX "type");
 	const exc_t *e;
 	int n;
 
@@ -378,9 +378,9 @@ static void select_update(int setattr)
 	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wtab, &hv);
 	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wselector, &hv);
 	if (setattr) {
-		const char *orig = pcb_attribute_get(&PCB->Attributes, "openems::excitation::type");
+		const char *orig = rnd_attribute_get(&PCB->Attributes, "openems::excitation::type");
 		if ((orig == NULL) || (strcmp(orig, excitations[exc_ctx.selected].name) != 0)) {
-			pcb_attribute_put(&PCB->Attributes, "openems::excitation::type", excitations[exc_ctx.selected].name);
+			rnd_attribute_put(&PCB->Attributes, "openems::excitation::type", excitations[exc_ctx.selected].name);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 	}
@@ -473,7 +473,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 			rnd_message(PCB_MSG_ERROR, "OpenemsExcitation(select) needs a excitation name");
 			goto error;
 		}
-		pcb_attribute_put(&PCB->Attributes, AEPREFIX "type", a1);
+		rnd_attribute_put(&PCB->Attributes, AEPREFIX "type", a1);
 		load_selector();
 		select_update(1);
 	}
@@ -493,7 +493,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 		RND_PCB_ACT_CONVARG(start+1, FGW_STR, OpenemsExcitation, val = argv[start+1].val.str);
 
 		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
-		pcb_attribute_put(&PCB->Attributes, attrkey, val);
+		rnd_attribute_put(&PCB->Attributes, attrkey, val);
 		free(attrkey);
 
 		exc_load_all();
@@ -514,7 +514,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 
 		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
 		res->type = FGW_STR;
-		res->val.cstr = pcb_attribute_get(&PCB->Attributes, attrkey);
+		res->val.cstr = rnd_attribute_get(&PCB->Attributes, attrkey);
 		free(attrkey);
 	}
 

@@ -174,7 +174,7 @@ static lht_node_t *build_board_meta(pcb_board_t *pcb)
 	return meta;
 }
 
-static lht_node_t *build_attributes(pcb_attribute_list_t *lst)
+static lht_node_t *build_attributes(rnd_attribute_list_t *lst)
 {
 	int n;
 	lht_node_t *ln;
@@ -262,13 +262,13 @@ static void obj_attr_flag_warn(pcb_any_obj_t *obj)
 	int warned = 0;
 
 	if (wrver < 5) {
-		if (pcb_attribute_get(&obj->Attributes, "intnoconn") != NULL) {
+		if (rnd_attribute_get(&obj->Attributes, "intnoconn") != NULL) {
 			warned = 1;
 			rnd_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v5 may ignore the intnoconn flag\n");
 		}
 	}
 	if (wrver < 3) {
-		if (pcb_attribute_get(&obj->Attributes, "intconn") != NULL) {
+		if (rnd_attribute_get(&obj->Attributes, "intconn") != NULL) {
 			warned = 1;
 			rnd_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v3 may ignore the intconn flag\n");
 		}
@@ -421,7 +421,7 @@ static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, rnd_bool 
 	pcb_pstk_compshape_t cshape;
 	rnd_bool plated;
 	pcb_flag_t flg;
-	char *name = pcb_attribute_get(&ps->Attributes, "name");
+	char *name = rnd_attribute_get(&ps->Attributes, "name");
 
 
 	if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
@@ -456,7 +456,7 @@ static lht_node_t *build_pstk_pad(pcb_data_t *data, pcb_pstk_t *ps, rnd_coord_t 
 	lht_node_t *obj;
 	rnd_coord_t x1, y1, x2, y2, thickness, clearance, mask;
 	rnd_bool square, nopaste;
-	char *name = pcb_attribute_get(&ps->Attributes, "name");
+	char *name = rnd_attribute_get(&ps->Attributes, "name");
 	pcb_flag_t flg;
 
 	if (!pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
@@ -627,11 +627,11 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 					if (!seen_refdes) {
 						pcb_text_t tmp;
 						memcpy(&tmp, text, sizeof(tmp));
-						tmp.TextString = pcb_attribute_get(&subc->Attributes, "footprint");
+						tmp.TextString = rnd_attribute_get(&subc->Attributes, "footprint");
 						lht_dom_list_append(lst, build_pcb_text("desc", &tmp));
-						tmp.TextString = pcb_attribute_get(&subc->Attributes, "refdes");
+						tmp.TextString = rnd_attribute_get(&subc->Attributes, "refdes");
 						lht_dom_list_append(lst, build_pcb_text("name", &tmp));
-						tmp.TextString = pcb_attribute_get(&subc->Attributes, "value");
+						tmp.TextString = rnd_attribute_get(&subc->Attributes, "value");
 						lht_dom_list_append(lst, build_pcb_text("value", &tmp));
 						seen_refdes = 1;
 					}
@@ -1276,7 +1276,7 @@ static lht_node_t *build_netlist(pcb_netlist_t *netlist, const char *name, int *
 			pcb_net_t *net = e->value;
 			pcb_net_term_t *t;
 			const char *netname = net->name;
-			const char *style = pcb_attribute_get(&net->Attributes, "style");
+			const char *style = rnd_attribute_get(&net->Attributes, "style");
 
 			/* create the net hash */
 			nnet = lht_dom_node_alloc(LHT_HASH, netname);

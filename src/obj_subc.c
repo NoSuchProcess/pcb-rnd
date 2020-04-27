@@ -90,7 +90,7 @@ static void pcb_box_bump_box_noflt(pcb_box_t *dst, pcb_box_t *src)
 /* update cached values: e.g. looking up refdes in attributes each time the
    netlist code needs it would be too expensive. Instead, we maintain a
    read-only ->refdes field and update it any time attributes change. */
-static void pcb_subc_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+static void pcb_subc_attrib_post_change(rnd_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_subc_t *sc = (pcb_subc_t *)(((char *)list) - offsetof(pcb_subc_t, Attributes));
 	if (strcmp(name, "refdes") == 0) {
@@ -136,7 +136,7 @@ void pcb_subc_free(pcb_subc_t *sc)
 	pcb_extobj_del_pre(sc);
 	if ((sc->parent.data != NULL) && (sc->parent.data->subc_tree != NULL))
 		pcb_r_delete_entry(sc->parent.data->subc_tree, (pcb_box_t *)sc);
-	pcb_attribute_free(&sc->Attributes);
+	rnd_attribute_free(&sc->Attributes);
 	if (sc->parent_type != PCB_PARENT_INVALID)
 		pcb_subc_unreg(sc);
 	pcb_data_free(sc->data);
@@ -184,7 +184,7 @@ pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_t
 static pcb_line_t *add_aux_line(pcb_layer_t *aux, const char *key, const char *val, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_line_t *l = pcb_line_new(aux, x1, y1, x2, y2, PCB_MM_TO_COORD(0.1), 0, pcb_no_flags());
-	pcb_attribute_put(&l->Attributes, key, val);
+	rnd_attribute_put(&l->Attributes, key, val);
 	return l;
 }
 
@@ -193,7 +193,7 @@ static pcb_line_t *find_aux_line(pcb_layer_t *aux, const char *key)
 	pcb_line_t *line;
 	gdl_iterator_t it;
 	linelist_foreach(&aux->Line, &it, line) {
-		const char *val = pcb_attribute_get(&line->Attributes, "subc-role");
+		const char *val = rnd_attribute_get(&line->Attributes, "subc-role");
 		if ((val != NULL) && (strcmp(val, key) == 0))
 			return line;
 	}
@@ -398,7 +398,7 @@ static pcb_poly_t *sqline2term(pcb_layer_t *dst, pcb_line_t *line)
 	for(n = 0; n < 4; n++)
 		pcb_poly_point_new(poly, x[n], y[n]);
 	PCB_FLAG_SET(PCB_FLAG_CLEARPOLYPOLY, poly);
-	pcb_attribute_copy_all(&poly->Attributes, &line->Attributes);
+	rnd_attribute_copy_all(&poly->Attributes, &line->Attributes);
 
 	pcb_poly_init_clip(dst->parent.data, dst, poly);
 	pcb_add_poly_on_layer(dst, poly);
@@ -452,7 +452,7 @@ void pcb_subc_as_board_update(pcb_board_t *pcb)
 
 static rnd_coord_t read_mask(pcb_any_obj_t *obj)
 {
-	const char *smask = pcb_attribute_get(&obj->Attributes, "elem_smash_pad_mask");
+	const char *smask = rnd_attribute_get(&obj->Attributes, "elem_smash_pad_mask");
 	rnd_coord_t mask = 0;
 
 	if (smask != NULL) {
@@ -555,7 +555,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			char *np, *sq, *termpad;
 			const char *term;
 
-			termpad = pcb_attribute_get(&line->Attributes, "elem_smash_pad");
+			termpad = rnd_attribute_get(&line->Attributes, "elem_smash_pad");
 			if (termpad != NULL) {
 				if (ltype & PCB_LYT_TOP)
 					top_pads++;
@@ -563,9 +563,9 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 					bottom_pads++;
 				mask = read_mask((pcb_any_obj_t *)line);
 			}
-			term = pcb_attribute_get(&line->Attributes, "term");
-			np = pcb_attribute_get(&line->Attributes, "elem_smash_nopaste");
-			sq = pcb_attribute_get(&line->Attributes, "elem_smash_shape_square");
+			term = rnd_attribute_get(&line->Attributes, "term");
+			np = rnd_attribute_get(&line->Attributes, "elem_smash_nopaste");
+			sq = rnd_attribute_get(&line->Attributes, "elem_smash_shape_square");
 			if ((sq != NULL) && (*sq == '1')) { /* convert to polygon */
 				poly = sqline2term(dst, line);
 				if (termpad != NULL) {
@@ -577,7 +577,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 						line->Thickness = mask;
 						poly = sqline2term(dst, line);
 						if (term != NULL)
-							pcb_attribute_put(&poly->Attributes, "term", term);
+							rnd_attribute_put(&poly->Attributes, "term", term);
 						vtp0_append(&mask_pads, poly);
 					}
 				}
@@ -598,7 +598,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 						nl = pcb_line_dup(dst, line);
 						nl->Thickness = mask;
 						if (term != NULL)
-							pcb_attribute_put(&nl->Attributes, "term", term);
+							rnd_attribute_put(&nl->Attributes, "term", term);
 						vtp0_append(&mask_pads, nl);
 					}
 				}
@@ -668,7 +668,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	/* Add refdes */
 	if ((conf_core.editor.subc_conv_refdes != NULL) && (*conf_core.editor.subc_conv_refdes != '\0')) {
 		if (strcmp(conf_core.editor.subc_conv_refdes, "<?>") != 0)
-			pcb_attribute_put(&sc->Attributes, "refdes", conf_core.editor.subc_conv_refdes);
+			rnd_attribute_put(&sc->Attributes, "refdes", conf_core.editor.subc_conv_refdes);
 		if (!has_refdes_text) {
 			if (dst_top_silk == NULL)
 				dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk", NULL);
@@ -847,7 +847,7 @@ pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 
@@ -1757,10 +1757,10 @@ void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	void *old;
 	if (sc->refdes != NULL)
-		old = pcb_strdup(sc->refdes); /* strdup because the pcb_attribute_put() is going to free the original */
+		old = pcb_strdup(sc->refdes); /* strdup because the rnd_attribute_put() is going to free the original */
 	else
 		old = NULL;
-	pcb_attribute_put(&sc->Attributes, "refdes", ctx->chgname.new_name);
+	rnd_attribute_put(&sc->Attributes, "refdes", ctx->chgname.new_name);
 	return old;
 }
 
@@ -2260,14 +2260,14 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 	const char *val;
 
 	if (local_name != NULL) {
-		val = pcb_attribute_get(&subc->Attributes, local_name);
+		val = rnd_attribute_get(&subc->Attributes, local_name);
 		if (val != NULL)
 			return val;
 	}
-	val = pcb_attribute_get(&subc->Attributes, "visible_footprint");
+	val = rnd_attribute_get(&subc->Attributes, "visible_footprint");
 	if (val != NULL)
 		return val;
-	val = pcb_attribute_get(&subc->Attributes, "footprint");
+	val = rnd_attribute_get(&subc->Attributes, "footprint");
 	return val;
 }
 
@@ -2311,10 +2311,10 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 
 	{ /* copy attributes */
 		int n;
-		pcb_attribute_list_t *adst = &placed->Attributes, *asrc = &dst->Attributes;
+		rnd_attribute_list_t *adst = &placed->Attributes, *asrc = &dst->Attributes;
 		for (n = 0; n < asrc->Number; n++)
 			if (strcmp(asrc->List[n].name, "footprint") != 0)
-				pcb_attribute_put(adst, asrc->List[n].name, asrc->List[n].value);
+				rnd_attribute_put(adst, asrc->List[n].name, asrc->List[n].value);
 	}
 
 	flags = dst->Flags.f & fmask;

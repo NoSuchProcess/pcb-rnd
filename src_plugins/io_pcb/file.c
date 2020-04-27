@@ -210,7 +210,7 @@ TODO("layer: revise this loop to save only what the original code saved")
 }
 
 
-static void WriteAttributeList(FILE * FP, pcb_attribute_list_t *list, const char *prefix, const char **inhibit)
+static void WriteAttributeList(FILE * FP, rnd_attribute_list_t *list, const char *prefix, const char **inhibit)
 {
 	int i;
 	const char **ih;
@@ -352,7 +352,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 		rnd_coord_t x, y, drill_dia, pad_dia, clearance, mask;
 		pcb_pstk_compshape_t cshape;
 		rnd_bool plated;
-		char *name = pcb_attribute_get(&ps->Attributes, "name");
+		char *name = rnd_attribute_get(&ps->Attributes, "name");
 
 		if (!pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 			pcb_io_incompat_save(Data, (pcb_any_obj_t *)ps, "via", "Failed to convert to old-style via", "Old via format is very much restricted; try to use a simpler, uniform shape padstack");
@@ -396,7 +396,7 @@ static void WritePCBNetlistData(FILE *FP)
 		fprintf(FP, "\tNet(");
 		pcb_print_quoted_string(FP, net->name);
 		fprintf(FP, " ");
-		pcb_print_quoted_string(FP, (char *) PCB_UNKNOWN(pcb_attribute_get(&net->Attributes, "style")));
+		pcb_print_quoted_string(FP, (char *) PCB_UNKNOWN(rnd_attribute_get(&net->Attributes, "style")));
 		fprintf(FP, ")\n\t(\n");
 		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 			fprintf(FP, "\t\tConnect(\"");
@@ -447,16 +447,16 @@ TODO("textrot: incompatibility warning")
 		}
 		else {
 			const char *tmp;
-			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_x");
+			tmp = rnd_attribute_get(&sc->Attributes, "io_pcb::hidename_x");
 			if (tmp != NULL)
 				rx = pcb_get_value(tmp, NULL, NULL, NULL) - ox;
-			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_y");
+			tmp = rnd_attribute_get(&sc->Attributes, "io_pcb::hidename_y");
 			if (tmp != NULL)
 				ry = pcb_get_value(tmp, NULL, NULL, NULL) - oy;
-			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_direction");
+			tmp = rnd_attribute_get(&sc->Attributes, "io_pcb::hidename_direction");
 			if (tmp != NULL)
 				rdir = atoi(tmp);
-			tmp = pcb_attribute_get(&sc->Attributes, "io_pcb::hidename_scale");
+			tmp = rnd_attribute_get(&sc->Attributes, "io_pcb::hidename_scale");
 			if (tmp != NULL)
 				rscale = atoi(tmp);
 		}
@@ -468,11 +468,11 @@ TODO("textrot: incompatibility warning")
 		if (on_bot)
 			fobj.Flags.f |= PCB_FLAG_ONSOLDER;
 		fprintf(FP, "\nElement[%s ", F2S(&fobj, PCB_OBJ_ELEMENT));
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "footprint")));
+		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&sc->Attributes, "footprint")));
 		fputc(' ', FP);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "refdes")));
+		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&sc->Attributes, "refdes")));
 		fputc(' ', FP);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&sc->Attributes, "value")));
+		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&sc->Attributes, "value")));
 		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_OBJ_ELEMENT_NAME) : "\"\"");
 		WriteAttributeList(FP, &sc->Attributes, "\t", attr_inhibit);
 
@@ -483,18 +483,18 @@ TODO("textrot: incompatibility warning")
 			unsigned char ic = ps->intconn;
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ", x - ox, y - oy, pad_dia, clearance*2, mask, drill_dia);
-				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
+				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
-				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
+				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "term")));
 				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON), PCB_OBJ_PIN, &ic, 1));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0) | (on_bot ? PCB_FLAG_ONSOLDER : 0);
 				pcb_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
 					x1 - ox, y1 - oy, x2 - ox, y2 - oy, thickness, clearance, mask);
-					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "name")));
+					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
 					fprintf(FP, " ");
-					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(pcb_attribute_get(&ps->Attributes, "term")));
+					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "term")));
 					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_OBJ_PAD, &ic, 1));
 			}
 			else
@@ -732,7 +732,7 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 
 int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
-	pcb_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description);
+	rnd_attribute_put(&PCB->Attributes, "PCB::loader", ctx->description);
 
 	LayersFixup();
 
@@ -1039,11 +1039,11 @@ pcb_subc_t *io_pcb_element_new(pcb_data_t *Data, pcb_subc_t *subc,
 	PCB_FLAG_SET(Flags.f, sc);
 
 	if (Description != NULL)
-		pcb_attribute_put(&sc->Attributes, "footprint", Description);
+		rnd_attribute_put(&sc->Attributes, "footprint", Description);
 	if (NameOnPCB != NULL)
-		pcb_attribute_put(&sc->Attributes, "refdes", NameOnPCB);
+		rnd_attribute_put(&sc->Attributes, "refdes", NameOnPCB);
 	if (Value != NULL)
-		pcb_attribute_put(&sc->Attributes, "value", Value);
+		rnd_attribute_put(&sc->Attributes, "value", Value);
 
 TODO("subc: TextFlags")
 	if (!(Flags.f & PCB_FLAG_HIDENAME))
@@ -1052,13 +1052,13 @@ TODO("subc: TextFlags")
 	if (Flags.f & PCB_FLAG_HIDENAME) {
 		char tmp[128];
 		pcb_sprintf(tmp, "%$mm", TextX);
-		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_x", tmp);
+		rnd_attribute_put(&sc->Attributes, "io_pcb::hidename_x", tmp);
 		pcb_sprintf(tmp, "%$mm", TextY);
-		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_y", tmp);
+		rnd_attribute_put(&sc->Attributes, "io_pcb::hidename_y", tmp);
 		sprintf(tmp, "%d", Direction);
-		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_direction", tmp);
+		rnd_attribute_put(&sc->Attributes, "io_pcb::hidename_direction", tmp);
 		sprintf(tmp, "%d", TextScale);
-		pcb_attribute_put(&sc->Attributes, "io_pcb::hidename_scale", tmp);
+		rnd_attribute_put(&sc->Attributes, "io_pcb::hidename_scale", tmp);
 	}
 
 	return sc;
@@ -1101,9 +1101,9 @@ pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t 
 	pcb_pstk_t *p;
 	p = pcb_old_via_new(subc->data, -1, X, Y, Thickness, Clearance, Mask, DrillingHole, Name, Flags);
 	if (Number != NULL)
-		pcb_attribute_put(&p->Attributes, "term", Number);
+		rnd_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
-		pcb_attribute_put(&p->Attributes, "name", Name);
+		rnd_attribute_put(&p->Attributes, "name", Name);
 
 	if (yysubc_bottom)
 		pcb_pstk_mirror(p, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0, 0);
@@ -1116,9 +1116,9 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t
 
 	p = pcb_pstk_new_compat_pad(subc->data, -1, X1, Y1, X2, Y2, Thickness, Clearance, Mask, Flags.f & PCB_FLAG_SQUARE, Flags.f & PCB_FLAG_NOPASTE, (!!(Flags.f & PCB_FLAG_ONSOLDER)) != yysubc_bottom);
 	if (Number != NULL)
-		pcb_attribute_put(&p->Attributes, "term", Number);
+		rnd_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
-		pcb_attribute_put(&p->Attributes, "name", Name);
+		rnd_attribute_put(&p->Attributes, "name", Name);
 
 	if (yysubc_bottom) {
 		pcb_data_t *old_hack = pcb_pstk_data_hack;

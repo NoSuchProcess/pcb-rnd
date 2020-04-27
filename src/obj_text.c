@@ -106,7 +106,7 @@ void pcb_text_free(pcb_text_t *text)
 {
 	if ((text->parent.layer != NULL) && (text->parent.layer->text_tree != NULL))
 		pcb_r_delete_entry(text->parent.layer->text_tree, (pcb_box_t *)text);
-	pcb_attribute_free(&text->Attributes);
+	rnd_attribute_free(&text->Attributes);
 	pcb_text_unreg(text);
 	free(text->TextString);
 	free(text);
@@ -197,7 +197,7 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 
@@ -240,7 +240,7 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 	*input += len+1;
 
 	if ((key[0] == 'a') && (key[1] == '.')) {
-		const pcb_attribute_list_t *attr = &text->Attributes;
+		const rnd_attribute_list_t *attr = &text->Attributes;
 		path = key+2;
 		if ((path[0] == 'p') && (memcmp(path, "parent.", 7) == 0)) {
 			pcb_data_t *par = text->parent.layer->parent.data;
@@ -256,7 +256,7 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 			path+=7;
 		}
 		if (attr != NULL) {
-			attrs = pcb_attribute_get(attr, path);
+			attrs = rnd_attribute_get(attr, path);
 			if (attrs != NULL)
 				gds_append_str(s, attrs);
 		}

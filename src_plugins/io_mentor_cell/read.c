@@ -1023,12 +1023,12 @@ static void parse_subc_text(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 
 	text_str = textnode->argv[1];
 	if (strcmp(tt->argv[1], "REF_DES") == 0) {
-		pcb_attribute_put(&subc->Attributes, "refdes", textnode->argv[1]);
+		rnd_attribute_put(&subc->Attributes, "refdes", textnode->argv[1]);
 		text_str = "%a.parent.refdes%";
 		flg |= PCB_FLAG_DYNTEXT;
 	}
 	else if (strcmp(tt->argv[1], "PARTNO") == 0) {
-		pcb_attribute_put(&subc->Attributes, "footprint", textnode->argv[1]);
+		rnd_attribute_put(&subc->Attributes, "footprint", textnode->argv[1]);
 		text_str = "%a.parent.footprint%";
 		flg |= PCB_FLAG_DYNTEXT;
 		omit_on_silk = 1;
@@ -1052,7 +1052,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 	/* extract global */
 	for(n = nd->first_child; n != NULL; n = n->next) {
 		if (strcmp(n->argv[0], "DESCRIPTION") == 0) {
-			pcb_attribute_put(&subc->Attributes, "description", n->argv[1]);
+			rnd_attribute_put(&subc->Attributes, "description", n->argv[1]);
 		}
 		else if (strcmp(n->argv[0], "XY") == 0) {
 			if ((parse_x(ctx, n->argv[1], &ox) != 0) || (parse_y(ctx, n->argv[2], &oy) != 0)) {

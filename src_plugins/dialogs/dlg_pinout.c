@@ -89,7 +89,7 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 	if ((obj->term != NULL) && (pcb_obj_parent_subc(obj) == ctx->tempsc) && (obj->term != NULL)) {
 		val.str = obj->term;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
-		val.str = pcb_attribute_get(&obj->Attributes, "name");
+		val.str = rnd_attribute_get(&obj->Attributes, "name");
 		if (val.str != NULL)
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
 		if (ctx->pcb != NULL) {

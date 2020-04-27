@@ -17,7 +17,7 @@ typedef struct {
 	int via_proto_set;            /* 1 if via_proto is set/valid, 0 for old file formats */
 	rnd_coord_t Diameter, Hole;   /* OBSOLETE: via diameter and drill hole; kept for compatibility with old file formats (lihata board v1..v4) */
 	char name[32];                /* fixed length name to save malloc/free */
-	pcb_attribute_list_t attr;
+	rnd_attribute_list_t attr;
 } pcb_route_style_t;
 
 /* all public symbols are wrapped in GVT() - see vt_t(7) */

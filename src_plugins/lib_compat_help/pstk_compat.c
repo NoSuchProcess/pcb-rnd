@@ -778,7 +778,7 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_co
 	}
 
 	if (Name != NULL)
-		pcb_attribute_put(&p->Attributes, "name", Name);
+		rnd_attribute_put(&p->Attributes, "name", Name);
 
 	return p;
 }

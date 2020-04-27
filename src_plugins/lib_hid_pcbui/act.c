@@ -230,7 +230,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						switch(type) {
 							case 0: tn = "none"; break;
 							case PCB_OBJ_SUBC:
-								if (pcb_attribute_get(&((pcb_any_obj_t *)o2)->Attributes, "extobj") != 0) {
+								if (rnd_attribute_get(&((pcb_any_obj_t *)o2)->Attributes, "extobj") != 0) {
 									tn = "extobj-subcircuit";
 									break;
 								}
@@ -291,7 +291,7 @@ fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		"{l shift-t} is written as:\n"
 		"<Key>l; Shift<Key>t\n";
 
-	val = pcb_attribute_get(&ly->Attributes, key);
+	val = rnd_attribute_get(&ly->Attributes, key);
 	args[1].type = FGW_STR; args[1].val.cstr = msg;
 	args[2].type = FGW_STR; args[2].val.cstr = val;
 	args[3].type = FGW_STR; args[3].val.cstr = title;
@@ -303,7 +303,7 @@ fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	
-	pcb_attribute_put(&ly->Attributes, key, r.val.str);
+	rnd_attribute_put(&ly->Attributes, key, r.val.str);
 	fgw_arg_free(&rnd_fgw, &r);
 
 	RND_ACT_IRES(0);

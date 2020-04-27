@@ -110,7 +110,7 @@ void pcb_line_free(pcb_line_t *line)
 {
 	if ((line->parent.layer != NULL) && (line->parent.layer->line_tree != NULL))
 		pcb_r_delete_entry(line->parent.layer->line_tree, (pcb_box_t *)line);
-	pcb_attribute_free(&line->Attributes);
+	rnd_attribute_free(&line->Attributes);
 	pcb_line_unreg(line);
 	free(line);
 }
@@ -316,7 +316,7 @@ static pcb_line_t *pcb_line_copy_meta(pcb_line_t *dst, pcb_line_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 

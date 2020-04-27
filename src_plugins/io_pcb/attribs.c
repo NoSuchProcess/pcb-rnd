@@ -76,7 +76,7 @@ static void c2a(pcb_board_t *pcb, lht_node_t *tree, const char *path1)
 		if (n->type == LHT_TEXT) {
 			conf_native_t *nv = pcb_conf_get_field(path);
 			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib))
-				pcb_attribute_put(&pcb->Attributes, apath, n->data.text.value);
+				rnd_attribute_put(&pcb->Attributes, apath, n->data.text.value);
 		}
 		else if (n->type == LHT_LIST) {
 			lht_node_t *i;
@@ -91,7 +91,7 @@ static void c2a(pcb_board_t *pcb, lht_node_t *tree, const char *path1)
 						gds_append_str(&conc, LISTSEP);
 					gds_append_str(&conc, i->data.text.value);
 				}
-				pcb_attribute_put(&pcb->Attributes, apath,  conc.array);
+				rnd_attribute_put(&pcb->Attributes, apath,  conc.array);
 				gds_uninit(&conc);
 			}
 		}

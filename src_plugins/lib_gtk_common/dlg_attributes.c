@@ -49,7 +49,7 @@ typedef struct {
 static AttrRow *attr_row = 0;
 static int attr_num_rows = 0;
 static int attr_max_rows = 0;
-static pcb_attribute_list_t *attributes_list;
+static rnd_attribute_list_t *attributes_list;
 static GtkWidget *attributes_dialog, *attr_table;
 
 static void attributes_delete_callback(GtkWidget * w, void *v);
@@ -141,7 +141,7 @@ static void attributes_delete_callback(GtkWidget * w, void *v)
 	ghid_attr_set_table_size();
 }
 
-void pcb_gtk_dlg_attributes(GtkWidget *top_window, const char *owner, pcb_attribute_list_t * attrs)
+void pcb_gtk_dlg_attributes(GtkWidget *top_window, const char *owner, rnd_attribute_list_t * attrs)
 {
 	GtkWidget *content_area;
 	int response;
@@ -176,10 +176,10 @@ void pcb_gtk_dlg_attributes(GtkWidget *top_window, const char *owner, pcb_attrib
 		if (response == GTK_RESPONSE_OK) {
 			int i;
 			/* Copy the values back */
-			pcb_attribute_copyback_begin(attributes_list);
+			rnd_attribute_copyback_begin(attributes_list);
 			for (i = 0; i < attr_num_rows; i++)
-				pcb_attribute_copyback(attributes_list, gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_name)), gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_value)));
-			pcb_attribute_copyback_end(attributes_list);
+				rnd_attribute_copyback(attributes_list, gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_name)), gtk_entry_get_text(GTK_ENTRY(attr_row[i].w_value)));
+			rnd_attribute_copyback_end(attributes_list);
 			break;
 		}
 

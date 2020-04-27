@@ -1016,7 +1016,7 @@ TODO("load placement status and apply PCB_FLAG_LOCK if needed")
 
 	new_module = pcb_subc_alloc();
 	pcb_subc_create_aux(new_module, module_X, module_Y, 0.0, 0);
-	pcb_attribute_put(&new_module->Attributes, "refdes", "A1");
+	rnd_attribute_put(&new_module->Attributes, "refdes", "A1");
 	pcb_subc_reg(st->pcb->Data, new_module);
 	pcb_subc_bind_globals(st->pcb, new_module);
 

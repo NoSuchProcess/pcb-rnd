@@ -343,7 +343,7 @@ pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t wh
 	return g;
 }
 
-static void layergrp_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+static void layergrp_post_change(rnd_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_layergrp_t *g = (pcb_layergrp_t *)(((char *)list) - offsetof(pcb_layergrp_t, Attributes));
 
@@ -1522,7 +1522,7 @@ static void pcb_layergrp_upgrade_by_map_(pcb_board_t *pcb, const pcb_dflgmap_t *
 		else
 			grp = pcb_get_grp_new_intern_(pcb, 1, (m->flags & PCB_DFLGMAP_FORCE_END));
 		if (m->flags & PCB_DFLGMAP_INIT_INVIS)
-			pcb_attribute_put(&grp->Attributes, "init-invis", "1");
+			rnd_attribute_put(&grp->Attributes, "init-invis", "1");
 		pcb_layergrp_set_dflgly(pcb, grp, m, NULL, NULL);
 	}
 	inhibit_notify--;

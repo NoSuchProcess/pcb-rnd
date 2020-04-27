@@ -742,21 +742,21 @@ TODO(": get this from data table (see also #1)")
 		if (group1 != NULL) {
 TODO(": we should probably do unm_name() on the refdes, not on footprint-name?")
 TODO(": the unique name makes no sense if we override it with unknown - if the unique name is NULL, it is more likely a save-incompatibility error")
-			currentElementName = unm_name(group1, pcb_attribute_get(&subc->Attributes, "footprint"), subc);
+			currentElementName = unm_name(group1, rnd_attribute_get(&subc->Attributes, "footprint"), subc);
 			if (currentElementName == NULL)
 				currentElementName = "unknown";
 		}
 		else {
-			currentElementName = pcb_attribute_get(&subc->Attributes, "footprint");
+			currentElementName = rnd_attribute_get(&subc->Attributes, "footprint");
 			if (currentElementName == NULL)
 				currentElementName = "unknown";
 		}
 
-		currentElementRef = pcb_attribute_get(&subc->Attributes, "refdes");
+		currentElementRef = rnd_attribute_get(&subc->Attributes, "refdes");
 		if (currentElementRef == NULL) {
 			currentElementRef = "unknown";
 		}
-		currentElementVal = pcb_attribute_get(&subc->Attributes, "value");
+		currentElementVal = rnd_attribute_get(&subc->Attributes, "value");
 		if (currentElementVal == NULL) {
 			currentElementVal = "unknown";
 		}

@@ -276,11 +276,11 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 
 int tedax_fp_fsave_subc(pcb_subc_t *subc, FILE *f)
 {
-	const char *fpname = pcb_attribute_get(&subc->Attributes, "tedax::footprint");
+	const char *fpname = rnd_attribute_get(&subc->Attributes, "tedax::footprint");
 	if (fpname == NULL)
-		fpname = pcb_attribute_get(&subc->Attributes, "visible_footprint");
+		fpname = rnd_attribute_get(&subc->Attributes, "visible_footprint");
 	if (fpname == NULL)
-		fpname = pcb_attribute_get(&subc->Attributes, "footprint");
+		fpname = rnd_attribute_get(&subc->Attributes, "footprint");
 	if ((fpname == NULL) && (subc->refdes != NULL))
 		fpname = subc->refdes;
 	if (fpname == NULL)
@@ -393,7 +393,7 @@ do { \
 		rnd_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", src); \
 		return -1; \
 	} \
-	pcb_attribute_put(&obj->Attributes, "term", term->name); \
+	rnd_attribute_put(&obj->Attributes, "term", term->name); \
 	vtp0_append(&term->objs, obj); \
 } while(0)
 
@@ -596,7 +596,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	}
 	htip_uninit(&terms);
 
-	pcb_attribute_put(&subc->Attributes, "refdes", "X1");
+	rnd_attribute_put(&subc->Attributes, "refdes", "X1");
 	pcb_subc_add_refdes_text(subc, 0, 0, 0, 100, pcb_false);
 	pcb_subc_create_aux(subc, 0, 0, 0.0, pcb_false);
 

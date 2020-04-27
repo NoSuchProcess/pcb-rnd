@@ -48,7 +48,7 @@ PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, 
 {
 	double v;
 	rnd_bool succ;
-	const char *s = pcb_attribute_get(&obj->Attributes, name);
+	const char *s = rnd_attribute_get(&obj->Attributes, name);
 	if (s != NULL) {
 		v = pcb_get_value(s, NULL, NULL, &succ);
 		if (succ) {
@@ -63,7 +63,7 @@ PCB_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char
 {
 	long l;
 	char *end;
-	const char *s = pcb_attribute_get(&obj->Attributes, name);
+	const char *s = rnd_attribute_get(&obj->Attributes, name);
 	if (s != NULL) {
 		l = strtol(s, &end, 10);
 		if (*end == '\0') {
@@ -101,7 +101,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 
 	if (copy_from != NULL)
 		pcb_subc_copy_meta(subc, copy_from);
-	pcb_attribute_put(&subc->Attributes, "extobj", eoname);
+	rnd_attribute_put(&subc->Attributes, "extobj", eoname);
 
 	for(; layers->name != NULL; layers++)
 		pcb_subc_layer_create(subc, layers->name, layers->lyt, layers->comb, 0, layers->purpose);
@@ -178,7 +178,7 @@ do { \
 	rnd_coord_t currval = 0; \
 	const pcb_unit_t *unit_out = NULL; \
 	int wid; \
-	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
+	char *sval = rnd_attribute_get(&subc->Attributes, attr_name); \
 	if (sval != NULL) \
 		pcb_get_value_unit(sval, NULL, 0, &d, &unit_out); \
 	currval = d; \
@@ -209,7 +209,7 @@ PCB_INLINE void pcb_exto_dlg_str_cb(void *hid_ctx, void *caller_data, pcb_hid_at
 #define pcb_exto_dlg_str(dlg, subc, vis_name, attr_name, help) \
 do { \
 	int wid; \
-	const char *currval = pcb_attribute_get(&subc->Attributes, attr_name); \
+	const char *currval = rnd_attribute_get(&subc->Attributes, attr_name); \
 	if (currval == NULL) currval = ""; \
 	currval = pcb_strdup(currval); \
 	PCB_DAD_LABEL(dlg, vis_name); \
@@ -235,7 +235,7 @@ PCB_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, pcb_hid_at
 do { \
 	rnd_coord_t currval = 0; \
 	int wid; \
-	char *sval = pcb_attribute_get(&subc->Attributes, attr_name); \
+	char *sval = rnd_attribute_get(&subc->Attributes, attr_name); \
 	if (sval != NULL) \
 		currval = strtol(sval, NULL, 10); \
 	PCB_DAD_LABEL(dlg, vis_name); \

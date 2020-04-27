@@ -175,7 +175,7 @@ static int undo_term_rename_swap(void *udata)
 	/* remove from previous terminal */
 	if (r->obj->term != NULL) {
 		old_term = pcb_strdup(r->obj->term);
-		pcb_attribute_remove(&r->obj->Attributes, "term");
+		rnd_attribute_remove(&r->obj->Attributes, "term");
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 		r->obj->term = NULL;
 	}
@@ -201,9 +201,9 @@ static int undo_term_rename_swap(void *udata)
 
 	/* Update the attributes */
 	if (r->obj->term != NULL)
-		pcb_attribute_put(&r->obj->Attributes, "term", r->obj->term);
+		rnd_attribute_put(&r->obj->Attributes, "term", r->obj->term);
 	else
-		pcb_attribute_remove(&r->obj->Attributes, "term");
+		rnd_attribute_remove(&r->obj->Attributes, "term");
 
 	if (r->obj->type == PCB_OBJ_POLY)
 		pcb_poly_init_clip(r->obj->parent.layer->parent.data, r->obj->parent.layer, (pcb_poly_t *)r->obj);

@@ -385,7 +385,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc
 	ps->proto = pid;
 	ps->xmirror = ps->smirror = on_bottom;
 	pcb_pstk_add(subc->data, ps);
-	pcb_attribute_put(&ps->Attributes, "term", nd->argv[1]);
+	rnd_attribute_put(&ps->Attributes, "term", nd->argv[1]);
 
 	set_pstk_clearance(ctx, nc, ps, nd);
 }

@@ -194,9 +194,9 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
 		int score;
 
-		if (pcb_attribute_get(&obj->Attributes, ctx->origin_tmp) != NULL)
+		if (rnd_attribute_get(&obj->Attributes, ctx->origin_tmp) != NULL)
 			score = 2; /* first look for the format-specific attribute */
-		else if (pcb_attribute_get(&obj->Attributes, "pnp-origin") != NULL)
+		else if (rnd_attribute_get(&obj->Attributes, "pnp-origin") != NULL)
 			score = 1; /* then for the generic pnp-specific attribute */
 		else
 			continue;
@@ -430,7 +430,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 				else /* only '?' is given, no ':' */
 					nope = "n/a";
 
-				val = pcb_attribute_get(&ctx->subc->Attributes, aname);
+				val = rnd_attribute_get(&ctx->subc->Attributes, aname);
 				if (is_val_true(val))
 					gds_append_str(s, unk_buf);
 				else
@@ -442,7 +442,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 				*input = end;
 			(*input)++;
 
-			val = pcb_attribute_get(&ctx->subc->Attributes, aname);
+			val = rnd_attribute_get(&ctx->subc->Attributes, aname);
 			if (val == NULL)
 				val = unk;
 			gds_append_str(s, val);
@@ -693,9 +693,9 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.pad_w = ctx.pad_h = 0;
 		ctx.theta = ctx.xray_theta = 0.0;
 
-		ctx.name = pcb_bom_clean_str((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes")));
+		ctx.name = pcb_bom_clean_str((char *) PCB_UNKNOWN(rnd_attribute_get(&subc->Attributes, "refdes")));
 		ctx.descr = pcb_bom_clean_str((char *) PCB_UNKNOWN(pcb_subc_name(subc, "export_xy::footprint")));
-		ctx.value = pcb_bom_clean_str((char *) PCB_UNKNOWN(pcb_attribute_get(&subc->Attributes, "value")));
+		ctx.value = pcb_bom_clean_str((char *) PCB_UNKNOWN(rnd_attribute_get(&subc->Attributes, "value")));
 
 		/* prefer the pnp-origin but if that doesn't exist, pick the subc origin */
 		if (!pcb_subc_find_aux_point(subc, "pnp-origin", &ctx.x, &ctx.y))

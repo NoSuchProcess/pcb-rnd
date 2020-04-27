@@ -463,7 +463,7 @@ pcb_subc_t *hyp_create_subc_by_name(char *refdes, rnd_coord_t x, rnd_coord_t y)
 
 	subc = pcb_subc_alloc();
 	pcb_subc_create_aux(subc, x, y, 0.0, on_bottom);
-	pcb_attribute_put(&subc->Attributes, "refdes", refdes);
+	rnd_attribute_put(&subc->Attributes, "refdes", refdes);
 	pcb_subc_add_refdes_text(subc, x, y, text_direction, text_scale, on_bottom);
 	pcb_subc_reg(hyp_dest, subc);
 	pcb_subc_bind_globals(hyp_dest->parent.board, subc);
@@ -1925,7 +1925,7 @@ void hyp_draw_pstk(padstack_t *padstk, rnd_coord_t x, rnd_coord_t y, char *ref)
 
 	pstk = hyp_new_pstk(padstk, data, x, y, (subc != NULL), (subc != NULL));
 	if (pin_name != NULL)
-		pcb_attribute_put(&pstk->Attributes, "term", pin_name);
+		rnd_attribute_put(&pstk->Attributes, "term", pin_name);
 
 	if (subc != NULL) /* add pin to current net */
 		hyp_netlist_add(name, number);

@@ -901,7 +901,7 @@ static int undo_chg_attr_swap(void *udata)
 	char *curr_value = NULL, **slot;
 	const char *new_val;
 
-	slot = pcb_attribute_get_ptr(&ca->obj->Attributes, ca->key);
+	slot = rnd_attribute_get_ptr(&ca->obj->Attributes, ca->key);
 
 	/* temp save current state */
 	if (slot == NULL)
@@ -912,8 +912,8 @@ static int undo_chg_attr_swap(void *udata)
 	/* install ca in the slot */
 	if (!ca->delete) {
 		if (curr_delete) {
-			pcb_attribute_put(&ca->obj->Attributes, ca->key, NULL);
-			slot = pcb_attribute_get_ptr(&ca->obj->Attributes, ca->key);
+			rnd_attribute_put(&ca->obj->Attributes, ca->key, NULL);
+			slot = rnd_attribute_get_ptr(&ca->obj->Attributes, ca->key);
 		}
 		*slot = ca->value;
 		new_val = ca->value;
@@ -923,7 +923,7 @@ static int undo_chg_attr_swap(void *udata)
 	else {
 		*slot = NULL;
 		new_val = NULL;
-		pcb_attribute_remove(&ca->obj->Attributes, ca->key);
+		rnd_attribute_remove(&ca->obj->Attributes, ca->key);
 	}
 
 
@@ -967,7 +967,7 @@ int pcb_uchg_attr(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *key, const c
 	if (key == NULL)
 		return -1;
 
-	curr = pcb_attribute_get(&obj->Attributes, key);
+	curr = rnd_attribute_get(&obj->Attributes, key);
 	if ((curr == NULL) && (new_value == NULL))
 		return 0; /* nothing to do: both delete */
 	if ((curr != NULL) && (new_value != NULL) && (strcmp(curr, new_value) == 0))

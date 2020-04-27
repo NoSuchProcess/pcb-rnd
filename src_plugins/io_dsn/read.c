@@ -183,10 +183,10 @@ static rnd_coord_t dsn_load_aper(dsn_read_t *ctx, gsxl_node_t *c)
 	return res;
 }
 
-static void parse_attribute(dsn_read_t *ctx, pcb_attribute_list_t *attr, gsxl_node_t *kv)
+static void parse_attribute(dsn_read_t *ctx, rnd_attribute_list_t *attr, gsxl_node_t *kv)
 {
 	for(;kv != NULL; kv = kv->next)
-		pcb_attribute_put(attr, STRE(kv), STRE(kv->children));
+		rnd_attribute_put(attr, STRE(kv), STRE(kv->children));
 }
 
 static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src, int no_y_flip)
@@ -348,7 +348,7 @@ static int parse_layer_type(dsn_read_t *ctx, pcb_layergrp_t *grp, const char *ty
 	if ((pcb_strcasecmp(ty, "signal") == 0) || (pcb_strcasecmp(ty, "jumper") == 0))
 		return 0; /* nothig special to do */
 	if ((pcb_strcasecmp(ty, "power") == 0) || (pcb_strcasecmp(ty, "mixed") == 0)) {
-		pcb_attribute_put(&grp->Attributes, "plane", ty);
+		rnd_attribute_put(&grp->Attributes, "plane", ty);
 		return 0;
 	}
 
@@ -496,7 +496,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 
 	/* place polygons on planes */
 	for(gid = 0, grp = ctx->pcb->LayerGroups.grp; gid < ctx->pcb->LayerGroups.len; gid++,grp++) {
-		if (pcb_attribute_get(&grp->Attributes, "plane") != NULL) {
+		if (rnd_attribute_get(&grp->Attributes, "plane") != NULL) {
 			pcb_layer_t *ly;
 			if (!ctx->has_pcb_boundary) {
 				rnd_message(PCB_MSG_ERROR, "Because of the missing pcb boundary power planes are not filled with polygons.\n");
@@ -903,7 +903,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 			ps->rot = rotang;
 			pcb_pstk_bbox(ps);
 		}
-		pcb_attribute_put(&ps->Attributes, "term", term);
+		rnd_attribute_put(&ps->Attributes, "term", term);
 	}
 	else
 		rnd_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
@@ -1038,8 +1038,8 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 		}
 	}
 
-	pcb_attribute_put(&subc->Attributes, "footprint", id);
-	id = pcb_attribute_get(&subc->Attributes, "footprint");
+	rnd_attribute_put(&subc->Attributes, "footprint", id);
+	id = rnd_attribute_get(&subc->Attributes, "footprint");
 	htsp_set(&ctx->subcs, id, subc);
 
 	if (old_unit != NULL)
@@ -1565,7 +1565,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 		}
 
 		nsc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, subc, crd[0], crd[1], 0);
-		pcb_attribute_put(&nsc->Attributes, "refdes", refdes);
+		rnd_attribute_put(&nsc->Attributes, "refdes", refdes);
 
 		if (mirror_first) {
 			if (need_mirror)

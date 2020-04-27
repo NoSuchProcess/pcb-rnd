@@ -127,22 +127,22 @@ long int pcb_create_ID_get(void)
 	return ID++;
 }
 
-static void pcb_attribute_copy_all_smart(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src, pcb_any_obj_t *dstobj, pcb_any_obj_t *copy_from_any)
+static void pcb_attribute_copy_all_smart(rnd_attribute_list_t *dest, const rnd_attribute_list_t *src, pcb_any_obj_t *dstobj, pcb_any_obj_t *copy_from_any)
 {
 	int i;
 	for (i = 0; i < src->Number; i++)
-		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
+		rnd_attribute_put(dest, src->List[i].name, src->List[i].value);
 }
 
 
-void pcb_obj_add_attribs(pcb_any_obj_t *o, const pcb_attribute_list_t *src, pcb_any_obj_t *copy_from)
+void pcb_obj_add_attribs(pcb_any_obj_t *o, const rnd_attribute_list_t *src, pcb_any_obj_t *copy_from)
 {
 	if (src == NULL)
 		return;
 	if (copy_from)
 		pcb_attribute_copy_all_smart(&o->Attributes, src, o, copy_from);
 	else
-		pcb_attribute_copy_all(&o->Attributes, src);
+		rnd_attribute_copy_all(&o->Attributes, src);
 }
 
 void pcb_obj_center(const pcb_any_obj_t *obj, rnd_coord_t *x, rnd_coord_t *y)
@@ -161,7 +161,7 @@ void pcb_obj_center(const pcb_any_obj_t *obj, rnd_coord_t *x, rnd_coord_t *y)
 	}
 }
 
-void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value)
+void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)(((char *)list) - offsetof(pcb_any_obj_t, Attributes));
 	if (strcmp(name, "term") == 0) {

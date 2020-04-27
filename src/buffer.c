@@ -273,9 +273,9 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	s = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
-	pcb_attribute_put(&s->Attributes, "refdes", refdes);
-	pcb_attribute_put(&s->Attributes, "footprint", name);
-	pcb_attribute_put(&s->Attributes, "value", value);
+	rnd_attribute_put(&s->Attributes, "refdes", refdes);
+	rnd_attribute_put(&s->Attributes, "footprint", name);
+	rnd_attribute_put(&s->Attributes, "value", value);
 
 	RND_ACT_IRES(0);
 	return 0;

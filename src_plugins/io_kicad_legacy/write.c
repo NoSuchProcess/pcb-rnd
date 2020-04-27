@@ -68,7 +68,7 @@ static int io_kicad_legacy_write_subc_index(FILE *FP, vtp0_t *subcs)
 TODO(": need a subc dedup")
 /*		elementlist_dedup_skip(ededup, element);*/
 
-		fprintf(FP, "%s\n", unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc));
+		fprintf(FP, "%s\n", unm_name(&group1, or_empty(rnd_attribute_get(&subc->Attributes, "footprint")), subc));
 	}
 
 	unm_uninit(&group1);
@@ -402,9 +402,9 @@ TODO(": is this the origin point? if so, it should be sox and soy")
 
 TODO(": do not hardwire coords")
 TODO(": figure how to turn off displaying these")
-	fprintf(FP, "T0 0 -4000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(pcb_attribute_get(&subc->Attributes, "refdes")));
-	fprintf(FP, "T1 0 -5000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(pcb_attribute_get(&subc->Attributes, "value")));
-	fprintf(FP, "T2 0 -6000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")));
+	fprintf(FP, "T0 0 -4000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(rnd_attribute_get(&subc->Attributes, "refdes")));
+	fprintf(FP, "T1 0 -5000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(rnd_attribute_get(&subc->Attributes, "value")));
+	fprintf(FP, "T2 0 -6000 600 600 0 120 N V %d N \"%s\"\n", silkLayer, or_empty(rnd_attribute_get(&subc->Attributes, "footprint")));
 
 	/* export padstacks */
 	padstacklist_foreach(&subc->data->padstack, &it, ps) {
@@ -609,7 +609,7 @@ static int write_kicad_legacy_layout_subcs(FILE *FP, pcb_board_t *Layout, pcb_da
 	unm_init(&group1);
 
 	subclist_foreach(&Data->subc, &sit, subc) {
-		const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
+		const char *uname = unm_name(&group1, or_empty(rnd_attribute_get(&subc->Attributes, "footprint")), subc);
 TODO(": what did we need this for?")
 /*		elementlist_dedup_skip(ededup, element); skip duplicate elements */
 		io_kicad_legacy_write_subc(FP, PCB, subc, xOffset, yOffset, uname);
@@ -693,7 +693,7 @@ TODO("no hardwiring of dates")
 	unm_init(&group1);
 	for(n = 0; n < subcs->used; n++) {
 		pcb_subc_t *subc = subcs->array[n];
-		const char *uname = unm_name(&group1, or_empty(pcb_attribute_get(&subc->Attributes, "footprint")), subc);
+		const char *uname = unm_name(&group1, or_empty(rnd_attribute_get(&subc->Attributes, "footprint")), subc);
 		io_kicad_legacy_write_subc(f, PCB, subc, 0, 0, uname);
 	}
 	unm_uninit(&group1);

@@ -682,9 +682,9 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					val = NULL;
 			}
 			if (val == NULL)
-				ret |= pcb_attribute_remove(&ly->Attributes, key);
+				ret |= rnd_attribute_remove(&ly->Attributes, key);
 			else
-				ret |= pcb_attribute_put(&ly->Attributes, key, val);
+				ret |= rnd_attribute_put(&ly->Attributes, key, val);
 			free(key);
 			pcb_board_set_changed_flag(pcb_true);
 		}
@@ -792,9 +792,9 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					val = NULL;
 			}
 			if (val == NULL)
-				ret |= pcb_attribute_remove(&g->Attributes, key);
+				ret |= rnd_attribute_remove(&g->Attributes, key);
 			else
-				ret |= pcb_attribute_put(&g->Attributes, key, val);
+				ret |= rnd_attribute_put(&g->Attributes, key, val);
 			free(key);
 		}
 		else {
@@ -936,7 +936,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				else
 					val = "";
-				pcb_attribute_put(&g->Attributes, curr, val);
+				rnd_attribute_put(&g->Attributes, curr, val);
 			}
 			free(attrs);
 		}

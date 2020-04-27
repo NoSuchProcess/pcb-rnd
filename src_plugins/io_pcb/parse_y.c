@@ -161,7 +161,7 @@ extern int yyElemFixLayers;
 
 static char *layer_group_string;
 
-static pcb_attribute_list_t *attr_list;
+static rnd_attribute_list_t *attr_list;
 
 int yyerror(const char *s);
 int yylex();
@@ -2704,7 +2704,7 @@ yyreduce:
 				pcb_pstk_t *pin = io_pcb_element_pin_new(yysubc, NU ((yyvsp[-9].measure)) + yysubc_ox,
 					NU ((yyvsp[-8].measure)) + yysubc_oy, NU ((yyvsp[-7].measure)), NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)), (yyvsp[-3].string),
 					(yyvsp[-2].string), (yyvsp[-1].flagtype));
-				pcb_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);
+				rnd_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
@@ -2775,7 +2775,7 @@ yyreduce:
 					NU ((yyvsp[-8].measure)) + yysubc_ox,
 					NU ((yyvsp[-7].measure)) + yysubc_oy, NU ((yyvsp[-6].measure)), NU ((yyvsp[-5].measure)), NU ((yyvsp[-4].measure)),
 					(yyvsp[-3].string), (yyvsp[-2].string), (yyvsp[-1].flagtype));
-				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
+				rnd_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
@@ -2892,7 +2892,7 @@ yyreduce:
     {
 				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], (yyvsp[-3].string), PCB_NETA_ALLOC);
 				if (((yyvsp[-2].string) != NULL) && (*(yyvsp[-2].string) != '\0'))
-					pcb_attribute_put(&currnet->Attributes, "style", (yyvsp[-2].string));
+					rnd_attribute_put(&currnet->Attributes, "style", (yyvsp[-2].string));
 				free ((yyvsp[-3].string));
 				free ((yyvsp[-2].string));
 			}
@@ -2930,11 +2930,11 @@ yyreduce:
 #line 1322 "parse_y.y" /* yacc.c:1652  */
     {
 				char *old_val, *key = (yyvsp[-2].string), *val = (yyvsp[-1].string) ? (yyvsp[-1].string) : (char *)"";
-				old_val = pcb_attribute_get(attr_list, key);
+				old_val = rnd_attribute_get(attr_list, key);
 				if (old_val != NULL)
 					rnd_message(PCB_MSG_ERROR, "mutliple values for attribute %s: '%s' and '%s' - ignoring '%s'\n", key, old_val, val, val);
 				else
-					pcb_attribute_put(attr_list, key, val);
+					rnd_attribute_put(attr_list, key, val);
 				free(key);
 				free(val);
 			}

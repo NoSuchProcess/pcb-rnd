@@ -400,7 +400,7 @@ static int number_of_footprints_not_found;
 
 static int parse_layout_attribute_units(pcb_board_t *pcb, const char *name, int def)
 {
-	const char *as = pcb_attrib_get(pcb, name);
+	const char *as = rnd_attrib_get(pcb, name);
 	if (!as)
 		return def;
 	return pcb_get_value(as, NULL, NULL, NULL);
@@ -408,7 +408,7 @@ static int parse_layout_attribute_units(pcb_board_t *pcb, const char *name, int 
 
 static int subc_differs(pcb_subc_t *sc, const char *expect_name)
 {
-	const char *got_name = pcb_attribute_get(&sc->Attributes, "footprint");
+	const char *got_name = rnd_attribute_get(&sc->Attributes, "footprint");
 	if ((expect_name != NULL) && (*expect_name == '\0'))
 		expect_name = NULL;
 	if ((got_name != NULL) && (*got_name == '\0'))
@@ -744,8 +744,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	/* Now reload footprint */
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
 	if (sc != NULL) {
-/*		pcb_attribute_put(&sc->Attributes, "refdes", refdes);*/
-		pcb_attribute_put(&sc->Attributes, "value", value);
+/*		rnd_attribute_put(&sc->Attributes, "refdes", refdes);*/
+		rnd_attribute_put(&sc->Attributes, "value", value);
 		PCB_FLAG_SET(PCB_FLAG_FOUND, sc);
 	}
 
@@ -782,9 +782,9 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *a
 	}
 
 	if (value != NULL)
-		pcb_attribute_put(&sc->Attributes, name, value);
+		rnd_attribute_put(&sc->Attributes, name, value);
 	else
-		pcb_attribute_remove(&sc->Attributes, name);
+		rnd_attribute_remove(&sc->Attributes, name);
 
 	RND_ACT_IRES(0);
 	return 0;

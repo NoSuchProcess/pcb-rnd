@@ -267,7 +267,7 @@ static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb
 
 	subc = pcb_exto_create(dst, "line-of-vias", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
 	if (copy_from == NULL)
-		pcb_attribute_put(&subc->Attributes, "extobj::pitch", "4mm");
+		rnd_attribute_put(&subc->Attributes, "extobj::pitch", "4mm");
 
 	/* create edit-objects */
 	ly = &subc->data->Layer[LID_EDIT];
@@ -275,7 +275,7 @@ static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb
 		l = pcb_line_dup(ly, objs->array[n]);
 		PCB_FLAG_SET(PCB_FLAG_FLOATER, l);
 		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, l);
-		pcb_attribute_put(&l->Attributes, "extobj::role", "edit");
+		rnd_attribute_put(&l->Attributes, "extobj::role", "edit");
 	}
 
 	/* create the padstack prototype */

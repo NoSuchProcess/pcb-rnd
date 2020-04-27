@@ -109,7 +109,7 @@ static void scad_insert_models(void)
 	htsp_init(&models, strhash, strkeyeq);
 
 	PCB_SUBC_LOOP(PCB->Data); {
-		mod = pcb_attribute_get(&subc->Attributes, "openscad");
+		mod = rnd_attribute_get(&subc->Attributes, "openscad");
 		if (mod != NULL) {
 			rnd_coord_t ox, oy;
 			double rot = 0;
@@ -122,8 +122,8 @@ static void scad_insert_models(void)
 			pcb_subc_get_rotation(subc, &rot);
 			pcb_subc_get_side(subc, &on_bottom);
 
-			transf = pcb_attribute_get(&subc->Attributes, "openscad-transformation");
-			param = pcb_attribute_get(&subc->Attributes, "openscad-param");
+			transf = rnd_attribute_get(&subc->Attributes, "openscad-transformation");
+			param = rnd_attribute_get(&subc->Attributes, "openscad-param");
 			scad_insert_model(&models, mod, TRX_(ox), TRY_(oy), rot, on_bottom, transf, param);
 		}
 	} PCB_END_LOOP;

@@ -55,7 +55,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		id++;
 		pcb_subclist_dedup_skip(dedup, subc);
 
-		ename = pcb_attribute_get(&subc->Attributes, "footprint");
+		ename = rnd_attribute_get(&subc->Attributes, "footprint");
 		if (ename == NULL)
 			ename = subc->refdes;
 		if (ename == NULL)

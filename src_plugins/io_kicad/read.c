@@ -238,7 +238,7 @@ static int kicad_create_copper_layer_(read_state_t *st, pcb_layergrp_id_t gid, c
 	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
 	if (ltype != NULL) {
 		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, id);
-		pcb_attribute_put(&ly->Attributes, "kicad::type", ltype);
+		rnd_attribute_put(&ly->Attributes, "kicad::type", ltype);
 	}
 	return 0;
 }
@@ -609,17 +609,17 @@ static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
 		return kicad_error(subtree, "error parsing KiCad titleblock: empty");
 
 	name = pcb_concat(prefix, subtree->str, NULL);
-	pcb_attrib_put(st->pcb, name, subtree->children->str);
+	rnd_attrib_put(st->pcb, name, subtree->children->str);
 	free(name);
 	for(n = subtree->next; n != NULL; n = n->next) {
 		if (n->str != NULL && strcmp("comment", n->str) != 0) {
 			name = pcb_concat(prefix, n->str, NULL);
-			pcb_attrib_put(st->pcb, name, n->children->str);
+			rnd_attrib_put(st->pcb, name, n->children->str);
 			free(name);
 		}
 		else { /* if comment field has extra children args */
 			name = pcb_concat(prefix, n->str, "_", n->children->str, NULL);
-			pcb_attrib_put(st->pcb, name, n->children->next->str);
+			rnd_attrib_put(st->pcb, name, n->children->next->str);
 			free(name);
 		}
 	}
@@ -1169,7 +1169,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	}
 	line = pcb_line_new(ly, x1, y1, x2, y2, thickness, clearance, flg);
 	if (st->primitive_term != NULL)
-		pcb_attribute_put(&line->Attributes, "term", st->primitive_term);
+		rnd_attribute_put(&line->Attributes, "term", st->primitive_term);
 	return 0;
 }
 
@@ -1282,7 +1282,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		}
 		arc = pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, pcb_true);
 		if (st->primitive_term != NULL)
-			pcb_attribute_put(&arc->Attributes, "term", st->primitive_term);
+			rnd_attribute_put(&arc->Attributes, "term", st->primitive_term);
 	}
 
 	return 0;
@@ -1848,7 +1848,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	}
 
 	if (pin_name != NULL)
-		pcb_attribute_put(&ps->Attributes, "term", pin_name);
+		rnd_attribute_put(&ps->Attributes, "term", pin_name);
 
 	if (netname != NULL) {
 		pcb_net_term_t *term;
@@ -1884,16 +1884,16 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 			if (strcmp("reference", key) == 0) {
 				SEEN_NO_DUP(*tally, 7);
 				pcb_obj_id_fix(text);
-				pcb_attribute_put(&subc->Attributes, "refdes", text);
+				rnd_attribute_put(&subc->Attributes, "refdes", text);
 				*foundRefdes = 1;
 			}
 			else if (strcmp("value", key) == 0) {
 				SEEN_NO_DUP(*tally, 8);
-				pcb_attribute_put(&subc->Attributes, "value", text);
+				rnd_attribute_put(&subc->Attributes, "value", text);
 			}
 			else if (strcmp("descr", key) == 0) {
 				SEEN_NO_DUP(*tally, 12);
-				pcb_attribute_put(&subc->Attributes, "footprint", text);
+				rnd_attribute_put(&subc->Attributes, "footprint", text);
 			}
 			else if (strcmp("hide", key) == 0) {
 				hidden = 1;
@@ -2325,7 +2325,7 @@ static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 	pcb_poly_init_clip(subc->data, ly, poly);
 
 	if (st->primitive_term != NULL)
-		pcb_attribute_put(&poly->Attributes, "term", st->primitive_term);
+		rnd_attribute_put(&poly->Attributes, "term", st->primitive_term);
 
 	return 0;
 }
@@ -2352,7 +2352,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		/* loading a module as a footprint - always create the subc in advance */
 		subc = pcb_subc_new();
 		pcb_subc_create_aux(subc, 0, 0, 0.0, 0);
-		pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+		rnd_attribute_put(&subc->Attributes, "refdes", "K1");
 		if (st->pcb != NULL) {
 			pcb_subc_reg(st->pcb->Data, subc);
 			pcb_subc_bind_globals(st->pcb, subc);
@@ -2411,7 +2411,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 				return kicad_error(n, "unexpected empty/NULL module attr node");
 
 			key = pcb_concat("kicad_attr_", n->children->str, NULL);
-			pcb_attribute_put(&subc->Attributes, key, "1");
+			rnd_attribute_put(&subc->Attributes, key, "1");
 			free(key);
 		}
 		else if (strcmp("at", n->str) == 0) {
@@ -2431,7 +2431,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 					   has no 'floater' - rotation is encoded both in text and subc
 					   and it has to be subtracted from text later on */
 					pcb_subc_create_aux(subc, mod_x, mod_y, 0.0, on_bottom);
-					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+					rnd_attribute_put(&subc->Attributes, "refdes", "K1");
 				}
 				if (st->pcb != NULL) {
 					pcb_subc_reg(st->pcb->Data, subc);
@@ -2457,13 +2457,13 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			SEEN_NO_DUP(tally, 11);
 			if ((n->children == NULL) || (n->children->str == NULL))
 				return kicad_error(n, "unexpected empty/NULL module descr node");
-			pcb_attribute_put(&subc->Attributes, "kicad_descr", n->children->str);
+			rnd_attribute_put(&subc->Attributes, "kicad_descr", n->children->str);
 		}
 		else if (strcmp("tags", n->str) == 0) {
 			SEEN_NO_DUP(tally, 12);
 			if ((n->children == NULL) || (n->children->str == NULL))
 				return kicad_error(n, "unexpected empty/NULL module tags node");
-			pcb_attribute_put(&subc->Attributes, "kicad_tags", n->children->str);
+			rnd_attribute_put(&subc->Attributes, "kicad_tags", n->children->str);
 		}
 		else if (strcmp("solder_paste_margin", n->str) == 0) {
 			PARSE_COORD(mod_paste, n, n->children, "module pad solder_paste_margin");
@@ -2506,8 +2506,8 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	if (subc == NULL)
 		return kicad_error(subtree, "unable to create incomplete subc.");
 
-	if ((mod_name != NULL) && (*mod_name != '\0') && (pcb_attribute_get(&subc->Attributes, "footprint") == NULL))
-		pcb_attribute_put(&subc->Attributes, "footprint", mod_name);
+	if ((mod_name != NULL) && (*mod_name != '\0') && (rnd_attribute_get(&subc->Attributes, "footprint") == NULL))
+		rnd_attribute_put(&subc->Attributes, "footprint", mod_name);
 
 	pcb_subc_bbox(subc);
 	if (st->pcb != NULL) {

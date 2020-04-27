@@ -294,7 +294,7 @@ static void ghid_beep(pcb_hid_t *hid)
 	gdk_beep();
 }
 
-static void ghid_attributes(pcb_hid_t *hid, const char *owner, pcb_attribute_list_t *attrs)
+static void ghid_attributes(pcb_hid_t *hid, const char *owner, rnd_attribute_list_t *attrs)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	pcb_gtk_dlg_attributes(gctx->port.top_window, owner, attrs);
