@@ -52,7 +52,7 @@ static void help1(void)
 	help1_common("pcb-rnd");
 
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
-	printf(" --dot_pcb_pcb=path         .pcb-rnd config path under $HOME/\n");
+	printf(" --dot_pcb_rnd=path         .pcb-rnd config path under $HOME/\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
 }
 
