@@ -1185,7 +1185,7 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 	pcb_rat_all_anchor_guess(pcb->Data);
 }
 
-#if !defined(HAS_ATEXIT)
+#if !defined(RND_HAS_ATEXIT)
 /* makes a temporary copy of the data. This is useful for systems which
  * doesn't support calling functions on exit. We use this to save the data
  * before LEX and YACC functions are called because they are able to abort

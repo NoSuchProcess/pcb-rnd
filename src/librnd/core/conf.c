@@ -471,7 +471,7 @@ const char *pcb_conf_get_project_conf_name(const char *project_fn, const char *p
 		/* replace pcb name with project_name and test */
 		strncpy(res, pcb_fn, sizeof(res)-1);
 		res[sizeof(res)-1] = '\0';
-		end = strrchr(res, PCB_DIR_SEPARATOR_C);
+		end = strrchr(res, RND_DIR_SEPARATOR_C);
 		if (end != NULL) {
 			if (end+1+sizeof(project_name) >= res + sizeof(res))
 				return NULL;

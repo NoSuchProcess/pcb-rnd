@@ -57,7 +57,7 @@
 
 pcb_output_t pcb_draw_out; /* global context used for drawing */
 
-rnd_box_t pcb_draw_invalidated = { COORD_MAX, COORD_MAX, -COORD_MAX, -COORD_MAX };
+rnd_box_t pcb_draw_invalidated = { RND_COORD_MAX, RND_COORD_MAX, -RND_COORD_MAX, -RND_COORD_MAX };
 
 int pcb_draw_force_termlab = 0;
 rnd_bool pcb_draw_doing_assy = pcb_false;
@@ -158,8 +158,8 @@ void pcb_draw(void)
 		pcb_render->invalidate_lr(pcb_render, pcb_draw_invalidated.X1, pcb_draw_invalidated.X2, pcb_draw_invalidated.Y1, pcb_draw_invalidated.Y2);
 
 	/* shrink the update block */
-	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = COORD_MAX;
-	pcb_draw_invalidated.X2 = pcb_draw_invalidated.Y2 = -COORD_MAX;
+	pcb_draw_invalidated.X1 = pcb_draw_invalidated.Y1 = RND_COORD_MAX;
+	pcb_draw_invalidated.X2 = pcb_draw_invalidated.Y2 = -RND_COORD_MAX;
 }
 
 static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)

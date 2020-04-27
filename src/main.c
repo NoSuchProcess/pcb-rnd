@@ -105,7 +105,7 @@ static char *main_path_init(char *argv0)
 	   something like /usr/local/bin/pcb or ./pcb or ./foo/pcb
 	   but if you just use pcb and it exists in your path, you'll
 	   just get back pcb again. */
-	haspath = (strchr(argv0, PCB_DIR_SEPARATOR_C) != NULL);
+	haspath = (strchr(argv0, RND_DIR_SEPARATOR_C) != NULL);
 
 #ifdef DEBUG
 	printf("main_path_init (%s): haspath = %d\n", argv0, haspath);
@@ -126,7 +126,7 @@ static char *main_path_init(char *argv0)
 			path = pcb_strdup(tmps);
 
 			/* search through the font path for a font file */
-			for (p = strtok(path, PCB_PATH_DELIMETER); p && *p; p = strtok(NULL, PCB_PATH_DELIMETER)) {
+			for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
 #ifdef DEBUG
 				printf("Looking for %s in %s\n", argv0, p);
 #endif
@@ -134,7 +134,7 @@ static char *main_path_init(char *argv0)
 					fprintf(stderr, "main_path_init():  malloc failed\n");
 					exit(1);
 				}
-				sprintf(tmps, "%s%s%s", p, PCB_DIR_SEPARATOR_S, argv0);
+				sprintf(tmps, "%s%s%s", p, RND_DIR_SEPARATOR_S, argv0);
 				r = stat(tmps, &sb);
 				if (r == 0) {
 #ifdef DEBUG
@@ -154,10 +154,10 @@ static char *main_path_init(char *argv0)
 	if (found_bindir) {
 		/* strip off the executable name leaving only the path */
 		t2 = NULL;
-		t1 = strchr(bindir, PCB_DIR_SEPARATOR_C);
+		t1 = strchr(bindir, RND_DIR_SEPARATOR_C);
 		while (t1 != NULL && *t1 != '\0') {
 			t2 = t1;
-			t1 = strchr(t2 + 1, PCB_DIR_SEPARATOR_C);
+			t1 = strchr(t2 + 1, RND_DIR_SEPARATOR_C);
 		}
 		if (t2 != NULL)
 			*t2 = '\0';
@@ -173,7 +173,7 @@ static char *main_path_init(char *argv0)
 		fprintf(stderr, "main_path_init():  malloc failed\n");
 		exit(1);
 	}
-	sprintf(exec_prefix, "%s%s%s", bindir, PCB_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
+	sprintf(exec_prefix, "%s%s%s", bindir, RND_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
 	tmp = pcb_concat(PCBSHAREDIR, "/pcblib", NULL);
@@ -214,31 +214,31 @@ static void main_path_uninit(void)
 /* initialize signal and error handlers */
 static void main_sighand_init(void)
 {
-#ifdef PCB_HAVE_SIGHUP
+#ifdef RND_HAVE_SIGHUP
 	signal(SIGHUP, pcb_catch_signal);
 #endif
-#ifdef PCB_HAVE_SIGQUIT
+#ifdef RND_HAVE_SIGQUIT
 	signal(SIGQUIT, pcb_catch_signal);
 #endif
-#ifdef PCB_HAVE_SIGTERM
+#ifdef RND_HAVE_SIGTERM
 	signal(SIGTERM, pcb_catch_signal);
 #endif
-#ifdef PCB_HAVE_SIGINT
+#ifdef RND_HAVE_SIGINT
 	signal(SIGINT, pcb_catch_signal);
 #endif
 
 #ifdef NDEBUG
 /* so that we get a core dump on segfault in debug mode */
-#	ifdef PCB_HAVE_SIGABRT
+#	ifdef RND_HAVE_SIGABRT
 		signal(SIGABRT, pcb_catch_signal);
 #	endif
-#	ifdef PCB_HAVE_SIGSEGV
+#	ifdef RND_HAVE_SIGSEGV
 		signal(SIGSEGV, pcb_catch_signal);
 #	endif
 #endif
 
 /* calling external program by popen() may cause a PIPE signal, so we ignore it */
-#ifdef PCB_HAVE_SIGPIPE
+#ifdef RND_HAVE_SIGPIPE
 	signal(SIGPIPE, SIG_IGN);
 #endif
 }

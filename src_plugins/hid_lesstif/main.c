@@ -108,12 +108,12 @@ static Pixmap mask_pixmap = 0;     /* 'Sketch pixmap' for compositing: color arr
 static Pixmap mask_bitmap = 0;     /* 'Sketch transparency bitmap' for compositing: tells which pixels shall be copied and which one are transparent/erased */
 
 static int use_xrender = 0;
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 static Picture main_picture;
 static Picture mask_picture;
 static Pixmap pale_pixmap;
 static Picture pale_picture;
-#endif /* HAVE_XRENDER */
+#endif /* RND_HAVE_XRENDER */
 
 static int pixmap_w = 0, pixmap_h = 0;
 Screen *screen_s;
@@ -615,7 +615,7 @@ typedef struct {
 	Pixmap mask_scaled;
 	char *img_data;
 
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 	Picture p_img_scaled;
 	Picture p_mask_scaled;
 #endif
@@ -734,7 +734,7 @@ static void pcb_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, rn
 				lpm->pm_scaled = 0;
 		}
 
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 		if (use_xrender) {
 			if (lpm->p_img_scaled != 0)
 				XRenderFreePicture(display, lpm->p_img_scaled);
@@ -750,7 +750,7 @@ static void pcb_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, rn
 #endif
 	}
 
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 	if (use_xrender) {
 		fprintf(stderr, "clip xrender\n");
 		XRenderPictureAttributes pa;
@@ -1251,7 +1251,7 @@ static void work_area_make_pixmaps(Dimension width, Dimension height)
 	if (mask_pixmap)
 		XFreePixmap(display, mask_pixmap);
 	mask_pixmap = XCreatePixmap(display, window, width, height, XDefaultDepth(display, screen));
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 	if (main_picture) {
 		XRenderFreePicture(display, main_picture);
 		main_picture = 0;
@@ -1266,7 +1266,7 @@ static void work_area_make_pixmaps(Dimension width, Dimension height)
 		if (!main_picture || !mask_picture)
 			use_xrender = 0;
 	}
-#endif /* HAVE_XRENDER */
+#endif /* RND_HAVE_XRENDER */
 
 	if (mask_bitmap)
 		XFreePixmap(display, mask_bitmap);
@@ -1329,7 +1329,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 
 	work_area_make_pixmaps(width, height);
 
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 	if (use_xrender) {
 		double l_alpha = pcbhl_conf.appearance.layer_alpha;
 		XRenderPictureAttributes pa;
@@ -1349,7 +1349,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 		else
 			use_xrender = 0;
 	}
-#endif /* HAVE_XRENDER */
+#endif /* RND_HAVE_XRENDER */
 
 	clip_gc = XCreateGC(display, window, 0, 0);
 	pxm_clip_gc = XCreateGC(display, window, 0, 0);
@@ -1800,16 +1800,16 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	XtGetApplicationResources(appwidget, new_values, new_resources, rmax, 0, 0);
 
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 	use_xrender = XRenderQueryExtension(display, &render_event, &render_error) &&
 		XRenderFindVisualFormat(display, DefaultVisual(display, screen));
-#ifdef HAVE_XINERAMA
+#ifdef RND_HAVE_XINERAMA
 	/* Xinerama and XRender don't get along well */
 	if (XineramaQueryExtension(display, &render_event, &render_error)
 			&& XineramaIsActive(display))
 		use_xrender = 0;
-#endif /* HAVE_XINERAMA */
-#endif /* HAVE_XRENDER */
+#endif /* RND_HAVE_XINERAMA */
+#endif /* RND_HAVE_XRENDER */
 
 	rcount = 0;
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
@@ -2217,7 +2217,7 @@ static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_
 			pixmap = main_pixmap;
 
 			/* blit back the result */
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 			if (use_xrender) {
 				XRenderPictureAttributes pa;
 
@@ -2227,7 +2227,7 @@ static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_
 					main_picture, 0, 0, 0, 0, 0, 0, view_width, view_height);
 			}
 			else
-#endif /* HAVE_XRENDER */
+#endif /* RND_HAVE_XRENDER */
 			{
 				XSetClipMask(display, clip_gc, mask_bitmap);
 				XCopyArea(display, mask_pixmap, main_pixmap, clip_gc, 0, 0, view_width, view_height, 0, 0);

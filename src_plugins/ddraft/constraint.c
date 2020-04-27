@@ -88,7 +88,7 @@ static int find_best_length(double *out_len, rnd_coord_t x1, rnd_coord_t y1, rnd
 	if (lengthlen > 0) {
 		/* find the best matching constraint length */
 		best = -1;
-		best_diff = COORD_MAX;
+		best_diff = RND_COORD_MAX;
 		for(n = 0; n < lengthlen; n++) {
 			diff = fabs(len - lengths[n]);
 			if (diff < best_diff) {

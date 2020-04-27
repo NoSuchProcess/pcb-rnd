@@ -193,7 +193,7 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 		case PCB_PROPT_invalid: break;
 		case PCB_PROPT_max: break;
 		case PCB_PROPT_STRING: break;
-		case PCB_PROPT_COORD:  minp.coord = COORD_MAX; maxp.coord = -minp.coord;  break;
+		case PCB_PROPT_COORD:  minp.coord = RND_COORD_MAX; maxp.coord = -minp.coord;  break;
 		case PCB_PROPT_ANGLE:  minp.angle = 100000;    maxp.angle = -minp.angle; break;
 		case PCB_PROPT_INT:    minp.i     = INT_MAX;   maxp.i = -minp.i; break;
 		case PCB_PROPT_BOOL:   minp.i     = 1;         maxp.i = 0; break;

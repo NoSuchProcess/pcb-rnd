@@ -90,7 +90,7 @@ pcb_pstk_t *io_pcb_element_pad_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t
 void io_pcb_preproc_board(pcb_board_t *pcb);
 void io_pcb_postproc_board(pcb_board_t *pcb);
 
-#ifndef HAS_ATEXIT
+#ifndef RND_HAS_ATEXIT
 void pcb_tmp_data_save(void);
 void pcb_tmp_data_remove(void);
 #endif

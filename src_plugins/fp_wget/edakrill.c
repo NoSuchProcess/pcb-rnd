@@ -146,7 +146,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
 
-	pcb_snprintf(last_sum_fn, sizeof(last_sum_fn), "%s" PCB_DIR_SEPARATOR_S "edakrill.last", conf_fp_wget.plugins.fp_wget.cache_dir);
+	pcb_snprintf(last_sum_fn, sizeof(last_sum_fn), "%s" RND_DIR_SEPARATOR_S "edakrill.last", conf_fp_wget.plugins.fp_wget.cache_dir);
 
 	gds_init(&vpath);
 	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);

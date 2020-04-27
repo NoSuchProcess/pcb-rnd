@@ -127,7 +127,7 @@ void pcb_set_design_dir(const char *fn)
 		return;
 	}
 
-	end = strrchr(last_design_dir, PCB_DIR_SEPARATOR_C);
+	end = strrchr(last_design_dir, RND_DIR_SEPARATOR_C);
 	if (end != NULL)
 		*end = '\0';
 
@@ -676,7 +676,7 @@ static int pcb_write_pipe(const char *Filename, rnd_bool thePcb, const char *fmt
 	return (pcb_pclose(fp) ? (-1) : result);
 }
 
-#if !defined(HAS_ATEXIT)
+#if !defined(RND_HAS_ATEXIT)
 static char *TMPFilename = NULL;
 #endif
 

@@ -46,7 +46,7 @@
 
 #include "script.h"
 
-#ifndef PCB_HAVE_SYS_FUNGW
+#ifndef RND_HAVE_SYS_FUNGW
 int pplg_init_fungw_fawk(void);
 int pplg_uninit_fungw_fawk(void);
 #endif
@@ -84,15 +84,15 @@ static int script_save_preunload(script_t *s, const char *data)
 
 	gds_init(&fn);
 	gds_append_str(&fn, pcbhl_conf.rc.path.home);
-	gds_append(&fn, PCB_DIR_SEPARATOR_C);
+	gds_append(&fn, RND_DIR_SEPARATOR_C);
 	gds_append_str(&fn, DOT_PCB_RND);
 	pcb_mkdir(NULL, fn.array, 0755);
 
-	gds_append(&fn, PCB_DIR_SEPARATOR_C);
+	gds_append(&fn, RND_DIR_SEPARATOR_C);
 	gds_append_str(&fn, SCRIPT_PERS);
 	pcb_mkdir(NULL, fn.array, 0750);
 
-	gds_append(&fn, PCB_DIR_SEPARATOR_C);
+	gds_append(&fn, RND_DIR_SEPARATOR_C);
 	gds_append_str(&fn, s->obj->name);
 
 	f = pcb_fopen(NULL, fn.array, "w");
@@ -145,7 +145,7 @@ static void script_free(script_t *s, const char *preunload, const char *cookie)
 
 	if (s->obj != NULL)
 		fgw_obj_unreg(&rnd_fgw, s->obj);
-#ifdef PCB_HAVE_SYS_FUNGW
+#ifdef RND_HAVE_SYS_FUNGW
 	if (s->pup != NULL)
 		pup_unload(&script_pup, s->pup, NULL);
 #endif
@@ -172,7 +172,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 		goto err;
 	}
 
-	fn = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, SCRIPT_PERS, PCB_DIR_SEPARATOR_S, script_persistency_id, NULL);
+	fn = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, DOT_PCB_RND, RND_DIR_SEPARATOR_S, SCRIPT_PERS, RND_DIR_SEPARATOR_S, script_persistency_id, NULL);
 
 	if (strcmp(cmd, "remove") == 0) {
 		RND_ACT_IRES(pcb_remove(NULL, fn));
@@ -250,7 +250,7 @@ static char *script_fn(const char *fn)
 {
 	if (*fn != '~')
 		return pcb_strdup(fn);
-	return pcb_strdup_printf("%s%c%s", pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_C, fn+1);
+	return pcb_strdup_printf("%s%c%s", pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
 }
 
 int pcb_script_load(const char *id, const char *fn, const char *lang)
@@ -271,7 +271,7 @@ TODO(": guess")
 	}
 
 	if (strcmp(lang, "c") != 0) {
-#ifdef PCB_HAVE_SYS_FUNGW
+#ifdef RND_HAVE_SYS_FUNGW
 		const char *engname = lang;
 		char name[PCB_PATH_MAX];
 		int st;
@@ -439,7 +439,7 @@ void pplg_uninit_script(void)
 	htsp_uninit(&scripts);
 	pup_uninit(&script_pup);
 
-#ifndef PCB_HAVE_SYS_FUNGW
+#ifndef RND_HAVE_SYS_FUNGW
 	pplg_uninit_fungw_fawk();
 #endif
 }
@@ -449,7 +449,7 @@ int pplg_init_script(void)
 	PCB_API_CHK_VER;
 	RND_REGISTER_ACTIONS(script_action_list, script_cookie);
 
-#ifndef PCB_HAVE_SYS_FUNGW
+#ifndef RND_HAVE_SYS_FUNGW
 	pplg_init_fungw_fawk();
 #endif
 

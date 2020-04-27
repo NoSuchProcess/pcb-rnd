@@ -38,7 +38,7 @@ components will be simplified.  The returned value will be allocated using
 #include <librnd/core/compat_lrealpath.h>
 #include <limits.h>
 #include <stdlib.h>
-#ifdef HAVE_UNISTD_H
+#ifdef RND_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <string.h>
@@ -50,7 +50,7 @@ components will be simplified.  The returned value will be allocated using
 extern char *canonicalize_file_name(const char *);
 #endif
 
-#if defined(HAVE_REALPATH)
+#if defined(RND_HAVE_REALPATH)
 #if defined (PATH_MAX)
 #define REALPATH_LIMIT PATH_MAX
 #else
@@ -102,7 +102,7 @@ char *pcb_lrealpath(const char *filename)
 	   pathconf()) making it impossible to pass a correctly sized buffer
 	   to realpath() (it could always overflow).  On those systems, we
 	   skip this.  */
-#elif defined (HAVE_REALPATH) && defined (HAVE_UNISTD_H)
+#elif defined (RND_HAVE_REALPATH) && defined (RND_HAVE_UNISTD_H)
 	{
 #ifdef inline
 	/* Suppress compiler warnings; -Dinline means we are compiling in
@@ -126,7 +126,7 @@ char *pcb_lrealpath(const char *filename)
 		}
 		return NULL;
 	}
-	/* HAVE_REALPATH && HAVE_UNISTD_H */
+	/* RND_HAVE_REALPATH && RND_HAVE_UNISTD_H */
 
 	/* The MS Windows method.  If we don't have realpath, we assume we
 	   don't have symlinks and just canonicalize to a Windows absolute

@@ -2259,8 +2259,8 @@ void pcb_poly_contour_init(pcb_pline_t * c)
 	if (c->head == NULL)
 		c->head = calloc(sizeof(pcb_vnode_t), 1);
 	c->head->next = c->head->prev = c->head;
-	c->xmin = c->ymin = COORD_MAX;
-	c->xmax = c->ymax = -COORD_MAX-1;
+	c->xmin = c->ymin = RND_COORD_MAX;
+	c->xmax = c->ymax = -RND_COORD_MAX-1;
 	c->is_round = pcb_false;
 	c->cx = 0;
 	c->cy = 0;
@@ -2622,7 +2622,7 @@ int pcb_poly_contour_inside(const pcb_pline_t *c, pcb_vector_t p)
 	info.f = 0;
 	info.p[0] = ray.X1 = p[0];
 	info.p[1] = ray.Y1 = p[1];
-	ray.X2 = COORD_MAX;
+	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = p[1] + 1;
 	if (setjmp(info.env) == 0)
 		pcb_r_search(c->tree, &ray, NULL, crossing, &info, NULL);
@@ -3042,7 +3042,7 @@ void pcb_polyarea_bbox(pcb_polyarea_t * p, rnd_box_t * b)
 static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t *chk)
 {
 	pcb_vnode_t *v, *n;
-	rnd_coord_t minx = COORD_MAX, miny = COORD_MAX, maxx = -COORD_MAX, maxy = -COORD_MAX;
+	rnd_coord_t minx = RND_COORD_MAX, miny = RND_COORD_MAX, maxx = -RND_COORD_MAX, maxy = -RND_COORD_MAX;
 
 #define update_minmax(min, max, val) \
 	if (val < min) min = val; \
@@ -3482,14 +3482,14 @@ rnd_bool pcb_pline_embraces_circ(pcb_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 
 	/* ray to the right */
 	bx.X1 = cx + r;
-	bx.X2 = COORD_MAX;
+	bx.X2 = RND_COORD_MAX;
 	cnt = 0;
 	pcb_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
 	if ((cnt % 2) == 0)
 		return pcb_false;
 
 	/* ray to the right */
-	bx.X1 = -COORD_MAX;
+	bx.X1 = -RND_COORD_MAX;
 	bx.X2 = cx - r;
 	cnt = 0;
 	pcb_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);

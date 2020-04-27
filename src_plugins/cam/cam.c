@@ -55,7 +55,7 @@ static void cam_init_inst_fn(cam_ctx_t *ctx)
 {
 	if ((PCB != NULL) && (PCB->hidlib.filename != NULL)) {
 		char *fn = pcb_derive_default_filename_(PCB->hidlib.filename, "");
-		char *val, *end = strrchr(fn, PCB_DIR_SEPARATOR_C);
+		char *val, *end = strrchr(fn, RND_DIR_SEPARATOR_C);
 		if (end != NULL)
 			val = pcb_strdup(end+1);
 		else
@@ -119,7 +119,7 @@ static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
 	if (dirlen > 0) {
 		ctx->prefix = malloc(dirlen+2);
 		memcpy(ctx->prefix, optval, dirlen);
-		ctx->prefix[dirlen] = PCB_DIR_SEPARATOR_C;
+		ctx->prefix[dirlen] = RND_DIR_SEPARATOR_C;
 		ctx->prefix[dirlen+1] = '\0';
 	}
 	else

@@ -31,7 +31,7 @@
 
 #include <librnd/config.h>
 
-#define PCB_LARGE_VALUE      (COORD_MAX / 2 - 1) /* maximum extent of board and elements */
+#define PCB_LARGE_VALUE      (RND_COORD_MAX / 2 - 1) /* maximum extent of board and elements */
 
 #define PCB_MAX_COORD        ((rnd_coord_t)PCB_LARGE_VALUE) /* coordinate limits */
 #define PCB_MIN_SIZE         0

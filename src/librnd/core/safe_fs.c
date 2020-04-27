@@ -282,7 +282,7 @@ static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *f
 	FILE *res;
 
 	/* try the trivial: directly under this  dir */
-	pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", from, PCB_DIR_SEPARATOR_C, fn);
+	pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", from, RND_DIR_SEPARATOR_C, fn);
 	res = pcb_fopen(hidlib, tmp, mode);
 
 	if (res != NULL) {
@@ -303,7 +303,7 @@ static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *f
 		struct stat st;
 		if (de->d_name[0] == '.')
 			continue;
-		pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", from, PCB_DIR_SEPARATOR_C, de->d_name);
+		pcb_snprintf(tmp, sizeof(tmp), "%s%c%s", from, RND_DIR_SEPARATOR_C, de->d_name);
 		if (stat(tmp, &st) != 0)
 			continue;
 		if (!S_ISDIR(st.st_mode))

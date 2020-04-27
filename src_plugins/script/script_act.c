@@ -40,7 +40,7 @@ static const char *guess_lang(const char *ext)
 		"awk",         "mawk",
 		"bas",         "fbas",
 		"pas",         "fpas",
-#ifdef PCB_HAVE_SYS_FUNGW
+#ifdef RND_HAVE_SYS_FUNGW
 		"ruby",        "mruby",
 		"py",          "python",
 		"js",          "duktape",
@@ -205,7 +205,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 			PCB_DAD_LABEL(idlang.dlg, "ID:");
 			PCB_DAD_STRING(idlang.dlg);
 				idlang.wid = PCB_DAD_CURRENT(idlang.dlg);
-				tmp = strrchr(fn, PCB_DIR_SEPARATOR_C);
+				tmp = strrchr(fn, RND_DIR_SEPARATOR_C);
 				if (tmp != NULL) {
 					tmp++;
 					idlang.dlg[idlang.wid].val.str = tmp = pcb_strdup(tmp);
@@ -505,7 +505,7 @@ static rnd_action_t script_action_list[] = {
 	{"pas",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"fbas",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"bas",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-#ifdef PCB_HAVE_SYS_FUNGW
+#ifdef RND_HAVE_SYS_FUNGW
 	{"awk",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"mawk",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"lua",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},

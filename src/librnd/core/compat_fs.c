@@ -58,9 +58,9 @@
 
 char *pcb_get_wd(char *path)
 {
-#if defined(HAVE_GETCWD)
+#if defined(RND_HAVE_GETCWD)
 	return getcwd(path, PCB_PATH_MAX);
-#elif defined(HAVE__GETCWD)
+#elif defined(RND_HAVE__GETCWD)
 	return _getcwd(path, PCB_PATH_MAX);
 #else
 	/* seems that some BSD releases lack of a prototype for getwd() */
@@ -68,18 +68,18 @@ char *pcb_get_wd(char *path)
 #endif
 }
 
-#if defined(USE_MKDIR)
+#if defined(RND_USE_MKDIR)
 #	define MKDIR mkdir
-#elif defined(USE__MKDIR)
+#elif defined(RND_USE__MKDIR)
 #	define MKDIR _mkdir
 #else
 #	error no mkdir() available
 #endif
 int pcb_mkdir_(const char *path, int mode)
 {
-#if MKDIR_NUM_ARGS == 1
+#if RND_MKDIR_NUM_ARGS == 1
 	return MKDIR(path);
-#elif MKDIR_NUM_ARGS == 2
+#elif RND_MKDIR_NUM_ARGS == 2
 	return MKDIR(path, mode);
 #else
 #	error invalid number of arguments for mkdir
@@ -100,13 +100,13 @@ int pcb_file_readable(const char *path)
 
 int pcb_spawnvp(const char **argv)
 {
-#if defined(USE_SPAWNVP)
+#if defined(RND_USE_SPAWNVP)
 	int result = _spawnvp(_P_WAIT, argv[0], (const char *const *) argv);
 	if (result == -1)
 		return 1;
 	else
 		return 0;
-#elif defined(USE_FORK_WAIT)
+#elif defined(RND_USE_FORK_WAIT)
 	int pid;
 	pid = fork();
 	if (pid < 0) {
@@ -166,11 +166,11 @@ char *pcb_tempfile_name_new(const char *name)
 			*c = '/';
 	return res;
 #else
-#ifdef HAVE_MKDTEMP
+#ifdef RND_HAVE_MKDTEMP
 #ifdef inline
 	/* Suppress compiler warnings; -Dinline means we are compiling in
 	   --debug with -ansi -pedantic; we do know that mkdtemp exists on the system,
-	   since HAVE_MKDTEMP is set. */
+	   since RND_HAVE_MKDTEMP is set. */
 	char *mkdtemp(char *template);
 #endif
 	const char *tmpdir;
@@ -180,7 +180,7 @@ char *pcb_tempfile_name_new(const char *name)
 
 	assert(name != NULL);
 
-#ifdef HAVE_MKDTEMP
+#ifdef RND_HAVE_MKDTEMP
 #define TEMPLATE "pcb.XXXXXXXX"
 
 
@@ -199,7 +199,7 @@ char *pcb_tempfile_name_new(const char *name)
 
 	*mytmpdir = '\0';
 	(void) strcat(mytmpdir, tmpdir);
-	(void) strcat(mytmpdir, PCB_DIR_SEPARATOR_S);
+	(void) strcat(mytmpdir, RND_DIR_SEPARATOR_S);
 	(void) strcat(mytmpdir, TEMPLATE);
 	if (mkdtemp(mytmpdir) == NULL) {
 		fprintf(stderr, "pcb_spawnvp():  mkdtemp (\"%s\") failed\n", mytmpdir);
@@ -218,7 +218,7 @@ char *pcb_tempfile_name_new(const char *name)
 
 	*tmpfile = '\0';
 	(void) strcat(tmpfile, mytmpdir);
-	(void) strcat(tmpfile, PCB_DIR_SEPARATOR_S);
+	(void) strcat(tmpfile, RND_DIR_SEPARATOR_S);
 	(void) strcat(tmpfile, name);
 
 	free(mytmpdir);
@@ -243,7 +243,7 @@ int pcb_tempfile_unlink(char *name)
 	return 0;
 #endif
 
-#ifdef HAVE_MKDTEMP
+#ifdef RND_HAVE_MKDTEMP
 	int e, rc2 = 0;
 	char *dname;
 
@@ -253,7 +253,7 @@ int pcb_tempfile_unlink(char *name)
 
 	/* now figure out the directory name to remove */
 	e = strlen(name) - 1;
-	while (e > 0 && name[e] != PCB_DIR_SEPARATOR_C) {
+	while (e > 0 && name[e] != RND_DIR_SEPARATOR_C) {
 		e--;
 	}
 

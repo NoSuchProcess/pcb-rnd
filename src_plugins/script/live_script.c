@@ -93,7 +93,7 @@ static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(lvs);
 }
 
-#ifdef PCB_HAVE_SYS_FUNGW
+#ifdef RND_HAVE_SYS_FUNGW
 static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	const char **path;
@@ -114,7 +114,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 		dirlen = strlen(*path);
 		memcpy(fn, *path, dirlen);
 		fn_end = fn + dirlen;
-		*fn_end = PCB_DIR_SEPARATOR_C;
+		*fn_end = RND_DIR_SEPARATOR_C;
 		fn_end++;
 
 		while((de = pcb_readdir(d)) != NULL) {

@@ -146,7 +146,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 	/* find and truncate extension */
 	for (s = fn + strlen(fn) - 1; *s != '.'; s--) {
-		if ((s <= fn) || (*s == PCB_DIR_SEPARATOR_C)) {
+		if ((s <= fn) || (*s == RND_DIR_SEPARATOR_C)) {
 			free(fn);
 			return;
 		}
@@ -154,7 +154,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	*s = '\0';
 
 	/* calculate basename in bn */
-	bn = strrchr(fn, PCB_DIR_SEPARATOR_C);
+	bn = strrchr(fn, RND_DIR_SEPARATOR_C);
 	if (bn == NULL)
 		bn = fn;
 	else

@@ -235,7 +235,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 			}
 
 			if (Path != NULL && *Path != '\0')
-				sprintf(tmps, "%s%s%s", Path, PCB_DIR_SEPARATOR_S, Filename);
+				sprintf(tmps, "%s%s%s", Path, RND_DIR_SEPARATOR_S, Filename);
 			else
 				sprintf(tmps, "%s", Filename);
 
@@ -286,7 +286,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 
 	pcb_create_be_lenient(pcb_true);
 
-#if !defined(HAS_ATEXIT)
+#if !defined(RND_HAS_ATEXIT)
 	if (PCB && PCB->Data)
 		pcb_tmp_data_save();
 	returncode = pcb_parse();

@@ -54,7 +54,7 @@ long pcb_rand(void)
 
 const char *pcb_get_user_name(void)
 {
-#ifdef HAVE_GETPWUID
+#ifdef RND_HAVE_GETPWUID
 	static struct passwd *pwentry;
 
 	int len;
@@ -107,7 +107,7 @@ char *pcb_strdup(const char *s)
 	return o;
 }
 
-#ifdef HAVE_ROUND
+#ifdef RND_HAVE_ROUND
 #undef round
 extern double round(double x);
 double pcb_round(double x)

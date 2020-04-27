@@ -35,12 +35,12 @@
 #include <Xm/ToggleB.h>
 #include <Xm/Xm.h>
 
-#ifdef HAVE_XRENDER
+#ifdef RND_HAVE_XRENDER
 #include <X11/extensions/Xrender.h>
-#endif /* HAVE_XRENDER */
+#endif /* RND_HAVE_XRENDER */
 
-#ifdef HAVE_XINERAMA
+#ifdef RND_HAVE_XINERAMA
 #include <X11/extensions/Xinerama.h>
-#endif /* HAVE_XINERAMA */
+#endif /* RND_HAVE_XINERAMA */
 
 #undef Mask

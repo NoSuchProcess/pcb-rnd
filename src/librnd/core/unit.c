@@ -183,10 +183,10 @@ rnd_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x)
 	switch(unit->family) {
 		case PCB_UNIT_METRIC:
 		case PCB_UNIT_IMPERIAL:
-			if (res >= (double)COORD_MAX)
-				return COORD_MAX;
-			if (res <= -1.0 * (double)COORD_MAX)
-				return -COORD_MAX;
+			if (res >= (double)RND_COORD_MAX)
+				return RND_COORD_MAX;
+			if (res <= -1.0 * (double)RND_COORD_MAX)
+				return -RND_COORD_MAX;
 			break;
 		case PCB_UNIT_FREQ:
 			break;

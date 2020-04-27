@@ -90,34 +90,34 @@ void pcb_hid_init()
 	pcb_render = pcb_gui = pcb_hid_nogui_get_hid();
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
-	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
-	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, PCB_DIR_SEPARATOR_S, "lib", PCB_DIR_SEPARATOR_S, "pcb-rnd", PCB_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-	tmp = pcb_concat(pcbhl_conf_lib_dir, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = pcb_concat(pcbhl_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
-	tmp = pcb_concat(pcbhl_conf_lib_dir, PCB_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = pcb_concat(pcbhl_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* pcbhl_conf.rc.path.home is set by the conf_core immediately on startup */
 	if (pcbhl_conf.rc.path.home != NULL) {
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, PCB_DIR_SEPARATOR_S, "plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, PCB_DIR_SEPARATOR_S, "plugins", NULL);
+		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 	}
 
-	tmp = pcb_concat("plugins", PCB_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = pcb_concat("plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
@@ -277,7 +277,7 @@ pcb_hid_t **pcb_hid_enumerate()
 const char *pcb_hid_export_fn(const char *filename)
 {
 	if (pcbhl_conf.rc.export_basename) {
-		const char *outfn = strrchr(filename, PCB_DIR_SEPARATOR_C);
+		const char *outfn = strrchr(filename, RND_DIR_SEPARATOR_C);
 		if (outfn == NULL)
 			return filename;
 		return outfn + 1;

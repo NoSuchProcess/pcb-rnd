@@ -425,7 +425,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		sep = strrchr(name, '.');
-		if ((sep != NULL) && (strchr(sep, PCB_DIR_SEPARATOR_C) == NULL)) {
+		if ((sep != NULL) && (strchr(sep, RND_DIR_SEPARATOR_C) == NULL)) {
 			*sep = '\0';
 			ending = sep+1;
 			sep = ".";

@@ -145,17 +145,17 @@ static int doing_outline, have_outline;
 #undef HAVE_SOME_FORMAT
 
 static const char *filetypes[] = {
-#ifdef HAVE_GDIMAGEPNG
+#ifdef RND_HAVE_GDIMAGEPNG
 	FMT_png,
 #define HAVE_SOME_FORMAT 1
 #endif
 
-#ifdef HAVE_GDIMAGEGIF
+#ifdef RND_HAVE_GDIMAGEGIF
 	FMT_gif,
 #define HAVE_SOME_FORMAT 1
 #endif
 
-#ifdef HAVE_GDIMAGEJPEG
+#ifdef RND_HAVE_GDIMAGEJPEG
 	FMT_jpg,
 #define HAVE_SOME_FORMAT 1
 #endif
@@ -499,19 +499,19 @@ static void png_foot(void)
 	if (fmt == NULL)
 		format_error = pcb_true;
 	else if (strcmp(fmt, FMT_gif) == 0)
-#ifdef HAVE_GDIMAGEGIF
+#ifdef RND_HAVE_GDIMAGEGIF
 		gdImageGif(im, f);
 #else
 		format_error = pcb_true;
 #endif
 	else if (strcmp(fmt, FMT_jpg) == 0)
-#ifdef HAVE_GDIMAGEJPEG
+#ifdef RND_HAVE_GDIMAGEJPEG
 		gdImageJpeg(im, f, -1);
 #else
 		format_error = pcb_true;
 #endif
 	else if (strcmp(fmt, FMT_png) == 0)
-#ifdef HAVE_GDIMAGEPNG
+#ifdef RND_HAVE_GDIMAGEPNG
 		gdImagePng(im, f);
 #else
 		format_error = pcb_true;
@@ -707,7 +707,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		return;
 	}
 
-#ifdef HAVE_GD_RESOLUTION
+#ifdef RND_HAVE_GD_RESOLUTION
 	gdImageSetResolution(im, dpi, dpi);
 #endif
 

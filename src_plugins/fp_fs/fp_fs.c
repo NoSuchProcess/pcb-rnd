@@ -103,7 +103,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 			*end = ':'; end++;
 		}
 		else {
-			*end = PCB_DIR_SEPARATOR_C; end++;
+			*end = RND_DIR_SEPARATOR_C; end++;
 		}
 		memcpy(end, name, nl+1); end += nl;
 	}
@@ -151,7 +151,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	l = strlen(new_subdir);
 	memcpy(fn, new_subdir, l);
-	fn[l] = PCB_DIR_SEPARATOR_C;
+	fn[l] = RND_DIR_SEPARATOR_C;
 	fn[l+1] = '\0';
 	fn_end = fn + l + 1;
 
@@ -191,7 +191,7 @@ TODO("fp: make this a configurable list")
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
 #endif
 			strcpy(fn_end, subdirentry->d_name);
-			if ((S_ISREG(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
+			if ((S_ISREG(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_plug_fp_map_t head = {0}, *res;
 				res = pcb_io_map_footprint_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
 				if (res->libtype == PCB_LIB_DIR) {
@@ -212,7 +212,7 @@ TODO("fp: make this a configurable list")
 				}
 			}
 
-			if ((S_ISDIR(buffer.st_mode)) || (WRAP_S_ISLNK(buffer.st_mode))) {
+			if ((S_ISDIR(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
 				cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_DIR, NULL, NULL);
 				if (recurse) {
 					n_footprints += fp_fs_list(pl, fn, recurse, cb, cookie, 0, need_tags);
@@ -237,7 +237,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	const char *visible_subdir;
 	char *working;								/* String holding abs path to working dir */
 
-	sprintf(working_, "%s%c%s", toppath, PCB_DIR_SEPARATOR_C, subdir);
+	sprintf(working_, "%s%c%s", toppath, RND_DIR_SEPARATOR_C, subdir);
 	pcb_path_resolve(&PCB->hidlib, working_, &working, 0, pcb_false);
 
 	/* Return error if the root is not a directory, to give other fp_ plugins a chance */
@@ -356,7 +356,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 
 		fp_fs_list(&pcb_library, fpath, 1, fp_search_cb, &ctx, 1, 0);
 		if (ctx.path != NULL) {
-			sprintf(path, "%s%c%s", ctx.path, PCB_DIR_SEPARATOR_C, ctx.real_name);
+			sprintf(path, "%s%c%s", ctx.path, RND_DIR_SEPARATOR_C, ctx.real_name);
 			free(ctx.path);
 			free(ctx.real_name);
 /*			fprintf("  found '%s'\n", path);*/

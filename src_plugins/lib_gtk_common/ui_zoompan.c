@@ -43,8 +43,8 @@ double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 	min_zoom = 200;
 
 	/* max zoom is calculated so that zoom * canvas_size * 2 doesn't overflow rnd_coord_t */
-	max_zoom_w = (double)COORD_MAX / (double)vw->canvas_width;
-	max_zoom_h = (double)COORD_MAX / (double)vw->canvas_height;
+	max_zoom_w = (double)RND_COORD_MAX / (double)vw->canvas_width;
+	max_zoom_h = (double)RND_COORD_MAX / (double)vw->canvas_height;
 	max_zoom = MIN(max_zoom_w, max_zoom_h) / 2.0;
 
 	out_zoom = coord_per_px;
@@ -134,7 +134,7 @@ void pcb_gtk_zoom_view_abs(pcb_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t 
 	/* Do not allow zoom level that'd overflow the coord type */
 	cmaxx = v->canvas_width  * (new_zoom / 2.0);
 	cmaxy = v->canvas_height * (new_zoom / 2.0);
-	if ((cmaxx >= COORD_MAX/2) || (cmaxy >= COORD_MAX/2)) {
+	if ((cmaxx >= RND_COORD_MAX/2) || (cmaxy >= RND_COORD_MAX/2)) {
 		return;
 	}
 

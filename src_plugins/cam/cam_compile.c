@@ -43,7 +43,7 @@ static int prefix_mkdir(char *arg, char **filename)
 	int res;
 
 		/* mkdir -p if there's a path sep in the prefix */
-		end = strrchr(arg, PCB_DIR_SEPARATOR_C);
+		end = strrchr(arg, RND_DIR_SEPARATOR_C);
 		if (end == NULL) {
 			if (filename != NULL)
 				*filename = arg;
@@ -56,12 +56,12 @@ static int prefix_mkdir(char *arg, char **filename)
 			*filename = end+1;
 
 		for(curr = arg; curr != NULL; curr = next) {
-			next = strrchr(curr, PCB_DIR_SEPARATOR_C);
+			next = strrchr(curr, RND_DIR_SEPARATOR_C);
 			if (next != NULL)
 				*next = '\0';
 			pcb_mkdir(&PCB->hidlib, arg, 0755);
 			if (next != NULL) {
-				*next = PCB_DIR_SEPARATOR_C;
+				*next = RND_DIR_SEPARATOR_C;
 				next++;
 			}
 		}
