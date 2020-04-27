@@ -107,7 +107,7 @@ static void rdialog(const char *name, const char *content)
 static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_drill_info_t *AllDrills;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	char *stringlist, *thestring;
 	int total_drills = 0;
 
@@ -449,7 +449,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	double length;
 	pcb_net_t *net;
-	pcb_cardinal_t terms, badterms, badobjs;
+	rnd_cardinal_t terms, badterms, badobjs;
 } net_length_t;
 
 static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
@@ -514,7 +514,7 @@ static double xy_to_net_length(rnd_coord_t x, rnd_coord_t y, int *found, gds_t *
 	pcb_find_free(&fctx);
 
 	if (nt.net != NULL) {
-		pcb_cardinal_t explen = pcb_termlist_length(&nt.net->conns);
+		rnd_cardinal_t explen = pcb_termlist_length(&nt.net->conns);
 		if (explen != nt.terms)
 			pcb_append_printf(err, "\nonly %ld terminals of the %ld on the network are connected!", (long)nt.terms, (long)explen);
 		if (nt.badterms != 0)
@@ -656,7 +656,7 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 		}
 
 #define MINDIST PCB_MIL_TO_COORD(40)
-		if ((pcb_distance(l->Point1.X, l->Point1.Y, x, y) < MINDIST) || (pcb_distance(l->Point2.X, l->Point2.Y, x, y) < MINDIST)) {
+		if ((rnd_distance(l->Point1.X, l->Point1.Y, x, y) < MINDIST) || (rnd_distance(l->Point2.X, l->Point2.Y, x, y) < MINDIST)) {
 			rnd_message(PCB_MSG_ERROR, "Can not split near the endpoint of a line\n");
 			return -1;
 		}

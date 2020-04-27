@@ -421,8 +421,8 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 		board = PCB;
 
 	if (group >= 0) {
-		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
-		pcb_cardinal_t entry;
+		rnd_cardinal_t length = board->LayerGroups.grp[group].len;
+		rnd_cardinal_t entry;
 		const rnd_coord_t t = Line->Thickness / 2;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 		struct rubber_info info;
@@ -462,8 +462,8 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
 		board = PCB;
 
 	if (group >= 0) {
-		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
-		pcb_cardinal_t entry;
+		rnd_cardinal_t length = board->LayerGroups.grp[group].len;
+		rnd_cardinal_t entry;
 		const rnd_coord_t t = Line->Thickness / 2;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 		struct rubber_info info;
@@ -503,8 +503,8 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 		board = PCB;
 
 	if (group >= 0) {
-		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
-		pcb_cardinal_t entry;
+		rnd_cardinal_t length = board->LayerGroups.grp[group].len;
+		rnd_cardinal_t entry;
 		const rnd_coord_t t = Arc->Thickness / 2;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 		struct rubber_info info;
@@ -553,8 +553,8 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 		board = PCB;
 
 	if (group >= 0) {
-		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
-		pcb_cardinal_t entry;
+		rnd_cardinal_t length = board->LayerGroups.grp[group].len;
+		rnd_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
 		for(which = 0; which <= 1; ++which) {
@@ -601,8 +601,8 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 	group = pcb_layer_get_group_(Layer);
 
 	if (group >= 0) {
-		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
-		pcb_cardinal_t entry;
+		rnd_cardinal_t length = board->LayerGroups.grp[group].len;
+		rnd_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
 		for(entry = 0; entry < length; ++entry) {
@@ -666,8 +666,8 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 		board = PCB;
 
 	if (group >= 0) {
-		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
-		pcb_cardinal_t entry;
+		rnd_cardinal_t length = board->LayerGroups.grp[group].len;
+		rnd_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
 		for(entry = 0; entry < length; ++entry) {
@@ -733,8 +733,8 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
 		board = PCB;
 
 	if (group >= 0) {
-		pcb_cardinal_t length = board->LayerGroups.grp[group].len;
-		pcb_cardinal_t entry;
+		rnd_cardinal_t length = board->LayerGroups.grp[group].len;
+		rnd_cardinal_t entry;
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
 		for(entry = 0; entry < length; ++entry) {
@@ -1133,7 +1133,7 @@ static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rb_line_t *ptr;
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	int direct = argv[1].d.i;
 
 	/* draw the attached rubberband lines too */

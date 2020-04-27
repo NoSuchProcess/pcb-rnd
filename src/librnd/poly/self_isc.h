@@ -37,7 +37,7 @@ rnd_bool pcb_pline_is_selfint(pcb_pline_t *pl);
 void pcb_pline_split_selfint(const pcb_pline_t *pl, vtp0_t *out);
 
 
-pcb_cardinal_t pcb_polyarea_split_selfint(pcb_polyarea_t *pa);
+rnd_cardinal_t pcb_polyarea_split_selfint(pcb_polyarea_t *pa);
 
 
 

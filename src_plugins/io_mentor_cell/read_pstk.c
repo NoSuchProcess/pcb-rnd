@@ -348,7 +348,7 @@ static void parse_pin(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass_t *nc
 	node_t *tmp;
 	rnd_coord_t px, py;
 	hkp_pstk_t *hpstk;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	pcb_pstk_t *ps;
 	double rot = 0;
 

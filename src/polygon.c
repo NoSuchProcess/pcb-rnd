@@ -101,7 +101,7 @@ void pcb_polygon_uninit(void)
 	pcb_event_unbind_allcookie(polygon_cookie);
 }
 
-pcb_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point)
+rnd_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point)
 {
 	assert(point >= polygon->Points);
 	assert(point <= polygon->Points + polygon->PointN);
@@ -109,10 +109,10 @@ pcb_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point)
 }
 
 /* Find contour number: 0 for outer, 1 for first hole etc.. */
-pcb_cardinal_t pcb_poly_contour_point(pcb_poly_t *polygon, pcb_cardinal_t point)
+rnd_cardinal_t pcb_poly_contour_point(pcb_poly_t *polygon, rnd_cardinal_t point)
 {
-	pcb_cardinal_t i;
-	pcb_cardinal_t contour = 0;
+	rnd_cardinal_t i;
+	rnd_cardinal_t contour = 0;
 
 	for (i = 0; i < polygon->HoleIndexN; i++)
 		if (point >= polygon->HoleIndex[i])
@@ -120,11 +120,11 @@ pcb_cardinal_t pcb_poly_contour_point(pcb_poly_t *polygon, pcb_cardinal_t point)
 	return contour;
 }
 
-pcb_cardinal_t pcb_poly_contour_next_point(pcb_poly_t *polygon, pcb_cardinal_t point)
+rnd_cardinal_t pcb_poly_contour_next_point(pcb_poly_t *polygon, rnd_cardinal_t point)
 {
-	pcb_cardinal_t contour;
-	pcb_cardinal_t this_contour_start;
-	pcb_cardinal_t next_contour_start;
+	rnd_cardinal_t contour;
+	rnd_cardinal_t this_contour_start;
+	rnd_cardinal_t next_contour_start;
 
 	contour = pcb_poly_contour_point(polygon, point);
 
@@ -138,11 +138,11 @@ pcb_cardinal_t pcb_poly_contour_next_point(pcb_poly_t *polygon, pcb_cardinal_t p
 	return point;
 }
 
-pcb_cardinal_t pcb_poly_contour_prev_point(pcb_poly_t *polygon, pcb_cardinal_t point)
+rnd_cardinal_t pcb_poly_contour_prev_point(pcb_poly_t *polygon, rnd_cardinal_t point)
 {
-	pcb_cardinal_t contour;
-	pcb_cardinal_t prev_contour_end;
-	pcb_cardinal_t this_contour_end;
+	rnd_cardinal_t contour;
+	rnd_cardinal_t prev_contour_end;
+	rnd_cardinal_t this_contour_end;
 
 	contour = pcb_poly_contour_point(polygon, point);
 
@@ -226,7 +226,7 @@ pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np1 = NULL, *np = NULL;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	pcb_vector_t v;
 	int hole = 0;
 
@@ -266,7 +266,7 @@ pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 TODO("multiple plines within the returned polyarea np does not really work\n");
 #if 0
 			if (!pcb_poly_valid(np)) {
-				pcb_cardinal_t cnt = pcb_polyarea_split_selfint(np);
+				rnd_cardinal_t cnt = pcb_polyarea_split_selfint(np);
 				rnd_message(PCB_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", (long)cnt);
 				if (cnt > 1)
 					*need_full = pcb_true;
@@ -366,7 +366,7 @@ static int SubtractPadstack(pcb_data_t *d, pcb_pstk_t *ps, pcb_layer_t *l, pcb_p
 }
 
 /* return the clearance polygon for a line */
-static pcb_polyarea_t *line_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_line_t *line)
+static pcb_polyarea_t *line_clearance_poly(rnd_cardinal_t layernum, pcb_board_t *pcb, pcb_line_t *line)
 {
 	if (line->thermal & PCB_THERMAL_ON)
 		return pcb_thermal_area_line(pcb, line, layernum);
@@ -576,7 +576,7 @@ void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, rn
 	rnd_coord_t x, y, px, py, x0, y0;
 	pcb_pline_t *pl;
 	int go;
-	pcb_cardinal_t cnt;
+	rnd_cardinal_t cnt;
 
 	if (*dst != NULL)
 		pa_append(it->pa);
@@ -633,7 +633,7 @@ pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *c
 }
 
 /* return the clearance polygon for a line */
-static pcb_polyarea_t *poly_clearance_poly(pcb_cardinal_t layernum, pcb_board_t *pcb, pcb_poly_t *subpoly)
+static pcb_polyarea_t *poly_clearance_poly(rnd_cardinal_t layernum, pcb_board_t *pcb, pcb_poly_t *subpoly)
 {
 	if (subpoly->thermal & PCB_THERMAL_ON)
 		return pcb_thermal_area_poly(pcb, subpoly, layernum);
@@ -752,9 +752,9 @@ static pcb_r_dir_t text_sub_callback(const rnd_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const rnd_box_t *here, rnd_coord_t expand, int noop)
+static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const rnd_box_t *here, rnd_coord_t expand, int noop)
 {
-	pcb_cardinal_t r = 0;
+	rnd_cardinal_t r = 0;
 	int seen;
 	rnd_box_t region;
 	struct cpInfo info;
@@ -992,9 +992,9 @@ int pcb_poly_init_clip_force(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p
 	return pcb_poly_init_clip_prog(Data, layer, p, NULL, NULL, 1);
 }
 
-pcb_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon)
+rnd_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon)
 {
-	pcb_cardinal_t res;
+	rnd_cardinal_t res;
 	void (*old_cb)(void *ctx);
 
 	if (layer->is_bound)
@@ -1017,7 +1017,7 @@ pcb_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_pol
 rnd_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_point_t *p;
-	pcb_cardinal_t n, prev, next;
+	rnd_cardinal_t n, prev, next;
 	pcb_line_t line;
 	rnd_bool changed = pcb_false;
 
@@ -1045,11 +1045,11 @@ rnd_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
  * point of the segment with the lowest distance to the passed
  * coordinates
  */
-pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y)
+rnd_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y)
 {
 	double mindistance = (double) PCB_MAX_COORD * PCB_MAX_COORD;
 	pcb_point_t *ptr1, *ptr2;
-	pcb_cardinal_t n, result = 0;
+	rnd_cardinal_t n, result = 0;
 
 	/* we calculate the distance to each segment and choose the
 	 * shortest distance. If the closest approach between the
@@ -1107,7 +1107,7 @@ void pcb_polygon_go_to_prev_point(void)
 	default:
 		{
 			pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
-			pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN - 2;
+			rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN - 2;
 
 			pcb_crosshair.AttachedPolygon.PointN--;
 			pcb_crosshair.AttachedLine.Point1.X = points[n].X;
@@ -1124,7 +1124,7 @@ void pcb_polygon_go_to_next_point(void)
 {
 	if ((pcb_crosshair.AttachedPolygon.PointN > 0) && (pcb_crosshair.AttachedPolygon.PointN < pcb_crosshair.AttachedPolygon_pts)) {
 		pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
-		pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
+		rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
 		pcb_crosshair.AttachedPolygon.PointN++;
 		pcb_crosshair.AttachedLine.Point1.X = points[n].X;
@@ -1137,7 +1137,7 @@ void pcb_polygon_go_to_next_point(void)
  */
 void pcb_polygon_close_poly(void)
 {
-	pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
+	rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
 	/* check number of points */
 	if (n >= 3) {
@@ -1215,7 +1215,7 @@ void pcb_polygon_copy_attached_to_layer(void)
  */
 void pcb_polygon_close_hole(void)
 {
-	pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
+	rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
 	/* check number of points */
 	if (n >= 3) {
@@ -1648,7 +1648,7 @@ void debug_polyarea(pcb_polyarea_t * p)
 
 void debug_polygon(pcb_poly_t * p)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	pcb_polyarea_t *pa;
 	fprintf(stderr, "POLYGON %p  %d pts\n", (void *)p, p->PointN);
 	for (i = 0; i < p->PointN; i++)

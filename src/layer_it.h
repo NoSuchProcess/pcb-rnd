@@ -46,7 +46,7 @@ PCB_INLINE pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it);
 struct pcb_layer_it_s {
 	pcb_layer_stack_t *stack;
 	pcb_layergrp_id_t gid;
-	pcb_cardinal_t lidx;
+	rnd_cardinal_t lidx;
 	unsigned int mask;
 	unsigned int exact:1;
 	unsigned int global:1;

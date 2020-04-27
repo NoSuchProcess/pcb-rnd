@@ -86,9 +86,9 @@ static void thindraw_moved_ps(pcb_pstk_t *ps, rnd_coord_t x, rnd_coord_t y)
  */
 void pcb_xordraw_poly(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, int dash_last)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
-		pcb_cardinal_t next = pcb_poly_contour_next_point(polygon, i);
+		rnd_cardinal_t next = pcb_poly_contour_next_point(polygon, i);
 
 		if (next == 0) { /* last line: sometimes the implicit closing line */
 			if (i == 1) /* corner case: don't draw two lines on top of each other - with XOR it looks bad */
@@ -115,9 +115,9 @@ void pcb_xordraw_poly(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, int d
  */
 void pcb_xordraw_poly_subc(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, rnd_coord_t w, rnd_coord_t h, int mirr)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	for (i = 0; i < polygon->PointN; i++) {
-		pcb_cardinal_t next = pcb_poly_contour_next_point(polygon, i);
+		rnd_cardinal_t next = pcb_poly_contour_next_point(polygon, i);
 
 		if (next == 0) { /* last line: sometimes the implicit closing line */
 			if (i == 1) /* corner case: don't draw two lines on top of each other - with XOR it looks bad */
@@ -170,7 +170,7 @@ void pcb_xordraw_attached_arc(rnd_coord_t thick)
  */
 void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	rnd_coord_t x, y;
 
 	/* set offset */
@@ -446,7 +446,7 @@ void pcb_xordraw_movecopy(void)
 		{
 			pcb_poly_t *polygon;
 			pcb_point_t *point;
-			pcb_cardinal_t point_idx, prev, next;
+			rnd_cardinal_t point_idx, prev, next;
 
 			polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
@@ -756,7 +756,7 @@ static void check_snap_object(struct snap_data *snap_data, rnd_coord_t x, rnd_co
 	if ((snapo != NULL) && (pcbhl_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
 		pcb_any_obj_t *parent = (pcb_any_obj_t *)pcb_obj_parent_subc(snapo);
 		int n;
-		pcb_cardinal_t parent_id = snapo->ID;
+		rnd_cardinal_t parent_id = snapo->ID;
 		if (parent != NULL)
 			parent_id = parent->ID;
 		for(n = 0; n < pcb_crosshair.drags_len; n++) {

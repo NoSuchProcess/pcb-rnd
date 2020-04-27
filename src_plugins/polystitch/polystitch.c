@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_polystitch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (inner_poly) {
 		outer_poly = find_enclosing_poly(inner_poly);
 		if (outer_poly) {
-			pcb_cardinal_t n, end;
+			rnd_cardinal_t n, end;
 
 			/* figure how many contour points the inner poly has (holes are going to be ignored) */
 			if (inner_poly->HoleIndexN > 0)

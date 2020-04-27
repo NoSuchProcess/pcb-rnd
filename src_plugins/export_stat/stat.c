@@ -137,7 +137,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	char buff[1024];
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
-	pcb_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0, num_slots = 0;
+	rnd_cardinal_t num_etop = 0, num_ebottom = 0, num_esmd = 0, num_epads = 0, num_epins = 0, num_terms = 0, num_slots = 0;
 	rnd_coord_t width, height;
 	pcb_cam_t cam;
 
@@ -269,7 +269,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	fprintf(f, "	li:netlist {\n");
 	for(nl = 0; nl < PCB_NUM_NETLISTS; nl++) {
 		htsp_entry_t *e;
-		pcb_cardinal_t terms = 0, best_terms = 0;
+		rnd_cardinal_t terms = 0, best_terms = 0;
 		fprintf(f, "		ha:%s {\n", pcb_netlist_names[nl]);
 
 		for(e = htsp_first(&PCB->netlist[nl]); e != NULL; e = htsp_next(&PCB->netlist[nl], e)) {
@@ -289,7 +289,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	PCB_SUBC_LOOP(PCB->Data) {
 		int bott;
-		pcb_cardinal_t slot = 0, hole = 0, all = 0;
+		rnd_cardinal_t slot = 0, hole = 0, all = 0;
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 		htsi_t t;

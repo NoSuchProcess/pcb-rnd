@@ -127,7 +127,7 @@ int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On
 void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
 {
 	pcb_layer_id_t comp;
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 
 	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
 	for (i = 0; i < pcb_max_layer(PCB); i++) {
@@ -158,7 +158,7 @@ void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
  */
 void pcb_layervis_save_stack(void)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	static rnd_bool run = pcb_false;
 
 	if (run == pcb_false) {
@@ -186,7 +186,7 @@ void pcb_layervis_save_stack(void)
  */
 void pcb_layervis_restore_stack(void)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 
 	if (SavedStack.cnt == 0) {
 		rnd_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);

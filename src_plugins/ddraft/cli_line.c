@@ -175,7 +175,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 				return 0;
 			}
 			replace=1;
-			pcb_snprintf(buff, sizeof(buff), "~%.08$$mm", pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, ox, oy));
+			pcb_snprintf(buff, sizeof(buff), "~%.08$$mm", rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, ox, oy));
 			break;
 		case_object: ;
 			{

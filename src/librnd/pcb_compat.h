@@ -118,3 +118,5 @@
 #define pcb_direction_t rnd_direction_t
 #define pcb_cheap_point_s rnd_cheap_point_s
 #define pcb_cheap_point_t rnd_cheap_point_t
+#define pcb_distance rnd_distance
+#define pcb_cardinal_t rnd_cardinal_t

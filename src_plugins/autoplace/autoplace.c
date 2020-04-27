@@ -202,7 +202,7 @@ static vtp0_t collectSelectedSubcircuits()
 /* makes a line on the solder layer surrounding all boxes in blist */
 static void showboxes(rnd_box_list_t *blist)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	pcb_layer_t *SLayer = &(PCB->Data->Layer[pcb_solder_silk_layer]);
 	for (i = 0; i < blist->BoxN; i++) {
 		pcb_line_new(SLayer, blist->Box[i].X1, blist->Box[i].Y1, blist->Box[i].X2, blist->Box[i].Y1, 1, 1, 0);
@@ -316,10 +316,10 @@ static double ComputeCost(double T0, double T)
 	double delta3 = 0;						/* out of bounds penalty */
 	double delta4 = 0;						/* alignment bonus */
 	double delta5 = 0;						/* total area penalty */
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	rnd_coord_t minx, maxx, miny, maxy;
 	rnd_bool allpads, allsameside;
-	pcb_cardinal_t thegroup;
+	rnd_cardinal_t thegroup;
 	rnd_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
 	rnd_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
 	rnd_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
@@ -685,7 +685,7 @@ void doPerturb(vtp0_t *selected, PerturbationType *pt, rnd_bool undo)
 				pcb_subc_rotate90(subc, bbcx, bbcy, b);
 			}
 			else {
-				pcb_cardinal_t n;
+				rnd_cardinal_t n;
 				rnd_coord_t y = bb->Y1;
 				pcb_subc_change_side(subc, (bb->Y1+bb->Y2)/2);
 				/* mirroring moves the subc.  move it back. */

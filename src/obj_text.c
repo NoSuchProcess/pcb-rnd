@@ -1170,7 +1170,7 @@ PCB_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 PCB_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, int scale, double rotdeg, int mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny, pcb_draw_text_cb cb, void *cb_ctx)
 {
 	rnd_coord_t x = 0;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 	double sc = (double)scale / 100.0;
 

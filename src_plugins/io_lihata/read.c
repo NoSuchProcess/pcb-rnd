@@ -710,7 +710,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_poly_t *poly;
 	lht_node_t *geo;
-	pcb_cardinal_t n = 0, c;
+	rnd_cardinal_t n = 0, c;
 	unsigned char intconn = 0;
 	int err = 0;
 	long int id;
@@ -747,13 +747,13 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 		poly->Points = malloc(sizeof(pcb_point_t) * poly->PointMax);
 		poly->HoleIndexMax = poly->HoleIndexN = c-1;
 		if (poly->HoleIndexN > 0)
-			poly->HoleIndex = malloc(sizeof(pcb_cardinal_t) * poly->HoleIndexMax);
+			poly->HoleIndex = malloc(sizeof(rnd_cardinal_t) * poly->HoleIndexMax);
 		else
 			poly->HoleIndex = NULL;
 
 		/* convert points and build hole index */
 		for(c = 0, cnt = lht_dom_first(&it, geo); cnt != NULL; c++, cnt = lht_dom_next(&it)) {
-			pcb_cardinal_t r;
+			rnd_cardinal_t r;
 			if (cnt->type != LHT_TABLE)
 				continue;
 			if (c > 0)
@@ -1630,7 +1630,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	lht_node_t *n;
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 
 	dst->shape = PCB_PSSH_POLY;
 	dst->data.poly.x = NULL; /* if we return before the allocation... */
@@ -1796,7 +1796,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 
 static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
 {
-	pcb_cardinal_t pid, len;
+	rnd_cardinal_t pid, len;
 	lht_node_t *pr;
 	int res = 0;
 

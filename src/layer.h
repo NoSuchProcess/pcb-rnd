@@ -190,7 +190,7 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
 
 #define LAYER_LOOP(data, ml) \
 	do { \
-		pcb_cardinal_t n; \
+		rnd_cardinal_t n; \
 		for (n = 0; n < ml; n++) { \
 			pcb_layer_t *layer = (&data->Layer[(n)]);
 

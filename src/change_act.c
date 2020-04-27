@@ -432,7 +432,7 @@ static const char pcb_acth_ChangePinName[] = "Sets the name of a specific pin on
 /* DOC: changepinname.html */
 static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_cardinal_t changed = 0;
+	rnd_cardinal_t changed = 0;
 	const char *refdes, *pinnum, *pinname;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangePinName, refdes = argv[1].val.str);

@@ -361,7 +361,7 @@ int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, rnd_box_t *ip, dou
 
 	pdx = Arc2->X - Arc1->X;
 	pdy = Arc2->Y - Arc1->Y;
-	dl = pcb_distance(Arc1->X, Arc1->Y, Arc2->X, Arc2->Y);
+	dl = rnd_distance(Arc1->X, Arc1->Y, Arc2->X, Arc2->Y);
 
 	/* the original code used to do angle checks for concentric case here but
 	   those cases are already handled by the above endpoint checks. */

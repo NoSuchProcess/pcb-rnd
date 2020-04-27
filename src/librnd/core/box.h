@@ -48,8 +48,8 @@
 #include <librnd/core/pcb_bool.h>
 
 struct rnd_box_list_s {
-	pcb_cardinal_t BoxN;   /* the number of boxes contained */
-	pcb_cardinal_t BoxMax; /* max boxes from malloc */
+	rnd_cardinal_t BoxN;   /* the number of boxes contained */
+	rnd_cardinal_t BoxMax; /* max boxes from malloc */
 	rnd_box_t *Box;
 };
 
@@ -235,7 +235,7 @@ PCB_INLINE void rnd_close_box(rnd_box_t * r)
 PCB_INLINE double rnd_dist2_to_box(const rnd_cheap_point_t * p, const rnd_box_t * b)
 {
 	rnd_cheap_point_t r = rnd_closest_cheap_point_in_box(p, b);
-	return pcb_distance(r.X, r.Y, p->X, p->Y);
+	return rnd_distance(r.X, r.Y, p->X, p->Y);
 }
 
 

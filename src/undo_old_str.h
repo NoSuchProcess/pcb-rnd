@@ -16,17 +16,17 @@ typedef struct {
 typedef struct {								/* information about removed polygon points */
 	rnd_coord_t X, Y;										/* data */
 	int ID;
-	pcb_cardinal_t Index;								/* index in a polygons array of points */
+	rnd_cardinal_t Index;								/* index in a polygons array of points */
 	rnd_bool last_in_contour;					/* Whether the point was the last in its contour */
 } RemovedPointType, *RemovedPointTypePtr;
 
 typedef struct {								/* information about rotation */
 	rnd_coord_t CenterX, CenterY;				/* center of rotation */
-	pcb_cardinal_t Steps;								/* number of steps */
+	rnd_cardinal_t Steps;								/* number of steps */
 } RotateType, *RotateTypePtr;
 
 typedef struct {								/* information about moves between layers */
-	pcb_cardinal_t OriginalLayer;				/* the index of the original layer */
+	rnd_cardinal_t OriginalLayer;				/* the index of the original layer */
 } MoveToLayer;
 
 typedef struct {								/* information about poly clear/restore */

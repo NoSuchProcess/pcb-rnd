@@ -155,7 +155,7 @@ static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
 	return 1;
 }
 
-static int pline_split_off_loop_new(pcb_pline_t *pl, vtp0_t *out, vhub_t *h, pcb_vnode_t *start, pcb_cardinal_t cnt)
+static int pline_split_off_loop_new(pcb_pline_t *pl, vtp0_t *out, vhub_t *h, pcb_vnode_t *start, rnd_cardinal_t cnt)
 {
 	pcb_pline_t *newpl = NULL;
 	pcb_vnode_t *v, *next, *tmp;
@@ -180,7 +180,7 @@ TRACE("APPEND: %p %p\n", newpl, newpl->head->next);
 static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_t *start)
 {
 	pcb_vnode_t *v;
-	pcb_cardinal_t cnt;
+	rnd_cardinal_t cnt;
 
 	for(v = start->next, cnt = 0;; v = v->next) {
 		if (v->Flags.in_hub) {
@@ -292,10 +292,10 @@ TODO("leak: remove the unused hubs");
 	vtp0_uninit(&hubs);
 }
 
-pcb_cardinal_t pcb_polyarea_split_selfint(pcb_polyarea_t *pa)
+rnd_cardinal_t pcb_polyarea_split_selfint(pcb_polyarea_t *pa)
 {
 	pcb_pline_t *pl, *next, *pln, *prev = NULL;
-	pcb_cardinal_t cnt = 0;
+	rnd_cardinal_t cnt = 0;
 
 	for(pl = pa->contours; pl != NULL; pl = next) {
 		next = pl->next;

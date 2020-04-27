@@ -257,7 +257,7 @@ static void pcb_bxl_padstack_end_automask(pcb_bxl_ctx_t *ctx)
 
 void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 
 	ctx->state.proto.hdia = ctx->state.hole;
 	ctx->state.proto.hplated = ctx->state.plated;

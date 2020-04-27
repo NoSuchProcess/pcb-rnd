@@ -32,7 +32,7 @@
 
 typedef struct {								/* holds drill information */
 	rnd_coord_t DrillSize;							/* this drill's diameter */
-	pcb_cardinal_t ElementN,						/* the number of elements using this drill size */
+	rnd_cardinal_t ElementN,						/* the number of elements using this drill size */
 	  ElementMax,									/* max number of elements from malloc() */
 	  PinCount,										/* number of pins drilled this size */
 	  ViaCount,										/* number of vias drilled this size */
@@ -44,7 +44,7 @@ typedef struct {								/* holds drill information */
 } pcb_drill_t;
 
 typedef struct {								/* holds a range of Drill Infos */
-	pcb_cardinal_t DrillN,							/* number of drill sizes */
+	rnd_cardinal_t DrillN,							/* number of drill sizes */
 	  DrillMax;										/* max number from malloc() */
 	pcb_drill_t *Drill;						/* plated holes */
 } pcb_drill_info_t;
@@ -57,7 +57,7 @@ pcb_any_obj_t **drill_pin_alloc(pcb_drill_t *);
 pcb_any_obj_t **drill_element_alloc(pcb_drill_t *);
 
 #define DRILL_LOOP(top) do             {                           \
-        pcb_cardinal_t        n;                                   \
+        rnd_cardinal_t        n;                                   \
         pcb_drill_t   *drill;                                     \
         for (n = 0; (top)->DrillN > 0 && n < (top)->DrillN; n++)   \
         {                                                          \

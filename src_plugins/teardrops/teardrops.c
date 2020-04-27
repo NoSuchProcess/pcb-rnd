@@ -69,7 +69,7 @@ static pcb_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 		x2 = l->Point2.X;
 		y2 = l->Point2.Y;
 	}
-	else if (pcb_distance(l->Point2.X, l->Point2.Y, px, py) < MAX_DISTANCE2) {
+	else if (rnd_distance(l->Point2.X, l->Point2.Y, px, py) < MAX_DISTANCE2) {
 		x1 = l->Point2.X;
 		y1 = l->Point2.Y;
 		x2 = l->Point1.X;

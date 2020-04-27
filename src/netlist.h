@@ -74,7 +74,7 @@ struct pcb_net_s {
 	PCB_ANY_OBJ_FIELDS;
 	int parent_nl_idx; /* netlist index within the parent board */
 	char *name;
-	pcb_cardinal_t export_tmp; /* filled in and used by export code; valid only until the end of exporting */
+	rnd_cardinal_t export_tmp; /* filled in and used by export code; valid only until the end of exporting */
 	unsigned inhibit_rats:1;
 	pcb_termlist_t conns;
 };
@@ -112,7 +112,7 @@ int pcb_net_term_del_by_name(pcb_net_t *net, const char *refdes, const char *ter
 
 /* Crawl a net and clear&set flags on each object belonging to the net
    and. Return the number of objects found */
-pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf);
+rnd_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf);
 
 
 /* Slow, linear search for a terminal, by pinname ("refdes-pinnumber") or
@@ -128,15 +128,15 @@ pcb_net_term_t *pcb_net_find_by_obj(const pcb_netlist_t *nl, const pcb_any_obj_t
 pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl);
 
 /* Create missing rat lines */
-pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc);
-pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc);
+rnd_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc);
+rnd_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc);
 
 /* Create a new network or a new net connection by drawing a rat line between two terminals */
 pcb_rat_t *pcb_net_create_by_rat_coords(pcb_board_t *pcb, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool interactive);
 
 /* Undoably remove all non-subc-part copper objects that are connected to net.
    Return the number of removals. */
-pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net);
+rnd_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net);
 
 void pcb_netlist_changed(int force_unfreeze);
 
@@ -148,7 +148,7 @@ typedef struct {
 	const pcb_board_t *pcb;
 	pcb_net_t *current_net;
 	htsp_t found;
-	pcb_cardinal_t changed, missing, num_shorts;
+	rnd_cardinal_t changed, missing, num_shorts;
 	int cancel_advanced; /* do not do any time consuming advanced operations (such as mincut) in the event handler because the user already clicked cancel */
 } pcb_short_ctx_t;
 
@@ -158,7 +158,7 @@ void pcb_net_short_ctx_uninit(pcb_short_ctx_t *sctx);
 /* Search and collect all subnets of a net, adding rat lines in between them.
    Caller provided subnets is a vector of vtp0_t items that each contain
    (pcb_any_obj_t *) pointers to subnet objects */
-pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets);
+rnd_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets);
 
 void pcb_net_reset_subnets(vtp0_t *subnets); /* clear the subnet list to zero items, but don't free the array ("malloc cache") */
 void pcb_net_free_subnets(vtp0_t *subnets);  /* same as reset but also free the array */

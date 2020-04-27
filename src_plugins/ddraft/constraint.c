@@ -83,7 +83,7 @@ static int find_best_length(double *out_len, rnd_coord_t x1, rnd_coord_t y1, rnd
 	double len, best_diff, diff, target_len;
 	int n, best;
 
-	len = pcb_distance(x1, y1, x2, y2);
+	len = rnd_distance(x1, y1, x2, y2);
 
 	if (lengthlen > 0) {
 		/* find the best matching constraint length */

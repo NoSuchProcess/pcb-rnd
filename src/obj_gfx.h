@@ -95,14 +95,14 @@ void pcb_gfx_post(pcb_gfx_t *gfx);
   linelist_foreach(&(element)->Gfx, &__it__, gfx) {
 
 #define PCB_GFX_ALL_LOOP(top) do { \
-	pcb_cardinal_t l; \
+	rnd_cardinal_t l; \
 	pcb_layer_t *layer = (top)->Layer; \
 	for (l =0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++) \
 	{ \
 		PCB_GFX_LOOP(layer)
 
 #define PCB_GFX_COPPER_LOOP(top) do { \
-	pcb_cardinal_t l; \
+	rnd_cardinal_t l; \
 	pcb_layer_t *layer = (top)->Layer; \
 	for (l =0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++) \
 	{ \
@@ -110,7 +110,7 @@ void pcb_gfx_post(pcb_gfx_t *gfx);
 		PCB_GFX_LOOP(layer)
 
 #define PCB_GFX_SILK_LOOP(top) do { \
-	pcb_cardinal_t l; \
+	rnd_cardinal_t l; \
 	pcb_layer_t *layer = (top)->Layer; \
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++) \
 	{ \
@@ -118,7 +118,7 @@ void pcb_gfx_post(pcb_gfx_t *gfx);
 		PCB_GFX_LOOP(layer)
 
 #define PCB_GFX_VISIBLE_LOOP(top) do { \
-	pcb_cardinal_t l; \
+	rnd_cardinal_t l; \
 	pcb_layer_t *layer = (top)->Layer; \
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++) \
 	{ \

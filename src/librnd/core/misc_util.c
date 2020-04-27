@@ -40,10 +40,10 @@
 #include <librnd/core/misc_util.h>
 #include <librnd/core/unit.h>
 
-/* pcb_distance() should be used so that there is only one
+/* rnd_distance() should be used so that there is only one
  *  place to deal with overflow/precision errors
  */
-double pcb_distance(double x1, double y1, double x2, double y2)
+double rnd_distance(double x1, double y1, double x2, double y2)
 {
 	double delta_x = (x2 - x1);
 	double delta_y = (y2 - y1);

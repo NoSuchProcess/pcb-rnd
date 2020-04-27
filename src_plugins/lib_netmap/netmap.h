@@ -44,7 +44,7 @@ struct dyn_obj_s {
 typedef struct pcb_netmap_s {
 	htpp_t o2n;   /* of (pcb_lib_menu_t *); tells the net for an object */
 	htpp_t n2o;   /* of (dyn_obj_t *); tells the object list for a net */
-	pcb_cardinal_t anon_cnt;
+	rnd_cardinal_t anon_cnt;
 	pcb_board_t *pcb;
 	pcb_net_t *curr_net;
 	dyn_net_t *dyn_nets;

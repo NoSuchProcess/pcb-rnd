@@ -50,9 +50,9 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 };
 
 
-static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, rnd_coord_t *excellon_last_tool_dia)
+static rnd_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, int slots, rnd_coord_t *excellon_last_tool_dia)
 {
-	pcb_cardinal_t i, cnt = 0;
+	rnd_cardinal_t i, cnt = 0;
 	int first = 1;
 
 	for (i = 0; i < ctx->obj.used; i++) {
@@ -91,10 +91,10 @@ static pcb_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 	return cnt;
 }
 
-static pcb_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, const char *coord_fmt_hdr)
+static rnd_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_t *ctx, int force_g85, const char *coord_fmt_hdr)
 {
 	aperture_t *search;
-	pcb_cardinal_t cnt = 0;
+	rnd_cardinal_t cnt = 0;
 	rnd_coord_t excellon_last_tool_dia = 0;
 
 	/* We omit the ,TZ here because we are not omitting trailing zeros.  Our format is

@@ -82,7 +82,7 @@ typedef struct {
 typedef struct {
 	pcb_board_t *pcb;
 	rnd_coord_t x, y;
-	pcb_cardinal_t idx; /* poly point idx */
+	rnd_cardinal_t idx; /* poly point idx */
 	rnd_bool last;
 	rnd_bool forcible;
 } pcb_opctx_insert_t;

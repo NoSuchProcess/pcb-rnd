@@ -47,7 +47,7 @@ typedef struct hyp_wr_s {
 	const char *ln_top, *ln_bottom;	/* "layer name" for top and bottom groups */
 	char *elem_name;
 	size_t elem_name_len;
-	pcb_cardinal_t poly_id;
+	rnd_cardinal_t poly_id;
 	htpi_t pstk_cache;
 	htpp_t grp_names;
 	long pstk_cache_next;
@@ -476,7 +476,7 @@ static int write_pstk_protos(hyp_wr_t *wr, pcb_data_t *data)
 {
 	gdl_iterator_t it;
 	pcb_subc_t *subc;
-	pcb_cardinal_t n, end;
+	rnd_cardinal_t n, end;
 
 	/* print the protos */
 	end = pcb_vtpadstack_proto_len(&data->ps_protos);

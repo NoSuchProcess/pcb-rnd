@@ -111,11 +111,11 @@ TODO(": do not hardwire this")
 	return 0;
 }
 
-static int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
+static int write_kicad_legacy_layout_tracks(FILE *FP, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
-	pcb_cardinal_t currentLayer = number;
+	rnd_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
@@ -140,12 +140,12 @@ static int write_kicad_legacy_layout_tracks(FILE *FP, pcb_cardinal_t number, pcb
 	}
 }
 
-static int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
+static int write_kicad_legacy_layout_arcs(FILE *FP, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
 	pcb_arc_t localArc; /* for converting ellipses to circular arcs */
-	pcb_cardinal_t currentLayer = number;
+	rnd_cardinal_t currentLayer = number;
 	rnd_coord_t radius, xStart, yStart, xEnd, yEnd;
 	int copperStartX; /* used for mapping geda copper arcs onto kicad copper lines */
 	int copperStartY; /* used for mapping geda copper arcs onto kicad copper lines */
@@ -200,7 +200,7 @@ static int write_kicad_legacy_layout_arcs(FILE *FP, pcb_cardinal_t number, pcb_l
 	}
 }
 
-static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
+static int write_kicad_legacy_layout_text(FILE *FP, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
 	rnd_coord_t mWidth = myfont->MaxWidth; /* kicad needs the width of the widest letter */
@@ -220,7 +220,7 @@ static int write_kicad_legacy_layout_text(FILE *FP, pcb_cardinal_t number, pcb_l
 
 	gdl_iterator_t it;
 	pcb_text_t *text;
-	pcb_cardinal_t currentLayer = number;
+	rnd_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
@@ -318,7 +318,7 @@ TODO("textrot: use the angle, not n*90 deg")
 static int write_kicad_legacy_equipotential_netlists(FILE *FP, pcb_board_t *Layout)
 {
 	htsp_entry_t *e;
-	pcb_cardinal_t netNumber = 0;
+	rnd_cardinal_t netNumber = 0;
 
 	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */
 	fputs("$EQUIPOT\n", FP);
@@ -619,12 +619,12 @@ TODO(": what did we need this for?")
 	return 0;
 }
 
-static int write_kicad_legacy_layout_polygons(FILE *FP, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
+static int write_kicad_legacy_layout_polygons(FILE *FP, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t xOffset, rnd_coord_t yOffset)
 {
 	int i, j;
 	gdl_iterator_t it;
 	pcb_poly_t *polygon;
-	pcb_cardinal_t currentLayer = number;
+	rnd_cardinal_t currentLayer = number;
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
@@ -705,7 +705,7 @@ TODO("no hardwiring of dates")
 
 int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	int kicadLayerCount = 0;
 	int physicalLayerCount = 0;
 	int layer = 0;

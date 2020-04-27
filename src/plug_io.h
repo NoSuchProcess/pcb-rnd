@@ -226,7 +226,7 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int
    used for navigating the user to the problem). Desc should be a short
    description (must not be NULL), details should go in hint (can be NULL).
    Returns a report ID. */
-pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *type, const char *title, const char *description);
+rnd_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *type, const char *title, const char *description);
 
 void pcb_io_uninit(void);
 

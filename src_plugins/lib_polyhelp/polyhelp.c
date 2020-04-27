@@ -73,9 +73,9 @@ static void cross(FILE *f, rnd_coord_t x, rnd_coord_t y)
 }
 #endif
 
-pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
+rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
-	pcb_cardinal_t cnt = 0;
+	rnd_cardinal_t cnt = 0;
 	vtp0_t tracks;
 	long i;
 
@@ -124,9 +124,9 @@ rnd_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p)
 	return pcb_pline_is_rectangle(p->Clipped->contours);
 }
 
-pcb_cardinal_t pcb_cpoly_num_corners(const pcb_poly_t *src)
+rnd_cardinal_t pcb_cpoly_num_corners(const pcb_poly_t *src)
 {
-	pcb_cardinal_t res = 0;
+	rnd_cardinal_t res = 0;
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
 
@@ -202,7 +202,7 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
 	pcb_cpoly_edgetree_t *res;
-	pcb_cardinal_t alloced = pcb_cpoly_num_corners(src) * sizeof(pcb_cpoly_edge_t);
+	rnd_cardinal_t alloced = pcb_cpoly_num_corners(src) * sizeof(pcb_cpoly_edge_t);
 
 	res = malloc(sizeof(pcb_cpoly_edgetree_t) + alloced);
 

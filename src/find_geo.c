@@ -176,7 +176,7 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 
 	pdx = Arc2->X - Arc1->X;
 	pdy = Arc2->Y - Arc1->Y;
-	dl = pcb_distance(Arc1->X, Arc1->Y, Arc2->X, Arc2->Y);
+	dl = rnd_distance(Arc1->X, Arc1->Y, Arc2->X, Arc2->Y);
 	/* concentric arcs, simpler intersection conditions */
 	if (dl < 0.5) {
 		if ((Arc1->Width - t >= Arc2->Width - t2 && Arc1->Width - t <= Arc2->Width + t2)
@@ -422,7 +422,7 @@ static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
 	else {
 		rnd_coord_t dX = l->Point2.X - l->Point1.X;
 		rnd_coord_t dY = l->Point2.Y - l->Point1.Y;
-		double r = pcb_distance(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
+		double r = rnd_distance(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
 		dwx = l->Thickness / 2.0 / r * dX;
 		dwy = l->Thickness / 2.0 / r * dY;
 	}

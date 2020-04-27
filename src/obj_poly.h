@@ -39,15 +39,15 @@
 struct pcb_poly_s  {           /* holds information about a polygon */
 	PCB_ANY_PRIMITIVE_FIELDS;
 	rnd_coord_t Clearance;
-	pcb_cardinal_t PointN;       /* number of points in polygon */
-	pcb_cardinal_t PointMax;     /* max number from malloc() */
+	rnd_cardinal_t PointN;       /* number of points in polygon */
+	rnd_cardinal_t PointMax;     /* max number from malloc() */
 	pcb_polyarea_t *Clipped;     /* the clipped region of this polygon */
 	pcb_pline_t *NoHoles;        /* the polygon broken into hole-less regions */
 	int NoHolesValid;            /* Is the NoHoles polygon up to date? */
 	pcb_point_t *Points;         /* data */
-	pcb_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
-	pcb_cardinal_t HoleIndexN;   /* number of holes in polygon */
-	pcb_cardinal_t HoleIndexMax; /* max number from malloc() */
+	rnd_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
+	rnd_cardinal_t HoleIndexN;   /* number of holes in polygon */
+	rnd_cardinal_t HoleIndexMax; /* max number from malloc() */
 	unsigned clip_dirty:1;       /* 1 if polygon should be reclipped after clipping inhibit is over */
 	gdl_elem_t link;             /* a poly is in a list of a layer */
 };
@@ -58,7 +58,7 @@ pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer);
 pcb_poly_t *pcb_poly_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_poly_free(pcb_poly_t * data);
 pcb_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon);
-pcb_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon);
+rnd_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon);
 void pcb_poly_free_fields(pcb_poly_t * polygon);
 
 void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly);
@@ -265,21 +265,21 @@ do { \
   linelist_foreach(&(layer)->Polygon, &__it__, polygon) {
 
 #define	PCB_POLY_POINT_LOOP(polygon) do	{	\
-	pcb_cardinal_t			n;		\
+	rnd_cardinal_t			n;		\
 	pcb_point_t *point;				\
 	for (n = (polygon)->PointN-1; n != -1; n--)	\
 	{						\
 		point = &(polygon)->Points[n]
 
 #define	PCB_POLY_ALL_LOOP(top)	do {		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN) ; l++, layer++)	\
 	{ \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_COPPER_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
@@ -287,7 +287,7 @@ do { \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_SILK_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
@@ -295,7 +295,7 @@ do { \
 		PCB_POLY_LOOP(layer)
 
 #define	PCB_POLY_VISIBLE_LOOP(top) do	{	\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \

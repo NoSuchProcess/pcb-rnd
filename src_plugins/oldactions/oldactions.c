@@ -77,7 +77,7 @@ static void dump_lib_any(int level, pcb_fplibrary_t *l);
 
 static void dump_lib_dir(int level, pcb_fplibrary_t *l)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 
 	ind(level);
 	printf("%s/\n", l->name);

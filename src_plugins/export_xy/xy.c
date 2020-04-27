@@ -171,7 +171,7 @@ typedef struct {
 	rnd_coord_t pad_w, pad_h;
 	rnd_coord_t prpad_cx, prpad_cy;
 	rnd_coord_t prpad_w, prpad_h;
-	pcb_cardinal_t count;
+	rnd_cardinal_t count;
 	rnd_coord_t ox, oy;
 	int origin_score;
 	char *origin_tmp;

@@ -80,7 +80,7 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 } pcb_crosshair_t;
 
 typedef struct {
-	pcb_cardinal_t Buffer; /* buffer number */
+	rnd_cardinal_t Buffer; /* buffer number */
 	rnd_bool Moving;       /* true if clicked on an object of PCB_SELECT_TYPES */
 	void *ptr1, *ptr2, *ptr3;
 } pcb_crosshair_note_t;

@@ -280,7 +280,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static int apply_vendor_pstk1(pcb_pstk_t *pstk, pcb_cardinal_t *tot)
+static int apply_vendor_pstk1(pcb_pstk_t *pstk, rnd_cardinal_t *tot)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pstk);
 	rnd_coord_t target;
@@ -304,11 +304,11 @@ static int apply_vendor_pstk1(pcb_pstk_t *pstk, pcb_cardinal_t *tot)
 	return res;
 }
 
-static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data, pcb_cardinal_t *tot)
+static rnd_cardinal_t apply_vendor_pstk(pcb_data_t *data, rnd_cardinal_t *tot)
 {
 	gdl_iterator_t it;
 	pcb_pstk_t *pstk;
-	pcb_cardinal_t changed = 0;
+	rnd_cardinal_t changed = 0;
 
 	padstacklist_foreach(&data->padstack, &it, pstk)
 		if (apply_vendor_pstk1(pstk, tot))
@@ -319,7 +319,7 @@ static pcb_cardinal_t apply_vendor_pstk(pcb_data_t *data, pcb_cardinal_t *tot)
 static void apply_vendor_map(void)
 {
 	int i;
-	pcb_cardinal_t changed = 0, tot = 0;
+	rnd_cardinal_t changed = 0, tot = 0;
 	rnd_bool state;
 
 	state = conf_vendor.plugins.vendor.enable;
@@ -643,7 +643,7 @@ static void vendor_free_all(void)
 static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_pstk_t *ps;
-	pcb_cardinal_t dummy;
+	rnd_cardinal_t dummy;
 
 	if ((argc < 2) || (argv[1].type != PCB_EVARG_PTR))
 		return;

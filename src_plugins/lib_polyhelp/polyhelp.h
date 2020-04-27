@@ -32,7 +32,7 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl);
 /* Add lines on dst tracing pline from the inner side (no line will extend
    outside of the original pline, except when the original polygon has a hair
    narrower than thickness). Returns number of lines created */
-pcb_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
+rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
 
 /* Returns whether the clipped polygon is a simple rectangle (single island,
    no-hole rectangle). */
@@ -51,7 +51,7 @@ typedef struct {
 typedef struct {
 	pcb_rtree_t *edge_tree;
 	rnd_box_t bbox;
-	pcb_cardinal_t used, alloced;
+	rnd_cardinal_t used, alloced;
 	pcb_cpoly_edge_t edges[1];
 } pcb_cpoly_edgetree_t;
 

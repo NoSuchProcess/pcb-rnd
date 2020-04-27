@@ -59,7 +59,7 @@ static pcb_opfunc_t InsertFunctions = {
 	0 /* extobj_inhibit_regen */
 };
 
-void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t *Ptr3, rnd_coord_t DX, rnd_coord_t DY, rnd_bool Force, rnd_bool insert_last)
+void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, rnd_cardinal_t *Ptr3, rnd_coord_t DX, rnd_coord_t DY, rnd_bool Force, rnd_bool insert_last)
 {
 	void *ptr;
 	pcb_opctx_t ctx;
@@ -91,8 +91,8 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	if (pcb_gui->shift_is_pressed(pcb_gui)) {
 		pcb_attached_line_t myline;
 		/* only force 45 degree for nearest point */
-		if (pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point1.X, line->Point1.Y) <
-				pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point2.X, line->Point2.Y))
+		if (rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point1.X, line->Point1.Y) <
+				rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point2.X, line->Point2.Y))
 			myline.Point1 = myline.Point2 = line->Point1;
 		else
 			myline.Point1 = myline.Point2 = line->Point2;

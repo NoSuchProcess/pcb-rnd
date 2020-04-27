@@ -1477,7 +1477,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 			cy = c;
 			cx = (long)((y3-cy)*(y2-y1)/(double)((x2-x1)) + x3);
 		}
-		radius = (long)pcb_distance((double)cx, (double)cy, (double)x2, (double)y2);
+		radius = (long)rnd_distance((double)cx, (double)cy, (double)x2, (double)y2);
 		sprintf(itoa_buffer, "%ld", radius);
 		egb_node_prop_set(elem, "radius", itoa_buffer);
 		sprintf(itoa_buffer, "%ld", cx);
@@ -1612,7 +1612,7 @@ TODO("TODO still need to fine tune non-trivial non 90 degree arcs start and delt
 		} else if (!(x1_ok && x2_ok && y1_ok && y2_ok)) {
 			rnd_message(PCB_MSG_ERROR, "x1/2 or y1/2 not set in binary arc\n");
 		}
-		radius = (long)(pcb_distance((double)cx, (double)cy, (double)x2, (double)y2));
+		radius = (long)(rnd_distance((double)cx, (double)cy, (double)x2, (double)y2));
 		sprintf(itoa_buffer, "%ld", radius);
 		egb_node_prop_set(elem, "radius", itoa_buffer);
 

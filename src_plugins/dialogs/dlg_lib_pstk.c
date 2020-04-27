@@ -52,13 +52,13 @@ typedef struct pstk_lib_ctx_s {
 	int wlist, wprev, wgrid;
 	int wlayerv[pcb_proto_num_layers], wlayerc[pcb_proto_num_layers]; /* layer visibility/current */
 	long subc_id;
-	pcb_cardinal_t proto_id;
-	pcb_cardinal_t *stat; /* temporary usage stat */
+	rnd_cardinal_t proto_id;
+	rnd_cardinal_t *stat; /* temporary usage stat */
 	rnd_box_t drawbox;
 	rnd_bool modal;
 } pstk_lib_ctx_t;
 
-static pcb_cardinal_t pstklib_last_proto_id; /* set on close to preserve the id after free'ing the context; useful only for modal windows because of blocking calls */
+static rnd_cardinal_t pstklib_last_proto_id; /* set on close to preserve the id after free'ing the context; useful only for modal windows because of blocking calls */
 
 static pcb_data_t *get_data(pstk_lib_ctx_t *ctx, long id, pcb_subc_t **sc_out)
 {
@@ -140,7 +140,7 @@ static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(ctx);
 }
 
-static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, pcb_cardinal_t proto_id)
+static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, rnd_cardinal_t proto_id)
 {
 	memset(ps, 0, sizeof(pcb_pstk_t));
 	ps->parent_type = PCB_PARENT_DATA;
@@ -297,7 +297,7 @@ static void pstklib_proto_edit_change_cb(pse_t *pse)
 	pstklib_force_redraw(pse->user_data, pse->ps);
 }
 
-static void pstklib_proto_edit_common(pstk_lib_ctx_t *ctx, pcb_data_t *data, pcb_cardinal_t proto_id, int tab)
+static void pstklib_proto_edit_common(pstk_lib_ctx_t *ctx, pcb_data_t *data, rnd_cardinal_t proto_id, int tab)
 {
 	pcb_pstk_t ps;
 	pse_t pse;
@@ -381,7 +381,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attri
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_hid_attribute_t *attr;
 	pcb_hid_row_t *r;
-	pcb_cardinal_t from_pid, to_pid;
+	rnd_cardinal_t from_pid, to_pid;
 	pcb_pstk_t *ps;
 
 	if (data == NULL)
@@ -451,7 +451,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_cardinal_t len;
+	rnd_cardinal_t len;
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 
@@ -466,7 +466,7 @@ static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_cardinal_t len, n;
+	rnd_cardinal_t len, n;
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 
@@ -483,7 +483,7 @@ static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	ctx->stat = NULL;
 }
 
-pcb_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, const char *hint)
+rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, const char *hint)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;

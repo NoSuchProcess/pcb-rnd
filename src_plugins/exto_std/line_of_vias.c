@@ -76,7 +76,7 @@ static void line_of_vias_clear(pcb_subc_t *subc)
 
 #define line_geo_calc(line) \
 	do { \
-		len = pcb_distance(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y); \
+		len = rnd_distance(line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y); \
 		dx = (double)(line->Point2.X - line->Point1.X) / len; \
 		dy = (double)(line->Point2.Y - line->Point1.Y) / len; \
 	} while(0)
@@ -108,7 +108,7 @@ static void line_of_vias_gen_line(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t
 
 		if ((pcb != NULL) && (pcb->Data->padstack_tree != NULL)) {
 			for(cl = pcb_rtree_first(&it, pcb->Data->padstack_tree, &qbox); cl != NULL; cl = pcb_rtree_next(&it)) {
-				if (pcb_distance(rx, ry, cl->x, cl->y) < too_close) {
+				if (rnd_distance(rx, ry, cl->x, cl->y) < too_close) {
 					skip = 1;
 					break;
 				}

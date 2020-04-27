@@ -192,7 +192,7 @@ static pcb_r_dir_t rat_callback(const rnd_box_t * box, void *cl)
 	TEST_OBJST(i->objst, i->req_flag, l, line, line);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, line) ?
-			(pcb_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
+			(rnd_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : pcb_is_point_on_line(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
 		return PCB_R_DIR_CANCEL;
@@ -374,7 +374,7 @@ static pcb_r_dir_t linepoint_callback(const rnd_box_t * b, void *cl)
 	TEST_OBJST(i->objst, i->req_flag, l, line, line);
 
 	/* some stupid code to check both points */
-	d = pcb_distance(PosX, PosY, line->Point1.X, line->Point1.Y);
+	d = rnd_distance(PosX, PosY, line->Point1.X, line->Point1.Y);
 	if (d < i->least) {
 		i->least = d;
 		*i->Line = line;
@@ -382,7 +382,7 @@ static pcb_r_dir_t linepoint_callback(const rnd_box_t * b, void *cl)
 		ret_val = PCB_R_DIR_FOUND_CONTINUE;
 	}
 
-	d = pcb_distance(PosX, PosY, line->Point2.X, line->Point2.Y);
+	d = rnd_distance(PosX, PosY, line->Point2.X, line->Point2.Y);
 	if (d < i->least) {
 		i->least = d;
 		*i->Line = line;
@@ -406,7 +406,7 @@ static pcb_r_dir_t arcpoint_callback(const rnd_box_t * b, void *cl)
 	pcb_arc_get_end(arc, 0, &ab.X1, &ab.Y1);
 	pcb_arc_get_end(arc, 1, &ab.X2, &ab.Y2);
 
-	d = pcb_distance(PosX, PosY, ab.X1, ab.Y1);
+	d = rnd_distance(PosX, PosY, ab.X1, ab.Y1);
 	if (d < i->least) {
 		i->least = d;
 		*i->Arc = arc;
@@ -414,7 +414,7 @@ static pcb_r_dir_t arcpoint_callback(const rnd_box_t * b, void *cl)
 		ret_val = PCB_R_DIR_FOUND_CONTINUE;
 	}
 
-	d = pcb_distance(PosX, PosY, ab.X2, ab.Y2);
+	d = rnd_distance(PosX, PosY, ab.X2, ab.Y2);
 	if (d < i->least) {
 		i->least = d;
 		*i->Arc = arc;
@@ -951,7 +951,7 @@ rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, 
 	/* so, pad.Point1.X = pad.Point1.Y = 0; */
 
 	/* rotate round (0, 0) so that Point2 coordinates be (r, 0) */
-	r = pcb_distance(0, 0, pad.Point2.X, pad.Point2.Y);
+	r = rnd_distance(0, 0, pad.Point2.X, pad.Point2.Y);
 	if (r < .1) {
 		Cos = 1;
 		Sin = 0;
@@ -978,13 +978,13 @@ rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, 
 			if (Y <= t2)
 				range = -X;
 			else
-				return Radius > pcb_distance(0, t2, X, Y);
+				return Radius > rnd_distance(0, t2, X, Y);
 		}
 		else if (X >= r) {
 			if (Y <= t2)
 				range = X - r;
 			else
-				return Radius > pcb_distance(r, t2, X, Y);
+				return Radius > rnd_distance(r, t2, X, Y);
 		}
 		else
 			range = Y - t2;
@@ -992,9 +992,9 @@ rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, 
 	else {												/*Rounded pad: even more simple */
 
 		if (X <= 0)
-			return (Radius + t2) > pcb_distance(0, 0, X, Y);
+			return (Radius + t2) > rnd_distance(0, 0, X, Y);
 		else if (X >= r)
-			return (Radius + t2) > pcb_distance(r, 0, X, Y);
+			return (Radius + t2) > rnd_distance(r, 0, X, Y);
 		else
 			range = Y - t2;
 	}
@@ -1016,17 +1016,17 @@ rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, rnd_box_t *box, rnd_c
 
 	if (X <= 0) {
 		if (Y < 0)
-			return Radius > pcb_distance(0, 0, X, Y);
+			return Radius > rnd_distance(0, 0, X, Y);
 		else if (Y > height)
-			return Radius > pcb_distance(0, height, X, Y);
+			return Radius > rnd_distance(0, height, X, Y);
 		else
 			range = -X;
 	}
 	else if (X >= width) {
 		if (Y < 0)
-			return Radius > pcb_distance(width, 0, X, Y);
+			return Radius > rnd_distance(width, 0, X, Y);
 		else if (Y > height)
-			return Radius > pcb_distance(width, height, X, Y);
+			return Radius > rnd_distance(width, height, X, Y);
 		else
 			range = X - width;
 	}
@@ -1066,7 +1066,7 @@ rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, rnd_box_t *b)
 rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_arc_t *Arc)
 {
 	/* Calculate angle of point from arc center */
-	double p_dist = pcb_distance(X, Y, Arc->X, Arc->Y);
+	double p_dist = rnd_distance(X, Y, Arc->X, Arc->Y);
 	double p_cos = (X - Arc->X) / p_dist;
 	pcb_angle_t p_ang = acos(p_cos) * PCB_RAD_TO_DEG;
 	pcb_angle_t ang1, ang2;
@@ -1101,19 +1101,19 @@ rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 		rnd_coord_t ArcX, ArcY;
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
-		if (pcb_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
+		if (rnd_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
-		if (pcb_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
+		if (rnd_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 		return pcb_false;
 	}
 
 	if ((Arc->Width == Arc->Height) || (fabs(Arc->Width - Arc->Height) < PCB_MM_TO_COORD(0.1))) {
 		/* Simple circular case: if point is inside the arc range, just compare it to the arc */
-		return fabs(pcb_distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
+		return fabs(rnd_distance(X, Y, Arc->X, Arc->Y) - Arc->Width) < Radius + Arc->Thickness / 2;
 	}
 	else {
 		/* elliptical case: guess where the arc would be in that point, by angle */
@@ -1128,7 +1128,7 @@ TODO(": elliptical arc: rewrite this, as it does not work properly on extreme ca
 		ax = Arc->X + cos(ang) * Arc->Width;
 		ay = Arc->Y - sin(ang) * Arc->Height;
 
-		d = fabs(pcb_distance(X, Y, ax, ay));
+		d = fabs(rnd_distance(X, Y, ax, ay));
 
 		return d < Arc->Thickness / 2;
 	}
@@ -1257,7 +1257,7 @@ static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void 
 
 static int pcb_search_obj_by_loc_group(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, const pcb_layergrp_t *grp, int HigherAvail, double HigherBound, int objst)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	for(n = 0; n < grp->len; n++) {
 		int found;
 		pcb_layer_t *oldly, *layer = pcb_get_layer(PCB->Data, grp->lid[n]);

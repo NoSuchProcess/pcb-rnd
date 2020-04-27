@@ -98,7 +98,7 @@ struct cli_node_s {
 
 	rnd_coord_t x, y, dist;
 	pcb_angle_t angle, offs;
-	pcb_cardinal_t id;
+	rnd_cardinal_t id;
 };
 
 static const cli_ntype_t find_type(const char *type, int typelen)

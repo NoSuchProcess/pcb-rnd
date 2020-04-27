@@ -213,7 +213,7 @@ static void pse_changed(pse_t *pse)
 static void pse_chg_protoid(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
-	pcb_cardinal_t proto_id;
+	rnd_cardinal_t proto_id;
 	pcb_subc_t *subc;
 	static int lock = 0;
 
@@ -238,7 +238,7 @@ static void pse_chg_protoid(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 static void pse_chg_protodup(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pse_t *pse = caller_data;
-	pcb_cardinal_t proto_id;
+	rnd_cardinal_t proto_id;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(pse->ps);
 
 	assert(pse->ps->parent_type == PCB_PARENT_DATA);
@@ -703,7 +703,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	rnd_coord_t size = pse->attrs[pse->gen_size].val.crd;
 	pcb_layer_type_t lyt = sides_lyt[sides];
 	pcb_pstk_tshape_t *ts;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 
 	memset(&proto, 0, sizeof(proto));
 

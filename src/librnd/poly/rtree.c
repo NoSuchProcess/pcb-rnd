@@ -60,9 +60,9 @@ void pcb_r_insert_entry(pcb_rtree_t *rtree, const rnd_box_t *which)
 	pcb_rtree_insert(rtree, (void *)which, (pcb_rtree_box_t *)which); /* assumes first field is the bounding box */
 }
 
-void pcb_r_insert_array(pcb_rtree_t *rtree, const rnd_box_t *boxlist[], pcb_cardinal_t len)
+void pcb_r_insert_array(pcb_rtree_t *rtree, const rnd_box_t *boxlist[], rnd_cardinal_t len)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 
 	if (len == 0)
 		return;

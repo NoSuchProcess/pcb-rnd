@@ -457,7 +457,7 @@ int pcb_net_del(pcb_netlist_t *nl, const char *netname)
 
 /* crawl from a single terminal; "first" sould be a pointer to an int
    initialized to 0. Returns number of objects found. */
-static pcb_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int *first, pcb_cardinal_t *missing)
+static rnd_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t *term, pcb_find_t *fctx, int *first, rnd_cardinal_t *missing)
 {
 	pcb_any_obj_t *o;
 
@@ -591,11 +591,11 @@ static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	return 0;
 }
 
-pcb_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf)
+rnd_cardinal_t pcb_net_crawl_flag(pcb_board_t *pcb, pcb_net_t *net, unsigned long setf, unsigned long clrf)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
-	pcb_cardinal_t res = 0, n;
+	rnd_cardinal_t res = 0, n;
 	pcb_short_ctx_t sctx;
 	int first = 0;
 
@@ -703,11 +703,11 @@ pcb_net_t **pcb_netlist_sort(pcb_netlist_t *nl)
 
 #include "netlist_geo.c"
 
-pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets)
+rnd_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc, vtp0_t *subnets)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
-	pcb_cardinal_t drawn = 0, r, n, s1, s2, su, sd;
+	rnd_cardinal_t drawn = 0, r, n, s1, s2, su, sd;
 	pcb_subnet_dist_t *connmx;
 	char *done;
 	int left, first = 0;
@@ -806,7 +806,7 @@ pcb_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 
 void pcb_net_reset_subnets(vtp0_t *subnets)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	for(n = 0; n < vtp0_len(subnets); n++)
 		vtp0_uninit(subnets->array[n]);
 	subnets->used = 0;
@@ -819,9 +819,9 @@ void pcb_net_free_subnets(vtp0_t *subnets)
 }
 
 
-pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
+rnd_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_accuracy_t acc)
 {
-	pcb_cardinal_t res;
+	rnd_cardinal_t res;
 	pcb_short_ctx_t sctx;
 	vtp0_t subnets;
 
@@ -834,10 +834,10 @@ pcb_cardinal_t pcb_net_add_rats(const pcb_board_t *pcb, pcb_net_t *net, pcb_rat_
 }
 
 
-pcb_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc)
+rnd_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t acc)
 {
 	htsp_entry_t *e;
-	pcb_cardinal_t drawn = 0;
+	rnd_cardinal_t drawn = 0;
 	pcb_short_ctx_t sctx;
 	vtp0_t subnets;
 
@@ -1094,11 +1094,11 @@ pcb_rat_t *pcb_net_create_by_rat_coords(pcb_board_t *pcb, rnd_coord_t x1, rnd_co
 }
 
 
-pcb_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
+rnd_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 {
 	pcb_find_t fctx;
 	pcb_net_term_t *t;
-	pcb_cardinal_t res, n;
+	rnd_cardinal_t res, n;
 	pcb_any_obj_t *o, *lasto;
 	pcb_data_it_t it;
 	int first = 0;

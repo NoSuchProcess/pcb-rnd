@@ -218,7 +218,7 @@ void pcb_data_free(pcb_data_t *data)
 
 rnd_bool pcb_data_is_empty(pcb_data_t *Data)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 
 	if (padstacklist_length(&Data->padstack) != 0) return pcb_false;
 	if (pcb_subclist_length(&Data->subc) != 0) return pcb_false;
@@ -744,7 +744,7 @@ typedef struct {
 	pcb_data_t *data;
 	time_t nextt;
 	int inited, force_all;
-	pcb_cardinal_t at, total;
+	rnd_cardinal_t at, total;
 } data_clip_all_t;
 
 static void data_clip_all_cb(void *ctx_)

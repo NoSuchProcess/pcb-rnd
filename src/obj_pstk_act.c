@@ -43,7 +43,7 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	rnd_coord_t x, y;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
 
 	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
@@ -134,7 +134,7 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case F_Selected:
 			{
-				pcb_cardinal_t n;
+				rnd_cardinal_t n;
 				int ret = 0;
 				vtp0_t objs;
 				pcb_any_obj_t **o;
@@ -167,7 +167,7 @@ static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id
 fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *pids = NULL;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	pcb_pstk_t *ps;
 	rnd_coord_t x, y;
 

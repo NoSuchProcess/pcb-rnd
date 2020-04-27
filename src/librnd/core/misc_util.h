@@ -34,7 +34,7 @@
 #include <librnd/core/unit.h>
 #include <librnd/core/pcb_bool.h>
 
-double pcb_distance(double x1, double y1, double x2, double y2);
+double rnd_distance(double x1, double y1, double x2, double y2);
 double pcb_distance2(double x1, double y1, double x2, double y2);	/* distance square */
 
 enum pcb_unit_flags_e { PCB_UNIT_PERCENT = 1 };

@@ -82,7 +82,7 @@ typedef struct pcb_draw_info_s {
    lot of other functions that would call pcb_draw() a lot in turn may increase
    this value before the calls, then decrease it at the end and call pcb_draw().
    This makes sure the whole block is redrawn only once at the end. */
-extern pcb_cardinal_t pcb_draw_inhibit;
+extern rnd_cardinal_t pcb_draw_inhibit;
 
 #define pcb_draw_inhibit_inc() pcb_draw_inhibit++
 #define pcb_draw_inhibit_dec() \

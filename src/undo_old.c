@@ -673,8 +673,8 @@ static rnd_bool UndoInsertPoint(UndoListTypePtr Entry)
 	pcb_poly_t *polygon;
 	pcb_point_t *pnt;
 	int type;
-	pcb_cardinal_t point_idx;
-	pcb_cardinal_t hole;
+	rnd_cardinal_t point_idx;
+	rnd_cardinal_t hole;
 	rnd_bool last_in_contour = pcb_false;
 
 	assert((long int)Entry->Kind == PCB_OBJ_POLY_POINT);
@@ -988,11 +988,11 @@ TODO("subc: floater subc in subc should remember its subc parent too")
 /* ---------------------------------------------------------------------------
  * adds an object to the list of removed polygon/... points
  */
-void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, pcb_cardinal_t index)
+void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, rnd_cardinal_t index)
 {
 	UndoListTypePtr undo;
 	pcb_poly_t *polygon = (pcb_poly_t *) Ptr2;
-	pcb_cardinal_t hole;
+	rnd_cardinal_t hole;
 	rnd_bool last_in_contour = pcb_false;
 
 	if (!Locked) {

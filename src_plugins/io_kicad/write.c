@@ -706,7 +706,7 @@ TODO(": this should be a safe lookup, merged with kicad_sexpr_layer_to_text()")
 	kicad_print_pstks(ctx, data, ind, dx, dy);
 }
 
-static int kicad_print_subc(wctx_t *ctx, pcb_subc_t *subc, pcb_cardinal_t ind, rnd_coord_t dx, rnd_coord_t dy, unm_t *group1)
+static int kicad_print_subc(wctx_t *ctx, pcb_subc_t *subc, rnd_cardinal_t ind, rnd_coord_t dx, rnd_coord_t dy, unm_t *group1)
 {
 	rnd_coord_t xPos, yPos, sox, soy;
 	int on_bottom;
@@ -804,7 +804,7 @@ TODO(": warn for heavy terminals")
 }
 
 
-static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, pcb_cardinal_t ind, rnd_coord_t dx, rnd_coord_t dy, long subc_idx)
+static int kicad_print_subcs(wctx_t *ctx, pcb_data_t *Data, rnd_cardinal_t ind, rnd_coord_t dx, rnd_coord_t dy, long subc_idx)
 {
 	gdl_iterator_t sit;
 	pcb_subc_t *subc;
@@ -837,7 +837,7 @@ TODO(": revise this for subc")
 	return 0;
 }
 
-static int write_kicad_layout_via_drill_size(FILE *FP, pcb_cardinal_t indentation)
+static int write_kicad_layout_via_drill_size(FILE *FP, rnd_cardinal_t indentation)
 {
 TODO(": do not hardwire the drill size here - does kicad support only one size, or what?")
 	fprintf(FP, "%*s", indentation, "");
@@ -878,9 +878,9 @@ int io_kicad_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f)
 }
 
 
-static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, pcb_cardinal_t indentation)
+static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, rnd_cardinal_t indentation)
 {
-	pcb_cardinal_t netNumber = 0;
+	rnd_cardinal_t netNumber = 0;
 	htsp_entry_t *e;
 
 	/* first we write a default netlist for the 0 net, which is for unconnected pads in pcbnew */

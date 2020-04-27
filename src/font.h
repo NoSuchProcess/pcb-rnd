@@ -44,8 +44,8 @@
 typedef struct symbol_s {     /* a single symbol */
 	pcb_line_t *Line;
 	rnd_bool Valid;
-	pcb_cardinal_t LineN;       /* number of lines */
-	pcb_cardinal_t LineMax;     /* lines allocated */
+	rnd_cardinal_t LineN;       /* number of lines */
+	rnd_cardinal_t LineMax;     /* lines allocated */
 	rnd_coord_t Width, Height, Delta; /* size of cell, distance to next symbol */
 	polylist_t polys;           /* simple (non-clipped) polygons */
 	arclist_t arcs;

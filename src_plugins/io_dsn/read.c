@@ -57,7 +57,7 @@ typedef struct {
 	htsp_t name2layer;
 	htsp_t protos; /* padstack prototypes - allocated for the hash, copied on placement */
 	htsp_t subcs;  /* subc images - allocated for the hash, copied on placement */
-	pcb_cardinal_t testpoint;
+	rnd_cardinal_t testpoint;
 	unsigned has_pcb_boundary:1;
 	unsigned has_testpoint:1;
 } dsn_read_t;
@@ -843,7 +843,7 @@ static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 
 	for(ncoord = pn->children->next; ncoord != NULL; ncoord = ncoord->next->next) {
 		rnd_coord_t crd[2];
-		pcb_cardinal_t pid;
+		rnd_cardinal_t pid;
 
 		DSN_LOAD_COORDS_FMT(crd, ncoord, "XY", goto err_coord);
 		pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1, 0);
@@ -862,7 +862,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 	const char *term, *psname = STRE(pn->children);
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_t *ps;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	rnd_coord_t crd[2] = {0, 0};
 	double rotang = 0.0;
 
@@ -1394,7 +1394,7 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 {
 	pcb_pstk_proto_t *proto;
 	const char *pname;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	rnd_coord_t crd[2] = {0, 0};
 
 	if ((vnd->children == NULL) || (vnd->children->str == NULL)) {

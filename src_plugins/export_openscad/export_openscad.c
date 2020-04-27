@@ -500,7 +500,7 @@ static void openscad_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	TRX(x1); TRY(y1);
 	TRX(x2); TRY(y2);
 
-	length = pcb_distance(x1, y1, x2, y2);
+	length = rnd_distance(x1, y1, x2, y2);
 	angle = atan2((double)y2-y1, (double)x2-x1);
 
 	if (gc->cap == pcb_cap_square)

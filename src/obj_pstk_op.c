@@ -30,7 +30,7 @@
 void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_t *p;
-	pcb_cardinal_t npid;
+	rnd_cardinal_t npid;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	if (proto == NULL)
 		return NULL;
@@ -44,7 +44,7 @@ void *pcb_pstkop_add_to_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 /* Move between board and buffer */
 void *pcb_pstkop_move_buffer(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
-	pcb_cardinal_t npid;
+	rnd_cardinal_t npid;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	if (proto == NULL)
 		return NULL;
@@ -74,7 +74,7 @@ void *pcb_pstkop_copy(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_t *nps;
 	pcb_data_t *data = ctx->copy.pcb->Data;
-	pcb_cardinal_t npid;
+	rnd_cardinal_t npid;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 
 	if (proto == NULL)
@@ -249,7 +249,7 @@ void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t proto;
-	pcb_cardinal_t nproto;
+	rnd_cardinal_t nproto;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
 		return NULL;
@@ -297,7 +297,7 @@ void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t proto;
-	pcb_cardinal_t nproto;
+	rnd_cardinal_t nproto;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, ps))
 		return NULL;

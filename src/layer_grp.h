@@ -39,7 +39,7 @@
 
 struct pcb_layergrp_s {
 	PCB_ANY_OBJ_FIELDS;
-	pcb_cardinal_t len;                    /* number of layer IDs in use */
+	rnd_cardinal_t len;                    /* number of layer IDs in use */
 	pcb_layer_id_t lid[PCB_MAX_LAYER];     /* lid=layer ID */
 	char *name;                            /* name of the physical layer (independent of the name of the layer groups) */
 
@@ -61,7 +61,7 @@ struct pcb_layergrp_s {
 
 /* layer stack: an ordered list of layer groups (physical layers). */
 struct pcb_layer_stack_s {
-	pcb_cardinal_t len;
+	rnd_cardinal_t len;
 	pcb_layergrp_t grp[PCB_MAX_LAYERGRP];
 	struct { /* cache copper groups from top to bottom for fast padstack ("bbvia") lookup */
 		int copper_len, copper_alloced;
@@ -212,7 +212,7 @@ void pcb_layergrp_undoable_created(pcb_layergrp_t *grp);
 int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, int oldfmt);
 
 #define PCB_COPPER_GROUP_LOOP(data, group) do { 	\
-	pcb_cardinal_t entry; \
+	rnd_cardinal_t entry; \
 	pcb_board_t *cgl__pcb = pcb_data_get_top(data); \
 	if (cgl__pcb == NULL) \
 		cgl__pcb = PCB; \

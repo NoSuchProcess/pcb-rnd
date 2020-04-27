@@ -75,12 +75,12 @@ static double msgr_connect(pcb_meshnode_t *curr, pcb_meshnode_t *next)
 
 	pcb_trace("size=%d\n", route.size);
 
-	return curr->gscore + pcb_distance(curr->bbox.X1, curr->bbox.Y1, next->bbox.X1, next->bbox.Y1) * (next->iscore + 1.0);
+	return curr->gscore + rnd_distance(curr->bbox.X1, curr->bbox.Y1, next->bbox.X1, next->bbox.Y1) * (next->iscore + 1.0);
 }
 
 static double msgr_heurist(pcb_meshnode_t *curr, pcb_meshnode_t *end)
 {
-	return pcb_distance(curr->bbox.X1, curr->bbox.Y1, end->bbox.X1, end->bbox.Y1);
+	return rnd_distance(curr->bbox.X1, curr->bbox.Y1, end->bbox.X1, end->bbox.Y1);
 }
 
 int pcb_msgr_astar(pcb_meshgraph_t *gr, long int startid, long int endid)

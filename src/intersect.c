@@ -166,7 +166,7 @@ void deleteSegment(SegmentTree * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
  */
 double pcb_intersect_box_box(rnd_box_list_t *boxlist)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	double area = 0.0;
 	/* first get the aggregate area. */
 	for (i = 0; i < boxlist->BoxN; i++)
@@ -182,7 +182,7 @@ double pcb_intersect_box_box(rnd_box_list_t *boxlist)
 double pcb_union_box_box(rnd_box_list_t *boxlist)
 {
 	rnd_box_t **rectLeft, **rectRight;
-	pcb_cardinal_t i, j;
+	rnd_cardinal_t i, j;
 	LocationList yCoords;
 	SegmentTree segtree;
 	rnd_coord_t lastX;

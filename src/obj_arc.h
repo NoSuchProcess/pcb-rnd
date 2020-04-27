@@ -119,14 +119,14 @@ void pcb_arc_post(pcb_arc_t *arc);
   linelist_foreach(&(element)->Arc, &__it__, arc) {
 
 #define PCB_ARC_ALL_LOOP(top) do {		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l =0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)		\
 	{ \
 		PCB_ARC_LOOP(layer)
 
 #define PCB_ARC_COPPER_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l =0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)		\
 	{ \
@@ -134,7 +134,7 @@ void pcb_arc_post(pcb_arc_t *arc);
 		PCB_ARC_LOOP(layer)
 
 #define PCB_ARC_SILK_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
@@ -142,7 +142,7 @@ void pcb_arc_post(pcb_arc_t *arc);
 		PCB_ARC_LOOP(layer)
 
 #define PCB_ARC_VISIBLE_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \

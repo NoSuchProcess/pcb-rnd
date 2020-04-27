@@ -421,7 +421,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	d = pcb_distance(arc->X, arc->Y, line->point1.X, line->point1.Y);
+	d = rnd_distance(arc->X, arc->Y, line->point1.X, line->point1.Y);
 	r = arc->Width;
 
 	if (d <= r) {

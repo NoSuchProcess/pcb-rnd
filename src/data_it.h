@@ -40,7 +40,7 @@ typedef struct pcb_data_it_s {
 	/* current state */
 	pcb_objtype_t remaining;
 	pcb_objtype_t type;
-	pcb_cardinal_t ln;
+	rnd_cardinal_t ln;
 	pcb_any_obj_t *last;
 } pcb_data_it_t;
 

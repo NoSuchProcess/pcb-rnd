@@ -158,7 +158,7 @@ struct pcb_query_iter_s {
 
 	/* iterator state for each variable - point into the correspoinding lst[] */
 	vtp0_t **vects;
-	pcb_cardinal_t *idx;
+	rnd_cardinal_t *idx;
 
 	pcb_any_obj_t *last_obj; /* last object retrieved by the expression */
 };

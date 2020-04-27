@@ -36,7 +36,7 @@
 #include "polygon.h"
 #include "funchash_core.h"
 
-pcb_cardinal_t pcb_themal_style_new2old(unsigned char t)
+rnd_cardinal_t pcb_themal_style_new2old(unsigned char t)
 {
 	switch(t) {
 		case 0: return 0;
@@ -49,7 +49,7 @@ pcb_cardinal_t pcb_themal_style_new2old(unsigned char t)
 	return 0;
 }
 
-unsigned char pcb_themal_style_old2new(pcb_cardinal_t t)
+unsigned char pcb_themal_style_old2new(rnd_cardinal_t t)
 {
 	switch(t) {
 		case 0: return 0;

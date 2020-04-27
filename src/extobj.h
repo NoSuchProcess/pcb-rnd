@@ -100,7 +100,7 @@ void pcb_extobj_float_new_spawn(pcb_extobj_t *eo, pcb_subc_t *subc, pcb_any_obj_
 
 /* Call this after selection changes on a floater - this makes sure all floaters
    are selected or unselected at once; returns the number of objects changed */
-pcb_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj_t *flt, int undoable, int draw);
+rnd_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj_t *flt, int undoable, int draw);
 
 
 int pcb_extobj_lookup_idx(const char *name);

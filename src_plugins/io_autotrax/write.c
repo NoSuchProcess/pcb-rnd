@@ -244,7 +244,7 @@ static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, rnd_coord_t dx, rnd_coord_t 
 }
 
 /* writes generic autotrax track descriptor line for components and layouts  */
-static int wrax_line(wctx_t *ctx, pcb_line_t *line, pcb_cardinal_t layer, rnd_coord_t dx, rnd_coord_t dy)
+static int wrax_line(wctx_t *ctx, pcb_line_t *line, rnd_cardinal_t layer, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int user_routed = 1;
 	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", line->Point1.X+dx, PCB->hidlib.size_y - (line->Point1.Y+dy), line->Point2.X+dx, PCB->hidlib.size_y - (line->Point2.Y+dy), line->Thickness, layer, user_routed);
@@ -252,7 +252,7 @@ static int wrax_line(wctx_t *ctx, pcb_line_t *line, pcb_cardinal_t layer, rnd_co
 }
 
 /* writes autotrax track descriptor for a pair of polyline vertices */
-static int wrax_pline_segment(wctx_t *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t Thickness, pcb_cardinal_t layer)
+static int wrax_pline_segment(wctx_t *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t Thickness, rnd_cardinal_t layer)
 {
 	int user_routed = 1;
 	pcb_fprintf(ctx->f, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", x1, PCB->hidlib.size_y - y1, x2, PCB->hidlib.size_y - y2, Thickness, layer, user_routed);
@@ -261,7 +261,7 @@ static int wrax_pline_segment(wctx_t *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 
 typedef struct {
 	wctx_t *wctx;
-	pcb_cardinal_t layer;
+	rnd_cardinal_t layer;
 	rnd_coord_t dx, dy;
 	rnd_coord_t thickness;
 } autotrax_hatch_ctx_t;
@@ -277,7 +277,7 @@ static void autotrax_hatch_cb(void *ctx_, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 }
 
 /* generates autotrax tracks to cross hatch a complex polygon being exported */
-static void autotrax_cpoly_hatch_lines(wctx_t *ctx, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, pcb_cardinal_t layer, rnd_coord_t dx, rnd_coord_t dy)
+static void autotrax_cpoly_hatch_lines(wctx_t *ctx, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_cardinal_t layer, rnd_coord_t dx, rnd_coord_t dy)
 {
 	autotrax_hatch_ctx_t hctx;
 
@@ -373,11 +373,11 @@ static int wrax_equipotential_netlists(wctx_t *ctx)
 }
 
 
-static int wrax_lines(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
+static int wrax_lines(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
-	pcb_cardinal_t current_layer = number;
+	rnd_cardinal_t current_layer = number;
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
@@ -397,11 +397,11 @@ static int wrax_lines(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, rn
 }
 
 /* writes autotrax arcs for layouts */
-static int wrax_arcs(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
+static int wrax_arcs(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
 {
 	gdl_iterator_t it;
 	pcb_arc_t *arc;
-	pcb_cardinal_t current_layer = number;
+	rnd_cardinal_t current_layer = number;
 
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer)) { /*|| (layer->name && *layer->name)) { */
@@ -421,7 +421,7 @@ static int wrax_arcs(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, rnd
 }
 
 /* writes generic autotrax text descriptor line layouts onl, since no text in .fp */
-static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
+static int wrax_text(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
 {
 	pcb_font_t *myfont = pcb_font(PCB, 0, 1);
 	rnd_coord_t mHeight = myfont->MaxHeight; /* autotrax needs the width of the widest letter */
@@ -433,7 +433,7 @@ static int wrax_text(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, rnd
 
 	gdl_iterator_t it;
 	pcb_text_t *text;
-	pcb_cardinal_t current_layer = number;
+	rnd_cardinal_t current_layer = number;
 
 	int index = 0;
 
@@ -544,12 +544,12 @@ static int wrax_subcs(wctx_t *ctx, pcb_data_t *data)
 }
 
 /* writes polygon data in autotrax fill (rectangle) format for use in a layout .PCB file */
-static int wrax_polygons(wctx_t *ctx, pcb_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
+static int wrax_polygons(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd_coord_t dx, rnd_coord_t dy, rnd_bool in_subc)
 {
 	int i;
 	gdl_iterator_t it;
 	pcb_poly_t *polygon;
-	pcb_cardinal_t current_layer = number;
+	rnd_cardinal_t current_layer = number;
 
 	pcb_poly_it_t poly_it;
 	pcb_polyarea_t *pa;

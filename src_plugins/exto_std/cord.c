@@ -244,7 +244,7 @@ static void pcb_cord_chg_attr(pcb_subc_t *subc, const char *key, const char *val
 	pcb_trace("cord chg_attr\n");
 }
 
-static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
+static rnd_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape;
@@ -273,7 +273,7 @@ static pcb_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 	return pcb_pstk_proto_insert_dup(data, &proto, 1, 0);
 }
 
-static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, pcb_cardinal_t pid, rnd_coord_t x, rnd_coord_t y, rnd_coord_t ox, rnd_coord_t oy, const char *term, const char *grp, int floater)
+static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, rnd_cardinal_t pid, rnd_coord_t x, rnd_coord_t y, rnd_coord_t ox, rnd_coord_t oy, const char *term, const char *grp, int floater)
 {
 	pcb_pstk_t *ps;
 	rnd_coord_t dx = ox-x, dy = oy-y,  cpx = x+dx/4, cpy = y+dy/4, cpr = PCB_MM_TO_COORD(0.5);

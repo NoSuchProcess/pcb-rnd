@@ -90,7 +90,7 @@ static void WritePCBDataHeader(FILE *);
 static void WritePCBFontData(FILE *);
 static void WriteViaData(FILE *, pcb_data_t *);
 static void WritePCBRatData(FILE *);
-static void WriteLayerData(FILE *, pcb_cardinal_t, pcb_layer_t *);
+static void WriteLayerData(FILE *, rnd_cardinal_t, pcb_layer_t *);
 
 #define IGNORE_FLAGS (PCB_FLAG_FLOATER | PCB_FLAG_DRC_INTCONN | PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_DYNTEXT)
 
@@ -321,7 +321,7 @@ static void WritePCBDataHeader(FILE * FP)
 /* writes font data of non empty symbols */
 static void WritePCBFontData(FILE * FP)
 {
-	pcb_cardinal_t i, j;
+	rnd_cardinal_t i, j;
 	pcb_line_t *line;
 	pcb_font_t *font;
 
@@ -597,7 +597,7 @@ static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
 	return name;
 }
 
-static void WriteLayerData(FILE * FP, pcb_cardinal_t Number, pcb_layer_t *layer)
+static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
@@ -633,7 +633,7 @@ TODO("textrot: incompatibility warning")
 		}
 		textlist_foreach(&layer->Polygon, &it, polygon) {
 			int p, i = 0;
-			pcb_cardinal_t hole = 0;
+			rnd_cardinal_t hole = 0;
 			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, PCB_OBJ_POLY));
 			for (p = 0; p < polygon->PointN; p++) {
 				pcb_point_t *point = &polygon->Points[p];

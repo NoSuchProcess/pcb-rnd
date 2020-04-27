@@ -35,7 +35,7 @@ static pcb_polyarea_t *original_poly(pcb_poly_t *p, rnd_bool *forward)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np = NULL;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	pcb_vector_t v;
 	int hole = 0;
 

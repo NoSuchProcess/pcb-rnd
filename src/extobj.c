@@ -195,14 +195,14 @@ pcb_subc_t *pcb_extobj_conv_obj(pcb_board_t *pcb, const pcb_extobj_t *eo, pcb_da
 	return pcb_extobj_conv_obj_using(pcb, eo, dst, src, remove, NULL);
 }
 
-pcb_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj_t *flt, int undoable, int draw)
+rnd_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj_t *flt, int undoable, int draw)
 {
 	pcb_subc_t *subc;
 	pcb_extobj_t *eo;
 	pcb_data_it_t it;
 	pcb_any_obj_t *o;
 	int sel;
-	pcb_cardinal_t cnt = 0;
+	rnd_cardinal_t cnt = 0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, flt))
 		return 0;

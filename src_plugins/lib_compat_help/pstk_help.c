@@ -37,7 +37,7 @@
 pcb_pstk_t *pcb_pstk_new_hole(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_bool plated)
 {
 	pcb_pstk_proto_t proto;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 
 	memset(&proto, 0, sizeof(proto));
 	proto.hdia = drill_dia;
@@ -89,7 +89,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet,
 
 	memset(&proto, 0, sizeof(proto));
 	if (pcb_pstk_proto_conv(data, &proto, quiet, &tmp, cx, cy) == 0) {
-		pcb_cardinal_t pid;
+		rnd_cardinal_t pid;
 		if (plated != -1)
 			proto.hplated = plated;
 		pid = pcb_pstk_proto_insert_or_free(data, &proto, quiet, 0);
@@ -286,7 +286,7 @@ int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_bool plated, rnd_coord_t glob_clearance, pcb_pstk_shape_t *shape)
 {
 	pcb_pstk_proto_t proto;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	pcb_pstk_tshape_t tshp;
 	pcb_pstk_shape_t *s;
 

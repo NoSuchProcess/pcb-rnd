@@ -117,7 +117,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[5]; /* max number of shapes: 3 coppers, 2 masks */
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	pcb_pstk_shape_t copper_master, mask_master;
 	pcb_pstk_tshape_t tshp;
 	int n;
@@ -478,7 +478,7 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, rnd_coord_t x
 	pcb_layer_type_t side;
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[3]; /* max number of shapes: 1 copper, 1 mask, 1 paste */
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	pcb_pstk_tshape_t tshp;
 	int n;
 	rnd_coord_t cx, cy;

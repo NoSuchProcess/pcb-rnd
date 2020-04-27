@@ -42,7 +42,7 @@ typedef enum {
 } pcb_bb_type_t;
 
 /* Returns the ID of a proto within its parent's cache */
-PCB_INLINE pcb_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
+PCB_INLINE rnd_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
 {
 	pcb_data_t *data = proto->parent;
 	if ((proto >= data->ps_protos.array) && (proto < data->ps_protos.array + data->ps_protos.used))
@@ -52,7 +52,7 @@ PCB_INLINE pcb_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, pcb_cardinal_t proto)
+PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, rnd_cardinal_t proto)
 {
 	if (proto >= data->ps_protos.used)
 		return NULL;
@@ -69,7 +69,7 @@ PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto(const pcb_pstk_t *ps)
 
 /* return the padstack transformed shape. Returns NULL if the proto or the
    tshape is not. */
-PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, pcb_cardinal_t proto, int protoi)
+PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, rnd_cardinal_t proto, int protoi)
 {
 	pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(data, proto);
 	if (protoi < 0)

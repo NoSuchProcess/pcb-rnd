@@ -198,7 +198,7 @@ static void status_rd_pcb2dlg(void)
 	if (pcb_marked.status) {
 		rnd_coord_t dx = pcb_crosshair.X - pcb_marked.X;
 		rnd_coord_t dy = pcb_crosshair.Y - pcb_marked.Y;
-		rnd_coord_t r = pcb_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
+		rnd_coord_t r = rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, pcb_marked.X, pcb_marked.Y);
 		double a = atan2(dy, dx) * PCB_RAD_TO_DEG;
 
 		s1 = status.buf.array;

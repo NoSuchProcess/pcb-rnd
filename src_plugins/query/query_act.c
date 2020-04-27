@@ -103,7 +103,7 @@ static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 }
 
 typedef struct {
-	pcb_cardinal_t cnt;
+	rnd_cardinal_t cnt;
 	pcb_change_flag_t how;
 	pcb_flag_values_t what;
 } flagop_t;

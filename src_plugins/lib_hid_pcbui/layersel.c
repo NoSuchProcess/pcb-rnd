@@ -603,7 +603,7 @@ static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, co
 
 static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, ls_group_t *lgs, int is_open)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	const char *gname = g->name == NULL ? "" : g->name;
 
 	if (is_open)
@@ -647,7 +647,7 @@ static void layersel_create_stack(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
-	pcb_cardinal_t created = 0;
+	rnd_cardinal_t created = 0;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
 		ls_group_t *lgs;
@@ -668,7 +668,7 @@ static void layersel_create_global(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	pcb_layergrp_id_t gid;
 	pcb_layergrp_t *g;
-	pcb_cardinal_t created = 0;
+	rnd_cardinal_t created = 0;
 
 	for(gid = 0, g = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,g++) {
 		ls_group_t *lgs;
@@ -782,7 +782,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 	ls_layer_t **lys = (ls_layer_t **)ls->real_layer.array;
 	ls_group_t **lgs = (ls_group_t **)ls->group.array;
 	const pcb_menu_layers_t *ml;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 
 	if (lys == NULL)
 		return;

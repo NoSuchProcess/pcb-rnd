@@ -980,7 +980,7 @@ void pcb_io_list_free(pcb_io_formats_t *out)
 }
 
 
-pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *type, const char *title, const char *description)
+rnd_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const char *type, const char *title, const char *description)
 {
 
 	if ((pcb_io_incompat_lst_enable) && (conf_core.editor.io_incomp_popup)) {

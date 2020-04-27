@@ -305,12 +305,12 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	}
 }
 
-static pcb_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, rnd_coord_t extra_offs)
+static rnd_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, rnd_coord_t extra_offs)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
 	rnd_coord_t tool_dia = result->tools->dia[tool_idx];
-	pcb_cardinal_t cnt = 0;
+	rnd_cardinal_t cnt = 0;
 	
 	for(pa = pcb_poly_island_first(result->fill, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		pcb_pline_t *pl = pcb_poly_contour(&it);

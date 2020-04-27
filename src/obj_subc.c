@@ -976,7 +976,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		gdl_iterator_t it;
 
 		padstacklist_foreach(&src->data->padstack, &it, ps) {
-			pcb_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1, undoable_psproto);
+			rnd_cardinal_t pid = pcb_pstk_proto_insert_dup(sc->data, pcb_pstk_get_proto(ps), 1, undoable_psproto);
 			nps = pcb_pstk_new_tr(sc->data, -1, pid, ps->x+dx, ps->y+dy, ps->Clearance, ps->Flags, ps->rot, ps->xmirror, ps->smirror);
 			pcb_pstk_copy_meta(nps, ps);
 			MAYBE_KEEP_ID(nps, ps);

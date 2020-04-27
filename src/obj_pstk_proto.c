@@ -269,7 +269,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				break;
 			case PCB_OBJ_POLY:
 				{
-					pcb_cardinal_t p, len, maxlen = (1L << ((sizeof(int)*8)-1));
+					rnd_cardinal_t p, len, maxlen = (1L << ((sizeof(int)*8)-1));
 					pcb_poly_t *poly = *(pcb_poly_t **)o;
 
 					len = poly->PointN;
@@ -667,9 +667,9 @@ void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
 
 /* Matches proto against all protos in data's cache; returns
    PCB_PADSTACK_INVALID (and loads first_free_out) if not found */
-static pcb_cardinal_t pcb_pstk_proto_insert_try(pcb_data_t *data, const pcb_pstk_proto_t *proto, pcb_cardinal_t *first_free_out)
+static rnd_cardinal_t pcb_pstk_proto_insert_try(pcb_data_t *data, const pcb_pstk_proto_t *proto, rnd_cardinal_t *first_free_out)
 {
-	pcb_cardinal_t n, first_free = PCB_PADSTACK_INVALID;
+	rnd_cardinal_t n, first_free = PCB_PADSTACK_INVALID;
 
 	/* look for the first existing padstack that matches */
 	for(n = 0; n < pcb_vtpadstack_proto_len(&data->ps_protos); n++) {
@@ -735,9 +735,9 @@ static const uundo_oper_t undo_proto_set = {
 
 
 
-pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet, int undoable)
+rnd_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet, int undoable)
 {
-	pcb_cardinal_t id, n, first_free;
+	rnd_cardinal_t id, n, first_free;
 
 	n = pcb_pstk_proto_insert_try(data, proto, &first_free);
 	if (n != PCB_PADSTACK_INVALID) {
@@ -773,9 +773,9 @@ pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t 
 	return id;
 }
 
-static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int forcedup, int undoable)
+static rnd_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int forcedup, int undoable)
 {
-	pcb_cardinal_t id, n, first_free = PCB_PADSTACK_INVALID;
+	rnd_cardinal_t id, n, first_free = PCB_PADSTACK_INVALID;
 
 	n = pcb_pstk_proto_insert_try(data, proto, &first_free);
 	if ((n != PCB_PADSTACK_INVALID) && (!forcedup))
@@ -809,18 +809,18 @@ static pcb_cardinal_t pcb_pstk_proto_insert_dup_(pcb_data_t *data, const pcb_pst
 	return id;
 }
 
-pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable)
+rnd_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable)
 {
 	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 0, undoable);
 }
 
-pcb_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable)
+rnd_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable)
 {
 	return pcb_pstk_proto_insert_dup_(data, proto, quiet, 1, undoable);
 }
 
 
-pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id, const pcb_pstk_proto_t *src)
+rnd_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, rnd_cardinal_t proto_id, const pcb_pstk_proto_t *src)
 {
 	pcb_pstk_proto_t *dst;
 	if ((proto_id < 0) || (proto_id >= pcb_vtpadstack_proto_len(&data->ps_protos)))
@@ -837,7 +837,7 @@ pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id,
 }
 
 
-pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, rnd_coord_t ox, rnd_coord_t oy)
+rnd_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, rnd_coord_t ox, rnd_coord_t oy)
 {
 	pcb_pstk_proto_t proto;
 
@@ -847,7 +847,7 @@ pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, rnd_coord_t 
 	return pcb_pstk_proto_insert_or_free(pcb->Data, &proto, quiet, 1);
 }
 
-pcb_cardinal_t pcb_pstk_conv_buffer(int quiet)
+rnd_cardinal_t pcb_pstk_conv_buffer(int quiet)
 {
 	pcb_pstk_proto_t proto;
 
@@ -892,7 +892,7 @@ void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly)
 
 typedef struct {
 	long int parent_ID; /* -1 for pcb, positive for a subc */
-	pcb_cardinal_t proto;
+	rnd_cardinal_t proto;
 
 	int hplated;
 	rnd_coord_t hdia;
@@ -978,7 +978,7 @@ int pcb_pstk_proto_change_hole(pcb_pstk_proto_t *proto, const int *hplated, cons
 
 typedef struct {
 	long int parent_ID; /* -1 for pcb, positive for a subc */
-	pcb_cardinal_t proto;
+	rnd_cardinal_t proto;
 
 	char *name;
 } padstack_proto_change_name_t;
@@ -1429,7 +1429,7 @@ void pcb_pstk_proto_del_shape(pcb_pstk_proto_t *proto, pcb_layer_type_t lyt, pcb
 	pcb_pstk_proto_del_shape_idx(proto, idx);
 }
 
-void pcb_pstk_proto_del(pcb_data_t *data, pcb_cardinal_t proto_id)
+void pcb_pstk_proto_del(pcb_data_t *data, rnd_cardinal_t proto_id)
 {
 	pcb_pstk_proto_t *proto = pcb_vtpadstack_proto_get(&data->ps_protos, proto_id, 0);
 	if (proto == NULL)
@@ -1437,9 +1437,9 @@ void pcb_pstk_proto_del(pcb_data_t *data, pcb_cardinal_t proto_id)
 	pcb_pstk_proto_free_fields(proto);
 }
 
-pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_out)
+rnd_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, rnd_cardinal_t *len_out)
 {
-	pcb_cardinal_t len, *res;
+	rnd_cardinal_t len, *res;
 	pcb_pstk_t *ps;
 
 	len = data->ps_protos.used;
@@ -1448,7 +1448,7 @@ pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_ou
 		return NULL;
 	}
 
-	res = calloc(sizeof(pcb_cardinal_t), len);
+	res = calloc(sizeof(rnd_cardinal_t), len);
 	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 		if ((ps->proto >= 0) && (ps->proto < len))
 			res[ps->proto]++;
@@ -1461,7 +1461,7 @@ pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_ou
 
 		for(n = 0; n < pcb->RouteStyle.used; n++) {
 			if (pcb->RouteStyle.array[n].via_proto_set) {
-				pcb_cardinal_t pid = pcb->RouteStyle.array[n].via_proto;
+				rnd_cardinal_t pid = pcb->RouteStyle.array[n].via_proto;
 				if ((pid >= 0) && (pid < len))
 					res[pid]++;
 			}

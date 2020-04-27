@@ -325,7 +325,7 @@ void pcb_qry_iter_init(pcb_query_iter_t *it)
 	if (it->vn != NULL)
 		return;
 	it->vects  = calloc(sizeof(vtp0_t *), it->num_vars);
-	it->idx  = calloc(sizeof(pcb_cardinal_t), it->num_vars);
+	it->idx  = calloc(sizeof(rnd_cardinal_t), it->num_vars);
 	it->lst = calloc(sizeof(pcb_qry_val_t), it->num_vars);
 
 	it->vn = malloc(sizeof(char *) * it->num_vars);

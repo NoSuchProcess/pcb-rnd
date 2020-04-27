@@ -131,14 +131,14 @@ pcb_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon)
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
-pcb_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon)
+rnd_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon)
 {
-	pcb_cardinal_t *holeindex = Polygon->HoleIndex;
+	rnd_cardinal_t *holeindex = Polygon->HoleIndex;
 
 	/* realloc new memory if necessary and clear it */
 	if (Polygon->HoleIndexN >= Polygon->HoleIndexMax) {
 		Polygon->HoleIndexMax += STEP_POLYGONHOLEINDEX;
-		holeindex = (pcb_cardinal_t *) realloc(holeindex, Polygon->HoleIndexMax * sizeof(int));
+		holeindex = (rnd_cardinal_t *) realloc(holeindex, Polygon->HoleIndexMax * sizeof(int));
 		Polygon->HoleIndex = holeindex;
 		memset(holeindex + Polygon->HoleIndexN, 0, STEP_POLYGONHOLEINDEX * sizeof(int));
 	}
@@ -208,7 +208,7 @@ int pcb_poly_is_valid(pcb_poly_t *p)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_polyarea_t *np1 = NULL, *np = NULL;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	pcb_vector_t v;
 	int res = 1;
 
@@ -405,7 +405,7 @@ int pcb_poly_eq(const pcb_host_trans_t *tr1, const pcb_poly_t *p1, const pcb_hos
 	if (pcb_neqs(p1->term, p2->term)) return 0;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, p2)) {
-		pcb_cardinal_t n;
+		rnd_cardinal_t n;
 		for(n = 0; n < p1->PointN; n++) {
 			rnd_coord_t x1, y1, x2, y2;
 			pcb_hash_tr_coords(tr1, &x1, &y1, p1->Points[n].X, p1->Points[n].Y);
@@ -419,7 +419,7 @@ int pcb_poly_eq(const pcb_host_trans_t *tr1, const pcb_poly_t *p1, const pcb_hos
 unsigned int pcb_poly_hash(const pcb_host_trans_t *tr, const pcb_poly_t *p)
 {
 	unsigned int crd = 0;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, p))
 		for(n = 0; n < p->PointN; n++) {
@@ -552,7 +552,7 @@ TODO("ID: register points too")
 /* creates a new hole in a polygon */
 pcb_poly_t *pcb_poly_hole_new(pcb_poly_t * Polygon)
 {
-	pcb_cardinal_t *holeindex = pcb_poly_holeidx_new(Polygon);
+	rnd_cardinal_t *holeindex = pcb_poly_holeidx_new(Polygon);
 	*holeindex = Polygon->PointN;
 	return Polygon;
 }
@@ -560,8 +560,8 @@ pcb_poly_t *pcb_poly_hole_new(pcb_poly_t * Polygon)
 /* copies data from one polygon to another; 'Dest' has to exist */
 pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_cardinal_t hole = 0;
-	pcb_cardinal_t n;
+	rnd_cardinal_t hole = 0;
+	rnd_cardinal_t n;
 
 	for (n = 0; n < Src->PointN; n++) {
 		if (hole < Src->HoleIndexN && n == Src->HoleIndex[hole]) {
@@ -576,7 +576,7 @@ pcb_poly_t *pcb_poly_copy(pcb_poly_t *Dest, pcb_poly_t *Src, rnd_coord_t dx, rnd
 	return Dest;
 }
 
-static double poly_area(pcb_point_t *points, pcb_cardinal_t n_points)
+static double poly_area(pcb_point_t *points, rnd_cardinal_t n_points)
 {
 	double area = 0;
 	int n;
@@ -732,7 +732,7 @@ void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	pcb_point_t save;
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	pcb_line_t line;
 
 	pcb_poly_pprestore(Polygon);
@@ -916,10 +916,10 @@ void *pcb_polyop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polyg
 /* removes a polygon-point from a polygon and destroys the data */
 void *pcb_polyop_destroy_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, pcb_point_t *Point)
 {
-	pcb_cardinal_t point_idx;
-	pcb_cardinal_t i;
-	pcb_cardinal_t contour;
-	pcb_cardinal_t contour_start, contour_end, contour_points;
+	rnd_cardinal_t point_idx;
+	rnd_cardinal_t i;
+	rnd_cardinal_t contour;
+	rnd_cardinal_t contour_start, contour_end, contour_points;
 
 	pcb_poly_pprestore(Polygon);
 	point_idx = pcb_poly_point_idx(Polygon, Point);
@@ -976,10 +976,10 @@ void *pcb_poly_remove(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 
 /* Removes a contour from a polygon.
    If removing the outer contour, it removes the whole polygon. */
-void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, pcb_cardinal_t contour)
+void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, rnd_cardinal_t contour)
 {
-	pcb_cardinal_t contour_start, contour_end, contour_points;
-	pcb_cardinal_t i;
+	rnd_cardinal_t contour_start, contour_end, contour_points;
+	rnd_cardinal_t i;
 
 	if (contour == 0)
 		return pcb_poly_remove(Layer, Polygon);
@@ -1019,10 +1019,10 @@ void *pcb_polyop_remove_counter(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t
 /* removes a polygon-point from a polygon */
 void *pcb_polyop_remove_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon, pcb_point_t *Point)
 {
-	pcb_cardinal_t point_idx;
-	pcb_cardinal_t i;
-	pcb_cardinal_t contour;
-	pcb_cardinal_t contour_start, contour_end, contour_points;
+	rnd_cardinal_t point_idx;
+	rnd_cardinal_t i;
+	rnd_cardinal_t contour;
+	rnd_cardinal_t contour_start, contour_end, contour_points;
 
 	pcb_poly_pprestore(Polygon);
 
@@ -1232,7 +1232,7 @@ void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
 
 void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 {
-	pcb_cardinal_t n, np;
+	rnd_cardinal_t n, np;
 
 	if (!conf_core.editor.as_drawn_poly)
 		return;

@@ -118,7 +118,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
    is at the zero position. The y coordinates are moved so that min(y) = 0 */
 void pcb_font_set_info(pcb_font_t *Ptr)
 {
-	pcb_cardinal_t i, j;
+	rnd_cardinal_t i, j;
 	pcb_symbol_t *symbol;
 	pcb_line_t *line;
 	pcb_arc_t *arc;

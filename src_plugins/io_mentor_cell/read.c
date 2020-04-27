@@ -687,7 +687,7 @@ static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
 	rnd_coord_t vx, vy;
 	node_t *tmp;
 	hkp_pstk_t *hps;
-	pcb_cardinal_t pid;
+	rnd_cardinal_t pid;
 	pcb_pstk_t *ps;
 
 	tmp = find_nth(nv->first_child, "XY", 0);

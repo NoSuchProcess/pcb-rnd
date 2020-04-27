@@ -41,7 +41,7 @@
 
 static void drill_fill(pcb_drill_t * Drill, pcb_any_obj_t *hole, int unplated)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	pcb_any_obj_t **pnew;
 	pcb_any_obj_t **hnew;
 

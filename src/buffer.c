@@ -247,7 +247,7 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *name, *refdes = NULL, *value = NULL;
 	pcb_subc_t *s;
-	pcb_cardinal_t len;
+	rnd_cardinal_t len;
 
 	
 	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadFootprint, name = argv[1].val.str);
@@ -764,7 +764,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 
 rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id)
 {
-	pcb_cardinal_t i;
+	rnd_cardinal_t i;
 	rnd_bool changed = pcb_false;
 	pcb_opctx_t ctx;
 	int num_layers;

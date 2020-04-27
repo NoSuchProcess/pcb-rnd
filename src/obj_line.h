@@ -135,14 +135,14 @@ double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *en
   linelist_foreach(&(layer)->Line, &__it__, line) {
 
 #define PCB_LINE_ALL_LOOP(top) do {    \
-	pcb_cardinal_t l;                    \
+	rnd_cardinal_t l;                    \
 	pcb_layer_t *layer = (top)->Layer;   \
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++) \
 	{ \
 		PCB_LINE_LOOP(layer)
 
 #define PCB_LINE_COPPER_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
@@ -150,7 +150,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *en
 		PCB_LINE_LOOP(layer)
 
 #define PCB_LINE_SILK_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \
@@ -158,7 +158,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *en
 		PCB_LINE_LOOP(layer)
 
 #define PCB_LINE_VISIBLE_LOOP(top) do	{		\
-	pcb_cardinal_t		l;			\
+	rnd_cardinal_t		l;			\
 	pcb_layer_t *layer = (top)->Layer;		\
 	for (l = 0; l < ((top)->LayerN > 0 ? (top)->LayerN : PCB->Data->LayerN); l++, layer++)	\
 	{ \

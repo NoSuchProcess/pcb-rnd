@@ -170,7 +170,7 @@ int tedax_net_load(const char *fname_net, int import_fp, const char *blk_id, int
 
 int tedax_net_fsave(pcb_board_t *pcb, const char *netlistid, FILE *f)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	htsp_entry_t *e;
 	pcb_netlist_t *nl = &pcb->netlist[PCB_NETLIST_EDITED];
 

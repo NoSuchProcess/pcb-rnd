@@ -83,7 +83,7 @@ void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 	case PCB_CH_STATE_SECOND:
 		{
 			pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
-			pcb_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
+			rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
 			/* do update of position */
 			if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST) {

@@ -510,7 +510,7 @@ TODO(": check if there is copper object on hid2 at x;y")
 
 static void openems_write_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
 {
-	pcb_cardinal_t n;
+	rnd_cardinal_t n;
 	for(n = 0; n < vtc0_len(&l->result); n++)
 		pcb_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : " "), l->result.array[n]);
 }

@@ -484,7 +484,7 @@ static void print_wires(FILE * fp)
 
 	for (group = 0; group < pcb_max_group(PCB); group++) {
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[group];
-		pcb_cardinal_t n;
+		rnd_cardinal_t n;
 		if (!(g->ltype & PCB_LYT_COPPER))
 			continue;
 		for(n = 0; n < g->len; n++) {

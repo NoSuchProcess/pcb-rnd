@@ -769,7 +769,7 @@ polygon_format
 		  polygonpoints
 		  polygonholes ')'
 			{
-				pcb_cardinal_t contour, contour_start, contour_end;
+				rnd_cardinal_t contour, contour_start, contour_end;
 				rnd_bool bad_contour_found = pcb_false;
 				/* ignore junk */
 				for (contour = 0; contour <= Polygon->HoleIndexN; contour++)

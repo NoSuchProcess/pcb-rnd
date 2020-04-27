@@ -34,7 +34,7 @@
 #include "global_typedefs.h"
 
 void pcb_undo_move_obj_to_remove(int, void *, void *, void *);
-void pcb_undo_add_obj_to_remove_point(int, void *, void *, pcb_cardinal_t);
+void pcb_undo_add_obj_to_remove_point(int, void *, void *, rnd_cardinal_t);
 void pcb_undo_add_obj_to_insert_point(int, void *, void *, void *);
 void pcb_undo_add_obj_to_remove_contour(int, pcb_layer_t *, pcb_poly_t *);
 void pcb_undo_add_obj_to_insert_contour(int, pcb_layer_t *, pcb_poly_t *);

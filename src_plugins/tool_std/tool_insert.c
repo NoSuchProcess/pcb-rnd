@@ -48,7 +48,7 @@ static struct {
 } fake;
 
 static pcb_point_t InsertedPoint;
-static pcb_cardinal_t polyIndex = 0;
+static rnd_cardinal_t polyIndex = 0;
 
 
 void pcb_tool_insert_uninit(void)

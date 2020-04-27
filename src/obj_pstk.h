@@ -36,7 +36,7 @@ struct pcb_pstk_s {
 #define thermal thermal_dont_use
 	PCB_ANY_PRIMITIVE_FIELDS;
 #undef thermal
-	pcb_cardinal_t proto;          /* reference to a pcb_pstk_proto_t within pcb_data_t */
+	rnd_cardinal_t proto;          /* reference to a pcb_pstk_proto_t within pcb_data_t */
 	int protoi;                    /* index of the transformed proto; -1 means invalid; local cache, not saved */
 	rnd_coord_t x, y;
 	rnd_coord_t Clearance;
@@ -56,7 +56,7 @@ struct pcb_pstk_s {
 
 #define PCB_PADSTACK_MAX_SHAPES 31
 
-#define PCB_PADSTACK_INVALID ((pcb_cardinal_t)(-1))
+#define PCB_PADSTACK_INVALID ((rnd_cardinal_t)(-1))
 
 #include "layer.h"
 #include "obj_common.h"
@@ -90,8 +90,8 @@ typedef struct pcb_pstk_proto_s {
 pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data);
 pcb_pstk_t *pcb_pstk_alloc_id(pcb_data_t *data, long int id);
 void pcb_pstk_free(pcb_pstk_t *ps);
-pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, pcb_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags);
-pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror);
+pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, rnd_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags);
+pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, rnd_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror);
 void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps);
 void pcb_pstk_bbox(pcb_pstk_t *ps);
 void pcb_pstk_copper_bbox(rnd_box_t *dst, pcb_pstk_t *ps);
@@ -114,7 +114,7 @@ unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_
 pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID);
 
 /* Undoably change the instance parameters of a padstack ref */
-int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const rnd_coord_t *clearance, double *rot, int *xmirror, int *smirror);
+int pcb_pstk_change_instance(pcb_pstk_t *ps, rnd_cardinal_t *proto, const rnd_coord_t *clearance, double *rot, int *xmirror, int *smirror);
 
 /* Return whether a group is empty (free of padstack shapes) */
 rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid);
@@ -133,8 +133,8 @@ rnd_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t
 /* Convert selection or current buffer to padstack; returns PCB_PADSTACK_INVALID
    on error; looks for existing matching protos to avoid adding redundant
    entries */
-pcb_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, rnd_coord_t ox, rnd_coord_t oy);
-pcb_cardinal_t pcb_pstk_conv_buffer(int quiet);
+rnd_cardinal_t pcb_pstk_conv_selection(pcb_board_t *pcb, int quiet, rnd_coord_t ox, rnd_coord_t oy);
+rnd_cardinal_t pcb_pstk_conv_buffer(int quiet);
 
 /* Low level converter: take an array of (pcb_any_obj_t *) objs and convert
    them into shapes of the dst proto. Does not remove input objects. */
@@ -176,8 +176,8 @@ void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly);
    ID, else dup it and insert it. The forcedup variant always dups.
    WARNING: make sure pcb_pstk_proto_update() was called on proto some point
    in time before this call, esle the hash is invalid. */
-pcb_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable);
-pcb_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable);
+rnd_cardinal_t pcb_pstk_proto_insert_dup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable);
+rnd_cardinal_t pcb_pstk_proto_insert_forcedup(pcb_data_t *data, const pcb_pstk_proto_t *proto, int quiet, int undoable);
 
 /* Change the non-NULL hole properties of a padstack proto; undoable.
    Returns 0 on success. */
@@ -251,23 +251,23 @@ extern pcb_data_t *pcb_pstk_data_hack;
 /* Insert a proto in data and return the proto-id. If the proto is already
    in data, the fields of the caller's version are free'd, else they are
    copied into data. In any case, the caller should not free proto. */
-pcb_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet, int undoable);
+rnd_cardinal_t pcb_pstk_proto_insert_or_free(pcb_data_t *data, pcb_pstk_proto_t *proto, int quiet, int undoable);
 
 /* Update caches and hash - must be called after any change to the prototype */
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst);
 
 /* Overwrite all fields of a proto in-place; returns the id or INVALID on error */
-pcb_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, pcb_cardinal_t proto_id, const pcb_pstk_proto_t *src);
+rnd_cardinal_t pcb_pstk_proto_replace(pcb_data_t *data, rnd_cardinal_t proto_id, const pcb_pstk_proto_t *src);
 
 /* Cycle through all (first level) padstacks of data and count how many times
    each prototype is referenced by them. The result is returned as an array
    of counts per prototype ID; the array is as large as data's prototype array.
    len_out is always filled with the length of the array. If the length is 0,
    NULL is returned. The caller needs to call free() on the returned array. */
-pcb_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, pcb_cardinal_t *len_out);
+rnd_cardinal_t *pcb_pstk_proto_used_all(pcb_data_t *data, rnd_cardinal_t *len_out);
 
 /* Remove a prototype: free all fields and mark it unused */
-void pcb_pstk_proto_del(pcb_data_t *data, pcb_cardinal_t proto_id);
+void pcb_pstk_proto_del(pcb_data_t *data, rnd_cardinal_t proto_id);
 
 /* allocate a new shape in proto:tr_idx and return the shape index -
    clal this for all transformed shapes! */

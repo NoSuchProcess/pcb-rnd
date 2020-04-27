@@ -13,7 +13,7 @@ typedef struct {
 	rnd_coord_t textt;            /* text thickness */
 	rnd_coord_t texts;            /* text scale */
 	rnd_coord_t Clearance;        /* min. separation from other nets */
-	pcb_cardinal_t via_proto;     /* via padstack prototype ID */
+	rnd_cardinal_t via_proto;     /* via padstack prototype ID */
 	int via_proto_set;            /* 1 if via_proto is set/valid, 0 for old file formats */
 	rnd_coord_t Diameter, Hole;   /* OBSOLETE: via diameter and drill hole; kept for compatibility with old file formats (lihata board v1..v4) */
 	char name[32];                /* fixed length name to save malloc/free */

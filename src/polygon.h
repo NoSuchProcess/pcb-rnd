@@ -45,11 +45,11 @@
 
 void pcb_polygon_init(void);
 void pcb_polygon_uninit(void);
-pcb_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point);
-pcb_cardinal_t pcb_poly_contour_point(pcb_poly_t *polygon, pcb_cardinal_t point);
-pcb_cardinal_t pcb_poly_contour_prev_point(pcb_poly_t *polygon, pcb_cardinal_t point);
-pcb_cardinal_t pcb_poly_contour_next_point(pcb_poly_t *polygon, pcb_cardinal_t point);
-pcb_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *, rnd_coord_t, rnd_coord_t);
+rnd_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point);
+rnd_cardinal_t pcb_poly_contour_point(pcb_poly_t *polygon, rnd_cardinal_t point);
+rnd_cardinal_t pcb_poly_contour_prev_point(pcb_poly_t *polygon, rnd_cardinal_t point);
+rnd_cardinal_t pcb_poly_contour_next_point(pcb_poly_t *polygon, rnd_cardinal_t point);
+rnd_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *, rnd_coord_t, rnd_coord_t);
 rnd_bool pcb_poly_remove_excess_points(pcb_layer_t *, pcb_poly_t *);
 void pcb_polygon_go_to_prev_point(void); /* undo */
 void pcb_polygon_go_to_next_point(void); /* redo */
@@ -84,7 +84,7 @@ int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p,
 
 /* Return the number of subtractions that have to be executed by a
    pcb_poly_init_clip() on the given polygon */
-pcb_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon);
+rnd_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon);
 
 
 rnd_bool pcb_poly_is_point_in_p(rnd_coord_t, rnd_coord_t, rnd_coord_t, pcb_poly_t *);

@@ -51,7 +51,7 @@ typedef struct pcb_rtree_it_s pcb_rtree_it_t;
 
 typedef struct pcb_hid_cfg_s pcb_hid_cfg_t;
 
-typedef unsigned int pcb_cardinal_t;
+typedef unsigned int rnd_cardinal_t;
 typedef struct pcb_color_s pcb_color_t;
 typedef struct pcb_clrcache_s pcb_clrcache_t;
 typedef struct pcb_pixmap_s pcb_pixmap_t;

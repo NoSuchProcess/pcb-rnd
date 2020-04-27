@@ -1251,7 +1251,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		pcb_angle_t start_angle;
 		rnd_coord_t width, height;
 
-		width = height = pcb_distance(cx, cy, endx, endy); /* calculate radius of arc */
+		width = height = rnd_distance(cx, cy, endx, endy); /* calculate radius of arc */
 		deltax = endx - cx;
 		deltay = endy - cy;
 		if (width < 1) { /* degenerate case */
@@ -1376,7 +1376,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	if (blind_cnt == 2) { /* change the prototype of the padstack to be blind or buried */
 		const pcb_pstk_proto_t *orig_proto;
 		pcb_pstk_proto_t *new_proto;
-		pcb_cardinal_t new_pid;
+		rnd_cardinal_t new_pid;
 		int ot1, ot2, ob1, ob2, err;
 		pcb_layergrp_id_t gtop = pcb_layergrp_get_top_copper();
 		pcb_layergrp_id_t gbot = pcb_layergrp_get_bottom_copper();

@@ -113,7 +113,7 @@ void pcb_pstk_free(pcb_pstk_t *ps)
 	free(ps);
 }
 
-pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror)
+pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, rnd_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror)
 {
 	pcb_pstk_t *ps;
 
@@ -140,7 +140,7 @@ pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, pcb_cardinal_t proto,
 	return ps;
 }
 
-pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, pcb_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags)
+pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, rnd_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags)
 {
 	return pcb_pstk_new_tr(data, id, proto, x, y, clearance, Flags, 0, 0, 0);
 }
@@ -1364,7 +1364,7 @@ typedef struct {
 	long int parent_ID; /* -1 for pcb, positive for a subc */
 	long int ID;        /* ID of the padstack */
 
-	pcb_cardinal_t proto;
+	rnd_cardinal_t proto;
 	rnd_coord_t clearance;
 	double rot;
 	int xmirror, smirror;
@@ -1416,7 +1416,7 @@ static int undo_change_instance_swap(void *udata)
 	if (ps->parent.data->padstack_tree != NULL)
 		pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
 
-	swap(ps->proto,      u->proto,     pcb_cardinal_t);
+	swap(ps->proto,      u->proto,     rnd_cardinal_t);
 	swap(ps->Clearance,  u->clearance, rnd_coord_t);
 	swap(ps->rot,        u->rot,       double);
 	swap(ps->xmirror,    u->xmirror,   int);
@@ -1449,7 +1449,7 @@ static const uundo_oper_t undo_pstk_change_instance = {
 	undo_change_instance_print
 };
 
-int pcb_pstk_change_instance(pcb_pstk_t *ps, pcb_cardinal_t *proto, const rnd_coord_t *clearance, double *rot, int *xmirror, int *smirror)
+int pcb_pstk_change_instance(pcb_pstk_t *ps, rnd_cardinal_t *proto, const rnd_coord_t *clearance, double *rot, int *xmirror, int *smirror)
 {
 	padstack_change_instance_t *u;
 	long int parent_ID;
@@ -1513,7 +1513,7 @@ rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid)
 	pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
 
 	PCB_PADSTACK_LOOP(pcb->Data); {
-		pcb_cardinal_t n;
+		rnd_cardinal_t n;
 		for(n = 0; n < g->len; n++)
 			if (pcb_pstk_shape_at(pcb, padstack, &pcb->Data->Layer[g->lid[n]]))
 				return pcb_false;

@@ -81,7 +81,7 @@ static pcb_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_
  * Usually this is 4 disjoint regions.
  *
  */
-pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t thickness, rnd_coord_t clearance, pcb_cardinal_t style)
+pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t thickness, rnd_coord_t clearance, rnd_cardinal_t style)
 {
 	pcb_arc_t a;
 	pcb_polyarea_t *pa, *arc;

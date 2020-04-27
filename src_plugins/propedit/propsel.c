@@ -693,7 +693,7 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 {
 	const char *pn = st->name + 11;
 	int i;
-	pcb_cardinal_t ca;
+	rnd_cardinal_t ca;
 	pcb_pstk_proto_t *proto;
 
 	if (st->is_attr) {

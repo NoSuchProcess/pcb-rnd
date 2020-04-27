@@ -493,7 +493,7 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 {
 	char buff[128];
 	lht_node_t *obj, *tbl, *geo;
-	pcb_cardinal_t n, hole = 0;
+	rnd_cardinal_t n, hole = 0;
 
 	sprintf(buff, "polygon.%ld", poly->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
@@ -715,7 +715,7 @@ static void build_data_layer_comb(void *ctx, pcb_layer_combining_t bit, const ch
 static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *pp)
 {
 	lht_node_t *lst, *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
-	pcb_cardinal_t n, sn, pn;
+	rnd_cardinal_t n, sn, pn;
 	pcb_pstk_tshape_t *ts;
 	char tmp[64];
 	pcb_layer_type_t lyt_permit = PCB_LYT_ANYWHERE | PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE;

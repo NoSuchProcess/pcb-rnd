@@ -149,7 +149,7 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, rnd_coord_t x1
 /*
  * initiate the actual redrawing of the updated area
  */
-pcb_cardinal_t pcb_draw_inhibit = 0;
+rnd_cardinal_t pcb_draw_inhibit = 0;
 void pcb_draw(void)
 {
 	if (pcb_draw_inhibit)
@@ -356,7 +356,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
 	if (backsilk_grp != NULL) {
-		pcb_cardinal_t n;
+		rnd_cardinal_t n;
 		for(n = 0; n < backsilk_grp->len; n++) {
 			pcb_layer_t *ly = pcb_get_layer(PCB->Data, backsilk_grp->lid[n]);
 			if (ly != NULL) {
@@ -538,7 +538,7 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	finish:;
 	if (backsilk_grp != NULL) {
-		pcb_cardinal_t n;
+		rnd_cardinal_t n;
 		for(n = 0; n < backsilk_grp->len; n++) {
 			pcb_layer_t *ly = pcb_get_layer(PCB->Data, backsilk_grp->lid[n]);
 			if (ly != NULL)
@@ -924,7 +924,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 	int i;
 	pcb_layer_id_t layernum;
 	pcb_layer_t *Layer;
-	pcb_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
+	rnd_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
 	pcb_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
 	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
 	unsigned int gflg = grp->ltype;
