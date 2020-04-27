@@ -31,8 +31,6 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files using bison/flex"},
 	{"enable-byaccic",    "/local/pcb/want_byaccic",      arg_true,      "$enable generating language files using byaccic/ureglex"},
 	{"disable-byaccic",   "/local/pcb/want_byaccic",      arg_false,     "$disable generating language files byaccic/ureglex"},
-	{"enable-dmalloc",    "/local/pcb/want_dmalloc",      arg_true,      "$compile with lib dmalloc"},
-	{"disable-dmalloc",   "/local/pcb/want_dmalloc",      arg_false,     "$compile without lib dmalloc"},
 
 #undef plugin_def
 #undef plugin_header
@@ -223,15 +221,6 @@ int hook_detect_target()
 		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
 	}
 
-	if (istrue(get("/local/pcb/want_dmalloc"))) {
-		require("libs/sul/dmalloc/*", 0, 1);
-	}
-	else {
-		put("libs/sul/dmalloc/presents", sfalse);
-		put("libs/sul/dmalloc/cflags", "");
-		put("libs/sul/dmalloc/ldflags", "");
-	}
-
 	/* yacc/lex - are we able to regenerate languages? */
 	if (istrue(get("/local/pcb/want_bison"))) {
 		require("parsgen/flex/*", 0, 0);
@@ -355,7 +344,6 @@ int hook_generate()
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
 	print_sum_setting_or("/local/pcb/symbols",        "Include debug symbols", istrue(get("/local/pcb/debug")));
-	print_sum_setting("libs/sul/dmalloc/presents", "Compile with dmalloc");
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
 
