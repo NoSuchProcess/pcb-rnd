@@ -158,7 +158,7 @@ static int do_setup(int argc, fgw_arg_t *argv)
 	}
 
 	for(n = 0; n < argc; n++) {
-		if (fgw_arg_conv(&pcb_fgw, &argv[n], FGW_STR) != 0) {
+		if (fgw_arg_conv(&rnd_fgw, &argv[n], FGW_STR) != 0) {
 			pcb_message(PCB_MSG_ERROR, "ImportSch: failed to convert argument %d to string\n", n+1);
 			return -1;
 		}
@@ -218,7 +218,7 @@ static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t import_sch_action_list[] = {
+static rnd_action_t import_sch_action_list[] = {
 	{"ImportSch", pcb_act_ImportSch, pcb_acth_ImportSch, pcb_acts_ImportSch}
 };
 
@@ -226,7 +226,7 @@ int pplg_check_ver_import_sch2(int ver_needed) { return 0; }
 
 void pplg_uninit_import_sch2(void)
 {
-	pcb_remove_actions_by_cookie(import_sch_cookie);
+	rnd_remove_actions_by_cookie(import_sch_cookie);
 	pcb_conf_unreg_fields("plugins/import_sch/");
 	isch_dlg_uninit();
 }

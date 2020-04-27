@@ -120,7 +120,7 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_coord_t x, y;
 					unsigned long res;
 					pcb_find_t fctx;
-				pcb_hid_get_coords("Click on a connection", &x, &y, 0);
+				rnd_hid_get_coords("Click on a connection", &x, &y, 0);
 				memset(&fctx, 0, sizeof(fctx));
 				fctx.flag_set = PCB_FLAG_FOUND;
 				fctx.flag_chg_undoable = 1;
@@ -196,7 +196,7 @@ static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t rats_action_list[] = {
+static rnd_action_t rats_action_list[] = {
 	{"AddRats", pcb_act_AddRats, pcb_acth_AddRats, pcb_acts_AddRats},
 	{"Connection", pcb_act_Connection, pcb_acth_Connection, pcb_acts_Connection},
 	{"DeleteRats", pcb_act_DeleteRats, pcb_acth_DeleteRats, pcb_acts_DeleteRats}

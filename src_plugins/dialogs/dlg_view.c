@@ -791,7 +791,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, ViewList, winid = argv[2].val.str);
 	PCB_ACT_MAY_CONVARG(3, FGW_PTR, ViewList, lst = argv[3].val.ptr_void);
 
-	if ((lst != NULL) && (!fgw_ptr_in_domain(&pcb_fgw, &argv[3], PCB_PTR_DOMAIN_VIEWLIST))) {
+	if ((lst != NULL) && (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], PCB_PTR_DOMAIN_VIEWLIST))) {
 		pcb_message(PCB_MSG_ERROR, "invalid list pointer");
 		PCB_ACT_IRES(1);
 		return 0;

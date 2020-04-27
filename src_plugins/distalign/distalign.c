@@ -533,7 +533,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t distalign_action_list[] = {
+static rnd_action_t distalign_action_list[] = {
 	{"distribute", pcb_act_distribute, "Distribute objects", pcb_acts_distribute},
 	{"distributetext", pcb_act_distribute, "Distribute objects", pcb_acts_distribute},
 	{"align", pcb_act_align, "Align objects", pcb_acts_align},
@@ -546,7 +546,7 @@ int pplg_check_ver_distalign(int ver_needed) { return 0; }
 
 void pplg_uninit_distalign(void)
 {
-	pcb_remove_actions_by_cookie(distalign_cookie);
+	rnd_remove_actions_by_cookie(distalign_cookie);
 }
 
 int pplg_init_distalign(void)

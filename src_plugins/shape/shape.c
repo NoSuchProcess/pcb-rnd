@@ -435,7 +435,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((data == PCB->Data) && (!have_coords))
-		pcb_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
+		rnd_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
 	if (regpoly_place(data, PCB_CURRLAYER(PCB), corners, rx, ry, rot, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "regpoly(): failed to create the polygon\n");
@@ -484,7 +484,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		a = 0;
 		data = PCB->Data;
 		have_coords = 1;
-		pcb_hid_get_coords("Click on the center of the rectangle", &x, &y, 0);
+		rnd_hid_get_coords("Click on the center of the rectangle", &x, &y, 0);
 	}
 
 	/* convert width;height */
@@ -551,7 +551,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((data == PCB->Data) && (!have_coords))
-		pcb_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
+		rnd_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
 	if (roundrect_place(data, PCB_CURRLAYER(PCB), w, h, rx, ry, rot, x, y, corner, roundres) == NULL)
 		pcb_message(PCB_MSG_ERROR, "roundrect(): failed to create the polygon\n");
@@ -605,7 +605,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((data == PCB->Data) && (!have_coords))
-		pcb_hid_get_coords("Click on the center of the circle", &x, &y, 0);
+		rnd_hid_get_coords("Click on the center of the circle", &x, &y, 0);
 
 	if (circle_place(PCB->Data, PCB_CURRLAYER(PCB), dia, x, y) == NULL)
 		pcb_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");
@@ -616,7 +616,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 #include "shape_dialog.c"
 
-pcb_action_t shape_action_list[] = {
+rnd_action_t shape_action_list[] = {
 	{"regpoly", pcb_act_regpoly, pcb_acth_regpoly, pcb_acts_regpoly},
 	{"roundrect", pcb_act_roundrect, pcb_acth_roundrect, pcb_acts_roundrect},
 	{"circle", pcb_act_circle, pcb_acth_circle, pcb_acts_circle},
@@ -628,7 +628,7 @@ int pplg_check_ver_shape(int ver_needed) { return 0; }
 void pplg_uninit_shape(void)
 {
 	pcb_event_unbind_allcookie(pcb_shape_cookie);
-	pcb_remove_actions_by_cookie(pcb_shape_cookie);
+	rnd_remove_actions_by_cookie(pcb_shape_cookie);
 }
 
 int pplg_init_shape(void)

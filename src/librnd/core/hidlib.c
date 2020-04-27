@@ -43,7 +43,7 @@ void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_
 
 static void hidlib_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	pcb_tool_gui_init();
+	rnd_tool_gui_init();
 	pcb_gui->set_mouse_cursor(pcb_gui, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
 }
 

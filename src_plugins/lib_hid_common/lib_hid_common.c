@@ -72,7 +72,7 @@ fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 
-pcb_action_t hid_common_action_list[] = {
+rnd_action_t hid_common_action_list[] = {
 	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
 	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
 	{"Center", pcb_act_Center, pcb_acth_Center, pcb_acts_Center},
@@ -101,7 +101,7 @@ void pplg_uninit_lib_hid_common(void)
 	pcb_event_unbind_allcookie(wplc_cookie);
 	pcb_conf_hid_unreg(grid_cookie);
 	pcb_dialog_place_uninit();
-	pcb_remove_actions_by_cookie(hid_common_cookie);
+	rnd_remove_actions_by_cookie(hid_common_cookie);
 	pcb_act_dad_uninit();
 	pcb_conf_unreg_fields("plugins/lib_hid_common/");
 	pcb_dlg_log_uninit();

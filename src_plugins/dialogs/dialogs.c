@@ -63,7 +63,7 @@ extern const conf_dialogs_t dialogs_conf;
 #include "dlg_pref.h"
 
 
-pcb_action_t dialogs_action_list[] = {
+rnd_action_t dialogs_action_list[] = {
 	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
 	{"LayerBinding", pcb_act_LayerBinding, pcb_acth_LayerBinding, pcb_acts_LayerBinding},
 	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},
@@ -102,7 +102,7 @@ void pplg_uninit_dialogs(void)
 	pcb_dlg_undo_uninit();
 	pcb_dlg_pstklib_uninit();
 	pcb_dlg_pref_uninit();
-	pcb_remove_actions_by_cookie(dialogs_cookie);
+	rnd_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
 	pcb_dlg_fontsel_uninit();
 	pcb_conf_unreg_fields("plugins/dialogs/");

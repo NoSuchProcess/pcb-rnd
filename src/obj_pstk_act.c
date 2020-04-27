@@ -55,7 +55,7 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 		}
 		else {
-			pcb_hid_get_coords("Click at padstack origin", &x, &y, 0);
+			rnd_hid_get_coords("Click at padstack origin", &x, &y, 0);
 			/* rather use the snapped corsshair coords */
 			x = pcb_crosshair.X;
 			y = pcb_crosshair.Y;
@@ -119,7 +119,7 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_objtype_t type;
 				pcb_coord_t x, y;
 				
-				pcb_hid_get_coords("Select a padstack to break up", &x, &y, 0);
+				rnd_hid_get_coords("Select a padstack to break up", &x, &y, 0);
 				if ((type = pcb_search_screen(x, y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_PSTK) {
 					pcb_message(PCB_MSG_ERROR, "Need a padstack under the cursor\n");
 					break;
@@ -178,7 +178,7 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 	}
 	else {
-		pcb_hid_get_coords("Click at padstack origin", &x, &y, 0);
+		rnd_hid_get_coords("Click at padstack origin", &x, &y, 0);
 		/* rather use the snapped corsshair coords */
 		x = pcb_crosshair.X;
 		y = pcb_crosshair.Y;
@@ -214,7 +214,7 @@ TODO("pstk: style default proto")
 
 /* --------------------------------------------------------------------------- */
 
-static pcb_action_t padstack_action_list[] = {
+static rnd_action_t padstack_action_list[] = {
 	{"PadstackConvert", pcb_act_padstackconvert, pcb_acth_padstackconvert, pcb_acts_padstackconvert},
 	{"PadstackBreakup", pcb_act_padstackbreakup, pcb_acth_padstackbreakup, pcb_acts_padstackbreakup},
 	{"PadstackPlace", pcb_act_padstackplace, pcb_acth_padstackplace, pcb_acts_padstackplace}

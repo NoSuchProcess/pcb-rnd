@@ -332,7 +332,7 @@ static fgw_error_t pcb_act_polycombine(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
-static pcb_action_t polycombine_action_list[] = {
+static rnd_action_t polycombine_action_list[] = {
 	{"PolyCombine", pcb_act_polycombine, NULL, NULL}
 };
 
@@ -342,7 +342,7 @@ int pplg_check_ver_polycombine(int ver_needed) { return 0; }
 
 void pplg_uninit_polycombine(void)
 {
-	pcb_remove_actions_by_cookie(polycombine_cookie);
+	rnd_remove_actions_by_cookie(polycombine_cookie);
 }
 
 int pplg_init_polycombine(void)

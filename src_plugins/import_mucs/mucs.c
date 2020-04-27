@@ -154,7 +154,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t mucs_action_list[] = {
+rnd_action_t mucs_action_list[] = {
 	{"LoadMucsFrom", pcb_act_LoadMucsFrom, pcb_acth_LoadMucsFrom, pcb_acts_LoadMucsFrom}
 };
 
@@ -162,7 +162,7 @@ int pplg_check_ver_import_mucs(int ver_needed) { return 0; }
 
 void pplg_uninit_import_mucs(void)
 {
-	pcb_remove_actions_by_cookie(mucs_cookie);
+	rnd_remove_actions_by_cookie(mucs_cookie);
 }
 
 int pplg_init_import_mucs(void)

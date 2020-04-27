@@ -349,7 +349,7 @@ static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t rnd_conf_action_list[] = {
+static rnd_action_t rnd_conf_action_list[] = {
 	{"conf", pcb_act_Conf, pcb_acth_Conf, pcb_acts_Conf},
 	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
 	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},

@@ -653,7 +653,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 }
 
 
-static pcb_action_t scad_action_list[] = {
+static rnd_action_t scad_action_list[] = {
 	{"ExportScadPoly", pcb_act_scad_export_poly, pcb_acth_scad_export_poly, pcb_acts_scad_export_poly}
 };
 
@@ -662,7 +662,7 @@ int pplg_check_ver_export_openscad(int ver_needed) { return 0; }
 void pplg_uninit_export_openscad(void)
 {
 	pcb_export_remove_opts_by_cookie(openscad_cookie);
-	pcb_remove_actions_by_cookie(openscad_cookie);
+	rnd_remove_actions_by_cookie(openscad_cookie);
 }
 
 int pplg_init_export_openscad(void)

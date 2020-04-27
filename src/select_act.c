@@ -72,7 +72,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_idpath_t *idp;
 				pcb_any_obj_t *obj;
 				PCB_ACT_CONVARG(2, FGW_IDPATH, Select, idp = fgw_idpath(&argv[2]));
-				if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH))
+				if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 					return FGW_ERR_PTR_DOMAIN;
 				obj = pcb_idpath2obj(PCB, idp);
 				if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
@@ -160,7 +160,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_crosshair_note.Buffer = conf_core.editor.buffer_number;
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-				pcb_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
+				rnd_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
 				x = pcb_grid_fit(x, PCB_ACT_HIDLIB->grid, PCB_ACT_HIDLIB->grid_ox);
 				y = pcb_grid_fit(y, PCB_ACT_HIDLIB->grid, PCB_ACT_HIDLIB->grid_oy);
 				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true, pcb_false);
@@ -245,7 +245,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t select_action_list[] = {
+static rnd_action_t select_action_list[] = {
 	{"Select", pcb_act_Select, pcb_acth_Select, pcb_acts_Select},
 	{"Unselect", pcb_act_Unselect, pcb_acth_Unselect, pcb_acts_Unselect}
 };

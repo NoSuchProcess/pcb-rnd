@@ -200,7 +200,7 @@ static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
 {
 	pcb_gtk_t *gctx = data;
 
-	pcb_action(gctx->hidlib, "Quit");
+	rnd_action(gctx->hidlib, "Quit");
 
 	/* Return TRUE to keep our app running.  A FALSE here would let the
 	   delete signal continue on and kill our program. */

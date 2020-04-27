@@ -306,7 +306,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* display the pinout of a subcircuit */
 		case F_Pinout:
-			return pcb_actionva(PCB_ACT_HIDLIB, "pinout", NULL);
+			return rnd_actionva(PCB_ACT_HIDLIB, "pinout", NULL);
 
 			/* toggle displaying of terminal names */
 		case F_PinOrPadName:
@@ -314,7 +314,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				int type;
 				void *ptr1, *ptr2, *ptr3;
 				pcb_coord_t x, y;
-				pcb_hid_get_coords("Click on a subcircuit", &x, &y, 0);
+				rnd_hid_get_coords("Click on a subcircuit", &x, &y, 0);
 
 				/* toggle terminal ID print for subcircuit parts */
 				type = pcb_search_screen(x, y, PCB_OBJ_SUBC | PCB_OBJ_SUBC_PART | PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
@@ -359,7 +359,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(id) {
 		case F_ToggleGrid:
 			if (argc > 3) {
-				if (fgw_arg_conv(&pcb_fgw, &argv[3], FGW_KEYWORD) != 0) {
+				if (fgw_arg_conv(&rnd_fgw, &argv[3], FGW_KEYWORD) != 0) {
 					PCB_ACT_FAIL(Display);
 					return FGW_ERR_ARG_CONV;
 				}
@@ -493,7 +493,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				pcb_marked.Y = pcb_crosshair.Y;
 			}
 			else
-				pcb_hid_get_coords("Click on new mark", &pcb_marked.X, &pcb_marked.Y, 0);
+				rnd_hid_get_coords("Click on new mark", &pcb_marked.X, &pcb_marked.Y, 0);
 			pcb_notify_mark_change(pcb_true);
 		}
 	}
@@ -505,7 +505,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			pcb_marked.Y = pcb_crosshair.Y;
 		}
 		else
-			pcb_hid_get_coords("Click on new mark", &pcb_marked.X, &pcb_marked.Y, 0);
+			rnd_hid_get_coords("Click on new mark", &pcb_marked.X, &pcb_marked.Y, 0);
 		pcb_notify_mark_change(pcb_true);
 		pcb_marked.user_placed = 1;
 	}
@@ -582,7 +582,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int type;
 	pcb_layer_t *layer = PCB_CURRLAYER(PCB_ACT_BOARD);
 
-	pcb_hid_get_coords("Select item to use properties from", &x, &y, 0);
+	rnd_hid_get_coords("Select item to use properties from", &x, &y, 0);
 
 	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 /* set layer current and size from line or arc */
@@ -698,12 +698,12 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char fn[PCB_ACTION_NAME_MAX];
 		fgw_arg_t args[2];
 		args[0].type = FGW_FUNC;
-		args[0].val.argv0.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "LayerPropGui"));
+		args[0].val.argv0.func = fgw_func_lookup(&rnd_fgw, pcb_aname(fn, "LayerPropGui"));
 		args[0].val.argv0.user_call_ctx = PCB_ACT_HIDLIB;
 		if (args[0].val.func != NULL) {
 			args[1].type = FGW_LONG;
 			args[1].val.nat_long = pcb_layer_id(PCB->Data, ly);
-			ret = pcb_actionv_(args[0].val.func, res, 2, args);
+			ret = rnd_actionv_(args[0].val.func, res, 2, args);
 			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 		else
@@ -807,12 +807,12 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		char fn[PCB_ACTION_NAME_MAX];
 		fgw_arg_t args[2];
 		args[0].type = FGW_FUNC;
-		args[0].val.argv0.func = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, "GroupPropGui"));
+		args[0].val.argv0.func = fgw_func_lookup(&rnd_fgw, pcb_aname(fn, "GroupPropGui"));
 		args[0].val.argv0.user_call_ctx = PCB_ACT_HIDLIB;
 		if (args[0].val.func != NULL) {
 			args[1].type = FGW_LONG;
 			args[1].val.nat_long = pcb_layergrp_id(PCB, g);
-			ret = pcb_actionv_(args[0].val.func, res, 2, args);
+			ret = rnd_actionv_(args[0].val.func, res, 2, args);
 			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 		else
@@ -1454,7 +1454,7 @@ static fgw_error_t pcb_act_LayerVisReset(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static pcb_action_t gui_action_list[] = {
+static rnd_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
 	{"MarkCrosshair", pcb_act_MarkCrosshair, pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair},

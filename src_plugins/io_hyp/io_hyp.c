@@ -118,7 +118,7 @@ TODO(": rewrite this - this is very unpcb-rnd")
 	return 0;
 }
 
-pcb_action_t hyp_action_list[] = {
+rnd_action_t hyp_action_list[] = {
 	{"LoadhypFrom", pcb_act_LoadhypFrom, pcb_acth_LoadhypFrom, pcb_acts_LoadhypFrom}
 };
 
@@ -160,7 +160,7 @@ int pplg_check_ver_io_hyp(int ver_needed)
 
 void pplg_uninit_io_hyp(void)
 {
-	pcb_remove_actions_by_cookie(hyp_cookie);
+	rnd_remove_actions_by_cookie(hyp_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
 
 }

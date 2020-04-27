@@ -401,7 +401,7 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t cpcb_action_list[] = {
+static rnd_action_t cpcb_action_list[] = {
 	{"ImportcpcbFrom", pcb_act_import_cpcb, pcb_acth_import_cpcb, pcb_acts_import_cpcb},
 	{"ExportcpcbTo", pcb_act_export_cpcb, pcb_acth_export_cpcb, pcb_acts_export_cpcb},
 	{"cpcb", pcb_act_cpcb, pcb_acth_cpcb, pcb_acts_cpcb}
@@ -411,7 +411,7 @@ int pplg_check_ver_ar_cpcb(int ver_needed) { return 0; }
 
 void pplg_uninit_ar_cpcb(void)
 {
-	pcb_remove_actions_by_cookie(cpcb_cookie);
+	rnd_remove_actions_by_cookie(cpcb_cookie);
 }
 
 

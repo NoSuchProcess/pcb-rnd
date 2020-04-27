@@ -267,7 +267,7 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t teardrops_action_list[] = {
+static rnd_action_t teardrops_action_list[] = {
 	{"Teardrops", pcb_act_teardrops, NULL, NULL}
 };
 
@@ -277,7 +277,7 @@ int pplg_check_ver_teardrops(int ver_needed) { return 0; }
 
 void pplg_uninit_teardrops(void)
 {
-	pcb_remove_actions_by_cookie(teardrops_cookie);
+	rnd_remove_actions_by_cookie(teardrops_cookie);
 }
 
 int pplg_init_teardrops(void)

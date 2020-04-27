@@ -406,7 +406,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(2, FGW_STR, Oneliner, scr = argv[2].val.str);
 	}
 	else if (strcmp(lang, "/exit") == 0) {
-		PCB_ACT_IRES(pcb_cli_leave());
+		PCB_ACT_IRES(rnd_cli_leave());
 		return 0;
 	}
 	else {
@@ -418,7 +418,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (first != NULL) {
 		if (*first == '/') {
 			if (pcb_strcasecmp(scr, "/exit") == 0) {
-				PCB_ACT_IRES(pcb_cli_leave());
+				PCB_ACT_IRES(rnd_cli_leave());
 				return 0;
 			}
 			PCB_ACT_IRES(-1); /* ignore /click, /tab and others for now */
@@ -429,12 +429,12 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	lang = guess_lang(lang);
 
 	if (scr == NULL) {
-		PCB_ACT_IRES(pcb_cli_enter(lang, lang));
+		PCB_ACT_IRES(rnd_cli_enter(lang, lang));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(scr, "/exit") == 0) {
-		PCB_ACT_IRES(pcb_cli_leave());
+		PCB_ACT_IRES(rnd_cli_leave());
 		return 0;
 	}
 
@@ -488,7 +488,7 @@ static fgw_error_t pcb_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t script_action_list[] = {
+static rnd_action_t script_action_list[] = {
 	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
 	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript},
 	{"ReloadScript", pcb_act_ReloadScript, pcb_acth_ReloadScript, pcb_acts_ReloadScript},

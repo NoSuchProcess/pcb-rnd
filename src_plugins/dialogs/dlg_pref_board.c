@@ -70,7 +70,7 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 static void pref_board_edit_attr(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva(&PCB->hidlib, "Propedit", "board", NULL);
+	rnd_actionva(&PCB->hidlib, "Propedit", "board", NULL);
 }
 
 

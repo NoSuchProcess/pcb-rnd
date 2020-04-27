@@ -1422,7 +1422,7 @@ static fgw_error_t pcb_act_PSCalib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t hidps_action_list[] = {
+rnd_action_t hidps_action_list[] = {
 	{"pscalib", pcb_act_PSCalib, NULL, NULL}
 };
 
@@ -1469,7 +1469,7 @@ static int ps_usage(pcb_hid_t *hid, const char *topic)
 
 static void plugin_ps_uninit(void)
 {
-	pcb_remove_actions_by_cookie(ps_cookie);
+	rnd_remove_actions_by_cookie(ps_cookie);
 	pcb_export_remove_opts_by_cookie(ps_cookie);
 	ps_inited = 0;
 }

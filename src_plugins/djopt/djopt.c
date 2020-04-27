@@ -2560,7 +2560,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t djopt_action_list[] = {
+rnd_action_t djopt_action_list[] = {
 	{"djopt", pcb_act_DJopt, pcb_acth_DJopt, pcb_acts_DJopt}
 };
 
@@ -2568,7 +2568,7 @@ int pplg_check_ver_djopt(int ver_needed) { return 0; }
 
 void pplg_uninit_djopt(void)
 {
-	pcb_remove_actions_by_cookie(djopt_cookie);
+	rnd_remove_actions_by_cookie(djopt_cookie);
 	pcb_conf_unreg_fields("plugins/djopt/");
 }
 

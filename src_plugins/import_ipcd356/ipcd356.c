@@ -339,7 +339,7 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 				if (want_net && (netname_valid(netname))) {
 					char tn[36];
 					sprintf(tn, "%s-%s", refdes, term);
-					pcb_actionva(&pcb->hidlib, "Netlist", "Add",  netname, tn, NULL);
+					rnd_actionva(&pcb->hidlib, "Netlist", "Add",  netname, tn, NULL);
 				}
 				break;
 			case '9': /* EOF */
@@ -405,15 +405,15 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (want_net) {
-		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Freeze", NULL);
-		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Clear", NULL);
+		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Freeze", NULL);
+		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Clear", NULL);
 	}
 
 	rs = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
 
 	if (want_net) {
-		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Sort", NULL);
-		pcb_actionva(PCB_ACT_HIDLIB, "Netlist", "Thaw", NULL);
+		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Sort", NULL);
+		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Thaw", NULL);
 	}
 
 	fclose(f);
@@ -435,7 +435,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t import_ipcd356_action_list[] = {
+rnd_action_t import_ipcd356_action_list[] = {
 	{"LoadIpc356From", pcb_act_LoadIpc356From, pcb_acth_LoadIpc356From, pcb_acts_LoadIpc356From}
 };
 
@@ -479,7 +479,7 @@ static int ipcd356_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 		pcb_message(PCB_MSG_ERROR, "import_ipcd356: requires exactly 1 input file name\n");
 		return -1;
 	}
-	return pcb_actionva(&PCB->hidlib, "LoadIpc356From", fns[0], NULL);
+	return rnd_actionva(&PCB->hidlib, "LoadIpc356From", fns[0], NULL);
 }
 
 static pcb_plug_import_t import_ipcd356;
@@ -489,7 +489,7 @@ int pplg_check_ver_import_ipcd356(int ver_needed) { return 0; }
 
 void pplg_uninit_import_ipcd356(void)
 {
-	pcb_remove_actions_by_cookie(ipcd356_cookie);
+	rnd_remove_actions_by_cookie(ipcd356_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
 }
 

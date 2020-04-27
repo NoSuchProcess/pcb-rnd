@@ -45,7 +45,7 @@ static void ev_pcb_changed(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_
 }
 
 
-/*pcb_action_t remote_action_list[] = {
+/*rnd_action_t remote_action_list[] = {
 };
 
 RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
@@ -384,7 +384,7 @@ int pplg_check_ver_hid_remote(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_remote(void)
 {
-/*	pcb_remove_actions_by_cookie(remote_cookie);*/
+/*	rnd_remove_actions_by_cookie(remote_cookie);*/
 	pcb_event_unbind_allcookie(remote_cookie);
 }
 

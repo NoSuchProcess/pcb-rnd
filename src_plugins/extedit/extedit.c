@@ -186,7 +186,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* pick up the object to edit */
 	if ((cmd == NULL) || (pcb_strcasecmp(cmd, "object") == 0)) {
 		pcb_coord_t x, y;
-		pcb_hid_get_coords("Click on object to edit", &x, &y, 0);
+		rnd_hid_get_coords("Click on object to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 
 		pcb_buffer_set_number(bn);
@@ -336,7 +336,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t extedit_action_list[] = {
+static rnd_action_t extedit_action_list[] = {
 	{"extedit", pcb_act_extedit, pcb_acts_extedit, pcb_acth_extedit}
 };
 
@@ -346,7 +346,7 @@ int pplg_check_ver_extedit(int ver_needed) { return 0; }
 
 void pplg_uninit_extedit(void)
 {
-	pcb_remove_actions_by_cookie(extedit_cookie);
+	rnd_remove_actions_by_cookie(extedit_cookie);
 }
 
 int pplg_init_extedit(void)

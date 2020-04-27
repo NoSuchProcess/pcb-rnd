@@ -112,13 +112,13 @@ static void log_import(log_ctx_t *ctx)
 static void btn_clear_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	log_ctx_t *ctx = caller_data;
-	pcb_actionva(ctx->hidlib, "log", "clear", NULL);
+	rnd_actionva(ctx->hidlib, "log", "clear", NULL);
 }
 
 static void btn_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	log_ctx_t *ctx = caller_data;
-	pcb_actionva(ctx->hidlib, "log", "export", NULL);
+	rnd_actionva(ctx->hidlib, "log", "export", NULL);
 }
 
 static void maybe_scroll_to_bottom()

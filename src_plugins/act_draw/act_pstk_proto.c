@@ -51,7 +51,7 @@ static int get_obj_and_data_from_idp(int argc, fgw_arg_t *argv, int aidx, pcb_an
 	}
 
 	PCB_ACT_CONVARG(aidx, FGW_IDPATH, PstkProtoTmp, idp = fgw_idpath(&argv[aidx]));
-	if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[aidx], PCB_PTR_DOMAIN_IDPATH))
+	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[aidx], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 	obj = pcb_idpath2obj(PCB, idp);
 	if ((obj == NULL) || (obj->type != PCB_OBJ_PSTK) || (obj->parent_type != PCB_PARENT_DATA))
@@ -80,7 +80,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	switch(cmdi) {
 		case act_draw_keywords_new:
 			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
-			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
+			fgw_ptr_reg(&rnd_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
 			res->val.ptr_void = proto;
 			pcb_vtpadstack_tshape_init(&proto->tr);
 			pcb_vtpadstack_tshape_alloc_append(&proto->tr, 1);
@@ -104,7 +104,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			if (src == NULL)
 				return 0;
 			proto = calloc(sizeof(pcb_pstk_proto_t), 1);
-			fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
+			fgw_ptr_reg(&rnd_fgw, res, PCB_PTR_DOMAIN_PSTK_PROTO, FGW_PTR | FGW_STRUCT, proto);
 			pcb_pstk_proto_copy(proto, src);
 			res->val.ptr_void = proto;
 			return 0;
@@ -118,7 +118,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				return 0;
 			}
 			PCB_ACT_CONVARG(3+ao, FGW_PTR, PstkProtoTmp, proto = argv[3+ao].val.ptr_void);
-			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
+			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
 				pcb_message(PCB_MSG_ERROR, "PstkProtoTmp: invalid proto pointer\n");
 				PCB_ACT_IRES(-1);
 				return 0;
@@ -162,7 +162,7 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_ACT_CONVARG(1+ao, FGW_PTR, PstkProtoEdit, proto = argv[1+ao].val.ptr_void);
 	PCB_ACT_CONVARG(2+ao, FGW_STR, PstkProtoEdit, cmd = argv[2+ao].val.str);
 
-	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
+	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
 		PCB_ACT_IRES(-1);
 		return 0;

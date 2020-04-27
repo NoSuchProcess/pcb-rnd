@@ -349,7 +349,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double tangent;
 	int new_delta_angle;
 
-	pcb_hid_get_coords("Click on a line-arc intersection or line segment", &Ux, &Uy, 0);
+	rnd_hid_get_coords("Click on a line-arc intersection or line segment", &Ux, &Uy, 0);
 
 	if (!find_pair(pcb_crosshair.X, pcb_crosshair.Y)) {
 		if (!find_pair(Ux, Uy)) {
@@ -2090,7 +2090,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	}
 
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
-	/* pcb_actionva(&PCB->hidlib, "djopt", "puller", 0); */
+	/* rnd_actionva(&PCB->hidlib, "djopt", "puller", 0); */
 
 	cflg = pcb_layergrp_flags(PCB, pcb_layer_get_group_(PCB_CURRLAYER(PCB)));
 	current_is_solder = (cflg & PCB_LYT_BOTTOM);
@@ -2189,7 +2189,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 /*                                                                           */
 /*****************************************************************************/
 
-pcb_action_t puller_action_list[] = {
+rnd_action_t puller_action_list[] = {
 	{"Puller", pcb_act_Puller, pcb_acth_Puller, pcb_acts_Puller},
 	{"GlobalPuller", pcb_act_GlobalPuller, pcb_acth_GlobalPuller, pcb_acts_GlobalPuller}
 };
@@ -2200,7 +2200,7 @@ int pplg_check_ver_puller(int ver_needed) { return 0; }
 
 void pplg_uninit_puller(void)
 {
-	pcb_remove_actions_by_cookie(puller_cookie);
+	rnd_remove_actions_by_cookie(puller_cookie);
 }
 
 int pplg_init_puller(void)

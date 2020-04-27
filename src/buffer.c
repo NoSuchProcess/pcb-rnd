@@ -1117,7 +1117,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_Save:
 			name = sbufnum;
-			rv = pcb_actionva(PCB_ACT_HIDLIB, "SaveTo", "PasteBuffer", name, fmt, NULL);
+			rv = rnd_actionva(PCB_ACT_HIDLIB, "SaveTo", "PasteBuffer", name, fmt, NULL);
 			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
 			return rv;
 
@@ -1206,7 +1206,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 /* --------------------------------------------------------------------------- */
 
-static pcb_action_t buffer_action_list[] = {
+static rnd_action_t buffer_action_list[] = {
 	{"FreeRotateBuffer", pcb_act_FreeRotateBuffer, pcb_acth_FreeRotateBuffer, pcb_acts_FreeRotateBuffer},
 	{"ScaleBuffer", pcb_act_ScaleBuffer, pcb_acth_ScaleBuffer, pcb_acts_ScaleBuffer},
 	{"LoadFootprint", pcb_act_LoadFootprint, pcb_acth_LoadFootprint, pcb_acts_LoadFootprint},

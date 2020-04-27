@@ -48,12 +48,12 @@ static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, f
 
 	strcpy(tmp, "gui_");
 	strncpy(tmp+4, act_name, sizeof(tmp)-5);
-	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, tmp) != NULL))
-		return pcb_actionv_bin(PCB_ACT_HIDLIB, tmp, res, argc, argv);
+	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, tmp) != NULL))
+		return rnd_actionv_bin(PCB_ACT_HIDLIB, tmp, res, argc, argv);
 
 	tmp[0] = 'c'; tmp[1] = 'l';
-	if (fgw_func_lookup(&pcb_fgw, tmp) != NULL)
-		return pcb_actionv_bin(PCB_ACT_HIDLIB, tmp, res, argc, argv);
+	if (fgw_func_lookup(&rnd_fgw, tmp) != NULL)
+		return rnd_actionv_bin(PCB_ACT_HIDLIB, tmp, res, argc, argv);
 
 	return FGW_ERR_NOT_FOUND;
 }
@@ -74,13 +74,13 @@ char *pcb_hid_prompt_for(pcb_hidlib_t *hl, const char *msg, const char *default_
 	argv[2].type = FGW_STR; argv[2].val.cstr = default_string;
 	argv[3].type = FGW_STR; argv[3].val.cstr = title;
 
-	if (pcb_actionv_bin(hl, "PromptFor", &res, 4, argv) != 0)
+	if (rnd_actionv_bin(hl, "PromptFor", &res, 4, argv) != 0)
 		return NULL;
 
 	if (res.type == (FGW_STR | FGW_DYN))
 		return res.val.str;
 
-	fgw_arg_free(&pcb_fgw, &res);
+	fgw_arg_free(&rnd_fgw, &res);
 	return NULL;
 }
 
@@ -116,13 +116,13 @@ int pcb_hid_message_box(pcb_hidlib_t *hl, const char *icon, const char *title, c
 	}
 	va_end(ap);
 
-	if (pcb_actionv_bin(hl, "MessageBox", &res, argc, argv) != 0)
+	if (rnd_actionv_bin(hl, "MessageBox", &res, argc, argv) != 0)
 		return -1;
 
-	if (fgw_arg_conv(&pcb_fgw, &res, FGW_INT) == 0)
+	if (fgw_arg_conv(&rnd_fgw, &res, FGW_INT) == 0)
 		return res.val.nat_int;
 
-	fgw_arg_free(&pcb_fgw, &res);
+	fgw_arg_free(&rnd_fgw, &res);
 	return -1;
 }
 
@@ -259,14 +259,14 @@ static const char pcb_acth_Print[] = "Present the print export dialog for printi
 /* DOC: print.html */
 static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&pcb_fgw, "printgui") != NULL))
-		return pcb_actionv_bin(PCB_ACT_HIDLIB, "printgui", res, argc, argv);
+	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, "printgui") != NULL))
+		return rnd_actionv_bin(PCB_ACT_HIDLIB, "printgui", res, argc, argv);
 	pcb_message(PCB_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
 	return FGW_ERR_NOT_FOUND;
 }
 
 
-static pcb_action_t hid_dlg_action_list[] = {
+static rnd_action_t hid_dlg_action_list[] = {
 	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
 	{"MessageBox", pcb_act_MessageBox, pcb_acth_MessageBox, pcb_acts_MessageBox},
 	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print}

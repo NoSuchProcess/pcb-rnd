@@ -115,7 +115,7 @@ static void dad_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	int idx = attr - dad->dlg;
 	char **act = vts0_get(&dad->change_cb, idx, 0);
 	if ((act != NULL) && (*act != NULL))
-		pcb_parse_command(dad->hidlib, *act, 1);
+		rnd_parse_command(dad->hidlib, *act, 1);
 }
 
 static void dad_row_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -125,7 +125,7 @@ static void dad_row_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_
 	fgw_arg_t res;
 	res.type = FGW_PTR | FGW_VOID;
 	res.val.ptr_void = row;
-	fgw_ptr_unreg(&pcb_fgw, &res, dad->row_domain);
+	fgw_ptr_unreg(&rnd_fgw, &res, dad->row_domain);
 }
 
 static char *tmp_str_dup(dad_t *dad, const char *txt)
@@ -357,7 +357,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 
 		if (row != NULL) {
-			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3], dad->row_domain)) {
+			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], dad->row_domain)) {
 				pcb_message(PCB_MSG_ERROR, "Invalid DAD row pointer\n");
 				PCB_ACT_IRES(-1);
 				return 0;
@@ -374,7 +374,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else
 			nrow = NULL;
-		fgw_ptr_reg(&pcb_fgw, res, dad->row_domain, FGW_PTR, nrow);
+		fgw_ptr_reg(&rnd_fgw, res, dad->row_domain, FGW_PTR, nrow);
 		return 0;
 	}
 	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {

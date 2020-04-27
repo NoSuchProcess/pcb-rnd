@@ -81,7 +81,7 @@ static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t conf_action_list[] = {
+static rnd_action_t conf_action_list[] = {
 	{"GetStyle", pcb_act_GetStyle, pcb_acth_GetStyle, pcb_acts_GetStyle},
 	{"ChkSubcID", pcb_act_ChkSubcID, pcb_acth_ChkSubcID, pcb_acts_ChkSubcID},
 	{"ChkTermID", pcb_act_ChkTermID, pcb_acth_ChkTermID, pcb_acts_ChkTermID},

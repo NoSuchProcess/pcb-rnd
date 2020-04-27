@@ -245,7 +245,7 @@ int pplg_check_ver_export_stl(int ver_needed) { return 0; }
 
 void pplg_uninit_export_stl(void)
 {
-	pcb_remove_actions_by_cookie(stl_cookie);
+	rnd_remove_actions_by_cookie(stl_cookie);
 }
 
 int pplg_init_export_stl(void)

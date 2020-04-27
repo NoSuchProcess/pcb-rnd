@@ -50,7 +50,7 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t ttf_action_list[] = {
+rnd_action_t ttf_action_list[] = {
 	{"LoadTtfGlyphs", pcb_act_LoadTtfGlyphs, pcb_acth_LoadTtfGlyphs, pcb_acts_LoadTtfGlyphs}
 };
 
@@ -58,7 +58,7 @@ int pplg_check_ver_import_ttf(int ver_needed) { return 0; }
 
 void pplg_uninit_import_ttf(void)
 {
-	pcb_remove_actions_by_cookie(ttf_cookie);
+	rnd_remove_actions_by_cookie(ttf_cookie);
 }
 
 int pplg_init_import_ttf(void)

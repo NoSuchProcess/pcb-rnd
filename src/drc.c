@@ -73,7 +73,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (pcb_strcasecmp(dlg_type, "list") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "list";
-			return pcb_actionv_bin(PCB_ACT_HIDLIB, dlgact, res, 2, args);
+			return rnd_actionv_bin(PCB_ACT_HIDLIB, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}
@@ -81,7 +81,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "simple";
-			return pcb_actionv_bin(PCB_ACT_HIDLIB, dlgact, res, 2, args);
+			return rnd_actionv_bin(PCB_ACT_HIDLIB, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}
@@ -186,7 +186,7 @@ fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return view_dlg(res, argc, argv, dlg_type, "ioincompatlistdialog", &pcb_drc_lst, pcb_drc_all);
 }
 
-static pcb_action_t drc_action_list[] = {
+static rnd_action_t drc_action_list[] = {
 	{"DRC", pcb_act_DRC, pcb_acth_DRC, pcb_acts_DRC},
 	{"IOIncompatList", pcb_act_IOIncompatList, pcb_acth_IOIncompatList, pcb_acts_IOIncompatList},
 };

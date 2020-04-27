@@ -824,7 +824,7 @@ static int openems_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static pcb_action_t openems_action_list[] = {
+static rnd_action_t openems_action_list[] = {
 	{"mesh", pcb_act_mesh, pcb_acth_mesh, pcb_acts_mesh},
 	{"OpenemsExcitation", pcb_act_OpenemsExcitation, pcb_acth_OpenemsExcitation, pcb_acts_OpenemsExcitation}
 };
@@ -834,7 +834,7 @@ int pplg_check_ver_export_openems(int ver_needed) { return 0; }
 void pplg_uninit_export_openems(void)
 {
 	pcb_openems_excitation_uninit();
-	pcb_remove_actions_by_cookie(openems_cookie);
+	rnd_remove_actions_by_cookie(openems_cookie);
 	pcb_export_remove_opts_by_cookie(openems_cookie);
 }
 

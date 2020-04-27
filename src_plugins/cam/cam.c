@@ -201,7 +201,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t cam_action_list[] = {
+static rnd_action_t cam_action_list[] = {
 	{"cam", pcb_act_cam, pcb_acth_cam, pcb_acts_cam}
 };
 
@@ -284,7 +284,7 @@ void pplg_uninit_cam(void)
 {
 	pcb_conf_unreg_file(CAM_CONF_FN, cam_conf_internal);
 	pcb_conf_unreg_fields("plugins/cam/");
-	pcb_remove_actions_by_cookie(cam_cookie);
+	rnd_remove_actions_by_cookie(cam_cookie);
 	pcb_export_remove_opts_by_cookie(cam_cookie);
 }
 

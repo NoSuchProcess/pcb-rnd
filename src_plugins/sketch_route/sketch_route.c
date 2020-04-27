@@ -1170,7 +1170,7 @@ fgw_error_t pcb_act_sktransform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t sketch_route_action_list[] = {
+rnd_action_t sketch_route_action_list[] = {
 	{"skretriangulate", pcb_act_skretriangulate, pcb_acth_skretriangulate, pcb_acts_skretriangulate},
 	{"skline", pcb_act_skline, pcb_acth_skline, pcb_acts_skline},
 	{"sktransform", pcb_act_sktransform, pcb_acth_sktransform, pcb_acts_sktransform}
@@ -1180,7 +1180,7 @@ int pplg_check_ver_sketch_route(int ver_needed) { return 0; }
 
 void pplg_uninit_sketch_route(void)
 {
-	pcb_remove_actions_by_cookie(pcb_sketch_route_cookie);
+	rnd_remove_actions_by_cookie(pcb_sketch_route_cookie);
 	pcb_tool_unreg_by_cookie(pcb_sketch_route_cookie); /* should be done before pcb_tool_uninit, somehow */
 	sketches_uninit();
 }

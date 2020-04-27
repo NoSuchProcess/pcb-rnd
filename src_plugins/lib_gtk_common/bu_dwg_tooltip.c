@@ -54,7 +54,7 @@ gboolean pcb_gtk_dwg_tooltip_check_object(pcb_hidlib_t *hl, GtkWidget *drawing_a
 	argv[2].type = FGW_COORD_;
 	fgw_coord(&argv[2]) = crosshairy;
 
-	if (pcb_actionv_bin(hl, "DescribeLocation", &res, 3, argv) != 0)
+	if (rnd_actionv_bin(hl, "DescribeLocation", &res, 3, argv) != 0)
 		return FALSE;
 
 	description = res.val.cstr;

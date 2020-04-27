@@ -318,7 +318,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, arg = argv[3].val.str);
 		PCB_ACT_MAY_CONVARG(4, FGW_STR, query, scope = argv[4].val.str);
 
-		if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH_LIST))
+		if (!fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH_LIST))
 			return FGW_ERR_PTR_DOMAIN;
 
 		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, append_cb, list) < 0)
@@ -335,8 +335,8 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, view_cb, view) >= 0) {
 			args[1].type = FGW_STR; args[1].val.str = "advanced search results";
 			args[2].type = FGW_STR; args[2].val.str = "search_res";
-			fgw_ptr_reg(&pcb_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
-			pcb_actionv_bin(PCB_ACT_HIDLIB, "viewlist", &ares, 4, args);
+			fgw_ptr_reg(&rnd_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
+			rnd_actionv_bin(PCB_ACT_HIDLIB, "viewlist", &ares, 4, args);
 			PCB_ACT_IRES(0);
 		}
 		else {
@@ -475,11 +475,11 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if ((argv[2].type & FGW_PTR) == FGW_PTR) {
 		id:;
 		PCB_ACT_CONVARG(2, FGW_PTR, QueryObj, fld = argv[2].val.ptr_void);
-		if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
+		if (!fgw_ptr_in_domain(&rnd_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
 			return FGW_ERR_PTR_DOMAIN;
 	}
 
-	if ((fld == NULL) || (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PCB_PTR_DOMAIN_IDPATH))) {
+	if ((fld == NULL) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_IDPATH))) {
 		if (free_fld)
 			field_free(fld);
 		return FGW_ERR_PTR_DOMAIN;
@@ -530,13 +530,13 @@ static fgw_error_t pcb_act_QueryCompileField(fgw_arg_t *res, int argc, fgw_arg_t
 		case 'c': /* compile */
 			PCB_ACT_CONVARG(2, FGW_STR, QueryCompileField, fname = argv[2].val.str);
 			fld = field_comp(fname);
-			fgw_ptr_reg(&pcb_fgw, res, PTR_DOMAIN_PCFIELD, FGW_PTR | FGW_STRUCT, fld);
+			fgw_ptr_reg(&rnd_fgw, res, PTR_DOMAIN_PCFIELD, FGW_PTR | FGW_STRUCT, fld);
 			return 0;
 		case 'f': /* free */
-			if (!fgw_ptr_in_domain(&pcb_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
+			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
 				return FGW_ERR_PTR_DOMAIN;
 			PCB_ACT_CONVARG(2, FGW_PTR, QueryCompileField, fld = argv[2].val.ptr_void);
-			fgw_ptr_unreg(&pcb_fgw, &argv[2], PTR_DOMAIN_PCFIELD);
+			fgw_ptr_unreg(&rnd_fgw, &argv[2], PTR_DOMAIN_PCFIELD);
 			field_free(fld);
 			break;
 		default:
@@ -547,7 +547,7 @@ static fgw_error_t pcb_act_QueryCompileField(fgw_arg_t *res, int argc, fgw_arg_t
 	return 0;
 }
 
-pcb_action_t query_action_list[] = {
+rnd_action_t query_action_list[] = {
 	{"query", pcb_act_query, pcb_acth_query, pcb_acts_query},
 	{"QueryObj", pcb_act_QueryObj, pcb_acth_QueryObj, pcb_acts_QueryObj},
 	{"QueryCompileField", pcb_act_QueryCompileField, pcb_acth_QueryCompileField, pcb_acts_QueryCompileField}

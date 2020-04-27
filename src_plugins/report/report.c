@@ -367,7 +367,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	char *op = NULL, *how = NULL;
 	pcb_subc_t *subc;
 	pcb_coord_t x, y;
-	pcb_hid_get_coords("Click on object to report on", &x, &y, 0);
+	rnd_hid_get_coords("Click on object to report on", &x, &y, 0);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, reportdialog, how = argv[2].val.str);
@@ -640,7 +640,7 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 		int type;
 		pcb_coord_t ox, oy, x, y;
 
-		pcb_hid_get_coords("Click on a copper line", &x, &y, 0);
+		rnd_hid_get_coords("Click on a copper line", &x, &y, 0);
 
 		type = pcb_search_screen(x, y, PCB_OBJ_LINE, &r1, &r2, &r3);
 		if (type != PCB_OBJ_LINE) {
@@ -685,7 +685,7 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 	}
 	else {
 		pcb_coord_t x, y;
-		pcb_hid_get_coords("Click on a network", &x, &y, 0);
+		rnd_hid_get_coords("Click on a network", &x, &y, 0);
 		return report_net_length_(res, argc, argv, x, y);
 	}
 }
@@ -770,15 +770,15 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
 
 	if (pcb_strcasecmp(cmd, "Object") == 0) {
-		pcb_hid_get_coords("Click on an object", &x, &y, 0);
+		rnd_hid_get_coords("Click on an object", &x, &y, 0);
 		return pcb_act_report_dialog(res, argc, argv);
 	}
 	else if (pcb_strncasecmp(cmd, "Subc", 4) == 0) {
-		pcb_hid_get_coords("Click on a subcircuit", &x, &y, 0);
+		rnd_hid_get_coords("Click on a subcircuit", &x, &y, 0);
 		return pcb_act_report_dialog(res, argc, argv);
 	}
 
-	pcb_hid_get_coords("Click on object to report on", &x, &y, 0);
+	rnd_hid_get_coords("Click on object to report on", &x, &y, 0);
 
 	if (pcb_strcasecmp(cmd, "DrillReport") == 0)
 		return report_drills(res, argc, argv);
@@ -818,7 +818,7 @@ static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t report_action_list[] = {
+rnd_action_t report_action_list[] = {
 	{"ReportObject", pcb_act_report_dialog, pcb_acth_reportdialog, pcb_acts_reportdialog},
 	{"Report", pcb_act_Report, pcb_acth_Report, pcb_acts_Report},
 	{"Info", pcb_act_info}
@@ -830,7 +830,7 @@ int pplg_check_ver_report(int ver_needed) { return 0; }
 
 void pplg_uninit_report(void)
 {
-	pcb_remove_actions_by_cookie(report_cookie);
+	rnd_remove_actions_by_cookie(report_cookie);
 	pcb_conf_unreg_fields("plugins/report/");
 }
 

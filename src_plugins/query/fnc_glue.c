@@ -50,14 +50,14 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 					long i;
 					pcb_idpath_list_t *list = calloc(sizeof(pcb_idpath_list_t), 1);
 					for(i = 0; i < argv[n].data.lst.used; i++) {
-						fgw_ptr_reg(&pcb_fgw, &tmp, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, pcb_obj2idpath(argv[n].data.lst.array[i]));
+						fgw_ptr_reg(&rnd_fgw, &tmp, RND_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, pcb_obj2idpath(argv[n].data.lst.array[i]));
 						pcb_idpath_list_append(list, fgw_idpath(&tmp));
 					}
-					fgw_ptr_reg(&pcb_fgw, &(arga[n]), PCB_PTR_DOMAIN_IDPATH_LIST, FGW_PTR | FGW_STRUCT, list);
+					fgw_ptr_reg(&rnd_fgw, &(arga[n]), RND_PTR_DOMAIN_IDPATH_LIST, FGW_PTR | FGW_STRUCT, list);
 				}
 				break;
 			case PCBQ_VT_OBJ:
-				fgw_ptr_reg(&pcb_fgw, &(arga[n]), PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, pcb_obj2idpath(argv[n].data.obj));
+				fgw_ptr_reg(&rnd_fgw, &(arga[n]), RND_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, pcb_obj2idpath(argv[n].data.obj));
 				break;
 			case PCBQ_VT_COORD:
 				arga[n].type = FGW_COORD;
@@ -78,7 +78,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 		}
 	}
 
-	if (pcb_actionv_bin(&ectx->pcb->hidlib, argv[0].data.str, &resa, argc, arga) != 0) {
+	if (rnd_actionv_bin(&ectx->pcb->hidlib, argv[0].data.str, &resa, argc, arga) != 0) {
 		retv = -1;
 		goto fin;
 	}
@@ -95,16 +95,16 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	} \
-	else if (fgw_ptr_in_domain(&pcb_fgw, val, PCB_PTR_DOMAIN_IDPATH)) { \
+	else if (fgw_ptr_in_domain(&rnd_fgw, val, RND_PTR_DOMAIN_IDPATH)) { \
 		pcb_idpath_t *idp = val; \
 		res->type = PCBQ_VT_OBJ; \
 		res->data.obj = pcb_idpath2obj(ectx->pcb, idp); \
 		pcb_idpath_list_remove(idp); \
-		fgw_ptr_unreg(&pcb_fgw, &resa, PCB_PTR_DOMAIN_IDPATH); \
+		fgw_ptr_unreg(&rnd_fgw, &resa, RND_PTR_DOMAIN_IDPATH); \
 		free(idp); \
 		goto fin; \
 	} \
-	else if (fgw_ptr_in_domain(&pcb_fgw, val, PCB_PTR_DOMAIN_IDPATH_LIST)) { \
+	else if (fgw_ptr_in_domain(&rnd_fgw, val, RND_PTR_DOMAIN_IDPATH_LIST)) { \
 		pcb_message(PCB_MSG_ERROR, "query action(): can not convert object list yet\n"); \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
@@ -117,7 +117,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 
 	arg = &resa;
 	if (FGW_IS_TYPE_CUSTOM(resa.type))
-		fgw_arg_conv(&pcb_fgw, &resa, FGW_AUTO);
+		fgw_arg_conv(&rnd_fgw, &resa, FGW_AUTO);
 
 	switch(FGW_BASE_TYPE(resa.type)) {
 		ARG_CONV_CASE_LONG(lst, FGW_TO_QRY_NUM);
@@ -151,7 +151,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 		}
 	}
 
-	fgw_arg_free(&pcb_fgw, &resa);
+	fgw_arg_free(&rnd_fgw, &resa);
 	return retv;
 }
 

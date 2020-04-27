@@ -546,7 +546,7 @@ pcb_hid_t *pcb_hid_nogui_get_hid(void)
 }
 
 
-static pcb_action_t cli_dlg_action_list[] = {
+static rnd_action_t cli_dlg_action_list[] = {
 	{"cli_PromptFor", pcb_act_cli_PromptFor, pcb_acth_cli, NULL},
 	{"cli_MessageBox", pcb_act_cli_MessageBox, pcb_acth_cli, NULL}
 };

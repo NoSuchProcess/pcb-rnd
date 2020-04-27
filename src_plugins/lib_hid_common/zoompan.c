@@ -84,7 +84,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (v <= 0)
 		return FGW_ERR_ARG_CONV;
 
-	pcb_hid_get_coords("Select zoom center", &x, &y, 0);
+	rnd_hid_get_coords("Select zoom center", &x, &y, 0);
 	switch (ovp[0]) {
 	case '-':
 		pcb_gui->zoom(pcb_gui, x, y, 1 / v, 1);
@@ -112,7 +112,7 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_GUI_NOGUI();
 
-	pcb_hid_get_coords("Click on a place to pan", &x, &y, 0);
+	rnd_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
 	PCB_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
 	pcb_gui->pan_mode(pcb_gui, x, y, mode);
@@ -129,7 +129,7 @@ fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	PCB_GUI_NOGUI();
 
-	pcb_hid_get_coords("Click to center", &x, &y, 0);
+	rnd_hid_get_coords("Click to center", &x, &y, 0);
 
 	if (argc != 1)
 		PCB_ACT_FAIL(Center);

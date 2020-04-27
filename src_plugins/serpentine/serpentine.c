@@ -436,7 +436,7 @@ fgw_error_t pcb_act_serpentine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-pcb_action_t serpentine_action_list[] = {
+rnd_action_t serpentine_action_list[] = {
   {"Serpentine", pcb_act_serpentine, pcb_acth_serpentine, pcb_acts_serpentine}
 };
 
@@ -444,7 +444,7 @@ int pplg_check_ver_serpentine(int ver_needed) { return 0; }
 
 void pplg_uninit_serpentine(void)
 {
-	pcb_remove_actions_by_cookie(serpentine_cookie);
+	rnd_remove_actions_by_cookie(serpentine_cookie);
 	pcb_tool_unreg_by_cookie(serpentine_cookie);
 	pcb_conf_unreg_fields("plugins/serpentine/");
 }

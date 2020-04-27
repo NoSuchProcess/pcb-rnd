@@ -61,7 +61,7 @@ int pcb_hid_get_flag(pcb_hidlib_t *hidlib, const char *name)
 		const char *end, *s;
 		fgw_arg_t res, argv[2];
 		if (cp != NULL) {
-			const pcb_action_t *a;
+			const rnd_action_t *a;
 			fgw_func_t *f;
 			char buff[256];
 			int len, multiarg;
@@ -72,7 +72,7 @@ int pcb_hid_get_flag(pcb_hidlib_t *hidlib, const char *name)
 			}
 			memcpy(buff, name, len);
 			buff[len] = '\0';
-			a = pcb_find_action(buff, &f);
+			a = rnd_find_action(buff, &f);
 			if (!a) {
 				pcb_message(PCB_MSG_ERROR, "hid_get_flag: no action %s\n", name);
 				return -1;
@@ -104,14 +104,14 @@ int pcb_hid_get_flag(pcb_hidlib_t *hidlib, const char *name)
 				argv[1].type = FGW_STR;
 				argv[1].val.str = buff;
 				res.type = FGW_INVALID;
-				if (pcb_actionv_(f, &res, (len > 0) ? 2 : 1, argv) != 0)
+				if (rnd_actionv_(f, &res, (len > 0) ? 2 : 1, argv) != 0)
 					return -1;
-				fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+				fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
 				return res.val.nat_int;
 			}
 			else {
 				/* slower but more generic way */
-				return pcb_parse_command(hidlib, name, pcb_true);
+				return rnd_parse_command(hidlib, name, pcb_true);
 			}
 		}
 		else {

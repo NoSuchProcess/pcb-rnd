@@ -335,7 +335,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t dsn_action_list[] = {
+rnd_action_t dsn_action_list[] = {
 	{"LoadDsnFrom", pcb_act_LoadDsnFrom, pcb_acth_LoadDsnFrom, pcb_acts_LoadDsnFrom}
 };
 
@@ -343,7 +343,7 @@ int pplg_check_ver_import_dsn(int ver_needed) { return 0; }
 
 void pplg_uninit_import_dsn(void)
 {
-	pcb_remove_actions_by_cookie(dsn_cookie);
+	rnd_remove_actions_by_cookie(dsn_cookie);
 
 }
 

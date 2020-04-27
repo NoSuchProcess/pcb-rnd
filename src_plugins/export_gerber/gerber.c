@@ -1011,7 +1011,7 @@ static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 {
 	pcb_dad_retovr_t retovr;
 	pcb_hid_dad_close(hid_ctx, &retovr, -1);
-	pcb_actionva(&PCB->hidlib, "cam", NULL);
+	rnd_actionva(&PCB->hidlib, "cam", NULL);
 }
 
 

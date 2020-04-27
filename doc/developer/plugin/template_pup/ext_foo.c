@@ -41,7 +41,7 @@ static fgw_error_t pcb_act_ExtFoo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const pcb_action_t ext_foo_action_list[] = {
+static const rnd_action_t ext_foo_action_list[] = {
 	{"ExtFoo", pcb_act_ExtFoo, pcb_acth_ExtFoo, pcb_acts_ExtFoo}
 };
 
@@ -50,7 +50,7 @@ int pplg_check_ver_ext_foo(int ver_needed) { return 0; }
 void pplg_uninit_ext_foo(void)
 {
 	fprintf(stderr, "EXT FOO uninit\n");
-	pcb_remove_actions_by_cookie(ext_foo_cookie);
+	rnd_remove_actions_by_cookie(ext_foo_cookie);
 }
 
 

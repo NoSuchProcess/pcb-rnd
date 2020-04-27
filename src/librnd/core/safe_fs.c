@@ -127,7 +127,7 @@ FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode,
 					argv[2].type = FGW_INT;  argv[2].val.nat_int = (all != NULL);
 					ares.type = FGW_INVALID;
 
-					if ((pcb_actionv_(fun, &ares, 3, argv) != 0) || (fgw_arg_conv(&pcb_fgw, &ares, FGW_INT) != 0))
+					if ((rnd_actionv_(fun, &ares, 3, argv) != 0) || (fgw_arg_conv(&rnd_fgw, &ares, FGW_INT) != 0))
 						res = -1;
 					else
 						res = ares.val.nat_int;

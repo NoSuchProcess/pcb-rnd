@@ -54,16 +54,16 @@ static const char *infobar_cookie = "lib_hid_pcbui/infobar";
 static const char *title_cookie = "lib_hid_pcbui/title";
 static const char *layersel_cookie = "lib_hid_pcbui/layersel";
 
-static pcb_action_t rst_action_list[] = {
+static rnd_action_t rst_action_list[] = {
 	{"AdjustStyle", pcb_act_AdjustStyle, pcb_acth_AdjustStyle, pcb_acts_AdjustStyle}
 };
 
-static pcb_action_t status_action_list[] = {
+static rnd_action_t status_action_list[] = {
 	{"StatusSetText", pcb_act_StatusSetText, pcb_acth_StatusSetText, pcb_acts_StatusSetText},
 	{"DescribeLocation", pcb_act_DescribeLocation, pcb_acth_DescribeLocation, pcb_acts_DescribeLocation}
 };
 
-static pcb_action_t act_action_list[] = {
+static rnd_action_t act_action_list[] = {
 	{"Zoom", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom_},
 	{"ZoomTo", pcb_act_Zoom, pcb_acth_Zoom, pcb_acts_Zoom_},
 	{"SwapSides", pcb_act_SwapSides, pcb_acth_SwapSides, pcb_acts_SwapSides},
@@ -76,9 +76,9 @@ int pplg_check_ver_lib_hid_pcbui(int ver_needed) { return 0; }
 
 void pplg_uninit_lib_hid_pcbui(void)
 {
-	pcb_remove_actions_by_cookie(rst_cookie);
-	pcb_remove_actions_by_cookie(status_cookie);
-	pcb_remove_actions_by_cookie(act_cookie);
+	rnd_remove_actions_by_cookie(rst_cookie);
+	rnd_remove_actions_by_cookie(status_cookie);
+	rnd_remove_actions_by_cookie(act_cookie);
 	pcb_event_unbind_allcookie(layer_cookie);
 	pcb_event_unbind_allcookie(rst_cookie);
 	pcb_event_unbind_allcookie(status_cookie);

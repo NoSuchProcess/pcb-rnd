@@ -209,7 +209,7 @@ TODO("use pcb_drc_lines(), probably during A*, saving mid-point, and draw pairs 
 	return 0;
 }
 
-pcb_action_t acompnet_action_list[] = {
+rnd_action_t acompnet_action_list[] = {
 	{"acompnet", pcb_act_acompnet, pcb_acth_acompnet, pcb_acts_acompnet},
 };
 
@@ -219,7 +219,7 @@ int pplg_check_ver_acompnet(int ver_needed) { return 0; }
 
 void pplg_uninit_acompnet(void)
 {
-	pcb_remove_actions_by_cookie(acompnet_cookie);
+	rnd_remove_actions_by_cookie(acompnet_cookie);
 	pcb_uilayer_free_all_cookie(acompnet_cookie);
 }
 

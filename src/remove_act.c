@@ -62,7 +62,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_idpath_t *idp;
 			pcb_any_obj_t *obj;
 			PCB_ACT_CONVARG(2, FGW_IDPATH, Delete, idp = fgw_idpath(&argv[2]));
-			if ((idp == NULL) || !fgw_ptr_in_domain(&pcb_fgw, &argv[2], PCB_PTR_DOMAIN_IDPATH))
+			if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 				return FGW_ERR_PTR_DOMAIN;
 			obj = pcb_idpath2obj(PCB, idp);
 			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
@@ -73,7 +73,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else { /* interactive remove */
 			pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
-			pcb_hid_get_coords("Click on object to delete", &hidlib->tool_x, &hidlib->tool_y, 0);
+			rnd_hid_get_coords("Click on object to delete", &hidlib->tool_x, &hidlib->tool_y, 0);
 			pcb_tool_save(PCB_ACT_HIDLIB);
 			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "remove");
 			pcb_tool_do_press(PCB_ACT_HIDLIB);
@@ -108,7 +108,7 @@ static fgw_error_t pcb_act_RemoveSelected(fgw_arg_t *res, int argc, fgw_arg_t *a
 }
 
 
-static pcb_action_t remove_action_list[] = {
+static rnd_action_t remove_action_list[] = {
 	{"Delete", pcb_act_Delete, pcb_acth_Delete, pcb_acts_Delete},
 	{"PcbDelete", pcb_act_Delete, NULL, "Alias to Delete()"},
 	{"RemoveSelected", pcb_act_RemoveSelected, pcb_acth_RemoveSelected, pcb_acts_RemoveSelected}

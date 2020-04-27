@@ -136,7 +136,7 @@ static int hpgl_load(const char *fname)
 			pcb_message(PCB_MSG_ERROR, "Error loading HP-GL: could not load any object from %s\n", fname);
 			return 0;
 		}
-		pcb_actionva(&PCB->hidlib, "mode", "buffer", NULL);
+		rnd_actionva(&PCB->hidlib, "mode", "buffer", NULL);
 		return 0;
 	}
 
@@ -171,7 +171,7 @@ fgw_error_t pcb_act_LoadHpglFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return hpgl_load(fname);
 }
 
-pcb_action_t hpgl_action_list[] = {
+rnd_action_t hpgl_action_list[] = {
 	{"LoadHpglFrom", pcb_act_LoadHpglFrom, pcb_acth_LoadHpglFrom, pcb_acts_LoadHpglFrom}
 };
 
@@ -179,7 +179,7 @@ int pplg_check_ver_import_hpgl(int ver_needed) { return 0; }
 
 void pplg_uninit_import_hpgl(void)
 {
-	pcb_remove_actions_by_cookie(hpgl_cookie);
+	rnd_remove_actions_by_cookie(hpgl_cookie);
 }
 
 int pplg_init_import_hpgl(void)

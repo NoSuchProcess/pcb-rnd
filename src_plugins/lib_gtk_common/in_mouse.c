@@ -173,7 +173,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 		return pcb_false;
 
 	getting_loc = 1;
-	pcb_actionva(ctx->hidlib, "StatusSetText", message, NULL);
+	rnd_actionva(ctx->hidlib, "StatusSetText", message, NULL);
 
 	
 	chst = pcb_hidlib_crosshair_suspend(ctx->hidlib);
@@ -209,7 +209,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	pcb_hidlib_crosshair_restore(ctx->hidlib, chst);
 	ghid_restore_cursor(ctx);
 
-	pcb_actionva(ctx->hidlib, "StatusSetText", NULL);
+	rnd_actionva(ctx->hidlib, "StatusSetText", NULL);
 	getting_loc = 0;
 	return lctx.got_location;
 }

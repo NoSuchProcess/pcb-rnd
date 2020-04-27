@@ -257,24 +257,24 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 	argv[0].type = FGW_VOID;
 	argv[1].type = FGW_STR | FGW_DYN;
 	argv[1].val.str = pcb_strdup_printf("#%02x%02x%02x", clr->r, clr->g, clr->b);
-	rs = pcb_actionv_bin(ltf_hidlib, CPACT, &res, 2, argv);
+	rs = rnd_actionv_bin(ltf_hidlib, CPACT, &res, 2, argv);
 	if (rs != 0)
 		return;
 
 	if (!(res.type & FGW_STR)) {
 		pcb_message(PCB_MSG_ERROR, CPACT " returned non-string\n");
-		fgw_arg_free(&pcb_fgw, &res);
+		fgw_arg_free(&rnd_fgw, &res);
 		return;
 	}
 
 	r = pcb_color_load_str(&nclr, res.val.str);
-	fgw_arg_free(&pcb_fgw, &res);
+	fgw_arg_free(&rnd_fgw, &res);
 	if (r != 0) {
 		pcb_message(PCB_MSG_ERROR, CPACT " returned invalid color string\n");
 		return;
 	}
 
-	fgw_arg_free(&pcb_fgw, &res);
+	fgw_arg_free(&rnd_fgw, &res);
 	pcb_ltf_color_button_recolor(display, w, &nclr);
 	ctx->attrs[widx].val.clr = nclr;
 	valchg(w, dlg_widget_, w);

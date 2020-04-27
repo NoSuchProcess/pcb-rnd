@@ -291,7 +291,7 @@ static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, GetXY, op = argv[2].val.str);
 
-	pcb_hid_get_coords(msg, &x, &y, 0);
+	rnd_hid_get_coords(msg, &x, &y, 0);
 
 	PCB_ACT_IRES(0);
 	if (op != NULL) {
@@ -332,7 +332,7 @@ static const char pcb_acts_Help[] = "Help()";
 static const char pcb_acth_Help[] = "On-line action help";
 static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_print_actions();
+	rnd_print_actions();
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -346,7 +346,7 @@ static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t rnd_gui_action_list[] = {
+static rnd_action_t rnd_gui_action_list[] = {
 	{"FullScreen", pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen},
 	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},
 	{"RemoveMenu", pcb_act_RemoveMenu, pcb_acth_RemoveMenu, pcb_acts_RemoveMenu},

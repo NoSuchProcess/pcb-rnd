@@ -54,7 +54,7 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 static void drc_rules_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva(&PCB->hidlib, attr->user_data, NULL);
+	rnd_actionva(&PCB->hidlib, attr->user_data, NULL);
 }
 
 static pref_confitem_t drc_sizes[] = {

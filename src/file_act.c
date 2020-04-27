@@ -285,14 +285,14 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* shorthand kept only for compatibility reasons - do not use */
 		case F_AllConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllConnections", name, NULL);
+			return rnd_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllConnections", name, NULL);
 		case F_AllUnusedPins:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllUnusedPins", name, NULL);
+			return rnd_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllUnusedPins", name, NULL);
 		case F_ElementConnections:
 		case F_SubcConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return pcb_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "SubcConnections", name, NULL);
+			return rnd_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "SubcConnections", name, NULL);
 	}
 
 	PCB_ACT_FAIL(SaveTo);
@@ -318,7 +318,7 @@ static int save_fmt_dialog(const char *title, const char *descr, char **default_
 		argv[3].type = FGW_STR; argv[3].val.str = "fp";
 		argv[4].type = FGW_STR; argv[4].val.cstr = descr;
 		argv[5].type = FGW_STR; argv[5].val.cstr = conf_core.rc.save_fp_fmt;
-		err = pcb_actionv_(f, &res, 5, argv);
+		err = rnd_actionv_(f, &res, 5, argv);
 		if ((err != 0) || (res.val.str == NULL)) /* cancel */
 			return -1;
 		if ((res.type & (FGW_STR | FGW_DYN)) != (FGW_STR | FGW_DYN)) {
@@ -532,7 +532,7 @@ static fgw_error_t pcb_act_Backup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-pcb_action_t file_action_list[] = {
+rnd_action_t file_action_list[] = {
 	{"Backup", pcb_act_Backup, pcb_acth_Backup, pcb_acts_Backup},
 	{"Export", pcb_act_Export, pcb_acth_Export, pcb_acts_Export},
 	{"LoadFrom", pcb_act_LoadFrom, pcb_acth_LoadFrom, pcb_acts_LoadFrom},

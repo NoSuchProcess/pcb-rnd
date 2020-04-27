@@ -112,7 +112,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 	}
 
-	if (pcb_actionva(PCB_ACT_HIDLIB, "New", "Font", 0))
+	if (rnd_actionva(PCB_ACT_HIDLIB, "New", "Font", 0))
 		return 1;
 
 	pcb_conf_set(CFR_DESIGN, "editor/grid_unit", -1, "mil", POL_OVERWRITE);
@@ -338,13 +338,13 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_font_set_info(font);
-	pcb_actionva(PCB_ACT_HIDLIB, "SaveFontTo", NULL);
+	rnd_actionva(PCB_ACT_HIDLIB, "SaveFontTo", NULL);
 
 	PCB_ACT_IRES(0);
 	return 0;
 }
 
-pcb_action_t fontmode_action_list[] = {
+rnd_action_t fontmode_action_list[] = {
 	{"FontEdit", pcb_act_FontEdit, pcb_acth_fontedit, pcb_acts_fontedit},
 	{"FontSave", pcb_act_FontSave, pcb_acth_fontsave, pcb_acts_fontsave}
 };
@@ -355,7 +355,7 @@ int pplg_check_ver_fontmode(int ver_needed) { return 0; }
 
 void pplg_uninit_fontmode(void)
 {
-	pcb_remove_actions_by_cookie(fontmode_cookie);
+	rnd_remove_actions_by_cookie(fontmode_cookie);
 }
 
 int pplg_init_fontmode(void)

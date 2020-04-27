@@ -119,7 +119,7 @@ static void fontsel_preview_update(fontsel_ctx_t *ctx)
 
 static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva(&PCB->hidlib, "LoadFontFrom", NULL); /* modal, blocking */
+	rnd_actionva(&PCB->hidlib, "LoadFontFrom", NULL); /* modal, blocking */
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
@@ -127,7 +127,7 @@ static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	char file[1] = "", id[5];
 	pcb_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
-	pcb_actionva(&PCB->hidlib, "LoadFontFrom", file, id, NULL); /* modal, blocking */
+	rnd_actionva(&PCB->hidlib, "LoadFontFrom", file, id, NULL); /* modal, blocking */
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
@@ -215,7 +215,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;
-			pcb_hid_get_coords("Select an Object", &x, &y, 0);
+			rnd_hid_get_coords("Select an Object", &x, &y, 0);
 			if ((type = pcb_search_screen(x, y, PCB_CHANGENAME_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 				txt_obj = ptr2;
 				modal = 0;

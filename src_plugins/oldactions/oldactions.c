@@ -150,7 +150,7 @@ static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(i, FGW_STR, debugxy, s = argv[i].val.str);
 		printf(" [%d] `%s'", i, s);
 	}
-	pcb_hid_get_coords("Click X,Y for Debug", &x, &y, 0);
+	rnd_hid_get_coords("Click X,Y for Debug", &x, &y, 0);
 	pcb_printf(" x,y %$mD\n", x, y);
 	PCB_ACT_IRES(0);
 	return 0;
@@ -291,7 +291,7 @@ static const char pcb_acth_ImportGUI[] = "Asks user which schematics to import i
 static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
-	PCB_ACT_IRES(pcb_actionva(PCB_ACT_HIDLIB, "ImportSch", NULL));
+	PCB_ACT_IRES(rnd_actionva(PCB_ACT_HIDLIB, "ImportSch", NULL));
 	return 0;
 }
 
@@ -371,7 +371,7 @@ static fgw_error_t pcb_act_ClearOctagon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 1;
 }
 
-pcb_action_t oldactions_action_list[] = {
+rnd_action_t oldactions_action_list[] = {
 	{"DumpLibrary", pcb_act_DumpLibrary, pcb_acth_DumpLibrary, pcb_acts_DumpLibrary},
 	{"Bell", pcb_act_Bell, pcb_acth_Bell, pcb_acts_Bell},
 	{"Debug", pcb_act_Debug, pcb_acth_debug, pcb_acts_debug},
@@ -407,7 +407,7 @@ int pplg_check_ver_oldactions(int ver_needed) { return 0; }
 
 void pplg_uninit_oldactions(void)
 {
-	pcb_remove_actions_by_cookie(oldactions_cookie);
+	rnd_remove_actions_by_cookie(oldactions_cookie);
 }
 
 int pplg_init_oldactions(void)

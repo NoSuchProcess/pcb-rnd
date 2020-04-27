@@ -856,7 +856,7 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		lesstif_show_library();
 	}
 	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
-		pcb_actionva(ltf_hidlib, "LogDialog", NULL);
+		rnd_actionva(ltf_hidlib, "LogDialog", NULL);
 	}
 	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
 		lesstif_show_netlist();
@@ -1188,7 +1188,7 @@ pcb_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
 
 /* ------------------------------------------------------------ */
 
-static pcb_action_t ltf_dialog_action_list[] = {
+static rnd_action_t ltf_dialog_action_list[] = {
 	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
 	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes}
 };

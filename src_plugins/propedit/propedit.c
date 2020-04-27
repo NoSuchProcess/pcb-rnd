@@ -142,7 +142,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 	else {
 		char *end;
 		pcb_idpath_t *idp = (void *)strtol(cmd, &end, 0);
-		if ((*end == '\0') && (idp != NULL) && (htpp_get(&pcb_fgw.ptr_tbl, idp) == PCB_PTR_DOMAIN_IDPATH)) {
+		if ((*end == '\0') && (idp != NULL) && (htpp_get(&rnd_fgw.ptr_tbl, idp) == RND_PTR_DOMAIN_IDPATH)) {
 			pcb_idpath_list_append(&pe->objs, idp);
 			return 0;
 		}
@@ -335,7 +335,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char *propedit_cookie = "propedit";
 
-pcb_action_t propedit_action_list[] = {
+rnd_action_t propedit_action_list[] = {
 	{"propedit", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
 	{"propprint", pcb_act_propprint, pcb_acth_propprint, pcb_acts_propprint},
 	{"propset", pcb_act_propset, pcb_acth_propset, pcb_acts_propset},
@@ -347,7 +347,7 @@ int pplg_check_ver_propedit(int ver_needed) { return 0; }
 void pplg_uninit_propedit(void)
 {
 	pcb_propdlg_uninit();
-	pcb_remove_actions_by_cookie(propedit_cookie);
+	rnd_remove_actions_by_cookie(propedit_cookie);
 }
 
 int pplg_init_propedit(void)

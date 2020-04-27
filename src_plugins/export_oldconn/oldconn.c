@@ -289,7 +289,7 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ElementConnections:
 		case F_SubcConnections:
-			pcb_hid_get_coords("Click on a subc", &x, &y, 0);
+			rnd_hid_get_coords("Click on a subc", &x, &y, 0);
 			if (pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *) ptrtmp;
 				f = pcb_check_and_open_file(name);
@@ -303,7 +303,7 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_FAIL(ExportOldConn);
 }
 
-static pcb_action_t oldconn_action_list[] = {
+static rnd_action_t oldconn_action_list[] = {
 	{"ExportOldConn", pcb_act_ExportOldConn, pcb_acth_ExportOldConn, pcb_acts_ExportOldConn}
 };
 
@@ -311,7 +311,7 @@ int pplg_check_ver_export_oldconn(int ver_needed) { return 0; }
 
 void pplg_uninit_export_oldconn(void)
 {
-	pcb_remove_actions_by_cookie(oldconn_cookie);
+	rnd_remove_actions_by_cookie(oldconn_cookie);
 }
 
 int pplg_init_export_oldconn(void)

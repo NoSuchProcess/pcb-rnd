@@ -48,7 +48,7 @@ static const char pcb_acts_PrintActions[] = "PrintActions()";
 static const char pcb_acth_PrintActions[] = "Print all actions available.";
 fgw_error_t pcb_act_PrintActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_print_actions();
+	rnd_print_actions();
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -57,7 +57,7 @@ static const char pcb_acts_DumpActions[] = "DumpActions()";
 static const char pcb_acth_DumpActions[] = "Dump all actions available.";
 fgw_error_t pcb_act_DumpActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_dump_actions();
+	rnd_dump_actions();
 	PCB_ACT_IRES(0);
 	return 0;
 }
@@ -120,7 +120,7 @@ fgw_error_t pcb_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t rnd_main_action_list[] = {
+static rnd_action_t rnd_main_action_list[] = {
 	{"PrintActions", pcb_act_PrintActions, pcb_acth_PrintActions, pcb_acts_PrintActions},
 	{"DumpActions", pcb_act_DumpActions, pcb_acth_DumpActions, pcb_acts_DumpActions},
 	{"PrintFiles", pcb_act_PrintFiles, pcb_acth_PrintFiles, pcb_acts_PrintFiles},

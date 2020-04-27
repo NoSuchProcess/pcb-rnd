@@ -58,7 +58,7 @@ static void pcb_tool_buffer_notify_mode_(pcb_hidlib_t *hl, pcb_bool keep_ids)
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if (pcb_gui->shift_is_pressed(pcb_gui)) {
-		pcb_actionva(hl, "ReplaceFootprint", "object", "@buffer", "dumb", NULL);
+		rnd_actionva(hl, "ReplaceFootprint", "object", "@buffer", "dumb", NULL);
 		return;
 	}
 

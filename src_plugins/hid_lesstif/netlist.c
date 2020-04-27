@@ -123,17 +123,17 @@ static void nbcb_rat_off(pcb_net_t *net, int pos)
 
 static void nbcb_select(pcb_net_t *net, int pos)
 {
-	pcb_actionva(ltf_hidlib, "netlist", "select", net->name, NULL);
+	rnd_actionva(ltf_hidlib, "netlist", "select", net->name, NULL);
 }
 
 static void nbcb_deselect(pcb_net_t *net, int pos)
 {
-	pcb_actionva(ltf_hidlib, "netlist", "unselect", net->name, NULL);
+	rnd_actionva(ltf_hidlib, "netlist", "unselect", net->name, NULL);
 }
 
 static void nbcb_find(pcb_net_t *net, int pos)
 {
-	pcb_actionva(ltf_hidlib, "netlist", "find", net->name, NULL);
+	rnd_actionva(ltf_hidlib, "netlist", "find", net->name, NULL);
 }
 
 static void nbcb_std_callback(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStruct * cbs)
@@ -144,7 +144,7 @@ static void nbcb_std_callback(Widget w, Std_Nbcb_Func v, XmPushButtonCallbackStr
 	if (XmListGetSelectedPos(netlist_list, &posl, &posc) == False)
 		return;
 	if (v == nbcb_find)
-		pcb_actionva(ltf_hidlib, "connection", "reset", NULL);
+		rnd_actionva(ltf_hidlib, "connection", "reset", NULL);
 
 	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]), i = 0; e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e), i++) {
 		pcb_net_t *net = e->value;
@@ -439,7 +439,7 @@ void lesstif_show_netlist()
 	XtAddEventHandler(XtParent(netlist_dialog), StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "netlist");
 }
 
-static pcb_action_t ltf_netlist_action_list[] = {
+static rnd_action_t ltf_netlist_action_list[] = {
 	{"NetlistShow", pcb_act_LesstifNetlistShow, pcb_acth_LesstifNetlistShow, pcb_acts_LesstifNetlistShow}
 };
 

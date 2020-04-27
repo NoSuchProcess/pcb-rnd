@@ -59,7 +59,7 @@ int pplg_check_ver_io_bxl(int ver_needed) { return 0; }
 
 void pplg_uninit_io_bxl(void)
 {
-	pcb_remove_actions_by_cookie(bxl_cookie);
+	rnd_remove_actions_by_cookie(bxl_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_bxl);
 }
 

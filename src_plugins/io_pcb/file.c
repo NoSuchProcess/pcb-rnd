@@ -1008,7 +1008,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, pcb_bool setup)
 		pcb_layer_add_in_group_(pcb, &pcb->LayerGroups.grp[gid], gid, lid);
 	}
 
-/*	pcb_action(&pcb->hidlib, "dumplayers");*/
+/*	rnd_action(&pcb->hidlib, "dumplayers");*/
 
 	return 0;
 }

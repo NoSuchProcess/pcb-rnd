@@ -58,7 +58,7 @@ int pplg_check_ver_io_eagle(int ver_needed) { return 0; }
 void pplg_uninit_io_eagle(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
-	pcb_remove_actions_by_cookie(eagle_cookie);
+	rnd_remove_actions_by_cookie(eagle_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_dru);

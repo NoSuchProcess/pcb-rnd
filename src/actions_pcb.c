@@ -270,18 +270,18 @@ static int idpath_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 			const char *str = arg->val.str;
 			pcb_idpath_t *idp = pcb_str2idpath(PCB, str);
 			if (idp != NULL) {
-				fgw_ptr_reg(&pcb_fgw, arg, PCB_PTR_DOMAIN_IDPATH, FGW_IDPATH, idp);
+				fgw_ptr_reg(&rnd_fgw, arg, RND_PTR_DOMAIN_IDPATH, FGW_IDPATH, idp);
 /*FGW_PTR | FGW_STRUCT*/
 				return 0;
 			}
 		}
-		if (FGW_BASE_TYPE(arg->type) == (FGW_PTR | FGW_STRUCT) && fgw_ptr_in_domain(&pcb_fgw, arg, PCB_PTR_DOMAIN_IDPATH))
+		if (FGW_BASE_TYPE(arg->type) == (FGW_PTR | FGW_STRUCT) && fgw_ptr_in_domain(&rnd_fgw, arg, RND_PTR_DOMAIN_IDPATH))
 			return 0;
 		arg->type = FGW_INVALID;
 		return -1;
 	}
 	if (arg->type == FGW_IDPATH) { /* convert from idpath */
-		if (fgw_ptr_in_domain(&pcb_fgw, arg, PCB_PTR_DOMAIN_IDPATH)) {
+		if (fgw_ptr_in_domain(&rnd_fgw, arg, RND_PTR_DOMAIN_IDPATH)) {
 			char *name = pcb_idpath2str(arg->val.ptr_void, 0);
 			if (name != NULL) {
 				arg->val.str = name;
@@ -297,27 +297,27 @@ static int idpath_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 
 void pcb_actions_init_pcb_only(void)
 {
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_arg_conv, NULL) != FGW_LAYERID) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_LAYERID, "layerid", layerid_arg_conv, NULL) != FGW_LAYERID) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERID\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYER, "layer", layer_arg_conv, NULL) != FGW_LAYER) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_LAYER, "layer", layer_arg_conv, NULL) != FGW_LAYER) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYER\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERGRPID, "layergrpid", layergrpid_arg_conv, NULL) != FGW_LAYERGRPID) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_LAYERGRPID, "layergrpid", layergrpid_arg_conv, NULL) != FGW_LAYERGRPID) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERGRPID\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERGRP, "layergrp", layergrp_arg_conv, NULL) != FGW_LAYERGRP) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_LAYERGRP, "layergrp", layergrp_arg_conv, NULL) != FGW_LAYERGRP) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_LAYERGRP\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_DATA, "data", data_arg_conv, NULL) != FGW_DATA) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_DATA, "data", data_arg_conv, NULL) != FGW_DATA) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_DATA\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_IDPATH, "idpath", idpath_arg_conv, NULL) != FGW_IDPATH) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_IDPATH, "idpath", idpath_arg_conv, NULL) != FGW_IDPATH) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_IDPATH\n");
 		abort();
 	}

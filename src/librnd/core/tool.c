@@ -192,7 +192,7 @@ int pcb_tool_restore(pcb_hidlib_t *hidlib)
 	return pcb_tool_select_by_id(hidlib, save_stack[--save_position]);
 }
 
-void pcb_tool_gui_init(void)
+void rnd_tool_gui_init(void)
 {
 	pcb_toolid_t n;
 	pcb_tool_t **tool;
@@ -262,7 +262,7 @@ pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
 
 static void do_release(pcb_hidlib_t *hidlib)
 {
-	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 0) == 0))
+	if (pcbhl_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 0) == 0))
 		return;
 
 	hidlib->tool_grabbed.status = pcb_false;
@@ -277,7 +277,7 @@ static void do_release(pcb_hidlib_t *hidlib)
 
 void pcb_tool_do_press(pcb_hidlib_t *hidlib)
 {
-	if (pcbhl_conf.temp.click_cmd_entry_active && (pcb_cli_mouse(hidlib, 1) == 0))
+	if (pcbhl_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 1) == 0))
 		return;
 
 	hidlib->tool_grabbed.X = hidlib->tool_x;
@@ -357,7 +357,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t tool_action_list[] = {
+static rnd_action_t tool_action_list[] = {
 	{"Tool", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool},
 	{"Mode", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool}
 };

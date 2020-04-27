@@ -98,7 +98,7 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 	}
 
 	/* Load the elements */
-	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 
 	for(c = components->children; c != NULL; c = c->next) {
 		const char *ref = NULL, *value = NULL, *footprint = NULL;
@@ -117,15 +117,15 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 			pcb_message(PCB_MSG_WARNING, "eeschema: ignoring component %s with no footprint\n", ref);
 			continue;
 		}
-		pcb_actionva(&PCB->hidlib, "ElementList", "Need", ref, footprint, value == NULL ? "" : value, NULL);
+		rnd_actionva(&PCB->hidlib, "ElementList", "Need", ref, footprint, value == NULL ? "" : value, NULL);
 	}
 
-	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 
 	/* Load the netlist */
 
-	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	for(net = nets->children; net != NULL; net = net->next) {
 		const char *netname = NULL, *code = NULL, *name = NULL;
@@ -164,13 +164,13 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 					continue;
 				}
 				pcb_snprintf(refpin, sizeof(refpin), "%s-%s", ref, pin);
-				pcb_actionva(&PCB->hidlib, "Netlist", "Add",  netname, refpin, NULL);
+				rnd_actionva(&PCB->hidlib, "Netlist", "Add",  netname, refpin, NULL);
 			}
 		}
 	}
 
-	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 
 	return 0;
 }

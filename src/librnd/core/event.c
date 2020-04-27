@@ -228,7 +228,7 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 				a->d.c = va_arg(ap, pcb_coord_t);
 				fa->type = FGW_LONG;
 				fa->val.nat_long = a->d.c;
-				fgw_arg_conv(&pcb_fgw, fa, FGW_COORD_);
+				fgw_arg_conv(&rnd_fgw, fa, FGW_COORD_);
 				break;
 			case 'a':
 				a->type = PCB_EVARG_ANGLE;
@@ -249,7 +249,7 @@ void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...)
 	for (e = events[ev]; e != NULL; e = e->next)
 		e->handler(hidlib, e->user_data, argc, argv);
 
-	fgw_ucall_all(&pcb_fgw, hidlib, pcb_event_name(ev), argc, fargv);
+	fgw_ucall_all(&rnd_fgw, hidlib, pcb_event_name(ev), argc, fargv);
 }
 
 void pcb_events_init(void)

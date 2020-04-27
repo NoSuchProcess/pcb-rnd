@@ -71,9 +71,9 @@ static int fpcb_nl_load(const char *fn)
 		return -1;
 	}
 
-	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while((line = fgets(buff, sizeof(buff), f)) != NULL) {
 		rtrim(line);
@@ -124,7 +124,7 @@ static int fpcb_nl_load(const char *fn)
 					ltrim(fp);
 				}
 				if ((fp != NULL) && (*fp != '\0')) {
-					pcb_actionva(&PCB->hidlib, "ElementList", "Need", line, fp, "", NULL);
+					rnd_actionva(&PCB->hidlib, "ElementList", "Need", line, fp, "", NULL);
 				}
 				else
 					pcb_message(PCB_MSG_ERROR, "No footprint specified for %s\n", line);
@@ -146,16 +146,16 @@ static int fpcb_nl_load(const char *fn)
 						continue;
 					}
 					*tn = '-';
-					pcb_actionva(&PCB->hidlib, "Netlist", "Add",  signame, curr, NULL);
+					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  signame, curr, NULL);
 				}
 				break;
 			default: break; /* ignore line */
 		}
 	}
 
-	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
-	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 
 	fclose(f);
 	return 0;
@@ -223,7 +223,7 @@ static int fpcb_nl_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 
 static pcb_plug_import_t import_fpcb_nl;
 
-pcb_action_t fpcb_nl_action_list[] = {
+rnd_action_t fpcb_nl_action_list[] = {
 	{"LoadFpcbnlFrom", pcb_act_LoadFpcbnlFrom, pcb_acth_LoadFpcbnlFrom, pcb_acts_LoadFpcbnlFrom}
 };
 
@@ -231,7 +231,7 @@ int pplg_check_ver_import_fpcb_nl(int ver_needed) { return 0; }
 
 void pplg_uninit_import_fpcb_nl(void)
 {
-	pcb_remove_actions_by_cookie(fpcb_nl_cookie);
+	rnd_remove_actions_by_cookie(fpcb_nl_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
 }
 

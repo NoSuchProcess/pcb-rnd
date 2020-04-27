@@ -101,13 +101,13 @@ void pcb_tool_polyhole_notify_mode(pcb_hidlib_t *hl)
 
 			/* check if this is the last point of a polygon */
 			if (n >= 3 && points[0].X == pcb_crosshair.AttachedLine.Point2.X && points[0].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-				pcb_actionva(hl, "Polygon", "CloseHole", NULL);
+				rnd_actionva(hl, "Polygon", "CloseHole", NULL);
 				break;
 			}
 
 			/* Someone clicking twice on the same point ('doubleclick'): close polygon hole */
 			if (n >= 3 && points[n - 1].X == pcb_crosshair.AttachedLine.Point2.X && points[n - 1].Y == pcb_crosshair.AttachedLine.Point2.Y) {
-				pcb_actionva(hl, "Polygon", "CloseHole", NULL);
+				rnd_actionva(hl, "Polygon", "CloseHole", NULL);
 				break;
 			}
 

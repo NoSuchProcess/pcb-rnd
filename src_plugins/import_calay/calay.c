@@ -66,8 +66,8 @@ static int calay_parse_net(FILE *fn)
 	char line[512];
 	char *curr = NULL;
 
-	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		char *s, *next, *num;
@@ -99,7 +99,7 @@ static int calay_parse_net(FILE *fn)
 			if (num != NULL) {
 				*num = '-';
 				if (curr != NULL)
-					pcb_actionva(&PCB->hidlib, "Netlist", "Add",  curr, s, NULL);
+					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  curr, s, NULL);
 				else
 					pcb_message(PCB_MSG_ERROR, "Calay syntax error: %s is after a ;, not in any net\n", s);
 			}
@@ -121,8 +121,8 @@ static int calay_parse_net(FILE *fn)
 	}
 
 	free(curr);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 
 	return 0;
 }
@@ -132,7 +132,7 @@ static int calay_parse_comp(FILE *f)
 	char line[512];
 	char *val, *refdes, *footprint, *end;
 	int len;
-	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		len = strlen(line);
@@ -160,9 +160,9 @@ static int calay_parse_comp(FILE *f)
 		if (end != NULL)
 			*end = '\0';
 
-		pcb_actionva(&PCB->hidlib, "ElementList", "Need", refdes, footprint, val, NULL);
+		rnd_actionva(&PCB->hidlib, "ElementList", "Need", refdes, footprint, val, NULL);
 	}
-	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 	return 0;
 }
 
@@ -254,12 +254,12 @@ static int calay_import(pcb_plug_import_t *ctx, unsigned int aspects, const char
 		pcb_message(PCB_MSG_ERROR, "import_calay: requires exactly 1 input file name\n");
 		return -1;
 	}
-	return pcb_actionva(&PCB->hidlib, "LoadCalayFrom", fns[0], NULL);
+	return rnd_actionva(&PCB->hidlib, "LoadCalayFrom", fns[0], NULL);
 }
 
 static pcb_plug_import_t import_calay;
 
-pcb_action_t calay_action_list[] = {
+rnd_action_t calay_action_list[] = {
 	{"LoadCalayFrom", pcb_act_LoadCalayFrom, pcb_acth_LoadCalayFrom, pcb_acts_LoadCalayFrom}
 };
 
@@ -267,7 +267,7 @@ int pplg_check_ver_import_calay(int ver_needed) { return 0; }
 
 void pplg_uninit_import_calay(void)
 {
-	pcb_remove_actions_by_cookie(calay_cookie);
+	rnd_remove_actions_by_cookie(calay_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
 }
 

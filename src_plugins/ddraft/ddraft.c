@@ -97,7 +97,7 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 		case F_Object:
 			for(;;) {
 				x = PCB_MAX_COORD;
-				pcb_hid_get_coords("Select an object to cut or press esc", &x, &y, 1);
+				rnd_hid_get_coords("Select an object to cut or press esc", &x, &y, 1);
 				if (x == PCB_MAX_COORD)
 					break;
 
@@ -141,7 +141,7 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(kwcut) {
 		case F_Object:
-			pcb_hid_get_coords("Select cutting edge object", &x, &y, 0);
+			rnd_hid_get_coords("Select cutting edge object", &x, &y, 0);
 			type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (type == 0) {
 				pcb_message(PCB_MSG_ERROR, "Invalid cutting edge object\n");
@@ -202,13 +202,13 @@ static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_ACT_CONVARG(n, FGW_IDPATH, split_idp, idp = fgw_idpath(&argv[n]));
 		if (idp == NULL)
 			goto invptr;
-		if (fgw_ptr_in_domain(&pcb_fgw, &argv[n], PCB_PTR_DOMAIN_IDPATH)) {
+		if (fgw_ptr_in_domain(&rnd_fgw, &argv[n], RND_PTR_DOMAIN_IDPATH)) {
 			obj = pcb_idpath2obj(PCB, idp);
 			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0))
 				goto invptr;
 			vtp0_append(vect, obj);
 		}
-		else if (fgw_ptr_in_domain(&pcb_fgw, &argv[n], PCB_PTR_DOMAIN_IDPATH_LIST)) {
+		else if (fgw_ptr_in_domain(&rnd_fgw, &argv[n], RND_PTR_DOMAIN_IDPATH_LIST)) {
 			idpl = (pcb_idpath_list_t *)idp;
 			pcb_idpath_list_foreach(idpl, &it, idp) {
 				obj = pcb_idpath2obj(PCB, idp);
@@ -227,7 +227,7 @@ static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* copy over the objects to an idpath_list that is then returned */
 	idpl = calloc(sizeof(pcb_idpath_list_t), 1);
-	fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH_LIST, FGW_PTR | FGW_STRUCT, idpl);
+	fgw_ptr_reg(&rnd_fgw, res, RND_PTR_DOMAIN_IDPATH_LIST, FGW_PTR | FGW_STRUCT, idpl);
 	for(n = 0; n < vtp0_len(&newobjs); n++) {
 		idp = pcb_obj2idpath(newobjs.array[n]);
 		if (idp != NULL)
@@ -341,11 +341,11 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double dx, dy;
 	pcb_line_t *line;
 
-	pcb_hid_get_coords("Select target object", &x, &y, 0);
+	rnd_hid_get_coords("Select target object", &x, &y, 0);
 	type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
 
 	if (type != PCB_OBJ_LINE) {
-		pcb_hid_get_coords("Select target object", &x, &y, 1);
+		rnd_hid_get_coords("Select target object", &x, &y, 1);
 		type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
 	}
 
@@ -400,11 +400,11 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		goto err_nonline;
 
 
-	pcb_hid_get_coords("Select target arc", &x, &y, 0);
+	rnd_hid_get_coords("Select target arc", &x, &y, 0);
 	type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
 
 	if (type != PCB_OBJ_ARC) {
-		pcb_hid_get_coords("Select target arc", &x, &y, 1);
+		rnd_hid_get_coords("Select target arc", &x, &y, 1);
 		type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
 	}
 
@@ -462,7 +462,7 @@ void ddraft_tool_draw_attached(pcb_hidlib_t *hl)
 
 #include "cli.c"
 
-static pcb_action_t ddraft_action_list[] = {
+static rnd_action_t ddraft_action_list[] = {
 	{"trim", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"split", pcb_act_trim_split, pcb_acth_trim_split, pcb_acts_trim_split},
 	{"pcbsplit", pcb_act_split_idp, pcb_acth_split_idp, pcb_acts_split_idp},
@@ -524,12 +524,12 @@ static void mode_confchg(conf_native_t *cfg, int arr_idx)
 	if (pcbhl_conf.editor.mode == pcb_ddraft_tool) {
 		if (!ddraft_tool_selected) {
 			ddraft_tool_selected = 1;
-			pcb_cli_enter("ddraft", "ddraft");
+			rnd_cli_enter("ddraft", "ddraft");
 			pcb_gui->open_command(pcb_gui);
 		}
 	}
 	else if (ddraft_tool_selected) {
-		pcb_cli_leave();
+		rnd_cli_leave();
 		ddraft_tool_selected = 0;
 	}
 }
@@ -540,7 +540,7 @@ void pplg_uninit_ddraft(void)
 {
 	pcb_conf_hid_unreg(ddraft_cookie);
 	pcb_event_unbind_allcookie(ddraft_cookie);
-	pcb_remove_actions_by_cookie(ddraft_cookie);
+	rnd_remove_actions_by_cookie(ddraft_cookie);
 	pcb_tool_unreg_by_cookie(ddraft_cookie);
 }
 

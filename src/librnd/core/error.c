@@ -277,7 +277,7 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t log_action_list[] = {
+static rnd_action_t log_action_list[] = {
 	{"Log", pcb_act_Log, pcb_acth_Log, pcb_acts_Log},
 	{"Message", pcb_act_Message, pcb_acth_Message, pcb_acts_Message}
 };

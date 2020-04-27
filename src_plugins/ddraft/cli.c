@@ -504,7 +504,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int ndlen;
 
 	if (argc == 1) {
-		pcb_cli_enter("ddraft", "ddraft");
+		rnd_cli_enter("ddraft", "ddraft");
 		pcb_tool_select_by_id(&PCB->hidlib, pcb_ddraft_tool);
 		PCB_ACT_IRES(0);
 		return 0;
@@ -512,7 +512,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_STR, ddraft, cmd = argv[1].val.str);
 	if (strcmp(cmd, "/exit") == 0) {
-		pcb_cli_leave();
+		rnd_cli_leave();
 		PCB_ACT_IRES(0);
 		return 0;
 	}

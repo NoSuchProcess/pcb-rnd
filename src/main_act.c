@@ -297,7 +297,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t main_action_list[] = {
+static rnd_action_t main_action_list[] = {
 	{"PrintUsage", pcb_act_PrintUsage, pcb_acth_PrintUsage, pcb_acts_PrintUsage},
 	{"PrintVersion", pcb_act_PrintVersion, pcb_acth_PrintVersion, pcb_acts_PrintVersion},
 	{"DumpVersion", pcb_act_DumpVersion, pcb_acth_DumpVersion, pcb_acts_DumpVersion},

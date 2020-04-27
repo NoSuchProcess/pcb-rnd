@@ -100,7 +100,7 @@ static int flg_error(const char *msg)
 	}
 
 
-pcb_action_t act_read_action_list[] = {
+rnd_action_t act_read_action_list[] = {
 	{"GetValue", pcb_act_GetValue, pcb_acth_GetValue, pcb_acts_GetValue},
 	{"IDPList", pcb_act_IDPList, pcb_acth_IDPList, pcb_acts_IDPList},
 	{"IDP", pcb_act_IDP, pcb_acth_IDP, pcb_acts_IDP},
@@ -121,7 +121,7 @@ int pplg_check_ver_act_read(int ver_needed) { return 0; }
 
 void pplg_uninit_act_read(void)
 {
-	pcb_remove_actions_by_cookie(act_read_cookie);
+	rnd_remove_actions_by_cookie(act_read_cookie);
 }
 
 int pplg_init_act_read(void)

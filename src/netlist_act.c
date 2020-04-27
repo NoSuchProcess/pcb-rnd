@@ -554,7 +554,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_coord_t x, y;
 				void *r1, *r2, *r3;
 
-				pcb_hid_get_coords("Select a an object to claim network from", &x, &y, 0);
+				rnd_hid_get_coords("Select a an object to claim network from", &x, &y, 0);
 				if (pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK, &r1, &r2, &r3) <= 0)
 					return 0;
 
@@ -617,7 +617,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t netlist_action_list[] = {
+static rnd_action_t netlist_action_list[] = {
 	{"net", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"netlist", pcb_act_Netlist, pcb_acth_Netlist, pcb_acts_Netlist},
 	{"claimnet", pcb_act_ClaimNet, pcb_acth_ClaimNet, pcb_acts_ClaimNet}

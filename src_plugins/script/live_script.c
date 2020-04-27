@@ -193,7 +193,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		return;
 	}
 
-	pcb_actionva(lvs->hidlib, "livescript", arg, lvs->name, NULL);
+	rnd_actionva(lvs->hidlib, "livescript", arg, lvs->name, NULL);
 }
 
 static live_script_t *pcb_dlg_live_script(pcb_hidlib_t *hidlib, const char *name)

@@ -133,10 +133,10 @@ static void script_free(script_t *s, const char *preunload, const char *cookie)
 			argv[1].val.cstr = preunload;
 			res.type = FGW_INVALID;
 			if (f->func(&res, 2, argv) == 0) {
-				if ((fgw_arg_conv(&pcb_fgw, &res, FGW_STR) == 0) && (res.val.str != NULL) && (*res.val.str != '\0'))
+				if ((fgw_arg_conv(&rnd_fgw, &res, FGW_STR) == 0) && (res.val.str != NULL) && (*res.val.str != '\0'))
 					script_save_preunload(s, res.val.str);
 			}
-			fgw_arg_free(&pcb_fgw, &res);
+			fgw_arg_free(&rnd_fgw, &res);
 		}
 	}
 
@@ -144,7 +144,7 @@ static void script_free(script_t *s, const char *preunload, const char *cookie)
 		script_unreg(cookie);
 
 	if (s->obj != NULL)
-		fgw_obj_unreg(&pcb_fgw, s->obj);
+		fgw_obj_unreg(&rnd_fgw, s->obj);
 #ifdef PCB_HAVE_SYS_FUNGW
 	if (s->pup != NULL)
 		pup_unload(&script_pup, s->pup, NULL);
@@ -305,7 +305,7 @@ TODO(": guess")
 
 	old_id = script_persistency_id;
 	script_persistency_id = id;
-	s->obj = fgw_obj_new(&pcb_fgw, s->id, s->lang, s->fn, NULL);
+	s->obj = fgw_obj_new(&rnd_fgw, s->id, s->lang, s->fn, NULL);
 	script_persistency_id = old_id;
 
 	if (s->obj == NULL) {
@@ -428,7 +428,7 @@ void pplg_uninit_script(void)
 	htsp_entry_t *e;
 
 	pcb_live_script_uninit();
-	pcb_remove_actions_by_cookie(script_cookie);
+	rnd_remove_actions_by_cookie(script_cookie);
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
 		script_t *script = e->value;
 		char *cookie = script_gen_cookie(script->id);

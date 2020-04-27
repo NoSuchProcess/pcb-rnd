@@ -199,7 +199,7 @@ static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	if (row != NULL) {
 		const char *outfile = ctx->dlg[ctx->woutfile].val.str;
 		char *tmp = pcb_strdup_printf("outfile=%s", outfile);
-		pcb_actionva(ctx->cam.hidlib, "cam", "call", row->cell[0], tmp, NULL);
+		rnd_actionva(ctx->cam.hidlib, "cam", "call", row->cell[0], tmp, NULL);
 		free(tmp);
 	}
 }

@@ -607,7 +607,7 @@ static pcb_bool rematch(const char *re, const char *s)
 
 static const char *vendor_cookie = "vendor drill mapping";
 
-pcb_action_t vendor_action_list[] = {
+rnd_action_t vendor_action_list[] = {
 	{"ApplyVendor", pcb_act_ApplyVendor, apply_vendor_help, apply_vendor_syntax},
 	{"UnloadVendor", pcb_act_UnloadVendor, unload_vendor_help, unload_vendor_syntax},
 	{"LoadVendorFrom", pcb_act_LoadVendorFrom, pcb_acth_LoadVendorFrom, pcb_acts_LoadVendorFrom}
@@ -657,7 +657,7 @@ int pplg_check_ver_vendordrill(int ver_needed) { return 0; }
 void pplg_uninit_vendordrill(void)
 {
 	pcb_event_unbind_allcookie(vendor_cookie);
-	pcb_remove_actions_by_cookie(vendor_cookie);
+	rnd_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
 	pcb_conf_unreg_fields("plugins/vendor/");
 }

@@ -56,7 +56,7 @@ static fgw_error_t pcb_act_AutoPlaceSelected(fgw_arg_t *res, int argc, fgw_arg_t
 
 static const char *autoplace_cookie = "autoplace plugin";
 
-pcb_action_t autoplace_action_list[] = {
+rnd_action_t autoplace_action_list[] = {
 	{"AutoPlaceSelected", pcb_act_AutoPlaceSelected, autoplace_help, autoplace_syntax}
 };
 
@@ -64,7 +64,7 @@ int pplg_check_ver_autoplace(int ver_needed) { return 0; }
 
 void pplg_uninit_autoplace(void)
 {
-	pcb_remove_actions_by_cookie(autoplace_cookie);
+	rnd_remove_actions_by_cookie(autoplace_cookie);
 }
 
 int pplg_init_autoplace(void)

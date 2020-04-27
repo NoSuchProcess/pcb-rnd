@@ -43,17 +43,17 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/safe_fs.h>
 
-const pcb_action_t *pcb_current_action = NULL;
+const rnd_action_t *pcb_current_action = NULL;
 
-const char *PCB_PTR_DOMAIN_IDPATH = "pcb_fgw_ptr_domain_idpath";
-const char *PCB_PTR_DOMAIN_IDPATH_LIST = "pcb_fgw_ptr_domain_idpath_list";
+const char *RND_PTR_DOMAIN_IDPATH = "pcb_fgw_ptr_domain_idpath";
+const char *RND_PTR_DOMAIN_IDPATH_LIST = "pcb_fgw_ptr_domain_idpath_list";
 
-fgw_ctx_t pcb_fgw;
+fgw_ctx_t rnd_fgw;
 fgw_obj_t *pcb_fgw_obj;
 
 typedef struct {
 	const char *cookie;
-	const pcb_action_t *action;
+	const rnd_action_t *action;
 } hid_cookie_action_t;
 
 static const char *check_action_name(const char *s)
@@ -79,7 +79,7 @@ char *pcb_make_action_name(char *out, const char *inp, int inp_len)
 	return out;
 }
 
-void rnd_register_actions(const pcb_action_t *a, int n, const char *cookie)
+void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 {
 	int i;
 	hid_cookie_action_t *ca;
@@ -114,7 +114,7 @@ void rnd_register_actions(const pcb_action_t *a, int n, const char *cookie)
 	}
 }
 
-void rnd_register_action(const pcb_action_t *a, const char *cookie)
+void rnd_register_action(const rnd_action_t *a, const char *cookie)
 {
 	rnd_register_actions(a, 1, cookie);
 }
@@ -129,11 +129,11 @@ static void pcb_remove_action(fgw_func_t *f)
 fgw_func_t *pcb_act_lookup(const char *aname)
 {
 	char fn[PCB_ACTION_NAME_MAX];
-	fgw_func_t *f = fgw_func_lookup(&pcb_fgw, pcb_aname(fn, aname));
+	fgw_func_t *f = fgw_func_lookup(&rnd_fgw, pcb_aname(fn, aname));
 	return f;
 }
 
-void pcb_remove_actions(const pcb_action_t *a, int n)
+void rnd_remove_actions(const rnd_action_t *a, int n)
 {
 	int i;
 
@@ -147,12 +147,12 @@ void pcb_remove_actions(const pcb_action_t *a, int n)
 	}
 }
 
-void pcb_remove_actions_by_cookie(const char *cookie)
+void rnd_remove_actions_by_cookie(const char *cookie)
 {
 	htsp_entry_t *e;
 
 	/* Slow linear search - probably OK, this will run only on uninit */
-	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+	for (e = htsp_first(&rnd_fgw.func_tbl); e; e = htsp_next(&rnd_fgw.func_tbl, e)) {
 		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = f->reg_data;
 		if ((ca != NULL) && (ca->cookie == cookie))
@@ -160,7 +160,7 @@ void pcb_remove_actions_by_cookie(const char *cookie)
 	}
 }
 
-const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
+const rnd_action_t *rnd_find_action(const char *name, fgw_func_t **f_out)
 {
 	fgw_func_t *f;
 	hid_cookie_action_t *ca;
@@ -179,12 +179,12 @@ const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out)
 	return ca->action;
 }
 
-void pcb_print_actions()
+void rnd_print_actions()
 {
 	htsp_entry_t *e;
 
 	fprintf(stderr, "Registered Actions:\n");
-	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+	for (e = htsp_first(&rnd_fgw.func_tbl); e; e = htsp_next(&rnd_fgw.func_tbl, e)) {
 		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = f->reg_data;
 		if (ca->action->description)
@@ -224,12 +224,12 @@ static void dump_string(char prefix, const char *str)
 		putchar('\n');
 }
 
-void pcb_dump_actions(void)
+void rnd_dump_actions(void)
 {
 	htsp_entry_t *e;
 
 	fprintf(stderr, "Registered Actions:\n");
-	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+	for (e = htsp_first(&rnd_fgw.func_tbl); e; e = htsp_next(&rnd_fgw.func_tbl, e)) {
 		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = f->reg_data;
 		const char *desc = ca->action->description;
@@ -247,26 +247,12 @@ void pcb_dump_actions(void)
 	}
 }
 
-int pcb_action(pcb_hidlib_t *hl, const char *name)
+int rnd_action(pcb_hidlib_t *hl, const char *name)
 {
-	return pcb_actionv(hl, name, 0, 0);
+	return rnd_actionv(hl, name, 0, 0);
 }
 
-int pcb_actionva(pcb_hidlib_t *hl, const char *name, ...)
-{
-	const char *argv[20];
-	int argc = 0;
-	va_list ap;
-	char *arg;
-
-	va_start(ap, name);
-	while ((arg = va_arg(ap, char *)) != 0)
-		argv[argc++] = arg;
-	va_end(ap);
-	return pcb_actionv(hl, name, argc, argv);
-}
-
-int pcb_actionl(const char *name, ...)
+int rnd_actionva(pcb_hidlib_t *hl, const char *name, ...)
 {
 	const char *argv[20];
 	int argc = 0;
@@ -277,14 +263,28 @@ int pcb_actionl(const char *name, ...)
 	while ((arg = va_arg(ap, char *)) != 0)
 		argv[argc++] = arg;
 	va_end(ap);
-	return pcb_actionv(NULL, name, argc, argv);
+	return rnd_actionv(hl, name, argc, argv);
 }
 
-fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+int rnd_actionl(const char *name, ...)
+{
+	const char *argv[20];
+	int argc = 0;
+	va_list ap;
+	char *arg;
+
+	va_start(ap, name);
+	while ((arg = va_arg(ap, char *)) != 0)
+		argv[argc++] = arg;
+	va_end(ap);
+	return rnd_actionv(NULL, name, argc, argv);
+}
+
+fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	fgw_error_t ret;
 	int i;
-	const pcb_action_t *old_action;
+	const rnd_action_t *old_action;
 	hid_cookie_action_t *ca = f->reg_data;
 
 	if (pcbhl_conf.rc.verbose) {
@@ -306,12 +306,12 @@ fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 		ret = f->func(res, argc, argv);
 	}
 
-	fgw_argv_free(&pcb_fgw, argc, argv);
+	fgw_argv_free(&rnd_fgw, argc, argv);
 
 	return ret;
 }
 
-fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	fgw_func_t *f = pcb_act_lookup(name);
 
@@ -323,11 +323,11 @@ fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, 
 	argv[0].val.argv0.user_call_ctx = hl;
 
 	res->type = FGW_INVALID;
-	return pcb_actionv_(f, res, argc, argv);
+	return rnd_actionv_(f, res, argc, argv);
 }
 
 
-int pcb_actionv(pcb_hidlib_t *hl, const char *name, int argc, const char **argsv)
+int rnd_actionv(pcb_hidlib_t *hl, const char *name, int argc, const char **argsv)
 {
 	fgw_func_t *f;
 	fgw_arg_t res, argv[PCB_ACTION_MAX_ARGS+1];
@@ -358,14 +358,14 @@ int pcb_actionv(pcb_hidlib_t *hl, const char *name, int argc, const char **argsv
 		argv[n+1].val.str = (char *)argsv[n];
 	}
 	res.type = FGW_INVALID;
-	if (pcb_actionv_(f, &res, argc+1, argv) != 0)
+	if (rnd_actionv_(f, &res, argc+1, argv) != 0)
 		return -1;
-	if (fgw_arg_conv(&pcb_fgw, &res, FGW_INT) != 0)
+	if (fgw_arg_conv(&rnd_fgw, &res, FGW_INT) != 0)
 		return -1;
 	return res.val.nat_int;
 }
 
-void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
+void rnd_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force)
 {
 	if (pcb_gui == NULL) {
 		fprintf(stderr, "pcb_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
@@ -424,7 +424,7 @@ another:
 	 * with no parameters or event.
 	 */
 	if (*sp == '\0') {
-		retcode = pcb_actionv(hl, aname, 0, 0);
+		retcode = rnd_actionv(hl, aname, 0, 0);
 		goto cleanup;
 	}
 
@@ -447,7 +447,7 @@ another:
 		 * ","
 		 */
 		if (!maybe_empty && ((parens && *sp == ')') || (!parens && !*sp))) {
-			retcode = pcb_actionv(hl, aname, num, list);
+			retcode = rnd_actionv(hl, aname, num, list);
 			if (retcode)
 				goto cleanup;
 
@@ -523,7 +523,7 @@ cleanup:
 	return retcode;
 }
 
-const char *pcb_cli_prompt(const char *suffix)
+const char *rnd_cli_prompt(const char *suffix)
 {
 	const char *base;
 	static char prompt[128];
@@ -568,7 +568,7 @@ static char *cli_pop(void)
 	return cli_stack.array[--cli_stack.used];
 }
 
-int pcb_cli_enter(const char *backend, const char *prompt)
+int rnd_cli_enter(const char *backend, const char *prompt)
 {
 	cli_push(pcbhl_conf.rc.cli_backend);
 	cli_push(pcbhl_conf.rc.cli_prompt);
@@ -578,7 +578,7 @@ int pcb_cli_enter(const char *backend, const char *prompt)
 	return pcb_conf_set(CFR_CLI, "rc/cli_prompt", 0, prompt, POL_OVERWRITE);
 }
 
-int pcb_cli_leave(void)
+int rnd_cli_leave(void)
 {
 	if (vtp0_len(&cli_stack) >= 2) {
 		char *prompt = NULL, *backend = NULL;
@@ -598,7 +598,7 @@ int pcb_cli_leave(void)
 
 static int pcb_cli_common(pcb_hidlib_t *hl, fgw_arg_t *args)
 {
-	const pcb_action_t *a;
+	const rnd_action_t *a;
 	fgw_func_t *f;
 
 	/* no backend: let the original action work */
@@ -606,7 +606,7 @@ static int pcb_cli_common(pcb_hidlib_t *hl, fgw_arg_t *args)
 		return -1;
 
 	/* backend: let the backend action handle it */
-	a = pcb_find_action(pcbhl_conf.rc.cli_backend, &f);
+	a = rnd_find_action(pcbhl_conf.rc.cli_backend, &f);
 	if (!a)
 		return -1;
 
@@ -616,7 +616,7 @@ static int pcb_cli_common(pcb_hidlib_t *hl, fgw_arg_t *args)
 	return 0;
 }
 
-int pcb_cli_tab(pcb_hidlib_t *hl)
+int rnd_cli_tab(pcb_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
@@ -626,13 +626,13 @@ int pcb_cli_tab(pcb_hidlib_t *hl)
 	args[1].type = FGW_STR;
 	args[1].val.str = "/tab";
 
-	if (pcb_actionv_(args[0].val.func, &res, 2, args) != 0)
+	if (rnd_actionv_(args[0].val.func, &res, 2, args) != 0)
 			return -1;
-	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
 	return res.val.nat_int;
 }
 
-int pcb_cli_edit(pcb_hidlib_t *hl)
+int rnd_cli_edit(pcb_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
@@ -642,13 +642,13 @@ int pcb_cli_edit(pcb_hidlib_t *hl)
 	args[1].type = FGW_STR;
 	args[1].val.str = "/edit";
 
-	if (pcb_actionv_(args[0].val.func, &res, 2, args) != 0)
+	if (rnd_actionv_(args[0].val.func, &res, 2, args) != 0)
 			return -1;
-	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
 	return res.val.nat_int;
 }
 
-int pcb_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify)
+int rnd_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify)
 {
 	fgw_arg_t res, args[3];
 
@@ -660,24 +660,24 @@ int pcb_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify)
 	args[2].type = FGW_INT;
 	args[2].val.nat_int = notify;
 
-	if (pcb_actionv_(args[0].val.func, &res, 3, args) != 0)
+	if (rnd_actionv_(args[0].val.func, &res, 3, args) != 0)
 			return -1;
-	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
 	return res.val.nat_int;
 }
 
 
-void pcb_cli_uninit(void)
+void rnd_cli_uninit(void)
 {
 	while(vtp0_len(&cli_stack) > 0)
 		free(cli_pop());
 }
 
-int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode)
+int rnd_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode)
 {
 	fgw_arg_t res, args[2];
 	fgw_func_t *f;
-	const pcb_action_t *a;
+	const rnd_action_t *a;
 	const char *end;
 
 	/* no backend or forced action mode: classic pcb-rnd action parse */
@@ -687,10 +687,10 @@ int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_
 	}
 
 	/* backend: let the backend action handle it */
-	a = pcb_find_action(pcbhl_conf.rc.cli_backend, &f);
+	a = rnd_find_action(pcbhl_conf.rc.cli_backend, &f);
 	if (!a) {
 		pcb_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", pcbhl_conf.rc.cli_backend);
-		pcb_cli_leave();
+		rnd_cli_leave();
 		return -1;
 	}
 
@@ -712,13 +712,13 @@ int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_
 		args[1].val.str[end - str_] = '\0';
 	}
 
-	if (pcb_actionv_(f, &res, 2, args) != 0)
+	if (rnd_actionv_(f, &res, 2, args) != 0)
 			return -1;
-	fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+	fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
 	return res.val.nat_int;
 }
 
-int pcb_parse_actions(pcb_hidlib_t *hl, const char *str_)
+int rnd_parse_actions(pcb_hidlib_t *hl, const char *str_)
 {
 	return hid_parse_actionstring(hl, str_, pcb_true);
 }
@@ -916,37 +916,37 @@ int rnd_act_execute_file(pcb_hidlib_t *hidlib, const char *fn)
 			s++;
 
 		if ((*s != '\0') && (*s != '#'))
-			res |= pcb_parse_actions(hidlib, s);
+			res |= rnd_parse_actions(hidlib, s);
 	}
 
 	fclose(f);
 	return res;
 }
 
-void pcb_actions_init(void)
+void rnd_actions_init(void)
 {
-	fgw_init(&pcb_fgw, "pcb-rnd");
-	pcb_fgw.async_error = pcb_action_err;
-	pcb_fgw_obj = fgw_obj_reg(&pcb_fgw, "core");
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv, NULL) != FGW_KEYWORD) {
+	fgw_init(&rnd_fgw, "pcb-rnd");
+	rnd_fgw.async_error = pcb_action_err;
+	pcb_fgw_obj = fgw_obj_reg(&rnd_fgw, "core");
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv, NULL) != FGW_KEYWORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORD, "coord", coord_arg_conv, NULL) != FGW_COORD) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_COORD, "coord", coord_arg_conv, NULL) != FGW_COORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
 		abort();
 	}
-	if (fgw_reg_custom_type(&pcb_fgw, FGW_COORDS, "coords", coords_arg_conv, coords_arg_free) != FGW_COORDS) {
+	if (fgw_reg_custom_type(&rnd_fgw, FGW_COORDS, "coords", coords_arg_conv, coords_arg_free) != FGW_COORDS) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORDS\n");
 		abort();
 	}
 }
 
-void pcb_actions_uninit(void)
+void rnd_actions_uninit(void)
 {
 	htsp_entry_t *e;
 
-	for (e = htsp_first(&pcb_fgw.func_tbl); e; e = htsp_next(&pcb_fgw.func_tbl, e)) {
+	for (e = htsp_first(&rnd_fgw.func_tbl); e; e = htsp_next(&rnd_fgw.func_tbl, e)) {
 		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = f->reg_data;
 		if (ca->cookie != NULL)
@@ -954,8 +954,8 @@ void pcb_actions_uninit(void)
 		pcb_remove_action(f);
 	}
 
-	fgw_obj_unreg(&pcb_fgw, pcb_fgw_obj);
-	fgw_uninit(&pcb_fgw);
+	fgw_obj_unreg(&rnd_fgw, pcb_fgw_obj);
+	fgw_uninit(&rnd_fgw);
 	fgw_atexit();
 }
 

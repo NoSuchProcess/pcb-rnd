@@ -95,7 +95,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_GUI_NOGUI();
 
-	pcb_hid_get_coords("Click to center of flip", &x, &y, 0);
+	rnd_hid_get_coords("Click to center of flip", &x, &y, 0);
 
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
@@ -221,7 +221,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					void *o1, *o2, *o3;
 					pcb_any_obj_t *o;
 
-					pcb_hid_get_coords("context sensitive popup: select object", &x, &y, 0);
+					rnd_hid_get_coords("context sensitive popup: select object", &x, &y, 0);
 					type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3);
 					o = o2;
 					if ((type == 0) || ((o != NULL) && (pcb_gobj_parent_subc(o->parent_type, &o->parent) == NULL))) {
@@ -295,16 +295,16 @@ fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	args[1].type = FGW_STR; args[1].val.cstr = msg;
 	args[2].type = FGW_STR; args[2].val.cstr = val;
 	args[3].type = FGW_STR; args[3].val.cstr = title;
-	er = pcb_actionv_bin(PCB_ACT_HIDLIB, "promptfor", &r, 4, args);
+	er = rnd_actionv_bin(PCB_ACT_HIDLIB, "promptfor", &r, 4, args);
 
 	if ((er != 0) || ((r.type & FGW_STR) != FGW_STR)) {
-		fgw_arg_free(&pcb_fgw, &r);
+		fgw_arg_free(&rnd_fgw, &r);
 		PCB_ACT_IRES(1);
 		return 0;
 	}
 	
 	pcb_attribute_put(&ly->Attributes, key, r.val.str);
-	fgw_arg_free(&pcb_fgw, &r);
+	fgw_arg_free(&rnd_fgw, &r);
 
 	PCB_ACT_IRES(0);
 	return 0;

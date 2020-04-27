@@ -59,7 +59,7 @@ static int flg_error(const char *msg)
 	do { \
 		pcb_idpath_t *idp = pcb_obj2idpath((pcb_any_obj_t *)obj); \
 		res->type = FGW_IDPATH; \
-		fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp); \
+		fgw_ptr_reg(&rnd_fgw, res, RND_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp); \
 	} while(0)
 
 #include "act_pstk_proto.c"
@@ -352,7 +352,7 @@ static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	poly = pcb_poly_new(layer, cl*2, flags);
 
 	if (poly != NULL)
-		fgw_ptr_reg(&pcb_fgw, res, PTR_DOMAIN_POLY, FGW_PTR, poly);
+		fgw_ptr_reg(&rnd_fgw, res, PTR_DOMAIN_POLY, FGW_PTR, poly);
 	return 0;
 }
 
@@ -367,7 +367,7 @@ static fgw_error_t pcb_act_PolyNewPoints(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	PCB_ACT_CONVARG(1+ao, FGW_PTR, PolyNewPoints, poly = argv[1+ao].val.ptr_void);
 	PCB_ACT_CONVARG(2+ao, FGW_STR, PolyNewPoints, ptlist = argv[2+ao].val.str);
-	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY)) {
+	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY)) {
 		pcb_message(PCB_MSG_ERROR, "PolyNewPoints: invalid polygon pointer\n");
 		PCB_ACT_IRES(-1);
 		return 0;
@@ -393,7 +393,7 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
 	PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
 	PCB_ACT_CONVARG(3+ao, FGW_PTR, PolyNewPoints, poly = argv[3+ao].val.ptr_void);
-	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY)) {
+	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY)) {
 		pcb_message(PCB_MSG_ERROR, "PolyNewEnd: invalid polygon pointer\n");
 		PCB_ACT_IRES(0);
 		return 0;
@@ -410,7 +410,7 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RET_IDPATH(poly);
 	if (!noundo)
 		pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
-	fgw_ptr_unreg(&pcb_fgw, &argv[1], PTR_DOMAIN_POLY);
+	fgw_ptr_unreg(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY);
 	return 0;
 }
 
@@ -431,7 +431,7 @@ TODO("implement noundo");
 	PCB_ACT_CONVARG(1+ao, FGW_DATA, LayerObjDup, data = fgw_data(&argv[1+ao]));
 	PCB_ACT_CONVARG(2+ao, FGW_LAYER, LayerObjDup, layer = fgw_layer(&argv[2+ao]));
 	PCB_ACT_CONVARG(3+ao, FGW_PTR, LayerObjDup, idp = argv[3+ao].val.ptr_void);
-	if (!fgw_ptr_in_domain(&pcb_fgw, &argv[3], PCB_PTR_DOMAIN_IDPATH)) {
+	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], RND_PTR_DOMAIN_IDPATH)) {
 		pcb_message(PCB_MSG_ERROR, "LayerObjDup: invalid object pointer\n");
 		return FGW_ERR_PTR_DOMAIN;
 	}
@@ -450,7 +450,7 @@ TODO("implement noundo");
 
 	if (dst != NULL) {
 		idp = pcb_obj2idpath(dst);
-		fgw_ptr_reg(&pcb_fgw, res, PCB_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp);
+		fgw_ptr_reg(&rnd_fgw, res, RND_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp);
 
 		pcb_poly_clear_from_poly(data, dst->type, layer, dst);
 	}
@@ -458,7 +458,7 @@ TODO("implement noundo");
 	return 0;
 }
 
-pcb_action_t act_draw_action_list[] = {
+rnd_action_t act_draw_action_list[] = {
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
 	{"TextNew", pcb_act_TextNew, pcb_acth_TextNew, pcb_acts_TextNew},
@@ -479,7 +479,7 @@ int pplg_check_ver_act_draw(int ver_needed) { return 0; }
 
 void pplg_uninit_act_draw(void)
 {
-	pcb_remove_actions_by_cookie(act_draw_cookie);
+	rnd_remove_actions_by_cookie(act_draw_cookie);
 }
 
 int pplg_init_act_draw(void)

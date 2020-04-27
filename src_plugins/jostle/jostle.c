@@ -509,7 +509,7 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t jostle_action_list[] = {
+static rnd_action_t jostle_action_list[] = {
 	{"jostle", pcb_act_jostle, pcb_acth_jostle, pcb_acts_jostle}
 };
 
@@ -519,7 +519,7 @@ int pplg_check_ver_jostle(int ver_needed) { return 0; }
 
 void pplg_uninit_jostle(void)
 {
-	pcb_remove_actions_by_cookie(jostle_cookie);
+	rnd_remove_actions_by_cookie(jostle_cookie);
 }
 
 int pplg_init_jostle(void)

@@ -246,7 +246,7 @@ static void isch_generic_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 
 static void isch_plc_cfg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva(&PCB->hidlib, "preferences", "config", "footprint_", NULL);
+	rnd_actionva(&PCB->hidlib, "preferences", "config", "footprint_", NULL);
 }
 
 

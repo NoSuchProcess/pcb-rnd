@@ -96,7 +96,7 @@ static int parse_netlist_instance(nethlp_ctx_t *nhctx, gsxl_node_t *inst)
 	}
 
 	nethlp_elem_done(&PCB->hidlib, &ectx);
-/*	pcb_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);*/
+/*	rnd_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);*/
 	return 0;
 }
 
@@ -177,9 +177,9 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 		return -1;
 	}
 
-	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
-	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 
 	for(library = dom->root->children; library != NULL; library = library->next) {
 		if (strcmp(library->str, "library") == 0) {
@@ -199,9 +199,9 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 		}
 	}
 
-	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 
 /*	for(n = library->children; n != NULL; n = n->next) {
 		printf("n=%s\n", n->str);
@@ -300,7 +300,7 @@ static int mentor_sch_import(pcb_plug_import_t *ctx, unsigned int aspects, const
 static pcb_plug_import_t import_mentor_sch;
 
 
-pcb_action_t mentor_sch_action_list[] = {
+rnd_action_t mentor_sch_action_list[] = {
 	{"LoadMentorFrom", pcb_act_LoadMentorFrom, pcb_acth_Loadmentor_schFrom, pcb_acts_Loadmentor_schFrom}
 };
 
@@ -308,7 +308,7 @@ int pplg_check_ver_import_mentor_sch(int ver_needed) { return 0; }
 
 void pplg_uninit_import_mentor_sch(void)
 {
-	pcb_remove_actions_by_cookie(mentor_sch_cookie);
+	rnd_remove_actions_by_cookie(mentor_sch_cookie);
 	pcb_conf_unreg_fields("plugins/import_mentor_sch/");
 	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
 }

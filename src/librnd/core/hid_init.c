@@ -328,7 +328,7 @@ extern void rnd_main_act_init2(void);
 
 void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
-	pcb_actions_init();
+	rnd_actions_init();
 
 	/* load custom config files in the order they were specified */
 	if (hidlib_conffile.used > 0) {
@@ -390,7 +390,7 @@ void pcb_hidlib_uninit(void)
 	pcb_events_uninit();
 	pcb_conf_uninit();
 	pcb_plugin_uninit();
-	pcb_actions_uninit();
+	rnd_actions_uninit();
 	pcb_dad_unit_uninit();
 }
 
@@ -663,7 +663,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 	pcb_conf_update(NULL, -1);
 
 	if (ga->main_action != NULL) {
-		int res = pcb_parse_command(NULL, ga->main_action, pcb_true); /* hidlib is NULL because there is no context yet */
+		int res = rnd_parse_command(NULL, ga->main_action, pcb_true); /* hidlib is NULL because there is no context yet */
 		if ((res != 0) && (ga->main_action_hint != NULL))
 			pcb_message(PCB_MSG_ERROR, "\nHint: %s\n", ga->main_action_hint);
 		pcbhl_log_print_uninit_errs("main_action parse error");

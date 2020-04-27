@@ -560,7 +560,7 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
 
-	pcb_hid_get_coords("Click on object to change", &x, &y, 0);
+	rnd_hid_get_coords("Click on object to change", &x, &y, 0);
 
 	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID){
 TODO("color: figure where to store this");
@@ -571,7 +571,7 @@ TODO("color: figure where to store this");
 	return 0;
 }
 
-pcb_action_t diag_action_list[] = {
+rnd_action_t diag_action_list[] = {
 	{"dumpconf", pcb_act_DumpConf, pcb_acth_DumpConf, pcb_acts_DumpConf},
 	{"dumplayers", pcb_act_DumpLayers, pcb_acth_DumpLayers, pcb_acts_DumpLayers},
 	{"dumpfonts", pcb_act_DumpFonts, dump_fonts_help, dump_fonts_syntax},
@@ -595,7 +595,7 @@ int pplg_check_ver_diag(int ver_needed) { return 0; }
 
 void pplg_uninit_diag(void)
 {
-	pcb_remove_actions_by_cookie(diag_cookie);
+	rnd_remove_actions_by_cookie(diag_cookie);
 	pcb_conf_unreg_fields("plugins/diag/");
 	pcb_event_unbind_allcookie(diag_cookie);
 }

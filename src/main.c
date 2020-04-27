@@ -350,7 +350,7 @@ void pcb_main_uninit(void)
 	pcb_funchash_uninit();
 	pcb_file_loaded_uninit();
 	pcb_uilayer_uninit();
-	pcb_cli_uninit();
+	rnd_cli_uninit();
 	pcb_dynflag_uninit();
 
 	pcb_extobj_uninit();
@@ -538,11 +538,11 @@ int main(int argc, char *argv[])
 
 	if (conf_core.rc.script_filename) {
 		pcb_message(PCB_MSG_INFO, "Executing startup script file %s\n", conf_core.rc.script_filename);
-		pcb_actionva(&PCB->hidlib, "ExecuteFile", conf_core.rc.script_filename, NULL);
+		rnd_actionva(&PCB->hidlib, "ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
 		pcb_message(PCB_MSG_INFO, "Executing startup action %s\n", conf_core.rc.action_string);
-		pcb_parse_actions(&PCB->hidlib, conf_core.rc.action_string);
+		rnd_parse_actions(&PCB->hidlib, conf_core.rc.action_string);
 	}
 
 	if (pcbhl_main_exported(&ga, &PCB->hidlib, pcb_data_is_empty(PCB->Data))) {

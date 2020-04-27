@@ -74,7 +74,7 @@ static void sym_flush(symattr_t *sattr)
 		if (sattr->footprint == NULL)
 			pcb_message(PCB_MSG_ERROR, "tinycad: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
-			pcb_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
+			rnd_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
 	free(sattr->refdes); sattr->refdes = NULL;
 	free(sattr->value); sattr->value = NULL;
@@ -89,9 +89,9 @@ static int tinycad_parse_net(FILE *fn)
 
 	memset(&sattr, 0, sizeof(sattr));
 
-	pcb_actionva(&PCB->hidlib, "ElementList", "start", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
@@ -120,7 +120,7 @@ static int tinycad_parse_net(FILE *fn)
 				if (sep != NULL) {
 					*sep = '-';
 /*					pcb_trace("net-add '%s' '%s'\n", argv[2], curr);*/
-					pcb_actionva(&PCB->hidlib, "Netlist", "Add",  argv[2], curr, NULL);
+					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  argv[2], curr, NULL);
 				}
 			}
 		}
@@ -146,9 +146,9 @@ static int tinycad_parse_net(FILE *fn)
 
 	sym_flush(&sattr);
 
-	pcb_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
-	pcb_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
-	pcb_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
+	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 
 	return 0;
 }
@@ -243,7 +243,7 @@ static int tinycad_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 
 static pcb_plug_import_t import_tinycad;
 
-pcb_action_t tinycad_action_list[] = {
+rnd_action_t tinycad_action_list[] = {
 	{"LoadTinycadFrom", pcb_act_LoadtinycadFrom, pcb_acth_LoadtinycadFrom, pcb_acts_LoadtinycadFrom}
 };
 
@@ -251,7 +251,7 @@ int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
 
 void pplg_uninit_import_tinycad(void)
 {
-	pcb_remove_actions_by_cookie(tinycad_cookie);
+	rnd_remove_actions_by_cookie(tinycad_cookie);
 	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
 }
 

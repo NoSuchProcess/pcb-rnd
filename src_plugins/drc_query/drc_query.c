@@ -349,7 +349,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 
 static pcb_drc_impl_t drc_query_impl = {"drc_query", "query() based DRC", "drcquerylistrules"};
 
-static pcb_action_t drc_query_action_list[] = {
+static rnd_action_t drc_query_action_list[] = {
 	{"DrcQueryListRules", pcb_act_DrcQueryListRules, pcb_acth_DrcQueryListRules, pcb_acts_DrcQueryListRules},
 	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule}
 };
@@ -370,7 +370,7 @@ void pplg_uninit_drc_query(void)
 		pcb_conf_unreg_field(free_drc_conf_nodes.array[n]);
 	vtp0_uninit(&free_drc_conf_nodes);
 
-	pcb_remove_actions_by_cookie(drc_query_cookie);
+	rnd_remove_actions_by_cookie(drc_query_cookie);
 	pcb_drcq_stat_uninit();
 }
 

@@ -137,14 +137,14 @@ static void batch_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	batch_stay = 1;
 	while (batch_stay) {
 		if ((interactive) && (!pcbhl_conf.rc.quiet)) {
-			printf("%s:%s> ", prompt, pcb_cli_prompt(NULL));
+			printf("%s:%s> ", prompt, rnd_cli_prompt(NULL));
 			fflush(stdout);
 		}
 		if (fgets(line, sizeof(line) - 1, stdin) == NULL) {
 			uninit_batch();
 			goto quit;
 		}
-		pcb_parse_command(hid->hid_data, line, pcb_false);
+		rnd_parse_command(hid->hid_data, line, pcb_false);
 	}
 
 	quit:;

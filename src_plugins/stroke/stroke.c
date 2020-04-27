@@ -62,7 +62,7 @@ static int pcb_stroke_exec(pcb_hidlib_t *hl, const char *seq)
 	int idx;
 
 	conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {
-		if ((strcmp(seq, item->name) == 0) && (pcb_parse_actions(hl, item->val.string[0]) == 0))
+		if ((strcmp(seq, item->name) == 0) && (rnd_parse_actions(hl, item->val.string[0]) == 0))
 			return 1;
 	}
 	if (conf_stroke.plugins.stroke.warn4unknown)
@@ -124,7 +124,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (pcb_strcasecmp(cmd, "zoom") == 0) {
 		fgw_arg_t args[5];
-		fgw_func_t *f = fgw_func_lookup(&pcb_fgw, "zoomto");
+		fgw_func_t *f = fgw_func_lookup(&rnd_fgw, "zoomto");
 
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "zoomto action is not available");
@@ -137,10 +137,10 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		args[2].type = FGW_COORD; fgw_coord(&args[2]) = stroke_first_y;
 		args[3].type = FGW_COORD; fgw_coord(&args[3]) = stroke_last_x;
 		args[4].type = FGW_COORD; fgw_coord(&args[4]) = stroke_last_y;
-		return pcb_actionv_(f, res, 5, args);
+		return rnd_actionv_(f, res, 5, args);
 	}
 	else if (pcb_strcasecmp(cmd, "stopline") == 0)
-		pcb_actionva(PCB_ACT_HIDLIB, "Tool", "Escape", NULL);
+		rnd_actionva(PCB_ACT_HIDLIB, "Tool", "Escape", NULL);
 	else
 		PCB_ACT_FAIL(stroke);
 
@@ -150,7 +150,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /*** administration ***/
 
-pcb_action_t stroke_action_list[] = {
+rnd_action_t stroke_action_list[] = {
 	{"stroke", pcb_act_stroke, pcb_acth_stroke, pcb_acts_stroke}
 };
 
@@ -160,7 +160,7 @@ int pplg_uninit_stroke(void)
 {
 	pcb_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
 	pcb_conf_unreg_fields("plugins/stroke/");
-	pcb_remove_actions_by_cookie(pcb_stroke_cookie);
+	rnd_remove_actions_by_cookie(pcb_stroke_cookie);
 	pcb_event_unbind_allcookie(pcb_stroke_cookie);
 	return 0;
 }

@@ -66,7 +66,7 @@ static void timer_cb(pcb_hidval_t hv)
 		if (t->next <= now) {
 			t->next += t->period;
 
-			f = fgw_func_lookup(&pcb_fgw, t->aname);
+			f = fgw_func_lookup(&rnd_fgw, t->aname);
 			if (f == NULL)
 				goto remove;
 			argv[0].type = FGW_FUNC;
@@ -86,9 +86,9 @@ static void timer_cb(pcb_hidval_t hv)
 			}
 
 			res.type = FGW_INVALID;
-			if (pcb_actionv_(f, &res, 4, argv) != 0)
+			if (rnd_actionv_(f, &res, 4, argv) != 0)
 				goto remove;
-			fgw_arg_conv(&pcb_fgw, &res, FGW_INT);
+			fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
 			if ((res.type != FGW_INT) || (res.val.nat_int != 0)) /* action requested timer removal */
 				goto remove;
 

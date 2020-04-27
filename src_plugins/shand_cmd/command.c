@@ -197,7 +197,7 @@ static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t
 	return 0;
 }
 
-pcb_action_t shand_cmd_action_list[] = {
+rnd_action_t shand_cmd_action_list[] = {
 	{"h", pcb_act_Help, pcb_acth_Help, pcb_acts_Help},
 	{"l", pcb_act_LoadLayout, pcb_acth_LoadLayout, pcb_acts_LoadLayout},
 	{"le", pcb_act_LoadElementToBuffer, pcb_acth_LoadElementToBuffer, pcb_acts_LoadElementToBuffer},
@@ -216,7 +216,7 @@ int pplg_check_ver_shand_cmd(int ver_needed) { return 0; }
 
 void pplg_uninit_shand_cmd(void)
 {
-	pcb_remove_actions_by_cookie(shand_cmd_cookie);
+	rnd_remove_actions_by_cookie(shand_cmd_cookie);
 }
 
 int pplg_init_shand_cmd(void)

@@ -177,7 +177,7 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_ACT_FAIL(LoadtedaxFrom);
 }
 
-pcb_action_t tedax_action_list[] = {
+rnd_action_t tedax_action_list[] = {
 	{"LoadTedaxFrom", pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
 	{"SaveTedax", pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
 };
@@ -247,7 +247,7 @@ int pplg_check_ver_io_tedax(int ver_needed) { return 0; }
 
 void pplg_uninit_io_tedax(void)
 {
-	pcb_remove_actions_by_cookie(tedax_cookie);
+	rnd_remove_actions_by_cookie(tedax_cookie);
 	tedax_etest_uninit();
 	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
 	pcb_tedax_net_uninit();

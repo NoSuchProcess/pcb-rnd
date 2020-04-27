@@ -43,11 +43,11 @@ int pcb_hid_cfg_action(pcb_hidlib_t *hl, const lht_node_t *node)
 
 	switch(node->type) {
 		case LHT_TEXT:
-			return pcb_parse_actions(hl, node->data.text.value);
+			return rnd_parse_actions(hl, node->data.text.value);
 		case LHT_LIST:
 			for(node = node->data.list.first; node != NULL; node = node->next) {
 				if (node->type == LHT_TEXT) {
-					if (pcb_parse_actions(hl, node->data.text.value) != 0)
+					if (rnd_parse_actions(hl, node->data.text.value) != 0)
 						return -1;
 				}
 				else if ((node->type == LHT_LIST) || (node->type == LHT_SYMLINK)) {

@@ -184,7 +184,7 @@ void lesstif_show_library()
 	}
 }
 
-static pcb_action_t ltf_library_action_list[] = {
+static rnd_action_t ltf_library_action_list[] = {
 	{"LibraryShow", pcb_act_LibraryShow, pcb_acth_LibraryShow, pcb_acts_LibraryShow}
 };
 

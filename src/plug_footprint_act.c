@@ -76,7 +76,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t plug_footprint_list[] = {
+static rnd_action_t plug_footprint_list[] = {
 	{"fp_rehash", pcb_act_fp_rehash, pcb_acth_fp_rehash, pcb_acts_fp_rehash}
 };
 

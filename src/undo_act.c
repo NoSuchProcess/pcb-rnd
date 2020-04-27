@@ -144,7 +144,7 @@ fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t undo_action_list[] = {
+static rnd_action_t undo_action_list[] = {
 	{"Atomic", pcb_act_Atomic, pcb_acth_Atomic, pcb_acts_Atomic},
 	{"Undo", pcb_act_Undo, pcb_acth_Undo, pcb_acts_Undo},
 	{"Redo", pcb_act_Redo, pcb_acth_Redo, pcb_acts_Redo}

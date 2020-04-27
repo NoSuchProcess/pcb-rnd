@@ -47,7 +47,7 @@ static fgw_error_t pcb_act_ExpFeatTmp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const pcb_action_t expfeat_action_list[] = {
+static const rnd_action_t expfeat_action_list[] = {
 	{"ExpFeatTmp", pcb_act_ExpFeatTmp, pcb_acth_ExpFeatTmp, pcb_acts_ExpFeatTmp}
 };
 
@@ -57,7 +57,7 @@ int pplg_check_ver_expfeat(int ver_needed) { return 0; }
 
 void pplg_uninit_expfeat(void)
 {
-	pcb_remove_actions_by_cookie(expfeat_cookie);
+	rnd_remove_actions_by_cookie(expfeat_cookie);
 }
 
 int pplg_init_expfeat(void)

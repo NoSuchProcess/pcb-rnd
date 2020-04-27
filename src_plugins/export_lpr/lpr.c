@@ -119,7 +119,7 @@ int pplg_check_ver_export_lpr(int ver_needed) { return 0; }
 
 void pplg_uninit_export_lpr(void)
 {
-	pcb_remove_actions_by_cookie(lpr_cookie);
+	rnd_remove_actions_by_cookie(lpr_cookie);
 }
 
 int pplg_init_export_lpr(void)

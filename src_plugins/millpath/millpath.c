@@ -62,7 +62,7 @@ fgw_error_t pcb_act_mill(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-pcb_action_t millpath_action_list[] = {
+rnd_action_t millpath_action_list[] = {
 	{"mill", pcb_act_mill, pcb_acth_mill, pcb_acts_mill}
 };
 
@@ -70,7 +70,7 @@ int pplg_check_ver_millpath(int ver_needed) { return 0; }
 
 void pplg_uninit_millpath(void)
 {
-	pcb_remove_actions_by_cookie(pcb_millpath_cookie);
+	rnd_remove_actions_by_cookie(pcb_millpath_cookie);
 }
 
 

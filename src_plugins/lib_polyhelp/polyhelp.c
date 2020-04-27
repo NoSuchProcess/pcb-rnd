@@ -526,7 +526,7 @@ static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static pcb_action_t polyhelp_action_list[] = {
+static rnd_action_t polyhelp_action_list[] = {
 	{"PolyHatch", pcb_act_PolyHatch, pcb_acth_PolyHatch, pcb_acts_PolyHatch},
 	{"PolyOffs", pcb_act_PolyOffs, pcb_acth_PolyOffs, pcb_acts_PolyOffs},
 	{"ToPoly", pcb_act_topoly, pcb_acth_topoly, pcb_acts_topoly}
@@ -536,7 +536,7 @@ int pplg_check_ver_lib_polyhelp(int ver_needed) { return 0; }
 
 void pplg_uninit_lib_polyhelp(void)
 {
-	pcb_remove_actions_by_cookie(polyhelp_cookie);
+	rnd_remove_actions_by_cookie(polyhelp_cookie);
 }
 
 int pplg_init_lib_polyhelp(void)

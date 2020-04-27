@@ -105,7 +105,7 @@ static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 	gint ksym = kev->keyval;
 
 	if (ksym == PCB_GTK_KEY(Tab)) {
-		pcb_cli_tab(ghidgui->hidlib);
+		rnd_cli_tab(ghidgui->hidlib);
 		return TRUE;
 	}
 
@@ -121,7 +121,7 @@ static pcb_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 static pcb_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
 {
 	if (ctx->command_entry_status_line_active)
-		pcb_cli_edit(ghidgui->hidlib);
+		rnd_cli_edit(ghidgui->hidlib);
 	return TRUE;
 }
 
@@ -170,7 +170,7 @@ void ghid_cmd_close(pcb_gtk_command_t *ctx)
 void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
 {
 	if (ctx->prompt_label != NULL)
-		gtk_label_set_text(GTK_LABEL(ctx->prompt_label), pcb_cli_prompt(":"));
+		gtk_label_set_text(GTK_LABEL(ctx->prompt_label), rnd_cli_prompt(":"));
 }
 
 
@@ -235,10 +235,10 @@ void ghid_handle_user_command(pcb_hidlib_t *hl, pcb_gtk_command_t *ctx, pcb_bool
 {
 	char *command;
 
-	command = ghid_command_entry_get(ctx, pcb_cli_prompt(":"), (gchar *)"");
+	command = ghid_command_entry_get(ctx, rnd_cli_prompt(":"), (gchar *)"");
 	if (command != NULL) {
 		/* copy new command line to save buffer */
-		pcb_parse_command(hl, command, pcb_false);
+		rnd_parse_command(hl, command, pcb_false);
 		g_free(command);
 	}
 }

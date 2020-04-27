@@ -86,7 +86,7 @@ static fgw_error_t pcb_act_polystitch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	pcb_poly_t *inner_poly, *outer_poly;
 
-	pcb_hid_get_coords("Select a corner on the inner polygon", &x, &y, 0);
+	rnd_hid_get_coords("Select a corner on the inner polygon", &x, &y, 0);
 	inner_poly = find_crosshair_poly(x, y);
 
 	if (inner_poly) {
@@ -114,7 +114,7 @@ static fgw_error_t pcb_act_polystitch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t polystitch_action_list[] = {
+static rnd_action_t polystitch_action_list[] = {
 	{"PolyStitch", pcb_act_polystitch, NULL, NULL}
 };
 
@@ -124,7 +124,7 @@ int pplg_check_ver_polystitch(int ver_needed) { return 0; }
 
 void pplg_uninit_polystitch(void)
 {
-	pcb_remove_actions_by_cookie(polystitch_cookie);
+	rnd_remove_actions_by_cookie(polystitch_cookie);
 }
 
 int pplg_init_polystitch(void)

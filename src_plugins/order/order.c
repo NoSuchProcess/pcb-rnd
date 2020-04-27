@@ -77,7 +77,7 @@ fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t order_action_list[] = {
+static rnd_action_t order_action_list[] = {
 	{"OrderPCB", pcb_act_OrderPCB, pcb_acth_OrderPCB, pcb_acts_OrderPCB}
 };
 
@@ -202,7 +202,7 @@ int pplg_check_ver_order(int ver_needed) { return 0; }
 
 void pplg_uninit_order(void)
 {
-	pcb_remove_actions_by_cookie(order_cookie);
+	rnd_remove_actions_by_cookie(order_cookie);
 	pcb_event_unbind_allcookie(order_cookie);
 	pcb_conf_unreg_file(ORDER_CONF_FN, order_conf_internal);
 	pcb_conf_unreg_fields("plugins/order/");

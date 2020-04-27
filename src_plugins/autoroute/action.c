@@ -71,7 +71,7 @@ static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char *autoroute_cookie = "autoroute plugin";
 
-pcb_action_t autoroute_action_list[] = {
+rnd_action_t autoroute_action_list[] = {
 	{"AutoRoute", pcb_act_AutoRoute, pcb_acth_AutoRoute, pcb_acts_AutoRoute},
 };
 
@@ -79,7 +79,7 @@ int pplg_check_ver_autoroute(int ver_needed) { return 0; }
 
 void pplg_uninit_autoroute(void)
 {
-	pcb_remove_actions_by_cookie(autoroute_cookie);
+	rnd_remove_actions_by_cookie(autoroute_cookie);
 }
 
 int pplg_init_autoroute(void)

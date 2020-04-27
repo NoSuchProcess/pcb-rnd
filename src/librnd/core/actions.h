@@ -7,14 +7,14 @@
 
 #define PCB_ACTION_NAME_MAX 128
 
-struct pcb_action_s {
+struct rnd_action_s {
 	const char *name; /* action command name */
 	fgw_error_t (*trigger_cb)(fgw_arg_t *ores, int argc, fgw_arg_t *argv); /* Action implementation; if this returns non-zero, no further actions will be invoked for this key/mouse event. */
 	const char *description;/* Short description (help text) */
 	const char *syntax; /* Full allowed syntax; use \n to separate lines.  */
 };
 
-extern fgw_ctx_t pcb_fgw;
+extern fgw_ctx_t rnd_fgw;
 
 typedef struct fgw_coords_s {
 	int len;
@@ -54,41 +54,41 @@ typedef enum {
 #define FGW_LAYERGRPID  ((fgw_type_t)FGW_LAYERGRPID_)
 #define FGW_LAYERGRP  ((fgw_type_t)FGW_LAYERGRP_)
 
-extern const char *PCB_PTR_DOMAIN_IDPATH;
-extern const char *PCB_PTR_DOMAIN_IDPATH_LIST;
+extern const char *RND_PTR_DOMAIN_IDPATH;
+extern const char *RND_PTR_DOMAIN_IDPATH_LIST;
 
-void rnd_register_action(const pcb_action_t *a, const char *cookie);
-void rnd_register_actions(const pcb_action_t *a, int, const char *cookie);
+void rnd_register_action(const rnd_action_t *a, const char *cookie);
+void rnd_register_actions(const rnd_action_t *a, int, const char *cookie);
 
 /* shorthand for registering all actions from an action table */
 #define RND_REGISTER_ACTIONS(a, cookie) \
 	rnd_register_actions(a, sizeof(a)/sizeof(a[0]), cookie);
 
 /* Inits and uninits the whole action framework */
-void pcb_actions_init(void);
-void pcb_actions_uninit(void);
+void rnd_actions_init(void);
+void rnd_actions_uninit(void);
 
 /* These are called from main_act.c */
-void pcb_print_actions(void);
-void pcb_dump_actions(void);
+void rnd_print_actions(void);
+void rnd_dump_actions(void);
 
-const pcb_action_t *pcb_find_action(const char *name, fgw_func_t **f_out);
+const rnd_action_t *rnd_find_action(const char *name, fgw_func_t **f_out);
 
-void pcb_remove_actions(const pcb_action_t *a, int n);
-void pcb_remove_actions_by_cookie(const char *cookie);
+void rnd_remove_actions(const rnd_action_t *a, int n);
+void rnd_remove_actions_by_cookie(const char *cookie);
 
-int pcb_action(pcb_hidlib_t *hl, const char *action_);
-int pcb_actionva(pcb_hidlib_t *hl, const char *action_, ...); /* NULL terminated */
-int pcb_actionv(pcb_hidlib_t *hl, const char *action_, int argc_, const char **argv_);
-fgw_error_t pcb_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv);
+int rnd_action(pcb_hidlib_t *hl, const char *action_);
+int rnd_actionva(pcb_hidlib_t *hl, const char *action_, ...); /* NULL terminated */
+int rnd_actionv(pcb_hidlib_t *hl, const char *action_, int argc_, const char **argv_);
+fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 
-int pcb_actionl(const char *action_, ...); /* NULL terminated - DEPRECATED, DO NOT USE (does not set user_call_ctx) */
+int rnd_actionl(const char *action_, ...); /* NULL terminated - DEPRECATED, DO NOT USE (does not set user_call_ctx) */
 
 
 /* Call an action by name, passing arguments and res in fungw binary format;
    Caller must leave argv[0] empty for the function designator. */
-fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv);
+fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 
 /* Parse the given command string into action calls, and call
@@ -97,45 +97,45 @@ fgw_error_t pcb_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, 
    action in the later case. If force_action_mode is true, str
    is interpreted as pcb-rnd action despite of the cli mode.
    Returns nonzero if the action handler(s) return nonzero. */
-int pcb_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode);
+int rnd_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode);
 
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only
    "action(arg1, arg2)" */
-int pcb_parse_actions(pcb_hidlib_t *hl, const char *str_);
+int rnd_parse_actions(pcb_hidlib_t *hl, const char *str_);
 
 /* Return a static buffer with the current prompt plus an optional
    suffix glued to it. Valid until the next call. */
-const char *pcb_cli_prompt(const char *suffix);
+const char *rnd_cli_prompt(const char *suffix);
 
 /* Change the cli backend/prompt, entering a new cli mode; the old
    mode is pushed on a stack */
-int pcb_cli_enter(const char *backend, const char *prompt);
+int rnd_cli_enter(const char *backend, const char *prompt);
 
 /* Leave the current cli mode, returning to the previous mode
    (popped from a stack) */
-int pcb_cli_leave(void);
+int rnd_cli_leave(void);
 
 /* Request for tab completion */
-int pcb_cli_tab(pcb_hidlib_t *hl);
+int rnd_cli_tab(pcb_hidlib_t *hl);
 
 /* Called on each key press so indication can be updated */
-int pcb_cli_edit(pcb_hidlib_t *hl);
+int rnd_cli_edit(pcb_hidlib_t *hl);
 
 /* Mouse event while the command line is open; returns zero if
    normal event processing shall be inhibited; notify is true if
    called in notify mode, false if called in release mode */
-int pcb_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify);
+int rnd_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify);
 
 /* Discard the cli mode stack */
-void pcb_cli_uninit(void);
+void rnd_cli_uninit(void);
 
 /* If the mouse cursor is in the drawin area, set x;y silently and return;
    else show msg and let the user click in the drawing area. If force is
    non-zero and msg is non-NULL, discard the cache and force querying a
    new coord. This mode must NOT be used unless action arguments explictly
    requested it. */
-void pcb_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
+void rnd_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
 #define PCB_ACTION_MAX_ARGS 16
 
@@ -157,7 +157,7 @@ PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
 	if (ret != 0)
 		return -1;
 
-	if (fgw_arg_conv(&pcb_fgw, res, FGW_INT) != 0)
+	if (fgw_arg_conv(&rnd_fgw, res, FGW_INT) != 0)
 		return -1;
 
 	return res->val.nat_int;
@@ -178,7 +178,7 @@ do { \
 		PCB_ACT_FAIL(aname); \
 		return FGW_ERR_ARGC; \
 	} \
-	if (fgw_arg_conv(&pcb_fgw, &argv[idx], type) != 0) { \
+	if (fgw_arg_conv(&rnd_fgw, &argv[idx], type) != 0) { \
 		PCB_ACT_FAIL(aname); \
 		return FGW_ERR_ARG_CONV; \
 	} \
@@ -189,7 +189,7 @@ do { \
 #define PCB_ACT_MAY_CONVARG(idx, type, aname, stmt) \
 do { \
 	if (argc > idx) { \
-		if (fgw_arg_conv(&pcb_fgw, &argv[idx], type) != 0) { \
+		if (fgw_arg_conv(&rnd_fgw, &argv[idx], type) != 0) { \
 			PCB_ACT_FAIL(aname); \
 			return FGW_ERR_ARG_CONV; \
 		} \

@@ -114,7 +114,7 @@ void pcb_view_goto(pcb_view_t *item)
 		argv[2].type = FGW_COORD; fgw_coord(&argv[2]) = item->bbox.Y1;
 		argv[3].type = FGW_COORD; fgw_coord(&argv[3]) = item->bbox.X2;
 		argv[4].type = FGW_COORD; fgw_coord(&argv[4]) = item->bbox.Y2;
-		pcb_actionv_bin(item->hidlib, "zoom", &res, 5, argv);
+		rnd_actionv_bin(item->hidlib, "zoom", &res, 5, argv);
 	}
 }
 

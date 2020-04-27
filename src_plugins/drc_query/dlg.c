@@ -106,8 +106,8 @@ static void drcq_open_view_win(pcb_hidlib_t *hidlib, pcb_view_list_t *view)
 	fgw_arg_t args[4], ares;
 	args[1].type = FGW_STR; args[1].val.str = "drc_query: manual run";
 	args[2].type = FGW_STR; args[2].val.str = "drc_query_run";
-	fgw_ptr_reg(&pcb_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
-	pcb_actionv_bin(hidlib, "viewlist", &ares, 4, args);
+	fgw_ptr_reg(&rnd_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
+	rnd_actionv_bin(hidlib, "viewlist", &ares, 4, args);
 
 }
 

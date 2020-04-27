@@ -438,7 +438,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
 		pcb_clihist_append(s, NULL, NULL, NULL);
-		pcb_parse_command(ltf_hidlib, s, pcb_false);
+		rnd_parse_command(ltf_hidlib, s, pcb_false);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
 
@@ -501,7 +501,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 	switch (e->type) {
 		case KeyRelease:
 			if (cmd_is_active)
-				pcb_cli_edit(ltf_hidlib);
+				rnd_cli_edit(ltf_hidlib);
 			break;
 		case KeyPress:
 
@@ -528,7 +528,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 						XmTextSetString(w, XmStrCast(""));
 					break;
 				case XK_Tab:
-					pcb_cli_tab(ltf_hidlib);
+					rnd_cli_tab(ltf_hidlib);
 					*cont = False;
 					break;
 				case XK_Escape:
@@ -1496,7 +1496,7 @@ static void lesstif_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	stdarg(XmNtopAttachment, XmATTACH_FORM);
 	stdarg(XmNbottomAttachment, XmATTACH_FORM);
 	stdarg(XmNleftAttachment, XmATTACH_FORM);
-	stdarg(XmNlabelString, XmStringCreatePCB(pcb_cli_prompt(":")));
+	stdarg(XmNlabelString, XmStringCreatePCB(rnd_cli_prompt(":")));
 	m_cmd_label = XmCreateLabel(messages, XmStrCast("command"), stdarg_args, stdarg_n);
 
 	stdarg_n = 0;
@@ -1613,7 +1613,7 @@ pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmVa
 
 static void mainwind_delete_cb()
 {
-	pcb_action(ltf_hidlib, "Quit");
+	rnd_action(ltf_hidlib, "Quit");
 }
 
 static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
@@ -1626,7 +1626,7 @@ static void lesstif_listener_cb(XtPointer client_data, int *fid, XtInputId * id)
 
 	if (nbytes) {
 		buf[nbytes] = '\0';
-		pcb_parse_actions(ltf_hidlib, buf);
+		rnd_parse_actions(ltf_hidlib, buf);
 	}
 }
 
@@ -2777,7 +2777,7 @@ static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
 		lesstif_invalidate_all(pcb_gui);
 	if (strncmp(cfg->hash_path, "rc/cli_", 7) == 0) {
 		stdarg_n = 0;
-		stdarg(XmNlabelString, XmStringCreatePCB(pcb_cli_prompt(":")));
+		stdarg(XmNlabelString, XmStringCreatePCB(rnd_cli_prompt(":")));
 		XtSetValues(m_cmd_label, stdarg_args, stdarg_n);
 	}
 }
@@ -3080,7 +3080,7 @@ static void lesstif_begin(void)
 
 static void lesstif_end(void)
 {
-	pcb_remove_actions_by_cookie(lesstif_cookie);
+	rnd_remove_actions_by_cookie(lesstif_cookie);
 	pcb_export_remove_opts_by_cookie(lesstif_cookie);
 	lesstif_active = 0;
 }

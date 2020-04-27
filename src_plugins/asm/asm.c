@@ -625,7 +625,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t asm_action_list[] = {
+static rnd_action_t asm_action_list[] = {
 	{"asm", pcb_act_asm, pcb_acth_asm, pcb_acts_asm}
 };
 
@@ -633,7 +633,7 @@ int pplg_check_ver_asm(int ver_needed) { return 0; }
 
 void pplg_uninit_asm(void)
 {
-	pcb_remove_actions_by_cookie(asm_cookie);
+	rnd_remove_actions_by_cookie(asm_cookie);
 	pcb_conf_unreg_file(ASM_CONF_FN, asm_conf_internal);
 	pcb_conf_unreg_fields("plugins/asm1/");
 }

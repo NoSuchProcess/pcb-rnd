@@ -224,7 +224,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static pcb_action_t smartdisperse_action_list[] = {
+static rnd_action_t smartdisperse_action_list[] = {
 	{"smartdisperse", pcb_act_smartdisperse, pcb_acth_smartdisperse, pcb_acts_smartdisperse}
 };
 
@@ -234,7 +234,7 @@ int pplg_check_ver_smartdisperse(int ver_needed) { return 0; }
 
 void pplg_uninit_smartdisperse(void)
 {
-	pcb_remove_actions_by_cookie(smartdisperse_cookie);
+	rnd_remove_actions_by_cookie(smartdisperse_cookie);
 }
 
 int pplg_init_smartdisperse(void)

@@ -637,7 +637,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		void *r1, *r2, *r3;
 		pcb_subc_t *sc;
 		int type;
-		pcb_hid_get_coords("Pick a subcircuit for padstack lib editing", &x, &y, 0);
+		rnd_hid_get_coords("Pick a subcircuit for padstack lib editing", &x, &y, 0);
 		type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, x, y, PCB_SLOP * pcb_pixel_slop);
 		if (type != PCB_OBJ_SUBC) {
 			PCB_ACT_IRES(-1);

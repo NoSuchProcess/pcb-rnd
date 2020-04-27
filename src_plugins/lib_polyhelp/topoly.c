@@ -346,7 +346,7 @@ fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (op == NULL) {
 		pcb_coord_t x, y;
-		pcb_hid_get_coords("Click on a line or arc of the contour loop", &x, &y, 0);
+		rnd_hid_get_coords("Click on a line or arc of the contour loop", &x, &y, 0);
 		if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
 			pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
 			PCB_ACT_IRES(1);

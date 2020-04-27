@@ -275,7 +275,7 @@ static fgw_error_t pcb_act_Brave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static pcb_action_t brave_action_list[] = {
+static rnd_action_t brave_action_list[] = {
 	{"Brave", pcb_act_Brave, pcb_acth_Brave, pcb_acts_Brave}
 };
 

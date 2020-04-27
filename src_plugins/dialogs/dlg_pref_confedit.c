@@ -240,7 +240,7 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_a
 static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
 {
 	confedit_ctx_t *ctx = caller_data;
-	pcb_actionva(&PCB->hidlib, ctx->nat->gui_edit_act,
+	rnd_actionva(&PCB->hidlib, ctx->nat->gui_edit_act,
 		pcb_conf_role_name(ctx->role), ctx->nat->hash_path, trigger_attr->val.str,
 		NULL);
 }

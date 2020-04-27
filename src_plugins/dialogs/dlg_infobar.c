@@ -39,12 +39,12 @@
 static void ifb_file_chg_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_revert_pcb();
-	pcb_actionva(&PCB->hidlib, "InfoBarFileChanged", "close", NULL);
+	rnd_actionva(&PCB->hidlib, "InfoBarFileChanged", "close", NULL);
 }
 
 static void ifb_file_chg_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_actionva(&PCB->hidlib, "InfoBarFileChanged", "close", NULL);
+	rnd_actionva(&PCB->hidlib, "InfoBarFileChanged", "close", NULL);
 }
 
 const char pcb_acts_InfoBarFileChanged[] = "InfoBarFileChanged(open|close)\n";
