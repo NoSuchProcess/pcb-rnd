@@ -166,16 +166,16 @@ int pcb_strncasecmp(const char *s1, const char *s2, size_t n)
 	return tolower(*s1) - tolower(*s2);
 }
 
-#ifdef PCB_HAVE_SETENV
+#ifdef RND_HAVE_SETENV
 	extern int setenv();
 #endif
 
 int pcb_setenv(const char *name, const char *val, int overwrite)
 {
-#ifdef PCB_HAVE_SETENV
+#ifdef RND_HAVE_SETENV
 	return setenv(name, val, overwrite);
 #else
-#	ifdef PCB_HAVE_PUTENV
+#	ifdef RND_HAVE_PUTENV
 	int res;
 	gds_t tmp;
 	gds_init(&tmp);
@@ -202,13 +202,13 @@ size_t pcb_print_utc(char *out, size_t out_len, time_t when)
 
 void pcb_ms_sleep(long ms)
 {
-#ifdef PCB_HAVE_USLEEP
+#ifdef RND_HAVE_USLEEP
 	usleep(ms*1000);
 #else
-#	ifdef PCB_HAVE_WSLEEP
+#	ifdef RND_HAVE_WSLEEP
 		Sleep(ms);
 #	else
-#		ifdef PCB_HAVE_SELECT
+#		ifdef RND_HAVE_SELECT
 			fd_set s;
 			struct timeval tv;
 

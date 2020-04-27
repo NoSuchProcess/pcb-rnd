@@ -121,3 +121,9 @@
 #define pcb_distance rnd_distance
 #define pcb_cardinal_t rnd_cardinal_t
 #define PCB_INLINE RND_INLINE
+#define PCB_FUNC_UNUSED RND_FUNC_UNUSED
+#define PCB_HAVE_SETENV RND_HAVE_SETENV
+#define PCB_HAVE_PUTENV RND_HAVE_PUTENV
+#define PCB_HAVE_USLEEP RND_HAVE_USLEEP
+#define PCB_HAVE_WSLEEP RND_HAVE_WSLEEP
+#define PCB_HAVE_SELECT RND_HAVE_SELECT

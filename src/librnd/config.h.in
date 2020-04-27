@@ -41,19 +41,19 @@ print {\n\n/* final, combined keywords and attributes for an inline function */\
 print {#define RND_INLINE static RND_INLINE_DETECTED PCB_FUNC_UNUSED\n\n}
 
 print {\n\n/* Wether setenv() works */\n}
-print_ternary ?libs/env/setenv/presents {#define PCB_HAVE_SETENV 1} {/* #undef PCB_HAVE_SETENV */}
+print_ternary ?libs/env/setenv/presents {#define RND_HAVE_SETENV 1} {/* #undef RND_HAVE_SETENV */}
 
 print {\n\n/* Wether putenv() works */\n}
-print_ternary ?libs/env/putenv/presents {#define PCB_HAVE_PUTENV 1} {/* #undef PCB_HAVE_PUTENV */}
+print_ternary ?libs/env/putenv/presents {#define RND_HAVE_PUTENV 1} {/* #undef RND_HAVE_PUTENV */}
 
 print {\n\n/* Wether usleep() works */\n}
-print_ternary ?libs/time/usleep/presents {#define PCB_HAVE_USLEEP 1} {/* #undef PCB_HAVE_USLEEP */}
+print_ternary ?libs/time/usleep/presents {#define RND_HAVE_USLEEP 1} {/* #undef RND_HAVE_USLEEP */}
 
 print {\n\n/* Wether win32 Sleep() works */\n}
-print_ternary ?libs/time/Sleep/presents {#define PCB_HAVE_WSLEEP 1} {/* #undef PCB_HAVE_WSLEEP */}
+print_ternary ?libs/time/Sleep/presents {#define RND_HAVE_WSLEEP 1} {/* #undef RND_HAVE_WSLEEP */}
 
 print {\n\n/* Wether select() works */\n}
-print_ternary ?libs/socket/select/presents {#define PCB_HAVE_SELECT 1} {/* #undef PCB_HAVE_SELECT */}
+print_ternary ?libs/socket/select/presents {#define RND_HAVE_SELECT 1} {/* #undef RND_HAVE_SELECT */}
 
 print {\n\n/* Define to 1 if you have the `snprintf' function. */\n}
 print_ternary ?libs/snprintf {#define HAVE_SNPRINTF 1} {/* #undef HAVE_SNPRINTF */}
