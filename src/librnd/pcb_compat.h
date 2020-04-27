@@ -55,3 +55,4 @@
 #define pcb_coord_t rnd_coord_t
 #define pcb_bool rnd_bool
 #define pcb_message rnd_message
+#define PCB_ACTION_NAME_MAX RND_ACTION_NAME_MAX

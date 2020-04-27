@@ -123,7 +123,7 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *act, *user_data = NULL;
 	double period;
 	int count = 1, len;
-	char fn[PCB_ACTION_NAME_MAX];
+	char fn[RND_ACTION_NAME_MAX];
 	script_timer_t *t;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, AddTimer, act = argv[1].val.str);

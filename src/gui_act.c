@@ -695,7 +695,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (interactive) {
-		char fn[PCB_ACTION_NAME_MAX];
+		char fn[RND_ACTION_NAME_MAX];
 		fgw_arg_t args[2];
 		args[0].type = FGW_FUNC;
 		args[0].val.argv0.func = fgw_func_lookup(&rnd_fgw, rnd_aname(fn, "LayerPropGui"));
@@ -804,7 +804,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (interactive) {
-		char fn[PCB_ACTION_NAME_MAX];
+		char fn[RND_ACTION_NAME_MAX];
 		fgw_arg_t args[2];
 		args[0].type = FGW_FUNC;
 		args[0].val.argv0.func = fgw_func_lookup(&rnd_fgw, rnd_aname(fn, "GroupPropGui"));

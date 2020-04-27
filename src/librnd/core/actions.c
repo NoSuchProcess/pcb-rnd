@@ -68,7 +68,7 @@ char *rnd_make_action_name(char *out, const char *inp, int inp_len)
 {
 	char *s;
 
-	if (inp_len >= PCB_ACTION_NAME_MAX) {
+	if (inp_len >= RND_ACTION_NAME_MAX) {
 		*out = '\0';
 		return out;
 	}
@@ -86,7 +86,7 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 	fgw_func_t *f;
 
 	for (i = 0; i < n; i++) {
-		char fn[PCB_ACTION_NAME_MAX];
+		char fn[RND_ACTION_NAME_MAX];
 		int len;
 
 		if (check_action_name(a[i].name)) {
@@ -128,7 +128,7 @@ static void pcb_remove_action(fgw_func_t *f)
 
 fgw_func_t *rnd_act_lookup(const char *aname)
 {
-	char fn[PCB_ACTION_NAME_MAX];
+	char fn[RND_ACTION_NAME_MAX];
 	fgw_func_t *f = fgw_func_lookup(&rnd_fgw, rnd_aname(fn, aname));
 	return f;
 }

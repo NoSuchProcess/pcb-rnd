@@ -1,11 +1,11 @@
-#ifndef PCB_ACTIONS_H
-#define PCB_ACTIONS_H
+#ifndef RND_ACTIONS_H
+#define RND_ACTIONS_H
 
 #include <librnd/core/hid.h>
 #include <string.h>
 #include <libfungw/fungw.h>
 
-#define PCB_ACTION_NAME_MAX 128
+#define RND_ACTION_NAME_MAX 128
 
 struct rnd_action_s {
 	const char *name; /* action command name */
