@@ -138,7 +138,7 @@ void rnd_pixmap_uninit(void)
 		pcb_message(PCB_MSG_ERROR, "pcb_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
 }
 
-int pcb_pixmap_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+int pcb_pixmap_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 {
 	pcb_pixmap_import_t *i;
 	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
@@ -147,7 +147,7 @@ int pcb_pixmap_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 	return -1;
 }
 
-pcb_pixmap_t *rnd_pixmap_load(pcb_hidlib_t *hidlib, const char *fn)
+pcb_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn)
 {
 	pcb_pixmap_t *p = calloc(sizeof(pcb_pixmap_t), 1);
 	if (pcb_pixmap_load(hidlib, p, fn) == 0)
@@ -156,7 +156,7 @@ pcb_pixmap_t *rnd_pixmap_load(pcb_hidlib_t *hidlib, const char *fn)
 	return NULL;
 }
 
-pcb_pixmap_t *rnd_pixmap_alloc(pcb_hidlib_t *hidlib, long sx, long sy)
+pcb_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy)
 {
 	pcb_pixmap_t *p = calloc(sizeof(pcb_pixmap_t), 1);
 	p->sx = sx;

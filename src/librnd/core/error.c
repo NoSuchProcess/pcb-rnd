@@ -161,7 +161,7 @@ void pcb_log_del_range(unsigned long from, unsigned long to)
 
 
 
-int pcb_log_export(pcb_hidlib_t *hidlib, const char *fn, int fmt_lihata)
+int pcb_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
 {
 	FILE *f;
 	pcb_logline_t *n;

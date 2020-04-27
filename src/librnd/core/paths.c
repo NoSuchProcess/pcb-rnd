@@ -39,7 +39,7 @@ int pcb_getpid(void);
 
 int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 {
-	pcb_hidlib_t *hidlib = ctx;
+	rnd_hidlib_t *hidlib = ctx;
 	char buff[20];
 	const char *name = NULL;
 
@@ -113,7 +113,7 @@ int pcb_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
 	return pcb_build_fn_cb(ctx->hidlib, s, input);
 }
 
-char *pcb_build_fn(pcb_hidlib_t *hidlib, const char *template)
+char *pcb_build_fn(rnd_hidlib_t *hidlib, const char *template)
 {
 	pcb_strdup_subst_t sbs = PCB_SUBST_ALL;
 #ifdef __WIN32__
@@ -308,7 +308,7 @@ char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 	return pcb_strdup_subst_(template, cb, ctx, flags, 0);
 }
 
-void pcb_paths_resolve(pcb_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
+void pcb_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
 {
 	pcb_strdup_subst_t flags = PCB_SUBST_ALL;
 #ifdef __WIN32__
@@ -320,12 +320,12 @@ void pcb_paths_resolve(pcb_hidlib_t *hidlib, const char **in, char **out, int nu
 		*out = pcb_strdup_subst_(*in, pcb_build_fn_cb, hidlib, flags, extra_room);
 }
 
-void pcb_path_resolve(pcb_hidlib_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet)
+void pcb_path_resolve(rnd_hidlib_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet)
 {
 	pcb_paths_resolve(hidlib, &in, out, 1, extra_room, quiet);
 }
 
-char *pcb_path_resolve_inplace(pcb_hidlib_t *hidlib, char *in, unsigned int extra_room, int quiet)
+char *pcb_path_resolve_inplace(rnd_hidlib_t *hidlib, char *in, unsigned int extra_room, int quiet)
 {
 	char *out;
 	pcb_path_resolve(hidlib, in, &out, extra_room, quiet);

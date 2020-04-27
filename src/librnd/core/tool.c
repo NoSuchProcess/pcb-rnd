@@ -67,7 +67,7 @@ void pcb_tool_uninit(void)
 	vtp0_uninit(&pcb_tools);
 }
 
-void pcb_tool_chg_mode(pcb_hidlib_t *hl)
+void pcb_tool_chg_mode(rnd_hidlib_t *hl)
 {
 	if ((hl != NULL) && (!tool_select_lock))
 		pcb_tool_select_by_id(hl, pcbhl_conf.editor.mode);
@@ -110,7 +110,7 @@ pcb_toolid_t pcb_tool_lookup(const char *name)
 	return PCB_TOOLID_INVALID;
 }
 
-int pcb_tool_select_by_name(pcb_hidlib_t *hidlib, const char *name)
+int pcb_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name)
 {
 	pcb_toolid_t id = pcb_tool_lookup(name);
 	if (id == PCB_TOOLID_INVALID)
@@ -118,7 +118,7 @@ int pcb_tool_select_by_name(pcb_hidlib_t *hidlib, const char *name)
 	return pcb_tool_select_by_id(hidlib, id);
 }
 
-int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
+int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 {
 	char id_s[32];
 	static pcb_bool recursing = pcb_false;
@@ -157,7 +157,7 @@ int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id)
 	return 0;
 }
 
-int pcb_tool_select_highest(pcb_hidlib_t *hidlib)
+int pcb_tool_select_highest(rnd_hidlib_t *hidlib)
 {
 	pcb_toolid_t n, bestn = PCB_TOOLID_INVALID;
 	unsigned int bestp = -1;
@@ -173,7 +173,7 @@ int pcb_tool_select_highest(pcb_hidlib_t *hidlib)
 	return pcb_tool_select_by_id(hidlib, bestn);
 }
 
-int pcb_tool_save(pcb_hidlib_t *hidlib)
+int pcb_tool_save(rnd_hidlib_t *hidlib)
 {
 	save_stack[save_position] = pcbhl_conf.editor.mode;
 	if (save_position < PCB_MAX_MODESTACK_DEPTH - 1)
@@ -183,7 +183,7 @@ int pcb_tool_save(pcb_hidlib_t *hidlib)
 	return 0;
 }
 
-int pcb_tool_restore(pcb_hidlib_t *hidlib)
+int pcb_tool_restore(rnd_hidlib_t *hidlib)
 {
 	if (save_position == 0) {
 		pcb_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
@@ -230,37 +230,37 @@ static void uninit_current_tool(void)
 	wrap_void(uninit, ());
 }
 
-void pcb_tool_press(pcb_hidlib_t *hidlib)
+void pcb_tool_press(rnd_hidlib_t *hidlib)
 {
 	wrap_void(press, (hidlib));
 }
 
-void pcb_tool_release(pcb_hidlib_t *hidlib)
+void pcb_tool_release(rnd_hidlib_t *hidlib)
 {
 	wrap_void(release, (hidlib));
 }
 
-void pcb_tool_adjust_attached(pcb_hidlib_t *hl)
+void pcb_tool_adjust_attached(rnd_hidlib_t *hl)
 {
 	wrap_void(adjust_attached, (hl));
 }
 
-void pcb_tool_draw_attached(pcb_hidlib_t *hl)
+void pcb_tool_draw_attached(rnd_hidlib_t *hl)
 {
 	wrap_void(draw_attached, (hl));
 }
 
-pcb_bool pcb_tool_undo_act(pcb_hidlib_t *hl)
+pcb_bool pcb_tool_undo_act(rnd_hidlib_t *hl)
 {
 	wrap_retv(undo_act, return pcb_true, (hl));
 }
 
-pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl)
+pcb_bool pcb_tool_redo_act(rnd_hidlib_t *hl)
 {
 	wrap_retv(redo_act, return pcb_true, (hl));
 }
 
-static void do_release(pcb_hidlib_t *hidlib)
+static void do_release(rnd_hidlib_t *hidlib)
 {
 	if (pcbhl_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 0) == 0))
 		return;
@@ -275,7 +275,7 @@ static void do_release(pcb_hidlib_t *hidlib)
 	pcb_event(hidlib, PCB_EVENT_TOOL_RELEASE, NULL);
 }
 
-void pcb_tool_do_press(pcb_hidlib_t *hidlib)
+void pcb_tool_do_press(rnd_hidlib_t *hidlib)
 {
 	if (pcbhl_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 1) == 0))
 		return;
@@ -296,7 +296,7 @@ static const char pcb_acth_Tool[] = "Change or use the tool mode.";
 /* DOC: tool.html */
 static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
+	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *cmd;
 	RND_ACT_IRES(0);
 	RND_PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);

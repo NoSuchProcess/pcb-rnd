@@ -62,7 +62,7 @@ do { \
 	} \
 } while(0)
 
-FILE *pcb_fopen_fn(pcb_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out)
+FILE *pcb_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out)
 {
 	FILE *f;
 	char *path_exp;
@@ -99,12 +99,12 @@ FILE *pcb_fopen_fn(pcb_hidlib_t *hidlib, const char *path, const char *mode, cha
 	return NULL;
 }
 
-FILE *pcb_fopen(pcb_hidlib_t *hidlib, const char *path, const char *mode)
+FILE *pcb_fopen(rnd_hidlib_t *hidlib, const char *path, const char *mode)
 {
 	return pcb_fopen_fn(hidlib, path, mode, NULL);
 }
 
-FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode, int *all)
+FILE *pcb_fopen_askovr(rnd_hidlib_t *hidlib, const char *path, const char *mode, int *all)
 {
 	if (hidlib->batch_ask_ovr != NULL)
 		all = hidlib->batch_ask_ovr;
@@ -142,7 +142,7 @@ FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode,
 	return pcb_fopen(hidlib, path, mode);
 }
 
-int *pcb_batched_ask_ovr_init(pcb_hidlib_t *hidlib, int *storage)
+int *pcb_batched_ask_ovr_init(rnd_hidlib_t *hidlib, int *storage)
 {
 	int *old = hidlib->batch_ask_ovr;
 	if (hidlib->batch_ask_ovr != NULL)
@@ -151,14 +151,14 @@ int *pcb_batched_ask_ovr_init(pcb_hidlib_t *hidlib, int *storage)
 	return old;
 }
 
-void pcb_batched_ask_ovr_uninit(pcb_hidlib_t *hidlib, int *init_retval)
+void pcb_batched_ask_ovr_uninit(rnd_hidlib_t *hidlib, int *init_retval)
 {
 	if (init_retval != NULL)
 		*init_retval = *hidlib->batch_ask_ovr;
 	hidlib->batch_ask_ovr = init_retval;
 }
 
-char *pcb_fopen_check(pcb_hidlib_t *hidlib, const char *path, const char *mode)
+char *pcb_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode)
 {
 	char *path_exp = pcb_build_fn(hidlib, path);
 
@@ -171,7 +171,7 @@ char *pcb_fopen_check(pcb_hidlib_t *hidlib, const char *path, const char *mode)
 	return NULL;
 }
 
-FILE *pcb_popen(pcb_hidlib_t *hidlib, const char *cmd, const char *mode)
+FILE *pcb_popen(rnd_hidlib_t *hidlib, const char *cmd, const char *mode)
 {
 	FILE *f = NULL;
 	char *cmd_exp = pcb_build_fn(hidlib, cmd);
@@ -193,7 +193,7 @@ int pcb_pclose(FILE *f)
 }
 
 
-int pcb_system(pcb_hidlib_t *hidlib, const char *cmd)
+int pcb_system(rnd_hidlib_t *hidlib, const char *cmd)
 {
 	int res = -1;
 	char *cmd_exp = pcb_build_fn(hidlib, cmd);
@@ -209,7 +209,7 @@ int pcb_system(pcb_hidlib_t *hidlib, const char *cmd)
 	return res;
 }
 
-int pcb_remove(pcb_hidlib_t *hidlib, const char *path)
+int pcb_remove(rnd_hidlib_t *hidlib, const char *path)
 {
 	int res = -1;
 	char *path_exp = pcb_build_fn(hidlib, path);
@@ -224,7 +224,7 @@ int pcb_remove(pcb_hidlib_t *hidlib, const char *path)
 	return res;
 }
 
-int pcb_rename(pcb_hidlib_t *hidlib, const char *old_path, const char *new_path)
+int pcb_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path)
 {
 	int res = -1;
 	char *old_path_exp = pcb_build_fn(hidlib, old_path);
@@ -242,7 +242,7 @@ int pcb_rename(pcb_hidlib_t *hidlib, const char *old_path, const char *new_path)
 	return res;
 }
 
-int pcb_unlink(pcb_hidlib_t *hidlib, const char *path)
+int pcb_unlink(rnd_hidlib_t *hidlib, const char *path)
 {
 	int res;
 	char *path_exp = pcb_build_fn(hidlib, path);
@@ -252,7 +252,7 @@ int pcb_unlink(pcb_hidlib_t *hidlib, const char *path)
 }
 
 
-DIR *pcb_opendir(pcb_hidlib_t *hidlib, const char *name)
+DIR *pcb_opendir(rnd_hidlib_t *hidlib, const char *name)
 {
 	DIR *d;
 	char *path_exp = pcb_build_fn(hidlib, name);
@@ -274,7 +274,7 @@ int pcb_closedir(DIR *dir)
 }
 
 
-static FILE *pcb_fopen_at_(pcb_hidlib_t *hidlib, const char *from, const char *fn, const char *mode, char **full_path, int recursive)
+static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	char tmp[PCB_PATH_MAX];
 	DIR *d;
@@ -320,7 +320,7 @@ static FILE *pcb_fopen_at_(pcb_hidlib_t *hidlib, const char *from, const char *f
 	return NULL;
 }
 
-FILE *pcb_fopen_at(pcb_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive)
+FILE *pcb_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	if (full_path != NULL)
 		*full_path = NULL;
@@ -328,7 +328,7 @@ FILE *pcb_fopen_at(pcb_hidlib_t *hidlib, const char *dir, const char *fn, const 
 	return pcb_fopen_at_(hidlib, dir, fn, mode, full_path, recursive);
 }
 
-FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const pcb_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
+FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const pcb_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	FILE *res;
 	char *real_fn = pcb_build_fn(hidlib, fn);
@@ -381,7 +381,7 @@ FILE *pcb_fopen_first(pcb_hidlib_t *hidlib, const pcb_conflist_t *paths, const c
 }
 
 extern int pcb_mkdir_(const char *path, int mode);
-int pcb_mkdir(pcb_hidlib_t *hidlib, const char *path, int mode)
+int pcb_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode)
 {
 	CHECK("mkdir", "access", path, NULL, return -1);
 	CHECK("mkdir", "mkdir", path, NULL, return -1);
@@ -391,7 +391,7 @@ int pcb_mkdir(pcb_hidlib_t *hidlib, const char *path, int mode)
 
 
 extern long pcb_file_size_(const char *path);
-long pcb_file_size(pcb_hidlib_t *hidlib, const char *path)
+long pcb_file_size(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_size", "access", path, NULL, return -1);
 	CHECK("file_size", "stat", path, NULL, return -1);
@@ -399,7 +399,7 @@ long pcb_file_size(pcb_hidlib_t *hidlib, const char *path)
 }
 
 extern int pcb_is_dir_(const char *path);
-int pcb_is_dir(pcb_hidlib_t *hidlib, const char *path)
+int pcb_is_dir(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("is_dir", "access", path, NULL, return -1);
 	CHECK("is_dir", "stat", path, NULL, return -1);
@@ -407,7 +407,7 @@ int pcb_is_dir(pcb_hidlib_t *hidlib, const char *path)
 }
 
 extern double pcb_file_mtime_(const char *path);
-double pcb_file_mtime(pcb_hidlib_t *hidlib, const char *path)
+double pcb_file_mtime(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_mtime", "access", path, NULL, return -1);
 	CHECK("file_mtime", "stat", path, NULL, return -1);

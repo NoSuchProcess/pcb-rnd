@@ -214,7 +214,7 @@ struct pcb_hid_s {
 
 	/* called by core when the global hidlib context changes (e.g. board changed)
 	   The HID should store the hidlib pointer for knowing drawing area dimensions */
-	void (*set_hidlib)(pcb_hid_t *hid, pcb_hidlib_t *hidlib);
+	void (*set_hidlib)(pcb_hid_t *hid, rnd_hidlib_t *hidlib);
 
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
@@ -556,7 +556,7 @@ struct pcb_hid_s {
 	void *hid_data;
 
 	/* convert hid_ctx into hidlib ptr; only valid within a DAD callback */
-	pcb_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
+	rnd_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
 };
 
 typedef void (*pcb_hid_expose_cb_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
@@ -599,13 +599,13 @@ extern int pcb_pixel_slop;
    value. "msg" is printed above the query. The optional title
    is the window title.
    Returns NULL on cancel. The caller needs to free the returned string */
-char *pcb_hid_prompt_for(pcb_hidlib_t *hl, const char *msg, const char *default_string, const char *title);
+char *pcb_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_string, const char *title);
 
 /* Present a dialog box with a message and variable number of buttons. If icon
    is not NULL, attempt to draw the named icon on the left. The vararg part is
    one or more buttons, as a list of "char *label, int retval", terminated with
    NULL. */
-int pcb_hid_message_box(pcb_hidlib_t *hl, const char *icon, const char *title, const char *label, ...);
+int pcb_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, const char *label, ...);
 
 /* Show modal progressbar to the user, offering cancel long running processes.
    Pass all zeros to flush display and remove the dialog.
@@ -643,7 +643,7 @@ do { \
  * They should initiate a redraw of the crosshair attached objects - which may
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing. */
-void pcb_hid_notify_crosshair_change(pcb_hidlib_t *hl, pcb_bool changes_complete);
+void pcb_hid_notify_crosshair_change(rnd_hidlib_t *hl, pcb_bool changes_complete);
 
 
 #endif

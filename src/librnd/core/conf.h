@@ -266,7 +266,7 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 void pcb_conf_reset(conf_role_t target, const char *source_fn);
 
 /* Save an in-memory lihata representation to the disk */
-int pcb_conf_save_file(pcb_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn);
+int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn);
 
 /* Returns whether a given lihata tree is locked */
 int pcb_conf_islocked(conf_role_t target);
@@ -390,7 +390,7 @@ lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create
 lht_node_t *pcb_conf_lht_get_at_mainplug(conf_role_t target, const char *path, int allow_plug, int create);
 
 /* Write an existing conf subtree to a file */
-int pcb_conf_export_to_file(pcb_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path);
+int pcb_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path);
 
 /* Determine the policy and priority of a config lihata node;
    returns 0 on success but may not fill in both values, caller is

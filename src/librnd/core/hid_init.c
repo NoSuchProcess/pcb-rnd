@@ -680,7 +680,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 	return 0;
 }
 
-int pcbhl_main_exported(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib, pcb_bool is_empty)
+int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, pcb_bool is_empty)
 {
 	if (!pcbhl_main_exporting)
 		return 0;
@@ -696,7 +696,7 @@ int pcbhl_main_exported(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib, pcb_bool is
 	return 1;
 }
 
-void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, pcb_hidlib_t *hidlib)
+void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib)
 {
 	if (pcb_gui->set_hidlib != NULL)
 		pcb_gui->set_hidlib(pcb_gui, hidlib);

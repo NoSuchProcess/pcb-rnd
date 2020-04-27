@@ -73,7 +73,7 @@ static void PushOnTopOfLayerStack(int NewTop)
 	}
 }
 
-int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder)
+int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder)
 {
 	pcb_layergrp_id_t group;
 	int i, changed = 1; /* at least the current layer changes */
@@ -124,7 +124,7 @@ int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On
 	return changed;
 }
 
-void pcb_layervis_reset_stack(pcb_hidlib_t *hl)
+void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
 {
 	pcb_layer_id_t comp;
 	pcb_cardinal_t i;
@@ -286,7 +286,7 @@ void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 	}
 }
 
-static void layer_vis_grp_defaults(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void layer_vis_grp_defaults(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	pcb_layer_vis_change_all(pcb, PCB_BOOL_SET, PCB_BOOL_PRESERVE);

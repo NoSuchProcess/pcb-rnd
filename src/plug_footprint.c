@@ -450,7 +450,7 @@ int pcb_fp_read_lib_all(void)
 	return 1;
 }
 
-int pcb_fp_rehash(pcb_hidlib_t *hidlib, pcb_fplibrary_t *l)
+int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l)
 {
 	pcb_plug_fp_t *be;
 	char *path;

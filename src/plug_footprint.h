@@ -93,6 +93,6 @@ int pcb_fp_read_lib_all(void);
 int pcb_fp_host_uninit(void);
 
 /* rescan/reload all footprints in the library cache */
-int pcb_fp_rehash(pcb_hidlib_t *hidlib, pcb_fplibrary_t *l);
+int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l);
 
 #endif

@@ -61,7 +61,7 @@ typedef htsp_t pcb_netlist_t;
 /* The pcb_board_t struct holds information about board layout most of which is
    saved with the layout. */
 struct pcb_board_s {
-	pcb_hidlib_t hidlib;
+	rnd_hidlib_t hidlib;
 
 	long ID;
 	char *PrintFilename;                            /* from print dialog */

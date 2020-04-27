@@ -34,7 +34,7 @@ struct pcb_box_s {        /* a bounding box */
 	pcb_coord_t X2, Y2;     /* and lower right corner */
 };
 
-typedef struct pcb_hidlib_s pcb_hidlib_t;
+typedef struct pcb_hidlib_s rnd_hidlib_t;
 
 
 /* typedef ... pcb_coord_t; pcb base unit, typedef'd in config.h */

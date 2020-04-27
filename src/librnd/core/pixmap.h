@@ -35,7 +35,7 @@ typedef struct pcb_pixmap_import_s pcb_pixmap_import_t;
 
 struct pcb_pixmap_import_s {
 	const char *name;
-	int (*load)(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn);
+	int (*load)(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn);
 
 	/* filled in by code */
 	pcb_pixmap_import_t *next;
@@ -70,9 +70,9 @@ void pcb_pixmap_reg_import(const pcb_pixmap_import_t *imp, const char *cookie);
 void pcb_pixmap_unreg_import_all(const char *cookie);
 void rnd_pixmap_uninit(void);
 
-int pcb_pixmap_load(pcb_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
-pcb_pixmap_t *rnd_pixmap_load(pcb_hidlib_t *hidlib, const char *fn);
-pcb_pixmap_t *rnd_pixmap_alloc(pcb_hidlib_t *hidlib, long sx, long sy);
+int pcb_pixmap_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
+pcb_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn);
+pcb_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy);
 
 unsigned int pcb_pixmap_hash_meta(const void *key);
 unsigned int pcb_pixmap_hash_pixels(const void *key);

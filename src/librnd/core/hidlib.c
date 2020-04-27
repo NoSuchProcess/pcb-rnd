@@ -33,7 +33,7 @@
 
 static const char *hidlib_cookie = "hidlib";
 
-void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+void pcb_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
 {
 	if (mouse_mot)
 		pcb_event(hidlib, PCB_EVENT_STROKE_RECORD, "cc", abs_x, abs_y);
@@ -41,7 +41,7 @@ void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_
 }
 
 
-static void hidlib_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void hidlib_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	rnd_tool_gui_init();
 	pcb_gui->set_mouse_cursor(pcb_gui, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */

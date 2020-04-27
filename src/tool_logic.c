@@ -41,15 +41,15 @@
 
 #include "tool_logic.h"
 
-static void tool_logic_chg_layer(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
-static void pcb_release_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
-static void pcb_press_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+static void pcb_release_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 
 /*** Generic part, all rnd apps should do something like this ***/
 
 static char tool_logic_cookie[] = "tool_logic";
 
-static void tool_logic_chg_tool(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void tool_logic_chg_tool(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	int *ok = argv[1].d.p;
 	int id = argv[2].d.i;
@@ -94,7 +94,7 @@ void pcb_tool_logic_uninit(void)
 /*** pcb-rnd-specific parts ***/
 
 
-static void tool_logic_chg_layer(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	static int was_rat;
 	if (PCB->RatDraw && !was_rat && !(pcb_tool_get(pcbhl_conf.editor.mode)->user_flags & PCB_TLF_RAT))
@@ -133,7 +133,7 @@ static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *pt
 	}
 }
 
-void pcb_tool_attach_for_copy(pcb_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband)
+void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, pcb_coord_t PlaceX, pcb_coord_t PlaceY, pcb_bool do_rubberband)
 {
 	pcb_coord_t mx = 0, my = 0;
 
@@ -183,12 +183,12 @@ void pcb_tool_notify_block(void)
 
 /*** old helpers ***/
 
-static void pcb_release_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_release_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_draw();
 }
 
-static void pcb_press_mode(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 

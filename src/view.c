@@ -118,7 +118,7 @@ void pcb_view_goto(pcb_view_t *item)
 	}
 }
 
-pcb_view_t *pcb_view_new(pcb_hidlib_t *hl, const char *type, const char *title, const char *description)
+pcb_view_t *pcb_view_new(rnd_hidlib_t *hl, const char *type, const char *title, const char *description)
 {
 	pcb_view_t *v = calloc(sizeof(pcb_view_t), 1);
 

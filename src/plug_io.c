@@ -77,7 +77,7 @@ int pcb_io_err_inhibit = 0;
 pcb_view_list_t pcb_io_incompat_lst;
 static pcb_bool pcb_io_incompat_lst_enable = pcb_false;
 
-void pcb_plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename)
+void pcb_plug_io_err(rnd_hidlib_t *hidlib, int res, const char *what, const char *filename)
 {
 	if (pcb_io_err_inhibit)
 		return;
@@ -746,7 +746,7 @@ int pcb_revert_pcb(void)
 	return real_load_pcb(PCB->hidlib.filename, NULL, pcb_true, pcb_true, 0);
 }
 
-int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt)
+int pcb_load_buffer(rnd_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt)
 {
 	int res = -1, len, n;
 	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
@@ -1004,7 +1004,7 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 	return 0;
 }
 
-pcb_plug_fp_map_t *pcb_io_map_footprint_file(pcb_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
 {
 	FILE *f = pcb_fopen(hl, fn, "r");
 	pcb_plug_fp_map_t *res = NULL;

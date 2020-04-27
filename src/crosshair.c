@@ -486,7 +486,7 @@ void pcb_xordraw_movecopy(void)
 		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
-void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
 		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
@@ -512,7 +512,7 @@ void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 }
 
 
-void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
+void pcbhl_draw_marks(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode)
 {
 	pcb_coord_t ms = conf_core.appearance.mark_size, ms2 = ms / 2;
 
@@ -868,7 +868,7 @@ static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_dat
  */
 void pcb_crosshair_grid_fit(pcb_coord_t X, pcb_coord_t Y)
 {
-	pcb_hidlib_t *hidlib = &PCB->hidlib;
+	rnd_hidlib_t *hidlib = &PCB->hidlib;
 	pcb_coord_t nearest_grid_x, nearest_grid_y;
 	void *ptr1, *ptr2, *ptr3;
 	struct snap_data snap_data;
@@ -1052,7 +1052,7 @@ void pcb_center_display(pcb_coord_t X, pcb_coord_t Y)
 }
 
 /* allocate GC only when the GUI is already up and running */
-static void pcb_crosshair_gui_init(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	pcb_crosshair.GC = pcb_hid_make_gc();
 
@@ -1135,7 +1135,7 @@ typedef struct {
 	int obj, line, box;
 } old_crosshair_t;
 
-void *pcb_hidlib_crosshair_suspend(pcb_hidlib_t *hl)
+void *pcb_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
 {
 	old_crosshair_t *buf = malloc(sizeof(old_crosshair_t));
 
@@ -1150,7 +1150,7 @@ void *pcb_hidlib_crosshair_suspend(pcb_hidlib_t *hl)
 	return buf;
 }
 
-void pcb_hidlib_crosshair_restore(pcb_hidlib_t *hl, void *susp_data)
+void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 {
 	old_crosshair_t *buf = susp_data;
 
@@ -1164,7 +1164,7 @@ void pcb_hidlib_crosshair_restore(pcb_hidlib_t *hl, void *susp_data)
 }
 
 
-void pcb_hidlib_crosshair_move_to(pcb_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot)
 {
 	if (!mouse_mot) {
 		pcb_hid_notify_crosshair_change(hl, pcb_false);

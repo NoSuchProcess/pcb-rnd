@@ -36,10 +36,10 @@
 
 /* changes the visibility of all layers in a group; returns the number of
    changed layers; on should be 0 or 1 for setting the state or -1 for toggling it */
-int pcb_layervis_change_group_vis(pcb_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder);
+int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On, pcb_bool ChangeStackOrder);
 
 /* resets the layer visibility stack setting */
-void pcb_layervis_reset_stack(pcb_hidlib_t *hl);
+void pcb_layervis_reset_stack(rnd_hidlib_t *hl);
 
 /* for historical reasons mask and paste are hidden by default (and this
    is hardwired in code); this function hides them */

@@ -101,7 +101,7 @@ pcb_plug_import_t *pcb_lookup_importer(const char *name)
 }
 
 
-int pcb_import(pcb_hidlib_t *hidlib, const char *filename, unsigned int aspect)
+int pcb_import(rnd_hidlib_t *hidlib, const char *filename, unsigned int aspect)
 {
 	pcb_plug_import_t *plug;
 
@@ -124,7 +124,7 @@ int pcb_import(pcb_hidlib_t *hidlib, const char *filename, unsigned int aspect)
 	return plug->import(plug, aspect, &filename, 1);
 }
 
-int pcb_import_netlist(pcb_hidlib_t *hidlib, const char *filename)
+int pcb_import_netlist(rnd_hidlib_t *hidlib, const char *filename)
 {
 	return pcb_import(hidlib, filename, IMPORT_ASPECT_NETLIST);
 }

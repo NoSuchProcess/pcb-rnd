@@ -72,7 +72,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_remove_object(obj->type, obj->parent.any, obj, obj);
 		}
 		else { /* interactive remove */
-			pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
+			rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 			rnd_hid_get_coords("Click on object to delete", &hidlib->tool_x, &hidlib->tool_y, 0);
 			pcb_tool_save(RND_ACT_HIDLIB);
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "remove");

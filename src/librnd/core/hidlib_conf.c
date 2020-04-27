@@ -50,7 +50,7 @@ int pcb_hidlib_conf_init()
 }
 
 /* sets cursor grid with respect to grid offset values */
-void pcb_hidlib_set_grid(pcb_hidlib_t *hidlib, pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_coord_t oy)
+void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, pcb_coord_t Grid, pcb_bool align, pcb_coord_t ox, pcb_coord_t oy)
 {
 	if (Grid >= 1 && Grid <= PCB_MAX_GRID) {
 		if (align) {
@@ -64,7 +64,7 @@ void pcb_hidlib_set_grid(pcb_hidlib_t *hidlib, pcb_coord_t Grid, pcb_bool align,
 	}
 }
 
-void pcb_hidlib_set_unit(pcb_hidlib_t *hidlib, const pcb_unit_t *new_unit)
+void pcb_hidlib_set_unit(rnd_hidlib_t *hidlib, const pcb_unit_t *new_unit)
 {
 	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT)
 		pcb_conf_set(CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, POL_OVERWRITE);

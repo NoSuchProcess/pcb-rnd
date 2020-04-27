@@ -247,12 +247,12 @@ void rnd_dump_actions(void)
 	}
 }
 
-int rnd_action(pcb_hidlib_t *hl, const char *name)
+int rnd_action(rnd_hidlib_t *hl, const char *name)
 {
 	return rnd_actionv(hl, name, 0, 0);
 }
 
-int rnd_actionva(pcb_hidlib_t *hl, const char *name, ...)
+int rnd_actionva(rnd_hidlib_t *hl, const char *name, ...)
 {
 	const char *argv[20];
 	int argc = 0;
@@ -311,7 +311,7 @@ fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	return ret;
 }
 
-fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	fgw_func_t *f = rnd_act_lookup(name);
 
@@ -327,7 +327,7 @@ fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, 
 }
 
 
-int rnd_actionv(pcb_hidlib_t *hl, const char *name, int argc, const char **argsv)
+int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv)
 {
 	fgw_func_t *f;
 	fgw_arg_t res, argv[RND_ACTION_MAX_ARGS+1];
@@ -376,7 +376,7 @@ void rnd_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int for
 		pcb_gui->get_coords(pcb_gui, msg, x, y, force);
 }
 
-static int hid_parse_actionstring(pcb_hidlib_t *hl, const char *rstr, char require_parens)
+static int hid_parse_actionstring(rnd_hidlib_t *hl, const char *rstr, char require_parens)
 {
 	const char **list = NULL;
 	int max = 0;
@@ -596,7 +596,7 @@ int rnd_cli_leave(void)
 	return -1;
 }
 
-static int pcb_cli_common(pcb_hidlib_t *hl, fgw_arg_t *args)
+static int pcb_cli_common(rnd_hidlib_t *hl, fgw_arg_t *args)
 {
 	const rnd_action_t *a;
 	fgw_func_t *f;
@@ -616,7 +616,7 @@ static int pcb_cli_common(pcb_hidlib_t *hl, fgw_arg_t *args)
 	return 0;
 }
 
-int rnd_cli_tab(pcb_hidlib_t *hl)
+int rnd_cli_tab(rnd_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
@@ -632,7 +632,7 @@ int rnd_cli_tab(pcb_hidlib_t *hl)
 	return res.val.nat_int;
 }
 
-int rnd_cli_edit(pcb_hidlib_t *hl)
+int rnd_cli_edit(rnd_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
@@ -648,7 +648,7 @@ int rnd_cli_edit(pcb_hidlib_t *hl)
 	return res.val.nat_int;
 }
 
-int rnd_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify)
+int rnd_cli_mouse(rnd_hidlib_t *hl, pcb_bool notify)
 {
 	fgw_arg_t res, args[3];
 
@@ -673,7 +673,7 @@ void rnd_cli_uninit(void)
 		free(cli_pop());
 }
 
-int rnd_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode)
+int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, pcb_bool force_action_mode)
 {
 	fgw_arg_t res, args[2];
 	fgw_func_t *f;
@@ -718,7 +718,7 @@ int rnd_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_
 	return res.val.nat_int;
 }
 
-int rnd_parse_actions(pcb_hidlib_t *hl, const char *str_)
+int rnd_parse_actions(rnd_hidlib_t *hl, const char *str_)
 {
 	return hid_parse_actionstring(hl, str_, pcb_true);
 }
@@ -890,7 +890,7 @@ static void pcb_action_err(fgw_obj_t *obj, const char *msg)
 	pcb_message(PCB_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
 }
 
-int rnd_act_execute_file(pcb_hidlib_t *hidlib, const char *fn)
+int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
 {
 	FILE *f;
 	char *s, line[4096];

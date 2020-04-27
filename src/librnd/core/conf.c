@@ -1876,7 +1876,7 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 }
 
 
-int pcb_conf_save_file(pcb_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn)
+int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn)
 {
 	int fail = 1;
 	lht_node_t *r = pcb_conf_lht_get_first(role, 0);
@@ -1951,7 +1951,7 @@ TODO("CONF: a project file needs to be loaded, merged, then written (to preserve
 	return fail;
 }
 
-int pcb_conf_export_to_file(pcb_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path)
+int pcb_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path)
 {
 	lht_node_t *at = pcb_conf_lht_get_at(role, conf_path, 0);
 	lht_err_t r;

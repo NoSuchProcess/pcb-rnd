@@ -108,7 +108,7 @@ void pcb_events_uninit(void);
 
 /* Event callback prototype; user_data is the same as in pcb_event_bind().
    argv[0] is always an PCB_EVARG_INT with the event id that triggered the event. */
-typedef void (pcb_event_handler_t)(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+typedef void (pcb_event_handler_t)(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
    so that mass-unbind is easier later. user_data is passed to the handler. */
@@ -125,7 +125,7 @@ void pcb_event_unbind_allcookie(const char *cookie);
 
 /* Event trigger: call all handlers for an event. Fmt is a list of
    format characters (e.g. i for PCB_EVARG_INT). */
-void pcb_event(pcb_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...);
+void pcb_event(rnd_hidlib_t *hidlib, pcb_event_id_t ev, const char *fmt, ...);
 
 /* Return the name of an event as seen on regisrtation */
 const char *pcb_event_name(pcb_event_id_t ev);

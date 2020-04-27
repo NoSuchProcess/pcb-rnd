@@ -69,7 +69,7 @@ void pcbhl_log_print_uninit_errs(const char *title);
 /*** The following API is implemented by the host application ***/
 
 /* update crosshair-attached object because crosshair coords likely changed */
-void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl);
+void pcb_hidlib_adjust_attached_objects(rnd_hidlib_t *hl);
 
 /* This indicates that the API has hidlib first argument in every crosshair related call */
 #define PCB_HIDLIB_ADJUST_ATTACHED_OBJECTS_HAS_HL 1
@@ -78,22 +78,22 @@ void pcb_hidlib_adjust_attached_objects(pcb_hidlib_t *hl);
    and returned temp buffer, then reset the crosshair to initial state;
    the returned buffer is used to restore the crosshair states later on.
    Used in the get location loop. */
-void *pcb_hidlib_crosshair_suspend(pcb_hidlib_t *hl);
-void pcb_hidlib_crosshair_restore(pcb_hidlib_t *hl, void *susp_data);
+void *pcb_hidlib_crosshair_suspend(rnd_hidlib_t *hl);
+void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
 
 /* Move the crosshair to an absolute x;y coord on the board and update the GUI;
    if mouse_mot is non-zero, the request is a direct result of a mouse motion
    event */
-void pcb_hidlib_crosshair_move_to(pcb_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
 
 /* The whole default menu file embedded in the executable; NULL if not present */
 extern const char *pcb_hidlib_default_embedded_menu;
 
 /* Draw any fixed mark on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void pcbhl_draw_marks(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
+void pcbhl_draw_marks(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
 
 /* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void pcbhl_draw_attached(pcb_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
+void pcbhl_draw_attached(rnd_hidlib_t *hidlib, pcb_bool inhibit_drawing_mode);
 
 /*** One of these two functions will be called whenever (parts of) the screen
      needs redrawing (on screen, print or export, board or preview). The expose
@@ -134,6 +134,6 @@ extern const char *pcbhl_app_version;
 extern const char *pcbhl_app_url;
 
 /*** API wrappers provided for plugins (these are translated into calls to the app within the hidlib) ***/
-void pcb_hidcore_crosshair_move_to(pcb_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
+void pcb_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, pcb_coord_t abs_x, pcb_coord_t abs_y, int mouse_mot);
 
 #endif

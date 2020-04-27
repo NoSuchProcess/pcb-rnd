@@ -32,7 +32,7 @@ typedef enum {
 	FGW_LAYERGRPID_,
 	FGW_LAYERGRP_,
 	FGW_IDPATH_
-} pcb_fgw_types_e;
+} rnd_fgw_types_e;
 #define fgw_keyword(arg) ((arg)->val.nat_int)
 #define fgw_coord(arg) (*(pcb_coord_t *)(&((arg)->val.custom.c)))
 #define fgw_coords(arg) ((arg)->val.ptr_void)
@@ -77,9 +77,9 @@ const rnd_action_t *rnd_find_action(const char *name, fgw_func_t **f_out);
 void rnd_remove_actions(const rnd_action_t *a, int n);
 void rnd_remove_actions_by_cookie(const char *cookie);
 
-int rnd_action(pcb_hidlib_t *hl, const char *action_);
-int rnd_actionva(pcb_hidlib_t *hl, const char *action_, ...); /* NULL terminated */
-int rnd_actionv(pcb_hidlib_t *hl, const char *action_, int argc_, const char **argv_);
+int rnd_action(rnd_hidlib_t *hl, const char *action_);
+int rnd_actionva(rnd_hidlib_t *hl, const char *action_, ...); /* NULL terminated */
+int rnd_actionv(rnd_hidlib_t *hl, const char *action_, int argc_, const char **argv_);
 fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 
@@ -88,7 +88,7 @@ int rnd_actionl(const char *action_, ...); /* NULL terminated - DEPRECATED, DO N
 
 /* Call an action by name, passing arguments and res in fungw binary format;
    Caller must leave argv[0] empty for the function designator. */
-fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv);
+fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 
 /* Parse the given command string into action calls, and call
@@ -97,12 +97,12 @@ fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, 
    action in the later case. If force_action_mode is true, str
    is interpreted as pcb-rnd action despite of the cli mode.
    Returns nonzero if the action handler(s) return nonzero. */
-int rnd_parse_command(pcb_hidlib_t *hl, const char *str_, pcb_bool force_action_mode);
+int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, pcb_bool force_action_mode);
 
 /* Parse the given string into action calls, and call
    hid_actionv for each action found.  Accepts only
    "action(arg1, arg2)" */
-int rnd_parse_actions(pcb_hidlib_t *hl, const char *str_);
+int rnd_parse_actions(rnd_hidlib_t *hl, const char *str_);
 
 /* Return a static buffer with the current prompt plus an optional
    suffix glued to it. Valid until the next call. */
@@ -117,15 +117,15 @@ int rnd_cli_enter(const char *backend, const char *prompt);
 int rnd_cli_leave(void);
 
 /* Request for tab completion */
-int rnd_cli_tab(pcb_hidlib_t *hl);
+int rnd_cli_tab(rnd_hidlib_t *hl);
 
 /* Called on each key press so indication can be updated */
-int rnd_cli_edit(pcb_hidlib_t *hl);
+int rnd_cli_edit(rnd_hidlib_t *hl);
 
 /* Mouse event while the command line is open; returns zero if
    normal event processing shall be inhibited; notify is true if
    called in notify mode, false if called in release mode */
-int rnd_cli_mouse(pcb_hidlib_t *hl, pcb_bool notify);
+int rnd_cli_mouse(rnd_hidlib_t *hl, pcb_bool notify);
 
 /* Discard the cli mode stack */
 void rnd_cli_uninit(void);
@@ -140,7 +140,7 @@ void rnd_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int for
 #define RND_ACTION_MAX_ARGS 16
 
 /* Read and execute an action script from a file; return 0 if all actions returned 0 */
-int rnd_act_execute_file(pcb_hidlib_t *hidlib, const char *fn);
+int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn);
 
 /* low level action function lookup */
 fgw_func_t *rnd_act_lookup(const char *aname);
@@ -163,8 +163,8 @@ PCB_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
 	return res->val.nat_int;
 }
 
-/* Retrieve the (pcb_hidlib_t *) context from argv[0] within an action */
-#define RND_ACT_HIDLIB ((pcb_hidlib_t *)argv[0].val.argv0.user_call_ctx)
+/* Retrieve the (rnd_hidlib_t *) context from argv[0] within an action */
+#define RND_ACT_HIDLIB ((rnd_hidlib_t *)argv[0].val.argv0.user_call_ctx)
 
 /* Call an action function directly, bypassing fungw; evaluates to an int
    that is 0 on success */

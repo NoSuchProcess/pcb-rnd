@@ -29,7 +29,7 @@
 #include <librnd/core/actions.h>
 #include <liblihata/tree.h>
 
-int pcb_hid_cfg_action(pcb_hidlib_t *hl, const lht_node_t *node)
+int pcb_hid_cfg_action(rnd_hidlib_t *hl, const lht_node_t *node)
 {
 	if (node == NULL)
 		return -1;

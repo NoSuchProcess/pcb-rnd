@@ -389,7 +389,7 @@ static const char pcb_acth_CycleDrag[] = "Cycle through which object is being dr
 #define close_enough(a, b) ((((a)-(b)) > 0) ? ((a)-(b) < (PCB_SLOP * pcb_pixel_slop)) : ((a)-(b) > -(PCB_SLOP * pcb_pixel_slop)))
 static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
+	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	void *ptr1, *ptr2, *ptr3;
 	int over = 0;
 

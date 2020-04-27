@@ -85,7 +85,7 @@ pcb_logline_t *pcb_log_find_first_unseen(void);
 void pcb_log_del_range(unsigned long from, unsigned long to);
 
 /* Export the whole log list to a file, in lihata or plain text */
-int pcb_log_export(pcb_hidlib_t *hidlib, const char *fn, int fmt_lihata);
+int pcb_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata);
 
 /* Free all memory and reset the log system */
 void pcb_log_uninit(void);

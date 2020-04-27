@@ -150,7 +150,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
 /* map a footprint file: always returns head with 0 or 1 or more mapping results */
-pcb_plug_fp_map_t *pcb_io_map_footprint_file(pcb_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
+pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 
 /* Append a file name to the footprint map at tail; the first item is appended
    assuming there would be only one footprint in the file; from the second item
@@ -174,7 +174,7 @@ void pcb_print_quoted_string_(FILE *, const char *); /* without wrapping in "" *
 void pcb_print_quoted_string(FILE *, const char *); /* with wrapping in "" */
 int pcb_write_pcb_file(const char *Filename, pcb_bool thePcb, const char *fmt, pcb_bool emergency, pcb_bool subc_only, long subc_idx, int askovr);
 void pcb_set_design_dir(const char *fn);
-int pcb_load_buffer(pcb_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt);
+int pcb_load_buffer(rnd_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt);
 
 /* Find the plugin that offers the highest write prio for the format */
 pcb_plug_io_t *pcb_io_find_writer(pcb_plug_iot_t typ, const char *fmt);
@@ -230,7 +230,7 @@ pcb_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 
 void pcb_io_uninit(void);
 
-void pcb_plug_io_err(pcb_hidlib_t *hidlib, int res, const char *what, const char *filename);
+void pcb_plug_io_err(rnd_hidlib_t *hidlib, int res, const char *what, const char *filename);
 
 
 

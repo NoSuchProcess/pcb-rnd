@@ -66,7 +66,7 @@ static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return call_dialog("promptfor", res, argc, argv);
 }
 
-char *pcb_hid_prompt_for(pcb_hidlib_t *hl, const char *msg, const char *default_string, const char *title)
+char *pcb_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_string, const char *title)
 {
 	fgw_arg_t res, argv[4];
 
@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return call_dialog("messagebox", res, argc, argv);
 }
 
-int pcb_hid_message_box(pcb_hidlib_t *hl, const char *icon, const char *title, const char *label, ...)
+int pcb_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, const char *label, ...)
 {
 	fgw_arg_t res, argv[128];
 	int argc;
@@ -274,7 +274,7 @@ static rnd_action_t hid_dlg_action_list[] = {
 
 static const char *event_dlg_cookie = "hid_dlg";
 
-static void hid_dlg_log_gui_init_ev(pcb_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void hid_dlg_log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
 	hid_dlg_gui_inited = 1;
 }

@@ -60,13 +60,13 @@ typedef struct pcb_tool_s {
 	/* tool implementation */
 	void     (*init)(void);
 	void     (*uninit)(void);
-	void     (*press)(pcb_hidlib_t *hl);
-	void     (*release)(pcb_hidlib_t *hl);
-	void     (*adjust_attached)(pcb_hidlib_t *hl);
-	void     (*draw_attached)(pcb_hidlib_t *hl);
-	pcb_bool (*undo_act)(pcb_hidlib_t *hl);
-	pcb_bool (*redo_act)(pcb_hidlib_t *hl);
-	void     (*escape)(pcb_hidlib_t *hl);
+	void     (*press)(rnd_hidlib_t *hl);
+	void     (*release)(rnd_hidlib_t *hl);
+	void     (*adjust_attached)(rnd_hidlib_t *hl);
+	void     (*draw_attached)(rnd_hidlib_t *hl);
+	pcb_bool (*undo_act)(rnd_hidlib_t *hl);
+	pcb_bool (*redo_act)(rnd_hidlib_t *hl);
+	void     (*escape)(rnd_hidlib_t *hl);
 	
 	unsigned long user_flags;
 } pcb_tool_t;
@@ -81,7 +81,7 @@ void pcb_tool_init(void);
 void pcb_tool_uninit(void);
 
 /* call this when the mode (tool) config node changes */
-void pcb_tool_chg_mode(pcb_hidlib_t *hl);
+void pcb_tool_chg_mode(rnd_hidlib_t *hl);
 
 /* Insert a new tool in pcb_tools; returns -1 on failure */
 pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie);
@@ -94,12 +94,12 @@ pcb_toolid_t pcb_tool_lookup(const char *name);
 
 
 /* Select a tool by name, id or pick the highest prio tool; return 0 on success */
-int pcb_tool_select_by_name(pcb_hidlib_t *hidlib, const char *name);
-int pcb_tool_select_by_id(pcb_hidlib_t *hidlib, pcb_toolid_t id);
-int pcb_tool_select_highest(pcb_hidlib_t *hidlib);
+int pcb_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name);
+int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id);
+int pcb_tool_select_highest(rnd_hidlib_t *hidlib);
 
-int pcb_tool_save(pcb_hidlib_t *hidlib);
-int pcb_tool_restore(pcb_hidlib_t *hidlib);
+int pcb_tool_save(rnd_hidlib_t *hidlib);
+int pcb_tool_restore(rnd_hidlib_t *hidlib);
 
 /* Called after GUI_INIT; registers all mouse cursors in the GUI */
 void rnd_tool_gui_init(void);
@@ -108,16 +108,16 @@ void rnd_tool_gui_init(void);
 /**** Tool function wrappers; calling these will operate on the current tool 
       as defined in pcbhl_conf.editor.mode ****/
 
-void pcb_tool_press(pcb_hidlib_t *hidlib);
-void pcb_tool_release(pcb_hidlib_t *hidlib);
-void pcb_tool_adjust_attached(pcb_hidlib_t *hl);
-void pcb_tool_draw_attached(pcb_hidlib_t *hl);
-pcb_bool pcb_tool_undo_act(pcb_hidlib_t *hl);
-pcb_bool pcb_tool_redo_act(pcb_hidlib_t *hl);
+void pcb_tool_press(rnd_hidlib_t *hidlib);
+void pcb_tool_release(rnd_hidlib_t *hidlib);
+void pcb_tool_adjust_attached(rnd_hidlib_t *hl);
+void pcb_tool_draw_attached(rnd_hidlib_t *hl);
+pcb_bool pcb_tool_undo_act(rnd_hidlib_t *hl);
+pcb_bool pcb_tool_redo_act(rnd_hidlib_t *hl);
 
 
 /* fake a click */
-void pcb_tool_do_press(pcb_hidlib_t *hidlib);
+void pcb_tool_do_press(rnd_hidlib_t *hidlib);
 
 /**** Low level, for internal use ****/
 

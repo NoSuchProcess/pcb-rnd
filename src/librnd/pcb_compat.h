@@ -50,5 +50,5 @@
 #define PCB_ACT_IRES RND_ACT_IRES
 #define PCB_ACT_DRES RND_ACT_DRES
 #define PCB_ACT_FAIL RND_ACT_FAIL
-
-
+#define pcb_fgw_types_e rnd_fgw_types_e
+#define pcb_hidlib_t rnd_hidlib_t
