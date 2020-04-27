@@ -263,6 +263,38 @@ TODO("Dangerous: rather support subc's data with IDPATH");
 	abort();
 }
 
+static int idpath_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
+{
+	if (target == FGW_IDPATH) { /* convert to idpath */
+		if (FGW_BASE_TYPE(arg->type) == FGW_STR) {
+			const char *str = arg->val.str;
+			pcb_idpath_t *idp = pcb_str2idpath(PCB, str);
+			if (idp != NULL) {
+				fgw_ptr_reg(&pcb_fgw, arg, PCB_PTR_DOMAIN_IDPATH, FGW_IDPATH, idp);
+/*FGW_PTR | FGW_STRUCT*/
+				return 0;
+			}
+		}
+		if (FGW_BASE_TYPE(arg->type) == (FGW_PTR | FGW_STRUCT) && fgw_ptr_in_domain(&pcb_fgw, arg, PCB_PTR_DOMAIN_IDPATH))
+			return 0;
+		arg->type = FGW_INVALID;
+		return -1;
+	}
+	if (arg->type == FGW_IDPATH) { /* convert from idpath */
+		if (fgw_ptr_in_domain(&pcb_fgw, arg, PCB_PTR_DOMAIN_IDPATH)) {
+			char *name = pcb_idpath2str(arg->val.ptr_void, 0);
+			if (name != NULL) {
+				arg->val.str = name;
+				arg->type = FGW_STR | FGW_DYN;
+			}
+			return 0;
+		}
+		return -1;
+	}
+	fprintf(stderr, "Neither side of the conversion is idpath\n");
+	abort();
+}
+
 void pcb_actions_init_pcb_only(void)
 {
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_LAYERID, "layerid", layerid_arg_conv, NULL) != FGW_LAYERID) {
@@ -283,6 +315,10 @@ void pcb_actions_init_pcb_only(void)
 	}
 	if (fgw_reg_custom_type(&pcb_fgw, FGW_DATA, "data", data_arg_conv, NULL) != FGW_DATA) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_DATA\n");
+		abort();
+	}
+	if (fgw_reg_custom_type(&pcb_fgw, FGW_IDPATH, "idpath", idpath_arg_conv, NULL) != FGW_IDPATH) {
+		fprintf(stderr, "pcb_actions_init: failed to register FGW_IDPATH\n");
 		abort();
 	}
 }
