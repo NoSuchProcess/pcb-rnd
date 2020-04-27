@@ -133,8 +133,8 @@ static void calc_dialog_deps(void)
 
 	rnd_calc_dialog_deps(); /* remove after librnd separation */
 
-	buildin = istrue("/target/librnd/dialogs/buildin");
-	plugin = istrue("/target/librnd/dialogs/plugin");
+	buildin = istrue(get("/target/librnd/dialogs/buildin"));
+	plugin = istrue(get("/target/librnd/dialogs/plugin"));
 
 	if (buildin) {
 		hook_custom_arg("buildin-draw_csect", NULL);
