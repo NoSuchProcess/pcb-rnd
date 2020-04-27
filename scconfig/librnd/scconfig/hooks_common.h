@@ -380,3 +380,14 @@ static void print_sum_cfg_val(const char *node, const char *desc)
 	const char *state = get(node);
 	printf("%-55s %s\n", desc, state);
 }
+
+static int rnd_hook_generate()
+{
+	int generr = 0;
+
+	printf("Generating librnd.mak (%d)\n", generr |= tmpasm("../src/librnd/core", "librnd.mak.in", "librnd.mak"));
+	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm("../src/librnd/core", "compat_inc.h.in", "compat_inc.h"));
+	printf("Generating librnd config.h (%d)\n", generr |= tmpasm("../src/librnd", "config.h.in", "config.h"));
+
+	return generr;
+}
