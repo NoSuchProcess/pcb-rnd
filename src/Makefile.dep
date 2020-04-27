@@ -4067,9 +4067,7 @@
 ../src_plugins/io_bxl/bxl_decode.o: ../src_plugins/io_bxl/bxl_decode.c \
  ../config.h librnd/config.h ../src_plugins/io_bxl/bxl_decode.h
 ../src_plugins/io_bxl/bxl_gram.o: ../src_plugins/io_bxl/bxl_gram.c \
- ../src_plugins/io_bxl/../../src_plugins/io_bxl/bxl_gram.h \
- ../src_plugins/io_bxl/../../src_plugins/io_bxl/bxl_gram.h \
- ../src_plugins/io_bxl/../../src_plugins/io_bxl/bxl.h data.h \
+ ../src_plugins/io_bxl/bxl_gram.h ../src_plugins/io_bxl/bxl.h data.h \
  librnd/core/globalconst.h librnd/config.h librnd/core/global_typedefs.h \
  librnd/core/pcb_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -6942,17 +6940,17 @@
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genvector/vtl0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h idpath.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_common.h flag.h librnd/core/globalconst.h librnd/core/attrib.h \
- global_typedefs.h data_parent.h librnd/core/color.h \
- ../src_3rd/genht/ht.h ../src_plugins/propedit/propsel.h \
- librnd/core/compat_misc.h board.h vtroutestyle.h librnd/core/unit.h \
- layer.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
- obj_text.h font.h ../src_3rd/genht/htip.h librnd/core/box.h \
- librnd/core/math_helper.h librnd/core/misc_util.h \
- ../src_3rd/genvector/gds_char.h obj_gfx_list.h obj_gfx.h layer_grp.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_common.h flag.h \
+ librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ data_parent.h librnd/core/color.h ../src_3rd/genht/ht.h \
+ ../src_plugins/propedit/propsel.h librnd/core/compat_misc.h board.h \
+ vtroutestyle.h librnd/core/unit.h layer.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h obj_gfx_list.h obj_gfx.h layer_grp.h \
  rats_patch.h board.h librnd/core/hidlib.h librnd/core/global_typedefs.h \
  librnd/core/pcb-printf.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -9110,18 +9108,19 @@ ht_subc.o: ht_subc.c ../config.h librnd/config.h obj_subc_list.h \
  ../src_3rd/genht/hash.h ../src_3rd/genht/ht.c \
  ../src_3rd/genht/ht_inlines.h
 idpath.o: idpath.c ../config.h librnd/config.h idpath.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_common.h flag.h librnd/core/globalconst.h librnd/core/attrib.h \
- global_typedefs.h librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
- data_parent.h ../src_3rd/genlist/gentdlist_impl.c board.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h vtroutestyle.h \
- librnd/core/unit.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h layer.h librnd/core/color.h \
- obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h librnd/core/box.h librnd/core/math_helper.h \
- librnd/core/misc_util.h ../src_3rd/genvector/gds_char.h obj_gfx_list.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_common.h flag.h \
+ librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/global_typedefs.h librnd/core/pcb_bool.h data_parent.h \
+ ../src_3rd/genlist/gentdlist_impl.c board.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h vtroutestyle.h librnd/core/unit.h layer.h \
+ librnd/core/color.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h librnd/core/box.h \
+ librnd/core/math_helper.h librnd/core/misc_util.h obj_gfx_list.h \
  obj_gfx.h layer_grp.h rats_patch.h librnd/core/hidlib.h \
  librnd/core/global_typedefs.h data.h crosshair.h vtonpoint.h \
  librnd/core/hid.h ../src_3rd/liblihata/dom.h \
@@ -10649,20 +10648,20 @@ undo_old.o: undo_old.c ../config.h librnd/config.h \
  librnd/core/list_conf.h netlist.h obj_poly_draw.h obj_term.h brave.h \
  undo_old_str.h
 view.o: view.c ../config.h librnd/config.h idpath.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
- obj_common.h flag.h librnd/core/globalconst.h librnd/core/attrib.h \
- global_typedefs.h librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
- data_parent.h view.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/unit.h \
- librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
- ../src_3rd/genlist/gentdlist_impl.c ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/actions.h \
- librnd/core/hid.h librnd/core/error.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h librnd/core/compat_misc.h \
- librnd/core/pcb-printf.h
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genlist/gentdlist_undef.h obj_common.h flag.h \
+ librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/global_typedefs.h librnd/core/pcb_bool.h data_parent.h \
+ view.h librnd/core/unit.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h ../src_3rd/genlist/gentdlist_impl.c \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h librnd/core/actions.h librnd/core/hid.h \
+ librnd/core/error.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ librnd/core/compat_misc.h librnd/core/pcb-printf.h
 vtlibrary.o: vtlibrary.c vtlibrary.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
