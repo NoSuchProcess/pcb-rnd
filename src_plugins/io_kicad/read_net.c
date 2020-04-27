@@ -221,7 +221,7 @@ fgw_error_t pcb_act_LoadeeschemaFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *fname = NULL;
 	static char *default_file = NULL;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadeeschemaFrom, fname = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadeeschemaFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect(pcb_gui, "Load eeschema netlist file...",
@@ -235,7 +235,7 @@ fgw_error_t pcb_act_LoadeeschemaFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	PCB_ACT_IRES(eeschema_load(fname));
+	RND_ACT_IRES(eeschema_load(fname));
 	return 0;
 }
 

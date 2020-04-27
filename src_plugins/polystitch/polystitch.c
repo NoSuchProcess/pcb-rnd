@@ -110,7 +110,7 @@ static fgw_error_t pcb_act_polystitch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_poly_remove(inner_poly->parent.layer, inner_poly);
 		}
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

@@ -258,9 +258,9 @@ static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *label, *default_str = "", *title = NULL;
 	const char *pcb_acts_cli_PromptFor = pcb_acth_cli;
 
-	PCB_ACT_CONVARG(1, FGW_STR, cli_PromptFor, label = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, cli_PromptFor, default_str = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, cli_PromptFor, title = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, cli_PromptFor, label = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, cli_PromptFor, default_str = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, cli_PromptFor, title = argv[3].val.str);
 
 	if (!pcbhl_conf.rc.quiet) {
 		char *tmp;
@@ -299,16 +299,16 @@ static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 		return 0;
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, cli_MessageBox, icon = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, cli_MessageBox, title = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, cli_MessageBox, label = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, cli_MessageBox, icon = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, cli_MessageBox, title = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(3, FGW_STR, cli_MessageBox, label = argv[3].val.str);
 
 	printf("[%s] *** %s ***\n", icon, title);
 
 	retry:;
 	printf("%s:\n", label);
 	for(n = 4; n < argc; n+=2) {
-		PCB_ACT_CONVARG(n+0, FGW_STR, cli_MessageBox, txt = argv[n+0].val.str);
+		RND_PCB_ACT_CONVARG(n+0, FGW_STR, cli_MessageBox, txt = argv[n+0].val.str);
 		printf(" %d = %s\n", (n - 4)/2+1, txt);
 	}
 	printf("\nChose a number from above: ");
@@ -324,7 +324,7 @@ static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 		goto retry;
 	}
 	n = (ret-1)*2+5;
-	PCB_ACT_CONVARG(n, FGW_INT, cli_MessageBox, res->val.nat_int = argv[n].val.nat_int);
+	RND_PCB_ACT_CONVARG(n, FGW_INT, cli_MessageBox, res->val.nat_int = argv[n].val.nat_int);
 	return 0;
 }
 

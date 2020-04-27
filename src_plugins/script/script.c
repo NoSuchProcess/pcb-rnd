@@ -175,7 +175,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 	fn = pcb_concat(pcbhl_conf.rc.path.home, PCB_DIR_SEPARATOR_S, DOT_PCB_RND, PCB_DIR_SEPARATOR_S, SCRIPT_PERS, PCB_DIR_SEPARATOR_S, script_persistency_id, NULL);
 
 	if (strcmp(cmd, "remove") == 0) {
-		PCB_ACT_IRES(pcb_remove(NULL, fn));
+		RND_ACT_IRES(pcb_remove(NULL, fn));
 		goto succ;
 	}
 
@@ -213,7 +213,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 	pcb_message(PCB_MSG_ERROR, "Unknown command for ScriptPersistency\n");
 
 	err:;
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	return 0;
 
 	succ:

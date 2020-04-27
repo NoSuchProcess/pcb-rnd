@@ -292,12 +292,12 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	FILE *f;
 	cpcb_layers_t stk;
 
-	PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not open %s for read\n", fn);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -306,7 +306,7 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fclose(f);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -319,19 +319,19 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cpcb_layers_t stk;
 	cpcb_netmap_t nmap;
 
-	PCB_ACT_CONVARG(1, FGW_STR, export_cpcb, fn = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, export_cpcb, fn = argv[1].val.str);
 
 	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not open %s for write\n", fn);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if (cpcb_map_nets(PCB, &nmap) != 0) {
 		fclose(f);
 		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -341,7 +341,7 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fclose(f);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -355,26 +355,26 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cpcb_layers_t stk;
 	cpcb_netmap_t nmap;
 
-	PCB_ACT_CONVARG(1, FGW_STR, cpcb, scope = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, cpcb, cmd = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, cpcb, scope = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, cpcb, cmd = argv[2].val.str);
 
 	if (strcmp(scope, "board") != 0) {
 		pcb_message(PCB_MSG_ERROR, "Only board routing is supported at the moment\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	f = pcb_fopen(&PCB->hidlib, tmpfn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can not open temp file %s for write\n", tmpfn);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if (cpcb_map_nets(PCB, &nmap) != 0) {
 		fclose(f);
 		pcb_message(PCB_MSG_ERROR, "Failed to map nets\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -387,11 +387,11 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (f != NULL) {
 		cpcb_load(PCB, f, &stk, NULL);
 		pclose(f);
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "Failed to execute c-pcb\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 

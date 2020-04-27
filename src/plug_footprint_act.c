@@ -39,36 +39,36 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name = NULL;
 	pcb_fplibrary_t *l;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, fp_rehash, name = argv[1].val.str);
-	PCB_ACT_IRES(0);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, fp_rehash, name = argv[1].val.str);
+	RND_ACT_IRES(0);
 
 	if (name == NULL) {
-		pcb_fp_rehash(PCB_ACT_HIDLIB, NULL);
+		pcb_fp_rehash(RND_ACT_HIDLIB, NULL);
 		return 0;
 	}
 
 	l = pcb_fp_lib_search(&pcb_library, name);
 	if (l == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't find library path %s\n", name);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	if (l->type != PCB_LIB_DIR) {
 		pcb_message(PCB_MSG_ERROR, "Library path %s is not a directory\n", name);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	if (l->data.dir.backend == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Library path %s is not a top level directory of a fp_ plugin\n", name);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
-	if (pcb_fp_rehash(PCB_ACT_HIDLIB, l) != 0) {
+	if (pcb_fp_rehash(RND_ACT_HIDLIB, l) != 0) {
 		pcb_message(PCB_MSG_ERROR, "Failed to rehash %s\n", name);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 

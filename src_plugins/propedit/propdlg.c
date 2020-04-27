@@ -665,7 +665,7 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 1) {
 		for(a = 1; a < argc; a++) {
 			const char *cmd;
-			PCB_ACT_CONVARG(a, FGW_STR, propedit, cmd = argv[a].val.str);
+			RND_PCB_ACT_CONVARG(a, FGW_STR, propedit, cmd = argv[a].val.str);
 			r = prop_scope_add(&ctx->pe, cmd, 0);
 			if (r != 0)
 				return r;

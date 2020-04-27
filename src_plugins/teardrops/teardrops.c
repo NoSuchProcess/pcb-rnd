@@ -263,7 +263,7 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (new_arcs)
 		pcb_undo_inc_serial();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

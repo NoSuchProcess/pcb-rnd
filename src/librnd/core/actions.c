@@ -64,7 +64,7 @@ static const char *check_action_name(const char *s)
 	return NULL;
 }
 
-char *pcb_make_action_name(char *out, const char *inp, int inp_len)
+char *rnd_make_action_name(char *out, const char *inp, int inp_len)
 {
 	char *s;
 
@@ -103,7 +103,7 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		ca->cookie = cookie;
 		ca->action = a+i;
 
-		pcb_make_action_name(fn, a[i].name, len);
+		rnd_make_action_name(fn, a[i].name, len);
 		f = fgw_func_reg(pcb_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
@@ -126,10 +126,10 @@ static void pcb_remove_action(fgw_func_t *f)
 	free(ca);
 }
 
-fgw_func_t *pcb_act_lookup(const char *aname)
+fgw_func_t *rnd_act_lookup(const char *aname)
 {
 	char fn[PCB_ACTION_NAME_MAX];
-	fgw_func_t *f = fgw_func_lookup(&rnd_fgw, pcb_aname(fn, aname));
+	fgw_func_t *f = fgw_func_lookup(&rnd_fgw, rnd_aname(fn, aname));
 	return f;
 }
 
@@ -138,7 +138,7 @@ void rnd_remove_actions(const rnd_action_t *a, int n)
 	int i;
 
 	for (i = 0; i < n; i++) {
-		fgw_func_t *f = pcb_act_lookup(a[i].name);
+		fgw_func_t *f = rnd_act_lookup(a[i].name);
 		if (f == NULL) {
 			pcb_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
 			continue;
@@ -168,7 +168,7 @@ const rnd_action_t *rnd_find_action(const char *name, fgw_func_t **f_out)
 	if (name == NULL)
 		return NULL;
 
-	f = pcb_act_lookup(name);
+	f = rnd_act_lookup(name);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
 		return NULL;
@@ -313,7 +313,7 @@ fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 
 fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	fgw_func_t *f = pcb_act_lookup(name);
+	fgw_func_t *f = rnd_act_lookup(name);
 
 	if (f == NULL)
 		return FGW_ERR_NOT_FOUND;
@@ -330,18 +330,18 @@ fgw_error_t rnd_actionv_bin(pcb_hidlib_t *hl, const char *name, fgw_arg_t *res, 
 int rnd_actionv(pcb_hidlib_t *hl, const char *name, int argc, const char **argsv)
 {
 	fgw_func_t *f;
-	fgw_arg_t res, argv[PCB_ACTION_MAX_ARGS+1];
+	fgw_arg_t res, argv[RND_ACTION_MAX_ARGS+1];
 	int n;
 
 	if (name == NULL)
 		return 1;
 
-	if (argc >= PCB_ACTION_MAX_ARGS) {
-		pcb_message(PCB_MSG_ERROR, "can not call action %s with this many arguments (%d >= %d)\n", name, argc, PCB_ACTION_MAX_ARGS);
+	if (argc >= RND_ACTION_MAX_ARGS) {
+		pcb_message(PCB_MSG_ERROR, "can not call action %s with this many arguments (%d >= %d)\n", name, argc, RND_ACTION_MAX_ARGS);
 		return 1;
 	}
 
-	f = pcb_act_lookup(name);
+	f = rnd_act_lookup(name);
 	if (f == NULL) {
 		int i;
 		pcb_message(PCB_MSG_ERROR, "no action %s(", name);

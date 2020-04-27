@@ -441,12 +441,12 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_flag_t flg;
 	int want_contour = 0, want_poly = 0, cont_specd = 0;
 
-	PCB_ACT_CONVARG(1, FGW_STR, PolyHatch, op = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, PolyHatch, arg = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, PolyHatch, op = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, PolyHatch, arg = argv[2].val.str);
 
 	if (pcb_strcasecmp(op, "interactive") == 0) {
 		if (polyhatch_gui(&period, &dir, &flg, &want_contour) != 0) {
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
@@ -500,7 +500,7 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_cpoly_hatch_lines(PCB_CURRLAYER(PCB), polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
 	} PCB_ENDALL_LOOP;
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -510,7 +510,7 @@ static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_coord_t offs;
 
-	PCB_ACT_CONVARG(1, FGW_COORD, PolyOffs, offs = fgw_coord(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_COORD, PolyOffs, offs = fgw_coord(&argv[1]));
 
 	PCB_POLY_ALL_LOOP(PCB->Data); {
 		pcb_poly_t *p;
@@ -521,7 +521,7 @@ static fgw_error_t pcb_act_PolyOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
 	} PCB_ENDALL_LOOP;
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

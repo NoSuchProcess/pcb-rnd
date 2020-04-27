@@ -264,13 +264,13 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_any_obj_t *obj;
 
 	if (argc < 2 || argc > 5) {
-		PCB_ACT_FAIL(align);
+		RND_ACT_FAIL(align);
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, align, a0 = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, align, a1 = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, align, a2 = argv[3].val.str);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, align, a3 = argv[4].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, align, a0 = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, align, a1 = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, align, a2 = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, align, a3 = argv[4].val.str);
 
 	/* parse direction arg */
 	switch ((dir = keyword(a0))) {
@@ -278,7 +278,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case K_Y:
 		break;
 	default:
-		PCB_ACT_FAIL(align);
+		RND_ACT_FAIL(align);
 	}
 	/* parse point (within each object) which will be aligned */
 	switch ((point = keyword(a1))) {
@@ -288,20 +288,20 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			PCB_ACT_FAIL(align);
+			RND_ACT_FAIL(align);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			PCB_ACT_FAIL(align);
+			RND_ACT_FAIL(align);
 		}
 		break;
 	case K_none:
 		point = K_Marks; /* default value */
 		break;
 	default:
-		PCB_ACT_FAIL(align);
+		RND_ACT_FAIL(align);
 	}
 	/* parse reference which will determine alignment coordinates */
 	switch ((reference = keyword(a2))) {
@@ -314,7 +314,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		reference = K_First; /* default value */
 		break;
 	default:
-		PCB_ACT_FAIL(align);
+		RND_ACT_FAIL(align);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(a3)) {
@@ -325,7 +325,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		gridless = 0;
 		break;
 	default:
-		PCB_ACT_FAIL(align);
+		RND_ACT_FAIL(align);
 	}
 	/* find the final alignment coordinate using the above options */
 	q = reference_coord(K_align, pcb_crosshair.X, pcb_crosshair.Y, dir, point, reference);
@@ -362,7 +362,7 @@ static fgw_error_t pcb_act_align(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	free_objs_by_pos();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -381,14 +381,14 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int i;
 
 	if (argc < 2 || argc == 4 || argc > 6) {
-		PCB_ACT_FAIL(distribute);
+		RND_ACT_FAIL(distribute);
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, distribute, a0 = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, distribute, a1 = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, distribute, a2 = argv[3].val.str);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, distribute, a3 = argv[4].val.str);
-	PCB_ACT_MAY_CONVARG(5, FGW_STR, distribute, a4 = argv[5].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, distribute, a0 = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, distribute, a1 = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, distribute, a2 = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, distribute, a3 = argv[4].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, distribute, a4 = argv[5].val.str);
 
 
 	/* parse direction arg */
@@ -397,7 +397,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case K_Y:
 		break;
 	default:
-		PCB_ACT_FAIL(distribute);
+		RND_ACT_FAIL(distribute);
 	}
 	/* parse point (within each objects) which will be distributed */
 	switch ((point = keyword(a1))) {
@@ -408,20 +408,20 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	case K_Lefts:
 	case K_Rights:
 		if (dir == K_Y) {
-			PCB_ACT_FAIL(distribute);
+			RND_ACT_FAIL(distribute);
 		}
 		break;
 	case K_Tops:
 	case K_Bottoms:
 		if (dir == K_X) {
-			PCB_ACT_FAIL(distribute);
+			RND_ACT_FAIL(distribute);
 		}
 		break;
 	case K_none:
 		point = K_Marks; /* default value */
 		break;
 	default:
-		PCB_ACT_FAIL(distribute);
+		RND_ACT_FAIL(distribute);
 	}
 	/* parse reference which will determine first distribution coordinate */
 	switch ((refa = keyword(a2))) {
@@ -434,7 +434,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		refa = K_First; /* default value */
 		break;
 	default:
-		PCB_ACT_FAIL(distribute);
+		RND_ACT_FAIL(distribute);
 	}
 	/* parse reference which will determine final distribution coordinate */
 	switch ((refb = keyword(a3))) {
@@ -447,10 +447,10 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		refb = K_Last; /* default value */
 		break;
 	default:
-		PCB_ACT_FAIL(distribute);
+		RND_ACT_FAIL(distribute);
 	}
 	if (refa == refb) {
-		PCB_ACT_FAIL(distribute);
+		RND_ACT_FAIL(distribute);
 	}
 	/* optionally work off the grid (solar cells!) */
 	switch (keyword(a4)) {
@@ -461,7 +461,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		gridless = 0;
 		break;
 	default:
-		PCB_ACT_FAIL(distribute);
+		RND_ACT_FAIL(distribute);
 	}
 	/* build list of objects in orthogonal axis order */
 	sort_objs_by_pos(K_distribute, dir, point, refb);
@@ -529,7 +529,7 @@ static fgw_error_t pcb_act_distribute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_board_set_changed_flag(1);
 	}
 	free_objs_by_pos();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

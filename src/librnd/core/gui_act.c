@@ -51,14 +51,14 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, CreateMenu, ;);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, CreateMenu, ;);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
 		pcb_menu_prop_t props;
@@ -70,11 +70,11 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		pcb_gui->create_menu(pcb_gui, argv[1].val.str, &props);
 
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
-	PCB_ACT_FAIL(CreateMenu);
+	RND_ACT_FAIL(CreateMenu);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -85,23 +85,23 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if (pcb_gui->remove_menu == NULL) {
 		pcb_message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
 	if (pcb_gui->remove_menu(pcb_gui, argv[1].val.str) != 0) {
 		pcb_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 	}
 	else
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -112,7 +112,7 @@ static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full sc
 static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = NULL;
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, FullScreen, cmd = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, FullScreen, cmd = argv[1].val.str);
 
 	if ((cmd == NULL) || (pcb_strcasecmp(cmd, "Toggle") == 0))
 		pcb_conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, POL_OVERWRITE);
@@ -121,9 +121,9 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(cmd, "Off") == 0)
 		pcb_conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", POL_OVERWRITE);
 	else
-		PCB_ACT_FAIL(FullScreen);
+		RND_ACT_FAIL(FullScreen);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -132,7 +132,7 @@ static const char pcb_acth_Cursor[] = "Move the cursor.";
 /* DOC: cursor.html */
 static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
+	pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	pcb_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
 		{"view", 0, PCB_UNIT_PERCENT},
@@ -151,11 +151,11 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *a1, *a2, *a3, *op;
 	pcb_box_t vbx;
 
-	extra_units_x[0].scale = PCB_ACT_HIDLIB->grid;
-	extra_units_x[2].scale = PCB_ACT_HIDLIB->size_x;
+	extra_units_x[0].scale = RND_ACT_HIDLIB->grid;
+	extra_units_x[2].scale = RND_ACT_HIDLIB->size_x;
 
-	extra_units_y[0].scale = PCB_ACT_HIDLIB->grid;
-	extra_units_y[2].scale = PCB_ACT_HIDLIB->size_y;
+	extra_units_y[0].scale = RND_ACT_HIDLIB->grid;
+	extra_units_y[2].scale = RND_ACT_HIDLIB->size_y;
 
 	pcb_gui->view_get(pcb_gui, &vbx);
 	view_width = vbx.X2 - vbx.X1;
@@ -164,10 +164,10 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	extra_units_x[1].scale = view_width;
 	extra_units_y[1].scale = view_height;
 
-	PCB_ACT_CONVARG(1, FGW_STR, Cursor, op = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, Cursor, a1 = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, Cursor, a2 = argv[3].val.str);
-	PCB_ACT_CONVARG(4, FGW_STR, Cursor, a3 = argv[4].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Cursor, op = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, Cursor, a1 = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(3, FGW_STR, Cursor, a2 = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(4, FGW_STR, Cursor, a3 = argv[4].val.str);
 
 	switch(*op) {
 		case 'p': case 'P': /* Pan */
@@ -177,7 +177,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pan_warp = HID_SC_WARP_POINTER;
 			break;
 		default:
-			PCB_ACT_FAIL(Cursor);
+			RND_ACT_FAIL(Cursor);
 	}
 
 	if (pcb_strcasecmp(a3, "grid") == 0) {
@@ -222,7 +222,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hidcore_crosshair_move_to(hidlib, dx, dy, 1);
 	pcb_gui->set_crosshair(pcb_gui, hidlib->ch_x, hidlib->ch_y, pan_warp);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -230,16 +230,16 @@ static const char pcb_acts_MoveCursorTo[] = "MoveCursorTo(x,y)";
 static const char pcb_acth_MoveCursorTo[] = "Move the cursor to absolute coords, pan the view as needed.";
 static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
+	pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	pcb_coord_t x, y;
 
-	PCB_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
+	RND_PCB_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
 
-	pcb_hidcore_crosshair_move_to(PCB_ACT_HIDLIB, x, y, 0);
+	pcb_hidcore_crosshair_move_to(RND_ACT_HIDLIB, x, y, 0);
 	pcb_gui->set_crosshair(pcb_gui, hidlib->ch_x, hidlib->ch_y, HID_SC_PAN_VIEWPORT);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -252,30 +252,30 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op, *a;
 
-	PCB_ACT_CONVARG(1, FGW_STR, grid, op = argv[1].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, grid, op = argv[1].val.str);
+	RND_ACT_IRES(0);
 
 	if (strcmp(op, "set") == 0) {
 		pcb_grid_t dst;
-		PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
 		if (!pcb_grid_parse(&dst, a))
-			PCB_ACT_FAIL(grid);
-		pcb_grid_set(PCB_ACT_HIDLIB, &dst);
+			RND_ACT_FAIL(grid);
+		pcb_grid_set(RND_ACT_HIDLIB, &dst);
 		pcb_grid_free(&dst);
 	}
 	else if ((strcmp(op, "up") == 0) || (strcmp(op, "+") == 0))
-		pcb_grid_list_step(PCB_ACT_HIDLIB, +1);
+		pcb_grid_list_step(RND_ACT_HIDLIB, +1);
 	else if ((strcmp(op, "down") == 0) || (strcmp(op, "-") == 0))
-		pcb_grid_list_step(PCB_ACT_HIDLIB, -1);
+		pcb_grid_list_step(RND_ACT_HIDLIB, -1);
 	else if (strcmp(op, "idx") == 0) {
-		PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
-		pcb_grid_list_jump(PCB_ACT_HIDLIB, atoi(a));
+		RND_PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
+		pcb_grid_list_jump(RND_ACT_HIDLIB, atoi(a));
 	}
 	else if (op[0] == '#') {
-		pcb_grid_list_jump(PCB_ACT_HIDLIB, atoi(op+1));
+		pcb_grid_list_jump(RND_ACT_HIDLIB, atoi(op+1));
 	}
 	else
-		PCB_ACT_FAIL(grid);
+		RND_ACT_FAIL(grid);
 
 	return 0;
 }
@@ -288,12 +288,12 @@ static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	const char *op = NULL, *msg = "Click to enter a coordinate.";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, GetXY, op = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, GetXY, op = argv[2].val.str);
 
 	rnd_hid_get_coords(msg, &x, &y, 0);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	if (op != NULL) {
 		if (((op[0] == 'x') || (op[0] == 'X')) && op[1] == '\0') {
 			res->type = FGW_COORD;
@@ -304,7 +304,7 @@ static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			fgw_coord(res) = y;
 		}
 		else
-			PCB_ACT_FAIL(GetXY);
+			RND_ACT_FAIL(GetXY);
 	}
 
 	return 0;
@@ -324,7 +324,7 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		pcb_message(PCB_MSG_ERROR, "benchmark is not available in the current HID\n");
 
-	PCB_ACT_DRES(fps);
+	RND_ACT_DRES(fps);
 	return 0;
 }
 
@@ -333,7 +333,7 @@ static const char pcb_acth_Help[] = "On-line action help";
 static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_print_actions();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -342,7 +342,7 @@ static const char pcb_acth_Redraw[] = "Redraw the entire screen";
 static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_gui->invalidate_all(pcb_gui);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

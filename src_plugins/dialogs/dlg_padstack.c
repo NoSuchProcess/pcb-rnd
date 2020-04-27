@@ -1008,9 +1008,9 @@ fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	memset(&pse, 0, sizeof(pse));
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, PadstackEdit, op = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_INT, PadstackEdit, target_tab = argv[2].val.nat_int);
-	PCB_ACT_IRES(0);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, PadstackEdit, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_INT, PadstackEdit, target_tab = argv[2].val.nat_int);
+	RND_ACT_IRES(0);
 
 	if (op == F_Object) {
 		pcb_coord_t x, y;
@@ -1020,13 +1020,13 @@ fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_PSTK) {
 			pcb_message(PCB_MSG_ERROR, "Need a padstack.\n");
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 		pse.ps = ptr2;
 	}
 	else
-		PCB_ACT_FAIL(PadstackEdit);
+		RND_ACT_FAIL(PadstackEdit);
 
 	pse.pcb = pcb_data_get_top(pse.ps->parent.data);
 	if (pse.pcb == NULL)
@@ -1037,7 +1037,7 @@ fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_pstkedit_dialog(&pse, target_tab);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

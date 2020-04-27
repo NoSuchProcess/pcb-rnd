@@ -261,7 +261,7 @@ fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_attr_val_t val;
 
 	memset(&ctx, 0, sizeof(ctx));
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, LayerBinding, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, LayerBinding, op = fgw_keyword(&argv[1]));
 
 	if (op == F_Object) {
 		pcb_coord_t x, y;
@@ -285,7 +285,7 @@ TODO("subc TODO")
 		ctx.data = PCB_PASTEBUFFER->Data;
 	}
 	else
-		PCB_ACT_FAIL(LayerBinding);
+		RND_ACT_FAIL(LayerBinding);
 
 	{ /* interactive mode */
 		int n;
@@ -381,6 +381,6 @@ TODO("subc TODO")
 		free(ctx.layer_names);
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

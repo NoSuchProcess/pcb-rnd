@@ -369,8 +369,8 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_coord_t x, y;
 	rnd_hid_get_coords("Click on object to report on", &x, &y, 0);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, reportdialog, how = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, reportdialog, how = argv[2].val.str);
 
 	gds_init(&tmp);
 
@@ -395,7 +395,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		case PCB_OBJ_POLY_POINT: report_point(&tmp, type, ptr1, ptr2); break;
 		case PCB_OBJ_VOID:
 			pcb_message(PCB_MSG_INFO, "Nothing found to report on\n");
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		default: pcb_append_printf(&tmp, "Unknown\n"); break;
 	}
@@ -418,7 +418,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		rdialog("Report", tmp.array);
 	gds_uninit(&tmp);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -550,7 +550,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_coord_t x = 0, y = 0;
 			gds_t err;
 
-			PCB_ACT_MAY_CONVARG(2, FGW_STR, Report, units_name = argv[2].val.str);
+			rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Report, units_name = argv[2].val.str);
 
 			pcb_obj_center(term, &x, &y);
 
@@ -767,7 +767,7 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *cmd, *name;
 	pcb_coord_t x, y;
 
-	PCB_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
 
 	if (pcb_strcasecmp(cmd, "Object") == 0) {
 		rnd_hid_get_coords("Click on an object", &x, &y, 0);
@@ -791,11 +791,11 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(cmd, "AllNetLengths") == 0)
 		return report_all_net_lengths(res, argc, argv);
 	else if (pcb_strcasecmp(cmd, "NetLength") == 0) {
-		PCB_ACT_CONVARG(2, FGW_STR, Report, name = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, Report, name = argv[2].val.str);
 		return report_net_length_by_name(name);
 	}
 
-	PCB_ACT_FAIL(Report);
+	RND_ACT_FAIL(Report);
 }
 
 static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -814,7 +814,7 @@ static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			putchar(j == lg ? '#' : '-');
 		printf(" %c %s\n", (gflg & PCB_LYT_TOP) ? 'c' : (gflg & PCB_LYT_BOTTOM) ? 's' : '-', PCB->Data->Layer[i].name);
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

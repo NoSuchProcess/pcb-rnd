@@ -109,7 +109,7 @@ FILE *pcb_fopen_askovr(pcb_hidlib_t *hidlib, const char *path, const char *mode,
 	if (hidlib->batch_ask_ovr != NULL)
 		all = hidlib->batch_ask_ovr;
 	if (strchr(mode, 'w') != NULL) {
-		fgw_func_t *fun = pcb_act_lookup("gui_mayoverwritefile");
+		fgw_func_t *fun = rnd_act_lookup("gui_mayoverwritefile");
 
 		/* if the action does not exist, use the old behavor: just overwrite anything */
 		if (fun != NULL) {

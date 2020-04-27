@@ -609,12 +609,12 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 	FILE *f;
 	const char *name;
 
-	PCB_ACT_CONVARG(1, FGW_STR, scad_export_poly, name = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, scad_export_poly, name = argv[1].val.str);
 
 	f = pcb_fopen_askovr(&PCB->hidlib, name, "w", NULL);
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", name);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -648,7 +648,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 
 	fclose(f);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

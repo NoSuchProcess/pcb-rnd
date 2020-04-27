@@ -144,8 +144,8 @@ static int help_invoc(void)
 fgw_error_t pcb_act_PrintUsage(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *topic = NULL, *subt = NULL;
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, PrintUsage, topic = argv[1].val.str);
-	PCB_ACT_IRES(0);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, PrintUsage, topic = argv[1].val.str);
+	RND_ACT_IRES(0);
 
 	u("");
 	if (topic != NULL) {
@@ -157,13 +157,13 @@ fgw_error_t pcb_act_PrintUsage(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		for (i = 0; hl[i]; i++) {
 			if ((hl[i]->usage != NULL) && (strcmp(topic, hl[i]->name) == 0)) {
-				PCB_ACT_MAY_CONVARG(2, FGW_STR, PrintUsage, subt = argv[2].val.str);
-				PCB_ACT_IRES(hl[i]->usage(hl[i], subt));
+				rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, PrintUsage, subt = argv[2].val.str);
+				RND_ACT_IRES(hl[i]->usage(hl[i], subt));
 				return 0;
 			}
 		}
 		fprintf(stderr, "No help available for %s\n", topic);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 	else
@@ -177,7 +177,7 @@ static const char pcb_acth_PrintVersion[] = "Print version.";
 fgw_error_t pcb_act_PrintVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	printf("%s\n", pcb_get_info_program());
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -187,7 +187,7 @@ fgw_error_t pcb_act_DumpVersion(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	printf("%s\n", PCB_VERSION);
 	printf("%s\n", PCB_REVISION);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -209,7 +209,7 @@ fgw_error_t pcb_act_PrintCopyright(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("    You should have received a copy of the GNU General Public License\n"
 				 "    along with this program; if not, write to the Free Software\n"
 				 "    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.\n\n");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -238,7 +238,7 @@ fgw_error_t pcb_act_PrintPaths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("rc/default_font_file             ="); print_list(&conf_core.rc.default_font_file);
 	printf("rc/library_search_paths          ="); print_list(&conf_core.rc.library_search_paths);
 	printf("rc/library_shell                 = \"%s\"\n", conf_core.rc.library_shell);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -261,7 +261,7 @@ fgw_error_t pcb_act_DumpObjFlags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_strflg_map(0x7fffffff, ot, NULL, dumpoflg);
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -272,16 +272,16 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char tmp[128];
 	const char *cmd;
 
-	PCB_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
+	RND_ACT_IRES(0);
 
-	pcb_setenv("PCB_RND_BOARD_FILE_NAME", PCB_ACT_HIDLIB->filename == NULL ? "" : PCB_ACT_HIDLIB->filename, 1);
+	pcb_setenv("PCB_RND_BOARD_FILE_NAME", RND_ACT_HIDLIB->filename == NULL ? "" : RND_ACT_HIDLIB->filename, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.X);
 	pcb_setenv("PCB_RND_CROSSHAIR_X_MM", tmp, 1);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);
 	pcb_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
 	pcb_setenv("PCB_RND_CURRENT_LAYER_NAME", PCB_CURRLAYER(PCB_ACT_BOARD)->name, 1);
-	PCB_ACT_IRES(pcb_system(PCB_ACT_HIDLIB, cmd));
+	RND_ACT_IRES(pcb_system(RND_ACT_HIDLIB, cmd));
 	return 0;
 }
 
@@ -292,8 +292,8 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
-	PCB_ACT_IRES(pcb_act_execute_file(PCB_ACT_HIDLIB, fname));
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
+	RND_ACT_IRES(pcb_act_execute_file(RND_ACT_HIDLIB, fname));
 	return 0;
 }
 

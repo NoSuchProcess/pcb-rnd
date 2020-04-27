@@ -365,14 +365,14 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	htsp_t subcs, *scs = NULL;
 	htsp_entry_t *e;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadIpc356From, fname = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadIpc356From, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(pcb_gui, "Load IPC-D-356 netlist...",
 			"Pick an IPC-D-356 netlist file.\n",
 			default_file, ".net", NULL, "ipcd356", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL) {
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 		if (default_file != NULL) {
@@ -384,13 +384,13 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open %s for read\n", fname);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	for(n = 2; n < argc; n++) {
 		const char *s;
-		PCB_ACT_MAY_CONVARG(n, FGW_STR, LoadIpc356From, s = argv[n].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(n, FGW_STR, LoadIpc356From, s = argv[n].val.str);
 		if (strcmp(s, "nonet") == 0) want_net = 0;
 		if (strcmp(s, "nopad") == 0) want_pads = 0;
 		if (strcmp(s, "nosubc") == 0) want_subc = 0;
@@ -405,15 +405,15 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (want_net) {
-		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Freeze", NULL);
-		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Clear", NULL);
+		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Freeze", NULL);
+		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Clear", NULL);
 	}
 
 	rs = ipc356_parse(PCB, f, fname, scs, want_net, want_pads);
 
 	if (want_net) {
-		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Sort", NULL);
-		rnd_actionva(PCB_ACT_HIDLIB, "Netlist", "Thaw", NULL);
+		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Sort", NULL);
+		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Thaw", NULL);
 	}
 
 	fclose(f);
@@ -431,7 +431,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		htsp_uninit(&subcs);
 	}
 
-	PCB_ACT_IRES(rs);
+	RND_ACT_IRES(rs);
 	return 0;
 }
 

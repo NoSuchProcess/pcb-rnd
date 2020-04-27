@@ -207,12 +207,12 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int ret;
 	const char *op = "";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Log, op = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Log, op = argv[1].val.str);
 
 	if (pcb_strcasecmp(op, "Clear") == 0) {
 		unsigned long from = -1, to = -1;
-		PCB_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
-		PCB_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
+		rnd_PCB_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
+		rnd_PCB_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
 		pcb_log_del_range(from, to);
 		pcb_event(NULL, PCB_EVENT_LOG_CLEAR, "pp", &from, &to);
 		ret = 0;
@@ -237,11 +237,11 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			ret = 0;
 	}
 	else {
-		PCB_ACT_FAIL(Log);
+		RND_ACT_FAIL(Log);
 		ret = -1;
 	}
 
-	PCB_ACT_IRES(ret);
+	RND_ACT_IRES(ret);
 	return 0;
 }
 
@@ -253,22 +253,22 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int i, how = PCB_MSG_INFO;
 
 	if (argc < 2)
-		PCB_ACT_FAIL(Message);
+		RND_ACT_FAIL(Message);
 
 	i = 1;
 	if (argc > 2) {
 		const char *hows;
-		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, hows = argv[i].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, hows = argv[i].val.str);
 		if (strcmp(hows, "ERROR") == 0)        { i++; how = PCB_MSG_ERROR; }
 		else if (strcmp(hows, "WARNING") == 0) { i++; how = PCB_MSG_WARNING; }
 		else if (strcmp(hows, "INFO") == 0)    { i++; how = PCB_MSG_INFO; }
 		else if (strcmp(hows, "DEBUG") == 0)   { i++; how = PCB_MSG_DEBUG; }
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	for(; i < argc; i++) {
 		char *s = NULL;
-		PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, s = argv[i].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, s = argv[i].val.str);
 		if ((s != NULL) && (*s != '\0'))
 			pcb_message(how, s);
 		pcb_message(how, "\n");

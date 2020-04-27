@@ -631,7 +631,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	const char *cmd = NULL;
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
 	if ((cmd != NULL) && (strcmp(cmd, "object") == 0)) {
 		pcb_coord_t x, y;
 		void *r1, *r2, *r3;
@@ -640,18 +640,18 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_get_coords("Pick a subcircuit for padstack lib editing", &x, &y, 0);
 		type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, x, y, PCB_SLOP * pcb_pixel_slop);
 		if (type != PCB_OBJ_SUBC) {
-			PCB_ACT_IRES(-1);
+			RND_ACT_IRES(-1);
 			return 0;
 		}
 		sc = r2;
 		id = sc->ID;
 	}
 	else
-		PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
+		rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
 	if (pcb_dlg_pstklib(PCB, id, pcb_false, NULL) == PCB_PADSTACK_INVALID)
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 	else
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 	return 0;
 }
 

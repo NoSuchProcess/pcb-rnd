@@ -46,7 +46,7 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (printer == NULL) {
 		pcb_message(PCB_MSG_ERROR, "No printer available\n");
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 	printer->calibrate(printer, 0.0, 0.0);
@@ -54,6 +54,6 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_attribute_dialog("printer_calibrate", printer_calibrate_attrs, 3, "Printer Calibration Values", NULL))
 		return 1;
 	printer->calibrate(printer, printer_calibrate_attrs[1].val.dbl, printer_calibrate_attrs[2].val.dbl);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

@@ -353,7 +353,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (!find_pair(pcb_crosshair.X, pcb_crosshair.Y)) {
 		if (!find_pair(Ux, Uy)) {
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
@@ -370,7 +370,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 #if TRACE1
 		printf("Line endpoint not at cursor\n");
 #endif
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 	ex = the_line->Point1.X;
@@ -385,7 +385,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 #if TRACE1
 		printf("arc not endpoints\n");
 #endif
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -393,7 +393,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 #if TRACE1
 		printf("line ends inside arc\n");
 #endif
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -442,7 +442,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_gui->invalidate_all(pcb_gui);
 	pcb_undo_inc_serial();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -2079,14 +2079,14 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	nloops = 0;
 	npulled = 0;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, GlobalPuller, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, GlobalPuller, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Selected: select_flags = PCB_FLAG_SELECTED; break;
 		case F_Found:    select_flags = PCB_FLAG_FOUND; break;
 		case -2: select_flags = 0; break;
 		default:
-			PCB_ACT_FAIL(GlobalPuller);
+			RND_ACT_FAIL(GlobalPuller);
 	}
 
 	/* This canonicalizes all the lines, and cleans up near-misses.  */
@@ -2179,7 +2179,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	g_hash_table_unref(arcs);
 
 	pcb_undo_inc_serial();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

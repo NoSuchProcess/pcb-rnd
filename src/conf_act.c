@@ -39,7 +39,7 @@ static const char pcb_acts_GetStyle[] = "GetStyle()" ;
 static const char pcb_acth_GetStyle[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
 fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_ACT_IRES(pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
+	RND_ACT_IRES(pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
 	return 0;
 }
 
@@ -51,9 +51,9 @@ static fgw_error_t pcb_act_ChkSubcID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (have == NULL) have = "";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkSubcID, expected = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkSubcID, expected = argv[1].val.str);
 
-	PCB_ACT_IRES(strcmp(expected, have) == 0);
+	RND_ACT_IRES(strcmp(expected, have) == 0);
 	return 0;
 }
 
@@ -65,9 +65,9 @@ static fgw_error_t pcb_act_ChkTermID(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (have == NULL) have = "";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkTermID, expected = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ChkTermID, expected = argv[1].val.str);
 
-	PCB_ACT_IRES(strcmp(expected, have) == 0);
+	RND_ACT_IRES(strcmp(expected, have) == 0);
 	return 0;
 }
 
@@ -76,8 +76,8 @@ static const char pcb_acth_ChkBuffer[] = "Return 1 if currently selected buffer'
 static fgw_error_t pcb_act_ChkBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int expected;
-	PCB_ACT_CONVARG(1, FGW_INT, ChkBuffer, expected = argv[1].val.nat_int);
-	PCB_ACT_IRES((conf_core.editor.buffer_number + 1) == expected);
+	RND_PCB_ACT_CONVARG(1, FGW_INT, ChkBuffer, expected = argv[1].val.nat_int);
+	RND_ACT_IRES((conf_core.editor.buffer_number + 1) == expected);
 	return 0;
 }
 

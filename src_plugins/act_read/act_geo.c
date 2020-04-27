@@ -42,17 +42,17 @@ static fgw_error_t pcb_act_IsPointOnLine(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
 
-	PCB_ACT_CONVARG(1, FGW_COORD, IsPointOnLine, x = fgw_coord(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_COORD, IsPointOnLine, y = fgw_coord(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, IsPointOnLine, r = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_IDPATH, IsPointOnLine, idp = fgw_idpath(&argv[4]));
+	RND_PCB_ACT_CONVARG(1, FGW_COORD, IsPointOnLine, x = fgw_coord(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_COORD, IsPointOnLine, y = fgw_coord(&argv[2]));
+	RND_PCB_ACT_CONVARG(3, FGW_COORD, IsPointOnLine, r = fgw_coord(&argv[3]));
+	RND_PCB_ACT_CONVARG(4, FGW_IDPATH, IsPointOnLine, idp = fgw_idpath(&argv[4]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[4], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 	obj = pcb_idpath2obj(PCB, idp);
 	if ((obj == NULL) || (obj->type != PCB_OBJ_LINE))
 		return FGW_ERR_ARG_CONV;
 
-	PCB_ACT_IRES(pcb_is_point_on_line(x, y, r, (pcb_line_t *)obj));
+	RND_ACT_IRES(pcb_is_point_on_line(x, y, r, (pcb_line_t *)obj));
 	return 0;
 }
 
@@ -65,17 +65,17 @@ static fgw_error_t pcb_act_IsPointOnArc(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
 
-	PCB_ACT_CONVARG(1, FGW_COORD, IsPointOnArc, x = fgw_coord(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_COORD, IsPointOnArc, y = fgw_coord(&argv[2]));
-	PCB_ACT_CONVARG(3, FGW_COORD, IsPointOnArc, r = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_IDPATH, IsPointOnArc, idp = fgw_idpath(&argv[4]));
+	RND_PCB_ACT_CONVARG(1, FGW_COORD, IsPointOnArc, x = fgw_coord(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_COORD, IsPointOnArc, y = fgw_coord(&argv[2]));
+	RND_PCB_ACT_CONVARG(3, FGW_COORD, IsPointOnArc, r = fgw_coord(&argv[3]));
+	RND_PCB_ACT_CONVARG(4, FGW_IDPATH, IsPointOnArc, idp = fgw_idpath(&argv[4]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[4], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 	obj = pcb_idpath2obj(PCB, idp);
 	if ((obj == NULL) || (obj->type != PCB_OBJ_ARC))
 		return FGW_ERR_ARG_CONV;
 
-	PCB_ACT_IRES(pcb_is_point_on_arc(x, y, r, (pcb_arc_t *)obj));
+	RND_ACT_IRES(pcb_is_point_on_arc(x, y, r, (pcb_arc_t *)obj));
 	return 0;
 }
 
@@ -87,8 +87,8 @@ static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *
 	pcb_idpath_t *idp1, *idp2;
 	pcb_any_obj_t *obj1, *obj2;
 
-	PCB_ACT_CONVARG(1, FGW_IDPATH, IntersectObjObj, idp1 = fgw_idpath(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_IDPATH, IntersectObjObj, idp2 = fgw_idpath(&argv[2]));
+	RND_PCB_ACT_CONVARG(1, FGW_IDPATH, IntersectObjObj, idp1 = fgw_idpath(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_IDPATH, IntersectObjObj, idp2 = fgw_idpath(&argv[2]));
 	if ((idp1 == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 	if ((idp2 == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
@@ -98,7 +98,7 @@ static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *
 	if ((obj1 == NULL) || ((obj1->type & PCB_OBJ_CLASS_REAL) == 0) || (obj2 == NULL) || ((obj2->type & PCB_OBJ_CLASS_REAL) == 0))
 		return FGW_ERR_ARG_CONV;
 
-	PCB_ACT_IRES(pcb_intersect_obj_obj(pcb_find0, obj1, obj2));
+	RND_ACT_IRES(pcb_intersect_obj_obj(pcb_find0, obj1, obj2));
 	return 0;
 }
 

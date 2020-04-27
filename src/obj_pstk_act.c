@@ -46,13 +46,13 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Selected:
 		if (argc > 3) {
-			PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
-			PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
+			RND_PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
+			RND_PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 		}
 		else {
 			rnd_hid_get_coords("Click at padstack origin", &x, &y, 0);
@@ -85,7 +85,7 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		break;
 		default:
-			PCB_ACT_FAIL(padstackconvert);
+			RND_ACT_FAIL(padstackconvert);
 	}
 
 	if (pid != PCB_PADSTACK_INVALID) {
@@ -93,11 +93,11 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_pstk_new(PCB_PASTEBUFFER->Data, -1, pid, 0, 0, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 		pcb_set_buffer_bbox(PCB_PASTEBUFFER);
 		PCB_PASTEBUFFER->X = PCB_PASTEBUFFER->Y = 0;
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "(failed to convert to padstack)\n", pid);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 	}
 
 	return 0;
@@ -108,8 +108,8 @@ static const char pcb_acth_padstackbreakup[] = "Break up a padstack into one non
 fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
-	PCB_ACT_IRES(-1);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
+	RND_ACT_IRES(-1);
 
 	switch(op) {
 		case F_Object:
@@ -129,7 +129,7 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_message(PCB_MSG_ERROR, "Sorry, that padstack is locked\n");
 					break;
 				}
-				PCB_ACT_IRES(pcb_pstk_proto_breakup(PCB->Data, ps, 1));
+				RND_ACT_IRES(pcb_pstk_proto_breakup(PCB->Data, ps, 1));
 			}
 			break;
 		case F_Selected:
@@ -143,7 +143,7 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_data_list_by_flag(PCB->Data, &objs, PCB_OBJ_PSTK, PCB_FLAG_SELECTED);
 				for(n = 0, o = (pcb_any_obj_t **)objs.array; n < vtp0_len(&objs); n++,o++)
 					ret |= pcb_pstk_proto_breakup(PCB->Data, (pcb_pstk_t *)*o, 1);
-				PCB_ACT_IRES(ret);
+				RND_ACT_IRES(ret);
 				vtp0_uninit(&objs);
 			}
 			break;
@@ -153,11 +153,11 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_PADSTACK_LOOP(PCB_PASTEBUFFER->Data) {
 					ret |= pcb_pstk_proto_breakup(PCB_PASTEBUFFER->Data, padstack, 1);
 				} PCB_END_LOOP;
-				PCB_ACT_IRES(ret);
+				RND_ACT_IRES(ret);
 			}
 			break;
 		default:
-			PCB_ACT_FAIL(padstackbreakup);
+			RND_ACT_FAIL(padstackbreakup);
 	}
 	return 0;
 }
@@ -171,11 +171,11 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_pstk_t *ps;
 	pcb_coord_t x, y;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, padstackplace, pids = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, padstackplace, pids = argv[1].val.str);
 
 	if (argc > 3) {
-		PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
-		PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
+		RND_PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
+		RND_PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 	}
 	else {
 		rnd_hid_get_coords("Click at padstack origin", &x, &y, 0);
@@ -208,7 +208,7 @@ TODO("pstk: style default proto")
 		return -1;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

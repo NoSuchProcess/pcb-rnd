@@ -446,10 +446,10 @@ static const char pcb_acth_NetlistDialog[] = "Open the netlist dialog.";
 static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (strcmp(pcb_gui->name, "lesstif") == 0)
-		rnd_actionva(PCB_ACT_HIDLIB, "DoWindows", "netlist");
+		rnd_actionva(RND_ACT_HIDLIB, "DoWindows", "netlist");
 	else
 		pcb_dlg_netlist(PCB);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

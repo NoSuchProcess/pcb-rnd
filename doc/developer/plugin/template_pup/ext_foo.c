@@ -37,7 +37,7 @@ static const char pcb_acth_ExtFoo[] = "Help text: short description of what the 
 static fgw_error_t pcb_act_ExtFoo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "PLEASE CONSIDER DEVELOPING A CORE PLUGIN INSTEAD!\n");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

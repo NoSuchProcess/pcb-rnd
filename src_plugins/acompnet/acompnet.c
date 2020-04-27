@@ -205,7 +205,7 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 TODO("use pcb_drc_lines(), probably during A*, saving mid-point, and draw pairs of lines here");
 		}
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

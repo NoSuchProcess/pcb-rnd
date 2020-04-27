@@ -66,7 +66,7 @@ fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_GUI_NOGUI();
 	pcb_gui->open_command(pcb_gui);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

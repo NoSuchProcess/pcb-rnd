@@ -153,7 +153,7 @@ static const char pcb_acth_UndoDialog[] = "Open the undo dialog.";
 static fgw_error_t pcb_act_UndoDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_dlg_undo();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

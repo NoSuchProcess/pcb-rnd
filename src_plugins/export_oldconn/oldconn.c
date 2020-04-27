@@ -265,9 +265,9 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptrtmp;
 	pcb_coord_t x, y;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, ExportOldConn, op = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, ExportOldConn, name = argv[2].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ExportOldConn, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ExportOldConn, name = argv[2].val.str);
+	RND_ACT_IRES(0);
 
 	switch(op) {
 		case F_AllConnections:
@@ -300,7 +300,7 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			return 0;
 	}
-	PCB_ACT_FAIL(ExportOldConn);
+	RND_ACT_FAIL(ExportOldConn);
 }
 
 static rnd_action_t oldconn_action_list[] = {

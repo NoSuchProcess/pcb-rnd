@@ -328,7 +328,7 @@ static fgw_error_t pcb_act_polycombine(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	pcb_undo_inc_serial();
 	pcb_draw();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

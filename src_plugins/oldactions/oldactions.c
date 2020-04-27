@@ -113,7 +113,7 @@ static fgw_error_t pcb_act_DumpLibrary(fgw_arg_t *res, int argc, fgw_arg_t *argv
 {
 	dump_lib_any(0, &pcb_library);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -128,7 +128,7 @@ static const char pcb_acth_Bell[] = "Attempt to produce audible notification (e.
 static fgw_error_t pcb_act_Bell(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_gui->beep(pcb_gui);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -147,12 +147,12 @@ static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("Debug:");
 	for (i = 1; i < argc; i++) {
 		const char *s;
-		PCB_ACT_CONVARG(i, FGW_STR, debugxy, s = argv[i].val.str);
+		RND_PCB_ACT_CONVARG(i, FGW_STR, debugxy, s = argv[i].val.str);
 		printf(" [%d] `%s'", i, s);
 	}
 	rnd_hid_get_coords("Click X,Y for Debug", &x, &y, 0);
 	pcb_printf(" x,y %$mD\n", x, y);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -170,7 +170,7 @@ optimize hand-routed traces also.
 fgw_error_t pcb_act_djopt_set_auto_only(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -190,7 +190,7 @@ loaded first.
 fgw_error_t pcb_act_ToggleVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -209,7 +209,7 @@ loaded first.
 fgw_error_t pcb_act_EnableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", POL_OVERWRITE);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -226,7 +226,7 @@ specified in the currently loaded vendor drill table.
 fgw_error_t pcb_act_DisableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -242,7 +242,7 @@ fgw_error_t pcb_act_ListRotations(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_message(PCB_MSG_INFO, "<unknown> %s\n", refdes);
 	}
 	PCB_END_LOOP;
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -254,8 +254,8 @@ static const char pcb_acth_PCBChanged[] =
 static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *rv = NULL;
-	PCB_ACT_IRES(0);
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
+	RND_ACT_IRES(0);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
 	pcb_board_changed((rv != NULL) && (pcb_strcasecmp(rv, "revert") == 0));
 	return 0;
 }
@@ -291,7 +291,7 @@ static const char pcb_acth_ImportGUI[] = "Asks user which schematics to import i
 static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
-	PCB_ACT_IRES(rnd_actionva(PCB_ACT_HIDLIB, "ImportSch", NULL));
+	RND_ACT_IRES(rnd_actionva(RND_ACT_HIDLIB, "ImportSch", NULL));
 	return 0;
 }
 
@@ -305,7 +305,7 @@ static const char pcb_acth_Import[] = "Import schematics.";
 static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "Import() is the old, deprecated import netlist/schematics action that got removed\nPlease switch over to using the new action, ImportSch().\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
-	PCB_ACT_IRES(1);
+	RND_ACT_IRES(1);
 	return 0;
 }
 

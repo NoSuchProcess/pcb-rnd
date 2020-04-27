@@ -63,15 +63,15 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, DumpConf, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, DumpConf, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Native:
 		{
 			int verbose = 0;
 			const char *prefix = "";
-			PCB_ACT_MAY_CONVARG(2, FGW_INT, DumpConf, verbose = argv[2].val.nat_int);
-			PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
+			rnd_PCB_ACT_MAY_CONVARG(2, FGW_INT, DumpConf, verbose = argv[2].val.nat_int);
+			rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
 			conf_dump(stdout, prefix, verbose, NULL);
 		}
 		break;
@@ -79,12 +79,12 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		{
 		conf_role_t role;
 		const char *srole, *prefix = "";
-		PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
-		PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
 		role = pcb_conf_role_parse(srole);
 		if (role == CFR_invalid) {
 			pcb_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 		if (pcb_conf_main_root[role] != NULL) {
@@ -100,11 +100,11 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		break;
 		default:
-			PCB_ACT_FAIL(DumpConf);
+			RND_ACT_FAIL(DumpConf);
 			return 1;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -119,12 +119,12 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	conf_native_t *nat;
 	int role;
 
-	PCB_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);
 
 	nat = pcb_conf_get_field(path);
 	if (nat == NULL) {
 		pcb_message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -155,7 +155,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf(" Native:\n");
 	pcb_conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -169,7 +169,7 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 	pcb_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, DumpLayers, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, DumpLayers, op = fgw_keyword(&argv[1]));
 
 	if (op == F_All) {
 		printf("Per group:\n");
@@ -206,7 +206,7 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 		}
 
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
@@ -238,7 +238,7 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -274,7 +274,7 @@ static fgw_error_t pcb_act_DumpFonts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else
 		printf(" <no extra font loaded>\n");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -286,7 +286,7 @@ static fgw_error_t pcb_act_DumpUndo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	printf("Undo:\n");
 	undo_dump();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 #endif
@@ -344,7 +344,7 @@ static fgw_error_t pcb_act_DumpData(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("DumpData:\n");
 	dump_data(PCB->Data, what, 0, NULL);
 	printf("\n");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -353,7 +353,7 @@ static const char integrity_help[] = "perform integrirty check on the current bo
 static fgw_error_t pcb_act_integrity(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_check_integrity(PCB);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -380,7 +380,7 @@ static fgw_error_t pcb_act_dumpflags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *default_fmt = "%m (%M %N) for %t:\n  %H\n";
 	const char *fmt = default_fmt;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, dumpflags, fmt = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, dumpflags, fmt = argv[1].val.str);
 
 	for(n = 0; n < pcb_object_flagbits_len; n++) {
 		char *tmp;
@@ -389,7 +389,7 @@ static fgw_error_t pcb_act_dumpflags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		free(tmp);
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -415,12 +415,12 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_gfx_t *g = pcb_gfx_new(PCB_CURRLAYER(pcb),
 		PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(233), PCB_MIL_TO_COORD(233), 15, pcb_flag_make(0));
 
-	pxm = rnd_pixmap_load(PCB_ACT_HIDLIB, "A.pnm");
+	pxm = rnd_pixmap_load(RND_ACT_HIDLIB, "A.pnm");
 pcb_trace("pxm=%p\n", pxm);
 
 	pcb_gfx_set_pixmap_free(g, pxm, 1);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -439,7 +439,7 @@ static fgw_error_t pcb_act_DumpIDs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			printf("%ld: %p %ld %s%s\n", e->key, (void *)o, o->ID, pcb_obj_type_name(o->type), (o->ID == e->key) ? "" : " BROKEN");
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -479,7 +479,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		now = pcb_dtime();
 	} while(now < end);
 	pcb_message(PCB_MSG_INFO, "find2.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -495,13 +495,13 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	pcb_fp_fopen_ctx_t fctx;
 	int n, want_bbox = 0, want_origin = 0;
 
-	PCB_ACT_CONVARG(1, FGW_STR, DumpLibFootprint, fpn = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, DumpLibFootprint, fpn = argv[1].val.str);
 
 	for(n = 2; n < argc; n++) {
-		PCB_ACT_CONVARG(n, FGW_STR, DumpLibFootprint, opt = argv[n].val.str);
+		RND_PCB_ACT_CONVARG(n, FGW_STR, DumpLibFootprint, opt = argv[n].val.str);
 		if (strcmp(opt, "bbox") == 0) want_bbox = 1;
 		else if (strcmp(opt, "origin") == 0) want_origin = 1;
-		else PCB_ACT_FAIL(DumpLibFootprint);
+		else RND_ACT_FAIL(DumpLibFootprint);
 	}
 
 	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, fpn, &fctx, PCB->Data);
@@ -522,7 +522,7 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		if (want_bbox || want_origin) {
 			pcb_buffer_clear(PCB, &SCRATCH);
 			if (!pcb_buffer_load_footprint(&SCRATCH, fctx.filename, NULL)) {
-				PCB_ACT_IRES(1);
+				RND_ACT_IRES(1);
 				return 0;
 			}
 		}
@@ -532,12 +532,12 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		if (want_origin)
 			pcb_printf(DLF_PREFIX "origin mm %mm %mm\n", SCRATCH.X, SCRATCH.Y);
 
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 	}
 	else {
 		pcb_fp_fclose(f, &fctx);
 		printf(DLF_PREFIX "error file not found\n");
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 	}
 
 	return 0;
@@ -558,7 +558,7 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_message(PCB_MSG_ERROR, "pcb_acth_forcecolor() is temporarily disabled.\n");
 	return -1;
 
-	PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
 
 	rnd_hid_get_coords("Click on object to change", &x, &y, 0);
 
@@ -567,7 +567,7 @@ TODO("color: figure where to store this");
 /*		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);*/
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

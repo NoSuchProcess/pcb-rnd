@@ -422,7 +422,7 @@ const char pcb_acth_SearchDialog[] = "Open the log dialog.";
 fgw_error_t pcb_act_SearchDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	search_window_create();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

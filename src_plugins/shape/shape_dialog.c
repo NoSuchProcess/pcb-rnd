@@ -400,7 +400,7 @@ static const char pcb_acth_shape[] = "Interactive shape generator.";
 fgw_error_t pcb_act_shape(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_shape_dialog(PCB, PCB_PASTEBUFFER->Data, pcb_shape_current_layer, pcb_false);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

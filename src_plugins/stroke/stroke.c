@@ -114,13 +114,13 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *arg = NULL;
 
-	PCB_ACT_CONVARG(1, FGW_STR, stroke,  cmd = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, stroke,  cmd = argv[1].val.str);
 
 	if (strcmp(cmd, "gesture") == 0) {
-		PCB_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
 		if (arg == NULL)
-			PCB_ACT_FAIL(stroke);
-		pcb_stroke_exec(PCB_ACT_HIDLIB, arg);
+			RND_ACT_FAIL(stroke);
+		pcb_stroke_exec(RND_ACT_HIDLIB, arg);
 	}
 	else if (pcb_strcasecmp(cmd, "zoom") == 0) {
 		fgw_arg_t args[5];
@@ -128,11 +128,11 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "zoomto action is not available");
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 
-		args[0].type = FGW_FUNC; args[0].val.argv0.func = f; args[0].val.argv0.user_call_ctx = PCB_ACT_HIDLIB;
+		args[0].type = FGW_FUNC; args[0].val.argv0.func = f; args[0].val.argv0.user_call_ctx = RND_ACT_HIDLIB;
 		args[1].type = FGW_COORD; fgw_coord(&args[1]) = stroke_first_x;
 		args[2].type = FGW_COORD; fgw_coord(&args[2]) = stroke_first_y;
 		args[3].type = FGW_COORD; fgw_coord(&args[3]) = stroke_last_x;
@@ -140,11 +140,11 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return rnd_actionv_(f, res, 5, args);
 	}
 	else if (pcb_strcasecmp(cmd, "stopline") == 0)
-		rnd_actionva(PCB_ACT_HIDLIB, "Tool", "Escape", NULL);
+		rnd_actionva(RND_ACT_HIDLIB, "Tool", "Escape", NULL);
 	else
-		PCB_ACT_FAIL(stroke);
+		RND_ACT_FAIL(stroke);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

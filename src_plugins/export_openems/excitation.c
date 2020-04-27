@@ -461,10 +461,10 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 {
 	const char *op = "interactive", *a1 = NULL;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, OpenemsExcitation, op = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, OpenemsExcitation, a1 = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, OpenemsExcitation, op = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, OpenemsExcitation, a1 = argv[2].val.str);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 
 	if (strcmp(op, "interactive") == 0)
 		pcb_dlg_exc();
@@ -489,8 +489,8 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 				goto error;
 		}
 
-		PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
-		PCB_ACT_CONVARG(start+1, FGW_STR, OpenemsExcitation, val = argv[start+1].val.str);
+		RND_PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
+		RND_PCB_ACT_CONVARG(start+1, FGW_STR, OpenemsExcitation, val = argv[start+1].val.str);
 
 		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
 		pcb_attribute_put(&PCB->Attributes, attrkey, val);
@@ -510,7 +510,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 				goto error;
 		}
 
-		PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
+		RND_PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
 
 		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
 		res->type = FGW_STR;
@@ -521,7 +521,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 	return 0;
 
 	error:;
-	PCB_ACT_IRES(1);
+	RND_ACT_IRES(1);
 	return 0;
 }
 

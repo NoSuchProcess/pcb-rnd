@@ -72,9 +72,9 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *layername;
 	char *buf;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
+	RND_ACT_IRES(0);
 
 	if (!pcb_gui->edit_attributes) {
 		pcb_message(PCB_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
@@ -133,7 +133,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
 					pcb_message(PCB_MSG_ERROR, "No subcircuit found there\n");
-					PCB_ACT_IRES(-1);
+					RND_ACT_IRES(-1);
 					return 0;
 				}
 			}
@@ -149,7 +149,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 	default:
-		PCB_ACT_FAIL(Attributes);
+		RND_ACT_FAIL(Attributes);
 	}
 
 	return 0;
@@ -218,13 +218,13 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	pcb_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, id;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = fgw_keyword(&argv[1]));
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = fgw_keyword(&argv[1]));
+	RND_ACT_IRES(0);
 
 	switch(id) {
 		case F_All:      all = 1; break;
 		case F_Selected: all = 0; break;
-		default:         PCB_ACT_FAIL(DisperseElements);
+		default:         RND_ACT_FAIL(DisperseElements);
 	}
 
 	pcb_draw_inhibit_inc();
@@ -263,8 +263,8 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int id;
 	void *ptrtmp;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = fgw_keyword(&argv[1]));
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = fgw_keyword(&argv[1]));
+	RND_ACT_IRES(0);
 
 	rnd_hid_get_coords("Click on Object or Flip Point", &x, &y, 0);
 
@@ -273,7 +273,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if ((pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID) {
 				pcb_subc_t *subc = (pcb_subc_t *)ptrtmp;
 				pcb_undo_freeze_serial();
-				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - PCB_ACT_HIDLIB->size_y);
+				pcb_subc_change_side(subc, 2 * pcb_crosshair.Y - RND_ACT_HIDLIB->size_y);
 				pcb_undo_unfreeze_serial();
 				pcb_undo_inc_serial();
 				pcb_draw();
@@ -288,7 +288,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_draw();
 			break;
 		default:
-			PCB_ACT_FAIL(Flip);
+			RND_ACT_FAIL(Flip);
 	}
 	return 0;
 }
@@ -304,10 +304,10 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, MoveObject, units = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, MoveObject, units = argv[3].val.str);
 	fgw_str2coord_unit_set(saved, units);
-	PCB_ACT_CONVARG(1, FGW_COORDS, MoveObject, nx = fgw_coords(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_COORDS, MoveObject, ny = fgw_coords(&argv[2]));
+	RND_PCB_ACT_CONVARG(1, FGW_COORDS, MoveObject, nx = fgw_coords(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_COORDS, MoveObject, ny = fgw_coords(&argv[2]));
 	fgw_str2coord_unit_restore(saved);
 
 
@@ -324,15 +324,15 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (ny->absolute[0])
 		ny->c[0] -= pcb_crosshair.Y;
 
-	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_RUBBER_RESET, NULL);
+	pcb_event(RND_ACT_HIDLIB, PCB_EVENT_RUBBER_RESET, NULL);
 	if (conf_core.editor.rubber_band_mode)
-		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+		pcb_event(RND_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 	if (type == PCB_OBJ_SUBC)
-		pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+		pcb_event(RND_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx->c[0], ny->c[0]);
 	pcb_board_set_changed_flag(pcb_true);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -344,8 +344,8 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int id;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, MoveToCurrentLayer, id = fgw_keyword(&argv[1]));
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, MoveToCurrentLayer, id = fgw_keyword(&argv[1]));
+	RND_ACT_IRES(0);
 
 	switch(id) {
 		case F_Object:
@@ -594,7 +594,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	int fx, fy, fs;
 	static placer_t plc;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, ElementList, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ElementList, op = fgw_keyword(&argv[1]));
 
 #ifdef DEBUG
 	printf("Entered pcb_act_ElementList, executing function %s\n", function);
@@ -628,15 +628,15 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	}
 
 	if (op != F_Need)
-		PCB_ACT_FAIL(ElementList);
+		RND_ACT_FAIL(ElementList);
 
-	PCB_ACT_CONVARG(2, FGW_STR, ElementList, refdes = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, ElementList, footprint = argv[3].val.str);
-	PCB_ACT_CONVARG(4, FGW_STR, ElementList, value = argv[4].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, ElementList, refdes = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(3, FGW_STR, ElementList, footprint = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(4, FGW_STR, ElementList, value = argv[4].val.str);
 
 	args[0].type = FGW_FUNC;
 	args[0].val.argv0.func = NULL;
-	args[0].val.argv0.user_call_ctx = PCB_ACT_HIDLIB;
+	args[0].val.argv0.user_call_ctx = RND_ACT_HIDLIB;
 	args[1] = argv[3];
 	args[2] = argv[2];
 	args[3] = argv[4];
@@ -665,9 +665,9 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		printf("  ... Footprint not on board, need to add it.\n");
 #endif
 		/* Not on board, need to add it. */
-		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &rs, argc, args) != 0) {
+		if (RND_ACT_CALL_C(pcb_act_LoadFootprint, &rs, argc, args) != 0) {
 			number_of_footprints_not_found++;
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 
@@ -687,9 +687,9 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		double orig_rot;
 
 		/* Different footprint, we need to swap them out.  */
-		if (PCB_ACT_CALL_C(pcb_act_LoadFootprint, &rs, argc, args) != 0) {
+		if (RND_ACT_CALL_C(pcb_act_LoadFootprint, &rs, argc, args) != 0) {
 			number_of_footprints_not_found++;
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 
@@ -712,7 +712,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				pcb_coord_t pcx = 0, pcy = 0;
 				pcb_subc_get_origin(psc, &pcx, &pcy);
 				if (!orig_on_top)
-					pcb_subc_change_side(psc, pcy * 2 - PCB_ACT_HIDLIB->size_y);
+					pcb_subc_change_side(psc, pcy * 2 - RND_ACT_HIDLIB->size_y);
 				if (orig_rot != 0) {
 					double cosa, sina;
 					cosa = cos(orig_rot / PCB_RAD_TO_DEG);
@@ -757,7 +757,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, fy);
 	conf_force_set_bool(conf_core.editor.show_solder_side, fs);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -770,14 +770,14 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *a
 	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ElementList, refdes = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, ElementList, name = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, ElementList, value = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ElementList, refdes = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, ElementList, name = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ElementList, value = argv[3].val.str);
 
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
 	if (sc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -786,7 +786,7 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *a
 	else
 		pcb_attribute_remove(&sc->Attributes, name);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -799,7 +799,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op;
 	pcb_bool changed = pcb_false;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, RipUp, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, RipUp, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_All:
@@ -860,7 +860,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			break;
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -930,9 +930,9 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	pcb_coord_t value;
 	int flags;
 
-	PCB_ACT_CONVARG(1, FGW_STR, MinClearGap, function = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, MinClearGap, delta = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, MinClearGap, delta = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, MinClearGap, function = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, MinClearGap, delta = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, MinClearGap, delta = argv[3].val.str);
 
 	if (pcb_strcasecmp(function, "Selected") == 0)
 		flags = PCB_FLAG_SELECTED;
@@ -947,7 +947,7 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	minclr(pcb->Data, value, flags);
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -961,8 +961,8 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int old_index, new_index;
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 
-	PCB_ACT_CONVARG(1, FGW_STR, MoveLayer, a0 = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, MoveLayer, a1 = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, MoveLayer, a0 = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, MoveLayer, a1 = argv[2].val.str);
 
 	if (strcmp(a0, "c") == 0)
 		old_index = PCB_CURRLID(pcb);
@@ -975,31 +975,31 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			new_index = 0;
 	}
 	else if (strcmp(a1, "gi") == 0) {
-		PCB_ACT_IRES(pcb_layer_move(pcb, -1, 0, pcb_actd_EditGroup_gid, 1));
+		RND_ACT_IRES(pcb_layer_move(pcb, -1, 0, pcb_actd_EditGroup_gid, 1));
 		return 0;
 	}
 	else if (strcmp(a1, "ga") == 0) {
-		PCB_ACT_IRES(pcb_layer_move(pcb, -1, 1, pcb_actd_EditGroup_gid, 1));
+		RND_ACT_IRES(pcb_layer_move(pcb, -1, 1, pcb_actd_EditGroup_gid, 1));
 		return 0;
 	}
 	else if (strcmp(a1, "group") == 0) {
 		long gid;
-		PCB_ACT_CONVARG(3, FGW_LONG, MoveLayer, gid = argv[3].val.nat_long);
+		RND_PCB_ACT_CONVARG(3, FGW_LONG, MoveLayer, gid = argv[3].val.nat_long);
 		pcb_layer_move_to_group(pcb, old_index, gid);
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 	else if (strcmp(a1, "up") == 0) {
 		new_index = PCB_CURRLID(pcb) - 1;
 		if (new_index < 0) {
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
 	else if (strcmp(a1, "down") == 0) {
 		new_index = PCB_CURRLID(pcb) + 1;
 		if (new_index >= pcb_max_layer(pcb)) {
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
@@ -1011,10 +1011,10 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 1;
 		}
 
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		switch(a1[4]) {
-			case '+': PCB_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), +1)); break;
-			case '-': PCB_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), -1)); break;
+			case '+': RND_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), +1)); break;
+			case '-': RND_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), -1)); break;
 			default: pcb_message(PCB_MSG_ERROR, "Invalid step direction\n");
 		}
 		return 0;
@@ -1029,13 +1029,13 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_layergrp_t *g = pcb_get_layergrp(pcb, l->meta.real.grp);
 			if (g->len == 1) {
 				pcb_message(PCB_MSG_ERROR, "Removing this layer would result in an empty top or bottom silk group, which is not possible at the moment.\n");
-				PCB_ACT_IRES(1);
+				RND_ACT_IRES(1);
 				return 0;
 			}
 		}
 	}
 
-	PCB_ACT_IRES(pcb_layer_move(pcb, old_index, new_index, -1, 1));
+	RND_ACT_IRES(pcb_layer_move(pcb, old_index, new_index, -1, 1));
 	return 0;
 }
 
@@ -1050,13 +1050,13 @@ static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int fid, dir, scale;
 	pcb_text_t *t;
 
-	PCB_ACT_CONVARG(1, FGW_LAYER, CreateText, ly = fgw_layer(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_INT, CreateText, fid = argv[2].val.nat_int);
-	PCB_ACT_CONVARG(3, FGW_COORD, CreateText, x = fgw_coord(&argv[3]));
-	PCB_ACT_CONVARG(4, FGW_COORD, CreateText, y = fgw_coord(&argv[4]));
-	PCB_ACT_CONVARG(5, FGW_INT, CreateText, dir = argv[5].val.nat_int);
-	PCB_ACT_CONVARG(6, FGW_INT, CreateText, scale = argv[6].val.nat_int);
-	PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_LAYER, CreateText, ly = fgw_layer(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_INT, CreateText, fid = argv[2].val.nat_int);
+	RND_PCB_ACT_CONVARG(3, FGW_COORD, CreateText, x = fgw_coord(&argv[3]));
+	RND_PCB_ACT_CONVARG(4, FGW_COORD, CreateText, y = fgw_coord(&argv[4]));
+	RND_PCB_ACT_CONVARG(5, FGW_INT, CreateText, dir = argv[5].val.nat_int);
+	RND_PCB_ACT_CONVARG(6, FGW_INT, CreateText, scale = argv[6].val.nat_int);
+	RND_PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
 
 	if (scale < 1) {
 		pcb_message(PCB_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
@@ -1084,9 +1084,9 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op1, op2 = -2;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, subc, op1 = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, subc, op2 = fgw_keyword(&argv[2]));
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, subc, op1 = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, subc, op2 = fgw_keyword(&argv[2]));
+	RND_ACT_IRES(0);
 
 	switch(op1) {
 		case F_Loose:
@@ -1095,8 +1095,8 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case F_Toggle: pcb->loose_subc = !pcb->loose_subc; break;
 				case F_On:     pcb->loose_subc = 1; break;
 				case F_Off:    pcb->loose_subc = 0; break;
-				case F_Check:  PCB_ACT_IRES(pcb->loose_subc); return 0;
-				default:       PCB_ACT_FAIL(subc); return 1;
+				case F_Check:  RND_ACT_IRES(pcb->loose_subc); return 0;
+				default:       RND_ACT_FAIL(subc); return 1;
 			}
 			/* have to manually trigger the update as it is not a conf item */
 			if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
@@ -1111,7 +1111,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				switch(op2) {
 					case -2: break;
 					case F_Selected: selected_only = 1; break;
-					default:         PCB_ACT_FAIL(subc); return 1;
+					default:         RND_ACT_FAIL(subc); return 1;
 				}
 
 				polylist_foreach(&pcb->Data->subc, &it, sc) {
@@ -1136,7 +1136,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				switch(op2) {
 					case -2: break;
 					case F_Selected: selected_only = 1; break;
-					default:         PCB_ACT_FAIL(subc); return 1;
+					default:         RND_ACT_FAIL(subc); return 1;
 				}
 				polylist_foreach(&pcb->Data->subc, &it, sc) {
 					unsigned int hash;
@@ -1183,8 +1183,8 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int steps;
 	pcb_coord_t x, y;
 
-	PCB_ACT_CONVARG(1, FGW_INT, Rotate90, steps = argv[1].val.nat_int);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_INT, Rotate90, steps = argv[1].val.nat_int);
+	RND_ACT_IRES(0);
 
 	rnd_hid_get_coords("Select an Object", &x, &y, 0);
 

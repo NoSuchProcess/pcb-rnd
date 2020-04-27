@@ -337,13 +337,13 @@ fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	long idx = -1;
 
 	if (argc > 2)
-		PCB_ACT_FAIL(AdjustStyle);
+		RND_ACT_FAIL(AdjustStyle);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_LONG, AdjustStyle, idx = argv[1].val.nat_long);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, AdjustStyle, idx = argv[1].val.nat_long);
 
 	if (idx >= (long)vtroutestyle_len(&PCB->RouteStyle)) {
 		pcb_message(PCB_MSG_ERROR, "Invalid route style %ld index; max value: %ld\n", idx, vtroutestyle_len(&PCB->RouteStyle)-1);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -351,10 +351,10 @@ fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		idx = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 		if (idx < 0) {
 			pcb_message(PCB_MSG_ERROR, "No style selected\n");
-			PCB_ACT_IRES(-1);
+			RND_ACT_IRES(-1);
 		}
 	}
 
-	PCB_ACT_IRES(pcb_dlg_rstdlg(idx));
+	RND_ACT_IRES(pcb_dlg_rstdlg(idx));
 	return 0;
 }

@@ -49,7 +49,7 @@ static const char pcb_acth_PrintActions[] = "Print all actions available.";
 fgw_error_t pcb_act_PrintActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_print_actions();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -58,7 +58,7 @@ static const char pcb_acth_DumpActions[] = "Dump all actions available.";
 fgw_error_t pcb_act_DumpActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_dump_actions();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -79,7 +79,7 @@ fgw_error_t pcb_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("# Data files loaded\n");
 	for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e))
 		print_cat(e->value);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -103,7 +103,7 @@ fgw_error_t pcb_act_DumpPlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pup_lookup(&pcb_pup, (*bu)->name) == NULL)
 			printf("unloaded buildin\t%s\t1\t0\t0\t<builtin>\n", (*bu)->name);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -116,7 +116,7 @@ fgw_error_t pcb_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(p = pcb_pup_paths; *p != NULL; p++)
 		printf("%s\n", *p);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

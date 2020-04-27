@@ -76,7 +76,7 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int debug = 0;
 	pcb_bool_t retval;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadhypFrom, fname = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadhypFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(pcb_gui,
@@ -85,7 +85,7 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (fname == NULL) {
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -114,7 +114,7 @@ TODO(": rewrite this - this is very unpcb-rnd")
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_CHANGED, NULL);
 
-	PCB_ACT_IRES(retval);
+	RND_ACT_IRES(retval);
 	return 0;
 }
 

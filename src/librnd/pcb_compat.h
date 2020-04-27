@@ -39,3 +39,16 @@
 #define pcb_cli_mouse rnd_cli_mouse
 #define pcb_cli_uninit rnd_cli_uninit
 #define pcb_hid_get_coords rnd_hid_get_coords
+#define PCB_ACTION_MAX_ARGS RND_ACTION_MAX_ARGS
+#define PCB_ACT_HIDLIB RND_ACT_HIDLIB
+#define pcb_act_lookup rnd_act_lookup
+#define pcb_make_action_name rnd_make_action_name
+#define pcb_aname rnd_aname
+#define pcb_act_result rnd_act_result
+#define PCB_ACT_CALL_C RND_ACT_CALL_C
+#define PCB_ACT_CONVARG RND_PCB_ACT_CONVARG
+#define PCB_ACT_IRES RND_ACT_IRES
+#define PCB_ACT_DRES RND_ACT_DRES
+#define PCB_ACT_FAIL RND_ACT_FAIL
+
+

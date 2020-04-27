@@ -109,19 +109,19 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	int all;
 	htsp_entry_t *e;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, smartdisperse, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, smartdisperse, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case -2:
 		case F_All: all = 1; break;
 		case F_Selected: all = 0; break;
 		default:
-			PCB_ACT_FAIL(smartdisperse);
+			RND_ACT_FAIL(smartdisperse);
 	}
 
 	if (nl->used == 0) {
 		pcb_message(PCB_MSG_ERROR, "Can't use SmartDisperse because no netlist is loaded.\n");
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -220,7 +220,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_hid_redraw(PCB);
 	pcb_board_set_changed_flag(1);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

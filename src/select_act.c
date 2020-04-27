@@ -62,7 +62,7 @@ static const char pcb_acth_Select[] = "Toggles or sets the selection.";
 static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Select, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Select, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 
@@ -71,12 +71,12 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (argc > 2) { /* select by idpath */
 				pcb_idpath_t *idp;
 				pcb_any_obj_t *obj;
-				PCB_ACT_CONVARG(2, FGW_IDPATH, Select, idp = fgw_idpath(&argv[2]));
+				RND_PCB_ACT_CONVARG(2, FGW_IDPATH, Select, idp = fgw_idpath(&argv[2]));
 				if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 					return FGW_ERR_PTR_DOMAIN;
 				obj = pcb_idpath2obj(PCB, idp);
 				if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
-					PCB_ACT_IRES(-1);
+					RND_ACT_IRES(-1);
 					return 0;
 				}
 				pcb_undo_add_obj_to_flag(obj);
@@ -102,13 +102,13 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
-				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+				pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
-				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+				pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 				pcb_gui->invalidate_all(pcb_gui);
 				break;
 			}
@@ -161,8 +161,8 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 				rnd_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
-				x = pcb_grid_fit(x, PCB_ACT_HIDLIB->grid, PCB_ACT_HIDLIB->grid_ox);
-				y = pcb_grid_fit(y, PCB_ACT_HIDLIB->grid, PCB_ACT_HIDLIB->grid_oy);
+				x = pcb_grid_fit(x, RND_ACT_HIDLIB->grid, RND_ACT_HIDLIB->grid_ox);
+				y = pcb_grid_fit(y, RND_ACT_HIDLIB->grid, RND_ACT_HIDLIB->grid_oy);
 				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true, pcb_false);
 				pcb_undo_save_serial();
 				pcb_remove_selected(pcb_false);
@@ -174,11 +174,11 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		default:
-			PCB_ACT_FAIL(Select);
+			RND_ACT_FAIL(Select);
 			break;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -190,7 +190,7 @@ static const char pcb_acth_Unselect[] = "Unselects the object at the pointer loc
 static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Unselect, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Unselect, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 
@@ -203,13 +203,13 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
-				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+				pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false, pcb_true, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
-				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+				pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 				break;
 			}
 
@@ -237,11 +237,11 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		default:
-			PCB_ACT_FAIL(Unselect);
+			RND_ACT_FAIL(Unselect);
 			break;
 
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

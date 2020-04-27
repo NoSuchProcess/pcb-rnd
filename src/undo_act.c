@@ -56,7 +56,7 @@ static const char pcb_acth_Atomic[] = "Save or restore the undo serial number.";
 fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Atomic, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Atomic, op = fgw_keyword(&argv[1]));
 
 	switch (op) {
 	case F_Save:
@@ -83,10 +83,10 @@ fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		break;
 	default:
 		pcb_message(PCB_MSG_ERROR, "Invalid argument for Atomic()\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -101,15 +101,15 @@ static const char pcb_acth_Undo[] = "Undo recent changes.";
 fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function = NULL;
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
 	if (!function || !*function) {
-		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
-		if (pcb_tool_undo_act(PCB_ACT_HIDLIB))
+		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		if (pcb_tool_undo_act(RND_ACT_HIDLIB))
 			if (pcb_undo(pcb_true) == 0)
 				pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
-		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		if (pcb_strcasecmp(function, "ClearList") == 0)
 			pcb_undo_clear_list(pcb_false);
 		else if (pcb_strcasecmp(function, "FreezeSerial") == 0)
@@ -119,8 +119,8 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (pcb_strcasecmp(function, "IncSerial") == 0)
 			pcb_undo_inc_serial();
 	}
-	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
-	PCB_ACT_IRES(0);
+	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -134,12 +134,12 @@ static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
 
 fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
-	if (pcb_tool_redo_act(PCB_ACT_HIDLIB))
+	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+	if (pcb_tool_redo_act(RND_ACT_HIDLIB))
 		if (pcb_redo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
-	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
-	PCB_ACT_IRES(0);
+	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

@@ -46,8 +46,8 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_font_t *fnt;
 	int r;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[2].val.str);
 
 	if (sid != NULL) {
 		char *end;
@@ -94,7 +94,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	
 	r = pcb_parse_font(fnt, fname);
-	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_FONT_CHANGED, "i", fnt->id);
+	pcb_event(RND_ACT_HIDLIB, PCB_EVENT_FONT_CHANGED, "i", fnt->id);
 	if (r != 0) {
 		pcb_message(PCB_MSG_ERROR, "LoadFontFrom(): failed to load font from %s\n", fname);
 		pcb_del_font(&PCB_ACT_BOARD->fontkit, fnt->id);
@@ -107,7 +107,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	
 	fid = dst_fid == 0 ? 0 : fnt->id;
 	pcb_message(PCB_MSG_INFO, "LoadFontFrom(): new font (ID %d) successfully loaded from file %s\n", fid, fname);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -123,8 +123,8 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_font_t *fnt;
 	int r;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, load_font_from, fname = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, load_font_from, sid = argv[1].val.str);
 
 	if (sid != NULL) {
 		char *end;
@@ -152,7 +152,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 																"Picks a PCB font file to save.\n",
 																default_file, ".font", NULL, "pcbfont", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
 		if (fname == NULL)
-			PCB_ACT_FAIL(save_font_to);
+			RND_ACT_FAIL(save_font_to);
 		if (default_file != NULL) {
 			free(default_file);
 			default_file = NULL;
@@ -165,7 +165,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

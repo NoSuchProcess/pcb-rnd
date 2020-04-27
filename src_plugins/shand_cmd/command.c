@@ -63,7 +63,7 @@ static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		"  s  [file]   save layout\n"
 		"  w  [file]   save layout\n"
 		"  wq [file]   save layout and quit\n");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -74,13 +74,13 @@ static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename, *format = NULL;
 
-	PCB_ACT_CONVARG(1, FGW_STR, LoadLayout, filename = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadLayout, filename = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
 
-	if (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "Load data lose", "OK to override layout data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "Load data lose", "OK to override layout data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_load_pcb(filename, format, pcb_true, 0);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -91,12 +91,12 @@ static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *res, int argc, fgw_arg
 {
 	const char *filename;
 
-	PCB_ACT_CONVARG(1, FGW_STR, LoadElementToBuffer, filename = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadElementToBuffer, filename = argv[1].val.str);
 
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, filename, NULL))
 		pcb_tool_select_by_name(&PCB->hidlib, "buffer");
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -107,13 +107,13 @@ static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *res, int argc, fgw_arg_
 {
 	const char *filename, *format = NULL;
 
-	PCB_ACT_CONVARG(1, FGW_STR, LoadLayoutToBuffer, filename = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayoutToBuffer, format = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadLayoutToBuffer, filename = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayoutToBuffer, format = argv[2].val.str);
 
 	if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, filename, format))
 		pcb_tool_select_by_name(&PCB->hidlib, "buffer");
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -122,9 +122,9 @@ static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 /* DOC: q.html */
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -134,7 +134,7 @@ static const char pcb_acth_ReallyQuit[] = "Quits the application without confirm
 static fgw_error_t pcb_act_ReallyQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_quit_app();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -145,13 +145,13 @@ static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv
 {
 	const char *filename;
 
-	PCB_ACT_CONVARG(1, FGW_STR, LoadNetlist, filename = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadNetlist, filename = argv[1].val.str);
 
 	if (PCB->Netlistname)
 		free(PCB->Netlistname);
 	PCB->Netlistname = pcb_strdup_strip_wspace(filename);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -162,7 +162,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename = NULL;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, SaveLayout, filename = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, SaveLayout, filename = argv[1].val.str);
 
 	if (filename == NULL) {
 		if (PCB->hidlib.filename) {
@@ -181,7 +181,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -190,10 +190,10 @@ static const char pcb_acth_SaveLayoutAndQuit[] = "Saves the layout data and quit
 /* DOC: wq.html */
 static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (PCB_ACT_CALL_C(pcb_act_SaveLayout, res, argc, argv) == 0)
+	if (RND_ACT_CALL_C(pcb_act_SaveLayout, res, argc, argv) == 0)
 		return pcb_act_Quit(res, argc, argv);
 
-	PCB_ACT_IRES(1);
+	RND_ACT_IRES(1);
 	return 0;
 }
 

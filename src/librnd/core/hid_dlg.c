@@ -49,11 +49,11 @@ static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, f
 	strcpy(tmp, "gui_");
 	strncpy(tmp+4, act_name, sizeof(tmp)-5);
 	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, tmp) != NULL))
-		return rnd_actionv_bin(PCB_ACT_HIDLIB, tmp, res, argc, argv);
+		return rnd_actionv_bin(RND_ACT_HIDLIB, tmp, res, argc, argv);
 
 	tmp[0] = 'c'; tmp[1] = 'l';
 	if (fgw_func_lookup(&rnd_fgw, tmp) != NULL)
-		return rnd_actionv_bin(PCB_ACT_HIDLIB, tmp, res, argc, argv);
+		return rnd_actionv_bin(RND_ACT_HIDLIB, tmp, res, argc, argv);
 
 	return FGW_ERR_NOT_FOUND;
 }
@@ -260,7 +260,7 @@ static const char pcb_acth_Print[] = "Present the print export dialog for printi
 static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, "printgui") != NULL))
-		return rnd_actionv_bin(PCB_ACT_HIDLIB, "printgui", res, argc, argv);
+		return rnd_actionv_bin(RND_ACT_HIDLIB, "printgui", res, argc, argv);
 	pcb_message(PCB_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
 	return FGW_ERR_NOT_FOUND;
 }

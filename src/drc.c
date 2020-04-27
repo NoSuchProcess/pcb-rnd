@@ -73,7 +73,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (pcb_strcasecmp(dlg_type, "list") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "list";
-			return rnd_actionv_bin(PCB_ACT_HIDLIB, dlgact, res, 2, args);
+			return rnd_actionv_bin(RND_ACT_HIDLIB, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}
@@ -81,13 +81,13 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "simple";
-			return rnd_actionv_bin(PCB_ACT_HIDLIB, dlgact, res, 2, args);
+			return rnd_actionv_bin(RND_ACT_HIDLIB, dlgact, res, 2, args);
 		}
 		dlg_type = "print";
 	}
 
 
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	if (refresh != NULL)
 		refresh();
 
@@ -140,7 +140,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 		}
 	}
 	else if (pcb_strcasecmp(dlg_type, "count") == 0)
-		PCB_ACT_IRES(pcb_view_list_length(lst));
+		RND_ACT_IRES(pcb_view_list_length(lst));
 
 
 	if (refresh != NULL)
@@ -161,7 +161,7 @@ static const char pcb_acth_DRC[] = "Invoke the DRC check. Results are presented 
 static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
 	return view_dlg(res, argc, argv, dlg_type, "drcdialog", &pcb_drc_lst, pcb_drc_all);
 }
 
@@ -172,13 +172,13 @@ fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *dlg_type = "list";
 	const char *aauto = NULL;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatList, dlg_type = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, IOIncompatList, aauto = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatList, dlg_type = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, IOIncompatList, aauto = argv[2].val.str);
 
 	if ((aauto != NULL) && (strcmp(aauto, "auto") == 0)) {
 		if (pcbhl_conf.rc.quiet && !PCB_HAVE_GUI_ATTR_DLG) {
 			/* if not explicitly asked for a listing style and we are on CLI and quiet is set, don't print anything */
-			PCB_ACT_IRES(0);
+			RND_ACT_IRES(0);
 			return 0;
 		}
 	}

@@ -38,7 +38,7 @@ const char *pcb_acts_Zoom;
 const char pcb_acts_Zoom_default[] = pcb_gui_acts_zoom;
 fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
+	pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *vp, *ovp;
 	double v;
 	pcb_coord_t x = 0, y = 0;
@@ -53,19 +53,19 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc == 5) {
 		pcb_coord_t x1, y1, x2, y2;
 
-		PCB_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
-		PCB_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
-		PCB_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
-		PCB_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
+		RND_PCB_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
+		RND_PCB_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
+		RND_PCB_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
+		RND_PCB_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
 
 		pcb_gui->zoom_win(pcb_gui, x1, y1, x2, y2, 1);
 		return 0;
 	}
 
 	if (argc > 2)
-		PCB_ACT_FAIL(Zoom);
+		RND_ACT_FAIL(Zoom);
 
-	PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
 
 	if (*vp == '?') {
 		pcb_message(PCB_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", pcb_gui->coord_per_pix);
@@ -98,7 +98,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		break;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -114,10 +114,10 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
-	PCB_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
+	RND_PCB_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
 	pcb_gui->pan_mode(pcb_gui, x, y, mode);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -132,11 +132,11 @@ fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_hid_get_coords("Click to center", &x, &y, 0);
 
 	if (argc != 1)
-		PCB_ACT_FAIL(Center);
+		RND_ACT_FAIL(Center);
 
 	pcb_gui->pan(pcb_gui, x, y, 0);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -148,8 +148,8 @@ fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *op;
 	double dx = 0.0, dy = 0.0, pixels = 100.0;
 
-	PCB_ACT_CONVARG(1, FGW_STR, Scroll, op = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, Scroll, pixels = argv[2].val.nat_double);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Scroll, op = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, Scroll, pixels = argv[2].val.nat_double);
 
 	if (pcb_strcasecmp(op, "up") == 0)
 		dy = -pcb_gui->coord_per_pix * pixels;
@@ -160,11 +160,11 @@ fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (pcb_strcasecmp(op, "left") == 0)
 		dx = -pcb_gui->coord_per_pix * pixels;
 	else
-		PCB_ACT_FAIL(Scroll);
+		RND_ACT_FAIL(Scroll);
 
 	pcb_gui->pan(pcb_gui, dx, dy, 1);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

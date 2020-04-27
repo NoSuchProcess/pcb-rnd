@@ -197,23 +197,23 @@ static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = "reimport";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ImportSch, cmd = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ImportSch, cmd = argv[1].val.str);
 
 	if (strcmp(cmd, "reimport") == 0) {
-		PCB_ACT_IRES(do_import());
+		RND_ACT_IRES(do_import());
 		return 0;
 	}
 	if (strcmp(cmd, "setup") == 0) {
-		PCB_ACT_IRES(do_setup(argc-2, argv+2));
+		RND_ACT_IRES(do_setup(argc-2, argv+2));
 		return 0;
 	}
 	if (strcmp(cmd, "dialog") == 0) {
-		PCB_ACT_IRES(do_dialog());
+		RND_ACT_IRES(do_dialog());
 		return 0;
 	}
 
-	PCB_ACT_FAIL(ImportSch);
-	PCB_ACT_IRES(1);
+	RND_ACT_FAIL(ImportSch);
+	RND_ACT_IRES(1);
 	return 0;
 }
 

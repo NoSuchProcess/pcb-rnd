@@ -214,24 +214,24 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	sel.cnt = 0;
 
-	PCB_ACT_CONVARG(1, FGW_STR, query, cmd = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, query, cmd = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 
 	if (strcmp(cmd, "version") == 0) {
-		PCB_ACT_IRES(0100); /* 1.0 */
+		RND_ACT_IRES(0100); /* 1.0 */
 		return 0;
 	}
 
 	if (strcmp(cmd, "dump") == 0) {
 		pcb_qry_node_t *prg = NULL;
 
-		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		printf("Script dump: '%s'\n", arg);
 		pcb_qry_set_input(arg);
 		qry_parse(&prg);
 		pcb_qry_dump_tree(" ", prg);
 		pcb_qry_n_free(prg);
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
@@ -239,8 +239,8 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int errs;
 		eval_stat_t st;
 
-		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
-		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
 		memset(&st, 0, sizeof(st));
 		st.print_idpath = (cmd[4] != '\0');
@@ -251,7 +251,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			printf("Failed to run the query\n");
 		else
 			printf("eval statistics: true=%d false=%d errors=%d\n", st.trues, st.falses, errs);
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
@@ -264,13 +264,13 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			sel.what = flg.f;
 			if (sel.what == 0) {
 				pcb_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
-				PCB_ACT_IRES(0);
+				RND_ACT_IRES(0);
 				return 0;
 			}
 		}
 
-		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
-		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
 		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, flagop_cb, &sel) < 0)
 			printf("Failed to run the query\n");
@@ -279,7 +279,7 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (PCB_HAVE_GUI_ATTR_DLG)
 				pcb_hid_redraw(PCB);
 		}
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
@@ -292,13 +292,13 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			sel.what = flg.f;
 			if (sel.what == 0) {
 				pcb_message(PCB_MSG_ERROR, "Invalid flag '%s'\n", cmd+8);
-				PCB_ACT_IRES(0);
+				RND_ACT_IRES(0);
 				return 0;
 			}
 		}
 
-		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
-		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
 
 		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, flagop_cb, &sel) < 0)
 			printf("Failed to run the query\n");
@@ -307,46 +307,46 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (PCB_HAVE_GUI_ATTR_DLG)
 				pcb_hid_redraw(PCB);
 		}
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
 	if (strcmp(cmd, "append") == 0) {
 		pcb_idpath_list_t *list;
 
-		PCB_ACT_CONVARG(2, FGW_IDPATH_LIST, query, list = fgw_idpath_list(&argv[2]));
-		PCB_ACT_MAY_CONVARG(3, FGW_STR, query, arg = argv[3].val.str);
-		PCB_ACT_MAY_CONVARG(4, FGW_STR, query, scope = argv[4].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_IDPATH_LIST, query, list = fgw_idpath_list(&argv[2]));
+		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, query, arg = argv[3].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, query, scope = argv[4].val.str);
 
 		if (!fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH_LIST))
 			return FGW_ERR_PTR_DOMAIN;
 
 		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, append_cb, list) < 0)
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 		else
-			PCB_ACT_IRES(0);
+			RND_ACT_IRES(0);
 		return 0;
 	}
 
 	if (strcmp(cmd, "view") == 0) {
 		fgw_arg_t args[4], ares;
 		pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
-		PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
 		if (pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, view_cb, view) >= 0) {
 			args[1].type = FGW_STR; args[1].val.str = "advanced search results";
 			args[2].type = FGW_STR; args[2].val.str = "search_res";
 			fgw_ptr_reg(&rnd_fgw, &args[3], PCB_PTR_DOMAIN_VIEWLIST, FGW_PTR | FGW_STRUCT, view);
-			rnd_actionv_bin(PCB_ACT_HIDLIB, "viewlist", &ares, 4, args);
-			PCB_ACT_IRES(0);
+			rnd_actionv_bin(RND_ACT_HIDLIB, "viewlist", &ares, 4, args);
+			RND_ACT_IRES(0);
 		}
 		else {
 			free(view);
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 		}
 		return 0;
 	}
 
-	PCB_ACT_FAIL(query);
+	RND_ACT_FAIL(query);
 }
 
 static const char *PTR_DOMAIN_PCFIELD = "ptr_domain_query_precompiled_field";
@@ -460,11 +460,11 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_qry_val_t val;
 	int free_fld = 0;
 
-	PCB_ACT_CONVARG(1, FGW_IDPATH, QueryObj, idp = fgw_idpath(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_IDPATH, QueryObj, idp = fgw_idpath(&argv[1]));
 
 	if ((argv[2].type & FGW_STR) == FGW_STR) {
 		const char *field;
-		PCB_ACT_CONVARG(2, FGW_STR, QueryObj, field = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, QueryObj, field = argv[2].val.str);
 		if (field == NULL)
 			goto err;
 		if (*field != '.')
@@ -474,7 +474,7 @@ static fgw_error_t pcb_act_QueryObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if ((argv[2].type & FGW_PTR) == FGW_PTR) {
 		id:;
-		PCB_ACT_CONVARG(2, FGW_PTR, QueryObj, fld = argv[2].val.ptr_void);
+		RND_PCB_ACT_CONVARG(2, FGW_PTR, QueryObj, fld = argv[2].val.ptr_void);
 		if (!fgw_ptr_in_domain(&rnd_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
 			return FGW_ERR_PTR_DOMAIN;
 	}
@@ -525,17 +525,17 @@ static fgw_error_t pcb_act_QueryCompileField(fgw_arg_t *res, int argc, fgw_arg_t
 	const char *cmd, *fname;
 	pcb_qry_node_t *fld;
 
-	PCB_ACT_CONVARG(1, FGW_STR, QueryCompileField, cmd = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, QueryCompileField, cmd = argv[1].val.str);
 	switch(*cmd) {
 		case 'c': /* compile */
-			PCB_ACT_CONVARG(2, FGW_STR, QueryCompileField, fname = argv[2].val.str);
+			RND_PCB_ACT_CONVARG(2, FGW_STR, QueryCompileField, fname = argv[2].val.str);
 			fld = field_comp(fname);
 			fgw_ptr_reg(&rnd_fgw, res, PTR_DOMAIN_PCFIELD, FGW_PTR | FGW_STRUCT, fld);
 			return 0;
 		case 'f': /* free */
 			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[2], PTR_DOMAIN_PCFIELD))
 				return FGW_ERR_PTR_DOMAIN;
-			PCB_ACT_CONVARG(2, FGW_PTR, QueryCompileField, fld = argv[2].val.ptr_void);
+			RND_PCB_ACT_CONVARG(2, FGW_PTR, QueryCompileField, fld = argv[2].val.ptr_void);
 			fgw_ptr_unreg(&rnd_fgw, &argv[2], PTR_DOMAIN_PCFIELD);
 			field_free(fld);
 			break;

@@ -68,7 +68,7 @@ static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_redraw(PCB);
 	pcb_board_set_changed_flag(1);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

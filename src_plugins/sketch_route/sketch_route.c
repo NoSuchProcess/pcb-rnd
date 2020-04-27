@@ -1147,7 +1147,7 @@ fgw_error_t pcb_act_skretriangulate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	sketches_uninit();
 	sketches_init();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -1157,7 +1157,7 @@ fgw_error_t pcb_act_skline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_tool_select_by_name(&PCB->hidlib, "skline");
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -1166,7 +1166,7 @@ static const char pcb_acth_sktransform[] = "Transform sketch to geometrical wiri
 fgw_error_t pcb_act_sktransform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	/* TODO */
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

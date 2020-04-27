@@ -71,46 +71,46 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL, *type;
 
-	PCB_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
 
 	if (pcb_strcasecmp(type, "netlist") == 0) {
-		PCB_ACT_IRES(tedax_net_save(PCB, NULL, fname));
+		RND_ACT_IRES(tedax_net_save(PCB, NULL, fname));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(type, "board-footprints") == 0) {
-		PCB_ACT_IRES(tedax_fp_save(PCB->Data, fname, -1));
+		RND_ACT_IRES(tedax_fp_save(PCB->Data, fname, -1));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(type, "stackup") == 0) {
-		PCB_ACT_IRES(tedax_stackup_save(PCB, PCB->hidlib.name, fname));
+		RND_ACT_IRES(tedax_stackup_save(PCB, PCB->hidlib.name, fname));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(type, "layer") == 0) {
-		PCB_ACT_IRES(tedax_layer_save(PCB, pcb_layer_get_group_(PCB_CURRLAYER(PCB)), NULL, fname));
+		RND_ACT_IRES(tedax_layer_save(PCB, pcb_layer_get_group_(PCB_CURRLAYER(PCB)), NULL, fname));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(type, "board") == 0) {
-		PCB_ACT_IRES(tedax_board_save(PCB, fname));
+		RND_ACT_IRES(tedax_board_save(PCB, fname));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(type, "drc") == 0) {
-		PCB_ACT_IRES(tedax_drc_save(PCB, NULL, fname));
+		RND_ACT_IRES(tedax_drc_save(PCB, NULL, fname));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(type, "etest") == 0) {
-		PCB_ACT_IRES(tedax_etest_save(PCB, NULL, fname));
+		RND_ACT_IRES(tedax_etest_save(PCB, NULL, fname));
 		return 0;
 	}
 
-	PCB_ACT_FAIL(Savetedax);
-	PCB_ACT_IRES(1);
+	RND_ACT_FAIL(Savetedax);
+	RND_ACT_IRES(1);
 	return 0;
 }
 
@@ -137,44 +137,44 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *fname = NULL, *type, *id = NULL, *silents = NULL;
 	int silent;
 
-	PCB_ACT_CONVARG(1, FGW_STR, LoadtedaxFrom, type = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadtedaxFrom, fname = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadtedaxFrom, id = argv[3].val.str);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, LoadtedaxFrom, silents = argv[4].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadtedaxFrom, type = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadtedaxFrom, fname = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadtedaxFrom, id = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, LoadtedaxFrom, silents = argv[4].val.str);
 
 	silent = (silents != NULL) && (pcb_strcasecmp(silents, "silent") == 0);
 
 	if (pcb_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
-		PCB_ACT_IRES(tedax_net_load(fname, 1, id, silent));
+		RND_ACT_IRES(tedax_net_load(fname, 1, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "board") == 0) {
 		gen_load(board, fname);
-		PCB_ACT_IRES(tedax_board_load(PCB, fname, id, silent));
+		RND_ACT_IRES(tedax_board_load(PCB, fname, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "footprint") == 0) {
 		gen_load(footprint, fname);
-		PCB_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, id, silent));
+		RND_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "stackup") == 0) {
 		gen_load(stackup, fname);
-		PCB_ACT_IRES(tedax_stackup_load(PCB, fname, id, silent));
+		RND_ACT_IRES(tedax_stackup_load(PCB, fname, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "layer") == 0) {
 		gen_load(layer, fname);
-		PCB_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname, id, silent));
+		RND_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname, id, silent));
 		return 0;
 	}
 	if (pcb_strcasecmp(type, "drc") == 0) {
 		gen_load(drc, fname);
-		PCB_ACT_IRES(tedax_drc_load(PCB, fname, id, silent));
+		RND_ACT_IRES(tedax_drc_load(PCB, fname, id, silent));
 		return 0;
 	}
-	PCB_ACT_FAIL(LoadtedaxFrom);
+	RND_ACT_FAIL(LoadtedaxFrom);
 }
 
 rnd_action_t tedax_action_list[] = {

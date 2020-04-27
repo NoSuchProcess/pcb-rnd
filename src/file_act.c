@@ -65,9 +65,9 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name, *format = NULL;
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, LoadFrom, op = fgw_keyword(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_STR, LoadFrom, name = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadFrom, format = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, LoadFrom, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_STR, LoadFrom, name = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadFrom, format = argv[3].val.str);
 
 	switch(op) {
 		case F_ElementToBuffer:
@@ -76,21 +76,21 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_SubcToBuffer:
 		case F_Subcircuit:
 		case F_Footprint:
-			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
-				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
-			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+				pcb_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
+			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_LayoutToBuffer:
-			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
-				pcb_tool_select_by_name(PCB_ACT_HIDLIB, "buffer");
-			pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+				pcb_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
+			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_Layout:
-			if (!PCB->Changed ||  pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
+			if (!PCB->Changed ||  pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
 				pcb_load_pcb(name, format, pcb_true, 0);
 			break;
 
@@ -105,24 +105,24 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_netlist_init(&(PCB->netlist[i]));
 				}
 			}
-			if (!pcb_import_netlist(PCB_ACT_HIDLIB, PCB->Netlistname))
+			if (!pcb_import_netlist(RND_ACT_HIDLIB, PCB->Netlistname))
 				pcb_netlist_changed(1);
 			else
 				pcb_message(PCB_MSG_ERROR, "None of the netlist import plugins could handle that file (unknown or broken file format?)\n");
 			break;
 
 		case F_Revert:
-			if (PCB_ACT_HIDLIB->filename && (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
+			if (RND_ACT_HIDLIB->filename && (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 
 		default:
 			pcb_message(PCB_MSG_ERROR, "LoadFrom(): invalid command (first arg)\n");
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -134,13 +134,13 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *argument_name = NULL;
 	char *name = NULL;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
-	if (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
+	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
 			name = pcb_strdup(argument_name);
 		else
-			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layout name:", "", "Layout name");
+			name = pcb_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", "", "Layout name");
 
 		if (!name)
 			return 1;
@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* PCB usgae: at the moment, while having only one global PCB, this function
    legitimately uses that */
 
-		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
@@ -176,11 +176,11 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_board_changed(0);
 		pcb_hid_redraw(PCB);
-		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
-		PCB_ACT_IRES(0);
+		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+		RND_ACT_IRES(0);
 		return 0;
 	}
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	return 0;
 }
 
@@ -191,10 +191,10 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *target = "board";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, normalize, target = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, normalize, target = argv[1].val.str);
 	
 	if (strcmp(target, "board") == 0)
-		PCB_ACT_IRES(pcb_board_normalize(PCB));
+		RND_ACT_IRES(pcb_board_normalize(PCB));
 	else if (strncmp(target, "buffer", 6) == 0) {
 		int bn;
 		char *end;
@@ -204,12 +204,12 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			bn = strtol(target, &end, 10);
 			if (*end != '\0') {
 				pcb_message(PCB_MSG_ERROR, "Expected buffer number, got '%s'\n", target);
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 			}
 			bn--;
 			if ((bn < 0) || (bn >= PCB_MAX_BUFFER)) {
 				pcb_message(PCB_MSG_ERROR, "Buffer number out of range\n");
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 			}
 		}
 		else
@@ -221,10 +221,10 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		pcb_buffers[bn].X = pcb_buffers[bn].Y = 0;
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 	}
 	else
-		PCB_ACT_FAIL(normalize);
+		RND_ACT_FAIL(normalize);
 	return 0;
 }
 
@@ -240,13 +240,13 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name = NULL;
 	const char *fmt = NULL;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, SaveTo, op = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, SaveTo, name = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveTo, fmt = argv[3].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, SaveTo, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, SaveTo, name = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveTo, fmt = argv[3].val.str);
+	RND_ACT_IRES(0);
 
 	if ((op != F_Layout) && (name == NULL))
-		PCB_ACT_FAIL(SaveTo);
+		RND_ACT_FAIL(SaveTo);
 
 	switch(op) {
 		case F_Layout:
@@ -254,17 +254,17 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_message(PCB_MSG_ERROR, "SaveTo(Layout) doesn't take file name or format - did you mean SaveTo(LayoutAs)?\n");
 				return FGW_ERR_ARGC;
 			}
-			if (pcb_save_pcb(PCB_ACT_HIDLIB->filename, NULL) == 0)
+			if (pcb_save_pcb(RND_ACT_HIDLIB->filename, NULL) == 0)
 				pcb_board_set_changed_flag(pcb_false);
-			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_BOARD_FN_CHANGED, NULL);
+			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 			return 0;
 
 		case F_LayoutAs:
 			if (pcb_save_pcb(name, fmt) == 0) {
 				pcb_board_set_changed_flag(pcb_false);
-				free(PCB_ACT_HIDLIB->filename);
-				PCB_ACT_HIDLIB->filename = pcb_strdup(name);
-				pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_BOARD_FN_CHANGED, NULL);
+				free(RND_ACT_HIDLIB->filename);
+				RND_ACT_HIDLIB->filename = pcb_strdup(name);
+				pcb_event(RND_ACT_HIDLIB, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 			}
 			return 0;
 
@@ -272,30 +272,30 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_PasteBuffer:
 			if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) == 0) {
 				pcb_message(PCB_MSG_ERROR, "Can not save subcircuit: there is no subcircuit in the paste buffer.\n");
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 			}
 			else if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) > 1) {
 				pcb_message(PCB_MSG_ERROR, "Can not save subcircuit: there are more than one subcircuits in the paste buffer.\nDid you mean saving a library instead?\n");
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 			}
 			else
-				PCB_ACT_IRES(pcb_save_buffer_subcs(name, fmt, 0));
+				RND_ACT_IRES(pcb_save_buffer_subcs(name, fmt, 0));
 			return 0;
 
 		/* shorthand kept only for compatibility reasons - do not use */
 		case F_AllConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return rnd_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllConnections", name, NULL);
+			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "AllConnections", name, NULL);
 		case F_AllUnusedPins:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return rnd_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "AllUnusedPins", name, NULL);
+			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "AllUnusedPins", name, NULL);
 		case F_ElementConnections:
 		case F_SubcConnections:
 			pcb_message(PCB_MSG_WARNING, "Please use action ExportOldConn() instead of SaveTo() for connections.\n");
-			return rnd_actionva(PCB_ACT_HIDLIB, "ExportOldConn", "SubcConnections", name, NULL);
+			return rnd_actionva(RND_ACT_HIDLIB, "ExportOldConn", "SubcConnections", name, NULL);
 	}
 
-	PCB_ACT_FAIL(SaveTo);
+	RND_ACT_FAIL(SaveTo);
 }
 
 /* Run the save dialog, either the full version from the dialogs plugin
@@ -303,7 +303,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 name_out and fmt_out. */
 static int save_fmt_dialog(const char *title, const char *descr, char **default_file, const char *history_tag, pcb_hid_fsd_flags_t flags, char **name_out, const char **fmt_out)
 {
-	const fgw_func_t *f = pcb_act_lookup("save");
+	const fgw_func_t *f = rnd_act_lookup("save");
 
 	*name_out = NULL;
 	*fmt_out = NULL;
@@ -356,15 +356,15 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *method, *source, *fn = NULL, *fmt = NULL;
 	pcb_data_t *src;
 
-	PCB_ACT_CONVARG(1, FGW_STR, SaveLib, method = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, SaveLib, source = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveLib, fn = argv[3].val.str);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, SaveLib, fmt = argv[4].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, SaveLib, method = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, SaveLib, source = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveLib, fn = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, SaveLib, fmt = argv[4].val.str);
 
 	if (pcb_strcasecmp(source, "board") == 0) src = PCB->Data;
 	else if (pcb_strcasecmp(source, "buffer") == 0) src = PCB_PASTEBUFFER->Data;
 	else
-		PCB_ACT_FAIL(SaveLib);
+		RND_ACT_FAIL(SaveLib);
 
 	if (pcb_strcasecmp(method, "file") == 0) {
 		char *name;
@@ -375,22 +375,22 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			int sr = save_fmt_dialog("Save footprint lib to file ...", "Choose a file to save all subcircuits to.\n",
 				&default_file, "save_lib_file", PCB_HID_FSD_MAY_NOT_EXIST, &name, &fmt);
 			if (sr != 0) {
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 				return 0;
 			}
 		}
 		else
 			name = pcb_strdup(fn);
 
-		f = pcb_fopen(PCB_ACT_HIDLIB, name, "w");
+		f = pcb_fopen(RND_ACT_HIDLIB, name, "w");
 		if (f == NULL) {
 			pcb_message(PCB_MSG_ERROR, "Failed to open %s for write\n", name);
 			free(name);
-			PCB_ACT_IRES(-1);
+			RND_ACT_IRES(-1);
 			return 0;
 		}
 		free(name);
-		PCB_ACT_IRES(pcb_write_footprint_data(f, src, fmt, -1));
+		RND_ACT_IRES(pcb_write_footprint_data(f, src, fmt, -1));
 	}
 	else if (pcb_strcasecmp(method, "dir") == 0) {
 		unsigned int ares = 0;
@@ -407,7 +407,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			int sr = save_fmt_dialog("Save footprint lib to directory ...", "Choose a file name pattern to save all subcircuits to.\n",
 				&default_file, "save_lib_dir", PCB_HID_FSD_IS_TEMPLATE, &name, &fmt);
 			if (sr != 0) {
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 				return 0;
 			}
 		}
@@ -420,7 +420,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_message(PCB_MSG_ERROR, "Failed to find a plugin that can write subcircuits", fmt);
 			else
 				pcb_message(PCB_MSG_ERROR, "Failed to find a plugin for format %s", fmt);
-			PCB_ACT_IRES(-1);
+			RND_ACT_IRES(-1);
 			return 0;
 		}
 
@@ -439,7 +439,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			FILE *f;
 			char *fullname = pcb_strdup_printf("%s.%ld%s%s", name, (long)sit.count, sep, ending);
 
-			f = pcb_fopen(PCB_ACT_HIDLIB, fullname, "w");
+			f = pcb_fopen(RND_ACT_HIDLIB, fullname, "w");
 			free(fullname);
 			if (f != NULL) {
 				if (p->write_subcs_head(p, &udata, f, 0, 1) == 0) {
@@ -453,11 +453,11 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (ares != 0)
 			pcb_message(PCB_MSG_ERROR, "Some of the subcircuits failed to export\n");
-		PCB_ACT_IRES(ares);
+		RND_ACT_IRES(ares);
 		free(name);
 	}
 	else
-		PCB_ACT_FAIL(SaveLib);
+		RND_ACT_FAIL(SaveLib);
 
 	return 0;
 }
@@ -468,13 +468,13 @@ static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *force = NULL;
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Quit, force = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Quit, force = argv[1].val.str);
 
 	if ((force != NULL) && (pcb_strcasecmp(force, "force") == 0))
 		exit(0);
-	if (!PCB->Changed || (pcb_hid_message_box(PCB_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	return 0;
 }
 
@@ -499,7 +499,7 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	args[0] = NULL;
 	for(n = 1; n < argc; n++)
-		PCB_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
+		RND_PCB_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
 
 	pcb_exporter = pcb_hid_find_exporter(args[0]);
 	if (pcb_exporter == NULL) {
@@ -511,15 +511,15 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	argc-=2;
 
 	/* call the exporter */
-	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_EXPORT_SESSION_BEGIN, NULL);
+	pcb_event(RND_ACT_HIDLIB, PCB_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	a = args;
 	a++;
 	pcb_exporter->parse_arguments(pcb_exporter, &argc, &a);
 	pcb_exporter->do_export(pcb_exporter, NULL);
-	pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_EXPORT_SESSION_END, NULL);
+	pcb_event(RND_ACT_HIDLIB, PCB_EVENT_EXPORT_SESSION_END, NULL);
 
 	pcb_exporter = NULL;
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -528,7 +528,7 @@ static const char pcb_acth_Backup[] = "Backup the current layout - save using th
 static fgw_error_t pcb_act_Backup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_backup();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

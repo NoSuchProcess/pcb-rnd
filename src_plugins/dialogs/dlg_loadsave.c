@@ -66,9 +66,9 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* Called with both function and file name -> no gui */
 	if (argc > 2)
-		return PCB_ACT_CALL_C(pcb_act_LoadFrom, res, argc, argv);
+		return RND_ACT_CALL_C(pcb_act_LoadFrom, res, argc, argv);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
 	if (pcb_strcasecmp(function, "Netlist") == 0)
 		name = pcb_gui->fileselect(pcb_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", PCB_HID_FSD_READ, NULL);
@@ -80,18 +80,18 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		name = pcb_gui->fileselect(pcb_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
 	else {
 		pcb_message(PCB_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	if (name != NULL) {
 		if (pcbhl_conf.rc.verbose)
 			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
-		rnd_actionva(PCB_ACT_HIDLIB, "LoadFrom", function, name, NULL);
+		rnd_actionva(RND_ACT_HIDLIB, "LoadFrom", function, name, NULL);
 		free(name);
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -403,37 +403,37 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (cwd == NULL) cwd = dup_cwd();
 
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
 
 	is_dialog = (function != NULL) && (pcb_strncasecmp(function, "Dialog", 6) == 0);
 
 	if ((!is_dialog) && (argc > 2))
-		return PCB_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
+		return RND_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
 
 	memset(&save, 0, sizeof(save));
 
 	if (pcb_strcasecmp(function, "Layout") == 0)
 		if (PCB->hidlib.filename != NULL)
-			return rnd_actionva(PCB_ACT_HIDLIB, "SaveTo", "Layout", NULL);
+			return rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "Layout", NULL);
 
 	if (is_dialog) {
 		const char *siot, *sext;
 
-		PCB_ACT_CONVARG(2, FGW_STR, Save, siot = argv[2].val.str);
-		PCB_ACT_CONVARG(3, FGW_STR, Save, sext = argv[3].val.str);
-		PCB_ACT_CONVARG(4, FGW_STR, Save, prompt = argv[4].val.str);
-		PCB_ACT_MAY_CONVARG(5, FGW_STR, Save, default_pattern = argv[5].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, Save, siot = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(3, FGW_STR, Save, sext = argv[3].val.str);
+		RND_PCB_ACT_CONVARG(4, FGW_STR, Save, prompt = argv[4].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, Save, default_pattern = argv[5].val.str);
 
 		if (pcb_strcasecmp(siot, "pcb") == 0) list_iot = PCB_IOT_PCB;
 		else if (pcb_strcasecmp(siot, "footprint") == 0) list_iot = PCB_IOT_FOOTPRINT;
 		else if (pcb_strcasecmp(siot, "font") == 0) list_iot = PCB_IOT_FONT;
 		else if (pcb_strcasecmp(siot, "buffer") == 0) list_iot = PCB_IOT_BUFFER;
-		else PCB_ACT_FAIL(Save);
+		else RND_ACT_FAIL(Save);
 
 		if (pcb_strcasecmp(sext, "none") == 0) list_ext = PCB_IOL_EXT_NONE;
 		else if (pcb_strcasecmp(sext, "board") == 0) list_ext = PCB_IOL_EXT_BOARD;
 		else if (pcb_strcasecmp(sext, "fp") == 0) list_ext = PCB_IOL_EXT_FP;
-		else PCB_ACT_FAIL(Save);
+		else RND_ACT_FAIL(Save);
 	}
 
 	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
@@ -495,7 +495,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
-			PCB_ACT_IRES(-1);
+			RND_ACT_IRES(-1);
 			return 0;
 		}
 	}
@@ -519,7 +519,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
-			PCB_ACT_IRES(-1);
+			RND_ACT_IRES(-1);
 			return 0;
 		}
 	}
@@ -581,7 +581,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (final_name == NULL) { /* cancel */
 		pcb_io_list_free(&avail);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -593,7 +593,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *sfmt = avail.plug[fmt]->description;
 		if (fmt_param != NULL)
 			sfmt = avail.plug[save.pick]->description;
-		rnd_actionva(PCB_ACT_HIDLIB, "PasteBuffer", "Save", final_name, sfmt, NULL);
+		rnd_actionva(RND_ACT_HIDLIB, "PasteBuffer", "Save", final_name, sfmt, NULL);
 	}
 	else {
 		const char *sfmt = NULL;
@@ -606,13 +606,13 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 * just obtained.
 		 */
 		if (pcb_strcasecmp(function, "Layout") == 0)
-			rnd_actionva(PCB_ACT_HIDLIB, "SaveTo", "LayoutAs", final_name, sfmt, NULL);
+			rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "LayoutAs", final_name, sfmt, NULL);
 		else
-			rnd_actionva(PCB_ACT_HIDLIB, "SaveTo", function, final_name, sfmt, NULL);
+			rnd_actionva(RND_ACT_HIDLIB, "SaveTo", function, final_name, sfmt, NULL);
 	}
 
 	free(final_name);
 	pcb_io_list_free(&avail);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

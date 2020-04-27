@@ -206,9 +206,9 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_text_t *txt_obj = NULL;
 
 	if (argc > 2)
-		PCB_ACT_FAIL(Fontsel);
+		RND_ACT_FAIL(Fontsel);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Fontsel, op = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Fontsel, op = argv[1].val.str);
 
 	if (op != NULL) {
 		if (pcb_strcasecmp(op, "Object") == 0) {
@@ -223,7 +223,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 		}
 		else
-			PCB_ACT_FAIL(Fontsel);
+			RND_ACT_FAIL(Fontsel);
 	}
 	pcb_dlg_fontsel(PCB, modal, global, txt_obj);
 	return 0;

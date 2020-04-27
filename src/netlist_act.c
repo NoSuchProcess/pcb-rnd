@@ -359,10 +359,10 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	unsigned net_found = 0;
 	unsigned pin_found = 0;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, a1 = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, Netlist, a2 = argv[3].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, a1 = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, Netlist, a2 = argv[3].val.str);
+	RND_ACT_IRES(0);
 
 	if (!PCB)
 		return 1;
@@ -370,28 +370,28 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(op) {
 		case F_Rename:
 			if (a1 == NULL)
-				PCB_ACT_FAIL(Netlist);
+				RND_ACT_FAIL(Netlist);
 			if (a2 == NULL) {
-				a2 = a2free = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "New name of the network", NULL, "net rename");
+				a2 = a2free = pcb_hid_prompt_for(RND_ACT_HIDLIB, "New name of the network", NULL, "net rename");
 				if (a2 == NULL) {
-					PCB_ACT_IRES(1);
+					RND_ACT_IRES(1);
 					return 0;
 				}
 			}
-			PCB_ACT_IRES(netlist_merge(PCB, a1, a2, 0));
+			RND_ACT_IRES(netlist_merge(PCB, a1, a2, 0));
 			free(a2free);
 			return 0;
 		case F_Merge:
 			if (a1 == NULL)
-				PCB_ACT_FAIL(Netlist);
+				RND_ACT_FAIL(Netlist);
 			if (a2 == NULL) {
-				a2 = a2free = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Network name to merge into", NULL, "net merge");
+				a2 = a2free = pcb_hid_prompt_for(RND_ACT_HIDLIB, "Network name to merge into", NULL, "net merge");
 				if (a2 == NULL) {
-					PCB_ACT_IRES(1);
+					RND_ACT_IRES(1);
 					return 0;
 				}
 			}
-			PCB_ACT_IRES(netlist_merge(PCB, a1, a2, 1));
+			RND_ACT_IRES(netlist_merge(PCB, a1, a2, 1));
 			free(a2free);
 			return 0;
 		case F_Find: func = pcb_netlist_find; break;
@@ -428,7 +428,7 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_netlist_changed(0);
 			return 0;
 		default:
-			PCB_ACT_FAIL(Netlist);
+			RND_ACT_FAIL(Netlist);
 	}
 
 	netlist_freeze(PCB);
@@ -543,9 +543,9 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_net_t *net;
 	char *netname = NULL, *free_netname = NULL;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, netname = argv[2].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, netname = argv[2].val.str);
+	RND_ACT_IRES(0);
 
 	vtp0_init(&termlist);
 	switch(op) {
@@ -573,21 +573,21 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		default:
 			vtp0_uninit(&termlist);
-			PCB_ACT_FAIL(ClaimNet);
+			RND_ACT_FAIL(ClaimNet);
 	}
 
 	if (termlist.used < 1) {
 		vtp0_uninit(&termlist);
 		pcb_message(PCB_MSG_ERROR, "Can not claim network: no terminal found.\nPlease pick objects that have terminals with refdes-termID.\n");
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	if (netname == NULL) {
-		free_netname = netname = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Name of the new network", NULL, "net name");
+		free_netname = netname = pcb_hid_prompt_for(RND_ACT_HIDLIB, "Name of the new network", NULL, "net name");
 		if (netname == NULL) {
 			vtp0_uninit(&termlist);
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
@@ -596,7 +596,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		free(free_netname);
 		vtp0_uninit(&termlist);
 		pcb_message(PCB_MSG_ERROR, "Can not claim network: '%s' is an existing network\n", netname);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -606,7 +606,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (net == NULL) {
 		vtp0_uninit(&termlist);
 		pcb_message(PCB_MSG_ERROR, "Can not claim network: failed to create net '%s'\n", netname);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 

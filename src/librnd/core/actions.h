@@ -137,22 +137,22 @@ void rnd_cli_uninit(void);
    requested it. */
 void rnd_hid_get_coords(const char *msg, pcb_coord_t *x, pcb_coord_t *y, int force);
 
-#define PCB_ACTION_MAX_ARGS 16
+#define RND_ACTION_MAX_ARGS 16
 
 /* Read and execute an action script from a file; return 0 if all actions returned 0 */
 int rnd_act_execute_file(pcb_hidlib_t *hidlib, const char *fn);
 
 /* low level action function lookup */
-fgw_func_t *pcb_act_lookup(const char *aname);
+fgw_func_t *rnd_act_lookup(const char *aname);
 
-char *pcb_make_action_name(char *out, const char *inp, int inp_len);
-PCB_INLINE char *pcb_aname(char *out, const char *inp)
+char *rnd_make_action_name(char *out, const char *inp, int inp_len);
+PCB_INLINE char *rnd_aname(char *out, const char *inp)
 {
-	return pcb_make_action_name(out, inp, strlen(inp));
+	return rnd_make_action_name(out, inp, strlen(inp));
 }
 
 /* Return 0 on success after an action call */
-PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
+PCB_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
 {
 	if (ret != 0)
 		return -1;
@@ -164,33 +164,33 @@ PCB_INLINE int pcb_act_result(fgw_arg_t *res, fgw_error_t ret)
 }
 
 /* Retrieve the (pcb_hidlib_t *) context from argv[0] within an action */
-#define PCB_ACT_HIDLIB ((pcb_hidlib_t *)argv[0].val.argv0.user_call_ctx)
+#define RND_ACT_HIDLIB ((pcb_hidlib_t *)argv[0].val.argv0.user_call_ctx)
 
 /* Call an action function directly, bypassing fungw; evaluates to an int
    that is 0 on success */
-#define PCB_ACT_CALL_C(func, res, argc, argv) \
-	pcb_act_result(res, func(res, argc, argv))
+#define RND_ACT_CALL_C(func, res, argc, argv) \
+	rnd_act_result(res, func(res, argc, argv))
 
 /* Require argument idx to exist and convert it to type; on success, also execute stmt */
-#define PCB_ACT_CONVARG(idx, type, aname, stmt) \
+#define RND_PCB_ACT_CONVARG(idx, type, aname, stmt) \
 do { \
 	if (argc <= idx) { \
-		PCB_ACT_FAIL(aname); \
+		RND_ACT_FAIL(aname); \
 		return FGW_ERR_ARGC; \
 	} \
 	if (fgw_arg_conv(&rnd_fgw, &argv[idx], type) != 0) { \
-		PCB_ACT_FAIL(aname); \
+		RND_ACT_FAIL(aname); \
 		return FGW_ERR_ARG_CONV; \
 	} \
 	{ stmt; } \
 } while(0)
 
 /* If argument idx exists, convert it to type; on success, also execute stmt */
-#define PCB_ACT_MAY_CONVARG(idx, type, aname, stmt) \
+#define rnd_PCB_ACT_MAY_CONVARG(idx, type, aname, stmt) \
 do { \
 	if (argc > idx) { \
 		if (fgw_arg_conv(&rnd_fgw, &argv[idx], type) != 0) { \
-			PCB_ACT_FAIL(aname); \
+			RND_ACT_FAIL(aname); \
 			return FGW_ERR_ARG_CONV; \
 		} \
 		{ stmt; } \
@@ -198,20 +198,20 @@ do { \
 } while(0)
 
 /* Set integer res value */
-#define PCB_ACT_IRES(v) \
+#define RND_ACT_IRES(v) \
 do { \
 	res->type = FGW_INT; \
 	res->val.nat_int = v; \
 } while(0)
 
 /* Set double res value */
-#define PCB_ACT_DRES(v) \
+#define RND_ACT_DRES(v) \
 do { \
 	res->type = FGW_DOUBLE; \
 	res->val.nat_double = v; \
 } while(0)
 
-#define PCB_ACT_FAIL(x) { pcb_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (pcb_acts_ ## x)); return FGW_ERR_ARG_CONV; }
+#define RND_ACT_FAIL(x) { pcb_message(PCB_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (pcb_acts_ ## x)); return FGW_ERR_ARG_CONV; }
 
 /*** The default unit to use when a coord value doesn't have its own unit ***/
 extern char *fgw_str2coord_unit; /* saved is char * too */

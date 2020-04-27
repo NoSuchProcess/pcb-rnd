@@ -81,7 +81,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int ok;
 	pcb_bool free_name = pcb_false;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Renumber, name = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Renumber, name = argv[1].val.str);
 
 	if (name == NULL) {
 		/*
@@ -110,7 +110,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_hid_message_box(&PCB->hidlib, "warning", "Renumber: overwrite", "File exists!  Ok to overwrite?", "cancel", 0, "overwrite", 1, NULL) != 1) {
 			if (free_name && name)
 				free((char*)name);
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
@@ -119,7 +119,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_message(PCB_MSG_ERROR, "Could not open %s\n", name);
 		if (free_name && name)
 			free((char*)name);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -339,7 +339,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	free(ox_list);
 	free(oy_list);
 	free(cnt_list);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

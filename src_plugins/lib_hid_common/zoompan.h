@@ -29,10 +29,10 @@
 #define PCB_GUI_NOGUI() \
 do { \
 	if ((pcb_gui == NULL) || (!pcb_gui->gui)) { \
-		PCB_ACT_IRES(1); \
+		RND_ACT_IRES(1); \
 		return 0; \
 	} \
-	PCB_ACT_IRES(0); \
+	RND_ACT_IRES(0); \
 } while(0)
 
 

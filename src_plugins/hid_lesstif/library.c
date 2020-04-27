@@ -169,7 +169,7 @@ static const char pcb_acts_LibraryShow[] = "LibraryShow()";
 static const char pcb_acth_LibraryShow[] = "[DEPRECATED] Displays the library window.";
 static fgw_error_t pcb_act_LibraryShow(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_ACT_IRES(build_library_dialog());
+	RND_ACT_IRES(build_library_dialog());
 	return 0;
 }
 

@@ -346,9 +346,9 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *text = NULL;
 
 	if (argc > 2)
-		PCB_ACT_FAIL(StatusSetText);
+		RND_ACT_FAIL(StatusSetText);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, StatusSetText, text = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, StatusSetText, text = argv[1].val.str);
 
 	if (text != NULL) {
 		pcb_hid_attr_val_t hv;
@@ -367,7 +367,7 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		status_st_pcb2dlg();
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -388,10 +388,10 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char ids[64];
 
 	if (argc > 3)
-		PCB_ACT_FAIL(StatusSetText);
+		RND_ACT_FAIL(StatusSetText);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
 
 	/* check if there are any pins or pads at that position */
 	type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3, x, y, 0);

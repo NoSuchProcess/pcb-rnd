@@ -308,13 +308,13 @@ static const char pcb_acts_LoadScript[] = "LoadScript(id, filename, [language])"
 static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id, *fn, *lang = NULL;
-	PCB_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, LoadScript, fn = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadScript, lang = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, LoadScript, fn = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadScript, lang = argv[3].val.str);
 
 	ID_VALIDATE(id, LoadScript);
 
-	PCB_ACT_IRES(pcb_script_load(id, fn, lang));
+	RND_ACT_IRES(pcb_script_load(id, fn, lang));
 	script_dlg_update();
 	return 0;
 }
@@ -325,11 +325,11 @@ static const char pcb_acts_UnloadScript[] = "UnloadScript(id)";
 static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
-	PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
 
 	ID_VALIDATE(id, UnloadScript);
 
-	PCB_ACT_IRES(pcb_script_unload(id, "unload"));
+	RND_ACT_IRES(pcb_script_unload(id, "unload"));
 	return 0;
 }
 
@@ -339,11 +339,11 @@ static const char pcb_acts_ReloadScript[] = "ReloadScript(id)";
 static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
-	PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
 
 	ID_VALIDATE(id, ReloadScript);
 
-	PCB_ACT_IRES(script_reload(id));
+	RND_ACT_IRES(script_reload(id));
 	script_dlg_update();
 	return 0;
 }
@@ -354,7 +354,7 @@ static const char pcb_acts_ScriptPersistency[] = "ScriptPersistency(read|remove)
 static fgw_error_t pcb_act_ScriptPersistency(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = NULL;
-	PCB_ACT_CONVARG(1, FGW_STR, ScriptPersistency, cmd = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ScriptPersistency, cmd = argv[1].val.str);
 	return script_persistency(res, cmd);
 }
 
@@ -364,11 +364,11 @@ static const char pcb_acts_ListScripts[] = "ListScripts([pat])";
 static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *pat = NULL;
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, ListScripts, pat = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ListScripts, pat = argv[1].val.str);
 
 	script_list(pat);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -377,7 +377,7 @@ static const char pcb_acts_BrowseScripts[] = "BrowseScripts()";
 static fgw_error_t pcb_act_BrowseScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	script_dlg_open();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -402,26 +402,26 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (strcmp(lang, "oneliner") == 0) {
 		/* call to oneliner(lang, script) */
-		PCB_ACT_CONVARG(1, FGW_STR, Oneliner, lang = argv[1].val.str);
-		PCB_ACT_CONVARG(2, FGW_STR, Oneliner, scr = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(1, FGW_STR, Oneliner, lang = argv[1].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, Oneliner, scr = argv[2].val.str);
 	}
 	else if (strcmp(lang, "/exit") == 0) {
-		PCB_ACT_IRES(rnd_cli_leave());
+		RND_ACT_IRES(rnd_cli_leave());
 		return 0;
 	}
 	else {
 		/* call to lang(script) */
-		PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
 	}
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, first = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, first = argv[1].val.str);
 	if (first != NULL) {
 		if (*first == '/') {
 			if (pcb_strcasecmp(scr, "/exit") == 0) {
-				PCB_ACT_IRES(rnd_cli_leave());
+				RND_ACT_IRES(rnd_cli_leave());
 				return 0;
 			}
-			PCB_ACT_IRES(-1); /* ignore /click, /tab and others for now */
+			RND_ACT_IRES(-1); /* ignore /click, /tab and others for now */
 			return 0;
 		}
 	}
@@ -429,16 +429,16 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	lang = guess_lang(lang);
 
 	if (scr == NULL) {
-		PCB_ACT_IRES(rnd_cli_enter(lang, lang));
+		RND_ACT_IRES(rnd_cli_enter(lang, lang));
 		return 0;
 	}
 
 	if (pcb_strcasecmp(scr, "/exit") == 0) {
-		PCB_ACT_IRES(rnd_cli_leave());
+		RND_ACT_IRES(rnd_cli_leave());
 		return 0;
 	}
 
-	PCB_ACT_IRES(script_oneliner(lang, scr));
+	RND_ACT_IRES(script_oneliner(lang, scr));
 	return 0;
 }
 
@@ -449,7 +449,7 @@ static fgw_error_t pcb_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *actname = argv[0].val.func->name;
 	double a;
 	
-	PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math1, a = argv[1].val.nat_double);
+	RND_PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math1, a = argv[1].val.nat_double);
 	res->type = FGW_DOUBLE;
 	switch(actname[4]) {
 		case 'a':
@@ -478,8 +478,8 @@ static fgw_error_t pcb_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *actname = argv[0].val.func->name;
 	double a, b;
 	
-	PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math2, a = argv[1].val.nat_double);
-	PCB_ACT_CONVARG(2, FGW_DOUBLE, pcb_math2, b = argv[2].val.nat_double);
+	RND_PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math2, a = argv[1].val.nat_double);
+	RND_PCB_ACT_CONVARG(2, FGW_DOUBLE, pcb_math2, b = argv[2].val.nat_double);
 	res->type = FGW_DOUBLE;
 	switch(actname[4]) {
 		case 'a': res->val.nat_double = atan2(a, b); return 0;

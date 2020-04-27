@@ -113,6 +113,6 @@ const char pcb_acth_About[] = "Present the about box";
 fgw_error_t pcb_act_About(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_dlg_about();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

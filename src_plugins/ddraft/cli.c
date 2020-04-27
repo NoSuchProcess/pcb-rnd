@@ -506,14 +506,14 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc == 1) {
 		rnd_cli_enter("ddraft", "ddraft");
 		pcb_tool_select_by_id(&PCB->hidlib, pcb_ddraft_tool);
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, ddraft, cmd = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ddraft, cmd = argv[1].val.str);
 	if (strcmp(cmd, "/exit") == 0) {
 		rnd_cli_leave();
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
@@ -527,7 +527,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	while(isspace(*cline)) cline++;
 	if ((*cline == '\n') || (*cline == '#') || (*cline == '\0')) { /* empty or comment */
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
@@ -551,7 +551,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (opp == NULL) {
 		if (strcmp(cmd, "/edit") != 0)
 			pcb_message(PCB_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		goto ret0;
 	}
 
@@ -560,20 +560,20 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (*cmd == '/') {
 		if (strcmp(cmd, "/click") == 0) {
-			PCB_ACT_IRES(opp->click(line, cursor, ndlen, nd));
+			RND_ACT_IRES(opp->click(line, cursor, ndlen, nd));
 			cmd = "/edit";
 			goto reparse;
 		}
 		else if (strcmp(cmd, "/tab") == 0)
-			PCB_ACT_IRES(opp->tab(line, cursor, ndlen, nd));
+			RND_ACT_IRES(opp->tab(line, cursor, ndlen, nd));
 		else if (strcmp(cmd, "/edit") == 0)
-			PCB_ACT_IRES(opp->edit(line, cursor, ndlen, nd));
+			RND_ACT_IRES(opp->edit(line, cursor, ndlen, nd));
 		else
-			PCB_ACT_IRES(0); /* ignore anything unhandled */
+			RND_ACT_IRES(0); /* ignore anything unhandled */
 		goto ret0;
 	}
 
-	PCB_ACT_IRES(opp->exec(line, ndlen, nd));
+	RND_ACT_IRES(opp->exec(line, ndlen, nd));
 
 	ret0:;
 	if (line != sline)

@@ -188,8 +188,8 @@ const char pcb_acts_LogDialog[] = "LogDialog()\n";
 const char pcb_acth_LogDialog[] = "Open the log dialog.";
 fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	log_window_create(PCB_ACT_HIDLIB);
-	PCB_ACT_IRES(0);
+	log_window_create(RND_ACT_HIDLIB);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

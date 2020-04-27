@@ -80,9 +80,9 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 	pcb_coord_t x, y;
 	int got_coords = 0;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChangeClearSize, function = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, ChangeClearSize, delta = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeClearSize, units = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangeClearSize, function = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ChangeClearSize, delta = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeClearSize, units = argv[3].val.str);
 
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
@@ -102,7 +102,7 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 			if ((type == PCB_OBJ_VOID) || (type == PCB_OBJ_POLY))	/* workaround: pcb_search_screen(PCB_CHANGECLEARSIZE_TYPES) wouldn't return elements */
 				type = pcb_search_screen(x, y, PCB_CHANGE2NDSIZE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (pcb_get_style_size(funcid, &value, type, 2) != 0) {
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 				return 0;
 			}
 			absolute = 1;
@@ -139,7 +139,7 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 			break;
 		}
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -158,15 +158,15 @@ static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *flag;
 	int value;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChangeFlag, function = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, ChangeFlag, flag = argv[2].val.str);
-	PCB_ACT_CONVARG(2, FGW_INT, ChangeFlag, value = argv[3].val.nat_int);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangeFlag, function = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeFlag, flag = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_INT, ChangeFlag, value = argv[3].val.nat_int);
 
 	if (value != 0 && value != 1)
-		PCB_ACT_FAIL(ChangeFlag);
+		RND_ACT_FAIL(ChangeFlag);
 
 	ChangeFlag(function, flag, value, "ChangeFlag");
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -257,7 +257,7 @@ static fgw_error_t pcb_act_ChangeSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	c = pcb_act_ChangeClearSize(res, argc, argv);
 	pcb_undo_restore_serial();
 	pcb_undo_inc_serial();
-	PCB_ACT_IRES(!(!a || !b || !c));
+	RND_ACT_IRES(!(!a || !b || !c));
 	return 0;
 }
 
@@ -280,9 +280,9 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int type = PCB_OBJ_VOID, tostyle = 0;
 	void *ptr1, *ptr2, *ptr3;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChangeSize, function = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, ChangeSize, delta = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeSize, units = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangeSize, function = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeSize, delta = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeSize, units = argv[3].val.str);
 
 
 	if (function && delta) {
@@ -355,7 +355,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -376,9 +376,9 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_bool absolute;
 	pcb_coord_t value;
 
-	PCB_ACT_CONVARG(1, FGW_STR, Change2ndSize, function = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, Change2ndSize, delta = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, Change2ndSize, units = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Change2ndSize, function = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, Change2ndSize, delta = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, Change2ndSize, units = argv[3].val.str);
 
 	if (function && delta) {
 		int funcid = pcb_funchash_get(function, NULL);
@@ -421,7 +421,7 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			break;
 		}
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -435,9 +435,9 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_cardinal_t changed = 0;
 	const char *refdes, *pinnum, *pinname;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChangePinName, refdes = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, ChangePinName, pinnum = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, ChangePinName, pinname = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangePinName, refdes = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangePinName, pinnum = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangePinName, pinname = argv[3].val.str);
 
 	PCB_SUBC_LOOP(PCB_ACT_BOARD->Data);
 	{
@@ -470,7 +470,7 @@ TODO(": make this undoable")
 		}
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -483,7 +483,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *name;
 	pcb_objtype_t type;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeName, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeName, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		/* change the refdes of a subcircuit */
@@ -509,7 +509,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					if (pcb_chg_obj_name_query(ptr2)) {
 						pcb_hid_redraw(PCB);
 						pcb_board_set_changed_flag(pcb_true);
-						rnd_actionva(PCB_ACT_HIDLIB, "DeleteRats", "AllRats", NULL);
+						rnd_actionva(RND_ACT_HIDLIB, "DeleteRats", "AllRats", NULL);
 					}
 					if (op == F_Object) {
 						pcb_subc_t *subc = pcb_obj_parent_subc(ptr2);
@@ -527,7 +527,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layout name:", PCB_EMPTY(PCB_ACT_HIDLIB->name), "Layout name");
+			name = pcb_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", PCB_EMPTY(RND_ACT_HIDLIB->name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb_true);
@@ -535,7 +535,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = pcb_hid_prompt_for(PCB_ACT_HIDLIB, "Enter the layer name:", PCB_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
+			name = pcb_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layer name:", PCB_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
 			if (name && (pcb_layer_rename_(PCB_CURRLAYER(PCB_ACT_BOARD), name, 1) == 0))
 				pcb_board_set_changed_flag(pcb_true);
@@ -547,7 +547,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return FGW_ERR_ARG_CONV;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -563,7 +563,7 @@ static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_ToggleObject:
@@ -600,7 +600,7 @@ static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return FGW_ERR_ARG_CONV;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -611,7 +611,7 @@ static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *
 {
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_ToggleObject:
@@ -640,7 +640,7 @@ static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *
 			return FGW_ERR_ARG_CONV;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -664,8 +664,8 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int err = 0;
 	pcb_coord_t gx, gy;
 
-	PCB_ACT_CONVARG(1, FGW_STR, SetThermal, function = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, SetThermal, style = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, SetThermal, function = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, SetThermal, style = argv[2].val.str);
 
 	if (function && *function && style && *style) {
 		pcb_bool absolute;
@@ -696,12 +696,12 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			err = 1;
 		if (!err) {
-			PCB_ACT_IRES(0);
+			RND_ACT_IRES(0);
 			return 0;
 		}
 	}
 
-	PCB_ACT_FAIL(SetThermal);
+	RND_ACT_FAIL(SetThermal);
 }
 
 
@@ -719,12 +719,12 @@ static fgw_error_t pcb_act_SetFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function;
 	const char *flag;
 
-	PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
 
 	ChangeFlag(function, flag, 1, "SetFlag");
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -742,12 +742,12 @@ static fgw_error_t pcb_act_ClrFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function;
 	const char *flag;
 
-	PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
 
 	ChangeFlag(function, flag, 0, "ClrFlag");
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -762,13 +762,13 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double value;
 	int err = 0;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
 
 	if (fnc_id == F_Grid)
-		return rnd_actionv_bin(PCB_ACT_HIDLIB, "setgrid", res, argc-1, argv+1);
+		return rnd_actionv_bin(RND_ACT_HIDLIB, "setgrid", res, argc-1, argv+1);
 
-	PCB_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
 
 	value = pcb_get_value(val, units, &absolute, NULL);
 
@@ -776,7 +776,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_LineSize:
 		case F_Line:
 			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
-			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 			break;
 
 		case F_Text:
@@ -789,11 +789,11 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 	}
 	if (!err) {
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
-	PCB_ACT_FAIL(SetValue);
+	RND_ACT_FAIL(SetValue);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -812,9 +812,9 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeAngle, funcid = fgw_keyword(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_STR, ChangeAngle, prim = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, ChangeAngle, delta = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeAngle, funcid = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeAngle, prim = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangeAngle, delta = argv[3].val.str);
 
 
 	if (pcb_strcasecmp(prim, "start") == 0) which = 0;
@@ -869,7 +869,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			break;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -890,10 +890,10 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeRadius, funcid = fgw_keyword(&argv[1]));
-	PCB_ACT_CONVARG(2, FGW_STR, ChangeRadius, prim = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, ChangeRadius, delta = argv[3].val.str);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, ChangeRadius, units = argv[4].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeRadius, funcid = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeRadius, prim = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangeRadius, delta = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, ChangeRadius, units = argv[4].val.str);
 
 	if ((pcb_strcasecmp(prim, "width") == 0) || (pcb_strcasecmp(prim, "x") == 0)) which = 0;
 	else if ((pcb_strcasecmp(prim, "height") == 0) || (pcb_strcasecmp(prim, "y") == 0)) which = 1;
@@ -938,7 +938,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			break;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

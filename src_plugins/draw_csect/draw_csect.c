@@ -934,7 +934,7 @@ static fgw_error_t pcb_act_dump_csect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				printf("         *** broken layer-to-group cross reference: %ld\n", l->meta.real.grp);
 		}
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

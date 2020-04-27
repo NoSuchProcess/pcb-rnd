@@ -342,31 +342,31 @@ fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *op = NULL;
 	void *r1, *r2, *r3;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, topoly, op = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, topoly, op = argv[1].val.str);
 
 	if (op == NULL) {
 		pcb_coord_t x, y;
 		rnd_hid_get_coords("Click on a line or arc of the contour loop", &x, &y, 0);
 		if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
 			pcb_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
 	else {
 		if (strcmp(op, "outline") == 0) {
 			pcb_topoly_1st_outline(PCB, 0);
-			PCB_ACT_IRES(0);
+			RND_ACT_IRES(0);
 			return 0;
 		}
 		else {
 			pcb_message(PCB_MSG_ERROR, "Invalid first argument\n");
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
 
 	pcb_topoly_conn(PCB, r2, 0);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

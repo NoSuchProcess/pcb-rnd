@@ -112,7 +112,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 1;
 	}
 
-	if (rnd_actionva(PCB_ACT_HIDLIB, "New", "Font", 0))
+	if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
 		return 1;
 
 	pcb_conf_set(CFR_DESIGN, "editor/grid_unit", -1, "mil", POL_OVERWRITE);
@@ -221,7 +221,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int y = (l + 1) * CELL_SIZE;
 		pcb_line_new_merge(lgrid, 0, y, PCB->hidlib.size_x, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -338,9 +338,9 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_font_set_info(font);
-	rnd_actionva(PCB_ACT_HIDLIB, "SaveFontTo", NULL);
+	rnd_actionva(RND_ACT_HIDLIB, "SaveFontTo", NULL);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

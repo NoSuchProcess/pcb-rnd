@@ -92,7 +92,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	memset(&ctx, 0, sizeof(ctx));
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FlagEdit, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FlagEdit, op = fgw_keyword(&argv[1]));
 
 	if (op == F_Object) {
 		pcb_coord_t x, y;
@@ -104,11 +104,11 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ctx.obj_type = (type & 0xFFFF) | (type & PCB_OBJ_PSTK);
 	}
 	else
-		PCB_ACT_FAIL(FlagEdit);
+		RND_ACT_FAIL(FlagEdit);
 
 	if ((ctx.obj_type != 0) && (PCB_FLAG_TEST(PCB_FLAG_LOCK, ctx.obj))) {
 		pcb_message(PCB_MSG_ERROR, "Can't edit the flags of a locked object, unlock first.\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -158,6 +158,6 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_undo_inc_serial();
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

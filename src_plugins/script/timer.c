@@ -126,12 +126,12 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char fn[PCB_ACTION_NAME_MAX];
 	script_timer_t *t;
 
-	PCB_ACT_CONVARG(1, FGW_STR, AddTimer, act = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_DOUBLE, AddTimer, period = argv[2].val.nat_double);
-	PCB_ACT_MAY_CONVARG(3, FGW_INT, AddTimer, count = argv[3].val.nat_int);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, AddTimer, user_data = argv[4].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, AddTimer, act = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_DOUBLE, AddTimer, period = argv[2].val.nat_double);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_INT, AddTimer, count = argv[3].val.nat_int);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, AddTimer, user_data = argv[4].val.str);
 
-	pcb_aname(fn, act);
+	rnd_aname(fn, act);
 	len = strlen(fn);
 	t = malloc(sizeof(script_timer_t) + len);
 	t->next = pcb_dtime() + period;
@@ -148,6 +148,6 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!timer_running)
 		start_timer();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

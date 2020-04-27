@@ -296,64 +296,64 @@ static const char pcb_acth_Tool[] = "Change or use the tool mode.";
 /* DOC: tool.html */
 static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hidlib_t *hidlib = PCB_ACT_HIDLIB;
+	pcb_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *cmd;
-	PCB_ACT_IRES(0);
-	PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
+	RND_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
 
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	hidlib->tool_x = hidlib->ch_x;
 	hidlib->tool_y = hidlib->ch_y;
-	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 	if (pcb_strcasecmp(cmd, "Cancel") == 0) {
-		pcb_tool_select_by_id(PCB_ACT_HIDLIB, pcbhl_conf.editor.mode);
+		pcb_tool_select_by_id(RND_ACT_HIDLIB, pcbhl_conf.editor.mode);
 	}
 	else if (pcb_strcasecmp(cmd, "Escape") == 0) {
 		const pcb_tool_t *t;
 		escape:;
 		t = pcb_tool_get(pcbhl_conf.editor.mode);
 		if ((t == NULL) || (t->escape == NULL)) {
-			pcb_tool_select_by_name(PCB_ACT_HIDLIB, "arrow");
+			pcb_tool_select_by_name(RND_ACT_HIDLIB, "arrow");
 			hidlib->tool_hit = hidlib->tool_click = 0; /* if the mouse button is still pressed, don't start selecting a box */
 		}
 		else
-			t->escape(PCB_ACT_HIDLIB);
+			t->escape(RND_ACT_HIDLIB);
 	}
 	else if ((pcb_strcasecmp(cmd, "Press") == 0) || (pcb_strcasecmp(cmd, "Notify") == 0)) {
-		pcb_tool_do_press(PCB_ACT_HIDLIB);
+		pcb_tool_do_press(RND_ACT_HIDLIB);
 	}
 	else if (pcb_strcasecmp(cmd, "Release") == 0) {
 		if (pcbhl_conf.editor.enable_stroke) {
 			int handled = 0;
-			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
+			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
 			if (handled) {
 			/* Ugly hack: returning 1 here will break execution of the
 			   action script, so actions after this one could do things
 			   that would be executed only after non-recognized gestures */
-				do_release(PCB_ACT_HIDLIB);
-				pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+				do_release(RND_ACT_HIDLIB);
+				pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 				return 1;
 			}
 		}
-		do_release(PCB_ACT_HIDLIB);
+		do_release(RND_ACT_HIDLIB);
 	}
 	else if (pcb_strcasecmp(cmd, "Stroke") == 0) {
 		if (pcbhl_conf.editor.enable_stroke)
-			pcb_event(PCB_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
+			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
 		else
 			goto escape; /* Right mouse button restarts drawing mode. */
 	}
 	else if (pcb_strcasecmp(cmd, "Restore") == 0) { /* restore the last saved tool */
-		pcb_tool_restore(PCB_ACT_HIDLIB);
+		pcb_tool_restore(RND_ACT_HIDLIB);
 	}
 	else if (pcb_strcasecmp(cmd, "Save") == 0) { /* save currently selected tool */
-		pcb_tool_save(PCB_ACT_HIDLIB);
+		pcb_tool_save(RND_ACT_HIDLIB);
 	}
 	else {
-		if (pcb_tool_select_by_name(PCB_ACT_HIDLIB, cmd) != 0)
+		if (pcb_tool_select_by_name(RND_ACT_HIDLIB, cmd) != 0)
 			pcb_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
-	pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 	return 0;
 }
 

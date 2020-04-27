@@ -111,7 +111,7 @@ fgw_error_t pcb_act_ApplyVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_busy(PCB, 1);
 	apply_vendor_map();
 	pcb_hid_busy(PCB, 0);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -122,7 +122,7 @@ fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cached_drill = -1;
 
 	vendor_free_all();
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -141,7 +141,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	cached_drill = -1;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadVendorFrom, fname = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadVendorFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect(pcb_gui, "Load Vendor Resource File...",
@@ -150,7 +150,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 															"particular vendor as well as a list of\n"
 															"predefined drills which are allowed.", default_file, ".res", NULL, "vendor", PCB_HID_FSD_READ, NULL);
 		if (fname == NULL) {
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 
@@ -169,7 +169,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	doc = pcb_hid_cfg_load_lht(&PCB->hidlib, fname);
 	if (doc == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Could not load vendor resource file \"%s\"\n", fname);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
@@ -276,7 +276,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (free_fname)
 		free((char*)fname);
 	lht_dom_uninit(doc);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

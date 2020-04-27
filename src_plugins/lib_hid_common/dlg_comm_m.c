@@ -53,9 +53,9 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
-	PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, label = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, gui_PromptFor, default_str = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, gui_PromptFor, title = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, label = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, gui_PromptFor, default_str = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, gui_PromptFor, title = argv[3].val.str);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_LABEL(dlg, label);
@@ -97,9 +97,9 @@ fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_DAD_DECL(dlg);
 
-	PCB_ACT_CONVARG(1, FGW_STR, gui_MessageBox, icon = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, gui_MessageBox, title = argv[2].val.str);
-	PCB_ACT_CONVARG(3, FGW_STR, gui_MessageBox, label = argv[3].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_MessageBox, icon = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, gui_MessageBox, title = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(3, FGW_STR, gui_MessageBox, label = argv[3].val.str);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
@@ -116,8 +116,8 @@ fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
 			PCB_DAD_END(dlg);
 			for(n = 4; n < argc; n+=2) {
-				PCB_ACT_CONVARG(n+0, FGW_STR, gui_MessageBox, txt = argv[n+0].val.str);
-				PCB_ACT_CONVARG(n+1, FGW_INT, gui_MessageBox, ret = argv[n+1].val.nat_int);
+				RND_PCB_ACT_CONVARG(n+0, FGW_STR, gui_MessageBox, txt = argv[n+0].val.str);
+				RND_PCB_ACT_CONVARG(n+1, FGW_INT, gui_MessageBox, ret = argv[n+1].val.nat_int);
 				PCB_DAD_BUTTON_CLOSE(dlg, txt, ret);
 			}
 		PCB_DAD_END(dlg);
@@ -164,7 +164,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	clrpick_t ctx;
 	pcb_hid_attr_val_t val;
 
-	PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, sclr = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, sclr = argv[1].val.str);
 
 	memset(&ctx, 0, sizeof(ctx));
 	if (pcb_color_load_str(&ctx.clr, sclr) != 0)
@@ -229,18 +229,18 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_DAD_DECL(dlg);
 
 	if (!PCB_HAVE_GUI_ATTR_DLG) {
-		PCB_ACT_IRES(0); /* no gui means auto-yes (for batch) */
+		RND_ACT_IRES(0); /* no gui means auto-yes (for batch) */
 		return 2;
 	}
 
 	if (dialogs_conf.plugins.dialogs.file_overwrite_dialog.dont_ask) {
-		PCB_ACT_IRES(0); /* "don't ask" means yes to all */
+		RND_ACT_IRES(0); /* "don't ask" means yes to all */
 		return 2;
 	}
 
-	hidlib = PCB_ACT_HIDLIB;
-	PCB_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
+	hidlib = RND_ACT_HIDLIB;
+	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */

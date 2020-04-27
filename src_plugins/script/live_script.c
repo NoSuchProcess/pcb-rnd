@@ -439,50 +439,50 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	live_script_t *lvs;
 	const char *cmd = "new", *name = NULL, *arg = NULL;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LiveScript, cmd = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, LiveScript, name = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, LiveScript, arg = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LiveScript, cmd = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LiveScript, name = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LiveScript, arg = argv[3].val.str);
 
 	if (pcb_strcasecmp(cmd, "new") == 0) {
 		if (name == NULL) name = "default";
 		lvs = htsp_get(&pcb_live_scripts, name);
 		if (lvs != NULL) {
 			pcb_message(PCB_MSG_ERROR, "live script '%s' is already open\n", name);
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
-		lvs = pcb_dlg_live_script(PCB_ACT_HIDLIB, name);
+		lvs = pcb_dlg_live_script(RND_ACT_HIDLIB, name);
 		if (lvs != NULL) {
 			htsp_set(&pcb_live_scripts, lvs->name, lvs);
-			PCB_ACT_IRES(0);
+			RND_ACT_IRES(0);
 		}
 		else
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 		return 0;
 	}
 
 	if (name == NULL) {
 		pcb_message(PCB_MSG_ERROR, "script name (second argument) required\n");
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	lvs = htsp_get(&pcb_live_scripts, name);
 	if (lvs == NULL) {
 		pcb_message(PCB_MSG_ERROR, "script '%s' does not exist\n", name);
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	if (pcb_strcasecmp(cmd, "load") == 0) {
-		PCB_ACT_IRES(live_load(NULL, lvs, arg));
+		RND_ACT_IRES(live_load(NULL, lvs, arg));
 	}
 	else if (pcb_strcasecmp(cmd, "save") == 0) {
-		PCB_ACT_IRES(live_save(NULL, lvs, arg));
+		RND_ACT_IRES(live_save(NULL, lvs, arg));
 	}
 	else if (pcb_strcasecmp(cmd, "undo") == 0) {
-		PCB_ACT_IRES(live_undo(lvs));
+		RND_ACT_IRES(live_undo(lvs));
 	}
 	else if (pcb_strcasecmp(cmd, "run") == 0) {
 		live_run(NULL, lvs);

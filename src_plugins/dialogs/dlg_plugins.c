@@ -84,6 +84,6 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	PCB_DAD_FREE(dlg);
 
 	gds_uninit(&str);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

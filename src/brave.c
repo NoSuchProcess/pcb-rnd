@@ -254,24 +254,24 @@ static fgw_error_t pcb_act_Brave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	desc_t *d;
 	const char *name, *op;
 	if (argc <= 1) {
-		PCB_ACT_IRES(brave_interact());
+		RND_ACT_IRES(brave_interact());
 		return 0;
 	}
 
 	/* look up */
-	PCB_ACT_CONVARG(1, FGW_STR, Brave, name = argv[1].val.str);
-	PCB_ACT_CONVARG(2, FGW_STR, Brave, op = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, Brave, name = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(2, FGW_STR, Brave, op = argv[2].val.str);
 	d = find_by_name(name);
 	if (d == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Unknown brave setting: %s\n", name);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 	brave_set(d->bit, (pcb_strcasecmp(op, "on") == 0));
 
 	pcb_message(PCB_MSG_INFO, "Brave setting: %s in %s\n", name, (pcb_brave & d->bit) ? "on" : "off");
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

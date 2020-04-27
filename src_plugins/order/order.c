@@ -65,15 +65,15 @@ fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = "gui";
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, OrderPCB, cmd = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, OrderPCB, cmd = argv[1].val.str);
 
 	if (strcmp(cmd, "gui") == 0) {
-		PCB_ACT_IRES(order_dialog());
+		RND_ACT_IRES(order_dialog());
 		return 0;
 	}
 	
 	pcb_message(PCB_MSG_ERROR, "CLI version of OrderPCB() not yet implemented\n");
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	return 0;
 }
 

@@ -59,11 +59,11 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op;
 	const char *a1, *a2, *a3, *a4;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, Conf, a1 = argv[2].val.str);
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, Conf, a2 = argv[3].val.str);
-	PCB_ACT_MAY_CONVARG(4, FGW_STR, Conf, a3 = argv[4].val.str);
-	PCB_ACT_MAY_CONVARG(5, FGW_STR, Conf, a4 = argv[5].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Conf, a1 = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, Conf, a2 = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, Conf, a3 = argv[4].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, Conf, a4 = argv[5].val.str);
 
 	if ((op == F_Set) || (op == F_Delta)) {
 		const char *path, *val;
@@ -166,7 +166,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /*		printf("iseq: %s %s==%s %d\n", path, nval.array, val, rs);*/
 		gds_uninit(&nval);
 
-		PCB_ACT_IRES(rs);
+		RND_ACT_IRES(rs);
 		return 0;
 	}
 
@@ -227,7 +227,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return FGW_ERR_ARG_CONV;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -238,14 +238,14 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *dst;
 	pcb_toolid_t id;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
 
 	id = pcb_tool_lookup(dst);
 	if (id >= 0) {
-		PCB_ACT_IRES(pcbhl_conf.editor.mode == id);
+		RND_ACT_IRES(pcbhl_conf.editor.mode == id);
 		return 0;
 	}
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	return 0;
 }
 
@@ -259,14 +259,14 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 {
 	const char *dst;
 
-	PCB_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
 
 	if (strcmp(dst, "none") == 0) {
-		PCB_ACT_IRES(PCB_ACT_HIDLIB->grid <= 300);
+		RND_ACT_IRES(RND_ACT_HIDLIB->grid <= 300);
 		return 0;
 	}
 
-	PCB_ACT_IRES(PCB_ACT_HIDLIB->grid == pcb_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
+	RND_ACT_IRES(RND_ACT_HIDLIB->grid == pcb_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
 	return 0;
 }
 
@@ -276,8 +276,8 @@ static const char pcb_acth_ChkGridUnits[] = "Return 1 if currently selected grid
 static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *expected;
-	PCB_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
-	PCB_ACT_IRES(strcmp(pcbhl_conf.editor.grid_unit->suffix, expected) == 0);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
+	RND_ACT_IRES(strcmp(pcbhl_conf.editor.grid_unit->suffix, expected) == 0);
 	return 0;
 }
 
@@ -290,10 +290,10 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_bool absolute;
 	double value;
 
-	PCB_ACT_CONVARG(1, FGW_STR, SetGrid, val = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, SetGrid, units = argv[2].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, SetGrid, val = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, SetGrid, units = argv[2].val.str);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 
 	/* special case: can't convert with pcb_get_value() */
 	if ((val[0] == '*') || (val[0] == '/')) {
@@ -307,9 +307,9 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		pcb_grid_inval();
 		if (val[0] == '*')
-			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(RND_ACT_HIDLIB, pcb_round(RND_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
 		else
-			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, pcb_round(PCB_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(RND_ACT_HIDLIB, pcb_round(RND_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
 		return 0;
 	}
 
@@ -317,15 +317,15 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_grid_inval();
 	if (absolute)
-		pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
+		pcb_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
 	else {
 		/* On the way down, until the minimum unit (1) */
-		if ((value + PCB_ACT_HIDLIB->grid) < 1)
-			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, 1, pcb_false, 0, 0);
-		else if (PCB_ACT_HIDLIB->grid == 1)
-			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value, pcb_false, 0, 0);
+		if ((value + RND_ACT_HIDLIB->grid) < 1)
+			pcb_hidlib_set_grid(RND_ACT_HIDLIB, 1, pcb_false, 0, 0);
+		else if (RND_ACT_HIDLIB->grid == 1)
+			pcb_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
 		else
-			pcb_hidlib_set_grid(PCB_ACT_HIDLIB, value + PCB_ACT_HIDLIB->grid, pcb_false, 0, 0);
+			pcb_hidlib_set_grid(RND_ACT_HIDLIB, value + RND_ACT_HIDLIB->grid, pcb_false, 0, 0);
 	}
 	return 0;
 }
@@ -339,11 +339,11 @@ static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const pcb_unit_t *new_unit;
 	const char *name;
 
-	PCB_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
-	PCB_ACT_IRES(0);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
+	RND_ACT_IRES(0);
 
 	new_unit = get_unit_struct(name);
-	pcb_hidlib_set_unit(PCB_ACT_HIDLIB, new_unit);
+	pcb_hidlib_set_unit(RND_ACT_HIDLIB, new_unit);
 
 	return 0;
 }

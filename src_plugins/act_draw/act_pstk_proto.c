@@ -45,12 +45,12 @@ static int get_obj_and_data_from_idp(int argc, fgw_arg_t *argv, int aidx, pcb_an
 	pcb_idpath_t *idp;
 
 	if (((argv[aidx].type & FGW_STR) == FGW_STR) && (argv[aidx].val.str[0] == 'b') && ((argv[aidx].val.str[1] == 'u') || (argv[aidx].val.str[1] == 'o'))) {
-		PCB_ACT_CONVARG(aidx, FGW_DATA, PstkProtoTmp, *data_out = fgw_data(&argv[aidx]));
+		RND_PCB_ACT_CONVARG(aidx, FGW_DATA, PstkProtoTmp, *data_out = fgw_data(&argv[aidx]));
 		*obj_out = NULL;
 		return 0;
 	}
 
-	PCB_ACT_CONVARG(aidx, FGW_IDPATH, PstkProtoTmp, idp = fgw_idpath(&argv[aidx]));
+	RND_PCB_ACT_CONVARG(aidx, FGW_IDPATH, PstkProtoTmp, idp = fgw_idpath(&argv[aidx]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[aidx], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 	obj = pcb_idpath2obj(PCB, idp);
@@ -74,7 +74,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	res->type = FGW_PTR | FGW_STRUCT;
 	res->val.ptr_void = NULL;
 
-	PCB_ACT_CONVARG(1+ao, FGW_STR, PstkProtoTmp, cmd = argv[1+ao].val.str);
+	RND_PCB_ACT_CONVARG(1+ao, FGW_STR, PstkProtoTmp, cmd = argv[1+ao].val.str);
 
 	cmdi = act_draw_keywords_sphash(cmd);
 	switch(cmdi) {
@@ -89,14 +89,14 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		case act_draw_keywords_dup:
 			if (argc < 4) {
 				if (get_obj_and_data_from_idp(argc, argv, 2+ao, &obj, &data) != 0) {
-					PCB_ACT_IRES(-1);
+					RND_ACT_IRES(-1);
 					return 0;
 				}
 				src = pcb_pstk_get_proto((pcb_pstk_t *)obj);
 			}
 			else {
-				PCB_ACT_CONVARG(2+ao, FGW_DATA, PstkProtoTmp, data = fgw_data(&argv[2+ao]));
-				PCB_ACT_CONVARG(3+ao, FGW_LONG, PstkProtoTmp, src_id = argv[3+ao].val.nat_long);
+				RND_PCB_ACT_CONVARG(2+ao, FGW_DATA, PstkProtoTmp, data = fgw_data(&argv[2+ao]));
+				RND_PCB_ACT_CONVARG(3+ao, FGW_LONG, PstkProtoTmp, src_id = argv[3+ao].val.nat_long);
 				if (data == NULL)
 					return 0;
 				src = pcb_pstk_get_proto_(data, src_id);
@@ -112,15 +112,15 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		case act_draw_keywords_insert:
 		case act_draw_keywords_insert_dup:
 			if (argc < 3)
-				PCB_ACT_FAIL(PstkProtoTmp);
+				RND_ACT_FAIL(PstkProtoTmp);
 			if (get_obj_and_data_from_idp(argc, argv, 2+ao, &obj, &data) != 0) {
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 				return 0;
 			}
-			PCB_ACT_CONVARG(3+ao, FGW_PTR, PstkProtoTmp, proto = argv[3+ao].val.ptr_void);
+			RND_PCB_ACT_CONVARG(3+ao, FGW_PTR, PstkProtoTmp, proto = argv[3+ao].val.ptr_void);
 			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
 				pcb_message(PCB_MSG_ERROR, "PstkProtoTmp: invalid proto pointer\n");
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 				return 0;
 			}
 			res->type = FGW_LONG;
@@ -159,35 +159,35 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_coord_t crd;
 	DRAWOPTARG;
 
-	PCB_ACT_CONVARG(1+ao, FGW_PTR, PstkProtoEdit, proto = argv[1+ao].val.ptr_void);
-	PCB_ACT_CONVARG(2+ao, FGW_STR, PstkProtoEdit, cmd = argv[2+ao].val.str);
+	RND_PCB_ACT_CONVARG(1+ao, FGW_PTR, PstkProtoEdit, proto = argv[1+ao].val.ptr_void);
+	RND_PCB_ACT_CONVARG(2+ao, FGW_STR, PstkProtoEdit, cmd = argv[2+ao].val.str);
 
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
 		pcb_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 	ts = &proto->tr.array[0];
 
 	switch(act_draw_keywords_sphash(cmd)) {
 		case act_draw_keywords_remove:
-			PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
+			RND_PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
 			if (pcb_layer_typecomb_str2bits(tmp, &dlyt, &dlyc, 1) != 0)
 				return FGW_ERR_ARG_CONV;
 			pcb_pstk_proto_del_shape(proto, dlyt, dlyc);
 			break;
 
 		case act_draw_keywords_copy:
-			PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
+			RND_PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
 			if (pcb_layer_typecomb_str2bits(tmp, &dlyt, &dlyc, 1) != 0)
 				return FGW_ERR_ARG_CONV;
-			PCB_ACT_CONVARG(4+ao, FGW_STR, PstkProtoEdit, tmp = argv[4+ao].val.str);
+			RND_PCB_ACT_CONVARG(4+ao, FGW_STR, PstkProtoEdit, tmp = argv[4+ao].val.str);
 			if (pcb_layer_typecomb_str2bits(tmp, &slyt, &slyc, 1) != 0)
 				return FGW_ERR_ARG_CONV;
 
 			src_idx = pcb_pstk_get_shape_idx(ts, slyt, slyc);
 			if (src_idx < 0) {
-				PCB_ACT_IRES(-1);
+				RND_ACT_IRES(-1);
 				return 0;
 			}
 			dst_idx = pcb_pstk_get_shape_idx(ts, dlyt, dlyc);
@@ -201,15 +201,15 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				proto->tr.array[n].shape[dst_idx].comb = dlyc;
 			}
 			pcb_pstk_proto_update(proto);
-			PCB_ACT_IRES(0);
+			RND_ACT_IRES(0);
 			return 0;
 
 		case act_draw_keywords_hdia:
 
-			PCB_ACT_CONVARG(3+ao, FGW_COORD, PstkProtoEdit, crd = fgw_coord(&argv[3+ao]));
+			RND_PCB_ACT_CONVARG(3+ao, FGW_COORD, PstkProtoEdit, crd = fgw_coord(&argv[3+ao]));
 			proto->hdia = crd;
 			pcb_pstk_proto_update(proto);
-			PCB_ACT_IRES(0);
+			RND_ACT_IRES(0);
 			return 0;
 
 		case act_draw_keywords_shape_line:
@@ -217,17 +217,17 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				pcb_coord_t x1, y1, x2, y2, th;
 				int sq = 0;
 
-				PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
-				PCB_ACT_CONVARG(4+ao, FGW_COORD, PstkProtoEdit, x1 = fgw_coord(&argv[4+ao]));
-				PCB_ACT_CONVARG(5+ao, FGW_COORD, PstkProtoEdit, y1 = fgw_coord(&argv[5+ao]));
-				PCB_ACT_CONVARG(6+ao, FGW_COORD, PstkProtoEdit, x2 = fgw_coord(&argv[6+ao]));
-				PCB_ACT_CONVARG(7+ao, FGW_COORD, PstkProtoEdit, y2 = fgw_coord(&argv[7+ao]));
-				PCB_ACT_CONVARG(8+ao, FGW_COORD, PstkProtoEdit, th = fgw_coord(&argv[8+ao]));
+				RND_PCB_ACT_CONVARG(3+ao, FGW_STR, PstkProtoEdit, tmp = argv[3+ao].val.str);
+				RND_PCB_ACT_CONVARG(4+ao, FGW_COORD, PstkProtoEdit, x1 = fgw_coord(&argv[4+ao]));
+				RND_PCB_ACT_CONVARG(5+ao, FGW_COORD, PstkProtoEdit, y1 = fgw_coord(&argv[5+ao]));
+				RND_PCB_ACT_CONVARG(6+ao, FGW_COORD, PstkProtoEdit, x2 = fgw_coord(&argv[6+ao]));
+				RND_PCB_ACT_CONVARG(7+ao, FGW_COORD, PstkProtoEdit, y2 = fgw_coord(&argv[7+ao]));
+				RND_PCB_ACT_CONVARG(8+ao, FGW_COORD, PstkProtoEdit, th = fgw_coord(&argv[8+ao]));
 				if (pcb_layer_typecomb_str2bits(tmp, &dlyt, &dlyc, 1) != 0)
 					return FGW_ERR_ARG_CONV;
 
 				tmp = NULL;
-				PCB_ACT_MAY_CONVARG(9+ao, FGW_STR, PstkProtoEdit, tmp = argv[9+ao].val.str);
+				rnd_PCB_ACT_MAY_CONVARG(9+ao, FGW_STR, PstkProtoEdit, tmp = argv[9+ao].val.str);
 				if ((tmp != NULL) && (*tmp == 's'))
 					sq = 1;
 
@@ -252,6 +252,6 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			return FGW_ERR_ARG_CONV;
 	}
 
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	return 0;
 }

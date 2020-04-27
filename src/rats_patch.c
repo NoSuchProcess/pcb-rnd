@@ -560,26 +560,26 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	pcb_subc_t *olds = NULL, *news;
 	int dumb = 0, op = F_Selected;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
 
 	if (act_replace_footprint_dst(op, &olds) != 0) {
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	/* fetch the name of the new footprint */
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[2].val.str));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[2].val.str));
 	if (act_replace_footprint_src(fpname, &news) != 0) {
-		PCB_ACT_IRES(1);
+		RND_ACT_IRES(1);
 		return 0;
 	}
 
-	PCB_ACT_MAY_CONVARG(3, FGW_STR, ReplaceFootprint, dumbs = argv[3].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ReplaceFootprint, dumbs = argv[3].val.str);
 	if ((dumbs != NULL) && (strcmp(dumbs, "dumb") == 0))
 		dumb = 1;
 
 
-	PCB_ACT_IRES(act_replace_footprint(op, olds, news, fpname, dumb));
+	RND_ACT_IRES(act_replace_footprint(op, olds, news, fpname, dumb));
 	free(fpname);
 	return 0;
 }
@@ -591,7 +591,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *fn = NULL;
 	FILE *f;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, SavePatch, fn = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, SavePatch, fn = argv[1].val.str);
 
 	if (fn == NULL) {
 		char *default_file;
@@ -620,13 +620,13 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		pcb_message(PCB_MSG_ERROR, "Can't open netlist patch file %s for writing\n", fn);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 	pcb_ratspatch_fexport(PCB, f, 0);
 	fclose(f);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

@@ -162,28 +162,28 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *cmd = "gui", *arg = NULL, *opt;
 	int n, rs = -1;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, cam, cmd = argv[1].val.str);
-	PCB_ACT_MAY_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, cam, cmd = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, cam, arg = argv[2].val.str);
 
 	cam_init_inst(&ctx);
 	for(n = 3; n < argc; n++) {
-		PCB_ACT_CONVARG(n, FGW_STR, cam, opt = argv[n].val.str);
+		RND_PCB_ACT_CONVARG(n, FGW_STR, cam, opt = argv[n].val.str);
 		if (cam_parse_opt(&ctx, opt) != 0) {
 			pcb_message(PCB_MSG_ERROR, "cam: invalid action option '%s'\n", opt);
 			cam_uninit_inst(&ctx);
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 	}
 
 	if (pcb_strcasecmp(cmd, "gui") == 0) {
-		rs = cam_gui(PCB_ACT_HIDLIB, arg);
+		rs = cam_gui(RND_ACT_HIDLIB, arg);
 	}
 	else {
 		if (arg == NULL) {
 			pcb_message(PCB_MSG_ERROR, "cam: need one more argument for '%s'\n", cmd);
 			cam_uninit_inst(&ctx);
-			PCB_ACT_IRES(1);
+			RND_ACT_IRES(1);
 			return 0;
 		}
 		if (pcb_strcasecmp(cmd, "exec") == 0) {
@@ -196,7 +196,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	cam_uninit_inst(&ctx);
-	PCB_ACT_IRES(rs);
+	RND_ACT_IRES(rs);
 	return 0;
 }
 

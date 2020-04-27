@@ -57,11 +57,11 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	const char *cmd;
 
 	if (!PCB_HAVE_GUI_ATTR_DLG) {
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
-	PCB_ACT_CONVARG(1, FGW_STR, InfoBarFileChanged, cmd = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, InfoBarFileChanged, cmd = argv[1].val.str);
 
 	if (strcmp(cmd, "open") == 0) {
 		if (!active) {
@@ -90,7 +90,7 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				PCB_DAD_END(sub.dlg);
 			PCB_DAD_END(sub.dlg);
 			if (pcb_hid_dock_enter(&sub, PCB_HID_DOCK_TOP_INFOBAR, "file_changed") != 0) {
-				PCB_ACT_IRES(1);
+				RND_ACT_IRES(1);
 				return 0;
 			}
 			active = 1;
@@ -111,8 +111,8 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		}
 	}
 	else
-		PCB_ACT_FAIL(InfoBarFileChanged);
+		RND_ACT_FAIL(InfoBarFileChanged);
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }

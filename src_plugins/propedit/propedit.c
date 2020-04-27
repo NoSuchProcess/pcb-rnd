@@ -183,18 +183,18 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_props_init(&ctx, PCB);
 
-	PCB_ACT_CONVARG(1, FGW_STR, propset, first = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, propset, first = argv[1].val.str);
 	if (prop_scope_add(&ctx, first, 1) == 0) {
-		PCB_ACT_CONVARG(2, FGW_STR, propset, name = argv[2].val.str);
-		PCB_ACT_CONVARG(3, FGW_STR, propset, val = argv[3].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, propset, name = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(3, FGW_STR, propset, val = argv[3].val.str);
 	}
 	else {
 		name = first;
 		ctx.selection = 1;
-		PCB_ACT_CONVARG(2, FGW_STR, propset, val = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, propset, val = argv[2].val.str);
 	}
 
-	PCB_ACT_IRES(pcb_propsel_set_str(&ctx, name, val));
+	RND_ACT_IRES(pcb_propsel_set_str(&ctx, name, val));
 
 	prop_scope_finish(&ctx);
 	pcb_props_uninit(&ctx);
@@ -214,15 +214,15 @@ fgw_error_t pcb_act_propget(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_props_init(&ctx, PCB);
 
-	PCB_ACT_CONVARG(1, FGW_STR, propget, first = argv[1].val.str);
+	RND_PCB_ACT_CONVARG(1, FGW_STR, propget, first = argv[1].val.str);
 	if (prop_scope_add(&ctx, first, 1) == 0) {
-		PCB_ACT_CONVARG(2, FGW_STR, propget, name = argv[2].val.str);
-		PCB_ACT_MAY_CONVARG(3, FGW_STR, propget, stty = argv[3].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, propget, name = argv[2].val.str);
+		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, propget, stty = argv[3].val.str);
 	}
 	else {
 		name = first;
 		ctx.selection = 1;
-		PCB_ACT_CONVARG(2, FGW_STR, propget, stty = argv[2].val.str);
+		RND_PCB_ACT_CONVARG(2, FGW_STR, propget, stty = argv[2].val.str);
 	}
 
 	ctx.geo = 1;
@@ -285,7 +285,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_props_init(&ctx, PCB);
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, propset, scope = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, propset, scope = argv[1].val.str);
 	if (scope != NULL) {
 		if (prop_scope_add(&ctx, scope, 0) != 0)
 			return FGW_ERR_ARG_CONV;
@@ -329,7 +329,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	prop_scope_finish(&ctx);
 	pcb_props_uninit(&ctx);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

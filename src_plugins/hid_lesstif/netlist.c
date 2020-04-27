@@ -376,11 +376,11 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_
 		const char *nn;
 
 	if (build_netlist_dialog()) {
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 		return 0;
 	}
 
-		PCB_ACT_CONVARG(1, FGW_STR, LesstifNetlistShow, nn = argv[1].val.str);
+		RND_PCB_ACT_CONVARG(1, FGW_STR, LesstifNetlistShow, nn = argv[1].val.str);
 
 	if (argc == 2) {
 		pcb_net_term_t *term;
@@ -427,7 +427,7 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_
 			}
 		}
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

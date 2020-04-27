@@ -216,7 +216,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	gsxl_node_t *wiring, *w, *routes, *nout, *n;
 	dsn_type_t type;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadDsnFrom, fname = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadDsnFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = pcb_gui->fileselect(pcb_gui,
@@ -325,13 +325,13 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_message(PCB_MSG_INFO, "import_dsn: loaded %ld wires and %ld vias\n", nlines, nvias);
 
 	gsxl_uninit(&dom);
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 
 	error:;
 	gsxl_uninit(&dom);
 
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	return 0;
 }
 

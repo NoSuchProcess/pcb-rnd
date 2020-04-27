@@ -199,7 +199,7 @@ fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static char *default_file = NULL;
 	
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadCalayFrom, fname_net = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadCalayFrom, fname_net = argv[1].val.str);
 
 	if (!fname_net || !*fname_net) {
 		fname_net = pcb_gui->fileselect(pcb_gui,
@@ -220,7 +220,7 @@ fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		end = fname_cmp + strlen(fname_cmp);
 	strcpy(end, CMPEXT);
 
-	PCB_ACT_IRES(calay_load(fname_net, fname_cmp));
+	RND_ACT_IRES(calay_load(fname_net, fname_cmp));
 	free(fname_cmp);
 	return 0;
 }

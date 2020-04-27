@@ -184,11 +184,11 @@ static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
 		pcb_dlg_pinout(PCB, PCB->Data, sc);
-		PCB_ACT_IRES(0);
+		RND_ACT_IRES(0);
 	}
 	else {
 		pcb_message(PCB_MSG_ERROR, "pinout dialog: there's no subcircuit there\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 	}
 	return 0;
 }

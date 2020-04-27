@@ -849,7 +849,7 @@ static const char pcb_acth_DoWindows[] = "Open various GUI windows.";
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a = "";
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
 	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
@@ -862,11 +862,11 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		lesstif_show_netlist();
 	}
 	else {
-		PCB_ACT_FAIL(DoWindows);
-		PCB_ACT_IRES(1);
+		RND_ACT_FAIL(DoWindows);
+		RND_ACT_IRES(1);
 		return 1;
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -875,7 +875,7 @@ static const char pcb_acth_AdjustSizes[] = "not supported, please use Preference
 static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_message(PCB_MSG_ERROR, "AdjustSizes() is not supported anymore, please use the Preferences() action\n");
-	PCB_ACT_IRES(1);
+	RND_ACT_IRES(1);
 	return 0;
 }
 

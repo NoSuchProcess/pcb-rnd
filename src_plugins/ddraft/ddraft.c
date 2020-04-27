@@ -129,8 +129,8 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_coord_t x, y;
 	vtp0_t edges;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, trim_split, kwcut = fgw_keyword(&argv[1]));
-	PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, trim_split, kwobj = fgw_keyword(&argv[2]));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, trim_split, kwcut = fgw_keyword(&argv[1]));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, trim_split, kwobj = fgw_keyword(&argv[2]));
 
 	vtp0_init(&edges);
 
@@ -169,12 +169,12 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (do_trim_split(&edges, kwobj, (*actname == 't')) < 0)
 		goto err;
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	vtp0_uninit(&edges);
 	return 0;
 
 	err:;
-	PCB_ACT_IRES(-1);
+	RND_ACT_IRES(-1);
 	vtp0_uninit(&edges);
 	return 0;
 }
@@ -199,7 +199,7 @@ static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 1; n < 3; n++) {
 		vect = (n == 1) ? &edges : &objs;
 
-		PCB_ACT_CONVARG(n, FGW_IDPATH, split_idp, idp = fgw_idpath(&argv[n]));
+		RND_PCB_ACT_CONVARG(n, FGW_IDPATH, split_idp, idp = fgw_idpath(&argv[n]));
 		if (idp == NULL)
 			goto invptr;
 		if (fgw_ptr_in_domain(&rnd_fgw, &argv[n], RND_PTR_DOMAIN_IDPATH)) {
@@ -254,12 +254,12 @@ do { \
 	int n; \
 	if (argc-2 >= sizeof(arr) / sizeof(arr[0])) { \
 		pcb_message(PCB_MSG_ERROR, "constraint: Too many " msg "\n"); \
-		PCB_ACT_IRES(-1); \
+		RND_ACT_IRES(-1); \
 		return 0; \
 	} \
 	ctr = 0; \
 	for(n = 2; n < argc; n++) { \
-		PCB_ACT_CONVARG(n, fgw_type_, constraint, arr[ctr] = fgw_val_); \
+		RND_PCB_ACT_CONVARG(n, fgw_type_, constraint, arr[ctr] = fgw_val_); \
 		ctr++; \
 	} \
 } while(0)
@@ -271,9 +271,9 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *stype = NULL;
 	int type;
 
-	PCB_ACT_MAY_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
 	if (stype == NULL) {
-		PCB_ACT_IRES(constraint_gui());
+		RND_ACT_IRES(constraint_gui());
 		return 0;
 	}
 	type = ddraft_fields_sphash(stype);
@@ -288,12 +288,12 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case ddraft_fields_line_angle_mod:
 			cons.line_angle_mod = 0;
-			PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.line_angle_mod = argv[2].val.nat_double);
+			rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.line_angle_mod = argv[2].val.nat_double);
 			cons_changed();
 			break;
 		case ddraft_fields_move_angle_mod:
 			cons.move_angle_mod = 0;
-			PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.move_angle_mod = argv[2].val.nat_double);
+			rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.move_angle_mod = argv[2].val.nat_double);
 			cons_changed();
 			break;
 		case ddraft_fields_line_length:
@@ -306,12 +306,12 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case ddraft_fields_line_length_mod:
 			cons.line_length_mod = 0;
-			PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.line_length_mod = fgw_coord(&argv[2]));
+			rnd_PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.line_length_mod = fgw_coord(&argv[2]));
 			cons_changed();
 			break;
 		case ddraft_fields_move_length_mod:
 			cons.move_length_mod = 0;
-			PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.move_length_mod = fgw_coord(&argv[2]));
+			rnd_PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.move_length_mod = fgw_coord(&argv[2]));
 			cons_changed();
 			break;
 
@@ -321,12 +321,12 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case ddraft_fields_SPHASH_INVALID:
 			pcb_message(PCB_MSG_ERROR, "constraint: invalid field '%s'\n", stype);
-			PCB_ACT_IRES(-1);
+			RND_ACT_IRES(-1);
 			return 0;
 			break;
 	}
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -351,7 +351,7 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (type != PCB_OBJ_LINE) {
 		pcb_message(PCB_MSG_ERROR, "%s: target object must be a line\n", actname);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -360,7 +360,7 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	dy = line->Point2.Y - line->Point1.Y;
 	if ((dx == 0.0) && (dy == 0.0)) {
 		pcb_message(PCB_MSG_ERROR, "%s: target line must be longer than 0\n", actname);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -371,7 +371,7 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cons.line_angle[1] = fmod(cons.line_angle[0]+180, 360);
 	cons_changed();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -391,7 +391,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (((pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND) && (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)) || (pcb_crosshair.Route.size < 1)) {
 		err_nonline:;
 		pcb_message(PCB_MSG_ERROR, "tang: must be in line drawing mode with the first point already set\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -410,14 +410,14 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (type != PCB_OBJ_ARC) {
 		pcb_message(PCB_MSG_ERROR, "tang: target object must be an arc\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	arc = (pcb_arc_t *)ptr2;
 	if (fabs((double)(arc->Height - arc->Width)) > 100) {
 		pcb_message(PCB_MSG_ERROR, "tang: elliptical arcs are not supported (%$mm != %$mm)\n", arc->Height, arc->Width);
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -426,7 +426,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (d <= r) {
 		pcb_message(PCB_MSG_ERROR, "tang: line must start outside of the circle\n");
-		PCB_ACT_IRES(-1);
+		RND_ACT_IRES(-1);
 		return 0;
 	}
 
@@ -437,7 +437,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cons.line_angle[1] = (base + asin(-r / d)) * PCB_RAD_TO_DEG;
 	cons_changed();
 
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

@@ -56,7 +56,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	int op;
 
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, MorphPolygon, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, MorphPolygon, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Object:
@@ -85,7 +85,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			pcb_undo_inc_serial();
 			break;
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
@@ -96,10 +96,10 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	
-	PCB_ACT_CONVARG(1, FGW_KEYWORD, Polygon, op = fgw_keyword(&argv[1]));
+	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Polygon, op = fgw_keyword(&argv[1]));
 
 	if ((argc > 1) && ((pcbhl_conf.editor.mode == pcb_crosshair.tool_poly) || (pcbhl_conf.editor.mode == pcb_crosshair.tool_poly_hole))) {
-		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_false);
+		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		switch(op) {
 			/* close open polygon if possible */
 		case F_Close:
@@ -116,9 +116,9 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_polygon_go_to_prev_point();
 			break;
 		}
-		pcb_hid_notify_crosshair_change(PCB_ACT_HIDLIB, pcb_true);
+		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 	}
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
