@@ -114,3 +114,109 @@ static void rnd_hook_detect_cc(void)
 		append("/local/pcb/c89flags", "-Dinline= ");
 	}
 }
+
+static void rnd_hook_detect_hid(int want_glib)
+{
+	int need_gtklibs = 0, want_gtk, want_gtk2, has_gtk2 = 0, want_gl;
+
+	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
+	want_gtk    = want_gtk2; /* plus |gtkN */
+
+	if (want_gtk2) {
+		require("libs/gui/gtk2/presents", 0, 0);
+		if (istrue(get("libs/gui/gtk2/presents"))) {
+			require("libs/gui/gtk2/key_prefix", 0, 1);
+			require("libs/gui/gtk2gl/presents", 0, 0);
+			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
+				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
+				hook_custom_arg("disable-hid_gtk2_gl", NULL);
+			}
+			need_gtklibs = 1;
+			has_gtk2 = 1;
+		}
+		else {
+			report_repeat("WARNING: Since there's no libgtk2 found, disabling hid_gtk2*...\n");
+			hook_custom_arg("disable-hid_gtk2_gdk", NULL);
+			hook_custom_arg("disable-hid_gtk2_gl", NULL);
+		}
+	}
+
+	want_gl = plug_is_enabled("hid_gtk2_gl");
+	if (want_gl) {
+		require("libs/gui/glu/presents", 0, 0);
+		if (!istrue(get("libs/gui/glu/presents"))) {
+			report_repeat("WARNING: Since there's no GLU found, disabling the hid_gtk2_gl plugin...\n");
+			goto disable_gl;
+		}
+		else
+			put("/local/pcb/has_glu", strue);
+	}
+	else {
+		disable_gl:;
+		hook_custom_arg("disable-lib_hid_gl", NULL);
+		hook_custom_arg("disable-hid_gtk2_gl", NULL);
+	}
+
+	/* libs/gui/gtkx is the version-independent set of flags in the XOR model */
+	if (has_gtk2) {
+		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk2/cflags"));
+		put("/target/libs/gui/gtkx/ldflags", get("/target/libs/gui/gtk2/ldflags"));
+	}
+
+	if (!need_gtklibs) {
+		report("No gtk support available, disabling lib_gtk_common...\n");
+		hook_custom_arg("disable-lib_gtk_common", NULL);
+	}
+
+	if (plug_is_enabled("hid_lesstif")) {
+		require("libs/gui/lesstif2/presents", 0, 0);
+		if (istrue(get("libs/gui/lesstif2/presents"))) {
+			require("libs/gui/xinerama/presents", 0, 0);
+			require("libs/gui/xrender/presents", 0, 0);
+		}
+		else {
+			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");
+			hook_custom_arg("disable-xinerama", NULL);
+			hook_custom_arg("disable-xrender", NULL);
+			hook_custom_arg("disable-hid_lesstif", NULL);
+		}
+	}
+	else {
+		hook_custom_arg("disable-xinerama", NULL);
+		hook_custom_arg("disable-xrender", NULL);
+	}
+
+	if (want_gtk)
+		want_glib = 1;
+
+	if (want_glib) {
+		require("libs/sul/glib", 0, 0);
+		if (!istrue(get("libs/sul/glib/presents"))) {
+			if (want_gtk) {
+				report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
+				hook_custom_arg("disable-hid_gtk2_gdk", NULL);
+				hook_custom_arg("disable-hid_gtk2_gl", NULL);
+			}
+			if (plug_is_enabled("puller")) {
+				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
+				hook_custom_arg("disable-puller", NULL);
+			}
+		}
+	}
+	else {
+		report("No need for glib, skipping GLIB detection\n");
+		put("libs/sul/glib/presents", "false");
+		put("libs/sul/glib/cflags", "");
+		put("libs/sul/glib/ldflags", "");
+	}
+
+	if (!istrue(get("libs/sul/glib/presents"))) {
+		/* Makefile templates will still reference these variables, they should be empty */
+		put("libs/sul/glib/cflags", "");
+		put("libs/sul/glib/ldflags", "");
+	}
+
+}
+
+
+
