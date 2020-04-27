@@ -122,11 +122,11 @@ static int parent_net_term_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pc
 {
 	parent_net_term_t *ctx = fctx->user_data;
 	if (new_obj->term != NULL) {
-		if (new_obj->ID < ctx->best_term->ID)
+		if ((ctx->best_term == NULL) || (new_obj->ID < ctx->best_term->ID))
 			ctx->best_term = new_obj;
 	}
 	else {
-		if (new_obj->ID < ctx->best_nonterm->ID)
+		if ((ctx->best_nonterm == NULL) || (new_obj->ID < ctx->best_nonterm->ID))
 			ctx->best_nonterm = new_obj;
 	}
 	return 0;
