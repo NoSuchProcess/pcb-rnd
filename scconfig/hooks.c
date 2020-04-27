@@ -21,8 +21,6 @@
 #include "librnd/scconfig/rnd_hook_detect.h"
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
-	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
 	{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
 	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png pcb_exporter"},
 	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png pcb_exporter"},
@@ -54,7 +52,7 @@ static void help1(void)
  returns true if no further argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
-	rnd_hook_custom_arg(key, value);
+	rnd_hook_custom_arg(key, value, disable_libs); /* call arg_auto_print_options() instead */
 
 	if (strcmp(key, "dot_pcb_rnd") == 0) {
 		put("/local/pcb/dot_pcb_rnd", value);

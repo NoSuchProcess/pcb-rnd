@@ -6,6 +6,21 @@ int hook_custom_arg(const char *key, const char *value);
 /*** implementation ***/
 int want_coord_bits;
 
+const arg_auto_set_t rnd_disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
+	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
+	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
+/*
+#undef plugin_def
+#undef plugin_header
+#undef plugin_dep
+#define plugin_def(name, desc, default_, all_, hidlib_) plugin3_args(name, desc)
+#define plugin_header(sect)
+#define plugin_dep(plg, on, hidlib)
+#include "plugins.h"
+*/
+	{NULL, NULL, NULL, NULL}
+};
+
 static void all_plugin_select(const char *state, int force);
 
 static void rnd_help1(const char *progname)
@@ -51,7 +66,7 @@ do { \
 		repeat = strclone(msg); \
 } while(0)
 
-static int rnd_hook_custom_arg_(const char *key, const char *value)
+static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_auto_set_t *disable_libs)
 {
 	if (strcmp(key, "prefix") == 0) {
 		report("Setting prefix to '%s'\n", value);
@@ -94,7 +109,9 @@ static int rnd_hook_custom_arg_(const char *key, const char *value)
 	if (strcmp(key, "help") == 0) {
 		help1();
 		printf("\nplugin control:\n");
-		arg_auto_print_options(stdout, " ", "                         ", disable_libs);
+		arg_auto_print_options(stdout, " ", "                         ", rnd_disable_libs);
+		if (disable_libs != NULL)
+			arg_auto_print_options(stdout, " ", "                         ", disable_libs);
 		help2();
 		printf("\n");
 		help_default_args(stdout, "");
@@ -124,12 +141,15 @@ static int rnd_hook_custom_arg_(const char *key, const char *value)
 		want_coord_bits = v;
 		return 1;
 	}
+	if (arg_auto_set(key, value, rnd_disable_libs) > 0)
+		return 1;
+
 	return 0;
 }
 
-#define rnd_hook_custom_arg(key, value) \
+#define rnd_hook_custom_arg(key, value, disable_libs) \
 do { \
-	if (rnd_hook_custom_arg_(key, value)) \
+	if (rnd_hook_custom_arg_(key, value, disable_libs)) \
 		return 1; \
 } while(0)
 
