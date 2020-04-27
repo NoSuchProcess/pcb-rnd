@@ -11,7 +11,6 @@
 #define pcb_register_action rnd_register_action
 #define pcb_register_actions rnd_register_actions
 #define PCB_REGISTER_ACTIONS RND_REGISTER_ACTIONS
-#define pcb_tool_gui_init rnd_tool_gui_init
 #define pcb_action_s rnd_action_s
 #define pcb_action_t rnd_action_t
 #define pcb_fgw rnd_fgw
