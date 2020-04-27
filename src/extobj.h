@@ -78,7 +78,7 @@ pcb_extobj_t *pcb_extobj_lookup(const char *name);
 
 /* Called to remove the subc of an edit object floater; returns 0 on no
    action, 1 if it removed an extobj subc */
-PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
+RND_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *edit_obj);
 
 
 /* called (by the subc code) before an edit-obj is removed */
@@ -108,7 +108,7 @@ int pcb_extobj_lookup_idx(const char *name);
 extern int pcb_extobj_invalid; /* this changes upon each new extobj reg, forcing the caches to be invalidated eventually */
 extern vtp0_t pcb_extobj_i2o;  /* extobj_idx -> (pcb_ext_obj_t *) */
 
-PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
+RND_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 {
 	pcb_extobj_t **eo;
 
@@ -129,7 +129,7 @@ PCB_INLINE pcb_extobj_t *pcb_extobj_get(pcb_subc_t *obj)
 	return *eo;
 }
 
-PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const char *value)
+RND_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const char *value)
 {
 	pcb_subc_t *subc = (pcb_subc_t *)obj;
 	pcb_extobj_t *eo;
@@ -142,7 +142,7 @@ PCB_INLINE void pcb_extobj_chg_attr(pcb_any_obj_t *obj, const char *key, const c
 		eo->chg_attr(subc, key, value);
 }
 
-PCB_INLINE pcb_subc_t *pcb_extobj_get_floater_subc(pcb_any_obj_t *flt)
+RND_INLINE pcb_subc_t *pcb_extobj_get_floater_subc(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;
 	pcb_extobj_t *eo;
@@ -161,7 +161,7 @@ PCB_INLINE pcb_subc_t *pcb_extobj_get_floater_subc(pcb_any_obj_t *flt)
 	return subc;
 }
 
-PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
+RND_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;
 	pcb_extobj_t *eo;
@@ -193,7 +193,7 @@ PCB_INLINE int pcb_extobj_del_floater(pcb_any_obj_t *flt)
 	return 0;
 }
 
-PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
+RND_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc = pcb_obj_parent_subc(flt);
 	pcb_extobj_t *eo;
@@ -217,7 +217,7 @@ PCB_INLINE void pcb_extobj_float_new(pcb_any_obj_t *flt)
 	}
 }
 
-PCB_INLINE pcb_any_obj_t *pcb_extobj_float_pre(pcb_any_obj_t *flt)
+RND_INLINE pcb_any_obj_t *pcb_extobj_float_pre(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;
 	pcb_extobj_t *eo;
@@ -239,7 +239,7 @@ PCB_INLINE pcb_any_obj_t *pcb_extobj_float_pre(pcb_any_obj_t *flt)
 	return NULL;
 }
 
-PCB_INLINE void pcb_extobj_float_geo(pcb_any_obj_t *flt)
+RND_INLINE void pcb_extobj_float_geo(pcb_any_obj_t *flt)
 {
 	pcb_subc_t *subc;
 	pcb_extobj_t *eo;
@@ -257,7 +257,7 @@ PCB_INLINE void pcb_extobj_float_geo(pcb_any_obj_t *flt)
 		eo->float_geo(subc, flt);
 }
 
-PCB_INLINE void pcb_extobj_subc_geo(pcb_subc_t *subc)
+RND_INLINE void pcb_extobj_subc_geo(pcb_subc_t *subc)
 {
 	pcb_extobj_t *eo;
 

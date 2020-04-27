@@ -97,7 +97,7 @@ void pcb_extobj_uninit(void)
 	vtp0_uninit(&pcb_extobj_i2o);
 }
 
-PCB_INLINE pcb_data_t *pcb_extobj_parent_data(pcb_any_obj_t *obj)
+RND_INLINE pcb_data_t *pcb_extobj_parent_data(pcb_any_obj_t *obj)
 {
 	if (obj->parent_type == PCB_PARENT_DATA)
 		return obj->parent.data;

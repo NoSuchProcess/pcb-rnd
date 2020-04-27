@@ -43,7 +43,7 @@ struct pcb_clrcache_s {
 	void *user_data; /* the caller can set this up after pcb_clrcache_init and use it in hidfree() */
 };
 
-PCB_INLINE void pcb_clrcache_init(pcb_clrcache_t *cache, int hidsize, pcb_clrcache_free_t hidfree)
+RND_INLINE void pcb_clrcache_init(pcb_clrcache_t *cache, int hidsize, pcb_clrcache_free_t hidfree)
 {
 	htip_init(&cache->ht, longhash, longkeyeq);
 	cache->hidsize = hidsize;
@@ -51,7 +51,7 @@ PCB_INLINE void pcb_clrcache_init(pcb_clrcache_t *cache, int hidsize, pcb_clrcac
 	cache->user_data = NULL;
 }
 
-PCB_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const pcb_color_t *color)
+RND_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const pcb_color_t *color)
 {
 	void *old = htip_get(&cache->ht, color->packed);
 	if (old == NULL)
@@ -61,7 +61,7 @@ PCB_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const pcb_color_t *color
 	free(old);
 }
 
-PCB_INLINE void *pcb_clrcache_get(pcb_clrcache_t *cache, const pcb_color_t *color, int alloc)
+RND_INLINE void *pcb_clrcache_get(pcb_clrcache_t *cache, const pcb_color_t *color, int alloc)
 {
 	void *clr = htip_get(&cache->ht, color->packed);
 	if (clr != NULL)
@@ -75,7 +75,7 @@ PCB_INLINE void *pcb_clrcache_get(pcb_clrcache_t *cache, const pcb_color_t *colo
 	return clr;
 }
 
-PCB_INLINE void pcb_clrcache_uninit(pcb_clrcache_t *cache)
+RND_INLINE void pcb_clrcache_uninit(pcb_clrcache_t *cache)
 {
 	htip_entry_t *e;
 

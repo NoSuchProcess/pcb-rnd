@@ -38,27 +38,27 @@ gr_t *gr_clone(gr_t *g);
 void gr_free(gr_t *g);
 
 
-PCB_INLINE void gr_bound_chk(gr_t *g, int n1, int n2)
+RND_INLINE void gr_bound_chk(gr_t *g, int n1, int n2)
 {
 	assert((n1 >= 0) && (n1 < g->n));
 	assert((n2 >= 0) && (n2 < g->n));
 }
 
 /* return number of edges between nodes n1 and n2 - without checks */
-PCB_INLINE int gr_get_(gr_t *g, int n1, int n2)
+RND_INLINE int gr_get_(gr_t *g, int n1, int n2)
 {
 	return g->adj[n1 * g->n + n2];
 }
 
 /* return number of edges between nodes n1 and n2 - with checks */
-PCB_INLINE int gr_get(gr_t *g, int n1, int n2)
+RND_INLINE int gr_get(gr_t *g, int n1, int n2)
 {
 	gr_bound_chk(g, n1, n2);
 	return gr_get_(g, n1, n2);
 }
 
 /* return old number of edges between nodes n1 and n2 and change it to newnum - no check*/
-PCB_INLINE int gr_set_(gr_t *g, int n1, int n2, int newnum)
+RND_INLINE int gr_set_(gr_t *g, int n1, int n2, int newnum)
 {
 	int old;
 	old = g->adj[n1 * g->n + n2];
@@ -68,7 +68,7 @@ PCB_INLINE int gr_set_(gr_t *g, int n1, int n2, int newnum)
 }
 
 /* return old number of edges between nodes n1 and n2 and increase it by newnum - no check*/
-PCB_INLINE int gr_add_(gr_t *g, int n1, int n2, int newnum)
+RND_INLINE int gr_add_(gr_t *g, int n1, int n2, int newnum)
 {
 	int old;
 	old = g->adj[n1 * g->n + n2];
@@ -78,7 +78,7 @@ PCB_INLINE int gr_add_(gr_t *g, int n1, int n2, int newnum)
 }
 
 /* return old number of edges between nodes n1 and n2 and change it to newnum - check*/
-PCB_INLINE int gr_set(gr_t *g, int n1, int n2, int newnum)
+RND_INLINE int gr_set(gr_t *g, int n1, int n2, int newnum)
 {
 	gr_bound_chk(g, n1, n2);
 	return gr_set_(g, n1, n2, newnum);

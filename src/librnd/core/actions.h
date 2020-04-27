@@ -146,13 +146,13 @@ int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn);
 fgw_func_t *rnd_act_lookup(const char *aname);
 
 char *rnd_make_action_name(char *out, const char *inp, int inp_len);
-PCB_INLINE char *rnd_aname(char *out, const char *inp)
+RND_INLINE char *rnd_aname(char *out, const char *inp)
 {
 	return rnd_make_action_name(out, inp, strlen(inp));
 }
 
 /* Return 0 on success after an action call */
-PCB_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
+RND_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
 {
 	if (ret != 0)
 		return -1;

@@ -51,7 +51,7 @@
 		}											\
 	} while(0)
 
-PCB_INLINE void pcb_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)
+RND_INLINE void pcb_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)
 {
 	double nx, ny;
 	rnd_coord_t px = *x - cx;

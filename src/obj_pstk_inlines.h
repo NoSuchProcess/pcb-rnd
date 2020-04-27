@@ -42,7 +42,7 @@ typedef enum {
 } pcb_bb_type_t;
 
 /* Returns the ID of a proto within its parent's cache */
-PCB_INLINE rnd_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
+RND_INLINE rnd_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
 {
 	pcb_data_t *data = proto->parent;
 	if ((proto >= data->ps_protos.array) && (proto < data->ps_protos.array + data->ps_protos.used))
@@ -52,7 +52,7 @@ PCB_INLINE rnd_cardinal_t pcb_pstk_get_proto_id(const pcb_pstk_proto_t *proto)
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, rnd_cardinal_t proto)
+RND_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, rnd_cardinal_t proto)
 {
 	if (proto >= data->ps_protos.used)
 		return NULL;
@@ -62,14 +62,14 @@ PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto_(const pcb_data_t *data, rnd_car
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-PCB_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto(const pcb_pstk_t *ps)
+RND_INLINE pcb_pstk_proto_t *pcb_pstk_get_proto(const pcb_pstk_t *ps)
 {
 	return pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 }
 
 /* return the padstack transformed shape. Returns NULL if the proto or the
    tshape is not. */
-PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, rnd_cardinal_t proto, int protoi)
+RND_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, rnd_cardinal_t proto, int protoi)
 {
 	pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(data, proto);
 	if (protoi < 0)
@@ -82,7 +82,7 @@ PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, rnd_c
 }
 
 /* return the padstack prototype for a padstack reference - returns NULL if not found */
-PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
+RND_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
 {
 	if (ps->protoi < 0) { /* need to update this */
 		pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
@@ -94,7 +94,7 @@ PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
 }
 
 /* return the padstack *untransformed* prototype for a padstack reference - returns NULL if not found */
-PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_untshape(pcb_pstk_t *ps)
+RND_INLINE pcb_pstk_tshape_t *pcb_pstk_get_untshape(pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *pr = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 	if (pr == NULL)
@@ -104,7 +104,7 @@ PCB_INLINE pcb_pstk_tshape_t *pcb_pstk_get_untshape(pcb_pstk_t *ps)
 
 /* return the type of drill and optionally fill in group IDs of drill ends ;
    if proto_out is not NULL, also load it with the proto */
-PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
+RND_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
 {
 	pcb_bb_type_t res;
 	int topi, boti;
@@ -182,7 +182,7 @@ PCB_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps,
 
 /* return whether a given padstack drills a given group
   (does not consider plating, only drill!) */
-PCB_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
+RND_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
 {
 	pcb_layergrp_id_t top, bot;
 	pcb_bb_type_t res = pcb_pstk_bbspan(pcb, ps, &top, &bot, proto_out);
@@ -197,7 +197,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps,
 /* returns the shape the padstack has on the given layer group;
    WARNING: does not respect the NOSHAPE thermal, should NOT be
    called directly; use pcb_pstk_shape_*() instead. */
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
@@ -216,7 +216,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape(pcb_pstk_t *ps, pcb_layer_type_t lyt
    Useful for GUI dialogs only, for presenting the prototype (not the actual ps transformed reality)
    WARNING: does not respect the NOSHAPE thermal, should NOT be
    called directly; use pcb_pstk_shape_*() instead. */
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_notransform(pcb_pstk_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_notransform(pcb_pstk_t *ps, pcb_layer_type_t lyt, pcb_layer_combining_t comb)
 {
 	int n;
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_untshape(ps);
@@ -233,7 +233,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_notransform(pcb_pstk_t *ps, pcb_laye
 }
 
 /* If force is non-zero, return the shape even if a thermal says no-shape */
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at_(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer, int force)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at_(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer, int force)
 {
 	unsigned int lyt = pcb_layer_flags_(layer);
 	pcb_layer_combining_t comb = layer->comb;
@@ -268,13 +268,13 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at_(pcb_board_t *pcb, pcb_pstk_t *ps
 	return pcb_pstk_shape(ps, lyt, comb);
 }
 
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 	return pcb_pstk_shape_at_(pcb, ps, layer, 0);
 }
 
 
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 
@@ -309,7 +309,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 }
 
 /* Returns the mech shape (slot) if it affects grp */
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t grp)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t grp)
 {
 	pcb_pstk_tshape_t *ts;
 	pcb_pstk_proto_t *proto;
@@ -325,7 +325,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_gid(pcb_board_t *pcb, pcb_pstk_
 }
 
 /* Returns the mech shape (slot) if it affects layer */
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 	layer = pcb_layer_get_real(layer);
 	return pcb_pstk_shape_mech_gid(pcb, ps, layer->meta.real.grp);
@@ -333,7 +333,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_at(pcb_board_t *pcb, pcb_pstk_t
 
 /* Returns a shape correspinding to the hole or the mech shape (slot) if
    it affects layer; hole shape is created in holetmp */
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer, pcb_pstk_shape_t *holetmp)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer, pcb_pstk_shape_t *holetmp)
 {
 	pcb_pstk_tshape_t *ts;
 	pcb_pstk_proto_t *proto;
@@ -363,7 +363,7 @@ PCB_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_at(pcb_board_t *pcb, pc
    shape. The forbidden shape should be the shape that triggers the lookup.
    tmpshp should be a local temporary shape where the circular shape for a
    hole can be built. */
-PCB_INLINE pcb_pstk_shape_t *pcb_pstk_hshadow_shape(pcb_pstk_t *ps, pcb_pstk_shape_t *forbidden, pcb_pstk_shape_t *tmpshp)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_hshadow_shape(pcb_pstk_t *ps, pcb_pstk_shape_t *forbidden, pcb_pstk_shape_t *tmpshp)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);

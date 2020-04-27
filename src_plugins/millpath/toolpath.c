@@ -53,7 +53,7 @@
 
 extern const char *pcb_millpath_cookie;
 
-PCB_INLINE void sub_layer_line(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_line_t *line_in, int centerline)
+RND_INLINE void sub_layer_line(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_line_t *line_in, int centerline)
 {
 	pcb_line_t line_tmp;
 
@@ -68,7 +68,7 @@ PCB_INLINE void sub_layer_line(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_
 	pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_LINE, &line_tmp);
 }
 
-PCB_INLINE void sub_layer_arc(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_arc_t *arc_in, int centerline)
+RND_INLINE void sub_layer_arc(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_arc_t *arc_in, int centerline)
 {
 	pcb_arc_t arc_tmp;
 
@@ -83,7 +83,7 @@ PCB_INLINE void sub_layer_arc(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_ARC, &arc_tmp);
 }
 
-PCB_INLINE void sub_layer_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_poly_t *poly, int centerline)
+RND_INLINE void sub_layer_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_poly_t *poly, int centerline)
 {
 	pcb_polyarea_t *f, *b, *ra;
 

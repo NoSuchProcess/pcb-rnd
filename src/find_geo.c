@@ -53,7 +53,7 @@
 /* This is required for fullpoly: whether an object bbox intersects a poly
    bbox can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj bbox intersects any island's bbox */
-PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_box_t *box, const pcb_poly_t *poly, int first_only)
+RND_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_box_t *box, const pcb_poly_t *poly, int first_only)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -75,7 +75,7 @@ PCB_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_box
    can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj's poly intersects any island's.
    Frees objpoly at the end. */
-PCB_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_poly_t *poly, int first_only)
+RND_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_poly_t *poly, int first_only)
 {
 	pcb_poly_it_t it;
 	pcb_polyarea_t *pa;
@@ -829,7 +829,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 
 /* returns whether a round-cap pcb line touches a polygon; assumes bounding
    boxes do touch */
-PCB_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *pl, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
+RND_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *pl, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
 {
 	rnd_coord_t ox, oy, vx, vy;
 	double dx, dy, h, l;
@@ -948,7 +948,7 @@ pcb_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *
 }
 
 
-PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc, pcb_pstk_shape_t *shape)
+RND_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc, pcb_pstk_shape_t *shape)
 {
 	if (shape == NULL) goto noshape;
 
@@ -998,7 +998,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps
 	return pcb_false;
 }
 
-PCB_INLINE pcb_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc)
+RND_INLINE pcb_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
@@ -1018,7 +1018,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pc
 }
 
 
-PCB_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+RND_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	int n;
 	pcb_pline_t *pl;
@@ -1043,7 +1043,7 @@ PCB_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape
 	return shp;
 }
 
-PCB_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, pcb_pstk_shape_t *shape)
+RND_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, pcb_pstk_shape_t *shape)
 {
 	if (shape == NULL) goto noshape;
 
@@ -1095,7 +1095,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 	return pcb_false;
 }
 
-PCB_INLINE pcb_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly)
+RND_INLINE pcb_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
@@ -1115,14 +1115,14 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 }
 
 
-PCB_INLINE pcb_bool_t pstk_shape_isc_circ_poly(const pcb_find_t *ctx, pcb_pstk_t *p, pcb_pstk_shape_t *sp, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
+RND_INLINE pcb_bool_t pstk_shape_isc_circ_poly(const pcb_find_t *ctx, pcb_pstk_t *p, pcb_pstk_shape_t *sp, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
 {
 	rnd_coord_t px = sc->data.circ.x + c->x - p->x;
 	rnd_coord_t py = sc->data.circ.y + c->y - p->y;
 	return pcb_isc_line_polyline(ctx, sp->data.poly.pa->contours,  px, py, px, py, sc->data.circ.dia);
 }
 
-PCB_INLINE pcb_bool_t pstk_shape_isc_circ_line(const pcb_find_t *ctx, pcb_pstk_t *l, pcb_pstk_shape_t *sl, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
+RND_INLINE pcb_bool_t pstk_shape_isc_circ_line(const pcb_find_t *ctx, pcb_pstk_t *l, pcb_pstk_shape_t *sl, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
 {
 	pcb_any_line_t tmp;
 	tmp.Point1.X = sl->data.line.x1 + l->x;
@@ -1134,7 +1134,7 @@ PCB_INLINE pcb_bool_t pstk_shape_isc_circ_line(const pcb_find_t *ctx, pcb_pstk_t
 	return pcb_is_point_in_line(sc->data.circ.x + c->x, sc->data.circ.y + c->y, sc->data.circ.dia/2, &tmp);
 }
 
-PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
+RND_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
 {
 	if ((shape1->shape == PCB_PSSH_POLY) && (shape1->data.poly.pa == NULL))
 		pcb_pstk_shape_update_pa(&shape1->data.poly);
@@ -1204,7 +1204,7 @@ PCB_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 	return pcb_false;
 }
 
-PCB_INLINE pcb_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2)
+RND_INLINE pcb_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2)
 {
 	pcb_layer_t *ly;
 	pcb_pstk_proto_t *proto1, *proto2;
@@ -1239,7 +1239,7 @@ PCB_INLINE pcb_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 }
 
 
-PCB_INLINE pcb_bool_t pcb_isc_pstk_rat(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_rat_t *rat)
+RND_INLINE pcb_bool_t pcb_isc_pstk_rat(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_rat_t *rat)
 {
 	pcb_board_t *pcb = PCB;
 

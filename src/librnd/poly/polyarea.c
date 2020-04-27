@@ -114,7 +114,7 @@ int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_
 
 #ifndef NDEBUG
 #include <stdarg.h>
-PCB_INLINE void DEBUGP(const char *fmt, ...)
+RND_INLINE void DEBUGP(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -122,7 +122,7 @@ PCB_INLINE void DEBUGP(const char *fmt, ...)
 	va_end(ap);
 }
 #else
-PCB_INLINE void DEBUGP(const char *fmt, ...) { }
+RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #endif
 
 /* ///////////////////////////////////////////////////////////////////////////// * /
@@ -2423,7 +2423,7 @@ void pcb_poly_vertex_exclude(pcb_pline_t *parent, pcb_vnode_t * node)
 	}
 }
 
-PCB_INLINE void pcb_poly_vertex_include_force_(pcb_vnode_t *after, pcb_vnode_t *node)
+RND_INLINE void pcb_poly_vertex_include_force_(pcb_vnode_t *after, pcb_vnode_t *node)
 {
 	assert(after != NULL);
 	assert(node != NULL);
@@ -2918,7 +2918,7 @@ do { \
 #endif
 
 
-PCB_INLINE rnd_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *fmt, ...)
+RND_INLINE rnd_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *fmt, ...)
 {
 #ifndef NDEBUG
 	va_list ap;

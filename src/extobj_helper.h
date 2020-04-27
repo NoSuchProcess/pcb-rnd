@@ -34,17 +34,17 @@
 /*** API ***/
 
 /* Convert an attribute to coord, return 0 on success */
-PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, const char *name);
-PCB_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char *name);
+RND_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, const char *name);
+RND_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char *name);
 
 /* Wrap the update/re-generation of an extobject-subc in this begin/end to
    make sure bbox and undo are updated properly. The end() call always returns
    0. */
-PCB_INLINE void pcb_exto_regen_begin(pcb_subc_t *subc);
-PCB_INLINE int pcb_exto_regen_end(pcb_subc_t *subc);
+RND_INLINE void pcb_exto_regen_begin(pcb_subc_t *subc);
+RND_INLINE int pcb_exto_regen_end(pcb_subc_t *subc);
 
 /*** implementation ***/
-PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, const char *name)
+RND_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, const char *name)
 {
 	double v;
 	rnd_bool succ;
@@ -59,7 +59,7 @@ PCB_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, 
 	return -1;
 }
 
-PCB_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char *name)
+RND_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char *name)
 {
 	long l;
 	char *end;
@@ -74,7 +74,7 @@ PCB_INLINE int pcb_extobj_unpack_int(const pcb_subc_t *obj, int *res, const char
 	return -1;
 }
 
-PCB_INLINE void pcb_exto_regen_begin(pcb_subc_t *subc)
+RND_INLINE void pcb_exto_regen_begin(pcb_subc_t *subc)
 {
 	pcb_data_t *data = subc->parent.data;
 	if (data->subc_tree != NULL)
@@ -82,7 +82,7 @@ PCB_INLINE void pcb_exto_regen_begin(pcb_subc_t *subc)
 	pcb_undo_freeze_add();
 }
 
-PCB_INLINE int pcb_exto_regen_end(pcb_subc_t *subc)
+RND_INLINE int pcb_exto_regen_end(pcb_subc_t *subc)
 {
 	pcb_data_t *data = subc->parent.data;
 
@@ -94,7 +94,7 @@ PCB_INLINE int pcb_exto_regen_end(pcb_subc_t *subc)
 	return 0;
 }
 
-PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, const pcb_dflgmap_t *layers, rnd_coord_t ox, rnd_coord_t oy, rnd_bool on_bottom, pcb_subc_t *copy_from)
+RND_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, const pcb_dflgmap_t *layers, rnd_coord_t ox, rnd_coord_t oy, rnd_bool on_bottom, pcb_subc_t *copy_from)
 {
 	pcb_subc_t *subc = pcb_subc_alloc();
 	pcb_board_t *pcb = NULL;
@@ -128,7 +128,7 @@ PCB_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 	return subc;
 }
 
-PCB_INLINE void pcb_exto_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
+RND_INLINE void pcb_exto_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
 	rnd_coord_t x, y, unit = PCB_SUBC_AUX_UNIT;
 
@@ -145,7 +145,7 @@ PCB_INLINE void pcb_exto_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 /*** dialog box build ***/
 
-PCB_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, pcb_hid_attribute_t *attr, const char *newval) /* for internal use */
+RND_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, pcb_hid_attribute_t *attr, const char *newval) /* for internal use */
 {
 	pcb_board_t *pcb;
 	pcb_data_t *data;
@@ -162,7 +162,7 @@ PCB_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, pcb_hid_attribute_t 
 	pcb_gui->invalidate_all(pcb_gui);
 }
 
-PCB_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+RND_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_subc_t *subc = caller_data;
 	char tmp[128];
@@ -200,7 +200,7 @@ do { \
 /*		pcb_dad_spin_set_value(spin->cmp.wend, NULL, wid, &hv); \*/
 
 
-PCB_INLINE void pcb_exto_dlg_str_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+RND_INLINE void pcb_exto_dlg_str_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_subc_t *subc = caller_data;
 	pcb_exto_dlg_gui_chg_attr(subc, attr, attr->val.str);
@@ -222,7 +222,7 @@ do { \
 		PCB_DAD_DEFAULT_PTR(dlg, currval); \
 } while(0)
 
-PCB_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+RND_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	pcb_subc_t *subc = caller_data;
 	char tmp[128];

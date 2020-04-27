@@ -172,7 +172,7 @@ typedef struct pcb_net_it_s {
 	htsp_entry_t *next;
 } pcb_net_it_t;
 
-PCB_INLINE pcb_net_t *pcb_net_next(pcb_net_it_t *it)
+RND_INLINE pcb_net_t *pcb_net_next(pcb_net_it_t *it)
 {
 	pcb_net_t *res;
 	if (it->next == NULL)
@@ -182,7 +182,7 @@ PCB_INLINE pcb_net_t *pcb_net_next(pcb_net_it_t *it)
 	return res;
 }
 
-PCB_INLINE pcb_net_t *pcb_net_first(pcb_net_it_t *it, pcb_netlist_t *nl)
+RND_INLINE pcb_net_t *pcb_net_first(pcb_net_it_t *it, pcb_netlist_t *nl)
 {
 	it->nl = nl;
 	it->next = htsp_first(nl);

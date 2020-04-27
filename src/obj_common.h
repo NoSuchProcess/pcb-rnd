@@ -283,7 +283,7 @@ void pcb_set_point_bounding_box(pcb_point_t *Pnt);
 #define pcb_size_class(a) ((a) < 32 ? 16 : ((a) < 64 ? 32 : ((a) < 128 ? 64 : ((a) < 256 ? 128 : ((a) < 512 ? 256 : ((a) < 1024 ? 512 : 1024 ))))))
 
 /* Return an object-instance-unique integer value */
-PCB_INLINE size_t pcb_obj_iid(pcb_any_obj_t *obj)
+RND_INLINE size_t pcb_obj_iid(pcb_any_obj_t *obj)
 {
 	return (size_t)obj / pcb_size_class(sizeof(pcb_any_obj_t));
 }

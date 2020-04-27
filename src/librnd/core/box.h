@@ -127,27 +127,27 @@ typedef struct rnd_cheap_point_s {
 /* note that boxes are closed on top and left and open on bottom and right.
    this means that top-left corner is in box, *but bottom-right corner is
    not*.  */
-PCB_INLINE rnd_bool rnd_point_in_box(const rnd_box_t * box, rnd_coord_t X, rnd_coord_t Y)
+RND_INLINE rnd_bool rnd_point_in_box(const rnd_box_t * box, rnd_coord_t X, rnd_coord_t Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X < box->X2) && (Y < box->Y2);
 }
 
-PCB_INLINE rnd_bool rnd_point_in_closed_box(const rnd_box_t * box, rnd_coord_t X, rnd_coord_t Y)
+RND_INLINE rnd_bool rnd_point_in_closed_box(const rnd_box_t * box, rnd_coord_t X, rnd_coord_t Y)
 {
 	return (X >= box->X1) && (Y >= box->Y1) && (X <= box->X2) && (Y <= box->Y2);
 }
 
-PCB_INLINE rnd_bool rnd_box_is_good(const rnd_box_t * b)
+RND_INLINE rnd_bool rnd_box_is_good(const rnd_box_t * b)
 {
 	return (b->X1 < b->X2) && (b->Y1 < b->Y2);
 }
 
-PCB_INLINE rnd_bool rnd_box_intersect(const rnd_box_t * a, const rnd_box_t * b)
+RND_INLINE rnd_bool rnd_box_intersect(const rnd_box_t * a, const rnd_box_t * b)
 {
 	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
 }
 
-PCB_INLINE rnd_cheap_point_t rnd_closest_cheap_point_in_box(const rnd_cheap_point_t * from, const rnd_box_t * box)
+RND_INLINE rnd_cheap_point_t rnd_closest_cheap_point_in_box(const rnd_cheap_point_t * from, const rnd_box_t * box)
 {
 	rnd_cheap_point_t r;
 	assert(box->X1 < box->X2 && box->Y1 < box->Y2);
@@ -157,12 +157,12 @@ PCB_INLINE rnd_cheap_point_t rnd_closest_cheap_point_in_box(const rnd_cheap_poin
 	return r;
 }
 
-PCB_INLINE rnd_bool rnd_box_in_box(const rnd_box_t * outer, const rnd_box_t * inner)
+RND_INLINE rnd_bool rnd_box_in_box(const rnd_box_t * outer, const rnd_box_t * inner)
 {
 	return (outer->X1 <= inner->X1) && (inner->X2 <= outer->X2) && (outer->Y1 <= inner->Y1) && (inner->Y2 <= outer->Y2);
 }
 
-PCB_INLINE rnd_box_t rnd_clip_box(const rnd_box_t * box, const rnd_box_t * clipbox)
+RND_INLINE rnd_box_t rnd_clip_box(const rnd_box_t * box, const rnd_box_t * clipbox)
 {
 	rnd_box_t r;
 	assert(rnd_box_intersect(box, clipbox));
@@ -174,7 +174,7 @@ PCB_INLINE rnd_box_t rnd_clip_box(const rnd_box_t * box, const rnd_box_t * clipb
 	return r;
 }
 
-PCB_INLINE rnd_box_t rnd_shrink_box(const rnd_box_t * box, rnd_coord_t amount)
+RND_INLINE rnd_box_t rnd_shrink_box(const rnd_box_t * box, rnd_coord_t amount)
 {
 	rnd_box_t r = *box;
 	r.X1 += amount;
@@ -184,13 +184,13 @@ PCB_INLINE rnd_box_t rnd_shrink_box(const rnd_box_t * box, rnd_coord_t amount)
 	return r;
 }
 
-PCB_INLINE rnd_box_t rnd_bloat_box(const rnd_box_t * box, rnd_coord_t amount)
+RND_INLINE rnd_box_t rnd_bloat_box(const rnd_box_t * box, rnd_coord_t amount)
 {
 	return rnd_shrink_box(box, -amount);
 }
 
 /* construct a minimum box that touches the input box at the center */
-PCB_INLINE rnd_box_t rnd_box_center(const rnd_box_t * box)
+RND_INLINE rnd_box_t rnd_box_center(const rnd_box_t * box)
 {
 	rnd_box_t r;
 	r.X1 = box->X1 + (box->X2 - box->X1) / 2;
@@ -201,7 +201,7 @@ PCB_INLINE rnd_box_t rnd_box_center(const rnd_box_t * box)
 }
 
 /* construct a minimum box that touches the input box at the corner */
-PCB_INLINE rnd_box_t rnd_box_corner(const rnd_box_t * box)
+RND_INLINE rnd_box_t rnd_box_corner(const rnd_box_t * box)
 {
 	rnd_box_t r;
 	r.X1 = box->X1;
@@ -212,7 +212,7 @@ PCB_INLINE rnd_box_t rnd_box_corner(const rnd_box_t * box)
 }
 
 /* construct a box that holds a single point */
-PCB_INLINE rnd_box_t rnd_point_box(rnd_coord_t X, rnd_coord_t Y)
+RND_INLINE rnd_box_t rnd_point_box(rnd_coord_t X, rnd_coord_t Y)
 {
 	rnd_box_t r;
 	r.X1 = X;
@@ -223,7 +223,7 @@ PCB_INLINE rnd_box_t rnd_point_box(rnd_coord_t X, rnd_coord_t Y)
 }
 
 /* close a bounding box by pushing its upper right corner */
-PCB_INLINE void rnd_close_box(rnd_box_t * r)
+RND_INLINE void rnd_close_box(rnd_box_t * r)
 {
 	r->X2++;
 	r->Y2++;
@@ -232,7 +232,7 @@ PCB_INLINE void rnd_close_box(rnd_box_t * r)
 /* return the square of the minimum distance from a point to some point
    inside a box.  The box is half-closed!  That is, the top-left corner
    is considered in the box, but the bottom-right corner is not. */
-PCB_INLINE double rnd_dist2_to_box(const rnd_cheap_point_t * p, const rnd_box_t * b)
+RND_INLINE double rnd_dist2_to_box(const rnd_cheap_point_t * p, const rnd_box_t * b)
 {
 	rnd_cheap_point_t r = rnd_closest_cheap_point_in_box(p, b);
 	return rnd_distance(r.X, r.Y, p->X, p->Y);
@@ -240,7 +240,7 @@ PCB_INLINE double rnd_dist2_to_box(const rnd_cheap_point_t * p, const rnd_box_t 
 
 
 /* Modify dst to include src */
-PCB_INLINE void rnd_box_bump_box(rnd_box_t *dst, const rnd_box_t *src)
+RND_INLINE void rnd_box_bump_box(rnd_box_t *dst, const rnd_box_t *src)
 {
 	if (src->X1 < dst->X1) dst->X1 = src->X1;
 	if (src->Y1 < dst->Y1) dst->Y1 = src->Y1;
@@ -249,7 +249,7 @@ PCB_INLINE void rnd_box_bump_box(rnd_box_t *dst, const rnd_box_t *src)
 }
 
 /* Modify dst to include src */
-PCB_INLINE void rnd_box_bump_point(rnd_box_t *dst, rnd_coord_t x, rnd_coord_t y)
+RND_INLINE void rnd_box_bump_point(rnd_box_t *dst, rnd_coord_t x, rnd_coord_t y)
 {
 	if (x < dst->X1) dst->X1 = x;
 	if (y < dst->Y1) dst->Y1 = y;

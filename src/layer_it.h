@@ -35,11 +35,11 @@
 typedef struct pcb_layer_it_s pcb_layer_it_t;
 
 /* Start an iteration matching exact flags or any of the flags; returns -1 if over */
-PCB_INLINE pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int exact_mask);
-PCB_INLINE pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int any_mask);
+RND_INLINE pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int exact_mask);
+RND_INLINE pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int any_mask);
 
 /* next iteration; returns -1 if over */
-PCB_INLINE pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it);
+RND_INLINE pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it);
 
 
 /*************** inline implementation *************************/
@@ -52,7 +52,7 @@ struct pcb_layer_it_s {
 	unsigned int global:1;
 };
 
-PCB_INLINE pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
+RND_INLINE pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
 {
 	if (it->global) {
 		/* over all layers, random order, without any checks - go the cheap way, bypassing groups */
@@ -87,7 +87,7 @@ PCB_INLINE pcb_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
 	}
 }
 
-PCB_INLINE pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int exact_mask)
+RND_INLINE pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int exact_mask)
 {
 	it->stack = stack;
 	it->mask = exact_mask;
@@ -98,7 +98,7 @@ PCB_INLINE pcb_layer_id_t pcb_layer_first(pcb_layer_stack_t *stack, pcb_layer_it
 	return pcb_layer_next(it);
 }
 
-PCB_INLINE pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int any_mask)
+RND_INLINE pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack_t *stack, pcb_layer_it_t *it, unsigned int any_mask)
 {
 	it->stack = stack;
 	it->mask = any_mask;
@@ -109,7 +109,7 @@ PCB_INLINE pcb_layer_id_t pcb_layer_first_any(pcb_layer_stack_t *stack, pcb_laye
 	return pcb_layer_next(it);
 }
 
-PCB_INLINE pcb_layer_id_t pcb_layer_first_all(pcb_layer_stack_t *stack, pcb_layer_it_t *it)
+RND_INLINE pcb_layer_id_t pcb_layer_first_all(pcb_layer_stack_t *stack, pcb_layer_it_t *it)
 {
 	it->stack = stack;
 	it->lidx = 0;

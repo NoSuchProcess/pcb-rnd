@@ -305,7 +305,7 @@ void drawgl_set_colour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 	alpha = a;
 }
 
-PCB_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
+RND_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
 {
 	/* Debug Drawing 
 	   primitive_buffer_add(GL_LINES,vertex_buffer.size,6);
@@ -323,7 +323,7 @@ PCB_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat 
 
 }
 
-PCB_INLINE void drawgl_add_texture_quad(	GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
+RND_INLINE void drawgl_add_texture_quad(	GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
 																					GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
 																					GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
 																					GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
@@ -337,7 +337,7 @@ PCB_INLINE void drawgl_add_texture_quad(	GLfloat x1, GLfloat y1, GLfloat u1, GLf
 	vertex_buffer_add_xyuv(x4, y4, u4, v4);
 }
 
-PCB_INLINE void drawgl_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+RND_INLINE void drawgl_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	primitive_buffer_add(GL_LINES, vertex_buffer.size, 2, 0);
 	vertex_buffer_reserve_extra(2);
@@ -345,7 +345,7 @@ PCB_INLINE void drawgl_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 	vertex_buffer_add(x2, y2);
 }
 
-PCB_INLINE void drawgl_add_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+RND_INLINE void drawgl_add_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	primitive_buffer_add(GL_LINE_LOOP, vertex_buffer.size, 4, 0);
 	vertex_buffer_reserve_extra(4);
@@ -355,22 +355,22 @@ PCB_INLINE void drawgl_add_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat
 	vertex_buffer_add(x1, y2);
 }
 
-PCB_INLINE void drawgl_add_mask_create()
+RND_INLINE void drawgl_add_mask_create()
 {
 	primitive_buffer_add(PRIM_MASK_CREATE, 0, 0, 0);
 }
 
-PCB_INLINE void drawgl_add_mask_destroy()
+RND_INLINE void drawgl_add_mask_destroy()
 {
 	primitive_buffer_add(PRIM_MASK_DESTROY, 0, 0, 0);
 }
 
-PCB_INLINE void drawgl_add_mask_use()
+RND_INLINE void drawgl_add_mask_use()
 {
 	primitive_buffer_add(PRIM_MASK_USE, 0, 0, 0);
 }
 
-PCB_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	glBegin(GL_LINE_LOOP);
 	glColor4f(red, green, blue, alpha);
@@ -381,7 +381,7 @@ PCB_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2,
 	glEnd();
 }
 
-PCB_INLINE void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+RND_INLINE void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	glBegin(GL_TRIANGLES);
 	glColor4f(red, green, blue, alpha);
@@ -394,7 +394,7 @@ PCB_INLINE void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLflo
 	glEnd();
 }
 
-PCB_INLINE void drawgl_reserve_triangles(int count)
+RND_INLINE void drawgl_reserve_triangles(int count)
 {
 	vertex_buffer_reserve_extra(count * 3);
 }
@@ -483,7 +483,7 @@ void drawgl_flush()
 /* Draw all buffered primitives. The dirty index is ignored and will remain unchanged.
  * This function accepts stencil bits that can be used to mask the drawing.
  */
-PCB_INLINE void drawgl_draw_all(int stencil_bits)
+RND_INLINE void drawgl_draw_all(int stencil_bits)
 {
 	int index = primitive_buffer.size;
 	primitive_t *prim;
@@ -618,13 +618,13 @@ void drawgl_reset()
 	primitive_buffer_clear();
 }
 
-PCB_INLINE void drawgl_set_marker()
+RND_INLINE void drawgl_set_marker()
 {
 	vertex_buffer_set_marker();
 	primitive_buffer_set_marker();
 }
 
-PCB_INLINE void drawgl_rewind_to_marker()
+RND_INLINE void drawgl_rewind_to_marker()
 {
 	vertex_buffer_rewind();
 	primitive_buffer_rewind();

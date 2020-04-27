@@ -133,7 +133,7 @@ static int parent_net_term_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pc
 }
 
 
-PCB_INLINE pcb_any_obj_t *pcb_qry_parent_net_term_(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
+RND_INLINE pcb_any_obj_t *pcb_qry_parent_net_term_(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
 {
 	pcb_find_t fctx;
 	parent_net_term_t ctx;

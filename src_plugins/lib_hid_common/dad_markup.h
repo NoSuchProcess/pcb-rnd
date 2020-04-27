@@ -35,7 +35,7 @@ typedef enum {
 } pcb_markup_state_t;
 
 
-PCB_INLINE const char *pcb_markup_next(pcb_markup_state_t *st, const char **at_, long *len)
+RND_INLINE const char *pcb_markup_next(pcb_markup_state_t *st, const char **at_, long *len)
 {
 	const char *start, *at = *at_;
 

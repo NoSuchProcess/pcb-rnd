@@ -29,26 +29,26 @@
 #include <librnd/core/compat_misc.h>
 
 /* compare two strings and return 0 if they are equal. NULL == NULL means equal. */
-PCB_INLINE int pcb_neqs(const char *s1, const char *s2)
+RND_INLINE int pcb_neqs(const char *s1, const char *s2)
 {
 	if ((s1 == NULL) && (s2 == NULL)) return 0;
 	if ((s1 == NULL) || (s2 == NULL)) return 1;
 	return strcmp(s1, s2) != 0;
 }
 
-PCB_INLINE unsigned pcb_hash_coord(rnd_coord_t c)
+RND_INLINE unsigned pcb_hash_coord(rnd_coord_t c)
 {
 	return murmurhash(&(c), sizeof(rnd_coord_t));
 }
 
 /* cheat: round with a tolerance of a few nanometers to overcome the usual
    +-1 nanometer rounding error */
-PCB_INLINE rnd_coord_t pcb_round_tol(double v, int tol)
+RND_INLINE rnd_coord_t pcb_round_tol(double v, int tol)
 {
 	return pcb_round(v/(double)tol)*tol;
 }
 
-PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, rnd_coord_t *dstx, rnd_coord_t *dsty, rnd_coord_t srcx, rnd_coord_t srcy)
+RND_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, rnd_coord_t *dstx, rnd_coord_t *dsty, rnd_coord_t srcx, rnd_coord_t srcy)
 {
 	rnd_coord_t px, py;
 
@@ -71,7 +71,7 @@ PCB_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, rnd_coord_t *dstx
 }
 
 
-PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
+RND_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
 {
 	long l;
 	ang = fmod(ang + tr->rot, 360.0);
@@ -86,7 +86,7 @@ PCB_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
 #define pcb_field_neq(s1, s2, f) ((s1)->f != (s2)->f)
 
 /* retruns if two sets of tr;x;y mismatches */
-PCB_INLINE rnd_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, rnd_coord_t x1, rnd_coord_t y1, const pcb_host_trans_t *tr2, rnd_coord_t x2, rnd_coord_t y2)
+RND_INLINE rnd_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, rnd_coord_t x1, rnd_coord_t y1, const pcb_host_trans_t *tr2, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_hash_tr_coords(tr1, &x1, &y1, x1, y1);
 	pcb_hash_tr_coords(tr2, &x2, &y2, x2, y2);

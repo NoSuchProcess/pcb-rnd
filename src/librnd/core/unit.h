@@ -145,7 +145,7 @@ void pcb_units_init(void);
 #define PCB_SWAP_ANGLE(a)        (-(a))
 #define PCB_SWAP_DELTA(d)        (-(d))
 
-PCB_INLINE rnd_coord_t pcb_coord_abs(rnd_coord_t c)
+RND_INLINE rnd_coord_t pcb_coord_abs(rnd_coord_t c)
 {
 	if (c < 0) return -c;
 	return c;

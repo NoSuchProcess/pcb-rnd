@@ -255,7 +255,7 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 }
 
 /* Modify v, pulling it back toward vp so that the distance to line ldx;ldy is increased by tune */
-PCB_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy, int inside)
+RND_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy, int inside)
 {
 	rnd_coord_t ox, oy;
 	double c, vx, vy, vlen, prx, pry, prlen;

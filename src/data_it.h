@@ -50,15 +50,15 @@ typedef struct pcb_data_it_s {
 
 /* Start an iteration on data, looking for any object type listed in mask;
    returns NULL if nothing is found. The iteration is non-recursive to subcircuits */
-PCB_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_objtype_t mask);
+RND_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_objtype_t mask);
 
 /* Return the next object or NULL on end of iteration */
-PCB_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it);
+RND_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it);
 
 /**** implementation (inlines) ****/
 
 /* Skip to the next type; returns 0 on success, non-0 at the end of types */
-PCB_INLINE int pcb_data_it_next_type(pcb_data_it_t *it)
+RND_INLINE int pcb_data_it_next_type(pcb_data_it_t *it)
 {
 	if (it->remaining == 0)
 		return 1;
@@ -98,7 +98,7 @@ PCB_INLINE int pcb_data_it_next_type(pcb_data_it_t *it)
 	} while(0)
 
 
-PCB_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it)
+RND_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it)
 {
 	retry:;
 
@@ -130,7 +130,7 @@ PCB_INLINE pcb_any_obj_t *pcb_data_next(pcb_data_it_t *it)
 	goto retry; /* ... on the new layer */
 }
 
-PCB_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_objtype_t mask)
+RND_INLINE pcb_any_obj_t *pcb_data_first(pcb_data_it_t *it, pcb_data_t *data, pcb_objtype_t mask)
 {
 	it->data = data;
 	it->mask = it->remaining = mask & PCB_DATA_IT_TYPES;

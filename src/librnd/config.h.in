@@ -35,10 +35,10 @@ print {\n\n/* Macro to add a funciton attribute to suppress "function unused" fo
 print_ternary ?cc/func_attr/unused/presents {#define PCB_FUNC_UNUSED __attribute__((unused))} {#define PCB_FUNC_UNUSED}
 
 print {\n\n/* inline, as detected ("inline" or empty) */\n}
-print_ternary ?cc/inline {#define PCB_INLINE_DETECTED inline} {#define PCB_INLINE_DETECTED /* no inline */}
+print_ternary ?cc/inline {#define RND_INLINE_DETECTED inline} {#define RND_INLINE_DETECTED /* no inline */}
 
 print {\n\n/* final, combined keywords and attributes for an inline function */\n}
-print {#define PCB_INLINE static PCB_INLINE_DETECTED PCB_FUNC_UNUSED\n\n}
+print {#define RND_INLINE static RND_INLINE_DETECTED PCB_FUNC_UNUSED\n\n}
 
 print {\n\n/* Wether setenv() works */\n}
 print_ternary ?libs/env/setenv/presents {#define PCB_HAVE_SETENV 1} {/* #undef PCB_HAVE_SETENV */}
@@ -195,7 +195,7 @@ print [@
 @?/local/pcb/include_stdint@
 
 /* Coordinate type and properties, as detected by scconfig */
-typedef @/local/pcb/coord_type@ pcb_coord_t;
+typedef @/local/pcb/coord_type@ rnd_coord_t;
 #define COORD_MAX @/local/pcb/coord_max@
 #define coord_abs pcb_coord_abs
 

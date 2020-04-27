@@ -120,3 +120,4 @@
 #define pcb_cheap_point_t rnd_cheap_point_t
 #define pcb_distance rnd_distance
 #define pcb_cardinal_t rnd_cardinal_t
+#define PCB_INLINE RND_INLINE

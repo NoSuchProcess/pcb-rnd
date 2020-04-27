@@ -2216,7 +2216,7 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	return &sc->data->Layer[n];
 }
 
-PCB_INLINE void pcb_subc_part_changed__(pcb_subc_t *sc, int force)
+RND_INLINE void pcb_subc_part_changed__(pcb_subc_t *sc, int force)
 {
 	/* can't do this incrementally: if a boundary object is smaller than before
 	   it has to make the subc bbox smaller too */
