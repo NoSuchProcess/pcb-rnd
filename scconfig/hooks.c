@@ -484,6 +484,7 @@ int hook_detect_target()
 	rnd_hook_detect_coord_bits(); /* remove this after the librnd split */
 
 	/* restore the original CFLAGS, without the effects of --debug, so Makefiles can decide when to use what cflag (c99 needs different ones) */
+	/* this should be removed after the librnd split */
 	put("/target/cc/cflags", get("/local/cc_flags_save"));
 
 	return 0;
