@@ -57,8 +57,7 @@ struct rnd_box_list_s {
 
 typedef enum {
 	PCB_NORTH = 0, PCB_EAST = 1, PCB_SOUTH = 2, PCB_WEST = 3,
-	PCB_NE = 4, PCB_SE = 5, PCB_SW = 6, PCB_NW = 7,
-	PCB_ANY_DIR = 8
+	PCB_NE = 4, PCB_SE = 5, PCB_SW = 6, PCB_NW = 7, PCB_ANY_DIR = 8
 } pcb_direction_t;
 
 /* rotates box 90-degrees cw */
@@ -113,8 +112,8 @@ do { rnd_coord_t t;\
 		((ys) += (deltay)); \
 	} while(0)
 
-#define	RND_BOX_MOVE_LOWLEVEL(b,dx,dy)		\
-	do {									\
+#define	RND_BOX_MOVE_LOWLEVEL(b,dx,dy) \
+	do { \
 		RND_MOVE_POINT((b)->X1,(b)->Y1,(dx),(dy)); \
 		RND_MOVE_POINT((b)->X2,(b)->Y2,(dx),(dy)); \
 	} while(0)
