@@ -171,37 +171,33 @@ static const char *grpname(pcb_layergrp_id_t gid)
 	return grp->name;
 }
 
-static char *report_pstk(pcb_pstk_t *ps)
+static void report_pstk(gds_t *dst, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto;
-	gds_t tmp;
 
 #ifndef NDEBUG
 	if (pcb_gui->shift_is_pressed(pcb_gui))
 		pcb_r_dump_tree(PCB->Data->padstack_tree, 0);
 #endif
 	proto = pcb_pstk_get_proto(ps);
-	gds_init(&tmp);
 
-	pcb_append_printf(&tmp, "%m+PADSTACK ID# %ld; Flags:%s\n"
+	pcb_append_printf(dst, "%m+PADSTACK ID# %ld; Flags:%s\n"
 		"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_OBJ_PSTK, NULL, 0),
 		ps->x, ps->y);
 
 	if ((proto != NULL) && (proto->hdia > 0))
-		pcb_append_printf(&tmp, "%m+Hole diameter: %$mS", USER_UNITMASK, proto->hdia);
+		pcb_append_printf(dst, "%m+Hole diameter: %$mS", USER_UNITMASK, proto->hdia);
 
-	pcb_append_printf(&tmp, "\n%s%s%s", gen_locked(ps), gen_term(ps));
-
-	return tmp.array;
+	pcb_append_printf(dst, "\n%s%s%s", gen_locked(ps), gen_term(ps));
 }
 
-static char *report_line(pcb_line_t *line)
+static void report_line(gds_t *dst, pcb_line_t *line)
 {
 #ifndef NDEBUG
 	if (pcb_gui->shift_is_pressed(pcb_gui))
 		pcb_r_dump_tree(line->parent.layer->line_tree, 0);
 #endif
-	return pcb_strdup_printf("%m+LINE ID# %ld;  Flags:%s\n"
+	pcb_append_printf(dst, "%m+LINE ID# %ld;  Flags:%s\n"
 		"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
 		"SecondPoint(X,Y) = %$mD, ID = %ld.\n"
 		"Width = %$mS.\nClearance = %$mS.\n"
@@ -217,13 +213,13 @@ static char *report_line(pcb_line_t *line)
 		gen_locked(line), gen_term(line));
 }
 
-static char *report_rat(pcb_rat_t *line)
+static void report_rat(gds_t *dst, pcb_rat_t *line)
 {
 #ifndef NDEBUG
 	if (pcb_gui->shift_is_pressed(pcb_gui))
 		pcb_r_dump_tree(PCB->Data->rat_tree, 0);
 #endif
-	return pcb_strdup_printf("%m+RAT-LINE ID# %ld;  Flags:%s\n"
+	pcb_append_printf(dst, "%m+RAT-LINE ID# %ld;  Flags:%s\n"
 		"FirstPoint(X,Y)  = %$mD; ID = %ld; "
 		"connects to layer group #%d (%s).\n"
 		"SecondPoint(X,Y) = %$mD; ID = %ld; "
@@ -233,7 +229,7 @@ static char *report_rat(pcb_rat_t *line)
 		line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
 }
 
-static char *report_arc(pcb_arc_t *arc)
+static void report_arc(gds_t *dst, pcb_arc_t *arc)
 {
 	pcb_box_t box;
 #ifndef NDEBUG
@@ -243,7 +239,7 @@ static char *report_arc(pcb_arc_t *arc)
 	pcb_arc_get_end(arc, 0, &box.X1, &box.Y1);
 	pcb_arc_get_end(arc, 1, &box.X2, &box.Y2);
 
-	return pcb_strdup_printf("%m+ARC ID# %ld;  Flags:%s\n"
+	pcb_append_printf(dst, "%m+ARC ID# %ld;  Flags:%s\n"
 		"CenterPoint(X,Y) = %$mD.\n"
 		"Width = %$mS.\nClearance = %$mS.\n"
 		"Radius = %$mS, StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
@@ -262,7 +258,7 @@ static char *report_arc(pcb_arc_t *arc)
 		pcb_layer_id(PCB->Data, arc->parent.layer), gen_locked(arc), gen_term(arc));
 }
 
-static char *report_poly(pcb_poly_t *poly)
+static void report_poly(gds_t *dst, pcb_poly_t *poly)
 {
 	const char *aunit;
 	double area, u;
@@ -282,7 +278,7 @@ static char *report_poly(pcb_poly_t *poly)
 	area = area / u;
 	area = area / u;
 
-	return pcb_strdup_printf("%m+POLYGON ID# %ld;  Flags:%s\n"
+	pcb_append_printf(dst, "%m+POLYGON ID# %ld;  Flags:%s\n"
 		"Its bounding box is %$mD %$mD.\n"
 		"It has %d points and could store %d more\n"
 		"  without using more memory.\n"
@@ -300,13 +296,13 @@ static char *report_poly(pcb_poly_t *poly)
 		gen_locked(poly), gen_term(poly));
 }
 
-static char *report_subc(pcb_subc_t *subc)
+static void report_subc(gds_t *dst, pcb_subc_t *subc)
 {
 #ifndef NDEBUG
 	if (pcb_gui->shift_is_pressed(pcb_gui))
 		pcb_r_dump_tree(PCB->Data->subc_tree, 0);
 #endif
-	return pcb_strdup_printf("%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
+	pcb_append_printf(dst, "%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Refdes \"%s\".\n"
 		"Footprint \"%s\".\n"
@@ -319,14 +315,14 @@ static char *report_subc(pcb_subc_t *subc)
 		gen_locked(subc));
 }
 
-static char *report_text(pcb_text_t *text)
+static void report_text(gds_t *dst, pcb_text_t *text)
 {
 #ifndef NDEBUG
 		if (pcb_gui->shift_is_pressed(pcb_gui))
 			pcb_r_dump_tree(text->parent.layer->text_tree, 0);
 #endif
 
-	return pcb_strdup_printf("%m+TEXT ID# %ld;  Flags:%s\n"
+	pcb_append_printf(dst, "%m+TEXT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Font id %d\nclearance %$mS\nthickness %$mS\nrotation %f\n"
 		, USER_UNITMASK,
@@ -336,14 +332,14 @@ static char *report_text(pcb_text_t *text)
 		text->fid, text->clearance, text->thickness, text->rot);
 }
 
-static char *report_gfx(pcb_gfx_t *gfx)
+static void report_gfx(gds_t *dst, pcb_gfx_t *gfx)
 {
 #ifndef NDEBUG
 		if (pcb_gui->shift_is_pressed(pcb_gui))
 			pcb_r_dump_tree(gfx->parent.layer->gfx_tree, 0);
 #endif
 
-	return pcb_strdup_printf("%m+GFX ID# %ld;  Flags:%s\n"
+	pcb_append_printf(dst, "%m+GFX ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Center %$mD\nSize %$mD\nrotation %f\n"
 		, USER_UNITMASK,
@@ -353,9 +349,9 @@ static char *report_gfx(pcb_gfx_t *gfx)
 		gfx->cx, gfx->cy, gfx->sx, gfx->sx, gfx->rot);
 }
 
-static char *report_point(int type, pcb_layer_t *layer, pcb_point_t *point)
+static void report_point(gds_t *dst, int type, pcb_layer_t *layer, pcb_point_t *point)
 {
-	return pcb_strdup_printf("%m+POINT ID# %ld.\n"
+	pcb_append_printf(dst, "%m+POINT ID# %ld.\n"
 		"Located at (X,Y) = %$mD.\n"
 		"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
 		point->X, point->Y,
@@ -365,15 +361,18 @@ static char *report_point(int type, pcb_layer_t *layer, pcb_point_t *point)
 
 static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	gds_t tmp;
 	void *ptr1, *ptr2, *ptr3;
 	int type = REPORT_TYPES;
-	char *op = NULL, *report = NULL, *how = NULL;
+	char *op = NULL, *how = NULL;
 	pcb_subc_t *subc;
 	pcb_coord_t x, y;
 	pcb_hid_get_coords("Click on object to report on", &x, &y, 0);
 
 	PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
 	PCB_ACT_MAY_CONVARG(2, FGW_STR, reportdialog, how = argv[2].val.str);
+
+	gds_init(&tmp);
 
 	if (op != NULL) {
 		if (pcb_strncasecmp(op, "Subc", 4) == 0)
@@ -384,39 +383,33 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		type = pcb_search_screen(x, y, REPORT_TYPES | PCB_OBJ_LOCKED, &ptr1, &ptr2, &ptr3);
 
 	switch (type) {
-		case PCB_OBJ_PSTK: report = report_pstk(ptr2); break;
-		case PCB_OBJ_LINE: report = report_line(ptr2); break;
-		case PCB_OBJ_RAT:  report = report_rat(ptr2); break;
-		case PCB_OBJ_ARC:  report = report_arc(ptr2); break;
-		case PCB_OBJ_POLY: report = report_poly(ptr2); break;
-		case PCB_OBJ_SUBC: report = report_subc(ptr2); break;
-		case PCB_OBJ_TEXT: report = report_text(ptr2); break;
-		case PCB_OBJ_GFX:  report = report_gfx(ptr2); break;
+		case PCB_OBJ_PSTK: report_pstk(&tmp, ptr2); break;
+		case PCB_OBJ_LINE: report_line(&tmp, ptr2); break;
+		case PCB_OBJ_RAT:  report_rat(&tmp, ptr2); break;
+		case PCB_OBJ_ARC:  report_arc(&tmp, ptr2); break;
+		case PCB_OBJ_POLY: report_poly(&tmp, ptr2); break;
+		case PCB_OBJ_SUBC: report_subc(&tmp, ptr2); break;
+		case PCB_OBJ_TEXT: report_text(&tmp, ptr2); break;
+		case PCB_OBJ_GFX:  report_gfx(&tmp, ptr2); break;
 		case PCB_OBJ_LINE_POINT:
-		case PCB_OBJ_POLY_POINT: report = report_point(type, ptr1, ptr2); break;
-		case PCB_OBJ_VOID: report = NULL; break;
-		default: report = pcb_strdup_printf("Unknown\n"); break;
+		case PCB_OBJ_POLY_POINT: report_point(&tmp, type, ptr1, ptr2); break;
+		case PCB_OBJ_VOID:
+			pcb_message(PCB_MSG_INFO, "Nothing found to report on\n");
+			PCB_ACT_IRES(1);
+			return 0;
+		default: pcb_append_printf(&tmp, "Unknown\n"); break;
 	}
 
-	if ((report == NULL) || (*report == '\0')) {
-		pcb_message(PCB_MSG_INFO, "Nothing found to report on\n");
-		PCB_ACT_IRES(1);
-		return 0;
-	}
+	subc = pcb_obj_parent_subc((pcb_any_obj_t *)ptr2);
+	if (subc != NULL)
+		pcb_append_printf(&tmp, "\nPart of subcircuit #%ld\n", subc->ID);
 
 	/* create dialog box */
-	subc = pcb_obj_parent_subc((pcb_any_obj_t *)ptr2);
-	if (subc != NULL) {
-		int len = strlen(report);
-		report = realloc(report, len + 256);
-		sprintf(report + len, "\nPart of subcircuit #%ld\n", subc->ID);
-	}
-
 	if ((how != NULL) && (strcmp(how, "log") == 0))
-		pcb_message(PCB_MSG_INFO, "--- Report ---\n%s---\n", report);
+		pcb_message(PCB_MSG_INFO, "--- Report ---\n%s---\n", tmp.array);
 	else
-		rdialog("Report", report);
-	free(report);
+		rdialog("Report", tmp.array);
+	gds_uninit(&tmp);
 
 	PCB_ACT_IRES(0);
 	return 0;
