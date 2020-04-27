@@ -33,7 +33,7 @@ const char *dlg_netlist_cookie = "netlist dialog";
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
-	pcb_box_t bb_prv;
+	rnd_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
 	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wripup, waddrats, wrename, wmerge, wattr;
 	int active; /* already open - allow only one instance */

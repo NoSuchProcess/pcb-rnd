@@ -149,7 +149,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double dx, dy;
 	rnd_coord_t view_width, view_height;
 	const char *a1, *a2, *a3, *op;
-	pcb_box_t vbx;
+	rnd_box_t vbx;
 
 	extra_units_x[0].scale = RND_ACT_HIDLIB->grid;
 	extra_units_x[2].scale = RND_ACT_HIDLIB->size_x;
@@ -192,7 +192,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (pcb_strcasecmp(a3, "view") == 0) {
 		if ((pcb_gui != NULL) && (pcb_gui->view_get != NULL)) {
-			pcb_box_t viewbox;
+			rnd_box_t viewbox;
 			pcb_gui->view_get(pcb_gui, &viewbox);
 			if (pcbhl_conf.editor.view.flip_x)
 				dx = viewbox.X2 - dx;
@@ -207,7 +207,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* Allow leaving snapped pin/pad/padstack */
 	if (hidlib->tool_snapped_obj_bbox) {
-		pcb_box_t *bbx = hidlib->tool_snapped_obj_bbox;
+		rnd_box_t *bbx = hidlib->tool_snapped_obj_bbox;
 		rnd_coord_t radius = ((bbx->X2 - bbx->X1) + (bbx->Y2 - bbx->Y1))/6;
 		if (dx < 0)
 			dx -= radius;

@@ -443,7 +443,7 @@ static int layer_sort(const void *va, const void *vb)
 }
 
 static const char *filename;
-static pcb_box_t *bounds;
+static rnd_box_t *bounds;
 static int in_mono, as_shown;
 
 static void parse_bloat(const char *str)
@@ -526,7 +526,7 @@ static void png_foot(void)
 void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_box_t tmp, region;
+	rnd_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
 
 	f = the_file;
@@ -600,7 +600,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER];
 	int i;
-	pcb_box_t tmp, *bbox;
+	rnd_box_t tmp, *bbox;
 	int w, h;
 	int xmax, ymax, dpi;
 	pcb_xform_t xform;
@@ -873,7 +873,7 @@ static void png_destroy_gc(pcb_hid_gc_t gc)
 }
 
 static pcb_composite_op_t drawing_mode;
-static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
+static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	drawing_mode = op;

@@ -118,7 +118,7 @@ struct rubber_info {
 	rnd_coord_t radius;
 	rnd_coord_t X, Y;
 	pcb_line_t *line;
-	pcb_box_t box;
+	rnd_box_t box;
 	pcb_layer_t *layer;
 	rubber_ctx_t *rbnd;
 	int delta_index;
@@ -138,10 +138,10 @@ static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end,
 
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, rnd_bool);
 
-static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl);
-static pcb_r_dir_t rubber_callback_arc(const pcb_box_t *b, void *cl);
+static pcb_r_dir_t rubber_callback(const rnd_box_t *b, void *cl);
+static pcb_r_dir_t rubber_callback_arc(const rnd_box_t *b, void *cl);
 
-static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl)
+static pcb_r_dir_t rubber_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	pcb_rb_line_t *have_line = NULL;
@@ -281,7 +281,7 @@ static pcb_r_dir_t rubber_callback(const pcb_box_t *b, void *cl)
 	return touches1 || touches2 ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t rubber_callback_arc(const pcb_box_t *b, void *cl)
+static pcb_r_dir_t rubber_callback_arc(const rnd_box_t *b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct rubber_info *i = (struct rubber_info *)cl;
@@ -361,7 +361,7 @@ struct rinfo {
 	int delta_index;
 };
 
-static pcb_r_dir_t rat_callback(const pcb_box_t *box, void *cl)
+static pcb_r_dir_t rat_callback(const rnd_box_t *box, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) box;
 	struct rinfo *i = (struct rinfo *)cl;
@@ -406,7 +406,7 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poi
 	info.rbnd = rbnd;
 	info.delta_index = 0;
 
-	pcb_r_search(PCB->Data->rat_tree, (pcb_box_t *) Point, NULL, rat_callback, &info, NULL);
+	pcb_r_search(PCB->Data->rat_tree, (rnd_box_t *) Point, NULL, rat_callback, &info, NULL);
 }
 
 /* checks all visible lines which belong to the same group as the passed line.
@@ -1265,10 +1265,10 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 		pcb_line_invalidate_erase(ptr->Line);
 		if (ptr->Layer) {
 			pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
-			pcb_r_delete_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
+			pcb_r_delete_entry(ptr->Layer->line_tree, (rnd_box_t *) ptr->Line);
 		}
 		else
-			pcb_r_delete_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
+			pcb_r_delete_entry(PCB->Data->rat_tree, (rnd_box_t *) ptr->Line);
 
 		if (dindex1 >= 0)
 			pcb_point_rotate90(&ptr->Line->Point1, cx, cy, steps);
@@ -1278,12 +1278,12 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
-			pcb_r_insert_entry(ptr->Layer->line_tree, (pcb_box_t *) ptr->Line);
+			pcb_r_insert_entry(ptr->Layer->line_tree, (rnd_box_t *) ptr->Line);
 			pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
 			pcb_line_invalidate_draw(ptr->Layer, ptr->Line);
 		}
 		else {
-			pcb_r_insert_entry(PCB->Data->rat_tree, (pcb_box_t *) ptr->Line);
+			pcb_r_insert_entry(PCB->Data->rat_tree, (rnd_box_t *) ptr->Line);
 			pcb_rat_invalidate_draw((pcb_rat_t *) ptr->Line);
 		}
 

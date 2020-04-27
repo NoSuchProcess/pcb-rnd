@@ -302,7 +302,7 @@ do { \
 	} \
  \
 	if ((fh1 == query_fields_bbox) || (fh1 == query_fields_bbox_naked)) { \
-		pcb_box_t *bx = (fh1 == query_fields_bbox) ? &(obj)->BoundingBox : &(obj)->bbox_naked; \
+		rnd_box_t *bx = (fh1 == query_fields_bbox) ? &(obj)->BoundingBox : &(obj)->bbox_naked; \
 		query_fields_keys_t fh2; \
  \
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ)) \

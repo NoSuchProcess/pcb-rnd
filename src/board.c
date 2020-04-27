@@ -189,7 +189,7 @@ typedef struct {
 
 TODO("padstack: move this to obj_pstk.c after pinvia removal")
 #include "obj_pstk_inlines.h"
-static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t hole_counting_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
@@ -204,7 +204,7 @@ static pcb_r_dir_t hole_counting_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t slot_counting_callback(const pcb_box_t *b, void *cl)
+static pcb_r_dir_t slot_counting_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
@@ -219,7 +219,7 @@ static pcb_r_dir_t slot_counting_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const pcb_box_t *within_area)
+void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const rnd_box_t *within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 
@@ -231,7 +231,7 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const p
 		*unplated = hcs.nunplated;
 }
 
-void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const pcb_box_t *within_area)
+void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const rnd_box_t *within_area)
 {
 	HoleCountStruct hcs = { 0, 0 };
 
@@ -388,7 +388,7 @@ void pcb_board_changed(int reverted)
 
 int pcb_board_normalize(pcb_board_t *pcb)
 {
-	pcb_box_t b;
+	rnd_box_t b;
 	int chg = 0;
 	
 	if (pcb_data_bbox(&b, pcb->Data, pcb_false) == NULL)

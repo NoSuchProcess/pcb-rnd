@@ -305,7 +305,7 @@ static void batch_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
 }
 
 
-static void batch_view_get(pcb_hid_t *hid, pcb_box_t *viewbox)
+static void batch_view_get(pcb_hid_t *hid, rnd_box_t *viewbox)
 {
 	rnd_hidlib_t *hidlib = hid->hid_data;
 	viewbox->X1 = 0;

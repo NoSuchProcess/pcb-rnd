@@ -772,7 +772,7 @@ void PreLoadElementPCB()
 void PostLoadElementPCB()
 {
 	pcb_board_t *pcb_save = PCB;
-	pcb_box_t dbb;
+	rnd_box_t dbb;
 	pcb_subc_t *sc;
 
 	if (!yyPCB)
@@ -1073,7 +1073,7 @@ void io_pcb_element_fin(pcb_data_t *Data)
 	pcb_subc_bbox(yysubc);
 	if (Data->subc_tree == NULL)
 		Data->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Data->subc_tree, (pcb_box_t *)yysubc);
+	pcb_r_insert_entry(Data->subc_tree, (rnd_box_t *)yysubc);
 }
 
 static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)

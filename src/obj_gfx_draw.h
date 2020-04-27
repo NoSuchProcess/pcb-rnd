@@ -31,7 +31,7 @@
 
 /* Include rtree.h for this */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t pcb_gfx_draw_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_gfx_draw_callback(const rnd_box_t * b, void *cl);
 #endif
 
 void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx);

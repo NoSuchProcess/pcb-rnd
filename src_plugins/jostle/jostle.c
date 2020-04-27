@@ -121,11 +121,11 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
  * pcb_polyarea_ts linked by ->f/b are outlines.\n
  * n->contours->next would be the start of the inner holes (irrelevant
  * for bounding box). */
-static pcb_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
+static rnd_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
 {
 	pcb_polyarea_t *n;
 	pcb_pline_t *pa;
-	pcb_box_t box;
+	rnd_box_t box;
 	int first = 1;
 
 	n = a;
@@ -329,7 +329,7 @@ static int MakeBypassingLines(pcb_polyarea_t * brush, pcb_layer_t * layer, pcb_l
 }
 
 struct info {
-	pcb_box_t box;
+	rnd_box_t box;
 	pcb_polyarea_t *brush;
 	pcb_layer_t *layer;
 	pcb_polyarea_t *smallest; /* after cutting brush with line, the smallest chunk, which we will go around on 'side'. */
@@ -339,7 +339,7 @@ struct info {
 };
 
 /* Process lines that intersect our 'brush'. */
-static pcb_r_dir_t jostle_callback(const pcb_box_t * targ, void *private)
+static pcb_r_dir_t jostle_callback(const rnd_box_t * targ, void *private)
 {
 	pcb_line_t *line = (pcb_line_t *) targ;
 	struct info *info = private;

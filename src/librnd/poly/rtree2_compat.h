@@ -54,11 +54,11 @@ pcb_rtree_t *pcb_r_create_tree(void);
 void pcb_r_destroy_tree(pcb_rtree_t **tree);
 void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr));
 
-void pcb_r_insert_entry(pcb_rtree_t *rtree, const pcb_box_t *which);
-void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_cardinal_t len);
+void pcb_r_insert_entry(pcb_rtree_t *rtree, const rnd_box_t *which);
+void pcb_r_insert_array(pcb_rtree_t *rtree, const rnd_box_t *boxlist[], pcb_cardinal_t len);
 
-rnd_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which);
-rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (*free_data)(void *d));
+rnd_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const rnd_box_t *which);
+rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, rnd_box_t *box, void (*free_data)(void *d));
 
 /* generic search routine */
 /* region_in_search should return pcb_true if "what you're looking for" is
@@ -72,13 +72,13 @@ rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (
  * Look at the implementation of r_region_is_empty for how to
  * abort the search if that is the desired behavior.
  */
-pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
-	pcb_r_dir_t (*region_in_search)(const pcb_box_t *region, void *closure),
-	pcb_r_dir_t (*rectangle_in_region)(const pcb_box_t *box, void *closure),
+pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const rnd_box_t *query,
+	pcb_r_dir_t (*region_in_search)(const rnd_box_t *region, void *closure),
+	pcb_r_dir_t (*rectangle_in_region)(const rnd_box_t *box, void *closure),
 	void *closure, int *num_found);
 
 /* return 0 if there are any rectangles in the given region. */
-int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region);
+int pcb_r_region_is_empty(pcb_rtree_t *rtree, const rnd_box_t *region);
 
 void pcb_r_dump_tree(pcb_rtree_t *root, int unused);
 
@@ -87,10 +87,10 @@ void pcb_r_dump_tree(pcb_rtree_t *root, int unused);
 /* -- Iterate through an rtree; DO NOT modify the tree while iterating -- */
 
 /* Get the first item, get fields of iterator set up; return can be casted to an object; returns NULL if rtree is empty */
-pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it);
+rnd_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it);
 
 /* Get the next item, return can be casted to an object; returns NULL if no more items */
-pcb_box_t *pcb_r_next(pcb_rtree_it_t *it);
+rnd_box_t *pcb_r_next(pcb_rtree_it_t *it);
 
 /* Free fields of the iterator - not needed anymore, will be removed */
 void pcb_r_end(pcb_rtree_it_t *it);

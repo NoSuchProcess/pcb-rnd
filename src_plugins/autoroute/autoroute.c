@@ -110,35 +110,35 @@ TODO("padstack: when style contains proto, remove this")
 //#define DEBUG_SHOW_ZIGZAG
 */
 
-static pcb_direction_t directionIncrement(pcb_direction_t dir)
+static rnd_direction_t directionIncrement(rnd_direction_t dir)
 {
 	switch (dir) {
-	case PCB_NORTH:
-		dir = PCB_EAST;
+	case RND_NORTH:
+		dir = RND_EAST;
 		break;
-	case PCB_EAST:
-		dir = PCB_SOUTH;
+	case RND_EAST:
+		dir = RND_SOUTH;
 		break;
-	case PCB_SOUTH:
-		dir = PCB_WEST;
+	case RND_SOUTH:
+		dir = RND_WEST;
 		break;
-	case PCB_WEST:
-		dir = PCB_NE;
+	case RND_WEST:
+		dir = RND_NE;
 		break;
-	case PCB_NE:
-		dir = PCB_SE;
+	case RND_NE:
+		dir = RND_SE;
 		break;
-	case PCB_SE:
-		dir = PCB_SW;
+	case RND_SE:
+		dir = RND_SW;
 		break;
-	case PCB_SW:
-		dir = PCB_NW;
+	case RND_SW:
+		dir = RND_NW;
 		break;
-	case PCB_NW:
-		dir = PCB_ANY_DIR;
+	case RND_NW:
+		dir = RND_ANY_DIR;
 		break;
-	case PCB_ANY_DIR:
-		dir = PCB_NORTH;
+	case RND_ANY_DIR:
+		dir = RND_NORTH;
 		break;
 	}
 	return dir;
@@ -229,7 +229,7 @@ typedef struct routebox_list_s {
 typedef enum etype { TERM, VIA, VIA_SHADOW, LINE, OTHER, EXPANSION_AREA, PLANE, THERMAL } etype;
 
 struct routebox_s {
-	pcb_box_t box, sbox;
+	rnd_box_t box, sbox;
 	struct {
 		rnd_coord_t x1, y1, x2, y2;
 	} line; /* exact coords of the line we are going to draw if type is line; reverse engineering these from the bounding box using halfthick and other hacks lead to rounding errors, a few LSB flicker in coords, e.g. breaking rubber band */
@@ -285,7 +285,7 @@ struct routebox_s {
 	} flags;
 	/* indicate the direction an expansion box came from */
 	pcb_cost_t cost;
-	pcb_cheap_point_t cost_point;
+	rnd_cheap_point_t cost_point;
 	/* reference count for homeless routeboxes; free when refcount==0 */
 	int refcount;
 	/* when routing with conflicts, we keep a record of what we're
@@ -299,7 +299,7 @@ struct routebox_s {
 	/* what pass this this track was laid down on */
 	unsigned char pass;
 	/* the direction this came from, if any */
-	pcb_direction_t came_from;
+	rnd_direction_t came_from;
 	/* circular lists with connectivity information. */
 	routebox_list_t same_net, same_subnet, original_subnet, different_net;
 	union {
@@ -327,12 +327,12 @@ typedef struct routedata_s {
 
 typedef struct edge_struct_s {
 	routebox_t *rb;								/* path expansion edges are real routeboxen. */
-	pcb_cheap_point_t cost_point;
+	rnd_cheap_point_t cost_point;
 	pcb_cost_t pcb_cost_to_point;					/* from source */
 	pcb_cost_t cost;									/* cached edge cost */
 	routebox_t *minpcb_cost_target;		/* minimum cost from cost_point to any target */
 	vetting_t *work;							/* for via search edges */
-	pcb_direction_t expand_dir;
+	rnd_direction_t expand_dir;
 	struct {
 		/* this indicates that this 'edge' is a via candidate. */
 		unsigned is_via:1;
@@ -386,13 +386,13 @@ typedef struct routeone_state_s {
 } routeone_state_t;
 
 
-static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t group,
+static routebox_t *CreateExpansionArea(const rnd_box_t * area, pcb_cardinal_t group,
 																			 routebox_t * parent, rnd_bool relax_edge_requirements, edge_t * edge);
 
 static pcb_cost_t edge_cost(const edge_t * e, const pcb_cost_t too_big);
 static void best_path_candidate(routeone_state_t *s, edge_t * e, routebox_t * best_target);
 
-static pcb_box_t edge_to_box(const routebox_t * rb, pcb_direction_t expand_dir);
+static rnd_box_t edge_to_box(const routebox_t * rb, rnd_direction_t expand_dir);
 
 static void add_or_destroy_edge(routeone_state_t *s, edge_t * e);
 
@@ -453,7 +453,7 @@ static int __edge_is_good(edge_t * e)
 	assert(e && e->rb && __routepcb_box_is_good(e->rb));
 	assert((e->rb->flags.homeless ? e->rb->refcount > 0 : 1));
 	assert((0 <= e->expand_dir) && (e->expand_dir < 9)
-				 && (e->flags.is_interior ? (e->expand_dir == PCB_ANY_DIR && e->rb->conflicts_with) : 1));
+				 && (e->flags.is_interior ? (e->expand_dir == RND_ANY_DIR && e->rb->conflicts_with) : 1));
 	assert((e->flags.is_via ? e->rb->flags.is_via : 1)
 				 && (e->flags.via_conflict_level >= 0 && e->flags.via_conflict_level <= 2)
 				 && (e->flags.via_conflict_level != 0 ? e->flags.is_via : 1));
@@ -461,7 +461,7 @@ static int __edge_is_good(edge_t * e)
 	return 1;
 }
 
-int no_planes(const pcb_box_t * b, void *cl)
+int no_planes(const rnd_box_t * b, void *cl)
 {
 	routebox_t *rb = (routebox_t *) b;
 	if (rb->type == PLANE)
@@ -548,14 +548,14 @@ static void RemoveFromNet(routebox_t * a, enum boxlist which)
 
 static void init_const_box(routebox_t * rb, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t clearance)
 {
-	pcb_box_t *bp = (pcb_box_t *) & rb->box;	/* note discarding const! */
+	rnd_box_t *bp = (rnd_box_t *) & rb->box;	/* note discarding const! */
 	assert(!rb->flags.inited);
 	assert(X1 <= X2 && Y1 <= Y2);
 	bp->X1 = X1 - clearance;
 	bp->Y1 = Y1 - clearance;
 	bp->X2 = X2 + clearance;
 	bp->Y2 = Y2 + clearance;
-	bp = (pcb_box_t *) & rb->sbox;
+	bp = (rnd_box_t *) & rb->sbox;
 	bp->X1 = X1;
 	bp->Y1 = Y1;
 	bp->X2 = X2;
@@ -563,25 +563,25 @@ static void init_const_box(routebox_t * rb, rnd_coord_t X1, rnd_coord_t Y1, rnd_
 	rb->flags.inited = 1;
 }
 
-static inline pcb_box_t shrink_routebox(const routebox_t * rb)
+static inline rnd_box_t shrink_routebox(const routebox_t * rb)
 {
 	return rb->sbox;
 }
 
-static inline pcb_cost_t box_area(const pcb_box_t b)
+static inline pcb_cost_t box_area(const rnd_box_t b)
 {
 	pcb_cost_t ans = b.X2 - b.X1;
 	return ans * (b.Y2 - b.Y1);
 }
 
-static inline pcb_cheap_point_t closest_point_in_routebox(const pcb_cheap_point_t * from, const routebox_t * rb)
+static inline rnd_cheap_point_t closest_point_in_routebox(const rnd_cheap_point_t * from, const routebox_t * rb)
 {
-	return rnd_closest_pcb_point_in_box(from, &rb->sbox);
+	return rnd_closest_cheap_point_in_box(from, &rb->sbox);
 }
 
 static inline rnd_bool point_in_shrunk_box(const routebox_t * box, rnd_coord_t X, rnd_coord_t Y)
 {
-	pcb_box_t b = shrink_routebox(box);
+	rnd_box_t b = shrink_routebox(box);
 	return rnd_point_in_box(&b, X, Y);
 }
 
@@ -634,7 +634,7 @@ TODO("term:")
 	(*rbpp)->type = TERM;
 	(*rbpp)->parent.term = term;
 	(*rbpp)->flags.fixed = 1;
-	(*rbpp)->came_from = PCB_ANY_DIR;
+	(*rbpp)->came_from = RND_ANY_DIR;
 	(*rbpp)->style = style;
 	/* circular lists */
 	InitLists(*rbpp);
@@ -708,7 +708,7 @@ static routebox_t *AddLine(vtp0_t layergroupboxes[], int layergroup, pcb_line_t 
 	(*rbpp)->line.y2 = line->Point2.Y;
 	(*rbpp)->parent.line = ptr;
 	(*rbpp)->flags.fixed = 1;
-	(*rbpp)->came_from = PCB_ANY_DIR;
+	(*rbpp)->came_from = RND_ANY_DIR;
 	(*rbpp)->style = style;
 	/* circular lists */
 	InitLists(*rbpp);
@@ -763,7 +763,7 @@ static routebox_t *AddPolygon(vtp0_t layergroupboxes[], pcb_cardinal_t layer, pc
 		is_not_rectangle = 0;
 	rb->flags.nonstraight = is_not_rectangle;
 	rb->layer = layer;
-	rb->came_from = PCB_ANY_DIR;
+	rb->came_from = RND_ANY_DIR;
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, polygon)) {
 		rb->flags.clear_poly = 1;
 		if (!is_not_rectangle)
@@ -787,16 +787,16 @@ static routebox_t *AddArc(vtp0_t layergroupboxes[], pcb_cardinal_t layergroup, p
 }
 
 struct rb_info {
-	pcb_box_t query;
+	rnd_box_t query;
 	routebox_t *winner;
 	jmp_buf env;
 };
 
-static pcb_r_dir_t __found_one_on_lg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __found_one_on_lg(const rnd_box_t * box, void *cl)
 {
 	struct rb_info *inf = (struct rb_info *) cl;
 	routebox_t *rb = (routebox_t *) box;
-	pcb_box_t sb;
+	rnd_box_t sb;
 
 	if (rb->flags.nonstraight)
 		return PCB_R_DIR_NOT_FOUND;
@@ -1109,7 +1109,7 @@ static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 static routedata_t *CreateRouteData()
 {
 	vtp0_t layergroupboxes[PCB_MAX_LAYERGRP];
-	pcb_box_t bbox;
+	rnd_box_t bbox;
 	routedata_t *rd;
 	int group, i;
 
@@ -1200,7 +1200,7 @@ static routedata_t *CreateRouteData()
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		/* create the r-tree */
 		rd->layergrouptree[i] = pcb_r_create_tree();
-		pcb_r_insert_array(rd->layergrouptree[i], (const pcb_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]));
+		pcb_r_insert_array(rd->layergrouptree[i], (const rnd_box_t **) layergroupboxes[i].array, vtp0_len(&layergroupboxes[i]));
 	}
 
 	if (AutoRouteParameters.use_vias) {
@@ -1278,7 +1278,7 @@ static void ResetSubnet(routebox_t * net)
 	PCB_END_LOOP;
 }
 
-static inline pcb_cost_t pcb_cost_to_point_on_layer(const pcb_cheap_point_t * p1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer)
+static inline pcb_cost_t pcb_cost_to_point_on_layer(const rnd_cheap_point_t * p1, const rnd_cheap_point_t * p2, pcb_cardinal_t point_layer)
 {
 	pcb_cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
 	x_dist *= x_cost[point_layer];
@@ -1290,7 +1290,7 @@ static inline pcb_cost_t pcb_cost_to_point_on_layer(const pcb_cheap_point_t * p1
 	return r;
 }
 
-static pcb_cost_t pcb_cost_to_point(const pcb_cheap_point_t * p1, pcb_cardinal_t point_layer1, const pcb_cheap_point_t * p2, pcb_cardinal_t point_layer2)
+static pcb_cost_t pcb_cost_to_point(const rnd_cheap_point_t * p1, pcb_cardinal_t point_layer1, const rnd_cheap_point_t * p2, pcb_cardinal_t point_layer2)
 {
 	pcb_cost_t r = pcb_cost_to_point_on_layer(p1, p2, point_layer1);
 	/* apply via cost penalty if layers differ */
@@ -1302,9 +1302,9 @@ static pcb_cost_t pcb_cost_to_point(const pcb_cheap_point_t * p1, pcb_cardinal_t
 /* return the minimum *cost* from a point to a box on any layer.
  * It's safe to return a smaller than minimum cost
  */
-static pcb_cost_t pcb_cost_to_layerless_box(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const pcb_box_t * b)
+static pcb_cost_t pcb_cost_to_layerless_box(const rnd_cheap_point_t * p, pcb_cardinal_t point_layer, const rnd_box_t * b)
 {
-	pcb_cheap_point_t p2 = rnd_closest_pcb_point_in_box(p, b);
+	rnd_cheap_point_t p2 = rnd_closest_cheap_point_in_box(p, b);
 	register pcb_cost_t c1, c2;
 
 	c1 = p2.X - p->X;
@@ -1319,7 +1319,7 @@ static pcb_cost_t pcb_cost_to_layerless_box(const pcb_cheap_point_t * p, pcb_car
 }
 
 /* get to actual pins/pad target coordinates */
-rnd_bool TargetPoint(pcb_cheap_point_t * nextpoint, const routebox_t * target)
+rnd_bool TargetPoint(rnd_cheap_point_t * nextpoint, const routebox_t * target)
 {
 /*	if (target->type == PIN) {
 		nextpoint->X = target->parent.pin->X;
@@ -1335,10 +1335,10 @@ rnd_bool TargetPoint(pcb_cheap_point_t * nextpoint, const routebox_t * target)
  * via costs if the route box is on a different layer.
  * assume routbox is bloated unless it is an expansion area
  */
-static pcb_cost_t pcb_cost_to_routebox(const pcb_cheap_point_t * p, pcb_cardinal_t point_layer, const routebox_t * rb)
+static pcb_cost_t pcb_cost_to_routebox(const rnd_cheap_point_t * p, pcb_cardinal_t point_layer, const routebox_t * rb)
 {
 	register pcb_cost_t trial = 0;
-	pcb_cheap_point_t p2 = closest_point_in_routebox(p, rb);
+	rnd_cheap_point_t p2 = closest_point_in_routebox(p, rb);
 	if (!usedGroup[point_layer] || !usedGroup[rb->group])
 		trial = AutoRouteParameters.NewLayerPenalty;
 	if ((p2.X - p->X) * (p2.Y - p->Y) != 0)
@@ -1355,9 +1355,9 @@ static pcb_cost_t pcb_cost_to_routebox(const pcb_cheap_point_t * p, pcb_cardinal
 }
 
 
-static pcb_box_t bloat_routebox(routebox_t * rb)
+static rnd_box_t bloat_routebox(routebox_t * rb)
 {
-	pcb_box_t r;
+	rnd_box_t r;
 	rnd_coord_t clearance;
 	assert(__routepcb_box_is_good(rb));
 
@@ -1377,7 +1377,7 @@ static pcb_box_t bloat_routebox(routebox_t * rb)
 
 typedef short pcb_dimension_t;
 /* makes a line on the solder layer silk surrounding the box */
-static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
+static void showbox(rnd_box_t b, pcb_dimension_t thickness, int group)
 {
 	pcb_line_t *line;
 	pcb_layer_t *csl, *SLayer = pcb_get_layer(PCB->Data, group);
@@ -1423,7 +1423,7 @@ static void showbox(pcb_box_t b, pcb_dimension_t thickness, int group)
 #if defined(ROUTE_DEBUG)
 static void showedge(edge_t * e)
 {
-	pcb_box_t *b = (pcb_box_t *) e->rb;
+	rnd_box_t *b = (rnd_box_t *) e->rb;
 
 	if (ddraw == NULL)
 		return;
@@ -1433,16 +1433,16 @@ static void showedge(edge_t * e)
 	ddraw->set_color(ar_gc, Settings.MaskColor);
 
 	switch (e->expand_dir) {
-	case PCB_NORTH:
+	case RND_NORTH:
 		ddraw->draw_line(ar_gc, b->X1, b->Y1, b->X2, b->Y1);
 		break;
-	case PCB_SOUTH:
+	case RND_SOUTH:
 		ddraw->draw_line(ar_gc, b->X1, b->Y2, b->X2, b->Y2);
 		break;
-	case PCB_WEST:
+	case RND_WEST:
 		ddraw->draw_line(ar_gc, b->X1, b->Y1, b->X1, b->Y2);
 		break;
-	case PCB_EAST:
+	case RND_EAST:
 		ddraw->draw_line(ar_gc, b->X2, b->Y1, b->X2, b->Y2);
 		break;
 	default:
@@ -1535,12 +1535,12 @@ static routebox_t *nonhomeless_parent(routebox_t * rb)
 /* some routines to find the minimum *cost* from a cost point to
  * a target (any target) */
 struct minpcb_cost_target_closure {
-	const pcb_cheap_point_t *CostPoint;
+	const rnd_cheap_point_t *CostPoint;
 	pcb_cardinal_t CostPointLayer;
 	routebox_t *nearest;
 	pcb_cost_t nearest_cost;
 };
-static pcb_r_dir_t __region_within_guess(const pcb_box_t * region, void *cl)
+static pcb_r_dir_t __region_within_guess(const rnd_box_t * region, void *cl)
 {
 	struct minpcb_cost_target_closure *mtc = (struct minpcb_cost_target_closure *) cl;
 	pcb_cost_t pcb_cost_to_region;
@@ -1554,7 +1554,7 @@ static pcb_r_dir_t __region_within_guess(const pcb_box_t * region, void *cl)
 	return (pcb_cost_to_region < mtc->nearest_cost) ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __found_new_guess(const rnd_box_t * box, void *cl)
 {
 	struct minpcb_cost_target_closure *mtc = (struct minpcb_cost_target_closure *) cl;
 	routebox_t *guess = (routebox_t *) box;
@@ -1572,7 +1572,7 @@ static pcb_r_dir_t __found_new_guess(const pcb_box_t * box, void *cl)
 
 /* target_guess is our guess at what the nearest target is, or NULL if we
  * just plum don't have a clue. */
-static routebox_t *minpcb_cost_target_to_point(const pcb_cheap_point_t * CostPoint,
+static routebox_t *minpcb_cost_target_to_point(const rnd_cheap_point_t * CostPoint,
 																					 pcb_cardinal_t CostPointLayer, pcb_rtree_t * targets, routebox_t * target_guess)
 {
 	struct minpcb_cost_target_closure mtc;
@@ -1594,7 +1594,7 @@ static routebox_t *minpcb_cost_target_to_point(const pcb_cheap_point_t * CostPoi
 /* minpcb_cost_target_guess can be NULL */
 static edge_t *CreateEdge(routebox_t * rb,
 													rnd_coord_t CostPointX, rnd_coord_t CostPointY,
-													pcb_cost_t pcb_cost_to_point, routebox_t * minpcb_cost_target_guess, pcb_direction_t expand_dir, pcb_rtree_t * targets)
+													pcb_cost_t pcb_cost_to_point, routebox_t * minpcb_cost_target_guess, rnd_direction_t expand_dir, pcb_rtree_t * targets)
 {
 	edge_t *e;
 	assert(__routepcb_box_is_good(rb));
@@ -1615,16 +1615,16 @@ static edge_t *CreateEdge(routebox_t * rb,
 		e->minpcb_cost_target = minpcb_cost_target_guess;
 	e->expand_dir = expand_dir;
 	assert(e->rb && e->minpcb_cost_target);	/* valid edge? */
-	assert(!e->flags.is_via || e->expand_dir == PCB_ANY_DIR);
+	assert(!e->flags.is_via || e->expand_dir == RND_ANY_DIR);
 	/* cost point should be on edge (unless this is a plane/via/conflict edge) */
 #if 0
 	assert(rb->type == PLANE || rb->conflicts_with != NULL || rb->flags.is_via
 				 || rb->flags.is_thermal
-				 || ((expand_dir == PCB_NORTH || expand_dir == PCB_SOUTH) ? rb->sbox.X1 <=
-						 CostPointX && CostPointX < rb->sbox.X2 && CostPointY == (expand_dir == PCB_NORTH ? rb->sbox.Y1 : rb->sbox.Y2 - 1) :
+				 || ((expand_dir == RND_NORTH || expand_dir == RND_SOUTH) ? rb->sbox.X1 <=
+						 CostPointX && CostPointX < rb->sbox.X2 && CostPointY == (expand_dir == RND_NORTH ? rb->sbox.Y1 : rb->sbox.Y2 - 1) :
 						 /* expand_dir==EAST || expand_dir==WEST */
 						 rb->sbox.Y1 <= CostPointY && CostPointY < rb->sbox.Y2 &&
-						 CostPointX == (expand_dir == PCB_EAST ? rb->sbox.X2 - 1 : rb->sbox.X1)));
+						 CostPointX == (expand_dir == RND_EAST ? rb->sbox.X2 - 1 : rb->sbox.X1)));
 #endif
 	assert(__edge_is_good(e));
 	/* done */
@@ -1633,11 +1633,11 @@ static edge_t *CreateEdge(routebox_t * rb,
 
 /* create edge, using previous edge to fill in defaults. */
 /* most of the work here is in determining a new cost point */
-static edge_t *CreateEdge2(routebox_t * rb, pcb_direction_t expand_dir,
+static edge_t *CreateEdge2(routebox_t * rb, rnd_direction_t expand_dir,
 													 edge_t * previous_edge, pcb_rtree_t * targets, routebox_t * guess)
 {
-	pcb_box_t thisbox;
-	pcb_cheap_point_t thiscost, prevcost;
+	rnd_box_t thisbox;
+	rnd_cheap_point_t thiscost, prevcost;
 	pcb_cost_t d;
 
 	assert(rb && previous_edge);
@@ -1645,7 +1645,7 @@ static edge_t *CreateEdge2(routebox_t * rb, pcb_direction_t expand_dir,
 	thisbox = edge_to_box(rb, expand_dir);
 	prevcost = previous_edge->cost_point;
 	/* find point closest to target */
-	thiscost = rnd_closest_pcb_point_in_box(&prevcost, &thisbox);
+	thiscost = rnd_closest_cheap_point_in_box(&prevcost, &thisbox);
 	/* compute cost-to-point */
 	d = pcb_cost_to_point_on_layer(&prevcost, &thiscost, rb->group);
 	/* add in jog penalty */
@@ -1657,12 +1657,12 @@ static edge_t *CreateEdge2(routebox_t * rb, pcb_direction_t expand_dir,
 }
 
 /* create via edge, using previous edge to fill in defaults. */
-static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
+static edge_t *CreateViaEdge(const rnd_box_t * area, pcb_cardinal_t group,
 														 routebox_t * parent, edge_t * previous_edge,
 														 conflict_t to_site_conflict, conflict_t through_site_conflict, pcb_rtree_t * targets)
 {
 	routebox_t *rb;
-	pcb_cheap_point_t costpoint;
+	rnd_cheap_point_t costpoint;
 	pcb_cost_t d;
 	edge_t *ne;
 	pcb_cost_t scale[3];
@@ -1675,14 +1675,14 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 	assert(AutoRouteParameters.with_conflicts || (to_site_conflict == NO_CONFLICT && through_site_conflict == NO_CONFLICT));
 	rb = CreateExpansionArea(area, group, parent, pcb_true, previous_edge);
 	rb->flags.is_via = 1;
-	rb->came_from = PCB_ANY_DIR;
+	rb->came_from = RND_ANY_DIR;
 #if defined(ROUTE_DEBUG) && defined(DEBUG_SHOW_VIA_BOXES)
 	showroutebox(rb);
 #endif /* ROUTE_DEBUG && DEBUG_SHOW_VIA_BOXES */
 	/* for planes, choose a point near the target */
 	if (previous_edge->flags.in_plane) {
 		routebox_t *target;
-		pcb_cheap_point_t pnt;
+		rnd_cheap_point_t pnt;
 		/* find a target near this via box */
 		pnt.X = RND_BOX_CENTER_X(*area);
 		pnt.Y = RND_BOX_CENTER_Y(*area);
@@ -1693,7 +1693,7 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 		costpoint = closest_point_in_routebox(&pnt, rb);
 		/* we moved from the previous cost point through the plane which is free travel */
 		d = (scale[through_site_conflict] * pcb_cost_to_point(&costpoint, group, &costpoint, previous_edge->rb->group));
-		ne = CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->pcb_cost_to_point + d, target, PCB_ANY_DIR, NULL);
+		ne = CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->pcb_cost_to_point + d, target, RND_ANY_DIR, NULL);
 		ne->minpcb_cost_target = target;
 	}
 	else {
@@ -1709,7 +1709,7 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
 		if (target->group == group && point_in_shrunk_box(target, costpoint.X, costpoint.Y))
 			d -= AutoRouteParameters.ViaCost / 2;
 		ne =
-			CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->pcb_cost_to_point + d, previous_edge->minpcb_cost_target, PCB_ANY_DIR, targets);
+			CreateEdge(rb, costpoint.X, costpoint.Y, previous_edge->pcb_cost_to_point + d, previous_edge->minpcb_cost_target, RND_ANY_DIR, targets);
 	}
 	ne->flags.is_via = 1;
 	ne->flags.via_conflict_level = to_site_conflict;
@@ -1723,12 +1723,12 @@ static edge_t *CreateViaEdge(const pcb_box_t * area, pcb_cardinal_t group,
  * it will become available if the conflict is elliminated.
  * That is why we ignore the interior_edge argument.
  */
-static edge_t *CreateEdgeWithConflicts(const pcb_box_t * interior_edge,
+static edge_t *CreateEdgeWithConflicts(const rnd_box_t * interior_edge,
 																			 routebox_t * container, edge_t * previous_edge,
 																			 pcb_cost_t cost_penalty_to_box, pcb_rtree_t * targets)
 {
 	routebox_t *rb;
-	pcb_cheap_point_t costpoint;
+	rnd_cheap_point_t costpoint;
 	pcb_cost_t d;
 	edge_t *ne;
 	assert(interior_edge && container && previous_edge && targets);
@@ -1739,11 +1739,11 @@ static edge_t *CreateEdgeWithConflicts(const pcb_box_t * interior_edge,
 	/* use the caller's idea of what this box should be */
 	rb = CreateExpansionArea(interior_edge, previous_edge->rb->group, previous_edge->rb, pcb_true, previous_edge);
 	path_conflicts(rb, container, pcb_true);	/* crucial! */
-	costpoint = rnd_closest_pcb_point_in_box(&previous_edge->cost_point, interior_edge);
+	costpoint = rnd_closest_cheap_point_in_box(&previous_edge->cost_point, interior_edge);
 	d = pcb_cost_to_point_on_layer(&costpoint, &previous_edge->cost_point, previous_edge->rb->group);
 	d *= cost_penalty_to_box;
 	d += previous_edge->pcb_cost_to_point;
-	ne = CreateEdge(rb, costpoint.X, costpoint.Y, d, NULL, PCB_ANY_DIR, targets);
+	ne = CreateEdge(rb, costpoint.X, costpoint.Y, d, NULL, RND_ANY_DIR, targets);
 	ne->flags.is_interior = 1;
 	assert(__edge_is_good(ne));
 	return ne;
@@ -1783,21 +1783,21 @@ static pcb_cost_t edge_cost(const edge_t * e, const pcb_cost_t too_big)
 /* given an edge of a box, return a box containing exactly the points on that
  * edge.  Note that the return box is treated as closed; that is, the bottom and
  * right "edges" consist of points (just barely) not in the (half-open) box. */
-static pcb_box_t edge_to_box(const routebox_t * rb, pcb_direction_t expand_dir)
+static rnd_box_t edge_to_box(const routebox_t * rb, rnd_direction_t expand_dir)
 {
-	pcb_box_t b = shrink_routebox(rb);
+	rnd_box_t b = shrink_routebox(rb);
 	/* narrow box down to just the appropriate edge */
 	switch (expand_dir) {
-	case PCB_NORTH:
+	case RND_NORTH:
 		b.Y2 = b.Y1 + 1;
 		break;
-	case PCB_EAST:
+	case RND_EAST:
 		b.X1 = b.X2 - 1;
 		break;
-	case PCB_SOUTH:
+	case RND_SOUTH:
 		b.Y1 = b.Y2 - 1;
 		break;
-	case PCB_WEST:
+	case RND_WEST:
 		b.X2 = b.X1 + 1;
 		break;
 	default:
@@ -1808,13 +1808,13 @@ static pcb_box_t edge_to_box(const routebox_t * rb, pcb_direction_t expand_dir)
 }
 
 struct broken_boxes {
-	pcb_box_t left, center, right;
+	rnd_box_t left, center, right;
 	rnd_bool is_valid_left, is_valid_center, is_valid_right;
 };
 
-static struct broken_boxes break_box_edge(const pcb_box_t * original, pcb_direction_t which_edge, routebox_t * breaker)
+static struct broken_boxes break_box_edge(const rnd_box_t * original, rnd_direction_t which_edge, routebox_t * breaker)
 {
-	pcb_box_t origbox, breakbox;
+	rnd_box_t origbox, breakbox;
 	struct broken_boxes result;
 
 	assert(original && breaker);
@@ -1849,7 +1849,7 @@ static struct broken_boxes break_box_edge(const pcb_box_t * original, pcb_direct
 }
 
 #ifndef NDEBUG
-static int share_edge(const pcb_box_t * child, const pcb_box_t * parent)
+static int share_edge(const rnd_box_t * child, const rnd_box_t * parent)
 {
 	return
 		(child->X1 == parent->X2 || child->X2 == parent->X1 ||
@@ -1857,7 +1857,7 @@ static int share_edge(const pcb_box_t * child, const pcb_box_t * parent)
 		((parent->X1 <= child->X1 && child->X2 <= parent->X2) || (parent->Y1 <= child->Y1 && child->Y2 <= parent->Y2));
 }
 
-static int edge_intersect(const pcb_box_t * child, const pcb_box_t * parent)
+static int edge_intersect(const rnd_box_t * child, const rnd_box_t * parent)
 {
 	return (child->X1 <= parent->X2) && (child->X2 >= parent->X1) && (child->Y1 <= parent->Y2) && (child->Y2 >= parent->Y1);
 }
@@ -1867,7 +1867,7 @@ static int edge_intersect(const pcb_box_t * child, const pcb_box_t * parent)
  * immediately preceding expansion area, for backtracing. 'lastarea' is
  * the last expansion area created, we string these together in a loop
  * so we can remove them all easily at the end. */
-static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t group,
+static routebox_t *CreateExpansionArea(const rnd_box_t * area, pcb_cardinal_t group,
 																			 routebox_t * parent, rnd_bool relax_edge_requirements, edge_t * src_edge)
 {
 	routebox_t *rb = (routebox_t *) malloc(sizeof(*rb));
@@ -1880,7 +1880,7 @@ static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t gr
 #ifndef NDEBUG
 	{
 		/* work around rounding errors: grow both boxes by 2 nm */
-		pcb_box_t b1 = rb->sbox, b2 = parent->sbox;
+		rnd_box_t b1 = rb->sbox, b2 = parent->sbox;
 		b1.X1--;b1.Y1--;b1.X2++;b1.Y2++;
 		b2.X1--;b2.Y1--;b2.X2++;b2.Y2++;
 		assert(relax_edge_requirements ? rnd_box_intersect(&b1, &b2)
@@ -1888,7 +1888,7 @@ static routebox_t *CreateExpansionArea(const pcb_box_t * area, pcb_cardinal_t gr
 	}
 #endif
 	rb->parent.expansion_area = route_parent(parent);
-	rb->cost_point = rnd_closest_pcb_point_in_box(&rb->parent.expansion_area->cost_point, area);
+	rb->cost_point = rnd_closest_cheap_point_in_box(&rb->parent.expansion_area->cost_point, area);
 	rb->cost =
 		rb->parent.expansion_area->cost +
 		pcb_cost_to_point_on_layer(&rb->parent.expansion_area->cost_point, &rb->cost_point, rb->group);
@@ -1915,7 +1915,7 @@ struct E_result {
 	routebox_t *parent;
 	routebox_t *n, *e, *s, *w;
 	rnd_coord_t keep, bloat;
-	pcb_box_t inflated, orig;
+	rnd_box_t inflated, orig;
 	int done;
 };
 
@@ -1925,11 +1925,11 @@ struct E_result {
  * like it wouldn't be seen. We do this while keep the inflated
  * box as large as possible.
  */
-static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __Expand_this_rect(const rnd_box_t * box, void *cl)
 {
 	struct E_result *res = (struct E_result *) cl;
 	routebox_t *rb = (routebox_t *) box;
-	pcb_box_t rbox;
+	rnd_box_t rbox;
 	rnd_coord_t dn, de, ds, dw, bloat;
 
 	/* we don't see conflicts already encountered */
@@ -2024,7 +2024,7 @@ static pcb_r_dir_t __Expand_this_rect(const pcb_box_t * box, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static rnd_bool boink_box(routebox_t * rb, struct E_result *res, pcb_direction_t dir)
+static rnd_bool boink_box(routebox_t * rb, struct E_result *res, rnd_direction_t dir)
 {
 	rnd_coord_t bloat;
 	if (rb->style->Clearance > res->keep)
@@ -2034,13 +2034,13 @@ static rnd_bool boink_box(routebox_t * rb, struct E_result *res, pcb_direction_t
 	if (rb->flags.nobloat)
 		bloat = res->bloat;
 	switch (dir) {
-	case PCB_NORTH:
-	case PCB_SOUTH:
+	case RND_NORTH:
+	case RND_SOUTH:
 		if (rb->sbox.X2 <= res->inflated.X1 + bloat || rb->sbox.X1 >= res->inflated.X2 - bloat)
 			return pcb_false;
 		return pcb_true;
-	case PCB_EAST:
-	case PCB_WEST:
+	case RND_EAST:
+	case RND_WEST:
 		if (rb->sbox.Y1 >= res->inflated.Y2 - bloat || rb->sbox.Y2 <= res->inflated.Y1 + bloat)
 			return pcb_false;
 		return pcb_true;
@@ -2065,7 +2065,7 @@ static rnd_bool boink_box(routebox_t * rb, struct E_result *res, pcb_direction_t
  * looks past the clearance to see these targets even though they
  * weren't actually touched in the expansion.
  */
-struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
+struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const rnd_box_t * box)
 {
 	static struct E_result ans;
 	int noshrink;									/* bit field of which edges to not shrink */
@@ -2080,23 +2080,23 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 	 * clearance so we are guaranteed to honor that.
 	 */
 	switch (e->expand_dir) {
-	case PCB_ANY_DIR:
-		ans.inflated.X1 = (e->rb->came_from == PCB_EAST ? ans.orig.X1 : 0);
-		ans.inflated.Y1 = (e->rb->came_from == PCB_SOUTH ? ans.orig.Y1 : 0);
-		ans.inflated.X2 = (e->rb->came_from == PCB_WEST ? ans.orig.X2 : PCB->hidlib.size_x);
-		ans.inflated.Y2 = (e->rb->came_from == PCB_NORTH ? ans.orig.Y2 : PCB->hidlib.size_y);
-		if (e->rb->came_from == PCB_NORTH)
+	case RND_ANY_DIR:
+		ans.inflated.X1 = (e->rb->came_from == RND_EAST ? ans.orig.X1 : 0);
+		ans.inflated.Y1 = (e->rb->came_from == RND_SOUTH ? ans.orig.Y1 : 0);
+		ans.inflated.X2 = (e->rb->came_from == RND_WEST ? ans.orig.X2 : PCB->hidlib.size_x);
+		ans.inflated.Y2 = (e->rb->came_from == RND_NORTH ? ans.orig.Y2 : PCB->hidlib.size_y);
+		if (e->rb->came_from == RND_NORTH)
 			ans.done = noshrink = _SOUTH;
-		else if (e->rb->came_from == PCB_EAST)
+		else if (e->rb->came_from == RND_EAST)
 			ans.done = noshrink = _WEST;
-		else if (e->rb->came_from == PCB_SOUTH)
+		else if (e->rb->came_from == RND_SOUTH)
 			ans.done = noshrink = _NORTH;
-		else if (e->rb->came_from == PCB_WEST)
+		else if (e->rb->came_from == RND_WEST)
 			ans.done = noshrink = _EAST;
 		else
 			ans.done = noshrink = 0;
 		break;
-	case PCB_NORTH:
+	case RND_NORTH:
 		ans.done = _SOUTH + _EAST + _WEST;
 		noshrink = _SOUTH;
 		ans.inflated.X1 = box->X1 - ans.bloat;
@@ -2104,7 +2104,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 		ans.inflated.Y2 = box->Y2;
 		ans.inflated.Y1 = 0;				/* far north */
 		break;
-	case PCB_NE:
+	case RND_NE:
 		ans.done = _SOUTH + _WEST;
 		noshrink = 0;
 		ans.inflated.X1 = box->X1 - ans.bloat;
@@ -2112,7 +2112,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 		ans.inflated.Y2 = box->Y2 + ans.bloat;
 		ans.inflated.Y1 = 0;
 		break;
-	case PCB_EAST:
+	case RND_EAST:
 		ans.done = _NORTH + _SOUTH + _WEST;
 		noshrink = _WEST;
 		ans.inflated.Y1 = box->Y1 - ans.bloat;
@@ -2120,7 +2120,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 		ans.inflated.X1 = box->X1;
 		ans.inflated.X2 = PCB->hidlib.size_x;
 		break;
-	case PCB_SE:
+	case RND_SE:
 		ans.done = _NORTH + _WEST;
 		noshrink = 0;
 		ans.inflated.X1 = box->X1 - ans.bloat;
@@ -2128,7 +2128,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 		ans.inflated.Y2 = PCB->hidlib.size_y;
 		ans.inflated.Y1 = box->Y1 - ans.bloat;
 		break;
-	case PCB_SOUTH:
+	case RND_SOUTH:
 		ans.done = _NORTH + _EAST + _WEST;
 		noshrink = _NORTH;
 		ans.inflated.X1 = box->X1 - ans.bloat;
@@ -2136,7 +2136,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 		ans.inflated.Y1 = box->Y1;
 		ans.inflated.Y2 = PCB->hidlib.size_y;
 		break;
-	case PCB_SW:
+	case RND_SW:
 		ans.done = _NORTH + _EAST;
 		noshrink = 0;
 		ans.inflated.X1 = 0;
@@ -2144,7 +2144,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 		ans.inflated.Y2 = PCB->hidlib.size_y;
 		ans.inflated.Y1 = box->Y1 - ans.bloat;
 		break;
-	case PCB_WEST:
+	case RND_WEST:
 		ans.done = _NORTH + _SOUTH + _EAST;
 		noshrink = _EAST;
 		ans.inflated.Y1 = box->Y1 - ans.bloat;
@@ -2152,7 +2152,7 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
 		ans.inflated.X1 = 0;
 		ans.inflated.X2 = box->X2;
 		break;
-	case PCB_NW:
+	case RND_NW:
 		ans.done = _SOUTH + _EAST;
 		noshrink = 0;
 		ans.inflated.X1 = 0;
@@ -2171,19 +2171,19 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
  * may have limited edges prematurely, so we check if the blockers realy
  * are blocking, and make another try if not
  */
-	if (ans.n && !boink_box(ans.n, &ans, PCB_NORTH))
+	if (ans.n && !boink_box(ans.n, &ans, RND_NORTH))
 		ans.inflated.Y1 = 0;
 	else
 		ans.done |= _NORTH;
-	if (ans.e && !boink_box(ans.e, &ans, PCB_EAST))
+	if (ans.e && !boink_box(ans.e, &ans, RND_EAST))
 		ans.inflated.X2 = PCB->hidlib.size_x;
 	else
 		ans.done |= _EAST;
-	if (ans.s && !boink_box(ans.s, &ans, PCB_SOUTH))
+	if (ans.s && !boink_box(ans.s, &ans, RND_SOUTH))
 		ans.inflated.Y2 = PCB->hidlib.size_y;
 	else
 		ans.done |= _SOUTH;
-	if (ans.w && !boink_box(ans.w, &ans, PCB_WEST))
+	if (ans.w && !boink_box(ans.w, &ans, RND_WEST))
 		ans.inflated.X1 = 0;
 	else
 		ans.done |= _WEST;
@@ -2207,9 +2207,9 @@ struct E_result *Expand(pcb_rtree_t * rtree, edge_t * e, const pcb_box_t * box)
  * It returns 1 for any fixed blocker that is not part
  * of this net and zero otherwise.
  */
-static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, pcb_box_t * box, pcb_direction_t dir)
+static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, rnd_box_t * box, rnd_direction_t dir)
 {
-	pcb_box_t b = rb->sbox;
+	rnd_box_t b = rb->sbox;
 	if (rb->style->Clearance > AutoRouteParameters.style->Clearance)
 		b = rnd_bloat_box(&b, rb->style->Clearance - AutoRouteParameters.style->Clearance);
 	b = rnd_clip_box(&b, box);
@@ -2220,16 +2220,16 @@ static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, pcb_box_t * box, 
 		 * ties since we want the shorter of the furthest
 		 * first.
 		 */
-	case PCB_NORTH:
+	case RND_NORTH:
 		pcb_heap_insert(heap, b.X1 - b.X1 / (b.X2 + 1.0), rb);
 		break;
-	case PCB_EAST:
+	case RND_EAST:
 		pcb_heap_insert(heap, b.Y1 - b.Y1 / (b.Y2 + 1.0), rb);
 		break;
-	case PCB_SOUTH:
+	case RND_SOUTH:
 		pcb_heap_insert(heap, -(b.X2 + b.X1 / (b.X2 + 1.0)), rb);
 		break;
-	case PCB_WEST:
+	case RND_WEST:
 		pcb_heap_insert(heap, -(b.Y2 + b.Y1 / (b.Y2 + 1.0)), rb);
 		break;
 	default:
@@ -2244,7 +2244,7 @@ static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, pcb_box_t * box, 
  * (more commonly) create a supper-thin box to provide a
  * home for an expansion edge.
  */
-static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, pcb_direction_t dir)
+static routebox_t *CreateBridge(const rnd_box_t * area, routebox_t * parent, rnd_direction_t dir)
 {
 	routebox_t *rb = (routebox_t *) malloc(sizeof(*rb));
 	memset((void *) rb, 0, sizeof(*rb));
@@ -2253,7 +2253,7 @@ static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, pcb
 	rb->group = parent->group;
 	rb->type = EXPANSION_AREA;
 	rb->came_from = dir;
-	rb->cost_point = rnd_closest_pcb_point_in_box(&parent->cost_point, area);
+	rb->cost_point = rnd_closest_cheap_point_in_box(&parent->cost_point, area);
 	rb->cost = parent->cost + pcb_cost_to_point_on_layer(&parent->cost_point, &rb->cost_point, rb->group);
 	rb->parent.expansion_area = route_parent(parent);
 	if (rb->parent.expansion_area->flags.homeless)
@@ -2272,12 +2272,12 @@ static routebox_t *CreateBridge(const pcb_box_t * area, routebox_t * parent, pcb
  * starting box, direction and blocker if any.
  */
 void
-moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
+moveable_edge(vector_t * result, const rnd_box_t * box, rnd_direction_t dir,
 							routebox_t * rb,
 							routebox_t * blocker, edge_t * e, pcb_rtree_t * targets,
 							routeone_state_t *s, pcb_rtree_t * tree, vector_t * area_vec)
 {
-	pcb_box_t b;
+	rnd_box_t b;
 	assert(rnd_box_is_good(box));
 	b = *box;
 	/* for the cardinal directions, move the box to overlap the
@@ -2288,61 +2288,61 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 	switch (dir) {
 	default:
 		break;
-	case PCB_NORTH:
+	case RND_NORTH:
 		b.Y2 = b.Y1;
 		b.Y1--;
 		if (b.Y1 <= AutoRouteParameters.bloat)
 			return;										/* off board edge */
 		break;
-	case PCB_EAST:
+	case RND_EAST:
 		b.X1 = b.X2;
 		b.X2++;
 		if (b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat)
 			return;										/* off board edge */
 		break;
-	case PCB_SOUTH:
+	case RND_SOUTH:
 		b.Y1 = b.Y2;
 		b.Y2++;
 		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat)
 			return;										/* off board edge */
 		break;
-	case PCB_WEST:
+	case RND_WEST:
 		b.X2 = b.X1;
 		b.X1--;
 		if (b.X1 <= AutoRouteParameters.bloat)
 			return;										/* off board edge */
 		break;
-	case PCB_NE:
+	case RND_NE:
 		if (b.Y1 <= AutoRouteParameters.bloat + 1 && b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
 			return;										/* off board edge */
 		if (b.Y1 <= AutoRouteParameters.bloat + 1)
-			dir = PCB_EAST;								/* north off board edge */
+			dir = RND_EAST;								/* north off board edge */
 		if (b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
-			dir = PCB_NORTH;							/* east off board edge */
+			dir = RND_NORTH;							/* east off board edge */
 		break;
-	case PCB_SE:
+	case RND_SE:
 		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1 && b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
 			return;										/* off board edge */
 		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1)
-			dir = PCB_EAST;								/* south off board edge */
+			dir = RND_EAST;								/* south off board edge */
 		if (b.X2 >= PCB->hidlib.size_x - AutoRouteParameters.bloat - 1)
-			dir = PCB_SOUTH;							/* east off board edge */
+			dir = RND_SOUTH;							/* east off board edge */
 		break;
-	case PCB_SW:
+	case RND_SW:
 		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1 && b.X1 <= AutoRouteParameters.bloat + 1)
 			return;										/* off board edge */
 		if (b.Y2 >= PCB->hidlib.size_y - AutoRouteParameters.bloat - 1)
-			dir = PCB_WEST;								/* south off board edge */
+			dir = RND_WEST;								/* south off board edge */
 		if (b.X1 <= AutoRouteParameters.bloat + 1)
-			dir = PCB_SOUTH;							/* west off board edge */
+			dir = RND_SOUTH;							/* west off board edge */
 		break;
-	case PCB_NW:
+	case RND_NW:
 		if (b.Y1 <= AutoRouteParameters.bloat + 1 && b.X1 <= AutoRouteParameters.bloat + 1)
 			return;										/* off board edge */
 		if (b.Y1 <= AutoRouteParameters.bloat + 1)
-			dir = PCB_WEST;								/* north off board edge */
+			dir = RND_WEST;								/* north off board edge */
 		if (b.X1 <= AutoRouteParameters.bloat + 1)
-			dir = PCB_NORTH;							/* west off board edge */
+			dir = RND_NORTH;							/* west off board edge */
 		break;
 	}
 
@@ -2352,10 +2352,10 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		/* move the cost point in corner expansions
 		 * these boxes are bigger, so move close to the target
 		 */
-		if (dir == PCB_NE || dir == PCB_SE || dir == PCB_SW || dir == PCB_NW) {
-			pcb_cheap_point_t p;
-			p = rnd_closest_pcb_point_in_box(&nrb->cost_point, &e->minpcb_cost_target->sbox);
-			p = rnd_closest_pcb_point_in_box(&p, &b);
+		if (dir == RND_NE || dir == RND_SE || dir == RND_SW || dir == RND_NW) {
+			rnd_cheap_point_t p;
+			p = rnd_closest_cheap_point_in_box(&nrb->cost_point, &e->minpcb_cost_target->sbox);
+			p = rnd_closest_cheap_point_in_box(&p, &b);
 			nrb->cost += pcb_cost_to_point_on_layer(&p, &nrb->cost_point, nrb->group);
 			nrb->cost_point = p;
 		}
@@ -2370,16 +2370,16 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		 * in all directions from there
 		 */
 		switch (dir) {
-		case PCB_NORTH:
+		case RND_NORTH:
 			b.Y1 = blocker->sbox.Y2 - 1;
 			break;
-		case PCB_EAST:
+		case RND_EAST:
 			b.X2 = blocker->sbox.X1 + 1;
 			break;
-		case PCB_SOUTH:
+		case RND_SOUTH:
 			b.Y2 = blocker->sbox.Y1 + 1;
 			break;
-		case PCB_WEST:
+		case RND_WEST:
 			b.X1 = blocker->sbox.X2 - 1;
 			break;
 		default:
@@ -2394,11 +2394,11 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		/* mark this one as conflicted */
 		path_conflicts(nrb, blocker, pcb_true);
 		/* and make an expansion edge */
-		nrb->cost_point = rnd_closest_pcb_point_in_box(&nrb->cost_point, &blocker->sbox);
+		nrb->cost_point = rnd_closest_cheap_point_in_box(&nrb->cost_point, &blocker->sbox);
 		nrb->cost +=
 			pcb_cost_to_point_on_layer(&nrb->parent.expansion_area->cost_point, &nrb->cost_point, nrb->group) * CONFLICT_PENALTY(blocker);
 
-		ne = CreateEdge(nrb, nrb->cost_point.X, nrb->cost_point.Y, nrb->cost, NULL, PCB_ANY_DIR, targets);
+		ne = CreateEdge(nrb, nrb->cost_point.X, nrb->cost_point.Y, nrb->cost, NULL, RND_ANY_DIR, targets);
 		ne->flags.is_interior = 1;
 		vector_append(result, ne);
 	}
@@ -2424,16 +2424,16 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 		if (!rnd_box_intersect(&b, &blocker->sbox)) {
 			/* if the expansion edge stopped before touching, expand the bridge */
 			switch (dir) {
-			case PCB_NORTH:
+			case RND_NORTH:
 				b.Y1 -= AutoRouteParameters.bloat + 1;
 				break;
-			case PCB_EAST:
+			case RND_EAST:
 				b.X2 += AutoRouteParameters.bloat + 1;
 				break;
-			case PCB_SOUTH:
+			case RND_SOUTH:
 				b.Y2 += AutoRouteParameters.bloat + 1;
 				break;
-			case PCB_WEST:
+			case RND_WEST:
 				b.X1 -= AutoRouteParameters.bloat + 1;
 				break;
 			default:
@@ -2455,16 +2455,16 @@ moveable_edge(vector_t * result, const pcb_box_t * box, pcb_direction_t dir,
 struct break_info {
 	pcb_heap_t *heap;
 	routebox_t *parent;
-	pcb_box_t box;
-	pcb_direction_t dir;
+	rnd_box_t box;
+	rnd_direction_t dir;
 	rnd_bool ignore_source;
 };
 
-static pcb_r_dir_t __GatherBlockers(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __GatherBlockers(const rnd_box_t * box, void *cl)
 {
 	routebox_t *rb = (routebox_t *) box;
 	struct break_info *bi = (struct break_info *) cl;
-	pcb_box_t b;
+	rnd_box_t b;
 
 	if (bi->parent == rb || rb->flags.touched || bi->parent->parent.expansion_area == rb)
 		return PCB_R_DIR_NOT_FOUND;
@@ -2484,17 +2484,17 @@ static pcb_r_dir_t __GatherBlockers(const pcb_box_t * box, void *cl)
  * i.e. if dir is SOUTH, then this means fixing up an EAST leftover
  * edge, which would be the southern most edge for that example.
  */
-static inline pcb_box_t previous_edge(rnd_coord_t last, pcb_direction_t i, const pcb_box_t * b)
+static inline rnd_box_t previous_edge(rnd_coord_t last, rnd_direction_t i, const rnd_box_t * b)
 {
-	pcb_box_t db = *b;
+	rnd_box_t db = *b;
 	switch (i) {
-	case PCB_EAST:
+	case RND_EAST:
 		db.X1 = last;
 		break;
-	case PCB_SOUTH:
+	case RND_SOUTH:
 		db.Y1 = last;
 		break;
-	case PCB_WEST:
+	case RND_WEST:
 		db.X2 = last;
 		break;
 	default:
@@ -2516,7 +2516,7 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 	pcb_heap_t *heap[4];
 	rnd_coord_t first, last;
 	rnd_coord_t bloat;
-	pcb_direction_t dir;
+	rnd_direction_t dir;
 	routebox_t fake;
 
 	edges = vector_create();
@@ -2538,8 +2538,8 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 	 * to prevent expansion back where we came from since
 	 * we still need to break portions of all 4 edges
 	 */
-	if (e->expand_dir == PCB_NE || e->expand_dir == PCB_SE || e->expand_dir == PCB_SW || e->expand_dir == PCB_NW) {
-		pcb_box_t *fb = (pcb_box_t *) & fake.sbox;
+	if (e->expand_dir == RND_NE || e->expand_dir == RND_SE || e->expand_dir == RND_SW || e->expand_dir == RND_NW) {
+		rnd_box_t *fb = (rnd_box_t *) & fake.sbox;
 		memset(&fake, 0, sizeof(fake));
 		*fb = e->rb->sbox;
 		fake.flags.fixed = 1;				/* this stops expansion there */
@@ -2548,7 +2548,7 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 #ifndef NDEBUG
 		/* the routbox_is_good checker wants a lot more! */
 		fake.flags.inited = 1;
-		fb = (pcb_box_t *) & fake.box;
+		fb = (rnd_box_t *) & fake.box;
 		*fb = e->rb->sbox;
 		fake.same_net.next = fake.same_net.prev = &fake;
 		fake.same_subnet.next = fake.same_subnet.prev = &fake;
@@ -2560,7 +2560,7 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 	 * in clockwise order, which allows finding corners that can
 	 * be expanded.
 	 */
-	for (dir = PCB_NORTH; dir <= PCB_WEST; dir = directionIncrement(dir)) {
+	for (dir = RND_NORTH; dir <= RND_WEST; dir = directionIncrement(dir)) {
 		int tmp;
 		/* don't break the edge we came from */
 		if (e->expand_dir != ((dir + 2) % 4)) {
@@ -2570,52 +2570,52 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 			bi.dir = dir;
 			/* convert to edge */
 			switch (dir) {
-			case PCB_NORTH:
+			case RND_NORTH:
 				bi.box.Y2 = bi.box.Y1 + bloat + 1;
 				/* for corner expansion, block the start edges and
 				 * limit the blocker search to only the new edge segment
 				 */
-				if (e->expand_dir == PCB_SE || e->expand_dir == PCB_SW)
+				if (e->expand_dir == RND_SE || e->expand_dir == RND_SW)
 					blocker_to_heap(heap[dir], &fake, &bi.box, dir);
-				if (e->expand_dir == PCB_SE)
+				if (e->expand_dir == RND_SE)
 					bi.box.X1 = e->rb->sbox.X2;
-				if (e->expand_dir == PCB_SW)
+				if (e->expand_dir == RND_SW)
 					bi.box.X2 = e->rb->sbox.X1;
 				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->n = tmp;
 				break;
-			case PCB_EAST:
+			case RND_EAST:
 				bi.box.X1 = bi.box.X2 - bloat - 1;
 				/* corner, same as above */
-				if (e->expand_dir == PCB_SW || e->expand_dir == PCB_NW)
+				if (e->expand_dir == RND_SW || e->expand_dir == RND_NW)
 					blocker_to_heap(heap[dir], &fake, &bi.box, dir);
-				if (e->expand_dir == PCB_SW)
+				if (e->expand_dir == RND_SW)
 					bi.box.Y1 = e->rb->sbox.Y2;
-				if (e->expand_dir == PCB_NW)
+				if (e->expand_dir == RND_NW)
 					bi.box.Y2 = e->rb->sbox.Y1;
 				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->e = tmp;
 				break;
-			case PCB_SOUTH:
+			case RND_SOUTH:
 				bi.box.Y1 = bi.box.Y2 - bloat - 1;
 				/* corner, same as above */
-				if (e->expand_dir == PCB_NE || e->expand_dir == PCB_NW)
+				if (e->expand_dir == RND_NE || e->expand_dir == RND_NW)
 					blocker_to_heap(heap[dir], &fake, &bi.box, dir);
-				if (e->expand_dir == PCB_NE)
+				if (e->expand_dir == RND_NE)
 					bi.box.X1 = e->rb->sbox.X2;
-				if (e->expand_dir == PCB_NW)
+				if (e->expand_dir == RND_NW)
 					bi.box.X2 = e->rb->sbox.X1;
 				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->s = tmp;
 				break;
-			case PCB_WEST:
+			case RND_WEST:
 				bi.box.X2 = bi.box.X1 + bloat + 1;
 				/* corner, same as above */
-				if (e->expand_dir == PCB_NE || e->expand_dir == PCB_SE)
+				if (e->expand_dir == RND_NE || e->expand_dir == RND_SE)
 					blocker_to_heap(heap[dir], &fake, &bi.box, dir);
-				if (e->expand_dir == PCB_SE)
+				if (e->expand_dir == RND_SE)
 					bi.box.Y1 = e->rb->sbox.Y2;
-				if (e->expand_dir == PCB_NE)
+				if (e->expand_dir == RND_NE)
 					bi.box.Y2 = e->rb->sbox.Y1;
 				pcb_r_search(tree, &bi.box, NULL, __GatherBlockers, &bi, &tmp);
 				rb->w = tmp;
@@ -2637,13 +2637,13 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
  * moveable as possible.
  */
 	first = last = -1;
-	for (dir = PCB_NORTH; dir <= PCB_WEST; dir = directionIncrement(dir)) {
+	for (dir = RND_NORTH; dir <= RND_WEST; dir = directionIncrement(dir)) {
 		if (heap[dir] && !pcb_heap_is_empty(heap[dir])) {
 			/* pull the very first one out of the heap outside of the
 			 * heap loop because it is special; it can be part of a corner
 			 */
 			routebox_t *blk = (routebox_t *) pcb_heap_remove_smallest(heap[dir]);
-			pcb_box_t b = rb->sbox;
+			rnd_box_t b = rb->sbox;
 			struct broken_boxes broke = break_box_edge(&b, dir, blk);
 			if (broke.is_valid_left) {
 				/* if last > 0, then the previous edge had a segment
@@ -2651,19 +2651,19 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 				 */
 				if (last > 0) {
 					/* make a corner expansion */
-					pcb_box_t db = b;
+					rnd_box_t db = b;
 					switch (dir) {
-					case PCB_EAST:
+					case RND_EAST:
 						/* possible NE expansion */
 						db.X1 = last;
 						db.Y2 = MIN(db.Y2, broke.left.Y2);
 						break;
-					case PCB_SOUTH:
+					case RND_SOUTH:
 						/* possible SE expansion */
 						db.Y1 = last;
 						db.X1 = MAX(db.X1, broke.left.X1);
 						break;
-					case PCB_WEST:
+					case RND_WEST:
 						/* possible SW expansion */
 						db.X2 = last;
 						db.Y1 = MAX(db.Y1, broke.left.Y1);
@@ -2672,9 +2672,9 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 						assert(0);
 						break;
 					}
-					moveable_edge(edges, &db, (pcb_direction_t) (dir + 3), rb, NULL, e, targets, s, NULL, NULL);
+					moveable_edge(edges, &db, (rnd_direction_t) (dir + 3), rb, NULL, e, targets, s, NULL, NULL);
 				}
-				else if (dir == PCB_NORTH) {	/* north is start, so nothing "before" it */
+				else if (dir == RND_NORTH) {	/* north is start, so nothing "before" it */
 					/* save for a possible corner once we've
 					 * finished circling the box
 					 */
@@ -2693,8 +2693,8 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 				 * in the direction of the previous edge,
 				 * which it belongs to.
 				 */
-				pcb_box_t db = previous_edge(last, dir, &rb->sbox);
-				moveable_edge(edges, &db, (pcb_direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
+				rnd_box_t db = previous_edge(last, dir, &rb->sbox);
+				moveable_edge(edges, &db, (rnd_direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
 			}
 			if (broke.is_valid_center && !blk->flags.source)
 				moveable_edge(edges, &broke.center, dir, rb, blk, e, targets, s, tree, area_vec);
@@ -2705,16 +2705,16 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 			while (broke.is_valid_right) {
 				/* move the box edge to the next potential free point */
 				switch (dir) {
-				case PCB_NORTH:
+				case RND_NORTH:
 					last = b.X1 = MAX(broke.right.X1, b.X1);
 					break;
-				case PCB_EAST:
+				case RND_EAST:
 					last = b.Y1 = MAX(broke.right.Y1, b.Y1);
 					break;
-				case PCB_SOUTH:
+				case RND_SOUTH:
 					last = b.X2 = MIN(broke.right.X2, b.X2);
 					break;
-				case PCB_WEST:
+				case RND_WEST:
 					last = b.Y2 = MIN(broke.right.Y2, b.Y2);
 					break;
 				default:
@@ -2740,40 +2740,40 @@ vector_t *BreakManyEdges(routeone_state_t * s, pcb_rtree_t * targets, pcb_rtree_
 			 * for this case (of hitting nothing) we give up trying for corner
 			 * expansions because it is likely that they're not possible anyway
 			 */
-			if ((e->expand_dir == PCB_ANY_DIR ? e->rb->came_from : e->expand_dir) != ((dir + 2) % 4)) {
+			if ((e->expand_dir == RND_ANY_DIR ? e->rb->came_from : e->expand_dir) != ((dir + 2) % 4)) {
 				/* ok, we are not going back on ourselves, and the whole edge seems free */
 				moveable_edge(edges, &rb->sbox, dir, rb, NULL, e, targets, s, NULL, NULL);
 			}
 
 			if (last > 0) {
 				/* expand the leftover from the prior direction */
-				pcb_box_t db = previous_edge(last, dir, &rb->sbox);
-				moveable_edge(edges, &db, (pcb_direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
+				rnd_box_t db = previous_edge(last, dir, &rb->sbox);
+				moveable_edge(edges, &db, (rnd_direction_t) (dir - 1), rb, NULL, e, targets, s, NULL, NULL);
 			}
 			last = -1;
 		}
 	}															/* for loop */
 	/* finally, check for the NW corner now that we've come full circle */
 	if (first > 0 && last > 0) {
-		pcb_box_t db = rb->sbox;
+		rnd_box_t db = rb->sbox;
 		db.X2 = first;
 		db.Y2 = last;
-		moveable_edge(edges, &db, PCB_NW, rb, NULL, e, targets, s, NULL, NULL);
+		moveable_edge(edges, &db, RND_NW, rb, NULL, e, targets, s, NULL, NULL);
 	}
 	else {
 		if (first > 0) {
-			pcb_box_t db = rb->sbox;
+			rnd_box_t db = rb->sbox;
 			db.X2 = first;
-			moveable_edge(edges, &db, PCB_NORTH, rb, NULL, e, targets, s, NULL, NULL);
+			moveable_edge(edges, &db, RND_NORTH, rb, NULL, e, targets, s, NULL, NULL);
 		}
 		else if (last > 0) {
-			pcb_box_t db = rb->sbox;
+			rnd_box_t db = rb->sbox;
 			db.Y2 = last;
-			moveable_edge(edges, &db, PCB_WEST, rb, NULL, e, targets, s, NULL, NULL);
+			moveable_edge(edges, &db, RND_WEST, rb, NULL, e, targets, s, NULL, NULL);
 		}
 	}
 	/* done with all expansion edges of this box */
-	for (dir = PCB_NORTH; dir <= PCB_WEST; dir = directionIncrement(dir)) {
+	for (dir = RND_NORTH; dir <= RND_WEST; dir = directionIncrement(dir)) {
 		if (heap[dir])
 			pcb_heap_destroy(&heap[dir]);
 	}
@@ -2793,15 +2793,15 @@ static routebox_t *rb_source(routebox_t * rb)
 /* ------------ */
 
 struct foib_info {
-	const pcb_box_t *box;
+	const rnd_box_t *box;
 	routebox_t *intersect;
 	jmp_buf env;
 };
 
-static pcb_r_dir_t foib_rect_in_reg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t foib_rect_in_reg(const rnd_box_t * box, void *cl)
 {
 	struct foib_info *foib = (struct foib_info *) cl;
-	pcb_box_t rbox;
+	rnd_box_t rbox;
 	routebox_t *rb = (routebox_t *) box;
 	if (rb->flags.touched)
 		return PCB_R_DIR_NOT_FOUND;
@@ -2819,7 +2819,7 @@ static pcb_r_dir_t foib_rect_in_reg(const pcb_box_t * box, void *cl)
 static routebox_t *FindOneInBox(pcb_rtree_t * rtree, routebox_t * rb)
 {
 	struct foib_info foib;
-	pcb_box_t r;
+	rnd_box_t r;
 
 	r = rb->sbox;
 	foib.box = &r;
@@ -2832,14 +2832,14 @@ static routebox_t *FindOneInBox(pcb_rtree_t * rtree, routebox_t * rb)
 
 struct therm_info {
 	routebox_t *plane;
-	pcb_box_t query;
+	rnd_box_t query;
 	jmp_buf env;
 };
-static pcb_r_dir_t ftherm_rect_in_reg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t ftherm_rect_in_reg(const rnd_box_t * box, void *cl)
 {
 	routebox_t *rbox = (routebox_t *) box;
 	struct therm_info *ti = (struct therm_info *) cl;
-	pcb_box_t sq, sb;
+	rnd_box_t sq, sb;
 
 	if (rbox->type != TERM)
 		return PCB_R_DIR_NOT_FOUND;
@@ -2932,7 +2932,7 @@ TODO("padstack: when style contains proto, remove this")
 		rb->flags.fixed = 0;				/* indicates that not on PCB yet */
 		rb->flags.is_odd = AutoRouteParameters.is_odd;
 		rb->flags.is_bad = is_bad;
-		rb->came_from = PCB_ANY_DIR;
+		rb->came_from = RND_ANY_DIR;
 		rb->flags.circular = pcb_true;
 		rb->style = AutoRouteParameters.style;
 		rb->pass = AutoRouteParameters.pass;
@@ -3028,7 +3028,7 @@ RD_DrawLine(routedata_t * rd,
 	rb->flags.fixed = 0;					/* indicates that not on PCB yet */
 	rb->flags.is_odd = AutoRouteParameters.is_odd;
 	rb->flags.is_bad = qis_bad;
-	rb->came_from = PCB_ANY_DIR;
+	rb->came_from = RND_ANY_DIR;
 	rb->flags.homeless = 0;				/* we're putting this in the tree */
 	rb->flags.nonstraight = qis_45;
 	rb->flags.bl_to_ur = ((qX2 >= qX1 && qY2 <= qY1)
@@ -3070,11 +3070,11 @@ RD_DrawLine(routedata_t * rd,
 
 static rnd_bool
 RD_DrawManhattanLine(routedata_t * rd,
-										 const pcb_box_t * box1, const pcb_box_t * box2,
-										 pcb_cheap_point_t start, pcb_cheap_point_t end,
+										 const rnd_box_t * box1, const rnd_box_t * box2,
+										 rnd_cheap_point_t start, rnd_cheap_point_t end,
 										 rnd_coord_t halfthick, pcb_cardinal_t group, routebox_t * subnet, rnd_bool is_bad, rnd_bool last_was_x)
 {
-	pcb_cheap_point_t knee = start;
+	rnd_cheap_point_t knee = start;
 	if (end.X == start.X) {
 		RD_DrawLine(rd, start.X, start.Y, end.X, end.Y, halfthick, group, subnet, is_bad, pcb_false);
 		return pcb_false;
@@ -3109,7 +3109,7 @@ RD_DrawManhattanLine(routedata_t * rd,
 	else {
 		/* draw 45-degree path across knee */
 		rnd_coord_t len45 = MIN(PCB_ABS(start.X - end.X), PCB_ABS(start.Y - end.Y));
-		pcb_cheap_point_t kneestart = knee, kneeend = knee;
+		rnd_cheap_point_t kneestart = knee, kneeend = knee;
 		if (kneestart.X == start.X)
 			kneestart.Y += (kneestart.Y > start.Y) ? -len45 : len45;
 		else
@@ -3127,7 +3127,7 @@ RD_DrawManhattanLine(routedata_t * rd,
 
 /* for smoothing, don't pack traces to min clearance gratuitously */
 #if 0
-static void add_clearance(pcb_cheap_point_t * nextpoint, const pcb_box_t * b)
+static void add_clearance(rnd_cheap_point_t * nextpoint, const rnd_box_t * b)
 {
 	if (nextpoint->X == b->X1) {
 		if (nextpoint->X + AutoRouteParameters.style->Clearance < (b->X1 + b->X2) / 2)
@@ -3173,9 +3173,9 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 	rnd_bool last_x = pcb_false;
 	rnd_coord_t halfwidth = HALF_THICK(AutoRouteParameters.style->Thick);
 	rnd_coord_t radius = HALF_THICK(AutoRouteParameters.style->Diameter);
-	pcb_cheap_point_t lastpoint, nextpoint;
+	rnd_cheap_point_t lastpoint, nextpoint;
 	routebox_t *lastpath;
-	pcb_box_t b;
+	rnd_box_t b;
 
 	assert(subnet->style == AutoRouteParameters.style);
 	/*XXX: because we round up odd thicknesses, there's the possibility that
@@ -3198,7 +3198,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 			TargetPoint(&nextpoint, rb_source(path));
 			/* nextpoint is the middle of the source terminal now */
 			b = rnd_clip_box(&path->sbox, &path->parent.expansion_area->sbox);
-			nextpoint = rnd_closest_pcb_point_in_box(&nextpoint, &b);
+			nextpoint = rnd_closest_cheap_point_in_box(&nextpoint, &b);
 			/* now it's in the via and plane near the source */
 		}
 		else {											/* no via coming, target must have been a pin */
@@ -3219,7 +3219,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 		b = path->sbox;
 		if (path->flags.circular)
 			b = rnd_shrink_box(&b, MIN(b.X2 - b.X1, b.Y2 - b.Y1) / 5);
-		nextpoint = rnd_closest_pcb_point_in_box(&lastpoint, &b);
+		nextpoint = rnd_closest_cheap_point_in_box(&lastpoint, &b);
 		if (AutoRouteParameters.last_smooth)
 			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, pcb_true);
 		else
@@ -3244,7 +3244,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 		assert(b.X1 != b.X2 && b.Y1 != b.Y2);	/* need someplace to put line! */
 		/* find point on path perimeter closest to last point */
 		/* if source terminal, try to hit a good place */
-		nextpoint = rnd_closest_pcb_point_in_box(&lastpoint, &b);
+		nextpoint = rnd_closest_cheap_point_in_box(&lastpoint, &b);
 #if 0
 		/* leave more clearance if this is a smoothing pass */
 		if (AutoRouteParameters.is_smoothing && (nextpoint.X != lastpoint.X || nextpoint.Y != lastpoint.Y))
@@ -3331,7 +3331,7 @@ CreateSearchEdge(routeone_state_t *s, vetting_t * work, edge_t * parent,
 								 routebox_t * rb, conflict_t conflict, pcb_rtree_t * targets, rnd_bool in_plane)
 {
 	routebox_t *target;
-	pcb_box_t b;
+	rnd_box_t b;
 	pcb_cost_t cost;
 	assert(__routepcb_box_is_good(rb));
 	/* find the cheapest target */
@@ -3412,7 +3412,7 @@ add_via_sites(routeone_state_t *s,
 {
 	rnd_coord_t radius, clearance;
 	vetting_t *work;
-	pcb_box_t region = shrink_routebox(within);
+	rnd_box_t region = shrink_routebox(within);
 	rnd_shrink_box(&region, shrink);
 
 	radius = HALF_THICK(AutoRouteParameters.style->Diameter);
@@ -3456,8 +3456,8 @@ do_via_search(edge_t * search, routeone_state_t *s,
 			 i == LO_CONFLICT ? vss->lo_conflict_space_vec : i == HI_CONFLICT ? vss->hi_conflict_space_vec : NULL);
 		assert(v);
 		while (!vector_is_empty(v)) {
-			pcb_box_t cliparea;
-			pcb_box_t *area = (pcb_box_t *) vector_remove_last(v);
+			rnd_box_t cliparea;
+			rnd_box_t *area = (rnd_box_t *) vector_remove_last(v);
 			if (!(i == NO_CONFLICT || AutoRouteParameters.with_conflicts)) {
 				free(area);
 				continue;
@@ -3573,7 +3573,7 @@ static void show_sources(routebox_t * rb)
 
 #endif
 
-static pcb_r_dir_t __conflict_source(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __conflict_source(const rnd_box_t * box, void *cl)
 {
 	routebox_t *rb = (routebox_t *) box;
 	if (rb->flags.touched || rb->flags.fixed)
@@ -3607,7 +3607,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	routeone_status_t result;
 	routebox_t *p;
 	int seen, i;
-	const pcb_box_t **target_list;
+	const rnd_box_t **target_list;
 	int num_targets;
 	pcb_rtree_t *targets;
 	/* vector of source edges for filtering */
@@ -3685,7 +3685,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	assert(!from->flags.target);
 	assert(num_targets > 0);
 	/* create list of target pointers and from that a r-tree of targets */
-	target_list = (const pcb_box_t **) malloc(num_targets * sizeof(*target_list));
+	target_list = (const rnd_box_t **) malloc(num_targets * sizeof(*target_list));
 	i = 0;
 	LIST_LOOP(from, same_net, p);
 	if (p->flags.target) {
@@ -3696,7 +3696,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	}
 	PCB_END_LOOP;
 	targets = pcb_r_create_tree();
-	pcb_r_insert_array(targets, (const pcb_box_t **)target_list, i);
+	pcb_r_insert_array(targets, (const rnd_box_t **)target_list, i);
 	assert(i <= num_targets);
 	free(target_list);
 
@@ -3709,9 +3709,9 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	{
 		/* we need the test for 'source' because this box may be nonstraight */
 		if (p->flags.source && is_layer_group_active[p->group]) {
-			pcb_cheap_point_t cp;
+			rnd_cheap_point_t cp;
 			edge_t *e;
-			pcb_box_t b = shrink_routebox(p);
+			rnd_box_t b = shrink_routebox(p);
 
 #if defined(ROUTE_DEBUG) && defined(DEBUG_SHOW_SOURCES)
 			showroutebox(p);
@@ -3721,9 +3721,9 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 
 			cp.X = RND_BOX_CENTER_X(b);
 			cp.Y = RND_BOX_CENTER_Y(b);
-			e = CreateEdge(p, cp.X, cp.Y, 0, NULL, PCB_ANY_DIR, targets);
-			cp = rnd_closest_pcb_point_in_box(&cp, &e->minpcb_cost_target->sbox);
-			cp = rnd_closest_pcb_point_in_box(&cp, &b);
+			e = CreateEdge(p, cp.X, cp.Y, 0, NULL, RND_ANY_DIR, targets);
+			cp = rnd_closest_cheap_point_in_box(&cp, &e->minpcb_cost_target->sbox);
+			cp = rnd_closest_cheap_point_in_box(&cp, &b);
 			e->cost_point = cp;
 			p->cost_point = cp;
 			source_conflicts(rd->layergrouptree[p->group], p);
@@ -3794,7 +3794,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		if (e->rb->type == PLANE) {
 			routebox_t *pin = FindThermable(targets, e->rb);
 			if (pin) {
-				pcb_box_t b = shrink_routebox(pin);
+				rnd_box_t b = shrink_routebox(pin);
 				edge_t *ne;
 				routebox_t *nrb;
 				assert(pin->flags.target);
@@ -3824,7 +3824,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		if (e->flags.is_via) {			/* special case via */
 			routebox_t *intersecting;
 			assert(AutoRouteParameters.use_vias);
-			assert(e->expand_dir == PCB_ANY_DIR);
+			assert(e->expand_dir == RND_ANY_DIR);
 			assert(vector_is_empty(edge_vec));
 			/* if there is already something here on this layer (like an
 			 * EXPANSION_AREA), then we don't want to expand from here
@@ -3837,7 +3837,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 				/* we have hit a plane */
 				edge_t *ne;
 				routebox_t *nrb;
-				pcb_box_t b = shrink_routebox(e->rb);
+				rnd_box_t b = shrink_routebox(e->rb);
 				/* limit via region to that inside the plane */
 				rnd_clip_box(&b, &intersecting->sbox);
 				nrb = CreateExpansionArea(&b, e->rb->group, e->rb, pcb_true, e);
@@ -3866,7 +3866,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 				goto dontexpand;
 			else if (0) {							/* XXX: disabling this causes no via
 																   collisions. */
-				pcb_box_t a = bloat_routebox(intersecting), b;
+				rnd_box_t a = bloat_routebox(intersecting), b;
 				edge_t *ne;
 				int i, j;
 				/* something intersects this via candidate.  split via candidate
@@ -3939,7 +3939,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		if (1) {
 			routebox_t *nrb;
 			struct E_result *ans;
-			pcb_box_t b;
+			rnd_box_t b;
 			vector_t *broken;
 			if (e->flags.is_interior) {
 				assert(AutoRouteParameters.with_conflicts);	/* no interior edges unless
@@ -3947,22 +3947,22 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 				assert(e->rb->conflicts_with);
 				b = e->rb->sbox;
 				switch (e->rb->came_from) {
-				case PCB_NORTH:
+				case RND_NORTH:
 					b.Y2 = b.Y1 + 1;
 					b.X1 = RND_BOX_CENTER_X(b);
 					b.X2 = b.X1 + 1;
 					break;
-				case PCB_EAST:
+				case RND_EAST:
 					b.X1 = b.X2 - 1;
 					b.Y1 = RND_BOX_CENTER_Y(b);
 					b.Y2 = b.Y1 + 1;
 					break;
-				case PCB_SOUTH:
+				case RND_SOUTH:
 					b.Y1 = b.Y2 - 1;
 					b.X1 = RND_BOX_CENTER_X(b);
 					b.X2 = b.X1 + 1;
 					break;
-				case PCB_WEST:
+				case RND_WEST:
 					b.X2 = b.X1 + 1;
 					b.Y1 = RND_BOX_CENTER_Y(b);
 					b.Y2 = b.Y1 + 1;
@@ -4112,7 +4112,7 @@ static void InitAutoRouteParameters(int pass, pcb_route_style_t * style, rnd_boo
 }
 
 #ifndef NDEBUG
-pcb_r_dir_t bad_boy(const pcb_box_t * b, void *cl)
+pcb_r_dir_t bad_boy(const rnd_box_t * b, void *cl)
 {
 	routebox_t *box = (routebox_t *) b;
 	if (box->type == EXPANSION_AREA)
@@ -4123,7 +4123,7 @@ pcb_r_dir_t bad_boy(const pcb_box_t * b, void *cl)
 rnd_bool no_expansion_boxes(routedata_t * rd)
 {
 	int i;
-	pcb_box_t big;
+	rnd_box_t big;
 	big.X1 = 0;
 	big.X2 = PCB_MAX_COORD;
 	big.Y1 = 0;
@@ -4152,7 +4152,7 @@ static void ripout_livedraw_obj(routebox_t * rb)
 	}
 }
 
-static pcb_r_dir_t ripout_livedraw_obj_cb(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t ripout_livedraw_obj_cb(const rnd_box_t * b, void *cl)
 {
 	routebox_t *box = (routebox_t *) b;
 	ripout_livedraw_obj(box);
@@ -4211,7 +4211,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 	LIST_LOOP(rd->first_net, different_net, net);
 	{
 		double area;
-		pcb_box_t bb = shrink_routebox(net);
+		rnd_box_t bb = shrink_routebox(net);
 		LIST_LOOP(net, same_net, p);
 		{
 			PCB_MAKE_MIN(bb.X1, p->sbox.X1);
@@ -4327,7 +4327,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 			LIST_LOOP(net, same_net, p);
 			{
 #ifdef NET_HEAP
-				pcb_box_t b = shrink_routebox(p);
+				rnd_box_t b = shrink_routebox(p);
 				/* using a heap allows us to start from smaller objects and
 				 * end at bigger ones. also prefer to start at planes, then pads */
 				pcb_heap_insert(net_heap, (float) (b.X2 - b.X1) *
@@ -4452,7 +4452,7 @@ struct fpin_info {
 	jmp_buf env;
 };
 
-static pcb_r_dir_t fpstk_rect(const pcb_box_t * b, void *cl)
+static pcb_r_dir_t fpstk_rect(const rnd_box_t * b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct fpin_info *info = (struct fpin_info *) cl;
@@ -4463,7 +4463,7 @@ static pcb_r_dir_t fpstk_rect(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static int FindPin(const pcb_box_t *box, pcb_pstk_t **ps_out)
+static int FindPin(const rnd_box_t *box, pcb_pstk_t **ps_out)
 {
 	struct fpin_info info;
 
@@ -4509,7 +4509,7 @@ rnd_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				if (p->type == LINE) {
 					rnd_coord_t halfwidth = HALF_THICK(p->style->Thick);
 					double th = halfwidth * 2 + 1;
-					pcb_box_t b;
+					rnd_box_t b;
 					assert(p->parent.line == NULL);
 					/* orthogonal; thickness is 2*halfwidth */
 					/* flip coordinates, if bl_to_ur */
@@ -4539,7 +4539,7 @@ rnd_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				else if (p->type == VIA || p->type == VIA_SHADOW) {
 					routebox_t *pp = (p->type == VIA_SHADOW) ? p->parent.via_shadow : p;
 					rnd_coord_t radius = HALF_THICK(pp->style->Diameter);
-					pcb_box_t b = shrink_routebox(p);
+					rnd_box_t b = shrink_routebox(p);
 					total_via_count++;
 					assert(pp->type == VIA);
 					if (pp->parent.via == NULL) {
@@ -4749,7 +4749,7 @@ donerouting:
 	pcb_hid_progress(0, 0, NULL);
 	if (conf_core.editor.live_routing) {
 		int i;
-		pcb_box_t big = { 0, 0, PCB_MAX_COORD, PCB_MAX_COORD };
+		rnd_box_t big = { 0, 0, PCB_MAX_COORD, PCB_MAX_COORD };
 		for (i = 0; i < pcb_max_group(PCB); i++) {
 			pcb_r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL, NULL);
 		}

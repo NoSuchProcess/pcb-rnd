@@ -71,7 +71,7 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	}
 	else {
 		char tmp[128];
-		pcb_box_t bbox;
+		rnd_box_t bbox;
 		sprintf(tmp, "Subcircuit #%ld not found.", ctx->subc_id);
 		bbox.X1 = bbox.Y1 = 0;
 		bbox.X2 = bbox.Y2 = PCB_MM_TO_COORD(10);
@@ -111,7 +111,7 @@ static rnd_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 		pinout_ctx_t *ctx = prv->user_ctx;
 		void *r1, *r2, *r3;
 		pcb_objtype_t type;
-		pcb_box_t b;
+		rnd_box_t b;
 		pcb_hid_attr_val_t val;
 
 		val.str = "n/a";

@@ -47,7 +47,7 @@ typedef struct {
 	rnd_coord_t r;
 } overlap_t;
 
-static pcb_r_dir_t overlap(const pcb_box_t *box, void *closure)
+static pcb_r_dir_t overlap(const rnd_box_t *box, void *closure)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 	overlap_t *ovl = (overlap_t *)closure;
@@ -75,7 +75,7 @@ static pcb_r_dir_t overlap(const pcb_box_t *box, void *closure)
 
 TODO("move this to search.[ch]")
 /* Search for object(s) on a specific layer */
-static pcb_r_dir_t pcb_search_on_layer(pcb_layer_t *layer, const pcb_box_t *bbox, pcb_r_dir_t (*cb)(const pcb_box_t *box, void *closure), void *closure)
+static pcb_r_dir_t pcb_search_on_layer(pcb_layer_t *layer, const rnd_box_t *bbox, pcb_r_dir_t (*cb)(const rnd_box_t *box, void *closure), void *closure)
 {
 	pcb_r_dir_t res, fin = 0;
 
@@ -105,7 +105,7 @@ pcb_flag_t flg_mesh_pt;
 static void acompnet_mesh_addpt(pcb_meshgraph_t *gr, pcb_layer_t *layer, double x, double y, int score, double sep)
 {
 	overlap_t ovl;
-	pcb_box_t bbox;
+	rnd_box_t bbox;
 
 	x = pcb_round(x);
 	y = pcb_round(y);
@@ -181,7 +181,7 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	acompnet_mesh(&gr, PCB_CURRLAYER(PCB));
 
 	{ /* temporary hack for testing: fixed, off-mesh start/end */
-		pcb_box_t bbox;
+		rnd_box_t bbox;
 		bbox.X1 = PCB_MM_TO_COORD(6.35); bbox.X2 = bbox.X1+1;
 		bbox.Y1 = PCB_MM_TO_COORD(21.5); bbox.Y2 = bbox.Y1+1;
 		is = pcb_msgr_add_node(&gr, &bbox, 0);

@@ -653,7 +653,7 @@ struct search_info {
 	sketch_t *sk;
 };
 
-static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
+static pcb_r_dir_t r_search_cb(const rnd_box_t *box, void *cl)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *) box;
 	struct search_info *i = (struct search_info *) cl;
@@ -690,7 +690,7 @@ static pcb_r_dir_t r_search_cb(const pcb_box_t *box, void *cl)
 
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
-	pcb_box_t bbox;
+	rnd_box_t bbox;
 	struct search_info info;
 	char name[256];
 

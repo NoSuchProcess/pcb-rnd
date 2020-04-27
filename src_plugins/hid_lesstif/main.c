@@ -2175,12 +2175,12 @@ static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void lesstif_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
+static void lesstif_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = view_zoom;
 }
 
-static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *drw_screen)
+static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *drw_screen)
 {
 	lesstif_drawing_mode = op;
 
@@ -2897,7 +2897,7 @@ static void ltf_pan_mode(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool 
 }
 
 
-static void ltf_view_get(pcb_hid_t *hid, pcb_box_t *viewbox)
+static void ltf_view_get(pcb_hid_t *hid, rnd_box_t *viewbox)
 {
 	viewbox->X1 = view_left_x;
 	viewbox->Y1 = view_top_y;

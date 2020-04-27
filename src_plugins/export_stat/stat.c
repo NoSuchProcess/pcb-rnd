@@ -334,7 +334,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	PCB_END_LOOP;
 
 	if (pcb_has_explicit_outline(PCB)) {
-		pcb_box_t bb;
+		rnd_box_t bb;
 		pcb_data_bbox_naked(&bb, PCB->Data, pcb_true);
 		width = bb.X2 - bb.X1;
 		height = bb.Y2 - bb.Y1;

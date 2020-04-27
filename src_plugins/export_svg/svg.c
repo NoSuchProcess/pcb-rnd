@@ -486,7 +486,7 @@ static void svg_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
+static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	drawing_mode = op;
 

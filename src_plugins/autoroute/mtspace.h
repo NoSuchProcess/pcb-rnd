@@ -60,20 +60,20 @@ void mtspace_destroy(mtspace_t ** mtspacep);
  * should *not* be bloated; it should be "true".  The feature will fill
  * *at least* a radius of clearance around it;
  */
-void mtspace_add(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, rnd_coord_t clearance);
+void mtspace_add(mtspace_t * mtspace, const rnd_box_t * box, mtspace_type_t which, rnd_coord_t clearance);
 /* remove a space-filler from the empty space representation.  The given box
  * should *not* be bloated; it should be "true".  The feature will fill
  * *at least* a radius of clearance around it;
  */
-void mtspace_remove(mtspace_t * mtspace, const pcb_box_t * box, mtspace_type_t which, rnd_coord_t clearance);
+void mtspace_remove(mtspace_t * mtspace, const rnd_box_t * box, mtspace_type_t which, rnd_coord_t clearance);
 
 
-vetting_t *mtspace_query_rect(mtspace_t * mtspace, const pcb_box_t * region,
+vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_box_t * region,
 															rnd_coord_t radius, rnd_coord_t clearance,
 															vetting_t * work,
 															vector_t * free_space_vec,
 															vector_t * lo_conflict_space_vec,
-															vector_t * hi_conflict_space_vec, rnd_bool is_odd, rnd_bool with_conflicts, pcb_cheap_point_t * desired);
+															vector_t * hi_conflict_space_vec, rnd_bool is_odd, rnd_bool with_conflicts, rnd_cheap_point_t * desired);
 
 void mtsFreeWork(vetting_t **);
 int mtsBoxCount(vetting_t *);

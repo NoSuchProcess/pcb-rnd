@@ -53,7 +53,7 @@ typedef struct {
 	gsxl_dom_t dom;
 	pcb_board_t *pcb;
 	const pcb_unit_t *unit;
-	pcb_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
+	rnd_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	htsp_t name2layer;
 	htsp_t protos; /* padstack prototypes - allocated for the hash, copied on placement */
 	htsp_t subcs;  /* subc images - allocated for the hash, copied on placement */
@@ -189,7 +189,7 @@ static void parse_attribute(dsn_read_t *ctx, rnd_attribute_list_t *attr, gsxl_no
 		rnd_attribute_put(attr, STRE(kv), STRE(kv->children));
 }
 
-static int dsn_parse_rect(dsn_read_t *ctx, pcb_box_t *dst, gsxl_node_t *src, int no_y_flip)
+static int dsn_parse_rect(dsn_read_t *ctx, rnd_box_t *dst, gsxl_node_t *src, int no_y_flip)
 {
 	rnd_coord_t x, y;
 
@@ -294,7 +294,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 				boundary_line(oly, lx, ly, x, y, aper);
 		}
 		else if (pcb_strcasecmp(bnd->str, "rect") == 0) {
-			pcb_box_t box;
+			rnd_box_t box;
 
 			b = gsxl_children(bnd);
 			if ((b->next == NULL) || (b->next->next == NULL)) {
@@ -538,7 +538,7 @@ int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape
 
 int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
-	pcb_box_t box;
+	rnd_box_t box;
 	gsxl_node_t *args = nd->children->next;
 
 	if (dsn_parse_rect(ctx, &box, args, 1) != 0)
@@ -1186,7 +1186,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 
 static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
-	pcb_box_t box;
+	rnd_box_t box;
 	gsxl_node_t *net = wrr->children;
 	pcb_layer_t *ly;
 

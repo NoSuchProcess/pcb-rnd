@@ -54,7 +54,7 @@ typedef struct pstk_lib_ctx_s {
 	long subc_id;
 	pcb_cardinal_t proto_id;
 	pcb_cardinal_t *stat; /* temporary usage stat */
-	pcb_box_t drawbox;
+	rnd_box_t drawbox;
 	rnd_bool modal;
 } pstk_lib_ctx_t;
 
@@ -210,7 +210,7 @@ static void pstklib_force_redraw(pstk_lib_ctx_t *ctx, pcb_pstk_t *ps)
 	ps->BoundingBox.Y1 -= PCB_MM_TO_COORD(0.5);
 	ps->BoundingBox.X2 += PCB_MM_TO_COORD(0.5);
 	ps->BoundingBox.Y2 += PCB_MM_TO_COORD(0.5);
-	memcpy(&ctx->drawbox, &ps->BoundingBox, sizeof(pcb_box_t));
+	memcpy(&ctx->drawbox, &ps->BoundingBox, sizeof(rnd_box_t));
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
 
@@ -413,7 +413,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attri
 	pcb_hid_attribute_t *attr;
 	pcb_hid_row_t *r;
 	long pid;
-	pcb_box_t box;
+	rnd_box_t box;
 	int changed = 0;
 	pcb_pstk_t *ps;
 

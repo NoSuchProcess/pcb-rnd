@@ -572,7 +572,7 @@ struct onpoint_search_info {
 	rnd_coord_t Y;
 };
 
-static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
@@ -598,7 +598,7 @@ static pcb_r_dir_t onpoint_line_callback(const pcb_box_t * box, void *cl)
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static pcb_r_dir_t onpoint_arc_callback(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
@@ -671,7 +671,7 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
  */
 static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t Y)
 {
-	pcb_box_t SearchBox = rnd_point_box(X, Y);
+	rnd_box_t SearchBox = rnd_point_box(X, Y);
 	struct onpoint_search_info info;
 	int i;
 	rnd_bool redraw = pcb_false;

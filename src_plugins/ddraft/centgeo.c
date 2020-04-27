@@ -40,7 +40,7 @@
 /* Note about all intersection code: same basic algo as in find_geo.c -
    see comment for the algo description there */
 
-int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, pcb_box_t *ip, double offs[2])
+int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, rnd_box_t *ip, double offs[2])
 {
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
@@ -170,7 +170,7 @@ do { \
 		return found; \
 } while(0)
 
-static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2], int oline)
+static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, rnd_box_t *ip, double offs[2], int oline)
 {
 	double dx, dy, dx1, dy1, l, d, r, r2, Radius;
 	rnd_coord_t ex, ey, ix, iy;
@@ -260,12 +260,12 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip,
 	return found;
 }
 
-int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, pcb_box_t *ip, double offs[2])
+int pcb_intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, rnd_box_t *ip, double offs[2])
 {
 	return intersect_cline_carc(Line, Arc, ip, offs, 1);
 }
 
-int pcb_intersect_carc_cline(pcb_arc_t *Arc, pcb_line_t *Line, pcb_box_t *ip, double offs[2])
+int pcb_intersect_carc_cline(pcb_arc_t *Arc, pcb_line_t *Line, rnd_box_t *ip, double offs[2])
 {
 	return intersect_cline_carc(Line, Arc, ip, offs, 0);
 }
@@ -344,7 +344,7 @@ static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 	return (sa + d - 360) >= alpha;
 }
 
-int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, pcb_box_t *ip, double offs[2])
+int pcb_intersect_carc_carc(pcb_arc_t *Arc1, pcb_arc_t *Arc2, rnd_box_t *ip, double offs[2])
 {
 	double x, y, dx, dy, r1, r2, a, d, l, dl;
 	rnd_coord_t pdx, pdy;

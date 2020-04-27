@@ -210,7 +210,7 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 
 static void calc_pad_bbox_(subst_ctx_t *ctx, rnd_coord_t *pw, rnd_coord_t *ph, rnd_coord_t *pcx, rnd_coord_t *pcy)
 {
-	pcb_box_t box;
+	rnd_box_t box;
 	box.X1 = box.Y1 = PCB_MAX_COORD;
 	box.X2 = box.Y2 = -PCB_MAX_COORD;
 

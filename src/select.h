@@ -37,8 +37,8 @@
 	 PCB_OBJ_PSTK | PCB_OBJ_RAT | PCB_OBJ_ARC | PCB_OBJ_GFX)
 
 rnd_bool pcb_select_object(pcb_board_t *pcb);
-rnd_bool pcb_select_block(pcb_board_t *pcb, pcb_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert);
-long int *pcb_list_block(pcb_board_t *pcb, pcb_box_t *Box, int *len);
+rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert);
+long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len);
 
 rnd_bool pcb_select_connection(pcb_board_t *pcb, rnd_bool);
 

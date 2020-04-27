@@ -67,7 +67,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, rnd_coord_t X, rnd_coord
 void pcb_arc_mirror(pcb_arc_t *arc, rnd_coord_t y_offs, rnd_bool undoable);
 void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc);
 void pcb_arc_scale(pcb_arc_t *arc, double sx, double sy, double sth);
-pcb_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc);
+rnd_box_t pcb_arc_mini_bbox(const pcb_arc_t *arc);
 
 
 /*** hash and eq ***/

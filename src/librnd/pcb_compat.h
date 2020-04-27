@@ -91,7 +91,7 @@
 #define pcb_point_in_closed_box rnd_point_in_closed_box
 #define pcb_box_is_good rnd_box_is_good
 #define pcb_box_intersect rnd_box_intersect
-#define pcb_closest_pcb_point_in_box rnd_closest_pcb_point_in_box
+#define pcb_closest_pcb_point_in_box rnd_closest_cheap_point_in_box
 #define pcb_box_in_box rnd_box_in_box
 #define pcb_clip_box rnd_clip_box
 #define pcb_shrink_box rnd_shrink_box
@@ -105,3 +105,16 @@
 #define pcb_box_bump_point rnd_box_bump_point
 #define pcb_box_rotate90 rnd_box_rotate90
 #define pcb_box_enlarge rnd_box_enlarge
+#define PCB_NORTH RND_NORTH
+#define PCB_EAST RND_EAST
+#define PCB_SOUTH RND_SOUTH
+#define PCB_WEST RND_WEST
+#define PCB_NE RND_NE
+#define PCB_SE RND_SE
+#define PCB_SW RND_SW
+#define PCB_NW RND_NW
+#define PCB_ANY_DIR RND_ANY_DIR
+#define pcb_box_t rnd_box_t
+#define pcb_direction_t rnd_direction_t
+#define pcb_cheap_point_s rnd_cheap_point_s
+#define pcb_cheap_point_t rnd_cheap_point_t

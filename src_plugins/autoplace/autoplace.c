@@ -129,16 +129,16 @@ TODO("cleanup: remove this and use genvect")
 #define STEP_POINT 100
 
 /* get next slot for a box, allocates memory if necessary */
-static pcb_box_t *pcb_box_new(rnd_box_list_t *Boxes)
+static rnd_box_t *pcb_box_new(rnd_box_list_t *Boxes)
 {
-	pcb_box_t *box = Boxes->Box;
+	rnd_box_t *box = Boxes->Box;
 
 	/* realloc new memory if necessary and clear it */
 	if (Boxes->BoxN >= Boxes->BoxMax) {
 		Boxes->BoxMax = STEP_POINT + (2 * Boxes->BoxMax);
-		box = (pcb_box_t *) realloc(box, Boxes->BoxMax * sizeof(pcb_box_t));
+		box = (rnd_box_t *) realloc(box, Boxes->BoxMax * sizeof(rnd_box_t));
 		Boxes->Box = box;
-		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(pcb_box_t));
+		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(rnd_box_t));
 	}
 	return (box + Boxes->BoxN++);
 }
@@ -220,9 +220,9 @@ static void showboxes(rnd_box_list_t *blist)
  */
 /*------ r_find_neighbor ------*/
 struct r_neighbor_info {
-	const pcb_box_t *neighbor;
-	pcb_box_t trap;
-	pcb_direction_t search_dir;
+	const rnd_box_t *neighbor;
+	rnd_box_t trap;
+	rnd_direction_t search_dir;
 };
 #define ROTATEBOX(box) { rnd_coord_t t;\
     t = (box).X1; (box).X1 = - (box).Y1; (box).Y1 = t;\
@@ -230,10 +230,10 @@ struct r_neighbor_info {
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
 }
 /* helper methods for __r_find_neighbor */
-static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *cl)
+static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_box_t * region, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	pcb_box_t query = *region;
+	rnd_box_t query = *region;
 	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
@@ -246,10 +246,10 @@ static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const pcb_box_t * region, void *
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl)
+static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_box_t * box, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	pcb_box_t query = *box;
+	rnd_box_t query = *box;
 	int r;
 	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
@@ -270,10 +270,10 @@ static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const pcb_box_t * box, void *cl
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the
  * requested direction. */
-static const pcb_box_t *r_find_neighbor(pcb_rtree_t * rtree, const pcb_box_t * box, pcb_direction_t search_direction)
+static const rnd_box_t *r_find_neighbor(pcb_rtree_t * rtree, const rnd_box_t * box, rnd_direction_t search_direction)
 {
 	struct r_neighbor_info ni;
-	pcb_box_t bbox;
+	rnd_box_t bbox;
 
 	ni.neighbor = NULL;
 	ni.trap = *box;
@@ -381,7 +381,7 @@ static double ComputeCost(double T0, double T)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		rnd_box_list_t *thisside, *otherside;
-		pcb_box_t *box, *lastbox = NULL;
+		rnd_box_t *box, *lastbox = NULL;
 		rnd_coord_t clearance;
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
@@ -414,7 +414,7 @@ TODO("subc: look up clearance")
 			/* add a box for each thru-hole pin to the "opposite side":
 			 * surface mount components can't sit on top of pins */
 			if ((!CostParameter.fast) && (o->type == PCB_OBJ_PSTK)) {
-				pcb_box_t box2;
+				rnd_box_t box2;
 				box2.X1 = o->BoundingBox.X1 - clearance;
 				box2.Y1 = o->BoundingBox.Y1 - clearance;
 				box2.X2 = o->BoundingBox.X2 + clearance;
@@ -451,14 +451,14 @@ TODO("subc: look up clearance")
 		/* create r tree */
 		vtp0_t seboxes, ceboxes;
 		struct ebox {
-			pcb_box_t box;
+			rnd_box_t box;
 TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove the fields below")
 			pcb_any_obj_t *comp;
 			const char *refdes;
 			int rot90;
-			pcb_box_t *vbox;
+			rnd_box_t *vbox;
 		};
-		pcb_direction_t dir[4] = { PCB_NORTH, PCB_EAST, PCB_SOUTH, PCB_WEST };
+		rnd_direction_t dir[4] = { RND_NORTH, RND_EAST, RND_SOUTH, RND_WEST };
 		struct ebox **boxpp, *boxp;
 		pcb_rtree_t *rt_s, *rt_c;
 		int factor;
@@ -489,9 +489,9 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 		PCB_END_LOOP;
 
 		rt_s = pcb_r_create_tree();
-		pcb_r_insert_array(rt_s, (const pcb_box_t **) seboxes.array, vtp0_len(&seboxes));
+		pcb_r_insert_array(rt_s, (const rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
 		rt_c = pcb_r_create_tree();
-		pcb_r_insert_array(rt_c, (const pcb_box_t **) ceboxes.array, vtp0_len(&ceboxes));
+		pcb_r_insert_array(rt_c, (const rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
 		/* now, for each subcircuit, find its neighbor on all four sides */
@@ -655,7 +655,7 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 
 void doPerturb(vtp0_t *selected, PerturbationType *pt, rnd_bool undo)
 {
-	pcb_box_t *bb;
+	rnd_box_t *bb;
 	rnd_coord_t bbcx, bbcy;
 	pcb_subc_t *subc = (pcb_subc_t *)pt->comp;
 	/* compute center of element bounding box */

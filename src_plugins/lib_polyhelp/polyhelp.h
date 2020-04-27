@@ -44,13 +44,13 @@ rnd_bool pcb_pline_is_aligned(const pcb_pline_t *src);
 /*** Generate an rtree of all edges if a polygon */
 
 typedef struct {
-	pcb_box_t bbox;
+	rnd_box_t bbox;
 	rnd_coord_t x1, y1, x2, y2;
 } pcb_cpoly_edge_t;
 
 typedef struct {
 	pcb_rtree_t *edge_tree;
-	pcb_box_t bbox;
+	rnd_box_t bbox;
 	pcb_cardinal_t used, alloced;
 	pcb_cpoly_edge_t edges[1];
 } pcb_cpoly_edgetree_t;

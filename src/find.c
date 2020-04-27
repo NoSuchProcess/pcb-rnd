@@ -183,7 +183,7 @@ static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, pcb_rtree_box_t *sb, pcb_found_conn_type_t ctype)
 {
 	pcb_rtree_it_t it;
-	pcb_box_t *n;
+	rnd_box_t *n;
 
 	if (l->line_tree != NULL) {
 		for(n = pcb_rtree_first(&it, l->line_tree, sb); n != NULL; n = pcb_rtree_next(&it))
@@ -256,7 +256,7 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 
 		{ /* search unmkared connections: iterative approach */
 			pcb_rtree_it_t it;
-			pcb_box_t *n;
+			rnd_box_t *n;
 			pcb_rtree_box_t *sb = (pcb_rtree_box_t *)&curr->bbox_naked;
 
 			if (PCB->Data->padstack_tree != NULL) {

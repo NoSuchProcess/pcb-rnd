@@ -76,7 +76,7 @@ pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 	pcb_drill_t *Drill = NULL;
 	rnd_bool DrillFound = pcb_false;
 	pcb_rtree_it_t it;
-	pcb_box_t *pb;
+	rnd_box_t *pb;
 
 	AllDrills = (pcb_drill_info_t *)calloc(1, sizeof(pcb_drill_info_t));
 

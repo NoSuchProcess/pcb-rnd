@@ -374,7 +374,7 @@ static void ghid_sketch_setup(render_priv_t *priv)
 	priv->out_clip = priv->sketch_clip;
 }
 
-static void ghid_gdk_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
+static void ghid_gdk_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -428,7 +428,7 @@ static void ghid_gdk_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd
 	curr_drawing_mode = op;
 }
 
-static void ghid_gdk_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const pcb_box_t *screen)
+static void ghid_gdk_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
@@ -806,7 +806,7 @@ static void ghid_gdk_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy
 
 /* Decide if a polygon is an axis aligned rectangle; if so, return non-zero
    and save the corners in b */
-static int poly_is_aligned_rect(pcb_box_t *b, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static int poly_is_aligned_rect(rnd_box_t *b, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	int n, xi1 = 0, yi1 = 0, xi2 = 0, yi2 = 0, xs1 = 0, ys1 = 0, xs2 = 0, ys2 = 0;
 	if (n_coords != 4)
@@ -850,7 +850,7 @@ static int poly_is_aligned_rect(pcb_box_t *b, int n_coords, rnd_coord_t *x, rnd_
 /* Intentional code duplication for performance */
 static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
-	pcb_box_t b;
+	rnd_box_t b;
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i, len, sup = 0;
@@ -910,7 +910,7 @@ static void ghid_gdk_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 /* Intentional code duplication for performance */
 static void ghid_gdk_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_box_t b;
+	rnd_box_t b;
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i, len, sup = 0;

@@ -57,7 +57,7 @@ static GLfloat *grid_points = NULL;
 static int grid_point_capacity = 0;
 
 
-static inline void mode_reset(rnd_bool direct, const pcb_box_t *screen)
+static inline void mode_reset(rnd_bool direct, const rnd_box_t *screen)
 {
 	drawgl_flush();
 	drawgl_reset();
@@ -67,7 +67,7 @@ static inline void mode_reset(rnd_bool direct, const pcb_box_t *screen)
 	comp_stencil_bit = 0;
 }
 
-static inline void mode_positive(rnd_bool direct, const pcb_box_t *screen)
+static inline void mode_positive(rnd_bool direct, const rnd_box_t *screen)
 {
 	if (comp_stencil_bit == 0)
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
@@ -79,7 +79,7 @@ static inline void mode_positive(rnd_bool direct, const pcb_box_t *screen)
 	stencilgl_mode_write_set(comp_stencil_bit);
 }
 
-static inline void mode_positive_xor(rnd_bool direct, const pcb_box_t *screen)
+static inline void mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
 {
 	drawgl_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -88,7 +88,7 @@ static inline void mode_positive_xor(rnd_bool direct, const pcb_box_t *screen)
 	glLogicOp(GL_XOR);
 }
 
-static inline void mode_negative(rnd_bool direct, const pcb_box_t *screen)
+static inline void mode_negative(rnd_bool direct, const rnd_box_t *screen)
 {
 	glEnable(GL_STENCIL_TEST);
 	glDisable(GL_COLOR_LOGIC_OP);
@@ -110,7 +110,7 @@ static inline void mode_negative(rnd_bool direct, const pcb_box_t *screen)
 	drawgl_set_marker();
 }
 
-static inline void mode_flush(rnd_bool direct, rnd_bool xor_mode, const pcb_box_t *screen)
+static inline void mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
 {
 	drawgl_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -140,7 +140,7 @@ pcb_composite_op_t hidgl_get_drawing_mode()
 	return composite_op;
 }
 
-void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const pcb_box_t *screen)
+void hidgl_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	rnd_bool xor_mode = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
 
@@ -225,7 +225,7 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy,
 
 }
 
-void hidgl_draw_grid(rnd_hidlib_t *hidlib, pcb_box_t *drawn_area)
+void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 {
 	rnd_coord_t x1, y1, x2, y2, n, i;
 	double x, y;

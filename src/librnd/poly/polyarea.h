@@ -156,7 +156,7 @@ int pcb_polyarea_and_subtract_free(pcb_polyarea_t *a, pcb_polyarea_t *b, pcb_pol
 int pcb_polyarea_save(pcb_polyarea_t *PA, char *fname);
 
 /* calculate the bounding box of a pcb_polyarea_t and save result in b */
-void pcb_polyarea_bbox(pcb_polyarea_t *p, pcb_box_t *b);
+void pcb_polyarea_bbox(pcb_polyarea_t *p, rnd_box_t *b);
 
 /* Move each point of pa1 by dx and dy */
 void pcb_polyarea_move(pcb_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);

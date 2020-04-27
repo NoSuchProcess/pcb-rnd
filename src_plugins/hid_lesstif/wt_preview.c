@@ -169,14 +169,14 @@ void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCal
 	pcb_ltf_preview_redraw(pd);
 }
 
-void pcb_ltf_preview_invalidate(const pcb_box_t *screen)
+void pcb_ltf_preview_invalidate(const rnd_box_t *screen)
 {
 	pcb_ltf_preview_t *prv;
 
 	for(prv = gdl_first(&ltf_previews); prv != NULL; prv = prv->link.next) {
 		if (!prv->redraw_with_board) continue;
 		if (screen != NULL) {
-			pcb_box_t pb;
+			rnd_box_t pb;
 			pb.X1 = prv->x1;
 			pb.Y1 = prv->y1;
 			pb.X2 = prv->x2;

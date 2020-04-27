@@ -574,7 +574,7 @@ TODO(": handle all cshapes (throw warnings)")
 					if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
 						int i;
 						pcb_line_t line;
-						pcb_box_t bx;
+						rnd_box_t bx;
 						pcb_pstk_shape_t *shape = &tshp->shape[n];
 						
 						on_bottom = tshp->shape[n].layer_mask & PCB_LYT_BOTTOM;

@@ -425,7 +425,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_subc_bbox(sc);
 			if (PCB->Data->subc_tree == NULL)
 				PCB->Data->subc_tree = pcb_r_create_tree();
-			pcb_r_insert_entry(PCB->Data->subc_tree, (pcb_box_t *)sc);
+			pcb_r_insert_entry(PCB->Data->subc_tree, (rnd_box_t *)sc);
 			pcb_subc_rebind(PCB, sc);
 		}
 		htsp_uninit(&subcs);

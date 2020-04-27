@@ -27,7 +27,7 @@ void spoke_uninit(spoke_t *sp)
 
 static void spoke_pos(spoke_t *sp, rnd_coord_t spacing, rnd_coord_t *x, rnd_coord_t *y)
 {
-	pcb_box_t *obj_bbox = &((pointdata_t *) sp->p->data)->obj->bbox_naked;
+	rnd_box_t *obj_bbox = &((pointdata_t *) sp->p->data)->obj->bbox_naked;
 	rnd_coord_t half_obj_w, half_obj_h;
 
 	half_obj_w = (obj_bbox->X2 - obj_bbox->X1 + 1) / 2;

@@ -113,7 +113,7 @@ typedef struct pcb_hid_preview_s pcb_hid_preview_t;
 struct pcb_hid_preview_s {
 	pcb_hid_attribute_t *attrib;
 
-	pcb_box_t initial_view;
+	rnd_box_t initial_view;
 	unsigned initial_view_valid:1;
 
 	int min_sizex_px, min_sizey_px; /* hint: widget minimum size in pixels */
@@ -126,7 +126,7 @@ struct pcb_hid_preview_s {
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
-	void (*hid_zoomto_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, const pcb_box_t *view);
+	void (*hid_zoomto_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, const rnd_box_t *view);
 	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
 };
 
@@ -360,10 +360,10 @@ do { \
 	prv->min_sizex_px = min_sizex_px_; \
 	prv->min_sizey_px = min_sizey_px_; \
 	if ((initial_view_box) != NULL) { \
-		prv->initial_view.X1 = ((pcb_box_t *)(initial_view_box))->X1; \
-		prv->initial_view.Y1 = ((pcb_box_t *)(initial_view_box))->Y1; \
-		prv->initial_view.X2 = ((pcb_box_t *)(initial_view_box))->X2; \
-		prv->initial_view.Y2 = ((pcb_box_t *)(initial_view_box))->Y2; \
+		prv->initial_view.X1 = ((rnd_box_t *)(initial_view_box))->X1; \
+		prv->initial_view.Y1 = ((rnd_box_t *)(initial_view_box))->Y1; \
+		prv->initial_view.X2 = ((rnd_box_t *)(initial_view_box))->X2; \
+		prv->initial_view.Y2 = ((rnd_box_t *)(initial_view_box))->Y2; \
 		prv->initial_view_valid = 1; \
 	} \
 	PCB_DAD_ALLOC(table, PCB_HATT_PREVIEW); \

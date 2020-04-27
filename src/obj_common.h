@@ -84,7 +84,7 @@ typedef enum pcb_objmask_e {
 
 /* point and box type - they are so common everything depends on them */
 struct pcb_point_s {    /* a line/polygon point */
-	rnd_coord_t X, Y, X2, Y2;   /* so Point type can be cast as pcb_box_t */
+	rnd_coord_t X, Y, X2, Y2;   /* so Point type can be cast as rnd_box_t */
 	long int ID;
 };
 
@@ -168,7 +168,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type);
 pcb_flag_values_t pcb_obj_valid_flags(unsigned long int objtype);
 
 
-int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_box_t *res);
+int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_box_t *res);
 
 /* Host transformations: typically the transformations an object of a subc
    inherits from the subc */
@@ -213,13 +213,13 @@ void pcb_obj_add_attribs(pcb_any_obj_t *obj, const rnd_attribute_list_t *src, pc
 /* Any object that ends up in common use as pcb_any_obj_t, MUST be defined
    using this as the first fieldsusing the following macros.  */
 #define PCB_ANY_OBJ_FIELDS \
-	pcb_box_t            BoundingBox; \
+	rnd_box_t            BoundingBox; \
 	long int             ID; \
 	pcb_flag_t           Flags; \
 	pcb_objtype_t        type; \
 	pcb_parenttype_t     parent_type; \
 	pcb_parent_t         parent; \
-	pcb_box_t            bbox_naked; \
+	rnd_box_t            bbox_naked; \
 	rnd_attribute_list_t Attributes \
 
 #define PCB_ANY_PRIMITIVE_FIELDS \

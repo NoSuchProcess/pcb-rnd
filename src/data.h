@@ -133,8 +133,8 @@ rnd_bool pcb_data_is_empty(pcb_data_t *);
 
 /* gets minimum and maximum coordinates
  * returns NULL if layout is empty */
-pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
-pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
+rnd_box_t *pcb_data_bbox(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
+rnd_box_t *pcb_data_bbox_naked(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters);
 
 /* Make sure all layers of data has their .parent field pointing to the data */
 void pcb_data_set_layer_parents(pcb_data_t *data);
@@ -153,7 +153,7 @@ void pcb_data_binding_update(pcb_board_t *pcb, pcb_data_t *data);
 void pcb_data_unbind_layers(pcb_data_t *data);
 
 /* Make sure there are no negative coords in data, knowing the bbox of the data */
-int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox);
+int pcb_data_normalize_(pcb_data_t *data, rnd_box_t *data_bbox);
 
 /* Make sure there are no negative coords in data (calculates the bbox of the data) */
 int pcb_data_normalize(pcb_data_t *data);
@@ -184,9 +184,9 @@ void pcb_data_clip_polys(pcb_data_t *data);
 
 
 /* rsearch on all trees matching types of data */
-pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
-						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
-						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
+pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_box_t *starting_region,
+						 pcb_r_dir_t (*region_in_search) (const rnd_box_t *region, void *cl),
+						 pcb_r_dir_t (*rectangle_in_region) (const rnd_box_t *box, void *cl),
 						 void *closure, int *num_found, rnd_bool vis_only);
 
 /* Either pcb->data or the subcircuit's data if PCB is a subc (footprint edit mode) */

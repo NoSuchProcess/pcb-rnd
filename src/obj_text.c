@@ -105,7 +105,7 @@ pcb_text_t *pcb_text_alloc(pcb_layer_t *layer)
 void pcb_text_free(pcb_text_t *text)
 {
 	if ((text->parent.layer != NULL) && (text->parent.layer->text_tree != NULL))
-		pcb_r_delete_entry(text->parent.layer->text_tree, (pcb_box_t *)text);
+		pcb_r_delete_entry(text->parent.layer->text_tree, (rnd_box_t *)text);
 	rnd_attribute_free(&text->Attributes);
 	pcb_text_unreg(text);
 	free(text->TextString);
@@ -132,7 +132,7 @@ static int undo_text_geo_swap(void *udata)
 	pcb_board_t *pcb = pcb_data_get_top(layer->parent.data);
 
 	if (layer->text_tree != NULL)
-		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *)g->text);
+		pcb_r_delete_entry(layer->text_tree, (rnd_box_t *)g->text);
 	pcb_poly_restore_to_poly(layer->parent.data, PCB_OBJ_TEXT, layer, g->text);
 
 	rnd_swap(int, g->Scale, g->text->Scale);
@@ -144,7 +144,7 @@ static int undo_text_geo_swap(void *udata)
 
 	pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
 	if (layer->text_tree != NULL)
-		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *)g->text);
+		pcb_r_insert_entry(layer->text_tree, (rnd_box_t *)g->text);
 	pcb_poly_clear_from_poly(layer->parent.data, PCB_OBJ_TEXT, layer, g->text);
 
 	return 0;
@@ -221,7 +221,7 @@ void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCB
 	pcb_text_bbox(PCBFont, text);
 	if (!Layer->text_tree)
 		Layer->text_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) text);
+	pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) text);
 }
 
 static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
@@ -381,7 +381,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 			space = symbol[*s].Delta;
 		}
 		else {
-			pcb_box_t *ds = &FontPtr->DefaultSymbol;
+			rnd_box_t *ds = &FontPtr->DefaultSymbol;
 			rnd_coord_t w = ds->X2 - ds->X1;
 
 			minx = MIN(minx, ds->X1 + tx);
@@ -497,7 +497,7 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 		dstly = &ctx->buffer.dst->Layer[lid];
 	}
 
-	pcb_r_delete_entry(srcly->text_tree, (pcb_box_t *) text);
+	pcb_r_delete_entry(srcly->text_tree, (rnd_box_t *) text);
 	pcb_poly_restore_to_poly(ctx->buffer.src, PCB_OBJ_TEXT, srcly, text);
 
 	pcb_text_unreg(text);
@@ -505,7 +505,7 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 
 	if (!dstly->text_tree)
 		dstly->text_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(dstly->text_tree, (pcb_box_t *) text);
+	pcb_r_insert_entry(dstly->text_tree, (rnd_box_t *) text);
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_TEXT, dstly, text);
 
 	return text;
@@ -522,11 +522,11 @@ void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	if (value <= PCB_MAX_TEXTSCALE && value >= PCB_MIN_TEXTSCALE && value != Text->Scale) {
 		pcb_undo_add_obj_to_size(PCB_OBJ_TEXT, Layer, Text, Text);
 		pcb_text_invalidate_erase(Layer, Text);
-		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		Text->Scale = value;
 		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
-		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		pcb_text_invalidate_draw(Layer, Text);
 		return Text;
@@ -544,11 +544,11 @@ void *pcb_textop_change_2nd_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_
 	if (value != Text->thickness) {
 		pcb_undo_add_obj_to_2nd_size(PCB_OBJ_TEXT, Layer, Text, Text);
 		pcb_text_invalidate_erase(Layer, Text);
-		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		Text->thickness = value;
 		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
-		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		pcb_text_invalidate_draw(Layer, Text);
 		return Text;
@@ -566,11 +566,11 @@ void *pcb_textop_change_rot(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Te
 	if (value != Text->rot) {
 		pcb_undo_add_obj_to_rot(PCB_OBJ_TEXT, Layer, Text, Text);
 		pcb_text_invalidate_erase(Layer, Text);
-		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		Text->rot = value;
 		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
-		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 		pcb_text_invalidate_draw(Layer, Text);
 		return Text;
@@ -587,13 +587,13 @@ void *pcb_textop_change_name(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return NULL;
 	pcb_text_invalidate_erase(Layer, Text);
-	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
+	pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *)Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	Text->TextString = ctx->chgname.new_name;
 
 	/* calculate size of the bounding box */
 	pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
-	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+	pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
 	return old;
@@ -665,10 +665,10 @@ void *pcb_textop_move_noclip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 
 void *pcb_textop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+	pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	pcb_textop_move_noclip(ctx, Layer, Text);
-	pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+	pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	return Text;
 }
@@ -676,11 +676,11 @@ void *pcb_textop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 void *pcb_textop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	if (ctx->clip.restore) {
-		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	}
 	if (ctx->clip.clear) {
-		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	}
 	return Text;
@@ -691,7 +691,7 @@ void *pcb_textop_clip(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_text_t * text, pcb_layer_t * Destination)
 {
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Source, text);
-	pcb_r_delete_entry(Source->text_tree, (pcb_box_t *) text);
+	pcb_r_delete_entry(Source->text_tree, (rnd_box_t *) text);
 
 	pcb_text_unreg(text);
 	pcb_text_reg(Destination, text);
@@ -705,7 +705,7 @@ void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_t
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	if (!Destination->text_tree)
 		Destination->text_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Destination->text_tree, (pcb_box_t *) text);
+	pcb_r_insert_entry(Destination->text_tree, (rnd_box_t *) text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Destination, text);
 
 	return text;
@@ -742,7 +742,7 @@ void *pcb_textop_remove(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	/* erase from screen */
 	if (Layer->meta.real.vis) {
 		pcb_text_invalidate_erase(Layer, Text);
-		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *)Text);
+		pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *)Text);
 	}
 	pcb_undo_move_obj_to_remove(PCB_OBJ_TEXT, Layer, Text, Text);
 	return NULL;
@@ -799,10 +799,10 @@ void *pcb_textop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text
 	pcb_text_invalidate_erase(Layer, Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	if (Layer->text_tree != NULL)
-		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_text_rotate90(Text, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.number);
 	if (Layer->text_tree != NULL)
-		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
 	return Text;
@@ -813,7 +813,7 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_text_invalidate_erase(Layer, Text);
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	if (Layer->text_tree != NULL)
-		pcb_r_delete_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_delete_entry(Layer->text_tree, (rnd_box_t *) Text);
 
 	if (Text->rot < 0.0)
 		Text->rot += 360.0;
@@ -826,7 +826,7 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_text_bbox(NULL, Text);
 
 	if (Layer->text_tree != NULL)
-		pcb_r_insert_entry(Layer->text_tree, (pcb_box_t *) Text);
+		pcb_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	pcb_text_invalidate_draw(Layer, Text);
 	return Text;
@@ -835,13 +835,13 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 void pcb_text_flip_side(pcb_layer_t *layer, pcb_text_t *text, rnd_coord_t y_offs, rnd_bool undoable)
 {
 	if (layer->text_tree != NULL)
-		pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+		pcb_r_delete_entry(layer->text_tree, (rnd_box_t *) text);
 	text->X = PCB_SWAP_X(text->X);
 	text->Y = PCB_SWAP_Y(text->Y) + y_offs;
 	PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, text);
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	if (layer->text_tree != NULL)
-		pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text);
+		pcb_r_insert_entry(layer->text_tree, (rnd_box_t *) text);
 }
 
 void pcb_text_mirror_coords(pcb_text_t *text, rnd_coord_t y_offs, rnd_bool undoable)
@@ -894,10 +894,10 @@ void pcb_text_set_font(pcb_text_t *text, pcb_font_id_t fid)
 	assert(text->parent_type = PCB_PARENT_LAYER);
 
 	pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, layer, text);
-	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+	pcb_r_delete_entry(layer->text_tree, (rnd_box_t *) text);
 	text->fid = fid;
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
-	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text);
+	pcb_r_insert_entry(layer->text_tree, (rnd_box_t *) text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, layer, text);
 }
 
@@ -907,7 +907,7 @@ void pcb_text_pre(pcb_text_t *text)
 	if (ly == NULL)
 		return;
 	if (ly->text_tree != NULL)
-		pcb_r_delete_entry(ly->text_tree, (pcb_box_t *)text);
+		pcb_r_delete_entry(ly->text_tree, (rnd_box_t *)text);
 	pcb_poly_restore_to_poly(ly->parent.data, PCB_OBJ_TEXT, ly, text);
 }
 
@@ -917,7 +917,7 @@ void pcb_text_post(pcb_text_t *text)
 	if (ly == NULL)
 		return;
 	if (ly->text_tree != NULL)
-		pcb_r_insert_entry(ly->text_tree, (pcb_box_t *)text);
+		pcb_r_insert_entry(ly->text_tree, (rnd_box_t *)text);
 	pcb_poly_clear_from_poly(ly->parent.data, PCB_OBJ_TEXT, ly, text);
 }
 
@@ -931,9 +931,9 @@ void pcb_text_update(pcb_layer_t *layer, pcb_text_t *text)
 		return;
 
 	pcb_poly_restore_to_poly(data, PCB_OBJ_TEXT, layer, text);
-	pcb_r_delete_entry(layer->text_tree, (pcb_box_t *) text);
+	pcb_r_delete_entry(layer->text_tree, (rnd_box_t *) text);
 	pcb_text_bbox(pcb_font(pcb, text->fid, 1), text);
-	pcb_r_insert_entry(layer->text_tree, (pcb_box_t *) text);
+	pcb_r_insert_entry(layer->text_tree, (rnd_box_t *) text);
 	pcb_poly_clear_from_poly(data, PCB_OBJ_TEXT, layer, text);
 }
 
@@ -946,7 +946,7 @@ void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save)
 		pcb_poly_restore_to_poly(data, PCB_OBJ_TEXT, Text->parent.layer, Text);
 	if (flagbits & PCB_FLAG_ONSOLDER) { /* bbox will also change, need to do rtree administration */
 		*save = Text->parent.layer;
-		pcb_r_delete_entry(Text->parent.layer->text_tree, (pcb_box_t *)Text);
+		pcb_r_delete_entry(Text->parent.layer->text_tree, (rnd_box_t *)Text);
 	}
 }
 
@@ -960,7 +960,7 @@ void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **s
 		pcb_text_bbox(pcb_font(PCB, Text->fid, 1), Text);
 
 	if (orig_layer != NULL)
-		pcb_r_insert_entry(orig_layer->text_tree, (pcb_box_t *)Text);
+		pcb_r_insert_entry(orig_layer->text_tree, (rnd_box_t *)Text);
 
 	if ((newflagbits & PCB_FLAG_CLEARLINE) || (orig_layer != NULL))
 		pcb_poly_clear_from_poly(data, PCB_OBJ_TEXT, Text->parent.layer, Text);
@@ -1076,7 +1076,7 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 rnd_coord_t pcb_text_width(pcb_font_t *font, int scale, const unsigned char *string)
 {
 	rnd_coord_t w = 0;
-	const pcb_box_t *defaultsymbol;
+	const rnd_box_t *defaultsymbol;
 	if (string == NULL)
 		return 0;
 	defaultsymbol = &font->DefaultSymbol;
@@ -1432,7 +1432,7 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 	pcb_text_draw_(info, text, min_silk_line, allow_term_gfx, PCB_TXT_TINY_CHEAP);
 }
 
-pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_text_draw_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
 	pcb_draw_info_t *info = cl;
@@ -1447,7 +1447,7 @@ pcb_r_dir_t pcb_text_draw_callback(const pcb_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_text_draw_term_callback(const pcb_box_t * b, void *cl)
+pcb_r_dir_t pcb_text_draw_term_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
 	pcb_draw_info_t *info = cl;
@@ -1510,9 +1510,9 @@ static int pcb_text_font_chg_data(pcb_data_t *data, pcb_font_id_t fid)
 		int chg = pcb_text_font_chg_data(subc->data, fid);
 		if (chg) {
 			need_redraw = 1;
-			pcb_r_delete_entry(data->subc_tree, (pcb_box_t *)subc);
+			pcb_r_delete_entry(data->subc_tree, (rnd_box_t *)subc);
 			pcb_subc_bbox(subc);
-			pcb_r_insert_entry(data->subc_tree, (pcb_box_t *)subc);
+			pcb_r_insert_entry(data->subc_tree, (rnd_box_t *)subc);
 		}
 	} PCB_END_LOOP;
 

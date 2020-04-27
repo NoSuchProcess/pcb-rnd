@@ -1182,7 +1182,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 TODO("subc: revise this: are we loading an instance here? do we need to place it? do not even bump if not!")
 			if (st->pcb->Data->subc_tree == NULL)
 				st->pcb->Data->subc_tree = pcb_r_create_tree();
-			pcb_r_insert_entry(st->pcb->Data->subc_tree, (pcb_box_t *)subc);
+			pcb_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
 			pcb_subc_rebind(st->pcb, subc);
 
 TODO("revise rotation and flip")

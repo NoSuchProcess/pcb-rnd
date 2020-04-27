@@ -32,8 +32,8 @@
 
 /* Include rtree.h for these */
 #ifdef PCB_RTREE_H
-pcb_r_dir_t pcb_poly_draw_callback(const pcb_box_t * b, void *cl);
-pcb_r_dir_t pcb_poly_draw_term_callback(const pcb_box_t * b, void *cl);
+pcb_r_dir_t pcb_poly_draw_callback(const rnd_box_t * b, void *cl);
+pcb_r_dir_t pcb_poly_draw_term_callback(const rnd_box_t * b, void *cl);
 #endif
 
 void pcb_poly_invalidate_erase(pcb_poly_t *Polygon);

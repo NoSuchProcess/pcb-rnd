@@ -54,13 +54,13 @@ void pcb_r_destroy_tree(pcb_rtree_t **tree)
 	*tree = NULL;
 }
 
-void pcb_r_insert_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
+void pcb_r_insert_entry(pcb_rtree_t *rtree, const rnd_box_t *which)
 {
 	assert(which != NULL);
 	pcb_rtree_insert(rtree, (void *)which, (pcb_rtree_box_t *)which); /* assumes first field is the bounding box */
 }
 
-void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_cardinal_t len)
+void pcb_r_insert_array(pcb_rtree_t *rtree, const rnd_box_t *boxlist[], pcb_cardinal_t len)
 {
 	pcb_cardinal_t n;
 
@@ -73,13 +73,13 @@ void pcb_r_insert_array(pcb_rtree_t *rtree, const pcb_box_t *boxlist[], pcb_card
 		pcb_r_insert_entry(rtree, boxlist[n]);
 }
 
-rnd_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const pcb_box_t *which)
+rnd_bool pcb_r_delete_entry(pcb_rtree_t *rtree, const rnd_box_t *which)
 {
 	assert(which != NULL);
 	return pcb_rtree_delete(rtree, (void *)which, (pcb_rtree_box_t *)which) == 0; /* assumes first field is the bounding box */
 }
 
-rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (*free_data)(void *d))
+rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, rnd_box_t *box, void (*free_data)(void *d))
 {
 	void *obj = box; /* assumes first field is the bounding box */
 	assert(obj != NULL);
@@ -90,27 +90,27 @@ rnd_bool pcb_r_delete_entry_free_data(pcb_rtree_t *rtree, pcb_box_t *box, void (
 }
 
 typedef struct {
-	pcb_r_dir_t (*region_in_search)(const pcb_box_t *region, void *closure);
-	pcb_r_dir_t (*rectangle_in_region)(const pcb_box_t *box, void *closure);
+	pcb_r_dir_t (*region_in_search)(const rnd_box_t *region, void *closure);
+	pcb_r_dir_t (*rectangle_in_region)(const rnd_box_t *box, void *closure);
 	void *clo;
 } r_cb_t;
 
 static pcb_rtree_dir_t r_cb_node(void *ctx_, void *obj, const pcb_rtree_box_t *box)
 {
 	r_cb_t *ctx = (r_cb_t *)ctx_;
-	return ctx->region_in_search((const pcb_box_t *)box, ctx->clo);
+	return ctx->region_in_search((const rnd_box_t *)box, ctx->clo);
 }
 
 static pcb_rtree_dir_t r_cb_obj(void *ctx_, void *obj, const pcb_rtree_box_t *box)
 {
 	r_cb_t *ctx = (r_cb_t *)ctx_;
-	return ctx->rectangle_in_region((const pcb_box_t *)obj, ctx->clo);
+	return ctx->rectangle_in_region((const rnd_box_t *)obj, ctx->clo);
 }
 
 
-pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
-	pcb_r_dir_t (*region_in_search)(const pcb_box_t *region, void *closure),
-	pcb_r_dir_t (*rectangle_in_region)(const pcb_box_t *box, void *closure),
+pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const rnd_box_t *query,
+	pcb_r_dir_t (*region_in_search)(const rnd_box_t *region, void *closure),
+	pcb_r_dir_t (*rectangle_in_region)(const rnd_box_t *box, void *closure),
 	void *closure, int *num_found)
 {
 	pcb_r_dir_t res;
@@ -131,7 +131,7 @@ pcb_r_dir_t pcb_r_search(pcb_rtree_t *rtree, const pcb_box_t *query,
 	return res;
 }
 
-int pcb_r_region_is_empty(pcb_rtree_t *rtree, const pcb_box_t *region)
+int pcb_r_region_is_empty(pcb_rtree_t *rtree, const rnd_box_t *region)
 {
 	return pcb_rtree_is_box_empty(rtree, (const pcb_rtree_box_t *)region);
 }
@@ -155,16 +155,16 @@ void pcb_r_free_tree_data(pcb_rtree_t *rtree, void (*free)(void *ptr))
 		free(o);
 }
 
-pcb_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it)
+rnd_box_t *pcb_r_first(pcb_rtree_t *tree, pcb_rtree_it_t *it)
 {
 	if (tree == NULL)
 		return NULL;
-	return (pcb_box_t *)pcb_rtree_all_first(it, tree);
+	return (rnd_box_t *)pcb_rtree_all_first(it, tree);
 }
 
-pcb_box_t *pcb_r_next(pcb_rtree_it_t *it)
+rnd_box_t *pcb_r_next(pcb_rtree_it_t *it)
 {
-	return (pcb_box_t *)pcb_rtree_all_next(it);
+	return (rnd_box_t *)pcb_rtree_all_next(it);
 }
 
 void pcb_r_end(pcb_rtree_it_t *it)

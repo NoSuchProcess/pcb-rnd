@@ -106,7 +106,7 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 void pcb_pstk_free(pcb_pstk_t *ps)
 {
 	if ((ps->parent.data != NULL) && (ps->parent.data->padstack_tree != NULL))
-		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+		pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
 	rnd_attribute_free(&ps->Attributes);
 	pcb_pstk_unreg(ps);
 	free(ps->thermals.shape);
@@ -151,11 +151,11 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	pcb_pstk_bbox(ps);
 	if (!data->padstack_tree)
 		data->padstack_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)ps);
+	pcb_r_insert_entry(data->padstack_tree, (rnd_box_t *)ps);
 	PCB_SET_PARENT(ps, data, data);
 }
 
-static void pcb_pstk_bbox_(pcb_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
+static void pcb_pstk_bbox_(rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 {
 	int n, sn;
 	pcb_line_t line;
@@ -216,7 +216,7 @@ void pcb_pstk_bbox(pcb_pstk_t *ps)
 	pcb_pstk_bbox_(&ps->bbox_naked, ps, pcb_true);
 }
 
-void pcb_pstk_copper_bbox(pcb_box_t *dst, pcb_pstk_t *ps)
+void pcb_pstk_copper_bbox(rnd_box_t *dst, pcb_pstk_t *ps)
 {
 	pcb_pstk_bbox_(dst, ps, pcb_true);
 }
@@ -528,7 +528,7 @@ static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb
 	}
 }
 
-pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
+pcb_r_dir_t pcb_pstk_draw_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
@@ -577,7 +577,7 @@ pcb_r_dir_t pcb_pstk_draw_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
+pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
@@ -608,7 +608,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_label_callback(const pcb_box_t *b, void *cl)
+pcb_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
@@ -625,7 +625,7 @@ pcb_r_dir_t pcb_pstk_draw_label_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
+pcb_r_dir_t pcb_pstk_draw_hole_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
@@ -682,7 +682,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const pcb_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_slot_callback(const pcb_box_t *b, void *cl)
+pcb_r_dir_t pcb_pstk_draw_slot_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
@@ -787,7 +787,7 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 }
 
 static pcb_xform_t dummy_xform;
-void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, rnd_bool mark, rnd_bool label, const pcb_box_t *drawn_area)
+void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, rnd_bool mark, rnd_bool label, const rnd_box_t *drawn_area)
 {
 	pcb_draw_info_t info;
 	int n, draw_hole = 0;
@@ -814,7 +814,7 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
 				draw_hole = 1;
 			else
-				pcb_pstk_draw_callback((pcb_box_t *)ps, &info);
+				pcb_pstk_draw_callback((rnd_box_t *)ps, &info);
 		}
 	}
 
@@ -832,21 +832,21 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 			if (info.objcb.pstk.shape_mask == PCB_LYT_MECH)
 				draw_hole = 2;
 			else
-				pcb_pstk_draw_callback((pcb_box_t *)ps, &info);
+				pcb_pstk_draw_callback((rnd_box_t *)ps, &info);
 		}
 	}
 
 	if (draw_hole) {
 		info.objcb.pstk.shape_mask = PCB_LYT_MECH;
 		info.objcb.pstk.is_current = (draw_hole > 1);
-		pcb_pstk_draw_hole_callback((pcb_box_t *)ps, &info);
+		pcb_pstk_draw_hole_callback((rnd_box_t *)ps, &info);
 	}
 
 	if (mark)
-		pcb_pstk_draw_mark_callback((pcb_box_t *)ps, &info);
+		pcb_pstk_draw_mark_callback((rnd_box_t *)ps, &info);
 
 	if (label)
-		pcb_pstk_draw_label_callback((pcb_box_t *)ps, &info);
+		pcb_pstk_draw_label_callback((rnd_box_t *)ps, &info);
 }
 
 
@@ -862,7 +862,7 @@ void pcb_pstk_invalidate_draw(pcb_pstk_t *ps)
 }
 
 
-static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *shape)
+static int pcb_pstk_near_box_(pcb_pstk_t *ps, rnd_box_t *box, pcb_pstk_shape_t *shape)
 {
 	pcb_any_line_t pad;
 	pcb_vector_t v;
@@ -973,7 +973,7 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, pcb_box_t *box, pcb_pstk_shape_t *
 #define	HOLE_TOUCHES_BOX(ps, dia, b) \
 	PCB_CIRCLE_TOUCHES_BOX((ps)->x, (ps)->y, dia/2, (b))
 
-int pcb_pstk_near_box(pcb_pstk_t *ps, pcb_box_t *box, pcb_layer_t *layer)
+int pcb_pstk_near_box(pcb_pstk_t *ps, rnd_box_t *box, pcb_layer_t *layer)
 {
 	pcb_pstk_shape_t *shp;
 	pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps);
@@ -1199,13 +1199,13 @@ static int undo_pstk_mirror_swap(void *udata)
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
 		if (ps->parent.data->padstack_tree != NULL)
-			pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+			pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
 
 		ps->y = PCB_SWAP_Y(ps->y) + g->y_offs;
 		pcb_pstk_bbox(ps);
 
 		if (ps->parent.data->padstack_tree != NULL)
-			pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+			pcb_r_insert_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 	}
@@ -1414,7 +1414,7 @@ static int undo_change_instance_swap(void *udata)
 	pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 	pcb_pstk_invalidate_erase(ps);
 	if (ps->parent.data->padstack_tree != NULL)
-		pcb_r_delete_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+		pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
 
 	swap(ps->proto,      u->proto,     pcb_cardinal_t);
 	swap(ps->Clearance,  u->clearance, rnd_coord_t);
@@ -1428,7 +1428,7 @@ static int undo_change_instance_swap(void *udata)
 
 	pcb_pstk_bbox(ps);
 	if (ps->parent.data->padstack_tree != NULL)
-		pcb_r_insert_entry(ps->parent.data->padstack_tree, (pcb_box_t *)ps);
+		pcb_r_insert_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
 	pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 	pcb_pstk_invalidate_draw(ps);
 
@@ -1565,7 +1565,7 @@ void pcb_pstk_pre(pcb_pstk_t *pstk)
 {
 	pcb_data_t *data = pstk->parent.data;
 	if (data->padstack_tree != NULL)
-		pcb_r_delete_entry(data->padstack_tree, (pcb_box_t *)pstk);
+		pcb_r_delete_entry(data->padstack_tree, (rnd_box_t *)pstk);
 	pcb_poly_restore_to_poly(data, PCB_OBJ_PSTK, NULL, pstk);
 }
 
@@ -1573,7 +1573,7 @@ void pcb_pstk_post(pcb_pstk_t *pstk)
 {
 	pcb_data_t *data = pstk->parent.data;
 	if (data->padstack_tree != NULL)
-		pcb_r_insert_entry(data->padstack_tree, (pcb_box_t *)pstk);
+		pcb_r_insert_entry(data->padstack_tree, (rnd_box_t *)pstk);
 	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, pstk);
 }
 

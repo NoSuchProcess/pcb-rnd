@@ -98,11 +98,11 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *he
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t init_widget,
 	pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
 
-void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const pcb_box_t *data_view);
+void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const rnd_box_t *data_view);
 
 /* invalidate (redraw) all preview widgets whose current view overlaps with
    the screen box; if screen is NULL, redraw all */
-void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const pcb_box_t *screen);
+void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const rnd_box_t *screen);
 
 void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv);
 

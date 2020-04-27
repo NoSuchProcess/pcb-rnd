@@ -148,7 +148,7 @@ pcb_cardinal_t pcb_cpoly_num_corners(const pcb_poly_t *src)
 static void add_track_seg(pcb_cpoly_edgetree_t *dst, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pcb_cpoly_edge_t *e = &dst->edges[dst->used++];
-	pcb_box_t *b = &e->bbox;
+	rnd_box_t *b = &e->bbox;
 
 	if (x1 <= x2) {
 		b->X1 = x1;
@@ -173,7 +173,7 @@ static void add_track_seg(pcb_cpoly_edgetree_t *dst, rnd_coord_t x1, rnd_coord_t
 	e->y2 = y2;
 
 	rnd_box_bump_box(&dst->bbox, b);
-	pcb_r_insert_entry(dst->edge_tree, (pcb_box_t *)e);
+	pcb_r_insert_entry(dst->edge_tree, (rnd_box_t *)e);
 }
 
 static void add_track(pcb_cpoly_edgetree_t *dst, pcb_pline_t *track)
@@ -244,7 +244,7 @@ typedef struct {
 	rnd_coord_t coord[1];
 } intersect_t;
 
-static pcb_r_dir_t pcb_cploy_hatch_edge_hor(const pcb_box_t *region, void *cl)
+static pcb_r_dir_t pcb_cploy_hatch_edge_hor(const rnd_box_t *region, void *cl)
 {
 	intersect_t *is = (intersect_t *)cl;
 	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)region;
@@ -263,7 +263,7 @@ static pcb_r_dir_t pcb_cploy_hatch_edge_hor(const pcb_box_t *region, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t pcb_cploy_hatch_edge_ver(const pcb_box_t *region, void *cl)
+static pcb_r_dir_t pcb_cploy_hatch_edge_ver(const rnd_box_t *region, void *cl)
 {
 	intersect_t *is = (intersect_t *)cl;
 	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)region;
@@ -294,7 +294,7 @@ static int coord_cmp(const void *p1, const void *p2)
 void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t offs, rnd_coord_t period, void *ctx, void (*cb)(void *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2))
 {
 	pcb_cpoly_edgetree_t *etr;
-	pcb_box_t scan;
+	rnd_box_t scan;
 	int n;
 	intersect_t *is;
 

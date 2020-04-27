@@ -169,7 +169,7 @@ static void autoload_field_lng(order_ctx_t *octx, pcb_order_field_t *f, long l, 
 
 void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 {
-	pcb_box_t bb;
+	rnd_box_t bb;
 	long l;
 	pcb_layergrp_id_t gid;
 

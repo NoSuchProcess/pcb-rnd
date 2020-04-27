@@ -229,7 +229,7 @@ rnd_bool pcb_data_is_empty(pcb_data_t *Data)
 	return pcb_true;
 }
 
-pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
+rnd_box_t *pcb_data_bbox(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
 {
 	/* preset identifiers with highest and lowest possible values */
 	out->X1 = out->Y1 = PCB_MAX_COORD;
@@ -281,7 +281,7 @@ pcb_box_t *pcb_data_bbox(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_float
 	return (pcb_data_is_empty(Data) ? NULL : out);
 }
 
-pcb_box_t *pcb_data_bbox_naked(pcb_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
+rnd_box_t *pcb_data_bbox_naked(rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
 {
 	/* preset identifiers with highest and lowest possible values */
 	out->X1 = out->Y1 = PCB_MAX_COORD;
@@ -522,9 +522,9 @@ void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recu
 }
 
 
-int pcb_data_normalize_(pcb_data_t *data, pcb_box_t *data_bbox)
+int pcb_data_normalize_(pcb_data_t *data, rnd_box_t *data_bbox)
 {
-	pcb_box_t tmp;
+	rnd_box_t tmp;
 	rnd_coord_t dx = 0, dy = 0;
 
 	if (data_bbox == NULL) {
@@ -682,9 +682,9 @@ void pcb_data_clip_polys(pcb_data_t *data)
 		res |= tmp; \
 	} while(0);
 
-pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const pcb_box_t *starting_region,
-						 pcb_r_dir_t (*region_in_search) (const pcb_box_t *region, void *cl),
-						 pcb_r_dir_t (*rectangle_in_region) (const pcb_box_t *box, void *cl),
+pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_box_t *starting_region,
+						 pcb_r_dir_t (*region_in_search) (const rnd_box_t *region, void *cl),
+						 pcb_r_dir_t (*rectangle_in_region) (const rnd_box_t *box, void *cl),
 						 void *closure, int *num_found, rnd_bool vis_only)
 {
 	pcb_layer_id_t lid;
@@ -860,7 +860,7 @@ do { \
 unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, unsigned long flag, int redraw, int undoable)
 {
 	pcb_rtree_it_t it;
-	pcb_box_t *n;
+	rnd_box_t *n;
 	int li;
 	pcb_layer_t *l;
 	unsigned long cnt = 0;
@@ -933,7 +933,7 @@ unsigned long pcb_data_clear_flag(pcb_data_t *data, unsigned long flag, int redr
 void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf)
 {
 	pcb_rtree_it_t it;
-	pcb_box_t *n;
+	rnd_box_t *n;
 	int li;
 	pcb_layer_t *l;
 
