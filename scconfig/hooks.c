@@ -17,19 +17,10 @@
 
 #include "librnd/scconfig/plugin_3state.h"
 #include "librnd/scconfig/hooks_common.h"
+#include "librnd/scconfig/hooks_gui.c"
+
 
 int want_coord_bits;
-
-/* if any of these are enabled, we need the dialog plugin; dialog can not be
-   a pup dep because it must be omitted from the hidlib */
-const char *dialog_deps[] = {
-	"/local/pcb/dialogs/controls",         /* so we don't relax user's explicit request */
-	"/local/pcb/hid_remote/controls",
-	"/local/pcb/lib_gtk_common/controls",
-	"/local/pcb/hid_lesstif/controls",
-	NULL
-};
-
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
@@ -165,17 +156,13 @@ int hook_detect_host()
 	/* figure if we need the dialogs plugin */
 static void calc_dialog_deps(void)
 {
-	int buildin = 0, plugin = 0;
-	const char **p;
-	for(p = dialog_deps; *p != NULL; p++) {
-		const char *st = get(*p);
-		if (strcmp(st, "buildin") == 0) {
-			buildin = 1;
-			break;
-		}
-		if (strcmp(st, "plugin") == 0)
-			plugin = 1;
-	}
+	int buildin, plugin;
+
+	rnd_calc_dialog_deps(); /* remove after librnd separation */
+
+	buildin = istrue("/target/librnd/dialogs/buildin");
+	plugin = istrue("/target/librnd/dialogs/plugin");
+
 	if (buildin) {
 		hook_custom_arg("buildin-draw_csect", NULL);
 		hook_custom_arg("buildin-draw_fontsel", NULL);
