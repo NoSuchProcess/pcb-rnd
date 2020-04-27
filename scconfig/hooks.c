@@ -18,9 +18,7 @@
 #include "librnd/scconfig/plugin_3state.h"
 #include "librnd/scconfig/hooks_common.h"
 #include "librnd/scconfig/hooks_gui.c"
-
-
-int want_coord_bits;
+#include "librnd/scconfig/rnd_hook_detect.h"
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
@@ -62,17 +60,6 @@ int hook_custom_arg(const char *key, const char *value)
 {
 	rnd_hook_custom_arg(key, value);
 
-	if (strcmp(key, "coord") == 0) {
-		int v = atoi(value);
-		if ((v != 32) && (v != 64)) {
-			report("ERROR: --coord needs to be 32 or 64.\n");
-			exit(1);
-		}
-		put("/local/pcb/coord_bits", value);
-		want_coord_bits = v;
-		return 1;
-	}
-
 	if (strcmp(key, "dot_pcb_rnd") == 0) {
 		put("/local/pcb/dot_pcb_rnd", value);
 		return 1;
@@ -103,8 +90,6 @@ int hook_postinit()
 
 	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/want_byaccic", sfalse);
-	put("/local/pcb/coord_bits", "32");
-	want_coord_bits = 32;
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 
 	return 0;
@@ -530,47 +515,7 @@ int hook_detect_target()
 	/* plugin dependencies */
 	plugin_deps(1);
 
-	/* figure coordinate bits */
-	{
-		int int_bits       = safe_atoi(get("sys/types/size/signed_int")) * 8;
-		int long_bits      = safe_atoi(get("sys/types/size/signed_long_int")) * 8;
-		int long_long_bits = safe_atoi(get("sys/types/size/signed_long_long_int")) * 8;
-		int int64_bits     = safe_atoi(get("sys/types/size/uint64_t")) * 8;
-		const char *chosen, *postfix;
-		char tmp[64];
-		int need_stdint = 0;
-
-		if (want_coord_bits == int_bits)             { postfix="U";   chosen = "int";           }
-		else if (want_coord_bits == long_bits)       { postfix="UL";  chosen = "long int";      }
-		else if (want_coord_bits == int64_bits)      { postfix="ULL"; chosen = "int64_t";       need_stdint = 1; }
-		else if (want_coord_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; }
-		else {
-			report("ERROR: can't find a suitable integer type for coord to be %d bits wide\n", want_coord_bits);
-			exit(1);
-		}
-
-		sprintf(tmp, "((1%s<<%d)-1)", postfix, want_coord_bits - 1);
-		put("/local/pcb/coord_type", chosen);
-		put("/local/pcb/coord_max", tmp);
-
-		chosen = NULL;
-		if (istrue(get("/local/pcb/debug"))) { /* debug: c89 */
-			if (int64_bits >= 64) {
-				/* to suppress warnings on systems that support c99 but are forced to compile in c89 mode */
-				chosen = "int64_t";
-				need_stdint = 1;
-			}
-		}
-
-		if (chosen == NULL) { /* non-debug, thus non-c89 */
-			if (long_long_bits >= 64) chosen = "long long int";
-			else if (long_bits >= 64) chosen = "long int";
-			else chosen = "double";
-		}
-		put("/local/pcb/long64", chosen);
-		if (need_stdint)
-			put("/local/pcb/include_stdint", "#include <stdint.h>");
-	}
+	rnd_hook_detect_coord_bits(); /* remove this after the librnd split */
 
 	/* set cflags for C89 */
 	put("/local/pcb/c89flags", "");

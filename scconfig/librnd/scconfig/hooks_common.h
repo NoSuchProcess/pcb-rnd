@@ -3,9 +3,9 @@ static void help1(void);
 const arg_auto_set_t disable_libs[];
 int hook_custom_arg(const char *key, const char *value);
 
-
-
 /*** implementation ***/
+int want_coord_bits;
+
 static void all_plugin_select(const char *state, int force);
 
 static void rnd_help1(const char *progname)
@@ -110,6 +110,16 @@ static int rnd_hook_custom_arg_(const char *key, const char *value)
 	}
 	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
 		report("ERROR: --with-intl is no longer supported, please do not use it\n");
+		return 1;
+	}
+	if (strcmp(key, "coord") == 0) {
+		int v = atoi(value);
+		if ((v != 32) && (v != 64)) {
+			report("ERROR: --coord needs to be 32 or 64.\n");
+			exit(1);
+		}
+		put("/local/pcb/coord_bits", value);
+		want_coord_bits = v;
 		return 1;
 	}
 	return 0;
@@ -248,6 +258,8 @@ void rnd_hook_postinit()
 #define plugin_dep(plg, on, hidlib)
 #include "plugins.h"
 
+	put("/local/pcb/coord_bits", "32");
+	want_coord_bits = 32;
 }
 
 
