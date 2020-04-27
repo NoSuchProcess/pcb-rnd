@@ -38,8 +38,6 @@
  */
 
 
-/* random box-related utilities. */
-
 #ifndef RND_BOX_H
 #define RND_BOX_H
 
@@ -266,4 +264,4 @@ void rnd_box_rotate90(pcb_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned Num
 /* Enlarge a box by adding current width,height multiplied by xfactor,yfactor */
 void rnd_box_enlarge(pcb_box_t *box, double xfactor, double yfactor);
 
-#endif /* __BOX_H_INCLUDED__ */
+#endif
