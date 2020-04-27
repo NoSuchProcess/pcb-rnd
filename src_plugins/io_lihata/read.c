@@ -985,7 +985,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			if (rdver < 5)
 				iolht_warn(nclr, 1, "layer color was not supprted before lihata board v5 (reading from v%d)\n", rdver);
 			if (nclr->type == LHT_TEXT) {
-				if (pcb_color_load_str(&ly->meta.real.color, nclr->data.text.value) != 0)
+				if (rnd_color_load_str(&ly->meta.real.color, nclr->data.text.value) != 0)
 					return iolht_error(nclr, "Invalid color: '%s'\n", nclr->data.text.value);
 			}
 			else

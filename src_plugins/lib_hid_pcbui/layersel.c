@@ -453,7 +453,7 @@ static void group_open_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 }
 
 /* draw a visibility box: filled or partially filled with layer color */
-static void layer_vis_box(gen_xpm_t *dst, int filled, const pcb_color_t *color, int brd, int hatch, int width, int height, int slant)
+static void layer_vis_box(gen_xpm_t *dst, int filled, const rnd_color_t *color, int brd, int hatch, int width, int height, int slant)
 {
 	int max_height = height;
 	char *p;
@@ -537,7 +537,7 @@ static void layersel_end_grp_closed(layersel_ctx_t *ls)
 }
 
 
-static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const pcb_color_t *color, int brd, int hatch, int selectable)
+static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const rnd_color_t *color, int brd, int hatch, int selectable)
 {
 	layer_vis_box(&lys->on_open, 1, color, brd, hatch, 16, 16, 5);
 	layer_vis_box(&lys->off_open, 0, color, brd, hatch, 16, 16, 5);
@@ -561,7 +561,7 @@ static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, cons
 	PCB_DAD_END(ls->sub.dlg);
 }
 
-static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const pcb_color_t *color, int brd, int hatch, int selected, int selectable)
+static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const rnd_color_t *color, int brd, int hatch, int selected, int selectable)
 {
 	layer_vis_box(&lys->on_closed, 1, color, brd, hatch, 10, 10, 0);
 	layer_vis_box(&lys->off_closed, 0, color, brd, hatch, 10, 10, 0);
@@ -616,7 +616,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 		if (ly != NULL) {
 			int brd = (((ly != NULL) && (ly->comb & PCB_LYC_SUB)) ? 2 : 1);
 			int hatch = (((ly != NULL) && (ly->comb & PCB_LYC_AUTO)) ? 1 : 0);
-			const pcb_color_t *clr = &ly->meta.real.color;
+			const rnd_color_t *clr = &ly->meta.real.color;
 			ls_layer_t *lys = lys_get(ls, &ls->real_layer, g->lid[n], 1);
 
 			lys->ly = ly;

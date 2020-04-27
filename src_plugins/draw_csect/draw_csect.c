@@ -57,7 +57,7 @@ static const char *COLOR_OUTLINE_ = "#000000";
 #define COLOR_ANNOT  pcbhl_conf.appearance.color.grid
 #define COLOR_BG     pcbhl_conf.appearance.color.background
 
-static pcb_color_t
+static rnd_color_t
 	COLOR_COPPER, COLOR_SUBSTRATE, COLOR_SILK, COLOR_MASK,
 	COLOR_PASTE, COLOR_MISC, COLOR_OUTLINE;
 
@@ -106,7 +106,7 @@ static pcb_text_t *dtext_(rnd_coord_t x, rnd_coord_t y, int scale, int dir, cons
 }
 
 /* Draw a text at x;y with a background */
-static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const pcb_color_t *bgcolor, const pcb_color_t *fgcolor)
+static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const rnd_color_t *bgcolor, const rnd_color_t *fgcolor)
 {
 	static pcb_text_t t;
 
@@ -453,7 +453,7 @@ static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		int i, stepf = 0, stepb = 0, th;
 		pcb_layergrp_t *g = PCB->LayerGroups.grp + gid;
-		const pcb_color_t *color;
+		const rnd_color_t *color;
 
 		if ((!g->valid) || (gid == drag_gid)  || (gid == drag_gid_subst))
 			continue;
@@ -580,7 +580,7 @@ TODO("layer: handle multiple outline layers")
 
 
 	if (DRAGGING) {
-		pcb_render->set_color(gc, pcb_color_black);
+		pcb_render->set_color(gc, rnd_color_black);
 
 		/* draw the actual operation */
 		if (drag_addgrp) {
@@ -958,13 +958,13 @@ int pplg_init_draw_csect(void)
 
 	def_info.xform = &def_xform;
 
-	pcb_color_load_str(&COLOR_COPPER,    COLOR_COPPER_);
-	pcb_color_load_str(&COLOR_SUBSTRATE, COLOR_SUBSTRATE_);
-	pcb_color_load_str(&COLOR_SILK,      COLOR_SILK_);
-	pcb_color_load_str(&COLOR_MASK,      COLOR_MASK_);
-	pcb_color_load_str(&COLOR_PASTE,     COLOR_PASTE_);
-	pcb_color_load_str(&COLOR_MISC,      COLOR_MISC_);
-	pcb_color_load_str(&COLOR_OUTLINE,   COLOR_OUTLINE_);
+	rnd_color_load_str(&COLOR_COPPER,    COLOR_COPPER_);
+	rnd_color_load_str(&COLOR_SUBSTRATE, COLOR_SUBSTRATE_);
+	rnd_color_load_str(&COLOR_SILK,      COLOR_SILK_);
+	rnd_color_load_str(&COLOR_MASK,      COLOR_MASK_);
+	rnd_color_load_str(&COLOR_PASTE,     COLOR_PASTE_);
+	rnd_color_load_str(&COLOR_MISC,      COLOR_MISC_);
+	rnd_color_load_str(&COLOR_OUTLINE,   COLOR_OUTLINE_);
 
 	pcb_stub_draw_csect = draw_csect;
 	pcb_stub_draw_csect_mouse_ev = mouse_csect;

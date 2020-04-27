@@ -51,7 +51,7 @@ RND_INLINE void pcb_clrcache_init(pcb_clrcache_t *cache, int hidsize, pcb_clrcac
 	cache->user_data = NULL;
 }
 
-RND_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const pcb_color_t *color)
+RND_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const rnd_color_t *color)
 {
 	void *old = htip_get(&cache->ht, color->packed);
 	if (old == NULL)
@@ -61,7 +61,7 @@ RND_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const pcb_color_t *color
 	free(old);
 }
 
-RND_INLINE void *pcb_clrcache_get(pcb_clrcache_t *cache, const pcb_color_t *color, int alloc)
+RND_INLINE void *pcb_clrcache_get(pcb_clrcache_t *cache, const rnd_color_t *color, int alloc)
 {
 	void *clr = htip_get(&cache->ht, color->packed);
 	if (clr != NULL)

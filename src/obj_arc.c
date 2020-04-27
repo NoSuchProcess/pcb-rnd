@@ -1094,8 +1094,8 @@ void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 
 static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 {
-	const pcb_color_t *color;
-	pcb_color_t buf;
+	const rnd_color_t *color;
+	rnd_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(arc->parent.layer);
 
 	pcb_obj_noexport(info, arc, return);

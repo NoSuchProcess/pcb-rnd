@@ -24,48 +24,48 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_COLOR_H
-#define PCB_COLOR_H
+#ifndef RND_COLOR_H
+#define RND_COLOR_H
 
 #include <librnd/core/global_typedefs.h>
 #include <stddef.h>
 
-struct pcb_color_s {
+struct rnd_color_s {
 	unsigned char r, g, b, a; /* primary storage; alpha is not really supported at the moment */
 	unsigned long packed;     /* cache: 32 bit portable (byte-order-safe) packed version used for lookups */
 	float fr, fg, fb, fa;     /* cache: 0..1 version; using float to save memory^1 */
 	char str[10];             /* cache: "#rrggbb[aa]" \0 terminated string version */
 };
 
-extern const pcb_color_t *pcb_color_black;
-extern const pcb_color_t *pcb_color_white;
-extern const pcb_color_t *pcb_color_cyan;
-extern const pcb_color_t *pcb_color_red;
-extern const pcb_color_t *pcb_color_blue;
-extern const pcb_color_t *pcb_color_grey33;
-extern const pcb_color_t *pcb_color_magenta;
-extern const pcb_color_t *pcb_color_golden;
-extern const pcb_color_t *pcb_color_drill;
+extern const rnd_color_t *rnd_color_black;
+extern const rnd_color_t *rnd_color_white;
+extern const rnd_color_t *rnd_color_cyan;
+extern const rnd_color_t *rnd_color_red;
+extern const rnd_color_t *rnd_color_blue;
+extern const rnd_color_t *rnd_color_grey33;
+extern const rnd_color_t *rnd_color_magenta;
+extern const rnd_color_t *rnd_color_golden;
+extern const rnd_color_t *rnd_color_drill;
 
 /* Convert a color from various formats to a pcb color; returns 0 on success */
-int pcb_color_load_int(pcb_color_t *dst, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
-int pcb_color_load_packed(pcb_color_t *dst, unsigned long p);
-int pcb_color_load_float(pcb_color_t *dst, float r, float g, float b, float a);
-int pcb_color_load_str(pcb_color_t *dst, const char *src);
+int rnd_color_load_int(rnd_color_t *dst, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+int rnd_color_load_packed(rnd_color_t *dst, unsigned long p);
+int rnd_color_load_float(rnd_color_t *dst, float r, float g, float b, float a);
+int rnd_color_load_str(rnd_color_t *dst, const char *src);
 
 /* Same as strdup(), but for colors */
-pcb_color_t *pcb_clrdup(const pcb_color_t *src);
+rnd_color_t *rnd_clrdup(const rnd_color_t *src);
 
-void pcb_color_init(void);
+void rnd_color_init(void);
 
 
 /* temporary hack */
-#define pcb_color_is_drill(clr) (strcmp((clr)->str, "drill") == 0)
+#define rnd_color_is_drill(clr) (strcmp((clr)->str, "drill") == 0)
 
 /*** color vector ***/
 
 #define GVT(x) vtclr_ ## x
-#define GVT_ELEM_TYPE pcb_color_t
+#define GVT_ELEM_TYPE rnd_color_t
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 512
 #define GVT_START_SIZE 16

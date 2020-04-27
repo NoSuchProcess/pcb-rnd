@@ -68,7 +68,7 @@ do { \
 
 #define CLAMP01(c) (((c) < 0.0) ? 0.0 : (((c) > 1.0) ? 1.0 : (c)))
 
-int pcb_color_load_int(pcb_color_t *dst, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+int rnd_color_load_int(rnd_color_t *dst, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
 	dst->r = r;
 	dst->g = g;
@@ -80,7 +80,7 @@ int pcb_color_load_int(pcb_color_t *dst, unsigned char r, unsigned char g, unsig
 	return 0;
 }
 
-int pcb_color_load_packed(pcb_color_t *dst, unsigned long p)
+int rnd_color_load_packed(rnd_color_t *dst, unsigned long p)
 {
 	dst->packed = p;
 	dst->r = (p & 0xff000000UL) >> 24;
@@ -92,7 +92,7 @@ int pcb_color_load_packed(pcb_color_t *dst, unsigned long p)
 	return 0;
 }
 
-int pcb_color_load_float(pcb_color_t *dst, float r, float g, float b, float a)
+int rnd_color_load_float(rnd_color_t *dst, float r, float g, float b, float a)
 {
 	dst->r = CLAMP01(r) * 255.0;
 	dst->g = CLAMP01(g) * 255.0;
@@ -122,7 +122,7 @@ do { \
 	dst_fld = tmp1 << 4 | tmp2; \
 } while(0)
 
-int pcb_color_load_str(pcb_color_t *dst, const char *src)
+int rnd_color_load_str(rnd_color_t *dst, const char *src)
 {
 	if (src[0] != '#')
 		return -1;
@@ -141,44 +141,44 @@ int pcb_color_load_str(pcb_color_t *dst, const char *src)
 	return 0;
 }
 
-pcb_color_t *pcb_clrdup(const pcb_color_t *src)
+rnd_color_t *rnd_clrdup(const rnd_color_t *src)
 {
-	pcb_color_t *dst = malloc(sizeof(pcb_color_t));
-	memcpy(dst, src, sizeof(pcb_color_t));
+	rnd_color_t *dst = malloc(sizeof(rnd_color_t));
+	memcpy(dst, src, sizeof(rnd_color_t));
 	return dst;
 }
 
-static pcb_color_t pcb_color_black_;
-static pcb_color_t pcb_color_white_;
-static pcb_color_t pcb_color_cyan_;
-static pcb_color_t pcb_color_red_;
-static pcb_color_t pcb_color_blue_;
-static pcb_color_t pcb_color_drill_;
-static pcb_color_t pcb_color_magenta_;
-static pcb_color_t pcb_color_golden_;
-static pcb_color_t pcb_color_grey33_;
+static rnd_color_t pcb_color_black_;
+static rnd_color_t pcb_color_white_;
+static rnd_color_t pcb_color_cyan_;
+static rnd_color_t pcb_color_red_;
+static rnd_color_t pcb_color_blue_;
+static rnd_color_t pcb_color_drill_;
+static rnd_color_t pcb_color_magenta_;
+static rnd_color_t pcb_color_golden_;
+static rnd_color_t pcb_color_grey33_;
 
-const pcb_color_t *pcb_color_black = &pcb_color_black_;
-const pcb_color_t *pcb_color_white = &pcb_color_white_;
-const pcb_color_t *pcb_color_cyan = &pcb_color_cyan_;
-const pcb_color_t *pcb_color_red = &pcb_color_red_;
-const pcb_color_t *pcb_color_blue = &pcb_color_blue_;
-const pcb_color_t *pcb_color_drill = &pcb_color_drill_;
-const pcb_color_t *pcb_color_grey33 = &pcb_color_grey33_;
-const pcb_color_t *pcb_color_magenta = &pcb_color_magenta_;
-const pcb_color_t *pcb_color_golden = &pcb_color_golden_;
+const rnd_color_t *rnd_color_black = &pcb_color_black_;
+const rnd_color_t *rnd_color_white = &pcb_color_white_;
+const rnd_color_t *rnd_color_cyan = &pcb_color_cyan_;
+const rnd_color_t *rnd_color_red = &pcb_color_red_;
+const rnd_color_t *rnd_color_blue = &pcb_color_blue_;
+const rnd_color_t *rnd_color_drill = &pcb_color_drill_;
+const rnd_color_t *rnd_color_grey33 = &pcb_color_grey33_;
+const rnd_color_t *rnd_color_magenta = &pcb_color_magenta_;
+const rnd_color_t *rnd_color_golden = &pcb_color_golden_;
 
-void pcb_color_init(void)
+void rnd_color_init(void)
 {
-	pcb_color_load_str(&pcb_color_black_, "#000000");
-	pcb_color_load_str(&pcb_color_white_, "#ffffff");
-	pcb_color_load_str(&pcb_color_cyan_, "#00ffff");
-	pcb_color_load_str(&pcb_color_red_, "#ff0000");
-	pcb_color_load_str(&pcb_color_blue_, "#0000ff");
-	pcb_color_load_str(&pcb_color_grey33_, "#333333");
-	pcb_color_load_str(&pcb_color_magenta_, "#ff00ff");
-	pcb_color_load_str(&pcb_color_golden_, "#dddd22");
-	pcb_color_load_str(&pcb_color_drill_, "#ff00ff");
+	rnd_color_load_str(&pcb_color_black_, "#000000");
+	rnd_color_load_str(&pcb_color_white_, "#ffffff");
+	rnd_color_load_str(&pcb_color_cyan_, "#00ffff");
+	rnd_color_load_str(&pcb_color_red_, "#ff0000");
+	rnd_color_load_str(&pcb_color_blue_, "#0000ff");
+	rnd_color_load_str(&pcb_color_grey33_, "#333333");
+	rnd_color_load_str(&pcb_color_magenta_, "#ff00ff");
+	rnd_color_load_str(&pcb_color_golden_, "#dddd22");
+	rnd_color_load_str(&pcb_color_drill_, "#ff00ff");
 	strcpy(pcb_color_drill_.str, "drill");
 }
 

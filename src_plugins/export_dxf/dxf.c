@@ -462,9 +462,9 @@ static void dxf_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 	}
 }
 
-static void dxf_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void dxf_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
-	if (pcb_color_is_drill(color) == 0)
+	if (rnd_color_is_drill(color) == 0)
 		gc->drawing_hole = 1;
 }
 

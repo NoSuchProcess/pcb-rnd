@@ -941,8 +941,8 @@ static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const cha
 			!(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		int save_drill = global.is_drill;
 		global.is_drill = 0;
-		pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &global.exps.view, pcb_color_black, PCB_LYT_MECH, 0, 0);
-		pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &global.exps.view, pcb_color_black, PCB_LYT_MECH, 0, 0);
+		pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &global.exps.view, rnd_color_black, PCB_LYT_MECH, 0, 0);
+		pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &global.exps.view, rnd_color_black, PCB_LYT_MECH, 0, 0);
 		global.is_drill = save_drill;
 	}
 
@@ -969,13 +969,13 @@ static void ps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool 
 }
 
 
-static void ps_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void ps_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (global.drawing_mode == PCB_HID_COMP_NEGATIVE) {
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 0;
 	}
-	else if (pcb_color_is_drill(color)) {
+	else if (rnd_color_is_drill(color)) {
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 1;
 	}

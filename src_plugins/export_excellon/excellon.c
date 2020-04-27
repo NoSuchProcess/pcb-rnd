@@ -354,7 +354,7 @@ static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd
 	}
 }
 
-static void excellon_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void excellon_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 }
 

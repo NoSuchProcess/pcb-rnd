@@ -84,7 +84,7 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 	Pixel color;
-	pcb_color_t pcolor;
+	rnd_color_t pcolor;
 	int width;
 	pcb_cap_style_t cap;
 	char xor_set;
@@ -338,7 +338,7 @@ void lesstif_coords_to_pcb(int vx, int vy, rnd_coord_t * px, rnd_coord_t * py)
 	*py = Py(vy);
 }
 
-Pixel lesstif_parse_color(const pcb_color_t *value)
+Pixel lesstif_parse_color(const rnd_color_t *value)
 {
 	XColor color;
 	color.pixel = 0;
@@ -2241,14 +2241,14 @@ typedef struct {
 	Pixel pix;
 } ltf_color_cache_t;
 
-static void lesstif_set_color(pcb_hid_gc_t gc, const pcb_color_t *pcolor)
+static void lesstif_set_color(pcb_hid_gc_t gc, const rnd_color_t *pcolor)
 {
 	ltf_color_cache_t *cc;
 
 	if (!display)
 		return;
 	if ((pcolor == NULL) || (*pcolor->str == '\0'))
-		pcolor = pcb_color_magenta;
+		pcolor = rnd_color_magenta;
 
 	gc->pcolor = *pcolor;
 
@@ -2257,7 +2257,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const pcb_color_t *pcolor)
 		ltf_ccache_inited = 1;
 	}
 
-	if (pcb_color_is_drill(pcolor)) {
+	if (rnd_color_is_drill(pcolor)) {
 		gc->color = offlimit_color;
 		gc->erase = 0;
 	}

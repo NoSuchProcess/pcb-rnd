@@ -534,7 +534,7 @@ static const char *svg_clip_color(pcb_hid_gc_t gc)
 	return NULL;
 }
 
-static void svg_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void svg_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	const char *name;
 	gc->drill = 0;
@@ -544,7 +544,7 @@ static void svg_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 	else
 		name = color->str;
 
-	if (pcb_color_is_drill(color)) {
+	if (rnd_color_is_drill(color)) {
 		name = "#ffffff";
 		gc->drill = 1;
 	}

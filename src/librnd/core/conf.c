@@ -568,7 +568,7 @@ int pcb_conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const
 				dst->unit[idx] = u;
 			break;
 		case CFN_COLOR:
-			if (pcb_color_load_str(&dst->color[idx], text) != 0) {
+			if (rnd_color_load_str(&dst->color[idx], text) != 0) {
 				pcb_hid_cfg_error(err_node, "Invalid color value: '%s'\n", text);
 				return -1;
 			}

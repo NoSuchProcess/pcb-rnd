@@ -34,7 +34,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/color.h>
 
-static int fill_bar(Display *display, XImage *image, const pcb_color_t *color, int width, int height)
+static int fill_bar(Display *display, XImage *image, const rnd_color_t *color, int width, int height)
 {
 	int i, j, bytes_per_pixel;
 	char *q;
@@ -119,7 +119,7 @@ static int fill_bar(Display *display, XImage *image, const pcb_color_t *color, i
 	return 0;
 }
 
-static Pixmap set_color_bar(Display *display, Pixmap px, const pcb_color_t *color, int width, int height)
+static Pixmap set_color_bar(Display *display, Pixmap px, const rnd_color_t *color, int width, int height)
 {
 	Visual *visual;
 	int depth, res;
@@ -143,7 +143,7 @@ static Pixmap set_color_bar(Display *display, Pixmap px, const pcb_color_t *colo
 	return px;
 }
 
-Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const pcb_color_t *color)
+Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const rnd_color_t *color)
 {
 	Widget btn;
 	Pixel background;
@@ -168,7 +168,7 @@ Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const 
 	return btn;
 }
 
-int pcb_ltf_color_button_recolor(Display *display, Widget btn, const pcb_color_t *color)
+int pcb_ltf_color_button_recolor(Display *display, Widget btn, const rnd_color_t *color)
 {
 	Arg args[3];
 	int n = 0;

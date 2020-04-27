@@ -338,8 +338,8 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, const pcb_layer_t *ly1, pcb_xform_t *xform)
 {
-	const pcb_color_t *color, *layer_color = NULL;
-	pcb_color_t buf;
+	const rnd_color_t *color, *layer_color = NULL;
+	rnd_color_t buf;
 
 	if ((lyt & PCB_LYT_PASTE) || (lyt & PCB_LYT_MASK) || (lyt & PCB_LYT_SILK)) {
 		if (ly1 == NULL)
@@ -352,7 +352,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 		color = &conf_core.appearance.color.invisible_objects;
 	}
 	else if (xform->black_current_group && is_current) {
-		color = pcb_color_black;
+		color = rnd_color_black;
 	}
 	else if (ps->term == NULL) {
 		/* normal via, not a terminal */

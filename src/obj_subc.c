@@ -1971,7 +1971,7 @@ pcb_r_dir_t pcb_draw_subc_mark(const rnd_box_t *b, void *cl)
 	rnd_box_t *bb = &subc->BoundingBox;
 	int selected, locked;
 	int freq = conf_core.appearance.subc.dash_freq;
-	const pcb_color_t *nnclr;
+	const rnd_color_t *nnclr;
 
 	selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc);
 	locked = PCB_FLAG_TEST(PCB_FLAG_LOCK, subc);

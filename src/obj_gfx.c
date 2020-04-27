@@ -627,7 +627,7 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 	PCB_DRAW_BBOX(gfx);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, gfx)) {
-		const pcb_color_t *color;
+		const rnd_color_t *color;
 		if (layer->is_bound)
 			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 		else

@@ -1403,7 +1403,7 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 
 	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_SELECTED, text)) {
 		if (layer->is_bound) {
-			const pcb_color_t *color;
+			const rnd_color_t *color;
 			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
 			pcb_render->set_color(pcb_draw_out.fgGC, color);
 		}
@@ -1414,7 +1414,7 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 		pcb_render->set_color(pcb_draw_out.fgGC, text->override_color);
 	}
 	else if (layer->is_bound) {
-		const pcb_color_t *color;
+		const rnd_color_t *color;
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 		pcb_render->set_color(pcb_draw_out.fgGC, color);
 	}

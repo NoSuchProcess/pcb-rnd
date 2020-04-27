@@ -382,7 +382,7 @@ int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *b
 				if (grp->len > 0) {
 					pcb_layer_t *ly = pcb_get_layer(pcb->Data, grp->lid[0]);
 					if (ly != NULL)
-						pcb_color_load_str(&ly->meta.real.color, argv[3]);
+						rnd_color_load_str(&ly->meta.real.color, argv[3]);
 				}
 			}
 			else

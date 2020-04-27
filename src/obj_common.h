@@ -231,7 +231,7 @@ void pcb_obj_add_attribs(pcb_any_obj_t *obj, const rnd_attribute_list_t *src, pc
 	unsigned int         noexport:1; \
 	unsigned int         noexport_named:1; \
 	unsigned int         extobj_editing:1; \
-	const pcb_color_t    *override_color
+	const rnd_color_t    *override_color
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define PCB_ANYLINEFIELDS \

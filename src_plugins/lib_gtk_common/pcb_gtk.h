@@ -67,7 +67,7 @@ struct pcb_gtk_impl_s {
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 
-	rnd_bool (*map_color)(const pcb_color_t *inclr, pcb_gtk_color_t *color);
+	rnd_bool (*map_color)(const rnd_color_t *inclr, pcb_gtk_color_t *color);
 	const gchar *(*get_color_name)(pcb_gtk_color_t *color);
 
 	void (*set_special_colors)(conf_native_t *cfg);

@@ -40,7 +40,7 @@
 vtp0_t pcb_uilayers;
 
 
-pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const pcb_color_t *color)
+pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const rnd_color_t *color)
 {
 	int n;
 	pcb_layer_t *l;

@@ -208,7 +208,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	view_ctx_t *ctx = prv->user_ctx;
 	pcb_xform_t xform;
 	int old_termlab, g;
-	static const pcb_color_t *offend_color[2];
+	static const rnd_color_t *offend_color[2];
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	size_t n;
 	void **p;
@@ -216,8 +216,8 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	if (v == NULL)
 		return;
 
-	offend_color[0] = pcb_color_red;
-	offend_color[1] = pcb_color_blue;
+	offend_color[0] = rnd_color_red;
+	offend_color[1] = rnd_color_blue;
 
 	/* NOTE: zoom box was already set on select */
 
@@ -249,7 +249,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	/* restore object color */
 	for(n = 0, p = view_color_save.array; n < view_color_save.used; n+=2,p+=2) {
 		pcb_any_obj_t *obj = p[0];
-		pcb_color_t *s = p[1];
+		rnd_color_t *s = p[1];
 		obj->override_color = s;
 	}
 	vtp0_truncate(&view_color_save, 0);

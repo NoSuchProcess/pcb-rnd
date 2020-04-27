@@ -31,7 +31,7 @@ typedef struct set_ctx_s {
 	const char *s; /* only for string */
 	rnd_coord_t c; /* also int */
 	double d;
-	pcb_color_t color;
+	rnd_color_t color;
 	rnd_bool c_absolute, d_absolute, c_valid, d_valid, clr_valid;
 
 	/* private */

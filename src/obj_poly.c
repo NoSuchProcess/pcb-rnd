@@ -1383,8 +1383,8 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 
 static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
 {
-	static const pcb_color_t *color;
-	pcb_color_t buf;
+	static const rnd_color_t *color;
+	rnd_color_t buf;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(polygon->parent.layer);
 
 	pcb_obj_noexport(info, polygon, return);

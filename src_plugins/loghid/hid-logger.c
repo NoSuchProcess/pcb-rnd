@@ -102,7 +102,7 @@ static void log_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t 
 }
 
 
-static void log_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void log_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	pcb_fprintf(out_, "set_color(gc, %s)\n", color->str);
 	delegatee_->set_color(gc, color);

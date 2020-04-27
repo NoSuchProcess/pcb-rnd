@@ -225,12 +225,12 @@ void pplg_uninit_acompnet(void)
 
 int pplg_init_acompnet(void)
 {
-	static pcb_color_t clr;
+	static rnd_color_t clr;
 
 	PCB_API_CHK_VER;
 
 	if (clr.str[0] != '#')
-		pcb_color_load_str(&clr, "#c09920");
+		rnd_color_load_str(&clr, "#c09920");
 
 	RND_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
 	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", &clr);

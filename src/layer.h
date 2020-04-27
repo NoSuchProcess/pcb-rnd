@@ -138,7 +138,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 		struct { /* A real board layer */
 			pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
 			rnd_bool vis;                  /* visible flag */
-			pcb_color_t color;             /* copied */
+			rnd_color_t color;             /* copied */
 			int no_drc;                    /* whether to ignore the layer when checking the design rules */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
 			pcb_xform_t xform;             /* layer specified rendering transformation */
@@ -177,7 +177,7 @@ typedef enum {
 
 typedef struct {
 	const char *name, *abbrev;
-	pcb_color_t const *force_color;
+	rnd_color_t const *force_color;
 	const char *select_name;
 	int vis_offs, sel_offs;
 } pcb_menu_layers_t;
@@ -285,7 +285,7 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
 
 /* Return the default color for a new layer from the config */
-const pcb_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
+const rnd_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
 
 /* Rename/recolor an existing layer by idx */
 int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, rnd_bool undoable);
@@ -295,7 +295,7 @@ int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, rnd_bool undoable);
 
 /* Low level layer color change, parsed color must be available */
-int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, rnd_bool undoable);
+int pcb_layer_recolor_(pcb_layer_t *Layer, const rnd_color_t *color, rnd_bool undoable);
 
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is

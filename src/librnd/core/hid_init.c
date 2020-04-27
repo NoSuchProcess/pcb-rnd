@@ -313,7 +313,7 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 	pcb_hidlib_event_init();
 	pcb_hid_dlg_init();
 	pcb_hid_init();
-	pcb_color_init();
+	rnd_color_init();
 }
 
 static vts0_t hidlib_conffile;

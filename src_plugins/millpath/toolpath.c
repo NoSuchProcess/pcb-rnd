@@ -188,14 +188,14 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 {
 	gdl_iterator_t it;
 	pcb_line_t *line;
-	static pcb_color_t clr1, clr2, clr3;
+	static rnd_color_t clr1, clr2, clr3;
 
 	if (clr1.str[0] != '#')
-		pcb_color_load_str(&clr1, "#EE9922");
+		rnd_color_load_str(&clr1, "#EE9922");
 	if (clr2.str[0] != '#')
-		pcb_color_load_str(&clr2, "#886611");
+		rnd_color_load_str(&clr2, "#886611");
 	if (clr3.str[0] != '#')
-		pcb_color_load_str(&clr3, "#FFCC55");
+		rnd_color_load_str(&clr3, "#FFCC55");
 
 	if (result->res_ply == NULL)
 		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", &clr1);

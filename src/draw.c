@@ -101,9 +101,9 @@ void pcb_draw_annotation_add(pcb_any_obj_t *obj)
 
 
 TODO("cleanup: this should be cached")
-void pcb_lighten_color(const pcb_color_t *orig, pcb_color_t *dst, double factor)
+void pcb_lighten_color(const rnd_color_t *orig, rnd_color_t *dst, double factor)
 {
-	pcb_color_load_int(dst, MIN(255, orig->r * factor), MIN(255, orig->g * factor), MIN(255, orig->b * factor), 255);
+	rnd_color_load_int(dst, MIN(255, orig->r * factor), MIN(255, orig->g * factor), MIN(255, orig->b * factor), 255);
 }
 
 void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap)
@@ -341,7 +341,7 @@ static void draw_everything(pcb_draw_info_t *info)
 {
 	pcb_layergrp_id_t backsilk_gid;
 	pcb_layergrp_t *backsilk_grp;
-	pcb_color_t old_silk_color[PCB_MAX_LAYERGRP];
+	rnd_color_t old_silk_color[PCB_MAX_LAYERGRP];
 	int i, ngroups;
 	pcb_layergrp_id_t component, solder, gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
@@ -707,7 +707,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	unsigned int lflg = 0;
 	int may_have_delayed = 0, restore_color = 0, current_grp;
 	pcb_xform_t xform;
-	pcb_color_t orig_color;
+	rnd_color_t orig_color;
 	pcb_layer_t *Layer = (pcb_layer_t *)Layer_; /* ugly hack until layer color is moved into info */
 
 	xform_setup(info, &xform, Layer);
@@ -729,7 +729,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		if (!restore_color) {
 			orig_color = Layer->meta.real.color;
 			restore_color = 1;
-			Layer->meta.real.color = *pcb_color_black;
+			Layer->meta.real.color = *rnd_color_black;
 		}
 	}
 
@@ -1088,8 +1088,8 @@ static void expose_begin(pcb_output_t *save, pcb_hid_t *hid)
 	else
 		pcb_draw_out.direct = 1;
 
-	hid->set_color(pcb_draw_out.pmGC, pcb_color_cyan);
-	hid->set_color(pcb_draw_out.drillGC, pcb_color_drill);
+	hid->set_color(pcb_draw_out.pmGC, rnd_color_cyan);
+	hid->set_color(pcb_draw_out.drillGC, rnd_color_drill);
 	hid->set_color(pcb_draw_out.padGC, &conf_core.appearance.color.pin);
 	hid->set_color(pcb_draw_out.backpadGC, &conf_core.appearance.color.invisible_objects);
 	hid->set_color(pcb_draw_out.padselGC, &conf_core.appearance.color.selected);

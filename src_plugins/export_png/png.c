@@ -935,7 +935,7 @@ static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 	}
 }
 
-static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void png_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	color_struct *cc;
 
@@ -943,9 +943,9 @@ static void png_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 		return;
 
 	if (color == NULL)
-		color = pcb_color_red;
+		color = rnd_color_red;
 
-	if (pcb_color_is_drill(color)) {
+	if (rnd_color_is_drill(color)) {
 		gc->color = white;
 		gc->is_erase = 1;
 		return;

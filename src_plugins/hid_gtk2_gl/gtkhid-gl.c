@@ -38,9 +38,9 @@ static rnd_coord_t grid_local_x = 0, grid_local_y = 0, grid_local_radius = 0;
 
 typedef struct render_priv_s {
 	GdkGLConfig *glconfig;
-	pcb_color_t bg_color;
-	pcb_color_t offlimits_color;
-	pcb_color_t grid_color;
+	rnd_color_t bg_color;
+	rnd_color_t offlimits_color;
+	rnd_color_t grid_color;
 	rnd_bool trans_lines;
 	rnd_bool in_context;
 	int subcomposite_stencil_bit;
@@ -57,7 +57,7 @@ typedef struct hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_hid_t *me_pointer;
 
-	const pcb_color_t *pcolor;
+	const rnd_color_t *pcolor;
 	double alpha_mult;
 	rnd_coord_t width;
 } hid_gc_s;
@@ -79,7 +79,7 @@ static const gchar *get_color_name(pcb_gtk_color_t *color)
 }
 
 /* Returns TRUE only if color_string has been allocated to color. */
-static rnd_bool map_color(const pcb_color_t *inclr, pcb_gtk_color_t *color)
+static rnd_bool map_color(const rnd_color_t *inclr, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
 
@@ -257,7 +257,7 @@ static void set_special_grid_color(void)
 	r = priv->grid_color.r ^ priv->bg_color.r;
 	g = priv->grid_color.g ^ priv->bg_color.g;
 	b = priv->grid_color.b ^ priv->bg_color.b;
-	pcb_color_load_int(&priv->grid_color, r, g, b, 255);
+	rnd_color_load_int(&priv->grid_color, r, g, b, 255);
 }
 
 void ghid_gl_set_special_colors(conf_native_t *cfg)
@@ -295,7 +295,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 
 	if (*gc->pcolor->str == '\0') {
 		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = 0, setting to magenta\n");
-		gc->pcolor = pcb_color_magenta;
+		gc->pcolor = rnd_color_magenta;
 	}
 
 	if ((priv->current_color_packed == gc->pcolor->packed) && (priv->current_alpha_mult == gc->alpha_mult))
@@ -307,7 +307,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(ghidgui->port.top_window);
 
-	if (pcb_color_is_drill(gc->pcolor)) {
+	if (rnd_color_is_drill(gc->pcolor)) {
 		r = priv->offlimits_color.fr;
 		g = priv->offlimits_color.fg;
 		b = priv->offlimits_color.fb;
@@ -385,11 +385,11 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	drawgl_set_colour(r, g, b, a);
 }
 
-void ghid_gl_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+void ghid_gl_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (color == NULL) {
 		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
-		color = pcb_color_magenta;
+		color = rnd_color_magenta;
 	}
 
 	gc->pcolor = color;
@@ -720,7 +720,7 @@ static void ghid_gl_screen_update(void)
 /* Settles background color + inital GL configuration, to allow further drawing in GL area.
     (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
     The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
-static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, pcb_color_t *bg_c)
+static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
 {
 	hidgl_init();
 

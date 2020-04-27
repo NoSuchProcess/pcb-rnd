@@ -64,7 +64,7 @@ typedef struct hid_gc_s {
 	GdkGC *pixel_gc;
 	GdkGC *clip_gc;
 
-	pcb_color_t pcolor;
+	rnd_color_t pcolor;
 	rnd_coord_t width;
 	gint cap, join;
 	gchar xor_mask;
@@ -83,7 +83,7 @@ static const gchar *get_color_name(pcb_gtk_color_t *color)
 }
 
 /* Returns TRUE only if color_string has been allocated to color. */
-static rnd_bool map_color(const pcb_color_t *inclr, pcb_gtk_color_t *color)
+static rnd_bool map_color(const rnd_color_t *inclr, pcb_gtk_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
 
@@ -479,14 +479,14 @@ static void ghid_gdk_set_special_colors(conf_native_t *cfg)
 	}
 }
 
-static void ghid_gdk_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void ghid_gdk_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	static GdkColormap *colormap = NULL;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	if (*color->str == '\0') {
 		fprintf(stderr, "ghid_gdk_set_color():  name = NULL, setting to magenta\n");
-		color = pcb_color_magenta;
+		color = rnd_color_magenta;
 	}
 
 	gc->pcolor = *color;
@@ -496,7 +496,7 @@ static void ghid_gdk_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
 	if (colormap == NULL)
 		colormap = gtk_widget_get_colormap(ghidgui->port.top_window);
 
-	if (pcb_color_is_drill(color)) {
+	if (rnd_color_is_drill(color)) {
 		gdk_gc_set_foreground(gc->pixel_gc, &priv->offlimits_color);
 	}
 	else {
@@ -1391,13 +1391,13 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 	if (!done_once) {
 		priv->bg_gc = gdk_gc_new(priv->out_pixel);
 		if (!map_color(&pcbhl_conf.appearance.color.background, &priv->bg_color))
-			map_color(pcb_color_white, &priv->bg_color);
+			map_color(rnd_color_white, &priv->bg_color);
 		gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 		gdk_gc_set_clip_origin(priv->bg_gc, 0, 0);
 
 		priv->offlimits_gc = gdk_gc_new(priv->out_pixel);
 		if (!map_color(&pcbhl_conf.appearance.color.off_limit, &priv->offlimits_color))
-			map_color(pcb_color_white, &priv->offlimits_color);
+			map_color(rnd_color_white, &priv->offlimits_color);
 		gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 		gdk_gc_set_clip_origin(priv->offlimits_gc, 0, 0);
 		done_once = 1;

@@ -632,13 +632,13 @@ int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, 
 /*** undoable layer recolor ***/
 typedef struct {
 	pcb_layer_t *layer;
-	pcb_color_t color;
+	rnd_color_t color;
 } undo_layer_recolor_t;
 
 
 static int undo_layer_recolor_swap(void *udata)
 {
-	pcb_color_t old;
+	rnd_color_t old;
 	undo_layer_recolor_t *r = udata;
 
 	old = r->layer->meta.real.color;
@@ -666,7 +666,7 @@ static const uundo_oper_t undo_layer_recolor = {
 };
 
 
-int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, rnd_bool undoable)
+int pcb_layer_recolor_(pcb_layer_t *Layer, const rnd_color_t *color, rnd_bool undoable)
 {
 	undo_layer_recolor_t rtmp, *r = &rtmp;
 
@@ -691,8 +691,8 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const pcb_color_t *color, rnd_bool un
 
 int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color, rnd_bool undoable)
 {
-	pcb_color_t clr;
-	pcb_color_load_str(&clr, color);
+	rnd_color_t clr;
+	rnd_color_load_str(&clr, color);
 	return pcb_layer_recolor_(&data->Layer[layer], &clr, undoable);
 }
 
@@ -745,7 +745,7 @@ void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src)
 	}
 }
 
-const pcb_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt)
+const rnd_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt)
 {
 	const int clrs = sizeof(conf_core.appearance.color.layer) / sizeof(conf_core.appearance.color.layer[0]);
 
@@ -930,7 +930,7 @@ typedef struct {
 	char *name;
 	pcb_layer_combining_t comb;
 	pcb_layergrp_id_t grp;
-	pcb_color_t color;
+	rnd_color_t color;
 } undo_layer_move_t;
 
 static int undo_layer_move_swap(void *udata)

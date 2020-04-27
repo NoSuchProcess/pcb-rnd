@@ -724,7 +724,7 @@ static void openems_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_
 	}
 }
 
-static void openems_set_color(pcb_hid_gc_t gc, const pcb_color_t *name)
+static void openems_set_color(pcb_hid_gc_t gc, const rnd_color_t *name)
 {
 }
 

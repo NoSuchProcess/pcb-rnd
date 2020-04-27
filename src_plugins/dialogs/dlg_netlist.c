@@ -283,7 +283,7 @@ static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 				vtp0_append(&netlist_color_save, (char *)obj->override_color);
 			else
 				vtp0_append(&netlist_color_save, NULL);
-			obj->override_color = pcb_color_magenta;
+			obj->override_color = rnd_color_magenta;
 		}
 	}
 
@@ -295,7 +295,7 @@ static void netlist_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	if (net != NULL) {/* restore object color */
 		for(n = 0, p = netlist_color_save.array; n < netlist_color_save.used; n+=2,p+=2) {
 			pcb_any_obj_t *obj = p[0];
-			pcb_color_t *s = p[1];
+			rnd_color_t *s = p[1];
 			obj->override_color = s;
 		}
 		vtp0_truncate(&netlist_color_save, 0);

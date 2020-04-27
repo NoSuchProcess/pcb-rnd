@@ -58,7 +58,7 @@ typedef union {
 	rnd_coord_t coord;
 	pcb_angle_t angle;
 	int i;
-	pcb_color_t clr;
+	rnd_color_t clr;
 } pcb_propval_t;
 
 typedef pcb_propval_t htprop_key_t;

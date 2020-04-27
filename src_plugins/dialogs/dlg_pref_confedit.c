@@ -88,7 +88,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			break;
 		case CFN_COLOR:
 			hv.clr = ctx->nat->val.color[ctx->idx];
-			pcb_color_load_str(&hv.clr, val);
+			rnd_color_load_str(&hv.clr, val);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case CFN_LIST:

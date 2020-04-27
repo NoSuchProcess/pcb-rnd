@@ -60,7 +60,7 @@ typedef long          CFT_INTEGER;
 typedef double        CFT_REAL;
 typedef rnd_coord_t   CFT_COORD;
 typedef pcb_unit_t *  CFT_UNIT;
-typedef pcb_color_t   CFT_COLOR;
+typedef rnd_color_t   CFT_COLOR;
 typedef pcb_conflist_t    CFT_LIST;
 typedef pcb_conflist_t    CFT_HLIST;
 
@@ -84,7 +84,7 @@ union confitem_u {
 	double *real;
 	rnd_coord_t *coord;
 	const pcb_unit_t **unit;
-	pcb_color_t *color;
+	rnd_color_t *color;
 	pcb_conflist_t *list;
 	void *any;
 };

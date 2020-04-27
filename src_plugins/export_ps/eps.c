@@ -466,14 +466,14 @@ static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 }
 
 
-static void eps_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void eps_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (drawing_mode == PCB_HID_COMP_NEGATIVE) {
 		gc->color = 0xffffff;
 		gc->erase = 1;
 		return;
 	}
-	if (pcb_color_is_drill(color)) {
+	if (rnd_color_is_drill(color)) {
 		gc->color = 0xffffff;
 		gc->erase = 0;
 		return;

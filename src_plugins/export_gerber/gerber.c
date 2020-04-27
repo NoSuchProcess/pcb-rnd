@@ -598,8 +598,8 @@ emit_outline:
 
 	if (want_outline && !(PCB_LAYER_IS_ROUTE(flags, purpi))) {
 		if (has_outline) {
-			pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &region, pcb_color_black, PCB_LYT_MECH, 0, 0);
-			pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &region, pcb_color_black, PCB_LYT_MECH, 0, 0);
+			pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_proute, NULL, &region, rnd_color_black, PCB_LYT_MECH, 0, 0);
+			pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &region, rnd_color_black, PCB_LYT_MECH, 0, 0);
 		}
 		else {
 			pcb_hid_gc_t gc = pcb_hid_make_gc();
@@ -638,9 +638,9 @@ static void gerber_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_b
 		fprintf(f, "G04 hid debug composite: %d*\r\n", op);
 }
 
-static void gerber_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void gerber_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
-	if (pcb_color_is_drill(color)) {
+	if (rnd_color_is_drill(color)) {
 		gc->color = 1;
 		gc->erase = 0;
 		gc->drill = 1;

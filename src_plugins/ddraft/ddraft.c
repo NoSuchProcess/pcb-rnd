@@ -446,7 +446,7 @@ void ddraft_tool_draw_attached(rnd_hidlib_t *hl)
 	int n;
 	pcb_render->set_line_cap(pcb_crosshair.GC, pcb_cap_round);
 	pcb_render->set_line_width(pcb_crosshair.GC, 1);
-	pcb_render->set_color(pcb_crosshair.GC, pcb_color_grey33);
+	pcb_render->set_color(pcb_crosshair.GC, rnd_color_grey33);
 	for(n = 0; n < vtc0_len(&pcb_ddraft_attached.annot_lines); n += 4) {
 		rnd_coord_t *c = &pcb_ddraft_attached.annot_lines.array[n];
 		pcb_render->draw_line(pcb_crosshair.GC, c[0], c[1], c[2], c[3]);

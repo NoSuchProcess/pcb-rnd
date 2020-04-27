@@ -200,7 +200,7 @@ static void remote_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_b
 		rnd_message(PCB_MSG_ERROR, "Invalid drawing mode %d\n", op);
 }
 
-static void remote_set_color(pcb_hid_gc_t gc, const pcb_color_t *color)
+static void remote_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {

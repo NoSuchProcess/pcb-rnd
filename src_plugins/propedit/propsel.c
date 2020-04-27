@@ -426,8 +426,8 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 
 static int layer_recolor(pcb_layer_t *layer, const char *clr)
 {
-	pcb_color_t c;
-	if (pcb_color_load_str(&c, clr) != 0)
+	rnd_color_t c;
+	if (rnd_color_load_str(&c, clr) != 0)
 		return -1;
 	return pcb_layer_recolor_(layer, &c, 1);
 }

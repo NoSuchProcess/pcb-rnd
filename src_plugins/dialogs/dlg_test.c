@@ -510,7 +510,7 @@ static void cb_text_ro(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 static void prv_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
 {
-	pcb_render->set_color(gc, pcb_color_red);
+	pcb_render->set_color(gc, rnd_color_red);
 	pcb_text_draw_string_simple(NULL, "foo", PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 500, 10.0, 0, 0, 0, 0, 0);
 
 	printf("expose in dlg_test!\n");
@@ -536,7 +536,7 @@ static void cb_color_reset(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	test_t *ctx = caller_data;
 	pcb_hid_attr_val_t val;
 
-	pcb_color_load_str(&val.clr, "#005599");
+	rnd_color_load_str(&val.clr, "#005599");
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }
 

@@ -33,7 +33,7 @@ typedef struct comp_ctx_s {
 	pcb_draw_info_t *info;
 	const pcb_layergrp_t *grp;
 	pcb_layergrp_id_t gid;
-	const pcb_color_t *color;
+	const rnd_color_t *color;
 
 	unsigned thin:1;
 	unsigned invert:1;
@@ -180,7 +180,7 @@ static void pcb_draw_groups_auto(comp_ctx_t *ctx, void *lym)
 		pcb_draw_pstks(ctx->info, ctx->gid, 0, *pstk_lyt_match);
 }
 
-void pcb_draw_groups(pcb_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_box_t *screen, const pcb_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
+void pcb_draw_groups(pcb_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_box_t *screen, const rnd_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
 {
 	pcb_draw_info_t info;
 	pcb_layergrp_id_t gid;

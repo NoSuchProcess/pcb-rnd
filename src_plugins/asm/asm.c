@@ -298,7 +298,7 @@ static void asm_greyout(int grey)
 			r = fade(r, 4);
 			g = fade(g, 4);
 			b = fade(b, 4);
-			pcb_color_load_int(&ly->meta.real.color, r, g, b, 255);
+			rnd_color_load_int(&ly->meta.real.color, r, g, b, 255);
 		}
 	}
 	else {

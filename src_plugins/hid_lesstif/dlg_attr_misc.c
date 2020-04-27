@@ -232,7 +232,7 @@ static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_h
 	return pic;
 }
 
-static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_color_t *clr)
+static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_color_t *clr)
 {
 	Widget btn = ctx->wl[idx];
 	ctx->attrs[idx].val.clr = *clr;
@@ -246,8 +246,8 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 	fgw_error_t rs;
 	fgw_arg_t res, argv[2];
 	lesstif_attr_dlg_t *ctx;
-	const pcb_color_t *clr;
-	pcb_color_t nclr;
+	const rnd_color_t *clr;
+	rnd_color_t nclr;
 	int r, widx = attr_get_idx(w, &ctx);
 	if (widx < 0)
 		return;
@@ -267,7 +267,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 		return;
 	}
 
-	r = pcb_color_load_str(&nclr, res.val.str);
+	r = rnd_color_load_str(&nclr, res.val.str);
 	fgw_arg_free(&rnd_fgw, &res);
 	if (r != 0) {
 		rnd_message(PCB_MSG_ERROR, CPACT " returned invalid color string\n");

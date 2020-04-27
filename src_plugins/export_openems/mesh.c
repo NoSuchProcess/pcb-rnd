@@ -943,10 +943,10 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 
 static void mesh_layer_reset()
 {
-	static pcb_color_t clr;
+	static rnd_color_t clr;
 
 	if (clr.str[0] != '#')
-		pcb_color_load_str(&clr, "#007733");
+		rnd_color_load_str(&clr, "#007733");
 
 	if (mesh.ui_layer_xy != NULL)
 		pcb_uilayer_free(mesh.ui_layer_xy);

@@ -134,8 +134,8 @@ typedef struct pcb_menu_prop_s {
 	const char *tip;        /* tooltip */
 	const char *checked;
 	const char *update_on;
-	const pcb_color_t *foreground;
-	const pcb_color_t *background;
+	const rnd_color_t *foreground;
+	const rnd_color_t *background;
 	const char *cookie;     /* used for cookie based removal */
 } pcb_menu_prop_t;
 
@@ -286,11 +286,11 @@ struct pcb_hid_s {
 	/*** gc vs. pcb_hid_t *: pcb_core_gc_t contains ->hid, so these calls don't
 	     need to get it as first arg. ***/
 
-	/* Sets a color. Can be one of the special colors like pcb_color_drill.
+	/* Sets a color. Can be one of the special colors like rnd_color_drill.
 	   (Always use the drill color to draw holes and slots).
 	   You may assume this is cheap enough to call inside the redraw
 	   callback, but not cheap enough to call for each item drawn. */
-	void (*set_color)(pcb_hid_gc_t gc, const pcb_color_t *color);
+	void (*set_color)(pcb_hid_gc_t gc, const rnd_color_t *color);
 
 	/* Sets the line style.  While calling this is cheap, calling it with
 	   different values each time may be expensive, so grouping items by

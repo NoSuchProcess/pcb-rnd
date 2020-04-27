@@ -134,7 +134,7 @@ fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 	int wclr, wr, wg, wb;
-	pcb_color_t clr;
+	rnd_color_t clr;
 } clrpick_t;
 
 static int clamp(int c)
@@ -151,7 +151,7 @@ static void color_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_hid_attr_val_t val;
 	clrpick_t *ctx = caller_data;
 
-	pcb_color_load_int(&ctx->clr, clamp(ctx->dlg[ctx->wr].val.lng), clamp(ctx->dlg[ctx->wg].val.lng), clamp(ctx->dlg[ctx->wb].val.lng), 255);
+	rnd_color_load_int(&ctx->clr, clamp(ctx->dlg[ctx->wr].val.lng), clamp(ctx->dlg[ctx->wg].val.lng), clamp(ctx->dlg[ctx->wb].val.lng), 255);
 	val.clr = ctx->clr;
 	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }
@@ -167,7 +167,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, sclr = argv[1].val.str);
 
 	memset(&ctx, 0, sizeof(ctx));
-	if (pcb_color_load_str(&ctx.clr, sclr) != 0)
+	if (rnd_color_load_str(&ctx.clr, sclr) != 0)
 		return -1;
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
