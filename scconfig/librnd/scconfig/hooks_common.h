@@ -98,6 +98,20 @@ static int rnd_hook_custom_arg_(const char *key, const char *value)
 		help_default_args(stdout, "");
 		exit(0);
 	}
+	if (strncmp(key, "workaround-", 11) == 0) {
+		const char *what = key+11;
+		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define PCB_WORKAROUND_GTK_CTRL 1");
+		else if (strcmp(what, "gtk-shift") == 0) append("/local/pcb/workaround_defs", "\n#define PCB_WORKAROUND_GTK_SHIFT 1");
+		else {
+			report("ERROR: unknown workaround '%s'\n", what);
+			exit(1);
+		}
+		return 1;
+	}
+	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
+		report("ERROR: --with-intl is no longer supported, please do not use it\n");
+		return 1;
+	}
 	return 0;
 }
 
