@@ -420,7 +420,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			if (f != NULL) {
 				char buff[4096];
 				int len;
-				fp = pcb_popen(&PCB->hidlib, cmd, "rb");
+				fp = pcb_popen(&PCB->hidlib, cmd, "r");
 				if (fp != NULL) {
 					while((len = fread(buff, 1, sizeof(buff), fp)) > 0)
 						fwrite(buff, 1, len, f);

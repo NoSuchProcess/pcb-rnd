@@ -81,7 +81,7 @@ FILE *pcb_wget_popen(const char *url, int update, const pcb_wget_opts_t *opts)
 	FILE *f;
 	char *cmd = pcb_wget_command(url, "-", update, opts);
 
-	f = pcb_popen(NULL, cmd, "rb");
+	f = pcb_popen(NULL, cmd, "r");
 	free(cmd);
 	return f;
 }
