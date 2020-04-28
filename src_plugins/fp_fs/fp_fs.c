@@ -414,15 +414,20 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			sprintf(cmd, "%s%s%s %s", libshell, sep, fullname, params);
 #endif
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
+			/* Make a copy of the output of the parametric so rewind() can be called on it */
 			fctx->field[F_TMPNAME].p = pcb_tempfile_name_new("pcb-rnd-pfp");
 			f = pcb_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "wb+");
 			if (f != NULL) {
 				char buff[4096];
 				int len;
 				fp = pcb_popen(&PCB->hidlib, cmd, "rb");
-				while((len = fread(buff, 1, sizeof(buff), fp)) > 0)
-					fwrite(buff, 1, len, f);
-				pcb_pclose(fp);
+				if (fp != NULL) {
+					while((len = fread(buff, 1, sizeof(buff), fp)) > 0)
+						fwrite(buff, 1, len, f);
+					pcb_pclose(fp);
+				}
+				else
+					rnd_message(PCB_MSG_ERROR, "Parametric footprint: failed to execute %s\n", cmd);
 				rewind(f);
 			}
 			free(cmd);
