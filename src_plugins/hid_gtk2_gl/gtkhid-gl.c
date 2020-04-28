@@ -48,7 +48,7 @@ typedef struct render_priv_s {
 	double current_alpha_mult;
 
 	/* color cache for set_color */
-	pcb_clrcache_t ccache;
+	rnd_clrcache_t ccache;
 	int ccache_inited;
 } render_priv_t;
 
@@ -317,10 +317,10 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 		pcb_gtk_color_cache_t *cc;
 
 		if (!priv->ccache_inited) {
-			pcb_clrcache_init(&priv->ccache, sizeof(pcb_gtk_color_cache_t), NULL);
+			rnd_clrcache_init(&priv->ccache, sizeof(pcb_gtk_color_cache_t), NULL);
 			priv->ccache_inited = 1;
 		}
-		cc = pcb_clrcache_get(&priv->ccache, gc->pcolor, 1);
+		cc = rnd_clrcache_get(&priv->ccache, gc->pcolor, 1);
 		if (!cc->color_set) {
 			if (gdk_color_parse(gc->pcolor->str, &cc->color))
 				gdk_color_alloc(colormap, &cc->color);

@@ -78,7 +78,7 @@ const char *png_cookie = "png HID";
 
 static pcb_cam_t png_cam;
 
-static pcb_clrcache_t color_cache;
+static rnd_clrcache_t color_cache;
 static int color_cache_inited = 0;
 static htpp_t brush_cache;
 static int brush_cache_inited = 0;
@@ -584,7 +584,7 @@ void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xfo
 static void png_free_cache(void)
 {
 	if (color_cache_inited) {
-		pcb_clrcache_uninit(&color_cache);
+		rnd_clrcache_uninit(&color_cache);
 		color_cache_inited = 0;
 	}
 	if (brush_cache_inited) {
@@ -958,15 +958,15 @@ static void png_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 	}
 
 	if (!color_cache_inited) {
-		pcb_clrcache_init(&color_cache, sizeof(color_struct), NULL);
+		rnd_clrcache_init(&color_cache, sizeof(color_struct), NULL);
 		color_cache_inited = 1;
 	}
 
-	if ((cc = pcb_clrcache_get(&color_cache, color, 0)) != NULL) {
+	if ((cc = rnd_clrcache_get(&color_cache, color, 0)) != NULL) {
 		gc->color = cc;
 	}
 	else if (color->str[0] == '#') {
-		cc = pcb_clrcache_get(&color_cache, color, 1);
+		cc = rnd_clrcache_get(&color_cache, color, 1);
 		gc->color = cc;
 		gc->color->r = color->r;
 		gc->color->g = color->g;

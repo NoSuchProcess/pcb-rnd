@@ -33,17 +33,17 @@
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/color.h>
 
-typedef void (*pcb_clrcache_free_t)(pcb_clrcache_t *cache, void *hidclr);
+typedef void (*rnd_clrcache_free_t)(rnd_clrcache_t *cache, void *hidclr);
 
-struct pcb_clrcache_s {
+struct rnd_clrcache_s {
 	htip_t ht;
 	int hidsize;
-	pcb_clrcache_free_t hidfree;
+	rnd_clrcache_free_t hidfree;
 
 	void *user_data; /* the caller can set this up after pcb_clrcache_init and use it in hidfree() */
 };
 
-RND_INLINE void pcb_clrcache_init(pcb_clrcache_t *cache, int hidsize, pcb_clrcache_free_t hidfree)
+RND_INLINE void rnd_clrcache_init(rnd_clrcache_t *cache, int hidsize, rnd_clrcache_free_t hidfree)
 {
 	htip_init(&cache->ht, longhash, longkeyeq);
 	cache->hidsize = hidsize;
@@ -51,7 +51,7 @@ RND_INLINE void pcb_clrcache_init(pcb_clrcache_t *cache, int hidsize, pcb_clrcac
 	cache->user_data = NULL;
 }
 
-RND_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const rnd_color_t *color)
+RND_INLINE void rnd_clrcache_del(rnd_clrcache_t *cache, const rnd_color_t *color)
 {
 	void *old = htip_get(&cache->ht, color->packed);
 	if (old == NULL)
@@ -61,7 +61,7 @@ RND_INLINE void pcb_clrcache_del(pcb_clrcache_t *cache, const rnd_color_t *color
 	free(old);
 }
 
-RND_INLINE void *pcb_clrcache_get(pcb_clrcache_t *cache, const rnd_color_t *color, int alloc)
+RND_INLINE void *rnd_clrcache_get(rnd_clrcache_t *cache, const rnd_color_t *color, int alloc)
 {
 	void *clr = htip_get(&cache->ht, color->packed);
 	if (clr != NULL)
@@ -75,7 +75,7 @@ RND_INLINE void *pcb_clrcache_get(pcb_clrcache_t *cache, const rnd_color_t *colo
 	return clr;
 }
 
-RND_INLINE void pcb_clrcache_uninit(pcb_clrcache_t *cache)
+RND_INLINE void rnd_clrcache_uninit(rnd_clrcache_t *cache)
 {
 	htip_entry_t *e;
 

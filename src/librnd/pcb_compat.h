@@ -183,3 +183,10 @@
 #define pcb_clrdup rnd_clrdup
 #define pcb_color_init rnd_color_init
 #define pcb_color_is_drill rnd_color_is_drill
+#define pcb_clrcache_s rnd_clrcache_s
+#define pcb_clrcache_init rnd_clrcache_init
+#define pcb_clrcache_del rnd_clrcache_del
+#define pcb_clrcache_get rnd_clrcache_get
+#define pcb_clrcache_uninit rnd_clrcache_uninit
+#define pcb_clrcache_t rnd_clrcache_t
+#define pcb_clrcache_free_t rnd_clrcache_free_t

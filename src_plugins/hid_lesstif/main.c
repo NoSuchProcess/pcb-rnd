@@ -69,7 +69,7 @@ int lesstif_active = 0;
 static int idle_proc_set = 0;
 static int need_redraw = 0;
 
-static pcb_clrcache_t ltf_ccache;
+static rnd_clrcache_t ltf_ccache;
 static int ltf_ccache_inited;
 
 #ifndef XtRDouble
@@ -2253,7 +2253,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const rnd_color_t *pcolor)
 	gc->pcolor = *pcolor;
 
 	if (!ltf_ccache_inited) {
-		pcb_clrcache_init(&ltf_ccache, sizeof(ltf_color_cache_t), NULL);
+		rnd_clrcache_init(&ltf_ccache, sizeof(ltf_color_cache_t), NULL);
 		ltf_ccache_inited = 1;
 	}
 
@@ -2261,12 +2261,12 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const rnd_color_t *pcolor)
 		gc->color = offlimit_color;
 		gc->erase = 0;
 	}
-	else if ((cc = pcb_clrcache_get(&ltf_ccache, pcolor, 0)) != NULL) {
+	else if ((cc = rnd_clrcache_get(&ltf_ccache, pcolor, 0)) != NULL) {
 		gc->color = cc->pix;
 		gc->erase = 0;
 	}
 	else {
-		cc = pcb_clrcache_get(&ltf_ccache, pcolor, 1);
+		cc = rnd_clrcache_get(&ltf_ccache, pcolor, 1);
 		cc->pix = lesstif_parse_color(pcolor);
 #if 0
 		printf("lesstif_set_color `%s' %08x rgb/%d/%d/%d\n", name, color.pixel, color.red, color.green, color.blue);
