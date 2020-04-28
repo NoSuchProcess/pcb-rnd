@@ -276,7 +276,7 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	res->type = FGW_INT;
 	PCB_DAD_AUTORUN("MayOverwriteFile", dlg, "File overwrite question", NULL, res->val.nat_int);
 	if (dlg[wdontask].val.lng) {
-		pcb_conf_set(CFR_USER, "plugins/dialogs/file_overwrite_dialog/dont_ask", 0, "1", POL_OVERWRITE);
+		pcb_conf_set(CFR_USER, "plugins/dialogs/file_overwrite_dialog/dont_ask", 0, "1", RND_POL_OVERWRITE);
 		if (pcb_conf_isdirty(CFR_USER))
 			pcb_conf_save_file(hidlib, NULL, NULL, CFR_USER, NULL);
 	}

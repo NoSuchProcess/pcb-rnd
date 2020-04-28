@@ -120,7 +120,7 @@ static void add_schematic(const char *sch)
 		const char *suff = loc_str_has_suffix(sch, ".sch", 4);
 		if (suff != NULL) {
 			char *tmp = rnd_strndup(sch, suff - sch);
-			pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, POL_OVERWRITE);
+			pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, RND_POL_OVERWRITE);
 			free(tmp);
 		}
 	}
@@ -164,35 +164,35 @@ static int parse_config(char * config, char * arg)
 
 	if (!strcmp(config, "remove-unfound") || !strcmp(config, "r")) {
 		/* This is default behavior set in header section */
-		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "1", POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "1", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "keep-unfound") || !strcmp(config, "k")) {
-		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "0", POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "0", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "quiet") || !strcmp(config, "q")) {
-		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/quiet_mode", -1, "1", POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/quiet_mode", -1, "1", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "preserve") || !strcmp(config, "p")) {
-		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/preserve", -1, "1", POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/preserve", -1, "1", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "elements-shell") || !strcmp(config, "s"))
-		pcb_conf_set(CFR_CLI, "rc/library_shell", -1, arg, POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "rc/library_shell", -1, arg, RND_POL_OVERWRITE);
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
 		static int warned = 0;
 		if (!warned) {
 			rnd_message(PCB_MSG_WARNING, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
 			warned = 1;
 		}
-		pcb_conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, POL_PREPEND);
+		pcb_conf_set(CFR_CLI, "rc/library_search_paths", -1, arg, RND_POL_PREPEND);
 	}
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
-		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, arg, POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, arg, RND_POL_OVERWRITE);
 	else if (!strcmp(config, "default-pcb") || !strcmp(config, "P"))
-		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/default_pcb", -1, arg, POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/default_pcb", -1, arg, RND_POL_OVERWRITE);
 	else if (!strcmp(config, "schematics"))
 		add_multiple_schematics(arg);
 	else if (!strcmp(config, "gnetlist")) {
@@ -202,7 +202,7 @@ static int parse_config(char * config, char * arg)
 		gadl_append(&extra_gnetlist_list, n);
 	}
 	else if (!strcmp(config, "empty-footprint"))
-		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/empty_footprint_name", -1, arg, POL_OVERWRITE);
+		pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/empty_footprint_name", -1, arg, RND_POL_OVERWRITE);
 	else
 		return -1;
 
@@ -298,7 +298,7 @@ static void get_args(int argc, char ** argv)
 			else if (!strcmp(opt, "verbose") || !strcmp(opt, "v")) {
 				char tmp[64];
 				sprintf(tmp, "%ld", conf_g2pr.utils.gsch2pcb_rnd.verbose + 1);
-				pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, POL_OVERWRITE);
+				pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, RND_POL_OVERWRITE);
 				continue;
 			}
 			else if (!strcmp(opt, "m") || !strcmp(opt, "method")) {
@@ -306,7 +306,7 @@ static void get_args(int argc, char ** argv)
 					rnd_message(PCB_MSG_ERROR, "Error: can't use unknown method '%s'; try --help\n", arg);
 					exit(1);
 				}
-				pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/method", -1, arg, POL_OVERWRITE);
+				pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/method", -1, arg, RND_POL_OVERWRITE);
 				i++;
 				continue;
 			}
@@ -320,7 +320,7 @@ static void get_args(int argc, char ** argv)
 				continue;
 			}
 			else if (!strcmp(opt, "fix-elements")) {
-				pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/fix_elements", -1, "1", POL_OVERWRITE);
+				pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/fix_elements", -1, "1", RND_POL_OVERWRITE);
 				continue;
 			}
 			else if (!strcmp(opt, "gnetlist-arg")) {

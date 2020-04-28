@@ -103,7 +103,7 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 			break;
 		case CFN_STRING:
 			if (strcmp(cn->val.string[0], attr->val.str) != 0)
-				pcb_conf_set(ctx->role, item->confpath, -1, attr->val.str, POL_OVERWRITE);
+				pcb_conf_set(ctx->role, item->confpath, -1, attr->val.str, RND_POL_OVERWRITE);
 			break;
 		default: rnd_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_item(): widget type not handled\n");
 	}

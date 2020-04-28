@@ -280,7 +280,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			nat->random_flags.dyn_desc = 1;
 			nat->random_flags.dyn_val = 1;
 			vtp0_append(&free_drc_conf_nodes, nat);
-			pcb_conf_set(CFR_INTERNAL, path, -1, "0", POL_OVERWRITE);
+			pcb_conf_set(CFR_INTERNAL, path, -1, "0", RND_POL_OVERWRITE);
 		}
 		else
 			free(path);
@@ -337,7 +337,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			if (slegacy != NULL)
 				pcb_conf_legacy(path, slegacy);
 			else if (sdefault != NULL)
-				pcb_conf_set(CFR_INTERNAL, path, -1, sdefault, POL_OVERWRITE);
+				pcb_conf_set(CFR_INTERNAL, path, -1, sdefault, RND_POL_OVERWRITE);
 			path = NULL; /* hash key shall not be free'd */
 		}
 		fail:;

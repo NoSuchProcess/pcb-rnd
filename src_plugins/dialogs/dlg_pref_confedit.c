@@ -178,7 +178,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 	if (val == NULL)
 		val = "";
-	pcb_conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, POL_OVERWRITE);
+	pcb_conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, RND_POL_OVERWRITE);
 
 	if ((ctx->role == CFR_USER) || (ctx->role == CFR_PROJECT))
 		pcb_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);

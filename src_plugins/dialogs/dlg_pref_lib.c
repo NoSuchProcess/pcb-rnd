@@ -161,7 +161,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	m = pcb_conf_lht_get_first(ctx->role, 0);
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	if (lst == NULL)
-		pcb_conf_set(ctx->role, "rc/library_search_paths", 0, "", POL_OVERWRITE);
+		pcb_conf_set(ctx->role, "rc/library_search_paths", 0, "", RND_POL_OVERWRITE);
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	assert(lst != NULL);
 	lht_clean_list(lst);

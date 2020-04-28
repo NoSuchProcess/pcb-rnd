@@ -522,7 +522,7 @@ static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *buff, int 
 		*isdir = 0;
 
 	if (wr)
-		return pcb_conf_set(CFR_DESIGN, path, 0, buff->array, POL_OVERWRITE);
+		return pcb_conf_set(CFR_DESIGN, path, 0, buff->array, RND_POL_OVERWRITE);
 	else
 		pcb_conf_print_native((conf_pfn)vfs_conf_printf, buff, NULL, 0, nat);
 

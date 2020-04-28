@@ -244,7 +244,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	if (load_settings)
 		pcb_event(&PCB->hidlib, PCB_EVENT_LOAD_POST, "si", Filename, res);
 	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-	pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
+	pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 	pcb_plug_io_err(&Ptr->hidlib, res, "load pcb", Filename);
 	return res;
@@ -581,7 +581,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 			if (nat == NULL) {
 				const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
 				if (new_unit)
-					pcb_conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, POL_OVERWRITE);
+					pcb_conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, RND_POL_OVERWRITE);
 			}
 		}
 

@@ -123,12 +123,12 @@ void io_pcb_attrib_a2c(pcb_board_t *pcb)
 						*next = '\0';
 						next += strlen(LISTSEP);
 					}
-					pcb_conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, curr, POL_APPEND);
+					pcb_conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, curr, RND_POL_APPEND);
 				}
 				free(tmp);
 			}
 			else /* assume plain string */
-				pcb_conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, pcb->Attributes.List[n].value, POL_OVERWRITE);
+				pcb_conf_set(CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, pcb->Attributes.List[n].value, RND_POL_OVERWRITE);
 		}
 	}
 }

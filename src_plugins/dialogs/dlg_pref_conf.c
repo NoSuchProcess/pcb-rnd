@@ -151,7 +151,7 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 		if (nat != NULL) {
 			lht_node_t *nd;
 			long prio = pcb_conf_default_prio[n];
-			conf_policy_t pol = POL_OVERWRITE;
+			rnd_conf_policy_t pol = RND_POL_OVERWRITE;
 
 			nd = pcb_conf_lht_get_at_mainplug(n, nat->hash_path, 1, 0);
 			if (nd != NULL) { /* role, prio, policy, value */
@@ -166,7 +166,7 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 	}
 }
 
-static const char *print_conf_val(conf_native_type_t type, const confitem_t *val, char *buf, int sizebuf)
+static const char *print_conf_val(conf_native_type_t type, const rnd_confitem_t *val, char *buf, int sizebuf)
 {
 	const char *ret = buf;
 

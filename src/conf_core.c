@@ -37,7 +37,7 @@ static void pcb_conf_legacy_(conf_native_t *ndst, conf_native_t *nlegacy)
 	gds_init(&tmp);
 	pcb_conf_print_native_field((conf_pfn)pcb_append_printf, &tmp, 0, &nlegacy->val, nlegacy->type, nlegacy->prop, 0);
 	if (tmp.used > 0)
-		pcb_conf_set(CFR_INTERNAL, dst_path, -1, tmp.array, POL_OVERWRITE);
+		pcb_conf_set(CFR_INTERNAL, dst_path, -1, tmp.array, RND_POL_OVERWRITE);
 	gds_uninit(&tmp);
 }
 
@@ -74,7 +74,7 @@ static void conf_core_postproc(void)
 
 	for(e = htpp_first(&legacy_new2old); e != NULL; e = htpp_next(&legacy_new2old, e)) {
 		conf_native_t *nlegacy = e->value, *ndst = e->key;
-		if (nlegacy->pcb_conf_rev > ndst->pcb_conf_rev)
+		if (nlegacy->rnd_conf_rev > ndst->rnd_conf_rev)
 			pcb_conf_legacy_(ndst, nlegacy);
 	}
 }

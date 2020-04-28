@@ -166,7 +166,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_draw_inhibit_dec();
 
 		pcb_set_design_dir(NULL);
-		pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", POL_OVERWRITE); /* we have only one font now, make sure it is selected */
+		pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 		/* setup the new name and reset some values to default */
 		free(PCB->hidlib.name);

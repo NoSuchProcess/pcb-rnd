@@ -68,7 +68,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((op == F_Set) || (op == F_Delta)) {
 		const char *path, *val;
 		char valbuff[128];
-		conf_policy_t pol = POL_OVERWRITE;
+		rnd_conf_policy_t pol = RND_POL_OVERWRITE;
 		conf_role_t role = CFR_invalid;
 		int rs;
 
@@ -85,7 +85,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		if (argc > 5) {
 			pol = pcb_conf_policy_parse(a4);
-			if (pol == POL_invalid) {
+			if (pol == RND_POL_invalid) {
 				rnd_message(PCB_MSG_ERROR, "Invalid policy: '%s'", a4);
 				return FGW_ERR_ARG_CONV;
 			}
@@ -202,7 +202,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (role == CFR_invalid)
 			res = pcb_conf_set_native(n, 0, new_value);
 		else
-			res = pcb_conf_set(role, a1, -1, new_value, POL_OVERWRITE);
+			res = pcb_conf_set(role, a1, -1, new_value, RND_POL_OVERWRITE);
 
 		if (res != 0) {
 			rnd_message(PCB_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", a1);

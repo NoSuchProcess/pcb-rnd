@@ -97,7 +97,7 @@ static void load_meta_coord(const char *path, rnd_coord_t crd)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%$mm", crd);
-	pcb_conf_set(CFR_DESIGN, path, -1, tmp, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
 }
 
 static rnd_bool vendorIsSubcMappable(pcb_subc_t *subc);
@@ -270,7 +270,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_message(PCB_MSG_INFO, "Loaded %d vendor drills from %s\n", n_vendor_drills, fname);
 	rnd_message(PCB_MSG_INFO, "Loaded %d RefDes skips, %d Value skips, %d Descr skips\n", n_refdes, n_value, n_descr);
 
-	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
 
 	apply_vendor_map();
 	if (free_fname)

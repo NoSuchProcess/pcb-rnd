@@ -134,7 +134,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		printf(" Role: %s\n", pcb_conf_role_name(role));
 		n = pcb_conf_lht_get_at(role, path, 0);
 		if (n != NULL) {
-			conf_policy_t pol = -1;
+			rnd_conf_policy_t pol = -1;
 			long prio = pcb_conf_default_prio[role];
 
 

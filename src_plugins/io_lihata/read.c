@@ -384,7 +384,7 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 		return -1;
 
 	if (cfg_dest != CFR_invalid)
-		pcb_conf_set(cfg_dest, path, -1, nd->data.text.value, POL_OVERWRITE);
+		pcb_conf_set(cfg_dest, path, -1, nd->data.text.value, RND_POL_OVERWRITE);
 	return 0;
 }
 

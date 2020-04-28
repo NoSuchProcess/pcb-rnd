@@ -85,7 +85,7 @@ static void set_conf(pcb_brave_t br)
 	/* truncate last comma */
 	gds_truncate(&tmp, gds_len(&tmp)-1);
 
-	pcb_conf_set(CFR_CLI, "rc/brave", 0, tmp.array, POL_OVERWRITE);
+	pcb_conf_set(CFR_CLI, "rc/brave", 0, tmp.array, RND_POL_OVERWRITE);
 
 	gds_uninit(&tmp);
 }
@@ -185,7 +185,7 @@ static void brave_dialog_alloff(void *hid_ctx, void *caller_data, pcb_hid_attrib
 /* Copy the config from CLI to USER and flush the file */
 static void brave_dialog_save(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_conf_set(CFR_USER, "rc/brave", 0, conf_core.rc.brave, POL_OVERWRITE);
+	pcb_conf_set(CFR_USER, "rc/brave", 0, conf_core.rc.brave, RND_POL_OVERWRITE);
 	if (pcb_conf_isdirty(CFR_USER))
 		pcb_conf_save_file(&PCB->hidlib, NULL, NULL, CFR_USER, NULL);
 }

@@ -78,7 +78,7 @@ $AWK -v "docdir=$1" '
 			flag=substr(desc, RSTART, RLENGTH)
 			sub("[ \t]*" flag "[ \t]*", " ", desc)
 			sub("^@", "",flag)
-			flag="CFF_" toupper(flag)
+			flag="RND_CFF_" toupper(flag)
 			if (flags == "")
 				flags = flag
 			else

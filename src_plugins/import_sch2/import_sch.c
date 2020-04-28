@@ -65,7 +65,7 @@ static int convert_attribs(void)
 		src = rnd_attrib_get(PCB, tmp);
 		if (src != NULL) {
 			pcb_conf_grow("plugins/import_sch/args", idx+1);
-			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", idx, src, POL_OVERWRITE);
+			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", idx, src, RND_POL_OVERWRITE);
 			idx++;
 		}
 	}
@@ -74,7 +74,7 @@ static int convert_attribs(void)
 		mode = "gnetlist";
 	else if (strcmp(mode, "make") == 0)
 		mode = "cmd";
-	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, mode, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, mode, RND_POL_OVERWRITE);
 
 
 	if (strcmp(mode, "cmd") == 0) {
@@ -97,8 +97,8 @@ static int convert_attribs(void)
 		gds_append_str(&cmdline, target);
 
 		pcb_conf_grow("plugins/import_sch/args", 2);
-		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 0, outfile, POL_OVERWRITE);
-		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 1, cmdline.array, POL_OVERWRITE);
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 0, outfile, RND_POL_OVERWRITE);
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 1, cmdline.array, RND_POL_OVERWRITE);
 
 		gds_uninit(&cmdline);
 	}
@@ -179,10 +179,10 @@ static int do_setup(int argc, fgw_arg_t *argv)
 		return -1;
 	}
 
-	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, argv[0].val.str, POL_OVERWRITE);
+	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, argv[0].val.str, RND_POL_OVERWRITE);
 	pcb_conf_grow("plugins/import_sch/args", argc-1);
 	for(n = 1; n < argc; n++)
-		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", n-1, argv[n].val.str, POL_OVERWRITE);
+		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", n-1, argv[n].val.str, RND_POL_OVERWRITE);
 
 	return 0;
 }

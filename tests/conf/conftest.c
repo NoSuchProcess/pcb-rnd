@@ -158,13 +158,13 @@ void cmd_load(char *arg, int is_text)
 	pcb_conf_update(NULL, -1);
 }
 
-conf_policy_t current_policy = POL_OVERWRITE;
+rnd_conf_policy_t current_policy = RND_POL_OVERWRITE;
 conf_role_t current_role = CFR_DESIGN;
 
 void cmd_policy(char *arg)
 {
-	conf_policy_t np = pcb_conf_policy_parse(arg);
-	if (np == POL_invalid)
+	rnd_conf_policy_t np = pcb_conf_policy_parse(arg);
+	if (np == RND_POL_invalid)
 		rnd_message(PCB_MSG_ERROR, "Invalid/unknown policy: '%s'", arg);
 	else
 		current_policy = np;
@@ -205,7 +205,7 @@ void cmd_chprio(char *arg)
 
 void cmd_chpolicy(char *arg)
 {
-	conf_policy_t np;
+	rnd_conf_policy_t np;
 	lht_node_t *first;
 
 	if (arg == NULL) {
@@ -213,7 +213,7 @@ void cmd_chpolicy(char *arg)
 		return;
 	}
 	np = pcb_conf_policy_parse(arg);
-	if (np == POL_invalid) {
+	if (np == RND_POL_invalid) {
 		rnd_message(PCB_MSG_ERROR, "Invalid integer policy: '%s'", arg);
 		return;
 	}

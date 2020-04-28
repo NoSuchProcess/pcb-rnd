@@ -215,3 +215,14 @@
 #define pcb_ltime rnd_ltime
 #define pcb_dtime rnd_dtime
 #define pcb_fileno rnd_fileno
+#define confitem_t rnd_confitem_t
+#define confitem_u rnd_confitem_u
+#define pcb_conf_rev rnd_conf_rev
+#define conf_policy_t rnd_conf_policy_t
+#define POL_PREPEND RND_POL_PREPEND
+#define POL_APPEND RND_POL_APPEND
+#define POL_OVERWRITE RND_POL_OVERWRITE
+#define POL_DISABLE RND_POL_DISABLE
+#define POL_invalid RND_POL_invalid
+#define conf_flag_t rnd_conf_flag_t
+#define CFF_USAGE RND_CFF_USAGE
