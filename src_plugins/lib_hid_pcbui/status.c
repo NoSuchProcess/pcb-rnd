@@ -373,6 +373,25 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* The following code is used for the object tooltip hints: */
 
+static void append_obj_desc(pcb_board_t *pcb, gds_t *dst, pcb_any_obj_t *obj, pcb_layergrp_id_t gid, const char *prefix)
+{
+	pcb_layergrp_t *grp;
+
+	if (obj == NULL)
+		return;
+
+	grp = pcb_get_layergrp(pcb, gid);
+
+	gds_append_str(dst, prefix);
+	gds_append_str(dst, pcb_obj_type_name(obj->type));
+	if (grp != NULL) {
+		gds_append_str(dst, " on");
+		gds_append_str(dst, prefix);
+		gds_append_str(dst, grp->name);
+	}
+
+}
+
 #define PCB_DESCRIBE_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
 
 const char pcb_acts_DescribeLocation[] = "DescribeLocation(x, y)\n";
@@ -380,9 +399,9 @@ const char pcb_acth_DescribeLocation[] = "Return a string constant (valud until 
 fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
-	void *ptr1, *ptr2, *ptr3;
+	void *ptr1, *ptr2, *ptr3, *rptr1, *rptr2, *rptr3;
 	pcb_any_obj_t *obj;
-	int type;
+	int type, rattype;
 	pcb_subc_t *subc;
 	pcb_net_term_t *term = NULL;
 	static gds_t desc;
@@ -396,26 +415,28 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
 
 	/* check if there are any pins or pads at that position */
+	rattype = pcb_search_obj_by_location(PCB_OBJ_RAT, &rptr1, &rptr2, &rptr3, x, y, 0);
 	type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3, x, y, 0);
-	if (type == PCB_OBJ_VOID)
+	if ((type == PCB_OBJ_VOID) && (rattype == PCB_OBJ_VOID))
 		goto fin;
+
+	desc.used = 0;
 
 	/* don't mess with silk objects! */
 	if ((type & PCB_DESCRIBE_TYPE) && (pcb_layer_flags_((pcb_layer_t *)ptr1) & PCB_LYT_SILK))
-		goto fin;
+		goto maybe_rat;
 
 	obj = ptr2;
 	if (obj->term == NULL)
-		goto fin;
+		goto maybe_rat;
 
 	subc = pcb_obj_parent_subc(ptr2);
 	if (subc == NULL)
-		goto fin;
+		goto maybe_rat;
 
 	if ((subc->refdes != NULL) && (obj->term != NULL))
 		term = pcb_net_find_by_refdes_term(&PCB->netlist[PCB_NETLIST_EDITED], subc->refdes, obj->term);
 
-	desc.used = 0;
 	gds_append_str(&desc, "Subc. refdes:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
 	gds_append_str(&desc, "\nTerminal:  \t"); gds_append_str(&desc, obj->term == NULL ? "--" : obj->term);
 	gds_append_str(&desc, "\nNetlist:     \t"); gds_append_str(&desc, term == NULL ? "--" : term->parent.net->name);
@@ -423,6 +444,17 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	gds_append_str(&desc, "\nSubcircuit ID:\t"); gds_append_str(&desc, ids);
 	sprintf(ids, "#%ld", obj->ID);
 	gds_append_str(&desc, "\nTerm. obj. ID:\t"); gds_append_str(&desc, ids);
+	if (rattype == PCB_OBJ_RAT)
+		gds_append(&desc, '\n');
+
+	maybe_rat:;
+	if (rattype == PCB_OBJ_RAT) {
+		pcb_rat_t *rat = rptr2;
+		pcb_any_obj_t *e0 = pcb_rat_anchor_guess(rat, 0, 0), *e1 = pcb_rat_anchor_guess(rat, 1, 0);
+		gds_append_str(&desc, "Rat line between:");
+		append_obj_desc(PCB_ACT_BOARD, &desc, e0, rat->group1, "\n\t");
+		append_obj_desc(PCB_ACT_BOARD, &desc, e1, rat->group2, "\n\t");
+	}
 
 	ret = desc.array;
 
