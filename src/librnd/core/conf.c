@@ -64,6 +64,7 @@ int pcb_conf_in_production = 0;
 /* The main conf: monolithic config files affecting all parts of the conf tree;
    By default every operation is done on these trees. */
 lht_doc_t *pcb_conf_main_root[CFR_max_alloc];
+long pcb_conf_main_root_replace_cnt[CFR_max_alloc]; /* number of times the root has been replaced */
 int pcb_conf_main_root_lock[CFR_max_alloc];
 int pcb_conf_lht_dirty[CFR_max_alloc];
 
@@ -124,6 +125,7 @@ int pcb_conf_insert_tree_as(conf_role_t role, lht_node_t *root)
 	d->root->doc = d;
 	lht_tree_merge(d->root, root);
 	pcb_conf_main_root[role] = d;
+	pcb_conf_main_root_replace_cnt[role]++;
 	return 0;
 }
 

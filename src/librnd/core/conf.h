@@ -152,6 +152,7 @@ typedef enum {
 } conf_role_t;
 
 extern const int pcb_conf_default_prio[];
+extern long pcb_conf_main_root_replace_cnt[CFR_max_alloc]; /* number of times the root has been replaced */
 
 void pcb_conf_init(void);
 void pcb_conf_uninit(void);
