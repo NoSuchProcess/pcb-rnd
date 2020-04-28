@@ -7,6 +7,7 @@
 - CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, Joe]
 + CLEANUP: remove the donut rats special casing - bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
 + CLEANUP: insert drag&drop strangeness (mainline too): insert should just insert a new point and stop there, not starting a drag&drop move; the new point should be marked somehow (e.g. green-find one half of the object, like arc split does) lines can be inserted mostly only in all-dir-line which is strange [report: Igor2]
+- BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
