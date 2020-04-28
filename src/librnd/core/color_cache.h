@@ -24,8 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_COLOR_CACHE_H
-#define PCB_COLOR_CACHE_H
+#ifndef RND_COLOR_CACHE_H
+#define RND_COLOR_CACHE_H
 
 #include <stdlib.h>
 #include <genht/htip.h>
