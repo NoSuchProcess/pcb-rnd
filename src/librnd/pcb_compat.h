@@ -190,3 +190,6 @@
 #define pcb_clrcache_uninit rnd_clrcache_uninit
 #define pcb_clrcache_t rnd_clrcache_t
 #define pcb_clrcache_free_t rnd_clrcache_free_t
+#define PCB_BOOLEAN_EXPR RND_BOOLEAN_EXPR
+#define PCB_LIKELY RND_LIKELY
+#define PCB_UNLIKELY RND_UNLIKELY

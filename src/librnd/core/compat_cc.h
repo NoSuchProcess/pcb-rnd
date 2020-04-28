@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef PCB_COMPAT_CC_H
-#define PCB_COMPAT_CC_H
+#ifndef RND_COMPAT_CC_H
+#define RND_COMPAT_CC_H
 
 /* ---------------------------------------------------------------------------
  * Macros to annotate branch-prediction information.
@@ -40,11 +40,11 @@
  * the compiler about the expected result of an expression. Some compilers
  * can use this information for optimizations.
  *
- * The PCB_BOOLEAN_EXPR macro is intended to trigger a gcc warning when
+ * The RND_BOOLEAN_EXPR macro is intended to trigger a gcc warning when
  * putting assignments inside the test.
  */
 #if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
-#	define PCB_BOOLEAN_EXPR(expr)                   \
+#	define RND_BOOLEAN_EXPR(expr)                   \
  __extension__ ({                             \
    int _boolean_var_;                         \
    if (expr)                                  \
@@ -53,11 +53,11 @@
       _boolean_var_ = 0;                      \
    _boolean_var_;                             \
 })
-#	define PCB_LIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 1))
-#	define PCB_UNLIKELY(expr) (__builtin_expect (PCB_BOOLEAN_EXPR(expr), 0))
+#	define RND_LIKELY(expr) (__builtin_expect (RND_BOOLEAN_EXPR(expr), 1))
+#	define RND_UNLIKELY(expr) (__builtin_expect (RND_BOOLEAN_EXPR(expr), 0))
 #else
-#	define PCB_LIKELY(expr) (expr)
-#	define PCB_UNLIKELY(expr) (expr)
+#	define RND_LIKELY(expr) (expr)
+#	define RND_UNLIKELY(expr) (expr)
 #endif
 
 #endif
