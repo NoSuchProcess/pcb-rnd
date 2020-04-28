@@ -60,14 +60,4 @@
 #	define PCB_UNLIKELY(expr) (expr)
 #endif
 
-#ifndef GCC_VERSION
-#	define GCC_VERSION (__GNUC__ * 1000 + __GNUC_MINOR__)
-#endif /* GCC_VERSION */
-
-#if GCC_VERSION > 2007
-#	define PCB_ATTRIBUTE_UNUSED __attribute__((unused))
-#else
-#	define PCB_ATTRIBUTE_UNUSED
-#endif
-
 #endif
