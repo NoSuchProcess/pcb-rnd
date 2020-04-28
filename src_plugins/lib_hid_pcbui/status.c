@@ -371,6 +371,8 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/* The following code is used for the object tooltip hints: */
+
 #define PCB_DESCRIBE_TYPE (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY)
 
 const char pcb_acts_DescribeLocation[] = "DescribeLocation(x, y)\n";
