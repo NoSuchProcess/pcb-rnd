@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
 #include "insert.h"
 #include "polygon.h"
 #include "search.h"
+#include "brave.h"
 #include <librnd/core/tool.h>
 
 
@@ -87,8 +88,27 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 					pcb_crosshair.AttachedObject.Ptr2 = &fake.line;
 
 				}
-				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
-				InsertedPoint = *pcb_adjust_insert_point();
+				if (!(pcb_brave & PCB_BRAVE_OLDINSERT)) {
+					InsertedPoint = *pcb_adjust_insert_point();
+					pcb_crosshair_set_local_ref(InsertedPoint.X, InsertedPoint.Y, pcb_true);
+					if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY)
+						pcb_insert_point_in_object(PCB_OBJ_POLY,
+																	pcb_crosshair.AttachedObject.Ptr1, fake.poly,
+																	&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
+					else
+						pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
+																	pcb_crosshair.AttachedObject.Ptr1,
+																	pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
+					pcb_board_set_changed_flag(pcb_true);
+
+					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
+					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
+					pcb_crosshair.extobj_edit = NULL;
+				}
+				else {
+					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
+					InsertedPoint = *pcb_adjust_insert_point();
+				}
 			}
 		}
 		break;

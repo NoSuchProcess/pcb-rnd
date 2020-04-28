@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +37,7 @@
 #include "data.h"
 #include "select.h"
 #include "undo.h"
+#include "brave.h"
 
 #include "obj_line_op.h"
 #include "obj_arc_op.h"
@@ -84,6 +86,12 @@ pcb_point_t *pcb_adjust_insert_point(void)
 	double m;
 	rnd_coord_t x, y, m1, m2;
 	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
+
+	if (!(pcb_brave & PCB_BRAVE_OLDINSERT)) {
+		InsertedPoint.X = pcb_crosshair.X;
+		InsertedPoint.Y = pcb_crosshair.Y;
+		return &InsertedPoint;
+	}
 
 	if (pcb_crosshair.AttachedObject.State == PCB_CH_STATE_FIRST)
 		return NULL;

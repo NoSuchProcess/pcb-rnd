@@ -34,6 +34,7 @@
 
 #include "undo.h"
 #include "board.h"
+#include "brave.h"
 #include "data.h"
 #include "move.h"
 #include "search.h"
@@ -1079,7 +1080,13 @@ void *pcb_lineop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *
 	/* we must create after playing with Line since creation may
 	 * invalidate the line pointer
 	 */
-	if ((line = pcb_line_new_merge(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags))) {
+
+	if (pcb_brave & PCB_BRAVE_OLDINSERT)
+		line = pcb_line_new_merge(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags);
+	else
+		line = pcb_line_new(Layer, ctx->insert.x, ctx->insert.y, X, Y, Line->Thickness, Line->Clearance, Line->Flags);
+
+	if (line) {
 		pcb_line_copy_meta(line, Line);
 		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, Layer, line, line);
 		pcb_line_invalidate_draw(Layer, line);
