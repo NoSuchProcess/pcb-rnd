@@ -161,6 +161,9 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, rnd_coord_
 				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
 					poly_dist_chk(x, y);
 		}
+
+		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, o1))
+			break; /* further islands are removed */
 	}
 	return best;
 }
