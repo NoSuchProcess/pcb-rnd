@@ -128,6 +128,9 @@ typedef struct pcb_poly_it_s {
 	pcb_vnode_t *v;
 } pcb_poly_it_t;
 
+/* WARNING: if the poly is not a FULLPOLY, quit after the first island else
+   invisible islands are returned */
+
 /* Set the iterator to the first island of the polygon; returns NULL if no contour available */
 RND_INLINE pcb_polyarea_t *pcb_poly_island_first(const pcb_poly_t *p, pcb_poly_it_t *it)
 {
