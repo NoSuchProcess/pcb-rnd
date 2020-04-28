@@ -54,7 +54,7 @@ static void ghid_win32_init(void)
 	char *cache, *cmd, *s;
 	/* set up gdk pixmap modules - without this XPMs won't be loaded */
 	cache = pcb_concat(pcb_w32_cachedir, "\\gdk-pixmap-loaders.cache", NULL);
-	pcb_setenv("GDK_PIXBUF_MODULE_FILE", cache, 1);
+	rnd_setenv("GDK_PIXBUF_MODULE_FILE", cache, 1);
 
 	for(s = cache; *s != '\0'; s++)
 		if (*s == '\\')

@@ -82,8 +82,8 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, rnd_coord_t rx, rnd_
 
 	for(n = 0,a = 0; n < corners; n++,a+=da) {
 		rnd_coord_t x,  y;
-		x = pcb_round(cos(a) * (double)rx + (double)cx);
-		y = pcb_round(sin(a) * (double)ry + (double)cy);
+		x = rnd_round(cos(a) * (double)rx + (double)cx);
+		y = rnd_round(sin(a) * (double)ry + (double)cy);
 		if (rot_deg != 0.0)
 			pcb_rotate(&x, &y, cx, cy, cosra, sinra);
 		pcb_poly_point_new(p, x, y);
@@ -118,8 +118,8 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 	segs -= 2;
 	for(n = 0,sa+=da; n < segs; n++,sa+=da) {
 		rnd_coord_t x, y;
-		x = pcb_round((double)cx + cos(sa) * (double)rx);
-		y = pcb_round((double)cy - sin(sa) * (double)ry);
+		x = rnd_round((double)cx + cos(sa) * (double)rx);
+		y = rnd_round((double)cy - sin(sa) * (double)ry);
 		if (need_rot)
 			pcb_rotate(&x, &y, rotcx, rotcy, cosra, sinra);
 		if ((x != lx) || (y != ly))
@@ -137,8 +137,8 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 }
 
 #define CORNER(outx, outy, rect_signx, rect_signy, rsignx, rsigny) \
-	outx = pcb_round((double)cx + rect_signx * (double)w/2 + rsignx*rx); \
-	outy = pcb_round((double)cy + rect_signy * (double)h/2 + rsigny*ry);
+	outx = rnd_round((double)cx + rect_signx * (double)w/2 + rsignx*rx); \
+	outy = rnd_round((double)cy + rect_signy * (double)h/2 + rsigny*ry);
 pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
 {
 	pcb_poly_t *p;
@@ -164,7 +164,7 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 	if (segs < 3)  segs = 3;
 	if (segs > 15) segs = 15;
 
-	segs = pcb_round((double)segs * roundres);
+	segs = rnd_round((double)segs * roundres);
 
 	p = pcb_poly_new(layer, 2 * conf_core.design.clearance, pcb_flag_make(flags));
 	if (p == NULL)
@@ -227,7 +227,7 @@ void pcb_shape_roundrect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t
 	else
 		layer = &data.Layer[0];
 
-	rr = pcb_round(minor * roundness);
+	rr = rnd_round(minor * roundness);
 	p = pcb_genpoly_roundrect(layer, width, height, rr, rr, 0, 0, 0, corner, 4.0);
 	pcb_pstk_shape_alloc_poly(dst, p->PointN);
 	shape->shape = PCB_PSSH_POLY;
@@ -317,7 +317,7 @@ static int get_where(const char *arg, pcb_data_t **data, rnd_coord_t *x, rnd_coo
 	rnd_bool succ;
 
 	dst = arg;
-	if (pcb_strncasecmp(dst, "buffer", 6) == 0) {
+	if (rnd_strncasecmp(dst, "buffer", 6) == 0) {
 		*data = PCB_PASTEBUFFER->Data;
 		dst += 6;
 		a = 1;
@@ -332,7 +332,7 @@ static int get_where(const char *arg, pcb_data_t **data, rnd_coord_t *x, rnd_coo
 		*have_coords = pcb_true;
 		a = 1;
 		
-		tmp = pcb_strdup(dst);
+		tmp = rnd_strdup(dst);
 		tmp[offs] = '\0';
 		sx = tmp;
 		sy = tmp + offs + 1;
@@ -360,7 +360,7 @@ static rnd_bool parse2coords(const char *arg, rnd_coord_t *rx, rnd_coord_t *ry)
 	dst = arg;
 	end = strchr(dst, ';');
 	if (end != NULL) {
-		char *sx, *sy, *tmp = pcb_strdup(dst);
+		char *sx, *sy, *tmp = rnd_strdup(dst);
 		int offs = end - dst;
 		tmp[offs] = '\0';
 		sx = tmp;

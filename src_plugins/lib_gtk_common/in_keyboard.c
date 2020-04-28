@@ -135,7 +135,7 @@ unsigned short int ghid_translate_key(const char *desc, int len)
 {
 	guint key;
 
-	if (pcb_strcasecmp(desc, "enter") == 0)
+	if (rnd_strcasecmp(desc, "enter") == 0)
 		desc = "Return";
 
 	key = gdk_keyval_from_name(desc);

@@ -47,7 +47,7 @@ static int keyeq(const void *a_, const void *b_)
 	const fh_key_t *a = a_, *b = b_;
 	if (a->cookie != b->cookie)
 		return 1;
-	return !pcb_strcasecmp(a->key, b->key);
+	return !rnd_strcasecmp(a->key, b->key);
 }
 
 static unsigned fh_hash(const void *key)

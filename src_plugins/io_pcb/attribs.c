@@ -115,7 +115,7 @@ void io_pcb_attrib_a2c(pcb_board_t *pcb)
 			if (nv == NULL)
 				continue;
 			if (nv->type == CFN_LIST) {
-				char *tmp = pcb_strdup(pcb->Attributes.List[n].value);
+				char *tmp = rnd_strdup(pcb->Attributes.List[n].value);
 				char *next, *curr;
 				for(curr = tmp; curr != NULL; curr = next) {
 					next = strstr(curr, LISTSEP);

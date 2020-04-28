@@ -542,7 +542,7 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		fprintf(f, "G04 start of page %d for group %ld layer_idx %ld *\r\n", pagecount, group, layer);
 
 		/* Create a portable timestamp. */
-		pcb_print_utc(utcTime, sizeof(utcTime), 0);
+		rnd_print_utc(utcTime, sizeof(utcTime), 0);
 
 		/* Print a cute file header at the beginning of each file. */
 		fprintf(f, "G04 Title: %s, %s *\r\n", PCB_UNKNOWN(PCB->hidlib.name), PCB_UNKNOWN(group_name));
@@ -562,7 +562,7 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		/* build a legal identifier. */
 		if (layername)
 			free(layername);
-		layername = pcb_strdup(filesuff);
+		layername = rnd_strdup(filesuff);
 		if (strrchr(layername, '.'))
 			*strrchr(layername, '.') = 0;
 
@@ -958,7 +958,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, 
 	if (radius <= 0)
 		return;
 	if (is_drill)
-		radius = 50 * pcb_round(radius / 50.0);
+		radius = 50 * rnd_round(radius / 50.0);
 	use_gc(gc, radius);
 	if (!f)
 		return;

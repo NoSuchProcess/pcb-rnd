@@ -344,7 +344,7 @@ static void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 	Widget wtxt = ctx->wl[idx];
 
 	if (how & PCB_HID_TEXT_MARKUP) {
-		char *orig, *tmp = pcb_strdup(txt);
+		char *orig, *tmp = rnd_strdup(txt);
 		pcb_markup_state_t st = 0;
 		char *seg;
 		long seglen;
@@ -380,7 +380,7 @@ static char *ltf_text_get_text_(pcb_hid_attribute_t *attrib, void *hid_ctx)
 char *ltf_text_get_text(pcb_hid_attribute_t *attrib, void *hid_ctx)
 {
 	char *orig = ltf_text_get_text_(attrib, hid_ctx);
-	char *s = pcb_strdup(orig);
+	char *s = rnd_strdup(orig);
 	XtFree(orig);
 	return s;
 }

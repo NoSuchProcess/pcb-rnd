@@ -244,7 +244,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 		else
 			spin->no_unit_chg = 1;
 
-		hv.str = pcb_strdup(ctx.buf);
+		hv.str = rnd_strdup(ctx.buf);
 		pcb_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
 	}
 
@@ -330,7 +330,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t
 	}
 
 	spin_warn(hid_ctx, spin, end, warn);
-	hv.str = pcb_strdup(buf);
+	hv.str = rnd_strdup(buf);
 	spin->set_writeback_lock++;
 	pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 	spin->set_writeback_lock--;
@@ -609,7 +609,7 @@ void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin)
 	char buf[128];
 
 	if (hid_ctx == NULL) /* before run() */
-		str->val.str = pcb_strdup(gen_str_coord(spin, end->val.crd, buf, sizeof(buf)));
+		str->val.str = rnd_strdup(gen_str_coord(spin, end->val.crd, buf, sizeof(buf)));
 	else
 		do_step(hid_ctx, spin, &dlg[spin->wstr], &dlg[spin->cmp.wend], 0); /* cheap conversion*/
 }

@@ -53,7 +53,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -66,7 +66,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 
 		cell[1] = NULL;
 		conf_loop_list(cn->val.list, item, idx) {
-			cell[0] = pcb_strdup(item->name);
+			cell[0] = rnd_strdup(item->name);
 			pcb_dad_tree_append(attr, NULL, cell);
 		}
 	}
@@ -115,7 +115,7 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 					cell[2] = "<none>";
 
 				if (plugin != NULL)
-					cell[1] = pcb_strdup(plugin->op.plugin.exporter->name);
+					cell[1] = rnd_strdup(plugin->op.plugin.exporter->name);
 				else
 					cell[1] = "<NO PLUGIN>";
 
@@ -147,15 +147,15 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
 
 	/* add all new items */
 	for(e = htsp_first(vars); e != NULL; e = htsp_next(vars, e)) {
-		cell[0] = pcb_strdup(e->key);
-		cell[1] = pcb_strdup(e->value);
+		cell[0] = rnd_strdup(e->key);
+		cell[1] = rnd_strdup(e->value);
 		cell[2] = NULL;
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
@@ -207,7 +207,7 @@ static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 static char *kill_tabs(const char *str_in)
 {
 	char *res, *o;
-	res = pcb_strdup(str_in);
+	res = rnd_strdup(str_in);
 	for(o = res; *o != '\0'; o++)
 		if (*o == '\t')
 			*o = ' ';

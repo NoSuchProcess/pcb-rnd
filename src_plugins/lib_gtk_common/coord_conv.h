@@ -10,7 +10,7 @@ static inline int Vx(rnd_coord_t x)
 		rv = (ghidgui->port.view.ctx->hidlib->size_x - x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px + 0.5;
 	else
 		rv = (x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px + 0.5;
-	return pcb_round(rv);
+	return rnd_round(rv);
 }
 
 static inline int Vy(rnd_coord_t y)
@@ -20,12 +20,12 @@ static inline int Vy(rnd_coord_t y)
 		rv = (ghidgui->port.view.ctx->hidlib->size_y - y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px + 0.5;
 	else
 		rv = (y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px + 0.5;
-	return pcb_round(rv);
+	return rnd_round(rv);
 }
 
 static inline int Vz(rnd_coord_t z)
 {
-	return pcb_round((double)z / ghidgui->port.view.coord_per_px + 0.5);
+	return rnd_round((double)z / ghidgui->port.view.coord_per_px + 0.5);
 }
 
 static inline double Vxd(rnd_coord_t x)

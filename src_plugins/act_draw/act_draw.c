@@ -257,7 +257,7 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 {
 	long len;
-	char *s, *next, *tmp = pcb_strdup(ptlist);
+	char *s, *next, *tmp = rnd_strdup(ptlist);
 	double c[2];
 	rnd_bool success;
 

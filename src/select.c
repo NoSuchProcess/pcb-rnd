@@ -519,7 +519,7 @@ static int regexec_match_all(re_sei_t *preg, const char *string)
 static int strlst_match(const char **pat, const char *name)
 {
 	for (; *pat != NULL; pat++)
-		if (pcb_strcasecmp(*pat, name) == 0)
+		if (rnd_strcasecmp(*pat, name) == 0)
 			return 1;
 	return 0;
 }

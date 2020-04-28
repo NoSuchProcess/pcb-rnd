@@ -148,7 +148,7 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 		pcb_layer_t *ly;
 
 		ly = pcb_subc_get_layer(ctx->subc, lm->lyt, lm->comb, 1, layer_name, pcb_true);
-		htsp_set(&ctx->layer_name2ly, pcb_strdup(layer_name), ly);
+		htsp_set(&ctx->layer_name2ly, rnd_strdup(layer_name), ly);
 		ctx->state.layer = ly;
 	}
 	else
@@ -163,15 +163,15 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 void pcb_bxl_set_justify(pcb_bxl_ctx_t *ctx, const char *str)
 {
 	/* special case for single center */
-	if (pcb_strcasecmp(str, "center") == 0) { ctx->state.hjust = ctx->state.vjust = PCB_BXL_JUST_CENTER; return; }
+	if (rnd_strcasecmp(str, "center") == 0) { ctx->state.hjust = ctx->state.vjust = PCB_BXL_JUST_CENTER; return; }
 
-	if (pcb_strncasecmp(str, "lower", 5) == 0)       { ctx->state.vjust = PCB_BXL_JUST_BOTTOM; str+=5; }
-	else if (pcb_strncasecmp(str, "upper", 5) == 0)  { ctx->state.vjust = PCB_BXL_JUST_TOP; str+=5; }
-	else if (pcb_strncasecmp(str, "center", 6) == 0) { ctx->state.vjust = PCB_BXL_JUST_CENTER; str+=6; }
+	if (rnd_strncasecmp(str, "lower", 5) == 0)       { ctx->state.vjust = PCB_BXL_JUST_BOTTOM; str+=5; }
+	else if (rnd_strncasecmp(str, "upper", 5) == 0)  { ctx->state.vjust = PCB_BXL_JUST_TOP; str+=5; }
+	else if (rnd_strncasecmp(str, "center", 6) == 0) { ctx->state.vjust = PCB_BXL_JUST_CENTER; str+=6; }
 
-	if (pcb_strncasecmp(str, "left", 4) == 0)        ctx->state.hjust = PCB_BXL_JUST_LEFT;
-	else if (pcb_strncasecmp(str, "right", 5) == 0)  ctx->state.hjust = PCB_BXL_JUST_RIGHT;
-	else if (pcb_strncasecmp(str, "center", 6) == 0) ctx->state.hjust = PCB_BXL_JUST_CENTER;
+	if (rnd_strncasecmp(str, "left", 4) == 0)        ctx->state.hjust = PCB_BXL_JUST_LEFT;
+	else if (rnd_strncasecmp(str, "right", 5) == 0)  ctx->state.hjust = PCB_BXL_JUST_RIGHT;
+	else if (rnd_strncasecmp(str, "center", 6) == 0) ctx->state.hjust = PCB_BXL_JUST_CENTER;
 }
 
 void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *keyval)
@@ -192,7 +192,7 @@ void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *ke
 		return;
 	}
 
-	tmp = pcb_strdup(keyval);
+	tmp = rnd_strdup(keyval);
 	tmp[sep-keyval] = '\0';
 	val = tmp+(sep-keyval)+1;
 	rnd_attribute_put(&obj->Attributes, tmp, val);
@@ -274,9 +274,9 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 
 void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)
 {
-	if (pcb_strcasecmp(name, "rectangle") == 0)    ctx->state.shape_type = 1;
-	else if (pcb_strcasecmp(name, "square") == 0)  ctx->state.shape_type = 1;
-	else if (pcb_strcasecmp(name, "round") == 0)   ctx->state.shape_type = 2;
+	if (rnd_strcasecmp(name, "rectangle") == 0)    ctx->state.shape_type = 1;
+	else if (rnd_strcasecmp(name, "square") == 0)  ctx->state.shape_type = 1;
+	else if (rnd_strcasecmp(name, "round") == 0)   ctx->state.shape_type = 2;
 	else {
 		rnd_message(PCB_MSG_WARNING, "bxl footprint error: unknown padstack shape '%s' in '%s' - omitting shape\n", name, ctx->state.proto.name);
 		return;
@@ -427,7 +427,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 	SKIP;
 
 	if (!ctx->state.is_text && (ctx->state.attr_key != NULL)) {
-		int is_refdes = (pcb_strcasecmp(ctx->state.attr_key, "refdes") == 0);
+		int is_refdes = (rnd_strcasecmp(ctx->state.attr_key, "refdes") == 0);
 
 		if (is_refdes) {
 			strcpy(ctx->state.attr_key, "refdes");
@@ -435,7 +435,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 			/* make sure the text object is created properly */
 			flg = PCB_FLAG_FLOATER | PCB_FLAG_DYNTEXT;
 			free(ctx->state.text_str);
-			ctx->state.text_str = pcb_strdup("%a.parent.refdes%");
+			ctx->state.text_str = rnd_strdup("%a.parent.refdes%");
 			ctx->state.is_visible = 1;
 		}
 		rnd_attribute_put(&ctx->subc->Attributes, ctx->state.attr_key, ctx->state.attr_val);

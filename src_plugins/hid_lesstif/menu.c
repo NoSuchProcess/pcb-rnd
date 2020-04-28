@@ -439,7 +439,7 @@ TODO(": remove this call")
 	}
 
 	v = node->name;
-	stdarg(XmNlabelString, XmStringCreatePCB(pcb_strdup(v)));
+	stdarg(XmNlabelString, XmStringCreatePCB(rnd_strdup(v)));
 	set_ins_after(menu, ins_after);
 
 	md = menu_data_alloc();
@@ -450,7 +450,7 @@ TODO(": remove this call")
 		lht_node_t *submenu_node = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, &field_name);
 
 		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
-		md->sub = XmCreatePulldownMenu(menu, pcb_strdup(v), stdarg_args + nn, stdarg_n - nn);
+		md->sub = XmCreatePulldownMenu(menu, rnd_strdup(v), stdarg_args + nn, stdarg_n - nn);
 		node->user_data = md;
 		stdarg_n = nn;
 		stdarg(XmNsubMenuId, md->sub);

@@ -25,8 +25,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_COMPAT_MISC_H
-#define PCB_COMPAT_MISC_H
+#ifndef RND_COMPAT_MISC_H
+#define RND_COMPAT_MISC_H
 
 #include <librnd/config.h>
 
@@ -35,39 +35,40 @@
 #include <math.h>
 #include <time.h>
 
-long pcb_rand(void);
+long rnd_rand(void);
 
 /* Gets the user's real name when available; normally shouldn't be used,
-   consider using pcb_author() that allows config override */
-const char *pcb_get_user_name(void);
+   consider using an app-specific function like pcb_author() that
+   allows config override */
+const char *rnd_get_user_name(void);
 
-int pcb_getpid(void);
+int rnd_getpid(void);
 
-char *pcb_strndup(const char *s, int len);
-char *pcb_strdup(const char *s);
+char *rnd_strndup(const char *s, int len);
+char *rnd_strdup(const char *s);
 
-#define pcb_strdup_null(x) (((x) != NULL) ? pcb_strdup (x) : NULL)
+#define rnd_strdup_null(x) (((x) != NULL) ? rnd_strdup(x) : NULL)
 
-double pcb_round(double x);
+double rnd_round(double x);
 
-int pcb_strcasecmp(const char *s1, const char *s2);
-int pcb_strncasecmp(const char *s1, const char *s2, size_t n);
+int rnd_strcasecmp(const char *s1, const char *s2);
+int rnd_strncasecmp(const char *s1, const char *s2, size_t n);
 
-int pcb_setenv(const char *name, const char *val, int overwrite);
+int rnd_setenv(const char *name, const char *val, int overwrite);
 
 /* Print a date in UTC; if when is 0, print current date */
-size_t pcb_print_utc(char *out, size_t out_len, time_t when);
+size_t rnd_print_utc(char *out, size_t out_len, time_t when);
 
 /* Sleep for the specified number if miliseconds */
-void pcb_ms_sleep(long ms);
+void rnd_ms_sleep(long ms);
 
 /* Return system time (local, time zoned) in seconds and microseconds
    since epoch. (gettimeofday() wrapper) */
-void pcb_ltime(unsigned long  *secs, unsigned long *usecs);
+void rnd_ltime(unsigned long  *secs, unsigned long *usecs);
 
 /* Return system time (local, time zoned) since epoch. (gettimeofday() wrapper) */
-double pcb_dtime(void);
+double rnd_dtime(void);
 
-int pcb_fileno(FILE *f);
+int rnd_fileno(FILE *f);
 
-#endif /* PCB_COMPAT_MISC_H */
+#endif /* RND_COMPAT_MISC_H */

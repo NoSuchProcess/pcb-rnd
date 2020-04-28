@@ -127,7 +127,7 @@ static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 		memcpy(id, li->name, len);
 		id[len] = '\0';
 		vts0_append(&fmt_names, (char *)li->payload);
-		vts0_append(&fmt_ids, pcb_strdup(id));
+		vts0_append(&fmt_ids, rnd_strdup(id));
 	}
 
 	if (fmt_names.used == 0) {
@@ -676,7 +676,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 	ctx.count = 0;
 
-	pcb_print_utc(ctx.utcTime, sizeof(ctx.utcTime), 0);
+	rnd_print_utc(ctx.utcTime, sizeof(ctx.utcTime), 0);
 
 	find_origin(&ctx, format_name);
 

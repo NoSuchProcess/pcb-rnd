@@ -91,15 +91,15 @@ const char *type_name[PCBQ_nodetype_max] = {
 char *pcb_query_sprint_val(pcb_qry_val_t *val)
 {
 	switch(val->type) {
-		case PCBQ_VT_VOID:   return pcb_strdup("<void>");
+		case PCBQ_VT_VOID:   return rnd_strdup("<void>");
 		case PCBQ_VT_COORD:  return pcb_strdup_printf("%mI=%$mH", val->data.crd, val->data.crd);
 		case PCBQ_VT_LONG:   return pcb_strdup_printf("%ld", val->data.lng, val->data.lng);
 		case PCBQ_VT_DOUBLE: return pcb_strdup_printf("%f", val->data.dbl);
 		case PCBQ_VT_STRING: return pcb_strdup_printf("\"%s\"", val->data.str);
 		case PCBQ_VT_OBJ:    return pcb_strdup_printf("<obj ID=%ld>", val->data.obj->ID);
-		case PCBQ_VT_LST:    return pcb_strdup("<lst>");
+		case PCBQ_VT_LST:    return rnd_strdup("<lst>");
 	}
-	return pcb_strdup("<invalid>");
+	return rnd_strdup("<invalid>");
 }
 
 const char *pcb_qry_nodetype_name(pcb_qry_nodetype_t ntype)
@@ -314,7 +314,7 @@ int pcb_qry_iter_var(pcb_query_iter_t *it, const char *varname, int alloc)
 	if (!alloc)
 		return -1;
 
-	htsi_set(&it->names, pcb_strdup(varname), it->num_vars);
+	htsi_set(&it->names, rnd_strdup(varname), it->num_vars);
 	return it->num_vars++;
 }
 
@@ -353,7 +353,7 @@ int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc)
 	if (htsp_get(qfnc, name) != NULL)
 		return -1;
 
-	htsp_set(qfnc, pcb_strdup(name), pcb_cast_f2d((pcb_fptr_t)fnc));
+	htsp_set(qfnc, rnd_strdup(name), pcb_cast_f2d((pcb_fptr_t)fnc));
 
 	return 0;
 }

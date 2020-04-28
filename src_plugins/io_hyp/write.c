@@ -94,7 +94,7 @@ static const char *hyp_grp_name(hyp_wr_t *wr, pcb_layergrp_t *grp, const char *s
 		if (dup)
 			name = pcb_strdup_printf("%s___%d", name, n);
 		else
-			name = pcb_strdup(name);
+			name = rnd_strdup(name);
 		htpp_set(&wr->grp_names, grp, (char *)name);
 	}
 	return name;
@@ -129,7 +129,7 @@ static int write_hdr(hyp_wr_t * wr)
 {
 	char dt[128];
 
-	pcb_print_utc(dt, sizeof(dt), 0);
+	rnd_print_utc(dt, sizeof(dt), 0);
 
 	fprintf(wr->f, "* %s exported by pcb-rnd " PCB_VERSION " (" PCB_REVISION ") on %s\n", wr->pcb->hidlib.filename, dt);
 	fprintf(wr->f, "* Board: %s\n", wr->pcb->hidlib.name);

@@ -479,8 +479,8 @@ static void ghid_view_get(pcb_hid_t *hid, rnd_box_t *viewbox)
 	pcb_gtk_t *gctx = hid->hid_data;
 	viewbox->X1 = gctx->port.view.x0;
 	viewbox->Y1 = gctx->port.view.y0;
-	viewbox->X2 = pcb_round((double)gctx->port.view.x0 + (double)gctx->port.view.canvas_width * gctx->port.view.coord_per_px);
-	viewbox->Y2 = pcb_round((double)gctx->port.view.y0 + (double)gctx->port.view.canvas_height * gctx->port.view.coord_per_px);
+	viewbox->X2 = rnd_round((double)gctx->port.view.x0 + (double)gctx->port.view.canvas_width * gctx->port.view.coord_per_px);
+	viewbox->Y2 = rnd_round((double)gctx->port.view.y0 + (double)gctx->port.view.canvas_height * gctx->port.view.coord_per_px);
 }
 
 static void ghid_open_command(pcb_hid_t *hid)

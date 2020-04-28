@@ -186,11 +186,11 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 
 	if (strcmp(cmd, "desc") == 0) {
 		code->inst = PCB_CAM_DESC;
-		code->op.desc.arg = pcb_strdup(arg);
+		code->op.desc.arg = rnd_strdup(arg);
 	}
 	else if (strcmp(cmd, "write") == 0) {
 		code->inst = PCB_CAM_WRITE;
-		code->op.write.arg = pcb_strdup(arg);
+		code->op.write.arg = rnd_strdup(arg);
 	}
 	else if (strcmp(cmd, "partial") == 0) {
 		ctx->has_partial = 1;
@@ -198,7 +198,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 		if ((arg == NULL) || (*arg == '\0'))
 			code->op.partial.arg = NULL;
 		else
-			code->op.partial.arg = pcb_strdup(arg);
+			code->op.partial.arg = rnd_strdup(arg);
 	}
 	else if (strcmp(cmd, "full") == 0) {
 		code->inst = PCB_CAM_PARTIAL;
@@ -222,7 +222,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 		}
 		free(ctx->args);
 
-		curr = pcb_strdup(curr == NULL ? "" : curr);
+		curr = rnd_strdup(curr == NULL ? "" : curr);
 		for(maxa = 0, s = curr; *s != '\0'; s++)
 			if (isspace(*s))
 				maxa++;
@@ -242,7 +242,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 			}
 			if (*curr == '\0')
 				continue;
-			code->op.plugin.argv[code->op.plugin.argc] = pcb_strdup(curr);
+			code->op.plugin.argv[code->op.plugin.argc] = rnd_strdup(curr);
 			code->op.plugin.argc++;
 			
 		}
@@ -257,7 +257,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 
 static int cam_compile(cam_ctx_t *ctx, const char *script_in)
 {
-	char *arg, *curr, *next, *script = pcb_strdup(script_in);
+	char *arg, *curr, *next, *script = rnd_strdup(script_in);
 	int res = 0, r;
 
 	for(curr = script; curr != NULL; curr = next) {

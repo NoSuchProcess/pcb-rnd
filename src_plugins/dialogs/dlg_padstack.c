@@ -171,7 +171,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 
 	free((char *)pse->attrs[pse->prname].val.str);
 	pse->attrs[pse->prname].val.str = NULL;
-	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str, pcb_strdup(proto->name == NULL ? "" : proto->name));
+	PCB_DAD_SET_VALUE(hid_ctx, pse->prname, str, rnd_strdup(proto->name == NULL ? "" : proto->name));
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hdia, crd, proto->hdia);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hplated, lng, proto->hplated);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->htop_val, lng, proto->htop);

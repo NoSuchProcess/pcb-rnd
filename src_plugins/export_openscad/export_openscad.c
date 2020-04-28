@@ -509,7 +509,7 @@ static void openscad_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 		cap_style = "rc";
 
 	pcb_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
-		x1, y1, (rnd_coord_t)pcb_round(length), angle * PCB_RAD_TO_DEG, gc->width, effective_layer_thickness);
+		x1, y1, (rnd_coord_t)rnd_round(length), angle * PCB_RAD_TO_DEG, gc->width, effective_layer_thickness);
 }
 
 static void openscad_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)

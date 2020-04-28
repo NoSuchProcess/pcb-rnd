@@ -165,9 +165,9 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 
 	st = pcb_drcq_stat_get(name);
 
-	ts = pcb_dtime();
+	ts = rnd_dtime();
 	pcb_qry_run_script(ec, pcb, query, scope, drc_qry_exec_cb, &qctx);
-	te = pcb_dtime();
+	te = rnd_dtime();
 
 	st->last_run_time = te - ts;
 	st->sum_run_time += te - ts;
@@ -269,7 +269,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
 
 			b = calloc(sizeof(pcb_bool_t), 1);
-			nat = pcb_conf_reg_field_(b, 1, CFN_BOOLEAN, path, pcb_strdup(sdesc), 0);
+			nat = pcb_conf_reg_field_(b, 1, CFN_BOOLEAN, path, rnd_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(b);
 				rnd_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
@@ -322,7 +322,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			}
 
 			c = calloc(sizeof(anyval), 1);
-			nat = pcb_conf_reg_field_(c, 1, type, path, pcb_strdup(sdesc), 0);
+			nat = pcb_conf_reg_field_(c, 1, type, path, rnd_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(c);
 				rnd_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);

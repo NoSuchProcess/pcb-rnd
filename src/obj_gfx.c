@@ -121,10 +121,10 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 	rx = (double)gfx->sx / 2.0;
 	ry = (double)gfx->sy / 2.0;
 
-	gfx->cox[0] = pcb_round((double)gfx->cx + rx); gfx->coy[0] = pcb_round((double)gfx->cy + ry);
-	gfx->cox[1] = pcb_round((double)gfx->cx - rx); gfx->coy[1] = pcb_round((double)gfx->cy + ry);
-	gfx->cox[2] = pcb_round((double)gfx->cx - rx); gfx->coy[2] = pcb_round((double)gfx->cy - ry);
-	gfx->cox[3] = pcb_round((double)gfx->cx + rx); gfx->coy[3] = pcb_round((double)gfx->cy - ry);
+	gfx->cox[0] = rnd_round((double)gfx->cx + rx); gfx->coy[0] = rnd_round((double)gfx->cy + ry);
+	gfx->cox[1] = rnd_round((double)gfx->cx - rx); gfx->coy[1] = rnd_round((double)gfx->cy + ry);
+	gfx->cox[2] = rnd_round((double)gfx->cx - rx); gfx->coy[2] = rnd_round((double)gfx->cy - ry);
+	gfx->cox[3] = rnd_round((double)gfx->cx + rx); gfx->coy[3] = rnd_round((double)gfx->cy - ry);
 	if (gfx->rot != 0.0) {
 		a = gfx->rot / PCB_RAD_TO_DEG;
 		cosa = cos(a);
@@ -210,7 +210,7 @@ int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *a1, const pcb_host_
 	if (a1->sx != a2->sx) return 0;
 	if (a1->sy != a2->sy) return 0;
 	if (pcb_neq_tr_coords(tr1, a1->cx, a1->cy, tr2, a2->cx, a2->cy)) return 0;
-	if (pcb_normalize_angle(pcb_round(a1->rot * sgn1)) != pcb_normalize_angle(pcb_round(a2->rot * sgn2))) return 0;
+	if (pcb_normalize_angle(rnd_round(a1->rot * sgn1)) != pcb_normalize_angle(rnd_round(a2->rot * sgn2))) return 0;
 TODO("compare pixmaps");
 	return 1;
 }
@@ -224,7 +224,7 @@ unsigned int pcb_gfx_hash(const pcb_host_trans_t *tr, const pcb_gfx_t *a)
 		rnd_coord_t x, y;
 		pcb_hash_tr_coords(tr, &x, &y, a->cx, a->cy);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^ pcb_hash_coord(a->sx) ^ pcb_hash_coord(a->sy) ^
-			pcb_hash_coord(pcb_normalize_angle(pcb_round(a->rot*sgn + tr->rot*sgn)));
+			pcb_hash_coord(pcb_normalize_angle(rnd_round(a->rot*sgn + tr->rot*sgn)));
 	}
 
 TODO("hash pixmaps");
@@ -543,8 +543,8 @@ void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth)
 	if (onbrd)
 		pcb_gfx_pre(gfx);
 
-	if (sx != 1.0) gfx->sx = pcb_round((double)gfx->sx * sx);
-	if (sy != 1.0) gfx->sy = pcb_round((double)gfx->sy * sy);
+	if (sx != 1.0) gfx->sx = rnd_round((double)gfx->sx * sx);
+	if (sy != 1.0) gfx->sy = rnd_round((double)gfx->sy * sy);
 
 	pcb_gfx_bbox(gfx);
 	if (onbrd)

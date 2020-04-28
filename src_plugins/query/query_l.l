@@ -40,8 +40,8 @@ static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *obj);
 %option prefix="qry_"
 
 %%
-["][^"]*["]     { qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
-['][^']*[']     { qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
+["][^"]*["]     { qry_lval.s = rnd_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
+['][^']*[']     { qry_lval.s = rnd_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
 
 let             { return T_LET; }
 assert          { return T_ASSERT; }
@@ -118,7 +118,7 @@ thus            { return T_THUS; }
 [0-9]+                    { qry_lval.c = strtol(yytext, NULL, 10); return T_INT; }
 [.][0-9]+                 { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
 [0-9]+[.][0-9]*           { qry_lval.d = strtod(yytext, NULL); return T_DBL; }
-[A-Za-z_][0-9A-Za-z_]*    { qry_lval.s = pcb_strdup(yytext); return T_STR; }
+[A-Za-z_][0-9A-Za-z_]*    { qry_lval.s = rnd_strdup(yytext); return T_STR; }
 
 [$@().,<>!*+/~-] { return *yytext; }
 
@@ -148,7 +148,7 @@ void pcb_qry_set_input(const char *script)
 static pcb_qry_node_t *make_constant(char *str, long val)
 {
 	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_CONST);
-	res->data.str = pcb_strdup(str);
+	res->data.str = rnd_strdup(str);
 	res->precomp.cnst = val;
 	return res;
 }
@@ -156,7 +156,7 @@ static pcb_qry_node_t *make_constant(char *str, long val)
 static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *o)
 {
 	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_OBJ);
-	res->data.str = pcb_strdup(str);
+	res->data.str = rnd_strdup(str);
 	res->precomp.obj = o;
 	return res;
 }

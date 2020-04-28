@@ -74,7 +74,7 @@ static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 	wg.y = y;
 	wg.w = w;
 	wg.h = h;
-	htsw_set(&wingeo, pcb_strdup(id), wg);
+	htsw_set(&wingeo, rnd_strdup(id), wg);
 }
 
 
@@ -112,7 +112,7 @@ void pcb_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_even
 static vtp0_t cleanup_later;
 static char *str_cleanup_later(const char *path)
 {
-	char *s = pcb_strdup(path);
+	char *s = rnd_strdup(path);
 	vtp0_append(&cleanup_later, s);
 	return s;
 }

@@ -236,7 +236,7 @@ static char *read_stdin_line(void)
 	s = fgets(buf, MAX_LINE_LENGTH, stdin);
 	if (s == NULL) {
 		printf("\n");
-		return pcb_strdup(CANCEL);
+		return rnd_strdup(CANCEL);
 	}
 
 	/* Strip any trailing newline characters */
@@ -247,7 +247,7 @@ static char *read_stdin_line(void)
 	if (s[0] == '\0')
 		return NULL;
 
-	return pcb_strdup(s);
+	return rnd_strdup(s);
 }
 
 #undef MAX_LINE_LENGTH
@@ -273,12 +273,12 @@ static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 		tmp = read_stdin_line();
 		if (tmp == NULL)
-			answer = pcb_strdup((default_str != NULL) ? default_str : "");
+			answer = rnd_strdup((default_str != NULL) ? default_str : "");
 		else
 			answer = tmp; /* always allocated */
 	}
 	else
-		answer = pcb_strdup("");
+		answer = rnd_strdup("");
 
 	res->type = FGW_STR | FGW_DYN;
 	res->val.str = answer;
@@ -336,7 +336,7 @@ static char *nogui_fileselect(pcb_hid_t *hid, const char *title, const char *des
 	char *answer;
 
 	if (pcbhl_conf.rc.quiet)
-		return pcb_strdup("");
+		return rnd_strdup("");
 
 	if (default_file)
 		printf("%s [%s] : ", title, default_file);
@@ -345,9 +345,9 @@ static char *nogui_fileselect(pcb_hid_t *hid, const char *title, const char *des
 
 	answer = read_stdin_line();
 	if (answer == NULL)
-		return (default_file != NULL) ? pcb_strdup(default_file) : NULL;
+		return (default_file != NULL) ? rnd_strdup(default_file) : NULL;
 	else
-		return pcb_strdup(answer);
+		return rnd_strdup(answer);
 }
 
 void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
@@ -401,7 +401,7 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 	}
 	else {
 		if ((pcbhl_conf.rc.verbose >= PCB_MSG_INFO) || (pcb_gui != &nogui_hid)) {
-			now = pcb_dtime();
+			now = rnd_dtime();
 			if (now >= nextt) {
 				fprintf(stderr, "progress: %ld/%ld %s\n", so_far, total, message);
 				nextt = now + 0.2;

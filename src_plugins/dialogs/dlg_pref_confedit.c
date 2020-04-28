@@ -102,7 +102,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 				for(nl = nd->data.list.first; nl != NULL; nl = nl->next) {
 					char *cell[2] = {NULL};
 					if (nl->type == LHT_TEXT)
-						cell[0] = pcb_strdup(nl->data.text.value);
+						cell[0] = rnd_strdup(nl->data.text.value);
 					pcb_dad_tree_append(attr, NULL, cell);
 				}
 			}
@@ -165,7 +165,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 				for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r)) {
 					lht_node_t *n = lht_dom_node_alloc(LHT_TEXT, NULL);
 					lht_dom_list_append(nd, n);
-					n->data.text.value = pcb_strdup(r->cell[0]);
+					n->data.text.value = rnd_strdup(r->cell[0]);
 				}
 				pcb_conf_makedirty(ctx->role);
 				pcb_conf_update(ctx->nat->hash_path, ctx->idx);
@@ -206,7 +206,7 @@ static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, pcb_hid_a
 	if (nv == NULL)
 		return;
 
-	if (pcb_dad_tree_modify_cell(attr, r, 0, pcb_strdup(nv)) == 0)
+	if (pcb_dad_tree_modify_cell(attr, r, 0, rnd_strdup(nv)) == 0)
 		pref_conf_editval_cb(hid_ctx, ctx, attr);
 }
 
@@ -227,7 +227,7 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_a
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	char *cols[] = {NULL, NULL};
 
-	cols[0] = pcb_strdup("");
+	cols[0] = rnd_strdup("");
 
 	if (trigger_attr == &ctx->dlg[ctx->winsa])
 		r = pcb_dad_tree_append(attr, r, cols);

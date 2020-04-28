@@ -51,7 +51,7 @@ static pcb_export_opt_t *lpr_get_export_options(pcb_hid_t *hid, int *n)
 	 * new one based on how a user fills out a print dialog.
 	 */
 	if (base_lpr_options[HA_lprcommand].default_val.str == NULL) {
-		base_lpr_options[HA_lprcommand].default_val.str = pcb_strdup("lpr");
+		base_lpr_options[HA_lprcommand].default_val.str = rnd_strdup("lpr");
 	}
 
 	if (lpr_options == 0) {

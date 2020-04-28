@@ -149,9 +149,9 @@ void pcb_ratspatch_append(pcb_board_t *pcb, pcb_rats_patch_op_t op, const char *
 	undo_ratspatch_append_t *a;
 	char *nid = NULL, *na1 = NULL, *na2 = NULL;
 
-	if (id != NULL) nid = pcb_strdup(id);
-	if (a1 != NULL) na1 = pcb_strdup(a1);
-	if (a2 != NULL) na2 = pcb_strdup(a2);
+	if (id != NULL) nid = rnd_strdup(id);
+	if (a1 != NULL) na1 = rnd_strdup(a1);
+	if (a2 != NULL) na2 = rnd_strdup(a2);
 
 	if (undoable) {
 		a = pcb_undo_alloc(pcb, &undo_ratspatch_append, sizeof(undo_ratspatch_append_t));
@@ -481,7 +481,7 @@ static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 		}
 	}
 	else
-		fpname = pcb_strdup(fpname);
+		fpname = rnd_strdup(fpname);
 
 	if (strcmp(fpname, "@buffer") != 0) {
 		/* check if the footprint is available */
@@ -568,7 +568,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	}
 
 	/* fetch the name of the new footprint */
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = pcb_strdup(argv[2].val.str));
+	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = rnd_strdup(argv[2].val.str));
 	if (act_replace_footprint_src(fpname, &news) != 0) {
 		RND_ACT_IRES(1);
 		return 0;
@@ -603,12 +603,12 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			default_file = malloc(len + 8);
 			memcpy(default_file, PCB->hidlib.filename, len + 1);
 			end = strrchr(default_file, '.');
-			if ((end == NULL) || (pcb_strcasecmp(end, ".pcb") != 0))
+			if ((end == NULL) || (rnd_strcasecmp(end, ".pcb") != 0))
 				end = default_file + len;
 			strcpy(end, ".bap");
 		}
 		else
-			default_file = pcb_strdup("unnamed.bap");
+			default_file = rnd_strdup("unnamed.bap");
 
 		fn = pcb_gui->fileselect(pcb_gui, "Save netlist patch as ...",
 			"Choose a file to save netlist patch to\n"

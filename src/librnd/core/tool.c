@@ -305,10 +305,10 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	hidlib->tool_x = hidlib->ch_x;
 	hidlib->tool_y = hidlib->ch_y;
 	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-	if (pcb_strcasecmp(cmd, "Cancel") == 0) {
+	if (rnd_strcasecmp(cmd, "Cancel") == 0) {
 		pcb_tool_select_by_id(RND_ACT_HIDLIB, pcbhl_conf.editor.mode);
 	}
-	else if (pcb_strcasecmp(cmd, "Escape") == 0) {
+	else if (rnd_strcasecmp(cmd, "Escape") == 0) {
 		const pcb_tool_t *t;
 		escape:;
 		t = pcb_tool_get(pcbhl_conf.editor.mode);
@@ -319,10 +319,10 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			t->escape(RND_ACT_HIDLIB);
 	}
-	else if ((pcb_strcasecmp(cmd, "Press") == 0) || (pcb_strcasecmp(cmd, "Notify") == 0)) {
+	else if ((rnd_strcasecmp(cmd, "Press") == 0) || (rnd_strcasecmp(cmd, "Notify") == 0)) {
 		pcb_tool_do_press(RND_ACT_HIDLIB);
 	}
-	else if (pcb_strcasecmp(cmd, "Release") == 0) {
+	else if (rnd_strcasecmp(cmd, "Release") == 0) {
 		if (pcbhl_conf.editor.enable_stroke) {
 			int handled = 0;
 			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
@@ -337,16 +337,16 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		do_release(RND_ACT_HIDLIB);
 	}
-	else if (pcb_strcasecmp(cmd, "Stroke") == 0) {
+	else if (rnd_strcasecmp(cmd, "Stroke") == 0) {
 		if (pcbhl_conf.editor.enable_stroke)
 			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
 		else
 			goto escape; /* Right mouse button restarts drawing mode. */
 	}
-	else if (pcb_strcasecmp(cmd, "Restore") == 0) { /* restore the last saved tool */
+	else if (rnd_strcasecmp(cmd, "Restore") == 0) { /* restore the last saved tool */
 		pcb_tool_restore(RND_ACT_HIDLIB);
 	}
-	else if (pcb_strcasecmp(cmd, "Save") == 0) { /* save currently selected tool */
+	else if (rnd_strcasecmp(cmd, "Save") == 0) { /* save currently selected tool */
 		pcb_tool_save(RND_ACT_HIDLIB);
 	}
 	else {

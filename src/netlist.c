@@ -75,8 +75,8 @@ static pcb_net_term_t *pcb_net_term_alloc(pcb_net_t *net, const char *refdes, co
 	t->type = PCB_OBJ_NET_TERM;
 	t->parent_type = PCB_PARENT_NET;
 	t->parent.net = net;
-	t->refdes = pcb_strdup(refdes);
-	t->term = pcb_strdup(term);
+	t->refdes = rnd_strdup(refdes);
+	t->term = rnd_strdup(term);
 	pcb_termlist_append(&net->conns, t);
 	return t;
 }
@@ -168,9 +168,9 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 				a = pcb_undo_alloc(net->parent.board, &undo_term_alloc, sizeof(undo_term_alloc_t));
 				a->pcb = net->parent.board;
 				a->nl_idx = net->parent_nl_idx;
-				a->netname = pcb_strdup(net->name);
-				a->refdes = pcb_strdup(refdes);
-				a->term = pcb_strdup(term);
+				a->netname = rnd_strdup(net->name);
+				a->refdes = rnd_strdup(refdes);
+				a->term = rnd_strdup(term);
 				return pcb_net_term_alloc(net, a->refdes, a->term);
 			}
 			else
@@ -219,7 +219,7 @@ pcb_net_term_t *pcb_net_term_get_by_pinname(pcb_net_t *net, const char *pinname,
 		memcpy(pn, pinname, len);
 	}
 	else
-		pn = pcb_strdup(pinname);
+		pn = rnd_strdup(pinname);
 	
 
 	refdes = pn;
@@ -282,7 +282,7 @@ static pcb_net_t *pcb_net_alloc_(pcb_board_t *pcb, pcb_netlist_t *nl, const char
 	for(n = 0; n < PCB_NUM_NETLISTS; n++)
 		if (nl == &pcb->netlist[n])
 			net->parent_nl_idx = n;
-	net->name = pcb_strdup(netname);
+	net->name = rnd_strdup(netname);
 	htsp_set(nl, net->name, net);
 	return net;
 }
@@ -379,7 +379,7 @@ pcb_net_t *pcb_net_get_icase(pcb_board_t *pcb, pcb_netlist_t *nl, const char *na
 
 	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
 		pcb_net_t *net = e->value;
-		if (pcb_strcasecmp(name, net->name) == 0)
+		if (rnd_strcasecmp(name, net->name) == 0)
 			break;
 	}
 
@@ -646,7 +646,7 @@ pcb_net_term_t *pcb_net_find_by_pinname(const pcb_netlist_t *nl, const char *pin
 		memcpy(pn, pinname, len);
 	}
 	else
-		pn = pcb_strdup(pinname);
+		pn = rnd_strdup(pinname);
 
 	refdes = pn;
 	term = strchr(refdes, '-');

@@ -4332,7 +4332,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 				 * end at bigger ones. also prefer to start at planes, then pads */
 				pcb_heap_insert(net_heap, (float) (b.X2 - b.X1) *
 #if defined(ROUTE_RANDOMIZED)
-										(0.3 + pcb_rand() / (RAND_MAX + 1.0)) *
+										(0.3 + rnd_rand() / (RAND_MAX + 1.0)) *
 #endif
 										(b.Y2 - b.Y1) * (p->type == PLANE ? -1 : ((p->type == TERM) ? 1 : 10)), p);
 			}

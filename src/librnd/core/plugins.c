@@ -46,7 +46,7 @@ void pcb_plugin_add_dir(const char *dir)
 		paths_alloced += 16;
 		pcb_pup_paths = realloc(pcb_pup_paths, sizeof(char *) * paths_alloced);
 	}
-	pcb_pup_paths[paths_used] = pcb_strdup(dir);
+	pcb_pup_paths[paths_used] = rnd_strdup(dir);
 	paths_used++;
 	pcb_pup_paths[paths_used] = NULL;
 }

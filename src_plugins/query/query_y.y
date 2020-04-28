@@ -267,7 +267,7 @@ fields:
 	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->precomp.fld = query_fields_sphash($1); $$->next = $3; }
 	| T_FLD_P fields         { $$ = $2; /* just ignore .p. */ }
 	| T_FLD_P T_FLD_FLAG T_STR { $$ = make_flag_free($3); }
-	| T_FLD_A attribs        { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = pcb_strdup("a"); $$->precomp.fld = query_fields_sphash("a"); $$->next = $2; }
+	| T_FLD_A attribs        { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = rnd_strdup("a"); $$->precomp.fld = query_fields_sphash("a"); $$->next = $2; }
 	;
 
 attribs:
@@ -311,7 +311,7 @@ assert:
 
 var:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); if (iter_active_ctx != NULL) vti0_set(iter_active_ctx, $$->data.crd, 1); free($1); }
-	| T_LIST '(' '@' ')'     { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = pcb_strdup("@"); /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
+	| T_LIST '(' '@' ')'     { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = rnd_strdup("@"); /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
 	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); if (iter_active_ctx != NULL) vti0_set(iter_active_ctx, $$->data.crd, 1); }
 	;
 
@@ -360,7 +360,7 @@ fargs:
 	;
 
 words:
-	  /* empty */            { $$ = pcb_qry_n_alloc(PCBQ_RNAME); $$->data.str = (const char *)pcb_strdup(""); }
+	  /* empty */            { $$ = pcb_qry_n_alloc(PCBQ_RNAME); $$->data.str = (const char *)rnd_strdup(""); }
 	| T_STR words            {
 			char *old = $2->data.str, *sep = ((*old != '\0') ? " " : "");
 			$2->data.str = pcb_concat($1, sep, old, NULL);

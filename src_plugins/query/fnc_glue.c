@@ -86,7 +86,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	/* convert action result to query result */
 
 #	define FGW_TO_QRY_NUM(lst, val)   res->type = PCBQ_VT_LONG; res->data.lng = val; goto fin;
-#	define FGW_TO_QRY_STR(lst, val)   res->type = PCBQ_VT_STRING; res->data.str = pcb_strdup(val == NULL ? "" : val); goto fin;
+#	define FGW_TO_QRY_STR(lst, val)   res->type = PCBQ_VT_STRING; res->data.str = rnd_strdup(val == NULL ? "" : val); goto fin;
 #	define FGW_TO_QRY_NIL(lst, val)   res->type = PCBQ_VT_VOID; goto fin;
 
 /* has to free idpath and idpathlist return, noone else will have the chance */

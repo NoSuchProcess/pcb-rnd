@@ -66,7 +66,7 @@ do { \
 		len -= l; \
 		end += l; \
 	} \
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, str, pcb_strdup(buff)); \
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.name, str, rnd_strdup(buff)); \
 } while(0)
 
 #define c2g_float(name) \
@@ -140,18 +140,18 @@ static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 
 static void reset_line(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle, str, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle, str, rnd_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle_mod, dbl, 0);
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length, str, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length, str, rnd_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_length_mod, crd, 0);
 	gui2cons(hid_ctx, caller_data, attr);
 }
 
 static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle, str, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle, str, rnd_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle_mod, dbl, 0);
-	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length, str, pcb_strdup(""));
+	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length, str, rnd_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_length_mod, crd, 0);
 	gui2cons(hid_ctx, caller_data, attr);
 }

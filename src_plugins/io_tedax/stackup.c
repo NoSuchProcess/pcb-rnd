@@ -310,7 +310,7 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stac
 		}
 
 
-		tn = pcb_strdup(tname);
+		tn = rnd_strdup(tname);
 		htsp_set(&ctx->n2g, tn, grp);
 		vtp0_set(&ctx->g2n, gid, tn);
 
@@ -354,8 +354,8 @@ static pcb_layergrp_t *get_grp_by_name(tedax_stackup_t *ctx, pcb_board_t *pcb, c
 		char *nn;
 
 		grp = pcb_get_grp_new_raw(pcb);
-		grp->name = pcb_strdup(name);
-		nn = pcb_strdup(name);
+		grp->name = rnd_strdup(name);
+		nn = rnd_strdup(name);
 		htsp_set(&ctx->n2g, nn, grp);
 		vtp0_set(&ctx->g2n, (grp - pcb->LayerGroups.grp), nn);
 	}
@@ -373,7 +373,7 @@ int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *b
 			grp = get_grp_by_name(ctx, pcb, argv[1]);
 			tedax_layer_set_by_str(pcb, grp, argv[2], argv[3]);
 			if (!(grp->ltype & PCB_LYT_SUBSTRATE))
-				pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, pcb_strdup(argv[1]), 0);
+				pcb_layer_create(pcb, grp - pcb->LayerGroups.grp, rnd_strdup(argv[1]), 0);
 
 		}
 		else if (strcmp(argv[0], "lprop") == 0) {

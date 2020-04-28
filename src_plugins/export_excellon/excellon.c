@@ -433,7 +433,7 @@ static void excellon_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy
 	if (radius <= 0)
 		return;
 
-	radius = 50 * pcb_round(radius / 50.0);
+	radius = 50 * rnd_round(radius / 50.0);
 	use_gc(gc, radius);
 	if (!finding_apertures)
 		pcb_drill_new_pending(get_drill_ctx(), cx, cy, cx, cy, radius * 2);

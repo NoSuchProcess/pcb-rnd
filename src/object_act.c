@@ -141,7 +141,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (s->refdes != NULL)
 				buf = pcb_strdup_printf("Subcircuit %s Attributes", s->refdes);
 			else
-				buf = pcb_strdup("Unnamed Subcircuit's Attributes");
+				buf = rnd_strdup("Unnamed Subcircuit's Attributes");
 
 			pcb_gui->edit_attributes(pcb_gui, buf, &(s->Attributes));
 			free(buf);
@@ -458,15 +458,15 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		plc->ly = conf_core.import.footprint_placement.y;
 		plc->dd = conf_core.import.footprint_placement.disperse;
 
-		if (pcb_strcasecmp(conf_plc_met, "disperse") == 0) plc->plc_method = PLC_DISPERSE;
-		else if (pcb_strcasecmp(conf_plc_met, "frame") == 0) plc->plc_method = PLC_FRAME;
-		else if (pcb_strcasecmp(conf_plc_met, "fit") == 0) plc->plc_method = PLC_FIT;
+		if (rnd_strcasecmp(conf_plc_met, "disperse") == 0) plc->plc_method = PLC_DISPERSE;
+		else if (rnd_strcasecmp(conf_plc_met, "frame") == 0) plc->plc_method = PLC_FRAME;
+		else if (rnd_strcasecmp(conf_plc_met, "fit") == 0) plc->plc_method = PLC_FIT;
 		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", conf_plc_met);
 
 		s = conf_core.import.footprint_placement.location;
 		if ((s == NULL) || (*s == '\0')) plc->location = PLC_AT;
-		else if (pcb_strcasecmp(s, "mark") == 0) plc->location = PLC_MARK;
-		else if (pcb_strcasecmp(s, "center") == 0) plc->location = PLC_CENTER;
+		else if (rnd_strcasecmp(s, "mark") == 0) plc->location = PLC_MARK;
+		else if (rnd_strcasecmp(s, "center") == 0) plc->location = PLC_CENTER;
 		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/location '%s', falling back to coordinates\n", s);
 
 	}
@@ -478,9 +478,9 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 	}
 
 	if ((conf_rem_met != NULL) && (*conf_rem_met != '\0')) {
-		if (pcb_strcasecmp(conf_rem_met, "select") == 0) plc->rem_method = PLC_SELECT;
-		else if (pcb_strcasecmp(conf_rem_met, "remove") == 0) plc->rem_method = PLC_REMOVE;
-		else if (pcb_strcasecmp(conf_rem_met, "list") == 0) plc->rem_method = PLC_LIST;
+		if (rnd_strcasecmp(conf_rem_met, "select") == 0) plc->rem_method = PLC_SELECT;
+		else if (rnd_strcasecmp(conf_rem_met, "remove") == 0) plc->rem_method = PLC_REMOVE;
+		else if (rnd_strcasecmp(conf_rem_met, "list") == 0) plc->rem_method = PLC_LIST;
 		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", conf_plc_met);
 	}
 
@@ -512,8 +512,8 @@ static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 			/* not yet implemented */
 		case PLC_DISPERSE:
 			if (plc->dd > 0) {
-				px += pcb_rand() % (plc->dd * 2) - plc->dd;
-				py += pcb_rand() % (plc->dd * 2) - plc->dd;
+				px += rnd_rand() % (plc->dd * 2) - plc->dd;
+				py += rnd_rand() % (plc->dd * 2) - plc->dd;
 			}
 			break;
 		case PLC_FRAME:
@@ -934,7 +934,7 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, MinClearGap, delta = argv[2].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, MinClearGap, delta = argv[3].val.str);
 
-	if (pcb_strcasecmp(function, "Selected") == 0)
+	if (rnd_strcasecmp(function, "Selected") == 0)
 		flags = PCB_FLAG_SELECTED;
 	else {
 		units = delta;

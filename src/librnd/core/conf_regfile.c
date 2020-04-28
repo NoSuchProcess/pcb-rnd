@@ -52,7 +52,7 @@ void pcb_conf_reg_file(const char *path, const char *intern)
 	if (!conf_files_inited) conf_files_init();
 	e = htsi_getentry(&conf_files, path);
 	if (e == NULL)
-		htsi_set(&conf_files, pcb_strdup(path), 1);
+		htsi_set(&conf_files, rnd_strdup(path), 1);
 	else
 		e->value++;
 	e = htsi_getentry(&conf_interns, intern);

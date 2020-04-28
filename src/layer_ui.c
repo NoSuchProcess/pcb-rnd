@@ -64,7 +64,7 @@ pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const rnd_c
 found:;
 	l->meta.real.cookie = cookie;
 	l->meta.real.color = *color;
-	l->name = pcb_strdup(name);
+	l->name = rnd_strdup(name);
 	l->meta.real.vis = 1;
 	l->parent_type = PCB_PARENT_UI;
 	l->parent.any = NULL;

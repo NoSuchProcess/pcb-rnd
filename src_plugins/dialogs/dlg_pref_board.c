@@ -52,7 +52,7 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	oldname = PCB_EMPTY(PCB->hidlib.name);
 	if (strcmp(oldname, newname) != 0) {
 		free(PCB->hidlib.name);
-		PCB->hidlib.name = pcb_strdup(newname);
+		PCB->hidlib.name = rnd_strdup(newname);
 		changed = 1;
 	}
 
@@ -85,7 +85,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		PCB_DAD_LABEL(ctx->dlg, "Board name");
 		PCB_DAD_STRING(ctx->dlg);
 			ctx->board.wname = PCB_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[ctx->board.wname].val.str = pcb_strdup(PCB_EMPTY(PCB->hidlib.name));
+			ctx->dlg[ctx->board.wname].val.str = rnd_strdup(PCB_EMPTY(PCB->hidlib.name));
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		PCB_DAD_LABEL(ctx->dlg, "Thermal scale");
 		PCB_DAD_REAL(ctx->dlg, "");
@@ -96,7 +96,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		PCB_DAD_LABEL(ctx->dlg, "Type");
 		PCB_DAD_LABEL(ctx->dlg, "");
 			ctx->board.wtype = PCB_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[ctx->board.wtype].name = pcb_strdup((PCB->is_footprint ? "footprint" : "PCB board"));
+			ctx->dlg[ctx->board.wtype].name = rnd_strdup((PCB->is_footprint ? "footprint" : "PCB board"));
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		PCB_DAD_LABEL(ctx->dlg, "Board attributes");
 		PCB_DAD_BUTTON(ctx->dlg, "Edit...");

@@ -202,7 +202,7 @@ static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 			break;
 		case PCB_HATT_STRING:
 			free((char *)ctx->attrs[widx].val.str);
-			ctx->attrs[widx].val.str = pcb_strdup(XmTextGetString(ctx->wl[widx]));
+			ctx->attrs[widx].val.str = rnd_strdup(XmTextGetString(ctx->wl[widx]));
 			return; /* can't rely on central copy because of the allocation */
 		case PCB_HATT_ENUM:
 			{
@@ -523,7 +523,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_
 			break;
 		case PCB_HATT_STRING:
 			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(val->str), NULL);
-			ctx->attrs[idx].val.str = pcb_strdup(val->str);
+			ctx->attrs[idx].val.str = rnd_strdup(val->str);
 			copied = 1;
 			break;
 		case PCB_HATT_INTEGER:
@@ -645,7 +645,7 @@ void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *
 	ctx->close_cb = button_cb;
 	ctx->close_cb_called = 0;
 	ctx->widget_destroyed = 0;
-	ctx->id = pcb_strdup(id);
+	ctx->id = rnd_strdup(id);
 
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
@@ -850,15 +850,15 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a = "";
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
-	if (strcmp(a, "1") == 0 || pcb_strcasecmp(a, "Layout") == 0) {
+	if (strcmp(a, "1") == 0 || rnd_strcasecmp(a, "Layout") == 0) {
 	}
-	else if (strcmp(a, "2") == 0 || pcb_strcasecmp(a, "Library") == 0) {
+	else if (strcmp(a, "2") == 0 || rnd_strcasecmp(a, "Library") == 0) {
 		lesstif_show_library();
 	}
-	else if (strcmp(a, "3") == 0 || pcb_strcasecmp(a, "Log") == 0) {
+	else if (strcmp(a, "3") == 0 || rnd_strcasecmp(a, "Log") == 0) {
 		rnd_actionva(ltf_hidlib, "LogDialog", NULL);
 	}
-	else if (strcmp(a, "4") == 0 || pcb_strcasecmp(a, "Netlist") == 0) {
+	else if (strcmp(a, "4") == 0 || rnd_strcasecmp(a, "Netlist") == 0) {
 		lesstif_show_netlist();
 	}
 	else {

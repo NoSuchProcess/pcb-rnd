@@ -126,7 +126,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 		}
 	}
 	else if (strncmp(cmd, "net:", 4) == 0) {
-		char *name = pcb_strdup(cmd+4);
+		char *name = rnd_strdup(cmd+4);
 		if (!pe->nets_inited) {
 			htsp_init(&pe->nets, strhash, strkeyeq);
 			pe->nets_inited = 1;
@@ -255,13 +255,13 @@ fgw_error_t pcb_act_propget(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			e = htprop_first(&p->values);
 			most_common = e->key;
 			res->type = FGW_STR | FGW_DYN;
-			res->val.str = pcb_strdup(out->string == NULL ? "" : out->string);
+			res->val.str = rnd_strdup(out->string == NULL ? "" : out->string);
 			break;
 		case PCB_PROPT_COORD: res->type = FGW_COORD; fgw_coord(res) = out->coord; break;
 		case PCB_PROPT_ANGLE: res->type = FGW_DOUBLE; res->val.nat_double = out->angle; break;
 		case PCB_PROPT_BOOL:
 		case PCB_PROPT_INT:   res->type = FGW_INT; res->val.nat_int = out->i; break;
-		case PCB_PROPT_COLOR: res->type = FGW_STR | FGW_DYN; res->val.str = pcb_strdup(out->clr.str); break;
+		case PCB_PROPT_COLOR: res->type = FGW_STR | FGW_DYN; res->val.str = rnd_strdup(out->clr.str); break;
 		case PCB_PROPT_invalid:
 		case PCB_PROPT_max: goto error;
 	}

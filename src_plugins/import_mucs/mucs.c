@@ -87,7 +87,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		if (fname && *fname)
-			default_file = pcb_strdup(fname);
+			default_file = rnd_strdup(fname);
 	}
 
 	fi = pcb_fopen(&PCB->hidlib, fname, "r");

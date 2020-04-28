@@ -40,8 +40,8 @@
 #define DRAW_X(view, x)         (gint)((SIDE_X((view), x) - (view)->x0) / (view)->coord_per_px)
 #define DRAW_Y(view, y)         (gint)((SIDE_Y((view), y) - (view)->y0) / (view)->coord_per_px)
 
-#define EVENT_TO_PCB_X_(hidlib, view, x) (rnd_coord_t)pcb_round(SIDE_X_((hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
-#define EVENT_TO_PCB_Y_(hidlib, view, y) (rnd_coord_t)pcb_round(SIDE_Y_((hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
+#define EVENT_TO_PCB_X_(hidlib, view, x) (rnd_coord_t)rnd_round(SIDE_X_((hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
+#define EVENT_TO_PCB_Y_(hidlib, view, y) (rnd_coord_t)rnd_round(SIDE_Y_((hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
 
 #define EVENT_TO_PCB_X(view, x)  EVENT_TO_PCB_X_((view)->ctx->hidlib, view, (x))
 #define EVENT_TO_PCB_Y(view, y)  EVENT_TO_PCB_Y_((view)->ctx->hidlib, view, (y))

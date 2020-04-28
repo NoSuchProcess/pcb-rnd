@@ -676,8 +676,8 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	nx = -sidey / sidelen;
 	ny = sidex / sidelen;
 	r = (sidelen / 2) / tan(curvang / PCB_RAD_TO_DEG / 2.0);
-	cx  = pcb_round(midx + nx * r);
-	cy  = pcb_round(midy + ny * r);
+	cx  = rnd_round(midx + nx * r);
+	cy  = rnd_round(midy + ny * r);
 /*	pcb_trace("curve mid: %mm;%mm center: %mm;%mm\n", midx, midy, cx, cy);*/
 
 	dx = x1 - cx;

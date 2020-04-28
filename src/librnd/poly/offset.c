@@ -164,12 +164,12 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs
 
 
 	/* create a new pline by copying the cache */
-	tmp[0] = pcb_round(pcsh[0].x);
-	tmp[1] = pcb_round(pcsh[0].y);
+	tmp[0] = rnd_round(pcsh[0].x);
+	tmp[1] = rnd_round(pcsh[0].y);
 	res = pcb_poly_contour_new(tmp);
 	for(n = 1; n < num_pts; n++) {
-		tmp[0] = pcb_round(pcsh[n].x);
-		tmp[1] = pcb_round(pcsh[n].y);
+		tmp[0] = rnd_round(pcsh[n].x);
+		tmp[1] = rnd_round(pcsh[n].y);
 		pcb_poly_vertex_include(res->head->prev, pcb_poly_node_create(tmp));
 	}
 
@@ -297,8 +297,8 @@ RND_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, dou
 	if (inside)
 		c = -c;
 	ox = v->point[0]; oy = v->point[1];
-	v->point[0] = pcb_round(v->point[0] + c * vx);
-	v->point[1] = pcb_round(v->point[1] + c * vy);
+	v->point[0] = rnd_round(v->point[0] + c * vx);
+	v->point[1] = rnd_round(v->point[1] + c * vy);
 
 	if ((ox == v->point[0]) && (oy == v->point[1]))
 		return -1; /* too close, can't pull any more */
@@ -377,10 +377,10 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_
 
 				if (((prevx == dx) || (prevx == -dx)) && ((prevy == dy) || (prevy == -dy))) {
 					/* apply direct shift of the whole parallel line */
-					v->point[0] = pcb_round(v->point[0] + prjx * tune);
-					v->point[1] = pcb_round(v->point[1] + prjy * tune);
-					v->prev->point[0] = pcb_round(v->prev->point[0] + prjx * tune);
-					v->prev->point[1] = pcb_round(v->prev->point[1] + prjy * tune);
+					v->point[0] = rnd_round(v->point[0] + prjx * tune);
+					v->point[1] = rnd_round(v->point[1] + prjy * tune);
+					v->prev->point[0] = rnd_round(v->prev->point[0] + prjx * tune);
+					v->prev->point[1] = rnd_round(v->prev->point[1] + prjy * tune);
 					v = v->next;
 					goto retry;
 				}

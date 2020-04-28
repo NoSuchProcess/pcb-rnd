@@ -129,9 +129,9 @@ pcb_view_t *pcb_view_new(rnd_hidlib_t *hl, const char *type, const char *title, 
 	if (title == NULL) title = "";
 	if (description == NULL) description = "";
 
-	v->type = pcb_strdup(type);
-	v->title = pcb_strdup(title);
-	v->description = pcb_strdup(description);
+	v->type = rnd_strdup(type);
+	v->title = rnd_strdup(title);
+	v->description = rnd_strdup(description);
 	v->hidlib = hl;
 
 	return v;

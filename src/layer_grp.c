@@ -174,10 +174,10 @@ pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int 
 
 	ng = pcb_layergrp_insert_after(pcb, after);
 	if (og->name != NULL)
-		ng->name = pcb_strdup(og->name);
+		ng->name = rnd_strdup(og->name);
 	ng->ltype = og->ltype;
 	if (og->purpose != NULL)
-		ng->purpose = pcb_strdup(og->purpose);
+		ng->purpose = rnd_strdup(og->purpose);
 	ng->purpi = og->purpi;
 	ng->valid = ng->open = ng->vis = 1;
 	pcb_layergrp_setup(ng, pcb);
@@ -351,8 +351,8 @@ static void layergrp_post_change(rnd_attribute_list_t *list, const char *name, c
 		int newv;
 		if ((value == NULL) || (*value == '\0'))
 			return;
-		if ((pcb_strcasecmp(value, "true") == 0) || (pcb_strcasecmp(value, "yes") == 0) || (pcb_strcasecmp(value, "on") == 0) || (strcmp(value, "1") == 0)) newv = 1;
-		else if ((pcb_strcasecmp(value, "false") == 0) || (pcb_strcasecmp(value, "no") == 0) || (pcb_strcasecmp(value, "off") == 0) || (strcmp(value, "0") == 0)) newv = 0;
+		if ((rnd_strcasecmp(value, "true") == 0) || (rnd_strcasecmp(value, "yes") == 0) || (rnd_strcasecmp(value, "on") == 0) || (strcmp(value, "1") == 0)) newv = 1;
+		else if ((rnd_strcasecmp(value, "false") == 0) || (rnd_strcasecmp(value, "no") == 0) || (rnd_strcasecmp(value, "off") == 0) || (strcmp(value, "0") == 0)) newv = 0;
 		else {
 			rnd_message(PCB_MSG_ERROR, "unrecognized value '%s' of layer group %s's init-invis attribute", value, g->name == NULL ? "" : g->name);
 			return;
@@ -377,7 +377,7 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room,
 
 	stack->len += room;
 
-	stack->grp[bl].name = pcb_strdup("Intern");
+	stack->grp[bl].name = rnd_strdup("Intern");
 	stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
 	pcb_layergrp_setup(&stack->grp[bl], pcb);
 	bl++;
@@ -762,12 +762,12 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 	g->ltype &= ~PCB_LYT_COPPER;
 	g->ltype &= ~(PCB_LYT_ANYWHERE);
 	free(g->name);
-	g->name = pcb_strdup("global_outline");
-	pcb_layergrp_set_purpose__(g, pcb_strdup("uroute"), 0);
+	g->name = rnd_strdup("global_outline");
+	pcb_layergrp_set_purpose__(g, rnd_strdup("uroute"), 0);
 }
 
 
-#define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].name != NULL) && ((strcmp(pcb->Data->Layer[idx].name, "route") == 0 || pcb_strcasecmp(pcb->Data->Layer[(idx)].name, "outline") == 0)))
+#define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].name != NULL) && ((strcmp(pcb->Data->Layer[idx].name, "route") == 0 || rnd_strcasecmp(pcb->Data->Layer[(idx)].name, "outline") == 0)))
 
 void pcb_layergrp_fix_old_outline_detect(pcb_board_t *pcb, pcb_layergrp_t *g)
 {
@@ -959,7 +959,7 @@ do { \
 	g = &(newg->grp[newg->len]); \
 	pcb_layergrp_setup(g, pcb); \
 	if (gname != NULL) \
-		g->name = pcb_strdup(gname); \
+		g->name = rnd_strdup(gname); \
 	else \
 		g->name = NULL; \
 	g->ltype = flags; \
@@ -1062,7 +1062,7 @@ int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *nam
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 	if (grp == NULL) return -1;
-	return pcb_layergrp_rename_(grp, pcb_strdup(name), undoable);
+	return pcb_layergrp_rename_(grp, rnd_strdup(name), undoable);
 }
 
 /*** undoable set-purpose ***/
@@ -1149,7 +1149,7 @@ int pcb_layergrp_set_purpose_(pcb_layergrp_t *lg, char *purpose, rnd_bool undoab
 
 int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, rnd_bool undoable)
 {
-	return pcb_layergrp_set_purpose_(lg, pcb_strdup(purpose), undoable);
+	return pcb_layergrp_set_purpose_(lg, rnd_strdup(purpose), undoable);
 }
 
 /*** undoable flags/type set ***/
@@ -1275,7 +1275,7 @@ void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb)
 		if ((g0->ltype & PCB_LYT_COPPER) && (g1->ltype & PCB_LYT_COPPER)) {
 			pcb_layergrp_t *ng = pcb_layergrp_insert_after(pcb, g);
 			ng->ltype = PCB_LYT_INTERN | PCB_LYT_SUBSTRATE;
-			ng->name = pcb_strdup("implicit_subst");
+			ng->name = rnd_strdup("implicit_subst");
 			pcb_layergrp_setup(ng, pcb);
 		}
 	}
@@ -1313,9 +1313,9 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			pcb_layer_id_t nlid;
 			pcb_layer_t *nly;
 			grp->ltype = PCB_LYT_BOUNDARY;
-			grp->name = pcb_strdup("outline");
+			grp->name = rnd_strdup("outline");
 			if (ly->meta.bound.purpose != NULL)
-				pcb_layergrp_set_purpose__(grp, pcb_strdup(ly->meta.bound.purpose), 0);
+				pcb_layergrp_set_purpose__(grp, rnd_strdup(ly->meta.bound.purpose), 0);
 			nlid = pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name, 0);
 			nly = pcb_get_layer(pcb->Data, nlid);
 			if (nly != NULL)
@@ -1366,13 +1366,13 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 						if (offs < 0)
 							offs = existing_intern + offs + 1;
 						if ((offs == int_ofs) && (ly->name != NULL)) {
-							pcb->LayerGroups.grp[n].name = pcb_strdup("internal");
+							pcb->LayerGroups.grp[n].name = rnd_strdup("internal");
 							pcb_layer_create(pcb, n, ly->name, 0);
 							goto found;
 						}
 					}
 				}
-				pcb->LayerGroups.grp[n].name = pcb_strdup("anon-recipe");
+				pcb->LayerGroups.grp[n].name = rnd_strdup("anon-recipe");
 				found:;
 			}
 		}
@@ -1386,7 +1386,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 			pcb_layergrp_t *grp = pcb_get_grp_new_misc(pcb);
 			if (grp != NULL) {
 				grp->ltype = ly->meta.bound.type;
-				grp->name = pcb_strdup(ly->name);
+				grp->name = rnd_strdup(ly->name);
 				pcb_layer_create(pcb, pcb_layergrp_id(pcb, grp), ly->name, 0);
 				pcb_layer_resolve_binding(pcb, ly);
 			}
@@ -1481,13 +1481,13 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 	if (lyname == NULL)
 		lyname = src->name;
 
-	grp->name = pcb_strdup(grname);
+	grp->name = rnd_strdup(grname);
 	grp->ltype = src->lyt;
 
 	free(grp->purpose);
 	grp->purpose = NULL;
 	if (src->purpose != NULL)
-		pcb_layergrp_set_purpose__(grp, pcb_strdup(src->purpose), 1);
+		pcb_layergrp_set_purpose__(grp, rnd_strdup(src->purpose), 1);
 
 	if (grp->len == 0) {
 		pcb_layer_id_t lid = pcb_layer_create(pcb, gid, lyname, 0);

@@ -118,7 +118,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 						PCB_DAD_BEGIN_VBOX(ctx->dlg);
 							PCB_DAD_COLOR(ctx->dlg);
 								ctx->color.wgen[n] = w = PCB_DAD_CURRENT(ctx->dlg);
-								ctx->dlg[w].user_data = pcb_strdup(e->key);
+								ctx->dlg[w].user_data = rnd_strdup(e->key);
 								PCB_DAD_CHANGE_CB(ctx->dlg, pref_color_gen_cb);
 						PCB_DAD_END(ctx->dlg);
 						PCB_DAD_LABEL(ctx->dlg, nat->description);

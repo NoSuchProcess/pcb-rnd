@@ -399,7 +399,7 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 				error(msg);
 
 				u = malloc(sizeof(pcb_unknown_flag_t));
-				u->str = pcb_strndup(fp, flen);
+				u->str = rnd_strndup(fp, flen);
 				u->next = NULL;
 				/* need to append, to keep order of flags */
 				if (rv.Flags.unknowns != NULL) {

@@ -156,7 +156,7 @@ in	{ return T_IN; }
 						return(CHAR_CONST);
 					}
 {FLOATING}		{	return parse_number(); }
-{INTEGER}		{	pcb_lval.integer = pcb_round (strtod (yytext, NULL)); return INTEGER; }
+{INTEGER}		{	pcb_lval.integer = rnd_round(strtod (yytext, NULL)); return INTEGER; }
 
 {HEX}			{	unsigned n;
 				sscanf((char *) yytext, "%x", &n);
@@ -518,7 +518,7 @@ static void add_tag(char *line)
 /*		printf("tag:%s=%s:\n", key,val); */
 		if (strcmp(key, "name") == 0) {
 			free(yyFont->name);
-			yyFont->name = pcb_strdup(val);
+			yyFont->name = rnd_strdup(val);
 		}
 	}
 }

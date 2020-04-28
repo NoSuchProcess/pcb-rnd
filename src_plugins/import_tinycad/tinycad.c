@@ -127,17 +127,17 @@ static int tinycad_parse_net(FILE *fn)
 		else if ((argc > 1) && (strcmp(argv[0], "COMPONENT") == 0)) {
 			sym_flush(&sattr);
 			free(sattr.refdes);
-			sattr.refdes = pcb_strdup(argv[1]);
+			sattr.refdes = rnd_strdup(argv[1]);
 		}
 		else if ((argc > 3) && (strcmp(argv[0], "OPTION") == 0)) {
 			if (strcmp(argv[3], "..") != 0) {
 				if (strcmp(argv[1], "Package") == 0) {
 					free(sattr.footprint);
-					sattr.footprint = pcb_strdup(argv[3]);
+					sattr.footprint = rnd_strdup(argv[3]);
 				}
 				else if (strcmp(argv[1], "Value") == 0) {
 					free(sattr.value);
-					sattr.value = pcb_strdup(argv[3]);
+					sattr.value = rnd_strdup(argv[3]);
 				}
 			}
 		}

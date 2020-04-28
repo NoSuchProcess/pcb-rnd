@@ -166,7 +166,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 
 	if (message == refresh) {
 		if (active)
-			last = pcb_dtime();
+			last = rnd_dtime();
 		have_timer = 0;
 		refresh_now:;
 		if (active) {
@@ -235,7 +235,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 
 	val.dbl = (double)so_far / (double)total;
 
-	now = pcb_dtime();
+	now = rnd_dtime();
 	if (now >= (last + (REFRESH_RATE / 1000.0))) {
 		last = now;
 		goto refresh_now;

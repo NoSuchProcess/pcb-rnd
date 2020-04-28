@@ -41,7 +41,7 @@ pcb_file_loaded_t *pcb_file_loaded_category(const char *name, int alloc)
 	if ((cat == NULL) && (alloc)) {
 		cat = calloc(sizeof(pcb_file_loaded_t), 1);
 		cat->type = PCB_FLT_CATEGORY;
-		cat->name = pcb_strdup(name);
+		cat->name = rnd_strdup(name);
 		htsp_init(&cat->data.category.children, strhash, strkeyeq);
 		htsp_set(&pcb_file_loaded, cat->name, cat);
 	}
@@ -91,16 +91,16 @@ int pcb_file_loaded_set(pcb_file_loaded_t *cat, const char *name, const char *pa
 	else {
 		file = malloc(sizeof(pcb_file_loaded_t));
 		file->type = PCB_FLT_FILE;
-		file->name = pcb_strdup(name);
+		file->name = rnd_strdup(name);
 		htsp_set(&cat->data.category.children, file->name, file);
 	}
 	if (path != NULL)
-		file->data.file.path = pcb_strdup(path);
+		file->data.file.path = rnd_strdup(path);
 	else
 		file->data.file.path = NULL;
 
 	if (desc != NULL)
-		file->data.file.desc = pcb_strdup(desc);
+		file->data.file.desc = rnd_strdup(desc);
 	else
 		file->data.file.desc = NULL;
 	return 0;

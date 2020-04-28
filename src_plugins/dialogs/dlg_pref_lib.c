@@ -78,7 +78,7 @@ static void pref_lib_conf2dlg_pre(conf_native_t *cfg, int arr_idx)
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL) {
 		free(pref_ctx.lib.cursor_path);
-		pref_ctx.lib.cursor_path = pcb_strdup(r->cell[0]);
+		pref_ctx.lib.cursor_path = rnd_strdup(r->cell[0]);
 	}
 
 	/* remove all existing entries */
@@ -113,10 +113,10 @@ static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
 	/* copy everything from the config tree to the dialog */
 	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		char *tmp;
-		cell[0] = pcb_strdup(i->payload);
+		cell[0] = rnd_strdup(i->payload);
 		pcb_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, pcb_false);
-		cell[1] = pcb_strdup(tmp == NULL ? "" : tmp);
-		cell[2] = pcb_strdup(pref_node_src(i->prop.src));
+		cell[1] = rnd_strdup(tmp == NULL ? "" : tmp);
+		cell[2] = rnd_strdup(pref_node_src(i->prop.src));
 		cell[3] = NULL;
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
@@ -169,10 +169,10 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	/* append items from the widget */
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r)) {
 		nd = lht_dom_node_alloc(LHT_TEXT, "");
-		nd->data.text.value = pcb_strdup(r->cell[0]);
+		nd->data.text.value = rnd_strdup(r->cell[0]);
 		nd->doc = m->doc;
 		lht_dom_list_append(lst, nd);
-		pcb_dad_tree_modify_cell(attr, r, 2, pcb_strdup(pref_node_src(nd)));
+		pcb_dad_tree_modify_cell(attr, r, 2, rnd_strdup(pref_node_src(nd)));
 	}
 
 	pcb_conf_update("rc/library_search_paths", -1);
@@ -211,7 +211,7 @@ static void lib_btn_up(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *bt
 	if (prev == NULL)
 		return;
 
-	cell[0] = pcb_strdup(r->cell[0]); /* have to copy because this is also the primary key (path for the hash) */
+	cell[0] = rnd_strdup(r->cell[0]); /* have to copy because this is also the primary key (path for the hash) */
 	cell[1] = r->cell[1]; r->cell[1] = NULL;
 	cell[2] = r->cell[2]; r->cell[2] = NULL;
 	cell[3] = NULL;
@@ -238,7 +238,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	if (next == NULL)
 		return;
 
-	cell[0] = pcb_strdup(r->cell[0]); /* have to copy because this is also the primary key (path for the hash) */
+	cell[0] = rnd_strdup(r->cell[0]); /* have to copy because this is also the primary key (path for the hash) */
 	cell[1] = r->cell[1]; r->cell[1] = NULL;
 	cell[2] = r->cell[2]; r->cell[2] = NULL;
 	cell[3] = NULL;
@@ -280,13 +280,13 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 			PCB_DAD_LABEL(ctx.dlg, "Path:");
 			PCB_DAD_STRING(ctx.dlg);
 				ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
-				ctx.dlg[ctx.wpath].val.str = pcb_strdup(cell[0]);
+				ctx.dlg[ctx.wpath].val.str = rnd_strdup(cell[0]);
 				PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
 
 			PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
-			PCB_DAD_LABEL(ctx.dlg, pcb_strdup(cell[1]));
+			PCB_DAD_LABEL(ctx.dlg, rnd_strdup(cell[1]));
 				ctx.wexp = PCB_DAD_CURRENT(ctx.dlg);
-				ctx.dlg[ctx.wexp].val.str = pcb_strdup(cell[1]);
+				ctx.dlg[ctx.wexp].val.str = rnd_strdup(cell[1]);
 
 			PCB_DAD_LABEL(ctx.dlg, "");
 			PCB_DAD_BUTTON(ctx.dlg, "Help...");
@@ -302,9 +302,9 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 	}
 
 	free(cell[0]);
-	cell[0] = pcb_strdup(PCB_EMPTY(ctx.dlg[ctx.wpath].val.str));
+	cell[0] = rnd_strdup(PCB_EMPTY(ctx.dlg[ctx.wpath].val.str));
 	free(cell[1]);
-	cell[1] = pcb_strdup(PCB_EMPTY(ctx.dlg[ctx.wexp].val.str));
+	cell[1] = rnd_strdup(PCB_EMPTY(ctx.dlg[ctx.wexp].val.str));
 
 	PCB_DAD_FREE(ctx.dlg);
 	return 0;
@@ -335,14 +335,14 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	}
 
 	if (pos != 0) {
-		cell[0] = pcb_strdup("");
-		cell[1] = pcb_strdup("");
-		cell[2] = pcb_strdup(SRC_BRD);
+		cell[0] = rnd_strdup("");
+		cell[1] = rnd_strdup("");
+		cell[2] = rnd_strdup(SRC_BRD);
 	}
 	else {
-		cell[0] = pcb_strdup(r->cell[0]);
-		cell[1] = pcb_strdup(r->cell[1]);
-		cell[2] = pcb_strdup(r->cell[2]);
+		cell[0] = rnd_strdup(r->cell[0]);
+		cell[1] = rnd_strdup(r->cell[1]);
+		cell[2] = rnd_strdup(r->cell[2]);
 	}
 	cell[3] = NULL;
 

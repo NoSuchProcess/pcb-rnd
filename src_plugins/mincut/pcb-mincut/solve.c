@@ -44,7 +44,7 @@ typedef struct {
 static int pick_del(sstate_t *st)
 {
 	int idx, ret, size;
-	idx = pcb_rand() % st->num_avail;
+	idx = rnd_rand() % st->num_avail;
 	ret = st->avail[idx];
 	size = (st->num_avail-idx-1) * sizeof(int);
 	if (size > 0)
@@ -66,7 +66,7 @@ static int pick_neigh(sstate_t *st, int node)
 	}
 	if (num_neigh == 0)
 		return -1;
-	return st->neigh[pcb_rand() % num_neigh];
+	return st->neigh[rnd_rand() % num_neigh];
 }
 
 static void retag(sstate_t *st, int from, int to)

@@ -71,7 +71,7 @@ pcb_term_err_t pcb_term_add(htsp_t *terminals, pcb_any_obj_t *obj)
 	e = htsp_getentry(terminals, obj->term);
 	if (e == NULL) {
 		/* allocate new terminal */
-		char *tname = pcb_strdup(obj->term);
+		char *tname = rnd_strdup(obj->term);
 		v = malloc(sizeof(vtp0_t));
 		vtp0_init(v);
 		htsp_set(terminals, tname, v);
@@ -174,7 +174,7 @@ static int undo_term_rename_swap(void *udata)
 
 	/* remove from previous terminal */
 	if (r->obj->term != NULL) {
-		old_term = pcb_strdup(r->obj->term);
+		old_term = rnd_strdup(r->obj->term);
 		rnd_attribute_remove(&r->obj->Attributes, "term");
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 		r->obj->term = NULL;
@@ -182,7 +182,7 @@ static int undo_term_rename_swap(void *udata)
 
 	/* add to new terminal */
 	if (*r->str != '\0') {
-		r->obj->term = autofree = pcb_strdup(r->str);
+		r->obj->term = autofree = rnd_strdup(r->str);
 		pcb_obj_invalidate_label(r->obj->type, r->obj->parent.any, r->obj, r->obj);
 	}
 

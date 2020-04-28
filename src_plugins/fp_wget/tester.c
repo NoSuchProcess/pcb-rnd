@@ -4,7 +4,7 @@
 #include "gedasymbols.h"
 
 #undef strdup
-char *pcb_strdup(const char *s) { return strdup(s); }
+char *rnd_strdup(const char *s) { return strdup(s); }
 
 pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
 

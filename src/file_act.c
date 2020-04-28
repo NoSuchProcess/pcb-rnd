@@ -138,7 +138,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
-			name = pcb_strdup(argument_name);
+			name = rnd_strdup(argument_name);
 		else
 			name = pcb_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", "", "Layout name");
 
@@ -263,7 +263,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (pcb_save_pcb(name, fmt) == 0) {
 				pcb_board_set_changed_flag(pcb_false);
 				free(RND_ACT_HIDLIB->filename);
-				RND_ACT_HIDLIB->filename = pcb_strdup(name);
+				RND_ACT_HIDLIB->filename = rnd_strdup(name);
 				pcb_event(RND_ACT_HIDLIB, PCB_EVENT_BOARD_FN_CHANGED, NULL);
 			}
 			return 0;
@@ -342,7 +342,7 @@ static int save_fmt_dialog(const char *title, const char *descr, char **default_
 
 		if (*default_file != NULL)
 			free(*default_file);
-		*default_file = pcb_strdup(name);
+		*default_file = rnd_strdup(name);
 	}
 	return 0;
 }
@@ -361,12 +361,12 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveLib, fn = argv[3].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, SaveLib, fmt = argv[4].val.str);
 
-	if (pcb_strcasecmp(source, "board") == 0) src = PCB->Data;
-	else if (pcb_strcasecmp(source, "buffer") == 0) src = PCB_PASTEBUFFER->Data;
+	if (rnd_strcasecmp(source, "board") == 0) src = PCB->Data;
+	else if (rnd_strcasecmp(source, "buffer") == 0) src = PCB_PASTEBUFFER->Data;
 	else
 		RND_ACT_FAIL(SaveLib);
 
-	if (pcb_strcasecmp(method, "file") == 0) {
+	if (rnd_strcasecmp(method, "file") == 0) {
 		char *name;
 		FILE *f;
 		static char *default_file;
@@ -380,7 +380,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 		}
 		else
-			name = pcb_strdup(fn);
+			name = rnd_strdup(fn);
 
 		f = pcb_fopen(RND_ACT_HIDLIB, name, "w");
 		if (f == NULL) {
@@ -392,7 +392,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		free(name);
 		RND_ACT_IRES(pcb_write_footprint_data(f, src, fmt, -1));
 	}
-	else if (pcb_strcasecmp(method, "dir") == 0) {
+	else if (rnd_strcasecmp(method, "dir") == 0) {
 		unsigned int ares = 0;
 		void *udata;
 		gdl_iterator_t sit;
@@ -412,7 +412,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 		}
 		else
-			name = pcb_strdup(fn);
+			name = rnd_strdup(fn);
 
 		p = pcb_io_find_writer(PCB_IOT_FOOTPRINT, fmt);
 		if (p == NULL) {
@@ -470,7 +470,7 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *force = NULL;
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Quit, force = argv[1].val.str);
 
-	if ((force != NULL) && (pcb_strcasecmp(force, "force") == 0))
+	if ((force != NULL) && (rnd_strcasecmp(force, "force") == 0))
 		exit(0);
 	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();

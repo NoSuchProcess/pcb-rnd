@@ -287,7 +287,7 @@ static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *f
 
 	if (res != NULL) {
 		if (full_path != NULL)
-			*full_path = pcb_strdup(tmp);
+			*full_path = rnd_strdup(tmp);
 		return res;
 	}
 

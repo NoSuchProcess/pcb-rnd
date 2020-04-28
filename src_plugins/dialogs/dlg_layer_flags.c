@@ -65,7 +65,7 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_DAD_END(dlg);
 	
 
-	dlg[wname].val.str = pcb_strdup(ly->name);
+	dlg[wname].val.str = rnd_strdup(ly->name);
 	dlg[wsub].val.lng = ly->comb & PCB_LYC_SUB;
 	dlg[wauto].val.lng = ly->comb & PCB_LYC_AUTO;
 
@@ -143,9 +143,9 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_DAD_END(dlg);
 
 
-	dlg[wname].val.str = pcb_strdup(g->name);
+	dlg[wname].val.str = rnd_strdup(g->name);
 	dlg[wtype].val.lng = orig_type = pcb_ly_type2enum(g->ltype);
-	dlg[wpurp].val.str = pcb_strdup(g->purpose == NULL ? "" : g->purpose);
+	dlg[wpurp].val.str = rnd_strdup(g->purpose == NULL ? "" : g->purpose);
 	if (!omit_loc)
 		dlg[wloc].val.lng = def_loc;
 
@@ -202,7 +202,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (*dlg[wpurp].val.str == '\0')
 				pcb_layergrp_set_purpose__(g, NULL, 1);
 			else
-				pcb_layergrp_set_purpose__(g, pcb_strdup(dlg[wpurp].val.str), 1);
+				pcb_layergrp_set_purpose__(g, rnd_strdup(dlg[wpurp].val.str), 1);
 			changed = 1;
 		}
 

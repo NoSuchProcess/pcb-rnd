@@ -102,7 +102,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (name && *name) {
-		default_file = pcb_strdup(name);
+		default_file = rnd_strdup(name);
 	}
 
 	if ((out = pcb_fopen(&PCB->hidlib, name, "r"))) {
@@ -206,7 +206,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for (i = 0; i < cnt; i++) {
 		if (subc_list[i]->refdes) {
 			/* figure out the prefix */
-			tmps = pcb_strdup(or_empty(subc_list[i]->refdes));
+			tmps = rnd_strdup(or_empty(subc_list[i]->refdes));
 			j = 0;
 			while (tmps[j] && (tmps[j] < '0' || tmps[j] > '9')
 						 && tmps[j] != '?')
@@ -234,7 +234,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* start a new counter if we don't have a counter for this prefix */
 			if (!cnt_list[j].name) {
-				cnt_list[j].name = pcb_strdup(tmps);
+				cnt_list[j].name = rnd_strdup(tmps);
 				cnt_list[j].cnt = 0;
 			}
 
@@ -274,8 +274,8 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				fprintf(out, "*RENAME* \"%s\" \"%s\"\n", or_empty(subc_list[i]->refdes), tmps);
 
 				/* add this rename to our table of renames so we can update the netlist */
-				was[c_cnt] = pcb_strdup(or_empty(subc_list[i]->refdes));
-				is[c_cnt] = pcb_strdup(tmps);
+				was[c_cnt] = rnd_strdup(or_empty(subc_list[i]->refdes));
+				is[c_cnt] = rnd_strdup(tmps);
 				c_cnt++;
 
 				pcb_undo_add_obj_to_change_name(PCB_OBJ_SUBC, NULL, NULL, subc_list[i], (char *)or_empty(subc_list[i]->refdes));
@@ -318,7 +318,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					 */
 					if (strcmp(t->refdes, was[k]) == 0) {
 						free(t->refdes);
-						t->refdes = pcb_strdup(is[k]);
+						t->refdes = rnd_strdup(is[k]);
 						k = c_cnt;
 					}
 				}

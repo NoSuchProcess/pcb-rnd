@@ -533,7 +533,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		number = -1;
 		for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 			rts = &PCB->RouteStyle.array[n];
-			if (pcb_strcasecmp(rts->name, str) == 0) {
+			if (rnd_strcasecmp(rts->name, str) == 0) {
 				number = n + 1;
 				break;
 			}
@@ -646,7 +646,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
-			ret |= pcb_layer_rename_(ly, pcb_strdup(arg+5), 1);
+			ret |= pcb_layer_rename_(ly, rnd_strdup(arg+5), 1);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(arg, "auto=", 5) == 0) {
@@ -673,7 +673,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_message(PCB_MSG_ERROR, "Need an attribute name=value\n", arg+1);
 				return 1;
 			}
-			key = pcb_strdup(arg);
+			key = rnd_strdup(arg);
 			val = strchr(key, '=');
 			if (val != NULL) {
 				*val = '\0';
@@ -752,7 +752,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
-			ret |= pcb_layergrp_rename_(g, pcb_strdup(arg+5), 1);
+			ret |= pcb_layergrp_rename_(g, rnd_strdup(arg+5), 1);
 			pcb_board_set_changed_flag(pcb_true);
 		}
 		else if (strncmp(arg, "type=", 5) == 0) {
@@ -783,7 +783,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_ACT_IRES(1);
 				return 0;
 			}
-			key = pcb_strdup(arg);
+			key = rnd_strdup(arg);
 			val = strchr(key, '=');
 			if (val != NULL) {
 				*val = '\0';
@@ -906,11 +906,11 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_layer_id_t lid;
 
 		if (spurp != NULL)
-			pcb_layergrp_set_purpose__(g, pcb_strdup(spurp), 1);
+			pcb_layergrp_set_purpose__(g, rnd_strdup(spurp), 1);
 
 		free(g->name);
 		if (name != NULL)
-			g->name = pcb_strdup(name);
+			g->name = rnd_strdup(name);
 		else
 			g->name = pcb_strdup_printf("%s%s%s", sloc == NULL ? "" : sloc, sloc == NULL ? "" : "-", stype);
 		g->ltype = ltype | lloc;
@@ -921,7 +921,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_layergrp_undoable_created(g);
 
 		if (attr != NULL) {
-			char *attrs = pcb_strdup(attr), *curr, *next, *val;
+			char *attrs = rnd_strdup(attr), *curr, *next, *val;
 			for(curr = attrs; curr != NULL; curr = next) {
 				next = strchr(curr, ';');
 				if (next != NULL) {
@@ -955,7 +955,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			if (name != NULL) {
 				free((char *)ly->name);
-				ly->name = pcb_strdup(name);
+				ly->name = rnd_strdup(name);
 			}
 		}
 		else
@@ -1040,7 +1040,7 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	RND_ACT_IRES(0);
 	RND_PCB_ACT_CONVARG(1, FGW_STR, selectlayer, name = argv[1].val.str);
 
-	if (pcb_strcasecmp(name, "silk") == 0) {
+	if (rnd_strcasecmp(name, "silk") == 0) {
 		PCB->RatDraw = 0;
 		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0) {
 			pcb_layervis_change_group_vis(RND_ACT_HIDLIB, lid, 1, 1);
@@ -1133,7 +1133,7 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, toggleview, name = argv[1].val.str);
 	RND_ACT_IRES(0);
 
-	if (pcb_strcasecmp(name, "all") == 0) {
+	if (rnd_strcasecmp(name, "all") == 0) {
 		pcb_bool_op_t open = PCB_BOOL_PRESERVE, vis = PCB_BOOL_PRESERVE, user = PCB_BOOL_PRESERVE;
 		const char *cmd, *suser;
 		RND_PCB_ACT_CONVARG(2, FGW_STR, toggleview, cmd = argv[2].val.str);
@@ -1142,9 +1142,9 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		user = pcb_str2boolop(suser);
 		if (user == PCB_BOOL_INVALID)
 			RND_ACT_FAIL(toggleview);
-		if (pcb_strcasecmp(cmd, "open") == 0)
+		if (rnd_strcasecmp(cmd, "open") == 0)
 			open = user;
-		else if (pcb_strcasecmp(cmd, "vis") == 0)
+		else if (rnd_strcasecmp(cmd, "vis") == 0)
 			vis = user;
 		else
 			RND_ACT_FAIL(toggleview);
@@ -1153,18 +1153,18 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_event(RND_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 		return 0;
 	}
-	else if (pcb_strcasecmp(name, "silk") == 0) {
+	else if (rnd_strcasecmp(name, "silk") == 0) {
 		if (pcb_layer_list(PCB, PCB_LYT_VISIBLE_SIDE() | PCB_LYT_SILK, &lid, 1) > 0)
 			pcb_layervis_change_group_vis(RND_ACT_HIDLIB, lid, -1, 0);
 		else
 			rnd_message(PCB_MSG_ERROR, "Can't find this-side silk layer\n");
 	}
-	else if ((pcb_strcasecmp(name, "padstacks") == 0) || (pcb_strcasecmp(name, "vias") == 0) || (pcb_strcasecmp(name, "pins") == 0) || (pcb_strcasecmp(name, "pads") == 0)) {
+	else if ((rnd_strcasecmp(name, "padstacks") == 0) || (rnd_strcasecmp(name, "vias") == 0) || (rnd_strcasecmp(name, "pins") == 0) || (rnd_strcasecmp(name, "pads") == 0)) {
 		PCB->pstk_on = !PCB->pstk_on;
 		pcb_gui->invalidate_all(pcb_gui);
 		pcb_event(RND_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
-	else if (pcb_strcasecmp(name, "BackSide") == 0) {
+	else if (rnd_strcasecmp(name, "BackSide") == 0) {
 		PCB->InvisibleObjectsOn = !PCB->InvisibleObjectsOn;
 		pcb_gui->invalidate_all(pcb_gui);
 		pcb_event(RND_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL);

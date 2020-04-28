@@ -245,7 +245,7 @@ TODO("Dangerous: rather support subc's data with IDPATH");
 
 		if (name != NULL) {
 			if (name == buf) {
-				arg->val.str = pcb_strdup(name);
+				arg->val.str = rnd_strdup(name);
 				arg->type = FGW_STR | FGW_DYN;
 			}
 			else { /* static string */

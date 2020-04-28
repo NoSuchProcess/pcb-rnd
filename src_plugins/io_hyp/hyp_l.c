@@ -2205,7 +2205,7 @@ char *yytext;
 #line 28 "hyp_l.l"
 #include <stdlib.h>
 
-char *pcb_strdup(const char *s); /* from #include <librnd/core/compat_misc.h> */
+char *rnd_strdup(const char *s); /* from #include <librnd/core/compat_misc.h> */
 
 #include "hyp_y.h"
 
@@ -3492,7 +3492,7 @@ YY_RULE_SETUP
 case 127:
 YY_RULE_SETUP
 #line 328 "hyp_l.l"
-{ yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return H_STRING; } /* emit empty string and reprocess */
+{ yyless(0); BEGIN INITIAL; hyylval.strval = rnd_strdup(""); return H_STRING; } /* emit empty string and reprocess */
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
@@ -3506,7 +3506,7 @@ YY_RULE_SETUP
                         REJECT 
                       else 
                       { 
-                        char *s = pcb_strdup(hyytext);
+                        char *s = rnd_strdup(hyytext);
   
                         BEGIN INITIAL; 
   
@@ -3573,7 +3573,7 @@ YY_RULE_SETUP
                         else 
                         { 
                           BEGIN INITIAL; 
-                          hyylval.strval = pcb_strdup(hyytext); 
+                          hyylval.strval = rnd_strdup(hyytext); 
                           return H_STRING;
                         }
                       }

@@ -61,7 +61,7 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_LABEL(dlg, label);
 		PCB_DAD_STRING(dlg);
 			ws = PCB_DAD_CURRENT(dlg);
-			dlg[ws].val.str = pcb_strdup(default_str == NULL ? "" : default_str);
+			dlg[ws].val.str = rnd_strdup(default_str == NULL ? "" : default_str);
 			PCB_DAD_ENTER_CB(dlg, prompt_enter_cb);
 			dlg[ws].user_data = &dlg_ret_override;
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
@@ -81,7 +81,7 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	res->type = FGW_STR | FGW_DYN;
-	res->val.str = pcb_strdup(dlg[ws].val.str);
+	res->val.str = rnd_strdup(dlg[ws].val.str);
 	PCB_DAD_FREE(dlg);
 
 	return 0;

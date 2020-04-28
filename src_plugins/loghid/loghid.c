@@ -102,7 +102,7 @@ static int loghid_usage(pcb_hid_t *hid, const char *topic)
 
 static pcb_export_opt_t *loghid_get_export_options(pcb_hid_t *hid, int *n)
 {
-/*	loghid_attribute_list[HA_psfile] = pcb_strdup("default?");*/
+/*	loghid_attribute_list[HA_psfile] = rnd_strdup("default?");*/
 
 	if (n)
 		*n = (sizeof(loghid_attribute_list)/sizeof(loghid_attribute_list[0]));

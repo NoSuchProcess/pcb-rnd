@@ -635,19 +635,19 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
 			rnd_coord_t d, t = mesh->def_subs_thick;
 			double dens = (double)t/(double)lns;
-			bottom_dens = pcb_round(dens);
+			bottom_dens = rnd_round(dens);
 			if (lns != 0) {
 				for(n = 0; n <= lns; n++) {
 					if (n == 0) {
 						if (first) {
 							ytop = y;
-							top_dens = pcb_round(dens);
+							top_dens = rnd_round(dens);
 							first = 0;
 						}
 						else
 							continue;
 					}
-					d = pcb_round((double)y+dens*(double)n);
+					d = rnd_round((double)y+dens*(double)n);
 					mesh_add_result(mesh, PCB_MESH_Z, d);
 				}
 			}
@@ -977,7 +977,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 	if (default_file != NULL) {
 		free(default_file);
-		default_file = pcb_strdup(fname);
+		default_file = rnd_strdup(fname);
 	}
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fname, "w", NULL);
@@ -1007,7 +1007,7 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 	if (default_file != NULL) {
 		free(default_file);
-		default_file = pcb_strdup(fname);
+		default_file = rnd_strdup(fname);
 	}
 
 	f = pcb_fopen(&PCB->hidlib, fname, "r");
@@ -1039,7 +1039,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	free(mesh.ui_name_xy);
 	free((char *)mesh.ui_layer_xy->name); /* we have strdup'd it */
 	mesh.ui_name_xy = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
-	mesh.ui_layer_xy->name = pcb_strdup(mesh.ui_name_xy);
+	mesh.ui_layer_xy->name = rnd_strdup(mesh.ui_name_xy);
 	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	pcb_gui->invalidate_all(pcb_gui);

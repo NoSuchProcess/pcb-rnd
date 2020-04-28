@@ -114,11 +114,11 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *cmd = NULL;
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, FullScreen, cmd = argv[1].val.str);
 
-	if ((cmd == NULL) || (pcb_strcasecmp(cmd, "Toggle") == 0))
+	if ((cmd == NULL) || (rnd_strcasecmp(cmd, "Toggle") == 0))
 		pcb_conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, POL_OVERWRITE);
-	else if (pcb_strcasecmp(cmd, "On") == 0)
+	else if (rnd_strcasecmp(cmd, "On") == 0)
 		pcb_conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", POL_OVERWRITE);
-	else if (pcb_strcasecmp(cmd, "Off") == 0)
+	else if (rnd_strcasecmp(cmd, "Off") == 0)
 		pcb_conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", POL_OVERWRITE);
 	else
 		RND_ACT_FAIL(FullScreen);
@@ -180,7 +180,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_FAIL(Cursor);
 	}
 
-	if (pcb_strcasecmp(a3, "grid") == 0) {
+	if (rnd_strcasecmp(a3, "grid") == 0) {
 		char *end;
 		dx = strtod(a1, &end) * pcbhl_conf.editor.grid;
 		dy = strtod(a2, &end) * pcbhl_conf.editor.grid;
@@ -190,7 +190,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		dy = pcb_get_value_ex(a2, a3, NULL, extra_units_y, "", NULL);
 	}
 
-	if (pcb_strcasecmp(a3, "view") == 0) {
+	if (rnd_strcasecmp(a3, "view") == 0) {
 		if ((pcb_gui != NULL) && (pcb_gui->view_get != NULL)) {
 			rnd_box_t viewbox;
 			pcb_gui->view_get(pcb_gui, &viewbox);

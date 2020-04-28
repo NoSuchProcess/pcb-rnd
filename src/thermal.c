@@ -112,8 +112,8 @@ static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, rn
 		ltmp.Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 	else
 		ltmp.Flags = pcb_no_flags();
-	ltmp.Point1.X = pcb_round(x1); ltmp.Point1.Y = pcb_round(y1);
-	ltmp.Point2.X = pcb_round(x2); ltmp.Point2.Y = pcb_round(y2);
+	ltmp.Point1.X = rnd_round(x1); ltmp.Point1.Y = rnd_round(y1);
+	ltmp.Point2.X = rnd_round(x2); ltmp.Point2.Y = rnd_round(y2);
 	return pcb_poly_from_pcb_line(&ltmp, clr);
 }
 
@@ -129,8 +129,8 @@ static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 /*	pcb_trace("sa=%f ea=%f diff=%f\n", sa, ea, ea-sa);*/
 
 	atmp.Flags = pcb_no_flags();
-	atmp.X = pcb_round(cx);
-	atmp.Y = pcb_round(cy);
+	atmp.X = rnd_round(cx);
+	atmp.Y = rnd_round(cy);
 
 	da = ea-sa;
 	if ((da < max_span_angle) && (da > -max_span_angle)) {

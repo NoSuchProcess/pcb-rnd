@@ -48,7 +48,7 @@
 rnd_coord_t pcb_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset)
 {
 	x -= grid_offset;
-	x = grid_spacing * pcb_round((double) x / grid_spacing);
+	x = grid_spacing * rnd_round((double) x / grid_spacing);
 	x += grid_offset;
 	return x;
 }
@@ -67,7 +67,7 @@ pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src)
 
 	/* remember where size starts */
 	while(isspace(*src)) src++;
-	sep = size = tmp = pcb_strdup(src);
+	sep = size = tmp = rnd_strdup(src);
 
 	/* find optional offs */
 	sep2 = strchr(sep, '@');
@@ -126,7 +126,7 @@ pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src)
 	free(tmp);
 
 	if (nsep != NULL)
-		dst->name = pcb_strndup(src, nsep-src-1);
+		dst->name = rnd_strndup(src, nsep-src-1);
 	else
 		dst->name = NULL;
 	return pcb_true;

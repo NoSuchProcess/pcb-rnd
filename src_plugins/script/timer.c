@@ -53,7 +53,7 @@ static void timer_cb(pcb_hidval_t hv)
 		return; /* don't even restart the timer if we are not waiting for anything */
 	}
 
-	now = pcb_dtime();
+	now = rnd_dtime();
 
 	/* we could do something clever here, e.g. sort timers by ->next but
 	   in reality there will be so few timers at any given time that it's
@@ -134,12 +134,12 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_aname(fn, act);
 	len = strlen(fn);
 	t = malloc(sizeof(script_timer_t) + len);
-	t->next = pcb_dtime() + period;
+	t->next = rnd_dtime() + period;
 	t->period = period;
 	t->count = count;
 	strcpy(t->aname, fn);
 	if (user_data != NULL)
-		t->user_data = pcb_strdup(user_data);
+		t->user_data = rnd_strdup(user_data);
 	else
 		t->user_data = NULL;
 

@@ -583,12 +583,12 @@ static const char *layer_name_hack(pcb_layer_t *layer, const char *name)
 	/* The old PCB format encodes some properties in layer names - have to
 	   alter the real layer name before save to get the same effect */
 	if (PCB_LAYER_IS_OUTLINE(lflg, purpi)) {
-		if (pcb_strcasecmp(name, "outline") == 0)
+		if (rnd_strcasecmp(name, "outline") == 0)
 			return name;
 		return "Outline";
 	}
 	if (lflg & PCB_LYT_SILK) {
-		if (pcb_strcasecmp(name, "silk") == 0)
+		if (rnd_strcasecmp(name, "silk") == 0)
 			return name;
 		return "silk";
 	}
@@ -866,7 +866,7 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 	if (pcb->Data->LayerN >= PCB_MAX_LAYER)
 		return -1;
 	lid = pcb->Data->LayerN;
-	pcb->Data->Layer[lid].name = pcb_strdup(name);
+	pcb->Data->Layer[lid].name = rnd_strdup(name);
 	pcb->Data->Layer[lid].parent.data = pcb->Data;
 	pcb->Data->Layer[lid].parent_type = PCB_PARENT_DATA;
 	pcb->Data->Layer[lid].type = PCB_OBJ_LAYER;
@@ -894,7 +894,7 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 	for(lid = 0; lid < PCB_MAX_LAYER; lid++) {
 		if (pcb->Data->Layer[lid].meta.real.grp == 0) {
 			free((char *)pcb->Data->Layer[lid].name);
-			pcb->Data->Layer[lid].name = pcb_strdup(name);
+			pcb->Data->Layer[lid].name = rnd_strdup(name);
 			pcb->Data->Layer[lid].parent.data = pcb->Data;
 			pcb->Data->Layer[lid].parent_type = PCB_PARENT_DATA;
 			pcb->Data->Layer[lid].type = PCB_OBJ_LAYER;
@@ -929,7 +929,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, rnd_bool setup)
 			else {
 				if (*pcb->Data->Layer[lid].name == '\0') {
 					free((char *)pcb->Data->Layer[lid].name);
-					pcb->Data->Layer[lid].name = pcb_strdup("anonymous");
+					pcb->Data->Layer[lid].name = rnd_strdup("anonymous");
 				}
 				if (lid == 0)
 					pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);

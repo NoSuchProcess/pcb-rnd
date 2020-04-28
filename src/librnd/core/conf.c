@@ -326,17 +326,17 @@ static int conf_load_plug_interns(conf_role_t role)
 
 conf_native_type_t pcb_conf_native_type_parse(const char *s)
 {
-	if (pcb_strcasecmp(s, "string") == 0)     return  CFN_STRING;
-	if (pcb_strcasecmp(s, "str") == 0)        return  CFN_STRING;
-	if (pcb_strcasecmp(s, "boolean") == 0)    return  CFN_BOOLEAN;
-	if (pcb_strcasecmp(s, "bool") == 0)       return  CFN_BOOLEAN;
-	if (pcb_strcasecmp(s, "integer") == 0)    return  CFN_INTEGER;
-	if (pcb_strcasecmp(s, "real") == 0)       return  CFN_REAL;
-	if (pcb_strcasecmp(s, "coord") == 0)      return  CFN_COORD;
-	if (pcb_strcasecmp(s, "unit") == 0)       return  CFN_UNIT;
-	if (pcb_strcasecmp(s, "color") == 0)      return  CFN_COLOR;
-	if (pcb_strcasecmp(s, "list") == 0)       return  CFN_LIST;
-	if (pcb_strcasecmp(s, "hlist") == 0)      return  CFN_HLIST;
+	if (rnd_strcasecmp(s, "string") == 0)     return  CFN_STRING;
+	if (rnd_strcasecmp(s, "str") == 0)        return  CFN_STRING;
+	if (rnd_strcasecmp(s, "boolean") == 0)    return  CFN_BOOLEAN;
+	if (rnd_strcasecmp(s, "bool") == 0)       return  CFN_BOOLEAN;
+	if (rnd_strcasecmp(s, "integer") == 0)    return  CFN_INTEGER;
+	if (rnd_strcasecmp(s, "real") == 0)       return  CFN_REAL;
+	if (rnd_strcasecmp(s, "coord") == 0)      return  CFN_COORD;
+	if (rnd_strcasecmp(s, "unit") == 0)       return  CFN_UNIT;
+	if (rnd_strcasecmp(s, "color") == 0)      return  CFN_COLOR;
+	if (rnd_strcasecmp(s, "list") == 0)       return  CFN_LIST;
+	if (rnd_strcasecmp(s, "hlist") == 0)      return  CFN_HLIST;
 
 	return CFN_max;
 }
@@ -344,10 +344,10 @@ conf_native_type_t pcb_conf_native_type_parse(const char *s)
 
 conf_policy_t pcb_conf_policy_parse(const char *s)
 {
-	if (pcb_strcasecmp(s, "overwrite") == 0)  return  POL_OVERWRITE;
-	if (pcb_strcasecmp(s, "prepend") == 0)    return  POL_PREPEND;
-	if (pcb_strcasecmp(s, "append") == 0)     return  POL_APPEND;
-	if (pcb_strcasecmp(s, "disable") == 0)    return  POL_DISABLE;
+	if (rnd_strcasecmp(s, "overwrite") == 0)  return  POL_OVERWRITE;
+	if (rnd_strcasecmp(s, "prepend") == 0)    return  POL_PREPEND;
+	if (rnd_strcasecmp(s, "append") == 0)     return  POL_APPEND;
+	if (rnd_strcasecmp(s, "disable") == 0)    return  POL_DISABLE;
 	return POL_invalid;
 }
 
@@ -365,14 +365,14 @@ const char *pcb_conf_policy_name(conf_policy_t p)
 
 conf_role_t pcb_conf_role_parse(const char *s)
 {
-	if (pcb_strcasecmp(s, "internal") == 0)   return CFR_INTERNAL;
-	if (pcb_strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
-	if (pcb_strcasecmp(s, "defaultpcb") == 0) return CFR_DEFAULTPCB;
-	if (pcb_strcasecmp(s, "user") == 0)       return CFR_USER;
-	if (pcb_strcasecmp(s, "env") == 0)        return CFR_ENV;
-	if (pcb_strcasecmp(s, "project") == 0)    return CFR_PROJECT;
-	if (pcb_strcasecmp(s, "design") == 0)     return CFR_DESIGN;
-	if (pcb_strcasecmp(s, "cli") == 0)        return CFR_CLI;
+	if (rnd_strcasecmp(s, "internal") == 0)   return CFR_INTERNAL;
+	if (rnd_strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
+	if (rnd_strcasecmp(s, "defaultpcb") == 0) return CFR_DEFAULTPCB;
+	if (rnd_strcasecmp(s, "user") == 0)       return CFR_USER;
+	if (rnd_strcasecmp(s, "env") == 0)        return CFR_ENV;
+	if (rnd_strcasecmp(s, "project") == 0)    return CFR_PROJECT;
+	if (rnd_strcasecmp(s, "design") == 0)     return CFR_DESIGN;
+	if (rnd_strcasecmp(s, "cli") == 0)        return CFR_CLI;
 	return CFR_invalid;
 }
 
@@ -521,12 +521,12 @@ int pcb_conf_parse_text(confitem_t *dst, int idx, conf_native_type_t type, const
 		case CFN_BOOLEAN:
 			while(isspace(*text)) text++;
 			for(s = strue; *s != NULL; s++)
-				if (pcb_strncasecmp(*s, text, strlen(*s)) == 0) {
+				if (rnd_strncasecmp(*s, text, strlen(*s)) == 0) {
 					dst->boolean[idx] = 1;
 					return 0;
 				}
 			for(s = sfalse; *s != NULL; s++)
-				if (pcb_strncasecmp(*s, text, strlen(*s)) == 0) {
+				if (rnd_strncasecmp(*s, text, strlen(*s)) == 0) {
 					dst->boolean[idx] = 0;
 					return 0;
 				}
@@ -1079,7 +1079,7 @@ void pcb_conf_update(const char *path, int arr_idx)
 		n = pcb_conf_get_field(path);
 		if (n == NULL) {
 			char *path_, *field;
-			path_ = pcb_strdup(path);
+			path_ = rnd_strdup(path);
 
 			/* It might be an array element - truncate */
 			field = strrchr(path_, '[');
@@ -1226,7 +1226,7 @@ lht_node_t *pcb_conf_lht_get_at_mainplug(conf_role_t target, const char *path, i
 	}
 	else {
 		/* lihata syntax differs from conf syntax in array indexing */
-		pc = pcb_strdup(path);
+		pc = rnd_strdup(path);
 		pc[end-path] = '/';
 		end = strchr(pc+(end-path), ']');
 		if (end != NULL)
@@ -1410,7 +1410,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 	if (mkdirp)
 		pcb_conf_lht_get_first_pol(target, pol, 1);
 
-	path = pcb_strdup(path_);
+	path = rnd_strdup(path_);
 	sidx = strrchr(path, '[');
 	if (sidx != NULL) {
 		char *end;
@@ -1604,7 +1604,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 		if (cwd->data.text.value != NULL)
 			free(cwd->data.text.value);
 
-		cwd->data.text.value = pcb_strdup(new_val);
+		cwd->data.text.value = rnd_strdup(new_val);
 		cwd->file_name = pcb_conf_main_root[target]->active_file;
 	}
 	else
@@ -1656,7 +1656,7 @@ int pcb_conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
 	if (node->data.text.value != NULL)
 		free(node->data.text.value);
 
-	node->data.text.value = pcb_strdup(new_val);
+	node->data.text.value = rnd_strdup(new_val);
 	return 0;
 }
 
@@ -1671,7 +1671,7 @@ int pcb_conf_set_from_cli(const char *prefix, const char *arg_, const char *val,
 	if (prefix != NULL) {
 		for(sc = arg_; (*sc != '=') && (*sc != '\0'); sc++)
 			if (*sc == '/')
-				arg = pcb_strdup(arg_); /* full path, don't use prefix */
+				arg = rnd_strdup(arg_); /* full path, don't use prefix */
 
 		if (arg == NULL) { /* insert prefix */
 			int pl = strlen(prefix), al = strlen(arg_);
@@ -1683,7 +1683,7 @@ int pcb_conf_set_from_cli(const char *prefix, const char *arg_, const char *val,
 		}
 	}
 	else
-		arg = pcb_strdup(arg_);
+		arg = rnd_strdup(arg_);
 
 	/* replace any - with _ in the path part; cli accepts dash but the backing C
 	   struct field names don't */
@@ -1826,7 +1826,7 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 				for(it = pcb_conflist_first(n->val.list); it != NULL; it = pcb_conflist_next(it)) {
 					lht_node_t *txt;
 					txt = lht_dom_node_alloc(LHT_TEXT, "");
-					txt->data.text.value = pcb_strdup(it->payload);
+					txt->data.text.value = rnd_strdup(it->payload);
 					lht_dom_list_append(ch, txt);
 				}
 			}
@@ -1914,7 +1914,7 @@ int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 			char *path = NULL, *end;
 			
 			if (efn != NULL)
-				path = pcb_strdup(efn);
+				path = rnd_strdup(efn);
 			else
 				path = pcb_build_fn(hidlib, fn);
 

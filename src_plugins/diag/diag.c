@@ -464,7 +464,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_message(PCB_MSG_INFO, "Measuring find.c peformance for %f seconds starting from %ld pins...\n", duration, pins);
 
-	from = pcb_dtime();
+	from = rnd_dtime();
 	end = from + duration;
 	do {
 		PCB_SUBC_LOOP(PCB->Data) {
@@ -476,7 +476,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		PCB_END_LOOP;
 		its++;
-		now = pcb_dtime();
+		now = rnd_dtime();
 	} while(now < end);
 	rnd_message(PCB_MSG_INFO, "find2.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
 	RND_ACT_IRES(0);

@@ -68,7 +68,7 @@ static void cb_mkdirp(pcb_vfs_list_cb cb, void *ctx, gds_t *path, const char *ap
 		*next= '\0';
 /*pcb_trace(" dir '%s'\n", path->array);*/
 		if (!htsp_has(seen, path->array)) {
-			htsp_set(seen, pcb_strdup(path->array), ctx);
+			htsp_set(seen, rnd_strdup(path->array), ctx);
 			cb(ctx, path->array, 1);
 		}
 		*next= '/';

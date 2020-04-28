@@ -167,18 +167,18 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);
 #ifndef M_PI
 #define M_PI  3.14159265358979323846
 #endif
-double pcb_round(double x); /* from math_helper.h */
+double rnd_round(double x); /* from math_helper.h */
 
 /* Calculate an endpoint of an arc and return the result in *x;*y */
 RND_INLINE void pcb_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, int which, rnd_coord_t *x, rnd_coord_t *y)
 {
 	if (which == 0) {
-		*x = pcb_round((double)cx - (double)width * cos(astart * (M_PI/180.0)));
-		*y = pcb_round((double)cy + (double)height * sin(astart * (M_PI/180.0)));
+		*x = rnd_round((double)cx - (double)width * cos(astart * (M_PI/180.0)));
+		*y = rnd_round((double)cy + (double)height * sin(astart * (M_PI/180.0)));
 	}
 	else {
-		*x = pcb_round((double)cx - (double)width * cos((astart + adelta) * (M_PI/180.0)));
-		*y = pcb_round((double)cy + (double)height * sin((astart + adelta) * (M_PI/180.0)));
+		*x = rnd_round((double)cx - (double)width * cos((astart + adelta) * (M_PI/180.0)));
+		*y = rnd_round((double)cy + (double)height * sin((astart + adelta) * (M_PI/180.0)));
 	}
 }
 

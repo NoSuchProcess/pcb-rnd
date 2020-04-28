@@ -79,7 +79,7 @@ do { \
 #define print_term(pnum, obj) \
 do { \
 	if (htsp_get(&terms, pnum) == NULL) { \
-		htsp_set(&terms, pcb_strdup(pnum), obj); \
+		htsp_set(&terms, rnd_strdup(pnum), obj); \
 		fprintf(f, "	term %s %s - %s\n", pnum, pnum, obj->Name); \
 	} \
 } while(0)
@@ -87,7 +87,7 @@ do { \
 #define print_terma(terms, pnum, obj) \
 do { \
 	if (htsp_get(terms, pnum) == NULL) { \
-		htsp_set(terms, pcb_strdup(pnum), obj); \
+		htsp_set(terms, rnd_strdup(pnum), obj); \
 		fprintf(f, "	term %s %s - %s\n", pnum, pnum, pnum); \
 	} \
 } while(0)
@@ -339,8 +339,8 @@ typedef struct {
 static term_t *term_new(const char *pinid, const char *name)
 {
 	term_t *t = calloc(sizeof(term_t), 1);
-	t->pinid = pcb_strdup(pinid);
-	t->name = pcb_strdup(name);
+	t->pinid = rnd_strdup(pinid);
+	t->name = rnd_strdup(name);
 	return t;
 }
 

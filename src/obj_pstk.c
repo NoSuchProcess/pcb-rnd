@@ -427,12 +427,12 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 		/* slow - but would be used on export mostly, not on-screen drawing */
 		pcb_polo_t *p, p_st[32];
 		rnd_coord_t *x, *y, xy_st[64];
-		double vl = pcb_round(-dthick/2);
+		double vl = rnd_round(-dthick/2);
 		long n;
 
 		if (shape->data.poly.inverted)
 			dthick = -dthick;
-		vl = pcb_round(dthick/2);
+		vl = rnd_round(dthick/2);
 		
 		if (shape->data.poly.len >= sizeof(p_st) / sizeof(p_st[0])) {
 			p = malloc(sizeof(pcb_polo_t) * shape->data.poly.len);
@@ -452,8 +452,8 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 		pcb_polo_norms(p, shape->data.poly.len);
 		pcb_polo_offs(vl, p, shape->data.poly.len);
 		for(n = 0; n < shape->data.poly.len; n++) {
-			x[n] = pcb_round(p[n].x);
-			y[n] = pcb_round(p[n].y);
+			x[n] = rnd_round(p[n].x);
+			y[n] = rnd_round(p[n].y);
 		}
 
 		if (!fill) {
@@ -1263,16 +1263,16 @@ void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy, int undoable)
 		pcb_pstk_shape_scale(prt, 0, n, sx, sy, undoable);
 
 	if (prt->hdia > 0.0)
-		prt->hdia = pcb_round((double)prt->hdia * ((sx+sy)/2.0));
+		prt->hdia = rnd_round((double)prt->hdia * ((sx+sy)/2.0));
 
 	pcb_pstk_proto_update(prt);
 	ps->proto = pcb_pstk_proto_insert_or_free(ps->parent.data, prt, 1, undoable);
 
 	if (sx != 1.0)
-		ps->x = pcb_round((double)ps->x * sx);
+		ps->x = rnd_round((double)ps->x * sx);
 
 	if (sy != 1.0)
-		ps->y = pcb_round((double)ps->y * sy);
+		ps->y = rnd_round((double)ps->y * sy);
 
 	pcb_pstk_post(ps);
 }

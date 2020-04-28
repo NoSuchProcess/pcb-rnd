@@ -36,7 +36,7 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 		fin = pcb_fopen_first(&PCB->hidlib, &conf_core.rc.library_search_paths, name, "r", &full_path, pcb_true);
 
 		if (fin != NULL) {
-			char *s, *safe_name = pcb_strdup(name);
+			char *s, *safe_name = rnd_strdup(name);
 			for(s = safe_name; *s != '\0'; s++)
 				if (!isalnum(*s))
 					*s = '_';
@@ -63,7 +63,7 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 			}
 			fclose(fin);
 			pcb_snprintf(buff, sizeof(buff), "pcb_part_%s", safe_name);
-			htsp_set(models, (char *)name, pcb_strdup(buff));
+			htsp_set(models, (char *)name, rnd_strdup(buff));
 			free(safe_name);
 		}
 		else {

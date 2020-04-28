@@ -308,8 +308,8 @@ int pcb_arc_eq(const pcb_host_trans_t *tr1, const pcb_arc_t *a1, const pcb_host_
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, a1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, a2)) {
 		if (pcb_neq_tr_coords(tr1, a1->X, a1->Y, tr2, a2->X, a2->Y)) return 0;
-		if (pcb_normalize_angle(pcb_round(a1->StartAngle * sgn1 + tr1->rot * sgn1)) != pcb_normalize_angle(pcb_round(a2->StartAngle * sgn2 + tr2->rot * sgn2))) return 0;
-		if (pcb_round(a1->Delta * sgn1) != pcb_round(a2->Delta * sgn2)) return 0;
+		if (pcb_normalize_angle(rnd_round(a1->StartAngle * sgn1 + tr1->rot * sgn1)) != pcb_normalize_angle(rnd_round(a2->StartAngle * sgn2 + tr2->rot * sgn2))) return 0;
+		if (rnd_round(a1->Delta * sgn1) != rnd_round(a2->Delta * sgn2)) return 0;
 	}
 
 	return 1;
@@ -324,7 +324,7 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 		rnd_coord_t x, y;
 		pcb_hash_tr_coords(tr, &x, &y, a->X, a->Y);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^
-			pcb_hash_coord(pcb_normalize_angle(pcb_round(a->StartAngle*sgn + tr->rot*sgn))) ^ pcb_hash_coord(pcb_round(a->Delta * sgn));
+			pcb_hash_coord(pcb_normalize_angle(rnd_round(a->StartAngle*sgn + tr->rot*sgn))) ^ pcb_hash_coord(rnd_round(a->Delta * sgn));
 	}
 
 	return
@@ -340,7 +340,7 @@ rnd_coord_t pcb_arc_length(const pcb_arc_t *arc)
 		da = -da;
 	while(da > 360.0)
 		da = 360.0;
-	return pcb_round(2.0*r*M_PI*da/360.0);
+	return rnd_round(2.0*r*M_PI*da/360.0);
 }
 
 double pcb_arc_area(const pcb_arc_t *arc)
@@ -843,17 +843,17 @@ void pcb_arc_scale(pcb_arc_t *arc, double sx, double sy, double sth)
 		pcb_arc_pre(arc);
 
 	if (sx != 1.0) {
-		arc->X = pcb_round((double)arc->X * sx);
-		arc->Width = pcb_round((double)arc->Width * sx);
+		arc->X = rnd_round((double)arc->X * sx);
+		arc->Width = rnd_round((double)arc->Width * sx);
 	}
 
 	if (sy != 1.0) {
-		arc->Y = pcb_round((double)arc->Y * sy);
-		arc->Height = pcb_round((double)arc->Height * sy);
+		arc->Y = rnd_round((double)arc->Y * sy);
+		arc->Height = rnd_round((double)arc->Height * sy);
 	}
 
 	if (sth != 1.0)
-		arc->Thickness = pcb_round((double)arc->Thickness * sth);
+		arc->Thickness = rnd_round((double)arc->Thickness * sth);
 
 	pcb_arc_bbox(arc);
 	if (onbrd)
@@ -956,8 +956,8 @@ static void arc_label_pos(const pcb_arc_t *arc, rnd_coord_t *x0, rnd_coord_t *y0
 
 	la = (arc->StartAngle+ea)/2.0;
 
-	*x0 = pcb_round((double)arc->X - (double)arc->Width * cos(la * PCB_M180));
-	*y0 = pcb_round((double)arc->Y + (double)arc->Height * sin(la * PCB_M180));
+	*x0 = rnd_round((double)arc->X - (double)arc->Width * cos(la * PCB_M180));
+	*y0 = rnd_round((double)arc->Y + (double)arc->Height * sin(la * PCB_M180));
 	*vert = (((la < 45) && (la > -45)) || ((la > 135) && (la < 225)));
 }
 
@@ -1001,18 +1001,18 @@ void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, i
 		if (step < 0) step = -step;
 		ea2 = ea - step/3;
 		for(a = arc->StartAngle; a < ea2; a += step)
-			if (cb(uctx, pcb_round((double)arc->X - (double)arc->Width * cos(a * PCB_M180)), pcb_round((double)arc->Y + (double)arc->Height * sin(a * PCB_M180))) != 0)
+			if (cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(a * PCB_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(a * PCB_M180))) != 0)
 				return;
 	}
 	else {
 		if (step > 0) step = +step;
 		ea2 = ea + step/3;
 		for(a = sa; a > ea2; a -= step)
-			if (cb(uctx, pcb_round((double)arc->X - (double)arc->Width * cos(a * PCB_M180)), pcb_round((double)arc->Y + (double)arc->Height * sin(a * PCB_M180))) != 0)
+			if (cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(a * PCB_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(a * PCB_M180))) != 0)
 				return;
 	}
 
-	cb(uctx, pcb_round((double)arc->X - (double)arc->Width * cos(ea * PCB_M180)), pcb_round((double)arc->Y + (double)arc->Height * sin(ea * PCB_M180)));
+	cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(ea * PCB_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(ea * PCB_M180)));
 }
 
 void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)

@@ -72,7 +72,7 @@ int fgws_c_load(fgw_obj_t *obj, const char *filename, const char *opts)
 		return -1;
 	}
 
-	library->name = pcb_strdup(filename);
+	library->name = rnd_strdup(filename);
 	obj->script_data = library;
 	return 0;
 }

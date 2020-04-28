@@ -97,7 +97,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -108,14 +108,14 @@ static void view2dlg_list(view_ctx_t *ctx)
 		pcb_hid_row_t *r, *rt;
 		rt = htsp_get(&tree->paths, v->type);
 		if (rt == NULL) {
-			cell[0] = pcb_strdup(v->type);
-			cell[1] = pcb_strdup("");
+			cell[0] = rnd_strdup(v->type);
+			cell[1] = rnd_strdup("");
 			rt = pcb_dad_tree_append(attr, NULL, cell);
 			rt->user_data2.lng = 0;
 		}
 
 		cell[0] = pcb_strdup_printf("%lu", v->uid);
-		cell[1] = pcb_strdup(v->title);
+		cell[1] = rnd_strdup(v->title);
 		r = pcb_dad_tree_append_under(attr, rt, cell);
 		r->user_data2.lng = v->uid;
 		pcb_dad_tree_expcoll(attr, rt, 1, 0);
@@ -138,10 +138,10 @@ static void view2dlg_pos(view_ctx_t *ctx)
 	if (cnt >= 0) {
 		char tmp[32];
 		sprintf(tmp, "%ld", cnt+1);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, pcb_strdup(tmp));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, rnd_strdup(tmp));
 	}
 	else
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, pcb_strdup(""));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, rnd_strdup(""));
 }
 
 static void view2dlg_count(view_ctx_t *ctx)
@@ -149,7 +149,7 @@ static void view2dlg_count(view_ctx_t *ctx)
 	char tmp[32];
 
 	sprintf(tmp, "%ld", (long)pcb_view_list_length(ctx->lst));
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str, pcb_strdup(tmp));
+	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str, rnd_strdup(tmp));
 }
 
 static void view2dlg(view_ctx_t *ctx)
@@ -168,10 +168,10 @@ void view_simple_show(view_ctx_t *ctx)
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	if (v != NULL) {
 		pcb_view_goto(v);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, pcb_text_wrap(pcb_strdup(v->description), 32, '\n', ' '));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, pcb_text_wrap(rnd_strdup(v->description), 32, '\n', ' '));
 		switch(v->data_type) {
 			case PCB_VIEW_PLAIN:
-				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup(""));
+				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup(""));
 				break;
 			case PCB_VIEW_DRC:
 				if (v->data.drc.have_measured)
@@ -184,8 +184,8 @@ void view_simple_show(view_ctx_t *ctx)
 
 	if (v == NULL) {
 		ctx->selected = 0;
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, pcb_strdup(""));
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup(""));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, rnd_strdup(""));
+		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup(""));
 	}
 	else
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
@@ -745,7 +745,7 @@ fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		drc_gui_ctx.lst = &pcb_drc_lst;
 		drc_gui_ctx.refresh = drc_refresh;
 		pcb_drc_all();
-		if (pcb_strcasecmp(dlg_type, "simple") == 0)
+		if (rnd_strcasecmp(dlg_type, "simple") == 0)
 			pcb_dlg_view_simplified("drc_simple", &drc_gui_ctx, "DRC violations");
 		else
 			pcb_dlg_view_full("drc_full", &drc_gui_ctx, "DRC violations");
@@ -769,7 +769,7 @@ fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		io_gui_ctx.pcb = PCB;
 		io_gui_ctx.lst = &pcb_io_incompat_lst;
 		io_gui_ctx.refresh = NULL;
-		if (pcb_strcasecmp(dlg_type, "simple") == 0)
+		if (rnd_strcasecmp(dlg_type, "simple") == 0)
 			pcb_dlg_view_simplified("io_incompat_simple", &io_gui_ctx, "IO incompatibilities in last save");
 		else
 			pcb_dlg_view_full("io_incompat_full", &io_gui_ctx, "IO incompatibilities in last save");

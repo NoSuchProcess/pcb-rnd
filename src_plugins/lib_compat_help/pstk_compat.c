@@ -46,28 +46,28 @@ static void octa_shape(pcb_pstk_poly_t *dst, rnd_coord_t x0, rnd_coord_t y0, rnd
 
 	pcb_poly_square_pin_factors(style, xm, ym);
 
-	dst->x[7] = x0 + pcb_round(rx * 0.5) * xm[7];
-	dst->y[7] = y0 + pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[7];
-	dst->x[6] = x0 + pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[6];
-	dst->y[6] = y0 + pcb_round(ry * 0.5) * ym[6];
-	dst->x[5] = x0 - pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[5];
-	dst->y[5] = y0 + pcb_round(ry * 0.5) * ym[5];
-	dst->x[4] = x0 - pcb_round(rx * 0.5) * xm[4];
-	dst->y[4] = y0 + pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[4];
-	dst->x[3] = x0 - pcb_round(rx * 0.5) * xm[3];
-	dst->y[3] = y0 - pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[3];
-	dst->x[2] = x0 - pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[2];
-	dst->y[2] = y0 - pcb_round(ry * 0.5) * ym[2];
-	dst->x[1] = x0 + pcb_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[1];
-	dst->y[1] = y0 - pcb_round(ry * 0.5) * ym[1];
-	dst->x[0] = x0 + pcb_round(rx * 0.5) * xm[0];
-	dst->y[0] = y0 - pcb_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[0];
+	dst->x[7] = x0 + rnd_round(rx * 0.5) * xm[7];
+	dst->y[7] = y0 + rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[7];
+	dst->x[6] = x0 + rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[6];
+	dst->y[6] = y0 + rnd_round(ry * 0.5) * ym[6];
+	dst->x[5] = x0 - rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[5];
+	dst->y[5] = y0 + rnd_round(ry * 0.5) * ym[5];
+	dst->x[4] = x0 - rnd_round(rx * 0.5) * xm[4];
+	dst->y[4] = y0 + rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[4];
+	dst->x[3] = x0 - rnd_round(rx * 0.5) * xm[3];
+	dst->y[3] = y0 - rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[3];
+	dst->x[2] = x0 - rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[2];
+	dst->y[2] = y0 - rnd_round(ry * 0.5) * ym[2];
+	dst->x[1] = x0 + rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[1];
+	dst->y[1] = y0 - rnd_round(ry * 0.5) * ym[1];
+	dst->x[0] = x0 + rnd_round(rx * 0.5) * xm[0];
+	dst->y[0] = y0 - rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[0];
 }
 
 /* emulate the old 'square flag' feature */
 static void square_shape(pcb_pstk_poly_t *dst, rnd_coord_t x0, rnd_coord_t y0, rnd_coord_t radius, int style)
 {
-	rnd_coord_t r2 = pcb_round(radius * 0.5);
+	rnd_coord_t r2 = rnd_round(radius * 0.5);
 
 	pcb_pstk_shape_alloc_poly(dst, 4);
 
@@ -126,7 +126,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 		/* in PCB hole means unplated with clearance; emulate this by placing a
 		   zero diameter copper circle on all layers and set clearance large
 		   enough to cover the hole too */
-		clearance = pcb_round((double)clearance + (double)drill_dia/2.0);
+		clearance = rnd_round((double)clearance + (double)drill_dia/2.0);
 		pad_dia = 0.0;
 	}
 
@@ -223,7 +223,7 @@ static pcb_pstk_compshape_t get_old_shape_square(rnd_coord_t *dia, const pcb_pst
 		return PCB_PSTK_COMPAT_INVALID;
 
 	/* found a valid square */
-	*dia = pcb_round(sqrt(sq / 2.0));
+	*dia = rnd_round(sqrt(sq / 2.0));
 
 	return PCB_PSTK_COMPAT_SQUARE;
 }
@@ -305,7 +305,7 @@ static pcb_pstk_compshape_t get_old_shape_octa(rnd_coord_t *dia, const pcb_pstk_
 			}
 		}
 		if (found) {
-			*dia = pcb_round(sqrt((sqr(minx) + sqr(miny)) / 2.0));
+			*dia = rnd_round(sqrt((sqr(minx) + sqr(miny)) / 2.0));
 			return shi;
 		}
 	}

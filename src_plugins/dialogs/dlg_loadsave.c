@@ -48,7 +48,7 @@ extern fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 static char *dup_cwd(void)
 {
 	char tmp[PCB_PATH_MAX + 1];
-	return pcb_strdup(rnd_get_wd(tmp));
+	return rnd_strdup(rnd_get_wd(tmp));
 }
 
 const char pcb_acts_Load[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";
@@ -70,13 +70,13 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
-	if (pcb_strcasecmp(function, "Netlist") == 0)
+	if (rnd_strcasecmp(function, "Netlist") == 0)
 		name = pcb_gui->fileselect(pcb_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", PCB_HID_FSD_READ, NULL);
-	else if ((pcb_strcasecmp(function, "FootprintToBuffer") == 0) || (pcb_strcasecmp(function, "ElementToBuffer") == 0))
+	else if ((rnd_strcasecmp(function, "FootprintToBuffer") == 0) || (rnd_strcasecmp(function, "ElementToBuffer") == 0))
 		name = pcb_gui->fileselect(pcb_gui, "Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", PCB_HID_FSD_READ, NULL);
-	else if (pcb_strcasecmp(function, "LayoutToBuffer") == 0)
+	else if (rnd_strcasecmp(function, "LayoutToBuffer") == 0)
 		name = pcb_gui->fileselect(pcb_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
-	else if (pcb_strcasecmp(function, "Layout") == 0)
+	else if (rnd_strcasecmp(function, "Layout") == 0)
 		name = pcb_gui->fileselect(pcb_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", PCB_HID_FSD_READ, NULL);
 	else {
 		rnd_message(PCB_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
@@ -405,14 +405,14 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
 
-	is_dialog = (function != NULL) && (pcb_strncasecmp(function, "Dialog", 6) == 0);
+	is_dialog = (function != NULL) && (rnd_strncasecmp(function, "Dialog", 6) == 0);
 
 	if ((!is_dialog) && (argc > 2))
 		return RND_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
 
 	memset(&save, 0, sizeof(save));
 
-	if (pcb_strcasecmp(function, "Layout") == 0)
+	if (rnd_strcasecmp(function, "Layout") == 0)
 		if (PCB->hidlib.filename != NULL)
 			return rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "Layout", NULL);
 
@@ -424,19 +424,19 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_PCB_ACT_CONVARG(4, FGW_STR, Save, prompt = argv[4].val.str);
 		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, Save, default_pattern = argv[5].val.str);
 
-		if (pcb_strcasecmp(siot, "pcb") == 0) list_iot = PCB_IOT_PCB;
-		else if (pcb_strcasecmp(siot, "footprint") == 0) list_iot = PCB_IOT_FOOTPRINT;
-		else if (pcb_strcasecmp(siot, "font") == 0) list_iot = PCB_IOT_FONT;
-		else if (pcb_strcasecmp(siot, "buffer") == 0) list_iot = PCB_IOT_BUFFER;
+		if (rnd_strcasecmp(siot, "pcb") == 0) list_iot = PCB_IOT_PCB;
+		else if (rnd_strcasecmp(siot, "footprint") == 0) list_iot = PCB_IOT_FOOTPRINT;
+		else if (rnd_strcasecmp(siot, "font") == 0) list_iot = PCB_IOT_FONT;
+		else if (rnd_strcasecmp(siot, "buffer") == 0) list_iot = PCB_IOT_BUFFER;
 		else RND_ACT_FAIL(Save);
 
-		if (pcb_strcasecmp(sext, "none") == 0) list_ext = PCB_IOL_EXT_NONE;
-		else if (pcb_strcasecmp(sext, "board") == 0) list_ext = PCB_IOL_EXT_BOARD;
-		else if (pcb_strcasecmp(sext, "fp") == 0) list_ext = PCB_IOL_EXT_FP;
+		if (rnd_strcasecmp(sext, "none") == 0) list_ext = PCB_IOL_EXT_NONE;
+		else if (rnd_strcasecmp(sext, "board") == 0) list_ext = PCB_IOL_EXT_BOARD;
+		else if (rnd_strcasecmp(sext, "fp") == 0) list_ext = PCB_IOL_EXT_FP;
 		else RND_ACT_FAIL(Save);
 	}
 
-	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
+	if (rnd_strcasecmp(function, "PasteBuffer") == 0) {
 		default_pattern = conf_core.rc.save_fp_fmt;
 		num_fmts = pcb_io_list(&avail, PCB_IOT_FOOTPRINT, 1, 1, PCB_IOL_EXT_FP);
 		prompt = "Save subcircuit as";
@@ -444,7 +444,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		list_ext = PCB_IOL_EXT_FP;
 		goto list_by_pattern;
 	}
-	else if (pcb_strcasecmp(function, "DialogByPattern") == 0) {
+	else if (rnd_strcasecmp(function, "DialogByPattern") == 0) {
 		int n;
 
 		dialog_by_pattern = 1;
@@ -465,7 +465,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				/* look for exact match, case insensitive */
 				if (fmt < 0)
 					for (n = 0; n < num_fmts; n++)
-						if (pcb_strcasecmp(avail.plug[n]->description, default_pattern) == 0)
+						if (rnd_strcasecmp(avail.plug[n]->description, default_pattern) == 0)
 							fmt = n;
 
 				/* look for partial match */
@@ -540,7 +540,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (PCB->hidlib.filename == NULL)
 			name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
 		else
-			name_in = pcb_strdup(PCB->hidlib.filename);
+			name_in = rnd_strdup(PCB->hidlib.filename);
 	}
 
 
@@ -589,7 +589,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcbhl_conf.rc.verbose)
 		fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, final_name);
 
-	if (pcb_strcasecmp(function, "PasteBuffer") == 0) {
+	if (rnd_strcasecmp(function, "PasteBuffer") == 0) {
 		const char *sfmt = avail.plug[fmt]->description;
 		if (fmt_param != NULL)
 			sfmt = avail.plug[save.pick]->description;
@@ -605,7 +605,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 * ActionSaveTo() will ignore the new file name we
 		 * just obtained.
 		 */
-		if (pcb_strcasecmp(function, "Layout") == 0)
+		if (rnd_strcasecmp(function, "Layout") == 0)
 			rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "LayoutAs", final_name, sfmt, NULL);
 		else
 			rnd_actionva(RND_ACT_HIDLIB, "SaveTo", function, final_name, sfmt, NULL);

@@ -106,7 +106,7 @@ static void templ_append(gdl_list_t *dst, ttype_t type, const char *key)
 
 static char *templ_compile(gdl_list_t *dst, const char *src_)
 {
-	char *s, *next, *src = pcb_strdup(src_);
+	char *s, *next, *src = rnd_strdup(src_);
 
 	for(s = src; (s != NULL) && (*s != '\0'); s = next) {
 		while(isspace(*s) || (*s == ',')) s++;

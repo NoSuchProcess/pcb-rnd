@@ -9,8 +9,8 @@
 
 #undef strdup
 
-char *pcb_strdup(const char *s) { return strdup(s); }
-int pcb_rand() { return rand(); }
+char *rnd_strdup(const char *s) { return strdup(s); }
+int rnd_rand() { return rand(); }
 
 int main()
 {

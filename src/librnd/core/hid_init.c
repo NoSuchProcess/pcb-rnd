@@ -474,7 +474,7 @@ void pcb_fix_locale_and_env()
 	   setlocale() won't do the trick on GUI. Also set all related env var
 	   to "C" so a setlocale(LC_ALL, "") will also do the right thing. */
 	for(lc = lcs; *lc != NULL; lc++)
-		pcb_setenv(*lc, "C", 1);
+		rnd_setenv(*lc, "C", 1);
 
 	setlocale(LC_ALL, "C");
 
@@ -499,9 +499,9 @@ void pcb_fix_locale_and_env()
 			if (*s == '\\')
 				*s = '/';
 
-		pcb_w32_bindir = pcb_strdup(exedir);
+		pcb_w32_bindir = rnd_strdup(exedir);
 		truncdir(exedir);
-		pcb_w32_root = pcb_strdup(exedir);
+		pcb_w32_root = rnd_strdup(exedir);
 		pcb_w32_libdir = pcb_concat(exedir, "/lib/pcb-rnd", NULL);
 		pcb_w32_sharedir = pcb_concat(exedir, "/share/pcb-rnd", NULL);
 
@@ -595,7 +595,7 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 			return 1;
 		}
 		if (pcbhl_main_arg_match(cmd, "C", "-conffile")) {
-			vts0_append(&hidlib_conffile, pcb_strdup(arg));
+			vts0_append(&hidlib_conffile, rnd_strdup(arg));
 			return 1;
 		}
 	}

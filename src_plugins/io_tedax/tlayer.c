@@ -90,7 +90,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 		PCB_LINE_LOOP(ly) {
 			pcb_fprintf(f, " line %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
 				line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
-				line->Thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) ? pcb_round(line->Clearance/2) : 0);
+				line->Thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) ? rnd_round(line->Clearance/2) : 0);
 		} PCB_END_LOOP;
 		PCB_ARC_LOOP(ly) {
 			rnd_coord_t sx, sy, ex, ey, clr;
@@ -100,7 +100,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 
 			pcb_arc_get_end(arc, 0, &sx, &sy);
 			pcb_arc_get_end(arc, 1, &ex, &ey);
-			clr = PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc) ? pcb_round(arc->Clearance/2) : 0;
+			clr = PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc) ? rnd_round(arc->Clearance/2) : 0;
 
 			pcb_fprintf(f, " arc %.06mm %.06mm %.06mm %f %f %.06mm %.06mm ",
 				arc->X, arc->Y, arc->Width, arc->StartAngle, arc->Delta, arc->Thickness, clr);
@@ -163,7 +163,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 			res = -1;
 			goto error;
 		}
-		pname = pcb_strdup(argv[3]);
+		pname = rnd_strdup(argv[3]);
 		coords = malloc(sizeof(vtc0_t));
 		vtc0_init(coords);
 
@@ -205,7 +205,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 		}
 		ly = &data->Layer[data->LayerN++];
 		free((char *)ly->name);
-		ly->name = pcb_strdup(argv[3]);
+		ly->name = rnd_strdup(argv[3]);
 		ly->is_bound = data->parent_type != PCB_PARENT_BOARD;
 		if (!ly->is_bound) {
 			/* real layer */
@@ -306,7 +306,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 					z = zx < zy ? zx : zy;
 					if ((z > 0.999) && (z < 1.001))
 						break;
-					text->Scale = pcb_round(text->Scale*z);
+					text->Scale = rnd_round(text->Scale*z);
 				}
 				pcb_text_bbox(pcb_font(PCB, 0, 1), text);
 				aw = text->bbox_naked.X2 - text->bbox_naked.X1; ah = text->bbox_naked.Y2 - text->bbox_naked.Y1;

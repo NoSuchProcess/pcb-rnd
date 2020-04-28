@@ -70,7 +70,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 
 	args[1].type = FGW_STR;
 
-	if (pcb_strcasecmp(dlg_type, "list") == 0) {
+	if (rnd_strcasecmp(dlg_type, "list") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "list";
 			return rnd_actionv_bin(RND_ACT_HIDLIB, dlgact, res, 2, args);
@@ -78,7 +78,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 		dlg_type = "print";
 	}
 
-	if (pcb_strcasecmp(dlg_type, "simple") == 0) {
+	if (rnd_strcasecmp(dlg_type, "simple") == 0) {
 		if (PCB_HAVE_GUI_ATTR_DLG) {
 			args[1].val.str = "simple";
 			return rnd_actionv_bin(RND_ACT_HIDLIB, dlgact, res, 2, args);
@@ -91,7 +91,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 	if (refresh != NULL)
 		refresh();
 
-	if (pcb_strcasecmp(dlg_type, "print") == 0) {
+	if (rnd_strcasecmp(dlg_type, "print") == 0) {
 		pcb_view_t *v;
 		for(v = pcb_view_list_first(lst); v != NULL; v = pcb_view_list_next(v)) {
 			printf("%ld: %s: %s\n", v->uid, v->type, v->title);
@@ -105,7 +105,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 			printf("%s\n\n", v->description);
 		}
 	}
-	else if (pcb_strcasecmp(dlg_type, "log") == 0) {
+	else if (rnd_strcasecmp(dlg_type, "log") == 0) {
 		pcb_view_t *v;
 		for(v = pcb_view_list_first(lst); v != NULL; v = pcb_view_list_next(v)) {
 			rnd_message(PCB_MSG_INFO, "%ld: %s: %s\n", v->uid, v->type, v->title);
@@ -119,7 +119,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 			rnd_message(PCB_MSG_INFO, "%s\n\n", v->description);
 		}
 	}
-	if (pcb_strcasecmp(dlg_type, "dump") == 0) {
+	if (rnd_strcasecmp(dlg_type, "dump") == 0) {
 		pcb_view_t *v;
 		char *s;
 		for(v = pcb_view_list_first(lst); v != NULL; v = pcb_view_list_next(v)) {
@@ -139,7 +139,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 			printf("E%s\n\n", v->description);
 		}
 	}
-	else if (pcb_strcasecmp(dlg_type, "count") == 0)
+	else if (rnd_strcasecmp(dlg_type, "count") == 0)
 		RND_ACT_IRES(pcb_view_list_length(lst));
 
 

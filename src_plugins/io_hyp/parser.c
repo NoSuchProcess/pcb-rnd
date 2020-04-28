@@ -1029,7 +1029,7 @@ void hyp_arc2contour(pcb_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_
 		rnd_message(PCB_MSG_ERROR, "error: negative arc precision\n");
 
 	/* A full circle is drawn using 'segments' segments; a 90 degree arc using segments/4. */
-	poly_points = pcb_round(segments * fabs(beta - alpha) / (2 * M_PI));
+	poly_points = rnd_round(segments * fabs(beta - alpha) / (2 * M_PI));
 
 	/* Sanity checks */
 	if (poly_points < 1)
@@ -1621,25 +1621,25 @@ rnd_bool exec_devices(parse_param * h)
 	/* add device to list  */
 	new_device = calloc(sizeof(device_t), 1);
 
-	new_device->ref = pcb_strdup(h->ref);
+	new_device->ref = rnd_strdup(h->ref);
 
 	new_device->name = NULL;
 	if (h->name_set)
-		new_device->name = pcb_strdup(h->name);
+		new_device->name = rnd_strdup(h->name);
 
 
 	new_device->value = NULL;
 	if (h->value_string_set)
-		new_device->value = pcb_strdup(h->value_string);
+		new_device->value = rnd_strdup(h->value_string);
 	else if (h->value_float_set) {
 		/* convert double to string */
 		pcb_snprintf(value, sizeof(value), "%f", h->value_float);
-		new_device->value = pcb_strdup(value);
+		new_device->value = rnd_strdup(value);
 	}
 
 	new_device->layer_name = NULL;
 	if (h->layer_name_set)
-		new_device->layer_name = pcb_strdup(h->layer_name);
+		new_device->layer_name = rnd_strdup(h->layer_name);
 
 	new_device->next = device_head;
 	device_head = new_device;
@@ -1730,7 +1730,7 @@ rnd_bool exec_pstk_element(parse_param * h)
 		current_pstk = malloc(sizeof(padstack_t));
 		if (current_pstk == NULL)
 			return 1;									/*malloc failed */
-		current_pstk->name = pcb_strdup(h->padstack_name);
+		current_pstk->name = rnd_strdup(h->padstack_name);
 		current_pstk->drill_size = xy2coord(h->drill_size);
 		current_pstk_element = malloc(sizeof(padstack_element_t));
 		current_pstk->padstack = current_pstk_element;
@@ -1745,7 +1745,7 @@ rnd_bool exec_pstk_element(parse_param * h)
 
 	/* fill in values */
 
-	current_pstk_element->layer_name = pcb_strdup(h->layer_name);
+	current_pstk_element->layer_name = rnd_strdup(h->layer_name);
 	current_pstk_element->pad_shape = h->pad_shape;
 	current_pstk_element->pad_sx = xy2coord(h->pad_sx);
 	current_pstk_element->pad_sy = xy2coord(h->pad_sy);
@@ -1893,11 +1893,11 @@ void hyp_draw_pstk(padstack_t *padstk, rnd_coord_t x, rnd_coord_t y, char *ref)
 	if (ref != NULL) {
 		char *dot;
 		/* reference has format 'device_name.pin_name' */
-		device_name = pcb_strdup(ref);
+		device_name = rnd_strdup(ref);
 		dot = strrchr(device_name, '.');
 		if (dot != NULL) {
 			*dot = '\0';
-			pin_name = pcb_strdup(dot + 1);
+			pin_name = rnd_strdup(dot + 1);
 		}
 
 		/* make sure device and pin name have valid values, even if reference has wrong format */
@@ -1943,7 +1943,7 @@ rnd_bool exec_net(parse_param * h)
 	if (hyp_debug)
 		rnd_message(PCB_MSG_DEBUG, "net: net_name = \"%s\"\n", h->net_name);
 
-	net_name = pcb_strdup(h->net_name);
+	net_name = rnd_strdup(h->net_name);
 	net_clearance = -1;
 
 	return 0;

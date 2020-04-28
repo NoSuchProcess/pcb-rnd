@@ -262,7 +262,7 @@ static void create_lib_tree_model_recurse(pcb_hid_attribute_t *attr, pcb_fplibra
 	for(l = parent_lib->data.dir.children.array, n = 0; n < parent_lib->data.dir.children.used; l++, n++) {
 		pcb_hid_row_t *row;
 
-		cell[0] = pcb_strdup(l->name);
+		cell[0] = rnd_strdup(l->name);
 		row = pcb_dad_tree_append_under(attr, parent_row, cell);
 		row->user_data = l;
 		if (l->type == PCB_LIB_DIR)
@@ -284,7 +284,7 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -443,7 +443,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	attr = &ctx->dlg[ctx->wtree];
 	tree = attr->wdata;
 	otext = attr_inp->val.str;
-	text = pcb_strdup(otext);
+	text = rnd_strdup(otext);
 	have_filter_text = (*text != '\0');
 
 	para_start = strchr(otext, '(');
@@ -490,7 +490,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 
 		vtp0_init(&taglist);
 		if (tags != NULL) {
-			tags = pcb_strdup(tags);
+			tags = rnd_strdup(tags);
 			for (tag = tags; tag != NULL; tag = next) {
 				next = strpbrk(tag, " \t\r\n");
 				if (next != NULL) {
@@ -533,7 +533,7 @@ static pcb_hid_row_t *find_fp_prefix_(pcb_hid_tree_t *tree, gdl_list_t *rowlist,
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		pcb_fplibrary_t *l = r->user_data;
-		if ((pcb_strncasecmp(r->cell[0], name, namelen) == 0) && (l->type == PCB_LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC))
+		if ((rnd_strncasecmp(r->cell[0], name, namelen) == 0) && (l->type == PCB_LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC))
 			return r;
 		pr = find_fp_prefix_(tree, &r->children, name, namelen);
 		if (pr != NULL)
@@ -567,14 +567,14 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	r = pcb_dad_tree_get_selected(attr);
 
 	if (!ctx->last_clicked && (otext != NULL)) {
-		name = pcb_strdup(otext);
+		name = rnd_strdup(otext);
 		sep = strchr(name, '(');
 		if (sep != NULL)
 			*sep = '\0';
 	}
 	else {
 		pcb_fplibrary_t *l = r->user_data;
-		name = pcb_strdup(l->name);
+		name = rnd_strdup(l->name);
 		if (name != NULL) {
 			pcb_hid_attr_val_t hv;
 			hv.str = name;
@@ -588,7 +588,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 	namelen = strlen(name);
 
-	if ((r == NULL) || (pcb_strncasecmp(name, r->cell[0], namelen) != 0)) {
+	if ((r == NULL) || (rnd_strncasecmp(name, r->cell[0], namelen) != 0)) {
 		/* no selection or wrong selection: go find the right one */
 		rnew = find_fp_prefix(ctx, name, namelen);
 	}
@@ -622,7 +622,7 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 
 	while((l->parent != NULL) && (l->parent->parent != NULL)) l = l->parent;
 
-	oname = pcb_strdup(l->name); /* need to save the name because refresh invalidates l */
+	oname = rnd_strdup(l->name); /* need to save the name because refresh invalidates l */
 
 	if (pcb_fp_rehash(&PCB->hidlib, l) == 0)
 		rnd_message(PCB_MSG_INFO, "Refreshed library '%s'\n", oname);

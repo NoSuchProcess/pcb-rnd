@@ -53,11 +53,11 @@ static pcb_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 
 	if (*value != '<') {
 	for(;;) {
-		if ((vlen >= 5) && (pcb_strncasecmp(value, "shift", 5) == 0))        m |= PCB_M_Shift;
-		else if ((vlen >= 4) && (pcb_strncasecmp(value, "ctrl", 4) == 0))    m |= PCB_M_Ctrl;
-		else if ((vlen >= 3) && (pcb_strncasecmp(value, "alt", 3) == 0))     m |= PCB_M_Alt;
-		else if ((vlen >= 7) && (pcb_strncasecmp(value, "release", 7) == 0)) m |= PCB_M_Release;
-		else if ((vlen >= 5) && (pcb_strncasecmp(value, "press", 5) == 0))   press = 1;
+		if ((vlen >= 5) && (rnd_strncasecmp(value, "shift", 5) == 0))        m |= PCB_M_Shift;
+		else if ((vlen >= 4) && (rnd_strncasecmp(value, "ctrl", 4) == 0))    m |= PCB_M_Ctrl;
+		else if ((vlen >= 3) && (rnd_strncasecmp(value, "alt", 3) == 0))     m |= PCB_M_Alt;
+		else if ((vlen >= 7) && (rnd_strncasecmp(value, "release", 7) == 0)) m |= PCB_M_Release;
+		else if ((vlen >= 5) && (rnd_strncasecmp(value, "press", 5) == 0))   press = 1;
 		else
 			rnd_message(PCB_MSG_ERROR, "Unknown modifier: %s\n", value);
 		/* skip to next word */
@@ -86,14 +86,14 @@ static pcb_hid_cfg_mod_t button_name2mask(const char *name)
 	   mouse button number.  */
 	if (!name)
 		return 0;
-	else if (pcb_strcasecmp(name, "left") == 0)   return PCB_MB_LEFT;
-	else if (pcb_strcasecmp(name, "middle") == 0) return PCB_MB_MIDDLE;
-	else if (pcb_strcasecmp(name, "right") == 0)  return PCB_MB_RIGHT;
+	else if (rnd_strcasecmp(name, "left") == 0)   return PCB_MB_LEFT;
+	else if (rnd_strcasecmp(name, "middle") == 0) return PCB_MB_MIDDLE;
+	else if (rnd_strcasecmp(name, "right") == 0)  return PCB_MB_RIGHT;
 
-	else if (pcb_strcasecmp(name, "scroll-up") == 0)     return PCB_MB_SCROLL_UP;
-	else if (pcb_strcasecmp(name, "scroll-down") == 0)   return PCB_MB_SCROLL_DOWN;
-	else if (pcb_strcasecmp(name, "scroll-left") == 0)   return PCB_MB_SCROLL_UP;
-	else if (pcb_strcasecmp(name, "scroll-right") == 0)  return PCB_MB_SCROLL_DOWN;
+	else if (rnd_strcasecmp(name, "scroll-up") == 0)     return PCB_MB_SCROLL_UP;
+	else if (rnd_strcasecmp(name, "scroll-down") == 0)   return PCB_MB_SCROLL_DOWN;
+	else if (rnd_strcasecmp(name, "scroll-left") == 0)   return PCB_MB_SCROLL_UP;
+	else if (rnd_strcasecmp(name, "scroll-right") == 0)  return PCB_MB_SCROLL_DOWN;
 	else {
 		rnd_message(PCB_MSG_ERROR, "Error: unknown mouse button: %s\n", name);
 		return 0;
@@ -267,7 +267,7 @@ static unsigned short int translate_key(pcb_hid_cfg_keys_t *km, const char *desc
 	if (km->auto_tr != NULL) {
 		const pcb_hid_cfg_keytrans_t *t;
 		for(t = km->auto_tr; t->name != NULL; t++) {
-			if (pcb_strcasecmp(tmp, t->name) == 0) {
+			if (rnd_strcasecmp(tmp, t->name) == 0) {
 				tmp[0] = t->sym;
 				tmp[1] = '\0';
 				len = 1;
@@ -309,12 +309,12 @@ static int parse_keydesc(pcb_hid_cfg_keys_t *km, const char *keydesc, pcb_hid_cf
 		}
 		len -= k-last;
 		k++; len--;
-		if (pcb_strncasecmp(k, "key>", 4) == 0) {
+		if (rnd_strncasecmp(k, "key>", 4) == 0) {
 			k+=4; len-=4;
 			key_raws[slen] = translate_key(km, k, len);
 			key_trs[slen] = 0;
 		}
-		else if (pcb_strncasecmp(k, "char>", 5) == 0) {
+		else if (rnd_strncasecmp(k, "char>", 5) == 0) {
 			k+=5; len-=5;
 			key_raws[slen] = 0;
 			if (!isalnum(*k))

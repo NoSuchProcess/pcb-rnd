@@ -235,7 +235,7 @@ static int kicad_create_copper_layer_(read_state_t *st, pcb_layergrp_id_t gid, c
 {
 	pcb_layer_id_t id;
 	id = pcb_layer_create(st->pcb, gid, lname, 0);
-	htsi_set(&st->layer_k2i, pcb_strdup(lname), id);
+	htsi_set(&st->layer_k2i, rnd_strdup(lname), id);
 	if (ltype != NULL) {
 		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, id);
 		rnd_attribute_put(&ly->Attributes, "kicad::type", ltype);
@@ -334,7 +334,7 @@ static int kicad_create_misc_layer(read_state_t *st, int lnum, const char *lname
 	if (best == NULL) {
 		kicad_warning(subtree, "unknown layer: %d %s %s\n", lnum, lname, ltype);
 		remember_bad:; /* HACK/WORKAROUND: remember kicad layers for those that are unsupported */
-		htsi_set(&st->layer_k2i, pcb_strdup(lname), -lnum);
+		htsi_set(&st->layer_k2i, rnd_strdup(lname), -lnum);
 		return 0;
 	}
 
@@ -349,7 +349,7 @@ static int kicad_create_misc_layer(read_state_t *st, int lnum, const char *lname
 
 		case LYACT_NEW_MISC:
 			grp = pcb_get_grp_new_misc(st->pcb);
-			grp->name = pcb_strdup(lname);
+			grp->name = rnd_strdup(lname);
 			grp->ltype = best->type;
 			lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, lname, 0);
 			new_grp = grp;
@@ -372,9 +372,9 @@ static int kicad_create_misc_layer(read_state_t *st, int lnum, const char *lname
 	ly->comb |= best->lyc;
 
 	if ((new_grp != NULL) && (best->purpose != NULL))
-		new_grp->purpose = pcb_strdup(best->purpose);
+		new_grp->purpose = rnd_strdup(best->purpose);
 
-	htsi_set(&st->layer_k2i, pcb_strdup(lname), lid);
+	htsi_set(&st->layer_k2i, rnd_strdup(lname), lid);
 	return 0;
 }
 
@@ -405,7 +405,7 @@ static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, un
 		if (mask & PCB_LYT_MASK)
 			ly->comb |= PCB_LYC_SUB;
 	}
-	htsi_set(&st->layer_k2i, pcb_strdup(kicad_name), id);
+	htsi_set(&st->layer_k2i, rnd_strdup(kicad_name), id);
 	return 0;
 }
 
@@ -421,7 +421,7 @@ static int kicad_get_layeridx(read_state_t *st, const char *kicad_name)
 			/* Workaround: specal case InX.Cu, where X is an integer */
 			char *end;
 			long id = strtol(kicad_name + 2, &end, 10);
-			if ((pcb_strcasecmp(end, ".Cu") == 0) && (id >= 1) && (id <= 30)) {
+			if ((rnd_strcasecmp(end, ".Cu") == 0) && (id >= 1) && (id <= 30)) {
 				if (kicad_reg_layer(st, kicad_name, PCB_LYT_COPPER | PCB_LYT_INTERN, NULL) == 0)
 					return kicad_get_layeridx(st, kicad_name);
 			}
@@ -445,13 +445,13 @@ static int kicad_get_layeridx_auto(read_state_t *st, const char *kicad_name)
 	TODO("for In, also remember the offset");
 
 	TODO("this should use the layertab instead");
-	if (pcb_strcasecmp(kicad_name, "Edge.Cuts") == 0) { lyt |= PCB_LYT_BOUNDARY; purpose = "uroute"; }
+	if (rnd_strcasecmp(kicad_name, "Edge.Cuts") == 0) { lyt |= PCB_LYT_BOUNDARY; purpose = "uroute"; }
 	else if (kicad_name[1] == '.') {
 		const char *ln = kicad_name + 2;
-		if (pcb_strcasecmp(ln, "SilkS") == 0) lyt |= PCB_LYT_SILK;
-		else if (pcb_strcasecmp(ln, "Mask") == 0) lyt |= PCB_LYT_MASK;
-		else if (pcb_strcasecmp(ln, "Paste") == 0) lyt |= PCB_LYT_PASTE;
-		else if (pcb_strcasecmp(ln, "Cu") == 0) lyt |= PCB_LYT_COPPER;
+		if (rnd_strcasecmp(ln, "SilkS") == 0) lyt |= PCB_LYT_SILK;
+		else if (rnd_strcasecmp(ln, "Mask") == 0) lyt |= PCB_LYT_MASK;
+		else if (rnd_strcasecmp(ln, "Paste") == 0) lyt |= PCB_LYT_PASTE;
+		else if (rnd_strcasecmp(ln, "Cu") == 0) lyt |= PCB_LYT_COPPER;
 		else lyt |= PCB_LYT_VIRTUAL;
 	}
 	else lyt |= PCB_LYT_VIRTUAL;
@@ -675,7 +675,7 @@ do { \
 do { \
 	double __dtmp__; \
 	PARSE_DOUBLE(__dtmp__, missnode, node, errmsg); \
-	(res) = pcb_round(PCB_MM_TO_COORD(__dtmp__)); \
+	(res) = rnd_round(PCB_MM_TO_COORD(__dtmp__)); \
 } while(0) \
 
 /* parse nd->str into a pcb_layer_t in ly, either as a subc layer or if subc
@@ -2521,7 +2521,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 	if ((mod_rot == 90) || (mod_rot == 180) || (mod_rot == 270)) {
 		/* lossles module rotation for round steps */
-		mod_rot = pcb_round(mod_rot / 90);
+		mod_rot = rnd_round(mod_rot / 90);
 		pcb_subc_rotate90(subc, mod_x, mod_y, mod_rot);
 	}
 	else if (mod_rot != 0)

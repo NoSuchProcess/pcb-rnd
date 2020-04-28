@@ -41,18 +41,18 @@ random() is less portable than rand(), which is C89. By default, just
 use rand(). Later on: scconfig should detect and enable random() if
 we find a system where it really breaks. */
 #ifdef HAVE_RANDOM
-long pcb_rand(void)
+long rnd_rand(void)
 {
 	return (long) random();
 }
 #else
-long pcb_rand(void)
+long rnd_rand(void)
 {
 	return (long) rand();
 }
 #endif
 
-const char *pcb_get_user_name(void)
+const char *rnd_get_user_name(void)
 {
 #ifdef RND_HAVE_GETPWUID
 	static struct passwd *pwentry;
@@ -81,12 +81,12 @@ const char *pcb_get_user_name(void)
 #endif
 }
 
-int pcb_getpid(void)
+int rnd_getpid(void)
 {
 	return getpid();
 }
 
-char *pcb_strndup(const char *s, int len)
+char *rnd_strndup(const char *s, int len)
 {
 	int a, l = strlen(s);
 	char *o;
@@ -98,7 +98,7 @@ char *pcb_strndup(const char *s, int len)
 	return o;
 }
 
-char *pcb_strdup(const char *s)
+char *rnd_strdup(const char *s)
 {
 	int l = strlen(s);
 	char *o;
@@ -110,14 +110,14 @@ char *pcb_strdup(const char *s)
 #ifdef RND_HAVE_ROUND
 #undef round
 extern double round(double x);
-double pcb_round(double x)
+double rnd_round(double x)
 {
 	return round(x);
 }
 #else
 
 /* Implementation idea borrowed from an old gcc (GPL'd) */
-double pcb_round(double x)
+double rnd_round(double x)
 {
 	double t;
 
@@ -138,7 +138,7 @@ double pcb_round(double x)
 }
 #endif
 
-int pcb_strcasecmp(const char *s1, const char *s2)
+int rnd_strcasecmp(const char *s1, const char *s2)
 {
 	while(tolower(*s1) == tolower(*s2)) {
 		if (*s1 == '\0')
@@ -149,7 +149,7 @@ int pcb_strcasecmp(const char *s1, const char *s2)
 	return tolower(*s1) - tolower(*s2);
 }
 
-int pcb_strncasecmp(const char *s1, const char *s2, size_t n)
+int rnd_strncasecmp(const char *s1, const char *s2, size_t n)
 {
 	if (n == 0)
 		return 0;
@@ -170,7 +170,7 @@ int pcb_strncasecmp(const char *s1, const char *s2, size_t n)
 	extern int setenv();
 #endif
 
-int pcb_setenv(const char *name, const char *val, int overwrite)
+int rnd_setenv(const char *name, const char *val, int overwrite)
 {
 #ifdef RND_HAVE_SETENV
 	return setenv(name, val, overwrite);
@@ -191,7 +191,7 @@ int pcb_setenv(const char *name, const char *val, int overwrite)
 #endif
 }
 
-size_t pcb_print_utc(char *out, size_t out_len, time_t when)
+size_t rnd_print_utc(char *out, size_t out_len, time_t when)
 {
 	static const char *fmt = "%Y-%m-%d %H:%M:%S UTC";
 	if (when <= 0)
@@ -200,7 +200,7 @@ size_t pcb_print_utc(char *out, size_t out_len, time_t when)
 	return strftime(out, out_len, fmt, gmtime(&when));
 }
 
-void pcb_ms_sleep(long ms)
+void rnd_ms_sleep(long ms)
 {
 #ifdef RND_HAVE_USLEEP
 	usleep(ms*1000);
@@ -217,13 +217,13 @@ void pcb_ms_sleep(long ms)
 			tv.tv_usec = ms*1000;
 			select(0, &s, &s, &s, &tv);
 #		else
-#			error pcb_ms_sleep(): no milisecond sleep on this host.
+#			error rnd_ms_sleep(): no milisecond sleep on this host.
 #		endif
 #	endif
 #endif
 }
 
-void pcb_ltime(unsigned long  *secs, unsigned long *usecs)
+void rnd_ltime(unsigned long  *secs, unsigned long *usecs)
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
@@ -232,15 +232,15 @@ void pcb_ltime(unsigned long  *secs, unsigned long *usecs)
 		*usecs = tv.tv_usec;
 }
 
-double pcb_dtime(void)
+double rnd_dtime(void)
 {
  unsigned long  s, u;
 
-	pcb_ltime(&s, &u);
+	rnd_ltime(&s, &u);
 	return (double)u / 1000000.0 + (double)s;
 }
 
-int pcb_fileno(FILE *f)
+int rnd_fileno(FILE *f)
 {
 	return RND_HOST_FILENO(f);
 }

@@ -33,7 +33,7 @@ static pcb_drcq_stat_t *pcb_drcq_stat_get(const char *name)
 		return st;
 
 	st = calloc(sizeof(pcb_drcq_stat_t), 1);
-	st->name = pcb_strdup(name);
+	st->name = rnd_strdup(name);
 	htsp_set(&pcb_drcq_stat, (char *)st->name, st);
 	return st;
 }

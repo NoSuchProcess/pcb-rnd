@@ -114,7 +114,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 			hv.dbl = strtod(orig, &end);
 			if (*end != '\0') {
 				while(isspace(*end)) end++;
-				if (pcb_strcasecmp(end, "hz") != 0) {
+				if (rnd_strcasecmp(end, "hz") != 0) {
 					rnd_message(PCB_MSG_ERROR, "Invalid real value (Hz) in board attribute '%s': '%s'\n", attrkey, orig);
 					hv.dbl = 0;
 				}
@@ -302,7 +302,7 @@ static void exc_user_dad(int idx)
 
 static char *exc_user_get(int idx)
 {
-	return pcb_strdup(rnd_attribute_get(&PCB->Attributes, AEPREFIX "user-defined::script"));
+	return rnd_strdup(rnd_attribute_get(&PCB->Attributes, AEPREFIX "user-defined::script"));
 }
 
 static void exc_user_ser(int idx, int save)
@@ -529,7 +529,7 @@ static char *pcb_openems_excitation_get(pcb_board_t *pcb)
 {
 	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
 		rnd_message(PCB_MSG_ERROR, "No excitation selected\n");
-		return pcb_strdup("%% ERROR: no excitation selected\n");
+		return rnd_strdup("%% ERROR: no excitation selected\n");
 	}
 	return excitations[exc_ctx.selected].get(exc_ctx.selected);
 }

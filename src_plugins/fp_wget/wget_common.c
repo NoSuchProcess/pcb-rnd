@@ -151,7 +151,7 @@ char *load_md5_sum(FILE *f)
 		if ((*s == '\0') || (isspace(*s))) {
 			if ((s - sum) == 32) {
 				*s = '\0';
-				return pcb_strdup(sum);
+				return rnd_strdup(sum);
 			}
 			else
 				return NULL;

@@ -92,7 +92,7 @@ static lht_node_t *dummy_text_node(const char *name)
 {
 	if (io_lihata_full_tree) {
 		lht_node_t *n = lht_dom_node_alloc(LHT_TEXT, name);
-		n->data.text.value = pcb_strdup("");
+		n->data.text.value = rnd_strdup("");
 		return n;
 	}
 	return dummy_node(name);
@@ -107,7 +107,7 @@ static lht_node_t *build_text(const char *key, const char *value)
 
 	field = lht_dom_node_alloc(LHT_TEXT, key);
 	if (value != NULL)
-		field->data.text.value = pcb_strdup(value);
+		field->data.text.value = rnd_strdup(value);
 	return field;
 }
 
@@ -224,7 +224,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type, int intconn)
 				txt = lht_dom_node_alloc(LHT_TEXT, PCB->Data->Layer[layer].name);
 				name = io_lihata_thermal_style_old(t);
 				if (name != NULL)
-					txt->data.text.value = pcb_strdup(name);
+					txt->data.text.value = rnd_strdup(name);
 				else
 					txt->data.text.value = pcb_strdup_printf("%d", t);
 				lht_dom_hash_put(lst, txt);

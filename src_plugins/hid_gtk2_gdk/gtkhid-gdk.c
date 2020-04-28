@@ -706,14 +706,14 @@ static void ghid_gdk_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 		start_angle -= 360;
 
 	gdk_draw_arc(priv->out_pixel, priv->pixel_gc, 0,
-							 pcb_round(Vxd(cx) - Vzd(xradius) + 0.5), pcb_round(Vyd(cy) - Vzd(yradius) + 0.5),
-							 pcb_round(vrx2), pcb_round(vry2),
+							 rnd_round(Vxd(cx) - Vzd(xradius) + 0.5), rnd_round(Vyd(cy) - Vzd(yradius) + 0.5),
+							 rnd_round(vrx2), rnd_round(vry2),
 							 (start_angle + 180) * 64, delta_angle * 64);
 
 	if (priv->out_clip != NULL)
 		gdk_draw_arc(priv->out_clip, priv->clip_gc, 0,
-							 pcb_round(Vxd(cx) - Vzd(xradius) + 0.5), pcb_round(Vyd(cy) - Vzd(yradius) + 0.5),
-							 pcb_round(vrx2), pcb_round(vry2),
+							 rnd_round(Vxd(cx) - Vzd(xradius) + 0.5), rnd_round(Vyd(cy) - Vzd(yradius) + 0.5),
+							 rnd_round(vrx2), rnd_round(vry2),
 							 (start_angle + 180) * 64, delta_angle * 64);
 }
 

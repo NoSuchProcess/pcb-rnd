@@ -160,7 +160,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		default_file = NULL;
 
 		if (fname && *fname)
-			default_file = pcb_strdup(fname);
+			default_file = rnd_strdup(fname);
 	}
 
 	vendor_free_all();
@@ -524,7 +524,7 @@ static void process_skips(lht_node_t *res)
 				fprintf(stderr, "realloc() failed\n");
 				exit(-1);
 			}
-			(*lst)[*cnt - 1] = pcb_strdup(sval);
+			(*lst)[*cnt - 1] = rnd_strdup(sval);
 		}
 		else
 			pcb_hid_cfg_error(n, "invalid skip type; must be text");

@@ -164,7 +164,7 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	pcb_board_count_holes(PCB, &hp, &hup, NULL);
-	pcb_print_utc(buff, sizeof(buff), 0);
+	rnd_print_utc(buff, sizeof(buff), 0);
 
 	fprintf(f, "ha:pcb-rnd-board-stats-v2 {\n");
 	fprintf(f, "	ha:meta {\n");
@@ -415,8 +415,8 @@ int pplg_init_export_stat(void)
 
 	stat_hid.usage = stat_usage;
 
-	stat_attribute_list[HA_first_ver].default_val.str = pcb_strdup(PCB_VERSION);
-	stat_attribute_list[HA_license].default_val.str = pcb_strdup("proprietary/private");
+	stat_attribute_list[HA_first_ver].default_val.str = rnd_strdup(PCB_VERSION);
+	stat_attribute_list[HA_license].default_val.str = rnd_strdup("proprietary/private");
 
 	pcb_hid_register_hid(&stat_hid);
 

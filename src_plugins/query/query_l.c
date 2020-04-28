@@ -1182,13 +1182,13 @@ case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
 #line 43 "query_l.l"
-{ qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
+{ qry_lval.s = rnd_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; /*"*/ }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
 #line 44 "query_l.l"
-{ qry_lval.s = pcb_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
+{ qry_lval.s = rnd_strdup(yytext+1); qry_lval.s[strlen(qry_lval.s)-1] = '\0'; return T_QSTR; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
@@ -1523,7 +1523,7 @@ YY_RULE_SETUP
 case 69:
 YY_RULE_SETUP
 #line 121 "query_l.l"
-{ qry_lval.s = pcb_strdup(yytext); return T_STR; }
+{ qry_lval.s = rnd_strdup(yytext); return T_STR; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
@@ -2580,7 +2580,7 @@ void pcb_qry_set_input(const char *script)
 static pcb_qry_node_t *make_constant(char *str, long val)
 {
 	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_CONST);
-	res->data.str = pcb_strdup(str);
+	res->data.str = rnd_strdup(str);
 	res->precomp.cnst = val;
 	return res;
 }
@@ -2588,7 +2588,7 @@ static pcb_qry_node_t *make_constant(char *str, long val)
 static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *o)
 {
 	pcb_qry_node_t *res = pcb_qry_n_alloc(PCBQ_DATA_OBJ);
-	res->data.str = pcb_strdup(str);
+	res->data.str = rnd_strdup(str);
 	res->precomp.obj = o;
 	return res;
 }

@@ -307,9 +307,9 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		pcb_grid_inval();
 		if (val[0] == '*')
-			pcb_hidlib_set_grid(RND_ACT_HIDLIB, pcb_round(RND_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
 		else
-			pcb_hidlib_set_grid(RND_ACT_HIDLIB, pcb_round(RND_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
+			pcb_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
 		return 0;
 	}
 

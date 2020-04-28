@@ -198,7 +198,7 @@ void cmd_chprio(char *arg)
 			*end = '\0';
 		sprintf(tmp, "%s-%d", first->name, np);
 		free(first->name);
-		first->name = pcb_strdup(tmp);
+		first->name = rnd_strdup(tmp);
 		pcb_conf_update(NULL, -1);
 	}
 }
@@ -226,11 +226,11 @@ void cmd_chpolicy(char *arg)
 		if (end != NULL) {
 			sprintf(tmp, "%s%s", arg, end);
 			free(first->name);
-			first->name = pcb_strdup(tmp);
+			first->name = rnd_strdup(tmp);
 		}
 		else {
 			free(first->name);
-			first->name = pcb_strdup(arg);
+			first->name = rnd_strdup(arg);
 		}
 		pcb_conf_update(NULL, -1);
 	}

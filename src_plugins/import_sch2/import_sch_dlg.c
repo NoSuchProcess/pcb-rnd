@@ -147,7 +147,7 @@ static void isch_pcb2dlg(void)
 
 	if (tname != NULL) {
 		for(n = 0; n < isch_ctx.len; n++) {
-			if (pcb_strcasecmp(isch_ctx.inames[n], tname) == 0) {
+			if (rnd_strcasecmp(isch_ctx.inames[n], tname) == 0) {
 				tab = n;
 				break;
 			}
@@ -278,7 +278,7 @@ static int do_dialog(void)
 	qsort(pa, len, sizeof(pcb_plug_import_t *), isch_cmp);
 
 	for(n = 0; n < len; n++)
-		isch_ctx.inames[n] = pcb_strdup(pa[n]->name);
+		isch_ctx.inames[n] = rnd_strdup(pa[n]->name);
 	isch_ctx.inames[n] = NULL;
 	isch_ctx.len = len;
 

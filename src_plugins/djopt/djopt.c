@@ -270,7 +270,7 @@ static int dist(int x1, int y1, int x2, int y2)
 	dy2 = (double) y2;
 
 	d = sqrt((dx1 - dx2) * (dx1 - dx2) + (dy1 - dy2) * (dy1 - dy2));
-	d = pcb_round(d);
+	d = rnd_round(d);
 
 	return (int) d;
 }

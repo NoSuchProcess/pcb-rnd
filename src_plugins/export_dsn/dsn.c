@@ -128,7 +128,7 @@ static void print_structure(FILE * fp)
 	for (group = 0; group < pcb_max_group(PCB); group++) {
 		htsp_entry_t *e;
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[group];
-		char *layeropts = pcb_strdup("(type signal)");
+		char *layeropts = rnd_strdup("(type signal)");
 		
 		if (!(g->ltype & PCB_LYT_COPPER))
 			continue;
@@ -184,9 +184,9 @@ static void print_placement(FILE * fp)
 		res = pcb_subc_get_origin(subc, &ox, &oy);
 		assert(res == 0);
 		if (subc->refdes != NULL)
-			ename = pcb_strdup(subc->refdes);
+			ename = rnd_strdup(subc->refdes);
 		else
-			ename = pcb_strdup("null");
+			ename = rnd_strdup("null");
 		pcb_fprintf(fp, "    (component %d\n", subc->ID);
 		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ox, PCB->hidlib.size_y - oy, side);
 		pcb_fprintf(fp, "    )\n");

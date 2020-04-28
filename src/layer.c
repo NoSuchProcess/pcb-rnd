@@ -495,7 +495,7 @@ void pcb_layers_reset(pcb_board_t *pcb)
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
 		if (pcb->Data->Layer[n].name != NULL)
 			free((char *)pcb->Data->Layer[n].name);
-		pcb->Data->Layer[n].name = pcb_strdup("<pcb_layers_reset>");
+		pcb->Data->Layer[n].name = rnd_strdup("<pcb_layers_reset>");
 		pcb->Data->Layer[n].meta.real.grp = -1;
 		pcb->Data->Layer[n].Attributes.post_change = layer_post_change;
 	}
@@ -533,7 +533,7 @@ pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const c
 	}
 
 	layer_clear(&pcb->Data->Layer[id]);
-	pcb->Data->Layer[id].name = pcb_strdup(lname);
+	pcb->Data->Layer[id].name = rnd_strdup(lname);
 
 	/* add layer to group */
 	if (grp >= 0) {
@@ -626,7 +626,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, rnd_bool undoable)
 
 int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, rnd_bool undoable)
 {
-	return pcb_layer_rename_(&data->Layer[layer], pcb_strdup(lname), undoable);
+	return pcb_layer_rename_(&data->Layer[layer], rnd_strdup(lname), undoable);
 }
 
 /*** undoable layer recolor ***/
@@ -773,7 +773,7 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	memset(lp, 0, sizeof(pcb_layer_t));
 	lp->meta.real.grp = gid;
 	lp->meta.real.vis = 1;
-	lp->name = pcb_strdup("New Layer");
+	lp->name = rnd_strdup("New Layer");
 	lp->meta.real.color = *pcb_layer_default_color(idx, (gid >= 0) ? pcb->LayerGroups.grp[gid].ltype : 0);
 	if ((gid >= 0) && (pcb->LayerGroups.grp[gid].len == 0)) { /*When adding the first layer in a group, set up comb flags automatically */
 		switch((pcb->LayerGroups.grp[gid].ltype) & PCB_LYT_ANYTHING) {
@@ -1171,12 +1171,12 @@ void pcb_layer_real2bound(pcb_layer_t *dst, pcb_layer_t *src, int share_rtrees)
 
 	dst->meta.bound.type = pcb_layergrp_flags(pcb, src->meta.real.grp);
 	if (src->name != NULL)
-		dst->name = pcb_strdup(src->name);
+		dst->name = rnd_strdup(src->name);
 	else
 		dst->name = NULL;
 
 	if ((grp != NULL) && (grp->purpose != NULL))
-		dst->meta.bound.purpose = pcb_strdup(grp->purpose);
+		dst->meta.bound.purpose = rnd_strdup(grp->purpose);
 	else
 		dst->meta.bound.purpose = NULL;
 
@@ -1199,7 +1199,7 @@ static int strcmp_score(const char *s1, const char *s2)
 	if ((s1 != NULL) && (s2 != NULL)) {
 		if (strcmp(s1, s2) == 0)
 			score += 4;
-		else if (pcb_strcasecmp(s1, s2) == 0)
+		else if (rnd_strcasecmp(s1, s2) == 0)
 			score += 2;
 	}
 
@@ -1269,12 +1269,12 @@ pcb_layer_t *pcb_layer_new_bound(pcb_data_t *data, pcb_layer_type_t type, const 
 
 	memset(lay, 0, sizeof(pcb_layer_t));
 	lay->is_bound = 1;
-	lay->name = pcb_strdup(name);
+	lay->name = rnd_strdup(name);
 	lay->meta.bound.type = type;
 	if (purpose == NULL)
 		lay->meta.bound.purpose = NULL;
 	else
-		lay->meta.bound.purpose = pcb_strdup(purpose);
+		lay->meta.bound.purpose = rnd_strdup(purpose);
 	lay->parent.data = data;
 	lay->parent_type = PCB_PARENT_DATA;
 	lay->type = PCB_OBJ_LAYER;
@@ -1402,21 +1402,21 @@ int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_laye
 
 
 		for(nt = pcb_layer_type_names; nt->name != NULL; nt++) {
-			if (pcb_strncasecmp(nt->name, curr, len) == 0) {
+			if (rnd_strncasecmp(nt->name, curr, len) == 0) {
 				*lyt |= nt->type;
 				goto done;
 			}
 		}
 
 		for(nc = pcb_layer_comb_names; nc->name != NULL; nc++) {
-			if (pcb_strncasecmp(nc->name, curr, len) == 0) {
+			if (rnd_strncasecmp(nc->name, curr, len) == 0) {
 				got_lyc = 1;
 				*lyc |= nc->type;
 				goto done;
 			}
 		}
 
-		if ((pcb_strncasecmp("pos", curr, len) == 0) || (pcb_strncasecmp("add", curr, len) == 0)) {
+		if ((rnd_strncasecmp("pos", curr, len) == 0) || (rnd_strncasecmp("add", curr, len) == 0)) {
 			got_lyc = 1;
 			*lyc &= ~PCB_LYC_SUB;
 			goto done;
@@ -1497,11 +1497,11 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev)
 	const pcb_menu_layers_t *ml;
 
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++)
-		if (pcb_strcasecmp(name_or_abbrev, ml->abbrev) == 0)
+		if (rnd_strcasecmp(name_or_abbrev, ml->abbrev) == 0)
 			return ml;
 
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++)
-		if (pcb_strcasecmp(name_or_abbrev, ml->name) == 0)
+		if (rnd_strcasecmp(name_or_abbrev, ml->name) == 0)
 			return ml;
 
 	return NULL;

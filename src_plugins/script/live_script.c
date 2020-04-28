@@ -142,11 +142,11 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 					continue;
 				if (s1 < s2) *s1 = '\0';
 				else *s2 = '\0';
-				eng = pcb_strdup(de->d_name + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
+				eng = rnd_strdup(de->d_name + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
 				el = strlen(eng);
 				eng[el-4] = '\0';
 				vtp0_append(&ve, eng);
-				vtp0_append(&vl, pcb_strdup(s));
+				vtp0_append(&vl, rnd_strdup(s));
 			}
 			fclose(f);
 		}
@@ -164,9 +164,9 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	vtp0_init(&vl);
 	vtp0_init(&ve);
 
-	vtp0_append(&vl, pcb_strdup("fawk")); vtp0_append(&ve, pcb_strdup("fawk"));
-	vtp0_append(&vl, pcb_strdup("fbas")); vtp0_append(&ve, pcb_strdup("fbas"));
-	vtp0_append(&vl, pcb_strdup("fpas")); vtp0_append(&ve, pcb_strdup("fpas"));
+	vtp0_append(&vl, rnd_strdup("fawk")); vtp0_append(&ve, rnd_strdup("fawk"));
+	vtp0_append(&vl, rnd_strdup("fbas")); vtp0_append(&ve, rnd_strdup("fbas"));
+	vtp0_append(&vl, rnd_strdup("fpas")); vtp0_append(&ve, rnd_strdup("fpas"));
 
 	lvs->langs = (char **)vl.array;
 	lvs->lang_engines = (char **)ve.array;
@@ -210,7 +210,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	}
 
 	lvs->hidlib = hidlib;
-	lvs->name = pcb_strdup(name);
+	lvs->name = rnd_strdup(name);
 	lvs->longname = pcb_concat("_live_script_", name, NULL);
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
 		PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
@@ -443,7 +443,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LiveScript, name = argv[2].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LiveScript, arg = argv[3].val.str);
 
-	if (pcb_strcasecmp(cmd, "new") == 0) {
+	if (rnd_strcasecmp(cmd, "new") == 0) {
 		if (name == NULL) name = "default";
 		lvs = htsp_get(&pcb_live_scripts, name);
 		if (lvs != NULL) {
@@ -475,22 +475,22 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	RND_ACT_IRES(0);
-	if (pcb_strcasecmp(cmd, "load") == 0) {
+	if (rnd_strcasecmp(cmd, "load") == 0) {
 		RND_ACT_IRES(live_load(NULL, lvs, arg));
 	}
-	else if (pcb_strcasecmp(cmd, "save") == 0) {
+	else if (rnd_strcasecmp(cmd, "save") == 0) {
 		RND_ACT_IRES(live_save(NULL, lvs, arg));
 	}
-	else if (pcb_strcasecmp(cmd, "undo") == 0) {
+	else if (rnd_strcasecmp(cmd, "undo") == 0) {
 		RND_ACT_IRES(live_undo(lvs));
 	}
-	else if (pcb_strcasecmp(cmd, "run") == 0) {
+	else if (rnd_strcasecmp(cmd, "run") == 0) {
 		live_run(NULL, lvs);
 	}
-	else if (pcb_strcasecmp(cmd, "stop") == 0) {
+	else if (rnd_strcasecmp(cmd, "stop") == 0) {
 		live_stop(lvs);
 	}
-	else if (pcb_strcasecmp(cmd, "rerun") == 0) {
+	else if (rnd_strcasecmp(cmd, "rerun") == 0) {
 		live_stop(lvs);
 		live_undo(lvs);
 		live_run(NULL, lvs);

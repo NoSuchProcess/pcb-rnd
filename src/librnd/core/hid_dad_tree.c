@@ -101,7 +101,7 @@ pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cell
 		parent = htsp_get(&tree->paths, path);
 		if (parent != NULL)
 			return parent;
-		cell[0] = pcb_strdup(path);
+		cell[0] = rnd_strdup(path);
 		return pcb_dad_tree_append(tree->attrib, NULL, cell);
 	}
 
@@ -111,12 +111,12 @@ pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cell
 	parent = pcb_dad_tree_mkdirp(tree, path, NULL);
 
 	if (cells == NULL) {
-		cell[0] = pcb_strdup(last);
+		cell[0] = rnd_strdup(last);
 		return pcb_dad_tree_append_under(tree->attrib, parent, cell);
 	}
 
 	old = cell[0];
-	cells[0] = pcb_strdup(last);
+	cells[0] = rnd_strdup(last);
 	free(old);
 	return pcb_dad_tree_append_under(tree->attrib, parent, cells);
 }

@@ -125,7 +125,7 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 	t = dtext(x, *y, 200, f->id, buf);
 	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
 
-	*y += pcb_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
+	*y += rnd_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
 
 	if (font_coords < MAX_FONT) {
 		font_coord[font_coords].y1 = y_old;

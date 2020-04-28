@@ -92,7 +92,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 		return NULL;
 
 	/* split file name and ID */
-	fpath = pcb_strdup(name + strlen(REQUIRE_PATH_PREFIX));
+	fpath = rnd_strdup(name + strlen(REQUIRE_PATH_PREFIX));
 	ids = strchr(fpath, '@');
 	if (ids == NULL)
 		goto err;

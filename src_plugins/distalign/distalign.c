@@ -78,7 +78,7 @@ static int keyword(const char *s)
 		return K_none;
 	}
 	for (i = 0; i < PCB_ENTRIES(keywords); ++i) {
-		if (keywords[i] && pcb_strcasecmp(s, keywords[i]) == 0)
+		if (keywords[i] && rnd_strcasecmp(s, keywords[i]) == 0)
 			return i;
 	}
 	return -1;

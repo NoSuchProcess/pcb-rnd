@@ -1777,7 +1777,7 @@ yyreduce:
 
   case 49:
 #line 270 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = pcb_strdup("a"); (yyval.n)->precomp.fld = query_fields_sphash("a"); (yyval.n)->next = (yyvsp[0].n); }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_FIELD); (yyval.n)->data.str = rnd_strdup("a"); (yyval.n)->precomp.fld = query_fields_sphash("a"); (yyval.n)->next = (yyvsp[0].n); }
 #line 1782 "query_y.c" /* yacc.c:1652  */
     break;
 
@@ -1850,7 +1850,7 @@ yyreduce:
 
   case 58:
 #line 314 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_LISTVAR); (yyval.n)->data.str = pcb_strdup("@"); /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_LISTVAR); (yyval.n)->data.str = rnd_strdup("@"); /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
 #line 1855 "query_y.c" /* yacc.c:1652  */
     break;
 
@@ -1921,7 +1921,7 @@ yyreduce:
 
   case 66:
 #line 363 "query_y.y" /* yacc.c:1652  */
-    { (yyval.n) = pcb_qry_n_alloc(PCBQ_RNAME); (yyval.n)->data.str = (const char *)pcb_strdup(""); }
+    { (yyval.n) = pcb_qry_n_alloc(PCBQ_RNAME); (yyval.n)->data.str = (const char *)rnd_strdup(""); }
 #line 1926 "query_y.c" /* yacc.c:1652  */
     break;
 

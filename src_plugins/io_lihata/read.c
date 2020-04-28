@@ -166,7 +166,7 @@ static int parse_text(char **res, lht_node_t *nd)
 		return -1;
 	if (nd->type != LHT_TEXT)
 		return iolht_error(nd, "expected a text node\n");
-	*res = pcb_strdup(nd->data.text.value);
+	*res = rnd_strdup(nd->data.text.value);
 	return 0;
 }
 
@@ -357,14 +357,14 @@ static int parse_bool(rnd_bool *res, lht_node_t *nd)
 		*end = '\0';
 
 
-	if ((strcmp(val, "1") == 0) || (pcb_strcasecmp(val, "on") == 0) ||
-	    (pcb_strcasecmp(val, "true") == 0) || (pcb_strcasecmp(val, "yes") == 0)) {
+	if ((strcmp(val, "1") == 0) || (rnd_strcasecmp(val, "on") == 0) ||
+	    (rnd_strcasecmp(val, "true") == 0) || (rnd_strcasecmp(val, "yes") == 0)) {
 		*res = 1;
 		return 0;
 	}
 
-	if ((strcmp(val, "0") == 0) || (pcb_strcasecmp(val, "off") == 0) ||
-	    (pcb_strcasecmp(val, "false") == 0) || (pcb_strcasecmp(val, "no") == 0)) {
+	if ((strcmp(val, "0") == 0) || (rnd_strcasecmp(val, "off") == 0) ||
+	    (rnd_strcasecmp(val, "false") == 0) || (rnd_strcasecmp(val, "no") == 0)) {
 		*res = 0;
 		return 0;
 	}
@@ -954,17 +954,17 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	if (bound) {
 		const char *prp;
 		ly->is_bound = 1;
-		ly->name = pcb_strdup(grp->name);
+		ly->name = rnd_strdup(grp->name);
 		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
 		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, &prp, lht_dom_hash_get(grp, "type"), "bound layer");
 		if (npurp != NULL) { /* use the explicit purpose if it is set */
 			if (npurp->type == LHT_TEXT)
-				dt->Layer[layer_id].meta.bound.purpose = pcb_strdup(npurp->data.text.value);
+				dt->Layer[layer_id].meta.bound.purpose = rnd_strdup(npurp->data.text.value);
 			else
 				iolht_warn(npurp, -1, "Layers purpose shall be text - ignoring this field\n");
 		}
 		else if (prp != NULL) /* or the implicit one from parse_layer_type(), for old versions */
-			dt->Layer[layer_id].meta.bound.purpose = pcb_strdup(prp);
+			dt->Layer[layer_id].meta.bound.purpose = rnd_strdup(prp);
 
 		if (pcb != NULL) {
 			dt->Layer[layer_id].meta.bound.real = pcb_layer_resolve_binding(pcb, &dt->Layer[layer_id]);
@@ -979,7 +979,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	else {
 		/* real */
 		lht_node_t *nclr;
-		ly->name = pcb_strdup(grp->name);
+		ly->name = rnd_strdup(grp->name);
 		nclr = hash_get(grp, "color", 1);
 		if ((nclr != NULL) && (nclr->type != LHT_INVALID_TYPE)) {
 			if (rdver < 5)
@@ -1572,7 +1572,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			sprintf(g->name, "grp_%ld", gid);
 		}
 		else
-			g->name = pcb_strdup(name->data.text.value);
+			g->name = rnd_strdup(name->data.text.value);
 		parse_layer_type(&g->ltype, &prp, lht_dom_hash_get(grp, "type"), g->name);
 
 		if (rdver < 6) {
@@ -1585,12 +1585,12 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			if (rdver < 6)
 				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.\n");
 			if (npurp->type == LHT_TEXT)
-				pcb_layergrp_set_purpose__(g, pcb_strdup(npurp->data.text.value), 0);
+				pcb_layergrp_set_purpose__(g, rnd_strdup(npurp->data.text.value), 0);
 			else
 				iolht_warn(npurp, -1, "Group purpose shall be text - ignoring this field\n");
 		}
 		else if (prp != NULL) /* or the implicit one returned by parse_layer_type() */
-			pcb_layergrp_set_purpose__(g, pcb_strdup(prp), 0);
+			pcb_layergrp_set_purpose__(g, rnd_strdup(prp), 0);
 
 		/* load attributes */
 		nattr = lht_dom_hash_get(grp, "attributes");
@@ -1750,7 +1750,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 
 	n = lht_dom_hash_get(nproto, "name");
 	if (n != NULL) {
-		dst->name = pcb_strdup(n->data.text.value);
+		dst->name = rnd_strdup(n->data.text.value);
 		if (rdver < 5)
 			iolht_warn(n, 6, "lihata board before v5 did not support padstack prototype names\n");
 	}

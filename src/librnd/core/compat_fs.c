@@ -225,10 +225,10 @@ char *rnd_tempfile_name_new(const char *name)
 #undef TEMPLATE
 #else
 	/*
-	 * tmpnam() uses a static buffer so pcb_strdup() the result right away
+	 * tmpnam() uses a static buffer so rnd_strdup() the result right away
 	 * in case someone decides to create multiple temp names.
 	 */
-	tmpfile = pcb_strdup(tmpnam(NULL));
+	tmpfile = rnd_strdup(tmpnam(NULL));
 #endif
 	return tmpfile;
 #endif
@@ -257,7 +257,7 @@ int rnd_tempfile_unlink(char *name)
 		e--;
 	}
 
-	dname = pcb_strdup(name);
+	dname = rnd_strdup(name);
 	dname[e] = '\0';
 
 	/*

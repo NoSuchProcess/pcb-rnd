@@ -57,7 +57,7 @@ static char *pcb_ltf_get_path(pcb_ltf_fsd_t *pctx)
 	XtGetValues(pctx->dialog, stdarg_args, stdarg_n);
 
 	XmStringGetLtoR(xmname, XmFONTLIST_DEFAULT_TAG, &name);
-	res = pcb_strdup(name);
+	res = rnd_strdup(name);
 	XtFree(name);
 	return res;
 }

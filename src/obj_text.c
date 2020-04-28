@@ -185,7 +185,7 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X,
 	text->Flags = Flags;
 	text->Scale = Scale;
 	text->thickness = thickness;
-	text->TextString = pcb_strdup(TextString);
+	text->TextString = rnd_strdup(TextString);
 	text->fid = PCBFont->id;
 
 	pcb_add_text_on_layer(Layer, text, PCBFont);
@@ -274,11 +274,11 @@ static unsigned char *pcb_text_render_str(pcb_text_t *text)
 
 	res = (unsigned char *)pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
 	if (res == NULL) {
-		res = (unsigned char *)pcb_strdup("<!>");
+		res = (unsigned char *)rnd_strdup("<!>");
 	}
 	else if (*res == '\0') {
 		free(res);
-		res = (unsigned char *)pcb_strdup("<?>");
+		res = (unsigned char *)rnd_strdup("<?>");
 	}
 
 	return res;
@@ -407,14 +407,14 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 	/* calculate the transformed coordinates of all 4 corners of the raw
 	   (non-axis-aligned) bounding box */
-	cx[0] = pcb_round(pcb_xform_x(mx, minx, miny));
-	cy[0] = pcb_round(pcb_xform_y(mx, minx, miny));
-	cx[1] = pcb_round(pcb_xform_x(mx, maxx, miny));
-	cy[1] = pcb_round(pcb_xform_y(mx, maxx, miny));
-	cx[2] = pcb_round(pcb_xform_x(mx, maxx, maxy));
-	cy[2] = pcb_round(pcb_xform_y(mx, maxx, maxy));
-	cx[3] = pcb_round(pcb_xform_x(mx, minx, maxy));
-	cy[3] = pcb_round(pcb_xform_y(mx, minx, maxy));
+	cx[0] = rnd_round(pcb_xform_x(mx, minx, miny));
+	cy[0] = rnd_round(pcb_xform_y(mx, minx, miny));
+	cx[1] = rnd_round(pcb_xform_x(mx, maxx, miny));
+	cy[1] = rnd_round(pcb_xform_y(mx, maxx, miny));
+	cx[2] = rnd_round(pcb_xform_x(mx, maxx, maxy));
+	cy[2] = rnd_round(pcb_xform_y(mx, maxx, maxy));
+	cx[3] = rnd_round(pcb_xform_x(mx, minx, maxy));
+	cy[3] = rnd_round(pcb_xform_y(mx, minx, maxy));
 
 	/* calculate the axis-aligned version */
 	Text->bbox_naked.X1 = Text->bbox_naked.X2 = cx[0];
@@ -870,16 +870,16 @@ void pcb_text_scale(pcb_text_t *text, double sx, double sy, double sth)
 		pcb_text_pre(text);
 
 	if (sx != 1.0)
-		text->X = pcb_round((double)text->X * sx);
+		text->X = rnd_round((double)text->X * sx);
 
 	if (sy != 1.0)
-		text->Y = pcb_round((double)text->Y * sy);
+		text->Y = rnd_round((double)text->Y * sy);
 
 	if ((sx != 1.0) || (sy != 1.0))
-		text->Scale = pcb_round((double)text->Scale * (sy+sx)/2.0);
+		text->Scale = rnd_round((double)text->Scale * (sy+sx)/2.0);
 
 	if ((sth != 1.0) && (text->thickness > 0.0))
-		text->thickness = pcb_round((double)text->thickness * sth);
+		text->thickness = rnd_round((double)text->thickness * sth);
 
 	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
 	if (onbrd)
@@ -1020,8 +1020,8 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 
 	/* transform each coordinate */
 	for(n = 0, p = poly->Points; n < max; n++,p++) {
-		x[n] = pcb_round(pcb_xform_x(mx, p->X + xo, p->Y));
-		y[n] = pcb_round(pcb_xform_y(mx, p->X + xo, p->Y));
+		x[n] = rnd_round(pcb_xform_x(mx, p->X + xo, p->Y));
+		y[n] = rnd_round(pcb_xform_y(mx, p->X + xo, p->Y));
 	}
 
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
@@ -1039,8 +1039,8 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 			dv = 0.5;
 		pcb_polo_offs(info->xform->bloat*dv, pp, max);
 		for(n = 0, p = pp; n < max; n++,p++) {
-			x[n] = pcb_round(p->x);
-			y[n] = pcb_round(p->y);
+			x[n] = rnd_round(p->x);
+			y[n] = rnd_round(p->y);
 		}
 	}
 
@@ -1110,10 +1110,10 @@ RND_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_xform_mx_t mx, rnd_coord_t 
 {
 	rnd_coord_t tx1, ty1, tx2, ty2;
 
-	tx1 = pcb_round(pcb_xform_x(mx, x1, y1));
-	ty1 = pcb_round(pcb_xform_y(mx, x1, y1));
-	tx2 = pcb_round(pcb_xform_x(mx, x2, y2));
-	ty2 = pcb_round(pcb_xform_y(mx, x2, y2));
+	tx1 = rnd_round(pcb_xform_x(mx, x1, y1));
+	ty1 = rnd_round(pcb_xform_y(mx, x1, y1));
+	tx2 = rnd_round(pcb_xform_x(mx, x2, y2));
+	ty2 = rnd_round(pcb_xform_y(mx, x2, y2));
 
 	tx1 += xordx;
 	ty1 += xordy;
@@ -1199,10 +1199,10 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 			for (n = font->Symbol[*string].LineN; n; n--, line++) {
 				/* create one line, scale, move, rotate and swap it */
 				newline = *line;
-				newline.Point1.X = pcb_round(pcb_xform_x(mx, line->Point1.X+x, line->Point1.Y));
-				newline.Point1.Y = pcb_round(pcb_xform_y(mx, line->Point1.X+x, line->Point1.Y));
-				newline.Point2.X = pcb_round(pcb_xform_x(mx, line->Point2.X+x, line->Point2.Y));
-				newline.Point2.Y = pcb_round(pcb_xform_y(mx, line->Point2.X+x, line->Point2.Y));
+				newline.Point1.X = rnd_round(pcb_xform_x(mx, line->Point1.X+x, line->Point1.Y));
+				newline.Point1.Y = rnd_round(pcb_xform_y(mx, line->Point1.X+x, line->Point1.Y));
+				newline.Point2.X = rnd_round(pcb_xform_x(mx, line->Point2.X+x, line->Point2.Y));
+				newline.Point2.Y = rnd_round(pcb_xform_y(mx, line->Point2.X+x, line->Point2.Y));
 				newline.Thickness = PCB_SCALE_TEXT(newline.Thickness, scale / 2);
 
 				if (newline.Thickness < min_line_width)
@@ -1223,8 +1223,8 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 			for(a = arclist_first(&font->Symbol[*string].arcs); a != NULL; a = arclist_next(a)) {
 				newarc = *a;
 
-				newarc.X = pcb_round(pcb_xform_x(mx, a->X + x, a->Y));
-				newarc.Y = pcb_round(pcb_xform_y(mx, a->X + x, a->Y));
+				newarc.X = rnd_round(pcb_xform_x(mx, a->X + x, a->Y));
+				newarc.Y = rnd_round(pcb_xform_y(mx, a->X + x, a->Y));
 				newarc.Height = newarc.Width = PCB_SCALE_TEXT(newarc.Height, scale);
 				newarc.Thickness = PCB_SCALE_TEXT(newarc.Thickness, scale / 2);
 				newarc.StartAngle += rotdeg;
@@ -1259,14 +1259,14 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 			rnd_coord_t size = (font->DefaultSymbol.X2 - font->DefaultSymbol.X1) * 6 / 5;
 			rnd_coord_t px[4], py[4];
 
-			px[0] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
-			py[0] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
-			px[1] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y1));
-			py[1] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y1));
-			px[2] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
-			py[2] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
-			px[3] = pcb_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
-			py[3] = pcb_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
+			px[0] = rnd_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
+			py[0] = rnd_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y1));
+			px[1] = rnd_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y1));
+			py[1] = rnd_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y1));
+			px[2] = rnd_round(pcb_xform_x(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
+			py[2] = rnd_round(pcb_xform_y(mx, font->DefaultSymbol.X2 + x, font->DefaultSymbol.Y2));
+			px[3] = rnd_round(pcb_xform_x(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
+			py[3] = rnd_round(pcb_xform_y(mx, font->DefaultSymbol.X1 + x, font->DefaultSymbol.Y2));
 
 			/* draw move on to next cursor position */
 			if ((cb == NULL) && (xordraw || (info->xform->thin_draw || info->xform->wireframe))) {
@@ -1538,7 +1538,7 @@ rnd_bool pcb_text_old_direction(int *dir_out, double rot)
 	r = fmod(rot, 90.0);
 
 	if (dir_out != NULL) {
-		int d = pcb_round(rot / 90);
+		int d = rnd_round(rot / 90);
 		if (d < 0)
 			d += 4;
 		*dir_out = d;

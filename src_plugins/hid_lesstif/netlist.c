@@ -53,7 +53,7 @@ static void pick_net(XmString *name, int pick)
 	if (net_name == NULL)
 		last_pick = NULL;
 	else
-		last_pick = pcb_strdup(net_name);
+		last_pick = rnd_strdup(net_name);
 
 	if (netnode_strings)
 		free(netnode_strings);			/* XXX leaked all XmStrings??? */
@@ -200,7 +200,7 @@ TODO("subc TODO")
 	const char *name = menu->Entry[cbs->item_position - 1].ListEntry;
 	char *ename, *pname;
 
-	ename = pcb_strdup(name);
+	ename = rnd_strdup(name);
 	pname = strchr(ename, '-');
 	if (!pname) {
 		free(ename);

@@ -114,12 +114,12 @@ static void add_schematic(const char *sch)
 {
 	char **n;
 	n = gadl_new(&schematics);
-	*n = pcb_strdup(sch);
+	*n = rnd_strdup(sch);
 	gadl_append(&schematics, n);
 	if (!conf_g2pr.utils.gsch2pcb_rnd.sch_basename) {
 		const char *suff = loc_str_has_suffix(sch, ".sch", 4);
 		if (suff != NULL) {
-			char *tmp = pcb_strndup(sch, suff - sch);
+			char *tmp = rnd_strndup(sch, suff - sch);
 			pcb_conf_set(CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, POL_OVERWRITE);
 			free(tmp);
 		}
@@ -131,7 +131,7 @@ static void add_multiple_schematics(const char * sch)
 	/* parse the string using shell semantics */
 	int count;
 	char **args;
-	char *tmp = pcb_strdup(sch);
+	char *tmp = rnd_strdup(sch);
 
 	count = qparse(tmp, &args);
 	free(tmp);
@@ -198,7 +198,7 @@ static int parse_config(char * config, char * arg)
 	else if (!strcmp(config, "gnetlist")) {
 		char **n;
 		n = gadl_new(&extra_gnetlist_list);
-		*n = pcb_strdup(arg);
+		*n = rnd_strdup(arg);
 		gadl_append(&extra_gnetlist_list, n);
 	}
 	else if (!strcmp(config, "empty-footprint"))
@@ -326,7 +326,7 @@ static void get_args(int argc, char ** argv)
 			else if (!strcmp(opt, "gnetlist-arg")) {
 				char **n;
 				n = gadl_new(&extra_gnetlist_arg_list);
-				*n = pcb_strdup(arg);
+				*n = rnd_strdup(arg);
 				gadl_append(&extra_gnetlist_arg_list, n);
 				i++;
 				continue;

@@ -82,7 +82,7 @@ static int calay_parse_net(FILE *fn)
 				next++;
 			}
 			free(curr);
-			curr = pcb_strdup(s);
+			curr = rnd_strdup(s);
 			s = next;
 		}
 

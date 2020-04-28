@@ -173,7 +173,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 		case CFN_STRING:
 			PCB_DAD_STRING(ctx->dlg);
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				ctx->dlg[item->wid].val.str = pcb_strdup(cn->val.string[0]);
+				ctx->dlg[item->wid].val.str = rnd_strdup(cn->val.string[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;

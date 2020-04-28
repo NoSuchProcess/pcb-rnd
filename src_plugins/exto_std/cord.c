@@ -147,8 +147,8 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 			/* B(t)=(1-t)^3 * P0 + 3*(1-t)^2 * t * P1 + 3 * (1-t)*t^2 * P2 + t^3*P3 */
 
-			x = pcb_round(it3*e1->x + 3*it2*t*a1->X + 3*it*t2*a2->X + t3*e2->x);
-			y = pcb_round(it3*e1->y + 3*it2*t*a1->Y + 3*it*t2*a2->Y + t3*e2->y);
+			x = rnd_round(it3*e1->x + 3*it2*t*a1->X + 3*it*t2*a2->X + t3*e2->x);
+			y = rnd_round(it3*e1->y + 3*it2*t*a1->Y + 3*it*t2*a2->Y + t3*e2->y);
 
 			l = pcb_line_new(lyr, lx, ly, x, y,
 				PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
@@ -434,7 +434,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 			dl->is_bound = 1;
 			dl->type = PCB_OBJ_LAYER;
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
-			dl->name = pcb_strdup(sl->name);
+			dl->name = rnd_strdup(sl->name);
 			dl->comb = sl->comb;
 			if (dl->meta.bound.real != NULL)
 				pcb_layer_link_trees(dl, dl->meta.bound.real);

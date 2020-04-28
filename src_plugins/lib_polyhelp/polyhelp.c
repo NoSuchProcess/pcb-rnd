@@ -444,7 +444,7 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, PolyHatch, op = argv[1].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, PolyHatch, arg = argv[2].val.str);
 
-	if (pcb_strcasecmp(op, "interactive") == 0) {
+	if (rnd_strcasecmp(op, "interactive") == 0) {
 		if (polyhatch_gui(&period, &dir, &flg, &want_contour) != 0) {
 			RND_ACT_IRES(1);
 			return 0;

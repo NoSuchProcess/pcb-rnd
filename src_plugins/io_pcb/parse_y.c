@@ -1894,13 +1894,13 @@ yyreduce:
 		    if (yyElemFixLayers) {
 		    	yyData->LayerN = 2;
 		    	free((char *)yyData->Layer[0].name);
-		    	yyData->Layer[0].name = pcb_strdup("top-silk");
+		    	yyData->Layer[0].name = rnd_strdup("top-silk");
 		    	yyData->Layer[0].parent_type = PCB_PARENT_DATA;
 		    	yyData->Layer[0].parent.data = yyData;
 		    	yyData->Layer[0].is_bound = 1;
 		    	yyData->Layer[0].meta.bound.type = PCB_LYT_SILK | PCB_LYT_TOP;
 		    	free((char *)yyData->Layer[1].name);
-		    	yyData->Layer[1].name = pcb_strdup("bottom-silk");
+		    	yyData->Layer[1].name = rnd_strdup("bottom-silk");
 		    	yyData->Layer[1].parent_type = PCB_PARENT_DATA;
 		    	yyData->Layer[1].parent.data = yyData;
 		    	yyData->Layer[1].is_bound = 1;
@@ -3297,7 +3297,7 @@ static void
 do_measure (PLMeasure *m, rnd_coord_t i, double d, int u)
 {
   m->ival = i;
-  m->bval = pcb_round (d);
+  m->bval = rnd_round(d);
   m->dval = d;
   m->has_units = u;
 }
@@ -3317,7 +3317,7 @@ old_units (PLMeasure m)
     return m.bval;
   if (m.ival != 0)
     pcb_io_pcb_usty_seen |= PCB_USTY_CMIL; /* ... because we can't save in mil */
-  return pcb_round (PCB_MIL_TO_COORD (m.ival));
+  return rnd_round(PCB_MIL_TO_COORD (m.ival));
 }
 
 static rnd_coord_t
@@ -3328,7 +3328,7 @@ new_units (PLMeasure m)
   if (m.dval != 0)
     pcb_io_pcb_usty_seen |= PCB_USTY_CMIL;
   /* if there's no unit m.dval already contains the converted value */
-  return pcb_round (m.dval);
+  return rnd_round(m.dval);
 }
 
 /* This converts old flag bits (from saved PCB files) to new format.  */

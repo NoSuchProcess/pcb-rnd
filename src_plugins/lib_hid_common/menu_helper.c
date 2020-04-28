@@ -280,7 +280,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 
 		if (rel_level <= 1) {
 			/* creating a main menu */
-			char *end, *name = pcb_strdup(path);
+			char *end, *name = rnd_strdup(path);
 			for(end = name; *end == '/'; end++) ;
 			end = strchr(end, '/');
 			*end = '\0';

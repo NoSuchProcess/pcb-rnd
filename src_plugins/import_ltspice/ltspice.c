@@ -117,7 +117,7 @@ static int ltspice_parse_asc(FILE *fa)
 				s+=9;
 				ltrim(s);
 				free(sattr.refdes);
-				sattr.refdes = pcb_strdup(s);
+				sattr.refdes = rnd_strdup(s);
 				/* figure out if device is passive or not, as this affects
 				   subsequent parsing of the "SYMATTR VALUE .... " line */
 				if (strncmp(s, "R", 1) != 0 && strncmp(s, "L", 1) != 0 &&
@@ -138,14 +138,14 @@ static int ltspice_parse_asc(FILE *fa)
 					ltrim(s);
 					free(sattr.value);
 					if (isPassive) {
-						sattr.value = pcb_strdup(s);
+						sattr.value = rnd_strdup(s);
 					}
 					else {
 						char *fp;
 						/*s+=6;*/
 						fp = strstr(s, ".pcb-rnd-");
 						if (fp != NULL) {
-							sattr.value = pcb_strdup(fp);
+							sattr.value = rnd_strdup(fp);
 							s = fp;							
 							fp += 9;
 							if (*fp == '"') {
@@ -156,7 +156,7 @@ static int ltspice_parse_asc(FILE *fa)
 									*end = '\0';
 							}
 							free(sattr.footprint);
-							sattr.footprint = pcb_strdup(fp);
+							sattr.footprint = rnd_strdup(fp);
 						}
 					}
 				}
@@ -179,7 +179,7 @@ static int ltspice_parse_asc(FILE *fa)
 						if (strncmp(fp, "pcb-rnd-", 8) == 0)
 							fp += 8;
 						free(sattr.footprint);
-						sattr.footprint = pcb_strdup(fp);
+						sattr.footprint = rnd_strdup(fp);
 					}
 				}
 				/* nothing stops a user inserting 
@@ -188,7 +188,7 @@ static int ltspice_parse_asc(FILE *fa)
 					s+=10;
 					ltrim(s);
 					free(sattr.footprint);
-					sattr.footprint = pcb_strdup(s);
+					sattr.footprint = rnd_strdup(s);
 				}
 			}
 		}
@@ -273,12 +273,12 @@ static void gen_filenames(const char *fname, char **fname_net, char **fname_asc)
 	end = strrchr(fname, '.');
 	if (end != NULL) {
 		if (strcmp(end, ".net") == 0)
-			fname_base = pcb_strndup(fname, end - fname);
+			fname_base = rnd_strndup(fname, end - fname);
 		else if (strcmp(end, ".asc") == 0)
-			fname_base = pcb_strndup(fname, end - fname);
+			fname_base = rnd_strndup(fname, end - fname);
 	}
 	if (fname_base == NULL)
-		fname_base = pcb_strdup(fname);
+		fname_base = rnd_strdup(fname);
 
 	*fname_net = pcb_strdup_printf("%s.net", fname_base);
 	*fname_asc = pcb_strdup_printf("%s.asc", fname_base);

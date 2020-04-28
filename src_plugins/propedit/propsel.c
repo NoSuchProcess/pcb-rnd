@@ -408,11 +408,11 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 
 	if (strncmp(st->name, "p/board/", 8) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
-		    (pcb_board_change_name(pcb_strdup(st->s)))) DONE;
+		    (pcb_board_change_name(rnd_strdup(st->s)))) DONE;
 
 		if ((strcmp(pn, "filename") == 0)) {
 			free(pcb->hidlib.filename);
-			pcb->hidlib.filename = pcb_strdup(st->s);
+			pcb->hidlib.filename = rnd_strdup(st->s);
 			DONE;
 		}
 
@@ -443,7 +443,7 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 
 	if (strncmp(st->name, "p/layer/", 8) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
-		    (pcb_layer_rename_(layer, pcb_strdup(st->s), 1) == 0)) DONE0;
+		    (pcb_layer_rename_(layer, rnd_strdup(st->s), 1) == 0)) DONE0;
 
 		if ((strcmp(pn, "color") == 0) &&
 		    (layer_recolor(layer, st->color.str) == 0)) DONE0;
@@ -464,7 +464,7 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 
 	if (strncmp(st->name, "p/layer_group/", 14) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
-		    (pcb_layergrp_rename_(grp, pcb_strdup(st->s), 1) == 0)) DONE;
+		    (pcb_layergrp_rename_(grp, rnd_strdup(st->s), 1) == 0)) DONE;
 
 		if ((strcmp(pn, "purpose") == 0) &&
 		    (pcb_layergrp_set_purpose(grp, st->s, 1) == 0)) DONE;
@@ -644,7 +644,7 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 		}
 
 		if ((strcmp(pn, "string") == 0) &&
-		    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, pcb_strdup(st->s)))) {
+		    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, rnd_strdup(st->s)))) {
 			free(old);
 			DONE;
 		}
@@ -1002,13 +1002,13 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val)
 {
 	switch(type) {
-		case PCB_PROPT_STRING: return val->string == NULL ? pcb_strdup("") : pcb_strdup(val->string);
+		case PCB_PROPT_STRING: return val->string == NULL ? rnd_strdup("") : rnd_strdup(val->string);
 		case PCB_PROPT_COORD:  return pcb_strdup_printf("%m+%.02mS", pcbhl_conf.editor.grid_unit->allow, val->coord);
 		case PCB_PROPT_ANGLE:  return pcb_strdup_printf("%f", val->angle);
 		case PCB_PROPT_INT:    return pcb_strdup_printf("%d", val->i);
-		case PCB_PROPT_BOOL:   return pcb_strdup(val->i ? "true" : "false");
+		case PCB_PROPT_BOOL:   return rnd_strdup(val->i ? "true" : "false");
 		case PCB_PROPT_COLOR:  return pcb_strdup_printf("#%02x%02x%02x", val->clr.r, val->clr.g, val->clr.b);
 		default:
-			return pcb_strdup("<error>");
+			return rnd_strdup("<error>");
 	}
 }

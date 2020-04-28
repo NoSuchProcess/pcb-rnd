@@ -211,7 +211,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Fontsel, op = argv[1].val.str);
 
 	if (op != NULL) {
-		if (pcb_strcasecmp(op, "Object") == 0) {
+		if (rnd_strcasecmp(op, "Object") == 0) {
 			rnd_coord_t x, y;
 			int type;
 			void *ptr1, *ptr2, *ptr3;

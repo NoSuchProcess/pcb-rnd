@@ -83,7 +83,7 @@ static int dad_new(rnd_hidlib_t *hl, const char *name)
 	}
 
 	dad = calloc(sizeof(dad_t), 1);
-	dad->name = pcb_strdup(name);
+	dad->name = rnd_strdup(name);
 	dad->row_domain = dad->name;
 	dad->hidlib = hl;
 	htsp_set(&dads, dad->name, dad);
@@ -210,13 +210,13 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, dad, dlgname = argv[1].val.str);
 	RND_PCB_ACT_CONVARG(2, FGW_STR, dad, cmd = argv[2].val.str);
 
-	if (pcb_strcasecmp(cmd, "new") == 0) {
+	if (rnd_strcasecmp(cmd, "new") == 0) {
 		RND_ACT_IRES(dad_new(RND_ACT_HIDLIB, dlgname));
 		return 0;
 	}
 
 	dad = htsp_get(&dads, dlgname);
-	if (pcb_strcasecmp(cmd, "exists") == 0) {
+	if (rnd_strcasecmp(cmd, "exists") == 0) {
 		RND_ACT_IRES(dad != NULL);
 		return 0;
 	}
@@ -228,19 +228,19 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 
-	if (pcb_strcasecmp(cmd, "label") == 0) {
+	if (rnd_strcasecmp(cmd, "label") == 0) {
 		if (dad->running) goto cant_chg;
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_LABEL(dad->dlg, txt);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "button") == 0) {
+	else if (rnd_strcasecmp(cmd, "button") == 0) {
 		if (dad->running) goto cant_chg;
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_BUTTON(dad->dlg, tmp_str_dup(dad, txt));
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "button_closes") == 0) {
+	else if (rnd_strcasecmp(cmd, "button_closes") == 0) {
 		int n, ret;
 
 		if (dad->running) goto cant_chg;
@@ -258,14 +258,14 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		PCB_DAD_END(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "bool") == 0) {
+	else if (rnd_strcasecmp(cmd, "bool") == 0) {
 		if (dad->running) goto cant_chg;
 		txt = "";
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_BOOL(dad->dlg, txt);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "integer") == 0) {
+	else if (rnd_strcasecmp(cmd, "integer") == 0) {
 		long vmin, vmax;
 		if (dad->running) goto cant_chg;
 		txt = "";
@@ -276,7 +276,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "real") == 0) {
+	else if (rnd_strcasecmp(cmd, "real") == 0) {
 		double vmin, vmax;
 		if (dad->running) goto cant_chg;
 		txt = "";
@@ -287,7 +287,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "coord") == 0) {
+	else if (rnd_strcasecmp(cmd, "coord") == 0) {
 		rnd_coord_t vmin, vmax;
 		if (dad->running) goto cant_chg;
 		txt = "";
@@ -298,17 +298,17 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "string") == 0) {
+	else if (rnd_strcasecmp(cmd, "string") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_STRING(dad->dlg);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "progress") == 0) {
+	else if (rnd_strcasecmp(cmd, "progress") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_PROGRESS(dad->dlg);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if ((pcb_strcasecmp(cmd, "enum") == 0) || (pcb_strcasecmp(cmd, "begin_tabbed") == 0)) {
+	else if ((rnd_strcasecmp(cmd, "enum") == 0) || (rnd_strcasecmp(cmd, "begin_tabbed") == 0)) {
 		char **values = tmp_new_strlist(dad);
 
 		if (dad->running) goto cant_chg;
@@ -327,7 +327,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			rv = -1;
 	}
-	else if (pcb_strcasecmp(cmd, "tree") == 0) {
+	else if (rnd_strcasecmp(cmd, "tree") == 0) {
 		int cols, istree;
 		char **values = tmp_new_strlist(dad);
 
@@ -347,7 +347,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			rv = -1;
 	}
-	else if ((pcb_strcasecmp(cmd, "tree_append") == 0) || (pcb_strcasecmp(cmd, "tree_append_under") == 0) || (pcb_strcasecmp(cmd, "tree_insert") == 0)) {
+	else if ((rnd_strcasecmp(cmd, "tree_append") == 0) || (rnd_strcasecmp(cmd, "tree_append_under") == 0) || (rnd_strcasecmp(cmd, "tree_insert") == 0)) {
 		void *row, *nrow = NULL;
 		char **values = tmp_new_strlist(dad);
 
@@ -377,31 +377,31 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		fgw_ptr_reg(&rnd_fgw, res, dad->row_domain, FGW_PTR, nrow);
 		return 0;
 	}
-	else if (pcb_strcasecmp(cmd, "begin_hbox") == 0) {
+	else if (rnd_strcasecmp(cmd, "begin_hbox") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_BEGIN_HBOX(dad->dlg);
 		dad->level++;
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "begin_vbox") == 0) {
+	else if (rnd_strcasecmp(cmd, "begin_vbox") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_BEGIN_VBOX(dad->dlg);
 		dad->level++;
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "begin_hpane") == 0) {
+	else if (rnd_strcasecmp(cmd, "begin_hpane") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_BEGIN_HPANE(dad->dlg);
 		dad->level++;
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "begin_vpane") == 0) {
+	else if (rnd_strcasecmp(cmd, "begin_vpane") == 0) {
 		if (dad->running) goto cant_chg;
 		PCB_DAD_BEGIN_VPANE(dad->dlg);
 		dad->level++;
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "begin_table") == 0) {
+	else if (rnd_strcasecmp(cmd, "begin_table") == 0) {
 		int cols;
 
 		if (dad->running) goto cant_chg;
@@ -411,14 +411,14 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		dad->level++;
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "end") == 0) {
+	else if (rnd_strcasecmp(cmd, "end") == 0) {
 		if (dad->running) goto cant_chg;
 
 		PCB_DAD_END(dad->dlg);
 		dad->level--;
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "flags") == 0) {
+	else if (rnd_strcasecmp(cmd, "flags") == 0) {
 		int n;
 		pcb_hatt_compflags_t tmp, flg = 0;
 
@@ -436,13 +436,13 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_COMPFLAG(dad->dlg, flg);
 		rv = PCB_DAD_CURRENT(dad->dlg);
 	}
-	else if (pcb_strcasecmp(cmd, "onchange") == 0) {
+	else if (rnd_strcasecmp(cmd, "onchange") == 0) {
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		PCB_DAD_CHANGE_CB(dad->dlg, dad_change_cb);
 		vts0_set(&dad->change_cb, PCB_DAD_CURRENT(dad->dlg), tmp_str_dup(dad, txt));
 		rv = 0;
 	}
-	else if (pcb_strcasecmp(cmd, "set") == 0) {
+	else if (rnd_strcasecmp(cmd, "set") == 0) {
 		int wid, i;
 		double d;
 		rnd_coord_t c;
@@ -487,7 +487,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		rv = 0;
 	}
-	else if (pcb_strcasecmp(cmd, "get") == 0) {
+	else if (rnd_strcasecmp(cmd, "get") == 0) {
 		int wid;
 		pcb_hid_attr_type_t wtype;
 
@@ -536,7 +536,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				return FGW_ERR_NOT_FOUND;
 		}
 		return 0;
-	}	else if ((pcb_strcasecmp(cmd, "run") == 0) || (pcb_strcasecmp(cmd, "run_modal") == 0)) {
+	}	else if ((rnd_strcasecmp(cmd, "run") == 0) || (rnd_strcasecmp(cmd, "run_modal") == 0)) {
 		if (dad->running) goto cant_chg;
 
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);

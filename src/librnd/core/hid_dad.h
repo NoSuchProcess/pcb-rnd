@@ -258,7 +258,7 @@ do { \
 #define PCB_DAD_LABEL(table, text) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, pcb_strdup(text)); \
+	PCB_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(text)); \
 } while(0)
 
 /* Add label usign printf formatting syntax: PCB_DAD_LABELF(tbl, ("a=%d", 12)); */
@@ -277,7 +277,7 @@ do { \
 #define PCB_DAD_BOOL(table, label) \
 do { \
 	PCB_DAD_ALLOC(table, PCB_HATT_BOOL); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, pcb_strdup(label)); \
+	PCB_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(label)); \
 } while(0)
 
 #define PCB_DAD_INTEGER(table, label) \

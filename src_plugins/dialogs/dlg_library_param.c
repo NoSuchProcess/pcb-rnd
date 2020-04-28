@@ -127,7 +127,7 @@ do { \
 	curr_type = PCB_HATT_END; \
 	curr = -1; \
 	vtp0_init(&curr_enum); \
-	vtp0_append(&curr_enum, pcb_strdup("")); \
+	vtp0_append(&curr_enum, rnd_strdup("")); \
 	numrows++; \
 } while(0)
 
@@ -142,7 +142,7 @@ do { \
 		break; \
 	pre_append(); \
 	PCB_DAD_LABEL(library_ctx.pdlg, name); \
-		PCB_DAD_HELP(library_ctx.pdlg, pcb_strdup(help)); \
+		PCB_DAD_HELP(library_ctx.pdlg, rnd_strdup(help)); \
 	switch(curr_type) { \
 		case PCB_HATT_COORD: \
 		case PCB_HATT_END: \
@@ -166,13 +166,13 @@ do { \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 				vtp0_init(&curr_enum); \
-				vtp0_append(&curr_enum, pcb_strdup("")); \
+				vtp0_append(&curr_enum, rnd_strdup("")); \
 			break; \
 		default: \
 			PCB_DAD_LABEL(library_ctx.pdlg, "internal error: invalid type"); \
 	} \
-	PCB_DAD_HELP(library_ctx.pdlg, pcb_strdup(help)); \
-	ctx->pnames[curr] = pcb_strdup(name); \
+	PCB_DAD_HELP(library_ctx.pdlg, rnd_strdup(help)); \
+	ctx->pnames[curr] = rnd_strdup(name); \
 	htsi_set(&ctx->param_names, ctx->pnames[curr], curr); \
 	post_append(); \
 } while(0)
@@ -192,7 +192,7 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	ctx->num_params = 0;
 
 	vtp0_init(&curr_enum);
-	vtp0_append(&curr_enum, pcb_strdup(""));
+	vtp0_append(&curr_enum, rnd_strdup(""));
 
 	while(fgets(line, sizeof(line), f) != NULL) {
 		char *end, *col, *arg, *cmd = line;
@@ -226,12 +226,12 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 		}
 		else if (strcmp(cmd, "params") == 0) {
 			free(ctx->help_params);
-			ctx->help_params = pcb_strdup(arg);
+			ctx->help_params = rnd_strdup(arg);
 		}
 		else if (strcmp(cmd, "example") == 0) {
 			if (examples == 0) {
 				free(ctx->example);
-				ctx->example = pcb_strdup(arg);
+				ctx->example = rnd_strdup(arg);
 			}
 			examples++;
 		}
@@ -246,15 +246,15 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 			ctx->num_params++;
 			free(name);
 			free(help);
-			name = pcb_strdup(col);
-			help = pcb_strdup(arg);
+			name = rnd_strdup(col);
+			help = rnd_strdup(arg);
 			curr_type = PCB_HATT_STRING; /* assume string until a dim or enum overrides that */
 		}
 		else if (strncmp(cmd, "default:", 6) == 0) {
 			free(help_def);
 			if (arg == NULL)
 				arg = "";
-			help_def = pcb_strdup(arg);
+			help_def = rnd_strdup(arg);
 		}
 		else if (strncmp(cmd, "dim:", 4) == 0) {
 			curr_type = PCB_HATT_COORD;
@@ -276,7 +276,7 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 					evl = pcb_strdup_printf("%s (%s)", col, arg);
 			}
 			else
-				evl = pcb_strdup(col);
+				evl = rnd_strdup(col);
 			vtp0_append(&curr_enum, evl);
 		}
 	}
@@ -413,8 +413,8 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 		help_params = "";
 
 
-	parain = pcb_strdup(user_params);
-	parahlp = pcb_strdup(help_params);
+	parain = rnd_strdup(user_params);
+	parahlp = rnd_strdup(help_params);
 
 	/* truncate trailing ")" */
 	if (*parain != '\0') {

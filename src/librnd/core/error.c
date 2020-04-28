@@ -209,7 +209,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Log, op = argv[1].val.str);
 
-	if (pcb_strcasecmp(op, "Clear") == 0) {
+	if (rnd_strcasecmp(op, "Clear") == 0) {
 		unsigned long from = -1, to = -1;
 		rnd_PCB_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
@@ -217,7 +217,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_event(NULL, PCB_EVENT_LOG_CLEAR, "pp", &from, &to);
 		ret = 0;
 	}
-	else if (pcb_strcasecmp(op, "Export") == 0) {
+	else if (rnd_strcasecmp(op, "Export") == 0) {
 		const char *fmts[] = { "text", "lihata", NULL };
 		pcb_hid_dad_subdialog_t fmtsub;
 		char *fn;

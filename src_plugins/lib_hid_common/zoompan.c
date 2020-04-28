@@ -72,7 +72,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (pcb_strcasecmp(argv[1].val.str, "get") == 0) {
+	if (rnd_strcasecmp(argv[1].val.str, "get") == 0) {
 		res->type = FGW_DOUBLE;
 		res->val.nat_double = pcb_gui->coord_per_pix;
 		return 0;
@@ -151,13 +151,13 @@ fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, Scroll, op = argv[1].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, Scroll, pixels = argv[2].val.nat_double);
 
-	if (pcb_strcasecmp(op, "up") == 0)
+	if (rnd_strcasecmp(op, "up") == 0)
 		dy = -pcb_gui->coord_per_pix * pixels;
-	else if (pcb_strcasecmp(op, "down") == 0)
+	else if (rnd_strcasecmp(op, "down") == 0)
 		dy = pcb_gui->coord_per_pix * pixels;
-	else if (pcb_strcasecmp(op, "right") == 0)
+	else if (rnd_strcasecmp(op, "right") == 0)
 		dx = pcb_gui->coord_per_pix * pixels;
-	else if (pcb_strcasecmp(op, "left") == 0)
+	else if (rnd_strcasecmp(op, "left") == 0)
 		dx = -pcb_gui->coord_per_pix * pixels;
 	else
 		RND_ACT_FAIL(Scroll);

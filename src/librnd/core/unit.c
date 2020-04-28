@@ -177,7 +177,7 @@ rnd_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x)
 		case PCB_UNIT_IMPERIAL: base = PCB_MIL_TO_COORD(x); break;
 		case PCB_UNIT_FREQ:     base = x; break;
 	}
-	res = pcb_round(base/unit->scale_factor);
+	res = rnd_round(base/unit->scale_factor);
 
 	/* clamp */
 	switch(unit->family) {

@@ -50,7 +50,7 @@ static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
 
 	switch(ctx->se.expr->rtype) {
 		case RIGHT_STR:
-			ctx->se.right = pcb_strdup(attr->val.str);
+			ctx->se.right = rnd_strdup(attr->val.str);
 			break;
 		case RIGHT_INT:
 			ctx->se.right = pcb_strdup_printf("%d", attr->val.lng);
@@ -85,7 +85,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 	if (click) {
 		r = pcb_dad_tree_get_selected(attr);
 		if (r != NULL)
-			cursor_path = pcb_strdup(r->cell[0]);
+			cursor_path = rnd_strdup(r->cell[0]);
 	}
 
 	/* remove existing items */
@@ -233,7 +233,7 @@ static int fill_in_left(srchedit_ctx_t *ctx)
 	for(t = expr_tab; t->left_desc != NULL; t++) {
 		if (t->left_var == NULL)
 			parent = NULL;
-		cell[0] = pcb_strdup(t->left_desc);
+		cell[0] = rnd_strdup(t->left_desc);
 		if (parent != NULL)
 			r = pcb_dad_tree_append_under(attr, parent, cell);
 		else
@@ -274,7 +274,7 @@ static void srch_expr_right_table_cb(pcb_hid_attribute_t *attrib, void *hid_ctx,
 	free(ctx->se.right);
 	ctx->se.right = NULL;
 	if (row != NULL)
-		ctx->se.right = pcb_strdup(row->cell[0]);
+		ctx->se.right = rnd_strdup(row->cell[0]);
 }
 
 static int srchedit_window(search_expr_t *expr)
@@ -285,7 +285,7 @@ static int srchedit_window(search_expr_t *expr)
 
 	ctx->se = *expr;
 	if (ctx->se.right != NULL)
-		ctx->se.right = pcb_strdup(ctx->se.right);
+		ctx->se.right = rnd_strdup(ctx->se.right);
 
 	/* clear all cache fields so a second window open won't inhibit refreshes */
 	ctx->last_op = NULL;

@@ -105,7 +105,7 @@ static int load_lib(htsi_t *ht, const char *fn)
 	}
 	*line = '\0';
 	fgets(line, sizeof(line), f);
-	if (pcb_strncasecmp(line, "[FIDOLIB PCB Footprints]", 24) != 0) {
+	if (rnd_strncasecmp(line, "[FIDOLIB PCB Footprints]", 24) != 0) {
 		rnd_message(PCB_MSG_ERROR, "'%s' doesn't have the fidocadj lib header\n", fn);
 		fclose(f);
 		return -1;
@@ -120,7 +120,7 @@ static int load_lib(htsi_t *ht, const char *fn)
 		end = strchr(s, ' ');
 		if (end != NULL) {
 			*end = '\0';
-			htsi_set(ht, pcb_strdup(s), 1);
+			htsi_set(ht, rnd_strdup(s), 1);
 		}
 	}
 	fclose(f);
@@ -129,7 +129,7 @@ static int load_lib(htsi_t *ht, const char *fn)
 
 static long int crd(rnd_coord_t c)
 {
-	return pcb_round((double)PCB_COORD_TO_MIL(c) / 5.0);
+	return rnd_round((double)PCB_COORD_TO_MIL(c) / 5.0);
 }
 
 static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)
@@ -270,7 +270,7 @@ TODO(": fprintf() some curve using arc->*")
 TODO("textrot: can we exprot rotation with %f?")
 			fprintf(f, "TY %ld %ld %ld %ld %d 1 %d * ", /* 1 = bold */
 				crd(x0), crd(y0), crd(glyphy), crd(glyphx),
-				(int)pcb_round(text->rot), fidoly);
+				(int)rnd_round(text->rot), fidoly);
 			for(s = text->TextString; *s != '\0'; s++) {
 				if (*s == ' ')
 					fprintf(f, "++");

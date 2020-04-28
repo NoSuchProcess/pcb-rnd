@@ -110,13 +110,13 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (function) {
 		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-		if (pcb_strcasecmp(function, "ClearList") == 0)
+		if (rnd_strcasecmp(function, "ClearList") == 0)
 			pcb_undo_clear_list(pcb_false);
-		else if (pcb_strcasecmp(function, "FreezeSerial") == 0)
+		else if (rnd_strcasecmp(function, "FreezeSerial") == 0)
 			pcb_undo_freeze_serial();
-		else if (pcb_strcasecmp(function, "UnFreezeSerial") == 0)
+		else if (rnd_strcasecmp(function, "UnFreezeSerial") == 0)
 			pcb_undo_unfreeze_serial();
-		else if (pcb_strcasecmp(function, "IncSerial") == 0)
+		else if (rnd_strcasecmp(function, "IncSerial") == 0)
 			pcb_undo_inc_serial();
 	}
 	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);

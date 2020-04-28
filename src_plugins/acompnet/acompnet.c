@@ -107,12 +107,12 @@ static void acompnet_mesh_addpt(pcb_meshgraph_t *gr, pcb_layer_t *layer, double 
 	overlap_t ovl;
 	rnd_box_t bbox;
 
-	x = pcb_round(x);
-	y = pcb_round(y);
+	x = rnd_round(x);
+	y = rnd_round(y);
 
 	ovl.x = x;
 	ovl.y = y;
-	ovl.r = pcb_round(sep/2-1);
+	ovl.r = rnd_round(sep/2-1);
 	bbox.X1 = x - ovl.r;
 	bbox.X2 = x + ovl.r;
 	bbox.Y1 = y - ovl.r;

@@ -87,7 +87,7 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 				case PCBQ_VT_DOUBLE: pcb_snprintf(buff, sizeof(buff), "%f", argv[n+1].data.dbl); break;
 				case PCBQ_VT_STRING: str = (char *)argv[n+1].data.str; break;
 			}
-			str = pcb_strdup(str == NULL ? "" : str);
+			str = rnd_strdup(str == NULL ? "" : str);
 			vtp0_append(&res->data.lst, argv[n].data.obj);
 			vtp0_append(&res->data.lst, str);
 			vtp0_append(&ectx->autofree, str);

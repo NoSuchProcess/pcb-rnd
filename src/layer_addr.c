@@ -307,7 +307,7 @@ static pcb_layer_id_t layer_str2id_data(pcb_board_t *pcb, pcb_data_t *data, cons
 	}
 	if (*str == '&') {
 		str++;
-		if (pcb_strcasecmp(str, "current") == 0)
+		if (rnd_strcasecmp(str, "current") == 0)
 			return PCB_CURRLID(pcb);
 	}
 	return -1;
@@ -389,7 +389,7 @@ pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 	pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 
 	if (strchr(str, '(') != NULL) {
-		curr = tmp = pcb_strdup(str);
+		curr = tmp = rnd_strdup(str);
 		spc = sizeof(spk) / sizeof(spk[0]);
 		end = pcb_parse_layergrp_address(tmp, spk, spv, &spc);
 		if (end != NULL) {

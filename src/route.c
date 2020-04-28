@@ -133,8 +133,8 @@ void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t st
 	p_object->layer = layer;
 	p_object->type = PCB_OBJ_ARC;
 
-	p_route->end_point.X = pcb_round((double)center->X - ((double)radius * cos((start_angle + delta) * PCB_M180)));
-	p_route->end_point.Y = pcb_round((double)center->Y + ((double)radius * sin((start_angle + delta) * PCB_M180)));
+	p_route->end_point.X = rnd_round((double)center->X - ((double)radius * cos((start_angle + delta) * PCB_M180)));
+	p_route->end_point.Y = rnd_round((double)center->Y + ((double)radius * sin((start_angle + delta) * PCB_M180)));
 }
 
 

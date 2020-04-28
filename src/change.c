@@ -983,7 +983,7 @@ int pcb_uchg_attr(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *key, const c
 		ca->delete = 1;
 	}
 	else {
-		ca->value = pcb_strdup(new_value);
+		ca->value = rnd_strdup(new_value);
 		ca->delete = 0;
 	}
 	undo_chg_attr_swap(ca);

@@ -122,7 +122,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 	fc = pcb_popen(&PCB->hidlib, cmd, "r");
 
 	if (pcb_gui != NULL) {
-		int fd = pcb_fileno(fc);
+		int fd = rnd_fileno(fc);
 		if (fd > 0) {
 			int n = 0;
 			pcb_hidval_t hd;
@@ -137,7 +137,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 					n++;
 					pcb_hid_progress(50+sin((double)n/10.0)*40, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
 				}
-				pcb_ms_sleep(50);
+				rnd_ms_sleep(50);
 			}
 		}
 		else
@@ -148,7 +148,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 
 		if (pcb_gui != NULL) {
 			pcb_hid_progress(50, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
-			pcb_ms_sleep(1000); /* ugly hack: give the GUI some time to flush */
+			rnd_ms_sleep(1000); /* ugly hack: give the GUI some time to flush */
 		}
 		while(!(feof(fc))) {
 			char tmp[128];
@@ -184,7 +184,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, extedit, method = argv[2].val.str);
 
 	/* pick up the object to edit */
-	if ((cmd == NULL) || (pcb_strcasecmp(cmd, "object") == 0)) {
+	if ((cmd == NULL) || (rnd_strcasecmp(cmd, "object") == 0)) {
 		rnd_coord_t x, y;
 		rnd_hid_get_coords("Click on object to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
@@ -197,7 +197,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		paste = 1;
 	}
-	else if ((argc > 1) && (pcb_strcasecmp(cmd, "selected") == 0)) {
+	else if ((argc > 1) && (rnd_strcasecmp(cmd, "selected") == 0)) {
 		pcb_buffer_set_number(bn);
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_crosshair.X, pcb_crosshair.Y, pcb_false, pcb_false);
@@ -210,7 +210,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			goto quit0;
 		}
 	}
-	else if ((argc > 1) && (pcb_strcasecmp(cmd, "buffer") == 0)) {
+	else if ((argc > 1) && (rnd_strcasecmp(cmd, "buffer") == 0)) {
 		load_bn = bn = conf_core.editor.buffer_number;
 		if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
 			rnd_message(PCB_MSG_WARNING, "Nothing in current buffer, can't ext-edit selection\n");
@@ -226,7 +226,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* determine the method */
 	if (argc > 2) {
 		for(mth = methods; mth->name != NULL; mth++) {
-			if (pcb_strcasecmp(mth->name, method) == 0)
+			if (rnd_strcasecmp(mth->name, method) == 0)
 				break;
 		}
 		if (mth->name == NULL) {

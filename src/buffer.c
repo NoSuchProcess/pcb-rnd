@@ -306,7 +306,7 @@ rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_board_free(newPCB);
 		free(newPCB);
 		Buffer->from_outside = 0; /* always place matching top-to-top, don't swap sides only because the user is viewing the board from the bottom */
-		free(Buffer->source_path); Buffer->source_path = pcb_strdup(Filename);
+		free(Buffer->source_path); Buffer->source_path = rnd_strdup(Filename);
 		PCB = orig;
 		pcb_layergrp_inhibit_dec();
 		return pcb_true;
@@ -452,7 +452,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *angle_s = NULL;
 	double ang;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, FreeRotateBuffer, angle_s = pcb_strdup(argv[1].val.str));
+	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, FreeRotateBuffer, angle_s = rnd_strdup(argv[1].val.str));
 	RND_ACT_IRES(0);
 
 	if (angle_s == NULL)
@@ -646,8 +646,8 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 void pcb_buffer_scale(pcb_buffer_t *Buffer, double sx, double sy, double sth, int recurse)
 {
 	pcb_data_scale(Buffer->Data, sx, sy, sth, recurse);
-	Buffer->X = pcb_round((double)Buffer->X * sx);
-	Buffer->Y = pcb_round((double)Buffer->Y * sy);
+	Buffer->X = rnd_round((double)Buffer->X * sx);
+	Buffer->Y = rnd_round((double)Buffer->Y * sy);
 	pcb_set_buffer_bbox(Buffer);
 }
 
@@ -937,7 +937,7 @@ rnd_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const
 		Buffer->X = 0;
 		Buffer->Y = 0;
 		Buffer->from_outside = 1;
-		free(Buffer->source_path); Buffer->source_path = pcb_strdup(Name);
+		free(Buffer->source_path); Buffer->source_path = rnd_strdup(Name);
 
 		if (pcb_subclist_length(&Buffer->Data->subc)) {
 			pcb_subc_t *subc = pcb_subclist_first(&Buffer->Data->subc);
@@ -1067,7 +1067,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 					default_file = NULL;
 				}
 				if (name && *name)
-					default_file = pcb_strdup(name);
+					default_file = rnd_strdup(name);
 				free_name = pcb_true;
 			}
 			else
@@ -1101,7 +1101,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 					default_file = NULL;
 				}
 				if (name && *name)
-					default_file = pcb_strdup(name);
+					default_file = rnd_strdup(name);
 				free_name = pcb_true;
 			}
 			else
@@ -1156,8 +1156,8 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_Normalize:
 			pcb_set_buffer_bbox(PCB_PASTEBUFFER);
-			PCB_PASTEBUFFER->X = pcb_round(((double)PCB_PASTEBUFFER->BoundingBox.X1 + (double)PCB_PASTEBUFFER->BoundingBox.X2) / 2.0);
-			PCB_PASTEBUFFER->Y = pcb_round(((double)PCB_PASTEBUFFER->BoundingBox.Y1 + (double)PCB_PASTEBUFFER->BoundingBox.Y2) / 2.0);
+			PCB_PASTEBUFFER->X = rnd_round(((double)PCB_PASTEBUFFER->BoundingBox.X1 + (double)PCB_PASTEBUFFER->BoundingBox.X2) / 2.0);
+			PCB_PASTEBUFFER->Y = rnd_round(((double)PCB_PASTEBUFFER->BoundingBox.Y1 + (double)PCB_PASTEBUFFER->BoundingBox.Y2) / 2.0);
 			break;
 
 		case F_GetSource:

@@ -95,7 +95,7 @@ static int extract_dim(rnd_coord_t *dst, const char *line, int start, int end, i
 		d = d / 10.0;
 	else
 		d = d / 1000.0;
-	*dst = pcb_round(d);
+	*dst = rnd_round(d);
 	return 0;
 }
 

@@ -1484,7 +1484,7 @@ YY_RULE_SETUP
 case 47:
 YY_RULE_SETUP
 #line 160 "parse_l.l"
-{	pcb_lval.integer = pcb_round (strtod (yytext, NULL)); return INTEGER; }
+{	pcb_lval.integer = rnd_round(strtod (yytext, NULL)); return INTEGER; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
@@ -2901,7 +2901,7 @@ static void add_tag(char *line)
 /*		printf("tag:%s=%s:\n", key,val); */
 		if (strcmp(key, "name") == 0) {
 			free(yyFont->name);
-			yyFont->name = pcb_strdup(val);
+			yyFont->name = rnd_strdup(val);
 		}
 	}
 }

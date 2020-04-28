@@ -50,8 +50,8 @@ void rnd_box_enlarge(rnd_box_t *box, double xfactor, double yfactor)
 	double w = (double)(box->X2 - box->X1) * xfactor / 2.0;
 	double h = (double)(box->Y2 - box->Y1) * yfactor / 2.0;
 
-	box->X1 = pcb_round(box->X1 - w);
-	box->Y1 = pcb_round(box->Y1 - h);
-	box->X2 = pcb_round(box->X2 + w);
-	box->Y2 = pcb_round(box->Y2 + h);
+	box->X1 = rnd_round(box->X1 - w);
+	box->Y1 = rnd_round(box->Y1 - h);
+	box->X2 = rnd_round(box->X2 + w);
+	box->Y2 = rnd_round(box->Y2 + h);
 }

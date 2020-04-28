@@ -68,7 +68,7 @@
 
 #define PNG_SCALE_HACK1 0
 #include <librnd/core/compat_misc.h>
-#define pcb_hack_round(d) pcb_round(d)
+#define pcb_hack_round(d) rnd_round(d)
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()
 
@@ -89,7 +89,7 @@ static rnd_coord_t x_shift = 0;
 static rnd_coord_t y_shift = 0;
 static int show_solder_side;
 static long png_drawn_objs = 0;
-#define SCALE(w)   ((int)pcb_round((w)/scale))
+#define SCALE(w)   ((int)rnd_round((w)/scale))
 #define SCALE_X(x) ((int)pcb_hack_round(((x) - x_shift)/scale))
 #define SCALE_Y(y) ((int)pcb_hack_round(((show_solder_side ? (PCB->hidlib.size_y-(y)) : (y)) - y_shift)/scale))
 #define SWAP_IF_SOLDER(a,b) do { int c; if (show_solder_side) { c=a; a=b; b=c; }} while (0)
@@ -680,8 +680,8 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		/* a scale of 1  means 1 pixel is 1 inch
 		   a scale of 10 means 1 pixel is 10 inches */
 		scale = PCB_INCH_TO_COORD(1) / dpi;
-		w = pcb_round(w / scale) - PNG_SCALE_HACK1;
-		h = pcb_round(h / scale) - PNG_SCALE_HACK1;
+		w = rnd_round(w / scale) - PNG_SCALE_HACK1;
+		h = rnd_round(h / scale) - PNG_SCALE_HACK1;
 	}
 	else if (xmax == 0 && ymax == 0) {
 		fprintf(stderr, "ERROR:  You may not set both xmax, ymax," "and xy-max to zero\n");

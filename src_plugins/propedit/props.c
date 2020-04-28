@@ -136,7 +136,7 @@ pcb_props_t *pcb_props_add(pcb_propedit_t *ctx, const char *propname, pcb_prop_t
 		p = malloc(sizeof(pcb_props_t));
 		p->type = type;
 		htprop_init(&p->values, prophash[type], propkeyeq[type]);
-		htsp_set(&ctx->props, pcb_strdup(propname), p);
+		htsp_set(&ctx->props, rnd_strdup(propname), p);
 	}
 	else {
 		if (type != p->type)

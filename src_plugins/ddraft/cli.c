@@ -109,7 +109,7 @@ static const cli_ntype_t find_type(const char *type, int typelen)
 		return CLI_INVALID;
 
 	for(p = cli_tnames; p->name != NULL; p++) {
-		if (pcb_strncasecmp(p->name, type, typelen) == 0) {
+		if (rnd_strncasecmp(p->name, type, typelen) == 0) {
 			if (found != NULL)
 				return CLI_INVALID; /* multiple match */
 			found = p;
@@ -426,10 +426,10 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, rnd_coord_t *ox
 		if (moved) {
 			if ((annot) && (len > 0)) {
 				rnd_coord_t *c = vtc0_alloc_append(&pcb_ddraft_attached.annot_lines, 4);
-				c[0] = pcb_round(lx);
-				c[1] = pcb_round(ly);
-				c[2] = pcb_round(x);
-				c[3] = pcb_round(y);
+				c[0] = rnd_round(lx);
+				c[1] = rnd_round(ly);
+				c[2] = rnd_round(x);
+				c[3] = rnd_round(y);
 			}
 			angle = atan2(y - ly, x - lx) * PCB_RAD_TO_DEG;
 			lx = x;
@@ -441,8 +441,8 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, rnd_coord_t *ox
 	over:;
 		if (have_angle || have_dist) /* could not apply */
 			return -1;
-	*ox = pcb_round(x);
-	*oy = pcb_round(y);
+	*ox = rnd_round(x);
+	*oy = rnd_round(y);
 	return n;
 }
 
@@ -482,7 +482,7 @@ static const ddraft_op_t *find_op(const char *op, int oplen)
 		return NULL;
 
 	for(p = ddraft_ops; p->name != NULL; p++) {
-		if (pcb_strncasecmp(p->name, op, oplen) == 0) {
+		if (rnd_strncasecmp(p->name, op, oplen) == 0) {
 			if (found != NULL)
 				return NULL; /* multiple match */
 			found = p;

@@ -81,7 +81,7 @@ static char *STRE(gsxl_node_t *node)
 /* check if node is named name and if so, save the node in nname for
    later reference; assumes node->str is not NULL */
 #define if_save_uniq(node, name) \
-	if (pcb_strcasecmp(node->str, #name) == 0) { \
+	if (rnd_strcasecmp(node->str, #name) == 0) { \
 		if (n ## name != NULL) { \
 			rnd_message(PCB_MSG_ERROR, "Multiple " #name " nodes where only one is expected (at %ld:%ld)\n", (long)node->line, (long)node->col); \
 			return -1; \
@@ -162,7 +162,7 @@ static const pcb_unit_t *dsn_set_old_unit(dsn_read_t *ctx, gsxl_node_t *nd)
 	gsxl_node_t *n;
 
 	for(n = nd; n != NULL; n = n->next) {
-		if ((n->str != NULL) && ((pcb_strcasecmp(n->str, "unit") == 0) || (pcb_strcasecmp(n->str, "resolution") == 0))) {
+		if ((n->str != NULL) && ((rnd_strcasecmp(n->str, "unit") == 0) || (rnd_strcasecmp(n->str, "resolution") == 0))) {
 			old_unit = push_unit(ctx, n);
 			break;
 		}
@@ -230,7 +230,7 @@ static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *rule)
 {
 	if ((rule == NULL) || (rule->str == NULL))
 		return 0;
-	if (pcb_strcasecmp(rule->str, "width") == 0)
+	if (rnd_strcasecmp(rule->str, "width") == 0)
 		conf_set_design("design/min_wid", "%$mS", COORD(ctx, rule->children));
 	/* the rest of the rules do not have a direct mapping in the current DRC code */
 	return 0;
@@ -249,12 +249,12 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 	for(bnd = bnd->children; bnd != NULL; bnd = bnd->next) {
 		if (bnd->str == NULL)
 			continue;
-		if (pcb_strcasecmp(bnd->str, "path") == 0) {
+		if (rnd_strcasecmp(bnd->str, "path") == 0) {
 			rnd_coord_t x, y, lx, ly, fx, fy, aper;
 			int len;
 
 			b = gsxl_children(bnd);
-			if (!do_bbox && (pcb_strcasecmp(STRE(b), "pcb") == 0)) {
+			if (!do_bbox && (rnd_strcasecmp(STRE(b), "pcb") == 0)) {
 				rnd_message(PCB_MSG_ERROR, "PCB boundary shall be a rect, not a path;\naccepting the path, but other software may choke on this file\n");
 				ctx->has_pcb_boundary = 1;
 			}
@@ -293,7 +293,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 			if (!do_bbox && (x != fx) && (y != fy)) /* close the boundary */
 				boundary_line(oly, lx, ly, x, y, aper);
 		}
-		else if (pcb_strcasecmp(bnd->str, "rect") == 0) {
+		else if (rnd_strcasecmp(bnd->str, "rect") == 0) {
 			rnd_box_t box;
 
 			b = gsxl_children(bnd);
@@ -301,7 +301,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 				rnd_message(PCB_MSG_ERROR, "not enough arguments for boundary rect (at %ld:%ld)\n", (long)b->line, (long)b->col);
 				return -1;
 			}
-			if (pcb_strcasecmp(STRE(b), "pcb") == 0)
+			if (rnd_strcasecmp(STRE(b), "pcb") == 0)
 				ctx->has_pcb_boundary = 1;
 			if (dsn_parse_rect(ctx, &box, b->next, do_bbox) != 0)
 				return -1;
@@ -345,9 +345,9 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 
 static int parse_layer_type(dsn_read_t *ctx, pcb_layergrp_t *grp, const char *ty)
 {
-	if ((pcb_strcasecmp(ty, "signal") == 0) || (pcb_strcasecmp(ty, "jumper") == 0))
+	if ((rnd_strcasecmp(ty, "signal") == 0) || (rnd_strcasecmp(ty, "jumper") == 0))
 		return 0; /* nothig special to do */
-	if ((pcb_strcasecmp(ty, "power") == 0) || (pcb_strcasecmp(ty, "mixed") == 0)) {
+	if ((rnd_strcasecmp(ty, "power") == 0) || (rnd_strcasecmp(ty, "mixed") == 0)) {
 		rnd_attribute_put(&grp->Attributes, "plane", ty);
 		return 0;
 	}
@@ -401,7 +401,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	for(n = str->children; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			continue;
-		else if (pcb_strcasecmp(n->str, "layer") == 0) {
+		else if (rnd_strcasecmp(n->str, "layer") == 0) {
 			pcb_layer_t *ly;
 
 			if (botcop != NULL) {
@@ -423,11 +423,11 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 
 			if (n->children != NULL) {
 				for(i = n->children->next; i != NULL; i = i->next) {
-					if (pcb_strcasecmp(i->str, "type") == 0) {
+					if (rnd_strcasecmp(i->str, "type") == 0) {
 						if (parse_layer_type(ctx, botcop, STRE(i->children)) != 0)
 							return -1;
 					}
-					else if (pcb_strcasecmp(i->str, "property") == 0) {
+					else if (rnd_strcasecmp(i->str, "property") == 0) {
 						parse_attribute(ctx, &botcop->Attributes, i->children);
 					}
 				}
@@ -473,11 +473,11 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	for(n = str->children; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			continue;
-		else if (pcb_strcasecmp(n->str, "boundary") == 0) {
+		else if (rnd_strcasecmp(n->str, "boundary") == 0) {
 			if (dsn_parse_boundary(ctx, n) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(n->str, "rule") == 0) {
+		else if (rnd_strcasecmp(n->str, "rule") == 0) {
 			if (dsn_parse_rule(ctx, n->children) != 0)
 				return -1;
 		}
@@ -630,7 +630,7 @@ int dsn_parse_pstk_shape_plating(dsn_read_t *ctx, gsxl_node_t *plt, pcb_pstk_pro
 {
 	if ((plt->children == NULL) || (plt->children->str == NULL))
 		return 0;
-	if (pcb_strcasecmp(plt->children->str, "plated") == 0)
+	if (rnd_strcasecmp(plt->children->str, "plated") == 0)
 		prt->hplated = 1;
 	return 0;
 }
@@ -642,23 +642,23 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 		rnd_message(PCB_MSG_ERROR, "Invalid padstack shape (at %ld:%ld)\n", (long)sn->line, (long)sn->col);
 		return -1;
 	}
-	if (pcb_strcasecmp(sn->str, "circle") == 0) {
+	if (rnd_strcasecmp(sn->str, "circle") == 0) {
 		if (dsn_parse_pstk_shape_circle(ctx, sn, shp) != 0)
 			return -1;
 	}
-	else if (pcb_strcasecmp(sn->str, "rect") == 0) {
+	else if (rnd_strcasecmp(sn->str, "rect") == 0) {
 		if (dsn_parse_pstk_shape_rect(ctx, sn, shp) != 0)
 			return -1;
 	}
-	else if ((pcb_strcasecmp(sn->str, "polygon") == 0) || (pcb_strcasecmp(sn->str, "poly") == 0)) {
+	else if ((rnd_strcasecmp(sn->str, "polygon") == 0) || (rnd_strcasecmp(sn->str, "poly") == 0)) {
 		if (dsn_parse_pstk_shape_poly(ctx, sn, shp) != 0)
 			return -1;
 	}
-	else if (pcb_strcasecmp(sn->str, "path") == 0) {
+	else if (rnd_strcasecmp(sn->str, "path") == 0) {
 		if (dsn_parse_pstk_shape_path(ctx, sn, shp) != 0)
 			return -1;
 	}
-	else if (pcb_strcasecmp(sn->str, "qarc") == 0) {
+	else if (rnd_strcasecmp(sn->str, "qarc") == 0) {
 		rnd_message(PCB_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
 		return -1;
 	}
@@ -676,7 +676,7 @@ static pcb_layer_type_t dsn_pstk_shape_layer(dsn_read_t *ctx, gsxl_node_t *net)
 	const char *nname= STRE(net);
 	pcb_layer_t *ly;
 
-	if ((pcb_strcasecmp(nname, "signal") == 0) || (pcb_strcasecmp(nname, "power") == 0))
+	if ((rnd_strcasecmp(nname, "signal") == 0) || (rnd_strcasecmp(nname, "power") == 0))
 		return 0;
 
 	ly = htsp_get(&ctx->name2layer, nname); \
@@ -743,14 +743,14 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 	prt = calloc(sizeof(pcb_pstk_proto_t), 1);
 	pcb_vtpadstack_tshape_alloc_append(&prt->tr, 1);
 
-	prt->name = pcb_strdup(wrr->children->str);
+	prt->name = rnd_strdup(wrr->children->str);
 
 	old_unit = dsn_set_old_unit(ctx, wrr->children->next);
 
 	for(n = wrr->children; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			continue;
-		if (pcb_strcasecmp(n->str, "shape") == 0) {
+		if (rnd_strcasecmp(n->str, "shape") == 0) {
 			pcb_pstk_shape_t shp;
 			pcb_layer_type_t lyt;
 
@@ -763,7 +763,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 
 			dsn_pstk_set_shape(prt, lyt, &shp, n);
 		}
-		else if (pcb_strcasecmp(n->str, "hole") == 0) {
+		else if (rnd_strcasecmp(n->str, "hole") == 0) {
 			pcb_pstk_shape_t shp;
 
 			if (has_hole) {
@@ -781,15 +781,15 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 				has_hole = 1;
 			}
 		}
-		else if (pcb_strcasecmp(n->str, "antipad") == 0) {
+		else if (rnd_strcasecmp(n->str, "antipad") == 0) {
 			/* silently not supported */
 		}
-		else if (pcb_strcasecmp(n->str, "plating") == 0) {
+		else if (rnd_strcasecmp(n->str, "plating") == 0) {
 			if (dsn_parse_pstk_shape_plating(ctx, n, prt) != 0)
 				goto err;
 		}
-		else if ((pcb_strcasecmp(n->str, "rotate") == 0) || (pcb_strcasecmp(n->str, "absolute") == 0)) {
-			if (pcb_strcasecmp(STRE(n->children), "off") == 0) {
+		else if ((rnd_strcasecmp(n->str, "rotate") == 0) || (rnd_strcasecmp(n->str, "absolute") == 0)) {
+			if (rnd_strcasecmp(STRE(n->children), "off") == 0) {
 				rnd_message(PCB_MSG_WARNING, "unhandled padstack flag %s (at %ld:%ld) - this property will be ignored\n", n->str, (long)n->line, (long)n->col);
 			}
 		}
@@ -887,7 +887,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 	DSN_LOAD_COORDS_FMT(crd, ncoord, "XY", goto err_coord);
 
 	nrot = ncoord->next->next;
-	if ((nrot != NULL) && (nrot->str != NULL) && (pcb_strcasecmp(nrot->str, "rotate") == 0)) {
+	if ((nrot != NULL) && (nrot->str != NULL) && (rnd_strcasecmp(nrot->str, "rotate") == 0)) {
 		char *end;
 		rotang = strtod(STRE(nrot->children), &end);
 		if (*end != '\0') {
@@ -1000,39 +1000,39 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 	for(imr = imr->children->next; imr != NULL; imr = imr->next) {
 		if (imr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(imr->str, "outline") == 0) {
+		if (rnd_strcasecmp(imr->str, "outline") == 0) {
 			if (dsn_parse_img_outline(ctx, imr, subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "pin") == 0) {
+		else if (rnd_strcasecmp(imr->str, "pin") == 0) {
 			if (dsn_parse_img_pin(ctx, imr, subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "conductor") == 0) {
+		else if (rnd_strcasecmp(imr->str, "conductor") == 0) {
 			if (dsn_parse_img_conductor(ctx, imr, subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "via") == 0) {
+		else if (rnd_strcasecmp(imr->str, "via") == 0) {
 			if (dsn_parse_img_via(ctx, imr, subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "keepout") == 0) {
+		else if (rnd_strcasecmp(imr->str, "keepout") == 0) {
 			if (dsn_parse_img_keepout(ctx, imr, "all", subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "wire_keepout") == 0) {
+		else if (rnd_strcasecmp(imr->str, "wire_keepout") == 0) {
 			if (dsn_parse_img_keepout(ctx, imr, "copper", subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "place_keepout") == 0) {
+		else if (rnd_strcasecmp(imr->str, "place_keepout") == 0) {
 			if (dsn_parse_img_keepout(ctx, imr, "subc", subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "via_keepout") == 0) {
+		else if (rnd_strcasecmp(imr->str, "via_keepout") == 0) {
 			if (dsn_parse_img_keepout(ctx, imr, "via", subc) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(imr->str, "property") == 0) {
+		else if (rnd_strcasecmp(imr->str, "property") == 0) {
 			if (dsn_parse_img_property(ctx, imr, subc) != 0)
 				return -1;
 		}
@@ -1055,7 +1055,7 @@ static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 	old_unit = dsn_set_old_unit(ctx, wrr->children);
 
 	for(n = wrr->children; n != NULL; n = n->next) {
-		if ((n->str != NULL) && (pcb_strcasecmp(n->str, "padstack") == 0)) {
+		if ((n->str != NULL) && (rnd_strcasecmp(n->str, "padstack") == 0)) {
 			if (dsn_parse_lib_padstack(ctx, n) != 0)
 				return -1;
 		}
@@ -1064,11 +1064,11 @@ static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 	for(n = wrr->children; n != NULL; n = n->next) {
 		if (n->str == NULL)
 			continue;
-		if (pcb_strcasecmp(n->str, "image") == 0) {
+		if (rnd_strcasecmp(n->str, "image") == 0) {
 			if (dsn_parse_lib_image(ctx, n) != 0)
 				return -1;
 		}
-		else if ((pcb_strcasecmp(n->str, "jumper") == 0) || (pcb_strcasecmp(n->str, "via_array_template") == 0) || (pcb_strcasecmp(n->str, "directory") == 0)) {
+		else if ((rnd_strcasecmp(n->str, "jumper") == 0) || (rnd_strcasecmp(n->str, "via_array_template") == 0) || (rnd_strcasecmp(n->str, "directory") == 0)) {
 			rnd_message(PCB_MSG_WARNING, "unhandled library item %s (at %ld:%ld) - please send the dsn file as a bugreport\n", n->str, (long)n->line, (long)n->col);
 		}
 	}
@@ -1175,8 +1175,8 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 		pcb_polo_offs((double)aper / dv, p, len);
 
 		for(n = 0; n < len; n++) {
-			poly->Points[n].X = pcb_round(p[n].x);
-			poly->Points[n].Y = pcb_round(p[n].y);
+			poly->Points[n].X = rnd_round(p[n].x);
+			poly->Points[n].Y = rnd_round(p[n].y);
 		}
 		free(p);
 	}
@@ -1221,7 +1221,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *
 	}
 
 	n = net->next;
-	r = pcb_round((double)COORD(ctx, n) / 2.0);
+	r = rnd_round((double)COORD(ctx, n) / 2.0);
 	n = n->next;
 	if (n != NULL)
 		DSN_LOAD_COORDS_FMT(cent, n, (subc == NULL) ? "xy" : "XY", goto err_cent);
@@ -1231,8 +1231,8 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *
 
 	for(a = 0; a < 2*M_PI; a += astep) {
 		rnd_coord_t x, y;
-		x = pcb_round(cos(a) * (double)r + (double)cent[0]);
-		y = pcb_round(sin(a) * (double)r + (double)cent[1]);
+		x = rnd_round(cos(a) * (double)r + (double)cent[0]);
+		y = rnd_round(sin(a) * (double)r + (double)cent[1]);
 		pcb_poly_point_new(poly, x, y);
 	}
 	pcb_add_poly_on_layer(ly, poly);
@@ -1352,13 +1352,13 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, p
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(wrr->str, "type")) { }
-		else if (pcb_strcasecmp(wrr->str, "attr") == 0) { }
-		else if (pcb_strcasecmp(wrr->str, "net") == 0) { }
-		else if (pcb_strcasecmp(wrr->str, "turret") == 0) { }
-		else if (pcb_strcasecmp(wrr->str, "shield") == 0) { }
-		else if (pcb_strcasecmp(wrr->str, "connect") == 0) { }
-		else if (pcb_strcasecmp(wrr->str, "supply") == 0) { }
+		if (rnd_strcasecmp(wrr->str, "type")) { }
+		else if (rnd_strcasecmp(wrr->str, "attr") == 0) { }
+		else if (rnd_strcasecmp(wrr->str, "net") == 0) { }
+		else if (rnd_strcasecmp(wrr->str, "turret") == 0) { }
+		else if (rnd_strcasecmp(wrr->str, "shield") == 0) { }
+		else if (rnd_strcasecmp(wrr->str, "connect") == 0) { }
+		else if (rnd_strcasecmp(wrr->str, "supply") == 0) { }
 	}
 */
 
@@ -1366,23 +1366,23 @@ static int dsn_parse_wire(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, p
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
-		if ((pcb_strcasecmp(wrr->str, "polygon") == 0) || (pcb_strcasecmp(wrr->str, "poly") == 0)) {
+		if ((rnd_strcasecmp(wrr->str, "polygon") == 0) || (rnd_strcasecmp(wrr->str, "poly") == 0)) {
 			if (dsn_parse_wire_poly(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "path") == 0) {
+		else if (rnd_strcasecmp(wrr->str, "path") == 0) {
 			if (dsn_parse_wire_path(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "qarc") == 0) {
+		else if (rnd_strcasecmp(wrr->str, "qarc") == 0) {
 			if (dsn_parse_wire_qarc(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "rect") == 0) {
+		else if (rnd_strcasecmp(wrr->str, "rect") == 0) {
 			if (dsn_parse_wire_rect(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "circle") == 0) {
+		else if (rnd_strcasecmp(wrr->str, "circle") == 0) {
 			if (dsn_parse_wire_circle(ctx, wrr, subc, force_ly) != 0)
 				return -1;
 		}
@@ -1435,10 +1435,10 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 		rnd_message(PCB_MSG_ERROR, "Testpoint without side (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
 		return -1;
 	}
-	if (pcb_strcasecmp(side->str, "front") == 0) {
+	if (rnd_strcasecmp(side->str, "front") == 0) {
 		back = 0;
 	}
-	else if (pcb_strcasecmp(side->str, "back") == 0) {
+	else if (rnd_strcasecmp(side->str, "back") == 0) {
 		back = 1;
 	}
 	else {
@@ -1467,7 +1467,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 		shp->layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
 		shp->comb = PCB_LYC_SUB | PCB_LYC_AUTO;
 		shp->shape = PCB_PSSH_CIRC;
-		shp->data.circ.dia = pcb_round((double)conf_core.design.min_wid * 1.05);
+		shp->data.circ.dia = rnd_round((double)conf_core.design.min_wid * 1.05);
 
 		ctx->testpoint = pcb_pstk_proto_insert_dup(ctx->pcb->Data, &tpp, 1, 0);
 		ctx->has_testpoint = 1;
@@ -1499,19 +1499,19 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 	for(wrr = wrr->children; wrr != NULL; wrr = wrr->next) {
 		if (wrr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(wrr->str, "wire") == 0) {
+		if (rnd_strcasecmp(wrr->str, "wire") == 0) {
 			if (dsn_parse_wire(ctx, wrr, NULL, NULL) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "via") == 0) {
+		else if (rnd_strcasecmp(wrr->str, "via") == 0) {
 			if (dsn_parse_via(ctx, wrr) != 0)
 				return -1;
 		}
-		else if (pcb_strcasecmp(wrr->str, "point") == 0) {
+		else if (rnd_strcasecmp(wrr->str, "point") == 0) {
 			if (dsn_parse_point(ctx, wrr) != 0)
 				return -1;
 		}
-		else if ((pcb_strcasecmp(wrr->str, "bond") == 0) || (pcb_strcasecmp(wrr->str, "supply_pin") == 0)) {
+		else if ((rnd_strcasecmp(wrr->str, "bond") == 0) || (rnd_strcasecmp(wrr->str, "supply_pin") == 0)) {
 			rnd_message(PCB_MSG_WARNING, "unhandled wiring: '%s' (at %ld:%ld) - please send the dsn file as a bugreport\n", wrr->str, (long)wrr->line, (long)wrr->col);
 		}
 	}
@@ -1549,9 +1549,9 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 			rnd_message(PCB_MSG_ERROR, "Invalid placement side (at %ld:%ld)\n", (long)n->line, (long)n->col);
 			return -1;
 		}
-		if (pcb_strcasecmp(side->str, "front") == 0)
+		if (rnd_strcasecmp(side->str, "front") == 0)
 			need_mirror = 0;
-		else if (pcb_strcasecmp(side->str, "back") == 0)
+		else if (rnd_strcasecmp(side->str, "back") == 0)
 			need_mirror = 1;
 		else {
 			rnd_message(PCB_MSG_ERROR, "Invalid placement side '%s' (at %ld:%ld)\n", side->str, (long)n->line, (long)n->col);
@@ -1597,17 +1597,17 @@ static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
 	for(plr = plr->children; plr != NULL; plr = plr->next) {
 		if (plr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(plr->str, "place_control") == 0) {
-			if (pcb_strcasecmp(STRE(plr->children), "flip_style") == 0) {
-				if (pcb_strcasecmp(STRE(plr->children->children), "mirror_first") == 0)
+		if (rnd_strcasecmp(plr->str, "place_control") == 0) {
+			if (rnd_strcasecmp(STRE(plr->children), "flip_style") == 0) {
+				if (rnd_strcasecmp(STRE(plr->children->children), "mirror_first") == 0)
 					mirror_first = 1;
-				else if (pcb_strcasecmp(STRE(plr->children->children), "mirror_first") == 0)
+				else if (rnd_strcasecmp(STRE(plr->children->children), "mirror_first") == 0)
 					mirror_first = 0;
 				else
 					rnd_message(PCB_MSG_WARNING, "invalid flip_style: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", STRE(plr->children->children), (long)plr->line, (long)plr->col);
 			}
 		}
-		else if (pcb_strcasecmp(plr->str, "component") == 0) {
+		else if (rnd_strcasecmp(plr->str, "component") == 0) {
 			if (dsn_parse_place_component(ctx, plr, mirror_first) != 0)
 				return -1;
 		}
@@ -1636,12 +1636,12 @@ static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 	for(nwr = nwr->children->next; nwr != NULL; nwr = nwr->next) {
 		if (nwr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(nwr->str, "pins") == 0) {
+		if (rnd_strcasecmp(nwr->str, "pins") == 0) {
 			gsxl_node_t *n;
 			for(n = nwr->children; n != NULL; n = n->next)
 				rnd_actionva(&ctx->pcb->hidlib, "Netlist", "Add",  netname, n->str, NULL);
 		}
-		else if (pcb_strcasecmp(nwr->str, "property") == 0) {
+		else if (rnd_strcasecmp(nwr->str, "property") == 0) {
 			parse_attribute(ctx, &net->Attributes, nwr->children);
 		}
 	}
@@ -1657,7 +1657,7 @@ static int dsn_parse_network(dsn_read_t *ctx, gsxl_node_t *nwr)
 	for(nwr = nwr->children; nwr != NULL; nwr = nwr->next) {
 		if (nwr->str == NULL)
 			continue;
-		if (pcb_strcasecmp(nwr->str, "net") == 0) {
+		if (rnd_strcasecmp(nwr->str, "net") == 0) {
 			if (dsn_parse_net(ctx, nwr) != 0)
 				return -1;
 		}
@@ -1679,7 +1679,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 	ctx->unit = get_unit_struct("inch");
 
 	free(ctx->pcb->hidlib.name);
-	ctx->pcb->hidlib.name = pcb_strdup(STRE(root->children));
+	ctx->pcb->hidlib.name = rnd_strdup(STRE(root->children));
 
 	for(n = root->children->next; n != NULL; n = n->next) {
 		if (n->str == NULL)
@@ -1840,7 +1840,7 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 
 	gsxl_compact_tree(&rdctx.dom);
 	rn = rdctx.dom.root;
-	if ((rn == NULL) || (rn->str == NULL) || (pcb_strcasecmp(rn->str, "pcb") != 0)) {
+	if ((rn == NULL) || (rn->str == NULL) || (rnd_strcasecmp(rn->str, "pcb") != 0)) {
 		rnd_message(PCB_MSG_ERROR, "Root node should be pcb, got %s instead\n", rn->str);
 		goto error;
 	}

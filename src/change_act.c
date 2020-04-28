@@ -781,7 +781,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_Text:
 		case F_TextScale:
-			value = pcb_round(value / (double)PCB_FONT_CAPHEIGHT * 100.0);
+			value = rnd_round(value / (double)PCB_FONT_CAPHEIGHT * 100.0);
 			pcb_board_set_text_scale(absolute ? value : (value + conf_core.design.text_scale));
 			break;
 		default:
@@ -817,9 +817,9 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangeAngle, delta = argv[3].val.str);
 
 
-	if (pcb_strcasecmp(prim, "start") == 0) which = 0;
-	else if (pcb_strcasecmp(prim, "delta") == 0) which = 1;
-	else if (pcb_strcasecmp(prim, "both") == 0) which = 2;
+	if (rnd_strcasecmp(prim, "start") == 0) which = 0;
+	else if (rnd_strcasecmp(prim, "delta") == 0) which = 1;
+	else if (rnd_strcasecmp(prim, "both") == 0) which = 2;
 	else {
 		rnd_message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
 		return -1;
@@ -895,9 +895,9 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangeRadius, delta = argv[3].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, ChangeRadius, units = argv[4].val.str);
 
-	if ((pcb_strcasecmp(prim, "width") == 0) || (pcb_strcasecmp(prim, "x") == 0)) which = 0;
-	else if ((pcb_strcasecmp(prim, "height") == 0) || (pcb_strcasecmp(prim, "y") == 0)) which = 1;
-	else if (pcb_strcasecmp(prim, "both") == 0) which = 2;
+	if ((rnd_strcasecmp(prim, "width") == 0) || (rnd_strcasecmp(prim, "x") == 0)) which = 0;
+	else if ((rnd_strcasecmp(prim, "height") == 0) || (rnd_strcasecmp(prim, "y") == 0)) which = 1;
+	else if (rnd_strcasecmp(prim, "both") == 0) which = 2;
 	else {
 		rnd_message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
 		return -1;

@@ -67,7 +67,7 @@ typedef struct pcbway_form_s {
 
 static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, pcb_wget_opts_t *wopts)
 {
-	double mt, now = pcb_dtime();
+	double mt, now = rnd_dtime();
 
 	mt = pcb_file_mtime(hidlib, path);
 	if (update || (mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
@@ -179,7 +179,7 @@ static int pcbway_load_countries(pcbway_form_t *form, const char *fn)
 			continue;
 		for(c = n->children; c != NULL; c = c->next)
 			if ((c->children != NULL) && (c->children->type == XML_TEXT_NODE) && (xmlStrcmp(c->name, (xmlChar *)"CountryCode") == 0))
-				vts0_append(&form->country_codes, pcb_strdup(c->children->content));
+				vts0_append(&form->country_codes, rnd_strdup(c->children->content));
 	}
 
 	xmlFreeDoc(doc);
@@ -212,7 +212,7 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		f = calloc(sizeof(pcb_order_field_t) + strlen((char *)n->name), 1);
 		strcpy(f->name, (char *)n->name);
 		if (note != NULL)
-			f->help = pcb_strdup(note);
+			f->help = rnd_strdup(note);
 		if (type == NULL) {
 			f->type = PCB_HATT_LABEL;
 		}
@@ -226,7 +226,7 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 				char *s;
 				if ((n->type == XML_TEXT_NODE) || (xmlStrcmp(v->name, (xmlChar *)"Value") != 0) || (n->children->type != XML_TEXT_NODE))
 					continue;
-				s = pcb_strdup((char *)v->children->content);
+				s = rnd_strdup((char *)v->children->content);
 				vtp0_append(&tmp, s);
 				if ((dflt != NULL) && (strcmp(s, dflt) == 0))
 					di = i;
@@ -254,7 +254,7 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		else if (strcmp(type, "string") == 0) {
 			f->type = PCB_HATT_STRING;
 			if (dflt != NULL)
-				f->val.str = pcb_strdup(dflt);
+				f->val.str = rnd_strdup(dflt);
 		}
 		else {
 			f->type = PCB_HATT_LABEL;

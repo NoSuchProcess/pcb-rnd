@@ -98,7 +98,7 @@ int tedax_seek_hdr(FILE *f, char *buff, int buff_size, char *argv[], int argv_si
 		return -1;
 	}
 
-	if ((argv[1] == NULL) || (pcb_strcasecmp(argv[0], "tEDAx") != 0) || (pcb_strcasecmp(argv[1], "v1") != 0)) {
+	if ((argv[1] == NULL) || (rnd_strcasecmp(argv[0], "tEDAx") != 0) || (rnd_strcasecmp(argv[1], "v1") != 0)) {
 		rnd_message(PCB_MSG_ERROR, "Can't find tEDAx header (wrong line)\n");
 		return -1;
 	}

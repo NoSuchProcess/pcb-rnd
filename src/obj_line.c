@@ -404,7 +404,7 @@ rnd_coord_t pcb_line_length(const pcb_line_t *line)
 	rnd_coord_t dx = line->Point1.X - line->Point2.X;
 	rnd_coord_t dy = line->Point1.Y - line->Point2.Y;
 TODO(": use the distance func instead")
-	return pcb_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
+	return rnd_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
 }
 
 double pcb_line_area(const pcb_line_t *line)
@@ -437,14 +437,14 @@ void pcb_sqline_to_rect(const pcb_line_t *line, rnd_coord_t *x, rnd_coord_t *y)
 	nx = -vy;
 	ny = vx;
 
-	x[0] = (rnd_coord_t)pcb_round(x1 - vx * width + nx * width);
-	y[0] = (rnd_coord_t)pcb_round(y1 - vy * width + ny * width);
-	x[1] = (rnd_coord_t)pcb_round(x1 - vx * width - nx * width);
-	y[1] = (rnd_coord_t)pcb_round(y1 - vy * width - ny * width);
-	x[2] = (rnd_coord_t)pcb_round(x2 + vx * width - nx * width);
-	y[2] = (rnd_coord_t)pcb_round(y2 + vy * width - ny * width);
-	x[3] = (rnd_coord_t)pcb_round(x2 + vx * width + nx * width);
-	y[3] = (rnd_coord_t)pcb_round(y2 + vy * width + ny * width);
+	x[0] = (rnd_coord_t)rnd_round(x1 - vx * width + nx * width);
+	y[0] = (rnd_coord_t)rnd_round(y1 - vy * width + ny * width);
+	x[1] = (rnd_coord_t)rnd_round(x1 - vx * width - nx * width);
+	y[1] = (rnd_coord_t)rnd_round(y1 - vy * width - ny * width);
+	x[2] = (rnd_coord_t)rnd_round(x2 + vx * width - nx * width);
+	y[2] = (rnd_coord_t)rnd_round(y2 + vy * width - ny * width);
+	x[3] = (rnd_coord_t)rnd_round(x2 + vx * width + nx * width);
+	y[3] = (rnd_coord_t)rnd_round(y2 + vy * width + ny * width);
 }
 
 void pcb_line_pre(pcb_line_t *line)
@@ -971,17 +971,17 @@ void pcb_line_scale(pcb_line_t *line, double sx, double sy, double sth)
 		pcb_line_pre(line);
 
 	if (sx != 1.0) {
-		line->Point1.X = pcb_round((double)line->Point1.X * sx);
-		line->Point2.X = pcb_round((double)line->Point2.X * sx);
+		line->Point1.X = rnd_round((double)line->Point1.X * sx);
+		line->Point2.X = rnd_round((double)line->Point2.X * sx);
 	}
 
 	if (sy != 1.0) {
-		line->Point1.Y = pcb_round((double)line->Point1.Y * sy);
-		line->Point2.Y = pcb_round((double)line->Point2.Y * sy);
+		line->Point1.Y = rnd_round((double)line->Point1.Y * sy);
+		line->Point2.Y = rnd_round((double)line->Point2.Y * sy);
 	}
 
 	if (sth != 1.0)
-		line->Thickness = pcb_round((double)line->Thickness * sth);
+		line->Thickness = rnd_round((double)line->Thickness * sth);
 
 	pcb_line_bbox(line);
 

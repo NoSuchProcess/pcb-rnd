@@ -78,7 +78,7 @@ char *rnd_lrealpath(const char *filename)
 		const char *rp = realpath(filename, buf);
 		if (rp == NULL)
 			rp = filename;
-		return pcb_strdup(rp);
+		return rnd_strdup(rp);
 	}
 	/* REALPATH_LIMIT */
 
@@ -89,7 +89,7 @@ char *rnd_lrealpath(const char *filename)
 	{
 		char *rp = canonicalize_file_name(filename);
 		if (rp == NULL)
-			return pcb_strdup(filename);
+			return rnd_strdup(filename);
 		else
 			return rp;
 	}
@@ -120,7 +120,7 @@ char *rnd_lrealpath(const char *filename)
 			if (buf == NULL)
 				return NULL;
 			rp = realpath(filename, buf);
-			ret = pcb_strdup(rp ? rp : filename);
+			ret = rnd_strdup(rp ? rp : filename);
 			free(buf);
 			return ret;
 		}
@@ -140,18 +140,18 @@ char *rnd_lrealpath(const char *filename)
 		char *basename;
 		DWORD len = GetFullPathName(filename, MAX_PATH, buf, &basename);
 		if (len == 0 || len > MAX_PATH - 1)
-			return pcb_strdup(filename);
+			return rnd_strdup(filename);
 		else {
 			/* The file system is case-preserving but case-insensitive,
 			   Canonicalize to lowercase, using the codepage associated
 			   with the process locale.  */
 			CharLowerBuff(buf, len);
-			return pcb_strdup(buf);
+			return rnd_strdup(buf);
 		}
 	}
 #else
 
 	/* This system is a lost cause, just duplicate the filename.  */
-	return pcb_strdup(filename);
+	return rnd_strdup(filename);
 #endif
 }

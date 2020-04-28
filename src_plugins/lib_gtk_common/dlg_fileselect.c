@@ -68,14 +68,14 @@ static void update_history(file_history_t *hi, const char *path)
 	for(n = 0; (n < MAX_HIST) && (hi->fn[n] != NULL); n++) {
 		if (strcmp(hi->fn[n], path) == 0) {
 			shift_history(hi, 0, n);
-			hi->fn[0] = pcb_strdup(path);
+			hi->fn[0] = rnd_strdup(path);
 			return;
 		}
 	}
 
 	/* else move everything down and insert in front */
 	shift_history(hi, 0, MAX_HIST-1);
-	hi->fn[0] = pcb_strdup(path);
+	hi->fn[0] = rnd_strdup(path);
 }
 
 typedef struct {
@@ -100,11 +100,11 @@ static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 		gchar *gp = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(pctx->dialog));
 			res->type = PCB_EVARG_STR;
 		if (gp != NULL) {
-			res->d.s = pcb_strdup(gp);
+			res->d.s = rnd_strdup(gp);
 			g_free(gp);
 		}
 		else
-			res->d.s = pcb_strdup("");
+			res->d.s = rnd_strdup("");
 		return 0;
 	}
 
@@ -135,7 +135,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 		hi = htsp_get(&history, history_tag);
 		if (hi == NULL) {
 			hi = calloc(sizeof(file_history_t), 1);
-			htsp_set(&history, pcb_strdup(history_tag), hi);
+			htsp_set(&history, rnd_strdup(history_tag), hi);
 		}
 	}
 
@@ -246,7 +246,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 		return NULL;
 
 	/* can't return something that needs g_free, have to copy */
-	result = pcb_strdup(res);
+	result = rnd_strdup(res);
 	g_free(res);
 	return result;
 }

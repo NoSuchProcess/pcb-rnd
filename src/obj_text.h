@@ -49,8 +49,8 @@ struct pcb_text_s {
 
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */
-#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)pcb_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
-#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)pcb_round((COORD) * (100.0 / (double)(TEXTSCALE))))
+#define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)rnd_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
+#define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)rnd_round((COORD) * (100.0 / (double)(TEXTSCALE))))
 
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 pcb_text_t *pcb_text_alloc_id(pcb_layer_t *layer, long int id);

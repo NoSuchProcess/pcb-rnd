@@ -249,7 +249,7 @@ int pcb_script_unload(const char *id, const char *preunload)
 static char *script_fn(const char *fn)
 {
 	if (*fn != '~')
-		return pcb_strdup(fn);
+		return rnd_strdup(fn);
 	return pcb_strdup_printf("%s%c%s", pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
 }
 
@@ -299,9 +299,9 @@ TODO(": guess")
 
 	s = calloc(1, sizeof(script_t));
 	s->pup = pup;
-	s->id = pcb_strdup(id);
+	s->id = rnd_strdup(id);
 	s->fn = script_fn(fn);
-	s->lang = pcb_strdup(lang);
+	s->lang = rnd_strdup(lang);
 
 	old_id = script_persistency_id;
 	script_persistency_id = id;
@@ -329,8 +329,8 @@ static int script_reload(const char *id)
 		return -1;
 
 	s = e->value;
-	fn = pcb_strdup(s->fn);
-	lang = pcb_strdup(s->lang);
+	fn = rnd_strdup(s->fn);
+	lang = rnd_strdup(s->lang);
 
 	cookie = script_gen_cookie(id);
 	script_unload_entry(e, "reload", cookie);

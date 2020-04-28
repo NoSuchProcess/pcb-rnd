@@ -1365,7 +1365,7 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 	}
 
 	if (ps_calib_attribute_list[0].val.str == NULL) {
-		ps_calib_attribute_list[0].val.str = pcb_strdup("lpr");
+		ps_calib_attribute_list[0].val.str = rnd_strdup("lpr");
 	}
 
 	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, "Print Calibration Page", NULL))

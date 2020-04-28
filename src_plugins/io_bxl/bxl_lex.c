@@ -515,14 +515,14 @@ static int pcb_bxl_user_code(pcb_bxl_ureglex_t *ctx, void * user_ctx, int ruleid
 		return UREGLEX_NOP;
 		case 2:{
 #line  53 "bxl_lex.ul"
-	lval->un.s = pcb_strdup(ULX_BUF);
+	lval->un.s = rnd_strdup(ULX_BUF);
 	return T_ID;
 
 		}
 		return UREGLEX_NOP;
 		case 3:{
 #line  59 "bxl_lex.ul"
-	lval->un.s = pcb_strndup(ULX_TAGP(1), ULX_TAGL(1));
+	lval->un.s = rnd_strndup(ULX_TAGP(1), ULX_TAGL(1));
 	return T_QSTR;
 
 		}
@@ -540,7 +540,7 @@ static int pcb_bxl_user_code(pcb_bxl_ureglex_t *ctx, void * user_ctx, int ruleid
 		}
 		return UREGLEX_NOP;
 		case 6:{
-           lval->un.s = pcb_strdup(ULX_BUF); return T_ID;
+           lval->un.s = rnd_strdup(ULX_BUF); return T_ID;
 		}
 		return UREGLEX_NOP;
 		case 7:{

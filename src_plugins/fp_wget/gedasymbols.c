@@ -138,7 +138,7 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		l = pcb_fp_mkdir_p(vpath.array);
 		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, NULL);
 		fn[-1] = '/';
-		l->data.fp.loc_info = pcb_strdup(vpath.array);
+		l->data.fp.loc_info = rnd_strdup(vpath.array);
 	}
 	fp_wget_close(&f, &fctx);
 

@@ -211,7 +211,7 @@ do { \
 	int wid; \
 	const char *currval = rnd_attribute_get(&subc->Attributes, attr_name); \
 	if (currval == NULL) currval = ""; \
-	currval = pcb_strdup(currval); \
+	currval = rnd_strdup(currval); \
 	PCB_DAD_LABEL(dlg, vis_name); \
 		if (help != NULL) PCB_DAD_HELP(dlg, help); \
 	PCB_DAD_STRING(dlg); \

@@ -52,7 +52,7 @@ int io_dsn_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
 
-	if ((pcb_strcasecmp(fmt, "dsn") != 0) ||
+	if ((rnd_strcasecmp(fmt, "dsn") != 0) ||
 		((typ & (~(PCB_IOT_PCB))) != 0))
 		return 0;
 

@@ -98,8 +98,8 @@ static void rstdlg_pcb2dlg(int rst_idx)
 
 	for(a = rst->attr.List, n = 0; n < rst->attr.Number; a++,n++) {
 		char *cell[3]= {NULL};
-		cell[0] = pcb_strdup(a->name);
-		cell[1] = pcb_strdup(a->value);
+		cell[0] = rnd_strdup(a->name);
+		cell[1] = rnd_strdup(a->value);
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
@@ -178,20 +178,20 @@ static int rst_edit_attr(char **key, char **val)
 			PCB_DAD_STRING(dlg);
 				wkey = PCB_DAD_CURRENT(dlg);
 				if (*key != NULL)
-					PCB_DAD_DEFAULT_PTR(dlg, pcb_strdup(*key));
+					PCB_DAD_DEFAULT_PTR(dlg, rnd_strdup(*key));
 			PCB_DAD_LABEL(dlg, "value");
 			PCB_DAD_STRING(dlg);
 				wval = PCB_DAD_CURRENT(dlg);
 				if (*val != NULL)
-					PCB_DAD_DEFAULT_PTR(dlg, pcb_strdup(*val));
+					PCB_DAD_DEFAULT_PTR(dlg, rnd_strdup(*val));
 		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
 	PCB_DAD_END(dlg);
 
 	PCB_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, pcb_true, NULL);
 	res = PCB_DAD_RUN(dlg);
 	if (res == 0) {
-		*key = pcb_strdup(dlg[wkey].val.str);
-		*val = pcb_strdup(dlg[wval].val.str);
+		*key = rnd_strdup(dlg[wkey].val.str);
+		*val = rnd_strdup(dlg[wval].val.str);
 	}
 	PCB_DAD_FREE(dlg);
 	return res;

@@ -553,7 +553,7 @@ static void svg_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 	if ((gc->color != NULL) && (strcmp(gc->color, name) == 0))
 		return;
 	free(gc->color);
-	gc->color = pcb_strdup(name);
+	gc->color = rnd_strdup(name);
 }
 
 static void svg_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
@@ -771,10 +771,10 @@ static void svg_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	ea = start_angle + delta_angle;
 
 	/* calculate the endpoints */
-	x2 = pcb_round((double)cx + ((double)width * cos(sa * M_PI / 180)));
-	y2 = pcb_round((double)cy + ((double)width * sin(sa * M_PI / 180)));
-	x1 = pcb_round((double)cx + ((double)width * cos(ea * M_PI / 180))+diff);
-	y1 = pcb_round((double)cy + ((double)width * sin(ea * M_PI / 180))+diff);
+	x2 = rnd_round((double)cx + ((double)width * cos(sa * M_PI / 180)));
+	y2 = rnd_round((double)cy + ((double)width * sin(sa * M_PI / 180)));
+	x1 = rnd_round((double)cx + ((double)width * cos(ea * M_PI / 180))+diff);
+	y1 = rnd_round((double)cy + ((double)width * sin(ea * M_PI / 180))+diff);
 
 	pcb_arc_draw(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }

@@ -98,7 +98,7 @@ static void script_dlg_s2d_act(script_dlg_t *ctx)
 	/* add all actions */
 	cell[1] = NULL;
 	for(e = htsp_first(&sc->obj->func_tbl); e; e = htsp_next(&sc->obj->func_tbl, e)) {
-		cell[0] = pcb_strdup(e->key);
+		cell[0] = rnd_strdup(e->key);
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 }
@@ -118,7 +118,7 @@ static void script_dlg_s2d(script_dlg_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
@@ -128,9 +128,9 @@ static void script_dlg_s2d(script_dlg_t *ctx)
 	cell[3] = NULL;
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
 		script_t *s = (script_t *)e->value;
-		cell[0] = pcb_strdup(s->id);
-		cell[1] = pcb_strdup(s->lang);
-		cell[2] = pcb_strdup(s->fn);
+		cell[0] = rnd_strdup(s->id);
+		cell[1] = rnd_strdup(s->lang);
+		cell[2] = rnd_strdup(s->fn);
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 
@@ -208,7 +208,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 				tmp = strrchr(fn, RND_DIR_SEPARATOR_C);
 				if (tmp != NULL) {
 					tmp++;
-					idlang.dlg[idlang.wid].val.str = tmp = pcb_strdup(tmp);
+					idlang.dlg[idlang.wid].val.str = tmp = rnd_strdup(tmp);
 					tmp = strchr(tmp, '.');
 					if (tmp != NULL)
 						*tmp = '\0';
@@ -220,7 +220,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 				idlang.wlang = PCB_DAD_CURRENT(idlang.dlg);
 				tmp = strrchr(fn, '.');
 				if (tmp != NULL)
-					idlang.dlg[idlang.wlang].val.str = pcb_strdup(guess_lang(tmp+1));
+					idlang.dlg[idlang.wlang].val.str = rnd_strdup(guess_lang(tmp+1));
 		PCB_DAD_END(idlang.dlg);
 		PCB_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
 	PCB_DAD_END(idlang.dlg);
@@ -417,7 +417,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, first = argv[1].val.str);
 	if (first != NULL) {
 		if (*first == '/') {
-			if (pcb_strcasecmp(scr, "/exit") == 0) {
+			if (rnd_strcasecmp(scr, "/exit") == 0) {
 				RND_ACT_IRES(rnd_cli_leave());
 				return 0;
 			}
@@ -433,7 +433,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (pcb_strcasecmp(scr, "/exit") == 0) {
+	if (rnd_strcasecmp(scr, "/exit") == 0) {
 		RND_ACT_IRES(rnd_cli_leave());
 		return 0;
 	}

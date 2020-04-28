@@ -43,7 +43,7 @@ static const char *bxl_cookie = "bxl IO";
 
 int io_bxl_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
-	if ((strcmp(ctx->description, fmt) != 0) && (pcb_strcasecmp(fmt, "bxl") != 0)) /* format name mismatch */
+	if ((strcmp(ctx->description, fmt) != 0) && (rnd_strcasecmp(fmt, "bxl") != 0)) /* format name mismatch */
 		return 0;
 
 	if ((typ & (~(PCB_IOT_FOOTPRINT))) != 0) /* support only footprints */

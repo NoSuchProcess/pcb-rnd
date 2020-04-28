@@ -447,7 +447,7 @@ static int rdax_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 
 	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
 
-	name = pcb_strdup("unnamed");
+	name = rnd_strdup("unnamed");
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
@@ -818,9 +818,9 @@ static int autotrax_create_layers(read_state_t *st)
 	st->protel_to_stackup[10] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Power", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	g->name = pcb_strdup("outline"); /* equivalent to keepout = layer 12 in autotrax */
+	g->name = rnd_strdup("outline"); /* equivalent to keepout = layer 12 in autotrax */
 	g->ltype = PCB_LYT_BOUNDARY; /* and includes cutouts */
-	pcb_layergrp_set_purpose__(g, pcb_strdup("uroute"), 0);
+	pcb_layergrp_set_purpose__(g, rnd_strdup("uroute"), 0);
 	st->protel_to_stackup[12] = autotrax_reg_layer(st, "outline", PCB_LYT_BOUNDARY);
 
 	pcb_layergrp_inhibit_dec();
@@ -850,7 +850,7 @@ static int rdax_net(read_state_t *st, FILE *FP)
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		s = line;
 		rtrim(s);
-		netname = pcb_strdup(line);
+		netname = rnd_strdup(line);
 	}
 	else {
 		rnd_message(PCB_MSG_ERROR, "Empty netlist name found, %s:%d\n", st->Filename, st->lineno);
@@ -876,28 +876,28 @@ static int rdax_net(read_state_t *st, FILE *FP)
 						rtrim(s);
 						sym_flush(&st->pcb->hidlib, &sattr);
 						free(sattr.refdes);
-						sattr.refdes = pcb_strdup(line);
+						sattr.refdes = rnd_strdup(line);
 					}
 					if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
 						rnd_message(PCB_MSG_ERROR, "Empty NETDEF package, %s:%d\n", st->Filename, st->lineno);
 						free(sattr.footprint);
-						sattr.footprint = pcb_strdup("unknown");
+						sattr.footprint = rnd_strdup("unknown");
 					}
 					else {
 						s = line;
 						rtrim(s);
 						free(sattr.footprint);
-						sattr.footprint = pcb_strdup(line);
+						sattr.footprint = rnd_strdup(line);
 					}
 					if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
 						free(sattr.value);
-						sattr.value = pcb_strdup("value");
+						sattr.value = rnd_strdup("value");
 					}
 					else {
 						s = line;
 						rtrim(s);
 						free(sattr.value);
-						sattr.value = pcb_strdup(line);
+						sattr.value = rnd_strdup(line);
 					}
 				}
 				while(fgetline(line, sizeof(line), FP, st->lineno) == NULL) {

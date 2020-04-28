@@ -165,7 +165,7 @@ do { \
 		return; \
 	} \
 	free(ntxt->data.text.value); \
-	ntxt->data.text.value = pcb_strdup(nval == NULL ? "" : nval); \
+	ntxt->data.text.value = rnd_strdup(nval == NULL ? "" : nval); \
 } while(0)
 
 static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
@@ -244,7 +244,7 @@ static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
 
 	ctx = calloc(sizeof(rule_edit_ctx_t), 1);
 	ctx->role = role;
-	ctx->rule = pcb_strdup(rule);
+	ctx->rule = rnd_strdup(rule);
 	ctx->path = path;
 
 	gdl_insert(&rule_edit_dialogs, ctx, link);
@@ -381,7 +381,7 @@ static void drc_rlist_pcb2dlg(void)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -403,7 +403,7 @@ static void drc_rlist_pcb2dlg(void)
 
 		role = pcb_conf_lookup_role(rule);
 		cell[0] = rule->name;
-		cell[1] = pcb_strdup(pcb_conf_role_name(role));
+		cell[1] = rnd_strdup(pcb_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
 		if (st->run_cnt > 0)
 			cell[3] = pcb_strdup_printf("%.3fs", st->last_run_time);

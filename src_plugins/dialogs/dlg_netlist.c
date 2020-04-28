@@ -64,7 +64,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -73,8 +73,8 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 	if (nets != NULL) {
 		cell[2] = NULL;
 		for(n = nets; *n != NULL; n++) {
-			cell[0] = pcb_strdup((*n)->name);
-			cell[1] = pcb_strdup((*n)->inhibit_rats ? "*" : "");
+			cell[0] = rnd_strdup((*n)->name);
+			cell[1] = rnd_strdup((*n)->inhibit_rats ? "*" : "");
 			pcb_dad_tree_append(attr, NULL, cell);
 		}
 		free(nets);
@@ -104,7 +104,7 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 	if (net != NULL) {
 		r = pcb_dad_tree_get_selected(attr);
 		if (r != NULL)
-			cursor_path = pcb_strdup(r->cell[0]);
+			cursor_path = rnd_strdup(r->cell[0]);
 	}
 
 	/* remove existing items */
@@ -172,7 +172,7 @@ static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pc
 	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 	if (row == NULL)
 		return;
-	refdes = pcb_strdup(row->cell[0]);
+	refdes = rnd_strdup(row->cell[0]);
 	term = strchr(refdes, '-');
 	if (term != NULL) {
 		*term = '\0';
@@ -199,7 +199,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	r = pcb_dad_tree_get_selected(atree);
 	if (r == NULL)
 		return;
-	name = pcb_strdup(r->cell[0]);
+	name = rnd_strdup(r->cell[0]);
 
 	if (w == ctx->wsel)
 		rnd_actionva(&ctx->pcb->hidlib, "netlist", "select", name, NULL);

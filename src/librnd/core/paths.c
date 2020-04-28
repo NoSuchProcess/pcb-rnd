@@ -35,7 +35,7 @@
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hidlib_conf.h>
 
-int pcb_getpid(void);
+int rnd_getpid(void);
 
 int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 {
@@ -45,7 +45,7 @@ int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input)
 
 	switch(**input) {
 		case 'P':
-			sprintf(buff, "%.8i", pcb_getpid());
+			sprintf(buff, "%.8i", rnd_getpid());
 			gds_append_str(s, buff);
 			(*input)++;
 			return 0;

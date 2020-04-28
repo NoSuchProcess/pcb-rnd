@@ -217,7 +217,7 @@ const char *pcb_author(void)
 	if (conf_core.design.fab_author && conf_core.design.fab_author[0])
 		return conf_core.design.fab_author;
 	else
-		return pcb_get_user_name();
+		return rnd_get_user_name();
 }
 
 /* Catches signals which abort the program. */

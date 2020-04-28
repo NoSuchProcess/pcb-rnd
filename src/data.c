@@ -492,8 +492,8 @@ void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recu
 		{
 			rnd_coord_t ox, oy, nx, ny;
 			if (pcb_subc_get_origin(subc, &ox, &oy) == 0) {
-				nx = pcb_round((double)ox * sx);
-				ny = pcb_round((double)oy * sy);
+				nx = rnd_round((double)ox * sx);
+				ny = rnd_round((double)oy * sy);
 				pcb_subc_move(subc, nx - ox, ny - oy, pcb_true);
 			}
 		}
@@ -979,14 +979,14 @@ static pcb_data_t *pcb_data_by_name_(pcb_board_t *pcb, const char **name, int *a
 	if (name == NULL)
 		return NULL;
 
-	if (pcb_strncasecmp(*name, "pcb", 3) == 0) {
+	if (rnd_strncasecmp(*name, "pcb", 3) == 0) {
 		(*name) += 3;
 		if (**name == '/')
 			(*name)++;
 		*addr = 1;
 		return pcb->Data;
 	}
-	else if (pcb_strncasecmp(*name, "buffer#", 7) == 0) {
+	else if (rnd_strncasecmp(*name, "buffer#", 7) == 0) {
 		char *end;
 		long idx = strtol((*name)+7, &end, 10);
 		if ((*end == '\0') && (idx >= 0) && (idx < PCB_MAX_BUFFER)) {
@@ -997,7 +997,7 @@ static pcb_data_t *pcb_data_by_name_(pcb_board_t *pcb, const char **name, int *a
 			return pcb_buffers[idx].Data;
 		}
 	}
-	else if (pcb_strncasecmp(*name, "buffer", 6) == 0) {
+	else if (rnd_strncasecmp(*name, "buffer", 6) == 0) {
 		(*name) += 6;
 		if (**name == '/')
 			(*name)++;

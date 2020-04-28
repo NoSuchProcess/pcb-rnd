@@ -251,7 +251,7 @@ static unsigned netlist_act_do(pcb_net_t *net, int argc, const char *a1, const c
 	if (argc > 3) {
 		{
 			char *refdes, *termid;
-			refdes = pcb_strdup(a2);
+			refdes = rnd_strdup(a2);
 			termid = strchr(refdes, '-');
 			if (termid != NULL) {
 				*termid = '\0';
@@ -260,7 +260,7 @@ static unsigned netlist_act_do(pcb_net_t *net, int argc, const char *a1, const c
 			else
 				termid = "";
 			for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
-				if ((pcb_strcasecmp(refdes, term->refdes) == 0) && (pcb_strcasecmp(termid, term->term) == 0)) {
+				if ((rnd_strcasecmp(refdes, term->refdes) == 0) && (rnd_strcasecmp(termid, term->term) == 0)) {
 					pin_found = 1;
 					func(net, term);
 				}

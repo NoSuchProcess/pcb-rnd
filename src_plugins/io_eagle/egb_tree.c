@@ -63,7 +63,7 @@ void egb_node_prop_set(egb_node_t *node, const char *key, const char *val)
 {
 	if (node->props.table == NULL)
 		htss_init(&node->props, strhash, strkeyeq);
-	htss_set(&node->props, pcb_strdup(key), pcb_strdup(val));
+	htss_set(&node->props, rnd_strdup(key), rnd_strdup(val));
 }
 
 char *egb_node_prop_get(egb_node_t *node, const char *key)

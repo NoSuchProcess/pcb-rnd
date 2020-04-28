@@ -578,7 +578,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "FONT", 0);
 	if (tmp != NULL) {
-		if (pcb_strncasecmp(tmp->argv[1], "VeriBest Gerber ", 16) != 0)
+		if (rnd_strncasecmp(tmp->argv[1], "VeriBest Gerber ", 16) != 0)
 			hkp_error(tmp, "Unknown font (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 		font_id = strtol(tmp->argv[1]+16, &tmp_char, 10);
 		if (*tmp_char != '\0')
@@ -998,7 +998,7 @@ TODO("this should be done only when subc == NULL");
 	if (subc != NULL) {
 		ly = pcb_subc_get_layer(subc, lyt, lyc, 1, name, (purpose != NULL));
 		if ((purpose != NULL) && (ly->meta.bound.purpose == NULL)) /* newly created bound layer */
-			ly->meta.bound.purpose = pcb_strdup(purpose);
+			ly->meta.bound.purpose = rnd_strdup(purpose);
 	}
 	else {
 		pcb_layer_id_t lid;
@@ -1355,7 +1355,7 @@ static void load_hkp(hkp_tree_t *tree, FILE *f, const char *fn)
 	int level;
 	long lineno = 0;
 
-	tree->filename = pcb_strdup(fn);
+	tree->filename = rnd_strdup(fn);
 	tree->curr = tree->root = calloc(sizeof(node_t), 1);
 	gds_init(&vline);
 

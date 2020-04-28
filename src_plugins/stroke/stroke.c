@@ -122,7 +122,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_FAIL(stroke);
 		pcb_stroke_exec(RND_ACT_HIDLIB, arg);
 	}
-	else if (pcb_strcasecmp(cmd, "zoom") == 0) {
+	else if (rnd_strcasecmp(cmd, "zoom") == 0) {
 		fgw_arg_t args[5];
 		fgw_func_t *f = fgw_func_lookup(&rnd_fgw, "zoomto");
 
@@ -139,7 +139,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		args[4].type = FGW_COORD; fgw_coord(&args[4]) = stroke_last_y;
 		return rnd_actionv_(f, res, 5, args);
 	}
-	else if (pcb_strcasecmp(cmd, "stopline") == 0)
+	else if (rnd_strcasecmp(cmd, "stopline") == 0)
 		rnd_actionva(RND_ACT_HIDLIB, "Tool", "Escape", NULL);
 	else
 		RND_ACT_FAIL(stroke);

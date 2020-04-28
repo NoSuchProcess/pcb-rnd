@@ -359,8 +359,8 @@ void pcb_poly_scale(pcb_poly_t *poly, double sx, double sy)
 		pcb_poly_pre(poly);
 	PCB_POLY_POINT_LOOP(poly);
 	{
-		point->X = pcb_round((double)point->X * sx);
-		point->Y = pcb_round((double)point->Y * sy);
+		point->X = rnd_round((double)point->X * sx);
+		point->Y = rnd_round((double)point->Y * sy);
 	}
 	PCB_END_LOOP;
 	pcb_poly_bbox(poly);
@@ -1281,8 +1281,8 @@ static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, rnd_coord_t offs)
 
 
 	for(go = pcb_poly_vect_first(it, &x, &y), n = 0; go; go = pcb_poly_vect_next(it, &x, &y), n++) {
-		it->v->point[0] = pcb_round(p[n].x);
-		it->v->point[1] = pcb_round(p[n].y);
+		it->v->point[0] = rnd_round(p[n].x);
+		it->v->point[1] = rnd_round(p[n].y);
 	}
 
 	if (p != p_st)

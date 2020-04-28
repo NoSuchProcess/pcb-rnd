@@ -1367,7 +1367,7 @@ static unsigned short int lesstif_translate_key(const char *desc, int len)
 {
 	KeySym key;
 
-	if (pcb_strcasecmp(desc, "enter") == 0) desc = "Return";
+	if (rnd_strcasecmp(desc, "enter") == 0) desc = "Return";
 
 	key = XStringToKeysym(desc);
 	if (key == NoSymbol && len > 1) {
@@ -1867,7 +1867,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	/* listen on standard input for actions */
 	if (stdin_listen) {
-		XtAppAddInput(app_context, pcb_fileno(stdin), (XtPointer) XtInputReadMask, lesstif_listener_cb, NULL);
+		XtAppAddInput(app_context, rnd_fileno(stdin), (XtPointer) XtInputReadMask, lesstif_listener_cb, NULL);
 	}
 	return 0;
 }
@@ -2901,8 +2901,8 @@ static void ltf_view_get(pcb_hid_t *hid, rnd_box_t *viewbox)
 {
 	viewbox->X1 = view_left_x;
 	viewbox->Y1 = view_top_y;
-	viewbox->X2 = pcb_round(view_left_x + view_width * view_zoom);
-	viewbox->Y2 = pcb_round(view_top_y + view_height * view_zoom);
+	viewbox->X2 = rnd_round(view_left_x + view_width * view_zoom);
+	viewbox->Y2 = rnd_round(view_top_y + view_height * view_zoom);
 }
 
 static void ltf_open_command(pcb_hid_t *hid)

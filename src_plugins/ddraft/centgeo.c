@@ -75,8 +75,8 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, rnd_box_t *i
 				s = 1.0;
 
 			if (ip != NULL) {
-				ip->X1 = pcb_round((double)Line1->Point1.X + r * line1_dx);
-				ip->Y1 = pcb_round((double)Line1->Point1.Y + r * line1_dy);
+				ip->X1 = rnd_round((double)Line1->Point1.X + r * line1_dx);
+				ip->Y1 = rnd_round((double)Line1->Point1.Y + r * line1_dy);
 				if (s == 1.0) {
 					ip->X2 = Line1->Point2.X;
 					ip->Y2 = Line1->Point2.Y;
@@ -102,8 +102,8 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, rnd_box_t *i
 	if (r >= 0.0 && r <= 1.0) {
 		if (s >= 0.0 && s <= 1.0) {
 			if (ip != NULL) {
-				ip->X1 = pcb_round((double)Line1->Point1.X + r * line1_dx);
-				ip->Y1 = pcb_round((double)Line1->Point1.Y + r * line1_dy);
+				ip->X1 = rnd_round((double)Line1->Point1.X + r * line1_dx);
+				ip->Y1 = rnd_round((double)Line1->Point1.Y + r * line1_dy);
 			}
 			if (offs != NULL)
 				offs[0] = r;
@@ -124,8 +124,8 @@ void pcb_cline_offs(pcb_line_t *line, double offs, rnd_coord_t *dstx, rnd_coord_
 	line_dx = line->Point2.X - line->Point1.X;
 	line_dy = line->Point2.Y - line->Point1.Y;
 
-	*dstx = pcb_round((double)line->Point1.X + offs * line_dx);
-	*dsty = pcb_round((double)line->Point1.Y + offs * line_dy);
+	*dstx = rnd_round((double)line->Point1.X + offs * line_dx);
+	*dsty = rnd_round((double)line->Point1.Y + offs * line_dy);
 }
 
 double pcb_cline_pt_offs(pcb_line_t *line, rnd_coord_t px, rnd_coord_t py)
@@ -215,8 +215,8 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, rnd_box_t *ip,
 	r = (Radius + r2) / l;
 
 	if ((r >= 0) && (r <= 1)) {
-		ix = pcb_round(Line->Point1.X + r * dx);
-		iy = pcb_round(Line->Point1.Y + r * dy);
+		ix = rnd_round(Line->Point1.X + r * dx);
+		iy = rnd_round(Line->Point1.Y + r * dy);
 		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc)) {
 			if (oline)
 				append(r, ix, iy);
@@ -227,8 +227,8 @@ static int intersect_cline_carc(pcb_line_t *Line, pcb_arc_t *Arc, rnd_box_t *ip,
 
 	r = (Radius - r2) / l;
 	if ((r >= 0) && (r <= 1)) {
-		ix = pcb_round(Line->Point1.X + r * dx);
-		iy = pcb_round(Line->Point1.Y + r * dy);
+		ix = rnd_round(Line->Point1.X + r * dx);
+		iy = rnd_round(Line->Point1.Y + r * dy);
 		if (!line_ep(Line, ix, iy) && pcb_is_point_on_arc(ix, iy, 1, Arc)) {
 			if (oline)
 				append(r, ix, iy);

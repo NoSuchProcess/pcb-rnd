@@ -102,7 +102,7 @@ static void setup_tree(pref_ctx_t *ctx)
 			}
 		}
 		else {
-			cell[0] = pcb_strdup(basename);
+			cell[0] = rnd_strdup(basename);
 			pcb_dad_tree_append_under(attr, parent, cell);
 		}
 	}
@@ -147,7 +147,7 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 
 	for(n = 0; n < CFR_max_real; n++) {
 		char *cell[5]= {NULL};
-		cell[0] = pcb_strdup(pcb_conf_role_name(n));
+		cell[0] = rnd_strdup(pcb_conf_role_name(n));
 		if (nat != NULL) {
 			lht_node_t *nd;
 			long prio = pcb_conf_default_prio[n];
@@ -157,8 +157,8 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 			if (nd != NULL) { /* role, prio, policy, value */
 				pcb_conf_get_policy_prio(nd, &pol, &prio);
 				cell[1] = pcb_strdup_printf("%ld", prio);
-				cell[2] = pcb_strdup(pcb_conf_policy_name(pol));
-				cell[3] = pcb_strdup(pref_conf_get_val(nd, nat, idx));
+				cell[2] = rnd_strdup(pcb_conf_policy_name(pol));
+				cell[3] = rnd_strdup(pref_conf_get_val(nd, nat, idx));
 			}
 		}
 		r = pcb_dad_tree_append(attr, NULL, cell);
@@ -217,7 +217,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	hv.str = path == NULL ? "" : path;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 
-	tmp = pcb_strdup(nat->description);
+	tmp = rnd_strdup(nat->description);
 	pcb_text_wrap(tmp, DESC_WRAP_WIDTH, '\n', ' ');
 	hv.str = tmp;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
@@ -246,9 +246,9 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 			else
 				strval = print_conf_val(n->type, &n->val, buf, sizeof(buf));
 
-			cell[0] = rolename == NULL ? pcb_strdup("") : pcb_strdup(rolename);
+			cell[0] = rolename == NULL ? rnd_strdup("") : rnd_strdup(rolename);
 			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);
-			cell[2] = pcb_strdup(strval);
+			cell[2] = rnd_strdup(strval);
 			cell[3] = 0;
 			pcb_dad_tree_append(attr, NULL, cell);
 		}
@@ -487,7 +487,7 @@ void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 
 	if (tabarg != NULL) {
 		pcb_hid_attr_val_t hv;
-		hv.str = pcb_strdup(tabarg);
+		hv.str = rnd_strdup(tabarg);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
 		pcb_pref_dlg_conf_filter_cb(ctx->dlg_hid_ctx, ctx, &ctx->dlg[ctx->conf.wfilter]);
 		pcb_dad_tree_expcoll(&ctx->dlg[ctx->conf.wtree], NULL, 1, 1);

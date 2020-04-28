@@ -57,10 +57,10 @@ static void cam_init_inst_fn(cam_ctx_t *ctx)
 		char *fn = pcb_derive_default_filename_(PCB->hidlib.filename, "");
 		char *val, *end = strrchr(fn, RND_DIR_SEPARATOR_C);
 		if (end != NULL)
-			val = pcb_strdup(end+1);
+			val = rnd_strdup(end+1);
 		else
-			val = pcb_strdup(fn);
-		pcb_cam_set_var(ctx->vars, pcb_strdup("base"), val);
+			val = rnd_strdup(fn);
+		pcb_cam_set_var(ctx->vars, rnd_strdup("base"), val);
 		free(fn);
 	}
 }
@@ -112,7 +112,7 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 
 static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
 {
-	char *fn, *tmp = pcb_strdup(optval);
+	char *fn, *tmp = rnd_strdup(optval);
 	int dirlen = prefix_mkdir(tmp, &fn);
 
 	free(ctx->prefix);
@@ -124,7 +124,7 @@ static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
 	}
 	else
 		ctx->prefix = NULL;
-	pcb_cam_set_var(ctx->vars, pcb_strdup("base"), pcb_strdup(fn));
+	pcb_cam_set_var(ctx->vars, rnd_strdup("base"), rnd_strdup(fn));
 	free(tmp);
 	return 0;
 }
@@ -136,8 +136,8 @@ static int cam_parse_set_var(cam_ctx_t *ctx, const char *opt)
 	if (sep == NULL)
 		return 1;
 
-	key = pcb_strndup(opt, sep-opt);
-	val = pcb_strdup(sep+1);
+	key = rnd_strndup(opt, sep-opt);
+	val = rnd_strdup(sep+1);
 	pcb_cam_set_var(ctx->vars, key, val);
 	return 0;
 }
@@ -176,7 +176,7 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	if (pcb_strcasecmp(cmd, "gui") == 0) {
+	if (rnd_strcasecmp(cmd, "gui") == 0) {
 		rs = cam_gui(RND_ACT_HIDLIB, arg);
 	}
 	else {
@@ -186,12 +186,12 @@ static fgw_error_t pcb_act_cam(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_IRES(1);
 			return 0;
 		}
-		if (pcb_strcasecmp(cmd, "exec") == 0) {
+		if (rnd_strcasecmp(cmd, "exec") == 0) {
 			rs = cam_compile(&ctx, arg);
 			if (rs == 0)
 				rs = cam_exec(&ctx);
 		}
-		else if (pcb_strcasecmp(cmd, "call") == 0)
+		else if (rnd_strcasecmp(cmd, "call") == 0)
 			rs = cam_call(arg, &ctx);
 	}
 
@@ -234,7 +234,7 @@ static int export_cam_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	cam_export_has_outfile = 0;
 	cam_init_inst(&cam_export_ctx);
-	cam_export_job = pcb_strdup((*argv)[0]);
+	cam_export_job = rnd_strdup((*argv)[0]);
 	oargc = (*argc);
 	(*argc)--;
 	for(d = 0, s = 1; s < oargc; s++) {

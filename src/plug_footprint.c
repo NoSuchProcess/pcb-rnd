@@ -48,7 +48,7 @@ int pcb_fp_dupname(const char *name, char **basename, char **params)
 {
 	char *newname, *s;
 
-	*basename = newname = pcb_strdup(name);
+	*basename = newname = rnd_strdup(name);
 	s = strchr(newname, '(');
 	if (s == NULL) {
 		*params = NULL;
@@ -78,7 +78,7 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 		fp_tags = htsp_alloc(strhash, strkeyeq);
 	e = htsp_getentry(fp_tags, tag);
 	if ((e == NULL) && alloc) {
-		htsp_set(fp_tags, pcb_strdup(tag), (void *) counter);
+		htsp_set(fp_tags, rnd_strdup(tag), (void *) counter);
 		counter++;
 		e = htsp_getentry(fp_tags, tag);
 	}
@@ -88,7 +88,7 @@ const void *pcb_fp_tag(const char *tag, int alloc)
 void pcb_fp_init()
 {
 	pcb_library.type = PCB_LIB_DIR;
-	pcb_library.name = pcb_strdup("/");  /* All names are eventually free()'d */
+	pcb_library.name = rnd_strdup("/");  /* All names are eventually free()'d */
 }
 
 void pcb_fp_uninit()
@@ -122,7 +122,7 @@ FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ct
 
 	if (sep != NULL) {
 		long offs = sep - name;
-		fctx->filename = pcb_strdup(name);
+		fctx->filename = rnd_strdup(name);
 		sep = (char *)fctx->filename + offs;
 		*sep = '\0';
 		fctx->free_filename = 0;
@@ -174,7 +174,7 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 		strcpy(entry->name+nl, "()");
 	}
 	else
-		entry->name = pcb_strdup(name);
+		entry->name = rnd_strdup(name);
 
 	entry->type = PCB_LIB_FOOTPRINT;
 	entry->data.fp.type = type;
@@ -220,9 +220,9 @@ pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int
 	pcb_fplibrary_t *l = pcb_get_library_memory(parent);
 
 	if (name_len > 0)
-		l->name = pcb_strndup(name, name_len);
+		l->name = rnd_strndup(name, name_len);
 	else
-		l->name = pcb_strdup(name);
+		l->name = rnd_strdup(name);
 	l->parent = parent;
 	l->type = PCB_LIB_DIR;
 	l->data.dir.backend = NULL;
@@ -469,7 +469,7 @@ int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l)
 	if ((be == NULL) || (be->load_dir == NULL))
 		return -1;
 
-	path = pcb_strdup(l->name);
+	path = rnd_strdup(l->name);
 	pcb_fp_rmdir(l);
 	res = be->load_dir(be, path, 1);
 	pcb_fp_sort_children(&pcb_library);

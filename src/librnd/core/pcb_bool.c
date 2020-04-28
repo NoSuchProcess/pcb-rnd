@@ -30,9 +30,9 @@
 
 pcb_bool_op_t pcb_str2boolop(const char *s)
 {
-	if (pcb_strcasecmp(s, "set") == 0)       return PCB_BOOL_SET;
-	if (pcb_strcasecmp(s, "clear") == 0)     return PCB_BOOL_CLEAR;
-	if (pcb_strcasecmp(s, "toggle") == 0)    return PCB_BOOL_TOGGLE;
-	if (pcb_strcasecmp(s, "preserve") == 0)  return PCB_BOOL_PRESERVE;
+	if (rnd_strcasecmp(s, "set") == 0)       return PCB_BOOL_SET;
+	if (rnd_strcasecmp(s, "clear") == 0)     return PCB_BOOL_CLEAR;
+	if (rnd_strcasecmp(s, "toggle") == 0)    return PCB_BOOL_TOGGLE;
+	if (rnd_strcasecmp(s, "preserve") == 0)  return PCB_BOOL_PRESERVE;
 	return PCB_BOOL_INVALID;
 }

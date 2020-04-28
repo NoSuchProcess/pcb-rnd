@@ -121,7 +121,7 @@ void pcb_set_design_dir(const char *fn)
 		last_design_dir = rnd_lrealpath(fn);
 
 	if (last_design_dir == NULL) {
-		last_design_dir = pcb_strdup("<invalid>");
+		last_design_dir = rnd_strdup("<invalid>");
 		conf_force_set_str(conf_core.rc.path.design, last_design_dir);
 		pcb_conf_ro("rc/path/design");
 		return;
@@ -814,7 +814,7 @@ void pcb_save_in_tmp(void)
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_EMERGENCY_FMT : conf_core.rc.emergency_format;
-		sprintf(filename, conf_core.rc.emergency_name, (long int)pcb_getpid());
+		sprintf(filename, conf_core.rc.emergency_name, (long int)rnd_getpid());
 		rnd_message(PCB_MSG_INFO, "Trying to save your layout in '%s'\n", filename);
 		pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false, -1, 0);
 	}
@@ -1048,7 +1048,7 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 	switch(head->type) {
 		case PCB_FP_INVALID: /* first append */
 			(*tail)->type = PCB_FP_FILE;
-			(*tail)->name = pcb_strdup(fpname);
+			(*tail)->name = rnd_strdup(fpname);
 			break;
 		case PCB_FP_FILE: /* second append */
 			/* clone the existing head */
@@ -1059,7 +1059,7 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 
 			head->type = PCB_FP_DIR;
 			head->libtype = PCB_LIB_DIR;
-			head->name = pcb_strdup(filename);
+			head->name = rnd_strdup(filename);
 			head->next = m;
 
 			*tail = m;
@@ -1068,7 +1068,7 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 			m = calloc(sizeof(pcb_plug_fp_map_t), 1);
 			m->type = PCB_FP_FILE;
 			m->libtype = PCB_LIB_FOOTPRINT;
-			m->name = pcb_strdup(fpname);
+			m->name = rnd_strdup(fpname);
 			
 			(*tail)->next = m;
 			*tail = m;

@@ -80,13 +80,13 @@ static int fpcb_nl_load(const char *fn)
 
 		/* parse directive */
 		if (*line == '*') {
-			if (pcb_strcasecmp(line, "*END*") == 0)
+			if (rnd_strcasecmp(line, "*END*") == 0)
 				break;
-			else if (pcb_strcasecmp(line, "*PART*") == 0)
+			else if (rnd_strcasecmp(line, "*PART*") == 0)
 				mode = MODE_PART;
-			else if (pcb_strcasecmp(line, "*NET*") == 0)
+			else if (rnd_strcasecmp(line, "*NET*") == 0)
 				mode = MODE_NET;
-			else if (pcb_strncasecmp(line, "*SIGNAL*", 8) == 0) {
+			else if (rnd_strncasecmp(line, "*SIGNAL*", 8) == 0) {
 				*signame = '\0';
 				if ((mode == MODE_NET) || (mode == MODE_SIGNAL)) {
 					int len;

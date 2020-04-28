@@ -27,7 +27,7 @@
 %{
 #include <stdlib.h>
 
-char *pcb_strdup(const char *s); /* from #include <librnd/core/compat_misc.h> */
+char *rnd_strdup(const char *s); /* from #include <librnd/core/compat_misc.h> */
 
 #include "hyp_y.h"
 
@@ -324,7 +324,7 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
                      */
 <STATE_STRING>{
 
-{EMPTY_STRING}      { yyless(0); BEGIN INITIAL; hyylval.strval = pcb_strdup(""); return H_STRING; } /* emit empty string and reprocess */
+{EMPTY_STRING}      { yyless(0); BEGIN INITIAL; hyylval.strval = rnd_strdup(""); return H_STRING; } /* emit empty string and reprocess */
 
 {STRING_W_SPACES}   {
                       /*
@@ -335,7 +335,7 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
                         REJECT 
                       else 
                       { 
-                        char *s = pcb_strdup(hyytext);
+                        char *s = rnd_strdup(hyytext);
   
                         BEGIN INITIAL; 
   
@@ -382,7 +382,7 @@ EMPTY_STRING        ({WS}{VARIABLE}"="|")"|"}")
                         else 
                         { 
                           BEGIN INITIAL; 
-                          hyylval.strval = pcb_strdup(hyytext); 
+                          hyylval.strval = rnd_strdup(hyytext); 
                           return H_STRING;
                         }
                       }

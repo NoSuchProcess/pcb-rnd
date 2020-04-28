@@ -41,7 +41,7 @@ int build_and_run_command(const char * format_, ...)
 	   within a copy of the format string. The format string is copied so
 	   that these parts can be terminated by overwriting whitepsace with \0 */
 	va_start(vargs, format_);
-	format = pcb_strdup(format_);
+	format = rnd_strdup(format_);
 	vts0_init(&args);
 	for(s = start = format; *s != '\0'; s++) {
 		/* if word separator is reached, save the previous word */

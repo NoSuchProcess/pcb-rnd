@@ -57,7 +57,7 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 	if (strcmp(ctx->description, fmt) == 0)
 		return 200;
 
-	if ((pcb_strcasecmp(fmt, "tedax") != 0) ||
+	if ((rnd_strcasecmp(fmt, "tedax") != 0) ||
 		((typ & (~(PCB_IOT_PCB | PCB_IOT_FOOTPRINT | PCB_IOT_BUFFER))) != 0))
 		return 0;
 
@@ -74,37 +74,37 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
 
-	if (pcb_strcasecmp(type, "netlist") == 0) {
+	if (rnd_strcasecmp(type, "netlist") == 0) {
 		RND_ACT_IRES(tedax_net_save(PCB, NULL, fname));
 		return 0;
 	}
 
-	if (pcb_strcasecmp(type, "board-footprints") == 0) {
+	if (rnd_strcasecmp(type, "board-footprints") == 0) {
 		RND_ACT_IRES(tedax_fp_save(PCB->Data, fname, -1));
 		return 0;
 	}
 
-	if (pcb_strcasecmp(type, "stackup") == 0) {
+	if (rnd_strcasecmp(type, "stackup") == 0) {
 		RND_ACT_IRES(tedax_stackup_save(PCB, PCB->hidlib.name, fname));
 		return 0;
 	}
 
-	if (pcb_strcasecmp(type, "layer") == 0) {
+	if (rnd_strcasecmp(type, "layer") == 0) {
 		RND_ACT_IRES(tedax_layer_save(PCB, pcb_layer_get_group_(PCB_CURRLAYER(PCB)), NULL, fname));
 		return 0;
 	}
 
-	if (pcb_strcasecmp(type, "board") == 0) {
+	if (rnd_strcasecmp(type, "board") == 0) {
 		RND_ACT_IRES(tedax_board_save(PCB, fname));
 		return 0;
 	}
 
-	if (pcb_strcasecmp(type, "drc") == 0) {
+	if (rnd_strcasecmp(type, "drc") == 0) {
 		RND_ACT_IRES(tedax_drc_save(PCB, NULL, fname));
 		return 0;
 	}
 
-	if (pcb_strcasecmp(type, "etest") == 0) {
+	if (rnd_strcasecmp(type, "etest") == 0) {
 		RND_ACT_IRES(tedax_etest_save(PCB, NULL, fname));
 		return 0;
 	}
@@ -142,34 +142,34 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadtedaxFrom, id = argv[3].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, LoadtedaxFrom, silents = argv[4].val.str);
 
-	silent = (silents != NULL) && (pcb_strcasecmp(silents, "silent") == 0);
+	silent = (silents != NULL) && (rnd_strcasecmp(silents, "silent") == 0);
 
-	if (pcb_strcasecmp(type, "netlist") == 0) {
+	if (rnd_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
 		RND_ACT_IRES(tedax_net_load(fname, 1, id, silent));
 		return 0;
 	}
-	if (pcb_strcasecmp(type, "board") == 0) {
+	if (rnd_strcasecmp(type, "board") == 0) {
 		gen_load(board, fname);
 		RND_ACT_IRES(tedax_board_load(PCB, fname, id, silent));
 		return 0;
 	}
-	if (pcb_strcasecmp(type, "footprint") == 0) {
+	if (rnd_strcasecmp(type, "footprint") == 0) {
 		gen_load(footprint, fname);
 		RND_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, id, silent));
 		return 0;
 	}
-	if (pcb_strcasecmp(type, "stackup") == 0) {
+	if (rnd_strcasecmp(type, "stackup") == 0) {
 		gen_load(stackup, fname);
 		RND_ACT_IRES(tedax_stackup_load(PCB, fname, id, silent));
 		return 0;
 	}
-	if (pcb_strcasecmp(type, "layer") == 0) {
+	if (rnd_strcasecmp(type, "layer") == 0) {
 		gen_load(layer, fname);
 		RND_ACT_IRES(tedax_layers_load(PCB_PASTEBUFFER->Data, fname, id, silent));
 		return 0;
 	}
-	if (pcb_strcasecmp(type, "drc") == 0) {
+	if (rnd_strcasecmp(type, "drc") == 0) {
 		gen_load(drc, fname);
 		RND_ACT_IRES(tedax_drc_load(PCB, fname, id, silent));
 		return 0;

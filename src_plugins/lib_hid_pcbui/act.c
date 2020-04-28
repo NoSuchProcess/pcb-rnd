@@ -59,7 +59,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		RND_PCB_ACT_CONVARG(1, FGW_STR, Zoom, vp = argv[1].val.str);
 
-		if (pcb_strcasecmp(vp, "selected") == 0) {
+		if (rnd_strcasecmp(vp, "selected") == 0) {
 			rnd_box_t sb;
 			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
@@ -68,7 +68,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 
-		if (pcb_strcasecmp(vp, "found") == 0) {
+		if (rnd_strcasecmp(vp, "found") == 0) {
 			rnd_box_t sb;
 			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
@@ -175,7 +175,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_draw_inhibit_dec();
 
 /*pcb_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (rnd_coord_t)(x + xoffs), (rnd_coord_t)(y + yoffs));*/
-	pcb_gui->pan(pcb_gui, pcb_round(x + xoffs), pcb_round(y + yoffs), 0);
+	pcb_gui->pan(pcb_gui, rnd_round(x + xoffs), rnd_round(y + yoffs), 0);
 	pcb_gui->set_crosshair(pcb_gui, x, y, HID_SC_PAN_VIEWPORT);
 
 	pcb_gui->invalidate_all(pcb_gui);
@@ -277,8 +277,8 @@ fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_LAYER, LayerHotkey, ly = fgw_layer(&argv[1]));
 	RND_PCB_ACT_CONVARG(2, FGW_STR, LayerHotkey, op = argv[2].val.str);
 
-	if (pcb_strcasecmp(op, "select") == 0)   { key = "pcb-rnd::key::select"; title = "set layer selection hotkey"; }
-	else if (pcb_strcasecmp(op, "vis") == 0) { key = "pcb-rnd::key::vis"; title = "set layer visibility hotkey"; }
+	if (rnd_strcasecmp(op, "select") == 0)   { key = "pcb-rnd::key::select"; title = "set layer selection hotkey"; }
+	else if (rnd_strcasecmp(op, "vis") == 0) { key = "pcb-rnd::key::vis"; title = "set layer visibility hotkey"; }
 	else RND_ACT_FAIL(LayerHotkey);
 
 	msg =

@@ -464,9 +464,9 @@ static int field_line(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 		case query_fields_x2:         PCB_QRY_RET_COORD(res, l->Point2.X);
 		case query_fields_y2:         PCB_QRY_RET_COORD(res, l->Point2.Y);
 		case query_fields_thickness:  PCB_QRY_RET_COORD(res, l->Thickness);
-		case query_fields_clearance:  PCB_QRY_RET_COORD(res, pcb_round((double)l->Clearance/2.0));
+		case query_fields_clearance:  PCB_QRY_RET_COORD(res, rnd_round((double)l->Clearance/2.0));
 		case query_fields_length:
-			PCB_QRY_RET_DBL(res, ((rnd_coord_t)pcb_round(sqrt(pcb_line_len2(l)))));
+			PCB_QRY_RET_DBL(res, ((rnd_coord_t)rnd_round(sqrt(pcb_line_len2(l)))));
 			break;
 		case query_fields_length2:
 			PCB_QRY_RET_DBL(res, pcb_line_len2(l));
@@ -474,7 +474,7 @@ static int field_line(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 		case query_fields_area:
 			{
 				double th = l->Thickness;
-				double len = pcb_round(sqrt(pcb_line_len2(l)));
+				double len = rnd_round(sqrt(pcb_line_len2(l)));
 				if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, l))
 					PCB_QRY_RET_DBL(res, (len+th) * th);
 				else
@@ -535,9 +535,9 @@ static int field_arc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 		case query_fields_cy:
 		case query_fields_y:         PCB_QRY_RET_COORD(res, a->Y);
 		case query_fields_thickness: PCB_QRY_RET_COORD(res, a->Thickness);
-		case query_fields_clearance: PCB_QRY_RET_COORD(res, (rnd_coord_t)pcb_round((double)a->Clearance/2.0));
+		case query_fields_clearance: PCB_QRY_RET_COORD(res, (rnd_coord_t)rnd_round((double)a->Clearance/2.0));
 		case query_fields_length:
-			PCB_QRY_RET_COORD(res, ((rnd_coord_t)pcb_round(pcb_arc_len(a))));
+			PCB_QRY_RET_COORD(res, ((rnd_coord_t)rnd_round(pcb_arc_len(a))));
 			break;
 		case query_fields_length2:
 			{
@@ -661,7 +661,7 @@ static int field_polygon(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t 
 	switch(fh1) {
 		case query_fields_clearance:
 			if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, p))
-				PCB_QRY_RET_COORD(res, (rnd_coord_t)pcb_round((double)p->Clearance/2.0));
+				PCB_QRY_RET_COORD(res, (rnd_coord_t)rnd_round((double)p->Clearance/2.0));
 			else
 				PCB_QRY_RET_INV(res);
 			break;

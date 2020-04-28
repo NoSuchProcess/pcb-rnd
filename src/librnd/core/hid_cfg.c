@@ -274,7 +274,7 @@ void pcb_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 			continue;
 
 		if (strncmp(cname, "li:", 3) == 0) {
-			char *start, *s, *tmp = pcb_strdup(cval);
+			char *start, *s, *tmp = rnd_strdup(cval);
 			li = lht_dom_node_alloc(LHT_LIST, cname+3);
 
 			for(s = start = tmp; *s != '\0'; s++) {
@@ -286,21 +286,21 @@ void pcb_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 				if (*s == ';') {
 					*s = '\0';
 					t = lht_dom_node_alloc(LHT_TEXT, "");
-					t->data.text.value = pcb_strdup(start);
+					t->data.text.value = rnd_strdup(start);
 					lht_dom_list_append(li, t);
 					start = s+1;
 				}
 			}
 			if (*start != '\0') {
 				t = lht_dom_node_alloc(LHT_TEXT, "");
-				t->data.text.value = pcb_strdup(start);
+				t->data.text.value = rnd_strdup(start);
 				lht_dom_list_append(li, t);
 			}
 			free(tmp);
 		}
 		else {
 			t = lht_dom_node_alloc(LHT_TEXT, cname);
-			t->data.text.value = pcb_strdup(cval);
+			t->data.text.value = rnd_strdup(cval);
 			lht_dom_hash_put(node, t);
 		}
 	}

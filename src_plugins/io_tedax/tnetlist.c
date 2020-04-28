@@ -57,7 +57,7 @@ static void *htsp_get2(htsp_t *ht, const char *key, size_t size)
 	void *res = htsp_get(ht, key);
 	if (res == NULL) {
 		res = calloc(size, 1);
-		htsp_set(ht, pcb_strdup(key), res);
+		htsp_set(ht, rnd_strdup(key), res);
 	}
 	return res;
 }
@@ -85,11 +85,11 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 		if ((argc == 3) && (strcmp(argv[0], "footprint") == 0)) {
 			fp_t *fp = htsp_get2(&fps, argv[1], sizeof(fp_t));
-			fp->footprint = pcb_strdup(argv[2]);
+			fp->footprint = rnd_strdup(argv[2]);
 		}
 		else if ((argc == 3) && (strcmp(argv[0], "value") == 0)) {
 			fp_t *fp = htsp_get2(&fps, argv[1], sizeof(fp_t));
-			fp->value = pcb_strdup(argv[2]);
+			fp->value = rnd_strdup(argv[2]);
 		}
 		else if ((argc == 4) && (strcmp(argv[0], "conn") == 0)) {
 			char id[512];
@@ -104,7 +104,7 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 				free(e->key);
 				free(e->value);
 			}
-			htsp_set(&pinnames, pcb_strdup(id), pcb_strdup(argv[3]));
+			htsp_set(&pinnames, rnd_strdup(id), rnd_strdup(argv[3]));
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "netlist") == 0))
 			break;

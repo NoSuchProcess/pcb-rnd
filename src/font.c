@@ -325,7 +325,7 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	f = calloc(sizeof(pcb_font_t), 1);
 	htip_set(&fk->fonts, id, f);
 	if (name != NULL)
-		f->name = pcb_strdup(name);
+		f->name = rnd_strdup(name);
 	f->id = id;
 
 	if (f->id > fk->last_id)
@@ -438,7 +438,7 @@ static void copy_font(pcb_font_t *dst, pcb_font_t *src)
 		}
 	}
 	if (src->name != NULL)
-		dst->name = pcb_strdup(src->name);
+		dst->name = rnd_strdup(src->name);
 }
 
 int pcb_move_font(pcb_fontkit_t *fk, pcb_font_id_t src, pcb_font_id_t dst)

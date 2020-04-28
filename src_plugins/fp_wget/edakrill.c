@@ -111,7 +111,7 @@ static void krill_flush(pcb_plug_fp_t *ctx, gds_t *vpath, int base_len)
 			tag_add_(NULL);
 		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, krill.tags);
 		fn[-1] = '/';
-		l->data.fp.loc_info = pcb_strdup(vpath->array);
+		l->data.fp.loc_info = rnd_strdup(vpath->array);
 		
 		krill.tags = NULL;
 		krill.tags_used = 0;
@@ -202,7 +202,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		*end = '\0';
 		if (*line == 'f') {
 			krill_flush(ctx, &vpath, vpath_base_len);
-			krill.name = pcb_strdup(line+2);
+			krill.name = rnd_strdup(line+2);
 		}
 		if (strncmp(line, "t type=", 7) == 0) {
 			if (strcmp(line+7, "footprint") == 0)
@@ -225,7 +225,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 				end += 7;
 				*end = '\0';
 				end++;
-				krill.fname = pcb_strdup(line+2);
+				krill.fname = rnd_strdup(line+2);
 				krill.date = strtol(end, NULL, 10);
 			}
 		}

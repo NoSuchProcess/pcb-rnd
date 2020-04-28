@@ -168,10 +168,10 @@ static int dimension_gen(pcb_subc_t *subc)
 	ly = &subc->data->Layer[LID_TARGET];
 
 	/* endpoints of the displaced baseline */
-	x1 = pcb_round(dim->x1 + dim->displace * -dim->dy);
-	y1 = pcb_round(dim->y1 + dim->displace * +dim->dx);
-	x2 = pcb_round(dim->x2 + dim->displace * -dim->dy);
-	y2 = pcb_round(dim->y2 + dim->displace * +dim->dx);
+	x1 = rnd_round(dim->x1 + dim->displace * -dim->dy);
+	y1 = rnd_round(dim->y1 + dim->displace * +dim->dx);
+	x2 = rnd_round(dim->x2 + dim->displace * -dim->dy);
+	y2 = rnd_round(dim->y2 + dim->displace * +dim->dx);
 
 	/* endpoints of the extended-displaced baseline */
 	dispe = PCB_MM_TO_COORD(0.5);
@@ -179,10 +179,10 @@ static int dimension_gen(pcb_subc_t *subc)
 		dispe = -dispe;
 	dispe = dim->displace + dispe;
 
-	x1e = pcb_round(dim->x1 + dispe * -dim->dy);
-	y1e = pcb_round(dim->y1 + dispe * +dim->dx);
-	x2e = pcb_round(dim->x2 + dispe * -dim->dy);
-	y2e = pcb_round(dim->y2 + dispe * +dim->dx);
+	x1e = rnd_round(dim->x1 + dispe * -dim->dy);
+	y1e = rnd_round(dim->y1 + dispe * +dim->dx);
+	x2e = rnd_round(dim->x2 + dispe * -dim->dy);
+	y2e = rnd_round(dim->y2 + dispe * +dim->dx);
 
 	/* main dim line */
 	flt = linelist_first(&subc->data->Layer[LID_TARGET].Line);
@@ -274,8 +274,8 @@ static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 		dimension_unpack(subc);
 	dim = subc->extobj_data;
 
-	fx = pcb_round((double)(fline->Point1.X + fline->Point2.X)/2.0);
-	fy = pcb_round((double)(fline->Point1.Y + fline->Point2.Y)/2.0);
+	fx = rnd_round((double)(fline->Point1.X + fline->Point2.X)/2.0);
+	fy = rnd_round((double)(fline->Point1.Y + fline->Point2.Y)/2.0);
 
 	memset(&bline, 0, sizeof(bline));
 	bline.Point1.X = dim->x1; bline.Point1.Y = dim->y1;

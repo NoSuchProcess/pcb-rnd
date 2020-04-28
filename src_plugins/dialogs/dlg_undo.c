@@ -79,7 +79,7 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->cell[0]);
+		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	pcb_dad_tree_clear(tree);
@@ -100,9 +100,9 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 		else if (i == pcb_uundo.tail)
 			mark[0] = 't';
 		sprintf(ser, "%ld", (long)i->serial);
-		cell[0] = pcb_strdup(ser);
-		cell[1] = pcb_strdup(mark);
-		cell[2] = pcb_strdup(payload);
+		cell[0] = rnd_strdup(ser);
+		cell[1] = rnd_strdup(mark);
+		cell[2] = rnd_strdup(payload);
 		pcb_dad_tree_append(attr, NULL, cell);
 	}
 

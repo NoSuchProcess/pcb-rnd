@@ -375,7 +375,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	gds_init(&tmp);
 
 	if (op != NULL) {
-		if (pcb_strncasecmp(op, "Subc", 4) == 0)
+		if (rnd_strncasecmp(op, "Subc", 4) == 0)
 			type = PCB_OBJ_SUBC;
 	}
 	type = pcb_search_screen(x, y, type, &ptr1, &ptr2, &ptr3);
@@ -769,28 +769,28 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
 
-	if (pcb_strcasecmp(cmd, "Object") == 0) {
+	if (rnd_strcasecmp(cmd, "Object") == 0) {
 		rnd_hid_get_coords("Click on an object", &x, &y, 0);
 		return pcb_act_report_dialog(res, argc, argv);
 	}
-	else if (pcb_strncasecmp(cmd, "Subc", 4) == 0) {
+	else if (rnd_strncasecmp(cmd, "Subc", 4) == 0) {
 		rnd_hid_get_coords("Click on a subcircuit", &x, &y, 0);
 		return pcb_act_report_dialog(res, argc, argv);
 	}
 
 	rnd_hid_get_coords("Click on object to report on", &x, &y, 0);
 
-	if (pcb_strcasecmp(cmd, "DrillReport") == 0)
+	if (rnd_strcasecmp(cmd, "DrillReport") == 0)
 		return report_drills(res, argc, argv);
-	else if (pcb_strcasecmp(cmd, "FoundPins") == 0)
+	else if (rnd_strcasecmp(cmd, "FoundPins") == 0)
 		return report_found_pins(res, argc, argv);
-	else if ((pcb_strcasecmp(cmd, "NetLength") == 0) && (argc == 2))
+	else if ((rnd_strcasecmp(cmd, "NetLength") == 0) && (argc == 2))
 		return report_net_length(res, argc, argv, 0);
-	else if ((pcb_strcasecmp(cmd, "NetLengthTo") == 0) && (argc == 2))
+	else if ((rnd_strcasecmp(cmd, "NetLengthTo") == 0) && (argc == 2))
 		return report_net_length(res, argc, argv, 1);
-	else if (pcb_strcasecmp(cmd, "AllNetLengths") == 0)
+	else if (rnd_strcasecmp(cmd, "AllNetLengths") == 0)
 		return report_all_net_lengths(res, argc, argv);
-	else if (pcb_strcasecmp(cmd, "NetLength") == 0) {
+	else if (rnd_strcasecmp(cmd, "NetLength") == 0) {
 		RND_PCB_ACT_CONVARG(2, FGW_STR, Report, name = argv[2].val.str);
 		return report_net_length_by_name(name);
 	}

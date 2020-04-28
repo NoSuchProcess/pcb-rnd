@@ -170,12 +170,12 @@ static pcb_export_opt_t *openems_get_export_options(pcb_hid_t *hid, int *n)
 	}
 
 TODO(": when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore")
-	openems_attribute_list[HA_def_copper_cond].default_val.str = pcb_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str);
-	openems_attribute_list[HA_def_subst_epsilon].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str);
-	openems_attribute_list[HA_def_subst_mue].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str);
-	openems_attribute_list[HA_def_subst_kappa].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_kappa].default_val.str);
-	openems_attribute_list[HA_def_subst_sigma].default_val.str = pcb_strdup(openems_attribute_list[HA_def_subst_sigma].default_val.str);
-	openems_attribute_list[HA_void_name].default_val.str = pcb_strdup(openems_attribute_list[HA_void_name].default_val.str);
+	openems_attribute_list[HA_def_copper_cond].default_val.str = rnd_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str);
+	openems_attribute_list[HA_def_subst_epsilon].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str);
+	openems_attribute_list[HA_def_subst_mue].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str);
+	openems_attribute_list[HA_def_subst_kappa].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_kappa].default_val.str);
+	openems_attribute_list[HA_def_subst_sigma].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_sigma].default_val.str);
+	openems_attribute_list[HA_void_name].default_val.str = rnd_strdup(openems_attribute_list[HA_void_name].default_val.str);
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -362,7 +362,7 @@ TODO("layer: consider multiple outline layers instead")
 
 static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, const char *port_name)
 {
-	char *end, *s, *safe_name = pcb_strdup(port_name);
+	char *end, *s, *safe_name = rnd_strdup(port_name);
 	const char *att;
 	double resistance = ctx->options[HA_def_port_res].dbl;
 	int act = 1;
@@ -380,9 +380,9 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 
 	att = rnd_attribute_get(&o->Attributes, "openems::active");
 	if (att != NULL) {
-		if (pcb_strcasecmp(att, "true") == 0)
+		if (rnd_strcasecmp(att, "true") == 0)
 			act = 1;
-		else if (pcb_strcasecmp(att, "false") == 0)
+		else if (rnd_strcasecmp(att, "false") == 0)
 			act = 0;
 		else
 			rnd_message(PCB_MSG_WARNING, "Ignoring invalid openems::active value for port %s: '%s' (must be true or false)\n", port_name, att);

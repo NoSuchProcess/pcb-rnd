@@ -93,7 +93,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 void pcb_gtk_create_listener(pcb_gtk_t *gctx)
 {
 	GIOChannel *channel;
-	int fd = pcb_fileno(stdin);
+	int fd = rnd_fileno(stdin);
 
 	channel = g_io_channel_unix_new(fd);
 	g_io_add_watch(channel, G_IO_IN, ghid_listener_cb, gctx);

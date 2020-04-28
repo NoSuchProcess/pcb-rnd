@@ -149,8 +149,8 @@ static int part_map_parse(nethlp_ctx_t *nhctx, int argc, char *argv[], const cha
 	r->prio = prio;
 	r->key = kr;
 	r->val = vr;
-	r->new_key = pcb_strdup(argv[3]);
-	r->new_val = pcb_strdup(argv[4]);
+	r->new_key = rnd_strdup(argv[3]);
+	r->new_val = rnd_strdup(argv[4]);
 	r->next = nhctx->part_rules;
 	nhctx->part_rules = r;
 
@@ -191,19 +191,19 @@ nethlp_elem_ctx_t *nethlp_elem_new(nethlp_ctx_t *nhctx, nethlp_elem_ctx_t *preal
 	else
 		prealloc->alloced = 0;
 	prealloc->nhctx = nhctx;
-	prealloc->id = pcb_strdup(id);
+	prealloc->id = rnd_strdup(id);
 	htsp_init(&prealloc->attr, strhash, strkeyeq);
 	return prealloc;
 }
 
 void nethlp_elem_refdes(nethlp_elem_ctx_t *ectx, const char *refdes)
 {
-	htsp_set(&ectx->nhctx->id2refdes, pcb_strdup(ectx->id), pcb_strdup(refdes));
+	htsp_set(&ectx->nhctx->id2refdes, rnd_strdup(ectx->id), rnd_strdup(refdes));
 }
 
 void nethlp_elem_attr(nethlp_elem_ctx_t *ectx, const char *key, const char *val)
 {
-	htsp_set(&ectx->attr, pcb_strdup(key), pcb_strdup(val));
+	htsp_set(&ectx->attr, rnd_strdup(key), rnd_strdup(val));
 }
 
 static void elem_map_apply(nethlp_elem_ctx_t *ectx, nethlp_rule_t *r)
@@ -211,7 +211,7 @@ static void elem_map_apply(nethlp_elem_ctx_t *ectx, nethlp_rule_t *r)
 	char *dst;
 	re_se_backref(r->val, &dst, r->new_val);
 /*	printf("Map add: '%s' -> '%s'\n", r->new_key, dst);*/
-	htsp_set(&ectx->attr, pcb_strdup(r->new_key), pcb_strdup(dst));
+	htsp_set(&ectx->attr, rnd_strdup(r->new_key), rnd_strdup(dst));
 }
 
 void nethlp_elem_done(rnd_hidlib_t *hl, nethlp_elem_ctx_t *ectx)
@@ -284,7 +284,7 @@ nethlp_net_ctx_t *nethlp_net_new(nethlp_ctx_t *nhctx, nethlp_net_ctx_t *prealloc
 		prealloc->alloced = 0;
 	prealloc->nhctx = nhctx;
 
-	prealloc->netname = pcb_strdup(netname);
+	prealloc->netname = rnd_strdup(netname);
 	return prealloc;
 }
 

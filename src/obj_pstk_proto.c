@@ -645,7 +645,7 @@ void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
 
 	memcpy(dst, src, sizeof(pcb_pstk_proto_t));
 	if (src->name != NULL)
-		dst->name = pcb_strdup(src->name);
+		dst->name = rnd_strdup(src->name);
 	pcb_vtpadstack_tshape_init(&dst->tr);
 
 	if (src->tr.used > 0) {
@@ -1043,7 +1043,7 @@ int pcb_pstk_proto_change_name(pcb_pstk_proto_t *proto, const char *new_name, in
 	if ((new_name == NULL) || (*new_name == '\0'))
 		proto->name = NULL;
 	else
-		proto->name = pcb_strdup(new_name);
+		proto->name = rnd_strdup(new_name);
 
 	if (undoable) {
 		padstack_proto_change_name_t *u = pcb_undo_alloc(PCB, &undo_pstk_proto_change_name, sizeof(padstack_proto_change_name_t));
@@ -1116,8 +1116,8 @@ static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, rnd_coord_t *cx, r
 	}
 	x /= (double)poly->len;
 	y /= (double)poly->len;
-	*cx = pcb_round(x);
-	*cy = pcb_round(y);
+	*cx = rnd_round(x);
+	*cy = rnd_round(y);
 }
 
 void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord_t val)
@@ -1152,7 +1152,7 @@ TODO("TODO")
 			}
 			else {
 				pcb_polo_t *p, p_st[32];
-				double vl = pcb_round(val/2);
+				double vl = rnd_round(val/2);
 
 				if (shp->data.poly.inverted)
 					vl = -vl;
@@ -1189,20 +1189,20 @@ static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 
 	switch(shp->shape) {
 		case PCB_PSSH_LINE:
-			shp->data.line.thickness = pcb_round(shp->data.line.thickness * ((sx+sy)/2.0));
+			shp->data.line.thickness = rnd_round(shp->data.line.thickness * ((sx+sy)/2.0));
 			if (shp->data.line.thickness < 1)
 				shp->data.line.thickness = 1;
-			shp->data.line.x1 = pcb_round((double)shp->data.line.x1 * sx);
-			shp->data.line.y1 = pcb_round((double)shp->data.line.y1 * sy);
-			shp->data.line.x2 = pcb_round((double)shp->data.line.x2 * sx);
-			shp->data.line.y2 = pcb_round((double)shp->data.line.y2 * sy);
+			shp->data.line.x1 = rnd_round((double)shp->data.line.x1 * sx);
+			shp->data.line.y1 = rnd_round((double)shp->data.line.y1 * sy);
+			shp->data.line.x2 = rnd_round((double)shp->data.line.x2 * sx);
+			shp->data.line.y2 = rnd_round((double)shp->data.line.y2 * sy);
 			break;
 		case PCB_PSSH_CIRC:
-			shp->data.circ.dia = pcb_round(shp->data.circ.dia * ((sx+sy)/2.0));
+			shp->data.circ.dia = rnd_round(shp->data.circ.dia * ((sx+sy)/2.0));
 			if (shp->data.circ.dia < 1)
 				shp->data.circ.dia = 1;
-			shp->data.circ.x = pcb_round((double)shp->data.circ.x * sx);
-			shp->data.circ.y = pcb_round((double)shp->data.circ.y * sy);
+			shp->data.circ.x = rnd_round((double)shp->data.circ.x * sx);
+			shp->data.circ.y = rnd_round((double)shp->data.circ.y * sy);
 			break;
 		case PCB_PSSH_HSHADOW:
 			break;
@@ -1211,8 +1211,8 @@ static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 			pcb_polyarea_free(&shp->data.poly.pa);
 
 			for(n = 0; n < shp->data.poly.len; n++) {
-				shp->data.poly.x[n] = pcb_round((double)shp->data.poly.x[n] * sx);
-				shp->data.poly.y[n] = pcb_round((double)shp->data.poly.y[n] * sy);
+				shp->data.poly.x[n] = rnd_round((double)shp->data.poly.x[n] * sx);
+				shp->data.poly.y[n] = rnd_round((double)shp->data.poly.y[n] * sy);
 			}
 			pcb_pstk_shape_update_pa(&shp->data.poly);
 			break;

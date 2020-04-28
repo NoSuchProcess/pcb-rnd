@@ -123,7 +123,7 @@ static char *main_path_init(char *argv0)
 		tmps = getenv("PATH");
 
 		if (tmps != NULL) {
-			path = pcb_strdup(tmps);
+			path = rnd_strdup(tmps);
 
 			/* search through the font path for a font file */
 			for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
@@ -164,7 +164,7 @@ static char *main_path_init(char *argv0)
 	}
 	else {
 		/* we have failed to find out anything from argv[0] so fall back to the original install prefix */
-		bindir = pcb_strdup(BINDIR);
+		bindir = rnd_strdup(BINDIR);
 	}
 
 	/* now find the path to exec_prefix */
@@ -177,12 +177,12 @@ static char *main_path_init(char *argv0)
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
 	tmp = pcb_concat(PCBSHAREDIR, "/pcblib", NULL);
-	se |= pcb_setenv("PCB_RND_VERSION",     PCB_VERSION,           1);
-	se |= pcb_setenv("PCB_RND_REVISION",    PCB_REVISION,          1);
-	se |= pcb_setenv("PCB_RND_PCBLIB",      tmp,                   1);
-	se |= pcb_setenv("PCB_RND_SHARE",       PCBSHAREDIR,           1);
-	se |= pcb_setenv("PCB_RND_LIB",         PCBLIBDIR,             1);
-	se |= pcb_setenv("PCB_RND_EXEC_PREFIX", exec_prefix,           1);
+	se |= rnd_setenv("PCB_RND_VERSION",     PCB_VERSION,           1);
+	se |= rnd_setenv("PCB_RND_REVISION",    PCB_REVISION,          1);
+	se |= rnd_setenv("PCB_RND_PCBLIB",      tmp,                   1);
+	se |= rnd_setenv("PCB_RND_SHARE",       PCBSHAREDIR,           1);
+	se |= rnd_setenv("PCB_RND_LIB",         PCBLIBDIR,             1);
+	se |= rnd_setenv("PCB_RND_EXEC_PREFIX", exec_prefix,           1);
 	free(tmp);
 
 	if (se != 0)
@@ -525,7 +525,7 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 			/* keep filename if load failed: file might not exist, save it by that name */
-			PCB->hidlib.filename = pcb_strdup(command_line_pcb);
+			PCB->hidlib.filename = rnd_strdup(command_line_pcb);
 		}
 	}
 

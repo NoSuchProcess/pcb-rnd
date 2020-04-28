@@ -99,8 +99,8 @@ rnd_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, rnd_coord_t pcb_x, rn
 
 rnd_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * pcb_x, rnd_coord_t * pcb_y)
 {
-	*pcb_x = pcb_round(EVENT_TO_PCB_X(v, event_x));
-	*pcb_y = pcb_round(EVENT_TO_PCB_Y(v, event_y));
+	*pcb_x = rnd_round(EVENT_TO_PCB_X(v, event_x));
+	*pcb_y = rnd_round(EVENT_TO_PCB_Y(v, event_y));
 
 	return pcb_true;
 }
@@ -201,8 +201,8 @@ void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y
 
 void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, double widget_x, double widget_y)
 {
-	v->x0 = pcb_round((double)SIDE_X(v, pcb_x) - (double)widget_x * v->coord_per_px);
-	v->y0 = pcb_round((double)SIDE_Y(v, pcb_y) - (double)widget_y * v->coord_per_px);
+	v->x0 = rnd_round((double)SIDE_X(v, pcb_x) - (double)widget_x * v->coord_per_px);
+	v->y0 = rnd_round((double)SIDE_Y(v, pcb_y) - (double)widget_y * v->coord_per_px);
 
 	uiz_pan_common(v);
 }

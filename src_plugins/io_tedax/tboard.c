@@ -72,7 +72,7 @@ static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
 			if (padstack->term != NULL)
 				fprintf(f, "	term %s %s - -\n", padstack->term, padstack->term);
 			tedax_pstk_fsave(padstack, padstack->x, padstack->y, f);
-			htsp_set(&seen, pcb_strdup(fpname), padstack);
+			htsp_set(&seen, rnd_strdup(fpname), padstack);
 			fprintf(f, "end footprint\n");
 		}
 	}
@@ -189,7 +189,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 			fake_refdes:;
 			sprintf(refdes, "ANON%ld", subc->ID);
 		}
-		htsi_insert(&urefdes, pcb_strdup(refdes), 1);
+		htsi_insert(&urefdes, rnd_strdup(refdes), 1);
 
 		subc2fpname(fpname, proto);
 		pcb_subc_get_host_trans(subc,  &tr, 0);
@@ -286,7 +286,7 @@ do { \
 	if (what != NULL) \
 		errexit("tEDAx board load: multiple instances of " #what " reference\n"); \
 	reqarg(what, 2); \
-	what = pcb_strdup(argv[1]); \
+	what = rnd_strdup(argv[1]); \
 } while(0)
 
 typedef struct tdx_plc_s tdx_plc_t;
@@ -348,7 +348,7 @@ static tdx_plc_t *get_place(htsp_t *plc, const char *id)
 	if (p != NULL)
 		return p;
 	p = calloc(sizeof(tdx_plc_t), 1);
-	htsp_set(plc, pcb_strdup(id), p);
+	htsp_set(plc, rnd_strdup(id), p);
 	return p;
 }
 
@@ -417,7 +417,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			else errexit("Invalid role value in place\n");
 
 			p = get_place(&plc, argv[1]);
-			p->block = pcb_strdup(argv[2]);
+			p->block = rnd_strdup(argv[2]);
 			p->ox = ox;
 			p->oy = oy;
 			p->rot = rot;
@@ -429,8 +429,8 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			reqarg(argv[0], 4);
 			p = get_place(&plc, argv[1]);
 			a = malloc(sizeof(tdx_attr_t));
-			a->key = pcb_strdup(argv[2]);
-			a->val = pcb_strdup(argv[3]);
+			a->key = rnd_strdup(argv[2]);
+			a->val = rnd_strdup(argv[3]);
 			a->next = p->attr;
 			p->attr = a;
 		}
@@ -455,8 +455,8 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 
 			p = get_place(&plc, argv[1]);
 			t = malloc(sizeof(tdx_text_t));
-			t->layer = pcb_strdup(argv[2]);
-			t->val = pcb_strdup(argv[9]);
+			t->layer = rnd_strdup(argv[2]);
+			t->val = rnd_strdup(argv[9]);
 			t->bbox.X1 = x1;
 			t->bbox.Y1 = y1;
 			t->bbox.X2 = x2;

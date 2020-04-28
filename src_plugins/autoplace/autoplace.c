@@ -483,7 +483,7 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 			(*boxpp)->box = subc->BoundingBox;
 			(*boxpp)->comp = (pcb_any_obj_t *)subc;
 			(*boxpp)->refdes = subc->refdes;
-			(*boxpp)->rot90 = pcb_round(rot / 90.0);
+			(*boxpp)->rot90 = rnd_round(rot / 90.0);
 			(*boxpp)->vbox = &subc->BoundingBox;
 		}
 		PCB_END_LOOP;
@@ -504,7 +504,7 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 
 				pcb_subc_get_side(subc, &onbtm);
 				pcb_subc_get_rotation(subc, &rot);
-				rot90 = pcb_round(rot / 90.0);
+				rot90 = rnd_round(rot / 90.0);
 
 				boxp = (struct ebox *)r_find_neighbor(onbtm ? rt_s : rt_c, &subc->BoundingBox, dir[i]);
 				/* score bounding box alignments */
@@ -597,17 +597,17 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 {
 	PerturbationType pt = { 0 };
 	/* pick subcircuit to perturb */
-	pt.comp = (pcb_any_obj_t *) selected->array[pcb_rand() % vtp0_len(selected)];
+	pt.comp = (pcb_any_obj_t *) selected->array[rnd_rand() % vtp0_len(selected)];
 	/* exchange, flip/rotate or shift? */
-	switch (pcb_rand() % ((vtp0_len(selected) > 1) ? 3 : 2)) {
+	switch (rnd_rand() % ((vtp0_len(selected) > 1) ? 3 : 2)) {
 	case 0:
 		{														/* shift! */
 			rnd_coord_t grid;
 			double scaleX = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_x / 3);
 			double scaleY = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_y / 3);
 			pt.which = SHIFT;
-			pt.DX = scaleX * 2 * ((((double) pcb_rand()) / RAND_MAX) - 0.5);
-			pt.DY = scaleY * 2 * ((((double) pcb_rand()) / RAND_MAX) - 0.5);
+			pt.DX = scaleX * 2 * ((((double) rnd_rand()) / RAND_MAX) - 0.5);
+			pt.DY = scaleY * 2 * ((((double) rnd_rand()) / RAND_MAX) - 0.5);
 			/* snap to grid. different grids for "high" and "low" T */
 			grid = (T > PCB_MIL_TO_COORD(10)) ? CostParameter.large_grid_size : CostParameter.small_grid_size;
 			/* (round away from zero) */
@@ -630,14 +630,14 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 			rnd_bool isSMD = is_smd(pt.comp);
 
 			pt.which = ROTATE;
-			pt.rotate = isSMD ? (pcb_rand() & 3) : (1 + (pcb_rand() % 3));
+			pt.rotate = isSMD ? (rnd_rand() & 3) : (1 + (rnd_rand() % 3));
 			/* 0 - flip; 1-3, rotate. */
 			break;
 		}
 	case 2:
 		{														/* exchange! */
 			pt.which = EXCHANGE;
-			pt.other = (pcb_any_obj_t *)selected->array[pcb_rand() % (vtp0_len(selected) - 1)];
+			pt.other = (pcb_any_obj_t *)selected->array[rnd_rand() % (vtp0_len(selected) - 1)];
 			if (pt.other == pt.comp)
 				pt.other = (pcb_any_obj_t *)selected->array[vtp0_len(selected) - 1];
 			/* don't allow exchanging a solderside-side SMD component
@@ -781,7 +781,7 @@ rnd_bool AutoPlaceSelected(void)
 				good_moves++;
 				steps++;
 			}
-			else if ((pcb_rand() / (double) RAND_MAX) < exp(MIN(MAX(-20, (C0 - Cprime) / T), 20))) {
+			else if ((rnd_rand() / (double) RAND_MAX) < exp(MIN(MAX(-20, (C0 - Cprime) / T), 20))) {
 				/* not good but keep it anyway */
 				C0 = Cprime;
 				steps++;

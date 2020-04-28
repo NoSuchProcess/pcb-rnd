@@ -558,7 +558,7 @@ static void cli_push(const char *val)
 {
 	if (val == NULL)
 		val = "";
-	vtp0_append(&cli_stack, pcb_strdup(val));
+	vtp0_append(&cli_stack, rnd_strdup(val));
 }
 
 static char *cli_pop(void)
@@ -703,12 +703,12 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_
 	if (end == NULL) {
 		/* optimization: string doesn't contain newline - pass it as is to save an strdup */
 		args[1].type = FGW_STR;
-		args[1].val.str = pcb_strdup(str_);
+		args[1].val.str = rnd_strdup(str_);
 	}
 	else {
 		/* string contains a newline; need to cut there, which needs a dup; let fungw free it as dynamic string, cleaning up args after the fungw call */
 		args[1].type = FGW_STR | FGW_DYN;
-		args[1].val.str = pcb_strdup(str_);
+		args[1].val.str = rnd_strdup(str_);
 		args[1].val.str[end - str_] = '\0';
 	}
 

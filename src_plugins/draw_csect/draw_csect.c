@@ -742,9 +742,9 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 					pcb_layergrp_t *g = pcb_get_grp_new_misc(PCB);
 
 					pcb_undo_freeze_serial();
-					g->name = pcb_strdup("global_outline");
+					g->name = rnd_strdup("global_outline");
 					g->ltype = PCB_LYT_BOUNDARY;
-					g->purpose = pcb_strdup("uroute");
+					g->purpose = rnd_strdup("uroute");
 					g->valid = 1;
 					g->open = 1;
 					pcb_layergrp_undoable_created(g);
@@ -769,7 +769,7 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 					g->valid = 1;
 					pcb_layergrp_undoable_created(g);
 					g = pcb_layergrp_insert_after(PCB, gactive);
-					g->name = pcb_strdup("Intern");
+					g->name = rnd_strdup("Intern");
 					g->ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
 					g->valid = 1;
 					pcb_layergrp_undoable_created(g);

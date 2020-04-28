@@ -292,7 +292,7 @@ static void DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose
 	/* Create a portable timestamp. */
 
 	if (!conf_draw_fab.plugins.draw_fab.omit_date)
-		pcb_print_utc(utcTime, sizeof(utcTime), 0);
+		rnd_print_utc(utcTime, sizeof(utcTime), 0);
 	else
 		strcpy(utcTime, "<date>");
 

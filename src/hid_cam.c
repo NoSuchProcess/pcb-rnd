@@ -270,7 +270,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 		return 0;
 
 	dst->pcb = pcb;
-	dst->inst = pcb_strdup(src);
+	dst->inst = rnd_strdup(src);
 	layervis_save_and_reset(dst);
 
 
@@ -382,7 +382,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 				int spc = sizeof(spk) / sizeof(spk[0]);
 				pcb_xform_t *dummy;
 
-				tmp = pcb_strdup(start);
+				tmp = rnd_strdup(start);
 				end = pcb_parse_layergrp_address(start, spk, spv, &spc);
 				if ((end != NULL) && (*end != '\0'))
 					rnd_message(PCB_MSG_ERROR, "global exporter --cam takes only one set of global supplements\n");
@@ -394,7 +394,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 		}
 
 
-		dst->fn_template = pcb_strdup(src);
+		dst->fn_template = rnd_strdup(src);
 		eq = strchr(dst->fn_template, '=');
 		if (eq != NULL)
 			*eq = '\0';
@@ -502,7 +502,7 @@ static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt
 	if ((cam->fn_last == NULL) || (strcmp(cam->fn, cam->fn_last) != 0)) {
 		cam->fn_changed = 1;
 		free(cam->fn_last);
-		cam->fn_last = pcb_strdup(cam->fn);
+		cam->fn_last = rnd_strdup(cam->fn);
 	}
 	else
 		cam->fn_changed = 0;

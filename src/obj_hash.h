@@ -45,7 +45,7 @@ RND_INLINE unsigned pcb_hash_coord(rnd_coord_t c)
    +-1 nanometer rounding error */
 RND_INLINE rnd_coord_t pcb_round_tol(double v, int tol)
 {
-	return pcb_round(v/(double)tol)*tol;
+	return rnd_round(v/(double)tol)*tol;
 }
 
 RND_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, rnd_coord_t *dstx, rnd_coord_t *dsty, rnd_coord_t srcx, rnd_coord_t srcy)

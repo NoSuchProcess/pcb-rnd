@@ -153,13 +153,13 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		/* name and type */
 		if (layer_name_mismatch(w, layer))
-			PCB_DAD_SET_VALUE(hid_ctx, w->name, str, pcb_strdup(layer->name));
+			PCB_DAD_SET_VALUE(hid_ctx, w->name, str, rnd_strdup(layer->name));
 
 		if (layer_purpose_mismatch(w, layer)) {
 			char *purp = layer->meta.bound.purpose;
 			if (purp == NULL)
 				purp = "";
-			PCB_DAD_SET_VALUE(hid_ctx, w->purpose, str, pcb_strdup(purp));
+			PCB_DAD_SET_VALUE(hid_ctx, w->purpose, str, rnd_strdup(purp));
 		}
 
 		PCB_DAD_SET_VALUE(hid_ctx, w->comp, lng, layer->comb);
@@ -207,7 +207,7 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 
 		if (layer_name_mismatch(w, layer)) {
 			free((char *)layer->name);
-			layer->name = pcb_strdup(ctx->attrs[w->name].val.str);
+			layer->name = rnd_strdup(ctx->attrs[w->name].val.str);
 		}
 
 		if (layer_purpose_mismatch(w, layer)) {
@@ -216,7 +216,7 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 			if ((purp == NULL) || (*purp == '\0'))
 				layer->meta.bound.purpose = NULL;
 			else
-				layer->meta.bound.purpose = pcb_strdup(purp);
+				layer->meta.bound.purpose = rnd_strdup(purp);
 		}
 
 		layer->comb = ctx->attrs[w->comp].val.lng;

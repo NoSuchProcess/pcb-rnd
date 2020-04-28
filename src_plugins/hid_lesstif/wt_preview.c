@@ -75,11 +75,11 @@ void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, rnd_coord_t *d
 
 	if (pcbhl_conf.editor.view.flip_x)
 		px = pd->v_width - px;
-	x = pcb_round((double)px * pd->zoom + (double)pd->x1);
+	x = rnd_round((double)px * pd->zoom + (double)pd->x1);
 
 	if (pcbhl_conf.editor.view.flip_y)
 		py = pd->v_height - py;
-	y = pcb_round((double)py * pd->zoom + (double)pd->y1);
+	y = rnd_round((double)py * pd->zoom + (double)pd->y1);
 
 	*dst_x = x;
 	*dst_y = y;

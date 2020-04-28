@@ -109,11 +109,11 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 		}
 
 		newlist->next = NULL;
-		newlist->descr = pcb_strdup(descr);
-		newlist->value = pcb_strdup(value);
+		newlist->descr = rnd_strdup(descr);
+		newlist->value = rnd_strdup(value);
 		newlist->num = 1;
 		vts0_init(&newlist->refdes);
-		vts0_append(&newlist->refdes, pcb_strdup(refdes));
+		vts0_append(&newlist->refdes, rnd_strdup(refdes));
 		return newlist;
 	}
 
@@ -122,7 +122,7 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 	while(cur != NULL) {
 		if ((PCB_NSTRCMP(descr, cur->descr) == 0) && (PCB_NSTRCMP(value, cur->value) == 0)) {
 			cur->num++;
-			vts0_append(&cur->refdes, pcb_strdup(refdes));
+			vts0_append(&cur->refdes, rnd_strdup(refdes));
 			break;
 		}
 		prev = cur;
@@ -138,11 +138,11 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 		prev->next = newlist;
 
 		newlist->next = NULL;
-		newlist->descr = pcb_strdup(descr);
-		newlist->value = pcb_strdup(value);
+		newlist->descr = rnd_strdup(descr);
+		newlist->value = rnd_strdup(value);
 		newlist->num = 1;
 		vts0_init(&newlist->refdes);
-		vts0_append(&newlist->refdes, pcb_strdup(refdes));
+		vts0_append(&newlist->refdes, rnd_strdup(refdes));
 	}
 
 	return bom;
@@ -186,7 +186,7 @@ static int bom_print(void)
 	FILE *fp;
 	pcb_bom_list_t *bom = NULL;
 
-	pcb_print_utc(utcTime, sizeof(utcTime), 0);
+	rnd_print_utc(utcTime, sizeof(utcTime), 0);
 
 	PCB_SUBC_LOOP(PCB->Data);
 	{

@@ -185,8 +185,8 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int
 	if (nonterms < 1)
 		bad_gr = 1;
 
-	g->node2name[0] = pcb_strdup("S");
-	g->node2name[1] = pcb_strdup("T");
+	g->node2name[0] = rnd_strdup("S");
+	g->node2name[1] = rnd_strdup("T");
 
 	/* calculate how many edges each node has and the max edge count */
 	maxedges = 0;

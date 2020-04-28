@@ -95,7 +95,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	/* remember cursor */
 	r = pcb_dad_tree_get_selected(attr);
 	if (r != NULL)
-		cursor_path = pcb_strdup(r->path);
+		cursor_path = rnd_strdup(r->path);
 
 	pcb_dad_tree_clear(tree);
 
@@ -117,7 +117,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 			cell[4] = pcb_propsel_printval(p->type, &avg);
 		}
 
-		cell[0] = pcb_strdup(e->key);
+		cell[0] = rnd_strdup(e->key);
 		cell[1] = pcb_propsel_printval(p->type, &com);
 
 		r = pcb_dad_tree_mkdirp(tree, cell[0], cell);
@@ -238,7 +238,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 
 	memset(&hv, 0, sizeof(hv));
 	switch(p->type) {
-		case PCB_PROPT_STRING: hv.str = pcb_strdup(pv->string == NULL ? "" : pv->string); break;
+		case PCB_PROPT_STRING: hv.str = rnd_strdup(pv->string == NULL ? "" : pv->string); break;
 		case PCB_PROPT_COORD:  hv.crd = pv->coord; break;
 		case PCB_PROPT_ANGLE:  hv.dbl = pv->angle; break;
 		case PCB_PROPT_BOOL:

@@ -155,7 +155,7 @@ static pcb_layer_t *pcb_subc_layer_create_buff(pcb_subc_t *sc, pcb_layer_t *src)
 	dst->parent.data = sc->data;
 	dst->parent_type = PCB_PARENT_DATA;
 	dst->type = PCB_OBJ_LAYER;
-	dst->name = pcb_strdup(src->name);
+	dst->name = rnd_strdup(src->name);
 	return dst;
 }
 
@@ -170,14 +170,14 @@ pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_t
 	dst->comb = comb;
 	dst->meta.bound.stack_offs = stack_offs;
 	if (purpose != NULL)
-		dst->meta.bound.purpose = pcb_strdup(purpose);
+		dst->meta.bound.purpose = rnd_strdup(purpose);
 	else
 		dst->meta.bound.purpose = NULL;
 
 	dst->parent.data = sc->data;
 	dst->parent_type = PCB_PARENT_DATA;
 	dst->type = PCB_OBJ_LAYER;
-	dst->name = pcb_strdup(name);
+	dst->name = rnd_strdup(name);
 	return dst;
 }
 
@@ -279,7 +279,7 @@ int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot)
 	/* ugly hack to get round angles where possible: if error to a round angle
 	   is less than 1/10000, it was meant to be round, just got ruined by
 	   rounding errors */
-	rr = pcb_round(r*10000.0) / 10000.0;
+	rr = rnd_round(r*10000.0) / 10000.0;
 	if (rr - r < 0.0001)
 		*rot = rr;
 	else
@@ -495,8 +495,8 @@ void pcb_subc_create_aux(pcb_subc_t *sc, rnd_coord_t ox, rnd_coord_t oy, double 
 	}
 
 	add_aux_line(sc->aux_layer, "subc-role", "origin", ox, oy, ox, oy);
-	add_aux_line(sc->aux_layer, "subc-role", "x", ox, oy, pcb_round((double)ox + cs*unit), pcb_round((double)oy + sn*unit));
-	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, pcb_round((double)ox + sn*unit), pcb_round((double)oy + cs*unit));
+	add_aux_line(sc->aux_layer, "subc-role", "x", ox, oy, rnd_round((double)ox + cs*unit), rnd_round((double)oy + sn*unit));
+	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, rnd_round((double)ox + sn*unit), rnd_round((double)oy + cs*unit));
 }
 
 void pcb_subc_create_aux_point(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, const char *role)
@@ -893,7 +893,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		if ((pcb != NULL) && (pcb == src_pcb)) {
 			/* copy within the same board */
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
-			dl->name = pcb_strdup(sl->name);
+			dl->name = rnd_strdup(sl->name);
 			dl->comb = sl->comb;
 			if (dl->meta.bound.real != NULL)
 				pcb_layer_link_trees(dl, dl->meta.bound.real);
@@ -901,7 +901,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		else if (pcb != NULL) {
 			/* copying from buffer to board */
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
-			dl->name = pcb_strdup(sl->name);
+			dl->name = rnd_strdup(sl->name);
 			dl->meta.bound.real = pcb_layer_resolve_binding(pcb, sl);
 			dl->comb = sl->comb;
 
@@ -920,7 +920,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
 
 			dl->meta.bound.real = NULL;
-			dl->name = pcb_strdup(sl->name);
+			dl->name = rnd_strdup(sl->name);
 			dl->comb = sl->comb;
 		}
 
@@ -1757,7 +1757,7 @@ void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	void *old;
 	if (sc->refdes != NULL)
-		old = pcb_strdup(sc->refdes); /* strdup because the rnd_attribute_put() is going to free the original */
+		old = rnd_strdup(sc->refdes); /* strdup because the rnd_attribute_put() is going to free the original */
 	else
 		old = NULL;
 	rnd_attribute_put(&sc->Attributes, "refdes", ctx->chgname.new_name);
@@ -2206,7 +2206,7 @@ pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_
 	}
 
 	memset(&sc->data->Layer[n], 0, sizeof(sc->data->Layer[n]));
-	sc->data->Layer[n].name = pcb_strdup(name);
+	sc->data->Layer[n].name = rnd_strdup(name);
 	sc->data->Layer[n].comb = comb;
 	sc->data->Layer[n].is_bound = 1;
 	sc->data->Layer[n].meta.bound.type = lyt;

@@ -320,7 +320,7 @@ static void png_photo_foot(void)
 							blend(&cop, 0.7, &cop, &white);
 					}
 					/*FIXME: old code...can be removed after validation.   rgb(&cop, 140, 150, 160);
-					   r = (pcb_rand() % 5 - 2) * 2;
+					   r = (rnd_rand() % 5 - 2) * 2;
 					   cop.r += r;
 					   cop.g += r;
 					   cop.b += r; */

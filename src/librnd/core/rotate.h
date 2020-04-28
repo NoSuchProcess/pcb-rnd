@@ -57,8 +57,8 @@ RND_INLINE void pcb_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd
 	rnd_coord_t px = *x - cx;
 	rnd_coord_t py = *y - cy;
 
-	nx = pcb_round(px * cosa + py * sina + cx);
-	ny = pcb_round(py * cosa - px * sina + cy);
+	nx = rnd_round(px * cosa + py * sina + cx);
+	ny = rnd_round(py * cosa - px * sina + cy);
 
 	*x = nx;
 	*y = ny;

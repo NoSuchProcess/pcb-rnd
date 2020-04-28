@@ -386,7 +386,7 @@ static pcb_qry_node_t *field_comp(const char *fields)
 			res[idx].precomp.fld = query_fields_sphash(fname);
 /*pcb_trace("[%d/%d] '%s' -> %d\n", idx, len, fname, res[idx].precomp.fld);*/
 			if (res[idx].precomp.fld < 0) /* if compilation failed, this will need to be evaluated run-time, save as string */
-				res[idx].data.str = pcb_strdup(fname);
+				res[idx].data.str = rnd_strdup(fname);
 			fno = fname;
 			if (*s == '\0')
 				break;
@@ -435,7 +435,7 @@ static void val2fgw(fgw_arg_t *dst, pcb_qry_val_t *src)
 		case PCBQ_VT_STRING:
 			if (src->data.str != NULL) {
 				dst->type = FGW_STR | FGW_DYN;
-				dst->val.str = pcb_strdup(src->data.str);
+				dst->val.str = rnd_strdup(src->data.str);
 			}
 			else {
 				dst->type = FGW_PTR;

@@ -100,11 +100,11 @@ static void line_of_vias_gen_line(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t
 		pcb_rtree_box_t qbox;
 		pcb_pstk_t *cl;
 		int skip = 0;
-		rnd_coord_t rx = pcb_round(x), ry = pcb_round(y);
+		rnd_coord_t rx = rnd_round(x), ry = rnd_round(y);
 
 		/* skip if there's a via too close */
-		qbox.x1 = pcb_round(rx - qbox_bloat); qbox.y1 = pcb_round(ry - qbox_bloat);
-		qbox.x2 = pcb_round(rx + qbox_bloat); qbox.y2 = pcb_round(ry + qbox_bloat);
+		qbox.x1 = rnd_round(rx - qbox_bloat); qbox.y1 = rnd_round(ry - qbox_bloat);
+		qbox.x2 = rnd_round(rx + qbox_bloat); qbox.y2 = rnd_round(ry + qbox_bloat);
 
 		if ((pcb != NULL) && (pcb->Data->padstack_tree != NULL)) {
 			for(cl = pcb_rtree_first(&it, pcb->Data->padstack_tree, &qbox); cl != NULL; cl = pcb_rtree_next(&it)) {

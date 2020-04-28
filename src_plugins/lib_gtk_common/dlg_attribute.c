@@ -110,7 +110,7 @@ static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 		return;
 
 	free((char *)dst->val.str);
-	dst->val.str = pcb_strdup(gtk_entry_get_text(entry));
+	dst->val.str = rnd_strdup(gtk_entry_get_text(entry));
 	change_cb(ctx, dst);
 }
 
@@ -636,7 +636,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 				if (strcmp(s, nv) == 0)
 					goto nochg;
 				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str);
-				ctx->attrs[idx].val.str = pcb_strdup(val->str);
+				ctx->attrs[idx].val.str = rnd_strdup(val->str);
 				*copied = 1;
 			}
 			break;
@@ -791,7 +791,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	ctx->caller_data = caller_data;
 	ctx->close_cb_called = 0;
 	ctx->close_cb = button_cb;
-	ctx->id = pcb_strdup(id);
+	ctx->id = rnd_strdup(id);
 	ctx->modal = modal;
 
 	pcb_event(gctx->hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);

@@ -73,10 +73,10 @@ static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_
 		else
 			prompt = hidlib->filename;
 		if (prompt != NULL)
-			prompt = pcb_strdup(prompt);
+			prompt = rnd_strdup(prompt);
 	}
 	else
-		prompt = pcb_strdup("no-board");
+		prompt = rnd_strdup("no-board");
 }
 
 static void log_append(pcb_logline_t *line)

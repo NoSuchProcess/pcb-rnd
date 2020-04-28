@@ -79,8 +79,8 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 		   pointer: pcb_lib_menu_new(&Library) calls realloc()!
 		   Build a list of directories to be visited later, instead. */
 		d = malloc(sizeof(list_dir_t));
-		d->subdir = pcb_strdup(name);
-		d->parent = pcb_strdup(subdir);
+		d->subdir = rnd_strdup(name);
+		d->parent = rnd_strdup(subdir);
 		d->next = l->subdirs;
 		d->children = children;
 		l->subdirs = d;
@@ -315,9 +315,9 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_
 	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((! !ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
 		const char *suffix = name + ctx->target_len;
 		/* ugly heuristics: footprint names may end in .fp or .ele or .subc.lht or .lht */
-		if ((*suffix == '\0') || (pcb_strcasecmp(suffix, ".fp") == 0) || (pcb_strcasecmp(suffix, ".ele") == 0) || (pcb_strcasecmp(suffix, ".subc.lht") == 0) || (pcb_strcasecmp(suffix, ".lht") == 0)) {
-			ctx->path = pcb_strdup(subdir);
-			ctx->real_name = pcb_strdup(name);
+		if ((*suffix == '\0') || (rnd_strcasecmp(suffix, ".fp") == 0) || (rnd_strcasecmp(suffix, ".ele") == 0) || (rnd_strcasecmp(suffix, ".subc.lht") == 0) || (rnd_strcasecmp(suffix, ".lht") == 0)) {
+			ctx->path = rnd_strdup(subdir);
+			ctx->real_name = rnd_strdup(name);
 			return 1;
 		}
 	}
@@ -332,7 +332,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	fp_search_t ctx;
 
 	if (rnd_is_path_abs(basename))
-		return pcb_strdup(basename);
+		return rnd_strdup(basename);
 
 	ctx.target = basename;
 	ctx.target_len = strlen(ctx.target);
@@ -361,7 +361,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 			free(ctx.real_name);
 /*			fprintf("  found '%s'\n", path);*/
 			free(fpath);
-			return pcb_strdup(path);
+			return rnd_strdup(path);
 		}
 		free(fpath);
 		if (end == NULL)
