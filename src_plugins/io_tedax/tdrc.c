@@ -62,7 +62,7 @@ int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 	fputc('\n', f);
 
 	for(n = 0, r = rules; n < NUM_RULES; r++,n++) {
-		conf_native_t *nat = pcb_conf_get_field(r->conf);
+		rnd_conf_native_t *nat = pcb_conf_get_field(r->conf);
 		if ((nat == NULL) || (nat->prop->src == NULL))
 			continue;
 		pcb_fprintf(f, " rule all %s %s %.06mm pcb_rnd_old_drc_from_conf\n", r->ttype, r->tkind, nat->val.coord[0]);

@@ -7,7 +7,7 @@
 #ifndef PCB_EAGLE_DRU_PARSER_TEST
 #include "plug_io.h"
 int io_eagle_test_parse_dru(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f);
-int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest);
+int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest);
 #endif
 
 /*** low level ***/

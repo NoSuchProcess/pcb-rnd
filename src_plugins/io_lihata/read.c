@@ -65,7 +65,7 @@ TODO("cleanup: put these in a gloal load-context-struct")
 vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 static int rdver;
 unsigned long warned, old_model_warned;
-static conf_role_t cfg_dest;
+static rnd_conf_role_t cfg_dest;
 
 static pcb_data_t DUMMY_BUFFER_SUBC;
 
@@ -2340,7 +2340,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	return 0;
 }
 
-int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int res;
 	char *errmsg = NULL, *realfn;

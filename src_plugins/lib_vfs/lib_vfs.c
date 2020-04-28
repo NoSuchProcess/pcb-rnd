@@ -508,7 +508,7 @@ static int vfs_conf_printf(void *ctx, const char *fmt, ...)
 
 static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *buff, int wr, int *isdir)
 {
-	conf_native_t *nat = pcb_conf_get_field(path);
+	rnd_conf_native_t *nat = pcb_conf_get_field(path);
 	if (nat == NULL) {
 		if (isdir != NULL)
 			*isdir = 1;

@@ -80,10 +80,10 @@ int pcb_import_netlist(rnd_hidlib_t *hidlib, const char *fn);
    sets the value in verbose if conf node present, else sets it ti 0 */
 #define PCB_IMPORT_SCH_VERBOSE(verbose) \
 do { \
-	conf_native_t *vn; \
+	rnd_conf_native_t *vn; \
 	verbose = 0; \
 	vn = pcb_conf_get_field("plugins/import_sch/verbose"); \
-	if ((vn != NULL) && (vn->type == CFN_BOOLEAN)) \
+	if ((vn != NULL) && (vn->type == RND_CFN_BOOLEAN)) \
 		verbose = *(vn->val.boolean); \
 } while(0)
 

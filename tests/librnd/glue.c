@@ -33,7 +33,7 @@ static const char *action_args[] = {
 
 void conf_core_init()
 {
-	pcb_conf_reg_field_(NULL, 1, CFN_COORD, "should_never_match", "dummy", 0);
+	pcb_conf_reg_field_(NULL, 1, RND_CFN_COORD, "should_never_match", "dummy", 0);
 }
 
 void pcb_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)

@@ -32,7 +32,7 @@
 
 static void pref_color_brd2dlg(pref_ctx_t *ctx)
 {
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 	int n;
 
 	if (ctx->color.wlayer != NULL) {
@@ -88,7 +88,7 @@ static void pref_color_layer_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 {
 	static const char *tabs[] = { "Generic colors", "Default layer colors", NULL };
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 	htsp_entry_t *e;
 	int n, pl, w;
 	const char *path_prefix = "appearance/color";
@@ -105,7 +105,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 			ctx->color.ngen = 0;
 			conf_fields_foreach(e) {
 				nat = e->value;
-				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == CFN_COLOR) && (nat->array_size == 1))
+				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == RND_CFN_COLOR) && (nat->array_size == 1))
 					ctx->color.ngen++;
 			}
 			ctx->color.wgen = calloc(sizeof(int), ctx->color.ngen);
@@ -113,7 +113,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 			n = 0;
 			conf_fields_foreach(e) {
 				nat = e->value;
-				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == CFN_COLOR) && (nat->array_size == 1)) {
+				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == RND_CFN_COLOR) && (nat->array_size == 1)) {
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);
 						PCB_DAD_BEGIN_VBOX(ctx->dlg);
 							PCB_DAD_COLOR(ctx->dlg);
@@ -131,7 +131,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 		PCB_DAD_BEGIN_VBOX(ctx->dlg); /* layer */
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
 			nat = pcb_conf_get_field("appearance/color/layer");
-			if (nat->type == CFN_COLOR) {
+			if (nat->type == RND_CFN_COLOR) {
 				PCB_DAD_LABEL(ctx->dlg, "NOTE: these colors are used only\nwhen creating new layers.");
 				ctx->color.wlayer = calloc(sizeof(int), nat->used);
 				PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);

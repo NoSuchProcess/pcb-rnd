@@ -6,8 +6,8 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_BOOLEAN plated_g85_slot;         /* use G85 (drill cycle instead of route) for plated slots */
-			CFT_BOOLEAN unplated_g85_slot;       /* use G85 (drill cycle instead of route) for unplated slots */
+			RND_CFT_BOOLEAN plated_g85_slot;         /* use G85 (drill cycle instead of route) for plated slots */
+			RND_CFT_BOOLEAN unplated_g85_slot;       /* use G85 (drill cycle instead of route) for unplated slots */
 		} export_excellon;
 	} plugins;
 } conf_excellon_t;

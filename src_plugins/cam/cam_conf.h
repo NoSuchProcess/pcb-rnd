@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_LIST jobs;         /* named cam scripts */
+			RND_CFT_LIST jobs;         /* named cam scripts */
 		} cam;
 	} plugins;
 } conf_cam_t;

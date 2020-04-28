@@ -70,7 +70,7 @@ struct pcb_gtk_impl_s {
 	rnd_bool (*map_color)(const rnd_color_t *inclr, pcb_gtk_color_t *color);
 	const gchar *(*get_color_name)(pcb_gtk_color_t *color);
 
-	void (*set_special_colors)(conf_native_t *cfg);
+	void (*set_special_colors)(rnd_conf_native_t *cfg);
 	void (*draw_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh);
 };
 

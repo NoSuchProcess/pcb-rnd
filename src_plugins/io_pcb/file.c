@@ -239,12 +239,12 @@ static void WritePCBInfoHeader(FILE * FP)
 
 static void conf_update_pcb_flag(pcb_flag_t *dest, const char *hash_path, int binflag)
 {
-	conf_native_t *n = pcb_conf_get_field(hash_path);
+	rnd_conf_native_t *n = pcb_conf_get_field(hash_path);
 	struct {
 		pcb_flag_t Flags;
 	} *tmp = (void *)dest;
 
-	if ((n == NULL) || (n->type != CFN_BOOLEAN) || (n->used < 0) || (!n->val.boolean[0]))
+	if ((n == NULL) || (n->type != RND_CFN_BOOLEAN) || (n->used < 0) || (!n->val.boolean[0]))
 		PCB_FLAG_CLEAR(binflag, tmp);
 	else
 		PCB_FLAG_SET(binflag, tmp);

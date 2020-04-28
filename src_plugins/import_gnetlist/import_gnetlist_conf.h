@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_STRING gnetlist_program;       /* gnetlist program name */
+			RND_CFT_STRING gnetlist_program;       /* gnetlist program name */
 		} import_gnetlist;
 	} plugins;
 } conf_import_gnetlist_t;

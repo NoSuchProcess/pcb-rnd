@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_INTEGER columns;         /* @usage number of columns for found pin report  */
+			RND_CFT_INTEGER columns;         /* @usage number of columns for found pin report  */
 		} report;
 	} plugins;
 } conf_report_t;

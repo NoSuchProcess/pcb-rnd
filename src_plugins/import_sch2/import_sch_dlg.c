@@ -359,7 +359,7 @@ static int do_dialog(void)
 	return 0;
 }
 
-static void isch_cfg_chg(conf_native_t *cfg, int arr_idx)
+static void isch_cfg_chg(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((isch_conf_lock == 0) && isch_ctx.active)
 		isch_pcb2dlg();

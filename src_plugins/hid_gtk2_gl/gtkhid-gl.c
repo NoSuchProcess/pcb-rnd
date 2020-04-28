@@ -260,17 +260,17 @@ static void set_special_grid_color(void)
 	rnd_color_load_int(&priv->grid_color, r, g, b, 255);
 }
 
-void ghid_gl_set_special_colors(conf_native_t *cfg)
+void ghid_gl_set_special_colors(rnd_conf_native_t *cfg)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	if (((CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
+	if (((RND_CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
 		priv->bg_color = cfg->val.color[0];
 	}
-	else if ((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) {
+	else if ((RND_CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) {
 		priv->offlimits_color = cfg->val.color[0];
 	}
-	else if (((CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.grid)) {
+	else if (((RND_CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.grid)) {
 		priv->grid_color = cfg->val.color[0];
 		set_special_grid_color();
 	}

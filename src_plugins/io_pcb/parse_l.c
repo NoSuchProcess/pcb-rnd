@@ -943,7 +943,7 @@ pcb_data_t *	yyData;
 pcb_subc_t *yysubc;
 rnd_coord_t yysubc_ox, yysubc_oy;
 pcb_font_t *	yyFont;
-conf_role_t yy_settings_dest;
+rnd_conf_role_t yy_settings_dest;
 pcb_flag_t yy_pcb_flags;
 int *yyFontkitValid;
 int yy_parse_tags;
@@ -2739,7 +2739,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, c
    have hardwired flags again in a "don't save these in attributes" list. */
 #define CONF_NO_ATTRIB(path) \
 do { \
-	conf_native_t *n = pcb_conf_get_field(path); \
+	rnd_conf_native_t *n = pcb_conf_get_field(path); \
 	if (n != NULL) \
 		n->random_flags.io_pcb_no_attrib = 1; \
 } while(0) \
@@ -2750,7 +2750,7 @@ do { \
 	pcb_conf_set(target, path, arr_idx, new_val, pol); \
 } while(0) \
 
-int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int retval;
 	const char *fcmd;

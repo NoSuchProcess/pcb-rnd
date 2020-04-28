@@ -80,7 +80,7 @@ struct pcb_plug_io_s {
 	   Conf subtree at settings_dest is replaced by settings loaded from the
 	   file unless it's CFR_invalid.
 	   Return 0 on success. */
-	int (*parse_pcb)(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest);
+	int (*parse_pcb)(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest);
 
 	/* Attempt to load an element from Filename to Ptr. Return 0 on success. */
 	int (*parse_footprint)(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname);

@@ -77,7 +77,7 @@ extern	pcb_font_t *	yyFont;
 extern	rnd_bool	yyFontReset;
 extern	int				pcb_lineno;		/* linenumber */
 extern	char			*yyfilename;	/* in this file */
-extern	conf_role_t yy_settings_dest;
+extern	rnd_conf_role_t yy_settings_dest;
 extern pcb_flag_t yy_pcb_flags;
 extern int *yyFontkitValid;
 extern int yyElemFixLayers;

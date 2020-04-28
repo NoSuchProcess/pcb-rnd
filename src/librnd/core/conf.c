@@ -108,7 +108,7 @@ static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
 	return lht_dom_hash_get(cwd, pcb_conf_list_name);
 }
 
-int pcb_conf_insert_tree_as(conf_role_t role, lht_node_t *root)
+int pcb_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root)
 {
 	lht_doc_t *d;
 
@@ -163,7 +163,7 @@ static lht_doc_t *conf_load_plug_file(const char *fn, int fn_is_text)
 	return d;
 }
 
-int pcb_conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
+int pcb_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 {
 	lht_doc_t *d;
 	const char *ifn, *role_name = pcb_conf_role_name(role);
@@ -246,7 +246,7 @@ int pcb_conf_load_as(conf_role_t role, const char *fn, int fn_is_text)
 }
 
 
-static int conf_merge_plug(lht_doc_t *d, conf_role_t role, const char *path)
+static int conf_merge_plug(lht_doc_t *d, rnd_conf_role_t role, const char *path)
 {
 	lht_err_t err;
 
@@ -265,7 +265,7 @@ static int conf_merge_plug(lht_doc_t *d, conf_role_t role, const char *path)
 }
 
 /* Load plugin config files */
-static int conf_load_plug_files(conf_role_t role, const char *dir)
+static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 {
 	char path[PCB_PATH_MAX], *fn;
 	int dlen, cnt = 0;
@@ -302,7 +302,7 @@ static int conf_load_plug_files(conf_role_t role, const char *dir)
 	return cnt;
 }
 
-static int conf_load_plug_interns(conf_role_t role)
+static int conf_load_plug_interns(rnd_conf_role_t role)
 {
 	int cnt = 0;
 	htsi_entry_t *e;
@@ -324,21 +324,21 @@ static int conf_load_plug_interns(conf_role_t role)
 	return cnt;
 }
 
-conf_native_type_t pcb_conf_native_type_parse(const char *s)
+rnd_conf_native_type_t pcb_conf_native_type_parse(const char *s)
 {
-	if (rnd_strcasecmp(s, "string") == 0)     return  CFN_STRING;
-	if (rnd_strcasecmp(s, "str") == 0)        return  CFN_STRING;
-	if (rnd_strcasecmp(s, "boolean") == 0)    return  CFN_BOOLEAN;
-	if (rnd_strcasecmp(s, "bool") == 0)       return  CFN_BOOLEAN;
-	if (rnd_strcasecmp(s, "integer") == 0)    return  CFN_INTEGER;
-	if (rnd_strcasecmp(s, "real") == 0)       return  CFN_REAL;
-	if (rnd_strcasecmp(s, "coord") == 0)      return  CFN_COORD;
-	if (rnd_strcasecmp(s, "unit") == 0)       return  CFN_UNIT;
-	if (rnd_strcasecmp(s, "color") == 0)      return  CFN_COLOR;
-	if (rnd_strcasecmp(s, "list") == 0)       return  CFN_LIST;
-	if (rnd_strcasecmp(s, "hlist") == 0)      return  CFN_HLIST;
+	if (rnd_strcasecmp(s, "string") == 0)     return  RND_CFN_STRING;
+	if (rnd_strcasecmp(s, "str") == 0)        return  RND_CFN_STRING;
+	if (rnd_strcasecmp(s, "boolean") == 0)    return  RND_CFN_BOOLEAN;
+	if (rnd_strcasecmp(s, "bool") == 0)       return  RND_CFN_BOOLEAN;
+	if (rnd_strcasecmp(s, "integer") == 0)    return  RND_CFN_INTEGER;
+	if (rnd_strcasecmp(s, "real") == 0)       return  RND_CFN_REAL;
+	if (rnd_strcasecmp(s, "coord") == 0)      return  RND_CFN_COORD;
+	if (rnd_strcasecmp(s, "unit") == 0)       return  RND_CFN_UNIT;
+	if (rnd_strcasecmp(s, "color") == 0)      return  RND_CFN_COLOR;
+	if (rnd_strcasecmp(s, "list") == 0)       return  RND_CFN_LIST;
+	if (rnd_strcasecmp(s, "hlist") == 0)      return  RND_CFN_HLIST;
 
-	return CFN_max;
+	return RND_CFN_max;
 }
 
 
@@ -363,7 +363,7 @@ const char *pcb_conf_policy_name(rnd_conf_policy_t p)
 	return "(unknown)";
 }
 
-conf_role_t pcb_conf_role_parse(const char *s)
+rnd_conf_role_t pcb_conf_role_parse(const char *s)
 {
 	if (rnd_strcasecmp(s, "internal") == 0)   return CFR_INTERNAL;
 	if (rnd_strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
@@ -376,7 +376,7 @@ conf_role_t pcb_conf_role_parse(const char *s)
 	return CFR_invalid;
 }
 
-const char *pcb_conf_role_name(conf_role_t r)
+const char *pcb_conf_role_name(rnd_conf_role_t r)
 {
 	switch(r) {
 		case CFR_INTERNAL:    return "internal";
@@ -503,7 +503,7 @@ const char *pcb_conf_get_project_conf_name(const char *project_fn, const char *p
 	return NULL;
 }
 
-int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node)
+int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t type, const char *text, lht_node_t *err_node)
 {
 	const char *strue[]  = {"true",  "yes",  "on",   "1", NULL};
 	const char *sfalse[] = {"false", "no",   "off",  "0", NULL};
@@ -515,10 +515,10 @@ int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, c
 	const pcb_unit_t *u;
 
 	switch(type) {
-		case CFN_STRING:
+		case RND_CFN_STRING:
 			dst->string[idx] = text;
 			break;
-		case CFN_BOOLEAN:
+		case RND_CFN_BOOLEAN:
 			while(isspace(*text)) text++;
 			for(s = strue; *s != NULL; s++)
 				if (rnd_strncasecmp(*s, text, strlen(*s)) == 0) {
@@ -532,7 +532,7 @@ int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, c
 				}
 			pcb_hid_cfg_error(err_node, "Invalid boolean value: %s\n", text);
 			return -1;
-		case CFN_INTEGER:
+		case RND_CFN_INTEGER:
 			if ((text[0] == '0') && (text[1] == 'x')) {
 				text += 2;
 				base = 16;
@@ -546,7 +546,7 @@ int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, c
 			}
 			pcb_hid_cfg_error(err_node, "Invalid integer value: %s\n", text);
 			return -1;
-		case CFN_REAL:
+		case RND_CFN_REAL:
 			d = strtod(text, &end);
 			if (*end == '\0') {
 				dst->real[idx] = d;
@@ -554,7 +554,7 @@ int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, c
 			}
 			pcb_hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
 			return -1;
-		case CFN_COORD:
+		case RND_CFN_COORD:
 			{
 				rnd_bool succ;
 				dst->coord[idx] = pcb_get_value(text, NULL, NULL, &succ);
@@ -562,14 +562,14 @@ int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, c
 					pcb_hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
 			}
 			break;
-		case CFN_UNIT:
+		case RND_CFN_UNIT:
 			u = get_unit_struct(text);
 			if (u == NULL)
 				pcb_hid_cfg_error(err_node, "Invalid unit: %s\n", text);
 			else
 				dst->unit[idx] = u;
 			break;
-		case CFN_COLOR:
+		case RND_CFN_COLOR:
 			if (rnd_color_load_str(&dst->color[idx], text) != 0) {
 				pcb_hid_cfg_error(err_node, "Invalid color value: '%s'\n", text);
 				return -1;
@@ -582,7 +582,7 @@ int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, c
 	return 0;
 }
 
-int pcb_conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, rnd_conf_policy_t pol)
+int pcb_conf_merge_patch_text(rnd_conf_native_t *dest, lht_node_t *src, int prio, rnd_conf_policy_t pol)
 {
 	if ((pol == RND_POL_DISABLE) || (dest->prop[0].prio > prio))
 		return 0;
@@ -601,7 +601,7 @@ int pcb_conf_merge_patch_text(conf_native_t *dest, lht_node_t *src, int prio, rn
 	return 0;
 }
 
-static void conf_insert_arr(conf_native_t *dest, int offs)
+static void conf_insert_arr(rnd_conf_native_t *dest, int offs)
 {
 #define CASE_PCB_MOVE(typ, fld) \
 	case typ: memmove(dest->val.fld+offs, dest->val.fld, dest->used * sizeof(dest->val.fld[0])); return
@@ -609,23 +609,23 @@ static void conf_insert_arr(conf_native_t *dest, int offs)
 	memmove(dest->prop+offs, dest->prop, dest->used * sizeof(dest->prop[0]));
 	if (dest->used > 0) {
 		switch(dest->type) {
-			CASE_PCB_MOVE(CFN_STRING, string);
-			CASE_PCB_MOVE(CFN_BOOLEAN, boolean);
-			CASE_PCB_MOVE(CFN_INTEGER, integer);
-			CASE_PCB_MOVE(CFN_REAL, real);
-			CASE_PCB_MOVE(CFN_COORD, coord);
-			CASE_PCB_MOVE(CFN_UNIT, unit);
-			CASE_PCB_MOVE(CFN_COLOR, color);
-			CASE_PCB_MOVE(CFN_LIST, list);
-			CASE_PCB_MOVE(CFN_HLIST, list);
-			case CFN_max: break;
+			CASE_PCB_MOVE(RND_CFN_STRING, string);
+			CASE_PCB_MOVE(RND_CFN_BOOLEAN, boolean);
+			CASE_PCB_MOVE(RND_CFN_INTEGER, integer);
+			CASE_PCB_MOVE(RND_CFN_REAL, real);
+			CASE_PCB_MOVE(RND_CFN_COORD, coord);
+			CASE_PCB_MOVE(RND_CFN_UNIT, unit);
+			CASE_PCB_MOVE(RND_CFN_COLOR, color);
+			CASE_PCB_MOVE(RND_CFN_LIST, list);
+			CASE_PCB_MOVE(RND_CFN_HLIST, list);
+			case RND_CFN_max: break;
 		}
 	}
 #undef CASE_MOVE
 	abort(); /* unhandled type */
 }
 
-int pcb_conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
+int pcb_conf_merge_patch_array(rnd_conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
 {
 	lht_node_t *s;
 	int res, idx, didx, maxpr;
@@ -683,7 +683,7 @@ int pcb_conf_merge_patch_array(conf_native_t *dest, lht_node_t *src_lst, int pri
 	return res;
 }
 
-int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
+int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
 {
 	lht_node_t *s, *prev;
 	int res = 0;
@@ -702,7 +702,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 				else
 					prev = NULL;
 
-				if ((s->type == LHT_TEXT) || ((s->type == LHT_HASH) && (dest->type == CFN_HLIST))) {
+				if ((s->type == LHT_TEXT) || ((s->type == LHT_HASH) && (dest->type == RND_CFN_HLIST))) {
 					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
@@ -711,18 +711,18 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 				}
 
 				if (s->type == LHT_TEXT) {
-					if (pcb_conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
+					if (pcb_conf_parse_text(&i->val, 0, RND_CFN_STRING, s->data.text.value, s) != 0) {
 						free(i);
 						continue;
 					}
 					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 				}
-				else if ((s->type == LHT_HASH) && (dest->type == CFN_HLIST)) {
+				else if ((s->type == LHT_HASH) && (dest->type == RND_CFN_HLIST)) {
 					i->val.any = NULL;
 					pcb_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
-					if ((dest->type == CFN_HLIST) || (s->user_data == NULL)) {
+					if ((dest->type == RND_CFN_HLIST) || (s->user_data == NULL)) {
 						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
 						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
 					}
@@ -742,7 +742,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 			/* fall through */
 		case RND_POL_APPEND:
 			for(s = src_lst->data.list.first; s != NULL; s = s->next) {
-				if ((s->type == LHT_TEXT) || ((s->type == LHT_HASH) && (dest->type == CFN_HLIST))) {
+				if ((s->type == LHT_TEXT) || ((s->type == LHT_HASH) && (dest->type == RND_CFN_HLIST))) {
 					i = calloc(sizeof(pcb_conf_listitem_t), 1);
 					i->name = s->name;
 					i->val.string = &i->payload;
@@ -750,18 +750,18 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 					i->prop.src  = s;
 				}
 				if (s->type == LHT_TEXT) {
-					if (pcb_conf_parse_text(&i->val, 0, CFN_STRING, s->data.text.value, s) != 0) {
+					if (pcb_conf_parse_text(&i->val, 0, RND_CFN_STRING, s->data.text.value, s) != 0) {
 						free(i);
 						continue;
 					}
 					pcb_conflist_append(dest->val.list, i);
 					dest->used |= 1;
 				}
-				else if ((s->type == LHT_HASH) && (dest->type == CFN_HLIST)) {
+				else if ((s->type == LHT_HASH) && (dest->type == RND_CFN_HLIST)) {
 					pcb_conflist_append(dest->val.list, i);
 					i->val.any = NULL;
 					dest->used |= 1;
-					if ((dest->type == CFN_HLIST) && (s->user_data == NULL)) {
+					if ((dest->type == RND_CFN_HLIST) && (s->user_data == NULL)) {
 						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
 						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
 					}
@@ -776,7 +776,7 @@ int pcb_conf_merge_patch_list(conf_native_t *dest, lht_node_t *src_lst, int prio
 	return res;
 }
 
-int pcb_conf_merge_patch_recurse(lht_node_t *sect, conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix);
+int pcb_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix);
 
 typedef struct conf_ignore_s {
 	const char *name;
@@ -845,9 +845,9 @@ static int conf_board_ignore(const char *path, lht_node_t *n)
 }
 
 
-int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, conf_role_t role, int default_prio, rnd_conf_policy_t default_policy)
+int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy)
 {
-	conf_native_t *target = pcb_conf_get_field(path);
+	rnd_conf_native_t *target = pcb_conf_get_field(path);
 	int res = 0;
 
 	if ((role == CFR_DESIGN) || (role == CFR_PROJECT)) {
@@ -871,7 +871,7 @@ int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, conf_role_t role,
 		case LHT_LIST:
 			if (target == NULL)
 				conf_warn_unknown_paths(path, n);
-			else if ((target->type == CFN_LIST) || (target->type == CFN_HLIST))
+			else if ((target->type == RND_CFN_LIST) || (target->type == RND_CFN_HLIST))
 				res |= pcb_conf_merge_patch_list(target, n, default_prio, default_policy);
 			else if (target->array_size > 1)
 				res |= pcb_conf_merge_patch_array(target, n, default_prio, default_policy);
@@ -891,7 +891,7 @@ TODO("TODO")
 
 
 /* merge main subtree of a patch */
-int pcb_conf_merge_patch_recurse(lht_node_t *sect, conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix)
+int pcb_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n;
@@ -922,7 +922,7 @@ int pcb_conf_merge_patch_recurse(lht_node_t *sect, conf_role_t role, int default
 	return res;
 }
 
-int pcb_conf_merge_patch(lht_node_t *root, conf_role_t role, long gprio)
+int pcb_conf_merge_patch(lht_node_t *root, rnd_conf_role_t role, long gprio)
 {
 	rnd_conf_policy_t gpolicy;
 	lht_node_t *n;
@@ -944,7 +944,7 @@ int pcb_conf_merge_patch(lht_node_t *root, conf_role_t role, long gprio)
 }
 
 typedef struct {
-	conf_role_t role;
+	rnd_conf_role_t role;
 	long prio;
 	rnd_conf_policy_t policy;
 	lht_node_t *subtree;
@@ -964,7 +964,7 @@ typedef struct {
 
 vmst_t merge_subtree; /* automatically initialized to all-zero */
 
-static void add_subtree(conf_role_t role, lht_node_t *subtree_parent_root, lht_node_t *subtree_root)
+static void add_subtree(rnd_conf_role_t role, lht_node_t *subtree_parent_root, lht_node_t *subtree_root)
 {
 	merge_subtree_t *m;
 
@@ -985,7 +985,7 @@ static int mst_prio_cmp(const void *a, const void *b)
 	return -1;
 }
 
-static void conf_merge_all_top(conf_role_t role, const char *path, lht_node_t *cr)
+static void conf_merge_all_top(rnd_conf_role_t role, const char *path, lht_node_t *cr)
 {
 	lht_node_t *r, *r2;
 	for(r = cr->data.list.first; r != NULL; r = r->next) {
@@ -1028,22 +1028,22 @@ int pcb_conf_merge_all(const char *path)
 	return ret;
 }
 
-static void conf_field_clear(conf_native_t *f)
+static void conf_field_clear(rnd_conf_native_t *f)
 {
 	if (strncmp(f->hash_path, "temp", 4) == 0)
 		return;
 	if (f->used > 0) {
 #define clr(field) memset(f->val.field, 0, sizeof(*(f->val.field)) * f->used)
 		switch(f->type) {
-			case CFN_STRING:      clr(string); break;
-			case CFN_BOOLEAN:     clr(boolean); break;
-			case CFN_INTEGER:     clr(integer); break;
-			case CFN_REAL:        clr(real); break;
-			case CFN_COORD:       clr(coord); break;
-			case CFN_UNIT:        clr(unit); break;
-			case CFN_COLOR:       clr(color); break;
-			case CFN_LIST:
-			case CFN_HLIST:
+			case RND_CFN_STRING:      clr(string); break;
+			case RND_CFN_BOOLEAN:     clr(boolean); break;
+			case RND_CFN_INTEGER:     clr(integer); break;
+			case RND_CFN_REAL:        clr(real); break;
+			case RND_CFN_COORD:       clr(coord); break;
+			case RND_CFN_UNIT:        clr(unit); break;
+			case RND_CFN_COLOR:       clr(color); break;
+			case RND_CFN_LIST:
+			case RND_CFN_HLIST:
 				while(pcb_conflist_first(f->val.list)) { /* need to free all items of a list before clearing the main struct */
 					pcb_conf_listitem_t *i = pcb_conflist_first(f->val.list);
 					pcb_conflist_remove(i);
@@ -1051,9 +1051,9 @@ static void conf_field_clear(conf_native_t *f)
 				}
 				clr(list);
 				break;
-			case CFN_max: break;
+			case RND_CFN_max: break;
 		}
-		memset(f->prop, 0, sizeof(confprop_t) * f->used);
+		memset(f->prop, 0, sizeof(rnd_confprop_t) * f->used);
 #undef clr
 	}
 
@@ -1064,14 +1064,14 @@ static void conf_field_clear(conf_native_t *f)
 int rnd_conf_rev = 0;
 void pcb_conf_update(const char *path, int arr_idx)
 {
-	conf_native_t *n;
+	rnd_conf_native_t *n;
 
 	/* clear memory-bin data first */
 	if (path == NULL) {
 		htsp_entry_t *e;
 		conf_fields_foreach(e) {
-			conf_hid_global_cb((conf_native_t *)e->value, -1, val_change_pre);
-			conf_hid_local_cb((conf_native_t *)e->value, -1, val_change_pre);
+			conf_hid_global_cb((rnd_conf_native_t *)e->value, -1, val_change_pre);
+			conf_hid_local_cb((rnd_conf_native_t *)e->value, -1, val_change_pre);
 			conf_field_clear(e->value);
 		}
 	}
@@ -1110,8 +1110,8 @@ void pcb_conf_update(const char *path, int arr_idx)
 	if (path == NULL) {
 		htsp_entry_t *e;
 		conf_fields_foreach(e) {
-			conf_hid_local_cb((conf_native_t *)e->value, -1, val_change_post);
-			conf_hid_global_cb((conf_native_t *)e->value, -1, val_change_post);
+			conf_hid_local_cb((rnd_conf_native_t *)e->value, -1, val_change_post);
+			conf_hid_global_cb((rnd_conf_native_t *)e->value, -1, val_change_post);
 		}
 	}
 	else {
@@ -1156,7 +1156,7 @@ static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, rnd_conf_policy_t pol, i
 	return ov;
 }
 
-lht_node_t *pcb_conf_lht_get_first(conf_role_t target, int create)
+lht_node_t *pcb_conf_lht_get_first(rnd_conf_role_t target, int create)
 {
 	assert(target != CFR_invalid);
 	assert(target >= 0);
@@ -1166,7 +1166,7 @@ lht_node_t *pcb_conf_lht_get_first(conf_role_t target, int create)
 	return conf_lht_get_first_(pcb_conf_main_root[target]->root, POL_ANY, create);
 }
 
-lht_node_t *pcb_conf_lht_get_first_plug(conf_role_t target, int create)
+lht_node_t *pcb_conf_lht_get_first_plug(rnd_conf_role_t target, int create)
 {
 	assert(target != CFR_invalid);
 	assert(target >= 0);
@@ -1176,7 +1176,7 @@ lht_node_t *pcb_conf_lht_get_first_plug(conf_role_t target, int create)
 	return conf_lht_get_first_(pcb_conf_plug_root[target]->root, POL_ANY, create);
 }
 
-lht_node_t *pcb_conf_lht_get_first_pol(conf_role_t target, rnd_conf_policy_t pol, int create)
+lht_node_t *pcb_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create)
 {
 	assert(target != CFR_invalid);
 	assert(target >= 0);
@@ -1186,7 +1186,7 @@ lht_node_t *pcb_conf_lht_get_first_pol(conf_role_t target, rnd_conf_policy_t pol
 	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create);
 }
 
-static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)
+static lht_node_t *conf_lht_get_at_(rnd_conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)
 {
 	lht_node_t *n, *r = NULL;
 
@@ -1211,7 +1211,7 @@ static lht_node_t *conf_lht_get_at_(conf_role_t target, const char *conf_path, c
 	return r;
 }
 
-lht_node_t *pcb_conf_lht_get_at_mainplug(conf_role_t target, const char *path, int allow_plug, int create)
+lht_node_t *pcb_conf_lht_get_at_mainplug(rnd_conf_role_t target, const char *path, int allow_plug, int create)
 {
 	lht_node_t *r;
 	char *pc, *end;
@@ -1237,7 +1237,7 @@ lht_node_t *pcb_conf_lht_get_at_mainplug(conf_role_t target, const char *path, i
 	return r;
 }
 
-lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create)
+lht_node_t *pcb_conf_lht_get_at(rnd_conf_role_t target, const char *path, int create)
 {
 	return pcb_conf_lht_get_at_mainplug(target, path, 0, create);
 }
@@ -1294,9 +1294,9 @@ void pcb_conf_load_project(const char *project_fn, const char *pcb_fn)
 	pcb_conf_update(NULL, -1);
 }
 
-conf_native_t *pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags)
+rnd_conf_native_t *pcb_conf_reg_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags)
 {
-	conf_native_t *node;
+	rnd_conf_native_t *node;
 
 	if (pcb_conf_fields == NULL) {
 		pcb_conf_fields = htsp_alloc(strhash, strkeyeq);
@@ -1306,11 +1306,11 @@ conf_native_t *pcb_conf_reg_field_(void *value, int array_size, conf_native_type
 
 	assert(htsp_get(pcb_conf_fields, path) == NULL);
 
-	node = calloc(sizeof(conf_native_t), 1);
+	node = calloc(sizeof(rnd_conf_native_t), 1);
 	node->array_size  = array_size;
 	node->type        = type;
 	node->val.any     = value;
-	node->prop        = calloc(sizeof(confprop_t), array_size);
+	node->prop        = calloc(sizeof(rnd_confprop_t), array_size);
 	node->description = desc;
 	node->hash_path   = path;
 	node->flags       = flags;
@@ -1323,7 +1323,7 @@ conf_native_t *pcb_conf_reg_field_(void *value, int array_size, conf_native_type
 	return node;
 }
 
-int pcb_conf_grow_list_(conf_native_t *node, int new_size)
+int pcb_conf_grow_list_(rnd_conf_native_t *node, int new_size)
 {
 	void *v;
 	int old_size = node->array_size;
@@ -1333,19 +1333,19 @@ int pcb_conf_grow_list_(conf_native_t *node, int new_size)
 	if (new_size < old_size)
 		return -1;
 
-	v = realloc(node->prop, sizeof(confprop_t) * new_size);
+	v = realloc(node->prop, sizeof(rnd_confprop_t) * new_size);
 	if (v == NULL)
 		return -1;
 
 	node->array_size = new_size;
 	node->prop = v;
-	memset(node->prop + old_size, 0, sizeof(confprop_t) * (new_size - old_size));
+	memset(node->prop + old_size, 0, sizeof(rnd_confprop_t) * (new_size - old_size));
 	return 0;
 }
 
-void pcb_conf_free_native(conf_native_t *node)
+void pcb_conf_free_native(rnd_conf_native_t *node)
 {
-	if ((node->type == CFN_LIST) || (node->type == CFN_HLIST)) {
+	if ((node->type == RND_CFN_LIST) || (node->type == RND_CFN_HLIST)) {
 		while(pcb_conflist_first(node->val.list) != NULL) {
 			pcb_conf_listitem_t *first = pcb_conflist_first(node->val.list);
 			pcb_conflist_remove(first);
@@ -1383,22 +1383,22 @@ void pcb_conf_unreg_fields(const char *prefix)
 	}
 }
 
-void pcb_conf_unreg_field(conf_native_t *field)
+void pcb_conf_unreg_field(rnd_conf_native_t *field)
 {
 	htsp_pop(pcb_conf_fields, field->hash_path);
 	pcb_conf_free_native(field);
 }
 
 
-conf_native_t *pcb_conf_get_field(const char *path)
+rnd_conf_native_t *pcb_conf_get_field(const char *path)
 {
 	return htsp_get(pcb_conf_fields, path);
 }
 
-int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, rnd_conf_policy_t pol, int mkdirp)
+int pcb_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, const char *new_val, rnd_conf_policy_t pol, int mkdirp)
 {
 	char *path, *basename, *next, *last, *sidx;
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 	lht_node_t *cwd, *nn;
 	lht_node_type_t ty;
 	int idx = -1;
@@ -1501,7 +1501,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 	} while(next != NULL);
 
 	/* add the last part of the path, which is either a list or a text node */
-	if ((nat->array_size > 1) || (nat->type == CFN_LIST) || (nat->type == CFN_HLIST))
+	if ((nat->array_size > 1) || (nat->type == RND_CFN_LIST) || (nat->type == RND_CFN_HLIST))
 		ty = LHT_LIST;
 	else
 		ty = LHT_TEXT;
@@ -1616,7 +1616,7 @@ int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const c
 	return 0;
 }
 
-int pcb_conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, rnd_conf_policy_t pol)
+int pcb_conf_set(rnd_conf_role_t target, const char *path, int arr_idx, const char *new_val, rnd_conf_policy_t pol)
 {
 	int res;
 	res = pcb_conf_set_dry(target, path, arr_idx, new_val, pol, 1);
@@ -1626,7 +1626,7 @@ int pcb_conf_set(conf_role_t target, const char *path, int arr_idx, const char *
 	return 0;
 }
 
-int pcb_conf_del(conf_role_t target, const char *path, int arr_idx)
+int pcb_conf_del(rnd_conf_role_t target, const char *path, int arr_idx)
 {
 	int res;
 	res = pcb_conf_set_dry(target, path, arr_idx, NULL, RND_POL_OVERWRITE, 0);
@@ -1638,13 +1638,13 @@ int pcb_conf_del(conf_role_t target, const char *path, int arr_idx)
 
 int pcb_conf_grow(const char *path, int new_size)
 {
-	conf_native_t *nat = pcb_conf_get_field(path);
+	rnd_conf_native_t *nat = pcb_conf_get_field(path);
 	if (nat == NULL)
 		return -1;
 	return pcb_conf_grow_list_(nat, new_size);
 }
 
-int pcb_conf_set_native(conf_native_t *field, int arr_idx, const char *new_val)
+int pcb_conf_set_native(rnd_conf_native_t *field, int arr_idx, const char *new_val)
 {
 	lht_node_t *node;
 
@@ -1703,8 +1703,8 @@ int pcb_conf_set_from_cli(const char *prefix, const char *arg_, const char *val,
 			return -1;
 		}
 		if (op == NULL) {
-			conf_native_t *n = pcb_conf_get_field(arg);
-			if ((n == NULL) || (n->type != CFN_BOOLEAN)) {
+			rnd_conf_native_t *n = pcb_conf_get_field(arg);
+			if ((n == NULL) || (n->type != RND_CFN_BOOLEAN)) {
 				free(arg);
 				*why = "value not specified for non-boolean variable; syntax is path=val";
 				return -1;
@@ -1766,7 +1766,7 @@ void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const ch
 
 	conf_fields_foreach(e) {
 		if ((prefix == NULL) || (strncmp(prefix, e->key, pl) == 0)) {
-			conf_native_t *n = e->value;
+			rnd_conf_native_t *n = e->value;
 			if (n->flags & RND_CFF_USAGE) {
 				int kl = strlen(n->hash_path);
 				char *s, *name = malloc(kl+32);
@@ -1777,16 +1777,16 @@ void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const ch
 					if (*s == '_')
 						*s = '-';
 				switch(n->type) {
-					case CFN_BOOLEAN: /* implicit true */ break;
-					case CFN_STRING:  strcpy(s, " str"); break;
-					case CFN_INTEGER: strcpy(s, " int"); break;
-					case CFN_REAL:    strcpy(s, " num"); break;
-					case CFN_COORD:   strcpy(s, " coord"); break;
-					case CFN_UNIT:    strcpy(s, " unit"); break;
-					case CFN_COLOR:   strcpy(s, " color"); break;
-					case CFN_LIST:    strcpy(s, " <list>"); break;
-					case CFN_HLIST:   strcpy(s, " <hlist>"); break;
-					case CFN_max:     break;
+					case RND_CFN_BOOLEAN: /* implicit true */ break;
+					case RND_CFN_STRING:  strcpy(s, " str"); break;
+					case RND_CFN_INTEGER: strcpy(s, " int"); break;
+					case RND_CFN_REAL:    strcpy(s, " num"); break;
+					case RND_CFN_COORD:   strcpy(s, " coord"); break;
+					case RND_CFN_UNIT:    strcpy(s, " unit"); break;
+					case RND_CFN_COLOR:   strcpy(s, " color"); break;
+					case RND_CFN_LIST:    strcpy(s, " <list>"); break;
+					case RND_CFN_HLIST:   strcpy(s, " <hlist>"); break;
+					case RND_CFN_max:     break;
 				}
 				print(name, n->description);
 				free(name);
@@ -1795,7 +1795,7 @@ void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const ch
 	}
 }
 
-int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t src_role, const char *src_path)
+int pcb_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd_conf_role_t src_role, const char *src_path)
 {
 	lht_node_t *dst = pcb_conf_lht_get_at(dst_role, dst_path, 1);
 	lht_node_t *src, *new_src = NULL;
@@ -1804,7 +1804,7 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 		char *name;
 		lht_node_t *ch = NULL;
 		int isarr, i;
-		conf_native_t *n = pcb_conf_get_field(src_path);
+		rnd_conf_native_t *n = pcb_conf_get_field(src_path);
 
 		if (n == NULL)
 			return -1;
@@ -1820,7 +1820,7 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 			gds_t s;
 
 			gds_init(&s);
-			if ((n->type == CFN_LIST) || (n->type == CFN_HLIST)) {
+			if ((n->type == RND_CFN_LIST) || (n->type == RND_CFN_HLIST)) {
 				pcb_conf_listitem_t *it;
 				ch = lht_dom_node_alloc(LHT_LIST, name+1);
 				for(it = pcb_conflist_first(n->val.list); it != NULL; it = pcb_conflist_next(it)) {
@@ -1878,7 +1878,7 @@ int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_ro
 }
 
 
-int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn)
+int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, rnd_conf_role_t role, const char *fn)
 {
 	int fail = 1;
 	lht_node_t *r = pcb_conf_lht_get_first(role, 0);
@@ -1953,7 +1953,7 @@ TODO("CONF: a project file needs to be loaded, merged, then written (to preserve
 	return fail;
 }
 
-int pcb_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path)
+int pcb_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, rnd_conf_role_t role, const char *conf_path)
 {
 	lht_node_t *at = pcb_conf_lht_get_at(role, conf_path, 0);
 	lht_err_t r;
@@ -1978,7 +1978,7 @@ pcb_conf_listitem_t *pcb_conf_list_first_str(pcb_conflist_t *list, const char **
 	item_li = pcb_conflist_first(list);
 	if (item_li == NULL)
 		return NULL;
-	if (item_li->type == CFN_STRING) {
+	if (item_li->type == RND_CFN_STRING) {
 		*item_str = item_li->val.string[0];
 		return item_li;
 	}
@@ -1989,7 +1989,7 @@ pcb_conf_listitem_t *pcb_conf_list_next_str(pcb_conf_listitem_t *item_li, const 
 {
 	while((item_li = pcb_conflist_next(item_li)) != NULL) {
 		(*idx)++;
-		if (item_li->type != CFN_STRING)
+		if (item_li->type != RND_CFN_STRING)
 			continue;
 		/* found next string */
 		*item_str = item_li->val.string[0];
@@ -2016,7 +2016,7 @@ const char *pcb_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int 
 
 	for (n = 0, ci = pcb_conflist_first((pcb_conflist_t *)lst); ci != NULL; ci = pcb_conflist_next(ci), n++) {
 		const char *p = ci->val.string[0];
-		if (ci->type != CFN_STRING)
+		if (ci->type != RND_CFN_STRING)
 			continue;
 		if (n > 0)
 			gds_append(buff, sep);
@@ -2025,33 +2025,33 @@ const char *pcb_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int 
 	return buff->array;
 }
 
-void pcb_conf_lock(conf_role_t target)
+void pcb_conf_lock(rnd_conf_role_t target)
 {
 	pcb_conf_main_root_lock[target] = 1;
 }
 
-void pcb_conf_unlock(conf_role_t target)
+void pcb_conf_unlock(rnd_conf_role_t target)
 {
 	pcb_conf_main_root_lock[target] = 0;
 }
 
-int pcb_conf_islocked(conf_role_t target)
+int pcb_conf_islocked(rnd_conf_role_t target)
 {
 	return pcb_conf_main_root_lock[target];
 }
 
-int pcb_conf_isdirty(conf_role_t target)
+int pcb_conf_isdirty(rnd_conf_role_t target)
 {
 	return pcb_conf_lht_dirty[target];
 }
 
-void pcb_conf_makedirty(conf_role_t target)
+void pcb_conf_makedirty(rnd_conf_role_t target)
 {
 	pcb_conf_lht_dirty[target]++;
 }
-conf_role_t pcb_conf_lookup_role(const lht_node_t *nd)
+rnd_conf_role_t pcb_conf_lookup_role(const lht_node_t *nd)
 {
-	conf_role_t r;
+	rnd_conf_role_t r;
 	for(r = 0; r < CFR_max_real; r++)
 		if (pcb_conf_main_root[r] == nd->doc)
 			return r;
@@ -2063,7 +2063,7 @@ conf_role_t pcb_conf_lookup_role(const lht_node_t *nd)
 	return CFR_invalid;
 }
 
-void pcb_conf_reset(conf_role_t target, const char *source_fn)
+void pcb_conf_reset(rnd_conf_role_t target, const char *source_fn)
 {
 	lht_node_t *n;
 
@@ -2103,19 +2103,19 @@ static int needs_braces(const char *s)
 			} \
 	} while(0)
 
-int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx)
+int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, rnd_conf_native_type_t type, rnd_confprop_t *prop, int idx)
 {
 	int ret = 0;
 	switch(type) {
-		case CFN_STRING:  print_str_or_null(pfn, ctx, verbose, val->string[idx], val->string[idx]); break;
-		case CFN_BOOLEAN: ret += pfn(ctx, "%d", val->boolean[idx]); break;
-		case CFN_INTEGER: ret += pfn(ctx, "%ld", val->integer[idx]); break;
-		case CFN_REAL:    ret += pfn(ctx, "%f", val->real[idx]); break;
-		case CFN_COORD:   ret += pfn(ctx, "%$mS", val->coord[idx]); break;
-		case CFN_UNIT:    print_str_or_null(pfn, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
-		case CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx].str, val->color[idx].str); break;
-		case CFN_LIST:
-		case CFN_HLIST:
+		case RND_CFN_STRING:  print_str_or_null(pfn, ctx, verbose, val->string[idx], val->string[idx]); break;
+		case RND_CFN_BOOLEAN: ret += pfn(ctx, "%d", val->boolean[idx]); break;
+		case RND_CFN_INTEGER: ret += pfn(ctx, "%ld", val->integer[idx]); break;
+		case RND_CFN_REAL:    ret += pfn(ctx, "%f", val->real[idx]); break;
+		case RND_CFN_COORD:   ret += pfn(ctx, "%$mS", val->coord[idx]); break;
+		case RND_CFN_UNIT:    print_str_or_null(pfn, ctx, verbose, val->unit[idx], val->unit[idx]->suffix); break;
+		case RND_CFN_COLOR:   print_str_or_null(pfn, ctx, verbose, val->color[idx].str, val->color[idx].str); break;
+		case RND_CFN_LIST:
+		case RND_CFN_HLIST:
 			{
 				pcb_conf_listitem_t *n;
 				if (pcb_conflist_length(val->list) > 0) {
@@ -2134,7 +2134,7 @@ int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confit
 				}
 			}
 			break;
-			case CFN_max: break;
+			case RND_CFN_max: break;
 	}
 	if (verbose) {
 		ret += pfn(ctx, " <<prio=%d", prop[idx].prio);
@@ -2146,7 +2146,7 @@ int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confit
 	return ret;
 }
 
-int pcb_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, conf_native_t *node)
+int pcb_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, rnd_conf_native_t *node)
 {
 	int ret = 0;
 	if ((node->used <= 0) && (!verbose))
@@ -2223,7 +2223,7 @@ void pcb_conf_uninit(void)
 	pcb_conf_files_uninit();
 }
 
-void pcb_conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...)
+void pcb_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...)
 {
 	char *tmp;
 	va_list ap;
@@ -2259,7 +2259,7 @@ int pcb_conf_resolve_all(pcb_conf_resolve_t *res)
 
 void pcb_conf_ro(const char *path)
 {
-	conf_native_t *n = pcb_conf_get_field(path);
+	rnd_conf_native_t *n = pcb_conf_get_field(path);
 	if (n != NULL) {
 		n->used = 1;
 		n->random_flags.read_only = 1;

@@ -45,14 +45,14 @@
 #include <librnd/core/compat_misc.h>
 #include "netlist.h"
 
-static void conf_toggle(conf_role_t role, const char *path)
+static void conf_toggle(rnd_conf_role_t role, const char *path)
 {
-	conf_native_t *n = pcb_conf_get_field(path);
+	rnd_conf_native_t *n = pcb_conf_get_field(path);
 	if (n == NULL) {
 		rnd_message(PCB_MSG_ERROR, "Error: can't find config node %s to toggle\n", path);
 		return;
 	}
-	if (n->type != CFN_BOOLEAN) {
+	if (n->type != RND_CFN_BOOLEAN) {
 		rnd_message(PCB_MSG_ERROR, "Error: config node %s is not a boolean, can't toggle\n", path);
 		return;
 	}

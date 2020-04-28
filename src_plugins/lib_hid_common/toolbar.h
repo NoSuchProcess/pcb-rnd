@@ -9,6 +9,6 @@ void rnd_toolbar_uninit(void);
 /* Alternatively, the caller can bind these */
 void pcb_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
 void pcb_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
-void pcb_toolbar_update_conf(conf_native_t *cfg, int arr_idx);
+void pcb_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx);
 
 

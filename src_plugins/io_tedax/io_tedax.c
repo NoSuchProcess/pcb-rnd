@@ -224,7 +224,7 @@ int pcb_io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const c
 	return 0;
 }
 
-int io_tedax_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_tedax_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int res;
 

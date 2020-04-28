@@ -6,8 +6,8 @@
 typedef struct {
 	const struct plugins {
 		const struct serpentine {
-			CFT_REAL pitch;						/* This value multiplied by the line width gives the serpentine pitch */
-			CFT_BOOLEAN show_length;	/* If true, show the length gained by adding the serpentine to an existing line */
+			RND_CFT_REAL pitch;						/* This value multiplied by the line width gives the serpentine pitch */
+			RND_CFT_BOOLEAN show_length;	/* If true, show the length gained by adding the serpentine to an existing line */
 		} serpentine;
 	} plugins;
 } conf_serpentine_t;

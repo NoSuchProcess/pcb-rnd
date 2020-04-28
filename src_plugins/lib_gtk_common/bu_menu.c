@@ -159,7 +159,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		const char *tip = pcb_hid_cfg_menu_field_str(sub_res, PCB_MF_TIP);
 		if (checked) {
 			/* TOGGLE ITEM */
-			conf_native_t *nat = NULL;
+			rnd_conf_native_t *nat = NULL;
 			gchar *name = g_strdup_printf("MainMenuAction%d", action_counter++);
 			action = GTK_ACTION(gtk_toggle_action_new(name, menu_label, tip, NULL));
 			/* checked=foo       is a binary flag (checkbox)

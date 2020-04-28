@@ -95,7 +95,7 @@ void pcb_gtk_conf_init(void)
 	const char **p;
 	static int dummy_gtk_conf_init;
 	int dirty[CFR_max_real] = {0};
-	conf_role_t r;
+	rnd_conf_role_t r;
 
 	ghid_conf_id = pcb_conf_hid_reg(lib_gtk_config_cookie, NULL);
 
@@ -105,7 +105,7 @@ void pcb_gtk_conf_init(void)
 
 	/* check for legacy win geo settings */
 	for(p = legacy_paths; *p != NULL; p+=2) {
-		conf_native_t *nat;
+		rnd_conf_native_t *nat;
 		char *end, dirname[128];
 		
 		pcb_conf_update(p[0], -1);
@@ -123,7 +123,7 @@ void pcb_gtk_conf_init(void)
 		assert(end != NULL);
 		*end = '\0';
 		if (pcb_conf_get_field(p[1]) == NULL)
-			pcb_conf_reg_field_(&dummy_gtk_conf_init, 1, CFN_INTEGER, p[1], "", 0);
+			pcb_conf_reg_field_(&dummy_gtk_conf_init, 1, RND_CFN_INTEGER, p[1], "", 0);
 		r = pcb_conf_lookup_role(nat->prop->src);
 		pcb_conf_setf(r, p[1], -1, "%d", nat->val.integer[0]);
 		dirty[r] = 1;

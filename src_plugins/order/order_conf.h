@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_STRING cache;        /* path to the cache directory where order related vendor data are saved */
+			RND_CFT_STRING cache;        /* path to the cache directory where order related vendor data are saved */
 		} order;
 	} plugins;
 } conf_order_t;

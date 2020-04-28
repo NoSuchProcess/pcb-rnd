@@ -10,20 +10,20 @@ typedef struct {
 	conf_hid_id_t id;
 } conf_hid_t;
 
-void *pcb_conf_hid_set_data(conf_native_t *cfg, conf_hid_id_t id, void *data)
+void *pcb_conf_hid_set_data(rnd_conf_native_t *cfg, conf_hid_id_t id, void *data)
 {
 	void **old = vtp0_get(&cfg->hid_data, id, 0);
 	vtp0_set(&cfg->hid_data, id, data);
 	return old == NULL ? NULL : *old;
 }
 
-void *pcb_conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id)
+void *pcb_conf_hid_get_data(rnd_conf_native_t *cfg, conf_hid_id_t id)
 {
 	void **old = vtp0_get(&cfg->hid_data, id, 0);
 	return old == NULL ? NULL : *old;
 }
 
-const conf_hid_callbacks_t *pcb_conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs)
+const conf_hid_callbacks_t *pcb_conf_hid_set_cb(rnd_conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs)
 {
 	void **old;
 	assert(id >= 0);
@@ -87,7 +87,7 @@ void pcb_conf_hid_unreg(const char *cookie)
 	/* remove local callbacks */
 	conf_fields_foreach(e) {
 		int len;
-		conf_native_t *cfg = e->value;
+		rnd_conf_native_t *cfg = e->value;
 		len = vtp0_len(&cfg->hid_callbacks);
 
 		conf_hid_local_cb(cfg, -1, unreg_item);
@@ -106,7 +106,7 @@ void pcb_conf_hid_unreg(const char *cookie)
 
 	if ((h->cb != NULL) && (h->cb->unreg_item != NULL)) {
 		conf_fields_foreach(e) {
-			conf_native_t *cfg = e->value;
+			rnd_conf_native_t *cfg = e->value;
 			h->cb->unreg_item(cfg, -1);
 		}
 	}
@@ -114,8 +114,8 @@ void pcb_conf_hid_unreg(const char *cookie)
 	free(h);
 }
 
-typedef void (*cbi_t)(conf_native_t *cfg, int arr_idx);
-void pcb_conf_hid_global_cb_int(conf_native_t *item, int arr_idx, int offs)
+typedef void (*cbi_t)(rnd_conf_native_t *cfg, int arr_idx);
+void pcb_conf_hid_global_cb_int(rnd_conf_native_t *item, int arr_idx, int offs)
 {
 	htpp_entry_t *e;
 	if (conf_hid_ids == NULL)
@@ -132,8 +132,8 @@ void pcb_conf_hid_global_cb_int(conf_native_t *item, int arr_idx, int offs)
 	}
 }
 
-typedef void (*cbp_t)(conf_native_t *cfg, void *ptr);
-void pcb_conf_hid_global_cb_ptr(conf_native_t *item, void *ptr, int offs)
+typedef void (*cbp_t)(rnd_conf_native_t *cfg, void *ptr);
+void pcb_conf_hid_global_cb_ptr(rnd_conf_native_t *item, void *ptr, int offs)
 {
 	htpp_entry_t *e;
 	if (conf_hid_ids == NULL)

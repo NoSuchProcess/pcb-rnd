@@ -1394,7 +1394,7 @@ static void load_hkp(hkp_tree_t *tree, FILE *f, const char *fn)
 #include "read_net.c"
 #include "read_pstk.c"
 
-int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, conf_role_t settings_dest)
+int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *fn, rnd_conf_role_t settings_dest)
 {
 	hkp_ctx_t ctx;
 	int res = -1;

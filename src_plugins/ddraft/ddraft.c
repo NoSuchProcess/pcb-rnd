@@ -517,7 +517,7 @@ static pcb_tool_t tool_ddraft = {
 };
 
 
-static void mode_confchg(conf_native_t *cfg, int arr_idx)
+static void mode_confchg(rnd_conf_native_t *cfg, int arr_idx)
 {
 	static int ddraft_tool_selected = 0;
 
@@ -549,7 +549,7 @@ static const conf_hid_callbacks_t conf_cbs_mode = { NULL, mode_confchg, NULL, NU
 
 int pplg_init_ddraft(void)
 {
-	conf_native_t *cn;
+	rnd_conf_native_t *cn;
 	conf_hid_id_t confid;
 
 	PCB_API_CHK_VER;

@@ -45,7 +45,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[2], *cursor_path = NULL;
-	conf_native_t *cn;
+	rnd_conf_native_t *cn;
 
 	attr = &ctx->dlg[ctx->wjobs];
 	tree = attr->wdata;

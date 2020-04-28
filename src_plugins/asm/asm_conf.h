@@ -6,8 +6,8 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_STRING group_template;        /* asm template that determines grouping (parts resulting in the same string will be put in the same group) */
-			CFT_STRING sort_template;         /* asm template that determines order of groups and parts within groups */
+			RND_CFT_STRING group_template;        /* asm template that determines grouping (parts resulting in the same string will be put in the same group) */
+			RND_CFT_STRING sort_template;         /* asm template that determines order of groups and parts within groups */
 		} asm1;
 	} plugins;
 } conf_asm_t;

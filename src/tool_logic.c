@@ -60,7 +60,7 @@ static void tool_logic_chg_tool(rnd_hidlib_t *hidlib, void *user_data, int argc,
 	}
 }
 
-static void tool_logic_chg_mode(conf_native_t *cfg, int arr_idx)
+static void tool_logic_chg_mode(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pcb_tool_chg_mode(&PCB->hidlib);
 }
@@ -70,7 +70,7 @@ void pcb_tool_logic_init(void)
 {
 	static conf_hid_callbacks_t cbs_mode;
 	static conf_hid_id_t tool_conf_id;
-	conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
+	rnd_conf_native_t *n_mode = pcb_conf_get_field("editor/mode");
 	tool_conf_id = pcb_conf_hid_reg(tool_logic_cookie, NULL);
 
 	if (n_mode != NULL) {

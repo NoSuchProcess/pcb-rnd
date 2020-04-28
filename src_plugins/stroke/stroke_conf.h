@@ -6,8 +6,8 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_LIST gestures;
-			CFT_BOOLEAN warn4unknown; /* Warn for unknown sequences */
+			RND_CFT_LIST gestures;
+			RND_CFT_BOOLEAN warn4unknown; /* Warn for unknown sequences */
 		} stroke;
 	} plugins;
 } conf_stroke_t;

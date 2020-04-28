@@ -518,7 +518,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	char *new_filename;
 	pcb_board_t *newPCB = pcb_board_new_(pcb_false);
 	pcb_board_t *oldPCB;
-	conf_role_t settings_dest;
+	rnd_conf_role_t settings_dest;
 #ifdef DEBUG
 	double elapsed;
 	clock_t start, end;

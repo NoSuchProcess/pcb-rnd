@@ -50,23 +50,23 @@ int pcb_file_loaded_del_at(const char *catname, const char *name)
 }
 
 
-void watch_pre(conf_native_t *cfg, int idx)
+void watch_pre(rnd_conf_native_t *cfg, int idx)
 {
 	printf("watch_pre:  '%s' old value\n", cfg->hash_path);
 }
 
-void watch_post(conf_native_t *cfg, int idx)
+void watch_post(rnd_conf_native_t *cfg, int idx)
 {
 	printf("watch_post: '%s' new value\n", cfg->hash_path);
 }
 
-void notify_pre(conf_native_t *cfg, int idx)
+void notify_pre(rnd_conf_native_t *cfg, int idx)
 {
 	if (global_notify)
 		printf("notify_pre:  '%s' old value\n", cfg->hash_path);
 }
 
-void notify_post(conf_native_t *cfg, int idx)
+void notify_post(rnd_conf_native_t *cfg, int idx)
 {
 	if (global_notify)
 		printf("notify_post: '%s' new value\n", cfg->hash_path);
@@ -89,7 +89,7 @@ void cmd_dump(char *arg)
 		conf_dump(stdout, "", 1, arg);
 	}
 	else if (strncmp(arg, "lihata", 6) == 0) {
-		conf_role_t role;
+		rnd_conf_role_t role;
 		arg+=7;
 		while(isspace(*arg)) arg++;
 		role = pcb_conf_role_parse(arg);
@@ -108,7 +108,7 @@ void cmd_dump(char *arg)
 
 void cmd_print(char *arg)
 {
-	conf_native_t *node;
+	rnd_conf_native_t *node;
 	gds_t s;
 
 	if (arg == NULL) {
@@ -129,7 +129,7 @@ void cmd_print(char *arg)
 void cmd_load(char *arg, int is_text)
 {
 	char *fn;
-	conf_role_t role ;
+	rnd_conf_role_t role ;
 
 	if (arg == NULL) {
 		help:;
@@ -159,7 +159,7 @@ void cmd_load(char *arg, int is_text)
 }
 
 rnd_conf_policy_t current_policy = RND_POL_OVERWRITE;
-conf_role_t current_role = CFR_DESIGN;
+rnd_conf_role_t current_role = CFR_DESIGN;
 
 void cmd_policy(char *arg)
 {
@@ -172,7 +172,7 @@ void cmd_policy(char *arg)
 
 void cmd_role(char *arg)
 {
-	conf_role_t nr = pcb_conf_role_parse(arg);
+	rnd_conf_role_t nr = pcb_conf_role_parse(arg);
 	if (nr == CFR_invalid)
 		rnd_message(PCB_MSG_ERROR, "Invalid/unknown role: '%s'", arg);
 	else
@@ -258,7 +258,7 @@ void cmd_set(char *arg)
 
 void cmd_watch(char *arg, int add)
 {
-	conf_native_t *n = pcb_conf_get_field(arg);
+	rnd_conf_native_t *n = pcb_conf_get_field(arg);
 	if (n == NULL) {
 		rnd_message(PCB_MSG_ERROR, "unknown path");
 		return;
@@ -294,7 +294,7 @@ void cmd_reset(char *arg)
 			pcb_conf_reset(n, "<cmd_reset *>");
 	}
 	else {
-		conf_role_t role = pcb_conf_role_parse(arg);
+		rnd_conf_role_t role = pcb_conf_role_parse(arg);
 		if (role == CFR_invalid) {
 			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;

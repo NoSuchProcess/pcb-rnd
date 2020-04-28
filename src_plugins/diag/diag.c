@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		break;
 		case F_Lihata:
 		{
-		conf_role_t role;
+		rnd_conf_role_t role;
 		const char *srole, *prefix = "";
 		RND_PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
@@ -116,7 +116,7 @@ static const char pcb_acth_EvalConf[] = "Perform various operations on the confi
 static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *path;
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 	int role;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);

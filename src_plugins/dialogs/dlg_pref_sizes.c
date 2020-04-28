@@ -73,7 +73,7 @@ static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_at
 	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
 }
 
-static void pref_isle_brd2dlg(conf_native_t *cfg, int arr_idx)
+static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((pref_ctx.sizes.lock) || (!pref_ctx.active))
 		return;
@@ -159,7 +159,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx)
 {
 	static conf_hid_callbacks_t cbs_isle;
-	conf_native_t *cn = pcb_conf_get_field("design/poly_isle_area");
+	rnd_conf_native_t *cn = pcb_conf_get_field("design/poly_isle_area");
 
 	if (cn != NULL) {
 		memset(&cbs_isle, 0, sizeof(conf_hid_callbacks_t));

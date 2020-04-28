@@ -1827,7 +1827,7 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 	return 0;
 }
 
-int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
+int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	dsn_read_t rdctx;
 	gsxl_node_t *rn;

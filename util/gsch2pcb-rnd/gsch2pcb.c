@@ -434,12 +434,12 @@ int main(int argc, char ** argv)
 		pcb_conf_load_project(NULL, local_project_pcb_name);
 
 	if (!have_cli_schematics) {  /* load all schematics from the project file unless we have schematics from the cli */
-		conf_native_t *nat = pcb_conf_get_field("utils/gsch2pcb_rnd/schematics");
+		rnd_conf_native_t *nat = pcb_conf_get_field("utils/gsch2pcb_rnd/schematics");
 		if (nat != NULL) {
 			pcb_conf_listitem_t *ci;
 			for (ci = pcb_conflist_first(nat->val.list); ci != NULL; ci = pcb_conflist_next(ci)) {
 				const char *p = ci->val.string[0];
-				if (ci->type != CFN_STRING)
+				if (ci->type != RND_CFN_STRING)
 					continue;
 				add_schematic(p);
 			}

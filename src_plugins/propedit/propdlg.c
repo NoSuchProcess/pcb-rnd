@@ -678,7 +678,7 @@ fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void propdlg_unit_change(conf_native_t *cfg, int arr_idx)
+static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx)
 {
 	propdlg_t *ctx;
 	gdl_iterator_t it;
@@ -693,7 +693,7 @@ static const char *propdlg_cookie = "propdlg";
 void pcb_propdlg_init(void)
 {
 	static conf_hid_callbacks_t cbs;
-	conf_native_t *n = pcb_conf_get_field("editor/grid_unit");
+	rnd_conf_native_t *n = pcb_conf_get_field("editor/grid_unit");
 	propdlg_conf_id = pcb_conf_hid_reg(propdlg_cookie, NULL);
 
 	if (n != NULL) {

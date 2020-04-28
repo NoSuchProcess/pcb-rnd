@@ -2769,7 +2769,7 @@ static int lesstif_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static void lesstif_globconf_change_post(conf_native_t *cfg, int arr_idx)
+static void lesstif_globconf_change_post(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (!lesstif_active)
 		return;
@@ -2786,9 +2786,9 @@ static conf_hid_id_t lesstif_conf_id = -1;
 
 TODO("decide if we'll ever need this")
 #if 0
-static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
+static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
 {
-	conf_native_t *n = pcb_conf_get_field(path);
+	rnd_conf_native_t *n = pcb_conf_get_field(path);
 	if (n != NULL) {
 		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
 		cbs->val_change_post = func;

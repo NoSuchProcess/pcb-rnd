@@ -220,7 +220,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 							start = next;
 							end = strchr(next, ')');
 							if (end != NULL) {
-								conf_native_t *cn;
+								rnd_conf_native_t *cn;
 								char path[256], *q;
 								size_t len = end - start;
 								if (len > sizeof(path) - 1) {
@@ -239,7 +239,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 										rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
 									goto error;
 								}
-								if (cn->type != CFN_STRING) {
+								if (cn->type != RND_CFN_STRING) {
 									if (!(flags & PCB_SUBST_QUIET))
 										rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
 									goto error;

@@ -69,7 +69,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *path, *val;
 		char valbuff[128];
 		rnd_conf_policy_t pol = RND_POL_OVERWRITE;
-		conf_role_t role = CFR_invalid;
+		rnd_conf_role_t role = CFR_invalid;
 		int rs;
 
 		if (argc < 4) {
@@ -96,7 +96,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (op == F_Delta) {
 			double d;
 			char *end;
-			conf_native_t *n = pcb_conf_get_field(a1);
+			rnd_conf_native_t *n = pcb_conf_get_field(a1);
 
 			if (n == 0) {
 				rnd_message(PCB_MSG_ERROR, "Can't delta-set '%s': no such path\n", argv[1]);
@@ -104,7 +104,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 
 			switch(n->type) {
-				case CFN_REAL:
+				case RND_CFN_REAL:
 					d = strtod(val, &end);
 					if (*end != '\0') {
 						rnd_message(PCB_MSG_ERROR, "Can't delta-set '%s': invalid delta value\n", a1);
@@ -114,8 +114,8 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					sprintf(valbuff, "%f", d);
 					val = valbuff;
 					break;
-				case CFN_COORD:
-				case CFN_INTEGER:
+				case RND_CFN_COORD:
+				case RND_CFN_INTEGER:
 				default:
 					rnd_message(PCB_MSG_ERROR, "Can't delta-set '%s': not a numeric item\n", a1);
 					return FGW_ERR_ARG_CONV;
@@ -123,7 +123,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		if (role == CFR_invalid) {
-			conf_native_t *n = pcb_conf_get_field(a1);
+			rnd_conf_native_t *n = pcb_conf_get_field(a1);
 			if (n == NULL) {
 				rnd_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
 				return FGW_ERR_ARG_CONV;
@@ -144,7 +144,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *path, *val;
 		int rs;
 		gds_t nval;
-		conf_native_t *n;
+		rnd_conf_native_t *n;
 
 		if (argc != 4) {
 			rnd_message(PCB_MSG_ERROR, "conf(iseq) needs two arguments");
@@ -171,16 +171,16 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	else if (op == F_Toggle) {
-		conf_native_t *n = pcb_conf_get_field(a1);
+		rnd_conf_native_t *n = pcb_conf_get_field(a1);
 		const char *new_value;
-		conf_role_t role = CFR_invalid;
+		rnd_conf_role_t role = CFR_invalid;
 		int res;
 
 		if (n == NULL) {
 			rnd_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
 			return FGW_ERR_UNKNOWN;
 		}
-		if (n->type != CFN_BOOLEAN) {
+		if (n->type != RND_CFN_BOOLEAN) {
 			rnd_message(PCB_MSG_ERROR, "Can not toggle '%s': not a boolean\n", a1);
 			return FGW_ERR_UNKNOWN;
 		}
@@ -212,7 +212,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	else if (op == F_Reset) {
-		conf_role_t role;
+		rnd_conf_role_t role;
 		role = pcb_conf_role_parse(a1);
 		if (role == CFR_invalid) {
 			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", a1);

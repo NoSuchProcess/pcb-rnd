@@ -208,7 +208,7 @@ static int fnc_netshort(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 
 static int fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 
 	if (argc != 1)
 		return -1;
@@ -220,24 +220,24 @@ static int fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 		PCB_QRY_RET_INV(res);
 
 	switch(nat->type) {
-		case CFN_STRING:   PCB_QRY_RET_STR(res, nat->val.string[0]);
-		case CFN_BOOLEAN:  PCB_QRY_RET_INT(res, nat->val.boolean[0]);
-		case CFN_INTEGER:  PCB_QRY_RET_INT(res, nat->val.integer[0]);
-		case CFN_REAL:     PCB_QRY_RET_DBL(res, nat->val.real[0]);
-		case CFN_COORD:    PCB_QRY_RET_COORD(res, nat->val.coord[0]);
+		case RND_CFN_STRING:   PCB_QRY_RET_STR(res, nat->val.string[0]);
+		case RND_CFN_BOOLEAN:  PCB_QRY_RET_INT(res, nat->val.boolean[0]);
+		case RND_CFN_INTEGER:  PCB_QRY_RET_INT(res, nat->val.integer[0]);
+		case RND_CFN_REAL:     PCB_QRY_RET_DBL(res, nat->val.real[0]);
+		case RND_CFN_COORD:    PCB_QRY_RET_COORD(res, nat->val.coord[0]);
 		
-		case CFN_COLOR:  PCB_QRY_RET_STR(res, nat->val.color[0].str);
+		case RND_CFN_COLOR:  PCB_QRY_RET_STR(res, nat->val.color[0].str);
 
-		case CFN_UNIT:
+		case RND_CFN_UNIT:
 			if (nat->val.unit[0] == NULL)
 				PCB_QRY_RET_INV(res);
 			else
 				PCB_QRY_RET_STR(res, nat->val.unit[0]->suffix);
 			break;
 
-		case CFN_LIST:
-		case CFN_HLIST:
-		case CFN_max:
+		case RND_CFN_LIST:
+		case RND_CFN_HLIST:
+		case RND_CFN_max:
 			PCB_QRY_RET_INV(res);
 	}
 	return 0;

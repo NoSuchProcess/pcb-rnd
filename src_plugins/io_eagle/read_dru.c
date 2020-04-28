@@ -157,7 +157,7 @@ static void bump_up_str(const char *key, const char *val, const char *cpath, rnd
 		pcb_conf_set(CFR_DESIGN, "design/min_drill", -1, val, RND_POL_OVERWRITE);
 }
 
-int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, conf_role_t settings_dest)
+int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	FILE *f;
 	char *efn;

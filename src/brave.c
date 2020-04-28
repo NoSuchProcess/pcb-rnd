@@ -91,7 +91,7 @@ static void set_conf(pcb_brave_t br)
 }
 
 /* Upon a change in the config, parse the new config string and set the brave bits */
-static void brave_conf_chg(conf_native_t *cfg, int arr_idx)
+static void brave_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 {
 	char *curr, *next, old;
 	desc_t *d;
@@ -287,7 +287,7 @@ void pcb_brave_init2(void)
 
 void pcb_brave_init(void)
 {
-	conf_native_t *n = pcb_conf_get_field("rc/brave");
+	rnd_conf_native_t *n = pcb_conf_get_field("rc/brave");
 	brave_conf_id = pcb_conf_hid_reg(brave_cookie, NULL);
 
 	if (n != NULL) {

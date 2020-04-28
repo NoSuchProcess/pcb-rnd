@@ -201,7 +201,7 @@ void pcb_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_eve
 	}
 }
 
-void pcb_toolbar_update_conf(conf_native_t *cfg, int arr_idx)
+void pcb_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	toolbar_pcb2dlg();
 }
@@ -210,10 +210,10 @@ void pcb_toolbar_update_conf(conf_native_t *cfg, int arr_idx)
 
 static const char *toolbar_cookie = "lib_hid_pcbui/toolbar";
 
-static conf_hid_id_t install_events(const char *cookie, const char *paths[], conf_hid_callbacks_t cb[], void (*update_cb)(conf_native_t*,int))
+static conf_hid_id_t install_events(const char *cookie, const char *paths[], conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
 {
 	const char **rp;
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 	int n;
 	conf_hid_id_t conf_id;
 

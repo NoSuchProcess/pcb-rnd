@@ -356,7 +356,7 @@ FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const pcb_conflist_t *paths, const c
 			char *real_p;
 			size_t pl;
 
-			if (ci->type != CFN_STRING)
+			if (ci->type != RND_CFN_STRING)
 				continue;
 			if (*p == '?')
 				p++;

@@ -6,9 +6,9 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_BOOLEAN disable;     /* disable the whole engine */
-			CFT_HLIST definitions;   /* DRC constant definitions */
-			CFT_HLIST rules;         /* inline rules */
+			RND_CFT_BOOLEAN disable;     /* disable the whole engine */
+			RND_CFT_HLIST definitions;   /* DRC constant definitions */
+			RND_CFT_HLIST rules;         /* inline rules */
 		} drc_query;
 	} plugins;
 } conf_drc_query_t;

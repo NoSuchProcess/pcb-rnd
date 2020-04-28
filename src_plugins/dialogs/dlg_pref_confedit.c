@@ -33,9 +33,9 @@
 typedef struct {
 	PCB_DAD_DECL_NOINIT(dlg)
 
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 	int idx;
-	conf_role_t role;
+	rnd_conf_role_t role;
 	
 	int wnewval, winsa;
 } confedit_ctx_t;
@@ -59,24 +59,24 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 	val = pref_conf_get_val(nd, ctx->nat, ctx->idx);
 
 	switch(ctx->nat->type) {
-		case CFN_STRING:
+		case RND_CFN_STRING:
 			hv.str = val;
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
-		case CFN_BOOLEAN:
-		case CFN_INTEGER:
+		case RND_CFN_BOOLEAN:
+		case RND_CFN_INTEGER:
 			hv.lng = atoi(val);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
-		case CFN_REAL:
+		case RND_CFN_REAL:
 			hv.dbl = strtod(val, NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
-		case CFN_COORD:
+		case RND_CFN_COORD:
 			hv.crd = pcb_get_value(val, NULL, NULL, NULL);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
-		case CFN_UNIT:
+		case RND_CFN_UNIT:
 			{
 				const pcb_unit_t *u = get_unit_struct(val);
 				if (u != NULL)
@@ -86,12 +86,12 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			}
 			break;
-		case CFN_COLOR:
+		case RND_CFN_COLOR:
 			hv.clr = ctx->nat->val.color[ctx->idx];
 			rnd_color_load_str(&hv.clr, val);
 			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
-		case CFN_LIST:
+		case RND_CFN_LIST:
 			{
 				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 				pcb_hid_tree_t *tree = attr->wdata;
@@ -107,11 +107,11 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 				}
 			}
 			break;
-		case CFN_HLIST:
+		case RND_CFN_HLIST:
 /*			rnd_message(PCB_MSG_ERROR, "ERROR: can not import hash lists on GUI\n");*/
 			/* Nothing to do, for now it's just a bunch of buttons */
 			break;
-		case CFN_max:
+		case RND_CFN_max:
 			rnd_message(PCB_MSG_ERROR, "ERROR: invalid conf node type\n");
 			break;
 	}
@@ -130,18 +130,18 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	attr = &ctx->dlg[ctx->wnewval];
 
 	switch(ctx->nat->type) {
-		case CFN_STRING:  val = attr->val.str; break;
-		case CFN_BOOLEAN:
-		case CFN_INTEGER: sprintf(buf, "%ld", attr->val.lng); break;
-		case CFN_REAL:    sprintf(buf, "%f", attr->val.dbl); break;
-		case CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.crd); break;
-		case CFN_UNIT:
+		case RND_CFN_STRING:  val = attr->val.str; break;
+		case RND_CFN_BOOLEAN:
+		case RND_CFN_INTEGER: sprintf(buf, "%ld", attr->val.lng); break;
+		case RND_CFN_REAL:    sprintf(buf, "%f", attr->val.dbl); break;
+		case RND_CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.crd); break;
+		case RND_CFN_UNIT:
 			if ((attr->val.lng < 0) || (attr->val.lng >= pcb_get_n_units(0)))
 				return;
 			val = pcb_units[attr->val.lng].suffix;
 			break;
-		case CFN_COLOR:   val = attr->val.clr.str; break;
-		case CFN_LIST:
+		case RND_CFN_COLOR:   val = attr->val.clr.str; break;
+		case RND_CFN_LIST:
 			{
 				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 				pcb_hid_tree_t *tree = attr->wdata;
@@ -171,8 +171,8 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 				pcb_conf_update(ctx->nat->hash_path, ctx->idx);
 			}
 			return;
-		case CFN_HLIST:
-		case CFN_max:
+		case RND_CFN_HLIST:
+		case RND_CFN_max:
 			return;
 	}
 
@@ -270,7 +270,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		return;
 	}
 
-	if (pctx->conf.selected_nat->type == CFN_HLIST) {
+	if (pctx->conf.selected_nat->type == RND_CFN_HLIST) {
 		if (pctx->conf.selected_nat->gui_edit_act == NULL) {
 			rnd_message(PCB_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
 			return;
@@ -288,19 +288,19 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		PCB_DAD_LABEL(ctx->dlg, ctx->nat->hash_path);
 
 		switch(ctx->nat->type) {
-			case CFN_STRING:
+			case RND_CFN_STRING:
 				PCB_DAD_STRING(ctx->dlg);
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
-			case CFN_BOOLEAN:
+			case RND_CFN_BOOLEAN:
 				PCB_DAD_BOOL(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
-			case CFN_INTEGER:
+			case RND_CFN_INTEGER:
 				PCB_DAD_INTEGER(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
@@ -308,7 +308,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
-			case CFN_REAL:
+			case RND_CFN_REAL:
 				PCB_DAD_REAL(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
@@ -316,7 +316,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
-			case CFN_COORD:
+			case RND_CFN_COORD:
 				PCB_DAD_COORD(ctx->dlg, "");
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_MINMAX(ctx->dlg, -PCB_MM_TO_COORD(1000), +PCB_MM_TO_COORD(1000));
@@ -324,17 +324,17 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 					b[0] = PCB_DAD_CURRENT(ctx->dlg);
 				break;
-			case CFN_UNIT:
+			case RND_CFN_UNIT:
 				PCB_DAD_UNIT(ctx->dlg, 0x3fff);
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
-			case CFN_COLOR:
+			case RND_CFN_COLOR:
 				PCB_DAD_COLOR(ctx->dlg);
 					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
-			case CFN_LIST:
+			case RND_CFN_LIST:
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
 					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 					PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
@@ -356,7 +356,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_END(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);
 				break;
-			case CFN_HLIST:
+			case RND_CFN_HLIST:
 				{
 					gdl_iterator_t it;
 					pcb_conf_listitem_t *i;
@@ -371,7 +371,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 					PCB_DAD_END(ctx->dlg);
 				}
 				break;
-			case CFN_max:
+			case RND_CFN_max:
 				PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
 		}
 

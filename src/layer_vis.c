@@ -210,7 +210,7 @@ void pcb_layervis_restore_stack(void)
 
 static conf_hid_id_t layer_vis_conf_id;
 
-void layer_vis_chg_mask(conf_native_t *cfg, int arr_idx)
+void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pcb_layer_id_t n;
 	int chg = 0;
@@ -350,7 +350,7 @@ static const char *layer_vis_cookie = "core_layer_vis";
 
 void pcb_layer_vis_init(void)
 {
-	conf_native_t *n_mask = pcb_conf_get_field("editor/show_mask");
+	rnd_conf_native_t *n_mask = pcb_conf_get_field("editor/show_mask");
 	static conf_hid_callbacks_t cbs_mask;
 
 	layer_vis_conf_id = pcb_conf_hid_reg(layer_vis_cookie, NULL);

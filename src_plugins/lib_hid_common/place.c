@@ -117,23 +117,23 @@ static char *str_cleanup_later(const char *path)
 	return s;
 }
 
-static void place_conf_set(conf_role_t role, const char *path, int val)
+static void place_conf_set(rnd_conf_role_t role, const char *path, int val)
 {
 	static int dummy;
 
 	if (pcb_conf_get_field(path) == NULL)
-		pcb_conf_reg_field_(&dummy, 1, CFN_INTEGER, str_cleanup_later(path), "", 0);
+		pcb_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
 	pcb_conf_setf(role, path, -1, "%d", val);
 }
 
-static void place_conf_load(conf_role_t role, const char *path, int *val)
+static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
 {
-	conf_native_t *nat = pcb_conf_get_field(path);
-	conf_role_t crole;
+	rnd_conf_native_t *nat = pcb_conf_get_field(path);
+	rnd_conf_role_t crole;
 	static int dummy;
 
 	if (pcb_conf_get_field(path) == NULL) {
-		pcb_conf_reg_field_(&dummy, 1, CFN_INTEGER, str_cleanup_later(path), "", 0);
+		pcb_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
 		pcb_conf_update(path, -1);
 	}
 
@@ -159,7 +159,7 @@ static void place_conf_load(conf_role_t role, const char *path, int *val)
 }
 
 #define BASEPATH "plugins/dialogs/window_geometry/"
-void pcb_wplc_load(conf_role_t role)
+void pcb_wplc_load(rnd_conf_role_t role)
 {
 	char *end, *end2, path[128 + sizeof(BASEPATH)];
 	lht_node_t *nd, *root;
@@ -195,7 +195,7 @@ void pcb_wplc_load(conf_role_t role)
 }
 
 
-static void place_maybe_save(rnd_hidlib_t *hidlib, conf_role_t role, int force)
+static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int force)
 {
 	htsw_entry_t *e;
 	char path[128 + sizeof(BASEPATH)];
@@ -247,7 +247,7 @@ static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb
 	pcb_wplc_load(CFR_DESIGN);
 }
 
-void pcb_wplc_save_to_role(rnd_hidlib_t *hidlib, conf_role_t role)
+void pcb_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
 {
 	place_maybe_save(hidlib, role, 1);
 }

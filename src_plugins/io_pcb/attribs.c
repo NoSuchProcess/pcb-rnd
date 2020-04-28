@@ -74,13 +74,13 @@ static void c2a(pcb_board_t *pcb, lht_node_t *tree, const char *path1)
 			continue;
 		}
 		if (n->type == LHT_TEXT) {
-			conf_native_t *nv = pcb_conf_get_field(path);
+			rnd_conf_native_t *nv = pcb_conf_get_field(path);
 			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib))
 				rnd_attribute_put(&pcb->Attributes, apath, n->data.text.value);
 		}
 		else if (n->type == LHT_LIST) {
 			lht_node_t *i;
-			conf_native_t *nv = pcb_conf_get_field(path);
+			rnd_conf_native_t *nv = pcb_conf_get_field(path);
 			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib)) {
 				gds_t conc;
 				gds_init(&conc);
@@ -111,10 +111,10 @@ void io_pcb_attrib_a2c(pcb_board_t *pcb)
 
 	for (n = 0; n < pcb->Attributes.Number; n++) {
 		if (path_ok(pcb->Attributes.List[n].name)) {
-			conf_native_t *nv = pcb_conf_get_field(pcb->Attributes.List[n].name + conf_attr_prefix_len);
+			rnd_conf_native_t *nv = pcb_conf_get_field(pcb->Attributes.List[n].name + conf_attr_prefix_len);
 			if (nv == NULL)
 				continue;
-			if (nv->type == CFN_LIST) {
+			if (nv->type == RND_CFN_LIST) {
 				char *tmp = rnd_strdup(pcb->Attributes.List[n].value);
 				char *next, *curr;
 				for(curr = tmp; curr != NULL; curr = next) {

@@ -29,7 +29,7 @@ do { \
 		*((type *)(&var)) = max; \
 }	while(0)
 
-static void pcb_conf_legacy_(conf_native_t *ndst, conf_native_t *nlegacy)
+static void pcb_conf_legacy_(rnd_conf_native_t *ndst, rnd_conf_native_t *nlegacy)
 {
 	gds_t tmp;
 	const char *dst_path = ndst->hash_path;
@@ -43,8 +43,8 @@ static void pcb_conf_legacy_(conf_native_t *ndst, conf_native_t *nlegacy)
 
 void pcb_conf_legacy(const char *dst_path, const char *legacy_path)
 {
-	conf_native_t *nlegacy = pcb_conf_get_field(legacy_path);
-	conf_native_t *ndst = pcb_conf_get_field(dst_path);
+	rnd_conf_native_t *nlegacy = pcb_conf_get_field(legacy_path);
+	rnd_conf_native_t *ndst = pcb_conf_get_field(dst_path);
 	if (nlegacy == NULL) {
 		rnd_message(PCB_MSG_ERROR, "pcb_conf_legacy: invalid legacy path '%s' for %s\n", legacy_path, dst_path);
 		return;
@@ -63,7 +63,7 @@ static void conf_core_postproc(void)
 {
 	htpp_entry_t *e;
 
-	conf_clamp_to(CFT_COORD, conf_core.design.line_thickness, PCB_MIN_THICKNESS, PCB_MAX_THICKNESS, PCB_MIL_TO_COORD(10));
+	conf_clamp_to(RND_CFT_COORD, conf_core.design.line_thickness, PCB_MIN_THICKNESS, PCB_MAX_THICKNESS, PCB_MIL_TO_COORD(10));
 	conf_force_set_bool(conf_core.rc.have_regex, 1);
 	pcb_conf_ro("rc/have_regex");
 
@@ -73,16 +73,16 @@ static void conf_core_postproc(void)
 	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   pcb_conf_ro("rc/path/share");
 
 	for(e = htpp_first(&legacy_new2old); e != NULL; e = htpp_next(&legacy_new2old, e)) {
-		conf_native_t *nlegacy = e->value, *ndst = e->key;
+		rnd_conf_native_t *nlegacy = e->value, *ndst = e->key;
 		if (nlegacy->rnd_conf_rev > ndst->rnd_conf_rev)
 			pcb_conf_legacy_(ndst, nlegacy);
 	}
 }
 
-static void conf_legacy_chg(conf_native_t *ndst, int arr_idx)
+static void conf_legacy_chg(rnd_conf_native_t *ndst, int arr_idx)
 {
  /* check if a legacy nde changes so we need to update a new node */
-	conf_native_t *nlegacy;
+	rnd_conf_native_t *nlegacy;
 	static int lock = 0;
 
 	if (lock)

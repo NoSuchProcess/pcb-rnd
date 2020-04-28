@@ -36,7 +36,7 @@ void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefi
 		pl = strlen(match_prefix);
 
 	for (e = htsp_first(pcb_conf_fields); e; e = htsp_next(pcb_conf_fields, e)) {
-		conf_native_t *node = (conf_native_t *)e->value;
+		rnd_conf_native_t *node = (rnd_conf_native_t *)e->value;
 		if (match_prefix != NULL) {
 			if (strncmp(node->hash_path, match_prefix, pl) != 0)
 				continue;

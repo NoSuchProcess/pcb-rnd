@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_BOOLEAN auto_integrity;         /* Enable (expensive) automatic integrity check after each user action */
+			RND_CFT_BOOLEAN auto_integrity;         /* Enable (expensive) automatic integrity check after each user action */
 		} diag;
 	} plugins;
 } conf_diag_t;

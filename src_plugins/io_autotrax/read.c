@@ -104,7 +104,7 @@ static void sym_flush(rnd_hidlib_t *hl, symattr_t *sattr)
 typedef struct {
 	pcb_board_t *pcb;
 	const char *Filename;
-	conf_role_t settings_dest;
+	rnd_conf_role_t settings_dest;
 	pcb_layer_id_t protel_to_stackup[14];
 	int lineno;
 	rnd_coord_t mask_clearance;
@@ -1072,7 +1072,7 @@ TODO("this does not handle return -1")
 }
 
 
-int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int readres = 0;
 	rnd_box_t board_size, *box;

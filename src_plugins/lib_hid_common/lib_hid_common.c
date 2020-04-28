@@ -54,7 +54,7 @@ static const char *lead_cookie = "lib_hid_common/user_lead";
 static const char *wplc_cookie = "lib_hid_common/window_placement";
 
 extern void pcb_dad_spin_update_global_coords(void);
-static void grid_unit_chg_ev(conf_native_t *cfg, int arr_idx)
+static void grid_unit_chg_ev(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pcb_dad_spin_update_global_coords();
 }
@@ -110,7 +110,7 @@ void pplg_uninit_lib_hid_common(void)
 int pplg_init_lib_hid_common(void)
 {
 	static conf_hid_callbacks_t ccb, ccbu;
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 
 	PCB_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \

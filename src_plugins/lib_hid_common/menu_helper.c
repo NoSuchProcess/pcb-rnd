@@ -50,10 +50,10 @@ int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
 
 	cp = strchr(name, '(');
 	if (cp == NULL) {
-		conf_native_t *n = pcb_conf_get_field(name);
+		rnd_conf_native_t *n = pcb_conf_get_field(name);
 		if (n == NULL)
 			return -1;
-		if ((n->type != CFN_BOOLEAN) || (n->used != 1))
+		if ((n->type != RND_CFN_BOOLEAN) || (n->used != 1))
 			return -1;
 		return n->val.boolean[0];
 	}

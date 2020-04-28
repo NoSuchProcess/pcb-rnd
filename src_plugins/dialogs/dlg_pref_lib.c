@@ -63,7 +63,7 @@ static void pref_lib_row_free(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 
 /* Current libraries from config to dialog box: remove everything from
    the widget first */
-static void pref_lib_conf2dlg_pre(conf_native_t *cfg, int arr_idx)
+static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pcb_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
@@ -96,7 +96,7 @@ static const char *pref_node_src(lht_node_t *nd)
 
 /* Current libraries from config to dialog box: after the change, fill
    in all widget rows from the conf */
-static void pref_lib_conf2dlg_post(conf_native_t *cfg, int arr_idx)
+static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pcb_conf_listitem_t *i;
 	int idx;
@@ -406,7 +406,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 	PCB_DAD_LABEL(ctx->dlg, "The following $(variables) can be used in the path:");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			conf_fields_foreach(e) {
-				conf_native_t *nat = e->value;
+				rnd_conf_native_t *nat = e->value;
 				char tmp[256];
 
 				if (strncmp(e->key, "rc/path/", 8) != 0)
@@ -477,14 +477,14 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 {
-	conf_native_t *cn = pcb_conf_get_field("rc/library_search_paths");
+	rnd_conf_native_t *cn = pcb_conf_get_field("rc/library_search_paths");
 	pref_lib_conf2dlg_post(cn, -1);
 }
 
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
 {
 	static conf_hid_callbacks_t cbs_spth;
-	conf_native_t *cn = pcb_conf_get_field("rc/library_search_paths");
+	rnd_conf_native_t *cn = pcb_conf_get_field("rc/library_search_paths");
 
 	if (cn != NULL) {
 		memset(&cbs_spth, 0, sizeof(conf_hid_callbacks_t));

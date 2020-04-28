@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_BOOLEAN enable;         /* Enable vendor mapping */
+			RND_CFT_BOOLEAN enable;         /* Enable vendor mapping */
 		} vendor;
 	} plugins;
 } conf_vendor_t;

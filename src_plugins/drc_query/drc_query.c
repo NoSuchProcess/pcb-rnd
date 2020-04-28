@@ -193,9 +193,9 @@ static const char *load_str(lht_node_t *rule, pcb_conf_listitem_t *i, const char
 static int *drc_get_disable(const char *name)
 {
 	char *path = pcb_concat(DRC_CONF_PATH_DISABLE, name, NULL);
-	conf_native_t *nat = pcb_conf_get_field(path);
+	rnd_conf_native_t *nat = pcb_conf_get_field(path);
 	free(path);
-	if ((nat == NULL) || (nat->type != CFN_BOOLEAN))
+	if ((nat == NULL) || (nat->type != RND_CFN_BOOLEAN))
 		return NULL;
 	return nat->val.boolean;
 }
@@ -238,9 +238,9 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 }
 
 static vtp0_t free_drc_conf_nodes;
-static conf_native_t *nat_defs = NULL;
-static conf_native_t *nat_rules = NULL;
-static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
+static rnd_conf_native_t *nat_defs = NULL;
+static rnd_conf_native_t *nat_rules = NULL;
+static void drc_query_newconf(rnd_conf_native_t *cfg, pcb_conf_listitem_t *i)
 {
 	if (nat_rules == NULL) {
 		if (strncmp(cfg->hash_path, DRC_CONF_PATH_RULES, strlen(DRC_CONF_PATH_RULES)-1) == 0) {
@@ -261,7 +261,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 
 		if (pcb_conf_get_field(path) == NULL) {
 			const char *sdesc;
-			conf_native_t *nat;
+			rnd_conf_native_t *nat;
 			pcb_bool_t *b;
 			lht_node_t *ndesc;
 
@@ -269,7 +269,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
 
 			b = calloc(sizeof(pcb_bool_t), 1);
-			nat = pcb_conf_reg_field_(b, 1, CFN_BOOLEAN, path, rnd_strdup(sdesc), 0);
+			nat = pcb_conf_reg_field_(b, 1, RND_CFN_BOOLEAN, path, rnd_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(b);
 				rnd_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
@@ -297,13 +297,13 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 				void *ptr;
 				char *str;
 			} anyval;
-			conf_native_t *nat;
+			rnd_conf_native_t *nat;
 			lht_node_t *ndesc = lht_dom_hash_get(nd, "desc");
 			lht_node_t *ntype = lht_dom_hash_get(nd, "type");
 			lht_node_t *ndefault = lht_dom_hash_get(nd, "default");
 			lht_node_t *nlegacy = lht_dom_hash_get(nd, "legacy");
 			const char *sdesc = "n/a", *stype = NULL, *sdefault = NULL, *slegacy = NULL;
-			conf_native_type_t type;
+			rnd_conf_native_type_t type;
 			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
 			if ((ntype != NULL) && (ntype->type == LHT_TEXT)) stype = ntype->data.text.value;
 			if ((ndefault != NULL) && (ndefault->type == LHT_TEXT)) sdefault = ndefault->data.text.value;
@@ -316,7 +316,7 @@ static void drc_query_newconf(conf_native_t *cfg, pcb_conf_listitem_t *i)
 			}
 
 			type = pcb_conf_native_type_parse(stype);
-			if (type >= CFN_LIST) {
+			if (type >= RND_CFN_LIST) {
 				rnd_message(PCB_MSG_ERROR, "drc_query: invalid type '%s' for %s\n", stype, nd->name);
 				goto fail;
 			}

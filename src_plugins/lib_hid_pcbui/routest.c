@@ -216,7 +216,7 @@ void pcb_rst_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 	rst_update();
 }
 
-void pcb_rst_update_conf(conf_native_t *cfg, int arr_idx)
+void pcb_rst_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((PCB != NULL) && (pcb_gui != NULL)) {
 		if (pcb_gui->update_menu_checkbox != NULL)

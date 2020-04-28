@@ -42,63 +42,63 @@ enum pcb_crosshair_shape_e {
 typedef struct {
 
 	struct {
-		CFT_BOOLEAN click_cmd_entry_active;/* true if the command line is active when the user click - this gives the command interpreter a chance to capture the click and use the coords */
+		RND_CFT_BOOLEAN click_cmd_entry_active;/* true if the command line is active when the user click - this gives the command interpreter a chance to capture the click and use the coords */
 	} temp;
 
 	const struct {                       /* rc */
-		CFT_INTEGER verbose;
-		CFT_INTEGER quiet;                 /* print only errors on stderr */
-		CFT_BOOLEAN dup_log_to_stderr;     /* copy log messages to stderr even if there is a HID that can show them */
-		CFT_STRING cli_prompt;             /* plain text prompt to prefix the command entry */
-		CFT_STRING cli_backend;            /* command parser action */
-		CFT_BOOLEAN export_basename;       /* if an exported file contains the source file name, remove path from it, keeping the basename only */
-		CFT_STRING menu_file;              /* where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht */
-		CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
-		CFT_BOOLEAN hid_fallback;          /* if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode */
+		RND_CFT_INTEGER verbose;
+		RND_CFT_INTEGER quiet;                 /* print only errors on stderr */
+		RND_CFT_BOOLEAN dup_log_to_stderr;     /* copy log messages to stderr even if there is a HID that can show them */
+		RND_CFT_STRING cli_prompt;             /* plain text prompt to prefix the command entry */
+		RND_CFT_STRING cli_backend;            /* command parser action */
+		RND_CFT_BOOLEAN export_basename;       /* if an exported file contains the source file name, remove path from it, keeping the basename only */
+		RND_CFT_STRING menu_file;              /* where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht */
+		RND_CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
+		RND_CFT_BOOLEAN hid_fallback;          /* if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode */
 
 		const struct {
-			CFT_STRING home;                 /* user's home dir, determined run-time */
-			CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
+			RND_CFT_STRING home;                 /* user's home dir, determined run-time */
+			RND_CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
 		} path;
 	} rc;
 
 	const struct {
-		CFT_REAL layer_alpha;              /* alpha value for layer drawing */
-		CFT_REAL drill_alpha;              /* alpha value for drill drawing */
+		RND_CFT_REAL layer_alpha;              /* alpha value for layer drawing */
+		RND_CFT_REAL drill_alpha;              /* alpha value for drill drawing */
 
 		const struct {
-			CFT_STRING   debug_tag;          /* log style tag of debug messages */
-			CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
-			CFT_STRING   info_tag;           /* log style tag of info messages */
-			CFT_BOOLEAN  info_popup;         /* whether an info line should pop up the log window */
-			CFT_STRING   warning_tag;        /* log style tag of warnings */
-			CFT_BOOLEAN  warning_popup;      /* whether a warning should pop up the log window */
-			CFT_STRING   error_tag;          /* log style tag of errors */
-			CFT_BOOLEAN  error_popup;        /* whether an error should pop up the log window */
+			RND_CFT_STRING   debug_tag;          /* log style tag of debug messages */
+			RND_CFT_BOOLEAN  debug_popup;        /* whether a debug line should pop up the log window */
+			RND_CFT_STRING   info_tag;           /* log style tag of info messages */
+			RND_CFT_BOOLEAN  info_popup;         /* whether an info line should pop up the log window */
+			RND_CFT_STRING   warning_tag;        /* log style tag of warnings */
+			RND_CFT_BOOLEAN  warning_popup;      /* whether a warning should pop up the log window */
+			RND_CFT_STRING   error_tag;          /* log style tag of errors */
+			RND_CFT_BOOLEAN  error_popup;        /* whether an error should pop up the log window */
 		} loglevels;
 		const struct {
-			CFT_COLOR background;            /* background and cursor color ... */
-			CFT_COLOR off_limit;             /* on-screen background beyond the configured drawing area */
-			CFT_COLOR grid;                  /* on-screen grid */
-			CFT_COLOR cross;                 /* on-screen crosshair color (inverted) */
+			RND_CFT_COLOR background;            /* background and cursor color ... */
+			RND_CFT_COLOR off_limit;             /* on-screen background beyond the configured drawing area */
+			RND_CFT_COLOR grid;                  /* on-screen grid */
+			RND_CFT_COLOR cross;                 /* on-screen crosshair color (inverted) */
 		} color;
 	} appearance;
 
 	const struct {
-		CFT_INTEGER mode;                  /* currently active tool */
-		CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
-		CFT_COORD grid;                    /* grid in pcb-units */
-		CFT_LIST grids;                    /* grid in grid-string format */
-		CFT_INTEGER grids_idx;             /* the index of the currently active grid from grids */
-		CFT_BOOLEAN draw_grid;             /* draw grid points */
-		CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
-		CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
-		CFT_INTEGER crosshair_shape_idx;   /* crosshair shape as defined in pcb_crosshair_shape_e */
-		CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
+		RND_CFT_INTEGER mode;                  /* currently active tool */
+		RND_CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
+		RND_CFT_COORD grid;                    /* grid in pcb-units */
+		RND_CFT_LIST grids;                    /* grid in grid-string format */
+		RND_CFT_INTEGER grids_idx;             /* the index of the currently active grid from grids */
+		RND_CFT_BOOLEAN draw_grid;             /* draw grid points */
+		RND_CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
+		RND_CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
+		RND_CFT_INTEGER crosshair_shape_idx;   /* crosshair shape as defined in pcb_crosshair_shape_e */
+		RND_CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
 
 		const struct {
-			CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
-			CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
+			RND_CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
+			RND_CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
 		} view;
 
 	} editor;

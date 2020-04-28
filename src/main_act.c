@@ -231,8 +231,8 @@ fgw_error_t pcb_act_PrintPaths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	htsp_entry_t *e;
 	conf_fields_foreach(e) {
-		conf_native_t *n = e->value;
-		if ((strncmp(n->hash_path, "rc/path/", 8) == 0) && (n->type == CFN_STRING) && (n->used == 1))
+		rnd_conf_native_t *n = e->value;
+		if ((strncmp(n->hash_path, "rc/path/", 8) == 0) && (n->type == RND_CFN_STRING) && (n->used == 1))
 			printf("%-32s = %s\n", n->hash_path, n->val.string[0]);
 	}
 	printf("rc/default_font_file             ="); print_list(&conf_core.rc.default_font_file);

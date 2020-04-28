@@ -93,7 +93,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	pcb_data_t *fp_data;
 	const char *Filename;
-	conf_role_t settings_dest;
+	rnd_conf_role_t settings_dest;
 	gsxl_dom_t dom;
 	unsigned auto_layers:1;
 	unsigned module_pre_create:1;
@@ -2719,7 +2719,7 @@ static gsx_parse_res_t kicad_parse_file(FILE *FP, gsxl_dom_t *dom)
 	return res;
 }
 
-int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, conf_role_t settings_dest)
+int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int readres = 0;
 	read_state_t st;

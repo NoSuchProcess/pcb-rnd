@@ -48,7 +48,7 @@ $AWK -v "docdir=$1" '
 	function gen(path, src_line,state_tags,          id, name, type, array, desc, flags,path_tmp,type2,fn)
 	{
 		name=src_line
-		sub("^.*CFT_", "CFN_", name)
+		sub("^.*CFT_", "RND_CFN_", name)
 		sub(";.*", "", name)
 		type=name
 		sub("[ \t]*[^ \t]*$", "", type)

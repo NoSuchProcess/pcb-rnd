@@ -6,27 +6,27 @@
 
 typedef struct conf_hid_callbacks_s {
 	/* Called before/after a value of a config item is updated - this doesn't necessarily mean the value actually changes */
-	void (*val_change_pre)(conf_native_t *cfg, int arr_idx);
-	void (*val_change_post)(conf_native_t *cfg, int arr_idx);
+	void (*val_change_pre)(rnd_conf_native_t *cfg, int arr_idx);
+	void (*val_change_post)(rnd_conf_native_t *cfg, int arr_idx);
 
 	/* Called when a new config item is added to the database; global-only */
-	void (*new_item_post)(conf_native_t *cfg, int arr_idx);
-	void (*new_hlist_item_post)(conf_native_t *cfg, pcb_conf_listitem_t *i);
+	void (*new_item_post)(rnd_conf_native_t *cfg, int arr_idx);
+	void (*new_hlist_item_post)(rnd_conf_native_t *cfg, pcb_conf_listitem_t *i);
 
 	/* Called during pcb_conf_hid_unreg to get hid-data cleaned up */
-	void (*unreg_item)(conf_native_t *cfg, int arr_idx);
+	void (*unreg_item)(rnd_conf_native_t *cfg, int arr_idx);
 } conf_hid_callbacks_t;
 
 typedef int conf_hid_id_t;
 
 /* Set local hid data in a native item; returns the previous value set or NULL */
-void *pcb_conf_hid_set_data(conf_native_t *cfg, conf_hid_id_t id, void *data);
+void *pcb_conf_hid_set_data(rnd_conf_native_t *cfg, conf_hid_id_t id, void *data);
 
 /* Returns local hid data in a native item */
-void *pcb_conf_hid_get_data(conf_native_t *cfg, conf_hid_id_t id);
+void *pcb_conf_hid_get_data(rnd_conf_native_t *cfg, conf_hid_id_t id);
 
 /* Set local callbacks in a native item; returns the previous callbacks set or NULL */
-const conf_hid_callbacks_t *pcb_conf_hid_set_cb(conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs);
+const conf_hid_callbacks_t *pcb_conf_hid_set_cb(rnd_conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs);
 
 
 /* register a hid with a cookie; this is necessary only if:
@@ -77,7 +77,7 @@ do { \
 void pcb_conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup);
 
 /****** Internal  ******/
-void pcb_conf_hid_global_cb_int(conf_native_t *item, int arr_idx, int offs);
-void pcb_conf_hid_global_cb_ptr(conf_native_t *item, void *ptr, int offs);
+void pcb_conf_hid_global_cb_int(rnd_conf_native_t *item, int arr_idx, int offs);
+void pcb_conf_hid_global_cb_ptr(rnd_conf_native_t *item, void *ptr, int offs);
 
 #endif

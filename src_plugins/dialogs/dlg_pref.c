@@ -56,22 +56,22 @@ static const char *pref_cookie = "preferences dialog";
 conf_hid_id_t pref_hid;
 
 static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
-static const conf_role_t roles[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI, 0 };
+static const rnd_conf_role_t roles[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI, 0 };
 
-void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
+void pcb_pref_conf2dlg_item(rnd_conf_native_t *cn, pref_confitem_t *item)
 {
 	switch(cn->type) {
-		case CFN_COORD:
+		case RND_CFN_COORD:
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, crd, cn->val.coord[0]);
 			break;
-		case CFN_BOOLEAN:
-		case CFN_INTEGER:
+		case RND_CFN_BOOLEAN:
+		case RND_CFN_INTEGER:
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, lng, cn->val.integer[0]);
 			break;
-		case CFN_REAL:
+		case RND_CFN_REAL:
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, dbl, cn->val.real[0]);
 			break;
-		case CFN_STRING:
+		case RND_CFN_STRING:
 			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, str, cn->val.string[0]);
 			break;
 		default: rnd_message(PCB_MSG_ERROR, "pcb_pref_conf2dlg_item(): widget type not handled\n");
@@ -81,27 +81,27 @@ void pcb_pref_conf2dlg_item(conf_native_t *cn, pref_confitem_t *item)
 void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attribute_t *attr)
 {
 	pref_confitem_t *old = ctx->pcb_conf_lock;
-	conf_native_t *cn = pcb_conf_get_field(item->confpath);
+	rnd_conf_native_t *cn = pcb_conf_get_field(item->confpath);
 
 	if (cn == NULL)
 		return;
 
 	ctx->pcb_conf_lock = item;
 	switch(cn->type) {
-		case CFN_COORD:
+		case RND_CFN_COORD:
 			if (cn->val.coord[0] != attr->val.crd)
 				pcb_conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.crd);
 			break;
-		case CFN_BOOLEAN:
-		case CFN_INTEGER:
+		case RND_CFN_BOOLEAN:
+		case RND_CFN_INTEGER:
 			if (cn->val.integer[0] != attr->val.lng)
 				pcb_conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.lng);
 			break;
-		case CFN_REAL:
+		case RND_CFN_REAL:
 			if (cn->val.real[0] != attr->val.dbl)
 				pcb_conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.dbl);
 			break;
-		case CFN_STRING:
+		case RND_CFN_STRING:
 			if (strcmp(cn->val.string[0], attr->val.str) != 0)
 				pcb_conf_set(ctx->role, item->confpath, -1, attr->val.str, RND_POL_OVERWRITE);
 			break;
@@ -127,7 +127,7 @@ rnd_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid
 
 void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
 {
-	conf_native_t *cn = pcb_conf_get_field(item->confpath);
+	rnd_conf_native_t *cn = pcb_conf_get_field(item->confpath);
 
 	if (cn == NULL) {
 		rnd_message(PCB_MSG_ERROR, "Internal error: pcb_pref_create_conf_item(): invalid conf node %s\n", item->confpath);
@@ -139,7 +139,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 		PCB_DAD_HELP(ctx->dlg, cn->description);
 
 	switch(cn->type) {
-		case CFN_COORD:
+		case RND_CFN_COORD:
 			PCB_DAD_COORD(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
@@ -147,14 +147,14 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
-		case CFN_BOOLEAN:
+		case RND_CFN_BOOLEAN:
 			PCB_DAD_BOOL(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_DEFAULT_NUM(ctx->dlg, cn->val.integer[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
-		case CFN_INTEGER:
+		case RND_CFN_INTEGER:
 			PCB_DAD_INTEGER(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
@@ -162,7 +162,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
-		case CFN_REAL:
+		case RND_CFN_REAL:
 			PCB_DAD_REAL(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
@@ -170,7 +170,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
-		case CFN_STRING:
+		case RND_CFN_STRING:
 			PCB_DAD_STRING(ctx->dlg);
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
 				ctx->dlg[item->wid].val.str = rnd_strdup(cn->val.string[0]);
@@ -198,7 +198,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 {
 	pref_confitem_t *c;
 	for(c = list; c->confpath != NULL; c++) {
-		conf_native_t *cn = pcb_conf_get_field(c->confpath);
+		rnd_conf_native_t *cn = pcb_conf_get_field(c->confpath);
 		c->cnext = NULL;
 		if (cn != NULL)
 			pcb_conf_hid_set_data(cn, pref_hid, NULL);
@@ -359,7 +359,7 @@ static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, in
 	pref_win_brd2dlg(ctx);
 }
 
-void pref_conf_changed(conf_native_t *cfg, int arr_idx)
+void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pref_confitem_t *i;
 

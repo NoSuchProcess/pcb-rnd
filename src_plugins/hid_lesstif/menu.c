@@ -396,7 +396,7 @@ static void set_ins_after(Widget menu, lht_node_t *ins_after)
 	}
 }
 
-static void lesstif_confchg_checkbox(conf_native_t *cfg, int arr_idx)
+static void lesstif_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
 {
 	lesstif_update_widget_flags(NULL, NULL);
 }
@@ -499,7 +499,7 @@ TODO(": remove this call")
 			if (uo != NULL) {
 				static conf_hid_callbacks_t cbs;
 				static int cbs_inited = 0;
-				conf_native_t *nat = pcb_conf_get_field(uo);
+				rnd_conf_native_t *nat = pcb_conf_get_field(uo);
 
 				if (nat != NULL) {
 					if (!cbs_inited) {

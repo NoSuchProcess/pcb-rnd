@@ -334,7 +334,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	if (hidlib_conffile.used > 0) {
 		int n;
 		for(n = 0; n < hidlib_conffile.used; n++) {
-			conf_role_t role = CFR_CLI;
+			rnd_conf_role_t role = CFR_CLI;
 			char *srole, *sep, *fn = hidlib_conffile.array[n];
 			sep = strchr(fn, ';');
 			if (sep != NULL) {

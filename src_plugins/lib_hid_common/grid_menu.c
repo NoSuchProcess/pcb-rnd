@@ -37,11 +37,11 @@
 
 #define ANCH "@grid"
 
-static pcb_conf_resolve_t grids_idx = {"editor.grids_idx", CFN_INTEGER, 0, NULL};
+static pcb_conf_resolve_t grids_idx = {"editor.grids_idx", RND_CFN_INTEGER, 0, NULL};
 
 static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 	pcb_conflist_t *lst;
 	pcb_conf_listitem_t *li;
 	char *end = path + strlen(path);
@@ -53,7 +53,7 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 	if (nat == NULL)
 		return;
 
-	if (nat->type != CFN_LIST) {
+	if (nat->type != RND_CFN_LIST) {
 		rnd_message(PCB_MSG_ERROR, "grid_install_menu(): conf node editor/grids should be a list\n");
 		return;
 	}
@@ -92,7 +92,7 @@ void pcb_grid_install_menu(void)
 
 static int grid_lock = 0;
 
-void pcb_grid_update_conf(conf_native_t *cfg, int arr_idx)
+void pcb_grid_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (grid_lock) return;
 	grid_lock++;

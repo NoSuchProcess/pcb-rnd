@@ -31,14 +31,14 @@
 #include "conf_core.h"
 #include <librnd/core/misc_util.h>
 
-static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *nat, int idx);
+static const char *pref_conf_get_val(const lht_node_t *nd, const rnd_conf_native_t *nat, int idx);
 #include "dlg_pref_confedit.c"
 
 /* how many chars per line in conf node description (determines window width vs.
    window height */
 #define DESC_WRAP_WIDTH 50
 
-static const char *type_tabs[CFN_max+2] = /* MUST MATCH conf_native_type_t */
+static const char *type_tabs[RND_CFN_max+2] = /* MUST MATCH rnd_conf_native_type_t */
 	{"STRING", "BOOLEAN", "INTEGER", "REAL", "COORD", "UNIT", "COLOR", "LIST", "invalid", NULL};
 
 static int conf_tree_cmp(const void *v1, const void *v2)
@@ -68,7 +68,7 @@ static void setup_tree(pref_ctx_t *ctx)
 	for(n = 0; n < num_paths; n++) {
 		char *basename, *bnsep;
 		pcb_hid_row_t *parent;
-		conf_native_t *nat;
+		rnd_conf_native_t *nat;
 
 		e = sorted[n];
 		if (strlen(e->key) > sizeof(path) - 1) {
@@ -109,7 +109,7 @@ static void setup_tree(pref_ctx_t *ctx)
 	free(sorted);
 }
 
-static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *nat, int idx)
+static const char *pref_conf_get_val(const lht_node_t *nd, const rnd_conf_native_t *nat, int idx)
 {
 	lht_node_t *ni;
 
@@ -136,9 +136,9 @@ static const char *pref_conf_get_val(const lht_node_t *nd, const conf_native_t *
 	return "<invalid-type>";
 }
 
-static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
+static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 {
-	conf_role_t n;
+	rnd_conf_role_t n;
 	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r;
@@ -166,27 +166,27 @@ static void setup_intree(pref_ctx_t *ctx, conf_native_t *nat, int idx)
 	}
 }
 
-static const char *print_conf_val(conf_native_type_t type, const rnd_confitem_t *val, char *buf, int sizebuf)
+static const char *print_conf_val(rnd_conf_native_type_t type, const rnd_confitem_t *val, char *buf, int sizebuf)
 {
 	const char *ret = buf;
 
 	*buf = '\0';
 	switch(type) {
-		case CFN_STRING:   if (*val->string != NULL) ret = *val->string; break;
-		case CFN_BOOLEAN:  strcpy(buf, *val->boolean ? "true" : "false"); break;
-		case CFN_INTEGER:  sprintf(buf, "%ld", *val->integer); break;
-		case CFN_REAL:     sprintf(buf, "%f", *val->real); break;
-		case CFN_COORD:    pcb_snprintf(buf, sizebuf, "%mH\n%mm\n%ml", *val->coord, *val->coord, *val->coord); break;
-		case CFN_UNIT:     strcpy(buf, (*val->unit)->suffix); break;
-		case CFN_COLOR:    strcpy(buf, val->color->str); break;
-		case CFN_LIST:     strcpy(buf, "<list>"); break;
-		case CFN_HLIST:    strcpy(buf, "<hlist>"); break;
-		case CFN_max:      strcpy(buf, "<invalid-type>"); break;
+		case RND_CFN_STRING:   if (*val->string != NULL) ret = *val->string; break;
+		case RND_CFN_BOOLEAN:  strcpy(buf, *val->boolean ? "true" : "false"); break;
+		case RND_CFN_INTEGER:  sprintf(buf, "%ld", *val->integer); break;
+		case RND_CFN_REAL:     sprintf(buf, "%f", *val->real); break;
+		case RND_CFN_COORD:    pcb_snprintf(buf, sizebuf, "%mH\n%mm\n%ml", *val->coord, *val->coord, *val->coord); break;
+		case RND_CFN_UNIT:     strcpy(buf, (*val->unit)->suffix); break;
+		case RND_CFN_COLOR:    strcpy(buf, val->color->str); break;
+		case RND_CFN_LIST:     strcpy(buf, "<list>"); break;
+		case RND_CFN_HLIST:    strcpy(buf, "<hlist>"); break;
+		case RND_CFN_max:      strcpy(buf, "<invalid-type>"); break;
 	}
 	return ret;
 }
 
-static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_t *nat, int idx)
+static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_native_t *nat, int idx)
 {
 	pcb_hid_attr_val_t hv;
 	char *tmp, buf[128];
@@ -208,7 +208,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 		setup_intree(ctx, NULL, 0);
 
-		hv.lng = CFN_max;
+		hv.lng = RND_CFN_max;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
 		return;
@@ -230,7 +230,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 	hv.lng = nat->type;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
-	if ((nat->type == CFN_LIST) || (nat->type == CFN_HLIST)) {
+	if ((nat->type == RND_CFN_LIST) || (nat->type == RND_CFN_HLIST)) {
 		/* non-default: lists are manually loaded */
 		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[nat->type]];
 		pcb_hid_tree_t *tree = attr->wdata;
@@ -241,7 +241,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, conf_native_
 		for (n = pcb_conflist_first(&nat->val.list[idx]); n != NULL; n = pcb_conflist_next(n)) {
 			const char *strval;
 			rolename = pcb_conf_role_name(pcb_conf_lookup_role(n->prop.src));
-			if (nat->type == CFN_HLIST)
+			if (nat->type == RND_CFN_HLIST)
 				strval = n->name;
 			else
 				strval = print_conf_val(n->type, &n->val, buf, sizeof(buf));
@@ -276,7 +276,7 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	char *end, *end2;
-	conf_native_t *nat;
+	rnd_conf_native_t *nat;
 
 	if (row == NULL) { /* deselect */
 		dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, NULL, NULL, 0);
@@ -311,7 +311,7 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 }
 
 
-void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, conf_native_t *cfg, int arr_idx)
+void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (ctx->conf.selected_nat == cfg)
 		dlg_conf_select_node(ctx, NULL, cfg, ctx->conf.selected_idx);

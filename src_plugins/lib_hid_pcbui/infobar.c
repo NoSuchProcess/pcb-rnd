@@ -67,7 +67,7 @@ static void infobar_tick(pcb_hidval_t user_data)
 	}
 }
 
-static void pcb_infobar_update_conf(conf_native_t *cfg, int arr_idx)
+static void pcb_infobar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((!infobar_gui_inited) || (last_interval == conf_core.rc.file_changed_interval))
 		return;

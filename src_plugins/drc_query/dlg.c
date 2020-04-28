@@ -41,14 +41,14 @@ static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
-	conf_role_t role;
+	rnd_conf_role_t role;
 	char *rule, *path;
 	int wtype, wtitle, wdisable, wdesc, wquery, wsave, wsaveroles;
 	gdl_elem_t link;
 } rule_edit_ctx_t;
 
 static const char *save_roles[] = {"user", "project", "design", "cli", NULL};
-static conf_role_t save_rolee[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI};
+static rnd_conf_role_t save_rolee[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI};
 #define save_role_defaulti 2
 
 gdl_list_t rule_edit_dialogs;
@@ -173,7 +173,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	rule_edit_ctx_t *ctx = caller_data;
 	int ri = ctx->dlg[ctx->wsaveroles].val.lng;
 	lht_node_t *nd;
-	conf_role_t role;
+	rnd_conf_role_t role;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 	pcb_hid_text_t *txt = atxt->wdata;
 
@@ -219,7 +219,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 #undef MKDIR_ND
 
-static int pcb_dlg_rule_edit(conf_role_t role, const char *rule)
+static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *info, *path;
@@ -327,7 +327,7 @@ static const char pcb_acth_DrcQueryEditRule[] = "Interactive, GUI based DRC rule
 static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *srole, *spath, *srule = NULL;
-	conf_role_t role;
+	rnd_conf_role_t role;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, DrcQueryEditRule, srole = argv[1].val.str);
 	RND_PCB_ACT_CONVARG(2, FGW_STR, DrcQueryEditRule, spath = argv[2].val.str);
@@ -390,7 +390,7 @@ static void drc_rlist_pcb2dlg(void)
 
 	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		int *dis, dis_ = 0;
-		conf_role_t role;
+		rnd_conf_role_t role;
 		lht_node_t *rule = i->prop.src;
 		st = pcb_drcq_stat_get(rule->name);
 
@@ -473,7 +473,7 @@ static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
-	conf_role_t role;
+	rnd_conf_role_t role;
 
 	rlist_fetch();
 
@@ -486,7 +486,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	lht_node_t *nd;
 	const char *script;
-	conf_role_t role;
+	rnd_conf_role_t role;
 	pcb_view_list_t *view;
 	pcb_board_t *pcb = (pcb_board_t *)pcb_gui->get_dad_hidlib(hid_ctx);
 
@@ -512,7 +512,7 @@ static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 	drc_rlist_ctx_t *ctx = tree->user_ctx;
 	lht_node_t *nd;
 	gds_t tmp;
-	conf_role_t role;
+	rnd_conf_role_t role;
 	pcb_drcq_stat_t *st;
 
 	rlist_fetch();

@@ -34,7 +34,7 @@ struct pref_ctx_s {
 	pref_win_t win;
 	pref_conf_t conf;
 
-	conf_role_t role; /* where changes are saved to */
+	rnd_conf_role_t role; /* where changes are saved to */
 
 	pref_confitem_t *pcb_conf_lock; /* the item being changed - should be ignored in a conf change callback */
 	vtp0_t auto_free; /* free() each item on close */

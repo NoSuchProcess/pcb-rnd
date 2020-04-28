@@ -6,7 +6,7 @@
 typedef struct {
 	const struct {
 		const struct {
-			CFT_BOOLEAN disable;        /* disable the whole engine */
+			RND_CFT_BOOLEAN disable;        /* disable the whole engine */
 		} drc_orig;
 	} plugins;
 } conf_drc_orig_t;

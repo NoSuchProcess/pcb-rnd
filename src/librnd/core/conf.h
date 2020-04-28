@@ -54,28 +54,28 @@ typedef enum { /* bitfield */
 } rnd_conf_flag_t;
 
 
-typedef const char *      CFT_STRING;
-typedef int               CFT_BOOLEAN;
-typedef long              CFT_INTEGER;
-typedef double            CFT_REAL;
-typedef rnd_coord_t       CFT_COORD;
-typedef pcb_unit_t *      CFT_UNIT;
-typedef rnd_color_t       CFT_COLOR;
-typedef pcb_conflist_t    CFT_LIST;
-typedef pcb_conflist_t    CFT_HLIST;
+typedef const char *      RND_CFT_STRING;
+typedef int               RND_CFT_BOOLEAN;
+typedef long              RND_CFT_INTEGER;
+typedef double            RND_CFT_REAL;
+typedef rnd_coord_t       RND_CFT_COORD;
+typedef pcb_unit_t *      RND_CFT_UNIT;
+typedef rnd_color_t       RND_CFT_COLOR;
+typedef pcb_conflist_t    RND_CFT_LIST;
+typedef pcb_conflist_t    RND_CFT_HLIST;
 
 typedef enum {
-	CFN_STRING,
-	CFN_BOOLEAN,
-	CFN_INTEGER,     /* signed long */
-	CFN_REAL,        /* double */
-	CFN_COORD,
-	CFN_UNIT,
-	CFN_COLOR,
-	CFN_LIST,
-	CFN_HLIST,
-	CFN_max
-} conf_native_type_t;
+	RND_CFN_STRING,
+	RND_CFN_BOOLEAN,
+	RND_CFN_INTEGER,     /* signed long */
+	RND_CFN_REAL,        /* double */
+	RND_CFN_COORD,
+	RND_CFN_UNIT,
+	RND_CFN_COLOR,
+	RND_CFN_LIST,
+	RND_CFN_HLIST,
+	RND_CFN_max
+} rnd_conf_native_type_t;
 
 union rnd_confitem_u {
 	const char **string;
@@ -92,14 +92,14 @@ union rnd_confitem_u {
 typedef struct {
 	int prio;
 	lht_node_t *src;
-} confprop_t;
+} rnd_confprop_t;
 
 typedef struct {
 	/* static fields defined by the macros */
 	const char *description;
 	const char *hash_path;     /* points to the hash key once its added in the hash (else: NULL) */
 	int array_size;
-	conf_native_type_t type;
+	rnd_conf_native_type_t type;
 	rnd_conf_flag_t flags;
 	struct {
 		unsigned io_pcb_no_attrib:1;
@@ -111,7 +111,7 @@ typedef struct {
 
 	/* dynamic fields loaded from lihata */
 	rnd_confitem_t val;   /* value is always an array (len 1 for the common case)  */
-	confprop_t *prop; /* an array of properties allocated as big as val's array */
+	rnd_confprop_t *prop; /* an array of properties allocated as big as val's array */
 	int used;         /* number of items actually used in the arrays */
 	int rnd_conf_rev;     /* last changed rev */
 
@@ -120,13 +120,13 @@ typedef struct {
 	vtp0_t hid_callbacks; /* vector of (const conf_hid_callbacks_t *) */
 
 	const char *gui_edit_act; /* if non-zero, run this action for GUI editing; args: role_name, full_list_conf_path, item_name */
-} conf_native_t;
+} rnd_conf_native_t;
 
 
 struct conf_listitem_s {
-	conf_native_type_t type;
+	rnd_conf_native_type_t type;
 	rnd_confitem_t val;   /* value is always an array (len 1 for the common case)  */
-	confprop_t prop; /* an array of properties allocated as big as val's array */
+	rnd_confprop_t prop; /* an array of properties allocated as big as val's array */
 	const char *name;
 	const char *payload;
 	gdl_elem_t link;
@@ -149,7 +149,7 @@ typedef enum {
 	CFR_max_alloc,  /* all the above should have a root */
 
 	CFR_invalid
-} conf_role_t;
+} rnd_conf_role_t;
 
 extern const int pcb_conf_default_prio[];
 extern long pcb_conf_main_root_replace_cnt[CFR_max_alloc]; /* number of times the root has been replaced */
@@ -169,11 +169,11 @@ void pcb_conf_load_all(const char *project_fn, const char *pcb_fn);
 extern int pcb_conf_in_production;
 
 /* Load a file or a string as a role */
-int pcb_conf_load_as(conf_role_t role, const char *fn, int fn_is_text);
+int pcb_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text);
 
 /* copy root to be the new config of role; root must be a li:pcb-rnd-conf-v1
    return 0 on success and removes/invalidates root */
-int pcb_conf_insert_tree_as(conf_role_t role, lht_node_t *root);
+int pcb_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root);
 
 /* Load a project file into CFR_PROJECT. Both project_fn and pcb_fn can't be NULL.
    Leaves an initialized but empty CFR_PROJECT root if no project file was
@@ -185,21 +185,21 @@ void pcb_conf_load_extra(const char *project_fn, const char *pcb_fn);
 /* Update the binary representation from the memory-lht representation */
 void pcb_conf_update(const char *path, int arr_idx);
 
-conf_native_t *pcb_conf_get_field(const char *path);
-conf_native_t *pcb_conf_reg_field_(void *value, int array_size, conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags);
+rnd_conf_native_t *pcb_conf_get_field(const char *path);
+rnd_conf_native_t *pcb_conf_reg_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags);
 
-void pcb_conf_unreg_field(conf_native_t *field);
+void pcb_conf_unreg_field(rnd_conf_native_t *field);
 void pcb_conf_unreg_fields(const char *prefix);
 
 /* Set the value of path[arr_idx] in memory-lht role target to new_val using
    policy pol. Only lists should be indexed. Indexing can be a [n] suffix on
    path or a non-negative arr_idx. Updates the in-memory binary as well. If
    new_val is NULL, the selected subtree is removed from the lihata document. */
-int pcb_conf_set(conf_role_t target, const char *path, int arr_idx, const char *new_val, rnd_conf_policy_t pol);
+int pcb_conf_set(rnd_conf_role_t target, const char *path, int arr_idx, const char *new_val, rnd_conf_policy_t pol);
 
 /* Remove the subtree of path[arr_idx] in memory-lht role target. Same
    considerations as in pcb_conf_set. */
-int pcb_conf_del(conf_role_t target, const char *path, int arr_idx);
+int pcb_conf_del(rnd_conf_role_t target, const char *path, int arr_idx);
 
 /* Increase the size of a list (array) to new_size; returns 0 on success */
 int pcb_conf_grow(const char *path, int new_size);
@@ -207,11 +207,11 @@ int pcb_conf_grow(const char *path, int new_size);
 /* Same as pcb_conf_set, but without updating the binary - useful for multiple
    pcb_conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions.
    If mkdirp is non-zero, automatically create the policy subtree if it doesn't exist. */
-int pcb_conf_set_dry(conf_role_t target, const char *path_, int arr_idx, const char *new_val, rnd_conf_policy_t pol, int mkdirp);
+int pcb_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, const char *new_val, rnd_conf_policy_t pol, int mkdirp);
 
 /* Same as pcb_conf_set, but doesn't look up where to set things: change the value of
    the lihata node backing the native field */
-int pcb_conf_set_native(conf_native_t *field, int arr_idx, const char *new_val);
+int pcb_conf_set_native(rnd_conf_native_t *field, int arr_idx, const char *new_val);
 
 /* Process a command line argument arg_ (if val == NULL) or a pair of command line
    arguments arg_ and val. In the first case assume arg_ has both a config path
@@ -234,8 +234,8 @@ int pcb_conf_parse_arguments(const char *prefix, int *argc, char ***argv);
 #define pcb_conf_reg_field(globvar,   field,isarray,type_name,cpath,cname, desc, flags) \
 	pcb_conf_reg_field_ ## isarray(globvar, field,type_name,cpath "/" cname, desc, flags)
 
-/* convert type name t type - return CFN_max on error */
-conf_native_type_t pcb_conf_native_type_parse(const char *s);
+/* convert type name t type - return RND_CFN_max on error */
+rnd_conf_native_type_t pcb_conf_native_type_parse(const char *s);
 
 /* convert a policy text to policy value - return RND_POL_invalid on error */
 rnd_conf_policy_t pcb_conf_policy_parse(const char *s);
@@ -244,10 +244,10 @@ rnd_conf_policy_t pcb_conf_policy_parse(const char *s);
 const char *pcb_conf_policy_name(rnd_conf_policy_t p);
 
 /* convert a role text to role value - return CFR_invalid on error */
-conf_role_t pcb_conf_role_parse(const char *s);
+rnd_conf_role_t pcb_conf_role_parse(const char *s);
 
 /* Return the name of the role - always a static string, even for invalid roles */
-const char *pcb_conf_role_name(conf_role_t r);
+const char *pcb_conf_role_name(rnd_conf_role_t r);
 
 /* Lock/unlock the structure of a role. In a locked role value of existing
    fields may be modified but the structure of the tree is static (can't
@@ -255,26 +255,26 @@ const char *pcb_conf_role_name(conf_role_t r);
    only a subset of settings: it can build the CFR_DESIGN tree, lock it so
    settings that it wouldn't know how to save won't appear. NOTE: io_pcb
    supports all settings via attributes so does not lock. */
-void pcb_conf_lock(conf_role_t target);
-void pcb_conf_unlock(conf_role_t target);
+void pcb_conf_lock(rnd_conf_role_t target);
+void pcb_conf_unlock(rnd_conf_role_t target);
 
 
 /* replace dst_role:dst_path with a copy of src_role:src_path */
-int pcb_conf_replace_subtree(conf_role_t dst_role, const char *dst_path, conf_role_t src_role, const char *src_path);
+int pcb_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd_conf_role_t src_role, const char *src_path);
 
 /* Throw out a subtree (remove all nodes from the lihata representation).
    Useful for io_ plugins, on CFR_DESIGN, before loading a new file. */
-void pcb_conf_reset(conf_role_t target, const char *source_fn);
+void pcb_conf_reset(rnd_conf_role_t target, const char *source_fn);
 
 /* Save an in-memory lihata representation to the disk */
-int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, conf_role_t role, const char *fn);
+int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, rnd_conf_role_t role, const char *fn);
 
 /* Returns whether a given lihata tree is locked */
-int pcb_conf_islocked(conf_role_t target);
+int pcb_conf_islocked(rnd_conf_role_t target);
 
 /* Returns whether a given lihata tree has changed since load or last save */
-int pcb_conf_isdirty(conf_role_t target);
-void pcb_conf_makedirty(conf_role_t target);
+int pcb_conf_isdirty(rnd_conf_role_t target);
+void pcb_conf_makedirty(rnd_conf_role_t target);
 
 /* all configuration fields ever seen */
 extern htsp_t *pcb_conf_fields;
@@ -287,12 +287,12 @@ typedef int (*conf_pfn)(void *ctx, const char *fmt, ...);
    a single element of an array, but prints lists as lists. Returns
    the sum of conf_pfn call return values - this is usually the number of
    bytes printed. */
-int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, conf_native_type_t type, confprop_t *prop, int idx);
+int pcb_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, rnd_conf_native_type_t type, rnd_confprop_t *prop, int idx);
 
 /* Prints the value of a node in a form that is suitable for lihata. Prints
    full arrays. Returns the sum of conf_pfn call return values - this is
    usually the number of bytes printed. */
-int pcb_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, conf_native_t *node);
+int pcb_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, rnd_conf_native_t *node);
 
 /* Mark a path read-only */
 void pcb_conf_ro(const char *path);
@@ -303,7 +303,7 @@ void pcb_conf_ro(const char *path);
 #define rnd_conf_is_read_only(role) \
 	(((role) == CFR_INTERNAL) || ((role) == CFR_SYSTEM) || ((role) == CFR_DEFAULTPCB))
 
-void pcb_conf_setf(conf_role_t role, const char *path, int idx, const char *fmt, ...);
+void pcb_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
 #define conf_list_foreach_path_first(hidlib, res, conf_list, call) \
 do { \
@@ -354,13 +354,13 @@ do { \
 	conf_set_editor_("editor/" sfield, !pcbhl_conf.editor.field)
 
 /* For temporary modification/restoration of variables (hack) */
-#define conf_force_set_bool(var, val) *((CFT_BOOLEAN *)(&var)) = val
-#define conf_force_set_str(var, val) *((CFT_STRING *)(&var)) = val
+#define conf_force_set_bool(var, val) *((RND_CFT_BOOLEAN *)(&var)) = val
+#define conf_force_set_str(var, val) *((RND_CFT_STRING *)(&var)) = val
 
 /* get the first config subtree node (it's a hash and its children
    are "design", "rc", ...); if create is 1, and the subtree doesn't
    exist, create an "overwrite". */
-lht_node_t *pcb_conf_lht_get_first(conf_role_t target, int create);
+lht_node_t *pcb_conf_lht_get_first(rnd_conf_role_t target, int create);
 
 /* loop helper */
 pcb_conf_listitem_t *pcb_conf_list_first_str(pcb_conflist_t *list, const char **item_str, int *idx);
@@ -383,15 +383,15 @@ const char *pcb_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int 
 void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const char *help));
 
 /* Determine under which role a node is */
-conf_role_t pcb_conf_lookup_role(const lht_node_t *nd);
+rnd_conf_role_t pcb_conf_lookup_role(const lht_node_t *nd);
 
 /* Return the lihata node of a path in target, optionally creating it with the right type;
    if allow_plug is 1, fall back returning node from plugin conf */
-lht_node_t *pcb_conf_lht_get_at(conf_role_t target, const char *path, int create);
-lht_node_t *pcb_conf_lht_get_at_mainplug(conf_role_t target, const char *path, int allow_plug, int create);
+lht_node_t *pcb_conf_lht_get_at(rnd_conf_role_t target, const char *path, int create);
+lht_node_t *pcb_conf_lht_get_at_mainplug(rnd_conf_role_t target, const char *path, int allow_plug, int create);
 
 /* Write an existing conf subtree to a file */
-int pcb_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, conf_role_t role, const char *conf_path);
+int pcb_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, rnd_conf_role_t role, const char *conf_path);
 
 /* Determine the policy and priority of a config lihata node;
    returns 0 on success but may not fill in both values, caller is
@@ -400,7 +400,7 @@ int pcb_conf_get_policy_prio(lht_node_t *node, rnd_conf_policy_t *gpolicy, long 
 
 /* Parse text and convert the value into native form and store in one of dst
    fields depending on type */
-int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, conf_native_type_t type, const char *text, lht_node_t *err_node);
+int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t type, const char *text, lht_node_t *err_node);
 
 /* Returns the user configuration file name */
 const char *pcb_conf_get_user_conf_name();
@@ -410,7 +410,7 @@ const char *pcb_conf_get_project_conf_name(const char *project_fn, const char *p
 
 /* Get the first subtree that matches pol within target; allocate new
    subtree if needed */
-lht_node_t *pcb_conf_lht_get_first_pol(conf_role_t target, rnd_conf_policy_t pol, int create);
+lht_node_t *pcb_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
 
 /* (un)register a custom config file name (not path, just file name);
    if intern is not NULL, it is the internal (executable-embedded)
@@ -427,9 +427,9 @@ extern void (*pcb_conf_core_postproc)(void); /* if not NULL, called after conf u
 /*** mass resolve (useful to avoid conf_core dep) ***/
 typedef struct {
 	const char *path;           /* full conf path to look up */
-	conf_native_type_t type;    /* accept only if type matches */
+	rnd_conf_native_type_t type;    /* accept only if type matches */
 	int allow_array;            /* if 0, refuse arrays */
-	conf_native_t *nat;         /* NULL if refused or not found */
+	rnd_conf_native_t *nat;         /* NULL if refused or not found */
 } pcb_conf_resolve_t;
 
 /* Resolve a single nat or an array of them (until a terminaltor where

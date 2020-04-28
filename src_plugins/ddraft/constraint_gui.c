@@ -172,7 +172,7 @@ static void set_tang(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 	rnd_actionva(&PCB->hidlib, "tang", NULL);
 }
 
-void cons_gui_confchg(conf_native_t *cfg, int arr_idx)
+void cons_gui_confchg(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (!cnstgui_ctx.active || cnstgui_ctx.inhibit_confchg)
 		return;

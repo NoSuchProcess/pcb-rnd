@@ -76,25 +76,25 @@ static void ghid_win32_init(void) {} /* no-op on non-win32 */
 
 static const char *cookie_menu = "gtk hid menu";
 
-static void ghid_confchg_fullscreen(conf_native_t *cfg, int arr_idx)
+static void ghid_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
 		ghid_fullscreen_apply(&ghidgui->topwin);
 }
 
 
-void ghid_confchg_checkbox(conf_native_t *cfg, int arr_idx)
+void ghid_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((ghidgui->hid_active) && (ghidgui->hidlib != NULL))
 		ghid_update_toggle_flags(ghidgui->hidlib, &ghidgui->topwin, NULL);
 }
 
-static void ghid_confchg_cli(conf_native_t *cfg, int arr_idx)
+static void ghid_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
 {
 	ghid_command_update_prompt(&ghidgui->topwin.cmd);
 }
 
-static void ghid_confchg_spec_color(conf_native_t *cfg, int arr_idx)
+static void ghid_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (!ghidgui->hid_active)
 		return;
@@ -105,9 +105,9 @@ static void ghid_confchg_spec_color(conf_native_t *cfg, int arr_idx)
 
 
 
-static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(conf_native_t *, int))
+static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
 {
-	conf_native_t *n = pcb_conf_get_field(path);
+	rnd_conf_native_t *n = pcb_conf_get_field(path);
 	if (n != NULL) {
 		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
 		cbs->val_change_post = func;
