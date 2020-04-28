@@ -204,6 +204,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
 	int accept_total = 0;
 	FILE *ft;
+	long design_root_cnt = pcb_conf_main_root_replace_cnt[CFR_DESIGN];
 
 	ft = pcb_fopen(&Ptr->hidlib, Filename, "r");
 	len = pcb_test_parse_all(ft, Filename, fmt, PCB_IOT_PCB, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), ignore_missing, load_settings);
@@ -231,8 +232,11 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	pcb_layergrp_inhibit_dec();
 
 
-	if ((res == 0) && (load_settings))
+	if ((res == 0) && (load_settings)) {
+		if (design_root_cnt == pcb_conf_main_root_replace_cnt[CFR_DESIGN]) /* the newly loaded board did not bring a design root */
+			pcb_conf_reset(CFR_DESIGN, "<pcb_parse_pcb>");
 		pcb_conf_load_project(NULL, Filename);
+	}
 
 	if (res == 0)
 		pcb_set_design_dir(Filename);
