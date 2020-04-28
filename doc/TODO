@@ -7,6 +7,7 @@
 + CLEANUP/BUG: new board should delete the design subtree from the config; File>Import>Import schematics dialog does not open after starting new layout and clearing data.  Import schematic from file at trunk/doc/tutorials/7805_gschem.sch as genlist, start new layout { f n }, File>Import>Import schematics imports above file but does not open import dialog to allow user to choose a different file. [report: Miloh]
 - CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, Joe]
 + CLEANUP: remove the donut rats special casing - bug_files/donut.lht: {c f} on the line, it will also mark the sorrunding larger poly found for no good reason; it happens if the donut rat is within the polygon hole; cut the poly so it's C shaped around it and it won't happen ml=3497,3623 - see also bug_files/rats.lht - remove donuts? code: pcb_isc_ratp_poly() [report: gpaubert]
++ CLEANUP: insert drag&drop strangeness (mainline too): insert should just insert a new point and stop there, not starting a drag&drop move; the new point should be marked somehow (e.g. green-find one half of the object, like arc split does) lines can be inserted mostly only in all-dir-line which is strange [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
@@ -173,11 +174,6 @@
 - improve locking:
 	- FEATURE: consider a move-only lock?
 	- BUG: when thermal and some other operations are applied on a locked element, indicate it
-- CLEANUP: insert drag&drop strangeness (mainline too):
-	insert should just insert a new point and stop there, not starting a drag&drop
-	move; the new point should be marked somehow (e.g. green-find one half of the
-	object, like arc split does) lines can be inserted mostly only in all-dir-line
-	which is strange
 - FEATURE: DRC should warn for thin poly hair
 - FEATURE: trace length calculator:
 	- click a line or arc or via
