@@ -112,7 +112,7 @@ static char *main_path_init(char *argv0)
 #endif
 
 	if (haspath) {
-		bindir = pcb_lrealpath(argv0);
+		bindir = rnd_lrealpath(argv0);
 		found_bindir = 1;
 	}
 	else {
@@ -140,7 +140,7 @@ static char *main_path_init(char *argv0)
 #ifdef DEBUG
 					printf("Found it:  \"%s\"\n", tmps);
 #endif
-					bindir = pcb_lrealpath(tmps);
+					bindir = rnd_lrealpath(tmps);
 					found_bindir = 1;
 					free(tmps);
 					break;

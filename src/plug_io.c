@@ -118,7 +118,7 @@ void pcb_set_design_dir(const char *fn)
 	last_design_dir = NULL;
 
 	if (fn != NULL)
-		last_design_dir = pcb_lrealpath(fn);
+		last_design_dir = rnd_lrealpath(fn);
 
 	if (last_design_dir == NULL) {
 		last_design_dir = pcb_strdup("<invalid>");

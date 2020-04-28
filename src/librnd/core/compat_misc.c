@@ -242,5 +242,5 @@ double pcb_dtime(void)
 
 int pcb_fileno(FILE *f)
 {
-	return PCB_HOST_FILENO(f);
+	return RND_HOST_FILENO(f);
 }

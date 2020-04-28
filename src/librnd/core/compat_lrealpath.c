@@ -22,7 +22,7 @@
 
 /*
 
-@deftypefn Replacement {const char*} pcb_lrealpath(const char *@var{name})
+@deftypefn Replacement {const char*} rnd_lrealpath(const char *@var{name})
 
 Given a pointer to a string containing a pathname, returns a canonical
 version of the filename.  Symlinks will be resolved, and ``.'' and ``..''
@@ -66,7 +66,7 @@ extern char *canonicalize_file_name(const char *);
 #endif
 #endif
 
-char *pcb_lrealpath(const char *filename)
+char *rnd_lrealpath(const char *filename)
 {
 	/* Method 1: The system has a compile time upper bound on a filename
 	   path.  Use that and realpath() to canonicalize the name.  This is

@@ -199,3 +199,4 @@
 #define pcb_tempfile_name_new rnd_tempfile_name_new
 #define pcb_tempfile_unlink rnd_tempfile_unlink
 #define pcb_is_path_abs rnd_is_path_abs
+#define pcb_lrealpath rnd_lrealpath
