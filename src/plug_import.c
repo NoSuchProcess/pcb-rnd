@@ -105,7 +105,7 @@ int pcb_import(rnd_hidlib_t *hidlib, const char *filename, unsigned int aspect)
 {
 	pcb_plug_import_t *plug;
 
-	if (!pcb_file_readable(filename)) {
+	if (!rnd_file_readable(filename)) {
 		rnd_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s - might be related: can't open %s for reading\n", filename, filename);
 		return 1;
 	}

@@ -204,7 +204,7 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 
 	if (*cwd == '\0')
-		pcb_get_wd(cwd);
+		rnd_get_wd(cwd);
 
 	name = pcb_gui->fileselect(pcb_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (name == NULL)

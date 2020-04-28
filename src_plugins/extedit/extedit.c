@@ -249,8 +249,8 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	tmp_fn = pcb_tempfile_name_new("extedit");
-	tmp_cfg_fn = pcb_tempfile_name_new("extedit_cfg");
+	tmp_fn = rnd_tempfile_name_new("extedit");
+	tmp_cfg_fn = rnd_tempfile_name_new("extedit_cfg");
 	if ((tmp_fn == NULL) || (tmp_cfg_fn == NULL)) {
 		rnd_message(PCB_MSG_ERROR, "Failed to create temporary file\n");
 		ret = 1;
@@ -327,9 +327,9 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	quit1:;
 	if (tmp_fn != NULL)
-		pcb_tempfile_unlink(tmp_fn);
+		rnd_tempfile_unlink(tmp_fn);
 	if (tmp_cfg_fn != NULL)
-		pcb_tempfile_unlink(tmp_cfg_fn);
+		rnd_tempfile_unlink(tmp_cfg_fn);
 	quit0:;
 	pcb_buffer_set_number(obn);
 	RND_ACT_IRES(ret);

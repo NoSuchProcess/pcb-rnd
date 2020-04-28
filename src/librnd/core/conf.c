@@ -285,7 +285,7 @@ static int conf_load_plug_files(conf_role_t role, const char *dir)
 
 	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e)) {
 		strcpy(fn, e->key);
-		if (pcb_file_readable(path)) {
+		if (rnd_file_readable(path)) {
 			lht_doc_t *d = conf_load_plug_file(path, 0);
 			if (d != NULL) {
 				int res = conf_merge_plug(d, role, path);

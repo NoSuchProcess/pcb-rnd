@@ -126,7 +126,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
-	if (pcb_get_wd(olddir) == NULL) {
+	if (rnd_get_wd(olddir) == NULL) {
 		rnd_message(PCB_MSG_ERROR, "fp_fs_list(): Could not determine initial working directory\n");
 		return 0;
 	}
@@ -142,7 +142,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 
 	/* Determine subdir's abs path */
-	if (pcb_get_wd(new_subdir) == NULL) {
+	if (rnd_get_wd(new_subdir) == NULL) {
 		rnd_message(PCB_MSG_ERROR, "fp_fs_list(): Could not determine new working directory\n");
 		if (chdir(olddir))
 			pcb_chdir_error_message(olddir);
@@ -331,7 +331,7 @@ static char *fp_fs_search(const char *search_path, const char *basename, int par
 	char path[PCB_PATH_MAX + 1];
 	fp_search_t ctx;
 
-	if (pcb_is_path_abs(basename))
+	if (rnd_is_path_abs(basename))
 		return pcb_strdup(basename);
 
 	ctx.target = basename;
@@ -415,7 +415,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 #endif
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
 			/* Make a copy of the output of the parametric so rewind() can be called on it */
-			fctx->field[F_TMPNAME].p = pcb_tempfile_name_new("pcb-rnd-pfp");
+			fctx->field[F_TMPNAME].p = rnd_tempfile_name_new("pcb-rnd-pfp");
 			f = pcb_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "wb+");
 			if (f != NULL) {
 				char buff[4096];
@@ -445,7 +445,7 @@ static void fp_fs_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 {
 	fclose(f);
 	if (fctx->field[F_TMPNAME].p != NULL)
-		pcb_tempfile_unlink((char *)fctx->field[F_TMPNAME].p);
+		rnd_tempfile_unlink((char *)fctx->field[F_TMPNAME].p);
 }
 
 

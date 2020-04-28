@@ -67,7 +67,7 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 		return -1;
 	}
 	if ((outfn[0] == '-') && (outfn[1] == '\0')) {
-		tmpfn = pcb_tempfile_name_new("net_cmd_output");
+		tmpfn = rnd_tempfile_name_new("net_cmd_output");
 		outfn = tmpfn;
 	}
 
@@ -83,7 +83,7 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 		pcb_import_netlist(&PCB->hidlib, outfn);
 	}
 	if (tmpfn != NULL)
-		pcb_tempfile_unlink(tmpfn);
+		rnd_tempfile_unlink(tmpfn);
 	return res;
 }
 

@@ -458,7 +458,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 	pcbway_dlg2fields(octx, form);
 
-	tmpfn = pcb_tempfile_name_new("pcbway_quote.xml");
+	tmpfn = rnd_tempfile_name_new("pcbway_quote.xml");
 	if (tmpfn == NULL) {
 		rnd_message(PCB_MSG_ERROR, "order_pcbway: can't get temp file name\n");
 		return;
@@ -466,7 +466,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 	fx = pcb_fopen(&PCB->hidlib, tmpfn, "w");
 	if (fx == NULL) {
-		pcb_tempfile_unlink(tmpfn);
+		rnd_tempfile_unlink(tmpfn);
 		rnd_message(PCB_MSG_ERROR, "order_pcbway: can't open temp file\n");
 		return;
 	}
@@ -522,7 +522,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcbway_present_quote(octx, respfn);
 
 	err:;
-	pcb_tempfile_unlink(tmpfn);
+	rnd_tempfile_unlink(tmpfn);
 }
 
 

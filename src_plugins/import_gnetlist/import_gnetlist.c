@@ -88,7 +88,7 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	char **cmd;
 	int n, res, verbose;
 	fgw_arg_t rs;
-	char *tmpfn = pcb_tempfile_name_new("gnetlist_output");
+	char *tmpfn = rnd_tempfile_name_new("gnetlist_output");
 
 	PCB_IMPORT_SCH_VERBOSE(verbose);
 
@@ -118,7 +118,7 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 		rnd_message(PCB_MSG_DEBUG, "\n");
 	}
 
-	res = pcb_spawnvp((const char **)cmd);
+	res = rnd_spawnvp((const char **)cmd);
 	if (res == 0) {
 		if (verbose)
 			rnd_message(PCB_MSG_DEBUG, "pcb_gnetlist:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfn);

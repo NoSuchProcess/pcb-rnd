@@ -340,7 +340,7 @@ FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const pcb_conflist_t *paths, const c
 	if (real_fn == NULL)
 		return NULL;
 
-	if (pcb_is_path_abs(fn)) {
+	if (rnd_is_path_abs(fn)) {
 		res = pcb_fopen(hidlib, real_fn, mode);
 		if ((res != NULL) && (full_path != NULL))
 			*full_path = real_fn;

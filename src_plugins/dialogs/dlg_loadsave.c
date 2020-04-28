@@ -48,7 +48,7 @@ extern fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 static char *dup_cwd(void)
 {
 	char tmp[PCB_PATH_MAX + 1];
-	return pcb_strdup(pcb_get_wd(tmp));
+	return pcb_strdup(rnd_get_wd(tmp));
 }
 
 const char pcb_acts_Load[] = "Load()\n" "Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)";

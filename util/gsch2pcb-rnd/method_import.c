@@ -105,11 +105,11 @@ static int method_import_guess_out_name(void)
 	char *name;
 	
 	name = pcb_concat(conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".lht", NULL);
-	res = pcb_file_readable(name);
+	res = rnd_file_readable(name);
 	free(name);
 	if (!res) {
 		name = pcb_concat(conf_g2pr.utils.gsch2pcb_rnd.sch_basename, ".pcb.lht", NULL);
-		res = pcb_file_readable(name);
+		res = rnd_file_readable(name);
 		free(name);
 	}
 	return res;

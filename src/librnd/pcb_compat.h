@@ -193,3 +193,9 @@
 #define PCB_BOOLEAN_EXPR RND_BOOLEAN_EXPR
 #define PCB_LIKELY RND_LIKELY
 #define PCB_UNLIKELY RND_UNLIKELY
+#define pcb_get_wd rnd_get_wd
+#define pcb_spawnvp rnd_spawnvp
+#define pcb_file_readable rnd_file_readable
+#define pcb_tempfile_name_new rnd_tempfile_name_new
+#define pcb_tempfile_unlink rnd_tempfile_unlink
+#define pcb_is_path_abs rnd_is_path_abs

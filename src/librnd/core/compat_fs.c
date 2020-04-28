@@ -56,7 +56,7 @@
 
 #include <librnd/core/error.h>
 
-char *pcb_get_wd(char *path)
+char *rnd_get_wd(char *path)
 {
 #if defined(RND_HAVE_GETCWD)
 	return getcwd(path, PCB_PATH_MAX);
@@ -87,7 +87,7 @@ int pcb_mkdir_(const char *path, int mode)
 }
 #undef MKDIR
 
-int pcb_file_readable(const char *path)
+int rnd_file_readable(const char *path)
 {
 	FILE *f;
 	f = pcb_fopen(NULL, path, "r");
@@ -98,7 +98,7 @@ int pcb_file_readable(const char *path)
 	return 0;
 }
 
-int pcb_spawnvp(const char **argv)
+int rnd_spawnvp(const char **argv)
 {
 #if defined(RND_USE_SPAWNVP)
 	int result = _spawnvp(_P_WAIT, argv[0], (const char *const *) argv);
@@ -137,17 +137,17 @@ int pcb_spawnvp(const char **argv)
  * the returned string is made up of the directory plus the name
  * variable.  For example:
  *
- * pcb_tempfile_name_new("myfile") might return
+ * rnd_tempfile_name_new("myfile") might return
  * "/var/tmp/pcb.123456/myfile".
  *
  * If mkdtemp() is not available then 'name' is ignored and the
  * insecure tmpnam() function is used.
  *
- * Files/names created with pcb_tempfile_name_new() should be unlinked
+ * Files/names created with rnd_tempfile_name_new() should be unlinked
  * with tempfile_unlink to make sure the temporary directory is also
  * removed when mkdtemp() is used.
  */
-char *pcb_tempfile_name_new(const char *name)
+char *rnd_tempfile_name_new(const char *name)
 {
 	char *tmpfile = NULL;
 
@@ -193,7 +193,7 @@ char *pcb_tempfile_name_new(const char *name)
 
 	mytmpdir = (char *) malloc(sizeof(char) * (strlen(tmpdir) + 1 + strlen(TEMPLATE) + 1));
 	if (mytmpdir == NULL) {
-		fprintf(stderr, "pcb_tempfile_name_new(): malloc failed()\n");
+		fprintf(stderr, "rnd_tempfile_name_new(): malloc failed()\n");
 		exit(1);
 	}
 
@@ -202,7 +202,7 @@ char *pcb_tempfile_name_new(const char *name)
 	(void) strcat(mytmpdir, RND_DIR_SEPARATOR_S);
 	(void) strcat(mytmpdir, TEMPLATE);
 	if (mkdtemp(mytmpdir) == NULL) {
-		fprintf(stderr, "pcb_spawnvp():  mkdtemp (\"%s\") failed\n", mytmpdir);
+		fprintf(stderr, "rnd_spawnvp():  mkdtemp (\"%s\") failed\n", mytmpdir);
 		free(mytmpdir);
 		return NULL;
 	}
@@ -236,7 +236,7 @@ char *pcb_tempfile_name_new(const char *name)
 
 /* If we have mkdtemp() then our temp file lives in a temporary directory and
  * we need to remove that directory too. */
-int pcb_tempfile_unlink(char *name)
+int rnd_tempfile_unlink(char *name)
 {
 #ifdef DEBUG
 	/* SDB says:  Want to keep old temp files for examination when debugging */
@@ -272,8 +272,8 @@ int pcb_tempfile_unlink(char *name)
 
 	}
 	else {
-		fprintf(stderr, "pcb_tempfile_unlink():  Unable to determine temp directory name from the temp file\n");
-		fprintf(stderr, "pcb_tempfile_unlink():  \"%s\"\n", name);
+		fprintf(stderr, "rnd_tempfile_unlink():  Unable to determine temp directory name from the temp file\n");
+		fprintf(stderr, "rnd_tempfile_unlink():  \"%s\"\n", name);
 		rc2 = -1;
 	}
 
@@ -330,7 +330,7 @@ double pcb_file_mtime_(const char *path)
 	return st.st_mtime;
 }
 
-int pcb_is_path_abs(const char *fn)
+int rnd_is_path_abs(const char *fn)
 {
 #ifdef __WIN32__
 	/* full path with drive, e.g. c:\foo */

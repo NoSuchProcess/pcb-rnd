@@ -392,10 +392,10 @@ int script_oneliner(const char *lang, const char *src)
 	char *fn;
 	int res = 0;
 
-	fn = pcb_tempfile_name_new("oneliner");
+	fn = rnd_tempfile_name_new("oneliner");
 	f = pcb_fopen(NULL, fn, "w");
 	if (f == NULL) {
-		pcb_tempfile_unlink(fn);
+		rnd_tempfile_unlink(fn);
 		rnd_message(PCB_MSG_ERROR, "script oneliner: can't open temp file for write\n");
 		return -1;
 	}
@@ -411,7 +411,7 @@ int script_oneliner(const char *lang, const char *src)
 	}
 	pcb_script_unload("__oneliner", NULL);
 
-	pcb_tempfile_unlink(fn);
+	rnd_tempfile_unlink(fn);
 	return res;
 }
 

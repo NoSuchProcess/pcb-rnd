@@ -330,7 +330,7 @@ static int ltspice_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 		return 0; /* only pure netlist import is supported */
 
 	gen_filenames(args[0], &fname_net, &fname_asc);
-	if (!pcb_file_readable(fname_net))
+	if (!rnd_file_readable(fname_net))
 		goto quit;
 
 	f = pcb_fopen(&PCB->hidlib, fname_asc, "r");

@@ -40,7 +40,7 @@ static int perma_load(const char *dir, const char *id, const char *path_in, cons
 	char spath[PCB_PATH_MAX];
 	const char *path;
 
-	if (!pcb_is_path_abs(path_in)) {
+	if (!rnd_is_path_abs(path_in)) {
 		path = spath;
 		pcb_snprintf(spath, sizeof(spath), "%s%c%s", dir, RND_DIR_SEPARATOR_C, path_in);
 	}

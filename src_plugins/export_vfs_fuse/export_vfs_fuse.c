@@ -243,7 +243,7 @@ static void pcb_fuse_destroy(void *private_data)
 		return;
 
 	/* pwd is lost during daemonisation */
-	if (!pcb_is_path_abs(PCB->hidlib.filename))
+	if (!rnd_is_path_abs(PCB->hidlib.filename))
 		fn = pcb_strdup_printf("%s%c%s", fuse_cwd, RND_DIR_SEPARATOR_C, PCB->hidlib.filename);
 
 	if (pcb_save_pcb(fn, NULL) != 0) {
@@ -259,7 +259,7 @@ static void export_vfs_fuse_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *option
 {
 	static struct fuse_operations oper;
 
-	pcb_get_wd(fuse_cwd);
+	rnd_get_wd(fuse_cwd);
 
 	oper.readdir = pcb_fuse_readdir;
 	oper.open = pcb_fuse_open;

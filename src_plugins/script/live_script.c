@@ -287,10 +287,10 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 	int res = 0;
 	long numu;
 
-	fn = pcb_tempfile_name_new("live_script");
+	fn = rnd_tempfile_name_new("live_script");
 	f = pcb_fopen(hl, fn, "w");
 	if (f == NULL) {
-		pcb_tempfile_unlink(fn);
+		rnd_tempfile_unlink(fn);
 		rnd_message(PCB_MSG_ERROR, "live_script: can't open temp file for write\n");
 		return -1;
 	}
@@ -324,7 +324,7 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 
 	pcb_gui->invalidate_all(pcb_gui); /* if the script drew anything, get it displayed */
 
-	pcb_tempfile_unlink(fn);
+	rnd_tempfile_unlink(fn);
 	return res;
 }
 
