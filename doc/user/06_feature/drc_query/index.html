@@ -231,6 +231,7 @@ The following DRC* constants can be used:
 <tr><td> DRCGRP2        <td> following object is in group-2 of offending objects
 <tr><td> DRCEXPECT      <td> following numeric constant is DRC-expected value (e.g. minimum or maximum)
 <tr><td> DRCMEASURE     <td> following numeric constant is the measured value (that contradicts the expected value)
+<tr><td> DRCTEXT        <td> following string or value is appended to the violation description as plain text
 </table>
 <p>
 Using any of the above instructions is optional, with the following considerations:
@@ -240,5 +241,6 @@ Using any of the above instructions is optional, with the following consideratio
 	     the location of the problem
 	<li> if DRCMEASURE is specified, DRCEXPECT must also be specified, else
 	     DRCMEASURE is ignored
-	<li> order of instructions does not matter
+	<li> order of instructions does not matter, except for: when multiple
+	     DRCTEXT items are specified, their order is preserved
 </ul>
