@@ -115,11 +115,11 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, FullScreen, cmd = argv[1].val.str);
 
 	if ((cmd == NULL) || (rnd_strcasecmp(cmd, "Toggle") == 0))
-		pcb_conf_setf(CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, RND_POL_OVERWRITE);
+		pcb_conf_setf(RND_CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, RND_POL_OVERWRITE);
 	else if (rnd_strcasecmp(cmd, "On") == 0)
-		pcb_conf_set(CFR_DESIGN, "editor/fullscreen", -1, "1", RND_POL_OVERWRITE);
+		pcb_conf_set(RND_CFR_DESIGN, "editor/fullscreen", -1, "1", RND_POL_OVERWRITE);
 	else if (rnd_strcasecmp(cmd, "Off") == 0)
-		pcb_conf_set(CFR_DESIGN, "editor/fullscreen", -1, "0", RND_POL_OVERWRITE);
+		pcb_conf_set(RND_CFR_DESIGN, "editor/fullscreen", -1, "0", RND_POL_OVERWRITE);
 	else
 		RND_ACT_FAIL(FullScreen);
 

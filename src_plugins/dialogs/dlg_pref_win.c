@@ -84,17 +84,17 @@ static void pref_win_user_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 static void pref_win_board_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_wplc_save_to_role(CFR_USER);
+	pcb_wplc_save_to_role(RND_CFR_USER);
 }
 
 static void pref_win_project_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_wplc_save_to_role(CFR_USER);
+	pcb_wplc_save_to_role(RND_CFR_USER);
 }
 
 static void pref_win_user_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
-	pcb_wplc_save_to_role(CFR_USER);
+	pcb_wplc_save_to_role(RND_CFR_USER);
 }
 
 static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)

@@ -82,7 +82,7 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
 		role = pcb_conf_role_parse(srole);
-		if (role == CFR_invalid) {
+		if (role == RND_CFR_invalid) {
 			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
 			RND_ACT_IRES(1);
 			return 0;
@@ -129,13 +129,13 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	printf("Conf node %s\n", path);
-	for(role = 0; role < CFR_max_real; role++) {
+	for(role = 0; role < RND_CFR_max_real; role++) {
 		lht_node_t *n;
 		printf(" Role: %s\n", pcb_conf_role_name(role));
 		n = pcb_conf_lht_get_at(role, path, 0);
 		if (n != NULL) {
 			rnd_conf_policy_t pol = -1;
-			long prio = pcb_conf_default_prio[role];
+			long prio = rnd_conf_default_prio[role];
 
 
 			if (pcb_conf_get_policy_prio(n, &pol, &prio) == 0)

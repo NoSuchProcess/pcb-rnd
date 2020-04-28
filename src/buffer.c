@@ -290,7 +290,7 @@ rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	pcb_layergrp_inhibit_inc();
 
 	/* new data isn't added to the undo list */
-	if (!pcb_parse_pcb(newPCB, Filename, fmt, CFR_invalid, 0)) {
+	if (!pcb_parse_pcb(newPCB, Filename, fmt, RND_CFR_invalid, 0)) {
 		pcb_data_t *tmpdata;
 
 		/* clear data area and replace pointer */

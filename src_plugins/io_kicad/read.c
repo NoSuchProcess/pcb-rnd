@@ -2814,7 +2814,7 @@ int io_kicad_parse_module(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name,
 	st.pcb = NULL;
 	st.fp_data = Ptr;
 	st.Filename = fpst.filename;
-	st.settings_dest = CFR_invalid;
+	st.settings_dest = RND_CFR_invalid;
 	st.auto_layers = 1;
 
 	res = kicad_parse_file(f, &st.dom);

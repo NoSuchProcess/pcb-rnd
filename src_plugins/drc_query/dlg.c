@@ -48,7 +48,7 @@ typedef struct{
 } rule_edit_ctx_t;
 
 static const char *save_roles[] = {"user", "project", "design", "cli", NULL};
-static rnd_conf_role_t save_rolee[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI};
+static rnd_conf_role_t save_rolee[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_DESIGN, RND_CFR_CLI};
 #define save_role_defaulti 2
 
 gdl_list_t rule_edit_dialogs;
@@ -193,7 +193,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		MKDIR_ND(nd, nd, LHT_HASH, "plugins");
 		MKDIR_ND(nd, nd, LHT_HASH, "drc_query");
 		MKDIR_ND(nd, nd, LHT_LIST, "rules");
-		if ((nd->data.list.first == NULL) && (role != CFR_USER)) {
+		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
 			gdl_iterator_t it;
 			pcb_conf_listitem_t *i;
 
@@ -337,7 +337,7 @@ static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t 
 		srule = spath;
 
 	role = pcb_conf_role_parse(srole);
-	if (role == CFR_invalid)
+	if (role == RND_CFR_invalid)
 		RND_ACT_FAIL(DrcQueryEditRule);
 
 	RND_ACT_IRES(pcb_dlg_rule_edit(role, srule));
@@ -452,7 +452,7 @@ do { \
 		return; \
 	} \
 	role = pcb_conf_role_parse(row->cell[1]); \
-	if (role == CFR_invalid) { \
+	if (role == RND_CFR_invalid) { \
 		rnd_message(PCB_MSG_ERROR, "internal error: invalid role %s\n", row->cell[0]); \
 		return; \
 	} \

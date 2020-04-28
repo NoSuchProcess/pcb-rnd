@@ -94,7 +94,7 @@ void pcb_gtk_conf_init(void)
 	int warned = 0;
 	const char **p;
 	static int dummy_gtk_conf_init;
-	int dirty[CFR_max_real] = {0};
+	int dirty[RND_CFR_max_real] = {0};
 	rnd_conf_role_t r;
 
 	ghid_conf_id = pcb_conf_hid_reg(lib_gtk_config_cookie, NULL);
@@ -128,7 +128,7 @@ void pcb_gtk_conf_init(void)
 		pcb_conf_setf(r, p[1], -1, "%d", nat->val.integer[0]);
 		dirty[r] = 1;
 	}
-	for(r = 0; r < CFR_max_real; r++)
+	for(r = 0; r < RND_CFR_max_real; r++)
 		if (dirty[r])
 			pcb_wplc_load(r);
 }

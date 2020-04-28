@@ -52,7 +52,7 @@ static void isch_arg2pcb(void)
 		if (newval == NULL)
 			newval = "";
 		if (strcmp(ci->val.string[0], newval) != 0) {
-			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", n, newval, RND_POL_OVERWRITE);
+			pcb_conf_set(RND_CFR_DESIGN, "plugins/import_sch/args", n, newval, RND_POL_OVERWRITE);
 			goto restart; /* elements may be deleted and added with different pointers... */
 		}
 	}
@@ -106,7 +106,7 @@ static void isch_switch_fmt(int target, int setconf)
 	isch_conf_lock++;
 	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wtab, lng, target);
 	if (setconf && (p != NULL))
-		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/import_fmt", 0, p->name, RND_POL_OVERWRITE);
+		pcb_conf_set(RND_CFR_DESIGN, "plugins/import_sch/import_fmt", 0, p->name, RND_POL_OVERWRITE);
 
 	if (p == NULL) {
 		len = 0;
@@ -116,7 +116,7 @@ static void isch_switch_fmt(int target, int setconf)
 		len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 		if (len < 1) {
 			pcb_conf_grow("plugins/import_sch/args", 1);
-			pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", 0, "", RND_POL_OVERWRITE);
+			pcb_conf_set(RND_CFR_DESIGN, "plugins/import_sch/args", 0, "", RND_POL_OVERWRITE);
 		}
 		len = 1;
 		controllable = 0;
@@ -171,7 +171,7 @@ static void isch_arg_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 {
 	int len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if (len > 0) {
-		pcb_conf_del(CFR_DESIGN, "plugins/import_sch/args", len-1);
+		pcb_conf_del(RND_CFR_DESIGN, "plugins/import_sch/args", len-1);
 		isch_pcb2dlg();
 	}
 }
@@ -182,7 +182,7 @@ static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	if (len < MAX_ARGS+1) {
 		isch_conf_lock++;
 		pcb_conf_grow("plugins/import_sch/args", len+1);
-		pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", len, "", RND_POL_OVERWRITE);
+		pcb_conf_set(RND_CFR_DESIGN, "plugins/import_sch/args", len, "", RND_POL_OVERWRITE);
 		isch_pcb2dlg();
 		isch_conf_lock--;
 	}
@@ -211,7 +211,7 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 		return;
 
 	isch_conf_lock++;
-	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/args", idx, name, RND_POL_OVERWRITE);
+	pcb_conf_set(RND_CFR_DESIGN, "plugins/import_sch/args", idx, name, RND_POL_OVERWRITE);
 	isch_pcb2dlg();
 	free(name);
 	isch_conf_lock--;
@@ -240,7 +240,7 @@ static void isch_generic_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 {
 	const char *nv = isch_ctx.dlg[isch_ctx.wverbose].val.lng ? "1" : "0";
 	isch_conf_lock++;
-	pcb_conf_set(CFR_DESIGN, "plugins/import_sch/verbose", 0, nv, RND_POL_OVERWRITE);
+	pcb_conf_set(RND_CFR_DESIGN, "plugins/import_sch/verbose", 0, nv, RND_POL_OVERWRITE);
 	isch_conf_lock--;
 }
 

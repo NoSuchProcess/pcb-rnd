@@ -145,12 +145,12 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 
 	pcb_dad_tree_clear(tree);
 
-	for(n = 0; n < CFR_max_real; n++) {
+	for(n = 0; n < RND_CFR_max_real; n++) {
 		char *cell[5]= {NULL};
 		cell[0] = rnd_strdup(pcb_conf_role_name(n));
 		if (nat != NULL) {
 			lht_node_t *nd;
-			long prio = pcb_conf_default_prio[n];
+			long prio = rnd_conf_default_prio[n];
 			rnd_conf_policy_t pol = RND_POL_OVERWRITE;
 
 			nd = pcb_conf_lht_get_at_mainplug(n, nat->hash_path, 1, 0);

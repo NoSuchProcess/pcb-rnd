@@ -56,7 +56,7 @@ static const char *pref_cookie = "preferences dialog";
 conf_hid_id_t pref_hid;
 
 static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
-static const rnd_conf_role_t roles[] = { CFR_USER, CFR_PROJECT, CFR_DESIGN, CFR_CLI, 0 };
+static const rnd_conf_role_t roles[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_DESIGN, RND_CFR_CLI, 0 };
 
 void pcb_pref_conf2dlg_item(rnd_conf_native_t *cn, pref_confitem_t *item)
 {
@@ -325,7 +325,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	PCB_DAD_NEW("preferences", pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
 
 	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
-	pref_ctx.role = CFR_DESIGN;
+	pref_ctx.role = RND_CFR_DESIGN;
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
 	pcb_dlg_pref_color_open(&pref_ctx);

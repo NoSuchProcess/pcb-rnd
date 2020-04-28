@@ -204,7 +204,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
 	int accept_total = 0;
 	FILE *ft;
-	long design_root_cnt = pcb_conf_main_root_replace_cnt[CFR_DESIGN];
+	long design_root_cnt = rnd_conf_main_root_replace_cnt[RND_CFR_DESIGN];
 
 	ft = pcb_fopen(&Ptr->hidlib, Filename, "r");
 	len = pcb_test_parse_all(ft, Filename, fmt, PCB_IOT_PCB, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), ignore_missing, load_settings);
@@ -233,8 +233,8 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 
 
 	if ((res == 0) && (load_settings)) {
-		if (design_root_cnt == pcb_conf_main_root_replace_cnt[CFR_DESIGN]) /* the newly loaded board did not bring a design root */
-			pcb_conf_reset(CFR_DESIGN, "<pcb_parse_pcb>");
+		if (design_root_cnt == rnd_conf_main_root_replace_cnt[RND_CFR_DESIGN]) /* the newly loaded board did not bring a design root */
+			pcb_conf_reset(RND_CFR_DESIGN, "<pcb_parse_pcb>");
 		pcb_conf_load_project(NULL, Filename);
 	}
 
@@ -244,7 +244,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	if (load_settings)
 		pcb_event(&PCB->hidlib, PCB_EVENT_LOAD_POST, "si", Filename, res);
 	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-	pcb_conf_set(CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
+	pcb_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 	pcb_plug_io_err(&Ptr->hidlib, res, "load pcb", Filename);
 	return res;
@@ -535,9 +535,9 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	newPCB->fontkit.valid = pcb_false;
 
 	switch(how & 0x0F) {
-		case 0: settings_dest = CFR_DESIGN; break;
-		case 1: settings_dest = CFR_DEFAULTPCB; break;
-		case 2: settings_dest = CFR_invalid; break;
+		case 0: settings_dest = RND_CFR_DESIGN; break;
+		case 1: settings_dest = RND_CFR_DEFAULTPCB; break;
+		case 2: settings_dest = RND_CFR_invalid; break;
 		default: abort();
 	}
 
@@ -577,7 +577,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		/* geda/pcb compatibility: use attribute PCB::grid::unit as unit, if present */
 		unit_suffix = rnd_attrib_get(PCB, "PCB::grid::unit");
 		if (unit_suffix && *unit_suffix) {
-			lht_node_t *nat = pcb_conf_lht_get_at(CFR_DESIGN, "editor/grid_unit", 0);
+			lht_node_t *nat = pcb_conf_lht_get_at(RND_CFR_DESIGN, "editor/grid_unit", 0);
 			if (nat == NULL) {
 				const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
 				if (new_unit)

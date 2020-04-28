@@ -320,7 +320,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, c
 	/* set up the yy globals only after the pcb_fp_fopen() because it can
 	   also call Parse */
 	yy_parse_tags = 0;
-	yy_settings_dest = CFR_invalid;
+	yy_settings_dest = RND_CFR_invalid;
 	yyPCB = NULL;
 	yyData = Ptr;
 	pcb_data_set_layer_parents(Ptr);
@@ -380,7 +380,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yysubc = NULL;
 	yy_settings_dest = settings_dest;
 
-	if (settings_dest != CFR_invalid)
+	if (settings_dest != RND_CFR_invalid)
 		pcb_conf_reset(settings_dest, Filename);
 
 	io_pcb_preproc_board(PCB);
@@ -389,10 +389,10 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	fcmd = conf_core.rc.file_command;
 	retval = Parse(NULL, fcmd, conf_core.rc.file_path, Filename);
 
-	if ((settings_dest != CFR_invalid) && (retval == 0)) {
+	if ((settings_dest != RND_CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
 		pcb_conf_reset(settings_dest, "<io_pcb_ParsePCB>");
-		pcb_conf_main_root_replace_cnt[settings_dest]++;
+		rnd_conf_main_root_replace_cnt[settings_dest]++;
 		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(PCB_ENABLEPCB_FLAG_MINCUT, yy_pcb_flags), RND_POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/show_number", -1, CONF_BOOL_FLAG(PCB_SHOWNUMBERFLAG, yy_pcb_flags), RND_POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/show_drc", -1, CONF_BOOL_FLAG(PCB_SHOWPCB_FLAG_DRC, yy_pcb_flags), RND_POL_OVERWRITE);
@@ -486,7 +486,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yysubc = NULL;
 	yyFontReset = pcb_false;
 
-	yy_settings_dest = CFR_invalid;
+	yy_settings_dest = RND_CFR_invalid;
 	fcmd = conf_core.rc.font_command;
 	r = Parse(NULL, fcmd, NULL, Filename);
 	if (r == 0) {

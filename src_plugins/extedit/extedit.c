@@ -264,7 +264,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				int res;
 				void *udata;
 
-				pcb_conf_save_file(&PCB->hidlib, NULL, NULL, CFR_DESIGN, tmp_cfg_fn);
+				pcb_conf_save_file(&PCB->hidlib, NULL, NULL, RND_CFR_DESIGN, tmp_cfg_fn);
 
 				f = pcb_fopen(&PCB->hidlib, tmp_fn, "w");
 				if (f == NULL) {

@@ -63,30 +63,30 @@ int pcb_conf_in_production = 0;
 
 /* The main conf: monolithic config files affecting all parts of the conf tree;
    By default every operation is done on these trees. */
-lht_doc_t *pcb_conf_main_root[CFR_max_alloc];
-long pcb_conf_main_root_replace_cnt[CFR_max_alloc]; /* number of times the root has been replaced */
-int pcb_conf_main_root_lock[CFR_max_alloc];
-int pcb_conf_lht_dirty[CFR_max_alloc];
+lht_doc_t *pcb_conf_main_root[RND_CFR_max_alloc];
+long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc]; /* number of times the root has been replaced */
+int pcb_conf_main_root_lock[RND_CFR_max_alloc];
+int pcb_conf_lht_dirty[RND_CFR_max_alloc];
 
 /* Plugin config: only plugin configuration is accepted; never edited, only
    merged in. Merge takes two steps: first all files per role are merged into
    a single pcb_conf_plug_root[R] (lihata level merge), then pcb_conf_plug_root[R]
    is merged in using the normal conf merge mechanism. Plug roots are
    merged before main roots so main root overwrite are stronger. */
-lht_doc_t *pcb_conf_plug_root[CFR_max_alloc];
+lht_doc_t *pcb_conf_plug_root[RND_CFR_max_alloc];
 
 
 htsp_t *pcb_conf_fields = NULL;
-const int pcb_conf_default_prio[] = {
-/*	CFR_INTERNAL */   100,
-/*	CFR_SYSTEM */     200,
-/*	CFR_DEFAULTPCB */ 300,
-/*	CFR_USER */       400,
-/*	CFR_ENV */        500,
-/*	CFR_PROJECT */    600,
-/*	CFR_DESIGN */     700,
-/*	CFR_CLI */        800,
-0, 0, 0, 0, 0, 0, 0, 0, 0 /* make sure the array is addressable until CFR_max_alloc */
+const int rnd_conf_default_prio[] = {
+/*	RND_CFR_INTERNAL */   100,
+/*	RND_CFR_SYSTEM */     200,
+/*	RND_CFR_DEFAULTPCB */ 300,
+/*	RND_CFR_USER */       400,
+/*	RND_CFR_ENV */        500,
+/*	RND_CFR_PROJECT */    600,
+/*	RND_CFR_DESIGN */     700,
+/*	RND_CFR_CLI */        800,
+0, 0, 0, 0, 0, 0, 0, 0, 0 /* make sure the array is addressable until RND_CFR_max_alloc */
 };
 
 extern const char *pcb_conf_internal;
@@ -125,7 +125,7 @@ int pcb_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root)
 	d->root->doc = d;
 	lht_tree_merge(d->root, root);
 	pcb_conf_main_root[role] = d;
-	pcb_conf_main_root_replace_cnt[role]++;
+	rnd_conf_main_root_replace_cnt[role]++;
 	return 0;
 }
 
@@ -365,34 +365,34 @@ const char *pcb_conf_policy_name(rnd_conf_policy_t p)
 
 rnd_conf_role_t pcb_conf_role_parse(const char *s)
 {
-	if (rnd_strcasecmp(s, "internal") == 0)   return CFR_INTERNAL;
-	if (rnd_strcasecmp(s, "system") == 0)     return CFR_SYSTEM;
-	if (rnd_strcasecmp(s, "defaultpcb") == 0) return CFR_DEFAULTPCB;
-	if (rnd_strcasecmp(s, "user") == 0)       return CFR_USER;
-	if (rnd_strcasecmp(s, "env") == 0)        return CFR_ENV;
-	if (rnd_strcasecmp(s, "project") == 0)    return CFR_PROJECT;
-	if (rnd_strcasecmp(s, "design") == 0)     return CFR_DESIGN;
-	if (rnd_strcasecmp(s, "cli") == 0)        return CFR_CLI;
-	return CFR_invalid;
+	if (rnd_strcasecmp(s, "internal") == 0)   return RND_CFR_INTERNAL;
+	if (rnd_strcasecmp(s, "system") == 0)     return RND_CFR_SYSTEM;
+	if (rnd_strcasecmp(s, "defaultpcb") == 0) return RND_CFR_DEFAULTPCB;
+	if (rnd_strcasecmp(s, "user") == 0)       return RND_CFR_USER;
+	if (rnd_strcasecmp(s, "env") == 0)        return RND_CFR_ENV;
+	if (rnd_strcasecmp(s, "project") == 0)    return RND_CFR_PROJECT;
+	if (rnd_strcasecmp(s, "design") == 0)     return RND_CFR_DESIGN;
+	if (rnd_strcasecmp(s, "cli") == 0)        return RND_CFR_CLI;
+	return RND_CFR_invalid;
 }
 
 const char *pcb_conf_role_name(rnd_conf_role_t r)
 {
 	switch(r) {
-		case CFR_INTERNAL:    return "internal";
-		case CFR_SYSTEM:      return "system";
-		case CFR_DEFAULTPCB:  return "defaultpcb";
-		case CFR_USER:        return "user";
-		case CFR_ENV:         return "env";
-		case CFR_PROJECT:     return "project";
-		case CFR_DESIGN:      return "design";
-		case CFR_CLI:         return "cli";
-		case CFR_file:        return "(file)";
-		case CFR_binary:      return "(binary)";
+		case RND_CFR_INTERNAL:    return "internal";
+		case RND_CFR_SYSTEM:      return "system";
+		case RND_CFR_DEFAULTPCB:  return "defaultpcb";
+		case RND_CFR_USER:        return "user";
+		case RND_CFR_ENV:         return "env";
+		case RND_CFR_PROJECT:     return "project";
+		case RND_CFR_DESIGN:      return "design";
+		case RND_CFR_CLI:         return "cli";
+		case RND_CFR_file:        return "(file)";
+		case RND_CFR_binary:      return "(binary)";
 
-		case CFR_max_alloc:
-		case CFR_max_real:
-		case CFR_invalid:     return "(invalid role)";
+		case RND_CFR_max_alloc:
+		case RND_CFR_max_real:
+		case RND_CFR_invalid:     return "(invalid role)";
 	}
 	return "(unknown role)";
 }
@@ -850,7 +850,7 @@ int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t r
 	rnd_conf_native_t *target = pcb_conf_get_field(path);
 	int res = 0;
 
-	if ((role == CFR_DESIGN) || (role == CFR_PROJECT)) {
+	if ((role == RND_CFR_DESIGN) || (role == RND_CFR_PROJECT)) {
 		if (conf_board_ignore(path, n))
 			return 0;
 	}
@@ -970,7 +970,7 @@ static void add_subtree(rnd_conf_role_t role, lht_node_t *subtree_parent_root, l
 
 	m = vmst_alloc_append(&merge_subtree, 1);
 	m->role = role;
-	m->prio = pcb_conf_default_prio[role];
+	m->prio = rnd_conf_default_prio[role];
 	m->policy = RND_POL_invalid;
 
 	pcb_conf_extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
@@ -1004,7 +1004,7 @@ int pcb_conf_merge_all(const char *path)
 	int n, ret = 0;
 	vmst_truncate(&merge_subtree, 0);
 
-	for(n = 0; n < CFR_max_real; n++) {
+	for(n = 0; n < RND_CFR_max_real; n++) {
 		lht_node_t *cr;
 		if (pcb_conf_main_root[n] != NULL) {
 			cr = conf_lht_get_confroot(pcb_conf_main_root[n]->root);
@@ -1158,9 +1158,9 @@ static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, rnd_conf_policy_t pol, i
 
 lht_node_t *pcb_conf_lht_get_first(rnd_conf_role_t target, int create)
 {
-	assert(target != CFR_invalid);
+	assert(target != RND_CFR_invalid);
 	assert(target >= 0);
-	assert(target < CFR_max_alloc);
+	assert(target < RND_CFR_max_alloc);
 	if (pcb_conf_main_root[target] == NULL)
 		return NULL;
 	return conf_lht_get_first_(pcb_conf_main_root[target]->root, POL_ANY, create);
@@ -1168,9 +1168,9 @@ lht_node_t *pcb_conf_lht_get_first(rnd_conf_role_t target, int create)
 
 lht_node_t *pcb_conf_lht_get_first_plug(rnd_conf_role_t target, int create)
 {
-	assert(target != CFR_invalid);
+	assert(target != RND_CFR_invalid);
 	assert(target >= 0);
-	assert(target < CFR_max_alloc);
+	assert(target < RND_CFR_max_alloc);
 	if (pcb_conf_plug_root[target] == NULL)
 		return NULL;
 	return conf_lht_get_first_(pcb_conf_plug_root[target]->root, POL_ANY, create);
@@ -1178,9 +1178,9 @@ lht_node_t *pcb_conf_lht_get_first_plug(rnd_conf_role_t target, int create)
 
 lht_node_t *pcb_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create)
 {
-	assert(target != CFR_invalid);
+	assert(target != RND_CFR_invalid);
 	assert(target >= 0);
-	assert(target < CFR_max_alloc);
+	assert(target < RND_CFR_max_alloc);
 	if (pcb_conf_main_root[target] == NULL)
 		return NULL;
 	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create);
@@ -1249,21 +1249,21 @@ void pcb_conf_load_all(const char *project_fn, const char *pcb_fn)
 
 	/* the ultimate fallback: all essential values are built in the executable
 	   on a low priority */
-	pcb_conf_load_as(CFR_INTERNAL, pcb_conf_internal, 1);
+	pcb_conf_load_as(RND_CFR_INTERNAL, pcb_conf_internal, 1);
 
 	/* load config files */
-	pcb_conf_load_as(CFR_SYSTEM, pcbhl_conf_sys_path, 0);
-	pcb_conf_load_as(CFR_USER, pcphl_conf_user_path, 0);
+	pcb_conf_load_as(RND_CFR_SYSTEM, pcbhl_conf_sys_path, 0);
+	pcb_conf_load_as(RND_CFR_USER, pcphl_conf_user_path, 0);
 	pc = pcb_conf_get_project_conf_name(project_fn, pcb_fn, &try);
 	if (pc != NULL)
-		pcb_conf_load_as(CFR_PROJECT, pc, 0);
+		pcb_conf_load_as(RND_CFR_PROJECT, pc, 0);
 	pcb_conf_merge_all(NULL);
 
 	/* create the user config (in-memory-lht) if it does not exist on disk;
 	   this is needed so if the user makes config changes from the GUI things
 	   get saved. */
-	if (pcb_conf_main_root[CFR_USER] == NULL)
-		pcb_conf_reset(CFR_USER, pcphl_conf_user_path);
+	if (pcb_conf_main_root[RND_CFR_USER] == NULL)
+		pcb_conf_reset(RND_CFR_USER, pcphl_conf_user_path);
 
 	pcb_conf_in_production = 1;
 }
@@ -1271,9 +1271,9 @@ void pcb_conf_load_all(const char *project_fn, const char *pcb_fn)
 void pcb_conf_load_extra(const char *project_fn, const char *pcb_fn)
 {
 	int cnt;
-	cnt = conf_load_plug_files(CFR_SYSTEM, pcbhl_conf_sysdir_path);
-	cnt += conf_load_plug_files(CFR_USER, pcbhl_conf_userdir_path);
-	cnt += conf_load_plug_interns(CFR_INTERNAL);
+	cnt = conf_load_plug_files(RND_CFR_SYSTEM, pcbhl_conf_sysdir_path);
+	cnt += conf_load_plug_files(RND_CFR_USER, pcbhl_conf_userdir_path);
+	cnt += conf_load_plug_interns(RND_CFR_INTERNAL);
 	if (cnt > 0)
 		pcb_conf_merge_all(NULL);
 }
@@ -1287,10 +1287,10 @@ void pcb_conf_load_project(const char *project_fn, const char *pcb_fn)
 
 	pc = pcb_conf_get_project_conf_name(project_fn, pcb_fn, &try);
 	if (pc != NULL)
-		if (pcb_conf_load_as(CFR_PROJECT, pc, 0) != 0)
+		if (pcb_conf_load_as(RND_CFR_PROJECT, pc, 0) != 0)
 			pc = NULL;
 	if (pc == NULL)
-		pcb_conf_reset(CFR_PROJECT, "<pcb_conf_load_project>");
+		pcb_conf_reset(RND_CFR_PROJECT, "<pcb_conf_load_project>");
 	pcb_conf_update(NULL, -1);
 }
 
@@ -1723,8 +1723,8 @@ int pcb_conf_set_from_cli(const char *prefix, const char *arg_, const char *val,
 	}
 
 	/* now that we have a clean path (arg) and a value, try to set the config */
-	pcb_conf_lht_get_first_pol(CFR_CLI, pol, 1); /* make sure the root for the given policy is created */
-	ret = pcb_conf_set(CFR_CLI, arg, -1, val, pol);
+	pcb_conf_lht_get_first_pol(RND_CFR_CLI, pol, 1); /* make sure the root for the given policy is created */
+	ret = pcb_conf_set(RND_CFR_CLI, arg, -1, val, pol);
 	if (ret != 0)
 		*why = "invalid config path";
 
@@ -1800,7 +1800,7 @@ int pcb_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 	lht_node_t *dst = pcb_conf_lht_get_at(dst_role, dst_path, 1);
 	lht_node_t *src, *new_src = NULL;
 
-	if (src_role == CFR_binary) {
+	if (src_role == RND_CFR_binary) {
 		char *name;
 		lht_node_t *ch = NULL;
 		int isarr, i;
@@ -1865,12 +1865,12 @@ int pcb_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 	pcb_conf_lht_dirty[dst_role]++;
 
 	lht_tree_del(dst);
-	if (src_role == CFR_binary)
+	if (src_role == RND_CFR_binary)
 		lht_dom_node_free(src);
 	return 0;
 
 	err:;
-	if (src_role == CFR_binary)
+	if (src_role == RND_CFR_binary)
 		lht_dom_node_free(src);
 	if (new_src != NULL)
 		lht_dom_node_free(new_src);
@@ -1891,10 +1891,10 @@ int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 
 	if (fn == NULL) {
 		switch(role) {
-			case CFR_USER:
+			case RND_CFR_USER:
 				fn = pcphl_conf_user_path;
 				break;
-			case CFR_PROJECT:
+			case RND_CFR_PROJECT:
 				fn = pcb_conf_get_project_conf_name(project_fn, pcb_fn, &try);
 				if (fn == NULL) {
 					rnd_message(PCB_MSG_ERROR, "Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
@@ -1909,7 +1909,7 @@ int pcb_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 		FILE *f;
 
 		f = pcb_fopen_fn(hidlib, fn, "w", &efn);
-		if ((f == NULL) && (role == CFR_USER)) {
+		if ((f == NULL) && (role == RND_CFR_USER)) {
 			/* create the directory and try again */
 			char *path = NULL, *end;
 			
@@ -2052,15 +2052,15 @@ void pcb_conf_makedirty(rnd_conf_role_t target)
 rnd_conf_role_t pcb_conf_lookup_role(const lht_node_t *nd)
 {
 	rnd_conf_role_t r;
-	for(r = 0; r < CFR_max_real; r++)
+	for(r = 0; r < RND_CFR_max_real; r++)
 		if (pcb_conf_main_root[r] == nd->doc)
 			return r;
 
-	for(r = 0; r < CFR_max_real; r++)
+	for(r = 0; r < RND_CFR_max_real; r++)
 		if (pcb_conf_plug_root[r] == nd->doc)
 			return r;
 
-	return CFR_invalid;
+	return RND_CFR_invalid;
 }
 
 void pcb_conf_reset(rnd_conf_role_t target, const char *source_fn)
@@ -2186,12 +2186,12 @@ int pcb_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verb
 
 void pcb_conf_init(void)
 {
-	pcb_conf_reset(CFR_ENV, "<environment-variables>");
-	pcb_conf_reset(CFR_CLI, "<commandline>");
-	pcb_conf_reset(CFR_DESIGN, "<null-design>");
+	pcb_conf_reset(RND_CFR_ENV, "<environment-variables>");
+	pcb_conf_reset(RND_CFR_CLI, "<commandline>");
+	pcb_conf_reset(RND_CFR_DESIGN, "<null-design>");
 
-	pcb_conf_reset(CFR_file, "<pcb_conf_init>");
-	pcb_conf_reset(CFR_binary, "<pcb_conf_init>");
+	pcb_conf_reset(RND_CFR_file, "<pcb_conf_init>");
+	pcb_conf_reset(RND_CFR_binary, "<pcb_conf_init>");
 }
 
 void pcb_conf_uninit(void)
@@ -2206,7 +2206,7 @@ void pcb_conf_uninit(void)
 
 	pcb_conf_pcb_hid_uninit();
 
-	for(n = 0; n < CFR_max_alloc; n++) {
+	for(n = 0; n < RND_CFR_max_alloc; n++) {
 		if (pcb_conf_main_root[n] != NULL)
 			lht_dom_uninit(pcb_conf_main_root[n]);
 		if (pcb_conf_plug_root[n] != NULL)

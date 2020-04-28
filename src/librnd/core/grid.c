@@ -191,7 +191,7 @@ pcb_bool_t pcb_grid_list_jump(rnd_hidlib_t *hidlib, int dst)
 	if (dst < 0)
 		return pcb_false;
 
-	pcb_conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
+	pcb_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
 
 	li = pcb_conflist_nth((pcb_conflist_t *)&pcbhl_conf.editor.grids, dst);
 	/* clamp */
@@ -217,6 +217,6 @@ pcb_bool_t pcb_grid_list_step(rnd_hidlib_t *hidlib, int stp)
 void pcb_grid_inval(void)
 {
 	if (pcbhl_conf.editor.grids_idx > 0)
-		pcb_conf_setf(CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - pcbhl_conf.editor.grids_idx);
+		pcb_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - pcbhl_conf.editor.grids_idx);
 }
 

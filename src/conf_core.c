@@ -37,7 +37,7 @@ static void pcb_conf_legacy_(rnd_conf_native_t *ndst, rnd_conf_native_t *nlegacy
 	gds_init(&tmp);
 	pcb_conf_print_native_field((conf_pfn)pcb_append_printf, &tmp, 0, &nlegacy->val, nlegacy->type, nlegacy->prop, 0);
 	if (tmp.used > 0)
-		pcb_conf_set(CFR_INTERNAL, dst_path, -1, tmp.array, RND_POL_OVERWRITE);
+		pcb_conf_set(RND_CFR_INTERNAL, dst_path, -1, tmp.array, RND_POL_OVERWRITE);
 	gds_uninit(&tmp);
 }
 

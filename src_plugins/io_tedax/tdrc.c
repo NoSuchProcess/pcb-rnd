@@ -124,7 +124,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	}
 
 	for(n = 0, r = rules; n < NUM_RULES; r++,n++)
-		pcb_conf_setf(CFR_DESIGN, r->conf, -1, "%$mm", val[n]);
+		pcb_conf_setf(RND_CFR_DESIGN, r->conf, -1, "%$mm", val[n]);
 	return 0;
 }
 

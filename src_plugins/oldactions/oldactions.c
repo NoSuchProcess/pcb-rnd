@@ -169,7 +169,7 @@ optimize hand-routed traces also.
 */
 fgw_error_t pcb_act_djopt_set_auto_only(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	conf_toggle(CFR_DESIGN, "plugins/djopt/auto_only");
+	conf_toggle(RND_CFR_DESIGN, "plugins/djopt/auto_only");
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -189,7 +189,7 @@ loaded first.
 */
 fgw_error_t pcb_act_ToggleVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	conf_toggle(CFR_DESIGN, "plugins/vendor/enable");
+	conf_toggle(RND_CFR_DESIGN, "plugins/vendor/enable");
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -208,7 +208,7 @@ loaded first.
 */
 fgw_error_t pcb_act_EnableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "1", RND_POL_OVERWRITE);
+	pcb_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "1", RND_POL_OVERWRITE);
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -225,7 +225,7 @@ specified in the currently loaded vendor drill table.
 */
 fgw_error_t pcb_act_DisableVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_conf_set(CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
+	pcb_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
 	RND_ACT_IRES(0);
 	return 0;
 }

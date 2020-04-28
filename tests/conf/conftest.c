@@ -93,7 +93,7 @@ void cmd_dump(char *arg)
 		arg+=7;
 		while(isspace(*arg)) arg++;
 		role = pcb_conf_role_parse(arg);
-		if (role == CFR_invalid) {
+		if (role == RND_CFR_invalid) {
 			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
@@ -150,7 +150,7 @@ void cmd_load(char *arg, int is_text)
 	while(isspace(*fn)) fn++;
 
 	role = pcb_conf_role_parse(arg);
-	if (role == CFR_invalid) {
+	if (role == RND_CFR_invalid) {
 		rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 		return;
 	}
@@ -159,7 +159,7 @@ void cmd_load(char *arg, int is_text)
 }
 
 rnd_conf_policy_t current_policy = RND_POL_OVERWRITE;
-rnd_conf_role_t current_role = CFR_DESIGN;
+rnd_conf_role_t current_role = RND_CFR_DESIGN;
 
 void cmd_policy(char *arg)
 {
@@ -173,7 +173,7 @@ void cmd_policy(char *arg)
 void cmd_role(char *arg)
 {
 	rnd_conf_role_t nr = pcb_conf_role_parse(arg);
-	if (nr == CFR_invalid)
+	if (nr == RND_CFR_invalid)
 		rnd_message(PCB_MSG_ERROR, "Invalid/unknown role: '%s'", arg);
 	else
 		current_role = nr;
@@ -290,12 +290,12 @@ void cmd_reset(char *arg)
 	}
 	else if (*arg == '*') {
 		int n;
-		for(n = 0; n < CFR_max_real; n++)
+		for(n = 0; n < RND_CFR_max_real; n++)
 			pcb_conf_reset(n, "<cmd_reset *>");
 	}
 	else {
 		rnd_conf_role_t role = pcb_conf_role_parse(arg);
-		if (role == CFR_invalid) {
+		if (role == RND_CFR_invalid) {
 			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
@@ -353,8 +353,8 @@ int main()
 	pcb_conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();
-	pcb_conf_reset(CFR_SYSTEM, "<main>");
-	pcb_conf_reset(CFR_USER, "<main>");
+	pcb_conf_reset(RND_CFR_SYSTEM, "<main>");
+	pcb_conf_reset(RND_CFR_USER, "<main>");
 
 	while(getline_cont(stdin)) {
 		char *arg, *cmd = line;

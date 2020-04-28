@@ -202,9 +202,9 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 	char *end, *end2;
 
 	switch(role) {
-		case CFR_USER:    if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user) return; break;
-		case CFR_DESIGN:  if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design) return; break;
-		case CFR_PROJECT: if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project) return; break;
+		case RND_CFR_USER:    if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user) return; break;
+		case RND_CFR_DESIGN:  if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design) return; break;
+		case RND_CFR_PROJECT: if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project) return; break;
 		default: return;
 	}
 
@@ -225,7 +225,7 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 	}
 
 
-	if (role != CFR_DESIGN) {
+	if (role != RND_CFR_DESIGN) {
 		int r = pcb_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), role, NULL);
 		if (r != 0)
 			rnd_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", pcb_conf_role_name(role));
@@ -237,14 +237,14 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
    info. */
 static void place_save_pre(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	place_maybe_save(hidlib, CFR_PROJECT, 0);
-	place_maybe_save(hidlib, CFR_DESIGN, 0);
+	place_maybe_save(hidlib, RND_CFR_PROJECT, 0);
+	place_maybe_save(hidlib, RND_CFR_DESIGN, 0);
 }
 
 static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	pcb_wplc_load(CFR_PROJECT);
-	pcb_wplc_load(CFR_DESIGN);
+	pcb_wplc_load(RND_CFR_PROJECT);
+	pcb_wplc_load(RND_CFR_DESIGN);
 }
 
 void pcb_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
@@ -293,7 +293,7 @@ void pcb_dialog_place_uninit(void)
 
 	pcb_conf_unreg_fields(BASEPATH);
 
-	place_maybe_save(NULL, CFR_USER, 0);
+	place_maybe_save(NULL, RND_CFR_USER, 0);
 
 	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e))
 		free((char *)e->key);
@@ -310,9 +310,9 @@ void pcb_dialog_place_init(void)
 	htsw_init(&wingeo, strhash, strkeyeq);
 	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 	pcb_event_bind(PCB_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
-	pcb_wplc_load(CFR_INTERNAL);
-	pcb_wplc_load(CFR_ENV);
-	pcb_wplc_load(CFR_SYSTEM);
-	pcb_wplc_load(CFR_USER);
-	pcb_wplc_load(CFR_CLI);
+	pcb_wplc_load(RND_CFR_INTERNAL);
+	pcb_wplc_load(RND_CFR_ENV);
+	pcb_wplc_load(RND_CFR_SYSTEM);
+	pcb_wplc_load(RND_CFR_USER);
+	pcb_wplc_load(RND_CFR_CLI);
 }

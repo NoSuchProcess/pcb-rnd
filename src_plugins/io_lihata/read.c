@@ -383,7 +383,7 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 	if (parse_coord(&tmp, nd) != 0)
 		return -1;
 
-	if (cfg_dest != CFR_invalid)
+	if (cfg_dest != RND_CFR_invalid)
 		pcb_conf_set(cfg_dest, path, -1, nd->data.text.value, RND_POL_OVERWRITE);
 	return 0;
 }
@@ -2215,7 +2215,7 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 
 static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 {
-	if (cfg_dest == CFR_invalid)
+	if (cfg_dest == RND_CFR_invalid)
 		return;
 	if (pcb_conf_insert_tree_as(cfg_dest, sub) != 0)
 		rnd_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
@@ -2394,7 +2394,7 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
-	cfg_dest = CFR_invalid;
+	cfg_dest = RND_CFR_invalid;
 
 	realfn = pcb_fopen_check(NULL, filename, "r");
 	if (realfn != NULL)
@@ -2527,7 +2527,7 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 	FILE *f;
 	pcb_subc_t *sc;
 
-	cfg_dest = CFR_invalid;
+	cfg_dest = RND_CFR_invalid;
 
 	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, name, &st, NULL);
 

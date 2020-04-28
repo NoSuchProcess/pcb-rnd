@@ -334,7 +334,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	if (hidlib_conffile.used > 0) {
 		int n;
 		for(n = 0; n < hidlib_conffile.used; n++) {
-			rnd_conf_role_t role = CFR_CLI;
+			rnd_conf_role_t role = RND_CFR_CLI;
 			char *srole, *sep, *fn = hidlib_conffile.array[n];
 			sep = strchr(fn, ';');
 			if (sep != NULL) {
@@ -342,7 +342,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 				*sep = '\0';
 				fn = sep+1;
 				role = pcb_conf_role_parse(srole);
-				if (role == CFR_invalid) {
+				if (role == RND_CFR_invalid) {
 					fprintf(stderr, "Can't load -C config file '%s': invalid role '%s'\n", fn, srole);
 					free(hidlib_conffile.array[n]);
 					continue;
@@ -383,8 +383,8 @@ void pcb_hidlib_uninit(void)
 	pcb_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();
 
-	if (pcb_conf_isdirty(CFR_USER))
-		pcb_conf_save_file(NULL, NULL, NULL, CFR_USER, NULL);
+	if (pcb_conf_isdirty(RND_CFR_USER))
+		pcb_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);
 
 	pcb_hid_uninit();
 	pcb_events_uninit();

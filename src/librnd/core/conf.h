@@ -134,25 +134,25 @@ struct conf_listitem_s {
 
 
 typedef enum {
-	CFR_INTERNAL,
-	CFR_SYSTEM,
-	CFR_DEFAULTPCB, /* default.pcb */
-	CFR_USER,
-	CFR_ENV,        /* env vars */
-	CFR_PROJECT,    /* project specific, from a local file */
-	CFR_DESIGN,     /* from the design file */
-	CFR_CLI,        /* from the command line */
-	CFR_max_real,   /* all the above are real files and should be merged */
+	RND_CFR_INTERNAL,
+	RND_CFR_SYSTEM,
+	RND_CFR_DEFAULTPCB, /* default.pcb */
+	RND_CFR_USER,
+	RND_CFR_ENV,        /* env vars */
+	RND_CFR_PROJECT,    /* project specific, from a local file */
+	RND_CFR_DESIGN,     /* from the design file */
+	RND_CFR_CLI,        /* from the command line */
+	RND_CFR_max_real,   /* all the above are real files and should be merged */
 	/* these ones are not real roles and are used in internal communication in the GUI HIDs */
-	CFR_file,       /* custom file */
-	CFR_binary,     /* the in-memory binary representation */
-	CFR_max_alloc,  /* all the above should have a root */
+	RND_CFR_file,       /* custom file */
+	RND_CFR_binary,     /* the in-memory binary representation */
+	RND_CFR_max_alloc,  /* all the above should have a root */
 
-	CFR_invalid
+	RND_CFR_invalid
 } rnd_conf_role_t;
 
-extern const int pcb_conf_default_prio[];
-extern long pcb_conf_main_root_replace_cnt[CFR_max_alloc]; /* number of times the root has been replaced */
+extern const int rnd_conf_default_prio[];
+extern long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc]; /* number of times the root has been replaced */
 
 void pcb_conf_init(void);
 void pcb_conf_uninit(void);
@@ -175,8 +175,8 @@ int pcb_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text);
    return 0 on success and removes/invalidates root */
 int pcb_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root);
 
-/* Load a project file into CFR_PROJECT. Both project_fn and pcb_fn can't be NULL.
-   Leaves an initialized but empty CFR_PROJECT root if no project file was
+/* Load a project file into RND_CFR_PROJECT. Both project_fn and pcb_fn can't be NULL.
+   Leaves an initialized but empty RND_CFR_PROJECT root if no project file was
    found. Runs pcb_conf_update(NULL); */
 void pcb_conf_load_project(const char *project_fn, const char *pcb_fn);
 
@@ -243,7 +243,7 @@ rnd_conf_policy_t pcb_conf_policy_parse(const char *s);
 /* Return the name of the policy - always a static string, even for invalid roles */
 const char *pcb_conf_policy_name(rnd_conf_policy_t p);
 
-/* convert a role text to role value - return CFR_invalid on error */
+/* convert a role text to role value - return RND_CFR_invalid on error */
 rnd_conf_role_t pcb_conf_role_parse(const char *s);
 
 /* Return the name of the role - always a static string, even for invalid roles */
@@ -252,7 +252,7 @@ const char *pcb_conf_role_name(rnd_conf_role_t r);
 /* Lock/unlock the structure of a role. In a locked role value of existing
    fields may be modified but the structure of the tree is static (can't
    create or remove nodes). This is useful when an io_ file format supports
-   only a subset of settings: it can build the CFR_DESIGN tree, lock it so
+   only a subset of settings: it can build the RND_CFR_DESIGN tree, lock it so
    settings that it wouldn't know how to save won't appear. NOTE: io_pcb
    supports all settings via attributes so does not lock. */
 void pcb_conf_lock(rnd_conf_role_t target);
@@ -263,7 +263,7 @@ void pcb_conf_unlock(rnd_conf_role_t target);
 int pcb_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd_conf_role_t src_role, const char *src_path);
 
 /* Throw out a subtree (remove all nodes from the lihata representation).
-   Useful for io_ plugins, on CFR_DESIGN, before loading a new file. */
+   Useful for io_ plugins, on RND_CFR_DESIGN, before loading a new file. */
 void pcb_conf_reset(rnd_conf_role_t target, const char *source_fn);
 
 /* Save an in-memory lihata representation to the disk */
@@ -301,7 +301,7 @@ void pcb_conf_ro(const char *path);
 /****** utility ******/
 
 #define rnd_conf_is_read_only(role) \
-	(((role) == CFR_INTERNAL) || ((role) == CFR_SYSTEM) || ((role) == CFR_DEFAULTPCB))
+	(((role) == RND_CFR_INTERNAL) || ((role) == RND_CFR_SYSTEM) || ((role) == RND_CFR_DEFAULTPCB))
 
 void pcb_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
@@ -333,13 +333,13 @@ do { \
 
 /* helpers to make the code shorter */
 #define conf_set_design(path, fmt, new_val) \
-	pcb_conf_setf(CFR_DESIGN, path, -1, fmt, new_val)
+	pcb_conf_setf(RND_CFR_DESIGN, path, -1, fmt, new_val)
 
 #define conf_set_editor(field, val) \
-	pcb_conf_set(CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", RND_POL_OVERWRITE)
+	pcb_conf_set(RND_CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", RND_POL_OVERWRITE)
 
 #define conf_set_editor_(sfield, val) \
-	pcb_conf_set(CFR_DESIGN, sfield, -1, val ? "1" : "0", RND_POL_OVERWRITE)
+	pcb_conf_set(RND_CFR_DESIGN, sfield, -1, val ? "1" : "0", RND_POL_OVERWRITE)
 
 #define conf_toggle_editor(field) \
 	conf_set_editor(field, !conf_core.editor.field)

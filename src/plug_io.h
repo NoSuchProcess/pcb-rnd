@@ -78,7 +78,7 @@ struct pcb_plug_io_s {
 
 	/* Attempt to load a pcb design from Filename to Ptr.
 	   Conf subtree at settings_dest is replaced by settings loaded from the
-	   file unless it's CFR_invalid.
+	   file unless it's RND_CFR_invalid.
 	   Return 0 on success. */
 	int (*parse_pcb)(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest);
 
