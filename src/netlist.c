@@ -784,8 +784,6 @@ rnd_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 			conf_core.appearance.rat_thickness, pcb_no_flags(),
 			best->o1, best->o2);
 		if (line != NULL) {
-			if (best->dist2 == 0)
-				PCB_FLAG_SET(PCB_FLAG_VIA, line);
 			pcb_undo_add_obj_to_create(PCB_OBJ_RAT, line, line, line);
 			pcb_rat_invalidate_draw(line);
 			drawn++;

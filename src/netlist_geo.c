@@ -145,18 +145,6 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, rnd_coord_
 	best.o2x = o2x;
 	best.o2y = o2y;
 
-	/* special case: enclosed in a polygon, minus the clearance (radius) -> donut (0 dist) */
-	if (radius > 0) {
-		if (pcb_poly_is_point_in_p(o2x, o2y, radius, o1)) {
-			if (pcb_poly_is_point_in_p_ignore_holes(o2x, o2y, o1)) {
-				best.dist2 = 0;
-				best.o1x = o2x;
-				best.o1y = o2y;
-				return best;
-			}
-		}
-	}
-
 	for(pa = pcb_poly_island_first(o1, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		rnd_coord_t x, y;
 		pcb_pline_t *pl;
@@ -422,12 +410,6 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 					farx = curr.o2x;
 					fary = curr.o2y;
 				}
-				if (o_in_poly && rnd_point_in_box(&o_in_poly->BoundingBox, farx, fary) && pcb_poly_is_point_in_p_ignore_holes(x, y, (pcb_poly_t *)poly)) {
-					curr.o1x = curr.o2x = x;
-					curr.o1y = curr.o2y = y;
-					curr.dist2 = 0;
-				}
-
 			}
 
 			if (curr.dist2 < best.dist2)
