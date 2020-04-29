@@ -233,7 +233,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 					vtp0_append(&view_color_save, (char *)obj->override_color);
 				else
 					vtp0_append(&view_color_save, NULL);
-				obj->override_color = offend_color[g];
+				obj->override_color = (rnd_color_t *)offend_color[g]; /* we are sure obj is not free'd before we restore this */
 			}
 		}
 	}
