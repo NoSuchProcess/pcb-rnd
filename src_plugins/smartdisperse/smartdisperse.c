@@ -120,7 +120,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	}
 
 	if (nl->used == 0) {
-		rnd_message(PCB_MSG_ERROR, "Can't use SmartDisperse because no netlist is loaded.\n");
+		rnd_message(RND_MSG_ERROR, "Can't use SmartDisperse because no netlist is loaded.\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}

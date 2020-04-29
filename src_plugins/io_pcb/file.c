@@ -691,7 +691,7 @@ static void LayersFixup(void)
 	ts = pcb_layer_get_top_silk();
 
 	if ((bs < 0) || (ts < 0)) {
-		rnd_message(PCB_MSG_ERROR, "The geda/pcb file format requires top and bottom silk layers.\nExporting a board without those will not be usable in geda/pcb.\n");
+		rnd_message(RND_MSG_ERROR, "The geda/pcb file format requires top and bottom silk layers.\nExporting a board without those will not be usable in geda/pcb.\n");
 		return;
 	}
 
@@ -1158,13 +1158,13 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 		if (PCB->Data->Layer[n].meta.real.grp == -1) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
 
-			rnd_message(PCB_MSG_WARNING, "Broken input file: layer group string doesn't contain layer %ld\n(Trying to fix it by introducing a new intern copper layer)\n", n);
+			rnd_message(RND_MSG_WARNING, "Broken input file: layer group string doesn't contain layer %ld\n(Trying to fix it by introducing a new intern copper layer)\n", n);
 			if (grp != NULL) {
 				pcb_layergrp_id_t gid = grp - PCB->LayerGroups.grp;
 				pcb_layer_move_to_group(pcb, n, gid);
 			}
 			else
-				rnd_message(PCB_MSG_ERROR, "Failed to add a new layer group - the board in memory IS BROKEN.\n");
+				rnd_message(RND_MSG_ERROR, "Failed to add a new layer group - the board in memory IS BROKEN.\n");
 		}
 	}
 

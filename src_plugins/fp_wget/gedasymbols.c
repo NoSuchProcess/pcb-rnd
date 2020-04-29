@@ -106,7 +106,7 @@ int fp_gedasymbols_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 		mode = 0;
 
 	if (fp_wget_open(url_idx_list, conf_fp_wget.plugins.fp_wget.cache_dir, &f, &fctx, mode) != 0) {
-		rnd_message(PCB_MSG_ERROR, "gedasymbols: failed to download the new list\n");
+		rnd_message(RND_MSG_ERROR, "gedasymbols: failed to download the new list\n");
 		pcb_remove(NULL, last_sum_fn); /* make sure it is downloaded next time */
 		goto err;
 	}

@@ -49,11 +49,11 @@ static void conf_toggle(rnd_conf_role_t role, const char *path)
 {
 	rnd_conf_native_t *n = rnd_conf_get_field(path);
 	if (n == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Error: can't find config node %s to toggle\n", path);
+		rnd_message(RND_MSG_ERROR, "Error: can't find config node %s to toggle\n", path);
 		return;
 	}
 	if (n->type != RND_CFN_BOOLEAN) {
-		rnd_message(PCB_MSG_ERROR, "Error: config node %s is not a boolean, can't toggle\n", path);
+		rnd_message(RND_MSG_ERROR, "Error: config node %s is not a boolean, can't toggle\n", path);
 		return;
 	}
 
@@ -237,9 +237,9 @@ fgw_error_t pcb_act_ListRotations(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		double rot;
 		const char *refdes = PCB_UNKNOWN(subc->refdes);
 		if (pcb_subc_get_rotation(subc, &rot) == 0)
-			rnd_message(PCB_MSG_INFO, "%f %s\n", rot, refdes);
+			rnd_message(RND_MSG_INFO, "%f %s\n", rot, refdes);
 		else
-			rnd_message(PCB_MSG_INFO, "<unknown> %s\n", refdes);
+			rnd_message(RND_MSG_INFO, "<unknown> %s\n", refdes);
 	}
 	PCB_END_LOOP;
 	RND_ACT_IRES(0);
@@ -290,7 +290,7 @@ static const char pcb_acth_ImportGUI[] = "Asks user which schematics to import i
 /* DOC: importgui.html */
 static fgw_error_t pcb_act_ImportGUI(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
+	rnd_message(RND_MSG_ERROR, "The ImportGUI() action is deprecated. Using ImportSch() instead.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
 	RND_ACT_IRES(rnd_actionva(RND_ACT_HIDLIB, "ImportSch", NULL));
 	return 0;
 }
@@ -304,7 +304,7 @@ static const char pcb_acth_Import[] = "Import schematics.";
 /* DOC: import.html */
 static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "Import() is the old, deprecated import netlist/schematics action that got removed\nPlease switch over to using the new action, ImportSch().\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
+	rnd_message(RND_MSG_ERROR, "Import() is the old, deprecated import netlist/schematics action that got removed\nPlease switch over to using the new action, ImportSch().\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0002.html\n");
 	RND_ACT_IRES(1);
 	return 0;
 }
@@ -313,61 +313,61 @@ static fgw_error_t pcb_act_Import(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static fgw_error_t pcb_act_ToggleHideName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
+	rnd_message(RND_MSG_ERROR, "ToggleHideName: deprecated feature removed with subcircuits; just delete\nthe text object if it should not be on the silk of the final board.\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_MinMaskGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "MinMaskGap: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "MinMaskGap: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_ChangeHole(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "ChangeHole: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "ChangeHole: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_ChangePaste(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "ChangePaste: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "ChangePaste: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_ChangeSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "ChangeSquare: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "ChangeSquare: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_SetSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "SetSquare: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "SetSquare: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_ClearSquare(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "ClearSquare: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "ClearSquare: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_ChangeOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "ChangeOctagon: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "ChangeOctagon: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_SetOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "SetOctagon: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "SetOctagon: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 
 static fgw_error_t pcb_act_ClearOctagon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "ClearOctagon: deprecated feature; use padstackedit() instead\n");
+	rnd_message(RND_MSG_ERROR, "ClearOctagon: deprecated feature; use padstackedit() instead\n");
 	return 1;
 }
 

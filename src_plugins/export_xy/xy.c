@@ -114,14 +114,14 @@ static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 		int len;
 
 		if (sep == NULL) {
-			rnd_message(PCB_MSG_ERROR, "export_xy: ignoring invalid template name (missing period): '%s'\n", li->name);
+			rnd_message(RND_MSG_ERROR, "export_xy: ignoring invalid template name (missing period): '%s'\n", li->name);
 			continue;
 		}
 		if (strcmp(sep+1, "name") != 0)
 			continue;
 		len = sep - li->name;
 		if (len > sizeof(id)-1) {
-			rnd_message(PCB_MSG_ERROR, "export_xy: ignoring invalid template name (too long): '%s'\n", li->name);
+			rnd_message(RND_MSG_ERROR, "export_xy: ignoring invalid template name (too long): '%s'\n", li->name);
 			continue;
 		}
 		memcpy(id, li->name, len);
@@ -131,7 +131,7 @@ static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 	}
 
 	if (fmt_names.used == 0) {
-		rnd_message(PCB_MSG_ERROR, "export_xy: can not set up export options: no template available\n");
+		rnd_message(RND_MSG_ERROR, "export_xy: can not set up export options: no template available\n");
 		return NULL;
 	}
 
@@ -391,7 +391,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			end = strpbrk(*input, "?|%");
 			len = end - *input;
 			if (len >= sizeof(aname) - 1) {
-				rnd_message(PCB_MSG_ERROR, "xy tempalte error: attribute name '%s' too long\n", *input);
+				rnd_message(RND_MSG_ERROR, "xy tempalte error: attribute name '%s' too long\n", *input);
 				return 1;
 			}
 			memcpy(aname, *input, len);
@@ -401,7 +401,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 				end = strchr(*input, '%');
 				len = end - *input;
 				if (len >= sizeof(unk_buf) - 1) {
-					rnd_message(PCB_MSG_ERROR, "xy tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
+					rnd_message(RND_MSG_ERROR, "xy tempalte error: elem atribute '|unknown' field '%s' too long\n", *input);
 					return 1;
 				}
 				memcpy(unk_buf, *input, len);
@@ -414,7 +414,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 				end = strchr(*input, '%');
 				len = end - *input;
 				if (len >= sizeof(unk_buf) - 1) {
-					rnd_message(PCB_MSG_ERROR, "xy tempalte error: elem atribute trenary field '%s' too long\n", *input);
+					rnd_message(RND_MSG_ERROR, "xy tempalte error: elem atribute trenary field '%s' too long\n", *input);
 					return 1;
 				}
 
@@ -670,7 +670,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 	fp = pcb_fopen_askovr(&PCB->hidlib, xy_filename, "w", NULL);
 	if (!fp) {
-		rnd_message(PCB_MSG_ERROR, "Cannot open file %s for writing\n", xy_filename);
+		rnd_message(RND_MSG_ERROR, "Cannot open file %s for writing\n", xy_filename);
 		return 1;
 	}
 
@@ -700,10 +700,10 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		/* prefer the pnp-origin but if that doesn't exist, pick the subc origin */
 		if (!pcb_subc_find_aux_point(subc, "pnp-origin", &ctx.x, &ctx.y))
 			if (pcb_subc_get_origin(subc, &ctx.x, &ctx.y) != 0)
-				rnd_message(PCB_MSG_ERROR, "xy: can't get subc origin for %s\n", ctx.name);
+				rnd_message(RND_MSG_ERROR, "xy: can't get subc origin for %s\n", ctx.name);
 
-		if (pcb_subc_get_rotation(subc, &ctx.theta) != 0) rnd_message(PCB_MSG_ERROR, "xy: can't get subc rotation for %s\n", ctx.name);
-		if (pcb_subc_get_side(subc, &bott) != 0) rnd_message(PCB_MSG_ERROR, "xy: can't get subc side for %s\n", ctx.name);
+		if (pcb_subc_get_rotation(subc, &ctx.theta) != 0) rnd_message(RND_MSG_ERROR, "xy: can't get subc rotation for %s\n", ctx.name);
+		if (pcb_subc_get_side(subc, &bott) != 0) rnd_message(RND_MSG_ERROR, "xy: can't get subc side for %s\n", ctx.name);
 
 		ctx.theta = -ctx.theta;
 		if (ctx.theta == -0)
@@ -759,14 +759,14 @@ static void gather_templates(void)
 		char buff[256], *id, *sect;
 		int nl = strlen(i->name);
 		if (nl > sizeof(buff)-1) {
-			rnd_message(PCB_MSG_ERROR, "export_xy: ignoring template '%s': name too long\n", i->name);
+			rnd_message(RND_MSG_ERROR, "export_xy: ignoring template '%s': name too long\n", i->name);
 			continue;
 		}
 		memcpy(buff, i->name, nl+1);
 		id = buff;
 		sect = strchr(id, '.');
 		if (sect == NULL) {
-			rnd_message(PCB_MSG_ERROR, "export_xy: ignoring template '%s': does not have a .section suffix\n", i->name);
+			rnd_message(RND_MSG_ERROR, "export_xy: ignoring template '%s': does not have a .section suffix\n", i->name);
 			continue;
 		}
 		*sect = '\0';
@@ -819,7 +819,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	tid = vts0_get(&fmt_ids, options[HA_format].lng, 0);
 	if ((tid == NULL) || (*tid == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "export_xy: invalid template selected\n");
+		rnd_message(RND_MSG_ERROR, "export_xy: invalid template selected\n");
 		return;
 	}
 	templ.hdr  = get_templ(*tid, "hdr");

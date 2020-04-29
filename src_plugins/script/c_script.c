@@ -54,20 +54,20 @@ int fgws_c_load(fgw_obj_t *obj, const char *filename, const char *opts)
 	
 
 	if (pup_load_lib(&script_pup, library, filename) != 0) {
-		rnd_message(PCB_MSG_ERROR, "Can't dlopen() %s\n", filename);
+		rnd_message(RND_MSG_ERROR, "Can't dlopen() %s\n", filename);
 		free(library);
 		return -1;
 	}
 
 	init = (init_t)pcb_cast_d2f(pup_dlsym(library, "pcb_rnd_init"));
 	if (init == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't find pcb_rnd_init() in %s - not a pcb-rnd c \"script\".\n", filename);
+		rnd_message(RND_MSG_ERROR, "Can't find pcb_rnd_init() in %s - not a pcb-rnd c \"script\".\n", filename);
 		free(library);
 		return -1;
 	}
 
 	if (init(obj, opts) != 0) {
-		rnd_message(PCB_MSG_ERROR, "%s pcb_rnd_init() returned error\n", filename);
+		rnd_message(RND_MSG_ERROR, "%s pcb_rnd_init() returned error\n", filename);
 		free(library);
 		return -1;
 	}

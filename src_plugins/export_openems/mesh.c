@@ -60,7 +60,7 @@ static void mesh2dlg()
 
 	subst_thick = pcb_board_thickness(PCB, "openems", PCB_BRDTHICK_PRINT_ERROR);
 	if (subst_thick <= 0) {
-		rnd_message(PCB_MSG_ERROR, "Assuming 1.5mm thick substrate because of the missing thickness attributes.\nFeel free to change it in the mesh dialog or add the attributes to the substrate groups.");
+		rnd_message(RND_MSG_ERROR, "Assuming 1.5mm thick substrate because of the missing thickness attributes.\nFeel free to change it in the mesh dialog or add the attributes to the substrate groups.");
 		subst_thick = PCB_MM_TO_COORD(1.5);
 	}
 
@@ -186,12 +186,12 @@ do { \
 		int v; \
 		char *end; \
 		if (n->type != LHT_TEXT) { \
-			rnd_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
+			rnd_message(RND_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
 			return -1; \
 		} \
 		v = strtol(n->data.text.value, &end, 10); \
 		if (*end != '\0') { \
-			rnd_message(PCB_MSG_ERROR, "Invalid mesh integer: " #name "\n"); \
+			rnd_message(RND_MSG_ERROR, "Invalid mesh integer: " #name "\n"); \
 			return -1; \
 		} \
 		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, me->name, lng, v); \
@@ -205,12 +205,12 @@ do { \
 		double v; \
 		rnd_bool succ; \
 		if (n->type != LHT_TEXT) { \
-			rnd_message(PCB_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
+			rnd_message(RND_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
 			return -1; \
 		} \
 		v = pcb_get_value(n->data.text.value, NULL, NULL, &succ); \
 		if (!succ) { \
-			rnd_message(PCB_MSG_ERROR, "Invalid mesh coord: " #name "\n"); \
+			rnd_message(RND_MSG_ERROR, "Invalid mesh coord: " #name "\n"); \
 			return -1; \
 		} \
 		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, me->name, crd, (rnd_coord_t)v); \
@@ -223,7 +223,7 @@ do { \
 		int __found__ = 0, __n__; \
 		const char **__a__; \
 		if (node->type != LHT_TEXT) { \
-			rnd_message(PCB_MSG_ERROR, "Invalid mesh value: " #name " should be text\n"); \
+			rnd_message(RND_MSG_ERROR, "Invalid mesh value: " #name " should be text\n"); \
 			return -1; \
 		} \
 		if (strcmp(node->data.text.value, "invalid") == 0) break; \
@@ -234,7 +234,7 @@ do { \
 			} \
 		} \
 		if (!__found__) { \
-			rnd_message(PCB_MSG_ERROR, "Invalid mesh value '%s' for " #name "\n", node->data.text.value); \
+			rnd_message(RND_MSG_ERROR, "Invalid mesh value '%s' for " #name "\n", node->data.text.value); \
 			return -1; \
 		} \
 		PCB_DAD_SET_VALUE(me->dlg_hid_ctx, dst, lng, __n__); \
@@ -246,7 +246,7 @@ static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 	lht_node_t *lst, *nd;
 
 	if ((root->type != LHT_HASH) || (strcmp(root->name, "pcb-rnd-mesh-v1") != 0)) {
-		rnd_message(PCB_MSG_ERROR, "Input is not a valid mesh save - should be a ha:pcb-rnd-mesh subtree\n");
+		rnd_message(RND_MSG_ERROR, "Input is not a valid mesh save - should be a ha:pcb-rnd-mesh subtree\n");
 		return -1;
 	}
 
@@ -271,7 +271,7 @@ static int mesh_load_subtree(mesh_dlg_t *me, lht_node_t *root)
 	if (lst != NULL) {
 		int n;
 		if (lst->type != LHT_LIST) {
-			rnd_message(PCB_MSG_ERROR, "Boundary shall be a list\n");
+			rnd_message(RND_MSG_ERROR, "Boundary shall be a list\n");
 			return -1;
 		}
 		for(n = 0, nd = lst->data.list.first; (n < 6) && (nd != NULL); n++,nd = nd->next)
@@ -512,7 +512,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	pcb_range_t *r;
 
 	if (vtr0_len(&mesh->line[dir].dens) < 1) {
-		rnd_message(PCB_MSG_ERROR, "There are not enough objects to do the meshing\n");
+		rnd_message(RND_MSG_ERROR, "There are not enough objects to do the meshing\n");
 		return -1;
 	}
 
@@ -528,7 +528,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 				vtc0_remove(&mesh->line[dir].edge, n+1, 1);
 			}
 			else
-				rnd_message(PCB_MSG_ERROR, "meshing error: invalid minimum spacing (%$mm) required: forced %s edges are closer than that around %$mm..%$mm; try decreasing your minimum spacing to below %$mm\n", mesh->min_space, dir == PCB_MESH_VERTICAL ? "vertical" : "horizonal", c1, c2, c2-c1);
+				rnd_message(RND_MSG_ERROR, "meshing error: invalid minimum spacing (%$mm) required: forced %s edges are closer than that around %$mm..%$mm; try decreasing your minimum spacing to below %$mm\n", mesh->min_space, dir == PCB_MESH_VERTICAL ? "vertical" : "horizonal", c1, c2, c2-c1);
 		}
 	}
 
@@ -982,7 +982,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fname, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can not open '%s' for write\n", fname);
+		rnd_message(RND_MSG_ERROR, "Can not open '%s' for write\n", fname);
 		return;
 	}
 
@@ -1012,11 +1012,11 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 
 	f = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can not open '%s' for read\n", fname);
+		rnd_message(RND_MSG_ERROR, "Can not open '%s' for read\n", fname);
 		return;
 	}
 	if (mesh_load_file(&ia, f) != 0)
-		rnd_message(PCB_MSG_ERROR, "Loading mesh settings from '%s' failed.\n", fname);
+		rnd_message(RND_MSG_ERROR, "Loading mesh settings from '%s' failed.\n", fname);
 	fclose(f);
 }
 

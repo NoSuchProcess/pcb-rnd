@@ -106,7 +106,7 @@ static int parse_layer_type(const char *type, pcb_layer_type_t *lyt, int *offs, 
 	if (soffs != NULL) {
 		*offs = strtol(soffs+1, &end, 10);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "CAM rule: invalid offset '%s'\n", soffs);
+			rnd_message(RND_MSG_ERROR, "CAM rule: invalid offset '%s'\n", soffs);
 			return 1;
 		}
 		*has_offs = 1;
@@ -125,7 +125,7 @@ static int parse_layer_type(const char *type, pcb_layer_type_t *lyt, int *offs, 
 				nxt++;
 		}
 		if (l == 0) {
-			rnd_message(PCB_MSG_ERROR, "CAM rule: invalid layer type '%s'\n", cur);
+			rnd_message(RND_MSG_ERROR, "CAM rule: invalid layer type '%s'\n", cur);
 			return 1;
 		}
 		(*lyt) |= l;
@@ -156,7 +156,7 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 					*xf = xf_;
 			}
 			else
-				rnd_message(PCB_MSG_ERROR, "CAM: ignoring invalid layer supplement value '%s' for bloat\n", val);
+				rnd_message(RND_MSG_ERROR, "CAM: ignoring invalid layer supplement value '%s' for bloat\n", val);
 		}
 		else if (strcmp(key, "faded") == 0) {
 			if (xf_ != NULL) xf_->layer_faded = 1;
@@ -191,7 +191,7 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 			if (xf != NULL) *xf = xf_;
 		}
 		else
-			rnd_message(PCB_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
+			rnd_message(RND_MSG_ERROR, "CAM: ignoring unknown layer supplement key '%s'\n", key);
 	}
 }
 
@@ -213,7 +213,7 @@ int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_i
 			return 1;
 		}
 		if (err_prefix != NULL)
-			rnd_message(PCB_MSG_ERROR, "%sinvalid layer group number\n", err_prefix);
+			rnd_message(RND_MSG_ERROR, "%sinvalid layer group number\n", err_prefix);
 		return -1;
 	}
 
@@ -237,7 +237,7 @@ int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_i
 		}
 		if (gid < 0) {
 			if (err_prefix != NULL)
-				rnd_message(PCB_MSG_ERROR, "%sno such layer group '%s'\n", curr, err_prefix);
+				rnd_message(RND_MSG_ERROR, "%sno such layer group '%s'\n", curr, err_prefix);
 			return -1;
 		}
 		if (pcb->LayerGroups.grp[gid].len <= 0)
@@ -260,7 +260,7 @@ int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_i
 		vl = pcb_vlayer_get_first(lyt, purpose, -1);
 		if ((lyt & PCB_LYT_VIRTUAL) && (vl == NULL)) {
 			if (err_prefix != NULL)
-				rnd_message(PCB_MSG_ERROR, "%sno virtual layer with purpose '%s'\n", err_prefix, purpose);
+				rnd_message(RND_MSG_ERROR, "%sno virtual layer with purpose '%s'\n", err_prefix, purpose);
 			return -1;
 		}
 		if (vl == NULL) {

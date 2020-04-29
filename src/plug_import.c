@@ -106,18 +106,18 @@ int pcb_import(rnd_hidlib_t *hidlib, const char *filename, unsigned int aspect)
 	pcb_plug_import_t *plug;
 
 	if (!rnd_file_readable(filename)) {
-		rnd_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s - might be related: can't open %s for reading\n", filename, filename);
+		rnd_message(RND_MSG_ERROR, "Error: can't find a suitable netlist parser for %s - might be related: can't open %s for reading\n", filename, filename);
 		return 1;
 	}
 
 	if (!filename) {
-		rnd_message(PCB_MSG_ERROR, "Error: need a file name for pcb_import_netlist()\n");
+		rnd_message(RND_MSG_ERROR, "Error: need a file name for pcb_import_netlist()\n");
 		return 1; /* nothing to do */
 	}
 
 	plug = find_importer(aspect, &filename, 1);
 	if (plug == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Error: can't find a suitable netlist parser for %s\n", filename);
+		rnd_message(RND_MSG_ERROR, "Error: can't find a suitable netlist parser for %s\n", filename);
 		return 1;
 	}
 
@@ -132,5 +132,5 @@ int pcb_import_netlist(rnd_hidlib_t *hidlib, const char *filename)
 void pcb_import_uninit(void)
 {
 	if (pcb_plug_import_chain != NULL)
-		rnd_message(PCB_MSG_ERROR, "pcb_plug_import_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
+		rnd_message(RND_MSG_ERROR, "pcb_plug_import_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
 }

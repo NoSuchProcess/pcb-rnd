@@ -104,7 +104,7 @@ TODO(": rewrite this - this is very unpcb-rnd")
 #endif
 
 	if (debug > 0)
-		rnd_message(PCB_MSG_INFO, "Importing Hyperlynx file '%s', debug level %d\n", fname, debug);
+		rnd_message(RND_MSG_INFO, "Importing Hyperlynx file '%s', debug level %d\n", fname, debug);
 
 	pcb_hid_busy(PCB, 1);
 	retval = hyp_parse(PCB->Data, fname, debug);

@@ -381,7 +381,7 @@ static pcb_r_dir_t rat_callback(const rnd_box_t *box, void *cl)
 				pcb_rubber_band_create(rbnd, NULL, (pcb_line_t *) rat, 1, i->delta_index);
 			break;
 		default:
-			rnd_message(PCB_MSG_ERROR, "hace: bad rubber-rat lookup callback\n");
+			rnd_message(RND_MSG_ERROR, "hace: bad rubber-rat lookup callback\n");
 	}
 	return PCB_R_DIR_NOT_FOUND;
 }

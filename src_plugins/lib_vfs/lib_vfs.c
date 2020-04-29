@@ -60,13 +60,13 @@ static void cb_mkdirp(pcb_vfs_list_cb cb, void *ctx, gds_t *path, const char *ap
 	char *s, *next;
 
 	gds_append_str(path, append);
-/*pcb_trace("---- mkdirp '%s'\n", path->array);*/
+/*rnd_trace("---- mkdirp '%s'\n", path->array);*/
 	for(s = path->array + ou;; s = next) {
 		next = strchr(s, '/');
 		if (next == NULL)
 			break;
 		*next= '\0';
-/*pcb_trace(" dir '%s'\n", path->array);*/
+/*rnd_trace(" dir '%s'\n", path->array);*/
 		if (!htsp_has(seen, path->array)) {
 			htsp_set(seen, rnd_strdup(path->array), ctx);
 			cb(ctx, path->array, 1);

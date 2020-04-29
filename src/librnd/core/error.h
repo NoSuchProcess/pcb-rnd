@@ -26,70 +26,70 @@
 
 /* Messages, error reporting, debug and logging */
 
-#ifndef PCB_ERROR_H
-#define PCB_ERROR_H
+#ifndef RND_ERROR_H
+#define RND_ERROR_H
 
 #include <time.h>
 #include <librnd/core/global_typedefs.h>
 
-/* pcb_printf()-like call to print temporary trace messages to stderr;
+/* rnd_printf()-like call to print temporary trace messages to stderr;
    disabled in non-debug compilation */
-void pcb_trace(const char *Format, ...);
+void rnd_trace(const char *Format, ...);
 
-typedef enum pcb_message_level {
-	PCB_MSG_DEBUG = 0,   /* Debug message. Should probably not be shown in regular operation. */
-	PCB_MSG_INFO,        /* Info message. FYI for the user, no action needed. */
-	PCB_MSG_WARNING,     /* Something the user should probably take note */
-	PCB_MSG_ERROR        /* Couldn't finish an action, needs user attention. */
-} pcb_message_level_t;
+typedef enum rnd_message_level_s {
+	RND_MSG_DEBUG = 0,   /* Debug message. Should probably not be shown in regular operation. */
+	RND_MSG_INFO,        /* Info message. FYI for the user, no action needed. */
+	RND_MSG_WARNING,     /* Something the user should probably take note */
+	RND_MSG_ERROR        /* Couldn't finish an action, needs user attention. */
+} rnd_message_level_t;
 
 /*** central log write API ***/
 
 /* printf-like logger to the log dialog and stderr */
-void rnd_message(enum pcb_message_level level, const char *Format, ...);
+void rnd_message(rnd_message_level_t level, const char *Format, ...);
 
 /* shorthands for indicating common errors using rnd_message() */
-#define pcb_FS_error_message(filename, func) rnd_message(PCB_MSG_ERROR, "Can't open file\n   '%s'\n" func "() returned: '%s'\n", filename, strerror(errno))
+#define rnd_FS_error_message(filename, func) rnd_message(RND_MSG_ERROR, "Can't open file\n   '%s'\n" func "() returned: '%s'\n", filename, strerror(errno))
 
-#define pcb_open_error_message(filename)     pcb_FS_error_message(filename, "open")
-#define pcb_popen_error_message(filename)    pcb_FS_error_message(filename, "popen")
-#define pcb_opendir_error_message(filename)  pcb_FS_error_message(filename, "opendir")
-#define pcb_chdir_error_message(filename)    pcb_FS_error_message(filename, "chdir")
+#define rnd_open_error_message(filename)     rnd_FS_error_message(filename, "open")
+#define rnd_popen_error_message(filename)    rnd_FS_error_message(filename, "popen")
+#define rnd_opendir_error_message(filename)  rnd_FS_error_message(filename, "opendir")
+#define rnd_chdir_error_message(filename)    rnd_FS_error_message(filename, "chdir")
 
 /*** central log storage and read API ***/
 
-typedef struct pcb_logline_s pcb_logline_t;
+typedef struct rnd_logline_s rnd_logline_t;
 
-struct pcb_logline_s {
+struct rnd_logline_s {
 	time_t stamp;
 	unsigned long ID;
-	pcb_message_level_t level;
+	rnd_message_level_t level;
 	unsigned seen:1; /* message ever shown to the user - set by the code that presented the message */
-	pcb_logline_t *prev, *next;
+	rnd_logline_t *prev, *next;
 	size_t len;
 	char str[1];
 };
 
-extern unsigned long pcb_log_next_ID;
+extern unsigned long rnd_log_next_ID;
 
 /* Return the first log line that has at least the specified value in its ID. */
-pcb_logline_t *pcb_log_find_min(unsigned long ID);
-pcb_logline_t *pcb_log_find_min_(pcb_logline_t *from, unsigned long ID);
+rnd_logline_t *rnd_log_find_min(unsigned long ID);
+rnd_logline_t *rnd_log_find_min_(rnd_logline_t *from, unsigned long ID);
 
 /* Search back from the bottom of the log and return the oldest unseen entry
    (or NULL if all entries have been shown) */
-pcb_logline_t *pcb_log_find_first_unseen(void);
+rnd_logline_t *rnd_log_find_first_unseen(void);
 
 /* Remove log lines between ID from and to, inclusive; -1 in these fields
    mean begin or end of the list. */
-void pcb_log_del_range(unsigned long from, unsigned long to);
+void rnd_log_del_range(unsigned long from, unsigned long to);
 
 /* Export the whole log list to a file, in lihata or plain text */
-int pcb_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata);
+int rnd_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata);
 
 /* Free all memory and reset the log system */
-void pcb_log_uninit(void);
+void rnd_log_uninit(void);
 
-extern pcb_logline_t *pcb_log_first, *pcb_log_last;
+extern rnd_logline_t *rnd_log_first, *rnd_log_last;
 
 #endif

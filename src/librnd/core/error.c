@@ -37,7 +37,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include <genvector/gds_char.h>
 
-void pcb_trace(const char *Format, ...)
+void rnd_trace(const char *Format, ...)
 {
 #ifndef NDEBUG
 	va_list args;
@@ -47,19 +47,19 @@ void pcb_trace(const char *Format, ...)
 #endif
 }
 
-unsigned long pcb_log_next_ID = 0;
-pcb_logline_t *pcb_log_first, *pcb_log_last;
+unsigned long rnd_log_next_ID = 0;
+rnd_logline_t *rnd_log_first, *rnd_log_last;
 
-void rnd_message(enum pcb_message_level level, const char *Format, ...)
+void rnd_message(rnd_message_level_t level, const char *Format, ...)
 {
 	va_list args;
-	pcb_message_level_t min_level = PCB_MSG_INFO;
+	rnd_message_level_t min_level = RND_MSG_INFO;
 	gds_t tmp;
-	pcb_logline_t *line;
+	rnd_logline_t *line;
 
 	if ((pcb_gui == NULL) || (pcbhl_conf.rc.dup_log_to_stderr)) {
 		if (pcbhl_conf.rc.quiet)
-			min_level = PCB_MSG_ERROR;
+			min_level = RND_MSG_ERROR;
 
 		if ((level >= min_level) || (pcbhl_conf.rc.verbose)) {
 			va_start(args, Format);
@@ -71,33 +71,33 @@ void rnd_message(enum pcb_message_level level, const char *Format, ...)
 	/* allocate a new log line; for efficiency pretend it is a string during
 	   the allocation */
 	gds_init(&tmp);
-	gds_enlarge(&tmp, sizeof(pcb_logline_t));
-	tmp.used = offsetof(pcb_logline_t, str);
+	gds_enlarge(&tmp, sizeof(rnd_logline_t));
+	tmp.used = offsetof(rnd_logline_t, str);
 	va_start(args, Format);
 	pcb_safe_append_vprintf(&tmp, 0, Format, args);
 	va_end(args);
 
 	/* add the header and link in */
-	line = (pcb_logline_t *)tmp.array;
+	line = (rnd_logline_t *)tmp.array;
 	line->stamp = time(NULL);
-	line->ID = pcb_log_next_ID++;
+	line->ID = rnd_log_next_ID++;
 	line->level = level;
 	line->seen = 0;
 	line->next = NULL;
-	line->prev = pcb_log_last;
-	if (pcb_log_first == NULL)
-		pcb_log_first = line;
-	if (pcb_log_last != NULL)
-		pcb_log_last->next = line;
-	pcb_log_last = line;
-	line->len = tmp.used - offsetof(pcb_logline_t, str);
+	line->prev = rnd_log_last;
+	if (rnd_log_first == NULL)
+		rnd_log_first = line;
+	if (rnd_log_last != NULL)
+		rnd_log_last->next = line;
+	rnd_log_last = line;
+	line->len = tmp.used - offsetof(rnd_logline_t, str);
 
 	pcb_event(NULL, PCB_EVENT_LOG_APPEND, "p", line);
 }
 
-pcb_logline_t *pcb_log_find_min_(pcb_logline_t *from, unsigned long ID)
+rnd_logline_t *rnd_log_find_min_(rnd_logline_t *from, unsigned long ID)
 {
-	pcb_logline_t *n;
+	rnd_logline_t *n;
 	if (ID == -1)
 		return from;
 	for(n = from; n != NULL; n = n->next)
@@ -106,32 +106,32 @@ pcb_logline_t *pcb_log_find_min_(pcb_logline_t *from, unsigned long ID)
 	return NULL;
 }
 
-pcb_logline_t *pcb_log_find_min(unsigned long ID)
+rnd_logline_t *rnd_log_find_min(unsigned long ID)
 {
-	return pcb_log_find_min_(pcb_log_first, ID);
+	return rnd_log_find_min_(rnd_log_first, ID);
 }
 
-pcb_logline_t *pcb_log_find_first_unseen(void)
+rnd_logline_t *rnd_log_find_first_unseen(void)
 {
-	pcb_logline_t *n;
-	for(n = pcb_log_last; n != NULL; n = n->prev)
+	rnd_logline_t *n;
+	for(n = rnd_log_last; n != NULL; n = n->prev)
 		if (n->seen)
 			return n->next;
-	return pcb_log_first;
+	return rnd_log_first;
 }
 
-void pcb_log_del_range(unsigned long from, unsigned long to)
+void rnd_log_del_range(unsigned long from, unsigned long to)
 {
-	pcb_logline_t *start = pcb_log_find_min(from), *end = NULL;
-	pcb_logline_t *next, *n, *start_prev, *end_next;
+	rnd_logline_t *start = rnd_log_find_min(from), *end = NULL;
+	rnd_logline_t *next, *n, *start_prev, *end_next;
 
 	if (start == NULL)
 		return; /* start is beyond the end of the list - do not delete anything */
 
 	if (to != -1)
-		end = pcb_log_find_min_(start, to);
+		end = rnd_log_find_min_(start, to);
 	if (end == NULL)
-		end = pcb_log_last;
+		end = rnd_log_last;
 
 	/* remember boundary elems near the range */
 	start_prev = start->prev;
@@ -151,20 +151,20 @@ void pcb_log_del_range(unsigned long from, unsigned long to)
 	if (start_prev != NULL)
 		start_prev->next = end_next;
 	else
-		pcb_log_first = end_next;
+		rnd_log_first = end_next;
 
 	if (end_next != NULL)
 		end_next->prev = start_prev;
 	else
-		pcb_log_last = start_prev;
+		rnd_log_last = start_prev;
 }
 
 
 
-int pcb_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
+int rnd_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
 {
 	FILE *f;
-	pcb_logline_t *n;
+	rnd_logline_t *n;
 
 	f = pcb_fopen(hidlib, fn, "w");
 	if (f == NULL)
@@ -175,7 +175,7 @@ int pcb_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
 		fprintf(f, " li:entries {\n");
 	}
 
-	for(n = pcb_log_first; n != NULL; n = n->next) {
+	for(n = rnd_log_first; n != NULL; n = n->next) {
 		if (fmt_lihata) {
 			fprintf(f, "  ha:%lu {", n->ID);
 			fprintf(f, "stamp=%ld; level=%d; seen=%d; ", (long int)n->stamp, n->level, n->seen);
@@ -192,9 +192,9 @@ int pcb_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
 	return 0;
 }
 
-void pcb_log_uninit(void)
+void rnd_log_uninit(void)
 {
-	pcb_log_del_range(-1, -1);
+	rnd_log_del_range(-1, -1);
 }
 
 
@@ -213,7 +213,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		unsigned long from = -1, to = -1;
 		rnd_PCB_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
-		pcb_log_del_range(from, to);
+		rnd_log_del_range(from, to);
 		pcb_event(NULL, PCB_EVENT_LOG_CLEAR, "pp", &from, &to);
 		ret = 0;
 	}
@@ -228,9 +228,9 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			wfmt = PCB_DAD_CURRENT(fmtsub.dlg);
 		fn = pcb_gui->fileselect(pcb_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", PCB_HID_FSD_MAY_NOT_EXIST, &fmtsub);
 		if (fn != NULL) {
-			ret = pcb_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.lng == 1));
+			ret = rnd_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.lng == 1));
 			if (ret != 0)
-				rnd_message(PCB_MSG_ERROR, "Failed to export log to '%s'\n", fn);
+				rnd_message(RND_MSG_ERROR, "Failed to export log to '%s'\n", fn);
 			free(fn);
 		}
 		else
@@ -250,7 +250,7 @@ static const char pcb_acth_Message[] = "Writes a message to the log window.";
 /* DOC: message.html */
 static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int i, how = PCB_MSG_INFO;
+	int i, how = RND_MSG_INFO;
 
 	if (argc < 2)
 		RND_ACT_FAIL(Message);
@@ -259,10 +259,10 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2) {
 		const char *hows;
 		rnd_PCB_ACT_MAY_CONVARG(i, FGW_STR, Message, hows = argv[i].val.str);
-		if (strcmp(hows, "ERROR") == 0)        { i++; how = PCB_MSG_ERROR; }
-		else if (strcmp(hows, "WARNING") == 0) { i++; how = PCB_MSG_WARNING; }
-		else if (strcmp(hows, "INFO") == 0)    { i++; how = PCB_MSG_INFO; }
-		else if (strcmp(hows, "DEBUG") == 0)   { i++; how = PCB_MSG_DEBUG; }
+		if (strcmp(hows, "ERROR") == 0)        { i++; how = RND_MSG_ERROR; }
+		else if (strcmp(hows, "WARNING") == 0) { i++; how = RND_MSG_WARNING; }
+		else if (strcmp(hows, "INFO") == 0)    { i++; how = RND_MSG_INFO; }
+		else if (strcmp(hows, "DEBUG") == 0)   { i++; how = RND_MSG_DEBUG; }
 	}
 
 	RND_ACT_IRES(0);

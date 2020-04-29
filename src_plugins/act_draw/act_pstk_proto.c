@@ -119,7 +119,7 @@ static fgw_error_t pcb_act_PstkProtoTmp(fgw_arg_t *res, int argc, fgw_arg_t *arg
 			}
 			RND_PCB_ACT_CONVARG(3+ao, FGW_PTR, PstkProtoTmp, proto = argv[3+ao].val.ptr_void);
 			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
-				rnd_message(PCB_MSG_ERROR, "PstkProtoTmp: invalid proto pointer\n");
+				rnd_message(RND_MSG_ERROR, "PstkProtoTmp: invalid proto pointer\n");
 				RND_ACT_IRES(-1);
 				return 0;
 			}
@@ -163,7 +163,7 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	RND_PCB_ACT_CONVARG(2+ao, FGW_STR, PstkProtoEdit, cmd = argv[2+ao].val.str);
 
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1+ao], PCB_PTR_DOMAIN_PSTK_PROTO) || (proto == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
+		rnd_message(RND_MSG_ERROR, "PstkProtoEdit: invalid proto pointer\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}

@@ -200,7 +200,7 @@ static int bom_print(void)
 
 	fp = pcb_fopen_askovr(&PCB->hidlib, bom_filename, "w", NULL);
 	if (!fp) {
-		rnd_message(PCB_MSG_ERROR, "Cannot open file %s for writing\n", bom_filename);
+		rnd_message(RND_MSG_ERROR, "Cannot open file %s for writing\n", bom_filename);
 		print_and_free(NULL, bom);
 		return 1;
 	}

@@ -108,7 +108,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	font = pcb_font_unlink(PCB, conf_core.design.text_font_id);
 	if (font == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
+		rnd_message(RND_MSG_ERROR, "Can't fetch font id %d\n", conf_core.design.text_font_id);
 		return 1;
 	}
 

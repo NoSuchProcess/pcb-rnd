@@ -497,7 +497,7 @@ void *pcb_lineop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_line_t *l
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
 		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
-			rnd_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_lineop_move_buffer\n");
+			rnd_message(RND_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_lineop_move_buffer\n");
 			return NULL;
 		}
 		dstly = &ctx->buffer.dst->Layer[lid];
@@ -782,7 +782,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	void *ptr1, *ptr2, *ptr3;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line)) {
-		rnd_message(PCB_MSG_WARNING, "Sorry, line object is locked\n");
+		rnd_message(RND_MSG_WARNING, "Sorry, line object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)

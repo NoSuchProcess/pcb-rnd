@@ -320,7 +320,7 @@ static void tool_serpentine_notify_mode(rnd_hidlib_t *hl)
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 		}
 		else
-			rnd_message(PCB_MSG_WARNING, "Serpentines can be only drawn onto a line\n");
+			rnd_message(RND_MSG_WARNING, "Serpentines can be only drawn onto a line\n");
 		break;
 
 	case PCB_CH_STATE_SECOND:

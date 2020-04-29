@@ -67,13 +67,13 @@ static int ReadNetlist(const char *filename)
 	if (!filename)
 		return 1;									/* nothing to do */
 
-	rnd_message(PCB_MSG_INFO, "Importing PCB netlist %s\n", filename);
+	rnd_message(RND_MSG_INFO, "Importing PCB netlist %s\n", filename);
 
 	ratcmd = conf_core.rc.rat_command;
 	if (PCB_EMPTY_STRING_P(ratcmd)) {
 		fp = pcb_fopen(&PCB->hidlib, filename, "r");
 		if (!fp) {
-			rnd_message(PCB_MSG_ERROR, "Cannot open %s for reading", filename);
+			rnd_message(RND_MSG_ERROR, "Cannot open %s for reading", filename);
 			return 1;
 		}
 	}
@@ -88,7 +88,7 @@ static int ReadNetlist(const char *filename)
 
 		/* open pipe to stdout of command */
 		if (*command == '\0' || (fp = pcb_popen(&PCB->hidlib, command, "r")) == NULL) {
-			pcb_popen_error_message(command);
+			rnd_popen_error_message(command);
 			free(command);
 			return 1;
 		}
@@ -105,7 +105,7 @@ static int ReadNetlist(const char *filename)
 		/* check for maximum length line */
 		if (len) {
 			if (inputline[--len] != '\n')
-				rnd_message(PCB_MSG_ERROR, "Line length (%i) exceeded in netlist file.\n"
+				rnd_message(RND_MSG_ERROR, "Line length (%i) exceeded in netlist file.\n"
 									"additional characters will be ignored.\n", PCB_MAX_NETLIST_LINE_LENGTH);
 			else
 				inputline[len] = '\0';
@@ -143,7 +143,7 @@ static int ReadNetlist(const char *filename)
 			kind = 0;
 	}
 	if (!lines) {
-		rnd_message(PCB_MSG_ERROR, "Empty netlist file!\n");
+		rnd_message(RND_MSG_ERROR, "Empty netlist file!\n");
 		pcb_pclose(fp);
 		return 1;
 	}
@@ -168,7 +168,7 @@ static int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 static int netlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	if (numfns != 1) {
-		rnd_message(PCB_MSG_ERROR, "import_netlist: requires exactly 1 input file name\n");
+		rnd_message(RND_MSG_ERROR, "import_netlist: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return ReadNetlist(fns[0]);

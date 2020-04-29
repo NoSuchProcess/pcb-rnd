@@ -583,7 +583,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 
 	if ((name == NULL) || (*name == '\0')) {
-		rnd_message(PCB_MSG_ERROR, "Filed to figure the name of the parametric footprint\n");
+		rnd_message(RND_MSG_ERROR, "Filed to figure the name of the parametric footprint\n");
 		return;
 	}
 	namelen = strlen(name);
@@ -601,7 +601,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		library_param_dialog(ctx, rnew->user_data);
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "No such parametric footprint: '%s'\n", name);
+		rnd_message(RND_MSG_ERROR, "No such parametric footprint: '%s'\n", name);
 
 	free(name);
 }
@@ -625,9 +625,9 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	oname = rnd_strdup(l->name); /* need to save the name because refresh invalidates l */
 
 	if (pcb_fp_rehash(&PCB->hidlib, l) == 0)
-		rnd_message(PCB_MSG_INFO, "Refreshed library '%s'\n", oname);
+		rnd_message(RND_MSG_INFO, "Refreshed library '%s'\n", oname);
 	else
-		rnd_message(PCB_MSG_ERROR, "Failed to refresh library '%s'\n", oname);
+		rnd_message(RND_MSG_ERROR, "Failed to refresh library '%s'\n", oname);
 
 	free(oname);
 }

@@ -93,7 +93,7 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_box
 	case PCB_OBJ_ARC_POINT:
 		return pcb_obj_ui_arc_point_bbox(Type, Ptr1, Ptr2, Ptr3, res);
 	default:
-		rnd_message(PCB_MSG_ERROR, "Request for bounding box of unsupported type %d\n", Type);
+		rnd_message(RND_MSG_ERROR, "Request for bounding box of unsupported type %d\n", Type);
 		*res = *(rnd_box_t *)Ptr2;
 		return -1;
 	}
@@ -175,7 +175,7 @@ void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, co
 			pcb_term_add(&subc->terminals, obj);
 		inv = pcb_obj_id_invalid(obj->term);
 		if (inv != NULL)
-			rnd_message(PCB_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
+			rnd_message(RND_MSG_ERROR, "Invalid character '%c' in terminal name (term attribute) '%s'\n", *inv, obj->term);
 	}
 	else if (strcmp(name, "intconn") == 0) {
 		long cid = 0;

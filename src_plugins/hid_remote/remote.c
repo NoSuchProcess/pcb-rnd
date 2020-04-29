@@ -164,7 +164,7 @@ static pcb_hid_gc_t remote_make_gc(pcb_hid_t *hid)
 	int gci = proto_send_make_gc();
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
 	if (gci >= max) {
-		rnd_message(PCB_MSG_ERROR, "remote_make_gc(): GC index too high: %d >= %d\n", gci, max);
+		rnd_message(RND_MSG_ERROR, "remote_make_gc(): GC index too high: %d >= %d\n", gci, max);
 		proto_send_del_gc(gci);
 		return NULL;
 	}
@@ -178,7 +178,7 @@ static int gc2idx(pcb_hid_gc_t gc)
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
 
 	if ((idx < 0) || (idx >= max)) {
-		rnd_message(PCB_MSG_ERROR, "GC index too high: %d >= %d\n", idx, max);
+		rnd_message(RND_MSG_ERROR, "GC index too high: %d >= %d\n", idx, max);
 		return -1;
 	}
 	return idx;
@@ -197,7 +197,7 @@ static void remote_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_b
 	if ((op >= 0) && (op < sizeof(drawing_mode_names) / sizeof(drawing_mode_names[0])))
 		proto_send_set_drawing_mode(drawing_mode_names[op], direct);
 	else
-		rnd_message(PCB_MSG_ERROR, "Invalid drawing mode %d\n", op);
+		rnd_message(RND_MSG_ERROR, "Invalid drawing mode %d\n", op);
 }
 
 static void remote_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
@@ -220,7 +220,7 @@ static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 
 
 	if (style >= max) {
-		rnd_message(PCB_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
+		rnd_message(RND_MSG_ERROR, "can't set invalid cap style: %d >= %d\n", style, max);
 		return;
 	}
 	if (idx >= 0) {

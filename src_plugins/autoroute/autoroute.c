@@ -2498,7 +2498,7 @@ static inline rnd_box_t previous_edge(rnd_coord_t last, rnd_direction_t i, const
 		db.X2 = last;
 		break;
 	default:
-		rnd_message(PCB_MSG_ERROR, "previous edge bogus direction!");
+		rnd_message(RND_MSG_ERROR, "previous edge bogus direction!");
 		assert(0);
 	}
 	return db;
@@ -4379,7 +4379,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					if (request_cancel) {
 						ras.total_nets_routed = 0;
 						ras.conflict_subnets = 0;
-						rnd_message(PCB_MSG_INFO, "Autorouting cancelled\n");
+						rnd_message(RND_MSG_INFO, "Autorouting cancelled\n");
 						goto out;
 					}
 				}
@@ -4431,7 +4431,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 		this_cost = 0;
 	}
 
-	rnd_message(PCB_MSG_INFO, "%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
+	rnd_message(RND_MSG_INFO, "%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
 
 out:
 	pcb_heap_destroy(&this_pass);
@@ -4613,7 +4613,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 	for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
 		if (PCB->RouteStyle.array[i].Thick == 0 ||
 				PCB->RouteStyle.array[i].Diameter == 0 || PCB->RouteStyle.array[i].Hole == 0 || PCB->RouteStyle.array[i].Clearance == 0) {
-			rnd_message(PCB_MSG_ERROR, "You must define proper routing styles\n" "before auto-routing.\n");
+			rnd_message(RND_MSG_ERROR, "You must define proper routing styles\n" "before auto-routing.\n");
 			return pcb_false;
 		}
 	}
@@ -4621,7 +4621,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 		return pcb_false;
 	rd = CreateRouteData();
 	if (rd == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to initialize data; might be missing\n" "top or bottom copper layer.\n");
+		rnd_message(RND_MSG_ERROR, "Failed to initialize data; might be missing\n" "top or bottom copper layer.\n");
 		return pcb_false;
 	}
 
@@ -4711,7 +4711,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, pcb_true, line);
 				pcb_rat_invalidate_draw(line, 0);
 #endif /* DEBUG_STALE_RATS */
-				rnd_message(PCB_MSG_ERROR, "The rats nest is stale! Aborting autoroute...\n");
+				rnd_message(RND_MSG_ERROR, "The rats nest is stale! Aborting autoroute...\n");
 				goto donerouting;
 			}
 			/* merge subnets into a net! */
@@ -4761,7 +4761,7 @@ donerouting:
 
 	if (changed)
 		changed = IronDownAllUnfixedPaths(rd);
-	rnd_message(PCB_MSG_INFO, "Total added wire length = %$mS, %d vias added\n", (rnd_coord_t) total_wire_length, total_via_count);
+	rnd_message(RND_MSG_INFO, "Total added wire length = %$mS, %d vias added\n", (rnd_coord_t) total_wire_length, total_via_count);
 	DestroyRouteData(&rd);
 	if (changed) {
 		pcb_undo_save_serial();

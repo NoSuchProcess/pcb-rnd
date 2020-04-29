@@ -168,7 +168,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 	char *fn;
 
 	if (script_persistency_id == NULL) {
-		rnd_message(PCB_MSG_ERROR, "ScriptPersistency may be called only from the init part of a script\n");
+		rnd_message(RND_MSG_ERROR, "ScriptPersistency may be called only from the init part of a script\n");
 		goto err;
 	}
 
@@ -210,7 +210,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 		goto succ;
 	}
 
-	rnd_message(PCB_MSG_ERROR, "Unknown command for ScriptPersistency\n");
+	rnd_message(RND_MSG_ERROR, "Unknown command for ScriptPersistency\n");
 
 	err:;
 	RND_ACT_IRES(-1);
@@ -225,7 +225,7 @@ static char *script_gen_cookie(const char *force_id)
 {
 	if (force_id == NULL) {
 		if (script_persistency_id == NULL) {
-			rnd_message(PCB_MSG_ERROR, "ScriptCookie called from outside of script init, can not generate the cookie\n");
+			rnd_message(RND_MSG_ERROR, "ScriptCookie called from outside of script init, can not generate the cookie\n");
 			return NULL;
 		}
 		force_id = script_persistency_id;
@@ -260,13 +260,13 @@ int pcb_script_load(const char *id, const char *fn, const char *lang)
 	const char *old_id;
 
 	if (htsp_has(&scripts, id)) {
-		rnd_message(PCB_MSG_ERROR, "Can not load script %s from file %s: ID already in use\n", id, fn);
+		rnd_message(RND_MSG_ERROR, "Can not load script %s from file %s: ID already in use\n", id, fn);
 		return -1;
 	}
 
 	if (lang == NULL) {
 TODO(": guess")
-		rnd_message(PCB_MSG_ERROR, "Can not load script %s from file %s: failed to guess language from file name\n", id, fn);
+		rnd_message(RND_MSG_ERROR, "Can not load script %s from file %s: failed to guess language from file name\n", id, fn);
 		return -1;
 	}
 
@@ -287,7 +287,7 @@ TODO(": guess")
 		pup = pup_load(&script_pup, pcb_script_pup_paths, name, 0, &st);
 		script_persistency_id = old_id;
 		if (pup == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
+			rnd_message(RND_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
 			return -1;
 		}
 #endif
@@ -310,7 +310,7 @@ TODO(": guess")
 
 	if (s->obj == NULL) {
 		script_free(s, NULL, NULL);
-		rnd_message(PCB_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
+		rnd_message(RND_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
 		return -1;
 	}
 
@@ -353,7 +353,7 @@ void script_list(const char *pat)
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
 		script_t *s = (script_t *)e->value;
 		if ((r == NULL) || (re_se_exec(r, s->id)) || (re_se_exec(r, s->fn)) || (re_se_exec(r, s->lang)))
-			rnd_message(PCB_MSG_INFO, "id=%s fn=%s lang=%s\n", s->id, s->fn, s->lang);
+			rnd_message(RND_MSG_INFO, "id=%s fn=%s lang=%s\n", s->id, s->fn, s->lang);
 	}
 	
 	if (r != NULL)
@@ -396,7 +396,7 @@ int script_oneliner(const char *lang, const char *src)
 	f = pcb_fopen(NULL, fn, "w");
 	if (f == NULL) {
 		rnd_tempfile_unlink(fn);
-		rnd_message(PCB_MSG_ERROR, "script oneliner: can't open temp file for write\n");
+		rnd_message(RND_MSG_ERROR, "script oneliner: can't open temp file for write\n");
 		return -1;
 	}
 	oneliner_boilerplate(f, lang, 1);
@@ -406,7 +406,7 @@ int script_oneliner(const char *lang, const char *src)
 	fclose(f);
 
 	if (pcb_script_load("__oneliner", fn, lang) != 0) {
-		rnd_message(PCB_MSG_ERROR, "script oneliner: can't load/parse the script\n");
+		rnd_message(RND_MSG_ERROR, "script oneliner: can't load/parse the script\n");
 		res = -1;
 	}
 	pcb_script_unload("__oneliner", NULL);

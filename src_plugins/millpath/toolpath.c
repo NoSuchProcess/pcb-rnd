@@ -124,7 +124,7 @@ static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
 			sub_layer_poly(ctx->pcb, ctx->result, ctx->layer, poly, ctx->centerline);
 			pcb_polyarea_free(&poly->Clipped);
 			break;
-		default:           rnd_message(PCB_MSG_ERROR, "Internal error: toolpath sub_layer_text() invalid object type %ld\n", obj->type);
+		default:           rnd_message(RND_MSG_ERROR, "Internal error: toolpath sub_layer_text() invalid object type %ld\n", obj->type);
 	}
 }
 
@@ -471,7 +471,7 @@ int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 
 	rem = fix_overcuts(pcb, result);
 	if (rem != 0)
-		rnd_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
+		rnd_message(RND_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 
 	return 0;
 }
@@ -479,9 +479,9 @@ int pcb_tlp_mill_copper_layer(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 #define req_setup(target) \
 	if (setup != target) { \
 		if (target) \
-			rnd_message(PCB_MSG_ERROR, "millpath script: need to call a setup_* function before milling"); \
+			rnd_message(RND_MSG_ERROR, "millpath script: need to call a setup_* function before milling"); \
 		else \
-			rnd_message(PCB_MSG_ERROR, "millpath script: can not call multiple setup_* functions"); \
+			rnd_message(RND_MSG_ERROR, "millpath script: can not call multiple setup_* functions"); \
 		continue; \
 	}
 
@@ -532,7 +532,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 			long rem = fix_overcuts(pcb, result);
 			req_setup(1);
 			if (rem != 0)
-				rnd_message(PCB_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
+				rnd_message(RND_MSG_WARNING, "toolpath: had to remove %ld cuts, there might be short circuits;\ncheck your clearance vs. tool size!\n", rem);
 		}
 
 		qparse_free(argc, &argv);

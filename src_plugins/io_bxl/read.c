@@ -213,7 +213,7 @@ void pcb_bxl_padstack_begin(pcb_bxl_ctx_t *ctx, char *name)
 {
 	htsi_entry_t *e = htsi_getentry(&ctx->proto_name2id, name);
 	if (e != NULL)
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' redefined\n", name);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: padstack '%s' redefined\n", name);
 
 	ctx->state.proto.name = name;
 	ctx->state.proto.in_use = 1;
@@ -233,12 +233,12 @@ static void pcb_bxl_padstack_end_automask(pcb_bxl_ctx_t *ctx)
 		return;
 
 	if (ctx->state.proto.hdia <= 0)
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' marked as non-surface-mounted yet there is no hole in it\n", ctx->state.proto.name);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: padstack '%s' marked as non-surface-mounted yet there is no hole in it\n", ctx->state.proto.name);
 	if (ctx->state.has_mask_shape)
 		return; /* do not override user's mask */
 
 	if (ctx->state.copper_shape_idx < 0) {
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack '%s' is thru-hole, does not have mask or copper\n", ctx->state.proto.name);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: padstack '%s' is thru-hole, does not have mask or copper\n", ctx->state.proto.name);
 		return;
 	}
 
@@ -266,7 +266,7 @@ void pcb_bxl_padstack_end(pcb_bxl_ctx_t *ctx)
 
 	i = pcb_pstk_proto_insert_forcedup(ctx->subc->data, &ctx->state.proto, 0, 0);
 	if (ctx->proto_id-1 != i)
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: failed to insert padstack '%s'\n", ctx->state.proto.name);
 	ctx->state.proto.name = NULL; /* do not free it as it is the hash key */
 
 	pcb_pstk_proto_free_fields(&ctx->state.proto);
@@ -278,7 +278,7 @@ void pcb_bxl_padstack_begin_shape(pcb_bxl_ctx_t *ctx, const char *name)
 	else if (rnd_strcasecmp(name, "square") == 0)  ctx->state.shape_type = 1;
 	else if (rnd_strcasecmp(name, "round") == 0)   ctx->state.shape_type = 2;
 	else {
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: unknown padstack shape '%s' in '%s' - omitting shape\n", name, ctx->state.proto.name);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: unknown padstack shape '%s' in '%s' - omitting shape\n", name, ctx->state.proto.name);
 		return;
 	}
 }
@@ -291,7 +291,7 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 	if ((ctx->state.width == 0) || (ctx->state.height == 0)) {
 		/* 0 sizes shape should not appear on the output */
 		if (ctx->state.layer->meta.bound.type & PCB_LYT_COPPER)
-			rnd_message(PCB_MSG_WARNING, "bxl footprint error: 0 sized copper shape in padstack '%s'\n", ctx->state.proto.name);
+			rnd_message(RND_MSG_WARNING, "bxl footprint error: 0 sized copper shape in padstack '%s'\n", ctx->state.proto.name);
 		return;
 	}
 
@@ -328,7 +328,7 @@ void pcb_bxl_padstack_end_shape(pcb_bxl_ctx_t *ctx)
 			sh->data.circ.x = sh->data.circ.y = 0;
 			sh->data.circ.dia = (ctx->state.width + ctx->state.height)/2;
 			if (ctx->state.width != ctx->state.height)
-				rnd_message(PCB_MSG_WARNING, "bxl footprint error: padstack: asymmetric round shape - probably a typo, using real round shape in '%s'\n", ctx->state.proto.name);
+				rnd_message(RND_MSG_WARNING, "bxl footprint error: padstack: asymmetric round shape - probably a typo, using real round shape in '%s'\n", ctx->state.proto.name);
 			break;
 	}
 
@@ -369,7 +369,7 @@ void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
 		}
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "bxl footprint: internal error: failed to create padstack - expect missing padstacks\n");
+		rnd_message(RND_MSG_ERROR, "bxl footprint: internal error: failed to create padstack - expect missing padstacks\n");
 
 	free(ctx->state.pin_name);
 	ctx->state.pin_name = NULL;
@@ -384,7 +384,7 @@ void pcb_bxl_pad_set_style(pcb_bxl_ctx_t *ctx, const char *pstkname)
 	e = htsi_getentry(&ctx->proto_name2id, pstkname);
 	if (e == NULL) {
 		ctx->state.pstk_proto_id = -1;
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: invalid padstack reference '%s' - pad will not be created\n", pstkname);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: invalid padstack reference '%s' - pad will not be created\n", pstkname);
 		return;
 	}
 	ctx->state.pstk_proto_id = e->value;
@@ -507,7 +507,7 @@ void pcb_bxl_text_style_begin(pcb_bxl_ctx_t *ctx, char *name)
 		htsp_set(&ctx->text_name2style, name, ts); /* name is not free'd at the caller */
 	}
 	else
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' is redefined; second definition will override first\n", name);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: text style '%s' is redefined; second definition will override first\n", name);
 	ctx->state.text_style = ts;
 }
 
@@ -520,7 +520,7 @@ void pcb_bxl_set_text_style(pcb_bxl_ctx_t *ctx, const char *name)
 {
 	ctx->state.text_style = htsp_get(&ctx->text_name2style, name);
 	if (ctx->state.text_style == NULL)
-		rnd_message(PCB_MSG_WARNING, "bxl footprint error: text style '%s' not defined (using default style)\n", name);
+		rnd_message(RND_MSG_WARNING, "bxl footprint error: text style '%s' not defined (using default style)\n", name);
 }
 
 
@@ -550,9 +550,9 @@ static void pcb_bxl_uninit(pcb_bxl_ctx_t *bctx)
 	htsi_entry_t *ei;
 
 	/* emit all accumulated warnings */
-	WARN_CNT(poly_broken,        (PCB_MSG_WARNING, "footprint contains %ld invalid polygons (polygons ignored)\n", cnt));
-	WARN_CNT(property_null_obj,  (PCB_MSG_WARNING, "footprint contains %ld properties that could not be attached to any object\n", cnt));
-	WARN_CNT(property_nosep,     (PCB_MSG_WARNING, "footprint contains %ld properties without separator between key and value\n", cnt));
+	WARN_CNT(poly_broken,        (RND_MSG_WARNING, "footprint contains %ld invalid polygons (polygons ignored)\n", cnt));
+	WARN_CNT(property_null_obj,  (RND_MSG_WARNING, "footprint contains %ld properties that could not be attached to any object\n", cnt));
+	WARN_CNT(property_nosep,     (RND_MSG_WARNING, "footprint contains %ld properties without separator between key and value\n", cnt));
 
 
 	for(e = htsp_first(&bctx->layer_name2ly); e != NULL; e = htsp_next(&bctx->layer_name2ly, e))
@@ -683,11 +683,11 @@ int io_bxl_test_parse2(rnd_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 				
 				/* found an opening token, tok is the ID */
 				case T_PADSTACK:
-					pcb_trace("BXL testparse; padstack '%s'\n", lval.un.s);
+					rnd_trace("BXL testparse; padstack '%s'\n", lval.un.s);
 					found_tok = T_ENDPADSTACK;
 					break;
 				case T_PATTERN:
-					pcb_trace("BXL testparse; footprint '%s'\n", lval.un.s);
+					rnd_trace("BXL testparse; footprint '%s'\n", lval.un.s);
 					if (pat_cb != NULL)
 						pat_cb(cbctx, lval.un.s);
 					if (typ & PCB_IOT_FOOTPRINT)

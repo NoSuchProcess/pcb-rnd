@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	if (!pcb_gui->edit_attributes) {
-		rnd_message(PCB_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
+		rnd_message(RND_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
 		return FGW_ERR_UNKNOWN;
 	}
 
@@ -100,7 +100,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						break;
 					}
 				if (layer == NULL) {
-					rnd_message(PCB_MSG_ERROR, "No layer named %s\n", layername);
+					rnd_message(RND_MSG_ERROR, "No layer named %s\n", layername);
 					return 1;
 				}
 			}
@@ -122,7 +122,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			PCB_END_LOOP;
 			if (n_found > 1) {
-				rnd_message(PCB_MSG_ERROR, "Too many subcircuits selected\n");
+				rnd_message(RND_MSG_ERROR, "Too many subcircuits selected\n");
 				return 1;
 			}
 			if (n_found == 0) {
@@ -132,7 +132,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
 					s = (pcb_subc_t *)ptrtmp;
 				else {
-					rnd_message(PCB_MSG_ERROR, "No subcircuit found there\n");
+					rnd_message(RND_MSG_ERROR, "No subcircuit found there\n");
 					RND_ACT_IRES(-1);
 					return 0;
 				}
@@ -207,7 +207,7 @@ static void disperse_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t ox, r
 		*maxy = newy2;
 		if (*maxy > pcb->hidlib.size_y - GAP) {
 			*maxy = GAP;
-			rnd_message(PCB_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
+			rnd_message(RND_MSG_WARNING, "The board is too small for hosting all subcircuits,\ndiesperse restarted from the top.\nExpect overlapping subcircuits\n");
 		}
 	}
 }
@@ -315,7 +315,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_MOVE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID) {
-		rnd_message(PCB_MSG_ERROR, "Nothing found under crosshair\n");
+		rnd_message(RND_MSG_ERROR, "Nothing found under crosshair\n");
 		return 1;
 	}
 
@@ -369,7 +369,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 						int old_len = subc->data->LayerN;
 						target = pcb_subc_get_layer(subc, lyt, PCB_CURRLAYER(pcb)->comb, 1, PCB_CURRLAYER(pcb)->name, 0);
 						if (target == NULL) {
-							rnd_message(PCB_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
+							rnd_message(RND_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
 							break;
 						}
 						if (old_len != subc->data->LayerN)
@@ -461,13 +461,13 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		if (rnd_strcasecmp(conf_plc_met, "disperse") == 0) plc->plc_method = PLC_DISPERSE;
 		else if (rnd_strcasecmp(conf_plc_met, "frame") == 0) plc->plc_method = PLC_FRAME;
 		else if (rnd_strcasecmp(conf_plc_met, "fit") == 0) plc->plc_method = PLC_FIT;
-		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", conf_plc_met);
+		else rnd_message(RND_MSG_ERROR, "Invalid import/footprint_placement/method '%s', falling back to disperse\n", conf_plc_met);
 
 		s = conf_core.import.footprint_placement.location;
 		if ((s == NULL) || (*s == '\0')) plc->location = PLC_AT;
 		else if (rnd_strcasecmp(s, "mark") == 0) plc->location = PLC_MARK;
 		else if (rnd_strcasecmp(s, "center") == 0) plc->location = PLC_CENTER;
-		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_placement/location '%s', falling back to coordinates\n", s);
+		else rnd_message(RND_MSG_ERROR, "Invalid import/footprint_placement/location '%s', falling back to coordinates\n", s);
 
 	}
 	else {
@@ -481,7 +481,7 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 		if (rnd_strcasecmp(conf_rem_met, "select") == 0) plc->rem_method = PLC_SELECT;
 		else if (rnd_strcasecmp(conf_rem_met, "remove") == 0) plc->rem_method = PLC_REMOVE;
 		else if (rnd_strcasecmp(conf_rem_met, "list") == 0) plc->rem_method = PLC_LIST;
-		else rnd_message(PCB_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", conf_plc_met);
+		else rnd_message(RND_MSG_ERROR, "Invalid import/footprint_removal/method '%s', falling back to select\n", conf_plc_met);
 	}
 
 	switch(plc->location) {
@@ -580,7 +580,7 @@ static void plc_end(placer_t *plc)
 		plc->remlst = NULL;
 	}
 	if ((number_of_footprints_not_found > 0) && (!pcbhl_conf.rc.quiet))
-		rnd_message(PCB_MSG_ERROR, "Footprint import: not all requested footprints were found.\nSee the message log above for details\n");
+		rnd_message(RND_MSG_ERROR, "Footprint import: not all requested footprints were found.\nSee the message log above for details\n");
 }
 
 
@@ -776,7 +776,7 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
 	if (sc == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
+		rnd_message(RND_MSG_ERROR, "Can't find subcircuit with refdes '%s'\n", refdes);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -1007,7 +1007,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_layer_t *l = PCB_CURRLAYER(pcb);
 		pcb_layergrp_t *g = pcb_get_layergrp(pcb, l->meta.real.grp);
 		if (g == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Invalid layer group\n");
+			rnd_message(RND_MSG_ERROR, "Invalid layer group\n");
 			return 1;
 		}
 
@@ -1015,7 +1015,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(a1[4]) {
 			case '+': RND_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), +1)); break;
 			case '-': RND_ACT_IRES(pcb_layergrp_step_layer(pcb, g, pcb_layer_id(pcb->Data, l), -1)); break;
-			default: rnd_message(PCB_MSG_ERROR, "Invalid step direction\n");
+			default: rnd_message(RND_MSG_ERROR, "Invalid step direction\n");
 		}
 		return 0;
 	}
@@ -1028,7 +1028,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_layer_t *l = pcb_get_layer(pcb->Data, old_index);
 			pcb_layergrp_t *g = pcb_get_layergrp(pcb, l->meta.real.grp);
 			if (g->len == 1) {
-				rnd_message(PCB_MSG_ERROR, "Removing this layer would result in an empty top or bottom silk group, which is not possible at the moment.\n");
+				rnd_message(RND_MSG_ERROR, "Removing this layer would result in an empty top or bottom silk group, which is not possible at the moment.\n");
 				RND_ACT_IRES(1);
 				return 0;
 			}
@@ -1059,12 +1059,12 @@ static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
 
 	if (scale < 1) {
-		rnd_message(PCB_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
+		rnd_message(RND_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
 		return 1;
 	}
 
 	if ((dir < 0) || (dir > 3)) {
-		rnd_message(PCB_MSG_ERROR, "Invalid direction (must be 0, 1, 2 or 3)\n");
+		rnd_message(RND_MSG_ERROR, "Invalid direction (must be 0, 1, 2 or 3)\n");
 		return 1;
 	}
 
@@ -1117,7 +1117,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				polylist_foreach(&pcb->Data->subc, &it, sc) {
 					if (selected_only && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, sc))
 						continue;
-					rnd_message(PCB_MSG_INFO, "subc #%ld (%s): %u\n", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_hash(sc));
+					rnd_message(RND_MSG_INFO, "subc #%ld (%s): %u\n", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_hash(sc));
 				}
 			}
 			break;
@@ -1162,7 +1162,7 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						sc = (pcb_subc_t *)vt->array[n];
 						pcb_append_printf(&str, " #%ld(%s):%d", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_eq(sc, (pcb_subc_t*)vt->array[0]));
 					}
-					rnd_message(PCB_MSG_INFO, "%s\n", str.array);
+					rnd_message(RND_MSG_INFO, "%s\n", str.array);
 					vtp0_uninit(vt);
 					free(vt);
 				}

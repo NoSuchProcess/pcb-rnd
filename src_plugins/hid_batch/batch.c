@@ -79,17 +79,17 @@ static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_
 		prompt = rnd_strdup("no-board");
 }
 
-static void log_append(pcb_logline_t *line)
+static void log_append(rnd_logline_t *line)
 {
-	if ((line->level < PCB_MSG_INFO) && !pcbhl_conf.rc.verbose)
+	if ((line->level < RND_MSG_INFO) && !pcbhl_conf.rc.verbose)
 		return;
 
 	if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
 		switch(line->level) {
-			case PCB_MSG_DEBUG:   printf("D: "); break;
-			case PCB_MSG_INFO:    printf("I: "); break;
-			case PCB_MSG_WARNING: printf("W: "); break;
-			case PCB_MSG_ERROR:   printf("E: "); break;
+			case RND_MSG_DEBUG:   printf("D: "); break;
+			case RND_MSG_INFO:    printf("I: "); break;
+			case RND_MSG_WARNING: printf("W: "); break;
+			case RND_MSG_ERROR:   printf("E: "); break;
 		}
 	}
 	printf("%s", line->str);
@@ -101,13 +101,13 @@ static void ev_log_append(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	if (!batch_active)
 		return;
 
-	log_append((pcb_logline_t *)argv[1].d.p);
+	log_append((rnd_logline_t *)argv[1].d.p);
 }
 
 static void log_import(void)
 {
-	pcb_logline_t *n;
-	for(n = pcb_log_first; n != NULL; n = n->next)
+	rnd_logline_t *n;
+	for(n = rnd_log_first; n != NULL; n = n->next)
 		log_append(n);
 }
 

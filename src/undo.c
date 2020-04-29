@@ -86,17 +86,17 @@ int pcb_undo(rnd_bool draw)
 	pcb_undo_and_draw = draw;
 
 	if (pcb_uundo.num_undo == 0) {
-		rnd_message(PCB_MSG_INFO, "Nothing to undo - buffer is empty\n");
+		rnd_message(RND_MSG_INFO, "Nothing to undo - buffer is empty\n");
 		return -1;
 	}
 
 	if (pcb_uundo.serial == 0) {
-		rnd_message(PCB_MSG_ERROR, "ERROR: Attempt to pcb_undo() with Serial == 0\n       Please save your work and report this bug.\n");
+		rnd_message(RND_MSG_ERROR, "ERROR: Attempt to pcb_undo() with Serial == 0\n       Please save your work and report this bug.\n");
 		return -1;
 	}
 
 	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial > pcb_uundo.serial)) {
-		rnd_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
+		rnd_message(RND_MSG_ERROR, "ERROR: Bad undo serial number %d in undo stack - expecting %d or lower\n"
 							"       Please save your work and report this bug.\n", pcb_uundo.tail->serial, pcb_uundo.serial);
 
 	/* It is likely that the serial number got corrupted through some bad
@@ -117,7 +117,7 @@ int pcb_undo(rnd_bool draw)
 	pcb_undo_unlock();
 
 	if (res != 0)
-		rnd_message(PCB_MSG_ERROR, "ERROR: Failed to undo some operations\n");
+		rnd_message(RND_MSG_ERROR, "ERROR: Failed to undo some operations\n");
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
@@ -138,13 +138,13 @@ int pcb_redo(rnd_bool draw)
 	pcb_undo_and_draw = draw;
 
 	if (pcb_uundo.num_redo == 0) {
-		rnd_message(PCB_MSG_INFO, "Nothing to redo. Perhaps changes have been made since last undo\n");
+		rnd_message(RND_MSG_INFO, "Nothing to redo. Perhaps changes have been made since last undo\n");
 		return 0;
 	}
 
 	if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->next != NULL) && (pcb_uundo.tail->next->serial > pcb_uundo.serial)) {
 
-		rnd_message(PCB_MSG_ERROR, "ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
+		rnd_message(RND_MSG_ERROR, "ERROR: Bad undo serial number %d in redo stack - expecting %d or higher\n"
 							"       Please save your work and report this bug.\n", pcb_uundo.tail->next->serial, pcb_uundo.serial);
 
 		/* It is likely that the serial number got corrupted through some bad
@@ -166,7 +166,7 @@ int pcb_redo(rnd_bool draw)
 	pcb_undo_unlock();
 
 	if (res != 0)
-		rnd_message(PCB_MSG_ERROR, "ERROR: Failed to redo some operations\n");
+		rnd_message(RND_MSG_ERROR, "ERROR: Failed to redo some operations\n");
 	else if (pcb_undo_and_draw)
 		pcb_draw();
 
@@ -181,7 +181,7 @@ int pcb_redo(rnd_bool draw)
 void pcb_undo_restore_serial(void)
 {
 	if (added_undo_between_increment_and_restore)
-		rnd_message(PCB_MSG_ERROR, "ERROR: Operations were added to the Undo stack with an incorrect serial number\n");
+		rnd_message(RND_MSG_ERROR, "ERROR: Operations were added to the Undo stack with an incorrect serial number\n");
 	between_increment_and_restore = pcb_false;
 	added_undo_between_increment_and_restore = pcb_false;
 	uundo_restore_serial(&pcb_uundo);

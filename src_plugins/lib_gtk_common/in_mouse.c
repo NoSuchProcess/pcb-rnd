@@ -385,7 +385,7 @@ void ghid_port_reg_mouse_cursor(pcb_gtk_t *ctx, int idx, const char *name, const
 					return;
 				}
 			}
-			rnd_message(PCB_MSG_ERROR, "Failed to register named mouse cursor for tool: '%s' is unknown name\n", name);
+			rnd_message(RND_MSG_ERROR, "Failed to register named mouse cursor for tool: '%s' is unknown name\n", name);
 		}
 		mc->shape = GDK_LEFT_PTR; /* default */
 		mc->X_cursor = gdk_cursor_new(mc->shape);
@@ -406,7 +406,7 @@ void ghid_port_set_mouse_cursor(pcb_gtk_t *ctx, int idx)
 
 	if (mc == NULL) {
 		if (ctx->mouse.cursor.used > 0)
-			rnd_message(PCB_MSG_ERROR, "Failed to set mouse cursor for unregistered tool %d\n", idx);
+			rnd_message(RND_MSG_ERROR, "Failed to set mouse cursor for unregistered tool %d\n", idx);
 		return;
 	}
 

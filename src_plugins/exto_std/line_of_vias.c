@@ -40,7 +40,7 @@ typedef struct {
 static void pcb_line_of_vias_del_pre(pcb_subc_t *subc)
 {
 	line_of_vias *lov = subc->extobj_data;
-	pcb_trace("LoV del_pre\n");
+	rnd_trace("LoV del_pre\n");
 
 	if ((lov != NULL) && (lov->gui_active))
 		PCB_DAD_FREE(lov->dlg);
@@ -135,7 +135,7 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 	lov = subc->extobj_data;
 	if (lov->pitch < PCB_MM_TO_COORD(0.001)) {
-		rnd_message(PCB_MSG_ERROR, "line_of_vias_gen(): can not generate line-of-vias, pitch value is too small\n");
+		rnd_message(RND_MSG_ERROR, "line_of_vias_gen(): can not generate line-of-vias, pitch value is too small\n");
 		return -1;
 	}
 
@@ -202,19 +202,19 @@ static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 static void pcb_line_of_vias_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	pcb_trace("LoV: edit pre %ld %ld\n", subc->ID, edit_obj->ID);
+	rnd_trace("LoV: edit pre %ld %ld\n", subc->ID, edit_obj->ID);
 	line_of_vias_clear(subc);
 }
 
 static void pcb_line_of_vias_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	pcb_trace("LoV: edit geo %ld %ld\n", subc->ID, edit_obj == NULL ? -1 : edit_obj->ID);
+	rnd_trace("LoV: edit geo %ld %ld\n", subc->ID, edit_obj == NULL ? -1 : edit_obj->ID);
 	line_of_vias_gen(subc, edit_obj);
 }
 
 static pcb_extobj_new_t pcb_line_of_vias_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("LoV: float new %ld %ld\n", subc->ID, floater->ID);
+	rnd_trace("LoV: float new %ld %ld\n", subc->ID, floater->ID);
 	return PCB_EXTONEW_FLOATER;
 }
 
@@ -223,7 +223,7 @@ static pcb_extobj_del_t pcb_line_of_vias_float_del(pcb_subc_t *subc, pcb_any_obj
 	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
 	long len = linelist_length(&ly->Line);
 
-	pcb_trace("LoV: float del %ld %ld edit-objs=%ld\n", subc->ID, floater->ID, len);
+	rnd_trace("LoV: float del %ld %ld edit-objs=%ld\n", subc->ID, floater->ID, len);
 
 	return len == 1 ? PCB_EXTODEL_SUBC : PCB_EXTODEL_FLOATER; /* removing the last floater should remove the subc */
 }
@@ -231,7 +231,7 @@ static pcb_extobj_del_t pcb_line_of_vias_float_del(pcb_subc_t *subc, pcb_any_obj
 
 static void pcb_line_of_vias_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
 {
-	pcb_trace("LoV chg_attr\n");
+	rnd_trace("LoV chg_attr\n");
 	if (strncmp(key, "extobj::", 8) == 0) {
 		line_of_vias_clear(subc);
 		line_of_vias_unpack(subc);
@@ -251,7 +251,7 @@ static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb
 		{NULL, 0, NULL, 0, 0}
 	};
 
-	pcb_trace("LoV: conv_objs\n");
+	rnd_trace("LoV: conv_objs\n");
 
 	/* refuse anything that's not a line */
 	for(n = 0; n < objs->used; n++) {
@@ -304,13 +304,13 @@ static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	line_of_vias *lov;
 
-	pcb_trace("LoV: gui propedit\n");
+	rnd_trace("LoV: gui propedit\n");
 
 	if (subc->extobj_data == NULL)
 		line_of_vias_unpack(subc);
 	lov = subc->extobj_data;
 
-	pcb_trace("LoV: active=%d\n", lov->gui_active);
+	rnd_trace("LoV: active=%d\n", lov->gui_active);
 	if (lov->gui_active)
 		return; /* do not open another */
 

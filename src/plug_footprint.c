@@ -96,7 +96,7 @@ void pcb_fp_uninit()
 	htsp_entry_t *e;
 
 	if (pcb_plug_fp_chain != NULL)
-		rnd_message(PCB_MSG_ERROR, "pcb_plug_fp_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
+		rnd_message(RND_MSG_ERROR, "pcb_plug_fp_chain is not empty; a plugin did not remove itself from the chain. Fix your plugins!\n");
 
 	pcb_fp_free_children(&pcb_library);
 	if (fp_tags != NULL) {
@@ -415,7 +415,7 @@ static int fp_read_lib_all_(const rnd_conflist_t *searchpath)
 		if (res >= 0)
 			n_footprints += res;
 		else if (!silent_fail)
-			rnd_message(PCB_MSG_WARNING, "Warning: footprint library list error on %s\n", toppath);
+			rnd_message(RND_MSG_WARNING, "Warning: footprint library list error on %s\n", toppath);
 	}
 
 #ifdef DEBUG

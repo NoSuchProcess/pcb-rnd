@@ -262,12 +262,12 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	len = pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc);
 
 	if (len == 0) {
-		rnd_message(PCB_MSG_ERROR, "Footprint %s contains no subcircuits", name);
+		rnd_message(RND_MSG_ERROR, "Footprint %s contains no subcircuits", name);
 		RND_ACT_IRES(1);
 		return 0;
 	}
 	if (len > 1) {
-		rnd_message(PCB_MSG_ERROR, "Footprint %s contains multiple subcircuits", name);
+		rnd_message(RND_MSG_ERROR, "Footprint %s contains multiple subcircuits", name);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -473,7 +473,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if ((ang < -360000) || (ang > +360000)) {
-		rnd_message(PCB_MSG_ERROR, "Angle too large\n");
+		rnd_message(RND_MSG_ERROR, "Angle too large\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -630,7 +630,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	for (i = 0; i < num_layers; i++) {
 		pcb_layer_t *layer = Buffer->Data->Layer + i;
 		if (textlist_length(&layer->Text)) {
-			rnd_message(PCB_MSG_ERROR, "You can't mirror a buffer that has text!\n");
+			rnd_message(RND_MSG_ERROR, "You can't mirror a buffer that has text!\n");
 			return;
 		}
 	}
@@ -794,7 +794,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 				const char *src_name = sourcelayer->name;
 				if ((src_name == NULL) || (*src_name == '\0'))
 					src_name = "<anonymous>";
-				rnd_message(PCB_MSG_WARNING, "Couldn't resolve buffer layer #%d (%s) on the current board\n", i, src_name);
+				rnd_message(RND_MSG_WARNING, "Couldn't resolve buffer layer #%d (%s) on the current board\n", i, src_name);
 			}
 			continue;
 		}
@@ -860,7 +860,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 	{
 		pcb_subc_t *nsubc;
 		if (pcb->is_footprint) {
-			rnd_message(PCB_MSG_WARNING, "Can not paste subcircuit in the footprint edit mode\n");
+			rnd_message(RND_MSG_WARNING, "Can not paste subcircuit in the footprint edit mode\n");
 			break;
 		}
 		nsubc = pcb_subcop_copy(&ctx, subc);
@@ -1001,21 +1001,21 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (sp < sizeof(stack) / sizeof(stack[0]))
 				stack[sp++] = conf_core.editor.buffer_number;
 			else
-				rnd_message(PCB_MSG_ERROR, "Paste buffer stack overflow on push.\n");
+				rnd_message(RND_MSG_ERROR, "Paste buffer stack overflow on push.\n");
 			break;
 
 		case F_Pop:
 			if (sp > 0)
 				pcb_buffer_set_number(stack[--sp]);
 			else
-				rnd_message(PCB_MSG_ERROR, "Paste buffer stack underflow on pop.\n");
+				rnd_message(RND_MSG_ERROR, "Paste buffer stack underflow on pop.\n");
 			break;
 
 			/* copies objects to paste buffer */
 		case F_AddSelected:
 			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-				rnd_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing copied to the paste buffer\n");
+				rnd_message(RND_MSG_WARNING, "Nothing buffer-movable is selected, nothing copied to the paste buffer\n");
 				goto error;
 			}
 			break;
@@ -1024,7 +1024,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		case F_MoveSelected:
 			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-				rnd_message(PCB_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
+				rnd_message(RND_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;
 			}
 			break;
@@ -1038,7 +1038,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			/* break up subcircuit for editing */
 		case F_Restore:
 			if (!pcb_subc_smash_buffer(PCB_PASTEBUFFER))
-				rnd_message(PCB_MSG_ERROR, "Error breaking up subcircuits - only one can be broken up at a time\n");
+				rnd_message(RND_MSG_ERROR, "Error breaking up subcircuits - only one can be broken up at a time\n");
 			break;
 
 			/* Mirror buffer */
@@ -1108,7 +1108,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				name = sbufnum;
 
 			if (pcb_load_buffer(RND_ACT_HIDLIB, PCB_PASTEBUFFER, name, NULL) != 0) {
-				rnd_message(PCB_MSG_ERROR, "Failed to load buffer from %s\n", name);
+				rnd_message(RND_MSG_ERROR, "Failed to load buffer from %s\n", name);
 				RND_ACT_IRES(-1);
 			}
 			else
@@ -1165,13 +1165,13 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				char *end;
 				number = strtol(sbufnum, &end, 10);
 				if (*end != 0) {
-					rnd_message(PCB_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
+					rnd_message(RND_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
 					pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 					return FGW_ERR_ARG_CONV;
 				}
 				number--;
 				if ((number < 0) || (number >= PCB_MAX_BUFFER)) {
-					rnd_message(PCB_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
+					rnd_message(RND_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
 					pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 					return FGW_ERR_ARG_CONV;
 				}

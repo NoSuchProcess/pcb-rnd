@@ -151,7 +151,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 
 		pcb_r_search(curr->parent.layer->arc_tree, &region, NULL, next_conn_found_arc, &ctx, &len);
 		if (len > 1) {
-			rnd_message(PCB_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
+			rnd_message(RND_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
 			return NULL;
 		}
 		if (ctx.result != NULL)
@@ -159,7 +159,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 
 		pcb_r_search(curr->parent.layer->line_tree, &region, NULL, next_conn_found_line, &ctx, &len);
 		if (len > 1) {
-			rnd_message(PCB_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
+			rnd_message(RND_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
 			return NULL;
 		}
 		if (ctx.result != NULL)
@@ -178,12 +178,12 @@ static int map_contour(pcb_data_t *data, vtp0_t *list, vti0_t *endlist, pcb_any_
 	df = pcb_dynflag_alloc("topoly_map_contour");
 	pcb_data_dynflag_clear(data, df);
 
-/*pcb_trace("loop start: %d\n", start->ID);*/
+/*rnd_trace("loop start: %d\n", start->ID);*/
 	vtp0_append(list, start);
 	PCB_DFLAG_SET(&start->Flags, df);
 	for(i = 0, n = next_conn(list, endlist, start, df); n != start; n = next_conn(list, endlist, n, df), i++) {
 		if (n == NULL) {
-/*			pcb_trace("      broken trace\n");*/
+/*			rnd_trace("      broken trace\n");*/
 			return -1;
 		}
 		if (i == 1)
@@ -253,7 +253,7 @@ pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t
 	pcb_poly_t *poly;
 
 	if (!VALID_TYPE(start)) {
-		rnd_message(PCB_MSG_ERROR, "pcb_topoly_conn(): starting object is not a line or arc\n");
+		rnd_message(RND_MSG_ERROR, "pcb_topoly_conn(): starting object is not a line or arc\n");
 		return NULL;
 	}
 
@@ -261,7 +261,7 @@ pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t
 	vti0_init(&ends);
 	res = map_contour(pcb->Data, &objs, &ends, start);
 	if (res != 0) {
-		rnd_message(PCB_MSG_ERROR, "pcb_topoly_conn(): failed to find a closed loop of lines and arcs\n");
+		rnd_message(RND_MSG_ERROR, "pcb_topoly_conn(): failed to find a closed loop of lines and arcs\n");
 		vtp0_uninit(&objs);
 		vti0_uninit(&ends);
 		return NULL;
@@ -348,7 +348,7 @@ fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_coord_t x, y;
 		rnd_hid_get_coords("Click on a line or arc of the contour loop", &x, &y, 0);
 		if (pcb_search_screen(x, y, CONT_TYPE, &r1, &r2, &r3) == 0) {
-			rnd_message(PCB_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
+			rnd_message(RND_MSG_ERROR, "ToPoly(): failed to find a line or arc there\n");
 			RND_ACT_IRES(1);
 			return 0;
 		}
@@ -360,7 +360,7 @@ fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 		else {
-			rnd_message(PCB_MSG_ERROR, "Invalid first argument\n");
+			rnd_message(RND_MSG_ERROR, "Invalid first argument\n");
 			RND_ACT_IRES(1);
 			return 0;
 		}

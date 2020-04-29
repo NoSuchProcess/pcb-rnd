@@ -349,11 +349,11 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&eps_cam) == 0) {
 		if (!eps_cam.okempty_group)
-			rnd_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "eps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (eps_drawn_objs == 0) {
 		if (!eps_cam.okempty_content)
-			rnd_message(PCB_MSG_ERROR, "eps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "eps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 

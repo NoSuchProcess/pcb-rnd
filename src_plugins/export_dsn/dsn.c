@@ -510,7 +510,7 @@ static int PrintSPECCTRA(void)
 	/* Print out the dsn .dsn file. */
 	fp = pcb_fopen_askovr(&PCB->hidlib, dsn_filename, "w", NULL);
 	if (!fp) {
-		rnd_message(PCB_MSG_WARNING, "Cannot open file %s for writing\n", dsn_filename);
+		rnd_message(RND_MSG_WARNING, "Cannot open file %s for writing\n", dsn_filename);
 		return 1;
 	}
 

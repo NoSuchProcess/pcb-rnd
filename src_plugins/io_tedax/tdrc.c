@@ -79,7 +79,7 @@ int tedax_drc_save(pcb_board_t *pcb, const char *drcid, const char *fn)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_drc_save(): can't open %s for writing\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_drc_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
@@ -114,13 +114,13 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 						val[n] = d;
 				}
 				else
-					rnd_message(PCB_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);
+					rnd_message(RND_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);
 			}
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "drc") == 0))
 			break;
 		else
-			rnd_message(PCB_MSG_ERROR, "ignoring invalid command in drc %s\n", argv[0]);
+			rnd_message(RND_MSG_ERROR, "ignoring invalid command in drc %s\n", argv[0]);
 	}
 
 	for(n = 0, r = rules; n < NUM_RULES; r++,n++)
@@ -135,7 +135,7 @@ int tedax_drc_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int sil
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_drc_load(): can't open %s for reading\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_drc_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
 	res = tedax_drc_fload(pcb, f, blk_id, silent);

@@ -90,12 +90,12 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		int len;
 
 		if (check_action_name(a[i].name)) {
-			rnd_message(PCB_MSG_ERROR, "ERROR! Invalid action name, " "action \"%s\" not registered.\n", a[i].name);
+			rnd_message(RND_MSG_ERROR, "ERROR! Invalid action name, " "action \"%s\" not registered.\n", a[i].name);
 			continue;
 		}
 		len = strlen(a[i].name);
 		if (len >= sizeof(fn)) {
-			rnd_message(PCB_MSG_ERROR, "Invalid action name: \"%s\" (too long).\n", a[i].name);
+			rnd_message(RND_MSG_ERROR, "Invalid action name: \"%s\" (too long).\n", a[i].name);
 			continue;
 		}
 
@@ -106,7 +106,7 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		rnd_make_action_name(fn, a[i].name, len);
 		f = fgw_func_reg(pcb_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
+			rnd_message(RND_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
 			free(ca);
 			continue;
 		}
@@ -140,7 +140,7 @@ void rnd_remove_actions(const rnd_action_t *a, int n)
 	for (i = 0; i < n; i++) {
 		fgw_func_t *f = rnd_act_lookup(a[i].name);
 		if (f == NULL) {
-			rnd_message(PCB_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
+			rnd_message(RND_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
 			continue;
 		}
 		pcb_remove_action(f);
@@ -170,7 +170,7 @@ const rnd_action_t *rnd_find_action(const char *name, fgw_func_t **f_out)
 
 	f = rnd_act_lookup(name);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "unknown action `%s'\n", name);
+		rnd_message(RND_MSG_ERROR, "unknown action `%s'\n", name);
 		return NULL;
 	}
 	ca = f->reg_data;
@@ -337,17 +337,17 @@ int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv
 		return 1;
 
 	if (argc >= RND_ACTION_MAX_ARGS) {
-		rnd_message(PCB_MSG_ERROR, "can not call action %s with this many arguments (%d >= %d)\n", name, argc, RND_ACTION_MAX_ARGS);
+		rnd_message(RND_MSG_ERROR, "can not call action %s with this many arguments (%d >= %d)\n", name, argc, RND_ACTION_MAX_ARGS);
 		return 1;
 	}
 
 	f = rnd_act_lookup(name);
 	if (f == NULL) {
 		int i;
-		rnd_message(PCB_MSG_ERROR, "no action %s(", name);
+		rnd_message(RND_MSG_ERROR, "no action %s(", name);
 		for (i = 0; i < argc; i++)
-			rnd_message(PCB_MSG_ERROR, "%s%s", i ? ", " : "", argsv[i]);
-		rnd_message(PCB_MSG_ERROR, ")\n");
+			rnd_message(RND_MSG_ERROR, "%s%s", i ? ", " : "", argsv[i]);
+		rnd_message(RND_MSG_ERROR, ")\n");
 		return 1;
 	}
 	argv[0].type = FGW_FUNC;
@@ -434,8 +434,8 @@ another:
 		sp++;
 	}
 	else if (require_parens) {
-		rnd_message(PCB_MSG_ERROR, "Syntax error: %s\n", rstr);
-		rnd_message(PCB_MSG_ERROR, "    expected: Action(arg1, arg2)");
+		rnd_message(RND_MSG_ERROR, "Syntax error: %s\n", rstr);
+		rnd_message(RND_MSG_ERROR, "    expected: Action(arg1, arg2)");
 		retcode = 1;
 		goto cleanup;
 	}
@@ -689,7 +689,7 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_
 	/* backend: let the backend action handle it */
 	a = rnd_find_action(pcbhl_conf.rc.cli_backend, &f);
 	if (!a) {
-		rnd_message(PCB_MSG_ERROR, "cli: no action %s; leaving mode\n", pcbhl_conf.rc.cli_backend);
+		rnd_message(RND_MSG_ERROR, "cli: no action %s; leaving mode\n", pcbhl_conf.rc.cli_backend);
 		rnd_cli_leave();
 		return -1;
 	}
@@ -887,7 +887,7 @@ static int coords_arg_free(fgw_ctx_t *ctx, fgw_arg_t *arg)
 
 static void pcb_action_err(fgw_obj_t *obj, const char *msg)
 {
-	rnd_message(PCB_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
+	rnd_message(RND_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
 }
 
 int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
@@ -898,7 +898,7 @@ int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
 
 	f = pcb_fopen(hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "rnd_act_execute_file(): Could not open actions file \"%s\".\n", fn);
+		rnd_message(RND_MSG_ERROR, "rnd_act_execute_file(): Could not open actions file \"%s\".\n", fn);
 		return 1;
 	}
 

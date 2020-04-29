@@ -49,11 +49,11 @@ static void hidlib_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, 
 
 void pcbhl_log_print_uninit_errs(const char *title)
 {
-	pcb_logline_t *n, *from = pcb_log_find_first_unseen();
+	rnd_logline_t *n, *from = rnd_log_find_first_unseen();
 	int printed = 0;
 
 	for(n = from; n != NULL; n = n->next) {
-		if ((n->level >= PCB_MSG_INFO) || pcbhl_conf.rc.verbose) {
+		if ((n->level >= RND_MSG_INFO) || pcbhl_conf.rc.verbose) {
 			if (!printed)
 				fprintf(stderr, "*** %s:\n", title);
 			fprintf(stderr, "%s", n->str);

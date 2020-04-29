@@ -1397,7 +1397,7 @@ static int undo_change_instance_swap(void *udata)
 		for(n = 0; (subc == NULL) && (n < PCB_MAX_BUFFER); n++)
 			subc = pcb_subc_by_id(pcb_buffers[n].Data, u->parent_ID);
 		if (subc == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Can't undo padstack change: parent subc #%ld is not found\n", u->parent_ID);
+			rnd_message(RND_MSG_ERROR, "Can't undo padstack change: parent subc #%ld is not found\n", u->parent_ID);
 			return -1;
 		}
 		data = subc->data;
@@ -1407,7 +1407,7 @@ static int undo_change_instance_swap(void *udata)
 
 	ps = pcb_pstk_by_id(data, u->ID);
 	if (ps == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't undo padstack change: padstack ID #%ld is not available\n", u->ID);
+		rnd_message(RND_MSG_ERROR, "Can't undo padstack change: padstack ID #%ld is not available\n", u->ID);
 		return -1;
 	}
 

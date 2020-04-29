@@ -56,12 +56,12 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if (!pcb->pstk_on) {
-		rnd_message(PCB_MSG_WARNING, "You must turn via visibility on before\nyou can place vias\n");
+		rnd_message(RND_MSG_WARNING, "You must turn via visibility on before\nyou can place vias\n");
 		return;
 	}
 
 	if (conf_core.design.via_drilling_hole >= conf_core.design.via_thickness) {
-		rnd_message(PCB_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
+		rnd_message(RND_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
 		return;
 	}
 

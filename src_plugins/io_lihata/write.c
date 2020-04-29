@@ -264,18 +264,18 @@ static void obj_attr_flag_warn(pcb_any_obj_t *obj)
 	if (wrver < 5) {
 		if (rnd_attribute_get(&obj->Attributes, "intnoconn") != NULL) {
 			warned = 1;
-			rnd_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v5 may ignore the intnoconn flag\n");
+			rnd_message(RND_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v5 may ignore the intnoconn flag\n");
 		}
 	}
 	if (wrver < 3) {
 		if (rnd_attribute_get(&obj->Attributes, "intconn") != NULL) {
 			warned = 1;
-			rnd_message(PCB_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v3 may ignore the intconn flag\n");
+			rnd_message(RND_MSG_WARNING, "pcb-rnd versions only reading file older than lihata v3 may ignore the intconn flag\n");
 		}
 	}
 
 	if (warned)
-		rnd_message(PCB_MSG_WARNING, "^^^ in %s #%ld\n", pcb_obj_type_name(obj->type), obj->ID);
+		rnd_message(RND_MSG_WARNING, "^^^ in %s #%ld\n", pcb_obj_type_name(obj->type), obj->ID);
 }
 
 /* Write the thermal list of heavy terminals; put the resulting "thermal"
@@ -809,7 +809,7 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 						nshapeo = build_text("ps_hshadow", "");
 					break;
 				default:
-					rnd_message(PCB_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
+					rnd_message(RND_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
 					abort();
 			}
 			lht_dom_hash_put(nshape, nshapeo);
@@ -954,10 +954,10 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_la
 					lht_dom_hash_put(obj, dummy_node("purpose"));
 			}
 			else if (layer->meta.bound.purpose != NULL)
-				rnd_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layer with a purpose string - not supported in lihata board below v6. Layer binding might be broken after load.\n");
+				rnd_message(RND_MSG_WARNING, "io_lihata: attempting to save bound layer with a purpose string - not supported in lihata board below v6. Layer binding might be broken after load.\n");
 		}
 		else
-			rnd_message(PCB_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
+			rnd_message(RND_MSG_WARNING, "io_lihata: attempting to save bound layers in lihata version lower than 3; feature not supported by the format.\n");
 	}
 
 	if (!layer->is_bound)
@@ -1029,7 +1029,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 				if (gflg & PCB_LYT_BOTTOM)
 					gbottom = gm;
 				grp[n] = gm;
-/*				pcb_trace("build data layers: %d -> %ld {%ld %ld}\n", n, gm, gtop, gbottom); */
+/*				rnd_trace("build data layers: %d -> %ld {%ld %ld}\n", n, gm, gtop, gbottom); */
 				gm++;
 			}
 			else
@@ -1506,7 +1506,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 	brd = build_board(PCB);
 
 	if (brd == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to build the board at that version - nothing is written\n");
+		rnd_message(RND_MSG_ERROR, "Failed to build the board at that version - nothing is written\n");
 		return -1;
 	}
 
@@ -1575,8 +1575,8 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 				res = lht_dom_export(brd->root, fe, "");
 				fclose(fe);
 			}
-			rnd_message(PCB_MSG_ERROR, "lhtpers_fsave_as() failed. Please include files %s and %s and %s in your bugreport\n", inf, old_filename, fe_name);
-			rnd_message(PCB_MSG_ERROR, "in case this broke your file %s, please use the emergency save %s instead.\n", old_filename, fe_name);
+			rnd_message(RND_MSG_ERROR, "lhtpers_fsave_as() failed. Please include files %s and %s and %s in your bugreport\n", inf, old_filename, fe_name);
+			rnd_message(RND_MSG_ERROR, "in case this broke your file %s, please use the emergency save %s instead.\n", old_filename, fe_name);
 		}
 		fflush(FP);
 		if (inf != NULL)
@@ -1626,7 +1626,7 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 
 	f = pcb_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
+		rnd_message(RND_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
 		return -1;
 	}
 
@@ -1674,7 +1674,7 @@ static int io_lihata_dump_subc(pcb_plug_io_t *ctx, FILE *f, pcb_subc_t *sc)
 TODO("subc: for subc-in-subc this should be recursive")
 	if (padstacklist_first(&sc->data->padstack) != NULL) {
 		if (wrver < 4) {
-			rnd_message(PCB_MSG_WARNING, "Had to bump lihata subc version to 4 because the subcircuit contains padstacks.\n");
+			rnd_message(RND_MSG_WARNING, "Had to bump lihata subc version to 4 because the subcircuit contains padstacks.\n");
 			wrver = 4;
 		}
 	}
@@ -1686,7 +1686,7 @@ TODO("subc: for subc-in-subc this should be recursive")
 	else if (wrver >= 6)
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v6");
 	else {
-		rnd_message(PCB_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
+		rnd_message(RND_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
 		return -1;
 	}
 
@@ -1703,7 +1703,7 @@ TODO("subc: for subc-in-subc this should be recursive")
 int io_lihata_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
 {
 	if ((lib) || (num_subcs != 1)) {
-		rnd_message(PCB_MSG_ERROR, "Only one subcircuit per footprint file can be written in lihata\n");
+		rnd_message(RND_MSG_ERROR, "Only one subcircuit per footprint file can be written in lihata\n");
 		return -1;
 	}
 	return 0;

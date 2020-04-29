@@ -654,7 +654,7 @@ void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_poly_t *p
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
 		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
-			rnd_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_polyop_move_buffer\n");
+			rnd_message(RND_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_polyop_move_buffer\n");
 			return NULL;
 		}
 		dstly = &ctx->buffer.dst->Layer[lid];
@@ -706,7 +706,7 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 	}
 
 	/* poly does not clear other polys */
-	rnd_message(PCB_MSG_WARNING,
+	rnd_message(RND_MSG_WARNING,
 		"To change the clearance of objects in a polygon, change \nthe objects, not the polygon.\n"
 		"Alternatively, set the clearpolypoly flag on the polygon to \nallow it to clear other polygons.\n"
 		"Hint: To set a minimum clearance for a group of objects, \nselect them all then :MinClearGap(Selected,=10,mil)\n",
@@ -885,7 +885,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 	pcb_poly_t *newone;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon)) {
-		rnd_message(PCB_MSG_WARNING, "Sorry, polygon object is locked\n");
+		rnd_message(RND_MSG_WARNING, "Sorry, polygon object is locked\n");
 		return NULL;
 	}
 	if (Layer == ctx->move.dst_layer)

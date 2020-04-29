@@ -155,7 +155,7 @@ void pcb_screen_obj_rotate90(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, uns
 	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
-			rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+			rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
 		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
@@ -175,7 +175,7 @@ void pcb_screen_obj_rotate(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, pcb_a
 	if ((type = pcb_search_screen(X, Y, PCB_ROTATE_TYPES | PCB_LOOSE_SUBC(PCB), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 		pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
-			rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+			rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
 		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);

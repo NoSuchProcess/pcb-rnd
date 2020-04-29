@@ -1821,7 +1821,7 @@ yyreduce:
 
 				if (!yyPCB)
 				{
-					rnd_message(PCB_MSG_ERROR, "illegal fileformat\n");
+					rnd_message(RND_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
@@ -1847,20 +1847,20 @@ yyreduce:
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (layer_group_string == NULL) {
 			     if (pcb_layer_improvise(yyPCB, pcb_true) != 0) {
-			        rnd_message(PCB_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
+			        rnd_message(RND_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
 			        YYABORT;
 			     }
-			     rnd_message(PCB_MSG_ERROR, "missing layer-group string: invalid input file, had to improvise, the layer stack is most probably broken\n");
+			     rnd_message(RND_MSG_ERROR, "missing layer-group string: invalid input file, had to improvise, the layer stack is most probably broken\n");
 			  }
 			  else {
 			    if (pcb_layer_parse_group_string(yyPCB, layer_group_string, yyData->LayerN, old_fmt))
 			    {
-			      rnd_message(PCB_MSG_ERROR, "illegal layer-group string\n");
+			      rnd_message(RND_MSG_ERROR, "illegal layer-group string\n");
 			      YYABORT;
 			    }
 			    else {
 			     if (pcb_layer_improvise(yyPCB, pcb_false) != 0) {
-			        rnd_message(PCB_MSG_ERROR, "failed to extend-improvise the groups\n");
+			        rnd_message(RND_MSG_ERROR, "failed to extend-improvise the groups\n");
 			        YYABORT;
 			     }
 			    }
@@ -1921,7 +1921,7 @@ yyreduce:
 
 				if (!yyData || !yyFont)
 				{
-					rnd_message(PCB_MSG_ERROR, "illegal fileformat\n");
+					rnd_message(RND_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
@@ -1937,7 +1937,7 @@ yyreduce:
 					/* mark all symbols invalid */
 				if (!yyFont)
 				{
-					rnd_message(PCB_MSG_ERROR, "illegal fileformat\n");
+					rnd_message(RND_MSG_ERROR, "illegal fileformat\n");
 					YYABORT;
 				}
 				if (yyFontReset) {
@@ -2143,7 +2143,7 @@ yyreduce:
     {
 				if (pcb_route_string_parse((yyvsp[-1].string), &yyPCB->RouteStyle, "mil"))
 				{
-					rnd_message(PCB_MSG_ERROR, "illegal route-style string\n");
+					rnd_message(RND_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free((yyvsp[-1].string));
@@ -2156,7 +2156,7 @@ yyreduce:
     {
 				if (pcb_route_string_parse(((yyvsp[-1].string) == NULL ? "" : (yyvsp[-1].string)), &yyPCB->RouteStyle, "cmil"))
 				{
-					rnd_message(PCB_MSG_ERROR, "illegal route-style string\n");
+					rnd_message(RND_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
 				}
 				free((yyvsp[-1].string));
@@ -2444,7 +2444,7 @@ yyreduce:
 
 				if (bad_contour_found)
 				  {
-				    rnd_message(PCB_MSG_WARNING, "WARNING parsing file '%s'\n"
+				    rnd_message(RND_MSG_WARNING, "WARNING parsing file '%s'\n"
 					    "    line:        %i\n"
 					    "    description: 'ignored polygon (< 3 points in a contour)'\n",
 					    yyfilename, pcb_lineno);
@@ -2932,7 +2932,7 @@ yyreduce:
 				char *old_val, *key = (yyvsp[-2].string), *val = (yyvsp[-1].string) ? (yyvsp[-1].string) : (char *)"";
 				old_val = rnd_attribute_get(attr_list, key);
 				if (old_val != NULL)
-					rnd_message(PCB_MSG_ERROR, "mutliple values for attribute %s: '%s' and '%s' - ignoring '%s'\n", key, old_val, val, val);
+					rnd_message(RND_MSG_ERROR, "mutliple values for attribute %s: '%s' and '%s' - ignoring '%s'\n", key, old_val, val, val);
 				else
 					rnd_attribute_put(attr_list, key, val);
 				free(key);
@@ -3265,7 +3265,7 @@ yyreturn:
  */
 int yyerror(const char * s)
 {
-	rnd_message(PCB_MSG_ERROR, "ERROR parsing file '%s'\n"
+	rnd_message(RND_MSG_ERROR, "ERROR parsing file '%s'\n"
 		"    line:        %i\n"
 		"    description: '%s'\n",
 		yyfilename, pcb_lineno, s);
@@ -3281,7 +3281,7 @@ static int
 check_file_version (int ver)
 {
   if ( ver > PCB_FILE_VERSION ) {
-    rnd_message(PCB_MSG_ERROR, "ERROR:  The file you are attempting to load is in a format\n"
+    rnd_message(RND_MSG_ERROR, "ERROR:  The file you are attempting to load is in a format\n"
 	     "which is too new for this version of pcb.  To load this file\n"
 	     "you need a version of pcb which is >= %d.  If you are\n"
 	     "using a version built from git source, the source date\n"

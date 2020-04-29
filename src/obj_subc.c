@@ -98,7 +98,7 @@ static void pcb_subc_attrib_post_change(rnd_attribute_list_t *list, const char *
 		sc->refdes = value;
 		inv = pcb_obj_id_invalid(sc->refdes);
 		if (inv != NULL)
-			rnd_message(PCB_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
+			rnd_message(RND_MSG_ERROR, "Invalid character '%c' in subc refdes '%s'\n", *inv, sc->refdes);
 	}
 	else if (strcmp(name, "extobj") == 0)
 		sc->extobj = value;
@@ -228,7 +228,7 @@ static int pcb_subc_cache_update(pcb_subc_t *sc)
 		return 0;
 
 	if (sc->aux_layer == NULL) {
-		rnd_message(PCB_MSG_WARNING, "Can't find subc aux layer\n");
+		rnd_message(RND_MSG_WARNING, "Can't find subc aux layer\n");
 		return -1;
 	}
 
@@ -675,7 +675,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			if (dst_top_silk != NULL)
 				pcb_text_new(dst_top_silk, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
 			else
-				rnd_message(PCB_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
+				rnd_message(RND_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
 		}
 	}
 
@@ -909,7 +909,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 				if (!(dl->meta.bound.type & PCB_LYT_VIRTUAL)) {
 					const char *name = dl->name;
 					if (name == NULL) name = "<anonymous>";
-					rnd_message(PCB_MSG_WARNING, "Couldn't bind layer %s of subcircuit while placing it\n", name);
+					rnd_message(RND_MSG_WARNING, "Couldn't bind layer %s of subcircuit while placing it\n", name);
 				}
 			}
 			else
@@ -1507,7 +1507,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree();
 				if (sl->gfx_tree == NULL) sl->gfx_tree = pcb_r_create_tree();
 				if (!(sl->meta.bound.type & PCB_LYT_VIRTUAL))
-					rnd_message(PCB_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
+					rnd_message(RND_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
 			}
 		}
 		else
@@ -1581,7 +1581,7 @@ rnd_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 		pcb_subc_free(subc);
 	}
 	if (warn)
-		rnd_message(PCB_MSG_WARNING, "There are %ld layers that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
+		rnd_message(RND_MSG_WARNING, "There are %ld layers that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
 	return pcb_true;
 }
 
@@ -2251,7 +2251,7 @@ void pcb_subc_part_changed_inhibit_dec(pcb_subc_t *sc)
 			pcb_subc_part_changed__(sc, 0);
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "Internal error: pcb_subc_part_changed_inhibit_dec(): underflow; please reprot this bug\n");
+		rnd_message(RND_MSG_ERROR, "Internal error: pcb_subc_part_changed_inhibit_dec(): underflow; please reprot this bug\n");
 }
 
 

@@ -763,7 +763,7 @@ TODO(": the unique name makes no sense if we override it with unknown - if the u
 
 TODO(": why the heck do we hardwire timestamps?!!?!?!")
 		fprintf(ctx->f, "%*s", ind, "");
-pcb_trace("copper layer=\n", copperLayer);
+rnd_trace("copper layer=\n", copperLayer);
 		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(ctx, copperLayer));
 		fprintf(ctx->f, "%*s", ind + 2, "");
 		pcb_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
@@ -848,7 +848,7 @@ TODO(": do not hardwire the drill size here - does kicad support only one size, 
 int io_kicad_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
 {
 	if ((lib) || (num_subcs > 1)) {
-		rnd_message(PCB_MSG_ERROR, "Can't save a library and/or multiple modules (footprints) in a single s-experssion mod file\n");
+		rnd_message(RND_MSG_ERROR, "Can't save a library and/or multiple modules (footprints) in a single s-experssion mod file\n");
 		return -1;
 	}
 	return 0;
@@ -1000,7 +1000,7 @@ static void kicad_fixup_outline(wctx_t *ctx, int ind)
 		}
 	}
 
-	rnd_message(PCB_MSG_ERROR, "io_kicad: internal error: can not find output outline layer for drawing the implicit outline\n");
+	rnd_message(RND_MSG_ERROR, "io_kicad: internal error: can not find output outline layer for drawing the implicit outline\n");
 }
 
 /* writes PCB to file in s-expression format */

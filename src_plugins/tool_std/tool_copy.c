@@ -73,7 +73,7 @@ void pcb_tool_copy_notify_mode(rnd_hidlib_t *hl)
 	case PCB_CH_STATE_SECOND:
 
 		if ((pcb->is_footprint) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
-			rnd_message(PCB_MSG_WARNING, "Can not copy subcircuit in the footprint edit mode\n");
+			rnd_message(RND_MSG_WARNING, "Can not copy subcircuit in the footprint edit mode\n");
 		}
 		else {
 			pcb_copy_obj(pcb_crosshair.AttachedObject.Type,

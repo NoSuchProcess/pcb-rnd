@@ -990,7 +990,7 @@ void pcb_erase_obj(int type, void *lptr, void *ptr)
 		pcb_gfx_invalidate_erase((pcb_gfx_t *)ptr);
 		break;
 	default:
-		rnd_message(PCB_MSG_ERROR, "hace: Internal ERROR, trying to erase an unknown type\n");
+		rnd_message(RND_MSG_ERROR, "hace: Internal ERROR, trying to erase an unknown type\n");
 	}
 }
 

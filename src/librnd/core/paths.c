@@ -152,7 +152,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 
 	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
 		if (pcbhl_conf.rc.path.home == NULL) {
-			rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
+			rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
 			goto error;
 		}
 		gds_append_str(s, pcbhl_conf.rc.path.home);
@@ -225,7 +225,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								size_t len = end - start;
 								if (len > sizeof(path) - 1) {
 									if (!(flags & PCB_SUBST_QUIET))
-										rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
+										rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
 									goto error;
 								}
 								memcpy(path, start, len);
@@ -236,12 +236,12 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								cn = rnd_conf_get_field(path);
 								if (cn == NULL) {
 									if (!(flags & PCB_SUBST_QUIET))
-										rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
+										rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
 									goto error;
 								}
 								if (cn->type != RND_CFN_STRING) {
 									if (!(flags & PCB_SUBST_QUIET))
-										rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
+										rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
 									goto error;
 								}
 								if (cn->val.string[0] != NULL) {
@@ -260,7 +260,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 							}
 							else {
 								if (!(flags & PCB_SUBST_QUIET))
-									rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): unterminated $(%s)\n", start);
+									rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): unterminated $(%s)\n", start);
 								goto error;
 							}
 							break;

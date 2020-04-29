@@ -355,13 +355,13 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, rnd_coord_t *ox
 				break;
 
 			case CLI_PERP:
-				rnd_message(PCB_MSG_ERROR, "perp not yet implemented\n");
+				rnd_message(RND_MSG_ERROR, "perp not yet implemented\n");
 				return -1;
 			case CLI_PARAL:
-				rnd_message(PCB_MSG_ERROR, "paral not yet implemented\n");
+				rnd_message(RND_MSG_ERROR, "paral not yet implemented\n");
 				return -1;
 			case CLI_TANGENT:
-				rnd_message(PCB_MSG_ERROR, "tangent not yet implemented\n");
+				rnd_message(RND_MSG_ERROR, "tangent not yet implemented\n");
 				return -1;
 
 			case CLI_CENTER:
@@ -450,20 +450,20 @@ static void cli_print_args(int argc, cli_node_t *argv)
 {
 	int n;
 	for(n = 0; n < argc; n++) {
-		pcb_trace(" [%d] %s/%d {%d..%d}", n, find_rev_type(argv[n].type), argv[n].type, argv[n].begin, argv[n].end);
+		rnd_trace(" [%d] %s/%d {%d..%d}", n, find_rev_type(argv[n].type), argv[n].type, argv[n].begin, argv[n].end);
 		if (!argv[n].invalid) {
 			switch(argv[n].type) {
-				case CLI_COORD: pcb_trace(": %$mm,%$mm", argv[n].x, argv[n].y); break;
-				case CLI_ANGLE: pcb_trace(": %f", argv[n].angle); break;
-				case CLI_DIST: pcb_trace(": %$mm", argv[n].dist); break;
-				case CLI_OFFS: pcb_trace(": %f", argv[n].offs); break;
-				case_object: pcb_trace(": %ld", (long)argv[n].id); break;
+				case CLI_COORD: rnd_trace(": %$mm,%$mm", argv[n].x, argv[n].y); break;
+				case CLI_ANGLE: rnd_trace(": %f", argv[n].angle); break;
+				case CLI_DIST: rnd_trace(": %$mm", argv[n].dist); break;
+				case CLI_OFFS: rnd_trace(": %f", argv[n].offs); break;
+				case_object: rnd_trace(": %ld", (long)argv[n].id); break;
 				default:;
 			}
-			pcb_trace("\n");
+			rnd_trace("\n");
 		}
 		else
-			pcb_trace(": INVALID\n");
+			rnd_trace(": INVALID\n");
 	}
 }
 
@@ -550,7 +550,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	opp = find_op(op, oplen);
 	if (opp == NULL) {
 		if (strcmp(cmd, "/edit") != 0)
-			rnd_message(PCB_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
+			rnd_message(RND_MSG_ERROR, "ddraft: unknown operator '%s'\n", op);
 		RND_ACT_IRES(-1);
 		goto ret0;
 	}

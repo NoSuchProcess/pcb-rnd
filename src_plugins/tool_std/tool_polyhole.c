@@ -65,12 +65,12 @@ void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
 		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_VOID) {
-			rnd_message(PCB_MSG_WARNING, "The first point of a polygon hole must be on a polygon.\n");
+			rnd_message(RND_MSG_WARNING, "The first point of a polygon hole must be on a polygon.\n");
 			break; /* don't start doing anything if clicket out of polys */
 		}
 
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)pcb_crosshair.AttachedObject.Ptr2)) {
-			rnd_message(PCB_MSG_WARNING, "Sorry, poly object is locked\n");
+			rnd_message(RND_MSG_WARNING, "Sorry, poly object is locked\n");
 			pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 			pcb_crosshair.extobj_edit = NULL;
 			break;

@@ -100,13 +100,13 @@ static int load_lib(htsi_t *ht, const char *fn)
 	char line[1024];
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't open fidocadj PCB library file '%s' for read\n", fn);
+		rnd_message(RND_MSG_ERROR, "Can't open fidocadj PCB library file '%s' for read\n", fn);
 		return -1;
 	}
 	*line = '\0';
 	fgets(line, sizeof(line), f);
 	if (rnd_strncasecmp(line, "[FIDOLIB PCB Footprints]", 24) != 0) {
-		rnd_message(PCB_MSG_ERROR, "'%s' doesn't have the fidocadj lib header\n", fn);
+		rnd_message(RND_MSG_ERROR, "'%s' doesn't have the fidocadj lib header\n", fn);
 		fclose(f);
 		return -1;
 	}

@@ -92,7 +92,7 @@ static void fill_field(char *dst, int start, int end, const char *data, const ch
 			dst[n] = ' ';
 	}
 	if (*d != '\0')
-		rnd_message(PCB_MSG_WARNING, "Data '%s' is too long for a(n) %s, truncated\n", data, name);
+		rnd_message(RND_MSG_WARNING, "Data '%s' is too long for a(n) %s, truncated\n", data, name);
 }
 
 static void fill_field_coord(write_ctx_t *ctx, char *dst, int start, int end, rnd_coord_t crd, int sign, const char *name)
@@ -463,7 +463,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
+		rnd_message(RND_MSG_ERROR, "Can't open %s for write\n", fn);
 		return;
 	}
 	ipcd356_write(PCB, f);

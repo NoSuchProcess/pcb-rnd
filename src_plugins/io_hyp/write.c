@@ -231,7 +231,7 @@ static const char *hyp_pstk_cache(hyp_wr_t *wr, pcb_pstk_proto_t *proto, int pri
 			htpi_set(&wr->pstk_cache, proto, id);
 		}
 		else
-			rnd_message(PCB_MSG_ERROR, "Internal error: unknown padstack prototype\n");
+			rnd_message(RND_MSG_ERROR, "Internal error: unknown padstack prototype\n");
 	}
 
 	sprintf(name, "proto_%ld", id);
@@ -325,7 +325,7 @@ static void write_arc_(hyp_wr_t * wr, const char *cmd, pcb_arc_t * arc, const ch
 
 	if (arc->Width != arc->Height) {
 		if (!wr->warn.elliptic) {
-			rnd_message(PCB_MSG_WARNING, "Elliptic arcs are not supported - omitting all elliptic arcs\n");
+			rnd_message(RND_MSG_WARNING, "Elliptic arcs are not supported - omitting all elliptic arcs\n");
 			wr->warn.elliptic = 1;
 		}
 		return;
@@ -465,7 +465,7 @@ static int write_devices(hyp_wr_t * wr)
 	}
 
 	if (cnt == 0)
-		rnd_message(PCB_MSG_WARNING,
+		rnd_message(RND_MSG_WARNING,
 								"There is no element on the board - this limites the use of the resulting .hyp file, as it won't be able to connect to a simulation\n");
 
 	fprintf(wr->f, "}\n");

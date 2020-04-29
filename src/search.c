@@ -1613,7 +1613,7 @@ int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void 
 {
 	int res = pcb_search_obj_by_id_(Base, Result1, Result2, Result3, ID, type);
 	if (res == PCB_OBJ_VOID)
-		rnd_message(PCB_MSG_ERROR, "pcb_search_obj_by_id(): internal error, search for ID %d failed\n", ID);
+		rnd_message(RND_MSG_ERROR, "pcb_search_obj_by_id(): internal error, search for ID %d failed\n", ID);
 	return res;
 }
 
@@ -1635,7 +1635,7 @@ int pcb_search_obj_by_id_buf2(pcb_data_t *Base, void **Result1, void **Result2, 
 			break;
 	}
 
-	rnd_message(PCB_MSG_ERROR, "pcb_search_obj_by_id_buf2(): internal error, search for ID %d failed\n", ID);
+	rnd_message(RND_MSG_ERROR, "pcb_search_obj_by_id_buf2(): internal error, search for ID %d failed\n", ID);
 	return PCB_OBJ_VOID;
 }
 

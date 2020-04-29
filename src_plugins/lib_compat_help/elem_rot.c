@@ -46,7 +46,7 @@ static double xyToAngle(double x, double y, rnd_bool morethan2pins)
 	double d = atan2(-y, x) * 180.0 / M_PI;
 
 		if (verbose_rot)
-			pcb_trace(" xyToAngle: %f %f %d ->%f\n", x, y, morethan2pins, d);
+			rnd_trace(" xyToAngle: %f %f %d ->%f\n", x, y, morethan2pins, d);
 
 	/* IPC 7351 defines different rules for 2 pin elements */
 	if (morethan2pins) {
@@ -104,10 +104,10 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 
 	if (!autodetect) {
 		if (pcb_subc_get_origin(subc, &ox, &oy) != 0)
-			rnd_message(PCB_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc origin for %s\n", subc->refdes);
+			rnd_message(RND_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc origin for %s\n", subc->refdes);
 
 		if (pcb_subc_get_side(subc, &bott) != 0)
-			rnd_message(PCB_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc side for %s\n", subc->refdes);
+			rnd_message(RND_MSG_ERROR, "pcb_subc_xy_rot(): can't get subc side for %s\n", subc->refdes);
 	}
 
 	/* initialize our pin count and our totals for finding the
@@ -186,7 +186,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 					pin1y = piny[rpindex] - *cy;
 
 					if (verbose_rot)
-						pcb_trace("\npcb_subc_xy_rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(subc->refdes), pin_cnt, pin1x, pin1y);
+						rnd_trace("\npcb_subc_xy_rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(subc->refdes), pin_cnt, pin1x, pin1y);
 
 					/* if only 1 pin, we are doomed */
 					if (pin_cnt == 1) {
@@ -207,19 +207,19 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 						}
 					}
 					if (verbose_rot)
-						pcb_trace(" ->theta=%f\n", *theta);
+						rnd_trace(" ->theta=%f\n", *theta);
 				}
 			}
 
 			if (!found_any) {
 				rnd_message
-					(PCB_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle because I could\n"
+					(RND_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle because I could\n"
 					 "     not find a suitable reference pin of element %s\n"
 					 "     Setting to %g degrees\n", PCB_UNKNOWN(subc->refdes), *theta);
 			}
 			else if (!found_any_not_at_centroid) {
 				rnd_message
-					(PCB_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle of element\n"
+					(RND_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle of element\n"
 					 "     %s because the reference pin(s) are at the centroid of the part.\n"
 					 "     Setting to %g degrees\n", PCB_UNKNOWN(subc->refdes), *theta);
 			}

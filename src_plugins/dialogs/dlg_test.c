@@ -277,7 +277,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_DAD_AUTORUN("dlg_test", ctx.dlg, "attribute dialog test", &ctx, failed);
 
 	if (failed != 0)
-		rnd_message(PCB_MSG_WARNING, "Test dialog cancelled");
+		rnd_message(RND_MSG_WARNING, "Test dialog cancelled");
 
 	PCB_DAD_FREE(ctx.dlg);
 
@@ -411,18 +411,18 @@ static void cb_ttbl_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
 	if (attr->val.str != NULL)
-		pcb_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->val.str, row, row->cell[0]);
+		rnd_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->val.str, row, row->cell[0]);
 	else
-		pcb_trace("tt tbl selected: <NONE>\n");
+		rnd_trace("tt tbl selected: <NONE>\n");
 }
 
 /* row level selection */
 static void cb_ttbl_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	if (row != NULL)
-		pcb_trace("tt row selected: row=%p '%s'\n", row, row->cell[0]);
+		rnd_trace("tt row selected: row=%p '%s'\n", row, row->cell[0]);
 	else
-		pcb_trace("tt row selected: <NONE>\n");
+		rnd_trace("tt row selected: <NONE>\n");
 }
 
 static void cb_ttbl_free_row(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)

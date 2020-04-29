@@ -341,7 +341,7 @@ static int get_where(const char *arg, pcb_data_t **data, rnd_coord_t *x, rnd_coo
 			*y = pcb_get_value(sy, NULL, NULL, &succ);
 		free(tmp);
 		if (!succ) {
-			rnd_message(PCB_MSG_ERROR, "regpoly(): invalid center coords '%s'\n", dst);
+			rnd_message(RND_MSG_ERROR, "regpoly(): invalid center coords '%s'\n", dst);
 			return -1;
 		}
 	}
@@ -388,12 +388,12 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *end;
 
 	if (argc < 3) {
-		rnd_message(PCB_MSG_ERROR, "regpoly() needs at least two parameters\n");
+		rnd_message(RND_MSG_ERROR, "regpoly() needs at least two parameters\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 	if (argc > 5) {
-		rnd_message(PCB_MSG_ERROR, "regpoly(): too many arguments\n");
+		rnd_message(RND_MSG_ERROR, "regpoly(): too many arguments\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -410,7 +410,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	corners = strtol(args[a], &end, 10);
 	if (*end != '\0') {
-		rnd_message(PCB_MSG_ERROR, "regpoly(): invalid number of corners '%s'\n", args[a]);
+		rnd_message(RND_MSG_ERROR, "regpoly(): invalid number of corners '%s'\n", args[a]);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -419,7 +419,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* convert radii */
 	succ = parse2coords(args[a], &rx, &ry);
 	if (!succ) {
-		rnd_message(PCB_MSG_ERROR, "regpoly(): invalid radius '%s'\n", args[a]);
+		rnd_message(RND_MSG_ERROR, "regpoly(): invalid radius '%s'\n", args[a]);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -428,7 +428,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (a < argc-1) {
 		rot = strtod(args[a], &end);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "regpoly(): invalid rotation '%s'\n", args[a]);
+			rnd_message(RND_MSG_ERROR, "regpoly(): invalid rotation '%s'\n", args[a]);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -438,7 +438,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
 	if (regpoly_place(data, PCB_CURRLAYER(PCB), corners, rx, ry, rot, x, y) == NULL)
-		rnd_message(PCB_MSG_ERROR, "regpoly(): failed to create the polygon\n");
+		rnd_message(RND_MSG_ERROR, "regpoly(): failed to create the polygon\n");
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -459,12 +459,12 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_shape_corner_t corner[4] = { PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
 
 	if (argc < 2) {
-		rnd_message(PCB_MSG_ERROR, "roundrect() needs at least one parameters\n");
+		rnd_message(RND_MSG_ERROR, "roundrect() needs at least one parameters\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 	if (argc > 8) {
-		rnd_message(PCB_MSG_ERROR, "roundrect(): too many arguments\n");
+		rnd_message(RND_MSG_ERROR, "roundrect(): too many arguments\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -490,7 +490,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* convert width;height */
 	succ = parse2coords(args[a], &w, &h);
 	if (!succ) {
-		rnd_message(PCB_MSG_ERROR, "roundrect(): invalid width or height '%s'\n", args[a]);
+		rnd_message(RND_MSG_ERROR, "roundrect(): invalid width or height '%s'\n", args[a]);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -500,7 +500,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (a < argc-1) {
 		succ = parse2coords(args[a], &rx, &ry);
 		if (!succ) {
-			rnd_message(PCB_MSG_ERROR, "roundrect(): invalid width or height '%s'\n", args[a]);
+			rnd_message(RND_MSG_ERROR, "roundrect(): invalid width or height '%s'\n", args[a]);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -512,7 +512,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (a < argc-1) {
 		rot = strtod(args[a], &end);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "roundrect(): invalid rotation '%s'\n", args[a]);
+			rnd_message(RND_MSG_ERROR, "roundrect(): invalid rotation '%s'\n", args[a]);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -528,7 +528,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case 'q': case 'Q': corner[n] = PCB_CORN_SQUARE; break;
 				case 'c': case 'C': corner[n] = PCB_CORN_CHAMF; break;
 				default:
-					rnd_message(PCB_MSG_ERROR, "roundrect(): invalid corner style character '%c' - has to eb r for round, q for square or c for chamfed", *s);
+					rnd_message(RND_MSG_ERROR, "roundrect(): invalid corner style character '%c' - has to eb r for round, q for square or c for chamfed", *s);
 					RND_ACT_IRES(-1);
 					return 0;
 			}
@@ -539,7 +539,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (a < argc-1) {
 		roundres = strtod(args[a], &end);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "roundrect(): roundness '%s'\n", args[a]);
+			rnd_message(RND_MSG_ERROR, "roundrect(): roundness '%s'\n", args[a]);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -554,7 +554,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
 	if (roundrect_place(data, PCB_CURRLAYER(PCB), w, h, rx, ry, rot, x, y, corner, roundres) == NULL)
-		rnd_message(PCB_MSG_ERROR, "roundrect(): failed to create the polygon\n");
+		rnd_message(RND_MSG_ERROR, "roundrect(): failed to create the polygon\n");
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -571,12 +571,12 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t x = 0, y = 0, dia;
 
 	if (argc < 2) {
-		rnd_message(PCB_MSG_ERROR, "circle() needs at least one parameters (diameter)\n");
+		rnd_message(RND_MSG_ERROR, "circle() needs at least one parameters (diameter)\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 	if (argc > 3) {
-		rnd_message(PCB_MSG_ERROR, "circle(): too many arguments\n");
+		rnd_message(RND_MSG_ERROR, "circle(): too many arguments\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -593,13 +593,13 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	dia = pcb_get_value(args[a], NULL, NULL, &succ);
 	if (!succ) {
-		rnd_message(PCB_MSG_ERROR, "circle(): failed to convert dia: invalid coord (%s)\n", args[a]);
+		rnd_message(RND_MSG_ERROR, "circle(): failed to convert dia: invalid coord (%s)\n", args[a]);
 		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	if ((dia < 1) || (dia > (PCB->hidlib.size_x + PCB->hidlib.size_y)/4)) {
-		rnd_message(PCB_MSG_ERROR, "circle(): invalid diameter\n");
+		rnd_message(RND_MSG_ERROR, "circle(): invalid diameter\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -608,7 +608,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_get_coords("Click on the center of the circle", &x, &y, 0);
 
 	if (circle_place(PCB->Data, PCB_CURRLAYER(PCB), dia, x, y) == NULL)
-		rnd_message(PCB_MSG_ERROR, "circle(): failed to create the polygon\n");
+		rnd_message(RND_MSG_ERROR, "circle(): failed to create the polygon\n");
 
 	RND_ACT_IRES(0);
 	return 0;

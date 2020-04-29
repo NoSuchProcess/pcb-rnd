@@ -158,7 +158,7 @@ RND_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, pcb_hid_attribute_t 
 	pcb = data->parent.board;
 
 	pcb_uchg_attr(pcb, (pcb_any_obj_t *)subc, (char *)attr->user_data, newval);
-	pcb_trace("chg: %s\n", (char *)attr->user_data);
+	rnd_trace("chg: %s\n", (char *)attr->user_data);
 	pcb_gui->invalidate_all(pcb_gui);
 }
 

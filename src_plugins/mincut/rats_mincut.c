@@ -240,7 +240,7 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int
 					}
 				}
 				else
-					rnd_message(PCB_MSG_WARNING, "Ignoring subcircuit %ld connecting to a net because it has no refdes;\nplease use the nonetlist flag on the subcircuit to suppress this warning\n", sc->ID);
+					rnd_message(RND_MSG_WARNING, "Ignoring subcircuit %ld connecting to a net because it has no refdes;\nplease use the nonetlist flag on the subcircuit to suppress this warning\n", sc->ID);
 			}
 		}
 

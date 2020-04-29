@@ -203,7 +203,7 @@ void create_log_hid(FILE *log_out, pcb_hid_t *loghid, pcb_hid_t *delegatee)
 	delegatee_ = delegatee;
 
 	if (delegatee == NULL) {
-		rnd_message(PCB_MSG_ERROR, "loghid: Invalid target HID.\n");
+		rnd_message(RND_MSG_ERROR, "loghid: Invalid target HID.\n");
 		exit(1);
 	}
 

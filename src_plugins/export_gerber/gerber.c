@@ -333,7 +333,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	/* set up the coord format */
 	i = options[HA_coord_format].lng;
 	if ((i < 0) || (i >= NUM_COORD_FORMATS)) {
-		rnd_message(PCB_MSG_ERROR, "Invalid coordinate format (out of bounds)\n");
+		rnd_message(RND_MSG_ERROR, "Invalid coordinate format (out of bounds)\n");
 		return;
 	}
 	gerber_cfmt = &coord_format[i];
@@ -406,11 +406,11 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&gerber_cam) == 0) {
 		if (!gerber_cam.okempty_group)
-			rnd_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (gerber_drawn_objs == 0) {
 		if (!gerber_cam.okempty_content)
-			rnd_message(PCB_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "gerber cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 
 	/* in cam mode we have f still open */
@@ -527,7 +527,7 @@ static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
 			f = pcb_fopen_askovr(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb", &gerber_ovr); /* Binary needed to force CR-LF */
 			if (f == NULL) {
-				rnd_message(PCB_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
+				rnd_message(RND_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 				return 1;
 			}
 		}

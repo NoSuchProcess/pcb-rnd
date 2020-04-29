@@ -460,8 +460,8 @@ static rnd_bool UndoFlag(UndoListTypePtr Entry)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 		return pcb_true;
 	}
-	rnd_message(PCB_MSG_ERROR, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
-	rnd_message(PCB_MSG_ERROR, "for UndoFlag Operation. Previous flags: %s\n", pcb_strflg_f2s(Entry->Data.Flags, 0, NULL, 0));
+	rnd_message(RND_MSG_ERROR, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
+	rnd_message(RND_MSG_ERROR, "for UndoFlag Operation. Previous flags: %s\n", pcb_strflg_f2s(Entry->Data.Flags, 0, NULL, 0));
 	return pcb_false;
 }
 
@@ -485,7 +485,7 @@ static rnd_bool UndoOtherSide(UndoListTypePtr Entry)
 			DrawSubc(subc);
 		return pcb_true;
 	}
-	rnd_message(PCB_MSG_ERROR, "hace Internal error: UndoOtherside on object type %x\n", type);
+	rnd_message(RND_MSG_ERROR, "hace Internal error: UndoOtherside on object type %x\n", type);
 	return pcb_false;
 }
 

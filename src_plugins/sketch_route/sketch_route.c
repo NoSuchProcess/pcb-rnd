@@ -1037,7 +1037,7 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			}
 			else
-				rnd_message(PCB_MSG_WARNING, "Sketch lines can be only drawn from a terminal\n");
+				rnd_message(RND_MSG_WARNING, "Sketch lines can be only drawn from a terminal\n");
 		}
 		break;
 
@@ -1054,14 +1054,14 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 				} else {
-					rnd_message(PCB_MSG_WARNING, "Cannot finish placing wire at this terminal\n");
-					rnd_message(PCB_MSG_WARNING, "(the terminal does not belong to the routed net or is the starting terminal)\n");
+					rnd_message(RND_MSG_WARNING, "Cannot finish placing wire at this terminal\n");
+					rnd_message(RND_MSG_WARNING, "(the terminal does not belong to the routed net or is the starting terminal)\n");
 				}
 				break;
 			}
 		}
 		if (attached_path_next_point(NULL) == pcb_false)
-			rnd_message(PCB_MSG_WARNING, "Cannot route the wire this way\n");
+			rnd_message(RND_MSG_WARNING, "Cannot route the wire this way\n");
 
 		break;
 	}

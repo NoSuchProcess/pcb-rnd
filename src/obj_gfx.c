@@ -328,7 +328,7 @@ void *pcb_gfxop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_gfx_t *gfx
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
 		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
-			rnd_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_gfxop_move_buffer\n");
+			rnd_message(RND_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_gfxop_move_buffer\n");
 			return NULL;
 		}
 		dstly = &ctx->buffer.dst->Layer[lid];
@@ -419,7 +419,7 @@ void *pcb_gfxop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_gfx_t *
 	pcb_gfx_t *newone;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, gfx)) {
-		rnd_message(PCB_MSG_WARNING, "Sorry, gfx object is locked\n");
+		rnd_message(RND_MSG_WARNING, "Sorry, gfx object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer == Layer && Layer->meta.real.vis)

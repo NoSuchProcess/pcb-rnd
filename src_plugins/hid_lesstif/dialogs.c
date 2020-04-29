@@ -874,7 +874,7 @@ static const char pcb_acts_AdjustSizes[] = "AdjustSizes()";
 static const char pcb_acth_AdjustSizes[] = "not supported, please use Preferences() instead";
 static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "AdjustSizes() is not supported anymore, please use the Preferences() action\n");
+	rnd_message(RND_MSG_ERROR, "AdjustSizes() is not supported anymore, please use the Preferences() action\n");
 	RND_ACT_IRES(1);
 	return 0;
 }

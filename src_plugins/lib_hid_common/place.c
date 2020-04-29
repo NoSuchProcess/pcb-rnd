@@ -59,7 +59,7 @@ static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 	htsw_entry_t *e;
 	wingeo_t wg;
 
-/*	pcb_trace("dialog place set: '%s' %d;%d  %d*%d\n", id, x, y, w, h);*/
+/*	rnd_trace("dialog place set: '%s' %d;%d  %d*%d\n", id, x, y, w, h);*/
 
 	e = htsw_getentry(&wingeo, (char *)id);
 	if (e != NULL) {
@@ -97,7 +97,7 @@ void pcb_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event
 		geo[2] = e->value.w;
 		geo[3] = e->value.h;
 	}
-/*	pcb_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
+/*	rnd_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
 void pcb_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
@@ -139,7 +139,7 @@ static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
 
 	nat = rnd_conf_get_field(path);
 	if ((nat == NULL) || (nat->prop->src == NULL) || (nat->prop->src->type != LHT_TEXT)) {
-		rnd_message(PCB_MSG_ERROR, "Can not load window geometry from invalid node for %s\n", path);
+		rnd_message(RND_MSG_ERROR, "Can not load window geometry from invalid node for %s\n", path);
 		return;
 	}
 
@@ -228,7 +228,7 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 	if (role != RND_CFR_DESIGN) {
 		int r = rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), role, NULL);
 		if (r != 0)
-			rnd_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", rnd_conf_role_name(role));
+			rnd_message(RND_MSG_ERROR, "Failed to save window geometry in %s\n", rnd_conf_role_name(role));
 	}
 }
 

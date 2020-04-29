@@ -511,7 +511,7 @@ TODO(": remove this call")
 				}
 				else {
 					if (*uo != '\0')
-						rnd_message(PCB_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
+						rnd_message(RND_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
 				}
 			}
 		}
@@ -569,7 +569,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	lesstif_cfg = pcb_hid_cfg_load(ltf_hidlib, "lesstif", 0, NULL);
 	lesstif_hid.hid_cfg = lesstif_cfg;
 	if (lesstif_cfg == NULL) {
-		rnd_message(PCB_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
+		rnd_message(RND_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
 
@@ -631,7 +631,7 @@ int ltf_open_popup(pcb_hid_t *hid, const char *menupath)
 	menu_data_t *md;
 	lht_node_t *menu_node = pcb_hid_cfg_get_menu(lesstif_cfg, menupath);
 
-	pcb_trace("ltf_open_popup: %s: %p\n", menupath, menu_node);
+	rnd_trace("ltf_open_popup: %s: %p\n", menupath, menu_node);
 
 	if (menu_node == NULL)
 		return -1;

@@ -44,7 +44,7 @@ typedef struct {
 static void pcb_bus_del_pre(pcb_subc_t *subc)
 {
 	bus_t *bus = subc->extobj_data;
-	pcb_trace("bus del_pre\n");
+	rnd_trace("bus del_pre\n");
 
 	if ((bus != NULL) && (bus->gui_active))
 		PCB_DAD_FREE(bus->dlg);
@@ -134,7 +134,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		l->Thickness = bus->vthickness;
 		if (l1 == NULL) l1 = l;
 
-/*		pcb_trace("line\n");*/
+/*		rnd_trace("line\n");*/
 		sb.x1 = l->Point1.X-1; sb.y1 = l->Point1.Y-1;
 		sb.x2 = l->Point1.X+1; sb.y2 = l->Point1.Y+1;
 		for(ltmp = pcb_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
@@ -143,13 +143,13 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 			if (close_enough(l->Point1, ltmp->Point1)) {
 				a1 = atan2(ltmp->Point2.Y - ltmp->Point1.Y, ltmp->Point2.X - ltmp->Point1.X);
 				c1 = 1;
-/*				pcb_trace(" conn1 2-1 %f\n", a1);*/
+/*				rnd_trace(" conn1 2-1 %f\n", a1);*/
 				break;
 			}
 			else if (close_enough(l->Point1, ltmp->Point2)) {
 				a1 = atan2(ltmp->Point1.Y - ltmp->Point2.Y, ltmp->Point1.X - ltmp->Point2.X);
 				c1 = 1;
-/*				pcb_trace(" conn1 1-2 %f\n", a1);*/
+/*				rnd_trace(" conn1 1-2 %f\n", a1);*/
 				break;
 			}
 		}
@@ -161,13 +161,13 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 			if (close_enough(l->Point2, ltmp->Point1)) {
 				a2 = atan2(ltmp->Point2.Y - ltmp->Point1.Y, ltmp->Point2.X - ltmp->Point1.X);
 				c2 = 1;
-/*				pcb_trace(" conn2 2-1 %f\n", a1);*/
+/*				rnd_trace(" conn2 2-1 %f\n", a1);*/
 				break;
 			}
 			if (close_enough(l->Point2, ltmp->Point2)) {
 				a2 = atan2(ltmp->Point1.Y - ltmp->Point2.Y, ltmp->Point1.X - ltmp->Point2.X);
 				c2 = 1;
-/*				pcb_trace(" conn2 2-1 %f\n", a1);*/
+/*				rnd_trace(" conn2 2-1 %f\n", a1);*/
 				break;
 			}
 		}
@@ -176,7 +176,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 		if (c1) {
 			double a0 = atan2(l->Point1.Y - l->Point2.Y, l->Point1.X - l->Point2.X);
-/*pcb_trace("c1 a0=%f a1=%f\n", a0 * PCB_RAD_TO_DEG, a1 * PCB_RAD_TO_DEG);*/
+/*rnd_trace("c1 a0=%f a1=%f\n", a0 * PCB_RAD_TO_DEG, a1 * PCB_RAD_TO_DEG);*/
 			a1 = a1 - a0;
 			tune1 = tan(a1/2.0);
 		}
@@ -185,19 +185,19 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	
 		if (c2) {
 			double a0 = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X);
-/*pcb_trace("c1 a0=%f a2=%f\n", a0 * PCB_RAD_TO_DEG, a2 * PCB_RAD_TO_DEG);*/
+/*rnd_trace("c1 a0=%f a2=%f\n", a0 * PCB_RAD_TO_DEG, a2 * PCB_RAD_TO_DEG);*/
 			a2 = a2 - a0;
 			tune2 = tan(a2/2.0);
 		}
 		else
 			tune2 = 0;
 
-/*		pcb_trace("tune: %f:%f  %f:%f\n", a1 * PCB_RAD_TO_DEG, tune1, a2 * PCB_RAD_TO_DEG, tune2);*/
+/*		rnd_trace("tune: %f:%f  %f:%f\n", a1 * PCB_RAD_TO_DEG, tune1, a2 * PCB_RAD_TO_DEG, tune2);*/
 
 		for(n = 0; n < bus->width; n++,o-=bus->pitch) {
 			double o2 = -o;
-/*			pcb_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (rnd_coord_t)o, (rnd_coord_t)(vx * tune1 * o));
-			pcb_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (rnd_coord_t)o, (rnd_coord_t)(vx * tune2 * o));*/
+/*			rnd_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (rnd_coord_t)o, (rnd_coord_t)(vx * tune1 * o));
+			rnd_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (rnd_coord_t)o, (rnd_coord_t)(vx * tune2 * o));*/
 			pcb_line_new(tly,
 				l->Point1.X + nx * o + vx * tune1 * o2, l->Point1.Y + ny * o + vy * tune1 * o2,
 				l->Point2.X + nx * o + vx * tune2 * o2, l->Point2.Y + ny * o + vy * tune2 * o2,
@@ -207,7 +207,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	}
 
 	if (l1 != NULL) {
-pcb_trace("bus origin at %mm %mm\n", l1->Point1.X, l1->Point1.Y);
+rnd_trace("bus origin at %mm %mm\n", l1->Point1.X, l1->Point1.Y);
 		pcb_subc_move_origin_to(subc, l1->Point1.X, l1->Point1.Y, 0);
 	}
 	return pcb_exto_regen_end(subc);
@@ -248,19 +248,19 @@ static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 static void pcb_bus_float_pre(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	pcb_trace("bus: edit pre %ld %ld\n", subc->ID, edit_obj->ID);
+	rnd_trace("bus: edit pre %ld %ld\n", subc->ID, edit_obj->ID);
 	bus_clear(subc);
 }
 
 static void pcb_bus_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 {
-	pcb_trace("bus: edit geo %ld %ld\n", subc->ID, edit_obj == NULL ? -1 : edit_obj->ID);
+	rnd_trace("bus: edit geo %ld %ld\n", subc->ID, edit_obj == NULL ? -1 : edit_obj->ID);
 	bus_gen(subc, edit_obj);
 }
 
 static pcb_extobj_new_t pcb_bus_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("bus: float new %ld %ld\n", subc->ID, floater->ID);
+	rnd_trace("bus: float new %ld %ld\n", subc->ID, floater->ID);
 	return PCB_EXTONEW_FLOATER;
 }
 
@@ -269,7 +269,7 @@ static pcb_extobj_del_t pcb_bus_float_del(pcb_subc_t *subc, pcb_any_obj_t *float
 	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
 	long len = linelist_length(&ly->Line);
 
-	pcb_trace("bus: float del %ld %ld edit-objs=%ld\n", subc->ID, floater->ID, len);
+	rnd_trace("bus: float del %ld %ld edit-objs=%ld\n", subc->ID, floater->ID, len);
 
 	return len == 1 ? PCB_EXTODEL_SUBC : PCB_EXTODEL_FLOATER; /* removing the last floater should remove the subc */
 }
@@ -277,7 +277,7 @@ static pcb_extobj_del_t pcb_bus_float_del(pcb_subc_t *subc, pcb_any_obj_t *float
 
 static void pcb_bus_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
 {
-	pcb_trace("bus chg_attr\n");
+	rnd_trace("bus chg_attr\n");
 	if (strncmp(key, "extobj::", 8) == 0) {
 		bus_clear(subc);
 		bus_unpack(subc);
@@ -298,7 +298,7 @@ static pcb_subc_t *pcb_bus_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *
 		{NULL, 0, NULL, 0, 0}
 	};
 
-	pcb_trace("bus: conv_objs\n");
+	rnd_trace("bus: conv_objs\n");
 
 	/* refuse anything that's not a line */
 	for(n = 0; n < objs->used; n++) {
@@ -344,7 +344,7 @@ TODO("set vthickness");
 		PCB_FLAG_SET(PCB_FLAG_FLOATER, l);
 		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, l);
 		rnd_attribute_put(&l->Attributes, "extobj::role", "edit");
-pcb_trace(" subc=%p l=%p\n", subc, ly);
+rnd_trace(" subc=%p l=%p\n", subc, ly);
 	}
 
 	bus_gen(subc, NULL);
@@ -366,13 +366,13 @@ static void pcb_bus_gui_propedit(pcb_subc_t *subc)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	bus_t *bus;
 
-	pcb_trace("bus: gui propedit\n");
+	rnd_trace("bus: gui propedit\n");
 
 	if (subc->extobj_data == NULL)
 		bus_unpack(subc);
 	bus = subc->extobj_data;
 
-	pcb_trace("bus: active=%d\n", bus->gui_active);
+	rnd_trace("bus: active=%d\n", bus->gui_active);
 	if (bus->gui_active)
 		return; /* do not open another */
 

@@ -66,7 +66,7 @@ static int pcb_stroke_exec(rnd_hidlib_t *hl, const char *seq)
 			return 1;
 	}
 	if (conf_stroke.plugins.stroke.warn4unknown)
-		rnd_message(PCB_MSG_WARNING, "Stroke: sequence '%s' is not configured.\n", seq);
+		rnd_message(RND_MSG_WARNING, "Stroke: sequence '%s' is not configured.\n", seq);
 	return 0;
 }
 
@@ -127,7 +127,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		fgw_func_t *f = fgw_func_lookup(&rnd_fgw, "zoomto");
 
 		if (f == NULL) {
-			rnd_message(PCB_MSG_ERROR, "zoomto action is not available");
+			rnd_message(RND_MSG_ERROR, "zoomto action is not available");
 			RND_ACT_IRES(1);
 			return 0;
 		}

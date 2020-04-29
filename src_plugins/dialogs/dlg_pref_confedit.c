@@ -108,11 +108,11 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			}
 			break;
 		case RND_CFN_HLIST:
-/*			rnd_message(PCB_MSG_ERROR, "ERROR: can not import hash lists on GUI\n");*/
+/*			rnd_message(RND_MSG_ERROR, "ERROR: can not import hash lists on GUI\n");*/
 			/* Nothing to do, for now it's just a bunch of buttons */
 			break;
 		case RND_CFN_max:
-			rnd_message(PCB_MSG_ERROR, "ERROR: invalid conf node type\n");
+			rnd_message(RND_MSG_ERROR, "ERROR: invalid conf node type\n");
 			break;
 	}
 }
@@ -149,12 +149,12 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 				lht_node_t *nd = rnd_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
 
 				if (nd == NULL) {
-					rnd_message(PCB_MSG_ERROR, "Internal error: can't copy back to non-existing list!\n");
+					rnd_message(RND_MSG_ERROR, "Internal error: can't copy back to non-existing list!\n");
 					return;
 				}
 
 				if (nd->type != LHT_LIST) {
-					rnd_message(PCB_MSG_ERROR, "Internal error: can't copy back list into non-list!\n");
+					rnd_message(RND_MSG_ERROR, "Internal error: can't copy back list into non-list!\n");
 					return;
 				}
 
@@ -255,24 +255,24 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	int b[4] = {0};
 
 	if (pctx->conf.selected_nat == NULL) {
-		rnd_message(PCB_MSG_ERROR, "You need to select a conf leaf node to edit\nTry the tree on the left.\n");
+		rnd_message(RND_MSG_ERROR, "You need to select a conf leaf node to edit\nTry the tree on the left.\n");
 		return;
 	}
 
 	r = pcb_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
 	if (r == NULL) {
-		rnd_message(PCB_MSG_ERROR, "You need to select a role (upper right list)\n");
+		rnd_message(RND_MSG_ERROR, "You need to select a role (upper right list)\n");
 		return;
 	}
 
 	if (pctx->conf.selected_idx >= pctx->conf.selected_nat->array_size) {
-		rnd_message(PCB_MSG_ERROR, "Internal error: array index out of bounds\n");
+		rnd_message(RND_MSG_ERROR, "Internal error: array index out of bounds\n");
 		return;
 	}
 
 	if (pctx->conf.selected_nat->type == RND_CFN_HLIST) {
 		if (pctx->conf.selected_nat->gui_edit_act == NULL) {
-			rnd_message(PCB_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
+			rnd_message(RND_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
 			return;
 		}
 	}
@@ -398,23 +398,23 @@ static void pref_conf_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_hid_row_t *r;
 
 	if (pctx->conf.selected_nat == NULL) {
-		rnd_message(PCB_MSG_ERROR, "You need to select a conf leaf node to remove\nTry the tree on the left.\n");
+		rnd_message(RND_MSG_ERROR, "You need to select a conf leaf node to remove\nTry the tree on the left.\n");
 		return;
 	}
 
 	r = pcb_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
 	if (r == NULL) {
-		rnd_message(PCB_MSG_ERROR, "You need to select a role (upper right list)\n");
+		rnd_message(RND_MSG_ERROR, "You need to select a role (upper right list)\n");
 		return;
 	}
 
 	if (pctx->conf.selected_idx >= pctx->conf.selected_nat->array_size) {
-		rnd_message(PCB_MSG_ERROR, "Internal error: array index out of bounds\n");
+		rnd_message(RND_MSG_ERROR, "Internal error: array index out of bounds\n");
 		return;
 	}
 
 	if (rnd_conf_is_read_only(r->user_data2.lng)) {
-		rnd_message(PCB_MSG_ERROR, "Role is read-only, can not remove item\n");
+		rnd_message(RND_MSG_ERROR, "Role is read-only, can not remove item\n");
 		return;
 	}
 

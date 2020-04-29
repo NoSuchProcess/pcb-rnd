@@ -187,7 +187,7 @@ static fgw_error_t pcb_act_Pinout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(0);
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "pinout dialog: there's no subcircuit there\n");
+		rnd_message(RND_MSG_ERROR, "pinout dialog: there's no subcircuit there\n");
 		RND_ACT_IRES(-1);
 	}
 	return 0;

@@ -68,7 +68,7 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 		}
 		else {
 			htsp_set(models, (char *)name, NULL);
-			rnd_message(PCB_MSG_WARNING, "openscad: can't find model file for %s in the footprint library\n", name);
+			rnd_message(RND_MSG_WARNING, "openscad: can't find model file for %s in the footprint library\n", name);
 		}
 	}
 	ref = htsp_get(models, (char *)name);

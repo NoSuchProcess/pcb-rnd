@@ -104,7 +104,7 @@ static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	rnd_coord_t dia = shp->dlg[shp->dia].val.crd;
 
 	if ((dia < 1) || (dia > (PCB->hidlib.size_x + PCB->hidlib.size_y)/4)) {
-		rnd_message(PCB_MSG_ERROR, "Invalid diameter.\n");
+		rnd_message(RND_MSG_ERROR, "Invalid diameter.\n");
 		return;
 	}
 

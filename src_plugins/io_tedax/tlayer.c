@@ -131,7 +131,7 @@ int tedax_layer_save(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *laynam
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_layer_save(): can't open %s for writing\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_layer_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
@@ -159,7 +159,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 	while((argc = tedax_seek_block(f, "polyline", "v1", NULL, 1, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
 		char *pname;
 		if (htsp_has(&plines, argv[3])) {
-			rnd_message(PCB_MSG_ERROR, "duplicate polyline: %s\n", argv[3]);
+			rnd_message(RND_MSG_ERROR, "duplicate polyline: %s\n", argv[3]);
 			res = -1;
 			goto error;
 		}
@@ -174,7 +174,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				vtc0_append(coords, pcb_get_value(argv[1], "mm", NULL, &s1));
 				vtc0_append(coords, pcb_get_value(argv[2], "mm", NULL, &s2));
 				if (!s1 || !s2) {
-					rnd_message(PCB_MSG_ERROR, "invalid coords in polyline %s: %s;%s\n", pname, argv[1], argv[2]);
+					rnd_message(RND_MSG_ERROR, "invalid coords in polyline %s: %s;%s\n", pname, argv[1], argv[2]);
 					res = -1;
 					free(pname);
 					goto error;
@@ -184,7 +184,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				break;
 			}
 			else {
-				rnd_message(PCB_MSG_ERROR, "invalid command in polyline %s: %s\n", pname, argv[0]);
+				rnd_message(RND_MSG_ERROR, "invalid command in polyline %s: %s\n", pname, argv[0]);
 				res = -1;
 				free(pname);
 				goto error;
@@ -199,7 +199,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 	while((argc = tedax_seek_block(f, "layer", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) > 1) {
 		pcb_layer_t *ly;
 		if (data->LayerN >= PCB_MAX_LAYER) {
-			rnd_message(PCB_MSG_ERROR, "too many layers\n");
+			rnd_message(RND_MSG_ERROR, "too many layers\n");
 			res = -1;
 			goto error;
 		}
@@ -226,14 +226,14 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				x2 = pcb_get_value(argv[3], "mm", NULL, &s3);
 				y2 = pcb_get_value(argv[4], "mm", NULL, &s4);
 				if (!s1 || !s2 || !s3 || !s4) {
-					rnd_message(PCB_MSG_ERROR, "invalid line coords in line: %s;%s %s;%s\n", argv[1], argv[2], argv[3], argv[4]);
+					rnd_message(RND_MSG_ERROR, "invalid line coords in line: %s;%s %s;%s\n", argv[1], argv[2], argv[3], argv[4]);
 					res = -1;
 					goto error;
 				}
 				th = pcb_get_value(argv[5], "mm", NULL, &s1);
 				cl = pcb_get_value(argv[6], "mm", NULL, &s2);
 				if (!s1 || !s2) {
-					rnd_message(PCB_MSG_ERROR, "invalid thickness or clearance in line: %s;%s\n", argv[5], argv[6]);
+					rnd_message(RND_MSG_ERROR, "invalid thickness or clearance in line: %s;%s\n", argv[5], argv[6]);
 					res = -1;
 					goto error;
 				}
@@ -248,26 +248,26 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				cy = pcb_get_value(argv[2], "mm", NULL, &s2);
 				r  = pcb_get_value(argv[3], "mm", NULL, &s3);
 				if (!s1 || !s2 || !s3) {
-					rnd_message(PCB_MSG_ERROR, "invalid arc coords or radius in line: %s;%s %s\n", argv[1], argv[2], argv[3]);
+					rnd_message(RND_MSG_ERROR, "invalid arc coords or radius in line: %s;%s %s\n", argv[1], argv[2], argv[3]);
 					res = -1;
 					goto error;
 				}
 				sa = strtod(argv[4], &end);
 				if ((*end != '\0') || (sa < 0) || (sa >= 360.0)) {
-					rnd_message(PCB_MSG_ERROR, "invalid arc start angle %s\n", argv[4]);
+					rnd_message(RND_MSG_ERROR, "invalid arc start angle %s\n", argv[4]);
 					res = -1;
 					goto error;
 				}
 				da = strtod(argv[5], &end);
 				if ((*end != '\0') || (da < -360.0) || (da > 360.0)) {
-					rnd_message(PCB_MSG_ERROR, "invalid arc delta angle %s\n", argv[5]);
+					rnd_message(RND_MSG_ERROR, "invalid arc delta angle %s\n", argv[5]);
 					res = -1;
 					goto error;
 				}
 				th = pcb_get_value(argv[6], "mm", NULL, &s1);
 				cl = pcb_get_value(argv[7], "mm", NULL, &s2);
 				if (!s1 || !s2) {
-					rnd_message(PCB_MSG_ERROR, "invalid thickness or clearance in arc: %s;%s\n", argv[6], argv[7]);
+					rnd_message(RND_MSG_ERROR, "invalid thickness or clearance in arc: %s;%s\n", argv[6], argv[7]);
 					res = -1;
 					goto error;
 				}
@@ -284,13 +284,13 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				bx2 = pcb_get_value(argv[3], "mm", NULL, &s3);
 				by2 = pcb_get_value(argv[4], "mm", NULL, &s4);
 				if (!s1 || !s2 || !s3 || !s4) {
-					rnd_message(PCB_MSG_ERROR, "invalid bbox coords in text %s;%s %s;%s \n", argv[1], argv[2], argv[3], argv[4]);
+					rnd_message(RND_MSG_ERROR, "invalid bbox coords in text %s;%s %s;%s \n", argv[1], argv[2], argv[3], argv[4]);
 					res = -1;
 					goto error;
 				}
 				rot = strtod(argv[6], &end);
 				if (*end != '\0') {
-					rnd_message(PCB_MSG_ERROR, "invalid text rotation %s \n", argv[6]);
+					rnd_message(RND_MSG_ERROR, "invalid text rotation %s \n", argv[6]);
 					res = -1;
 					goto error;
 				}
@@ -323,17 +323,17 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				ox = pcb_get_value(argv[2], "mm", NULL, &s1);
 				oy = pcb_get_value(argv[3], "mm", NULL, &s2);
 				if (!s1 || !s2) {
-					rnd_message(PCB_MSG_ERROR, "invalid coords in poly %s;%s\n", argv[2], argv[3]);
+					rnd_message(RND_MSG_ERROR, "invalid coords in poly %s;%s\n", argv[2], argv[3]);
 					res = -1;
 					goto error;
 				}
 				coords = htsp_get(&plines, argv[1]);
 				if (coords == NULL) {
-					rnd_message(PCB_MSG_ERROR, "invalid polyline referecnce %s\n", argv[1]);
+					rnd_message(RND_MSG_ERROR, "invalid polyline referecnce %s\n", argv[1]);
 					res = -1;
 					goto error;
 				}
-				pcb_trace("POLY: %mm %mm %s\n", ox, oy, argv[1]);
+				rnd_trace("POLY: %mm %mm %s\n", ox, oy, argv[1]);
 				poly = pcb_poly_new(ly, 0, pcb_no_flags());
 				for(n = 0; n < coords->used; n+=2)
 					pcb_poly_point_new(poly, ox+coords->array[n], oy+coords->array[n+1]);
@@ -342,7 +342,7 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 			else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "layer") == 0))
 				break;
 			else {
-				rnd_message(PCB_MSG_ERROR, "invalid layer object %s\n", argv[0]);
+				rnd_message(RND_MSG_ERROR, "invalid layer object %s\n", argv[0]);
 				res = -1;
 				goto error;
 			}
@@ -367,7 +367,7 @@ int tedax_layers_load(pcb_data_t *data, const char *fn, const char *blk_id, int 
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_layers_load(): can't open %s for reading\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_layers_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
 	res = tedax_layers_fload(data, f, blk_id, silent);

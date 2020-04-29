@@ -60,7 +60,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 
 	fnc = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fnc == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open netclass hkp '%s' for read\n", fn);
+		rnd_message(RND_MSG_ERROR, "can't open netclass hkp '%s' for read\n", fn);
 		return -1;
 	}
 
@@ -91,7 +91,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 
 	if (ncrs == NULL) {
 		tree_destroy(&nc_tree);
-		rnd_message(PCB_MSG_ERROR, "netclass hkp '%s' does not contain any NET_CLASS_SCHEME/CLEARANCE_RULE_SET section\n", fn);
+		rnd_message(RND_MSG_ERROR, "netclass hkp '%s' does not contain any NET_CLASS_SCHEME/CLEARANCE_RULE_SET section\n", fn);
 		return -1;
 	}
 
@@ -144,7 +144,7 @@ static int io_mentor_cell_netlist(hkp_ctx_t *ctx, const char *fn)
 
 	fnet = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fnet == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open netprops hkp '%s' for read\n", fn);
+		rnd_message(RND_MSG_ERROR, "can't open netprops hkp '%s' for read\n", fn);
 		return -1;
 	}
 

@@ -69,7 +69,7 @@ static int pcb_netlist_swap()
 				int le, lp;
 
 				if (next > 2) {
-					rnd_message(PCB_MSG_ERROR, "Exactly two terminals should be selected for swap (more than 2 selected at the moment)\n");
+					rnd_message(RND_MSG_ERROR, "Exactly two terminals should be selected for swap (more than 2 selected at the moment)\n");
 					goto quit;
 				}
 
@@ -84,7 +84,7 @@ static int pcb_netlist_swap()
 	PCB_END_LOOP;
 
 	if (next < 2) {
-		rnd_message(PCB_MSG_ERROR, "Exactly two terminals should be selected for swap (less than 2 selected at the moment)\n");
+		rnd_message(RND_MSG_ERROR, "Exactly two terminals should be selected for swap (less than 2 selected at the moment)\n");
 		goto quit;
 	}
 
@@ -92,14 +92,14 @@ static int pcb_netlist_swap()
 	t1 = pcb_net_find_by_pinname(&PCB->netlist[PCB_NETLIST_EDITED], pins[0]);
 	t2 = pcb_net_find_by_pinname(&PCB->netlist[PCB_NETLIST_EDITED], pins[1]);
 	if ((t1 == NULL) || (t2 == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "That terminal is not on a net.\n");
+		rnd_message(RND_MSG_ERROR, "That terminal is not on a net.\n");
 		goto quit;
 	}
 
 	n1 = t1->parent.net;
 	n2 = t2->parent.net;
 	if (n1 == n2) {
-		rnd_message(PCB_MSG_ERROR, "Those two terminals are on the same net, can't swap them.\n");
+		rnd_message(RND_MSG_ERROR, "Those two terminals are on the same net, can't swap them.\n");
 		goto quit;
 	}
 
@@ -312,20 +312,20 @@ static int netlist_merge(pcb_board_t *pcb, const char *from, const char *to, int
 
 	nfrom = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], from, 0);
 	if (nfrom == NULL) {
-		rnd_message(PCB_MSG_ERROR, "No such net: '%s'\n", from);
+		rnd_message(RND_MSG_ERROR, "No such net: '%s'\n", from);
 		return 1;
 	}
 
 		nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, 0);
 	if (merge) {
 		if (nto == NULL) {
-			rnd_message(PCB_MSG_ERROR, "No such net: '%s'\n", to);
+			rnd_message(RND_MSG_ERROR, "No such net: '%s'\n", to);
 			return 1;
 		}
 	}
 	else {
 		if (nto != NULL) {
-			rnd_message(PCB_MSG_ERROR, "Net name '%s' already in use\n", to);
+			rnd_message(RND_MSG_ERROR, "Net name '%s' already in use\n", to);
 			return 1;
 		}
 		nto = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], to, PCB_NETA_ALLOC);
@@ -459,11 +459,11 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	netlist_unfreeze(PCB);
 
 	if (argc > 3 && !pin_found) {
-		rnd_message(PCB_MSG_ERROR, "Net %s has no pin %s\n", a1, a2);
+		rnd_message(RND_MSG_ERROR, "Net %s has no pin %s\n", a1, a2);
 		return 1;
 	}
 	else if (!net_found) {
-		rnd_message(PCB_MSG_ERROR, "No net named %s\n", a1);
+		rnd_message(RND_MSG_ERROR, "No net named %s\n", a1);
 	}
 
 
@@ -578,7 +578,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (termlist.used < 1) {
 		vtp0_uninit(&termlist);
-		rnd_message(PCB_MSG_ERROR, "Can not claim network: no terminal found.\nPlease pick objects that have terminals with refdes-termID.\n");
+		rnd_message(RND_MSG_ERROR, "Can not claim network: no terminal found.\nPlease pick objects that have terminals with refdes-termID.\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -595,7 +595,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], netname, 0) != NULL) {
 		free(free_netname);
 		vtp0_uninit(&termlist);
-		rnd_message(PCB_MSG_ERROR, "Can not claim network: '%s' is an existing network\n", netname);
+		rnd_message(RND_MSG_ERROR, "Can not claim network: '%s' is an existing network\n", netname);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -605,7 +605,7 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (net == NULL) {
 		vtp0_uninit(&termlist);
-		rnd_message(PCB_MSG_ERROR, "Can not claim network: failed to create net '%s'\n", netname);
+		rnd_message(RND_MSG_ERROR, "Can not claim network: failed to create net '%s'\n", netname);
 		RND_ACT_IRES(1);
 		return 0;
 	}

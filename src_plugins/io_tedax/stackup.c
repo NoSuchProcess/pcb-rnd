@@ -257,7 +257,7 @@ static int tedax_layer_set_by_str(pcb_board_t *pcb, pcb_layergrp_t *grp, const c
 	else if (strcmp(lloc, "virtual") == 0) grp->ltype |= PCB_LYT_VIRTUAL;
 	else if (strcmp(lloc, "all") == 0) {}
 	else
-		rnd_message(PCB_MSG_ERROR, "invalid layer location: %s\n", lloc);
+		rnd_message(RND_MSG_ERROR, "invalid layer location: %s\n", lloc);
 
 	for(t = layertab; t->typename != NULL; t++) {
 		if (strcmp(typename, t->typename) == 0) {
@@ -269,7 +269,7 @@ static int tedax_layer_set_by_str(pcb_board_t *pcb, pcb_layergrp_t *grp, const c
 		}
 	}
 
-	rnd_message(PCB_MSG_ERROR, "invalid layer type: %s\n", typename);
+	rnd_message(RND_MSG_ERROR, "invalid layer type: %s\n", typename);
 	return -1;
 }
 
@@ -335,7 +335,7 @@ int tedax_stackup_save(pcb_board_t *pcb, const char *stackid, const char *fn)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_stackup_save(): can't open %s for writing\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_stackup_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	tedax_stackup_init(&ctx);
@@ -418,7 +418,7 @@ int tedax_stackup_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_stackup_load(): can't open %s for reading\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_stackup_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
 	tedax_stackup_init(&ctx);

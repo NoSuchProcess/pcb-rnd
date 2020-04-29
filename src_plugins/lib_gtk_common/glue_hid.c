@@ -500,7 +500,7 @@ static int ghid_open_popup(pcb_hid_t *hid, const char *menupath)
 
 	menu = pcb_gtk_menu_widget(menu_node);
 	if (!GTK_IS_MENU(menu)) {
-		rnd_message(PCB_MSG_ERROR, "The specified popup menu \"%s\" has not been defined.\n", menupath);
+		rnd_message(RND_MSG_ERROR, "The specified popup menu \"%s\" has not been defined.\n", menupath);
 		return 1;
 	}
 
@@ -634,7 +634,7 @@ TODO("gfx: this use of sx/sy ignores rotation");
 		double rsx, rsy, ca = cos(pixmap->tr_rot / PCB_RAD_TO_DEG), sa = sin(pixmap->tr_rot / PCB_RAD_TO_DEG);
 		rsx = (double)sx * ca + (double)sy * sa;
 		rsy = (double)sy * ca + (double)sx * sa;
-pcb_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);
+rnd_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);
 		gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - rsx/2.0, cy - rsy/2.0, rsx, rsy);
 	}
 }

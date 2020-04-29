@@ -93,7 +93,7 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	PCB_IMPORT_SCH_VERBOSE(verbose);
 
 	if (tmpfn == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Could not create temp file for gnetlist output");
+		rnd_message(RND_MSG_ERROR, "Could not create temp file for gnetlist output");
 		return -1;
 	}
 
@@ -112,16 +112,16 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	cmd[numfns+8] = NULL;
 
 	if (verbose) {
-		rnd_message(PCB_MSG_DEBUG, "import_gnetlist:  running gnetlist:\n");
+		rnd_message(RND_MSG_DEBUG, "import_gnetlist:  running gnetlist:\n");
 		for(n = 0; n < numfns+8; n++)
-			rnd_message(PCB_MSG_DEBUG, " %s", cmd[n]);
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " %s", cmd[n]);
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	res = rnd_spawnvp((const char **)cmd);
 	if (res == 0) {
 		if (verbose)
-			rnd_message(PCB_MSG_DEBUG, "pcb_gnetlist:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfn);
+			rnd_message(RND_MSG_DEBUG, "pcb_gnetlist:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfn);
 		fgw_uvcall(&rnd_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfn, 0);
 	}
 	for(n = 0; n < numfns; n++)

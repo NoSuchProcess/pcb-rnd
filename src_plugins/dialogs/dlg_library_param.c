@@ -135,7 +135,7 @@ do { \
 do { \
 	if (curr >= MAX_PARAMS) { \
 		if (curr == MAX_PARAMS) \
-			rnd_message(PCB_MSG_ERROR, "too many parameters, displaying only the first %d\n", MAX_PARAMS); \
+			rnd_message(RND_MSG_ERROR, "too many parameters, displaying only the first %d\n", MAX_PARAMS); \
 		break; \
 	} \
 	if (curr_type == PCB_HATT_END) \
@@ -450,7 +450,7 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 		}
 		else {
 			if (posi >= argc_help) {
-				rnd_message(PCB_MSG_ERROR, "More positional parameters than expected - ignoring %s", argv_in[n]);
+				rnd_message(RND_MSG_ERROR, "More positional parameters than expected - ignoring %s", argv_in[n]);
 				continue;
 			}
 			key = argv_help[posi];
@@ -460,7 +460,7 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 
 		e = htsi_getentry(&ctx->param_names, key);
 		if (e == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Unknown parameter %s - ignoring value %s", key, val);
+			rnd_message(RND_MSG_ERROR, "Unknown parameter %s - ignoring value %s", key, val);
 			continue;
 		}
 		pidx = e->value;
@@ -565,7 +565,7 @@ static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	f = pcb_popen(NULL, cmd, "r");
 	free(cmd);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can not execute parametric footprint %s\n", l->data.fp.loc_info);
+		rnd_message(RND_MSG_ERROR, "Can not execute parametric footprint %s\n", l->data.fp.loc_info);
 		return NULL;
 	}
 

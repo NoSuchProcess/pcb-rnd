@@ -37,22 +37,22 @@
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \
 		if (__obj__->type != exp_type) \
-			rnd_message(PCB_MSG_ERROR, CHK "%s %ld type broken (%d != %d)\n", pcb_obj_type_name(exp_type), __obj__->ID, __obj__->type, exp_type); \
+			rnd_message(RND_MSG_ERROR, CHK "%s %ld type broken (%d != %d)\n", pcb_obj_type_name(exp_type), __obj__->ID, __obj__->type, exp_type); \
 	} while(0)
 
 #define check_parent(name, obj, pt, prnt) \
 	do { \
 		if (obj->parent_type != pt) \
-			rnd_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type broken (%d != %d)\n", whose, obj->ID, obj->parent_type, pt); \
+			rnd_message(RND_MSG_ERROR, CHK "%s " name " %ld parent type broken (%d != %d)\n", whose, obj->ID, obj->parent_type, pt); \
 		else if (obj->parent.any != prnt) \
-			rnd_message(PCB_MSG_ERROR, CHK "%s " name " %ld parent type broken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
+			rnd_message(RND_MSG_ERROR, CHK "%s " name " %ld parent type broken (%p != %p)\n", whose, obj->ID, obj->parent.any, prnt); \
 	} while(0)
 
 #define check_obj_id(name, data, obj) \
 	do { \
 		pcb_any_obj_t *__ao__ = htip_get(&data->id2obj, obj->ID); \
 		if (__ao__ != (pcb_any_obj_t *)obj) \
-			rnd_message(PCB_MSG_ERROR, CHK "%s " name " %ld id hash broken (%p != %p)\n", whose, obj->ID, obj, __ao__); \
+			rnd_message(RND_MSG_ERROR, CHK "%s " name " %ld id hash broken (%p != %p)\n", whose, obj->ID, obj, __ao__); \
 		id_chk_cnt++; \
 	} while(0)
 
@@ -60,13 +60,13 @@
 #define chk_attr(name, obj) \
 	do { \
 		if (((obj)->Attributes.Number > 0) && ((obj)->Attributes.List == NULL)) \
-			rnd_message(PCB_MSG_ERROR, CHK "%s " name " %ld broken empty attribute list\n", whose, (obj)->ID); \
+			rnd_message(RND_MSG_ERROR, CHK "%s " name " %ld broken empty attribute list\n", whose, (obj)->ID); \
 	} while(0)
 
 #define check_field_eq(name, obj, st1, st2, fld, fmt) \
 	do { \
 		if ((st1)->fld != (st2)->fld) \
-			rnd_message(PCB_MSG_ERROR, CHK "%s " name " field ." #fld " value mismatch (" fmt " != " fmt ")\n", whose, obj->ID, (st1)->fld, (st2)->fld); \
+			rnd_message(RND_MSG_ERROR, CHK "%s " name " field ." #fld " value mismatch (" fmt " != " fmt ")\n", whose, obj->ID, (st1)->fld, (st2)->fld); \
 	} while(0)
 
 static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk);
@@ -77,20 +77,20 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 	const char *s_intconn = rnd_attribute_get(&obj->Attributes, "intconn");
 
 	if (pcb_obj_id_invalid(aterm))
-		rnd_message(PCB_MSG_ERROR, CHK "%s %ld has term attribute '%s' with invalid characters\n", whose, obj->ID, aterm);
+		rnd_message(RND_MSG_ERROR, CHK "%s %ld has term attribute '%s' with invalid characters\n", whose, obj->ID, aterm);
 
 	if ((aterm == NULL) && (obj->term == NULL))
 		return;
 	if (obj->term == NULL) {
-		rnd_message(PCB_MSG_ERROR, CHK "%s %ld has term attribute '%s' but no ->term set\n", whose, obj->ID, aterm);
+		rnd_message(RND_MSG_ERROR, CHK "%s %ld has term attribute '%s' but no ->term set\n", whose, obj->ID, aterm);
 		return;
 	}
 	if (aterm == NULL) {
-		rnd_message(PCB_MSG_ERROR, CHK "%s %ld has ->term '%s' but no attribute term set\n", whose, obj->ID, obj->term);
+		rnd_message(RND_MSG_ERROR, CHK "%s %ld has ->term '%s' but no attribute term set\n", whose, obj->ID, obj->term);
 		return;
 	}
 	if (aterm != obj->term) {
-		rnd_message(PCB_MSG_ERROR, CHK "%s %ld has mismatching pointer of ->term ('%s') and attribute term ('%s')\n", whose, obj->ID, obj->term, aterm);
+		rnd_message(RND_MSG_ERROR, CHK "%s %ld has mismatching pointer of ->term ('%s') and attribute term ('%s')\n", whose, obj->ID, obj->term, aterm);
 		return;
 	}
 
@@ -99,7 +99,7 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 		long intconn = strtol(s_intconn, &end, 10);
 		if (*end == '\0') {
 			if (intconn != obj->intconn) {
-				rnd_message(PCB_MSG_ERROR, CHK "%s %ld has mismatching intconn: cached is %d, attribute is '%s'\n", whose, obj->ID, obj->intconn, s_intconn);
+				rnd_message(RND_MSG_ERROR, CHK "%s %ld has mismatching intconn: cached is %d, attribute is '%s'\n", whose, obj->ID, obj->intconn, s_intconn);
 				return;
 			}
 		}
@@ -111,26 +111,26 @@ static void chk_subc_cache(pcb_subc_t *subc)
 	const char *arefdes = rnd_attribute_get(&subc->Attributes, "refdes");
 
 	if (pcb_obj_id_invalid(arefdes))
-		rnd_message(PCB_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);
 
 	if ((subc->BoundingBox.X2 < 0) || (subc->BoundingBox.Y2 < 0))
-		rnd_message(PCB_MSG_ERROR, CHK "subc %ld is on negative coordinates; its bottom right corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X2, subc->BoundingBox.Y2);
+		rnd_message(RND_MSG_ERROR, CHK "subc %ld is on negative coordinates; its bottom right corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X2, subc->BoundingBox.Y2);
 
 	if ((subc->BoundingBox.X1 > PCB->hidlib.size_x) || (subc->BoundingBox.Y1 > PCB->hidlib.size_y))
-		rnd_message(PCB_MSG_ERROR, CHK "subc %ld is olost beyond board extents; its top left corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X1, subc->BoundingBox.Y1);
+		rnd_message(RND_MSG_ERROR, CHK "subc %ld is olost beyond board extents; its top left corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X1, subc->BoundingBox.Y1);
 
 	if ((arefdes == NULL) && (subc->refdes == NULL))
 		return;
 	if (subc->refdes == NULL) {
-		rnd_message(PCB_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' but no ->refdes set\n", subc->ID, arefdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' but no ->refdes set\n", subc->ID, arefdes);
 		return;
 	}
 	if (arefdes == NULL) {
-		rnd_message(PCB_MSG_ERROR, CHK "subc %ld has ->refdes '%s' but no attribute refdes set\n", subc->ID, subc->refdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc %ld has ->refdes '%s' but no attribute refdes set\n", subc->ID, subc->refdes);
 		return;
 	}
 	if (arefdes != subc->refdes) {
-		rnd_message(PCB_MSG_ERROR, CHK "subc %ld has mismatching pointer of ->refdes ('%s') and attribute refdes ('%s')\n", subc->ID, subc->refdes, arefdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc %ld has mismatching pointer of ->refdes ('%s') and attribute refdes ('%s')\n", subc->ID, subc->refdes, arefdes);
 		return;
 	}
 }
@@ -147,11 +147,11 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 	chk_subc_cache(subc);
 
 	if (pcb_subc_get_origin(subc, &dummy, &dummy) != 0)
-		rnd_message(PCB_MSG_ERROR, CHK "%s %ld: can not determine subc origin\n", whose, subc->ID);
+		rnd_message(RND_MSG_ERROR, CHK "%s %ld: can not determine subc origin\n", whose, subc->ID);
 	if (pcb_subc_get_rotation(subc, &dummy2) != 0)
-		rnd_message(PCB_MSG_ERROR, CHK "%s %ld: can not determine subc rotation\n", whose, subc->ID);
+		rnd_message(RND_MSG_ERROR, CHK "%s %ld: can not determine subc rotation\n", whose, subc->ID);
 	if (pcb_subc_get_side(subc, &dummy) != 0)
-		rnd_message(PCB_MSG_ERROR, CHK "%s %ld: can not determine subc side\n", whose, subc->ID);
+		rnd_message(RND_MSG_ERROR, CHK "%s %ld: can not determine subc side\n", whose, subc->ID);
 
 	/* check term chaches */
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps))
@@ -165,7 +165,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 		pcb_poly_t *pol;
 
 		if (!ly->is_bound)
-			rnd_message(PCB_MSG_ERROR, CHK "%ld subc layer %ld is not a bound layer\n", subc->ID, n);
+			rnd_message(RND_MSG_ERROR, CHK "%ld subc layer %ld is not a bound layer\n", subc->ID, n);
 
 		for(lin = linelist_first(&ly->Line); lin != NULL; lin = linelist_next(lin))
 			chk_term("line", (pcb_any_obj_t *)lin);
@@ -190,9 +190,9 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	htip_entry_t *e;
 
 	if (data->parent_type != pt)
-		rnd_message(PCB_MSG_ERROR, CHK "%s data: parent type broken (%d != %d)\n", whose, data->parent_type, pt);
+		rnd_message(RND_MSG_ERROR, CHK "%s data: parent type broken (%d != %d)\n", whose, data->parent_type, pt);
 	else if (data->parent.any != parent)
-		rnd_message(PCB_MSG_ERROR, CHK "%s data: parent broken (%p != %p)\n", whose, data->parent, parent);
+		rnd_message(RND_MSG_ERROR, CHK "%s data: parent broken (%p != %p)\n", whose, data->parent, parent);
 
 
 	for(n = 0; n < data->LayerN; n++) {
@@ -204,9 +204,9 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 	
 		/* check layers */
 		if (data->Layer[n].parent.data != data)
-			rnd_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s parent broken (%p != %p)\n", whose, n, data->Layer[n].name, data->Layer[n].parent, data);
+			rnd_message(RND_MSG_ERROR, CHK "%s layer %ld/%s parent broken (%p != %p)\n", whose, n, data->Layer[n].name, data->Layer[n].parent, data);
 		if (name_chk && ((data->Layer[n].name == NULL) || (*data->Layer[n].name == '\0')))
-			rnd_message(PCB_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
+			rnd_message(RND_MSG_ERROR, CHK "%s layer %ld has invalid name\n", whose, n);
 		check_type(&data->Layer[n], PCB_OBJ_LAYER);
 		check_parent("layer", (&data->Layer[n]), PCB_PARENT_DATA, data);
 		chk_attr("layer", &data->Layer[n]);
@@ -222,15 +222,15 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 					}
 				}
 				if (!found)
-					rnd_message(PCB_MSG_ERROR, CHK "%s layer %ld is linked to group %ld but the group does not link back to the layer\n", whose, n, data->Layer[n].meta.real.grp);
+					rnd_message(RND_MSG_ERROR, CHK "%s layer %ld is linked to group %ld but the group does not link back to the layer\n", whose, n, data->Layer[n].meta.real.grp);
 			}
 			else
-				rnd_message(PCB_MSG_ERROR, CHK "%s layer %ld is linked to non-existing group %ld\n", whose, n, data->Layer[n].meta.real.grp);
+				rnd_message(RND_MSG_ERROR, CHK "%s layer %ld is linked to non-existing group %ld\n", whose, n, data->Layer[n].meta.real.grp);
 		}
 
 		if (data->Layer[n].is_bound) {
 			if ((data->Layer[n].meta.bound.type & PCB_LYT_BOUNDARY) && (data->Layer[n].meta.bound.type & PCB_LYT_ANYWHERE))
-				rnd_message(PCB_MSG_ERROR, CHK "%s layer %ld/%s is a non-global boundary (bound layer)\n", whose, n, data->Layer[n].name);
+				rnd_message(RND_MSG_ERROR, CHK "%s layer %ld/%s is a non-global boundary (bound layer)\n", whose, n, data->Layer[n].name);
 		}
 
 		/* check layer objects */
@@ -301,7 +301,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 		id_chk_cnt--;
 	}
 	if (id_chk_cnt != 0)
-		rnd_message(PCB_MSG_ERROR, CHK "id hash contains %ld excess IDs in %s\n", id_chk_cnt, whose);
+		rnd_message(RND_MSG_ERROR, CHK "id hash contains %ld excess IDs in %s\n", id_chk_cnt, whose);
 }
 
 static void chk_layergrps(pcb_board_t *pcb)
@@ -316,22 +316,22 @@ static void chk_layergrps(pcb_board_t *pcb)
 		check_parent("layer_group", grp, PCB_PARENT_BOARD, pcb);
 		check_type(grp, PCB_OBJ_LAYERGRP);
 		if ((grp->ltype & PCB_LYT_BOUNDARY) && (grp->ltype & PCB_LYT_ANYWHERE))
-			rnd_message(PCB_MSG_ERROR, CHK "layer group %ld/%s is a non-global boundary\n", n, grp->name);
+			rnd_message(RND_MSG_ERROR, CHK "layer group %ld/%s is a non-global boundary\n", n, grp->name);
 
 		for(i = 0; i < grp->len; i++) {
 			pcb_layer_t *ly;
 
 			for(i2 = 0; i2 < i; i2++)
 				if (grp->lid[i] == grp->lid[i2])
-					rnd_message(PCB_MSG_ERROR, CHK "layer group %ld/%s has duplicate layer entry: %ld\n", n, grp->name, (long)grp->lid[i]);
+					rnd_message(RND_MSG_ERROR, CHK "layer group %ld/%s has duplicate layer entry: %ld\n", n, grp->name, (long)grp->lid[i]);
 
 			ly = pcb_get_layer(pcb->Data, grp->lid[i]);
 			if (ly != NULL) {
 				if (ly->meta.real.grp != n)
-					rnd_message(PCB_MSG_ERROR, CHK "layer group %ld/%s conains layer %ld/%s but it doesn't link back to the group but links to %ld instead \n", n, grp->name, (long)grp->lid[i], ly->name, ly->meta.real.grp);
+					rnd_message(RND_MSG_ERROR, CHK "layer group %ld/%s conains layer %ld/%s but it doesn't link back to the group but links to %ld instead \n", n, grp->name, (long)grp->lid[i], ly->name, ly->meta.real.grp);
 			}
 			else
-				rnd_message(PCB_MSG_ERROR, CHK "layer group %ld/%s contains invalid layer entry: %ld\n", n, grp->name, (long)grp->lid[i]);
+				rnd_message(RND_MSG_ERROR, CHK "layer group %ld/%s contains invalid layer entry: %ld\n", n, grp->name, (long)grp->lid[i]);
 		}
 	}
 }
@@ -351,5 +351,5 @@ void pcb_check_integrity(pcb_board_t *pcb)
 	}
 
 	if (undo_check() != 0)
-		rnd_message(PCB_MSG_ERROR, CHK "undo\n");
+		rnd_message(RND_MSG_ERROR, CHK "undo\n");
 }

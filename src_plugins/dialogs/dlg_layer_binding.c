@@ -270,7 +270,7 @@ fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_get_coords("Click on subc to change the layer binding of", &x, &y, 0);
 		type = pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 		if (type != PCB_OBJ_SUBC) {
-			rnd_message(PCB_MSG_ERROR, "No subc under the cursor\n");
+			rnd_message(RND_MSG_ERROR, "No subc under the cursor\n");
 			return -1;
 		}
 		ctx.subc = ptr2;
@@ -278,7 +278,7 @@ fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (op == F_Selected) {
 TODO("subc TODO")
-		rnd_message(PCB_MSG_ERROR, "TODO\n");
+		rnd_message(RND_MSG_ERROR, "TODO\n");
 		return 1;
 	}
 	else if (op == F_Buffer) {

@@ -3984,7 +3984,7 @@ static void yyerror(const char *ers)
 #ifdef	DEBUG
   DumpStack();
 #endif	/* DEBUG */
-  rnd_message(PCB_MSG_ERROR, "EDIF import error: %s, line %ld: %s\n",InFile,LineNumber,ers);
+  rnd_message(RND_MSG_ERROR, "EDIF import error: %s, line %ld: %s\n",InFile,LineNumber,ers);
 }
 /*
  *	String bucket definitions.
@@ -4446,7 +4446,7 @@ static int yylex()
 
 int ReadEdifNetlist(char *filename)
 {
-	rnd_message(PCB_MSG_INFO,"Importing edif netlist %s\n", filename);
+	rnd_message(RND_MSG_INFO,"Importing edif netlist %s\n", filename);
 	ParseEDIF(filename, NULL);
 
 	return 0;

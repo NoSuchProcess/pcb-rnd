@@ -114,7 +114,7 @@ static const pcb_layer_type_name_t pcb_layer_comb_names[] = {
 #define layer_if_too_many(pcb, fail_cmd) \
 do { \
 	if (pcb->Data->LayerN >= PCB_MAX_LAYER) { \
-		rnd_message(PCB_MSG_ERROR, "Too many layers - can't have more than %d\n", PCB_MAX_LAYER); \
+		rnd_message(RND_MSG_ERROR, "Too many layers - can't have more than %d\n", PCB_MAX_LAYER); \
 		fail_cmd; \
 	} \
 } while(0)
@@ -880,7 +880,7 @@ static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, rn
 	g = pcb_get_layergrp(pcb, pcb->Data->Layer[old_index].meta.real.grp);
 	grp_idx = pcb_layergrp_index_in_grp(g, old_index);
 	if (grp_idx < 0) {
-		rnd_message(PCB_MSG_ERROR, "Internal error; layer not in group\n");
+		rnd_message(RND_MSG_ERROR, "Internal error; layer not in group\n");
 		return -1;
 	}
 
@@ -1061,12 +1061,12 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 {
 	/* sanity checks */
 	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
-		rnd_message(PCB_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
+		rnd_message(RND_MSG_ERROR, "Invalid old layer %d for move: must be -1..%d\n", old_index, pcb->Data->LayerN - 1);
 		return 1;
 	}
 
 	if (new_index < -1 || new_index > pcb->Data->LayerN || new_index >= PCB_MAX_LAYER) {
-		rnd_message(PCB_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
+		rnd_message(RND_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
 		return 1;
 	}
 
@@ -1087,7 +1087,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 		return pcb_layer_move_delete(pcb, old_index, undoable);
 
 
-	rnd_message(PCB_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
+	rnd_message(RND_MSG_ERROR, "Logical layer move is not supported any more. This function should have not been called. Please report this error.\n");
 	/* Removed r8686:
 	   The new layer design presents the layers by groups to preserve physical
 	   order. In this system the index of the logical layer on the logical
@@ -1152,7 +1152,7 @@ void pcb_layer_real2bound_offs(pcb_layer_t *dst, pcb_board_t *src_pcb, pcb_layer
 				dst->meta.bound.stack_offs = -from_bottom;
 		}
 		else
-			rnd_message(PCB_MSG_ERROR, "Internal error: can't figure the inter copper\nlayer offset for %s\n", src->name);
+			rnd_message(RND_MSG_ERROR, "Internal error: can't figure the inter copper\nlayer offset for %s\n", src->name);
 	}
 	else
 		dst->meta.bound.stack_offs = 0;
@@ -1253,7 +1253,7 @@ pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 		pcb_layer_type_t lyt = src->meta.bound.type;
 		if ((lyt & PCB_LYT_BOUNDARY) && (lyt & PCB_LYT_ANYWHERE)) {
 			lyt = PCB_LYT_BOUNDARY;
-			rnd_message(PCB_MSG_WARNING, "Ignoring invalid layer flag combination for %s: boundary layer must be global\n(fixed up by removing location specifier bits)\n", src->name);
+			rnd_message(RND_MSG_WARNING, "Ignoring invalid layer flag combination for %s: boundary layer must be global\n(fixed up by removing location specifier bits)\n", src->name);
 		}
 		for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++)
 			if ((grp->ltype & lyt) == lyt)

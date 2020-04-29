@@ -73,20 +73,20 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int rs;
 
 		if (argc < 4) {
-			rnd_message(PCB_MSG_ERROR, "conf(set) needs at least two arguments");
+			rnd_message(RND_MSG_ERROR, "conf(set) needs at least two arguments");
 			return FGW_ERR_ARGC;
 		}
 		if (argc > 4) {
 			role = rnd_conf_role_parse(a3);
 			if (role == RND_CFR_invalid) {
-				rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", a3);
+				rnd_message(RND_MSG_ERROR, "Invalid role: '%s'", a3);
 				return FGW_ERR_ARG_CONV;
 			}
 		}
 		if (argc > 5) {
 			pol = rnd_conf_policy_parse(a4);
 			if (pol == RND_POL_invalid) {
-				rnd_message(PCB_MSG_ERROR, "Invalid policy: '%s'", a4);
+				rnd_message(RND_MSG_ERROR, "Invalid policy: '%s'", a4);
 				return FGW_ERR_ARG_CONV;
 			}
 		}
@@ -99,7 +99,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_conf_native_t *n = rnd_conf_get_field(a1);
 
 			if (n == 0) {
-				rnd_message(PCB_MSG_ERROR, "Can't delta-set '%s': no such path\n", argv[1]);
+				rnd_message(RND_MSG_ERROR, "Can't delta-set '%s': no such path\n", argv[1]);
 				return FGW_ERR_ARG_CONV;
 			}
 
@@ -107,7 +107,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case RND_CFN_REAL:
 					d = strtod(val, &end);
 					if (*end != '\0') {
-						rnd_message(PCB_MSG_ERROR, "Can't delta-set '%s': invalid delta value\n", a1);
+						rnd_message(RND_MSG_ERROR, "Can't delta-set '%s': invalid delta value\n", a1);
 						return FGW_ERR_ARG_CONV;
 					}
 					d += *n->val.real;
@@ -117,7 +117,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case RND_CFN_COORD:
 				case RND_CFN_INTEGER:
 				default:
-					rnd_message(PCB_MSG_ERROR, "Can't delta-set '%s': not a numeric item\n", a1);
+					rnd_message(RND_MSG_ERROR, "Can't delta-set '%s': not a numeric item\n", a1);
 					return FGW_ERR_ARG_CONV;
 			}
 		}
@@ -125,7 +125,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (role == RND_CFR_invalid) {
 			rnd_conf_native_t *n = rnd_conf_get_field(a1);
 			if (n == NULL) {
-				rnd_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
+				rnd_message(RND_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
 				return FGW_ERR_ARG_CONV;
 			}
 			rs = rnd_conf_set_native(n, 0, val);
@@ -135,7 +135,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rs = rnd_conf_set(role, path, -1, val, pol);
 
 		if (rs != 0) {
-			rnd_message(PCB_MSG_ERROR, "conf(set) failed.\n");
+			rnd_message(RND_MSG_ERROR, "conf(set) failed.\n");
 			return FGW_ERR_UNKNOWN;
 		}
 	}
@@ -147,7 +147,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_conf_native_t *n;
 
 		if (argc != 4) {
-			rnd_message(PCB_MSG_ERROR, "conf(iseq) needs two arguments");
+			rnd_message(RND_MSG_ERROR, "conf(iseq) needs two arguments");
 			return FGW_ERR_ARGC;
 		}
 		path = a1;
@@ -156,7 +156,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		n = rnd_conf_get_field(a1);
 		if (n == NULL) {
 			if (pcbhl_conf.rc.verbose)
-				rnd_message(PCB_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
+				rnd_message(RND_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
 			return FGW_ERR_ARG_CONV;
 		}
 
@@ -177,21 +177,21 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int res;
 
 		if (n == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
+			rnd_message(RND_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
 			return FGW_ERR_UNKNOWN;
 		}
 		if (n->type != RND_CFN_BOOLEAN) {
-			rnd_message(PCB_MSG_ERROR, "Can not toggle '%s': not a boolean\n", a1);
+			rnd_message(RND_MSG_ERROR, "Can not toggle '%s': not a boolean\n", a1);
 			return FGW_ERR_UNKNOWN;
 		}
 		if (n->used != 1) {
-			rnd_message(PCB_MSG_ERROR, "Can not toggle '%s': array size should be 1, not %d\n", a1, n->used);
+			rnd_message(RND_MSG_ERROR, "Can not toggle '%s': array size should be 1, not %d\n", a1, n->used);
 			return FGW_ERR_UNKNOWN;
 		}
 		if (argc > 3) {
 			role = rnd_conf_role_parse(a2);
 			if (role == RND_CFR_invalid) {
-				rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", a2);
+				rnd_message(RND_MSG_ERROR, "Invalid role: '%s'", a2);
 				return FGW_ERR_ARG_CONV;
 			}
 		}
@@ -205,7 +205,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			res = rnd_conf_set(role, a1, -1, new_value, RND_POL_OVERWRITE);
 
 		if (res != 0) {
-			rnd_message(PCB_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", a1);
+			rnd_message(RND_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", a1);
 			return FGW_ERR_UNKNOWN;
 		}
 		rnd_conf_update(a1, -1);
@@ -215,7 +215,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_conf_role_t role;
 		role = rnd_conf_role_parse(a1);
 		if (role == RND_CFR_invalid) {
-			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", a1);
+			rnd_message(RND_MSG_ERROR, "Invalid role: '%s'", a1);
 			return FGW_ERR_ARG_CONV;
 		}
 		rnd_conf_reset(role, "<action>");
@@ -223,7 +223,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	else {
-		rnd_message(PCB_MSG_ERROR, "Invalid conf command\n");
+		rnd_message(RND_MSG_ERROR, "Invalid conf command\n");
 		return FGW_ERR_ARG_CONV;
 	}
 
@@ -302,7 +302,7 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		d = strtod(val+1, &end);
 		if ((*end != '\0') || (d <= 0)) {
-			rnd_message(PCB_MSG_ERROR, "SetGrid: Invalid multiplier/divider for grid set: needs to be a positive number\n");
+			rnd_message(RND_MSG_ERROR, "SetGrid: Invalid multiplier/divider for grid set: needs to be a positive number\n");
 			return 1;
 		}
 		pcb_grid_inval();

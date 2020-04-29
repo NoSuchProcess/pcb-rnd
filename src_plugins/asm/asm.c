@@ -126,7 +126,7 @@ static char *templ_compile(gdl_list_t *dst, const char *src_)
 		else if (strcmp(s, "y") == 0)
 			templ_append(dst, TT_Y, NULL);
 		else
-			rnd_message(PCB_MSG_ERROR, "Ignoring unknown asm template entry: '%s'\n", s);
+			rnd_message(RND_MSG_ERROR, "Ignoring unknown asm template entry: '%s'\n", s);
 	}
 	return src;
 }

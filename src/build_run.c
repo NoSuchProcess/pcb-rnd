@@ -252,6 +252,6 @@ void pcb_catch_signal(int Signal)
 		s = "unknown";
 		break;
 	}
-	rnd_message(PCB_MSG_ERROR, "aborted by %s signal\n", s);
+	rnd_message(RND_MSG_ERROR, "aborted by %s signal\n", s);
 	exit(1);
 }

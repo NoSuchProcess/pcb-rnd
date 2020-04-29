@@ -661,11 +661,11 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&ps_cam) == 0) {
 		if (!ps_cam.okempty_group)
-			rnd_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "ps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (global.drawn_objs == 0) {
 		if (!ps_cam.okempty_content)
-			rnd_message(PCB_MSG_ERROR, "ps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "ps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 
 }
@@ -1351,7 +1351,7 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 					if (xval < 2)
 						ps_attribute_list[HA_xcalib].default_val.dbl = global.calibration_x = xval;
 					else
-						rnd_message(PCB_MSG_ERROR, "X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
+						rnd_message(RND_MSG_ERROR, "X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
 				}
 		if (guess(yval, 4, &global.calibration_y))
 			if (guess(yval, 20, &global.calibration_y))
@@ -1359,7 +1359,7 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 					if (yval < 2)
 						ps_attribute_list[HA_ycalib].default_val.dbl = global.calibration_y = yval;
 					else
-						rnd_message(PCB_MSG_ERROR, "Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
+						rnd_message(RND_MSG_ERROR, "Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
 				}
 		return;
 	}

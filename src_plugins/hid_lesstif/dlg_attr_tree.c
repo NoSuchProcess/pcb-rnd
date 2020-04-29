@@ -389,9 +389,9 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 						ltf_tree_expcoll(lt, lt->cursor, !lt->cursor->flags.is_unfolded);
 						REDRAW();
 					}
-					pcb_trace("tree key {enter}\n");
+					rnd_trace("tree key {enter}\n");
 					break;
-				default: pcb_trace("tree key %s\n", text);
+				default: rnd_trace("tree key %s\n", text);
 			}
 			break;
 	}

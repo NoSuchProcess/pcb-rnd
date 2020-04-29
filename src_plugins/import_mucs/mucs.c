@@ -67,7 +67,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadMucsFrom, fname = argv[1].val.str);
 
 	if (!(pcb_layer_flags(PCB, PCB_CURRLID(PCB)) & PCB_LYT_COPPER)) {
-		rnd_message(PCB_MSG_ERROR, "The currently active layer is not a copper layer.\n");
+		rnd_message(RND_MSG_ERROR, "The currently active layer is not a copper layer.\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -92,27 +92,27 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	fi = pcb_fopen(&PCB->hidlib, fname, "r");
 	if (!fi) {
-		rnd_message(PCB_MSG_ERROR, "Can't load mucs unixplot file %s for read\n", fname);
+		rnd_message(RND_MSG_ERROR, "Can't load mucs unixplot file %s for read\n", fname);
 		RND_ACT_IRES(1);
 		return 0;
 	}
 
 	while ((c = getc(fi)) != EOF) {
-/*		pcb_trace("Char: %d \n", c); */
+/*		rnd_trace("Char: %d \n", c); */
 		switch (c) {
 			case 's':
 				x1 = 100 * (getc(fi) + (getc(fi) * 256));
 				y1 = 100 * (getc(fi) + (getc(fi) * 256));
 				x2 = 100 * (getc(fi) + (getc(fi) * 256));
 				y2 = 100 * (getc(fi) + (getc(fi) * 256));
-				pcb_trace("s--%i %i %i %i ???\n", x1, y1, x2, y2);
+				rnd_trace("s--%i %i %i %i ???\n", x1, y1, x2, y2);
 				break;
 			case 'l':
 				x1 = (getc(fi) + (getc(fi) * 256));
 				y1 = (getc(fi) + (getc(fi) * 256));
 				x2 = (getc(fi) + (getc(fi) * 256));
 				y2 = (getc(fi) + (getc(fi) * 256));
-				pcb_trace("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
+				rnd_trace("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
 				/* consider a bounds checking function to censor absurd coord sizes */
 				pcb_line_new(PCB_CURRLAYER(PCB), PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), PCB_MIL_TO_COORD(x2), PCB_MIL_TO_COORD(y2), PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10), pcb_flag_make(PCB_FLAG_AUTO));
 				break;
@@ -120,14 +120,14 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				x1 = (getc(fi) + (getc(fi) * 256));
 				y1 = (getc(fi) + (getc(fi) * 256));
 				r = (getc(fi) + (getc(fi) * 256));
-				pcb_trace("Via(%d %d 60 25 \"\" \" \")\n", x1, y1);
+				rnd_trace("Via(%d %d 60 25 \"\" \" \")\n", x1, y1);
 				ps = pcb_pstk_new_compat_via(PCB->Data, -1, PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
 				PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
 				break;
 			case 'n':
 				x1 = (getc(fi) + (getc(fi) * 256));
 				y1 = (getc(fi) + (getc(fi) * 256));
-				pcb_trace("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
+				rnd_trace("Line(%d %d %d %d 20 \" \")\n", x1, y1, x2, y2);
 				pcb_line_new(PCB_CURRLAYER(PCB), PCB_MIL_TO_COORD(x1), PCB_MIL_TO_COORD(y1), PCB_MIL_TO_COORD(x2), PCB_MIL_TO_COORD(y2), PCB_MIL_TO_COORD(10), PCB_MIL_TO_COORD(10), pcb_flag_make(PCB_FLAG_AUTO));
 				x2 = x1;
 				y2 = y1;
@@ -138,7 +138,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				x2 = 100 * ((getc(fi) * 256) + getc(fi));
 				y2 = 100 * ((getc(fi) * 256) + getc(fi));
 				r = 100 * ((getc(fi) * 256) + getc(fi));
-				pcb_trace("a--stroke newpath\n%d %d %d %d %d arc\n", x1, y1, x2, y2, r);
+				rnd_trace("a--stroke newpath\n%d %d %d %d %d arc\n", x1, y1, x2, y2, r);
 				break;
 			case 'e':
 				break;

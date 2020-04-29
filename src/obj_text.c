@@ -491,7 +491,7 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
 		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
-			rnd_message(PCB_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_textop_move_buffer\n");
+			rnd_message(RND_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_textop_move_buffer\n");
 			return NULL;
 		}
 		dstly = &ctx->buffer.dst->Layer[lid];
@@ -715,7 +715,7 @@ void *pcb_textop_move_to_layer_low(pcb_opctx_t *ctx, pcb_layer_t * Source, pcb_t
 void *pcb_textop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_text_t * text)
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, text)) {
-		rnd_message(PCB_MSG_WARNING, "Sorry, text object is locked\n");
+		rnd_message(RND_MSG_WARNING, "Sorry, text object is locked\n");
 		return NULL;
 	}
 	if (ctx->move.dst_layer != layer) {
@@ -1528,7 +1528,7 @@ static void pcb_text_font_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, p
 	if (pcb_text_font_chg_data(PCB->Data, argv[1].d.i))
 		pcb_gui->invalidate_all(pcb_gui); /* can't just redraw the text, as the old text may have been bigger, before the change! */
 
-	pcb_trace("font change %d\n", argv[1].d.i);
+	rnd_trace("font change %d\n", argv[1].d.i);
 }
 
 rnd_bool pcb_text_old_direction(int *dir_out, double rot)

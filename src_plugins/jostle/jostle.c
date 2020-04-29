@@ -216,7 +216,7 @@ static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vecto
 				minmax = 1;
 				break;
 			default:
-				rnd_message(PCB_MSG_ERROR, "jostle: aiee, what side?");
+				rnd_message(RND_MSG_ERROR, "jostle: aiee, what side?");
 				return;
 			}
 			v = a->contours->head;

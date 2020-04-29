@@ -120,7 +120,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 			default:
 				if (PCB_HATT_IS_COMPOSITE(a->type)) /* function callback */
 					break;
-				rnd_message(PCB_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
+				rnd_message(RND_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
 				abort();
 			}
 		}
@@ -234,7 +234,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 			(*argv)++;
 		}
 		else {
-			rnd_message(PCB_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename, (*argv)[0]);
+			rnd_message(RND_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename, (*argv)[0]);
 			return -1;
 		}
 	}

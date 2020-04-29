@@ -70,9 +70,9 @@ typedef struct {
 static void sym_flush(symattr_t *sattr)
 {
 	if (sattr->refdes != NULL) {
-/*		pcb_trace("tinycad sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
+/*		rnd_trace("tinycad sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
 		if (sattr->footprint == NULL)
-			rnd_message(PCB_MSG_ERROR, "tinycad: not importing refdes=%s: no footprint specified\n", sattr->refdes);
+			rnd_message(RND_MSG_ERROR, "tinycad: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
 			rnd_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
@@ -119,7 +119,7 @@ static int tinycad_parse_net(FILE *fn)
 				sep = strchr(curr, ',');
 				if (sep != NULL) {
 					*sep = '-';
-/*					pcb_trace("net-add '%s' '%s'\n", argv[2], curr);*/
+/*					rnd_trace("net-add '%s' '%s'\n", argv[2], curr);*/
 					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  argv[2], curr, NULL);
 				}
 			}
@@ -161,7 +161,7 @@ static int tinycad_load(const char *fname_net)
 
 	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
 	}
 
@@ -235,7 +235,7 @@ static int tinycad_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 static int tinycad_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	if (numfns != 1) {
-		rnd_message(PCB_MSG_ERROR, "import_tinycad: requires exactly 1 input file name\n");
+		rnd_message(RND_MSG_ERROR, "import_tinycad: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return tinycad_load(fns[0]);

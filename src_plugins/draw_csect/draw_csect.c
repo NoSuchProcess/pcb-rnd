@@ -630,12 +630,12 @@ static int check_layer_del(pcb_layer_id_t lid)
 	grp = pcb_get_layergrp(PCB, pcb_layer_get_group(PCB, lid));
 
 	if (grp == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Invalid source group.\n");
+		rnd_message(RND_MSG_ERROR, "Invalid source group.\n");
 		return -1;
 	}
 
 	if ((tflg & PCB_LYT_SILK) && (grp->len == 1)) {
-		rnd_message(PCB_MSG_ERROR, "Can not remove the last layer of this group because this group must have at least one layer.\n");
+		rnd_message(RND_MSG_ERROR, "Can not remove the last layer of this group because this group must have at least one layer.\n");
 		return -1;
 	}
 
@@ -840,7 +840,7 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 					else if (check_layer_del(drag_lid) == 0) {
 						g = &PCB->LayerGroups.grp[gactive];
 						pcb_layer_move_to_group(PCB, drag_lid, gactive);
-						rnd_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->name, gactive);
+						rnd_message(RND_MSG_INFO, "moved layer %s to group %d\n", l->name, gactive);
 						move_layer_to_its_place:;
 						if (lactive_idx < g->len-1) {
 							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(pcb_layer_id_t));
@@ -852,10 +852,10 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 				else if (outline_gactive >= 0 && PCB->LayerGroups.grp[outline_gactive].len == 0) {
 					pcb_layer_t *l = &PCB->Data->Layer[drag_lid];
 					pcb_layer_move_to_group(PCB, drag_lid, outline_gactive);
-					rnd_message(PCB_MSG_INFO, "moved layer %s to group %d\n", l->name, outline_gactive);
+					rnd_message(RND_MSG_INFO, "moved layer %s to group %d\n", l->name, outline_gactive);
 				}
 				else
-					rnd_message(PCB_MSG_ERROR, "Can not move layer into that layer group\n");
+					rnd_message(RND_MSG_ERROR, "Can not move layer into that layer group\n");
 				res = 1;
 				drag_lid = -1;
 				gactive = -1;

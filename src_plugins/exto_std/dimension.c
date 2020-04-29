@@ -51,7 +51,7 @@ static pcb_any_obj_t *dimension_edit_obj(pcb_subc_t *subc)
 
 static void pcb_dimension_del_pre(pcb_subc_t *subc)
 {
-	pcb_trace("dim del_pre\n");
+	rnd_trace("dim del_pre\n");
 	free(subc->extobj_data);
 	subc->extobj_data = NULL;
 }
@@ -252,7 +252,7 @@ static void pcb_dimension_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 static void pcb_dimension_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("dim: float pre %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
+	rnd_trace("dim: float pre %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
 	dimension_clear(subc);
 }
@@ -288,12 +288,12 @@ static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 			d = -d;
 	}
 
-pcb_trace("new disp: %mm f=%mm;%mm\n", (rnd_coord_t)d, fx, fy);
+rnd_trace("new disp: %mm f=%mm;%mm\n", (rnd_coord_t)d, fx, fy);
 
 	if ((d > -PCB_MM_TO_COORD(0.1)) && (d < PCB_MM_TO_COORD(0.1)))
 		return;
 
-pcb_trace("let's do it!\n");
+rnd_trace("let's do it!\n");
 
 	dimension_clear(subc);
 	dim->displace = d;
@@ -304,7 +304,7 @@ pcb_trace("let's do it!\n");
 
 static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("dim: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
+	rnd_trace("dim: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
 	if (floater->extobj_role == NULL)
 		return;
@@ -318,19 +318,19 @@ static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 static pcb_extobj_new_t pcb_dimension_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("dim: float new %ld %ld\n", subc->ID, floater->ID);
+	rnd_trace("dim: float new %ld %ld\n", subc->ID, floater->ID);
 	return PCB_EXTONEW_SPAWN;
 }
 
 static pcb_extobj_del_t pcb_dimension_float_del(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("dim: float del %ld %ld\n", subc->ID, floater->ID);
+	rnd_trace("dim: float del %ld %ld\n", subc->ID, floater->ID);
 	return PCB_EXTODEL_SUBC;
 }
 
 static void pcb_dimension_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
 {
-	pcb_trace("dim chg_attr\n");
+	rnd_trace("dim chg_attr\n");
 	if (strncmp(key, "extobj::", 8) == 0) {
 		dimension_clear(subc);
 		dimension_unpack(subc);
@@ -349,7 +349,7 @@ static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_su
 		{NULL, 0, NULL, 0, 0}
 	};
 
-	pcb_trace("dim: conv_objs\n");
+	rnd_trace("dim: conv_objs\n");
 
 	if (objs->used != 1)
 		return NULL; /* there must be a single line */
@@ -404,13 +404,13 @@ static void pcb_dimension_gui_propedit(pcb_subc_t *subc)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	dimension *dim;
 
-	pcb_trace("dim: gui propedit\n");
+	rnd_trace("dim: gui propedit\n");
 
 	if (subc->extobj_data == NULL)
 		dimension_unpack(subc);
 	dim = subc->extobj_data;
 
-	pcb_trace("dim: active=%d\n", dim->gui_active);
+	rnd_trace("dim: active=%d\n", dim->gui_active);
 	if (dim->gui_active)
 		return; /* do not open another */
 

@@ -148,7 +148,7 @@ static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
 
 	gds_append(&str, '\n');
 
-	rnd_message(PCB_MSG_ERROR, "%s", str.array);
+	rnd_message(RND_MSG_ERROR, "%s", str.array);
 
 	gds_uninit(&str);
 	return -1;
@@ -168,7 +168,7 @@ static int kicad_warning(gsxl_node_t *subtree, char *fmt, ...)
 
 	gds_append(&str, '\n');
 
-	rnd_message(PCB_MSG_WARNING, "%s", str.array);
+	rnd_message(RND_MSG_WARNING, "%s", str.array);
 
 	gds_uninit(&str);
 	return 0;
@@ -503,7 +503,7 @@ static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, con
 		pcb_idx = kicad_get_layeridx(st, layer_name);
 		lnm = layer_name;
 		if (pcb_idx < 0) {
-			rnd_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
+			rnd_message(RND_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
 			lyt = PCB_LYT_VIRTUAL;
 			comb = 0;
 			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
@@ -515,7 +515,7 @@ static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, con
 		if (lid >= 0)
 			return &subc->data->Layer[lid];
 
-		rnd_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
+		rnd_message(RND_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using module layer '%s' instead.\n", layer_name, default_layer_name);
 		pcb_idx = kicad_get_layeridx(st, default_layer_name);
 		if (pcb_idx < 0)
 			return NULL;
@@ -1594,7 +1594,7 @@ static void exec_zone_connect(read_state_t *st)
 						case 3: (*th) |= PCB_THERMAL_ON | PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL; break;
 					}
 					htpp_set(&poly_upd, p, p);
-					pcb_trace("CONN lid=%ld p=%p in %s style=%d\n", lid, p, pnet, zc->style);
+					rnd_trace("CONN lid=%ld p=%p in %s style=%d\n", lid, p, pnet, zc->style);
 				}
 			}
 		}
@@ -2777,7 +2777,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	pcb_layer_auto_fixup(Ptr);
 
 	if (pcb_board_normalize(Ptr) > 0)
-		rnd_message(PCB_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
+		rnd_message(RND_MSG_WARNING, "Had to make changes to the coords so that the design fits the board.\n");
 	pcb_layer_colors_from_conf(Ptr, 1);
 
 	{ /* free layer hack */
@@ -2822,13 +2822,13 @@ int io_kicad_parse_module(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name,
 
 	if (res != GSX_RES_EOE) {
 		if (!pcb_io_err_inhibit)
-			rnd_message(PCB_MSG_ERROR, "Error parsing s-expression '%s'\n", name);
+			rnd_message(RND_MSG_ERROR, "Error parsing s-expression '%s'\n", name);
 		gsxl_uninit(&st.dom);
 		return -1;
 	}
 
 	if ((st.dom.root->str == NULL) || (strcmp(st.dom.root->str, "module") != 0)) {
-		rnd_message(PCB_MSG_ERROR, "Wrong root node '%s', expected 'module'\n", st.dom.root->str);
+		rnd_message(RND_MSG_ERROR, "Wrong root node '%s', expected 'module'\n", st.dom.root->str);
 		gsxl_uninit(&st.dom);
 		return -1;
 	}

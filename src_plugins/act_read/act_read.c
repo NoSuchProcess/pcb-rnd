@@ -88,7 +88,7 @@ static fgw_error_t pcb_act_GetMark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static int flg_error(const char *msg)
 {
-	rnd_message(PCB_MSG_ERROR, "act_read flag conversion error: %s\n", msg);
+	rnd_message(RND_MSG_ERROR, "act_read flag conversion error: %s\n", msg);
 	return 0;
 }
 

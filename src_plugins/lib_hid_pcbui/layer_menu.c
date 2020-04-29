@@ -276,7 +276,7 @@ static pcb_hidval_t layer_menu_key_timer;
 
 static void timed_layer_menu_key_update_cb(pcb_hidval_t user_data)
 {
-/*	pcb_trace("************ layer key update timer!\n");*/
+/*	rnd_trace("************ layer key update timer!\n");*/
 	layer_install_menu_keys();
 	layer_menu_key_timer_active = 0;
 }
@@ -286,7 +286,7 @@ void pcb_layer_menu_key_update_ev(rnd_hidlib_t *hidlib, void *user_data, int arg
 {
 	pcb_hidval_t timerdata;
 
-/*	pcb_trace("************ layer key update ev!\n");*/
+/*	rnd_trace("************ layer key update ev!\n");*/
 
 	if ((pcb_gui == NULL) || (!pcb_gui->gui))
 		return;

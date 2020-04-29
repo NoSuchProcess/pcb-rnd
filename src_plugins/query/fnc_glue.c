@@ -34,7 +34,7 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	fgw_arg_t tmp, resa, arga[PCB_QRY_MAX_FUNC_ARGS], *arg;
 
 	if (argv[0].type != PCBQ_VT_STRING) {
-		rnd_message(PCB_MSG_ERROR, "query: action() first argument must be a string\n");
+		rnd_message(RND_MSG_ERROR, "query: action() first argument must be a string\n");
 		return -1;
 	}
 
@@ -105,12 +105,12 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 		goto fin; \
 	} \
 	else if (fgw_ptr_in_domain(&rnd_fgw, val, RND_PTR_DOMAIN_IDPATH_LIST)) { \
-		rnd_message(PCB_MSG_ERROR, "query action(): can not convert object list yet\n"); \
+		rnd_message(RND_MSG_ERROR, "query action(): can not convert object list yet\n"); \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	} \
 	else { \
-		rnd_message(PCB_MSG_ERROR, "query action(): can not convert unknown pointer\n"); \
+		rnd_message(RND_MSG_ERROR, "query action(): can not convert unknown pointer\n"); \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	}

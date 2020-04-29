@@ -72,7 +72,7 @@ fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	
-	rnd_message(PCB_MSG_ERROR, "CLI version of OrderPCB() not yet implemented\n");
+	rnd_message(RND_MSG_ERROR, "CLI version of OrderPCB() not yet implemented\n");
 	RND_ACT_IRES(-1);
 	return 0;
 }

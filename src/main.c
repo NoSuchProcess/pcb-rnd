@@ -255,10 +255,10 @@ static void gui_support_plugins(int load)
 		static const char *plugin_name = "dialogs";
 		int state = 0;
 		loaded = 1;
-		rnd_message(PCB_MSG_DEBUG, "Loading GUI support plugin: '%s'\n", plugin_name);
+		rnd_message(RND_MSG_DEBUG, "Loading GUI support plugin: '%s'\n", plugin_name);
 		puphand = pup_load(&pcb_pup, (const char **)pcb_pup_paths, plugin_name, 0, &state);
 		if (puphand == NULL)
-			rnd_message(PCB_MSG_ERROR, "Error: failed to load GUI support plugin '%s'\n-> expect missing widgets and dialog boxes\n", plugin_name);
+			rnd_message(RND_MSG_ERROR, "Error: failed to load GUI support plugin '%s'\n-> expect missing widgets and dialog boxes\n", plugin_name);
 	}
 	if (!load && loaded && (puphand != NULL)) {
 		pup_unload(&pcb_pup, puphand, NULL);
@@ -316,8 +316,8 @@ extern void pcb_poly_uninit(void);
 
 void pcb_main_uninit(void)
 {
-	if (pcb_log_last != NULL)
-		pcb_log_last->seen = 1; /* ignore anything unseen before the uninit */
+	if (rnd_log_last != NULL)
+		rnd_log_last->seen = 1; /* ignore anything unseen before the uninit */
 
 	conf_core_uninit_pre();
 	pcb_brave_uninit();
@@ -363,7 +363,7 @@ void pcb_main_uninit(void)
 	pcb_poly_uninit();
 
 	pcbhl_log_print_uninit_errs("Log produced during uninitialization");
-	pcb_log_uninit();
+	rnd_log_uninit();
 	main_path_uninit();
 	conf_core_uninit();
 }
@@ -386,7 +386,7 @@ const char *pcb_action_args[] = {
 
 void print_pup_err(pup_err_stack_t *entry, char *string)
 {
-	rnd_message(PCB_MSG_ERROR, "puplug: %s\n", string);
+	rnd_message(RND_MSG_ERROR, "puplug: %s\n", string);
 }
 
 #include "funchash_core.h"
@@ -463,16 +463,16 @@ int main(int argc, char *argv[])
 	pcb_text_init();
 
 	if (pcb_pup.err_stack != NULL) {
-		rnd_message(PCB_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
+		rnd_message(RND_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
 		pup_err_stack_process_str(&pcb_pup, print_pup_err);
 	}
 
 	for(sp = pcb_pup_paths; *sp != NULL; sp++) {
-		rnd_message(PCB_MSG_DEBUG, "Loading plugins from '%s'\n", *sp);
+		rnd_message(RND_MSG_DEBUG, "Loading plugins from '%s'\n", *sp);
 		pup_autoload_dir(&pcb_pup, *sp, (const char **)pcb_pup_paths);
 	}
 	if (pcb_pup.err_stack != NULL) {
-		rnd_message(PCB_MSG_ERROR, "Some of the dynamic linked plugins could not be loaded:\n");
+		rnd_message(RND_MSG_ERROR, "Some of the dynamic linked plugins could not be loaded:\n");
 		pup_err_stack_process_str(&pcb_pup, print_pup_err);
 	}
 
@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
 	PCB = pcb_board_new(0);
 
 	if (PCB == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't create an empty layout, exiting\n");
+		rnd_message(RND_MSG_ERROR, "Can't create an empty layout, exiting\n");
 		pcbhl_log_print_uninit_errs("Initialization");
 		exit(1);
 	}
@@ -520,7 +520,7 @@ int main(int argc, char *argv[])
 		int how = conf_core.rc.silently_create_on_load ? 0x10 : 0;
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, how) != 0) {
 			if (pcbhl_main_exporting) {
-				rnd_message(PCB_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
+				rnd_message(RND_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
 				pcbhl_log_print_uninit_errs("Export load error");
 				exit(1);
 			}
@@ -530,18 +530,18 @@ int main(int argc, char *argv[])
 	}
 
 	if (conf_core.design.initial_layer_stack && conf_core.design.initial_layer_stack[0])
-		rnd_message(PCB_MSG_ERROR, "Config setting desgin/initial_layer_stack is set but is deprecated and ignored. Please edit your config files to remove it.\n");
+		rnd_message(RND_MSG_ERROR, "Config setting desgin/initial_layer_stack is set but is deprecated and ignored. Please edit your config files to remove it.\n");
 
 	/* read the library file and display it if it's not empty */
 	if (!pcb_fp_read_lib_all() && pcb_library.data.dir.children.used)
 		pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 
 	if (conf_core.rc.script_filename) {
-		rnd_message(PCB_MSG_INFO, "Executing startup script file %s\n", conf_core.rc.script_filename);
+		rnd_message(RND_MSG_INFO, "Executing startup script file %s\n", conf_core.rc.script_filename);
 		rnd_actionva(&PCB->hidlib, "ExecuteFile", conf_core.rc.script_filename, NULL);
 	}
 	if (conf_core.rc.action_string) {
-		rnd_message(PCB_MSG_INFO, "Executing startup action %s\n", conf_core.rc.action_string);
+		rnd_message(RND_MSG_INFO, "Executing startup action %s\n", conf_core.rc.action_string);
 		rnd_parse_actions(&PCB->hidlib, conf_core.rc.action_string);
 	}
 
@@ -558,11 +558,11 @@ int main(int argc, char *argv[])
 		gui_support_plugins(1);
 
 	if (EXPERIMENTAL != NULL) {
-		rnd_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
-		rnd_message(PCB_MSG_ERROR, "This revision of pcb-rnd is experimental, unstable, do NOT attempt to use\n");
-		rnd_message(PCB_MSG_ERROR, "it for production. The reason for this state is:\n");
-		rnd_message(PCB_MSG_ERROR, "%s\n", EXPERIMENTAL);
-		rnd_message(PCB_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
+		rnd_message(RND_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
+		rnd_message(RND_MSG_ERROR, "This revision of pcb-rnd is experimental, unstable, do NOT attempt to use\n");
+		rnd_message(RND_MSG_ERROR, "it for production. The reason for this state is:\n");
+		rnd_message(RND_MSG_ERROR, "%s\n", EXPERIMENTAL);
+		rnd_message(RND_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 	}
 	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
 	pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);

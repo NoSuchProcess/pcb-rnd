@@ -108,13 +108,13 @@ static int undo_term_alloc_undo(void *udata)
 	int res;
 
 	if (net == NULL) {
-		rnd_message(PCB_MSG_ERROR, "undo_term_alloc_undo failed: net is NULL\n");
+		rnd_message(RND_MSG_ERROR, "undo_term_alloc_undo failed: net is NULL\n");
 		return -1;
 	}
 
 	term = pcb_net_term_get(net, a->refdes, a->term, PCB_NETA_NOALLOC);
 	if (term == NULL) {
-		rnd_message(PCB_MSG_ERROR, "undo_term_alloc_undo failed: term is NULL\n");
+		rnd_message(RND_MSG_ERROR, "undo_term_alloc_undo failed: term is NULL\n");
 		return -1;
 	}
 
@@ -174,7 +174,7 @@ pcb_net_term_t *pcb_net_term_get(pcb_net_t *net, const char *refdes, const char 
 				return pcb_net_term_alloc(net, a->refdes, a->term);
 			}
 			else
-				rnd_message(PCB_MSG_ERROR, "Internal error: failed to add terminal in an undoable way\nUndo will not affect this temrinal. Please report this bug.");
+				rnd_message(RND_MSG_ERROR, "Internal error: failed to add terminal in an undoable way\nUndo will not affect this temrinal. Please report this bug.");
 			/* intentional fall-through */
 		case PCB_NETA_ALLOC:
 			return pcb_net_term_alloc(net, refdes, term);
@@ -465,7 +465,7 @@ static rnd_cardinal_t pcb_net_term_crawl(const pcb_board_t *pcb, pcb_net_term_t 
 	o = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, NULL, NULL);
 	if (o == NULL) {
 		if (missing != NULL) {
-			rnd_message(PCB_MSG_WARNING, "Netlist problem: terminal %s-%s is missing from the board but referenced from the netlist\n", term->refdes, term->term);
+			rnd_message(RND_MSG_WARNING, "Netlist problem: terminal %s-%s is missing from the board but referenced from the netlist\n", term->refdes, term->term);
 			(*missing)++;
 		}
 		return 0;
@@ -515,7 +515,7 @@ static int short_ctx_is_dup(pcb_short_ctx_t *sctx, pcb_net_t *net1, pcb_net_t *n
 	order = strcmp(net1->name, net2->name);
 
 	if (order == 0) {
-		rnd_message(PCB_MSG_ERROR, "netlist internal error: short_ctx_is_dup() net %s shorted with itself?!\n", net1->name);
+		rnd_message(RND_MSG_ERROR, "netlist internal error: short_ctx_is_dup() net %s shorted with itself?!\n", net1->name);
 		return 1;
 	}
 	if (order > 0)
@@ -551,9 +551,9 @@ static void net_found_short(pcb_short_ctx_t *sctx, pcb_any_obj_t *offender)
 	}
 
 	if (offnn != NULL)
-		rnd_message(PCB_MSG_WARNING, "SHORT: net \"%s\" is shorted to \"%s\" at terminal %s-%s\n", sctx->current_net->name, offnn, sc->refdes, offender->term);
+		rnd_message(RND_MSG_WARNING, "SHORT: net \"%s\" is shorted to \"%s\" at terminal %s-%s\n", sctx->current_net->name, offnn, sc->refdes, offender->term);
 	else
-		rnd_message(PCB_MSG_WARNING, "SHORT: net \"%s\" is shorted to terminal %s-%s\n", sctx->current_net->name, sc->refdes, offender->term);
+		rnd_message(RND_MSG_WARNING, "SHORT: net \"%s\" is shorted to terminal %s-%s\n", sctx->current_net->name, sc->refdes, offender->term);
 
 	pcb_event(&PCB->hidlib, PCB_EVENT_NET_INDICATE_SHORT, "ppppp", sctx->current_net, offender, offn, &handled, &sctx->cancel_advanced);
 	if (!handled) {
@@ -774,7 +774,7 @@ rnd_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 			   found, so some subnets will remain disconnected (there is no point
 			   in looping more, this won't improve) */
 			sctx->missing++;
-			rnd_message(PCB_MSG_WARNING, "Netlist problem: could not find the best rat line, rat missing (#1)\n");
+			rnd_message(RND_MSG_WARNING, "Netlist problem: could not find the best rat line, rat missing (#1)\n");
 			break;
 		}
 
@@ -790,7 +790,7 @@ rnd_cardinal_t pcb_net_map_subnets(pcb_short_ctx_t *sctx, pcb_rat_accuracy_t acc
 		}
 		else {
 			sctx->missing++;
-			rnd_message(PCB_MSG_WARNING, "Netlist problem: could not find the best rat line, rat missing (#2)\n");
+			rnd_message(RND_MSG_WARNING, "Netlist problem: could not find the best rat line, rat missing (#2)\n");
 		}
 		done[bestu] = 1;
 	}
@@ -842,7 +842,7 @@ rnd_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 	vtp0_init(&subnets);
 
 	if (acc & PCB_RATACC_INFO)
-		rnd_message(PCB_MSG_INFO, "\n--- netlist check ---\n");
+		rnd_message(RND_MSG_INFO, "\n--- netlist check ---\n");
 
 
 	pcb_net_short_ctx_init(&sctx, pcb, NULL);
@@ -873,13 +873,13 @@ rnd_cardinal_t pcb_net_add_all_rats(const pcb_board_t *pcb, pcb_rat_accuracy_t a
 	if (acc & PCB_RATACC_INFO) {
 		long rem = ratlist_length(&pcb->Data->Rat);
 		if (rem > 0)
-			rnd_message(PCB_MSG_INFO, "%d rat line%s remaining\n", rem, rem > 1 ? "s" : "");
+			rnd_message(RND_MSG_INFO, "%d rat line%s remaining\n", rem, rem > 1 ? "s" : "");
 		else if (acc & PCB_RATACC_ONLY_SELECTED)
-			rnd_message(PCB_MSG_WARNING, "No rat for any network that has selected terminal\n");
+			rnd_message(RND_MSG_WARNING, "No rat for any network that has selected terminal\n");
 		else if (sctx.missing > 0)
-			rnd_message(PCB_MSG_WARNING, "Nothing more to add, but there are\neither rat-lines in the layout, disabled nets\nin the net-list, or missing components\n");
+			rnd_message(RND_MSG_WARNING, "Nothing more to add, but there are\neither rat-lines in the layout, disabled nets\nin the net-list, or missing components\n");
 		else if (sctx.num_shorts == 0)
-			rnd_message(PCB_MSG_INFO, "Congratulations!!\n" "The layout is complete and has no shorted nets.\n");
+			rnd_message(RND_MSG_INFO, "Congratulations!!\n" "The layout is complete and has no shorted nets.\n");
 	}
 
 	vtp0_uninit(&subnets);
@@ -967,7 +967,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, rnd_coord_t x1, rnd_c
 	long old_len, new_len;
 
 	if ((o1 == o2) || (o1 == NULL) || (o2 == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Missing start or end terminal\n");
+		rnd_message(RND_MSG_ERROR, "Missing start or end terminal\n");
 		return NULL;
 	}
 
@@ -977,7 +977,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, rnd_coord_t x1, rnd_c
 		sc1 = pcb_obj_parent_subc(o1);
 		sc2 = pcb_obj_parent_subc(o2);
 		if ((sc1 == NULL) || (sc2 == NULL) || (sc1->refdes == NULL) || (sc2->refdes == NULL)) {
-			rnd_message(PCB_MSG_ERROR, "Both start or end terminal must be in a subcircuit with refdes\n");
+			rnd_message(RND_MSG_ERROR, "Both start or end terminal must be in a subcircuit with refdes\n");
 			return NULL;
 		}
 
@@ -987,11 +987,11 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, rnd_coord_t x1, rnd_c
 		if (term2 != NULL) net1 = term2->parent.net;
 
 		if ((net1 == net2) && (net1 != NULL)) {
-			rnd_message(PCB_MSG_ERROR, "Those terminals are already on the same net (%s)\n", net1->name);
+			rnd_message(RND_MSG_ERROR, "Those terminals are already on the same net (%s)\n", net1->name);
 			return NULL;
 		}
 		if ((net1 != NULL) && (net2 != NULL)) {
-			rnd_message(PCB_MSG_ERROR, "Can not connect two existing nets with a rat (%s and %s)\n", net1->name, net2->name);
+			rnd_message(RND_MSG_ERROR, "Can not connect two existing nets with a rat (%s and %s)\n", net1->name, net2->name);
 			return NULL;
 		}
 	}
@@ -1007,7 +1007,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, rnd_coord_t x1, rnd_c
 	group1 = get_side_group(pcb, o1);
 	group2 = get_side_group(pcb, o2);
 	if ((group1 == -1) && (group2 == -1)) {
-		rnd_message(PCB_MSG_ERROR, "Can not determine copper layer group of that terminal\n");
+		rnd_message(RND_MSG_ERROR, "Can not determine copper layer group of that terminal\n");
 		return NULL;
 	}
 
@@ -1066,13 +1066,13 @@ static pcb_any_obj_t *find_rat_end(pcb_board_t *pcb, rnd_coord_t x, rnd_coord_t 
 
 	o = ptr2;
 	if ((type == PCB_OBJ_VOID) || (o->term == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Can't find a terminal at %s\n", loc);
+		rnd_message(RND_MSG_ERROR, "Can't find a terminal at %s\n", loc);
 		return NULL;
 	}
 
 	sc = pcb_obj_parent_subc(o);
 	if ((sc == NULL) || (sc->refdes == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "The terminal terminal found at %s is not part of a subc with refdes\n", loc);
+		rnd_message(RND_MSG_ERROR, "The terminal terminal found at %s is not part of a subc with refdes\n", loc);
 		return NULL;
 	}
 

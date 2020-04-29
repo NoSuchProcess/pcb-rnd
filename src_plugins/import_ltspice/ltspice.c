@@ -80,11 +80,11 @@ typedef struct {
 
 static void sym_flush(symattr_t *sattr)
 {
-/*	pcb_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
+/*	rnd_trace("ltspice sym: refdes=%s val=%s fp=%s\n", sattr->refdes, sattr->value, sattr->footprint);*/
 
 	if (sattr->refdes != NULL) {
 		if (sattr->footprint == NULL)
-			rnd_message(PCB_MSG_ERROR, "ltspice: not importing refdes=%s: no footprint specified\n", sattr->refdes);
+			rnd_message(RND_MSG_ERROR, "ltspice: not importing refdes=%s: no footprint specified\n", sattr->refdes);
 		else
 			rnd_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(sattr->refdes), null_empty(sattr->footprint), null_empty(sattr->value), NULL);
 	}
@@ -216,7 +216,7 @@ static int ltspice_parse_net(FILE *fn)
 		if ((argc > 1) && (strcmp(argv[0], "NET") == 0)) {
 			int n;
 			for(n = 2; n < argc; n++) {
-/*				pcb_trace("net-add '%s' '%s'\n", argv[1], argv[n]);*/
+/*				rnd_trace("net-add '%s' '%s'\n", argv[1], argv[n]);*/
 				rnd_actionva(&PCB->hidlib, "Netlist", "Add",  argv[1], argv[n], NULL);
 			}
 		}
@@ -236,18 +236,18 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 
 	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
 	}
 	fa = pcb_fopen(&PCB->hidlib, fname_asc, "r");
 	if (fa == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_asc);
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_asc);
 		fclose(fn);
 		return -1;
 	}
 
 	if (ltspice_hdr_asc(fa)) {
-		rnd_message(PCB_MSG_ERROR, "file '%s' doesn't look like a verison 4 asc file\n", fname_asc);
+		rnd_message(RND_MSG_ERROR, "file '%s' doesn't look like a verison 4 asc file\n", fname_asc);
 		goto error;
 	}
 
@@ -366,7 +366,7 @@ static int ltspice_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 static int ltspice_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	if (numfns != 1) {
-		rnd_message(PCB_MSG_ERROR, "import_ltspice: requires exactly 1 input file name\n");
+		rnd_message(RND_MSG_ERROR, "import_ltspice: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return rnd_actionva(&PCB->hidlib, "LoadLtspiceFrom", fns[0], NULL);

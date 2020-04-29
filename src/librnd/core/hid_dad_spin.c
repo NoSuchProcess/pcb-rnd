@@ -405,7 +405,7 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 			if (!spin->no_unit_chg)
 				spin->unit = unit;
 			break;
-		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
+		default: rnd_trace("INTERNAL ERROR: spin_set_num\n");
 	}
 
 	spin_warn(hid_ctx, spin, end, warn);
@@ -517,7 +517,7 @@ void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, rnd_coord
 			free((char *)str->val.str);
 			str->val.str = gen_str_coord(spin, c, NULL, 0);
 			break;
-		default: pcb_trace("INTERNAL ERROR: spin_set_num\n");
+		default: rnd_trace("INTERNAL ERROR: spin_set_num\n");
 	}
 }
 

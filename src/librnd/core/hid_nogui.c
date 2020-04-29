@@ -395,12 +395,12 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 	if (pcbhl_conf.rc.quiet)
 		return 0;
 	if (message == NULL) {
-		if ((on) && (pcbhl_conf.rc.verbose >= PCB_MSG_INFO))
+		if ((on) && (pcbhl_conf.rc.verbose >= RND_MSG_INFO))
 			fprintf(stderr, "progress: finished\n");
 		on = 0;
 	}
 	else {
-		if ((pcbhl_conf.rc.verbose >= PCB_MSG_INFO) || (pcb_gui != &nogui_hid)) {
+		if ((pcbhl_conf.rc.verbose >= RND_MSG_INFO) || (pcb_gui != &nogui_hid)) {
 			now = rnd_dtime();
 			if (now >= nextt) {
 				fprintf(stderr, "progress: %ld/%ld %s\n", so_far, total, message);
@@ -420,7 +420,7 @@ static int clip_warn(void)
 {
 	static int warned = 0;
 	if (!warned) {
-		rnd_message(PCB_MSG_ERROR, "The current GUI HID does not support clipboard.\nClipboard is emulated, not shared withother programs\n");
+		rnd_message(RND_MSG_ERROR, "The current GUI HID does not support clipboard.\nClipboard is emulated, not shared withother programs\n");
 		warned = 1;
 	}
 	return 0;

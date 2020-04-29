@@ -562,7 +562,7 @@ static int wrax_polygons(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer,
 
 		polylist_foreach(&layer->Polygon, &it, polygon) {
 			if (pcb_cpoly_is_simple_rect(polygon)) {
-				pcb_trace(" simple rectangular polyogon\n");
+				rnd_trace(" simple rectangular polyogon\n");
 
 TODO("why do we recalculate the bounding box here?")
 				minx = maxx = polygon->Points[0].X;
@@ -586,7 +586,7 @@ TODO("why do we recalculate the bounding box here?")
 /* here we need to test for non rectangular polygons to flag imperfect export to easy/autotrax
 
 			if (helper_clipped_polygon_type_function(clipped_thing)) {
-				rnd_message(PCB_MSG_ERROR, "Polygon exported as a bounding box only.\n");
+				rnd_message(RND_MSG_ERROR, "Polygon exported as a bounding box only.\n");
 			}*/
 			}
 			else {
@@ -670,7 +670,7 @@ int io_autotrax_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename
 
 TODO("this is a bug - exporting to a file shall not change the content we are exporting")
 	if (pcb_board_normalize(PCB) < 0) {
-		rnd_message(PCB_MSG_ERROR, "Unable to normalise layout prior to attempting export.\n");
+		rnd_message(RND_MSG_ERROR, "Unable to normalise layout prior to attempting export.\n");
 		return -1;
 	}
 
@@ -681,7 +681,7 @@ TODO("this is a bug - exporting to a file shall not change the content we are ex
 
 	/* we sort out if the layout dimensions exceed the autotrax maxima */
 	if (PCB_COORD_TO_MIL(PCB->hidlib.size_x) > max_width_mil || PCB_COORD_TO_MIL(PCB->hidlib.size_y) > max_height_mil) {
-		rnd_message(PCB_MSG_ERROR, "Layout size exceeds protel autotrax 32000 mil x 32000 mil maximum.");
+		rnd_message(RND_MSG_ERROR, "Layout size exceeds protel autotrax 32000 mil x 32000 mil maximum.");
 		return -1;
 	}
 

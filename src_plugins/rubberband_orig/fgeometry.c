@@ -161,7 +161,7 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 /* Can we remove this? */
 		{
 			double s = (d2y * (p2x - p1x) + d2x * (p1y - p2y)) / (d2y * d1x - d2x * d1y);
-			pcb_trace("Intersection t=%f, s=%f\n", t, s);
+			rnd_trace("Intersection t=%f, s=%f\n", t, s);
 
 			ret.x = p1x + s * d1x;
 			ret.y = p1y + s * d1y;
@@ -171,7 +171,7 @@ pcb_fvector_t pcb_fline_intersection(pcb_fline_t l1, pcb_fline_t l2)
 		ret.x = p2x + t * d2x;
 		ret.y = p2y + t * d2y;
 
-		/*pcb_trace("Intersection x=%f, y=%f\n", ret.x, ret.y); */
+		/*rnd_trace("Intersection x=%f, y=%f\n", ret.x, ret.y); */
 	}
 	return ret;
 }

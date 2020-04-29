@@ -159,7 +159,7 @@ static int eagle_dispatch(read_state_t *st, trnode_t *subtree, const dispatch_t 
 		if (STRCMP(d->node_name, name) == 0)
 			return d->parser(st, subtree, obj, type);
 
-	rnd_message(PCB_MSG_ERROR, "eagle: unknown node: '%s'\n", name);
+	rnd_message(RND_MSG_ERROR, "eagle: unknown node: '%s'\n", name);
 	/* node name not found in the dispatcher table */
 	return -1;
 }
@@ -315,7 +315,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			ly->lid     = -1;
 			tmp_id = eagle_get_attrl(st, n, "number", -1);
 			if (tmp_id < 1 || tmp_id > 254) {
-				rnd_message(PCB_MSG_ERROR, "invalid layer definition layer number found: '%d', skipping\n", tmp_id);
+				rnd_message(RND_MSG_ERROR, "invalid layer definition layer number found: '%d', skipping\n", tmp_id);
 				return -1;
 			}
 			id = tmp_id;
@@ -422,7 +422,7 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 				return &subc->data->Layer[lid];
 
 			if (ly->lid < 0) {
-				rnd_message(PCB_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", ly->name);
+				rnd_message(RND_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", ly->name);
 				lyt = PCB_LYT_VIRTUAL;
 				comb = 0;
 				return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, pcb_true);
@@ -451,31 +451,31 @@ static pcb_subc_t *eagle_libelem_by_idx(read_state_t *st, trnode_t *libs, long l
 	/* count children of libs so n ends up at the libith library */
 	for(n = CHILDREN(libs); (n != NULL) && (libi > 1); n = NEXT(n), libi--) ;
 	if (n == NULL) {
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find lib by idx:\n");
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find lib by idx:\n");
 		return NULL;
 	}
 
 	if (STRCMP(NODENAME(n), "library") != 0) {
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() expected library node:\n");
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() expected library node:\n");
 		return NULL;
 	}
 	n = CHILDREN(n);
 
 	if (STRCMP(NODENAME(n), "packages") != 0) {
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() expected packages node:\n");
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() expected packages node:\n");
 		return NULL;
 	}
 
 	/* count children of that library so n ends up at the pkgth package */
 	for(n = CHILDREN(n); (n != NULL) && (pkgi > 1); n = NEXT(n), pkgi--) ;
 	if (n == NULL) {
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find pkg by idx:\n");
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() can't find pkg by idx:\n");
 		return NULL;
 	}
 
 	res = st->parser.calls->get_user_data(n);
 	if (res == NULL)
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() found the element node in the tree but there's no element instance associated with it:\n");
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_libelem_by_idx() found the element node in the tree but there's no element instance associated with it:\n");
 	return res;
 }
 
@@ -517,7 +517,7 @@ static int eagle_rot2steps(const char *rot)
 		case 180: return 2;
 		case 270: return 1;
 	}
-	rnd_message(PCB_MSG_WARNING, "Unexpected non n*90 degree rotation value '%s' ignored\n", rot);
+	rnd_message(RND_MSG_WARNING, "Unexpected non n*90 degree rotation value '%s' ignored\n", rot);
 	return -1;
 }
 
@@ -534,15 +534,15 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	pcb_layer_t *ly;
 	ly = eagle_layer_get(st, ln, type, obj);
 	if (ly == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to allocate text layer 'ly' to 'ln:%d' in eagle_read_text()\n", ln);
+		rnd_message(RND_MSG_ERROR, "Failed to allocate text layer 'ly' to 'ln:%d' in eagle_read_text()\n", ln);
 		return 0;
 	}
 	if (!(text_val = eagle_get_attrs(st, subtree, "textfield", NULL)) && CHILDREN(subtree) == NULL) {
-		rnd_message(PCB_MSG_WARNING, "Ignoring empty text field\n");
+		rnd_message(RND_MSG_WARNING, "Ignoring empty text field\n");
 		return 0;
 	}
 	if (text_val == NULL && !IS_TEXT(CHILDREN(subtree))) {
-		rnd_message(PCB_MSG_WARNING, "Ignoring text field (invalid child node)\n");
+		rnd_message(RND_MSG_WARNING, "Ignoring text field (invalid child node)\n");
 		return 0;
 	}
 
@@ -560,7 +560,7 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 			char *end;
 			rotdeg = strtol(rot+1, &end, 10);
 			if (*end != '\0')
-				rnd_message(PCB_MSG_WARNING, "Ignoring invalid text rotation '%s' (requires integer)\n", rot);
+				rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (requires integer)\n", rot);
 
 				TODO("but: alignment changed, see {text_rot}");
 /*
@@ -569,7 +569,7 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 */
 		}
 		else
-			rnd_message(PCB_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
+			rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
 	}
 TODO("{text_size} calculate bounding box, requires size_bump(st, X, Y)")
 	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, text_scaling, 0, text_val, text_flags);
@@ -596,7 +596,7 @@ static int eagle_read_circle(read_state_t *st, trnode_t *subtree, void *obj, int
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to allocate circle layer 'ly' to 'ln:%d' in eagle_read_circle()\n", ln);
+		rnd_message(RND_MSG_ERROR, "Failed to allocate circle layer 'ly' to 'ln:%d' in eagle_read_circle()\n", ln);
 		return 0;
 	}
 
@@ -632,7 +632,7 @@ static int eagle_read_rect(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to allocate rect layer 'ly' to 'ln:%d' in eagle_read_rect()\n", ln);
+		rnd_message(RND_MSG_ERROR, "Failed to allocate rect layer 'ly' to 'ln:%d' in eagle_read_rect()\n", ln);
 		return 0;
 	}
 
@@ -678,7 +678,7 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	r = (sidelen / 2) / tan(curvang / PCB_RAD_TO_DEG / 2.0);
 	cx  = rnd_round(midx + nx * r);
 	cy  = rnd_round(midy + ny * r);
-/*	pcb_trace("curve mid: %mm;%mm center: %mm;%mm\n", midx, midy, cx, cy);*/
+/*	rnd_trace("curve mid: %mm;%mm center: %mm;%mm\n", midx, midy, cx, cy);*/
 
 	dx = x1 - cx;
 	dy = y1 - cy;
@@ -686,7 +686,7 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	sa = 180.0 - atan2(y1 - cy, x1 - cx) * PCB_RAD_TO_DEG;
 	ea = 180.0 - atan2(y2 - cy, x2 - cx) * PCB_RAD_TO_DEG;
 	da = ea - sa;
-/*	pcb_trace("  r=%mm %f %f -> %f\n", (rnd_coord_t)r, sa, ea, da);*/
+/*	rnd_trace("  r=%mm %f %f -> %f\n", (rnd_coord_t)r, sa, ea, da);*/
 	arc = pcb_arc_new(ly, cx, cy, r, r, sa, da, th, st->md_wire_wire*2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 
 	switch (loc) {
@@ -739,7 +739,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n");
+		rnd_message(RND_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n");
 		return 0;
 	}
 
@@ -911,10 +911,10 @@ TODO("{smdsides} rot example too, on the bottom side to check if rotation invert
 	if (ln != -1) { /* can't go by layer type because there's no layer stack yet (we are in lib) */
 		if (ln == 16) onbottom = 1;
 		else if (ln== 1) onbottom = 0;
-		else rnd_message(PCB_MSG_ERROR, "Failed to determine smd pad side, assuming top (invalid layer %d)\n", ln);
+		else rnd_message(RND_MSG_ERROR, "Failed to determine smd pad side, assuming top (invalid layer %d)\n", ln);
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "Failed to determine smd pad side, assuming top (missing layer)\n");
+		rnd_message(RND_MSG_ERROR, "Failed to determine smd pad side, assuming top (missing layer)\n");
 
 	name = eagle_get_attrs(st, subtree, "name", NULL);
 	x = eagle_get_attrc(st, subtree, "x", 0);
@@ -933,7 +933,7 @@ TODO("{clearance} this should be coming from the eagle file")
 
 	ps = eagle_create_pstk(st, subc->data, x, y, EAGLE_PSH_SMD, dx, dy, clr, 0, roundness, rot, onbottom, 0);
 	if (ps == NULL)
-		rnd_message(PCB_MSG_ERROR, "Failed to load smd pad\n");
+		rnd_message(RND_MSG_ERROR, "Failed to load smd pad\n");
 
 	if (name != NULL)
 		rnd_attribute_put(&ps->Attributes, "term", name);
@@ -994,7 +994,7 @@ static int eagle_read_pad_or_hole(read_state_t *st, trnode_t *subtree, void *obj
 			diay *= 2;
 		}
 		else {
-			rnd_message(PCB_MSG_ERROR, "Invalid padstack shape: '%s' - omitting padstack\n", shape);
+			rnd_message(RND_MSG_ERROR, "Invalid padstack shape: '%s' - omitting padstack\n", shape);
 			return -1;
 		}
 	}
@@ -1097,7 +1097,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to allocate polygon layer 'ly' to 'ln:%d' in eagle_read_poly()\n", ln);
+		rnd_message(RND_MSG_ERROR, "Failed to allocate polygon layer 'ly' to 'ln:%d' in eagle_read_poly()\n", ln);
 		return 0;
 	}
 
@@ -1159,7 +1159,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 	trnode_t *n;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
-		pcb_trace("looking at child %s of packages node\n", NODENAME(n)); 
+		rnd_trace("looking at child %s of packages node\n", NODENAME(n)); 
 		if (STRCMP(NODENAME(n), "package") == 0) {
 			pcb_subc_t *subc;
 
@@ -1170,7 +1170,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 			eagle_read_pkg(st, n, subc);
 			if (pcb_data_is_empty(subc->data)) {
 				pcb_subc_free(subc);
-				rnd_message(PCB_MSG_WARNING, "Ignoring empty package in library\n");
+				rnd_message(RND_MSG_WARNING, "Ignoring empty package in library\n");
 				continue;
 			}
 
@@ -1215,14 +1215,14 @@ static int eagle_read_lib_pkgs(read_state_t *st, trnode_t *subtree, void *obj, i
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
 
 			if ((st->elem_by_name) && (name == NULL)) {
-				rnd_message(PCB_MSG_WARNING, "Ignoring package with no name\n");
+				rnd_message(RND_MSG_WARNING, "Ignoring package with no name\n");
 				continue;
 			}
 
 			subc = pcb_subc_alloc();
 			eagle_read_pkg(st, n, subc);
 			if (pcb_subc_is_empty(subc)) {
-				rnd_message(PCB_MSG_WARNING, "Ignoring empty package %s\n", name);
+				rnd_message(RND_MSG_WARNING, "Ignoring empty package %s\n", name);
 				free(subc);
 				continue;
 			}
@@ -1264,7 +1264,7 @@ static int eagle_read_libs(read_state_t *st, trnode_t *subtree, void *obj, int t
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			eagle_library_t *lib;
 			if ((st->elem_by_name) && (name == NULL)) {
-				rnd_message(PCB_MSG_WARNING, "Ignoring library with no name\n");
+				rnd_message(RND_MSG_WARNING, "Ignoring library with no name\n");
 				continue;
 			}
 			lib = calloc(sizeof(eagle_library_t), 1);
@@ -1291,13 +1291,13 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 
 
 	if ((elem == NULL) || (pad == NULL)) {
-		rnd_message(PCB_MSG_WARNING, "Failed to parse contactref node: missing \"element\" or \"pad\" netlist attributes\n");
+		rnd_message(RND_MSG_WARNING, "Failed to parse contactref node: missing \"element\" or \"pad\" netlist attributes\n");
 		return -1;
 	}
 
 	if (elem != NULL && elem[0] == '-' && elem[1] == '\0') {
 		pcb_snprintf(conn, sizeof(conn), "%s-%s", "HYPHEN", pad);
-		rnd_message(PCB_MSG_WARNING, "Substituted invalid element name '-' with 'HYPHEN'\n");
+		rnd_message(RND_MSG_WARNING, "Substituted invalid element name '-' with 'HYPHEN'\n");
 	} else {
 		pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
 	}
@@ -1306,7 +1306,7 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 
 	if (net != NULL && net[0] == '-' && net[1] == '\0') { /* pcb-rnd doesn't like it when Eagle uses '-' for GND*/
 		rnd_actionva(&st->pcb->hidlib, "Netlist", "Add", "GND", conn, NULL);
-		rnd_message(PCB_MSG_WARNING, "Substituted contactref net \"GND\" instead of original invalid '-'\n");
+		rnd_message(RND_MSG_WARNING, "Substituted contactref net \"GND\" instead of original invalid '-'\n");
 	} else {
 		rnd_actionva(&st->pcb->hidlib, "Netlist", "Add",  net, conn, NULL);
 	}
@@ -1334,7 +1334,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 		if (STRCMP(NODENAME(n), "signal") == 0) {
 			const char *name = eagle_get_attrs(st, n, "name", NULL);
 			if (name == NULL) {
-				rnd_message(PCB_MSG_WARNING, "Ignoring signal with no name\n");
+				rnd_message(RND_MSG_WARNING, "Ignoring signal with no name\n");
 				continue;
 			}
 			eagle_foreach_dispatch(st, CHILDREN(n), disp, (char *)name, ON_BOARD);
@@ -1391,7 +1391,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			val = eagle_get_attrs(st, n, "value", NULL);
 
 			if (name == NULL) {
-				rnd_message(PCB_MSG_ERROR, "Element name not found in tree\n");
+				rnd_message(RND_MSG_ERROR, "Element name not found in tree\n");
 				name = "refdes_not_found";
 				val = "parse_error";
 			}
@@ -1402,7 +1402,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 
 			if (st->elem_by_name) { /* xml: library and package are named */
 				if ((lib == NULL) || (pkg == NULL)) {
-					rnd_message(PCB_MSG_WARNING, "Ignoring element with incomplete library reference\n");
+					rnd_message(RND_MSG_WARNING, "Ignoring element with incomplete library reference\n");
 					continue;
 				}
 				subc = eagle_libelem_by_name(st, lib, pkg);
@@ -1411,7 +1411,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				long libi = eagle_get_attrl(st, n, "library", -1);
 				long pkgi = eagle_get_attrl(st, n, "package", -1);
 				if ((libi < 0) || (pkgi < 0)) {
-					rnd_message(PCB_MSG_WARNING, "Ignoring element with broken library reference: %s/%s\n", lib, pkg);
+					rnd_message(RND_MSG_WARNING, "Ignoring element with broken library reference: %s/%s\n", lib, pkg);
 					continue;
 				}
 				subc = eagle_libelem_by_idx(st, nlib, libi, pkgi);
@@ -1419,11 +1419,11 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 
 			/* sanity checks: the element exists and is non-empty */
 			if (subc == NULL) {
-				rnd_message(PCB_MSG_ERROR, "Library element not found: %s/%s\n", lib, pkg);
+				rnd_message(RND_MSG_ERROR, "Library element not found: %s/%s\n", lib, pkg);
 				continue;
 			}
 			if (pcb_subc_is_empty(subc)) {
-				rnd_message(PCB_MSG_ERROR, "Not placing empty element: %s/%s\n", lib, pkg);
+				rnd_message(RND_MSG_ERROR, "Not placing empty element: %s/%s\n", lib, pkg);
 				continue;
 			}
 
@@ -1460,7 +1460,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 						if (steps > 0)
 							pcb_subc_rotate90(new_subc, x, y, steps);
 						else
-							rnd_message(PCB_MSG_WARNING, "0 degree element rotation/steps used for '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
+							rnd_message(RND_MSG_WARNING, "0 degree element rotation/steps used for '%s'/'%d': %s/%s/%s\n", rot, steps, name, pkg, lib);
 					}
 					else {
 						double sina, cosa;
@@ -1471,7 +1471,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					}
 				}
 				else
-					rnd_message(PCB_MSG_ERROR, "syntax error in element rotation '%s': %s/%s/%s\n", rot, name, pkg, lib);
+					rnd_message(RND_MSG_ERROR, "syntax error in element rotation '%s': %s/%s/%s\n", rot, name, pkg, lib);
 			}
 
 			if (back)
@@ -1569,7 +1569,7 @@ static int eagle_read_design_rules(read_state_t *st)
 
 	dr = eagle_trpath(st, st->parser.root, "drawing", "board", "designrules", NULL);
 	if (dr == NULL) {
-		rnd_message(PCB_MSG_WARNING, "can't find design rules, using sane defaults\n");
+		rnd_message(RND_MSG_WARNING, "can't find design rules, using sane defaults\n");
 	} else {
 		for(n = CHILDREN(dr); n != NULL; n = NEXT(n)) {
 			if (STRCMP(NODENAME(n), "param") != 0)
@@ -1582,7 +1582,7 @@ static int eagle_read_design_rules(read_state_t *st)
 			else if (strcmp(name, "rvPadBottom") == 0) st->rv_pad_bottom = eagle_get_attrd(st, n, "value", 0);
 		}
 		if ((st->rv_pad_top != st->rv_pad_inner) || (st->rv_pad_top != st->rv_pad_inner))
-			rnd_message(PCB_MSG_WARNING, "top/inner/bottom default pad sizes differ - using top size only\n");
+			rnd_message(RND_MSG_WARNING, "top/inner/bottom default pad sizes differ - using top size only\n");
 	}
 	return 0;
 }
@@ -1595,36 +1595,36 @@ static int eagle_read_ver(const char *ver)
 	v3 = 0;
 
 	if (ver == NULL) {
-		rnd_message(PCB_MSG_ERROR, "no version attribute in <eagle>\n");
+		rnd_message(RND_MSG_ERROR, "no version attribute in <eagle>\n");
 		return -1;
 	}
 	v1 = strtol(ver, &end, 10);
 	if (*end != '.') {
-		rnd_message(PCB_MSG_ERROR, "malformed version string [1] in <eagle>\n");
+		rnd_message(RND_MSG_ERROR, "malformed version string [1] in <eagle>\n");
 		return -1;
 	}
 	v2 = strtol(end+1, &end, 10);
 	if (*end != '.' && *end != '\0') {
-		rnd_message(PCB_MSG_ERROR, "malformed version string [2] in <eagle>\n");
+		rnd_message(RND_MSG_ERROR, "malformed version string [2] in <eagle>\n");
 		return -1;
 	} else if (*end == '.') {
 		v3 = strtol(end+1, &end, 10);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "malformed version string [3] in <eagle>\n");
+			rnd_message(RND_MSG_ERROR, "malformed version string [3] in <eagle>\n");
 			return -1;
 		}
 	}
 
 	/* version check */
 	if (v1 < 6) {
-		rnd_message(PCB_MSG_ERROR, "file version too old\n");
+		rnd_message(RND_MSG_ERROR, "file version too old\n");
 		return -1;
 	}
 	if (v1 > 8) {
-		rnd_message(PCB_MSG_ERROR, "file version too new\n");
+		rnd_message(RND_MSG_ERROR, "file version too new\n");
 		return -1;
 	}
-	rnd_message(PCB_MSG_DEBUG, "Loading eagle board version %d.%d.%d\n", v1, v2, v3);
+	rnd_message(RND_MSG_DEBUG, "Loading eagle board version %d.%d.%d\n", v1, v2, v3);
 	return 0;
 }
 
@@ -1722,7 +1722,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	st_init(&st);
 
 	if (eagle_read_ver(GET_PROP_(&st, st.parser.root, "version")) < 0) {
-		rnd_message(PCB_MSG_ERROR, "Eagle XML version parse error\n");
+		rnd_message(RND_MSG_ERROR, "Eagle XML version parse error\n");
 		goto err;
 	}
 
@@ -1755,7 +1755,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 err:;
 	st_uninit(&st);
-	rnd_message(PCB_MSG_ERROR, "Eagle XML parsing error.\n");
+	rnd_message(RND_MSG_ERROR, "Eagle XML parsing error.\n");
 	return -1;
 }
 

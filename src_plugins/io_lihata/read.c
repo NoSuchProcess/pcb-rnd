@@ -93,7 +93,7 @@ static int iolht_error(lht_node_t *nd, char *fmt, ...)
 	pcb_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
-	rnd_message(PCB_MSG_ERROR, "%s", str.array);
+	rnd_message(RND_MSG_ERROR, "%s", str.array);
 
 	gds_uninit(&str);
 	return -1;
@@ -122,7 +122,7 @@ static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
 	pcb_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
-	rnd_message(PCB_MSG_WARNING, "%s", str.array);
+	rnd_message(RND_MSG_WARNING, "%s", str.array);
 
 	gds_uninit(&str);
 }
@@ -1000,7 +1000,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			int grp_id;
 			parse_int(&grp_id, hash_get(grp, "group", 0));
 			dt->Layer[layer_id].meta.real.grp = grp_id;
-	/*		pcb_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->name, grp_id);*/
+	/*		rnd_trace("parse_data_layer name: %d,%d '%s' grp=%d\n", layer_id, dt->LayerN-1, ly->name, grp_id);*/
 		}
 	}
 
@@ -1400,12 +1400,12 @@ static void layer_fixup(pcb_board_t *pcb)
 	pcb->Data->Layer[pcb->Data->LayerN-2].meta.real.grp = -1;
 	pcb->Data->Layer[pcb->Data->LayerN-1].meta.real.grp = -1;
 
-/*	pcb_trace("NAME: '%s' '%s'\n", pcb->Data->Layer[pcb->Data->LayerN-1].Name,pcb->Data->Layer[pcb->Data->LayerN-2].Name);*/
+/*	rnd_trace("NAME: '%s' '%s'\n", pcb->Data->Layer[pcb->Data->LayerN-1].Name,pcb->Data->Layer[pcb->Data->LayerN-2].Name);*/
 
 	for(n = 0; n < pcb->Data->LayerN - 2; n++) {
 		pcb_layer_t *l = &pcb->Data->Layer[n];
 		pcb_layergrp_id_t grp = l->meta.real.grp;
-		/*pcb_trace("********* l=%d %s g=%ld (top=%ld bottom=%ld)\n", n, l->name, grp, top_silk, bottom_silk);*/
+		/*rnd_trace("********* l=%d %s g=%ld (top=%ld bottom=%ld)\n", n, l->name, grp, top_silk, bottom_silk);*/
 		l->meta.real.grp = -1;
 
 		if (grp == bottom_silk)
@@ -1414,14 +1414,14 @@ static void layer_fixup(pcb_board_t *pcb)
 			g = pcb_get_grp(&pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
 		else
 			g = pcb_get_grp_new_intern(pcb, grp);
-/*			pcb_trace(" add %ld\n", g - pcb->LayerGroups.meta.real.grp);*/
+/*			rnd_trace(" add %ld\n", g - pcb->LayerGroups.meta.real.grp);*/
 		if (g != NULL) {
 			pcb_layer_add_in_group_(pcb, g, g - pcb->LayerGroups.grp, n);
 			if (strcmp(l->name, "outline") == 0)
 				pcb_layergrp_fix_turn_to_outline(g);
 		}
 		else
-			rnd_message(PCB_MSG_ERROR, "failed to create layer %s\n", l->name);
+			rnd_message(RND_MSG_ERROR, "failed to create layer %s\n", l->name);
 	}
 
 	pcb_layergrp_fix_old_outline(pcb);
@@ -2218,7 +2218,7 @@ static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 	if (cfg_dest == RND_CFR_invalid)
 		return;
 	if (rnd_conf_insert_tree_as(cfg_dest, sub) != 0)
-		rnd_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
+		rnd_message(RND_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
 	else
 		rnd_conf_update(NULL, -1);
 }
@@ -2354,7 +2354,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	free(realfn);
 
 	if (doc == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
+		rnd_message(RND_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
 		free(errmsg);
 		return -1;
 	}
@@ -2402,7 +2402,7 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 	free(realfn);
 
 	if (doc == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", filename, errmsg);
+		rnd_message(RND_MSG_ERROR, "Error loading '%s': %s\n", filename, errmsg);
 		free(errmsg);
 		return -1;
 	}
@@ -2499,14 +2499,14 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 
 	if (doc == NULL) {
 		if (!pcb_io_err_inhibit)
-			rnd_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
+			rnd_message(RND_MSG_ERROR, "Error loading '%s': %s\n", Filename, errmsg);
 		free(errmsg);
 		return -1;
 	}
 
 	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-font-v1"))) {
 		if (!pcb_io_err_inhibit)
-			rnd_message(PCB_MSG_ERROR, "Not a font lihata.\n");
+			rnd_message(RND_MSG_ERROR, "Not a font lihata.\n");
 		res = -1;
 	}
 	else
@@ -2537,14 +2537,14 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 
 	if (doc == NULL) {
 		if (!pcb_io_err_inhibit)
-			rnd_message(PCB_MSG_ERROR, "Error loading '%s': %s\n", name, errmsg);
+			rnd_message(RND_MSG_ERROR, "Error loading '%s': %s\n", name, errmsg);
 		free(errmsg);
 		return -1;
 	}
 
 	if ((doc->root->type != LHT_LIST) || (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20))) {
 		if (!pcb_io_err_inhibit)
-			rnd_message(PCB_MSG_ERROR, "Not a subcircuit lihata.\n");
+			rnd_message(RND_MSG_ERROR, "Not a subcircuit lihata.\n");
 		free(errmsg);
 		lht_dom_uninit(doc);
 		return -1;
@@ -2555,7 +2555,7 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 	rdver = atoi(doc->root->name+20);
 	if (rdver < 3) {
 		if (!pcb_io_err_inhibit)
-			rnd_message(PCB_MSG_ERROR, "io_lihata: invalid subc file version: %s (expected 3 or higher)\n", doc->root->name+20);
+			rnd_message(RND_MSG_ERROR, "io_lihata: invalid subc file version: %s (expected 3 or higher)\n", doc->root->name+20);
 		free(errmsg);
 		lht_dom_uninit(doc);
 		return -1;

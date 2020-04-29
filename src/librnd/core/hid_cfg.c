@@ -49,7 +49,7 @@ static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t er
 	const char *fn;
 	int line, col;
 	lht_dom_loc_active(doc, &fn, &line, &col);
-	rnd_message(PCB_MSG_ERROR, "Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
+	rnd_message(RND_MSG_ERROR, "Resource error: %s (%s:%d.%d)*\n", lht_err_str(err), filename, line+1, col+1);
 	return 1;
 }
 
@@ -374,7 +374,7 @@ void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 	va_start(ap, fmt);
 	end += pcb_vsnprintf(end, maxlen, fmt, ap);
 	va_end(ap);
-	rnd_message(PCB_MSG_ERROR, hid_cfg_error_shared);
+	rnd_message(RND_MSG_ERROR, hid_cfg_error_shared);
 }
 
 /*** minimal menu support for feature plugins - needs to stay in core ***/
@@ -435,7 +435,7 @@ void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hi
 				used += len+1;
 			}
 			memcpy(path+used, name, l0+1);
-/*			pcb_trace("path='%s' used=%d\n", path, used);*/
+/*			rnd_trace("path='%s' used=%d\n", path, used);*/
 			cb(ctx, pcb_gui->hid_cfg, node, path);
 			used = 0;
 		}
@@ -459,7 +459,7 @@ int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
 			break;
 		ncookie = lht_dom_hash_get(node, "cookie");
 
-/*		pcb_trace("  '%s' cookie='%s'\n", node->name, ncookie == NULL ? "NULL":ncookie->data.text.value );*/
+/*		rnd_trace("  '%s' cookie='%s'\n", node->name, ncookie == NULL ? "NULL":ncookie->data.text.value );*/
 		if ((ncookie == NULL) || (ncookie->type != LHT_TEXT) || (strcmp(ncookie->data.text.value, cookie) != 0))
 			break;
 

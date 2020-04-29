@@ -66,26 +66,26 @@ static void perma_script_load_conf(const char *dir)
 	fclose(f);
 
 	if (doc == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to parse script config '%s':\n'%s'\n", path, errmsg);
+		rnd_message(RND_MSG_ERROR, "Failed to parse script config '%s':\n'%s'\n", path, errmsg);
 		goto end;
 	}
 
 	n = doc->root;
 	if ((n->type != LHT_LIST) || (strcmp(n->name, "pcb-rnd-perma-script-v1") != 0)) {
-		rnd_message(PCB_MSG_ERROR, "Failed to load script config '%s':\nroot node is not li:pcb-rnd-perma-script-v1\n", path);
+		rnd_message(RND_MSG_ERROR, "Failed to load script config '%s':\nroot node is not li:pcb-rnd-perma-script-v1\n", path);
 		goto end;
 	}
 
 	for(n = n->data.list.first; n != NULL; n = n->next) {
 		const char *id = n->name, *path_in, *lang = NULL;
 		if (n->type != LHT_HASH) {
-			rnd_message(PCB_MSG_ERROR, "ignoring non-hash child '%s' in '%s'\n", n->name, path);
+			rnd_message(RND_MSG_ERROR, "ignoring non-hash child '%s' in '%s'\n", n->name, path);
 			continue;
 		}
 
 		npath = lht_dom_hash_get(n, "path");
 		if ((npath == NULL) || (npath->type != LHT_TEXT)) {
-			rnd_message(PCB_MSG_ERROR, "ignoring '%s' in '%s': no path\n", n->name, path);
+			rnd_message(RND_MSG_ERROR, "ignoring '%s' in '%s': no path\n", n->name, path);
 			continue;
 		}
 		path_in = npath->data.text.value;
@@ -93,7 +93,7 @@ static void perma_script_load_conf(const char *dir)
 		nlang = lht_dom_hash_get(n, "lang");
 		if (nlang != NULL) {
 			if (npath->type != LHT_TEXT) {
-				rnd_message(PCB_MSG_ERROR, "ignoring '%s' in '%s': invalid lang node type\n", n->name, path);
+				rnd_message(RND_MSG_ERROR, "ignoring '%s' in '%s': invalid lang node type\n", n->name, path);
 				continue;
 			}
 			lang = nlang->data.text.value;
@@ -101,7 +101,7 @@ static void perma_script_load_conf(const char *dir)
 		else { /* guess from path */
 			const char *tmp = strrchr(path_in, '.');
 			if (tmp == NULL) {
-				rnd_message(PCB_MSG_ERROR, "ignoring '%s' in '%s': no lang specified and file name is not suitable for guessing\n", n->name, path);
+				rnd_message(RND_MSG_ERROR, "ignoring '%s' in '%s': no lang specified and file name is not suitable for guessing\n", n->name, path);
 				continue;
 			}
 			lang = guess_lang(tmp+1);
@@ -110,10 +110,10 @@ static void perma_script_load_conf(const char *dir)
 		if (perma_load(dir, id, path_in, lang) == 0)
 			succ++;
 		else
-			rnd_message(PCB_MSG_ERROR, "failed to load script '%s' in '%s'\n", n->name, path);
+			rnd_message(RND_MSG_ERROR, "failed to load script '%s' in '%s'\n", n->name, path);
 	}
 
-	rnd_message(PCB_MSG_INFO, "Loaded %ld scripts from '%s'\n", succ, path);
+	rnd_message(RND_MSG_INFO, "Loaded %ld scripts from '%s'\n", succ, path);
 
 	end:;
 	lht_dom_uninit(doc);

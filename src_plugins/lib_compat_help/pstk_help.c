@@ -85,7 +85,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet,
 		}
 	}
 
-	pcb_trace("Converting %d objects into a pstk\n", tmp.used);
+	rnd_trace("Converting %d objects into a pstk\n", tmp.used);
 
 	memset(&proto, 0, sizeof(proto));
 	if (pcb_pstk_proto_conv(data, &proto, quiet, &tmp, cx, cy) == 0) {

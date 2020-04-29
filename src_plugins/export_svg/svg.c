@@ -369,11 +369,11 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&svg_cam) == 0) {
 		if (!svg_cam.okempty_group)
-			rnd_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "svg cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (svg_drawn_objs == 0) {
 		if (!svg_cam.okempty_content)
-			rnd_message(PCB_MSG_ERROR, "svg cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "svg cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 
@@ -742,7 +742,7 @@ static void svg_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 		maxdiff = height;
 	if (diff2 > maxdiff / 1000) {
 		if (!gc->warned_elliptical) {
-			rnd_message(PCB_MSG_ERROR, "Can't draw elliptical arc on svg; object omitted; expect BROKEN TRACE\n");
+			rnd_message(RND_MSG_ERROR, "Can't draw elliptical arc on svg; object omitted; expect BROKEN TRACE\n");
 			gc->warned_elliptical = 1;
 		}
 		return;
@@ -866,7 +866,7 @@ static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_
 
 static void svg_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	rnd_message(PCB_MSG_ERROR, "svg_calibrate() not implemented");
+	rnd_message(RND_MSG_ERROR, "svg_calibrate() not implemented");
 	return;
 }
 

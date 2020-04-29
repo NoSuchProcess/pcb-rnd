@@ -88,7 +88,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 		}
 		break;
 	default:
-		rnd_message(PCB_MSG_ERROR, "hace: Bad Plow object in callback\n");
+		rnd_message(RND_MSG_ERROR, "hace: Bad Plow object in callback\n");
 	}
 	return PCB_R_DIR_NOT_FOUND;
 

@@ -45,7 +45,7 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_t *printer = pcb_hid_find_printer();
 
 	if (printer == NULL) {
-		rnd_message(PCB_MSG_ERROR, "No printer available\n");
+		rnd_message(RND_MSG_ERROR, "No printer available\n");
 		RND_ACT_IRES(1);
 		return 0;
 	}

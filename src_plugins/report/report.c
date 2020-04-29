@@ -394,7 +394,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		case PCB_OBJ_LINE_POINT:
 		case PCB_OBJ_POLY_POINT: report_point(&tmp, type, ptr1, ptr2); break;
 		case PCB_OBJ_VOID:
-			rnd_message(PCB_MSG_INFO, "Nothing found to report on\n");
+			rnd_message(RND_MSG_INFO, "Nothing found to report on\n");
 			RND_ACT_IRES(1);
 			return 0;
 		default: pcb_append_printf(&tmp, "Unknown\n"); break;
@@ -413,7 +413,7 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	/* create dialog box */
 	if ((how != NULL) && (strcmp(how, "log") == 0))
-		rnd_message(PCB_MSG_INFO, "--- Report ---\n%s---\n", tmp.array);
+		rnd_message(RND_MSG_INFO, "--- Report ---\n%s---\n", tmp.array);
 	else
 		rdialog("Report", tmp.array);
 	gds_uninit(&tmp);
@@ -559,9 +559,9 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
 			if (err.used != 0)
-				rnd_message(PCB_MSG_INFO, "Net %s length %s, BUT BEWARE:%s\n", net->name, buf, err.array);
+				rnd_message(RND_MSG_INFO, "Net %s length %s, BUT BEWARE:%s\n", net->name, buf, err.array);
 			else
-					rnd_message(PCB_MSG_INFO, "Net %s length %s\n", net->name, buf);
+					rnd_message(RND_MSG_INFO, "Net %s length %s\n", net->name, buf);
 			gds_uninit(&err);
 		}
 	}
@@ -612,17 +612,17 @@ static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, rnd_coo
 
 		pcb_snprintf(buf, sizeof(buf), "%$m*", pcbhl_conf.editor.grid_unit->suffix, length);
 		if (netname)
-			rnd_message(PCB_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
+			rnd_message(RND_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
-			rnd_message(PCB_MSG_INFO, "Net length: %s\n", buf);
+			rnd_message(RND_MSG_INFO, "Net length: %s\n", buf);
 
 		if (err.used != 0)
-			rnd_message(PCB_MSG_INFO, "BUT BEWARE: %s\n", err.array);
+			rnd_message(RND_MSG_INFO, "BUT BEWARE: %s\n", err.array);
 
 		ret = 0;
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "No net under cursor.\n");
+		rnd_message(RND_MSG_ERROR, "No net under cursor.\n");
 		ret = 1;
 	}
 
@@ -644,25 +644,25 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 
 		type = pcb_search_screen(x, y, PCB_OBJ_LINE, &r1, &r2, &r3);
 		if (type != PCB_OBJ_LINE) {
-			rnd_message(PCB_MSG_ERROR, "can't find a line to split\n");
+			rnd_message(RND_MSG_ERROR, "can't find a line to split\n");
 			return -1;
 		}
 		l = r2;
 		assert(l->parent_type == PCB_PARENT_LAYER);
 		ly = l->parent.layer;
 		if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER)) {
-			rnd_message(PCB_MSG_ERROR, "not a copper line, can't split it\n");
+			rnd_message(RND_MSG_ERROR, "not a copper line, can't split it\n");
 			return -1;
 		}
 
 #define MINDIST PCB_MIL_TO_COORD(40)
 		if ((rnd_distance(l->Point1.X, l->Point1.Y, x, y) < MINDIST) || (rnd_distance(l->Point2.X, l->Point2.Y, x, y) < MINDIST)) {
-			rnd_message(PCB_MSG_ERROR, "Can not split near the endpoint of a line\n");
+			rnd_message(RND_MSG_ERROR, "Can not split near the endpoint of a line\n");
 			return -1;
 		}
 #undef MINDIST2
 
-		rnd_message(PCB_MSG_INFO, "The two arms of the net are:\n");
+		rnd_message(RND_MSG_INFO, "The two arms of the net are:\n");
 		pcb_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
 		pcb_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
@@ -714,13 +714,13 @@ static int report_net_length_by_name(const char *tofind)
 			netname = net->name;
 			term = pcb_termlist_first(&net->conns);
 			if (term == NULL) {
-				rnd_message(PCB_MSG_INFO, "Net found, but it has not terminals.\n");
+				rnd_message(RND_MSG_INFO, "Net found, but it has not terminals.\n");
 				return 1;
 			}
 
 			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, term->refdes, term->term, NULL, NULL);
 			if (obj == NULL) {
-				rnd_message(PCB_MSG_INFO, "Net found, but its terminal %s-%s is not on the board.\n", term->refdes, term->term);
+				rnd_message(RND_MSG_INFO, "Net found, but its terminal %s-%s is not on the board.\n", term->refdes, term->term);
 				return 1;
 			}
 			pcb_obj_center(obj, &x, &y);
@@ -728,7 +728,7 @@ static int report_net_length_by_name(const char *tofind)
 	}
 
 	if (netname == NULL) {
-		rnd_message(PCB_MSG_ERROR, "No net named %s\n", tofind);
+		rnd_message(RND_MSG_ERROR, "No net named %s\n", tofind);
 		return 1;
 	}
 
@@ -738,9 +738,9 @@ static int report_net_length_by_name(const char *tofind)
 
 	if (!found) {
 		if (netname != NULL)
-			rnd_message(PCB_MSG_INFO, "Net found, but no lines or arcs were flagged.\n");
+			rnd_message(RND_MSG_INFO, "Net found, but no lines or arcs were flagged.\n");
 		else
-			rnd_message(PCB_MSG_ERROR, "Net not found.\n");
+			rnd_message(RND_MSG_ERROR, "Net not found.\n");
 
 		gds_uninit(&err);
 		return 1;
@@ -750,11 +750,11 @@ static int report_net_length_by_name(const char *tofind)
 		char buf[50];
 		pcb_snprintf(buf, sizeof(buf), "%$m*", pcbhl_conf.editor.grid_unit->suffix, length);
 		if (netname)
-			rnd_message(PCB_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
+			rnd_message(RND_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
-			rnd_message(PCB_MSG_INFO, "Net length: %s\n", buf);
+			rnd_message(RND_MSG_INFO, "Net length: %s\n", buf);
 		if (err.used != 0)
-			rnd_message(PCB_MSG_INFO, "BUT BEWARE: %s\n", err.array);
+			rnd_message(RND_MSG_INFO, "BUT BEWARE: %s\n", err.array);
 	}
 
 	gds_uninit(&err);

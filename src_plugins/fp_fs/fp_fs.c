@@ -127,7 +127,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
 	if (rnd_get_wd(olddir) == NULL) {
-		rnd_message(PCB_MSG_ERROR, "fp_fs_list(): Could not determine initial working directory\n");
+		rnd_message(RND_MSG_ERROR, "fp_fs_list(): Could not determine initial working directory\n");
 		return 0;
 	}
 
@@ -136,16 +136,16 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	if (chdir(subdir)) {
 		if (!subdir_may_not_exist)
-			pcb_chdir_error_message(subdir);
+			rnd_chdir_error_message(subdir);
 		return 0;
 	}
 
 
 	/* Determine subdir's abs path */
 	if (rnd_get_wd(new_subdir) == NULL) {
-		rnd_message(PCB_MSG_ERROR, "fp_fs_list(): Could not determine new working directory\n");
+		rnd_message(RND_MSG_ERROR, "fp_fs_list(): Could not determine new working directory\n");
 		if (chdir(olddir))
-			pcb_chdir_error_message(olddir);
+			rnd_chdir_error_message(olddir);
 		return 0;
 	}
 
@@ -157,9 +157,9 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 
 	/* First try opening the directory specified by path */
 	if ((subdirobj = pcb_opendir(&PCB->hidlib, new_subdir)) == NULL) {
-		pcb_opendir_error_message(new_subdir);
+		rnd_opendir_error_message(new_subdir);
 		if (chdir(olddir))
-			pcb_chdir_error_message(olddir);
+			rnd_chdir_error_message(olddir);
 		return 0;
 	}
 
@@ -225,7 +225,7 @@ TODO("fp: make this a configurable list")
 	/* Done.  Clean up, cd back into old dir, and return */
 	pcb_closedir(subdirobj);
 	if (chdir(olddir))
-		pcb_chdir_error_message(olddir);
+		rnd_chdir_error_message(olddir);
 	return n_footprints;
 }
 
@@ -427,7 +427,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 					pcb_pclose(fp);
 				}
 				else
-					rnd_message(PCB_MSG_ERROR, "Parametric footprint: failed to execute %s\n", cmd);
+					rnd_message(RND_MSG_ERROR, "Parametric footprint: failed to execute %s\n", cmd);
 				rewind(f);
 			}
 			free(cmd);

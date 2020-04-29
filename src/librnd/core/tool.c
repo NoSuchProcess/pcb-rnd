@@ -61,7 +61,7 @@ void pcb_tool_uninit(void)
 {
 	while(vtp0_len(&pcb_tools) != 0) {
 		const pcb_tool_t *tool = pcb_tool_get(0);
-		rnd_message(PCB_MSG_WARNING, "Unregistered tool: %s of %s; check your plugins, fix them to unregister their tools!\n", tool->name, tool->cookie);
+		rnd_message(RND_MSG_WARNING, "Unregistered tool: %s of %s; check your plugins, fix them to unregister their tools!\n", tool->name, tool->cookie);
 		pcb_tool_unreg_by_cookie(tool->cookie);
 	}
 	vtp0_uninit(&pcb_tools);
@@ -186,7 +186,7 @@ int pcb_tool_save(rnd_hidlib_t *hidlib)
 int pcb_tool_restore(rnd_hidlib_t *hidlib)
 {
 	if (save_position == 0) {
-		rnd_message(PCB_MSG_ERROR, "hace: underflow of restore mode\n");
+		rnd_message(RND_MSG_ERROR, "hace: underflow of restore mode\n");
 		return -1;
 	}
 	return pcb_tool_select_by_id(hidlib, save_stack[--save_position]);
@@ -351,7 +351,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		if (pcb_tool_select_by_name(RND_ACT_HIDLIB, cmd) != 0)
-			rnd_message(PCB_MSG_ERROR, "No such tool: '%s'\n", cmd);
+			rnd_message(RND_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
 	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 	return 0;

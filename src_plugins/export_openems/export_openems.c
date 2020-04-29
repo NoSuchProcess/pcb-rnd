@@ -375,7 +375,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 		if (*end == '\0')
 			resistance = tmp;
 		else
-			rnd_message(PCB_MSG_WARNING, "Ignoring invalid openems::resistance value for port %s: '%s' (must be a number without suffix)\n", port_name, att);
+			rnd_message(RND_MSG_WARNING, "Ignoring invalid openems::resistance value for port %s: '%s' (must be a number without suffix)\n", port_name, att);
 	}
 
 	att = rnd_attribute_get(&o->Attributes, "openems::active");
@@ -385,7 +385,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 		else if (rnd_strcasecmp(att, "false") == 0)
 			act = 0;
 		else
-			rnd_message(PCB_MSG_WARNING, "Ignoring invalid openems::active value for port %s: '%s' (must be true or false)\n", port_name, att);
+			rnd_message(RND_MSG_WARNING, "Ignoring invalid openems::active value for port %s: '%s' (must be true or false)\n", port_name, att);
 	}
 
 	for(s = safe_name; *s != '\0'; s++)
@@ -408,15 +408,15 @@ pcb_layergrp_id_t openems_vport_main_group_pstk(pcb_board_t *pcb, pcb_pstk_t *ps
 	bot = (pcb_pstk_shape(ps, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) != NULL);
 	intern = (pcb_pstk_shape(ps, PCB_LYT_INTERN | PCB_LYT_BOTTOM, 0) != NULL);
 	if (intern) {
-		rnd_message(PCB_MSG_ERROR, "Can not export openems vport %s: it has internal copper\n(must be either top or bottom copper)\n", port_name);
+		rnd_message(RND_MSG_ERROR, "Can not export openems vport %s: it has internal copper\n(must be either top or bottom copper)\n", port_name);
 		return -1;
 	}
 	if (top && bot) {
-		rnd_message(PCB_MSG_ERROR, "Can not export openems vport %s: it has both top and bottom copper\n", port_name);
+		rnd_message(RND_MSG_ERROR, "Can not export openems vport %s: it has both top and bottom copper\n", port_name);
 		return -1;
 	}
 	if (!top && !bot) {
-		rnd_message(PCB_MSG_ERROR, "Can not export openems vport %s: it does not have copper either on top or bottom\n", port_name);
+		rnd_message(RND_MSG_ERROR, "Can not export openems vport %s: it does not have copper either on top or bottom\n", port_name);
 		return -1;
 	}
 
@@ -430,7 +430,7 @@ pcb_layergrp_id_t openems_vport_main_group_pstk(pcb_board_t *pcb, pcb_pstk_t *ps
 		*gstep = -1;
 	}
 	if (gid1 < 0) {
-		rnd_message(PCB_MSG_ERROR, "Can not export openems vport %s: can not find top or bottom layer group ID\n", port_name);
+		rnd_message(RND_MSG_ERROR, "Can not export openems vport %s: can not find top or bottom layer group ID\n", port_name);
 		return -1;
 	}
 
@@ -445,7 +445,7 @@ pcb_layergrp_id_t openems_vport_aux_group(pcb_board_t *pcb, pcb_layergrp_id_t gi
 		if (pcb->LayerGroups.grp[gid2].ltype & PCB_LYT_COPPER)
 			return gid2;
 
-	rnd_message(PCB_MSG_ERROR, "Can not export openems vport %s: can not find pair layer\n", port_name);
+	rnd_message(RND_MSG_ERROR, "Can not export openems vport %s: can not find pair layer\n", port_name);
 	return -1;
 }
 
@@ -467,7 +467,7 @@ static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 
 		if (o->type == PCB_OBJ_SUBC) {
 			if (!ctx->warn_subc_term)
-				rnd_message(PCB_MSG_ERROR, "Subcircuit being a terminal is not supported.\n");
+				rnd_message(RND_MSG_ERROR, "Subcircuit being a terminal is not supported.\n");
 			ctx->warn_subc_term = 1;
 			continue;
 		}
@@ -501,7 +501,7 @@ TODO(": check if there is copper object on hid2 at x;y")
 				break;
 				default:
 					if (!ctx->warn_port_pstk)
-						rnd_message(PCB_MSG_ERROR, "Only padstacks can be openems ports at the moment\n");
+						rnd_message(RND_MSG_ERROR, "Only padstacks can be openems ports at the moment\n");
 					ctx->warn_port_pstk = 1;
 					break;
 		}
@@ -717,7 +717,7 @@ static void openems_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_
 		case PCB_HID_COMP_POSITIVE_XOR:
 			break;
 		case PCB_HID_COMP_NEGATIVE:
-			rnd_message(PCB_MSG_ERROR, "Can't draw composite layer, especially not on copper\n");
+			rnd_message(RND_MSG_ERROR, "Can't draw composite layer, especially not on copper\n");
 			break;
 		case PCB_HID_COMP_FLUSH:
 			break;
@@ -808,7 +808,7 @@ static void openems_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 
 static void openems_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	rnd_message(PCB_MSG_ERROR, "openems_calibrate() not implemented");
+	rnd_message(RND_MSG_ERROR, "openems_calibrate() not implemented");
 	return;
 }
 

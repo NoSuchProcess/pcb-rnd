@@ -356,12 +356,12 @@ int hyp_parse(pcb_data_t * dest, const char *fname, int debug)
 /* print error message */
 void hyp_error(const char *msg)
 {
-	enum pcb_message_level level;
+	rnd_message_level_t level;
 
 	if (strstr(msg, "warning"))
-		level = PCB_MSG_WARNING;
+		level = RND_MSG_WARNING;
 	else
-		level = PCB_MSG_ERROR;
+		level = RND_MSG_ERROR;
 
 	rnd_message(level, "line %d: %s at '%s'\n", hyylineno, msg, hyytext);
 }
@@ -397,7 +397,7 @@ void hyp_netlist_add(char *device_name, char *pin_name)
 	char conn[MAX_STRING];
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "netlist net: '%s' device: '%s' pin: '%s'\n", net_name, device_name, pin_name);
+		rnd_message(RND_MSG_DEBUG, "netlist net: '%s' device: '%s' pin: '%s'\n", net_name, device_name, pin_name);
 
 	if ((net_name != NULL) && (device_name != NULL) && (pin_name != NULL)) {
 		pcb_snprintf(conn, sizeof(conn), "%s-%s", device_name, pin_name);
@@ -444,7 +444,7 @@ pcb_subc_t *hyp_create_subc_by_name(char *refdes, rnd_coord_t x, rnd_coord_t y)
 	dev = hyp_device_by_name(refdes);
 	if (dev == NULL) {
 		/* no device with this name exists, and no such device has been listed in a DEVICE record. Let's create the device anyhow so we can continue. Assume device is on component side. */
-		rnd_message(PCB_MSG_WARNING, "device \"%s\" not specified in DEVICE record. Assuming device is on component side.\n", refdes);
+		rnd_message(RND_MSG_WARNING, "device \"%s\" not specified in DEVICE record. Assuming device is on component side.\n", refdes);
 
 		dev = calloc(sizeof(device_t), 1);
 		dev->next = device_head;
@@ -459,7 +459,7 @@ pcb_subc_t *hyp_create_subc_by_name(char *refdes, rnd_coord_t x, rnd_coord_t y)
 
 	/* create */
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "creating device \"%s\".\n", dev->ref);
+		rnd_message(RND_MSG_DEBUG, "creating device \"%s\".\n", dev->ref);
 
 	subc = pcb_subc_alloc();
 	pcb_subc_create_aux(subc, x, y, 0.0, on_bottom);
@@ -502,12 +502,12 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 	/* get outline layer */
 	outline_id = pcb_layer_by_name(PCB->Data, "outline");
 	if (outline_id < 0) {
-		rnd_message(PCB_MSG_ERROR, "no outline layer.\n");
+		rnd_message(RND_MSG_ERROR, "no outline layer.\n");
 		return;
 	}
 	outline_layer = pcb_get_layer(PCB->Data, outline_id);
 	if (outline_layer == NULL) {
-		rnd_message(PCB_MSG_ERROR, "get outline layer failed.\n");
+		rnd_message(RND_MSG_ERROR, "get outline layer failed.\n");
 		return;
 	}
 
@@ -517,10 +517,10 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 	/* debugging */
 	if (hyp_debug) {
 		if (forward)
-			rnd_message(PCB_MSG_DEBUG, "outline: fwd %s from (%ml, %ml) to (%ml, %ml)\n", s->is_arc ? "arc" : "line", s->x1, s->y1,
+			rnd_message(RND_MSG_DEBUG, "outline: fwd %s from (%ml, %ml) to (%ml, %ml)\n", s->is_arc ? "arc" : "line", s->x1, s->y1,
 									s->x2, s->y2);
 		else
-			rnd_message(PCB_MSG_DEBUG, "outline: bwd %s from (%ml, %ml) to (%ml, %ml)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);	/* add segment back to front */
+			rnd_message(RND_MSG_DEBUG, "outline: bwd %s from (%ml, %ml) to (%ml, %ml)\n", s->is_arc ? "arc" : "line", s->x2, s->y2, s->x1, s->y1);	/* add segment back to front */
 	}
 
 	if (s->is_arc) {
@@ -721,10 +721,10 @@ void hyp_perimeter()
 
 #undef XXX
 #ifdef XXX
-			rnd_message(PCB_MSG_DEBUG, "perimeter: last_x = %ml last_y = %ml\n", last_x, last_y);
+			rnd_message(RND_MSG_DEBUG, "perimeter: last_x = %ml last_y = %ml\n", last_x, last_y);
 			for (i = outline_head; i != NULL; i = i->next)
 				if (!i->used)
-					rnd_message(PCB_MSG_DEBUG, "perimeter segments available: %s from (%ml, %ml) to (%ml, %ml)\n",
+					rnd_message(RND_MSG_DEBUG, "perimeter segments available: %s from (%ml, %ml) to (%ml, %ml)\n",
 											i->is_arc ? "arc " : "line", i->x1, i->y1, i->x2, i->y2);
 #endif
 
@@ -765,11 +765,11 @@ void hyp_perimeter()
 		}
 		if (polygon_closed) {
 			if (hyp_debug)
-				rnd_message(PCB_MSG_DEBUG, "outline: closed\n");
+				rnd_message(RND_MSG_DEBUG, "outline: closed\n");
 		}
 		else {
 			if (hyp_debug)
-				rnd_message(PCB_MSG_DEBUG, "outline: open\n");
+				rnd_message(RND_MSG_DEBUG, "outline: open\n");
 			warn_not_closed = pcb_true;
 		}
 	}
@@ -782,7 +782,7 @@ void hyp_perimeter()
 	outline_head = outline_tail = NULL;
 
 	if (warn_not_closed)
-		rnd_message(PCB_MSG_WARNING, "warning: board outline not closed\n");
+		rnd_message(RND_MSG_WARNING, "warning: board outline not closed\n");
 
 	return;
 }
@@ -809,25 +809,25 @@ void hyp_reset_layers()
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1) == 1)
 		id = pcb_layer_create(PCB, gid, "top silk", 0);
 	if (id < 0)
-		rnd_message(PCB_MSG_ERROR, "failed to create top silk\n");
+		rnd_message(RND_MSG_ERROR, "failed to create top silk\n");
 
 	id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_SILK | PCB_LYT_BOTTOM, &gid, 1) == 1)
 		id = pcb_layer_create(PCB, gid, "bottom silk", 0);
 	if (id < 0)
-		rnd_message(PCB_MSG_ERROR, "failed to create bottom silk\n");
+		rnd_message(RND_MSG_ERROR, "failed to create bottom silk\n");
 
 	top_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &gid, 1) == 1)
 		top_layer_id = pcb_layer_create(PCB, gid, "", 0);
 	if (top_layer_id < 0)
-		rnd_message(PCB_MSG_ERROR, "failed to create top copper\n");
+		rnd_message(RND_MSG_ERROR, "failed to create top copper\n");
 
 	bottom_layer_id = -1;
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &gid, 1) == 1)
 		bottom_layer_id = pcb_layer_create(PCB, gid, "", 0);
 	if (bottom_layer_id < 0)
-		rnd_message(PCB_MSG_ERROR, "failed to create bottom copper\n");
+		rnd_message(RND_MSG_ERROR, "failed to create bottom copper\n");
 
 	/* create outline layer */
 
@@ -838,7 +838,7 @@ void hyp_reset_layers()
 		pcb_layergrp_fix_turn_to_outline(grp);
 	}
 	if (id < 0)
-		rnd_message(PCB_MSG_ERROR, "failed to create outline\n");
+		rnd_message(RND_MSG_ERROR, "failed to create outline\n");
 
 	pcb_layergrp_inhibit_dec();
 
@@ -905,7 +905,7 @@ pcb_layer_id_t hyp_create_layer(char *lname)
 		if (layer_id < 0) {
 			/* layer creation failed. return old bottom layer. */
 			if (hyp_debug)
-				rnd_message(PCB_MSG_DEBUG, "running out of layers\n");
+				rnd_message(RND_MSG_DEBUG, "running out of layers\n");
 			return bottom_layer_id;
 		}
 
@@ -1026,7 +1026,7 @@ void hyp_arc2contour(pcb_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_
 		while (arc_error > arc_precision);
 	}
 	else if (arc_precision < 0)
-		rnd_message(PCB_MSG_ERROR, "error: negative arc precision\n");
+		rnd_message(RND_MSG_ERROR, "error: negative arc precision\n");
 
 	/* A full circle is drawn using 'segments' segments; a 90 degree arc using segments/4. */
 	poly_points = rnd_round(segments * fabs(beta - alpha) / (2 * M_PI));
@@ -1066,15 +1066,15 @@ void hyp_dump_polygons()
 
 	/* loop over all created polygons and draw them */
 	for (i = polygon_head; i != NULL; i = i->next) {
-		rnd_message(PCB_MSG_DEBUG, "%s id=%i.\n", (i->is_polygon ? "polygon" : "polyline"), i->hyp_poly_id);
+		rnd_message(RND_MSG_DEBUG, "%s id=%i.\n", (i->is_polygon ? "polygon" : "polyline"), i->hyp_poly_id);
 		for (v = i->vertex; v != NULL; v = v->next) {
 			if (v->is_first)
-				rnd_message(PCB_MSG_DEBUG, "  contour\n");
+				rnd_message(RND_MSG_DEBUG, "  contour\n");
 			if (v->is_arc)
-				rnd_message(PCB_MSG_DEBUG, "    arc  x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", v->x1, v->y1,
+				rnd_message(RND_MSG_DEBUG, "    arc  x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", v->x1, v->y1,
 										v->x2, v->y2, v->xc, v->yc, v->r);
 			else
-				rnd_message(PCB_MSG_DEBUG, "    line x1 = %ml y1 = %ml\n", v->x1, v->y1);
+				rnd_message(RND_MSG_DEBUG, "    line x1 = %ml y1 = %ml\n", v->x1, v->y1);
 		}
 	}
 }
@@ -1094,7 +1094,7 @@ void hyp_draw_polyline(hyp_polygon_t * polyline)
 		return;
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "draw polyline:  drawing poly id=%i.\n", polyline->hyp_poly_id);
+		rnd_message(RND_MSG_DEBUG, "draw polyline:  drawing poly id=%i.\n", polyline->hyp_poly_id);
 
 	layer = pcb_get_layer(PCB->Data, hyp_create_layer(polyline->layer_name));
 
@@ -1150,7 +1150,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 		return;
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "draw polygon:   drawing poly id=%i.\n", polygon->hyp_poly_id);
+		rnd_message(RND_MSG_DEBUG, "draw polygon:   drawing poly id=%i.\n", polygon->hyp_poly_id);
 
 	layer = pcb_get_layer(PCB->Data, hyp_create_layer(polygon->layer_name));
 
@@ -1167,7 +1167,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 
 				/* check contour valid */
 				if (pcb_polyarea_contour_check(contour) && hyp_debug)
-					rnd_message(PCB_MSG_WARNING, "draw polygon: bad contour? continuing.\n");
+					rnd_message(RND_MSG_WARNING, "draw polygon: bad contour? continuing.\n");
 
 				/* set orientation for outer contour, negative for holes */
 				if (contour->Flags.orient != (outer_contour ? PCB_PLF_DIR : PCB_PLF_INV))
@@ -1198,7 +1198,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 	if (pcb_poly_valid(polyarea))
 		pcb_poly_to_polygons_on_layer(hyp_dest, layer, polyarea, pcb_no_flags());
 	else if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "draw polygon: self-intersecting polygon id=%i dropped.\n", polygon->hyp_poly_id);
+		rnd_message(RND_MSG_DEBUG, "draw polygon: self-intersecting polygon id=%i dropped.\n", polygon->hyp_poly_id);
 
 	return;
 }
@@ -1230,7 +1230,7 @@ void hyp_draw_polygons()
 	for (l = 0; l < layer_count; l++) {
 		pcb_layer_id_t layer_id = layer_array[l];
 		if (hyp_debug)
-			rnd_message(PCB_MSG_DEBUG, "draw polygons: layer %lx \"%s\"\n", layer_id, pcb_layer_name(PCB->Data, layer_id));
+			rnd_message(RND_MSG_DEBUG, "draw polygons: layer %lx \"%s\"\n", layer_id, pcb_layer_name(PCB->Data, layer_id));
 
 		/* loop over all polygons of the layer and draw them */
 		for (i = polygon_head; i != NULL; i = i->next) {
@@ -1291,7 +1291,7 @@ rnd_coord_t hyp_clearance(parse_param * h)
 rnd_bool exec_board_file(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "board:\n");
+		rnd_message(RND_MSG_DEBUG, "board:\n");
 
 	return 0;
 }
@@ -1304,10 +1304,10 @@ rnd_bool exec_board_file(parse_param * h)
 rnd_bool exec_version(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "version: vers = %f\n", h->vers);
+		rnd_message(RND_MSG_DEBUG, "version: vers = %f\n", h->vers);
 
 	if (h->vers < 1.0)
-		rnd_message(PCB_MSG_DEBUG, "info: version 1.x deprecated\n");
+		rnd_message(RND_MSG_DEBUG, "info: version 1.x deprecated\n");
 
 	return 0;
 }
@@ -1321,7 +1321,7 @@ rnd_bool exec_version(parse_param * h)
 rnd_bool exec_data_mode(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "data_mode: detailed = %i\n", h->detailed);
+		rnd_message(RND_MSG_DEBUG, "data_mode: detailed = %i\n", h->detailed);
 
 	return 0;
 }
@@ -1334,7 +1334,7 @@ rnd_bool exec_data_mode(parse_param * h)
 rnd_bool exec_units(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "units: unit_system_english = %d metal_thickness_weight = %d\n", h->unit_system_english,
+		rnd_message(RND_MSG_DEBUG, "units: unit_system_english = %d metal_thickness_weight = %d\n", h->unit_system_english,
 								h->metal_thickness_weight);
 
 	/* convert everything to meter */
@@ -1355,7 +1355,7 @@ rnd_bool exec_units(parse_param * h)
 	}
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "units: unit = %f metal_thickness_unit = %f\n", unit, metal_thickness_unit);
+		rnd_message(RND_MSG_DEBUG, "units: unit = %f metal_thickness_unit = %f\n", unit, metal_thickness_unit);
 
 	return 0;
 }
@@ -1370,7 +1370,7 @@ rnd_bool exec_plane_sep(parse_param * h)
 	board_clearance = xy2coord(h->default_plane_separation);
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "plane_sep: default_plane_separation = %ml\n", board_clearance);
+		rnd_message(RND_MSG_DEBUG, "plane_sep: default_plane_separation = %ml\n", board_clearance);
 
 	return 0;
 }
@@ -1399,7 +1399,7 @@ rnd_bool exec_perimeter_segment(parse_param * h)
 	peri_seg->next = NULL;
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "perimeter_segment: x1 = %ml y1 = %ml x2 = %ml y2 = %ml\n", peri_seg->x1, peri_seg->y1,
+		rnd_message(RND_MSG_DEBUG, "perimeter_segment: x1 = %ml y1 = %ml x2 = %ml y2 = %ml\n", peri_seg->x1, peri_seg->y1,
 								peri_seg->x2, peri_seg->y2);
 
 	/* append at end of doubly linked list */
@@ -1445,7 +1445,7 @@ rnd_bool exec_perimeter_arc(parse_param * h)
 	peri_arc->next = NULL;
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "perimeter_arc: x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", peri_arc->x1,
+		rnd_message(RND_MSG_DEBUG, "perimeter_arc: x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", peri_arc->x1,
 								peri_arc->y1, peri_arc->x2, peri_arc->y2, peri_arc->xc, peri_arc->yc, peri_arc->r);
 
 	/* append at end of doubly linked list */
@@ -1472,7 +1472,7 @@ rnd_bool exec_perimeter_arc(parse_param * h)
 rnd_bool exec_board_attribute(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "board_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
+		rnd_message(RND_MSG_DEBUG, "board_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
 
 	return 0;
 }
@@ -1489,28 +1489,28 @@ void hyp_debug_layer(parse_param * h)
 {
 	if (hyp_debug) {
 		if (h->thickness_set)
-			rnd_message(PCB_MSG_DEBUG, " thickness = %ml", z2coord(h->thickness));
+			rnd_message(RND_MSG_DEBUG, " thickness = %ml", z2coord(h->thickness));
 		if (h->plating_thickness_set)
-			rnd_message(PCB_MSG_DEBUG, " plating_thickness = %ml", z2coord(h->plating_thickness));
+			rnd_message(RND_MSG_DEBUG, " plating_thickness = %ml", z2coord(h->plating_thickness));
 		if (h->bulk_resistivity_set)
-			rnd_message(PCB_MSG_DEBUG, " bulk_resistivity = %f", h->bulk_resistivity);
+			rnd_message(RND_MSG_DEBUG, " bulk_resistivity = %f", h->bulk_resistivity);
 		if (h->temperature_coefficient_set)
-			rnd_message(PCB_MSG_DEBUG, " temperature_coefficient = %f", h->temperature_coefficient);
+			rnd_message(RND_MSG_DEBUG, " temperature_coefficient = %f", h->temperature_coefficient);
 		if (h->epsilon_r_set)
-			rnd_message(PCB_MSG_DEBUG, " epsilon_r = %f", h->epsilon_r);
+			rnd_message(RND_MSG_DEBUG, " epsilon_r = %f", h->epsilon_r);
 		if (h->loss_tangent_set)
-			rnd_message(PCB_MSG_DEBUG, " loss_tangent = %f", h->loss_tangent);
+			rnd_message(RND_MSG_DEBUG, " loss_tangent = %f", h->loss_tangent);
 		if (h->conformal_set)
-			rnd_message(PCB_MSG_DEBUG, " conformal = %i", h->conformal);
+			rnd_message(RND_MSG_DEBUG, " conformal = %i", h->conformal);
 		if (h->prepreg_set)
-			rnd_message(PCB_MSG_DEBUG, " prepreg = %i", h->prepreg);
+			rnd_message(RND_MSG_DEBUG, " prepreg = %i", h->prepreg);
 		if (h->layer_name_set)
-			rnd_message(PCB_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
+			rnd_message(RND_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
 		if (h->material_name_set)
-			rnd_message(PCB_MSG_DEBUG, " material_name = \"%s\"", h->material_name);
+			rnd_message(RND_MSG_DEBUG, " material_name = \"%s\"", h->material_name);
 		if (h->plane_separation_set)
-			rnd_message(PCB_MSG_DEBUG, " plane_separation = %ml", xy2coord(h->plane_separation));
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " plane_separation = %ml", xy2coord(h->plane_separation));
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	return;
@@ -1525,7 +1525,7 @@ rnd_bool exec_options(parse_param * h)
 {
 	/* Use dielectric for metal? */
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "options: use_die_for_metal = %f\n", h->use_die_for_metal);
+		rnd_message(RND_MSG_DEBUG, "options: use_die_for_metal = %f\n", h->use_die_for_metal);
 	if (h->use_die_for_metal)
 		use_die_for_metal = pcb_true;
 	return 0;
@@ -1541,7 +1541,7 @@ rnd_bool exec_signal(parse_param * h)
 	pcb_layer_id_t signal_layer_id;
 
 	if ((h->layer_name != NULL) && (pcb_layer_by_name(PCB->Data, h->layer_name) >= 0))
-		rnd_message(PCB_MSG_WARNING, "duplicate SIGNAL layer name \"%s\"\n", h->layer_name);
+		rnd_message(RND_MSG_WARNING, "duplicate SIGNAL layer name \"%s\"\n", h->layer_name);
 
 	signal_layer_id = hyp_create_layer(h->layer_name);
 
@@ -1550,7 +1550,7 @@ rnd_bool exec_signal(parse_param * h)
 		layer_clearance[signal_layer_id] = xy2coord(h->plane_separation);
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "signal layer: \"%s\"", pcb_layer_name(PCB->Data, signal_layer_id));
+		rnd_message(RND_MSG_DEBUG, "signal layer: \"%s\"", pcb_layer_name(PCB->Data, signal_layer_id));
 	hyp_debug_layer(h);
 
 	return 0;
@@ -1564,7 +1564,7 @@ rnd_bool exec_signal(parse_param * h)
 rnd_bool exec_dielectric(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "dielectric layer: ");
+		rnd_message(RND_MSG_DEBUG, "dielectric layer: ");
 	hyp_debug_layer(h);
 
 	return 0;
@@ -1580,7 +1580,7 @@ rnd_bool exec_plane(parse_param * h)
 	pcb_layer_id_t plane_layer_id;
 
 	if ((h->layer_name != NULL) && (pcb_layer_by_name(PCB->Data, h->layer_name) >= 0))
-		rnd_message(PCB_MSG_WARNING, "duplicate PLANE layer name \"%s\"\n", h->layer_name);
+		rnd_message(RND_MSG_WARNING, "duplicate PLANE layer name \"%s\"\n", h->layer_name);
 
 	plane_layer_id = hyp_create_layer(h->layer_name);
 
@@ -1591,7 +1591,7 @@ rnd_bool exec_plane(parse_param * h)
 	/* XXX need to flood layer with copper */
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "plane layer: \"%s\"", pcb_layer_name(PCB->Data, plane_layer_id));
+		rnd_message(RND_MSG_DEBUG, "plane layer: \"%s\"", pcb_layer_name(PCB->Data, plane_layer_id));
 	hyp_debug_layer(h);
 
 	return 0;
@@ -1604,18 +1604,18 @@ rnd_bool exec_devices(parse_param * h)
 	char value[128];
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "device: device_type = \"%s\" ref = \"%s\"", h->device_type, h->ref);
+		rnd_message(RND_MSG_DEBUG, "device: device_type = \"%s\" ref = \"%s\"", h->device_type, h->ref);
 		if (h->name_set)
-			rnd_message(PCB_MSG_DEBUG, " name = \"%s\"", h->name);
+			rnd_message(RND_MSG_DEBUG, " name = \"%s\"", h->name);
 		if (h->value_float_set)
-			rnd_message(PCB_MSG_DEBUG, " value_float = %f", h->value_float);
+			rnd_message(RND_MSG_DEBUG, " value_float = %f", h->value_float);
 		if (h->value_string_set)
-			rnd_message(PCB_MSG_DEBUG, " value_string = \"%s\"", h->value_string);
+			rnd_message(RND_MSG_DEBUG, " value_string = \"%s\"", h->value_string);
 		if (h->layer_name_set)
-			rnd_message(PCB_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
+			rnd_message(RND_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
 		if (h->package_set)
-			rnd_message(PCB_MSG_DEBUG, " package = \"%s\"", h->package);
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " package = \"%s\"", h->package);
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	/* add device to list  */
@@ -1655,7 +1655,7 @@ rnd_bool exec_devices(parse_param * h)
 rnd_bool exec_supplies(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "supplies: name = \"%s\" value_float = %f voltage_specified = %i conversion = %i\n", h->name,
+		rnd_message(RND_MSG_DEBUG, "supplies: name = \"%s\" value_float = %f voltage_specified = %i conversion = %i\n", h->name,
 								h->value_float, h->voltage_specified, h->conversion);
 
 	return 0;
@@ -1674,55 +1674,55 @@ rnd_bool exec_pstk_element(parse_param * h)
 	 */
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "padstack_element:");
+		rnd_message(RND_MSG_DEBUG, "padstack_element:");
 		if (h->padstack_name_set)
-			rnd_message(PCB_MSG_DEBUG, " padstack_name = \"%s\"", h->padstack_name);
+			rnd_message(RND_MSG_DEBUG, " padstack_name = \"%s\"", h->padstack_name);
 		if (h->drill_size_set)
-			rnd_message(PCB_MSG_DEBUG, " drill_size = %ml", xy2coord(h->drill_size));
-		rnd_message(PCB_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
-		rnd_message(PCB_MSG_DEBUG, " pad_shape = %f", h->pad_shape);
+			rnd_message(RND_MSG_DEBUG, " drill_size = %ml", xy2coord(h->drill_size));
+		rnd_message(RND_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
+		rnd_message(RND_MSG_DEBUG, " pad_shape = %f", h->pad_shape);
 		if (h->pad_shape == 0)
-			rnd_message(PCB_MSG_DEBUG, " oval");
+			rnd_message(RND_MSG_DEBUG, " oval");
 		else if (h->pad_shape == 1)
-			rnd_message(PCB_MSG_DEBUG, " rectangular");
+			rnd_message(RND_MSG_DEBUG, " rectangular");
 		else if (h->pad_shape == 2)
-			rnd_message(PCB_MSG_DEBUG, " oblong");
+			rnd_message(RND_MSG_DEBUG, " oblong");
 		else
-			rnd_message(PCB_MSG_DEBUG, " ?");
-		rnd_message(PCB_MSG_DEBUG, " pad_sx = %ml", xy2coord(h->pad_sx));
-		rnd_message(PCB_MSG_DEBUG, " pad_sy = %ml", xy2coord(h->pad_sy));
-		rnd_message(PCB_MSG_DEBUG, " pad_angle = %f", h->pad_angle);
+			rnd_message(RND_MSG_DEBUG, " ?");
+		rnd_message(RND_MSG_DEBUG, " pad_sx = %ml", xy2coord(h->pad_sx));
+		rnd_message(RND_MSG_DEBUG, " pad_sy = %ml", xy2coord(h->pad_sy));
+		rnd_message(RND_MSG_DEBUG, " pad_angle = %f", h->pad_angle);
 		if (h->pad_type_set & (h->pad_type == PAD_TYPE_THERMAL_RELIEF)) {
-			rnd_message(PCB_MSG_DEBUG, " thermal_clear_shape = %f", h->thermal_clear_shape);
+			rnd_message(RND_MSG_DEBUG, " thermal_clear_shape = %f", h->thermal_clear_shape);
 			if (h->thermal_clear_shape == 0)
-				rnd_message(PCB_MSG_DEBUG, " oval");
+				rnd_message(RND_MSG_DEBUG, " oval");
 			else if (h->thermal_clear_shape == 1)
-				rnd_message(PCB_MSG_DEBUG, " rectangular");
+				rnd_message(RND_MSG_DEBUG, " rectangular");
 			else if (h->thermal_clear_shape == 2)
-				rnd_message(PCB_MSG_DEBUG, " oblong");
+				rnd_message(RND_MSG_DEBUG, " oblong");
 			else
-				rnd_message(PCB_MSG_DEBUG, " ?");
-			rnd_message(PCB_MSG_DEBUG, " thermal_clear_sx = %ml", xy2coord(h->thermal_clear_sx));
-			rnd_message(PCB_MSG_DEBUG, " thermal_clear_sy = %ml", xy2coord(h->thermal_clear_sy));
-			rnd_message(PCB_MSG_DEBUG, " thermal_clear_angle = %f", h->thermal_clear_angle);
+				rnd_message(RND_MSG_DEBUG, " ?");
+			rnd_message(RND_MSG_DEBUG, " thermal_clear_sx = %ml", xy2coord(h->thermal_clear_sx));
+			rnd_message(RND_MSG_DEBUG, " thermal_clear_sy = %ml", xy2coord(h->thermal_clear_sy));
+			rnd_message(RND_MSG_DEBUG, " thermal_clear_angle = %f", h->thermal_clear_angle);
 		}
 		if (h->pad_type_set) {
-			rnd_message(PCB_MSG_DEBUG, " pad_type = ");
+			rnd_message(RND_MSG_DEBUG, " pad_type = ");
 			switch (h->pad_type) {
 			case PAD_TYPE_METAL:
-				rnd_message(PCB_MSG_DEBUG, "metal");
+				rnd_message(RND_MSG_DEBUG, "metal");
 				break;
 			case PAD_TYPE_ANTIPAD:
-				rnd_message(PCB_MSG_DEBUG, "antipad");
+				rnd_message(RND_MSG_DEBUG, "antipad");
 				break;
 			case PAD_TYPE_THERMAL_RELIEF:
-				rnd_message(PCB_MSG_DEBUG, "thermal_relief");
+				rnd_message(RND_MSG_DEBUG, "thermal_relief");
 				break;
 			default:
-				rnd_message(PCB_MSG_DEBUG, "error");
+				rnd_message(RND_MSG_DEBUG, "error");
 			}
 		}
-		rnd_message(PCB_MSG_DEBUG, "\n");
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	if (h->padstack_name_set) {
@@ -1766,7 +1766,7 @@ rnd_bool exec_pstk_element(parse_param * h)
 rnd_bool exec_pstk_end(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "padstack_end\n");
+		rnd_message(RND_MSG_DEBUG, "padstack_end\n");
 
 	/* add current padstack to list of padstacks */
 	if (current_pstk != NULL) {
@@ -1824,7 +1824,7 @@ static pcb_pstk_t *hyp_new_pstk(padstack_t *padstk, pcb_data_t *data, rnd_coord_
 			continue;
 
 		if (i->pad_angle != 0)
-			rnd_message(PCB_MSG_ERROR, "ignoring pad rotation of padstack at %$mm;%$mm.\n", x, y);
+			rnd_message(RND_MSG_ERROR, "ignoring pad rotation of padstack at %$mm;%$mm.\n", x, y);
 
 		mdef = strcmp(i->layer_name, "MDEF") == 0;
 		top_or_bottom = 0;
@@ -1855,7 +1855,7 @@ TODO(": check if mask/paste layers can be acquired explicitly as non-metal layer
 
 	ps = pcb_pstk_new_from_shape(data, x, y, padstk->drill_size, 1, 0, sh);
 	if (ps == NULL)
-		rnd_message(PCB_MSG_ERROR, "Failed to convert padstack at %$mm;%$mm.\n", x, y);
+		rnd_message(RND_MSG_ERROR, "Failed to convert padstack at %$mm;%$mm.\n", x, y);
 	return ps;
 }
 
@@ -1880,7 +1880,7 @@ void hyp_draw_pstk(padstack_t *padstk, rnd_coord_t x, rnd_coord_t y, char *ref)
 
 	if (padstk == NULL) {
 		if (hyp_debug)
-			rnd_message(PCB_MSG_DEBUG, "draw padstack: padstack not found.\n");
+			rnd_message(RND_MSG_DEBUG, "draw padstack: padstack not found.\n");
 		return;
 	}
 
@@ -1921,7 +1921,7 @@ void hyp_draw_pstk(padstack_t *padstk, rnd_coord_t x, rnd_coord_t y, char *ref)
 	number = pin_name;
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "draw padstack: device_name = \"%s\" pin_name = \"%s\"\n", name, number);
+		rnd_message(RND_MSG_DEBUG, "draw padstack: device_name = \"%s\" pin_name = \"%s\"\n", name, number);
 
 	pstk = hyp_new_pstk(padstk, data, x, y, (subc != NULL), (subc != NULL));
 	if (pin_name != NULL)
@@ -1941,7 +1941,7 @@ void hyp_draw_pstk(padstack_t *padstk, rnd_coord_t x, rnd_coord_t y, char *ref)
 rnd_bool exec_net(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "net: net_name = \"%s\"\n", h->net_name);
+		rnd_message(RND_MSG_DEBUG, "net: net_name = \"%s\"\n", h->net_name);
 
 	net_name = rnd_strdup(h->net_name);
 	net_clearance = -1;
@@ -1956,7 +1956,7 @@ rnd_bool exec_net(parse_param * h)
 rnd_bool exec_net_plane_separation(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "net_plane_separation: plane_separation = %ml\n", xy2coord(h->plane_separation));
+		rnd_message(RND_MSG_DEBUG, "net_plane_separation: plane_separation = %ml\n", xy2coord(h->plane_separation));
 
 	net_clearance = xy2coord(h->plane_separation);
 
@@ -1970,7 +1970,7 @@ rnd_bool exec_net_plane_separation(parse_param * h)
 rnd_bool exec_net_attribute(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "net_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
+		rnd_message(RND_MSG_DEBUG, "net_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
 
 	return 0;
 }
@@ -1982,14 +1982,14 @@ rnd_bool exec_net_attribute(parse_param * h)
 rnd_bool exec_seg(parse_param * h)
 {
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "seg: x1 = %ml y1 = %ml x2 = %ml y2 = %ml ", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2),
+		rnd_message(RND_MSG_DEBUG, "seg: x1 = %ml y1 = %ml x2 = %ml y2 = %ml ", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2),
 								y2coord(h->y2));
-		rnd_message(PCB_MSG_DEBUG, " width = %ml layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
+		rnd_message(RND_MSG_DEBUG, " width = %ml layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
 		if (h->plane_separation_set)
-			rnd_message(PCB_MSG_DEBUG, " plane_separation = %ml ", xy2coord(h->plane_separation));
+			rnd_message(RND_MSG_DEBUG, " plane_separation = %ml ", xy2coord(h->plane_separation));
 		if (h->left_plane_separation_set)
-			rnd_message(PCB_MSG_DEBUG, " left_plane_separation = %ml ", xy2coord(h->left_plane_separation));
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " left_plane_separation = %ml ", xy2coord(h->left_plane_separation));
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	pcb_line_new(hyp_get_layer(h), x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), xy2coord(h->width),
@@ -2006,15 +2006,15 @@ rnd_bool exec_arc(parse_param * h)
 {
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "arc: x1 = %ml y1 = %ml x2 = %ml y2 = %ml", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2),
+		rnd_message(RND_MSG_DEBUG, "arc: x1 = %ml y1 = %ml x2 = %ml y2 = %ml", x2coord(h->x1), y2coord(h->y1), x2coord(h->x2),
 								y2coord(h->y2));
-		rnd_message(PCB_MSG_DEBUG, " xc = %ml yc = %ml r = %ml", x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
-		rnd_message(PCB_MSG_DEBUG, " width = %ml layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
+		rnd_message(RND_MSG_DEBUG, " xc = %ml yc = %ml r = %ml", x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
+		rnd_message(RND_MSG_DEBUG, " width = %ml layer_name = \"%s\"", xy2coord(h->width), h->layer_name);
 		if (h->plane_separation_set)
-			rnd_message(PCB_MSG_DEBUG, " plane_separation = %ml", xy2coord(h->plane_separation));
+			rnd_message(RND_MSG_DEBUG, " plane_separation = %ml", xy2coord(h->plane_separation));
 		if (h->left_plane_separation_set)
-			rnd_message(PCB_MSG_DEBUG, " left_plane_separation = %ml", xy2coord(h->left_plane_separation));
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " left_plane_separation = %ml", xy2coord(h->left_plane_separation));
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	hyp_arc_new(hyp_get_layer(h), x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc),
@@ -2053,15 +2053,15 @@ rnd_bool exec_via(parse_param * h)
 		return exec_via_v1(h);
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
+		rnd_message(RND_MSG_DEBUG, "via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		if (h->padstack_name_set)
-			rnd_message(PCB_MSG_DEBUG, " padstack_name = \"%s\"", h->padstack_name);
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " padstack_name = \"%s\"", h->padstack_name);
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	if (!h->padstack_name_set) {
 		if (hyp_debug)
-			rnd_message(PCB_MSG_DEBUG, "pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
+			rnd_message(RND_MSG_DEBUG, "pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
 		return 0;
 	}
 
@@ -2082,38 +2082,38 @@ rnd_bool exec_via_v1(parse_param * h)
 	padstack_element_t *pad2;
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "old_via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
+		rnd_message(RND_MSG_DEBUG, "old_via: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		if (h->drill_size_set)
-			rnd_message(PCB_MSG_DEBUG, " drill_size = %ml", xy2coord(h->drill_size));
+			rnd_message(RND_MSG_DEBUG, " drill_size = %ml", xy2coord(h->drill_size));
 		if (h->layer1_name_set)
-			rnd_message(PCB_MSG_DEBUG, " layer1_name = \"%s\"", h->layer1_name);
+			rnd_message(RND_MSG_DEBUG, " layer1_name = \"%s\"", h->layer1_name);
 		if (h->layer2_name_set)
-			rnd_message(PCB_MSG_DEBUG, " layer2_name = \"%s\"", h->layer2_name);
+			rnd_message(RND_MSG_DEBUG, " layer2_name = \"%s\"", h->layer2_name);
 		if (h->via_pad_shape_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_shape = \"%s\"", h->via_pad_shape);
+			rnd_message(RND_MSG_DEBUG, " via_pad_shape = \"%s\"", h->via_pad_shape);
 		if (h->via_pad_sx_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_sx = \"%ml\"", xy2coord(h->via_pad_sx));
+			rnd_message(RND_MSG_DEBUG, " via_pad_sx = \"%ml\"", xy2coord(h->via_pad_sx));
 		if (h->via_pad_sy_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_sy = \"%ml\"", xy2coord(h->via_pad_sy));
+			rnd_message(RND_MSG_DEBUG, " via_pad_sy = \"%ml\"", xy2coord(h->via_pad_sy));
 		if (h->via_pad_angle_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_angle = \"%f\"", h->via_pad_angle);
+			rnd_message(RND_MSG_DEBUG, " via_pad_angle = \"%f\"", h->via_pad_angle);
 		if (h->via_pad1_shape_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad1_shape = \"%s\"", h->via_pad1_shape);
+			rnd_message(RND_MSG_DEBUG, " via_pad1_shape = \"%s\"", h->via_pad1_shape);
 		if (h->via_pad1_sx_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad1_sx = \"%ml\"", xy2coord(h->via_pad1_sx));
+			rnd_message(RND_MSG_DEBUG, " via_pad1_sx = \"%ml\"", xy2coord(h->via_pad1_sx));
 		if (h->via_pad1_sy_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad1_sy = \"%ml\"", xy2coord(h->via_pad1_sy));
+			rnd_message(RND_MSG_DEBUG, " via_pad1_sy = \"%ml\"", xy2coord(h->via_pad1_sy));
 		if (h->via_pad1_angle_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad1_angle = \"%f\"", h->via_pad1_angle);
+			rnd_message(RND_MSG_DEBUG, " via_pad1_angle = \"%f\"", h->via_pad1_angle);
 		if (h->via_pad2_shape_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad2_shape = \"%s\"", h->via_pad2_shape);
+			rnd_message(RND_MSG_DEBUG, " via_pad2_shape = \"%s\"", h->via_pad2_shape);
 		if (h->via_pad2_sx_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad2_sx = \"%ml\"", xy2coord(h->via_pad2_sx));
+			rnd_message(RND_MSG_DEBUG, " via_pad2_sx = \"%ml\"", xy2coord(h->via_pad2_sx));
 		if (h->via_pad2_sy_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad2_sy = \"%ml\"", xy2coord(h->via_pad2_sy));
+			rnd_message(RND_MSG_DEBUG, " via_pad2_sy = \"%ml\"", xy2coord(h->via_pad2_sy));
 		if (h->via_pad2_angle_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad2_angle = \"%f\"", h->via_pad2_angle);
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " via_pad2_angle = \"%f\"", h->via_pad2_angle);
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	/* create padstack for this via */
@@ -2177,18 +2177,18 @@ rnd_bool exec_via_v1(parse_param * h)
 rnd_bool exec_pin(parse_param * h)
 {
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "pin: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
-		rnd_message(PCB_MSG_DEBUG, " pin_reference = \"%s\"", h->pin_reference);
+		rnd_message(RND_MSG_DEBUG, "pin: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
+		rnd_message(RND_MSG_DEBUG, " pin_reference = \"%s\"", h->pin_reference);
 		if (h->padstack_name_set)
-			rnd_message(PCB_MSG_DEBUG, " padstack_name = \"%s\"", h->padstack_name);
+			rnd_message(RND_MSG_DEBUG, " padstack_name = \"%s\"", h->padstack_name);
 		if (h->pin_function_set)
-			rnd_message(PCB_MSG_DEBUG, " pin_function = %i", h->pin_function);
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " pin_function = %i", h->pin_function);
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	if (!h->padstack_name_set) {
 		if (hyp_debug)
-			rnd_message(PCB_MSG_DEBUG, "pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
+			rnd_message(RND_MSG_DEBUG, "pin: padstack not set. skipping pin \"%s\"\n", h->pin_reference);
 		return 0;
 	}
 
@@ -2208,23 +2208,23 @@ rnd_bool exec_pad(parse_param * h)
 	padstack_element_t *pad;
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "pad: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
+		rnd_message(RND_MSG_DEBUG, "pad: x = %ml y = %ml", x2coord(h->x), y2coord(h->y));
 		if (h->layer_name_set)
-			rnd_message(PCB_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
+			rnd_message(RND_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
 		if (h->via_pad_shape_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_shape = \"%s\"", h->via_pad_shape);
+			rnd_message(RND_MSG_DEBUG, " via_pad_shape = \"%s\"", h->via_pad_shape);
 		if (h->via_pad_sx_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_sx = \"%ml\"", xy2coord(h->via_pad_sx));
+			rnd_message(RND_MSG_DEBUG, " via_pad_sx = \"%ml\"", xy2coord(h->via_pad_sx));
 		if (h->via_pad_sy_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_sy = \"%ml\"", xy2coord(h->via_pad_sy));
+			rnd_message(RND_MSG_DEBUG, " via_pad_sy = \"%ml\"", xy2coord(h->via_pad_sy));
 		if (h->via_pad_angle_set)
-			rnd_message(PCB_MSG_DEBUG, " via_pad_angle = \"%f\"", h->via_pad_angle);
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " via_pad_angle = \"%f\"", h->via_pad_angle);
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	if (!h->layer_name_set) {
 		if (hyp_debug)
-			rnd_message(PCB_MSG_DEBUG, "pad: layer name not set. skipping pad\n.");
+			rnd_message(RND_MSG_DEBUG, "pad: layer name not set. skipping pad\n.");
 		return 0;
 	}
 
@@ -2272,16 +2272,16 @@ rnd_bool exec_useg(parse_param * h)
 	pcb_layergrp_id_t layer1_grp_id, layer2_grp_id;
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "useg: x1 = %ml y1 = %ml layer1_name = \"%s\"", x2coord(h->x1), y2coord(h->y1), h->layer1_name);
-		rnd_message(PCB_MSG_DEBUG, " x2 = %ml y2 = %ml layer2_name = \"%s\"", x2coord(h->x2), y2coord(h->y2), h->layer2_name);
+		rnd_message(RND_MSG_DEBUG, "useg: x1 = %ml y1 = %ml layer1_name = \"%s\"", x2coord(h->x1), y2coord(h->y1), h->layer1_name);
+		rnd_message(RND_MSG_DEBUG, " x2 = %ml y2 = %ml layer2_name = \"%s\"", x2coord(h->x2), y2coord(h->y2), h->layer2_name);
 		if (h->zlayer_name_set)
-			rnd_message(PCB_MSG_DEBUG, " zlayer_name = \"%s\" width = %ml length = %ml", h->zlayer_name, xy2coord(h->width),
+			rnd_message(RND_MSG_DEBUG, " zlayer_name = \"%s\" width = %ml length = %ml", h->zlayer_name, xy2coord(h->width),
 									xy2coord(h->length));
 		if (h->impedance_set)
-			rnd_message(PCB_MSG_DEBUG, " impedance = %f delay = %f ", h->impedance, h->delay);
+			rnd_message(RND_MSG_DEBUG, " impedance = %f delay = %f ", h->impedance, h->delay);
 		if (h->resistance_set)
-			rnd_message(PCB_MSG_DEBUG, " resistance = %f ", h->resistance);
-		rnd_message(PCB_MSG_DEBUG, "\n");
+			rnd_message(RND_MSG_DEBUG, " resistance = %f ", h->resistance);
+		rnd_message(RND_MSG_DEBUG, "\n");
 	}
 
 	/* lookup layer group begin and end layer are on */
@@ -2290,7 +2290,7 @@ rnd_bool exec_useg(parse_param * h)
 
 	if ((layer1_grp_id == -1) || (layer2_grp_id == -1)) {
 		if (hyp_debug)
-			rnd_message(PCB_MSG_DEBUG, "useg: skipping unrouted segment\n");
+			rnd_message(RND_MSG_DEBUG, "useg: skipping unrouted segment\n");
 		return 0;
 	}
 
@@ -2312,31 +2312,31 @@ rnd_bool exec_polygon_begin(parse_param * h)
 	hyp_polygon_t *i;
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "polygon begin:");
+		rnd_message(RND_MSG_DEBUG, "polygon begin:");
 		if (h->layer_name_set)
-			rnd_message(PCB_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
+			rnd_message(RND_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
 		if (h->width_set)
-			rnd_message(PCB_MSG_DEBUG, " width = %ml", xy2coord(h->width));
+			rnd_message(RND_MSG_DEBUG, " width = %ml", xy2coord(h->width));
 		if (h->polygon_type_set) {
-			rnd_message(PCB_MSG_DEBUG, " polygon_type = ", h->polygon_type, " ");
+			rnd_message(RND_MSG_DEBUG, " polygon_type = ", h->polygon_type, " ");
 			switch (h->polygon_type) {
 			case POLYGON_TYPE_PLANE:
-				rnd_message(PCB_MSG_DEBUG, "POLYGON_TYPE_PLANE");
+				rnd_message(RND_MSG_DEBUG, "POLYGON_TYPE_PLANE");
 				break;
 			case POLYGON_TYPE_POUR:
-				rnd_message(PCB_MSG_DEBUG, "POLYGON_TYPE_POUR");
+				rnd_message(RND_MSG_DEBUG, "POLYGON_TYPE_POUR");
 				break;
 			case POLYGON_TYPE_COPPER:
-				rnd_message(PCB_MSG_DEBUG, "POLYGON_TYPE_COPPER");
+				rnd_message(RND_MSG_DEBUG, "POLYGON_TYPE_COPPER");
 				break;
 			default:
-				rnd_message(PCB_MSG_DEBUG, "Error");
+				rnd_message(RND_MSG_DEBUG, "Error");
 				break;
 			}
 		}
 		if (h->id_set)
-			rnd_message(PCB_MSG_DEBUG, " id = %i", h->id);
-		rnd_message(PCB_MSG_DEBUG, " x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
+			rnd_message(RND_MSG_DEBUG, " id = %i", h->id);
+		rnd_message(RND_MSG_DEBUG, " x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 	}
 
 	if (!h->layer_name_set) {
@@ -2356,7 +2356,7 @@ rnd_bool exec_polygon_begin(parse_param * h)
 	if (hyp_debug)
 		for (i = polygon_head; i != NULL; i = i->next)
 			if (h->id == i->hyp_poly_id) {
-				rnd_message(PCB_MSG_INFO, "info: duplicate polygon id %i.\n", h->id);
+				rnd_message(RND_MSG_INFO, "info: duplicate polygon id %i.\n", h->id);
 				break;
 			}
 
@@ -2395,11 +2395,11 @@ rnd_bool exec_polygon_begin(parse_param * h)
 rnd_bool exec_polygon_end(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "polygon end:\n");
+		rnd_message(RND_MSG_DEBUG, "polygon end:\n");
 
 	/* bookkeeping */
 	if ((current_vertex == NULL) && hyp_debug)
-		rnd_message(PCB_MSG_WARNING, "polygon: unexpected polygon end. continuing.\n");
+		rnd_message(RND_MSG_WARNING, "polygon: unexpected polygon end. continuing.\n");
 	current_vertex = NULL;
 
 	return 0;
@@ -2416,10 +2416,10 @@ rnd_bool exec_polyvoid_begin(parse_param * h)
 	hyp_vertex_t *new_vertex;
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "polyvoid begin:");
+		rnd_message(RND_MSG_DEBUG, "polyvoid begin:");
 		if (h->id_set)
-			rnd_message(PCB_MSG_DEBUG, " id = %i", h->id);
-		rnd_message(PCB_MSG_DEBUG, " x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
+			rnd_message(RND_MSG_DEBUG, " id = %i", h->id);
+		rnd_message(RND_MSG_DEBUG, " x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 	}
 
 	if (!h->id_set) {
@@ -2434,7 +2434,7 @@ rnd_bool exec_polyvoid_begin(parse_param * h)
 
 	if (i == NULL) {
 		current_vertex = NULL;
-		rnd_message(PCB_MSG_WARNING, "polyvoid: polygon id %i not found\n", h->id);
+		rnd_message(RND_MSG_WARNING, "polyvoid: polygon id %i not found\n", h->id);
 		return 0;
 	}
 
@@ -2470,11 +2470,11 @@ rnd_bool exec_polyvoid_begin(parse_param * h)
 rnd_bool exec_polyvoid_end(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "polyvoid end:\n");
+		rnd_message(RND_MSG_DEBUG, "polyvoid end:\n");
 
 	/* bookkeeping */
 	if ((current_vertex == NULL) && hyp_debug)
-		rnd_message(PCB_MSG_WARNING, "polyvoid: unexpected polyvoid end. continuing.\n");
+		rnd_message(RND_MSG_WARNING, "polyvoid: unexpected polyvoid end. continuing.\n");
 	current_vertex = NULL;
 
 	return 0;
@@ -2491,31 +2491,31 @@ rnd_bool exec_polyline_begin(parse_param * h)
 	hyp_polygon_t *i;
 
 	if (hyp_debug) {
-		rnd_message(PCB_MSG_DEBUG, "polyline begin:");
+		rnd_message(RND_MSG_DEBUG, "polyline begin:");
 		if (h->layer_name_set)
-			rnd_message(PCB_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
+			rnd_message(RND_MSG_DEBUG, " layer_name = \"%s\"", h->layer_name);
 		if (h->width_set)
-			rnd_message(PCB_MSG_DEBUG, " width = %ml", xy2coord(h->width));
+			rnd_message(RND_MSG_DEBUG, " width = %ml", xy2coord(h->width));
 		if (h->polygon_type_set) {
-			rnd_message(PCB_MSG_DEBUG, " polygon_type = ", h->polygon_type, " ");
+			rnd_message(RND_MSG_DEBUG, " polygon_type = ", h->polygon_type, " ");
 			switch (h->polygon_type) {
 			case POLYGON_TYPE_PLANE:
-				rnd_message(PCB_MSG_DEBUG, "POLYGON_TYPE_PLANE");
+				rnd_message(RND_MSG_DEBUG, "POLYGON_TYPE_PLANE");
 				break;
 			case POLYGON_TYPE_POUR:
-				rnd_message(PCB_MSG_DEBUG, "POLYGON_TYPE_POUR");
+				rnd_message(RND_MSG_DEBUG, "POLYGON_TYPE_POUR");
 				break;
 			case POLYGON_TYPE_COPPER:
-				rnd_message(PCB_MSG_DEBUG, "POLYGON_TYPE_COPPER");
+				rnd_message(RND_MSG_DEBUG, "POLYGON_TYPE_COPPER");
 				break;
 			default:
-				rnd_message(PCB_MSG_DEBUG, "Error");
+				rnd_message(RND_MSG_DEBUG, "Error");
 				break;
 			}
 		}
 		if (h->id_set)
-			rnd_message(PCB_MSG_DEBUG, " id = %i", h->id);
-		rnd_message(PCB_MSG_DEBUG, " x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
+			rnd_message(RND_MSG_DEBUG, " id = %i", h->id);
+		rnd_message(RND_MSG_DEBUG, " x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 	}
 
 	if (!h->layer_name_set) {
@@ -2540,7 +2540,7 @@ rnd_bool exec_polyline_begin(parse_param * h)
 	if (hyp_debug)
 		for (i = polygon_head; i != NULL; i = i->next)
 			if (h->id == i->hyp_poly_id) {
-				rnd_message(PCB_MSG_DEBUG, "info: duplicate polygon id %i.\n", h->id);
+				rnd_message(RND_MSG_DEBUG, "info: duplicate polygon id %i.\n", h->id);
 				break;
 			}
 
@@ -2579,11 +2579,11 @@ rnd_bool exec_polyline_begin(parse_param * h)
 rnd_bool exec_polyline_end(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "polyline end:\n");
+		rnd_message(RND_MSG_DEBUG, "polyline end:\n");
 
 	/* bookkeeping */
 	if ((current_vertex == NULL) && hyp_debug)
-		rnd_message(PCB_MSG_WARNING, "polyline: unexpected polyline end. continuing.\n");
+		rnd_message(RND_MSG_WARNING, "polyline: unexpected polyline end. continuing.\n");
 	current_vertex = NULL;
 
 	return 0;
@@ -2598,10 +2598,10 @@ rnd_bool exec_line(parse_param * h)
 	hyp_vertex_t *new_vertex;
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "line: x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
+		rnd_message(RND_MSG_DEBUG, "line: x = %ml y = %ml\n", x2coord(h->x), y2coord(h->y));
 
 	if (current_vertex == NULL) {
-		rnd_message(PCB_MSG_DEBUG, "line: skipping.");
+		rnd_message(RND_MSG_DEBUG, "line: skipping.");
 		return 0;
 	}
 
@@ -2635,11 +2635,11 @@ rnd_bool exec_curve(parse_param * h)
 	hyp_vertex_t *new_vertex;
 
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "curve: x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", x2coord(h->x1),
+		rnd_message(RND_MSG_DEBUG, "curve: x1 = %ml y1 = %ml x2 = %ml y2 = %ml xc = %ml yc = %ml r = %ml\n", x2coord(h->x1),
 								y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc), y2coord(h->yc), xy2coord(h->r));
 
 	if (current_vertex == NULL) {
-		rnd_message(PCB_MSG_DEBUG, "curve: skipping.");
+		rnd_message(RND_MSG_DEBUG, "curve: skipping.");
 		return 0;
 	}
 
@@ -2670,7 +2670,7 @@ rnd_bool exec_curve(parse_param * h)
 rnd_bool exec_net_class(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "net_class: net_class_name = \"%s\"\n", h->net_class_name);
+		rnd_message(RND_MSG_DEBUG, "net_class: net_class_name = \"%s\"\n", h->net_class_name);
 
 	return 0;
 }
@@ -2682,7 +2682,7 @@ rnd_bool exec_net_class(parse_param * h)
 rnd_bool exec_net_class_element(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "net_class_element: net_name = \"%s\"\n", h->net_name);
+		rnd_message(RND_MSG_DEBUG, "net_class_element: net_name = \"%s\"\n", h->net_name);
 
 	return 0;
 }
@@ -2695,7 +2695,7 @@ rnd_bool exec_net_class_element(parse_param * h)
 rnd_bool exec_net_class_attribute(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "netclass_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
+		rnd_message(RND_MSG_DEBUG, "netclass_attribute: name = \"%s\" value = \"%s\"\n", h->name, h->value);
 
 	return 0;
 }
@@ -2707,7 +2707,7 @@ rnd_bool exec_net_class_attribute(parse_param * h)
 rnd_bool exec_key(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "key: key = \"%s\"\n", h->key);
+		rnd_message(RND_MSG_DEBUG, "key: key = \"%s\"\n", h->key);
 
 	return 0;
 }
@@ -2719,7 +2719,7 @@ rnd_bool exec_key(parse_param * h)
 rnd_bool exec_end(parse_param * h)
 {
 	if (hyp_debug)
-		rnd_message(PCB_MSG_DEBUG, "end:\n");
+		rnd_message(RND_MSG_DEBUG, "end:\n");
 	return 0;
 }
 

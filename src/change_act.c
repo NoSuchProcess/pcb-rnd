@@ -184,7 +184,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		set_selected = value ? pcb_clr_selected_join : pcb_set_selected_join;
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "%s():  Flag \"%s\" is not valid\n", cmd_name, flag_name);
+		rnd_message(RND_MSG_ERROR, "%s():  Flag \"%s\" is not valid\n", cmd_name, flag_name);
 		return;
 	}
 
@@ -200,7 +200,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 			if ((type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
 				pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-					rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+					rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			}
 			if (set_object(type, ptr1, ptr2, ptr3))
 				pcb_board_set_changed_flag(pcb_true);
@@ -226,7 +226,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 
 	case F_SelectedNames:
 	case F_SelectedElements:
-		rnd_message(PCB_MSG_ERROR, "Feature not supported\n");
+		rnd_message(RND_MSG_ERROR, "Feature not supported\n");
 		break;
 
 	case F_Selected:
@@ -308,7 +308,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (type != PCB_OBJ_VOID) {
 					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-						rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+						rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 				}
 				if (tostyle) {
 					if (pcb_chg_obj_1st_size(type, ptr1, ptr2, ptr3, value, absolute))
@@ -344,7 +344,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_SelectedNames:
 		case F_SelectedElements:
-			rnd_message(PCB_MSG_ERROR, "Feature not supported.\n");
+			rnd_message(RND_MSG_ERROR, "Feature not supported.\n");
 			break;
 
 		case F_Selected:
@@ -821,7 +821,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	else if (rnd_strcasecmp(prim, "delta") == 0) which = 1;
 	else if (rnd_strcasecmp(prim, "both") == 0) which = 2;
 	else {
-		rnd_message(PCB_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
+		rnd_message(RND_MSG_ERROR, "Second argument of ChangeAngle must be start, delta or both\n");
 		return -1;
 	}
 
@@ -836,7 +836,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		while(isspace(*delta)) delta++;
 		value = strtod(delta, &end);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "Invalid numeric (in angle)\n");
+			rnd_message(RND_MSG_ERROR, "Invalid numeric (in angle)\n");
 			return -1;
 		}
 		absolute = ((*delta != '-') && (*delta != '+'));
@@ -848,7 +848,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				if (type != PCB_OBJ_VOID) {
 					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-						rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+						rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_angle(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);
@@ -899,7 +899,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	else if ((rnd_strcasecmp(prim, "height") == 0) || (rnd_strcasecmp(prim, "y") == 0)) which = 1;
 	else if (rnd_strcasecmp(prim, "both") == 0) which = 2;
 	else {
-		rnd_message(PCB_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
+		rnd_message(RND_MSG_ERROR, "Second argument of ChangeRadius must be width, x, height, y or both\n");
 		return -1;
 	}
 
@@ -917,7 +917,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				if (type != PCB_OBJ_VOID) {
 					pcb_any_obj_t *obj = (pcb_any_obj_t *)ptr2;
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
-						rnd_message(PCB_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+						rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_radius(type, ptr1, ptr2, ptr3, which, value, absolute))
 							pcb_board_set_changed_flag(pcb_true);

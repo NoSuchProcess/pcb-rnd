@@ -126,7 +126,7 @@ static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 	sa = atan2(-(e1y - cy), e1x - cx) * PCB_RAD_TO_DEG + 180.0;
 	ea = atan2(-(e2y - cy), e2x - cx) * PCB_RAD_TO_DEG + 180.0;
 
-/*	pcb_trace("sa=%f ea=%f diff=%f\n", sa, ea, ea-sa);*/
+/*	rnd_trace("sa=%f ea=%f diff=%f\n", sa, ea, ea-sa);*/
 
 	atmp.Flags = pcb_no_flags();
 	atmp.X = rnd_round(cx);
@@ -422,9 +422,9 @@ static int cong_map(char *cong, pcb_poly_it_t *it, rnd_coord_t clr)
 	for(n = 0, go = pcb_poly_vect_first(it, &cx, &cy); go; go = pcb_poly_vect_next(it, &cx, &cy), n++) {
 		x = cx; y = cy;
 		if (first) {
-/*pcb_trace("prev %mm;%mm\n", cx, cy);*/
+/*rnd_trace("prev %mm;%mm\n", cx, cy);*/
 			pcb_poly_vect_peek_prev(it, &cx, &cy);
-/*pcb_trace("     %mm;%mm\n", cx, cy);*/
+/*rnd_trace("     %mm;%mm\n", cx, cy);*/
 			px = cx; py = cy;
 			first = 0;
 		}
@@ -463,7 +463,7 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 			first = 0;
 		}
 
-/*pcb_trace("[%d] %d %mm;%mm\n", n, cong[n], (rnd_coord_t)x, (rnd_coord_t)y);*/
+/*rnd_trace("[%d] %d %mm;%mm\n", n, cong[n], (rnd_coord_t)x, (rnd_coord_t)y);*/
 
 
 		dx = x - px;
@@ -566,7 +566,7 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 			first = 0;
 		}
 
-/*pcb_trace("[%d] %d %mm;%mm\n", n, cong[n], (rnd_coord_t)x, (rnd_coord_t)y);*/
+/*rnd_trace("[%d] %d %mm;%mm\n", n, cong[n], (rnd_coord_t)x, (rnd_coord_t)y);*/
 
 		/* skip points too dense */
 		if ((n >= CONG_MAX) || (cong[n])) {

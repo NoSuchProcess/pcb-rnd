@@ -247,7 +247,7 @@ int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 			dxf_gen_layer(&dxf_ctx, *s);
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Invalid header insertion: '%s'\n", name);
+		rnd_message(RND_MSG_ERROR, "Invalid header insertion: '%s'\n", name);
 		return -1;
 	}
 
@@ -256,7 +256,7 @@ int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 
 int insert_ftr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 {
-	rnd_message(PCB_MSG_ERROR, "Invalid footer insertion: '%s'\n", name);
+	rnd_message(RND_MSG_ERROR, "Invalid footer insertion: '%s'\n", name);
 	return -1;
 }
 
@@ -310,7 +310,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 
 	if (dxf_ctx.temp == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't open dxf template: %s\n", fn);
+		rnd_message(RND_MSG_ERROR, "Can't open dxf template: %s\n", fn);
 		fclose(dxf_ctx.f);
 		return;
 	}
@@ -318,7 +318,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	dxf_ctx.handle = 100;
 	if (dxf_ctx.f != NULL) {
 		if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "header", insert_hdr, &err) != 0)
-			rnd_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+			rnd_message(RND_MSG_ERROR, "Can't render dxf template header\n");
 	}
 
 	if (!dxf_cam.active)
@@ -330,18 +330,18 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 		pcb_hid_restore_layer_ons(save_ons);
 
 	if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "footer", insert_ftr, &err) != 0)
-		rnd_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+		rnd_message(RND_MSG_ERROR, "Can't render dxf template header\n");
 	fclose(dxf_ctx.f);
 
 	if (!dxf_cam.active) dxf_cam.okempty_content = 1; /* never warn in direct export */
 
 	if (pcb_cam_end(&dxf_cam) == 0) {
 		if (!dxf_cam.okempty_group)
-			rnd_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "dxf cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (dxf_ctx.drawn_objs == 0) {
 		if (!dxf_cam.okempty_content)
-			rnd_message(PCB_MSG_ERROR, "dxf cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "dxf cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 
@@ -363,7 +363,7 @@ static int dxf_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 
 		if (dxf_ctx.f != NULL) {
 			if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "footer", insert_ftr, &err) != 0)
-				rnd_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+				rnd_message(RND_MSG_ERROR, "Can't render dxf template header\n");
 			fclose(dxf_ctx.f);
 		}
 
@@ -373,7 +373,7 @@ static int dxf_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 			return 0;
 		}
 		if (lht_temp_exec(dxf_ctx.f, "", dxf_ctx.temp, "header", insert_hdr, &err) != 0)
-			rnd_message(PCB_MSG_ERROR, "Can't render dxf template header\n");
+			rnd_message(RND_MSG_ERROR, "Can't render dxf template header\n");
 	}
 
 	if (!dxf_cam.active) {
@@ -508,7 +508,7 @@ static void dxf_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 
 static void dxf_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	rnd_message(PCB_MSG_ERROR, "dxf_calibrate() not implemented");
+	rnd_message(RND_MSG_ERROR, "dxf_calibrate() not implemented");
 	return;
 }
 

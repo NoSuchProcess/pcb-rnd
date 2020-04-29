@@ -267,7 +267,7 @@ TODO("multiple plines within the returned polyarea np does not really work\n");
 #if 0
 			if (!pcb_poly_valid(np)) {
 				rnd_cardinal_t cnt = pcb_polyarea_split_selfint(np);
-				rnd_message(PCB_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", (long)cnt);
+				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", (long)cnt);
 				if (cnt > 1)
 					*need_full = pcb_true;
 				assert(pcb_poly_valid(np));
@@ -333,7 +333,7 @@ static int Subtract(pcb_polyarea_t * np1, pcb_poly_t * p, rnd_bool fnp)
 	p->Clipped = biggest(merged);
 	assert(!p->Clipped || pcb_poly_valid(p->Clipped));
 	if (!p->Clipped)
-		rnd_message(PCB_MSG_WARNING, "Polygon #%ld cleared out of existence near (%$mm, %$mm)\n",
+		rnd_message(RND_MSG_WARNING, "Polygon #%ld cleared out of existence near (%$mm, %$mm)\n",
 						p->ID, (p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
 	return 1;
 }
@@ -948,7 +948,7 @@ int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p,
 		pcb_polyarea_free(&p->Clipped);
 	p->Clipped = pcb_poly_to_polyarea(p, &need_full);
 	if (need_full && !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, p)) {
-		rnd_message(PCB_MSG_WARNING, "Polygon #%ld was self intersecting; it had to be split up and\nthe full poly flag set.\n", (long)p->ID);
+		rnd_message(RND_MSG_WARNING, "Polygon #%ld was self intersecting; it had to be split up and\nthe full poly flag set.\n", (long)p->ID);
 		PCB_FLAG_SET(PCB_FLAG_FULLPOLY, p);
 	}
 	pcb_poly_contours_free(&p->NoHoles);
@@ -1150,7 +1150,7 @@ void pcb_polygon_close_poly(void)
 			dx = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].X - pcb_crosshair.AttachedPolygon.Points[0].X);
 			dy = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].Y - pcb_crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
-				rnd_message(PCB_MSG_ERROR, "Cannot close polygon because 45 degree lines are requested.\n");
+				rnd_message(RND_MSG_ERROR, "Cannot close polygon because 45 degree lines are requested.\n");
 				return;
 			}
 		}
@@ -1158,7 +1158,7 @@ void pcb_polygon_close_poly(void)
 		pcb_draw();
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "A polygon has to have at least 3 points\n");
+		rnd_message(RND_MSG_ERROR, "A polygon has to have at least 3 points\n");
 }
 
 static void poly_copy_data(pcb_poly_t *dst, pcb_poly_t *src)
@@ -1228,7 +1228,7 @@ void pcb_polygon_close_hole(void)
 			dx = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].X - pcb_crosshair.AttachedPolygon.Points[0].X);
 			dy = coord_abs(pcb_crosshair.AttachedPolygon.Points[n - 1].Y - pcb_crosshair.AttachedPolygon.Points[0].Y);
 			if (!(dx == 0 || dy == 0 || dx == dy)) {
-				rnd_message(PCB_MSG_ERROR, "Cannot close polygon hole because 45 degree lines are requested.\n");
+				rnd_message(RND_MSG_ERROR, "Cannot close polygon hole because 45 degree lines are requested.\n");
 				return;
 			}
 		}
@@ -1236,7 +1236,7 @@ void pcb_polygon_close_hole(void)
 		pcb_draw();
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "A polygon hole has to have at least 3 points\n");
+		rnd_message(RND_MSG_ERROR, "A polygon hole has to have at least 3 points\n");
 }
 
 /* ---------------------------------------------------------------------------

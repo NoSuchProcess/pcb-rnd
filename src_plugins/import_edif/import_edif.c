@@ -77,7 +77,7 @@ static int edif_import(pcb_plug_import_t *ctx, unsigned int aspects, const char 
 	int ret;
 
 	if (numfns != 1) {
-		rnd_message(PCB_MSG_ERROR, "import_edif: requires exactly 1 input file name\n");
+		rnd_message(RND_MSG_ERROR, "import_edif: requires exactly 1 input file name\n");
 		return -1;
 	}
 

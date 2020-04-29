@@ -174,7 +174,7 @@ static pcb_layergrp_id_t obj_layergrp(const pcb_any_obj_t *obj)
 				return layer->meta.real.grp;
 			return SLayer;  /* any layer will do */
 		default:
-			rnd_message(PCB_MSG_ERROR, "Odd terminal type encountered in obj_layergrp()\n");
+			rnd_message(RND_MSG_ERROR, "Odd terminal type encountered in obj_layergrp()\n");
 	}
 	return -1;
 }
@@ -742,7 +742,7 @@ rnd_bool AutoPlaceSelected(void)
 
 	Selected = collectSelectedSubcircuits();
 	if (vtp0_len(&Selected) == 0) {
-		rnd_message(PCB_MSG_ERROR, "No subcircuits selected to autoplace.\n");
+		rnd_message(RND_MSG_ERROR, "No subcircuits selected to autoplace.\n");
 		goto done;
 	}
 

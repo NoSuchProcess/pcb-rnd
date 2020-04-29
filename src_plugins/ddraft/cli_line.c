@@ -5,18 +5,18 @@ static int line_parse(char *line, int argc, cli_node_t *argv, rnd_box_t *box, in
 	if (argv[n].type == CLI_FROM)
 		n++;
 	else if (argv[n].type == CLI_TO) {
-		rnd_message(PCB_MSG_ERROR, "Incremental line drawing is not yet supported\n");
+		rnd_message(RND_MSG_ERROR, "Incremental line drawing is not yet supported\n");
 		return -1;
 	}
 	n = cli_apply_coord(argv, n, argc, &box->X1, &box->Y1, annot);
 	if (n < 0) {
 		if (verbose)
-			rnd_message(PCB_MSG_ERROR, "Invalid 'from' coord\n");
+			rnd_message(RND_MSG_ERROR, "Invalid 'from' coord\n");
 		return -1;
 	}
 	if (argv[n].type != CLI_TO) {
 		if (verbose)
-			rnd_message(PCB_MSG_ERROR, "Missing 'to'\n");
+			rnd_message(RND_MSG_ERROR, "Missing 'to'\n");
 		return -1;
 	}
 	n++;
@@ -25,12 +25,12 @@ static int line_parse(char *line, int argc, cli_node_t *argv, rnd_box_t *box, in
 	n = cli_apply_coord(argv, n, argc, &box->X2, &box->Y2, annot);
 	if (n < 0) {
 		if (verbose)
-			rnd_message(PCB_MSG_ERROR, "Invalid 'to' coord\n");
+			rnd_message(RND_MSG_ERROR, "Invalid 'to' coord\n");
 		return -1;
 	}
 	if (n != argc) {
 		if (verbose)
-			rnd_message(PCB_MSG_ERROR, "Excess tokens after the to coord\n");
+			rnd_message(RND_MSG_ERROR, "Excess tokens after the to coord\n");
 		return -1;
 	}
 	return 0;
@@ -41,12 +41,12 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 	int res;
 	rnd_box_t box;
 
-	pcb_trace("line e: '%s'\n", line);
+	rnd_trace("line e: '%s'\n", line);
 
 	memset(&box, 0, sizeof(box));
 	res = line_parse(line, argc, argv, &box, 1, 0);
 	if (res == 0) {
-		pcb_trace("line_exec: %mm;%mm -> %mm;%mm\n", box.X1, box.Y1, box.X2, box.Y2);
+		rnd_trace("line_exec: %mm;%mm -> %mm;%mm\n", box.X1, box.Y1, box.X2, box.Y2);
 		pcb_line_new(PCB_CURRLAYER(PCB), box.X1, box.Y1, box.X2, box.Y2,
 			conf_core.design.line_thickness, 2 * conf_core.design.clearance,
 			pcb_flag_make(conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0));
@@ -65,7 +65,7 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 	if (pcb_tool_next_id != pcb_ddraft_tool)
 		pcb_tool_select_by_id(&PCB->hidlib, pcb_ddraft_tool);
 
-	pcb_trace("line e: '%s':%d\n", line, cursor);
+	rnd_trace("line e: '%s':%d\n", line, cursor);
 	memset(&box, 0, sizeof(box));
 	res = line_parse(line, argc, argv, &box, 0, 1);
 	if (res == 0) {
@@ -109,7 +109,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 	rnd_coord_t ox, oy;
 	char buff[CLI_MAX_INS_LEN];
 
-	pcb_trace("line c: '%s':%d (argn=%d)\n", line, cursor, argn);
+	rnd_trace("line c: '%s':%d (argn=%d)\n", line, cursor, argn);
 	cli_print_args(argc, argv);
 
 	if (argn < 0) {
@@ -141,17 +141,17 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 		case CLI_ABSOLUTE:
 		case CLI_FROM:
 		case CLI_TO:
-			pcb_trace("abs");
+			rnd_trace("abs");
 			pcb_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X, pcb_crosshair.Y);
 			goto maybe_replace_after;
 			break;
 		case CLI_RELATIVE:
 			res = get_rel_coord(argc, argv, argn, &ox, &oy);
 			if (res < 0) {
-				rnd_message(PCB_MSG_ERROR, "Failed to interpret coords already entered\n");
+				rnd_message(RND_MSG_ERROR, "Failed to interpret coords already entered\n");
 				return 0;
 			}
-			pcb_trace("rel from %$mm,%$mm", ox, oy);
+			rnd_trace("rel from %$mm,%$mm", ox, oy);
 			pcb_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X - ox, pcb_crosshair.Y - oy);
 			maybe_replace_after:;
 			if ((by+1 < argc) && (argv[by+1].type == CLI_COORD)) {
@@ -162,7 +162,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 		case CLI_ANGLE:
 			res = get_rel_coord(argc, argv, argn, &ox, &oy);
 			if (res < 0) {
-				rnd_message(PCB_MSG_ERROR, "Failed to interpret coords already entered\n");
+				rnd_message(RND_MSG_ERROR, "Failed to interpret coords already entered\n");
 				return 0;
 			}
 			replace=1;
@@ -171,7 +171,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 		case CLI_DIST:
 			res = get_rel_coord(argc, argv, argn, &ox, &oy);
 			if (res < 0) {
-				rnd_message(PCB_MSG_ERROR, "Failed to interpret coords already entered\n");
+				rnd_message(RND_MSG_ERROR, "Failed to interpret coords already entered\n");
 				return 0;
 			}
 			replace=1;
@@ -193,22 +193,22 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 	}
 
 	if (*buff == '\0') {
-		pcb_trace("nope...\n");
+		rnd_trace("nope...\n");
 		return 0;
 	}
 
 	if (replace) {
-		pcb_trace(" replace %d: '%s'\n", argn, buff);
+		rnd_trace(" replace %d: '%s'\n", argn, buff);
 		cli_str_remove(line, argv[argn].begin, argv[argn].end);
 		cursor = cli_str_insert(line, argv[argn].begin, buff, 1);
 		
 	}
 	else {
-		pcb_trace(" insert-after %d: '%s'\n", argn, buff);
+		rnd_trace(" insert-after %d: '%s'\n", argn, buff);
 		cursor = cli_str_insert(line, argv[argn].end, buff, 1);
 	}
 
-pcb_trace("line='%s'\n", line);
+rnd_trace("line='%s'\n", line);
 	update:;
 	pcb_hid_command_entry(line, &cursor);
 
@@ -217,7 +217,7 @@ pcb_trace("line='%s'\n", line);
 
 static int line_tab(char *line, int cursor, int argc, cli_node_t *argv)
 {
-	pcb_trace("line t: '%s':%d\n", line, cursor);
+	rnd_trace("line t: '%s':%d\n", line, cursor);
 	return -1;
 }
 

@@ -68,7 +68,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
 
 	if (*vp == '?') {
-		rnd_message(PCB_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", pcb_gui->coord_per_pix);
+		rnd_message(RND_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", pcb_gui->coord_per_pix);
 		return 0;
 	}
 

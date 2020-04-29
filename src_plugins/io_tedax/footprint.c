@@ -117,7 +117,7 @@ int tedax_pstk_fsave(pcb_pstk_t *padstack, rnd_coord_t ox, rnd_coord_t oy, FILE 
 	int n, i;
 
 	if (proto == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc padstack with invalid prototype\n");
+		rnd_message(RND_MSG_ERROR, "tEDAx footprint export: omitting subc padstack with invalid prototype\n");
 		return 1;
 	}
 	if (proto->hdia > 0)
@@ -225,7 +225,7 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 
 				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
 				if (pcb_poly_contour(&it) == NULL) {
-					rnd_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no clipped contour\n");
+					rnd_message(RND_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no clipped contour\n");
 					continue;
 				}
 
@@ -234,10 +234,10 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 					numpt++;
 
 				if (pcb_poly_hole_first(&it) != NULL)
-					rnd_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon holes\n");
+					rnd_message(RND_MSG_ERROR, "tEDAx footprint export: omitting subc polygon holes\n");
 
 				if (numpt == 0) {
-					rnd_message(PCB_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no points\n");
+					rnd_message(RND_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no points\n");
 					continue;
 				}
 
@@ -316,7 +316,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn, long subc_idx)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_fp_save(): can't open %s for writing\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_fp_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	res = tedax_fp_fsave(data, f, subc_idx);
@@ -357,7 +357,7 @@ do { \
 	char *end; \
 	dst = strtol(src, &end, 10); \
 	if (*end != '\0') { \
-		rnd_message(PCB_MSG_ERROR, msg, src); \
+		rnd_message(RND_MSG_ERROR, msg, src); \
 		return -1; \
 	} \
 } while(0)
@@ -367,7 +367,7 @@ do { \
 	char *end; \
 	dst = strtod(src, &end); \
 	if (*end != '\0') { \
-		rnd_message(PCB_MSG_ERROR, msg, src); \
+		rnd_message(RND_MSG_ERROR, msg, src); \
 		return -1; \
 	} \
 } while(0)
@@ -377,7 +377,7 @@ do { \
 	rnd_bool succ; \
 	dst = pcb_get_value_ex(src, NULL, NULL, NULL, "mm", &succ); \
 	if (!succ) { \
-		rnd_message(PCB_MSG_ERROR, msg, src); \
+		rnd_message(RND_MSG_ERROR, msg, src); \
 		return -1; \
 	} \
 } while(0)
@@ -390,7 +390,7 @@ do { \
 	load_int(termid, src, msg); \
 	term = htip_get(&terms, termid); \
 	if (term == NULL) { \
-		rnd_message(PCB_MSG_ERROR, "undefined terminal %s - skipping footprint\n", src); \
+		rnd_message(RND_MSG_ERROR, "undefined terminal %s - skipping footprint\n", src); \
 		return -1; \
 	} \
 	rnd_attribute_put(&obj->Attributes, "term", term->name); \
@@ -404,7 +404,7 @@ do { \
 	else if (strcmp(src, "primary") == 0) \
 		dst = 0; \
 	else { \
-		rnd_message(PCB_MSG_ERROR, msg, lloc); \
+		rnd_message(RND_MSG_ERROR, msg, lloc); \
 		return -1; \
 	} \
 } while(0)
@@ -417,7 +417,7 @@ static int load_poly(rnd_coord_t *px, rnd_coord_t *py, int maxpt, int argc, char
 	argc--;
 	argv++;
 	if (max*2 != argc) {
-		rnd_message(PCB_MSG_ERROR, "invalid number of polygon points: expected %d coords got %d skipping footprint\n", max*2, argc);
+		rnd_message(RND_MSG_ERROR, "invalid number of polygon points: expected %d coords got %d skipping footprint\n", max*2, argc);
 		return -1;
 	}
 	for(n = 0; n < max; n++) {
@@ -442,7 +442,7 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 	else if (strcmp(ltyp, "mask") == 0) lyt |= PCB_LYT_MASK;
 	else if (strcmp(ltyp, "paste") == 0) lyt |= PCB_LYT_PASTE;
 	else {
-		rnd_message(PCB_MSG_ERROR, "tEDAx footprint load: invalid layer type %s\n", ltyp);
+		rnd_message(RND_MSG_ERROR, "tEDAx footprint load: invalid layer type %s\n", ltyp);
 		return NULL;
 	}
 
@@ -462,7 +462,7 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 	else if (strcmp(lloc, "secondary") == 0) lyt |= PCB_LYT_BOTTOM;
 	else if (strcmp(lloc, "inner") == 0) lyt |= PCB_LYT_INTERN;
 	else {
-		rnd_message(PCB_MSG_ERROR, "tEDAx footprint load: invalid layer location %s\n", lloc);
+		rnd_message(RND_MSG_ERROR, "tEDAx footprint load: invalid layer location %s\n", lloc);
 		return NULL;
 	}
 
@@ -495,7 +495,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 
 			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
 			if (numpt < 0) {
-				rnd_message(PCB_MSG_ERROR, "tEDAx footprint load: failed to load polygon\n");
+				rnd_message(RND_MSG_ERROR, "tEDAx footprint load: failed to load polygon\n");
 				return -1;
 			}
 			load_val(clr, argv[4], "invalid clearance");
@@ -504,7 +504,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 				int n;
 				p = pcb_poly_new(*ly, clr, pcb_no_flags());
 				if (p == NULL) {
-					rnd_message(PCB_MSG_ERROR, "tEDAx footprint load: failed to create poly, skipping footprint\n");
+					rnd_message(RND_MSG_ERROR, "tEDAx footprint load: failed to create poly, skipping footprint\n");
 					return -1;
 				}
 				for(n = 0; n < numpt; n++)
@@ -647,7 +647,7 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_i
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fn);
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fn);
 		return -1;
 	}
 

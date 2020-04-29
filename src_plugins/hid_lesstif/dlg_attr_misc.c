@@ -262,7 +262,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 		return;
 
 	if (!(res.type & FGW_STR)) {
-		rnd_message(PCB_MSG_ERROR, CPACT " returned non-string\n");
+		rnd_message(RND_MSG_ERROR, CPACT " returned non-string\n");
 		fgw_arg_free(&rnd_fgw, &res);
 		return;
 	}
@@ -270,7 +270,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 	r = rnd_color_load_str(&nclr, res.val.str);
 	fgw_arg_free(&rnd_fgw, &res);
 	if (r != 0) {
-		rnd_message(PCB_MSG_ERROR, CPACT " returned invalid color string\n");
+		rnd_message(RND_MSG_ERROR, CPACT " returned invalid color string\n");
 		return;
 	}
 

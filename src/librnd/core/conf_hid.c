@@ -151,15 +151,15 @@ void rnd_conf_hid_global_cb_ptr_(rnd_conf_native_t *item, void *ptr, int offs)
 }
 
 
-void rnd_conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup)
+void rnd_conf_loglevel_props(rnd_message_level_t level, const char **tag, int *popup)
 {
 	*tag = NULL;
 	*popup = 0;
 	switch(level) {
-		case PCB_MSG_DEBUG:   *tag = pcbhl_conf.appearance.loglevels.debug_tag; *popup = pcbhl_conf.appearance.loglevels.debug_popup; break;
-		case PCB_MSG_INFO:    *tag = pcbhl_conf.appearance.loglevels.info_tag; *popup = pcbhl_conf.appearance.loglevels.info_popup; break;
-		case PCB_MSG_WARNING: *tag = pcbhl_conf.appearance.loglevels.warning_tag; *popup = pcbhl_conf.appearance.loglevels.warning_popup; break;
-		case PCB_MSG_ERROR:   *tag = pcbhl_conf.appearance.loglevels.error_tag; *popup = pcbhl_conf.appearance.loglevels.error_popup; break;
+		case RND_MSG_DEBUG:   *tag = pcbhl_conf.appearance.loglevels.debug_tag; *popup = pcbhl_conf.appearance.loglevels.debug_popup; break;
+		case RND_MSG_INFO:    *tag = pcbhl_conf.appearance.loglevels.info_tag; *popup = pcbhl_conf.appearance.loglevels.info_popup; break;
+		case RND_MSG_WARNING: *tag = pcbhl_conf.appearance.loglevels.warning_tag; *popup = pcbhl_conf.appearance.loglevels.warning_popup; break;
+		case RND_MSG_ERROR:   *tag = pcbhl_conf.appearance.loglevels.error_tag; *popup = pcbhl_conf.appearance.loglevels.error_popup; break;
 			break;
 	}
 }

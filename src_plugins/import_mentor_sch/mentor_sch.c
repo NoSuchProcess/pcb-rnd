@@ -149,7 +149,7 @@ static int parse_netlist_view(gsxl_node_t *view)
 		}
 	}
 	if (cnt == 0)
-		rnd_message(PCB_MSG_WARNING, "Couldn't find any part map rules - check your map_search_paths and rule files\n");
+		rnd_message(RND_MSG_WARNING, "Couldn't find any part map rules - check your map_search_paths and rule files\n");
 
 	for(contents = view->children; contents != NULL; contents = contents->next) {
 		if (strcmp(contents->str, "contents") == 0) {
@@ -173,7 +173,7 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 
 	/* check the header */
 	if (strcmp(dom->root->str, "edif") != 0) {
-		rnd_message(PCB_MSG_ERROR, "Invalid mentor edf header: not an EDIF file\n");
+		rnd_message(RND_MSG_ERROR, "Invalid mentor edf header: not an EDIF file\n");
 		return -1;
 	}
 
@@ -224,7 +224,7 @@ static int mentor_sch_load(const char *fname_net)
 
 	fn = pcb_fopen(NULL, fname_net, "r");
 	if (fn == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
 	}
 
@@ -244,7 +244,7 @@ static int mentor_sch_load(const char *fname_net)
 		ret = mentor_parse_tree(&dom);
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Invalid mentor edf: not a valid s-expression file near %d:%d\n", dom.parse.line, dom.parse.col);
+		rnd_message(RND_MSG_ERROR, "Invalid mentor edf: not a valid s-expression file near %d:%d\n", dom.parse.line, dom.parse.col);
 		ret = -1;
 	}
 
@@ -291,7 +291,7 @@ static int mentor_sch_support_prio(pcb_plug_import_t *ctx, unsigned int aspects,
 static int mentor_sch_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	if (numfns != 1) {
-		rnd_message(PCB_MSG_ERROR, "import_mentor_sch: requires exactly 1 input file name\n");
+		rnd_message(RND_MSG_ERROR, "import_mentor_sch: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return mentor_sch_load(fns[0]);

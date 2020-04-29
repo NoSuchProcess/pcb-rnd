@@ -80,7 +80,7 @@ extern lht_doc_t *pcb_conf_main_root[];
 void cmd_dump(char *arg)
 {
 	if (arg == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Need an arg: native or lihata");
+		rnd_message(RND_MSG_ERROR, "Need an arg: native or lihata");
 		return;
 	}
 	if (strncmp(arg, "native", 6) == 0) {
@@ -94,7 +94,7 @@ void cmd_dump(char *arg)
 		while(isspace(*arg)) arg++;
 		role = rnd_conf_role_parse(arg);
 		if (role == RND_CFR_invalid) {
-			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
+			rnd_message(RND_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
 		if (pcb_conf_main_root[role] != NULL)
@@ -103,7 +103,7 @@ void cmd_dump(char *arg)
 			printf("<empty>\n");
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "Invalid dump mode: '%s'", arg);
+		rnd_message(RND_MSG_ERROR, "Invalid dump mode: '%s'", arg);
 }
 
 void cmd_print(char *arg)
@@ -112,12 +112,12 @@ void cmd_print(char *arg)
 	gds_t s;
 
 	if (arg == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Need an arg: a native path");
+		rnd_message(RND_MSG_ERROR, "Need an arg: a native path");
 		return;
 	}
 	node = rnd_conf_get_field(arg);
 	if (node == NULL) {
-		rnd_message(PCB_MSG_ERROR, "No such path: '%s'", arg);
+		rnd_message(RND_MSG_ERROR, "No such path: '%s'", arg);
 		return;
 	}
 	gds_init(&s);
@@ -133,7 +133,7 @@ void cmd_load(char *arg, int is_text)
 
 	if (arg == NULL) {
 		help:;
-		rnd_message(PCB_MSG_ERROR, "Need 2 args: role and %s", (is_text ? "lihata text" : "file name"));
+		rnd_message(RND_MSG_ERROR, "Need 2 args: role and %s", (is_text ? "lihata text" : "file name"));
 		return;
 	}
 
@@ -151,7 +151,7 @@ void cmd_load(char *arg, int is_text)
 
 	role = rnd_conf_role_parse(arg);
 	if (role == RND_CFR_invalid) {
-		rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
+		rnd_message(RND_MSG_ERROR, "Invalid role: '%s'", arg);
 		return;
 	}
 	printf("Result: %d\n", rnd_conf_load_as(role, fn, is_text));
@@ -165,7 +165,7 @@ void cmd_policy(char *arg)
 {
 	rnd_conf_policy_t np = rnd_conf_policy_parse(arg);
 	if (np == RND_POL_invalid)
-		rnd_message(PCB_MSG_ERROR, "Invalid/unknown policy: '%s'", arg);
+		rnd_message(RND_MSG_ERROR, "Invalid/unknown policy: '%s'", arg);
 	else
 		current_policy = np;
 }
@@ -174,7 +174,7 @@ void cmd_role(char *arg)
 {
 	rnd_conf_role_t nr = rnd_conf_role_parse(arg);
 	if (nr == RND_CFR_invalid)
-		rnd_message(PCB_MSG_ERROR, "Invalid/unknown role: '%s'", arg);
+		rnd_message(RND_MSG_ERROR, "Invalid/unknown role: '%s'", arg);
 	else
 		current_role = nr;
 }
@@ -186,7 +186,7 @@ void cmd_chprio(char *arg)
 	lht_node_t *first;
 
 	if ((*end != '\0') || (np < 0)) {
-		rnd_message(PCB_MSG_ERROR, "Invalid integer prio: '%s'", arg);
+		rnd_message(RND_MSG_ERROR, "Invalid integer prio: '%s'", arg);
 		return;
 	}
 	first = rnd_conf_lht_get_first(current_role, 0);
@@ -209,12 +209,12 @@ void cmd_chpolicy(char *arg)
 	lht_node_t *first;
 
 	if (arg == NULL) {
-		rnd_message(PCB_MSG_ERROR, "need a policy", arg);
+		rnd_message(RND_MSG_ERROR, "need a policy", arg);
 		return;
 	}
 	np = rnd_conf_policy_parse(arg);
 	if (np == RND_POL_invalid) {
-		rnd_message(PCB_MSG_ERROR, "Invalid integer policy: '%s'", arg);
+		rnd_message(RND_MSG_ERROR, "Invalid integer policy: '%s'", arg);
 		return;
 	}
 
@@ -244,7 +244,7 @@ void cmd_set(char *arg)
 	path = arg;
 	val = strpbrk(path, " \t=");
 	if (val == NULL) {
-		rnd_message(PCB_MSG_ERROR, "set needs a value");
+		rnd_message(RND_MSG_ERROR, "set needs a value");
 		return;
 	}
 	*val = '\0';
@@ -260,7 +260,7 @@ void cmd_watch(char *arg, int add)
 {
 	rnd_conf_native_t *n = rnd_conf_get_field(arg);
 	if (n == NULL) {
-		rnd_message(PCB_MSG_ERROR, "unknown path");
+		rnd_message(RND_MSG_ERROR, "unknown path");
 		return;
 	}
 	rnd_conf_hid_set_cb(n, hid_id, (add ? &watch_cbs : NULL));
@@ -296,7 +296,7 @@ void cmd_reset(char *arg)
 	else {
 		rnd_conf_role_t role = rnd_conf_role_parse(arg);
 		if (role == RND_CFR_invalid) {
-			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", arg);
+			rnd_message(RND_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
 		rnd_conf_reset(role, "<cmd_reset role>");
@@ -399,7 +399,7 @@ int main()
 		else if (strcmp(cmd, "help") == 0)
 			cmd_help(arg);
 		else
-			rnd_message(PCB_MSG_ERROR, "unknown command '%s'", cmd);
+			rnd_message(RND_MSG_ERROR, "unknown command '%s'", cmd);
 	}
 
 	conf_core_uninit_pre();

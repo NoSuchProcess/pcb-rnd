@@ -189,7 +189,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				changed = 1;
 			}
 			else
-				rnd_message(PCB_MSG_ERROR, "Ignoring location - for this layer group type it is determined by the stackup\n");
+				rnd_message(RND_MSG_ERROR, "Ignoring location - for this layer group type it is determined by the stackup\n");
 		}
 
 		if (dlg[wpurp].val.str == NULL) {

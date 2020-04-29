@@ -53,7 +53,7 @@ static void log_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	ctx->active = 0;
 }
 
-static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, pcb_logline_t *line)
+static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, rnd_logline_t *line)
 {
 	pcb_hid_text_t *txt = atxt->wdata;
 	const char *prefix = NULL;
@@ -83,10 +83,10 @@ static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, pcb_logline_t 
 	else {
 		if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
 			switch(line->level) {
-				case PCB_MSG_DEBUG:   prefix = "D: "; break;
-				case PCB_MSG_INFO:    prefix = "I: "; break;
-				case PCB_MSG_WARNING: prefix = "W: "; break;
-				case PCB_MSG_ERROR:   prefix = "E: "; break;
+				case RND_MSG_DEBUG:   prefix = "D: "; break;
+				case RND_MSG_INFO:    prefix = "I: "; break;
+				case RND_MSG_WARNING: prefix = "W: "; break;
+				case RND_MSG_ERROR:   prefix = "E: "; break;
 			}
 			if (prefix != NULL)
 				txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, prefix);
@@ -102,10 +102,10 @@ static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, pcb_logline_t 
 
 static void log_import(log_ctx_t *ctx)
 {
-	pcb_logline_t *n;
+	rnd_logline_t *n;
 	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 
-	for(n = pcb_log_find_min(ctx->last_added); n != NULL; n = n->next)
+	for(n = rnd_log_find_min(ctx->last_added); n != NULL; n = n->next)
 		log_append(ctx, atxt, n);
 }
 
@@ -195,7 +195,7 @@ fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	pcb_logline_t *line = argv[1].d.p;
+	rnd_logline_t *line = argv[1].d.p;
 
 	if (log_ctx.active) {
 		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
@@ -226,12 +226,12 @@ static void log_clear_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 
 static void log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
 {
-	pcb_logline_t *n;
+	rnd_logline_t *n;
 
 	log_ctx.gui_inited = 1;
 
 	/* if there's pending popup-message in the queue, pop up the dialog */
-	for(n = pcb_log_first; n != NULL; n = n->next) {
+	for(n = rnd_log_first; n != NULL; n = n->next) {
 		const char *prefix;
 		int popup;
 

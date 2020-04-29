@@ -54,7 +54,7 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 		return;
 
 	if (nat->type != RND_CFN_LIST) {
-		rnd_message(PCB_MSG_ERROR, "grid_install_menu(): conf node editor/grids should be a list\n");
+		rnd_message(RND_MSG_ERROR, "grid_install_menu(): conf node editor/grids should be a list\n");
 		return;
 	}
 

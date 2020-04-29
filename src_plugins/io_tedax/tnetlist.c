@@ -118,9 +118,9 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 		for (e = htsp_first(&fps); e; e = htsp_next(&fps, e)) {
 			fp_t *fp = e->value;
 
-/*			pcb_trace("tedax fp: refdes=%s val=%s fp=%s\n", e->key, fp->value, fp->footprint);*/
+/*			rnd_trace("tedax fp: refdes=%s val=%s fp=%s\n", e->key, fp->value, fp->footprint);*/
 			if (fp->footprint == NULL)
-				rnd_message(PCB_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
+				rnd_message(RND_MSG_ERROR, "tedax: not importing refdes=%s: no footprint specified\n", e->key);
 			else
 				rnd_actionva(&PCB->hidlib, "ElementList", "Need", null_empty(e->key), null_empty(fp->footprint), null_empty(fp->value), NULL);
 
@@ -158,7 +158,7 @@ int tedax_net_load(const char *fname_net, int import_fp, const char *blk_id, int
 
 	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
 	}
 
@@ -234,7 +234,7 @@ int tedax_net_save(pcb_board_t *pcb, const char *netlistid, const char *fn)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_net_save(): can't open %s for writing\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_net_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
@@ -268,7 +268,7 @@ static int tedaxnet_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, c
 static int tedaxnet_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	if (numargs != 1) {
-		rnd_message(PCB_MSG_ERROR, "import_tedaxnet: requires exactly 1 input file name\n");
+		rnd_message(RND_MSG_ERROR, "import_tedaxnet: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return tedax_net_load(args[0], 1, NULL, 0);

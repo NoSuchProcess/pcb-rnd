@@ -149,7 +149,7 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	double ts, te;
 
 	if (query == NULL) {
-		rnd_message(PCB_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", name);
+		rnd_message(RND_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", name);
 		return 0;
 	}
 	if (type == NULL) type = "DRC violation";
@@ -184,7 +184,7 @@ static const char *load_str(lht_node_t *rule, rnd_conf_listitem_t *i, const char
 	if (n == NULL)
 		return NULL;
 	if (n->type != LHT_TEXT) {
-		rnd_message(PCB_MSG_ERROR, "drc_query: igoring non-text node %s of rule %s \n", name, i->name);
+		rnd_message(RND_MSG_ERROR, "drc_query: igoring non-text node %s of rule %s \n", name, i->name);
 		return NULL;
 	}
 	return n->data.text.value;
@@ -219,7 +219,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		lht_node_t *rule = i->prop.src;
 		int *dis;
 		if (rule->type != LHT_HASH) {
-			rnd_message(PCB_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
+			rnd_message(RND_MSG_ERROR, "drc_query: rule %s is not a hash\n", i->name);
 			continue;
 		}
 
@@ -272,7 +272,7 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 			nat = rnd_conf_reg_field_(b, 1, RND_CFN_BOOLEAN, path, rnd_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(b);
-				rnd_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
+				rnd_message(RND_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
 				goto fail;
 			}
 
@@ -311,13 +311,13 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 
 
 			if (stype == NULL) {
-				rnd_message(PCB_MSG_ERROR, "drc_query: missing type field for constant %s\n", nd->name);
+				rnd_message(RND_MSG_ERROR, "drc_query: missing type field for constant %s\n", nd->name);
 				goto fail;
 			}
 
 			type = rnd_conf_native_type_parse(stype);
 			if (type >= RND_CFN_LIST) {
-				rnd_message(PCB_MSG_ERROR, "drc_query: invalid type '%s' for %s\n", stype, nd->name);
+				rnd_message(RND_MSG_ERROR, "drc_query: invalid type '%s' for %s\n", stype, nd->name);
 				goto fail;
 			}
 
@@ -325,7 +325,7 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 			nat = rnd_conf_reg_field_(c, 1, type, path, rnd_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(c);
-				rnd_message(PCB_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
+				rnd_message(RND_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
 				goto fail;
 			}
 

@@ -722,7 +722,7 @@ void pcb_data_clip_inhibit_inc(pcb_data_t *data)
 	data->clip_inhibit++;
 
 	if (old > data->clip_inhibit) {
-		rnd_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
+		rnd_message(RND_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
 		abort();
 	}
 }
@@ -730,7 +730,7 @@ void pcb_data_clip_inhibit_inc(pcb_data_t *data)
 void pcb_data_clip_inhibit_dec(pcb_data_t *data, rnd_bool enable_progbar)
 {
 	if (data->clip_inhibit == 0) {
-		rnd_message(PCB_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
+		rnd_message(RND_MSG_ERROR, "Internal error: overflow on poly clip inhibit\n");
 		assert(!"clip_inhibit underflow");
 		return;
 	}

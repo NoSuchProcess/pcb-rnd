@@ -51,7 +51,7 @@ static const char pcb_acts_Help[] = "h";
 static const char pcb_acth_Help[] = "Print a help message for commands.";
 static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_INFO,
+	rnd_message(RND_MSG_INFO,
 		"following shorthand commands are supported:\n"
 		"  h           display this help message\n"
 		"  l  [file]   load layout\n"
@@ -170,7 +170,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_board_set_changed_flag(pcb_false);
 		}
 		else
-			rnd_message(PCB_MSG_ERROR, "No filename to save to yet\n");
+			rnd_message(RND_MSG_ERROR, "No filename to save to yet\n");
 	}
 	else {
 		if (pcb_save_pcb(filename, NULL) == 0) {

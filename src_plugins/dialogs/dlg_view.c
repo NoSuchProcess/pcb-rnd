@@ -447,7 +447,7 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	f = pcb_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't open %s for write\n", fn);
+		rnd_message(RND_MSG_ERROR, "Can't open %s for write\n", fn);
 		return;
 	}
 
@@ -476,13 +476,13 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't open %s for read\n", fn);
+		rnd_message(RND_MSG_ERROR, "Can't open %s for read\n", fn);
 		return;
 	}
 
 	load_ctx = pcb_view_load_start_file(f);
 	if (load_ctx == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Error parsing %s - is it a view list?\n", fn);
+		rnd_message(RND_MSG_ERROR, "Error parsing %s - is it a view list?\n", fn);
 		fclose(f);
 		return;
 	}
@@ -792,7 +792,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_PTR, ViewList, lst = argv[3].val.ptr_void);
 
 	if ((lst != NULL) && (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], PCB_PTR_DOMAIN_VIEWLIST))) {
-		rnd_message(PCB_MSG_ERROR, "invalid list pointer");
+		rnd_message(RND_MSG_ERROR, "invalid list pointer");
 		RND_ACT_IRES(1);
 		return 0;
 	}

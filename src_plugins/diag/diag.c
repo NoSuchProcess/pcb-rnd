@@ -83,7 +83,7 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
 		role = rnd_conf_role_parse(srole);
 		if (role == RND_CFR_invalid) {
-			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
+			rnd_message(RND_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
 			RND_ACT_IRES(1);
 			return 0;
 		}
@@ -123,7 +123,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	nat = rnd_conf_get_field(path);
 	if (nat == NULL) {
-		rnd_message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
+		rnd_message(RND_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -399,7 +399,7 @@ static void ev_ui_post(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_even
 	if (conf_diag.plugins.diag.auto_integrity) {
 		static int cnt = 0;
 		if ((cnt++ % 100) == 0) {
-			pcb_trace("Number of integrity checks so far: %d\n", cnt);
+			rnd_trace("Number of integrity checks so far: %d\n", cnt);
 		}
 		pcb_check_integrity(PCB);
 	}
@@ -416,7 +416,7 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(233), PCB_MIL_TO_COORD(233), 15, pcb_flag_make(0));
 
 	pxm = rnd_pixmap_load(RND_ACT_HIDLIB, "A.pnm");
-pcb_trace("pxm=%p\n", pxm);
+rnd_trace("pxm=%p\n", pxm);
 
 	pcb_gfx_set_pixmap_free(g, pxm, 1);
 
@@ -462,7 +462,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	PCB_END_LOOP;
 
-	rnd_message(PCB_MSG_INFO, "Measuring find.c peformance for %f seconds starting from %ld pins...\n", duration, pins);
+	rnd_message(RND_MSG_INFO, "Measuring find.c peformance for %f seconds starting from %ld pins...\n", duration, pins);
 
 	from = rnd_dtime();
 	end = from + duration;
@@ -478,7 +478,7 @@ static fgw_error_t pcb_act_Find2Perf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		its++;
 		now = rnd_dtime();
 	} while(now < end);
-	rnd_message(PCB_MSG_INFO, "find2.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
+	rnd_message(RND_MSG_INFO, "find2.c peformance: %d %f pin find per second\n", its, (double)its * (double)pins / (now-from));
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -555,7 +555,7 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptr1, *ptr2, *ptr3;
 	const char *new_color;
 
-	rnd_message(PCB_MSG_ERROR, "pcb_acth_forcecolor() is temporarily disabled.\n");
+	rnd_message(RND_MSG_ERROR, "pcb_acth_forcecolor() is temporarily disabled.\n");
 	return -1;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);

@@ -50,7 +50,7 @@ static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path 
 static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
+		rnd_message(RND_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -84,20 +84,20 @@ static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup
 static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_gui == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
+		rnd_message(RND_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	if (pcb_gui->remove_menu == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
+		rnd_message(RND_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
 	if (pcb_gui->remove_menu(pcb_gui, argv[1].val.str) != 0) {
-		rnd_message(PCB_MSG_ERROR, "failed to remove some of the menu items\n");
+		rnd_message(RND_MSG_ERROR, "failed to remove some of the menu items\n");
 		RND_ACT_IRES(-1);
 	}
 	else
@@ -319,10 +319,10 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((pcb_gui != NULL) && (pcb_gui->benchmark != NULL)) {
 		fps = pcb_gui->benchmark(pcb_gui);
-		rnd_message(PCB_MSG_INFO, "%f redraws per second\n", fps);
+		rnd_message(RND_MSG_INFO, "%f redraws per second\n", fps);
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "benchmark is not available in the current HID\n");
+		rnd_message(RND_MSG_ERROR, "benchmark is not available in the current HID\n");
 
 	RND_ACT_DRES(fps);
 	return 0;

@@ -103,7 +103,7 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 
 				type = pcb_search_screen(x, y, CUT_TYPES, &ptr1, &ptr2, &ptr3);
 				if (type == 0) {
-					rnd_message(PCB_MSG_ERROR, "Can't cut that object\n");
+					rnd_message(RND_MSG_ERROR, "Can't cut that object\n");
 					continue;
 				}
 				res += pcb_trim_split(edges, NULL, (pcb_any_obj_t *)ptr2, REMO_INVALID, x, y, trim);
@@ -111,7 +111,7 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 			}
 			break;
 		default:
-			rnd_message(PCB_MSG_ERROR, "Invalid second argument\n");
+			rnd_message(RND_MSG_ERROR, "Invalid second argument\n");
 			return -1;
 	}
 
@@ -135,7 +135,7 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	vtp0_init(&edges);
 
 	if ((kwobj == kwcut) && (kwobj != F_Object)) {
-		rnd_message(PCB_MSG_ERROR, "Both cutting edge and objects to cut can't be '%s'\n", kwcut == F_Selected ? "selected" : "found");
+		rnd_message(RND_MSG_ERROR, "Both cutting edge and objects to cut can't be '%s'\n", kwcut == F_Selected ? "selected" : "found");
 		goto err;
 	}
 
@@ -144,7 +144,7 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_hid_get_coords("Select cutting edge object", &x, &y, 0);
 			type = pcb_search_screen(x, y, EDGE_TYPES, &ptr1, &ptr2, &ptr3);
 			if (type == 0) {
-				rnd_message(PCB_MSG_ERROR, "Invalid cutting edge object\n");
+				rnd_message(RND_MSG_ERROR, "Invalid cutting edge object\n");
 				goto err;
 			}
 			vtp0_append(&edges, ptr2);
@@ -156,12 +156,12 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			list_by_flag(PCB->Data, &edges, EDGE_TYPES, PCB_FLAG_FOUND);
 			break;
 		default:
-			rnd_message(PCB_MSG_ERROR, "Invalid first argument\n");
+			rnd_message(RND_MSG_ERROR, "Invalid first argument\n");
 			goto err;
 	}
 
 	if (vtp0_len(&edges) < 1) {
-		rnd_message(PCB_MSG_ERROR, "No cutting edge found\n");
+		rnd_message(RND_MSG_ERROR, "No cutting edge found\n");
 		goto err;
 	}
 
@@ -253,7 +253,7 @@ static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 do { \
 	int n; \
 	if (argc-2 >= sizeof(arr) / sizeof(arr[0])) { \
-		rnd_message(PCB_MSG_ERROR, "constraint: Too many " msg "\n"); \
+		rnd_message(RND_MSG_ERROR, "constraint: Too many " msg "\n"); \
 		RND_ACT_IRES(-1); \
 		return 0; \
 	} \
@@ -320,7 +320,7 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			cons_changed();
 			break;
 		case ddraft_fields_SPHASH_INVALID:
-			rnd_message(PCB_MSG_ERROR, "constraint: invalid field '%s'\n", stype);
+			rnd_message(RND_MSG_ERROR, "constraint: invalid field '%s'\n", stype);
 			RND_ACT_IRES(-1);
 			return 0;
 			break;
@@ -350,7 +350,7 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (type != PCB_OBJ_LINE) {
-		rnd_message(PCB_MSG_ERROR, "%s: target object must be a line\n", actname);
+		rnd_message(RND_MSG_ERROR, "%s: target object must be a line\n", actname);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -359,7 +359,7 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	dx = line->Point2.X - line->Point1.X;
 	dy = line->Point2.Y - line->Point1.Y;
 	if ((dx == 0.0) && (dy == 0.0)) {
-		rnd_message(PCB_MSG_ERROR, "%s: target line must be longer than 0\n", actname);
+		rnd_message(RND_MSG_ERROR, "%s: target line must be longer than 0\n", actname);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -390,7 +390,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (((pcb_crosshair.AttachedLine.State != PCB_CH_STATE_SECOND) && (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_THIRD)) || (pcb_crosshair.Route.size < 1)) {
 		err_nonline:;
-		rnd_message(PCB_MSG_ERROR, "tang: must be in line drawing mode with the first point already set\n");
+		rnd_message(RND_MSG_ERROR, "tang: must be in line drawing mode with the first point already set\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -409,14 +409,14 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (type != PCB_OBJ_ARC) {
-		rnd_message(PCB_MSG_ERROR, "tang: target object must be an arc\n");
+		rnd_message(RND_MSG_ERROR, "tang: target object must be an arc\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	arc = (pcb_arc_t *)ptr2;
 	if (fabs((double)(arc->Height - arc->Width)) > 100) {
-		rnd_message(PCB_MSG_ERROR, "tang: elliptical arcs are not supported (%$mm != %$mm)\n", arc->Height, arc->Width);
+		rnd_message(RND_MSG_ERROR, "tang: elliptical arcs are not supported (%$mm != %$mm)\n", arc->Height, arc->Width);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -425,7 +425,7 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	r = arc->Width;
 
 	if (d <= r) {
-		rnd_message(PCB_MSG_ERROR, "tang: line must start outside of the circle\n");
+		rnd_message(RND_MSG_ERROR, "tang: line must start outside of the circle\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}

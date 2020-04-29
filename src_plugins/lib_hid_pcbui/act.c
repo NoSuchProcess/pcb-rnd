@@ -64,7 +64,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
-				rnd_message(PCB_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
+				rnd_message(RND_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
 			return 0;
 		}
 
@@ -73,7 +73,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
-				rnd_message(PCB_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
+				rnd_message(RND_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
 			return 0;
 		}
 	}
@@ -105,7 +105,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	ycent = (double)(vb.Y1 + vb.Y2)/2.0;
 	xoffs = xcent - x;
 	yoffs = ycent - y;
-/*	pcb_trace("SwapSides: xy=%mm;%mm cent=%mm;%mm ofs=%mm;%mm\n", x, y, (rnd_coord_t)xcent, (rnd_coord_t)ycent, (rnd_coord_t)xoffs, (rnd_coord_t)yoffs);*/
+/*	rnd_trace("SwapSides: xy=%mm;%mm cent=%mm;%mm ofs=%mm;%mm\n", x, y, (rnd_coord_t)xcent, (rnd_coord_t)ycent, (rnd_coord_t)xoffs, (rnd_coord_t)yoffs);*/
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_group, 1) > 0)
 		solder_on = pcb_get_layer(PCB->Data, PCB->LayerGroups.grp[solder_group].lid[0])->meta.real.vis;
@@ -174,7 +174,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_draw_inhibit_dec();
 
-/*pcb_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (rnd_coord_t)(x + xoffs), (rnd_coord_t)(y + yoffs));*/
+/*rnd_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (rnd_coord_t)(x + xoffs), (rnd_coord_t)(y + yoffs));*/
 	pcb_gui->pan(pcb_gui, rnd_round(x + xoffs), rnd_round(y + yoffs), 0);
 	pcb_gui->set_crosshair(pcb_gui, x, y, HID_SC_PAN_VIEWPORT);
 

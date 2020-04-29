@@ -96,7 +96,7 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_REPLACE, textval(nd, "query"));
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Rule %s disappeared from the config tree.\n", ctx->rule);
+		rnd_message(RND_MSG_ERROR, "Rule %s disappeared from the config tree.\n", ctx->rule);
 		pcb_hid_dad_close(ctx->dlg_hid_ctx, &retovr, -1);
 	}
 }
@@ -140,7 +140,7 @@ do { \
 	nnew = lht_tree_path_(parent->doc, parent, nname0, 1, 1, &err); \
 	if (parent->type == LHT_LIST) free(nname0); \
 	if ((nnew != NULL) && (nnew->type != ntype)) { \
-		rnd_message(PCB_MSG_ERROR, "Internal error: invalid existing node type for %s: %d, rule is NOT saved\n", nname, nnew->type); \
+		rnd_message(RND_MSG_ERROR, "Internal error: invalid existing node type for %s: %d, rule is NOT saved\n", nname, nnew->type); \
 		return; \
 	} \
 	else if (nnew == NULL) { \
@@ -149,7 +149,7 @@ do { \
 			case LHT_HASH: err = lht_dom_hash_put(parent, nnew); break; \
 			case LHT_LIST: err = lht_dom_list_append(parent, nnew); break; \
 			default: \
-				rnd_message(PCB_MSG_ERROR, "Internal error: invalid parent node type for %s: %d, rule is NOT saved\n", parent->name, parent->type); \
+				rnd_message(RND_MSG_ERROR, "Internal error: invalid parent node type for %s: %d, rule is NOT saved\n", parent->name, parent->type); \
 				return; \
 		} \
 	} \
@@ -161,7 +161,7 @@ do { \
 	lht_node_t *ntxt; \
 	MKDIR_ND(ntxt, parent, LHT_TEXT, nname); \
 	if (ntxt == NULL) { \
-		rnd_message(PCB_MSG_ERROR, "Internal error: new text node for %s is NULL, rule is NOT saved\n", nname); \
+		rnd_message(RND_MSG_ERROR, "Internal error: new text node for %s is NULL, rule is NOT saved\n", nname); \
 		return; \
 	} \
 	free(ntxt->data.text.value); \
@@ -178,7 +178,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	pcb_hid_text_t *txt = atxt->wdata;
 
 	if ((ri < 0) || (ri >= sizeof(save_rolee)/sizeof(save_rolee[0]))) {
-		rnd_message(PCB_MSG_ERROR, "Internal error: role out of range, rule is NOT saved\n");
+		rnd_message(RND_MSG_ERROR, "Internal error: role out of range, rule is NOT saved\n");
 		return;
 	}
 
@@ -187,7 +187,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	if (nd == NULL) {
 		nd = rnd_conf_lht_get_first(role, 1);
 		if (nd == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n");
+			rnd_message(RND_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n");
 			return;
 		}
 		MKDIR_ND(nd, nd, LHT_HASH, "plugins");
@@ -202,10 +202,10 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 				lht_node_t *nnew = lht_dom_duptree(i->prop.src);
 				lht_dom_list_append(nd, nnew);
 			}
-			rnd_message(PCB_MSG_WARNING, "NOTE: Copying ALL drc rule to config role %s\n", ctx->rule, save_roles[ri]);
+			rnd_message(RND_MSG_WARNING, "NOTE: Copying ALL drc rule to config role %s\n", ctx->rule, save_roles[ri]);
 		}
 		MKDIR_ND(nd, nd, LHT_HASH, ctx->rule);
-		rnd_message(PCB_MSG_INFO, "NOTE: Copying drc rule '%s' to config role %s\n", ctx->rule, save_roles[ri]);
+		rnd_message(RND_MSG_INFO, "NOTE: Copying drc rule '%s' to config role %s\n", ctx->rule, save_roles[ri]);
 	}
 
 	MKDIR_ND_SET_TEXT(nd, "type", ctx->dlg[ctx->wtype].val.str);
@@ -230,7 +230,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 	for(ctx = gdl_first(&rule_edit_dialogs); ctx != NULL; ctx = gdl_next(&rule_edit_dialogs, ctx))
 	{
 		if (strcmp(rule, ctx->rule) == 0) {
-			rnd_message(PCB_MSG_ERROR, "An edit dialog for rule %s is already open.\n", rule);
+			rnd_message(RND_MSG_ERROR, "An edit dialog for rule %s is already open.\n", rule);
 			return 0;
 		}
 	}
@@ -238,7 +238,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 	path = pcb_concat(DRC_CONF_PATH_RULES, rule, ":0", NULL);
 	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0);
 	if (nd == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Rule %s not found on this role.\n", rule);
+		rnd_message(RND_MSG_ERROR, "Rule %s not found on this role.\n", rule);
 		return -1;
 	}
 
@@ -431,13 +431,13 @@ static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	int *dis;
 
 	if (row == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Select a rule first!\n");
+		rnd_message(RND_MSG_ERROR, "Select a rule first!\n");
 		return;
 	}
 
 	dis = drc_get_disable(row->cell[0]);
 	if (dis == NULL) {
-		rnd_message(PCB_MSG_ERROR, "internal error: no disable conf node for %s\n", row->cell[0]);
+		rnd_message(RND_MSG_ERROR, "internal error: no disable conf node for %s\n", row->cell[0]);
 		return;
 	}
 
@@ -448,12 +448,12 @@ static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 #define rlist_fetch() \
 do { \
 	if (row == NULL) { \
-		rnd_message(PCB_MSG_ERROR, "Select a rule first!\n"); \
+		rnd_message(RND_MSG_ERROR, "Select a rule first!\n"); \
 		return; \
 	} \
 	role = rnd_conf_role_parse(row->cell[1]); \
 	if (role == RND_CFR_invalid) { \
-		rnd_message(PCB_MSG_ERROR, "internal error: invalid role %s\n", row->cell[0]); \
+		rnd_message(RND_MSG_ERROR, "internal error: invalid role %s\n", row->cell[0]); \
 		return; \
 	} \
 } while(0)
@@ -463,7 +463,7 @@ do { \
 	char *path = pcb_concat(DRC_CONF_PATH_RULES, row->cell[0], ":0", NULL); \
 	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0); \
 	if (nd == NULL) { \
-		rnd_message(PCB_MSG_ERROR, "internal error: rule not found at %s\n", path); \
+		rnd_message(RND_MSG_ERROR, "internal error: rule not found at %s\n", path); \
 		return; \
 	} \
 	free(path); \
@@ -495,7 +495,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 
 	script = textval(nd, "query");
 	if (script == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can not run rule %s: no query specified\n", row->cell[0]);
+		rnd_message(RND_MSG_ERROR, "Can not run rule %s: no query specified\n", row->cell[0]);
 		return;
 	}
 

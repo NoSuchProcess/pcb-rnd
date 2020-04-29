@@ -72,13 +72,13 @@ static void setup_tree(pref_ctx_t *ctx)
 
 		e = sorted[n];
 		if (strlen(e->key) > sizeof(path) - 1) {
-			rnd_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: path too long\n", e->key);
+			rnd_message(RND_MSG_WARNING, "Warning: can't create config item for %s: path too long\n", e->key);
 			continue;
 		}
 		strcpy(path, e->key);
 		basename = strrchr(path, '/');
 		if ((basename == NULL) || (basename == path)) {
-			rnd_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path (node in root)\n", e->key);
+			rnd_message(RND_MSG_WARNING, "Warning: can't create config item for %s: invalid path (node in root)\n", e->key);
 			continue;
 		}
 		bnsep = basename;
@@ -87,7 +87,7 @@ static void setup_tree(pref_ctx_t *ctx)
 
 		parent = pcb_dad_tree_mkdirp(tree, path, NULL);
 		if (parent == NULL) {
-			rnd_message(PCB_MSG_WARNING, "Warning: can't create config item for %s: invalid path\n", e->key);
+			rnd_message(RND_MSG_WARNING, "Warning: can't create config item for %s: invalid path\n", e->key);
 			continue;
 		}
 		
@@ -291,7 +291,7 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 			char tmp[1024];
 			int len = end - row->path;
 			if ((len <= 0) || (len > sizeof(tmp)-1)) {
-				rnd_message(PCB_MSG_WARNING, "Warning: can't show array item %s: path too long\n", row->path);
+				rnd_message(RND_MSG_WARNING, "Warning: can't show array item %s: path too long\n", row->path);
 				return;
 			}
 			memcpy(tmp, row->path, len);

@@ -67,7 +67,7 @@ static int fpcb_nl_load(const char *fn)
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't open %s for read\n", fn);
+		rnd_message(RND_MSG_ERROR, "Can't open %s for read\n", fn);
 		return -1;
 	}
 
@@ -95,13 +95,13 @@ static int fpcb_nl_load(const char *fn)
 					ltrim(line);
 					len = strlen(line);
 					if (len == 0) {
-						rnd_message(PCB_MSG_ERROR, "Empty/missing net name in *SINGAL*\n");
+						rnd_message(RND_MSG_ERROR, "Empty/missing net name in *SINGAL*\n");
 						sprintf(signame, "pcbrndanonymous%d", anon++);
 					}
 					else {
 						if (len > sizeof(signame)-1) {
 							len = sizeof(signame)-1;
-							rnd_message(PCB_MSG_ERROR, "Net name %s is too long, truncating.\nThis may result in broken netlist, please use shorter names \n", line);
+							rnd_message(RND_MSG_ERROR, "Net name %s is too long, truncating.\nThis may result in broken netlist, please use shorter names \n", line);
 						}
 						memcpy(signame, line, len);
 						signame[len] = '\0';
@@ -127,7 +127,7 @@ static int fpcb_nl_load(const char *fn)
 					rnd_actionva(&PCB->hidlib, "ElementList", "Need", line, fp, "", NULL);
 				}
 				else
-					rnd_message(PCB_MSG_ERROR, "No footprint specified for %s\n", line);
+					rnd_message(RND_MSG_ERROR, "No footprint specified for %s\n", line);
 				break;
 			case MODE_SIGNAL:
 				ltrim(line);
@@ -142,7 +142,7 @@ static int fpcb_nl_load(const char *fn)
 						continue;
 					tn = strchr(curr, '.');
 					if (tn == NULL) {
-						rnd_message(PCB_MSG_ERROR, "Syntax error in netlist: '%s' in net '%s' should be refdes.termid\n", curr, signame);
+						rnd_message(RND_MSG_ERROR, "Syntax error in netlist: '%s' in net '%s' should be refdes.termid\n", curr, signame);
 						continue;
 					}
 					*tn = '-';
@@ -215,7 +215,7 @@ static int fpcb_nl_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 static int fpcb_nl_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
 	if (numfns != 1) {
-		rnd_message(PCB_MSG_ERROR, "import_fpcb_nl: requires exactly 1 input file name\n");
+		rnd_message(RND_MSG_ERROR, "import_fpcb_nl: requires exactly 1 input file name\n");
 		return -1;
 	}
 	return fpcb_nl_load(fns[0]);

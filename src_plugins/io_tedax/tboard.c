@@ -130,7 +130,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 
 	fputc('\n', f);
 	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
-		rnd_message(PCB_MSG_ERROR, "internal error: failed to save the stackup\n");
+		rnd_message(RND_MSG_ERROR, "internal error: failed to save the stackup\n");
 		goto error;
 	}
 
@@ -258,7 +258,7 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 
 	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_board_save(): can't open %s for writing\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_board_save(): can't open %s for writing\n", fn);
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
@@ -270,7 +270,7 @@ int tedax_board_save(pcb_board_t *pcb, const char *fn)
 #define errexit(msg) \
 do { \
 	if (!silent) \
-		rnd_message(PCB_MSG_ERROR, msg); \
+		rnd_message(RND_MSG_ERROR, msg); \
 	res = -1; \
 	goto error; \
 } while(0)
@@ -378,7 +378,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			y2 = pcb_get_value(argv[4], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid y2 coord in drawing_area\n");
 			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area\n");
-			if ((x1 < 0) || (y1 < 0)) rnd_message(PCB_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
+			if ((x1 < 0) || (y1 < 0)) rnd_message(RND_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
 			PCB->hidlib.size_x = x2 - x1;
 			PCB->hidlib.size_y = y2 - y1;
 		}
@@ -506,7 +506,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 	{ /* placement */
 		htsp_entry_t *e;
 		for(e = htsp_first(&plc); e != NULL; e = htsp_next(&plc, e)) {
-pcb_trace("placing '%s'\n", e->key);
+rnd_trace("placing '%s'\n", e->key);
 		}
 	}
 
@@ -545,7 +545,7 @@ int tedax_board_load(pcb_board_t *pcb, const char *fn, const char *blk_id, int s
 
 	f = pcb_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "tedax_board_load(): can't open %s for reading\n", fn);
+		rnd_message(RND_MSG_ERROR, "tedax_board_load(): can't open %s for reading\n", fn);
 		return -1;
 	}
 	res = tedax_board_fload(pcb, f, blk_id, silent);

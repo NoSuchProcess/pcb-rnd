@@ -130,9 +130,9 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 			fclose(f);
 			dpcb = pcb_load_pcb(efn, NULL, pcb_false, 1 | 0x10);
 			if (dpcb == 0)
-				rnd_message(PCB_MSG_WARNING, "Couldn't find default.pcb - using the embedded fallback\n");
+				rnd_message(RND_MSG_WARNING, "Couldn't find default.pcb - using the embedded fallback\n");
 			else
-				rnd_message(PCB_MSG_ERROR, "Couldn't find default.pcb and failed to load the embedded fallback\n");
+				rnd_message(RND_MSG_ERROR, "Couldn't find default.pcb and failed to load the embedded fallback\n");
 			pcb_remove(NULL, efn);
 			free(efn);
 		}
@@ -432,8 +432,8 @@ rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 			if (grp->ltype & PCB_LYT_SUBSTRATE) {
 				if (flags & PCB_BRDTHICK_PRINT_ERROR) {
 					if (namespace != NULL)
-						rnd_message(PCB_MSG_ERROR, "%s: ", namespace);
-					rnd_message(PCB_MSG_ERROR, "can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
+						rnd_message(RND_MSG_ERROR, "%s: ", namespace);
+					rnd_message(RND_MSG_ERROR, "can not determine substrate thickness on layer group %ld - total board thickness is probably wrong\n", (long)gid);
 				}
 				if (flags & PCB_BRDTHICK_TOLERANT)
 					continue;

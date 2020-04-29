@@ -192,7 +192,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_buffer_set_number(bn);
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		if (pcb_copy_obj_to_buffer(PCB, pcb_buffers[bn].Data, PCB->Data, type, ptr1, ptr2, ptr3) == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Failed to copy target objects to temporary paste buffer\n");
+			rnd_message(RND_MSG_ERROR, "Failed to copy target objects to temporary paste buffer\n");
 			goto quit0;
 		}
 		paste = 1;
@@ -206,19 +206,19 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		del_selected = 1;
 		paste = 1;
 		if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-			rnd_message(PCB_MSG_WARNING, "Nothing is selected, can't ext-edit selection\n");
+			rnd_message(RND_MSG_WARNING, "Nothing is selected, can't ext-edit selection\n");
 			goto quit0;
 		}
 	}
 	else if ((argc > 1) && (rnd_strcasecmp(cmd, "buffer") == 0)) {
 		load_bn = bn = conf_core.editor.buffer_number;
 		if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
-			rnd_message(PCB_MSG_WARNING, "Nothing in current buffer, can't ext-edit selection\n");
+			rnd_message(RND_MSG_WARNING, "Nothing in current buffer, can't ext-edit selection\n");
 			goto quit0;
 		}
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Wrong 1st argument '%s'\n", cmd);
+		rnd_message(RND_MSG_ERROR, "Wrong 1st argument '%s'\n", cmd);
 		ret = 1;
 		goto quit0;
 	}
@@ -230,13 +230,13 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 		}
 		if (mth->name == NULL) {
-			rnd_message(PCB_MSG_ERROR, "unknown method '%s'; available methods:\n", method);
+			rnd_message(RND_MSG_ERROR, "unknown method '%s'; available methods:\n", method);
 			for(mth = methods; mth->name != NULL; mth++) {
 				if (mth != methods)
-					rnd_message(PCB_MSG_ERROR, ", ", mth->name);
-				rnd_message(PCB_MSG_ERROR, "%s", mth->name);
+					rnd_message(RND_MSG_ERROR, ", ", mth->name);
+				rnd_message(RND_MSG_ERROR, "%s", mth->name);
 			}
-			rnd_message(PCB_MSG_ERROR, "\n");
+			rnd_message(RND_MSG_ERROR, "\n");
 			ret = 1;
 			goto quit0;
 		}
@@ -252,7 +252,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	tmp_fn = rnd_tempfile_name_new("extedit");
 	tmp_cfg_fn = rnd_tempfile_name_new("extedit_cfg");
 	if ((tmp_fn == NULL) || (tmp_cfg_fn == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Failed to create temporary file\n");
+		rnd_message(RND_MSG_ERROR, "Failed to create temporary file\n");
 		ret = 1;
 		goto quit1;
 	}
@@ -268,7 +268,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				f = pcb_fopen(&PCB->hidlib, tmp_fn, "w");
 				if (f == NULL) {
-					rnd_message(PCB_MSG_ERROR, "Failed to open temporary file\n");
+					rnd_message(RND_MSG_ERROR, "Failed to open temporary file\n");
 					goto quit1;
 				}
 
@@ -280,7 +280,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				if (res != 0) {
 					fclose(f);
-					rnd_message(PCB_MSG_ERROR, "Failed to export target objects to lihata footprint.\n");
+					rnd_message(RND_MSG_ERROR, "Failed to export target objects to lihata footprint.\n");
 					goto quit1;
 				}
 				fclose(f);
@@ -303,7 +303,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 
 				if (io_lihata_parse_subc(plug_io_lihata_default, pcb_buffers[bn].Data, tmp_fn, NULL) != 0) {
-					rnd_message(PCB_MSG_ERROR, "Failed to load the edited footprint. File left at '%s'.\n", tmp_fn);
+					rnd_message(RND_MSG_ERROR, "Failed to load the edited footprint. File left at '%s'.\n", tmp_fn);
 					ret = 1;
 					goto quit1;
 				}

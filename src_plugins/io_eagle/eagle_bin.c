@@ -1104,14 +1104,14 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 	egb_ctx->free_text_cursor = NULL;
 
 	if (fread(block, 1, 8, f) != 8) {
-		rnd_message(PCB_MSG_ERROR, "Short attempted free text section read. Text section not found.\n");
+		rnd_message(RND_MSG_ERROR, "Short attempted free text section read. Text section not found.\n");
 		return -1;
 	}
 
 	if (load_long(block, 0, 1) == 0x13 && load_long(block, 1, 1) == 0x12) {
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Failed to find 0x1312 start of pre-DRC free text section.\n");
+		rnd_message(RND_MSG_ERROR, "Failed to find 0x1312 start of pre-DRC free text section.\n");
 		return -1;
 	}
 
@@ -1121,13 +1121,13 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 TODO("TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it")
 	while (text_remaining > 400) {
 		if (fread(free_text, 1, 400, f) != 400) {
-			rnd_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
+			rnd_message(RND_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
 			return -1;
 		}
 		text_remaining -= 400;
 	}
 	if (fread(free_text, 1, text_remaining, f) != text_remaining) {
-		rnd_message(PCB_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
+		rnd_message(RND_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
 		return -1;
 	}
 	return 0;
@@ -1150,7 +1150,7 @@ int read_drc(void *ctx, FILE *f, const char *fn, egb_ctx_t *drc_ctx)
 
 	if (fread(block, 1, 4, f) != 4) {
 TODO(": convert this to proper error reporting")
-		pcb_trace("E: short attempted DRC preamble read; preamble not found. Truncated file?\n");
+		rnd_trace("E: short attempted DRC preamble read; preamble not found. Truncated file?\n");
 		return -1;
 	}
 
@@ -1160,24 +1160,24 @@ TODO(": convert this to proper error reporting")
 		&& load_long(block, 2, 1) == 0x00
 		&& load_long(block, 3, 1) == 0x20)) {
 TODO(": convert this to proper error reporting")
-		pcb_trace("E: start of DRC preamble not found where it was expected.\n");
-		pcb_trace("E: drc byte 0 : %d\n", (int)load_long(block, 0, 1) );
-		pcb_trace("E: drc byte 1 : %d\n", (int)load_long(block, 1, 1) );
-		pcb_trace("E: drc byte 2 : %d\n", (int)load_long(block, 2, 1) );
-		pcb_trace("E: drc byte 3 : %d\n", (int)load_long(block, 3, 1) );
+		rnd_trace("E: start of DRC preamble not found where it was expected.\n");
+		rnd_trace("E: drc byte 0 : %d\n", (int)load_long(block, 0, 1) );
+		rnd_trace("E: drc byte 1 : %d\n", (int)load_long(block, 1, 1) );
+		rnd_trace("E: drc byte 2 : %d\n", (int)load_long(block, 2, 1) );
+		rnd_trace("E: drc byte 3 : %d\n", (int)load_long(block, 3, 1) );
 		return -1;
 	}
 
 	while (!DRC_preamble_end_found) {
 		if (fread(&c, 1, 1, f) != 1) { /* the text preamble is not necessarily n * 4 bytes */
 TODO(": convert this to proper error reporting")
-			pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
+			rnd_trace("E: short attempted DRC preamble read. Truncated file?\n");
 			return -1;
 		} else {
 			if (c == '\0') { /* so we step through, looking for each 0x00 */
 				if (fread(block, 1, 4, f) != 4) { /* the text preamble seems to n * 24 bytes */
 TODO(": convert this to proper error reporting")
-					pcb_trace("E: short attempted DRC preamble read. Truncated file?\n");
+					rnd_trace("E: short attempted DRC preamble read. Truncated file?\n");
 					return -1;
 				}
 				if (load_long(block, 0, 1) == 0x78
@@ -1192,7 +1192,7 @@ TODO(": convert this to proper error reporting")
 
 	if (fread(DRC_block, 1, DRC_length_used, f) != DRC_length_used) {
 TODO(": convert this to proper error reporting")
-		pcb_trace("E: short DRC value block read. DRC section incomplete. Truncated file?\n");
+		rnd_trace("E: short DRC value block read. DRC section incomplete. Truncated file?\n");
 		return -1;
 	}
 
@@ -1280,7 +1280,7 @@ int read_block(long *numblocks, int level, void *ctx, FILE *f, const char *fn, e
 	/* load the current block */
 	if (fread(block, 1, 24, f) != 24) {
 TODO(": convert this to proper error reporting")
-		pcb_trace("E: short read\n");
+		rnd_trace("E: short read\n");
 		return -1;
 	}
 	processed++;
@@ -1311,7 +1311,7 @@ TODO(": convert this to proper error reporting")
 	}
 
 TODO(": convert this to proper error reporting")
-	pcb_trace("E: unknown block ID 0x%02x%02x at offset %ld\n", block[0], block[1], ftell(f));
+	rnd_trace("E: unknown block ID 0x%02x%02x at offset %ld\n", block[0], block[1], ftell(f));
 	return -1;
 
 	found:;
@@ -1607,10 +1607,10 @@ TODO("TODO still need to fine tune non-trivial non 90 degree arcs start and delt
 		}
 
 		if (!cxy_ok) {
-			rnd_message(PCB_MSG_ERROR, "cx and cy not set in arc/linetype: %d/%d\n", linetype, arctype);
+			rnd_message(RND_MSG_ERROR, "cx and cy not set in arc/linetype: %d/%d\n", linetype, arctype);
 			cx = cy = 0;
 		} else if (!(x1_ok && x2_ok && y1_ok && y2_ok)) {
-			rnd_message(PCB_MSG_ERROR, "x1/2 or y1/2 not set in binary arc\n");
+			rnd_message(RND_MSG_ERROR, "x1/2 or y1/2 not set in binary arc\n");
 		}
 		radius = (long)(rnd_distance((double)cx, (double)cy, (double)x2, (double)y2));
 		sprintf(itoa_buffer, "%ld", radius);
@@ -1633,7 +1633,7 @@ static egb_node_t *library_ref_by_idx(egb_node_t *libraries, long idx)
 	/* count children of libraries */
 	for(n = libraries->first_child; (n != NULL) && (idx > 1); n = n->next, idx--) ;
 	if (n == NULL)
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_library_ref_by_idx() can't find library index %ld\n", idx);
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_library_ref_by_idx() can't find library index %ld\n", idx);
 	return n;
 }
 
@@ -1645,11 +1645,11 @@ static egb_node_t *package_ref_by_idx(egb_node_t *library, long idx)
 	/* find library/0x1500->packages/0x1900 node */
 	for(pkgs = library->first_child; (pkgs != NULL) && ((pkgs->id & 0xFF00) != 0x1900); pkgs = pkgs->next);
 	if (pkgs == NULL)
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find packages node in library tree\n", idx);
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find packages node in library tree\n", idx);
 	/* count children of library */
 	for(n = pkgs->first_child; (n != NULL) && (idx > 1); n = n->next, idx--);
 	if (n == NULL)
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find package index %ld\n", idx);
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_pkg_ref_by_idx() can't find package index %ld\n", idx);
 	return n;
 }
 
@@ -1661,7 +1661,7 @@ static egb_node_t *elem_ref_by_idx(egb_node_t *elements, long idx)
 	/* count children of elelements */
 	for(n = elements->first_child; (n != NULL) && (idx > 1); n = n->next, idx--) ;
 	if (n == NULL)
-		rnd_message(PCB_MSG_ERROR, "io_eagle bin: eagle_elem_ref_by_idx() can't find element placement index %ld\n", idx);
+		rnd_message(RND_MSG_ERROR, "io_eagle bin: eagle_elem_ref_by_idx() can't find element placement index %ld\n", idx);
 	return n;
 }
 
@@ -2014,7 +2014,7 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 					if (strcmp(e->key, "name") == 0) {
 						if (e->value != NULL && e->value[0] == '-' && e->value[1] == '\0') {
 							egb_node_prop_set(n, "name", "HYPHEN");
-							rnd_message(PCB_MSG_WARNING, "Substituted invalid name %s in PCB_EKGW_SECT_ELEMENT with 'HYPHEN'\n", e->value);
+							rnd_message(RND_MSG_WARNING, "Substituted invalid name %s in PCB_EKGW_SECT_ELEMENT with 'HYPHEN'\n", e->value);
 						} else {
 							egb_node_prop_set(n, "name", e->value);
 						}
@@ -2139,7 +2139,7 @@ static int postproc_libs(void *ctx, egb_ctx_t *egb_ctx)
 			break;
 
 		if (n->id != PCB_EGKW_SECT_PACKAGES) {
-			rnd_message(PCB_MSG_ERROR, "postproc_libs(): unexpected node under libraries (must be packages)\n");
+			rnd_message(RND_MSG_ERROR, "postproc_libs(): unexpected node under libraries (must be packages)\n");
 			return -1;
 		}
 
@@ -2178,7 +2178,7 @@ static int postproc(void *ctx, egb_node_t *root, egb_ctx_t *drc_ctx)
 	eagle_bin_ctx.board = find_node(eagle_bin_ctx.drawing->first_child, PCB_EGKW_SECT_BOARD);
 	if (eagle_bin_ctx.board == NULL) {
 TODO(": convert this to proper error reporting")
-		pcb_trace("No board node found, this may be a library file.\n");
+		rnd_trace("No board node found, this may be a library file.\n");
 	} else {
 		/* the following code relies on the board node being present, i.e. a layout */
 		/* create a drc node, since DRC block if present in binary file comes after the tree */
@@ -2186,7 +2186,7 @@ TODO(": convert this to proper error reporting")
 		eagle_bin_ctx.libraries = find_node_name(eagle_bin_ctx.board->first_child, "libraries");
 		if (eagle_bin_ctx.libraries == NULL) { /* layouts have a libraries node it seems */
 TODO(": convert this to proper error reporting")
-			pcb_trace("Eagle binary layout is missing a board/libraries node.\n");
+			rnd_trace("Eagle binary layout is missing a board/libraries node.\n");
 			return -1;
 		}
 
@@ -2238,24 +2238,24 @@ int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
 
 	egb_ctx_t eagle_bin_ctx;
 
-/*	pcb_trace("blocks remaining prior to function call = %ld\n", *numblocks);*/
+/*	rnd_trace("blocks remaining prior to function call = %ld\n", *numblocks);*/
 
 	*root = egb_node_alloc(0, "eagle");
 
 	res = read_block(numblocks, 1, ctx, f, fn, *root);
 	if (res < 0) {
 TODO(": convert this to proper error reporting")
-		pcb_trace("Problem with remaining blocks... is this a library file?\n");
+		rnd_trace("Problem with remaining blocks... is this a library file?\n");
 		return res;
 	}
-/*	pcb_trace("blocks remaining after outer function call = %ld (after reading %d blocks)\n\n", *numblocks, res);*/
+/*	rnd_trace("blocks remaining after outer function call = %ld (after reading %d blocks)\n\n", *numblocks, res);*/
 
 	/* could test if < v4 as v3.xx seems to have no DRC or Netclass or Free Text end blocks */
 	read_notes(ctx, f, fn, &eagle_bin_ctx);
 	/* read_drc will determine sane defaults if no DRC block found */
 	if (read_drc(ctx, f, fn, &eagle_bin_ctx) != 0) {
 TODO(": convert this to proper error reporting")
-		pcb_trace("No DRC section found, either a v3 binary file or a binary library file.\n");
+		rnd_trace("No DRC section found, either a v3 binary file or a binary library file.\n");
 	} /* we now use the eagle_bin_ctx results for post_proc */
 
 	return postproc(ctx, *root, &eagle_bin_ctx);

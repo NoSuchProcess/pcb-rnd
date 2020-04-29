@@ -110,7 +110,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 	cord_get_ends(subc, group, &e1, &a1, &e2, &a2);
 	if ((e1 == NULL) || (e2 == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "extended object cord: failed to generate cord for #%ld group %s: missing endpoint\n", subc->ID, group);
+		rnd_message(RND_MSG_ERROR, "extended object cord: failed to generate cord for #%ld group %s: missing endpoint\n", subc->ID, group);
 		return -1;
 	}
 
@@ -179,7 +179,7 @@ static void pcb_cord_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 static void pcb_cord_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
-	pcb_trace("cord: float pre %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
+	rnd_trace("cord: float pre %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
 	if (floater->extobj_role == NULL)
 		return;
@@ -196,7 +196,7 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 		return;
 	}
 
-	pcb_trace("cord: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
+	rnd_trace("cord: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
 	if (floater->extobj_role == NULL)
 		return;
@@ -219,7 +219,7 @@ static pcb_extobj_del_t pcb_cord_float_del(pcb_subc_t *subc, pcb_any_obj_t *floa
 	const char *group = group_of(floater);
 	int has_other_grp = 0;
 
-	pcb_trace("cord: float del %ld %ld\n", subc->ID, floater->ID);
+	rnd_trace("cord: float del %ld %ld\n", subc->ID, floater->ID);
 
 	if ((floater->type != PCB_OBJ_LINE) || (group == NULL))
 		return PCB_EXTODEL_FLOATER; /* e.g. refdes text - none of our business */
@@ -241,7 +241,7 @@ static pcb_extobj_del_t pcb_cord_float_del(pcb_subc_t *subc, pcb_any_obj_t *floa
 
 static void pcb_cord_chg_attr(pcb_subc_t *subc, const char *key, const char *value)
 {
-	pcb_trace("cord chg_attr\n");
+	rnd_trace("cord chg_attr\n");
 }
 
 static rnd_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
@@ -338,7 +338,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		{NULL, 0, NULL, 0, 0}
 	};
 
-	pcb_trace("cord: conv_objs\n");
+	rnd_trace("cord: conv_objs\n");
 
 	/* origin override: if converting subcircuits, keep the first subcircuits origin */
 	for(n = 0; n < objs->used; n++) {
@@ -371,9 +371,9 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 	/* create padstack prototypes */
 	if (endpt_pstk_proto(subc->data, PCB_LYT_COPPER | PCB_LYT_TOP) != COPPER_END)
-		rnd_message(PCB_MSG_WARNING, "extended object cord: wrong pstk proto ID for copper end\n");
+		rnd_message(RND_MSG_WARNING, "extended object cord: wrong pstk proto ID for copper end\n");
 	if (endpt_pstk_proto(subc->data, PCB_LYT_SILK | PCB_LYT_TOP) != SILK_END)
-		rnd_message(PCB_MSG_WARNING, "extended object cord: wrong pstk proto ID for silk end\n");
+		rnd_message(RND_MSG_WARNING, "extended object cord: wrong pstk proto ID for silk end\n");
 
 	/* convert lines into 2-ended cords */
 	for(n = 0; n < objs->used; n++) {

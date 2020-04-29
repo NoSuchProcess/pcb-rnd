@@ -86,7 +86,7 @@ static void ser_int(int save, int widx, const char *attrkey)
 		if (orig != NULL) {
 			hv.lng = strtol(orig, &end, 10);
 			if (*end != '\0') {
-				rnd_message(PCB_MSG_ERROR, "Invalid integer value in board attribute '%s': '%s'\n", attrkey, orig);
+				rnd_message(RND_MSG_ERROR, "Invalid integer value in board attribute '%s': '%s'\n", attrkey, orig);
 				hv.lng = 0;
 			}
 		}
@@ -115,7 +115,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 			if (*end != '\0') {
 				while(isspace(*end)) end++;
 				if (rnd_strcasecmp(end, "hz") != 0) {
-					rnd_message(PCB_MSG_ERROR, "Invalid real value (Hz) in board attribute '%s': '%s'\n", attrkey, orig);
+					rnd_message(RND_MSG_ERROR, "Invalid real value (Hz) in board attribute '%s': '%s'\n", attrkey, orig);
 					hv.dbl = 0;
 				}
 			}
@@ -187,10 +187,10 @@ static char *exc_gaus_get(int idx)
 	double f0 = 0, fc = 0;
 
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::f0"), &f0))
-		rnd_message(PCB_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::f0\n");
+		rnd_message(RND_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::f0\n");
 
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc"), &fc))
-		rnd_message(PCB_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::fc\n");
+		rnd_message(RND_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::fc\n");
 
 	return pcb_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
 }
@@ -225,7 +225,7 @@ static char *exc_sin_get(int idx)
 	double f0;
 
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0"), &f0))
-		rnd_message(PCB_MSG_ERROR, "Sinus excitation: unable to parse frequency sinusoidal::f0\n");
+		rnd_message(RND_MSG_ERROR, "Sinus excitation: unable to parse frequency sinusoidal::f0\n");
 
 	return pcb_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
 }
@@ -265,7 +265,7 @@ static char *exc_cust_get(int idx)
 	double f0;
 
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"), &f0))
-		rnd_message(PCB_MSG_ERROR, "Custom excitation: unable to parse frequency custom::f0\n");
+		rnd_message(RND_MSG_ERROR, "Custom excitation: unable to parse frequency custom::f0\n");
 
 	return pcb_strdup_printf(
 		"FDTD = SetCustomExcite(FDTD, %f, %s)",
@@ -371,7 +371,7 @@ static void select_update(int setattr)
 	hv.lng = exc_ctx.selected;
 
 	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
-		rnd_message(PCB_MSG_ERROR, "Invalid excitation selected\n");
+		rnd_message(RND_MSG_ERROR, "Invalid excitation selected\n");
 		exc_ctx.selected = 0;
 	}
 
@@ -410,7 +410,7 @@ static void pcb_dlg_exc(void)
 	if (excnames[0] == NULL) {
 		for(n = 0, e = excitations; e->name != NULL; n++,e++) {
 			if (n >= MAX_EXC) {
-				rnd_message(PCB_MSG_ERROR, "internal error: too many excitations");
+				rnd_message(RND_MSG_ERROR, "internal error: too many excitations");
 				break;
 			}
 			excnames[n] = e->name;
@@ -470,7 +470,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 		pcb_dlg_exc();
 	else if (strcmp(op, "select") == 0) {
 		if (a1 == NULL) {
-			rnd_message(PCB_MSG_ERROR, "OpenemsExcitation(select) needs a excitation name");
+			rnd_message(RND_MSG_ERROR, "OpenemsExcitation(select) needs a excitation name");
 			goto error;
 		}
 		rnd_attribute_put(&PCB->Attributes, AEPREFIX "type", a1);
@@ -485,7 +485,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 			case 4: a1 = excitations[exc_ctx.selected].name; start = 2; break;
 			case 5: start = 3; break;
 			default:
-				rnd_message(PCB_MSG_ERROR, "OpenemsExcitation(set) needs exactly 2 or 3 more arguments");
+				rnd_message(RND_MSG_ERROR, "OpenemsExcitation(set) needs exactly 2 or 3 more arguments");
 				goto error;
 		}
 
@@ -506,7 +506,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 			case 3: a1 = excitations[exc_ctx.selected].name; start = 2; break;
 			case 4: start = 3; break;
 			default:
-				rnd_message(PCB_MSG_ERROR, "OpenemsExcitation(get) needs exactly 1 or 2 more arguments");
+				rnd_message(RND_MSG_ERROR, "OpenemsExcitation(get) needs exactly 1 or 2 more arguments");
 				goto error;
 		}
 
@@ -528,7 +528,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 static char *pcb_openems_excitation_get(pcb_board_t *pcb)
 {
 	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
-		rnd_message(PCB_MSG_ERROR, "No excitation selected\n");
+		rnd_message(RND_MSG_ERROR, "No excitation selected\n");
 		return rnd_strdup("%% ERROR: no excitation selected\n");
 	}
 	return excitations[exc_ctx.selected].get(exc_ctx.selected);

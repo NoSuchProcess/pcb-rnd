@@ -116,12 +116,12 @@ static int do_import(void)
 
 	if ((imp_name == NULL) || (*imp_name == '\0')) {
 		if (convert_attribs()) {
-			rnd_message(PCB_MSG_ERROR, "Had to convert import:: attributes to import_sch config\nNOTE: changes done to import settings will not change the old attribute values.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0001.html\n");
+			rnd_message(RND_MSG_ERROR, "Had to convert import:: attributes to import_sch config\nNOTE: changes done to import settings will not change the old attribute values.\nFor details see: http://repo.hu/projects/pcb-rnd/help/err0001.html\n");
 			imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 		}
 		else {
 			if (!PCB_HAVE_GUI_ATTR_DLG) {
-				rnd_message(PCB_MSG_ERROR, "import_sch not configured; please use ImportSch(setup, ...)\n");
+				rnd_message(RND_MSG_ERROR, "import_sch not configured; please use ImportSch(setup, ...)\n");
 				return 1;
 			}
 			else
@@ -131,7 +131,7 @@ static int do_import(void)
 
 	p = pcb_lookup_importer(imp_name);
 	if (p == NULL) {
-		rnd_message(PCB_MSG_ERROR, "import_sch2: can not find importer called '%s'\nIs the corresponding plugin compiled?\n", imp_name);
+		rnd_message(RND_MSG_ERROR, "import_sch2: can not find importer called '%s'\nIs the corresponding plugin compiled?\n", imp_name);
 		return 1;
 	}
 
@@ -141,7 +141,7 @@ static int do_import(void)
 	a = malloc((len+1) * sizeof(char *));
 	for(n = 0, ci = rnd_conflist_first((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = rnd_conflist_next(ci), n++)
 		a[n] = ci->val.string[0];
-	rnd_message(PCB_MSG_DEBUG, "import_sch2: reimport with %s -> %p\n", imp_name, p);
+	rnd_message(RND_MSG_DEBUG, "import_sch2: reimport with %s -> %p\n", imp_name, p);
 	res = p->import(p, IMPORT_ASPECT_NETLIST, a, len);
 	free(a);
 	return res;
@@ -153,29 +153,29 @@ static int do_setup(int argc, fgw_arg_t *argv)
 	pcb_plug_import_t *p;
 
 	if (argc < 1) {
-		rnd_message(PCB_MSG_ERROR, "ImportSch: setup needs importer name\n");
+		rnd_message(RND_MSG_ERROR, "ImportSch: setup needs importer name\n");
 		return -1;
 	}
 
 	for(n = 0; n < argc; n++) {
 		if (fgw_arg_conv(&rnd_fgw, &argv[n], FGW_STR) != 0) {
-			rnd_message(PCB_MSG_ERROR, "ImportSch: failed to convert argument %d to string\n", n+1);
+			rnd_message(RND_MSG_ERROR, "ImportSch: failed to convert argument %d to string\n", n+1);
 			return -1;
 		}
 	}
 
 	p = pcb_lookup_importer(argv[0].val.str);
 	if (p == NULL) {
-		rnd_message(PCB_MSG_ERROR, "ImportSch: importer not found: '%s'\n", argv[0].val.str);
+		rnd_message(RND_MSG_ERROR, "ImportSch: importer not found: '%s'\n", argv[0].val.str);
 		return -1;
 	}
 
 	if (p->single_arg && (argc != 2)) {
-		rnd_message(PCB_MSG_ERROR, "ImportSch: importer '%s' requires exactly one file name argument\n", argv[0].val.str);
+		rnd_message(RND_MSG_ERROR, "ImportSch: importer '%s' requires exactly one file name argument\n", argv[0].val.str);
 		return -1;
 	}
 	else if (p->all_filenames && (argc < 2)) {
-		rnd_message(PCB_MSG_ERROR, "ImportSch: importer '%s' requires at least one file name argument\n", argv[0].val.str);
+		rnd_message(RND_MSG_ERROR, "ImportSch: importer '%s' requires at least one file name argument\n", argv[0].val.str);
 		return -1;
 	}
 

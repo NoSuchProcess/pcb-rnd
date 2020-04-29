@@ -354,7 +354,7 @@ static void layergrp_post_change(rnd_attribute_list_t *list, const char *name, c
 		if ((rnd_strcasecmp(value, "true") == 0) || (rnd_strcasecmp(value, "yes") == 0) || (rnd_strcasecmp(value, "on") == 0) || (strcmp(value, "1") == 0)) newv = 1;
 		else if ((rnd_strcasecmp(value, "false") == 0) || (rnd_strcasecmp(value, "no") == 0) || (rnd_strcasecmp(value, "off") == 0) || (strcmp(value, "0") == 0)) newv = 0;
 		else {
-			rnd_message(PCB_MSG_ERROR, "unrecognized value '%s' of layer group %s's init-invis attribute", value, g->name == NULL ? "" : g->name);
+			rnd_message(RND_MSG_ERROR, "unrecognized value '%s' of layer group %s's init-invis attribute", value, g->name == NULL ? "" : g->name);
 			return;
 		}
 		g->init_invis = newv;
@@ -832,7 +832,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 							pcb->Data->Layer[lids[n]].comb |= PCB_LYC_AUTO;
 						}
 						else
-							rnd_message(PCB_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
+							rnd_message(RND_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
 					}
 					pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, lids[n]);
 				}
@@ -1341,12 +1341,12 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 		}
 
 		if (!((ly->meta.bound.type & PCB_LYT_DOC) || (ly->meta.bound.type & PCB_LYT_MECH))) /* doc layers are created later */
-			rnd_message(PCB_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->name);
+			rnd_message(RND_MSG_ERROR, "Failed to create layer from recipe %s\n", ly->name);
 	}
 
 	if (want_intern > existing_intern) {
 		int int_ofs = 0;
-/*pcb_trace("want: %d have: %d\n", want_intern, existing_intern);*/
+/*rnd_trace("want: %d have: %d\n", want_intern, existing_intern);*/
 		/* create enough dummy internal layers, mark them by name anon */
 		while(want_intern > existing_intern) {
 			pcb_layergrp_t *grp = pcb_get_grp_new_intern(pcb, -1);
@@ -1362,7 +1362,7 @@ int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int nu
 					pcb_layer_t *ly = layer + m;
 					if ((ly->meta.bound.type & PCB_LYT_COPPER) && (ly->meta.bound.type & PCB_LYT_INTERN)) {
 						int offs = ly->meta.bound.stack_offs;
-/*pcb_trace("offs: %d (%d) == %d\n", offs, existing_intern + offs + 1, int_ofs);*/
+/*rnd_trace("offs: %d (%d) == %d\n", offs, existing_intern + offs + 1, int_ofs);*/
 						if (offs < 0)
 							offs = existing_intern + offs + 1;
 						if ((offs == int_ofs) && (ly->name != NULL)) {

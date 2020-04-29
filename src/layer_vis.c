@@ -167,7 +167,7 @@ void pcb_layervis_save_stack(void)
 	}
 
 	if (SavedStack.cnt != 0)
-		rnd_message(PCB_MSG_ERROR, "pcb_layervis_save_stack()  layerstack was already saved and not yet restored.  cnt = %d\n", SavedStack.cnt);
+		rnd_message(RND_MSG_ERROR, "pcb_layervis_save_stack()  layerstack was already saved and not yet restored.  cnt = %d\n", SavedStack.cnt);
 
 	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
@@ -189,11 +189,11 @@ void pcb_layervis_restore_stack(void)
 	rnd_cardinal_t i;
 
 	if (SavedStack.cnt == 0) {
-		rnd_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
+		rnd_message(RND_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack has not" " been saved.  cnt = %d\n", SavedStack.cnt);
 		return;
 	}
 	else if (SavedStack.cnt != 1) {
-		rnd_message(PCB_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
+		rnd_message(RND_MSG_ERROR, "pcb_layervis_restore_stack()  layerstack save count is" " wrong.  cnt = %d\n", SavedStack.cnt);
 	}
 
 	for (i = 0; i < pcb_max_layer(PCB); i++) {
@@ -278,7 +278,7 @@ void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
 				if (l == NULL)
-					rnd_message(PCB_MSG_ERROR, "broken layer groups; layer group references to non-existing layer\n");
+					rnd_message(RND_MSG_ERROR, "broken layer groups; layer group references to non-existing layer\n");
 				else
 					l->meta.real.vis = 0;
 			}

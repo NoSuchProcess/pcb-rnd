@@ -74,7 +74,7 @@ do { \
 /****** Utility/helper functions  ******/
 /* Looking at the log level, return a log format tag and whether the window
    should pop up. */
-void rnd_conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup);
+void rnd_conf_loglevel_props(rnd_message_level_t level, const char **tag, int *popup);
 
 /****** Internal  ******/
 void rnd_conf_hid_global_cb_int_(rnd_conf_native_t *item, int arr_idx, int offs);

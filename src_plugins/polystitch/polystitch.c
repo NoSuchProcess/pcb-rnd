@@ -54,7 +54,7 @@ static pcb_poly_t *find_crosshair_poly(rnd_coord_t x, rnd_coord_t y)
 	PCB_ENDALL_LOOP;
 
 	if (res == NULL)
-		rnd_message(PCB_MSG_ERROR, "Cannot find any polygons");
+		rnd_message(RND_MSG_ERROR, "Cannot find any polygons");
 
 	return res;
 }
@@ -76,7 +76,7 @@ static pcb_poly_t *find_enclosing_poly(pcb_poly_t *inner_poly)
 	}
 	PCB_END_LOOP;
 
-	rnd_message(PCB_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
+	rnd_message(RND_MSG_ERROR, "Cannot find a polygon enclosing the one you selected");
 	return NULL;
 }
 

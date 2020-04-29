@@ -44,7 +44,7 @@ static const char *PTR_DOMAIN_POLY = "fgw_ptr_domain_poly";
 
 static int flg_error(const char *msg)
 {
-	rnd_message(PCB_MSG_ERROR, "act_draw flag conversion error: %s\n", msg);
+	rnd_message(RND_MSG_ERROR, "act_draw flag conversion error: %s\n", msg);
 	return 0;
 }
 
@@ -177,7 +177,7 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		text = pcb_text_new(layer, font, x, y, rot, scale, th, str, flags);
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "NewText: font %d not found\n", fontid);
+		rnd_message(RND_MSG_ERROR, "NewText: font %d not found\n", fontid);
 
 	if (text != NULL) {
 		RET_IDPATH(text);
@@ -274,7 +274,7 @@ static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 		}
 		c[len % 2] = pcb_get_value_ex(s, NULL, NULL, NULL, "mm", &success);
 		if (!success) {
-			rnd_message(PCB_MSG_ERROR, "act_draw ptlist processing: '%s' is not a valid coordinate\n", s);
+			rnd_message(RND_MSG_ERROR, "act_draw ptlist processing: '%s' is not a valid coordinate\n", s);
 			free(tmp);
 			return -1;
 		}
@@ -283,7 +283,7 @@ static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 	}
 	free(tmp);
 	if ((len % 2) == 1) {
-		rnd_message(PCB_MSG_ERROR, "act_draw ptlist processing: odd number of points\n");
+		rnd_message(RND_MSG_ERROR, "act_draw ptlist processing: odd number of points\n");
 		return -1;
 	}
 	return len/2;
@@ -368,7 +368,7 @@ static fgw_error_t pcb_act_PolyNewPoints(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	RND_PCB_ACT_CONVARG(1+ao, FGW_PTR, PolyNewPoints, poly = argv[1+ao].val.ptr_void);
 	RND_PCB_ACT_CONVARG(2+ao, FGW_STR, PolyNewPoints, ptlist = argv[2+ao].val.str);
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY)) {
-		rnd_message(PCB_MSG_ERROR, "PolyNewPoints: invalid polygon pointer\n");
+		rnd_message(RND_MSG_ERROR, "PolyNewPoints: invalid polygon pointer\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -394,12 +394,12 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
 	RND_PCB_ACT_CONVARG(3+ao, FGW_PTR, PolyNewPoints, poly = argv[3+ao].val.ptr_void);
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY)) {
-		rnd_message(PCB_MSG_ERROR, "PolyNewEnd: invalid polygon pointer\n");
+		rnd_message(RND_MSG_ERROR, "PolyNewEnd: invalid polygon pointer\n");
 		RND_ACT_IRES(0);
 		return 0;
 	}
 	if (poly->PointN < 3) {
-		rnd_message(PCB_MSG_ERROR, "PolyNewEnd: can not finish polygon, need at least 3 points\n");
+		rnd_message(RND_MSG_ERROR, "PolyNewEnd: can not finish polygon, need at least 3 points\n");
 		RND_ACT_IRES(0);
 		return 0;
 	}
@@ -432,7 +432,7 @@ TODO("implement noundo");
 	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, LayerObjDup, layer = fgw_layer(&argv[2+ao]));
 	RND_PCB_ACT_CONVARG(3+ao, FGW_PTR, LayerObjDup, idp = argv[3+ao].val.ptr_void);
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], RND_PTR_DOMAIN_IDPATH)) {
-		rnd_message(PCB_MSG_ERROR, "LayerObjDup: invalid object pointer\n");
+		rnd_message(RND_MSG_ERROR, "LayerObjDup: invalid object pointer\n");
 		return FGW_ERR_PTR_DOMAIN;
 	}
 	src = pcb_idpath2obj(PCB, idp);

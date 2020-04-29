@@ -78,7 +78,7 @@ static int dad_new(rnd_hidlib_t *hl, const char *name)
 	dad_t *dad;
 
 	if (htsp_get(&dads, name) != NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't create named DAD dialog %s: already exists\n", name);
+		rnd_message(RND_MSG_ERROR, "Can't create named DAD dialog %s: already exists\n", name);
 		return -1;
 	}
 
@@ -155,7 +155,7 @@ static int split_tablist(dad_t *dad, char **values, const char *txt, const char 
 
 	for(len = 0; s != NULL; s = next) {
 		if (len >= MAX_ENUM) {
-			rnd_message(PCB_MSG_ERROR, "Too many DAD %s values\n", cmd);
+			rnd_message(RND_MSG_ERROR, "Too many DAD %s values\n", cmd);
 			return -1;
 		}
 		next = strchr(s, '\t');
@@ -222,7 +222,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (dad == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can't find named DAD dialog %s\n", dlgname);
+		rnd_message(RND_MSG_ERROR, "Can't find named DAD dialog %s\n", dlgname);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
@@ -358,7 +358,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (row != NULL) {
 			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], dad->row_domain)) {
-				rnd_message(PCB_MSG_ERROR, "Invalid DAD row pointer\n");
+				rnd_message(RND_MSG_ERROR, "Invalid DAD row pointer\n");
 				RND_ACT_IRES(-1);
 				return 0;
 			}
@@ -430,7 +430,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				continue;
 			tmp = pcb_hid_compflag_name2bit(txt);
 			if (tmp == 0)
-				rnd_message(PCB_MSG_ERROR, "Invalid DAD flag: %s (ignored)\n", txt);
+				rnd_message(RND_MSG_ERROR, "Invalid DAD flag: %s (ignored)\n", txt);
 			flg |= tmp;
 		}
 		PCB_DAD_COMPFLAG(dad->dlg, flg);
@@ -450,7 +450,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
 		if ((wid < 0) || (wid >= dad->dlg_len)) {
-			rnd_message(PCB_MSG_ERROR, "Invalid widget ID %d (set ignored)\n", wid);
+			rnd_message(RND_MSG_ERROR, "Invalid widget ID %d (set ignored)\n", wid);
 			RND_ACT_IRES(-1);
 			return 0;
 		}
@@ -481,7 +481,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str, txt);
 				break;
 			default:
-				rnd_message(PCB_MSG_ERROR, "Invalid widget type %d - can not change value (set ignored)\n", wid);
+				rnd_message(RND_MSG_ERROR, "Invalid widget type %d - can not change value (set ignored)\n", wid);
 				RND_ACT_IRES(-1);
 				return 0;
 		}
@@ -493,7 +493,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
 		if ((wid < 0) || (wid >= dad->dlg_len)) {
-			rnd_message(PCB_MSG_ERROR, "Invalid widget ID %d (get ignored)\n", wid);
+			rnd_message(RND_MSG_ERROR, "Invalid widget ID %d (get ignored)\n", wid);
 			return FGW_ERR_NOT_FOUND;
 		}
 
@@ -508,7 +508,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (txt != NULL) {
 					const pcb_unit_t *u = get_unit_struct(txt);
 					if (u == NULL) {
-						rnd_message(PCB_MSG_ERROR, "Invalid unit %s (get ignored)\n", txt);
+						rnd_message(RND_MSG_ERROR, "Invalid unit %s (get ignored)\n", txt);
 						return FGW_ERR_NOT_FOUND;
 					}
 					res->type = FGW_DOUBLE;
@@ -532,7 +532,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				res->val.str = (char *)dad->dlg[wid].val.str;
 				break;
 			default:
-				rnd_message(PCB_MSG_ERROR, "Invalid widget type %d - can not retrieve value (get ignored)\n", wid);
+				rnd_message(RND_MSG_ERROR, "Invalid widget type %d - can not retrieve value (get ignored)\n", wid);
 				return FGW_ERR_NOT_FOUND;
 		}
 		return 0;
@@ -542,7 +542,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 
 		if (dad->level != 0) {
-			rnd_message(PCB_MSG_ERROR, "Invalid DAD dialog structure: %d levels not closed (missing 'end' calls)\n", dad->level);
+			rnd_message(RND_MSG_ERROR, "Invalid DAD dialog structure: %d levels not closed (missing 'end' calls)\n", dad->level);
 			rv = -1;
 		}
 		else {
@@ -551,7 +551,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Invalid DAD dialog command: '%s'\n", cmd);
+		rnd_message(RND_MSG_ERROR, "Invalid DAD dialog command: '%s'\n", cmd);
 		rv = -1;
 	}
 
@@ -559,7 +559,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 
 	cant_chg:;
-	rnd_message(PCB_MSG_ERROR, "Can't find named DAD dialog %s\n", dlgname);
+	rnd_message(RND_MSG_ERROR, "Can't find named DAD dialog %s\n", dlgname);
 	RND_ACT_IRES(-1);
 	return 0;
 }

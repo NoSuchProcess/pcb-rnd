@@ -167,7 +167,7 @@ static void gcode_print_header(void)
 	if (step > 0)
 		step = -step;
 	else if (step == 0) {
-		rnd_message(PCB_MSG_ERROR, "export_gcode: cut increment not configured - not exporting thru-cut layer\n");
+		rnd_message(RND_MSG_ERROR, "export_gcode: cut increment not configured - not exporting thru-cut layer\n");
 		return;
 	}
 
@@ -175,7 +175,7 @@ static void gcode_print_header(void)
 	if (total == 0) {
 		total = pcb_board_thickness(gctx.pcb, "gcode", PCB_BRDTHICK_PRINT_ERROR);
 		if (total == 0) {
-			rnd_message(PCB_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
+			rnd_message(RND_MSG_ERROR, "export_gcode: can't determine board thickness - not exporting thru-cut layer\n");
 			return;
 		}
 	}
@@ -369,11 +369,11 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 	if (pcb_cam_end(&gctx.cam) == 0) {
 		if (!gctx.cam.okempty_group)
-			rnd_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
 	else if (gctx.drawn_objs == 0) {
 		if (!gctx.cam.okempty_content)
-			rnd_message(PCB_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
+			rnd_message(RND_MSG_ERROR, "gcode cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
 }
 

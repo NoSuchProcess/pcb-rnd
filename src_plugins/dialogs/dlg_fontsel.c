@@ -134,7 +134,7 @@ static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 {
 	if (conf_core.design.text_font_id == 0) {
-		rnd_message(PCB_MSG_ERROR, "Can not remove the default font.\n");
+		rnd_message(RND_MSG_ERROR, "Can not remove the default font.\n");
 		return;
 	}
 	pcb_del_font(&PCB->fontkit, conf_core.design.text_font_id);
@@ -159,7 +159,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 		for(c = gdl_first(&fontsels); c != NULL; c = gdl_next(&fontsels, c)) {
 			pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj_in(c->pcb->Data, c->txt_id);
 			if (txt == txt_obj) {
-				rnd_message(PCB_MSG_ERROR, "There is already an active fontedit dialog for that object,\nnot going to open a second dialog.\n");
+				rnd_message(RND_MSG_ERROR, "There is already an active fontedit dialog for that object,\nnot going to open a second dialog.\n");
 				return;
 			}
 		}

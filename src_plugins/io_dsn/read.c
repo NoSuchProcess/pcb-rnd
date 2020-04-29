@@ -83,7 +83,7 @@ static char *STRE(gsxl_node_t *node)
 #define if_save_uniq(node, name) \
 	if (rnd_strcasecmp(node->str, #name) == 0) { \
 		if (n ## name != NULL) { \
-			rnd_message(PCB_MSG_ERROR, "Multiple " #name " nodes where only one is expected (at %ld:%ld)\n", (long)node->line, (long)node->col); \
+			rnd_message(RND_MSG_ERROR, "Multiple " #name " nodes where only one is expected (at %ld:%ld)\n", (long)node->line, (long)node->col); \
 			return -1; \
 		} \
 		n ## name = node; \
@@ -95,7 +95,7 @@ static rnd_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 	double v = strtod(s, &end);
 
 	if (*end != '\0') {
-		rnd_message(PCB_MSG_ERROR, "Invalid coord: '%s' (at %ld:%ld)\n", s, (long)n->line, (long)n->col);
+		rnd_message(RND_MSG_ERROR, "Invalid coord: '%s' (at %ld:%ld)\n", s, (long)n->line, (long)n->col);
 		return 0;
 	}
 	v /= ctx->unit->scale_factor;
@@ -142,7 +142,7 @@ static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 
 	ctx->unit = get_unit_struct(su);
 	if (ctx->unit == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", su, (long)nu->line, (long)nu->col);
+		rnd_message(RND_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", su, (long)nu->line, (long)nu->col);
 		return NULL;
 	}
 
@@ -194,7 +194,7 @@ static int dsn_parse_rect(dsn_read_t *ctx, rnd_box_t *dst, gsxl_node_t *src, int
 	rnd_coord_t x, y;
 
 	if (src == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Missing coord in rect\n");
+		rnd_message(RND_MSG_ERROR, "Missing coord in rect\n");
 		return -1;
 	}
 
@@ -221,7 +221,7 @@ static int dsn_parse_rect(dsn_read_t *ctx, rnd_box_t *dst, gsxl_node_t *src, int
 	return 0;
 
 	err:;
-	rnd_message(PCB_MSG_ERROR, "Missing coord in rect (at %ld:%ld)\n", (long)src->line, (long)src->col);
+	rnd_message(RND_MSG_ERROR, "Missing coord in rect (at %ld:%ld)\n", (long)src->line, (long)src->col);
 	return -1;
 }
 
@@ -255,11 +255,11 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 
 			b = gsxl_children(bnd);
 			if (!do_bbox && (rnd_strcasecmp(STRE(b), "pcb") == 0)) {
-				rnd_message(PCB_MSG_ERROR, "PCB boundary shall be a rect, not a path;\naccepting the path, but other software may choke on this file\n");
+				rnd_message(RND_MSG_ERROR, "PCB boundary shall be a rect, not a path;\naccepting the path, but other software may choke on this file\n");
 				ctx->has_pcb_boundary = 1;
 			}
 			if ((b->next == NULL) || (b->next->next == NULL)) {
-				rnd_message(PCB_MSG_ERROR, "not enough arguments for boundary poly (at %ld:%ld)\n", (long)b->line, (long)b->col);
+				rnd_message(RND_MSG_ERROR, "not enough arguments for boundary poly (at %ld:%ld)\n", (long)b->line, (long)b->col);
 				return -1;
 			}
 
@@ -268,7 +268,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 			for(len = 0, n = b->next->next; n != NULL; len++) {
 				x = COORDX(ctx, n);
 				if (n->next == NULL) {
-					rnd_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
+					rnd_message(RND_MSG_ERROR, "Not enough coordinate values (missing y)\n");
 					break;
 				}
 				n = n->next;
@@ -298,7 +298,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 
 			b = gsxl_children(bnd);
 			if ((b->next == NULL) || (b->next->next == NULL)) {
-				rnd_message(PCB_MSG_ERROR, "not enough arguments for boundary rect (at %ld:%ld)\n", (long)b->line, (long)b->col);
+				rnd_message(RND_MSG_ERROR, "not enough arguments for boundary rect (at %ld:%ld)\n", (long)b->line, (long)b->col);
 				return -1;
 			}
 			if (rnd_strcasecmp(STRE(b), "pcb") == 0)
@@ -328,7 +328,7 @@ static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 		return 0;
 
 	if (pcb_layer_list(ctx->pcb, PCB_LYT_BOUNDARY, &olid, 1) < 1) {
-		rnd_message(PCB_MSG_ERROR, "Intenal error: no boundary layer found\n");
+		rnd_message(RND_MSG_ERROR, "Intenal error: no boundary layer found\n");
 		return -1;
 	}
 	oly = pcb_get_layer(ctx->pcb->Data, olid);
@@ -352,14 +352,14 @@ static int parse_layer_type(dsn_read_t *ctx, pcb_layergrp_t *grp, const char *ty
 		return 0;
 	}
 
-	rnd_message(PCB_MSG_WARNING, "Ignoring unknown layer type '%s' for %s\n", ty, grp->name);
+	rnd_message(RND_MSG_WARNING, "Ignoring unknown layer type '%s' for %s\n", ty, grp->name);
 	return 0;
 }
 
 #define CHECK_TOO_MANY_LAYERS(node, num) \
 do { \
 	if (num >= PCB_MAX_LAYERGRP) { \
-		rnd_message(PCB_MSG_ERROR, "Too many layer groups in the layer stack (at %ld:%ld)\n", (long)node->line, (long)node->col); \
+		rnd_message(RND_MSG_ERROR, "Too many layer groups in the layer stack (at %ld:%ld)\n", (long)node->line, (long)node->col); \
 		return -1; \
 	} \
 } while(0)
@@ -386,7 +386,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	};
 
 	if (str == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can not parse board without a structure subtree\n");
+		rnd_message(RND_MSG_ERROR, "Can not parse board without a structure subtree\n");
 		return -1;
 	}
 
@@ -416,7 +416,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 
 			ly = pcb_get_layer(ctx->pcb->Data, botcop->lid[0]);
 			if (ly == NULL) {
-				rnd_message(PCB_MSG_ERROR, "io_dsn internal error: no layer in group\n");
+				rnd_message(RND_MSG_ERROR, "io_dsn internal error: no layer in group\n");
 				return -1;
 			}
 			htsp_set(&ctx->name2layer, (char *)ly->name, ly);
@@ -436,7 +436,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	}
 
 	if (topcop == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Can not parse board without a copper layers\n");
+		rnd_message(RND_MSG_ERROR, "Can not parse board without a copper layers\n");
 		return -1;
 	}
 
@@ -484,14 +484,14 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	}
 
 	if ((ctx->bbox.X1 < 0) || (ctx->bbox.Y1 < 0))
-		rnd_message(PCB_MSG_WARNING, "Negative coordinates on input - you may want to execute autocrop()\n");
+		rnd_message(RND_MSG_WARNING, "Negative coordinates on input - you may want to execute autocrop()\n");
 
 	ctx->pcb->hidlib.size_x = ctx->bbox.X2 - ctx->bbox.X1;
 	ctx->pcb->hidlib.size_y = ctx->bbox.Y2 - ctx->bbox.Y1;
 
 	if (!ctx->has_pcb_boundary) {
 		ctx->bbox.X1 = ctx->bbox.Y1 = ctx->bbox.X2 = ctx->bbox.Y2 = 0;
-		rnd_message(PCB_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\nYou may want to execute autocrop()\n");
+		rnd_message(RND_MSG_ERROR, "Missing pcb boundary; every dsn design must have a pcb boundary.\ntrying to make up one using the bounding box.\nYou may want to execute autocrop()\n");
 	}
 
 	/* place polygons on planes */
@@ -499,7 +499,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 		if (rnd_attribute_get(&grp->Attributes, "plane") != NULL) {
 			pcb_layer_t *ly;
 			if (!ctx->has_pcb_boundary) {
-				rnd_message(PCB_MSG_ERROR, "Because of the missing pcb boundary power planes are not filled with polygons.\n");
+				rnd_message(RND_MSG_ERROR, "Because of the missing pcb boundary power planes are not filled with polygons.\n");
 				return 0;
 			}
 			ly = pcb_get_layer(ctx->pcb->Data, grp->lid[0]);
@@ -518,7 +518,7 @@ int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape
 	gsxl_node_t *args = nd->children->next;
 
 	if ((args == NULL) || (args->str == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Padstack circle: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		rnd_message(RND_MSG_ERROR, "Padstack circle: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 
@@ -566,13 +566,13 @@ int dsn_parse_pstk_shape_path(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t
 	gsxl_node_t *th = nd->children->next, *args = th->next;
 
 	if ((args == NULL) || (args->next == NULL) || (args->next->next == NULL) || (args->next->next->next == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Padstack path: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		rnd_message(RND_MSG_ERROR, "Padstack path: not enough arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 
 	extra = args->next->next->next->next;
 	if ((extra != NULL) && (!isalpha(*extra->str))) {
-		rnd_message(PCB_MSG_ERROR, "Padstack path: too many arguments - only a single line supported (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		rnd_message(RND_MSG_ERROR, "Padstack path: too many arguments - only a single line supported (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 
@@ -598,12 +598,12 @@ int dsn_parse_pstk_shape_poly(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t
 	for(len = 0, n = args; (n != NULL) && !(isalpha(*n->str)); n = n->next, len++) ;
 
 	if (len < 3) {
-		rnd_message(PCB_MSG_ERROR, "Padstack poly: too few points (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		rnd_message(RND_MSG_ERROR, "Padstack poly: too few points (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 
 	if ((len % 2) != 0) {
-		rnd_message(PCB_MSG_ERROR, "Padstack poly: wrong (odd) number of arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		rnd_message(RND_MSG_ERROR, "Padstack poly: wrong (odd) number of arguments (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 
@@ -639,7 +639,7 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 {
 	memset(shp, 0, sizeof(pcb_pstk_shape_t));
 	if ((sn == NULL) || (sn->str == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Invalid padstack shape (at %ld:%ld)\n", (long)sn->line, (long)sn->col);
+		rnd_message(RND_MSG_ERROR, "Invalid padstack shape (at %ld:%ld)\n", (long)sn->line, (long)sn->col);
 		return -1;
 	}
 	if (rnd_strcasecmp(sn->str, "circle") == 0) {
@@ -659,11 +659,11 @@ static int dsn_parse_lib_padstack_shp(dsn_read_t *ctx, gsxl_node_t *sn, pcb_pstk
 			return -1;
 	}
 	else if (rnd_strcasecmp(sn->str, "qarc") == 0) {
-		rnd_message(PCB_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
+		rnd_message(RND_MSG_ERROR, "Unsupported padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
 		return -1;
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Invalid/unknown padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
+		rnd_message(RND_MSG_ERROR, "Invalid/unknown padstack shape %s (at %ld:%ld)\n", sn->str, (long)sn->line, (long)sn->col);
 		return -1;
 	}
 	return 0;
@@ -681,7 +681,7 @@ static pcb_layer_type_t dsn_pstk_shape_layer(dsn_read_t *ctx, gsxl_node_t *net)
 
 	ly = htsp_get(&ctx->name2layer, nname); \
 	if (ly == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", nname, (long)net->line, (long)net->col);
+		rnd_message(RND_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", nname, (long)net->line, (long)net->col);
 		return -1;
 	}
 
@@ -712,7 +712,7 @@ static void dsn_pstk_set_shape_(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb
 	if (pcb_pstk_shape_eq(existing, shp))
 		return;
 
-	rnd_message(PCB_MSG_WARNING, "Incompatible padstack: some shape details are lost (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+	rnd_message(RND_MSG_WARNING, "Incompatible padstack: some shape details are lost (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 }
 
 static void dsn_pstk_set_shape(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb_pstk_shape_t *shp, gsxl_node_t *nd)
@@ -736,7 +736,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 	int has_hole = 0;
 
 	if ((wrr->children == NULL) || (wrr->children->str == NULL)) {
-		rnd_message(PCB_MSG_WARNING, "Empty padstack (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		rnd_message(RND_MSG_WARNING, "Empty padstack (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -771,7 +771,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 					goto err;
 
 				if (!pcb_pstk_shape_eq(&hole, &shp))
-					rnd_message(PCB_MSG_WARNING, "Incompatible padstack: non-uniform hole geometry; keeping one hole shape randomly (at %ld:%ld)\n", (long)n->line, (long)n->col);
+					rnd_message(RND_MSG_WARNING, "Incompatible padstack: non-uniform hole geometry; keeping one hole shape randomly (at %ld:%ld)\n", (long)n->line, (long)n->col);
 
 				pcb_pstk_shape_free(&shp);
 			}
@@ -790,7 +790,7 @@ static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 		}
 		else if ((rnd_strcasecmp(n->str, "rotate") == 0) || (rnd_strcasecmp(n->str, "absolute") == 0)) {
 			if (rnd_strcasecmp(STRE(n->children), "off") == 0) {
-				rnd_message(PCB_MSG_WARNING, "unhandled padstack flag %s (at %ld:%ld) - this property will be ignored\n", n->str, (long)n->line, (long)n->col);
+				rnd_message(RND_MSG_WARNING, "unhandled padstack flag %s (at %ld:%ld) - this property will be ignored\n", n->str, (long)n->line, (long)n->col);
 			}
 		}
 	}
@@ -831,13 +831,13 @@ static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 	pcb_pstk_proto_t *proto;
 
 	if ((psname == NULL) || (*psname == '\0')) {
-		rnd_message(PCB_MSG_ERROR, "Invalid anonymous via (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+		rnd_message(RND_MSG_ERROR, "Invalid anonymous via (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 		return -1;
 	}
 
 	proto = htsp_get(&ctx->protos, psname);
 	if (proto == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Unknown via '%s' (at %ld:%ld)\n", psname, (long)pn->line, (long)pn->col);
+		rnd_message(RND_MSG_ERROR, "Unknown via '%s' (at %ld:%ld)\n", psname, (long)pn->line, (long)pn->col);
 		return -1;
 	}
 
@@ -852,7 +852,7 @@ static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 
 	return 0;
 	err_coord:;
-	rnd_message(PCB_MSG_ERROR, "Invalid via coordinates (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+	rnd_message(RND_MSG_ERROR, "Invalid via coordinates (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 	return -1;
 }
 
@@ -867,18 +867,18 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 	double rotang = 0.0;
 
 	if ((psname == NULL) || (*psname == '\0')) {
-		rnd_message(PCB_MSG_ERROR, "Invalid anonymous pin (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+		rnd_message(RND_MSG_ERROR, "Invalid anonymous pin (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 		return -1;
 	}
 
 	proto = htsp_get(&ctx->protos, psname);
 	if (proto == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Unknown pin '%s' (at %ld:%ld)\n", psname, (long)pn->line, (long)pn->col);
+		rnd_message(RND_MSG_ERROR, "Unknown pin '%s' (at %ld:%ld)\n", psname, (long)pn->line, (long)pn->col);
 		return -1;
 	}
 
 	if (pn->children->next == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Missing pin terminal ID (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+		rnd_message(RND_MSG_ERROR, "Missing pin terminal ID (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 		return -1;
 	}
 
@@ -891,7 +891,7 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 		char *end;
 		rotang = strtod(STRE(nrot->children), &end);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "Invalid pin rotation angle (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+			rnd_message(RND_MSG_ERROR, "Invalid pin rotation angle (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 			return -1;
 		}
 	}
@@ -906,11 +906,11 @@ static int dsn_parse_img_pin(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 		rnd_attribute_put(&ps->Attributes, "term", term);
 	}
 	else
-		rnd_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+		rnd_message(RND_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 
 	return 0;
 	err_coord:;
-	rnd_message(PCB_MSG_ERROR, "Invalid pin coordinates (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
+	rnd_message(RND_MSG_ERROR, "Invalid pin coordinates (at %ld:%ld)\n", (long)pn->line, (long)pn->col);
 	return -1;
 }
 
@@ -930,7 +930,7 @@ static int dsn_parse_img_hardwired(dsn_read_t *ctx, gsxl_node_t *nd, pcb_subc_t 
 		}
 	}
 	if (!found) {
-		rnd_message(PCB_MSG_ERROR, "Internal error: subc doc outline layer (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
+		rnd_message(RND_MSG_ERROR, "Internal error: subc doc outline layer (at %ld:%ld)\n", (long)nd->line, (long)nd->col);
 		return -1;
 	}
 	return dsn_parse_wire(ctx, nd, subc, ly);
@@ -962,7 +962,7 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 
 	id = STRE(imr->children);
 	if ((id == NULL) || (*id == '\0')) {
-		rnd_message(PCB_MSG_WARNING, "invalid empty image name (at %ld:%ld) - this property will be ignored\n", (long)imr->line, (long)imr->col);
+		rnd_message(RND_MSG_WARNING, "invalid empty image name (at %ld:%ld) - this property will be ignored\n", (long)imr->line, (long)imr->col);
 		return -1;
 	}
 
@@ -1069,7 +1069,7 @@ static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 				return -1;
 		}
 		else if ((rnd_strcasecmp(n->str, "jumper") == 0) || (rnd_strcasecmp(n->str, "via_array_template") == 0) || (rnd_strcasecmp(n->str, "directory") == 0)) {
-			rnd_message(PCB_MSG_WARNING, "unhandled library item %s (at %ld:%ld) - please send the dsn file as a bugreport\n", n->str, (long)n->line, (long)n->col);
+			rnd_message(RND_MSG_WARNING, "unhandled library item %s (at %ld:%ld) - please send the dsn file as a bugreport\n", n->str, (long)n->line, (long)n->col);
 		}
 	}
 
@@ -1097,7 +1097,7 @@ do { \
 		else \
 			ly = htsp_get(&ctx->name2layer, __nname__); \
 		if (ly == NULL) { \
-			rnd_message(PCB_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", __nname__, (long)__net__->line, (long)__net__->col); \
+			rnd_message(RND_MSG_ERROR, "Invalid/unknown net '%s' (at %ld:%ld)\n", __nname__, (long)__net__->line, (long)__net__->col); \
 			{ fail; } \
 		} \
 	} \
@@ -1117,7 +1117,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Not enough wire polygon attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		rnd_message(RND_MSG_ERROR, "Not enough wire polygon attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -1128,7 +1128,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 			break;
 		x = COORDX(ctx, n);
 		if (n->next == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
+			rnd_message(RND_MSG_ERROR, "Not enough coordinate values (missing y)\n");
 			break;
 		}
 		n = n->next;
@@ -1152,7 +1152,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 	}
 
 	if (len < 3) {
-		rnd_message(PCB_MSG_ERROR, "Not enough coordinate pairs for a polygon (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		rnd_message(RND_MSG_ERROR, "Not enough coordinate pairs for a polygon (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -1216,7 +1216,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *
 	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Not enough wire circle attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		rnd_message(RND_MSG_ERROR, "Not enough wire circle attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -1239,7 +1239,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *
 	return 0;
 
 	err_cent:;
-	rnd_message(PCB_MSG_ERROR, "Not enough circle center attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+	rnd_message(RND_MSG_ERROR, "Not enough circle center attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 	return -1;
 }
 
@@ -1254,7 +1254,7 @@ static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 	DSN_PARSE_NET(ly, net, return -1, subc, force_ly);
 
 	if ((net->next == NULL) || (net->next->next == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Not enough wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		rnd_message(RND_MSG_ERROR, "Not enough wire path attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -1263,7 +1263,7 @@ static int dsn_parse_wire_path(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 	for(n = net->next->next; n != NULL;) {
 		x = COORDX(ctx, n);
 		if (n->next == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Not enough coordinate values (missing y)\n");
+			rnd_message(RND_MSG_ERROR, "Not enough coordinate values (missing y)\n");
 			break;
 		}
 		n = n->next;
@@ -1325,7 +1325,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 
 	if ((net->next == NULL) || ((coords = net->next->next) == NULL)) {
 		not_enough:;
-		rnd_message(PCB_MSG_ERROR, "Not enough wire qarc attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		rnd_message(RND_MSG_ERROR, "Not enough wire qarc attributes (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -1336,7 +1336,7 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 	sa = qarc_angle(crd[4], crd[5], crd[0], crd[1], &r1);
 	ea = qarc_angle(crd[4], crd[5], crd[2], crd[3], &r2);
 	if ((sa == -1) || (ea == -1) || (r1 != r2)) {
-		rnd_message(PCB_MSG_ERROR, "invalid qarcs coords (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
+		rnd_message(RND_MSG_ERROR, "invalid qarcs coords (at %ld:%ld)\n", (long)wrr->line, (long)wrr->col);
 		return -1;
 	}
 
@@ -1398,14 +1398,14 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 	rnd_coord_t crd[2] = {0, 0};
 
 	if ((vnd->children == NULL) || (vnd->children->str == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Not enough via arguments (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
+		rnd_message(RND_MSG_ERROR, "Not enough via arguments (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
 		return -1;
 	}
 
 	pname = vnd->children->str;
 	proto = htsp_get(&ctx->protos, pname);
 	if (proto == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Unknown via '%s' (at %ld:%ld)\n", pname, (long)vnd->line, (long)vnd->col);
+		rnd_message(RND_MSG_ERROR, "Unknown via '%s' (at %ld:%ld)\n", pname, (long)vnd->line, (long)vnd->col);
 		return -1;
 	}
 
@@ -1413,11 +1413,11 @@ static int dsn_parse_via(dsn_read_t *ctx, gsxl_node_t *vnd)
 
 	pid = pcb_pstk_proto_insert_dup(ctx->pcb->Data, proto, 1, 0);
 	if (pcb_pstk_new(ctx->pcb->Data, -1, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE)) == NULL)
-		rnd_message(PCB_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
+		rnd_message(RND_MSG_ERROR, "Failed to create via - expect missing vias (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
 
 	return 0;
 	err_coord:;
-	rnd_message(PCB_MSG_ERROR, "Invalid via coordinates (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
+	rnd_message(RND_MSG_ERROR, "Invalid via coordinates (at %ld:%ld)\n", (long)vnd->line, (long)vnd->col);
 	return -1;
 }
 
@@ -1432,7 +1432,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 
 	side = tnd->children->next->next;
 	if ((side == NULL) || (side->str == NULL)) {
-		rnd_message(PCB_MSG_ERROR, "Testpoint without side (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
+		rnd_message(RND_MSG_ERROR, "Testpoint without side (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
 		return -1;
 	}
 	if (rnd_strcasecmp(side->str, "front") == 0) {
@@ -1442,7 +1442,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 		back = 1;
 	}
 	else {
-		rnd_message(PCB_MSG_ERROR, "Invalid testpoint side '%s' (at %ld:%ld)\n", side->str, (long)tnd->line, (long)tnd->col);
+		rnd_message(RND_MSG_ERROR, "Invalid testpoint side '%s' (at %ld:%ld)\n", side->str, (long)tnd->line, (long)tnd->col);
 		return -1;
 	}
 
@@ -1476,7 +1476,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 
 	ps = pcb_pstk_new(ctx->pcb->Data, -1, ctx->testpoint, crd[0], crd[1], 0, pcb_no_flags());
 	if (ps == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to create testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
+		rnd_message(RND_MSG_ERROR, "Failed to create testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
 		return 0;
 	}
 
@@ -1486,7 +1486,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 
 	return 0;
 	not_enough:;
-	rnd_message(PCB_MSG_ERROR, "Not enough coordinates for a testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
+	rnd_message(RND_MSG_ERROR, "Not enough coordinates for a testpoint (at %ld:%ld)\n", (long)tnd->line, (long)tnd->col);
 	return -1;
 }
 
@@ -1512,7 +1512,7 @@ static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 				return -1;
 		}
 		else if ((rnd_strcasecmp(wrr->str, "bond") == 0) || (rnd_strcasecmp(wrr->str, "supply_pin") == 0)) {
-			rnd_message(PCB_MSG_WARNING, "unhandled wiring: '%s' (at %ld:%ld) - please send the dsn file as a bugreport\n", wrr->str, (long)wrr->line, (long)wrr->col);
+			rnd_message(RND_MSG_WARNING, "unhandled wiring: '%s' (at %ld:%ld) - please send the dsn file as a bugreport\n", wrr->str, (long)wrr->line, (long)wrr->col);
 		}
 	}
 
@@ -1530,7 +1530,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 
 	subc = htsp_get(&ctx->subcs, id);
 	if (subc == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Invalid image name '%s' in placement (at %ld:%ld) - please send the dsn file as a bugreport\n", id, (long)plr->line, (long)plr->col);
+		rnd_message(RND_MSG_ERROR, "Invalid image name '%s' in placement (at %ld:%ld) - please send the dsn file as a bugreport\n", id, (long)plr->line, (long)plr->col);
 		return -1;
 	}
 
@@ -1546,7 +1546,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 
 		side = n->children->next->next->next;
 		if ((side == NULL) || (side->str == NULL)) {
-			rnd_message(PCB_MSG_ERROR, "Invalid placement side (at %ld:%ld)\n", (long)n->line, (long)n->col);
+			rnd_message(RND_MSG_ERROR, "Invalid placement side (at %ld:%ld)\n", (long)n->line, (long)n->col);
 			return -1;
 		}
 		if (rnd_strcasecmp(side->str, "front") == 0)
@@ -1554,13 +1554,13 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 		else if (rnd_strcasecmp(side->str, "back") == 0)
 			need_mirror = 1;
 		else {
-			rnd_message(PCB_MSG_ERROR, "Invalid placement side '%s' (at %ld:%ld)\n", side->str, (long)n->line, (long)n->col);
+			rnd_message(RND_MSG_ERROR, "Invalid placement side '%s' (at %ld:%ld)\n", side->str, (long)n->line, (long)n->col);
 			return -1;
 		}
 
 		rot = strtod(STRE(side->next), &end);
 		if (*end != '\0') {
-			rnd_message(PCB_MSG_ERROR, "Invalid placement rotation '%s' - must be a number (at %ld:%ld)\n", side->next->str, (long)n->line, (long)n->col);
+			rnd_message(RND_MSG_ERROR, "Invalid placement rotation '%s' - must be a number (at %ld:%ld)\n", side->next->str, (long)n->line, (long)n->col);
 			return -1;
 		}
 
@@ -1583,7 +1583,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 
 	return 0;
 	bad_coord:;
-	rnd_message(PCB_MSG_ERROR, "Invalid placement coords (at %ld:%ld) - please send the dsn file as a bugreport\n", (long)n->line, (long)n->col);
+	rnd_message(RND_MSG_ERROR, "Invalid placement coords (at %ld:%ld) - please send the dsn file as a bugreport\n", (long)n->line, (long)n->col);
 	return -1;
 }
 
@@ -1604,7 +1604,7 @@ static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
 				else if (rnd_strcasecmp(STRE(plr->children->children), "mirror_first") == 0)
 					mirror_first = 0;
 				else
-					rnd_message(PCB_MSG_WARNING, "invalid flip_style: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", STRE(plr->children->children), (long)plr->line, (long)plr->col);
+					rnd_message(RND_MSG_WARNING, "invalid flip_style: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", STRE(plr->children->children), (long)plr->line, (long)plr->col);
 			}
 		}
 		else if (rnd_strcasecmp(plr->str, "component") == 0) {
@@ -1630,7 +1630,7 @@ static int dsn_parse_net(dsn_read_t *ctx, gsxl_node_t *nwr)
 
 	net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_INPUT], netname, 1);
 	if (net == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can not create net: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", netname, (long)nwr->children->line, (long)nwr->children->col);
+		rnd_message(RND_MSG_ERROR, "can not create net: '%s' (at %ld:%ld) - subcircuits may be misplaced - please send the dsn file as a bugreport\n", netname, (long)nwr->children->line, (long)nwr->children->col);
 		return -1;
 	}
 	for(nwr = nwr->children->next; nwr != NULL; nwr = nwr->next) {
@@ -1702,7 +1702,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 
 		ctx->unit = get_unit_struct(su);
 		if (ctx->unit == NULL) {
-			rnd_message(PCB_MSG_ERROR, "Invalid resolution unit: '%s'\n", su);
+			rnd_message(RND_MSG_ERROR, "Invalid resolution unit: '%s'\n", su);
 			return -1;
 		}
 	}
@@ -1820,7 +1820,7 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 
 	fclose(f);
 	if (res != GSX_RES_EOE) {
-		rnd_message(PCB_MSG_ERROR, "s-expression parse error at offset %ld\n", offs);
+		rnd_message(RND_MSG_ERROR, "s-expression parse error at offset %ld\n", offs);
 		return -1;
 	}
 
@@ -1841,11 +1841,11 @@ int io_dsn_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename,
 	gsxl_compact_tree(&rdctx.dom);
 	rn = rdctx.dom.root;
 	if ((rn == NULL) || (rn->str == NULL) || (rnd_strcasecmp(rn->str, "pcb") != 0)) {
-		rnd_message(PCB_MSG_ERROR, "Root node should be pcb, got %s instead\n", rn->str);
+		rnd_message(RND_MSG_ERROR, "Root node should be pcb, got %s instead\n", rn->str);
 		goto error;
 	}
 	if (gsxl_next(rn) != NULL) {
-		rnd_message(PCB_MSG_ERROR, "Multiple root nodes?!\n");
+		rnd_message(RND_MSG_ERROR, "Multiple root nodes?!\n");
 		goto error;
 	}
 

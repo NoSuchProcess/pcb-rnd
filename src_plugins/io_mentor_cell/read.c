@@ -153,7 +153,7 @@ static int hkp_error(node_t *nd, char *fmt, ...)
 	pcb_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
-	rnd_message(PCB_MSG_ERROR, "%s", str.array);
+	rnd_message(RND_MSG_ERROR, "%s", str.array);
 
 	gds_uninit(&str);
 	return -1;
@@ -1408,7 +1408,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 
 	flay = pcb_fopen(&pcb->hidlib, fn, "r");
 	if (flay == NULL) {
-		rnd_message(PCB_MSG_ERROR, "can't open layout hkp '%s' for read\n", fn);
+		rnd_message(RND_MSG_ERROR, "can't open layout hkp '%s' for read\n", fn);
 		goto err;
 	}
 

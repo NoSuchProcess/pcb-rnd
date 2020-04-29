@@ -297,7 +297,7 @@ static int script_id_invalid(const char *id)
 #define ID_VALIDATE(id, act) \
 do { \
 	if (script_id_invalid(id)) { \
-		rnd_message(PCB_MSG_ERROR, #act ": Invalid script ID '%s' (must contain only alphanumeric characters and underscores)\n", id); \
+		rnd_message(RND_MSG_ERROR, #act ": Invalid script ID '%s' (must contain only alphanumeric characters and underscores)\n", id); \
 		return FGW_ERR_ARG_CONV; \
 	} \
 } while(0)

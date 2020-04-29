@@ -73,7 +73,7 @@ static double msgr_connect(pcb_meshnode_t *curr, pcb_meshnode_t *next)
 	cp.Y = curr->bbox.Y1;
 	pcb_route_calculate(PCB, &route, &np, &cp, PCB_CURRLID(PCB), conf_core.design.line_thickness, conf_core.design.bloat, pcb_flag_make(PCB_FLAG_CLEARLINE), 0, 0);
 
-	pcb_trace("size=%d\n", route.size);
+	rnd_trace("size=%d\n", route.size);
 
 	return curr->gscore + rnd_distance(curr->bbox.X1, curr->bbox.Y1, next->bbox.X1, next->bbox.Y1) * (next->iscore + 1.0);
 }
@@ -120,16 +120,16 @@ TODO("should use a faster way for picking lowest fscore")
 		}
 
 		if (curr == NULL) {
-pcb_trace("NO PATH\n");
+rnd_trace("NO PATH\n");
 			return 0;
 		}
 		htip_pop(&open, curr->id);
 		if (curr->id == endid) {
-pcb_trace("found path\n");
+rnd_trace("found path\n");
 			return 1;
 		}
 		htip_set(&closed, curr->id, curr);
-pcb_trace("first: %ld\n", curr->id);
+rnd_trace("first: %ld\n", curr->id);
 
 		/* search potential neighbors */
 		sb.x1 = curr->bbox.X1 - SEARCHR;
@@ -150,7 +150,7 @@ pcb_trace("first: %ld\n", curr->id);
 			else if (tentative_g > next->gscore)
 				continue;
 
-pcb_trace("add:   %ld\n", next->id);
+rnd_trace("add:   %ld\n", next->id);
 			next->came_from = curr->id;
 			next->gscore = tentative_g;
 			next->fscore = msgr_heurist(curr, end);

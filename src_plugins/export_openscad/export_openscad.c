@@ -585,7 +585,7 @@ static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 
 static void openscad_calibrate(pcb_hid_t *hid, double xval, double yval)
 {
-	rnd_message(PCB_MSG_ERROR, "openscad_calibrate() not implemented");
+	rnd_message(RND_MSG_ERROR, "openscad_calibrate() not implemented");
 	return;
 }
 
@@ -613,7 +613,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 
 	f = pcb_fopen_askovr(&PCB->hidlib, name, "w", NULL);
 	if (f == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Failed to open %s for writing\n", name);
+		rnd_message(RND_MSG_ERROR, "Failed to open %s for writing\n", name);
 		RND_ACT_IRES(-1);
 		return 0;
 	}

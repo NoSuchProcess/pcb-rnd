@@ -264,13 +264,13 @@ static fgw_error_t pcb_act_Brave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(2, FGW_STR, Brave, op = argv[2].val.str);
 	d = find_by_name(name);
 	if (d == NULL) {
-		rnd_message(PCB_MSG_ERROR, "Unknown brave setting: %s\n", name);
+		rnd_message(RND_MSG_ERROR, "Unknown brave setting: %s\n", name);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 	brave_set(d->bit, (rnd_strcasecmp(op, "on") == 0));
 
-	rnd_message(PCB_MSG_INFO, "Brave setting: %s in %s\n", name, (pcb_brave & d->bit) ? "on" : "off");
+	rnd_message(RND_MSG_INFO, "Brave setting: %s in %s\n", name, (pcb_brave & d->bit) ? "on" : "off");
 
 	RND_ACT_IRES(0);
 	return 0;

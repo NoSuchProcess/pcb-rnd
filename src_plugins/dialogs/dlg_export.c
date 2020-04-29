@@ -89,12 +89,12 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 			export_ctx->hid[h]->do_export(export_ctx->hid[h], results);
 			pcb_event(&PCB->hidlib, PCB_EVENT_EXPORT_SESSION_END, NULL);
 			free(results);
-			rnd_message(PCB_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
+			rnd_message(RND_MSG_INFO, "Export done using exporter: %s\n", export_ctx->hid[h]->name);
 			goto done;
 		}
 	}
 
-	rnd_message(PCB_MSG_ERROR, "Internal error: can not find which exporter to call\n");
+	rnd_message(RND_MSG_ERROR, "Internal error: can not find which exporter to call\n");
 	done:;
 
 	if (have_gui) {
@@ -156,7 +156,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	}
 
 	if (export_ctx.len == 0) {
-		rnd_message(PCB_MSG_ERROR, "Can not export: there are no export plugins available\n");
+		rnd_message(RND_MSG_ERROR, "Can not export: there are no export plugins available\n");
 		return;
 	}
 

@@ -36,7 +36,7 @@ static const char pcb_acts_ExtFoo[] = "ExtFoo(arg1, arg2, [arg3]...)";
 static const char pcb_acth_ExtFoo[] = "Help text: short description of what the action does.";
 static fgw_error_t pcb_act_ExtFoo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_message(PCB_MSG_ERROR, "PLEASE CONSIDER DEVELOPING A CORE PLUGIN INSTEAD!\n");
+	rnd_message(RND_MSG_ERROR, "PLEASE CONSIDER DEVELOPING A CORE PLUGIN INSTEAD!\n");
 	RND_ACT_IRES(0);
 	return 0;
 }
