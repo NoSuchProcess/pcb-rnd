@@ -180,9 +180,9 @@ void pcb_grid_free(pcb_grid_t *dst)
 
 pcb_bool_t pcb_grid_list_jump(rnd_hidlib_t *hidlib, int dst)
 {
-	const pcb_conf_listitem_t *li;
+	const rnd_conf_listitem_t *li;
 	pcb_grid_t g;
-	int max = pcb_conflist_length((pcb_conflist_t *)&pcbhl_conf.editor.grids);
+	int max = rnd_conflist_length((rnd_conflist_t *)&pcbhl_conf.editor.grids);
 
 	if (dst < 0)
 		dst = 0;
@@ -193,7 +193,7 @@ pcb_bool_t pcb_grid_list_jump(rnd_hidlib_t *hidlib, int dst)
 
 	rnd_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
 
-	li = pcb_conflist_nth((pcb_conflist_t *)&pcbhl_conf.editor.grids, dst);
+	li = rnd_conflist_nth((rnd_conflist_t *)&pcbhl_conf.editor.grids, dst);
 	/* clamp */
 	if (li == NULL)
 		return pcb_false;

@@ -35,7 +35,7 @@
 #include <librnd/core/unit.h>
 
 typedef union rnd_confitem_u rnd_confitem_t ;
-typedef struct conf_listitem_s pcb_conf_listitem_t;
+typedef struct conf_listitem_s rnd_conf_listitem_t;
 
 #include <librnd/core/list_conf.h>
 
@@ -61,8 +61,8 @@ typedef double            RND_CFT_REAL;
 typedef rnd_coord_t       RND_CFT_COORD;
 typedef pcb_unit_t *      RND_CFT_UNIT;
 typedef rnd_color_t       RND_CFT_COLOR;
-typedef pcb_conflist_t    RND_CFT_LIST;
-typedef pcb_conflist_t    RND_CFT_HLIST;
+typedef rnd_conflist_t    RND_CFT_LIST;
+typedef rnd_conflist_t    RND_CFT_HLIST;
 
 typedef enum {
 	RND_CFN_STRING,
@@ -85,7 +85,7 @@ union rnd_confitem_u {
 	rnd_coord_t *coord;
 	const pcb_unit_t **unit;
 	rnd_color_t *color;
-	pcb_conflist_t *list;
+	rnd_conflist_t *list;
 	void *any;
 };
 
@@ -307,11 +307,11 @@ void rnd_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *
 
 #define rnd_conf_list_foreach_path_first(hidlib, res, conf_list, call) \
 do { \
-	pcb_conf_listitem_t *__n__; \
-	const pcb_conflist_t *__lst1__ = (conf_list); \
-	pcb_conflist_t *__lst__ = (pcb_conflist_t *)(__lst1__); \
+	rnd_conf_listitem_t *__n__; \
+	const rnd_conflist_t *__lst1__ = (conf_list); \
+	rnd_conflist_t *__lst__ = (rnd_conflist_t *)(__lst1__); \
 	if (__lst__ != NULL) { \
-		for(__n__ = pcb_conflist_first(__lst__); __n__ != NULL; __n__ = pcb_conflist_next(__n__)) { \
+		for(__n__ = rnd_conflist_first(__lst__); __n__ != NULL; __n__ = rnd_conflist_next(__n__)) { \
 			char *__path__; \
 			const char **__in__ = __n__->val.string; \
 			if (__in__ == NULL) \
@@ -363,20 +363,20 @@ do { \
 lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create);
 
 /* loop helper */
-pcb_conf_listitem_t *rnd_conf_list_first_str(pcb_conflist_t *list, const char **item_str, int *idx);
-pcb_conf_listitem_t *rnd_conf_list_next_str(pcb_conf_listitem_t *item_li, const char **item_str, int *idx);
+rnd_conf_listitem_t *rnd_conf_list_first_str(rnd_conflist_t *list, const char **item_str, int *idx);
+rnd_conf_listitem_t *rnd_conf_list_next_str(rnd_conf_listitem_t *item_li, const char **item_str, int *idx);
 
-/*pcb_conf_listitem_t *item;*/
+/*rnd_conf_listitem_t *item;*/
 #define rnd_conf_loop_list(list, item, idx) \
-	for (idx = 0, item = pcb_conflist_first((pcb_conflist_t *)list); item != NULL; item = pcb_conflist_next(item), idx++)
+	for (idx = 0, item = rnd_conflist_first((rnd_conflist_t *)list); item != NULL; item = rnd_conflist_next(item), idx++)
 
-/*pcb_conf_listitem_t *item; const char *item_str; */
+/*rnd_conf_listitem_t *item; const char *item_str; */
 #define rnd_conf_loop_list_str(list, item_li, item_str, idx) \
-	for (idx = 0, item_li = rnd_conf_list_first_str((pcb_conflist_t *)list, &item_str, &idx); \
+	for (idx = 0, item_li = rnd_conf_list_first_str((rnd_conflist_t *)list, &item_str, &idx); \
 		item_li != NULL;\
 		item_li = rnd_conf_list_next_str(item_li, &item_str, &idx))
 
-const char *rnd_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int *inited, char sep);
+const char *rnd_conf_concat_strlist(const rnd_conflist_t *lst, gds_t *buff, int *inited, char sep);
 
 /* Print usage help for all nodes that have the RND_CFF_USAGE flag and whose
    path starts with prefix (if prefix != NULL) */
@@ -405,8 +405,8 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 /* Returns the user configuration file name */
 const char *rnd_conf_get_user_conf_name();
 
-/* Determine the file name of the project file - project_fn and pcb_fn can be NULL */
-const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **out_project_fn);
+/* Determine the file name of the project file - project_fn and design_fn can be NULL */
+const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *design_fn, const char **out_project_fn);
 
 /* Get the first subtree that matches pol within target; allocate new
    subtree if needed */

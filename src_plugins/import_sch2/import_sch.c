@@ -110,7 +110,7 @@ static int do_import(void)
 {
 	const char **a = NULL;
 	int len, n, res;
-	pcb_conf_listitem_t *ci;
+	rnd_conf_listitem_t *ci;
 	const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 	pcb_plug_import_t *p;
 
@@ -135,11 +135,11 @@ static int do_import(void)
 		return 1;
 	}
 
-	len = pcb_conflist_length((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args);
+	len = rnd_conflist_length((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if ((p->single_arg) && (len > 1))
 		len = 1;
 	a = malloc((len+1) * sizeof(char *));
-	for(n = 0, ci = pcb_conflist_first((pcb_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = pcb_conflist_next(ci), n++)
+	for(n = 0, ci = rnd_conflist_first((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = rnd_conflist_next(ci), n++)
 		a[n] = ci->val.string[0];
 	rnd_message(PCB_MSG_DEBUG, "import_sch2: reimport with %s -> %p\n", imp_name, p);
 	res = p->import(p, IMPORT_ASPECT_NETLIST, a, len);

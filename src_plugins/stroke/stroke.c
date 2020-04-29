@@ -58,7 +58,7 @@ static rnd_bool pcb_mid_stroke = pcb_false;
 
 static int pcb_stroke_exec(rnd_hidlib_t *hl, const char *seq)
 {
-	pcb_conf_listitem_t *item;
+	rnd_conf_listitem_t *item;
 	int idx;
 
 	rnd_conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {

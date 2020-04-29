@@ -21,7 +21,7 @@ typedef struct {
 } pcb_fp_fopen_ctx_t;
 
 /* hook bindings, see below;  pcb_fp_fclose() must be called even if pcb_fp_fopen() returned NULL! */
-FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
+FILE *pcb_fp_fopen(const rnd_conflist_t *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst);
 void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx);
 
 /* duplicates the name and splits it into a basename and params;

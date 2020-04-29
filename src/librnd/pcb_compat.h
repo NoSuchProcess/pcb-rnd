@@ -341,3 +341,16 @@
 #define pcb_conf_resolve_t rnd_conf_resolve_t
 #define pcb_conf_resolve_all rnd_conf_resolve_all
 #define pcb_conf_resolve rnd_conf_resolve
+#define pcb_conflist_t rnd_conflist_t
+#define pcb_conflist_u rnd_conflist_u
+#define pcb_conf_listitem_t rnd_conf_listitem_t
+#define pcb_conflist_foreach rnd_conflist_foreach
+#define pcb_conflist_first rnd_conflist_first
+#define pcb_conflist_next rnd_conflist_next
+#define pcb_conflist_last rnd_conflist_last
+#define pcb_conflist_prev rnd_conflist_prev
+#define pcb_conflist_length rnd_conflist_length
+#define pcb_conflist_append rnd_conflist_append
+#define pcb_conflist_nth rnd_conflist_nth
+#define pcb_conflist_insert rnd_conflist_insert
+#define pcb_conflist_remove rnd_conflist_remove

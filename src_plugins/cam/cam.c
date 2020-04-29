@@ -85,7 +85,7 @@ static void cam_uninit_inst(cam_ctx_t *ctx)
 /* look up a job by name in the config */
 static const char *cam_find_job(const char *job)
 {
-	pcb_conf_listitem_t *j;
+	rnd_conf_listitem_t *j;
 	int idx;
 
 	rnd_conf_loop_list(&conf_cam.plugins.cam.jobs, j, idx)

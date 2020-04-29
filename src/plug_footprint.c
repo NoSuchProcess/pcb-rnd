@@ -114,9 +114,9 @@ const char *pcb_fp_tagname(const void *tagid)
 	return (char *) tagid;
 }
 
-FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
+FILE *pcb_fp_fopen(const rnd_conflist_t *path, const char *name, pcb_fp_fopen_ctx_t *fctx, pcb_data_t *dst)
 {
-	pcb_conf_listitem_t *ci;
+	rnd_conf_listitem_t *ci;
 	FILE *res = NULL;
 	char *sep = strstr(name, "::");
 
@@ -135,7 +135,7 @@ FILE *pcb_fp_fopen(const pcb_conflist_t *path, const char *name, pcb_fp_fopen_ct
 		fctx->free_filename = 0;
 	}
 
-	for(ci = pcb_conflist_first((pcb_conflist_t *)path); ci != NULL; ci = pcb_conflist_next(ci)) {
+	for(ci = rnd_conflist_first((rnd_conflist_t *)path); ci != NULL; ci = rnd_conflist_next(ci)) {
 		const char *curr = ci->val.string[0];
 		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, fctx->filename, fctx, dst));
 		if (res != NULL)
@@ -383,14 +383,14 @@ void fp_dump()
  * fp_fs_load_dir to put the footprints into PCB's internal
  * datastructures.
  */
-static int fp_read_lib_all_(const pcb_conflist_t *searchpath)
+static int fp_read_lib_all_(const rnd_conflist_t *searchpath)
 {
-	pcb_conf_listitem_t *ci;
+	rnd_conf_listitem_t *ci;
 	char *toppath, toppath_[PCB_PATH_MAX + 1];  /* String holding abs path to top level library dir */
 	int n_footprints = 0;  /* Running count of footprints found */
 	int res;
 
-	for(ci = pcb_conflist_first((pcb_conflist_t *)searchpath); ci != NULL; ci = pcb_conflist_next(ci)) {
+	for(ci = rnd_conflist_first((rnd_conflist_t *)searchpath); ci != NULL; ci = rnd_conflist_next(ci)) {
 		const char *p = ci->val.string[0];
 		int silent_fail = 0;
 

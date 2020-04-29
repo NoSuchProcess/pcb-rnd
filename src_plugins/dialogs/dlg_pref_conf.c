@@ -234,11 +234,11 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 		/* non-default: lists are manually loaded */
 		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[nat->type]];
 		pcb_hid_tree_t *tree = attr->wdata;
-		pcb_conf_listitem_t *n;
+		rnd_conf_listitem_t *n;
 		char *cell[4];
 
 		pcb_dad_tree_clear(tree);
-		for (n = pcb_conflist_first(&nat->val.list[idx]); n != NULL; n = pcb_conflist_next(n)) {
+		for (n = rnd_conflist_first(&nat->val.list[idx]); n != NULL; n = rnd_conflist_next(n)) {
 			const char *strval;
 			rolename = rnd_conf_role_name(rnd_conf_lookup_role(n->prop.src));
 			if (nat->type == RND_CFN_HLIST)

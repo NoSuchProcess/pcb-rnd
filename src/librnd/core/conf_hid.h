@@ -11,7 +11,7 @@ typedef struct conf_hid_callbacks_s {
 
 	/* Called when a new config item is added to the database; global-only */
 	void (*new_item_post)(rnd_conf_native_t *cfg, int arr_idx);
-	void (*new_hlist_item_post)(rnd_conf_native_t *cfg, pcb_conf_listitem_t *i);
+	void (*new_hlist_item_post)(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i);
 
 	/* Called during pcb_conf_hid_unreg to get hid-data cleaned up */
 	void (*unreg_item)(rnd_conf_native_t *cfg, int arr_idx);

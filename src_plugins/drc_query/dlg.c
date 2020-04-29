@@ -195,10 +195,10 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		MKDIR_ND(nd, nd, LHT_LIST, "rules");
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
 			gdl_iterator_t it;
-			pcb_conf_listitem_t *i;
+			rnd_conf_listitem_t *i;
 
 			/* need to copy all rules! */
-			pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+			rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 				lht_node_t *nnew = lht_dom_duptree(i->prop.src);
 				lht_dom_list_append(nd, nnew);
 			}
@@ -369,7 +369,7 @@ static void drc_rlist_pcb2dlg(void)
 	pcb_hid_row_t *r;
 	char *cell[5], *cursor_path = NULL;
 	gdl_iterator_t it;
-	pcb_conf_listitem_t *i;
+	rnd_conf_listitem_t *i;
 	pcb_drcq_stat_t *st;
 
 	if (!ctx->active)
@@ -388,7 +388,7 @@ static void drc_rlist_pcb2dlg(void)
 
 	cell[4] = NULL;
 
-	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		int *dis, dis_ = 0;
 		rnd_conf_role_t role;
 		lht_node_t *rule = i->prop.src;

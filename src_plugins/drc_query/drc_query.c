@@ -178,7 +178,7 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	return 0;
 }
 
-static const char *load_str(lht_node_t *rule, pcb_conf_listitem_t *i, const char *name)
+static const char *load_str(lht_node_t *rule, rnd_conf_listitem_t *i, const char *name)
 {
 	lht_node_t *n = lht_dom_hash_get(rule, name);
 	if (n == NULL)
@@ -204,7 +204,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	gdl_iterator_t it;
-	pcb_conf_listitem_t *i;
+	rnd_conf_listitem_t *i;
 	long cnt = 0;
 	int bufno = -1;
 	pcb_qry_exec_t ec;
@@ -215,7 +215,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 
 	pcb_qry_init(&ec, pcb, NULL, bufno);
 
-	pcb_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;
 		int *dis;
 		if (rule->type != LHT_HASH) {
@@ -240,7 +240,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 static vtp0_t free_drc_conf_nodes;
 static rnd_conf_native_t *nat_defs = NULL;
 static rnd_conf_native_t *nat_rules = NULL;
-static void drc_query_newconf(rnd_conf_native_t *cfg, pcb_conf_listitem_t *i)
+static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 {
 	if (nat_rules == NULL) {
 		if (strncmp(cfg->hash_path, DRC_CONF_PATH_RULES, strlen(DRC_CONF_PATH_RULES)-1) == 0) {
