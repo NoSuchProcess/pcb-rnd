@@ -391,6 +391,8 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 
 			curr = pcb_obj_obj_distance(o1, o2, acc);
 
+#if 0
+/* remains of the donut rat */
 			if (curr.dist2 < HUGE_VAL) {
 				pcb_any_obj_t *o_in_poly = NULL, *poly;
 				rnd_coord_t x, y, farx, fary;
@@ -414,7 +416,7 @@ static pcb_subnet_dist_t pcb_subnet_dist(const pcb_board_t *pcb, vtp0_t *objs1, 
 					fary = curr.o2y;
 				}
 			}
-
+#endif
 			if (curr.dist2 < best.dist2)
 				best = curr;
 		}
