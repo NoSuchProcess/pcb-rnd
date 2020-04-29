@@ -375,6 +375,11 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 				PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
 		}
 
+		if (is_read_only(ctx)) {
+			PCB_DAD_LABEL(ctx->dlg, "NOTE: this value is read-only");
+				PCB_DAD_HELP(ctx->dlg, "Config value with this config role\ncan not be modified.\nPlease pick another config role\nand try to edit or create\nthe value there!\n(If that role has higher priority,\nthat value will override this one)");
+		}
+
 		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	PCB_DAD_END(ctx->dlg);
 
