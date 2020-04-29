@@ -498,11 +498,11 @@ void pcb_line_enforce_drc(pcb_board_t *pcb)
 		if (conf_core.editor.line_refraction != 0) {
 			if (shift) {
 				if (conf_core.editor.line_refraction !=2)
-					pcb_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
+					rnd_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
 			}
 			else{
 				if (conf_core.editor.line_refraction != 1)
-				pcb_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
+				rnd_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
 			}
 		}
 		pcb->hidlib.ch_x = pcb_crosshair.X = rs.X;
@@ -512,11 +512,11 @@ void pcb_line_enforce_drc(pcb_board_t *pcb)
 		if (conf_core.editor.line_refraction !=0) {
 			if (shift) {
 				if (conf_core.editor.line_refraction != 1)
-					pcb_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
+					rnd_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 1);
 			}
 			else {
 				if (conf_core.editor.line_refraction != 2)
-					pcb_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
+					rnd_conf_setf(RND_CFR_DESIGN, "editor/line_refraction", -1, "%d", 2);
 			}
 		}
 		pcb->hidlib.ch_x = pcb_crosshair.X = r45.X;

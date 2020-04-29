@@ -125,8 +125,8 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	view_zoom = pd->zoom;
 	view_width = pd->x2;
 	view_height = pd->y2;
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 
 	XFillRectangle(display, pixmap, bg_gc, 0, 0, pd->v_width, pd->v_height);
 
@@ -154,8 +154,8 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	mask_bitmap = save_mask_bm;
 	pixmap = save_px;
 	pcb_gui->coord_per_pix = save_cpp;
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
 
 	pd->expose_lock = 0;
 }

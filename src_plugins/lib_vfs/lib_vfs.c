@@ -484,7 +484,7 @@ static void vfs_list_conf(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 	gds_append_str(&path, "conf/");
 	ou = path.used;
 	SEE;
-	conf_fields_foreach(e) {
+	rnd_conf_fields_foreach(e) {
 		path.used = ou;
 		cb_mkdirp(cb, ctx, &path, e->key, &seen);
 		gds_append_str(&path, e->key);

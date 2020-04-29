@@ -78,7 +78,7 @@ static const char *textval(lht_node_t *nd, const char *fname)
 static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 {
 	pcb_dad_retovr_t retovr;
-	lht_node_t *nd = pcb_conf_lht_get_at_mainplug(ctx->role, ctx->path, 1, 0);
+	lht_node_t *nd = rnd_conf_lht_get_at_mainplug(ctx->role, ctx->path, 1, 0);
 	if (nd != NULL) {
 		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 		pcb_hid_text_t *txt = atxt->wdata;
@@ -183,9 +183,9 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	}
 
 	role = save_rolee[ri];
-	nd = pcb_conf_lht_get_at_mainplug(role, ctx->path, 1, 0);
+	nd = rnd_conf_lht_get_at_mainplug(role, ctx->path, 1, 0);
 	if (nd == NULL) {
-		nd = pcb_conf_lht_get_first(role, 1);
+		nd = rnd_conf_lht_get_first(role, 1);
 		if (nd == NULL) {
 			rnd_message(PCB_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n");
 			return;
@@ -236,7 +236,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 	}
 
 	path = pcb_concat(DRC_CONF_PATH_RULES, rule, ":0", NULL);
-	nd = pcb_conf_lht_get_at_mainplug(role, path, 1, 0);
+	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0);
 	if (nd == NULL) {
 		rnd_message(PCB_MSG_ERROR, "Rule %s not found on this role.\n", rule);
 		return -1;
@@ -401,7 +401,7 @@ static void drc_rlist_pcb2dlg(void)
 		if (dis == NULL)
 			dis = &dis_;
 
-		role = pcb_conf_lookup_role(rule);
+		role = rnd_conf_lookup_role(rule);
 		cell[0] = rule->name;
 		cell[1] = rnd_strdup(rnd_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
@@ -461,7 +461,7 @@ do { \
 #define rlist_fetch_nd() \
 do { \
 	char *path = pcb_concat(DRC_CONF_PATH_RULES, row->cell[0], ":0", NULL); \
-	nd = pcb_conf_lht_get_at_mainplug(role, path, 1, 0); \
+	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0); \
 	if (nd == NULL) { \
 		rnd_message(PCB_MSG_ERROR, "internal error: rule not found at %s\n", path); \
 		return; \

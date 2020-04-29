@@ -409,7 +409,7 @@ void *pcb_ratop_move_to_layer(pcb_opctx_t *ctx, pcb_rat_t * Rat)
 	newone = pcb_line_new(ctx->move.dst_layer, Rat->Point1.X, Rat->Point1.Y,
 																Rat->Point2.X, Rat->Point2.Y, conf_core.design.line_thickness, 2 * conf_core.design.clearance, Rat->Flags);
 	if (conf_core.editor.clear_line)
-		conf_set_editor(clear_line, 1);
+		rnd_conf_set_editor(clear_line, 1);
 	if (!newone)
 		return NULL;
 	pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ctx->move.dst_layer, newone, newone);

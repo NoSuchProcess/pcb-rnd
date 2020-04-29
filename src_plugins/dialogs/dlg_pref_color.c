@@ -73,7 +73,7 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 {
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
-	pcb_conf_setf(ctx->role, path, -1, "%s", attr->val.clr.str);
+	rnd_conf_setf(ctx->role, path, -1, "%s", attr->val.clr.str);
 	pcb_gui->invalidate_all(pcb_gui);
 }
 
@@ -81,7 +81,7 @@ static void pref_color_layer_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 {
 	pref_ctx_t *ctx = caller_data;
 	int idx = (int *)attr->user_data - ctx->color.wlayer;
-	pcb_conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->val.clr.str);
+	rnd_conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->val.clr.str);
 }
 
 
@@ -103,7 +103,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 			pl = strlen(path_prefix);
 
 			ctx->color.ngen = 0;
-			conf_fields_foreach(e) {
+			rnd_conf_fields_foreach(e) {
 				nat = e->value;
 				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == RND_CFN_COLOR) && (nat->array_size == 1))
 					ctx->color.ngen++;
@@ -111,7 +111,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 			ctx->color.wgen = calloc(sizeof(int), ctx->color.ngen);
 
 			n = 0;
-			conf_fields_foreach(e) {
+			rnd_conf_fields_foreach(e) {
 				nat = e->value;
 				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == RND_CFN_COLOR) && (nat->array_size == 1)) {
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);

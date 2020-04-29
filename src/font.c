@@ -100,13 +100,13 @@ void pcb_font_create_default(pcb_board_t *pcb)
 {
 	int res = -1;
 	pcb_io_err_inhibit_inc();
-	conf_list_foreach_path_first(&pcb->hidlib, res, &conf_core.rc.default_font_file, pcb_parse_font_default(&pcb->fontkit.dflt, __path__));
+	rnd_conf_list_foreach_path_first(&pcb->hidlib, res, &conf_core.rc.default_font_file, pcb_parse_font_default(&pcb->fontkit.dflt, __path__));
 	pcb_io_err_inhibit_dec();
 
 	if (res != 0) {
 		const char *s;
 		gds_t buff;
-		s = pcb_conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
+		s = rnd_conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		rnd_message(PCB_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
 		pcb_font_load_internal(&pcb->fontkit.dflt);
 		pcb_file_loaded_set_at("font", "default", "<internal>", "original default font");

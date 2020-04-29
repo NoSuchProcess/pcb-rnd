@@ -100,7 +100,7 @@ static void c2a(pcb_board_t *pcb, lht_node_t *tree, const char *path1)
 
 void io_pcb_attrib_c2a(pcb_board_t *pcb)
 {
-	lht_node_t *nmain = pcb_conf_lht_get_first(RND_CFR_DESIGN, 0);
+	lht_node_t *nmain = rnd_conf_lht_get_first(RND_CFR_DESIGN, 0);
 
 	c2a(pcb, nmain, "");
 }

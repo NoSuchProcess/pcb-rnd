@@ -1791,13 +1791,13 @@ void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_
 		int omit_styles = !!sub->dlg[save->womit_styles].val.lng;
 
 		if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
-			pcb_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
+			rnd_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
 
 		if (omit_config != !!conf_io_lihata.plugins.io_lihata.omit_config)
-			pcb_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
+			rnd_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_config", 0, "%d", omit_config);
 
 		if (omit_styles != !!conf_io_lihata.plugins.io_lihata.omit_styles)
-			pcb_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_styles", 0, "%d", omit_styles);
+			rnd_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_styles", 0, "%d", omit_styles);
 	}
 
 	free(save);

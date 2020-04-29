@@ -570,7 +570,7 @@ int pplg_check_ver_order_pcbway(int ver_needed) { return 0; }
 
 void pplg_uninit_order_pcbway(void)
 {
-	pcb_conf_unreg_file(ORDER_PCBWAY_CONF_FN, order_pcbway_conf_internal);
+	rnd_conf_unreg_file(ORDER_PCBWAY_CONF_FN, order_pcbway_conf_internal);
 	rnd_conf_unreg_fields("plugins/order_pcbway/");
 }
 
@@ -578,7 +578,7 @@ int pplg_init_order_pcbway(void)
 {
 	PCB_API_CHK_VER;
 
-	pcb_conf_reg_file(ORDER_PCBWAY_CONF_FN, order_pcbway_conf_internal);
+	rnd_conf_reg_file(ORDER_PCBWAY_CONF_FN, order_pcbway_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_order_pcbway, field,isarray,type_name,cpath,cname,desc,flags);
 #include "order_pcbway_conf_fields.h"

@@ -646,9 +646,9 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	fx = pcbhl_conf.editor.view.flip_x;
 	fy = pcbhl_conf.editor.view.flip_y;
 	fs = conf_core.editor.show_solder_side;
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
-	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 #ifdef DEBUG
 	printf("  ... footprint = %s\n", footprint);
@@ -753,9 +753,9 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	printf(" ... Leaving pcb_act_ElementList.\n");
 #endif
 
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, fx);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, fy);
-	conf_force_set_bool(conf_core.editor.show_solder_side, fs);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, fx);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, fy);
+	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, fs);
 
 	RND_ACT_IRES(0);
 	return 0;

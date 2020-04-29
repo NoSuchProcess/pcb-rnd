@@ -61,7 +61,7 @@ static int pcb_stroke_exec(rnd_hidlib_t *hl, const char *seq)
 	pcb_conf_listitem_t *item;
 	int idx;
 
-	conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {
+	rnd_conf_loop_list(&conf_stroke.plugins.stroke.gestures, item, idx) {
 		if ((strcmp(seq, item->name) == 0) && (rnd_parse_actions(hl, item->val.string[0]) == 0))
 			return 1;
 	}
@@ -158,7 +158,7 @@ int pplg_check_ver_stroke(int ver_needed) { return 0; }
 
 int pplg_uninit_stroke(void)
 {
-	pcb_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
+	rnd_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
 	rnd_conf_unreg_fields("plugins/stroke/");
 	rnd_remove_actions_by_cookie(pcb_stroke_cookie);
 	pcb_event_unbind_allcookie(pcb_stroke_cookie);
@@ -169,7 +169,7 @@ int pplg_init_stroke(void)
 {
 	PCB_API_CHK_VER;
 	stroke_init();
-	pcb_conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
+	rnd_conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);

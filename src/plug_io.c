@@ -122,7 +122,7 @@ void pcb_set_design_dir(const char *fn)
 
 	if (last_design_dir == NULL) {
 		last_design_dir = rnd_strdup("<invalid>");
-		conf_force_set_str(conf_core.rc.path.design, last_design_dir);
+		rnd_conf_force_set_str(conf_core.rc.path.design, last_design_dir);
 		rnd_conf_ro("rc/path/design");
 		return;
 	}
@@ -131,7 +131,7 @@ void pcb_set_design_dir(const char *fn)
 	if (end != NULL)
 		*end = '\0';
 
-	conf_force_set_str(conf_core.rc.path.design, last_design_dir);
+	rnd_conf_force_set_str(conf_core.rc.path.design, last_design_dir);
 	rnd_conf_ro("rc/path/design");
 }
 
@@ -577,7 +577,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		/* geda/pcb compatibility: use attribute PCB::grid::unit as unit, if present */
 		unit_suffix = rnd_attrib_get(PCB, "PCB::grid::unit");
 		if (unit_suffix && *unit_suffix) {
-			lht_node_t *nat = pcb_conf_lht_get_at(RND_CFR_DESIGN, "editor/grid_unit", 0);
+			lht_node_t *nat = rnd_conf_lht_get_at(RND_CFR_DESIGN, "editor/grid_unit", 0);
 			if (nat == NULL) {
 				const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
 				if (new_unit)

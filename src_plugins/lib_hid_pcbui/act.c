@@ -123,7 +123,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, SwapSides, b = argv[2].val.str);
 		switch (a[0]) {
 			case 'h': case 'H':
-				conf_toggle_heditor_("view/flip_x", view.flip_x);
+				rnd_conf_toggle_heditor_("view/flip_x", view.flip_x);
 				xoffs = 0;
 				break;
 			case 'v': case 'V':
@@ -131,7 +131,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					yoffs = -yoffs;
 				else
 					yoffs = 0;
-				conf_toggle_heditor_("view/flip_y", view.flip_y);
+				rnd_conf_toggle_heditor_("view/flip_y", view.flip_y);
 				break;
 			case 'r': case 'R':
 				xoffs = 0;
@@ -140,9 +140,9 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				else
 					yoffs = 0;
 
-				conf_toggle_heditor_("view/flip_x", view.flip_x);
-				conf_toggle_heditor_("view/flip_y", view.flip_y);
-				conf_toggle_editor(show_solder_side); /* Swapped back below */
+				rnd_conf_toggle_heditor_("view/flip_x", view.flip_x);
+				rnd_conf_toggle_heditor_("view/flip_y", view.flip_y);
+				rnd_conf_toggle_editor(show_solder_side); /* Swapped back below */
 				break;
 
 			default:
@@ -161,7 +161,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	conf_toggle_editor(show_solder_side);
+	rnd_conf_toggle_editor(show_solder_side);
 
 	if ((active_group == comp_group && comp_on && !solder_on) || (active_group == solder_group && solder_on && !comp_on)) {
 		rnd_bool new_solder_vis = conf_core.editor.show_solder_side;

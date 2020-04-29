@@ -36,7 +36,7 @@ static void conf_files_init(void)
 	conf_files_inited = 1;
 }
 
-void pcb_conf_files_uninit(void)
+void rnd_conf_files_uninit(void)
 {
 	htsi_entry_t *e;
 	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e))
@@ -46,7 +46,7 @@ void pcb_conf_files_uninit(void)
 	conf_files_inited = 0;
 }
 
-void pcb_conf_reg_file(const char *path, const char *intern)
+void rnd_conf_reg_file(const char *path, const char *intern)
 {
 	htsi_entry_t *e;
 	if (!conf_files_inited) conf_files_init();
@@ -83,7 +83,7 @@ static void conf_unreg_any(htsi_t *ht, const char *key, int free_key)
 	}
 }
 
-void pcb_conf_unreg_file(const char *path, const char *intern)
+void rnd_conf_unreg_file(const char *path, const char *intern)
 {
 	assert(conf_files_inited);
 	if (!conf_files_inited) return;

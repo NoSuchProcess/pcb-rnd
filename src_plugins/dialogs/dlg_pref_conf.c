@@ -153,9 +153,9 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 			long prio = rnd_conf_default_prio[n];
 			rnd_conf_policy_t pol = RND_POL_OVERWRITE;
 
-			nd = pcb_conf_lht_get_at_mainplug(n, nat->hash_path, 1, 0);
+			nd = rnd_conf_lht_get_at_mainplug(n, nat->hash_path, 1, 0);
 			if (nd != NULL) { /* role, prio, policy, value */
-				pcb_conf_get_policy_prio(nd, &pol, &prio);
+				rnd_conf_get_policy_prio(nd, &pol, &prio);
 				cell[1] = pcb_strdup_printf("%ld", prio);
 				cell[2] = rnd_strdup(rnd_conf_policy_name(pol));
 				cell[3] = rnd_strdup(pref_conf_get_val(nd, nat, idx));
@@ -240,7 +240,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 		pcb_dad_tree_clear(tree);
 		for (n = pcb_conflist_first(&nat->val.list[idx]); n != NULL; n = pcb_conflist_next(n)) {
 			const char *strval;
-			rolename = rnd_conf_role_name(pcb_conf_lookup_role(n->prop.src));
+			rolename = rnd_conf_role_name(rnd_conf_lookup_role(n->prop.src));
 			if (nat->type == RND_CFN_HLIST)
 				strval = n->name;
 			else
@@ -261,7 +261,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 
 	src = nat->prop[idx].src;
 	if (src != NULL) {
-		rolename = rnd_conf_role_name(pcb_conf_lookup_role(nat->prop[idx].src));
+		rolename = rnd_conf_role_name(rnd_conf_lookup_role(nat->prop[idx].src));
 		hv.str = tmp = pcb_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
 	}
 	else

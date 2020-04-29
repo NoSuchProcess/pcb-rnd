@@ -299,7 +299,7 @@ static char *get_homedir(void)
 
 void pcbhl_conf_postproc(void)
 {
-	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
+	rnd_conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
 
 void pcb_hidlib_init1(void (*conf_core_init)(void))
@@ -403,7 +403,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 		int n;
 		const char *g;
 
-		conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, apg, g, n) {
+		rnd_conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, apg, g, n) {
 			if (n == autopick_gui)
 				break;
 		}
@@ -436,7 +436,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 			int n;
 			const char *g;
 
-			apg = pcb_conf_list_next_str(apg, &g, &n);
+			apg = rnd_conf_list_next_str(apg, &g, &n);
 			if (apg == NULL)
 				goto ran_out_of_hids;
 			pcb_render = pcb_gui = pcb_hid_find_gui(g);
@@ -633,7 +633,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 			pcb_conf_listitem_t *i;
 
 			pcb_render = pcb_gui = NULL;
-			conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
+			rnd_conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
 				pcb_render = pcb_gui = pcb_hid_find_gui(g);
 				if (pcb_gui != NULL)
 					break;

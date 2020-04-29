@@ -232,13 +232,13 @@ static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 	preview->expose_data.view.Y2 = preview->y_max;
 	save_fx = pcbhl_conf.editor.view.flip_x;
 	save_fy = pcbhl_conf.editor.view.flip_y;
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 
 	res = preview->expose(widget, ev, pcbhl_expose_preview, &preview->expose_data);
 
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
 
 	return res;
 }
@@ -361,13 +361,13 @@ static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 
 	save_fx = pcbhl_conf.editor.view.flip_x;
 	save_fy = pcbhl_conf.editor.view.flip_y;
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 
 	r = button_press_(w, btn);
 
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
 
 	return r;
 }
@@ -399,8 +399,8 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 
 	save_fx = pcbhl_conf.editor.view.flip_x;
 	save_fy = pcbhl_conf.editor.view.flip_y;
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 
 	draw_data = preview->expose_data.draw_data;
 
@@ -424,8 +424,8 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 	default:;
 	}
 
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
 
 	return FALSE;
 }
@@ -440,8 +440,8 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 
 	save_fx = pcbhl_conf.editor.view.flip_x;
 	save_fy = pcbhl_conf.editor.view.flip_y;
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 
 	draw_data = preview->expose_data.draw_data;
 
@@ -459,8 +459,8 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 			gtk_widget_queue_draw(w);
 	}
 
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
-	conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
+	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
 
 	return FALSE;
 }

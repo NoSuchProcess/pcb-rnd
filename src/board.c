@@ -115,7 +115,7 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 
 	dpcb = -1;
 	pcb_io_err_inhibit_inc();
-	conf_list_foreach_path_first(NULL, dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, pcb_false, 1 | 0x10 | inh));
+	rnd_conf_list_foreach_path_first(NULL, dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, pcb_false, 1 | 0x10 | inh));
 	pcb_io_err_inhibit_dec();
 
 	if (dpcb != 0) { /* no default PCB in file, use embedded version */
@@ -329,7 +329,7 @@ void pcb_board_remove(pcb_board_t *Ptr)
 void pcb_board_set_line_width(rnd_coord_t Size)
 {
 	if (Size >= PCB_MIN_THICKNESS && Size <= PCB_MAX_THICKNESS) {
-		conf_set_design("design/line_thickness", "%$mS", Size);
+		rnd_conf_set_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
 			pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
 	}
@@ -339,7 +339,7 @@ void pcb_board_set_line_width(rnd_coord_t Size)
 void pcb_board_set_via_size(rnd_coord_t Size, rnd_bool Force)
 {
 	if (Force || (Size <= PCB_MAX_PINORVIASIZE && Size >= PCB_MIN_PINORVIASIZE && Size >= conf_core.design.via_drilling_hole + PCB_MIN_PINORVIACOPPER)) {
-		conf_set_design("design/via_thickness", "%$mS", Size);
+		rnd_conf_set_design("design/via_thickness", "%$mS", Size);
 	}
 }
 
@@ -347,7 +347,7 @@ void pcb_board_set_via_size(rnd_coord_t Size, rnd_bool Force)
 void pcb_board_set_via_drilling_hole(rnd_coord_t Size, rnd_bool Force)
 {
 	if (Force || (Size <= PCB_MAX_PINORVIASIZE && Size >= PCB_MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - PCB_MIN_PINORVIACOPPER)) {
-		conf_set_design("design/via_drilling_hole", "%$mS", Size);
+		rnd_conf_set_design("design/via_drilling_hole", "%$mS", Size);
 	}
 }
 
@@ -355,7 +355,7 @@ void pcb_board_set_via_drilling_hole(rnd_coord_t Size, rnd_bool Force)
 void pcb_board_set_clearance(rnd_coord_t Width)
 {
 	if (Width <= PCB_MAX_THICKNESS) {
-		conf_set_design("design/clearance", "%$mS", Width);
+		rnd_conf_set_design("design/clearance", "%$mS", Width);
 	}
 }
 
@@ -363,7 +363,7 @@ void pcb_board_set_clearance(rnd_coord_t Width)
 void pcb_board_set_text_scale(int Scale)
 {
 	if (Scale <= PCB_MAX_TEXTSCALE && Scale >= PCB_MIN_TEXTSCALE) {
-		conf_set_design("design/text_scale", "%d", Scale);
+		rnd_conf_set_design("design/text_scale", "%d", Scale);
 	}
 }
 

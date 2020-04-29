@@ -390,7 +390,7 @@ int pplg_check_ver_drc_orig(int ver_needed) { return 0; }
 void pplg_uninit_drc_orig(void)
 {
 	pcb_event_unbind_allcookie(drc_orig_cookie);
-	pcb_conf_unreg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
+	rnd_conf_unreg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
 	rnd_conf_unreg_fields("plugins/drc_orig/");
 }
 
@@ -399,7 +399,7 @@ int pplg_init_drc_orig(void)
 	PCB_API_CHK_VER;
 	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_orig, NULL, drc_orig_cookie);
 
-	pcb_conf_reg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
+	rnd_conf_reg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_drc_orig, field,isarray,type_name,cpath,cname,desc,flags);
 #include "drc_orig_conf_fields.h"

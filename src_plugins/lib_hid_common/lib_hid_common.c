@@ -93,7 +93,7 @@ static conf_hid_id_t conf_id;
 
 void pplg_uninit_lib_hid_common(void)
 {
-	pcb_conf_unreg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
+	rnd_conf_unreg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
 	pcb_clihist_save();
 	pcb_clihist_uninit();
 	pcb_event_unbind_allcookie(grid_cookie);
@@ -122,7 +122,7 @@ int pplg_init_lib_hid_common(void)
 	RND_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
 	pcb_act_dad_init();
 
-	pcb_conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
+	rnd_conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
 
 	pcb_dialog_place_init();
 

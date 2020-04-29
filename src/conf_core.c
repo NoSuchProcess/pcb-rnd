@@ -64,13 +64,13 @@ static void conf_core_postproc(void)
 	htpp_entry_t *e;
 
 	conf_clamp_to(RND_CFT_COORD, conf_core.design.line_thickness, PCB_MIN_THICKNESS, PCB_MAX_THICKNESS, PCB_MIL_TO_COORD(10));
-	conf_force_set_bool(conf_core.rc.have_regex, 1);
+	rnd_conf_force_set_bool(conf_core.rc.have_regex, 1);
 	rnd_conf_ro("rc/have_regex");
 
-	conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   rnd_conf_ro("rc/path/prefix");
-	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       rnd_conf_ro("rc/path/lib");
-	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          rnd_conf_ro("rc/path/bin");
-	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   rnd_conf_ro("rc/path/share");
+	rnd_conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   rnd_conf_ro("rc/path/prefix");
+	rnd_conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       rnd_conf_ro("rc/path/lib");
+	rnd_conf_force_set_str(conf_core.rc.path.bin, BINDIR);          rnd_conf_ro("rc/path/bin");
+	rnd_conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   rnd_conf_ro("rc/path/share");
 
 	for(e = htpp_first(&legacy_new2old); e != NULL; e = htpp_next(&legacy_new2old, e)) {
 		rnd_conf_native_t *nlegacy = e->value, *ndst = e->key;

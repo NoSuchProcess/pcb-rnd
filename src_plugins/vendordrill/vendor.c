@@ -325,7 +325,7 @@ static void apply_vendor_map(void)
 	state = conf_vendor.plugins.vendor.enable;
 
 	/* enable mapping */
-	conf_force_set_bool(conf_vendor.plugins.vendor.enable, 1);
+	rnd_conf_force_set_bool(conf_vendor.plugins.vendor.enable, 1);
 
 	/* If we have loaded vendor drills, then apply them to the design */
 	if (n_vendor_drills > 0) {
@@ -345,7 +345,7 @@ static void apply_vendor_map(void)
 		/* Update the current Via */
 		if (conf_core.design.via_drilling_hole != vendorDrillMap(conf_core.design.via_drilling_hole)) {
 			changed++;
-			pcb_conf_setf(RND_CFR_DESIGN, "design/via_drilling_hole", -1, "%$mm", vendorDrillMap(conf_core.design.via_drilling_hole));
+			rnd_conf_setf(RND_CFR_DESIGN, "design/via_drilling_hole", -1, "%$mm", vendorDrillMap(conf_core.design.via_drilling_hole));
 			rnd_message(PCB_MSG_INFO, "Adjusted active via hole size to be %ml mils\n", conf_core.design.via_drilling_hole);
 		}
 
@@ -378,7 +378,7 @@ static void apply_vendor_map(void)
 	}
 
 	/* restore mapping on/off */
-	conf_force_set_bool(conf_vendor.plugins.vendor.enable, state);
+	rnd_conf_force_set_bool(conf_vendor.plugins.vendor.enable, state);
 }
 
 /* for a given drill size, find the closest vendor drill size */

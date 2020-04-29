@@ -920,7 +920,7 @@ TODO("subc: fix this after the element removal")
 void pcb_buffer_set_number(int Number)
 {
 	if (Number >= 0 && Number < PCB_MAX_BUFFER)
-		conf_set_design("editor/buffer_number", "%d", Number);
+		rnd_conf_set_design("editor/buffer_number", "%d", Number);
 }
 
 /* loads footprint data from file/library into buffer (as subcircuit)

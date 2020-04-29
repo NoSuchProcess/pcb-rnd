@@ -50,7 +50,7 @@ static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void confedit_brd2dlg(confedit_ctx_t *ctx)
 {
 	pcb_hid_attr_val_t hv;
-	lht_node_t *nl, *nd = pcb_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
+	lht_node_t *nl, *nd = rnd_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
 	const char *val;
 
 	if (ctx->idx >= ctx->nat->array_size)
@@ -146,7 +146,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 				pcb_hid_tree_t *tree = attr->wdata;
 				pcb_hid_row_t *r;
-				lht_node_t *nd = pcb_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
+				lht_node_t *nd = rnd_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
 
 				if (nd == NULL) {
 					rnd_message(PCB_MSG_ERROR, "Internal error: can't copy back to non-existing list!\n");

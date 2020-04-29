@@ -222,7 +222,7 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options, pcb_xf
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
-	conf_force_set_bool(conf_core.editor.show_solder_side, 0);
+	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 	dxf_ctx.enable_force_thin = options[HA_thin].lng;
 	dxf_ctx.poly_fill = options[HA_poly_fill].lng;

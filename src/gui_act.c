@@ -143,18 +143,18 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* toggle line-adjust flag */
 		case F_ToggleAllDirections:
-			conf_toggle_editor(all_direction_lines);
+			rnd_conf_toggle_editor(all_direction_lines);
 			pcb_tool_adjust_attached(RND_ACT_HIDLIB);
 			break;
 
 		case F_CycleClip:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			if (conf_core.editor.all_direction_lines) {
-				conf_toggle_editor(all_direction_lines);
-				pcb_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
+				rnd_conf_toggle_editor(all_direction_lines);
+				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
 			}
 			else {
-				pcb_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
+				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
 			pcb_tool_adjust_attached(RND_ACT_HIDLIB);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
@@ -162,7 +162,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_CycleCrosshair:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			pcb_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
+			rnd_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
 			if (pcb_ch_shape_NUM == pcbhl_conf.editor.crosshair_shape_idx)
 				rnd_conf_set(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "0", RND_POL_OVERWRITE);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
@@ -170,13 +170,13 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleRubberBandMode:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			conf_toggle_editor(rubber_band_mode);
+			rnd_conf_toggle_editor(rubber_band_mode);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleStartDirection:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			conf_toggle_editor(swap_start_direction);
+			rnd_conf_toggle_editor(swap_start_direction);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
@@ -186,66 +186,66 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleSnapPin:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			conf_toggle_editor(snap_pin);
+			rnd_conf_toggle_editor(snap_pin);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleSnapOffGridLine:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			conf_toggle_editor(snap_offgrid_line);
+			rnd_conf_toggle_editor(snap_offgrid_line);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleHighlightOnPoint:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			conf_toggle_editor(highlight_on_point);
+			rnd_conf_toggle_editor(highlight_on_point);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleLocalRef:
-			conf_toggle_editor(local_ref);
+			rnd_conf_toggle_editor(local_ref);
 			break;
 
 		case F_ToggleThindraw:
-			conf_toggle_editor(thin_draw);
+			rnd_conf_toggle_editor(thin_draw);
 			pcb_hid_redraw(PCB);
 			break;
 
 		case F_ToggleThindrawPoly:
-			conf_toggle_editor(thin_draw_poly);
+			rnd_conf_toggle_editor(thin_draw_poly);
 			pcb_hid_redraw(PCB);
 			break;
 
 		case F_ToggleLockNames:
-			conf_toggle_editor(lock_names);
-			conf_set_editor(only_names, 0);
+			rnd_conf_toggle_editor(lock_names);
+			rnd_conf_set_editor(only_names, 0);
 			break;
 
 		case F_ToggleOnlyNames:
-			conf_toggle_editor(only_names);
-			conf_set_editor(lock_names, 0);
+			rnd_conf_toggle_editor(only_names);
+			rnd_conf_set_editor(lock_names, 0);
 			break;
 
 		case F_ToggleHideNames:
-			conf_toggle_editor(hide_names);
+			rnd_conf_toggle_editor(hide_names);
 			pcb_hid_redraw(PCB);
 			break;
 
 		case F_ToggleStroke:
-			conf_toggle_heditor(enable_stroke);
+			rnd_conf_toggle_heditor(enable_stroke);
 			break;
 
 		case F_ToggleShowDRC:
-			conf_toggle_editor(show_drc);
+			rnd_conf_toggle_editor(show_drc);
 			break;
 
 		case F_ToggleLiveRoute:
-			conf_toggle_editor(live_routing);
+			rnd_conf_toggle_editor(live_routing);
 			break;
 
 		case F_ToggleAutoDRC:
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			conf_toggle_editor(auto_drc);
+			rnd_conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && pcbhl_conf.editor.mode == pcb_crosshair.tool_line) {
 				if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
 					pcb_undo_inc_serial();
@@ -264,25 +264,25 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ToggleCheckPlanes:
-			conf_toggle_editor(check_planes);
+			rnd_conf_toggle_editor(check_planes);
 			pcb_hid_redraw(PCB);
 			break;
 
 		case F_ToggleOrthoMove:
-			conf_toggle_editor(orthogonal_moves);
+			rnd_conf_toggle_editor(orthogonal_moves);
 			break;
 
 		case F_ToggleName:
-			conf_toggle_editor(show_number);
+			rnd_conf_toggle_editor(show_number);
 			pcb_hid_redraw(PCB);
 			break;
 
 		case F_ToggleClearLine:
-			conf_toggle_editor(clear_line);
+			rnd_conf_toggle_editor(clear_line);
 			break;
 
 		case F_ToggleFullPoly:
-			conf_toggle_editor(full_poly);
+			rnd_conf_toggle_editor(full_poly);
 			break;
 
 			/* shift grid alignment */
@@ -300,7 +300,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* toggle displaying of the grid */
 		case F_Grid:
-			conf_toggle_heditor(draw_grid);
+			rnd_conf_toggle_heditor(draw_grid);
 			pcb_hid_redraw(PCB);
 			break;
 
@@ -565,10 +565,10 @@ static void set_same_(rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole,
 	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
 	if (known < 0) {
 		/* unknown style, set properties */
-		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     conf_set_design("design/line_thickness", "%$mS", Thick); }
-		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; conf_set_design("design/clearance", "%$mS", Clearance); }
-		if (Diameter != -1)  { pcb_custom_route_style.Diameter  = Diameter;  conf_set_design("design/via_thickness", "%$mS", Diameter); }
-		if (Hole != -1)      { pcb_custom_route_style.Hole      = Hole;      conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
+		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
+		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; rnd_conf_set_design("design/clearance", "%$mS", Clearance); }
+		if (Diameter != -1)  { pcb_custom_route_style.Diameter  = Diameter;  rnd_conf_set_design("design/via_thickness", "%$mS", Diameter); }
+		if (Hole != -1)      { pcb_custom_route_style.Hole      = Hole;      rnd_conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
 		PCB->pen_attr = NULL;
 	}
 	else

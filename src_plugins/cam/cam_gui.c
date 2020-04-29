@@ -65,7 +65,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 		int idx;
 
 		cell[1] = NULL;
-		conf_loop_list(cn->val.list, item, idx) {
+		rnd_conf_loop_list(cn->val.list, item, idx) {
 			cell[0] = rnd_strdup(item->name);
 			pcb_dad_tree_append(attr, NULL, cell);
 		}

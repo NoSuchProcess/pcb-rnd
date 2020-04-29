@@ -140,7 +140,7 @@ static int parse_netlist_view(gsxl_node_t *view)
 
 	nethlp_new(&nhctx);
 
-	conf_loop_list_str(&conf_mentor.plugins.import_mentor_sch.map_search_paths, item, item_str, idx) {
+	rnd_conf_loop_list_str(&conf_mentor.plugins.import_mentor_sch.map_search_paths, item, item_str, idx) {
 		char *p; 
 		pcb_path_resolve(&PCB->hidlib, item_str, &p, 0, pcb_false);
 		if (p != NULL) {

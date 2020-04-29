@@ -108,7 +108,7 @@ static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
 	fmt_ids.used = 0;
 
 	free_fmts();
-	conf_loop_list(&conf_xy.plugins.export_xy.templates, li, idx) {
+	rnd_conf_loop_list(&conf_xy.plugins.export_xy.templates, li, idx) {
 		char id[MAX_TEMP_NAME_LEN];
 		const char *sep = strchr(li->name, '.');
 		int len;
@@ -755,7 +755,7 @@ static void gather_templates(void)
 	pcb_conf_listitem_t *i;
 	int n;
 
-	conf_loop_list(&conf_xy.plugins.export_xy.templates, i, n) {
+	rnd_conf_loop_list(&conf_xy.plugins.export_xy.templates, i, n) {
 		char buff[256], *id, *sect;
 		int nl = strlen(i->name);
 		if (nl > sizeof(buff)-1) {
@@ -781,7 +781,7 @@ static const char *get_templ(const char *tid, const char *type)
 	int idx;
 
 	sprintf(path, "%s.%s", tid, type); /* safe: tid's length is checked before it was put in the vector, type is hardwired in code and is never longer than a few chars */
-	conf_loop_list(&conf_xy.plugins.export_xy.templates, li, idx)
+	rnd_conf_loop_list(&conf_xy.plugins.export_xy.templates, li, idx)
 		if (strcmp(li->name, path) == 0)
 			return li->payload;
 	return NULL;
@@ -851,7 +851,7 @@ int pplg_check_ver_export_xy(int ver_needed) { return 0; }
 void pplg_uninit_export_xy(void)
 {
 	pcb_export_remove_opts_by_cookie(xy_cookie);
-	pcb_conf_unreg_file(CONF_FN, export_xy_conf_internal);
+	rnd_conf_unreg_file(CONF_FN, export_xy_conf_internal);
 	rnd_conf_unreg_fields("plugins/export_xy/");
 	free_fmts();
 	vts0_uninit(&fmt_names);
@@ -863,7 +863,7 @@ int pplg_init_export_xy(void)
 {
 	PCB_API_CHK_VER;
 
-	pcb_conf_reg_file(CONF_FN, export_xy_conf_internal);
+	rnd_conf_reg_file(CONF_FN, export_xy_conf_internal);
 
 	memset(&xy_hid, 0, sizeof(pcb_hid_t));
 

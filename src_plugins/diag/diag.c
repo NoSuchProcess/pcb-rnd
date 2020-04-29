@@ -132,13 +132,13 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(role = 0; role < RND_CFR_max_real; role++) {
 		lht_node_t *n;
 		printf(" Role: %s\n", rnd_conf_role_name(role));
-		n = pcb_conf_lht_get_at(role, path, 0);
+		n = rnd_conf_lht_get_at(role, path, 0);
 		if (n != NULL) {
 			rnd_conf_policy_t pol = -1;
 			long prio = rnd_conf_default_prio[role];
 
 
-			if (pcb_conf_get_policy_prio(n, &pol, &prio) == 0)
+			if (rnd_conf_get_policy_prio(n, &pol, &prio) == 0)
 				printf("  * policy=%s\n  * prio=%ld\n", rnd_conf_policy_name(pol), prio);
 
 			if (n->file_name != NULL)

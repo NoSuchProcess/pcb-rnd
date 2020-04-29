@@ -123,7 +123,7 @@ static void place_conf_set(rnd_conf_role_t role, const char *path, int val)
 
 	if (rnd_conf_get_field(path) == NULL)
 		rnd_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
-	pcb_conf_setf(role, path, -1, "%d", val);
+	rnd_conf_setf(role, path, -1, "%d", val);
 }
 
 static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
@@ -148,7 +148,7 @@ static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
 	   role matches the role that's being loaded. Else the currently loading
 	   role is lower prio and didn't contribute to the final values and should
 	   be ignored. */
-	crole = pcb_conf_lookup_role(nat->prop->src);
+	crole = rnd_conf_lookup_role(nat->prop->src);
 	if (crole != role)
 		return;
 
@@ -169,7 +169,7 @@ void pcb_wplc_load(rnd_conf_role_t role)
 	strcpy(path, BASEPATH);
 	end = path + strlen(BASEPATH);
 
-	root = pcb_conf_lht_get_at(role, path, 0);
+	root = rnd_conf_lht_get_at(role, path, 0);
 	if (root == NULL)
 		return;
 

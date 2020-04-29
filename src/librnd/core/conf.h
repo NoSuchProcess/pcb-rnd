@@ -303,9 +303,9 @@ void rnd_conf_ro(const char *path);
 #define rnd_conf_is_read_only(role) \
 	(((role) == RND_CFR_INTERNAL) || ((role) == RND_CFR_SYSTEM) || ((role) == RND_CFR_DEFAULTPCB))
 
-void pcb_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...);
+void rnd_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
-#define conf_list_foreach_path_first(hidlib, res, conf_list, call) \
+#define rnd_conf_list_foreach_path_first(hidlib, res, conf_list, call) \
 do { \
 	pcb_conf_listitem_t *__n__; \
 	const pcb_conflist_t *__lst1__ = (conf_list); \
@@ -328,98 +328,98 @@ do { \
 /*	printf("conf_list_foreach_path_first: %s using %s\n", # call, # conf_list); \*/
 
 /* htsp_entry_t *e; */
-#define conf_fields_foreach(e) \
+#define rnd_conf_fields_foreach(e) \
 	for (e = htsp_first(rnd_conf_fields); e; e = htsp_next(rnd_conf_fields, e))
 
 /* helpers to make the code shorter */
-#define conf_set_design(path, fmt, new_val) \
-	pcb_conf_setf(RND_CFR_DESIGN, path, -1, fmt, new_val)
+#define rnd_conf_set_design(path, fmt, new_val) \
+	rnd_conf_setf(RND_CFR_DESIGN, path, -1, fmt, new_val)
 
-#define conf_set_editor(field, val) \
+#define rnd_conf_set_editor(field, val) \
 	rnd_conf_set(RND_CFR_DESIGN, "editor/" #field, -1, val ? "1" : "0", RND_POL_OVERWRITE)
 
-#define conf_set_editor_(sfield, val) \
+#define rnd_conf_set_editor_(sfield, val) \
 	rnd_conf_set(RND_CFR_DESIGN, sfield, -1, val ? "1" : "0", RND_POL_OVERWRITE)
 
-#define conf_toggle_editor(field) \
-	conf_set_editor(field, !conf_core.editor.field)
+#define rnd_conf_toggle_editor(field) \
+	rnd_conf_set_editor(field, !conf_core.editor.field)
 
-#define conf_toggle_heditor(field) \
-	conf_set_editor(field, !pcbhl_conf.editor.field)
+#define rnd_conf_toggle_heditor(field) \
+	rnd_conf_set_editor(field, !pcbhl_conf.editor.field)
 
-#define conf_toggle_editor_(sfield, field) \
-	conf_set_editor_("editor/" sfield, !conf_core.editor.field)
+#define rnd_conf_toggle_editor_(sfield, field) \
+	rnd_conf_set_editor_("editor/" sfield, !conf_core.editor.field)
 
-#define conf_toggle_heditor_(sfield, field) \
-	conf_set_editor_("editor/" sfield, !pcbhl_conf.editor.field)
+#define rnd_conf_toggle_heditor_(sfield, field) \
+	rnd_conf_set_editor_("editor/" sfield, !pcbhl_conf.editor.field)
 
 /* For temporary modification/restoration of variables (hack) */
-#define conf_force_set_bool(var, val) *((RND_CFT_BOOLEAN *)(&var)) = val
-#define conf_force_set_str(var, val) *((RND_CFT_STRING *)(&var)) = val
+#define rnd_conf_force_set_bool(var, val) *((RND_CFT_BOOLEAN *)(&var)) = val
+#define rnd_conf_force_set_str(var, val) *((RND_CFT_STRING *)(&var)) = val
 
 /* get the first config subtree node (it's a hash and its children
    are "design", "rc", ...); if create is 1, and the subtree doesn't
    exist, create an "overwrite". */
-lht_node_t *pcb_conf_lht_get_first(rnd_conf_role_t target, int create);
+lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create);
 
 /* loop helper */
-pcb_conf_listitem_t *pcb_conf_list_first_str(pcb_conflist_t *list, const char **item_str, int *idx);
-pcb_conf_listitem_t *pcb_conf_list_next_str(pcb_conf_listitem_t *item_li, const char **item_str, int *idx);
+pcb_conf_listitem_t *rnd_conf_list_first_str(pcb_conflist_t *list, const char **item_str, int *idx);
+pcb_conf_listitem_t *rnd_conf_list_next_str(pcb_conf_listitem_t *item_li, const char **item_str, int *idx);
 
 /*pcb_conf_listitem_t *item;*/
-#define conf_loop_list(list, item, idx) \
+#define rnd_conf_loop_list(list, item, idx) \
 	for (idx = 0, item = pcb_conflist_first((pcb_conflist_t *)list); item != NULL; item = pcb_conflist_next(item), idx++)
 
 /*pcb_conf_listitem_t *item; const char *item_str; */
-#define conf_loop_list_str(list, item_li, item_str, idx) \
-	for (idx = 0, item_li = pcb_conf_list_first_str((pcb_conflist_t *)list, &item_str, &idx); \
+#define rnd_conf_loop_list_str(list, item_li, item_str, idx) \
+	for (idx = 0, item_li = rnd_conf_list_first_str((pcb_conflist_t *)list, &item_str, &idx); \
 		item_li != NULL;\
-		item_li = pcb_conf_list_next_str(item_li, &item_str, &idx))
+		item_li = rnd_conf_list_next_str(item_li, &item_str, &idx))
 
-const char *pcb_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int *inited, char sep);
+const char *rnd_conf_concat_strlist(const pcb_conflist_t *lst, gds_t *buff, int *inited, char sep);
 
 /* Print usage help for all nodes that have the RND_CFF_USAGE flag and whose
    path starts with prefix (if prefix != NULL) */
-void pcb_conf_usage(const char *prefix, void (*print)(const char *name, const char *help));
+void rnd_conf_usage(const char *prefix, void (*print)(const char *name, const char *help));
 
 /* Determine under which role a node is */
-rnd_conf_role_t pcb_conf_lookup_role(const lht_node_t *nd);
+rnd_conf_role_t rnd_conf_lookup_role(const lht_node_t *nd);
 
 /* Return the lihata node of a path in target, optionally creating it with the right type;
    if allow_plug is 1, fall back returning node from plugin conf */
-lht_node_t *pcb_conf_lht_get_at(rnd_conf_role_t target, const char *path, int create);
-lht_node_t *pcb_conf_lht_get_at_mainplug(rnd_conf_role_t target, const char *path, int allow_plug, int create);
+lht_node_t *rnd_conf_lht_get_at(rnd_conf_role_t target, const char *path, int create);
+lht_node_t *rnd_conf_lht_get_at_mainplug(rnd_conf_role_t target, const char *path, int allow_plug, int create);
 
 /* Write an existing conf subtree to a file */
-int pcb_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, rnd_conf_role_t role, const char *conf_path);
+int rnd_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, rnd_conf_role_t role, const char *conf_path);
 
 /* Determine the policy and priority of a config lihata node;
    returns 0 on success but may not fill in both values, caller is
    responsible for initializing them before the call. */
-int pcb_conf_get_policy_prio(lht_node_t *node, rnd_conf_policy_t *gpolicy, long *gprio);
+int rnd_conf_get_policy_prio(lht_node_t *node, rnd_conf_policy_t *gpolicy, long *gprio);
 
 /* Parse text and convert the value into native form and store in one of dst
    fields depending on type */
-int pcb_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t type, const char *text, lht_node_t *err_node);
+int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t type, const char *text, lht_node_t *err_node);
 
 /* Returns the user configuration file name */
-const char *pcb_conf_get_user_conf_name();
+const char *rnd_conf_get_user_conf_name();
 
 /* Determine the file name of the project file - project_fn and pcb_fn can be NULL */
-const char *pcb_conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **out_project_fn);
+const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **out_project_fn);
 
 /* Get the first subtree that matches pol within target; allocate new
    subtree if needed */
-lht_node_t *pcb_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
+lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
 
 /* (un)register a custom config file name (not path, just file name);
    if intern is not NULL, it is the internal (executable-embedded)
    version; it's not strdup'd, the caller needs to keep the string available
-   until pcb_conf_unreg_file(). path is strdup'd */
-void pcb_conf_reg_file(const char *path, const char *intern);
-void pcb_conf_unreg_file(const char *path, const char *intern);
+   until rnd_conf_unreg_file(). path is strdup'd */
+void rnd_conf_reg_file(const char *path, const char *intern);
+void rnd_conf_unreg_file(const char *path, const char *intern);
 
-void pcb_conf_files_uninit(void);
+void rnd_conf_files_uninit(void);
 
 extern void (*pcb_conf_core_postproc)(void); /* if not NULL, called after conf updates to give conf_core a chance to update dynamic entries */
 

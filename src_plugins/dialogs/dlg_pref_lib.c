@@ -91,7 +91,7 @@ static const char *pref_node_src(lht_node_t *nd)
 {
 	if (nd->file_name != NULL)
 		return nd->file_name;
-	return rnd_conf_role_name(pcb_conf_lookup_role(nd));
+	return rnd_conf_role_name(rnd_conf_lookup_role(nd));
 }
 
 /* Current libraries from config to dialog box: after the change, fill
@@ -111,7 +111,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
 
 	/* copy everything from the config tree to the dialog */
-	conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
+	rnd_conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		char *tmp;
 		cell[0] = rnd_strdup(i->payload);
 		pcb_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, pcb_false);
@@ -158,7 +158,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	ctx->lib.lock++;
 
 	/* get the list and clean it */
-	m = pcb_conf_lht_get_first(ctx->role, 0);
+	m = rnd_conf_lht_get_first(ctx->role, 0);
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	if (lst == NULL)
 		rnd_conf_set(ctx->role, "rc/library_search_paths", 0, "", RND_POL_OVERWRITE);
@@ -405,7 +405,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 
 	PCB_DAD_LABEL(ctx->dlg, "The following $(variables) can be used in the path:");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			conf_fields_foreach(e) {
+			rnd_conf_fields_foreach(e) {
 				rnd_conf_native_t *nat = e->value;
 				char tmp[256];
 

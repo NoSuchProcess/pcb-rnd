@@ -90,16 +90,16 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	switch(cn->type) {
 		case RND_CFN_COORD:
 			if (cn->val.coord[0] != attr->val.crd)
-				pcb_conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.crd);
+				rnd_conf_setf(ctx->role, item->confpath, -1, "%.8$mm", attr->val.crd);
 			break;
 		case RND_CFN_BOOLEAN:
 		case RND_CFN_INTEGER:
 			if (cn->val.integer[0] != attr->val.lng)
-				pcb_conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.lng);
+				rnd_conf_setf(ctx->role, item->confpath, -1, "%d", attr->val.lng);
 			break;
 		case RND_CFN_REAL:
 			if (cn->val.real[0] != attr->val.dbl)
-				pcb_conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.dbl);
+				rnd_conf_setf(ctx->role, item->confpath, -1, "%f", attr->val.dbl);
 			break;
 		case RND_CFN_STRING:
 			if (strcmp(cn->val.string[0], attr->val.str) != 0)

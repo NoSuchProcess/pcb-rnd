@@ -124,8 +124,8 @@ void pcb_gtk_conf_init(void)
 		*end = '\0';
 		if (rnd_conf_get_field(p[1]) == NULL)
 			rnd_conf_reg_field_(&dummy_gtk_conf_init, 1, RND_CFN_INTEGER, p[1], "", 0);
-		r = pcb_conf_lookup_role(nat->prop->src);
-		pcb_conf_setf(r, p[1], -1, "%d", nat->val.integer[0]);
+		r = rnd_conf_lookup_role(nat->prop->src);
+		rnd_conf_setf(r, p[1], -1, "%d", nat->val.integer[0]);
 		dirty[r] = 1;
 	}
 	for(r = 0; r < RND_CFR_max_real; r++)

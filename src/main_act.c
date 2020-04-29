@@ -222,7 +222,7 @@ static void print_list(const pcb_conflist_t *cl)
 	const char *p;
 
 	printf(" ");
-	conf_loop_list_str(cl, ci, p, n) {
+	rnd_conf_loop_list_str(cl, ci, p, n) {
 		printf("%c%s", (n == 0) ? '"' : ':', p);
 	}
 	printf("\"\n");
@@ -230,7 +230,7 @@ static void print_list(const pcb_conflist_t *cl)
 fgw_error_t pcb_act_PrintPaths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	htsp_entry_t *e;
-	conf_fields_foreach(e) {
+	rnd_conf_fields_foreach(e) {
 		rnd_conf_native_t *n = e->value;
 		if ((strncmp(n->hash_path, "rc/path/", 8) == 0) && (n->type == RND_CFN_STRING) && (n->used == 1))
 			printf("%-32s = %s\n", n->hash_path, n->val.string[0]);

@@ -214,7 +214,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 
 		/* automatic swap of line refraction after each click - should work only if refraction is in effect (no ortho, no alldir) */
 		if (conf_core.editor.swap_start_direction && (conf_core.editor.line_refraction != 0) && !conf_core.editor.all_direction_lines)
-			pcb_conf_setf(RND_CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
+			rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
 
 		if (conf_core.editor.orthogonal_moves) {
 			/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
@@ -325,7 +325,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 
 
 			if (conf_core.editor.swap_start_direction) {
-				pcb_conf_setf(RND_CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
+				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction", -1, "%d",conf_core.editor.line_refraction ^ 3);
 			}
 			pcb_subc_as_board_update(PCB);
 		}
