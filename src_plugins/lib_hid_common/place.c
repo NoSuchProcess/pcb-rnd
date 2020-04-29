@@ -121,23 +121,23 @@ static void place_conf_set(rnd_conf_role_t role, const char *path, int val)
 {
 	static int dummy;
 
-	if (pcb_conf_get_field(path) == NULL)
-		pcb_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
+	if (rnd_conf_get_field(path) == NULL)
+		rnd_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
 	pcb_conf_setf(role, path, -1, "%d", val);
 }
 
 static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
 {
-	rnd_conf_native_t *nat = pcb_conf_get_field(path);
+	rnd_conf_native_t *nat = rnd_conf_get_field(path);
 	rnd_conf_role_t crole;
 	static int dummy;
 
-	if (pcb_conf_get_field(path) == NULL) {
-		pcb_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
+	if (rnd_conf_get_field(path) == NULL) {
+		rnd_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
 		pcb_conf_update(path, -1);
 	}
 
-	nat = pcb_conf_get_field(path);
+	nat = rnd_conf_get_field(path);
 	if ((nat == NULL) || (nat->prop->src == NULL) || (nat->prop->src->type != LHT_TEXT)) {
 		rnd_message(PCB_MSG_ERROR, "Can not load window geometry from invalid node for %s\n", path);
 		return;
@@ -226,9 +226,9 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 
 
 	if (role != RND_CFR_DESIGN) {
-		int r = pcb_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), role, NULL);
+		int r = rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), role, NULL);
 		if (r != 0)
-			rnd_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", pcb_conf_role_name(role));
+			rnd_message(PCB_MSG_ERROR, "Failed to save window geometry in %s\n", rnd_conf_role_name(role));
 	}
 }
 
@@ -291,7 +291,7 @@ void pcb_dialog_place_uninit(void)
 	htsw_entry_t *e;
 	int n;
 
-	pcb_conf_unreg_fields(BASEPATH);
+	rnd_conf_unreg_fields(BASEPATH);
 
 	place_maybe_save(NULL, RND_CFR_USER, 0);
 

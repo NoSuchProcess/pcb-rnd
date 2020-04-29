@@ -1843,7 +1843,7 @@ yyreduce:
     {
 			  pcb_board_t *pcb_save = PCB;
 			  if ((yy_settings_dest != RND_CFR_invalid) && (layer_group_string != NULL))
-					pcb_conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, RND_POL_OVERWRITE);
+					rnd_conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, RND_POL_OVERWRITE);
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (layer_group_string == NULL) {
 			     if (pcb_layer_improvise(yyPCB, pcb_true) != 0) {
@@ -2020,9 +2020,9 @@ yyreduce:
 				yyPCB->hidlib.grid_oy = OU ((yyvsp[-2].measure));
 				if (yy_settings_dest != RND_CFR_invalid) {
 					if ((yyvsp[-1].integer))
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
 					else
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
 				}
 			}
 #line 2029 "parse_y.c" /* yacc.c:1652  */
@@ -2036,9 +2036,9 @@ yyreduce:
 				yyPCB->hidlib.grid_oy = NU ((yyvsp[-2].measure));
 				if (yy_settings_dest != RND_CFR_invalid) {
 					if ((yyvsp[-1].integer))
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
 					else
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
 				}
 			}
 #line 2045 "parse_y.c" /* yacc.c:1652  */
@@ -3354,12 +3354,12 @@ static void load_meta_coord(const char *path, rnd_coord_t crd)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%$mm", crd);
-	pcb_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
 }
 
 static void load_meta_float(const char *path, double val)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%f", val);
-	pcb_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
 }

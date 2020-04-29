@@ -138,7 +138,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		return;
 	}
 	pcb_del_font(&PCB->fontkit, conf_core.design.text_font_id);
-	pcb_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE);
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 

@@ -81,7 +81,7 @@ void pcb_pref_conf2dlg_item(rnd_conf_native_t *cn, pref_confitem_t *item)
 void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attribute_t *attr)
 {
 	pref_confitem_t *old = ctx->pcb_conf_lock;
-	rnd_conf_native_t *cn = pcb_conf_get_field(item->confpath);
+	rnd_conf_native_t *cn = rnd_conf_get_field(item->confpath);
 
 	if (cn == NULL)
 		return;
@@ -103,7 +103,7 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 			break;
 		case RND_CFN_STRING:
 			if (strcmp(cn->val.string[0], attr->val.str) != 0)
-				pcb_conf_set(ctx->role, item->confpath, -1, attr->val.str, RND_POL_OVERWRITE);
+				rnd_conf_set(ctx->role, item->confpath, -1, attr->val.str, RND_POL_OVERWRITE);
 			break;
 		default: rnd_message(PCB_MSG_ERROR, "pcb_pref_dlg2conf_item(): widget type not handled\n");
 	}
@@ -127,7 +127,7 @@ rnd_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid
 
 void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
 {
-	rnd_conf_native_t *cn = pcb_conf_get_field(item->confpath);
+	rnd_conf_native_t *cn = rnd_conf_get_field(item->confpath);
 
 	if (cn == NULL) {
 		rnd_message(PCB_MSG_ERROR, "Internal error: pcb_pref_create_conf_item(): invalid conf node %s\n", item->confpath);
@@ -198,7 +198,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 {
 	pref_confitem_t *c;
 	for(c = list; c->confpath != NULL; c++) {
-		rnd_conf_native_t *cn = pcb_conf_get_field(c->confpath);
+		rnd_conf_native_t *cn = rnd_conf_get_field(c->confpath);
 		c->cnext = NULL;
 		if (cn != NULL)
 			pcb_conf_hid_set_data(cn, pref_hid, NULL);

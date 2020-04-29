@@ -42,7 +42,7 @@ conf_hid_gtk_t pcb_conf_hid_gtk;
 void pcb_gtk_conf_uninit(void)
 {
 	pcb_conf_hid_unreg(lib_gtk_config_cookie);
-	pcb_conf_unreg_fields("plugins/hid_gtk/");
+	rnd_conf_unreg_fields("plugins/hid_gtk/");
 }
 
 /* Config paths that got removed but can be converted. Pairs of old,new strings */
@@ -100,7 +100,7 @@ void pcb_gtk_conf_init(void)
 	ghid_conf_id = pcb_conf_hid_reg(lib_gtk_config_cookie, NULL);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(pcb_conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(pcb_conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h"
 
 	/* check for legacy win geo settings */
@@ -109,7 +109,7 @@ void pcb_gtk_conf_init(void)
 		char *end, dirname[128];
 		
 		pcb_conf_update(p[0], -1);
-		nat = pcb_conf_get_field(p[0]);
+		nat = rnd_conf_get_field(p[0]);
 		if ((nat == NULL) || (nat->prop->src == NULL))
 			continue;
 		if (!warned) {
@@ -122,8 +122,8 @@ void pcb_gtk_conf_init(void)
 		end = strrchr(dirname, '/');
 		assert(end != NULL);
 		*end = '\0';
-		if (pcb_conf_get_field(p[1]) == NULL)
-			pcb_conf_reg_field_(&dummy_gtk_conf_init, 1, RND_CFN_INTEGER, p[1], "", 0);
+		if (rnd_conf_get_field(p[1]) == NULL)
+			rnd_conf_reg_field_(&dummy_gtk_conf_init, 1, RND_CFN_INTEGER, p[1], "", 0);
 		r = pcb_conf_lookup_role(nat->prop->src);
 		pcb_conf_setf(r, p[1], -1, "%d", nat->val.integer[0]);
 		dirty[r] = 1;

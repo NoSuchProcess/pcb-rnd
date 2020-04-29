@@ -299,14 +299,14 @@ static char *get_homedir(void)
 
 void pcbhl_conf_postproc(void)
 {
-	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); pcb_conf_ro("rc/path/home");
+	conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
 
 void pcb_hidlib_init1(void (*conf_core_init)(void))
 {
 	pcb_events_init();
 	pcb_file_loaded_init();
-	pcb_conf_init();
+	rnd_conf_init();
 	conf_core_init();
 	pcbhl_conf_postproc();
 	pcb_hidlib_conf_init();
@@ -341,20 +341,20 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 				srole = fn;
 				*sep = '\0';
 				fn = sep+1;
-				role = pcb_conf_role_parse(srole);
+				role = rnd_conf_role_parse(srole);
 				if (role == RND_CFR_invalid) {
 					fprintf(stderr, "Can't load -C config file '%s': invalid role '%s'\n", fn, srole);
 					free(hidlib_conffile.array[n]);
 					continue;
 				}
 			}
-			pcb_conf_load_as(role, fn, 0);
+			rnd_conf_load_as(role, fn, 0);
 			free(hidlib_conffile.array[n]);
 		}
 		vts0_uninit(&hidlib_conffile);
 	}
 
-	pcb_conf_load_all(NULL, NULL);
+	rnd_conf_load_all(NULL, NULL);
 
 	pup_init(&pcb_pup);
 	pcb_pup.error_stack_enable = 1;
@@ -363,7 +363,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 		pup_buildin_load(&pcb_pup, local_buildins);
 	pup_autoload_dir(&pcb_pup, NULL, NULL);
 
-	pcb_conf_load_extra(NULL, NULL);
+	rnd_conf_load_extra(NULL, NULL);
 	pcb_units_init();
 	pcb_funchash_init();
 
@@ -383,12 +383,12 @@ void pcb_hidlib_uninit(void)
 	pcb_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();
 
-	if (pcb_conf_isdirty(RND_CFR_USER))
-		pcb_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);
+	if (rnd_conf_isdirty(RND_CFR_USER))
+		rnd_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);
 
 	pcb_hid_uninit();
 	pcb_events_uninit();
-	pcb_conf_uninit();
+	rnd_conf_uninit();
 	pcb_plugin_uninit();
 	rnd_actions_uninit();
 	pcb_dad_unit_uninit();
@@ -587,7 +587,7 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 				*a = arg;
 			}
 			else {
-				if (pcb_conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+				if (rnd_conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
 					exit(1);
 				}
@@ -610,7 +610,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 	/* Now that plugins are already initialized, apply plugin config items */
 	for(n = 0; n < vtp0_len(&ga->plugin_cli_conf); n++) {
 		const char *why, *arg = ga->plugin_cli_conf.array[n];
-		if (pcb_conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
+		if (rnd_conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
 			fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
 			return 1;
 		}

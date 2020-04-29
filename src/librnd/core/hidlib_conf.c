@@ -43,7 +43,7 @@ int pcb_hidlib_conf_init()
 	int cnt = 0;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(pcbhl_conf, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(pcbhl_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include <librnd/core/hidlib_conf_fields.h>
 
 	return cnt;
@@ -67,5 +67,5 @@ void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align,
 void pcb_hidlib_set_unit(rnd_hidlib_t *hidlib, const pcb_unit_t *new_unit)
 {
 	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT)
-		pcb_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, RND_POL_OVERWRITE);
 }

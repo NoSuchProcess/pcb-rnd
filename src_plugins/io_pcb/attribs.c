@@ -74,13 +74,13 @@ static void c2a(pcb_board_t *pcb, lht_node_t *tree, const char *path1)
 			continue;
 		}
 		if (n->type == LHT_TEXT) {
-			rnd_conf_native_t *nv = pcb_conf_get_field(path);
+			rnd_conf_native_t *nv = rnd_conf_get_field(path);
 			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib))
 				rnd_attribute_put(&pcb->Attributes, apath, n->data.text.value);
 		}
 		else if (n->type == LHT_LIST) {
 			lht_node_t *i;
-			rnd_conf_native_t *nv = pcb_conf_get_field(path);
+			rnd_conf_native_t *nv = rnd_conf_get_field(path);
 			if ((nv != NULL) && (!nv->random_flags.io_pcb_no_attrib)) {
 				gds_t conc;
 				gds_init(&conc);
@@ -111,7 +111,7 @@ void io_pcb_attrib_a2c(pcb_board_t *pcb)
 
 	for (n = 0; n < pcb->Attributes.Number; n++) {
 		if (path_ok(pcb->Attributes.List[n].name)) {
-			rnd_conf_native_t *nv = pcb_conf_get_field(pcb->Attributes.List[n].name + conf_attr_prefix_len);
+			rnd_conf_native_t *nv = rnd_conf_get_field(pcb->Attributes.List[n].name + conf_attr_prefix_len);
 			if (nv == NULL)
 				continue;
 			if (nv->type == RND_CFN_LIST) {
@@ -123,12 +123,12 @@ void io_pcb_attrib_a2c(pcb_board_t *pcb)
 						*next = '\0';
 						next += strlen(LISTSEP);
 					}
-					pcb_conf_set(RND_CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, curr, RND_POL_APPEND);
+					rnd_conf_set(RND_CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, curr, RND_POL_APPEND);
 				}
 				free(tmp);
 			}
 			else /* assume plain string */
-				pcb_conf_set(RND_CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, pcb->Attributes.List[n].value, RND_POL_OVERWRITE);
+				rnd_conf_set(RND_CFR_DESIGN, pcb->Attributes.List[n].name + conf_attr_prefix_len, -1, pcb->Attributes.List[n].value, RND_POL_OVERWRITE);
 		}
 	}
 }

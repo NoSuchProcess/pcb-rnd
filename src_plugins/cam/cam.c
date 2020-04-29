@@ -283,7 +283,7 @@ int pplg_check_ver_cam(int ver_needed) { return 0; }
 void pplg_uninit_cam(void)
 {
 	pcb_conf_unreg_file(CAM_CONF_FN, cam_conf_internal);
-	pcb_conf_unreg_fields("plugins/cam/");
+	rnd_conf_unreg_fields("plugins/cam/");
 	rnd_remove_actions_by_cookie(cam_cookie);
 	pcb_export_remove_opts_by_cookie(cam_cookie);
 }
@@ -295,7 +295,7 @@ int pplg_init_cam(void)
 	PCB_API_CHK_VER;
 	pcb_conf_reg_file(CAM_CONF_FN, cam_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);
 #include "cam_conf_fields.h"
 
 	RND_REGISTER_ACTIONS(cam_action_list, cam_cookie)

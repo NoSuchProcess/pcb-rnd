@@ -112,9 +112,9 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (id == F_SubcID) { /* change the displayed name of subcircuits */
 		if (argc > 1)
-			pcb_conf_set(RND_CFR_DESIGN, "editor/subc_id", -1, str_dir, RND_POL_OVERWRITE);
+			rnd_conf_set(RND_CFR_DESIGN, "editor/subc_id", -1, str_dir, RND_POL_OVERWRITE);
 		else
-			pcb_conf_set(RND_CFR_DESIGN, "editor/subc_id", -1, "", RND_POL_OVERWRITE);
+			rnd_conf_set(RND_CFR_DESIGN, "editor/subc_id", -1, "", RND_POL_OVERWRITE);
 
 		pcb_gui->invalidate_all(pcb_gui); /* doesn't change too often, isn't worth anything more complicated */
 		pcb_draw();
@@ -123,9 +123,9 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (id == F_TermID) { /* change the displayed name of terminals */
 		if (argc > 1)
-			pcb_conf_set(RND_CFR_DESIGN, "editor/term_id", -1, str_dir, RND_POL_OVERWRITE);
+			rnd_conf_set(RND_CFR_DESIGN, "editor/term_id", -1, str_dir, RND_POL_OVERWRITE);
 		else
-			pcb_conf_set(RND_CFR_DESIGN, "editor/term_id", -1, "", RND_POL_OVERWRITE);
+			rnd_conf_set(RND_CFR_DESIGN, "editor/term_id", -1, "", RND_POL_OVERWRITE);
 
 		pcb_gui->invalidate_all(pcb_gui); /* doesn't change too often, isn't worth anything more complicated */
 		pcb_draw();
@@ -164,7 +164,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			pcb_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
 			if (pcb_ch_shape_NUM == pcbhl_conf.editor.crosshair_shape_idx)
-				pcb_conf_set(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "0", RND_POL_OVERWRITE);
+				rnd_conf_set(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "0", RND_POL_OVERWRITE);
 			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
@@ -1436,7 +1436,7 @@ static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	tmp[0] = '0' + !conf_core.temp.clip_inhibit_chg;
 	tmp[1] = '\0';
-	pcb_conf_set(RND_CFR_CLI, "temp/clip_inhibit_chg", 0, tmp, RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_CLI, "temp/clip_inhibit_chg", 0, tmp, RND_POL_OVERWRITE);
 
 
 	RND_ACT_IRES(0);

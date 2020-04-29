@@ -384,7 +384,7 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 		return -1;
 
 	if (cfg_dest != RND_CFR_invalid)
-		pcb_conf_set(cfg_dest, path, -1, nd->data.text.value, RND_POL_OVERWRITE);
+		rnd_conf_set(cfg_dest, path, -1, nd->data.text.value, RND_POL_OVERWRITE);
 	return 0;
 }
 
@@ -2217,7 +2217,7 @@ static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 {
 	if (cfg_dest == RND_CFR_invalid)
 		return;
-	if (pcb_conf_insert_tree_as(cfg_dest, sub) != 0)
+	if (rnd_conf_insert_tree_as(cfg_dest, sub) != 0)
 		rnd_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
 	else
 		pcb_conf_update(NULL, -1);

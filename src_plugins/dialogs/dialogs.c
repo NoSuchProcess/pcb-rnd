@@ -105,7 +105,7 @@ void pplg_uninit_dialogs(void)
 	rnd_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
 	pcb_dlg_fontsel_uninit();
-	pcb_conf_unreg_fields("plugins/dialogs/");
+	rnd_conf_unreg_fields("plugins/dialogs/");
 }
 
 int pplg_init_dialogs(void)

@@ -91,7 +91,7 @@ static const char *pref_node_src(lht_node_t *nd)
 {
 	if (nd->file_name != NULL)
 		return nd->file_name;
-	return pcb_conf_role_name(pcb_conf_lookup_role(nd));
+	return rnd_conf_role_name(pcb_conf_lookup_role(nd));
 }
 
 /* Current libraries from config to dialog box: after the change, fill
@@ -161,7 +161,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	m = pcb_conf_lht_get_first(ctx->role, 0);
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	if (lst == NULL)
-		pcb_conf_set(ctx->role, "rc/library_search_paths", 0, "", RND_POL_OVERWRITE);
+		rnd_conf_set(ctx->role, "rc/library_search_paths", 0, "", RND_POL_OVERWRITE);
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	assert(lst != NULL);
 	lht_clean_list(lst);
@@ -176,7 +176,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	}
 
 	pcb_conf_update("rc/library_search_paths", -1);
-	pcb_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
+	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 	if (ctx->role == RND_CFR_DESIGN)
 		pcb_board_set_changed_flag(1);
 
@@ -477,14 +477,14 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 {
-	rnd_conf_native_t *cn = pcb_conf_get_field("rc/library_search_paths");
+	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
 	pref_lib_conf2dlg_post(cn, -1);
 }
 
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
 {
 	static conf_hid_callbacks_t cbs_spth;
-	rnd_conf_native_t *cn = pcb_conf_get_field("rc/library_search_paths");
+	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
 
 	if (cn != NULL) {
 		memset(&cbs_spth, 0, sizeof(conf_hid_callbacks_t));

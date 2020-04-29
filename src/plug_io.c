@@ -123,7 +123,7 @@ void pcb_set_design_dir(const char *fn)
 	if (last_design_dir == NULL) {
 		last_design_dir = rnd_strdup("<invalid>");
 		conf_force_set_str(conf_core.rc.path.design, last_design_dir);
-		pcb_conf_ro("rc/path/design");
+		rnd_conf_ro("rc/path/design");
 		return;
 	}
 
@@ -132,7 +132,7 @@ void pcb_set_design_dir(const char *fn)
 		*end = '\0';
 
 	conf_force_set_str(conf_core.rc.path.design, last_design_dir);
-	pcb_conf_ro("rc/path/design");
+	rnd_conf_ro("rc/path/design");
 }
 
 static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, pcb_plug_iot_t type, pcb_find_io_t *available, int *accepts, int *accept_total, int maxav, int ignore_missing, int gen_event)
@@ -234,8 +234,8 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 
 	if ((res == 0) && (load_settings)) {
 		if (design_root_cnt == rnd_conf_main_root_replace_cnt[RND_CFR_DESIGN]) /* the newly loaded board did not bring a design root */
-			pcb_conf_reset(RND_CFR_DESIGN, "<pcb_parse_pcb>");
-		pcb_conf_load_project(NULL, Filename);
+			rnd_conf_reset(RND_CFR_DESIGN, "<pcb_parse_pcb>");
+		rnd_conf_load_project(NULL, Filename);
 	}
 
 	if (res == 0)
@@ -244,7 +244,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	if (load_settings)
 		pcb_event(&PCB->hidlib, PCB_EVENT_LOAD_POST, "si", Filename, res);
 	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-	pcb_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
+	rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 	pcb_plug_io_err(&Ptr->hidlib, res, "load pcb", Filename);
 	return res;
@@ -581,7 +581,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 			if (nat == NULL) {
 				const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
 				if (new_unit)
-					pcb_conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, RND_POL_OVERWRITE);
+					rnd_conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, RND_POL_OVERWRITE);
 			}
 		}
 

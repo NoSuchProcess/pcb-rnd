@@ -173,7 +173,7 @@ static rnd_bool pcb_mouse_fontsel(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_co
 				if (txt == NULL) {
 					char sval[128];
 					sprintf(sval, "%ld", fid);
-					pcb_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, sval, RND_POL_OVERWRITE);
+					rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, sval, RND_POL_OVERWRITE);
 				}
 				else {
 					switch(txt->type) {

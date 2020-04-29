@@ -215,7 +215,7 @@ static int fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 	if (argv[0].type != PCBQ_VT_STRING)
 		return -1;
 
-	nat = pcb_conf_get_field(argv[0].data.str);
+	nat = rnd_conf_get_field(argv[0].data.str);
 	if (nat == NULL)
 		PCB_QRY_RET_INV(res);
 

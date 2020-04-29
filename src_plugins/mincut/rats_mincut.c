@@ -363,7 +363,7 @@ int pplg_check_ver_mincut(int ver_needed) { return 0; }
 
 void pplg_uninit_mincut(void)
 {
-	pcb_conf_unreg_fields("plugins/mincut/");
+	rnd_conf_unreg_fields("plugins/mincut/");
 	pcb_event_unbind_allcookie(pcb_mincut_cookie);
 }
 
@@ -374,7 +374,7 @@ int pplg_init_mincut(void)
 	pcb_event_bind(PCB_EVENT_NET_INDICATE_SHORT, pcb_mincut_ev, NULL, pcb_mincut_cookie);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc,flags);
 #include "rats_mincut_conf_fields.h"
 	return 0;
 }

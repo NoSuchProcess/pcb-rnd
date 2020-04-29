@@ -486,7 +486,7 @@ void pplg_uninit_export_excellon(void)
 {
 	pcb_export_remove_opts_by_cookie(excellon_cookie);
 	free(filename);
-	pcb_conf_unreg_fields("plugins/export_excellon/");
+	rnd_conf_unreg_fields("plugins/export_excellon/");
 	pcb_event_unbind_allcookie(excellon_cookie);
 }
 
@@ -495,7 +495,7 @@ int pplg_init_export_excellon(void)
 	PCB_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_excellon, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_excellon, field,isarray,type_name,cpath,cname,desc,flags);
 #include "excellon_conf_fields.h"
 
 	memset(&excellon_hid, 0, sizeof(excellon_hid));

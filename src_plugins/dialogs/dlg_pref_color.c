@@ -36,7 +36,7 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 	int n;
 
 	if (ctx->color.wlayer != NULL) {
-		nat = pcb_conf_get_field("appearance/color/layer");
+		nat = rnd_conf_get_field("appearance/color/layer");
 		for (n = 0; n < nat->used; n++)
 			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->color.wlayer[n], clr, nat->val.color[n]);
 	}
@@ -44,7 +44,7 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 	for(n = 0; n < ctx->color.ngen; n++) {
 		int w = ctx->color.wgen[n];
 		const char *path = ctx->dlg[w].user_data;
-		nat = pcb_conf_get_field(path);
+		nat = rnd_conf_get_field(path);
 		if (nat != NULL)
 			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, w, clr, nat->val.color[0]);
 	}
@@ -130,7 +130,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 
 		PCB_DAD_BEGIN_VBOX(ctx->dlg); /* layer */
 			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
-			nat = pcb_conf_get_field("appearance/color/layer");
+			nat = rnd_conf_get_field("appearance/color/layer");
 			if (nat->type == RND_CFN_COLOR) {
 				PCB_DAD_LABEL(ctx->dlg, "NOTE: these colors are used only\nwhen creating new layers.");
 				ctx->color.wlayer = calloc(sizeof(int), nat->used);

@@ -167,7 +167,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 					lht_dom_list_append(nd, n);
 					n->data.text.value = rnd_strdup(r->cell[0]);
 				}
-				pcb_conf_makedirty(ctx->role);
+				rnd_conf_makedirty(ctx->role);
 				pcb_conf_update(ctx->nat->hash_path, ctx->idx);
 			}
 			return;
@@ -178,10 +178,10 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 
 	if (val == NULL)
 		val = "";
-	pcb_conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, RND_POL_OVERWRITE);
+	rnd_conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, RND_POL_OVERWRITE);
 
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
-		pcb_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
+		rnd_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
 	else if (ctx->role == RND_CFR_DESIGN)
 		pcb_board_set_changed_flag(1);
 
@@ -241,7 +241,7 @@ static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, pcb_hid
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_actionva(&PCB->hidlib, ctx->nat->gui_edit_act,
-		pcb_conf_role_name(ctx->role), ctx->nat->hash_path, trigger_attr->val.str,
+		rnd_conf_role_name(ctx->role), ctx->nat->hash_path, trigger_attr->val.str,
 		NULL);
 }
 
@@ -418,5 +418,5 @@ static void pref_conf_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		return;
 	}
 
-	pcb_conf_del(r->user_data2.lng, pctx->conf.selected_nat->hash_path, pctx->conf.selected_idx);
+	rnd_conf_del(r->user_data2.lng, pctx->conf.selected_nat->hash_path, pctx->conf.selected_idx);
 }

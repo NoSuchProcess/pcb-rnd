@@ -81,7 +81,7 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *srole, *prefix = "";
 		RND_PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
-		role = pcb_conf_role_parse(srole);
+		role = rnd_conf_role_parse(srole);
 		if (role == RND_CFR_invalid) {
 			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
 			RND_ACT_IRES(1);
@@ -121,7 +121,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);
 
-	nat = pcb_conf_get_field(path);
+	nat = rnd_conf_get_field(path);
 	if (nat == NULL) {
 		rnd_message(PCB_MSG_ERROR, "EvalConf: invalid path %s - no such config setting\n", path);
 		RND_ACT_IRES(-1);
@@ -131,7 +131,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("Conf node %s\n", path);
 	for(role = 0; role < RND_CFR_max_real; role++) {
 		lht_node_t *n;
-		printf(" Role: %s\n", pcb_conf_role_name(role));
+		printf(" Role: %s\n", rnd_conf_role_name(role));
 		n = pcb_conf_lht_get_at(role, path, 0);
 		if (n != NULL) {
 			rnd_conf_policy_t pol = -1;
@@ -139,7 +139,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 			if (pcb_conf_get_policy_prio(n, &pol, &prio) == 0)
-				printf("  * policy=%s\n  * prio=%ld\n", pcb_conf_policy_name(pol), prio);
+				printf("  * policy=%s\n  * prio=%ld\n", rnd_conf_policy_name(pol), prio);
 
 			if (n->file_name != NULL)
 				printf("  * from=%s:%d.%d\n", n->file_name, n->line, n->col);
@@ -153,7 +153,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	printf(" Native:\n");
-	pcb_conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
+	rnd_conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -596,7 +596,7 @@ int pplg_check_ver_diag(int ver_needed) { return 0; }
 void pplg_uninit_diag(void)
 {
 	rnd_remove_actions_by_cookie(diag_cookie);
-	pcb_conf_unreg_fields("plugins/diag/");
+	rnd_conf_unreg_fields("plugins/diag/");
 	pcb_event_unbind_allcookie(diag_cookie);
 }
 
@@ -605,7 +605,7 @@ int pplg_init_diag(void)
 	PCB_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
 #include "diag_conf_fields.h"
 
 	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, ev_ui_post, NULL, diag_cookie);

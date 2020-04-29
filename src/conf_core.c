@@ -35,16 +35,16 @@ static void pcb_conf_legacy_(rnd_conf_native_t *ndst, rnd_conf_native_t *nlegacy
 	const char *dst_path = ndst->hash_path;
 
 	gds_init(&tmp);
-	pcb_conf_print_native_field((conf_pfn)pcb_append_printf, &tmp, 0, &nlegacy->val, nlegacy->type, nlegacy->prop, 0);
+	rnd_conf_print_native_field((conf_pfn)pcb_append_printf, &tmp, 0, &nlegacy->val, nlegacy->type, nlegacy->prop, 0);
 	if (tmp.used > 0)
-		pcb_conf_set(RND_CFR_INTERNAL, dst_path, -1, tmp.array, RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_INTERNAL, dst_path, -1, tmp.array, RND_POL_OVERWRITE);
 	gds_uninit(&tmp);
 }
 
 void pcb_conf_legacy(const char *dst_path, const char *legacy_path)
 {
-	rnd_conf_native_t *nlegacy = pcb_conf_get_field(legacy_path);
-	rnd_conf_native_t *ndst = pcb_conf_get_field(dst_path);
+	rnd_conf_native_t *nlegacy = rnd_conf_get_field(legacy_path);
+	rnd_conf_native_t *ndst = rnd_conf_get_field(dst_path);
 	if (nlegacy == NULL) {
 		rnd_message(PCB_MSG_ERROR, "pcb_conf_legacy: invalid legacy path '%s' for %s\n", legacy_path, dst_path);
 		return;
@@ -65,12 +65,12 @@ static void conf_core_postproc(void)
 
 	conf_clamp_to(RND_CFT_COORD, conf_core.design.line_thickness, PCB_MIN_THICKNESS, PCB_MAX_THICKNESS, PCB_MIL_TO_COORD(10));
 	conf_force_set_bool(conf_core.rc.have_regex, 1);
-	pcb_conf_ro("rc/have_regex");
+	rnd_conf_ro("rc/have_regex");
 
-	conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   pcb_conf_ro("rc/path/prefix");
-	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       pcb_conf_ro("rc/path/lib");
-	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          pcb_conf_ro("rc/path/bin");
-	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   pcb_conf_ro("rc/path/share");
+	conf_force_set_str(conf_core.rc.path.prefix, PCB_PREFIX);   rnd_conf_ro("rc/path/prefix");
+	conf_force_set_str(conf_core.rc.path.lib, PCBLIBDIR);       rnd_conf_ro("rc/path/lib");
+	conf_force_set_str(conf_core.rc.path.bin, BINDIR);          rnd_conf_ro("rc/path/bin");
+	conf_force_set_str(conf_core.rc.path.share, PCBSHAREDIR);   rnd_conf_ro("rc/path/share");
 
 	for(e = htpp_first(&legacy_new2old); e != NULL; e = htpp_next(&legacy_new2old, e)) {
 		rnd_conf_native_t *nlegacy = e->value, *ndst = e->key;
@@ -117,7 +117,7 @@ void conf_core_init(void)
 	htpp_init(&legacy_old2new, ptrhash, ptrkeyeq);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
 #include "conf_core_fields.h"
 	pcb_conf_core_postproc = conf_core_postproc;
 	conf_core_postproc();

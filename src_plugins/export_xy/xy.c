@@ -852,7 +852,7 @@ void pplg_uninit_export_xy(void)
 {
 	pcb_export_remove_opts_by_cookie(xy_cookie);
 	pcb_conf_unreg_file(CONF_FN, export_xy_conf_internal);
-	pcb_conf_unreg_fields("plugins/export_xy/");
+	rnd_conf_unreg_fields("plugins/export_xy/");
 	free_fmts();
 	vts0_uninit(&fmt_names);
 	vts0_uninit(&fmt_ids);
@@ -868,7 +868,7 @@ int pplg_init_export_xy(void)
 	memset(&xy_hid, 0, sizeof(pcb_hid_t));
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_xy, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_xy, field,isarray,type_name,cpath,cname,desc,flags);
 #include "xy_conf_fields.h"
 
 	pcb_hid_nogui_init(&xy_hid);

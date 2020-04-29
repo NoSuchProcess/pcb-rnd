@@ -257,7 +257,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 		}
 	}
 
-	info = pcb_strdup_printf("DRC rule edit: %s on role %s", rule, pcb_conf_role_name(role));
+	info = pcb_strdup_printf("DRC rule edit: %s on role %s", rule, rnd_conf_role_name(role));
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
 		PCB_DAD_LABEL(ctx->dlg, info);
@@ -336,7 +336,7 @@ static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t 
 	if (srule == NULL)
 		srule = spath;
 
-	role = pcb_conf_role_parse(srole);
+	role = rnd_conf_role_parse(srole);
 	if (role == RND_CFR_invalid)
 		RND_ACT_FAIL(DrcQueryEditRule);
 
@@ -403,7 +403,7 @@ static void drc_rlist_pcb2dlg(void)
 
 		role = pcb_conf_lookup_role(rule);
 		cell[0] = rule->name;
-		cell[1] = rnd_strdup(pcb_conf_role_name(role));
+		cell[1] = rnd_strdup(rnd_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
 		if (st->run_cnt > 0)
 			cell[3] = pcb_strdup_printf("%.3fs", st->last_run_time);
@@ -451,7 +451,7 @@ do { \
 		rnd_message(PCB_MSG_ERROR, "Select a rule first!\n"); \
 		return; \
 	} \
-	role = pcb_conf_role_parse(row->cell[1]); \
+	role = rnd_conf_role_parse(row->cell[1]); \
 	if (role == RND_CFR_invalid) { \
 		rnd_message(PCB_MSG_ERROR, "internal error: invalid role %s\n", row->cell[0]); \
 		return; \

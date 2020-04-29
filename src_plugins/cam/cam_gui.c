@@ -59,7 +59,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	pcb_dad_tree_clear(tree);
 
 	/* add all new items */
-	cn = pcb_conf_get_field("plugins/cam/jobs");
+	cn = rnd_conf_get_field("plugins/cam/jobs");
 	if (cn != NULL) {
 		pcb_conf_listitem_t *item;
 		int idx;

@@ -159,7 +159,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx)
 {
 	static conf_hid_callbacks_t cbs_isle;
-	rnd_conf_native_t *cn = pcb_conf_get_field("design/poly_isle_area");
+	rnd_conf_native_t *cn = rnd_conf_get_field("design/poly_isle_area");
 
 	if (cn != NULL) {
 		memset(&cbs_isle, 0, sizeof(conf_hid_callbacks_t));

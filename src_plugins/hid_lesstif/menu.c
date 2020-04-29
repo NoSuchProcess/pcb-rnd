@@ -499,7 +499,7 @@ TODO(": remove this call")
 			if (uo != NULL) {
 				static conf_hid_callbacks_t cbs;
 				static int cbs_inited = 0;
-				rnd_conf_native_t *nat = pcb_conf_get_field(uo);
+				rnd_conf_native_t *nat = rnd_conf_get_field(uo);
 
 				if (nat != NULL) {
 					if (!cbs_inited) {

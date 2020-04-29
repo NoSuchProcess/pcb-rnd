@@ -146,7 +146,7 @@ int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 	uninit_current_tool();
 	sprintf(id_s, "%d", id);
 	tool_select_lock = 1;
-	pcb_conf_set(RND_CFR_DESIGN, "editor/mode", -1, id_s, RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_DESIGN, "editor/mode", -1, id_s, RND_POL_OVERWRITE);
 	tool_select_lock = 0;
 	init_current_tool();
 

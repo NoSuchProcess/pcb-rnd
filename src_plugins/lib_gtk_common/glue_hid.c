@@ -223,7 +223,7 @@ int gtkhid_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	gtk_disable_setlocale();
 #endif
 
-	pcb_conf_parse_arguments("plugins/hid_gtk/", argc, argv);
+	rnd_conf_parse_arguments("plugins/hid_gtk/", argc, argv);
 
 	if (!gtk_init_check(argc, argv)) {
 		fprintf(stderr, "gtk_init_check() fail - maybe $DISPLAY not set or X/GUI not accessible?\n");

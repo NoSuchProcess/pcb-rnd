@@ -560,9 +560,9 @@ int pplg_init_ddraft(void)
 	pcb_ddraft_tool = pcb_tool_reg(&tool_ddraft, ddraft_cookie);
 
 	confid = pcb_conf_hid_reg(ddraft_cookie, NULL);
-	cn = pcb_conf_get_field("editor/all_direction_lines");
+	cn = rnd_conf_get_field("editor/all_direction_lines");
 	pcb_conf_hid_set_cb(cn, confid, &conf_cbs_adl);
-	cn = pcb_conf_get_field("editor/mode");
+	cn = rnd_conf_get_field("editor/mode");
 	pcb_conf_hid_set_cb(cn, confid, &conf_cbs_mode);
 	return 0;
 }

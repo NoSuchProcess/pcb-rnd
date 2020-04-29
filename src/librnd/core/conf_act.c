@@ -77,14 +77,14 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return FGW_ERR_ARGC;
 		}
 		if (argc > 4) {
-			role = pcb_conf_role_parse(a3);
+			role = rnd_conf_role_parse(a3);
 			if (role == RND_CFR_invalid) {
 				rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", a3);
 				return FGW_ERR_ARG_CONV;
 			}
 		}
 		if (argc > 5) {
-			pol = pcb_conf_policy_parse(a4);
+			pol = rnd_conf_policy_parse(a4);
 			if (pol == RND_POL_invalid) {
 				rnd_message(PCB_MSG_ERROR, "Invalid policy: '%s'", a4);
 				return FGW_ERR_ARG_CONV;
@@ -96,7 +96,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (op == F_Delta) {
 			double d;
 			char *end;
-			rnd_conf_native_t *n = pcb_conf_get_field(a1);
+			rnd_conf_native_t *n = rnd_conf_get_field(a1);
 
 			if (n == 0) {
 				rnd_message(PCB_MSG_ERROR, "Can't delta-set '%s': no such path\n", argv[1]);
@@ -123,16 +123,16 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		if (role == RND_CFR_invalid) {
-			rnd_conf_native_t *n = pcb_conf_get_field(a1);
+			rnd_conf_native_t *n = rnd_conf_get_field(a1);
 			if (n == NULL) {
 				rnd_message(PCB_MSG_ERROR, "Invalid conf field '%s': no such path\n", a1);
 				return FGW_ERR_ARG_CONV;
 			}
-			rs = pcb_conf_set_native(n, 0, val);
+			rs = rnd_conf_set_native(n, 0, val);
 			pcb_conf_update(a1, 0);
 		}
 		else
-			rs = pcb_conf_set(role, path, -1, val, pol);
+			rs = rnd_conf_set(role, path, -1, val, pol);
 
 		if (rs != 0) {
 			rnd_message(PCB_MSG_ERROR, "conf(set) failed.\n");
@@ -153,7 +153,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		path = a1;
 		val = a2;
 
-		n = pcb_conf_get_field(a1);
+		n = rnd_conf_get_field(a1);
 		if (n == NULL) {
 			if (pcbhl_conf.rc.verbose)
 				rnd_message(PCB_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
@@ -161,7 +161,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		gds_init(&nval);
-		pcb_conf_print_native_field(conf_iseq_pf, &nval, 0, &n->val, n->type, NULL, 0);
+		rnd_conf_print_native_field(conf_iseq_pf, &nval, 0, &n->val, n->type, NULL, 0);
 		rs = !strcmp(nval.array, val);
 /*		printf("iseq: %s %s==%s %d\n", path, nval.array, val, rs);*/
 		gds_uninit(&nval);
@@ -171,7 +171,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	else if (op == F_Toggle) {
-		rnd_conf_native_t *n = pcb_conf_get_field(a1);
+		rnd_conf_native_t *n = rnd_conf_get_field(a1);
 		const char *new_value;
 		rnd_conf_role_t role = RND_CFR_invalid;
 		int res;
@@ -189,7 +189,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return FGW_ERR_UNKNOWN;
 		}
 		if (argc > 3) {
-			role = pcb_conf_role_parse(a2);
+			role = rnd_conf_role_parse(a2);
 			if (role == RND_CFR_invalid) {
 				rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", a2);
 				return FGW_ERR_ARG_CONV;
@@ -200,9 +200,9 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			new_value = "true";
 		if (role == RND_CFR_invalid)
-			res = pcb_conf_set_native(n, 0, new_value);
+			res = rnd_conf_set_native(n, 0, new_value);
 		else
-			res = pcb_conf_set(role, a1, -1, new_value, RND_POL_OVERWRITE);
+			res = rnd_conf_set(role, a1, -1, new_value, RND_POL_OVERWRITE);
 
 		if (res != 0) {
 			rnd_message(PCB_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", a1);
@@ -213,12 +213,12 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	else if (op == F_Reset) {
 		rnd_conf_role_t role;
-		role = pcb_conf_role_parse(a1);
+		role = rnd_conf_role_parse(a1);
 		if (role == RND_CFR_invalid) {
 			rnd_message(PCB_MSG_ERROR, "Invalid role: '%s'", a1);
 			return FGW_ERR_ARG_CONV;
 		}
-		pcb_conf_reset(role, "<action>");
+		rnd_conf_reset(role, "<action>");
 		pcb_conf_update(a1, -1);
 	}
 

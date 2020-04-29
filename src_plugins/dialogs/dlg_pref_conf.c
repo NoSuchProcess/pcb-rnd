@@ -147,7 +147,7 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 
 	for(n = 0; n < RND_CFR_max_real; n++) {
 		char *cell[5]= {NULL};
-		cell[0] = rnd_strdup(pcb_conf_role_name(n));
+		cell[0] = rnd_strdup(rnd_conf_role_name(n));
 		if (nat != NULL) {
 			lht_node_t *nd;
 			long prio = rnd_conf_default_prio[n];
@@ -157,7 +157,7 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 			if (nd != NULL) { /* role, prio, policy, value */
 				pcb_conf_get_policy_prio(nd, &pol, &prio);
 				cell[1] = pcb_strdup_printf("%ld", prio);
-				cell[2] = rnd_strdup(pcb_conf_policy_name(pol));
+				cell[2] = rnd_strdup(rnd_conf_policy_name(pol));
 				cell[3] = rnd_strdup(pref_conf_get_val(nd, nat, idx));
 			}
 		}
@@ -194,7 +194,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 	lht_node_t *src;
 
 	if ((path != NULL) && (nat == NULL))
-		nat = pcb_conf_get_field(path);
+		nat = rnd_conf_get_field(path);
 
 	if ((path == NULL) && (nat != NULL))
 		path = nat->hash_path;
@@ -240,7 +240,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 		pcb_dad_tree_clear(tree);
 		for (n = pcb_conflist_first(&nat->val.list[idx]); n != NULL; n = pcb_conflist_next(n)) {
 			const char *strval;
-			rolename = pcb_conf_role_name(pcb_conf_lookup_role(n->prop.src));
+			rolename = rnd_conf_role_name(pcb_conf_lookup_role(n->prop.src));
 			if (nat->type == RND_CFN_HLIST)
 				strval = n->name;
 			else
@@ -261,7 +261,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 
 	src = nat->prop[idx].src;
 	if (src != NULL) {
-		rolename = pcb_conf_role_name(pcb_conf_lookup_role(nat->prop[idx].src));
+		rolename = rnd_conf_role_name(pcb_conf_lookup_role(nat->prop[idx].src));
 		hv.str = tmp = pcb_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
 	}
 	else
@@ -302,7 +302,7 @@ static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, 
 	}
 
 	/* non-array selection */
-	nat = pcb_conf_get_field(row->path);
+	nat = rnd_conf_get_field(row->path);
 	if ((nat != NULL) && (nat->array_size > 1)) { /* array head: do not display for now */
 		dlg_conf_select_node((pref_ctx_t *)tree->user_ctx, NULL, NULL, 0);
 		return;

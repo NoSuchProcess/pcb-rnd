@@ -191,7 +191,7 @@ parsepcb
 			{
 			  pcb_board_t *pcb_save = PCB;
 			  if ((yy_settings_dest != RND_CFR_invalid) && (layer_group_string != NULL))
-					pcb_conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, RND_POL_OVERWRITE);
+					rnd_conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, RND_POL_OVERWRITE);
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (layer_group_string == NULL) {
 			     if (pcb_layer_improvise(yyPCB, pcb_true) != 0) {
@@ -352,9 +352,9 @@ pcbgridnew
 				yyPCB->hidlib.grid_oy = OU ($5);
 				if (yy_settings_dest != RND_CFR_invalid) {
 					if ($6)
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
 					else
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
 				}
 			}
 		;
@@ -367,9 +367,9 @@ pcbhigrid
 				yyPCB->hidlib.grid_oy = NU ($5);
 				if (yy_settings_dest != RND_CFR_invalid) {
 					if ($6)
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "true", RND_POL_OVERWRITE);
 					else
-						pcb_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
+						rnd_conf_set(yy_settings_dest, "editor/draw_grid", -1, "false", RND_POL_OVERWRITE);
 				}
 			}
 		;
@@ -1450,12 +1450,12 @@ static void load_meta_coord(const char *path, rnd_coord_t crd)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%$mm", crd);
-	pcb_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
 }
 
 static void load_meta_float(const char *path, double val)
 {
 	char tmp[128];
 	pcb_sprintf(tmp, "%f", val);
-	pcb_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
 }

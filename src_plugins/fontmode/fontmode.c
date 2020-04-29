@@ -115,7 +115,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (rnd_actionva(RND_ACT_HIDLIB, "New", "Font", 0))
 		return 1;
 
-	pcb_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, "mil", RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, "mil", RND_POL_OVERWRITE);
 	conf_set_design("design/min_wid", "%s", "1");
 	conf_set_design("design/min_slk", "%s", "1");
 	conf_set_design("design/text_font_id", "%s", "0");

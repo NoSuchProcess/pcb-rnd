@@ -159,7 +159,7 @@ int pplg_check_ver_stroke(int ver_needed) { return 0; }
 int pplg_uninit_stroke(void)
 {
 	pcb_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
-	pcb_conf_unreg_fields("plugins/stroke/");
+	rnd_conf_unreg_fields("plugins/stroke/");
 	rnd_remove_actions_by_cookie(pcb_stroke_cookie);
 	pcb_event_unbind_allcookie(pcb_stroke_cookie);
 	return 0;
@@ -172,7 +172,7 @@ int pplg_init_stroke(void)
 	pcb_conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);
 #include "stroke_conf_fields.h"
 
 	RND_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)

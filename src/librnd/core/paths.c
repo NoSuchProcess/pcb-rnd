@@ -233,7 +233,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								for(q = path; *q != '\0'; q++)
 									if (*q == '.')
 										*q = '/';
-								cn = pcb_conf_get_field(path);
+								cn = rnd_conf_get_field(path);
 								if (cn == NULL) {
 									if (!(flags & PCB_SUBST_QUIET))
 										rnd_message(PCB_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);

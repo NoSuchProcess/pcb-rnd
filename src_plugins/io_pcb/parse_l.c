@@ -2739,7 +2739,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, c
    have hardwired flags again in a "don't save these in attributes" list. */
 #define CONF_NO_ATTRIB(path) \
 do { \
-	rnd_conf_native_t *n = pcb_conf_get_field(path); \
+	rnd_conf_native_t *n = rnd_conf_get_field(path); \
 	if (n != NULL) \
 		n->random_flags.io_pcb_no_attrib = 1; \
 } while(0) \
@@ -2747,7 +2747,7 @@ do { \
 #define CONF_SET(target, path, arr_idx, new_val, pol) \
 do { \
 	CONF_NO_ATTRIB(path); \
-	pcb_conf_set(target, path, arr_idx, new_val, pol); \
+	rnd_conf_set(target, path, arr_idx, new_val, pol); \
 } while(0) \
 
 int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
@@ -2764,7 +2764,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yy_settings_dest = settings_dest;
 
 	if (settings_dest != RND_CFR_invalid)
-		pcb_conf_reset(settings_dest, Filename);
+		rnd_conf_reset(settings_dest, Filename);
 
 	io_pcb_preproc_board(PCB);
 
@@ -2774,7 +2774,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 
 	if ((settings_dest != RND_CFR_invalid) && (retval == 0)) {
 		/* overwrite settings from the flags, mark them not-to-save */
-		pcb_conf_reset(settings_dest, "<io_pcb_ParsePCB>");
+		rnd_conf_reset(settings_dest, "<io_pcb_ParsePCB>");
 		rnd_conf_main_root_replace_cnt[settings_dest]++;
 		CONF_SET(settings_dest, "plugins/mincut/enable", -1, CONF_BOOL_FLAG(PCB_ENABLEPCB_FLAG_MINCUT, yy_pcb_flags), RND_POL_OVERWRITE);
 		CONF_SET(settings_dest, "editor/show_number", -1, CONF_BOOL_FLAG(PCB_SHOWNUMBERFLAG, yy_pcb_flags), RND_POL_OVERWRITE);

@@ -446,7 +446,7 @@ void pplg_uninit_serpentine(void)
 {
 	rnd_remove_actions_by_cookie(serpentine_cookie);
 	pcb_tool_unreg_by_cookie(serpentine_cookie);
-	pcb_conf_unreg_fields("plugins/serpentine/");
+	rnd_conf_unreg_fields("plugins/serpentine/");
 }
 
 int pplg_init_serpentine(void)
@@ -454,7 +454,7 @@ int pplg_init_serpentine(void)
 	PCB_API_CHK_VER;
 	RND_REGISTER_ACTIONS(serpentine_action_list, serpentine_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_serpentine, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_serpentine, field,isarray,type_name,cpath,cname,desc,flags);
 #include "serpentine_conf_fields.h"
 
 	pcb_tool_reg(&tool_serpentine, serpentine_cookie);

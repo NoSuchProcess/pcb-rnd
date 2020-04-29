@@ -82,7 +82,7 @@ int pcb_import_netlist(rnd_hidlib_t *hidlib, const char *fn);
 do { \
 	rnd_conf_native_t *vn; \
 	verbose = 0; \
-	vn = pcb_conf_get_field("plugins/import_sch/verbose"); \
+	vn = rnd_conf_get_field("plugins/import_sch/verbose"); \
 	if ((vn != NULL) && (vn->type == RND_CFN_BOOLEAN)) \
 		verbose = *(vn->val.boolean); \
 } while(0)

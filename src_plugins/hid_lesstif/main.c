@@ -2788,7 +2788,7 @@ TODO("decide if we'll ever need this")
 #if 0
 static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
 {
-	rnd_conf_native_t *n = pcb_conf_get_field(path);
+	rnd_conf_native_t *n = rnd_conf_get_field(path);
 	if (n != NULL) {
 		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
 		cbs->val_change_post = func;

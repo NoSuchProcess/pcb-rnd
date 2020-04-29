@@ -205,7 +205,7 @@ void pplg_uninit_order(void)
 	rnd_remove_actions_by_cookie(order_cookie);
 	pcb_event_unbind_allcookie(order_cookie);
 	pcb_conf_unreg_file(ORDER_CONF_FN, order_conf_internal);
-	pcb_conf_unreg_fields("plugins/order/");
+	rnd_conf_unreg_fields("plugins/order/");
 }
 
 int pplg_init_order(void)
@@ -214,7 +214,7 @@ int pplg_init_order(void)
 
 	pcb_conf_reg_file(ORDER_CONF_FN, order_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_order, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_order, field,isarray,type_name,cpath,cname,desc,flags);
 #include "order_conf_fields.h"
 
 	RND_REGISTER_ACTIONS(order_action_list, order_cookie)

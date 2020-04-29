@@ -1065,7 +1065,7 @@ int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
 void pplg_uninit_export_gerber(void)
 {
 	pcb_export_remove_opts_by_cookie(gerber_cookie);
-	pcb_conf_unreg_fields("plugins/export_gerber/");
+	rnd_conf_unreg_fields("plugins/export_gerber/");
 	pcb_event_unbind_allcookie(gerber_cookie);
 }
 
@@ -1074,7 +1074,7 @@ int pplg_init_export_gerber(void)
 	PCB_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_gerber, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_gerber, field,isarray,type_name,cpath,cname,desc,flags);
 #include "gerber_conf_fields.h"
 
 	memset(&gerber_hid, 0, sizeof(gerber_hid));

@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 		n += pcbhl_main_args_add(&ga, argv[n], argv[n+1]);
 	pcb_hidlib_init2(pup_buildins, local_buildins);
 
-	pcb_conf_set(RND_CFR_CLI, "editor/view/flip_y", 0, "1", RND_POL_OVERWRITE);
+	rnd_conf_set(RND_CFR_CLI, "editor/view/flip_y", 0, "1", RND_POL_OVERWRITE);
 
 	if (pcbhl_main_args_setup1(&ga) != 0) {
 		fprintf(stderr, "setup1 fail\n");

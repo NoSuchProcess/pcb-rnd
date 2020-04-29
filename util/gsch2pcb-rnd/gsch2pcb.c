@@ -120,7 +120,7 @@ static void add_schematic(const char *sch)
 		const char *suff = loc_str_has_suffix(sch, ".sch", 4);
 		if (suff != NULL) {
 			char *tmp = rnd_strndup(sch, suff - sch);
-			pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, RND_POL_OVERWRITE);
+			rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, tmp, RND_POL_OVERWRITE);
 			free(tmp);
 		}
 	}
@@ -164,35 +164,35 @@ static int parse_config(char * config, char * arg)
 
 	if (!strcmp(config, "remove-unfound") || !strcmp(config, "r")) {
 		/* This is default behavior set in header section */
-		pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "1", RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "1", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "keep-unfound") || !strcmp(config, "k")) {
-		pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "0", RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/remove_unfound_elements", -1, "0", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "quiet") || !strcmp(config, "q")) {
-		pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/quiet_mode", -1, "1", RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/quiet_mode", -1, "1", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "preserve") || !strcmp(config, "p")) {
-		pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/preserve", -1, "1", RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/preserve", -1, "1", RND_POL_OVERWRITE);
 		return 0;
 	}
 	if (!strcmp(config, "elements-shell") || !strcmp(config, "s"))
-		pcb_conf_set(RND_CFR_CLI, "rc/library_shell", -1, arg, RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "rc/library_shell", -1, arg, RND_POL_OVERWRITE);
 	else if (!strcmp(config, "elements-dir") || !strcmp(config, "d")) {
 		static int warned = 0;
 		if (!warned) {
 			rnd_message(PCB_MSG_WARNING, "WARNING: using elements-dir from %s - this overrides the normal pcb-rnd configured library search paths\n", config);
 			warned = 1;
 		}
-		pcb_conf_set(RND_CFR_CLI, "rc/library_search_paths", -1, arg, RND_POL_PREPEND);
+		rnd_conf_set(RND_CFR_CLI, "rc/library_search_paths", -1, arg, RND_POL_PREPEND);
 	}
 	else if (!strcmp(config, "output-name") || !strcmp(config, "o"))
-		pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, arg, RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/sch_basename", -1, arg, RND_POL_OVERWRITE);
 	else if (!strcmp(config, "default-pcb") || !strcmp(config, "P"))
-		pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/default_pcb", -1, arg, RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/default_pcb", -1, arg, RND_POL_OVERWRITE);
 	else if (!strcmp(config, "schematics"))
 		add_multiple_schematics(arg);
 	else if (!strcmp(config, "gnetlist")) {
@@ -202,7 +202,7 @@ static int parse_config(char * config, char * arg)
 		gadl_append(&extra_gnetlist_list, n);
 	}
 	else if (!strcmp(config, "empty-footprint"))
-		pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/empty_footprint_name", -1, arg, RND_POL_OVERWRITE);
+		rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/empty_footprint_name", -1, arg, RND_POL_OVERWRITE);
 	else
 		return -1;
 
@@ -252,7 +252,7 @@ static void load_project(char * path)
 
 lihata_prj:;
 	fclose(f);
-	if (pcb_conf_load_as(RND_CFR_PROJECT, path, 0) != 0) {
+	if (rnd_conf_load_as(RND_CFR_PROJECT, path, 0) != 0) {
 		rnd_message(PCB_MSG_ERROR, "Failed to parse project file %s.\n", path);
 		exit(1);
 	}
@@ -298,7 +298,7 @@ static void get_args(int argc, char ** argv)
 			else if (!strcmp(opt, "verbose") || !strcmp(opt, "v")) {
 				char tmp[64];
 				sprintf(tmp, "%ld", conf_g2pr.utils.gsch2pcb_rnd.verbose + 1);
-				pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, RND_POL_OVERWRITE);
+				rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/verbose", -1, tmp, RND_POL_OVERWRITE);
 				continue;
 			}
 			else if (!strcmp(opt, "m") || !strcmp(opt, "method")) {
@@ -306,13 +306,13 @@ static void get_args(int argc, char ** argv)
 					rnd_message(PCB_MSG_ERROR, "Error: can't use unknown method '%s'; try --help\n", arg);
 					exit(1);
 				}
-				pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/method", -1, arg, RND_POL_OVERWRITE);
+				rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/method", -1, arg, RND_POL_OVERWRITE);
 				i++;
 				continue;
 			}
 			else if (!strcmp(opt, "c") || !strcmp(opt, "conf")) {
 				const char *stmp;
-				if (pcb_conf_set_from_cli(NULL, arg, NULL, &stmp) != 0) {
+				if (rnd_conf_set_from_cli(NULL, arg, NULL, &stmp) != 0) {
 					fprintf(stderr, "Error: failed to set config %s: %s\n", arg, stmp);
 					exit(1);
 				}
@@ -320,7 +320,7 @@ static void get_args(int argc, char ** argv)
 				continue;
 			}
 			else if (!strcmp(opt, "fix-elements")) {
-				pcb_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/fix_elements", -1, "1", RND_POL_OVERWRITE);
+				rnd_conf_set(RND_CFR_CLI, "utils/gsch2pcb_rnd/fix_elements", -1, "1", RND_POL_OVERWRITE);
 				continue;
 			}
 			else if (!strcmp(opt, "gnetlist-arg")) {
@@ -399,7 +399,7 @@ int main(int argc, char ** argv)
 	pcbhl_menu_file_paths[3] = NULL;
 
 	pcb_file_loaded_init();
-	pcb_conf_init();
+	rnd_conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();
 
@@ -408,12 +408,12 @@ int main(int argc, char ** argv)
 	gadl_list_init(&extra_gnetlist_list, sizeof(char *), NULL, NULL);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	pcb_conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(conf_g2pr, field,isarray,type_name,cpath,cname,desc,flags);
 #include "gsch2pcb_rnd_conf_fields.h"
 
 	get_args(argc, argv);
 
-	pcb_conf_load_all(NULL, NULL);
+	rnd_conf_load_all(NULL, NULL);
 	pcb_conf_update(NULL, -1);
 
 	load_extra_project_files();
@@ -424,17 +424,17 @@ int main(int argc, char ** argv)
 			rnd_message(PCB_MSG_ERROR, "Don't know what to do: no project or schematics given, no local project file %s found. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
 			exit(1);
 		}
-		if (pcb_conf_load_as(RND_CFR_PROJECT, LOCAL_PROJECT_FILE, 0) != 0) {
+		if (rnd_conf_load_as(RND_CFR_PROJECT, LOCAL_PROJECT_FILE, 0) != 0) {
 			rnd_message(PCB_MSG_ERROR, "Failed to load project file %s. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
 			exit(1);
 		}
 		pcb_conf_update(NULL, -1); /* because of our new project file */
 	}
 	else if ((local_project_pcb_name != NULL) && (!have_cli_project_file))
-		pcb_conf_load_project(NULL, local_project_pcb_name);
+		rnd_conf_load_project(NULL, local_project_pcb_name);
 
 	if (!have_cli_schematics) {  /* load all schematics from the project file unless we have schematics from the cli */
-		rnd_conf_native_t *nat = pcb_conf_get_field("utils/gsch2pcb_rnd/schematics");
+		rnd_conf_native_t *nat = rnd_conf_get_field("utils/gsch2pcb_rnd/schematics");
 		if (nat != NULL) {
 			pcb_conf_listitem_t *ci;
 			for (ci = pcb_conflist_first(nat->val.list); ci != NULL; ci = pcb_conflist_next(ci)) {
@@ -491,7 +491,7 @@ int main(int argc, char ** argv)
 
 	current_method->uninit();
 
-	pcb_conf_uninit();
+	rnd_conf_uninit();
 
 	free_strlist(&schematics);
 	free_strlist(&extra_gnetlist_arg_list);
