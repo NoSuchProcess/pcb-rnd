@@ -135,7 +135,6 @@ static int fnc_netlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 static int fnc_layerlist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	long n;
-	htsp_entry_t *e;
 
 	res->type = PCBQ_VT_LST;
 	vtp0_init(&res->data.lst);
