@@ -148,7 +148,7 @@ void pcb_view_load_end(void *load_ctx);
 /*** utility ***/
 
 /* append txt to description */
-void pcb_drc_append_text(pcb_view_t *view, const char *txt);
+void pcb_view_append_text(pcb_view_t *view, const char *txt);
 
 
 #endif
