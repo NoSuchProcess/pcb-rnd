@@ -68,15 +68,15 @@ static void tool_logic_chg_mode(rnd_conf_native_t *cfg, int arr_idx)
 
 void pcb_tool_logic_init(void)
 {
-	static conf_hid_callbacks_t cbs_mode;
-	static conf_hid_id_t tool_conf_id;
+	static rnd_conf_hid_callbacks_t cbs_mode;
+	static rnd_conf_hid_id_t tool_conf_id;
 	rnd_conf_native_t *n_mode = rnd_conf_get_field("editor/mode");
-	tool_conf_id = pcb_conf_hid_reg(tool_logic_cookie, NULL);
+	tool_conf_id = rnd_conf_hid_reg(tool_logic_cookie, NULL);
 
 	if (n_mode != NULL) {
-		memset(&cbs_mode, 0, sizeof(conf_hid_callbacks_t));
+		memset(&cbs_mode, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs_mode.val_change_post = tool_logic_chg_mode;
-		pcb_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
+		rnd_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
 	}
 
 	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, tool_logic_chg_tool, NULL, tool_logic_cookie);
@@ -88,7 +88,7 @@ void pcb_tool_logic_init(void)
 void pcb_tool_logic_uninit(void)
 {
 	pcb_event_unbind_allcookie(tool_logic_cookie);
-	pcb_conf_hid_unreg(tool_logic_cookie);
+	rnd_conf_hid_unreg(tool_logic_cookie);
 }
 
 /*** pcb-rnd-specific parts ***/

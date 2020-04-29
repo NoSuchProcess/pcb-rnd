@@ -105,21 +105,21 @@ static void ghid_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
 
 
 
-static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
+static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
 {
 	rnd_conf_native_t *n = rnd_conf_get_field(path);
 	if (n != NULL) {
-		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
+		memset(cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs->val_change_post = func;
-		pcb_conf_hid_set_cb(n, ghidgui->conf_id, cbs);
+		rnd_conf_hid_set_cb(n, ghidgui->conf_id, cbs);
 	}
 }
 
 static void ghid_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3];
+	static rnd_conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3];
 
-	ghidgui->conf_id = pcb_conf_hid_reg(cookie, NULL);
+	ghidgui->conf_id = rnd_conf_hid_reg(cookie, NULL);
 
 	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
 
@@ -130,7 +130,7 @@ static void ghid_conf_regs(const char *cookie)
 	init_conf_watch(&cbs_color[1], "appearance/color/off_limit", ghid_confchg_spec_color);
 	init_conf_watch(&cbs_color[2], "appearance/color/grid", ghid_confchg_spec_color);
 
-	ghidgui->topwin.menu.ghid_menuconf_id = pcb_conf_hid_reg(cookie_menu, NULL);
+	ghidgui->topwin.menu.ghid_menuconf_id = rnd_conf_hid_reg(cookie_menu, NULL);
 	ghidgui->topwin.menu.confchg_checkbox = ghid_confchg_checkbox;
 }
 
@@ -339,8 +339,8 @@ void pcb_gtk_note_event_location(GdkEventButton *ev)
 void ghid_glue_common_uninit(const char *cookie)
 {
 	pcb_event_unbind_allcookie(cookie);
-	pcb_conf_hid_unreg(cookie);
-	pcb_conf_hid_unreg(cookie_menu);
+	rnd_conf_hid_unreg(cookie);
+	rnd_conf_hid_unreg(cookie_menu);
 }
 
 void ghid_glue_common_init(const char *cookie)

@@ -2,7 +2,7 @@
 #include <librnd/core/event.h>
 #include <librnd/core/conf_hid.h>
 
-extern conf_hid_id_t ghid_conf_id;
+extern rnd_conf_hid_id_t ghid_conf_id;
 
 void pcb_gtk_conf_init(void);
 void pcb_gtk_conf_uninit(void);

@@ -208,7 +208,7 @@ void pcb_layervis_restore_stack(void)
 	SavedStack.cnt--;
 }
 
-static conf_hid_id_t layer_vis_conf_id;
+static rnd_conf_hid_id_t layer_vis_conf_id;
 
 void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx)
 {
@@ -351,14 +351,14 @@ static const char *layer_vis_cookie = "core_layer_vis";
 void pcb_layer_vis_init(void)
 {
 	rnd_conf_native_t *n_mask = rnd_conf_get_field("editor/show_mask");
-	static conf_hid_callbacks_t cbs_mask;
+	static rnd_conf_hid_callbacks_t cbs_mask;
 
-	layer_vis_conf_id = pcb_conf_hid_reg(layer_vis_cookie, NULL);
+	layer_vis_conf_id = rnd_conf_hid_reg(layer_vis_cookie, NULL);
 
 	if (n_mask != NULL) {
-		memset(&cbs_mask, 0, sizeof(conf_hid_callbacks_t));
+		memset(&cbs_mask, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs_mask.val_change_post = layer_vis_chg_mask;
-		pcb_conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
+		rnd_conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
 	}
 
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
@@ -368,5 +368,5 @@ void pcb_layer_vis_init(void)
 void pcb_layer_vis_uninit(void)
 {
 	pcb_event_unbind_allcookie(layer_vis_cookie);
-	pcb_conf_hid_unreg(layer_vis_cookie);
+	rnd_conf_hid_unreg(layer_vis_cookie);
 }

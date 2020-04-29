@@ -86,27 +86,27 @@ void pplg_uninit_lib_hid_pcbui(void)
 	pcb_event_unbind_allcookie(infobar_cookie);
 	pcb_event_unbind_allcookie(title_cookie);
 	pcb_event_unbind_allcookie(layersel_cookie);
-	pcb_conf_hid_unreg(rst_cookie);
-	pcb_conf_hid_unreg(status_cookie);
-	pcb_conf_hid_unreg(status_rd_cookie);
-	pcb_conf_hid_unreg(infobar_cookie);
+	rnd_conf_hid_unreg(rst_cookie);
+	rnd_conf_hid_unreg(status_cookie);
+	rnd_conf_hid_unreg(status_rd_cookie);
+	rnd_conf_hid_unreg(infobar_cookie);
 	rnd_toolbar_uninit();
 }
 
-static conf_hid_id_t install_events(const char *cookie, const char *paths[], conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
+static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[], rnd_conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
 {
 	const char **rp;
 	rnd_conf_native_t *nat;
 	int n;
-	conf_hid_id_t conf_id;
+	rnd_conf_hid_id_t conf_id;
 
-	conf_id = pcb_conf_hid_reg(cookie, NULL);
+	conf_id = rnd_conf_hid_reg(cookie, NULL);
 	for(rp = paths, n = 0; *rp != NULL; rp++, n++) {
 		memset(&cb[n], 0, sizeof(cb[0]));
 		cb[n].val_change_post = update_cb;
 		nat = rnd_conf_get_field(*rp);
 		if (nat != NULL)
-			pcb_conf_hid_set_cb(nat, conf_id, &cb[n]);
+			rnd_conf_hid_set_cb(nat, conf_id, &cb[n]);
 	}
 
 	return conf_id;
@@ -119,10 +119,10 @@ TODO("padstack: remove some paths when route style has proto")
 	const char *stpaths[] = { "editor/show_solder_side", "design/line_thickness", "editor/all_direction_lines", "editor/line_refraction", "editor/rubber_band_mode", "design/via_thickness", "design/via_drilling_hole", "design/clearance", "design/text_scale", "design/text_thickness", "editor/buffer_number", "editor/grid_unit", "editor/grid", "appearance/compact", NULL };
 	const char *rdpaths[] = { "editor/grid_unit", "appearance/compact", NULL };
 	const char *ibpaths[] = { "rc/file_changed_interval", NULL };
-	static conf_hid_callbacks_t rcb[sizeof(rpaths)/sizeof(rpaths[0])];
-	static conf_hid_callbacks_t stcb[sizeof(stpaths)/sizeof(stpaths[0])];
-	static conf_hid_callbacks_t rdcb[sizeof(rdpaths)/sizeof(rdpaths[0])];
-	static conf_hid_callbacks_t ibcb[sizeof(rdpaths)/sizeof(ibpaths[0])];
+	static rnd_conf_hid_callbacks_t rcb[sizeof(rpaths)/sizeof(rpaths[0])];
+	static rnd_conf_hid_callbacks_t stcb[sizeof(stpaths)/sizeof(stpaths[0])];
+	static rnd_conf_hid_callbacks_t rdcb[sizeof(rdpaths)/sizeof(rdpaths[0])];
+	static rnd_conf_hid_callbacks_t ibcb[sizeof(rdpaths)/sizeof(ibpaths[0])];
 
 	PCB_API_CHK_VER;
 

@@ -688,21 +688,21 @@ static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx)
 	}
 }
 
-static conf_hid_id_t propdlg_conf_id;
+static rnd_conf_hid_id_t propdlg_conf_id;
 static const char *propdlg_cookie = "propdlg";
 void pcb_propdlg_init(void)
 {
-	static conf_hid_callbacks_t cbs;
+	static rnd_conf_hid_callbacks_t cbs;
 	rnd_conf_native_t *n = rnd_conf_get_field("editor/grid_unit");
-	propdlg_conf_id = pcb_conf_hid_reg(propdlg_cookie, NULL);
+	propdlg_conf_id = rnd_conf_hid_reg(propdlg_cookie, NULL);
 
 	if (n != NULL) {
 		cbs.val_change_post = propdlg_unit_change;
-		pcb_conf_hid_set_cb(n, propdlg_conf_id, &cbs);
+		rnd_conf_hid_set_cb(n, propdlg_conf_id, &cbs);
 	}
 }
 
 void pcb_propdlg_uninit(void)
 {
-	pcb_conf_hid_unreg(propdlg_cookie);
+	rnd_conf_hid_unreg(propdlg_cookie);
 }

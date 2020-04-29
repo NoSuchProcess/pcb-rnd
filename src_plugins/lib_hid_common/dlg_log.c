@@ -59,7 +59,7 @@ static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, pcb_logline_t 
 	const char *prefix = NULL;
 	int popup;
 
-	pcb_conf_loglevel_props(line->level, &prefix, &popup);
+	rnd_conf_loglevel_props(line->level, &prefix, &popup);
 
 	if (pcb_gui->supports_dad_text_markup) {
 		if (prefix != NULL) {
@@ -207,7 +207,7 @@ static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 		const char *prefix;
 		int popup;
 
-		pcb_conf_loglevel_props(line->level, &prefix, &popup);
+		rnd_conf_loglevel_props(line->level, &prefix, &popup);
 		if (popup)
 			log_window_create(hidlib);
 	}
@@ -235,7 +235,7 @@ static void log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb
 		const char *prefix;
 		int popup;
 
-		pcb_conf_loglevel_props(n->level, &prefix, &popup);
+		rnd_conf_loglevel_props(n->level, &prefix, &popup);
 		if (popup) {
 			log_window_create(hidlib);
 			return;

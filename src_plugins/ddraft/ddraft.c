@@ -538,19 +538,19 @@ int pplg_check_ver_ddraft(int ver_needed) { return 0; }
 
 void pplg_uninit_ddraft(void)
 {
-	pcb_conf_hid_unreg(ddraft_cookie);
+	rnd_conf_hid_unreg(ddraft_cookie);
 	pcb_event_unbind_allcookie(ddraft_cookie);
 	rnd_remove_actions_by_cookie(ddraft_cookie);
 	pcb_tool_unreg_by_cookie(ddraft_cookie);
 }
 
-static const conf_hid_callbacks_t conf_cbs_adl = { NULL, cons_gui_confchg, NULL, NULL };
-static const conf_hid_callbacks_t conf_cbs_mode = { NULL, mode_confchg, NULL, NULL };
+static const rnd_conf_hid_callbacks_t conf_cbs_adl = { NULL, cons_gui_confchg, NULL, NULL };
+static const rnd_conf_hid_callbacks_t conf_cbs_mode = { NULL, mode_confchg, NULL, NULL };
 
 int pplg_init_ddraft(void)
 {
 	rnd_conf_native_t *cn;
-	conf_hid_id_t confid;
+	rnd_conf_hid_id_t confid;
 
 	PCB_API_CHK_VER;
 
@@ -559,10 +559,10 @@ int pplg_init_ddraft(void)
 
 	pcb_ddraft_tool = pcb_tool_reg(&tool_ddraft, ddraft_cookie);
 
-	confid = pcb_conf_hid_reg(ddraft_cookie, NULL);
+	confid = rnd_conf_hid_reg(ddraft_cookie, NULL);
 	cn = rnd_conf_get_field("editor/all_direction_lines");
-	pcb_conf_hid_set_cb(cn, confid, &conf_cbs_adl);
+	rnd_conf_hid_set_cb(cn, confid, &conf_cbs_adl);
 	cn = rnd_conf_get_field("editor/mode");
-	pcb_conf_hid_set_cb(cn, confid, &conf_cbs_mode);
+	rnd_conf_hid_set_cb(cn, confid, &conf_cbs_mode);
 	return 0;
 }

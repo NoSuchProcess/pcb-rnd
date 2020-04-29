@@ -42,7 +42,7 @@
 
 pcb_brave_t pcb_brave = 0;
 static const char brave_cookie[] = "brave";
-static conf_hid_id_t brave_conf_id;
+static rnd_conf_hid_id_t brave_conf_id;
 
 typedef struct {
 	pcb_brave_t bit;
@@ -288,17 +288,17 @@ void pcb_brave_init2(void)
 void pcb_brave_init(void)
 {
 	rnd_conf_native_t *n = rnd_conf_get_field("rc/brave");
-	brave_conf_id = pcb_conf_hid_reg(brave_cookie, NULL);
+	brave_conf_id = rnd_conf_hid_reg(brave_cookie, NULL);
 
 	if (n != NULL) {
-		static conf_hid_callbacks_t cbs;
-		memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
+		static rnd_conf_hid_callbacks_t cbs;
+		memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs.val_change_post = brave_conf_chg;
-		pcb_conf_hid_set_cb(n, brave_conf_id, &cbs);
+		rnd_conf_hid_set_cb(n, brave_conf_id, &cbs);
 	}
 }
 
 void pcb_brave_uninit(void)
 {
-	pcb_conf_hid_unreg(brave_cookie);
+	rnd_conf_hid_unreg(brave_cookie);
 }

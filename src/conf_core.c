@@ -97,12 +97,12 @@ static void conf_legacy_chg(rnd_conf_native_t *ndst, int arr_idx)
 	lock--;
 }
 
-static conf_hid_callbacks_t cbs;
+static rnd_conf_hid_callbacks_t cbs;
 
 
 void conf_core_uninit_pre(void)
 {
-	pcb_conf_hid_unreg(conf_core_cookie);
+	rnd_conf_hid_unreg(conf_core_cookie);
 }
 
 void conf_core_uninit(void)
@@ -123,7 +123,7 @@ void conf_core_init(void)
 	conf_core_postproc();
 
 	cbs.val_change_post = conf_legacy_chg;
-	pcb_conf_hid_reg(conf_core_cookie, &cbs);
+	rnd_conf_hid_reg(conf_core_cookie, &cbs);
 
 	/* these old drc settings from editor/ are copied over to editor/drc
 	   because various core and tool code depend on the values being at the

@@ -6,30 +6,30 @@
 #include <librnd/core/hidlib_conf.h>
 
 typedef struct {
-	const conf_hid_callbacks_t *cb;
-	conf_hid_id_t id;
+	const rnd_conf_hid_callbacks_t *cb;
+	rnd_conf_hid_id_t id;
 } conf_hid_t;
 
-void *pcb_conf_hid_set_data(rnd_conf_native_t *cfg, conf_hid_id_t id, void *data)
+void *rnd_conf_hid_set_data(rnd_conf_native_t *cfg, rnd_conf_hid_id_t id, void *data)
 {
 	void **old = vtp0_get(&cfg->hid_data, id, 0);
 	vtp0_set(&cfg->hid_data, id, data);
 	return old == NULL ? NULL : *old;
 }
 
-void *pcb_conf_hid_get_data(rnd_conf_native_t *cfg, conf_hid_id_t id)
+void *rnd_conf_hid_get_data(rnd_conf_native_t *cfg, rnd_conf_hid_id_t id)
 {
 	void **old = vtp0_get(&cfg->hid_data, id, 0);
 	return old == NULL ? NULL : *old;
 }
 
-const conf_hid_callbacks_t *pcb_conf_hid_set_cb(rnd_conf_native_t *cfg, conf_hid_id_t id, const conf_hid_callbacks_t *cbs)
+const rnd_conf_hid_callbacks_t *rnd_conf_hid_set_cb(rnd_conf_native_t *cfg, rnd_conf_hid_id_t id, const rnd_conf_hid_callbacks_t *cbs)
 {
 	void **old;
 	assert(id >= 0);
 	old = vtp0_get(&cfg->hid_callbacks, id, 0);
 	vtp0_set(&cfg->hid_callbacks, id, (void *)cbs);
-	return (const conf_hid_callbacks_t *)(old == NULL ? NULL : *old);
+	return (const rnd_conf_hid_callbacks_t *)(old == NULL ? NULL : *old);
 }
 
 
@@ -42,7 +42,7 @@ static void conf_pcb_hid_init(void)
 		conf_hid_ids = htpp_alloc(ptrhash, ptrkeyeq);
 }
 
-void pcb_conf_pcb_hid_uninit(void)
+void rnd_conf_pcb_hid_uninit(void)
 {
 #ifndef NDEBUG
 	if (conf_hid_ids != NULL) {
@@ -58,7 +58,7 @@ void pcb_conf_pcb_hid_uninit(void)
 	}
 }
 
-conf_hid_id_t pcb_conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *cb)
+rnd_conf_hid_id_t rnd_conf_hid_reg(const char *cookie, const rnd_conf_hid_callbacks_t *cb)
 {
 	conf_hid_t *h;
 
@@ -76,7 +76,7 @@ conf_hid_id_t pcb_conf_hid_reg(const char *cookie, const conf_hid_callbacks_t *c
 	return h->id;
 }
 
-void pcb_conf_hid_unreg(const char *cookie)
+void rnd_conf_hid_unreg(const char *cookie)
 {
 	htsp_entry_t *e;
 	conf_hid_t *h = htpp_pop(conf_hid_ids, (void *)cookie);
@@ -90,7 +90,7 @@ void pcb_conf_hid_unreg(const char *cookie)
 		rnd_conf_native_t *cfg = e->value;
 		len = vtp0_len(&cfg->hid_callbacks);
 
-		conf_hid_local_cb(cfg, -1, unreg_item);
+		rnd_conf_hid_local_cb(cfg, -1, unreg_item);
 
 		/* truncate the list if there are empty items at the end */
 		if (len > h->id) {
@@ -115,14 +115,14 @@ void pcb_conf_hid_unreg(const char *cookie)
 }
 
 typedef void (*cbi_t)(rnd_conf_native_t *cfg, int arr_idx);
-void pcb_conf_hid_global_cb_int(rnd_conf_native_t *item, int arr_idx, int offs)
+void rnd_conf_hid_global_cb_int_(rnd_conf_native_t *item, int arr_idx, int offs)
 {
 	htpp_entry_t *e;
 	if (conf_hid_ids == NULL)
 		return;
 	for (e = htpp_first(conf_hid_ids); e; e = htpp_next(conf_hid_ids, e)) {
 		conf_hid_t *h = e->value;
-		const conf_hid_callbacks_t *cbs = h->cb;
+		const rnd_conf_hid_callbacks_t *cbs = h->cb;
 		if (cbs != NULL) {
 			char *s = (char *)&cbs->val_change_pre;
 			cbi_t *cb = (cbi_t *)(s + offs);
@@ -133,14 +133,14 @@ void pcb_conf_hid_global_cb_int(rnd_conf_native_t *item, int arr_idx, int offs)
 }
 
 typedef void (*cbp_t)(rnd_conf_native_t *cfg, void *ptr);
-void pcb_conf_hid_global_cb_ptr(rnd_conf_native_t *item, void *ptr, int offs)
+void rnd_conf_hid_global_cb_ptr_(rnd_conf_native_t *item, void *ptr, int offs)
 {
 	htpp_entry_t *e;
 	if (conf_hid_ids == NULL)
 		return;
 	for (e = htpp_first(conf_hid_ids); e; e = htpp_next(conf_hid_ids, e)) {
 		conf_hid_t *h = e->value;
-		const conf_hid_callbacks_t *cbs = h->cb;
+		const rnd_conf_hid_callbacks_t *cbs = h->cb;
 		if (cbs != NULL) {
 			char *s = (char *)&cbs->val_change_pre;
 			cbp_t *cb = (cbp_t *)(s + offs);
@@ -151,7 +151,7 @@ void pcb_conf_hid_global_cb_ptr(rnd_conf_native_t *item, void *ptr, int offs)
 }
 
 
-void pcb_conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup)
+void rnd_conf_loglevel_props(enum pcb_message_level level, const char **tag, int *popup)
 {
 	*tag = NULL;
 	*popup = 0;

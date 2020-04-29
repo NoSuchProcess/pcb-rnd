@@ -176,7 +176,7 @@ struct pcb_gtk_s {
 	GtkActionGroup *main_actions;
 
 	pcb_gtk_topwin_t topwin;
-	conf_hid_id_t conf_id;
+	rnd_conf_hid_id_t conf_id;
 
 	pcb_gtk_pixmap_t bg_pixmap;
 

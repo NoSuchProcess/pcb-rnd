@@ -210,20 +210,20 @@ void pcb_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 
 static const char *toolbar_cookie = "lib_hid_pcbui/toolbar";
 
-static conf_hid_id_t install_events(const char *cookie, const char *paths[], conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
+static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[], rnd_conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
 {
 	const char **rp;
 	rnd_conf_native_t *nat;
 	int n;
-	conf_hid_id_t conf_id;
+	rnd_conf_hid_id_t conf_id;
 
-	conf_id = pcb_conf_hid_reg(cookie, NULL);
+	conf_id = rnd_conf_hid_reg(cookie, NULL);
 	for(rp = paths, n = 0; *rp != NULL; rp++, n++) {
 		memset(&cb[n], 0, sizeof(cb[0]));
 		cb[n].val_change_post = update_cb;
 		nat = rnd_conf_get_field(*rp);
 		if (nat != NULL)
-			pcb_conf_hid_set_cb(nat, conf_id, &cb[n]);
+			rnd_conf_hid_set_cb(nat, conf_id, &cb[n]);
 	}
 
 	return conf_id;
@@ -232,13 +232,13 @@ static conf_hid_id_t install_events(const char *cookie, const char *paths[], con
 void rnd_toolbar_uninit(void)
 {
 	pcb_event_unbind_allcookie(toolbar_cookie);
-	pcb_conf_hid_unreg(toolbar_cookie);
+	rnd_conf_hid_unreg(toolbar_cookie);
 }
 
 void rnd_toolbar_init(void)
 {
 	const char *tpaths[] = {"editor/mode",  NULL};
-	static conf_hid_callbacks_t tcb[sizeof(tpaths)/sizeof(tpaths[0])];
+	static rnd_conf_hid_callbacks_t tcb[sizeof(tpaths)/sizeof(tpaths[0])];
 
 	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
 	pcb_event_bind(PCB_EVENT_TOOL_REG, pcb_toolbar_reg_ev, NULL, toolbar_cookie);

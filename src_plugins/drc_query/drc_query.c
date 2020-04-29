@@ -364,7 +364,7 @@ void pplg_uninit_drc_query(void)
 	pcb_event_unbind_allcookie(drc_query_cookie);
 	rnd_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 	rnd_conf_unreg_fields(DRC_CONF_PATH_PLUGIN);
-	pcb_conf_hid_unreg(drc_query_cookie);
+	rnd_conf_hid_unreg(drc_query_cookie);
 
 	for(n = 0; n < free_drc_conf_nodes.used; n++)
 		rnd_conf_unreg_field(free_drc_conf_nodes.array[n]);
@@ -374,7 +374,7 @@ void pplg_uninit_drc_query(void)
 	pcb_drcq_stat_uninit();
 }
 
-static conf_hid_callbacks_t cbs;
+static rnd_conf_hid_callbacks_t cbs;
 
 int pplg_init_drc_query(void)
 {
@@ -386,7 +386,7 @@ int pplg_init_drc_query(void)
 
 	vtp0_init(&free_drc_conf_nodes);
 	cbs.new_hlist_item_post = drc_query_newconf;
-	pcb_conf_hid_reg(drc_query_cookie, &cbs);
+	rnd_conf_hid_reg(drc_query_cookie, &cbs);
 
 	rnd_conf_reg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \

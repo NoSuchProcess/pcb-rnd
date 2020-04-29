@@ -723,7 +723,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					rnd_conflist_insert(dest->val.list, i);
 					dest->used |= 1;
 					if ((dest->type == RND_CFN_HLIST) || (s->user_data == NULL)) {
-						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
+						rnd_conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
 						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
 					}
 				}
@@ -762,7 +762,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					i->val.any = NULL;
 					dest->used |= 1;
 					if ((dest->type == RND_CFN_HLIST) && (s->user_data == NULL)) {
-						conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
+						rnd_conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
 						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
 					}
 				}
@@ -1070,8 +1070,8 @@ void rnd_conf_update(const char *path, int arr_idx)
 	if (path == NULL) {
 		htsp_entry_t *e;
 		rnd_conf_fields_foreach(e) {
-			conf_hid_global_cb((rnd_conf_native_t *)e->value, -1, val_change_pre);
-			conf_hid_local_cb((rnd_conf_native_t *)e->value, -1, val_change_pre);
+			rnd_conf_hid_global_cb((rnd_conf_native_t *)e->value, -1, val_change_pre);
+			rnd_conf_hid_local_cb((rnd_conf_native_t *)e->value, -1, val_change_pre);
 			conf_field_clear(e->value);
 		}
 	}
@@ -1097,8 +1097,8 @@ void rnd_conf_update(const char *path, int arr_idx)
 			return;
 		}
 		conf_field_clear(n);
-		conf_hid_global_cb(n, arr_idx, val_change_pre);
-		conf_hid_local_cb(n, arr_idx, val_change_pre);
+		rnd_conf_hid_global_cb(n, arr_idx, val_change_pre);
+		rnd_conf_hid_local_cb(n, arr_idx, val_change_pre);
 	}
 
 	/* merge all memory-lht data to memory-bin */
@@ -1110,13 +1110,13 @@ void rnd_conf_update(const char *path, int arr_idx)
 	if (path == NULL) {
 		htsp_entry_t *e;
 		rnd_conf_fields_foreach(e) {
-			conf_hid_local_cb((rnd_conf_native_t *)e->value, -1, val_change_post);
-			conf_hid_global_cb((rnd_conf_native_t *)e->value, -1, val_change_post);
+			rnd_conf_hid_local_cb((rnd_conf_native_t *)e->value, -1, val_change_post);
+			rnd_conf_hid_global_cb((rnd_conf_native_t *)e->value, -1, val_change_post);
 		}
 	}
 	else {
-		conf_hid_local_cb(n, arr_idx, val_change_post);
-		conf_hid_global_cb(n, arr_idx, val_change_post);
+		rnd_conf_hid_local_cb(n, arr_idx, val_change_post);
+		rnd_conf_hid_global_cb(n, arr_idx, val_change_post);
 	}
 	rnd_conf_rev++;
 }
@@ -1318,7 +1318,7 @@ rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_nat
 	vtp0_init(&(node->hid_callbacks));
 
 	htsp_set(rnd_conf_fields, (char *)path, node);
-	conf_hid_global_cb(node, -1, new_item_post);
+	rnd_conf_hid_global_cb(node, -1, new_item_post);
 
 	return node;
 }
@@ -2204,7 +2204,7 @@ void rnd_conf_uninit(void)
 			fprintf(stderr, "pcb-rnd conf ERROR: conf node '%s' is not unregistered\n", e->key);
 	}
 
-	pcb_conf_pcb_hid_uninit();
+	rnd_conf_pcb_hid_uninit();
 
 	for(n = 0; n < RND_CFR_max_alloc; n++) {
 		if (pcb_conf_main_root[n] != NULL)

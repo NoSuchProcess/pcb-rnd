@@ -34,7 +34,7 @@ extern rnd_hidlib_t *ltf_hidlib;
 
 Widget lesstif_menubar;
 pcb_hid_cfg_t *lesstif_cfg;
-conf_hid_id_t lesstif_menuconf_id = -1;
+rnd_conf_hid_id_t lesstif_menuconf_id = -1;
 htsp_t ltf_popups; /* popup_name -> Widget */
 
 #ifndef R_OK
@@ -497,17 +497,17 @@ TODO(": remove this call")
 			if (uo == NULL)
 				uo = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
 			if (uo != NULL) {
-				static conf_hid_callbacks_t cbs;
+				static rnd_conf_hid_callbacks_t cbs;
 				static int cbs_inited = 0;
 				rnd_conf_native_t *nat = rnd_conf_get_field(uo);
 
 				if (nat != NULL) {
 					if (!cbs_inited) {
-						memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
+						memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
 						cbs.val_change_post = lesstif_confchg_checkbox;
 						cbs_inited = 1;
 					}
-					pcb_conf_hid_set_cb(nat, lesstif_menuconf_id, &cbs);
+					rnd_conf_hid_set_cb(nat, lesstif_menuconf_id, &cbs);
 				}
 				else {
 					if (*uo != '\0')
@@ -675,12 +675,12 @@ static const char *lesstif_menu_cookie = "hid_lesstif_menu";
 void lesstif_init_menu(void)
 {
 	if (lesstif_menuconf_id < 0)
-		lesstif_menuconf_id = pcb_conf_hid_reg(lesstif_menu_cookie, NULL);
+		lesstif_menuconf_id = rnd_conf_hid_reg(lesstif_menu_cookie, NULL);
 }
 
 void lesstif_uninit_menu(void)
 {
-	pcb_conf_hid_unreg(lesstif_menu_cookie);
+	rnd_conf_hid_unreg(lesstif_menu_cookie);
 	XtDestroyWidget(lesstif_menubar);
 	lesstif_menuconf_id = -1;
 }

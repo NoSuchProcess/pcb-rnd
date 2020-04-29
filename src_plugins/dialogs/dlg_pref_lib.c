@@ -483,13 +483,13 @@ void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
 {
-	static conf_hid_callbacks_t cbs_spth;
+	static rnd_conf_hid_callbacks_t cbs_spth;
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
 
 	if (cn != NULL) {
-		memset(&cbs_spth, 0, sizeof(conf_hid_callbacks_t));
+		memset(&cbs_spth, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs_spth.val_change_pre = pref_lib_conf2dlg_pre;
 		cbs_spth.val_change_post = pref_lib_conf2dlg_post;
-		pcb_conf_hid_set_cb(cn, pref_hid, &cbs_spth);
+		rnd_conf_hid_set_cb(cn, pref_hid, &cbs_spth);
 	}
 }

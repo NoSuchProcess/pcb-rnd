@@ -365,21 +365,21 @@ static void isch_cfg_chg(rnd_conf_native_t *cfg, int arr_idx)
 		isch_pcb2dlg();
 }
 
-static conf_hid_id_t cfgid;
+static rnd_conf_hid_id_t cfgid;
 
 static void isch_dlg_uninit(void)
 {
-	pcb_conf_hid_unreg(import_sch_cookie);
+	rnd_conf_hid_unreg(import_sch_cookie);
 }
 
 static void isch_dlg_init(void)
 {
-	static conf_hid_callbacks_t cbs;
-	cfgid = pcb_conf_hid_reg(import_sch_cookie, NULL);
+	static rnd_conf_hid_callbacks_t cbs;
+	cfgid = rnd_conf_hid_reg(import_sch_cookie, NULL);
 
 	cbs.val_change_post = isch_cfg_chg;
 
-	pcb_conf_hid_set_cb(rnd_conf_get_field("plugins/import_sch/args"), cfgid, &cbs);
-	pcb_conf_hid_set_cb(rnd_conf_get_field("plugins/import_sch/import_fmt"), cfgid, &cbs);
-	pcb_conf_hid_set_cb(rnd_conf_get_field("plugins/import_sch/verbose"), cfgid, &cbs);
+	rnd_conf_hid_set_cb(rnd_conf_get_field("plugins/import_sch/args"), cfgid, &cbs);
+	rnd_conf_hid_set_cb(rnd_conf_get_field("plugins/import_sch/import_fmt"), cfgid, &cbs);
+	rnd_conf_hid_set_cb(rnd_conf_get_field("plugins/import_sch/verbose"), cfgid, &cbs);
 }

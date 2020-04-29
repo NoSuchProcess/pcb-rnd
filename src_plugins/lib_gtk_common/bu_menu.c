@@ -172,14 +172,14 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 				nat = rnd_conf_get_field(checked);
 
 			if (nat != NULL) {
-				static conf_hid_callbacks_t cbs;
+				static rnd_conf_hid_callbacks_t cbs;
 				static int cbs_inited = 0;
 				if (!cbs_inited) {
-					memset(&cbs, 0, sizeof(conf_hid_callbacks_t));
+					memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
 					cbs.val_change_post = ctx->confchg_checkbox;
 					cbs_inited = 1;
 				}
-				pcb_conf_hid_set_cb(nat, ctx->ghid_menuconf_id, &cbs);
+				rnd_conf_hid_set_cb(nat, ctx->ghid_menuconf_id, &cbs);
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))

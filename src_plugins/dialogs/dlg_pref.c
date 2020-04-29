@@ -53,7 +53,7 @@
 
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
-conf_hid_id_t pref_hid;
+rnd_conf_hid_id_t pref_hid;
 
 static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
 static const rnd_conf_role_t roles[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_DESIGN, RND_CFR_CLI, 0 };
@@ -183,8 +183,8 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 			return;
 	}
 
-	item->cnext = pcb_conf_hid_get_data(cn, pref_hid);
-	pcb_conf_hid_set_data(cn, pref_hid, item);
+	item->cnext = rnd_conf_hid_get_data(cn, pref_hid);
+	rnd_conf_hid_set_data(cn, pref_hid, item);
 }
 
 void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_confitem_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
@@ -201,7 +201,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 		rnd_conf_native_t *cn = rnd_conf_get_field(c->confpath);
 		c->cnext = NULL;
 		if (cn != NULL)
-			pcb_conf_hid_set_data(cn, pref_hid, NULL);
+			rnd_conf_hid_set_data(cn, pref_hid, NULL);
 	}
 }
 
@@ -363,20 +363,20 @@ void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pref_confitem_t *i;
 
-	for(i = pcb_conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
+	for(i = rnd_conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
 		if (i != pref_ctx.pcb_conf_lock)
 			pcb_pref_conf2dlg_item(cfg, i);
 
 	pcb_pref_dlg_conf_changed_cb(&pref_ctx, cfg, arr_idx);
 }
 
-static conf_hid_callbacks_t pref_conf_cb;
+static rnd_conf_hid_callbacks_t pref_conf_cb;
 void pcb_dlg_pref_init(void)
 {
 	pref_conf_cb.val_change_post = pref_conf_changed;
 	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
 	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
-	pref_hid = pcb_conf_hid_reg(pref_cookie, &pref_conf_cb);
+	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
 	pcb_dlg_pref_sizes_init(&pref_ctx);
 	pcb_dlg_pref_lib_init(&pref_ctx);
 }
@@ -384,7 +384,7 @@ void pcb_dlg_pref_init(void)
 void pcb_dlg_pref_uninit(void)
 {
 	pcb_event_unbind_allcookie(pref_cookie);
-	pcb_conf_hid_unreg(pref_cookie);
+	rnd_conf_hid_unreg(pref_cookie);
 }
 
 const char pcb_acts_Preferences[] = "Preferences([tabname])\n";

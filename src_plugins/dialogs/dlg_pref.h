@@ -56,7 +56,7 @@ rnd_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid
    (i.e. on dialog box close) */
 void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list);
 
-conf_hid_id_t pref_hid;
+rnd_conf_hid_id_t pref_hid;
 
 /*** pulbic API for the caller ***/
 void pcb_dlg_pref_init(void);

@@ -12,7 +12,7 @@
 
 int lineno = 0;
 int global_notify = 0;
-conf_hid_id_t hid_id;
+rnd_conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
 pcb_hid_t *pcb_gui = NULL;
 const char *pcb_hidlib_default_embedded_menu = "";
@@ -72,8 +72,8 @@ void notify_post(rnd_conf_native_t *cfg, int idx)
 		printf("notify_post: '%s' new value\n", cfg->hash_path);
 }
 
-conf_hid_callbacks_t watch_cbs = {watch_pre, watch_post, NULL, NULL};
-conf_hid_callbacks_t global_cbs = {notify_pre, notify_post, NULL, NULL};
+rnd_conf_hid_callbacks_t watch_cbs = {watch_pre, watch_post, NULL, NULL};
+rnd_conf_hid_callbacks_t global_cbs = {notify_pre, notify_post, NULL, NULL};
 
 
 extern lht_doc_t *pcb_conf_main_root[];
@@ -263,7 +263,7 @@ void cmd_watch(char *arg, int add)
 		rnd_message(PCB_MSG_ERROR, "unknown path");
 		return;
 	}
-	pcb_conf_hid_set_cb(n, hid_id, (add ? &watch_cbs : NULL));
+	rnd_conf_hid_set_cb(n, hid_id, (add ? &watch_cbs : NULL));
 }
 
 void cmd_notify(char *arg)
@@ -348,7 +348,7 @@ int getline_cont(FILE *f)
 int main()
 {
 
-	hid_id = pcb_conf_hid_reg(hid_cookie, &global_cbs);
+	hid_id = rnd_conf_hid_reg(hid_cookie, &global_cbs);
 
 	rnd_conf_init();
 	conf_core_init();
@@ -403,7 +403,7 @@ int main()
 	}
 
 	conf_core_uninit_pre();
-	pcb_conf_hid_unreg(hid_cookie);
+	rnd_conf_hid_unreg(hid_cookie);
 	rnd_conf_uninit();
 	return 0;
 }

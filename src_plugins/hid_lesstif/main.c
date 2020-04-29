@@ -2782,23 +2782,23 @@ static void lesstif_globconf_change_post(rnd_conf_native_t *cfg, int arr_idx)
 	}
 }
 
-static conf_hid_id_t lesstif_conf_id = -1;
+static rnd_conf_hid_id_t lesstif_conf_id = -1;
 
 TODO("decide if we'll ever need this")
 #if 0
-static void init_conf_watch(conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
+static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
 {
 	rnd_conf_native_t *n = rnd_conf_get_field(path);
 	if (n != NULL) {
-		memset(cbs, 0, sizeof(conf_hid_callbacks_t));
+		memset(cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs->val_change_post = func;
-		pcb_conf_hid_set_cb(n, lesstif_conf_id, cbs);
+		rnd_conf_hid_set_cb(n, lesstif_conf_id, cbs);
 	}
 }
 
 static void lesstif_conf_regs(const char *cookie)
 {
-	static conf_hid_callbacks_t cbs_grid_unit;
+	static rnd_conf_hid_callbacks_t cbs_grid_unit;
 }
 #endif
 
@@ -2934,12 +2934,12 @@ void pplg_uninit_hid_lesstif(void)
 {
 	pcb_export_remove_opts_by_cookie(lesstif_cookie);
 	pcb_event_unbind_allcookie(lesstif_cookie);
-	pcb_conf_hid_unreg(lesstif_cookie);
+	rnd_conf_hid_unreg(lesstif_cookie);
 }
 
 int pplg_init_hid_lesstif(void)
 {
-	static conf_hid_callbacks_t ccb;
+	static rnd_conf_hid_callbacks_t ccb;
 
 	PCB_API_CHK_VER;
 
@@ -3050,7 +3050,7 @@ int pplg_init_hid_lesstif(void)
 
 	pcb_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
-		lesstif_conf_id = pcb_conf_hid_reg(lesstif_cookie, &ccb);
+		lesstif_conf_id = rnd_conf_hid_reg(lesstif_cookie, &ccb);
 /*	lesstif_conf_regs(lesstif_cookie);*/
 
 	return 0;

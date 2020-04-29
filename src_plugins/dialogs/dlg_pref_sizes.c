@@ -158,12 +158,12 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx)
 {
-	static conf_hid_callbacks_t cbs_isle;
+	static rnd_conf_hid_callbacks_t cbs_isle;
 	rnd_conf_native_t *cn = rnd_conf_get_field("design/poly_isle_area");
 
 	if (cn != NULL) {
-		memset(&cbs_isle, 0, sizeof(conf_hid_callbacks_t));
+		memset(&cbs_isle, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs_isle.val_change_post = pref_isle_brd2dlg;
-		pcb_conf_hid_set_cb(cn, pref_hid, &cbs_isle);
+		rnd_conf_hid_set_cb(cn, pref_hid, &cbs_isle);
 	}
 }
