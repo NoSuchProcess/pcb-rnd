@@ -78,12 +78,12 @@ typedef enum {
 
 /* Argument types in event's argv[] */
 typedef enum {
-	PCB_EVARG_INT,											/* format char: i */
-	PCB_EVARG_DOUBLE,										/* format char: d */
-	PCB_EVARG_STR,											/* format char: s */
-	PCB_EVARG_PTR,											/* format char: p */
-	PCB_EVARG_COORD,										/* format char: c */
-	PCB_EVARG_ANGLE											/* format char: a */
+	PCB_EVARG_INT,     /* format char: i */
+	PCB_EVARG_DOUBLE,  /* format char: d */
+	PCB_EVARG_STR,     /* format char: s */
+	PCB_EVARG_PTR,     /* format char: p */
+	PCB_EVARG_COORD,   /* format char: c */
+	PCB_EVARG_ANGLE    /* format char: a */
 } pcb_event_argtype_t;
 
 /* An argument is its type and value */
