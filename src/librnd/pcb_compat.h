@@ -337,3 +337,7 @@
 #define pcb_conf_reg_file rnd_conf_reg_file
 #define pcb_conf_unreg_file rnd_conf_unreg_file
 #define pcb_conf_files_uninit rnd_conf_files_uninit
+#define pcb_conf_core_postproc rnd_conf_core_postproc
+#define pcb_conf_resolve_t rnd_conf_resolve_t
+#define pcb_conf_resolve_all rnd_conf_resolve_all
+#define pcb_conf_resolve rnd_conf_resolve

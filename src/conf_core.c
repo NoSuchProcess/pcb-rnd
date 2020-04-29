@@ -119,7 +119,7 @@ void conf_core_init(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_core, field,isarray,type_name,cpath,cname,desc,flags);
 #include "conf_core_fields.h"
-	pcb_conf_core_postproc = conf_core_postproc;
+	rnd_conf_core_postproc = conf_core_postproc;
 	conf_core_postproc();
 
 	cbs.val_change_post = conf_legacy_chg;

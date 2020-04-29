@@ -117,7 +117,7 @@ typedef struct {
 
 	/* dynamic fields for HIDs storing their data */
 	vtp0_t hid_data;
-	vtp0_t hid_callbacks; /* vector of (const conf_hid_callbacks_t *) */
+	vtp0_t hid_callbacks; /* vector of (const rnd_conf_hid_callbacks_t *) */
 
 	const char *gui_edit_act; /* if non-zero, run this action for GUI editing; args: role_name, full_list_conf_path, item_name */
 } rnd_conf_native_t;
@@ -205,7 +205,7 @@ int rnd_conf_del(rnd_conf_role_t target, const char *path, int arr_idx);
 int rnd_conf_grow(const char *path, int new_size);
 
 /* Same as rnd_conf_set, but without updating the binary - useful for multiple
-   rnd_conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions.
+   rnd_conf_set_dry calls and a single all-tree rnd_conf_udpate(NULL) for transactions.
    If mkdirp is non-zero, automatically create the policy subtree if it doesn't exist. */
 int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, const char *new_val, rnd_conf_policy_t pol, int mkdirp);
 
@@ -421,7 +421,7 @@ void rnd_conf_unreg_file(const char *path, const char *intern);
 
 void rnd_conf_files_uninit(void);
 
-extern void (*pcb_conf_core_postproc)(void); /* if not NULL, called after conf updates to give conf_core a chance to update dynamic entries */
+extern void (*rnd_conf_core_postproc)(void); /* if not NULL, called after conf updates to give conf_core a chance to update dynamic entries */
 
 
 /*** mass resolve (useful to avoid conf_core dep) ***/
@@ -430,12 +430,12 @@ typedef struct {
 	rnd_conf_native_type_t type;    /* accept only if type matches */
 	int allow_array;            /* if 0, refuse arrays */
 	rnd_conf_native_t *nat;         /* NULL if refused or not found */
-} pcb_conf_resolve_t;
+} rnd_conf_resolve_t;
 
 /* Resolve a single nat or an array of them (until a terminaltor where
    path==NULL). Return the number of succesful resolves */
-int pcb_conf_resolve(pcb_conf_resolve_t *res);
-int pcb_conf_resolve_all(pcb_conf_resolve_t *res);
+int rnd_conf_resolve(rnd_conf_resolve_t *res);
+int rnd_conf_resolve_all(rnd_conf_resolve_t *res);
 
 
 #endif

@@ -37,7 +37,7 @@
 
 #define ANCH "@grid"
 
-static pcb_conf_resolve_t grids_idx = {"editor.grids_idx", RND_CFN_INTEGER, 0, NULL};
+static rnd_conf_resolve_t grids_idx = {"editor.grids_idx", RND_CFN_INTEGER, 0, NULL};
 
 static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
@@ -60,7 +60,7 @@ static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, c
 
 	lst = nat->val.list;
 
-	pcb_conf_resolve(&grids_idx);
+	rnd_conf_resolve(&grids_idx);
 
 	memset(&props, 0,sizeof(props));
 	props.action = act;

@@ -56,7 +56,7 @@ static htsi_t conf_files;
 static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
-void (*pcb_conf_core_postproc)(void) = NULL;
+void (*rnd_conf_core_postproc)(void) = NULL;
 extern void pcbhl_conf_postproc(void);
 
 int rnd_conf_in_production = 0;
@@ -1103,8 +1103,8 @@ void rnd_conf_update(const char *path, int arr_idx)
 
 	/* merge all memory-lht data to memory-bin */
 	pcb_conf_merge_all(path);
-	if (pcb_conf_core_postproc != NULL)
-		pcb_conf_core_postproc();
+	if (rnd_conf_core_postproc != NULL)
+		rnd_conf_core_postproc();
 	pcbhl_conf_postproc();
 
 	if (path == NULL) {
@@ -2237,7 +2237,7 @@ void rnd_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *
 	free(tmp);
 }
 
-int pcb_conf_resolve(pcb_conf_resolve_t *res)
+int rnd_conf_resolve(rnd_conf_resolve_t *res)
 {
 	res->nat = rnd_conf_get_field(res->path);
 	if (res->nat == NULL)
@@ -2249,11 +2249,11 @@ int pcb_conf_resolve(pcb_conf_resolve_t *res)
 	return 1;
 }
 
-int pcb_conf_resolve_all(pcb_conf_resolve_t *res)
+int rnd_conf_resolve_all(rnd_conf_resolve_t *res)
 {
 	int cnt = 0;
 	for(; res->path != NULL; res++)
-		cnt += pcb_conf_resolve(res);
+		cnt += rnd_conf_resolve(res);
 	return cnt;
 }
 
