@@ -108,7 +108,7 @@ void pcb_gtk_conf_init(void)
 		rnd_conf_native_t *nat;
 		char *end, dirname[128];
 		
-		pcb_conf_update(p[0], -1);
+		rnd_conf_update(p[0], -1);
 		nat = rnd_conf_get_field(p[0]);
 		if ((nat == NULL) || (nat->prop->src == NULL))
 			continue;

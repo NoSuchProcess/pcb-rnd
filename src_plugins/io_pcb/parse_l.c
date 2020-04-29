@@ -2811,7 +2811,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 		/* load config nodes not disabled above, from optional attributes */
 		io_pcb_attrib_a2c(Ptr);
 
-		pcb_conf_update(NULL, -1);
+		rnd_conf_update(NULL, -1);
 	}
 	if (retval == 0) {
 		/* restore loader so the next save will use the same units */

@@ -35,12 +35,12 @@ void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefi
 	if (match_prefix != NULL)
 		pl = strlen(match_prefix);
 
-	for (e = htsp_first(pcb_conf_fields); e; e = htsp_next(pcb_conf_fields, e)) {
+	for (e = htsp_first(rnd_conf_fields); e; e = htsp_next(rnd_conf_fields, e)) {
 		rnd_conf_native_t *node = (rnd_conf_native_t *)e->value;
 		if (match_prefix != NULL) {
 			if (strncmp(node->hash_path, match_prefix, pl) != 0)
 				continue;
 		}
-		rnd_conf_print_native((conf_pfn)pcb_fprintf, f, prefix, verbose, node);
+		rnd_conf_print_native((rnd_conf_pfn)pcb_fprintf, f, prefix, verbose, node);
 	}
 }

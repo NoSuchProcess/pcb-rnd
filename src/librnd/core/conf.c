@@ -59,7 +59,7 @@ static int conf_files_inited = 0;
 void (*pcb_conf_core_postproc)(void) = NULL;
 extern void pcbhl_conf_postproc(void);
 
-int pcb_conf_in_production = 0;
+int rnd_conf_in_production = 0;
 
 /* The main conf: monolithic config files affecting all parts of the conf tree;
    By default every operation is done on these trees. */
@@ -76,7 +76,7 @@ int pcb_conf_lht_dirty[RND_CFR_max_alloc];
 lht_doc_t *pcb_conf_plug_root[RND_CFR_max_alloc];
 
 
-htsp_t *pcb_conf_fields = NULL;
+htsp_t *rnd_conf_fields = NULL;
 const int rnd_conf_default_prio[] = {
 /*	RND_CFR_INTERNAL */   100,
 /*	RND_CFR_SYSTEM */     200,
@@ -1062,7 +1062,7 @@ static void conf_field_clear(rnd_conf_native_t *f)
 }
 
 int rnd_conf_rev = 0;
-void pcb_conf_update(const char *path, int arr_idx)
+void rnd_conf_update(const char *path, int arr_idx)
 {
 	rnd_conf_native_t *n;
 
@@ -1091,7 +1091,7 @@ void pcb_conf_update(const char *path, int arr_idx)
 
 			/* if a valid node is found, update it */
 			if (n != NULL)
-				pcb_conf_update(path_, arr_idx);
+				rnd_conf_update(path_, arr_idx);
 
 			free(path_);
 			return;
@@ -1265,7 +1265,7 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 	if (pcb_conf_main_root[RND_CFR_USER] == NULL)
 		rnd_conf_reset(RND_CFR_USER, pcphl_conf_user_path);
 
-	pcb_conf_in_production = 1;
+	rnd_conf_in_production = 1;
 }
 
 void rnd_conf_load_extra(const char *project_fn, const char *pcb_fn)
@@ -1291,20 +1291,20 @@ void rnd_conf_load_project(const char *project_fn, const char *pcb_fn)
 			pc = NULL;
 	if (pc == NULL)
 		rnd_conf_reset(RND_CFR_PROJECT, "<pcb_conf_load_project>");
-	pcb_conf_update(NULL, -1);
+	rnd_conf_update(NULL, -1);
 }
 
 rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags)
 {
 	rnd_conf_native_t *node;
 
-	if (pcb_conf_fields == NULL) {
-		pcb_conf_fields = htsp_alloc(strhash, strkeyeq);
-		assert(pcb_conf_fields != NULL);
+	if (rnd_conf_fields == NULL) {
+		rnd_conf_fields = htsp_alloc(strhash, strkeyeq);
+		assert(rnd_conf_fields != NULL);
 	}
 	assert(array_size >= 1);
 
-	assert(htsp_get(pcb_conf_fields, path) == NULL);
+	assert(htsp_get(rnd_conf_fields, path) == NULL);
 
 	node = calloc(sizeof(rnd_conf_native_t), 1);
 	node->array_size  = array_size;
@@ -1317,7 +1317,7 @@ rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_nat
 	vtp0_init(&(node->hid_data));
 	vtp0_init(&(node->hid_callbacks));
 
-	htsp_set(pcb_conf_fields, (char *)path, node);
+	htsp_set(rnd_conf_fields, (char *)path, node);
 	conf_hid_global_cb(node, -1, new_item_post);
 
 	return node;
@@ -1378,21 +1378,21 @@ void rnd_conf_unreg_fields(const char *prefix)
 	conf_fields_foreach(e) {
 		if (strncmp(e->key, prefix, len) == 0) {
 			pcb_conf_free_native(e->value);
-			htsp_delentry(pcb_conf_fields, e);
+			htsp_delentry(rnd_conf_fields, e);
 		}
 	}
 }
 
 void rnd_conf_unreg_field(rnd_conf_native_t *field)
 {
-	htsp_pop(pcb_conf_fields, field->hash_path);
+	htsp_pop(rnd_conf_fields, field->hash_path);
 	pcb_conf_free_native(field);
 }
 
 
 rnd_conf_native_t *rnd_conf_get_field(const char *path)
 {
-	return htsp_get(pcb_conf_fields, path);
+	return htsp_get(rnd_conf_fields, path);
 }
 
 int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, const char *new_val, rnd_conf_policy_t pol, int mkdirp)
@@ -1622,7 +1622,7 @@ int rnd_conf_set(rnd_conf_role_t target, const char *path, int arr_idx, const ch
 	res = rnd_conf_set_dry(target, path, arr_idx, new_val, pol, 1);
 	if (res < 0)
 		return res;
-	pcb_conf_update(path, arr_idx);
+	rnd_conf_update(path, arr_idx);
 	return 0;
 }
 
@@ -1632,7 +1632,7 @@ int rnd_conf_del(rnd_conf_role_t target, const char *path, int arr_idx)
 	res = rnd_conf_set_dry(target, path, arr_idx, NULL, RND_POL_OVERWRITE, 0);
 	if (res < 0)
 		return res;
-	pcb_conf_update(path, arr_idx);
+	rnd_conf_update(path, arr_idx);
 	return 0;
 }
 
@@ -1831,7 +1831,7 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 				}
 			}
 			else {
-				rnd_conf_print_native_field((conf_pfn)pcb_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
+				rnd_conf_print_native_field((rnd_conf_pfn)pcb_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
 				ch = lht_dom_node_alloc(LHT_TEXT, isarr ? "" : name+1);
 				ch->data.text.value = s.array;
 				if (isarr)
@@ -2103,7 +2103,7 @@ static int needs_braces(const char *s)
 			} \
 	} while(0)
 
-int rnd_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, rnd_conf_native_type_t type, rnd_confprop_t *prop, int idx)
+int rnd_conf_print_native_field(rnd_conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, rnd_conf_native_type_t type, rnd_confprop_t *prop, int idx)
 {
 	int ret = 0;
 	switch(type) {
@@ -2146,7 +2146,7 @@ int rnd_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confit
 	return ret;
 }
 
-int rnd_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, rnd_conf_native_t *node)
+int rnd_conf_print_native(rnd_conf_pfn pfn, void *ctx, const char * prefix, int verbose, rnd_conf_native_t *node)
 {
 	int ret = 0;
 	if ((node->used <= 0) && (!verbose))
@@ -2215,9 +2215,9 @@ void rnd_conf_uninit(void)
 
 	conf_fields_foreach(e) {
 		pcb_conf_free_native(e->value);
-		htsp_delentry(pcb_conf_fields, e);
+		htsp_delentry(rnd_conf_fields, e);
 	}
-	htsp_free(pcb_conf_fields);
+	htsp_free(rnd_conf_fields);
 
 	vmst_uninit(&merge_subtree);
 	pcb_conf_files_uninit();

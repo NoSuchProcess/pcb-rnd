@@ -129,7 +129,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				return FGW_ERR_ARG_CONV;
 			}
 			rs = rnd_conf_set_native(n, 0, val);
-			pcb_conf_update(a1, 0);
+			rnd_conf_update(a1, 0);
 		}
 		else
 			rs = rnd_conf_set(role, path, -1, val, pol);
@@ -208,7 +208,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_message(PCB_MSG_ERROR, "Can not toggle '%s': failed to set new value\n", a1);
 			return FGW_ERR_UNKNOWN;
 		}
-		pcb_conf_update(a1, -1);
+		rnd_conf_update(a1, -1);
 	}
 
 	else if (op == F_Reset) {
@@ -219,7 +219,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return FGW_ERR_ARG_CONV;
 		}
 		rnd_conf_reset(role, "<action>");
-		pcb_conf_update(a1, -1);
+		rnd_conf_update(a1, -1);
 	}
 
 	else {

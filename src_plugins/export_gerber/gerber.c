@@ -400,7 +400,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	f = NULL;
 	if (!gerber_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
-	pcb_conf_update(NULL, -1); /* resotre forced sets */
+	rnd_conf_update(NULL, -1); /* resotre forced sets */
 
 	if (!gerber_cam.active) gerber_cam.okempty_content = 1; /* never warn in direct export */
 

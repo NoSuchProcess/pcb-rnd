@@ -258,7 +258,7 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	lastwidth = -1;
 	finding_apertures = 0;
 	pcbhl_expose_main(&excellon_hid, &ctx, &xform);
-	pcb_conf_update(NULL, -1); /* resotre forced sets */
+	rnd_conf_update(NULL, -1); /* resotre forced sets */
 
 
 	if (excellon_cam.active) {

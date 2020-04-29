@@ -524,7 +524,7 @@ static int vfs_access_conf(pcb_board_t *pcb, const char *path, gds_t *buff, int 
 	if (wr)
 		return rnd_conf_set(RND_CFR_DESIGN, path, 0, buff->array, RND_POL_OVERWRITE);
 	else
-		rnd_conf_print_native((conf_pfn)vfs_conf_printf, buff, NULL, 0, nat);
+		rnd_conf_print_native((rnd_conf_pfn)vfs_conf_printf, buff, NULL, 0, nat);
 
 	return 0;
 }

@@ -134,7 +134,7 @@ static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
 
 	if (rnd_conf_get_field(path) == NULL) {
 		rnd_conf_reg_field_(&dummy, 1, RND_CFN_INTEGER, str_cleanup_later(path), "", 0);
-		pcb_conf_update(path, -1);
+		rnd_conf_update(path, -1);
 	}
 
 	nat = rnd_conf_get_field(path);

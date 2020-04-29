@@ -232,7 +232,7 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options, pcb_xf
 
 	pcbhl_expose_main(&dxf_hid, &hectx, xform);
 
-	pcb_conf_update(NULL, -1); /* restore forced sets */
+	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
 int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)

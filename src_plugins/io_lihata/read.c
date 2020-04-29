@@ -2220,7 +2220,7 @@ static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 	if (rnd_conf_insert_tree_as(cfg_dest, sub) != 0)
 		rnd_message(PCB_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
 	else
-		pcb_conf_update(NULL, -1);
+		rnd_conf_update(NULL, -1);
 }
 
 

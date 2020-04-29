@@ -153,7 +153,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	printf(" Native:\n");
-	rnd_conf_print_native((conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
+	rnd_conf_print_native((rnd_conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
 
 	RND_ACT_IRES(0);
 	return 0;

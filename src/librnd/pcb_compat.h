@@ -302,3 +302,7 @@
 #define pcb_conf_print_native_field rnd_conf_print_native_field
 #define pcb_conf_print_native rnd_conf_print_native
 #define pcb_conf_ro rnd_conf_ro
+#define pcb_conf_in_production rnd_conf_in_production
+#define pcb_conf_update rnd_conf_update
+#define pcb_conf_fields rnd_conf_fields
+#define conf_pfn rnd_conf_pfn

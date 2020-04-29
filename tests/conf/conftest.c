@@ -121,7 +121,7 @@ void cmd_print(char *arg)
 		return;
 	}
 	gds_init(&s);
-	rnd_conf_print_native((conf_pfn)pcb_append_printf, &s, NULL, 0, node);
+	rnd_conf_print_native((rnd_conf_pfn)pcb_append_printf, &s, NULL, 0, node);
 	printf("%s='%s'\n", node->hash_path, s.array);
 	gds_uninit(&s);
 }
@@ -155,7 +155,7 @@ void cmd_load(char *arg, int is_text)
 		return;
 	}
 	printf("Result: %d\n", rnd_conf_load_as(role, fn, is_text));
-	pcb_conf_update(NULL, -1);
+	rnd_conf_update(NULL, -1);
 }
 
 rnd_conf_policy_t current_policy = RND_POL_OVERWRITE;
@@ -199,7 +199,7 @@ void cmd_chprio(char *arg)
 		sprintf(tmp, "%s-%d", first->name, np);
 		free(first->name);
 		first->name = rnd_strdup(tmp);
-		pcb_conf_update(NULL, -1);
+		rnd_conf_update(NULL, -1);
 	}
 }
 
@@ -232,7 +232,7 @@ void cmd_chpolicy(char *arg)
 			free(first->name);
 			first->name = rnd_strdup(arg);
 		}
-		pcb_conf_update(NULL, -1);
+		rnd_conf_update(NULL, -1);
 	}
 }
 
@@ -301,7 +301,7 @@ void cmd_reset(char *arg)
 		}
 		rnd_conf_reset(role, "<cmd_reset role>");
 	}
-	pcb_conf_update(NULL, -1);
+	rnd_conf_update(NULL, -1);
 }
 
 extern void cmd_help(char *arg);

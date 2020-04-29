@@ -157,16 +157,16 @@ extern long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc]; /* number of time
 void rnd_conf_init(void);
 void rnd_conf_uninit(void);
 
-/* Load all config files from disk into memory-lht and run pcb_conf_update to
+/* Load all config files from disk into memory-lht and run rnd_conf_update to
    get the binary representation updated. Called only once, from main.c.
    Switches the conf system into production mode - new plugins registering new
    internal files will get special treat after this. */
-void rnd_conf_load_all(const char *project_fn, const char *pcb_fn);
+void rnd_conf_load_all(const char *project_fn, const char *design_fn);
 
 /* Set to 1 after rnd_conf_load_all() to indicate that the in-memory conf
    system is complete; any new plugin registering new conf will need to
    trigger a refresh */
-extern int pcb_conf_in_production;
+extern int rnd_conf_in_production;
 
 /* Load a file or a string as a role */
 int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text);
@@ -175,15 +175,15 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text);
    return 0 on success and removes/invalidates root */
 int rnd_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root);
 
-/* Load a project file into RND_CFR_PROJECT. Both project_fn and pcb_fn can't be NULL.
+/* Load a project file into RND_CFR_PROJECT. Both project_fn and design_fn can't be NULL.
    Leaves an initialized but empty RND_CFR_PROJECT root if no project file was
-   found. Runs pcb_conf_update(NULL); */
-void rnd_conf_load_project(const char *project_fn, const char *pcb_fn);
+   found. Runs rnd_conf_update(NULL); */
+void rnd_conf_load_project(const char *project_fn, const char *design_fn);
 
-void rnd_conf_load_extra(const char *project_fn, const char *pcb_fn);
+void rnd_conf_load_extra(const char *project_fn, const char *design_fn);
 
 /* Update the binary representation from the memory-lht representation */
-void pcb_conf_update(const char *path, int arr_idx);
+void rnd_conf_update(const char *path, int arr_idx);
 
 rnd_conf_native_t *rnd_conf_get_field(const char *path);
 rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags);
@@ -198,18 +198,18 @@ void rnd_conf_unreg_fields(const char *prefix);
 int rnd_conf_set(rnd_conf_role_t target, const char *path, int arr_idx, const char *new_val, rnd_conf_policy_t pol);
 
 /* Remove the subtree of path[arr_idx] in memory-lht role target. Same
-   considerations as in pcb_conf_set. */
+   considerations as in rnd_conf_set. */
 int rnd_conf_del(rnd_conf_role_t target, const char *path, int arr_idx);
 
 /* Increase the size of a list (array) to new_size; returns 0 on success */
 int rnd_conf_grow(const char *path, int new_size);
 
-/* Same as pcb_conf_set, but without updating the binary - useful for multiple
-   pcb_conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions.
+/* Same as rnd_conf_set, but without updating the binary - useful for multiple
+   rnd_conf_set_dry calls and a single all-tree conf_udpate(NULL) for transactions.
    If mkdirp is non-zero, automatically create the policy subtree if it doesn't exist. */
 int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, const char *new_val, rnd_conf_policy_t pol, int mkdirp);
 
-/* Same as pcb_conf_set, but doesn't look up where to set things: change the value of
+/* Same as rnd_conf_set, but doesn't look up where to set things: change the value of
    the lihata node backing the native field */
 int rnd_conf_set_native(rnd_conf_native_t *field, int arr_idx, const char *new_val);
 
@@ -221,7 +221,7 @@ int rnd_conf_set_native(rnd_conf_native_t *field, int arr_idx, const char *new_v
    Returns 0 on success. */
 int rnd_conf_set_from_cli(const char *prefix, const char *arg_, const char *val, const char **why);
 
-/* Attempt to consume argv[] using pcb_conf_set_from_cli */
+/* Attempt to consume argv[] using rnd_conf_set_from_cli */
 int rnd_conf_parse_arguments(const char *prefix, int *argc, char ***argv);
 
 #define rnd_conf_reg_field_array(globvar, field, type_name, path, desc, flags) \
@@ -267,7 +267,7 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn);
 
 /* Save an in-memory lihata representation to the disk */
-int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, rnd_conf_role_t role, const char *fn);
+int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *design_fn, rnd_conf_role_t role, const char *fn);
 
 /* Returns whether a given lihata tree is locked */
 int rnd_conf_islocked(rnd_conf_role_t target);
@@ -277,22 +277,22 @@ int rnd_conf_isdirty(rnd_conf_role_t target);
 void rnd_conf_makedirty(rnd_conf_role_t target);
 
 /* all configuration fields ever seen */
-extern htsp_t *pcb_conf_fields;
+extern htsp_t *rnd_conf_fields;
 
 /***** print fields from binary to lihata/text *****/
 
-typedef int (*conf_pfn)(void *ctx, const char *fmt, ...);
+typedef int (*rnd_conf_pfn)(void *ctx, const char *fmt, ...);
 
 /* Prints the value of a node in a form that is suitable for lihata. Prints
    a single element of an array, but prints lists as lists. Returns
-   the sum of conf_pfn call return values - this is usually the number of
+   the sum of rnd_conf_pfn call return values - this is usually the number of
    bytes printed. */
-int rnd_conf_print_native_field(conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, rnd_conf_native_type_t type, rnd_confprop_t *prop, int idx);
+int rnd_conf_print_native_field(rnd_conf_pfn pfn, void *ctx, int verbose, rnd_confitem_t *val, rnd_conf_native_type_t type, rnd_confprop_t *prop, int idx);
 
 /* Prints the value of a node in a form that is suitable for lihata. Prints
-   full arrays. Returns the sum of conf_pfn call return values - this is
+   full arrays. Returns the sum of rnd_conf_pfn call return values - this is
    usually the number of bytes printed. */
-int rnd_conf_print_native(conf_pfn pfn, void *ctx, const char * prefix, int verbose, rnd_conf_native_t *node);
+int rnd_conf_print_native(rnd_conf_pfn pfn, void *ctx, const char * prefix, int verbose, rnd_conf_native_t *node);
 
 /* Mark a path read-only */
 void rnd_conf_ro(const char *path);
@@ -329,7 +329,7 @@ do { \
 
 /* htsp_entry_t *e; */
 #define conf_fields_foreach(e) \
-	for (e = htsp_first(pcb_conf_fields); e; e = htsp_next(pcb_conf_fields, e))
+	for (e = htsp_first(rnd_conf_fields); e; e = htsp_next(rnd_conf_fields, e))
 
 /* helpers to make the code shorter */
 #define conf_set_design(path, fmt, new_val) \

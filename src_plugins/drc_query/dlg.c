@@ -213,7 +213,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	MKDIR_ND_SET_TEXT(nd, "title", ctx->dlg[ctx->wtitle].val.str);
 	MKDIR_ND_SET_TEXT(nd, "query", txt->hid_get_text(atxt, hid_ctx));
 
-	pcb_conf_update(NULL, -1);
+	rnd_conf_update(NULL, -1);
 	drc_rlist_pcb2dlg();
 }
 

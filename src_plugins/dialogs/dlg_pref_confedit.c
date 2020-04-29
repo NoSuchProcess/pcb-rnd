@@ -168,7 +168,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 					n->data.text.value = rnd_strdup(r->cell[0]);
 				}
 				rnd_conf_makedirty(ctx->role);
-				pcb_conf_update(ctx->nat->hash_path, ctx->idx);
+				rnd_conf_update(ctx->nat->hash_path, ctx->idx);
 			}
 			return;
 		case RND_CFN_HLIST:

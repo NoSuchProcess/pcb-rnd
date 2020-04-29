@@ -58,10 +58,10 @@ static void setup_tree(pref_ctx_t *ctx)
 	char path[1024];
 
 	/* alpha sort keys for the more consistend UI */
-	for(e = htsp_first(pcb_conf_fields), num_paths = 0; e; e = htsp_next(pcb_conf_fields, e))
+	for(e = htsp_first(rnd_conf_fields), num_paths = 0; e; e = htsp_next(rnd_conf_fields, e))
 		num_paths++;
 	sorted = malloc(sizeof(htsp_entry_t *) * num_paths);
-	for(e = htsp_first(pcb_conf_fields), n = 0; e; e = htsp_next(pcb_conf_fields, e), n++)
+	for(e = htsp_first(rnd_conf_fields), n = 0; e; e = htsp_next(rnd_conf_fields, e), n++)
 		sorted[n] = e;
 	qsort(sorted, num_paths, sizeof(htsp_entry_t *), conf_tree_cmp);
 

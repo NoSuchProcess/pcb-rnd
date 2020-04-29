@@ -175,7 +175,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		pcb_dad_tree_modify_cell(attr, r, 2, rnd_strdup(pref_node_src(nd)));
 	}
 
-	pcb_conf_update("rc/library_search_paths", -1);
+	rnd_conf_update("rc/library_search_paths", -1);
 	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 	if (ctx->role == RND_CFR_DESIGN)
 		pcb_board_set_changed_flag(1);

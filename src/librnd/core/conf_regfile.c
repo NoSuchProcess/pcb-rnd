@@ -61,7 +61,7 @@ void pcb_conf_reg_file(const char *path, const char *intern)
 	else
 		e->value++;
 
-	if (pcb_conf_in_production) {
+	if (rnd_conf_in_production) {
 		if (conf_load_plug_interns(RND_CFR_INTERNAL))
 			pcb_conf_merge_all(NULL);
 	}

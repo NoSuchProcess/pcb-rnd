@@ -660,7 +660,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 
 	/* plugins may have installed their new fields, reinterpret the config
 	   (memory lht -> memory bin) to get the new fields */
-	pcb_conf_update(NULL, -1);
+	rnd_conf_update(NULL, -1);
 
 	if (ga->main_action != NULL) {
 		int res = rnd_parse_command(NULL, ga->main_action, pcb_true); /* hidlib is NULL because there is no context yet */
