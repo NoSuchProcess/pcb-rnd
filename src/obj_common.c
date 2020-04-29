@@ -428,3 +428,11 @@ void pcb_set_point_bounding_box(pcb_point_t *Pnt)
 	Pnt->X2 = Pnt->X + 1;
 	Pnt->Y2 = Pnt->Y + 1;
 }
+
+void pcb_obj_common_free(pcb_any_obj_t *o)
+{
+	if (o->override_color != NULL) {
+		free(o->override_color);
+		o->override_color = NULL;
+	}
+}

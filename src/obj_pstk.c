@@ -110,6 +110,7 @@ void pcb_pstk_free(pcb_pstk_t *ps)
 	rnd_attribute_free(&ps->Attributes);
 	pcb_pstk_unreg(ps);
 	free(ps->thermals.shape);
+	pcb_obj_common_free((pcb_any_obj_t *)ps);
 	free(ps);
 }
 

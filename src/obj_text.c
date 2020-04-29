@@ -109,6 +109,7 @@ void pcb_text_free(pcb_text_t *text)
 	rnd_attribute_free(&text->Attributes);
 	pcb_text_unreg(text);
 	free(text->TextString);
+	pcb_obj_common_free((pcb_any_obj_t *)text);
 	free(text);
 }
 

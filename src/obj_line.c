@@ -113,6 +113,7 @@ void pcb_line_free(pcb_line_t *line)
 		pcb_r_delete_entry(line->parent.layer->line_tree, (rnd_box_t *)line);
 	rnd_attribute_free(&line->Attributes);
 	pcb_line_unreg(line);
+	pcb_obj_common_free((pcb_any_obj_t *)line);
 	free(line);
 }
 

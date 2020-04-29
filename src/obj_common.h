@@ -231,7 +231,7 @@ void pcb_obj_add_attribs(pcb_any_obj_t *obj, const rnd_attribute_list_t *src, pc
 	unsigned int         noexport:1; \
 	unsigned int         noexport_named:1; \
 	unsigned int         extobj_editing:1; \
-	const rnd_color_t    *override_color
+	rnd_color_t          *override_color
 
 /* Lines, pads, and rats all use this so they can be cross-cast.  */
 #define PCB_ANYLINEFIELDS \
@@ -277,6 +277,8 @@ void pcb_obj_change_id(pcb_any_obj_t *o, long int new_id);
 
 /* sets the bounding box of a point */
 void pcb_set_point_bounding_box(pcb_point_t *Pnt);
+
+void pcb_obj_common_free(pcb_any_obj_t *o);
 
 /* Determine the size class of a sub-kilobyte object: the largest 2^n that
    is smaller than the size; size must be at least 16. */

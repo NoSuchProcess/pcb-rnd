@@ -198,6 +198,7 @@ void pcb_gfx_free(pcb_gfx_t *gfx)
 		pcb_r_delete_entry(gfx->parent.layer->gfx_tree, (rnd_box_t *)gfx);
 	rnd_attribute_free(&gfx->Attributes);
 	pcb_gfx_unreg(gfx);
+	pcb_obj_common_free((pcb_any_obj_t *)gfx);
 	free(gfx);
 }
 

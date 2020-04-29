@@ -112,6 +112,7 @@ void pcb_poly_free(pcb_poly_t *poly)
 		pcb_r_delete_entry(poly->parent.layer->polygon_tree, (rnd_box_t *)poly);
 	rnd_attribute_free(&poly->Attributes);
 	pcb_poly_unreg(poly);
+	pcb_obj_common_free((pcb_any_obj_t *)poly);
 	free(poly);
 }
 

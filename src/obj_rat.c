@@ -87,6 +87,7 @@ void pcb_rat_free(pcb_rat_t *rat)
 	pcb_rat_unreg(rat);
 	free(rat->anchor[0]);
 	free(rat->anchor[1]);
+	pcb_obj_common_free((pcb_any_obj_t *)rat);
 	free(rat);
 }
 
