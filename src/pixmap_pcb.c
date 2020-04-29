@@ -30,6 +30,7 @@
 #include <genht/htsp.h>
 
 #include <librnd/core/pixmap.h>
+#include <librnd/core/error.h>
 #include "pixmap_pcb.h"
 #include "obj_common.h"
 
