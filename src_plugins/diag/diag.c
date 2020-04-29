@@ -555,16 +555,15 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptr1, *ptr2, *ptr3;
 	const char *new_color;
 
-	rnd_message(RND_MSG_ERROR, "pcb_acth_forcecolor() is temporarily disabled.\n");
-	return -1;
-
 	RND_PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
 
 	rnd_hid_get_coords("Click on object to change", &x, &y, 0);
 
-	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID){
-TODO("color: figure where to store this");
-/*		strncpy(((pcb_any_obj_t *)ptr2)->override_color, new_color, sizeof(((pcb_any_obj_t *)ptr2)->override_color)-1);*/
+	if ((type = pcb_search_screen(x, y, PCB_FORCECOLOR_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
+		pcb_any_obj_t *o = (pcb_any_obj_t *)ptr2;
+		if (o->override_color == NULL)
+			o->override_color = malloc(sizeof(rnd_color_t));
+		rnd_color_load_str(o->override_color, new_color);
 	}
 
 	RND_ACT_IRES(0);
