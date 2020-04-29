@@ -47,6 +47,12 @@ static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(ctx);
 }
 
+/* Returns true if the value being edited is not yet created in the conf tree */
+static int confedit_node_is_uninitialized(confedit_ctx_t *ctx)
+{
+	return (rnd_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0) == NULL);
+}
+
 static void confedit_brd2dlg(confedit_ctx_t *ctx)
 {
 	pcb_hid_attr_val_t hv;
@@ -378,6 +384,10 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		if (is_read_only(ctx)) {
 			PCB_DAD_LABEL(ctx->dlg, "NOTE: this value is read-only");
 				PCB_DAD_HELP(ctx->dlg, "Config value with this config role\ncan not be modified.\nPlease pick another config role\nand try to edit or create\nthe value there!\n(If that role has higher priority,\nthat value will override this one)");
+		}
+		else if (confedit_node_is_uninitialized(ctx)) {
+			PCB_DAD_LABEL(ctx->dlg, "NOTE: change the value to create the config node");
+				PCB_DAD_HELP(ctx->dlg, "This config node does not exist\non the selected role.\nTo create it, change the value.\nSpecial case for boolean values:\nto create an unticked value,\nfirst tick then untick the checkbox.");
 		}
 
 		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
