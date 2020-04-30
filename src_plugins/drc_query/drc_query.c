@@ -192,7 +192,7 @@ static const char *load_str(lht_node_t *rule, rnd_conf_listitem_t *i, const char
 
 static int *drc_get_disable(const char *name)
 {
-	char *path = pcb_concat(DRC_CONF_PATH_DISABLE, name, NULL);
+	char *path = rnd_concat(DRC_CONF_PATH_DISABLE, name, NULL);
 	rnd_conf_native_t *nat = rnd_conf_get_field(path);
 	free(path);
 	if ((nat == NULL) || (nat->type != RND_CFN_BOOLEAN))
@@ -257,7 +257,7 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 
 	if (nat_rules == cfg) {
 		lht_node_t *nd = i->prop.src;
-		char *path = pcb_concat(DRC_CONF_PATH_DISABLE, nd->name, NULL);
+		char *path = rnd_concat(DRC_CONF_PATH_DISABLE, nd->name, NULL);
 
 		if (rnd_conf_get_field(path) == NULL) {
 			const char *sdesc;
@@ -287,7 +287,7 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 	}
 	else if (nat_defs == cfg) {
 		lht_node_t *nd = i->prop.src;
-		char *path = pcb_concat(DRC_CONF_PATH_CONST, nd->name, NULL);
+		char *path = rnd_concat(DRC_CONF_PATH_CONST, nd->name, NULL);
 		rnd_coord_t *c;
 
 		if (rnd_conf_get_field(path) == NULL) {

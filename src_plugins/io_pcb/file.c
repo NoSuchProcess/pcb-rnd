@@ -290,7 +290,7 @@ static void WritePCBDataHeader(FILE * FP)
 	fprintf(FP, "FileVersion[%i]\n", PCBFileVersionNeeded());
 
 	fputs("\nPCB[", FP);
-	pcb_print_quoted_string(FP, (char *) PCB_EMPTY(PCB->hidlib.name));
+	pcb_print_quoted_string(FP, (char *) RND_EMPTY(PCB->hidlib.name));
 	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
 	pcb_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->hidlib.grid, PCB->hidlib.grid_ox, PCB->hidlib.grid_oy, rnd_conf.editor.draw_grid);
 	pcb_fprintf(FP, "Cursor[%[0] %[0] 1000]\n", pcb_crosshair.X, pcb_crosshair.Y);
@@ -361,7 +361,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 
 		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
 			pad_dia, clearance*2, mask, drill_dia);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(name));
+		pcb_print_quoted_string(FP, (char *) RND_EMPTY(name));
 		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON), PCB_OBJ_VIA, NULL, 1));
 	}
 }
@@ -396,7 +396,7 @@ static void WritePCBNetlistData(FILE *FP)
 		fprintf(FP, "\tNet(");
 		pcb_print_quoted_string(FP, net->name);
 		fprintf(FP, " ");
-		pcb_print_quoted_string(FP, (char *) PCB_UNKNOWN(rnd_attribute_get(&net->Attributes, "style")));
+		pcb_print_quoted_string(FP, (char *) RND_UNKNOWN(rnd_attribute_get(&net->Attributes, "style")));
 		fprintf(FP, ")\n\t(\n");
 		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 			fprintf(FP, "\t\tConnect(\"");
@@ -449,10 +449,10 @@ TODO("textrot: incompatibility warning")
 			const char *tmp;
 			tmp = rnd_attribute_get(&sc->Attributes, "io_pcb::hidename_x");
 			if (tmp != NULL)
-				rx = pcb_get_value(tmp, NULL, NULL, NULL) - ox;
+				rx = rnd_get_value(tmp, NULL, NULL, NULL) - ox;
 			tmp = rnd_attribute_get(&sc->Attributes, "io_pcb::hidename_y");
 			if (tmp != NULL)
-				ry = pcb_get_value(tmp, NULL, NULL, NULL) - oy;
+				ry = rnd_get_value(tmp, NULL, NULL, NULL) - oy;
 			tmp = rnd_attribute_get(&sc->Attributes, "io_pcb::hidename_direction");
 			if (tmp != NULL)
 				rdir = atoi(tmp);
@@ -468,11 +468,11 @@ TODO("textrot: incompatibility warning")
 		if (on_bot)
 			fobj.Flags.f |= PCB_FLAG_ONSOLDER;
 		fprintf(FP, "\nElement[%s ", F2S(&fobj, PCB_OBJ_ELEMENT));
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&sc->Attributes, "footprint")));
+		pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&sc->Attributes, "footprint")));
 		fputc(' ', FP);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&sc->Attributes, "refdes")));
+		pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&sc->Attributes, "refdes")));
 		fputc(' ', FP);
-		pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&sc->Attributes, "value")));
+		pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&sc->Attributes, "value")));
 		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_OBJ_ELEMENT_NAME) : "\"\"");
 		WriteAttributeList(FP, &sc->Attributes, "\t", attr_inhibit);
 
@@ -483,18 +483,18 @@ TODO("textrot: incompatibility warning")
 			unsigned char ic = ps->intconn;
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ", x - ox, y - oy, pad_dia, clearance*2, mask, drill_dia);
-				pcb_print_quoted_string(FP, (char *)PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
+				pcb_print_quoted_string(FP, (char *)RND_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
-				pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "term")));
+				pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&ps->Attributes, "term")));
 				fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON), PCB_OBJ_PIN, &ic, 1));
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0) | (on_bot ? PCB_FLAG_ONSOLDER : 0);
 				pcb_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
 					x1 - ox, y1 - oy, x2 - ox, y2 - oy, thickness, clearance, mask);
-					pcb_print_quoted_string(FP, (char *)PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
+					pcb_print_quoted_string(FP, (char *)RND_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
 					fprintf(FP, " ");
-					pcb_print_quoted_string(FP, (char *) PCB_EMPTY(rnd_attribute_get(&ps->Attributes, "term")));
+					pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&ps->Attributes, "term")));
 					fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_flag_make(fl), PCB_OBJ_PAD, &ic, 1));
 			}
 			else
@@ -608,7 +608,7 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
 		fprintf(FP, "Layer(%i ", (int) Number + 1);
-		pcb_print_quoted_string(FP, layer_name_hack(layer, PCB_EMPTY(layer->name)));
+		pcb_print_quoted_string(FP, layer_name_hack(layer, RND_EMPTY(layer->name)));
 		fputs(")\n(\n", FP);
 		WriteAttributeList(FP, &layer->Attributes, "\t", NULL);
 
@@ -628,7 +628,7 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 TODO("textrot: incompatibility warning")
 			}
 			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, text->Scale);
-			pcb_print_quoted_string(FP, (char *) PCB_EMPTY(text->TextString));
+			pcb_print_quoted_string(FP, (char *) RND_EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_OBJ_TEXT));
 		}
 		textlist_foreach(&layer->Polygon, &it, polygon) {

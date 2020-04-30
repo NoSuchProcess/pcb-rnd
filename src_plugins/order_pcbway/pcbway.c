@@ -96,7 +96,7 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 	int res = 0;
 
 	wopts.header = (const char **)hdr;
-	hdr[0] = pcb_concat("api-key: ", CFG.api_key, NULL);
+	hdr[0] = rnd_concat("api-key: ", CFG.api_key, NULL);
 	hdr[1] = "Content-Type: application/xml";
 	hdr[2] = "Accept: application/xml";
 	hdr[3] = NULL;
@@ -359,7 +359,7 @@ static void pcbway_dlg2fields(order_ctx_t *octx, pcbway_form_t *form)
 				val = __n__->children->content; \
 			RND_DAD_LABEL(dlg, (char *)__n__->name); \
 			if ((val != NULL) && (xmlStrcmp(__n__->name, (xmlChar *)pricetag) == 0)) { \
-				char *__end__, *__tmp__ = pcb_concat("$", val, NULL); \
+				char *__end__, *__tmp__ = rnd_concat("$", val, NULL); \
 				RND_DAD_LABEL(dlg, __tmp__); \
 				free(__tmp__); \
 				__prc__ = strtod(val, &__end__); \
@@ -507,7 +507,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		pcb_wget_opts_t wopts;
 
 		wopts.header = (const char **)hdr;
-		hdr[0] = pcb_concat("api-key: ", CFG.api_key, NULL);
+		hdr[0] = rnd_concat("api-key: ", CFG.api_key, NULL);
 		hdr[1] = "Content-Type: application/xml";
 		hdr[2] = "Accept: application/xml";
 		hdr[3] = NULL;

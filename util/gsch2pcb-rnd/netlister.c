@@ -92,7 +92,7 @@ int run_gnetlist(const char *pins_file, const char *net_file, const char *pcb_fi
 		char *out_file;
 		char *backend;
 		if (!s2) {
-			out_file = pcb_concat(basename, ".", s, NULL);
+			out_file = rnd_concat(basename, ".", s, NULL);
 			backend = rnd_strdup(s);
 		}
 		else {

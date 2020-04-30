@@ -171,19 +171,19 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
 		if (argc > 5) {
-			X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			X = rnd_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+			Y = rnd_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			height_mil = pcb_get_value_ex(argv[2], NULL, NULL, NULL, NULL, &success);
+			height_mil = rnd_get_value_ex(argv[2], NULL, NULL, NULL, NULL, &success);
 			valid &= success;
 			scaling = (100 * height_mil) / 60;
-			direction = pcb_get_value_ex(argv[3], NULL, NULL, NULL, NULL, &success);
+			direction = rnd_get_value_ex(argv[3], NULL, NULL, NULL, NULL, &success);
 			direction = direction % 4; /* ignore mirroring */
 			valid &= success;
-			linewidth = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
+			linewidth = rnd_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			autotrax_layer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
+			autotrax_layer = rnd_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
 			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
@@ -256,17 +256,17 @@ static int rdax_track(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
 		if (argc > 5) {
-			X1 = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			X1 = rnd_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Y1 = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+			Y1 = rnd_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			X2 = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+			X2 = rnd_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Y2 = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+			Y2 = rnd_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
+			Thickness = rnd_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			autotrax_layer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
+			autotrax_layer = rnd_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
 			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			/* we ignore the user routed flag */
 			qparse_free(argc, &argv);
@@ -315,17 +315,17 @@ static int rdax_arc(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
 		if (argc > 5) {
-			centreX = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			centreX = rnd_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			centreY = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+			centreY = rnd_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			radius = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+			radius = rnd_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			segments = pcb_get_value_ex(argv[3], NULL, NULL, NULL, NULL, &success);
+			segments = rnd_get_value_ex(argv[3], NULL, NULL, NULL, NULL, &success);
 			valid &= success;
-			Thickness = pcb_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
+			Thickness = rnd_get_value_ex(argv[4], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			autotrax_layer = pcb_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
+			autotrax_layer = rnd_get_value_ex(argv[5], NULL, NULL, NULL, NULL, &success);
 			PCB_layer = st->protel_to_stackup[(int)autotrax_layer];
 			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			/* we ignore the user routed flag */
@@ -457,13 +457,13 @@ static int rdax_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
 		if (argc >= 4) {
-			X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			X = rnd_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+			Y = rnd_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Thickness = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+			Thickness = rnd_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Drill = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+			Drill = rnd_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 			qparse_free(argc, &argv);
 		}
@@ -519,17 +519,17 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 			rnd_message(RND_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
 			return -1;
 		}
-		X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+		X = rnd_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 		valid &= success;
-		Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+		Y = rnd_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 		valid &= success;
-		X_size = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+		X_size = rnd_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
 		valid &= success;
-		Y_size = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+		Y_size = rnd_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 		valid &= success;
 		Shape = strtol(argv[4], &end, 10);
 		if (*end != '\0') valid = 0;
-		Drill = pcb_get_value_ex(argv[5], NULL, NULL, NULL, "mil", &success);
+		Drill = rnd_get_value_ex(argv[5], NULL, NULL, NULL, "mil", &success);
 		valid &= success;
 		Connects = strtol(argv[6], &end, 10);
 		if (*end != '\0') valid = 0;
@@ -690,16 +690,16 @@ static int rdax_fill(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
 		if (argc >= 5) {
-			X1 = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			X1 = rnd_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Y1 = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+			Y1 = rnd_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			X2 = pcb_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
+			X2 = rnd_get_value_ex(argv[2], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			Y2 = pcb_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
+			Y2 = rnd_get_value_ex(argv[3], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 TODO("do not use get_value_ex for plain integers (revise the whole file for this)")
-			autotrax_layer = pcb_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success);
+			autotrax_layer = rnd_get_value_ex(argv[4], NULL, NULL, NULL, NULL, &success);
 			valid &= (success && (autotrax_layer > 0) && (autotrax_layer < 14));
 			qparse_free(argc, &argv);
 		}
@@ -995,9 +995,9 @@ static int rdax_component(read_state_t *st, FILE *FP)
 		rtrim(s);
 		argc = qparse2(s, &argv, 0);
 		if (argc >= 2) {
-			module_X = pcb_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
+			module_X = rnd_get_value_ex(argv[0], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
-			module_Y = pcb_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
+			module_Y = rnd_get_value_ex(argv[1], NULL, NULL, NULL, "mil", &success);
 			valid &= success;
 TODO("load placement status and apply PCB_FLAG_LOCK if needed")
 			qparse_free(argc, &argv);

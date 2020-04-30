@@ -262,7 +262,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 
 #define CHECK_TERM_LY(ob) \
 	do { \
-		if (PCB_NSTRCMP(term_name, ob->term) == 0) { \
+		if (RND_NSTRCMP(term_name, ob->term) == 0) { \
 			if (parent_out != NULL) *parent_out = subc; \
 			if (gid_out != NULL) *gid_out = pcb_layer_get_group_(layer); \
 			return (pcb_any_obj_t *)ob; \
@@ -271,7 +271,7 @@ pcb_term_err_t pcb_term_undoable_rename(pcb_board_t *pcb, pcb_any_obj_t *obj, co
 
 #define CHECK_TERM_GL(ob) \
 	do { \
-		if (PCB_NSTRCMP(term_name, ob->term) == 0) { \
+		if (RND_NSTRCMP(term_name, ob->term) == 0) { \
 			if (parent_out != NULL) *parent_out = subc; \
 			if (gid_out != NULL) { \
 				*gid_out = -1; \

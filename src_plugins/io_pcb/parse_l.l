@@ -221,7 +221,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 #endif
 	pcb_io_pcb_usty_seen = 0;
 	if (Pipe == NULL) {
-		if (PCB_EMPTY_STRING_P(Executable)) {
+		if (RND_EMPTY_STRING_P(Executable)) {
 			l = 2;
 			if (Path != NULL)
 				l += strlen(Path);

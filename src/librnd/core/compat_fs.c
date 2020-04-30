@@ -160,7 +160,7 @@ char *rnd_tempfile_name_new(const char *name)
 
 	sprintf(num, "%lu%lu", r1, r2);
 	tmpdir = rnd_w32_cachedir;
-	res = pcb_concat(tmpdir, "/", num, NULL);
+	res = rnd_concat(tmpdir, "/", num, NULL);
 	for(c = res; *c; c++)
 		if (*c == '\\')
 			*c = '/';

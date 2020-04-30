@@ -198,7 +198,7 @@ static int parse_coord(rnd_coord_t *res, lht_node_t *nd)
 	if (nd->type != LHT_TEXT)
 		return iolht_error(nd, "Invalid coord type: '%d'\n", nd->type);
 
-	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
+	tmp = rnd_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success)
 		return iolht_error(nd, "Invalid coord value: '%s'\n", nd->data.text.value);
 
@@ -221,7 +221,7 @@ static int parse_angle(rnd_angle_t *res, lht_node_t *nd)
 	if (nd->type != LHT_TEXT)
 		return iolht_error(nd, "Invalid angle type: '%d'\n", nd->type);
 
-	tmp = pcb_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
+	tmp = rnd_get_value_ex(nd->data.text.value, NULL, NULL, NULL, NULL, &success);
 	if (!success)
 		return iolht_error(nd, "Invalid angle value: '%s'\n", nd->data.text.value);
 

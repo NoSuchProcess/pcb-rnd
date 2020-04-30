@@ -30,12 +30,12 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 
-#define PCB_EMPTY(a)           ((a) ? (a) : "")
+#define RND_EMPTY(a)           ((a) ? (a) : "")
 
 /* Actual board meta to dialog box */
 static void pref_board_brd2dlg(pref_ctx_t *ctx)
 {
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str, PCB_EMPTY(PCB->hidlib.name));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str, RND_EMPTY(PCB->hidlib.name));
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wthermscale, dbl, PCB->ThermScale);
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str, (PCB->is_footprint ? "footprint" : "PCB board"));
 }
@@ -48,8 +48,8 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	double newtherm;
 	pref_ctx_t *ctx = caller_data;
 
-	newname = PCB_EMPTY(ctx->dlg[ctx->board.wname].val.str);
-	oldname = PCB_EMPTY(PCB->hidlib.name);
+	newname = RND_EMPTY(ctx->dlg[ctx->board.wname].val.str);
+	oldname = RND_EMPTY(PCB->hidlib.name);
 	if (strcmp(oldname, newname) != 0) {
 		free(PCB->hidlib.name);
 		PCB->hidlib.name = rnd_strdup(newname);
@@ -85,7 +85,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		RND_DAD_LABEL(ctx->dlg, "Board name");
 		RND_DAD_STRING(ctx->dlg);
 			ctx->board.wname = RND_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[ctx->board.wname].val.str = rnd_strdup(PCB_EMPTY(PCB->hidlib.name));
+			ctx->dlg[ctx->board.wname].val.str = rnd_strdup(RND_EMPTY(PCB->hidlib.name));
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		RND_DAD_LABEL(ctx->dlg, "Thermal scale");
 		RND_DAD_REAL(ctx->dlg, "");

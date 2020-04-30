@@ -1134,10 +1134,10 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 					y = pcb_crosshair.Y;
 				}
 				else if (argc == 4 || argc == 5) {
-					x = pcb_get_value(sbufnum, forces, &absolute, NULL);
+					x = rnd_get_value(sbufnum, forces, &absolute, NULL);
 					if (!absolute)
 						x += oldx;
-					y = pcb_get_value(fmt, forces, &absolute, NULL);
+					y = rnd_get_value(fmt, forces, &absolute, NULL);
 					if (!absolute)
 						y += oldy;
 				}

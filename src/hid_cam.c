@@ -282,7 +282,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, cons
 		goto err;
 	}
 	read_out_params(dst, &next);
-	dst->fn = pcb_str_strip(dst->inst);
+	dst->fn = rnd_str_strip(dst->inst);
 
 	if (strchr(dst->fn, '%') != NULL) {
 		dst->fn_template = dst->fn;
@@ -307,7 +307,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, cons
 			goto err;
 		}
 
-		curr = pcb_str_strip(curr);
+		curr = rnd_str_strip(curr);
 		numg = pcb_layergrp_list_by_addr(pcb, curr, gids, spk, spv, spc, &vid, &xf, &xf_, "CAM rule: ");
 		if (numg < 0)
 			goto err;

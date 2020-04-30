@@ -107,7 +107,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 				break;
 			case RND_HATT_STRING:
 				if (a->value)
-					*(const char **) a->value = rnd_strdup(PCB_EMPTY(a->default_val.str));
+					*(const char **) a->value = rnd_strdup(RND_EMPTY(a->default_val.str));
 				break;
 			case RND_HATT_ENUM:
 				if (a->value)
@@ -152,9 +152,9 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case RND_HATT_COORD:
 						if (a->value)
-							*(rnd_coord_t *) a->value = pcb_get_value((*argv)[1], NULL, NULL, NULL);
+							*(rnd_coord_t *) a->value = rnd_get_value((*argv)[1], NULL, NULL, NULL);
 						else
-							a->default_val.crd = pcb_get_value((*argv)[1], NULL, NULL, NULL);
+							a->default_val.crd = rnd_get_value((*argv)[1], NULL, NULL, NULL);
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -168,9 +168,9 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case RND_HATT_STRING:
 						if (a->value)
-							*(char **) a->value = rnd_strdup(PCB_EMPTY((*argv)[1]));
+							*(char **) a->value = rnd_strdup(RND_EMPTY((*argv)[1]));
 						else
-							a->default_val.str = rnd_strdup(PCB_EMPTY((*argv)[1]));
+							a->default_val.str = rnd_strdup(RND_EMPTY((*argv)[1]));
 						(*argc)--;
 						(*argv)++;
 						break;

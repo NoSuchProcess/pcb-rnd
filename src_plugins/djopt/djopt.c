@@ -2480,7 +2480,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	check(0, 0);
 
-	if (PCB_NSTRCMP(arg, "splitlines") == 0) {
+	if (RND_NSTRCMP(arg, "splitlines") == 0) {
 		if (canonicalize_lines())
 			pcb_undo_inc_serial();
 		rnd_hid_busy(PCB, 0);
@@ -2527,21 +2527,21 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/*dump_all(); */
 	check(0, 0);
 
-	if (PCB_NSTRCMP(arg, "debumpify") == 0)
+	if (RND_NSTRCMP(arg, "debumpify") == 0)
 		saved += debumpify();
-	else if (PCB_NSTRCMP(arg, "unjaggy") == 0)
+	else if (RND_NSTRCMP(arg, "unjaggy") == 0)
 		saved += unjaggy();
-	else if (PCB_NSTRCMP(arg, "simple") == 0)
+	else if (RND_NSTRCMP(arg, "simple") == 0)
 		saved += simple_optimizations();
-	else if (PCB_NSTRCMP(arg, "vianudge") == 0)
+	else if (RND_NSTRCMP(arg, "vianudge") == 0)
 		saved += vianudge();
-	else if (PCB_NSTRCMP(arg, "viatrim") == 0)
+	else if (RND_NSTRCMP(arg, "viatrim") == 0)
 		saved += viatrim();
-	else if (PCB_NSTRCMP(arg, "orthopull") == 0)
+	else if (RND_NSTRCMP(arg, "orthopull") == 0)
 		saved += orthopull();
-	else if (PCB_NSTRCMP(arg, "auto") == 0)
+	else if (RND_NSTRCMP(arg, "auto") == 0)
 		saved += automagic();
-	else if (PCB_NSTRCMP(arg, "miter") == 0)
+	else if (RND_NSTRCMP(arg, "miter") == 0)
 		saved += miter();
 	else {
 		printf("unknown command: %s\n", arg);

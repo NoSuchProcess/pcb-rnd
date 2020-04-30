@@ -458,7 +458,7 @@ static rnd_coord_t read_mask(pcb_any_obj_t *obj)
 
 	if (smask != NULL) {
 		rnd_bool success;
-		mask = pcb_get_value_ex(smask, NULL, NULL, NULL, "mm", &success);
+		mask = rnd_get_value_ex(smask, NULL, NULL, NULL, "mm", &success);
 		if (!success)
 			mask = 0;
 	}
@@ -2142,7 +2142,7 @@ pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name)
 TODO("subc: hierarchy")
 	PCB_SUBC_LOOP(base);
 	{
-		if ((subc->refdes != NULL) && (PCB_NSTRCMP(subc->refdes, name) == 0))
+		if ((subc->refdes != NULL) && (RND_NSTRCMP(subc->refdes, name) == 0))
 			return subc;
 	}
 	PCB_END_LOOP;

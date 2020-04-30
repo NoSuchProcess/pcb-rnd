@@ -145,7 +145,7 @@ void pcb_xordraw_attached_arc(rnd_coord_t thick)
 		return;
 	arc.X = pcb_crosshair.AttachedBox.Point1.X;
 	arc.Y = pcb_crosshair.AttachedBox.Point1.Y;
-	if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
+	if (RND_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
 		arc.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * RND_SGNZ(wx);
 		sa = (wx >= 0) ? 0 : 180;
 		dir = (RND_SGNZ(wx) == RND_SGNZ(wy)) ? 90 : -90;

@@ -449,7 +449,7 @@ static int in_mono, as_shown;
 static void parse_bloat(const char *str)
 {
 	int n;
-	pcb_unit_list_t extra_units = {
+	rnd_unit_list_t extra_units = {
 		{"pix", 0, 0},
 		{"px", 0, 0},
 		{"", 0, 0}
@@ -458,7 +458,7 @@ static void parse_bloat(const char *str)
 		extra_units[n].scale = scale;
 	if (str == NULL)
 		return;
-	bloat = pcb_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
+	bloat = rnd_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
 }
 
 static void rgb(color_struct *dest, int r, int g, int b)

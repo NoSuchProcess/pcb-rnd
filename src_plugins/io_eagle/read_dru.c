@@ -148,7 +148,7 @@ static void bump_up_str(const char *key, const char *val, const char *cpath, rnd
 	rnd_bool succ;
 	double d;
 
-	d = pcb_get_value(val, NULL, NULL, &succ);
+	d = rnd_get_value(val, NULL, NULL, &succ);
 	if (!succ) {
 		rnd_message(RND_MSG_ERROR, "Invalid coord value for key %s: '%s'\n", key, val);
 		return;

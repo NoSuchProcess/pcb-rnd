@@ -154,7 +154,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 		memset(&flt_local, 0, sizeof(flt_local));
 		flt_local[0].name = default_ext;
 		flt_local[0].pat = malloc(sizeof(char *) * 2);
-		flt_local[0].pat[0] = pcb_concat("*", default_ext, NULL);
+		flt_local[0].pat[0] = rnd_concat("*", default_ext, NULL);
 		flt_local[0].pat[1] = NULL;
 		flt_local[1] = rnd_hid_fsd_filter_any[0];
 		flt = flt_local;

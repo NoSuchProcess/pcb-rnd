@@ -176,7 +176,7 @@ static char *main_path_init(char *argv0)
 	sprintf(exec_prefix, "%s%s%s", bindir, RND_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
-	tmp = pcb_concat(PCBSHAREDIR, "/pcblib", NULL);
+	tmp = rnd_concat(PCBSHAREDIR, "/pcblib", NULL);
 	se |= rnd_setenv("PCB_RND_VERSION",     PCB_VERSION,           1);
 	se |= rnd_setenv("PCB_RND_REVISION",    PCB_REVISION,          1);
 	se |= rnd_setenv("PCB_RND_PCBLIB",      tmp,                   1);
@@ -190,13 +190,13 @@ static char *main_path_init(char *argv0)
 
 	rnd_menu_file_paths[0] = "./";
 	rnd_menu_file_paths[1] = "~/.pcb-rnd/";
-	rnd_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
+	rnd_menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
 	rnd_menu_file_paths[3] = NULL;
 
 	rnd_conf_userdir_path = CONF_USER_DIR;
-	rnd_pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_pcphl_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
 	rnd_conf_sysdir_path = PCBCONFDIR;
-	rnd_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 
 	free(bindir);
 	return exec_prefix;
@@ -451,7 +451,7 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));  /* Set seed for rand() */
 
-	pcb_funchash_set_table(Functions, PCB_ENTRIES(Functions), NULL);
+	pcb_funchash_set_table(Functions, RND_ENTRIES(Functions), NULL);
 	pcb_polygon_init();
 
 	/* Register a function to be called when the program terminates. This makes

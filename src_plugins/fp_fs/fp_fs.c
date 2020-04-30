@@ -90,7 +90,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	l->children++;
 	e = pcb_fp_append_entry(l->menu, name, type, tags);
 
-/* Avoid using pcb_concat() - would be a new dependency for gsch2pcb-rnd */
+/* Avoid using rnd_concat() - would be a new dependency for gsch2pcb-rnd */
 	{
 		int sl = strlen(subdir);
 		int nl = strlen(name);
@@ -180,12 +180,12 @@ TODO("fp: make this a configurable list")
 		l = strlen(subdirentry->d_name);
 		if (!stat(subdirentry->d_name, &buffer)
 				&& subdirentry->d_name[0] != '.'
-				&& PCB_NSTRCMP(subdirentry->d_name, "CVS") != 0
-				&& PCB_NSTRCMP(subdirentry->d_name, "Makefile") != 0
-				&& PCB_NSTRCMP(subdirentry->d_name, "Makefile.am") != 0
-				&& PCB_NSTRCMP(subdirentry->d_name, "Makefile.in") != 0 && (l < 4 || PCB_NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0)
-				&& (l < 5 || PCB_NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
-				&& (l < 4 || PCB_NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
+				&& RND_NSTRCMP(subdirentry->d_name, "CVS") != 0
+				&& RND_NSTRCMP(subdirentry->d_name, "Makefile") != 0
+				&& RND_NSTRCMP(subdirentry->d_name, "Makefile.am") != 0
+				&& RND_NSTRCMP(subdirentry->d_name, "Makefile.in") != 0 && (l < 4 || RND_NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0)
+				&& (l < 5 || RND_NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
+				&& (l < 4 || RND_NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
 
 #ifdef DEBUG
 /*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */

@@ -1866,7 +1866,7 @@ yyreduce:
 			pcb_qry_node_t *fname, *nname;
 
 			nname = pcb_qry_n_alloc(PCBQ_DATA_STRING);
-			nname->data.str = pcb_concat("design/drc/", (yyvsp[0].s), NULL);
+			nname->data.str = rnd_concat("design/drc/", (yyvsp[0].s), NULL);
 			free((yyvsp[0].s));
 
 			fname = pcb_qry_n_alloc(PCBQ_FNAME);
@@ -1929,7 +1929,7 @@ yyreduce:
 #line 364 "query_y.y" /* yacc.c:1652  */
     {
 			char *old = (yyvsp[0].n)->data.str, *sep = ((*old != '\0') ? " " : "");
-			(yyvsp[0].n)->data.str = pcb_concat((yyvsp[-1].s), sep, old, NULL);
+			(yyvsp[0].n)->data.str = rnd_concat((yyvsp[-1].s), sep, old, NULL);
 			free(old);
 			free((yyvsp[-1].s));
 			(yyval.n) = (yyvsp[0].n);

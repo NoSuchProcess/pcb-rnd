@@ -608,17 +608,17 @@ static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
 	if (subtree->str == NULL)
 		return kicad_error(subtree, "error parsing KiCad titleblock: empty");
 
-	name = pcb_concat(prefix, subtree->str, NULL);
+	name = rnd_concat(prefix, subtree->str, NULL);
 	rnd_attrib_put(st->pcb, name, subtree->children->str);
 	free(name);
 	for(n = subtree->next; n != NULL; n = n->next) {
 		if (n->str != NULL && strcmp("comment", n->str) != 0) {
-			name = pcb_concat(prefix, n->str, NULL);
+			name = rnd_concat(prefix, n->str, NULL);
 			rnd_attrib_put(st->pcb, name, n->children->str);
 			free(name);
 		}
 		else { /* if comment field has extra children args */
-			name = pcb_concat(prefix, n->str, "_", n->children->str, NULL);
+			name = rnd_concat(prefix, n->str, "_", n->children->str, NULL);
 			rnd_attrib_put(st->pcb, name, n->children->next->str);
 			free(name);
 		}
@@ -2410,7 +2410,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			if ((n->children == NULL) || (n->children->str == NULL))
 				return kicad_error(n, "unexpected empty/NULL module attr node");
 
-			key = pcb_concat("kicad_attr_", n->children->str, NULL);
+			key = rnd_concat("kicad_attr_", n->children->str, NULL);
 			rnd_attribute_put(&subc->Attributes, key, "1");
 			free(key);
 		}

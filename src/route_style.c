@@ -44,7 +44,7 @@ pcb_route_style_t pcb_custom_route_style;
 static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
 {
 	/* Read value */
-	rnd_coord_t ret_val = pcb_get_value_ex(*s, NULL, NULL, NULL, default_unit, NULL);
+	rnd_coord_t ret_val = rnd_get_value_ex(*s, NULL, NULL, NULL, default_unit, NULL);
 	/* Advance pointer */
 	while (isalnum(**s) || **s == '.')
 		(*s)++;

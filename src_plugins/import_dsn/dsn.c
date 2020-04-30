@@ -96,7 +96,7 @@ static void parse_polyline(long int *nlines, rnd_coord_t clear, const gsxl_node_
 	rnd_layer_id_t lid;
 	pcb_layer_t *layer;
 
-	thick = pcb_get_value(sthick, unit, NULL, &succ);
+	thick = rnd_get_value(sthick, unit, NULL, &succ);
 	if (!succ) {
 		rnd_message(RND_MSG_ERROR, "import_dsn: skipping polyline because thickness is invalid: %s\n", sthick);
 		return;
@@ -113,12 +113,12 @@ static void parse_polyline(long int *nlines, rnd_coord_t clear, const gsxl_node_
 	for(pn = 0, c = n->children->next->next; c != NULL; pn++, c = c->next->next) {
 		const char *sx = c->str;
 		const char *sy = c->next->str;
-		x = pcb_get_value(sx, unit, NULL, &succ);
+		x = rnd_get_value(sx, unit, NULL, &succ);
 		if (!succ) {
 			rnd_message(RND_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sx);
 			return;
 		}
-		y = pcb_get_value(sy, unit, NULL, &succ);
+		y = rnd_get_value(sy, unit, NULL, &succ);
 		if (!succ) {
 			rnd_message(RND_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
 			return;
@@ -184,12 +184,12 @@ static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	dia = l1;
 	drill = l2;
 
-	x = pcb_get_value(sx, unit, NULL, &succ);
+	x = rnd_get_value(sx, unit, NULL, &succ);
 	if (!succ) {
 		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sx);
 		return;
 	}
-	y = pcb_get_value(sy, unit, NULL, &succ);
+	y = rnd_get_value(sy, unit, NULL, &succ);
 	if (!succ) {
 		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sy);
 		return;

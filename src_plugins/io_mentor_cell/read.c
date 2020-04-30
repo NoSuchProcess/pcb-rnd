@@ -182,7 +182,7 @@ static int parse_coord(hkp_ctx_t *ctx, char *s, rnd_coord_t *crd)
 	if (end != NULL)
 		*end = '\0';
 
-	*crd = pcb_get_value(s, ctx->unit->suffix, NULL, &suc);
+	*crd = rnd_get_value(s, ctx->unit->suffix, NULL, &suc);
 	return !suc;
 }
 
@@ -219,8 +219,8 @@ static int parse_xy(hkp_ctx_t *ctx, char *s, rnd_coord_t *x, rnd_coord_t *y, int
 	sy++;
 
 
-	xx = pcb_get_value(s, ctx->unit->suffix, NULL, &suc1);
-	yy = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
+	xx = rnd_get_value(s, ctx->unit->suffix, NULL, &suc1);
+	yy = rnd_get_value(sy, ctx->unit->suffix, NULL, &suc2);
 
 	if (xform)
 		yy = -yy;
@@ -255,9 +255,9 @@ static int parse_xyr(hkp_ctx_t *ctx, char *s, rnd_coord_t *x, rnd_coord_t *y, rn
 	*sr = '\0';
 	sr++;
 
-	xx = pcb_get_value(s, ctx->unit->suffix, NULL, &suc1);
-	yy = pcb_get_value(sy, ctx->unit->suffix, NULL, &suc2);
-	rr = pcb_get_value(sr, ctx->unit->suffix, NULL, &suc3);
+	xx = rnd_get_value(s, ctx->unit->suffix, NULL, &suc1);
+	yy = rnd_get_value(sy, ctx->unit->suffix, NULL, &suc2);
+	rr = rnd_get_value(sr, ctx->unit->suffix, NULL, &suc3);
 
 	if (xform)
 		yy = -yy;

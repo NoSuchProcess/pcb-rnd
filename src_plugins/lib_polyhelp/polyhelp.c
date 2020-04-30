@@ -453,7 +453,7 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else {
 		if (op != NULL) {
 			rnd_bool succ;
-			period = pcb_get_value(op, NULL, NULL, &succ);
+			period = rnd_get_value(op, NULL, NULL, &succ);
 			if (!succ) {
 				rnd_message(RND_MSG_ERROR, "Invalid spacing value - must be a coordinate\n");
 				return -1;

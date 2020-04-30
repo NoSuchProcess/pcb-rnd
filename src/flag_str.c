@@ -92,7 +92,7 @@ pcb_flag_bits_t pcb_object_flagbits[] = {
 #undef N
 #undef FN
 
-const int pcb_object_flagbits_len = PCB_ENTRIES(pcb_object_flagbits);
+const int pcb_object_flagbits_len = RND_ENTRIES(pcb_object_flagbits);
 
 /* List of old/obsolete flags to silently ignore on load */
 static const char *old_flag_ignore[] = { "connected", NULL };
@@ -418,7 +418,7 @@ pcb_flag_t pcb_strflg_common_s2f(const char *flagstring, int (*error) (const cha
 
 pcb_flag_t pcb_strflg_s2f(const char *flagstring, int (*error) (const char *msg), unsigned char *intconn, int compat)
 {
-	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits), intconn, compat);
+	return pcb_strflg_common_s2f(flagstring, error, pcb_object_flagbits, RND_ENTRIES(pcb_object_flagbits), intconn, compat);
 }
 
 char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *flagbits, int n_flagbits, unsigned char *intconn, int compat)
@@ -532,12 +532,12 @@ char *pcb_strflg_common_f2s(pcb_flag_t flags, int object_type, pcb_flag_bits_t *
 
 char *pcb_strflg_f2s(pcb_flag_t flags, int object_type, unsigned char *intconn, int compat)
 {
-	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, PCB_ENTRIES(pcb_object_flagbits), intconn, compat);
+	return pcb_strflg_common_f2s(flags, object_type, pcb_object_flagbits, RND_ENTRIES(pcb_object_flagbits), intconn, compat);
 }
 
 const pcb_flag_bits_t *pcb_strflg_1bit(unsigned long bit, int object_type)
 {
-	int i, n_flagbits = PCB_ENTRIES(pcb_object_flagbits);;
+	int i, n_flagbits = RND_ENTRIES(pcb_object_flagbits);;
 	for (i = 0; i < n_flagbits; i++) {
 		unsigned long my_obj_typs = pcb_object_flagbits[i].object_types;
 		if ((my_obj_typs & object_type) && (!pcb_object_flagbits[i].omit_list) && (pcb_object_flagbits[i].mask & bit))
@@ -548,7 +548,7 @@ const pcb_flag_bits_t *pcb_strflg_1bit(unsigned long bit, int object_type)
 
 const pcb_flag_bits_t *pcb_strflg_name(const char *name, int object_type)
 {
-	int i, n_flagbits = PCB_ENTRIES(pcb_object_flagbits);;
+	int i, n_flagbits = RND_ENTRIES(pcb_object_flagbits);;
 	for (i = 0; i < n_flagbits; i++) {
 		unsigned long my_obj_typs = pcb_object_flagbits[i].object_types;
 		if ((my_obj_typs & object_type) && (!pcb_object_flagbits[i].omit_list) && (strcmp(pcb_object_flagbits[i].name, name) == 0))
@@ -559,7 +559,7 @@ const pcb_flag_bits_t *pcb_strflg_name(const char *name, int object_type)
 
 void pcb_strflg_map(unsigned long fbits, int object_type, void *ctx, void (*cb)(void *ctx, unsigned long flg, const pcb_flag_bits_t *fb))
 {
-	int n, i, n_flagbits = PCB_ENTRIES(pcb_object_flagbits);
+	int n, i, n_flagbits = RND_ENTRIES(pcb_object_flagbits);
 	for(n = 0; n < 32; n++) {
 		unsigned long bit = 1 << n;
 		if (!(fbits & bit))
@@ -607,10 +607,10 @@ static pcb_flag_bits_t pcb_flagbits[] = {
 
 char *pcb_strflg_board_f2s(pcb_flag_t flags)
 {
-	return pcb_strflg_common_f2s(flags, PCB_OBJ_ANY, pcb_flagbits, PCB_ENTRIES(pcb_flagbits), NULL, 0);
+	return pcb_strflg_common_f2s(flags, PCB_OBJ_ANY, pcb_flagbits, RND_ENTRIES(pcb_flagbits), NULL, 0);
 }
 
 pcb_flag_t pcb_strflg_board_s2f(const char *flagstring, int (*error)(const char *msg))
 {
-	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, PCB_ENTRIES(pcb_flagbits), NULL, 0);
+	return pcb_strflg_common_s2f(flagstring, error, pcb_flagbits, RND_ENTRIES(pcb_flagbits), NULL, 0);
 }

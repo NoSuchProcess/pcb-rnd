@@ -336,9 +336,9 @@ static int get_where(const char *arg, pcb_data_t **data, rnd_coord_t *x, rnd_coo
 		tmp[offs] = '\0';
 		sx = tmp;
 		sy = tmp + offs + 1;
-		*x = pcb_get_value(sx, NULL, NULL, &succ);
+		*x = rnd_get_value(sx, NULL, NULL, &succ);
 		if (succ)
-			*y = pcb_get_value(sy, NULL, NULL, &succ);
+			*y = rnd_get_value(sy, NULL, NULL, &succ);
 		free(tmp);
 		if (!succ) {
 			rnd_message(RND_MSG_ERROR, "regpoly(): invalid center coords '%s'\n", dst);
@@ -365,13 +365,13 @@ static rnd_bool parse2coords(const char *arg, rnd_coord_t *rx, rnd_coord_t *ry)
 		tmp[offs] = '\0';
 		sx = tmp;
 		sy = tmp + offs + 1;
-		*rx = pcb_get_value(sx, NULL, NULL, &succ);
+		*rx = rnd_get_value(sx, NULL, NULL, &succ);
 		if (succ)
-			*ry = pcb_get_value(sy, NULL, NULL, &succ);
+			*ry = rnd_get_value(sy, NULL, NULL, &succ);
 		free(tmp);
 	}
 	else
-		*rx = *ry = pcb_get_value(dst, NULL, NULL, &succ);
+		*rx = *ry = rnd_get_value(dst, NULL, NULL, &succ);
 	return succ;
 }
 
@@ -591,7 +591,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	dia = pcb_get_value(args[a], NULL, NULL, &succ);
+	dia = rnd_get_value(args[a], NULL, NULL, &succ);
 	if (!succ) {
 		rnd_message(RND_MSG_ERROR, "circle(): failed to convert dia: invalid coord (%s)\n", args[a]);
 		RND_ACT_IRES(1);

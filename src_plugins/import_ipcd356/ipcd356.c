@@ -88,7 +88,7 @@ static int extract_dim(rnd_coord_t *dst, const char *line, int start, int end, i
 		}
 	}
 	extract_field(tmp, line, start, end);
-	d = pcb_get_value(tmp, is_mil ? "mil" : "mm", NULL, &succ);
+	d = rnd_get_value(tmp, is_mil ? "mil" : "mm", NULL, &succ);
 	if (!succ)
 		return -1;
 	if (is_mil)

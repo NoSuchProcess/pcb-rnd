@@ -270,7 +270,7 @@ static void load_extra_project_files(void)
 	load_project("/etc/gsch2pcb");
 	load_project("/usr/local/etc/gsch2pcb");
 
-	path = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, ".gEDA", RND_DIR_SEPARATOR_S, "gsch2pcb", NULL);
+	path = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, ".gEDA", RND_DIR_SEPARATOR_S, "gsch2pcb", NULL);
 	load_project(path);
 	free(path);
 
@@ -390,12 +390,12 @@ int main(int argc, char ** argv)
 	method_import_register();
 
 	rnd_conf_userdir_path = CONF_USER_DIR;
-	rnd_pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_pcphl_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
 	rnd_conf_sysdir_path = PCBCONFDIR;
-	rnd_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 	rnd_menu_file_paths[0] = "./";
 	rnd_menu_file_paths[1] = "~/.pcb-rnd/";
-	rnd_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
+	rnd_menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
 	rnd_menu_file_paths[3] = NULL;
 
 	rnd_file_loaded_init();

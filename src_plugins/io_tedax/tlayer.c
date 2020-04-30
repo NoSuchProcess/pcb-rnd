@@ -171,8 +171,8 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 
 			if ((argc == 3) && (strcmp(argv[0], "v") == 0)) {
 				rnd_bool s1, s2;
-				vtc0_append(coords, pcb_get_value(argv[1], "mm", NULL, &s1));
-				vtc0_append(coords, pcb_get_value(argv[2], "mm", NULL, &s2));
+				vtc0_append(coords, rnd_get_value(argv[1], "mm", NULL, &s1));
+				vtc0_append(coords, rnd_get_value(argv[2], "mm", NULL, &s2));
 				if (!s1 || !s2) {
 					rnd_message(RND_MSG_ERROR, "invalid coords in polyline %s: %s;%s\n", pname, argv[1], argv[2]);
 					res = -1;
@@ -221,17 +221,17 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				rnd_coord_t x1, y1, x2, y2, th, cl;
 				rnd_bool s1, s2, s3, s4;
 
-				x1 = pcb_get_value(argv[1], "mm", NULL, &s1);
-				y1 = pcb_get_value(argv[2], "mm", NULL, &s2);
-				x2 = pcb_get_value(argv[3], "mm", NULL, &s3);
-				y2 = pcb_get_value(argv[4], "mm", NULL, &s4);
+				x1 = rnd_get_value(argv[1], "mm", NULL, &s1);
+				y1 = rnd_get_value(argv[2], "mm", NULL, &s2);
+				x2 = rnd_get_value(argv[3], "mm", NULL, &s3);
+				y2 = rnd_get_value(argv[4], "mm", NULL, &s4);
 				if (!s1 || !s2 || !s3 || !s4) {
 					rnd_message(RND_MSG_ERROR, "invalid line coords in line: %s;%s %s;%s\n", argv[1], argv[2], argv[3], argv[4]);
 					res = -1;
 					goto error;
 				}
-				th = pcb_get_value(argv[5], "mm", NULL, &s1);
-				cl = pcb_get_value(argv[6], "mm", NULL, &s2);
+				th = rnd_get_value(argv[5], "mm", NULL, &s1);
+				cl = rnd_get_value(argv[6], "mm", NULL, &s2);
 				if (!s1 || !s2) {
 					rnd_message(RND_MSG_ERROR, "invalid thickness or clearance in line: %s;%s\n", argv[5], argv[6]);
 					res = -1;
@@ -244,9 +244,9 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				double sa, da;
 				rnd_bool s1, s2, s3;
 
-				cx = pcb_get_value(argv[1], "mm", NULL, &s1);
-				cy = pcb_get_value(argv[2], "mm", NULL, &s2);
-				r  = pcb_get_value(argv[3], "mm", NULL, &s3);
+				cx = rnd_get_value(argv[1], "mm", NULL, &s1);
+				cy = rnd_get_value(argv[2], "mm", NULL, &s2);
+				r  = rnd_get_value(argv[3], "mm", NULL, &s3);
 				if (!s1 || !s2 || !s3) {
 					rnd_message(RND_MSG_ERROR, "invalid arc coords or radius in line: %s;%s %s\n", argv[1], argv[2], argv[3]);
 					res = -1;
@@ -264,8 +264,8 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 					res = -1;
 					goto error;
 				}
-				th = pcb_get_value(argv[6], "mm", NULL, &s1);
-				cl = pcb_get_value(argv[7], "mm", NULL, &s2);
+				th = rnd_get_value(argv[6], "mm", NULL, &s1);
+				cl = rnd_get_value(argv[7], "mm", NULL, &s2);
 				if (!s1 || !s2) {
 					rnd_message(RND_MSG_ERROR, "invalid thickness or clearance in arc: %s;%s\n", argv[6], argv[7]);
 					res = -1;
@@ -279,10 +279,10 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				double rot, zx, zy, z;
 				pcb_text_t *text;
 
-				bx1 = pcb_get_value(argv[1], "mm", NULL, &s1);
-				by1 = pcb_get_value(argv[2], "mm", NULL, &s2);
-				bx2 = pcb_get_value(argv[3], "mm", NULL, &s3);
-				by2 = pcb_get_value(argv[4], "mm", NULL, &s4);
+				bx1 = rnd_get_value(argv[1], "mm", NULL, &s1);
+				by1 = rnd_get_value(argv[2], "mm", NULL, &s2);
+				bx2 = rnd_get_value(argv[3], "mm", NULL, &s3);
+				by2 = rnd_get_value(argv[4], "mm", NULL, &s4);
 				if (!s1 || !s2 || !s3 || !s4) {
 					rnd_message(RND_MSG_ERROR, "invalid bbox coords in text %s;%s %s;%s \n", argv[1], argv[2], argv[3], argv[4]);
 					res = -1;
@@ -320,8 +320,8 @@ int tedax_layers_fload(pcb_data_t *data, FILE *f, const char *blk_id, int silent
 				rnd_coord_t ox, oy;
 				pcb_poly_t *poly;
 
-				ox = pcb_get_value(argv[2], "mm", NULL, &s1);
-				oy = pcb_get_value(argv[3], "mm", NULL, &s2);
+				ox = rnd_get_value(argv[2], "mm", NULL, &s1);
+				oy = rnd_get_value(argv[3], "mm", NULL, &s2);
 				if (!s1 || !s2) {
 					rnd_message(RND_MSG_ERROR, "invalid coords in poly %s;%s\n", argv[2], argv[3]);
 					res = -1;

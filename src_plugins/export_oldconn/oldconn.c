@@ -64,11 +64,11 @@ const char *oldconn_cookie = "export_oldconn HID";
 static void print_subc_name(FILE *f, pcb_subc_t *subc)
 {
 	fputc('(', f);
-	pcb_print_quoted_string(f, (char *)PCB_EMPTY(rnd_attribute_get(&subc->Attributes, "footprint")));
+	pcb_print_quoted_string(f, (char *)RND_EMPTY(rnd_attribute_get(&subc->Attributes, "footprint")));
 	fputc(' ', f);
-	pcb_print_quoted_string(f, (char *)PCB_EMPTY(subc->refdes));
+	pcb_print_quoted_string(f, (char *)RND_EMPTY(subc->refdes));
 	fputc(' ', f);
-	pcb_print_quoted_string(f, (char *)PCB_EMPTY(rnd_attribute_get(&subc->Attributes, "value")));
+	pcb_print_quoted_string(f, (char *)RND_EMPTY(rnd_attribute_get(&subc->Attributes, "value")));
 	fputs(")\n", f);
 }
 
@@ -120,7 +120,7 @@ static void print_select_unused_subc_terms(FILE *f, pcb_subc_t *subc, int do_sel
 			}
 
 			fputc('\t', f);
-			pcb_print_quoted_string(f, (char *)PCB_EMPTY(o->term));
+			pcb_print_quoted_string(f, (char *)RND_EMPTY(o->term));
 			fputc('\n', f);
 			if (do_select) {
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, o);
@@ -154,7 +154,7 @@ static int print_term_conn_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t 
 		return 0;
 
 	fputs("\t\t", ctx->f);
-	pcb_print_quoted_string(ctx->f, PCB_EMPTY(o->term));
+	pcb_print_quoted_string(ctx->f, RND_EMPTY(o->term));
 	fputs(" ", ctx->f);
 	print_subc_name(ctx->f, sc);
 	return 0;
@@ -179,7 +179,7 @@ static void pcb_print_subc_conns(FILE *f, pcb_subc_t *subc)
 			continue;
 
 		fputs("\t", f);
-		pcb_print_quoted_string(f, PCB_EMPTY(o->term));
+		pcb_print_quoted_string(f, RND_EMPTY(o->term));
 		fputs("\n\t{\n", f);
 
 		cbctx.start = o;

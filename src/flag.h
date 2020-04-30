@@ -179,8 +179,8 @@ int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2);
 #define PCB_FLAG_SQUARE_ASSIGN(V,P)	(P)->Flags.q = V
 
 /* Returns 1 if any of the bytes in arr is non-zero */
-int pcb_mem_any_set(unsigned char *arr, int arr_len);
-#define PCB_FLAG_THERM_TEST_ANY(P)	pcb_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
+int rnd_mem_any_set(unsigned char *arr, int arr_len);
+#define PCB_FLAG_THERM_TEST_ANY(P)	rnd_mem_any_set((P)->Flags.t, sizeof((P)->Flags.t))
 
 /*** Dynamic flags ***/
 #define PCB_DFLAG_SET(flg, dynf) (flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] |= (1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))

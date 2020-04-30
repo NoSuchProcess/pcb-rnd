@@ -1602,7 +1602,7 @@ static Boolean
 pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
 {
 	static rnd_coord_t rv;
-	rv = pcb_get_value((char *) from->addr, NULL, NULL, NULL);
+	rv = rnd_get_value((char *) from->addr, NULL, NULL, NULL);
 	if (to->addr)
 		*(rnd_coord_t *) to->addr = rv;
 	else

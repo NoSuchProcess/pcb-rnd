@@ -363,8 +363,8 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					RND_ACT_FAIL(Display);
 					return FGW_ERR_ARG_CONV;
 				}
-				RND_ACT_HIDLIB->grid_ox = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
-				RND_ACT_HIDLIB->grid_oy = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
+				RND_ACT_HIDLIB->grid_ox = rnd_get_value(argv[2].val.str, NULL, NULL, NULL);
+				RND_ACT_HIDLIB->grid_oy = rnd_get_value(argv[3].val.str, NULL, NULL, NULL);
 				if (rnd_conf.editor.draw_grid)
 					rnd_hid_redraw(PCB);
 			}

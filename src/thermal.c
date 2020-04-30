@@ -432,7 +432,7 @@ static int cong_map(char *cong, pcb_poly_it_t *it, rnd_coord_t clr)
 			n++;
 			break;
 		}
-		cong[n] = (pcb_distance2(x, y, px, py) < cl2);
+		cong[n] = (rnd_distance2(x, y, px, py) < cl2);
 		px = x; py = y;
 	}
 	return n;

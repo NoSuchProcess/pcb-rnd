@@ -82,7 +82,7 @@ int main()
 
 		otype = PCB_OBJ_ANY;
 		fh.Flags = empty_flags;
-		for (i = 0; i < PCB_ENTRIES(pcb_object_flagbits); i++) {
+		for (i = 0; i < RND_ENTRIES(pcb_object_flagbits); i++) {
 			if (PCB_FLAG_TEST(pcb_object_flagbits[i].mask, &fh))
 				continue;
 			if ((otype & pcb_object_flagbits[i].object_types) == 0)
@@ -122,7 +122,7 @@ int main()
 
 		otype = PCB_OBJ_ANY;
 		fh.Flags = empty_flags;
-		for (i = 0; i < PCB_ENTRIES(pcb_flagbits); i++) {
+		for (i = 0; i < RND_ENTRIES(pcb_flagbits); i++) {
 			if (PCB_FLAG_TEST(pcb_flagbits[i].mask, &fh))
 				continue;
 			if ((random() & 4) == 0)

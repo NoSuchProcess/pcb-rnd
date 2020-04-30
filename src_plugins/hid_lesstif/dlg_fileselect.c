@@ -71,16 +71,16 @@ static void pcb_ltf_set_fn(pcb_ltf_fsd_t *pctx, int append, const char *fn)
 
 		end = strrchr(dir, RND_DIR_SEPARATOR_C);
 		if (end == NULL) {
-			path = pcb_concat(dir, "/", fn, NULL);
+			path = rnd_concat(dir, "/", fn, NULL);
 		}
 		else if (end[1] == '\0') {
 			/* dir is a directory, ending in /, append fn */
-			path = pcb_concat(dir, fn, NULL);
+			path = rnd_concat(dir, fn, NULL);
 		}
 		else {
 			/* dir is a full path, with file name included, replace that */
 			end[1] = '\0';
-			path = pcb_concat(dir, fn, NULL);
+			path = rnd_concat(dir, fn, NULL);
 		}
 
 		xms_path = XmStringCreatePCB(path);

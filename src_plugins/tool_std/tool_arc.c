@@ -94,7 +94,7 @@ void pcb_tool_arc_notify_mode(rnd_hidlib_t *hl)
 			wx = hl->tool_x - pcb_crosshair.AttachedBox.Point1.X;
 			wy = hl->tool_y - pcb_crosshair.AttachedBox.Point1.Y;
 rnd_trace("arc: %mm %mm wh %mm %mm\n", hl->tool_x, hl->tool_y, wx, wy);
-			if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
+			if (RND_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
 				pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * RND_SGNZ(wx);
 				sa = (wx >= 0) ? 0 : 180;
 				dir = (RND_SGNZ(wx) == RND_SGNZ(wy)) ? 90 : -90;

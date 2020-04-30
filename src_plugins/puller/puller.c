@@ -717,7 +717,7 @@ static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y,
 		{
 			rnd_coord_t cx = shape->data.circ.x + ps->x, cy = shape->data.circ.y + ps->y;
 			double max_dist2 = ((double)shape->data.circ.dia/2.0) * ((double)shape->data.circ.dia/2.0);
-			double dist2 = pcb_distance2(cx, cy, x, y);
+			double dist2 = rnd_distance2(cx, cy, x, y);
 			return (dist2 <= max_dist2);
 		}
 		case PCB_PSSH_HSHADOW:

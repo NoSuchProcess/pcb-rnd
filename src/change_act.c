@@ -109,7 +109,7 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 			value *= 2;
 		}
 		else
-			value = 2 * pcb_get_value(delta, units, &absolute, NULL);
+			value = 2 * rnd_get_value(delta, units, &absolute, NULL);
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
 			{
@@ -177,7 +177,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	rnd_bool(*set_object) (int, void *, void *, void *);
 	rnd_bool(*set_selected) (int);
 
-	if (PCB_NSTRCMP(flag_name, "join") == 0) {
+	if (RND_NSTRCMP(flag_name, "join") == 0) {
 		/* Note: these are backwards, because the flag is "clear" but
 		   the command is "join".  */
 		set_object = value ? pcb_clr_obj_join : pcb_set_obj_join;
@@ -301,7 +301,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			tostyle = 1;
 		}
 		else
-			value = pcb_get_value(delta, units, &absolute, NULL);
+			value = rnd_get_value(delta, units, &absolute, NULL);
 		switch (funcid) {
 		case F_Object:
 			{
@@ -395,7 +395,7 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			absolute = 1;
 		}
 		else
-			value = pcb_get_value(delta, units, &absolute, NULL);
+			value = rnd_get_value(delta, units, &absolute, NULL);
 
 		switch (pcb_funchash_get(function, NULL)) {
 		case F_Object:
@@ -441,12 +441,12 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	PCB_SUBC_LOOP(PCB_ACT_BOARD->Data);
 	{
-		if ((subc->refdes != NULL) && (PCB_NSTRCMP(refdes, subc->refdes) == 0)) {
+		if ((subc->refdes != NULL) && (RND_NSTRCMP(refdes, subc->refdes) == 0)) {
 			pcb_any_obj_t *o;
 			pcb_data_it_t it;
 
 			for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
-				if ((o->term != NULL) && (PCB_NSTRCMP(pinnum, o->term) == 0)) {
+				if ((o->term != NULL) && (RND_NSTRCMP(pinnum, o->term) == 0)) {
 TODO(": make this undoable")
 					rnd_attribute_put(&o->Attributes, "name", pinname);
 					pcb_board_set_changed_flag(pcb_true);
@@ -527,7 +527,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the layout's name */
 		case F_Layout:
-			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", PCB_EMPTY(RND_ACT_HIDLIB->name), "Layout name");
+			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", RND_EMPTY(RND_ACT_HIDLIB->name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
 				pcb_board_set_changed_flag(pcb_true);
@@ -535,7 +535,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* change the name of the active layer */
 		case F_Layer:
-			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layer name:", PCB_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
+			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layer name:", RND_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
 			if (name && (pcb_layer_rename_(PCB_CURRLAYER(PCB_ACT_BOARD), name, 1) == 0))
 				pcb_board_set_changed_flag(pcb_true);
@@ -670,7 +670,7 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (function && *function && style && *style) {
 		rnd_bool absolute;
 
-		kind = pcb_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
+		kind = rnd_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
 		if (absolute && (kind <= 5))
 			switch (pcb_funchash_get(function, NULL)) {
 			case F_Object:
@@ -770,7 +770,7 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
 
-	value = pcb_get_value(val, units, &absolute, NULL);
+	value = rnd_get_value(val, units, &absolute, NULL);
 
 	switch(fnc_id) {
 		case F_LineSize:
@@ -909,7 +909,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		type = pcb_search_screen(x, y, PCB_CHANGESIZE_TYPES, &ptr1, &ptr2, &ptr3);
 	}
 
-	value = pcb_get_value(delta, units, &absolute, NULL);
+	value = rnd_get_value(delta, units, &absolute, NULL);
 
 	switch(funcid) {
 		case F_Object:

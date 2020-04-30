@@ -269,7 +269,7 @@ static rnd_coord_t eagle_get_attrc(read_state_t *st, trnode_t *nd, const char *n
 	if (p == NULL)
 		return invalid_val;
 
-	c = pcb_get_value(p, st->default_unit, NULL, &succ);
+	c = rnd_get_value(p, st->default_unit, NULL, &succ);
 	if (!succ)
 		return invalid_val;
 	return c;
@@ -285,7 +285,7 @@ static rnd_coord_t eagle_get_attrcu(read_state_t *st, trnode_t *nd, const char *
 	if (p == NULL)
 		return invalid_val;
 
-	c = pcb_get_value(p, NULL, NULL, &succ);
+	c = rnd_get_value(p, NULL, NULL, &succ);
 	if (!succ)
 		return invalid_val;
 	return c;

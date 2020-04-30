@@ -94,12 +94,12 @@ pcb_bool_t rnd_grid_parse(rnd_grid_t *dst, const char *src)
 	}
 
 	/* convert */
-	dst->size = pcb_get_value(size, NULL, NULL, &succ);
+	dst->size = rnd_get_value(size, NULL, NULL, &succ);
 	if ((!succ) || (dst->size < 0))
 		goto error;
 
 	if (ox != NULL) {
-		dst->ox = pcb_get_value(ox, NULL, NULL, &succ);
+		dst->ox = rnd_get_value(ox, NULL, NULL, &succ);
 		if (!succ)
 			goto error;
 	}
@@ -107,7 +107,7 @@ pcb_bool_t rnd_grid_parse(rnd_grid_t *dst, const char *src)
 		dst->ox = 0;
 
 	if (oy != NULL) {
-		dst->oy = pcb_get_value(oy, NULL, NULL, &succ);
+		dst->oy = rnd_get_value(oy, NULL, NULL, &succ);
 		if (!succ)
 			goto error;
 	}

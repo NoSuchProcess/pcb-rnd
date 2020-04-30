@@ -652,7 +652,7 @@ static int pcb_write_pipe(const char *Filename, rnd_bool thePcb, const char *fmt
 	static gds_t command;
 	const char *save_cmd;
 
-	if (PCB_EMPTY_STRING_P(conf_core.rc.save_command))
+	if (RND_EMPTY_STRING_P(conf_core.rc.save_command))
 		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false, subc_only, subc_idx, askovr);
 
 	save_cmd = conf_core.rc.save_command;

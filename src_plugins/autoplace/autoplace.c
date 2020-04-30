@@ -511,7 +511,7 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 				if (!boxp)
 					continue;
 				factor = 1;
-				if (subc->refdes && boxp->refdes && 0 == PCB_NSTRCMP(subc->refdes, boxp->refdes)) {
+				if (subc->refdes && boxp->refdes && 0 == RND_NSTRCMP(subc->refdes, boxp->refdes)) {
 					delta4 += CostParameter.matching_neighbor_bonus;
 					factor++;
 				}

@@ -771,7 +771,7 @@ char *fgw_str2coord_unit = NULL;
 #define conv_str2coord(dst, src) \
 do { \
 	rnd_bool succ; \
-	dst = pcb_get_value_ex(src, NULL, NULL, NULL, fgw_str2coord_unit, &succ); \
+	dst = rnd_get_value_ex(src, NULL, NULL, NULL, fgw_str2coord_unit, &succ); \
 	if (!succ) \
 		return -1; \
 } while(0)
@@ -820,7 +820,7 @@ static int coord_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 #define conv_str2coords(dst, src) \
 do { \
 	rnd_bool succ, abso; \
-	dst.c[0] = pcb_get_value_ex(src, NULL, &abso, NULL, fgw_str2coord_unit, &succ); \
+	dst.c[0] = rnd_get_value_ex(src, NULL, &abso, NULL, fgw_str2coord_unit, &succ); \
 	if (!succ) \
 		return -1; \
 	dst.len = 1; \

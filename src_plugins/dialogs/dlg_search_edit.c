@@ -176,7 +176,7 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_COORD:
-			hv.crd = pcb_get_value_ex(hv.str, NULL, NULL, NULL, "mm", NULL);
+			hv.crd = rnd_get_value_ex(hv.str, NULL, NULL, NULL, "mm", NULL);
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);

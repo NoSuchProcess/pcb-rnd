@@ -120,7 +120,7 @@ static pcb_bom_list_t *bom_insert(char *refdes, char *descr, char *value, pcb_bo
 	/* search and see if we already have used one of these components */
 	cur = bom;
 	while(cur != NULL) {
-		if ((PCB_NSTRCMP(descr, cur->descr) == 0) && (PCB_NSTRCMP(value, cur->value) == 0)) {
+		if ((RND_NSTRCMP(descr, cur->descr) == 0) && (RND_NSTRCMP(value, cur->value) == 0)) {
 			cur->num++;
 			vts0_append(&cur->refdes, rnd_strdup(refdes));
 			break;
@@ -191,9 +191,9 @@ static int bom_print(void)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		/* insert this component into the bill of materials list */
-		bom = bom_insert((char *) PCB_UNKNOWN(subc->refdes),
-			(char *) PCB_UNKNOWN(pcb_subc_name(subc, "bom::footprint")),
-			(char *) PCB_UNKNOWN(rnd_attribute_get(&subc->Attributes, "value")),
+		bom = bom_insert((char *) RND_UNKNOWN(subc->refdes),
+			(char *) RND_UNKNOWN(pcb_subc_name(subc, "bom::footprint")),
+			(char *) RND_UNKNOWN(rnd_attribute_get(&subc->Attributes, "value")),
 			bom);
 	}
 	PCB_END_LOOP;
@@ -210,7 +210,7 @@ static int bom_print(void)
 	fprintf(fp, "# PcbBOM Version 1.0\n");
 	fprintf(fp, "# Date: %s\n", utcTime);
 	fprintf(fp, "# Author: %s\n", pcb_author());
-	fprintf(fp, "# Title: %s - PCB BOM\n", PCB_UNKNOWN(PCB->hidlib.name));
+	fprintf(fp, "# Title: %s - PCB BOM\n", RND_UNKNOWN(PCB->hidlib.name));
 	fprintf(fp, "# Quantity, Description, Value, RefDes\n");
 	fprintf(fp, "# --------------------------------------------\n");
 

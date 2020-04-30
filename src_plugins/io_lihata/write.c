@@ -1462,8 +1462,8 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 
 /*		fprintf(stderr, "SMART d='%s' m='%s'\n", ondisk_value, inmem_node->data.text.value);*/
 
-		v1 = pcb_get_value_ex(ondisk_value, NULL, NULL, NULL, NULL, &success1);
-		v2 = pcb_get_value_ex(inmem_node->data.text.value, NULL, NULL, NULL, NULL, &success2);
+		v1 = rnd_get_value_ex(ondisk_value, NULL, NULL, NULL, NULL, &success1);
+		v2 = rnd_get_value_ex(inmem_node->data.text.value, NULL, NULL, NULL, NULL, &success2);
 /*		pcb_fprintf(stderr, " %d %d | %mm %mm\n", success1, success2, v1, v2);*/
 		if (success1 && success2) {
 			/* smart: if values are the same, keep the on-disk version */
@@ -1568,7 +1568,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		}
 		if (res != 0) {
 			FILE *fe;
-			char *fe_name = pcb_concat(old_filename, ".mem.lht", NULL);
+			char *fe_name = rnd_concat(old_filename, ".mem.lht", NULL);
 			fe = pcb_fopen(&PCB->hidlib, fe_name, "w");
 			if (fe != NULL) {
 				clean_invalid(brd->root); /* remove invalid nodes placed for persistency */

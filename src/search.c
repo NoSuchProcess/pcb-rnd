@@ -496,7 +496,7 @@ static pcb_r_dir_t polypoint_callback(const rnd_rnd_box_t *box, void *cl)
 
 	PCB_POLY_POINT_LOOP(polygon);
 	{
-		d = pcb_distance2(point->X, point->Y, PosX, PosY);
+		d = rnd_distance2(point->X, point->Y, PosX, PosY);
 		if (d < ctx->least) {
 			ctx->least = d;
 			*ctx->Polygon = polygon;

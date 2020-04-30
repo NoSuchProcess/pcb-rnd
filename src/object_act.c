@@ -403,7 +403,7 @@ static int parse_layout_attribute_units(pcb_board_t *pcb, const char *name, int 
 	const char *as = rnd_attrib_get(pcb, name);
 	if (!as)
 		return def;
-	return pcb_get_value(as, NULL, NULL, NULL);
+	return rnd_get_value(as, NULL, NULL, NULL);
 }
 
 static int subc_differs(pcb_subc_t *sc, const char *expect_name)
@@ -559,7 +559,7 @@ static void plc_remove(placer_t *plc, pcb_subc_t *sc)
 			break;
 		case PLC_LIST:
 			{
-				pcb_view_t *v = pcb_view_new(&plc->pcb->hidlib, "removal", PCB_UNKNOWN(sc->refdes), "This part is not present on the new netlist");
+				pcb_view_t *v = pcb_view_new(&plc->pcb->hidlib, "removal", RND_UNKNOWN(sc->refdes), "This part is not present on the new netlist");
 				pcb_view_append_obj(v, 0, (pcb_any_obj_t *)sc);
 				pcb_view_set_bbox_by_objs(plc->pcb->Data, v);
 				pcb_view_list_append(plc->remlst, v);
@@ -617,7 +617,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (PCB_FLAG_TEST(PCB_FLAG_FOUND, subc)) {
 				PCB_FLAG_CLEAR(PCB_FLAG_FOUND, subc);
 			}
-			else if (!PCB_EMPTY_STRING_P(subc->refdes) && (!PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc))) {
+			else if (!RND_EMPTY_STRING_P(subc->refdes) && (!PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc))) {
 				/* Unnamed elements should remain untouched */
 				plc_remove(&plc, subc);
 			}
@@ -941,7 +941,7 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		delta = function;
 		flags = 0;
 	}
-	value = 2 * pcb_get_value(delta, units, &absolute, NULL);
+	value = 2 * rnd_get_value(delta, units, &absolute, NULL);
 
 	pcb_undo_save_serial();
 	minclr(pcb->Data, value, flags);

@@ -50,22 +50,22 @@ double rnd_distance(double x1, double y1, double x2, double y2)
 	return sqrt(delta_x * delta_x + delta_y * delta_y);
 }
 
-/* pcb_distance2() should be used so that there is only one
+/* rnd_distance2() should be used so that there is only one
  *  place to deal with overflow/precision errors
  */
-double pcb_distance2(double x1, double y1, double x2, double y2)
+double rnd_distance2(double x1, double y1, double x2, double y2)
 {
 	double delta_x = (x2 - x1);
 	double delta_y = (y2 - y1);
 	return delta_x * delta_x + delta_y * delta_y;
 }
 
-double pcb_get_value(const char *val, const char *units, rnd_bool * absolute, rnd_bool *success)
+double rnd_get_value(const char *val, const char *units, rnd_bool * absolute, rnd_bool *success)
 {
-	return pcb_get_value_ex(val, units, absolute, NULL, "cmil", success);
+	return rnd_get_value_ex(val, units, absolute, NULL, "cmil", success);
 }
 
-rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const rnd_unit_t **unit_out)
+rnd_bool rnd_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const rnd_unit_t **unit_out)
 {
 	int ul, ulo = 0;
 	const char *start;
@@ -102,7 +102,7 @@ rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict
 			rnd_bool succ;
 			double crd;
 
-			crd = pcb_get_value(val, unit, NULL, &succ);
+			crd = rnd_get_value(val, unit, NULL, &succ);
 			if (succ) {
 				*val_out = crd;
 				*unit_out = u;
@@ -118,7 +118,7 @@ rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict
 }
 
 
-double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute, pcb_unit_list_t extra_units, const char *default_unit, rnd_bool *success)
+double rnd_get_value_ex(const char *val, const char *units, rnd_bool * absolute, rnd_unit_list_t extra_units, const char *default_unit, rnd_bool *success)
 {
 	double value;
 	int n = -1;
@@ -165,7 +165,7 @@ double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 			for (i = 0; *extra_units[i].suffix; ++i) {
 				if (strncmp(units, extra_units[i].suffix, strlen(extra_units[i].suffix)) == 0) {
 					value *= extra_units[i].scale;
-					if (extra_units[i].flags & PCB_UNIT_PERCENT)
+					if (extra_units[i].flags & RND_UNIT_PERCENT)
 						value /= 100.0;
 					scaled = 1;
 					unit_ok = 1;
@@ -184,7 +184,7 @@ double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 			for (i = 0; *extra_units[i].suffix; ++i)
 				if (strcmp(extra_units[i].suffix, default_unit) == 0) {
 					value *= extra_units[i].scale;
-					if (extra_units[i].flags & PCB_UNIT_PERCENT)
+					if (extra_units[i].flags & RND_UNIT_PERCENT)
 						value /= 100.0;
 					scaled = 1;
 				}
@@ -202,7 +202,7 @@ double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 	return 0;
 }
 
-char *pcb_concat(const char *first, ...)
+char *rnd_concat(const char *first, ...)
 {
 	gds_t buf;
 	va_list a;
@@ -221,7 +221,7 @@ char *pcb_concat(const char *first, ...)
  * returns a pointer to the new 'duped' one or NULL if the old one
  * holds only white space characters
  */
-char *pcb_strdup_strip_wspace(const char *S)
+char *rnd_strdup_strip_wspace(const char *S)
 {
 	const char *p1, *p2;
 	char *copy;
@@ -248,7 +248,7 @@ char *pcb_strdup_strip_wspace(const char *S)
 		return NULL;
 }
 
-char *pcb_text_wrap(char *inp, int len, int sep, int nonsep)
+char *rnd_text_wrap(char *inp, int len, int sep, int nonsep)
 {
 	int cnt;
 	char *s, *lastspc = NULL;
@@ -266,7 +266,7 @@ char *pcb_text_wrap(char *inp, int len, int sep, int nonsep)
 	return inp;
 }
 
-char *pcb_str_strip(char *s)
+char *rnd_str_strip(char *s)
 {
 	char *end;
 	while(isspace(*s)) s++;

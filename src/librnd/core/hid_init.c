@@ -90,34 +90,34 @@ void rnd_hid_init()
 	rnd_render = rnd_gui = rnd_hid_nogui_get_hid();
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
-	tmp = pcb_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
-	tmp = pcb_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-	tmp = pcb_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = rnd_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
-	tmp = pcb_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = rnd_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* rnd_conf.rc.path.home is set by the conf_core immediately on startup */
 	if (rnd_conf.rc.path.home != NULL) {
-		tmp = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 
-		tmp = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 	}
 
-	tmp = pcb_concat("plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = rnd_concat("plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
@@ -502,10 +502,10 @@ void rnd_fix_locale_and_env()
 		rnd_w32_bindir = rnd_strdup(exedir);
 		truncdir(exedir);
 		rnd_w32_root = rnd_strdup(exedir);
-		rnd_w32_libdir = pcb_concat(exedir, "/lib/pcb-rnd", NULL);
-		rnd_w32_sharedir = pcb_concat(exedir, "/share/pcb-rnd", NULL);
+		rnd_w32_libdir = rnd_concat(exedir, "/lib/pcb-rnd", NULL);
+		rnd_w32_sharedir = rnd_concat(exedir, "/share/pcb-rnd", NULL);
 
-		rnd_w32_cachedir = pcb_concat(rnd_w32_root, "/cache", NULL);
+		rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
 		pcb_mkdir_(rnd_w32_cachedir, 0755);
 
 /*		printf("WIN32 root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/

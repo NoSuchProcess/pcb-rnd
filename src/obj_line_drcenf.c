@@ -494,7 +494,7 @@ void pcb_line_enforce_drc(pcb_board_t *pcb)
 	/* shift<Key> forces the line lookahead path to refract the alternate way */
 	shift = rnd_gui->shift_is_pressed(rnd_gui);
 
-	if (PCB_XOR(r1 > r2, shift)) {
+	if (RND_XOR(r1 > r2, shift)) {
 		if (conf_core.editor.line_refraction != 0) {
 			if (shift) {
 				if (conf_core.editor.line_refraction !=2)

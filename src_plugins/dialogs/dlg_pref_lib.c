@@ -302,9 +302,9 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 	}
 
 	free(cell[0]);
-	cell[0] = rnd_strdup(PCB_EMPTY(ctx.dlg[ctx.wpath].val.str));
+	cell[0] = rnd_strdup(RND_EMPTY(ctx.dlg[ctx.wpath].val.str));
 	free(cell[1]);
-	cell[1] = rnd_strdup(PCB_EMPTY(ctx.dlg[ctx.wexp].val.str));
+	cell[1] = rnd_strdup(RND_EMPTY(ctx.dlg[ctx.wexp].val.str));
 
 	RND_DAD_FREE(ctx.dlg);
 	return 0;

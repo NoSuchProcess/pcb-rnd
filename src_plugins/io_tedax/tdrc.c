@@ -108,7 +108,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 				rnd_bool succ;
 				if ((strcmp(argv[2], r->ttype) != 0) || (strcmp(argv[3], r->tkind) != 0))
 					continue;
-				d = pcb_get_value(argv[4], "mm", NULL, &succ);
+				d = rnd_get_value(argv[4], "mm", NULL, &succ);
 				if (succ) {
 					if (d > val[n])
 						val[n] = d;

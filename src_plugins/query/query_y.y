@@ -322,7 +322,7 @@ constant:
 			pcb_qry_node_t *fname, *nname;
 
 			nname = pcb_qry_n_alloc(PCBQ_DATA_STRING);
-			nname->data.str = pcb_concat("design/drc/", $2, NULL);
+			nname->data.str = rnd_concat("design/drc/", $2, NULL);
 			free($2);
 
 			fname = pcb_qry_n_alloc(PCBQ_FNAME);
@@ -363,7 +363,7 @@ words:
 	  /* empty */            { $$ = pcb_qry_n_alloc(PCBQ_RNAME); $$->data.str = (const char *)rnd_strdup(""); }
 	| T_STR words            {
 			char *old = $2->data.str, *sep = ((*old != '\0') ? " " : "");
-			$2->data.str = pcb_concat($1, sep, old, NULL);
+			$2->data.str = rnd_concat($1, sep, old, NULL);
 			free(old);
 			free($1);
 			$$ = $2;

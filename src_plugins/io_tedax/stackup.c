@@ -185,7 +185,7 @@ static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, cons
 	if (thick != NULL) {
 		if (grp->ltype & (PCB_LYT_SUBSTRATE | PCB_LYT_COPPER)) {
 			rnd_bool succ;
-			double th = pcb_get_value(thick, NULL, NULL, &succ);
+			double th = rnd_get_value(thick, NULL, NULL, &succ);
 			if (succ) {
 				char tmp[64];
 				pcb_sprintf(tmp, "%mu", (rnd_coord_t)th);

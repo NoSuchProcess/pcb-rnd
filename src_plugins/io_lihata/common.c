@@ -64,7 +64,7 @@ int io_lihata_resolve_thermal_style_old(const char *name, int ver)
 	if (ver < 6) /* old file versions did not have explicit no-shape */
 		omit = 1;
 
-	for(n = 1; n < PCB_ENTRIES(thermal_style) - omit; n++)
+	for(n = 1; n < RND_ENTRIES(thermal_style) - omit; n++)
 		if (strcmp(name, thermal_style[n]) == 0)
 			return thermal_style_bits[n];
 
@@ -79,7 +79,7 @@ int io_lihata_resolve_thermal_style_old(const char *name, int ver)
 
 const char *io_lihata_thermal_style_old(int idx)
 {
-	if ((idx > 0) && (idx < PCB_ENTRIES(thermal_style)))
+	if ((idx > 0) && (idx < RND_ENTRIES(thermal_style)))
 		return thermal_style[idx];
 	return NULL;
 }

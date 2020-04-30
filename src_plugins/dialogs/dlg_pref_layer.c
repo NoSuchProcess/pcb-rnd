@@ -31,7 +31,7 @@
 #include "conf_core.h"
 #include "stub_draw.h"
 
-#define PCB_EMPTY(a)           ((a) ? (a) : "")
+#define RND_EMPTY(a)           ((a) ? (a) : "")
 
 
 void layersel_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)

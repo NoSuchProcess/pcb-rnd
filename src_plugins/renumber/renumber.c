@@ -165,7 +165,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* add to the list of locked subcircuits which we won't try to renumber and whose reference designators are now reserved. */
 			pcb_fprintf(out,
 				"*WARN* subc \"%s\" at %$md is locked and will not be renumbered.\n",
-				PCB_UNKNOWN(subc->refdes), ox, oy);
+				RND_UNKNOWN(subc->refdes), ox, oy);
 			locked_subc_list[lock_cnt] = subc;
 			lock_cnt++;
 		}
@@ -261,7 +261,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				 * subcircuits) names
 				 */
 				for (k = 0; k < lock_cnt; k++) {
-					if (strcmp(PCB_UNKNOWN(locked_subc_list[k]->refdes), tmps) == 0) {
+					if (strcmp(RND_UNKNOWN(locked_subc_list[k]->refdes), tmps) == 0) {
 						ok = 0;
 						break;
 					}

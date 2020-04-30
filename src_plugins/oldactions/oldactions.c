@@ -235,7 +235,7 @@ fgw_error_t pcb_act_ListRotations(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	PCB_SUBC_LOOP(PCB->Data);
 	{
 		double rot;
-		const char *refdes = PCB_UNKNOWN(subc->refdes);
+		const char *refdes = RND_UNKNOWN(subc->refdes);
 		if (pcb_subc_get_rotation(subc, &rot) == 0)
 			rnd_message(RND_MSG_INFO, "%f %s\n", rot, refdes);
 		else

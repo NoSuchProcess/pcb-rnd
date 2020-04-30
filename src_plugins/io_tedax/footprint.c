@@ -375,7 +375,7 @@ do { \
 #define load_val(dst, src, msg) \
 do { \
 	rnd_bool succ; \
-	dst = pcb_get_value_ex(src, NULL, NULL, NULL, "mm", &succ); \
+	dst = rnd_get_value_ex(src, NULL, NULL, NULL, "mm", &succ); \
 	if (!succ) { \
 		rnd_message(RND_MSG_ERROR, msg, src); \
 		return -1; \

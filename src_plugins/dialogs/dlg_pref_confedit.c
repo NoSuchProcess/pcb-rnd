@@ -79,7 +79,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case RND_CFN_COORD:
-			hv.crd = pcb_get_value(val, NULL, NULL, NULL);
+			hv.crd = rnd_get_value(val, NULL, NULL, NULL);
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case RND_CFN_UNIT:

@@ -56,14 +56,14 @@ static pcb_r_dir_t check_line_callback(const rnd_rnd_box_t * box, void *cl)
 					PCB_COORD_TO_MM(l->Point1.X), PCB_COORD_TO_MM(l->Point1.Y), PCB_COORD_TO_MM(l->Point2.X), PCB_COORD_TO_MM(l->Point2.Y));
 
 	/* if our line is to short ignore it */
-	if (pcb_distance2(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH2) {
+	if (rnd_distance2(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH2) {
 		fprintf(stderr, "not within max line length\n");
 		return 1;
 	}
 
 	fprintf(stderr, "......Point (%.6f, %.6f): ", PCB_COORD_TO_MM(px), PCB_COORD_TO_MM(py));
 
-	if (pcb_distance2(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE2) {
+	if (rnd_distance2(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE2) {
 		x1 = l->Point1.X;
 		y1 = l->Point1.Y;
 		x2 = l->Point2.X;
@@ -211,7 +211,7 @@ static void check_pstk(pcb_pstk_t *ps)
 				mindist = PCB_MM_TO_COORD(8);
 				mindist *= mindist;
 				for(n = 0; n < shp->data.poly.len; n++) {
-					double dist = pcb_distance2(px, py, shp->data.poly.x[n], shp->data.poly.y[n]);
+					double dist = rnd_distance2(px, py, shp->data.poly.x[n], shp->data.poly.y[n]);
 					if (dist < mindist)
 						mindist = dist;
 				}

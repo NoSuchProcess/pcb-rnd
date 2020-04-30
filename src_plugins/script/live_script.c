@@ -211,7 +211,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 
 	lvs->hidlib = hidlib;
 	lvs->name = rnd_strdup(name);
-	lvs->longname = pcb_concat("_live_script_", name, NULL);
+	lvs->longname = rnd_concat("_live_script_", name, NULL);
 	RND_DAD_BEGIN_VBOX(lvs->dlg);
 		RND_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL);
 		RND_DAD_TEXT(lvs->dlg, lvs);
@@ -259,7 +259,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	RND_DAD_END(lvs->dlg);
 	RND_DAD_DEFSIZE(lvs->dlg, 300, 500);
 
-	title = pcb_concat("Live Scripting: ", name, NULL);
+	title = rnd_concat("Live Scripting: ", name, NULL);
 	RND_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
 	free(title);
 	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
@@ -401,7 +401,7 @@ static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 		const char *default_ext = live_default_ext(lvs);
 
 		if (lvs->fn == NULL)
-			lvs->fn = pcb_concat(lvs->name, ".", default_ext, NULL);
+			lvs->fn = rnd_concat(lvs->name, ".", default_ext, NULL);
 
 		fn = rnd_gui->fileselect(rnd_gui,
 			"Save live script", "Save the source of a live script",

@@ -149,7 +149,7 @@ static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	if (PCB->Netlistname)
 		free(PCB->Netlistname);
-	PCB->Netlistname = pcb_strdup_strip_wspace(filename);
+	PCB->Netlistname = rnd_strdup_strip_wspace(filename);
 
 	RND_ACT_IRES(0);
 	return 0;

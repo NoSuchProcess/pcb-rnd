@@ -519,9 +519,9 @@ static int short_ctx_is_dup(pcb_short_ctx_t *sctx, pcb_net_t *net1, pcb_net_t *n
 		return 1;
 	}
 	if (order > 0)
-		key = pcb_concat(net1->name, "-", net2->name, NULL);
+		key = rnd_concat(net1->name, "-", net2->name, NULL);
 	else
-		key = pcb_concat(net2->name, "-", net1->name, NULL);
+		key = rnd_concat(net2->name, "-", net1->name, NULL);
 
 	if (htsp_has(&sctx->found, key)) {
 		free(key);
@@ -1039,7 +1039,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, rnd_coord_t x1, rnd_c
 	pcb_net_term_get(target_net, sc1->refdes, o1->term, PCB_NETA_ALLOC_UNDOABLE);
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
-		id = pcb_concat(sc1->refdes, "-", o1->term, NULL);
+		id = rnd_concat(sc1->refdes, "-", o1->term, NULL);
 		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL, 1);
 		free(id);
 	}
@@ -1048,7 +1048,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, rnd_coord_t x1, rnd_c
 	pcb_net_term_get(target_net, sc2->refdes, o2->term, PCB_NETA_ALLOC_UNDOABLE);
 	new_len = pcb_termlist_length(&target_net->conns);
 	if (new_len != old_len) {
-		id = pcb_concat(sc2->refdes, "-", o2->term, NULL);
+		id = rnd_concat(sc2->refdes, "-", o2->term, NULL);
 		pcb_ratspatch_append(pcb, RATP_ADD_CONN, id, target_net->name, NULL, 1);
 		free(id);
 	}

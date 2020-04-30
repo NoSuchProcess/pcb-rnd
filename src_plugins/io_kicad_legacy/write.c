@@ -426,7 +426,7 @@ TODO(": figure how to turn off displaying these")
 			fputs("$PAD\n", FP);
 			pcb_fprintf(FP, "Po %.0mk %.0mk\n", x - sox, y - soy);  /* positions of pad */
 			fputs("Sh ", FP); /* pin shape descriptor */
-			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(ps->term));
+			pcb_print_quoted_string(FP, (char *)RND_EMPTY(ps->term));
 
 			if (cshape == PCB_PSTK_COMPAT_SQUARE) fputs(" R ", FP);
 			else if (cshape == PCB_PSTK_COMPAT_ROUND) fputs(" C ", FP);
@@ -518,7 +518,7 @@ TODO("hshadow TODO")
 			pcb_fprintf(FP, "Po %.0mk %.0mk\n", ps->x + cx - sox, ps->y + cy - soy);  /* positions of pad */
 
 			fputs("Sh ", FP); /* pin shape descriptor */
-			pcb_print_quoted_string(FP, (char *)PCB_EMPTY(ps->term));
+			pcb_print_quoted_string(FP, (char *)RND_EMPTY(ps->term));
 			pcb_fprintf(FP, " %c %.0mk %.0mk ", shape_chr, w, h);
 
 			pcb_fprintf(FP, "0 0 %d\n", (int)(psrot*10.0)); /* deltaX deltaY Orientation as float in decidegrees */

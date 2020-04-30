@@ -172,7 +172,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 		goto err;
 	}
 
-	fn = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, DOT_PCB_RND, RND_DIR_SEPARATOR_S, SCRIPT_PERS, RND_DIR_SEPARATOR_S, script_persistency_id, NULL);
+	fn = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, DOT_PCB_RND, RND_DIR_SEPARATOR_S, SCRIPT_PERS, RND_DIR_SEPARATOR_S, script_persistency_id, NULL);
 
 	if (strcmp(cmd, "remove") == 0) {
 		RND_ACT_IRES(pcb_remove(NULL, fn));
@@ -230,7 +230,7 @@ static char *script_gen_cookie(const char *force_id)
 		}
 		force_id = script_persistency_id;
 	}
-	return pcb_concat("script::fungw::", force_id, NULL);
+	return rnd_concat("script::fungw::", force_id, NULL);
 }
 
 int pcb_script_unload(const char *id, const char *preunload)

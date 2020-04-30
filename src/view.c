@@ -445,22 +445,22 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 
 		c = n->data.list.first;
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
-			dst->bbox.X1 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			dst->bbox.X1 = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 			if (succ) ok++;
 			c = c->next;
 		}
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
-			dst->bbox.Y1 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			dst->bbox.Y1 = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 			if (succ) ok++;
 			c = c->next;
 		}
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
-			dst->bbox.X2 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			dst->bbox.X2 = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 			if (succ) ok++;
 			c = c->next;
 		}
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
-			dst->bbox.Y2 = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			dst->bbox.Y2 = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 			if (succ) ok++;
 			c = c->next;
 		}
@@ -476,12 +476,12 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 
 		c = n->data.list.first;
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
-			dst->x = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			dst->x = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 			if (succ) ok++;
 			c = c->next;
 		}
 		if ((c != NULL) && (c->type == LHT_TEXT)) {
-			dst->y = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+			dst->y = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 			if (succ) ok++;
 			c = c->next;
 		}
@@ -506,13 +506,13 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 			if ((n != NULL) && (n->type == LHT_HASH)) {
 				c = lht_dom_hash_get(n, "required_value");
 				if ((c != NULL) && (c->type == LHT_TEXT)) {
-					dst->data.drc.required_value = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+					dst->data.drc.required_value = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 					if (!succ)
 						rnd_message(RND_MSG_ERROR, LOADERR "invalid drc required value: '%s'\n", c->data.text.value);
 				}
 				c = lht_dom_hash_get(n, "measured_value");
 				if ((c != NULL) && (c->type == LHT_TEXT)) {
-					dst->data.drc.measured_value = pcb_get_value(c->data.text.value, NULL, NULL, &succ);
+					dst->data.drc.measured_value = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
 					if (succ)
 						dst->data.drc.have_measured = 1;
 					else

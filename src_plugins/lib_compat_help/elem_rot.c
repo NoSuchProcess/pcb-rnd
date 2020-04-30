@@ -143,7 +143,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 		pin_cnt++;
 
 		for (rpindex = 0; reference_pin_names[rpindex]; rpindex++) {
-			if (PCB_NSTRCMP(o->term, reference_pin_names[rpindex]) == 0) {
+			if (RND_NSTRCMP(o->term, reference_pin_names[rpindex]) == 0) {
 				pinx[rpindex] = (double)px;
 				piny[rpindex] = (double)py;
 				pinfound[rpindex] = 1;
@@ -155,7 +155,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 		centroidx = sumx / (double) pin_cnt;
 		centroidy = sumy / (double) pin_cnt;
 
-		if (!autodetect && (PCB_NSTRCMP(rnd_attribute_get(&subc->Attributes, "xy-centre"), "origin") == 0)) {
+		if (!autodetect && (RND_NSTRCMP(rnd_attribute_get(&subc->Attributes, "xy-centre"), "origin") == 0)) {
 			*cx = ox;
 			*cy = oy;
 		}
@@ -186,7 +186,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 					pin1y = piny[rpindex] - *cy;
 
 					if (verbose_rot)
-						rnd_trace("\npcb_subc_xy_rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", PCB_UNKNOWN(subc->refdes), pin_cnt, pin1x, pin1y);
+						rnd_trace("\npcb_subc_xy_rot: %s pin_cnt=%d pin1x=%d pin1y=%d\n", RND_UNKNOWN(subc->refdes), pin_cnt, pin1x, pin1y);
 
 					/* if only 1 pin, we are doomed */
 					if (pin_cnt == 1) {
@@ -215,13 +215,13 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 				rnd_message
 					(RND_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle because I could\n"
 					 "     not find a suitable reference pin of element %s\n"
-					 "     Setting to %g degrees\n", PCB_UNKNOWN(subc->refdes), *theta);
+					 "     Setting to %g degrees\n", RND_UNKNOWN(subc->refdes), *theta);
 			}
 			else if (!found_any_not_at_centroid) {
 				rnd_message
 					(RND_MSG_WARNING, "pcb_subc_xy_rot: unable to figure out angle of element\n"
 					 "     %s because the reference pin(s) are at the centroid of the part.\n"
-					 "     Setting to %g degrees\n", PCB_UNKNOWN(subc->refdes), *theta);
+					 "     Setting to %g degrees\n", RND_UNKNOWN(subc->refdes), *theta);
 			}
 		}
 	}

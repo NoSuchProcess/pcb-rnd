@@ -208,7 +208,7 @@ do { \
 			rnd_message(RND_MSG_ERROR, "Invalid mesh item: " #name " should be text\n"); \
 			return -1; \
 		} \
-		v = pcb_get_value(n->data.text.value, NULL, NULL, &succ); \
+		v = rnd_get_value(n->data.text.value, NULL, NULL, &succ); \
 		if (!succ) { \
 			rnd_message(RND_MSG_ERROR, "Invalid mesh coord: " #name "\n"); \
 			return -1; \

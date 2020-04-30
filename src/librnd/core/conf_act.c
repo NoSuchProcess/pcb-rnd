@@ -266,7 +266,7 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		return 0;
 	}
 
-	RND_ACT_IRES(RND_ACT_HIDLIB->grid == pcb_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
+	RND_ACT_IRES(RND_ACT_HIDLIB->grid == rnd_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
 	return 0;
 }
 
@@ -295,7 +295,7 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_IRES(0);
 
-	/* special case: can't convert with pcb_get_value() */
+	/* special case: can't convert with rnd_get_value() */
 	if ((val[0] == '*') || (val[0] == '/')) {
 		double d;
 		char *end;
@@ -313,7 +313,7 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	value = pcb_get_value(val, units, &absolute, NULL);
+	value = rnd_get_value(val, units, &absolute, NULL);
 
 	rnd_grid_inval();
 	if (absolute)

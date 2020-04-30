@@ -67,7 +67,7 @@ static void pick_net(XmString *name, int pick)
 
 	netnode_strings = (XmString *) malloc(n_netnode_strings * sizeof(XmString));
 	for(t = pcb_termlist_first(&net->conns), i = 0; t != NULL; t = pcb_termlist_next(t), i++) {
-		char *tmp = pcb_concat(t->refdes, "-", t->term, NULL);
+		char *tmp = rnd_concat(t->refdes, "-", t->term, NULL);
 		netnode_strings[i] = XmStringCreatePCB(tmp);
 	}
 

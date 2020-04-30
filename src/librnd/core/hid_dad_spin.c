@@ -273,7 +273,7 @@ static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 			if (spin->unit == NULL) {
 				rnd_bool succ = 0;
 				if (str->val.str != NULL)
-					succ = pcb_get_value_unit(str->val.str, NULL, 0, &v, &unit);
+					succ = rnd_get_value_unit(str->val.str, NULL, 0, &v, &unit);
 				if (!succ) {
 					v = end->val.crd;
 					unit = rnd_conf.editor.grid_unit;
@@ -392,7 +392,7 @@ void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 			end->val.dbl = d;
 			break;
 		case RND_DAD_SPIN_COORD:
-			succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
+			succ = rnd_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 			if (succ) {
 				SPIN_CLAMP(d);
 				end->val.crd = d;
@@ -433,21 +433,21 @@ void rnd_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 			while(isspace(*inval)) inval++;
 			if (*inval == '\0')
 				inval = "0";
-			succ = pcb_get_value_unit(inval, &absolute, 0, &d, &unit);
+			succ = rnd_get_value_unit(inval, &absolute, 0, &d, &unit);
 			if (succ)
 				break;
 			strtod(inval, &ends);
 			while(isspace(*ends)) ends++;
 			if (*ends == '\0') {
 				rnd_hid_attr_val_t hv;
-				char *tmp = pcb_concat(inval, " ", rnd_conf.editor.grid_unit->suffix, NULL);
+				char *tmp = rnd_concat(inval, " ", rnd_conf.editor.grid_unit->suffix, NULL);
 
 				changed = 1;
 				hv.str = tmp;
 				spin->set_writeback_lock++;
 				rnd_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 				spin->set_writeback_lock--;
-				succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
+				succ = rnd_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 				if (succ) {
 					end->val.crd = d;
 					spin->last_good_crd = d;

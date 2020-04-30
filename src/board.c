@@ -427,7 +427,7 @@ rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 			s = rnd_attribute_get(&grp->Attributes, "thickness");
 		curr = 0;
 		if (s != NULL)
-			curr = pcb_get_value(s, NULL, NULL, NULL);
+			curr = rnd_get_value(s, NULL, NULL, NULL);
 		if (curr <= 0) {
 			if (grp->ltype & PCB_LYT_SUBSTRATE) {
 				if (flags & PCB_BRDTHICK_PRINT_ERROR) {

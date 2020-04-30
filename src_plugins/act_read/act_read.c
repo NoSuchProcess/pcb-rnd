@@ -43,7 +43,7 @@
 
 
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
-static const char pcb_acth_GetValue[] = "Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().";
+static const char pcb_acth_GetValue[] = "Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps rnd_get_value_ex().";
 static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *input, *units, *def_unit;
@@ -59,7 +59,7 @@ static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (*units == '\0')
 		units = NULL;
 
-	v = pcb_get_value_ex(input, units, &a, NULL, def_unit, &success);
+	v = rnd_get_value_ex(input, units, &a, NULL, def_unit, &success);
 	if (!success || (relative && a))
 		return FGW_ERR_ARG_CONV;
 

@@ -557,7 +557,7 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 		case RND_CFN_COORD:
 			{
 				rnd_bool succ;
-				dst->coord[idx] = pcb_get_value(text, NULL, NULL, &succ);
+				dst->coord[idx] = rnd_get_value(text, NULL, NULL, &succ);
 				if (!succ)
 					rnd_hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
 			}

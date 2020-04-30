@@ -218,7 +218,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 
 	tmp = rnd_strdup(nat->description);
-	pcb_text_wrap(tmp, DESC_WRAP_WIDTH, '\n', ' ');
+	rnd_text_wrap(tmp, DESC_WRAP_WIDTH, '\n', ' ');
 	hv.str = tmp;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 	free(tmp);

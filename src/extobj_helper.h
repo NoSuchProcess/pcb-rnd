@@ -50,7 +50,7 @@ RND_INLINE int pcb_extobj_unpack_coord(const pcb_subc_t *obj, rnd_coord_t *res, 
 	rnd_bool succ;
 	const char *s = rnd_attribute_get(&obj->Attributes, name);
 	if (s != NULL) {
-		v = pcb_get_value(s, NULL, NULL, &succ);
+		v = rnd_get_value(s, NULL, NULL, &succ);
 		if (succ) {
 			*res = v;
 			return 0;
@@ -180,7 +180,7 @@ do { \
 	int wid; \
 	char *sval = rnd_attribute_get(&subc->Attributes, attr_name); \
 	if (sval != NULL) \
-		pcb_get_value_unit(sval, NULL, 0, &d, &unit_out); \
+		rnd_get_value_unit(sval, NULL, 0, &d, &unit_out); \
 	currval = d; \
 	RND_DAD_LABEL(dlg, vis_name); \
 		if (help != NULL) RND_DAD_HELP(dlg, help); \

@@ -168,7 +168,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 	/* build a new file name with the right extension */
 
 	argv[0].type = RND_EVARG_STR;
-	argv[0].d.s = pcb_concat(bn, ext, NULL);;
+	argv[0].d.s = rnd_concat(bn, ext, NULL);;
 	fmtsub->parent_poke(fmtsub, "set_file_name", &res, 1, argv);
 	free(fn);
 
@@ -491,7 +491,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (fmt < 0) /* fallback: choose the frist format */
 				fmt = 0;
 
-			name_in = pcb_concat("unnamed", avail.plug[fmt]->fp_extension, NULL);
+			name_in = rnd_concat("unnamed", avail.plug[fmt]->fp_extension, NULL);
 		}
 		else {
 			rnd_message(RND_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
@@ -538,7 +538,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* construct the input file name and run a file selection dialog to get the final file name */
 	if (name_in == NULL) {
 		if (PCB->hidlib.filename == NULL)
-			name_in = pcb_concat("unnamed", extensions_param[fmt], NULL);
+			name_in = rnd_concat("unnamed", extensions_param[fmt], NULL);
 		else
 			name_in = rnd_strdup(PCB->hidlib.filename);
 	}
@@ -571,7 +571,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			sfmt = avail.plug[save.pick]->default_fmt;
 		res->type = FGW_STR | FGW_DYN;
 		if (final_name != NULL)
-			res->val.str = pcb_concat(final_name, "*", sfmt, NULL);
+			res->val.str = rnd_concat(final_name, "*", sfmt, NULL);
 		else
 			res->val.str = NULL;
 		free(final_name);

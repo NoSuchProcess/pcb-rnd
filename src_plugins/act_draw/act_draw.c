@@ -272,7 +272,7 @@ static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 			if (*next == '\0')
 				next = NULL;
 		}
-		c[len % 2] = pcb_get_value_ex(s, NULL, NULL, NULL, "mm", &success);
+		c[len % 2] = rnd_get_value_ex(s, NULL, NULL, NULL, "mm", &success);
 		if (!success) {
 			rnd_message(RND_MSG_ERROR, "act_draw ptlist processing: '%s' is not a valid coordinate\n", s);
 			free(tmp);

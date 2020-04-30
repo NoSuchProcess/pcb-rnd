@@ -87,7 +87,7 @@ rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, rnd_rnd_box_t *b);
 
 /* == the same but accept if any part of the object touches the box == */
 #define PCB_POINT_IN_CIRCLE(x, y, cx, cy, r) \
-	(pcb_distance2(x, y, cx, cy) <= (double)(r) * (double)(r))
+	(rnd_distance2(x, y, cx, cy) <= (double)(r) * (double)(r))
 
 #define PCB_CIRCLE_TOUCHES_BOX(cx, cy, r, b) \
 	(    PCB_POINT_IN_BOX((cx)-(r),(cy),(b)) || PCB_POINT_IN_BOX((cx)+(r),(cy),(b)) || PCB_POINT_IN_BOX((cx),(cy)-(r),(b)) || PCB_POINT_IN_BOX((cx),(cy)+(r),(b)) \

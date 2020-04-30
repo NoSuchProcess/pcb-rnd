@@ -115,7 +115,7 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 
 	cell[1] = NULL;
 	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
-		cell[0] = pcb_concat(t->refdes, "-", t->term, NULL);
+		cell[0] = rnd_concat(t->refdes, "-", t->term, NULL);
 		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
@@ -224,7 +224,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	else if (w == ctx->wmerge)
 		rnd_actionva(&ctx->pcb->hidlib, "netlist", "merge", name, NULL);
 	else if (w == ctx->wattr) {
-		char *tmp = pcb_concat("net:", name, NULL);
+		char *tmp = rnd_concat("net:", name, NULL);
 		rnd_actionva(&ctx->pcb->hidlib, "propedit", tmp, NULL);
 		free(tmp);
 	}

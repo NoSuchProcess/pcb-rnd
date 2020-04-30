@@ -369,13 +369,13 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 			rnd_coord_t x1, y1, x2, y2;
 
 			reqarg("drawing_area", 5);
-			x1 = pcb_get_value(argv[1], "mm", NULL, &succ);
+			x1 = rnd_get_value(argv[1], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid x1 coord in drawing_area\n");
-			y1 = pcb_get_value(argv[2], "mm", NULL, &succ);
+			y1 = rnd_get_value(argv[2], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid y1 coord in drawing_area\n");
-			x2 = pcb_get_value(argv[3], "mm", NULL, &succ);
+			x2 = rnd_get_value(argv[3], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid x2 coord in drawing_area\n");
-			y2 = pcb_get_value(argv[4], "mm", NULL, &succ);
+			y2 = rnd_get_value(argv[4], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid y2 coord in drawing_area\n");
 			if ((x1 >= x2) || (y1 >= y2)) errexit("Invalid (unordered, negative box) drawing area\n");
 			if ((x1 < 0) || (y1 < 0)) rnd_message(RND_MSG_WARNING, "drawing_area starts at negative coords; some objects may not display;\nyou may want to run autocrop()\n");
@@ -403,9 +403,9 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 
 			reqarg("place", 8);
 
-			ox = pcb_get_value(argv[3], "mm", NULL, &succ);
+			ox = rnd_get_value(argv[3], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid ox coord in place\n");
-			oy = pcb_get_value(argv[4], "mm", NULL, &succ);
+			oy = rnd_get_value(argv[4], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid ox coord in place\n");
 			rot = strtod(argv[5], &end);
 			if (*end != '\0') errexit("Invalid rotation value in place\n");
@@ -442,13 +442,13 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 
 			reqarg("place_text", 10);
 
-			x1 = pcb_get_value(argv[3], "mm", NULL, &succ);
+			x1 = rnd_get_value(argv[3], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid x1 coord in place_text\n");
-			y1 = pcb_get_value(argv[4], "mm", NULL, &succ);
+			y1 = rnd_get_value(argv[4], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid y1 coord in place_text\n");
-			x2 = pcb_get_value(argv[5], "mm", NULL, &succ);
+			x2 = rnd_get_value(argv[5], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid x2 coord in place_text\n");
-			y2 = pcb_get_value(argv[6], "mm", NULL, &succ);
+			y2 = rnd_get_value(argv[6], "mm", NULL, &succ);
 			if (!succ) errexit("Invalid y2 coord in place_text\n");
 			rot = strtod(argv[8], &end);
 			if (*end != '\0') errexit("Invalid rotation value in place_text\n");

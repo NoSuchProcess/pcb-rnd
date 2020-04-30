@@ -1189,7 +1189,7 @@ RND_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 					return pstk_shape_isc_circ_line(ctx, ps2, shape2, ps1, shape1);
 				case PCB_PSSH_CIRC:
 					{
-						double cdist2 = pcb_distance2(ps1->x + shape1->data.circ.x, ps1->y + shape1->data.circ.y, ps2->x + shape2->data.circ.x, ps2->y + shape2->data.circ.y);
+						double cdist2 = rnd_distance2(ps1->x + shape1->data.circ.x, ps1->y + shape1->data.circ.y, ps2->x + shape2->data.circ.x, ps2->y + shape2->data.circ.y);
 						double dia = ((double)shape1->data.circ.dia + (double)shape2->data.circ.dia)/2.0;
 						return cdist2 <= dia*dia;
 					}

@@ -906,7 +906,7 @@ int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value
 	}
 	else
 		sctx.d_absolute = ((*start != '-') && (*start != '+'));
-	sctx.c = pcb_get_value_ex(start, NULL, &sctx.c_absolute, NULL, NULL, &sctx.c_valid);
+	sctx.c = rnd_get_value_ex(start, NULL, &sctx.c_absolute, NULL, NULL, &sctx.c_valid);
 	sctx.d = strtod(start, &end);
 	sctx.d_valid = (*end == '\0');
 	sctx.set_cnt = 0;

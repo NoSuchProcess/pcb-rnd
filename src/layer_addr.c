@@ -65,7 +65,7 @@ char *pcb_parse_layergrp_address(char *curr, char **spk, char **spv, int *spc)
 				*s = '\0';
 				if (*spc >= trmax)
 					return pcb_parse_layergrp_err;
-				lasta = pcb_str_strip(lasta);
+				lasta = rnd_str_strip(lasta);
 				spk[*spc] = lasta;
 				eq = strchr(lasta, '=');
 				if (eq != NULL) {
@@ -148,7 +148,7 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 			*purpose = val;
 		else if (strcmp(key, "bloat") == 0) {
 			rnd_bool succ;
-			double v = pcb_get_value(val, NULL, NULL, &succ);
+			double v = rnd_get_value(val, NULL, NULL, &succ);
 			if (succ) {
 				if (xf_ != NULL)
 					xf_->bloat = v;

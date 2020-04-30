@@ -70,7 +70,7 @@ static int ReadNetlist(const char *filename)
 	rnd_message(RND_MSG_INFO, "Importing PCB netlist %s\n", filename);
 
 	ratcmd = conf_core.rc.rat_command;
-	if (PCB_EMPTY_STRING_P(ratcmd)) {
+	if (RND_EMPTY_STRING_P(ratcmd)) {
 		fp = pcb_fopen(&PCB->hidlib, filename, "r");
 		if (!fp) {
 			rnd_message(RND_MSG_ERROR, "Cannot open %s for reading", filename);

@@ -67,7 +67,7 @@ static pcb_funchash_table_t rnd_functions[] = {
 void pcb_funchash_init(void)
 {
 	funchash = htpi_alloc(fh_hash, keyeq);
-	pcb_funchash_set_table(rnd_functions, PCB_ENTRIES(rnd_functions), NULL);
+	pcb_funchash_set_table(rnd_functions, RND_ENTRIES(rnd_functions), NULL);
 }
 
 void pcb_funchash_uninit(void)

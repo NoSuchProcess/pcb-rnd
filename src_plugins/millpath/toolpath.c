@@ -515,7 +515,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 			rnd_coord_t extra = 1000;
 			req_setup(1);
 			if (argc > 1) tool = atoi(argv[1]);
-			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
+			if (argc > 2) extra = rnd_get_value(argv[2], NULL, NULL, NULL);
 			trace_contour(pcb, result, tool, extra);
 		}
 		else if (strcmp(argv[0], "trace_spiral") == 0) {
@@ -524,7 +524,7 @@ int pcb_tlp_mill_script(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergr
 			rnd_coord_t extra = 1000;
 			req_setup(1);
 			if (argc > 1) tool = atoi(argv[1]);
-			if (argc > 2) extra = pcb_get_value(argv[2], NULL, NULL, NULL);
+			if (argc > 2) extra = rnd_get_value(argv[2], NULL, NULL, NULL);
 			if (argc > 3) passes = strtol(argv[3], NULL, 10);
 			trace_spiral(pcb, result, tool, extra, passes);
 		}

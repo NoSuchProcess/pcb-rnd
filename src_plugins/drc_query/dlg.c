@@ -136,7 +136,7 @@ do { \
 	lht_node_t *nnew; \
 	lht_err_t err; \
 	char *nname0 = nname; \
-	if (parent->type == LHT_LIST) nname0 = pcb_concat(nname, ":0", NULL); \
+	if (parent->type == LHT_LIST) nname0 = rnd_concat(nname, ":0", NULL); \
 	nnew = lht_tree_path_(parent->doc, parent, nname0, 1, 1, &err); \
 	if (parent->type == LHT_LIST) free(nname0); \
 	if ((nnew != NULL) && (nnew->type != ntype)) { \
@@ -235,7 +235,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 		}
 	}
 
-	path = pcb_concat(DRC_CONF_PATH_RULES, rule, ":0", NULL);
+	path = rnd_concat(DRC_CONF_PATH_RULES, rule, ":0", NULL);
 	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0);
 	if (nd == NULL) {
 		rnd_message(RND_MSG_ERROR, "Rule %s not found on this role.\n", rule);
@@ -460,7 +460,7 @@ do { \
 
 #define rlist_fetch_nd() \
 do { \
-	char *path = pcb_concat(DRC_CONF_PATH_RULES, row->cell[0], ":0", NULL); \
+	char *path = rnd_concat(DRC_CONF_PATH_RULES, row->cell[0], ":0", NULL); \
 	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0); \
 	if (nd == NULL) { \
 		rnd_message(RND_MSG_ERROR, "internal error: rule not found at %s\n", path); \

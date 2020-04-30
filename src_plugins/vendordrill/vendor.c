@@ -174,20 +174,20 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	/* figure out the vendor name, if specified */
-	vendor_name = (char *) PCB_UNKNOWN(rnd_hid_cfg_text_value(doc, "vendor"));
+	vendor_name = (char *) RND_UNKNOWN(rnd_hid_cfg_text_value(doc, "vendor"));
 
 	/* figure out the units, if specified */
 	sval = rnd_hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
 		sf = PCB_MIL_TO_COORD(1);
 	}
-	else if ((PCB_NSTRCMP(sval, "mil") == 0) || (PCB_NSTRCMP(sval, "mils") == 0)) {
+	else if ((RND_NSTRCMP(sval, "mil") == 0) || (RND_NSTRCMP(sval, "mils") == 0)) {
 		sf = PCB_MIL_TO_COORD(1);
 	}
-	else if ((PCB_NSTRCMP(sval, "inch") == 0) || (PCB_NSTRCMP(sval, "inches") == 0)) {
+	else if ((RND_NSTRCMP(sval, "inch") == 0) || (RND_NSTRCMP(sval, "inches") == 0)) {
 		sf = PCB_INCH_TO_COORD(1);
 	}
-	else if (PCB_NSTRCMP(sval, "mm") == 0) {
+	else if (RND_NSTRCMP(sval, "mm") == 0) {
 		sf = PCB_MM_TO_COORD(1);
 	}
 	else {
@@ -199,10 +199,10 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rounding_method = ROUND_UP;
 	sval = rnd_hid_cfg_text_value(doc, "/round");
 	if (sval != NULL) {
-		if (PCB_NSTRCMP(sval, "up") == 0) {
+		if (RND_NSTRCMP(sval, "up") == 0) {
 			rounding_method = ROUND_UP;
 		}
-		else if (PCB_NSTRCMP(sval, "nearest") == 0) {
+		else if (RND_NSTRCMP(sval, "nearest") == 0) {
 			rounding_method = CLOSEST;
 		}
 		else {
@@ -501,15 +501,15 @@ static void process_skips(lht_node_t *res)
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		if (n->type == LHT_TEXT) {
-			if (PCB_NSTRCMP(n->name, "refdes") == 0) {
+			if (RND_NSTRCMP(n->name, "refdes") == 0) {
 				cnt = &n_refdes;
 				lst = &ignore_refdes;
 			}
-			else if (PCB_NSTRCMP(n->name, "value") == 0) {
+			else if (RND_NSTRCMP(n->name, "value") == 0) {
 				cnt = &n_value;
 				lst = &ignore_value;
 			}
-			else if (PCB_NSTRCMP(n->name, "descr") == 0) {
+			else if (RND_NSTRCMP(n->name, "descr") == 0) {
 				cnt = &n_descr;
 				lst = &ignore_descr;
 			}
@@ -542,18 +542,18 @@ static rnd_bool vendorIsSubcMappable(pcb_subc_t *subc)
 TODO(": these 3 loops should be wrapped in a single loop that iterates over attribute keys")
 	noskip = 1;
 	for (i = 0; i < n_refdes; i++) {
-		if ((PCB_NSTRCMP(PCB_UNKNOWN(subc->refdes), ignore_refdes[i]) == 0)
-				|| rematch(ignore_refdes[i], PCB_UNKNOWN(subc->refdes))) {
-			rnd_message(RND_MSG_INFO, "Vendor mapping skipped because refdes = %s matches %s\n", PCB_UNKNOWN(subc->refdes), ignore_refdes[i]);
+		if ((RND_NSTRCMP(RND_UNKNOWN(subc->refdes), ignore_refdes[i]) == 0)
+				|| rematch(ignore_refdes[i], RND_UNKNOWN(subc->refdes))) {
+			rnd_message(RND_MSG_INFO, "Vendor mapping skipped because refdes = %s matches %s\n", RND_UNKNOWN(subc->refdes), ignore_refdes[i]);
 			noskip = 0;
 		}
 	}
 	if (noskip) {
 		const char *vl = rnd_attribute_get(&subc->Attributes, "value");
 		for (i = 0; i < n_value; i++) {
-			if ((PCB_NSTRCMP(PCB_UNKNOWN(vl), ignore_value[i]) == 0)
-					|| rematch(ignore_value[i], PCB_UNKNOWN(vl))) {
-				rnd_message(RND_MSG_INFO, "Vendor mapping skipped because value = %s matches %s\n", PCB_UNKNOWN(vl), ignore_value[i]);
+			if ((RND_NSTRCMP(RND_UNKNOWN(vl), ignore_value[i]) == 0)
+					|| rematch(ignore_value[i], RND_UNKNOWN(vl))) {
+				rnd_message(RND_MSG_INFO, "Vendor mapping skipped because value = %s matches %s\n", RND_UNKNOWN(vl), ignore_value[i]);
 				noskip = 0;
 			}
 		}
@@ -562,18 +562,18 @@ TODO(": these 3 loops should be wrapped in a single loop that iterates over attr
 	if (noskip) {
 		const char *fp = rnd_attribute_get(&subc->Attributes, "footprint");
 		for (i = 0; i < n_descr; i++) {
-			if ((PCB_NSTRCMP(PCB_UNKNOWN(fp), ignore_descr[i]) == 0)
-					|| rematch(ignore_descr[i], PCB_UNKNOWN(fp))) {
+			if ((RND_NSTRCMP(RND_UNKNOWN(fp), ignore_descr[i]) == 0)
+					|| rematch(ignore_descr[i], RND_UNKNOWN(fp))) {
 				rnd_message(RND_MSG_INFO,
 								"Vendor mapping skipped because descr = %s matches %s\n",
-								PCB_UNKNOWN(fp), ignore_descr[i]);
+								RND_UNKNOWN(fp), ignore_descr[i]);
 				noskip = 0;
 			}
 		}
 	}
 
 	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)) {
-		rnd_message(RND_MSG_INFO, "Vendor mapping skipped because element %s is locked\n", PCB_UNKNOWN(subc->refdes));
+		rnd_message(RND_MSG_INFO, "Vendor mapping skipped because element %s is locked\n", RND_UNKNOWN(subc->refdes));
 		noskip = 0;
 	}
 

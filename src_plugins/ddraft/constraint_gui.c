@@ -129,12 +129,12 @@ static void gui2cons(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 
 	g2c_array(line_angle, strtod(curr, &end));
 	g2c_scalar(line_angle_mod, dbl);
-	g2c_array(line_length, pcb_get_value(curr, NULL, NULL, &succ));
+	g2c_array(line_length, rnd_get_value(curr, NULL, NULL, &succ));
 	g2c_scalar(line_length_mod, crd);
 
 	g2c_array(move_angle, strtod(curr, &end));
 	g2c_scalar(move_angle_mod, dbl);
-	g2c_array(move_length, pcb_get_value(curr, NULL, NULL, &succ));
+	g2c_array(move_length, rnd_get_value(curr, NULL, NULL, &succ));
 	g2c_scalar(move_length_mod, crd);
 }
 

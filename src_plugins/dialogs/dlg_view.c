@@ -168,7 +168,7 @@ void view_simple_show(view_ctx_t *ctx)
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	if (v != NULL) {
 		pcb_view_goto(v);
-		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, pcb_text_wrap(rnd_strdup(v->description), 32, '\n', ' '));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, rnd_text_wrap(rnd_strdup(v->description), 32, '\n', ' '));
 		switch(v->data_type) {
 			case PCB_VIEW_PLAIN:
 				RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup(""));

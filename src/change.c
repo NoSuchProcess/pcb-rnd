@@ -830,18 +830,18 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 					goto subc_name;
 				}
 			}
-			name = rnd_hid_prompt_for(&PCB->hidlib, "Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString), "Change text");
+			name = rnd_hid_prompt_for(&PCB->hidlib, "Enter text:", RND_EMPTY(((pcb_text_t *)obj)->TextString), "Change text");
 			break;
 
 		case PCB_OBJ_SUBC:
 			subc_name:;
-			name = rnd_hid_prompt_for(&PCB->hidlib, "Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes), "Change refdes");
+			name = rnd_hid_prompt_for(&PCB->hidlib, "Subcircuit refdes:", RND_EMPTY(((pcb_subc_t *)obj)->refdes), "Change refdes");
 			break;
 
 		default:
 			term_name:;
 			{
-				name = rnd_hid_prompt_for(&PCB->hidlib, "Enter terminal ID:", PCB_EMPTY(obj->term), "Change terminal ID");
+				name = rnd_hid_prompt_for(&PCB->hidlib, "Enter terminal ID:", RND_EMPTY(obj->term), "Change terminal ID");
 				if (name != NULL) {
 					pcb_term_undoable_rename(PCB, obj, name);
 					pcb_draw();

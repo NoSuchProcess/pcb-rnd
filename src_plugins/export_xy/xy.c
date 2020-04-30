@@ -355,7 +355,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "title%", 6) == 0) {
 		*input += 6;
-		gds_append_str(s, PCB_UNKNOWN(PCB->hidlib.name));
+		gds_append_str(s, RND_UNKNOWN(PCB->hidlib.name));
 		return 0;
 	}
 	if (strncmp(*input, "suffix%", 7) == 0) {
@@ -693,9 +693,9 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.pad_w = ctx.pad_h = 0;
 		ctx.theta = ctx.xray_theta = 0.0;
 
-		ctx.name = pcb_bom_clean_str((char *) PCB_UNKNOWN(rnd_attribute_get(&subc->Attributes, "refdes")));
-		ctx.descr = pcb_bom_clean_str((char *) PCB_UNKNOWN(pcb_subc_name(subc, "export_xy::footprint")));
-		ctx.value = pcb_bom_clean_str((char *) PCB_UNKNOWN(rnd_attribute_get(&subc->Attributes, "value")));
+		ctx.name = pcb_bom_clean_str((char *) RND_UNKNOWN(rnd_attribute_get(&subc->Attributes, "refdes")));
+		ctx.descr = pcb_bom_clean_str((char *) RND_UNKNOWN(pcb_subc_name(subc, "export_xy::footprint")));
+		ctx.value = pcb_bom_clean_str((char *) RND_UNKNOWN(rnd_attribute_get(&subc->Attributes, "value")));
 
 		/* prefer the pnp-origin but if that doesn't exist, pick the subc origin */
 		if (!pcb_subc_find_aux_point(subc, "pnp-origin", &ctx.x, &ctx.y))

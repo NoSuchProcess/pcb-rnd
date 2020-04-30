@@ -122,7 +122,7 @@ static int undo_ratspatch_append_undo(void *udata)
 static void undo_ratspatch_append_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_ratspatch_append_t *a = udata;
-	pcb_snprintf(dst, dst_len, "ratspatch_append: op=%d '%s' '%s' '%s' (used by attr: %d)", a->op, PCB_EMPTY(a->id), PCB_EMPTY(a->a1), PCB_EMPTY(a->a2), a->used_by_attr);
+	pcb_snprintf(dst, dst_len, "ratspatch_append: op=%d '%s' '%s' '%s' (used by attr: %d)", a->op, RND_EMPTY(a->id), RND_EMPTY(a->a1), RND_EMPTY(a->a2), a->used_by_attr);
 }
 
 static void undo_ratspatch_append_free(void *udata)
@@ -349,7 +349,7 @@ int pcb_rats_patch_export(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, rnd_bool 
 							htsp_set(seen, n->arg1.net_name, net);
 							cb(ctx, PCB_RPE_INFO_BEGIN, n->arg1.net_name, NULL, NULL);
 							for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term)) {
-								char *tmp = pcb_concat(term->refdes, "-", term->term, NULL);
+								char *tmp = rnd_concat(term->refdes, "-", term->term, NULL);
 								cb(ctx, PCB_RPE_INFO_TERMINAL, n->arg1.net_name, NULL, tmp);
 								free(tmp);
 							}

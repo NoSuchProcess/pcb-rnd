@@ -93,7 +93,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 			break;
 		case RND_HATT_COORD:
 		case RND_HATT_END: /* compound widget for the spinbox! */
-			hv.crd = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
+			hv.crd = rnd_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
 			break;
 		default:
 			assert(!"set_attr() can't set non-data field!\n");
@@ -108,7 +108,7 @@ static void library_param_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 do { \
 	if (help_def != NULL) { \
 		if (help != NULL) { \
-			char *tmp = pcb_concat(help, "\nDefault: ", help_def, NULL); \
+			char *tmp = rnd_concat(help, "\nDefault: ", help_def, NULL); \
 			free(help); \
 			free(help_def); \
 			help = tmp; \

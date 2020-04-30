@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
 	for(n = 2; n < argc; n++) {
 		rnd_bool success;
-		double val = pcb_get_value_ex(argv[n], NULL, NULL, NULL, "", &success);
+		double val = rnd_get_value_ex(argv[n], NULL, NULL, NULL, "", &success);
 		if (!success) {
 			fprintf(stderr, "Unable to convert '%s' to rnd_coord_t\n", argv[n]);
 			return 1;
