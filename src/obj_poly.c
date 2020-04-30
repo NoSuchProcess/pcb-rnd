@@ -179,7 +179,7 @@ void pcb_poly_rotate90(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y, unsign
 	assert(Polygon->parent_type = PCB_PARENT_LAYER);
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
-		PCB_COORD_ROTATE90(point->X, point->Y, X, Y, Number);
+		RND_COORD_ROTATE90(point->X, point->Y, X, Y, Number);
 	}
 	PCB_END_LOOP;
 
@@ -195,7 +195,7 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, rnd_coord_t X, rnd
 		pcb_r_delete_entry(layer->polygon_tree, (rnd_rnd_box_t *) polygon);
 	PCB_POLY_POINT_LOOP(polygon);
 	{
-		pcb_rotate(&point->X, &point->Y, X, Y, cosa, sina);
+		rnd_rotate(&point->X, &point->Y, X, Y, cosa, sina);
 	}
 	PCB_END_LOOP;
 	if (layer->parent_type == PCB_PARENT_DATA)

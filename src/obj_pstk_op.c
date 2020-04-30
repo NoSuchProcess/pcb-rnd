@@ -202,7 +202,7 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		if (ps->parent.data->padstack_tree != NULL)
 			pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
 
-		pcb_rotate(&nx, &ny, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
+		rnd_rotate(&nx, &ny, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
 		if ((nx != ps->x) || (ny != ps->y))
 			pcb_pstk_move_(ps, nx - ps->x, ny - ps->y);
 

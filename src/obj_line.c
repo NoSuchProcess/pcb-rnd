@@ -912,8 +912,8 @@ void *pcb_line_destroy(pcb_layer_t *Layer, pcb_line_t *Line)
 /* rotates a line in 90 degree steps */
 void pcb_line_rotate90(pcb_line_t *Line, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
-	PCB_COORD_ROTATE90(Line->Point1.X, Line->Point1.Y, X, Y, Number);
-	PCB_COORD_ROTATE90(Line->Point2.X, Line->Point2.Y, X, Y, Number);
+	RND_COORD_ROTATE90(Line->Point1.X, Line->Point1.Y, X, Y, Number);
+	RND_COORD_ROTATE90(Line->Point2.X, Line->Point2.Y, X, Y, Number);
 	/* keep horizontal, vertical Point2 > Point1 */
 	if (Line->Point1.X == Line->Point2.X) {
 		if (Line->Point1.Y > Line->Point2.Y) {
@@ -939,8 +939,8 @@ void pcb_line_rotate(pcb_layer_t *layer, pcb_line_t *line, rnd_coord_t X, rnd_co
 {
 	if (layer->line_tree != NULL)
 		pcb_r_delete_entry(layer->line_tree, (rnd_rnd_box_t *) line);
-	pcb_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
-	pcb_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
+	rnd_rotate(&line->Point1.X, &line->Point1.Y, X, Y, cosa, sina);
+	rnd_rotate(&line->Point2.X, &line->Point2.Y, X, Y, cosa, sina);
 	pcb_line_bbox(line);
 	if (layer->line_tree != NULL)
 		pcb_r_insert_entry(layer->line_tree, (rnd_rnd_box_t *) line);

@@ -91,7 +91,7 @@ pcb_opfunc_t RotateFunctions = {
  */
 void pcb_point_rotate90(rnd_point_t *Point, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
-	PCB_COORD_ROTATE90(Point->X, Point->Y, X, Y, Number);
+	RND_COORD_ROTATE90(Point->X, Point->Y, X, Y, Number);
 }
 
 pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t X, rnd_coord_t Y, unsigned Steps)

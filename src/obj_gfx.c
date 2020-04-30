@@ -130,7 +130,7 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 		cosa = cos(a);
 		sina = sin(a);
 		for(n = 0; n < 4; n++)
-			pcb_rotate(&gfx->cox[n], &gfx->coy[n], gfx->cx, gfx->cy, cosa, sina);
+			rnd_rotate(&gfx->cox[n], &gfx->coy[n], gfx->cx, gfx->cy, cosa, sina);
 	}
 }
 

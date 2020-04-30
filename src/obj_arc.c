@@ -782,7 +782,7 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, rnd_coord_t X, rnd_coord_t Y, unsigned Num
 
 	/* add Number*90 degrees (i.e., Number quarter-turns) */
 	Arc->StartAngle = pcb_normalize_angle(Arc->StartAngle + Number * 90);
-	PCB_COORD_ROTATE90(Arc->X, Arc->Y, X, Y, Number);
+	RND_COORD_ROTATE90(Arc->X, Arc->Y, X, Y, Number);
 
 	/* now change width and height */
 	if (Number == 1 || Number == 3) {
@@ -799,7 +799,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, rnd_coord_t X, rnd_coord
 {
 	if (layer->arc_tree != NULL)
 		pcb_r_delete_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
-	pcb_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
+	rnd_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
 	arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
 	if (layer->arc_tree != NULL)
 		pcb_r_insert_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);

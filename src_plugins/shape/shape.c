@@ -85,7 +85,7 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, rnd_coord_t rx, rnd_
 		x = rnd_round(cos(a) * (double)rx + (double)cx);
 		y = rnd_round(sin(a) * (double)ry + (double)cy);
 		if (rot_deg != 0.0)
-			pcb_rotate(&x, &y, cx, cy, cosra, sinra);
+			rnd_rotate(&x, &y, cx, cy, cosra, sinra);
 		pcb_poly_point_new(p, x, y);
 	}
 
@@ -108,7 +108,7 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 
 	/* add exact start point */
 	if (need_rot)
-		pcb_rotate(&sx, &sy, rotcx, rotcy, cosra, sinra);
+		rnd_rotate(&sx, &sy, rotcx, rotcy, cosra, sinra);
 	pcb_poly_point_new(p, sx, sy);
 	lx = sx;
 	ly = sy;
@@ -121,7 +121,7 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 		x = rnd_round((double)cx + cos(sa) * (double)rx);
 		y = rnd_round((double)cy - sin(sa) * (double)ry);
 		if (need_rot)
-			pcb_rotate(&x, &y, rotcx, rotcy, cosra, sinra);
+			rnd_rotate(&x, &y, rotcx, rotcy, cosra, sinra);
 		if ((x != lx) || (y != ly))
 			pcb_poly_point_new(p, x, y);
 		lx = x;
@@ -131,7 +131,7 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 
 	/* add exact end point */
 	if (need_rot)
-		pcb_rotate(&ex, &ey, rotcx, rotcy, cosra, sinra);
+		rnd_rotate(&ex, &ey, rotcx, rotcy, cosra, sinra);
 	if ((ex != lx) || (ey != ly))
 		pcb_poly_point_new(p, ex, ey);
 }

@@ -34,7 +34,7 @@
 #include <librnd/core/compat_misc.h>
 
 /*** Transformation macros ***/
-#define	PCB_COORD_ROTATE90(x,y,x0,y0,n)							\
+#define	RND_COORD_ROTATE90(x,y,x0,y0,n)							\
 	do {												\
 		rnd_coord_t	dx = (x)-(x0),					\
 					dy = (y)-(y0);					\
@@ -51,7 +51,7 @@
 		}											\
 	} while(0)
 
-RND_INLINE void pcb_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)
+RND_INLINE void rnd_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)
 {
 	double nx, ny;
 	rnd_coord_t px = *x - cx;

@@ -767,7 +767,7 @@ void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text)
 void pcb_text_rotate90(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	int number = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text) ? (4 - Number) & 3 : Number;
-	PCB_COORD_ROTATE90(Text->X, Text->Y, X, Y, Number);
+	RND_COORD_ROTATE90(Text->X, Text->Y, X, Y, Number);
 
 	Text->rot += number*90.0;
 	if (Text->rot > 360.0)
@@ -783,7 +783,7 @@ void pcb_text_rotate90(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, unsigned 
    text rotation itself is done by the drawing routines */
 void pcb_text_rotate(pcb_text_t *Text, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, double rotdeg)
 {
-	pcb_rotate(&Text->X, &Text->Y, X, Y, cosa, sina);
+	rnd_rotate(&Text->X, &Text->Y, X, Y, cosa, sina);
 	Text->rot += rotdeg;
 	if (Text->rot > 360.0)
 		Text->rot -= 360.0;
@@ -819,7 +819,7 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	if (Text->rot < 0.0)
 		Text->rot += 360.0;
 
-	pcb_rotate(&Text->X, &Text->Y, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
+	rnd_rotate(&Text->X, &Text->Y, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
 	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text))
 		Text->rot -= ctx->rotate.angle;
 	else

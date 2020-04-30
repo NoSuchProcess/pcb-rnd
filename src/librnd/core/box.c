@@ -37,8 +37,8 @@ void rnd_box_rotate90(rnd_rnd_box_t *Box, rnd_coord_t X, rnd_coord_t Y, unsigned
 {
 	rnd_coord_t x1 = Box->X1, y1 = Box->Y1, x2 = Box->X2, y2 = Box->Y2;
 
-	PCB_COORD_ROTATE90(x1, y1, X, Y, Number);
-	PCB_COORD_ROTATE90(x2, y2, X, Y, Number);
+	RND_COORD_ROTATE90(x1, y1, X, Y, Number);
+	RND_COORD_ROTATE90(x2, y2, X, Y, Number);
 	Box->X1 = MIN(x1, x2);
 	Box->Y1 = MIN(y1, y2);
 	Box->X2 = MAX(x1, x2);
