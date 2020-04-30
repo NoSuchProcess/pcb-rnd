@@ -28,11 +28,11 @@
    does not permit these casts but they practically work on any platform
    pcb-rnd has the chance to run on. Hide the ugliness behind this API. */
 
-#ifndef PCB_FPTRCAST_H
-#define PCB_FPTRCAST_H
-typedef void (*pcb_fptr_t)();
+#ifndef RND_FPTRCAST_H
+#define RND_FPTRCAST_H
+typedef void (*rnd_fptr_t)();
 
-void *pcb_cast_f2d(pcb_fptr_t f);
-pcb_fptr_t pcb_cast_d2f(void *d);
+void *rnd_cast_f2d(rnd_fptr_t f);
+rnd_fptr_t rnd_cast_d2f(void *d);
 
 #endif

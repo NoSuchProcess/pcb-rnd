@@ -267,7 +267,7 @@ void pcb_events_uninit_(event_t **events, long last)
 		event_t *e, *next;
 		for(e = events[ev]; e != NULL; e = next) {
 			next = e->next;
-			fprintf(stderr, "WARNING: events_uninit: event %d still has %p registered for cookie %p (%s)\n", ev, pcb_cast_f2d(e->handler), (void *)e->cookie, e->cookie);
+			fprintf(stderr, "WARNING: events_uninit: event %d still has %p registered for cookie %p (%s)\n", ev, rnd_cast_f2d(e->handler), (void *)e->cookie, e->cookie);
 			free(e);
 		}
 	}

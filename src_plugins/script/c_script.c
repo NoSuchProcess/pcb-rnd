@@ -59,7 +59,7 @@ int fgws_c_load(fgw_obj_t *obj, const char *filename, const char *opts)
 		return -1;
 	}
 
-	init = (init_t)pcb_cast_d2f(pup_dlsym(library, "pcb_rnd_init"));
+	init = (init_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_init"));
 	if (init == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't find pcb_rnd_init() in %s - not a pcb-rnd c \"script\".\n", filename);
 		free(library);
@@ -83,7 +83,7 @@ int fgws_c_unload(fgw_obj_t *obj)
 	typedef void (*uninit_t)(fgw_obj_t *obj);
 	uninit_t uninit;
 
-	uninit = (uninit_t)pcb_cast_d2f(pup_dlsym(library, "pcb_rnd_uninit"));
+	uninit = (uninit_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_uninit"));
 	if (uninit != NULL)
 		uninit(obj);
 

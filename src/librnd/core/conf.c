@@ -724,7 +724,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					dest->used |= 1;
 					if ((dest->type == RND_CFN_HLIST) || (s->user_data == NULL)) {
 						rnd_conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
-						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
+						s->user_data = rnd_cast_f2d((rnd_fptr_t)pcb_conf_merge_patch_list);
 					}
 				}
 				else {
@@ -763,7 +763,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					dest->used |= 1;
 					if ((dest->type == RND_CFN_HLIST) && (s->user_data == NULL)) {
 						rnd_conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
-						s->user_data = pcb_cast_f2d((pcb_fptr_t)pcb_conf_merge_patch_list);
+						s->user_data = rnd_cast_f2d((rnd_fptr_t)pcb_conf_merge_patch_list);
 					}
 				}
 				else {

@@ -448,3 +448,6 @@
 #define pcb_file_loaded_type_t rnd_file_loaded_type_t
 #define pcb_file_loaded_type_e rnd_file_loaded_type_e
 #define PCB_FLT_CATEGORY RND_FLT_CATEGORY
+#define pcb_fptr_t rnd_fptr_t
+#define pcb_cast_f2d rnd_cast_f2d
+#define pcb_cast_d2f rnd_cast_d2f

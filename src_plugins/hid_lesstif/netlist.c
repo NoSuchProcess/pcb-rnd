@@ -260,7 +260,7 @@ netlist_button(Widget parent, const char *name, const char *string,
 	rv = XmCreatePushButton(parent, XmStrCast(name), stdarg_args, stdarg_n);
 	XtManageChild(rv);
 	if (callback)
-		XtAddCallback(rv, XmNactivateCallback, callback, (XtPointer)pcb_cast_f2d(user_func));
+		XtAddCallback(rv, XmNactivateCallback, callback, (XtPointer)rnd_cast_f2d(user_func));
 	XmStringFree(str);
 	return rv;
 }

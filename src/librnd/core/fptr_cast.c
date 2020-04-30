@@ -28,15 +28,15 @@
 #include <librnd/config.h>
 #include <librnd/core/fptr_cast.h>
 
-void *pcb_cast_f2d(pcb_fptr_t f)
+void *rnd_cast_f2d(rnd_fptr_t f)
 {
-	assert(sizeof(void *) == sizeof(pcb_fptr_t));
+	assert(sizeof(void *) == sizeof(rnd_fptr_t));
 	return (void *)f;
 }
 
-pcb_fptr_t pcb_cast_d2f(void *d)
+rnd_fptr_t rnd_cast_d2f(void *d)
 {
-	assert(sizeof(void *) == sizeof(pcb_fptr_t));
-	return (pcb_fptr_t)d;
+	assert(sizeof(void *) == sizeof(rnd_fptr_t));
+	return (rnd_fptr_t)d;
 }
 
