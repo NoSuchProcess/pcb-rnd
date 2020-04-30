@@ -41,7 +41,7 @@
 #include <librnd/core/error.h>
 #include "data.h"
 #include "board.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
 #include "obj_line.h"

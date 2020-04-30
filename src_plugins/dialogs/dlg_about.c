@@ -31,7 +31,7 @@
 #include "build_run.h"
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/hid_dad.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "dlg_about.h"
 
 typedef struct{

@@ -50,7 +50,7 @@ By Josh Jordan and Dan McMahill, modified from bom.c
 #include "change.h"
 #include "draw.h"
 #include "undo.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "polygon.h"
 #include <librnd/core/compat_misc.h>
 #include "layer.h"

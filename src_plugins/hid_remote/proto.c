@@ -26,7 +26,7 @@
 
 #include <stdarg.h>
 #include <ctype.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #define proto_vsnprintf rnd_vsnprintf
 #include "proto_lowcommon.h"
 #include "proto_lowsend.h"

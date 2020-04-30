@@ -42,7 +42,7 @@
 #include "find.h"
 #include "draw.h"
 #include "draw_wireframe.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include "serpentine_conf.h"

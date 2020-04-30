@@ -18,7 +18,7 @@
 #include "draw.h"
 #include "layer.h"
 #include "layer_vis.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include "hid_cam.h"
 #include <librnd/core/compat_misc.h>

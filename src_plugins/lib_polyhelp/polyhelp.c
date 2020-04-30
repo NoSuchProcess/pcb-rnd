@@ -32,7 +32,7 @@
 #include "polyhelp.h"
 #include "polygon.h"
 #include <librnd/core/plugins.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "obj_line.h"
 #include <librnd/core/box.h>
 #include <librnd/poly/offset.h>

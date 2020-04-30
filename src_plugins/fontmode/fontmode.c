@@ -50,7 +50,7 @@
 #include <librnd/poly/rtree.h>
 #include "flag_str.h"
 #include "undo.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>

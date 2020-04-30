@@ -1,7 +1,7 @@
 #include <time.h>
 #include <locale.h>
 #include "config.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 
 #ifdef SPEED
 	char buff[8192];

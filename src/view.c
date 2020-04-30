@@ -43,7 +43,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 
 static unsigned long int pcb_view_next_uid = 0;
 

@@ -40,7 +40,7 @@
 #include "layer_addr.h"
 #include "undo.h"
 #include "change.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "conf_core.h"
 
 const char *PCB_PTR_DOMAIN_LAYER = "pcb_fgw_ptr_domain_layer";

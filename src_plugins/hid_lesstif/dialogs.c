@@ -16,7 +16,7 @@
 #include "build_run.h"
 #include "crosshair.h"
 #include "layer.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 
 #include <librnd/core/hid.h>
 #include "lesstif.h"

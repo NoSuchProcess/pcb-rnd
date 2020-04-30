@@ -35,7 +35,7 @@
 
 #include "netlist_helper.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/error.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>

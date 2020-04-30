@@ -12,7 +12,7 @@
 #include "layer.h"
 #include <librnd/core/error.h>
 #include "draw.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include "hid_cam.h"
 #include <librnd/core/safe_fs.h>

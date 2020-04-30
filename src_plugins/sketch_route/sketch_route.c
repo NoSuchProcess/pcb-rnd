@@ -43,7 +43,7 @@
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_subc_parent.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "search.h"
 #include <librnd/core/tool.h>
 #include "layer_ui.h"

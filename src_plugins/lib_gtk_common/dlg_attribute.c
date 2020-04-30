@@ -35,7 +35,7 @@
 #include "dlg_attribute.h"
 #include <stdlib.h>
 
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/hid_dad_tree.h>
 #include <librnd/core/hid_init.h>

@@ -9,7 +9,7 @@
 #include <librnd/core/hid.h>
 #include "data.h"
 #include "layer.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>

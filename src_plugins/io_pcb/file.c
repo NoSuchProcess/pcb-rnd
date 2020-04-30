@@ -51,7 +51,7 @@
 #include "layer_grp.h"
 #include "move.h"
 #include "parse_common.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "polygon.h"
 #include <librnd/poly/polygon1_gen.h>
 #include "remove.h"

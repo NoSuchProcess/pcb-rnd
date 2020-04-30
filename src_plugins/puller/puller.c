@@ -64,7 +64,7 @@
 #include "data.h"
 #include "draw.h"
 #include "move.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "remove.h"
 #include <librnd/poly/rtree.h>
 #include "flag_str.h"

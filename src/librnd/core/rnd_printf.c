@@ -34,13 +34,13 @@
 
 /* Implementation of printf wrapper to output pcb coords and angles
  * For details of all supported specifiers, see the comment at the
- * top of pcb-printf.h */
+ * top of rnd_printf.h */
 
 #include <locale.h>
 #include <ctype.h>
 #include <math.h>
 #include <librnd/config.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 
 const char *rnd_printf_slot[RND_PRINTF_SLOT_max] =
 {
@@ -413,7 +413,7 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
 /* Main low level pcb-printf function
  * This is a printf wrapper that accepts new format specifiers to
  * output pcb coords as various units. See the comment at the top
- * of pcb-printf.h for full details.
+ * of rnd_printf.h for full details.
  *
  * [in] string Append anything new at the end of this dynamic string (must be initialized before the call)
  * [in] fmt    Format specifier

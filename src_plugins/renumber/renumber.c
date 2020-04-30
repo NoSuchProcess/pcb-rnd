@@ -45,7 +45,7 @@
 #include "netlist.h"
 #include <librnd/core/safe_fs.h>
 
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 
 static const char pcb_acts_Renumber[] = "Renumber()\n" "Renumber(filename)";
 static const char pcb_acth_Renumber[] =

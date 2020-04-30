@@ -25,7 +25,7 @@
 #include "hyp_l.h"
 #include "hyp_y.h"
 #include <librnd/core/error.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "flag_str.h"
 #include "polygon.h"
 #include "board.h"

@@ -80,7 +80,7 @@
 #include "obj_pinvia_therm.h"
 #include "undo.h"
 #include "vector.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "layer.h"
 #include <genvector/vtp0.h>
 #include "layer.h"

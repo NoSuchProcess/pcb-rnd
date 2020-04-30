@@ -37,7 +37,7 @@
 #include "undo.h"
 #include "rotate.h"
 #include "obj_pstk_inlines.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include "netlist.h"

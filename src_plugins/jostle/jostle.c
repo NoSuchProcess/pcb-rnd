@@ -27,7 +27,7 @@
 #include <librnd/poly/polygon1_gen.h>
 #include "remove.h"
 #include <librnd/core/error.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include "layer.h"

@@ -3,7 +3,7 @@
  */
 #include "config.h"
 #include "hid-logger.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/color.h>
 
 #define ENUM_LOG_TEXT(e) case e: txt = #e; break

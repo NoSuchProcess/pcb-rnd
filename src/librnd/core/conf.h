@@ -28,7 +28,7 @@
 #define RND_CONF_H
 #include <librnd/config.h>
 #include <librnd/core/global_typedefs.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <liblihata/lihata.h>
 #include <liblihata/dom.h>
 #include <genvector/vtp0.h>

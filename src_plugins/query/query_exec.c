@@ -32,7 +32,7 @@
 #include "query.h"
 #include "query_exec.h"
 #include "query_access.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 
 #define PCB dontuse
 

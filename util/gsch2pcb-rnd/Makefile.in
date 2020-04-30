@@ -41,7 +41,7 @@ print [@
 
 
 FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o
-CONF_OBJS  = ../../src/vtlibrary.o $(LIBRND)/core/compat_fs.o $(LIBRND)/core/paths.o $(LIBRND)/core/conf.o ../../src/conf_core.o $(LIBRND)/core/hid_cfg.o $(LIBRND)/core/hidlib_conf.o $(LIBRND)/core/misc_util.o $(LIBRND)/core/unit.o ../../src/conf_internal.o $(LIBRND)/core/list_conf.o $(LIBRND)/core/conf_hid.o $(LIBRND)/core/pcb-printf.o $(LIBRND)/core/compat_misc.o $(LIBRND)/core/safe_fs.o
+CONF_OBJS  = ../../src/vtlibrary.o $(LIBRND)/core/compat_fs.o $(LIBRND)/core/paths.o $(LIBRND)/core/conf.o ../../src/conf_core.o $(LIBRND)/core/hid_cfg.o $(LIBRND)/core/hidlib_conf.o $(LIBRND)/core/misc_util.o $(LIBRND)/core/unit.o ../../src/conf_internal.o $(LIBRND)/core/list_conf.o $(LIBRND)/core/conf_hid.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/compat_misc.o $(LIBRND)/core/safe_fs.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 OBJS = \

@@ -28,7 +28,7 @@
 #include "propsel.h"
 #include <librnd/core/compat_misc.h>
 #include "board.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/hid.h>
 #include <genht/hash.h>
 /*#define HT_INVALID_VALUE ((pcb_propval_t){PCB_PROPT_invalid, {0}})*/

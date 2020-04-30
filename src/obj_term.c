@@ -36,7 +36,7 @@
 #include "obj_common.h"
 #include "obj_term.h"
 #include "obj_subc_parent.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "undo.h"
 #include "polygon.h"
 

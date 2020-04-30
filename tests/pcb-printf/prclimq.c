@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <locale.h>
 #include <librnd/core/misc_util.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/pcb_bool.h>
 
 int main(int argc, char *argv[])

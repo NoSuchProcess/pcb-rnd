@@ -33,7 +33,7 @@
 #include "propsel.h"
 #include "propdlg.h"
 #include <librnd/core/actions.h>
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/error.h>
 #include "layer.h"
 #include "layer_addr.h"

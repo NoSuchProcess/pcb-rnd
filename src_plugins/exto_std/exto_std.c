@@ -35,7 +35,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include "obj_subc.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "extobj.h"
 #include "extobj_helper.h"
 #include "conf_core.h"

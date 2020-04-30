@@ -32,7 +32,7 @@
 #include <limits.h>
 #include <librnd/core/actions.h>
 #include "build_run.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/error.h>
 #include "event.h"
 #include <librnd/core/conf.h>

@@ -26,7 +26,7 @@
 
 #include <genvector/gds_char.h>
 #include "build_run.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include "obj_subc_parent.h"
 #include "draw.h"
 #include "obj_term.h"

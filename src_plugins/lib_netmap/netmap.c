@@ -33,7 +33,7 @@
 #include "data.h"
 #include "find.h"
 #include "netlist.h"
-#include <librnd/core/pcb-printf.h>
+#include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 
 static pcb_net_t *alloc_net(pcb_netmap_t *map)
