@@ -1438,37 +1438,37 @@ YY_RULE_SETUP
 case 52:
 YY_RULE_SETUP
 #line 102 "query_l.l"
-{ qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_MM); return T_UNIT; }
+{ qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_MM); return T_UNIT; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 103 "query_l.l"
-{ qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_M); return T_UNIT; }
+{ qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_M); return T_UNIT; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 104 "query_l.l"
-{ qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_UM); return T_UNIT; }
+{ qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_UM); return T_UNIT; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 105 "query_l.l"
-{ qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_CM); return T_UNIT; }
+{ qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_CM); return T_UNIT; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 106 "query_l.l"
-{ qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_NM); return T_UNIT; }
+{ qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_NM); return T_UNIT; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 107 "query_l.l"
-{ qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_MIL); return T_UNIT; }
+{ qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_MIL); return T_UNIT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 108 "query_l.l"
-{ qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_IN); return T_UNIT; }
+{ qry_lval.u = rnd_get_unit_struct_by_allow(RND_UNIT_ALLOW_IN); return T_UNIT; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
