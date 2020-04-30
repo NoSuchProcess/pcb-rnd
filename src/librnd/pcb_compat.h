@@ -1203,3 +1203,5 @@
 #define PCB_TLF_AUTO_TOOLBAR RND_TLF_AUTO_TOOLBAR
 #define pcb_tool_s rnd_tool_s
 #define pcb_tool_t rnd_tool_t
+#define PCB_SAFEPRINT_arg_max RND_SAFEPRINT_arg_max
+#define PCB_SAFEPRINT_COORD_ONLY RND_SAFEPRINT_COORD_ONLY

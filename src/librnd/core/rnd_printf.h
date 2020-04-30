@@ -95,8 +95,8 @@
  *   No support for %zu size_t printf spec
  */
 
-#ifndef RND_PCB_PRINTF_H
-#define RND_PCB_PRINTF_H
+#ifndef RND_PRINTF_H
+#define RND_PRINTF_H
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -104,8 +104,8 @@
 #include <librnd/core/unit.h>
 
 typedef enum {                    /* bitmask for printf hardening */
-	PCB_SAFEPRINT_arg_max = 1023,   /* for internal use */
-	PCB_SAFEPRINT_COORD_ONLY = 1024 /* print only coords (%m); anything else will result in error, returning -1  */
+	RND_SAFEPRINT_arg_max = 1023,   /* for internal use */
+	RND_SAFEPRINT_COORD_ONLY = 1024 /* print only coords (%m); anything else will result in error, returning -1  */
 } rnd_safe_printf_t;
 
 int rnd_fprintf(FILE * f, const char *fmt, ...);

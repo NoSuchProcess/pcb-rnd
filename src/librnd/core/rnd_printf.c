@@ -430,8 +430,8 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 	enum rnd_allow_e mask = RND_UNIT_ALLOW_ALL_SANE;
 	unsigned long maxfmts;
 
-	if ((safe & PCB_SAFEPRINT_arg_max) > 0)
-		maxfmts = (safe & PCB_SAFEPRINT_arg_max);
+	if ((safe & RND_SAFEPRINT_arg_max) > 0)
+		maxfmts = (safe & RND_SAFEPRINT_arg_max);
 	else
 		maxfmts = 1UL<<31;
 
@@ -542,7 +542,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 			case 'u':
 			case 'x':
 			case 'X':
-				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+				if (safe & RND_SAFEPRINT_COORD_ONLY)
 					return -1;
 				if (spec.array[1] == 'l')
 					tmplen = sprintf(tmp, spec.array, va_arg(args, long));
@@ -555,7 +555,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 			case 'f':
 			case 'g':
 			case 'G':
-				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+				if (safe & RND_SAFEPRINT_COORD_ONLY)
 					return -1;
 				if (strchr(spec.array, '*')) {
 					int prec = va_arg(args, int);
@@ -566,7 +566,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'c':
-				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+				if (safe & RND_SAFEPRINT_COORD_ONLY)
 					return -1;
 				if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
 					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t));
@@ -575,7 +575,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 's':
-				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+				if (safe & RND_SAFEPRINT_COORD_ONLY)
 					return -1;
 				if (spec.array[0] == 'l') {
 					/* TODO: convert wchar to char and append it */
@@ -589,7 +589,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				}
 				break;
 			case 'n':
-				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+				if (safe & RND_SAFEPRINT_COORD_ONLY)
 					return -1;
 				/* Depending on gcc settings, this will probably break with
 				 *  some silly "can't put %n in writable data space" message */
@@ -597,7 +597,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 				break;
 			case 'p':
-				if (safe & PCB_SAFEPRINT_COORD_ONLY)
+				if (safe & RND_SAFEPRINT_COORD_ONLY)
 					return -1;
 				tmplen = sprintf(tmp, spec.array, va_arg(args, void *));
 				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
@@ -635,7 +635,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (CoordsToString(string, value, 1, &spec, mask, suffix) != 0) goto err;
 					break;
 				case 'H':
-					if ((safe & PCB_SAFEPRINT_COORD_ONLY) && (value[0] > 1))
+					if ((safe & RND_SAFEPRINT_COORD_ONLY) && (value[0] > 1))
 						return -1;
 					if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
 					break;
@@ -668,13 +668,13 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					value[count++] = va_arg(args, rnd_coord_t);
 				case '2':
 				case 'D':
-					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
 					value[count++] = va_arg(args, rnd_coord_t);
 					if (CoordsToString(string, value, count, &spec, mask & RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 					break;
 				case 'd':
-					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
 					value[1] = va_arg(args, rnd_coord_t);
 					if (CoordsToString(string, value, 2, &spec, RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_MIL, suffix) != 0) goto err;
@@ -694,7 +694,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					}
 					break;
 				case 'a':
-					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
 					if (gds_append_len(&spec, ".06f", 4) != 0) goto err;
 					if (suffix == RND_UNIT_SUFFIX)
@@ -703,7 +703,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 'A':
-					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
 					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
 					/* if (suffix == RND_UNIT_SUFFIX)
@@ -712,7 +712,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 'f':
-					if (safe & PCB_SAFEPRINT_COORD_ONLY)
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
 					gds_append_len(&spec, "f", 1);
 					tmplen = sprintf(tmp, spec.array, va_arg(args, double));
