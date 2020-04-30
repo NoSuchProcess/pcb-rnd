@@ -61,7 +61,7 @@ conf_djopt_t conf_djopt;
 
 static const char *djopt_cookie = "djopt";
 
-#define dprintf if(0)pcb_printf
+#define dprintf if(0)rnd_printf
 
 #define selected(x) PCB_FLAG_TEST(PCB_FLAG_SELECTED, (x))
 #define autorouted(x) PCB_FLAG_TEST(PCB_FLAG_AUTO, (x))
