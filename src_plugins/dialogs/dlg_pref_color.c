@@ -38,7 +38,7 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 	if (ctx->color.wlayer != NULL) {
 		nat = rnd_conf_get_field("appearance/color/layer");
 		for (n = 0; n < nat->used; n++)
-			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->color.wlayer[n], clr, nat->val.color[n]);
+			RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->color.wlayer[n], clr, nat->val.color[n]);
 	}
 
 	for(n = 0; n < ctx->color.ngen; n++) {
@@ -46,7 +46,7 @@ static void pref_color_brd2dlg(pref_ctx_t *ctx)
 		const char *path = ctx->dlg[w].user_data;
 		nat = rnd_conf_get_field(path);
 		if (nat != NULL)
-			PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, w, clr, nat->val.color[0]);
+			RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, w, clr, nat->val.color[0]);
 	}
 }
 
@@ -94,12 +94,12 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 	const char *path_prefix = "appearance/color";
 
 
-	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	PCB_DAD_BEGIN_TABBED(ctx->dlg, tabs);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_LEFT_TAB);
+	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_TABBED(ctx->dlg, tabs);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_LEFT_TAB);
 
-		PCB_DAD_BEGIN_VBOX(ctx->dlg); /* generic */
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+		RND_DAD_BEGIN_VBOX(ctx->dlg); /* generic */
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			pl = strlen(path_prefix);
 
 			ctx->color.ngen = 0;
@@ -114,43 +114,43 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 			rnd_conf_fields_foreach(e) {
 				nat = e->value;
 				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == RND_CFN_COLOR) && (nat->array_size == 1)) {
-					PCB_DAD_BEGIN_HBOX(ctx->dlg);
-						PCB_DAD_BEGIN_VBOX(ctx->dlg);
-							PCB_DAD_COLOR(ctx->dlg);
-								ctx->color.wgen[n] = w = PCB_DAD_CURRENT(ctx->dlg);
+					RND_DAD_BEGIN_HBOX(ctx->dlg);
+						RND_DAD_BEGIN_VBOX(ctx->dlg);
+							RND_DAD_COLOR(ctx->dlg);
+								ctx->color.wgen[n] = w = RND_DAD_CURRENT(ctx->dlg);
 								ctx->dlg[w].user_data = rnd_strdup(e->key);
-								PCB_DAD_CHANGE_CB(ctx->dlg, pref_color_gen_cb);
-						PCB_DAD_END(ctx->dlg);
-						PCB_DAD_LABEL(ctx->dlg, nat->description);
+								RND_DAD_CHANGE_CB(ctx->dlg, pref_color_gen_cb);
+						RND_DAD_END(ctx->dlg);
+						RND_DAD_LABEL(ctx->dlg, nat->description);
 						n++;
-					PCB_DAD_END(ctx->dlg);
+					RND_DAD_END(ctx->dlg);
 				}
 			}
-		PCB_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_VBOX(ctx->dlg); /* layer */
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+		RND_DAD_BEGIN_VBOX(ctx->dlg); /* layer */
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			nat = rnd_conf_get_field("appearance/color/layer");
 			if (nat->type == RND_CFN_COLOR) {
-				PCB_DAD_LABEL(ctx->dlg, "NOTE: these colors are used only\nwhen creating new layers.");
+				RND_DAD_LABEL(ctx->dlg, "NOTE: these colors are used only\nwhen creating new layers.");
 				ctx->color.wlayer = calloc(sizeof(int), nat->used);
-				PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+				RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 				for (n = 0; n < nat->used; n++) {
 					char tmp[32];
-						PCB_DAD_COLOR(ctx->dlg);
-							ctx->color.wlayer[n] = w = PCB_DAD_CURRENT(ctx->dlg);
+						RND_DAD_COLOR(ctx->dlg);
+							ctx->color.wlayer[n] = w = RND_DAD_CURRENT(ctx->dlg);
 							ctx->dlg[w].user_data = &ctx->color.wlayer[n];
-							PCB_DAD_CHANGE_CB(ctx->dlg, pref_color_layer_cb);
+							RND_DAD_CHANGE_CB(ctx->dlg, pref_color_layer_cb);
 						sprintf(tmp, "Layer %d", n);
-						PCB_DAD_LABEL(ctx->dlg, tmp);
+						RND_DAD_LABEL(ctx->dlg, tmp);
 				}
-				PCB_DAD_END(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
 			}
 			else {
 				ctx->color.wlayer = NULL;
-				PCB_DAD_LABEL(ctx->dlg, "Broken internal configuration:\nno layer colors");
+				RND_DAD_LABEL(ctx->dlg, "Broken internal configuration:\nno layer colors");
 			}
-		PCB_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 }

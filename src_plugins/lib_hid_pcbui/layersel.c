@@ -488,52 +488,52 @@ static void layer_vis_box(gen_xpm_t *dst, int filled, const rnd_color_t *color, 
 
 static void layersel_begin_grp_open(layersel_ctx_t *ls, const char *name, ls_group_t *lsg)
 {
-	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-		lsg->wopen = PCB_DAD_CURRENT(ls->sub.dlg);
+	RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+		lsg->wopen = RND_DAD_CURRENT(ls->sub.dlg);
 
 		/* vertical group name */
-		PCB_DAD_LABEL(ls->sub.dlg, name);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_TEXT_VERTICAL | RND_HATF_TEXT_TRUNCATED);
-			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
-			PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
-			PCB_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
-			PCB_DAD_HELP(ls->sub.dlg, name);
+		RND_DAD_LABEL(ls->sub.dlg, name);
+			RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_TEXT_VERTICAL | RND_HATF_TEXT_TRUNCATED);
+			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
+			RND_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
+			RND_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
+			RND_DAD_HELP(ls->sub.dlg, name);
 
 		/* vert sep */
-		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
-		PCB_DAD_END(ls->sub.dlg);
+		RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+			RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
+		RND_DAD_END(ls->sub.dlg);
 
 		/* layer list box */
-		PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT);
+		RND_DAD_BEGIN_VBOX(ls->sub.dlg);
+			RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT);
 }
 
 static void layersel_end_grp_open(layersel_ctx_t *ls)
 {
-		PCB_DAD_END(ls->sub.dlg);
-	PCB_DAD_END(ls->sub.dlg);
+		RND_DAD_END(ls->sub.dlg);
+	RND_DAD_END(ls->sub.dlg);
 }
 
 static void layersel_begin_grp_closed(layersel_ctx_t *ls, const char *name, ls_group_t *lsg)
 {
-	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-		lsg->wclosed = PCB_DAD_CURRENT(ls->sub.dlg);
-		PCB_DAD_LABEL(ls->sub.dlg, name);
-			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
-			PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
-			PCB_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
+	RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+		lsg->wclosed = RND_DAD_CURRENT(ls->sub.dlg);
+		RND_DAD_LABEL(ls->sub.dlg, name);
+			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
+			RND_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
+			RND_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
 
 		/* vert sep */
-		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
-		PCB_DAD_END(ls->sub.dlg);
+		RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+			RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
+		RND_DAD_END(ls->sub.dlg);
 
 }
 
 static void layersel_end_grp_closed(layersel_ctx_t *ls)
 {
-	PCB_DAD_END(ls->sub.dlg);
+	RND_DAD_END(ls->sub.dlg);
 }
 
 
@@ -542,23 +542,23 @@ static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, cons
 	layer_vis_box(&lys->on_open, 1, color, brd, hatch, 16, 16, 5);
 	layer_vis_box(&lys->off_open, 0, color, brd, hatch, 16, 16, 5);
 
-	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-		PCB_DAD_PICTURE(ls->sub.dlg, lys->on_open.xpm);
-			lys->wvis_on_open = PCB_DAD_CURRENT(ls->sub.dlg);
-			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
-			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
-		PCB_DAD_PICTURE(ls->sub.dlg, lys->off_open.xpm);
-			lys->wvis_off_open = PCB_DAD_CURRENT(ls->sub.dlg);
-			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
-			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
-		PCB_DAD_LABEL(ls->sub.dlg, name);
-			lys->wlab = PCB_DAD_CURRENT(ls->sub.dlg);
-			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+	RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+		RND_DAD_PICTURE(ls->sub.dlg, lys->on_open.xpm);
+			lys->wvis_on_open = RND_DAD_CURRENT(ls->sub.dlg);
+			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+			RND_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+		RND_DAD_PICTURE(ls->sub.dlg, lys->off_open.xpm);
+			lys->wvis_off_open = RND_DAD_CURRENT(ls->sub.dlg);
+			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+			RND_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+		RND_DAD_LABEL(ls->sub.dlg, name);
+			lys->wlab = RND_DAD_CURRENT(ls->sub.dlg);
+			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			if (selectable) {
-				PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
-				PCB_DAD_RIGHT_CB(ls->sub.dlg, layer_right_cb);
+				RND_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
+				RND_DAD_RIGHT_CB(ls->sub.dlg, layer_right_cb);
 			}
-	PCB_DAD_END(ls->sub.dlg);
+	RND_DAD_END(ls->sub.dlg);
 }
 
 static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, const char *name, const rnd_color_t *color, int brd, int hatch, int selected, int selectable)
@@ -566,39 +566,39 @@ static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, co
 	layer_vis_box(&lys->on_closed, 1, color, brd, hatch, 10, 10, 0);
 	layer_vis_box(&lys->off_closed, 0, color, brd, hatch, 10, 10, 0);
 
-	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT);
-		PCB_DAD_PICTURE(ls->sub.dlg, lys->on_closed.xpm);
-			lys->wvis_on_closed = PCB_DAD_CURRENT(ls->sub.dlg);
-			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
-			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
-			PCB_DAD_HELP(ls->sub.dlg, name);
-		PCB_DAD_PICTURE(ls->sub.dlg, lys->off_closed.xpm);
-			lys->wvis_off_closed = PCB_DAD_CURRENT(ls->sub.dlg);
-			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
-			PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
-			PCB_DAD_HELP(ls->sub.dlg, name);
+	RND_DAD_BEGIN_VBOX(ls->sub.dlg);
+		RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT);
+		RND_DAD_PICTURE(ls->sub.dlg, lys->on_closed.xpm);
+			lys->wvis_on_closed = RND_DAD_CURRENT(ls->sub.dlg);
+			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+			RND_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+			RND_DAD_HELP(ls->sub.dlg, name);
+		RND_DAD_PICTURE(ls->sub.dlg, lys->off_closed.xpm);
+			lys->wvis_off_closed = RND_DAD_CURRENT(ls->sub.dlg);
+			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+			RND_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+			RND_DAD_HELP(ls->sub.dlg, name);
 		if (selectable) {
-			PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_unsel);
+			RND_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_unsel);
 				if (selected)
-					PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_HIDE);
-				lys->wunsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
-				PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
-				PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
-				PCB_DAD_HELP(ls->sub.dlg, name);
-			PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_sel);
+					RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_HIDE);
+				lys->wunsel_closed = RND_DAD_CURRENT(ls->sub.dlg);
+				RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+				RND_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
+				RND_DAD_HELP(ls->sub.dlg, name);
+			RND_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_sel);
 				if (!selected)
-					PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_HIDE);
-				lys->wsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
-				PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
-				PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
-				PCB_DAD_HELP(ls->sub.dlg, name);
+					RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_HIDE);
+				lys->wsel_closed = RND_DAD_CURRENT(ls->sub.dlg);
+				RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
+				RND_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
+				RND_DAD_HELP(ls->sub.dlg, name);
 		}
 		else {
-			PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_nosel);
-				lys->wunsel_closed = lys->wsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
+			RND_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_nosel);
+				lys->wunsel_closed = lys->wsel_closed = RND_DAD_CURRENT(ls->sub.dlg);
 		}
-	PCB_DAD_END(ls->sub.dlg);
+	RND_DAD_END(ls->sub.dlg);
 }
 
 static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layergrp_t *g, ls_group_t *lgs, int is_open)
@@ -635,10 +635,10 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 
 static void layersel_add_grpsep(layersel_ctx_t *ls)
 {
-	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_PICTURE(ls->sub.dlg, grpsep);
-	PCB_DAD_END(ls->sub.dlg);
+	RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+		RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL);
+		RND_DAD_PICTURE(ls->sub.dlg, grpsep);
+	RND_DAD_END(ls->sub.dlg);
 
 }
 
@@ -716,7 +716,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 
 	layersel_begin_grp_open(ls, "UI", lgs);
 	if (vtp0_len(&pcb_uilayers) == 0)
-		PCB_DAD_LABEL(ls->sub.dlg, "(no layers)");
+		RND_DAD_LABEL(ls->sub.dlg, "(no layers)");
 	for(n = 0; n < vtp0_len(&pcb_uilayers); n++) {
 		pcb_layer_t *ly = pcb_uilayers.array[n];
 		if ((ly != NULL) && (ly->name != NULL)) {
@@ -741,16 +741,16 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 
 static void hsep(layersel_ctx_t *ls)
 {
-	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
-	PCB_DAD_END(ls->sub.dlg);
+	RND_DAD_BEGIN_VBOX(ls->sub.dlg);
+		RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
+	RND_DAD_END(ls->sub.dlg);
 }
 
 static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	lgs_reset(ls);
-	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT | RND_HATF_SCROLL);
+	RND_DAD_BEGIN_VBOX(ls->sub.dlg);
+		RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT | RND_HATF_SCROLL);
 		layersel_create_stack(&layersel, pcb);
 		hsep(&layersel);
 		layersel_create_global(&layersel, pcb);
@@ -759,20 +759,20 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 		layersel_add_grpsep(ls);
 		layersel_create_ui(&layersel, pcb);
 		layersel_add_grpsep(ls);
-		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-			PCB_DAD_PICBUTTON(ls->sub.dlg, all_open_xpm);
-				PCB_DAD_HELP(ls->sub.dlg, "expand/open all layer groups\nso that layer names are\ndisplayed, one layer per row");
-				PCB_DAD_CHANGE_CB(ls->sub.dlg, all_open_cb);
-			PCB_DAD_PICBUTTON(ls->sub.dlg, all_closed_xpm);
-				PCB_DAD_HELP(ls->sub.dlg, "collapse/close all layer groups\nso that layer names are\nnot displayed,\neach row is a layer group");
-				PCB_DAD_CHANGE_CB(ls->sub.dlg, all_close_cb);
-			PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-				PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(ls->sub.dlg);
-		PCB_DAD_END(ls->sub.dlg);
-	PCB_DAD_END(ls->sub.dlg);
-	PCB_DAD_DEFSIZE(ls->sub.dlg, 180, 200);
-	PCB_DAD_MINSIZE(ls->sub.dlg, 100, 100);
+		RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+			RND_DAD_PICBUTTON(ls->sub.dlg, all_open_xpm);
+				RND_DAD_HELP(ls->sub.dlg, "expand/open all layer groups\nso that layer names are\ndisplayed, one layer per row");
+				RND_DAD_CHANGE_CB(ls->sub.dlg, all_open_cb);
+			RND_DAD_PICBUTTON(ls->sub.dlg, all_closed_xpm);
+				RND_DAD_HELP(ls->sub.dlg, "collapse/close all layer groups\nso that layer names are\nnot displayed,\neach row is a layer group");
+				RND_DAD_CHANGE_CB(ls->sub.dlg, all_close_cb);
+			RND_DAD_BEGIN_HBOX(ls->sub.dlg);
+				RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(ls->sub.dlg);
+		RND_DAD_END(ls->sub.dlg);
+	RND_DAD_END(ls->sub.dlg);
+	RND_DAD_DEFSIZE(ls->sub.dlg, 180, 200);
+	RND_DAD_MINSIZE(ls->sub.dlg, 100, 100);
 	ls->w_last_sel = 0;
 }
 

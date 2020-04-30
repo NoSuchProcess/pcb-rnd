@@ -132,7 +132,7 @@ RND_INLINE void pcb_dad_tree_set_hash(rnd_hid_attribute_t *attr, rnd_hid_row_t *
 
 /* allocate a new row and append it after aft; if aft is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
-RND_INLINE rnd_hid_row_t *pcb_dad_tree_append(rnd_hid_attribute_t *attr, rnd_hid_row_t *aft, char **cols)
+RND_INLINE rnd_hid_row_t *rnd_dad_tree_append(rnd_hid_attribute_t *attr, rnd_hid_row_t *aft, char **cols)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
@@ -156,7 +156,7 @@ RND_INLINE rnd_hid_row_t *pcb_dad_tree_append(rnd_hid_attribute_t *attr, rnd_hid
 
 /* allocate a new row and inert it before bfr; if bfr is NULL, the new row is inserted at the
    beginning of the list of entries in the root (== at the top of the list) */
-RND_INLINE rnd_hid_row_t *pcb_dad_tree_insert(rnd_hid_attribute_t *attr, rnd_hid_row_t *bfr, char **cols)
+RND_INLINE rnd_hid_row_t *rnd_dad_tree_insert(rnd_hid_attribute_t *attr, rnd_hid_row_t *bfr, char **cols)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
@@ -180,7 +180,7 @@ RND_INLINE rnd_hid_row_t *pcb_dad_tree_insert(rnd_hid_attribute_t *attr, rnd_hid
 
 /* allocate a new row and append it under prn; if aft is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
-RND_INLINE rnd_hid_row_t *pcb_dad_tree_append_under(rnd_hid_attribute_t *attr, rnd_hid_row_t *prn, char **cols)
+RND_INLINE rnd_hid_row_t *rnd_dad_tree_append_under(rnd_hid_attribute_t *attr, rnd_hid_row_t *prn, char **cols)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *nrow = pcb_dad_tree_new_row(cols);

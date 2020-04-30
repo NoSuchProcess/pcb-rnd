@@ -37,8 +37,8 @@ static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 {
 	if (ctx->sizes.lock)
 		return;
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wwidth, crd, PCB->hidlib.size_x);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wheight, crd, PCB->hidlib.size_y);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wwidth, crd, PCB->hidlib.size_x);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wheight, crd, PCB->hidlib.size_y);
 }
 
 /* Dialog box to actual board size */
@@ -77,7 +77,7 @@ static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((pref_ctx.sizes.lock) || (!pref_ctx.active))
 		return;
-	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.sizes.wisle, dbl, conf_core.design.poly_isle_area / 1000000.0);
+	RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.sizes.wisle, dbl, conf_core.design.poly_isle_area / 1000000.0);
 }
 
 static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -99,61 +99,61 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 {
 	pcb_drc_impl_t *di;
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "Board size");
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Width=");
-			PCB_DAD_COORD(ctx->dlg, "");
-				ctx->sizes.wwidth = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
-				PCB_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_x);
-				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
-			PCB_DAD_LABEL(ctx->dlg, "Height=");
-			PCB_DAD_COORD(ctx->dlg, "");
-				ctx->sizes.wheight = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
-				PCB_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_y);
-				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+		RND_DAD_LABEL(ctx->dlg, "Board size");
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Width=");
+			RND_DAD_COORD(ctx->dlg, "");
+				ctx->sizes.wwidth = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_x);
+				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
+			RND_DAD_LABEL(ctx->dlg, "Height=");
+			RND_DAD_COORD(ctx->dlg, "");
+				ctx->sizes.wheight = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_y);
+				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "*OBSOLETE* DRC; do not use; details:");
-		PCB_DAD_STRING(ctx->dlg);
-		PCB_DAD_DEFAULT_PTR(ctx->dlg, "http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=deprecation#olddrc");
-		PCB_DAD_WIDTH_CHR(ctx->dlg, 64);
-		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+		RND_DAD_LABEL(ctx->dlg, "*OBSOLETE* DRC; do not use; details:");
+		RND_DAD_STRING(ctx->dlg);
+		RND_DAD_DEFAULT_PTR(ctx->dlg, "http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=deprecation#olddrc");
+		RND_DAD_WIDTH_CHR(ctx->dlg, 64);
+		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, drc_sizes, pref_sizes_drc_dlg2conf);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "Configure DRC rules:");
+	RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+		RND_DAD_LABEL(ctx->dlg, "Configure DRC rules:");
 		for(di = gdl_first(&pcb_drc_impls); di != NULL; di = di->link.next) {
 			char *ra = rnd_strdup(di->list_rules_action); /* need to strdup it just in case the plugin is unloaded while the preferences dialog is open */
 			vtp0_append(&ctx->auto_free, ra);
-			PCB_DAD_BUTTON(ctx->dlg, di->name);
-				PCB_DAD_HELP(ctx->dlg, di->desc);
-				PCB_DAD_SET_ATTR_FIELD(ctx->dlg, user_data, ra);
-				PCB_DAD_CHANGE_CB(ctx->dlg, drc_rules_cb);
+			RND_DAD_BUTTON(ctx->dlg, di->name);
+				RND_DAD_HELP(ctx->dlg, di->desc);
+				RND_DAD_SET_ATTR_FIELD(ctx->dlg, user_data, ra);
+				RND_DAD_CHANGE_CB(ctx->dlg, drc_rules_cb);
 		}
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "misc sizes");
-		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			PCB_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
-			PCB_DAD_REAL(ctx->dlg, "");
-				ctx->sizes.wisle = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+		RND_DAD_LABEL(ctx->dlg, "misc sizes");
+		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
+			RND_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
+			RND_DAD_REAL(ctx->dlg, "");
+				ctx->sizes.wisle = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
 				ctx->dlg[ctx->sizes.wisle].val.dbl = (conf_core.design.poly_isle_area / 1000000.0);
-				PCB_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+				RND_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 }
 
 void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx)

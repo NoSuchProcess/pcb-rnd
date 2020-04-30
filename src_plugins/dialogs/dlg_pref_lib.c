@@ -118,7 +118,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 		cell[1] = rnd_strdup(tmp == NULL ? "" : tmp);
 		cell[2] = rnd_strdup(pref_node_src(i->prop.src));
 		cell[3] = NULL;
-		pcb_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
 	hv.str = pref_ctx.lib.cursor_path;
@@ -217,7 +217,7 @@ static void lib_btn_up(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *bt
 	cell[3] = NULL;
 	if (pcb_dad_tree_remove(attr, r) == 0) {
 		rnd_hid_attr_val_t hv;
-		pcb_dad_tree_insert(attr, prev, cell);
+		rnd_dad_tree_insert(attr, prev, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
 		hv.str = cell[0];
 		rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
@@ -244,7 +244,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	cell[3] = NULL;
 	if (pcb_dad_tree_remove(attr, r) == 0) {
 		rnd_hid_attr_val_t hv;
-		pcb_dad_tree_append(attr, next, cell);
+		rnd_dad_tree_append(attr, next, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
 		hv.str = cell[0];
 		rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
@@ -252,7 +252,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 }
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wpath, wexp;
 	pref_ctx_t *pctx;
 } cell_edit_ctx_t;
@@ -264,40 +264,40 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, rnd_hid_attri
 
 	pcb_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str, &tmp, 0, pcb_true);
 	if (tmp != NULL)
-		PCB_DAD_SET_VALUE(hid_ctx, ctx->wexp, str, tmp);
+		RND_DAD_SET_VALUE(hid_ctx, ctx->wexp, str, tmp);
 }
 
 static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 {
 	cell_edit_ctx_t ctx;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 
 	memset(&ctx, 0, sizeof(ctx));
 	ctx.pctx = pctx;
 
-	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-			PCB_DAD_LABEL(ctx.dlg, "Path:");
-			PCB_DAD_STRING(ctx.dlg);
-				ctx.wpath = PCB_DAD_CURRENT(ctx.dlg);
+	RND_DAD_BEGIN_VBOX(ctx.dlg);
+		RND_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			RND_DAD_LABEL(ctx.dlg, "Path:");
+			RND_DAD_STRING(ctx.dlg);
+				ctx.wpath = RND_DAD_CURRENT(ctx.dlg);
 				ctx.dlg[ctx.wpath].val.str = rnd_strdup(cell[0]);
-				PCB_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
+				RND_DAD_CHANGE_CB(ctx.dlg, lib_cell_edit_update);
 
-			PCB_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
-			PCB_DAD_LABEL(ctx.dlg, rnd_strdup(cell[1]));
-				ctx.wexp = PCB_DAD_CURRENT(ctx.dlg);
+			RND_DAD_LABEL(ctx.dlg, "Expanded\nversion:");
+			RND_DAD_LABEL(ctx.dlg, rnd_strdup(cell[1]));
+				ctx.wexp = RND_DAD_CURRENT(ctx.dlg);
 				ctx.dlg[ctx.wexp].val.str = rnd_strdup(cell[1]);
 
-			PCB_DAD_LABEL(ctx.dlg, "");
-			PCB_DAD_BUTTON(ctx.dlg, "Help...");
-				PCB_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
-		PCB_DAD_END(ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
-	PCB_DAD_END(ctx.dlg);
+			RND_DAD_LABEL(ctx.dlg, "");
+			RND_DAD_BUTTON(ctx.dlg, "Help...");
+				RND_DAD_CHANGE_CB(ctx.dlg, libhelp_btn);
+		RND_DAD_END(ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+	RND_DAD_END(ctx.dlg);
 
-	PCB_DAD_NEW("pref_lib_path", ctx.dlg, "Edit library path", &ctx, pcb_true, NULL);
-	if (PCB_DAD_RUN(ctx.dlg) != 0) {
-		PCB_DAD_FREE(ctx.dlg);
+	RND_DAD_NEW("pref_lib_path", ctx.dlg, "Edit library path", &ctx, pcb_true, NULL);
+	if (RND_DAD_RUN(ctx.dlg) != 0) {
+		RND_DAD_FREE(ctx.dlg);
 		return -1;
 	}
 
@@ -306,7 +306,7 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 	free(cell[1]);
 	cell[1] = rnd_strdup(PCB_EMPTY(ctx.dlg[ctx.wexp].val.str));
 
-	PCB_DAD_FREE(ctx.dlg);
+	RND_DAD_FREE(ctx.dlg);
 	return 0;
 }
 
@@ -355,10 +355,10 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 	switch(pos) {
 		case -1: /* before */
-			pcb_dad_tree_insert(attr, r, cell);
+			rnd_dad_tree_insert(attr, r, cell);
 			break;
 		case +1: /* after */
-			pcb_dad_tree_append(attr, r, cell);
+			rnd_dad_tree_append(attr, r, cell);
 			break;
 		case 0: /* replace */
 			pcb_dad_tree_modify_cell(attr, r, 0, cell[0]);
@@ -387,7 +387,7 @@ static void lib_btn_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
 {
 	if (ctx->lib.help.active)
-		PCB_DAD_FREE(ctx->lib.help.dlg);
+		RND_DAD_FREE(ctx->lib.help.dlg);
 }
 
 static void pref_libhelp_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -398,13 +398,13 @@ static void pref_libhelp_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 {
 	htsp_entry_t *e;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (ctx->active)
 		return;
 
-	PCB_DAD_LABEL(ctx->dlg, "The following $(variables) can be used in the path:");
-		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+	RND_DAD_LABEL(ctx->dlg, "The following $(variables) can be used in the path:");
+		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			rnd_conf_fields_foreach(e) {
 				rnd_conf_native_t *nat = e->value;
 				char tmp[256];
@@ -413,17 +413,17 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 					continue;
 
 				pcb_snprintf(tmp, sizeof(tmp), "$(rc.path.%s)", e->key + 8);
-				PCB_DAD_LABEL(ctx->dlg, tmp);
-				PCB_DAD_LABEL(ctx->dlg, nat->val.string[0] == NULL ? "" : nat->val.string[0]);
+				RND_DAD_LABEL(ctx->dlg, tmp);
+				RND_DAD_LABEL(ctx->dlg, nat->val.string[0] == NULL ? "" : nat->val.string[0]);
 			}
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-	PCB_DAD_END(ctx->dlg);
+		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+	RND_DAD_END(ctx->dlg);
 
 	ctx->active = 1;
-	PCB_DAD_NEW("pref_lib_path_help", ctx->dlg, "pcb-rnd preferences: library help", ctx, pcb_true, pref_libhelp_close_cb);
+	RND_DAD_NEW("pref_lib_path_help", ctx->dlg, "pcb-rnd preferences: library help", ctx, pcb_true, pref_libhelp_close_cb);
 
-	PCB_DAD_RUN(ctx->dlg);
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_RUN(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(pref_libhelp_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -437,41 +437,41 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 	static const char *hdr[] = {"configured path", "actual path on the filesystem", "config source", NULL};
 	rnd_hid_tree_t *tree;
 
-	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL); /* get the parent vbox, which is the tab's page vbox, to expand and fill */
+	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL); /* get the parent vbox, which is the tab's page vbox, to expand and fill */
 
-	PCB_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
+	RND_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL | RND_HATF_EXPFILL);
-		PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			ctx->lib.wlist = PCB_DAD_CURRENT(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL | RND_HATF_EXPFILL);
+		RND_DAD_TREE(ctx->dlg, 3, 0, hdr);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			ctx->lib.wlist = RND_DAD_CURRENT(ctx->dlg);
 			tree = ctx->dlg[ctx->lib.wlist].wdata;
 			tree->user_free_cb = pref_lib_row_free;
-			PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pref_lib_select_cb);
-	PCB_DAD_END(ctx->dlg);
+			RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pref_lib_select_cb);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_BUTTON(ctx->dlg, "Move up");
-			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_up);
-			ctx->lib.wmoveup = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BUTTON(ctx->dlg, "Move down");
-			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_down);
-			ctx->lib.wmovedown = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BUTTON(ctx->dlg, "Insert before");
-			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_before);
-		PCB_DAD_BUTTON(ctx->dlg, "Insert after");
-			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_after);
-		PCB_DAD_BUTTON(ctx->dlg, "Remove");
-			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
-			ctx->lib.wremove = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
-			PCB_DAD_CHANGE_CB(ctx->dlg, lib_btn_edit);
-			ctx->lib.wedit = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BUTTON(ctx->dlg, "Help...");
-			ctx->lib.whsbutton = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Move up");
+			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_up);
+			ctx->lib.wmoveup = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Move down");
+			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_down);
+			ctx->lib.wmovedown = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Insert before");
+			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_before);
+		RND_DAD_BUTTON(ctx->dlg, "Insert after");
+			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_after);
+		RND_DAD_BUTTON(ctx->dlg, "Remove");
+			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
+			ctx->lib.wremove = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Edit...");
+			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_edit);
+			ctx->lib.wedit = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Help...");
+			ctx->lib.whsbutton = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
+	RND_DAD_END(ctx->dlg);
 
 }
 

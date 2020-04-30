@@ -56,7 +56,7 @@ static const char *library_cookie = "dlg_library";
 #define MAX_PARAMS 128
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wtree, wpreview, wtags, wfilt, wpend, wnopend, wedit;
 
 	int active; /* already open - allow only one instance */
@@ -70,7 +70,7 @@ typedef struct{
  /* for the parametric */
 	int pactive; /* already open - allow only one instance */
 	int pwdesc;
-	PCB_DAD_DECL_NOINIT(pdlg)
+	RND_DAD_DECL_NOINIT(pdlg)
 	pcb_fplibrary_t *last_l;
 	char *example, *help_params;
 	htsi_t param_names;     /* param_name -> param_idx */
@@ -152,7 +152,7 @@ static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplib
 	if (sc != NULL) {
 		ctx->sc = pcb_subc_dup_at(ctx->prev_pcb, ctx->prev_pcb->Data, sc, 0, 0, 1);
 		pcb_data_bbox(&bbox, ctx->sc->data, 0);
-		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
+		rnd_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
 	}
 
 	if (l != NULL) {
@@ -243,12 +243,12 @@ static void library_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 	if (ctx->pactive) {
 		ctx->pactive = 0;
-		PCB_DAD_FREE(ctx->pdlg);
+		RND_DAD_FREE(ctx->pdlg);
 	}
 
 	timed_update_preview(ctx, 0);
 	pcb_board_free(ctx->prev_pcb);
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(library_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -263,7 +263,7 @@ static void create_lib_tree_model_recurse(rnd_hid_attribute_t *attr, pcb_fplibra
 		rnd_hid_row_t *row;
 
 		cell[0] = rnd_strdup(l->name);
-		row = pcb_dad_tree_append_under(attr, parent_row, cell);
+		row = rnd_dad_tree_append_under(attr, parent_row, cell);
 		row->user_data = l;
 		if (l->type == PCB_LIB_DIR)
 			create_lib_tree_model_recurse(attr, l, row);
@@ -640,7 +640,7 @@ static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *pr
 
 static void pcb_dlg_library(void)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	const pcb_dflgmap_t *g;
 	int n;
 
@@ -653,63 +653,63 @@ static void pcb_dlg_library(void)
 		pcb_layergrp_set_dflgly(library_ctx.prev_pcb, &(library_ctx.prev_pcb->LayerGroups.grp[n]), g, g->name, g->name);
 	library_ctx.prev_pcb->LayerGroups.len = n;
 
-	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
-		PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_HPANE(library_ctx.dlg);
+	RND_DAD_BEGIN_VBOX(library_ctx.dlg);
+		RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HPANE(library_ctx.dlg);
 			/* left */
-			PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
-				PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
-				PCB_DAD_TREE(library_ctx.dlg, 1, 1, NULL);
-					PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					PCB_DAD_TREE_SET_CB(library_ctx.dlg, selected_cb, library_select);
-					PCB_DAD_TREE_SET_CB(library_ctx.dlg, ctx, &library_ctx);
-					library_ctx.wtree = PCB_DAD_CURRENT(library_ctx.dlg);
-				PCB_DAD_BEGIN_HBOX(library_ctx.dlg);
-					PCB_DAD_STRING(library_ctx.dlg);
-						PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
-						PCB_DAD_HELP(library_ctx.dlg, "filter: display only footprints matching this text\n(if empty: display all)");
-						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_filter_cb);
-						library_ctx.wfilt = PCB_DAD_CURRENT(library_ctx.dlg);
-					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_edit_param);
-						PCB_DAD_HELP(library_ctx.dlg, "open GUI to edit the parameters\nof a parametric footprint");
-						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_edit_cb);
-						library_ctx.wedit = PCB_DAD_CURRENT(library_ctx.dlg);
-					PCB_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
-						PCB_DAD_HELP(library_ctx.dlg, "reload and refresh the current\nmain tree of the library");
-						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_refresh_cb);
-				PCB_DAD_END(library_ctx.dlg);
-			PCB_DAD_END(library_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(library_ctx.dlg);
+				RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_TREE(library_ctx.dlg, 1, 1, NULL);
+					RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+					RND_DAD_TREE_SET_CB(library_ctx.dlg, selected_cb, library_select);
+					RND_DAD_TREE_SET_CB(library_ctx.dlg, ctx, &library_ctx);
+					library_ctx.wtree = RND_DAD_CURRENT(library_ctx.dlg);
+				RND_DAD_BEGIN_HBOX(library_ctx.dlg);
+					RND_DAD_STRING(library_ctx.dlg);
+						RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
+						RND_DAD_HELP(library_ctx.dlg, "filter: display only footprints matching this text\n(if empty: display all)");
+						RND_DAD_CHANGE_CB(library_ctx.dlg, library_filter_cb);
+						library_ctx.wfilt = RND_DAD_CURRENT(library_ctx.dlg);
+					RND_DAD_PICBUTTON(library_ctx.dlg, xpm_edit_param);
+						RND_DAD_HELP(library_ctx.dlg, "open GUI to edit the parameters\nof a parametric footprint");
+						RND_DAD_CHANGE_CB(library_ctx.dlg, library_edit_cb);
+						library_ctx.wedit = RND_DAD_CURRENT(library_ctx.dlg);
+					RND_DAD_PICBUTTON(library_ctx.dlg, xpm_refresh);
+						RND_DAD_HELP(library_ctx.dlg, "reload and refresh the current\nmain tree of the library");
+						RND_DAD_CHANGE_CB(library_ctx.dlg, library_refresh_cb);
+				RND_DAD_END(library_ctx.dlg);
+			RND_DAD_END(library_ctx.dlg);
 
 			/* right */
-			PCB_DAD_BEGIN_VPANE(library_ctx.dlg);
-				PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
+			RND_DAD_BEGIN_VPANE(library_ctx.dlg);
+				RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				/* right top */
-				PCB_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, 100, 100, &library_ctx);
-					library_ctx.wpreview = PCB_DAD_CURRENT(library_ctx.dlg);
+				RND_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, 100, 100, &library_ctx);
+					library_ctx.wpreview = RND_DAD_CURRENT(library_ctx.dlg);
 
 				/* right bottom */
-				PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
-					PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
-					PCB_DAD_LABEL(library_ctx.dlg, "Refreshing");
-						PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_HIDE);
-						library_ctx.wpend = PCB_DAD_CURRENT(library_ctx.dlg);
-					PCB_DAD_LABEL(library_ctx.dlg, " ");
-						library_ctx.wnopend = PCB_DAD_CURRENT(library_ctx.dlg);
+				RND_DAD_BEGIN_VBOX(library_ctx.dlg);
+					RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
+					RND_DAD_LABEL(library_ctx.dlg, "Refreshing");
+						RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_HIDE);
+						library_ctx.wpend = RND_DAD_CURRENT(library_ctx.dlg);
+					RND_DAD_LABEL(library_ctx.dlg, " ");
+						library_ctx.wnopend = RND_DAD_CURRENT(library_ctx.dlg);
 					TODO("rich text label");
-					PCB_DAD_LABEL(library_ctx.dlg, "");
-						library_ctx.wtags = PCB_DAD_CURRENT(library_ctx.dlg);
-				PCB_DAD_END(library_ctx.dlg);
-			PCB_DAD_END(library_ctx.dlg);
-		PCB_DAD_END(library_ctx.dlg);
+					RND_DAD_LABEL(library_ctx.dlg, "");
+						library_ctx.wtags = RND_DAD_CURRENT(library_ctx.dlg);
+				RND_DAD_END(library_ctx.dlg);
+			RND_DAD_END(library_ctx.dlg);
+		RND_DAD_END(library_ctx.dlg);
 
 		/* bottom */
-		PCB_DAD_BUTTON_CLOSES(library_ctx.dlg, clbtn);
-	PCB_DAD_END(library_ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(library_ctx.dlg, clbtn);
+	RND_DAD_END(library_ctx.dlg);
 
 	/* set up the context */
 	library_ctx.active = 1;
 
-	PCB_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, pcb_false, library_close_cb);
+	RND_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, pcb_false, library_close_cb);
 
 	library_lib2dlg(&library_ctx);
 	rnd_gui->attr_dlg_widget_state(library_ctx.dlg_hid_ctx, library_ctx.wedit, 0);

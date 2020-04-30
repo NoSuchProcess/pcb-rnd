@@ -123,7 +123,7 @@ static char *gen_str_coord(pcb_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, i
 }
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	rnd_hid_attribute_t *end;
 	int wout, wunit, wstick, wglob, valid;
 	char buf[128];
@@ -165,7 +165,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_hid_attribute_t *str)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	spin_unit_t ctx;
 	const rnd_unit_t *def_unit;
 	int dlgfail;
@@ -175,58 +175,58 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_h
 
 	def_unit = spin->unit == NULL ? pcbhl_conf.editor.grid_unit : spin->unit;
 
-	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_FRAME);
-			PCB_DAD_LABEL(ctx.dlg, "Original:");
-			PCB_DAD_LABEL(ctx.dlg, str->val.str);
-			PCB_DAD_LABEL(ctx.dlg, "With new unit:");
-			PCB_DAD_LABEL(ctx.dlg, "");
-				ctx.wout = PCB_DAD_CURRENT(ctx.dlg);
-		PCB_DAD_END(ctx.dlg);
+	RND_DAD_BEGIN_VBOX(ctx.dlg);
+		RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_FRAME);
+			RND_DAD_LABEL(ctx.dlg, "Original:");
+			RND_DAD_LABEL(ctx.dlg, str->val.str);
+			RND_DAD_LABEL(ctx.dlg, "With new unit:");
+			RND_DAD_LABEL(ctx.dlg, "");
+				ctx.wout = RND_DAD_CURRENT(ctx.dlg);
+		RND_DAD_END(ctx.dlg);
 
 
-		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-			PCB_DAD_LABEL(ctx.dlg, "Preferred unit");
+		RND_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			RND_DAD_LABEL(ctx.dlg, "Preferred unit");
 			PCB_DAD_UNIT(ctx.dlg, spin->unit_family);
-				ctx.wunit = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_HELP(ctx.dlg, "Convert value to this unit and rewrite\nthe text entry field with the converted value.");
-				PCB_DAD_DEFAULT_PTR(ctx.dlg, def_unit);
-				PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+				ctx.wunit = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_HELP(ctx.dlg, "Convert value to this unit and rewrite\nthe text entry field with the converted value.");
+				RND_DAD_DEFAULT_PTR(ctx.dlg, def_unit);
+				RND_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 			
 			if (spin->unit_family == (PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)) {
-				PCB_DAD_LABEL(ctx.dlg, "Use the global");
-				PCB_DAD_BOOL(ctx.dlg, "");
-					PCB_DAD_HELP(ctx.dlg, "Ignore the above unit selection,\nuse the global unit (grid unit) in this spinbox,\nfollow changes of the global unit");
-					ctx.wglob = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_DEFAULT_NUM(ctx.dlg, (spin->unit == NULL));
-					PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+				RND_DAD_LABEL(ctx.dlg, "Use the global");
+				RND_DAD_BOOL(ctx.dlg, "");
+					RND_DAD_HELP(ctx.dlg, "Ignore the above unit selection,\nuse the global unit (grid unit) in this spinbox,\nfollow changes of the global unit");
+					ctx.wglob = RND_DAD_CURRENT(ctx.dlg);
+					RND_DAD_DEFAULT_NUM(ctx.dlg, (spin->unit == NULL));
+					RND_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 
-				PCB_DAD_LABEL(ctx.dlg, "Stick to unit");
-				PCB_DAD_BOOL(ctx.dlg, "");
-					PCB_DAD_HELP(ctx.dlg, "Upon any update from software, switch back to\the selected unit even if the user specified\na different unit in the text field.");
-					ctx.wstick = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_DEFAULT_NUM(ctx.dlg, spin->no_unit_chg);
-					PCB_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
+				RND_DAD_LABEL(ctx.dlg, "Stick to unit");
+				RND_DAD_BOOL(ctx.dlg, "");
+					RND_DAD_HELP(ctx.dlg, "Upon any update from software, switch back to\the selected unit even if the user specified\na different unit in the text field.");
+					ctx.wstick = RND_DAD_CURRENT(ctx.dlg);
+					RND_DAD_DEFAULT_NUM(ctx.dlg, spin->no_unit_chg);
+					RND_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 			}
 			else {
 				ctx.wglob = -1;
 				ctx.wstick = -1;
 			}
 
-		PCB_DAD_END(ctx.dlg);
+		RND_DAD_END(ctx.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ctx.dlg);
-			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_BEGIN_HBOX(ctx.dlg);
-				PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(ctx.dlg);
-			PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
-		PCB_DAD_END(ctx.dlg);
-	PCB_DAD_END(ctx.dlg);
+		RND_DAD_BEGIN_HBOX(ctx.dlg);
+			RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_BEGIN_HBOX(ctx.dlg);
+				RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(ctx.dlg);
+			RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+		RND_DAD_END(ctx.dlg);
+	RND_DAD_END(ctx.dlg);
 
-	PCB_DAD_AUTORUN("unit", ctx.dlg, "spinbox coord unit change", &ctx, dlgfail);
+	RND_DAD_AUTORUN("unit", ctx.dlg, "spinbox coord unit change", &ctx, dlgfail);
 	if ((dlgfail == 0) && (ctx.valid)) {
 		rnd_hid_attr_val_t hv;
 		int unum = ctx.dlg[ctx.wunit].val.lng;
@@ -248,7 +248,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_h
 		rnd_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
 	}
 
-	PCB_DAD_FREE(ctx.dlg);
+	RND_DAD_FREE(ctx.dlg);
 }
 
 static double get_step(pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_hid_attribute_t *str)

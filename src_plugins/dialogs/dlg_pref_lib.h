@@ -2,7 +2,7 @@
 #define PCB_DLG_PREF_LIB_H
 
 typedef struct pref_libhelp_ctx_s {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 } pref_libhelp_ctx_t;
 

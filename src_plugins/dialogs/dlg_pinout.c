@@ -36,7 +36,7 @@
 #include "netlist.h"
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb; /* for netlist lookups */
 	pcb_data_t *data;
 	long subc_id;
@@ -51,7 +51,7 @@ pinout_ctx_t pinout_ctx;
 static void pinout_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pinout_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
 
@@ -75,7 +75,7 @@ static void pinout_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, r
 		sprintf(tmp, "Subcircuit #%ld not found.", ctx->subc_id);
 		bbox.X1 = bbox.Y1 = 0;
 		bbox.X2 = bbox.Y2 = PCB_MM_TO_COORD(10);
-		pcb_dad_preview_zoomto(attrib, &bbox);
+		rnd_dad_preview_zoomto(attrib, &bbox);
 		rnd_render->set_color(gc, rnd_color_red);
 		pcb_text_draw_string_simple(NULL, tmp, PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 100, 0, 0, 0, 0, 0, 0);
 	}
@@ -138,37 +138,37 @@ static rnd_bool pinout_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv
 static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 {
 	char title[64];
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pinout_ctx_t *ctx = calloc(sizeof(pinout_ctx_t), 1);
 
 	ctx->pcb = pcb;
 	ctx->data = data;
 	ctx->subc_id = sc->ID;
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, &sc->BoundingBox, 200, 200, ctx);
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Term ID:");
-			PCB_DAD_LABEL(ctx->dlg, "");
-				ctx->w_lab_num = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Term name:");
-			PCB_DAD_LABEL(ctx->dlg, "");
-				ctx->w_lab_name = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, &sc->BoundingBox, 200, 200, ctx);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Term ID:");
+			RND_DAD_LABEL(ctx->dlg, "");
+				ctx->w_lab_num = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Term name:");
+			RND_DAD_LABEL(ctx->dlg, "");
+				ctx->w_lab_name = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Net:");
-			PCB_DAD_LABEL(ctx->dlg, "");
-				ctx->w_lab_net = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-	PCB_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Net:");
+			RND_DAD_LABEL(ctx->dlg, "");
+				ctx->w_lab_net = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+	RND_DAD_END(ctx->dlg);
 
 	if (sc->refdes != NULL)
 		sprintf(title, "Subcircuit #%ld (%s) pinout", sc->ID, sc->refdes);
 	else
 		sprintf(title, "Subcircuit #%ld pinout", sc->ID);
-	PCB_DAD_NEW("pinout", ctx->dlg, title, ctx, pcb_false, pinout_close_cb);
+	RND_DAD_NEW("pinout", ctx->dlg, title, ctx, pcb_false, pinout_close_cb);
 }
 
 static const char pcb_acts_Pinout[] = "Pinout()\n";

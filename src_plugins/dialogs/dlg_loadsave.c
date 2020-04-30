@@ -314,29 +314,29 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 	}
 	save->fmt_tab_names[tabs+1] = NULL;
 
-	PCB_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
-		PCB_DAD_COMPFLAG(save->fmtsub->dlg, RND_HATF_HIDE_TABLAB);
-		save->wopts = PCB_DAD_CURRENT(save->fmtsub->dlg);
-/*	pre-creation tab switch not yet supported:	PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->opt_tab[0]);*/
+	RND_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
+		RND_DAD_COMPFLAG(save->fmtsub->dlg, RND_HATF_HIDE_TABLAB);
+		save->wopts = RND_DAD_CURRENT(save->fmtsub->dlg);
+/*	pre-creation tab switch not yet supported:	RND_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->opt_tab[0]);*/
 
 		/* the no-options tab */
-		PCB_DAD_LABEL(save->fmtsub->dlg, "(no format options)");
-			PCB_DAD_HELP(save->fmtsub->dlg, "Some formats offer format-specific options\nwhich are normally displayed here.\nThe currently selected format does\nnot offer any options.");
+		RND_DAD_LABEL(save->fmtsub->dlg, "(no format options)");
+			RND_DAD_HELP(save->fmtsub->dlg, "Some formats offer format-specific options\nwhich are normally displayed here.\nThe currently selected format does\nnot offer any options.");
 
 		/* all other tabs, filled in by the plug code */
 		for(n = 1; n < tabs+1; n++) {
 			for(i = 0; i < save->num_fmts; i++) {
 				if (save->opt_tab[i] == n) {
 					const pcb_plug_io_t *plug = save->avail->plug[i];
-					PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
+					RND_DAD_BEGIN_VBOX(save->fmtsub->dlg);
 						save->fmt_plug_data[n] = plug->save_as_subd_init(plug, save->fmtsub, save_type);
-					PCB_DAD_END(save->fmtsub->dlg);
+					RND_DAD_END(save->fmtsub->dlg);
 					break;
 				}
 			}
 		}
 		save->tabs = tabs+1;
-	PCB_DAD_END(save->fmtsub->dlg);
+	RND_DAD_END(save->fmtsub->dlg);
 }
 
 static void setup_fmt_sub(save_t *save, pcb_plug_iot_t save_type)
@@ -348,31 +348,31 @@ static void setup_fmt_sub(save_t *save, pcb_plug_iot_t save_type)
 		"(guessing will NOT change the initial format selection\n"
 		"when the dialog box is fresh open)";
 
-	PCB_DAD_BEGIN_VBOX(save->fmtsub->dlg);
-		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
-			PCB_DAD_LABEL(save->fmtsub->dlg, "File format:");
-			PCB_DAD_ENUM(save->fmtsub->dlg, (const char **)save->avail->digest);
-				save->wfmt = PCB_DAD_CURRENT(save->fmtsub->dlg);
-				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->pick);
-				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, fmt_chg);
-		PCB_DAD_END(save->fmtsub->dlg);
-		PCB_DAD_BEGIN_HBOX(save->fmtsub->dlg);
-			PCB_DAD_LABEL(save->fmtsub->dlg, "Guess format:");
-				PCB_DAD_HELP(save->fmtsub->dlg, guess_help);
-			PCB_DAD_BOOL(save->fmtsub->dlg, "");
-				save->wguess = PCB_DAD_CURRENT(save->fmtsub->dlg);
-				PCB_DAD_CHANGE_CB(save->fmtsub->dlg, guess_chg);
-				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, !!dialogs_conf.plugins.dialogs.file_select_dialog.save_as_format_guess);
-				PCB_DAD_HELP(save->fmtsub->dlg, guess_help);
-			PCB_DAD_LABEL(save->fmtsub->dlg, "(guess failed)");
-				PCB_DAD_COMPFLAG(save->fmtsub->dlg, RND_HATF_HIDE);
-				PCB_DAD_HELP(save->fmtsub->dlg, "This file name is not naturally connected to\nany file format; file format\nis left on what was last selected/recognized");
-				save->wguess_err = PCB_DAD_CURRENT(save->fmtsub->dlg);
-		PCB_DAD_END(save->fmtsub->dlg);
+	RND_DAD_BEGIN_VBOX(save->fmtsub->dlg);
+		RND_DAD_BEGIN_HBOX(save->fmtsub->dlg);
+			RND_DAD_LABEL(save->fmtsub->dlg, "File format:");
+			RND_DAD_ENUM(save->fmtsub->dlg, (const char **)save->avail->digest);
+				save->wfmt = RND_DAD_CURRENT(save->fmtsub->dlg);
+				RND_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->pick);
+				RND_DAD_CHANGE_CB(save->fmtsub->dlg, fmt_chg);
+		RND_DAD_END(save->fmtsub->dlg);
+		RND_DAD_BEGIN_HBOX(save->fmtsub->dlg);
+			RND_DAD_LABEL(save->fmtsub->dlg, "Guess format:");
+				RND_DAD_HELP(save->fmtsub->dlg, guess_help);
+			RND_DAD_BOOL(save->fmtsub->dlg, "");
+				save->wguess = RND_DAD_CURRENT(save->fmtsub->dlg);
+				RND_DAD_CHANGE_CB(save->fmtsub->dlg, guess_chg);
+				RND_DAD_DEFAULT_NUM(save->fmtsub->dlg, !!dialogs_conf.plugins.dialogs.file_select_dialog.save_as_format_guess);
+				RND_DAD_HELP(save->fmtsub->dlg, guess_help);
+			RND_DAD_LABEL(save->fmtsub->dlg, "(guess failed)");
+				RND_DAD_COMPFLAG(save->fmtsub->dlg, RND_HATF_HIDE);
+				RND_DAD_HELP(save->fmtsub->dlg, "This file name is not naturally connected to\nany file format; file format\nis left on what was last selected/recognized");
+				save->wguess_err = RND_DAD_CURRENT(save->fmtsub->dlg);
+		RND_DAD_END(save->fmtsub->dlg);
 
 
 		setup_fmt_tabs(save, save_type);
-	PCB_DAD_END(save->fmtsub->dlg);
+	RND_DAD_END(save->fmtsub->dlg);
 }
 
 const char pcb_acts_Save[] = 

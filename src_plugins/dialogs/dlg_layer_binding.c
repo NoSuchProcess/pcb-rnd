@@ -70,7 +70,7 @@ int pcb_ly_type2enum(pcb_layer_type_t type)
 
 static void set_ly_type(void *hid_ctx, int wid, pcb_layer_type_t type)
 {
-	PCB_DAD_SET_VALUE(hid_ctx, wid, lng, pcb_ly_type2enum(type));
+	RND_DAD_SET_VALUE(hid_ctx, wid, lng, pcb_ly_type2enum(type));
 }
 
 static pcb_layer_type_t int2side(int i)
@@ -153,23 +153,23 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		/* name and type */
 		if (layer_name_mismatch(w, layer))
-			PCB_DAD_SET_VALUE(hid_ctx, w->name, str, rnd_strdup(layer->name));
+			RND_DAD_SET_VALUE(hid_ctx, w->name, str, rnd_strdup(layer->name));
 
 		if (layer_purpose_mismatch(w, layer)) {
 			char *purp = layer->meta.bound.purpose;
 			if (purp == NULL)
 				purp = "";
-			PCB_DAD_SET_VALUE(hid_ctx, w->purpose, str, rnd_strdup(purp));
+			RND_DAD_SET_VALUE(hid_ctx, w->purpose, str, rnd_strdup(purp));
 		}
 
-		PCB_DAD_SET_VALUE(hid_ctx, w->comp, lng, layer->comb);
+		RND_DAD_SET_VALUE(hid_ctx, w->comp, lng, layer->comb);
 
 		set_ly_type(hid_ctx, w->type, layer->meta.bound.type);
 
 		/* disable side for non-sided */
 		if (PCB_LAYER_SIDED(layer->meta.bound.type)) {
 			/* side & offset */
-			PCB_DAD_SET_VALUE(hid_ctx, w->side, lng, side2int(layer->meta.bound.type));
+			RND_DAD_SET_VALUE(hid_ctx, w->side, lng, side2int(layer->meta.bound.type));
 			rnd_gui->attr_dlg_widget_state(hid_ctx, w->side, 1);
 		}
 		else
@@ -177,10 +177,10 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		ofs = layer->meta.bound.stack_offs;
 		if (ofs < 0) {
-			PCB_DAD_SET_VALUE(hid_ctx, w->side, lng, 1);
+			RND_DAD_SET_VALUE(hid_ctx, w->side, lng, 1);
 			ofs = -layer->meta.bound.stack_offs;
 		}
-		PCB_DAD_SET_VALUE(hid_ctx, w->offs, lng, ofs);
+		RND_DAD_SET_VALUE(hid_ctx, w->offs, lng, ofs);
 
 		/* enable offset only for copper */
 		enable = (layer->meta.bound.type & PCB_LYT_COPPER);
@@ -192,7 +192,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 			lid = pcb_layer_id(PCB->Data, layer->meta.bound.real);
 		else
 			lid = ctx->no_layer;
-		PCB_DAD_SET_VALUE(hid_ctx, w->layer, lng, lid);
+		RND_DAD_SET_VALUE(hid_ctx, w->layer, lng, lid);
 		rnd_gui->attr_dlg_widget_state(hid_ctx, w->layer, 0);
 	}
 }
@@ -289,8 +289,8 @@ TODO("subc TODO")
 
 	{ /* interactive mode */
 		int n;
-		pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-		PCB_DAD_DECL(dlg);
+		rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+		RND_DAD_DECL(dlg);
 
 		ctx.pcb = PCB;
 		ctx.widx = malloc(sizeof(lb_widx_t) * ctx.data->LayerN);
@@ -306,77 +306,77 @@ TODO("subc TODO")
 			if (pcb_layergrp_flags(PCB, n) & PCB_LYT_COPPER)
 				num_copper++;
 
-		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
-			PCB_DAD_BEGIN_TABLE(dlg, 2);
-				PCB_DAD_COMPFLAG(dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_VBOX(dlg);
+			RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+			RND_DAD_BEGIN_TABLE(dlg, 2);
+				RND_DAD_COMPFLAG(dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
 			for(n = 0; n < ctx.data->LayerN; n++) {
 				lb_widx_t *w = ctx.widx+n;
 				/* left side */
-				PCB_DAD_BEGIN_VBOX(dlg);
+				RND_DAD_BEGIN_VBOX(dlg);
 					if (n == 0)
-						PCB_DAD_LABEL(dlg, "RECIPE");
+						RND_DAD_LABEL(dlg, "RECIPE");
 					else
-						PCB_DAD_LABEL(dlg, "\n");
+						RND_DAD_LABEL(dlg, "\n");
 
-					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_LABEL(dlg, "Name:");
-						PCB_DAD_STRING(dlg);
-							w->name = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_END(dlg);
-					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_ENUM(dlg, pcb_lb_comp); /* coposite */
-							w->comp = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_ENUM(dlg, pcb_lb_types); /* lyt */
-							w->type = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_END(dlg);
-					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_INTEGER(dlg, NULL);
-							PCB_DAD_MINVAL(dlg, 0);
-							PCB_DAD_MAXVAL(dlg, num_copper);
-							w->offs = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_LABEL(dlg, "from");
-							w->from = PCB_DAD_CURRENT(dlg);
-						PCB_DAD_ENUM(dlg, pcb_lb_side);
-							w->side = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_END(dlg);
-					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_LABEL(dlg, "Purpose:");
-						PCB_DAD_STRING(dlg);
-							w->purpose = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_END(dlg);
+					RND_DAD_BEGIN_HBOX(dlg);
+						RND_DAD_LABEL(dlg, "Name:");
+						RND_DAD_STRING(dlg);
+							w->name = RND_DAD_CURRENT(dlg);
+					RND_DAD_END(dlg);
+					RND_DAD_BEGIN_HBOX(dlg);
+						RND_DAD_ENUM(dlg, pcb_lb_comp); /* coposite */
+							w->comp = RND_DAD_CURRENT(dlg);
+						RND_DAD_ENUM(dlg, pcb_lb_types); /* lyt */
+							w->type = RND_DAD_CURRENT(dlg);
+					RND_DAD_END(dlg);
+					RND_DAD_BEGIN_HBOX(dlg);
+						RND_DAD_INTEGER(dlg, NULL);
+							RND_DAD_MINVAL(dlg, 0);
+							RND_DAD_MAXVAL(dlg, num_copper);
+							w->offs = RND_DAD_CURRENT(dlg);
+						RND_DAD_LABEL(dlg, "from");
+							w->from = RND_DAD_CURRENT(dlg);
+						RND_DAD_ENUM(dlg, pcb_lb_side);
+							w->side = RND_DAD_CURRENT(dlg);
+					RND_DAD_END(dlg);
+					RND_DAD_BEGIN_HBOX(dlg);
+						RND_DAD_LABEL(dlg, "Purpose:");
+						RND_DAD_STRING(dlg);
+							w->purpose = RND_DAD_CURRENT(dlg);
+					RND_DAD_END(dlg);
 
-				PCB_DAD_END(dlg);
+				RND_DAD_END(dlg);
 
 				/* right side */
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_LABELF(dlg, ("\n\n layer #%d ", n));
-					PCB_DAD_BEGIN_VBOX(dlg);
+				RND_DAD_BEGIN_HBOX(dlg);
+					RND_DAD_LABELF(dlg, ("\n\n layer #%d ", n));
+					RND_DAD_BEGIN_VBOX(dlg);
 						if (n == 0)
-							PCB_DAD_LABEL(dlg, "BOARD LAYER");
+							RND_DAD_LABEL(dlg, "BOARD LAYER");
 						else
-							PCB_DAD_LABEL(dlg, "\n\n");
-						PCB_DAD_LABEL(dlg, "Automatic");
-						PCB_DAD_ENUM(dlg, ctx.layer_names);
-							w->layer = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_END(dlg);
-				PCB_DAD_END(dlg);
+							RND_DAD_LABEL(dlg, "\n\n");
+						RND_DAD_LABEL(dlg, "Automatic");
+						RND_DAD_ENUM(dlg, ctx.layer_names);
+							w->layer = RND_DAD_CURRENT(dlg);
+					RND_DAD_END(dlg);
+				RND_DAD_END(dlg);
 			}
-			PCB_DAD_END(dlg);
-			PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-		PCB_DAD_END(dlg);
+			RND_DAD_END(dlg);
+			RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+		RND_DAD_END(dlg);
 
 		ctx.attrs = dlg;
 
-		PCB_DAD_DEFSIZE(dlg, 500, 500);
-		PCB_DAD_NEW("layer_binding", dlg, "Layer bindings", &ctx, pcb_true, NULL);
+		RND_DAD_DEFSIZE(dlg, 500, 500);
+		RND_DAD_NEW("layer_binding", dlg, "Layer bindings", &ctx, pcb_true, NULL);
 		val.func = lb_attr_chg;
 		rnd_gui->attr_dlg_property(dlg_hid_ctx, RND_HATP_GLOBAL_CALLBACK, &val);
 		lb_data2dialog(dlg_hid_ctx, &ctx);
 
-		PCB_DAD_RUN(dlg);
+		RND_DAD_RUN(dlg);
 
-		PCB_DAD_FREE(dlg);
+		RND_DAD_FREE(dlg);
 		free(ctx.widx);
 		free(ctx.layer_names);
 	}

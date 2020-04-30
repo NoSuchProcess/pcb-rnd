@@ -40,8 +40,8 @@ static const char nope[] = "Do not use.";
 
 static void prompt_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_dad_retovr_t **ro = attr->user_data;
-	pcb_hid_dad_close(hid_ctx, *ro, 0);
+	rnd_dad_retovr_t **ro = attr->user_data;
+	rnd_hid_dad_close(hid_ctx, *ro, 0);
 }
 
 fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -50,39 +50,39 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *pcb_acts_gui_PromptFor =  nope;
 	char *title = NULL;
 	int ws, ft = 0;
-	pcb_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, label = argv[1].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, gui_PromptFor, default_str = argv[2].val.str);
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, gui_PromptFor, title = argv[3].val.str);
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_LABEL(dlg, label);
-		PCB_DAD_STRING(dlg);
-			ws = PCB_DAD_CURRENT(dlg);
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_LABEL(dlg, label);
+		RND_DAD_STRING(dlg);
+			ws = RND_DAD_CURRENT(dlg);
 			dlg[ws].val.str = rnd_strdup(default_str == NULL ? "" : default_str);
-			PCB_DAD_ENTER_CB(dlg, prompt_enter_cb);
+			RND_DAD_ENTER_CB(dlg, prompt_enter_cb);
 			dlg[ws].user_data = &dlg_ret_override;
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
 
 	if (title == NULL) {
 		title = pcb_concat(pcbhl_app_package, " user input", NULL);
 		ft = 1;
 	}
-	PCB_DAD_NEW("prompt_for", dlg, title, NULL, pcb_true, NULL);
+	RND_DAD_NEW("prompt_for", dlg, title, NULL, pcb_true, NULL);
 	if (ft)
 		free(title);
 
-	if (PCB_DAD_RUN(dlg) != 0) {
-		PCB_DAD_FREE(dlg);
+	if (RND_DAD_RUN(dlg) != 0) {
+		RND_DAD_FREE(dlg);
 		return -1;
 	}
 
 	res->type = FGW_STR | FGW_DYN;
 	res->val.str = rnd_strdup(dlg[ws].val.str);
-	PCB_DAD_FREE(dlg);
+	RND_DAD_FREE(dlg);
 
 	return 0;
 }
@@ -95,44 +95,44 @@ fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char **xpm;
 	int n, ret;
 
-	PCB_DAD_DECL(dlg);
+	RND_DAD_DECL(dlg);
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_MessageBox, icon = argv[1].val.str);
 	RND_PCB_ACT_CONVARG(2, FGW_STR, gui_MessageBox, title = argv[2].val.str);
 	RND_PCB_ACT_CONVARG(3, FGW_STR, gui_MessageBox, label = argv[3].val.str);
 
-	PCB_DAD_BEGIN_VBOX(dlg);
+	RND_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
-		PCB_DAD_BEGIN_HBOX(dlg);
+		RND_DAD_BEGIN_HBOX(dlg);
 			xpm = pcp_dlg_xpm_by_name(icon);
 			if (xpm != NULL)
-				PCB_DAD_PICTURE(dlg, xpm);
-			PCB_DAD_LABEL(dlg, label);
-		PCB_DAD_END(dlg);
+				RND_DAD_PICTURE(dlg, xpm);
+			RND_DAD_LABEL(dlg, label);
+		RND_DAD_END(dlg);
 
 		/* close buttons */
-		PCB_DAD_BEGIN_HBOX(dlg);
-			PCB_DAD_BEGIN_HBOX(dlg);
-				PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(dlg);
+		RND_DAD_BEGIN_HBOX(dlg);
+			RND_DAD_BEGIN_HBOX(dlg);
+				RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(dlg);
 			for(n = 4; n < argc; n+=2) {
 				RND_PCB_ACT_CONVARG(n+0, FGW_STR, gui_MessageBox, txt = argv[n+0].val.str);
 				RND_PCB_ACT_CONVARG(n+1, FGW_INT, gui_MessageBox, ret = argv[n+1].val.nat_int);
-				PCB_DAD_BUTTON_CLOSE(dlg, txt, ret);
+				RND_DAD_BUTTON_CLOSE(dlg, txt, ret);
 			}
-		PCB_DAD_END(dlg);
+		RND_DAD_END(dlg);
 
-	PCB_DAD_END(dlg);
+	RND_DAD_END(dlg);
 
 	res->type = FGW_INT;
-	PCB_DAD_AUTORUN("message", dlg, title, NULL, res->val.nat_int);
-	PCB_DAD_FREE(dlg);
+	RND_DAD_AUTORUN("message", dlg, title, NULL, res->val.nat_int);
+	RND_DAD_FREE(dlg);
 
 	return 0;
 }
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wclr, wr, wg, wb;
 	rnd_color_t clr;
 } clrpick_t;
@@ -160,7 +160,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 {
 	const char *sclr;
 	const char *pcb_acts_gui_PromptFor =  nope;
-	pcb_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {"cancel", 1}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {"cancel", 1}, {NULL, 0}};
 	clrpick_t ctx;
 	rnd_hid_attr_val_t val;
 
@@ -170,31 +170,31 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	if (rnd_color_load_str(&ctx.clr, sclr) != 0)
 		return -1;
 
-	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_COLOR(ctx.dlg);
-			ctx.wclr = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_CLR_STATIC);
-		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-			PCB_DAD_LABEL(ctx.dlg, "red");
-			PCB_DAD_INTEGER(ctx.dlg, "");
-				PCB_DAD_MINMAX(ctx.dlg, 0, 255);
-				PCB_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
-				ctx.wr = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_LABEL(ctx.dlg, "green");
-			PCB_DAD_INTEGER(ctx.dlg, "");
-				PCB_DAD_MINMAX(ctx.dlg, 0, 255);
-				PCB_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
-				ctx.wg = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_LABEL(ctx.dlg, "blue");
-			PCB_DAD_INTEGER(ctx.dlg, "");
-				PCB_DAD_MINMAX(ctx.dlg, 0, 255);
-				PCB_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
-				ctx.wb = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
-		PCB_DAD_END(ctx.dlg);
-	PCB_DAD_END(ctx.dlg);
+	RND_DAD_BEGIN_VBOX(ctx.dlg);
+		RND_DAD_COLOR(ctx.dlg);
+			ctx.wclr = RND_DAD_CURRENT(ctx.dlg);
+			RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_CLR_STATIC);
+		RND_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			RND_DAD_LABEL(ctx.dlg, "red");
+			RND_DAD_INTEGER(ctx.dlg, "");
+				RND_DAD_MINMAX(ctx.dlg, 0, 255);
+				RND_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
+				ctx.wr = RND_DAD_CURRENT(ctx.dlg);
+			RND_DAD_LABEL(ctx.dlg, "green");
+			RND_DAD_INTEGER(ctx.dlg, "");
+				RND_DAD_MINMAX(ctx.dlg, 0, 255);
+				RND_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
+				ctx.wg = RND_DAD_CURRENT(ctx.dlg);
+			RND_DAD_LABEL(ctx.dlg, "blue");
+			RND_DAD_INTEGER(ctx.dlg, "");
+				RND_DAD_MINMAX(ctx.dlg, 0, 255);
+				RND_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
+				ctx.wb = RND_DAD_CURRENT(ctx.dlg);
+			RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+		RND_DAD_END(ctx.dlg);
+	RND_DAD_END(ctx.dlg);
 
-	PCB_DAD_NEW("fallback_color_pick", ctx.dlg, "Change color", &ctx, pcb_true, NULL);
+	RND_DAD_NEW("fallback_color_pick", ctx.dlg, "Change color", &ctx, pcb_true, NULL);
 
 
 	val.lng = ctx.clr.r;
@@ -206,14 +206,14 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	val.clr = ctx.clr;
 	rnd_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, ctx.wclr, &val);
 
-	if (PCB_DAD_RUN(ctx.dlg) != 0) {
-		PCB_DAD_FREE(ctx.dlg);
+	if (RND_DAD_RUN(ctx.dlg) != 0) {
+		RND_DAD_FREE(ctx.dlg);
 		return -1;
 	}
 
 	res->type = FGW_STR | FGW_DYN;
 	res->val.str = pcb_strdup_printf("#%02x%02x%02x", ctx.clr.r, ctx.clr.g, ctx.clr.b);
-	PCB_DAD_FREE(ctx.dlg);
+	RND_DAD_FREE(ctx.dlg);
 	return 0;
 }
 
@@ -224,9 +224,9 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	const char *pcb_acts_gui_MayOverwriteFile = nope;
 	const char **xpm;
 	int multi, wdontask;
-	pcb_hid_dad_buttons_t clbtn_s[] = {{"yes", 1}, {"no", 0}, {NULL, 0}};
-	pcb_hid_dad_buttons_t clbtn_m[] = {{"yes", 1}, {"yes to all", 2}, {"no", 0}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn_s[] = {{"yes", 1}, {"no", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn_m[] = {{"yes", 1}, {"yes to all", 2}, {"no", 0}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
 	if (!RND_HAVE_GUI_ATTR_DLG) {
 		RND_ACT_IRES(0); /* no gui means auto-yes (for batch) */
@@ -242,45 +242,45 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
 	RND_PCB_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
 
-	PCB_DAD_BEGIN_VBOX(dlg);
+	RND_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
-		PCB_DAD_BEGIN_HBOX(dlg);
+		RND_DAD_BEGIN_HBOX(dlg);
 			xpm = pcp_dlg_xpm_by_name("warning");
 			if (xpm != NULL)
-				PCB_DAD_PICTURE(dlg, xpm);
+				RND_DAD_PICTURE(dlg, xpm);
 
-			PCB_DAD_BEGIN_VBOX(dlg);
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_LABEL(dlg, "File ");
-					PCB_DAD_LABEL(dlg, fn);
-					PCB_DAD_LABEL(dlg, " already exists.");
-				PCB_DAD_END(dlg);
+			RND_DAD_BEGIN_VBOX(dlg);
+				RND_DAD_BEGIN_HBOX(dlg);
+					RND_DAD_LABEL(dlg, "File ");
+					RND_DAD_LABEL(dlg, fn);
+					RND_DAD_LABEL(dlg, " already exists.");
+				RND_DAD_END(dlg);
 
-				PCB_DAD_LABEL(dlg, "Do you want to overwrite that file?");
+				RND_DAD_LABEL(dlg, "Do you want to overwrite that file?");
 
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_BOOL(dlg, "");
-					wdontask = PCB_DAD_CURRENT(dlg);
-					PCB_DAD_LABEL(dlg, "do not ask, always overwrite");
-					PCB_DAD_HELP(dlg, "saved in your user config under plugins/dialogs/file_overwrite_dialog/dont_ask");
-				PCB_DAD_END(dlg);
-			PCB_DAD_END(dlg);
-		PCB_DAD_END(dlg);
+				RND_DAD_BEGIN_HBOX(dlg);
+					RND_DAD_BOOL(dlg, "");
+					wdontask = RND_DAD_CURRENT(dlg);
+					RND_DAD_LABEL(dlg, "do not ask, always overwrite");
+					RND_DAD_HELP(dlg, "saved in your user config under plugins/dialogs/file_overwrite_dialog/dont_ask");
+				RND_DAD_END(dlg);
+			RND_DAD_END(dlg);
+		RND_DAD_END(dlg);
 
 		if (multi)
-			PCB_DAD_BUTTON_CLOSES(dlg, clbtn_m);
+			RND_DAD_BUTTON_CLOSES(dlg, clbtn_m);
 		else
-			PCB_DAD_BUTTON_CLOSES(dlg, clbtn_s);
-	PCB_DAD_END(dlg);
+			RND_DAD_BUTTON_CLOSES(dlg, clbtn_s);
+	RND_DAD_END(dlg);
 
 	res->type = FGW_INT;
-	PCB_DAD_AUTORUN("MayOverwriteFile", dlg, "File overwrite question", NULL, res->val.nat_int);
+	RND_DAD_AUTORUN("MayOverwriteFile", dlg, "File overwrite question", NULL, res->val.nat_int);
 	if (dlg[wdontask].val.lng) {
 		rnd_conf_set(RND_CFR_USER, "plugins/dialogs/file_overwrite_dialog/dont_ask", 0, "1", RND_POL_OVERWRITE);
 		if (rnd_conf_isdirty(RND_CFR_USER))
 			rnd_conf_save_file(hidlib, NULL, NULL, RND_CFR_USER, NULL);
 	}
-	PCB_DAD_FREE(dlg);
+	RND_DAD_FREE(dlg);
 
 	return 0;
 }

@@ -52,21 +52,21 @@ typedef struct{
 static void pcb_dlg_foo(whatever args) <<<- edit this
 {
 	foo_ctx_t ctx;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
-		PCB_DAD_LABEL(dlg, "foo");
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+		RND_DAD_LABEL(dlg, "foo");
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
 
 	/* set up the context */
 	ctx.attrs = dlg;
 
-	PCB_DAD_NEW("EDIT_THIS_ID", dlg, "EDIT THIS: title", &ctx, pcb_true, NULL);
-	PCB_DAD_RUN(dlg);
-	PCB_DAD_FREE(dlg);
+	RND_DAD_NEW("EDIT_THIS_ID", dlg, "EDIT THIS: title", &ctx, pcb_true, NULL);
+	RND_DAD_RUN(dlg);
+	RND_DAD_FREE(dlg);
 }
 
 static const char pcb_acts_Foo[] = "Foo(object)\n"; <<<- edit this

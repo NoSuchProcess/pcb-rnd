@@ -62,7 +62,7 @@ static const char *guess_lang(const char *ext)
 
 /*** dialog box ***/
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 
 	int wslist; /* list of scripts */
@@ -99,7 +99,7 @@ static void script_dlg_s2d_act(script_dlg_t *ctx)
 	cell[1] = NULL;
 	for(e = htsp_first(&sc->obj->func_tbl); e; e = htsp_next(&sc->obj->func_tbl, e)) {
 		cell[0] = rnd_strdup(e->key);
-		pcb_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 }
 
@@ -131,7 +131,7 @@ static void script_dlg_s2d(script_dlg_t *ctx)
 		cell[0] = rnd_strdup(s->id);
 		cell[1] = rnd_strdup(s->lang);
 		cell[2] = rnd_strdup(s->fn);
-		pcb_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
 	/* restore cursor */
@@ -153,7 +153,7 @@ void script_dlg_update(void)
 static void script_dlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	script_dlg_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(script_dlg_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -189,9 +189,9 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	script_dlg_t *ctx = caller_data;
 	int failed;
 	char *tmp, *fn = rnd_gui->fileselect(rnd_gui, "script to load", "Select a script file to load", NULL, NULL, NULL, "script", RND_HID_FSD_READ, NULL);
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	typedef struct {
-		PCB_DAD_DECL_NOINIT(dlg)
+		RND_DAD_DECL_NOINIT(dlg)
 		int wid, wlang;
 	} idlang_t;
 	idlang_t idlang;
@@ -200,11 +200,11 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 		return;
 
 	memset(&idlang, 0, sizeof(idlang));
-	PCB_DAD_BEGIN_VBOX(idlang.dlg);
-		PCB_DAD_BEGIN_HBOX(idlang.dlg);
-			PCB_DAD_LABEL(idlang.dlg, "ID:");
-			PCB_DAD_STRING(idlang.dlg);
-				idlang.wid = PCB_DAD_CURRENT(idlang.dlg);
+	RND_DAD_BEGIN_VBOX(idlang.dlg);
+		RND_DAD_BEGIN_HBOX(idlang.dlg);
+			RND_DAD_LABEL(idlang.dlg, "ID:");
+			RND_DAD_STRING(idlang.dlg);
+				idlang.wid = RND_DAD_CURRENT(idlang.dlg);
 				tmp = strrchr(fn, RND_DIR_SEPARATOR_C);
 				if (tmp != NULL) {
 					tmp++;
@@ -213,74 +213,74 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 					if (tmp != NULL)
 						*tmp = '\0';
 				}
-		PCB_DAD_END(idlang.dlg);
-		PCB_DAD_BEGIN_HBOX(idlang.dlg);
-			PCB_DAD_LABEL(idlang.dlg, "language:");
-			PCB_DAD_STRING(idlang.dlg);
-				idlang.wlang = PCB_DAD_CURRENT(idlang.dlg);
+		RND_DAD_END(idlang.dlg);
+		RND_DAD_BEGIN_HBOX(idlang.dlg);
+			RND_DAD_LABEL(idlang.dlg, "language:");
+			RND_DAD_STRING(idlang.dlg);
+				idlang.wlang = RND_DAD_CURRENT(idlang.dlg);
 				tmp = strrchr(fn, '.');
 				if (tmp != NULL)
 					idlang.dlg[idlang.wlang].val.str = rnd_strdup(guess_lang(tmp+1));
-		PCB_DAD_END(idlang.dlg);
-		PCB_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
-	PCB_DAD_END(idlang.dlg);
+		RND_DAD_END(idlang.dlg);
+		RND_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
+	RND_DAD_END(idlang.dlg);
 
 
-	PCB_DAD_AUTORUN("script_load", idlang.dlg, "load script", NULL, failed);
+	RND_DAD_AUTORUN("script_load", idlang.dlg, "load script", NULL, failed);
 
 	if ((!failed) && (pcb_script_load(idlang.dlg[idlang.wid].val.str, fn, idlang.dlg[idlang.wlang].val.str) == 0))
 		script_dlg_s2d(ctx);
 
-	PCB_DAD_FREE(idlang.dlg);
+	RND_DAD_FREE(idlang.dlg);
 }
 
 static void script_dlg_open(void)
 {
 	static const char *hdr[] = {"ID", "language", "file", NULL};
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (script_dlg.active)
 		return; /* do not open another */
 
-	PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
-	PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
-	PCB_DAD_BEGIN_HPANE(script_dlg.dlg);
-		PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(script_dlg.dlg);
+	RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_HPANE(script_dlg.dlg);
+		RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
 		/* left side */
-		PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
-			PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_TREE(script_dlg.dlg, 3, 0, hdr);
-				PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-				script_dlg.wslist = PCB_DAD_CURRENT(script_dlg.dlg);
-				PCB_DAD_CHANGE_CB(script_dlg.dlg, slist_cb);
-			PCB_DAD_BEGIN_HBOX(script_dlg.dlg);
-				PCB_DAD_BUTTON(script_dlg.dlg, "Unload");
-					PCB_DAD_HELP(script_dlg.dlg, "Unload the currently selected script");
-					PCB_DAD_CHANGE_CB(script_dlg.dlg, btn_unload_cb);
-				PCB_DAD_BUTTON(script_dlg.dlg, "Reload");
-					PCB_DAD_HELP(script_dlg.dlg, "Reload the currently selected script\n(useful if the script has changed)");
-					PCB_DAD_CHANGE_CB(script_dlg.dlg, btn_reload_cb);
-				PCB_DAD_BUTTON(script_dlg.dlg, "Load...");
-					PCB_DAD_HELP(script_dlg.dlg, "Load a new script from disk");
-					PCB_DAD_CHANGE_CB(script_dlg.dlg, btn_load_cb);
-			PCB_DAD_END(script_dlg.dlg);
-		PCB_DAD_END(script_dlg.dlg);
+		RND_DAD_BEGIN_VBOX(script_dlg.dlg);
+			RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
+			RND_DAD_TREE(script_dlg.dlg, 3, 0, hdr);
+				RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				script_dlg.wslist = RND_DAD_CURRENT(script_dlg.dlg);
+				RND_DAD_CHANGE_CB(script_dlg.dlg, slist_cb);
+			RND_DAD_BEGIN_HBOX(script_dlg.dlg);
+				RND_DAD_BUTTON(script_dlg.dlg, "Unload");
+					RND_DAD_HELP(script_dlg.dlg, "Unload the currently selected script");
+					RND_DAD_CHANGE_CB(script_dlg.dlg, btn_unload_cb);
+				RND_DAD_BUTTON(script_dlg.dlg, "Reload");
+					RND_DAD_HELP(script_dlg.dlg, "Reload the currently selected script\n(useful if the script has changed)");
+					RND_DAD_CHANGE_CB(script_dlg.dlg, btn_reload_cb);
+				RND_DAD_BUTTON(script_dlg.dlg, "Load...");
+					RND_DAD_HELP(script_dlg.dlg, "Load a new script from disk");
+					RND_DAD_CHANGE_CB(script_dlg.dlg, btn_load_cb);
+			RND_DAD_END(script_dlg.dlg);
+		RND_DAD_END(script_dlg.dlg);
 
 		/* right side */
-		PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
-			PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_LABEL(script_dlg.dlg, "Actions:");
-			PCB_DAD_TREE(script_dlg.dlg, 1, 0, NULL);
-				PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-				script_dlg.walist = PCB_DAD_CURRENT(script_dlg.dlg);
-		PCB_DAD_END(script_dlg.dlg);
-	PCB_DAD_END(script_dlg.dlg);
-	PCB_DAD_BUTTON_CLOSES(script_dlg.dlg, clbtn);
-	PCB_DAD_END(script_dlg.dlg);
+		RND_DAD_BEGIN_VBOX(script_dlg.dlg);
+			RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
+			RND_DAD_LABEL(script_dlg.dlg, "Actions:");
+			RND_DAD_TREE(script_dlg.dlg, 1, 0, NULL);
+				RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				script_dlg.walist = RND_DAD_CURRENT(script_dlg.dlg);
+		RND_DAD_END(script_dlg.dlg);
+	RND_DAD_END(script_dlg.dlg);
+	RND_DAD_BUTTON_CLOSES(script_dlg.dlg, clbtn);
+	RND_DAD_END(script_dlg.dlg);
 
 	/* set up the context */
 	script_dlg.active = 1;
 
-	PCB_DAD_NEW("scripts", script_dlg.dlg, "pcb-rnd Scripts", &script_dlg, pcb_false, script_dlg_close_cb);
+	RND_DAD_NEW("scripts", script_dlg.dlg, "pcb-rnd Scripts", &script_dlg, pcb_false, script_dlg_close_cb);
 	script_dlg_s2d(&script_dlg);
 }
 

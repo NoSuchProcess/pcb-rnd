@@ -88,7 +88,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	fe_ctx_t ctx;
 	rnd_hid_attr_val_t val;
 	int type;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	memset(&ctx, 0, sizeof(ctx));
 
@@ -115,45 +115,45 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (ctx.obj_type != 0) { /* interactive mode */
 		int n;
 		char tmp[128];
-		PCB_DAD_DECL(dlg);
+		RND_DAD_DECL(dlg);
 
 		ctx.pcb = PCB;
 		ctx.len = 0;
 
 		pcb_undo_save_serial();
 
-		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_VBOX(dlg);
+			RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 			sprintf(tmp, "Object flags of %s #%ld\n", pcb_obj_type_name(ctx.obj_type), ctx.obj->ID);
-			PCB_DAD_LABEL(dlg, tmp);
+			RND_DAD_LABEL(dlg, tmp);
 
 			for(n = 0; n < pcb_object_flagbits_len; n++) {
 				if (pcb_object_flagbits[n].object_types & ctx.obj_type) {
-					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_BOOL(dlg, "");
-							PCB_DAD_HELP(dlg, pcb_object_flagbits[n].help);
-						ctx.wid[ctx.len] = PCB_DAD_CURRENT(dlg);
+					RND_DAD_BEGIN_HBOX(dlg);
+						RND_DAD_BOOL(dlg, "");
+							RND_DAD_HELP(dlg, pcb_object_flagbits[n].help);
+						ctx.wid[ctx.len] = RND_DAD_CURRENT(dlg);
 						ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;
 						if (PCB_FLAG_TEST(ctx.flag_bit[ctx.len], ctx.obj))
-							PCB_DAD_DEFAULT_NUM(dlg, 1);
-						PCB_DAD_LABEL(dlg, pcb_object_flagbits[n].name);
+							RND_DAD_DEFAULT_NUM(dlg, 1);
+						RND_DAD_LABEL(dlg, pcb_object_flagbits[n].name);
 						ctx.len++;
-					PCB_DAD_END(dlg);
+					RND_DAD_END(dlg);
 				}
 			}
-			PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-		PCB_DAD_END(dlg);
+			RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+		RND_DAD_END(dlg);
 
 		ctx.attrs = dlg;
 
-		PCB_DAD_NEW("flags", dlg, "Edit flags", &ctx, pcb_true, NULL);
+		RND_DAD_NEW("flags", dlg, "Edit flags", &ctx, pcb_true, NULL);
 
 		val.func = fe_attr_chg;
 		rnd_gui->attr_dlg_property(dlg_hid_ctx, RND_HATP_GLOBAL_CALLBACK, &val);
 
-		PCB_DAD_RUN(dlg);
+		RND_DAD_RUN(dlg);
 
-		PCB_DAD_FREE(dlg);
+		RND_DAD_FREE(dlg);
 		pcb_undo_restore_serial();
 		pcb_undo_inc_serial();
 	}

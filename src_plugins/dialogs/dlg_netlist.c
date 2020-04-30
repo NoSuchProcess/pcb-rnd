@@ -31,7 +31,7 @@
 const char *dlg_netlist_cookie = "netlist dialog";
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
 	rnd_rnd_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
@@ -44,7 +44,7 @@ netlist_ctx_t netlist_ctx;
 static void netlist_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	netlist_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(netlist_ctx_t));
 	rnd_event(&PCB->hidlib, RND_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 }
@@ -75,7 +75,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 		for(n = nets; *n != NULL; n++) {
 			cell[0] = rnd_strdup((*n)->name);
 			cell[1] = rnd_strdup((*n)->inhibit_rats ? "*" : "");
-			pcb_dad_tree_append(attr, NULL, cell);
+			rnd_dad_tree_append(attr, NULL, cell);
 		}
 		free(nets);
 
@@ -116,7 +116,7 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 	cell[1] = NULL;
 	for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 		cell[0] = pcb_concat(t->refdes, "-", t->term, NULL);
-		pcb_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
 	/* restore cursor */
@@ -142,7 +142,7 @@ static void netlist_data2dlg(netlist_ctx_t *ctx)
 
 static void netlist_force_redraw(netlist_ctx_t *ctx)
 {
-	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->bb_prv);
+	rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->bb_prv);
 }
 
 
@@ -311,7 +311,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 {
 	static const char *hdr[] = {"network", "FR", NULL};
 	static const char *hdr2[] = {"terminals", NULL};
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	int wvpan;
 
@@ -324,113 +324,113 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	netlist_ctx.bb_prv.Y2 = pcb->hidlib.size_y;
 	netlist_ctx.pcb = pcb;
 
-	PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */
-		PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */
+		RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 
-		PCB_DAD_BEGIN_HPANE(netlist_ctx.dlg);
-			PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HPANE(netlist_ctx.dlg);
+			RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* left */
-				PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-				PCB_DAD_TREE(netlist_ctx.dlg, 2, 0, hdr);
-					PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					netlist_ctx.wnetlist = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, netlist_row_selected);
-					PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
-			PCB_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* left */
+				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_TREE(netlist_ctx.dlg, 2, 0, hdr);
+					RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+					netlist_ctx.wnetlist = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, netlist_row_selected);
+					RND_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
+			RND_DAD_END(netlist_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right */
-				PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-				PCB_DAD_BEGIN_VPANE(netlist_ctx.dlg);
-					PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-					wvpan = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */
-						PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-						PCB_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, &netlist_ctx.bb_prv, 100, 100, &netlist_ctx);
-							PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
-							netlist_ctx.wprev = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_END(netlist_ctx.dlg);
-					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-bottom */
-						PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-						PCB_DAD_TREE(netlist_ctx.dlg, 1, 0, hdr2);
-							PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-							netlist_ctx.wtermlist = PCB_DAD_CURRENT(netlist_ctx.dlg);
-							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, termlist_row_selected);
-							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
-					PCB_DAD_END(netlist_ctx.dlg);
-				PCB_DAD_END(netlist_ctx.dlg);
-			PCB_DAD_END(netlist_ctx.dlg);
-		PCB_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right */
+				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_BEGIN_VPANE(netlist_ctx.dlg);
+					RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+					wvpan = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */
+						RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+						RND_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, &netlist_ctx.bb_prv, 100, 100, &netlist_ctx);
+							RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
+							netlist_ctx.wprev = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_END(netlist_ctx.dlg);
+					RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-bottom */
+						RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+						RND_DAD_TREE(netlist_ctx.dlg, 1, 0, hdr2);
+							RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+							netlist_ctx.wtermlist = RND_DAD_CURRENT(netlist_ctx.dlg);
+							RND_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, termlist_row_selected);
+							RND_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
+					RND_DAD_END(netlist_ctx.dlg);
+				RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_END(netlist_ctx.dlg);
+		RND_DAD_END(netlist_ctx.dlg);
 
-		PCB_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* bottom button row */
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "select");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-					netlist_ctx.wsel = PCB_DAD_CURRENT(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "unsel.");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-					netlist_ctx.wunsel = PCB_DAD_CURRENT(netlist_ctx.dlg);
-			PCB_DAD_END(netlist_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "find ");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-					netlist_ctx.wfind = PCB_DAD_CURRENT(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "clear");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-					netlist_ctx.wunfind = PCB_DAD_CURRENT(netlist_ctx.dlg);
-			PCB_DAD_END(netlist_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "rat disable");
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-					netlist_ctx.wnorats = PCB_DAD_CURRENT(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "rat enable");
-					netlist_ctx.wrats = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-			PCB_DAD_END(netlist_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "add rats");
-					netlist_ctx.waddrats = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "rip up  ");
-					netlist_ctx.wripup = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-			PCB_DAD_END(netlist_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg);
-				PCB_DAD_BUTTON(netlist_ctx.dlg, "rename");
-					netlist_ctx.wrename = PCB_DAD_CURRENT(netlist_ctx.dlg);
-					PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+		RND_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* bottom button row */
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "select");
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+					netlist_ctx.wsel = RND_DAD_CURRENT(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "unsel.");
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+					netlist_ctx.wunsel = RND_DAD_CURRENT(netlist_ctx.dlg);
+			RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "find ");
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+					netlist_ctx.wfind = RND_DAD_CURRENT(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "clear");
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+					netlist_ctx.wunfind = RND_DAD_CURRENT(netlist_ctx.dlg);
+			RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "rat disable");
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+					netlist_ctx.wnorats = RND_DAD_CURRENT(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "rat enable");
+					netlist_ctx.wrats = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+			RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "add rats");
+					netlist_ctx.waddrats = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "rip up  ");
+					netlist_ctx.wripup = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+			RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "rename");
+					netlist_ctx.wrename = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 
-				PCB_DAD_BEGIN_HBOX(netlist_ctx.dlg);
-					PCB_DAD_BUTTON(netlist_ctx.dlg, "merge");
-						netlist_ctx.wmerge = PCB_DAD_CURRENT(netlist_ctx.dlg);
-						PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-					PCB_DAD_BUTTON(netlist_ctx.dlg, "attr");
-						netlist_ctx.wattr = PCB_DAD_CURRENT(netlist_ctx.dlg);
-						PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
-				PCB_DAD_END(netlist_ctx.dlg);
-			PCB_DAD_END(netlist_ctx.dlg);
-		PCB_DAD_END(netlist_ctx.dlg);
+				RND_DAD_BEGIN_HBOX(netlist_ctx.dlg);
+					RND_DAD_BUTTON(netlist_ctx.dlg, "merge");
+						netlist_ctx.wmerge = RND_DAD_CURRENT(netlist_ctx.dlg);
+						RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+					RND_DAD_BUTTON(netlist_ctx.dlg, "attr");
+						netlist_ctx.wattr = RND_DAD_CURRENT(netlist_ctx.dlg);
+						RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+				RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_END(netlist_ctx.dlg);
+		RND_DAD_END(netlist_ctx.dlg);
 
-		PCB_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* bottom button row */
-			PCB_DAD_LABEL(netlist_ctx.dlg, "Claim net:");
-			PCB_DAD_BUTTON(netlist_ctx.dlg, "click");
-				PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);
-			PCB_DAD_BUTTON(netlist_ctx.dlg, "select");
-				PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_sel_cb);
-			PCB_DAD_BUTTON(netlist_ctx.dlg, "found");
-				PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_fnd_cb);
-			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
-				PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(netlist_ctx.dlg);
-			PCB_DAD_BUTTON_CLOSES(netlist_ctx.dlg, clbtn);
-		PCB_DAD_END(netlist_ctx.dlg);
-	PCB_DAD_END(netlist_ctx.dlg);
+		RND_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* bottom button row */
+			RND_DAD_LABEL(netlist_ctx.dlg, "Claim net:");
+			RND_DAD_BUTTON(netlist_ctx.dlg, "click");
+				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);
+			RND_DAD_BUTTON(netlist_ctx.dlg, "select");
+				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_sel_cb);
+			RND_DAD_BUTTON(netlist_ctx.dlg, "found");
+				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_fnd_cb);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
+				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BUTTON_CLOSES(netlist_ctx.dlg, clbtn);
+		RND_DAD_END(netlist_ctx.dlg);
+	RND_DAD_END(netlist_ctx.dlg);
 
 	/* set up the context */
 	netlist_ctx.active = 1;
 
-	PCB_DAD_DEFSIZE(netlist_ctx.dlg, 300, 350);
-	PCB_DAD_NEW("netlist", netlist_ctx.dlg, "pcb-rnd netlist", &netlist_ctx, pcb_false, netlist_close_cb);
+	RND_DAD_DEFSIZE(netlist_ctx.dlg, 300, 350);
+	RND_DAD_NEW("netlist", netlist_ctx.dlg, "pcb-rnd netlist", &netlist_ctx, pcb_false, netlist_close_cb);
 
 	{
 		rnd_hid_attr_val_t hv;

@@ -149,7 +149,7 @@ typedef struct {
 #include <librnd/core/hid_dad_spin.h>
 
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
-#define PCB_DAD_DECL(table) \
+#define RND_DAD_DECL(table) \
 	rnd_hid_attribute_t *table = NULL; \
 	int table ## _append_lock = 0; \
 	int table ## _len = 0; \
@@ -157,9 +157,9 @@ typedef struct {
 	void *table ## _hid_ctx = NULL; \
 	int table ## _defx = 0, table ## _defy = 0; \
 	int table ## _minx = 0, table ## _miny = 0; \
-	pcb_dad_retovr_t *table ## _ret_override;
+	rnd_dad_retovr_t *table ## _ret_override;
 
-#define PCB_DAD_DECL_NOINIT(table) \
+#define RND_DAD_DECL_NOINIT(table) \
 	rnd_hid_attribute_t *table; \
 	int table ## _append_lock; \
 	int table ## _len; \
@@ -167,16 +167,16 @@ typedef struct {
 	void *table ## _hid_ctx; \
 	int table ## _defx, table ## _defy; \
 	int table ## _minx, table ## _miny; \
-	pcb_dad_retovr_t *table ## _ret_override;
+	rnd_dad_retovr_t *table ## _ret_override;
 
 /* Free all resources allocated by DAD macros for table */
-#define PCB_DAD_FREE(table) \
+#define RND_DAD_FREE(table) \
 do { \
 	int __n__; \
 	if ((table ## _hid_ctx != NULL) && (table ## _ret_override != NULL)) \
 		rnd_gui->attr_dlg_free(table ## _hid_ctx); \
 	for(__n__ = 0; __n__ < table ## _len; __n__++) { \
-		PCB_DAD_FREE_FIELD(table, __n__); \
+		RND_DAD_FREE_FIELD(table, __n__); \
 	} \
 	free(table); \
 	table = NULL; \
@@ -190,37 +190,37 @@ do { \
 	} \
 } while(0)
 
-#define PCB_DAD_NEW(id, table, title, caller_data, modal, ev_cb) \
+#define RND_DAD_NEW(id, table, title, caller_data, modal, ev_cb) \
 do { \
-	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
+	table ## _ret_override = calloc(sizeof(rnd_dad_retovr_t), 1); \
 	table ## _append_lock = 1; \
 	table ## _hid_ctx = rnd_gui->attr_dlg_new(rnd_gui, id, table, table ## _len, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny); \
 } while(0)
 
 /* Sets the default window size (that is only a hint) - NOTE: must be called
-   before PCB_DAD_NEW() */
-#define PCB_DAD_DEFSIZE(table, width, height) \
+   before RND_DAD_NEW() */
+#define RND_DAD_DEFSIZE(table, width, height) \
 do { \
 	table ## _defx = width; \
 	table ## _defy = height; \
 } while(0)
 
 /* Sets the minimum window size (that is only a hint) - NOTE: must be called
-   before PCB_DAD_NEW() */
-#define PCB_DAD_MINSIZE(table, width, height) \
+   before RND_DAD_NEW() */
+#define RND_DAD_MINSIZE(table, width, height) \
 do { \
 	table ## _minx = width; \
 	table ## _miny = height; \
 } while(0)
 
-#define PCB_DAD_RUN(table) pcb_hid_dad_run(table ## _hid_ctx, table ## _ret_override)
+#define RND_DAD_RUN(table) rnd_hid_dad_run(table ## _hid_ctx, table ## _ret_override)
 
 /* failed is zero on success and -1 on error (e.g. cancel) or an arbitrary
    value set by ret_override (e.g. on close buttons) */
-#define PCB_DAD_AUTORUN(id, table, title, caller_data, failed) \
+#define RND_DAD_AUTORUN(id, table, title, caller_data, failed) \
 do { \
 	int __ok__; \
-	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
+	table ## _ret_override = calloc(sizeof(rnd_dad_retovr_t), 1); \
 	table ## _ret_override->dont_free++; \
 	table ## _ret_override->valid = 0; \
 	table ## _append_lock = 1; \
@@ -232,125 +232,125 @@ do { \
 } while(0)
 
 /* Return the index of the item currenty being edited */
-#define PCB_DAD_CURRENT(table) (table ## _len - 1)
+#define RND_DAD_CURRENT(table) (table ## _len - 1)
 
 /* Begin a new box or table */
-#define PCB_DAD_BEGIN(table, item_type) \
-	PCB_DAD_ALLOC(table, item_type);
+#define RND_DAD_BEGIN(table, item_type) \
+	RND_DAD_ALLOC(table, item_type);
 
-#define PCB_DAD_BEGIN_TABLE(table, cols) \
+#define RND_DAD_BEGIN_TABLE(table, cols) \
 do { \
-	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_TABLE); \
-	PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_table_cols, cols); \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_TABLE); \
+	RND_DAD_SET_ATTR_FIELD(table, rnd_hatt_table_cols, cols); \
 } while(0)
 
-#define PCB_DAD_BEGIN_TABBED(table, tabs) \
+#define RND_DAD_BEGIN_TABBED(table, tabs) \
 do { \
-	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_TABBED); \
-	PCB_DAD_SET_ATTR_FIELD(table, wdata, tabs); \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_TABBED); \
+	RND_DAD_SET_ATTR_FIELD(table, wdata, tabs); \
 } while(0)
 
-#define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, RND_HATT_BEGIN_HBOX)
-#define PCB_DAD_BEGIN_VBOX(table)      PCB_DAD_BEGIN(table, RND_HATT_BEGIN_VBOX)
-#define PCB_DAD_END(table)             PCB_DAD_BEGIN(table, RND_HATT_END)
-#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_flags, val | (table[table ## _len-1].rnd_hatt_flags & RND_HATF_TREE_COL))
+#define RND_DAD_BEGIN_HBOX(table)      RND_DAD_BEGIN(table, RND_HATT_BEGIN_HBOX)
+#define RND_DAD_BEGIN_VBOX(table)      RND_DAD_BEGIN(table, RND_HATT_BEGIN_VBOX)
+#define RND_DAD_END(table)             RND_DAD_BEGIN(table, RND_HATT_END)
+#define RND_DAD_COMPFLAG(table, val)   RND_DAD_SET_ATTR_FIELD(table, rnd_hatt_flags, val | (table[table ## _len-1].rnd_hatt_flags & RND_HATF_TREE_COL))
 
-#define PCB_DAD_LABEL(table, text) \
+#define RND_DAD_LABEL(table, text) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_LABEL); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(text)); \
+	RND_DAD_ALLOC(table, RND_HATT_LABEL); \
+	RND_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(text)); \
 } while(0)
 
-/* Add label usign printf formatting syntax: PCB_DAD_LABELF(tbl, ("a=%d", 12)); */
-#define PCB_DAD_LABELF(table, printf_args) \
+/* Add label usign printf formatting syntax: RND_DAD_LABELF(tbl, ("a=%d", 12)); */
+#define RND_DAD_LABELF(table, printf_args) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_LABEL); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, pcb_strdup_printf printf_args); \
+	RND_DAD_ALLOC(table, RND_HATT_LABEL); \
+	RND_DAD_SET_ATTR_FIELD(table, name, pcb_strdup_printf printf_args); \
 } while(0)
 
-#define PCB_DAD_ENUM(table, choices) \
+#define RND_DAD_ENUM(table, choices) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_ENUM); \
-	PCB_DAD_SET_ATTR_FIELD(table, wdata, choices); \
+	RND_DAD_ALLOC(table, RND_HATT_ENUM); \
+	RND_DAD_SET_ATTR_FIELD(table, wdata, choices); \
 } while(0)
 
-#define PCB_DAD_BOOL(table, label) \
+#define RND_DAD_BOOL(table, label) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_BOOL); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(label)); \
+	RND_DAD_ALLOC(table, RND_HATT_BOOL); \
+	RND_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(label)); \
 } while(0)
 
-#define PCB_DAD_INTEGER(table, label) \
+#define RND_DAD_INTEGER(table, label) \
 do { \
 	PCB_DAD_SPIN_INT(table); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
+	RND_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
-#define PCB_DAD_REAL(table, label) \
+#define RND_DAD_REAL(table, label) \
 do { \
 	PCB_DAD_SPIN_DOUBLE(table); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
+	RND_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
-#define PCB_DAD_COORD(table, label) \
+#define RND_DAD_COORD(table, label) \
 do { \
 	PCB_DAD_SPIN_COORD(table); \
-	PCB_DAD_SET_ATTR_FIELD(table, name, label); \
+	RND_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
-#define PCB_DAD_STRING(table) \
-	PCB_DAD_ALLOC(table, RND_HATT_STRING); \
+#define RND_DAD_STRING(table) \
+	RND_DAD_ALLOC(table, RND_HATT_STRING); \
 
-#define PCB_DAD_TEXT(table, user_ctx_) \
+#define RND_DAD_TEXT(table, user_ctx_) \
 do { \
 	rnd_hid_text_t *txt = calloc(sizeof(rnd_hid_text_t), 1); \
 	txt->user_ctx = user_ctx_; \
-	PCB_DAD_ALLOC(table, RND_HATT_TEXT); \
-	PCB_DAD_SET_ATTR_FIELD(table, wdata, txt); \
+	RND_DAD_ALLOC(table, RND_HATT_TEXT); \
+	RND_DAD_SET_ATTR_FIELD(table, wdata, txt); \
 } while(0)
 
-#define PCB_DAD_BUTTON(table, text) \
+#define RND_DAD_BUTTON(table, text) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_BUTTON); \
+	RND_DAD_ALLOC(table, RND_HATT_BUTTON); \
 	table[table ## _len - 1].val.str = text; \
 } while(0)
 
-#define PCB_DAD_BUTTON_CLOSE(table, text, retval) \
+#define RND_DAD_BUTTON_CLOSE(table, text, retval) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_BUTTON); \
+	RND_DAD_ALLOC(table, RND_HATT_BUTTON); \
 	table[table ## _len - 1].val.str = text; \
 	table[table ## _len - 1].val.lng = retval; \
 	table[table ## _len - 1].wdata = (&table ## _ret_override); \
-	PCB_DAD_CHANGE_CB(table, pcb_hid_dad_close_cb); \
+	RND_DAD_CHANGE_CB(table, rnd_hid_dad_close_cb); \
 } while(0)
 
 /* Draw a set of close buttons without trying to fill a while hbox row */
-#define PCB_DAD_BUTTON_CLOSES_NAKED(table, buttons) \
+#define RND_DAD_BUTTON_CLOSES_NAKED(table, buttons) \
 do { \
-	pcb_hid_dad_buttons_t *__n__; \
-	PCB_DAD_BEGIN_HBOX(table); \
-	PCB_DAD_COMPFLAG(table, RND_HATF_EXPFILL); \
-	PCB_DAD_END(table); \
+	rnd_hid_dad_buttons_t *__n__; \
+	RND_DAD_BEGIN_HBOX(table); \
+	RND_DAD_COMPFLAG(table, RND_HATF_EXPFILL); \
+	RND_DAD_END(table); \
 	for(__n__ = buttons; __n__->label != NULL; __n__++) { \
-		PCB_DAD_BUTTON_CLOSE(table, __n__->label, __n__->retval); \
+		RND_DAD_BUTTON_CLOSE(table, __n__->label, __n__->retval); \
 	} \
 } while(0)
 
 /* Draw a set of close buttons, adding a new hbox that tries to fill a whole row */
-#define PCB_DAD_BUTTON_CLOSES(table, buttons) \
+#define RND_DAD_BUTTON_CLOSES(table, buttons) \
 do { \
-	PCB_DAD_BEGIN_HBOX(table); \
-	PCB_DAD_BUTTON_CLOSES_NAKED(table, buttons); \
-	PCB_DAD_END(table); \
+	RND_DAD_BEGIN_HBOX(table); \
+	RND_DAD_BUTTON_CLOSES_NAKED(table, buttons); \
+	RND_DAD_END(table); \
 } while(0)
 
 
-#define PCB_DAD_PROGRESS(table) \
+#define RND_DAD_PROGRESS(table) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_PROGRESS); \
+	RND_DAD_ALLOC(table, RND_HATT_PROGRESS); \
 } while(0)
 
-#define PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
+#define RND_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
 do { \
 	rnd_hid_preview_t *prv = calloc(sizeof(rnd_hid_preview_t), 1); \
 	prv->user_ctx = user_ctx_; \
@@ -366,12 +366,12 @@ do { \
 		prv->initial_view.Y2 = ((rnd_rnd_box_t *)(initial_view_box))->Y2; \
 		prv->initial_view_valid = 1; \
 	} \
-	PCB_DAD_ALLOC(table, RND_HATT_PREVIEW); \
+	RND_DAD_ALLOC(table, RND_HATT_PREVIEW); \
 	prv->attrib = &table[table ## _len-1]; \
-	PCB_DAD_SET_ATTR_FIELD(table, wdata, prv); \
+	RND_DAD_SET_ATTR_FIELD(table, wdata, prv); \
 } while(0)
 
-#define pcb_dad_preview_zoomto(attr, view) \
+#define rnd_dad_preview_zoomto(attr, view) \
 do { \
 	rnd_hid_preview_t *prv = ((attr)->wdata); \
 	if (prv->hid_zoomto_cb != NULL) \
@@ -379,77 +379,77 @@ do { \
 } while(0)
 
 
-#define PCB_DAD_PICTURE(table, xpm) \
+#define RND_DAD_PICTURE(table, xpm) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_PICTURE); \
+	RND_DAD_ALLOC(table, RND_HATT_PICTURE); \
 	table[table ## _len - 1].wdata = xpm; \
 } while(0)
 
-#define PCB_DAD_PICBUTTON(table, xpm) \
+#define RND_DAD_PICBUTTON(table, xpm) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_PICBUTTON); \
+	RND_DAD_ALLOC(table, RND_HATT_PICBUTTON); \
 	table[table ## _len - 1].wdata = xpm; \
 } while(0)
 
 
-#define PCB_DAD_COLOR(table) \
+#define RND_DAD_COLOR(table) \
 do { \
-	PCB_DAD_ALLOC(table, RND_HATT_COLOR); \
+	RND_DAD_ALLOC(table, RND_HATT_COLOR); \
 } while(0)
 
-#define PCB_DAD_BEGIN_HPANE(table) \
+#define RND_DAD_BEGIN_HPANE(table) \
 do { \
-	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_HPANE); \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_HPANE); \
 	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
-#define PCB_DAD_BEGIN_VPANE(table) \
+#define RND_DAD_BEGIN_VPANE(table) \
 do { \
-	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_VPANE); \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_VPANE); \
 	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
-#define PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
+#define RND_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
 do { \
 	rnd_hid_tree_t *tree = calloc(sizeof(rnd_hid_tree_t), 1); \
 	htsp_init(&tree->paths, strhash, strkeyeq); \
-	PCB_DAD_ALLOC(table, RND_HATT_TREE); \
+	RND_DAD_ALLOC(table, RND_HATT_TREE); \
 	tree->attrib = &table[table ## _len-1]; \
 	tree->hdr = opt_header; \
-	PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_table_cols, cols); \
-	PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_flags, first_col_is_tree ? RND_HATF_TREE_COL : 0); \
-	PCB_DAD_SET_ATTR_FIELD(table, wdata, tree); \
+	RND_DAD_SET_ATTR_FIELD(table, rnd_hatt_table_cols, cols); \
+	RND_DAD_SET_ATTR_FIELD(table, rnd_hatt_flags, first_col_is_tree ? RND_HATF_TREE_COL : 0); \
+	RND_DAD_SET_ATTR_FIELD(table, wdata, tree); \
 } while(0)
 
-#define PCB_DAD_TREE_APPEND(table, row_after, cells) \
-	pcb_dad_tree_append(&table[table ## _len-1], row_after, cells)
+#define RND_DAD_TREE_APPEND(table, row_after, cells) \
+	rnd_dad_tree_append(&table[table ## _len-1], row_after, cells)
 
-#define PCB_DAD_TREE_APPEND_UNDER(table, parent_row, cells) \
-	pcb_dad_tree_append_under(&table[table ## _len-1], parent_row, cells)
+#define RND_DAD_TREE_APPEND_UNDER(table, parent_row, cells) \
+	rnd_dad_tree_append_under(&table[table ## _len-1], parent_row, cells)
 
-#define PCB_DAD_TREE_INSERT(table, row_before, cells) \
-	pcb_dad_tree_insert(&table[table ## _len-1], row_before, cells)
+#define RND_DAD_TREE_INSERT(table, row_before, cells) \
+	rnd_dad_tree_insert(&table[table ## _len-1], row_before, cells)
 
 /* set the named tree user callback to func_or_data; name is automatically
    appended with user_, any field prefixed with user_ in rnd_hid_tree_t
    can be set */
-#define PCB_DAD_TREE_SET_CB(table, name, func_or_data) \
+#define RND_DAD_TREE_SET_CB(table, name, func_or_data) \
 do { \
 	rnd_hid_tree_t *__tree__ = table[table ## _len-1].wdata; \
 	__tree__->user_ ## name = func_or_data; \
 } while(0)
 
-#define PCB_DAD_DUP_ATTR(table, attr) \
+#define RND_DAD_DUP_ATTR(table, attr) \
 do { \
-	PCB_DAD_ALLOC(table, 0); \
+	RND_DAD_ALLOC(table, 0); \
 	memcpy(&table[table ## _len-1], (attr), sizeof(rnd_hid_attribute_t)); \
-	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
+	RND_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
-#define PCB_DAD_DUP_EXPOPT(table, opt) \
+#define RND_DAD_DUP_EXPOPT(table, opt) \
 do { \
 	rnd_export_opt_t *__opt__ = (opt); \
-	PCB_DAD_ALLOC(table, 0); \
+	RND_DAD_ALLOC(table, 0); \
 	table[table ## _len-1].name = __opt__->name; \
 	table[table ## _len-1].help_text = __opt__->help_text; \
 	table[table ## _len-1].type = __opt__->type; \
@@ -457,19 +457,19 @@ do { \
 	table[table ## _len-1].max_val = __opt__->max_val; \
 	table[table ## _len-1].val = __opt__->default_val; \
 	table[table ## _len-1].wdata = __opt__->enumerations; \
-	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
+	RND_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
 
 /* Set properties of the current item */
-#define PCB_DAD_MINVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, min_val, val)
-#define PCB_DAD_MAXVAL(table, val)       PCB_DAD_SET_ATTR_FIELD(table, max_val, val)
-#define PCB_DAD_MINMAX(table, min, max)  (PCB_DAD_SET_ATTR_FIELD(table, min_val, min),PCB_DAD_SET_ATTR_FIELD(table, max_val, max))
-#define PCB_DAD_CHANGE_CB(table, cb)     PCB_DAD_SET_ATTR_FIELD(table, change_cb, cb)
-#define PCB_DAD_RIGHT_CB(table, cb)      PCB_DAD_SET_ATTR_FIELD(table, right_cb, cb)
-#define PCB_DAD_ENTER_CB(table, cb)      PCB_DAD_SET_ATTR_FIELD(table, enter_cb, cb)
+#define RND_DAD_MINVAL(table, val)       RND_DAD_SET_ATTR_FIELD(table, min_val, val)
+#define RND_DAD_MAXVAL(table, val)       RND_DAD_SET_ATTR_FIELD(table, max_val, val)
+#define RND_DAD_MINMAX(table, min, max)  (RND_DAD_SET_ATTR_FIELD(table, min_val, min),RND_DAD_SET_ATTR_FIELD(table, max_val, max))
+#define RND_DAD_CHANGE_CB(table, cb)     RND_DAD_SET_ATTR_FIELD(table, change_cb, cb)
+#define RND_DAD_RIGHT_CB(table, cb)      RND_DAD_SET_ATTR_FIELD(table, right_cb, cb)
+#define RND_DAD_ENTER_CB(table, cb)      RND_DAD_SET_ATTR_FIELD(table, enter_cb, cb)
 
-#define PCB_DAD_HELP(table, val) \
+#define RND_DAD_HELP(table, val) \
 	do { \
 		switch(table[table ## _len - 1].type) { \
 			case RND_HATT_END: \
@@ -480,11 +480,11 @@ do { \
 				} \
 				break; \
 			default: \
-				PCB_DAD_SET_ATTR_FIELD(table, help_text, val); \
+				RND_DAD_SET_ATTR_FIELD(table, help_text, val); \
 		} \
 	} while(0)
 
-#define PCB_DAD_DEFAULT_PTR(table, val_) \
+#define RND_DAD_DEFAULT_PTR(table, val_) \
 	do {\
 		switch(table[table ## _len - 1].type) { \
 			case RND_HATT_BEGIN_COMPOUND: \
@@ -498,11 +498,11 @@ do { \
 				} \
 				break; \
 			default: \
-				PCB_DAD_SET_ATTR_FIELD_PTR(table, val, val_); \
+				RND_DAD_SET_ATTR_FIELD_PTR(table, val, val_); \
 		} \
 	} while(0)
 
-#define PCB_DAD_DEFAULT_NUM(table, val_) \
+#define RND_DAD_DEFAULT_NUM(table, val_) \
 	do {\
 		switch(table[table ## _len - 1].type) { \
 			case RND_HATT_BEGIN_COMPOUND: \
@@ -516,12 +516,12 @@ do { \
 				} \
 				break; \
 			default: \
-				PCB_DAD_SET_ATTR_FIELD_NUM(table, val, val_); \
+				RND_DAD_SET_ATTR_FIELD_NUM(table, val, val_); \
 		} \
 	} while(0);
 
 /* safe way to call gui->attr_dlg_set_value() - resets the unused fields */
-#define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val_) \
+#define RND_DAD_SET_VALUE(hid_ctx, wid, field, val_) \
 	do { \
 		rnd_hid_attr_val_t __val__; \
 		memset(&__val__, 0, sizeof(__val__)); \
@@ -532,7 +532,7 @@ do { \
 /*** DAD internals (do not use directly) ***/
 
 /* Update widget internals after a potential attr pointer change */
-#define PCB_DAD_UPDATE_INTERNAL(table, widx) \
+#define RND_DAD_UPDATE_INTERNAL(table, widx) \
 	do { \
 		rnd_hid_preview_t *__prv__; \
 		rnd_hid_tree_t *__tree__; \
@@ -552,7 +552,7 @@ do { \
 /* Allocate a new item at the end of the attribute table; updates stored
    attribute pointers of existing items (e.g. previews, trees) as the base
    address of the table may have changed. */
-#define PCB_DAD_ALLOC(table, item_type) \
+#define RND_DAD_ALLOC(table, item_type) \
 	do { \
 		assert(table ## _append_lock == 0); \
 		if (table ## _len >= table ## _alloced) { \
@@ -560,7 +560,7 @@ do { \
 			table ## _alloced += 16; \
 			table = realloc(table, sizeof(table[0]) * table ## _alloced); \
 			for(__n__ = 0; __n__ < table ## _len; __n__++) { \
-				PCB_DAD_UPDATE_INTERNAL(table, __n__); \
+				RND_DAD_UPDATE_INTERNAL(table, __n__); \
 			} \
 		} \
 		memset(&table[table ## _len], 0, sizeof(table[0])); \
@@ -568,13 +568,13 @@ do { \
 		table ## _len++; \
 	} while(0)
 
-#define PCB_DAD_SET_ATTR_FIELD(table, field, value) \
+#define RND_DAD_SET_ATTR_FIELD(table, field, value) \
 	table[table ## _len - 1].field = (value)
 
-#define PCB_DAD_OR_ATTR_FIELD(table, field, value) \
+#define RND_DAD_OR_ATTR_FIELD(table, field, value) \
 	table[table ## _len - 1].field |= (value)
 
-#define PCB_DAD_SET_ATTR_FIELD_VAL(table, field, val) \
+#define RND_DAD_SET_ATTR_FIELD_VAL(table, field, val) \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case RND_HATT_LABEL: \
@@ -617,7 +617,7 @@ do { \
 	} \
 } while(0)
 
-#define PCB_DAD_SET_ATTR_FIELD_NUM(table, field, val_) \
+#define RND_DAD_SET_ATTR_FIELD_NUM(table, field, val_) \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case RND_HATT_LABEL: \
@@ -666,7 +666,7 @@ do { \
 	} \
 } while(0)
 
-#define PCB_DAD_SET_ATTR_FIELD_PTR(table, field, val_) \
+#define RND_DAD_SET_ATTR_FIELD_PTR(table, field, val_) \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case RND_HATT_LABEL: \
@@ -725,7 +725,7 @@ do { \
 	} \
 } while(0)
 
-#define PCB_DAD_FREE_FIELD(table, field) \
+#define RND_DAD_FREE_FIELD(table, field) \
 do { \
 	switch(table[field].type) { \
 		case RND_HATT_LABEL: \
@@ -745,7 +745,7 @@ do { \
 		case RND_HATT_COLOR: \
 			break; \
 		case RND_HATT_TREE: \
-			pcb_dad_tree_free(&table[field]); \
+			rnd_dad_tree_free(&table[field]); \
 			break; \
 		case RND_HATT_PREVIEW: \
 			{ \
@@ -784,7 +784,7 @@ do { \
 	} \
 } while(0)
 
-#define PCB_DAD_WIDTH_CHR(table, width) \
+#define RND_DAD_WIDTH_CHR(table, width) \
 do { \
 	if ((table[table ## _len - 1].type) == RND_HATT_END) { \
 		rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
@@ -792,35 +792,35 @@ do { \
 			cmp->set_geo(&table[table ## _len - 1], RND_HATF_HEIGHT_CHR, (width)); \
 	} \
 	else { \
-		PCB_DAD_OR_ATTR_FIELD(table, hatt_flags, RND_HATF_HEIGHT_CHR); \
-		PCB_DAD_SET_ATTR_FIELD(table, geo_width, (width)); \
+		RND_DAD_OR_ATTR_FIELD(table, hatt_flags, RND_HATF_HEIGHT_CHR); \
+		RND_DAD_SET_ATTR_FIELD(table, geo_width, (width)); \
 	} \
 } while(0)
 
 /* Internal: free all rows and caches and the tree itself */
-void pcb_dad_tree_free(rnd_hid_attribute_t *attr);
+void rnd_dad_tree_free(rnd_hid_attribute_t *attr);
 
 /* internal: retval override for the auto-close buttons */
 typedef struct {
 	int dont_free;
 	int valid;
 	int value;
-} pcb_dad_retovr_t;
+} rnd_dad_retovr_t;
 
 typedef struct {
 	const char *label;
 	int retval;
-} pcb_hid_dad_buttons_t;
+} rnd_hid_dad_buttons_t;
 
-void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval);
-void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
-int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr);
-void pcb_hid_iterate(rnd_hid_t *hid);
+void rnd_hid_dad_close(void *hid_ctx, rnd_dad_retovr_t *retovr, int retval);
+void rnd_hid_dad_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+int rnd_hid_dad_run(void *hid_ctx, rnd_dad_retovr_t *retovr);
+void rnd_hid_iterate(rnd_hid_t *hid);
 
 /* sub-dialogs e.g. for the file selector dialog */
 struct rnd_hid_dad_subdialog_s {
 	/* filled in by the sub-dialog's creator */
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 
 	/* filled in by the parent dialog's code, the subdialog's code should
 	   call this to query/change properties of the parent dialog. cmd and
@@ -841,7 +841,7 @@ struct rnd_hid_dad_subdialog_s {
 };
 
 typedef struct pcb_hid_export_opt_func_dad_s {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 } pcb_hid_export_opt_func_dad_t;
 
 #endif

@@ -374,47 +374,47 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_ha
 static int polyhatch_gui(rnd_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_flag_t *flg, int *want_contour)
 {
 	int wspc, wcont, whor, wver, wclr;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_BEGIN_TABLE(dlg, 2);
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_BEGIN_TABLE(dlg, 2);
 
-			PCB_DAD_LABEL(dlg, "Spacing");
-			PCB_DAD_COORD(dlg, "");
-				PCB_DAD_HELP(dlg, "Distance between centerlines of adjacent hatch lines for vertical and horizontal hatching");
-				PCB_DAD_DEFAULT_NUM(dlg, conf_core.design.line_thickness * 2);
-				PCB_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
-				wspc = PCB_DAD_CURRENT(dlg);
+			RND_DAD_LABEL(dlg, "Spacing");
+			RND_DAD_COORD(dlg, "");
+				RND_DAD_HELP(dlg, "Distance between centerlines of adjacent hatch lines for vertical and horizontal hatching");
+				RND_DAD_DEFAULT_NUM(dlg, conf_core.design.line_thickness * 2);
+				RND_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
+				wspc = RND_DAD_CURRENT(dlg);
 
-			PCB_DAD_LABEL(dlg, "Draw contour");
-			PCB_DAD_BOOL(dlg, "");
-				PCB_DAD_HELP(dlg, "Draw the contour of the polygon");
-				wcont = PCB_DAD_CURRENT(dlg);
+			RND_DAD_LABEL(dlg, "Draw contour");
+			RND_DAD_BOOL(dlg, "");
+				RND_DAD_HELP(dlg, "Draw the contour of the polygon");
+				wcont = RND_DAD_CURRENT(dlg);
 
-			PCB_DAD_LABEL(dlg, "Draw horizontal hatch");
-			PCB_DAD_BOOL(dlg, "");
-				PCB_DAD_HELP(dlg, "Draw evenly spaced horizontal hatch lines");
-				whor = PCB_DAD_CURRENT(dlg);
+			RND_DAD_LABEL(dlg, "Draw horizontal hatch");
+			RND_DAD_BOOL(dlg, "");
+				RND_DAD_HELP(dlg, "Draw evenly spaced horizontal hatch lines");
+				whor = RND_DAD_CURRENT(dlg);
 
-			PCB_DAD_LABEL(dlg, "Draw vertical hatch");
-			PCB_DAD_BOOL(dlg, "");
-				PCB_DAD_HELP(dlg, "Draw evenly spaced vertical hatch lines");
-				wver = PCB_DAD_CURRENT(dlg);
+			RND_DAD_LABEL(dlg, "Draw vertical hatch");
+			RND_DAD_BOOL(dlg, "");
+				RND_DAD_HELP(dlg, "Draw evenly spaced vertical hatch lines");
+				wver = RND_DAD_CURRENT(dlg);
 
-			PCB_DAD_LABEL(dlg, "Clear-line");
-			PCB_DAD_BOOL(dlg, "");
-				PCB_DAD_HELP(dlg, "Hatch lines have clearance");
-				wclr = PCB_DAD_CURRENT(dlg);
+			RND_DAD_LABEL(dlg, "Clear-line");
+			RND_DAD_BOOL(dlg, "");
+				RND_DAD_HELP(dlg, "Hatch lines have clearance");
+				wclr = RND_DAD_CURRENT(dlg);
 
-		PCB_DAD_END(dlg);
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
+		RND_DAD_END(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
 
-	PCB_DAD_NEW("poly_hatch", dlg, "Polygon hatch", NULL, pcb_true, NULL);
-	if (PCB_DAD_RUN(dlg) != 0) {
+	RND_DAD_NEW("poly_hatch", dlg, "Polygon hatch", NULL, pcb_true, NULL);
+	if (RND_DAD_RUN(dlg) != 0) {
 	/* cancel */
-		PCB_DAD_FREE(dlg);
+		RND_DAD_FREE(dlg);
 		return -1;
 	}
 
@@ -427,7 +427,7 @@ static int polyhatch_gui(rnd_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_fla
 
 	*flg = pcb_flag_make(dlg[wclr].val.lng ? PCB_FLAG_CLEARLINE : 0);
 
-	PCB_DAD_FREE(dlg);
+	RND_DAD_FREE(dlg);
 	return 0;
 }
 

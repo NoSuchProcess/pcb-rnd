@@ -55,7 +55,7 @@ typedef struct {
 } search_expr_t;
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wexpr_str, wwizard, wact;
 	int wrowbox[MAX_ROW];
 	int wexpr[MAX_ROW][MAX_COL]; /* expression framed box */
@@ -90,16 +90,16 @@ static void search_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 static void hspacer(search_ctx_t *ctx)
 {
-	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_END(ctx->dlg);
 }
 
 static void vspacer(search_ctx_t *ctx)
 {
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_END(ctx->dlg);
 }
 
 static void update_vis(search_ctx_t *ctx)
@@ -327,89 +327,89 @@ static const char *icon_edit[] = {
 
 static void search_window_create(void)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	search_ctx_t *ctx = calloc(sizeof(search_ctx_t), 1);
 	int row, col;
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_LABEL(ctx->dlg, "Query expression:");
-		PCB_DAD_STRING(ctx->dlg);
-			PCB_DAD_WIDTH_CHR(ctx->dlg, 64);
-			ctx->wexpr_str = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Action on the results:");
-			PCB_DAD_ENUM(ctx->dlg, search_acts);
-				ctx->wact = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_EXPFILL | RND_HATF_SCROLL);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "Enable the wizard:");
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->wwizard = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_DEFAULT_NUM(ctx->dlg, 1);
-					PCB_DAD_CHANGE_CB(ctx->dlg, search_enable_cb);
-			PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_LABEL(ctx->dlg, "Query expression:");
+		RND_DAD_STRING(ctx->dlg);
+			RND_DAD_WIDTH_CHR(ctx->dlg, 64);
+			ctx->wexpr_str = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Action on the results:");
+			RND_DAD_ENUM(ctx->dlg, search_acts);
+				ctx->wact = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "Enable the wizard:");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->wwizard = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_DEFAULT_NUM(ctx->dlg, 1);
+					RND_DAD_CHANGE_CB(ctx->dlg, search_enable_cb);
+			RND_DAD_END(ctx->dlg);
 			for(row = 0; row < MAX_ROW; row++) {
 				if (row > 0) {
-					PCB_DAD_BEGIN_HBOX(ctx->dlg);
-						ctx->wand[row] = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_HIDE);
-						PCB_DAD_LABEL(ctx->dlg, "AND");
-					PCB_DAD_END(ctx->dlg);
+					RND_DAD_BEGIN_HBOX(ctx->dlg);
+						ctx->wand[row] = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_HIDE);
+						RND_DAD_LABEL(ctx->dlg, "AND");
+					RND_DAD_END(ctx->dlg);
 				}
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, /*RND_HATF_EXPFILL | */RND_HATF_HIDE);
-					ctx->wrowbox[row] = PCB_DAD_CURRENT(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, /*RND_HATF_EXPFILL | */RND_HATF_HIDE);
+					ctx->wrowbox[row] = RND_DAD_CURRENT(ctx->dlg);
 					for(col = 0; col < MAX_COL; col++) {
 						ctx->visible[row][col] = 0;
 						if (col > 0) {
-							PCB_DAD_LABEL(ctx->dlg, "  OR  ");
-								PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
-								ctx->wor[row][col] = PCB_DAD_CURRENT(ctx->dlg);
+							RND_DAD_LABEL(ctx->dlg, "  OR  ");
+								RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
+								ctx->wor[row][col] = RND_DAD_CURRENT(ctx->dlg);
 						}
-						PCB_DAD_BEGIN_HBOX(ctx->dlg);
-							PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_TIGHT | RND_HATF_HIDE);
-							ctx->wexpr[row][col] = PCB_DAD_CURRENT(ctx->dlg);
-							PCB_DAD_LABEL(ctx->dlg, NEW_EXPR_LAB);
-								ctx->wexpr_lab[row][col] = PCB_DAD_CURRENT(ctx->dlg);
-							PCB_DAD_BEGIN_VBOX(ctx->dlg);
-								PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_TIGHT);
-								PCB_DAD_PICBUTTON(ctx->dlg, icon_del);
-									PCB_DAD_HELP(ctx->dlg, "Remove expression");
-									ctx->wexpr_del[row][col] = PCB_DAD_CURRENT(ctx->dlg);
-									PCB_DAD_CHANGE_CB(ctx->dlg, search_del_cb);
-								PCB_DAD_PICBUTTON(ctx->dlg, icon_edit);
-									PCB_DAD_HELP(ctx->dlg, "Edit expression");
-									ctx->wexpr_edit[row][col] = PCB_DAD_CURRENT(ctx->dlg);
-									PCB_DAD_CHANGE_CB(ctx->dlg, search_edit_cb);
-							PCB_DAD_END(ctx->dlg);
-						PCB_DAD_END(ctx->dlg);
+						RND_DAD_BEGIN_HBOX(ctx->dlg);
+							RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_TIGHT | RND_HATF_HIDE);
+							ctx->wexpr[row][col] = RND_DAD_CURRENT(ctx->dlg);
+							RND_DAD_LABEL(ctx->dlg, NEW_EXPR_LAB);
+								ctx->wexpr_lab[row][col] = RND_DAD_CURRENT(ctx->dlg);
+							RND_DAD_BEGIN_VBOX(ctx->dlg);
+								RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_TIGHT);
+								RND_DAD_PICBUTTON(ctx->dlg, icon_del);
+									RND_DAD_HELP(ctx->dlg, "Remove expression");
+									ctx->wexpr_del[row][col] = RND_DAD_CURRENT(ctx->dlg);
+									RND_DAD_CHANGE_CB(ctx->dlg, search_del_cb);
+								RND_DAD_PICBUTTON(ctx->dlg, icon_edit);
+									RND_DAD_HELP(ctx->dlg, "Edit expression");
+									ctx->wexpr_edit[row][col] = RND_DAD_CURRENT(ctx->dlg);
+									RND_DAD_CHANGE_CB(ctx->dlg, search_edit_cb);
+							RND_DAD_END(ctx->dlg);
+						RND_DAD_END(ctx->dlg);
 					}
 					hspacer(ctx);
-					PCB_DAD_BUTTON(ctx->dlg, "append OR");
-						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
-						ctx->wnew_or[row] = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_CHANGE_CB(ctx->dlg, search_append_col_cb);
-				PCB_DAD_END(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "append OR");
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
+						ctx->wnew_or[row] = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, search_append_col_cb);
+				RND_DAD_END(ctx->dlg);
 			}
 			vspacer(ctx);
-			PCB_DAD_BUTTON(ctx->dlg, "append AND");
-				ctx->wnew_and = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_CHANGE_CB(ctx->dlg, search_append_row_cb);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_BUTTON(ctx->dlg, "Apply");
-				PCB_DAD_CHANGE_CB(ctx->dlg, search_apply_cb);
-				PCB_DAD_HELP(ctx->dlg, "Execute the search expression\nusing the selected action");
+			RND_DAD_BUTTON(ctx->dlg, "append AND");
+				ctx->wnew_and = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_CHANGE_CB(ctx->dlg, search_append_row_cb);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_BUTTON(ctx->dlg, "Apply");
+				RND_DAD_CHANGE_CB(ctx->dlg, search_apply_cb);
+				RND_DAD_HELP(ctx->dlg, "Execute the search expression\nusing the selected action");
 			hspacer(ctx);
-			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+			RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_DEFSIZE(ctx->dlg, 300, 350);
-	PCB_DAD_NEW("search", ctx->dlg, "pcb-rnd search", ctx, pcb_false, search_close_cb);
+	RND_DAD_DEFSIZE(ctx->dlg, 300, 350);
+	RND_DAD_NEW("search", ctx->dlg, "pcb-rnd search", ctx, pcb_false, search_close_cb);
 
 	ctx->visible[0][0] = 1;
 	update_vis(ctx);

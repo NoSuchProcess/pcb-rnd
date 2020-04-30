@@ -31,8 +31,8 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pup_plugin_t *p;
 	int nump = 0, numb = 0;
 	gds_t str;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
 	gds_init(&str);
 
@@ -73,15 +73,15 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	gds_append_str(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
 
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
-		PCB_DAD_LABEL(dlg, str.array);
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
+		RND_DAD_LABEL(dlg, str.array);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
 
-	PCB_DAD_NEW("plugins", dlg, "Manage plugins", NULL, pcb_true, NULL);
-	PCB_DAD_RUN(dlg);
-	PCB_DAD_FREE(dlg);
+	RND_DAD_NEW("plugins", dlg, "Manage plugins", NULL, pcb_true, NULL);
+	RND_DAD_RUN(dlg);
+	RND_DAD_FREE(dlg);
 
 	gds_uninit(&str);
 	RND_ACT_IRES(0);

@@ -34,7 +34,7 @@
 extern conf_order_t conf_order;
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	vtp0_t names;
 	void *odata;                                   /* implementation-specific data of the current order */

@@ -62,17 +62,17 @@ void pcb_pref_conf2dlg_item(rnd_conf_native_t *cn, pref_confitem_t *item)
 {
 	switch(cn->type) {
 		case RND_CFN_COORD:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, crd, cn->val.coord[0]);
+			RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, crd, cn->val.coord[0]);
 			break;
 		case RND_CFN_BOOLEAN:
 		case RND_CFN_INTEGER:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, lng, cn->val.integer[0]);
+			RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, lng, cn->val.integer[0]);
 			break;
 		case RND_CFN_REAL:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, dbl, cn->val.real[0]);
+			RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, dbl, cn->val.real[0]);
 			break;
 		case RND_CFN_STRING:
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, str, cn->val.string[0]);
+			RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, item->wid, str, cn->val.string[0]);
 			break;
 		default: rnd_message(RND_MSG_ERROR, "pcb_pref_conf2dlg_item(): widget type not handled\n");
 	}
@@ -135,50 +135,50 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 		return;
 	}
 
-	PCB_DAD_LABEL(ctx->dlg, item->label);
-		PCB_DAD_HELP(ctx->dlg, cn->description);
+	RND_DAD_LABEL(ctx->dlg, item->label);
+		RND_DAD_HELP(ctx->dlg, cn->description);
 
 	switch(cn->type) {
 		case RND_CFN_COORD:
-			PCB_DAD_COORD(ctx->dlg, "");
-				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
-				PCB_DAD_DEFAULT_NUM(ctx->dlg, cn->val.coord[0]);
-				PCB_DAD_HELP(ctx->dlg, cn->description);
-				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
+			RND_DAD_COORD(ctx->dlg, "");
+				item->wid = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, cn->val.coord[0]);
+				RND_DAD_HELP(ctx->dlg, cn->description);
+				RND_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		case RND_CFN_BOOLEAN:
-			PCB_DAD_BOOL(ctx->dlg, "");
-				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_DEFAULT_NUM(ctx->dlg, cn->val.integer[0]);
-				PCB_DAD_HELP(ctx->dlg, cn->description);
-				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
+			RND_DAD_BOOL(ctx->dlg, "");
+				item->wid = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, cn->val.integer[0]);
+				RND_DAD_HELP(ctx->dlg, cn->description);
+				RND_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		case RND_CFN_INTEGER:
-			PCB_DAD_INTEGER(ctx->dlg, "");
-				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
-				PCB_DAD_DEFAULT_NUM(ctx->dlg, cn->val.integer[0]);
-				PCB_DAD_HELP(ctx->dlg, cn->description);
-				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
+			RND_DAD_INTEGER(ctx->dlg, "");
+				item->wid = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
+				RND_DAD_DEFAULT_NUM(ctx->dlg, cn->val.integer[0]);
+				RND_DAD_HELP(ctx->dlg, cn->description);
+				RND_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		case RND_CFN_REAL:
-			PCB_DAD_REAL(ctx->dlg, "");
-				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
+			RND_DAD_REAL(ctx->dlg, "");
+				item->wid = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, 0, INT_MAX);
 				ctx->dlg[item->wid].val.dbl = cn->val.real[0];
-				PCB_DAD_HELP(ctx->dlg, cn->description);
-				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
+				RND_DAD_HELP(ctx->dlg, cn->description);
+				RND_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		case RND_CFN_STRING:
-			PCB_DAD_STRING(ctx->dlg);
-				item->wid = PCB_DAD_CURRENT(ctx->dlg);
+			RND_DAD_STRING(ctx->dlg);
+				item->wid = RND_DAD_CURRENT(ctx->dlg);
 				ctx->dlg[item->wid].val.str = rnd_strdup(cn->val.string[0]);
-				PCB_DAD_HELP(ctx->dlg, cn->description);
-				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);
+				RND_DAD_HELP(ctx->dlg, cn->description);
+				RND_DAD_CHANGE_CB(ctx->dlg, change_cb);
 			break;
 		default:
-			PCB_DAD_LABEL(ctx->dlg, "Internal error: pcb_pref_create_conf_item(): unhandled type");
+			RND_DAD_LABEL(ctx->dlg, "Internal error: pcb_pref_create_conf_item(): unhandled type");
 			item->wid = -1;
 			return;
 	}
@@ -227,7 +227,7 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		free(ctx->auto_free.array[n]);
 	vtp0_uninit(&ctx->auto_free);
 
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -248,7 +248,7 @@ static int pref_strcmp(const char *fixed, const char *inp)
 static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 {
 	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Config tree", NULL };
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int target_tab = -1;
 
 	if ((target_tab_str != NULL) && (*target_tab_str != '\0')) {
@@ -265,66 +265,66 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 
 	if (pref_ctx.active) {
 		if (target_tab >= 0)
-			PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
+			RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
 		return;
 	}
 
-	PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
-		PCB_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
-			PCB_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
-			pref_ctx.wtab = PCB_DAD_CURRENT(pref_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
+	RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
+		RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
+			RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
+			pref_ctx.wtab = RND_DAD_CURRENT(pref_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
 				pcb_dlg_pref_general_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Board meta */
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Board meta */
 				pcb_dlg_pref_board_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Sizes & DRC */
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Sizes & DRC */
 				pcb_dlg_pref_sizes_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Library */
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Library */
 				pcb_dlg_pref_lib_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Layers */
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Layers */
 				pcb_dlg_pref_layer_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Colors */
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Colors */
 				pcb_dlg_pref_color_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
 				pcb_dlg_pref_win_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Config tree */
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Config tree */
 				pcb_dlg_pref_conf_create(&pref_ctx);
-			PCB_DAD_END(pref_ctx.dlg);
+			RND_DAD_END(pref_ctx.dlg);
 
-		PCB_DAD_END(pref_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(pref_ctx.dlg);
-			PCB_DAD_BEGIN_HBOX(pref_ctx.dlg);
-				PCB_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
-				PCB_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
-				PCB_DAD_ENUM(pref_ctx.dlg, role_names);
-					pref_ctx.wrole = PCB_DAD_CURRENT(pref_ctx.dlg);
-					PCB_DAD_CHANGE_CB(pref_ctx.dlg, pref_role_cb);
-				PCB_DAD_BUTTON_CLOSES_NAKED(pref_ctx.dlg, clbtn);
-			PCB_DAD_END(pref_ctx.dlg);
-		PCB_DAD_END(pref_ctx.dlg);
-	PCB_DAD_END(pref_ctx.dlg);
+		RND_DAD_END(pref_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
+			RND_DAD_BEGIN_HBOX(pref_ctx.dlg);
+				RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
+				RND_DAD_ENUM(pref_ctx.dlg, role_names);
+					pref_ctx.wrole = RND_DAD_CURRENT(pref_ctx.dlg);
+					RND_DAD_CHANGE_CB(pref_ctx.dlg, pref_role_cb);
+				RND_DAD_BUTTON_CLOSES_NAKED(pref_ctx.dlg, clbtn);
+			RND_DAD_END(pref_ctx.dlg);
+		RND_DAD_END(pref_ctx.dlg);
+	RND_DAD_END(pref_ctx.dlg);
 
 	/* set up the context */
 	pref_ctx.active = 1;
 
-	PCB_DAD_NEW("preferences", pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
+	RND_DAD_NEW("preferences", pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
 
-	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
+	RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
 	pref_ctx.role = RND_CFR_DESIGN;
 
 	pcb_dlg_pref_lib_open(&pref_ctx);
@@ -332,7 +332,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	pcb_dlg_pref_win_open(&pref_ctx);
 	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
 	if (target_tab >= 0)
-		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
+		RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
 }
 
 static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])

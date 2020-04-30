@@ -37,7 +37,7 @@
 #include "dlg_export.h"
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 
 	int tabs, len;
@@ -128,7 +128,7 @@ static void export_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 	copy_attrs_back(ctx);
 
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	free(ctx->hid);
 	free(ctx->tab_name);
 	for(n = 0; n < export_ctx.len; n++)
@@ -144,7 +144,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 {
 	rnd_hid_t **hids;
 	int n, i, *exp_attr;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (export_ctx.active)
 		return; /* do not open another */
@@ -177,46 +177,46 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 
 	export_ctx.tab_name[i] = NULL;
 
-	PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
-	PCB_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
-			PCB_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_LEFT_TAB|RND_HATF_EXPFILL);
-			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
+	RND_DAD_BEGIN_VBOX(export_ctx.dlg);
+	RND_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
+			RND_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_LEFT_TAB|RND_HATF_EXPFILL);
+			export_ctx.tabs = RND_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
 				int numo;
 				rnd_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
 				export_ctx.numo[n] = numo;
 				export_ctx.ea[n] = opts;
 				if (numo < 1) {
-					PCB_DAD_LABEL(export_ctx.dlg, "Exporter unavailable for direct export");
+					RND_DAD_LABEL(export_ctx.dlg, "Exporter unavailable for direct export");
 					continue;
 				}
-				PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
+				RND_DAD_BEGIN_VBOX(export_ctx.dlg);
 					if (numo > 12)
-						PCB_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_SCROLL);
+						RND_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_SCROLL);
 					export_ctx.exp_attr[n] = exp_attr = malloc(sizeof(int) * numo);
 					for(i = 0; i < numo; i++) {
-						PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
+						RND_DAD_BEGIN_HBOX(export_ctx.dlg)
 							
 							switch(opts[i].type) {
 								case RND_HATT_COORD:
-									PCB_DAD_COORD(export_ctx.dlg, opts[i].name);
-									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.crd);
+									RND_DAD_COORD(export_ctx.dlg, opts[i].name);
+									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.crd);
 									break;
 								case RND_HATT_INTEGER:
-									PCB_DAD_INTEGER(export_ctx.dlg, opts[i].name);
-									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
+									RND_DAD_INTEGER(export_ctx.dlg, opts[i].name);
+									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
 									break;
 								case RND_HATT_REAL:
-									PCB_DAD_REAL(export_ctx.dlg, opts[i].name);
-									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.dbl);
+									RND_DAD_REAL(export_ctx.dlg, opts[i].name);
+									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.dbl);
 									break;
 								case RND_HATT_UNIT:
 									PCB_DAD_UNIT(export_ctx.dlg, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL);
-									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
 									break;
 								default:
 									if (RND_HATT_IS_COMPOSITE(opts[i].type)) {
@@ -225,30 +225,30 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 											fnc(RND_HIDEOF_DAD, &export_ctx, &opts[i]);
 									}
 									else
-										PCB_DAD_DUP_EXPOPT(export_ctx.dlg, &(opts[i]));
+										RND_DAD_DUP_EXPOPT(export_ctx.dlg, &(opts[i]));
 							}
-							exp_attr[i] = PCB_DAD_CURRENT(export_ctx.dlg);
+							exp_attr[i] = RND_DAD_CURRENT(export_ctx.dlg);
 							if (opts[i].name != NULL)
-								PCB_DAD_LABEL(export_ctx.dlg, opts[i].name);
-						PCB_DAD_END(export_ctx.dlg);
+								RND_DAD_LABEL(export_ctx.dlg, opts[i].name);
+						RND_DAD_END(export_ctx.dlg);
 					}
-					PCB_DAD_LABEL(export_ctx.dlg, " "); /* ugly way of inserting some vertical spacing */
-					PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
-						PCB_DAD_LABEL(export_ctx.dlg, "Apply attributes and export: ");
-						PCB_DAD_BUTTON(export_ctx.dlg, "Export!");
-							export_ctx.button[n] = PCB_DAD_CURRENT(export_ctx.dlg);
-							PCB_DAD_CHANGE_CB(export_ctx.dlg, export_cb);
-					PCB_DAD_END(export_ctx.dlg);
-				PCB_DAD_END(export_ctx.dlg);
+					RND_DAD_LABEL(export_ctx.dlg, " "); /* ugly way of inserting some vertical spacing */
+					RND_DAD_BEGIN_HBOX(export_ctx.dlg)
+						RND_DAD_LABEL(export_ctx.dlg, "Apply attributes and export: ");
+						RND_DAD_BUTTON(export_ctx.dlg, "Export!");
+							export_ctx.button[n] = RND_DAD_CURRENT(export_ctx.dlg);
+							RND_DAD_CHANGE_CB(export_ctx.dlg, export_cb);
+					RND_DAD_END(export_ctx.dlg);
+				RND_DAD_END(export_ctx.dlg);
 			}
-		PCB_DAD_END(export_ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(export_ctx.dlg, clbtn);
-	PCB_DAD_END(export_ctx.dlg);
+		RND_DAD_END(export_ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(export_ctx.dlg, clbtn);
+	RND_DAD_END(export_ctx.dlg);
 
 	/* set up the context */
 	export_ctx.active = 1;
 
-	PCB_DAD_NEW("export", export_ctx.dlg, title, &export_ctx, pcb_false, export_close_cb);
+	RND_DAD_NEW("export", export_ctx.dlg, title, &export_ctx, pcb_false, export_close_cb);
 }
 
 const char pcb_acts_ExportGUI[] = "ExportGUI()\n";

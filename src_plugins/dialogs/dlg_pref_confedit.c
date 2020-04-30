@@ -31,7 +31,7 @@
 #define is_read_only(ctx)   rnd_conf_is_read_only(ctx->role)
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 
 	rnd_conf_native_t *nat;
 	int idx;
@@ -43,7 +43,7 @@ typedef struct {
 static void pref_conf_edit_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pref_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
 
@@ -109,7 +109,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 					char *cell[2] = {NULL};
 					if (nl->type == LHT_TEXT)
 						cell[0] = rnd_strdup(nl->data.text.value);
-					pcb_dad_tree_append(attr, NULL, cell);
+					rnd_dad_tree_append(attr, NULL, cell);
 				}
 			}
 			break;
@@ -236,9 +236,9 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 	cols[0] = rnd_strdup("");
 
 	if (trigger_attr == &ctx->dlg[ctx->winsa])
-		r = pcb_dad_tree_append(attr, r, cols);
+		r = rnd_dad_tree_append(attr, r, cols);
 	else
-		r = pcb_dad_tree_insert(attr, r, cols);
+		r = rnd_dad_tree_insert(attr, r, cols);
 	if (r != NULL)
 		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
 }
@@ -254,7 +254,7 @@ static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, rnd_hid
 
 static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pref_ctx_t *pctx = caller_data;
 	confedit_ctx_t *ctx;
 	rnd_hid_row_t *r;
@@ -288,112 +288,112 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	ctx->idx = pctx->conf.selected_idx;
 	ctx->role = r->user_data2.lng;
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
-		PCB_DAD_LABEL(ctx->dlg, ctx->nat->hash_path);
+		RND_DAD_LABEL(ctx->dlg, ctx->nat->hash_path);
 
 		switch(ctx->nat->type) {
 			case RND_CFN_STRING:
-				PCB_DAD_STRING(ctx->dlg);
-					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
-					b[0] = PCB_DAD_CURRENT(ctx->dlg);
+				RND_DAD_STRING(ctx->dlg);
+					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_BOOLEAN:
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case RND_CFN_INTEGER:
-				PCB_DAD_INTEGER(ctx->dlg, "");
-					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
-					b[0] = PCB_DAD_CURRENT(ctx->dlg);
+				RND_DAD_INTEGER(ctx->dlg, "");
+					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_REAL:
-				PCB_DAD_REAL(ctx->dlg, "");
-					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
-					b[0] = PCB_DAD_CURRENT(ctx->dlg);
+				RND_DAD_REAL(ctx->dlg, "");
+					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_COORD:
-				PCB_DAD_COORD(ctx->dlg, "");
-					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_MINMAX(ctx->dlg, -PCB_MM_TO_COORD(1000), +PCB_MM_TO_COORD(1000));
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
-					b[0] = PCB_DAD_CURRENT(ctx->dlg);
+				RND_DAD_COORD(ctx->dlg, "");
+					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_MINMAX(ctx->dlg, -PCB_MM_TO_COORD(1000), +PCB_MM_TO_COORD(1000));
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_UNIT:
 				PCB_DAD_UNIT(ctx->dlg, 0x3fff);
-					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case RND_CFN_COLOR:
-				PCB_DAD_COLOR(ctx->dlg);
-					ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
+				RND_DAD_COLOR(ctx->dlg);
+					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case RND_CFN_LIST:
-				PCB_DAD_BEGIN_VBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-					PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
-						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-						ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_BEGIN_HBOX(ctx->dlg);
-						PCB_DAD_BUTTON(ctx->dlg, "Edit...");
-							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_edit_cb);
-							b[0] = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_BUTTON(ctx->dlg, "Del");
-							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_del_cb);
-							b[1] = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_BUTTON(ctx->dlg, "Insert before");
-							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
-							b[2] = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_BUTTON(ctx->dlg, "Insert after");
-							PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
-							b[3] = ctx->winsa = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_END(ctx->dlg);
-				PCB_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+					RND_DAD_TREE(ctx->dlg, 1, 0, NULL);
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+						ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_BEGIN_HBOX(ctx->dlg);
+						RND_DAD_BUTTON(ctx->dlg, "Edit...");
+							RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_edit_cb);
+							b[0] = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_BUTTON(ctx->dlg, "Del");
+							RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_del_cb);
+							b[1] = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_BUTTON(ctx->dlg, "Insert before");
+							RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
+							b[2] = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_BUTTON(ctx->dlg, "Insert after");
+							RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_ins_cb);
+							b[3] = ctx->winsa = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_END(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
 				break;
 			case RND_CFN_HLIST:
 				{
 					gdl_iterator_t it;
 					rnd_conf_listitem_t *i;
 
-					PCB_DAD_BEGIN_VBOX(ctx->dlg);
-						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+					RND_DAD_BEGIN_VBOX(ctx->dlg);
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 						rnd_conflist_foreach(pctx->conf.selected_nat->val.list, &it, i) {
 							lht_node_t *rule = i->prop.src;
-							PCB_DAD_BUTTON(ctx->dlg, rule->name);
-								PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_hlist_cb);
+							RND_DAD_BUTTON(ctx->dlg, rule->name);
+								RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_hlist_cb);
 						}
-					PCB_DAD_END(ctx->dlg);
+					RND_DAD_END(ctx->dlg);
 				}
 				break;
 			case RND_CFN_max:
-				PCB_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
+				RND_DAD_LABEL(ctx->dlg, "ERROR: invalid conf node type");
 		}
 
 		if (is_read_only(ctx)) {
-			PCB_DAD_LABEL(ctx->dlg, "NOTE: this value is read-only");
-				PCB_DAD_HELP(ctx->dlg, "Config value with this config role\ncan not be modified.\nPlease pick another config role\nand try to edit or create\nthe value there!\n(If that role has higher priority,\nthat value will override this one)");
+			RND_DAD_LABEL(ctx->dlg, "NOTE: this value is read-only");
+				RND_DAD_HELP(ctx->dlg, "Config value with this config role\ncan not be modified.\nPlease pick another config role\nand try to edit or create\nthe value there!\n(If that role has higher priority,\nthat value will override this one)");
 		}
 		else if (confedit_node_is_uninitialized(ctx)) {
-			PCB_DAD_LABEL(ctx->dlg, "NOTE: change the value to create the config node");
-				PCB_DAD_HELP(ctx->dlg, "This config node does not exist\non the selected role.\nTo create it, change the value.\nSpecial case for boolean values:\nto create an unticked value,\nfirst tick then untick the checkbox.");
+			RND_DAD_LABEL(ctx->dlg, "NOTE: change the value to create the config node");
+				RND_DAD_HELP(ctx->dlg, "This config node does not exist\non the selected role.\nTo create it, change the value.\nSpecial case for boolean values:\nto create an unticked value,\nfirst tick then untick the checkbox.");
 		}
 
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-	PCB_DAD_END(ctx->dlg);
+		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW("pref_confedit", ctx->dlg, "pcb-rnd conf item", ctx, pcb_false, pref_conf_edit_close_cb);
+	RND_DAD_NEW("pref_confedit", ctx->dlg, "pcb-rnd conf item", ctx, pcb_false, pref_conf_edit_close_cb);
 
 	if (is_read_only(ctx)) {
 		int n;

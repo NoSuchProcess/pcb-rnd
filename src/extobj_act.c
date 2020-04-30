@@ -39,31 +39,31 @@ static int extobj_pick_gui(void)
 {
 	int n, res;
 	static int last = 0;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
-		PCB_DAD_LABEL(dlg, "Choose extended object:");
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+		RND_DAD_LABEL(dlg, "Choose extended object:");
 		if ((last > 0) && (last < pcb_extobj_i2o.used)) {
 			pcb_extobj_t *eo = pcb_extobj_i2o.array[last];
-			PCB_DAD_BEGIN_HBOX(dlg);
-				PCB_DAD_LABEL(dlg, "Last used:");
-				PCB_DAD_BUTTON_CLOSE(dlg, eo->name, last);
-			PCB_DAD_END(dlg);
+			RND_DAD_BEGIN_HBOX(dlg);
+				RND_DAD_LABEL(dlg, "Last used:");
+				RND_DAD_BUTTON_CLOSE(dlg, eo->name, last);
+			RND_DAD_END(dlg);
 		}
-		PCB_DAD_BEGIN_TABLE(dlg, 3);
+		RND_DAD_BEGIN_TABLE(dlg, 3);
 			for(n = 1; n < pcb_extobj_i2o.used; n++) {
 				pcb_extobj_t *eo = pcb_extobj_i2o.array[n];
-				PCB_DAD_BUTTON_CLOSE(dlg, eo->name, n);
+				RND_DAD_BUTTON_CLOSE(dlg, eo->name, n);
 			}
-		PCB_DAD_END(dlg);
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
+		RND_DAD_END(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
 
-	PCB_DAD_NEW("extobj_select", dlg, "Select extended object", NULL, pcb_true, NULL);
-	res = PCB_DAD_RUN(dlg);
-	PCB_DAD_FREE(dlg);
+	RND_DAD_NEW("extobj_select", dlg, "Select extended object", NULL, pcb_true, NULL);
+	res = RND_DAD_RUN(dlg);
+	RND_DAD_FREE(dlg);
 	if (res > 0)
 		last = res;
 	return res;

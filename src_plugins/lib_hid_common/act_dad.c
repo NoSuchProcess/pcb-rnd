@@ -61,7 +61,7 @@ union tmp_u {
 };
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	rnd_hidlib_t *hidlib;
 	char *name;
 	const char *row_domain;
@@ -105,7 +105,7 @@ static void dad_destroy(dad_t *dad)
 static void dad_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	dad_t *dad = caller_data;
-	PCB_DAD_FREE(dad->dlg);
+	RND_DAD_FREE(dad->dlg);
 	dad_destroy(dad);
 }
 
@@ -231,39 +231,39 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (rnd_strcasecmp(cmd, "label") == 0) {
 		if (dad->running) goto cant_chg;
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
-		PCB_DAD_LABEL(dad->dlg, txt);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_LABEL(dad->dlg, txt);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "button") == 0) {
 		if (dad->running) goto cant_chg;
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
-		PCB_DAD_BUTTON(dad->dlg, tmp_str_dup(dad, txt));
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_BUTTON(dad->dlg, tmp_str_dup(dad, txt));
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "button_closes") == 0) {
 		int n, ret;
 
 		if (dad->running) goto cant_chg;
 
-		PCB_DAD_BEGIN_HBOX(dad->dlg);
-		PCB_DAD_BEGIN_HBOX(dad->dlg);
-		PCB_DAD_COMPFLAG(dad->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_END(dad->dlg);
+		RND_DAD_BEGIN_HBOX(dad->dlg);
+		RND_DAD_BEGIN_HBOX(dad->dlg);
+		RND_DAD_COMPFLAG(dad->dlg, RND_HATF_EXPFILL);
+		RND_DAD_END(dad->dlg);
 		for(n = 3; n < argc; n+=2) {
 			RND_PCB_ACT_CONVARG(n+0, FGW_STR, dad, txt = argv[n+0].val.str);
 			RND_PCB_ACT_CONVARG(n+1, FGW_INT, dad, ret = argv[n+1].val.nat_int);
 			
-			PCB_DAD_BUTTON_CLOSE(dad->dlg, tmp_str_dup(dad, txt), ret);
-				rv = PCB_DAD_CURRENT(dad->dlg);
+			RND_DAD_BUTTON_CLOSE(dad->dlg, tmp_str_dup(dad, txt), ret);
+				rv = RND_DAD_CURRENT(dad->dlg);
 		}
-		PCB_DAD_END(dad->dlg);
+		RND_DAD_END(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "bool") == 0) {
 		if (dad->running) goto cant_chg;
 		txt = "";
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
-		PCB_DAD_BOOL(dad->dlg, txt);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_BOOL(dad->dlg, txt);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "integer") == 0) {
 		long vmin, vmax;
@@ -272,9 +272,9 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_PCB_ACT_CONVARG(3, FGW_LONG, dad, vmin = argv[3].val.nat_long);
 		RND_PCB_ACT_CONVARG(4, FGW_LONG, dad, vmax = argv[4].val.nat_long);
 		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
-		PCB_DAD_INTEGER(dad->dlg, txt);
-		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_INTEGER(dad->dlg, txt);
+		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "real") == 0) {
 		double vmin, vmax;
@@ -283,9 +283,9 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_PCB_ACT_CONVARG(3, FGW_DOUBLE, dad, vmin = argv[3].val.nat_double);
 		RND_PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, vmax = argv[4].val.nat_double);
 		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
-		PCB_DAD_REAL(dad->dlg, txt);
-		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_REAL(dad->dlg, txt);
+		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "coord") == 0) {
 		rnd_coord_t vmin, vmax;
@@ -294,19 +294,19 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_PCB_ACT_CONVARG(3, FGW_COORD_, dad, vmin = fgw_coord(&argv[3]));
 		RND_PCB_ACT_CONVARG(4, FGW_COORD_, dad, vmax = fgw_coord(&argv[4]));
 		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
-		PCB_DAD_COORD(dad->dlg, txt);
-		PCB_DAD_MINMAX(dad->dlg, vmin, vmax);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_COORD(dad->dlg, txt);
+		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "string") == 0) {
 		if (dad->running) goto cant_chg;
-		PCB_DAD_STRING(dad->dlg);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_STRING(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "progress") == 0) {
 		if (dad->running) goto cant_chg;
-		PCB_DAD_PROGRESS(dad->dlg);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_PROGRESS(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if ((rnd_strcasecmp(cmd, "enum") == 0) || (rnd_strcasecmp(cmd, "begin_tabbed") == 0)) {
 		char **values = tmp_new_strlist(dad);
@@ -317,12 +317,12 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (split_tablist(dad, values, txt, cmd) == 0) {
 			if (*cmd == 'b') {
-				PCB_DAD_BEGIN_TABBED(dad->dlg, (const char **)values);
+				RND_DAD_BEGIN_TABBED(dad->dlg, (const char **)values);
 				dad->level++;
 			}
 			else
-				PCB_DAD_ENUM(dad->dlg, (const char **)values);
-			rv = PCB_DAD_CURRENT(dad->dlg);
+				RND_DAD_ENUM(dad->dlg, (const char **)values);
+			rv = RND_DAD_CURRENT(dad->dlg);
 		}
 		else
 			rv = -1;
@@ -339,10 +339,10 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
 
 		if ((txt == NULL) || (split_tablist(dad, values, txt, cmd) == 0)) {
-			PCB_DAD_TREE(dad->dlg, cols, istree, (const char **)values);
-			PCB_DAD_TREE_SET_CB(dad->dlg, free_cb, dad_row_free_cb);
-			PCB_DAD_TREE_SET_CB(dad->dlg, ctx, dad);
-			rv = PCB_DAD_CURRENT(dad->dlg);
+			RND_DAD_TREE(dad->dlg, cols, istree, (const char **)values);
+			RND_DAD_TREE_SET_CB(dad->dlg, free_cb, dad_row_free_cb);
+			RND_DAD_TREE_SET_CB(dad->dlg, ctx, dad);
+			rv = RND_DAD_CURRENT(dad->dlg);
 		}
 		else
 			rv = -1;
@@ -366,11 +366,11 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if ((txt == NULL) || (split_tablist(dad, values, txt, cmd) == 0)) {
 			if (cmd[5] == 'i')
-				nrow = PCB_DAD_TREE_INSERT(dad->dlg, row, values);
+				nrow = RND_DAD_TREE_INSERT(dad->dlg, row, values);
 			else if (cmd[11] == '_')
-				nrow = PCB_DAD_TREE_APPEND_UNDER(dad->dlg, row, values);
+				nrow = RND_DAD_TREE_APPEND_UNDER(dad->dlg, row, values);
 			else
-				nrow = PCB_DAD_TREE_APPEND(dad->dlg, row, values);
+				nrow = RND_DAD_TREE_APPEND(dad->dlg, row, values);
 		}
 		else
 			nrow = NULL;
@@ -379,27 +379,27 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "begin_hbox") == 0) {
 		if (dad->running) goto cant_chg;
-		PCB_DAD_BEGIN_HBOX(dad->dlg);
+		RND_DAD_BEGIN_HBOX(dad->dlg);
 		dad->level++;
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "begin_vbox") == 0) {
 		if (dad->running) goto cant_chg;
-		PCB_DAD_BEGIN_VBOX(dad->dlg);
+		RND_DAD_BEGIN_VBOX(dad->dlg);
 		dad->level++;
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "begin_hpane") == 0) {
 		if (dad->running) goto cant_chg;
-		PCB_DAD_BEGIN_HPANE(dad->dlg);
+		RND_DAD_BEGIN_HPANE(dad->dlg);
 		dad->level++;
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "begin_vpane") == 0) {
 		if (dad->running) goto cant_chg;
-		PCB_DAD_BEGIN_VPANE(dad->dlg);
+		RND_DAD_BEGIN_VPANE(dad->dlg);
 		dad->level++;
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "begin_table") == 0) {
 		int cols;
@@ -407,16 +407,16 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 
 		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
-		PCB_DAD_BEGIN_TABLE(dad->dlg, cols);
+		RND_DAD_BEGIN_TABLE(dad->dlg, cols);
 		dad->level++;
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "end") == 0) {
 		if (dad->running) goto cant_chg;
 
-		PCB_DAD_END(dad->dlg);
+		RND_DAD_END(dad->dlg);
 		dad->level--;
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "flags") == 0) {
 		int n;
@@ -433,13 +433,13 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_message(RND_MSG_ERROR, "Invalid DAD flag: %s (ignored)\n", txt);
 			flg |= tmp;
 		}
-		PCB_DAD_COMPFLAG(dad->dlg, flg);
-		rv = PCB_DAD_CURRENT(dad->dlg);
+		RND_DAD_COMPFLAG(dad->dlg, flg);
+		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "onchange") == 0) {
 		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
-		PCB_DAD_CHANGE_CB(dad->dlg, dad_change_cb);
-		vts0_set(&dad->change_cb, PCB_DAD_CURRENT(dad->dlg), tmp_str_dup(dad, txt));
+		RND_DAD_CHANGE_CB(dad->dlg, dad_change_cb);
+		vts0_set(&dad->change_cb, RND_DAD_CURRENT(dad->dlg), tmp_str_dup(dad, txt));
 		rv = 0;
 	}
 	else if (rnd_strcasecmp(cmd, "set") == 0) {
@@ -462,23 +462,23 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(wtype) {
 			case RND_HATT_COORD:
 				RND_PCB_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, crd, c);
+				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, crd, c);
 				break;
 			case RND_HATT_REAL:
 			case RND_HATT_PROGRESS:
 				RND_PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, d = argv[4].val.nat_double);
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, dbl, d);
+				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, dbl, d);
 				break;
 			case RND_HATT_INTEGER:
 			case RND_HATT_BOOL:
 				RND_PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, lng, i);
+				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, lng, i);
 				break;
 			case RND_HATT_STRING:
 			case RND_HATT_LABEL:
 			case RND_HATT_BUTTON:
 				RND_PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
-				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str, txt);
+				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str, txt);
 				break;
 			default:
 				rnd_message(RND_MSG_ERROR, "Invalid widget type %d - can not change value (set ignored)\n", wid);
@@ -546,8 +546,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rv = -1;
 		}
 		else {
-			PCB_DAD_NEW(dlgname, dad->dlg, txt, dad, (cmd[3] == '_'), dad_close_cb);
-			rv = PCB_DAD_CURRENT(dad->dlg);
+			RND_DAD_NEW(dlgname, dad->dlg, txt, dad, (cmd[3] == '_'), dad_close_cb);
+			rv = RND_DAD_CURRENT(dad->dlg);
 		}
 	}
 	else {

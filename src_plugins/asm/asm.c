@@ -86,7 +86,7 @@ typedef struct {
 
 /* dialog context */
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	vtp0_t grps;
 	vtclr_t layer_colors; /* saved before greying out */
 	int wtbl, wskipg, wdoneg, wskipp, wdonep;
@@ -326,7 +326,7 @@ static void asm_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	}
 	vtp0_uninit(&asm_ctx.grps);
 
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(asm_ctx_t));
 }
 
@@ -521,7 +521,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	group_t **g;
 	part_t **p;
 	long n, i;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (asm_ctx.active) {
 		RND_ACT_IRES(0);
@@ -534,11 +534,11 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	asm_greyout(1);
 
-	PCB_DAD_BEGIN_VBOX(asm_ctx.dlg);
-		PCB_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_TREE(asm_ctx.dlg, 6, 1, hdr);
-			asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
-			PCB_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_SCROLL);
+	RND_DAD_BEGIN_VBOX(asm_ctx.dlg);
+		RND_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_TREE(asm_ctx.dlg, 6, 1, hdr);
+			asm_ctx.wtbl = RND_DAD_CURRENT(asm_ctx.dlg);
+			RND_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_SCROLL);
 			for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
 				rnd_hid_row_t *parent, *child;
 				row[0] = (*g)->name;
@@ -548,7 +548,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				row[4] = "";
 				row[5] = "";
 				row[6] = NULL;
-				parent = PCB_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
+				parent = RND_DAD_TREE_APPEND(asm_ctx.dlg, NULL, row);
 				parent->user_data = *g;
 				(*g)->row = parent;
 				for(p = (part_t **)(*g)->parts.array, i = 0; i < (*g)->parts.used; p++,i++) {
@@ -579,43 +579,43 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						row[5] = "";
 					}
 					row[6] = NULL;
-					child = PCB_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
+					child = RND_DAD_TREE_APPEND_UNDER(asm_ctx.dlg, parent, row);
 					child->user_data = *p;
 					(*p)->row = child;
 				}
 			}
-			PCB_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, asm_row_selected);
-		PCB_DAD_BEGIN_HBOX(asm_ctx.dlg);
-			PCB_DAD_BUTTON(asm_ctx.dlg, "skip part");
-				asm_ctx.wskipp = PCB_DAD_CURRENT(asm_ctx.dlg);
-				PCB_DAD_HELP(asm_ctx.dlg, "Do not populate this part,\ncontinue with the next part");
-				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_part);
-			PCB_DAD_BUTTON(asm_ctx.dlg, "skip group");
-				asm_ctx.wskipg = PCB_DAD_CURRENT(asm_ctx.dlg);
-				PCB_DAD_HELP(asm_ctx.dlg, "Stop populating this group,\ncontinue with the next group");
-				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_group);
-			PCB_DAD_BUTTON(asm_ctx.dlg, "done part");
-				asm_ctx.wdonep = PCB_DAD_CURRENT(asm_ctx.dlg);
-				PCB_DAD_HELP(asm_ctx.dlg, "Mark current part done,\ncontinue with the next part");
-				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_part);
-			PCB_DAD_BUTTON(asm_ctx.dlg, "undo part");
-				asm_ctx.wdonep = PCB_DAD_CURRENT(asm_ctx.dlg);
-				PCB_DAD_HELP(asm_ctx.dlg, "Remove the done mark from the current part,\njump to the next part");
-				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_undo_part);
-			PCB_DAD_BUTTON(asm_ctx.dlg, "done group");
-				asm_ctx.wdoneg = PCB_DAD_CURRENT(asm_ctx.dlg);
-				PCB_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
-				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_group);
-			PCB_DAD_BUTTON(asm_ctx.dlg, "undo group");
-				asm_ctx.wdoneg = PCB_DAD_CURRENT(asm_ctx.dlg);
-				PCB_DAD_HELP(asm_ctx.dlg, "Remove the done mark from all parts in this group done,\ncontinue with the next group");
-				PCB_DAD_CHANGE_CB(asm_ctx.dlg, asm_undo_group);
-		PCB_DAD_END(asm_ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(asm_ctx.dlg, clbtn);
-	PCB_DAD_END(asm_ctx.dlg);
+			RND_DAD_TREE_SET_CB(asm_ctx.dlg, selected_cb, asm_row_selected);
+		RND_DAD_BEGIN_HBOX(asm_ctx.dlg);
+			RND_DAD_BUTTON(asm_ctx.dlg, "skip part");
+				asm_ctx.wskipp = RND_DAD_CURRENT(asm_ctx.dlg);
+				RND_DAD_HELP(asm_ctx.dlg, "Do not populate this part,\ncontinue with the next part");
+				RND_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_part);
+			RND_DAD_BUTTON(asm_ctx.dlg, "skip group");
+				asm_ctx.wskipg = RND_DAD_CURRENT(asm_ctx.dlg);
+				RND_DAD_HELP(asm_ctx.dlg, "Stop populating this group,\ncontinue with the next group");
+				RND_DAD_CHANGE_CB(asm_ctx.dlg, asm_skip_group);
+			RND_DAD_BUTTON(asm_ctx.dlg, "done part");
+				asm_ctx.wdonep = RND_DAD_CURRENT(asm_ctx.dlg);
+				RND_DAD_HELP(asm_ctx.dlg, "Mark current part done,\ncontinue with the next part");
+				RND_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_part);
+			RND_DAD_BUTTON(asm_ctx.dlg, "undo part");
+				asm_ctx.wdonep = RND_DAD_CURRENT(asm_ctx.dlg);
+				RND_DAD_HELP(asm_ctx.dlg, "Remove the done mark from the current part,\njump to the next part");
+				RND_DAD_CHANGE_CB(asm_ctx.dlg, asm_undo_part);
+			RND_DAD_BUTTON(asm_ctx.dlg, "done group");
+				asm_ctx.wdoneg = RND_DAD_CURRENT(asm_ctx.dlg);
+				RND_DAD_HELP(asm_ctx.dlg, "Mark all parts in this group done,\ncontinue with the next group");
+				RND_DAD_CHANGE_CB(asm_ctx.dlg, asm_done_group);
+			RND_DAD_BUTTON(asm_ctx.dlg, "undo group");
+				asm_ctx.wdoneg = RND_DAD_CURRENT(asm_ctx.dlg);
+				RND_DAD_HELP(asm_ctx.dlg, "Remove the done mark from all parts in this group done,\ncontinue with the next group");
+				RND_DAD_CHANGE_CB(asm_ctx.dlg, asm_undo_group);
+		RND_DAD_END(asm_ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(asm_ctx.dlg, clbtn);
+	RND_DAD_END(asm_ctx.dlg);
 
 	asm_ctx.active = 1;
-	PCB_DAD_NEW("asm", asm_ctx.dlg, "Hand assembly with pcb-rnd", &asm_ctx, pcb_false, asm_close_cb);
+	RND_DAD_NEW("asm", asm_ctx.dlg, "Hand assembly with pcb-rnd", &asm_ctx, pcb_false, asm_close_cb);
 
 	/* expand all groups by default */
 	for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++)

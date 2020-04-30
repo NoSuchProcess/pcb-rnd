@@ -224,8 +224,8 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int wfmt;
 
 		memset(&fmtsub, 0, sizeof(fmtsub));
-		PCB_DAD_ENUM(fmtsub.dlg, fmts);
-			wfmt = PCB_DAD_CURRENT(fmtsub.dlg);
+		RND_DAD_ENUM(fmtsub.dlg, fmts);
+			wfmt = RND_DAD_CURRENT(fmtsub.dlg);
 		fn = rnd_gui->fileselect(rnd_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", RND_HID_FSD_MAY_NOT_EXIST, &fmtsub);
 		if (fn != NULL) {
 			ret = rnd_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.lng == 1));

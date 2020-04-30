@@ -70,46 +70,46 @@ typedef struct {
 #define PCB_DAD_SPIN_ANY(table, typ, wtyp, has_unit, unit_family_) \
 do { \
 	pcb_hid_dad_spin_t *spin = calloc(sizeof(pcb_hid_dad_spin_t), 1); \
-	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \
-		spin->cmp.wbegin = PCB_DAD_CURRENT(table); \
-		PCB_DAD_SET_ATTR_FIELD(table, wdata, spin); \
-		PCB_DAD_BEGIN_HBOX(table); \
-			spin->wall = PCB_DAD_CURRENT(table); \
-			PCB_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
-			PCB_DAD_STRING(table); \
-				PCB_DAD_DEFAULT_PTR(table, rnd_strdup("")); \
-				PCB_DAD_ENTER_CB(table, pcb_dad_spin_txt_enter_cb); \
-				PCB_DAD_CHANGE_CB(table, pcb_dad_spin_txt_change_cb); \
-				PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
-				spin->wstr = PCB_DAD_CURRENT(table); \
-			PCB_DAD_BEGIN_VBOX(table); \
-				PCB_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
-				PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_up); \
-					PCB_DAD_CHANGE_CB(table, pcb_dad_spin_up_cb); \
-					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
-					spin->wup = PCB_DAD_CURRENT(table); \
-				PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_down); \
-					PCB_DAD_CHANGE_CB(table, pcb_dad_spin_down_cb); \
-					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
-					spin->wdown = PCB_DAD_CURRENT(table); \
-			PCB_DAD_END(table); \
-			PCB_DAD_BEGIN_VBOX(table); \
-				PCB_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \
+		spin->cmp.wbegin = RND_DAD_CURRENT(table); \
+		RND_DAD_SET_ATTR_FIELD(table, wdata, spin); \
+		RND_DAD_BEGIN_HBOX(table); \
+			spin->wall = RND_DAD_CURRENT(table); \
+			RND_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
+			RND_DAD_STRING(table); \
+				RND_DAD_DEFAULT_PTR(table, rnd_strdup("")); \
+				RND_DAD_ENTER_CB(table, pcb_dad_spin_txt_enter_cb); \
+				RND_DAD_CHANGE_CB(table, pcb_dad_spin_txt_change_cb); \
+				RND_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
+				spin->wstr = RND_DAD_CURRENT(table); \
+			RND_DAD_BEGIN_VBOX(table); \
+				RND_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
+				RND_DAD_PICBUTTON(table, pcb_hid_dad_spin_up); \
+					RND_DAD_CHANGE_CB(table, pcb_dad_spin_up_cb); \
+					RND_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
+					spin->wup = RND_DAD_CURRENT(table); \
+				RND_DAD_PICBUTTON(table, pcb_hid_dad_spin_down); \
+					RND_DAD_CHANGE_CB(table, pcb_dad_spin_down_cb); \
+					RND_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
+					spin->wdown = RND_DAD_CURRENT(table); \
+			RND_DAD_END(table); \
+			RND_DAD_BEGIN_VBOX(table); \
+				RND_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
 				if (has_unit) { \
-					PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_unit); \
-						PCB_DAD_CHANGE_CB(table, pcb_dad_spin_unit_cb); \
-						PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
-						spin->wunit = PCB_DAD_CURRENT(table); \
+					RND_DAD_PICBUTTON(table, pcb_hid_dad_spin_unit); \
+						RND_DAD_CHANGE_CB(table, pcb_dad_spin_unit_cb); \
+						RND_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
+						spin->wunit = RND_DAD_CURRENT(table); \
 				} \
-				PCB_DAD_PICTURE(table, pcb_hid_dad_spin_warn); \
-					PCB_DAD_COMPFLAG(table, RND_HATF_HIDE); \
-					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
-					spin->wwarn = PCB_DAD_CURRENT(table); \
-			PCB_DAD_END(table); \
-		PCB_DAD_END(table); \
-	PCB_DAD_END(table); \
-		PCB_DAD_SET_ATTR_FIELD(table, wdata, spin); \
-		spin->cmp.wend = PCB_DAD_CURRENT(table); \
+				RND_DAD_PICTURE(table, pcb_hid_dad_spin_warn); \
+					RND_DAD_COMPFLAG(table, RND_HATF_HIDE); \
+					RND_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
+					spin->wwarn = RND_DAD_CURRENT(table); \
+			RND_DAD_END(table); \
+		RND_DAD_END(table); \
+	RND_DAD_END(table); \
+		RND_DAD_SET_ATTR_FIELD(table, wdata, spin); \
+		spin->cmp.wend = RND_DAD_CURRENT(table); \
 	\
 	spin->cmp.free = pcb_dad_spin_free; \
 	spin->cmp.set_val_num = pcb_dad_spin_set_num; \

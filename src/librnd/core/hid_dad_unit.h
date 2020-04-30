@@ -46,16 +46,16 @@ typedef struct {
 #define PCB_DAD_UNIT(table, family_) \
 do { \
 	pcb_hid_dad_unit_t *unit = calloc(sizeof(pcb_hid_dad_unit_t), 1); \
-	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \
-		unit->cmp.wbegin = PCB_DAD_CURRENT(table); \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \
+		unit->cmp.wbegin = RND_DAD_CURRENT(table); \
 		pcb_dad_unit_init(family_); \
-		PCB_DAD_ENUM(table, pcb_dad_unit_enum); \
-			PCB_DAD_CHANGE_CB(table, pcb_dad_unit_change_cb); \
-			PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)unit); \
-			unit->wenum = PCB_DAD_CURRENT(table); \
-	PCB_DAD_END(table); \
-		PCB_DAD_SET_ATTR_FIELD(table, wdata, unit); \
-		unit->cmp.wend = PCB_DAD_CURRENT(table); \
+		RND_DAD_ENUM(table, pcb_dad_unit_enum); \
+			RND_DAD_CHANGE_CB(table, pcb_dad_unit_change_cb); \
+			RND_DAD_SET_ATTR_FIELD(table, user_data, (const char **)unit); \
+			unit->wenum = RND_DAD_CURRENT(table); \
+	RND_DAD_END(table); \
+		RND_DAD_SET_ATTR_FIELD(table, wdata, unit); \
+		unit->cmp.wend = RND_DAD_CURRENT(table); \
 	\
 	unit->cmp.set_val_num = pcb_dad_unit_set_num; \
 	unit->cmp.widget_state = pcb_dad_unit_widget_state; \

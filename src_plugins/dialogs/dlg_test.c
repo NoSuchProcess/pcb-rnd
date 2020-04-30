@@ -33,7 +33,7 @@ static const char dlg_test_syntax[] = "dlg_test()\n";
 static const char dlg_test_help[] = "test the attribute dialog";
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wtab, tt, wprog, whpane, wvpane, wtxt, wtxtpos, wtxtro;
 	int ttctr, wclr, txtro;
 	int wspin_int, wspout_int, wspin_double, wspout_double, wspin_coord, wspout_coord;
@@ -93,193 +93,193 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *row2b[] = {"under_two", "ut", "uuut", NULL};
 	char *row3[] = {"three", "baz", "BAZ", NULL};
 	const char *hdr[] = {"num", "data1", "data2", NULL};
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	rnd_hid_row_t *row;
 	int failed;
 
 	test_t ctx;
 	memset(&ctx, 0, sizeof(ctx));
 
-	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABBED(ctx.dlg, tabs);
-			PCB_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
-			ctx.wtab = PCB_DAD_CURRENT(ctx.dlg);
+	RND_DAD_BEGIN_VBOX(ctx.dlg);
+		RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABBED(ctx.dlg, tabs);
+			RND_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
+			ctx.wtab = RND_DAD_CURRENT(ctx.dlg);
 
 			/* tab 0: "original test" */
-			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_LABEL(ctx.dlg, "text1");
-				PCB_DAD_BEGIN_TABLE(ctx.dlg, 3);
-					PCB_DAD_LABEL(ctx.dlg, "text2a");
-					PCB_DAD_LABEL(ctx.dlg, "text2b");
-					PCB_DAD_LABEL(ctx.dlg, "text2c");
-					PCB_DAD_LABEL(ctx.dlg, "text2d");
-				PCB_DAD_END(ctx.dlg);
-				PCB_DAD_LABEL(ctx.dlg, "text3");
+			RND_DAD_BEGIN_VBOX(ctx.dlg);
+				RND_DAD_LABEL(ctx.dlg, "text1");
+				RND_DAD_BEGIN_TABLE(ctx.dlg, 3);
+					RND_DAD_LABEL(ctx.dlg, "text2a");
+					RND_DAD_LABEL(ctx.dlg, "text2b");
+					RND_DAD_LABEL(ctx.dlg, "text2c");
+					RND_DAD_LABEL(ctx.dlg, "text2d");
+				RND_DAD_END(ctx.dlg);
+				RND_DAD_LABEL(ctx.dlg, "text3");
 
-				PCB_DAD_BEGIN_VBOX(ctx.dlg);
-					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_FRAME);
-					PCB_DAD_LABEL(ctx.dlg, "spin test");
-					PCB_DAD_BUTTON(ctx.dlg, "reset all to 42");
-						PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_reset);
+				RND_DAD_BEGIN_VBOX(ctx.dlg);
+					RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_FRAME);
+					RND_DAD_LABEL(ctx.dlg, "spin test");
+					RND_DAD_BUTTON(ctx.dlg, "reset all to 42");
+						RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_reset);
 
-					PCB_DAD_BEGIN_HBOX(ctx.dlg);
-						PCB_DAD_LABEL(ctx.dlg, "INT:");
+					RND_DAD_BEGIN_HBOX(ctx.dlg);
+						RND_DAD_LABEL(ctx.dlg, "INT:");
 						PCB_DAD_SPIN_INT(ctx.dlg);
-							ctx.wspin_int = PCB_DAD_CURRENT(ctx.dlg);
-							PCB_DAD_DEFAULT_NUM(ctx.dlg, 42);
-							PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
-						PCB_DAD_LABEL(ctx.dlg, "->");
-						PCB_DAD_LABEL(ctx.dlg, "n/a");
-							ctx.wspout_int = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_END(ctx.dlg);
+							ctx.wspin_int = RND_DAD_CURRENT(ctx.dlg);
+							RND_DAD_DEFAULT_NUM(ctx.dlg, 42);
+							RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
+						RND_DAD_LABEL(ctx.dlg, "->");
+						RND_DAD_LABEL(ctx.dlg, "n/a");
+							ctx.wspout_int = RND_DAD_CURRENT(ctx.dlg);
+					RND_DAD_END(ctx.dlg);
 
-					PCB_DAD_BEGIN_HBOX(ctx.dlg);
-						PCB_DAD_LABEL(ctx.dlg, "DBL:");
+					RND_DAD_BEGIN_HBOX(ctx.dlg);
+						RND_DAD_LABEL(ctx.dlg, "DBL:");
 						PCB_DAD_SPIN_DOUBLE(ctx.dlg);
-							ctx.wspin_double = PCB_DAD_CURRENT(ctx.dlg);
-							PCB_DAD_DEFAULT_NUM(ctx.dlg, 42);
-							PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
-						PCB_DAD_LABEL(ctx.dlg, "->");
-						PCB_DAD_LABEL(ctx.dlg, "n/a");
-							ctx.wspout_double = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_END(ctx.dlg);
+							ctx.wspin_double = RND_DAD_CURRENT(ctx.dlg);
+							RND_DAD_DEFAULT_NUM(ctx.dlg, 42);
+							RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
+						RND_DAD_LABEL(ctx.dlg, "->");
+						RND_DAD_LABEL(ctx.dlg, "n/a");
+							ctx.wspout_double = RND_DAD_CURRENT(ctx.dlg);
+					RND_DAD_END(ctx.dlg);
 
-					PCB_DAD_BEGIN_HBOX(ctx.dlg);
-						PCB_DAD_LABEL(ctx.dlg, "CRD:");
+					RND_DAD_BEGIN_HBOX(ctx.dlg);
+						RND_DAD_LABEL(ctx.dlg, "CRD:");
 						PCB_DAD_SPIN_COORD(ctx.dlg);
-							ctx.wspin_coord = PCB_DAD_CURRENT(ctx.dlg);
-							PCB_DAD_DEFAULT_NUM(ctx.dlg, PCB_MM_TO_COORD(42));
-							PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
-						PCB_DAD_LABEL(ctx.dlg, "->");
-						PCB_DAD_LABEL(ctx.dlg, "n/a");
-							ctx.wspout_coord = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_END(ctx.dlg);
+							ctx.wspin_coord = RND_DAD_CURRENT(ctx.dlg);
+							RND_DAD_DEFAULT_NUM(ctx.dlg, PCB_MM_TO_COORD(42));
+							RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
+						RND_DAD_LABEL(ctx.dlg, "->");
+						RND_DAD_LABEL(ctx.dlg, "n/a");
+							ctx.wspout_coord = RND_DAD_CURRENT(ctx.dlg);
+					RND_DAD_END(ctx.dlg);
 
-				PCB_DAD_END(ctx.dlg);
+				RND_DAD_END(ctx.dlg);
 
-				PCB_DAD_ENUM(ctx.dlg, vals);
-					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
-					attr_idx = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_INTEGER(ctx.dlg, "text2e");
-					PCB_DAD_MINVAL(ctx.dlg, 1);
-					PCB_DAD_MAXVAL(ctx.dlg, 10);
-					PCB_DAD_DEFAULT_NUM(ctx.dlg, 3);
-					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
-					attr_idx2 = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_BUTTON(ctx.dlg, "update!");
-					PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
-			PCB_DAD_END(ctx.dlg);
+				RND_DAD_ENUM(ctx.dlg, vals);
+					RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+					attr_idx = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_INTEGER(ctx.dlg, "text2e");
+					RND_DAD_MINVAL(ctx.dlg, 1);
+					RND_DAD_MAXVAL(ctx.dlg, 10);
+					RND_DAD_DEFAULT_NUM(ctx.dlg, 3);
+					RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+					attr_idx2 = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_BUTTON(ctx.dlg, "update!");
+					RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
+			RND_DAD_END(ctx.dlg);
 
 			/* tab 1: "new test" */
-			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_LABEL(ctx.dlg, "new test.");
-				PCB_DAD_PICTURE(ctx.dlg, test_xpm);
-				PCB_DAD_BUTTON(ctx.dlg, "jump to the first tab");
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_jump);
-				PCB_DAD_PICBUTTON(ctx.dlg, test_xpm);
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_color_reset);
-				PCB_DAD_COLOR(ctx.dlg);
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_color_print);
-					ctx.wclr = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_END(ctx.dlg);
+			RND_DAD_BEGIN_VBOX(ctx.dlg);
+				RND_DAD_LABEL(ctx.dlg, "new test.");
+				RND_DAD_PICTURE(ctx.dlg, test_xpm);
+				RND_DAD_BUTTON(ctx.dlg, "jump to the first tab");
+					RND_DAD_CHANGE_CB(ctx.dlg, cb_jump);
+				RND_DAD_PICBUTTON(ctx.dlg, test_xpm);
+					RND_DAD_CHANGE_CB(ctx.dlg, cb_color_reset);
+				RND_DAD_COLOR(ctx.dlg);
+					RND_DAD_CHANGE_CB(ctx.dlg, cb_color_print);
+					ctx.wclr = RND_DAD_CURRENT(ctx.dlg);
+			RND_DAD_END(ctx.dlg);
 
 
 			/* tab 2: tree table widget */
-			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-				PCB_DAD_TREE(ctx.dlg, 3, 1, hdr);
-					ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_SCROLL);
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
-					PCB_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
-					PCB_DAD_TREE_SET_CB(ctx.dlg, selected_cb, cb_ttbl_row_selected);
-					PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
-					row = PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
-					PCB_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
-					PCB_DAD_TREE_APPEND(ctx.dlg, NULL, row3);
-				PCB_DAD_BEGIN_HBOX(ctx.dlg);
-					PCB_DAD_BUTTON(ctx.dlg, "insert row");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
-					PCB_DAD_BUTTON(ctx.dlg, "append row");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
-					PCB_DAD_BUTTON(ctx.dlg, "jump!");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_jump);
-					PCB_DAD_BOOL(ctx.dlg, "filter");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_filt);
-				PCB_DAD_END(ctx.dlg);
-				PCB_DAD_BEGIN_VBOX(ctx.dlg);
-					PCB_DAD_PROGRESS(ctx.dlg);
-						ctx.wprog = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_END(ctx.dlg);
-			PCB_DAD_END(ctx.dlg);
+			RND_DAD_BEGIN_VBOX(ctx.dlg);
+				RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_TREE(ctx.dlg, 3, 1, hdr);
+					ctx.tt = RND_DAD_CURRENT(ctx.dlg);
+					RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_SCROLL);
+					RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
+					RND_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
+					RND_DAD_TREE_SET_CB(ctx.dlg, selected_cb, cb_ttbl_row_selected);
+					RND_DAD_TREE_APPEND(ctx.dlg, NULL, row1);
+					row = RND_DAD_TREE_APPEND(ctx.dlg, NULL, row2);
+					RND_DAD_TREE_APPEND_UNDER(ctx.dlg, row, row2b);
+					RND_DAD_TREE_APPEND(ctx.dlg, NULL, row3);
+				RND_DAD_BEGIN_HBOX(ctx.dlg);
+					RND_DAD_BUTTON(ctx.dlg, "insert row");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_insert);
+					RND_DAD_BUTTON(ctx.dlg, "append row");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
+					RND_DAD_BUTTON(ctx.dlg, "jump!");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_jump);
+					RND_DAD_BOOL(ctx.dlg, "filter");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_filt);
+				RND_DAD_END(ctx.dlg);
+				RND_DAD_BEGIN_VBOX(ctx.dlg);
+					RND_DAD_PROGRESS(ctx.dlg);
+						ctx.wprog = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_END(ctx.dlg);
+			RND_DAD_END(ctx.dlg);
 
 			/* tab 3: pane */
-			PCB_DAD_BEGIN_HPANE(ctx.dlg);
-				ctx.whpane = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_BEGIN_VBOX(ctx.dlg);
-					PCB_DAD_LABEL(ctx.dlg, "left1");
-					PCB_DAD_LABEL(ctx.dlg, "left2");
-				PCB_DAD_END(ctx.dlg);
-				PCB_DAD_BEGIN_VPANE(ctx.dlg);
-					ctx.wvpane = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_BEGIN_VBOX(ctx.dlg);
-						PCB_DAD_LABEL(ctx.dlg, "right top1");
-						PCB_DAD_LABEL(ctx.dlg, "right top2");
-					PCB_DAD_END(ctx.dlg);
-					PCB_DAD_BEGIN_VBOX(ctx.dlg);
-						PCB_DAD_LABEL(ctx.dlg, "right bottom1");
-						PCB_DAD_LABEL(ctx.dlg, "right bottom2");
-						PCB_DAD_BUTTON(ctx.dlg, "set all to 30%");
-							PCB_DAD_CHANGE_CB(ctx.dlg, cb_pane_set);
-					PCB_DAD_END(ctx.dlg);
-				PCB_DAD_END(ctx.dlg);
-			PCB_DAD_END(ctx.dlg);
+			RND_DAD_BEGIN_HPANE(ctx.dlg);
+				ctx.whpane = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_BEGIN_VBOX(ctx.dlg);
+					RND_DAD_LABEL(ctx.dlg, "left1");
+					RND_DAD_LABEL(ctx.dlg, "left2");
+				RND_DAD_END(ctx.dlg);
+				RND_DAD_BEGIN_VPANE(ctx.dlg);
+					ctx.wvpane = RND_DAD_CURRENT(ctx.dlg);
+					RND_DAD_BEGIN_VBOX(ctx.dlg);
+						RND_DAD_LABEL(ctx.dlg, "right top1");
+						RND_DAD_LABEL(ctx.dlg, "right top2");
+					RND_DAD_END(ctx.dlg);
+					RND_DAD_BEGIN_VBOX(ctx.dlg);
+						RND_DAD_LABEL(ctx.dlg, "right bottom1");
+						RND_DAD_LABEL(ctx.dlg, "right bottom2");
+						RND_DAD_BUTTON(ctx.dlg, "set all to 30%");
+							RND_DAD_CHANGE_CB(ctx.dlg, cb_pane_set);
+					RND_DAD_END(ctx.dlg);
+				RND_DAD_END(ctx.dlg);
+			RND_DAD_END(ctx.dlg);
 
 			/* tab 4: preview */
-			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, 200, 200, NULL);
-				PCB_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
-			PCB_DAD_END(ctx.dlg);
+			RND_DAD_BEGIN_VBOX(ctx.dlg);
+				RND_DAD_PREVIEW(ctx.dlg, prv_expose, prv_mouse, NULL, NULL, 200, 200, NULL);
+				RND_DAD_LABEL(ctx.dlg, "This is a cool preview widget.");
+			RND_DAD_END(ctx.dlg);
 
 			/* tab 5: text */
-			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-				PCB_DAD_TEXT(ctx.dlg, NULL);
-					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
-					PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_edit);
-					ctx.wtxt = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_BEGIN_HBOX(ctx.dlg);
-					PCB_DAD_LABEL(ctx.dlg, "<pos>");
-						ctx.wtxtpos = PCB_DAD_CURRENT(ctx.dlg);
-						PCB_DAD_BUTTON(ctx.dlg, "half the offset");
-							PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_offs);
-				PCB_DAD_END(ctx.dlg);
-				PCB_DAD_BEGIN_HBOX(ctx.dlg);
-					PCB_DAD_BUTTON(ctx.dlg, "replace");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_replace);
-					PCB_DAD_BUTTON(ctx.dlg, "insert");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_insert);
-					PCB_DAD_BUTTON(ctx.dlg, "append");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_append);
-					PCB_DAD_BUTTON(ctx.dlg, "get");
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_get);
-					PCB_DAD_BUTTON(ctx.dlg, "ro");
+			RND_DAD_BEGIN_VBOX(ctx.dlg);
+				RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_TEXT(ctx.dlg, NULL);
+					RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
+					RND_DAD_CHANGE_CB(ctx.dlg, cb_text_edit);
+					ctx.wtxt = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_BEGIN_HBOX(ctx.dlg);
+					RND_DAD_LABEL(ctx.dlg, "<pos>");
+						ctx.wtxtpos = RND_DAD_CURRENT(ctx.dlg);
+						RND_DAD_BUTTON(ctx.dlg, "half the offset");
+							RND_DAD_CHANGE_CB(ctx.dlg, cb_text_offs);
+				RND_DAD_END(ctx.dlg);
+				RND_DAD_BEGIN_HBOX(ctx.dlg);
+					RND_DAD_BUTTON(ctx.dlg, "replace");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_text_replace);
+					RND_DAD_BUTTON(ctx.dlg, "insert");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_text_insert);
+					RND_DAD_BUTTON(ctx.dlg, "append");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_text_append);
+					RND_DAD_BUTTON(ctx.dlg, "get");
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_text_get);
+					RND_DAD_BUTTON(ctx.dlg, "ro");
 						ctx.txtro = 0;
-						PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_ro);
-				PCB_DAD_END(ctx.dlg);
-			PCB_DAD_END(ctx.dlg);
+						RND_DAD_CHANGE_CB(ctx.dlg, cb_text_ro);
+				RND_DAD_END(ctx.dlg);
+			RND_DAD_END(ctx.dlg);
 
-		PCB_DAD_END(ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
-	PCB_DAD_END(ctx.dlg);
+		RND_DAD_END(ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+	RND_DAD_END(ctx.dlg);
 
-	PCB_DAD_AUTORUN("dlg_test", ctx.dlg, "attribute dialog test", &ctx, failed);
+	RND_DAD_AUTORUN("dlg_test", ctx.dlg, "attribute dialog test", &ctx, failed);
 
 	if (failed != 0)
 		rnd_message(RND_MSG_WARNING, "Test dialog cancelled");
 
-	PCB_DAD_FREE(ctx.dlg);
+	RND_DAD_FREE(ctx.dlg);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -354,7 +354,7 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	rnd_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
-	new_row = pcb_dad_tree_insert(treea, row, rowdata);
+	new_row = rnd_dad_tree_insert(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
 
 	val.dbl = (double)ctx->ttctr / 20.0;
@@ -370,7 +370,7 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	rnd_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
-	new_row = pcb_dad_tree_append(treea, row, rowdata);
+	new_row = rnd_dad_tree_append(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
 
 	val.dbl = (double)ctx->ttctr / 20.0;

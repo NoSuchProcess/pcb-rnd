@@ -182,14 +182,14 @@ do { \
 	if (sval != NULL) \
 		pcb_get_value_unit(sval, NULL, 0, &d, &unit_out); \
 	currval = d; \
-	PCB_DAD_LABEL(dlg, vis_name); \
-		if (help != NULL) PCB_DAD_HELP(dlg, help); \
-	PCB_DAD_COORD(dlg, ""); \
-		if (help != NULL) PCB_DAD_HELP(dlg, help); \
-		PCB_DAD_CHANGE_CB(dlg, pcb_exto_dlg_coord_cb); \
-		wid = PCB_DAD_CURRENT(dlg); \
+	RND_DAD_LABEL(dlg, vis_name); \
+		if (help != NULL) RND_DAD_HELP(dlg, help); \
+	RND_DAD_COORD(dlg, ""); \
+		if (help != NULL) RND_DAD_HELP(dlg, help); \
+		RND_DAD_CHANGE_CB(dlg, pcb_exto_dlg_coord_cb); \
+		wid = RND_DAD_CURRENT(dlg); \
 		dlg[wid].user_data = (void *)attr_name; \
-		PCB_DAD_DEFAULT_NUM(dlg, currval); \
+		RND_DAD_DEFAULT_NUM(dlg, currval); \
 		spin = dlg[wid].wdata; \
 		spin->unit = unit_out; \
 		spin->no_unit_chg = 1; \
@@ -212,14 +212,14 @@ do { \
 	const char *currval = rnd_attribute_get(&subc->Attributes, attr_name); \
 	if (currval == NULL) currval = ""; \
 	currval = rnd_strdup(currval); \
-	PCB_DAD_LABEL(dlg, vis_name); \
-		if (help != NULL) PCB_DAD_HELP(dlg, help); \
-	PCB_DAD_STRING(dlg); \
-		if (help != NULL) PCB_DAD_HELP(dlg, help); \
-		PCB_DAD_CHANGE_CB(dlg, pcb_exto_dlg_str_cb); \
-		wid = PCB_DAD_CURRENT(dlg); \
+	RND_DAD_LABEL(dlg, vis_name); \
+		if (help != NULL) RND_DAD_HELP(dlg, help); \
+	RND_DAD_STRING(dlg); \
+		if (help != NULL) RND_DAD_HELP(dlg, help); \
+		RND_DAD_CHANGE_CB(dlg, pcb_exto_dlg_str_cb); \
+		wid = RND_DAD_CURRENT(dlg); \
 		dlg[wid].user_data = (void *)attr_name; \
-		PCB_DAD_DEFAULT_PTR(dlg, currval); \
+		RND_DAD_DEFAULT_PTR(dlg, currval); \
 } while(0)
 
 RND_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -238,12 +238,12 @@ do { \
 	char *sval = rnd_attribute_get(&subc->Attributes, attr_name); \
 	if (sval != NULL) \
 		currval = strtol(sval, NULL, 10); \
-	PCB_DAD_LABEL(dlg, vis_name); \
-		if (help != NULL) PCB_DAD_HELP(dlg, help); \
-	PCB_DAD_INTEGER(dlg, ""); \
-		if (help != NULL) PCB_DAD_HELP(dlg, help); \
-		PCB_DAD_CHANGE_CB(dlg, pcb_exto_dlg_int_cb); \
-		wid = PCB_DAD_CURRENT(dlg); \
+	RND_DAD_LABEL(dlg, vis_name); \
+		if (help != NULL) RND_DAD_HELP(dlg, help); \
+	RND_DAD_INTEGER(dlg, ""); \
+		if (help != NULL) RND_DAD_HELP(dlg, help); \
+		RND_DAD_CHANGE_CB(dlg, pcb_exto_dlg_int_cb); \
+		wid = RND_DAD_CURRENT(dlg); \
 		dlg[wid].user_data = (void *)attr_name; \
-		PCB_DAD_DEFAULT_NUM(dlg, currval); \
+		RND_DAD_DEFAULT_NUM(dlg, currval); \
 } while(0)

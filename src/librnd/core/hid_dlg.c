@@ -126,7 +126,7 @@ int rnd_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, c
 	return -1;
 }
 
-void pcb_hid_iterate(rnd_hid_t *hid)
+void rnd_hid_iterate(rnd_hid_t *hid)
 {
 	if (hid->iterate != NULL)
 		hid->iterate(hid);
@@ -161,7 +161,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	static double last = 0;
 	static int closing = 0;
 	static struct {
-		PCB_DAD_DECL_NOINIT(dlg)
+		RND_DAD_DECL_NOINIT(dlg)
 	} ctx;
 
 	if (message == refresh) {
@@ -175,7 +175,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 				timer = rnd_gui->add_timer(rnd_gui, progress_refresh_cb, REFRESH_RATE, timer);
 				have_timer = 1;
 			}
-			pcb_hid_iterate(rnd_gui);
+			rnd_hid_iterate(rnd_gui);
 		}
 		return 0;
 	}
@@ -196,7 +196,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 			}
 			if (!closing) {
 				closing = 1;
-				PCB_DAD_FREE(ctx.dlg);
+				RND_DAD_FREE(ctx.dlg);
 			}
 			active = 0;
 		}
@@ -209,22 +209,22 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	}
 
 	if (!active) {
-		PCB_DAD_BEGIN_VBOX(ctx.dlg);
-			PCB_DAD_LABEL(ctx.dlg, message);
-			PCB_DAD_PROGRESS(ctx.dlg);
-				wp = PCB_DAD_CURRENT(ctx.dlg);
+		RND_DAD_BEGIN_VBOX(ctx.dlg);
+			RND_DAD_LABEL(ctx.dlg, message);
+			RND_DAD_PROGRESS(ctx.dlg);
+				wp = RND_DAD_CURRENT(ctx.dlg);
 
 			/* need to have a manual cancel button as it needs to call the close cb before really closing the window */
-			PCB_DAD_BEGIN_HBOX(ctx.dlg);
-				PCB_DAD_BEGIN_HBOX(ctx.dlg);
-					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx.dlg);
-				PCB_DAD_BUTTON(ctx.dlg, "cancel");
-					PCB_DAD_CHANGE_CB(ctx.dlg, progress_close_btn_cb);
-			PCB_DAD_END(ctx.dlg);
-		PCB_DAD_END(ctx.dlg);
+			RND_DAD_BEGIN_HBOX(ctx.dlg);
+				RND_DAD_BEGIN_HBOX(ctx.dlg);
+					RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx.dlg);
+				RND_DAD_BUTTON(ctx.dlg, "cancel");
+					RND_DAD_CHANGE_CB(ctx.dlg, progress_close_btn_cb);
+			RND_DAD_END(ctx.dlg);
+		RND_DAD_END(ctx.dlg);
 
-		PCB_DAD_NEW("progress", ctx.dlg, "pcb-rnd progress", &ctx, pcb_false, progress_close_cb);
+		RND_DAD_NEW("progress", ctx.dlg, "pcb-rnd progress", &ctx, pcb_false, progress_close_cb);
 		active = 1;
 		cancelled = 0;
 

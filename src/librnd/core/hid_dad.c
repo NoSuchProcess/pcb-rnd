@@ -65,20 +65,20 @@ rnd_hatt_compflags_t rnd_hid_compflag_name2bit(const char *name)
 	return 0;
 }
 
-void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
+void rnd_hid_dad_close(void *hid_ctx, rnd_dad_retovr_t *retovr, int retval)
 {
 	retovr->valid = 1;
 	retovr->value = retval;
 	rnd_gui->attr_dlg_close(hid_ctx);
 }
 
-void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void rnd_hid_dad_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_dad_retovr_t **retovr = attr->wdata;
-	pcb_hid_dad_close(hid_ctx, *retovr, attr->val.lng);
+	rnd_dad_retovr_t **retovr = attr->wdata;
+	rnd_hid_dad_close(hid_ctx, *retovr, attr->val.lng);
 }
 
-int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
+int rnd_hid_dad_run(void *hid_ctx, rnd_dad_retovr_t *retovr)
 {
 	int ret;
 

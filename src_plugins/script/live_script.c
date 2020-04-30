@@ -51,7 +51,7 @@ static const char *lvs_cookie = "live_script";
 
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	rnd_hidlib_t *hidlib;
 	char *name, *longname, *fn;
 	char **langs;
@@ -85,7 +85,7 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		pcb_script_unload(lvs->longname, NULL);
 
 	if (rnd_gui != NULL)
-		PCB_DAD_FREE(lvs->dlg);
+		RND_DAD_FREE(lvs->dlg);
 	lvs_free_langs(lvs);
 	free(lvs->name);
 	free(lvs->longname);
@@ -198,7 +198,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *title;
 	live_script_t *lvs = calloc(sizeof(live_script_t), 1);
 
@@ -212,55 +212,55 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	lvs->hidlib = hidlib;
 	lvs->name = rnd_strdup(name);
 	lvs->longname = pcb_concat("_live_script_", name, NULL);
-	PCB_DAD_BEGIN_VBOX(lvs->dlg);
-		PCB_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_TEXT(lvs->dlg, lvs);
-			PCB_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-			lvs->wtxt = PCB_DAD_CURRENT(lvs->dlg);
+	RND_DAD_BEGIN_VBOX(lvs->dlg);
+		RND_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL);
+		RND_DAD_TEXT(lvs->dlg, lvs);
+			RND_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			lvs->wtxt = RND_DAD_CURRENT(lvs->dlg);
 
-		PCB_DAD_BEGIN_HBOX(lvs->dlg);
-			PCB_DAD_BUTTON(lvs->dlg, "re-run");
-				lvs->wrerun = PCB_DAD_CURRENT(lvs->dlg);
-				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
-				PCB_DAD_HELP(lvs->dlg, "Stop the script if it is running\nundo the changes the script performed if no\nuser modification happened since\nrun the script again");
-			PCB_DAD_BUTTON(lvs->dlg, "run");
-				lvs->wrun = PCB_DAD_CURRENT(lvs->dlg);
-				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
-				PCB_DAD_HELP(lvs->dlg, "Run the script:\nonce and unload, if not persistent\nor keep it running in persistent mode");
-			PCB_DAD_BUTTON(lvs->dlg, "stop");
-				lvs->wstop = PCB_DAD_CURRENT(lvs->dlg);
-				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
-				PCB_DAD_HELP(lvs->dlg, "Halt and unload the script\nand unregister any action, menu, etc. it registered");
-			PCB_DAD_BUTTON(lvs->dlg, "undo");
-				lvs->wundo = PCB_DAD_CURRENT(lvs->dlg);
-				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
-				PCB_DAD_HELP(lvs->dlg, "undo the changes the script performed if no\nuser modification happened since");
-			PCB_DAD_BUTTON(lvs->dlg, "save");
-				lvs->wsave = PCB_DAD_CURRENT(lvs->dlg);
-				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
-				PCB_DAD_HELP(lvs->dlg, "Save script source to a file");
-			PCB_DAD_BUTTON(lvs->dlg, "load");
-				lvs->wload = PCB_DAD_CURRENT(lvs->dlg);
-				PCB_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
-				PCB_DAD_HELP(lvs->dlg, "Load script source from a file");
-		PCB_DAD_END(lvs->dlg);
-		PCB_DAD_BEGIN_HBOX(lvs->dlg);
-			PCB_DAD_BOOL(lvs->dlg, "");
-				lvs->wpers = PCB_DAD_CURRENT(lvs->dlg);
-			PCB_DAD_LABEL(lvs->dlg, "persistent");
-				PCB_DAD_HELP(lvs->dlg, "Persistent mode: keep the script loaded and running\n(useful if the script registers actions)\nNon-persistent mode: run once then unload.");
-			PCB_DAD_ENUM(lvs->dlg, (const char **)lvs->langs);
-				lvs->wlang = PCB_DAD_CURRENT(lvs->dlg);
-			PCB_DAD_BEGIN_HBOX(lvs->dlg);
-				PCB_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(lvs->dlg);
-			PCB_DAD_BUTTON_CLOSES(lvs->dlg, clbtn);
-		PCB_DAD_END(lvs->dlg);
-	PCB_DAD_END(lvs->dlg);
-	PCB_DAD_DEFSIZE(lvs->dlg, 300, 500);
+		RND_DAD_BEGIN_HBOX(lvs->dlg);
+			RND_DAD_BUTTON(lvs->dlg, "re-run");
+				lvs->wrerun = RND_DAD_CURRENT(lvs->dlg);
+				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+				RND_DAD_HELP(lvs->dlg, "Stop the script if it is running\nundo the changes the script performed if no\nuser modification happened since\nrun the script again");
+			RND_DAD_BUTTON(lvs->dlg, "run");
+				lvs->wrun = RND_DAD_CURRENT(lvs->dlg);
+				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+				RND_DAD_HELP(lvs->dlg, "Run the script:\nonce and unload, if not persistent\nor keep it running in persistent mode");
+			RND_DAD_BUTTON(lvs->dlg, "stop");
+				lvs->wstop = RND_DAD_CURRENT(lvs->dlg);
+				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+				RND_DAD_HELP(lvs->dlg, "Halt and unload the script\nand unregister any action, menu, etc. it registered");
+			RND_DAD_BUTTON(lvs->dlg, "undo");
+				lvs->wundo = RND_DAD_CURRENT(lvs->dlg);
+				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+				RND_DAD_HELP(lvs->dlg, "undo the changes the script performed if no\nuser modification happened since");
+			RND_DAD_BUTTON(lvs->dlg, "save");
+				lvs->wsave = RND_DAD_CURRENT(lvs->dlg);
+				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+				RND_DAD_HELP(lvs->dlg, "Save script source to a file");
+			RND_DAD_BUTTON(lvs->dlg, "load");
+				lvs->wload = RND_DAD_CURRENT(lvs->dlg);
+				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+				RND_DAD_HELP(lvs->dlg, "Load script source from a file");
+		RND_DAD_END(lvs->dlg);
+		RND_DAD_BEGIN_HBOX(lvs->dlg);
+			RND_DAD_BOOL(lvs->dlg, "");
+				lvs->wpers = RND_DAD_CURRENT(lvs->dlg);
+			RND_DAD_LABEL(lvs->dlg, "persistent");
+				RND_DAD_HELP(lvs->dlg, "Persistent mode: keep the script loaded and running\n(useful if the script registers actions)\nNon-persistent mode: run once then unload.");
+			RND_DAD_ENUM(lvs->dlg, (const char **)lvs->langs);
+				lvs->wlang = RND_DAD_CURRENT(lvs->dlg);
+			RND_DAD_BEGIN_HBOX(lvs->dlg);
+				RND_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(lvs->dlg);
+			RND_DAD_BUTTON_CLOSES(lvs->dlg, clbtn);
+		RND_DAD_END(lvs->dlg);
+	RND_DAD_END(lvs->dlg);
+	RND_DAD_DEFSIZE(lvs->dlg, 300, 500);
 
 	title = pcb_concat("Live Scripting: ", name, NULL);
-	PCB_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
+	RND_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
 	free(title);
 	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
 	return lvs;

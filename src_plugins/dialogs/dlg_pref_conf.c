@@ -98,12 +98,12 @@ static void setup_tree(pref_ctx_t *ctx)
 			parent = pcb_dad_tree_mkdirp(tree, path, NULL);
 			for(i = 0; i < nat->array_size; i++) {
 				cell[0] = pcb_strdup_printf("[%d]", i);
-				pcb_dad_tree_append_under(attr, parent, cell);
+				rnd_dad_tree_append_under(attr, parent, cell);
 			}
 		}
 		else {
 			cell[0] = rnd_strdup(basename);
-			pcb_dad_tree_append_under(attr, parent, cell);
+			rnd_dad_tree_append_under(attr, parent, cell);
 		}
 	}
 	free(sorted);
@@ -161,7 +161,7 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 				cell[3] = rnd_strdup(pref_conf_get_val(nd, nat, idx));
 			}
 		}
-		r = pcb_dad_tree_append(attr, NULL, cell);
+		r = rnd_dad_tree_append(attr, NULL, cell);
 		r->user_data2.lng = n;
 	}
 }
@@ -250,7 +250,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);
 			cell[2] = rnd_strdup(strval);
 			cell[3] = 0;
-			pcb_dad_tree_append(attr, NULL, cell);
+			rnd_dad_tree_append(attr, NULL, cell);
 		}
 		return;
 	}
@@ -345,135 +345,135 @@ static void build_natval(pref_ctx_t *ctx)
 {
 	static const char *hdr_nat[] = {"role", "prio", "value", NULL};
 
-	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, type_tabs);
-		PCB_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_HIDE_TABLAB);
-		ctx->conf.wnattype = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[0] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(data)");
-				ctx->conf.wnatval[0] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: boolean");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[1] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(data)");
-				ctx->conf.wnatval[1] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: integer");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[2] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(data)");
-				ctx->conf.wnatval[2] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: real");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[3] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(data)");
-				ctx->conf.wnatval[3] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: coord");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[4] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(data)");
-				ctx->conf.wnatval[4] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: unit");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[5] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(data)");
-				ctx->conf.wnatval[5] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: color");
-			PCB_DAD_LABEL(ctx->dlg, "role/prio");
-				ctx->conf.wsrc[6] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(data)");
-				ctx->conf.wnatval[6] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: list of strings");
+	RND_DAD_BEGIN_TABBED(pref_ctx.dlg, type_tabs);
+		RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_HIDE_TABLAB);
+		ctx->conf.wnattype = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: string");
+			RND_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[0] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[0] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: boolean");
+			RND_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[1] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[1] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: integer");
+			RND_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[2] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[2] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: real");
+			RND_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[3] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[3] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: coord");
+			RND_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[4] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[4] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: unit");
+			RND_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[5] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[5] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: color");
+			RND_DAD_LABEL(ctx->dlg, "role/prio");
+				ctx->conf.wsrc[6] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(data)");
+				ctx->conf.wnatval[6] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_LABEL(ctx->dlg, "Data type: list of strings");
 			ctx->conf.wsrc[7] = -1;
-			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-				ctx->conf.wnatval[7] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: list of hash subtrees");
+			RND_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				ctx->conf.wnatval[7] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_LABEL(ctx->dlg, "Data type: list of hash subtrees");
 			ctx->conf.wsrc[8] = -1;
-			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-				ctx->conf.wnatval[8] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(no conf node selected)");
-			ctx->conf.wnatval[9] = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+			RND_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				ctx->conf.wnatval[8] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(no conf node selected)");
+			ctx->conf.wnatval[9] = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 }
 
 void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 {
 	static const char *hdr_intree[] = {"role", "prio", "policy", "value", NULL};
 
-	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	PCB_DAD_BEGIN_HPANE(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		ctx->conf.wmainp = PCB_DAD_CURRENT(ctx->dlg);
+	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_HPANE(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		ctx->conf.wmainp = RND_DAD_CURRENT(ctx->dlg);
 
 		/* left: tree */
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-				ctx->conf.wtree = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);
-				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
-			PCB_DAD_STRING(ctx->dlg);
-				PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist conf nodes with\nmatching name only");
-				PCB_DAD_CHANGE_CB(ctx->dlg, pcb_pref_dlg_conf_filter_cb);
-				ctx->conf.wfilter = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_TREE(ctx->dlg, 1, 1, NULL);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				ctx->conf.wtree = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);
+				RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+			RND_DAD_STRING(ctx->dlg);
+				RND_DAD_HELP(ctx->dlg, "Filter text:\nlist conf nodes with\nmatching name only");
+				RND_DAD_CHANGE_CB(ctx->dlg, pcb_pref_dlg_conf_filter_cb);
+				ctx->conf.wfilter = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
 		/* right: details */
-		PCB_DAD_BEGIN_VPANE(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_VPANE(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			
 			/* right/top: conf file */
-			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-				PCB_DAD_LABEL(ctx->dlg, "");
-					ctx->conf.wname = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "");
-					ctx->conf.wdesc = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "INPUT: configuration node (\"file\" version)");
-				PCB_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
-					ctx->conf.wintree = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_BUTTON(ctx->dlg, "Edit selected...");
-						PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_edit_cb);
-					PCB_DAD_BUTTON(ctx->dlg, "Remove selected");
-						PCB_DAD_CHANGE_CB(ctx->dlg, pref_conf_del_cb);
-				PCB_DAD_END(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+				RND_DAD_LABEL(ctx->dlg, "");
+					ctx->conf.wname = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "");
+					ctx->conf.wdesc = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "INPUT: configuration node (\"file\" version)");
+				RND_DAD_TREE(ctx->dlg, 4, 0, hdr_intree); /* input state */
+					ctx->conf.wintree = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "Edit selected...");
+						RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_edit_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Remove selected");
+						RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_del_cb);
+				RND_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
 
 			/* right/bottom: native file */
-			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
-				PCB_DAD_LABEL(ctx->dlg, "NATIVE: in-memory conf node after the merge");
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
+				RND_DAD_LABEL(ctx->dlg, "NATIVE: in-memory conf node after the merge");
 				build_natval(ctx);
 
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
 	setup_tree(ctx);
 	setup_intree(ctx, NULL, 0);

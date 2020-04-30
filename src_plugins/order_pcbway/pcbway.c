@@ -357,16 +357,16 @@ static void pcbway_dlg2fields(order_ctx_t *octx, pcbway_form_t *form)
 			char *val = NULL; \
 			if ((__n__->children != NULL) && (__n__->children->type == XML_TEXT_NODE)) \
 				val = __n__->children->content; \
-			PCB_DAD_LABEL(dlg, (char *)__n__->name); \
+			RND_DAD_LABEL(dlg, (char *)__n__->name); \
 			if ((val != NULL) && (xmlStrcmp(__n__->name, (xmlChar *)pricetag) == 0)) { \
 				char *__end__, *__tmp__ = pcb_concat("$", val, NULL); \
-				PCB_DAD_LABEL(dlg, __tmp__); \
+				RND_DAD_LABEL(dlg, __tmp__); \
 				free(__tmp__); \
 				__prc__ = strtod(val, &__end__); \
 				if (*__end__ == '\0') price = __prc__; \
 			} \
 			else \
-				PCB_DAD_LABEL(dlg, val); \
+				RND_DAD_LABEL(dlg, val); \
 		} \
 	} while(0)
 
@@ -375,8 +375,8 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 	double shipcost, cost;
 	xmlNode *root, *n, *error = NULL, *status = NULL, *ship = NULL, *prices = NULL;
 	xmlDoc *doc = pcbway_xml_load(respfn);
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
 	if (doc == NULL)
 		return -1;
@@ -408,41 +408,41 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 		return -1;
 	}
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 
-		PCB_DAD_BEGIN_TABLE(dlg, 2);
-			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-			PCB_DAD_LABEL(dlg, "=== Shipping ==="); PCB_DAD_LABEL(dlg, "");
+		RND_DAD_BEGIN_TABLE(dlg, 2);
+			RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			RND_DAD_LABEL(dlg, "=== Shipping ==="); RND_DAD_LABEL(dlg, "");
 			XML_TBL(dlg, ship, shipcost, "ShipCost");
 			for(n = prices->children; n != NULL; n = n->next) {
 				char tmp[128];
-				PCB_DAD_LABEL(dlg, "=== Option ==="); PCB_DAD_LABEL(dlg, "");
+				RND_DAD_LABEL(dlg, "=== Option ==="); RND_DAD_LABEL(dlg, "");
 				XML_TBL(dlg, n, cost, "Price");
 				if ((shipcost >= 0) && (cost >= 0))
 					sprintf(tmp, "$%.2f    ", shipcost+cost);
 				else
 					*tmp = 0;
 
-				PCB_DAD_LABEL(dlg, "    Total:");
-				PCB_DAD_COMPFLAG(dlg, RND_HATF_TIGHT);
+				RND_DAD_LABEL(dlg, "    Total:");
+				RND_DAD_COMPFLAG(dlg, RND_HATF_TIGHT);
 
-				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_COMPFLAG(dlg, RND_HATF_TIGHT);
-					PCB_DAD_LABEL(dlg, tmp);
-					PCB_DAD_PICBUTTON(dlg, order_xpm);
-				PCB_DAD_END(dlg);
+				RND_DAD_BEGIN_HBOX(dlg);
+					RND_DAD_COMPFLAG(dlg, RND_HATF_TIGHT);
+					RND_DAD_LABEL(dlg, tmp);
+					RND_DAD_PICBUTTON(dlg, order_xpm);
+				RND_DAD_END(dlg);
 
 	
 			}
-		PCB_DAD_END(dlg);
+		RND_DAD_END(dlg);
 
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
 
-	PCB_DAD_NEW("pcbway_quote", dlg, "PCBWay: quote", NULL, pcb_true, NULL);
-	PCB_DAD_RUN(dlg);
-	PCB_DAD_FREE(dlg);
+	RND_DAD_NEW("pcbway_quote", dlg, "PCBWay: quote", NULL, pcb_true, NULL);
+	RND_DAD_RUN(dlg);
+	RND_DAD_FREE(dlg);
 
 	xmlFreeDoc(doc);
 	return 0;
@@ -531,30 +531,30 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 	int n;
 	pcbway_form_t *form = octx->odata;
 
-	PCB_DAD_BEGIN_VBOX(octx->dlg);
-		PCB_DAD_COMPFLAG(octx->dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(octx->dlg);
+		RND_DAD_COMPFLAG(octx->dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
 
 		for(n = 0; n < form->fields.used; n++)
 			pcb_order_dad_field(octx, form->fields.array[n]);
 
-		PCB_DAD_BEGIN_VBOX(octx->dlg);
-			PCB_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_LABEL(octx->dlg, "");
-			PCB_DAD_LABEL(octx->dlg, "");
-		PCB_DAD_END(octx->dlg);
+		RND_DAD_BEGIN_VBOX(octx->dlg);
+			RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_LABEL(octx->dlg, "");
+			RND_DAD_LABEL(octx->dlg, "");
+		RND_DAD_END(octx->dlg);
 
-		PCB_DAD_BEGIN_HBOX(octx->dlg);
-			PCB_DAD_BUTTON(octx->dlg, "Update data");
-				PCB_DAD_HELP(octx->dlg, "Copy data from board to form");
-			PCB_DAD_BEGIN_VBOX(octx->dlg);
-				PCB_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(octx->dlg);
-			PCB_DAD_BUTTON(octx->dlg, "Quote & order");
-				PCB_DAD_HELP(octx->dlg, "Generate a price quote");
-				PCB_DAD_CHANGE_CB(octx->dlg, pcbway_quote_cb);
-		PCB_DAD_END(octx->dlg);
+		RND_DAD_BEGIN_HBOX(octx->dlg);
+			RND_DAD_BUTTON(octx->dlg, "Update data");
+				RND_DAD_HELP(octx->dlg, "Copy data from board to form");
+			RND_DAD_BEGIN_VBOX(octx->dlg);
+				RND_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(octx->dlg);
+			RND_DAD_BUTTON(octx->dlg, "Quote & order");
+				RND_DAD_HELP(octx->dlg, "Generate a price quote");
+				RND_DAD_CHANGE_CB(octx->dlg, pcbway_quote_cb);
+		RND_DAD_END(octx->dlg);
 
-	PCB_DAD_END(octx->dlg);
+	RND_DAD_END(octx->dlg);
 }
 
 static pcb_order_imp_t pcbway = {

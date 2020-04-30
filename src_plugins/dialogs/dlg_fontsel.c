@@ -37,7 +37,7 @@
 #include "dlg_fontsel.h"
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
 	int wprev;
 	
@@ -62,7 +62,7 @@ static void fontsel_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	if (ctx->txt_id != NULL)
 		pcb_idpath_destroy(ctx->txt_id);
 
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	if (ctx->alloced) {
 		gdl_remove(&fontsels, ctx, link);
 		free(ctx);
@@ -146,7 +146,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t *txt_obj)
 {
 	rnd_rnd_box_t vbox = {0, 0, PCB_MM_TO_COORD(55), PCB_MM_TO_COORD(55)};
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	fontsel_ctx_t *c, *ctx = NULL;
 
 	if (global) {
@@ -173,28 +173,28 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 		ctx->txt_id = pcb_obj2idpath((pcb_any_obj_t *)txt_obj);
 	else
 		ctx->txt_id = NULL;
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_PREVIEW(ctx->dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, ctx);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_BUTTON(ctx->dlg, "Load font");
-			PCB_DAD_CHANGE_CB(ctx->dlg, btn_load_cb);
-			PCB_DAD_HELP(ctx->dlg, "Load new font from disk");
-		PCB_DAD_BUTTON(ctx->dlg, "Replace font");
-			PCB_DAD_CHANGE_CB(ctx->dlg, btn_replace_cb);
-			PCB_DAD_HELP(ctx->dlg, "Replace currently selected font\nwith new font loaded from disk");
-		PCB_DAD_BUTTON(ctx->dlg, "Remove font");
-			PCB_DAD_CHANGE_CB(ctx->dlg, btn_remove_cb);
-			PCB_DAD_HELP(ctx->dlg, "Remove currently selected font");
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_PREVIEW(ctx->dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, ctx);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Load font");
+			RND_DAD_CHANGE_CB(ctx->dlg, btn_load_cb);
+			RND_DAD_HELP(ctx->dlg, "Load new font from disk");
+		RND_DAD_BUTTON(ctx->dlg, "Replace font");
+			RND_DAD_CHANGE_CB(ctx->dlg, btn_replace_cb);
+			RND_DAD_HELP(ctx->dlg, "Replace currently selected font\nwith new font loaded from disk");
+		RND_DAD_BUTTON(ctx->dlg, "Remove font");
+			RND_DAD_CHANGE_CB(ctx->dlg, btn_remove_cb);
+			RND_DAD_HELP(ctx->dlg, "Remove currently selected font");
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+	RND_DAD_END(ctx->dlg);
 
 	ctx->active = 1;
-	PCB_DAD_DEFSIZE(ctx->dlg, 250, 200);
-	PCB_DAD_NEW("fontsel", ctx->dlg, "Font selection", ctx, modal, fontsel_close_cb);
+	RND_DAD_DEFSIZE(ctx->dlg, 250, 200);
+	RND_DAD_NEW("fontsel", ctx->dlg, "Font selection", ctx, modal, fontsel_close_cb);
 }
 
 const char pcb_acts_Fontsel[] = "Fontsel()\n";
@@ -243,14 +243,14 @@ static void fontsel_mchanged_ev(rnd_hidlib_t *hidlib, void *user_data, int argc,
 static void fontsel_bchanged_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	fontsel_ctx_t *c, *next;
-	pcb_dad_retovr_t retovr;
+	rnd_dad_retovr_t retovr;
 
 	if (fontsel_brd.active)
 		fontsel_preview_update(&fontsel_brd);
 
 	for(c = gdl_first(&fontsels); c != NULL; c = next) {
 		next = gdl_next(&fontsels, c);
-		pcb_hid_dad_close(c->dlg_hid_ctx, &retovr, 0);
+		rnd_hid_dad_close(c->dlg_hid_ctx, &retovr, 0);
 	}
 }
 

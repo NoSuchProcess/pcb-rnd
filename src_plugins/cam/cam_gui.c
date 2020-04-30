@@ -34,7 +34,7 @@ static const char *OUTFILE_HELP = "Output file name sample, which will\nbe split
 static const char *PREFIX_HELP = "File name prefix: every output file\npath will start with this prefix.\nIt is derived from outfile.";
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	cam_ctx_t cam;
 	int wjobs, wdigest, wtxt, woutfile, wprefix, wopts;
 } cam_dlg_t;
@@ -67,7 +67,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 		cell[1] = NULL;
 		rnd_conf_loop_list(cn->val.list, item, idx) {
 			cell[0] = rnd_strdup(item->name);
-			pcb_dad_tree_append(attr, NULL, cell);
+			rnd_dad_tree_append(attr, NULL, cell);
 		}
 	}
 
@@ -120,7 +120,7 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 					cell[1] = "<NO PLUGIN>";
 
 				cell[3] = NULL;
-				pcb_dad_tree_append(attr, NULL, cell);
+				rnd_dad_tree_append(attr, NULL, cell);
 				break;
 		}
 	}
@@ -157,7 +157,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 		cell[0] = rnd_strdup(e->key);
 		cell[1] = rnd_strdup(e->value);
 		cell[2] = NULL;
-		pcb_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
 	/* restore cursor */
@@ -239,22 +239,22 @@ static void cam_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	cam_dlg_t *ctx = caller_data;
 	cam_uninit_inst(&ctx->cam);
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
 
 /* center aligned label */
 static void header_label(cam_dlg_t *ctx, const char *text)
 {
-	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_LABEL(ctx->dlg, text);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_LABEL(ctx->dlg, text);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 }
 
 static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
@@ -263,81 +263,81 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 	const char *opt_hdr[] = {"key", "option value", NULL};
 	const char *script_tabs[] = {"digest", "raw", NULL};
 	const char *digest_hdr[] = {"file", "plugin", "layer groups", NULL};
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	ctx->cam.hidlib = hidlib;
 	ctx->cam.vars = pcb_cam_vars_alloc();
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_HPANE(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HPANE(ctx->dlg);
 
-			PCB_DAD_BEGIN_VBOX(ctx->dlg); /* left */
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, cam_job_select_cb);
-					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
-					ctx->wjobs = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg); /* command section */
-					PCB_DAD_STRING(ctx->dlg);
-						PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist jobs with matching name only");
-						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_filter_cb);
-					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* filler */
-						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-					PCB_DAD_END(ctx->dlg);
-					PCB_DAD_BUTTON(ctx->dlg, "export!");
-						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_export_cb);
-						PCB_DAD_HELP(ctx->dlg, "Export the current board using the above selected CAM job\nand the options set on the right");
-				PCB_DAD_END(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_VBOX(ctx->dlg); /* left */
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_TREE(ctx->dlg, 1, 0, NULL);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, cam_job_select_cb);
+					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+					ctx->wjobs = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg); /* command section */
+					RND_DAD_STRING(ctx->dlg);
+						RND_DAD_HELP(ctx->dlg, "Filter text:\nlist jobs with matching name only");
+						RND_DAD_CHANGE_CB(ctx->dlg, cam_gui_filter_cb);
+					RND_DAD_BEGIN_VBOX(ctx->dlg); /* filler */
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+					RND_DAD_END(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "export!");
+						RND_DAD_CHANGE_CB(ctx->dlg, cam_gui_export_cb);
+						RND_DAD_HELP(ctx->dlg, "Export the current board using the above selected CAM job\nand the options set on the right");
+				RND_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
 
-			PCB_DAD_BEGIN_VBOX(ctx->dlg); /* right */
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_BEGIN_VPANE(ctx->dlg);
-					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* top */
-						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_BEGIN_VBOX(ctx->dlg); /* right */
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_BEGIN_VPANE(ctx->dlg);
+					RND_DAD_BEGIN_VBOX(ctx->dlg); /* top */
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 						header_label(ctx, "CAM job script");
-						PCB_DAD_BEGIN_TABBED(ctx->dlg, script_tabs);
-							PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+						RND_DAD_BEGIN_TABBED(ctx->dlg, script_tabs);
+							RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
-							PCB_DAD_TREE(ctx->dlg, 3, 0, digest_hdr);
-								PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-								ctx->wdigest = PCB_DAD_CURRENT(ctx->dlg);
+							RND_DAD_TREE(ctx->dlg, 3, 0, digest_hdr);
+								RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+								ctx->wdigest = RND_DAD_CURRENT(ctx->dlg);
 
-							PCB_DAD_TEXT(ctx->dlg, ctx);
-								PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-								ctx->wtxt = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_END(ctx->dlg);
-					PCB_DAD_END(ctx->dlg);
-					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
-						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+							RND_DAD_TEXT(ctx->dlg, ctx);
+								RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+								ctx->wtxt = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_END(ctx->dlg);
+					RND_DAD_END(ctx->dlg);
+					RND_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 						header_label(ctx, "CAM options");
-						PCB_DAD_BEGIN_TABLE(ctx->dlg, 2); /* special options */
-							PCB_DAD_LABEL(ctx->dlg, "outfile");
-								PCB_DAD_HELP(ctx->dlg, OUTFILE_HELP);
-							PCB_DAD_STRING(ctx->dlg);
-								PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_outfile_cb);
-								ctx->woutfile = PCB_DAD_CURRENT(ctx->dlg);
-								PCB_DAD_HELP(ctx->dlg, OUTFILE_HELP);
-							PCB_DAD_LABEL(ctx->dlg, "prefix");
-							PCB_DAD_HELP(ctx->dlg, PREFIX_HELP);
-							PCB_DAD_LABEL(ctx->dlg, "");
-								ctx->wprefix = PCB_DAD_CURRENT(ctx->dlg);
-								PCB_DAD_HELP(ctx->dlg, PREFIX_HELP);
-						PCB_DAD_END(ctx->dlg);
+						RND_DAD_BEGIN_TABLE(ctx->dlg, 2); /* special options */
+							RND_DAD_LABEL(ctx->dlg, "outfile");
+								RND_DAD_HELP(ctx->dlg, OUTFILE_HELP);
+							RND_DAD_STRING(ctx->dlg);
+								RND_DAD_CHANGE_CB(ctx->dlg, cam_gui_outfile_cb);
+								ctx->woutfile = RND_DAD_CURRENT(ctx->dlg);
+								RND_DAD_HELP(ctx->dlg, OUTFILE_HELP);
+							RND_DAD_LABEL(ctx->dlg, "prefix");
+							RND_DAD_HELP(ctx->dlg, PREFIX_HELP);
+							RND_DAD_LABEL(ctx->dlg, "");
+								ctx->wprefix = RND_DAD_CURRENT(ctx->dlg);
+								RND_DAD_HELP(ctx->dlg, PREFIX_HELP);
+						RND_DAD_END(ctx->dlg);
 
-						PCB_DAD_TREE(ctx->dlg, 2, 0, opt_hdr); /* option table */
-							PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-							ctx->wopts = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_END(ctx->dlg);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+						RND_DAD_TREE(ctx->dlg, 2, 0, opt_hdr); /* option table */
+							RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+							ctx->wopts = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_END(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
+	RND_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
 
 	{ /* set default outfile */
 		rnd_hid_attr_val_t hv;

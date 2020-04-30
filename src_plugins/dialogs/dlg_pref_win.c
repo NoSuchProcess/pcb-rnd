@@ -38,10 +38,10 @@ extern int pcb_wplc_save_to_file(const char *fn);
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, lng, pcbhl_conf.editor.auto_place);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, lng, pcbhl_conf.editor.auto_place);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user);
 }
 
 void pcb_dlg_pref_win_open(pref_ctx_t *ctx)
@@ -115,76 +115,76 @@ static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 
 void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 {
-	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "Load window geometry and enable window placement:");
-		PCB_DAD_BOOL(ctx->dlg, "");
-			PCB_DAD_HELP(ctx->dlg, "When enabled, pcb-rnd will load window geometry from config files\nand try to resize and place windows accordingly.\nSizes can be saved once (golden arrangement)\nor at every exit (retrain last setup),\nsee below.");
-			ctx->win.wmaster = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_master_cb);
-	PCB_DAD_END(ctx->dlg);
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		PCB_DAD_LABEL(ctx->dlg, "Save window geometry to...");
-		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
+	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+		RND_DAD_LABEL(ctx->dlg, "Load window geometry and enable window placement:");
+		RND_DAD_BOOL(ctx->dlg, "");
+			RND_DAD_HELP(ctx->dlg, "When enabled, pcb-rnd will load window geometry from config files\nand try to resize and place windows accordingly.\nSizes can be saved once (golden arrangement)\nor at every exit (retrain last setup),\nsee below.");
+			ctx->win.wmaster = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_win_master_cb);
+	RND_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
+		RND_DAD_LABEL(ctx->dlg, "Save window geometry to...");
+		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "... in the design (board) file");
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "now");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_board_now_cb);
-				PCB_DAD_LABEL(ctx->dlg, "before close:");
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->win.wboard = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_board_cb);
-			PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "... in the design (board) file");
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "now");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_board_now_cb);
+				RND_DAD_LABEL(ctx->dlg, "before close:");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->win.wboard = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_board_cb);
+			RND_DAD_END(ctx->dlg);
 
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "... in the project file");
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "now");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_project_now_cb);
-				PCB_DAD_LABEL(ctx->dlg, "before close:");
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->win.wproject = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_project_cb);
-			PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "... in the project file");
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "now");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_project_now_cb);
+				RND_DAD_LABEL(ctx->dlg, "before close:");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->win.wproject = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_project_cb);
+			RND_DAD_END(ctx->dlg);
 
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "... in the user config");
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "now");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_user_now_cb);
-				PCB_DAD_LABEL(ctx->dlg, "before close:");
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->win.wuser = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_user_cb);
-			PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "... in the user config");
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "now");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_user_now_cb);
+				RND_DAD_LABEL(ctx->dlg, "before close:");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->win.wuser = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_user_cb);
+			RND_DAD_END(ctx->dlg);
 
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "... in a custom file");
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "now");
-					PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_file_now_cb);
-			PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "... in a custom file");
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "now");
+					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_file_now_cb);
+			RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 }

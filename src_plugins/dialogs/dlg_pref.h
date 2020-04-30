@@ -22,7 +22,7 @@ struct pref_conflist_s {
 };
 
 struct pref_ctx_s {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wtab, wrole;
 	int active; /* already open - allow only one instance */
 

@@ -54,7 +54,7 @@
 #include "core headers this file depends on (even if other dialogs include them)"
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	int whatever;
 } foo_ctx_t; <<<- rename this
@@ -64,26 +64,26 @@ foo_ctx_t foo_ctx;
 static void foo_close_cb(void *caller_data, rnd_hid_attr_ev_t ev) <<<- rename this
 {
 	foo_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(foo_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
 static void pcb_dlg_foo(whatever args) <<<- edit this
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (foo_ctx.active)
 		return; /* do not open another */
 
-	PCB_DAD_BEGIN_VBOX(foo_ctx.dlg);
-		PCB_DAD_COMPFLAG(foo_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_LABEL(foo_ctx.dlg, "foo");
-		PCB_DAD_BUTTON_CLOSES(foo_ctx.dlg, clbtn);
-	PCB_DAD_END(foo_ctx.dlg);
+	RND_DAD_BEGIN_VBOX(foo_ctx.dlg);
+		RND_DAD_COMPFLAG(foo_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_LABEL(foo_ctx.dlg, "foo");
+		RND_DAD_BUTTON_CLOSES(foo_ctx.dlg, clbtn);
+	RND_DAD_END(foo_ctx.dlg);
 
 	/* set up the context */
 	foo_ctx.active = 1;
 
-	PCB_DAD_NEW("EDIT_THIS_ID", foo_ctx.dlg, "EDIT THIS: title", &foo_ctx, pcb_false, foo_close_cb);
+	RND_DAD_NEW("EDIT_THIS_ID", foo_ctx.dlg, "EDIT THIS: title", &foo_ctx, pcb_false, foo_close_cb);
 }
 
 static const char pcb_acts_Foo[] = "Foo(object)\n"; <<<- edit this

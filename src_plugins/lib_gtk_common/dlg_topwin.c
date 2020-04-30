@@ -134,7 +134,7 @@ void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 	gtk_widget_destroy(docked->frame);
 	gdl_remove(&tw->dock[docked->where], sub, link);
 	free(docked);
-	PCB_DAD_FREE(sub->dlg);
+	RND_DAD_FREE(sub->dlg);
 }
 
 /*** static top window code ***/

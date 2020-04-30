@@ -27,7 +27,7 @@
 /* #included from import_sch.c to share global static variables */
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	char **inames;
 	int len;
 	int wfmt, wtab, warg_ctrl, wverbose;
@@ -80,7 +80,7 @@ static void isch_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	isch_ctx_t *ctx = caller_data;
 
 	isch_flush_timer();
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	for(n = 0; n < isch_ctx.len; n++)
 		free(isch_ctx.inames[n]);
 	free(isch_ctx.inames);
@@ -104,7 +104,7 @@ static void isch_switch_fmt(int target, int setconf)
 	int len, n, controllable;
 
 	isch_conf_lock++;
-	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wtab, lng, target);
+	RND_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wtab, lng, target);
 	if (setconf && (p != NULL))
 		rnd_conf_set(RND_CFR_DESIGN, "plugins/import_sch/import_fmt", 0, p->name, RND_POL_OVERWRITE);
 
@@ -155,10 +155,10 @@ static void isch_pcb2dlg(void)
 	}
 
 	for(n = 0, ci = rnd_conflist_first((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = rnd_conflist_next(ci), n++)
-		PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
+		RND_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.warg[n], str, ci->val.string[0]);
 
-	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wfmt, lng, tab);
-	PCB_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wverbose, lng, conf_import_sch.plugins.import_sch.verbose);
+	RND_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wfmt, lng, tab);
+	RND_DAD_SET_VALUE(isch_ctx.dlg_hid_ctx, isch_ctx.wverbose, lng, conf_import_sch.plugins.import_sch.verbose);
 	isch_switch_fmt(tab, 0);
 }
 
@@ -252,16 +252,16 @@ static void isch_plc_cfg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 
 static void isch_add_tab(const pcb_plug_import_t *p)
 {
-	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
-		PCB_DAD_LABEL(isch_ctx.dlg, p->desc);
-	PCB_DAD_END(isch_ctx.dlg);
+	RND_DAD_BEGIN_VBOX(isch_ctx.dlg);
+		RND_DAD_LABEL(isch_ctx.dlg, p->desc);
+	RND_DAD_END(isch_ctx.dlg);
 }
 
 static int do_dialog(void)
 {
 	int len, n;
 	const pcb_plug_import_t *p, **pa;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	if (isch_ctx.active)
 		return 0; /* do not open another */
 
@@ -282,79 +282,79 @@ static int do_dialog(void)
 	isch_ctx.inames[n] = NULL;
 	isch_ctx.len = len;
 
-	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
-		PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(isch_ctx.dlg);
+		RND_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
 
-		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* format box */
-			PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
-				PCB_DAD_LABEL(isch_ctx.dlg, "Format:");
-				PCB_DAD_ENUM(isch_ctx.dlg, isch_ctx.inames);
-					isch_ctx.wfmt = PCB_DAD_CURRENT(isch_ctx.dlg);
-					PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_fmt_chg_cb);
-					PCB_DAD_HELP(isch_ctx.dlg, "Import file format (or plugin)");
-			PCB_DAD_END(isch_ctx.dlg);
-			PCB_DAD_BEGIN_TABBED(isch_ctx.dlg, isch_ctx.inames);
-				PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_HIDE_TABLAB);
-				isch_ctx.wtab = PCB_DAD_CURRENT(isch_ctx.dlg);
+		RND_DAD_BEGIN_VBOX(isch_ctx.dlg); /* format box */
+			RND_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_BEGIN_HBOX(isch_ctx.dlg);
+				RND_DAD_LABEL(isch_ctx.dlg, "Format:");
+				RND_DAD_ENUM(isch_ctx.dlg, isch_ctx.inames);
+					isch_ctx.wfmt = RND_DAD_CURRENT(isch_ctx.dlg);
+					RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_fmt_chg_cb);
+					RND_DAD_HELP(isch_ctx.dlg, "Import file format (or plugin)");
+			RND_DAD_END(isch_ctx.dlg);
+			RND_DAD_BEGIN_TABBED(isch_ctx.dlg, isch_ctx.inames);
+				RND_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_HIDE_TABLAB);
+				isch_ctx.wtab = RND_DAD_CURRENT(isch_ctx.dlg);
 				for(n = 0; n < len; n++)
 					isch_add_tab(pa[n]);
-			PCB_DAD_END(isch_ctx.dlg);
-			PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* scrollable arg list */
-				PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			RND_DAD_END(isch_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(isch_ctx.dlg); /* scrollable arg list */
+				RND_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				for(n = 0; n < MAX_ARGS; n++) {
-					PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
-						isch_ctx.warg_box[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
-						PCB_DAD_STRING(isch_ctx.dlg);
-							isch_ctx.warg[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
-							PCB_DAD_WIDTH_CHR(isch_ctx.dlg, 32);
-							PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_chg_cb);
-						PCB_DAD_BUTTON(isch_ctx.dlg, "browse");
-							PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_browse_cb);
-							isch_ctx.warg_button[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
-					PCB_DAD_END(isch_ctx.dlg);
+					RND_DAD_BEGIN_HBOX(isch_ctx.dlg);
+						isch_ctx.warg_box[n] = RND_DAD_CURRENT(isch_ctx.dlg);
+						RND_DAD_STRING(isch_ctx.dlg);
+							isch_ctx.warg[n] = RND_DAD_CURRENT(isch_ctx.dlg);
+							RND_DAD_WIDTH_CHR(isch_ctx.dlg, 32);
+							RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_chg_cb);
+						RND_DAD_BUTTON(isch_ctx.dlg, "browse");
+							RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_browse_cb);
+							isch_ctx.warg_button[n] = RND_DAD_CURRENT(isch_ctx.dlg);
+					RND_DAD_END(isch_ctx.dlg);
 				}
-				PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
-					isch_ctx.warg_ctrl = PCB_DAD_CURRENT(isch_ctx.dlg);
-					PCB_DAD_BUTTON(isch_ctx.dlg, "Del last");
-						PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_del_cb);
-						PCB_DAD_HELP(isch_ctx.dlg, "Remove the last option from the end of the list");
-					PCB_DAD_BUTTON(isch_ctx.dlg, "One more");
-						PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_add_cb);
-						PCB_DAD_HELP(isch_ctx.dlg, "Append one more option to the end of the list");
-				PCB_DAD_END(isch_ctx.dlg);
-			PCB_DAD_END(isch_ctx.dlg);
-		PCB_DAD_END(isch_ctx.dlg);
+				RND_DAD_BEGIN_HBOX(isch_ctx.dlg);
+					isch_ctx.warg_ctrl = RND_DAD_CURRENT(isch_ctx.dlg);
+					RND_DAD_BUTTON(isch_ctx.dlg, "Del last");
+						RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_del_cb);
+						RND_DAD_HELP(isch_ctx.dlg, "Remove the last option from the end of the list");
+					RND_DAD_BUTTON(isch_ctx.dlg, "One more");
+						RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_arg_add_cb);
+						RND_DAD_HELP(isch_ctx.dlg, "Append one more option to the end of the list");
+				RND_DAD_END(isch_ctx.dlg);
+			RND_DAD_END(isch_ctx.dlg);
+		RND_DAD_END(isch_ctx.dlg);
 
-		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* generic settings */
-			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
-				PCB_DAD_LABEL(isch_ctx.dlg, "Verbose import:");
-				PCB_DAD_BOOL(isch_ctx.dlg, "");
-					isch_ctx.wverbose = PCB_DAD_CURRENT(isch_ctx.dlg);
-					PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_generic_chg_cb);
-			PCB_DAD_END(isch_ctx.dlg);
-			PCB_DAD_BUTTON(isch_ctx.dlg, "Placement config...");
-				PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_plc_cfg_cb);
-				PCB_DAD_HELP(isch_ctx.dlg, "Configure how/where newly imported subcircuits\nare placed on the board");
-		PCB_DAD_END(isch_ctx.dlg);
+		RND_DAD_BEGIN_VBOX(isch_ctx.dlg); /* generic settings */
+			RND_DAD_BEGIN_HBOX(isch_ctx.dlg);
+				RND_DAD_LABEL(isch_ctx.dlg, "Verbose import:");
+				RND_DAD_BOOL(isch_ctx.dlg, "");
+					isch_ctx.wverbose = RND_DAD_CURRENT(isch_ctx.dlg);
+					RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_generic_chg_cb);
+			RND_DAD_END(isch_ctx.dlg);
+			RND_DAD_BUTTON(isch_ctx.dlg, "Placement config...");
+				RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_plc_cfg_cb);
+				RND_DAD_HELP(isch_ctx.dlg, "Configure how/where newly imported subcircuits\nare placed on the board");
+		RND_DAD_END(isch_ctx.dlg);
 
-		PCB_DAD_BEGIN_HBOX(isch_ctx.dlg); /* bottom buttons */
-			PCB_DAD_BUTTON(isch_ctx.dlg, "Import!");
-				PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_import_cb);
-			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
-				PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(isch_ctx.dlg);
-			PCB_DAD_BUTTON_CLOSES(isch_ctx.dlg, clbtn);
-		PCB_DAD_END(isch_ctx.dlg);
-	PCB_DAD_END(isch_ctx.dlg);
+		RND_DAD_BEGIN_HBOX(isch_ctx.dlg); /* bottom buttons */
+			RND_DAD_BUTTON(isch_ctx.dlg, "Import!");
+				RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_import_cb);
+			RND_DAD_BEGIN_HBOX(isch_ctx.dlg);
+				RND_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(isch_ctx.dlg);
+			RND_DAD_BUTTON_CLOSES(isch_ctx.dlg, clbtn);
+		RND_DAD_END(isch_ctx.dlg);
+	RND_DAD_END(isch_ctx.dlg);
 
 	free(pa);
 
 	/* set up the context */
 	isch_ctx.active = 1;
 
-	PCB_DAD_DEFSIZE(isch_ctx.dlg, 360, 400);
-	PCB_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
+	RND_DAD_DEFSIZE(isch_ctx.dlg, 360, 400);
+	RND_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
 	isch_pcb2dlg();
 	return 0;
 }

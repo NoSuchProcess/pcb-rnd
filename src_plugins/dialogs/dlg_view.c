@@ -50,7 +50,7 @@ static const char *dlg_view_cookie = "dlg_drc";
 
 typedef struct view_ctx_s view_ctx_t;
 struct view_ctx_s {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
 	pcb_view_list_t *lst;
 	pcb_view_list_t lst_local;
@@ -72,7 +72,7 @@ static void view_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	view_ctx_t *ctx = caller_data;
 
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	if (ctx->list_alloced) {
 		pcb_view_list_free(ctx->lst);
 		ctx->lst = NULL;
@@ -110,13 +110,13 @@ static void view2dlg_list(view_ctx_t *ctx)
 		if (rt == NULL) {
 			cell[0] = rnd_strdup(v->type);
 			cell[1] = rnd_strdup("");
-			rt = pcb_dad_tree_append(attr, NULL, cell);
+			rt = rnd_dad_tree_append(attr, NULL, cell);
 			rt->user_data2.lng = 0;
 		}
 
 		cell[0] = pcb_strdup_printf("%lu", v->uid);
 		cell[1] = rnd_strdup(v->title);
-		r = pcb_dad_tree_append_under(attr, rt, cell);
+		r = rnd_dad_tree_append_under(attr, rt, cell);
 		r->user_data2.lng = v->uid;
 		pcb_dad_tree_expcoll(attr, rt, 1, 0);
 	}
@@ -138,10 +138,10 @@ static void view2dlg_pos(view_ctx_t *ctx)
 	if (cnt >= 0) {
 		char tmp[32];
 		sprintf(tmp, "%ld", cnt+1);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, rnd_strdup(tmp));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, rnd_strdup(tmp));
 	}
 	else
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, rnd_strdup(""));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wpos, str, rnd_strdup(""));
 }
 
 static void view2dlg_count(view_ctx_t *ctx)
@@ -149,7 +149,7 @@ static void view2dlg_count(view_ctx_t *ctx)
 	char tmp[32];
 
 	sprintf(tmp, "%ld", (long)pcb_view_list_length(ctx->lst));
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str, rnd_strdup(tmp));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wcount, str, rnd_strdup(tmp));
 }
 
 static void view2dlg(view_ctx_t *ctx)
@@ -168,27 +168,27 @@ void view_simple_show(view_ctx_t *ctx)
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
 	if (v != NULL) {
 		pcb_view_goto(v);
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, pcb_text_wrap(rnd_strdup(v->description), 32, '\n', ' '));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, pcb_text_wrap(rnd_strdup(v->description), 32, '\n', ' '));
 		switch(v->data_type) {
 			case PCB_VIEW_PLAIN:
-				PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup(""));
+				RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup(""));
 				break;
 			case PCB_VIEW_DRC:
 				if (v->data.drc.have_measured)
-					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
+					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
 				else
-					PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value));
+					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value));
 				break;
 		}
 	}
 
 	if (v == NULL) {
 		ctx->selected = 0;
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, rnd_strdup(""));
-		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup(""));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdescription, str, rnd_strdup(""));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup(""));
 	}
 	else
-		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
+		rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
 }
 
 static void view_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
@@ -288,7 +288,7 @@ static void view_refresh_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 static void view_close_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	view_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 }
 
 static void view_stepped(view_ctx_t *ctx, pcb_view_t *v)
@@ -587,74 +587,74 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 
 	ctx->wpos = -1;
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
-		PCB_DAD_BEGIN_HPANE(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HPANE(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 			/* left */
-			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_LABEL(ctx->dlg, "Number of violations:");
-					PCB_DAD_LABEL(ctx->dlg, "n/a");
-					ctx->wcount = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_LABEL(ctx->dlg, "Number of violations:");
+					RND_DAD_LABEL(ctx->dlg, "n/a");
+					ctx->wcount = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
 
-				PCB_DAD_TREE(ctx->dlg, 2, 1, hdr);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
-					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, view_select);
-					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
-					ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
+				RND_DAD_TREE(ctx->dlg, 2, 1, hdr);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
+					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, view_select);
+					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+					ctx->wlist = RND_DAD_CURRENT(ctx->dlg);
 
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_BUTTON(ctx->dlg, "Copy");
-						PCB_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
-					PCB_DAD_BUTTON(ctx->dlg, "Cut");
-						ctx->wbtn_cut = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
-					PCB_DAD_BUTTON(ctx->dlg, "Paste");
-						PCB_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
-					PCB_DAD_BUTTON(ctx->dlg, "Del");
-						PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
-					PCB_DAD_BUTTON(ctx->dlg, "Select");
-						PCB_DAD_CHANGE_CB(ctx->dlg, view_select_btn_cb);
-				PCB_DAD_END(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "Copy");
+						RND_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Cut");
+						ctx->wbtn_cut = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, view_copy_btn_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Paste");
+						RND_DAD_CHANGE_CB(ctx->dlg, view_paste_btn_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Del");
+						RND_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Select");
+						RND_DAD_CHANGE_CB(ctx->dlg, view_select_btn_cb);
+				RND_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
 
 			/* right */
-			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
-					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
-				PCB_DAD_LABEL(ctx->dlg, "(description)");
-					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "(measure)");
-					ctx->wmeasure = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
+					ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
+				RND_DAD_LABEL(ctx->dlg, "(description)");
+					ctx->wdescription = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "(measure)");
+					ctx->wmeasure = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_BUTTON(ctx->dlg, "Save all");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_save_btn_cb);
-			PCB_DAD_BUTTON(ctx->dlg, "Load all");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_load_btn_cb);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_BUTTON(ctx->dlg, "Save all");
+				RND_DAD_CHANGE_CB(ctx->dlg, view_save_btn_cb);
+			RND_DAD_BUTTON(ctx->dlg, "Load all");
+				RND_DAD_CHANGE_CB(ctx->dlg, view_load_btn_cb);
 			if (ctx->refresh != NULL) {
-				PCB_DAD_BUTTON(ctx->dlg, "Refresh");
-					PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
+				RND_DAD_BUTTON(ctx->dlg, "Refresh");
+					RND_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
 			}
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BUTTON(ctx->dlg, "Close");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BUTTON(ctx->dlg, "Close");
+				RND_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
+	RND_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
 }
@@ -665,54 +665,54 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 
 	ctx->wlist = -1;
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
-				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
-			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "(description)");
-					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "(measure)");
-					ctx->wmeasure = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
+				ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "(description)");
+					ctx->wdescription = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "(measure)");
+					ctx->wmeasure = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_BUTTON(ctx->dlg, "Previous");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_prev_btn_cb);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_LABEL(ctx->dlg, "na");
-					ctx->wpos = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "/");
-				PCB_DAD_LABEL(ctx->dlg, "na");
-					ctx->wcount = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BUTTON(ctx->dlg, "Del");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
-			PCB_DAD_BUTTON(ctx->dlg, "Next");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_next_btn_cb);
-		PCB_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_BUTTON(ctx->dlg, "Previous");
+				RND_DAD_CHANGE_CB(ctx->dlg, view_prev_btn_cb);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_LABEL(ctx->dlg, "na");
+					ctx->wpos = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "/");
+				RND_DAD_LABEL(ctx->dlg, "na");
+					ctx->wcount = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BUTTON(ctx->dlg, "Del");
+				RND_DAD_CHANGE_CB(ctx->dlg, view_del_btn_cb);
+			RND_DAD_BUTTON(ctx->dlg, "Next");
+				RND_DAD_CHANGE_CB(ctx->dlg, view_next_btn_cb);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
 			if (ctx->refresh != NULL) {
-				PCB_DAD_BUTTON(ctx->dlg, "Refresh");
-					PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
+				RND_DAD_BUTTON(ctx->dlg, "Refresh");
+					RND_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
 			}
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			PCB_DAD_END(ctx->dlg);
-			PCB_DAD_BUTTON(ctx->dlg, "Close");
-				PCB_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);
-		PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BUTTON(ctx->dlg, "Close");
+				RND_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);
+		RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
+	RND_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
 
 	ctx->active = 1;
 

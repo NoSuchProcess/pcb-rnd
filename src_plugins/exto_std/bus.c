@@ -30,7 +30,7 @@
 #define LID_TARGET 1
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int gui_active;
 	int width;
 	rnd_coord_t pitch;
@@ -47,7 +47,7 @@ static void pcb_bus_del_pre(pcb_subc_t *subc)
 	rnd_trace("bus del_pre\n");
 
 	if ((bus != NULL) && (bus->gui_active))
-		PCB_DAD_FREE(bus->dlg);
+		RND_DAD_FREE(bus->dlg);
 
 	free(bus);
 	subc->extobj_data = NULL;
@@ -357,13 +357,13 @@ static void pcb_bus_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	pcb_subc_t *subc = caller_data;
 	bus_t *bus = subc->extobj_data;
 
-	PCB_DAD_FREE(bus->dlg);
+	RND_DAD_FREE(bus->dlg);
 	bus->gui_active = 0;
 }
 
 static void pcb_bus_gui_propedit(pcb_subc_t *subc)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	bus_t *bus;
 
 	rnd_trace("bus: gui propedit\n");
@@ -376,21 +376,21 @@ static void pcb_bus_gui_propedit(pcb_subc_t *subc)
 	if (bus->gui_active)
 		return; /* do not open another */
 
-	PCB_DAD_BEGIN_VBOX(bus->dlg);
-		PCB_DAD_COMPFLAG(bus->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABLE(bus->dlg, 2);
+	RND_DAD_BEGIN_VBOX(bus->dlg);
+		RND_DAD_COMPFLAG(bus->dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABLE(bus->dlg, 2);
 			pcb_exto_dlg_int(bus->dlg, subc, "width", "extobj::width", "number of traces in the bus");
 			pcb_exto_dlg_coord(bus->dlg, subc, "thickness", "extobj::thickness", "thickness of each trace");
 			pcb_exto_dlg_coord(bus->dlg, subc, "clearance", "extobj::clearance", "clearance on each trace");
 			pcb_exto_dlg_coord(bus->dlg, subc, "pitch", "extobj::pitch", "distance between trace centerlines");
-		PCB_DAD_END(bus->dlg);
-		PCB_DAD_BUTTON_CLOSES(bus->dlg, clbtn);
-	PCB_DAD_END(bus->dlg);
+		RND_DAD_END(bus->dlg);
+		RND_DAD_BUTTON_CLOSES(bus->dlg, clbtn);
+	RND_DAD_END(bus->dlg);
 
 	/* set up the context */
 	bus->gui_active = 1;
 
-	PCB_DAD_NEW("bus", bus->dlg, "Bus", subc, pcb_false, pcb_bus_close_cb);
+	RND_DAD_NEW("bus", bus->dlg, "Bus", subc, pcb_false, pcb_bus_close_cb);
 }
 
 static pcb_extobj_t pcb_bus = {

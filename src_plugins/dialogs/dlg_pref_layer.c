@@ -52,10 +52,10 @@ void pcb_dlg_pref_layer_create(pref_ctx_t *ctx)
 {
 	rnd_rnd_box_t vbox = {0, 0, PCB_MM_TO_COORD(150), PCB_MM_TO_COORD(150)};
 
-	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_PREVIEW(ctx->dlg, layersel_expose_cb, layersel_mouse_cb, layersel_free_cb, &vbox, 200, 200, ctx);
-			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_PREVIEW(ctx->dlg, layersel_expose_cb, layersel_mouse_cb, layersel_free_cb, &vbox, 200, 200, ctx);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+	RND_DAD_END(ctx->dlg);
 }

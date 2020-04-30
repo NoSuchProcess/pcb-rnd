@@ -485,7 +485,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wx, wy, wlock;
 } scale_t;
 
@@ -515,40 +515,40 @@ static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y)
 	scale_t ctx;
 	int res;
 
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"Apply", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"Apply", 0}, {NULL, 0}};
 
 	memset(&ctx, 0, sizeof(ctx));
-	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+	RND_DAD_BEGIN_VBOX(ctx.dlg);
+		RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABLE(ctx.dlg, 2);
+			RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 
-			PCB_DAD_LABEL(ctx.dlg, "scale X");
-			PCB_DAD_REAL(ctx.dlg, "");
-				ctx.wx = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_DEFAULT_NUM(ctx.dlg, 1);
-				PCB_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
+			RND_DAD_LABEL(ctx.dlg, "scale X");
+			RND_DAD_REAL(ctx.dlg, "");
+				ctx.wx = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
+				RND_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
 
-			PCB_DAD_LABEL(ctx.dlg, "same");
-			PCB_DAD_BOOL(ctx.dlg, "");
-				ctx.wlock = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_DEFAULT_NUM(ctx.dlg, 1);
-				PCB_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
+			RND_DAD_LABEL(ctx.dlg, "same");
+			RND_DAD_BOOL(ctx.dlg, "");
+				ctx.wlock = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
+				RND_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
 
-			PCB_DAD_LABEL(ctx.dlg, "scale Y");
-			PCB_DAD_REAL(ctx.dlg, "");
-				ctx.wy = PCB_DAD_CURRENT(ctx.dlg);
-				PCB_DAD_DEFAULT_NUM(ctx.dlg, 1);
-				PCB_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
+			RND_DAD_LABEL(ctx.dlg, "scale Y");
+			RND_DAD_REAL(ctx.dlg, "");
+				ctx.wy = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
+				RND_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
 
-		PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
-	PCB_DAD_END(ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
+	RND_DAD_END(ctx.dlg);
 
-	PCB_DAD_NEW("buffer_scale", ctx.dlg, "Buffer scale factors", &ctx, pcb_true, NULL);
-	res = PCB_DAD_RUN(ctx.dlg);
+	RND_DAD_NEW("buffer_scale", ctx.dlg, "Buffer scale factors", &ctx, pcb_true, NULL);
+	res = RND_DAD_RUN(ctx.dlg);
 	*x = ctx.dlg[ctx.wx].val.dbl;
 	*y = ctx.dlg[ctx.wy].val.dbl;
-	PCB_DAD_FREE(ctx.dlg);
+	RND_DAD_FREE(ctx.dlg);
 	return res;
 }
 

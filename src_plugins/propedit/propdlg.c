@@ -41,7 +41,7 @@
 #include "propsel.h"
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
 	int wtree, wfilter, wtype, wvals, wscope;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
@@ -57,7 +57,7 @@ static void propdlgclose_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	propdlg_t *ctx = caller_data;
 	gdl_remove(&propdlgs, ctx, link);
 	pcb_props_uninit(&ctx->pe);
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
 
@@ -291,7 +291,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 		rnd_hid_row_t *r;
 		cell[0] = pcb_strdup_printf("%ld", pvs[n].cnt);
 		cell[1] = pcb_propsel_printval(p->type, pvs[n].val);
-		r = pcb_dad_tree_append(attr, NULL, cell);
+		r = rnd_dad_tree_append(attr, NULL, cell);
 		r->user_data = pvs[n].val;
 	}
 
@@ -383,25 +383,25 @@ static void prop_data_force_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 
 static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	PCB_DAD_DECL(dlg)
+	RND_DAD_DECL(dlg)
 	propdlg_t *ctx = caller_data;
 	const char *key;
 	int wkey, wval, failed;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"OK", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"OK", 0}, {NULL, 0}};
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_BEGIN_TABLE(dlg, 2);
-			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
-			PCB_DAD_LABEL(dlg, "Attribute key:");
-			PCB_DAD_STRING(dlg);
-				wkey = PCB_DAD_CURRENT(dlg);
-			PCB_DAD_LABEL(dlg, "Attribute value:");
-			PCB_DAD_STRING(dlg);
-				wval = PCB_DAD_CURRENT(dlg);
-		PCB_DAD_END(dlg);
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
-	PCB_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", NULL, failed);
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_BEGIN_TABLE(dlg, 2);
+			RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+			RND_DAD_LABEL(dlg, "Attribute key:");
+			RND_DAD_STRING(dlg);
+				wkey = RND_DAD_CURRENT(dlg);
+			RND_DAD_LABEL(dlg, "Attribute value:");
+			RND_DAD_STRING(dlg);
+				wval = RND_DAD_CURRENT(dlg);
+		RND_DAD_END(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
+	RND_DAD_AUTORUN("propedit_add", dlg, "Propedit: add new attribute", NULL, failed);
 
 	key = dlg[wkey].val.str;
 	if (key == NULL) key = "";
@@ -413,7 +413,7 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 		free(path);
 		prop_refresh(ctx);
 	}
-	PCB_DAD_FREE(dlg);
+	RND_DAD_FREE(dlg);
 }
 
 static void prop_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -470,177 +470,177 @@ static void build_propval(propdlg_t *ctx)
 	static const char *type_tabs[] = {"none", "string", "coord", "angle", "int", NULL};
 	static const char *abshelp = "When unticked each apply is a relative change added to\nthe current value of each object";
 
-	PCB_DAD_BEGIN_TABBED(ctx->dlg, type_tabs);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE_TABLAB);
-		ctx->wtype = PCB_DAD_CURRENT(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "(nothing to edit)");
+	RND_DAD_BEGIN_TABBED(ctx->dlg, type_tabs);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE_TABLAB);
+		ctx->wtype = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "(nothing to edit)");
 				ctx->wabs[0] = 0;
 				ctx->wedit[0] = 0;
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
-			PCB_DAD_STRING(ctx->dlg);
-				ctx->wedit[1] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: string");
+			RND_DAD_STRING(ctx->dlg);
+				ctx->wedit[1] = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[1] = 0;
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: coord");
-			PCB_DAD_COORD(ctx->dlg, "");
-				ctx->wedit[2] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, -RND_MAX_COORD, RND_MAX_COORD);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "abs");
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->wabs[2] = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_HELP(ctx->dlg, abshelp);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: angle");
-			PCB_DAD_REAL(ctx->dlg, "");
-				ctx->wedit[3] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, -360.0, +360.0);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "abs");
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->wabs[3] = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_HELP(ctx->dlg, abshelp);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: coord");
+			RND_DAD_COORD(ctx->dlg, "");
+				ctx->wedit[2] = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, -RND_MAX_COORD, RND_MAX_COORD);
+				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "abs");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->wabs[2] = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_HELP(ctx->dlg, abshelp);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: angle");
+			RND_DAD_REAL(ctx->dlg, "");
+				ctx->wedit[3] = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, -360.0, +360.0);
+				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "abs");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->wabs[3] = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_HELP(ctx->dlg, abshelp);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: int");
-			PCB_DAD_INTEGER(ctx->dlg, "");
-				ctx->wedit[4] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
-			PCB_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "abs");
-				PCB_DAD_BOOL(ctx->dlg, "");
-					ctx->wabs[4] = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_HELP(ctx->dlg, abshelp);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: int");
+			RND_DAD_INTEGER(ctx->dlg, "");
+				ctx->wedit[4] = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
+			RND_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "abs");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->wabs[4] = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_HELP(ctx->dlg, abshelp);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: boolean");
-			PCB_DAD_BOOL(ctx->dlg, "");
-				ctx->wedit[5] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: boolean");
+			RND_DAD_BOOL(ctx->dlg, "");
+				ctx->wedit[5] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[5] = 0;
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_LABEL(ctx->dlg, "Data type: color");
-			PCB_DAD_COLOR(ctx->dlg);
-				ctx->wedit[6] = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: color");
+			RND_DAD_COLOR(ctx->dlg);
+				ctx->wedit[6] = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[6] = 0;
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON(ctx->dlg, "apply");
-					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 }
 
 static void pcb_dlg_propdlg(propdlg_t *ctx)
 {
 	const char *hdr[] = {"property", "common", "min", "max", "avg", NULL};
 	const char *hdr_val[] = {"use", "values"};
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static rnd_rnd_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
 	int n;
 	rnd_hid_attr_val_t hv;
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_HPANE(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HPANE(ctx->dlg);
 
 			/* left: property tree and filter */
-			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_TREE(ctx->dlg, 5, 1, hdr);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					ctx->wtree = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, prop_select_node_cb);
-					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
-				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_STRING(ctx->dlg);
-						PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist properties with\nmatching name only");
-						PCB_DAD_CHANGE_CB(ctx->dlg, prop_filter_cb);
-						ctx->wfilter = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_BUTTON(ctx->dlg, "add");
-						PCB_DAD_CHANGE_CB(ctx->dlg, prop_add_cb);
-						PCB_DAD_HELP(ctx->dlg, "Create a new attribute\n(in the a/ subtree)");
-					PCB_DAD_BUTTON(ctx->dlg, "del");
-						PCB_DAD_CHANGE_CB(ctx->dlg, prop_del_cb);
-						PCB_DAD_HELP(ctx->dlg, "Remove the selected attribute\n(from the a/ subtree)");
-					PCB_DAD_BUTTON(ctx->dlg, "rfr");
-						PCB_DAD_CHANGE_CB(ctx->dlg, prop_refresh_cb);
-						PCB_DAD_HELP(ctx->dlg, "Refresh: rebuild the tree\nupdating all values from the board");
-				PCB_DAD_END(ctx->dlg);
-			PCB_DAD_END(ctx->dlg);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_TREE(ctx->dlg, 5, 1, hdr);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+					ctx->wtree = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, prop_select_node_cb);
+					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_STRING(ctx->dlg);
+						RND_DAD_HELP(ctx->dlg, "Filter text:\nlist properties with\nmatching name only");
+						RND_DAD_CHANGE_CB(ctx->dlg, prop_filter_cb);
+						ctx->wfilter = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "add");
+						RND_DAD_CHANGE_CB(ctx->dlg, prop_add_cb);
+						RND_DAD_HELP(ctx->dlg, "Create a new attribute\n(in the a/ subtree)");
+					RND_DAD_BUTTON(ctx->dlg, "del");
+						RND_DAD_CHANGE_CB(ctx->dlg, prop_del_cb);
+						RND_DAD_HELP(ctx->dlg, "Remove the selected attribute\n(from the a/ subtree)");
+					RND_DAD_BUTTON(ctx->dlg, "rfr");
+						RND_DAD_CHANGE_CB(ctx->dlg, prop_refresh_cb);
+						RND_DAD_HELP(ctx->dlg, "Refresh: rebuild the tree\nupdating all values from the board");
+				RND_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
 
 			/* right: preview and per type edit */
-			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				PCB_DAD_BEGIN_VBOX(ctx->dlg);
-					PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 100, 100, ctx);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_LABEL(ctx->dlg, "<scope>");
-					ctx->wscope = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_HELP(ctx->dlg, "Scope: list of objects affected");
-				PCB_DAD_BEGIN_VBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					PCB_DAD_TREE(ctx->dlg, 2, 0, hdr_val);
-						ctx->wvals = PCB_DAD_CURRENT(ctx->dlg);
-						PCB_DAD_CHANGE_CB(ctx->dlg, prop_preset_cb);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
+					RND_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 100, 100, ctx);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "<scope>");
+					ctx->wscope = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_HELP(ctx->dlg, "Scope: list of objects affected");
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+					RND_DAD_TREE(ctx->dlg, 2, 0, hdr_val);
+						ctx->wvals = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, prop_preset_cb);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
 					build_propval(ctx);
-				PCB_DAD_END(ctx->dlg);
-				PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-			PCB_DAD_END(ctx->dlg);
-		PCB_DAD_END(ctx->dlg);
-	PCB_DAD_END(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_false, propdlgclose_cb);
+	RND_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_false, propdlgclose_cb);
 
 	prop_refresh(ctx);
 	gdl_append(&propdlgs, ctx, link);

@@ -35,9 +35,9 @@
 /* Actual board meta to dialog box */
 static void pref_board_brd2dlg(pref_ctx_t *ctx)
 {
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str, PCB_EMPTY(PCB->hidlib.name));
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wthermscale, dbl, PCB->ThermScale);
-	PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str, (PCB->is_footprint ? "footprint" : "PCB board"));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wname, str, PCB_EMPTY(PCB->hidlib.name));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wthermscale, dbl, PCB->ThermScale);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->board.wtype, str, (PCB->is_footprint ? "footprint" : "PCB board"));
 }
 
 /* Dialog box to actual board meta */
@@ -81,25 +81,25 @@ void pcb_dlg_pref_board_close(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 {
-	PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
-		PCB_DAD_LABEL(ctx->dlg, "Board name");
-		PCB_DAD_STRING(ctx->dlg);
-			ctx->board.wname = PCB_DAD_CURRENT(ctx->dlg);
+	RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
+		RND_DAD_LABEL(ctx->dlg, "Board name");
+		RND_DAD_STRING(ctx->dlg);
+			ctx->board.wname = RND_DAD_CURRENT(ctx->dlg);
 			ctx->dlg[ctx->board.wname].val.str = rnd_strdup(PCB_EMPTY(PCB->hidlib.name));
-			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
-		PCB_DAD_LABEL(ctx->dlg, "Thermal scale");
-		PCB_DAD_REAL(ctx->dlg, "");
-			ctx->board.wthermscale = PCB_DAD_CURRENT(ctx->dlg);
-			PCB_DAD_MINMAX(ctx->dlg, 0.01, 100);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
+		RND_DAD_LABEL(ctx->dlg, "Thermal scale");
+		RND_DAD_REAL(ctx->dlg, "");
+			ctx->board.wthermscale = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_MINMAX(ctx->dlg, 0.01, 100);
 			ctx->dlg[ctx->board.wthermscale].val.dbl = PCB->ThermScale;
-			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
-		PCB_DAD_LABEL(ctx->dlg, "Type");
-		PCB_DAD_LABEL(ctx->dlg, "");
-			ctx->board.wtype = PCB_DAD_CURRENT(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
+		RND_DAD_LABEL(ctx->dlg, "Type");
+		RND_DAD_LABEL(ctx->dlg, "");
+			ctx->board.wtype = RND_DAD_CURRENT(ctx->dlg);
 			ctx->dlg[ctx->board.wtype].name = rnd_strdup((PCB->is_footprint ? "footprint" : "PCB board"));
-			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
-		PCB_DAD_LABEL(ctx->dlg, "Board attributes");
-		PCB_DAD_BUTTON(ctx->dlg, "Edit...");
-			PCB_DAD_CHANGE_CB(ctx->dlg, pref_board_edit_attr);
-		PCB_DAD_END(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
+		RND_DAD_LABEL(ctx->dlg, "Board attributes");
+		RND_DAD_BUTTON(ctx->dlg, "Edit...");
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_edit_attr);
+		RND_DAD_END(ctx->dlg);
 }

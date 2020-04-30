@@ -80,27 +80,27 @@ static const char pcb_acth_Report[] = "Produce various report.";
 
 
 typedef struct rdialog_ctx_s {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 } rdialog_ctx_t;
 
 static void rdialog_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	rdialog_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	free(ctx);
 }
 
 static void rdialog(const char *name, const char *content)
 {
 	rdialog_ctx_t *ctx = calloc(sizeof(rdialog_ctx_t), 1);
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
-	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_LABEL(ctx->dlg, content);
-		PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-	PCB_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_LABEL(ctx->dlg, content);
+		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+	RND_DAD_END(ctx->dlg);
 
-	PCB_DAD_NEW("report", ctx->dlg, name, ctx, pcb_false, rdialog_close_cb);
+	RND_DAD_NEW("report", ctx->dlg, name, ctx, pcb_false, rdialog_close_cb);
 }
 
 

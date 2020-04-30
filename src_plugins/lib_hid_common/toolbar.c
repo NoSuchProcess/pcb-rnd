@@ -88,14 +88,14 @@ static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool, const char *
 		help = menufile_help;
 
 	if (tool->icon != NULL)
-		PCB_DAD_PICBUTTON(toolbar.sub.dlg, tool->icon);
+		RND_DAD_PICBUTTON(toolbar.sub.dlg, tool->icon);
 	else
-		PCB_DAD_BUTTON(toolbar.sub.dlg, tool->name);
-	PCB_DAD_CHANGE_CB(toolbar.sub.dlg, toolbar_select_cb);
-	PCB_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_TIGHT | RND_HATF_TOGGLE);
+		RND_DAD_BUTTON(toolbar.sub.dlg, tool->name);
+	RND_DAD_CHANGE_CB(toolbar.sub.dlg, toolbar_select_cb);
+	RND_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_TIGHT | RND_HATF_TOGGLE);
 	if (help != NULL)
-		PCB_DAD_HELP(toolbar.sub.dlg, help);
-	wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
+		RND_DAD_HELP(toolbar.sub.dlg, help);
+	wid = RND_DAD_CURRENT(toolbar.sub.dlg);
 	toolbar.sub.dlg[wid].user_data = (void *)(ptrdiff_t)tid;
 	vti0_set(&toolbar.tid2wid, tid, wid);
 }
@@ -128,8 +128,8 @@ static void toolbar_create_static(rnd_hid_cfg_t *cfg)
 		}
 	}
 	else {
-		PCB_DAD_LABEL(toolbar.sub.dlg, "No toolbar found in the menu file.");
-		PCB_DAD_HELP(toolbar.sub.dlg, "Check your menu file. If you use a locally modified or custom\nmenu file, make sure you merge upstream changes\n(such as the new toolbar subtree)");
+		RND_DAD_LABEL(toolbar.sub.dlg, "No toolbar found in the menu file.");
+		RND_DAD_HELP(toolbar.sub.dlg, "Check your menu file. If you use a locally modified or custom\nmenu file, make sure you merge upstream changes\n(such as the new toolbar subtree)");
 	}
 }
 
@@ -151,20 +151,20 @@ static void toolbar_docked_create(rnd_hid_cfg_t *cfg)
 {
 	toolbar.tid2wid.used = 0;
 
-	PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
-		PCB_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT);
+	RND_DAD_BEGIN_HBOX(toolbar.sub.dlg);
+		RND_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT);
 
 		toolbar_create_static(cfg);
 		toolbar_create_dyn_all();
 
 	/* eat up remaining space in the middle before displaying the dynamic tools */
-		PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
-			PCB_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_END(toolbar.sub.dlg);
+		RND_DAD_BEGIN_HBOX(toolbar.sub.dlg);
+			RND_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_EXPFILL);
+		RND_DAD_END(toolbar.sub.dlg);
 
 	/* later on dynamic tools would be displayed here */
 
-	PCB_DAD_END(toolbar.sub.dlg);
+	RND_DAD_END(toolbar.sub.dlg);
 }
 
 static void toolbar_create(void)

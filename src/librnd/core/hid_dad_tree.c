@@ -53,7 +53,7 @@ static void pcb_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *lis
 }
 
 /* Internal: free all rows and caches and the tree itself */
-void pcb_dad_tree_free(rnd_hid_attribute_t *attr)
+void rnd_dad_tree_free(rnd_hid_attribute_t *attr)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
 	htsp_uninit(&tree->paths);
@@ -102,7 +102,7 @@ rnd_hid_row_t *pcb_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cell
 		if (parent != NULL)
 			return parent;
 		cell[0] = rnd_strdup(path);
-		return pcb_dad_tree_append(tree->attrib, NULL, cell);
+		return rnd_dad_tree_append(tree->attrib, NULL, cell);
 	}
 
 /* non-root-dir: get or create parent */
@@ -112,11 +112,11 @@ rnd_hid_row_t *pcb_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cell
 
 	if (cells == NULL) {
 		cell[0] = rnd_strdup(last);
-		return pcb_dad_tree_append_under(tree->attrib, parent, cell);
+		return rnd_dad_tree_append_under(tree->attrib, parent, cell);
 	}
 
 	old = cell[0];
 	cells[0] = rnd_strdup(last);
 	free(old);
-	return pcb_dad_tree_append_under(tree->attrib, parent, cells);
+	return rnd_dad_tree_append_under(tree->attrib, parent, cells);
 }

@@ -29,7 +29,7 @@
 #include <librnd/core/hid_dad_tree.h>
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	int curr;
 	int wname, wlineth, wclr, wtxtscale, wtxtth, wviahole, wviaring, wattr;
@@ -49,7 +49,7 @@ static void rstdlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		}
 	}
 
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(rstdlg_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -100,7 +100,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 		char *cell[3]= {NULL};
 		cell[0] = rnd_strdup(a->name);
 		cell[1] = rnd_strdup(a->value);
-		pcb_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
 	rstdlg_ctx.curr = rst_idx;
@@ -168,32 +168,32 @@ TODO("This change is not undoable");
 static int rst_edit_attr(char **key, char **val)
 {
 	int wkey, wval, res;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
-	PCB_DAD_DECL(dlg);
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	RND_DAD_DECL(dlg);
 
-	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABLE(dlg, 2);
-			PCB_DAD_LABEL(dlg, "key");
-			PCB_DAD_STRING(dlg);
-				wkey = PCB_DAD_CURRENT(dlg);
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABLE(dlg, 2);
+			RND_DAD_LABEL(dlg, "key");
+			RND_DAD_STRING(dlg);
+				wkey = RND_DAD_CURRENT(dlg);
 				if (*key != NULL)
-					PCB_DAD_DEFAULT_PTR(dlg, rnd_strdup(*key));
-			PCB_DAD_LABEL(dlg, "value");
-			PCB_DAD_STRING(dlg);
-				wval = PCB_DAD_CURRENT(dlg);
+					RND_DAD_DEFAULT_PTR(dlg, rnd_strdup(*key));
+			RND_DAD_LABEL(dlg, "value");
+			RND_DAD_STRING(dlg);
+				wval = RND_DAD_CURRENT(dlg);
 				if (*val != NULL)
-					PCB_DAD_DEFAULT_PTR(dlg, rnd_strdup(*val));
-		PCB_DAD_BUTTON_CLOSES(dlg, clbtn);
-	PCB_DAD_END(dlg);
+					RND_DAD_DEFAULT_PTR(dlg, rnd_strdup(*val));
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
 
-	PCB_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, pcb_true, NULL);
-	res = PCB_DAD_RUN(dlg);
+	RND_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, pcb_true, NULL);
+	res = RND_DAD_RUN(dlg);
 	if (res == 0) {
 		*key = rnd_strdup(dlg[wkey].val.str);
 		*val = rnd_strdup(dlg[wval].val.str);
 	}
-	PCB_DAD_FREE(dlg);
+	RND_DAD_FREE(dlg);
 	return res;
 }
 
@@ -244,7 +244,7 @@ static void rst_del_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 
 static int pcb_dlg_rstdlg(int rst_idx)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static const char *attr_hdr[] = {"attribute key", "attribute value", NULL};
 
 	if (rstdlg_ctx.active) { /* do not open another, just refresh data to target */
@@ -252,77 +252,77 @@ static int pcb_dlg_rstdlg(int rst_idx)
 		return 0;
 	}
 
-	PCB_DAD_BEGIN_VBOX(rstdlg_ctx.dlg);
-		PCB_DAD_COMPFLAG(rstdlg_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABLE(rstdlg_ctx.dlg, 2);
+	RND_DAD_BEGIN_VBOX(rstdlg_ctx.dlg);
+		RND_DAD_COMPFLAG(rstdlg_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABLE(rstdlg_ctx.dlg, 2);
 
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Name:");
-			PCB_DAD_STRING(rstdlg_ctx.dlg);
-				rstdlg_ctx.wname = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Name of the routing style");
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "Name:");
+			RND_DAD_STRING(rstdlg_ctx.dlg);
+				rstdlg_ctx.wname = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Name of the routing style");
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Line thick.:");
-			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
-				rstdlg_ctx.wlineth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Thickness of line/arc objects");
-				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "Line thick.:");
+			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wlineth = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Thickness of line/arc objects");
+				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
-			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
-				rstdlg_ctx.wtxtscale = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
-				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
+			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wtxtscale = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
+				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
-			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
-				rstdlg_ctx.wclr = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Object clearance: any object placed with this style\nwill clear this much from sorrunding clearing-enabled polygons\n(unless the object is joined to the polygon)");
-				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
+			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wclr = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Object clearance: any object placed with this style\nwill clear this much from sorrunding clearing-enabled polygons\n(unless the object is joined to the polygon)");
+				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Text thick.:");
-			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
-				rstdlg_ctx.wtxtth = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
-				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "Text thick.:");
+			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wtxtth = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
+				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
-			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
-				rstdlg_ctx.wviahole = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
-				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
+			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wviahole = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
+				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			PCB_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
-			PCB_DAD_COORD(rstdlg_ctx.dlg, "");
-				rstdlg_ctx.wviaring = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-				PCB_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
-				PCB_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
+			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+				rstdlg_ctx.wviaring = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
+				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-		PCB_DAD_END(rstdlg_ctx.dlg);
-		PCB_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
-			PCB_DAD_HELP(rstdlg_ctx.dlg, "These attributes are automatically added to\nany object drawn with this routing style");
-			rstdlg_ctx.wattr = PCB_DAD_CURRENT(rstdlg_ctx.dlg);
-		PCB_DAD_BEGIN_HBOX(rstdlg_ctx.dlg);
-			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "add");
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_add_attr_cb);
-			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "edit");
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_edit_attr_cb);
-			PCB_DAD_BUTTON(rstdlg_ctx.dlg, "del");
-				PCB_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_del_attr_cb);
-		PCB_DAD_END(rstdlg_ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(rstdlg_ctx.dlg, clbtn);
-	PCB_DAD_END(rstdlg_ctx.dlg);
+		RND_DAD_END(rstdlg_ctx.dlg);
+		RND_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
+			RND_DAD_HELP(rstdlg_ctx.dlg, "These attributes are automatically added to\nany object drawn with this routing style");
+			rstdlg_ctx.wattr = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+		RND_DAD_BEGIN_HBOX(rstdlg_ctx.dlg);
+			RND_DAD_BUTTON(rstdlg_ctx.dlg, "add");
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_add_attr_cb);
+			RND_DAD_BUTTON(rstdlg_ctx.dlg, "edit");
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_edit_attr_cb);
+			RND_DAD_BUTTON(rstdlg_ctx.dlg, "del");
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_del_attr_cb);
+		RND_DAD_END(rstdlg_ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(rstdlg_ctx.dlg, clbtn);
+	RND_DAD_END(rstdlg_ctx.dlg);
 
 	/* set up the context */
 	rstdlg_ctx.active = 1;
 
-	PCB_DAD_NEW("route_style", rstdlg_ctx.dlg, "Edit route style", &rstdlg_ctx, pcb_false, rstdlg_close_cb);
+	RND_DAD_NEW("route_style", rstdlg_ctx.dlg, "Edit route style", &rstdlg_ctx, pcb_false, rstdlg_close_cb);
 
 	rstdlg_pcb2dlg(rst_idx);
 	return 0;

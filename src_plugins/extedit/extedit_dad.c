@@ -27,7 +27,7 @@
 #include <librnd/core/hid_dad.h>
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int mthi;
 
 	int wmethod, wfmt, wcmd;
@@ -37,9 +37,9 @@ typedef struct {
 
 static void ee_data2dialog(ee_t *ee)
 {
-	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wmethod, lng, ee->mthi);
-	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wfmt, lng, methods[ee->mthi].fmt);
-	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str, rnd_strdup(methods[ee->mthi].command));
+	RND_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wmethod, lng, ee->mthi);
+	RND_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wfmt, lng, methods[ee->mthi].fmt);
+	RND_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str, rnd_strdup(methods[ee->mthi].command));
 
 	/* we have only one format, so disable the combo box for selecting it */
 	rnd_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, pcb_false);
@@ -83,7 +83,7 @@ static extedit_method_t *extedit_interactive(void)
 	char tmp[256];
 	const char *names[NUM_METHODS+1];
 	int n, res;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"Edit!", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"Edit!", 0}, {NULL, 0}};
 
 	for(n = 0; n < NUM_METHODS; n++)
 		names[n] = methods[n].name;
@@ -91,38 +91,38 @@ static extedit_method_t *extedit_interactive(void)
 
 	memset(&ee, 0, sizeof(ee));
 
-	PCB_DAD_BEGIN_VBOX(ee.dlg);
+	RND_DAD_BEGIN_VBOX(ee.dlg);
 		sprintf(tmp, "Select external editor...");
-		PCB_DAD_LABEL(ee.dlg, tmp);
+		RND_DAD_LABEL(ee.dlg, tmp);
 
-		PCB_DAD_BEGIN_HBOX(ee.dlg);
-			PCB_DAD_LABEL(ee.dlg, "Method name:");
-			PCB_DAD_ENUM(ee.dlg, names);
-			ee.wmethod = PCB_DAD_CURRENT(ee.dlg);
-			PCB_DAD_CHANGE_CB(ee.dlg, ee_chg_method);
-		PCB_DAD_END(ee.dlg);
+		RND_DAD_BEGIN_HBOX(ee.dlg);
+			RND_DAD_LABEL(ee.dlg, "Method name:");
+			RND_DAD_ENUM(ee.dlg, names);
+			ee.wmethod = RND_DAD_CURRENT(ee.dlg);
+			RND_DAD_CHANGE_CB(ee.dlg, ee_chg_method);
+		RND_DAD_END(ee.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ee.dlg);
-			PCB_DAD_LABEL(ee.dlg, "File format:");
-			PCB_DAD_ENUM(ee.dlg, extedit_fmt_names);
-			ee.wfmt = PCB_DAD_CURRENT(ee.dlg);
-		PCB_DAD_END(ee.dlg);
+		RND_DAD_BEGIN_HBOX(ee.dlg);
+			RND_DAD_LABEL(ee.dlg, "File format:");
+			RND_DAD_ENUM(ee.dlg, extedit_fmt_names);
+			ee.wfmt = RND_DAD_CURRENT(ee.dlg);
+		RND_DAD_END(ee.dlg);
 
-		PCB_DAD_BEGIN_HBOX(ee.dlg);
-			PCB_DAD_LABEL(ee.dlg, "Command template:");
-			PCB_DAD_STRING(ee.dlg);
-			ee.wcmd = PCB_DAD_CURRENT(ee.dlg);
-			PCB_DAD_CHANGE_CB(ee.dlg, ee_chg_cmd);
-		PCB_DAD_END(ee.dlg);
-		PCB_DAD_BUTTON_CLOSES(ee.dlg, clbtn);
-	PCB_DAD_END(ee.dlg);
+		RND_DAD_BEGIN_HBOX(ee.dlg);
+			RND_DAD_LABEL(ee.dlg, "Command template:");
+			RND_DAD_STRING(ee.dlg);
+			ee.wcmd = RND_DAD_CURRENT(ee.dlg);
+			RND_DAD_CHANGE_CB(ee.dlg, ee_chg_cmd);
+		RND_DAD_END(ee.dlg);
+		RND_DAD_BUTTON_CLOSES(ee.dlg, clbtn);
+	RND_DAD_END(ee.dlg);
 
-	PCB_DAD_NEW("extedit", ee.dlg, "External editor", &ee, pcb_true, NULL);
+	RND_DAD_NEW("extedit", ee.dlg, "External editor", &ee, pcb_true, NULL);
 
 	ee_data2dialog(&ee);
-	res = PCB_DAD_RUN(ee.dlg);
+	res = RND_DAD_RUN(ee.dlg);
 
-	PCB_DAD_FREE(ee.dlg);
+	RND_DAD_FREE(ee.dlg);
 	if (res != 0)
 		return NULL;
 	return &methods[ee.mthi];

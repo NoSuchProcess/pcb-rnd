@@ -1756,27 +1756,27 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, rnd_hid_dad_subdialo
 	io_lihata_save_t *save = calloc(sizeof(io_lihata_save_t), 1);
 
 	if (type == PCB_IOT_PCB) {
-		PCB_DAD_BEGIN_HBOX(sub->dlg);
-			PCB_DAD_LABEL(sub->dlg, "Omit font");
-				PCB_DAD_HELP(sub->dlg, "Do not save the font subtree\nWARNING: this will make the board depend on\nthe default font available on systems\nwhere it is loaded; if multiple fonts\nare used, all will be displayed using the default");
-			PCB_DAD_BOOL(sub->dlg, "");
-				PCB_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_font);
-				save->womit_font = PCB_DAD_CURRENT(sub->dlg);
-		PCB_DAD_END(sub->dlg);
-		PCB_DAD_BEGIN_HBOX(sub->dlg);
-			PCB_DAD_LABEL(sub->dlg, "Omit config");
-				PCB_DAD_HELP(sub->dlg, "Do not save the config subtree\nWARNING: this will lose all DESIGN role\nconfig setting in the resulting file");
-			PCB_DAD_BOOL(sub->dlg, "");
-				PCB_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_config);
-				save->womit_config = PCB_DAD_CURRENT(sub->dlg);
-		PCB_DAD_END(sub->dlg);
-		PCB_DAD_BEGIN_HBOX(sub->dlg);
-			PCB_DAD_LABEL(sub->dlg, "Omit styles");
-				PCB_DAD_HELP(sub->dlg, "Do not save the routing style subtree\nThe resulting file will have no\nrouting styles");
-			PCB_DAD_BOOL(sub->dlg, "");
-				PCB_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_styles);
-				save->womit_styles = PCB_DAD_CURRENT(sub->dlg);
-		PCB_DAD_END(sub->dlg);
+		RND_DAD_BEGIN_HBOX(sub->dlg);
+			RND_DAD_LABEL(sub->dlg, "Omit font");
+				RND_DAD_HELP(sub->dlg, "Do not save the font subtree\nWARNING: this will make the board depend on\nthe default font available on systems\nwhere it is loaded; if multiple fonts\nare used, all will be displayed using the default");
+			RND_DAD_BOOL(sub->dlg, "");
+				RND_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_font);
+				save->womit_font = RND_DAD_CURRENT(sub->dlg);
+		RND_DAD_END(sub->dlg);
+		RND_DAD_BEGIN_HBOX(sub->dlg);
+			RND_DAD_LABEL(sub->dlg, "Omit config");
+				RND_DAD_HELP(sub->dlg, "Do not save the config subtree\nWARNING: this will lose all DESIGN role\nconfig setting in the resulting file");
+			RND_DAD_BOOL(sub->dlg, "");
+				RND_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_config);
+				save->womit_config = RND_DAD_CURRENT(sub->dlg);
+		RND_DAD_END(sub->dlg);
+		RND_DAD_BEGIN_HBOX(sub->dlg);
+			RND_DAD_LABEL(sub->dlg, "Omit styles");
+				RND_DAD_HELP(sub->dlg, "Do not save the routing style subtree\nThe resulting file will have no\nrouting styles");
+			RND_DAD_BOOL(sub->dlg, "");
+				RND_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_styles);
+				save->womit_styles = RND_DAD_CURRENT(sub->dlg);
+		RND_DAD_END(sub->dlg);
 	}
 	return save;
 }

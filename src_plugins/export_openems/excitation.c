@@ -38,7 +38,7 @@ typedef struct {
 } exc_data_t;
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	int wselector, wtab;
 	int selected;
@@ -163,22 +163,22 @@ static rnd_bool to_hz(const char *s, double *out)
 /** gaussian **/
 static void exc_gaus_dad(int idx)
 {
-	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
-		PCB_DAD_LABEL(exc_ctx.dlg, "fc");
+	RND_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
+		RND_DAD_LABEL(exc_ctx.dlg, "fc");
 		PCB_DAD_SPIN_FREQ(exc_ctx.dlg);
-			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
-			PCB_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency\nbandwidth is 2*fc");
-			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
-			exc_ctx.exc_data[idx].w[I_FC] = PCB_DAD_CURRENT(exc_ctx.dlg);
+			RND_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
+			RND_DAD_HELP(exc_ctx.dlg, "20db Cutoff Frequency\nbandwidth is 2*fc");
+			RND_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
+			exc_ctx.exc_data[idx].w[I_FC] = RND_DAD_CURRENT(exc_ctx.dlg);
 
-		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
-		PCB_DAD_REAL(exc_ctx.dlg, "");
-			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
-			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
-			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
-			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
+		RND_DAD_LABEL(exc_ctx.dlg, "f0");
+		RND_DAD_REAL(exc_ctx.dlg, "");
+			RND_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
+			RND_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
+			RND_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
+			exc_ctx.exc_data[idx].w[I_F0] = RND_DAD_CURRENT(exc_ctx.dlg);
 
-	PCB_DAD_END(exc_ctx.dlg);
+	RND_DAD_END(exc_ctx.dlg);
 }
 
 
@@ -210,14 +210,14 @@ static void exc_gaus_ser(int idx, int save)
 
 static void exc_sin_dad(int idx)
 {
-	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
-		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
-		PCB_DAD_REAL(exc_ctx.dlg, "");
-			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
-			PCB_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
-			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
-			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
-	PCB_DAD_END(exc_ctx.dlg);
+	RND_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
+		RND_DAD_LABEL(exc_ctx.dlg, "f0");
+		RND_DAD_REAL(exc_ctx.dlg, "");
+			RND_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
+			RND_DAD_HELP(exc_ctx.dlg, "Center Frequency [Hz]");
+			RND_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
+			exc_ctx.exc_data[idx].w[I_F0] = RND_DAD_CURRENT(exc_ctx.dlg);
+	RND_DAD_END(exc_ctx.dlg);
 }
 
 static char *exc_sin_get(int idx)
@@ -244,20 +244,20 @@ static void exc_sin_ser(int idx, int save)
 
 static void exc_cust_dad(int idx)
 {
-	PCB_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
-		PCB_DAD_LABEL(exc_ctx.dlg, "f0");
-		PCB_DAD_REAL(exc_ctx.dlg, "");
-			PCB_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
-			PCB_DAD_HELP(exc_ctx.dlg, "Nyquest Rate [Hz]");
-			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
-			exc_ctx.exc_data[idx].w[I_F0] = PCB_DAD_CURRENT(exc_ctx.dlg);
+	RND_DAD_BEGIN_TABLE(exc_ctx.dlg, 2);
+		RND_DAD_LABEL(exc_ctx.dlg, "f0");
+		RND_DAD_REAL(exc_ctx.dlg, "");
+			RND_DAD_MINMAX(exc_ctx.dlg, 0, FREQ_MAX);
+			RND_DAD_HELP(exc_ctx.dlg, "Nyquest Rate [Hz]");
+			RND_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
+			exc_ctx.exc_data[idx].w[I_F0] = RND_DAD_CURRENT(exc_ctx.dlg);
 
-		PCB_DAD_LABEL(exc_ctx.dlg, "function");
-		PCB_DAD_STRING(exc_ctx.dlg);
-			PCB_DAD_HELP(exc_ctx.dlg, "Custom function");
-			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
-			exc_ctx.exc_data[idx].w[I_FUNC] = PCB_DAD_CURRENT(exc_ctx.dlg);
-	PCB_DAD_END(exc_ctx.dlg);
+		RND_DAD_LABEL(exc_ctx.dlg, "function");
+		RND_DAD_STRING(exc_ctx.dlg);
+			RND_DAD_HELP(exc_ctx.dlg, "Custom function");
+			RND_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
+			exc_ctx.exc_data[idx].w[I_FUNC] = RND_DAD_CURRENT(exc_ctx.dlg);
+	RND_DAD_END(exc_ctx.dlg);
 }
 
 static char *exc_cust_get(int idx)
@@ -290,14 +290,14 @@ static void exc_cust_ser(int idx, int save)
 
 static void exc_user_dad(int idx)
 {
-	PCB_DAD_BEGIN_VBOX(exc_ctx.dlg);
-		PCB_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_LABEL(exc_ctx.dlg, "Specify the excitation setup script:");
-		PCB_DAD_TEXT(exc_ctx.dlg, NULL);
-			PCB_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-			PCB_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
-			exc_ctx.exc_data[idx].w[I_SCRIPT] = PCB_DAD_CURRENT(exc_ctx.dlg);
-	PCB_DAD_END(exc_ctx.dlg);
+	RND_DAD_BEGIN_VBOX(exc_ctx.dlg);
+		RND_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_LABEL(exc_ctx.dlg, "Specify the excitation setup script:");
+		RND_DAD_TEXT(exc_ctx.dlg, NULL);
+			RND_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			RND_DAD_CHANGE_CB(exc_ctx.dlg, exc_val_chg_cb);
+			exc_ctx.exc_data[idx].w[I_SCRIPT] = RND_DAD_CURRENT(exc_ctx.dlg);
+	RND_DAD_END(exc_ctx.dlg);
 }
 
 static char *exc_user_get(int idx)
@@ -332,7 +332,7 @@ static const exc_t excitations[] = {
 static void exc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	exc_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(exc_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -402,7 +402,7 @@ static void pcb_dlg_exc(void)
 	static const char *excnames[MAX_EXC+1];
 	const exc_t *e;
 	int n;
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (exc_ctx.active)
 		return; /* do not open another */
@@ -418,31 +418,31 @@ static void pcb_dlg_exc(void)
 		excnames[n] = NULL;
 	}
 
-	PCB_DAD_BEGIN_VBOX(exc_ctx.dlg);
-		PCB_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_HBOX(exc_ctx.dlg);
-			PCB_DAD_LABEL(exc_ctx.dlg, "Excitation type:");
-			PCB_DAD_ENUM(exc_ctx.dlg, excnames);
-				exc_ctx.wselector = PCB_DAD_CURRENT(exc_ctx.dlg);
-				PCB_DAD_CHANGE_CB(exc_ctx.dlg, select_cb);
-		PCB_DAD_END(exc_ctx.dlg);
-		PCB_DAD_BEGIN_TABBED(exc_ctx.dlg, excnames);
-			PCB_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_HIDE_TABLAB);
-			exc_ctx.wtab = PCB_DAD_CURRENT(exc_ctx.dlg);
+	RND_DAD_BEGIN_VBOX(exc_ctx.dlg);
+		RND_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HBOX(exc_ctx.dlg);
+			RND_DAD_LABEL(exc_ctx.dlg, "Excitation type:");
+			RND_DAD_ENUM(exc_ctx.dlg, excnames);
+				exc_ctx.wselector = RND_DAD_CURRENT(exc_ctx.dlg);
+				RND_DAD_CHANGE_CB(exc_ctx.dlg, select_cb);
+		RND_DAD_END(exc_ctx.dlg);
+		RND_DAD_BEGIN_TABBED(exc_ctx.dlg, excnames);
+			RND_DAD_COMPFLAG(exc_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_HIDE_TABLAB);
+			exc_ctx.wtab = RND_DAD_CURRENT(exc_ctx.dlg);
 			for(n = 0, e = excitations; e->name != NULL; n++,e++) {
 				if (e->dad != NULL)
 					e->dad(n);
 				else
-					PCB_DAD_LABEL(exc_ctx.dlg, "Not yet available.");
+					RND_DAD_LABEL(exc_ctx.dlg, "Not yet available.");
 			}
-		PCB_DAD_END(exc_ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(exc_ctx.dlg, clbtn);
-	PCB_DAD_END(exc_ctx.dlg);
+		RND_DAD_END(exc_ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(exc_ctx.dlg, clbtn);
+	RND_DAD_END(exc_ctx.dlg);
 
 	/* set up the context */
 	exc_ctx.active = 1;
 
-	PCB_DAD_NEW("openems_excitation", exc_ctx.dlg, "openems: excitation", &exc_ctx, pcb_false, exc_close_cb);
+	RND_DAD_NEW("openems_excitation", exc_ctx.dlg, "openems: excitation", &exc_ctx, pcb_false, exc_close_cb);
 
 	load_selector();
 	select_update(1);

@@ -31,7 +31,7 @@
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
 typedef struct {
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int gui_active;
 	rnd_coord_t pitch;
 	rnd_coord_t clearance;
@@ -43,7 +43,7 @@ static void pcb_line_of_vias_del_pre(pcb_subc_t *subc)
 	rnd_trace("LoV del_pre\n");
 
 	if ((lov != NULL) && (lov->gui_active))
-		PCB_DAD_FREE(lov->dlg);
+		RND_DAD_FREE(lov->dlg);
 
 	free(lov);
 	subc->extobj_data = NULL;
@@ -295,13 +295,13 @@ static void pcb_line_of_vias_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	pcb_subc_t *subc = caller_data;
 	line_of_vias *lov = subc->extobj_data;
 
-	PCB_DAD_FREE(lov->dlg);
+	RND_DAD_FREE(lov->dlg);
 	lov->gui_active = 0;
 }
 
 static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
 {
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	line_of_vias *lov;
 
 	rnd_trace("LoV: gui propedit\n");
@@ -314,19 +314,19 @@ static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
 	if (lov->gui_active)
 		return; /* do not open another */
 
-	PCB_DAD_BEGIN_VBOX(lov->dlg);
-		PCB_DAD_COMPFLAG(lov->dlg, RND_HATF_EXPFILL);
-		PCB_DAD_BEGIN_TABLE(lov->dlg, 2);
+	RND_DAD_BEGIN_VBOX(lov->dlg);
+		RND_DAD_COMPFLAG(lov->dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_TABLE(lov->dlg, 2);
 			pcb_exto_dlg_coord(lov->dlg, subc, "pitch", "extobj::pitch", "target distance between center of vias");
 			pcb_exto_dlg_coord(lov->dlg, subc, "clearance", "extobj::clearance", "global clarance value on vias");
-		PCB_DAD_END(lov->dlg);
-		PCB_DAD_BUTTON_CLOSES(lov->dlg, clbtn);
-	PCB_DAD_END(lov->dlg);
+		RND_DAD_END(lov->dlg);
+		RND_DAD_BUTTON_CLOSES(lov->dlg, clbtn);
+	RND_DAD_END(lov->dlg);
 
 	/* set up the context */
 	lov->gui_active = 1;
 
-	PCB_DAD_NEW("line_of_vias", lov->dlg, "Line of vias", subc, pcb_false, pcb_line_of_vias_close_cb);
+	RND_DAD_NEW("line_of_vias", lov->dlg, "Line of vias", subc, pcb_false, pcb_line_of_vias_close_cb);
 }
 
 static pcb_extobj_t pcb_line_of_vias = {

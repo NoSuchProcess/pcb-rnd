@@ -31,7 +31,7 @@
 const char *dlg_undo_cookie = "undo dialog";
 
 typedef struct{
-	PCB_DAD_DECL_NOINIT(dlg)
+	RND_DAD_DECL_NOINIT(dlg)
 	int wlist;
 	long serial; /* last seen undo serial, for updating the dialog on change */
 	int active; /* already open - allow only one instance */
@@ -44,7 +44,7 @@ extern uundo_list_t pcb_uundo;
 static void undo_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	undo_ctx_t *ctx = caller_data;
-	PCB_DAD_FREE(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(undo_ctx_t));
 }
 
@@ -103,7 +103,7 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 		cell[0] = rnd_strdup(ser);
 		cell[1] = rnd_strdup(mark);
 		cell[2] = rnd_strdup(payload);
-		pcb_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
 	/* restore cursor */
@@ -118,33 +118,33 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 static void pcb_dlg_undo(void)
 {
 	static const char *hdr[] = {"serial", "flg", "operation", NULL};
-	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
 	if (undo_ctx.active)
 		return; /* do not open another */
 
-	PCB_DAD_BEGIN_VBOX(undo_ctx.dlg);
-		PCB_DAD_COMPFLAG(undo_ctx.dlg, RND_HATF_EXPFILL);
-		PCB_DAD_TREE(undo_ctx.dlg, 3, 0, hdr);
-			PCB_DAD_COMPFLAG(undo_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-			undo_ctx.wlist = PCB_DAD_CURRENT(undo_ctx.dlg);
+	RND_DAD_BEGIN_VBOX(undo_ctx.dlg);
+		RND_DAD_COMPFLAG(undo_ctx.dlg, RND_HATF_EXPFILL);
+		RND_DAD_TREE(undo_ctx.dlg, 3, 0, hdr);
+			RND_DAD_COMPFLAG(undo_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			undo_ctx.wlist = RND_DAD_CURRENT(undo_ctx.dlg);
 
-		PCB_DAD_BEGIN_HBOX(undo_ctx.dlg);
-			PCB_DAD_BUTTON(undo_ctx.dlg, "Undo");
-				PCB_DAD_CHANGE_CB(undo_ctx.dlg, cb_undo);
-			PCB_DAD_BUTTON(undo_ctx.dlg, "Redo");
-				PCB_DAD_CHANGE_CB(undo_ctx.dlg, cb_redo);
-			PCB_DAD_BUTTON(undo_ctx.dlg, "Clear");
-				PCB_DAD_CHANGE_CB(undo_ctx.dlg, cb_clear);
-		PCB_DAD_END(undo_ctx.dlg);
-		PCB_DAD_BUTTON_CLOSES(undo_ctx.dlg, clbtn);
-	PCB_DAD_END(undo_ctx.dlg);
+		RND_DAD_BEGIN_HBOX(undo_ctx.dlg);
+			RND_DAD_BUTTON(undo_ctx.dlg, "Undo");
+				RND_DAD_CHANGE_CB(undo_ctx.dlg, cb_undo);
+			RND_DAD_BUTTON(undo_ctx.dlg, "Redo");
+				RND_DAD_CHANGE_CB(undo_ctx.dlg, cb_redo);
+			RND_DAD_BUTTON(undo_ctx.dlg, "Clear");
+				RND_DAD_CHANGE_CB(undo_ctx.dlg, cb_clear);
+		RND_DAD_END(undo_ctx.dlg);
+		RND_DAD_BUTTON_CLOSES(undo_ctx.dlg, clbtn);
+	RND_DAD_END(undo_ctx.dlg);
 
 	/* set up the context */
 	undo_ctx.active = 1;
 
-	PCB_DAD_DEFSIZE(undo_ctx.dlg, 300, 400);
-	PCB_DAD_NEW("undo", undo_ctx.dlg, "pcb-rnd undo list", &undo_ctx, pcb_false, undo_close_cb);
+	RND_DAD_DEFSIZE(undo_ctx.dlg, 300, 400);
+	RND_DAD_NEW("undo", undo_ctx.dlg, "pcb-rnd undo list", &undo_ctx, pcb_false, undo_close_cb);
 	undo_data2dlg(&undo_ctx);
 }
 
