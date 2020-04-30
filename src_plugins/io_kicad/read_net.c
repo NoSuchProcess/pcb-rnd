@@ -184,7 +184,7 @@ static int eeschema_load(const char *fname_net)
 	int c, ret = 0;
 	gsx_parse_res_t res;
 
-	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
+	fn = rnd_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
@@ -248,7 +248,7 @@ static int eeschema_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, c
 	if ((aspects != IMPORT_ASPECT_NETLIST) && (numargs == 1))
 		return 0; /* only pure netlist import is supported with a single input file */
 
-	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	f = rnd_fopen(&PCB->hidlib, args[0], "r");
 	if (f == NULL)
 		return 0;
 

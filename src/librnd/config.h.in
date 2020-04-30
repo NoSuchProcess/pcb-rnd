@@ -218,28 +218,28 @@ typedef @/local/pcb/long64@    pcb_long64_t;
 #	undef snprintf
 #	undef round
 #	undef strcasecmp
-#	define strdup      never_use_strdup__use_pcb_strdup
-#	define strndup     never_use_strndup__use_pcb_strndup
-#	define snprintf    never_use_snprintf__use_pcb_snprintf
-#	define round       never_use_round__use_pcb_round
-#	define strcasecmp  never_use_strcasecmp__use_pcb_strcasecmp
+#	define strdup      never_use_strdup__use_rnd_strdup
+#	define strndup     never_use_strndup__use_rnd_strndup
+#	define snprintf    never_use_snprintf__use_rnd_snprintf
+#	define round       never_use_round__use_rnd_round
+#	define strcasecmp  never_use_strcasecmp__use_rnd_strcasecmp
 #	ifndef PCB_SAFE_FS
 #		undef fopen
 #		undef popen
 #		undef system
 #		undef remove
 #		undef rename
-#		define fopen       never_use_fopen__use_pcb_fopen
-#		define popen       never_use_popen__use_pcb_popen
-#		define system      never_use_system__use_pcb_system
-#		define remove      never_use_remove__use_pcb_remove
-#		define rename      never_use_rename__use_pcb_rename
-#		define mkdir       never_use_mkdir__use_pcb_mkdir
-#		define unlink      never_use_unlink__use_pcb_unlink
-#		define opendir     never_use_opendir__use_pcb_opendir
-#		define readdir     never_use_readdir__use_pcb_readdir
-#		define closedir    never_use_closedir__use_pcb_closedir
-#		define access      never_use_access__use_pcb_file_readable
+#		define fopen       never_use_fopen__use_rnd_fopen
+#		define popen       never_use_popen__use_rnd_popen
+#		define system      never_use_system__use_rnd_system
+#		define remove      never_use_remove__use_rnd_remove
+#		define rename      never_use_rename__use_rnd_rename
+#		define mkdir       never_use_mkdir__use_rnd_mkdir
+#		define unlink      never_use_unlink__use_rnd_unlink
+#		define opendir     never_use_opendir__use_rnd_opendir
+#		define readdir     never_use_readdir__use_rnd_readdir
+#		define closedir    never_use_closedir__use_rnd_closedir
+#		define access      never_use_access__use_rnd_file_readable
 #	endif
 
 #endif

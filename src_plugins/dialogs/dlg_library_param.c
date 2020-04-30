@@ -562,7 +562,7 @@ static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
 #else
 	cmd = rnd_strdup_printf("%s --help", l->data.fp.loc_info);
 #endif
-	f = pcb_popen(NULL, cmd, "r");
+	f = rnd_popen(NULL, cmd, "r");
 	free(cmd);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not execute parametric footprint %s\n", l->data.fp.loc_info);
@@ -607,7 +607,7 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 		   not persistent (window palcement code) */
 		RND_DAD_DEFSIZE(library_ctx.pdlg, 700, 500);
 	}
-	pcb_pclose(f);
+	rnd_pclose(f);
 
 	RND_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, rnd_false, library_param_close_cb);
 

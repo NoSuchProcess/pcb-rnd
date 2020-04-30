@@ -69,7 +69,7 @@ static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const cha
 {
 	double mt, now = rnd_dtime();
 
-	mt = pcb_file_mtime(hidlib, path);
+	mt = rnd_file_mtime(hidlib, path);
 	if (update || (mt < 0) || ((now - mt) > CFG.cache_update_sec)) {
 		if (CFG.verbose) {
 			if (update)
@@ -103,7 +103,7 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 
 	cachedir = rnd_build_fn(hidlib, conf_order.plugins.order.cache);
 
-	pcb_mkdir(hidlib, cachedir, 0755);
+	rnd_mkdir(hidlib, cachedir, 0755);
 	wopts.post_file = "/dev/null";
 	path = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
 	if (pcbway_cahce_update_(hidlib, SERVER "/api/Address/GetCountry", path, 0, &wopts) != 0) {
@@ -134,7 +134,7 @@ static xmlDoc *pcbway_xml_load(const char *fn)
 	FILE *f;
 	char *efn = NULL;
 
-	f = pcb_fopen_fn(NULL, fn, "r", &efn);
+	f = rnd_fopen_fn(NULL, fn, "r", &efn);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "pcbway: can't open '%s' (%s) for read\n", fn, efn);
 		free(efn);
@@ -464,7 +464,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		return;
 	}
 
-	fx = pcb_fopen(&PCB->hidlib, tmpfn, "w");
+	fx = rnd_fopen(&PCB->hidlib, tmpfn, "w");
 	if (fx == NULL) {
 		rnd_tempfile_unlink(tmpfn);
 		rnd_message(RND_MSG_ERROR, "order_pcbway: can't open temp file\n");

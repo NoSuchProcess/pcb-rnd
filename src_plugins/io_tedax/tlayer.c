@@ -129,7 +129,7 @@ int tedax_layer_save(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *laynam
 	int res;
 	FILE *f;
 
-	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "tedax_layer_save(): can't open %s for writing\n", fn);
 		return -1;
@@ -365,7 +365,7 @@ int tedax_layers_load(pcb_data_t *data, const char *fn, const char *blk_id, int 
 	int res;
 	FILE *f;
 
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
+	f = rnd_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "tedax_layers_load(): can't open %s for reading\n", fn);
 		return -1;

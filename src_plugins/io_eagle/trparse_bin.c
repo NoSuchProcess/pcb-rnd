@@ -45,7 +45,7 @@ static int eagle_bin_load(trparse_t *pst, const char *fn)
 	FILE *f;
 	int res;
 
-	f = pcb_fopen(NULL, fn, "rb");
+	f = rnd_fopen(NULL, fn, "rb");
 	if (f == NULL)
 		return -1;
 

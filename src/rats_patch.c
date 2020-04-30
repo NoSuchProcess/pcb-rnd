@@ -617,7 +617,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		free(default_file);
 	}
 
-	f = pcb_fopen(&PCB->hidlib, fn, "w");
+	f = rnd_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't open netlist patch file %s for writing\n", fn);
 		RND_ACT_IRES(-1);

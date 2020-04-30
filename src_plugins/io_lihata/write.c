@@ -1552,7 +1552,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		lhtpers_ev_t events;
 
 		if (old_filename != NULL)
-			inf = pcb_fopen(&PCB->hidlib, old_filename, "r");
+			inf = rnd_fopen(&PCB->hidlib, old_filename, "r");
 
 		memset(&events, 0, sizeof(events));
 		events.text = check_text;
@@ -1569,7 +1569,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		if (res != 0) {
 			FILE *fe;
 			char *fe_name = rnd_concat(old_filename, ".mem.lht", NULL);
-			fe = pcb_fopen(&PCB->hidlib, fe_name, "w");
+			fe = rnd_fopen(&PCB->hidlib, fe_name, "w");
 			if (fe != NULL) {
 				clean_invalid(brd->root); /* remove invalid nodes placed for persistency */
 				res = lht_dom_export(brd->root, fe, "");
@@ -1624,7 +1624,7 @@ int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filen
 	lht_doc_t *doc;
 
 
-	f = pcb_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to open font file %s for write\n", Filename);
 		return -1;

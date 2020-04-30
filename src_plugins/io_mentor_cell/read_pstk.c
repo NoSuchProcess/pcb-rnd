@@ -395,7 +395,7 @@ static int io_mentor_cell_pstks(hkp_ctx_t *ctx, const char *fn)
 	FILE *fpstk;
 	node_t *n;
 
-	fpstk = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
+	fpstk = rnd_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fpstk == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open padstack hkp '%s' for read\n", fn);
 		return -1;

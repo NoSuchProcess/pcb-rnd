@@ -51,7 +51,7 @@ int edif_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char *
 	if (aspects != IMPORT_ASPECT_NETLIST)
 		return 0; /* only pure netlist import is supported */
 
-	fp = pcb_fopen(&PCB->hidlib, args[0], "r");
+	fp = rnd_fopen(&PCB->hidlib, args[0], "r");
 	if (fp == NULL)
 		return 0; /* only importing from a file is supported */
 

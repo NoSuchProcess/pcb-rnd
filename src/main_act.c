@@ -281,7 +281,7 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_snprintf(tmp, sizeof(tmp), "%mm", pcb_crosshair.Y);
 	rnd_setenv("PCB_RND_CROSSHAIR_Y_MM", tmp, 1);
 	rnd_setenv("PCB_RND_CURRENT_LAYER_NAME", PCB_CURRLAYER(PCB_ACT_BOARD)->name, 1);
-	RND_ACT_IRES(pcb_system(RND_ACT_HIDLIB, cmd));
+	RND_ACT_IRES(rnd_system(RND_ACT_HIDLIB, cmd));
 	return 0;
 }
 

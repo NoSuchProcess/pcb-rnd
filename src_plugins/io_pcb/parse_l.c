@@ -2621,7 +2621,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 			else
 				sprintf(tmps, "%s", Filename);
 
-			yyin = pcb_fopen(NULL, tmps, "r");
+			yyin = rnd_fopen(NULL, tmps, "r");
 			if (!yyin) {
 				free(tmps);
 				return (1);
@@ -2637,7 +2637,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 			p.hidlib = &PCB->hidlib;
 			command = rnd_build_argfn(Executable, &p);
 			/* open pipe to stdout of command */
-			if (*command == '\0' || (yyin = pcb_popen(NULL, command, "r")) == NULL) {
+			if (*command == '\0' || (yyin = rnd_popen(NULL, command, "r")) == NULL) {
 				rnd_popen_error_message(command);
 				free(command);
 				return (1);
@@ -2685,7 +2685,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 		return returncode;
 
 	if (used_popen)
-		return (pcb_pclose(yyin) ? 1 : returncode);
+		return (rnd_pclose(yyin) ? 1 : returncode);
 	return (fclose(yyin) ? 1 : returncode);
 }
 

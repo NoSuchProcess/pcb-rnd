@@ -286,7 +286,7 @@ static int gcode_export_layer_group(rnd_layergrp_id_t group, const char *purpose
 		pcb_layer_to_file_name_append(&fn, layer, flags, purpose, purpi, PCB_FNS_pcb_rnd);
 		gds_append_str(&fn, ".cnc");
 
-		gctx.f = pcb_fopen_askovr(&gctx.pcb->hidlib, fn.array, "w", NULL);
+		gctx.f = rnd_fopen_askovr(&gctx.pcb->hidlib, fn.array, "w", NULL);
 		if (gctx.f != NULL)
 			gcode_print_header();
 
@@ -345,7 +345,7 @@ static void gcode_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 
 	if (gctx.cam.active) {
-		gctx.f = pcb_fopen_askovr(&pcb->hidlib, gctx.cam.fn, "w", NULL);
+		gctx.f = rnd_fopen_askovr(&pcb->hidlib, gctx.cam.fn, "w", NULL);
 		if (gctx.f != NULL)
 			gcode_print_header();
 	}

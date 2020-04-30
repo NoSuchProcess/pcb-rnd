@@ -120,7 +120,7 @@ static int hpgl_load(const char *fname)
 	ctx.conf.arc   = load_arc;
 	ctx.conf.poly  = load_poly;
 
-	f = pcb_fopen(&PCB->hidlib, fname, "r");
+	f = rnd_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Error opening HP-GL %s for read\n", fname);
 		return 1;

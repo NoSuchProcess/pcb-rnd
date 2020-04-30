@@ -58,7 +58,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 	node_t *n, *ncl, *nsch, *ns, *nln, *ndefault = NULL, *ncrs = NULL;
 	hkp_tree_t nc_tree; /* no need to keep the tree in ctx, no data is needed after the function returns */
 
-	fnc = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
+	fnc = rnd_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fnc == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open netclass hkp '%s' for read\n", fn);
 		return -1;
@@ -142,7 +142,7 @@ static int io_mentor_cell_netlist(hkp_ctx_t *ctx, const char *fn)
 	node_t *p, *nnet, *pinsect;
 	hkp_tree_t net_tree; /* no need to keep the tree in ctx, no data is needed after the function returns */
 
-	fnet = pcb_fopen(&ctx->pcb->hidlib, fn, "r");
+	fnet = rnd_fopen(&ctx->pcb->hidlib, fn, "r");
 	if (fnet == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open netprops hkp '%s' for read\n", fn);
 		return -1;

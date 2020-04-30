@@ -241,7 +241,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	rnd_path_resolve(&PCB->hidlib, working_, &working, 0, rnd_false);
 
 	/* Return error if the root is not a directory, to give other fp_ plugins a chance */
-	if ((is_root) && (!pcb_is_dir(&PCB->hidlib, working))) {
+	if ((is_root) && (!rnd_is_dir(&PCB->hidlib, working))) {
 		free(working);
 		return -1;
 	}
@@ -416,15 +416,15 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 /*fprintf(stderr, " cmd=%s\n",  cmd);*/
 			/* Make a copy of the output of the parametric so rewind() can be called on it */
 			fctx->field[F_TMPNAME].p = rnd_tempfile_name_new("pcb-rnd-pfp");
-			f = pcb_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "wb+");
+			f = rnd_fopen(&PCB->hidlib, (char *)fctx->field[F_TMPNAME].p, "wb+");
 			if (f != NULL) {
 				char buff[4096];
 				int len;
-				fp = pcb_popen(&PCB->hidlib, cmd, "r");
+				fp = rnd_popen(&PCB->hidlib, cmd, "r");
 				if (fp != NULL) {
 					while((len = fread(buff, 1, sizeof(buff), fp)) > 0)
 						fwrite(buff, 1, len, f);
-					pcb_pclose(fp);
+					rnd_pclose(fp);
 				}
 				else
 					rnd_message(RND_MSG_ERROR, "Parametric footprint: failed to execute %s\n", cmd);
@@ -433,7 +433,7 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 			free(cmd);
 		}
 		else
-			f = pcb_fopen(&PCB->hidlib, fullname, "rb");
+			f = rnd_fopen(&PCB->hidlib, fullname, "rb");
 		free(fullname);
 	}
 

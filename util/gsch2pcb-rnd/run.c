@@ -112,13 +112,13 @@ int build_and_run_command(const char * format_, ...)
 			printf("%s", SEP_STRING);
 		}
 
-		f = pcb_popen(NULL, cmd, "r");
+		f = rnd_popen(NULL, cmd, "r");
 		while(fgets(line, sizeof(line), f) != NULL) {
 			if (conf_g2pr.utils.gsch2pcb_rnd.verbose)
 				fputs(line, stdout);
 		}
 
-		if (pcb_pclose(f) == 0)
+		if (rnd_pclose(f) == 0)
 			result = TRUE;
 		else
 			fprintf(stderr, "Failed to execute external program\n");

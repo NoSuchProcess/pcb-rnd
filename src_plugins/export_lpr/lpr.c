@@ -82,7 +82,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	filename = options[HA_lprcommand].str;
 
 	printf("LPR: open %s\n", filename);
-	f = pcb_popen(NULL, filename, "w");
+	f = rnd_popen(NULL, filename, "w");
 	if (!f) {
 		perror(filename);
 		return;
@@ -90,7 +90,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	ps_hid_export_to_file(f, options, NULL);
 
-	pcb_pclose(f);
+	rnd_pclose(f);
 }
 
 static int lpr_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)

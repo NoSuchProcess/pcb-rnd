@@ -234,12 +234,12 @@ static int ltspice_load(const char *fname_net, const char *fname_asc)
 	FILE *fn, *fa;
 	int ret = 0;
 
-	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
+	fn = rnd_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
 	}
-	fa = pcb_fopen(&PCB->hidlib, fname_asc, "r");
+	fa = rnd_fopen(&PCB->hidlib, fname_asc, "r");
 	if (fa == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_asc);
 		fclose(fn);
@@ -333,7 +333,7 @@ static int ltspice_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 	if (!rnd_file_readable(fname_net))
 		goto quit;
 
-	f = pcb_fopen(&PCB->hidlib, fname_asc, "r");
+	f = rnd_fopen(&PCB->hidlib, fname_asc, "r");
 	if (f == NULL)
 		goto quit;
 

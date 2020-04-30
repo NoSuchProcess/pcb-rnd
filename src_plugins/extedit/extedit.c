@@ -117,9 +117,9 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 	subs.hidlib = &PCB->hidlib;
 	cmd = rnd_build_argfn(mth->command, &subs);
 
-	/* Don't use pcb_system() because that blocks the current process and the
+	/* Don't use rnd_system() because that blocks the current process and the
 	   GUI toolkit won't have a chance to handle expose events */
-	fc = pcb_popen(&PCB->hidlib, cmd, "r");
+	fc = rnd_popen(&PCB->hidlib, cmd, "r");
 
 	if (rnd_gui != NULL) {
 		int fd = rnd_fileno(fc);
@@ -266,7 +266,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				rnd_conf_save_file(&PCB->hidlib, NULL, NULL, RND_CFR_DESIGN, tmp_cfg_fn);
 
-				f = pcb_fopen(&PCB->hidlib, tmp_fn, "w");
+				f = rnd_fopen(&PCB->hidlib, tmp_fn, "w");
 				if (f == NULL) {
 					rnd_message(RND_MSG_ERROR, "Failed to open temporary file\n");
 					goto quit1;

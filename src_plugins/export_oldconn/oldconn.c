@@ -248,7 +248,7 @@ static FILE *pcb_check_and_open_file(const char *Filename)
 			if (response != 1)
 				return NULL;
 		}
-		if ((fp = pcb_fopen_askovr(&PCB->hidlib, Filename, "w", NULL)) == NULL)
+		if ((fp = rnd_fopen_askovr(&PCB->hidlib, Filename, "w", NULL)) == NULL)
 			rnd_open_error_message(Filename);
 	}
 	return fp;

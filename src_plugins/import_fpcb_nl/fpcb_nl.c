@@ -65,7 +65,7 @@ static int fpcb_nl_load(const char *fn)
 	enum { MODE_NONE, MODE_PART, MODE_NET, MODE_SIGNAL } mode = MODE_NONE;
 	int anon = 0;
 
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
+	f = rnd_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't open %s for read\n", fn);
 		return -1;
@@ -194,7 +194,7 @@ static int fpcb_nl_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported */
 
-	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	f = rnd_fopen(&PCB->hidlib, args[0], "r");
 	if (f == NULL)
 		return 0;
 

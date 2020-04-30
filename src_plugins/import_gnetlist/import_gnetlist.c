@@ -60,7 +60,7 @@ int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs < 1))
 		return 0; /* only pure netlist import is supported, only if there are files */
 
-	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	f = rnd_fopen(&PCB->hidlib, args[0], "r");
 	if (f == NULL)
 		return 0;
 
@@ -126,7 +126,7 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	}
 	for(n = 0; n < numfns; n++)
 		free(cmd[n+8]);
-	pcb_unlink(&PCB->hidlib, tmpfn);
+	rnd_unlink(&PCB->hidlib, tmpfn);
 	free(cmd);
 	return res;
 }

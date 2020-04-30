@@ -980,7 +980,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 		default_file = rnd_strdup(fname);
 	}
 
-	f = pcb_fopen_askovr(&PCB->hidlib, fname, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, fname, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not open '%s' for write\n", fname);
 		return;
@@ -1010,7 +1010,7 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 		default_file = rnd_strdup(fname);
 	}
 
-	f = pcb_fopen(&PCB->hidlib, fname, "r");
+	f = rnd_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not open '%s' for read\n", fname);
 		return;

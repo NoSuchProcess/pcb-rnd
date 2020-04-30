@@ -202,7 +202,7 @@ static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &filename);
 
-	f = pcb_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
 	if (!f) {
 		perror(filename);
 		return;

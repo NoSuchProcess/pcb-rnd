@@ -23,7 +23,7 @@
   - use getenv() instead of g_getenv(): on windows this won't do recursive variable expansion
   - use rnd-specific .scm
   - use pcb-rnd's conf system
-  - use pcb_popen() instead of glib's spawn (stderr is always printed to stderr)
+  - use rnd_popen() instead of glib's spawn (stderr is always printed to stderr)
  */
 
 #include "config.h"
@@ -215,7 +215,7 @@ static void load_project(char * path)
 	char *s, buf[1024], config[32], arg[768];
 	int n;
 
-	f = pcb_fopen(NULL, path, "r");
+	f = rnd_fopen(NULL, path, "r");
 	if (!f)
 		return;
 

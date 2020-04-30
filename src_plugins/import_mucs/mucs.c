@@ -90,7 +90,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			default_file = rnd_strdup(fname);
 	}
 
-	fi = pcb_fopen(&PCB->hidlib, fname, "r");
+	fi = rnd_fopen(&PCB->hidlib, fname, "r");
 	if (!fi) {
 		rnd_message(RND_MSG_ERROR, "Can't load mucs unixplot file %s for read\n", fname);
 		RND_ACT_IRES(1);

@@ -53,7 +53,7 @@ static int net_action_support_prio(pcb_plug_import_t *ctx, unsigned int aspects,
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported from a single file*/
 
-	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	f = rnd_fopen(&PCB->hidlib, args[0], "r");
 	if (f == NULL)
 		return 0;
 

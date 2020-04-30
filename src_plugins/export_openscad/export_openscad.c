@@ -311,7 +311,7 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &filename);
 
-	f = pcb_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, filename, "wb", NULL);
 	if (!f) {
 		perror(filename);
 		return;
@@ -611,7 +611,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, scad_export_poly, name = argv[1].val.str);
 
-	f = pcb_fopen_askovr(&PCB->hidlib, name, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, name, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to open %s for writing\n", name);
 		RND_ACT_IRES(-1);

@@ -382,7 +382,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else
 			name = rnd_strdup(fn);
 
-		f = pcb_fopen(RND_ACT_HIDLIB, name, "w");
+		f = rnd_fopen(RND_ACT_HIDLIB, name, "w");
 		if (f == NULL) {
 			rnd_message(RND_MSG_ERROR, "Failed to open %s for write\n", name);
 			free(name);
@@ -439,7 +439,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			FILE *f;
 			char *fullname = rnd_strdup_printf("%s.%ld%s%s", name, (long)sit.count, sep, ending);
 
-			f = pcb_fopen(RND_ACT_HIDLIB, fullname, "w");
+			f = rnd_fopen(RND_ACT_HIDLIB, fullname, "w");
 			free(fullname);
 			if (f != NULL) {
 				if (p->write_subcs_head(p, &udata, f, 0, 1) == 0) {

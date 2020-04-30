@@ -896,7 +896,7 @@ int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
 	char *s, line[4096];
 	int res = 0;
 
-	f = pcb_fopen(hidlib, fn, "r");
+	f = rnd_fopen(hidlib, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "rnd_act_execute_file(): Could not open actions file \"%s\".\n", fn);
 		return 1;

@@ -59,7 +59,7 @@ static int prefix_mkdir(char *arg, char **filename)
 			next = strrchr(curr, RND_DIR_SEPARATOR_C);
 			if (next != NULL)
 				*next = '\0';
-			pcb_mkdir(&PCB->hidlib, arg, 0755);
+			rnd_mkdir(&PCB->hidlib, arg, 0755);
 			if (next != NULL) {
 				*next = RND_DIR_SEPARATOR_C;
 				next++;
@@ -145,7 +145,7 @@ static int cam_exec(cam_ctx_t *ctx)
 	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
 	int ovr = 0, *old_ovr;
 
-	old_ovr = pcb_batched_ask_ovr_init(&PCB->hidlib, &ovr);
+	old_ovr = rnd_batched_ask_ovr_init(&PCB->hidlib, &ovr);
 
 	if (ctx->has_partial)
 		pcb_data_clear_flag(PCB->Data, PCB_FLAG_EXPORTSEL, 0, 0);
@@ -177,7 +177,7 @@ static int cam_exec(cam_ctx_t *ctx)
 		rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 
-	pcb_batched_ask_ovr_uninit(&PCB->hidlib, old_ovr);
+	rnd_batched_ask_ovr_uninit(&PCB->hidlib, old_ovr);
 	return res;
 }
 

@@ -445,7 +445,7 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	if (fn == NULL)
 		return;
 
-	f = pcb_fopen(&PCB->hidlib, fn, "w");
+	f = rnd_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't open %s for write\n", fn);
 		return;
@@ -474,7 +474,7 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	if (fn == NULL)
 		return;
 
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
+	f = rnd_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't open %s for read\n", fn);
 		return;

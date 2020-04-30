@@ -381,7 +381,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	f = pcb_fopen(&PCB->hidlib, fname, "r");
+	f = rnd_fopen(&PCB->hidlib, fname, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't open %s for read\n", fname);
 		RND_ACT_IRES(1);
@@ -446,7 +446,7 @@ static int ipcd356_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported */
 
-	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	f = rnd_fopen(&PCB->hidlib, args[0], "r");
 	if (f == NULL)
 		return 0;
 

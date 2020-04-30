@@ -45,7 +45,7 @@ static int gd_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn, gdIm
 	gdImagePtr gdi;
 	FILE *f;
 
-	f = pcb_fopen(hidlib, fn, "rb");
+	f = rnd_fopen(hidlib, fn, "rb");
 	if (f == NULL)
 		return -1;
 	gdi = loader(f);

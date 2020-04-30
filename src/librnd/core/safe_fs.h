@@ -29,8 +29,8 @@
    of the % substitutions will not be performed (the ones that depend on
    design (file) name) */
 
-#ifndef PCB_SAFE_FS_H
-#define PCB_SAFE_FS_H
+#ifndef RND_SAFE_FS_H
+#define RND_SAFE_FS_H
 
 #include <stdio.h>
 #include <librnd/core/global_typedefs.h>
@@ -38,46 +38,46 @@
 /* file name templating wrappers around file system calls; later they
    will also execute checks to avoid unsafe access */
 
-FILE *pcb_fopen(rnd_hidlib_t *hidlib, const char *path, const char *mode);
-FILE *pcb_fopen_askovr(rnd_hidlib_t *hidlib, const char *path, const char *mode, int *all);
-FILE *pcb_popen(rnd_hidlib_t *hidlib, const char *cmd, const char *mode);
-int pcb_pclose(FILE *f);
-int pcb_system(rnd_hidlib_t *hidlib, const char *cmd);
-int pcb_remove(rnd_hidlib_t *hidlib, const char *path);
-int pcb_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path);
-int pcb_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode);
-int pcb_unlink(rnd_hidlib_t *hidlib, const char *path);
+FILE *rnd_fopen(rnd_hidlib_t *hidlib, const char *path, const char *mode);
+FILE *rnd_fopen_askovr(rnd_hidlib_t *hidlib, const char *path, const char *mode, int *all);
+FILE *rnd_popen(rnd_hidlib_t *hidlib, const char *cmd, const char *mode);
+int rnd_pclose(FILE *f);
+int rnd_system(rnd_hidlib_t *hidlib, const char *cmd);
+int rnd_remove(rnd_hidlib_t *hidlib, const char *path);
+int rnd_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path);
+int rnd_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode);
+int rnd_unlink(rnd_hidlib_t *hidlib, const char *path);
 
 
 /* Batched ask-overwrite in storage provided by the caller; the return value
    of the init() call needs to be passed to the uninit() so nested batching is
    possible. */
-int *pcb_batched_ask_ovr_init(rnd_hidlib_t *hidlib, int *storage);
-void pcb_batched_ask_ovr_uninit(rnd_hidlib_t *hidlib, int *init_retval);
+int *rnd_batched_ask_ovr_init(rnd_hidlib_t *hidlib, int *storage);
+void rnd_batched_ask_ovr_uninit(rnd_hidlib_t *hidlib, int *init_retval);
 
 
 /* Return the size of non-large files; on error or for large files
    (size larger than the value long can hold) return -1 */
-long pcb_file_size(rnd_hidlib_t *hidlib, const char *path);
+long rnd_file_size(rnd_hidlib_t *hidlib, const char *path);
 
 /* Return -1 on error or the last modification time (in sec from epoch) */
-double pcb_file_mtime(rnd_hidlib_t *hidlib, const char *path);
+double rnd_file_mtime(rnd_hidlib_t *hidlib, const char *path);
 
 /* Return non-zero if path is a directory */
-int pcb_is_dir(rnd_hidlib_t *hidlib, const char *path);
+int rnd_is_dir(rnd_hidlib_t *hidlib, const char *path);
 
 /* Check if path could be open with mode; if yes, return the substituted/expanded
    file name, if no, return NULL */
-char *pcb_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode);
+char *rnd_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode);
 
-/* Same as pcb_fopen(), but on success load fn_out() with the malloc()'d
+/* Same as rnd_fopen(), but on success load fn_out() with the malloc()'d
    file name as it looked after the substitution */
-FILE *pcb_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out);
+FILE *rnd_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out);
 
 /* Open a file given as a basename fn, under the directory dir, optionally
    doing a recusrive search in the directory tree. If full_path is not NULL,
    and the call succeeds, load it with the full path of the file opened. */
-FILE *pcb_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
+FILE *rnd_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
 
 
 #include <librnd/core/conf.h>
@@ -89,6 +89,6 @@ FILE *pcb_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const 
    (or NULL on failure); the caller needs to call free() on it.
    If recursive is set, all subcirectories under each path is also searched for the file.
    */
-FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
+FILE *rnd_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
 
 #endif

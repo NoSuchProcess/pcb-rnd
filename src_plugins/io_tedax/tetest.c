@@ -159,7 +159,7 @@ int tedax_etest_save(pcb_board_t *pcb, const char *etestid, const char *fn)
 	int res;
 	FILE *f;
 
-	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "tedax_etest_save(): can't open %s for writing\n", fn);
 		return -1;

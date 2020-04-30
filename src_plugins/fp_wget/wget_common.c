@@ -51,7 +51,7 @@ static int mkdirp(const char *dir)
 	len = rnd_snprintf(buff, sizeof(buff), "mkdir -p '%s'", dir);
 	if (len >= sizeof(buff)-1)
 		return -1;
-	return pcb_system(NULL, buff);
+	return rnd_system(NULL, buff);
 }
 
 int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, fp_get_mode mode)
@@ -98,12 +98,12 @@ int fp_wget_open(const char *url, const char *cache_path, FILE **f, int *fctx, f
 /*			rnd_trace("------res=%d\n", res); */
 			if ((res != 0) && (res != 768)) { /* some versions of wget will return error on -c if the file doesn't need update; try to guess whether it's really an error */
 				/* when wget fails, a 0-long file might be left there - remove it so it won't block new downloads */
-				pcb_remove(NULL, cmd);
+				rnd_remove(NULL, cmd);
 			}
 		}
 		if (f != NULL) {
 			sprintf(cmd, "%s/%s", cache_path, cdir);
-			*f = pcb_fopen(NULL, cmd, "rb");
+			*f = rnd_fopen(NULL, cmd, "rb");
 			if (*f == NULL)
 				goto error;
 			*fctx = FCTX_FOPEN;
@@ -128,7 +128,7 @@ int fp_wget_close(FILE **f, int *fctx)
 		return -1;
 
 	switch(*fctx) {
-		case FCTX_POPEN: pcb_pclose(*f); *f = NULL; return 0;
+		case FCTX_POPEN: rnd_pclose(*f); *f = NULL; return 0;
 		case FCTX_FOPEN: fclose(*f); *f = NULL; return 0;
 	}
 
@@ -172,7 +172,7 @@ int md5_cmp_free(const char *last_fn, char *md5_last, char *md5_new)
 
 	if ((md5_last == NULL) || (strcmp(md5_last, md5_new) != 0)) {
 		FILE *f;
-		f = pcb_fopen(NULL, last_fn, "w");
+		f = rnd_fopen(NULL, last_fn, "w");
 		fputs(md5_new, f);
 		fclose(f);
 		changed = 1;

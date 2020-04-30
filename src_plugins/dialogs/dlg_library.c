@@ -326,7 +326,7 @@ static void library_select_show_param_example(library_ctx_t *ctx, pcb_fplibrary_
 			}
 		}
 	}
-	pcb_pclose(f);
+	rnd_pclose(f);
 }
 
 static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)

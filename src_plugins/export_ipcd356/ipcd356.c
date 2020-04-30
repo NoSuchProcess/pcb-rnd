@@ -461,7 +461,7 @@ static void ipcd356_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &fn);
 
-	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't open %s for write\n", fn);
 		return;

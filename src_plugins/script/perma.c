@@ -59,7 +59,7 @@ static void perma_script_load_conf(const char *dir)
 	long succ = 0;
 
 	rnd_snprintf(path, sizeof(path), "%s%c%s", dir, RND_DIR_SEPARATOR_C, "scripts.lht");
-	f = pcb_fopen(NULL, path, "r");
+	f = rnd_fopen(NULL, path, "r");
 	if (f == NULL)
 		return; /* non-existing or unreadable file is no error */
 	doc = lht_dom_load_stream(f, path, &errmsg);

@@ -59,7 +59,7 @@ lht_doc_t *rnd_hid_cfg_load_lht(rnd_hidlib_t *hidlib, const char *filename)
 	lht_doc_t *doc;
 	int error = 0;
 
-	f = pcb_fopen(hidlib, filename, "r");
+	f = rnd_fopen(hidlib, filename, "r");
 	if (f == NULL)
 		return NULL;
 

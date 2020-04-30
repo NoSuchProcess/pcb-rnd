@@ -286,7 +286,7 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		filename = "pcb.dxf";
 
 	if (dxf_cam.fn_template == NULL) {
-		dxf_ctx.f = pcb_fopen_askovr(&PCB->hidlib, dxf_cam.active ? dxf_cam.fn : filename, "wb", NULL);
+		dxf_ctx.f = rnd_fopen_askovr(&PCB->hidlib, dxf_cam.active ? dxf_cam.fn : filename, "wb", NULL);
 		if (!dxf_ctx.f) {
 			perror(filename);
 			return;
@@ -303,7 +303,7 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	else {
 		char *real_fn;
 		dxf_ctx.temp = NULL;
-		real_fn = pcb_fopen_check(&PCB->hidlib, fn, "r");
+		real_fn = rnd_fopen_check(&PCB->hidlib, fn, "r");
 		if (real_fn != NULL)
 			dxf_ctx.temp = lht_dom_load(real_fn, &errmsg);
 		free(real_fn);
@@ -367,7 +367,7 @@ static int dxf_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 			fclose(dxf_ctx.f);
 		}
 
-		dxf_ctx.f = pcb_fopen_askovr(&PCB->hidlib, dxf_cam.fn, "wb", NULL);
+		dxf_ctx.f = rnd_fopen_askovr(&PCB->hidlib, dxf_cam.fn, "wb", NULL);
 		if (!dxf_ctx.f) {
 			perror(dxf_cam.fn);
 			return 0;

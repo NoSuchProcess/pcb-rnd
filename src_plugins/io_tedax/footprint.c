@@ -314,7 +314,7 @@ int tedax_fp_save(pcb_data_t *data, const char *fn, long subc_idx)
 	int res;
 	FILE *f;
 
-	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "tedax_fp_save(): can't open %s for writing\n", fn);
 		return -1;
@@ -645,7 +645,7 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_i
 	FILE *f;
 	int ret = 0;
 
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
+	f = rnd_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fn);
 		return -1;

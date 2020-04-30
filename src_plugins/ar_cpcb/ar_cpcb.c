@@ -294,7 +294,7 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
 
-	f = pcb_fopen(&PCB->hidlib, fn, "r");
+	f = rnd_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not open %s for read\n", fn);
 		RND_ACT_IRES(-1);
@@ -321,7 +321,7 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, export_cpcb, fn = argv[1].val.str);
 
-	f = pcb_fopen(&PCB->hidlib, fn, "w");
+	f = rnd_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not open %s for write\n", fn);
 		RND_ACT_IRES(-1);
@@ -364,7 +364,7 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	f = pcb_fopen(&PCB->hidlib, tmpfn, "w");
+	f = rnd_fopen(&PCB->hidlib, tmpfn, "w");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not open temp file %s for write\n", tmpfn);
 		RND_ACT_IRES(-1);
@@ -383,7 +383,7 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	fclose(f);
 
 	cmdline = rnd_strdup_printf("%s < %s", cmd, tmpfn);
-	f = pcb_popen(&PCB->hidlib, cmdline, "r");
+	f = rnd_popen(&PCB->hidlib, cmdline, "r");
 	if (f != NULL) {
 		cpcb_load(PCB, f, &stk, NULL);
 		pclose(f);
@@ -395,7 +395,7 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-/*	pcb_remove(&PCB->hidlib, tmpfn);*/
+/*	rnd_remove(&PCB->hidlib, tmpfn);*/
 	free(cmdline);
 	cpcb_free_nets(&nmap);
 	return 0;

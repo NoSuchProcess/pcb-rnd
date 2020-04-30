@@ -91,7 +91,7 @@ void pcb_plug_io_err(rnd_hidlib_t *hidlib, int res, const char *what, const char
 			else {
 				FILE *f;
 				reason = "none of io plugins could successfully read file";
-				f = pcb_fopen(hidlib, filename, "r");
+				f = rnd_fopen(hidlib, filename, "r");
 				if (f != NULL) {
 					fclose(f);
 					comment = "(unknown/invalid file format?)";
@@ -206,7 +206,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	FILE *ft;
 	long design_root_cnt = rnd_conf_main_root_replace_cnt[RND_CFR_DESIGN];
 
-	ft = pcb_fopen(&Ptr->hidlib, Filename, "r");
+	ft = rnd_fopen(&Ptr->hidlib, Filename, "r");
 	len = pcb_test_parse_all(ft, Filename, fmt, PCB_IOT_PCB, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), ignore_missing, load_settings);
 	if (ft != NULL)
 		fclose(ft);
@@ -670,14 +670,14 @@ static int pcb_write_pipe(const char *Filename, rnd_bool thePcb, const char *fmt
 		}
 	}
 	printf("write to pipe \"%s\"\n", command.array);
-	if ((fp = pcb_popen(&PCB->hidlib, command.array, "w")) == NULL) {
+	if ((fp = rnd_popen(&PCB->hidlib, command.array, "w")) == NULL) {
 		rnd_popen_error_message(command.array);
 		return (-1);
 	}
 
 	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, rnd_false, subc_only, subc_idx);
 
-	return (pcb_pclose(fp) ? (-1) : result);
+	return (rnd_pclose(fp) ? (-1) : result);
 }
 
 #if !defined(RND_HAS_ATEXIT)
@@ -758,7 +758,7 @@ int pcb_load_buffer(rnd_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, co
 	int accept_total = 0;
 	FILE *ft;
 
-	ft = pcb_fopen(hidlib, fn, "r");
+	ft = rnd_fopen(hidlib, fn, "r");
 	len = pcb_test_parse_all(ft, fn, fmt, PCB_IOT_BUFFER, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
 	if (ft != NULL)
 		fclose(ft);
@@ -908,7 +908,7 @@ int pcb_write_pcb_file(const char *Filename, rnd_bool thePcb, const char *fmt, r
 		fn_tmp = malloc(len+8);
 		memcpy(fn_tmp, Filename, len);
 		strcpy(fn_tmp+len, ".old");
-		if (pcb_rename(NULL, Filename, fn_tmp) != 0) {
+		if (rnd_rename(NULL, Filename, fn_tmp) != 0) {
 			if (emergency) {
 				/* Try an alternative emergency file */
 				strcpy(fn_tmp+len, ".emr");
@@ -922,9 +922,9 @@ int pcb_write_pcb_file(const char *Filename, rnd_bool thePcb, const char *fmt, r
 	}
 
 	if (askovr)
-		fp = pcb_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
+		fp = rnd_fopen_askovr(&PCB->hidlib, Filename, "w", NULL);
 	else
-		fp = pcb_fopen(&PCB->hidlib, Filename, "w");
+		fp = rnd_fopen(&PCB->hidlib, Filename, "w");
 
 	if (fp == NULL) {
 		rnd_open_error_message(Filename);
@@ -936,7 +936,7 @@ int pcb_write_pcb_file(const char *Filename, rnd_bool thePcb, const char *fmt, r
 	fclose(fp);
 	if (fn_tmp != NULL) {
 		if ((result == 0) && (!conf_core.rc.keep_save_backups))
-			pcb_unlink(&PCB->hidlib, fn_tmp);
+			rnd_unlink(&PCB->hidlib, fn_tmp);
 		free(fn_tmp);
 	}
 	return result;
@@ -1010,7 +1010,7 @@ rnd_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 
 pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
 {
-	FILE *f = pcb_fopen(hl, fn, "r");
+	FILE *f = rnd_fopen(hl, fn, "r");
 	pcb_plug_fp_map_t *res = NULL;
 	pcb_plug_io_t *plug;
 

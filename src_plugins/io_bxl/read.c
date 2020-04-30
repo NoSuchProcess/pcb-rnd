@@ -586,7 +586,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	pcb_bxl_ctx_t bctx;
 	pcb_bxl_STYPE lval;
 
-	f = pcb_fopen(hl, filename, "rb");
+	f = rnd_fopen(hl, filename, "rb");
 	if (f == NULL)
 		return -1;
 
@@ -647,7 +647,7 @@ int io_bxl_test_parse2(rnd_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 	hdecode_t hctx;
 	pcb_bxl_ureglex_t lctx;
 	
-	f = pcb_fopen(hl, filename, "rb"); /* need to open it again, for binary access */
+	f = rnd_fopen(hl, filename, "rb"); /* need to open it again, for binary access */
 	if (f == NULL)
 		return 0;
 

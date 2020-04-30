@@ -71,7 +71,7 @@ int pcb_wget_disk(const char *url, const char *ofn, int update, const pcb_wget_o
 	int res;
 	char *cmd = pcb_wget_command(url, ofn, update, opts);
 
-	res = pcb_system(NULL, cmd);
+	res = rnd_system(NULL, cmd);
 	free(cmd);
 	return res;
 }
@@ -81,7 +81,7 @@ FILE *pcb_wget_popen(const char *url, int update, const pcb_wget_opts_t *opts)
 	FILE *f;
 	char *cmd = pcb_wget_command(url, "-", update, opts);
 
-	f = pcb_popen(NULL, cmd, "r");
+	f = rnd_popen(NULL, cmd, "r");
 	free(cmd);
 	return f;
 }

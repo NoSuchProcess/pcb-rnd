@@ -668,7 +668,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	FILE *fp;
 	subst_ctx_t ctx;
 
-	fp = pcb_fopen_askovr(&PCB->hidlib, xy_filename, "w", NULL);
+	fp = rnd_fopen_askovr(&PCB->hidlib, xy_filename, "w", NULL);
 	if (!fp) {
 		rnd_message(RND_MSG_ERROR, "Cannot open file %s for writing\n", xy_filename);
 		return 1;

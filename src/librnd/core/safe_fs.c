@@ -62,7 +62,7 @@ do { \
 	} \
 } while(0)
 
-FILE *pcb_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out)
+FILE *rnd_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, char **fn_out)
 {
 	FILE *f;
 	char *path_exp;
@@ -99,12 +99,12 @@ FILE *pcb_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, cha
 	return NULL;
 }
 
-FILE *pcb_fopen(rnd_hidlib_t *hidlib, const char *path, const char *mode)
+FILE *rnd_fopen(rnd_hidlib_t *hidlib, const char *path, const char *mode)
 {
-	return pcb_fopen_fn(hidlib, path, mode, NULL);
+	return rnd_fopen_fn(hidlib, path, mode, NULL);
 }
 
-FILE *pcb_fopen_askovr(rnd_hidlib_t *hidlib, const char *path, const char *mode, int *all)
+FILE *rnd_fopen_askovr(rnd_hidlib_t *hidlib, const char *path, const char *mode, int *all)
 {
 	if (hidlib->batch_ask_ovr != NULL)
 		all = hidlib->batch_ask_ovr;
@@ -113,7 +113,7 @@ FILE *pcb_fopen_askovr(rnd_hidlib_t *hidlib, const char *path, const char *mode,
 
 		/* if the action does not exist, use the old behavor: just overwrite anything */
 		if (fun != NULL) {
-			FILE *f = pcb_fopen(hidlib, path, "r");
+			FILE *f = rnd_fopen(hidlib, path, "r");
 			if (f != NULL) {
 				int res = 0;
 				fclose(f);
@@ -139,10 +139,10 @@ FILE *pcb_fopen_askovr(rnd_hidlib_t *hidlib, const char *path, const char *mode,
 			}
 		}
 	}
-	return pcb_fopen(hidlib, path, mode);
+	return rnd_fopen(hidlib, path, mode);
 }
 
-int *pcb_batched_ask_ovr_init(rnd_hidlib_t *hidlib, int *storage)
+int *rnd_batched_ask_ovr_init(rnd_hidlib_t *hidlib, int *storage)
 {
 	int *old = hidlib->batch_ask_ovr;
 	if (hidlib->batch_ask_ovr != NULL)
@@ -151,14 +151,14 @@ int *pcb_batched_ask_ovr_init(rnd_hidlib_t *hidlib, int *storage)
 	return old;
 }
 
-void pcb_batched_ask_ovr_uninit(rnd_hidlib_t *hidlib, int *init_retval)
+void rnd_batched_ask_ovr_uninit(rnd_hidlib_t *hidlib, int *init_retval)
 {
 	if (init_retval != NULL)
 		*init_retval = *hidlib->batch_ask_ovr;
 	hidlib->batch_ask_ovr = init_retval;
 }
 
-char *pcb_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode)
+char *rnd_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode)
 {
 	char *path_exp = rnd_build_fn(hidlib, path);
 
@@ -171,7 +171,7 @@ char *pcb_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode)
 	return NULL;
 }
 
-FILE *pcb_popen(rnd_hidlib_t *hidlib, const char *cmd, const char *mode)
+FILE *rnd_popen(rnd_hidlib_t *hidlib, const char *cmd, const char *mode)
 {
 	FILE *f = NULL;
 	char *cmd_exp = rnd_build_fn(hidlib, cmd);
@@ -187,13 +187,13 @@ FILE *pcb_popen(rnd_hidlib_t *hidlib, const char *cmd, const char *mode)
 	return f;
 }
 
-int pcb_pclose(FILE *f)
+int rnd_pclose(FILE *f)
 {
 	return pclose(f);
 }
 
 
-int pcb_system(rnd_hidlib_t *hidlib, const char *cmd)
+int rnd_system(rnd_hidlib_t *hidlib, const char *cmd)
 {
 	int res = -1;
 	char *cmd_exp = rnd_build_fn(hidlib, cmd);
@@ -209,7 +209,7 @@ int pcb_system(rnd_hidlib_t *hidlib, const char *cmd)
 	return res;
 }
 
-int pcb_remove(rnd_hidlib_t *hidlib, const char *path)
+int rnd_remove(rnd_hidlib_t *hidlib, const char *path)
 {
 	int res = -1;
 	char *path_exp = rnd_build_fn(hidlib, path);
@@ -224,7 +224,7 @@ int pcb_remove(rnd_hidlib_t *hidlib, const char *path)
 	return res;
 }
 
-int pcb_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path)
+int rnd_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path)
 {
 	int res = -1;
 	char *old_path_exp = rnd_build_fn(hidlib, old_path);
@@ -242,7 +242,7 @@ int pcb_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path)
 	return res;
 }
 
-int pcb_unlink(rnd_hidlib_t *hidlib, const char *path)
+int rnd_unlink(rnd_hidlib_t *hidlib, const char *path)
 {
 	int res;
 	char *path_exp = rnd_build_fn(hidlib, path);
@@ -283,7 +283,7 @@ static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *f
 
 	/* try the trivial: directly under this  dir */
 	rnd_snprintf(tmp, sizeof(tmp), "%s%c%s", from, RND_DIR_SEPARATOR_C, fn);
-	res = pcb_fopen(hidlib, tmp, mode);
+	res = rnd_fopen(hidlib, tmp, mode);
 
 	if (res != NULL) {
 		if (full_path != NULL)
@@ -320,7 +320,7 @@ static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *f
 	return NULL;
 }
 
-FILE *pcb_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive)
+FILE *rnd_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	if (full_path != NULL)
 		*full_path = NULL;
@@ -328,7 +328,7 @@ FILE *pcb_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const 
 	return pcb_fopen_at_(hidlib, dir, fn, mode, full_path, recursive);
 }
 
-FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
+FILE *rnd_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	FILE *res;
 	char *real_fn = rnd_build_fn(hidlib, fn);
@@ -341,7 +341,7 @@ FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const c
 		return NULL;
 
 	if (rnd_is_path_abs(fn)) {
-		res = pcb_fopen(hidlib, real_fn, mode);
+		res = rnd_fopen(hidlib, real_fn, mode);
 		if ((res != NULL) && (full_path != NULL))
 			*full_path = real_fn;
 		else
@@ -367,7 +367,7 @@ FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const c
 			if ((pl > 0) && (real_p[pl-1] == '/'))
 				real_p[pl-1] = '\0';
 	
-			res = pcb_fopen_at(hidlib, real_p, real_fn, mode, full_path, recursive);
+			res = rnd_fopen_at(hidlib, real_p, real_fn, mode, full_path, recursive);
 			free(real_p);
 
 			if (res != NULL) {
@@ -381,7 +381,7 @@ FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const c
 }
 
 extern int pcb_mkdir_(const char *path, int mode);
-int pcb_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode)
+int rnd_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode)
 {
 	CHECK("mkdir", "access", path, NULL, return -1);
 	CHECK("mkdir", "mkdir", path, NULL, return -1);
@@ -391,7 +391,7 @@ int pcb_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode)
 
 
 extern long pcb_file_size_(const char *path);
-long pcb_file_size(rnd_hidlib_t *hidlib, const char *path)
+long rnd_file_size(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_size", "access", path, NULL, return -1);
 	CHECK("file_size", "stat", path, NULL, return -1);
@@ -399,7 +399,7 @@ long pcb_file_size(rnd_hidlib_t *hidlib, const char *path)
 }
 
 extern int pcb_is_dir_(const char *path);
-int pcb_is_dir(rnd_hidlib_t *hidlib, const char *path)
+int rnd_is_dir(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("is_dir", "access", path, NULL, return -1);
 	CHECK("is_dir", "stat", path, NULL, return -1);
@@ -407,7 +407,7 @@ int pcb_is_dir(rnd_hidlib_t *hidlib, const char *path)
 }
 
 extern double pcb_file_mtime_(const char *path);
-double pcb_file_mtime(rnd_hidlib_t *hidlib, const char *path)
+double rnd_file_mtime(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_mtime", "access", path, NULL, return -1);
 	CHECK("file_mtime", "stat", path, NULL, return -1);

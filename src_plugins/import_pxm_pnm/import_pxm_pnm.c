@@ -71,7 +71,7 @@ static int pnm_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 	unsigned char *o;
 	int n, type;
 
-	f = pcb_fopen(hidlib, fn, "rb");
+	f = rnd_fopen(hidlib, fn, "rb");
 	if (f == NULL)
 		return -1;
 	

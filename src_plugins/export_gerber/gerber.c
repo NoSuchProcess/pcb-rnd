@@ -525,7 +525,7 @@ static int gerber_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const
 		pagecount++;
 		append_file_suffix(&fn_gds, group, layer, flags, purpose, purpi, 0, NULL);
 		if (f == NULL) { /* open a new file if we closed the previous (cam mode: only one file) */
-			f = pcb_fopen_askovr(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb", &gerber_ovr); /* Binary needed to force CR-LF */
+			f = rnd_fopen_askovr(&PCB->hidlib, gerber_cam.active ? gerber_cam.fn : filename, "wb", &gerber_ovr); /* Binary needed to force CR-LF */
 			if (f == NULL) {
 				rnd_message(RND_MSG_ERROR, "Error:  Could not open %s for writing.\n", filename);
 				return 1;

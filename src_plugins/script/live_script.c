@@ -130,7 +130,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 
 			strcpy(fn_end, de->d_name);
 
-			f = pcb_fopen(hl, fn, "r");
+			f = rnd_fopen(hl, fn, "r");
 			if (f == NULL)
 				continue;
 			while((s = fgets(line, sizeof(line), f)) != NULL) {
@@ -288,7 +288,7 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 	long numu;
 
 	fn = rnd_tempfile_name_new("live_script");
-	f = pcb_fopen(hl, fn, "w");
+	f = rnd_fopen(hl, fn, "w");
 	if (f == NULL) {
 		rnd_tempfile_unlink(fn);
 		rnd_message(RND_MSG_ERROR, "live_script: can't open temp file for write\n");
@@ -364,7 +364,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 			return 0;
 	}
 
-	f = pcb_fopen(hl, fn, "r");
+	f = rnd_fopen(hl, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "live_script: failed to open '%s' for read\n", fn);
 		return -1;
@@ -410,7 +410,7 @@ static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 			return 0;
 	}
 
-	f = pcb_fopen(hl, fn, "w");
+	f = rnd_fopen(hl, fn, "w");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "live_script: failed to open '%s' for write\n", fn);
 		return -1;

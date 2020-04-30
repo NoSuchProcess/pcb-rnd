@@ -166,7 +166,7 @@ int rnd_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
 	FILE *f;
 	rnd_logline_t *n;
 
-	f = pcb_fopen(hidlib, fn, "w");
+	f = rnd_fopen(hidlib, fn, "w");
 	if (f == NULL)
 		return -1;
 

@@ -2348,7 +2348,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 
 	cfg_dest = settings_dest;
 
-	realfn = pcb_fopen_check(NULL, Filename, "r");
+	realfn = rnd_fopen_check(NULL, Filename, "r");
 	if (realfn != NULL)
 		doc = lht_dom_load(realfn, &errmsg);
 	free(realfn);
@@ -2396,7 +2396,7 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 
 	cfg_dest = RND_CFR_invalid;
 
-	realfn = pcb_fopen_check(NULL, filename, "r");
+	realfn = rnd_fopen_check(NULL, filename, "r");
 	if (realfn != NULL)
 		doc = lht_dom_load(realfn, &errmsg);
 	free(realfn);
@@ -2492,7 +2492,7 @@ int io_lihata_parse_font(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filena
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
-	realfn = pcb_fopen_check(&PCB->hidlib, Filename, "r");
+	realfn = rnd_fopen_check(&PCB->hidlib, Filename, "r");
 	if (realfn != NULL)
 		doc = lht_dom_load(realfn, &errmsg);
 	free(realfn);

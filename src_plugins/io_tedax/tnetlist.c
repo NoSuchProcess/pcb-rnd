@@ -156,7 +156,7 @@ int tedax_net_load(const char *fname_net, int import_fp, const char *blk_id, int
 	FILE *fn;
 	int ret = 0;
 
-	fn = pcb_fopen(&PCB->hidlib, fname_net, "r");
+	fn = rnd_fopen(&PCB->hidlib, fname_net, "r");
 	if (fn == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
 		return -1;
@@ -232,7 +232,7 @@ int tedax_net_save(pcb_board_t *pcb, const char *netlistid, const char *fn)
 	int res;
 	FILE *f;
 
-	f = pcb_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
+	f = rnd_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "tedax_net_save(): can't open %s for writing\n", fn);
 		return -1;
@@ -255,7 +255,7 @@ static int tedaxnet_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, c
 		return 0; /* only pure netlist import is supported from a single file*/
 
 
-	f = pcb_fopen(&PCB->hidlib, args[0], "r");
+	f = rnd_fopen(&PCB->hidlib, args[0], "r");
 	if (f == NULL)
 		return 0;
 

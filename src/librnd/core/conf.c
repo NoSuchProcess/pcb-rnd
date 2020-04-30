@@ -189,7 +189,7 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		FILE *f;
 		char *efn;
 
-		f = pcb_fopen_fn(NULL, fn, "r", &efn);
+		f = rnd_fopen_fn(NULL, fn, "r", &efn);
 		if (f != NULL) { /* warn only if the file is there - missing file is normal */
 			rnd_message(RND_MSG_ERROR, "error: failed to load lht config: %s (%s)\n", fn, efn);
 			fclose(f);
@@ -491,7 +491,7 @@ const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *p
 
 	check:;
 	*try = res;
-	f = pcb_fopen_fn(NULL, res, "r", &efn);
+	f = rnd_fopen_fn(NULL, res, "r", &efn);
 	if (f != NULL) {
 		fclose(f);
 		strncpy(res, efn, sizeof(res)-1);
@@ -1908,7 +1908,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 	if (r != NULL) {
 		FILE *f;
 
-		f = pcb_fopen_fn(hidlib, fn, "w", &efn);
+		f = rnd_fopen_fn(hidlib, fn, "w", &efn);
 		if ((f == NULL) && (role == RND_CFR_USER)) {
 			/* create the directory and try again */
 			char *path = NULL, *end;
@@ -1927,10 +1927,10 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 			end = strrchr(path, '/');
 			if (end != NULL) {
 				*end = '\0';
-				if (pcb_mkdir(NULL, path, 0755) == 0) {
+				if (rnd_mkdir(NULL, path, 0755) == 0) {
 					rnd_message(RND_MSG_INFO, "Created directory %s for saving %s\n", path, fn);
 					*end = '/';
-					f = pcb_fopen(hidlib, path, "w");
+					f = rnd_fopen(hidlib, path, "w");
 				}
 				else
 					rnd_message(RND_MSG_ERROR, "Error: failed to create directory %s for saving %s\n", path, efn);
@@ -1962,7 +1962,7 @@ int rnd_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, rnd_conf_role_
 	if (at == NULL)
 		return -1;
 
-	f = pcb_fopen(hidlib, fn, "w");
+	f = rnd_fopen(hidlib, fn, "w");
 	if (f == NULL)
 		return -1;
 

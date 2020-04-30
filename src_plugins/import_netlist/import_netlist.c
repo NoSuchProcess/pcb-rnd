@@ -71,7 +71,7 @@ static int ReadNetlist(const char *filename)
 
 	ratcmd = conf_core.rc.rat_command;
 	if (RND_EMPTY_STRING_P(ratcmd)) {
-		fp = pcb_fopen(&PCB->hidlib, filename, "r");
+		fp = rnd_fopen(&PCB->hidlib, filename, "r");
 		if (!fp) {
 			rnd_message(RND_MSG_ERROR, "Cannot open %s for reading", filename);
 			return 1;
@@ -87,7 +87,7 @@ static int ReadNetlist(const char *filename)
 		command = rnd_build_argfn(conf_core.rc.rat_command, &p);
 
 		/* open pipe to stdout of command */
-		if (*command == '\0' || (fp = pcb_popen(&PCB->hidlib, command, "r")) == NULL) {
+		if (*command == '\0' || (fp = rnd_popen(&PCB->hidlib, command, "r")) == NULL) {
 			rnd_popen_error_message(command);
 			free(command);
 			return 1;
@@ -144,11 +144,11 @@ static int ReadNetlist(const char *filename)
 	}
 	if (!lines) {
 		rnd_message(RND_MSG_ERROR, "Empty netlist file!\n");
-		pcb_pclose(fp);
+		rnd_pclose(fp);
 		return 1;
 	}
 	if (used_popen)
-		pcb_pclose(fp);
+		rnd_pclose(fp);
 	else
 		fclose(fp);
 	pcb_ratspatch_make_edited(PCB);

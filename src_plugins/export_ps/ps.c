@@ -500,7 +500,7 @@ static FILE *psopen(const char *base, const char *which)
 		return NULL;
 
 	if (!global.multi_file)
-		return pcb_fopen_askovr(&PCB->hidlib, base, "w", NULL);
+		return rnd_fopen_askovr(&PCB->hidlib, base, "w", NULL);
 
 	buf = (char *) malloc(strlen(base) + strlen(which) + 5);
 
@@ -513,7 +513,7 @@ static FILE *psopen(const char *base, const char *which)
 	else {
 		sprintf(buf, "%s.%s.ps", base, which);
 	}
-	ps_open_file = pcb_fopen_askovr(&PCB->hidlib, buf, "w", &global.ovr_all);
+	ps_open_file = rnd_fopen_askovr(&PCB->hidlib, buf, "w", &global.ovr_all);
 	free(buf);
 	return ps_open_file;
 }
@@ -1378,11 +1378,11 @@ void ps_calibrate_1(rnd_hid_t *hid, double xval, double yval, int use_command)
 		const char *cmd = ps_calib_attribute_list[0].val.str;
 		while (*cmd == ' ' || *cmd == '|')
 			cmd++;
-		ps_cal_file = pcb_popen(&PCB->hidlib, cmd, "w");
+		ps_cal_file = rnd_popen(&PCB->hidlib, cmd, "w");
 		used_popen = 1;
 	}
 	else
-		ps_cal_file = pcb_fopen(&PCB->hidlib, ps_calib_attribute_list[0].val.str, "w");
+		ps_cal_file = rnd_fopen(&PCB->hidlib, ps_calib_attribute_list[0].val.str, "w");
 
 	for (c = 0; calib_lines[c]; c++)
 		fputs(calib_lines[c], ps_cal_file);
@@ -1400,7 +1400,7 @@ void ps_calibrate_1(rnd_hid_t *hid, double xval, double yval, int use_command)
 	fprintf(ps_cal_file, "%%%%EOF\n");
 
 	if (used_popen)
-		pcb_pclose(ps_cal_file);
+		rnd_pclose(ps_cal_file);
 	else
 		fclose(ps_cal_file);
 }
