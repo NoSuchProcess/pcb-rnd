@@ -86,7 +86,7 @@ digraph g {
 	cli          -> CFR_CLI         [label="built during\ncommand line argument\nparsing"]
 
 
-	hid_gtk [label="the GTK HID"]
+	hid_gtk [label="the preferences dialog"]
 
 	conf_core     -> hid_gtk [weight=100]
 	conf_hid_gtk  -> hid_gtk
