@@ -56,7 +56,7 @@ do { \
 } while(0)
 
 
-/* generic file name template substitution callbacks for pcb_strdup_subst:
+/* generic file name template substitution callbacks for rnd_strdup_subst:
     %P    pid
     %F    load-time file name of the current pcb
     %B    basename (load-time file name of the current pcb without path)

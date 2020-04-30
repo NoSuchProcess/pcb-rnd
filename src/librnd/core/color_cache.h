@@ -40,7 +40,7 @@ struct rnd_clrcache_s {
 	int hidsize;
 	rnd_clrcache_free_t hidfree;
 
-	void *user_data; /* the caller can set this up after pcb_clrcache_init and use it in hidfree() */
+	void *user_data; /* the caller can set this up after rnd_clrcache_init and use it in hidfree() */
 };
 
 RND_INLINE void rnd_clrcache_init(rnd_clrcache_t *cache, int hidsize, rnd_clrcache_free_t hidfree)

@@ -143,7 +143,7 @@ typedef struct {
 	void (*set_field_num)(rnd_hid_attribute_t *attr, const char *fieldname, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
 	void (*set_field_ptr)(rnd_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
 	void (*set_geo)(rnd_hid_attribute_t *attr, rnd_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
-	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the RND_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
+	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the RND_HATT_BEGIN_COMPOUND and RND_HATT_END_COMPOUND widget */
 } rnd_hid_compound_t;
 
 #include <librnd/core/hid_dad_spin.h>

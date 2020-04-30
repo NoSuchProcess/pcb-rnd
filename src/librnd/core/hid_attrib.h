@@ -63,7 +63,7 @@ typedef enum rnd_hid_attr_type_e {
 	RND_HATT_BEGIN_TABLE,         /* wdata_aux1 is the number of columns */
 	RND_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->wdata stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	RND_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (rnd_hid_compound_t *) stored in END's wdata */
-	RND_HATT_END                  /* close one level of PCB_HATT_* */
+	RND_HATT_END                  /* close one level of RND_HATT_* */
 } rnd_hid_attr_type_t;
 
 #define RND_HATT_IS_COMPOSITE(type) \
@@ -84,7 +84,7 @@ struct rnd_hid_attribute_s {
 
 	/* RND_HATT_ENUM: const char ** (NULL terminated list of values)
 	   RND_HATT_PICTURE & RND_HATT_PICBUTTON: const char **xpm
-	   RND_HATT_TREE and others: (pcb_hid_*_t *)  */
+	   RND_HATT_TREE and others: (rnd_hid_*_t *)  */
 	void *wdata; /* main widget data */
 	int wdata_aux1; /* auixiliary widget data - should phase out long term */
 

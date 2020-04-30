@@ -60,7 +60,7 @@ typedef struct {
 #define RND_DAD_SPIN_COORD(table) RND_DAD_SPIN_ANY(table, RND_DAD_SPIN_COORD, RND_HATT_COORD, 1, RND_UNIT_METRIC | RND_UNIT_IMPERIAL)
 #define RND_DAD_SPIN_FREQ(table) RND_DAD_SPIN_ANY(table, RND_DAD_SPIN_FREQ, RND_HATT_REAL, 1, RND_UNIT_FREQ)
 
-/* Return the widget-type (PCB_DAD_HATT) of a spinbox at the RND_HATT_END widget;
+/* Return the widget-type (RND_DAD_HATT) of a spinbox at the RND_HATT_END widget;
    useful for dispatching what value set to use */
 #define RND_DAD_SPIN_GET_TYPE(attr) \
 	((((attr)->type == RND_HATT_END) && (((rnd_hid_dad_spin_t *)((attr)->wdata))->cmp.free == rnd_dad_spin_free)) ? ((rnd_hid_dad_spin_t *)((attr)->wdata))->wtype : RND_HATT_END)
