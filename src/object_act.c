@@ -76,7 +76,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
 	RND_ACT_IRES(0);
 
-	if (!pcb_gui->edit_attributes) {
+	if (!rnd_gui->edit_attributes) {
 		rnd_message(RND_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
 		return FGW_ERR_UNKNOWN;
 	}
@@ -84,7 +84,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(id) {
 	case F_Layout:
 		{
-			pcb_gui->edit_attributes(pcb_gui, "Layout Attributes", &(pcb->Attributes));
+			rnd_gui->edit_attributes(rnd_gui, "Layout Attributes", &(pcb->Attributes));
 			return 0;
 		}
 
@@ -143,7 +143,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				buf = rnd_strdup("Unnamed Subcircuit's Attributes");
 
-			pcb_gui->edit_attributes(pcb_gui, buf, &(s->Attributes));
+			rnd_gui->edit_attributes(rnd_gui, buf, &(s->Attributes));
 			free(buf);
 			break;
 		}
@@ -1099,8 +1099,8 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				default:       RND_ACT_FAIL(subc); return 1;
 			}
 			/* have to manually trigger the update as it is not a conf item */
-			if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
-				pcb_gui->update_menu_checkbox(pcb_gui, NULL);
+			if ((rnd_gui != NULL) && (rnd_gui->update_menu_checkbox != NULL))
+				rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 			return 0;
 		case F_Hash:
 			{

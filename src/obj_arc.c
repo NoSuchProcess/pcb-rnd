@@ -1068,13 +1068,13 @@ void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(arc) && pcb_draw_term_hid_permission()) {
 			pcb_hid_set_line_cap(pcb_draw_out.active_padGC, rnd_cap_round);
 			pcb_hid_set_line_width(pcb_draw_out.active_padGC, thickness);
-			pcb_render->draw_arc(pcb_draw_out.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+			rnd_render->draw_arc(pcb_draw_out.active_padGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, thickness);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
-		pcb_render->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+		rnd_render->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 	}
 	else
 	{
@@ -1082,7 +1082,7 @@ void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 
 		if(info->xform->thin_draw)
-			pcb_render->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+			rnd_render->draw_arc(pcb_draw_out.fgGC, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 
 		if(info->xform->wireframe)
 			pcb_draw_wireframe_arc(pcb_draw_out.fgGC, arc, thickness);
@@ -1128,7 +1128,7 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 		pcb_lighten_color(color, &buf, 1.75);
 		color = &buf;
 	}
-	pcb_render->set_color(pcb_draw_out.fgGC, color);
+	rnd_render->set_color(pcb_draw_out.fgGC, color);
 	pcb_arc_draw_(info, arc, allow_term_gfx);
 }
 

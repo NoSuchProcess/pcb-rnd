@@ -61,7 +61,7 @@ static void build_st_line1(void)
 {
 	char kbd[128];
 	const char *flag = conf_core.editor.all_direction_lines ? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
-	pcb_hid_cfg_keys_t *kst = pcb_gui->key_state;
+	pcb_hid_cfg_keys_t *kst = rnd_gui->key_state;
 
 	if (kst != NULL) {
 		if (kst->seq_len_action > 0) {
@@ -141,24 +141,24 @@ static void status_st_pcb2dlg(void)
 	build_st_line1();
 	if (!conf_core.appearance.compact) {
 		build_st_line2();
-		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 1);
+		rnd_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 1);
 	}
 	hv.str = status.buf.array;
-	pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst1, &hv);
+	rnd_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst1, &hv);
 
 	if (conf_core.appearance.compact) {
 		status.buf.used = 0;
 		build_st_line2();
 		hv.str = status.buf.array;
-		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
+		rnd_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
 		if (!status.st_has_text)
-			pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 0);
+			rnd_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst2, 0);
 	}
 
 	status.buf.used = 0;
 	build_st_help();
-	pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst1, status.buf.array);
-	pcb_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst2, status.buf.array);
+	rnd_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst1, status.buf.array);
+	rnd_gui->attr_dlg_set_help(status.stsub.dlg_hid_ctx, status.wst2, status.buf.array);
 }
 
 static void status_rd_pcb2dlg(void)
@@ -175,20 +175,20 @@ static void status_rd_pcb2dlg(void)
 		status.buf.used = 0;
 		pcb_append_printf(&status.buf, "%m+%-mS", pcbhl_conf.editor.grid_unit->allow, pcb_crosshair.X);
 		hv.str = status.buf.array;
-		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
+		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
 
 		status.buf.used = 0;
 		pcb_append_printf(&status.buf, "%m+%-mS", pcbhl_conf.editor.grid_unit->allow, pcb_crosshair.Y);
 		hv.str = status.buf.array;
-		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[1], &hv);
-		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 0);
+		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[1], &hv);
+		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 0);
 	}
 	else {
 		status.buf.used = 0;
 		pcb_append_printf(&status.buf, "%m+%-mS %-mS", pcbhl_conf.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
 		hv.str = status.buf.array;
-		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
-		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
+		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
+		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
 	}
 
 	/* distance readout (left side box) */
@@ -216,25 +216,25 @@ static void status_rd_pcb2dlg(void)
 	}
 
 	hv.str = s1;
-	pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[0], &hv);
+	rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[0], &hv);
 	if (conf_core.appearance.compact) {
 		hv.str = s2;
-		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[1], &hv);
+		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[1], &hv);
 		hv.str = s3;
-		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[2], &hv);
-		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 0);
-		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 0);
+		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd1[2], &hv);
+		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 0);
+		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 0);
 	}
 	else {
-		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 1);
-		pcb_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 1);
+		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[1], 1);
+		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd1[2], 1);
 	}
 
 	if (status.last_unit != pcbhl_conf.editor.grid_unit) {
 		status.lock++;
 		status.last_unit = pcbhl_conf.editor.grid_unit;
 		hv.str = pcbhl_conf.editor.grid_unit->suffix;
-		pcb_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrdunit, &hv);
+		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrdunit, &hv);
 		status.lock--;
 	}
 }
@@ -304,7 +304,7 @@ static void status_docked_create_rd()
 
 void pcb_status_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL)) {
+	if ((PCB_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL)) {
 		status_docked_create_st();
 		if (pcb_hid_dock_enter(&status.stsub, RND_HID_DOCK_BOTTOM, "status") == 0) {
 			status.stsub_inited = 1;
@@ -353,17 +353,17 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (text != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = text;
-		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wsttxt, &hv);
+		rnd_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wsttxt, &hv);
 		hv.str = "";
-		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
-		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst1, 1);
-		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wsttxt, 0);
+		rnd_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wst2, &hv);
+		rnd_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst1, 1);
+		rnd_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wsttxt, 0);
 		status.st_has_text = 1;
 	}
 	else {
 		status.st_has_text = 0;
-		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst1, 0);
-		pcb_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wsttxt, 1);
+		rnd_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wst1, 0);
+		rnd_gui->attr_dlg_widget_hide(status.stsub.dlg_hid_ctx, status.wsttxt, 1);
 		status_st_pcb2dlg();
 	}
 

@@ -96,11 +96,11 @@ draw_serpentine_ui(serpentine_info_t * p_info)
 	const rnd_coord_t x2 = p_info->end.X + nx;
 	const rnd_coord_t y2 = p_info->end.Y + ny;
 	
-	pcb_render->set_color(pcb_crosshair.GC, "#808080" /*conf_core.appearance.color.attached*/ );
-	pcb_render->draw_line(pcb_crosshair.GC, p_info->start.X, p_info->start.Y, p_info->end.X, p_info->end.Y );
-	pcb_render->draw_line(pcb_crosshair.GC, p_info->start.X, p_info->start.Y, x1, y1 );
-	pcb_render->draw_line(pcb_crosshair.GC, p_info->end.X, p_info->end.Y, x2, y2 );
-	pcb_render->draw_line(pcb_crosshair.GC, x1, y1, x2, y2 );
+	rnd_render->set_color(pcb_crosshair.GC, "#808080" /*conf_core.appearance.color.attached*/ );
+	rnd_render->draw_line(pcb_crosshair.GC, p_info->start.X, p_info->start.Y, p_info->end.X, p_info->end.Y );
+	rnd_render->draw_line(pcb_crosshair.GC, p_info->start.X, p_info->start.Y, x1, y1 );
+	rnd_render->draw_line(pcb_crosshair.GC, p_info->end.X, p_info->end.Y, x2, y2 );
+	rnd_render->draw_line(pcb_crosshair.GC, x1, y1, x2, y2 );
 }
 
 int 

@@ -99,7 +99,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 			assert(!"set_attr() can't set non-data field!\n");
 			return;
 	}
-	pcb_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwid[pidx], &hv);
+	rnd_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwid[pidx], &hv);
 }
 
 static void library_param_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp);
@@ -363,7 +363,7 @@ static void library_param_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	rnd_hid_attr_val_t hv;
 
 	hv.str = cmd;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 	free(cmd);
 	timed_update_preview(ctx, 1);
 }
@@ -497,7 +497,7 @@ void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 		filter_txt = ctx->example;
 
 		hv.str = filter_txt;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 	}
 
 	if (filter_txt != NULL) {
@@ -508,7 +508,7 @@ void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 			if (ctx->example != NULL) {
 				filter_txt = ctx->example;
 				hv.str = filter_txt;
-				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 				prm = strchr(filter_txt, '(');
 			}
 		}
@@ -520,7 +520,7 @@ void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	hv.str = ctx->descr.array;
 	if (hv.str == NULL)
 		hv.str = "";
-	pcb_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwdesc, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwdesc, &hv);
 	timed_update_preview(ctx, 1);
 }
 

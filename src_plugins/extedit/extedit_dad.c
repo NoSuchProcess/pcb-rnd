@@ -42,7 +42,7 @@ static void ee_data2dialog(ee_t *ee)
 	PCB_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str, rnd_strdup(methods[ee->mthi].command));
 
 	/* we have only one format, so disable the combo box for selecting it */
-	pcb_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, pcb_false);
+	rnd_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, pcb_false);
 }
 
 static void ee_chg_method(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

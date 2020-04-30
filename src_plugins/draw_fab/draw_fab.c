@@ -62,13 +62,13 @@ conf_draw_fab_t conf_draw_fab;
 
 static void fab_line(rnd_hid_gc_t gc, int x1, int y1, int x2, int y2)
 {
-	pcb_render->draw_line(gc, x1, y1, x2, y2);
+	rnd_render->draw_line(gc, x1, y1, x2, y2);
 }
 
 static void fab_circle(rnd_hid_gc_t gc, int x, int y, int r)
 {
-	pcb_render->draw_arc(gc, x, y, r, r, 0, 180);
-	pcb_render->draw_arc(gc, x, y, r, r, 180, 180);
+	rnd_render->draw_arc(gc, x, y, r, r, 0, 180);
+	rnd_render->draw_arc(gc, x, y, r, r, 180, 180);
 }
 
 /* align is 0=left, 1=center, 2=right, add 8 for underline */
@@ -181,12 +181,12 @@ static void draw_fab_layer(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid
 	pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
 	PCB_LINE_LOOP(layer);
 	{
-		pcb_render->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+		rnd_render->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 	}
 	PCB_END_LOOP;
 	PCB_ARC_LOOP(layer);
 	{
-		pcb_render->draw_arc(gc, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
+		rnd_render->draw_arc(gc, arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta);
 	}
 	PCB_END_LOOP;
 	PCB_TEXT_LOOP(layer);
@@ -235,7 +235,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 			plated_sym = --ds;
 		if (drill->UnplatedCount)
 			unplated_sym = --ds;
-		pcb_render->set_color(gc, &conf_core.appearance.color.pin);
+		rnd_render->set_color(gc, &conf_core.appearance.color.pin);
 		for (i = 0; i < drill->PinN; i++) {
 			int unplated = 1;
 			rnd_coord_t x, y;
@@ -262,7 +262,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 			text_at(info, gc, PCB_MIL_TO_COORD(1400), yoff, PCB_MIL_TO_COORD(2), "NO");
 			text_at(info, gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
-		pcb_render->set_color(gc, &conf_core.appearance.color.element);
+		rnd_render->set_color(gc, &conf_core.appearance.color.element);
 		if (pcbhl_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 			text_at(info, gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
 		else
@@ -278,7 +278,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		total_drills += drill->ViaCount;
 	}
 
-	pcb_render->set_color(gc, &conf_core.appearance.color.element);
+	rnd_render->set_color(gc, &conf_core.appearance.color.element);
 	text_at(info, gc, 0, yoff, PCB_MIL_TO_COORD(9), "Symbol");
 	if (pcbhl_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
 		text_at(info, gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");
@@ -308,10 +308,10 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 	}
 	if (!found) {
 		pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
-		pcb_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
-		pcb_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
-		pcb_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-		pcb_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		rnd_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
+		rnd_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
+		rnd_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		rnd_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		/*FPrintOutline (); */
 		pcb_hid_set_line_width(gc, FAB_LINE_W);
 		text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0,

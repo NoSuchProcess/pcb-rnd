@@ -45,7 +45,7 @@ static size_t fc_alloced = 0;
 		last_x = pl->head->point[0]; \
 		last_y = pl->head->point[1]; \
 		v = pl->head->next; \
-		mindist = pcb_render->coord_per_pix * 2; \
+		mindist = rnd_render->coord_per_pix * 2; \
 
 /* call this before drawing the next vertex */
 #define vert_opt_loop1(v, force, skip_stmt) \
@@ -88,7 +88,7 @@ static void fill_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 	vert_opt_begin();
 	do {
 		vert_opt_loop1(v, first, continue);
-		if (pcb_render->gui)
+		if (rnd_render->gui)
 			first = 0; /* if gui, turn on optimization and start to omit vertices */
 		fc_x[i] = this_x;
 		fc_y[i++] = this_y;
@@ -99,10 +99,10 @@ static void fill_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 	if (i < 3) {
 		pcb_hid_set_line_width(gc, PCB_MM_TO_COORD(0.01));
 		pcb_hid_set_line_cap(gc, rnd_cap_round);
-		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
+		rnd_render->draw_line(gc, last_x, last_y, this_x, this_y);
 	}
 	else
-		pcb_render->fill_polygon(gc, i, fc_x, fc_y);
+		rnd_render->fill_polygon(gc, i, fc_x, fc_y);
 
 	vert_opt_end();
 }
@@ -118,7 +118,7 @@ static void thindraw_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 
 	/* If the contour is round, use an arc drawing routine. */
 	if (pl->is_round) {
-		pcb_render->draw_arc(gc, pl->cx, pl->cy, pl->radius, pl->radius, 0, 360);
+		rnd_render->draw_arc(gc, pl->cx, pl->cy, pl->radius, pl->radius, 0, 360);
 		return;
 	}
 
@@ -129,7 +129,7 @@ static void thindraw_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 	vert_opt_begin();
 	do {
 		vert_opt_loop1(v, 0, continue);
-		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
+		rnd_render->draw_line(gc, last_x, last_y, this_x, this_y);
 		vert_opt_loop2();
 	}
 	while ((v = v->next) != pl->head->next);

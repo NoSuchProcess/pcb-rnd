@@ -204,23 +204,23 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 
 	if (nat == NULL) {
 		hv.str = "";
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 		setup_intree(ctx, NULL, 0);
 
 		hv.lng = RND_CFN_max;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
 		return;
 	}
 
 	hv.str = path == NULL ? "" : path;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wname, &hv);
 
 	tmp = rnd_strdup(nat->description);
 	pcb_text_wrap(tmp, DESC_WRAP_WIDTH, '\n', ' ');
 	hv.str = tmp;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wdesc, &hv);
 	free(tmp);
 
 	/* display lht value */
@@ -228,7 +228,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 
 	/* display native value */
 	hv.lng = nat->type;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnattype, &hv);
 
 	if ((nat->type == RND_CFN_LIST) || (nat->type == RND_CFN_HLIST)) {
 		/* non-default: lists are manually loaded */
@@ -257,7 +257,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 
 	/* default: set the value of the given node from hv loaded above */
 	hv.str = print_conf_val(nat->type, &nat->val, buf, sizeof(buf));
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnatval[nat->type], &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wnatval[nat->type], &hv);
 
 	src = nat->prop[idx].src;
 	if (src != NULL) {
@@ -266,7 +266,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 	}
 	else
 		hv.str = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[idx].prio);
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wsrc[nat->type], &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wsrc[nat->type], &hv);
 	free(tmp);
 
 	return;
@@ -483,12 +483,12 @@ void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 {
 	rnd_hid_attr_val_t hv;
 	hv.dbl = 0.25;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wmainp, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wmainp, &hv);
 
 	if (tabarg != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = rnd_strdup(tabarg);
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
 		pcb_pref_dlg_conf_filter_cb(ctx->dlg_hid_ctx, ctx, &ctx->dlg[ctx->conf.wfilter]);
 		pcb_dad_tree_expcoll(&ctx->dlg[ctx->conf.wtree], NULL, 1, 1);
 	}

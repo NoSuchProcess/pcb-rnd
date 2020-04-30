@@ -501,11 +501,11 @@ static void scale_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	if (wid == ctx->wy) { /* copy y into x */
 		hv.dbl = ctx->dlg[ctx->wy].val.dbl;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wx, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wx, &hv);
 	}
 	else { /* copy x into y */
 		hv.dbl = ctx->dlg[ctx->wx].val.dbl;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wy, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wy, &hv);
 	}
 }
 
@@ -1058,7 +1058,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		case F_SaveAll:
 			free_name = pcb_false;
 			if (argc <= 2) {
-				name = pcb_gui->fileselect(pcb_gui, "Save Paste Buffer As ...",
+				name = rnd_gui->fileselect(rnd_gui, "Save Paste Buffer As ...",
 					"Choose a file to save the contents of the\npaste buffer to.\n",
 					default_file, ".lht", NULL, "buffer", 0, NULL);
 
@@ -1092,7 +1092,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		case F_LoadAll:
 			free_name = pcb_false;
 			if (argc <= 2) {
-				name = pcb_gui->fileselect(pcb_gui, "Load Paste Buffer ...",
+				name = rnd_gui->fileselect(rnd_gui, "Load Paste Buffer ...",
 					"Choose a file to load the contents of the\npaste buffer from.\n",
 					default_file, ".lht", NULL, "buffer", RND_HID_FSD_READ | RND_HID_FSD_MAY_NOT_EXIST, NULL);
 

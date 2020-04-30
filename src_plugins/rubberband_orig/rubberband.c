@@ -1052,7 +1052,7 @@ static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 			point2.Y += argv[argi2 + 1].d.i;
 
 			pcb_route_init(&route);
-			pcb_route_calculate(PCB, &route, &point1, &point2, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(pcb_gui), pcb_gui->control_is_pressed(pcb_gui));
+			pcb_route_calculate(PCB, &route, &point1, &point2, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, rnd_gui->shift_is_pressed(rnd_gui), rnd_gui->control_is_pressed(rnd_gui));
 			pcb_route_apply_to_line(&route, ptr->Layer, ptr->Line);
 			pcb_route_destroy(&route);
 		}
@@ -1165,15 +1165,15 @@ static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 			}
 
 			if (PCB_FLAG_TEST(PCB_FLAG_RAT, ptr->Line)) {
-				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.rat);
+				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.rat);
 				pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness, 0);
 			}
 			else if (direct || (conf_core.editor.move_linepoint_uses_route == 0)) {
-				pcb_render->set_color(pcb_crosshair.GC, &ptr->Layer->meta.real.color);
+				rnd_render->set_color(pcb_crosshair.GC, &ptr->Layer->meta.real.color);
 				pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness, 0);
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
-					pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 					pcb_draw_wireframe_line(pcb_crosshair.GC, x[0], y[0], x[1], y[1], ptr->Line->Thickness + 2 * (conf_core.design.bloat + 1), 0);
 				}
 			}
@@ -1191,13 +1191,13 @@ static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 				pcb_route_calculate(PCB,
 														&route,
 														ptr->delta_index[0] < 0 ? &point1 : &point2,
-														ptr->delta_index[0] < 0 ? &point2 : &point1, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, pcb_gui->shift_is_pressed(pcb_gui), pcb_gui->control_is_pressed(pcb_gui));
+														ptr->delta_index[0] < 0 ? &point2 : &point1, pcb_layer_id(PCB->Data, ptr->Layer), ptr->Line->Thickness, ptr->Line->Clearance, ptr->Line->Flags, rnd_gui->shift_is_pressed(rnd_gui), rnd_gui->control_is_pressed(rnd_gui));
 				pcb_route_draw(&route, pcb_crosshair.GC);
 				if (conf_core.editor.show_drc)
 					pcb_route_draw_drc(&route, pcb_crosshair.GC);
 				pcb_route_destroy(&route);
 			}
-			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 
 		ptr++;
@@ -1415,7 +1415,7 @@ static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end,
 	pcb_route_add_arc(route, &center, arc.StartAngle, arc.Delta, arc.Width, layerid);
 
 	if ((dx != 0) || (dy != 0))
-		pcb_route_calculate_to(route, &endpoint, pcb_gui->shift_is_pressed(pcb_gui), pcb_gui->control_is_pressed(pcb_gui));
+		pcb_route_calculate_to(route, &endpoint, rnd_gui->shift_is_pressed(rnd_gui), rnd_gui->control_is_pressed(rnd_gui));
 }
 
 

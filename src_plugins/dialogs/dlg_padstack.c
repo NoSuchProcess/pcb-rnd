@@ -75,7 +75,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	if (ts == NULL)
 		return;
 
-	pcb_gui->attr_dlg_widget_hide(hid_ctx, pse->prsmirror, !pse->ps->smirror);
+	rnd_gui->attr_dlg_widget_hide(hid_ctx, pse->prsmirror, !pse->ps->smirror);
 
 	htype = pcb_pstk_bbspan(pse->pcb, pse->ps, &top_gid, &bottom_gid, &proto);
 	top_grp = pcb_get_layergrp(pse->pcb, top_gid);
@@ -155,7 +155,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 			case PCB_BB_BB: s = "Slot geometry (blind and/or buried slot):"; break;
 			case PCB_BB_INVALID: s = "Slot geometry (INVALID SLOT):"; break;
 		}
-		pcb_gui->attr_dlg_widget_state(hid_ctx, pse->hdia, 0);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, pse->hdia, 0);
 	}
 	else {
 		s = "Hole geometry (<unknown>):";
@@ -165,7 +165,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 			case PCB_BB_BB: s = "Hole geometry (blind and/or buried hole):"; break;
 			case PCB_BB_INVALID: s = "Hole geometry (INVALID HOLE):"; break;
 		}
-		pcb_gui->attr_dlg_widget_state(hid_ctx, pse->hdia, 1);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, pse->hdia, 1);
 	}
 	PCB_DAD_SET_VALUE(hid_ctx, pse->hole_header, str, s);
 
@@ -232,7 +232,7 @@ static void pse_chg_protoid(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	lock--;
 
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_chg_protodup(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -250,7 +250,7 @@ static void pse_chg_protodup(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	pcb_pstk_change_instance(pse->ps, &proto_id, NULL, NULL, NULL, NULL);
 	pse_ps2dlg(hid_ctx, pse);
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_chg_instance(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -277,7 +277,7 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	lock--;
 
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_chg_prname(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -306,7 +306,7 @@ static void pse_chg_prname(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	lock--;
 
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_chg_hole(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -331,7 +331,7 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	lock--;
 
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -378,7 +378,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	lock--;
 
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_shape_del(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -390,7 +390,7 @@ static void pse_shape_del(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_shape_hshadow(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -402,7 +402,7 @@ static void pse_shape_hshadow(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_shape_auto(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -448,7 +448,7 @@ static void pse_shape_auto(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_shape_copy(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -482,7 +482,7 @@ static void pse_shape_copy(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_shape_swap(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -516,7 +516,7 @@ static void pse_shape_swap(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 
@@ -544,7 +544,7 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, rnd_coord_t sign)
 
 	pse_ps2dlg(pse->parent_hid_ctx, pse);
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pse_shape_shrink(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -639,7 +639,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	pse->shape_chg = NULL;
 	PCB_DAD_FREE(dlg);
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 /* Auto gen shape on a single layer */
@@ -742,7 +742,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 	pse_ps2dlg(hid_ctx, pse);
 	PCB_DAD_SET_VALUE(hid_ctx, pse->tab, lng, 1); /* switch to the prototype view where the new attributes are visible */
 	pse_changed(pse);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 #define spring(dlg) \

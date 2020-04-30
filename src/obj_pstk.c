@@ -408,12 +408,12 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 
 	}
 
-	pcb_render->set_color(pcb_draw_out.fgGC, color);
+	rnd_render->set_color(pcb_draw_out.fgGC, color);
 }
 
 static void set_ps_annot_color(rnd_hid_gc_t gc, pcb_pstk_t *ps)
 {
-	pcb_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
+	rnd_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
 		&conf_core.appearance.color.selected : &conf_core.appearance.color.padstackmark);
 }
 
@@ -459,11 +459,11 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_
 
 		if (!fill) {
 			for(n = 1; n < shape->data.poly.len; n++)
-				pcb_render->draw_line(gc, ps->x + x[n-1], ps->y + y[n-1], ps->x + x[n], ps->y + y[n]);
-			pcb_render->draw_line(gc, ps->x + x[n-1], ps->y + y[n-1], ps->x + x[0], ps->y + y[0]);
+				rnd_render->draw_line(gc, ps->x + x[n-1], ps->y + y[n-1], ps->x + x[n], ps->y + y[n]);
+			rnd_render->draw_line(gc, ps->x + x[n-1], ps->y + y[n-1], ps->x + x[0], ps->y + y[0]);
 		}
 		else
-			pcb_render->fill_polygon_offs(gc, shape->data.poly.len, x, y, ps->x, ps->y);
+			rnd_render->fill_polygon_offs(gc, shape->data.poly.len, x, y, ps->x, ps->y);
 		if (p != p_st) {
 			free(p);
 			free(x);
@@ -472,11 +472,11 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_
 	else {
 		if (!fill) {
 			for(n = 1; n < shape->data.poly.len; n++)
-				pcb_render->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
-			pcb_render->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
+				rnd_render->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n]);
+			rnd_render->draw_line(gc, ps->x + shape->data.poly.x[n-1], ps->y + shape->data.poly.y[n-1], ps->x + shape->data.poly.x[0], ps->y + shape->data.poly.y[0]);
 		}
 		else
-			pcb_render->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
+			rnd_render->fill_polygon_offs(gc, shape->data.poly.len, shape->data.poly.x, shape->data.poly.y, ps->x, ps->y);
 	}
 }
 
@@ -493,12 +493,12 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, rnd_hid_gc_t gc, pc
 		case PCB_PSSH_LINE:
 			pcb_hid_set_line_cap(gc, shape->data.line.square ? rnd_cap_square : rnd_cap_round);
 			pcb_hid_set_line_width(gc, MAX(shape->data.line.thickness + dthick, 1));
-			pcb_render->draw_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
+			rnd_render->draw_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 			break;
 		case PCB_PSSH_CIRC:
 			r = MAX(shape->data.circ.dia/2 + dthick/2, 1);
 			pcb_hid_set_line_cap(gc, rnd_cap_round);
-			pcb_render->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r);
+			rnd_render->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r);
 			break;
 		case PCB_PSSH_HSHADOW:
 			break;
@@ -522,7 +522,7 @@ static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb
 			break;
 		case PCB_PSSH_CIRC:
 			r = MAX(shape->data.circ.dia/2 + dthick/2, 1);
-			pcb_render->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r, r, 0, 360);
+			rnd_render->draw_arc(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r, r, 0, 360);
 			break;
 		case PCB_PSSH_HSHADOW:
 			break;
@@ -593,18 +593,18 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_rnd_box_t *b, void *cl)
 		mark += proto->hdia/2;
 
 	mark2 = mark*2;
-	if (mark2 < pcb_render->coord_per_pix)
+	if (mark2 < rnd_render->coord_per_pix)
 		return PCB_R_DIR_FOUND_CONTINUE;
 
 	/* draw the cross using xor */
 	set_ps_annot_color(pcb_draw_out.fgGC, ps);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-	if (mark2 > pcb_render->coord_per_pix*3) {
-		pcb_render->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
-		pcb_render->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
+	if (mark2 > rnd_render->coord_per_pix*3) {
+		rnd_render->draw_line(pcb_draw_out.fgGC, ps->x-mark, ps->y, ps->x+mark, ps->y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, ps->x, ps->y-mark, ps->x, ps->y+mark);
 	}
 	else
-		pcb_render->draw_line(pcb_draw_out.fgGC, ps->x-pcb_render->coord_per_pix, ps->y, ps->x+pcb_render->coord_per_pix, ps->y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, ps->x-rnd_render->coord_per_pix, ps->y, ps->x+rnd_render->coord_per_pix, ps->y);
 
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
@@ -668,16 +668,16 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const rnd_rnd_box_t *b, void *cl)
 	/* actual hole */
 	pcb_hid_set_line_width(pcb_draw_out.drillGC, 0);
 	pcb_hid_set_line_cap(pcb_draw_out.drillGC, rnd_cap_round);
-	pcb_render->fill_circle(pcb_draw_out.drillGC, ps->x, ps->y, proto->hdia / 2);
+	rnd_render->fill_circle(pcb_draw_out.drillGC, ps->x, ps->y, proto->hdia / 2);
 
 	/* indicate unplated holes with an arc; unplated holes are more rare
 	   than plated holes, thus unplated holes are indicated */
 	if (!proto->hplated && !pcb_xform_omit_overlay(info)) {
 		rnd_coord_t r = proto->hdia / 2;
 		r -= r/8; /* +12.5% */
-		pcb_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
+		rnd_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-		pcb_render->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
+		rnd_render->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;

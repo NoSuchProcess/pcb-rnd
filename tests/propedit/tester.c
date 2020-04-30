@@ -2,7 +2,7 @@
 #include <assert.h>
 #include "props.h"
 
-void *pcb_gui = NULL;
+void *rnd_gui = NULL;
 
 int pcb_propsel_set(const char *prop, const char *value)
 {

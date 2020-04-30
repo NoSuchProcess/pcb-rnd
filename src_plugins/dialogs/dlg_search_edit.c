@@ -105,7 +105,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wop, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wop, &hv);
 		free(cursor_path);
 	}
 	if (cur != NULL)
@@ -137,7 +137,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 	if ((s != NULL) && (s->right != NULL)) {
 		rnd_hid_attr_val_t hv;
 		hv.str = s->right;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], &hv);
 	}
 }
 
@@ -151,7 +151,7 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 		return;
 
 	for(n = 0; n < RIGHT_max; n++)
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[n], 1);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[n], 1);
 
 	hv.str = ctx->se.right;
 	if (hv.str == NULL) {
@@ -161,23 +161,23 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 
 	switch(s->expr->rtype) {
 		case RIGHT_STR:
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			break;
 		case RIGHT_INT:
 			hv.lng = strtol(hv.str, NULL, 10);
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_DOUBLE:
 			hv.dbl = strtod(hv.str, NULL);
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
 		case RIGHT_COORD:
 			hv.crd = pcb_get_value_ex(hv.str, NULL, NULL, NULL, "mm", NULL);
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			if (empty)
 				set_right(ctx, &ctx->dlg[ctx->wright[s->expr->rtype]]);
 			break;
@@ -185,7 +185,7 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 		case RIGHT_max: break;
 	}
 
-	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], 0);
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], 0);
 	ctx->last_rtype = s->expr->rtype;
 }
 
@@ -351,7 +351,7 @@ static int srchedit_window(search_expr_t *expr)
 
 	if (fill_in_left(ctx) != 1) {
 		srch_expr_set_ops(ctx, op_tab, 1); /* just to get the initial tree widget width */
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], 0); /* just to get something harmless display on the right side after open */
 	}
 
 	res = PCB_DAD_RUN(ctx->dlg);

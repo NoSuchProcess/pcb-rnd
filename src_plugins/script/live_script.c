@@ -84,7 +84,7 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	if (lvs->loaded)
 		pcb_script_unload(lvs->longname, NULL);
 
-	if (pcb_gui != NULL)
+	if (rnd_gui != NULL)
 		PCB_DAD_FREE(lvs->dlg);
 	lvs_free_langs(lvs);
 	free(lvs->name);
@@ -262,7 +262,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	title = pcb_concat("Live Scripting: ", name, NULL);
 	PCB_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
 	free(title);
-	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
+	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
 	return lvs;
 }
 
@@ -273,8 +273,8 @@ static int live_stop(live_script_t *lvs)
 		lvs->loaded = 0;
 	}
 
-	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 1);
-	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
+	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 1);
+	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
 	return 0;
 }
 
@@ -312,8 +312,8 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 		res = -1;
 	}
 	lvs->loaded = 1;
-	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 0);
-	pcb_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 1);
+	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wrun, 0);
+	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 1);
 
 	if (!lvs->dlg[lvs->wpers].val.lng)
 		live_stop(lvs);
@@ -322,7 +322,7 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 		pcb_undo_inc_serial();
 	lvs->undo_post = pcb_undo_serial();
 
-	pcb_gui->invalidate_all(pcb_gui); /* if the script drew anything, get it displayed */
+	rnd_gui->invalidate_all(rnd_gui); /* if the script drew anything, get it displayed */
 
 	rnd_tempfile_unlink(fn);
 	return res;
@@ -343,7 +343,7 @@ static int live_undo(live_script_t *lvs)
 		return 1;
 	}
 	pcb_undo_above(lvs->undo_pre);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 	return 0;
 }
 
@@ -357,7 +357,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 
 	if (fn == NULL) {
 		const char *default_ext = live_default_ext(lvs);
-		fn = pcb_gui->fileselect(pcb_gui,
+		fn = rnd_gui->fileselect(rnd_gui,
 			"Load live script", "Load the a live script from file",
 			lvs->fn, default_ext, rnd_hid_fsd_filter_any, "live_script", RND_HID_FSD_READ, NULL);
 		if (fn == NULL)
@@ -403,7 +403,7 @@ static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 		if (lvs->fn == NULL)
 			lvs->fn = pcb_concat(lvs->name, ".", default_ext, NULL);
 
-		fn = pcb_gui->fileselect(pcb_gui,
+		fn = rnd_gui->fileselect(rnd_gui,
 			"Save live script", "Save the source of a live script",
 			lvs->fn, default_ext, rnd_hid_fsd_filter_any, "live_script", 0, NULL);
 		if (fn == NULL)
@@ -514,10 +514,10 @@ static void lvs_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, ch
 	end++;
 
 	strcpy(end, "Open live script dialog...."); strcpy(act, "LiveScript(new)"); 
-	pcb_gui->create_menu(pcb_gui, path, &props);
+	rnd_gui->create_menu(rnd_gui, path, &props);
 
 /*	strcpy(end, "Load live script...."); strcpy(act, "LiveScript(load)");
-	pcb_gui->create_menu(pcb_gui, path, &props);*/
+	rnd_gui->create_menu(rnd_gui, path, &props);*/
 }
 
 
@@ -540,8 +540,8 @@ void pcb_live_script_uninit(void)
 		lvs_close_cb(lvs, RND_HID_ATTR_EV_CODECLOSE);
 	}
 	htsp_uninit(&pcb_live_scripts);
-	if ((pcb_gui != NULL) && (pcb_gui->remove_menu != NULL))
-		pcb_gui->remove_menu(pcb_gui, lvs_cookie);
+	if ((rnd_gui != NULL) && (rnd_gui->remove_menu != NULL))
+		rnd_gui->remove_menu(rnd_gui, lvs_cookie);
 	rnd_event_unbind_allcookie(lvs_cookie);
 }
 

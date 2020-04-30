@@ -559,38 +559,38 @@ struct rnd_hid_s {
 	rnd_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
 };
 
-typedef void (*pcb_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
+typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
 
 struct rnd_hid_expose_ctx_s {
 	rnd_rnd_box_t view;
-	pcb_hid_expose_cb_t expose_cb;   /* function that is called on expose to get things drawn */
+	rnd_hid_expose_cb_t expose_cb;   /* function that is called on expose to get things drawn */
 	void *draw_data;                 /* user data for the expose function */
 };
 
-typedef void (*pcb_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx);
+typedef void (*rnd_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx);
 
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. It is used for on-screen GUI calls, such as dialog boxes */
-extern rnd_hid_t *pcb_gui;
+extern rnd_hid_t *rnd_gui;
 
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. Normally
-   matches pcb_gui, but is temporarily changed while exporting. It is used
+   matches rnd_gui, but is temporarily changed while exporting. It is used
    for drawing calls, mainly by draw*.c */
-extern rnd_hid_t *pcb_render;
+extern rnd_hid_t *rnd_render;
 
 /* This is either NULL or points to the current HID that is being called to
    do the exporting. The GUI HIDs set and unset this var.*/
-extern rnd_hid_t *pcb_exporter;
+extern rnd_hid_t *rnd_exporter;
 
 /* This is either NULL or points to the current rnd_action_t that is being
    called. The action launcher sets and unsets this variable. */
-extern const rnd_action_t *pcb_current_action;
+extern const rnd_action_t *rnd_current_action;
 
 /* The GUI may set this to be approximately the PCB size of a pixel,
    to allow for near-misses in selection and changes in drawing items
    smaller than a screen pixel.  */
-extern int pcb_pixel_slop;
+extern int rnd_pixel_slop;
 
 /*** Glue for GUI/CLI dialogs: wrappers around actions */
 
@@ -614,19 +614,19 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 
 /* non-zero if DAD dialogs are available currently */
 #define PCB_HAVE_GUI_ATTR_DLG \
-	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
+	((rnd_gui != NULL) && (rnd_gui->gui) && (rnd_gui->attr_dlg_new != NULL) && (rnd_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
 void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
 int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
 void pcb_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
 
-#define pcb_hid_redraw(pcb) pcb_gui->invalidate_all(pcb_gui)
+#define pcb_hid_redraw(pcb) rnd_gui->invalidate_all(rnd_gui)
 
 #define pcb_hid_busy(pcb, is_busy) \
 do { \
 	rnd_event(&pcb->hidlib, RND_EVENT_BUSY, "i", is_busy, NULL); \
-	if ((pcb_gui != NULL) && (pcb_gui->busy != NULL)) \
-		pcb_gui->busy(pcb_gui, is_busy); \
+	if ((rnd_gui != NULL) && (rnd_gui->busy != NULL)) \
+		rnd_gui->busy(rnd_gui, is_busy); \
 } while(0)
 
 

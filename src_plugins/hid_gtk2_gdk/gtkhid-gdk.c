@@ -430,7 +430,7 @@ static void ghid_gdk_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd
 
 static void ghid_gdk_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
 {
-	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
+	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
 
 typedef struct {
@@ -1171,7 +1171,7 @@ static void ghid_gdk_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_co
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the crosshair will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
-		ghid_gdk_invalidate_all(pcb_gui);
+		ghid_gdk_invalidate_all(rnd_gui);
 		return;
 	}
 
@@ -1205,7 +1205,7 @@ static void ghid_gdk_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complet
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the mark will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
-		ghid_gdk_invalidate_all(pcb_gui);
+		ghid_gdk_invalidate_all(rnd_gui);
 		return;
 	}
 
@@ -1441,7 +1441,7 @@ static void ghid_gdk_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 }
 
-static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
+static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
 {
 	GdkWindow *window = gtkc_widget_get_window(widget);
 	GdkDrawable *save_drawable;
@@ -1461,7 +1461,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev,
 	save_view = ghidgui->port.view;
 	save_width = ghidgui->port.view.canvas_width;
 	save_height = ghidgui->port.view.canvas_height;
-	save_cpp = pcb_gui->coord_per_pix;
+	save_cpp = rnd_gui->coord_per_pix;
 
 	gtkc_widget_get_allocation(widget, &allocation);
 	xz = vw / (double)allocation.width;
@@ -1485,14 +1485,14 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev,
 	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
 
 	/* call the drawing routine */
-	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
+	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 	expcall(&gtk2_gdk_hid, ctx);
 
 	/* restore the original context and priv */
 	ctx->view.X1 = ox1; ctx->view.X2 = ox2; ctx->view.Y1 = oy1; ctx->view.Y2 = oy2;
 	priv->out_pixel = priv->base_pixel = save_drawable;
 
-	pcb_gui->coord_per_pix = save_cpp;
+	rnd_gui->coord_per_pix = save_cpp;
 	ghidgui->port.view = save_view;
 	ghidgui->port.view.canvas_width = save_width;
 	ghidgui->port.view.canvas_height = save_height;

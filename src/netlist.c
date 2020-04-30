@@ -500,7 +500,7 @@ void pcb_net_short_ctx_uninit(pcb_short_ctx_t *sctx)
 		free(e->key);
 	htsp_uninit(&sctx->found);
 	if (sctx->changed) {
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 		conf_core.temp.rat_warn = pcb_true;
 	}
 }

@@ -203,7 +203,7 @@ static void pcb_lookup_unused_pins(FILE *f, int do_select)
 	PCB_END_LOOP;
 
 	if (conf_core.editor.beep_when_finished)
-		pcb_gui->beep(pcb_gui);
+		rnd_gui->beep(rnd_gui);
 
 	if (do_select) {
 		pcb_undo_inc_serial();
@@ -216,7 +216,7 @@ static void pcb_lookup_subc_conns(FILE *f, pcb_subc_t *subc)
 {
 	pcb_print_subc_conns(f, subc);
 	if (conf_core.editor.beep_when_finished)
-		pcb_gui->beep(pcb_gui);
+		rnd_gui->beep(rnd_gui);
 }
 
 /* Find all connections from all terminals of all subcircuits and print in f. */
@@ -230,7 +230,7 @@ static void pcb_lookup_conns_to_all_subcs(FILE *f)
 	PCB_END_LOOP;
 
 	if (conf_core.editor.beep_when_finished)
-		pcb_gui->beep(pcb_gui);
+		rnd_gui->beep(rnd_gui);
 	pcb_hid_redraw(PCB);
 }
 

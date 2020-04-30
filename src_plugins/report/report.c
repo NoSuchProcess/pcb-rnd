@@ -176,7 +176,7 @@ static void report_pstk(gds_t *dst, pcb_pstk_t *ps)
 	pcb_pstk_proto_t *proto;
 
 #ifndef NDEBUG
-	if (pcb_gui->shift_is_pressed(pcb_gui))
+	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(PCB->Data->padstack_tree, 0);
 #endif
 	proto = pcb_pstk_get_proto(ps);
@@ -194,7 +194,7 @@ static void report_pstk(gds_t *dst, pcb_pstk_t *ps)
 static void report_line(gds_t *dst, pcb_line_t *line)
 {
 #ifndef NDEBUG
-	if (pcb_gui->shift_is_pressed(pcb_gui))
+	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(line->parent.layer->line_tree, 0);
 #endif
 	pcb_append_printf(dst, "%m+LINE ID# %ld;  Flags:%s\n"
@@ -216,7 +216,7 @@ static void report_line(gds_t *dst, pcb_line_t *line)
 static void report_rat(gds_t *dst, pcb_rat_t *line)
 {
 #ifndef NDEBUG
-	if (pcb_gui->shift_is_pressed(pcb_gui))
+	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(PCB->Data->rat_tree, 0);
 #endif
 	pcb_append_printf(dst, "%m+RAT-LINE ID# %ld;  Flags:%s\n"
@@ -233,7 +233,7 @@ static void report_arc(gds_t *dst, pcb_arc_t *arc)
 {
 	rnd_rnd_box_t box;
 #ifndef NDEBUG
-	if (pcb_gui->shift_is_pressed(pcb_gui))
+	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(arc->parent.layer->arc_tree, 0);
 #endif
 	pcb_arc_get_end(arc, 0, &box.X1, &box.Y1);
@@ -264,7 +264,7 @@ static void report_poly(gds_t *dst, pcb_poly_t *poly)
 	double area, u;
 
 #ifndef NDEBUG
-	if (pcb_gui->shift_is_pressed(pcb_gui))
+	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(poly->parent.layer->polygon_tree, 0);
 #endif
 
@@ -299,7 +299,7 @@ static void report_poly(gds_t *dst, pcb_poly_t *poly)
 static void report_subc(gds_t *dst, pcb_subc_t *subc)
 {
 #ifndef NDEBUG
-	if (pcb_gui->shift_is_pressed(pcb_gui))
+	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(PCB->Data->subc_tree, 0);
 #endif
 	pcb_append_printf(dst, "%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
@@ -318,7 +318,7 @@ static void report_subc(gds_t *dst, pcb_subc_t *subc)
 static void report_text(gds_t *dst, pcb_text_t *text)
 {
 #ifndef NDEBUG
-		if (pcb_gui->shift_is_pressed(pcb_gui))
+		if (rnd_gui->shift_is_pressed(rnd_gui))
 			pcb_r_dump_tree(text->parent.layer->text_tree, 0);
 #endif
 
@@ -335,7 +335,7 @@ static void report_text(gds_t *dst, pcb_text_t *text)
 static void report_gfx(gds_t *dst, pcb_gfx_t *gfx)
 {
 #ifndef NDEBUG
-		if (pcb_gui->shift_is_pressed(pcb_gui))
+		if (rnd_gui->shift_is_pressed(rnd_gui))
 			pcb_r_dump_tree(gfx->parent.layer->gfx_tree, 0);
 #endif
 

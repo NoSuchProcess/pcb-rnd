@@ -49,7 +49,7 @@ static void pcb_infobar_brdchg_ev(rnd_hidlib_t *hidlib, void *user_data, int arg
 static void infobar_tick(rnd_hidval_t user_data)
 {
 	if (conf_core.rc.file_changed_interval > 0) {
-		infobar_timer = pcb_gui->add_timer(pcb_gui, infobar_tick, (conf_core.rc.file_changed_interval * 1000.0), user_data);
+		infobar_timer = rnd_gui->add_timer(rnd_gui, infobar_tick, (conf_core.rc.file_changed_interval * 1000.0), user_data);
 		last_interval = conf_core.rc.file_changed_interval;
 		infobar_timer_active = 1;
 	}
@@ -71,8 +71,8 @@ static void pcb_infobar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((!infobar_gui_inited) || (last_interval == conf_core.rc.file_changed_interval))
 		return;
-	if ((infobar_timer_active) && (pcb_gui != NULL) && (pcb_gui->stop_timer != NULL)) {
-		pcb_gui->stop_timer(pcb_gui, infobar_timer);
+	if ((infobar_timer_active) && (rnd_gui != NULL) && (rnd_gui->stop_timer != NULL)) {
+		rnd_gui->stop_timer(rnd_gui, infobar_timer);
 		infobar_timer_active = 0;
 	}
 	infobar_tick(infobar_timer);

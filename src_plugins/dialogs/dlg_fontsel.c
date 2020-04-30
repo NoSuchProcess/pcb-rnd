@@ -113,7 +113,7 @@ static void fontsel_preview_update(fontsel_ctx_t *ctx)
 		return;
 
 	hv.str = NULL;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
 
@@ -271,7 +271,7 @@ static void fontsel_timer_cb(rnd_hidval_t user_data)
 		if ((txt != c->last_fobj) || (txt != NULL && (txt->fid != c->last_fid)))
 			fontsel_preview_update(c);
 	}
-	fontsel_timer = pcb_gui->add_timer(pcb_gui, fontsel_timer_cb, 500, fontsel_timer);
+	fontsel_timer = rnd_gui->add_timer(rnd_gui, fontsel_timer_cb, 500, fontsel_timer);
 }
 
 static void fontsel_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
@@ -282,8 +282,8 @@ static void fontsel_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc,
 
 void pcb_dlg_fontsel_uninit(void)
 {
-	if ((fontsel_timer_active) && (pcb_gui != NULL) && (pcb_gui->stop_timer != NULL))
-		pcb_gui->stop_timer(pcb_gui, fontsel_timer);
+	if ((fontsel_timer_active) && (rnd_gui != NULL) && (rnd_gui->stop_timer != NULL))
+		rnd_gui->stop_timer(rnd_gui, fontsel_timer);
 	rnd_event_unbind_allcookie(fontsel_cookie);
 }
 

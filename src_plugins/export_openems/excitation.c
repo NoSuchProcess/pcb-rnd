@@ -93,7 +93,7 @@ static void ser_int(int save, int widx, const char *attrkey)
 		else
 			hv.lng = 0;
 
-		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
+		rnd_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
 	}
 }
 #endif
@@ -123,7 +123,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 		else
 			hv.dbl = 0;
 
-		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
+		rnd_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
 	}
 }
 
@@ -137,7 +137,7 @@ static void ser_str(int save, int widx, const char *attrkey)
 		hv.str = ser_load(attrkey);
 		if (hv.str == NULL)
 			hv.str = "";
-		pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
+		rnd_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, widx, &hv);
 	}
 }
 
@@ -375,8 +375,8 @@ static void select_update(int setattr)
 		exc_ctx.selected = 0;
 	}
 
-	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wtab, &hv);
-	pcb_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wselector, &hv);
+	rnd_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wtab, &hv);
+	rnd_gui->attr_dlg_set_value(exc_ctx.dlg_hid_ctx, exc_ctx.wselector, &hv);
 	if (setattr) {
 		const char *orig = rnd_attribute_get(&PCB->Attributes, "openems::excitation::type");
 		if ((orig == NULL) || (strcmp(orig, excitations[exc_ctx.selected].name) != 0)) {

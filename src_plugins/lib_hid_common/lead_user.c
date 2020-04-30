@@ -50,10 +50,10 @@ static void lead_cb(rnd_hidval_t user_data)
 	step = sin(p) * LEAD_ANIM_AMP - LEAD_ANIM_AMP;
 	p += LEAD_ANIM_SPEED;
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 
 	if (lead)
-		lead_timer = pcb_gui->add_timer(pcb_gui, lead_cb, LEAD_PERIOD_MS, user_data);
+		lead_timer = rnd_gui->add_timer(rnd_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
 static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_coord_t y, rnd_bool enabled)
@@ -61,9 +61,9 @@ static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_c
 	rnd_hidval_t user_data;
 
 	if (lead) {
-		pcb_gui->stop_timer(pcb_gui, lead_timer);
+		rnd_gui->stop_timer(rnd_gui, lead_timer);
 		lead = enabled;
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 
 	leadx = x;
@@ -72,7 +72,7 @@ static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_c
 	lead_hidlib = hidlib;
 
 	if (enabled)
-		lead_timer = pcb_gui->add_timer(pcb_gui, lead_cb, LEAD_PERIOD_MS, user_data);
+		lead_timer = rnd_gui->add_timer(rnd_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
 void pcb_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
@@ -96,17 +96,17 @@ void pcb_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 
 		assert(argv[1].type == RND_EVARG_PTR);
 
-		pcb_render->set_line_width(*gc, ARL/40);
-		pcb_render->draw_arc(*gc, leadx, leady, LEAD_CENTER_RAD+step/10, LEAD_CENTER_RAD+step/10, 0, 360);
+		rnd_render->set_line_width(*gc, ARL/40);
+		rnd_render->draw_arc(*gc, leadx, leady, LEAD_CENTER_RAD+step/10, LEAD_CENTER_RAD+step/10, 0, 360);
 
-/*		pcb_render->set_color(*gc, const rnd_color_t *color);*/
+/*		rnd_render->set_color(*gc, const rnd_color_t *color);*/
 
-		pcb_render->draw_line(*gc, x, y, x - ARL, y);
-		pcb_render->draw_line(*gc, x, y, x, y-ARL);
-		pcb_render->draw_line(*gc, x - ARL, y, x, y-ARL);
+		rnd_render->draw_line(*gc, x, y, x - ARL, y);
+		rnd_render->draw_line(*gc, x, y, x, y-ARL);
+		rnd_render->draw_line(*gc, x - ARL, y, x, y-ARL);
 
-		pcb_gui->set_line_width(*gc, ARL/4);
-		pcb_render->draw_line(*gc, x - ARL/2, y - ARL/2, x - LEAD_ARROW_LEN, y - LEAD_ARROW_LEN);
+		rnd_gui->set_line_width(*gc, ARL/4);
+		rnd_render->draw_line(*gc, x - ARL/2, y - ARL/2, x - LEAD_ARROW_LEN, y - LEAD_ARROW_LEN);
 
 	}
 }

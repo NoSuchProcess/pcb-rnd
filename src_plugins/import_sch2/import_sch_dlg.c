@@ -69,7 +69,7 @@ static void isch_timed_update_cb(rnd_hidval_t user_data)
 static void isch_flush_timer(void)
 {
 	if (isch_ctx.arg_dirty) {
-		pcb_gui->stop_timer(pcb_gui, isch_ctx.timer);
+		rnd_gui->stop_timer(rnd_gui, isch_ctx.timer);
 		isch_arg2pcb();
 	}
 }
@@ -128,11 +128,11 @@ static void isch_switch_fmt(int target, int setconf)
 
 
 	for(n = 0; n < MAX_ARGS; n++) {
-		pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_box[n], n >= len);
-		pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_button[n], !((p != NULL) && (p->all_filenames)));
+		rnd_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_box[n], n >= len);
+		rnd_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_button[n], !((p != NULL) && (p->all_filenames)));
 	}
 
-	pcb_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_ctrl, !controllable);
+	rnd_gui->attr_dlg_widget_hide(isch_ctx.dlg_hid_ctx, isch_ctx.warg_ctrl, !controllable);
 	isch_conf_lock--;
 }
 
@@ -206,7 +206,7 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	if (*cwd == '\0')
 		rnd_get_wd(cwd);
 
-	name = pcb_gui->fileselect(pcb_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	name = rnd_gui->fileselect(rnd_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (name == NULL)
 		return;
 
@@ -229,10 +229,10 @@ static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_hidval_t user_data;
 
 	if (isch_ctx.arg_dirty)
-		pcb_gui->stop_timer(pcb_gui, isch_ctx.timer);
+		rnd_gui->stop_timer(rnd_gui, isch_ctx.timer);
 
 	user_data.ptr = NULL;
-	isch_ctx.timer = pcb_gui->add_timer(pcb_gui, isch_timed_update_cb, 1000, user_data);
+	isch_ctx.timer = rnd_gui->add_timer(rnd_gui, isch_timed_update_cb, 1000, user_data);
 	isch_ctx.arg_dirty = 1;
 }
 

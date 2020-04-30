@@ -132,7 +132,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, Gdk
 	ghid_gui_inited(gctx, 0, 1);
 
 	pcb_gtk_tw_ranges_scale(gctx);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 	return 0;
 }
 
@@ -151,8 +151,8 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	ghid_create_pcb_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
-	/* assume pcb_gui is us */
-	pcb_gui->hid_cfg = gctx->topwin.ghid_cfg;
+	/* assume rnd_gui is us */
+	rnd_gui->hid_cfg = gctx->topwin.ghid_cfg;
 
 	gctx->port.drawing_area = gctx->topwin.drawing_area;
 
@@ -232,7 +232,7 @@ int gtkhid_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	gctx->port.view.use_max_pcb = 1;
 	gctx->port.view.coord_per_px = 300.0;
-	pcb_pixel_slop = 300;
+	rnd_pixel_slop = 300;
 
 	gctx->impl.init_renderer(argc, argv, &gctx->port);
 	gctx->wtop_window = window = gctx->port.top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -422,7 +422,7 @@ static double ghid_benchmark(rnd_hid_t *hid)
 	gdk_display_sync(display);
 	time(&start);
 	do {
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 		gdk_window_process_updates(window, FALSE);
 		time(&end);
 		i++;

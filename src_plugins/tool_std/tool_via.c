@@ -76,7 +76,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 
-		if (pcb_gui->shift_is_pressed(pcb_gui))
+		if (rnd_gui->shift_is_pressed(rnd_gui))
 			pcb_tool_thermal_on_pstk(ps, PCB_CURRLID(pcb));
 
 		pcb_undo_inc_serial();
@@ -88,7 +88,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 static void xor_draw_fake_via(rnd_coord_t x, rnd_coord_t y, rnd_coord_t dia, rnd_coord_t clearance)
 {
 	rnd_coord_t r = (dia/2)+clearance;
-	pcb_render->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
+	rnd_render->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
 }
 
 
@@ -98,9 +98,9 @@ TODO("pstk: replace this when route style has a prototype")
 	xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);
 	if (conf_core.editor.show_drc) {
 		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 		xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, conf_core.design.clearance);
-		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	}
 }
 

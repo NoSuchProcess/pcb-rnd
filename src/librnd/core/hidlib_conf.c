@@ -60,7 +60,7 @@ void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align,
 		hidlib->grid = Grid;
 		rnd_conf_set_design("editor/grid", "%$mS", Grid);
 		if (pcbhl_conf.editor.draw_grid)
-			pcb_gui->invalidate_all(pcb_gui);
+			rnd_gui->invalidate_all(rnd_gui);
 	}
 }
 

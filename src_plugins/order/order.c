@@ -98,7 +98,7 @@ static void order_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, 
 	end++;
 
 	strcpy(end, "Order PCB"); strcpy(act, "OrderPCB(gui)");
-	pcb_gui->create_menu(pcb_gui, path, &props);
+	rnd_gui->create_menu(rnd_gui, path, &props);
 }
 
 void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f)

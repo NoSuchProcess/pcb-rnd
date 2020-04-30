@@ -69,7 +69,7 @@ void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
 {
 	retovr->valid = 1;
 	retovr->value = retval;
-	pcb_gui->attr_dlg_close(hid_ctx);
+	rnd_gui->attr_dlg_close(hid_ctx);
 }
 
 void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -84,7 +84,7 @@ int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
 
 	retovr->valid = 0;
 	retovr->dont_free++;
-	ret = pcb_gui->attr_dlg_run(hid_ctx);
+	ret = rnd_gui->attr_dlg_run(hid_ctx);
 	if (retovr->valid)
 		ret = retovr->value;
 	retovr->dont_free--;
@@ -122,15 +122,15 @@ int pcb_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attr
 	int rv;
 	void *hid_ctx;
 
-	if ((pcb_gui == NULL) || (pcb_gui->attr_dlg_new == NULL))
+	if ((rnd_gui == NULL) || (rnd_gui->attr_dlg_new == NULL))
 		return -1;
 
-	hid_ctx = pcb_gui->attr_dlg_new(pcb_gui, id, attrs, n_attrs, title, caller_data, pcb_true, NULL, defx, defy, minx, miny);
+	hid_ctx = rnd_gui->attr_dlg_new(rnd_gui, id, attrs, n_attrs, title, caller_data, pcb_true, NULL, defx, defy, minx, miny);
 	if (hid_ctx_out != NULL)
 		*hid_ctx_out = hid_ctx;
-	rv = pcb_gui->attr_dlg_run(hid_ctx);
+	rv = rnd_gui->attr_dlg_run(hid_ctx);
 	if ((retovr == NULL) || (*retovr != 0))
-		pcb_gui->attr_dlg_close(hid_ctx);
+		rnd_gui->attr_dlg_close(hid_ctx);
 
 	return rv ? 0 : 1;
 }
@@ -142,15 +142,15 @@ int pcb_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs
 
 int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
-	if ((pcb_gui == NULL) || (pcb_gui->dock_enter == NULL))
+	if ((rnd_gui == NULL) || (rnd_gui->dock_enter == NULL))
 		return -1;
-	return pcb_gui->dock_enter(pcb_gui, sub, where, id);
+	return rnd_gui->dock_enter(rnd_gui, sub, where, id);
 }
 
 void pcb_hid_dock_leave(rnd_hid_dad_subdialog_t *sub)
 {
-	if ((pcb_gui == NULL) || (pcb_gui->dock_leave == NULL))
+	if ((rnd_gui == NULL) || (rnd_gui->dock_leave == NULL))
 		return;
-	pcb_gui->dock_leave(pcb_gui, sub);
+	rnd_gui->dock_leave(rnd_gui, sub);
 }
 

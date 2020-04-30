@@ -154,15 +154,15 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		 */
 		if (PCB->Changed && conf_core.editor.save_in_tmp)
 			pcb_save_in_tmp();
-		if (pcb_gui->set_hidlib != NULL)
-			pcb_gui->set_hidlib(pcb_gui, NULL);
+		if (rnd_gui->set_hidlib != NULL)
+			rnd_gui->set_hidlib(rnd_gui, NULL);
 
 		pcb_draw_inhibit_inc();
 		pcb_board_remove(PCB);
 		PCB = pcb_board_new(1);
 		pcb_board_new_postproc(PCB, 1);
-		if (pcb_gui->set_hidlib != NULL)
-			pcb_gui->set_hidlib(pcb_gui, &PCB->hidlib);
+		if (rnd_gui->set_hidlib != NULL)
+			rnd_gui->set_hidlib(rnd_gui, &PCB->hidlib);
 		pcb_draw_inhibit_dec();
 
 		pcb_set_design_dir(NULL);
@@ -334,7 +334,7 @@ static int save_fmt_dialog(const char *title, const char *descr, char **default_
 		printf("RES2: '%s' '%s'\n", *name_out, *fmt_out);
 	}
 	else { /* fallback to simpler fileselect */
-		char *name = pcb_gui->fileselect(pcb_gui, title, descr, *default_file, "", NULL, history_tag, flags, NULL);
+		char *name = rnd_gui->fileselect(rnd_gui, title, descr, *default_file, "", NULL, history_tag, flags, NULL);
 
 		*name_out = name;
 		if (name == NULL)
@@ -501,8 +501,8 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 1; n < argc; n++)
 		RND_PCB_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
 
-	pcb_exporter = pcb_hid_find_exporter(args[0]);
-	if (pcb_exporter == NULL) {
+	rnd_exporter = pcb_hid_find_exporter(args[0]);
+	if (rnd_exporter == NULL) {
 		rnd_message(RND_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", args[0]);
 		return 1;
 	}
@@ -514,11 +514,11 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_event(RND_ACT_HIDLIB, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	a = args;
 	a++;
-	pcb_exporter->parse_arguments(pcb_exporter, &argc, &a);
-	pcb_exporter->do_export(pcb_exporter, NULL);
+	rnd_exporter->parse_arguments(rnd_exporter, &argc, &a);
+	rnd_exporter->do_export(rnd_exporter, NULL);
 	rnd_event(RND_ACT_HIDLIB, RND_EVENT_EXPORT_SESSION_END, NULL);
 
-	pcb_exporter = NULL;
+	rnd_exporter = NULL;
 	RND_ACT_IRES(0);
 	return 0;
 }

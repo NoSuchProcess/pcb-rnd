@@ -609,10 +609,10 @@ emit_outline:
 				pcb_hid_set_line_width(gc, conf_core.design.min_wid);
 			else
 				pcb_hid_set_line_width(gc, AUTO_OUTLINE_WIDTH);
-			pcb_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
-			pcb_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
-			pcb_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-			pcb_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			rnd_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
+			rnd_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
+			rnd_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			rnd_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 			pcb_hid_destroy_gc(gc);
 		}
 	}

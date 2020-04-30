@@ -697,15 +697,15 @@ static void pcb_subc_draw_origin(rnd_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t DX
 	DX += (origin->Point1.X + origin->Point2.X) / 2;
 	DY += (origin->Point1.Y + origin->Point2.Y) / 2;
 
-	pcb_render->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
-	pcb_render->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
-	pcb_render->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
-	pcb_render->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY - PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, DX - PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, DX + PCB_EMARK_SIZE, DY, DX, DY + PCB_EMARK_SIZE);
 
 	if (sc->auto_termname_display) {
 #define OFX (PCB_EMARK_SIZE/5)
-		pcb_render->draw_line(GC, DX-OFX, DY-PCB_EMARK_SIZE/3, DX-OFX, DY+PCB_EMARK_SIZE/3);
-		pcb_render->draw_line(GC, DX-OFX, DY+PCB_EMARK_SIZE/3, DX-OFX+PCB_EMARK_SIZE/3, DY+PCB_EMARK_SIZE/3);
+		rnd_render->draw_line(GC, DX-OFX, DY-PCB_EMARK_SIZE/3, DX-OFX, DY+PCB_EMARK_SIZE/3);
+		rnd_render->draw_line(GC, DX-OFX, DY+PCB_EMARK_SIZE/3, DX-OFX+PCB_EMARK_SIZE/3, DY+PCB_EMARK_SIZE/3);
 #undef OFX
 	}
 }
@@ -725,13 +725,13 @@ static void pcb_subc_draw_locked(rnd_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t lx
 	else
 		ly -= PCB_EMARK_SIZE*1.5;
 
-	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
-	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE);
-	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
-	pcb_render->draw_line(GC, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
-	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3);
-	pcb_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3);
-	pcb_render->draw_arc(GC,  lx, ly-s, PCB_EMARK_SIZE*2/3, PCB_EMARK_SIZE*2/3, 180, on_bottom ? -180 : 180);
+	rnd_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE);
+	rnd_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly+PCB_EMARK_SIZE*1/3);
+	rnd_render->draw_line(GC, lx-PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3, lx+PCB_EMARK_SIZE, ly-PCB_EMARK_SIZE*1/3);
+	rnd_render->draw_arc(GC,  lx, ly-s, PCB_EMARK_SIZE*2/3, PCB_EMARK_SIZE*2/3, 180, on_bottom ? -180 : 180);
 }
 
 void pcb_xordraw_subc(pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY, int use_curr_side)
@@ -771,7 +771,7 @@ void pcb_xordraw_subc(pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY, int use_cu
 TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elliptical arc with a thin line ")
 				double sa = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
 				double da = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
-				pcb_render->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
+				rnd_render->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
 			}
 			else {
 				pcb_arc_t temp_arc;
@@ -1983,7 +1983,7 @@ pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl)
 		freq = 32;
 
 	nnclr = (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc)) ? &conf_core.appearance.color.subc_nonetlist : &conf_core.appearance.color.subc;
-	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : nnclr);
+	rnd_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : nnclr);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
 

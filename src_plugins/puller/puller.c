@@ -439,7 +439,7 @@ static fgw_error_t pcb_act_Puller(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_move_obj(PCB_OBJ_LINE_POINT, PCB_CURRLAYER(PCB), the_line, &(the_line->Point2), x - the_line->Point2.X, y - the_line->Point2.Y);
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 	pcb_undo_inc_serial();
 
 	RND_ACT_IRES(0);
@@ -1976,7 +1976,7 @@ static void maybe_pull_1(pcb_line_t *line)
 #if TRACE0
 	printf("\033[35mdid_something: recursing\033[0m\n");
 	{
-		int i = pcb_gui->confirm_dialog("recurse?", 0);
+		int i = rnd_gui->confirm_dialog("recurse?", 0);
 		printf("confirm = %d\n", i);
 		if (i == 0)
 			return;
@@ -2140,13 +2140,13 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				if (did_something != old_did_something) {
 					pcb_undo_inc_serial();
 					old_did_something = did_something;
-					if (pcb_gui->confirm_dialog("more?", 0) == 0) {
+					if (rnd_gui->confirm_dialog("more?", 0) == 0) {
 						did_something = 0;
 						break;
 					}
 				}
 #endif
-				/*pcb_gui->progress(0,0,0); */
+				/*rnd_gui->progress(0,0,0); */
 			}
 			PCB_END_LOOP;
 		}

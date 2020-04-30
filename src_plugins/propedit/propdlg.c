@@ -132,7 +132,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
 		free(cursor_path);
 	}
 
@@ -206,7 +206,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 		gds_truncate(&scope, gds_len(&scope)-2);
 
 		hv.str = scope.array;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscope, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscope, &hv);
 	}
 }
 
@@ -247,7 +247,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_invalid:
 		case PCB_PROPT_max: return;
 	}
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wedit[p->type], &hv);
 }
 
 typedef struct {
@@ -275,7 +275,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 
 	if (p == NULL) { /* deselect or not found */
 		hv.lng = 0;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 		return;
 	}
 
@@ -296,7 +296,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 	}
 
 	hv.lng = p->type;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 
 	prop_valedit_update(ctx, p, pvs[0].val);
 
@@ -366,7 +366,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	if (force_update || ctx->dlg[ctx->wabs[p->type]].val.lng) {
 		pcb_propsel_set(&ctx->pe, r->user_data, &sctx);
 		prop_refresh(ctx);
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 }
 
@@ -648,7 +648,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	/* default all abs */
 	hv.lng = 1;
 	for(n = 0; n < PCB_PROPT_max; n++)
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wabs[n], &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wabs[n], &hv);
 }
 
 extern int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet);

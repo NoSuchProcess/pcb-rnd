@@ -81,8 +81,8 @@ pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 	tool->cookie = cookie;
 	id = pcb_tools.used;
 	vtp0_append(&pcb_tools, (void *)tool);
-	if (pcb_gui != NULL)
-		pcb_gui->reg_mouse_cursor(pcb_gui, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
+	if (rnd_gui != NULL)
+		rnd_gui->reg_mouse_cursor(rnd_gui, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
 	rnd_event(NULL, RND_EVENT_TOOL_REG, "p", tool);
 	return id;
 }
@@ -152,8 +152,8 @@ int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 
 	recursing = pcb_false;
 
-	if (pcb_gui != NULL)
-		pcb_gui->set_mouse_cursor(pcb_gui, id);
+	if (rnd_gui != NULL)
+		rnd_gui->set_mouse_cursor(rnd_gui, id);
 	return 0;
 }
 
@@ -197,12 +197,12 @@ void rnd_tool_gui_init(void)
 	pcb_toolid_t n;
 	pcb_tool_t **tool;
 
-	if (pcb_gui == NULL)
+	if (rnd_gui == NULL)
 		return;
 
 	for(n = 0, tool = (pcb_tool_t **)pcb_tools.array; n < pcb_tools.used; n++,tool++)
 		if (*tool != NULL)
-			pcb_gui->reg_mouse_cursor(pcb_gui, n, (*tool)->cursor.name, (*tool)->cursor.pixel, (*tool)->cursor.mask);
+			rnd_gui->reg_mouse_cursor(rnd_gui, n, (*tool)->cursor.name, (*tool)->cursor.pixel, (*tool)->cursor.mask);
 }
 
 /**** current tool function wrappers ****/

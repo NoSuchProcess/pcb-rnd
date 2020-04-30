@@ -88,7 +88,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_ToggleObject:
 				if (pcb_select_object(PCB)) {
 					pcb_board_set_changed_flag(pcb_true);
-					pcb_gui->invalidate_all(pcb_gui);
+					rnd_gui->invalidate_all(rnd_gui);
 				}
 			}
 			break;
@@ -109,7 +109,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
 				pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
-				pcb_gui->invalidate_all(pcb_gui);
+				rnd_gui->invalidate_all(rnd_gui);
 				break;
 			}
 
@@ -124,7 +124,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y2 = RND_MAX_COORD;
 				if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false)) {
 					pcb_board_set_changed_flag(pcb_true);
-					pcb_gui->invalidate_all(pcb_gui);
+					rnd_gui->invalidate_all(rnd_gui);
 				}
 				break;
 			}
@@ -139,7 +139,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y2 = RND_MAX_COORD;
 				if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_true)) {
 					pcb_board_set_changed_flag(pcb_true);
-					pcb_gui->invalidate_all(pcb_gui);
+					rnd_gui->invalidate_all(rnd_gui);
 				}
 				break;
 			}

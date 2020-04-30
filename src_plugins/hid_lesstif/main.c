@@ -846,7 +846,7 @@ void lesstif_pan_fixup()
 	set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->size_x);
 	set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->size_y);
 
-	lesstif_invalidate_all(pcb_gui);
+	lesstif_invalidate_all(rnd_gui);
 }
 
 static void zoom_max()
@@ -858,7 +858,7 @@ static void zoom_max()
 	view_left_x = -(view_width * new_zoom - ltf_hidlib->size_x) / 2;
 	view_top_y = -(view_height * new_zoom - ltf_hidlib->size_y) / 2;
 	view_zoom = new_zoom;
-	pcb_pixel_slop = view_zoom;
+	rnd_pixel_slop = view_zoom;
 	lesstif_pan_fixup();
 }
 
@@ -895,7 +895,7 @@ static void zoom_to(double new_zoom, rnd_coord_t x, rnd_coord_t y)
 
 	if (view_zoom != new_zoom) {
 		view_zoom = new_zoom;
-		pcb_pixel_slop = view_zoom;
+		rnd_pixel_slop = view_zoom;
 
 		view_left_x = cx - view_width * xfrac * view_zoom;
 		view_top_y = cy - view_height * yfrac * view_zoom;
@@ -915,7 +915,7 @@ static void zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t
 
 	if (view_zoom != new_zoom) {
 		view_zoom = new_zoom;
-		pcb_pixel_slop = view_zoom;
+		rnd_pixel_slop = view_zoom;
 	}
 
 	view_left_x = x1;
@@ -1239,7 +1239,7 @@ static void work_area_expose(Widget work_area, void *me, XmDrawingAreaCallbackSt
 static void scroll_callback(Widget scroll, int *view_dim, XmScrollBarCallbackStruct * cbs)
 {
 	*view_dim = cbs->value;
-	lesstif_invalidate_all(pcb_gui);
+	lesstif_invalidate_all(rnd_gui);
 }
 
 static void work_area_make_pixmaps(Dimension width, Dimension height)
@@ -1360,7 +1360,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 
 	XtRemoveCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_expose, 0);
-	lesstif_invalidate_all(pcb_gui);
+	lesstif_invalidate_all(rnd_gui);
 }
 
 static unsigned short int lesstif_translate_key(const char *desc, int len)
@@ -2177,7 +2177,7 @@ static void lesstif_destroy_gc(rnd_hid_gc_t gc)
 
 static void lesstif_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
 {
-	pcb_gui->coord_per_pix = view_zoom;
+	rnd_gui->coord_per_pix = view_zoom;
 }
 
 static void lesstif_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
@@ -2712,7 +2712,7 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 
 	x.ptr = (void *) watch;
 	if (!watch->func(x, watch->fd, pcb_condition, watch->user_data))
-		lesstif_unwatch_file(pcb_gui, x);
+		lesstif_unwatch_file(rnd_gui, x);
 	return;
 }
 
@@ -2774,7 +2774,7 @@ static void lesstif_globconf_change_post(rnd_conf_native_t *cfg, int arr_idx)
 	if (!lesstif_active)
 		return;
 	if (strncmp(cfg->hash_path, "appearance/color/", 17) == 0)
-		lesstif_invalidate_all(pcb_gui);
+		lesstif_invalidate_all(rnd_gui);
 	if (strncmp(cfg->hash_path, "rc/cli_", 7) == 0) {
 		stdarg_n = 0;
 		stdarg(XmNlabelString, XmStringCreatePCB(rnd_cli_prompt(":")));

@@ -132,7 +132,7 @@ void pcb_tool_polyhole_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
-	if (pcb_gui->control_is_pressed(pcb_gui)) {
+	if (rnd_gui->control_is_pressed(rnd_gui)) {
 		line->draw = pcb_false;
 		return;
 	}
@@ -151,7 +151,7 @@ void pcb_tool_polyhole_draw_attached(rnd_hidlib_t *hl)
 {
 	/* draw only if starting point is set */
 	if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST)
-		pcb_render->draw_line(pcb_crosshair.GC,
+		rnd_render->draw_line(pcb_crosshair.GC,
 									 pcb_crosshair.AttachedLine.Point1.X,
 									 pcb_crosshair.AttachedLine.Point1.Y, pcb_crosshair.AttachedLine.Point2.X, pcb_crosshair.AttachedLine.Point2.Y);
 

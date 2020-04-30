@@ -110,7 +110,7 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 	}
 }

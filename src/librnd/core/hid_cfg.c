@@ -402,14 +402,14 @@ void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
 {
 	vtp0_t anchors;
 
-	if ((pcb_gui == NULL) || (pcb_gui->hid_cfg == NULL) || (pcb_gui->hid_cfg->doc == NULL) || (pcb_gui->hid_cfg->doc->root == NULL))
+	if ((rnd_gui == NULL) || (rnd_gui->hid_cfg == NULL) || (rnd_gui->hid_cfg->doc == NULL) || (rnd_gui->hid_cfg->doc->root == NULL))
 		return;
 
 	/* extract anchors; don't do the callbacks from there because the tree
 	   is going to be changed from the callbacks. It is however guaranteed
 	   that anchors are not removed. */
 	vtp0_init(&anchors);
-	map_anchor_menus(&anchors, pcb_gui->hid_cfg->doc->root, name);
+	map_anchor_menus(&anchors, rnd_gui->hid_cfg->doc->root, name);
 
 	/* iterate over all anchors extracted and call the callback */
 	{
@@ -436,7 +436,7 @@ void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
 			}
 			memcpy(path+used, name, l0+1);
 /*			rnd_trace("path='%s' used=%d\n", path, used);*/
-			cb(ctx, pcb_gui->hid_cfg, node, path);
+			cb(ctx, rnd_gui->hid_cfg, node, path);
 			used = 0;
 		}
 		free(path);
@@ -464,7 +464,7 @@ int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
 			break;
 
 		nxt = node->next;
-		pcb_gui->remove_menu_node(pcb_gui, node);
+		rnd_gui->remove_menu_node(rnd_gui, node);
 	}
 	return 0;
 }

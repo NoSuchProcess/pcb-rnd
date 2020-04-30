@@ -168,10 +168,10 @@ static void draw_mark_line(pcb_draw_info_t *info, pcb_subc_t *subc, pcb_line_t *
 	line_geo_calc(line);
 
 	selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, line);
-	pcb_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.extobj);
+	rnd_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.extobj);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
-	pcb_render->draw_line(pcb_draw_out.fgGC, x1 - dy * +disp, y1 + dx * +disp, x2 - dy * +disp, y2 + dx * +disp);
-	pcb_render->draw_line(pcb_draw_out.fgGC, x1 - dy * -disp, y1 + dx * -disp, x2 - dy * -disp, y2 + dx * -disp);
+	rnd_render->draw_line(pcb_draw_out.fgGC, x1 - dy * +disp, y1 + dx * +disp, x2 - dy * +disp, y2 + dx * +disp);
+	rnd_render->draw_line(pcb_draw_out.fgGC, x1 - dy * -disp, y1 + dx * -disp, x2 - dy * -disp, y2 + dx * -disp);
 
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -2);
 	ax = x1 + dx * arrow;
@@ -180,9 +180,9 @@ static void draw_mark_line(pcb_draw_info_t *info, pcb_subc_t *subc, pcb_line_t *
 	ay1 = y1 + dx * +arrow;
 	ax2 = x1 - dy * -arrow;
 	ay2 = y1 + dx * -arrow;
-	pcb_render->draw_line(pcb_draw_out.fgGC, ax1, ay1, ax2, ay2);
-	pcb_render->draw_line(pcb_draw_out.fgGC, ax1, ay1, ax, ay);
-	pcb_render->draw_line(pcb_draw_out.fgGC, ax2, ay2, ax, ay);
+	rnd_render->draw_line(pcb_draw_out.fgGC, ax1, ay1, ax2, ay2);
+	rnd_render->draw_line(pcb_draw_out.fgGC, ax1, ay1, ax, ay);
+	rnd_render->draw_line(pcb_draw_out.fgGC, ax2, ay2, ax, ay);
 }
 
 static void pcb_line_of_vias_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)

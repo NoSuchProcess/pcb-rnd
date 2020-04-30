@@ -969,7 +969,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	FILE *f;
 	gds_t tmp;
 
-	fname = pcb_gui->fileselect(pcb_gui, "Save mesh settings...",
+	fname = rnd_gui->fileselect(rnd_gui, "Save mesh settings...",
 															"Picks file for saving mesh settings.\n",
 															default_file, ".lht", NULL, "mesh", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (fname == NULL)
@@ -999,7 +999,7 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	char *fname = NULL;
 	FILE *f;
 
-	fname = pcb_gui->fileselect(pcb_gui, "Load mesh settings...",
+	fname = rnd_gui->fileselect(rnd_gui, "Load mesh settings...",
 															"Picks file for loading mesh settings from.\n",
 															default_file, ".lht", NULL, "mesh", RND_HID_FSD_READ, NULL);
 	if (fname == NULL)
@@ -1042,7 +1042,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	mesh.ui_layer_xy->name = rnd_strdup(mesh.ui_name_xy);
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 pcb_mesh_t *pcb_mesh_get(const char *name)

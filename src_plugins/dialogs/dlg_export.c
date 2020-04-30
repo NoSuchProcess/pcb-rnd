@@ -75,7 +75,7 @@ static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	int have_gui, currly = PCB_CURRLID(PCB);
 	int save_l_ons[PCB_MAX_LAYER], save_g_ons[PCB_MAX_LAYERGRP];
 	
-	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
+	have_gui = (rnd_gui != NULL) && rnd_gui->gui;
 	if (have_gui) {
 		pcb_hid_save_and_show_layer_ons(save_l_ons);
 		pcb_hid_save_and_show_layergrp_ons(save_g_ons);

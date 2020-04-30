@@ -109,21 +109,21 @@ static void update_vis(search_ctx_t *ctx)
 	wen = WIZ(ctx);
 
 	for(r = 0; r < MAX_ROW; r++) {
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wrowbox[r],!ctx->visible[r][0]);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wrowbox[r],!ctx->visible[r][0]);
 		for(c = 0; c < MAX_COL; c++) {
-			pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wexpr[r][c], !ctx->visible[r][c]);
+			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wexpr[r][c], !ctx->visible[r][c]);
 			if (c > 0)
-				pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wor[r][c], !((ctx->visible[r][c-1] && ctx->visible[r][c])));
-			pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_del[r][c], wen);
-			pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_edit[r][c], wen);
+				rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wor[r][c], !((ctx->visible[r][c-1] && ctx->visible[r][c])));
+			rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_del[r][c], wen);
+			rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_edit[r][c], wen);
 		}
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnew_or[r], !ctx->visible[r][0]);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnew_or[r], !ctx->visible[r][0]);
 		if (r > 0)
-			pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wand[r], !((ctx->visible[r-1][0] && ctx->visible[r][0])));
-		pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnew_or[r], wen);
+			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wand[r], !((ctx->visible[r-1][0] && ctx->visible[r][0])));
+		rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnew_or[r], wen);
 	}
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnew_and, wen);
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_str, !wen);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnew_and, wen);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wexpr_str, !wen);
 }
 
 /* look up row and col for a widget attr in a [row][col] widget idx array; returns 0 on success */
@@ -174,12 +174,12 @@ static void redraw_expr(search_ctx_t *ctx, int row, int col)
 		gds_init(&buf);
 		append_expr(&buf, e, '\n');
 		hv.str = buf.array;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 		gds_uninit(&buf);
 	}
 	else {
 		hv.str = NEW_EXPR_LAB;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
 	}
 }
 
@@ -208,7 +208,7 @@ static void search_recompile(search_ctx_t *ctx)
 		gds_append(&buf, ')');
 	}
 	hv.str = buf.array;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_str, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_str, &hv);
 	gds_uninit(&buf);
 }
 

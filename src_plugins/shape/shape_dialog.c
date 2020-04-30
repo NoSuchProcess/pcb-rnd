@@ -49,11 +49,11 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 
 	/* elliptical logics */
 	if (!shp->dlg[shp->pell].val.lng) {
-		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_false);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_false);
 		PCB_DAD_SET_VALUE(hid_ctx, shp->pry, crd, shp->dlg[shp->prx].val.crd);
 	}
 	else
-		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_true);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_true);
 
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)regpoly_place(
@@ -71,19 +71,19 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	/* elliptical logics */
 	if (!shp->dlg[shp->rell].val.lng) {
-		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_false);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_false);
 		PCB_DAD_SET_VALUE(hid_ctx, shp->ry, crd, shp->dlg[shp->rx].val.crd);
 	}
 	else
-		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_true);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_true);
 
 	/* rectangular logics */
 	if (!shp->dlg[shp->rrect].val.lng) {
-		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_false);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_false);
 		PCB_DAD_SET_VALUE(hid_ctx, shp->h, crd, shp->dlg[shp->w].val.crd);
 	}
 	else
-		pcb_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
 
 	for(n = 0; n < 4; n++)
 		corner[n] = shp->dlg[shp->corner[n]].val.lng;

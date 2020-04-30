@@ -82,7 +82,7 @@ static void Debugpcb_polyarea_t(rnd_polyarea_t * s, char *color)
 #endif
 
 /* TODO: rewrite this to UI layers if needed
-	ddraw = pcb_gui->request_debug_draw();
+	ddraw = rnd_gui->request_debug_draw();
 	ddgc = ddraw->make_gc();
 */
 
@@ -97,13 +97,13 @@ static void Debugpcb_polyarea_t(rnd_polyarea_t * s, char *color)
 				y[i++] = v->point[1];
 			}
 /*			if (1) {
-				pcb_render->set_color(ddgc, color ? color : conf_core.appearance.color.connected);
+				rnd_render->set_color(ddgc, color ? color : conf_core.appearance.color.connected);
 				pcb_hid_set_line_width(ddgc, 1);
 				for (i = 0; i < n - 1; i++) {
-					pcb_render->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
-					pcb_render->fill_circle (ddgc, x[i], y[i], 30);
+					rnd_render->draw_line(ddgc, x[i], y[i], x[i + 1], y[i + 1]);
+					rnd_render->fill_circle (ddgc, x[i], y[i], 30);
 				}
-				pcb_render->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
+				rnd_render->draw_line(ddgc, x[n - 1], y[n - 1], x[0], y[0]);
 			}*/
 			free(x);
 			free(y);

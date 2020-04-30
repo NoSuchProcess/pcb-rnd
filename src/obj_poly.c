@@ -1239,9 +1239,9 @@ void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 		return;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, poly))
-		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
+		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
 	else
-		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
+		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 	pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
@@ -1252,8 +1252,8 @@ void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 		np = poly->PointN;
 
 	for(n = 1; n < np; n++)
-		pcb_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[n].X, poly->Points[n].Y);
-	pcb_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[0].X, poly->Points[0].Y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[n].X, poly->Points[n].Y);
+	rnd_render->draw_line(pcb_draw_out.fgGC, poly->Points[n-1].X, poly->Points[n-1].Y, poly->Points[0].X, poly->Points[0].Y);
 }
 
 static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, rnd_coord_t offs)
@@ -1358,7 +1358,7 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 				r = PCB_DRAW_TERM_GFX_WIDTH;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
 				pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
-				pcb_render->draw_line(pcb_draw_out.fgGC, x, y, x, y);
+				rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x, y);
 			}
 		}
 		else
@@ -1414,7 +1414,7 @@ static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
 	else
 		color = &layer->meta.real.color;
-	pcb_render->set_color(pcb_draw_out.fgGC, color);
+	rnd_render->set_color(pcb_draw_out.fgGC, color);
 
 	pcb_poly_draw_(info, polygon, allow_term_gfx);
 }

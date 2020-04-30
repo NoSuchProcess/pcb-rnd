@@ -265,7 +265,7 @@ fgw_error_t pcb_act_LoadMentorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Loadmentor_schFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect(pcb_gui, "Load mentor edf netlist file...",
+		fname = rnd_gui->fileselect(rnd_gui, "Load mentor edf netlist file...",
 																"Picks a mentor edf file to load.\n",
 																default_file, ".edf", NULL, "mentor_sch", RND_HID_FSD_READ, NULL);
 		if (fname == NULL)

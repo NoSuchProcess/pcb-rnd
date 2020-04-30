@@ -330,7 +330,7 @@ void pcb_main_uninit(void)
 	pcb_strflg_uninit_layerlist();
 
 	gui_support_plugins(0);
-	pcb_render = pcb_gui = NULL;
+	rnd_render = rnd_gui = NULL;
 	pcb_crosshair_uninit();
 	pcb_tool_logic_uninit();
 
@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
 
 	pcb_layervis_reset_stack(&PCB->hidlib);
 
-	if (pcb_gui->gui)
+	if (rnd_gui->gui)
 		pcb_crosshair_init();
 	main_sighand_init();
 	pcb_init_buffers(PCB);

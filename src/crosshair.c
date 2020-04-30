@@ -103,7 +103,7 @@ void pcb_xordraw_poly(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, int d
 		}
 
 		/* normal contour line */
-		pcb_render->draw_line(pcb_crosshair.GC,
+		rnd_render->draw_line(pcb_crosshair.GC,
 								 polygon->Points[i].X + dx,
 								 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
 	}
@@ -125,7 +125,7 @@ void pcb_xordraw_poly_subc(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, 
 		}
 
 		/* normal contour line */
-		pcb_render->draw_line(pcb_crosshair.GC,
+		rnd_render->draw_line(pcb_crosshair.GC,
 			PCB_CSWAP_X(polygon->Points[i].X, w, mirr) + dx,
 			PCB_CSWAP_Y(polygon->Points[i].Y, h, mirr) + dy,
 			PCB_CSWAP_X(polygon->Points[next].X, w, mirr) + dx,
@@ -243,8 +243,8 @@ void pcb_xordraw_insert_pt_obj(void)
 	rnd_point_t *point = (rnd_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
-		pcb_render->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
-		pcb_render->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
+		rnd_render->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
+		rnd_render->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point2.X, line->Point2.Y);
 	}
 }
 
@@ -297,11 +297,11 @@ void pcb_xordraw_movecopy(void)
 			
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
-				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 				pcb_draw_wireframe_line(pcb_crosshair.GC,line.Point1.X, line.Point1.Y,
 																line.Point2.X, line.Point2.Y,
 																line.Thickness + 2 * (conf_core.design.bloat + 1), 0);
-				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
 			break;
 		}
@@ -320,10 +320,10 @@ void pcb_xordraw_movecopy(void)
 
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
-				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
-				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
 			break;
 		}
@@ -371,10 +371,10 @@ void pcb_xordraw_movecopy(void)
 
 				/* Draw the DRC outline if it is enabled */
 				if (conf_core.editor.show_drc) {
-					pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 					pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, 
 																	point2.Y,line->Thickness + 2 * (conf_core.design.bloat + 1), 0);
-					pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 				}
 			}
 			else {
@@ -388,8 +388,8 @@ void pcb_xordraw_movecopy(void)
 															line->Thickness,
 															line->Clearance,
 															line->Flags,
-															pcb_gui->shift_is_pressed(pcb_gui),
-															pcb_gui->control_is_pressed(pcb_gui) );
+															rnd_gui->shift_is_pressed(rnd_gui),
+															rnd_gui->control_is_pressed(rnd_gui) );
 				pcb_route_draw(&route,pcb_crosshair.GC);
 				if (conf_core.editor.show_drc) 
 					pcb_route_draw_drc(&route,pcb_crosshair.GC);
@@ -426,10 +426,10 @@ void pcb_xordraw_movecopy(void)
 
 			/* Draw the DRC outline if it is enabled */
 			if (conf_core.editor.show_drc) {
-				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 				arc.Thickness += 2 * (conf_core.design.bloat + 1);
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
-				pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
 
 			/* Get the new arc point positions, calculate the movement deltas and send them 
@@ -457,8 +457,8 @@ void pcb_xordraw_movecopy(void)
 			next = pcb_poly_contour_next_point(polygon, point_idx);
 
 			/* draw the two segments */
-			pcb_render->draw_line(pcb_crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);
-			pcb_render->draw_line(pcb_crosshair.GC, point->X + dx, point->Y + dy, polygon->Points[next].X, polygon->Points[next].Y);
+			rnd_render->draw_line(pcb_crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);
+			rnd_render->draw_line(pcb_crosshair.GC, point->X + dx, point->Y + dy, polygon->Points[next].X, polygon->Points[next].Y);
 			break;
 		}
 
@@ -477,7 +477,7 @@ void pcb_xordraw_movecopy(void)
 				pcb_subc_t *sc = data->parent.subc;
 				rnd_coord_t ox, oy;
 				if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
-					pcb_render->draw_line(pcb_crosshair.GC, ox, oy, pcb_crosshair.X, pcb_crosshair.Y);
+					rnd_render->draw_line(pcb_crosshair.GC, ox, oy, pcb_crosshair.X, pcb_crosshair.Y);
 			}
 		}
 	}
@@ -489,11 +489,11 @@ void pcb_xordraw_movecopy(void)
 void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
-		pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_RESET, 1, NULL);
-		pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_POSITIVE_XOR, 1, NULL);
+		rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_RESET, 1, NULL);
+		rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_POSITIVE_XOR, 1, NULL);
 	}
 
-	pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+	rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	pcb_tool_draw_attached(hidlib);
 
 	/* an attached box does not depend on a special mode */
@@ -504,11 +504,11 @@ void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 		y1 = pcb_crosshair.AttachedBox.Point1.Y;
 		x2 = pcb_crosshair.AttachedBox.Point2.X;
 		y2 = pcb_crosshair.AttachedBox.Point2.Y;
-		pcb_render->draw_rect(pcb_crosshair.GC, x1, y1, x2, y2);
+		rnd_render->draw_rect(pcb_crosshair.GC, x1, y1, x2, y2);
 	}
 
 	if (!inhibit_drawing_mode)
-		pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_FLUSH, 1, NULL);
+		rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_FLUSH, 1, NULL);
 }
 
 
@@ -518,25 +518,25 @@ void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 
 	if ((pcb_marked.status) || (hidlib->tool_grabbed.status)) {
 		if (!inhibit_drawing_mode) {
-			pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_RESET, 1, NULL);
-			pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_POSITIVE, 1, NULL);
+			rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_RESET, 1, NULL);
+			rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_POSITIVE, 1, NULL);
 		}
-		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.mark);
+		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.mark);
 	}
 
 	if (pcb_marked.status) {
-		pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
-		pcb_render->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
+		rnd_render->draw_line(pcb_crosshair.GC, pcb_marked.X - ms, pcb_marked.Y - ms, pcb_marked.X + ms, pcb_marked.Y + ms);
+		rnd_render->draw_line(pcb_crosshair.GC, pcb_marked.X + ms, pcb_marked.Y - ms, pcb_marked.X - ms, pcb_marked.Y + ms);
 	}
 
 	if (hidlib->tool_grabbed.status) {
-		pcb_render->draw_line(pcb_crosshair.GC, hidlib->tool_grabbed.X - ms, hidlib->tool_grabbed.Y - ms2, hidlib->tool_grabbed.X + ms, hidlib->tool_grabbed.Y + ms2);
-		pcb_render->draw_line(pcb_crosshair.GC, hidlib->tool_grabbed.X + ms2, hidlib->tool_grabbed.Y - ms, hidlib->tool_grabbed.X - ms2, hidlib->tool_grabbed.Y + ms);
+		rnd_render->draw_line(pcb_crosshair.GC, hidlib->tool_grabbed.X - ms, hidlib->tool_grabbed.Y - ms2, hidlib->tool_grabbed.X + ms, hidlib->tool_grabbed.Y + ms2);
+		rnd_render->draw_line(pcb_crosshair.GC, hidlib->tool_grabbed.X + ms2, hidlib->tool_grabbed.Y - ms, hidlib->tool_grabbed.X - ms2, hidlib->tool_grabbed.Y + ms);
 	}
 
 	if ((pcb_marked.status) || (hidlib->tool_grabbed.status))
 		if (!inhibit_drawing_mode)
-			pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_FLUSH, 1, NULL);
+			rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_FLUSH, 1, NULL);
 }
 
 
@@ -556,8 +556,8 @@ void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
  */
 void pcb_notify_mark_change(rnd_bool changes_complete)
 {
-	if (pcb_gui->notify_mark_change)
-		pcb_gui->notify_mark_change(pcb_gui, changes_complete);
+	if (rnd_gui->notify_mark_change)
+		rnd_gui->notify_mark_change(rnd_gui, changes_complete);
 }
 
 
@@ -766,7 +766,7 @@ static void check_snap_object(struct snap_data *snap_data, rnd_coord_t x, rnd_co
 	}
 
 	sq_dist = crosshair_sq_dist(snap_data->crosshair, x, y);
-	if (sq_dist < snap_data->nearest_sq_dist || (prefer_to_grid && snap_data->nearest_is_grid && !pcb_gui->shift_is_pressed(pcb_gui))) {
+	if (sq_dist < snap_data->nearest_sq_dist || (prefer_to_grid && snap_data->nearest_is_grid && !rnd_gui->shift_is_pressed(rnd_gui))) {
 		snap_data->x = x;
 		snap_data->y = y;
 		snap_data->nearest_sq_dist = sq_dist;
@@ -986,19 +986,19 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_arrow) {
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_OBJ_VOID) {
-			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
-				pcb_gui->point_cursor(pcb_gui, pcb_false);
+			if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
+				rnd_gui->point_cursor(rnd_gui, pcb_false);
 		}
 		else if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_line_t *) ptr2)) {
-			if ((pcb_gui != NULL) && (pcb_gui->point_cursor != NULL))
-				pcb_gui->point_cursor(pcb_gui, pcb_true);
+			if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
+				rnd_gui->point_cursor(rnd_gui, pcb_true);
 		}
 	}
 
 	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		pcb_line_enforce_drc(PCB);
 
-	pcb_gui->set_crosshair(pcb_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
+	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1047,7 +1047,7 @@ void pcb_center_display(rnd_coord_t X, rnd_coord_t Y)
 	PCB->hidlib.grid = 1;
 	if (pcb_crosshair_move_absolute(X, Y))
 		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
-	pcb_gui->set_crosshair(pcb_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_WARP_POINTER);
+	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_WARP_POINTER);
 	PCB->hidlib.grid = save_grid;
 }
 
@@ -1056,7 +1056,7 @@ static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int ar
 {
 	pcb_crosshair.GC = pcb_hid_make_gc();
 
-	pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+	rnd_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 	pcb_hid_set_draw_xor(pcb_crosshair.GC, 1);
 	pcb_hid_set_line_cap(pcb_crosshair.GC, rnd_cap_round);
 	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
@@ -1092,7 +1092,7 @@ void pcb_crosshair_uninit(void)
 {
 	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
 	pcb_route_destroy(&pcb_crosshair.Route);
-	if (pcb_render != NULL)
+	if (rnd_render != NULL)
 		pcb_hid_destroy_gc(pcb_crosshair.GC);
 	rnd_event_unbind_allcookie(crosshair_cookie);
 }

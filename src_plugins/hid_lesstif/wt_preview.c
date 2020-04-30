@@ -115,7 +115,7 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	save_main_px = main_pixmap;
 	save_mask_px = mask_pixmap;
 	save_mask_bm = mask_bitmap;
-	save_cpp = pcb_gui->coord_per_pix;
+	save_cpp = rnd_gui->coord_per_pix;
 	main_pixmap = XCreatePixmap(XtDisplay(pd->pw), XtWindow(pd->pw), pd->v_width, pd->v_height, widget_depth(pd->pw));
 	mask_pixmap = XCreatePixmap(XtDisplay(pd->pw), XtWindow(pd->pw), pd->v_width, pd->v_height, widget_depth(pd->pw));
 	mask_bitmap = XCreatePixmap(XtDisplay(pd->pw), XtWindow(pd->pw), pd->v_width, pd->v_height, 1);
@@ -135,7 +135,7 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	pd->exp_ctx.view.X2 = pd->x2;
 	pd->exp_ctx.view.Y2 = pd->y2;
 
-	pcb_gui->coord_per_pix = view_zoom;
+	rnd_gui->coord_per_pix = view_zoom;
 	pcbhl_expose_preview(&lesstif_hid, &pd->exp_ctx);
 
 	XCopyArea(lesstif_display, pixmap, XtWindow(pd->pw), gc, 0, 0, pd->v_width, pd->v_height, 0, 0);
@@ -153,7 +153,7 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	mask_pixmap = save_mask_px;
 	mask_bitmap = save_mask_bm;
 	pixmap = save_px;
-	pcb_gui->coord_per_pix = save_cpp;
+	rnd_gui->coord_per_pix = save_cpp;
 	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
 	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);
 

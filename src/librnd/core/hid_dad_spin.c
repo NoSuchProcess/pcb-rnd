@@ -103,9 +103,9 @@ static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *s
 
 static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, const char *msg)
 {
-	pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wwarn, (msg == NULL));
-	if (pcb_gui->attr_dlg_set_help != NULL)
-		pcb_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
+	rnd_gui->attr_dlg_widget_hide(hid_ctx, spin->wwarn, (msg == NULL));
+	if (rnd_gui->attr_dlg_set_help != NULL)
+		rnd_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
 }
 
 static char *gen_str_coord(pcb_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, int buflen)
@@ -149,16 +149,16 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		/* global ticked in: also set the unit by force */
 		unum = pcbhl_conf.editor.grid_unit - pcb_units;
 		hv.lng = unum;
-		pcb_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
+		rnd_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
 	}
 
 	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
 	hv.str = su->buf;
-	pcb_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
 	if (!is_globbing && can_glob) {
 		/* unit changed: disable global, accept the user wants to use this unit */
 		hv.lng = 0;
-		pcb_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
+		rnd_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
 	}
 	su->valid = 1;
 }
@@ -245,7 +245,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_h
 			spin->no_unit_chg = 1;
 
 		hv.str = rnd_strdup(ctx.buf);
-		pcb_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
+		rnd_gui->attr_dlg_set_value(spin_hid_ctx, spin->wstr, &hv);
 	}
 
 	PCB_DAD_FREE(ctx.dlg);
@@ -332,7 +332,7 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t
 	spin_warn(hid_ctx, spin, end, warn);
 	hv.str = rnd_strdup(buf);
 	spin->set_writeback_lock++;
-	pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 	spin->set_writeback_lock--;
 }
 
@@ -445,7 +445,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 				changed = 1;
 				hv.str = tmp;
 				spin->set_writeback_lock++;
-				pcb_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
+				rnd_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
 				spin->set_writeback_lock--;
 				succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 				if (succ) {
@@ -534,13 +534,13 @@ void pcb_dad_spin_free(rnd_hid_attribute_t *attr)
 int pcb_dad_spin_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
 {
 	pcb_hid_dad_spin_t *spin = end->wdata;
-	return pcb_gui->attr_dlg_widget_state(hid_ctx, spin->wall, enabled);
+	return rnd_gui->attr_dlg_widget_state(hid_ctx, spin->wall, enabled);
 }
 
 int pcb_dad_spin_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
 {
 	pcb_hid_dad_spin_t *spin = end->wdata;
-	return pcb_gui->attr_dlg_widget_hide(hid_ctx, spin->wall, hide);
+	return rnd_gui->attr_dlg_widget_hide(hid_ctx, spin->wall, hide);
 }
 
 int pcb_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
@@ -579,8 +579,8 @@ void pcb_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help)
 
 	if ((spin->hid_ctx == NULL) || (*spin->hid_ctx == NULL)) /* while building */
 		str->help_text = help;
-	else if (pcb_gui->attr_dlg_set_help != NULL) /* when the dialog is already running */
-		pcb_gui->attr_dlg_set_help(*spin->hid_ctx, spin->wstr, help);
+	else if (rnd_gui->attr_dlg_set_help != NULL) /* when the dialog is already running */
+		rnd_gui->attr_dlg_set_help(*spin->hid_ctx, spin->wstr, help);
 }
 
 void pcb_dad_spin_update_global_coords(void)

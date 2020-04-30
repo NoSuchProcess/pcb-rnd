@@ -75,7 +75,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wjobs, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wjobs, &hv);
 	}
 }
 
@@ -139,7 +139,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 
 	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].val.str);
 	hv.str = ctx->cam.prefix == NULL ? "" : ctx->cam.prefix;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprefix, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprefix, &hv);
 
 	attr = &ctx->dlg[ctx->wopts];
 	tree = attr->wdata;
@@ -164,7 +164,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wopts, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wopts, &hv);
 	}
 }
 
@@ -342,7 +342,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 	{ /* set default outfile */
 		rnd_hid_attr_val_t hv;
 		hv.str = pcb_derive_default_filename_(PCB->hidlib.filename, "");
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->woutfile, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->woutfile, &hv);
 		free((char *)hv.str);
 		cam_gui_opts2dlg(ctx);
 	}

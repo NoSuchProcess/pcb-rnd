@@ -380,7 +380,7 @@ static void pcb_drc_orig(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 	pcb_hid_progress(0, 0, NULL);
 	pcb_layervis_restore_stack();
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 

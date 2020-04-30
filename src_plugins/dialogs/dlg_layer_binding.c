@@ -147,7 +147,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		/* disable comp for copper and outline */
 		enable = !(layer->meta.bound.type & PCB_LYT_COPPER) && !(layer->meta.bound.type & PCB_LYT_BOUNDARY);
-		pcb_gui->attr_dlg_widget_state(hid_ctx, w->comp, enable);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, w->comp, enable);
 		if (!enable)
 			layer->comb = 0; /* copper and outline must be +manual */
 
@@ -170,10 +170,10 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		if (PCB_LAYER_SIDED(layer->meta.bound.type)) {
 			/* side & offset */
 			PCB_DAD_SET_VALUE(hid_ctx, w->side, lng, side2int(layer->meta.bound.type));
-			pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, 1);
+			rnd_gui->attr_dlg_widget_state(hid_ctx, w->side, 1);
 		}
 		else
-			pcb_gui->attr_dlg_widget_state(hid_ctx, w->side, 0);
+			rnd_gui->attr_dlg_widget_state(hid_ctx, w->side, 0);
 
 		ofs = layer->meta.bound.stack_offs;
 		if (ofs < 0) {
@@ -184,8 +184,8 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 
 		/* enable offset only for copper */
 		enable = (layer->meta.bound.type & PCB_LYT_COPPER);
-		pcb_gui->attr_dlg_widget_state(hid_ctx, w->offs, enable);
-		pcb_gui->attr_dlg_widget_state(hid_ctx, w->from, enable);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, w->offs, enable);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, w->from, enable);
 
 		/* real layer */
 		if (layer->meta.bound.real != NULL)
@@ -193,7 +193,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		else
 			lid = ctx->no_layer;
 		PCB_DAD_SET_VALUE(hid_ctx, w->layer, lng, lid);
-		pcb_gui->attr_dlg_widget_state(hid_ctx, w->layer, 0);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, w->layer, 0);
 	}
 }
 
@@ -242,11 +242,11 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	lb_dialog2data(hid_ctx, ctx);
 	if (ctx->subc != NULL) {
 		if (pcb_subc_rebind(ctx->pcb, ctx->subc) > 0)
-			pcb_gui->invalidate_all(pcb_gui);
+			rnd_gui->invalidate_all(rnd_gui);
 	}
 	else { /* buffer */
 		pcb_data_binding_update(ctx->pcb, ctx->data);
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }
@@ -371,7 +371,7 @@ TODO("subc TODO")
 		PCB_DAD_DEFSIZE(dlg, 500, 500);
 		PCB_DAD_NEW("layer_binding", dlg, "Layer bindings", &ctx, pcb_true, NULL);
 		val.func = lb_attr_chg;
-		pcb_gui->attr_dlg_property(dlg_hid_ctx, RND_HATP_GLOBAL_CALLBACK, &val);
+		rnd_gui->attr_dlg_property(dlg_hid_ctx, RND_HATP_GLOBAL_CALLBACK, &val);
 		lb_data2dialog(dlg_hid_ctx, &ctx);
 
 		PCB_DAD_RUN(dlg);

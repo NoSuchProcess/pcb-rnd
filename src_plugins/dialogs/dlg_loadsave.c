@@ -71,13 +71,13 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
 	if (rnd_strcasecmp(function, "Netlist") == 0)
-		name = pcb_gui->fileselect(pcb_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", RND_HID_FSD_READ, NULL);
+		name = rnd_gui->fileselect(rnd_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", RND_HID_FSD_READ, NULL);
 	else if ((rnd_strcasecmp(function, "FootprintToBuffer") == 0) || (rnd_strcasecmp(function, "ElementToBuffer") == 0))
-		name = pcb_gui->fileselect(pcb_gui, "Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", RND_HID_FSD_READ, NULL);
+		name = rnd_gui->fileselect(rnd_gui, "Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", RND_HID_FSD_READ, NULL);
 	else if (rnd_strcasecmp(function, "LayoutToBuffer") == 0)
-		name = pcb_gui->fileselect(pcb_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
+		name = rnd_gui->fileselect(rnd_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
 	else if (rnd_strcasecmp(function, "Layout") == 0)
-		name = pcb_gui->fileselect(pcb_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
+		name = rnd_gui->fileselect(rnd_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
 	else {
 		rnd_message(RND_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
 		RND_ACT_IRES(1);
@@ -119,7 +119,7 @@ static void update_opts(save_t *save)
 	int selection = save->fmtsub->dlg[save->wfmt].val.lng;
 
 	hv.lng = save->opt_tab[selection];
-	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
+	rnd_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
 }
 
 static void fmt_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -140,7 +140,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 
 	/* turn off guessing becuase the user explicitly selected a format */
 	hv.lng = 0;
-	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wguess, &hv);
+	rnd_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wguess, &hv);
 
 	fn = (char *)res.d.s;
 
@@ -208,18 +208,18 @@ static void save_guess_format(save_t *save, const char *ext)
 			rnd_hid_attr_val_t hv;
 			save->fmt_chg_lock = 1;
 			hv.lng = n;
-			pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wfmt, &hv);
+			rnd_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wfmt, &hv);
 			save->fmt_chg_lock = 0;
 			update_opts(save);
-			pcb_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 1);
+			rnd_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 1);
 			fmt_chg(save->fmtsub->dlg_hid_ctx, save->fmtsub, save->fmtsub->dlg+save->wfmt);
 			/* turn on guessing - was turned off by the call above */
 			hv.lng = 1;
-			pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wguess, &hv);
+			rnd_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wguess, &hv);
 			return;
 		}
 	}
-	pcb_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 0);
+	rnd_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 0);
 }
 
 static void save_timer(rnd_hidval_t user_data)
@@ -236,7 +236,7 @@ static void save_timer(rnd_hidval_t user_data)
 		save->inited = 1;
 	}
 
-	save->timer = pcb_gui->add_timer(pcb_gui, save_timer, 300, user_data);
+	save->timer = rnd_gui->add_timer(rnd_gui, save_timer, 300, user_data);
 
 	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].val.lng)) {
 		rnd_event_arg_t res;
@@ -556,10 +556,10 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	
 	timer_ctx.ptr = &save;
 	save.timer_active = 1;
-	save.timer = pcb_gui->add_timer(pcb_gui, save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
-	final_name = pcb_gui->fileselect(pcb_gui, prompt, NULL, name_in, NULL, NULL, "board", RND_HID_FSD_MAY_NOT_EXIST, fmtsub);
+	save.timer = rnd_gui->add_timer(rnd_gui, save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
+	final_name = rnd_gui->fileselect(rnd_gui, prompt, NULL, name_in, NULL, NULL, "board", RND_HID_FSD_MAY_NOT_EXIST, fmtsub);
 	if (save.timer_active)
-		pcb_gui->stop_timer(pcb_gui, save.timer);
+		rnd_gui->stop_timer(rnd_gui, save.timer);
 	free(name_in);
 	free(save.fmt_tab_names);
 	free(save.fmt_plug_data);

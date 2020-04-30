@@ -75,7 +75,7 @@ static void rst_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, ch
 		sprintf(act, "RouteStyle(%d)", idx+1); /* for historical reasons this action counts from 1 */
 		sprintf(chk, "ChkRst(%d)", idx);
 		strcpy(end, PCB->RouteStyle.array[idx].name);
-		pcb_gui->create_menu(pcb_gui, path, &props);
+		rnd_gui->create_menu(rnd_gui, path, &props);
 	}
 }
 
@@ -87,7 +87,7 @@ static void rst_force_update_chk_and_dlg()
 
 	for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 		hv.lng = (n == target);
-		pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
+		rnd_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
 	}
 	rstdlg_pcb2dlg(target);
 }
@@ -107,16 +107,16 @@ static void rst_update()
 
 			hv.lng = (n == target);
 			if (rst.sub.dlg[rst.wlab[n]].val.lng != hv.lng)
-				pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
+				rnd_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
 
 			hv.str = PCB->RouteStyle.array[n].name;
 			if (strcmp(rst.sub.dlg[rst.wlab[n]].name, hv.str) != 0)
-				pcb_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wlab[n], &hv);
+				rnd_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wlab[n], &hv);
 		}
 		if (vtroutestyle_len(&PCB->RouteStyle) != rst.last_len) {
 			rst.last_len = vtroutestyle_len(&PCB->RouteStyle);
 			for(n = 0; n < MAX_STYLES; n++)
-				pcb_gui->attr_dlg_widget_hide(rst.sub.dlg_hid_ctx, rst.whbox[n], n >= rst.last_len);
+				rnd_gui->attr_dlg_widget_hide(rst.sub.dlg_hid_ctx, rst.whbox[n], n >= rst.last_len);
 		}
 		rstdlg_pcb2dlg(target);
 	}
@@ -218,9 +218,9 @@ void pcb_rst_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 
 void pcb_rst_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
-	if ((PCB != NULL) && (pcb_gui != NULL)) {
-		if (pcb_gui->update_menu_checkbox != NULL)
-			pcb_gui->update_menu_checkbox(pcb_gui, NULL);
+	if ((PCB != NULL) && (rnd_gui != NULL)) {
+		if (rnd_gui->update_menu_checkbox != NULL)
+			rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 		if (rst.sub_inited)
 			rst_force_update_chk_and_dlg();
 	}

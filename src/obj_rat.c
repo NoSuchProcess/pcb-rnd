@@ -449,18 +449,18 @@ pcb_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl)
 
 	if (PCB_FLAG_TEST(PCB_FLAG_SELECTED | PCB_FLAG_FOUND, rat)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, rat))
-			pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
+			rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
 		else
-			pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.connected);
+			rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.connected);
 	}
 	else if (PCB_HAS_COLOROVERRIDE(rat)) {
-		pcb_render->set_color(pcb_draw_out.fgGC, rat->override_color);
+		rnd_render->set_color(pcb_draw_out.fgGC, rat->override_color);
 	}
 	else
-		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.rat);
+		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.rat);
 
 	if (conf_core.appearance.rat_thickness < 20)
-		rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;
+		rat->Thickness = rnd_pixel_slop * conf_core.appearance.rat_thickness;
 	/* PCB_FLAG_VIA is set if this rat goes to a containing poly: draw a donut */
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, rat)) {
 		int w = rat->Thickness;
@@ -469,7 +469,7 @@ pcb_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl)
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		else
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, w);
-		pcb_render->draw_arc(pcb_draw_out.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
+		rnd_render->draw_arc(pcb_draw_out.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else
 		pcb_line_draw_(info, (pcb_line_t *) rat, 0);
@@ -497,7 +497,7 @@ void pcb_rat_invalidate_erase(pcb_rat_t *Rat)
 void pcb_rat_invalidate_draw(pcb_rat_t *Rat)
 {
 	if (conf_core.appearance.rat_thickness < 20)
-		Rat->Thickness = pcb_pixel_slop * conf_core.appearance.rat_thickness;
+		Rat->Thickness = rnd_pixel_slop * conf_core.appearance.rat_thickness;
 	/* rats.c set PCB_FLAG_VIA if this rat goes to a containing poly: draw a donut */
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		rnd_coord_t w = Rat->Thickness;

@@ -123,7 +123,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 	}
 	return 0;
@@ -173,7 +173,7 @@ static void pstklib_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
-	pcb_render->set_color(gc, rnd_color_black);
+	rnd_render->set_color(gc, rnd_color_black);
 	pcb_hid_set_line_cap(gc, rnd_cap_round);
 	pcb_hid_set_line_width(gc, -1);
 
@@ -184,13 +184,13 @@ static void pstklib_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 
 	grid = ctx->dlg[ctx->wgrid].val.crd;
 	for(x = 0; x < x2; x += grid)
-		pcb_render->draw_line(gc, x, y1, x, y2);
+		rnd_render->draw_line(gc, x, y1, x, y2);
 	for(x = -grid; x > x1; x -= grid)
-		pcb_render->draw_line(gc, x, y1, x, y2);
+		rnd_render->draw_line(gc, x, y1, x, y2);
 	for(y = 0; y < y2; y += grid)
-		pcb_render->draw_line(gc, x1, y, x2, y);
+		rnd_render->draw_line(gc, x1, y, x2, y);
 	for(y = -grid; y > y1; y -= grid)
-		pcb_render->draw_line(gc, x1, y, x2, y);
+		rnd_render->draw_line(gc, x1, y, x2, y);
 
 	/* draw the mark only */
 	for(n = 0; n < pcb_proto_num_layers; n++)
@@ -231,7 +231,7 @@ static void pstklib_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 		ctx->proto_id = PCB_PADSTACK_INVALID;
 
 	hv.str = NULL;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
 static void pstklib_update_prv(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -250,11 +250,11 @@ static void pstklib_update_layerc(void *hid_ctx, void *caller_data, rnd_hid_attr
 		if (ctx->wlayerc[n] == widx) {
 			hv.lng = 1;
 			idx = n;
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerv[n], &hv); /* current must be visible as well */
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerv[n], &hv); /* current must be visible as well */
 		}
 		else
 			hv.lng = 0;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerc[n], &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlayerc[n], &hv);
 	}
 	if (idx < 0)
 		return;
@@ -360,7 +360,7 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	pstklib_data2dlg(ctx);
 	sprintf(tmp, "%u", ctx->proto_id);
 	hv.str = tmp;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 
 	pstklib_proto_edit_common(ctx, data, ctx->proto_id, tab);
 }
@@ -402,7 +402,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attri
 			pcb_pstk_change_instance(ps, &to_pid, NULL, NULL, NULL, NULL);
 	}
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 
@@ -445,7 +445,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, rnd_hid_attri
 
 	if (changed) {
 		pcb_board_set_changed_flag(pcb_true);
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 }
 
@@ -638,7 +638,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_subc_t *sc;
 		int type;
 		rnd_hid_get_coords("Pick a subcircuit for padstack lib editing", &x, &y, 0);
-		type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, x, y, PCB_SLOP * pcb_pixel_slop);
+		type = pcb_search_obj_by_location(PCB_OBJ_SUBC, &r1, &r2, &r3, x, y, PCB_SLOP * rnd_pixel_slop);
 		if (type != PCB_OBJ_SUBC) {
 			RND_ACT_IRES(-1);
 			return 0;

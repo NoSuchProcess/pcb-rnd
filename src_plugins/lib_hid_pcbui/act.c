@@ -62,7 +62,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (rnd_strcasecmp(vp, "selected") == 0) {
 			rnd_rnd_box_t sb;
 			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
-				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+				rnd_gui->zoom_win(rnd_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
 				rnd_message(RND_MSG_ERROR, "Can't zoom to selection: nothing selected\n");
 			return 0;
@@ -71,7 +71,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (rnd_strcasecmp(vp, "found") == 0) {
 			rnd_rnd_box_t sb;
 			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
-				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
+				rnd_gui->zoom_win(rnd_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
 				rnd_message(RND_MSG_ERROR, "Can't zoom to 'found': nothing found\n");
 			return 0;
@@ -100,7 +100,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
 
-	pcb_gui->view_get(pcb_gui, &vb);
+	rnd_gui->view_get(rnd_gui, &vb);
 	xcent = (double)(vb.X1 + vb.X2)/2.0;
 	ycent = (double)(vb.Y1 + vb.Y2)/2.0;
 	xoffs = xcent - x;
@@ -175,10 +175,10 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_draw_inhibit_dec();
 
 /*rnd_trace("-jump-> %mm;%mm -> %mm;%mm\n", x, y, (rnd_coord_t)(x + xoffs), (rnd_coord_t)(y + yoffs));*/
-	pcb_gui->pan(pcb_gui, rnd_round(x + xoffs), rnd_round(y + yoffs), 0);
-	pcb_gui->set_crosshair(pcb_gui, x, y, HID_SC_PAN_VIEWPORT);
+	rnd_gui->pan(rnd_gui, rnd_round(x + xoffs), rnd_round(y + yoffs), 0);
+	rnd_gui->set_crosshair(rnd_gui, x, y, HID_SC_PAN_VIEWPORT);
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -255,9 +255,9 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (*name != '\0')
-		r = pcb_gui->open_popup(pcb_gui, name);
+		r = rnd_gui->open_popup(rnd_gui, name);
 	if ((r != 0) && (*name2 != '\0'))
-		r = pcb_gui->open_popup(pcb_gui, name2);
+		r = rnd_gui->open_popup(rnd_gui, name2);
 
 	RND_ACT_IRES(r);
 	return 0;

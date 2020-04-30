@@ -18,7 +18,7 @@ typedef struct pcb_ltf_preview_s {
 	rnd_hid_expose_ctx_t ctx;
 	rnd_bool (*mouse_ev)(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 	void (*pre_close)(struct pcb_ltf_preview_s *pd);
-	pcb_hid_expose_t overlay_draw;
+	rnd_hid_expose_t overlay_draw;
 	unsigned resized:1;
 	unsigned pan:1;
 	unsigned expose_lock:1;

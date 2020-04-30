@@ -634,25 +634,25 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 		else
 			color = &conf_core.appearance.color.selected;
 
-		pcb_render->set_color(pcb_draw_out.fgGC, color);
+		rnd_render->set_color(pcb_draw_out.fgGC, color);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, -2);
-		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
-		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
-		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
-		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[3], gfx->coy[3], gfx->cox[0], gfx->coy[0]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[3], gfx->coy[3], gfx->cox[0], gfx->coy[0]);
 	}
 
 
-	if ((gfx->pxm_neutral == NULL) || (pcb_render->draw_pixmap == NULL)) {
-		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
+	if ((gfx->pxm_neutral == NULL) || (rnd_render->draw_pixmap == NULL)) {
+		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
 		pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.1));
-		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
-		pcb_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
 	}
 	else {
-		pcb_render->draw_pixmap(pcb_render, gfx->cx, gfx->cy, gfx->sx, gfx->sy, gfx->pxm_xformed);
+		rnd_render->draw_pixmap(rnd_render, gfx->cx, gfx->cy, gfx->sx, gfx->sy, gfx->pxm_xformed);
 	}
 }
 
@@ -697,8 +697,8 @@ void pcb_gfx_invalidate_draw(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 
 void pcb_gfx_draw_xor(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[0]+dx, gfx->coy[0]+dy, gfx->cox[1]+dx, gfx->coy[1]+dy);
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[1]+dx, gfx->coy[1]+dy, gfx->cox[2]+dx, gfx->coy[2]+dy);
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[2]+dx, gfx->coy[2]+dy, gfx->cox[3]+dx, gfx->coy[3]+dy);
-	pcb_render->draw_line(pcb_crosshair.GC, gfx->cox[3]+dx, gfx->coy[3]+dy, gfx->cox[0]+dx, gfx->coy[0]+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[0]+dx, gfx->coy[0]+dy, gfx->cox[1]+dx, gfx->coy[1]+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[1]+dx, gfx->coy[1]+dy, gfx->cox[2]+dx, gfx->coy[2]+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[2]+dx, gfx->coy[2]+dy, gfx->cox[3]+dx, gfx->coy[3]+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[3]+dx, gfx->coy[3]+dy, gfx->cox[0]+dx, gfx->coy[0]+dy);
 }

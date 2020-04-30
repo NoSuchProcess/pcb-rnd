@@ -125,7 +125,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 	}
 }
@@ -243,7 +243,7 @@ static void view_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	pcb_draw_force_termlab = 1;
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
-	pcbhl_expose_main(pcb_gui, e, &xform);
+	pcbhl_expose_main(rnd_gui, e, &xform);
 	pcb_draw_force_termlab = old_termlab;
 
 	/* restore object color */
@@ -276,7 +276,7 @@ static void view_preview_update(view_ctx_t *ctx)
 		return;
 
 	hv.str = NULL;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
 
@@ -382,7 +382,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		}
 	}
 	pcb_view_save_list_end(&tmp, NULL);
-	pcb_gui->clip_set(pcb_gui, RND_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
+	rnd_gui->clip_set(rnd_gui, RND_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
 	gds_uninit(&tmp);
 	if (cut)
 		view2dlg_list(ctx);
@@ -408,16 +408,16 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		vt = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
 	}
 
-	if (pcb_gui->clip_get(pcb_gui, &cformat, &cdata, &clen) != 0)
+	if (rnd_gui->clip_get(rnd_gui, &cformat, &cdata, &clen) != 0)
 		return;
 
 	if (cformat != RND_HID_CLIPFMT_TEXT) {
-		pcb_gui->clip_free(pcb_gui, cformat, cdata, clen);
+		rnd_gui->clip_free(rnd_gui, cformat, cdata, clen);
 		return;
 	}
 
 	load_ctx = pcb_view_load_start_str(cdata);
-	pcb_gui->clip_free(pcb_gui, cformat, cdata, clen);
+	rnd_gui->clip_free(rnd_gui, cformat, cdata, clen);
 	if (load_ctx == NULL)
 		return;
 
@@ -441,7 +441,7 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	char *fn;
 	FILE *f;
 
-	fn = pcb_gui->fileselect(pcb_gui, "Save view list", "Save all views from the list", "view.lht", "lht", NULL, "view", 0, NULL);
+	fn = rnd_gui->fileselect(rnd_gui, "Save view list", "Save all views from the list", "view.lht", "lht", NULL, "view", 0, NULL);
 	if (fn == NULL)
 		return;
 
@@ -470,7 +470,7 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	FILE *f;
 	void *load_ctx;
 
-	fn = pcb_gui->fileselect(pcb_gui, "Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", RND_HID_FSD_READ, NULL);
+	fn = rnd_gui->fileselect(rnd_gui, "Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", RND_HID_FSD_READ, NULL);
 	if (fn == NULL)
 		return;
 

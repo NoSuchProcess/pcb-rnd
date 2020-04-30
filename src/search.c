@@ -1644,7 +1644,7 @@ int pcb_search_obj_by_id_buf2(pcb_data_t *Base, void **Result1, void **Result2, 
  */
 int pcb_search_screen(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
-	return pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB_SLOP * pcb_pixel_slop);
+	return pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB_SLOP * rnd_pixel_slop);
 }
 
 /* ---------------------------------------------------------------------------

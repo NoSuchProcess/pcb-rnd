@@ -335,7 +335,7 @@ int pcb_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
 	defer_updates = 0;
 	if (defer_needs_update) {
 		pcb_undo_inc_serial();
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 
 	return res;

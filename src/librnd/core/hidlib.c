@@ -44,7 +44,7 @@ void pcb_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_
 static void hidlib_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_tool_gui_init();
-	pcb_gui->set_mouse_cursor(pcb_gui, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
+	rnd_gui->set_mouse_cursor(rnd_gui, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
 }
 
 void pcbhl_log_print_uninit_errs(const char *title)

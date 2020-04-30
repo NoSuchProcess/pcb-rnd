@@ -150,7 +150,7 @@ void pcb_draw_pstk_names(pcb_draw_info_t *info, rnd_layergrp_id_t group, const r
 #define PCB_DRAW_BBOX(obj) \
 	do { \
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 0); \
-		pcb_render->draw_rect(pcb_draw_out.fgGC, obj->BoundingBox.X1, obj->BoundingBox.Y1, obj->BoundingBox.X2, obj->BoundingBox.Y2); \
+		rnd_render->draw_rect(pcb_draw_out.fgGC, obj->BoundingBox.X1, obj->BoundingBox.Y1, obj->BoundingBox.X2, obj->BoundingBox.Y2); \
 	} while(0)
 #else
 #define PCB_DRAW_BBOX(obj)
@@ -182,7 +182,7 @@ void pcb_draw_delay_label_add(pcb_any_obj_t *obj);
 #define pcb_draw_term_need_gfx(obj) \
 	(((obj)->term != NULL) && !PCB_FLAG_TEST(PCB_FLAG_FOUND, (obj)) && !PCB_FLAG_TEST(PCB_FLAG_WARN, (obj)) && !PCB_FLAG_TEST(PCB_FLAG_SELECTED, (obj)))
 
-#define pcb_draw_term_hid_permission() (pcb_gui->heavy_term_layer_ind)
+#define pcb_draw_term_hid_permission() (rnd_gui->heavy_term_layer_ind)
 
 #define PCB_DRAW_TERM_GFX_WIDTH (-3)
 

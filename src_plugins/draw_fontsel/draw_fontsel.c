@@ -87,13 +87,13 @@ static void dchkbox(rnd_hid_gc_t gc, int x0, int y0, int checked)
 	int w = 2, h = 2;
 	float th = 0.1, th2 = 0.4;
 
-	pcb_render->set_color(gc, rnd_color_black);
+	rnd_render->set_color(gc, rnd_color_black);
 	dline(x0, y0, x0+w, y0, th);
 	dline(x0+w, y0, x0+w, y0+h, th);
 	dline(x0+w, y0+h, x0, y0+h, th);
 	dline(x0, y0+h, x0, y0, th);
 	if (checked) {
-		pcb_render->set_color(gc, rnd_color_red);
+		rnd_render->set_color(gc, rnd_color_red);
 		dline(x0, y0, x0+w, y0+h, th2);
 		dline(x0, y0+h, x0+w, y0, th2);
 	}
@@ -121,7 +121,7 @@ static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 
 	dchkbox(gc, x-4, *y, (f->id == target_fid));
 
-	pcb_render->set_color(gc, rnd_color_black);
+	rnd_render->set_color(gc, rnd_color_black);
 	t = dtext(x, *y, 200, f->id, buf);
 	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
 
@@ -183,7 +183,7 @@ static rnd_bool pcb_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_co
 						default:
 							break;
 					}
-					pcb_gui->invalidate_all(pcb_gui);
+					rnd_gui->invalidate_all(rnd_gui);
 				}
 				return 1;
 			}

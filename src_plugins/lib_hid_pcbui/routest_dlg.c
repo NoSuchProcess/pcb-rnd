@@ -74,25 +74,25 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	rst = vtroutestyle_get(&PCB->RouteStyle, rst_idx, 0);
 
 	hv.str = rst->name;
-	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wname, &hv);
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wname, &hv);
 
 	hv.crd = rst->Thick;
-	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wlineth, &hv);
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wlineth, &hv);
 
 	hv.crd = rst->textt;
-	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
 
 	hv.crd = rst->texts;
-	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtscale, &hv);
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtscale, &hv);
 
 	hv.crd = rst->Clearance;
-	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wclr, &hv);
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wclr, &hv);
 
 	hv.crd = rst->Hole;
-	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
 
 	hv.crd = rst->Diameter;
-	pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
 
 	pcb_dad_tree_clear(tree);
 
@@ -144,7 +144,7 @@ TODO("This change is not undoable");
 		rst->Hole = attr->val.crd;
 		if (rst->Hole * 1.1 >= rstdlg_ctx.dlg[rstdlg_ctx.wviaring].val.crd) {
 			hv.crd = rst->Hole * 1.1;
-			pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+			rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
 			rst->Diameter = hv.crd;
 		}
 	}
@@ -152,7 +152,7 @@ TODO("This change is not undoable");
 		rst->Diameter = attr->val.crd;
 		if (rst->Diameter / 1.1 <= rstdlg_ctx.dlg[rstdlg_ctx.wviahole].val.crd) {
 			hv.crd = rst->Diameter / 1.1;
-			pcb_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
+			rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
 			rst->Hole = hv.crd;
 		}
 

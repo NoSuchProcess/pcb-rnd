@@ -400,7 +400,7 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 		on = 0;
 	}
 	else {
-		if ((pcbhl_conf.rc.verbose >= RND_MSG_INFO) || (pcb_gui != &nogui_hid)) {
+		if ((pcbhl_conf.rc.verbose >= RND_MSG_INFO) || (rnd_gui != &nogui_hid)) {
 			now = rnd_dtime();
 			if (now >= nextt) {
 				fprintf(stderr, "progress: %ld/%ld %s\n", so_far, total, message);

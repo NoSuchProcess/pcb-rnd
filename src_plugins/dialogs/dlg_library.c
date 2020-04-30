@@ -176,7 +176,7 @@ TODO("Use rich text for this with explicit wrap marks\n");
 	else
 		hv.str = "";
 
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtags, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtags, &hv);
 	gds_uninit(&tmp);
 }
 
@@ -186,11 +186,11 @@ static void timed_update_preview_(library_ctx_t *ctx, const char *otext)
 		pcb_tool_select_by_name(&PCB->hidlib, "buffer");
 		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 			library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
-		pcb_gui->invalidate_all(pcb_gui);
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 	ctx->timer_active = 0;
-	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
-	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
 }
 
 static void timed_update_preview_cb(rnd_hidval_t user_data)
@@ -203,19 +203,19 @@ static void timed_update_preview_cb(rnd_hidval_t user_data)
 static void timed_update_preview(library_ctx_t *ctx, int active)
 {
 	if (ctx->timer_active) {
-		pcb_gui->stop_timer(pcb_gui, ctx->timer);
+		rnd_gui->stop_timer(rnd_gui, ctx->timer);
 		ctx->timer_active = 0;
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
 	}
 
 	if (active) {
 		rnd_hidval_t user_data;
 		user_data.ptr = ctx;
-		ctx->timer = pcb_gui->add_timer(pcb_gui, timed_update_preview_cb, 500, user_data);
+		ctx->timer = rnd_gui->add_timer(rnd_gui, timed_update_preview_cb, 500, user_data);
 		ctx->timer_active = 1;
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
-		pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 1);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 1);
 	}
 }
 
@@ -232,7 +232,7 @@ static void update_edit_button(library_ctx_t *ctx)
 
 	param_entered = !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL);
 
-	pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, param_selected || param_entered);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, param_selected || param_entered);
 }
 
 #include "dlg_library_param.c"
@@ -296,7 +296,7 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
 		free(cursor_path);
 	}
 }
@@ -361,7 +361,7 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 					if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 						library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
 					update_edit_button(ctx);
-					pcb_gui->invalidate_all(pcb_gui);
+					rnd_gui->invalidate_all(rnd_gui);
 				}
 			}
 		}
@@ -372,7 +372,7 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 		library_param_dialog(ctx, NULL);
 
 	hv.str = NULL;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpreview, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpreview, &hv);
 
 }
 
@@ -578,7 +578,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		if (name != NULL) {
 			rnd_hid_attr_val_t hv;
 			hv.str = name;
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 		}
 	}
 
@@ -712,14 +712,14 @@ static void pcb_dlg_library(void)
 	PCB_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, pcb_false, library_close_cb);
 
 	library_lib2dlg(&library_ctx);
-	pcb_gui->attr_dlg_widget_state(library_ctx.dlg_hid_ctx, library_ctx.wedit, 0);
+	rnd_gui->attr_dlg_widget_state(library_ctx.dlg_hid_ctx, library_ctx.wedit, 0);
 }
 
 const char pcb_acts_LibraryDialog[] = "libraryDialog()\n";
 const char pcb_acth_LibraryDialog[] = "Open the library dialog.";
 fgw_error_t pcb_act_LibraryDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	if (strcmp(pcb_gui->name, "lesstif") == 0)
+	if (strcmp(rnd_gui->name, "lesstif") == 0)
 		rnd_actionva(oargv[0].val.argv0.user_call_ctx, "DoWindows", "library");
 	else
 		pcb_dlg_library();

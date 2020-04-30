@@ -43,7 +43,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/safe_fs.h>
 
-const rnd_action_t *pcb_current_action = NULL;
+const rnd_action_t *rnd_current_action = NULL;
 
 const char *RND_PTR_DOMAIN_IDPATH = "pcb_fgw_ptr_domain_idpath";
 const char *RND_PTR_DOMAIN_IDPATH_LIST = "pcb_fgw_ptr_domain_idpath_list";
@@ -296,10 +296,10 @@ fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 
 	if (ca != NULL) {
 		/* pcb-rnd action with a lot of metadata */
-		old_action = pcb_current_action;
-		pcb_current_action = ca->action;
-		ret = pcb_current_action->trigger_cb(res, argc, argv);
-		pcb_current_action = old_action;
+		old_action = rnd_current_action;
+		rnd_current_action = ca->action;
+		ret = rnd_current_action->trigger_cb(res, argc, argv);
+		rnd_current_action = old_action;
 	}
 	else {
 		/* direct call, no metadata */
@@ -367,13 +367,13 @@ int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv
 
 void rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
-	if (pcb_gui == NULL) {
+	if (rnd_gui == NULL) {
 		fprintf(stderr, "pcb_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
 		*x = 0;
 		*y = 0;
 	}
 	else
-		pcb_gui->get_coords(pcb_gui, msg, x, y, force);
+		rnd_gui->get_coords(rnd_gui, msg, x, y, force);
 }
 
 static int hid_parse_actionstring(rnd_hidlib_t *hl, const char *rstr, char require_parens)

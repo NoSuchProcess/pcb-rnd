@@ -268,8 +268,8 @@ static unsigned netlist_act_do(pcb_net_t *net, int argc, const char *a1, const c
 			
 			free(refdes);
 		}
-		if (pcb_gui != NULL)
-			pcb_gui->invalidate_all(pcb_gui);
+		if (rnd_gui != NULL)
+			rnd_gui->invalidate_all(rnd_gui);
 	}
 	else if (argc > 2) {
 		pin_found = 1;
@@ -277,13 +277,13 @@ static unsigned netlist_act_do(pcb_net_t *net, int argc, const char *a1, const c
 			for(term = pcb_termlist_first(&net->conns); term != NULL; term = pcb_termlist_next(term))
 				func(net, term);
 		}
-		if (pcb_gui != NULL)
-			pcb_gui->invalidate_all(pcb_gui);
+		if (rnd_gui != NULL)
+			rnd_gui->invalidate_all(rnd_gui);
 	}
 	else {
 		func(net, NULL);
-		if (pcb_gui != NULL)
-			pcb_gui->invalidate_all(pcb_gui);
+		if (rnd_gui != NULL)
+			rnd_gui->invalidate_all(rnd_gui);
 	}
 
 	return pin_found;

@@ -83,7 +83,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 		if (cursor_path != NULL) {
 			rnd_hid_attr_val_t hv;
 			hv.str = cursor_path;
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnetlist, &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnetlist, &hv);
 		}
 	}
 	return cursor_path;
@@ -123,7 +123,7 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtermlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtermlist, &hv);
 		free(cursor_path);
 	}
 }
@@ -232,7 +232,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		rnd_message(RND_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
 		return;
 	}
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void netlist_claim_obj_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -290,7 +290,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	/* draw the board */
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
-	pcbhl_expose_main(pcb_gui, e, &xform);
+	pcbhl_expose_main(rnd_gui, e, &xform);
 
 	if (net != NULL) {/* restore object color */
 		for(n = 0, p = netlist_color_save.array; n < netlist_color_save.used; n+=2,p+=2) {
@@ -435,7 +435,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	{
 		rnd_hid_attr_val_t hv;
 		hv.dbl = 0.33;
-		pcb_gui->attr_dlg_set_value(netlist_ctx.dlg_hid_ctx, wvpan, &hv);
+		rnd_gui->attr_dlg_set_value(netlist_ctx.dlg_hid_ctx, wvpan, &hv);
 	}
 
 	netlist_data2dlg(&netlist_ctx);
@@ -445,7 +445,7 @@ static const char pcb_acts_NetlistDialog[] = "NetlistDialog()\n";
 static const char pcb_acth_NetlistDialog[] = "Open the netlist dialog.";
 static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (strcmp(pcb_gui->name, "lesstif") == 0)
+	if (strcmp(rnd_gui->name, "lesstif") == 0)
 		rnd_actionva(RND_ACT_HIDLIB, "DoWindows", "netlist");
 	else
 		pcb_dlg_netlist(PCB);

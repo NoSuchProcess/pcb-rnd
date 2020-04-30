@@ -712,11 +712,11 @@ void pcb_route_draw_arc(rnd_hid_gc_t GC, rnd_coord_t x, rnd_coord_t y, rnd_angle
 	x2 = x - (cos(PCB_M180 * (start_angle + delta)) * radius);
 	y2 = y + (sin(PCB_M180 * (start_angle + delta)) * radius);
 
-	pcb_render->draw_arc(GC, x, y, radius + wid, radius + wid, start_angle, delta);
-	if (wid > pcb_pixel_slop) {
-		pcb_render->draw_arc(GC, x, y, radius - wid, radius - wid, start_angle, delta);
-		pcb_render->draw_arc(GC, x1, y1, wid, wid, start_angle, -180 * SGN(delta));
-		pcb_render->draw_arc(GC, x2, y2, wid, wid, start_angle + delta, 180 * SGN(delta));
+	rnd_render->draw_arc(GC, x, y, radius + wid, radius + wid, start_angle, delta);
+	if (wid > rnd_pixel_slop) {
+		rnd_render->draw_arc(GC, x, y, radius - wid, radius - wid, start_angle, delta);
+		rnd_render->draw_arc(GC, x1, y1, wid, wid, start_angle, -180 * SGN(delta));
+		rnd_render->draw_arc(GC, x2, y2, wid, wid, start_angle + delta, 180 * SGN(delta));
 	}
 
 }
@@ -732,7 +732,7 @@ void pcb_route_draw(pcb_route_t *p_route, rnd_hid_gc_t GC)
 
 		pcb_layer_t *layer = pcb_get_layer(PCB->Data, p_obj->layer);
 		if (layer)
-			pcb_render->set_color(GC, &layer->meta.real.color);
+			rnd_render->set_color(GC, &layer->meta.real.color);
 
 		switch (p_obj->type) {
 			case PCB_OBJ_LINE:
@@ -757,7 +757,7 @@ void pcb_route_draw_drc(pcb_route_t *p_route, rnd_hid_gc_t GC)
 	rnd_coord_t thickness = p_route->thickness + 2 * conf_core.design.bloat;
 	int i;
 
-	pcb_render->set_color(GC, &conf_core.appearance.color.drc);
+	rnd_render->set_color(GC, &conf_core.appearance.color.drc);
 
 	for(i = 0; i < p_route->size; ++i) {
 		const pcb_route_object_t *p_obj = &p_route->objects[i];

@@ -28,7 +28,7 @@
    if there's GUI */
 #define PCB_GUI_NOGUI() \
 do { \
-	if ((pcb_gui == NULL) || (!pcb_gui->gui)) { \
+	if ((rnd_gui == NULL) || (!rnd_gui->gui)) { \
 		RND_ACT_IRES(1); \
 		return 0; \
 	} \

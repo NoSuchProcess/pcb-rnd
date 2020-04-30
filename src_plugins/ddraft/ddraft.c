@@ -107,7 +107,7 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 					continue;
 				}
 				res += pcb_trim_split(edges, NULL, (pcb_any_obj_t *)ptr2, REMO_INVALID, x, y, trim);
-				pcb_gui->invalidate_all(pcb_gui);
+				rnd_gui->invalidate_all(rnd_gui);
 			}
 			break;
 		default:
@@ -444,16 +444,16 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 void ddraft_tool_draw_attached(rnd_hidlib_t *hl)
 {
 	int n;
-	pcb_render->set_line_cap(pcb_crosshair.GC, rnd_cap_round);
-	pcb_render->set_line_width(pcb_crosshair.GC, 1);
-	pcb_render->set_color(pcb_crosshair.GC, rnd_color_grey33);
+	rnd_render->set_line_cap(pcb_crosshair.GC, rnd_cap_round);
+	rnd_render->set_line_width(pcb_crosshair.GC, 1);
+	rnd_render->set_color(pcb_crosshair.GC, rnd_color_grey33);
 	for(n = 0; n < vtc0_len(&pcb_ddraft_attached.annot_lines); n += 4) {
 		rnd_coord_t *c = &pcb_ddraft_attached.annot_lines.array[n];
-		pcb_render->draw_line(pcb_crosshair.GC, c[0], c[1], c[2], c[3]);
+		rnd_render->draw_line(pcb_crosshair.GC, c[0], c[1], c[2], c[3]);
 	}
 
 	if (pcb_ddraft_attached.line_valid) {
-		pcb_render->set_color(pcb_crosshair.GC, &PCB_CURRLAYER(PCB)->meta.real.color);
+		rnd_render->set_color(pcb_crosshair.GC, &PCB_CURRLAYER(PCB)->meta.real.color);
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_ddraft_attached.line.Point1.X, pcb_ddraft_attached.line.Point1.Y, pcb_ddraft_attached.line.Point2.X, pcb_ddraft_attached.line.Point2.Y,
 			conf_core.design.line_thickness, 0);
@@ -525,7 +525,7 @@ static void mode_confchg(rnd_conf_native_t *cfg, int arr_idx)
 		if (!ddraft_tool_selected) {
 			ddraft_tool_selected = 1;
 			rnd_cli_enter("ddraft", "ddraft");
-			pcb_gui->open_command(pcb_gui);
+			rnd_gui->open_command(rnd_gui);
 		}
 	}
 	else if (ddraft_tool_selected) {

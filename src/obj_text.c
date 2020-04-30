@@ -1066,11 +1066,11 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 	if (xordraw || thindraw) {
 		rnd_hid_gc_t gc = xordraw ? pcb_crosshair.GC : pcb_draw_out.fgGC;
 		for(n = 1, p = poly->Points+1; n < max; n++,p++)
-			pcb_render->draw_line(gc, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
-		pcb_render->draw_line(gc, xordx + x[0], xordy + y[0], xordx + x[max-1], xordy + y[max-1]);
+			rnd_render->draw_line(gc, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
+		rnd_render->draw_line(gc, xordx + x[0], xordy + y[0], xordx + x[max-1], xordy + y[max-1]);
 	}
 	else
-		pcb_render->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
+		rnd_render->fill_polygon(pcb_draw_out.fgGC, poly->PointN, x, y);
 }
 
 /* Very rough estimation on the full width of the text */
@@ -1121,7 +1121,7 @@ RND_INLINE void cheap_text_line(rnd_hid_gc_t gc, pcb_xform_mx_t mx, rnd_coord_t 
 	tx2 += xordx;
 	ty2 += xordy;
 
-	pcb_render->draw_line(gc, tx1, ty1, tx2, ty2);
+	rnd_render->draw_line(gc, tx1, ty1, tx2, ty2);
 }
 
 
@@ -1130,11 +1130,11 @@ RND_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 {
 	rnd_coord_t w, h = PCB_SCALE_TEXT(font->MaxHeight, scale);
 	if (tiny == PCB_TXT_TINY_HIDE) {
-		if (h <= pcb_render->coord_per_pix*6) /* <= 6 pixel high: unreadable */
+		if (h <= rnd_render->coord_per_pix*6) /* <= 6 pixel high: unreadable */
 			return 1;
 	}
 	else if (tiny == PCB_TXT_TINY_CHEAP) {
-		if (h <= pcb_render->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
+		if (h <= rnd_render->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
 			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
 				cheap_text_line(pcb_crosshair.GC, mx, 0, h/2, w, h/2, xordx, xordy);
@@ -1146,7 +1146,7 @@ RND_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 			}
 			return 1;
 		}
-		else if (h <= pcb_render->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
+		else if (h <= rnd_render->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
 			w = pcb_text_width(font, scale, string);
 			if (xordraw) {
 				h /= 4;
@@ -1215,7 +1215,7 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 					cb(cb_ctx, (pcb_any_obj_t *)&newline);
 				}
 				else if (xordraw)
-					pcb_render->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
+					rnd_render->draw_line(pcb_crosshair.GC, xordx + newline.Point1.X, xordy + newline.Point1.Y, xordx + newline.Point2.X, xordy + newline.Point2.Y);
 				else
 					pcb_line_draw_(info, &newline, 0);
 			}
@@ -1242,7 +1242,7 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 					cb(cb_ctx, (pcb_any_obj_t *)&newarc);
 				}
 				else if (xordraw)
-					pcb_render->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
+					rnd_render->draw_arc(pcb_crosshair.GC, xordx + newarc.X, xordy + newarc.Y, newarc.Width, newarc.Height, newarc.StartAngle, newarc.Delta);
 				else
 					pcb_arc_draw_(info, &newarc, 0);
 			}
@@ -1272,16 +1272,16 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 			/* draw move on to next cursor position */
 			if ((cb == NULL) && (xordraw || (info->xform->thin_draw || info->xform->wireframe))) {
 				if (xordraw) {
-					pcb_render->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
-					pcb_render->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);
-					pcb_render->draw_line(pcb_crosshair.GC, px[2] + xordx, py[2] + xordy, px[3] + xordx, py[3] + xordy);
-					pcb_render->draw_line(pcb_crosshair.GC, px[3] + xordx, py[3] + xordy, px[0] + xordx, py[0] + xordy);
+					rnd_render->draw_line(pcb_crosshair.GC, px[0] + xordx, py[0] + xordy, px[1] + xordx, py[1] + xordy);
+					rnd_render->draw_line(pcb_crosshair.GC, px[1] + xordx, py[1] + xordy, px[2] + xordx, py[2] + xordy);
+					rnd_render->draw_line(pcb_crosshair.GC, px[2] + xordx, py[2] + xordy, px[3] + xordx, py[3] + xordy);
+					rnd_render->draw_line(pcb_crosshair.GC, px[3] + xordx, py[3] + xordy, px[0] + xordx, py[0] + xordy);
 				}
 				else {
-					pcb_render->draw_line(pcb_draw_out.fgGC, px[0], py[0], px[1], py[1]);
-					pcb_render->draw_line(pcb_draw_out.fgGC, px[1], py[1], px[2], py[2]);
-					pcb_render->draw_line(pcb_draw_out.fgGC, px[2], py[2], px[3], py[3]);
-					pcb_render->draw_line(pcb_draw_out.fgGC, px[3], py[3], px[0], py[0]);
+					rnd_render->draw_line(pcb_draw_out.fgGC, px[0], py[0], px[1], py[1]);
+					rnd_render->draw_line(pcb_draw_out.fgGC, px[1], py[1], px[2], py[2]);
+					rnd_render->draw_line(pcb_draw_out.fgGC, px[2], py[2], px[3], py[3]);
+					rnd_render->draw_line(pcb_draw_out.fgGC, px[3], py[3], px[0], py[0]);
 				}
 			}
 			else {
@@ -1300,7 +1300,7 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 					cb(cb_ctx, (pcb_any_obj_t *)&po);
 				}
 				else
-					pcb_render->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
+					rnd_render->fill_polygon(pcb_draw_out.fgGC, 4, px, py);
 			}
 			x += size;
 		}
@@ -1406,21 +1406,21 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 		if (layer->is_bound) {
 			const rnd_color_t *color;
 			PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 1);
-			pcb_render->set_color(pcb_draw_out.fgGC, color);
+			rnd_render->set_color(pcb_draw_out.fgGC, color);
 		}
 		else
-			pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
+			rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.selected);
 	}
 	else if (info->xform->flag_color && PCB_HAS_COLOROVERRIDE(text)) {
-		pcb_render->set_color(pcb_draw_out.fgGC, text->override_color);
+		rnd_render->set_color(pcb_draw_out.fgGC, text->override_color);
 	}
 	else if (layer->is_bound) {
 		const rnd_color_t *color;
 		PCB_OBJ_COLOR_ON_BOUND_LAYER(color, layer, 0);
-		pcb_render->set_color(pcb_draw_out.fgGC, color);
+		rnd_render->set_color(pcb_draw_out.fgGC, color);
 	}
 	else
-		pcb_render->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
+		rnd_render->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
 
 	if ((!layer->is_bound) && (layer->meta.real.grp >= 0))
 		flg = pcb_layergrp_flags(PCB, layer->meta.real.grp);
@@ -1482,10 +1482,10 @@ void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y)
 	txor_info.xform = &txor_xform;
 	DrawTextLowLevel_(&txor_info, text, 0, 1, x, y, PCB_TXT_TINY_CHEAP);
 	if ((conf_core.appearance.text_host_bbox) && (text->BoundingBox.X1 != text->BoundingBox.X2)) {
-		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
-		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
-		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
-		pcb_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
+		rnd_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
+		rnd_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
+		rnd_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
+		rnd_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
 	}
 }
 
@@ -1527,7 +1527,7 @@ static void pcb_text_font_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, r
 		return;
 
 	if (pcb_text_font_chg_data(PCB->Data, argv[1].d.i))
-		pcb_gui->invalidate_all(pcb_gui); /* can't just redraw the text, as the old text may have been bigger, before the change! */
+		rnd_gui->invalidate_all(rnd_gui); /* can't just redraw the text, as the old text may have been bigger, before the change! */
 
 	rnd_trace("font change %d\n", argv[1].d.i);
 }

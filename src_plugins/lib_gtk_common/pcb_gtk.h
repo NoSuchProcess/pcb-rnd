@@ -58,7 +58,7 @@ struct pcb_gtk_impl_s {
 
 	GtkWidget *(*new_drawing_widget)(pcb_gtk_impl_t *impl);
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
-	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
+	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
 	void (*draw_grid_local)(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy);
@@ -180,7 +180,7 @@ struct pcb_gtk_s {
 
 	pcb_gtk_pixmap_t bg_pixmap;
 
-	int hid_active; /* 1 if the currently running hid (pcb_gui) is up */
+	int hid_active; /* 1 if the currently running hid (rnd_gui) is up */
 	int gui_is_up; /*1 if all parts of the gui is up and running */
 
 	gulong button_press_handler, button_release_handler, key_press_handler[5], key_release_handler[5];

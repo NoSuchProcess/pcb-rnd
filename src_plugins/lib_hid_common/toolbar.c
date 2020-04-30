@@ -63,7 +63,7 @@ static void toolbar_pcb2dlg()
 		if (wid == 0)
 			continue;
 		st = (tid == pcbhl_conf.editor.mode) ? 2 : 1;
-		pcb_gui->attr_dlg_widget_state(toolbar.sub.dlg_hid_ctx, wid, st);
+		rnd_gui->attr_dlg_widget_state(toolbar.sub.dlg_hid_ctx, wid, st);
 	}
 	toolbar.lock = 0;
 }
@@ -76,7 +76,7 @@ static void toolbar_select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		return;
 
 	tid = (ptrdiff_t)attr->user_data;
-	pcb_tool_select_by_id(pcb_gui->get_dad_hidlib(hid_ctx), tid);
+	pcb_tool_select_by_id(rnd_gui->get_dad_hidlib(hid_ctx), tid);
 }
 
 static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool, const char *menufile_help)
@@ -169,7 +169,7 @@ static void toolbar_docked_create(rnd_hid_cfg_t *cfg)
 
 static void toolbar_create(void)
 {
-	rnd_hid_cfg_t *cfg = pcb_gui->get_menu_cfg(pcb_gui);
+	rnd_hid_cfg_t *cfg = rnd_gui->get_menu_cfg(rnd_gui);
 	if (cfg == NULL)
 		return;
 	toolbar_docked_create(cfg);
@@ -181,7 +181,7 @@ static void toolbar_create(void)
 
 void pcb_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL))
+	if ((PCB_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL))
 		toolbar_create();
 }
 

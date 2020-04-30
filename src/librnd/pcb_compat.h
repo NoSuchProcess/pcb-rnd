@@ -598,3 +598,10 @@
 #define PCB_HID_DOCK_max RND_HID_DOCK_max
 #define pcb_dock_is_vert rnd_dock_is_vert
 #define pcb_dock_has_frame rnd_dock_has_frame
+#define pcb_hid_expose_cb_t rnd_hid_expose_cb_t
+#define pcb_hid_expose_t rnd_hid_expose_t
+#define pcb_gui rnd_gui
+#define pcb_render rnd_render
+#define pcb_exporter rnd_exporter
+#define pcb_current_action rnd_current_action
+#define pcb_pixel_slop rnd_pixel_slop

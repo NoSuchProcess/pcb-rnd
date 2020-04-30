@@ -170,12 +170,12 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 		have_timer = 0;
 		refresh_now:;
 		if (active) {
-			pcb_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, wp, &val);
+			rnd_gui->attr_dlg_set_value(ctx.dlg_hid_ctx, wp, &val);
 			if (!have_timer) {
-				timer = pcb_gui->add_timer(pcb_gui, progress_refresh_cb, REFRESH_RATE, timer);
+				timer = rnd_gui->add_timer(rnd_gui, progress_refresh_cb, REFRESH_RATE, timer);
 				have_timer = 1;
 			}
-			pcb_hid_iterate(pcb_gui);
+			pcb_hid_iterate(rnd_gui);
 		}
 		return 0;
 	}
@@ -191,7 +191,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	if (so_far == 0 && total == 0 && message == NULL) {
 		if (active) {
 			if (have_timer) {
-				pcb_gui->stop_timer(pcb_gui, timer);
+				rnd_gui->stop_timer(rnd_gui, timer);
 				have_timer = 0;
 			}
 			if (!closing) {
@@ -228,7 +228,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 		active = 1;
 		cancelled = 0;
 
-		timer = pcb_gui->add_timer(pcb_gui, progress_refresh_cb, REFRESH_RATE, timer);
+		timer = rnd_gui->add_timer(rnd_gui, progress_refresh_cb, REFRESH_RATE, timer);
 		have_timer = 1;
 		closing = 0;
 	}
@@ -246,9 +246,9 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 
 int pcb_hid_progress(long so_far, long total, const char *message)
 {
-	if (pcb_gui == NULL)
+	if (rnd_gui == NULL)
 		return 0;
-	if ((pcb_gui->gui) && (PCB_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || pcb_gui->allow_dad_before_init))
+	if ((rnd_gui->gui) && (PCB_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || rnd_gui->allow_dad_before_init))
 		return pcb_gui_progress(so_far, total, message);
 
 	return pcb_nogui_progress(so_far, total, message);

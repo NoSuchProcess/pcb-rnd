@@ -224,7 +224,7 @@ fgw_error_t pcb_act_LoadeeschemaFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadeeschemaFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
-		fname = pcb_gui->fileselect(pcb_gui, "Load eeschema netlist file...",
+		fname = rnd_gui->fileselect(rnd_gui, "Load eeschema netlist file...",
 					"Picks a eeschema netlist file to load.\n",
 					default_file, ".net", NULL, "eeschema", RND_HID_FSD_READ, NULL);
 		if (fname == NULL)

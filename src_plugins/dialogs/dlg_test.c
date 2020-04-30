@@ -293,9 +293,9 @@ static void pcb_act_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 	st = !st;
 	val.lng = (val.lng + 1) % 3;
-/*	pcb_gui->attr_dlg_widget_state(hid_ctx, attr_idx, st);*/
+/*	rnd_gui->attr_dlg_widget_state(hid_ctx, attr_idx, st);*/
 
-	pcb_gui->attr_dlg_set_value(hid_ctx, attr_idx, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, attr_idx, &val);
 }
 
 static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -307,9 +307,9 @@ static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	hv.dbl = 42.0;
 	hv.crd = PCB_MM_TO_COORD(42);
 
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_double, &hv);
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_coord, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_double, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_coord, &hv);
 }
 
 static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -321,11 +321,11 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	hv.str = tmp;
 
 	sprintf(tmp, "%ld", ctx->dlg[ctx->wspin_int].val.lng);
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
 	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.dbl);
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
 	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].val.crd, ctx->dlg[ctx->wspin_coord].val.crd);
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_coord, &hv);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_coord, &hv);
 }
 
 
@@ -342,7 +342,7 @@ static void cb_jump(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 
 	printf("Jumping tabs\n");
 	val.lng = 0;
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wtab, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wtab, &val);
 }
 
 static void cb_ttbl_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -358,7 +358,7 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	new_row->user_data2.lng = 1;
 
 	val.dbl = (double)ctx->ttctr / 20.0;
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
 }
 
 static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -374,7 +374,7 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	new_row->user_data2.lng = 1;
 
 	val.dbl = (double)ctx->ttctr / 20.0;
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wprog, &val);
 }
 
 static void cb_ttbl_jump(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -383,7 +383,7 @@ static void cb_ttbl_jump(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	rnd_hid_attr_val_t val;
 
 	val.str = "two/under_two";
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->tt, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->tt, &val);
 }
 
 static void ttbl_filt(gdl_list_t *list, int hide)
@@ -437,8 +437,8 @@ static void cb_pane_set(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	rnd_hid_attr_val_t val;
 
 	val.dbl = 0.3;
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->whpane, &val);
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wvpane, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->whpane, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wvpane, &val);
 }
 
 static void cb_text_replace(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -488,7 +488,7 @@ static void cb_text_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	o = txt->hid_get_offs(attr, hid_ctx);
 	sprintf(buf, "cursor after edit: line %ld col %ld offs %ld", y, x, o);
 	val.str = buf;
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wtxtpos, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wtxtpos, &val);
 }
 
 static void cb_text_offs(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -510,7 +510,7 @@ static void cb_text_ro(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 
 static void prv_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
-	pcb_render->set_color(gc, rnd_color_red);
+	rnd_render->set_color(gc, rnd_color_red);
 	pcb_text_draw_string_simple(NULL, "foo", PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 500, 10.0, 0, 0, 0, 0, 0);
 
 	printf("expose in dlg_test!\n");
@@ -537,6 +537,6 @@ static void cb_color_reset(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	rnd_hid_attr_val_t val;
 
 	rnd_color_load_str(&val.clr, "#005599");
-	pcb_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
+	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }
 

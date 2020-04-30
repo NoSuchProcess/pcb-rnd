@@ -366,9 +366,9 @@ unsigned long pcb_find_from_xy(pcb_find_t *ctx, pcb_data_t *data, rnd_coord_t x,
 	pcb_any_obj_t *obj;
 	int type;
 
-	type = pcb_search_obj_by_location(PCB_LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, x, y, PCB_SLOP * pcb_pixel_slop);
+	type = pcb_search_obj_by_location(PCB_LOOKUP_FIRST, &ptr1, &ptr2, &ptr3, x, y, PCB_SLOP * rnd_pixel_slop);
 	if (type == PCB_OBJ_VOID)
-		type = pcb_search_obj_by_location(PCB_LOOKUP_MORE, &ptr1, &ptr2, &ptr3, x, y, PCB_SLOP * pcb_pixel_slop);
+		type = pcb_search_obj_by_location(PCB_LOOKUP_MORE, &ptr1, &ptr2, &ptr3, x, y, PCB_SLOP * rnd_pixel_slop);
 
 	if (type == PCB_OBJ_VOID)
 		return -1;

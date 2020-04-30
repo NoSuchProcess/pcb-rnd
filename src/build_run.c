@@ -50,12 +50,12 @@ void pcb_quit_app(void)
 	else
 		pcb_disable_emergency_save();
 
-	if (pcb_gui->do_exit == NULL) {
+	if (rnd_gui->do_exit == NULL) {
 		pcb_main_uninit();
 		exit(0);
 	}
 	else
-		pcb_gui->do_exit(pcb_gui);
+		rnd_gui->do_exit(rnd_gui);
 }
 
 char *pcb_get_info_program(void)
@@ -150,8 +150,8 @@ char *pcb_get_info_compile_options(void)
 
 		gds_append_str(&info, "----- Run Time Options -----\n");
 		gds_append_str(&info, "GUI: ");
-		if (pcb_gui != NULL) {
-			gds_append_str(&info, pcb_gui->name);
+		if (rnd_gui != NULL) {
+			gds_append_str(&info, rnd_gui->name);
 			gds_append_str(&info, "\n");
 		}
 		else

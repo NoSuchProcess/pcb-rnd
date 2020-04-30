@@ -49,7 +49,7 @@ static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, ac
 static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
 static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (pcb_gui == NULL) {
+	if (rnd_gui == NULL) {
 		rnd_message(RND_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
 		RND_ACT_IRES(-1);
 		return 0;
@@ -68,7 +68,7 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		props.tip = (argc > 3) ? argv[3].val.str : NULL;
 		props.cookie = (argc > 4) ? argv[4].val.str : NULL;
 
-		pcb_gui->create_menu(pcb_gui, argv[1].val.str, &props);
+		rnd_gui->create_menu(rnd_gui, argv[1].val.str, &props);
 
 		RND_ACT_IRES(0);
 		return 0;
@@ -83,20 +83,20 @@ static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path|cookie)";
 static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
 static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (pcb_gui == NULL) {
+	if (rnd_gui == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
-	if (pcb_gui->remove_menu == NULL) {
+	if (rnd_gui->remove_menu == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
-	if (pcb_gui->remove_menu(pcb_gui, argv[1].val.str) != 0) {
+	if (rnd_gui->remove_menu(rnd_gui, argv[1].val.str) != 0) {
 		rnd_message(RND_MSG_ERROR, "failed to remove some of the menu items\n");
 		RND_ACT_IRES(-1);
 	}
@@ -157,7 +157,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	extra_units_y[0].scale = RND_ACT_HIDLIB->grid;
 	extra_units_y[2].scale = RND_ACT_HIDLIB->size_y;
 
-	pcb_gui->view_get(pcb_gui, &vbx);
+	rnd_gui->view_get(rnd_gui, &vbx);
 	view_width = vbx.X2 - vbx.X1;
 	view_height = vbx.Y2 - vbx.Y1;
 
@@ -191,9 +191,9 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (rnd_strcasecmp(a3, "view") == 0) {
-		if ((pcb_gui != NULL) && (pcb_gui->view_get != NULL)) {
+		if ((rnd_gui != NULL) && (rnd_gui->view_get != NULL)) {
 			rnd_rnd_box_t viewbox;
-			pcb_gui->view_get(pcb_gui, &viewbox);
+			rnd_gui->view_get(rnd_gui, &viewbox);
 			if (pcbhl_conf.editor.view.flip_x)
 				dx = viewbox.X2 - dx;
 			else
@@ -220,7 +220,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_hidcore_crosshair_move_to(hidlib, dx, dy, 1);
-	pcb_gui->set_crosshair(pcb_gui, hidlib->ch_x, hidlib->ch_y, pan_warp);
+	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, pan_warp);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -237,7 +237,7 @@ static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	RND_PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
 
 	pcb_hidcore_crosshair_move_to(RND_ACT_HIDLIB, x, y, 0);
-	pcb_gui->set_crosshair(pcb_gui, hidlib->ch_x, hidlib->ch_y, HID_SC_PAN_VIEWPORT);
+	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, HID_SC_PAN_VIEWPORT);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -317,8 +317,8 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	double fps = 0;
 
-	if ((pcb_gui != NULL) && (pcb_gui->benchmark != NULL)) {
-		fps = pcb_gui->benchmark(pcb_gui);
+	if ((rnd_gui != NULL) && (rnd_gui->benchmark != NULL)) {
+		fps = rnd_gui->benchmark(rnd_gui);
 		rnd_message(RND_MSG_INFO, "%f redraws per second\n", fps);
 	}
 	else
@@ -341,7 +341,7 @@ static const char pcb_acts_Redraw[] = "Redraw()";
 static const char pcb_acth_Redraw[] = "Redraw the entire screen";
 static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 	RND_ACT_IRES(0);
 	return 0;
 }

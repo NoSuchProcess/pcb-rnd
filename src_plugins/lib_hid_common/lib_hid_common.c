@@ -65,7 +65,7 @@ const char pcb_acth_Command[] = "Displays the command line input in the status a
 fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_GUI_NOGUI();
-	pcb_gui->open_command(pcb_gui);
+	rnd_gui->open_command(rnd_gui);
 	RND_ACT_IRES(0);
 	return 0;
 }

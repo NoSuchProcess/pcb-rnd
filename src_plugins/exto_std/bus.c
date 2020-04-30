@@ -223,7 +223,7 @@ static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 		bus_unpack(subc);
 	bus = subc->extobj_data;
 
-	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
+	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
 
 	for(l = linelist_first(&ly->Line); l != NULL; l = linelist_next(l)) {
@@ -237,7 +237,7 @@ static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 		x = l->Point1.X; y = l->Point1.Y;
 		for(o = 0; o < len; o += PCB_MM_TO_COORD(5), x += vx*PCB_MM_TO_COORD(5), y += vy*PCB_MM_TO_COORD(5))
-			pcb_render->draw_line(pcb_draw_out.fgGC,
+			rnd_render->draw_line(pcb_draw_out.fgGC,
 				x + nx * bus->vthickness/2, y + ny * bus->vthickness/2,
 				x - nx * bus->vthickness/2, y - ny * bus->vthickness/2);
 	}

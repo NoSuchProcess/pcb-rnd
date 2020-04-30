@@ -717,7 +717,7 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 			point2.Y += ctx->move.dy;
 		}
 
-		mod1 = pcb_gui->shift_is_pressed(pcb_gui);
+		mod1 = rnd_gui->shift_is_pressed(rnd_gui);
 		if (is_first)
 			mod1 = !mod1;
 
@@ -732,7 +732,7 @@ void *pcb_lineop_move_point_with_route(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb
 												Line->Clearance,
 												Line->Flags,
 												mod1,
-												pcb_gui->control_is_pressed(pcb_gui) );
+												rnd_gui->control_is_pressed(rnd_gui) );
 		pcb_route_apply_to_line(&route,Layer,Line);
 		pcb_route_destroy(&route);
 		return Line; /* first line is preserved */
@@ -1183,17 +1183,17 @@ void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(line) && pcb_draw_term_hid_permission()) {
 			pcb_hid_set_line_cap(pcb_draw_out.active_padGC, rnd_cap_round);
 			pcb_hid_set_line_width(pcb_draw_out.active_padGC, thickness);
-			pcb_render->draw_line(pcb_draw_out.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			rnd_render->draw_line(pcb_draw_out.active_padGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, PCB_DRAW_TERM_GFX_WIDTH);
 		}
 		else
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, thickness);
-		pcb_render->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 	}
 	else {
 		if(info->xform->thin_draw) {
 			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
-			pcb_render->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+			rnd_render->draw_line(pcb_draw_out.fgGC, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 		}
 
 		if (info->xform->wireframe) {
@@ -1244,7 +1244,7 @@ static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_ter
 		color = &buf;
 	}
 
-	pcb_render->set_color(pcb_draw_out.fgGC, color);
+	rnd_render->set_color(pcb_draw_out.fgGC, color);
 	pcb_line_draw_(info, line, allow_term_gfx);
 }
 

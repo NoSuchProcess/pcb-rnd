@@ -75,7 +75,7 @@ static void fe_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	if (clr != 0)
 		pcb_flag_change(ctx->pcb, PCB_CHGFLG_CLEAR, clr, ctx->obj_type, ctx->ptr1, ctx->obj, ctx->obj);
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 
@@ -149,7 +149,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_NEW("flags", dlg, "Edit flags", &ctx, pcb_true, NULL);
 
 		val.func = fe_attr_chg;
-		pcb_gui->attr_dlg_property(dlg_hid_ctx, RND_HATP_GLOBAL_CALLBACK, &val);
+		rnd_gui->attr_dlg_property(dlg_hid_ctx, RND_HATP_GLOBAL_CALLBACK, &val);
 
 		PCB_DAD_RUN(dlg);
 

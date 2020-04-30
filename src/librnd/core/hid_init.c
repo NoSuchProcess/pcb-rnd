@@ -74,11 +74,11 @@ const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[] = {
 rnd_hid_t **pcb_hid_list = 0;
 int pcb_hid_num_hids = 0;
 
-rnd_hid_t *pcb_gui = NULL;
-rnd_hid_t *pcb_render = NULL;
-rnd_hid_t *pcb_exporter = NULL;
+rnd_hid_t *rnd_gui = NULL;
+rnd_hid_t *rnd_render = NULL;
+rnd_hid_t *rnd_exporter = NULL;
 
-int pcb_pixel_slop = 1;
+int rnd_pixel_slop = 1;
 
 pcb_plugin_dir_t *pcb_plugin_dir_first = NULL, *pcb_plugin_dir_last = NULL;
 
@@ -87,7 +87,7 @@ void pcb_hid_init()
 	char *tmp;
 
 	/* Setup a "nogui" default HID */
-	pcb_render = pcb_gui = pcb_hid_nogui_get_hid();
+	rnd_render = rnd_gui = pcb_hid_nogui_get_hid();
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
 	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
@@ -411,16 +411,16 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 
 	for(;;) {
 		int res;
-		if (pcb_gui->get_export_options != NULL)
-			pcb_gui->get_export_options(pcb_gui, NULL);
-		res = pcb_gui->parse_arguments(pcb_gui, hid_argc, hid_argv);
+		if (rnd_gui->get_export_options != NULL)
+			rnd_gui->get_export_options(rnd_gui, NULL);
+		res = rnd_gui->parse_arguments(rnd_gui, hid_argc, hid_argv);
 		if (res == 0)
 			break; /* HID accepted, don't try anything else */
 		if (res < 0) {
-			rnd_message(RND_MSG_ERROR, "Failed to initialize HID %s (unrecoverable, have to give up)\n", pcb_gui->name);
+			rnd_message(RND_MSG_ERROR, "Failed to initialize HID %s (unrecoverable, have to give up)\n", rnd_gui->name);
 			return -1;
 		}
-		fprintf(stderr, "Failed to initialize HID %s (recoverable)\n", pcb_gui->name);
+		fprintf(stderr, "Failed to initialize HID %s (recoverable)\n", rnd_gui->name);
 		if (apg == NULL) {
 			if (pcbhl_conf.rc.hid_fallback) {
 				ran_out_of_hids:;
@@ -439,8 +439,8 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 			apg = rnd_conf_list_next_str(apg, &g, &n);
 			if (apg == NULL)
 				goto ran_out_of_hids;
-			pcb_render = pcb_gui = pcb_hid_find_gui(g);
-		} while(pcb_gui == NULL);
+			rnd_render = rnd_gui = pcb_hid_find_gui(g);
+		} while(rnd_gui == NULL);
 	}
 	return 0;
 }
@@ -619,11 +619,11 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 
 	/* Export pcb from command line if requested.  */
 	switch(ga->do_what) {
-		case DO_PRINT:   pcb_render = pcb_exporter = pcb_gui = pcb_hid_find_printer(); break;
-		case DO_EXPORT:  pcb_render = pcb_exporter = pcb_gui = pcb_hid_find_exporter(ga->hid_name); break;
+		case DO_PRINT:   rnd_render = rnd_exporter = rnd_gui = pcb_hid_find_printer(); break;
+		case DO_EXPORT:  rnd_render = rnd_exporter = rnd_gui = pcb_hid_find_exporter(ga->hid_name); break;
 		case DO_GUI:
-			pcb_render = pcb_gui = pcb_hid_find_gui(ga->hid_name);
-			if (pcb_gui == NULL) {
+			rnd_render = rnd_gui = pcb_hid_find_gui(ga->hid_name);
+			if (rnd_gui == NULL) {
 				rnd_message(RND_MSG_ERROR, "Can't find the gui (%s) requested.\n", ga->hid_name);
 				return 1;
 			}
@@ -632,23 +632,23 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 			const char *g;
 			rnd_conf_listitem_t *i;
 
-			pcb_render = pcb_gui = NULL;
+			rnd_render = rnd_gui = NULL;
 			rnd_conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
-				pcb_render = pcb_gui = pcb_hid_find_gui(g);
-				if (pcb_gui != NULL)
+				rnd_render = rnd_gui = pcb_hid_find_gui(g);
+				if (rnd_gui != NULL)
 					break;
 			}
 
 			/* try anything */
-			if (pcb_gui == NULL) {
+			if (rnd_gui == NULL) {
 				rnd_message(RND_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
-				pcb_render = pcb_gui = pcb_hid_find_gui(NULL);
+				rnd_render = rnd_gui = pcb_hid_find_gui(NULL);
 			}
 		}
 	}
 
 	/* Exit with error if GUI failed to start. */
-	if (!pcb_gui)
+	if (!rnd_gui)
 		return 1;
 
 	return 0;
@@ -687,10 +687,10 @@ int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is
 
 	if (is_empty)
 		rnd_message(RND_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
-	if (pcb_gui->set_hidlib != NULL)
-		pcb_gui->set_hidlib(pcb_gui, hidlib);
+	if (rnd_gui->set_hidlib != NULL)
+		rnd_gui->set_hidlib(rnd_gui, hidlib);
 	rnd_event(hidlib, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
-	pcb_gui->do_export(pcb_gui, 0);
+	rnd_gui->do_export(rnd_gui, 0);
 	rnd_event(hidlib, RND_EVENT_EXPORT_SESSION_END, NULL);
 	pcbhl_log_print_uninit_errs("Exporting");
 	return 1;
@@ -698,8 +698,8 @@ int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is
 
 void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib)
 {
-	if (pcb_gui->set_hidlib != NULL)
-		pcb_gui->set_hidlib(pcb_gui, hidlib);
-	pcb_gui->do_export(pcb_gui, 0);
+	if (rnd_gui->set_hidlib != NULL)
+		rnd_gui->set_hidlib(rnd_gui, hidlib);
+	rnd_gui->do_export(rnd_gui, 0);
 }
 

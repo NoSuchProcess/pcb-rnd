@@ -121,7 +121,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 	   GUI toolkit won't have a chance to handle expose events */
 	fc = pcb_popen(&PCB->hidlib, cmd, "r");
 
-	if (pcb_gui != NULL) {
+	if (rnd_gui != NULL) {
 		int fd = rnd_fileno(fc);
 		if (fd > 0) {
 			int n = 0;
@@ -131,9 +131,9 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 			ctx.stay = 1;
 			ctx.fc = fc;
 			hd.ptr = &ctx;
-			ctx.wid = pcb_gui->watch_file(pcb_gui, fd, RND_WATCH_READABLE | RND_WATCH_HANGUP, extedit_fd_watch, hd);
+			ctx.wid = rnd_gui->watch_file(rnd_gui, fd, RND_WATCH_READABLE | RND_WATCH_HANGUP, extedit_fd_watch, hd);
 			while(ctx.stay) {
-				if (pcb_gui != NULL) {
+				if (rnd_gui != NULL) {
 					n++;
 					pcb_hid_progress(50+sin((double)n/10.0)*40, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
 				}
@@ -146,7 +146,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 	else {
 		old_wait:;
 
-		if (pcb_gui != NULL) {
+		if (rnd_gui != NULL) {
 			pcb_hid_progress(50, 100, "Invoked external editor. Please edit, save and close there to finish this operation");
 			rnd_ms_sleep(1000); /* ugly hack: give the GUI some time to flush */
 		}
@@ -157,7 +157,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 	}
 	pclose(fc);
 
-	if (pcb_gui != NULL)
+	if (rnd_gui != NULL)
 		pcb_hid_progress(0, 0, NULL);
 	free(cmd);
 }
@@ -322,8 +322,8 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case EEF_max:
 			break;
 	}
-	if (pcb_gui != NULL)
-		pcb_gui->invalidate_all(pcb_gui);
+	if (rnd_gui != NULL)
+		rnd_gui->invalidate_all(rnd_gui);
 
 	quit1:;
 	if (tmp_fn != NULL)

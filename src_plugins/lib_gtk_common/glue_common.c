@@ -161,7 +161,7 @@ void pcb_gtk_port_ranges_changed(void)
 	ghidgui->port.view.x0 = gtk_adjustment_get_value(h_adj);
 	ghidgui->port.view.y0 = gtk_adjustment_get_value(v_adj);
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 void pcb_gtk_pan_common(void)

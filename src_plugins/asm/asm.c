@@ -345,9 +345,9 @@ static void select_part(part_t *p)
 	pcb_subc_select(PCB, sc, PCB_CHGFLG_SET, 1);
 
 	/* if the part is out of the screen, pan there */
-	pcb_gui->view_get(pcb_gui, &view);
+	rnd_gui->view_get(rnd_gui, &view);
 	if ((view.X2 < sc->BoundingBox.X1) || (view.X1 > sc->BoundingBox.X2) || (view.Y2 < sc->BoundingBox.Y1) || (view.Y1 > sc->BoundingBox.Y2))
-		pcb_gui->pan(pcb_gui, (sc->BoundingBox.X1+sc->BoundingBox.X2)/2, (sc->BoundingBox.Y1+sc->BoundingBox.Y2)/2, 0);
+		rnd_gui->pan(rnd_gui, (sc->BoundingBox.X1+sc->BoundingBox.X2)/2, (sc->BoundingBox.Y1+sc->BoundingBox.Y2)/2, 0);
 }
 
 static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -381,10 +381,10 @@ static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 	}
 
 	skip:;
-	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipg, isgrp | ispart);
-	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdoneg, isgrp | ispart);
-	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipp, ispart);
-	pcb_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdonep, ispart);
+	rnd_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipg, isgrp | ispart);
+	rnd_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdoneg, isgrp | ispart);
+	rnd_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wskipp, ispart);
+	rnd_gui->attr_dlg_widget_state(hid_ctx, asm_ctx.wdonep, ispart);
 	pcb_hid_redraw(PCB); /* for displaying the new selection */
 }
 

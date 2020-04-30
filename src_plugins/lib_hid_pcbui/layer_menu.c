@@ -83,12 +83,12 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(chk, "ChkView(ui:%d)", idx);
 
 			pcb_snprintf(end, len_avail, "  %s", ly->name);
-			pcb_gui->create_menu(pcb_gui, path, &props);
+			rnd_gui->create_menu(rnd_gui, path, &props);
 		}
 
 		props.checked = NULL;
 		pcb_snprintf(end, len_avail, "[UI]");
-		pcb_gui->create_menu(pcb_gui, path, &props);
+		rnd_gui->create_menu(rnd_gui, path, &props);
 	}
 
 	/* menu-only virtual layers; have to go reverse to keep order because this will insert items */
@@ -107,12 +107,12 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(chk, "ChkLayer(%s)", ml->abbrev);
 		}
 		pcb_snprintf(end, len_avail, "  %s", ml->name);
-		pcb_gui->create_menu(pcb_gui, path, &props);
+		rnd_gui->create_menu(rnd_gui, path, &props);
 	}
 
 	props.checked = NULL;
 	pcb_snprintf(end, len_avail, "[virtual]");
-	pcb_gui->create_menu(pcb_gui, path, &props);
+	rnd_gui->create_menu(rnd_gui, path, &props);
 
 
 	/* have to go reverse to keep order because this will insert items */
@@ -124,7 +124,7 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 		props.checked = NULL;
 		*act = '\0';
 		*chk = '\0';
-		pcb_gui->create_menu(pcb_gui, path, &props);
+		rnd_gui->create_menu(rnd_gui, path, &props);
 
 		for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
 			pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
@@ -153,14 +153,14 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 					sprintf(chk, "ChkLayer(%ld)", lid+1);
 				}
 				pcb_snprintf(end, len_avail, "  %s", l->name);
-				pcb_gui->create_menu(pcb_gui, path, &props);
+				rnd_gui->create_menu(rnd_gui, path, &props);
 			}
 
 			props.foreground = NULL;
 			props.background = NULL;
 			props.checked = NULL;
 			pcb_snprintf(end, len_avail, "[%s]", g->name);
-			pcb_gui->create_menu(pcb_gui, path, &props);
+			rnd_gui->create_menu(rnd_gui, path, &props);
 		}
 	}
 
@@ -176,7 +176,7 @@ static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char
 		keyprops->accel = key;
 		pcb_snprintf(end, len_avail, "%s %ld:%s", menu_prefix, lid+1, l->name);
 		sprintf((char *)keyprops->action, "%s(%ld)", action_prefix, lid+1);
-		pcb_gui->create_menu(pcb_gui, path, keyprops);
+		rnd_gui->create_menu(rnd_gui, path, keyprops);
 	}
 }
 
@@ -243,16 +243,16 @@ static void layer_install_menu(void)
 {
 	rnd_hidval_t timerdata;
 
-	if ((pcb_gui == NULL) || (!pcb_gui->gui))
+	if ((rnd_gui == NULL) || (!rnd_gui->gui))
 		return;
 
 	if (layer_menu_install_timer_active) {
-		pcb_gui->stop_timer(pcb_gui, layer_menu_install_timer);
+		rnd_gui->stop_timer(rnd_gui, layer_menu_install_timer);
 		layer_menu_install_timer_active = 0;
 	}
 
 	timerdata.ptr = NULL;
-	layer_menu_install_timer = pcb_gui->add_timer(pcb_gui, layer_install_menu_cb, MENU_REFRESH_TIME_MS, timerdata);
+	layer_menu_install_timer = rnd_gui->add_timer(rnd_gui, layer_install_menu_cb, MENU_REFRESH_TIME_MS, timerdata);
 	layer_menu_install_timer_active = 1;
 
 }
@@ -260,14 +260,14 @@ static void layer_install_menu(void)
 void pcb_layer_menu_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	layer_install_menu();
-	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
-		pcb_gui->update_menu_checkbox(pcb_gui, NULL);
+	if ((rnd_gui != NULL) && (rnd_gui->update_menu_checkbox != NULL))
+		rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 }
 
 void pcb_layer_menu_vis_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if ((pcb_gui != NULL) && (pcb_gui->update_menu_checkbox != NULL))
-		pcb_gui->update_menu_checkbox(pcb_gui, NULL);
+	if ((rnd_gui != NULL) && (rnd_gui->update_menu_checkbox != NULL))
+		rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 }
 
 
@@ -288,15 +288,15 @@ void pcb_layer_menu_key_update_ev(rnd_hidlib_t *hidlib, void *user_data, int arg
 
 /*	rnd_trace("************ layer key update ev!\n");*/
 
-	if ((pcb_gui == NULL) || (!pcb_gui->gui))
+	if ((rnd_gui == NULL) || (!rnd_gui->gui))
 		return;
 
 	if (layer_menu_key_timer_active) {
-		pcb_gui->stop_timer(pcb_gui, layer_menu_key_timer);
+		rnd_gui->stop_timer(rnd_gui, layer_menu_key_timer);
 		layer_menu_key_timer_active = 0;
 	}
 
 	timerdata.ptr = NULL;
-	layer_menu_key_timer = pcb_gui->add_timer(pcb_gui, timed_layer_menu_key_update_cb, MENU_REFRESH_TIME_MS, timerdata);
+	layer_menu_key_timer = rnd_gui->add_timer(rnd_gui, timed_layer_menu_key_update_cb, MENU_REFRESH_TIME_MS, timerdata);
 	layer_menu_key_timer_active = 1;
 }

@@ -381,8 +381,8 @@ void pcb_board_set_changed_flag(rnd_bool New)
 
 void pcb_board_changed(int reverted)
 {
-	if ((pcb_gui != NULL) && (pcb_gui->set_hidlib != NULL))
-		pcb_gui->set_hidlib(pcb_gui, &PCB->hidlib);
+	if ((rnd_gui != NULL) && (rnd_gui->set_hidlib != NULL))
+		rnd_gui->set_hidlib(rnd_gui, &PCB->hidlib);
 	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, "i", reverted);
 }
 

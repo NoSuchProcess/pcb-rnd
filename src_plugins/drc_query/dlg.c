@@ -118,7 +118,7 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	pcb_hid_text_t *txt = atxt->wdata;
 	char *script = txt->hid_get_text(atxt, hid_ctx);
 	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
-	pcb_board_t *pcb = (pcb_board_t *)pcb_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
 
 	drc_qry_exec(NULL, pcb, view, ctx->rule,
 		ctx->dlg[ctx->wtype].val.str,
@@ -416,7 +416,7 @@ static void drc_rlist_pcb2dlg(void)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 
 		r = pcb_dad_tree_get_selected(attr);
@@ -488,7 +488,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	const char *script;
 	rnd_conf_role_t role;
 	pcb_view_list_t *view;
-	pcb_board_t *pcb = (pcb_board_t *)pcb_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
 
 	rlist_fetch();
 	rlist_fetch_nd();
@@ -520,19 +520,19 @@ static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 
 	hv.str = nd->name;
 	if (hv.str == NULL) hv.str = "<n/a>";
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wrule, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wrule, &hv);
 
 	hv.str = textval(nd, "type");
 	if (hv.str == NULL) hv.str = "<n/a>";
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 
 	hv.str = textval(nd, "title");
 	if (hv.str == NULL) hv.str = "<n/a>";
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtitle, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtitle, &hv);
 
 	hv.str = textval(nd, "desc");
 	if (hv.str == NULL) hv.str = "<n/a>";
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdesc, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdesc, &hv);
 
 	gds_init(&tmp);
 	st = pcb_drcq_stat_get(nd->name);
@@ -546,7 +546,7 @@ static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row
 		pcb_append_printf(&tmp, "\nAverage violations: %.2f", (double)st->sum_hit_cnt / (double)st->run_cnt);
 	}
 	hv.str = tmp.array;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wstat, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wstat, &hv);
 	gds_uninit(&tmp);
 }
 

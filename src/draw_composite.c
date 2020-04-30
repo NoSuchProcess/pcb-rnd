@@ -41,28 +41,28 @@ typedef struct comp_ctx_s {
 
 static void comp_fill_board(comp_ctx_t *ctx)
 {
-	pcb_render->set_color(pcb_draw_out.fgGC, ctx->color);
+	rnd_render->set_color(pcb_draw_out.fgGC, ctx->color);
 	if (ctx->info->drawn_area == NULL)
-		pcb_render->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->info->pcb->hidlib.size_x, ctx->info->pcb->hidlib.size_y);
+		rnd_render->fill_rect(pcb_draw_out.fgGC, 0, 0, ctx->info->pcb->hidlib.size_x, ctx->info->pcb->hidlib.size_y);
 	else
-		pcb_render->fill_rect(pcb_draw_out.fgGC, ctx->info->drawn_area->X1, ctx->info->drawn_area->Y1, ctx->info->drawn_area->X2, ctx->info->drawn_area->Y2);
+		rnd_render->fill_rect(pcb_draw_out.fgGC, ctx->info->drawn_area->X1, ctx->info->drawn_area->Y1, ctx->info->drawn_area->X2, ctx->info->drawn_area->Y2);
 }
 
 static void comp_start_sub_(comp_ctx_t *ctx)
 {
-	pcb_render->set_drawing_mode(pcb_render, RND_HID_COMP_NEGATIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_NEGATIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_start_add_(comp_ctx_t *ctx)
 {
-	pcb_render->set_drawing_mode(pcb_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_start_sub(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_render->set_drawing_mode(pcb_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
-		pcb_render->set_color(pcb_draw_out.pmGC, ctx->color);
+		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+		rnd_render->set_color(pcb_draw_out.pmGC, ctx->color);
 		return;
 	}
 
@@ -75,7 +75,7 @@ static void comp_start_sub(comp_ctx_t *ctx)
 static void comp_start_add(comp_ctx_t *ctx)
 {
 	if (ctx->thin) {
-		pcb_render->set_drawing_mode(pcb_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		return;
 	}
 
@@ -87,12 +87,12 @@ static void comp_start_add(comp_ctx_t *ctx)
 
 static void comp_finish(comp_ctx_t *ctx)
 {
-	pcb_render->set_drawing_mode(pcb_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->info->drawn_area);
+	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, ctx->info->drawn_area);
 }
 
 static void comp_init(comp_ctx_t *ctx, int negative)
 {
-	pcb_render->set_drawing_mode(pcb_render, RND_HID_COMP_RESET, pcb_draw_out.direct, ctx->info->drawn_area);
+	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, ctx->info->drawn_area);
 
 	if (ctx->thin)
 		return;
@@ -102,7 +102,7 @@ static void comp_init(comp_ctx_t *ctx, int negative)
 
 	if ((!ctx->thin) && (negative)) {
 		/* drawing the big poly for the negative */
-		pcb_render->set_drawing_mode(pcb_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
+		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, ctx->info->drawn_area);
 		comp_fill_board(ctx);
 	}
 }

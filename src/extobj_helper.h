@@ -135,12 +135,12 @@ RND_INLINE void pcb_exto_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	if (pcb_subc_get_origin(subc, &x, &y) != 0)
 		return;
 
-	pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
+	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -2);
-	pcb_render->draw_line(pcb_draw_out.fgGC, x, y, x, y + unit);
-	pcb_render->draw_line(pcb_draw_out.fgGC, x, y, x + unit/2, y);
-	pcb_render->draw_line(pcb_draw_out.fgGC, x, y + unit, x + unit/2, y + unit);
-	pcb_render->draw_line(pcb_draw_out.fgGC, x, y + unit/2, x + unit/3, y + unit/2);
+	rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x, y + unit);
+	rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x + unit/2, y);
+	rnd_render->draw_line(pcb_draw_out.fgGC, x, y + unit, x + unit/2, y + unit);
+	rnd_render->draw_line(pcb_draw_out.fgGC, x, y + unit/2, x + unit/3, y + unit/2);
 }
 
 /*** dialog box build ***/
@@ -159,7 +159,7 @@ RND_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, rnd_hid_attribute_t 
 
 	pcb_uchg_attr(pcb, (pcb_any_obj_t *)subc, (char *)attr->user_data, newval);
 	rnd_trace("chg: %s\n", (char *)attr->user_data);
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 RND_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

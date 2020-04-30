@@ -150,7 +150,7 @@ static int cam_exec(cam_ctx_t *ctx)
 	if (ctx->has_partial)
 		pcb_data_clear_flag(PCB->Data, PCB_FLAG_EXPORTSEL, 0, 0);
 
-	have_gui = (pcb_gui != NULL) && pcb_gui->gui;
+	have_gui = (rnd_gui != NULL) && rnd_gui->gui;
 	if (have_gui) {
 		pcb_hid_save_and_show_layer_ons(save_l_ons);
 		pcb_hid_save_and_show_layergrp_ons(save_g_ons);

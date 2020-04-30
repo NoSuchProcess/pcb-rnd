@@ -141,7 +141,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval);
    exit); else return 0 */
 int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_empty);
 
-/* launches the GUI or CLI; after it returns, if pcb_gui is not NULL, the user
+/* launches the GUI or CLI; after it returns, if rnd_gui is not NULL, the user
    has selected another GUI to switch to. */
 void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib);
 
@@ -150,7 +150,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
 
 /* true if main() is called for printing or exporting (no interactive HID
    shall be invoked) */
-#define pcbhl_main_exporting (pcb_gui->printer || pcb_gui->exporter)
+#define pcbhl_main_exporting (rnd_gui->printer || rnd_gui->exporter)
 
 #ifdef __WIN32__
 extern char *pcb_w32_root;     /* installation prefix; what would be $PREFIX on FHS, e.g. /usr/local */

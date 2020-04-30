@@ -93,7 +93,7 @@ static int pcbui_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const 
 static void pcb_rendering_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	/* hook in our dispatcher */
-	gui_set_layer_group = pcb_gui->set_layer_group;
-	pcb_gui->set_layer_group = pcbui_set_layer_group;
+	gui_set_layer_group = rnd_gui->set_layer_group;
+	rnd_gui->set_layer_group = pcbui_set_layer_group;
 }
 

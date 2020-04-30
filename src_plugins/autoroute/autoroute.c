@@ -4603,7 +4603,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 	total_via_count = 0;
 
 #ifdef ROUTE_DEBUG
-	ddraw = pcb_gui->request_debug_draw();
+	ddraw = rnd_gui->request_debug_draw();
 	if (ddraw != NULL) {
 		ar_gc = ddraw->make_gc();
 		ddraw->set_line_cap(ar_gc, rnd_cap_round);

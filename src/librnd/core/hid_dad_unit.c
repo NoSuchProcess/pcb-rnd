@@ -81,19 +81,19 @@ void pcb_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val_)
 int pcb_dad_unit_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
-	return pcb_gui->attr_dlg_widget_state(hid_ctx, unit->wenum, enabled);
+	return rnd_gui->attr_dlg_widget_state(hid_ctx, unit->wenum, enabled);
 }
 
 int pcb_dad_unit_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
-	return pcb_gui->attr_dlg_widget_hide(hid_ctx, unit->wenum, hide);
+	return rnd_gui->attr_dlg_widget_hide(hid_ctx, unit->wenum, hide);
 }
 
 int pcb_dad_unit_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
-	if (pcb_gui->attr_dlg_set_value(hid_ctx, unit->wenum, val) != 0)
+	if (rnd_gui->attr_dlg_set_value(hid_ctx, unit->wenum, val) != 0)
 		return -1;
 	end->val.lng = val->lng;
 	return 0;
@@ -106,8 +106,8 @@ void pcb_dad_unit_set_help(rnd_hid_attribute_t *end, const char *help)
 
 	if ((unit->hid_ctx == NULL) || (*unit->hid_ctx == NULL)) /* while building */
 		enu->help_text = help;
-	else if (pcb_gui->attr_dlg_set_help != NULL) /* when the dialog is already running */
-		pcb_gui->attr_dlg_set_help(*unit->hid_ctx, unit->wenum, help);
+	else if (rnd_gui->attr_dlg_set_help != NULL) /* when the dialog is already running */
+		rnd_gui->attr_dlg_set_help(*unit->hid_ctx, unit->wenum, help);
 }
 
 const char **pcb_dad_unit_enum = NULL;

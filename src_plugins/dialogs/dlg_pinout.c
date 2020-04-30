@@ -76,7 +76,7 @@ static void pinout_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, r
 		bbox.X1 = bbox.Y1 = 0;
 		bbox.X2 = bbox.Y2 = PCB_MM_TO_COORD(10);
 		pcb_dad_preview_zoomto(attrib, &bbox);
-		pcb_render->set_color(gc, rnd_color_red);
+		rnd_render->set_color(gc, rnd_color_red);
 		pcb_text_draw_string_simple(NULL, tmp, PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 100, 0, 0, 0, 0, 0, 0);
 	}
 }
@@ -88,16 +88,16 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 
 	if ((obj->term != NULL) && (pcb_obj_parent_subc(obj) == ctx->tempsc) && (obj->term != NULL)) {
 		val.str = obj->term;
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
 		val.str = rnd_attribute_get(&obj->Attributes, "name");
 		if (val.str != NULL)
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
 		if (ctx->pcb != NULL) {
 			{
 				pcb_net_term_t *term = pcb_net_find_by_obj(&ctx->pcb->netlist[PCB_NETLIST_EDITED], obj);
 				if (term != NULL) {
 					val.str = term->parent.net->name;
-					pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
+					rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
 				}
 			}
 		}
@@ -115,9 +115,9 @@ static rnd_bool pinout_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv
 		rnd_hid_attr_val_t val;
 
 		val.str = "n/a";
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
-		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_name, &val);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_net, &val);
 
 		type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 		if (type != PCB_OBJ_SUBC)

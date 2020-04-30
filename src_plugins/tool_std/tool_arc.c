@@ -134,7 +134,7 @@ rnd_trace("arc: %mm %mm wh %mm %mm\n", hl->tool_x, hl->tool_y, wx, wy);
 
 void pcb_tool_arc_adjust_attached_objects(rnd_hidlib_t *hl)
 {
-	pcb_crosshair.AttachedBox.otherway = pcb_gui->shift_is_pressed(pcb_gui);
+	pcb_crosshair.AttachedBox.otherway = rnd_gui->shift_is_pressed(rnd_gui);
 }
 
 void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
@@ -144,15 +144,15 @@ void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 		pcb_xordraw_attached_arc(conf_core.design.line_thickness);
 		if (conf_core.editor.show_drc) {
-			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 			pcb_xordraw_attached_arc(conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1));
-			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 	}
 	else {
 		/* Draw a circle (0 length line) to show where the arc will start when placed */
 		if(PCB_CURRLAYER(pcb))
-			pcb_render->set_color(pcb_crosshair.GC, &PCB_CURRLAYER(pcb)->meta.real.color);
+			rnd_render->set_color(pcb_crosshair.GC, &PCB_CURRLAYER(pcb)->meta.real.color);
 
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			pcb_crosshair.X, pcb_crosshair.Y,
@@ -160,12 +160,12 @@ void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
 			conf_core.design.line_thickness, 0);
 
 		if(conf_core.editor.show_drc) {
-			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
 				pcb_crosshair.X, pcb_crosshair.Y,
 				pcb_crosshair.X, pcb_crosshair.Y,
 				conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
-			pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 	}
 

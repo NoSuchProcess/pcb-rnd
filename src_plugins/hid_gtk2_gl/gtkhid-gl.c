@@ -64,7 +64,7 @@ typedef struct rnd_hid_gc_s {
 
 void ghid_gl_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
 {
-	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
+	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
 
 static const gchar *get_color_name(pcb_gtk_color_t *color)
@@ -823,7 +823,7 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 	return;
 }
 
-static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
+static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
 {
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
@@ -842,7 +842,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	save_view = ghidgui->port.view;
 	save_width = ghidgui->port.view.canvas_width;
 	save_height = ghidgui->port.view.canvas_height;
-	save_cpp = pcb_gui->coord_per_pix;
+	save_cpp = rnd_gui->coord_per_pix;
 
 	/* Setup zoom factor for drawing routines */
 	gtkc_widget_get_allocation(widget, &allocation);
@@ -898,7 +898,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, 1);
 	glTranslatef(pcbhl_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, pcbhl_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
 
-	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
+	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 	expcall(&gtk2_gl_hid, ctx);
 
 	drawgl_flush();
@@ -918,7 +918,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	ctx->view.X2 = ox2;
 	ctx->view.Y1 = oy1;
 	ctx->view.Y2 = oy2;
-	pcb_gui->coord_per_pix = save_cpp;
+	rnd_gui->coord_per_pix = save_cpp;
 	ghidgui->port.view = save_view;
 	ghidgui->port.view.canvas_width = save_width;
 	ghidgui->port.view.canvas_height = save_height;

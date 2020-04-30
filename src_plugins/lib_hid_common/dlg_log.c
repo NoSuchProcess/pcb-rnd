@@ -61,7 +61,7 @@ static void log_append(log_ctx_t *ctx, rnd_hid_attribute_t *atxt, rnd_logline_t 
 
 	rnd_conf_loglevel_props(line->level, &prefix, &popup);
 
-	if (pcb_gui->supports_dad_text_markup) {
+	if (rnd_gui->supports_dad_text_markup) {
 		if (prefix != NULL) {
 			gds_t tmp;
 			gds_init(&tmp);
@@ -93,8 +93,8 @@ static void log_append(log_ctx_t *ctx, rnd_hid_attribute_t *atxt, rnd_logline_t 
 		}
 		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, line->str);
 	}
-	if (popup && (pcb_gui->attr_dlg_raise != NULL))
-		pcb_gui->attr_dlg_raise(ctx->dlg_hid_ctx);
+	if (popup && (rnd_gui->attr_dlg_raise != NULL))
+		rnd_gui->attr_dlg_raise(ctx->dlg_hid_ctx);
 	if (line->ID > ctx->last_added)
 		ctx->last_added = line->ID;
 	line->seen = 1;
@@ -178,7 +178,7 @@ static void log_window_create(rnd_hidlib_t *hidlib)
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}
 	hv.lng = 1;
-	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscroll, &hv);
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wscroll, &hv);
 	log_import(ctx);
 	maybe_scroll_to_bottom();
 }

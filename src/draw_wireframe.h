@@ -40,18 +40,18 @@ RND_INLINE void pcb_draw_wireframe_arc(rnd_hid_gc_t gc, pcb_arc_t *arc, rnd_coor
 	rnd_coord_t x1, y1, x2, y2;
 
 	if ((arc->Width == 0) && (arc->Height == 0)) {
-		pcb_render->draw_arc(gc, arc->X, arc->Y, wid, wid, 0, 360);
+		rnd_render->draw_arc(gc, arc->X, arc->Y, wid, wid, 0, 360);
 		return;
 	}
 
 	pcb_arc_get_end(arc, 0, &x1, &y1);
 	pcb_arc_get_end(arc, 1, &x2, &y2);
 
-	pcb_render->draw_arc(gc, arc->X, arc->Y, arc->Width + wid, arc->Height + wid, arc->StartAngle, arc->Delta);
-	if (wid > pcb_pixel_slop) {
-		pcb_render->draw_arc(gc, arc->X, arc->Y, arc->Width - wid, arc->Height - wid, arc->StartAngle, arc->Delta);
-		pcb_render->draw_arc(gc, x1, y1, wid, wid, arc->StartAngle, -180 * SGN(arc->Delta));
-		pcb_render->draw_arc(gc, x2, y2, wid, wid, arc->StartAngle + arc->Delta, 180 * SGN(arc->Delta));
+	rnd_render->draw_arc(gc, arc->X, arc->Y, arc->Width + wid, arc->Height + wid, arc->StartAngle, arc->Delta);
+	if (wid > rnd_pixel_slop) {
+		rnd_render->draw_arc(gc, arc->X, arc->Y, arc->Width - wid, arc->Height - wid, arc->StartAngle, arc->Delta);
+		rnd_render->draw_arc(gc, x1, y1, wid, wid, arc->StartAngle, -180 * SGN(arc->Delta));
+		rnd_render->draw_arc(gc, x2, y2, wid, wid, arc->StartAngle + arc->Delta, 180 * SGN(arc->Delta));
 	}
 }
 
@@ -73,35 +73,35 @@ RND_INLINE void pcb_draw_wireframe_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 			y1 -= dy * h;
 			y2 += dy * h;
 		}
-		if ((coord_abs(ox) >= pcb_pixel_slop) || (coord_abs(oy) >= pcb_pixel_slop)) {
-			pcb_render->draw_line(gc, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
-			pcb_render->draw_line(gc, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
+		if ((coord_abs(ox) >= rnd_pixel_slop) || (coord_abs(oy) >= rnd_pixel_slop)) {
+			rnd_render->draw_line(gc, x1 + ox, y1 + oy, x2 + ox, y2 + oy);
+			rnd_render->draw_line(gc, x1 - ox, y1 - oy, x2 - ox, y2 - oy);
 
 			/* draw caps */
 			if (!square) {
 				rnd_angle_t angle = atan2(dx, dy) * 57.295779;
-				pcb_render->draw_arc(gc, x1, y1, thick / 2, thick / 2, angle - 180, 180);
-				pcb_render->draw_arc(gc, x2, y2, thick / 2, thick / 2, angle, 180);
+				rnd_render->draw_arc(gc, x1, y1, thick / 2, thick / 2, angle - 180, 180);
+				rnd_render->draw_arc(gc, x2, y2, thick / 2, thick / 2, angle, 180);
 			}
 			else {
-				pcb_render->draw_line(gc, x1 + ox, y1 + oy, x1 - ox, y1 - oy);
-				pcb_render->draw_line(gc, x2 + ox, y2 + oy, x2 - ox, y2 - oy);
+				rnd_render->draw_line(gc, x1 + ox, y1 + oy, x1 - ox, y1 - oy);
+				rnd_render->draw_line(gc, x2 + ox, y2 + oy, x2 - ox, y2 - oy);
 			}
 		}
 		else
-			pcb_render->draw_line(gc, x1, y1, x2, y2);
+			rnd_render->draw_line(gc, x1, y1, x2, y2);
 	}
 	else {
 		if (square) {
 			/* square cap 0 long line does not have an angle -> always draw it axis aligned */
 			rnd_coord_t cx1 = x1 - thick/2, cx2 = x1 + thick/2, cy1 = y1 - thick/2, cy2 = y1 + thick/2;
-			pcb_render->draw_line(gc, cx1, cy1, cx2, cy1);
-			pcb_render->draw_line(gc, cx2, cy1, cx2, cy2);
-			pcb_render->draw_line(gc, cx2, cy2, cx1, cy2);
-			pcb_render->draw_line(gc, cx1, cy2, cx1, cy1);
+			rnd_render->draw_line(gc, cx1, cy1, cx2, cy1);
+			rnd_render->draw_line(gc, cx2, cy1, cx2, cy2);
+			rnd_render->draw_line(gc, cx2, cy2, cx1, cy2);
+			rnd_render->draw_line(gc, cx1, cy2, cx1, cy1);
 		}
 		else
-			pcb_render->draw_arc(gc, x1, y1, thick/2, thick/2, 0, 360); 
+			rnd_render->draw_arc(gc, x1, y1, thick/2, thick/2, 0, 360); 
 	}
 }
 

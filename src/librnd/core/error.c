@@ -57,7 +57,7 @@ void rnd_message(rnd_message_level_t level, const char *Format, ...)
 	gds_t tmp;
 	rnd_logline_t *line;
 
-	if ((pcb_gui == NULL) || (pcbhl_conf.rc.dup_log_to_stderr)) {
+	if ((rnd_gui == NULL) || (pcbhl_conf.rc.dup_log_to_stderr)) {
 		if (pcbhl_conf.rc.quiet)
 			min_level = RND_MSG_ERROR;
 
@@ -226,7 +226,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		memset(&fmtsub, 0, sizeof(fmtsub));
 		PCB_DAD_ENUM(fmtsub.dlg, fmts);
 			wfmt = PCB_DAD_CURRENT(fmtsub.dlg);
-		fn = pcb_gui->fileselect(pcb_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", RND_HID_FSD_MAY_NOT_EXIST, &fmtsub);
+		fn = rnd_gui->fileselect(rnd_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", RND_HID_FSD_MAY_NOT_EXIST, &fmtsub);
 		if (fn != NULL) {
 			ret = rnd_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.lng == 1));
 			if (ret != 0)

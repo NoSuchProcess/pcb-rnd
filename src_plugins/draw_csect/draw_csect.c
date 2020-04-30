@@ -120,12 +120,12 @@ static pcb_text_t *dtext_bg(rnd_hid_gc_t gc, int x, int y, int scale, int dir, c
 	t.fid = 0; /* use the default font */
 	t.Flags = pcb_no_flags();
 
-	if (pcb_gui->gui) { /* it is unreadable on black&white and on most exporters */
-		pcb_render->set_color(gc, bgcolor);
+	if (rnd_gui->gui) { /* it is unreadable on black&white and on most exporters */
+		rnd_render->set_color(gc, bgcolor);
 		pcb_text_draw_(&def_info, &t, 1000000, 0, PCB_TXT_TINY_ACCURATE);
 	}
 
-	pcb_render->set_color(gc, fgcolor);
+	rnd_render->set_color(gc, fgcolor);
 	pcb_text_draw_(&def_info, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
 
 	return &t;
@@ -432,7 +432,7 @@ static void mark_layer_order(rnd_coord_t x)
 static void draw_hover_label(rnd_hid_gc_t gc, const char *str)
 {
 	int x0 = PCB_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
-	pcb_render->set_color(gc, &COLOR_ANNOT);
+	rnd_render->set_color(gc, &COLOR_ANNOT);
 	dtext_(cx+x0, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
 }
 
@@ -445,7 +445,7 @@ static void draw_csect(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 	reset_layer_coords();
 	csect_gc = gc;
 
-	pcb_render->set_color(gc, &COLOR_ANNOT);
+	rnd_render->set_color(gc, &COLOR_ANNOT);
 	dtext(0, 0, 500, 0, "Board cross section");
 
 	/* draw physical layers */
@@ -499,7 +499,7 @@ TODO("layer: handle multiple outline layers")
 		else
 			continue;
 
-		pcb_render->set_color(gc, color);
+		rnd_render->set_color(gc, color);
 		dhrect(0, y, GROUP_WIDTH_MM, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
 		dtext_bg(gc, 5, y, 200, 0, g->name, &COLOR_BG, &COLOR_ANNOT);
 		reg_group_coords(gid, PCB_MM_TO_COORD(y), PCB_MM_TO_COORD(y+th));
@@ -549,7 +549,7 @@ TODO("layer: handle multiple outline layers")
 		pcb_text_t *t;
 		if (g->len > 0) {
 			pcb_layer_t *l = &PCB->Data->Layer[g->lid[0]];
-			pcb_render->set_color(gc, &l->meta.real.color);
+			rnd_render->set_color(gc, &l->meta.real.color);
 			t = dtext_bg(gc, 1, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
@@ -557,7 +557,7 @@ TODO("layer: handle multiple outline layers")
 			reg_layer_coords(g->lid[0], t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));
 		}
 		else {
-			pcb_render->set_color(gc, &COLOR_OUTLINE);
+			rnd_render->set_color(gc, &COLOR_OUTLINE);
 			t = dtext_bg(gc, 1, y, 200, 0, "<outline>", &COLOR_BG, &COLOR_OUTLINE);
 			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
@@ -580,7 +580,7 @@ TODO("layer: handle multiple outline layers")
 
 
 	if (DRAGGING) {
-		pcb_render->set_color(gc, rnd_color_black);
+		rnd_render->set_color(gc, rnd_color_black);
 
 		/* draw the actual operation */
 		if (drag_addgrp) {

@@ -514,7 +514,7 @@ static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
 
 
 GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t init_widget,
-																			pcb_gtk_preview_expose_t expose, pcb_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
+																			pcb_gtk_preview_expose_t expose, rnd_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	pcb_gtk_preview_t *prv = (pcb_gtk_preview_t *)g_object_new(
 		PCB_GTK_TYPE_PREVIEW,

@@ -38,7 +38,7 @@ static void update_title(void)
 {
 	const char *filename, *name;
 
-	if ((pcb_gui == NULL) || (pcb_gui->set_top_title == NULL) || (!gui_inited))
+	if ((rnd_gui == NULL) || (rnd_gui->set_top_title == NULL) || (!gui_inited))
 		return;
 
 	if ((PCB->hidlib.name == NULL) || (*PCB->hidlib.name == '\0'))
@@ -53,7 +53,7 @@ static void update_title(void)
 
 	title_buf.used = 0;
 	pcb_append_printf(&title_buf, "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
-	pcb_gui->set_top_title(pcb_gui, title_buf.array);
+	rnd_gui->set_top_title(rnd_gui, title_buf.array);
 }
 
 static void pcb_title_board_changed_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])

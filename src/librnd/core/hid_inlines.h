@@ -34,19 +34,19 @@ RND_INLINE rnd_hid_gc_t pcb_hid_make_gc(void)
 {
 	rnd_hid_gc_t res;
 	rnd_core_gc_t *hc;
-	res = pcb_render->make_gc(pcb_gui);
+	res = rnd_render->make_gc(rnd_gui);
 	hc = (rnd_core_gc_t *)res; /* assumes first field is rnd_core_gc_t */
 	hc->width = RND_MAX_COORD;
 	hc->cap = rnd_cap_invalid;
 	hc->xor = 0;
 	hc->faded = 0;
-	hc->hid = pcb_gui;
+	hc->hid = rnd_gui;
 	return res;
 }
 
 RND_INLINE void pcb_hid_destroy_gc(rnd_hid_gc_t gc)
 {
-	pcb_render->destroy_gc(gc);
+	rnd_render->destroy_gc(gc);
 }
 
 RND_INLINE void pcb_hid_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
@@ -54,7 +54,7 @@ RND_INLINE void pcb_hid_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->cap != style) {
 		hc->cap = style;
-		pcb_render->set_line_cap(gc, style);
+		rnd_render->set_line_cap(gc, style);
 	}
 }
 
@@ -63,7 +63,7 @@ RND_INLINE void pcb_hid_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->width != width) {
 		hc->width = width;
-		pcb_render->set_line_width(gc, width);
+		rnd_render->set_line_width(gc, width);
 	}
 }
 
@@ -72,7 +72,7 @@ RND_INLINE void pcb_hid_set_draw_xor(rnd_hid_gc_t gc, int xor)
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->xor != xor) {
 		hc->xor = xor;
-		pcb_render->set_draw_xor(gc, xor);
+		rnd_render->set_draw_xor(gc, xor);
 	}
 }
 
@@ -81,18 +81,18 @@ RND_INLINE void pcb_hid_set_draw_faded(rnd_hid_gc_t gc, int faded)
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->faded != faded) {
 		hc->faded = faded;
-		pcb_render->set_draw_faded(gc, faded);
+		rnd_render->set_draw_faded(gc, faded);
 	}
 }
 
 RND_INLINE const char *pcb_hid_command_entry(const char *ovr, int *cursor)
 {
-	if ((pcb_gui == NULL) || (pcb_gui->command_entry == NULL)) {
+	if ((rnd_gui == NULL) || (rnd_gui->command_entry == NULL)) {
 		if (cursor != NULL)
 			*cursor = -1;
 		return NULL;
 	}
-	return pcb_gui->command_entry(pcb_gui, ovr, cursor);
+	return rnd_gui->command_entry(rnd_gui, ovr, cursor);
 }
 
 

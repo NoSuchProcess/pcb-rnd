@@ -111,8 +111,8 @@ static int script_save_preunload(script_t *s, const char *data)
    the standard script cookie */
 static void script_unreg(const char *cookie)
 {
-	if ((pcb_gui != NULL) && (pcb_gui->remove_menu != NULL))
-		pcb_gui->remove_menu(pcb_gui, cookie);
+	if ((rnd_gui != NULL) && (rnd_gui->remove_menu != NULL))
+		rnd_gui->remove_menu(rnd_gui, cookie);
 }
 
 /* unload a script, free all memory and remove it from all lists/hashes.

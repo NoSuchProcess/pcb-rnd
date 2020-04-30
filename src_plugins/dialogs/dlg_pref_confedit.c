@@ -67,20 +67,20 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 	switch(ctx->nat->type) {
 		case RND_CFN_STRING:
 			hv.str = val;
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case RND_CFN_BOOLEAN:
 		case RND_CFN_INTEGER:
 			hv.lng = atoi(val);
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case RND_CFN_REAL:
 			hv.dbl = strtod(val, NULL);
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case RND_CFN_COORD:
 			hv.crd = pcb_get_value(val, NULL, NULL, NULL);
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case RND_CFN_UNIT:
 			{
@@ -89,13 +89,13 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 					hv.lng = u - pcb_units;
 				else
 					hv.lng = -1;
-				pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			}
 			break;
 		case RND_CFN_COLOR:
 			hv.clr = ctx->nat->val.color[ctx->idx];
 			rnd_color_load_str(&hv.clr, val);
-			pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
 			break;
 		case RND_CFN_LIST:
 			{
@@ -191,7 +191,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	else if (ctx->role == RND_CFR_DESIGN)
 		pcb_board_set_changed_flag(1);
 
-	pcb_gui->invalidate_all(pcb_gui);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
@@ -397,10 +397,10 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	if (is_read_only(ctx)) {
 		int n;
-		pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnewval, 0);
+		rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wnewval, 0);
 		for(n = 0; n < sizeof(b) / sizeof(b[0]); n++)
 			if (b[n] != 0)
-				pcb_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, b[n], 0);
+				rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, b[n], 0);
 	}
 
 

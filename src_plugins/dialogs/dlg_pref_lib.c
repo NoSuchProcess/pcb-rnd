@@ -42,10 +42,10 @@ static void pref_lib_update_buttons(void)
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	int en = (r != NULL);
 
-	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wedit, en);
-	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wremove, en);
-	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmoveup, en);
-	pcb_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmovedown, en);
+	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wedit, en);
+	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wremove, en);
+	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmoveup, en);
+	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmovedown, en);
 }
 
 static void pref_lib_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
@@ -122,7 +122,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	}
 
 	hv.str = pref_ctx.lib.cursor_path;
-	if (pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv) == 0) {
+	if (rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv) == 0) {
 		free(pref_ctx.lib.cursor_path);
 		pref_ctx.lib.cursor_path = NULL;
 	}
@@ -220,7 +220,7 @@ static void lib_btn_up(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *bt
 		pcb_dad_tree_insert(attr, prev, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
 		hv.str = cell[0];
-		pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
+		rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
 	}
 }
 
@@ -247,7 +247,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 		pcb_dad_tree_append(attr, next, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
 		hv.str = cell[0];
-		pcb_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
+		rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
 	}
 }
 

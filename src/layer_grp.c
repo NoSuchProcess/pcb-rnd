@@ -48,8 +48,8 @@ do { \
 	pcb->LayerGroups.cache.copper_valid = 0; \
 	if (!inhibit_notify) { \
 		rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); \
-		if ((pcb_gui != NULL) && (pcb_exporter == NULL)) \
-			pcb_gui->invalidate_all(pcb_gui); \
+		if ((rnd_gui != NULL) && (rnd_exporter == NULL)) \
+			rnd_gui->invalidate_all(rnd_gui); \
 		pcb_board_set_changed_flag(pcb_true); \
 	} \
 } while(0)
@@ -870,14 +870,14 @@ error:
 int pcb_layer_gui_set_layer(rnd_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty, rnd_xform_t **xform)
 {
 	/* if there's no GUI, that means no draw should be done */
-	if (pcb_gui == NULL)
+	if (rnd_gui == NULL)
 		return 0;
 
 	if (xform != NULL)
 		*xform = NULL;
 
-	if (pcb_render->set_layer_group != NULL)
-		return pcb_render->set_layer_group(pcb_gui, gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, is_empty, xform);
+	if (rnd_render->set_layer_group != NULL)
+		return rnd_render->set_layer_group(rnd_gui, gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, is_empty, xform);
 
 	/* if the GUI doesn't have a set_layer, assume it wants to draw all layers */
 	return 1;

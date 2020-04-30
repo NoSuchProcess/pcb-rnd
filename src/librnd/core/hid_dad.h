@@ -174,7 +174,7 @@ typedef struct {
 do { \
 	int __n__; \
 	if ((table ## _hid_ctx != NULL) && (table ## _ret_override != NULL)) \
-		pcb_gui->attr_dlg_free(table ## _hid_ctx); \
+		rnd_gui->attr_dlg_free(table ## _hid_ctx); \
 	for(__n__ = 0; __n__ < table ## _len; __n__++) { \
 		PCB_DAD_FREE_FIELD(table, __n__); \
 	} \
@@ -194,7 +194,7 @@ do { \
 do { \
 	table ## _ret_override = calloc(sizeof(pcb_dad_retovr_t), 1); \
 	table ## _append_lock = 1; \
-	table ## _hid_ctx = pcb_gui->attr_dlg_new(pcb_gui, id, table, table ## _len, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny); \
+	table ## _hid_ctx = rnd_gui->attr_dlg_new(rnd_gui, id, table, table ## _len, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny); \
 } while(0)
 
 /* Sets the default window size (that is only a hint) - NOTE: must be called
@@ -526,7 +526,7 @@ do { \
 		rnd_hid_attr_val_t __val__; \
 		memset(&__val__, 0, sizeof(__val__)); \
 		__val__.field = val_; \
-		pcb_gui->attr_dlg_set_value(hid_ctx, wid, &__val__); \
+		rnd_gui->attr_dlg_set_value(hid_ctx, wid, &__val__); \
 	} while(0)
 
 /*** DAD internals (do not use directly) ***/
