@@ -331,7 +331,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_UNIT:
-				PCB_DAD_UNIT(ctx->dlg, 0x3fff);
+				RND_DAD_UNIT(ctx->dlg, 0x3fff);
 					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;

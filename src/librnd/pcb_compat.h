@@ -1209,3 +1209,4 @@
 #define pcb_hid_export_opt_func_dad_t rnd_hid_export_opt_func_dad_t
 #define pcb_events_init rnd_events_init
 #define pcb_events_uninit rnd_events_uninit
+#define PCB_DAD_UNIT RND_DAD_UNIT

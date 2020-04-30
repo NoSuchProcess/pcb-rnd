@@ -43,7 +43,7 @@ typedef struct {
 /*** implementation ***/
 
 
-#define PCB_DAD_UNIT(table, family_) \
+#define RND_DAD_UNIT(table, family_) \
 do { \
 	rnd_hid_dad_unit_t *unit = calloc(sizeof(rnd_hid_dad_unit_t), 1); \
 	RND_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \

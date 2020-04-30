@@ -189,7 +189,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 
 		RND_DAD_BEGIN_TABLE(ctx.dlg, 2);
 			RND_DAD_LABEL(ctx.dlg, "Preferred unit");
-			PCB_DAD_UNIT(ctx.dlg, spin->unit_family);
+			RND_DAD_UNIT(ctx.dlg, spin->unit_family);
 				ctx.wunit = RND_DAD_CURRENT(ctx.dlg);
 				RND_DAD_HELP(ctx.dlg, "Convert value to this unit and rewrite\nthe text entry field with the converted value.");
 				RND_DAD_DEFAULT_PTR(ctx.dlg, def_unit);
