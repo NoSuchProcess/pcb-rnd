@@ -87,12 +87,12 @@ int pcb_flag_eq(pcb_flag_t *f1, pcb_flag_t *f2)
 	return (memcmp(f1->t, &f2->t, sizeof(f1->t)) == 0);
 }
 
-const char *pcb_dynflag_cookie[PCB_DYNFLAG_BLEN];
+const char *pcb_dynflag_cookie[RND_DYNFLAG_BLEN];
 
 pcb_dynf_t pcb_dynflag_alloc(const char *cookie)
 {
 	pcb_dynf_t n;
-	for(n = 0; n < PCB_DYNFLAG_BLEN; n++) {
+	for(n = 0; n < RND_DYNFLAG_BLEN; n++) {
 		if (pcb_dynflag_cookie[n] == NULL) {
 			pcb_dynflag_cookie[n] = cookie;
 			return n;
@@ -103,7 +103,7 @@ pcb_dynf_t pcb_dynflag_alloc(const char *cookie)
 
 void pcb_dynflag_free(pcb_dynf_t dynf)
 {
-	if ((dynf >= 0) && (dynf < PCB_DYNFLAG_BLEN))
+	if ((dynf >= 0) && (dynf < RND_DYNFLAG_BLEN))
 		pcb_dynflag_cookie[dynf] = NULL;
 }
 
@@ -111,7 +111,7 @@ void pcb_dynflag_free(pcb_dynf_t dynf)
 void pcb_dynflag_uninit(void)
 {
 	pcb_dynf_t n;
-	for(n = 0; n < PCB_DYNFLAG_BLEN; n++)
+	for(n = 0; n < RND_DYNFLAG_BLEN; n++)
 		if (pcb_dynflag_cookie[n] != NULL)
 			fprintf(stderr, "pcb-rnd: Internal error: dynamic flag %d (%s) not unregistered\n", n, pcb_dynflag_cookie[n]);
 }

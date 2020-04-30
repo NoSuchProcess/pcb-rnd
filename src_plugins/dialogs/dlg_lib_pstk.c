@@ -428,10 +428,10 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, rnd_hid_attri
 	pid = strtol(r->cell[0], NULL, 10);
 
 	/* unselect all */
-	box.X1 = -PCB_MAX_COORD;
-	box.Y1 = -PCB_MAX_COORD;
-	box.X2 = PCB_MAX_COORD;
-	box.Y2 = PCB_MAX_COORD;
+	box.X1 = -RND_MAX_COORD;
+	box.Y1 = -RND_MAX_COORD;
+	box.X2 = RND_MAX_COORD;
+	box.Y2 = RND_MAX_COORD;
 	if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
 		changed = 1;
 

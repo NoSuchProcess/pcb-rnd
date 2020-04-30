@@ -4125,9 +4125,9 @@ rnd_bool no_expansion_boxes(routedata_t * rd)
 	int i;
 	rnd_rnd_box_t big;
 	big.X1 = 0;
-	big.X2 = PCB_MAX_COORD;
+	big.X2 = RND_MAX_COORD;
 	big.Y1 = 0;
-	big.Y2 = PCB_MAX_COORD;
+	big.Y2 = RND_MAX_COORD;
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		if (pcb_r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL, NULL))
 			return pcb_false;
@@ -4749,7 +4749,7 @@ donerouting:
 	pcb_hid_progress(0, 0, NULL);
 	if (conf_core.editor.live_routing) {
 		int i;
-		rnd_rnd_box_t big = { 0, 0, PCB_MAX_COORD, PCB_MAX_COORD };
+		rnd_rnd_box_t big = { 0, 0, RND_MAX_COORD, RND_MAX_COORD };
 		for (i = 0; i < pcb_max_group(PCB); i++) {
 			pcb_r_search(rd->layergrouptree[i], &big, NULL, ripout_livedraw_obj_cb, NULL, NULL);
 		}

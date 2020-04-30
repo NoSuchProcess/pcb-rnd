@@ -59,9 +59,9 @@
 char *rnd_get_wd(char *path)
 {
 #if defined(RND_HAVE_GETCWD)
-	return getcwd(path, PCB_PATH_MAX);
+	return getcwd(path, RND_PATH_MAX);
 #elif defined(RND_HAVE__GETCWD)
-	return _getcwd(path, PCB_PATH_MAX);
+	return _getcwd(path, RND_PATH_MAX);
 #else
 	/* seems that some BSD releases lack of a prototype for getwd() */
 	return getwd(path);

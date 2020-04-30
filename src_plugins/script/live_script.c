@@ -103,7 +103,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	vtp0_init(&ve);
 
 	for(path = pcb_script_pup_paths; *path != NULL; path++) {
-		char fn[PCB_PATH_MAX*2], *fn_end;
+		char fn[RND_PATH_MAX*2], *fn_end;
 		int dirlen;
 		struct dirent *de;
 		DIR *d = pcb_opendir(hl, *path);

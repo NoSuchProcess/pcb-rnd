@@ -271,7 +271,7 @@ static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_c
 	if (!pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
 		return;
 
-	if ((Vz(hidlib->grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
+	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
 		return;
 
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
@@ -811,8 +811,8 @@ static int poly_is_aligned_rect(rnd_rnd_box_t *b, int n_coords, rnd_coord_t *x, 
 	int n, xi1 = 0, yi1 = 0, xi2 = 0, yi2 = 0, xs1 = 0, ys1 = 0, xs2 = 0, ys2 = 0;
 	if (n_coords != 4)
 		return 0;
-	b->X1 = b->Y1 = PCB_MAX_COORD;
-	b->X2 = b->Y2 = -PCB_MAX_COORD;
+	b->X1 = b->Y1 = RND_MAX_COORD;
+	b->X2 = b->Y2 = -RND_MAX_COORD;
 	for(n = 0; n < 4; n++) {
 		if (x[n] == b->X1)
 			xs1++;
@@ -854,7 +854,7 @@ static void ghid_gdk_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	static GdkPoint *points = 0;
 	static int npoints = 0;
 	int i, len, sup = 0;
-	rnd_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
+	rnd_coord_t lsx, lsy, lastx = RND_MAX_COORD, lasty = RND_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
 
 	render_priv_t *priv = ghidgui->port.render_priv;
 	USE_GC_NOPEN(gc);
@@ -915,7 +915,7 @@ static void ghid_gdk_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_
 	static int npoints = 0;
 	int i, len, sup = 0;
 	render_priv_t *priv = ghidgui->port.render_priv;
-	rnd_coord_t lsx, lsy, lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
+	rnd_coord_t lsx, lsy, lastx = RND_MAX_COORD, lasty = RND_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
 	USE_GC_NOPEN(gc);
 
 	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));

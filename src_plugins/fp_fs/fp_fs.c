@@ -115,9 +115,9 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children),
 								void *cookie, int subdir_may_not_exist, int need_tags)
 {
-	char olddir[PCB_PATH_MAX + 1];	/* The directory we start out in (cwd) */
-	char new_subdir[PCB_PATH_MAX + 1];
-	char fn[PCB_PATH_MAX + 1], *fn_end;
+	char olddir[RND_PATH_MAX + 1];	/* The directory we start out in (cwd) */
+	char new_subdir[RND_PATH_MAX + 1];
+	char fn[RND_PATH_MAX + 1], *fn_end;
 	DIR *subdirobj;								/* Interable object holding all subdir entries */
 	struct dirent *subdirentry;		/* Individual subdir entry */
 	struct stat buffer;						/* Buffer used in stat */
@@ -233,7 +233,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 {
 	list_st_t l;
 	list_dir_t *d, *nextd;
-	char working_[PCB_PATH_MAX + 1];
+	char working_[RND_PATH_MAX + 1];
 	const char *visible_subdir;
 	char *working;								/* String holding abs path to working dir */
 
@@ -328,7 +328,7 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_
 static char *fp_fs_search(const char *search_path, const char *basename, int parametric)
 {
 	const char *p, *end;
-	char path[PCB_PATH_MAX + 1];
+	char path[RND_PATH_MAX + 1];
 	fp_search_t ctx;
 
 	if (rnd_is_path_abs(basename))

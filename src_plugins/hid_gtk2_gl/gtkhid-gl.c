@@ -192,7 +192,7 @@ static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_rnd_box_t *drawn_area)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	if ((Vz(hidlib->grid) < PCB_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
+	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
 		return;
 
 	glEnable(GL_COLOR_LOGIC_OP);

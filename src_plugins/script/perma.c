@@ -37,7 +37,7 @@ static const char *guess_lang(const char *ext);
 
 static int perma_load(const char *dir, const char *id, const char *path_in, const char *lang)
 {
-	char spath[PCB_PATH_MAX];
+	char spath[RND_PATH_MAX];
 	const char *path;
 
 	if (!rnd_is_path_abs(path_in)) {
@@ -52,7 +52,7 @@ static int perma_load(const char *dir, const char *id, const char *path_in, cons
 
 static void perma_script_load_conf(const char *dir)
 {
-	char path[PCB_PATH_MAX], *errmsg;
+	char path[RND_PATH_MAX], *errmsg;
 	lht_doc_t *doc;
 	lht_node_t *n, *npath, *nlang;
 	FILE *f;

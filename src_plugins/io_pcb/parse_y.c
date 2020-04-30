@@ -1973,8 +1973,8 @@ yyreduce:
 #line 312 "parse_y.y" /* yacc.c:1652  */
     {
 				yyPCB->hidlib.name = (yyvsp[-1].string);
-				yyPCB->hidlib.size_x = PCB_MAX_COORD;
-				yyPCB->hidlib.size_y = PCB_MAX_COORD;
+				yyPCB->hidlib.size_x = RND_MAX_COORD;
+				yyPCB->hidlib.size_y = RND_MAX_COORD;
 				old_fmt = 1;
 			}
 #line 1981 "parse_y.c" /* yacc.c:1652  */

@@ -1401,7 +1401,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	hkp_ctx_t ctx;
 	int res = -1;
 	FILE *flay;
-	char *end, fn2[PCB_PATH_MAX];
+	char *end, fn2[RND_PATH_MAX];
 
 	pcb_data_clip_inhibit_inc(pcb->Data);
 	pcb_layergrp_inhibit_inc();
@@ -1415,8 +1415,8 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	}
 
 	/* create the file name for the padstacks */
-	strncpy(fn2, fn, PCB_PATH_MAX);
-	fn2[PCB_PATH_MAX-1] = '\0';
+	strncpy(fn2, fn, RND_PATH_MAX);
+	fn2[RND_PATH_MAX-1] = '\0';
 	end = strrchr(fn2, RND_DIR_SEPARATOR_C);
 	if (end == NULL)
 		end = fn2;

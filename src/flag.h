@@ -41,7 +41,7 @@ struct pcb_unknown_flag_s {
 };
 
 #define PCB_DYNFLAG_WORD unsigned long
-#define PCB_DYNFLAG_WLEN ((PCB_DYNFLAG_BLEN-1) / sizeof(PCB_DYNFLAG_WORD)+1)
+#define PCB_DYNFLAG_WLEN ((RND_DYNFLAG_BLEN-1) / sizeof(PCB_DYNFLAG_WORD)+1)
 typedef PCB_DYNFLAG_WORD pcb_dynflag_t[PCB_DYNFLAG_WLEN];
 
 typedef struct {
@@ -188,7 +188,7 @@ int pcb_mem_any_set(unsigned char *arr, int arr_len);
 #define PCB_DFLAG_TEST(flg, dynf) (!!((flg)->df[(dynf) / sizeof(PCB_DYNFLAG_WORD)] & (1 << (dynf) % sizeof(PCB_DYNFLAG_WORD))))
 #define PCB_DFLAG_PUT(flg, dynf, val) ((val) ? PCB_DFLAG_SET((flg), (dynf)) : PCB_DFLAG_CLR((flg), (dynf)))
 
-extern const char *pcb_dynflag_cookie[PCB_DYNFLAG_BLEN];
+extern const char *pcb_dynflag_cookie[RND_DYNFLAG_BLEN];
 
 typedef int pcb_dynf_t;
 #define PCB_DYNF_INVALID (-1)

@@ -141,7 +141,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	int vpath_base_len;
 	fp_get_mode wmode = FP_WGET_OFFLINE;
 	pcb_fplibrary_t *l;
-	char last_sum_fn[PCB_PATH_MAX];
+	char last_sum_fn[RND_PATH_MAX];
 
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;

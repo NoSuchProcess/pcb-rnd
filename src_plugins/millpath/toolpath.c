@@ -241,8 +241,8 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		rnd_rnd_box_t otlbb;
 		rnd_layer_id_t lid;
 		
-		otlbb.X1 = otlbb.Y1 = PCB_MAX_COORD;
-		otlbb.X2 = otlbb.Y2 = -PCB_MAX_COORD;
+		otlbb.X1 = otlbb.Y1 = RND_MAX_COORD;
+		otlbb.X2 = otlbb.Y2 = -RND_MAX_COORD;
 
 		for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 			pcb_layer_t *l;

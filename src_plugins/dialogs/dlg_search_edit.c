@@ -330,7 +330,7 @@ static int srchedit_window(search_expr_t *expr)
 			PCB_DAD_COORD(ctx->dlg, "");
 				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
 				ctx->wright[RIGHT_COORD] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, -PCB_MAX_COORD, PCB_MAX_COORD);
+				PCB_DAD_MINMAX(ctx->dlg, -RND_MAX_COORD, RND_MAX_COORD);
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);

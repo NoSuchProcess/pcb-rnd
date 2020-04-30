@@ -496,7 +496,7 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_LABEL(ctx->dlg, "Data type: coord");
 			PCB_DAD_COORD(ctx->dlg, "");
 				ctx->wedit[2] = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, -PCB_MAX_COORD, PCB_MAX_COORD);
+				PCB_DAD_MINMAX(ctx->dlg, -RND_MAX_COORD, RND_MAX_COORD);
 				PCB_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "abs");

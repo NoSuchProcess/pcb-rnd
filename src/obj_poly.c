@@ -373,8 +373,8 @@ void pcb_poly_scale(pcb_poly_t *poly, double sx, double sy)
 /* sets the bounding box of a polygons */
 void pcb_poly_bbox(pcb_poly_t *Polygon)
 {
-	Polygon->bbox_naked.X1 = Polygon->bbox_naked.Y1 = PCB_MAX_COORD;
-	Polygon->bbox_naked.X2 = Polygon->bbox_naked.Y2 = -PCB_MAX_COORD;
+	Polygon->bbox_naked.X1 = Polygon->bbox_naked.Y1 = RND_MAX_COORD;
+	Polygon->bbox_naked.X2 = Polygon->bbox_naked.Y2 = -RND_MAX_COORD;
 
 	PCB_POLY_POINT_LOOP(Polygon);
 	{

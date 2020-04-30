@@ -114,10 +114,10 @@ static void click_timer_cb(pcb_hidval_t hv)
 			hl->tool_hit = 0;
 			pcb_crosshair_note.Moving = pcb_false;
 			pcb_undo_save_serial();
-			box.X1 = -PCB_MAX_COORD;
-			box.Y1 = -PCB_MAX_COORD;
-			box.X2 = PCB_MAX_COORD;
-			box.Y2 = PCB_MAX_COORD;
+			box.X1 = -RND_MAX_COORD;
+			box.Y1 = -RND_MAX_COORD;
+			box.X2 = RND_MAX_COORD;
+			box.Y2 = RND_MAX_COORD;
 			/* unselect first if shift key not down */
 			if (!pcb_gui->shift_is_pressed(pcb_gui) && pcb_select_block(pcb, &box, pcb_false, pcb_false, pcb_false))
 				pcb_board_set_changed_flag(pcb_true);
@@ -185,10 +185,10 @@ void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 	if (hl->tool_click) {
 		rnd_rnd_box_t box;
 
-		box.X1 = -PCB_MAX_COORD;
-		box.Y1 = -PCB_MAX_COORD;
-		box.X2 = PCB_MAX_COORD;
-		box.Y2 = PCB_MAX_COORD;
+		box.X1 = -RND_MAX_COORD;
+		box.Y1 = -RND_MAX_COORD;
+		box.X2 = RND_MAX_COORD;
+		box.Y2 = RND_MAX_COORD;
 
 		hl->tool_click = pcb_false;					/* inhibit timer action */
 		pcb_undo_save_serial();

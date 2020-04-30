@@ -386,7 +386,7 @@ void fp_dump()
 static int fp_read_lib_all_(const rnd_conflist_t *searchpath)
 {
 	rnd_conf_listitem_t *ci;
-	char *toppath, toppath_[PCB_PATH_MAX + 1];  /* String holding abs path to top level library dir */
+	char *toppath, toppath_[RND_PATH_MAX + 1];  /* String holding abs path to top level library dir */
 	int n_footprints = 0;  /* Running count of footprints found */
 	int res;
 

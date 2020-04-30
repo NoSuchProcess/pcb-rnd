@@ -36,8 +36,8 @@ static rnd_cardinal_t pcb_get_bbox_by_flag(rnd_rnd_box_t *dst, const pcb_data_t 
 	pcb_data_it_t it;
 	rnd_cardinal_t cnt = 0;
 
-	dst->X1 = dst->Y1 = PCB_MAX_COORD;
-	dst->X2 = dst->Y2 = -PCB_MAX_COORD;
+	dst->X1 = dst->Y1 = RND_MAX_COORD;
+	dst->X2 = dst->Y2 = -RND_MAX_COORD;
 
 	for(o = pcb_data_first(&it, (pcb_data_t *)data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 		if (!PCB_FLAG_TEST(flg, o))

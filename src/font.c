@@ -123,7 +123,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_poly_t *poly;
-	rnd_coord_t totalminy = PCB_MAX_COORD;
+	rnd_coord_t totalminy = RND_MAX_COORD;
 
 	/* calculate cell with and height (is at least PCB_DEFAULT_CELLSIZE)
 	   maximum cell width and height
@@ -137,7 +137,7 @@ void pcb_font_set_info(pcb_font_t *Ptr)
 		if (!symbol->Valid || !symbol->LineN)
 			continue;
 
-		minx = miny = PCB_MAX_COORD;
+		minx = miny = RND_MAX_COORD;
 		maxx = maxy = 0;
 		for (line = symbol->Line, j = symbol->LineN; j; j--, line++) {
 			minx = MIN(minx, line->Point1.X);

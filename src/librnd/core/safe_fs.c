@@ -276,7 +276,7 @@ int pcb_closedir(DIR *dir)
 
 static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *fn, const char *mode, char **full_path, int recursive)
 {
-	char tmp[PCB_PATH_MAX];
+	char tmp[RND_PATH_MAX];
 	DIR *d;
 	struct dirent *de;
 	FILE *res;

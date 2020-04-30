@@ -212,7 +212,7 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 {
 	pcb_line_t *from = NULL, *to, *last_to = NULL;
 	gdl_iterator_t it;
-	rnd_coord_t lastx = PCB_MAX_COORD, lasty = PCB_MAX_COORD;
+	rnd_coord_t lastx = RND_MAX_COORD, lasty = RND_MAX_COORD;
 	int start_depth, passes;
 
 	if (tctx->res_path->Line.lst.length == 0) {

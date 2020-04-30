@@ -187,8 +187,8 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 		}
 	}
 
-	b.X1 = b.Y1 = PCB_MAX_COORD;
-	b.X2 = b.Y2 = -PCB_MAX_COORD;
+	b.X1 = b.Y1 = RND_MAX_COORD;
+	b.X2 = b.Y2 = -RND_MAX_COORD;
 	for(g = 0; g < 2; g++) {
 		for(idp = pcb_idpath_list_first(&v->objs[g]); idp != NULL; idp = pcb_idpath_list_next(idp)) {
 			obj = pcb_idpath2obj_in(data, idp);

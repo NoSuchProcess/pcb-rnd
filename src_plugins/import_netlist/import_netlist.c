@@ -55,8 +55,8 @@ static pcb_plug_import_t import_netlist;
 static int ReadNetlist(const char *filename)
 {
 	char *command = NULL;
-	char inputline[PCB_MAX_NETLIST_LINE_LENGTH + 1];
-	char temp[PCB_MAX_NETLIST_LINE_LENGTH + 1];
+	char inputline[RND_MAX_NETLIST_LINE_LENGTH + 1];
+	char temp[RND_MAX_NETLIST_LINE_LENGTH + 1];
 	FILE *fp;
 	pcb_net_t *net = NULL;
 	int i, j, lines, kind;
@@ -100,13 +100,13 @@ static int ReadNetlist(const char *filename)
 	 * kind = 2  is connection
 	 */
 	kind = 0;
-	while (fgets(inputline, PCB_MAX_NETLIST_LINE_LENGTH, fp)) {
+	while (fgets(inputline, RND_MAX_NETLIST_LINE_LENGTH, fp)) {
 		size_t len = strlen(inputline);
 		/* check for maximum length line */
 		if (len) {
 			if (inputline[--len] != '\n')
 				rnd_message(RND_MSG_ERROR, "Line length (%i) exceeded in netlist file.\n"
-									"additional characters will be ignored.\n", PCB_MAX_NETLIST_LINE_LENGTH);
+									"additional characters will be ignored.\n", RND_MAX_NETLIST_LINE_LENGTH);
 			else
 				inputline[len] = '\0';
 		}

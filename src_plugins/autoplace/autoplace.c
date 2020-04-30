@@ -537,8 +537,8 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 	}
 	/* penalize total area used by this layout */
 	{
-		rnd_coord_t minX = PCB_MAX_COORD, minY = PCB_MAX_COORD;
-		rnd_coord_t maxX = -PCB_MAX_COORD, maxY = -PCB_MAX_COORD;
+		rnd_coord_t minX = RND_MAX_COORD, minY = RND_MAX_COORD;
+		rnd_coord_t maxX = -RND_MAX_COORD, maxY = -RND_MAX_COORD;
 		PCB_SUBC_LOOP(PCB->Data);
 		{
 			PCB_MAKE_MIN(minX, subc->BoundingBox.X1);

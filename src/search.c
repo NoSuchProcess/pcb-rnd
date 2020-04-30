@@ -434,7 +434,7 @@ static rnd_bool SearchLinePointByLocation(unsigned long objst, unsigned long req
 	info.Line = Line;
 	info.Point = Point;
 	*Point = NULL;
-	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
+	info.least = RND_MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.objst = objst;
 	info.req_flag = req_flag;
 
@@ -453,7 +453,7 @@ static rnd_bool SearchArcPointByLocation(unsigned long objst, unsigned long req_
 	info.Arc = Arc;
 	info.arc_pt = Point;
 	*Point = NULL;
-	info.least = PCB_MAX_LINE_POINT_DISTANCE + SearchRadius;
+	info.least = RND_MAX_LINE_POINT_DISTANCE + SearchRadius;
 	info.objst = objst;
 	info.req_flag = req_flag;
 
@@ -518,7 +518,7 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	ctx.Polygon = Polygon;
 	ctx.Point = Point;
 	ctx.found = pcb_false;;
-	ctx.least = SearchRadius + PCB_MAX_POLYGON_POINT_DISTANCE;
+	ctx.least = SearchRadius + RND_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
 	pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
 
@@ -573,7 +573,7 @@ SearchSubcByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **s
 	info.ptr1 = (void **) subc;
 	info.ptr2 = (void **) Dummy1;
 	info.ptr3 = (void **) Dummy2;
-	info.area = PCB_SQUARE(PCB_MAX_COORD);
+	info.area = PCB_SQUARE(RND_MAX_COORD);
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 	info.objst = objst;
 	info.req_flag = req_flag;

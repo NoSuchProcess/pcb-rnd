@@ -239,7 +239,7 @@ static FILE *pcb_check_and_open_file(const char *Filename)
 	FILE *fp = NULL;
 
 	if ((Filename != NULL) && (*Filename != '\0')) {
-		char message[PCB_PATH_MAX + 80];
+		char message[RND_PATH_MAX + 80];
 		int response;
 
 		if (rnd_file_readable(Filename)) {

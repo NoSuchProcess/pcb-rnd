@@ -1883,7 +1883,7 @@ static void draw_grid()
 
 	if (!pcbhl_conf.editor.draw_grid)
 		return;
-	if (Vz(ltf_hidlib->grid) < PCB_MIN_GRID_DISTANCE)
+	if (Vz(ltf_hidlib->grid) < RND_MIN_GRID_DISTANCE)
 		return;
 	if (!grid_gc) {
 		grid_gc = XCreateGC(display, window, 0, 0);

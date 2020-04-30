@@ -192,7 +192,7 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 {
 	int n, idx = -1, wid = attr - isch_ctx.dlg;
 	char *name;
-	static char cwd[PCB_PATH_MAX + 1];
+	static char cwd[RND_PATH_MAX + 1];
 
 	for(n = 0; n < MAX_ARGS; n++) {
 		if (isch_ctx.warg_button[n] == wid) {

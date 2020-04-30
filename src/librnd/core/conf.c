@@ -267,7 +267,7 @@ static int conf_merge_plug(lht_doc_t *d, rnd_conf_role_t role, const char *path)
 /* Load plugin config files */
 static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 {
-	char path[PCB_PATH_MAX], *fn;
+	char path[RND_PATH_MAX], *fn;
 	int dlen, cnt = 0;
 	htsi_entry_t *e;
 
@@ -457,7 +457,7 @@ const char *rnd_conf_get_user_conf_name()
 
 const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
 {
-	static char res[PCB_PATH_MAX+1];
+	static char res[RND_PATH_MAX+1];
 	static const char *project_name = "project.lht";
 	FILE *f;
 	char *efn;

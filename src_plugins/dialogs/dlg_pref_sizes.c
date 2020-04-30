@@ -106,13 +106,13 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 			PCB_DAD_LABEL(ctx->dlg, "Width=");
 			PCB_DAD_COORD(ctx->dlg, "");
 				ctx->sizes.wwidth = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD);
+				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
 				PCB_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_x);
 				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 			PCB_DAD_LABEL(ctx->dlg, "Height=");
 			PCB_DAD_COORD(ctx->dlg, "");
 				ctx->sizes.wheight = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), PCB_MAX_COORD);
+				PCB_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
 				PCB_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_y);
 				PCB_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 		PCB_DAD_END(ctx->dlg);
@@ -149,7 +149,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 			PCB_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
 			PCB_DAD_REAL(ctx->dlg, "");
 				ctx->sizes.wisle = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
+				PCB_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
 				ctx->dlg[ctx->sizes.wisle].val.dbl = (conf_core.design.poly_isle_area / 1000000.0);
 				PCB_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
 		PCB_DAD_END(ctx->dlg);

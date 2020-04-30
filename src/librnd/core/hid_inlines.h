@@ -36,7 +36,7 @@ RND_INLINE rnd_hid_gc_t pcb_hid_make_gc(void)
 	pcb_core_gc_t *hc;
 	res = pcb_render->make_gc(pcb_gui);
 	hc = (pcb_core_gc_t *)res; /* assumes first field is pcb_core_gc_t */
-	hc->width = PCB_MAX_COORD;
+	hc->width = RND_MAX_COORD;
 	hc->cap = pcb_cap_invalid;
 	hc->xor = 0;
 	hc->faded = 0;

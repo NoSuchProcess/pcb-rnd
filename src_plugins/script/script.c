@@ -273,7 +273,7 @@ TODO(": guess")
 	if (strcmp(lang, "c") != 0) {
 #ifdef RND_HAVE_SYS_FUNGW
 		const char *engname = lang;
-		char name[PCB_PATH_MAX];
+		char name[RND_PATH_MAX];
 		int st;
 
 		TODO("move this to fungw");

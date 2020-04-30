@@ -142,7 +142,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 		case RND_CFN_COORD:
 			PCB_DAD_COORD(ctx->dlg, "");
 				item->wid = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_MINMAX(ctx->dlg, 0, PCB_MAX_COORD);
+				PCB_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
 				PCB_DAD_DEFAULT_NUM(ctx->dlg, cn->val.coord[0]);
 				PCB_DAD_HELP(ctx->dlg, cn->description);
 				PCB_DAD_CHANGE_CB(ctx->dlg, change_cb);

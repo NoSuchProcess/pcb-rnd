@@ -874,10 +874,10 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 	pcb_subc_copy_meta(sc, src);
 
-	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
-	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
-	sc->bbox_naked.X1 = sc->bbox_naked.Y1 = PCB_MAX_COORD;
-	sc->bbox_naked.X2 = sc->bbox_naked.Y2 = -PCB_MAX_COORD;
+	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = RND_MAX_COORD;
+	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -RND_MAX_COORD;
+	sc->bbox_naked.X1 = sc->bbox_naked.Y1 = RND_MAX_COORD;
+	sc->bbox_naked.X2 = sc->bbox_naked.Y2 = -RND_MAX_COORD;
 
 	/* make a copy of layer data */
 	for(n = 0; n < src->data->LayerN; n++) {
@@ -1082,10 +1082,10 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	}
 
 	/* for calculating the new bounding box on the fly */
-	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = PCB_MAX_COORD;
-	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -PCB_MAX_COORD;
-	sc->bbox_naked.X1 = sc->bbox_naked.Y1 = PCB_MAX_COORD;
-	sc->bbox_naked.X2 = sc->bbox_naked.Y2 = -PCB_MAX_COORD;
+	sc->BoundingBox.X1 = sc->BoundingBox.Y1 = RND_MAX_COORD;
+	sc->BoundingBox.X2 = sc->BoundingBox.Y2 = -RND_MAX_COORD;
+	sc->bbox_naked.X1 = sc->bbox_naked.Y1 = RND_MAX_COORD;
+	sc->bbox_naked.X2 = sc->bbox_naked.Y2 = -RND_MAX_COORD;
 
 	/* execute on layer locals */
 	for(n = 0; n < sc->data->LayerN; n++) {

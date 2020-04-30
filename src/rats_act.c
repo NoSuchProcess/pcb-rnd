@@ -76,7 +76,7 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_Close:
-			small = PCB_SQUARE(PCB_MAX_COORD);
+			small = PCB_SQUARE(RND_MAX_COORD);
 			shorty = NULL;
 			PCB_RAT_LOOP(PCB->Data);
 			{

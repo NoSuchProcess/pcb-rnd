@@ -311,8 +311,8 @@ pcbname
 		: T_PCB '(' STRING ')'
 			{
 				yyPCB->hidlib.name = $3;
-				yyPCB->hidlib.size_x = PCB_MAX_COORD;
-				yyPCB->hidlib.size_y = PCB_MAX_COORD;
+				yyPCB->hidlib.size_x = RND_MAX_COORD;
+				yyPCB->hidlib.size_y = RND_MAX_COORD;
 				old_fmt = 1;
 			}
 		| T_PCB '(' STRING measure measure ')'

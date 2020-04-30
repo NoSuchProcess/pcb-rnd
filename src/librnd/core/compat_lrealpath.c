@@ -54,8 +54,8 @@ extern char *canonicalize_file_name(const char *);
 #if defined (PATH_MAX)
 #define REALPATH_LIMIT PATH_MAX
 #else
-#if defined (PCB_PATH_MAX)
-#define REALPATH_LIMIT PCB_PATH_MAX
+#if defined (RND_PATH_MAX)
+#define REALPATH_LIMIT RND_PATH_MAX
 #endif
 #endif
 #else

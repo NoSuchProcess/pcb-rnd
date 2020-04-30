@@ -357,10 +357,10 @@ static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 	rnd_rnd_box_t box;
 
 	/* unselect all */
-	box.X1 = -PCB_MAX_COORD;
-	box.Y1 = -PCB_MAX_COORD;
-	box.X2 = PCB_MAX_COORD;
-	box.Y2 = PCB_MAX_COORD;
+	box.X1 = -RND_MAX_COORD;
+	box.Y1 = -RND_MAX_COORD;
+	box.X2 = RND_MAX_COORD;
+	box.Y2 = RND_MAX_COORD;
 	if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
 			pcb_board_set_changed_flag(pcb_true);
 

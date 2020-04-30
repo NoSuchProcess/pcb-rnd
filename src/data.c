@@ -232,8 +232,8 @@ rnd_bool pcb_data_is_empty(pcb_data_t *Data)
 rnd_rnd_box_t *pcb_data_bbox(rnd_rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
 {
 	/* preset identifiers with highest and lowest possible values */
-	out->X1 = out->Y1 = PCB_MAX_COORD;
-	out->X2 = out->Y2 = -PCB_MAX_COORD;
+	out->X1 = out->Y1 = RND_MAX_COORD;
+	out->X2 = out->Y2 = -RND_MAX_COORD;
 
 	/* now scan for the lowest/highest X and Y coordinate */
 	PCB_PADSTACK_LOOP(Data);
@@ -284,8 +284,8 @@ rnd_rnd_box_t *pcb_data_bbox(rnd_rnd_box_t *out, pcb_data_t *Data, rnd_bool igno
 rnd_rnd_box_t *pcb_data_bbox_naked(rnd_rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
 {
 	/* preset identifiers with highest and lowest possible values */
-	out->X1 = out->Y1 = PCB_MAX_COORD;
-	out->X2 = out->Y2 = -PCB_MAX_COORD;
+	out->X1 = out->Y1 = RND_MAX_COORD;
+	out->X2 = out->Y2 = -RND_MAX_COORD;
 
 	/* now scan for the lowest/highest X and Y coordinate */
 	PCB_PADSTACK_LOOP(Data);

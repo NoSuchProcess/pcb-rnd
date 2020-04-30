@@ -209,8 +209,8 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 	res->alloced = alloced;
 	res->used = 0;
 	res->edge_tree = pcb_r_create_tree();
-	res->bbox.X1 = res->bbox.Y1 = PCB_MAX_COORD;
-	res->bbox.X2 = res->bbox.Y2 = -PCB_MAX_COORD;
+	res->bbox.X1 = res->bbox.Y1 = RND_MAX_COORD;
+	res->bbox.X2 = res->bbox.Y2 = -RND_MAX_COORD;
 
 	for(pa = pcb_poly_island_first(src, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		pcb_pline_t *pl, *track;
@@ -309,8 +309,8 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_
 		rnd_coord_t y;
 
 		for(y = etr->bbox.Y1; y <= etr->bbox.Y2; y += period) {
-			scan.X1 = -PCB_MAX_COORD;
-			scan.X2 = PCB_MAX_COORD;
+			scan.X1 = -RND_MAX_COORD;
+			scan.X2 = RND_MAX_COORD;
 			scan.Y1 = y;
 			scan.Y2 = y+1;
 
@@ -327,8 +327,8 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_
 		rnd_coord_t x;
 
 		for(x = etr->bbox.X1; x <= etr->bbox.X2; x += period) {
-			scan.Y1 = -PCB_MAX_COORD;
-			scan.Y2 = PCB_MAX_COORD;
+			scan.Y1 = -RND_MAX_COORD;
+			scan.Y2 = RND_MAX_COORD;
 			scan.X1 = x;
 			scan.X2 = x+1;
 

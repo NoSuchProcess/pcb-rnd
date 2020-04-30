@@ -71,7 +71,7 @@
 #define PCB_FOR_FP (st->pcb == NULL ? PCB : st->pcb)
 
 /* when a coord value is not specified in the file */
-#define UNSPECIFIED PCB_MAX_COORD
+#define UNSPECIFIED RND_MAX_COORD
 
 typedef enum {
 	DIM_PAGE,
