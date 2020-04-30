@@ -316,7 +316,7 @@ do { \
 			const char **__in__ = __n__->val.string; \
 			if (__in__ == NULL) \
 				continue; \
-			pcb_path_resolve(hidlib, *__in__, &__path__, 0, pcb_false); \
+			rnd_path_resolve(hidlib, *__in__, &__path__, 0, pcb_false); \
 			res = call; \
 			free(__path__); \
 			if (res == 0) \

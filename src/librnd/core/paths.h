@@ -33,25 +33,25 @@
    If extra_room is non-zero, allocate this many bytes extra for each slot;
    this leaves some room to append a file name. If quiet is non-zero, suppress
    error messages. */
-void pcb_path_resolve(rnd_hidlib_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet);
+void rnd_path_resolve(rnd_hidlib_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet);
 
 /* Same as resolve_path, but it returns the pointer to the new path and calls
    free() on in */
-char *pcb_path_resolve_inplace(rnd_hidlib_t *hidlib, char *in, unsigned int extra_room, int quiet);
+char *rnd_path_resolve_inplace(rnd_hidlib_t *hidlib, char *in, unsigned int extra_room, int quiet);
 
 
 /* Resolve all paths from a in[] into out[](should be large enough) */
-void pcb_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet);
+void rnd_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet);
 
 /* Resolve all paths from a char *in[] into a freshly allocated char **out */
-#define pcb_paths_resolve_all(hidlib, in, out, extra_room, quiet) \
+#define rnd_paths_resolve_all(hidlib, in, out, extra_room, quiet) \
 do { \
 	int __numpath__; \
 	for(__numpath__ = 0; in[__numpath__] != NULL; __numpath__++) ; \
 	__numpath__++; \
 	if (__numpath__ > 0) { \
 		out = malloc(sizeof(char *) * __numpath__); \
-		pcb_paths_resolve(hidlib, in, out, __numpath__, extra_room, quiet); \
+		rnd_paths_resolve(hidlib, in, out, __numpath__, extra_room, quiet); \
 	} \
 } while(0)
 
@@ -65,19 +65,19 @@ do { \
     %T    wall time (Epoch)
    ctx must be the current (rnd_hidlib_t *)
 */
-int pcb_build_fn_cb(void *ctx, gds_t *s, const char **input);
+int rnd_build_fn_cb(void *ctx, gds_t *s, const char **input);
 
-char *pcb_build_fn(rnd_hidlib_t *hidlib, const char *template);
+char *rnd_build_fn(rnd_hidlib_t *hidlib, const char *template);
 
 
 /* Same as above, but also replaces lower case formatting to the members of
-   the array if they are not NULL; use with pcb_build_argfn() */
+   the array if they are not NULL; use with rnd_build_argfn() */
 typedef struct {
 	const char *params['z' - 'a' + 1]; /* [0] for 'a' */
 	rnd_hidlib_t *hidlib; /* if NULL, some of the substitutions (e.g. %B, %D, %N) won't be performed */
-} pcb_build_argfn_t;
+} rnd_build_argfn_t;
 
-char *pcb_build_argfn(const char *template, pcb_build_argfn_t *arg);
+char *rnd_build_argfn(const char *template, rnd_build_argfn_t *arg);
 
-int pcb_build_argfn_cb(void *ctx, gds_t *s, const char **input);
+int rnd_build_argfn_cb(void *ctx, gds_t *s, const char **input);
 

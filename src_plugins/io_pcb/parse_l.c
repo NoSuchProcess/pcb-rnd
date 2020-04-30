@@ -2629,13 +2629,13 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 			free(tmps);
 		}
 		else {
-			pcb_build_argfn_t p;
+			rnd_build_argfn_t p;
 			used_popen = 1;
 			memset(&p, 0, sizeof(p));
 			p.params['p' - 'a'] = Path;
 			p.params['f' - 'a'] = Filename;
 			p.hidlib = &PCB->hidlib;
-			command = pcb_build_argfn(Executable, &p);
+			command = rnd_build_argfn(Executable, &p);
 			/* open pipe to stdout of command */
 			if (*command == '\0' || (yyin = pcb_popen(NULL, command, "r")) == NULL) {
 				rnd_popen_error_message(command);

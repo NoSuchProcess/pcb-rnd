@@ -1007,3 +1007,12 @@
 #define PCB_EMPTY RND_EMPTY
 #define PCB_EMPTY_STRING_P RND_EMPTY_STRING_P
 #define PCB_XOR RND_XOR
+#define pcb_path_resolve rnd_path_resolve
+#define pcb_path_resolve_inplace rnd_path_resolve_inplace
+#define pcb_paths_resolve rnd_paths_resolve
+#define pcb_paths_resolve_all rnd_paths_resolve_all
+#define pcb_build_fn_cb rnd_build_fn_cb
+#define pcb_build_fn rnd_build_fn
+#define pcb_build_argfn rnd_build_argfn
+#define pcb_build_argfn_cb rnd_build_argfn_cb
+#define pcb_build_argfn_t rnd_build_argfn_t

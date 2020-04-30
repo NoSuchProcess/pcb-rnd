@@ -114,7 +114,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	rnd_conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		char *tmp;
 		cell[0] = rnd_strdup(i->payload);
-		pcb_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, pcb_false);
+		rnd_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, pcb_false);
 		cell[1] = rnd_strdup(tmp == NULL ? "" : tmp);
 		cell[2] = rnd_strdup(pref_node_src(i->prop.src));
 		cell[3] = NULL;
@@ -262,7 +262,7 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, rnd_hid_attri
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 
-	pcb_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str, &tmp, 0, pcb_true);
+	rnd_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str, &tmp, 0, pcb_true);
 	if (tmp != NULL)
 		RND_DAD_SET_VALUE(hid_ctx, ctx->wexp, str, tmp);
 }

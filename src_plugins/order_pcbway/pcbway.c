@@ -101,7 +101,7 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 	hdr[2] = "Accept: application/xml";
 	hdr[3] = NULL;
 
-	cachedir = pcb_build_fn(hidlib, conf_order.plugins.order.cache);
+	cachedir = rnd_build_fn(hidlib, conf_order.plugins.order.cache);
 
 	pcb_mkdir(hidlib, cachedir, 0755);
 	wopts.post_file = "/dev/null";
@@ -292,7 +292,7 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 		return -1;
 	}
 
-	cachedir = pcb_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
+	cachedir = rnd_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
 	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, RND_DIR_SEPARATOR_C);
 	doc = pcbway_xml_load(path);
 	if (doc != NULL) {

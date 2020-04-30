@@ -107,7 +107,7 @@ rnd_bool extedit_fd_watch(rnd_hidval_t watch, int fd, unsigned int condition, rn
    refreshed, even if the process is blocking) */
 static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 {
-	pcb_build_argfn_t subs;
+	rnd_build_argfn_t subs;
 	char *cmd;
 	FILE *fc;
 
@@ -115,7 +115,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 	subs.params['f' - 'a'] = fn;
 	subs.params['c' - 'a'] = fn_cfg;
 	subs.hidlib = &PCB->hidlib;
-	cmd = pcb_build_argfn(mth->command, &subs);
+	cmd = rnd_build_argfn(mth->command, &subs);
 
 	/* Don't use pcb_system() because that blocks the current process and the
 	   GUI toolkit won't have a chance to handle expose events */

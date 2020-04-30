@@ -74,7 +74,7 @@ FILE *pcb_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, cha
 	if ((path == NULL) || (*path == '\0'))
 		return NULL;
 
-	path_exp = pcb_build_fn(hidlib, path);
+	path_exp = rnd_build_fn(hidlib, path);
 	if (path_exp == NULL)
 		return NULL;
 
@@ -160,7 +160,7 @@ void pcb_batched_ask_ovr_uninit(rnd_hidlib_t *hidlib, int *init_retval)
 
 char *pcb_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode)
 {
-	char *path_exp = pcb_build_fn(hidlib, path);
+	char *path_exp = rnd_build_fn(hidlib, path);
 
 	CHECK("fopen", "access", path_exp, mode, goto err);
 	CHECK("fopen", "fopen", path_exp, mode, goto err);
@@ -174,7 +174,7 @@ char *pcb_fopen_check(rnd_hidlib_t *hidlib, const char *path, const char *mode)
 FILE *pcb_popen(rnd_hidlib_t *hidlib, const char *cmd, const char *mode)
 {
 	FILE *f = NULL;
-	char *cmd_exp = pcb_build_fn(hidlib, cmd);
+	char *cmd_exp = rnd_build_fn(hidlib, cmd);
 
 	CHECK("popen", "access", cmd_exp, mode, goto err);
 	CHECK("popen", "exec", cmd_exp, NULL, goto err);
@@ -196,7 +196,7 @@ int pcb_pclose(FILE *f)
 int pcb_system(rnd_hidlib_t *hidlib, const char *cmd)
 {
 	int res = -1;
-	char *cmd_exp = pcb_build_fn(hidlib, cmd);
+	char *cmd_exp = rnd_build_fn(hidlib, cmd);
 
 	CHECK("access", "access", cmd_exp, "r", goto err);
 	CHECK("access", "exec", cmd_exp, NULL, goto err);
@@ -212,7 +212,7 @@ int pcb_system(rnd_hidlib_t *hidlib, const char *cmd)
 int pcb_remove(rnd_hidlib_t *hidlib, const char *path)
 {
 	int res = -1;
-	char *path_exp = pcb_build_fn(hidlib, path);
+	char *path_exp = rnd_build_fn(hidlib, path);
 
 	CHECK("remove", "access", path_exp, "w", goto err);
 	CHECK("remove", "remove", path_exp, NULL, goto err);
@@ -227,8 +227,8 @@ int pcb_remove(rnd_hidlib_t *hidlib, const char *path)
 int pcb_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path)
 {
 	int res = -1;
-	char *old_path_exp = pcb_build_fn(hidlib, old_path);
-	char *new_path_exp = pcb_build_fn(hidlib, new_path);
+	char *old_path_exp = rnd_build_fn(hidlib, old_path);
+	char *new_path_exp = rnd_build_fn(hidlib, new_path);
 
 	CHECK("rename", "access", old_path_exp, "w", goto err);
 	CHECK("rename", "access", new_path_exp, "w", goto err);
@@ -245,7 +245,7 @@ int pcb_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path)
 int pcb_unlink(rnd_hidlib_t *hidlib, const char *path)
 {
 	int res;
-	char *path_exp = pcb_build_fn(hidlib, path);
+	char *path_exp = rnd_build_fn(hidlib, path);
 	res = unlink(path_exp);
 	free(path_exp);
 	return res;
@@ -255,7 +255,7 @@ int pcb_unlink(rnd_hidlib_t *hidlib, const char *path)
 DIR *pcb_opendir(rnd_hidlib_t *hidlib, const char *name)
 {
 	DIR *d;
-	char *path_exp = pcb_build_fn(hidlib, name);
+	char *path_exp = rnd_build_fn(hidlib, name);
 	if (path_exp == NULL)
 		return NULL;
 	d = opendir(path_exp);
@@ -331,7 +331,7 @@ FILE *pcb_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const 
 FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	FILE *res;
-	char *real_fn = pcb_build_fn(hidlib, fn);
+	char *real_fn = rnd_build_fn(hidlib, fn);
 	rnd_conf_listitem_t *ci;
 
 	if (full_path != NULL)
@@ -362,7 +362,7 @@ FILE *pcb_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const c
 				p++;
 
 			/* resolve the path from the list, truncate trailing '/' */
-			real_p = pcb_build_fn(hidlib, p);
+			real_p = rnd_build_fn(hidlib, p);
 			pl = strlen(real_p);
 			if ((pl > 0) && (real_p[pl-1] == '/'))
 				real_p[pl-1] = '\0';

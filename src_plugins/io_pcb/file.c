@@ -1192,7 +1192,7 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
  * the program.*/
 void pcb_tmp_data_save(void)
 {
-	char *fn = pcb_build_fn(&PCB->hidlib, conf_core.rc.emergency_name);
+	char *fn = rnd_build_fn(&PCB->hidlib, conf_core.rc.emergency_name);
 	pcb_write_pcb_file(fn, pcb_true, NULL, pcb_true, pcb_false, -1, 0);
 	if (TMPFilename != NULL)
 		free(TMPFilename);

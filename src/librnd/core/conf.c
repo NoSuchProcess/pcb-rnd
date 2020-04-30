@@ -1916,7 +1916,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 			if (efn != NULL)
 				path = rnd_strdup(efn);
 			else
-				path = pcb_build_fn(hidlib, fn);
+				path = rnd_build_fn(hidlib, fn);
 
 			if (path == NULL) {
 				rnd_message(RND_MSG_ERROR, "Error: failed to calculate the project file name (board file name or allocation error)\n");

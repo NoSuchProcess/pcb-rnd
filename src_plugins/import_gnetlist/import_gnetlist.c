@@ -108,7 +108,7 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	cmd[6] = tmpfn;
 	cmd[7] = "--";
 	for(n = 0; n < numfns; n++)
-		cmd[n+8] = pcb_build_fn(&PCB->hidlib, fns[n]);
+		cmd[n+8] = rnd_build_fn(&PCB->hidlib, fns[n]);
 	cmd[numfns+8] = NULL;
 
 	if (verbose) {
