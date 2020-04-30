@@ -1,5 +1,5 @@
-#ifndef VTC0_H
-#define VTC0_H
+#ifndef RND_VTC0_H
+#define RND_VTC0_H
 
 #include <librnd/config.h>
 #include <stdlib.h>
