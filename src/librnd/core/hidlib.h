@@ -27,7 +27,7 @@
 #ifndef PCB_HIDLIB_H
 #define PCB_HIDLIB_H
 
-#include "global_typedefs.h"
+#include <librnd/core/global_typedefs.h>
 
 typedef struct pcb_mark_s {
 	rnd_bool status;
