@@ -56,7 +56,7 @@ static fgw_error_t pcb_act_MorphPolygon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	int op;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, MorphPolygon, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, MorphPolygon, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Object:
@@ -96,7 +96,7 @@ static fgw_error_t pcb_act_Polygon(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Polygon, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Polygon, op = fgw_keyword(&argv[1]));
 
 	if ((argc > 1) && ((rnd_conf.editor.mode == pcb_crosshair.tool_poly) || (rnd_conf.editor.mode == pcb_crosshair.tool_poly_hole))) {
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);

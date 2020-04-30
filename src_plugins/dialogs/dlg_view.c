@@ -738,7 +738,7 @@ const char pcb_acth_DrcDialog[] = "Execute drc checks and invoke a view list dia
 fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DrcDialog, dlg_type = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, DrcDialog, dlg_type = argv[1].val.str);
 
 	if (!drc_gui_ctx.active) {
 		drc_gui_ctx.pcb = PCB;
@@ -763,7 +763,7 @@ const char pcb_acth_IOIncompatListDialog[] = "Present the format incompatibiliti
 fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatListDialog, dlg_type = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatListDialog, dlg_type = argv[1].val.str);
 
 	if (!io_gui_ctx.active) {
 		io_gui_ctx.pcb = PCB;
@@ -787,9 +787,9 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	view_ctx_t *ctx;
 	void *lst = NULL;
 	const char *name = "view list", *winid = "viewlist";
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ViewList, name = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ViewList, winid = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_PTR, ViewList, lst = argv[3].val.ptr_void);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, ViewList, name = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, ViewList, winid = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_PTR, ViewList, lst = argv[3].val.ptr_void);
 
 	if ((lst != NULL) && (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], PCB_PTR_DOMAIN_VIEWLIST))) {
 		rnd_message(RND_MSG_ERROR, "invalid list pointer");

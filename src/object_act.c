@@ -72,8 +72,8 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *layername;
 	char *buf;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
 	RND_ACT_IRES(0);
 
 	if (!rnd_gui->edit_attributes) {
@@ -218,7 +218,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	rnd_coord_t minx = GAP, miny = GAP, maxy = GAP, dx, dy;
 	int all = 0, id;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, DisperseElements, id = fgw_keyword(&argv[1]));
 	RND_ACT_IRES(0);
 
 	switch(id) {
@@ -263,7 +263,7 @@ static fgw_error_t pcb_act_Flip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int id;
 	void *ptrtmp;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Flip, id = fgw_keyword(&argv[1]));
 	RND_ACT_IRES(0);
 
 	rnd_hid_get_coords("Click on Object or Flip Point", &x, &y, 0);
@@ -304,10 +304,10 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, MoveObject, units = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, MoveObject, units = argv[3].val.str);
 	fgw_str2coord_unit_set(saved, units);
-	RND_PCB_ACT_CONVARG(1, FGW_COORDS, MoveObject, nx = fgw_coords(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_COORDS, MoveObject, ny = fgw_coords(&argv[2]));
+	RND_ACT_CONVARG(1, FGW_COORDS, MoveObject, nx = fgw_coords(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_COORDS, MoveObject, ny = fgw_coords(&argv[2]));
 	fgw_str2coord_unit_restore(saved);
 
 
@@ -344,7 +344,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int id;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, MoveToCurrentLayer, id = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, MoveToCurrentLayer, id = fgw_keyword(&argv[1]));
 	RND_ACT_IRES(0);
 
 	switch(id) {
@@ -594,7 +594,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	int fx, fy, fs;
 	static placer_t plc;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ElementList, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ElementList, op = fgw_keyword(&argv[1]));
 
 #ifdef DEBUG
 	printf("Entered pcb_act_ElementList, executing function %s\n", function);
@@ -630,9 +630,9 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	if (op != F_Need)
 		RND_ACT_FAIL(ElementList);
 
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ElementList, refdes = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(3, FGW_STR, ElementList, footprint = argv[3].val.str);
-	RND_PCB_ACT_CONVARG(4, FGW_STR, ElementList, value = argv[4].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, ElementList, refdes = argv[2].val.str);
+	RND_ACT_CONVARG(3, FGW_STR, ElementList, footprint = argv[3].val.str);
+	RND_ACT_CONVARG(4, FGW_STR, ElementList, value = argv[4].val.str);
 
 	args[0].type = FGW_FUNC;
 	args[0].val.argv0.func = NULL;
@@ -770,9 +770,9 @@ static fgw_error_t pcb_act_ElementSetAttr(fgw_arg_t *res, int argc, fgw_arg_t *a
 	pcb_subc_t *sc;
 	const char *refdes, *name, *value;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ElementList, refdes = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ElementList, name = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ElementList, value = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ElementList, refdes = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, ElementList, name = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, ElementList, value = argv[3].val.str);
 
 	sc = pcb_subc_by_refdes(pcb->Data, refdes);
 	if (sc == NULL) {
@@ -799,7 +799,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op;
 	rnd_bool changed = rnd_false;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, RipUp, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, RipUp, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_All:
@@ -930,9 +930,9 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	rnd_coord_t value;
 	int flags;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, MinClearGap, function = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, MinClearGap, delta = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, MinClearGap, delta = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, MinClearGap, function = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, MinClearGap, delta = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, MinClearGap, delta = argv[3].val.str);
 
 	if (rnd_strcasecmp(function, "Selected") == 0)
 		flags = PCB_FLAG_SELECTED;
@@ -961,8 +961,8 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int old_index, new_index;
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, MoveLayer, a0 = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, MoveLayer, a1 = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, MoveLayer, a0 = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, MoveLayer, a1 = argv[2].val.str);
 
 	if (strcmp(a0, "c") == 0)
 		old_index = PCB_CURRLID(pcb);
@@ -984,7 +984,7 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (strcmp(a1, "group") == 0) {
 		long gid;
-		RND_PCB_ACT_CONVARG(3, FGW_LONG, MoveLayer, gid = argv[3].val.nat_long);
+		RND_ACT_CONVARG(3, FGW_LONG, MoveLayer, gid = argv[3].val.nat_long);
 		pcb_layer_move_to_group(pcb, old_index, gid);
 		RND_ACT_IRES(0);
 		return 0;
@@ -1050,13 +1050,13 @@ static fgw_error_t pcb_act_CreateText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int fid, dir, scale;
 	pcb_text_t *t;
 
-	RND_PCB_ACT_CONVARG(1, FGW_LAYER, CreateText, ly = fgw_layer(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_INT, CreateText, fid = argv[2].val.nat_int);
-	RND_PCB_ACT_CONVARG(3, FGW_COORD, CreateText, x = fgw_coord(&argv[3]));
-	RND_PCB_ACT_CONVARG(4, FGW_COORD, CreateText, y = fgw_coord(&argv[4]));
-	RND_PCB_ACT_CONVARG(5, FGW_INT, CreateText, dir = argv[5].val.nat_int);
-	RND_PCB_ACT_CONVARG(6, FGW_INT, CreateText, scale = argv[6].val.nat_int);
-	RND_PCB_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
+	RND_ACT_CONVARG(1, FGW_LAYER, CreateText, ly = fgw_layer(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_INT, CreateText, fid = argv[2].val.nat_int);
+	RND_ACT_CONVARG(3, FGW_COORD, CreateText, x = fgw_coord(&argv[3]));
+	RND_ACT_CONVARG(4, FGW_COORD, CreateText, y = fgw_coord(&argv[4]));
+	RND_ACT_CONVARG(5, FGW_INT, CreateText, dir = argv[5].val.nat_int);
+	RND_ACT_CONVARG(6, FGW_INT, CreateText, scale = argv[6].val.nat_int);
+	RND_ACT_CONVARG(7, FGW_STR, CreateText, txt = argv[7].val.str);
 
 	if (scale < 1) {
 		rnd_message(RND_MSG_ERROR, "Invalid scale (must be larger than zero)\n");
@@ -1084,8 +1084,8 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op1, op2 = -2;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, subc, op1 = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, subc, op2 = fgw_keyword(&argv[2]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, subc, op1 = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, subc, op2 = fgw_keyword(&argv[2]));
 	RND_ACT_IRES(0);
 
 	switch(op1) {
@@ -1183,7 +1183,7 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int steps;
 	rnd_coord_t x, y;
 
-	RND_PCB_ACT_CONVARG(1, FGW_INT, Rotate90, steps = argv[1].val.nat_int);
+	RND_ACT_CONVARG(1, FGW_INT, Rotate90, steps = argv[1].val.nat_int);
 	RND_ACT_IRES(0);
 
 	rnd_hid_get_coords("Select an Object", &x, &y, 0);

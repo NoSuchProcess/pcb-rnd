@@ -207,8 +207,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	dad_t *dad;
 	int rv = 0;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, dad, dlgname = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, dad, cmd = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, dad, dlgname = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, dad, cmd = argv[2].val.str);
 
 	if (rnd_strcasecmp(cmd, "new") == 0) {
 		RND_ACT_IRES(dad_new(RND_ACT_HIDLIB, dlgname));
@@ -230,13 +230,13 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (rnd_strcasecmp(cmd, "label") == 0) {
 		if (dad->running) goto cant_chg;
-		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		RND_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		RND_DAD_LABEL(dad->dlg, txt);
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "button") == 0) {
 		if (dad->running) goto cant_chg;
-		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		RND_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		RND_DAD_BUTTON(dad->dlg, tmp_str_dup(dad, txt));
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
@@ -250,8 +250,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_DAD_COMPFLAG(dad->dlg, RND_HATF_EXPFILL);
 		RND_DAD_END(dad->dlg);
 		for(n = 3; n < argc; n+=2) {
-			RND_PCB_ACT_CONVARG(n+0, FGW_STR, dad, txt = argv[n+0].val.str);
-			RND_PCB_ACT_CONVARG(n+1, FGW_INT, dad, ret = argv[n+1].val.nat_int);
+			RND_ACT_CONVARG(n+0, FGW_STR, dad, txt = argv[n+0].val.str);
+			RND_ACT_CONVARG(n+1, FGW_INT, dad, ret = argv[n+1].val.nat_int);
 			
 			RND_DAD_BUTTON_CLOSE(dad->dlg, tmp_str_dup(dad, txt), ret);
 				rv = RND_DAD_CURRENT(dad->dlg);
@@ -261,7 +261,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (rnd_strcasecmp(cmd, "bool") == 0) {
 		if (dad->running) goto cant_chg;
 		txt = "";
-		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		RND_ACT_MAY_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		RND_DAD_BOOL(dad->dlg, txt);
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
@@ -269,9 +269,9 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		long vmin, vmax;
 		if (dad->running) goto cant_chg;
 		txt = "";
-		RND_PCB_ACT_CONVARG(3, FGW_LONG, dad, vmin = argv[3].val.nat_long);
-		RND_PCB_ACT_CONVARG(4, FGW_LONG, dad, vmax = argv[4].val.nat_long);
-		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+		RND_ACT_CONVARG(3, FGW_LONG, dad, vmin = argv[3].val.nat_long);
+		RND_ACT_CONVARG(4, FGW_LONG, dad, vmax = argv[4].val.nat_long);
+		RND_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
 		RND_DAD_INTEGER(dad->dlg, txt);
 		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = RND_DAD_CURRENT(dad->dlg);
@@ -280,9 +280,9 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		double vmin, vmax;
 		if (dad->running) goto cant_chg;
 		txt = "";
-		RND_PCB_ACT_CONVARG(3, FGW_DOUBLE, dad, vmin = argv[3].val.nat_double);
-		RND_PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, vmax = argv[4].val.nat_double);
-		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+		RND_ACT_CONVARG(3, FGW_DOUBLE, dad, vmin = argv[3].val.nat_double);
+		RND_ACT_CONVARG(4, FGW_DOUBLE, dad, vmax = argv[4].val.nat_double);
+		RND_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
 		RND_DAD_REAL(dad->dlg, txt);
 		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = RND_DAD_CURRENT(dad->dlg);
@@ -291,9 +291,9 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_coord_t vmin, vmax;
 		if (dad->running) goto cant_chg;
 		txt = "";
-		RND_PCB_ACT_CONVARG(3, FGW_COORD_, dad, vmin = fgw_coord(&argv[3]));
-		RND_PCB_ACT_CONVARG(4, FGW_COORD_, dad, vmax = fgw_coord(&argv[4]));
-		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+		RND_ACT_CONVARG(3, FGW_COORD_, dad, vmin = fgw_coord(&argv[3]));
+		RND_ACT_CONVARG(4, FGW_COORD_, dad, vmax = fgw_coord(&argv[4]));
+		RND_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
 		RND_DAD_COORD(dad->dlg, txt);
 		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = RND_DAD_CURRENT(dad->dlg);
@@ -313,7 +313,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (dad->running) goto cant_chg;
 
-		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		RND_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 
 		if (split_tablist(dad, values, txt, cmd) == 0) {
 			if (*cmd == 'b') {
@@ -334,9 +334,9 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 
 		txt = NULL;
-		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
-		RND_PCB_ACT_CONVARG(4, FGW_INT, dad, istree = argv[4].val.nat_int);
-		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
+		RND_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
+		RND_ACT_CONVARG(4, FGW_INT, dad, istree = argv[4].val.nat_int);
+		RND_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
 
 		if ((txt == NULL) || (split_tablist(dad, values, txt, cmd) == 0)) {
 			RND_DAD_TREE(dad->dlg, cols, istree, (const char **)values);
@@ -353,8 +353,8 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (dad->running) goto cant_chg;
 
-		RND_PCB_ACT_CONVARG(3, FGW_PTR, dad, row = argv[3].val.ptr_void);
-		RND_PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
+		RND_ACT_CONVARG(3, FGW_PTR, dad, row = argv[3].val.ptr_void);
+		RND_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 
 		if (row != NULL) {
 			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], dad->row_domain)) {
@@ -406,7 +406,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (dad->running) goto cant_chg;
 
-		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
+		RND_ACT_CONVARG(3, FGW_INT, dad, cols = argv[3].val.nat_int);
 		RND_DAD_BEGIN_TABLE(dad->dlg, cols);
 		dad->level++;
 		rv = RND_DAD_CURRENT(dad->dlg);
@@ -425,7 +425,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 
 		for(n = 3; n < argc; n++) {
-			RND_PCB_ACT_CONVARG(n, FGW_STR, dad, txt = argv[n].val.str);
+			RND_ACT_CONVARG(n, FGW_STR, dad, txt = argv[n].val.str);
 			if ((*txt == '\0') || (*txt == '0'))
 				continue;
 			tmp = rnd_hid_compflag_name2bit(txt);
@@ -437,7 +437,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "onchange") == 0) {
-		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		RND_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 		RND_DAD_CHANGE_CB(dad->dlg, dad_change_cb);
 		vts0_set(&dad->change_cb, RND_DAD_CURRENT(dad->dlg), tmp_str_dup(dad, txt));
 		rv = 0;
@@ -448,7 +448,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_coord_t c;
 		rnd_hid_attr_type_t wtype;
 
-		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
+		RND_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
 		if ((wid < 0) || (wid >= dad->dlg_len)) {
 			rnd_message(RND_MSG_ERROR, "Invalid widget ID %d (set ignored)\n", wid);
 			RND_ACT_IRES(-1);
@@ -461,23 +461,23 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		switch(wtype) {
 			case RND_HATT_COORD:
-				RND_PCB_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
+				RND_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
 				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, crd, c);
 				break;
 			case RND_HATT_REAL:
 			case RND_HATT_PROGRESS:
-				RND_PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, d = argv[4].val.nat_double);
+				RND_ACT_CONVARG(4, FGW_DOUBLE, dad, d = argv[4].val.nat_double);
 				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, dbl, d);
 				break;
 			case RND_HATT_INTEGER:
 			case RND_HATT_BOOL:
-				RND_PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
+				RND_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
 				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, lng, i);
 				break;
 			case RND_HATT_STRING:
 			case RND_HATT_LABEL:
 			case RND_HATT_BUTTON:
-				RND_PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
+				RND_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str, txt);
 				break;
 			default:
@@ -491,7 +491,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int wid;
 		rnd_hid_attr_type_t wtype;
 
-		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
+		RND_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
 		if ((wid < 0) || (wid >= dad->dlg_len)) {
 			rnd_message(RND_MSG_ERROR, "Invalid widget ID %d (get ignored)\n", wid);
 			return FGW_ERR_NOT_FOUND;
@@ -504,7 +504,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(wtype) {
 			case RND_HATT_COORD:
 				txt = NULL;
-				rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
+				RND_ACT_MAY_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 				if (txt != NULL) {
 					const rnd_unit_t *u = rnd_get_unit_struct(txt);
 					if (u == NULL) {
@@ -539,7 +539,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}	else if ((rnd_strcasecmp(cmd, "run") == 0) || (rnd_strcasecmp(cmd, "run_modal") == 0)) {
 		if (dad->running) goto cant_chg;
 
-		RND_PCB_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
+		RND_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
 
 		if (dad->level != 0) {
 			rnd_message(RND_MSG_ERROR, "Invalid DAD dialog structure: %d levels not closed (missing 'end' calls)\n", dad->level);

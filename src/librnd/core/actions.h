@@ -172,7 +172,7 @@ RND_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
 	rnd_act_result(res, func(res, argc, argv))
 
 /* Require argument idx to exist and convert it to type; on success, also execute stmt */
-#define RND_PCB_ACT_CONVARG(idx, type, aname, stmt) \
+#define RND_ACT_CONVARG(idx, type, aname, stmt) \
 do { \
 	if (argc <= idx) { \
 		RND_ACT_FAIL(aname); \
@@ -186,7 +186,7 @@ do { \
 } while(0)
 
 /* If argument idx exists, convert it to type; on success, also execute stmt */
-#define rnd_PCB_ACT_MAY_CONVARG(idx, type, aname, stmt) \
+#define RND_ACT_MAY_CONVARG(idx, type, aname, stmt) \
 do { \
 	if (argc > idx) { \
 		if (fgw_arg_conv(&rnd_fgw, &argv[idx], type) != 0) { \

@@ -59,11 +59,11 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op;
 	const char *a1, *a2, *a3, *a4;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Conf, a1 = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, Conf, a2 = argv[3].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, Conf, a3 = argv[4].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, Conf, a4 = argv[5].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, Conf, a1 = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, Conf, a2 = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, Conf, a3 = argv[4].val.str);
+	RND_ACT_MAY_CONVARG(5, FGW_STR, Conf, a4 = argv[5].val.str);
 
 	if ((op == F_Set) || (op == F_Delta)) {
 		const char *path, *val;
@@ -238,7 +238,7 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *dst;
 	rnd_toolid_t id;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
 
 	id = rnd_tool_lookup(dst);
 	if (id >= 0) {
@@ -259,7 +259,7 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 {
 	const char *dst;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
 
 	if (strcmp(dst, "none") == 0) {
 		RND_ACT_IRES(RND_ACT_HIDLIB->grid <= 300);
@@ -276,7 +276,7 @@ static const char pcb_acth_ChkGridUnits[] = "Return 1 if currently selected grid
 static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *expected;
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
 	RND_ACT_IRES(strcmp(rnd_conf.editor.grid_unit->suffix, expected) == 0);
 	return 0;
 }
@@ -290,8 +290,8 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_bool absolute;
 	double value;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, SetGrid, val = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, SetGrid, units = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, SetGrid, val = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, SetGrid, units = argv[2].val.str);
 
 	RND_ACT_IRES(0);
 
@@ -339,7 +339,7 @@ static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const rnd_unit_t *new_unit;
 	const char *name;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
 	RND_ACT_IRES(0);
 
 	new_unit = rnd_get_unit_struct(name);

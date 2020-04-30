@@ -114,10 +114,10 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *arg = NULL;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, stroke,  cmd = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, stroke,  cmd = argv[1].val.str);
 
 	if (strcmp(cmd, "gesture") == 0) {
-		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
+		RND_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
 		if (arg == NULL)
 			RND_ACT_FAIL(stroke);
 		pcb_stroke_exec(RND_ACT_HIDLIB, arg);

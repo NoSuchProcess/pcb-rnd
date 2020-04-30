@@ -265,8 +265,8 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptrtmp;
 	rnd_coord_t x, y;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ExportOldConn, op = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ExportOldConn, name = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ExportOldConn, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, ExportOldConn, name = argv[2].val.str);
 	RND_ACT_IRES(0);
 
 	switch(op) {

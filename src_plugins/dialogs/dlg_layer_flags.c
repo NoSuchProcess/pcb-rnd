@@ -43,7 +43,7 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_layer_id_t lid;
 
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, LayerPropGui, lid = argv[1].val.nat_long);
+	RND_ACT_MAY_CONVARG(1, FGW_LONG, LayerPropGui, lid = argv[1].val.nat_long);
 	ly = pcb_get_layer(PCB->Data, lid);
 
 	RND_DAD_BEGIN_VBOX(dlg);
@@ -106,7 +106,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layer_type_t ltype_bits[] = { PCB_LYT_TOP, PCB_LYT_BOTTOM, PCB_LYT_INTERN, 0 };
 #define LOC_TYPES (PCB_LYT_DOC)
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, GroupPropGui, gid = argv[1].val.nat_long);
+	RND_ACT_MAY_CONVARG(1, FGW_LONG, GroupPropGui, gid = argv[1].val.nat_long);
 	g = pcb_get_layergrp(PCB, gid);
 
 	if (g->ltype & LOC_TYPES) {

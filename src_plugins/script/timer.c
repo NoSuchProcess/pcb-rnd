@@ -126,10 +126,10 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char fn[RND_ACTION_NAME_MAX];
 	script_timer_t *t;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, AddTimer, act = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_DOUBLE, AddTimer, period = argv[2].val.nat_double);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_INT, AddTimer, count = argv[3].val.nat_int);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, AddTimer, user_data = argv[4].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, AddTimer, act = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_DOUBLE, AddTimer, period = argv[2].val.nat_double);
+	RND_ACT_MAY_CONVARG(3, FGW_INT, AddTimer, count = argv[3].val.nat_int);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, AddTimer, user_data = argv[4].val.str);
 
 	rnd_aname(fn, act);
 	len = strlen(fn);

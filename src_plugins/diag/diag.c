@@ -63,15 +63,15 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, DumpConf, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, DumpConf, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Native:
 		{
 			int verbose = 0;
 			const char *prefix = "";
-			rnd_PCB_ACT_MAY_CONVARG(2, FGW_INT, DumpConf, verbose = argv[2].val.nat_int);
-			rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
+			RND_ACT_MAY_CONVARG(2, FGW_INT, DumpConf, verbose = argv[2].val.nat_int);
+			RND_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
 			conf_dump(stdout, prefix, verbose, NULL);
 		}
 		break;
@@ -79,8 +79,8 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		{
 		rnd_conf_role_t role;
 		const char *srole, *prefix = "";
-		RND_PCB_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
-		rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, DumpConf, srole = argv[2].val.str);
+		RND_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
 		role = rnd_conf_role_parse(srole);
 		if (role == RND_CFR_invalid) {
 			rnd_message(RND_MSG_ERROR, "Invalid role: '%s'\n", argv[1]);
@@ -119,7 +119,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_conf_native_t *nat;
 	int role;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, EvalConf, path = argv[1].val.str);
 
 	nat = rnd_conf_get_field(path);
 	if (nat == NULL) {
@@ -169,7 +169,7 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 	rnd_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, DumpLayers, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, DumpLayers, op = fgw_keyword(&argv[1]));
 
 	if (op == F_All) {
 		printf("Per group:\n");
@@ -380,7 +380,7 @@ static fgw_error_t pcb_act_dumpflags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *default_fmt = "%m (%M %N) for %t:\n  %H\n";
 	const char *fmt = default_fmt;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, dumpflags, fmt = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, dumpflags, fmt = argv[1].val.str);
 
 	for(n = 0; n < pcb_object_flagbits_len; n++) {
 		char *tmp;
@@ -495,10 +495,10 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	pcb_fp_fopen_ctx_t fctx;
 	int n, want_bbox = 0, want_origin = 0;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, DumpLibFootprint, fpn = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, DumpLibFootprint, fpn = argv[1].val.str);
 
 	for(n = 2; n < argc; n++) {
-		RND_PCB_ACT_CONVARG(n, FGW_STR, DumpLibFootprint, opt = argv[n].val.str);
+		RND_ACT_CONVARG(n, FGW_STR, DumpLibFootprint, opt = argv[n].val.str);
 		if (strcmp(opt, "bbox") == 0) want_bbox = 1;
 		else if (strcmp(opt, "origin") == 0) want_origin = 1;
 		else RND_ACT_FAIL(DumpLibFootprint);
@@ -555,7 +555,7 @@ static fgw_error_t pcb_act_forcecolor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	void *ptr1, *ptr2, *ptr3;
 	const char *new_color;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, forcecolor, new_color = argv[1].val.str);
 
 	rnd_hid_get_coords("Click on object to change", &x, &y, 0);
 

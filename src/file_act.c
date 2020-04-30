@@ -65,9 +65,9 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name, *format = NULL;
 	int op;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, LoadFrom, op = fgw_keyword(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_STR, LoadFrom, name = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadFrom, format = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, LoadFrom, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_STR, LoadFrom, name = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, LoadFrom, format = argv[3].val.str);
 
 	switch(op) {
 		case F_ElementToBuffer:
@@ -134,7 +134,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *argument_name = NULL;
 	char *name = NULL;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
 	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
@@ -191,7 +191,7 @@ static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *target = "board";
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, normalize, target = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, normalize, target = argv[1].val.str);
 	
 	if (strcmp(target, "board") == 0)
 		RND_ACT_IRES(pcb_board_normalize(PCB));
@@ -240,9 +240,9 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name = NULL;
 	const char *fmt = NULL;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, SaveTo, op = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, SaveTo, name = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveTo, fmt = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, SaveTo, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, SaveTo, name = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, SaveTo, fmt = argv[3].val.str);
 	RND_ACT_IRES(0);
 
 	if ((op != F_Layout) && (name == NULL))
@@ -356,10 +356,10 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *method, *source, *fn = NULL, *fmt = NULL;
 	pcb_data_t *src;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, SaveLib, method = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, SaveLib, source = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SaveLib, fn = argv[3].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, SaveLib, fmt = argv[4].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, SaveLib, method = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SaveLib, source = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, SaveLib, fn = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, SaveLib, fmt = argv[4].val.str);
 
 	if (rnd_strcasecmp(source, "board") == 0) src = PCB->Data;
 	else if (rnd_strcasecmp(source, "buffer") == 0) src = PCB_PASTEBUFFER->Data;
@@ -468,7 +468,7 @@ static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *force = NULL;
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Quit, force = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Quit, force = argv[1].val.str);
 
 	if ((force != NULL) && (rnd_strcasecmp(force, "force") == 0))
 		exit(0);
@@ -499,7 +499,7 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	args[0] = NULL;
 	for(n = 1; n < argc; n++)
-		RND_PCB_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
+		RND_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
 
 	rnd_exporter = rnd_hid_find_exporter(args[0]);
 	if (rnd_exporter == NULL) {

@@ -199,7 +199,7 @@ fgw_error_t pcb_act_LoadCalayFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static char *default_file = NULL;
 	
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadCalayFrom, fname_net = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadCalayFrom, fname_net = argv[1].val.str);
 
 	if (!fname_net || !*fname_net) {
 		fname_net = rnd_gui->fileselect(rnd_gui,

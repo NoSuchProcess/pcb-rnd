@@ -294,7 +294,7 @@ fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static char *default_file = NULL;
 	int rs;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadLtspiceFrom, fname = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadLtspiceFrom, fname = argv[1].val.str);
 
 	if (!fname || !*fname) {
 		fname = rnd_gui->fileselect(rnd_gui, "Load ltspice net+asc file pair...",

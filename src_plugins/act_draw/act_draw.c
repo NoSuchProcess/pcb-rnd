@@ -77,15 +77,15 @@ static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	DRAWOPTARG;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, LineNew, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, LineNew, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_COORD, LineNew, x1 = fgw_coord(&argv[3+ao]));
-	RND_PCB_ACT_CONVARG(4+ao, FGW_COORD, LineNew, y1 = fgw_coord(&argv[4+ao]));
-	RND_PCB_ACT_CONVARG(5+ao, FGW_COORD, LineNew, x2 = fgw_coord(&argv[5+ao]));
-	RND_PCB_ACT_CONVARG(6+ao, FGW_COORD, LineNew, y2 = fgw_coord(&argv[6+ao]));
-	RND_PCB_ACT_CONVARG(7+ao, FGW_COORD, LineNew, th = fgw_coord(&argv[7+ao]));
-	RND_PCB_ACT_CONVARG(8+ao, FGW_COORD, LineNew, cl = fgw_coord(&argv[8+ao]));
-	RND_PCB_ACT_CONVARG(9+ao, FGW_STR, LineNew, sflg = argv[9+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, LineNew, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, LineNew, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_COORD, LineNew, x1 = fgw_coord(&argv[3+ao]));
+	RND_ACT_CONVARG(4+ao, FGW_COORD, LineNew, y1 = fgw_coord(&argv[4+ao]));
+	RND_ACT_CONVARG(5+ao, FGW_COORD, LineNew, x2 = fgw_coord(&argv[5+ao]));
+	RND_ACT_CONVARG(6+ao, FGW_COORD, LineNew, y2 = fgw_coord(&argv[6+ao]));
+	RND_ACT_CONVARG(7+ao, FGW_COORD, LineNew, th = fgw_coord(&argv[7+ao]));
+	RND_ACT_CONVARG(8+ao, FGW_COORD, LineNew, cl = fgw_coord(&argv[8+ao]));
+	RND_ACT_CONVARG(9+ao, FGW_STR, LineNew, sflg = argv[9+ao].val.str);
 
 	if ((data != PCB->Data) || (layer == NULL))
 		return 0;
@@ -115,17 +115,17 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	DRAWOPTARG;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, ArcNew, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, ArcNew, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_COORD, ArcNew, cx = fgw_coord(&argv[3+ao]));
-	RND_PCB_ACT_CONVARG(4+ao, FGW_COORD, ArcNew, cy = fgw_coord(&argv[4+ao]));
-	RND_PCB_ACT_CONVARG(5+ao, FGW_COORD, ArcNew, wr = fgw_coord(&argv[5+ao]));
-	RND_PCB_ACT_CONVARG(6+ao, FGW_COORD, ArcNew, hr = fgw_coord(&argv[6+ao]));
-	RND_PCB_ACT_CONVARG(7+ao, FGW_DOUBLE, ArcNew, sa = argv[7+ao].val.nat_double);
-	RND_PCB_ACT_CONVARG(8+ao, FGW_DOUBLE, ArcNew, da = argv[8+ao].val.nat_double);
-	RND_PCB_ACT_CONVARG(9+ao, FGW_COORD, ArcNew, th = fgw_coord(&argv[9+ao]));
-	RND_PCB_ACT_CONVARG(10+ao, FGW_COORD, ArcNew, cl = fgw_coord(&argv[10+ao]));
-	RND_PCB_ACT_CONVARG(11+ao, FGW_STR, ArcNew, sflg = argv[11+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, ArcNew, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, ArcNew, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_COORD, ArcNew, cx = fgw_coord(&argv[3+ao]));
+	RND_ACT_CONVARG(4+ao, FGW_COORD, ArcNew, cy = fgw_coord(&argv[4+ao]));
+	RND_ACT_CONVARG(5+ao, FGW_COORD, ArcNew, wr = fgw_coord(&argv[5+ao]));
+	RND_ACT_CONVARG(6+ao, FGW_COORD, ArcNew, hr = fgw_coord(&argv[6+ao]));
+	RND_ACT_CONVARG(7+ao, FGW_DOUBLE, ArcNew, sa = argv[7+ao].val.nat_double);
+	RND_ACT_CONVARG(8+ao, FGW_DOUBLE, ArcNew, da = argv[8+ao].val.nat_double);
+	RND_ACT_CONVARG(9+ao, FGW_COORD, ArcNew, th = fgw_coord(&argv[9+ao]));
+	RND_ACT_CONVARG(10+ao, FGW_COORD, ArcNew, cl = fgw_coord(&argv[10+ao]));
+	RND_ACT_CONVARG(11+ao, FGW_STR, ArcNew, sflg = argv[11+ao].val.str);
 
 	if ((data != PCB->Data) || (layer == NULL))
 		return 0;
@@ -157,16 +157,16 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	DRAWOPTARG;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, TextNew, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, TextNew, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_INT, TextNew, fontid = argv[3+ao].val.nat_int);
-	RND_PCB_ACT_CONVARG(4+ao, FGW_COORD, TextNew, x = fgw_coord(&argv[4+ao]));
-	RND_PCB_ACT_CONVARG(5+ao, FGW_COORD, TextNew, y = fgw_coord(&argv[5+ao]));
-	RND_PCB_ACT_CONVARG(6+ao, FGW_DOUBLE, TextNew, rot = argv[6+ao].val.nat_double);
-	RND_PCB_ACT_CONVARG(7+ao, FGW_INT, TextNew, scale = argv[7+ao].val.nat_int);
-	RND_PCB_ACT_CONVARG(8+ao, FGW_COORD, TextNew, th = fgw_coord(&argv[8+ao]));
-	RND_PCB_ACT_CONVARG(9+ao, FGW_STR, TextNew, str = argv[9+ao].val.str);
-	RND_PCB_ACT_CONVARG(10+ao, FGW_STR, TextNew, sflg = argv[10+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, TextNew, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, TextNew, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_INT, TextNew, fontid = argv[3+ao].val.nat_int);
+	RND_ACT_CONVARG(4+ao, FGW_COORD, TextNew, x = fgw_coord(&argv[4+ao]));
+	RND_ACT_CONVARG(5+ao, FGW_COORD, TextNew, y = fgw_coord(&argv[5+ao]));
+	RND_ACT_CONVARG(6+ao, FGW_DOUBLE, TextNew, rot = argv[6+ao].val.nat_double);
+	RND_ACT_CONVARG(7+ao, FGW_INT, TextNew, scale = argv[7+ao].val.nat_int);
+	RND_ACT_CONVARG(8+ao, FGW_COORD, TextNew, th = fgw_coord(&argv[8+ao]));
+	RND_ACT_CONVARG(9+ao, FGW_STR, TextNew, str = argv[9+ao].val.str);
+	RND_ACT_CONVARG(10+ao, FGW_STR, TextNew, sflg = argv[10+ao].val.str);
 
 	if ((data != PCB->Data) || (layer == NULL))
 		return 0;
@@ -200,12 +200,12 @@ static fgw_error_t pcb_act_PstkNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	DRAWOPTARG;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, PstkNew, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LONG, PstkNew, proto = argv[2+ao].val.nat_int);
-	RND_PCB_ACT_CONVARG(3+ao, FGW_COORD, PstkNew, x = fgw_coord(&argv[3+ao]));
-	RND_PCB_ACT_CONVARG(4+ao, FGW_COORD, PstkNew, y = fgw_coord(&argv[4+ao]));
-	RND_PCB_ACT_CONVARG(5+ao, FGW_COORD, PstkNew, cl = fgw_coord(&argv[5+ao]));
-	RND_PCB_ACT_CONVARG(6+ao, FGW_STR, PstkNew, sflg = argv[6+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, PstkNew, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LONG, PstkNew, proto = argv[2+ao].val.nat_int);
+	RND_ACT_CONVARG(3+ao, FGW_COORD, PstkNew, x = fgw_coord(&argv[3+ao]));
+	RND_ACT_CONVARG(4+ao, FGW_COORD, PstkNew, y = fgw_coord(&argv[4+ao]));
+	RND_ACT_CONVARG(5+ao, FGW_COORD, PstkNew, cl = fgw_coord(&argv[5+ao]));
+	RND_ACT_CONVARG(6+ao, FGW_STR, PstkNew, sflg = argv[6+ao].val.str);
 
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
 	pstk = pcb_pstk_new(data, -1, proto, x, y, cl, flags);
@@ -231,14 +231,14 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 	DRAWOPTARG;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromRectangle, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromRectangle, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_COORD, PolyNewFromRectangle, x1 = fgw_coord(&argv[3+ao]));
-	RND_PCB_ACT_CONVARG(4+ao, FGW_COORD, PolyNewFromRectangle, y1 = fgw_coord(&argv[4+ao]));
-	RND_PCB_ACT_CONVARG(5+ao, FGW_COORD, PolyNewFromRectangle, x2 = fgw_coord(&argv[5+ao]));
-	RND_PCB_ACT_CONVARG(6+ao, FGW_COORD, PolyNewFromRectangle, y2 = fgw_coord(&argv[6+ao]));
-	RND_PCB_ACT_CONVARG(7+ao, FGW_COORD, PolyNewFromRectangle, cl = fgw_coord(&argv[7+ao]));
-	RND_PCB_ACT_CONVARG(8+ao, FGW_STR, PolyNewFromRectangle, sflg = argv[8+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromRectangle, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromRectangle, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_COORD, PolyNewFromRectangle, x1 = fgw_coord(&argv[3+ao]));
+	RND_ACT_CONVARG(4+ao, FGW_COORD, PolyNewFromRectangle, y1 = fgw_coord(&argv[4+ao]));
+	RND_ACT_CONVARG(5+ao, FGW_COORD, PolyNewFromRectangle, x2 = fgw_coord(&argv[5+ao]));
+	RND_ACT_CONVARG(6+ao, FGW_COORD, PolyNewFromRectangle, y2 = fgw_coord(&argv[6+ao]));
+	RND_ACT_CONVARG(7+ao, FGW_COORD, PolyNewFromRectangle, cl = fgw_coord(&argv[7+ao]));
+	RND_ACT_CONVARG(8+ao, FGW_STR, PolyNewFromRectangle, sflg = argv[8+ao].val.str);
 
 	if (data != PCB->Data)
 		return 0;
@@ -302,11 +302,11 @@ static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t
 	DRAWOPTARG;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_STR, PolyNewFromPoints, ptlist = argv[3+ao].val.str);
-	RND_PCB_ACT_CONVARG(4+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[4+ao]));
-	RND_PCB_ACT_CONVARG(5+ao, FGW_STR, PolyNewFromPoints, sflg = argv[5+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_STR, PolyNewFromPoints, ptlist = argv[3+ao].val.str);
+	RND_ACT_CONVARG(4+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[4+ao]));
+	RND_ACT_CONVARG(5+ao, FGW_STR, PolyNewFromPoints, sflg = argv[5+ao].val.str);
 
 	if (data != PCB->Data)
 		return 0;
@@ -340,10 +340,10 @@ static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	(void)noundo;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[3+ao]));
-	RND_PCB_ACT_CONVARG(4+ao, FGW_STR, PolyNewFromPoints, sflg = argv[4+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[3+ao]));
+	RND_ACT_CONVARG(4+ao, FGW_STR, PolyNewFromPoints, sflg = argv[4+ao].val.str);
 
 	if (data != PCB->Data)
 		return 0;
@@ -365,8 +365,8 @@ static fgw_error_t pcb_act_PolyNewPoints(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	DRAWOPTARG;
 	(void)noundo;
 
-	RND_PCB_ACT_CONVARG(1+ao, FGW_PTR, PolyNewPoints, poly = argv[1+ao].val.ptr_void);
-	RND_PCB_ACT_CONVARG(2+ao, FGW_STR, PolyNewPoints, ptlist = argv[2+ao].val.str);
+	RND_ACT_CONVARG(1+ao, FGW_PTR, PolyNewPoints, poly = argv[1+ao].val.ptr_void);
+	RND_ACT_CONVARG(2+ao, FGW_STR, PolyNewPoints, ptlist = argv[2+ao].val.str);
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY)) {
 		rnd_message(RND_MSG_ERROR, "PolyNewPoints: invalid polygon pointer\n");
 		RND_ACT_IRES(-1);
@@ -390,9 +390,9 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layer_t *layer;
 	DRAWOPTARG;
 
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_PTR, PolyNewPoints, poly = argv[3+ao].val.ptr_void);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, PolyNewFromPoints, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, PolyNewFromPoints, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_PTR, PolyNewPoints, poly = argv[3+ao].val.ptr_void);
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY)) {
 		rnd_message(RND_MSG_ERROR, "PolyNewEnd: invalid polygon pointer\n");
 		RND_ACT_IRES(0);
@@ -428,9 +428,9 @@ TODO("implement noundo");
 	(void)noundo;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1+ao, FGW_DATA, LayerObjDup, data = fgw_data(&argv[1+ao]));
-	RND_PCB_ACT_CONVARG(2+ao, FGW_LAYER, LayerObjDup, layer = fgw_layer(&argv[2+ao]));
-	RND_PCB_ACT_CONVARG(3+ao, FGW_PTR, LayerObjDup, idp = argv[3+ao].val.ptr_void);
+	RND_ACT_CONVARG(1+ao, FGW_DATA, LayerObjDup, data = fgw_data(&argv[1+ao]));
+	RND_ACT_CONVARG(2+ao, FGW_LAYER, LayerObjDup, layer = fgw_layer(&argv[2+ao]));
+	RND_ACT_CONVARG(3+ao, FGW_PTR, LayerObjDup, idp = argv[3+ao].val.ptr_void);
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], RND_PTR_DOMAIN_IDPATH)) {
 		rnd_message(RND_MSG_ERROR, "LayerObjDup: invalid object pointer\n");
 		return FGW_ERR_PTR_DOMAIN;

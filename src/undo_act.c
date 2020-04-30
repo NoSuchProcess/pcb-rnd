@@ -56,7 +56,7 @@ static const char pcb_acth_Atomic[] = "Save or restore the undo serial number.";
 fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Atomic, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Atomic, op = fgw_keyword(&argv[1]));
 
 	switch (op) {
 	case F_Save:
@@ -101,7 +101,7 @@ static const char pcb_acth_Undo[] = "Undo recent changes.";
 fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function = NULL;
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
 	if (!function || !*function) {
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 		if (rnd_tool_undo_act(RND_ACT_HIDLIB))

@@ -439,9 +439,9 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	live_script_t *lvs;
 	const char *cmd = "new", *name = NULL, *arg = NULL;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LiveScript, cmd = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LiveScript, name = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LiveScript, arg = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LiveScript, cmd = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, LiveScript, name = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, LiveScript, arg = argv[3].val.str);
 
 	if (rnd_strcasecmp(cmd, "new") == 0) {
 		if (name == NULL) name = "default";

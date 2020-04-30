@@ -53,9 +53,9 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {NULL, 0}};
 	RND_DAD_DECL(dlg);
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, label = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, gui_PromptFor, default_str = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, gui_PromptFor, title = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, gui_PromptFor, label = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, gui_PromptFor, default_str = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, gui_PromptFor, title = argv[3].val.str);
 
 	RND_DAD_BEGIN_VBOX(dlg);
 		RND_DAD_LABEL(dlg, label);
@@ -97,9 +97,9 @@ fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_DAD_DECL(dlg);
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_MessageBox, icon = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, gui_MessageBox, title = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(3, FGW_STR, gui_MessageBox, label = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, gui_MessageBox, icon = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, gui_MessageBox, title = argv[2].val.str);
+	RND_ACT_CONVARG(3, FGW_STR, gui_MessageBox, label = argv[3].val.str);
 
 	RND_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
@@ -116,8 +116,8 @@ fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 			RND_DAD_END(dlg);
 			for(n = 4; n < argc; n+=2) {
-				RND_PCB_ACT_CONVARG(n+0, FGW_STR, gui_MessageBox, txt = argv[n+0].val.str);
-				RND_PCB_ACT_CONVARG(n+1, FGW_INT, gui_MessageBox, ret = argv[n+1].val.nat_int);
+				RND_ACT_CONVARG(n+0, FGW_STR, gui_MessageBox, txt = argv[n+0].val.str);
+				RND_ACT_CONVARG(n+1, FGW_INT, gui_MessageBox, ret = argv[n+1].val.nat_int);
 				RND_DAD_BUTTON_CLOSE(dlg, txt, ret);
 			}
 		RND_DAD_END(dlg);
@@ -164,7 +164,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	clrpick_t ctx;
 	rnd_hid_attr_val_t val;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, sclr = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, gui_PromptFor, sclr = argv[1].val.str);
 
 	memset(&ctx, 0, sizeof(ctx));
 	if (rnd_color_load_str(&ctx.clr, sclr) != 0)
@@ -239,8 +239,8 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	}
 
 	hidlib = RND_ACT_HIDLIB;
-	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
+	RND_ACT_CONVARG(1, FGW_STR, gui_MayOverwriteFile, fn = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_INT, gui_MayOverwriteFile, multi = argv[2].val.nat_int);
 
 	RND_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */

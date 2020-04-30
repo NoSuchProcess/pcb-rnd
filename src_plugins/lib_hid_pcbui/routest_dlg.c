@@ -339,7 +339,7 @@ fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2)
 		RND_ACT_FAIL(AdjustStyle);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, AdjustStyle, idx = argv[1].val.nat_long);
+	RND_ACT_MAY_CONVARG(1, FGW_LONG, AdjustStyle, idx = argv[1].val.nat_long);
 
 	if (idx >= (long)vtroutestyle_len(&PCB->RouteStyle)) {
 		rnd_message(RND_MSG_ERROR, "Invalid route style %ld index; max value: %ld\n", idx, vtroutestyle_len(&PCB->RouteStyle)-1);

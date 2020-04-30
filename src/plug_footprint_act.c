@@ -39,7 +39,7 @@ static fgw_error_t pcb_act_fp_rehash(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name = NULL;
 	pcb_fplibrary_t *l;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, fp_rehash, name = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, fp_rehash, name = argv[1].val.str);
 	RND_ACT_IRES(0);
 
 	if (name == NULL) {

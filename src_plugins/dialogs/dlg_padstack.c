@@ -1008,8 +1008,8 @@ fgw_error_t pcb_act_PadstackEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	memset(&pse, 0, sizeof(pse));
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, PadstackEdit, op = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_INT, PadstackEdit, target_tab = argv[2].val.nat_int);
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, PadstackEdit, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_INT, PadstackEdit, target_tab = argv[2].val.nat_int);
 	RND_ACT_IRES(0);
 
 	if (op == F_Object) {

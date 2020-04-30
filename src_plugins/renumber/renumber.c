@@ -81,7 +81,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int ok;
 	rnd_bool free_name = rnd_false;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Renumber, name = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Renumber, name = argv[1].val.str);
 
 	if (name == NULL) {
 		/*

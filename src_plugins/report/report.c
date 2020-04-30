@@ -369,8 +369,8 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	rnd_coord_t x, y;
 	rnd_hid_get_coords("Click on object to report on", &x, &y, 0);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, reportdialog, how = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, reportdialog, op = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, reportdialog, how = argv[2].val.str);
 
 	gds_init(&tmp);
 
@@ -550,7 +550,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_coord_t x = 0, y = 0;
 			gds_t err;
 
-			rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Report, units_name = argv[2].val.str);
+			RND_ACT_MAY_CONVARG(2, FGW_STR, Report, units_name = argv[2].val.str);
 
 			pcb_obj_center(term, &x, &y);
 
@@ -767,7 +767,7 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *cmd, *name;
 	rnd_coord_t x, y;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, Report, cmd = argv[1].val.str);
 
 	if (rnd_strcasecmp(cmd, "Object") == 0) {
 		rnd_hid_get_coords("Click on an object", &x, &y, 0);
@@ -791,7 +791,7 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (rnd_strcasecmp(cmd, "AllNetLengths") == 0)
 		return report_all_net_lengths(res, argc, argv);
 	else if (rnd_strcasecmp(cmd, "NetLength") == 0) {
-		RND_PCB_ACT_CONVARG(2, FGW_STR, Report, name = argv[2].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, Report, name = argv[2].val.str);
 		return report_net_length_by_name(name);
 	}
 

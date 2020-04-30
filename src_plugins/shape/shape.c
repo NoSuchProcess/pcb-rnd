@@ -400,7 +400,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	memset(args, 0, sizeof(args));
 	for(n = 1; n < argc; n++)
-		rnd_PCB_ACT_MAY_CONVARG(n, FGW_STR, regpoly, args[n-1] = argv[n].val.str);
+		RND_ACT_MAY_CONVARG(n, FGW_STR, regpoly, args[n-1] = argv[n].val.str);
 
 	a = get_where(args[0], &data, &x, &y, &have_coords);
 	if (a < 0) {
@@ -471,7 +471,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	memset(args, 0, sizeof(args));
 	for(n = 1; n < argc; n++)
-		rnd_PCB_ACT_MAY_CONVARG(n, FGW_STR, regpoly, args[n-1] = argv[n].val.str);
+		RND_ACT_MAY_CONVARG(n, FGW_STR, regpoly, args[n-1] = argv[n].val.str);
 
 	if (argc > 2) {
 		a = get_where(args[0], &data, &x, &y, &have_coords);
@@ -583,7 +583,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	memset(args, 0, sizeof(args));
 	for(n = 1; n < argc; n++)
-		rnd_PCB_ACT_MAY_CONVARG(n, FGW_STR, circle, args[n-1] = argv[n].val.str);
+		RND_ACT_MAY_CONVARG(n, FGW_STR, circle, args[n-1] = argv[n].val.str);
 
 	a = get_where(args[0], &data, &x, &y, &have_coords);
 	if (a < 0) {

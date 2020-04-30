@@ -61,28 +61,28 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layer_type_t lyt;
 	long idx;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ReadGroup, cmds = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ReadGroup, cmds = argv[1].val.str);
 	cmd = act_read_keywords_sphash(cmds);
 	switch(cmd) {
 		case act_read_keywords_length:
 			res->type = FGW_LONG; res->val.nat_long = pcb->LayerGroups.len;
 			return 0;
 		case act_read_keywords_layerid:
-			RND_PCB_ACT_CONVARG(2, FGW_LAYERGRPID, ReadGroup, gid = fgw_layergrpid(&argv[2]));
+			RND_ACT_CONVARG(2, FGW_LAYERGRPID, ReadGroup, gid = fgw_layergrpid(&argv[2]));
 			grp = pcb_get_layergrp(pcb, gid);
 			if (grp == NULL)
 				return FGW_ERR_ARG_CONV;
-			RND_PCB_ACT_CONVARG(3, FGW_LONG, ReadGroup, idx = argv[3].val.nat_long);
+			RND_ACT_CONVARG(3, FGW_LONG, ReadGroup, idx = argv[3].val.nat_long);
 			if ((idx < 0) || (idx >= grp->len))
 				return FGW_ERR_ARG_CONV;
 			res->type = FGW_LONG; res->val.nat_long = grp->lid[idx];
 			return 0;
 		case act_read_keywords_field:
-			RND_PCB_ACT_CONVARG(2, FGW_LAYERGRPID, ReadGroup, gid = fgw_layergrpid(&argv[2]));
+			RND_ACT_CONVARG(2, FGW_LAYERGRPID, ReadGroup, gid = fgw_layergrpid(&argv[2]));
 			grp = pcb_get_layergrp(pcb, gid);
 			if (grp == NULL)
 				return FGW_ERR_ARG_CONV;
-			RND_PCB_ACT_CONVARG(3, FGW_STR, ReadGroup, flds = argv[3].val.str);
+			RND_ACT_CONVARG(3, FGW_STR, ReadGroup, flds = argv[3].val.str);
 			fld = act_read_keywords_sphash(flds);
 			switch(fld) {
 				case act_read_keywords_name:

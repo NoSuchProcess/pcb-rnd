@@ -129,8 +129,8 @@ static fgw_error_t pcb_act_trim_split(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t x, y;
 	vtp0_t edges;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, trim_split, kwcut = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, trim_split, kwobj = fgw_keyword(&argv[2]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, trim_split, kwcut = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, trim_split, kwobj = fgw_keyword(&argv[2]));
 
 	vtp0_init(&edges);
 
@@ -199,7 +199,7 @@ static fgw_error_t pcb_act_split_idp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 1; n < 3; n++) {
 		vect = (n == 1) ? &edges : &objs;
 
-		RND_PCB_ACT_CONVARG(n, FGW_IDPATH, split_idp, idp = fgw_idpath(&argv[n]));
+		RND_ACT_CONVARG(n, FGW_IDPATH, split_idp, idp = fgw_idpath(&argv[n]));
 		if (idp == NULL)
 			goto invptr;
 		if (fgw_ptr_in_domain(&rnd_fgw, &argv[n], RND_PTR_DOMAIN_IDPATH)) {
@@ -259,7 +259,7 @@ do { \
 	} \
 	ctr = 0; \
 	for(n = 2; n < argc; n++) { \
-		RND_PCB_ACT_CONVARG(n, fgw_type_, constraint, arr[ctr] = fgw_val_); \
+		RND_ACT_CONVARG(n, fgw_type_, constraint, arr[ctr] = fgw_val_); \
 		ctr++; \
 	} \
 } while(0)
@@ -271,7 +271,7 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *stype = NULL;
 	int type;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, constraint, stype = argv[1].val.str);
 	if (stype == NULL) {
 		RND_ACT_IRES(constraint_gui());
 		return 0;
@@ -288,12 +288,12 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case ddraft_fields_line_angle_mod:
 			cons.line_angle_mod = 0;
-			rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.line_angle_mod = argv[2].val.nat_double);
+			RND_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.line_angle_mod = argv[2].val.nat_double);
 			cons_changed();
 			break;
 		case ddraft_fields_move_angle_mod:
 			cons.move_angle_mod = 0;
-			rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.move_angle_mod = argv[2].val.nat_double);
+			RND_ACT_MAY_CONVARG(2, FGW_DOUBLE, constraint, cons.move_angle_mod = argv[2].val.nat_double);
 			cons_changed();
 			break;
 		case ddraft_fields_line_length:
@@ -306,12 +306,12 @@ static fgw_error_t pcb_act_constraint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case ddraft_fields_line_length_mod:
 			cons.line_length_mod = 0;
-			rnd_PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.line_length_mod = fgw_coord(&argv[2]));
+			RND_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.line_length_mod = fgw_coord(&argv[2]));
 			cons_changed();
 			break;
 		case ddraft_fields_move_length_mod:
 			cons.move_length_mod = 0;
-			rnd_PCB_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.move_length_mod = fgw_coord(&argv[2]));
+			RND_ACT_MAY_CONVARG(2, FGW_COORD, constraint, cons.move_length_mod = fgw_coord(&argv[2]));
 			cons_changed();
 			break;
 

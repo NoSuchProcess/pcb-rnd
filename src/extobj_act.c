@@ -80,8 +80,8 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_subc_t *sc;
 	pcb_any_obj_t *obj;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ExtobjConvFrom, op = fgw_keyword(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ExtobjConvFrom, eoname = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ExtobjConvFrom, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_STR, ExtobjConvFrom, eoname = argv[2].val.str);
 
 	if (strcmp(eoname, "@gui") != 0) {
 		eo = pcb_extobj_lookup(eoname);
@@ -104,7 +104,7 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Object:
 			if (argc > 3) { /* convert by idpath */
 				pcb_idpath_t *idp;
-				RND_PCB_ACT_CONVARG(3, FGW_IDPATH, ExtobjConvFrom, idp = fgw_idpath(&argv[2]));
+				RND_ACT_CONVARG(3, FGW_IDPATH, ExtobjConvFrom, idp = fgw_idpath(&argv[2]));
 				if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[3], RND_PTR_DOMAIN_IDPATH))
 					return FGW_ERR_PTR_DOMAIN;
 				obj = pcb_idpath2obj(PCB, idp);
@@ -159,13 +159,13 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op = F_Object;
 	pcb_subc_t *obj;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ExtobjGUIPropEdit, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, ExtobjGUIPropEdit, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Object:
 			if (argc > 2) { /* convert by idpath */
 				pcb_idpath_t *idp;
-				RND_PCB_ACT_CONVARG(2, FGW_IDPATH, ExtobjGUIPropEdit, idp = fgw_idpath(&argv[2]));
+				RND_ACT_CONVARG(2, FGW_IDPATH, ExtobjGUIPropEdit, idp = fgw_idpath(&argv[2]));
 				if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 					return FGW_ERR_PTR_DOMAIN;
 				obj = (pcb_subc_t *)pcb_idpath2obj(PCB, idp);

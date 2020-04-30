@@ -380,7 +380,7 @@ static fgw_error_t pcb_act_LesstifNetlistShow(fgw_arg_t *res, int argc, fgw_arg_
 		return 0;
 	}
 
-		RND_PCB_ACT_CONVARG(1, FGW_STR, LesstifNetlistShow, nn = argv[1].val.str);
+		RND_ACT_CONVARG(1, FGW_STR, LesstifNetlistShow, nn = argv[1].val.str);
 
 	if (argc == 2) {
 		pcb_net_term_t *term;

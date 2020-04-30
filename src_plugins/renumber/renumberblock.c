@@ -33,8 +33,8 @@ fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char num_buf[15];
 	int old_base, new_base;
 
-	RND_PCB_ACT_CONVARG(1, FGW_INT, RenumberBlock, old_base = argv[1].val.nat_int);
-	RND_PCB_ACT_CONVARG(2, FGW_INT, RenumberBlock, new_base = argv[2].val.nat_int);
+	RND_ACT_CONVARG(1, FGW_INT, RenumberBlock, old_base = argv[1].val.nat_int);
+	RND_ACT_CONVARG(2, FGW_INT, RenumberBlock, new_base = argv[2].val.nat_int);
 
 	rnd_conf_set_editor(name_on_pcb, 1);
 
@@ -78,8 +78,8 @@ fgw_error_t pcb_act_RenumberBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char num_buf[15];
 	int old_base, new_base;
 
-	RND_PCB_ACT_CONVARG(1, FGW_INT, RenumberBuffer, old_base = argv[1].val.nat_int);
-	RND_PCB_ACT_CONVARG(2, FGW_INT, RenumberBuffer, new_base = argv[2].val.nat_int);
+	RND_ACT_CONVARG(1, FGW_INT, RenumberBuffer, old_base = argv[1].val.nat_int);
+	RND_ACT_CONVARG(2, FGW_INT, RenumberBuffer, new_base = argv[2].val.nat_int);
 
 	rnd_conf_set_editor(name_on_pcb, 1);
 

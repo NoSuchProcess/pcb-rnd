@@ -49,7 +49,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int id;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Delete, id = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Delete, id = fgw_keyword(&argv[1]));
 
 	if (id == -1) { /* no arg */
 		if (pcb_remove_selected(rnd_false) == rnd_false)
@@ -61,7 +61,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (argc > 2) { /* delete by idpath */
 			pcb_idpath_t *idp;
 			pcb_any_obj_t *obj;
-			RND_PCB_ACT_CONVARG(2, FGW_IDPATH, Delete, idp = fgw_idpath(&argv[2]));
+			RND_ACT_CONVARG(2, FGW_IDPATH, Delete, idp = fgw_idpath(&argv[2]));
 			if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 				return FGW_ERR_PTR_DOMAIN;
 			obj = pcb_idpath2obj(PCB, idp);

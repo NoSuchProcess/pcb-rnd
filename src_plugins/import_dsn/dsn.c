@@ -216,7 +216,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	gsxl_node_t *wiring, *w, *routes, *nout, *n;
 	dsn_type_t type;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadDsnFrom, fname = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadDsnFrom, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = rnd_gui->fileselect(rnd_gui,

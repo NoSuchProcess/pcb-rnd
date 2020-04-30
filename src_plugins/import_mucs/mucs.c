@@ -64,7 +64,7 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t x1, y1, x2, y2, r;
 	pcb_pstk_t *ps;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadMucsFrom, fname = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadMucsFrom, fname = argv[1].val.str);
 
 	if (!(pcb_layer_flags(PCB, PCB_CURRLID(PCB)) & PCB_LYT_COPPER)) {
 		rnd_message(RND_MSG_ERROR, "The currently active layer is not a copper layer.\n");

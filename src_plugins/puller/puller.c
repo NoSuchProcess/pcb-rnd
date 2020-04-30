@@ -2079,7 +2079,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	nloops = 0;
 	npulled = 0;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, GlobalPuller, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, GlobalPuller, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Selected: select_flags = PCB_FLAG_SELECTED; break;

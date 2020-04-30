@@ -365,7 +365,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	htsp_t subcs, *scs = NULL;
 	htsp_entry_t *e;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadIpc356From, fname = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadIpc356From, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = rnd_gui->fileselect(rnd_gui, "Load IPC-D-356 netlist...",
@@ -390,7 +390,7 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	for(n = 2; n < argc; n++) {
 		const char *s;
-		rnd_PCB_ACT_MAY_CONVARG(n, FGW_STR, LoadIpc356From, s = argv[n].val.str);
+		RND_ACT_MAY_CONVARG(n, FGW_STR, LoadIpc356From, s = argv[n].val.str);
 		if (strcmp(s, "nonet") == 0) want_net = 0;
 		if (strcmp(s, "nopad") == 0) want_pads = 0;
 		if (strcmp(s, "nosubc") == 0) want_subc = 0;

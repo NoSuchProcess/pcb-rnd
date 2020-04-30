@@ -292,7 +292,7 @@ fgw_error_t pcb_act_import_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	FILE *f;
 	cpcb_layers_t stk;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, import_cpcb, fn = argv[1].val.str);
 
 	f = rnd_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
@@ -319,7 +319,7 @@ fgw_error_t pcb_act_export_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cpcb_layers_t stk;
 	cpcb_netmap_t nmap;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, export_cpcb, fn = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, export_cpcb, fn = argv[1].val.str);
 
 	f = rnd_fopen(&PCB->hidlib, fn, "w");
 	if (f == NULL) {
@@ -355,8 +355,8 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cpcb_layers_t stk;
 	cpcb_netmap_t nmap;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, cpcb, scope = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, cpcb, cmd = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, cpcb, scope = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, cpcb, cmd = argv[2].val.str);
 
 	if (strcmp(scope, "board") != 0) {
 		rnd_message(RND_MSG_ERROR, "Only board routing is supported at the moment\n");

@@ -329,9 +329,9 @@ static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t 
 	const char *srole, *spath, *srule = NULL;
 	rnd_conf_role_t role;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, DrcQueryEditRule, srole = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, DrcQueryEditRule, spath = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, DrcQueryEditRule, srule = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, DrcQueryEditRule, srole = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, DrcQueryEditRule, spath = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, DrcQueryEditRule, srule = argv[3].val.str);
 
 	if (srule == NULL)
 		srule = spath;

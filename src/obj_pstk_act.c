@@ -46,13 +46,13 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_Selected:
 		if (argc > 3) {
-			RND_PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
-			RND_PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
+			RND_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
+			RND_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 		}
 		else {
 			rnd_hid_get_coords("Click at padstack origin", &x, &y, 0);
@@ -108,7 +108,7 @@ static const char pcb_acth_padstackbreakup[] = "Break up a padstack into one non
 fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
 	RND_ACT_IRES(-1);
 
 	switch(op) {
@@ -171,11 +171,11 @@ fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_pstk_t *ps;
 	rnd_coord_t x, y;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, padstackplace, pids = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, padstackplace, pids = argv[1].val.str);
 
 	if (argc > 3) {
-		RND_PCB_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
-		RND_PCB_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
+		RND_ACT_CONVARG(2, FGW_COORD, padstackconvert, x = fgw_coord(&argv[2]));
+		RND_ACT_CONVARG(3, FGW_COORD, padstackconvert, y = fgw_coord(&argv[3]));
 	}
 	else {
 		rnd_hid_get_coords("Click at padstack origin", &x, &y, 0);

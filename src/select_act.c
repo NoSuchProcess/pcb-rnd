@@ -62,7 +62,7 @@ static const char pcb_acth_Select[] = "Toggles or sets the selection.";
 static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Select, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Select, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 
@@ -71,7 +71,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (argc > 2) { /* select by idpath */
 				pcb_idpath_t *idp;
 				pcb_any_obj_t *obj;
-				RND_PCB_ACT_CONVARG(2, FGW_IDPATH, Select, idp = fgw_idpath(&argv[2]));
+				RND_ACT_CONVARG(2, FGW_IDPATH, Select, idp = fgw_idpath(&argv[2]));
 				if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 					return FGW_ERR_PTR_DOMAIN;
 				obj = pcb_idpath2obj(PCB, idp);
@@ -190,7 +190,7 @@ static const char pcb_acth_Unselect[] = "Unselects the object at the pointer loc
 static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Unselect, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Unselect, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 

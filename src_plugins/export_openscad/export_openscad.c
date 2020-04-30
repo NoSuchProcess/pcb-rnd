@@ -609,7 +609,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 	FILE *f;
 	const char *name;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, scad_export_poly, name = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, scad_export_poly, name = argv[1].val.str);
 
 	f = rnd_fopen_askovr(&PCB->hidlib, name, "w", NULL);
 	if (f == NULL) {

@@ -144,7 +144,7 @@ static int help_invoc(void)
 fgw_error_t pcb_act_PrintUsage(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *topic = NULL, *subt = NULL;
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, PrintUsage, topic = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, PrintUsage, topic = argv[1].val.str);
 	RND_ACT_IRES(0);
 
 	u("");
@@ -157,7 +157,7 @@ fgw_error_t pcb_act_PrintUsage(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		for (i = 0; hl[i]; i++) {
 			if ((hl[i]->usage != NULL) && (strcmp(topic, hl[i]->name) == 0)) {
-				rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, PrintUsage, subt = argv[2].val.str);
+				RND_ACT_MAY_CONVARG(2, FGW_STR, PrintUsage, subt = argv[2].val.str);
 				RND_ACT_IRES(hl[i]->usage(hl[i], subt));
 				return 0;
 			}
@@ -272,7 +272,7 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char tmp[128];
 	const char *cmd;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, System, cmd = argv[1].val.str);
 	RND_ACT_IRES(0);
 
 	rnd_setenv("PCB_RND_BOARD_FILE_NAME", RND_ACT_HIDLIB->filename == NULL ? "" : RND_ACT_HIDLIB->filename, 1);
@@ -292,7 +292,7 @@ fgw_error_t pcb_act_ExecuteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ExecuteFile, fname = argv[1].val.str);
 	RND_ACT_IRES(pcb_act_execute_file(RND_ACT_HIDLIB, fname));
 	return 0;
 }

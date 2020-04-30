@@ -180,8 +180,8 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int paste = 0, del_selected = 0;
 	rnd_coord_t pastex = 0, pastey = 0;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, extedit, cmd = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, extedit, method = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, extedit, cmd = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, extedit, method = argv[2].val.str);
 
 	/* pick up the object to edit */
 	if ((cmd == NULL) || (rnd_strcasecmp(cmd, "object") == 0)) {

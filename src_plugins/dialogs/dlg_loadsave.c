@@ -68,7 +68,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2)
 		return RND_ACT_CALL_C(pcb_act_LoadFrom, res, argc, argv);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
 	if (rnd_strcasecmp(function, "Netlist") == 0)
 		name = rnd_gui->fileselect(rnd_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", RND_HID_FSD_READ, NULL);
@@ -403,7 +403,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (cwd == NULL) cwd = dup_cwd();
 
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Save, function = argv[1].val.str);
 
 	is_dialog = (function != NULL) && (rnd_strncasecmp(function, "Dialog", 6) == 0);
 
@@ -419,10 +419,10 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (is_dialog) {
 		const char *siot, *sext;
 
-		RND_PCB_ACT_CONVARG(2, FGW_STR, Save, siot = argv[2].val.str);
-		RND_PCB_ACT_CONVARG(3, FGW_STR, Save, sext = argv[3].val.str);
-		RND_PCB_ACT_CONVARG(4, FGW_STR, Save, prompt = argv[4].val.str);
-		rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, Save, default_pattern = argv[5].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, Save, siot = argv[2].val.str);
+		RND_ACT_CONVARG(3, FGW_STR, Save, sext = argv[3].val.str);
+		RND_ACT_CONVARG(4, FGW_STR, Save, prompt = argv[4].val.str);
+		RND_ACT_MAY_CONVARG(5, FGW_STR, Save, default_pattern = argv[5].val.str);
 
 		if (rnd_strcasecmp(siot, "pcb") == 0) list_iot = PCB_IOT_PCB;
 		else if (rnd_strcasecmp(siot, "footprint") == 0) list_iot = PCB_IOT_FOOTPRINT;

@@ -510,7 +510,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ddraft, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ddraft, cmd = argv[1].val.str);
 	if (strcmp(cmd, "/exit") == 0) {
 		rnd_cli_leave();
 		RND_ACT_IRES(0);

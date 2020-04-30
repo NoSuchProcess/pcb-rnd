@@ -109,7 +109,7 @@ static fgw_error_t pcb_act_smartdisperse(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	int all;
 	htsp_entry_t *e;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, smartdisperse, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, smartdisperse, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case -2:

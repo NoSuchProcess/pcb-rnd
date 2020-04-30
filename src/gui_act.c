@@ -107,8 +107,8 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int err = 0;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Display, id = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Display, str_dir = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Display, id = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, Display, str_dir = argv[2].val.str);
 
 	if (id == F_SubcID) { /* change the displayed name of subcircuits */
 		if (argc > 1)
@@ -471,7 +471,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	int id = -2;
 
 	RND_ACT_IRES(0);
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, Display, id = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, Display, id = fgw_keyword(&argv[1]));
 
 	if (id == -1) { /* invalid */
 		RND_ACT_FAIL(MarkCrosshair);
@@ -524,7 +524,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int number;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1, FGW_STR, RouteStyle, str = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, RouteStyle, str = argv[1].val.str);
 
 	number = strtol(str, &end, 10);
 
@@ -634,7 +634,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	for(n = 1; n < argc; n++) {
 		const char *arg;
-		RND_PCB_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
+		RND_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
 		if (!explicit && (*arg == '@')) {
 			rnd_layer_id_t lid = pcb_layer_by_name(PCB->Data, arg+1);
 			if (lid < 0) {
@@ -735,7 +735,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	for(n = 1; n < argc; n++) {
 		const char *arg;
-		RND_PCB_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
+		RND_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
 		if (!explicit && (*arg == '@')) {
 			rnd_layergrp_id_t gid;
 			if (arg[1] == '\0')
@@ -837,7 +837,7 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (PCB_CURRLAYER(PCB_ACT_BOARD) != NULL)
 		g = pcb_get_layergrp(PCB, PCB_CURRLAYER(PCB_ACT_BOARD)->meta.real.grp);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DelGroup, name = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, DelGroup, name = argv[1].val.str);
 	if (*name == '@') {
 		gid = pcb_actd_EditGroup_gid;
 		if (name[1] != '\0')
@@ -869,12 +869,12 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_t *g = NULL;
 	pcb_layer_type_t ltype = 0, lloc = 0;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, NewGroup, stype = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, NewGroup, sloc = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, NewGroup, spurp = argv[3].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, NewGroup, scomb = argv[4].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(5, FGW_STR, NewGroup, name = argv[5].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(6, FGW_STR, NewGroup, attr = argv[6].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, NewGroup, stype = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, NewGroup, sloc = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, NewGroup, spurp = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, NewGroup, scomb = argv[4].val.str);
+	RND_ACT_MAY_CONVARG(5, FGW_STR, NewGroup, name = argv[5].val.str);
+	RND_ACT_MAY_CONVARG(6, FGW_STR, NewGroup, attr = argv[6].val.str);
 
 	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
 	if (ltype == 0) {
@@ -984,7 +984,7 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (PCB_CURRLAYER(PCB_ACT_BOARD) != NULL)
 		g = pcb_get_layergrp(PCB, PCB_CURRLAYER(PCB_ACT_BOARD)->meta.real.grp);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DupGroup, name = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, DupGroup, name = argv[1].val.str);
 	if (*name == '@') {
 		gid = pcb_actd_EditGroup_gid;
 		if (name[1] != '\0')
@@ -1038,7 +1038,7 @@ static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	char *name;
 
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1, FGW_STR, selectlayer, name = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, selectlayer, name = argv[1].val.str);
 
 	if (rnd_strcasecmp(name, "silk") == 0) {
 		PCB->RatDraw = 0;
@@ -1084,7 +1084,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *name;
 	const pcb_menu_layers_t *ml;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, chklayer, name = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, chklayer, name = argv[1].val.str);
 
 	lid = strtol(name, &end, 10);
 	if (*end != '\0') {
@@ -1130,14 +1130,14 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_layer_id_t lid;
 	const char *name;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, toggleview, name = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, toggleview, name = argv[1].val.str);
 	RND_ACT_IRES(0);
 
 	if (rnd_strcasecmp(name, "all") == 0) {
 		rnd_bool_op_t open = RND_BOOL_PRESERVE, vis = RND_BOOL_PRESERVE, user = RND_BOOL_PRESERVE;
 		const char *cmd, *suser;
-		RND_PCB_ACT_CONVARG(2, FGW_STR, toggleview, cmd = argv[2].val.str);
-		RND_PCB_ACT_CONVARG(3, FGW_STR, toggleview, suser = argv[3].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, toggleview, cmd = argv[2].val.str);
+		RND_ACT_CONVARG(3, FGW_STR, toggleview, suser = argv[3].val.str);
 
 		user = rnd_str2boolop(suser);
 		if (user == RND_BOOL_INVALID)
@@ -1216,7 +1216,7 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *end;
 	const char *name;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, chkview, name = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, chkview, name = argv[1].val.str);
 
 	if (strncmp(name, "ui:", 3) == 0) {
 		pcb_layer_t *ly = pcb_uilayer_get(atoi(name+3));
@@ -1338,8 +1338,8 @@ static fgw_error_t pcb_act_LayerByStack(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	int op1, op2;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, LayerByStack, op1 = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_KEYWORD, LayerByStack, op2 = fgw_keyword(&argv[2]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, LayerByStack, op1 = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, LayerByStack, op2 = fgw_keyword(&argv[2]));
 	RND_ACT_IRES(0);
 
 	switch(op1) {
@@ -1365,7 +1365,7 @@ static fgw_error_t pcb_act_ChkRst(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int rid;
 	pcb_route_style_t *rst;
 
-	RND_PCB_ACT_CONVARG(1, FGW_INT, chkrst, rid = argv[1].val.nat_int);
+	RND_ACT_CONVARG(1, FGW_INT, chkrst, rid = argv[1].val.nat_int);
 
 	rst = vtroutestyle_get(&PCB->RouteStyle, rid, 0);
 	if (rst == NULL)
@@ -1383,7 +1383,7 @@ static fgw_error_t pcb_act_boardflip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op = -2;
 	rnd_bool smirror;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, boardflip, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, boardflip, op = fgw_keyword(&argv[1]));
 
 	smirror = (op == F_Sides);
 	pcb_data_mirror(PCB->Data, 0, smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, smirror, 1);
@@ -1401,7 +1401,7 @@ static fgw_error_t pcb_act_ClipInhibit(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	const char *op;
 	char tmp[2];
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ClipInhibit, op = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ClipInhibit, op = argv[1].val.str);
 
 	if (strcmp(op, "check") == 0) {
 		RND_ACT_IRES(is_on);

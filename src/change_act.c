@@ -80,9 +80,9 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 	rnd_coord_t x, y;
 	int got_coords = 0;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangeClearSize, function = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ChangeClearSize, delta = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeClearSize, units = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ChangeClearSize, function = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, ChangeClearSize, delta = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, ChangeClearSize, units = argv[3].val.str);
 
 	if (function && delta) {
 		int funcid = rnd_funchash_get(function, NULL);
@@ -158,9 +158,9 @@ static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *flag;
 	int value;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangeFlag, function = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeFlag, flag = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_INT, ChangeFlag, value = argv[3].val.nat_int);
+	RND_ACT_CONVARG(1, FGW_STR, ChangeFlag, function = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, ChangeFlag, flag = argv[2].val.str);
+	RND_ACT_CONVARG(2, FGW_INT, ChangeFlag, value = argv[3].val.nat_int);
 
 	if (value != 0 && value != 1)
 		RND_ACT_FAIL(ChangeFlag);
@@ -280,9 +280,9 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int type = PCB_OBJ_VOID, tostyle = 0;
 	void *ptr1, *ptr2, *ptr3;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangeSize, function = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeSize, delta = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeSize, units = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ChangeSize, function = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, ChangeSize, delta = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, ChangeSize, units = argv[3].val.str);
 
 
 	if (function && delta) {
@@ -376,9 +376,9 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	rnd_bool absolute;
 	rnd_coord_t value;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Change2ndSize, function = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, Change2ndSize, delta = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, Change2ndSize, units = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, Change2ndSize, function = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, Change2ndSize, delta = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, Change2ndSize, units = argv[3].val.str);
 
 	if (function && delta) {
 		int funcid = rnd_funchash_get(function, NULL);
@@ -435,9 +435,9 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	rnd_cardinal_t changed = 0;
 	const char *refdes, *pinnum, *pinname;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ChangePinName, refdes = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangePinName, pinnum = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangePinName, pinname = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ChangePinName, refdes = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, ChangePinName, pinnum = argv[2].val.str);
+	RND_ACT_CONVARG(3, FGW_STR, ChangePinName, pinname = argv[3].val.str);
 
 	PCB_SUBC_LOOP(PCB_ACT_BOARD->Data);
 	{
@@ -483,7 +483,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *name;
 	pcb_objtype_t type;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeName, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeName, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		/* change the refdes of a subcircuit */
@@ -563,7 +563,7 @@ static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_ToggleObject:
@@ -611,7 +611,7 @@ static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *
 {
 	int op;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
 
 	switch(op) {
 		case F_ToggleObject:
@@ -664,8 +664,8 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int err = 0;
 	rnd_coord_t gx, gy;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, SetThermal, function = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, SetThermal, style = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, SetThermal, function = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SetThermal, style = argv[2].val.str);
 
 	if (function && *function && style && *style) {
 		rnd_bool absolute;
@@ -719,8 +719,8 @@ static fgw_error_t pcb_act_SetFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function;
 	const char *flag;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
 
 	ChangeFlag(function, flag, 1, "SetFlag");
 
@@ -742,8 +742,8 @@ static fgw_error_t pcb_act_ClrFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function;
 	const char *flag;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
 
 	ChangeFlag(function, flag, 0, "ClrFlag");
 
@@ -762,13 +762,13 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double value;
 	int err = 0;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
 
 	if (fnc_id == F_Grid)
 		return rnd_actionv_bin(RND_ACT_HIDLIB, "setgrid", res, argc-1, argv+1);
 
-	RND_PCB_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SetValue, val = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, SetValue, units = argv[3].val.str);
 
 	value = rnd_get_value(val, units, &absolute, NULL);
 
@@ -812,9 +812,9 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeAngle, funcid = fgw_keyword(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeAngle, prim = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangeAngle, delta = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeAngle, funcid = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_STR, ChangeAngle, prim = argv[2].val.str);
+	RND_ACT_CONVARG(3, FGW_STR, ChangeAngle, delta = argv[3].val.str);
 
 
 	if (rnd_strcasecmp(prim, "start") == 0) which = 0;
@@ -890,10 +890,10 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	int funcid, type = PCB_OBJ_VOID, which;
 	void *ptr1, *ptr2, *ptr3;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, ChangeRadius, funcid = fgw_keyword(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_STR, ChangeRadius, prim = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(3, FGW_STR, ChangeRadius, delta = argv[3].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, ChangeRadius, units = argv[4].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeRadius, funcid = fgw_keyword(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_STR, ChangeRadius, prim = argv[2].val.str);
+	RND_ACT_CONVARG(3, FGW_STR, ChangeRadius, delta = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, ChangeRadius, units = argv[4].val.str);
 
 	if ((rnd_strcasecmp(prim, "width") == 0) || (rnd_strcasecmp(prim, "x") == 0)) which = 0;
 	else if ((rnd_strcasecmp(prim, "height") == 0) || (rnd_strcasecmp(prim, "y") == 0)) which = 1;

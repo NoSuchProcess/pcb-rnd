@@ -51,10 +51,10 @@ static fgw_error_t pcb_act_GetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double v;
 	rnd_bool success;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, GetValue, input = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, GetValue, units = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(3, FGW_INT, GetValue, relative = argv[3].val.nat_int);
-	RND_PCB_ACT_CONVARG(4, FGW_STR, GetValue, def_unit = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, GetValue, input = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, GetValue, units = argv[2].val.str);
+	RND_ACT_CONVARG(3, FGW_INT, GetValue, relative = argv[3].val.nat_int);
+	RND_ACT_CONVARG(4, FGW_STR, GetValue, def_unit = argv[1].val.str);
 
 	if (*units == '\0')
 		units = NULL;
@@ -74,7 +74,7 @@ static fgw_error_t pcb_act_GetMark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, GetMark, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, GetMark, cmd = argv[1].val.str);
 	switch(*cmd) {
 		case 'a': res->type = FGW_INT; res->val.nat_int = pcb_marked.status; break;
 		case 'u': res->type = FGW_INT; res->val.nat_int = pcb_marked.user_placed; break;

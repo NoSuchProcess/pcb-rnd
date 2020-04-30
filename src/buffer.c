@@ -250,9 +250,9 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_cardinal_t len;
 
 	
-	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadFootprint, name = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadFootprint, refdes = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadFootprint, value = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, LoadFootprint, name = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, LoadFootprint, refdes = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, LoadFootprint, value = argv[3].val.str);
 
 	if (!pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, NULL)) {
 		RND_ACT_IRES(1);
@@ -452,7 +452,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *angle_s = NULL;
 	double ang;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, FreeRotateBuffer, angle_s = rnd_strdup(argv[1].val.str));
+	RND_ACT_MAY_CONVARG(1, FGW_STR, FreeRotateBuffer, angle_s = rnd_strdup(argv[1].val.str));
 	RND_ACT_IRES(0);
 
 	if (angle_s == NULL)
@@ -564,7 +564,7 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int recurse = 0;
 	char *end;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, ScaleBuffer, sx = argv[1].val.str);
 
 	if (sx != NULL) {
 		x = strtod(sx, &end);
@@ -582,9 +582,9 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		th = 1;
 	}
 
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, ScaleBuffer, y = argv[2].val.nat_double);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_DOUBLE, ScaleBuffer, th = argv[3].val.nat_double);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, ScaleBuffer, recurse = (argv[4].val.str != NULL));
+	RND_ACT_MAY_CONVARG(2, FGW_DOUBLE, ScaleBuffer, y = argv[2].val.nat_double);
+	RND_ACT_MAY_CONVARG(3, FGW_DOUBLE, ScaleBuffer, th = argv[3].val.nat_double);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, ScaleBuffer, recurse = (argv[4].val.str != NULL));
 
 	if ((x <= 0) || (y <= 0)) {
 		RND_ACT_IRES(-1);
@@ -981,12 +981,12 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	static int sp = 0;
 	int number, rv;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, PasteBuffer, tmp = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, PasteBuffer, tmp = argv[1].val.str);
 	number = atoi(tmp);
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, PasteBuffer, op = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, PasteBuffer, sbufnum = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, PasteBuffer, fmt = argv[3].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, PasteBuffer, forces = argv[4].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, PasteBuffer, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, PasteBuffer, sbufnum = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, PasteBuffer, fmt = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, PasteBuffer, forces = argv[4].val.str);
 
 	force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 

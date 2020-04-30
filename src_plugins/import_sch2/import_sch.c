@@ -197,7 +197,7 @@ static fgw_error_t pcb_act_ImportSch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = "reimport";
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ImportSch, cmd = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, ImportSch, cmd = argv[1].val.str);
 
 	if (strcmp(cmd, "reimport") == 0) {
 		RND_ACT_IRES(do_import());

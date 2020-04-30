@@ -74,8 +74,8 @@ static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename, *format = NULL;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadLayout, filename = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, LoadLayout, filename = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
 
 	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Load data lose", "OK to override layout data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_load_pcb(filename, format, rnd_true, 0);
@@ -91,7 +91,7 @@ static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *res, int argc, fgw_arg
 {
 	const char *filename;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadElementToBuffer, filename = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, LoadElementToBuffer, filename = argv[1].val.str);
 
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, filename, NULL))
 		rnd_tool_select_by_name(&PCB->hidlib, "buffer");
@@ -107,8 +107,8 @@ static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *res, int argc, fgw_arg_
 {
 	const char *filename, *format = NULL;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadLayoutToBuffer, filename = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayoutToBuffer, format = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, LoadLayoutToBuffer, filename = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, LoadLayoutToBuffer, format = argv[2].val.str);
 
 	if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, filename, format))
 		rnd_tool_select_by_name(&PCB->hidlib, "buffer");
@@ -145,7 +145,7 @@ static fgw_error_t pcb_act_LoadNetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv
 {
 	const char *filename;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadNetlist, filename = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, LoadNetlist, filename = argv[1].val.str);
 
 	if (PCB->Netlistname)
 		free(PCB->Netlistname);
@@ -162,7 +162,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *filename = NULL;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, SaveLayout, filename = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, SaveLayout, filename = argv[1].val.str);
 
 	if (filename == NULL) {
 		if (PCB->hidlib.filename) {

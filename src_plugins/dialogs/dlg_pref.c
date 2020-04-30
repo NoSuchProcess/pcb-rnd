@@ -392,8 +392,8 @@ const char pcb_acth_Preferences[] = "Present the preferences dialog, optionally 
 fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *tab = NULL, *tabarg = NULL;
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Preferences, tab = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Preferences, tabarg = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Preferences, tab = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, Preferences, tabarg = argv[2].val.str);
 	pcb_dlg_pref(tab, tabarg);
 	RND_ACT_IRES(0);
 	return 0;

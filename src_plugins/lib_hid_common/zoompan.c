@@ -53,10 +53,10 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc == 5) {
 		rnd_coord_t x1, y1, x2, y2;
 
-		RND_PCB_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
-		RND_PCB_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
-		RND_PCB_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
-		RND_PCB_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
+		RND_ACT_CONVARG(1, FGW_COORD, Zoom, x1 = fgw_coord(&argv[1]));
+		RND_ACT_CONVARG(2, FGW_COORD, Zoom, y1 = fgw_coord(&argv[2]));
+		RND_ACT_CONVARG(3, FGW_COORD, Zoom, x2 = fgw_coord(&argv[3]));
+		RND_ACT_CONVARG(4, FGW_COORD, Zoom, y2 = fgw_coord(&argv[4]));
 
 		rnd_gui->zoom_win(rnd_gui, x1, y1, x2, y2, 1);
 		return 0;
@@ -65,7 +65,7 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2)
 		RND_ACT_FAIL(Zoom);
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, Zoom, ovp = vp = argv[1].val.str);
 
 	if (*vp == '?') {
 		rnd_message(RND_MSG_INFO, "Current zoom level (coord-per-pix): %$mm\n", rnd_gui->coord_per_pix);
@@ -114,7 +114,7 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
-	RND_PCB_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
+	RND_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
 	rnd_gui->pan_mode(rnd_gui, x, y, mode);
 
 	RND_ACT_IRES(0);
@@ -148,8 +148,8 @@ fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *op;
 	double dx = 0.0, dy = 0.0, pixels = 100.0;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Scroll, op = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_DOUBLE, Scroll, pixels = argv[2].val.nat_double);
+	RND_ACT_CONVARG(1, FGW_STR, Scroll, op = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_DOUBLE, Scroll, pixels = argv[2].val.nat_double);
 
 	if (rnd_strcasecmp(op, "up") == 0)
 		dy = -rnd_gui->coord_per_pix * pixels;

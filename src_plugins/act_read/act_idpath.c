@@ -41,7 +41,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int cmd;
 	long idx;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, IDPList, cmd_ = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, IDPList, cmd_ = argv[1].val.str);
 
 	cmd = act_read_keywords_sphash(cmd_);
 	if (cmd == act_read_keywords_alloc) {
@@ -49,7 +49,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		fgw_ptr_reg(&rnd_fgw, res, RND_PTR_DOMAIN_IDPATH_LIST, FGW_PTR | FGW_STRUCT, list);
 		return 0;
 	}
-	RND_PCB_ACT_CONVARG(2, FGW_IDPATH_LIST, IDPList, list = fgw_idpath_list(&argv[2]));
+	RND_ACT_CONVARG(2, FGW_IDPATH_LIST, IDPList, list = fgw_idpath_list(&argv[2]));
 
 	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH_LIST))
 		return FGW_ERR_PTR_DOMAIN;
@@ -74,7 +74,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case act_read_keywords_append:
 		case act_read_keywords_push:
 		case act_read_keywords_prepend:
-			RND_PCB_ACT_CONVARG(3, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[3]));
+			RND_ACT_CONVARG(3, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[3]));
 			if (!fgw_ptr_in_domain(&rnd_fgw, &argv[3], RND_PTR_DOMAIN_IDPATH))
 				return FGW_ERR_PTR_DOMAIN;
 			if (cmd == act_read_keywords_append)
@@ -85,7 +85,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_remove:
-			RND_PCB_ACT_CONVARG(3, FGW_LONG, IDPList, idx = argv[3].val.nat_long);
+			RND_ACT_CONVARG(3, FGW_LONG, IDPList, idx = argv[3].val.nat_long);
 			idp = pcb_idpath_list_nth(list, idx);
 			if (idp == NULL) {
 				RND_ACT_IRES(-1);
@@ -96,7 +96,7 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_get:
-			RND_PCB_ACT_CONVARG(3, FGW_LONG, IDPList, idx = argv[3].val.nat_long);
+			RND_ACT_CONVARG(3, FGW_LONG, IDPList, idx = argv[3].val.nat_long);
 			idp = pcb_idpath_list_nth(list, idx);
 			if (idp == NULL) {
 				res->type = FGW_PTR;
@@ -133,8 +133,8 @@ static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, IDP, cmd = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[2]));
+	RND_ACT_CONVARG(1, FGW_STR, IDP, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[2]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 
@@ -176,11 +176,11 @@ static fgw_error_t pcb_act_GetParentData(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	res->val.ptr_void = NULL;
 
 	if (argc > 2) {
-		RND_PCB_ACT_CONVARG(1, FGW_DATA, GetParentData, root_data = fgw_data(&argv[1]));
+		RND_ACT_CONVARG(1, FGW_DATA, GetParentData, root_data = fgw_data(&argv[1]));
 		iidx++;
 	}
 
-	RND_PCB_ACT_CONVARG(iidx, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[iidx]));
+	RND_ACT_CONVARG(iidx, FGW_IDPATH, IDPList, idp = fgw_idpath(&argv[iidx]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[iidx], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
 

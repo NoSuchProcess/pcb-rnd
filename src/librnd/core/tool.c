@@ -299,7 +299,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *cmd;
 	RND_ACT_IRES(0);
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
 
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	hidlib->tool_x = hidlib->ch_x;

@@ -57,7 +57,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc == 2) {
 		const char *vp;
 
-		RND_PCB_ACT_CONVARG(1, FGW_STR, Zoom, vp = argv[1].val.str);
+		RND_ACT_CONVARG(1, FGW_STR, Zoom, vp = argv[1].val.str);
 
 		if (rnd_strcasecmp(vp, "selected") == 0) {
 			rnd_rnd_box_t sb;
@@ -119,8 +119,8 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_layer_id_t lid;
 		pcb_layer_type_t lyt;
 
-		RND_PCB_ACT_CONVARG(1, FGW_STR, SwapSides, a = argv[1].val.str);
-		rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, SwapSides, b = argv[2].val.str);
+		RND_ACT_CONVARG(1, FGW_STR, SwapSides, a = argv[1].val.str);
+		RND_ACT_MAY_CONVARG(2, FGW_STR, SwapSides, b = argv[2].val.str);
 		switch (a[0]) {
 			case 'h': case 'H':
 				rnd_conf_toggle_heditor_("view/flip_x", view.flip_x);
@@ -202,8 +202,8 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc != 2 && argc != 3)
 		RND_ACT_FAIL(Popup);
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Popup, a0 = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Popup, a1 = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, Popup, a0 = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, Popup, a1 = argv[2].val.str);
 
 	*name = '\0';
 	*name2 = '\0';
@@ -274,8 +274,8 @@ fgw_error_t pcb_act_LayerHotkey(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	fgw_error_t er;
 	fgw_arg_t r, args[4];
 
-	RND_PCB_ACT_CONVARG(1, FGW_LAYER, LayerHotkey, ly = fgw_layer(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_STR, LayerHotkey, op = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_LAYER, LayerHotkey, ly = fgw_layer(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_STR, LayerHotkey, op = argv[2].val.str);
 
 	if (rnd_strcasecmp(op, "select") == 0)   { key = "pcb-rnd::key::select"; title = "set layer selection hotkey"; }
 	else if (rnd_strcasecmp(op, "vis") == 0) { key = "pcb-rnd::key::vis"; title = "set layer visibility hotkey"; }

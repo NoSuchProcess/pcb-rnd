@@ -92,7 +92,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	memset(&ctx, 0, sizeof(ctx));
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, FlagEdit, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, FlagEdit, op = fgw_keyword(&argv[1]));
 
 	if (op == F_Object) {
 		rnd_coord_t x, y;

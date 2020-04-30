@@ -55,10 +55,10 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, CreateMenu, ;);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
-	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
+	RND_ACT_CONVARG(1, FGW_STR, CreateMenu, ;);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
 		rnd_menu_prop_t props;
@@ -95,7 +95,7 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
+	RND_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
 	if (rnd_gui->remove_menu(rnd_gui, argv[1].val.str) != 0) {
 		rnd_message(RND_MSG_ERROR, "failed to remove some of the menu items\n");
 		RND_ACT_IRES(-1);
@@ -112,7 +112,7 @@ static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full sc
 static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = NULL;
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, FullScreen, cmd = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, FullScreen, cmd = argv[1].val.str);
 
 	if ((cmd == NULL) || (rnd_strcasecmp(cmd, "Toggle") == 0))
 		rnd_conf_setf(RND_CFR_DESIGN, "editor/fullscreen", -1, "%d", !rnd_conf.editor.fullscreen, RND_POL_OVERWRITE);
@@ -164,10 +164,10 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	extra_units_x[1].scale = view_width;
 	extra_units_y[1].scale = view_height;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Cursor, op = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, Cursor, a1 = argv[2].val.str);
-	RND_PCB_ACT_CONVARG(3, FGW_STR, Cursor, a2 = argv[3].val.str);
-	RND_PCB_ACT_CONVARG(4, FGW_STR, Cursor, a3 = argv[4].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, Cursor, op = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, Cursor, a1 = argv[2].val.str);
+	RND_ACT_CONVARG(3, FGW_STR, Cursor, a2 = argv[3].val.str);
+	RND_ACT_CONVARG(4, FGW_STR, Cursor, a3 = argv[4].val.str);
 
 	switch(*op) {
 		case 'p': case 'P': /* Pan */
@@ -233,8 +233,8 @@ static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	rnd_coord_t x, y;
 
-	RND_PCB_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
-	RND_PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
+	RND_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
 
 	rnd_hidcore_crosshair_move_to(RND_ACT_HIDLIB, x, y, 0);
 	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, HID_SC_PAN_VIEWPORT);
@@ -252,12 +252,12 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op, *a;
 
-	RND_PCB_ACT_CONVARG(1, FGW_STR, grid, op = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, grid, op = argv[1].val.str);
 	RND_ACT_IRES(0);
 
 	if (strcmp(op, "set") == 0) {
 		rnd_grid_t dst;
-		RND_PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
 		if (!rnd_grid_parse(&dst, a))
 			RND_ACT_FAIL(grid);
 		rnd_grid_set(RND_ACT_HIDLIB, &dst);
@@ -268,7 +268,7 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if ((strcmp(op, "down") == 0) || (strcmp(op, "-") == 0))
 		rnd_grid_list_step(RND_ACT_HIDLIB, -1);
 	else if (strcmp(op, "idx") == 0) {
-		RND_PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
 		rnd_grid_list_jump(RND_ACT_HIDLIB, atoi(a));
 	}
 	else if (op[0] == '#') {
@@ -288,8 +288,8 @@ static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t x, y;
 	const char *op = NULL, *msg = "Click to enter a coordinate.";
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, GetXY, op = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, GetXY, msg = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, GetXY, op = argv[2].val.str);
 
 	rnd_hid_get_coords(msg, &x, &y, 0);
 

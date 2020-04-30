@@ -161,7 +161,7 @@ static const char pcb_acth_DRC[] = "Invoke the DRC check. Results are presented 
 static fgw_error_t pcb_act_DRC(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, DRC, dlg_type = argv[1].val.str);
 	return view_dlg(res, argc, argv, dlg_type, "drcdialog", &pcb_drc_lst, pcb_drc_all);
 }
 
@@ -172,8 +172,8 @@ fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *dlg_type = "list";
 	const char *aauto = NULL;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatList, dlg_type = argv[1].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, IOIncompatList, aauto = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, IOIncompatList, dlg_type = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, IOIncompatList, aauto = argv[2].val.str);
 
 	if ((aauto != NULL) && (strcmp(aauto, "auto") == 0)) {
 		if (rnd_conf.rc.quiet && !RND_HAVE_GUI_ATTR_DLG) {

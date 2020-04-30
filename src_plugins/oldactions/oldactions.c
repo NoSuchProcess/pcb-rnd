@@ -147,7 +147,7 @@ static fgw_error_t pcb_act_Debug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("Debug:");
 	for (i = 1; i < argc; i++) {
 		const char *s;
-		RND_PCB_ACT_CONVARG(i, FGW_STR, debugxy, s = argv[i].val.str);
+		RND_ACT_CONVARG(i, FGW_STR, debugxy, s = argv[i].val.str);
 		printf(" [%d] `%s'", i, s);
 	}
 	rnd_hid_get_coords("Click X,Y for Debug", &x, &y, 0);
@@ -255,7 +255,7 @@ static fgw_error_t pcb_act_PCBChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *rv = NULL;
 	RND_ACT_IRES(0);
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, PCBChanged, rv = argv[1].val.str);
 	pcb_board_changed((rv != NULL) && (rnd_strcasecmp(rv, "revert") == 0));
 	return 0;
 }

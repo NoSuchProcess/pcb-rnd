@@ -260,8 +260,8 @@ static fgw_error_t pcb_act_Brave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	/* look up */
-	RND_PCB_ACT_CONVARG(1, FGW_STR, Brave, name = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, Brave, op = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, Brave, name = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, Brave, op = argv[2].val.str);
 	d = find_by_name(name);
 	if (d == NULL) {
 		rnd_message(RND_MSG_ERROR, "Unknown brave setting: %s\n", name);

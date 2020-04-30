@@ -342,7 +342,7 @@ fgw_error_t pcb_act_topoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *op = NULL;
 	void *r1, *r2, *r3;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, topoly, op = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, topoly, op = argv[1].val.str);
 
 	if (op == NULL) {
 		rnd_coord_t x, y;

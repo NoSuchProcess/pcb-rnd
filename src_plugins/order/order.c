@@ -65,7 +65,7 @@ fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = "gui";
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, OrderPCB, cmd = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, OrderPCB, cmd = argv[1].val.str);
 
 	if (strcmp(cmd, "gui") == 0) {
 		RND_ACT_IRES(order_dialog());

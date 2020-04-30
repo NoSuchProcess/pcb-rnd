@@ -560,7 +560,7 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	pcb_subc_t *olds = NULL, *news;
 	int dumb = 0, op = F_Selected;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, ReplaceFootprint, op = fgw_keyword(&argv[1]));
 
 	if (act_replace_footprint_dst(op, &olds) != 0) {
 		RND_ACT_IRES(1);
@@ -568,13 +568,13 @@ static fgw_error_t pcb_act_ReplaceFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 	}
 
 	/* fetch the name of the new footprint */
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = rnd_strdup(argv[2].val.str));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, ReplaceFootprint, fpname = rnd_strdup(argv[2].val.str));
 	if (act_replace_footprint_src(fpname, &news) != 0) {
 		RND_ACT_IRES(1);
 		return 0;
 	}
 
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ReplaceFootprint, dumbs = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, ReplaceFootprint, dumbs = argv[3].val.str);
 	if ((dumbs != NULL) && (strcmp(dumbs, "dumb") == 0))
 		dumb = 1;
 
@@ -591,7 +591,7 @@ static fgw_error_t pcb_act_SavePatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *fn = NULL;
 	FILE *f;
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, SavePatch, fn = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, SavePatch, fn = argv[1].val.str);
 
 	if (fn == NULL) {
 		char *default_file;

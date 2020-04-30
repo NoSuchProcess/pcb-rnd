@@ -308,9 +308,9 @@ static const char pcb_acts_LoadScript[] = "LoadScript(id, filename, [language])"
 static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id, *fn, *lang = NULL;
-	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
-	RND_PCB_ACT_CONVARG(2, FGW_STR, LoadScript, fn = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, LoadScript, lang = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, LoadScript, fn = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, LoadScript, lang = argv[3].val.str);
 
 	ID_VALIDATE(id, LoadScript);
 
@@ -325,7 +325,7 @@ static const char pcb_acts_UnloadScript[] = "UnloadScript(id)";
 static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
-	RND_PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
 
 	ID_VALIDATE(id, UnloadScript);
 
@@ -339,7 +339,7 @@ static const char pcb_acts_ReloadScript[] = "ReloadScript(id)";
 static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
-	RND_PCB_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
 
 	ID_VALIDATE(id, ReloadScript);
 
@@ -354,7 +354,7 @@ static const char pcb_acts_ScriptPersistency[] = "ScriptPersistency(read|remove)
 static fgw_error_t pcb_act_ScriptPersistency(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = NULL;
-	RND_PCB_ACT_CONVARG(1, FGW_STR, ScriptPersistency, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, ScriptPersistency, cmd = argv[1].val.str);
 	return script_persistency(res, cmd);
 }
 
@@ -364,7 +364,7 @@ static const char pcb_acts_ListScripts[] = "ListScripts([pat])";
 static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *pat = NULL;
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, ListScripts, pat = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, ListScripts, pat = argv[1].val.str);
 
 	script_list(pat);
 
@@ -402,8 +402,8 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (strcmp(lang, "oneliner") == 0) {
 		/* call to oneliner(lang, script) */
-		RND_PCB_ACT_CONVARG(1, FGW_STR, Oneliner, lang = argv[1].val.str);
-		RND_PCB_ACT_CONVARG(2, FGW_STR, Oneliner, scr = argv[2].val.str);
+		RND_ACT_CONVARG(1, FGW_STR, Oneliner, lang = argv[1].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, Oneliner, scr = argv[2].val.str);
 	}
 	else if (strcmp(lang, "/exit") == 0) {
 		RND_ACT_IRES(rnd_cli_leave());
@@ -411,10 +411,10 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else {
 		/* call to lang(script) */
-		rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
+		RND_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, scr = argv[1].val.str);
 	}
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, first = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Oneliner, first = argv[1].val.str);
 	if (first != NULL) {
 		if (*first == '/') {
 			if (rnd_strcasecmp(scr, "/exit") == 0) {
@@ -449,7 +449,7 @@ static fgw_error_t pcb_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *actname = argv[0].val.func->name;
 	double a;
 	
-	RND_PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math1, a = argv[1].val.nat_double);
+	RND_ACT_CONVARG(1, FGW_DOUBLE, pcb_math1, a = argv[1].val.nat_double);
 	res->type = FGW_DOUBLE;
 	switch(actname[4]) {
 		case 'a':
@@ -478,8 +478,8 @@ static fgw_error_t pcb_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *actname = argv[0].val.func->name;
 	double a, b;
 	
-	RND_PCB_ACT_CONVARG(1, FGW_DOUBLE, pcb_math2, a = argv[1].val.nat_double);
-	RND_PCB_ACT_CONVARG(2, FGW_DOUBLE, pcb_math2, b = argv[2].val.nat_double);
+	RND_ACT_CONVARG(1, FGW_DOUBLE, pcb_math2, a = argv[1].val.nat_double);
+	RND_ACT_CONVARG(2, FGW_DOUBLE, pcb_math2, b = argv[2].val.nat_double);
 	res->type = FGW_DOUBLE;
 	switch(actname[4]) {
 		case 'a': res->val.nat_double = atan2(a, b); return 0;

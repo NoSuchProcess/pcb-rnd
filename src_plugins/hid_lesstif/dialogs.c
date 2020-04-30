@@ -849,7 +849,7 @@ static const char pcb_acth_DoWindows[] = "Open various GUI windows.";
 static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a = "";
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
 	if (strcmp(a, "1") == 0 || rnd_strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || rnd_strcasecmp(a, "Library") == 0) {

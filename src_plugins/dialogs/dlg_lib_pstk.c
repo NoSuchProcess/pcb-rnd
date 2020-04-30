@@ -631,7 +631,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	long id = -1;
 	const char *cmd = NULL;
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
 	if ((cmd != NULL) && (strcmp(cmd, "object") == 0)) {
 		rnd_coord_t x, y;
 		void *r1, *r2, *r3;
@@ -647,7 +647,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		id = sc->ID;
 	}
 	else
-		rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
+		RND_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
 	if (pcb_dlg_pstklib(PCB, id, rnd_false, NULL) == PCB_PADSTACK_INVALID)
 		RND_ACT_IRES(-1);
 	else

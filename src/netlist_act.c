@@ -359,9 +359,9 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	unsigned net_found = 0;
 	unsigned pin_found = 0;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, a1 = argv[2].val.str);
-	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, Netlist, a2 = argv[3].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, Netlist, a1 = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, Netlist, a2 = argv[3].val.str);
 	RND_ACT_IRES(0);
 
 	if (!PCB)
@@ -543,8 +543,8 @@ static fgw_error_t pcb_act_ClaimNet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_net_t *net;
 	char *netname = NULL, *free_netname = NULL;
 
-	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, Netlist, netname = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_KEYWORD, Netlist, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, Netlist, netname = argv[2].val.str);
 	RND_ACT_IRES(0);
 
 	vtp0_init(&termlist);

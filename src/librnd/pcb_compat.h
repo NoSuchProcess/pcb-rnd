@@ -52,7 +52,7 @@
 #define pcb_aname rnd_aname
 #define pcb_act_result rnd_act_result
 #define PCB_ACT_CALL_C RND_ACT_CALL_C
-#define PCB_ACT_CONVARG RND_PCB_ACT_CONVARG
+#define PCB_ACT_CONVARG RND_ACT_CONVARG
 #define PCB_ACT_IRES RND_ACT_IRES
 #define PCB_ACT_DRES RND_ACT_DRES
 #define PCB_ACT_FAIL RND_ACT_FAIL

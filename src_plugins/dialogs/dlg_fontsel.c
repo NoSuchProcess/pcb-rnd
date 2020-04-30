@@ -208,7 +208,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2)
 		RND_ACT_FAIL(Fontsel);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Fontsel, op = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Fontsel, op = argv[1].val.str);
 
 	if (op != NULL) {
 		if (rnd_strcasecmp(op, "Object") == 0) {

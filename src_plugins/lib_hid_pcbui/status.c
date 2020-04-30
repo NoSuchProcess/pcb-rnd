@@ -348,7 +348,7 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 2)
 		RND_ACT_FAIL(StatusSetText);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, StatusSetText, text = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, StatusSetText, text = argv[1].val.str);
 
 	if (text != NULL) {
 		rnd_hid_attr_val_t hv;
@@ -411,8 +411,8 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (argc > 3)
 		RND_ACT_FAIL(StatusSetText);
 
-	rnd_PCB_ACT_MAY_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
-	rnd_PCB_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
+	RND_ACT_MAY_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
 
 	/* check if there are any pins or pads at that position */
 	rattype = pcb_search_obj_by_location(PCB_OBJ_RAT, &rptr1, &rptr2, &rptr3, x, y, 0);
