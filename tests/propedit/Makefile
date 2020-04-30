@@ -15,7 +15,7 @@ LIB_OBJS = \
  $(LHT)/genht/hash.o \
  $(LIBRND)/core/compat_misc.o \
  $(LIBRND)/core/misc_util.o \
- $(LIBRND)/core/pcb-printf.o \
+ $(LIBRND)/core/rnd_printf.o \
  $(LIBRND)/core/unit.o \
  $(ROOT)/src_3rd/genvector/gds_char.o
 
