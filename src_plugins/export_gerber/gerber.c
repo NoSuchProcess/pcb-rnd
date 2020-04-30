@@ -1023,7 +1023,7 @@ static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx,
 		"board. Please use the cam export instead!\n"
 		"For more info please read:\n"
 		"http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=cam_switch\n";
-	pcb_hid_export_opt_func_dad_t *dad = call_ctx;
+	rnd_hid_export_opt_func_dad_t *dad = call_ctx;
 
 	switch(act) {
 		case RND_HIDEOF_USAGE:

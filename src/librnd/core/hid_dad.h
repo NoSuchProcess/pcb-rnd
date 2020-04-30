@@ -840,8 +840,8 @@ struct rnd_hid_dad_subdialog_s {
 	gdl_elem_t link;  /* list of subdialogs: e.g. dock */
 };
 
-typedef struct pcb_hid_export_opt_func_dad_s {
+typedef struct rnd_hid_export_opt_func_dad_s {
 	RND_DAD_DECL_NOINIT(dlg)
-} pcb_hid_export_opt_func_dad_t;
+} rnd_hid_export_opt_func_dad_t;
 
 #endif

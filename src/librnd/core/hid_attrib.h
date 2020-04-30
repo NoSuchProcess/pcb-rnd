@@ -160,7 +160,7 @@ rnd_hatt_compflags_t rnd_hid_compflag_name2bit(const char *name);
 
 typedef enum rnd_hid_export_opt_func_action_e {
 	RND_HIDEOF_USAGE, /* call_ctx is a FILE * */
-	RND_HIDEOF_DAD    /* call_ctx is a pcb_hid_export_opt_func_dad_t */
+	RND_HIDEOF_DAD    /* call_ctx is a rnd_hid_export_opt_func_dad_t */
 } rnd_hid_export_opt_func_action_t;
 
 typedef void (*rnd_hid_export_opt_func_t)(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);

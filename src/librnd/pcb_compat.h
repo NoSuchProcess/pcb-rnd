@@ -827,8 +827,8 @@
 #define pcb_dad_tree_free rnd_dad_tree_free
 #define pcb_hid_dad_close rnd_hid_dad_close
 #define pcb_hid_iterate rnd_hid_iterate
-#define pcb_hid_export_opt_func_dad_s rnd_hid_export_opt_func_dad_s
-#define pcb_hid_export_opt_func_dad_t rnd_hid_export_opt_func_dad_t
+#define rnd_hid_export_opt_func_dad_s rnd_hid_export_opt_func_dad_s
+#define rnd_hid_export_opt_func_dad_t rnd_hid_export_opt_func_dad_t
 #define PCB_DAD_SPIN_INT RND_DAD_SPIN_INT
 #define PCB_DAD_SPIN_DOUBLE RND_DAD_SPIN_DOUBLE
 #define PCB_DAD_SPIN_COORD RND_DAD_SPIN_COORD
@@ -1205,3 +1205,5 @@
 #define pcb_tool_t rnd_tool_t
 #define PCB_SAFEPRINT_arg_max RND_SAFEPRINT_arg_max
 #define PCB_SAFEPRINT_COORD_ONLY RND_SAFEPRINT_COORD_ONLY
+#define pcb_hid_export_opt_func_dad_s rnd_hid_export_opt_func_dad_s
+#define pcb_hid_export_opt_func_dad_t rnd_hid_export_opt_func_dad_t
