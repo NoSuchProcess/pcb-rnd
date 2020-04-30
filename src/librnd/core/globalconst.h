@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef PCB_GLOBALCONST_H
-#define PCB_GLOBALCONST_H
+#ifndef RND_GLOBALCONST_H
+#define RND_GLOBALCONST_H
 
 #include <librnd/config.h>
 
