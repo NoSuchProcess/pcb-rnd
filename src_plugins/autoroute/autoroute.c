@@ -890,9 +890,9 @@ static void CreateRouteData_subc(routedata_t *rd, vtp0_t layergroupboxes[], pcb_
 				pcb_line_t fake_line = *line;
 				rnd_coord_t dx = (line->Point2.X - line->Point1.X);
 				rnd_coord_t dy = (line->Point2.Y - line->Point1.Y);
-				int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * rd->max_bloat + 1);
+				int segs = MAX(RND_ABS(dx), RND_ABS(dy)) / (4 * rd->max_bloat + 1);
 				int qq;
-				segs = PCB_CLAMP(segs, 1, 32);	/* don't go too crazy */
+				segs = RND_CLAMP(segs, 1, 32);	/* don't go too crazy */
 				dx /= segs;
 				dy /= segs;
 				for (qq = 0; qq < segs - 1; qq++) {
@@ -953,9 +953,9 @@ static routebox_t *crd_add_line(routedata_t *rd, vtp0_t *layergroupboxes, rnd_la
 		pcb_line_t fake_line = *line;
 		rnd_coord_t dx = (line->Point2.X - line->Point1.X);
 		rnd_coord_t dy = (line->Point2.Y - line->Point1.Y);
-		int segs = MAX(PCB_ABS(dx), PCB_ABS(dy)) / (4 * BLOAT(rd->styles[j]) + 1);
+		int segs = MAX(RND_ABS(dx), RND_ABS(dy)) / (4 * BLOAT(rd->styles[j]) + 1);
 		int qq;
-		segs = PCB_CLAMP(segs, 1, 32); /* don't go too crazy */
+		segs = RND_CLAMP(segs, 1, 32); /* don't go too crazy */
 		dx /= segs;
 		dy /= segs;
 		for (qq = 0; qq < segs - 1; qq++) {
@@ -1284,7 +1284,7 @@ static inline rnd_heap_cost_t pcb_cost_to_point_on_layer(const rnd_cheap_point_t
 	x_dist *= x_cost[point_layer];
 	y_dist *= y_cost[point_layer];
 	/* cost is proportional to orthogonal distance. */
-	r = PCB_ABS(x_dist) + PCB_ABS(y_dist);
+	r = RND_ABS(x_dist) + RND_ABS(y_dist);
 	if (p1->X != p2->X && p1->Y != p2->Y)
 		r += AutoRouteParameters.JogPenalty;
 	return r;
@@ -1310,8 +1310,8 @@ static rnd_heap_cost_t pcb_cost_to_layerless_box(const rnd_cheap_point_t * p, rn
 	c1 = p2.X - p->X;
 	c2 = p2.Y - p->Y;
 
-	c1 = PCB_ABS(c1);
-	c2 = PCB_ABS(c2);
+	c1 = RND_ABS(c1);
+	c2 = RND_ABS(c2);
 	if (c1 < c2)
 		return c1 * AutoRouteParameters.MinPenalty + c2;
 	else
@@ -1345,12 +1345,12 @@ static rnd_heap_cost_t pcb_cost_to_routebox(const rnd_cheap_point_t * p, rnd_car
 		trial += AutoRouteParameters.JogPenalty;
 	/* special case for defered via searching */
 	if (point_layer > pcb_max_group(PCB) || point_layer == rb->group)
-		return trial + PCB_ABS(p2.X - p->X) + PCB_ABS(p2.Y - p->Y);
+		return trial + RND_ABS(p2.X - p->X) + RND_ABS(p2.Y - p->Y);
 	/* if this target is only a via away, then the via is cheaper than the congestion */
 	if (p->X == p2.X && p->Y == p2.Y)
 		return trial + 1;
 	trial += AutoRouteParameters.ViaCost;
-	trial += PCB_ABS(p2.X - p->X) + PCB_ABS(p2.Y - p->Y);
+	trial += RND_ABS(p2.X - p->X) + RND_ABS(p2.Y - p->Y);
 	return trial;
 }
 
@@ -3011,7 +3011,7 @@ RD_DrawLine(routedata_t * rd,
 		return;											/* but not this! */
 	rb = (routebox_t *) malloc(sizeof(*rb));
 	memset((void *) rb, 0, sizeof(*rb));
-	assert(is_45 ? (PCB_ABS(qX2 - qX1) == PCB_ABS(qY2 - qY1))	/* line must be 45-degrees */
+	assert(is_45 ? (RND_ABS(qX2 - qX1) == RND_ABS(qY2 - qY1))	/* line must be 45-degrees */
 				 : (qX1 == qX2 || qY1 == qY2) /* line must be ortho */ );
 	init_const_box(rb,
 								 /*X1 */ MIN(qX1, qX2) - qhthick,
@@ -3108,7 +3108,7 @@ RD_DrawManhattanLine(routedata_t * rd,
 	}
 	else {
 		/* draw 45-degree path across knee */
-		rnd_coord_t len45 = MIN(PCB_ABS(start.X - end.X), PCB_ABS(start.Y - end.Y));
+		rnd_coord_t len45 = MIN(RND_ABS(start.X - end.X), RND_ABS(start.Y - end.Y));
 		rnd_cheap_point_t kneestart = knee, kneeend = knee;
 		if (kneestart.X == start.X)
 			kneestart.Y += (kneestart.Y > start.Y) ? -len45 : len45;
@@ -4214,10 +4214,10 @@ struct routeall_status RouteAll(routedata_t * rd)
 		rnd_rnd_box_t bb = shrink_routebox(net);
 		LIST_LOOP(net, same_net, p);
 		{
-			PCB_MAKE_MIN(bb.X1, p->sbox.X1);
-			PCB_MAKE_MIN(bb.Y1, p->sbox.Y1);
-			PCB_MAKE_MAX(bb.X2, p->sbox.X2);
-			PCB_MAKE_MAX(bb.Y2, p->sbox.Y2);
+			RND_MAKE_MIN(bb.X1, p->sbox.X1);
+			RND_MAKE_MIN(bb.Y1, p->sbox.Y1);
+			RND_MAKE_MAX(bb.X2, p->sbox.X2);
+			RND_MAKE_MAX(bb.Y2, p->sbox.Y2);
 		}
 		PCB_END_LOOP;
 		area = (double) (bb.X2 - bb.X1) * (bb.Y2 - bb.Y1);

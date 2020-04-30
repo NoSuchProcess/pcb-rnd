@@ -275,7 +275,7 @@ int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot)
 	if ((pcb_subc_cache_update(sc) != 0) || (sc->aux_cache[PCB_SUBCH_X] == NULL))
 		return -1;
 
-	r = -1 * PCB_RAD_TO_DEG * atan2(sc->aux_cache[PCB_SUBCH_X]->Point2.Y - sc->aux_cache[PCB_SUBCH_X]->Point1.Y, sc->aux_cache[PCB_SUBCH_X]->Point2.X - sc->aux_cache[PCB_SUBCH_X]->Point1.X);
+	r = -1 * RND_RAD_TO_DEG * atan2(sc->aux_cache[PCB_SUBCH_X]->Point2.Y - sc->aux_cache[PCB_SUBCH_X]->Point1.Y, sc->aux_cache[PCB_SUBCH_X]->Point2.X - sc->aux_cache[PCB_SUBCH_X]->Point1.X);
 
 	/* ugly hack to get round angles where possible: if error to a round angle
 	   is less than 1/10000, it was meant to be round, just got ruined by
@@ -328,7 +328,7 @@ int pcb_subc_get_host_trans(pcb_subc_t *sc, pcb_host_trans_t *tr, int neg)
 		res = -1;
 	}
 
-	rr = tr->rot / PCB_RAD_TO_DEG;
+	rr = tr->rot / RND_RAD_TO_DEG;
 
 	if (neg) {
 		tr->rot = -tr->rot;
@@ -484,8 +484,8 @@ void pcb_subc_create_aux(pcb_subc_t *sc, rnd_coord_t ox, rnd_coord_t oy, double 
 		sn = 0;
 	}
 	else {
-		cs = cos(rot/PCB_RAD_TO_DEG);
-		sn = sin(rot/PCB_RAD_TO_DEG);
+		cs = cos(rot/RND_RAD_TO_DEG);
+		sn = sin(rot/RND_RAD_TO_DEG);
 	}
 
 	if (bottom) {
@@ -715,7 +715,7 @@ static void pcb_subc_draw_locked(rnd_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t lx
 {
 	rnd_coord_t s = on_bottom ? -PCB_EMARK_SIZE : PCB_EMARK_SIZE;
 
-	if (pcbhl_conf.editor.view.flip_x)
+	if (rnd_conf.editor.view.flip_x)
 		lx += PCB_EMARK_SIZE*1.5;
 	else
 		lx -= PCB_EMARK_SIZE*1.5;
@@ -1990,9 +1990,9 @@ pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl)
 	if (locked) {
 		int on_bottom = 0;
 		pcb_subc_get_side(subc, &on_bottom);
-		if (pcbhl_conf.editor.view.flip_x)
+		if (rnd_conf.editor.view.flip_x)
 			on_bottom = !on_bottom;
-		pcb_subc_draw_locked(pcb_draw_out.fgGC, subc, pcbhl_conf.editor.view.flip_x ? bb->X1 : bb->X2, on_bottom ? bb->Y1 : bb->Y2, on_bottom);
+		pcb_subc_draw_locked(pcb_draw_out.fgGC, subc, rnd_conf.editor.view.flip_x ? bb->X1 : bb->X2, on_bottom ? bb->Y1 : bb->Y2, on_bottom);
 	}
 
 	if (freq >= 0) {
@@ -2034,14 +2034,14 @@ pcb_r_dir_t draw_subc_label_callback(const rnd_rnd_box_t *b, void *cl)
 	dx = font->MaxWidth/2;
 	dy = font->MaxHeight/2;
 
-	if (pcbhl_conf.editor.view.flip_x) {
+	if (rnd_conf.editor.view.flip_x) {
 		x0 = bb->X2;
 		dx = -dx;
 	}
 	else
 		x0 = bb->X1;
 
-	if (pcbhl_conf.editor.view.flip_y) {
+	if (rnd_conf.editor.view.flip_y) {
 		y0 = bb->Y2;
 		dy = -dy;
 	}
@@ -2332,7 +2332,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	if (rot != 0) {
 		if (dst_on_bottom != src_on_bottom)
 			rot = -rot;
-		pcb_subc_rotate(placed, ox, oy, cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+		pcb_subc_rotate(placed, ox, oy, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 	}
 
 	if (dst_on_bottom != src_on_bottom)

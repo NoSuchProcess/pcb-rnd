@@ -167,9 +167,9 @@ char *rnd_grid_print(const rnd_grid_t *src)
 
 void rnd_grid_set(rnd_hidlib_t *hidlib, const rnd_grid_t *src)
 {
-	pcb_hidlib_set_grid(hidlib, src->size, pcb_true, src->ox, src->oy);
+	rnd_hidlib_set_grid(hidlib, src->size, pcb_true, src->ox, src->oy);
 	if (src->unit != NULL)
-		pcb_hidlib_set_unit(hidlib, src->unit);
+		rnd_hidlib_set_unit(hidlib, src->unit);
 }
 
 void rnd_grid_free(rnd_grid_t *dst)
@@ -182,7 +182,7 @@ pcb_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst)
 {
 	const rnd_conf_listitem_t *li;
 	rnd_grid_t g;
-	int max = rnd_conflist_length((rnd_conflist_t *)&pcbhl_conf.editor.grids);
+	int max = rnd_conflist_length((rnd_conflist_t *)&rnd_conf.editor.grids);
 
 	if (dst < 0)
 		dst = 0;
@@ -193,7 +193,7 @@ pcb_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst)
 
 	rnd_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
 
-	li = rnd_conflist_nth((rnd_conflist_t *)&pcbhl_conf.editor.grids, dst);
+	li = rnd_conflist_nth((rnd_conflist_t *)&rnd_conf.editor.grids, dst);
 	/* clamp */
 	if (li == NULL)
 		return pcb_false;
@@ -208,7 +208,7 @@ pcb_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst)
 
 pcb_bool_t rnd_grid_list_step(rnd_hidlib_t *hidlib, int stp)
 {
-	int dst = pcbhl_conf.editor.grids_idx;
+	int dst = rnd_conf.editor.grids_idx;
 	if (dst < 0)
 		dst = -dst-1;
 	return rnd_grid_list_jump(hidlib, dst + stp);
@@ -216,7 +216,7 @@ pcb_bool_t rnd_grid_list_step(rnd_hidlib_t *hidlib, int stp)
 
 void rnd_grid_inval(void)
 {
-	if (pcbhl_conf.editor.grids_idx > 0)
-		rnd_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - pcbhl_conf.editor.grids_idx);
+	if (rnd_conf.editor.grids_idx > 0)
+		rnd_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - rnd_conf.editor.grids_idx);
 }
 

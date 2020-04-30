@@ -57,11 +57,11 @@ void rnd_message(rnd_message_level_t level, const char *Format, ...)
 	gds_t tmp;
 	rnd_logline_t *line;
 
-	if ((rnd_gui == NULL) || (pcbhl_conf.rc.dup_log_to_stderr)) {
-		if (pcbhl_conf.rc.quiet)
+	if ((rnd_gui == NULL) || (rnd_conf.rc.dup_log_to_stderr)) {
+		if (rnd_conf.rc.quiet)
 			min_level = RND_MSG_ERROR;
 
-		if ((level >= min_level) || (pcbhl_conf.rc.verbose)) {
+		if ((level >= min_level) || (rnd_conf.rc.verbose)) {
 			va_start(args, Format);
 			pcb_vfprintf(stderr, Format, args);
 			va_end(args);

@@ -579,7 +579,7 @@ static void plc_end(placer_t *plc)
 		rnd_actionv_bin(&plc->pcb->hidlib, "viewlist", &res, 4, args);
 		plc->remlst = NULL;
 	}
-	if ((number_of_footprints_not_found > 0) && (!pcbhl_conf.rc.quiet))
+	if ((number_of_footprints_not_found > 0) && (!rnd_conf.rc.quiet))
 		rnd_message(RND_MSG_ERROR, "Footprint import: not all requested footprints were found.\nSee the message log above for details\n");
 }
 
@@ -643,11 +643,11 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	argc = 4;
 
 	/* turn of flip to avoid mirror/rotat confusion */
-	fx = pcbhl_conf.editor.view.flip_x;
-	fy = pcbhl_conf.editor.view.flip_y;
+	fx = rnd_conf.editor.view.flip_x;
+	fy = rnd_conf.editor.view.flip_y;
 	fs = conf_core.editor.show_solder_side;
-	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
-	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
+	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
+	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
 	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 #ifdef DEBUG
@@ -715,8 +715,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 					pcb_subc_change_side(psc, pcy * 2 - RND_ACT_HIDLIB->size_y);
 				if (orig_rot != 0) {
 					double cosa, sina;
-					cosa = cos(orig_rot / PCB_RAD_TO_DEG);
-					sina = sin(orig_rot / PCB_RAD_TO_DEG);
+					cosa = cos(orig_rot / RND_RAD_TO_DEG);
+					sina = sin(orig_rot / RND_RAD_TO_DEG);
 					pcb_subc_rotate(psc, pcx, pcy, cosa, sina, orig_rot);
 				}
 
@@ -753,8 +753,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	printf(" ... Leaving pcb_act_ElementList.\n");
 #endif
 
-	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, fx);
-	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, fy);
+	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, fx);
+	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, fy);
 	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, fs);
 
 	RND_ACT_IRES(0);

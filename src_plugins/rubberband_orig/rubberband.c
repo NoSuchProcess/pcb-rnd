@@ -229,7 +229,7 @@ static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl)
 		if (i->radius < 0)
 			rad = 0; /* require exact match */
 		else
-			rad = PCB_SQUARE(i->radius + t);
+			rad = RND_SQUARE(i->radius + t);
 
 		x = (i->X - line->Point1.X);
 		x *= x;
@@ -318,7 +318,7 @@ static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 	if (i->radius < 0)
 		rad = 0; /* require exact match */
 	else
-		rad = PCB_SQUARE(i->radius + t);
+		rad = RND_SQUARE(i->radius + t);
 
 	x = (i->X - ex1);
 	x *= x;

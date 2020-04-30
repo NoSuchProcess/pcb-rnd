@@ -146,14 +146,14 @@ void pcb_xordraw_attached_arc(rnd_coord_t thick)
 	arc.X = pcb_crosshair.AttachedBox.Point1.X;
 	arc.Y = pcb_crosshair.AttachedBox.Point1.Y;
 	if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
-		arc.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
+		arc.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * RND_SGNZ(wx);
 		sa = (wx >= 0) ? 0 : 180;
-		dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
+		dir = (RND_SGNZ(wx) == RND_SGNZ(wy)) ? 90 : -90;
 	}
 	else {
-		arc.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
+		arc.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * RND_SGNZ(wy);
 		sa = (wy >= 0) ? -90 : 90;
-		dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
+		dir = (RND_SGNZ(wx) == RND_SGNZ(wy)) ? -90 : 90;
 		wy = wx;
 	}
 	wy = coord_abs(wy);
@@ -605,10 +605,10 @@ static pcb_r_dir_t onpoint_arc_callback(const rnd_rnd_box_t * box, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *) box;
 	rnd_coord_t p1x, p1y, p2x, p2y;
 
-	p1x = arc->X - arc->Width * cos(PCB_TO_RADIANS(arc->StartAngle));
-	p1y = arc->Y + arc->Height * sin(PCB_TO_RADIANS(arc->StartAngle));
-	p2x = arc->X - arc->Width * cos(PCB_TO_RADIANS(arc->StartAngle + arc->Delta));
-	p2y = arc->Y + arc->Height * sin(PCB_TO_RADIANS(arc->StartAngle + arc->Delta));
+	p1x = arc->X - arc->Width * cos(RND_TO_RADIANS(arc->StartAngle));
+	p1y = arc->Y + arc->Height * sin(RND_TO_RADIANS(arc->StartAngle));
+	p2x = arc->X - arc->Width * cos(RND_TO_RADIANS(arc->StartAngle + arc->Delta));
+	p2y = arc->Y + arc->Height * sin(RND_TO_RADIANS(arc->StartAngle + arc->Delta));
 
 	/* printf("p1=%ld;%ld p2=%ld;%ld info=%ld;%ld\n", p1x, p1y, p2x, p2y, info->X, info->Y); */
 
@@ -753,7 +753,7 @@ static void check_snap_object(struct snap_data *snap_data, rnd_coord_t x, rnd_co
 	double sq_dist;
 
 	/* avoid snapping to an object if it is in the same subc */
-	if ((snapo != NULL) && (pcbhl_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
+	if ((snapo != NULL) && (rnd_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC)) {
 		pcb_any_obj_t *parent = (pcb_any_obj_t *)pcb_obj_parent_subc(snapo);
 		int n;
 		rnd_cardinal_t parent_id = snapo->ID;
@@ -780,8 +780,8 @@ static rnd_bool should_snap_offgrid_line(pcb_board_t *pcb, pcb_layer_t *layer, p
 	 * the same layer), and when moving a line end-point
 	 * (but don't snap to the same line)
 	 */
-	if ((pcbhl_conf.editor.mode == pcb_crosshair.tool_line && PCB_CURRLAYER(pcb) == layer) ||
-			(pcbhl_conf.editor.mode == pcb_crosshair.tool_move
+	if ((rnd_conf.editor.mode == pcb_crosshair.tool_line && PCB_CURRLAYER(pcb) == layer) ||
+			(rnd_conf.editor.mode == pcb_crosshair.tool_move
 			 && pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT
 			 && pcb_crosshair.AttachedObject.Ptr1 == layer
 			 && pcb_crosshair.AttachedObject.Ptr2 != line))
@@ -874,8 +874,8 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	struct snap_data snap_data;
 	int ans;
 
-	PCB->hidlib.ch_x = pcb_crosshair.X = PCB_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
-	PCB->hidlib.ch_y = pcb_crosshair.Y = PCB_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
+	PCB->hidlib.ch_x = pcb_crosshair.X = RND_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
+	PCB->hidlib.ch_y = pcb_crosshair.Y = RND_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
 
 	nearest_grid_x = rnd_grid_fit(pcb_crosshair.X, PCB->hidlib.grid, PCB->hidlib.grid_ox);
 	nearest_grid_y = rnd_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
@@ -883,7 +883,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
 		rnd_coord_t dx = pcb_crosshair.X - hidlib->tool_grabbed.X;
 		rnd_coord_t dy = pcb_crosshair.Y - hidlib->tool_grabbed.Y;
-		if (PCB_ABS(dx) > PCB_ABS(dy))
+		if (RND_ABS(dx) > RND_ABS(dy))
 			nearest_grid_y = hidlib->tool_grabbed.Y;
 		else
 			nearest_grid_x = hidlib->tool_grabbed.X;
@@ -912,7 +912,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping padstack to any other padstack */
-	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_move && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
+	if (rnd_conf.editor.mode == pcb_crosshair.tool_move && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
 		ans = PCB_OBJ_VOID;
 
 	if (ans != PCB_OBJ_VOID) {
@@ -983,7 +983,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
 
-	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_arrow) {
+	if (rnd_conf.editor.mode == pcb_crosshair.tool_arrow) {
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_OBJ_VOID) {
 			if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
@@ -995,7 +995,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		}
 	}
 
-	if (pcbhl_conf.editor.mode == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
+	if (rnd_conf.editor.mode == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
 		pcb_line_enforce_drc(PCB);
 
 	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
@@ -1056,7 +1056,7 @@ static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int ar
 {
 	pcb_crosshair.GC = rnd_hid_make_gc();
 
-	rnd_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
+	rnd_render->set_color(pcb_crosshair.GC, &rnd_conf.appearance.color.cross);
 	rnd_hid_set_draw_xor(pcb_crosshair.GC, 1);
 	rnd_hid_set_line_cap(pcb_crosshair.GC, rnd_cap_round);
 	rnd_hid_set_line_width(pcb_crosshair.GC, 1);

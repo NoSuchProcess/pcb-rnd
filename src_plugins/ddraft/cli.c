@@ -202,7 +202,7 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 							}
 							memcpy(tmp, s, sep-s);
 							tmp[sep-s] = '\0';
-							dst[i-1].x = pcb_get_value_ex(tmp, NULL, NULL, NULL, pcbhl_conf.editor.grid_unit->suffix, &succ);
+							dst[i-1].x = pcb_get_value_ex(tmp, NULL, NULL, NULL, rnd_conf.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
 
@@ -213,12 +213,12 @@ static int cli_parse(cli_node_t *dst, int dstlen, const char *line)
 							}
 							memcpy(tmp, sep, next-sep);
 							tmp[next-sep] = '\0';
-							dst[i-1].y = pcb_get_value_ex(tmp, NULL, NULL, NULL, pcbhl_conf.editor.grid_unit->suffix, &succ);
+							dst[i-1].y = pcb_get_value_ex(tmp, NULL, NULL, NULL, rnd_conf.editor.grid_unit->suffix, &succ);
 							if (!succ)
 								dst[i-1].invalid = 1;
 							break;
 						case CLI_DIST:
-							dst[i-1].dist = pcb_get_value_ex(s, NULL, NULL, NULL, pcbhl_conf.editor.grid_unit->suffix, &succ);
+							dst[i-1].dist = pcb_get_value_ex(s, NULL, NULL, NULL, rnd_conf.editor.grid_unit->suffix, &succ);
 							dst[i-1].invalid = !succ;
 							dst[i-1].end = next - line;
 							break;
@@ -413,8 +413,8 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, rnd_coord_t *ox
 				goto over;
 			apply:;
 				if (have_angle && have_dist) {
-					x += cos(angle / PCB_RAD_TO_DEG) * dist;
-					y += sin(angle / PCB_RAD_TO_DEG) * dist;
+					x += cos(angle / RND_RAD_TO_DEG) * dist;
+					y += sin(angle / RND_RAD_TO_DEG) * dist;
 					have_angle = have_dist = 0;
 					moved = 1;
 				}
@@ -431,7 +431,7 @@ static int cli_apply_coord(cli_node_t *argv, int start, int end, rnd_coord_t *ox
 				c[2] = rnd_round(x);
 				c[3] = rnd_round(y);
 			}
-			angle = atan2(y - ly, x - lx) * PCB_RAD_TO_DEG;
+			angle = atan2(y - ly, x - lx) * RND_RAD_TO_DEG;
 			lx = x;
 			ly = y;
 			len++;

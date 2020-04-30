@@ -144,8 +144,8 @@ int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char 
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -Z_NEAR);
 
-	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, ((pcbhl_conf.editor.view.flip_x == pcbhl_conf.editor.view.flip_y) ? 1. : -1.) / ghidgui->port.view.coord_per_px);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, pcbhl_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
+	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / ghidgui->port.view.coord_per_px);
+	glTranslatef(rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
 
@@ -175,7 +175,7 @@ rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
 
 	rv = g_new0(rnd_hid_gc_s, 1);
 	rv->me_pointer = &gtk2_gl_hid;
-	rv->pcolor = &pcbhl_conf.appearance.color.background;
+	rv->pcolor = &rnd_conf.appearance.color.background;
 	rv->alpha_mult = 1.0;
 	return rv;
 }
@@ -192,7 +192,7 @@ static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_rnd_box_t *drawn_area)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!pcbhl_conf.editor.draw_grid))
+	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!rnd_conf.editor.draw_grid))
 		return;
 
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -264,13 +264,13 @@ void ghid_gl_set_special_colors(rnd_conf_native_t *cfg)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	if (((RND_CFT_COLOR *) cfg->val.color == &pcbhl_conf.appearance.color.background)) {
+	if (((RND_CFT_COLOR *) cfg->val.color == &rnd_conf.appearance.color.background)) {
 		priv->bg_color = cfg->val.color[0];
 	}
-	else if ((RND_CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.off_limit) {
+	else if ((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.off_limit) {
 		priv->offlimits_color = cfg->val.color[0];
 	}
-	else if (((RND_CFT_COLOR *)cfg->val.color == &pcbhl_conf.appearance.color.grid)) {
+	else if (((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.grid)) {
 		priv->grid_color = cfg->val.color[0];
 		set_special_grid_color();
 	}
@@ -311,7 +311,7 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 		r = priv->offlimits_color.fr;
 		g = priv->offlimits_color.fg;
 		b = priv->offlimits_color.fb;
-		a = pcbhl_conf.appearance.drill_alpha;
+		a = rnd_conf.appearance.drill_alpha;
 	}
 	else {
 		pcb_gtk_color_cache_t *cc;
@@ -351,7 +351,7 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 			g = cc->green;
 			b = cc->blue;
 		}
-		a = pcbhl_conf.appearance.layer_alpha;
+		a = rnd_conf.appearance.layer_alpha;
 	}
 	if (1) {
 		double maxi, mult;
@@ -585,17 +585,17 @@ static void pcb_gl_draw_dozen_cross(rnd_hidlib_t *hidlib, GLint x, GLint y, GLin
 
 static void pcb_gl_draw_crosshair(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
 {
-	static enum pcb_crosshair_shape_e prev = pcb_ch_shape_basic;
+	static enum rnd_crosshair_shape_e prev = rnd_ch_shape_basic;
 
 	if (!ghidgui->topwin.active || !ghidgui->port.view.has_entered)
 		return;
 
 	pcb_gl_draw_right_cross(hidlib, x, y, z, minx, miny, maxx, maxy);
-	if (prev == pcb_ch_shape_union_jack)
+	if (prev == rnd_ch_shape_union_jack)
 		pcb_gl_draw_slanted_cross(hidlib, x, y, z, minx, miny, maxx, maxy);
-	if (prev == pcb_ch_shape_dozen)
+	if (prev == rnd_ch_shape_dozen)
 		pcb_gl_draw_dozen_cross(hidlib, x, y, z, minx, miny, maxx, maxy);
-	prev = pcbhl_conf.editor.crosshair_shape_idx;
+	prev = rnd_conf.editor.crosshair_shape_idx;
 }
 
 static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_location, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
@@ -608,10 +608,10 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 	if (!paint_new_location)
 		return;
 
-	if (!done_once || (cross_color_packed != pcbhl_conf.appearance.color.cross.packed)) {
+	if (!done_once || (cross_color_packed != rnd_conf.appearance.color.cross.packed)) {
 		done_once = 1;
-		map_color(&pcbhl_conf.appearance.color.cross, &cross_color);
-		cross_color_packed = pcbhl_conf.appearance.color.cross.packed;
+		map_color(&rnd_conf.appearance.color.cross, &cross_color);
+		cross_color_packed = rnd_conf.appearance.color.cross.packed;
 	}
 	x = ghidgui->port.view.crosshair_x;
 	y = ghidgui->port.view.crosshair_y;
@@ -674,9 +674,9 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	ghidgui->port.drawing_allowed = pcb_true;
 
 	if (!done_once) {
-		priv->bg_color = pcbhl_conf.appearance.color.background;
-		priv->offlimits_color = pcbhl_conf.appearance.color.off_limit;
-		priv->grid_color = pcbhl_conf.appearance.color.grid;
+		priv->bg_color = rnd_conf.appearance.color.background;
+		priv->offlimits_color = rnd_conf.appearance.color.off_limit;
+		priv->grid_color = rnd_conf.appearance.color.grid;
 		set_special_grid_color();
 		done_once = 1;
 	}
@@ -768,8 +768,8 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &priv->offlimits_color);
 
-	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((pcbhl_conf.editor.view.flip_x == pcbhl_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, pcbhl_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
+	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
+	glTranslatef(rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
 	glColor3f(priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
@@ -895,8 +895,8 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
-	glScalef((pcbhl_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (pcbhl_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, 1);
-	glTranslatef(pcbhl_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, pcbhl_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
+	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, 1);
+	glTranslatef(rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
 
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 	expcall(&gtk2_gl_hid, ctx);

@@ -105,7 +105,7 @@ static void fprint_aperture(FILE *f, aperture_t *aptr)
 		break;
 	case OCTAGON:
 		pcb_fprintf(f, "%%AMOCT%d*5,0,8,0,0,%[5],22.5*%%\r\n"
-								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (rnd_coord_t) ((double) aptr->width / PCB_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
+								"%%ADD%dOCT%d*%%\r\n", aptr->dCode, (rnd_coord_t) ((double) aptr->width / RND_COS_22_5_DEGREE), aptr->dCode, aptr->dCode);
 		break;
 	}
 }
@@ -347,7 +347,7 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	if (!fnbase)
 		fnbase = "pcb-out";
 
-	verbose = options[HA_verbose].lng || pcbhl_conf.rc.verbose;
+	verbose = options[HA_verbose].lng || rnd_conf.rc.verbose;
 	all_layers = options[HA_all_layers].lng;
 
 	copy_outline_mode = options[HA_copy_outline].lng;
@@ -887,8 +887,8 @@ static void gerber_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 	}
 
 
-	arcStartX = cx - width * cos(PCB_TO_RADIANS(start_angle));
-	arcStartY = cy + height * sin(PCB_TO_RADIANS(start_angle));
+	arcStartX = cx - width * cos(RND_TO_RADIANS(start_angle));
+	arcStartY = cy + height * sin(RND_TO_RADIANS(start_angle));
 
 	if (fabs(delta_angle) < 0.01) {
 		gerber_draw_line(gc, arcStartX, arcStartY, arcStartX, arcStartY);
@@ -920,8 +920,8 @@ static void gerber_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 		angle = start_angle;
 		while (nsteps > 0) {
 			nsteps--;
-			x1 = cx - width * cos(PCB_TO_RADIANS(angle + step));
-			y1 = cy + height * sin(PCB_TO_RADIANS(angle + step));
+			x1 = cx - width * cos(RND_TO_RADIANS(angle + step));
+			y1 = cy + height * sin(RND_TO_RADIANS(angle + step));
 			gerber_draw_line(gc, x0, y0, x1, y1);
 			x0 = x1;
 			y0 = y1;
@@ -930,8 +930,8 @@ static void gerber_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 		return;
 	}
 
-	arcStopX = cx - width * cos(PCB_TO_RADIANS(start_angle + delta_angle));
-	arcStopY = cy + height * sin(PCB_TO_RADIANS(start_angle + delta_angle));
+	arcStopX = cx - width * cos(RND_TO_RADIANS(start_angle + delta_angle));
+	arcStopY = cy + height * sin(RND_TO_RADIANS(start_angle + delta_angle));
 	if (arcStartX != lastX) {
 		m = pcb_true;
 		lastX = arcStartX;

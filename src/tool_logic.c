@@ -97,7 +97,7 @@ void pcb_tool_logic_uninit(void)
 static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	static int was_rat;
-	if (PCB->RatDraw && !was_rat && !(pcb_tool_get(pcbhl_conf.editor.mode)->user_flags & PCB_TLF_RAT))
+	if (PCB->RatDraw && !was_rat && !(pcb_tool_get(rnd_conf.editor.mode)->user_flags & PCB_TLF_RAT))
 		pcb_tool_select_by_name(&PCB->hidlib, "line");
 	was_rat = PCB->RatDraw;
 }

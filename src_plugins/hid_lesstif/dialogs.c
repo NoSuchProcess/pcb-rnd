@@ -49,7 +49,7 @@ void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy
 
 	rnd_event(ltf_hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
-	if (pcbhl_conf.editor.auto_place) {
+	if (rnd_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0) && (plc[0] >= 0) && (plc[1] >= 0)) {
 			XMoveResizeWindow(dsp, w, plc[0], plc[1], plc[2], plc[3]);
 		}

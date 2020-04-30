@@ -188,8 +188,8 @@ void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y
 	yf = (y2 - y1) / v->canvas_height;
 	v->coord_per_px = (xf > yf ? xf : yf);
 
-	v->x0 = SIDE_X(v, pcbhl_conf.editor.view.flip_x ? x2 : x1);
-	v->y0 = SIDE_Y(v, pcbhl_conf.editor.view.flip_y ? y2 : y1);
+	v->x0 = SIDE_X(v, rnd_conf.editor.view.flip_x ? x2 : x1);
+	v->y0 = SIDE_Y(v, rnd_conf.editor.view.flip_y ? y2 : y1);
 
 	uiz_pan_common(v);
 	if (setch) {

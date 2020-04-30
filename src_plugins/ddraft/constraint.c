@@ -46,7 +46,7 @@ static int find_best_angle(double *out_ang, rnd_coord_t x1, rnd_coord_t y1, rnd_
 	double diff, ang, best_diff, target_ang;
 	int n, best;
 
-	ang = atan2(y2 - y1, x2 - x1) * PCB_RAD_TO_DEG;
+	ang = atan2(y2 - y1, x2 - x1) * RND_RAD_TO_DEG;
 
 	if (anglen > 0) {
 		/* find the best matching constraint angle */
@@ -73,7 +73,7 @@ static int find_best_angle(double *out_ang, rnd_coord_t x1, rnd_coord_t y1, rnd_
 	if (angle_mod > 0)
 		target_ang = floor(target_ang / angle_mod) * angle_mod;
 
-	target_ang /= PCB_RAD_TO_DEG;
+	target_ang /= RND_RAD_TO_DEG;
 	*out_ang = target_ang;
 	return 0;
 }

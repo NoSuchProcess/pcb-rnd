@@ -675,7 +675,7 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	sidelen = sqrt(sidex * sidex + sidey * sidey);
 	nx = -sidey / sidelen;
 	ny = sidex / sidelen;
-	r = (sidelen / 2) / tan(curvang / PCB_RAD_TO_DEG / 2.0);
+	r = (sidelen / 2) / tan(curvang / RND_RAD_TO_DEG / 2.0);
 	cx  = rnd_round(midx + nx * r);
 	cy  = rnd_round(midy + ny * r);
 /*	rnd_trace("curve mid: %mm;%mm center: %mm;%mm\n", midx, midy, cx, cy);*/
@@ -683,8 +683,8 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	dx = x1 - cx;
 	dy = y1 - cy;
 	r = sqrt(dx * dx + dy * dy);
-	sa = 180.0 - atan2(y1 - cy, x1 - cx) * PCB_RAD_TO_DEG;
-	ea = 180.0 - atan2(y2 - cy, x2 - cx) * PCB_RAD_TO_DEG;
+	sa = 180.0 - atan2(y1 - cy, x1 - cx) * RND_RAD_TO_DEG;
+	ea = 180.0 - atan2(y2 - cy, x2 - cx) * RND_RAD_TO_DEG;
 	da = ea - sa;
 /*	rnd_trace("  r=%mm %f %f -> %f\n", (rnd_coord_t)r, sa, ea, da);*/
 	arc = pcb_arc_new(ly, cx, cy, r, r, sa, da, th, st->md_wire_wire*2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
@@ -881,7 +881,7 @@ TODO("{pstk_shape} TODO need OFFSET shape generation function, once OFFSET objec
 
 	if (rot != 0) {
 		int n;
-		double sina = sin(-(double)rot / PCB_RAD_TO_DEG), cosa = cos(-(double)rot / PCB_RAD_TO_DEG);
+		double sina = sin(-(double)rot / RND_RAD_TO_DEG), cosa = cos(-(double)rot / RND_RAD_TO_DEG);
 
 		for(n = 0; n < sizeof(shapes)/sizeof(shapes[0]); n++) {
 			if (shapes[n].layer_mask == 0) break;
@@ -1194,7 +1194,7 @@ TODO("revise rotation and flip")
 			}
 			else if (moduleRotation != 0) {
 				double rot = moduleRotation;
-				pcb_subc_rotate(subc, moduleX, moduleY, cos(rot/PCB_RAD_TO_DEG), sin(rot/PCB_RAD_TO_DEG), rot);
+				pcb_subc_rotate(subc, moduleX, moduleY, cos(rot/RND_RAD_TO_DEG), sin(rot/RND_RAD_TO_DEG), rot);
 			}
 #endif
 
@@ -1465,8 +1465,8 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					else {
 						double sina, cosa;
 						ang = -ang;
-						sina = sin(ang / PCB_RAD_TO_DEG);
-						cosa = cos(ang / PCB_RAD_TO_DEG);
+						sina = sin(ang / RND_RAD_TO_DEG);
+						cosa = cos(ang / RND_RAD_TO_DEG);
 						pcb_subc_rotate(new_subc, x, y, cosa, sina, ang);
 					}
 				}

@@ -95,14 +95,14 @@ void pcb_tool_arc_notify_mode(rnd_hidlib_t *hl)
 			wy = hl->tool_y - pcb_crosshair.AttachedBox.Point1.Y;
 rnd_trace("arc: %mm %mm wh %mm %mm\n", hl->tool_x, hl->tool_y, wx, wy);
 			if (PCB_XOR(pcb_crosshair.AttachedBox.otherway, coord_abs(wy) > coord_abs(wx))) {
-				pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * PCB_SGNZ(wx);
+				pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedBox.Point1.X + coord_abs(wy) * RND_SGNZ(wx);
 				sa = (wx >= 0) ? 0 : 180;
-				dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? 90 : -90;
+				dir = (RND_SGNZ(wx) == RND_SGNZ(wy)) ? 90 : -90;
 			}
 			else {
-				pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * PCB_SGNZ(wy);
+				pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y + coord_abs(wx) * RND_SGNZ(wy);
 				sa = (wy >= 0) ? -90 : 90;
-				dir = (PCB_SGNZ(wx) == PCB_SGNZ(wy)) ? -90 : 90;
+				dir = (RND_SGNZ(wx) == RND_SGNZ(wy)) ? -90 : 90;
 				wy = wx;
 			}
 			if (coord_abs(wy) > 0 && (arc = pcb_arc_new(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true),

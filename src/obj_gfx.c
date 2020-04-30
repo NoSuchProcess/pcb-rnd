@@ -126,7 +126,7 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 	gfx->cox[2] = rnd_round((double)gfx->cx - rx); gfx->coy[2] = rnd_round((double)gfx->cy - ry);
 	gfx->cox[3] = rnd_round((double)gfx->cx + rx); gfx->coy[3] = rnd_round((double)gfx->cy - ry);
 	if (gfx->rot != 0.0) {
-		a = gfx->rot / PCB_RAD_TO_DEG;
+		a = gfx->rot / RND_RAD_TO_DEG;
 		cosa = cos(a);
 		sina = sin(a);
 		for(n = 0; n < 4; n++)

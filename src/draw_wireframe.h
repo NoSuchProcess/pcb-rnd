@@ -63,7 +63,7 @@ RND_INLINE void pcb_draw_wireframe_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 	if((x1 != x2) || (y1 != y2)) {
 		double dx = x2 - x1;
 		double dy = y2 - y1;
-		double h = 0.5 * thick / sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+		double h = 0.5 * thick / sqrt(RND_SQUARE(dx) + RND_SQUARE(dy));
 		rnd_coord_t ox = dy * h + 0.5 * SGN(dy);
 		rnd_coord_t oy = -(dx * h + 0.5 * SGN(dx));
 		if (square) {

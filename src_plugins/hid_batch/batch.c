@@ -81,7 +81,7 @@ static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 
 static void log_append(rnd_logline_t *line)
 {
-	if ((line->level < RND_MSG_INFO) && !pcbhl_conf.rc.verbose)
+	if ((line->level < RND_MSG_INFO) && !rnd_conf.rc.verbose)
 		return;
 
 	if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
@@ -129,14 +129,14 @@ static void batch_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	log_import();
 
-	if ((interactive) && (!pcbhl_conf.rc.quiet)) {
+	if ((interactive) && (!rnd_conf.rc.quiet)) {
 		printf("Entering %s version %s batch mode.\n", rnd_app_package, rnd_app_version);
 		printf("See %s for project information\n", rnd_app_url);
 	}
 
 	batch_stay = 1;
 	while (batch_stay) {
-		if ((interactive) && (!pcbhl_conf.rc.quiet)) {
+		if ((interactive) && (!rnd_conf.rc.quiet)) {
 			printf("%s:%s> ", prompt, rnd_cli_prompt(NULL));
 			fflush(stdout);
 		}

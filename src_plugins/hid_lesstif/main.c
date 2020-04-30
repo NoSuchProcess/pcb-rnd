@@ -78,7 +78,7 @@ static int ltf_ccache_inited;
 
 /* How big the viewport can be relative to the pcb size.  */
 #define MAX_ZOOM_SCALE	10
-#define UUNIT	pcbhl_conf.editor.grid_unit->allow
+#define UUNIT	rnd_conf.editor.grid_unit->allow
 
 typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
@@ -295,7 +295,7 @@ static void Pan(int mode, rnd_coord_t x, rnd_coord_t y);
 static inline int Vx(rnd_coord_t x)
 {
 	int rv = (x - view_left_x) / view_zoom + 0.5;
-	if (pcbhl_conf.editor.view.flip_x)
+	if (rnd_conf.editor.view.flip_x)
 		rv = view_width - rv;
 	return rv;
 }
@@ -303,7 +303,7 @@ static inline int Vx(rnd_coord_t x)
 static inline int Vy(rnd_coord_t y)
 {
 	int rv = (y - view_top_y) / view_zoom + 0.5;
-	if (pcbhl_conf.editor.view.flip_y)
+	if (rnd_conf.editor.view.flip_y)
 		rv = view_height - rv;
 	return rv;
 }
@@ -320,14 +320,14 @@ static inline int Vw(rnd_coord_t w)
 
 static inline rnd_coord_t Px(int x)
 {
-	if (pcbhl_conf.editor.view.flip_x)
+	if (rnd_conf.editor.view.flip_x)
 		x = view_width - x;
 	return x * view_zoom + view_left_x;
 }
 
 static inline rnd_coord_t Py(int y)
 {
-	if (pcbhl_conf.editor.view.flip_y)
+	if (rnd_conf.editor.view.flip_y)
 		y = view_height - y;
 	return y * view_zoom + view_top_y;
 }
@@ -874,9 +874,9 @@ static void zoom_to(double new_zoom, rnd_coord_t x, rnd_coord_t y)
 	xfrac = (double) x / (double) view_width;
 	yfrac = (double) y / (double) view_height;
 
-	if (pcbhl_conf.editor.view.flip_x)
+	if (rnd_conf.editor.view.flip_x)
 		xfrac = 1 - xfrac;
-	if (pcbhl_conf.editor.view.flip_y)
+	if (rnd_conf.editor.view.flip_y)
 		yfrac = 1 - yfrac;
 
 	max_zoom = ltf_hidlib->size_x / view_width;
@@ -946,9 +946,9 @@ TODO("remove this if there is no bugreport for a long time");
 	if (pan_thumb_mode) {
 		opx = x * ltf_hidlib->size_x / view_width;
 		opy = y * ltf_hidlib->size_y / view_height;
-		if (pcbhl_conf.editor.view.flip_x)
+		if (rnd_conf.editor.view.flip_x)
 			opx = ltf_hidlib->size_x - opx;
-		if (pcbhl_conf.editor.view.flip_y)
+		if (rnd_conf.editor.view.flip_y)
 			opy = ltf_hidlib->size_y - opy;
 		view_left_x = opx - view_width / 2 * view_zoom;
 		view_top_y = opy - view_height / 2 * view_zoom;
@@ -968,11 +968,11 @@ TODO("remove this if there is no bugreport for a long time");
 	/* continued drag, we calculate how far we've moved the cursor and
 	   set the position accordingly.  */
 	else {
-		if (pcbhl_conf.editor.view.flip_x)
+		if (rnd_conf.editor.view.flip_x)
 			view_left_x = opx + (x - ox) * view_zoom;
 		else
 			view_left_x = opx - (x - ox) * view_zoom;
-		if (pcbhl_conf.editor.view.flip_y)
+		if (rnd_conf.editor.view.flip_y)
 			view_top_y = opy + (y - oy) * view_zoom;
 		else
 			view_top_y = opy - (y - oy) * view_zoom;
@@ -1190,9 +1190,9 @@ static void draw_dozen_cross(GC xor_gc, int x, int y, int view_width, int view_h
 static void draw_crosshair(GC xor_gc, int x, int y, int view_width, int view_height)
 {
 	draw_right_cross(xor_gc, x, y, view_width, view_height);
-	if (pcbhl_conf.editor.crosshair_shape_idx == pcb_ch_shape_union_jack)
+	if (rnd_conf.editor.crosshair_shape_idx == rnd_ch_shape_union_jack)
 		draw_slanted_cross(xor_gc, x, y, view_width, view_height);
-	if (pcbhl_conf.editor.crosshair_shape_idx == pcb_ch_shape_dozen)
+	if (rnd_conf.editor.crosshair_shape_idx == rnd_ch_shape_dozen)
 		draw_dozen_cross(xor_gc, x, y, view_width, view_height);
 }
 
@@ -1206,12 +1206,12 @@ void lesstif_show_crosshair(int show)
 
 	if (!crosshair_in_window || !window)
 		return;
-	if ((xor_gc == 0) || (cross_color_packed != pcbhl_conf.appearance.color.cross.packed)) {
-		crosshair_color = lesstif_parse_color(&pcbhl_conf.appearance.color.cross);
+	if ((xor_gc == 0) || (cross_color_packed != rnd_conf.appearance.color.cross.packed)) {
+		crosshair_color = lesstif_parse_color(&rnd_conf.appearance.color.cross);
 		xor_gc = XCreateGC(display, window, 0, 0);
 		XSetFunction(display, xor_gc, GXxor);
 		XSetForeground(display, xor_gc, crosshair_color);
-		cross_color_packed = pcbhl_conf.appearance.color.cross.packed;
+		cross_color_packed = rnd_conf.appearance.color.cross.packed;
 	}
 	if (show == showing)
 		return;
@@ -1321,8 +1321,8 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 	view_width = width;
 	view_height = height;
 
-	offlimit_color = lesstif_parse_color(&pcbhl_conf.appearance.color.off_limit);
-	grid_color = lesstif_parse_color(&pcbhl_conf.appearance.color.grid);
+	offlimit_color = lesstif_parse_color(&rnd_conf.appearance.color.off_limit);
+	grid_color = lesstif_parse_color(&rnd_conf.appearance.color.grid);
 
 	bg_gc = XCreateGC(display, window, 0, 0);
 	XSetForeground(display, bg_gc, bgcolor);
@@ -1331,7 +1331,7 @@ static void work_area_first_expose(Widget work_area, void *me, XmDrawingAreaCall
 
 #ifdef RND_HAVE_XRENDER
 	if (use_xrender) {
-		double l_alpha = pcbhl_conf.appearance.layer_alpha;
+		double l_alpha = rnd_conf.appearance.layer_alpha;
 		XRenderPictureAttributes pa;
 		XRenderColor a = { 0, 0, 0,  0x8000};
 		
@@ -1448,7 +1448,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	XtManageChild(work_area_frame);
 
 	stdarg_n = 0;
-	stdarg_do_color(&pcbhl_conf.appearance.color.background, XmNbackground);
+	stdarg_do_color(&rnd_conf.appearance.color.background, XmNbackground);
 	work_area = XmCreateDrawingArea(work_area_frame, XmStrCast("work_area"), stdarg_args, stdarg_n);
 	XtManageChild(work_area);
 	XtAddCallback(work_area, XmNexposeCallback, (XtCallbackProc) work_area_first_expose, 0);
@@ -1881,7 +1881,7 @@ static void draw_grid()
 	int n;
 	static GC grid_gc = 0;
 
-	if (!pcbhl_conf.editor.draw_grid)
+	if (!rnd_conf.editor.draw_grid)
 		return;
 	if (Vz(ltf_hidlib->grid) < RND_MIN_GRID_DISTANCE)
 		return;
@@ -1890,7 +1890,7 @@ static void draw_grid()
 		XSetFunction(display, grid_gc, GXxor);
 		XSetForeground(display, grid_gc, grid_color);
 	}
-	if (pcbhl_conf.editor.view.flip_x) {
+	if (rnd_conf.editor.view.flip_x) {
 		x2 = rnd_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
 		x1 = rnd_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
 		if (Vx(x2) < 0)
@@ -1906,7 +1906,7 @@ static void draw_grid()
 		if (Vx(x2) >= view_width)
 			x2 -= ltf_hidlib->grid;
 	}
-	if (pcbhl_conf.editor.view.flip_y) {
+	if (rnd_conf.editor.view.flip_y) {
 		y2 = rnd_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
 		y1 = rnd_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
 		if (Vy(y2) < 0)
@@ -1959,12 +1959,12 @@ static Boolean idle_proc(XtPointer dummy)
 		ctx.view.Y1 = Py(0);
 		ctx.view.X2 = Px(view_width);
 		ctx.view.Y2 = Py(view_height);
-		if (pcbhl_conf.editor.view.flip_x) {
+		if (rnd_conf.editor.view.flip_x) {
 			rnd_coord_t tmp = ctx.view.X1;
 			ctx.view.X1 = ctx.view.X2;
 			ctx.view.X2 = tmp;
 		}
-		if (pcbhl_conf.editor.view.flip_y) {
+		if (rnd_conf.editor.view.flip_y) {
 			rnd_coord_t tmp = ctx.view.Y1;
 			ctx.view.Y1 = ctx.view.Y2;
 			ctx.view.Y2 = tmp;
@@ -2039,14 +2039,14 @@ static Boolean idle_proc(XtPointer dummy)
 		static int c_x = -2, c_y = -2;
 		static rnd_mark_t saved_mark;
 		static const rnd_unit_t *old_grid_unit = NULL;
-		if (crosshair_x != c_x || crosshair_y != c_y || pcbhl_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(rnd_mark_t))) {
+		if (crosshair_x != c_x || crosshair_y != c_y || rnd_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(rnd_mark_t))) {
 			c_x = crosshair_x;
 			c_y = crosshair_y;
 
 			memcpy(&saved_mark, &pcb_marked, sizeof(rnd_mark_t));
 
-			if (old_grid_unit != pcbhl_conf.editor.grid_unit)
-				old_grid_unit = pcbhl_conf.editor.grid_unit;
+			if (old_grid_unit != rnd_conf.editor.grid_unit)
+				old_grid_unit = rnd_conf.editor.grid_unit;
 		}
 	}
 
@@ -2412,11 +2412,11 @@ static void lesstif_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 		delta_angle = 360;
 	}
 
-	if (pcbhl_conf.editor.view.flip_x) {
+	if (rnd_conf.editor.view.flip_x) {
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
 	}
-	if (pcbhl_conf.editor.view.flip_y) {
+	if (rnd_conf.editor.view.flip_y) {
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
@@ -2621,11 +2621,11 @@ static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, 
 		unsigned int keys_buttons;
 		int pos_x, pos_y, root_x, root_y;
 		XQueryPointer(display, window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
-		if (pcbhl_conf.editor.view.flip_x)
+		if (rnd_conf.editor.view.flip_x)
 			view_left_x = x - (view_width - pos_x) * view_zoom;
 		else
 			view_left_x = x - pos_x * view_zoom;
-		if (pcbhl_conf.editor.view.flip_y)
+		if (rnd_conf.editor.view.flip_y)
 			view_top_y = y - (view_height - pos_y) * view_zoom;
 		else
 			view_top_y = y - pos_y * view_zoom;

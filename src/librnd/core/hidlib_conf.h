@@ -24,17 +24,17 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_HIDLIB_CONF_H
-#define PCB_HIDLIB_CONF_H
+#ifndef RND_HIDLIB_CONF_H
+#define RND_HIDLIB_CONF_H
 
 #include <librnd/core/conf.h>
 #include <librnd/core/color.h>
 
-enum pcb_crosshair_shape_e {
-	pcb_ch_shape_basic       = 0,    /*  4-ray */
-	pcb_ch_shape_union_jack  = 1,    /*  8-ray */
-	pcb_ch_shape_dozen       = 2,    /* 12-ray */
-	pcb_ch_shape_NUM
+enum rnd_crosshair_shape_e {
+	rnd_ch_shape_basic       = 0,    /*  4-ray */
+	rnd_ch_shape_union_jack  = 1,    /*  8-ray */
+	rnd_ch_shape_dozen       = 2,    /* 12-ray */
+	rnd_ch_shape_NUM
 };
 
 /* to @conf_gen.sh: begin hidlib */
@@ -93,7 +93,7 @@ typedef struct {
 		RND_CFT_BOOLEAN draw_grid;             /* draw grid points */
 		RND_CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		RND_CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
-		RND_CFT_INTEGER crosshair_shape_idx;   /* crosshair shape as defined in pcb_crosshair_shape_e */
+		RND_CFT_INTEGER crosshair_shape_idx;   /* crosshair shape as defined in rnd_crosshair_shape_e */
 		RND_CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
 
 		const struct {
@@ -102,18 +102,18 @@ typedef struct {
 		} view;
 
 	} editor;
-} pcbhl_conf_t;
+} rnd_conf_t;
 
 /* to @conf_gen.sh: end hidlib */
 
 
-extern pcbhl_conf_t pcbhl_conf;
+extern rnd_conf_t rnd_conf;
 
-int pcb_hidlib_conf_init();
+int rnd_hidlib_conf_init();
 
 /* sets cursor grid with respect to grid spacing, offset and unit values */
-void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
-void pcb_hidlib_set_unit(rnd_hidlib_t *hidlib, const rnd_unit_t *new_unit);
+void rnd_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
+void rnd_hidlib_set_unit(rnd_hidlib_t *hidlib, const rnd_unit_t *new_unit);
 
 
 #endif

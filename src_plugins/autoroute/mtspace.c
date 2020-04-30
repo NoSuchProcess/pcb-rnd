@@ -198,7 +198,7 @@ static inline void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, r
 	rnd_cheap_point_t p = *desired;
 	assert(desired);
 	rnd_closest_cheap_point_in_box(&p, newone);
-	rnd_heap_insert(heap, PCB_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
+	rnd_heap_insert(heap, RND_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
 }
 
 static inline void append(struct query_closure *qc, rnd_rnd_box_t * newone)

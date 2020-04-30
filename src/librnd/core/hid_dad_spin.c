@@ -114,7 +114,7 @@ static char *gen_str_coord(rnd_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, i
 	if (spin->unit != NULL)
 		unit = spin->unit;
 	else
-		unit = pcbhl_conf.editor.grid_unit;
+		unit = rnd_conf.editor.grid_unit;
 	if (buf != NULL) {
 		pcb_snprintf(buf, buflen, "%$m*", unit->suffix, c);
 		return buf;
@@ -143,11 +143,11 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	else if ((!is_globbing) && (unum >= 0) && (unum < pcb_get_n_units(0)))
 		unit = &pcb_units[unum];
 	else
-		unit = pcbhl_conf.editor.grid_unit;
+		unit = rnd_conf.editor.grid_unit;
 
 	if (is_globbing && su->dlg[su->wglob].val.lng) {
 		/* global ticked in: also set the unit by force */
-		unum = pcbhl_conf.editor.grid_unit - pcb_units;
+		unum = rnd_conf.editor.grid_unit - pcb_units;
 		hv.lng = unum;
 		rnd_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
 	}
@@ -173,7 +173,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 	memset(&ctx, 0, sizeof(ctx));
 	ctx.end = end;
 
-	def_unit = spin->unit == NULL ? pcbhl_conf.editor.grid_unit : spin->unit;
+	def_unit = spin->unit == NULL ? rnd_conf.editor.grid_unit : spin->unit;
 
 	RND_DAD_BEGIN_VBOX(ctx.dlg);
 		RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
@@ -276,7 +276,7 @@ static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 					succ = pcb_get_value_unit(str->val.str, NULL, 0, &v, &unit);
 				if (!succ) {
 					v = end->val.crd;
-					unit = pcbhl_conf.editor.grid_unit;
+					unit = rnd_conf.editor.grid_unit;
 				}
 			}
 			else
@@ -440,7 +440,7 @@ void rnd_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 			while(isspace(*ends)) ends++;
 			if (*ends == '\0') {
 				rnd_hid_attr_val_t hv;
-				char *tmp = pcb_concat(inval, " ", pcbhl_conf.editor.grid_unit->suffix, NULL);
+				char *tmp = pcb_concat(inval, " ", rnd_conf.editor.grid_unit->suffix, NULL);
 
 				changed = 1;
 				hv.str = tmp;

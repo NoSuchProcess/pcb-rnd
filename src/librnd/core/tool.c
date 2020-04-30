@@ -70,7 +70,7 @@ void pcb_tool_uninit(void)
 void pcb_tool_chg_mode(rnd_hidlib_t *hl)
 {
 	if ((hl != NULL) && (!tool_select_lock))
-		pcb_tool_select_by_id(hl, pcbhl_conf.editor.mode);
+		pcb_tool_select_by_id(hl, rnd_conf.editor.mode);
 }
 
 pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
@@ -137,11 +137,11 @@ int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 	/* check if the UI logic allows picking that tool */
 	rnd_event(hidlib, RND_EVENT_TOOL_SELECT_PRE, "pi", &ok, id);
 	if (ok == 0)
-		id = pcbhl_conf.editor.mode;
+		id = rnd_conf.editor.mode;
 
 	recursing = pcb_true;
 
-	pcb_tool_prev_id = pcbhl_conf.editor.mode;
+	pcb_tool_prev_id = rnd_conf.editor.mode;
 	pcb_tool_next_id = id;
 	uninit_current_tool();
 	sprintf(id_s, "%d", id);
@@ -175,7 +175,7 @@ int pcb_tool_select_highest(rnd_hidlib_t *hidlib)
 
 int pcb_tool_save(rnd_hidlib_t *hidlib)
 {
-	save_stack[save_position] = pcbhl_conf.editor.mode;
+	save_stack[save_position] = rnd_conf.editor.mode;
 	if (save_position < PCB_MAX_MODESTACK_DEPTH - 1)
 		save_position++;
 	else
@@ -209,9 +209,9 @@ void rnd_tool_gui_init(void)
 #define wrap(func, err_ret, prefix, args) \
 	do { \
 		const pcb_tool_t *tool; \
-		if ((pcbhl_conf.editor.mode < 0) || (pcbhl_conf.editor.mode >= vtp0_len(&pcb_tools))) \
+		if ((rnd_conf.editor.mode < 0) || (rnd_conf.editor.mode >= vtp0_len(&pcb_tools))) \
 			{ err_ret; } \
-		tool = (const pcb_tool_t *)pcb_tools.array[pcbhl_conf.editor.mode]; \
+		tool = (const pcb_tool_t *)pcb_tools.array[rnd_conf.editor.mode]; \
 		if (tool->func == NULL) \
 			{ err_ret; } \
 		prefix tool->func args; \
@@ -262,7 +262,7 @@ rnd_bool pcb_tool_redo_act(rnd_hidlib_t *hl)
 
 static void do_release(rnd_hidlib_t *hidlib)
 {
-	if (pcbhl_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 0) == 0))
+	if (rnd_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 0) == 0))
 		return;
 
 	hidlib->tool_grabbed.status = pcb_false;
@@ -277,7 +277,7 @@ static void do_release(rnd_hidlib_t *hidlib)
 
 void pcb_tool_do_press(rnd_hidlib_t *hidlib)
 {
-	if (pcbhl_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 1) == 0))
+	if (rnd_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 1) == 0))
 		return;
 
 	hidlib->tool_grabbed.X = hidlib->tool_x;
@@ -306,12 +306,12 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	hidlib->tool_y = hidlib->ch_y;
 	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 	if (rnd_strcasecmp(cmd, "Cancel") == 0) {
-		pcb_tool_select_by_id(RND_ACT_HIDLIB, pcbhl_conf.editor.mode);
+		pcb_tool_select_by_id(RND_ACT_HIDLIB, rnd_conf.editor.mode);
 	}
 	else if (rnd_strcasecmp(cmd, "Escape") == 0) {
 		const pcb_tool_t *t;
 		escape:;
-		t = pcb_tool_get(pcbhl_conf.editor.mode);
+		t = pcb_tool_get(rnd_conf.editor.mode);
 		if ((t == NULL) || (t->escape == NULL)) {
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "arrow");
 			hidlib->tool_hit = hidlib->tool_click = 0; /* if the mouse button is still pressed, don't start selecting a box */
@@ -323,7 +323,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_tool_do_press(RND_ACT_HIDLIB);
 	}
 	else if (rnd_strcasecmp(cmd, "Release") == 0) {
-		if (pcbhl_conf.editor.enable_stroke) {
+		if (rnd_conf.editor.enable_stroke) {
 			int handled = 0;
 			rnd_event(RND_ACT_HIDLIB, RND_EVENT_STROKE_FINISH, "p", &handled);
 			if (handled) {
@@ -338,7 +338,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		do_release(RND_ACT_HIDLIB);
 	}
 	else if (rnd_strcasecmp(cmd, "Stroke") == 0) {
-		if (pcbhl_conf.editor.enable_stroke)
+		if (rnd_conf.editor.enable_stroke)
 			rnd_event(RND_ACT_HIDLIB, RND_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
 		else
 			goto escape; /* Right mouse button restarts drawing mode. */

@@ -32,8 +32,8 @@
 
 #include <librnd/core/pcb_bool.h>
 
-#define SIDE_X_(hidlib, x)      ((pcbhl_conf.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
-#define SIDE_Y_(hidlib, y)      ((pcbhl_conf.editor.view.flip_y ? hidlib->size_y - (y) : (y)))
+#define SIDE_X_(hidlib, x)      ((rnd_conf.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
+#define SIDE_Y_(hidlib, y)      ((rnd_conf.editor.view.flip_y ? hidlib->size_y - (y) : (y)))
 #define SIDE_X(v, x)            SIDE_X_((v)->ctx->hidlib, (x))
 #define SIDE_Y(v, y)            SIDE_Y_((v)->ctx->hidlib, (y))
 

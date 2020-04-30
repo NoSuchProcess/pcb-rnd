@@ -123,8 +123,8 @@ static rnd_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 	double sa, ea, da;
 	pcb_arc_t atmp;
 
-	sa = atan2(-(e1y - cy), e1x - cx) * PCB_RAD_TO_DEG + 180.0;
-	ea = atan2(-(e2y - cy), e2x - cx) * PCB_RAD_TO_DEG + 180.0;
+	sa = atan2(-(e1y - cy), e1x - cx) * RND_RAD_TO_DEG + 180.0;
+	ea = atan2(-(e2y - cy), e2x - cx) * RND_RAD_TO_DEG + 180.0;
 
 /*	rnd_trace("sa=%f ea=%f diff=%f\n", sa, ea, ea-sa);*/
 

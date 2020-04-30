@@ -90,11 +90,11 @@ void rnd_hid_init()
 	rnd_render = rnd_gui = rnd_hid_nogui_get_hid();
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
-	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = pcb_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
-	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = pcb_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
@@ -106,13 +106,13 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
-	/* pcbhl_conf.rc.path.home is set by the conf_core immediately on startup */
-	if (pcbhl_conf.rc.path.home != NULL) {
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	/* rnd_conf.rc.path.home is set by the conf_core immediately on startup */
+	if (rnd_conf.rc.path.home != NULL) {
+		tmp = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+		tmp = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 	}
@@ -276,7 +276,7 @@ rnd_hid_t **rnd_hid_enumerate()
 
 const char *rnd_hid_export_fn(const char *filename)
 {
-	if (pcbhl_conf.rc.export_basename) {
+	if (rnd_conf.rc.export_basename) {
 		const char *outfn = strrchr(filename, RND_DIR_SEPARATOR_C);
 		if (outfn == NULL)
 			return filename;
@@ -299,7 +299,7 @@ static char *get_homedir(void)
 
 void pcbhl_conf_postproc(void)
 {
-	rnd_conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
+	rnd_conf_force_set_str(rnd_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
 
 void rnd_hidlib_init1(void (*conf_core_init)(void))
@@ -309,7 +309,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	rnd_conf_init();
 	conf_core_init();
 	pcbhl_conf_postproc();
-	pcb_hidlib_conf_init();
+	rnd_hidlib_conf_init();
 	rnd_hidlib_event_init();
 	pcb_hid_dlg_init();
 	rnd_hid_init();
@@ -399,11 +399,11 @@ int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 {
 	rnd_conf_listitem_t *apg = NULL;
 
-	if ((autopick_gui >= 0) && (pcbhl_conf.rc.hid_fallback)) { /* start from the GUI we are initializing first */
+	if ((autopick_gui >= 0) && (rnd_conf.rc.hid_fallback)) { /* start from the GUI we are initializing first */
 		int n;
 		const char *g;
 
-		rnd_conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, apg, g, n) {
+		rnd_conf_loop_list_str(&rnd_conf.rc.preferred_gui, apg, g, n) {
 			if (n == autopick_gui)
 				break;
 		}
@@ -422,7 +422,7 @@ int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 		}
 		fprintf(stderr, "Failed to initialize HID %s (recoverable)\n", rnd_gui->name);
 		if (apg == NULL) {
-			if (pcbhl_conf.rc.hid_fallback) {
+			if (rnd_conf.rc.hid_fallback) {
 				ran_out_of_hids:;
 				rnd_message(RND_MSG_ERROR, "Tried all available HIDs, all failed, giving up.\n");
 			}
@@ -633,7 +633,7 @@ int rnd_main_args_setup1(rnd_main_args_t *ga)
 			rnd_conf_listitem_t *i;
 
 			rnd_render = rnd_gui = NULL;
-			rnd_conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
+			rnd_conf_loop_list_str(&rnd_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
 				rnd_render = rnd_gui = rnd_hid_find_gui(g);
 				if (rnd_gui != NULL)
 					break;

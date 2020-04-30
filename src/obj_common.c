@@ -301,7 +301,7 @@ void pcb_xform_mx_rotate(pcb_xform_mx_t mx, double deg)
 {
 	pcb_xform_mx_t tr;
 
-	deg /= PCB_RAD_TO_DEG;
+	deg /= RND_RAD_TO_DEG;
 
 	tr[0] = cos(deg);
 	tr[1] = sin(deg);

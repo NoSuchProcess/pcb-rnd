@@ -76,13 +76,13 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_board_set_changed_flag(pcb_true);
 			break;
 		case F_Close:
-			small = PCB_SQUARE(RND_MAX_COORD);
+			small = RND_SQUARE(RND_MAX_COORD);
 			shorty = NULL;
 			PCB_RAT_LOOP(PCB->Data);
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 					continue;
-				len = PCB_SQUARE(line->Point1.X - line->Point2.X) + PCB_SQUARE(line->Point1.Y - line->Point2.Y);
+				len = RND_SQUARE(line->Point1.X - line->Point2.X) + RND_SQUARE(line->Point1.Y - line->Point2.Y);
 				if (len < small) {
 					small = len;
 					shorty = line;

@@ -573,7 +573,7 @@ SearchSubcByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **s
 	info.ptr1 = (void **) subc;
 	info.ptr2 = (void **) Dummy1;
 	info.ptr3 = (void **) Dummy2;
-	info.area = PCB_SQUARE(RND_MAX_COORD);
+	info.area = RND_SQUARE(RND_MAX_COORD);
 	info.BackToo = (BackToo && PCB->InvisibleObjectsOn);
 	info.objst = objst;
 	info.req_flag = req_flag;
@@ -1068,7 +1068,7 @@ rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 	/* Calculate angle of point from arc center */
 	double p_dist = rnd_distance(X, Y, Arc->X, Arc->Y);
 	double p_cos = (X - Arc->X) / p_dist;
-	rnd_angle_t p_ang = acos(p_cos) * PCB_RAD_TO_DEG;
+	rnd_angle_t p_ang = acos(p_cos) * RND_RAD_TO_DEG;
 	rnd_angle_t ang1, ang2;
 #define angle_in_range(r1, r2, ang) (((ang) >= (r1)) && ((ang) <= (r2)))
 
@@ -1099,13 +1099,13 @@ rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 	   either. */
 	if (!angle_in_range(ang1, ang2, p_ang) && !angle_in_range(ang1, ang2, p_ang+360)) {
 		rnd_coord_t ArcX, ArcY;
-		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
-		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + 180) / PCB_RAD_TO_DEG);
+		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / RND_RAD_TO_DEG);
+		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + 180) / RND_RAD_TO_DEG);
 		if (rnd_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 
-		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
-		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + Arc->Delta + 180) / PCB_RAD_TO_DEG);
+		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / RND_RAD_TO_DEG);
+		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + Arc->Delta + 180) / RND_RAD_TO_DEG);
 		if (rnd_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
 			return pcb_true;
 		return pcb_false;

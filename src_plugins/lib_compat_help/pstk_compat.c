@@ -47,21 +47,21 @@ static void octa_shape(pcb_pstk_poly_t *dst, rnd_coord_t x0, rnd_coord_t y0, rnd
 	pcb_poly_square_pin_factors(style, xm, ym);
 
 	dst->x[7] = x0 + rnd_round(rx * 0.5) * xm[7];
-	dst->y[7] = y0 + rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[7];
-	dst->x[6] = x0 + rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[6];
+	dst->y[7] = y0 + rnd_round(ry * RND_TAN_22_5_DEGREE_2) * ym[7];
+	dst->x[6] = x0 + rnd_round(rx * RND_TAN_22_5_DEGREE_2) * xm[6];
 	dst->y[6] = y0 + rnd_round(ry * 0.5) * ym[6];
-	dst->x[5] = x0 - rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[5];
+	dst->x[5] = x0 - rnd_round(rx * RND_TAN_22_5_DEGREE_2) * xm[5];
 	dst->y[5] = y0 + rnd_round(ry * 0.5) * ym[5];
 	dst->x[4] = x0 - rnd_round(rx * 0.5) * xm[4];
-	dst->y[4] = y0 + rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[4];
+	dst->y[4] = y0 + rnd_round(ry * RND_TAN_22_5_DEGREE_2) * ym[4];
 	dst->x[3] = x0 - rnd_round(rx * 0.5) * xm[3];
-	dst->y[3] = y0 - rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[3];
-	dst->x[2] = x0 - rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[2];
+	dst->y[3] = y0 - rnd_round(ry * RND_TAN_22_5_DEGREE_2) * ym[3];
+	dst->x[2] = x0 - rnd_round(rx * RND_TAN_22_5_DEGREE_2) * xm[2];
 	dst->y[2] = y0 - rnd_round(ry * 0.5) * ym[2];
-	dst->x[1] = x0 + rnd_round(rx * PCB_TAN_22_5_DEGREE_2) * xm[1];
+	dst->x[1] = x0 + rnd_round(rx * RND_TAN_22_5_DEGREE_2) * xm[1];
 	dst->y[1] = y0 - rnd_round(ry * 0.5) * ym[1];
 	dst->x[0] = x0 + rnd_round(rx * 0.5) * xm[0];
-	dst->y[0] = y0 - rnd_round(ry * PCB_TAN_22_5_DEGREE_2) * ym[0];
+	dst->y[0] = y0 - rnd_round(ry * RND_TAN_22_5_DEGREE_2) * ym[0];
 }
 
 /* emulate the old 'square flag' feature */
@@ -218,7 +218,7 @@ static pcb_pstk_compshape_t get_old_shape_square(rnd_coord_t *dia, const pcb_pst
 	}
 
 	/* must be axis aligned */
-	a = atan2(shp->data.poly.y[3] - shp->data.poly.y[0], shp->data.poly.x[3] - shp->data.poly.x[0]) * PCB_RAD_TO_DEG;
+	a = atan2(shp->data.poly.y[3] - shp->data.poly.y[0], shp->data.poly.x[3] - shp->data.poly.x[0]) * RND_RAD_TO_DEG;
 	if (fmod(a, 90.0) > 0.1)
 		return PCB_PSTK_COMPAT_INVALID;
 
@@ -242,21 +242,21 @@ static pcb_pstk_compshape_t get_old_shape_octa(rnd_coord_t *dia, const pcb_pstk_
 
 	/* compensate for the octagon shape */
 	x[7] /= 0.5;
-	y[7] /= PCB_TAN_22_5_DEGREE_2;
-	x[6] /= PCB_TAN_22_5_DEGREE_2;
+	y[7] /= RND_TAN_22_5_DEGREE_2;
+	x[6] /= RND_TAN_22_5_DEGREE_2;
 	y[6] /= 0.5;
-	x[5] /= PCB_TAN_22_5_DEGREE_2;
+	x[5] /= RND_TAN_22_5_DEGREE_2;
 	y[5] /= 0.5;
 	x[4] /= 0.5;
-	y[4] /= PCB_TAN_22_5_DEGREE_2;
+	y[4] /= RND_TAN_22_5_DEGREE_2;
 	x[3] /= 0.5;
-	y[3] /= PCB_TAN_22_5_DEGREE_2;
-	x[2] /= PCB_TAN_22_5_DEGREE_2;
+	y[3] /= RND_TAN_22_5_DEGREE_2;
+	x[2] /= RND_TAN_22_5_DEGREE_2;
 	y[2] /= 0.5;
-	x[1] /= PCB_TAN_22_5_DEGREE_2;
+	x[1] /= RND_TAN_22_5_DEGREE_2;
 	y[1] /= 0.5;
 	x[0] /= 0.5;
-	y[0] /= PCB_TAN_22_5_DEGREE_2;
+	y[0] /= RND_TAN_22_5_DEGREE_2;
 
 	/* check min distances */
 	for(n = 0; n < 8; n++) {
@@ -389,10 +389,10 @@ rnd_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, rnd_coord_t *x, rnd_coord_t 
 
 	/* all copper sizes must be the same, all mask sizes must be the same */
 	for(n = 0; n < tshp->len; n++) {
-		if ((tshp->shape[n].layer_mask & PCB_LYT_COPPER) && (PCB_ABS(old_dia[n] - old_dia[coppern]) > 10))
+		if ((tshp->shape[n].layer_mask & PCB_LYT_COPPER) && (RND_ABS(old_dia[n] - old_dia[coppern]) > 10))
 			return pcb_false;
 		if (maskn >= 0)
-			if ((tshp->shape[n].layer_mask & PCB_LYT_MASK) && (PCB_ABS(old_dia[n] - old_dia[maskn]) > 10))
+			if ((tshp->shape[n].layer_mask & PCB_LYT_MASK) && (RND_ABS(old_dia[n] - old_dia[maskn]) > 10))
 				return pcb_false;
 	}
 

@@ -110,7 +110,7 @@ static rnd_rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 
 	/* first put angles into standard form:
 	 *  ang1 < ang2, both angles between 0 and 720 */
-	delta = PCB_CLAMP(Arc->Delta, -360, 360);
+	delta = RND_CLAMP(Arc->Delta, -360, 360);
 
 	if (delta > 0) {
 		ang1 = pcb_normalize_angle(Arc->StartAngle);
@@ -127,10 +127,10 @@ static rnd_rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 		ang2 = ang1 + 360;
 
 	/* calculate sines, cosines */
-	sa1 = sin(PCB_M180 * ang1);
-	ca1 = cos(PCB_M180 * ang1);
-	sa2 = sin(PCB_M180 * ang2);
-	ca2 = cos(PCB_M180 * ang2);
+	sa1 = sin(RND_M180 * ang1);
+	ca1 = cos(RND_M180 * ang1);
+	sa2 = sin(RND_M180 * ang2);
+	ca2 = cos(RND_M180 * ang2);
 
 	minx = MIN(ca1, ca2);
 	maxx = MAX(ca1, ca2);
@@ -950,15 +950,15 @@ static void arc_label_pos(const pcb_arc_t *arc, rnd_coord_t *x0, rnd_coord_t *y0
 {
 	double da, ea, la;
 
-	da = PCB_CLAMP(arc->Delta, -360, 360);
+	da = RND_CLAMP(arc->Delta, -360, 360);
 	ea = arc->StartAngle + da;
 	while(ea < -360) ea += 360;
 	while(ea > +360) ea -= 360;
 
 	la = (arc->StartAngle+ea)/2.0;
 
-	*x0 = rnd_round((double)arc->X - (double)arc->Width * cos(la * PCB_M180));
-	*y0 = rnd_round((double)arc->Y + (double)arc->Height * sin(la * PCB_M180));
+	*x0 = rnd_round((double)arc->X - (double)arc->Width * cos(la * RND_M180));
+	*y0 = rnd_round((double)arc->Y + (double)arc->Height * sin(la * RND_M180));
 	*vert = (((la < 45) && (la > -45)) || ((la > 135) && (la < 225)));
 }
 
@@ -1002,18 +1002,18 @@ void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, i
 		if (step < 0) step = -step;
 		ea2 = ea - step/3;
 		for(a = arc->StartAngle; a < ea2; a += step)
-			if (cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(a * PCB_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(a * PCB_M180))) != 0)
+			if (cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(a * RND_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(a * RND_M180))) != 0)
 				return;
 	}
 	else {
 		if (step > 0) step = +step;
 		ea2 = ea + step/3;
 		for(a = sa; a > ea2; a -= step)
-			if (cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(a * PCB_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(a * PCB_M180))) != 0)
+			if (cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(a * RND_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(a * RND_M180))) != 0)
 				return;
 	}
 
-	cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(ea * PCB_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(ea * PCB_M180)));
+	cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(ea * RND_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(ea * RND_M180)));
 }
 
 void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)

@@ -1571,11 +1571,11 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 			if (need_mirror)
 				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->hidlib.size_y);
 			if (rot != 0.0)
-				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 		}
 		else {
 			if (rot != 0.0)
-				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / PCB_RAD_TO_DEG), sin(rot / PCB_RAD_TO_DEG), rot);
+				pcb_subc_rotate(nsc, crd[0], crd[1], cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 			if (need_mirror)
 				pcb_subc_change_side(nsc, crd[1] * 2 - PCB->hidlib.size_y);
 		}

@@ -37,19 +37,19 @@
 #ifndef M_SQRT1_2
 #define M_SQRT1_2 		0.707106781	/* 1/sqrt(2) */
 #endif
-#define	PCB_M180			(M_PI/180.0)
-#define PCB_RAD_TO_DEG		(180.0/M_PI)
-#define	PCB_TAN_22_5_DEGREE_2	0.207106781	/* 0.5*tan(22.5) */
-#define PCB_COS_22_5_DEGREE		0.923879533	/* cos(22.5) */
-#define	PCB_TAN_30_DEGREE		0.577350269	/* tan(30) */
-#define	PCB_TAN_60_DEGREE		1.732050808	/* tan(60) */
-#define PCB_LN_2_OVER_2		0.346573590
-#define PCB_TO_RADIANS(degrees)	(PCB_M180 * (degrees))
-#define PCB_SQRT2	1.41421356237309504880	/* sqrt(2) */
+#define	RND_M180			(M_PI/180.0)
+#define RND_RAD_TO_DEG		(180.0/M_PI)
+#define	RND_TAN_22_5_DEGREE_2	0.207106781	/* 0.5*tan(22.5) */
+#define RND_COS_22_5_DEGREE		0.923879533	/* cos(22.5) */
+#define	RND_TAN_30_DEGREE		0.577350269	/* tan(30) */
+#define	RND_TAN_60_DEGREE		1.732050808	/* tan(60) */
+#define RND_LN_2_OVER_2		0.346573590
+#define RND_TO_RADIANS(degrees)	(RND_M180 * (degrees))
+#define RND_SQRT2	1.41421356237309504880	/* sqrt(2) */
 
-#define PCB_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-#define PCB_ABS(a)	   (((a) < 0) ? -(a) : (a))
-#define PCB_SQUARE(x)          ((float) (x) * (float) (x))
+#define RND_CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define RND_ABS(a)	   (((a) < 0) ? -(a) : (a))
+#define RND_SQUARE(x)          ((float) (x) * (float) (x))
 
 /* ---------------------------------------------------------------------------
  * misc macros, some might already be defined by <limits.h>
@@ -61,10 +61,10 @@
 #ifndef SGN
 #define SGN(a)			((a) >0 ? 1 : ((a) == 0 ? 0 : -1))
 #endif
-#define PCB_SGNZ(a)                 ((a) >=0 ? 1 : -1)
-#define PCB_MAKE_MIN(a,b)            if ((b) < (a)) (a) = (b)
-#define PCB_MAKE_MAX(a,b)            if ((b) > (a)) (a) = (b)
+#define RND_SGNZ(a)                 ((a) >=0 ? 1 : -1)
+#define RND_MAKE_MIN(a,b)            if ((b) < (a)) (a) = (b)
+#define RND_MAKE_MAX(a,b)            if ((b) > (a)) (a) = (b)
 
 
-#define	PCB_SWAP_SIGN_X(x)		(x)
-#define	PCB_SWAP_SIGN_Y(y)		(-(y))
+#define	RND_SWAP_SIGN_X(x)		(x)
+#define	RND_SWAP_SIGN_Y(y)		(-(y))

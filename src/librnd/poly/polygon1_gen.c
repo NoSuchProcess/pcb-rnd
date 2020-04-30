@@ -120,20 +120,20 @@ static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	ang = astart;
 	da = (1.0 * adelta) / segs;
 	radius_adj = (M_PI * da / 360) * (M_PI * da / 360) / 2;
-	v[0] = cx - rx * cos(ang * PCB_M180);
-	v[1] = cy + ry * sin(ang * PCB_M180);
+	v[0] = cx - rx * cos(ang * RND_M180);
+	v[1] = cy + ry * sin(ang * RND_M180);
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return 0;
 	for (i = 0; i < segs - 1; i++) {
 		ang += da;
-		v[0] = cx - rx * cos(ang * PCB_M180);
-		v[1] = cy + ry * sin(ang * PCB_M180);
+		v[0] = cx - rx * cos(ang * RND_M180);
+		v[1] = cy + ry * sin(ang * RND_M180);
 		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	}
 	/* find last point */
 	ang = astart + adelta;
-	v[0] = cx - rx * cos(ang * PCB_M180) * (1 - radius_adj);
-	v[1] = cy + ry * sin(ang * PCB_M180) * (1 - radius_adj);
+	v[0] = cx - rx * cos(ang * RND_M180) * (1 - radius_adj);
+	v[1] = cy + ry * sin(ang * RND_M180) * (1 - radius_adj);
 
 	/* add the round cap at the end */
 	if (end_caps)
@@ -144,16 +144,16 @@ static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	ry = (width + half) * (1 + radius_adj);
 	da = -da;
 	for (i = 0; i < segs; i++) {
-		v[0] = cx - rx * cos(ang * PCB_M180);
-		v[1] = cy + ry * sin(ang * PCB_M180);
+		v[0] = cx - rx * cos(ang * RND_M180);
+		v[1] = cy + ry * sin(ang * RND_M180);
 		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 		ang += da;
 	}
 
 	/* explicitly draw the last point if the manhattan-distance is large enough */
 	ang = astart;
-	v2[0] = cx - rx * cos(ang * PCB_M180) * (1 - radius_adj);
-	v2[1] = cy + ry * sin(ang * PCB_M180) * (1 - radius_adj);
+	v2[0] = cx - rx * cos(ang * RND_M180) * (1 - radius_adj);
+	v2[1] = cy + ry * sin(ang * RND_M180) * (1 - radius_adj);
 	edx = (v[0] - v2[0]);
 	edy = (v[1] - v2[1]);
 	if (edx < 0) edx = -edx;
@@ -208,36 +208,36 @@ rnd_polyarea_t *pcb_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t 
 TODO(": rewrite this to use the same table as the square/oct pin draw function")
 	/* point 7 */
 	v[0] = x + ROUND(radius * 0.5) * xm[7];
-	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[7];
+	v[1] = y + ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[7];
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
 	/* point 6 */
-	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[6];
+	v[0] = x + ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[6];
 	v[1] = y + ROUND(radius * 0.5) * ym[6];
 	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 5 */
-	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[5];
+	v[0] = x - ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[5];
 	v[1] = y + ROUND(radius * 0.5) * ym[5];
 	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 4 */
 	v[0] = x - ROUND(radius * 0.5) * xm[4];
-	v[1] = y + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[4];
+	v[1] = y + ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[4];
 	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 3 */
 	v[0] = x - ROUND(radius * 0.5) * xm[3];
-	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[3];
+	v[1] = y - ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[3];
 	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 2 */
-	v[0] = x - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[2];
+	v[0] = x - ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[2];
 	v[1] = y - ROUND(radius * 0.5) * ym[2];
 	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 1 */
-	v[0] = x + ROUND(radius * PCB_TAN_22_5_DEGREE_2) * xm[1];
+	v[0] = x + ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[1];
 	v[1] = y - ROUND(radius * 0.5) * ym[1];
 	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	/* point 0 */
 	v[0] = x + ROUND(radius * 0.5) * xm[0];
-	v[1] = y - ROUND(radius * PCB_TAN_22_5_DEGREE_2) * ym[0];
+	v[1] = y - ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[0];
 	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 	return pcb_poly_from_contour(contour);
 }
@@ -357,7 +357,7 @@ rnd_polyarea_t *pcb_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x
 	if (thick <= 0)
 		return NULL;
 	half = (thick + 1) / 2;
-	d = sqrt(PCB_SQUARE(x1 - x2) + PCB_SQUARE(y1 - y2));
+	d = sqrt(RND_SQUARE(x1 - x2) + RND_SQUARE(y1 - y2));
 	if (!square)
 		if (d == 0)									/* line is a point */
 			return pcb_poly_from_circle(x1, y1, half);

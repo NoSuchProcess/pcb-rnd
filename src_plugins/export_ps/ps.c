@@ -534,7 +534,7 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.automirror = options[HA_automirror].lng;
 	global.incolor = options[HA_color].lng;
 	global.invert = options[HA_psinvert].lng;
-	global.fade_ratio = PCB_CLAMP(options[HA_psfade].dbl, 0, 1);
+	global.fade_ratio = RND_CLAMP(options[HA_psfade].dbl, 0, 1);
 	global.media_idx = options[HA_media].lng;
 	global.media_width = pcb_media_data[global.media_idx].width;
 	global.media_height = pcb_media_data[global.media_idx].height;

@@ -352,7 +352,7 @@ int main()
 
 	rnd_conf_init();
 	conf_core_init();
-	pcb_hidlib_conf_init();
+	rnd_hidlib_conf_init();
 	rnd_conf_reset(RND_CFR_SYSTEM, "<main>");
 	rnd_conf_reset(RND_CFR_USER, "<main>");
 

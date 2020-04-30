@@ -83,7 +83,7 @@ static int script_save_preunload(script_t *s, const char *data)
 	gds_t fn;
 
 	gds_init(&fn);
-	gds_append_str(&fn, pcbhl_conf.rc.path.home);
+	gds_append_str(&fn, rnd_conf.rc.path.home);
 	gds_append(&fn, RND_DIR_SEPARATOR_C);
 	gds_append_str(&fn, DOT_PCB_RND);
 	pcb_mkdir(NULL, fn.array, 0755);
@@ -172,7 +172,7 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 		goto err;
 	}
 
-	fn = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, DOT_PCB_RND, RND_DIR_SEPARATOR_S, SCRIPT_PERS, RND_DIR_SEPARATOR_S, script_persistency_id, NULL);
+	fn = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, DOT_PCB_RND, RND_DIR_SEPARATOR_S, SCRIPT_PERS, RND_DIR_SEPARATOR_S, script_persistency_id, NULL);
 
 	if (strcmp(cmd, "remove") == 0) {
 		RND_ACT_IRES(pcb_remove(NULL, fn));
@@ -250,7 +250,7 @@ static char *script_fn(const char *fn)
 {
 	if (*fn != '~')
 		return rnd_strdup(fn);
-	return pcb_strdup_printf("%s%c%s", pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
+	return pcb_strdup_printf("%s%c%s", rnd_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
 }
 
 int pcb_script_load(const char *id, const char *fn, const char *lang)

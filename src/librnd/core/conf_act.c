@@ -155,7 +155,7 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		n = rnd_conf_get_field(a1);
 		if (n == NULL) {
-			if (pcbhl_conf.rc.verbose)
+			if (rnd_conf.rc.verbose)
 				rnd_message(RND_MSG_ERROR, "Invalid conf field '%s' in iseq: no such path\n", path);
 			return FGW_ERR_ARG_CONV;
 		}
@@ -242,7 +242,7 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	id = pcb_tool_lookup(dst);
 	if (id >= 0) {
-		RND_ACT_IRES(pcbhl_conf.editor.mode == id);
+		RND_ACT_IRES(rnd_conf.editor.mode == id);
 		return 0;
 	}
 	RND_ACT_IRES(-1);
@@ -277,7 +277,7 @@ static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	const char *expected;
 	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
-	RND_ACT_IRES(strcmp(pcbhl_conf.editor.grid_unit->suffix, expected) == 0);
+	RND_ACT_IRES(strcmp(rnd_conf.editor.grid_unit->suffix, expected) == 0);
 	return 0;
 }
 
@@ -307,9 +307,9 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		rnd_grid_inval();
 		if (val[0] == '*')
-			pcb_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
 		else
-			pcb_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
 		return 0;
 	}
 
@@ -317,15 +317,15 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_grid_inval();
 	if (absolute)
-		pcb_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
+		rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
 	else {
 		/* On the way down, until the minimum unit (1) */
 		if ((value + RND_ACT_HIDLIB->grid) < 1)
-			pcb_hidlib_set_grid(RND_ACT_HIDLIB, 1, pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, 1, pcb_false, 0, 0);
 		else if (RND_ACT_HIDLIB->grid == 1)
-			pcb_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
 		else
-			pcb_hidlib_set_grid(RND_ACT_HIDLIB, value + RND_ACT_HIDLIB->grid, pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value + RND_ACT_HIDLIB->grid, pcb_false, 0, 0);
 	}
 	return 0;
 }
@@ -343,7 +343,7 @@ static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	new_unit = get_unit_struct(name);
-	pcb_hidlib_set_unit(RND_ACT_HIDLIB, new_unit);
+	rnd_hidlib_set_unit(RND_ACT_HIDLIB, new_unit);
 
 	return 0;
 }

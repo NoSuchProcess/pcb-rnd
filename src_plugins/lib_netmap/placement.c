@@ -56,7 +56,7 @@ void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data)
 
 			pcb_subc_move(proto, tr.ox, tr.oy, 1);
 			if (tr.rot != 0) {
-				double rr = tr.rot / PCB_RAD_TO_DEG;
+				double rr = tr.rot / RND_RAD_TO_DEG;
 				pcb_subc_rotate(proto, 0, 0, cos(rr), sin(rr), tr.rot);
 			}
 			if (tr.on_bottom) {

@@ -107,7 +107,7 @@ static void normalize_angles(rnd_angle_t * sa, rnd_angle_t * d)
 
 static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 {
-	double alpha = atan2(y - arc->Y, -x + arc->X) * PCB_RAD_TO_DEG;
+	double alpha = atan2(y - arc->Y, -x + arc->X) * RND_RAD_TO_DEG;
 	rnd_angle_t sa = arc->StartAngle, d = arc->Delta;
 
 	normalize_angles(&sa, &d);
@@ -120,10 +120,10 @@ static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 
 static void get_arc_ends(rnd_coord_t * box, pcb_arc_t *arc)
 {
-	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
-	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
-	box[2] = arc->X - arc->Width * cos(PCB_M180 * (arc->StartAngle + arc->Delta));
-	box[3] = arc->Y + arc->Height * sin(PCB_M180 * (arc->StartAngle + arc->Delta));
+	box[0] = arc->X - arc->Width * cos(RND_M180 * arc->StartAngle);
+	box[1] = arc->Y + arc->Height * sin(RND_M180 * arc->StartAngle);
+	box[2] = arc->X - arc->Width * cos(RND_M180 * (arc->StartAngle + arc->Delta));
+	box[3] = arc->Y + arc->Height * sin(RND_M180 * (arc->StartAngle + arc->Delta));
 }
 
 /* ---------------------------------------------------------------------------
@@ -847,7 +847,7 @@ RND_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *
 
 	dx = x2 - x1;
 	dy = y2 - y1;
-	l = sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+	l = sqrt(RND_SQUARE(dx) + RND_SQUARE(dy));
 	h = 0.5 * thick / l;
 	ox = dy * h + 0.5 * SGN(dy);
 	oy = -(dx * h + 0.5 * SGN(dx));

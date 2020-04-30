@@ -204,7 +204,7 @@ static void pcb_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const c
 
 	rnd_event(hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
-	if (pcbhl_conf.editor.auto_place) {
+	if (rnd_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
 			gtk_window_resize(GTK_WINDOW(dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))
@@ -631,7 +631,7 @@ TODO("gfx: this use of sx/sy ignores rotation");
 	if (pixmap->hid_data == NULL)
 		ghid_init_pixmap(hid, pixmap);
 	if (pixmap->hid_data != NULL) {
-		double rsx, rsy, ca = cos(pixmap->tr_rot / PCB_RAD_TO_DEG), sa = sin(pixmap->tr_rot / PCB_RAD_TO_DEG);
+		double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG);
 		rsx = (double)sx * ca + (double)sy * sa;
 		rsy = (double)sy * ca + (double)sx * sa;
 rnd_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);

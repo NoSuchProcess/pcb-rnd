@@ -6,7 +6,7 @@
 static inline int Vx(rnd_coord_t x)
 {
 	double rv;
-	if (pcbhl_conf.editor.view.flip_x)
+	if (rnd_conf.editor.view.flip_x)
 		rv = (ghidgui->port.view.ctx->hidlib->size_x - x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px + 0.5;
 	else
 		rv = (x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px + 0.5;
@@ -16,7 +16,7 @@ static inline int Vx(rnd_coord_t x)
 static inline int Vy(rnd_coord_t y)
 {
 	double rv;
-	if (pcbhl_conf.editor.view.flip_y)
+	if (rnd_conf.editor.view.flip_y)
 		rv = (ghidgui->port.view.ctx->hidlib->size_y - y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px + 0.5;
 	else
 		rv = (y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px + 0.5;
@@ -31,7 +31,7 @@ static inline int Vz(rnd_coord_t z)
 static inline double Vxd(rnd_coord_t x)
 {
 	double rv;
-	if (pcbhl_conf.editor.view.flip_x)
+	if (rnd_conf.editor.view.flip_x)
 		rv = (ghidgui->port.view.ctx->hidlib->size_x - x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px;
 	else
 		rv = (x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px;
@@ -41,7 +41,7 @@ static inline double Vxd(rnd_coord_t x)
 static inline double Vyd(rnd_coord_t y)
 {
 	double rv;
-	if (pcbhl_conf.editor.view.flip_y)
+	if (rnd_conf.editor.view.flip_y)
 		rv = (ghidgui->port.view.ctx->hidlib->size_y - y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px;
 	else
 		rv = (y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px;
@@ -56,7 +56,7 @@ static inline double Vzd(rnd_coord_t z)
 static inline rnd_coord_t Px(int x)
 {
 	rnd_coord_t rv = x * ghidgui->port.view.coord_per_px + ghidgui->port.view.x0;
-	if (pcbhl_conf.editor.view.flip_x)
+	if (rnd_conf.editor.view.flip_x)
 		rv = ghidgui->port.view.ctx->hidlib->size_x - (x * ghidgui->port.view.coord_per_px + ghidgui->port.view.x0);
 	return rv;
 }
@@ -64,7 +64,7 @@ static inline rnd_coord_t Px(int x)
 static inline rnd_coord_t Py(int y)
 {
 	rnd_coord_t rv = y * ghidgui->port.view.coord_per_px + ghidgui->port.view.y0;
-	if (pcbhl_conf.editor.view.flip_y)
+	if (rnd_conf.editor.view.flip_y)
 		rv = ghidgui->port.view.ctx->hidlib->size_y - (y * ghidgui->port.view.coord_per_px + ghidgui->port.view.y0);
 	return rv;
 }
@@ -78,7 +78,7 @@ static inline rnd_coord_t Pz(int z)
 static inline int pcb_gtk_1dot(rnd_coord_t penwidth, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double minw = ghidgui->port.view.coord_per_px;
-	double dx = PCB_ABS(x1-x2) + penwidth, dy = PCB_ABS(y1-y2) + penwidth;
+	double dx = RND_ABS(x1-x2) + penwidth, dy = RND_ABS(y1-y2) + penwidth;
 	return ((dx < minw) && (dy < minw));
 }
 

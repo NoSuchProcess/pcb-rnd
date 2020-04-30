@@ -121,11 +121,11 @@ void pcb_layer_colors_from_conf(pcb_board_t *pcb, int force);
 void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const rnd_rnd_box_t *within_area);
 void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const rnd_rnd_box_t *within_area);
 
-#define	PCB_SWAP_X(x)		(PCB_SWAP_SIGN_X(x))
-#define	PCB_SWAP_Y(y)		(PCB->hidlib.size_y +PCB_SWAP_SIGN_Y(y))
+#define	PCB_SWAP_X(x)		(RND_SWAP_SIGN_X(x))
+#define	PCB_SWAP_Y(y)		(PCB->hidlib.size_y +RND_SWAP_SIGN_Y(y))
 
-#define	PCB_CSWAP_X(x, w, cond)		((cond) ? (PCB_SWAP_SIGN_X(x)) : (x))
-#define	PCB_CSWAP_Y(y, h, cond)		((cond) ? (h+PCB_SWAP_SIGN_Y(y)) : (y))
+#define	PCB_CSWAP_X(x, w, cond)		((cond) ? (RND_SWAP_SIGN_X(x)) : (x))
+#define	PCB_CSWAP_Y(y, h, cond)		((cond) ? (h+RND_SWAP_SIGN_Y(y)) : (y))
 
 /* Conditionally allow subc parts to be reached directly in search masks */
 #define PCB_LOOSE_SUBC(pcb) ((pcb)->loose_subc ? PCB_OBJ_SUBC_PART : 0)

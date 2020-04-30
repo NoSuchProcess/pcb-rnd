@@ -85,7 +85,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (name != NULL) {
-		if (pcbhl_conf.rc.verbose)
+		if (rnd_conf.rc.verbose)
 			fprintf(stderr, "Load:  Calling LoadFrom(%s, %s)\n", function, name);
 		rnd_actionva(RND_ACT_HIDLIB, "LoadFrom", function, name, NULL);
 		free(name);
@@ -586,7 +586,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 
-	if (pcbhl_conf.rc.verbose)
+	if (rnd_conf.rc.verbose)
 		fprintf(stderr, "Save:  Calling SaveTo(%s, %s)\n", function, final_name);
 
 	if (rnd_strcasecmp(function, "PasteBuffer") == 0) {

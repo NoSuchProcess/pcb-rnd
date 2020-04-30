@@ -337,7 +337,7 @@ static void ipcd356_write_line(write_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *
 	t.cx = (line->Point1.X + line->Point2.X) / 2;
 	t.cy = (line->Point1.Y + line->Point2.Y) / 2;
 	t.width = t.height = line->Thickness;
-	t.rot = atan2(line->Point2.Y - line->Point1.Y, line->Point2.X - line->Point1.X) * PCB_RAD_TO_DEG;
+	t.rot = atan2(line->Point2.Y - line->Point1.Y, line->Point2.X - line->Point1.X) * RND_RAD_TO_DEG;
 	ipcd356_write_feature(ctx, &t);
 }
 
@@ -375,7 +375,7 @@ static void ipcd356_write(pcb_board_t *pcb, FILE *f)
 
 	ctx.pcb = pcb;
 	ctx.f = f;
-	ctx.is_mil = (strcmp(pcbhl_conf.editor.grid_unit->suffix, "mil") == 0);
+	ctx.is_mil = (strcmp(rnd_conf.editor.grid_unit->suffix, "mil") == 0);
 
 	ipcd356_write_head(&ctx);
 	PCB_SUBC_LOOP(pcb->Data); {

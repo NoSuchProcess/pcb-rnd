@@ -166,7 +166,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 				return 0;
 			}
 			replace=1;
-			pcb_snprintf(buff, sizeof(buff), "<%f", atan2(pcb_crosshair.Y - oy, pcb_crosshair.X - ox) * PCB_RAD_TO_DEG);
+			pcb_snprintf(buff, sizeof(buff), "<%f", atan2(pcb_crosshair.Y - oy, pcb_crosshair.X - ox) * RND_RAD_TO_DEG);
 			break;
 		case CLI_DIST:
 			res = get_rel_coord(argc, argv, argn, &ox, &oy);

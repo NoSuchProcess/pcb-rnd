@@ -378,10 +378,10 @@ void pcb_poly_bbox(pcb_poly_t *Polygon)
 
 	PCB_POLY_POINT_LOOP(Polygon);
 	{
-		PCB_MAKE_MIN(Polygon->bbox_naked.X1, point->X);
-		PCB_MAKE_MIN(Polygon->bbox_naked.Y1, point->Y);
-		PCB_MAKE_MAX(Polygon->bbox_naked.X2, point->X);
-		PCB_MAKE_MAX(Polygon->bbox_naked.Y2, point->Y);
+		RND_MAKE_MIN(Polygon->bbox_naked.X1, point->X);
+		RND_MAKE_MIN(Polygon->bbox_naked.Y1, point->Y);
+		RND_MAKE_MAX(Polygon->bbox_naked.X2, point->X);
+		RND_MAKE_MAX(Polygon->bbox_naked.Y2, point->Y);
 	}
 	PCB_END_LOOP;
 

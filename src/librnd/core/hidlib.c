@@ -44,7 +44,7 @@ void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_
 static void hidlib_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_tool_gui_init();
-	rnd_gui->set_mouse_cursor(rnd_gui, pcbhl_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
+	rnd_gui->set_mouse_cursor(rnd_gui, rnd_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
 }
 
 void rnd_log_print_uninit_errs(const char *title)
@@ -53,7 +53,7 @@ void rnd_log_print_uninit_errs(const char *title)
 	int printed = 0;
 
 	for(n = from; n != NULL; n = n->next) {
-		if ((n->level >= RND_MSG_INFO) || pcbhl_conf.rc.verbose) {
+		if ((n->level >= RND_MSG_INFO) || rnd_conf.rc.verbose) {
 			if (!printed)
 				fprintf(stderr, "*** %s:\n", title);
 			fprintf(stderr, "%s", n->str);

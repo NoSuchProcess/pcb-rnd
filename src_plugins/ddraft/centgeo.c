@@ -273,7 +273,7 @@ int pcb_intersect_carc_cline(pcb_arc_t *Arc, pcb_line_t *Line, rnd_rnd_box_t *ip
 
 void pcb_carc_offs(pcb_arc_t *arc, double offs, rnd_coord_t *dstx, rnd_coord_t *dsty)
 {
-	double ang = (arc->StartAngle + offs * arc->Delta) / PCB_RAD_TO_DEG;
+	double ang = (arc->StartAngle + offs * arc->Delta) / RND_RAD_TO_DEG;
 
 	*dstx = arc->X + cos(ang) * arc->Width;
 	*dsty = arc->Y - sin(ang) * arc->Height;
@@ -286,7 +286,7 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, rnd_coord_t px, rnd_coord_t py)
 	/* won't work with elliptical arc - see also pcb_is_point_on_arc */
 	dy = (double)(py - arc->Y) / (double)arc->Height;
 	dx = (double)(px - arc->X) / (double)arc->Width;
-	ang = (-atan2(dy, dx)) * PCB_RAD_TO_DEG + 180;
+	ang = (-atan2(dy, dx)) * RND_RAD_TO_DEG + 180;
 	end = arc->StartAngle + arc->Delta;
 
 	/* normalize the angle: there are multiple ways an arc can cover the same
@@ -313,10 +313,10 @@ double pcb_carc_pt_offs(pcb_arc_t *arc, rnd_coord_t px, rnd_coord_t py)
 
 static void get_arc_ends(rnd_coord_t *box, pcb_arc_t *arc)
 {
-	box[0] = arc->X - arc->Width * cos(PCB_M180 * arc->StartAngle);
-	box[1] = arc->Y + arc->Height * sin(PCB_M180 * arc->StartAngle);
-	box[2] = arc->X - arc->Width * cos(PCB_M180 * (arc->StartAngle + arc->Delta));
-	box[3] = arc->Y + arc->Height * sin(PCB_M180 * (arc->StartAngle + arc->Delta));
+	box[0] = arc->X - arc->Width * cos(RND_M180 * arc->StartAngle);
+	box[1] = arc->Y + arc->Height * sin(RND_M180 * arc->StartAngle);
+	box[2] = arc->X - arc->Width * cos(RND_M180 * (arc->StartAngle + arc->Delta));
+	box[3] = arc->Y + arc->Height * sin(RND_M180 * (arc->StartAngle + arc->Delta));
 }
 
 /* reduce arc start angle and delta to 0..360 */
@@ -333,7 +333,7 @@ static void normalize_angles(rnd_angle_t *sa, rnd_angle_t *d)
 
 static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 {
-	double alpha = atan2(y - arc->Y, -x + arc->X) * PCB_RAD_TO_DEG;
+	double alpha = atan2(y - arc->Y, -x + arc->X) * RND_RAD_TO_DEG;
 	rnd_angle_t sa = arc->StartAngle, d = arc->Delta;
 
 	normalize_angles(&sa, &d);

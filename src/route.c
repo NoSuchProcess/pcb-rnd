@@ -133,8 +133,8 @@ void pcb_route_add_arc(pcb_route_t *p_route, rnd_point_t *center, rnd_angle_t st
 	p_object->layer = layer;
 	p_object->type = PCB_OBJ_ARC;
 
-	p_route->end_point.X = rnd_round((double)center->X - ((double)radius * cos((start_angle + delta) * PCB_M180)));
-	p_route->end_point.Y = rnd_round((double)center->Y + ((double)radius * sin((start_angle + delta) * PCB_M180)));
+	p_route->end_point.X = rnd_round((double)center->X - ((double)radius * cos((start_angle + delta) * RND_M180)));
+	p_route->end_point.Y = rnd_round((double)center->Y + ((double)radius * sin((start_angle + delta) * RND_M180)));
 }
 
 
@@ -200,8 +200,8 @@ void pcb_route_calculate_corner_arc(const rnd_point_t *point1, const rnd_point_t
 
 		p_out_obj->point1.X = xc;
 		p_out_obj->point1.Y = yc;
-		p_out_obj->start_angle = start * PCB_RAD_TO_DEG; /* Start Angle */
-		p_out_obj->delta_angle = delta * PCB_RAD_TO_DEG; /* Delta Angle */
+		p_out_obj->start_angle = start * RND_RAD_TO_DEG; /* Start Angle */
+		p_out_obj->delta_angle = delta * RND_RAD_TO_DEG; /* Delta Angle */
 		p_out_obj->radius = r;
 
 		if (p_endpoint1) {
@@ -244,10 +244,10 @@ void pcb_route_calculate_45(rnd_point_t *start_point, rnd_point_t *target_point)
 	else {
 		m = (double)dy / dx;
 		direction = 2;
-		if (m > PCB_TAN_30_DEGREE)
-			direction = m > PCB_TAN_60_DEGREE ? 0 : 1;
-		else if (m < -PCB_TAN_30_DEGREE)
-			direction = m < -PCB_TAN_60_DEGREE ? 0 : 3;
+		if (m > RND_TAN_30_DEGREE)
+			direction = m > RND_TAN_60_DEGREE ? 0 : 1;
+		else if (m < -RND_TAN_30_DEGREE)
+			direction = m < -RND_TAN_60_DEGREE ? 0 : 3;
 	}
 
 	if (dx < 0)
@@ -707,10 +707,10 @@ void pcb_route_draw_arc(rnd_hid_gc_t GC, rnd_coord_t x, rnd_coord_t y, rnd_angle
 		delta = -delta;
 	}
 
-	x1 = x - (cos(PCB_M180 * start_angle) * radius);
-	y1 = y + (sin(PCB_M180 * start_angle) * radius);
-	x2 = x - (cos(PCB_M180 * (start_angle + delta)) * radius);
-	y2 = y + (sin(PCB_M180 * (start_angle + delta)) * radius);
+	x1 = x - (cos(RND_M180 * start_angle) * radius);
+	y1 = y + (sin(RND_M180 * start_angle) * radius);
+	x2 = x - (cos(RND_M180 * (start_angle + delta)) * radius);
+	y2 = y + (sin(RND_M180 * (start_angle + delta)) * radius);
 
 	rnd_render->draw_arc(GC, x, y, radius + wid, radius + wid, start_angle, delta);
 	if (wid > rnd_pixel_slop) {

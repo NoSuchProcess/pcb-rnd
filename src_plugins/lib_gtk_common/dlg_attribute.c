@@ -804,7 +804,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *at
 	gtk_window_set_role(GTK_WINDOW(ctx->dialog), id);
 	gtk_window_set_modal(GTK_WINDOW(ctx->dialog), modal);
 
-	if (pcbhl_conf.editor.auto_place) {
+	if (rnd_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
 			gtk_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))

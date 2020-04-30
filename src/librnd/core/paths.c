@@ -151,11 +151,11 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 #endif
 
 	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
-		if (pcbhl_conf.rc.path.home == NULL) {
+		if (rnd_conf.rc.path.home == NULL) {
 			rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
 			goto error;
 		}
-		gds_append_str(s, pcbhl_conf.rc.path.home);
+		gds_append_str(s, rnd_conf.rc.path.home);
 		template++;
 	}
 

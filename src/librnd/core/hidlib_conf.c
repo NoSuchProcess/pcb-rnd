@@ -36,21 +36,21 @@
 
 #define PCB_MAX_GRID         PCB_MIL_TO_COORD(1000)
 
-pcbhl_conf_t pcbhl_conf;
+rnd_conf_t rnd_conf;
 
-int pcb_hidlib_conf_init()
+int rnd_hidlib_conf_init()
 {
 	int cnt = 0;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	rnd_conf_reg_field(pcbhl_conf, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(rnd_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include <librnd/core/hidlib_conf_fields.h>
 
 	return cnt;
 }
 
 /* sets cursor grid with respect to grid offset values */
-void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy)
+void rnd_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy)
 {
 	if (Grid >= 1 && Grid <= PCB_MAX_GRID) {
 		if (align) {
@@ -59,12 +59,12 @@ void pcb_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align,
 		}
 		hidlib->grid = Grid;
 		rnd_conf_set_design("editor/grid", "%$mS", Grid);
-		if (pcbhl_conf.editor.draw_grid)
+		if (rnd_conf.editor.draw_grid)
 			rnd_gui->invalidate_all(rnd_gui);
 	}
 }
 
-void pcb_hidlib_set_unit(rnd_hidlib_t *hidlib, const rnd_unit_t *new_unit)
+void rnd_hidlib_set_unit(rnd_hidlib_t *hidlib, const rnd_unit_t *new_unit)
 {
 	if (new_unit != NULL && new_unit->allow != PCB_UNIT_NO_PRINT)
 		rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, RND_POL_OVERWRITE);

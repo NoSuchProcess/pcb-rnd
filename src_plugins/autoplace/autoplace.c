@@ -353,10 +353,10 @@ static double ComputeCost(double T0, double T)
 				rnd_coord_t X, Y;
 				obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
 				pcb_obj_center(obj, &X, &Y);
-				PCB_MAKE_MIN(minx, X);
-				PCB_MAKE_MAX(maxx, X);
-				PCB_MAKE_MIN(miny, Y);
-				PCB_MAKE_MAX(maxy, Y);
+				RND_MAKE_MIN(minx, X);
+				RND_MAKE_MAX(maxx, X);
+				RND_MAKE_MIN(miny, Y);
+				RND_MAKE_MAX(maxy, Y);
 				if (!pstk_ispad((pcb_pstk_t *)obj))
 					allpads = pcb_false;
 				if (obj_layergrp(obj) != thegroup)
@@ -541,10 +541,10 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 		rnd_coord_t maxX = -RND_MAX_COORD, maxY = -RND_MAX_COORD;
 		PCB_SUBC_LOOP(PCB->Data);
 		{
-			PCB_MAKE_MIN(minX, subc->BoundingBox.X1);
-			PCB_MAKE_MIN(minY, subc->BoundingBox.Y1);
-			PCB_MAKE_MAX(maxX, subc->BoundingBox.X2);
-			PCB_MAKE_MAX(maxY, subc->BoundingBox.Y2);
+			RND_MAKE_MIN(minX, subc->BoundingBox.X1);
+			RND_MAKE_MIN(minY, subc->BoundingBox.Y1);
+			RND_MAKE_MAX(maxX, subc->BoundingBox.X2);
+			RND_MAKE_MAX(maxY, subc->BoundingBox.Y2);
 		}
 		PCB_END_LOOP;
 		if (minX < maxX && minY < maxY)
@@ -603,8 +603,8 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 	case 0:
 		{														/* shift! */
 			rnd_coord_t grid;
-			double scaleX = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_x / 3);
-			double scaleY = PCB_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_y / 3);
+			double scaleX = RND_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_x / 3);
+			double scaleY = RND_CLAMP(sqrt(T), PCB_MIL_TO_COORD(2.5), PCB->hidlib.size_y / 3);
 			pt.which = SHIFT;
 			pt.DX = scaleX * 2 * ((((double) rnd_rand()) / RAND_MAX) - 0.5);
 			pt.DY = scaleY * 2 * ((((double) rnd_rand()) / RAND_MAX) - 0.5);

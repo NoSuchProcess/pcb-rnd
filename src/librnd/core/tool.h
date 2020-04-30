@@ -106,7 +106,7 @@ void rnd_tool_gui_init(void);
 
 
 /**** Tool function wrappers; calling these will operate on the current tool 
-      as defined in pcbhl_conf.editor.mode ****/
+      as defined in rnd_conf.editor.mode ****/
 
 void pcb_tool_press(rnd_hidlib_t *hidlib);
 void pcb_tool_release(rnd_hidlib_t *hidlib);

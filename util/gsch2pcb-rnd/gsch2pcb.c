@@ -270,7 +270,7 @@ static void load_extra_project_files(void)
 	load_project("/etc/gsch2pcb");
 	load_project("/usr/local/etc/gsch2pcb");
 
-	path = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, ".gEDA", RND_DIR_SEPARATOR_S, "gsch2pcb", NULL);
+	path = pcb_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, ".gEDA", RND_DIR_SEPARATOR_S, "gsch2pcb", NULL);
 	load_project(path);
 	free(path);
 
@@ -401,7 +401,7 @@ int main(int argc, char ** argv)
 	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
-	pcb_hidlib_conf_init();
+	rnd_hidlib_conf_init();
 
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);

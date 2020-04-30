@@ -139,10 +139,10 @@ static rnd_rnd_box_t pcb_polyarea_t_boundingBox(rnd_polyarea_t * a)
 			first = 0;
 		}
 		else {
-			PCB_MAKE_MIN(box.X1, pa->xmin);
-			PCB_MAKE_MAX(box.X2, pa->xmax + 1);
-			PCB_MAKE_MIN(box.Y1, pa->ymin);
-			PCB_MAKE_MAX(box.Y2, pa->ymax + 1);
+			RND_MAKE_MIN(box.X1, pa->xmin);
+			RND_MAKE_MAX(box.X2, pa->xmax + 1);
+			RND_MAKE_MIN(box.Y1, pa->ymin);
+			RND_MAKE_MAX(box.Y2, pa->ymax + 1);
 		}
 	} while ((n = n->f) != a);
 	return box;

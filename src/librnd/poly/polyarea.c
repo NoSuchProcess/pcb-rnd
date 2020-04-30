@@ -1814,10 +1814,10 @@ static void M_pcb_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 	b = bpa;
 	while ((b = b->f) != bpa) {
 		rnd_rnd_box_t *b_box = (rnd_rnd_box_t *) b->contours;
-		PCB_MAKE_MIN(box.X1, b_box->X1);
-		PCB_MAKE_MIN(box.Y1, b_box->Y1);
-		PCB_MAKE_MAX(box.X2, b_box->X2);
-		PCB_MAKE_MAX(box.Y2, b_box->Y2);
+		RND_MAKE_MIN(box.X1, b_box->X1);
+		RND_MAKE_MIN(box.Y1, b_box->Y1);
+		RND_MAKE_MAX(box.X2, b_box->X2);
+		RND_MAKE_MAX(box.Y2, b_box->Y2);
 	}
 
 	if (del_inside) {
@@ -2369,7 +2369,7 @@ void pcb_poly_contour_pre(pcb_pline_t * C, rnd_bool optimize)
 		}
 		while ((c = (p = c)->next) != C->head);
 	}
-	C->area = PCB_ABS(area);
+	C->area = RND_ABS(area);
 	if (C->Count > 2)
 		C->Flags.orient = ((area < 0) ? PCB_PLF_INV : PCB_PLF_DIR);
 	C->tree = (rnd_rtree_t *) pcb_poly_make_edge_tree(C);
@@ -3419,14 +3419,14 @@ static pcb_r_dir_t pline_isect_circ_cb(const rnd_rnd_box_t * b, void *cl)
 	double ox, oy, dx, dy, l;
 
 	/* Cheap: if either line endpoint is within the circle, we sure have an intersection */
-	if ((PCB_SQUARE(s->v->point[0] - ctx->cx) + PCB_SQUARE(s->v->point[1] - ctx->cy)) <= ctx->r2)
+	if ((RND_SQUARE(s->v->point[0] - ctx->cx) + RND_SQUARE(s->v->point[1] - ctx->cy)) <= ctx->r2)
 		return PCB_R_DIR_CANCEL; /* found */
-	if ((PCB_SQUARE(s->v->next->point[0] - ctx->cx) + PCB_SQUARE(s->v->next->point[1] - ctx->cy)) <= ctx->r2)
+	if ((RND_SQUARE(s->v->next->point[0] - ctx->cx) + RND_SQUARE(s->v->next->point[1] - ctx->cy)) <= ctx->r2)
 		return PCB_R_DIR_CANCEL; /* found */
 
 	dx = s->v->point[0] - s->v->next->point[0];
 	dy = s->v->point[1] - s->v->next->point[1];
-	l = sqrt(PCB_SQUARE(dx) + PCB_SQUARE(dy));
+	l = sqrt(RND_SQUARE(dx) + RND_SQUARE(dy));
 	ox = -dy / l * (double)ctx->r;
 	oy = dx / l * (double)ctx->r;
 

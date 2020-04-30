@@ -139,8 +139,8 @@ static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 
 	/* set default unit and filename */
 	if (xy_options[HA_unit].default_val.lng == last_unit_value) {
-		if (pcbhl_conf.editor.grid_unit)
-			xy_options[HA_unit].default_val.lng = pcbhl_conf.editor.grid_unit->index;
+		if (rnd_conf.editor.grid_unit)
+			xy_options[HA_unit].default_val.lng = rnd_conf.editor.grid_unit->index;
 		else
 			xy_options[HA_unit].default_val.lng = get_unit_struct("mil")->index;
 		last_unit_value = xy_options[HA_unit].default_val.lng;
@@ -301,7 +301,7 @@ static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, rnd_coord_t *pw, rnd_coo
 		}
 		
 		sc_rot0 = pcb_subc_dup_at(NULL, tmp, ctx->subc, 0, 0, 0);
-		ang = ctx->theta / PCB_RAD_TO_DEG;
+		ang = ctx->theta / RND_RAD_TO_DEG;
 		pcb_subc_rotate(sc_rot0, 0, 0, cos(ang), sin(ang), ctx->theta);
 
 		save = ctx->subc;

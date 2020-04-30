@@ -345,13 +345,13 @@ do { \
 	rnd_conf_set_editor(field, !conf_core.editor.field)
 
 #define rnd_conf_toggle_heditor(field) \
-	rnd_conf_set_editor(field, !pcbhl_conf.editor.field)
+	rnd_conf_set_editor(field, !rnd_conf.editor.field)
 
 #define rnd_conf_toggle_editor_(sfield, field) \
 	rnd_conf_set_editor_("editor/" sfield, !conf_core.editor.field)
 
 #define rnd_conf_toggle_heditor_(sfield, field) \
-	rnd_conf_set_editor_("editor/" sfield, !pcbhl_conf.editor.field)
+	rnd_conf_set_editor_("editor/" sfield, !rnd_conf.editor.field)
 
 /* For temporary modification/restoration of variables (hack) */
 #define rnd_conf_force_set_bool(var, val) *((RND_CFT_BOOLEAN *)(&var)) = val

@@ -1470,7 +1470,7 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		x3 = (x1+x2)/2;
 		y3 = (y1+y2)/2;
 
-		if (PCB_ABS(x2-x1) < PCB_ABS(y2-y1)) {
+		if (RND_ABS(x2-x1) < RND_ABS(y2-y1)) {
 			cx = c;
 			cy = (long)((x3-cx)*(x2-x1)/(double)((y2-y1)) + y3);
 		} else {
@@ -1500,8 +1500,8 @@ static int arc_decode(void *ctx, egb_node_t *elem, int arctype, int linetype)
 		} else {
 			delta_x = (double)(x1 - cx);
 			delta_y = (double)(y1 - cy);
-			theta_1 = PCB_RAD_TO_DEG*atan2(-delta_y, delta_x);
-			theta_2 = PCB_RAD_TO_DEG*atan2(-(y2 - cy), (x2 - cx));
+			theta_1 = RND_RAD_TO_DEG*atan2(-delta_y, delta_x);
+			theta_2 = RND_RAD_TO_DEG*atan2(-(y2 - cy), (x2 - cx));
 
 			theta_1 = 180 - theta_1; /* eagle coord system */
 			theta_2 = 180 - theta_2; /* eagle coord system */

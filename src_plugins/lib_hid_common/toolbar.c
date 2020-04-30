@@ -62,7 +62,7 @@ static void toolbar_pcb2dlg()
 		int st, wid = toolbar.tid2wid.array[tid];
 		if (wid == 0)
 			continue;
-		st = (tid == pcbhl_conf.editor.mode) ? 2 : 1;
+		st = (tid == rnd_conf.editor.mode) ? 2 : 1;
 		rnd_gui->attr_dlg_widget_state(toolbar.sub.dlg_hid_ctx, wid, st);
 	}
 	toolbar.lock = 0;

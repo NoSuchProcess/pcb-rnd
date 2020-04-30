@@ -164,8 +164,8 @@ serpentine_calculate_route(	pcb_route_t * route,
 	end.X = ex;
 	end.Y = ey;
 
-	angle_n = (0.0-(atan2(ny, nx) / PCB_M180));
-	angle_l = (0.0-(atan2(ly, lx) / PCB_M180));
+	angle_n = (0.0-(atan2(ny, nx) / RND_M180));
+	angle_l = (0.0-(atan2(ly, lx) / RND_M180));
 
 	/* Calculate Amplitude */
 	amplitude = nd;

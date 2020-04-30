@@ -252,7 +252,7 @@ static void fix_topbar_theming(pcb_gtk_topwin_t *tw)
 
 static void fullscreen_cb(GtkButton *btn, void *data)
 {
-	rnd_conf_setf(RND_CFR_DESIGN, "editor/fullscreen", -1, "%d", !pcbhl_conf.editor.fullscreen, RND_POL_OVERWRITE);
+	rnd_conf_setf(RND_CFR_DESIGN, "editor/fullscreen", -1, "%d", !rnd_conf.editor.fullscreen, RND_POL_OVERWRITE);
 }
 
 /* XPM */
@@ -547,7 +547,7 @@ void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in
 
 void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 {
-	if (pcbhl_conf.editor.fullscreen) {
+	if (rnd_conf.editor.fullscreen) {
 		gtk_widget_hide(tw->left_toolbar);
 		gtk_widget_hide(tw->top_hbox);
 		if (!tw->cmd.command_entry_status_line_active)

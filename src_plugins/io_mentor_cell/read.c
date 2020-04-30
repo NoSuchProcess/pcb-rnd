@@ -387,9 +387,9 @@ static void convert_arc(rnd_coord_t sx, rnd_coord_t sy, rnd_coord_t cx, rnd_coor
 
 	srx = -(sx - cx); sry = sy - cy; /* Since angle = 0 is towards -x, change sign to x part */
 	erx = -(ex - cx); ery = ey - cy; /* Since angle = 0 is towards -x, change sign to x part */
-	*sa = atan2(sry, srx) * PCB_RAD_TO_DEG;
+	*sa = atan2(sry, srx) * RND_RAD_TO_DEG;
 	*sa = pcb_normalize_angle(360 + *sa); /* normalize angle between 0 and 359 */
-	ea = atan2(ery, erx) * PCB_RAD_TO_DEG;
+	ea = atan2(ery, erx) * RND_RAD_TO_DEG;
 	ea = pcb_normalize_angle(360 + ea); /* normalize angle between 0 and 359 */
 
 	if (*r < 0) {
@@ -639,7 +639,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 			"Consider rotation, using:"
 			"  pcb_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)"
 			"Maybe:"
-			"  double sina = sin(-(double)rot / PCB_RAD_TO_DEG), cosa = cos(-(double)rot / PCB_RAD_TO_DEG);");
+			"  double sina = sin(-(double)rot / RND_RAD_TO_DEG), cosa = cos(-(double)rot / RND_RAD_TO_DEG);");
 		if (strcmp(tmp->argv[1], "Top") == 0) {
 			y1 = ty+height; y2 = ty;
 		}

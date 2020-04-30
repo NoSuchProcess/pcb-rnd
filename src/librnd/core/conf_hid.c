@@ -156,10 +156,10 @@ void rnd_conf_loglevel_props(rnd_message_level_t level, const char **tag, int *p
 	*tag = NULL;
 	*popup = 0;
 	switch(level) {
-		case RND_MSG_DEBUG:   *tag = pcbhl_conf.appearance.loglevels.debug_tag; *popup = pcbhl_conf.appearance.loglevels.debug_popup; break;
-		case RND_MSG_INFO:    *tag = pcbhl_conf.appearance.loglevels.info_tag; *popup = pcbhl_conf.appearance.loglevels.info_popup; break;
-		case RND_MSG_WARNING: *tag = pcbhl_conf.appearance.loglevels.warning_tag; *popup = pcbhl_conf.appearance.loglevels.warning_popup; break;
-		case RND_MSG_ERROR:   *tag = pcbhl_conf.appearance.loglevels.error_tag; *popup = pcbhl_conf.appearance.loglevels.error_popup; break;
+		case RND_MSG_DEBUG:   *tag = rnd_conf.appearance.loglevels.debug_tag; *popup = rnd_conf.appearance.loglevels.debug_popup; break;
+		case RND_MSG_INFO:    *tag = rnd_conf.appearance.loglevels.info_tag; *popup = rnd_conf.appearance.loglevels.info_popup; break;
+		case RND_MSG_WARNING: *tag = rnd_conf.appearance.loglevels.warning_tag; *popup = rnd_conf.appearance.loglevels.warning_popup; break;
+		case RND_MSG_ERROR:   *tag = rnd_conf.appearance.loglevels.error_tag; *popup = rnd_conf.appearance.loglevels.error_popup; break;
 			break;
 	}
 }

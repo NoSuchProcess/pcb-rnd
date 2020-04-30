@@ -221,10 +221,10 @@ static int dimension_gen(pcb_subc_t *subc)
 	ty = t->BoundingBox.Y2 - t->BoundingBox.Y1;
 
 	ang = atan2(-dim->dy, dim->dx) + M_PI;
-	deg = ang * PCB_RAD_TO_DEG;
+	deg = ang * RND_RAD_TO_DEG;
 	if ((deg > 135) && (deg < 315)) {
 		ang = ang-M_PI;
-		deg = ang * PCB_RAD_TO_DEG;
+		deg = ang * RND_RAD_TO_DEG;
 		rotsign = -1;
 	}
 	else

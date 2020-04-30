@@ -38,7 +38,7 @@ extern int pcb_wplc_save_to_file(const char *fn);
 
 static void pref_win_brd2dlg(pref_ctx_t *ctx)
 {
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, lng, pcbhl_conf.editor.auto_place);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wmaster, lng, rnd_conf.editor.auto_place);
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wboard, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design);
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wproject, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project);
 	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->win.wuser, lng, dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user);

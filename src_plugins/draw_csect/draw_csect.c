@@ -54,8 +54,8 @@ static const char *COLOR_PASTE_ = "#60e0e0";
 static const char *COLOR_MISC_ = "#e0e000";
 static const char *COLOR_OUTLINE_ = "#000000";
 
-#define COLOR_ANNOT  pcbhl_conf.appearance.color.grid
-#define COLOR_BG     pcbhl_conf.appearance.color.background
+#define COLOR_ANNOT  rnd_conf.appearance.color.grid
+#define COLOR_BG     rnd_conf.appearance.color.background
 
 static rnd_color_t
 	COLOR_COPPER, COLOR_SUBSTRATE, COLOR_SILK, COLOR_MASK,

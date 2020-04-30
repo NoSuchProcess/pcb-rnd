@@ -138,9 +138,9 @@ rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 		embedded_fallback = rnd_hidlib_default_embedded_menu;
 
 	/* override HID defaults with the configured path */
-	if ((pcbhl_conf.rc.menu_file != NULL) && (*pcbhl_conf.rc.menu_file != '\0')) {
-		fn = pcbhl_conf.rc.menu_file;
-		exact_fn = (strchr(pcbhl_conf.rc.menu_file, '/') != NULL);
+	if ((rnd_conf.rc.menu_file != NULL) && (*rnd_conf.rc.menu_file != '\0')) {
+		fn = rnd_conf.rc.menu_file;
+		exact_fn = (strchr(rnd_conf.rc.menu_file, '/') != NULL);
 	}
 
 	if (!exact_fn) {

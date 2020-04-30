@@ -509,7 +509,7 @@ static void openscad_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 		cap_style = "rc";
 
 	pcb_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
-		x1, y1, (rnd_coord_t)rnd_round(length), angle * PCB_RAD_TO_DEG, gc->width, effective_layer_thickness);
+		x1, y1, (rnd_coord_t)rnd_round(length), angle * RND_RAD_TO_DEG, gc->width, effective_layer_thickness);
 }
 
 static void openscad_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
@@ -544,8 +544,8 @@ static void openscad_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 
 	TODO("use the central arc approximation instead");
 	for(first = 1, a = start_angle; step > 0 ? (a < end_angle) : (a > end_angle); a += step) {
-		x = (double)cx + cos((180-a) / PCB_RAD_TO_DEG) * (double)width;
-		y = (double)cy + sin((180-a) / PCB_RAD_TO_DEG) * (double)height;
+		x = (double)cx + cos((180-a) / RND_RAD_TO_DEG) * (double)width;
+		y = (double)cy + sin((180-a) / RND_RAD_TO_DEG) * (double)height;
 		if (!first) {
 			fprintf(f, "\t");
 			openscad_draw_line(gc, lx, ly, x, y);
@@ -555,8 +555,8 @@ static void openscad_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 		first = 0;
 	}
 	if (!first) {
-		x = (double)cx + cos((180 - end_angle) / PCB_RAD_TO_DEG) * (double)width;
-		y = (double)cy + sin((180 - end_angle) / PCB_RAD_TO_DEG) * (double)height;
+		x = (double)cx + cos((180 - end_angle) / RND_RAD_TO_DEG) * (double)width;
+		y = (double)cy + sin((180 - end_angle) / RND_RAD_TO_DEG) * (double)height;
 		fprintf(f, "\t");
 		openscad_draw_line(gc, lx, ly, x, y);
 	}

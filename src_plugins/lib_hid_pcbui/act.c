@@ -127,7 +127,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				xoffs = 0;
 				break;
 			case 'v': case 'V':
-				if (!pcbhl_conf.editor.view.flip_y)
+				if (!rnd_conf.editor.view.flip_y)
 					yoffs = -yoffs;
 				else
 					yoffs = 0;
@@ -135,7 +135,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 			case 'r': case 'R':
 				xoffs = 0;
-				if (!pcbhl_conf.editor.view.flip_y)
+				if (!rnd_conf.editor.view.flip_y)
 					yoffs = -yoffs;
 				else
 					yoffs = 0;

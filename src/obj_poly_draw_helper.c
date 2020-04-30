@@ -51,10 +51,10 @@ static size_t fc_alloced = 0;
 #define vert_opt_loop1(v, force, skip_stmt) \
 		this_x = v->point[0]; \
 		this_y = v->point[1]; \
-		if ((!force) && (PCB_ABS(this_x - last_x) < mindist) && (PCB_ABS(this_y - last_y) < mindist)) { \
+		if ((!force) && (RND_ABS(this_x - last_x) < mindist) && (RND_ABS(this_y - last_y) < mindist)) { \
 			next_x = v->next->point[0]; \
 			next_y = v->next->point[1]; \
-			if ((PCB_ABS(this_x - next_x) < mindist) && (PCB_ABS(this_y - next_y) < mindist)) \
+			if ((RND_ABS(this_x - next_x) < mindist) && (RND_ABS(this_y - next_y) < mindist)) \
 				{ skip_stmt; } \
 		} \
 

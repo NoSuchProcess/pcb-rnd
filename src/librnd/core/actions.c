@@ -287,7 +287,7 @@ fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	const rnd_action_t *old_action;
 	hid_cookie_action_t *ca = f->reg_data;
 
-	if (pcbhl_conf.rc.verbose) {
+	if (rnd_conf.rc.verbose) {
 		fprintf(stderr, "Action: \033[34m%s(", f->name);
 		for (i = 0; i < argc; i++)
 			fprintf(stderr, "%s%s", i ? "," : "", (argv[i].type & FGW_STR) == FGW_STR ? argv[i].val.str : "<non-str>");
@@ -529,12 +529,12 @@ const char *rnd_cli_prompt(const char *suffix)
 	static char prompt[128];
 	int blen, slen, len;
 
-	if ((pcbhl_conf.rc.cli_prompt != NULL) && (*pcbhl_conf.rc.cli_prompt != '\0'))
-		base = pcbhl_conf.rc.cli_prompt;
-	else if ((pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0'))
+	if ((rnd_conf.rc.cli_prompt != NULL) && (*rnd_conf.rc.cli_prompt != '\0'))
+		base = rnd_conf.rc.cli_prompt;
+	else if ((rnd_conf.rc.cli_backend == NULL) || (*rnd_conf.rc.cli_backend == '\0'))
 		base = "action";
 	else
-		base = pcbhl_conf.rc.cli_backend;
+		base = rnd_conf.rc.cli_backend;
 
 	if ((suffix == NULL) || (*suffix == '\0'))
 		return base;
@@ -570,8 +570,8 @@ static char *cli_pop(void)
 
 int rnd_cli_enter(const char *backend, const char *prompt)
 {
-	cli_push(pcbhl_conf.rc.cli_backend);
-	cli_push(pcbhl_conf.rc.cli_prompt);
+	cli_push(rnd_conf.rc.cli_backend);
+	cli_push(rnd_conf.rc.cli_prompt);
 
 	if (rnd_conf_set(RND_CFR_CLI, "rc/cli_backend", 0, backend, RND_POL_OVERWRITE) != 0)
 		return -1;
@@ -602,11 +602,11 @@ static int pcb_cli_common(rnd_hidlib_t *hl, fgw_arg_t *args)
 	fgw_func_t *f;
 
 	/* no backend: let the original action work */
-	if ((pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0'))
+	if ((rnd_conf.rc.cli_backend == NULL) || (*rnd_conf.rc.cli_backend == '\0'))
 		return -1;
 
 	/* backend: let the backend action handle it */
-	a = rnd_find_action(pcbhl_conf.rc.cli_backend, &f);
+	a = rnd_find_action(rnd_conf.rc.cli_backend, &f);
 	if (!a)
 		return -1;
 
@@ -681,15 +681,15 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_
 	const char *end;
 
 	/* no backend or forced action mode: classic pcb-rnd action parse */
-	if (force_action_mode || (pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0')) {
+	if (force_action_mode || (rnd_conf.rc.cli_backend == NULL) || (*rnd_conf.rc.cli_backend == '\0')) {
 		rnd_event(NULL, RND_EVENT_CLI_ENTER, "s", str_);
 		return hid_parse_actionstring(hl, str_, pcb_false);
 	}
 
 	/* backend: let the backend action handle it */
-	a = rnd_find_action(pcbhl_conf.rc.cli_backend, &f);
+	a = rnd_find_action(rnd_conf.rc.cli_backend, &f);
 	if (!a) {
-		rnd_message(RND_MSG_ERROR, "cli: no action %s; leaving mode\n", pcbhl_conf.rc.cli_backend);
+		rnd_message(RND_MSG_ERROR, "cli: no action %s; leaving mode\n", rnd_conf.rc.cli_backend);
 		rnd_cli_leave();
 		return -1;
 	}

@@ -80,20 +80,20 @@ static const char pcb_acts_Display[] =
 
 static const char pcb_acth_Display[] = "Several display-related actions.";
 /* DOC: display.html */
-static enum pcb_crosshair_shape_e CrosshairShapeIncrement(enum pcb_crosshair_shape_e shape)
+static enum rnd_crosshair_shape_e CrosshairShapeIncrement(enum rnd_crosshair_shape_e shape)
 {
 	switch (shape) {
-	case pcb_ch_shape_basic:
-		shape = pcb_ch_shape_union_jack;
+	case rnd_ch_shape_basic:
+		shape = rnd_ch_shape_union_jack;
 		break;
-	case pcb_ch_shape_union_jack:
-		shape = pcb_ch_shape_dozen;
+	case rnd_ch_shape_union_jack:
+		shape = rnd_ch_shape_dozen;
 		break;
-	case pcb_ch_shape_dozen:
-		shape = pcb_ch_shape_NUM;
+	case rnd_ch_shape_dozen:
+		shape = rnd_ch_shape_NUM;
 		break;
-	case pcb_ch_shape_NUM:
-		shape = pcb_ch_shape_basic;
+	case rnd_ch_shape_NUM:
+		shape = rnd_ch_shape_basic;
 		break;
 	}
 	return shape;
@@ -162,8 +162,8 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_CycleCrosshair:
 			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
-			rnd_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
-			if (pcb_ch_shape_NUM == pcbhl_conf.editor.crosshair_shape_idx)
+			rnd_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(rnd_conf.editor.crosshair_shape_idx));
+			if (rnd_ch_shape_NUM == rnd_conf.editor.crosshair_shape_idx)
 				rnd_conf_set(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "0", RND_POL_OVERWRITE);
 			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
@@ -246,7 +246,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_ToggleAutoDRC:
 			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_toggle_editor(auto_drc);
-			if (conf_core.editor.auto_drc && pcbhl_conf.editor.mode == pcb_crosshair.tool_line) {
+			if (conf_core.editor.auto_drc && rnd_conf.editor.mode == pcb_crosshair.tool_line) {
 				if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
 					pcb_undo_inc_serial();
 					pcb_draw();
@@ -293,7 +293,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_ACT_HIDLIB->grid = 1;
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
 					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true); /* first notify was in MoveCrosshairAbs */
-				pcb_hidlib_set_grid(RND_ACT_HIDLIB, oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
+				rnd_hidlib_set_grid(RND_ACT_HIDLIB, oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
 				rnd_grid_inval();
 			}
 			break;
@@ -365,7 +365,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				RND_ACT_HIDLIB->grid_ox = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
 				RND_ACT_HIDLIB->grid_oy = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
-				if (pcbhl_conf.editor.draw_grid)
+				if (rnd_conf.editor.draw_grid)
 					rnd_hid_redraw(PCB);
 			}
 			break;
@@ -591,7 +591,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
-		if (pcbhl_conf.editor.mode != pcb_crosshair.tool_line)
+		if (rnd_conf.editor.mode != pcb_crosshair.tool_line)
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "line");
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
@@ -601,7 +601,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
-		if (pcbhl_conf.editor.mode != pcb_crosshair.tool_arc)
+		if (rnd_conf.editor.mode != pcb_crosshair.tool_arc)
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "arc");
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);

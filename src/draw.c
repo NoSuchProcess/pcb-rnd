@@ -110,7 +110,7 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
-	double len_mnt = PCB_ABS(dx) + PCB_ABS(dy);
+	double len_mnt = RND_ABS(dx) + RND_ABS(dy);
 	int n;
 	rnd_coord_t minlen = rnd_render->coord_per_pix * 8;
 
@@ -1212,8 +1212,8 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 
 /* vert flip magic: make sure the offset is in-line with the flip and our sick y coords for vertical */
 #define PCB_TERM_LABEL_SETUP(label) \
-	rnd_bool flip_x = pcbhl_conf.editor.view.flip_x; \
-	rnd_bool flip_y = pcbhl_conf.editor.view.flip_y; \
+	rnd_bool flip_x = rnd_conf.editor.view.flip_x; \
+	rnd_bool flip_y = rnd_conf.editor.view.flip_y; \
 	pcb_font_t *font = pcb_font(PCB, 0, 0); \
 	rnd_coord_t w, h, dx, dy; \
 	if (vert) { \
@@ -1261,8 +1261,8 @@ void pcb_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool v
 	rnd_rnd_box_t b;
 	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
-	dx = PCB_ABS(dx);
-	dy = PCB_ABS(dy);
+	dx = RND_ABS(dx);
+	dy = RND_ABS(dy);
 	b.X1 = ox - dx - margin;
 	b.X2 = ox + dx + margin;
 	b.Y1 = oy - dy - margin;

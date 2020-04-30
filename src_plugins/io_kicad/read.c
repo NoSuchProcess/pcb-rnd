@@ -2525,7 +2525,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		pcb_subc_rotate90(subc, mod_x, mod_y, mod_rot);
 	}
 	else if (mod_rot != 0)
-		pcb_subc_rotate(subc, mod_x, mod_y, cos(mod_rot/PCB_RAD_TO_DEG), sin(mod_rot/PCB_RAD_TO_DEG), mod_rot);
+		pcb_subc_rotate(subc, mod_x, mod_y, cos(mod_rot/RND_RAD_TO_DEG), sin(mod_rot/RND_RAD_TO_DEG), mod_rot);
 
 	st->subc_rot = 0.0;
 	st->last_sc = subc;

@@ -365,7 +365,7 @@ static fgw_error_t pcb_act_perp_paral(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	cons.line_angle_len = 2;
-	cons.line_angle[0] = atan2(dy, dx) * PCB_RAD_TO_DEG;
+	cons.line_angle[0] = atan2(dy, dx) * RND_RAD_TO_DEG;
 	if (actname[1] == 'e') /* perp */
 		cons.line_angle[0] += 90;
 	cons.line_angle[1] = fmod(cons.line_angle[0]+180, 360);
@@ -433,8 +433,8 @@ static fgw_error_t pcb_act_tang(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	base = atan2(arc->Y - line->point1.Y, arc->X - line->point1.X);
 
 	cons.line_angle_len = 2;
-	cons.line_angle[0] = (base + asin(r / d)) * PCB_RAD_TO_DEG;
-	cons.line_angle[1] = (base + asin(-r / d)) * PCB_RAD_TO_DEG;
+	cons.line_angle[0] = (base + asin(r / d)) * RND_RAD_TO_DEG;
+	cons.line_angle[1] = (base + asin(-r / d)) * RND_RAD_TO_DEG;
 	cons_changed();
 
 	RND_ACT_IRES(0);
@@ -521,7 +521,7 @@ static void mode_confchg(rnd_conf_native_t *cfg, int arr_idx)
 {
 	static int ddraft_tool_selected = 0;
 
-	if (pcbhl_conf.editor.mode == pcb_ddraft_tool) {
+	if (rnd_conf.editor.mode == pcb_ddraft_tool) {
 		if (!ddraft_tool_selected) {
 			ddraft_tool_selected = 1;
 			rnd_cli_enter("ddraft", "ddraft");

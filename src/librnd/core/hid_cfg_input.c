@@ -183,10 +183,10 @@ static lht_node_t *find_best_action(rnd_hid_cfg_mouse_t *mouse, rnd_hid_cfg_mod_
 
 void rnd_hid_cfg_mouse_action(rnd_hidlib_t *hl, rnd_hid_cfg_mouse_t *mouse, rnd_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active)
 {
-	pcbhl_conf.temp.click_cmd_entry_active = cmd_entry_active;
+	rnd_conf.temp.click_cmd_entry_active = cmd_entry_active;
 	rnd_hid_cfg_action(hl, find_best_action(mouse, button_and_mask));
 	rnd_event(NULL, RND_EVENT_USER_INPUT_POST, NULL);
-	pcbhl_conf.temp.click_cmd_entry_active = 0;
+	rnd_conf.temp.click_cmd_entry_active = 0;
 }
 
 

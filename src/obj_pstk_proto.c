@@ -577,7 +577,7 @@ void pcb_pstk_shape_rot(pcb_pstk_shape_t *sh, double sina, double cosa, double a
 void pcb_pstk_tshape_rot(pcb_pstk_tshape_t *ts, double angle)
 {
 	int n;
-	double cosa = cos(angle / PCB_RAD_TO_DEG), sina = sin(angle / PCB_RAD_TO_DEG);
+	double cosa = cos(angle / RND_RAD_TO_DEG), sina = sin(angle / RND_RAD_TO_DEG);
 
 	for(n = 0; n < ts->len; n++)
 		pcb_pstk_shape_rot(&ts->shape[n], sina, cosa, angle);

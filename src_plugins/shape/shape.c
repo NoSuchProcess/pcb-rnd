@@ -76,8 +76,8 @@ static pcb_poly_t *regpoly(pcb_layer_t *layer, int corners, rnd_coord_t rx, rnd_
 		return NULL;
 
 	if (rot_deg != 0.0) {
-		cosra = cos(rot_deg / PCB_RAD_TO_DEG);
-		sinra = sin(rot_deg / PCB_RAD_TO_DEG);
+		cosra = cos(rot_deg / RND_RAD_TO_DEG);
+		sinra = sin(rot_deg / RND_RAD_TO_DEG);
 	}
 
 	for(n = 0,a = 0; n < corners; n++,a+=da) {
@@ -153,8 +153,8 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 		return NULL;
 
 	if (rot_deg != 0.0) {
-		cosra = cos(rot_deg / PCB_RAD_TO_DEG);
-		sinra = sin(rot_deg / PCB_RAD_TO_DEG);
+		cosra = cos(rot_deg / RND_RAD_TO_DEG);
+		sinra = sin(rot_deg / RND_RAD_TO_DEG);
 		need_rot = 1;
 	}
 	else

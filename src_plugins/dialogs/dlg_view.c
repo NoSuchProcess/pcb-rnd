@@ -175,9 +175,9 @@ void view_simple_show(view_ctx_t *ctx)
 				break;
 			case PCB_VIEW_DRC:
 				if (v->data.drc.have_measured)
-					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
+					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
 				else
-					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\n", pcbhl_conf.editor.grid_unit->allow, v->data.drc.required_value));
+					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value));
 				break;
 		}
 	}

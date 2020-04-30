@@ -1070,13 +1070,13 @@ rnd_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, rnd_coord
 			u = ((X - ptr1->X) * dx + (Y - ptr1->Y) * dy) / (dx * dx + dy * dy);
 
 			if (u < 0.0) {						/* ptr1 is closest point */
-				u = PCB_SQUARE(X - ptr1->X) + PCB_SQUARE(Y - ptr1->Y);
+				u = RND_SQUARE(X - ptr1->X) + RND_SQUARE(Y - ptr1->Y);
 			}
 			else if (u > 1.0) {				/* ptr2 is closest point */
-				u = PCB_SQUARE(X - ptr2->X) + PCB_SQUARE(Y - ptr2->Y);
+				u = RND_SQUARE(X - ptr2->X) + RND_SQUARE(Y - ptr2->Y);
 			}
 			else {										/* projected intersection is closest point */
-				u = PCB_SQUARE(X - ptr1->X * (1.0 - u) - u * ptr2->X) + PCB_SQUARE(Y - ptr1->Y * (1.0 - u) - u * ptr2->Y);
+				u = RND_SQUARE(X - ptr1->X * (1.0 - u) - u * ptr2->X) + RND_SQUARE(Y - ptr1->Y * (1.0 - u) - u * ptr2->Y);
 			}
 			if (u < mindistance) {
 				mindistance = u;

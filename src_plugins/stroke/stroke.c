@@ -48,8 +48,8 @@
 
 conf_stroke_t conf_stroke;
 
-#define SIDE_X(hl, x)  ((pcbhl_conf.editor.view.flip_x ? hl->size_x - (x) : (x)))
-#define SIDE_Y(hl, y)  ((pcbhl_conf.editor.view.flip_y ? hl->size_y - (y) : (y)))
+#define SIDE_X(hl, x)  ((rnd_conf.editor.view.flip_x ? hl->size_x - (x) : (x)))
+#define SIDE_Y(hl, y)  ((rnd_conf.editor.view.flip_y ? hl->size_y - (y) : (y)))
 
 static const char *pcb_stroke_cookie = "stroke plugin";
 

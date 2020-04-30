@@ -90,10 +90,10 @@ void pcb_line_45(pcb_attached_line_t *Line)
 	else {
 		m = (double) dy / dx;
 		direction = 2;
-		if (m > PCB_TAN_30_DEGREE)
-			direction = m > PCB_TAN_60_DEGREE ? 0 : 1;
-		else if (m < -PCB_TAN_30_DEGREE)
-			direction = m < -PCB_TAN_60_DEGREE ? 0 : 3;
+		if (m > RND_TAN_30_DEGREE)
+			direction = m > RND_TAN_60_DEGREE ? 0 : 1;
+		else if (m < -RND_TAN_30_DEGREE)
+			direction = m < -RND_TAN_60_DEGREE ? 0 : 3;
 	}
 	if (dx < 0)
 		direction += 4;
