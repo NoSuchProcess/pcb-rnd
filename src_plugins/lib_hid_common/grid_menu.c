@@ -68,7 +68,7 @@ static void grid_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, c
 	props.update_on = "editor/grids_idx";
 	props.cookie = ANCH;
 
-	pcb_hid_cfg_del_anchor_menus(node, ANCH);
+	rnd_hid_cfg_del_anchor_menus(node, ANCH);
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
@@ -87,7 +87,7 @@ static void grid_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, c
 
 void rnd_grid_install_menu(void)
 {
-	pcb_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
+	rnd_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
 }
 
 static int grid_lock = 0;

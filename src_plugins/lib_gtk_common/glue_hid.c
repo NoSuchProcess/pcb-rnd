@@ -493,7 +493,7 @@ static int ghid_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	GtkWidget *menu = NULL;
-	lht_node_t *menu_node = pcb_hid_cfg_get_menu(gctx->topwin.ghid_cfg, menupath);
+	lht_node_t *menu_node = rnd_hid_cfg_get_menu(gctx->topwin.ghid_cfg, menupath);
 
 	if (menu_node == NULL)
 		return 1;

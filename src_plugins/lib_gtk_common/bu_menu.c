@@ -120,7 +120,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 			accel = pcb_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, 1, NULL);
 		}
 		else
-			pcb_hid_cfg_error(sub_res, "No action specified for key accel\n");
+			rnd_hid_cfg_error(sub_res, "No action specified for key accel\n");
 	}
 
 	/* Resolve menu name */
@@ -270,11 +270,11 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 				/* anchor; ignore */
 			}
 			else
-				pcb_hid_cfg_error(base, "Unexpected text node; the only text accepted here is sep, -, or @");
+				rnd_hid_cfg_error(base, "Unexpected text node; the only text accepted here is sep, -, or @");
 		}
 		break;
 	default:
-		pcb_hid_cfg_error(base, "Unexpected node type; should be hash (submenu) or text (separator or @special)");
+		rnd_hid_cfg_error(base, "Unexpected node type; should be hash (submenu) or text (separator or @special)");
 	}
 }
 
@@ -328,7 +328,7 @@ void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const 
 {
 	lht_node_t *n;
 	if (base->type != LHT_LIST) {
-		pcb_hid_cfg_error(base, "Menu description shall be a list (li)\n");
+		rnd_hid_cfg_error(base, "Menu description shall be a list (li)\n");
 		abort();
 	}
 	for (n = base->data.list.first; n != NULL; n = n->next) {
@@ -343,7 +343,7 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
 
 	submenu = pcb_hid_cfg_menu_field_path(base, "submenu");
 	if (submenu == NULL) {
-		pcb_hid_cfg_error(base, "can not create popup without submenu list");
+		rnd_hid_cfg_error(base, "can not create popup without submenu list");
 		return;
 	}
 
@@ -469,20 +469,20 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 
 	menu->hidlib = hidlib;
 
-	*cfg_out = pcb_hid_cfg_load(menu->hidlib, "gtk", 0, NULL);
+	*cfg_out = rnd_hid_cfg_load(menu->hidlib, "gtk", 0, NULL);
 	if (*cfg_out == NULL) {
 		rnd_message(RND_MSG_ERROR, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
 		abort();
 	}
 
-	mr = pcb_hid_cfg_get_menu(*cfg_out, "/main_menu");
+	mr = rnd_hid_cfg_get_menu(*cfg_out, "/main_menu");
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
 		ghid_main_menu_add_node(menu, GHID_MAIN_MENU(menu_bar), mr);
 		mr->doc->root->user_data = menu;
 	}
 
-	mr = pcb_hid_cfg_get_menu(*cfg_out, "/popups");
+	mr = rnd_hid_cfg_get_menu(*cfg_out, "/popups");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -490,11 +490,11 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 				ghid_main_menu_add_popup_node(menu, GHID_MAIN_MENU(menu_bar), n);
 		}
 		else
-			pcb_hid_cfg_error(mr, "/popups should be a list");
+			rnd_hid_cfg_error(mr, "/popups should be a list");
 		mr->doc->root->user_data = menu;
 	}
 
-	mr = pcb_hid_cfg_get_menu(*cfg_out, "/mouse");
+	mr = rnd_hid_cfg_get_menu(*cfg_out, "/mouse");
 	if (hid_cfg_mouse_init(*cfg_out, &ghid_mouse) != 0)
 		rnd_message(RND_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
 

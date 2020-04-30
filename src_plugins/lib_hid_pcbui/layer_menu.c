@@ -65,7 +65,7 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 	props.update_on = "";
 	props.cookie = ctx->anch;
 
-	pcb_hid_cfg_del_anchor_menus(node, ctx->anch);
+	rnd_hid_cfg_del_anchor_menus(node, ctx->anch);
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
@@ -192,7 +192,7 @@ static void layer_install_menu_key(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *n
 	pcb_layer_t *l;
 	rnd_menu_prop_t keyprops;
 
-	pcb_hid_cfg_del_anchor_menus(node, ctx->anch);
+	rnd_hid_cfg_del_anchor_menus(node, ctx->anch);
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
@@ -217,7 +217,7 @@ static void layer_install_menu_keys(void)
 
 	ctx.view = 0;
 	ctx.anch = "@layerkeys";
-	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu_key, &ctx);
+	rnd_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu_key, &ctx);
 }
 
 static int layer_menu_install_timer_active = 0;
@@ -229,11 +229,11 @@ static void layer_install_menu_cb(rnd_hidval_t user_data)
 
 	ctx.view = 1;
 	ctx.anch = "@layerview";
-	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
+	rnd_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
 
 	ctx.view = 0;
 	ctx.anch = "@layerpick";
-	pcb_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
+	rnd_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
 
 	layer_install_menu_keys();
 	layer_menu_install_timer_active = 0;

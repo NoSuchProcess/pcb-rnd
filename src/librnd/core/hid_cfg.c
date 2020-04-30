@@ -53,7 +53,7 @@ static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t er
 	return 1;
 }
 
-lht_doc_t *pcb_hid_cfg_load_lht(rnd_hidlib_t *hidlib, const char *filename)
+lht_doc_t *rnd_hid_cfg_load_lht(rnd_hidlib_t *hidlib, const char *filename)
 {
 	FILE *f;
 	lht_doc_t *doc;
@@ -88,7 +88,7 @@ lht_doc_t *pcb_hid_cfg_load_lht(rnd_hidlib_t *hidlib, const char *filename)
 	return doc;
 }
 
-lht_doc_t *pcb_hid_cfg_load_str(const char *text)
+lht_doc_t *rnd_hid_cfg_load_str(const char *text)
 {
 	lht_doc_t *doc;
 	int error = 0;
@@ -117,19 +117,19 @@ lht_doc_t *pcb_hid_cfg_load_str(const char *text)
 	return doc;
 }
 
-const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path)
+const char *rnd_hid_cfg_text_value(lht_doc_t *doc, const char *path)
 {
 	lht_node_t *n = lht_tree_path(doc, "/", path, 1, NULL);
 	if (n == NULL)
 		return NULL;
 	if (n->type != LHT_TEXT) {
-		pcb_hid_cfg_error(n, "Error: node %s should be a text node\n", path);
+		rnd_hid_cfg_error(n, "Error: node %s should be a text node\n", path);
 		return NULL;
 	}
 	return n->data.text.value;
 }
 
-rnd_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
+rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
 {
 	lht_doc_t *doc;
 	rnd_hid_cfg_t *hr;
@@ -154,7 +154,7 @@ rnd_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 			if (doc == NULL) {
 				char *end = *p + strlen(*p);
 				sprintf(end, pcbhl_menu_name_fmt, fn);
-				doc = pcb_hid_cfg_load_lht(hidlib, *p);
+				doc = rnd_hid_cfg_load_lht(hidlib, *p);
 				if (doc != NULL)
 					rnd_file_loaded_set_at("menu", "HID main", *p, "main menu system");
 			}
@@ -163,10 +163,10 @@ rnd_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 		free(paths);
 	}
 	else
-		doc = pcb_hid_cfg_load_lht(hidlib, fn);
+		doc = rnd_hid_cfg_load_lht(hidlib, fn);
 
 	if (doc == NULL) {
-		doc = pcb_hid_cfg_load_str(embedded_fallback);
+		doc = rnd_hid_cfg_load_str(embedded_fallback);
 		rnd_file_loaded_set_at("menu", "HID main", "<internal>", "main menu system");
 	}
 	if (doc == NULL)
@@ -180,7 +180,7 @@ rnd_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 
 /************* "parsing" **************/
 
-lht_node_t *pcb_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
+lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
 {
 	lht_err_t err;
 	lht_node_t *curr;
@@ -254,12 +254,12 @@ lht_node_t *pcb_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const cha
 	return curr;
 }
 
-lht_node_t *pcb_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path)
+lht_node_t *rnd_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path)
 {
-	return pcb_hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
+	return rnd_hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
 }
 
-void pcb_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
+void rnd_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 {
 	for(;;) {
 		char *cname, *cval;
@@ -306,15 +306,15 @@ void pcb_hid_cfg_extend_hash_nodev(lht_node_t *node, va_list ap)
 	}
 }
 
-void pcb_hid_cfg_extend_hash_node(lht_node_t *node, ...)
+void rnd_hid_cfg_extend_hash_node(lht_node_t *node, ...)
 {
 	va_list ap;
 	va_start(ap, node);
-	pcb_hid_cfg_extend_hash_nodev(node, ap);
+	rnd_hid_cfg_extend_hash_nodev(node, ap);
 	va_end(ap);
 }
 
-lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, lht_node_t *ins_after, const char *name, ...)
+lht_node_t *rnd_hid_cfg_create_hash_node(lht_node_t *parent, lht_node_t *ins_after, const char *name, ...)
 {
 	lht_node_t *n;
 	va_list ap;
@@ -337,13 +337,13 @@ lht_node_t *pcb_hid_cfg_create_hash_node(lht_node_t *parent, lht_node_t *ins_aft
 	}
 
 	va_start(ap, name);
-	pcb_hid_cfg_extend_hash_nodev(n, ap);
+	rnd_hid_cfg_extend_hash_nodev(n, ap);
 	va_end(ap);
 
 	return n;
 }
 
-int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx)
+int rnd_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), void *ctx)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n;
@@ -354,7 +354,7 @@ int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), voi
 		if (ret != 0)
 			return ret;
 		if (n->type != LHT_TEXT) {
-			ret = pcb_hid_cfg_dfs(n, cb, ctx);
+			ret = rnd_hid_cfg_dfs(n, cb, ctx);
 			if (ret != 0)
 				return ret;
 		}
@@ -362,7 +362,7 @@ int pcb_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), voi
 	return 0;
 }
 
-void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
+void rnd_hid_cfg_error(const lht_node_t *node, const char *fmt, ...)
 {
 	char *end;
 	va_list ap;
@@ -398,7 +398,7 @@ static void map_anchor_menus(vtp0_t *dst, lht_node_t *node, const char *name)
 	}
 }
 
-void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
+void rnd_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
 {
 	vtp0_t anchors;
 
@@ -445,7 +445,7 @@ void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
 	vtp0_uninit(&anchors);
 }
 
-int pcb_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
+int rnd_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
 {
 	lht_node_t *nxt;
 

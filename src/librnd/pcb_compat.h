@@ -681,3 +681,16 @@
 #define PCB_HIDEOF_USAGE RND_HIDEOF_USAGE
 #define PCB_HIDEOF_DAD RND_HIDEOF_DAD
 #define pcb_hid_export_opt_func_t rnd_hid_export_opt_func_t
+#define pcb_hid_cfg_load rnd_hid_cfg_load
+#define pcb_hid_cfg_load_lht rnd_hid_cfg_load_lht
+#define pcb_hid_cfg_load_str rnd_hid_cfg_load_str
+#define pcb_hid_cfg_text_value rnd_hid_cfg_text_value
+#define pcb_hid_cfg_get_menu rnd_hid_cfg_get_menu
+#define pcb_hid_cfg_get_menu_at rnd_hid_cfg_get_menu_at
+#define pcb_hid_cfg_create_hash_node rnd_hid_cfg_create_hash_node
+#define pcb_hid_cfg_extend_hash_node rnd_hid_cfg_extend_hash_node
+#define pcb_hid_cfg_extend_hash_nodev rnd_hid_cfg_extend_hash_nodev
+#define pcb_hid_cfg_dfs rnd_hid_cfg_dfs
+#define pcb_hid_cfg_error rnd_hid_cfg_error
+#define pcb_hid_cfg_map_anchor_menus rnd_hid_cfg_map_anchor_menus
+#define pcb_hid_cfg_del_anchor_menus rnd_hid_cfg_del_anchor_menus

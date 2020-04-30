@@ -228,7 +228,7 @@ static void note_accelerator(const lht_node_t *node)
 	if ((anode != NULL) && (knode != NULL))
 		pcb_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode);
 	else
-		pcb_hid_cfg_error(node, "No action specified for key accel\n");
+		rnd_hid_cfg_error(node, "No action specified for key accel\n");
 }
 
 int lesstif_key_event(XKeyEvent * e)
@@ -566,14 +566,14 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
 
-	lesstif_cfg = pcb_hid_cfg_load(ltf_hidlib, "lesstif", 0, NULL);
+	lesstif_cfg = rnd_hid_cfg_load(ltf_hidlib, "lesstif", 0, NULL);
 	lesstif_hid.hid_cfg = lesstif_cfg;
 	if (lesstif_cfg == NULL) {
 		rnd_message(RND_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
 	}
 
-	mr = pcb_hid_cfg_get_menu(lesstif_cfg, "/main_menu");
+	mr = rnd_hid_cfg_get_menu(lesstif_cfg, "/main_menu");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -581,11 +581,11 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 				add_node_to_menu(mb, NULL, n, (XtCallbackProc) callback, 0);
 		}
 		else
-			pcb_hid_cfg_error(mr, "/main_menu should be a list");
+			rnd_hid_cfg_error(mr, "/main_menu should be a list");
 	}
 
 	htsp_init(&ltf_popups, strhash, strkeyeq);
-	mr = pcb_hid_cfg_get_menu(lesstif_cfg, "/popups");
+	mr = rnd_hid_cfg_get_menu(lesstif_cfg, "/popups");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -617,7 +617,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 			}
 		}
 		else
-			pcb_hid_cfg_error(mr, "/popups should be a list");
+			rnd_hid_cfg_error(mr, "/popups should be a list");
 	}
 
 
@@ -629,7 +629,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 int ltf_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	menu_data_t *md;
-	lht_node_t *menu_node = pcb_hid_cfg_get_menu(lesstif_cfg, menupath);
+	lht_node_t *menu_node = rnd_hid_cfg_get_menu(lesstif_cfg, menupath);
 
 	rnd_trace("ltf_open_popup: %s: %p\n", menupath, menu_node);
 

@@ -102,7 +102,7 @@ static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool, const char *
 
 static void toolbar_create_static(rnd_hid_cfg_t *cfg)
 {
-	const lht_node_t *t, *ts = pcb_hid_cfg_get_menu(cfg, "/toolbar_static");
+	const lht_node_t *t, *ts = rnd_hid_cfg_get_menu(cfg, "/toolbar_static");
 
 	if ((ts != NULL) && (ts->type == LHT_LIST)) {
 		for(t = ts->data.list.first; t != NULL; t = t->next) {

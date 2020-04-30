@@ -135,11 +135,11 @@ static lht_doc_t *conf_load_plug_file(const char *fn, int fn_is_text)
 	const char *ifn;
 
 	if (fn_is_text) {
-		d = pcb_hid_cfg_load_str(fn);
+		d = rnd_hid_cfg_load_str(fn);
 		ifn = "<string>";
 	}
 	else {
-		d = pcb_hid_cfg_load_lht(NULL, fn);
+		d = rnd_hid_cfg_load_lht(NULL, fn);
 		ifn = fn;
 	}
 
@@ -177,11 +177,11 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 			rnd_file_loaded_del_at(flcat, role_name);
 	}
 	if (fn_is_text) {
-		d = pcb_hid_cfg_load_str(fn);
+		d = rnd_hid_cfg_load_str(fn);
 		ifn = "<string>";
 	}
 	else {
-		d = pcb_hid_cfg_load_lht(NULL, fn);
+		d = rnd_hid_cfg_load_lht(NULL, fn);
 		ifn = fn;
 	}
 
@@ -238,7 +238,7 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		return 0;
 	}
 
-	pcb_hid_cfg_error(d->root, "Root node must be one of li:pcb-rnd-conf-v1, ha:coraleda-project-v1 or ha:geda-project-v1\n");
+	rnd_hid_cfg_error(d->root, "Root node must be one of li:pcb-rnd-conf-v1, ha:coraleda-project-v1 or ha:geda-project-v1\n");
 
 	if (d != NULL)
 		lht_dom_uninit(d);
@@ -406,7 +406,7 @@ void pcb_conf_extract_poliprio(lht_node_t *root, rnd_conf_policy_t *gpolicy, lon
 	rnd_conf_policy_t pol;
 
 	if (len >= sizeof(tmp)) {
-		pcb_hid_cfg_error(root, "Invalid policy-prio '%s', subtree is ignored\n", root->name);
+		rnd_hid_cfg_error(root, "Invalid policy-prio '%s', subtree is ignored\n", root->name);
 		return;
 	}
 
@@ -419,7 +419,7 @@ void pcb_conf_extract_poliprio(lht_node_t *root, rnd_conf_policy_t *gpolicy, lon
 		sprio++;
 		p = strtol(sprio, &end, 10);
 		if ((*end != '\0') || (p < 0)) {
-			pcb_hid_cfg_error(root, "Invalid prio in '%s', subtree is ignored\n", root->name);
+			rnd_hid_cfg_error(root, "Invalid prio in '%s', subtree is ignored\n", root->name);
 			return;
 		}
 	}
@@ -427,7 +427,7 @@ void pcb_conf_extract_poliprio(lht_node_t *root, rnd_conf_policy_t *gpolicy, lon
 	/* convert policy */
 	pol = rnd_conf_policy_parse(tmp);
 	if (pol == RND_POL_invalid) {
-		pcb_hid_cfg_error(root, "Invalid policy in '%s', subtree is ignored\n", root->name);
+		rnd_hid_cfg_error(root, "Invalid policy in '%s', subtree is ignored\n", root->name);
 		return;
 	}
 
@@ -530,7 +530,7 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 					dst->boolean[idx] = 0;
 					return 0;
 				}
-			pcb_hid_cfg_error(err_node, "Invalid boolean value: %s\n", text);
+			rnd_hid_cfg_error(err_node, "Invalid boolean value: %s\n", text);
 			return -1;
 		case RND_CFN_INTEGER:
 			if ((text[0] == '0') && (text[1] == 'x')) {
@@ -544,7 +544,7 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 				dst->integer[idx] = l;
 				return 0;
 			}
-			pcb_hid_cfg_error(err_node, "Invalid integer value: %s\n", text);
+			rnd_hid_cfg_error(err_node, "Invalid integer value: %s\n", text);
 			return -1;
 		case RND_CFN_REAL:
 			d = strtod(text, &end);
@@ -552,26 +552,26 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 				dst->real[idx] = d;
 				return 0;
 			}
-			pcb_hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
+			rnd_hid_cfg_error(err_node, "Invalid numeric value: %s\n", text);
 			return -1;
 		case RND_CFN_COORD:
 			{
 				rnd_bool succ;
 				dst->coord[idx] = pcb_get_value(text, NULL, NULL, &succ);
 				if (!succ)
-					pcb_hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
+					rnd_hid_cfg_error(err_node, "Invalid numeric value (coordinate): %s\n", text);
 			}
 			break;
 		case RND_CFN_UNIT:
 			u = get_unit_struct(text);
 			if (u == NULL)
-				pcb_hid_cfg_error(err_node, "Invalid unit: %s\n", text);
+				rnd_hid_cfg_error(err_node, "Invalid unit: %s\n", text);
 			else
 				dst->unit[idx] = u;
 			break;
 		case RND_CFN_COLOR:
 			if (rnd_color_load_str(&dst->color[idx], text) != 0) {
-				pcb_hid_cfg_error(err_node, "Invalid color value: '%s'\n", text);
+				rnd_hid_cfg_error(err_node, "Invalid color value: '%s'\n", text);
 				return -1;
 			}
 			break;
@@ -588,7 +588,7 @@ int pcb_conf_merge_patch_text(rnd_conf_native_t *dest, lht_node_t *src, int prio
 		return 0;
 
 	if (dest->random_flags.read_only) {
-		pcb_hid_cfg_error(src, "WARNING: not going to overwrite read-only value %s from a config file\n", dest->hash_path);
+		rnd_hid_cfg_error(src, "WARNING: not going to overwrite read-only value %s from a config file\n", dest->hash_path);
 		return 0;
 	}
 
@@ -662,7 +662,7 @@ int pcb_conf_merge_patch_array(rnd_conf_native_t *dest, lht_node_t *src_lst, int
 			}
 /*printf("   didx: %d / %d '%s'\n", didx, dest->array_size, s->data.text.value);*/
 			if (didx >= dest->array_size) {
-				pcb_hid_cfg_error(s, "Array is already full [%d] of [%d] ignored value: '%s' policy=%d\n", dest->used, dest->array_size, s->data.text.value, pol);
+				rnd_hid_cfg_error(s, "Array is already full [%d] of [%d] ignored value: '%s' policy=%d\n", dest->used, dest->array_size, s->data.text.value, pol);
 				res = -1;
 				break;
 			}
@@ -675,7 +675,7 @@ int pcb_conf_merge_patch_array(rnd_conf_native_t *dest, lht_node_t *src_lst, int
 			}
 		}
 		else {
-			pcb_hid_cfg_error(s, "List item (in an array) must be text\n");
+			rnd_hid_cfg_error(s, "List item (in an array) must be text\n");
 			res = -1;
 		}
 	}
@@ -728,7 +728,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					}
 				}
 				else {
-					pcb_hid_cfg_error(s, "List item (on a list, prepend) must be text\n");
+					rnd_hid_cfg_error(s, "List item (on a list, prepend) must be text\n");
 					res = -1;
 				}
 			}
@@ -767,7 +767,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					}
 				}
 				else {
-					pcb_hid_cfg_error(s, "List item (on a list) must be text\n");
+					rnd_hid_cfg_error(s, "List item (on a list) must be text\n");
 					res = -1;
 				}
 			}
@@ -824,7 +824,7 @@ static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
 			break;
 		}
 	}
-	pcb_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s'\n(it may be an obsolete setting, check your lht)\n", path);
+	rnd_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s'\n(it may be an obsolete setting, check your lht)\n", path);
 }
 
 /* returns 1 if the config node should be ignored */
@@ -836,7 +836,7 @@ static int conf_board_ignore(const char *path, lht_node_t *n)
 		if (strncmp(path, i->name, i->len) == 0) {
 			if (!i->warned) {
 				i->warned = 1;
-				pcb_hid_cfg_error(n, "conf error: lht->bin conversion: path '%s' from board or project file\nis ignored (probably due to security considerations)\n", path);
+				rnd_hid_cfg_error(n, "conf error: lht->bin conversion: path '%s' from board or project file\nis ignored (probably due to security considerations)\n", path);
 			}
 			return 1;
 		}
@@ -876,7 +876,7 @@ int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t r
 			else if (target->array_size > 1)
 				res |= pcb_conf_merge_patch_array(target, n, default_prio, default_policy);
 			else
-				pcb_hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
+				rnd_hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
 			break;
 		case LHT_SYMLINK:
 TODO("TODO")
@@ -929,7 +929,7 @@ int pcb_conf_merge_patch(lht_node_t *root, rnd_conf_role_t role, long gprio)
 	lht_dom_iterator_t it;
 
 	if (root->type != LHT_HASH) {
-		pcb_hid_cfg_error(root, "patch root should be a hash\n");
+		rnd_hid_cfg_error(root, "patch root should be a hash\n");
 		return -1;
 	}
 

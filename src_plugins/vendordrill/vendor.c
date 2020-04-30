@@ -166,7 +166,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	vendor_free_all();
 
 	/* load the resource file */
-	doc = pcb_hid_cfg_load_lht(&PCB->hidlib, fname);
+	doc = rnd_hid_cfg_load_lht(&PCB->hidlib, fname);
 	if (doc == NULL) {
 		rnd_message(RND_MSG_ERROR, "Could not load vendor resource file \"%s\"\n", fname);
 		RND_ACT_IRES(1);
@@ -174,10 +174,10 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	/* figure out the vendor name, if specified */
-	vendor_name = (char *) PCB_UNKNOWN(pcb_hid_cfg_text_value(doc, "vendor"));
+	vendor_name = (char *) PCB_UNKNOWN(rnd_hid_cfg_text_value(doc, "vendor"));
 
 	/* figure out the units, if specified */
-	sval = pcb_hid_cfg_text_value(doc, "/units");
+	sval = rnd_hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
 		sf = PCB_MIL_TO_COORD(1);
 	}
@@ -197,7 +197,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* default to ROUND_UP */
 	rounding_method = ROUND_UP;
-	sval = pcb_hid_cfg_text_value(doc, "/round");
+	sval = rnd_hid_cfg_text_value(doc, "/round");
 	if (sval != NULL) {
 		if (PCB_NSTRCMP(sval, "up") == 0) {
 			rounding_method = ROUND_UP;
@@ -220,7 +220,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			lht_node_t *n;
 			for(n = drlres->data.list.first; n != NULL; n = n->next) {
 				if (n->type != LHT_TEXT)
-					pcb_hid_cfg_error(n, "Broken drillmap: /drillmap should contain text children only\n");
+					rnd_hid_cfg_error(n, "Broken drillmap: /drillmap should contain text children only\n");
 				else
 					add_to_drills(n->data.text.value);
 			}
@@ -231,37 +231,37 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		rnd_message(RND_MSG_ERROR, "No drillmap resource found\n");
 
-	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_space");
+	sval = rnd_hid_cfg_text_value(doc, "/drc/copper_space");
 	if (sval != NULL) {
 		load_meta_coord("design/bloat", floor(sf * atof(sval) + 0.5));
 		rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.bloat);
 	}
 
-	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_overlap");
+	sval = rnd_hid_cfg_text_value(doc, "/drc/copper_overlap");
 	if (sval != NULL) {
 		load_meta_coord("design/shrink", floor(sf * atof(sval) + 0.5));
 		rnd_message(RND_MSG_INFO, "Set DRC minimum copper overlap to %ml mils\n", conf_core.design.shrink);
 	}
 
-	sval = pcb_hid_cfg_text_value(doc, "/drc/copper_width");
+	sval = rnd_hid_cfg_text_value(doc, "/drc/copper_width");
 	if (sval != NULL) {
 		load_meta_coord("design/min_wid", floor(sf * atof(sval) + 0.5));
 		rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.min_wid);
 	}
 
-	sval = pcb_hid_cfg_text_value(doc, "/drc/silk_width");
+	sval = rnd_hid_cfg_text_value(doc, "/drc/silk_width");
 	if (sval != NULL) {
 		load_meta_coord("design/min_slk", floor(sf * atof(sval) + 0.5));
 		rnd_message(RND_MSG_INFO, "Set DRC minimum silk width to %ml mils\n", conf_core.design.min_slk);
 	}
 
-	sval = pcb_hid_cfg_text_value(doc, "/drc/min_drill");
+	sval = rnd_hid_cfg_text_value(doc, "/drc/min_drill");
 	if (sval != NULL) {
 		load_meta_coord("design/min_drill", floor(sf * atof(sval) + 0.5));
 		rnd_message(RND_MSG_INFO, "Set DRC minimum drill diameter to %ml mils\n", conf_core.design.min_drill);
 	}
 
-	sval = pcb_hid_cfg_text_value(doc, "/drc/min_ring");
+	sval = rnd_hid_cfg_text_value(doc, "/drc/min_ring");
 	if (sval != NULL) {
 		load_meta_coord("design/min_ring", floor(sf * atof(sval) + 0.5));
 		rnd_message(RND_MSG_INFO, "Set DRC minimum annular ring to %ml mils\n", conf_core.design.min_ring);
@@ -497,7 +497,7 @@ static void process_skips(lht_node_t *res)
 		return;
 
 	if (res->type != LHT_LIST)
-		pcb_hid_cfg_error(res, "skips must be a list.\n");
+		rnd_hid_cfg_error(res, "skips must be a list.\n");
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		if (n->type == LHT_TEXT) {
@@ -514,7 +514,7 @@ static void process_skips(lht_node_t *res)
 				lst = &ignore_descr;
 			}
 			else {
-				pcb_hid_cfg_error(n, "invalid skip name; must be one of refdes, value, descr");
+				rnd_hid_cfg_error(n, "invalid skip name; must be one of refdes, value, descr");
 				continue;
 			}
 			/* add the entry to the appropriate list */
@@ -527,7 +527,7 @@ static void process_skips(lht_node_t *res)
 			(*lst)[*cnt - 1] = rnd_strdup(sval);
 		}
 		else
-			pcb_hid_cfg_error(n, "invalid skip type; must be text");
+			rnd_hid_cfg_error(n, "invalid skip type; must be text");
 	}
 }
 

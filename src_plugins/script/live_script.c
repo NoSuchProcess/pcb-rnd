@@ -523,7 +523,7 @@ static void lvs_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, ch
 
 static void lvs_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	pcb_hid_cfg_map_anchor_menus(ANCH, lvs_install_menu, NULL);
+	rnd_hid_cfg_map_anchor_menus(ANCH, lvs_install_menu, NULL);
 }
 
 void pcb_live_script_init(void)

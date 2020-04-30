@@ -64,7 +64,7 @@ static void rst_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, ch
 	props.update_on = "";
 	props.cookie = ANCH;
 
-	pcb_hid_cfg_del_anchor_menus(node, ANCH);
+	rnd_hid_cfg_del_anchor_menus(node, ANCH);
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
@@ -97,7 +97,7 @@ static void rst_update()
 {
 	if (rst_lock) return;
 	rst_lock++;
-	pcb_hid_cfg_map_anchor_menus(ANCH, rst_install_menu, NULL);
+	rnd_hid_cfg_map_anchor_menus(ANCH, rst_install_menu, NULL);
 
 	if (rst.sub_inited) {
 		int n, target;

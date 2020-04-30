@@ -156,7 +156,7 @@ const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_me
 	if (n == NULL)
 		return NULL;
 	if (n->type != LHT_TEXT) {
-		pcb_hid_cfg_error(submenu, "Error: field %s should be a text node\n", fldname);
+		rnd_hid_cfg_error(submenu, "Error: field %s should be a text node\n", fldname);
 		return NULL;
 	}
 	return n->data.text.value;
@@ -169,7 +169,7 @@ int pcb_hid_cfg_has_submenus(const lht_node_t *submenu)
 	if (n == NULL)
 		return 0;
 	if (n->type != LHT_LIST) {
-		pcb_hid_cfg_error(submenu, "Error: field %s should be a list (of submenus)\n", fldname);
+		rnd_hid_cfg_error(submenu, "Error: field %s should be a list (of submenus)\n", fldname);
 		return 0;
 	}
 	return 1;
@@ -243,7 +243,7 @@ int pcb_hid_cfg_remove_menu_cookie(rnd_hid_cfg_t *hr, const char *cookie, int (*
 int pcb_hid_cfg_remove_menu(rnd_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if (hr != NULL) {
-		lht_node_t *nd = pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL);
+		lht_node_t *nd = rnd_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL);
 
 		if (nd == NULL)
 			return pcb_hid_cfg_remove_menu_cookie(hr, path, gui_remove, ctx, 0, hr->doc->root);
@@ -284,19 +284,19 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			for(end = name; *end == '/'; end++) ;
 			end = strchr(end, '/');
 			*end = '\0';
-			psub = cmc->parent = pcb_hid_cfg_get_menu(cmc->hr, name);
+			psub = cmc->parent = rnd_hid_cfg_get_menu(cmc->hr, name);
 			free(name);
 		}
 		else
 			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props->cookie, "a", cmc->props->accel, "tip", cmc->props->tip, "action", cmc->props->action, "checked", cmc->props->checked, "update_on", cmc->props->update_on, "foreground", cmc->props->foreground, "background", cmc->props->background, NULL);
+			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props->cookie, "a", cmc->props->accel, "tip", cmc->props->tip, "action", cmc->props->action, "checked", cmc->props->checked, "update_on", cmc->props->update_on, "foreground", cmc->props->foreground, "background", cmc->props->background, NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
 		else
-			node = pcb_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props->cookie,  NULL);
+			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props->cookie,  NULL);
 
 		if (node == NULL)
 			return NULL;
@@ -362,7 +362,7 @@ int pcb_hid_cfg_create_menu(rnd_hid_cfg_t *hr, const char *path, const rnd_menu_
 		}
 
 		/* descend and visit each level, create missing levels */
-		pcb_hid_cfg_get_menu_at(hr, NULL, path, create_menu_cb, &cmc);
+		rnd_hid_cfg_get_menu_at(hr, NULL, path, create_menu_cb, &cmc);
 	}
 
 	return cmc.err;
