@@ -284,7 +284,7 @@ struct routebox_s {
 		unsigned is_thermal;
 	} flags;
 	/* indicate the direction an expansion box came from */
-	pcb_cost_t cost;
+	rnd_heap_cost_t cost;
 	rnd_cheap_point_t cost_point;
 	/* reference count for homeless routeboxes; free when refcount==0 */
 	int refcount;
@@ -328,8 +328,8 @@ typedef struct routedata_s {
 typedef struct edge_struct_s {
 	routebox_t *rb;								/* path expansion edges are real routeboxen. */
 	rnd_cheap_point_t cost_point;
-	pcb_cost_t pcb_cost_to_point;					/* from source */
-	pcb_cost_t cost;									/* cached edge cost */
+	rnd_heap_cost_t pcb_cost_to_point;					/* from source */
+	rnd_heap_cost_t cost;									/* cached edge cost */
 	routebox_t *minpcb_cost_target;		/* minimum cost from cost_point to any target */
 	vetting_t *work;							/* for via search edges */
 	rnd_direction_t expand_dir;
@@ -354,7 +354,7 @@ static struct AutoRouteParameters_s {
 	/* the present bloat */
 	rnd_coord_t bloat;
 	/* cost parameters */
-	pcb_cost_t ViaCost,								/* additional "length" cost for using a via */
+	rnd_heap_cost_t ViaCost,								/* additional "length" cost for using a via */
 	  LastConflictPenalty,				/* length mult. for routing over last pass' trace */
 	  ConflictPenalty,						/* length multiplier for routing over another trace */
 	  JogPenalty,									/* additional "length" cost for changing direction */
@@ -379,17 +379,17 @@ static struct AutoRouteParameters_s {
 
 typedef struct routeone_state_s {
 	/* heap of all candidate expansion edges */
-	pcb_heap_t *workheap;
+	rnd_heap_t *workheap;
 	/* information about the best path found so far. */
 	routebox_t *best_path, *best_target;
-	pcb_cost_t best_cost;
+	rnd_heap_cost_t best_cost;
 } routeone_state_t;
 
 
 static routebox_t *CreateExpansionArea(const rnd_rnd_box_t * area, rnd_cardinal_t group,
 																			 routebox_t * parent, rnd_bool relax_edge_requirements, edge_t * edge);
 
-static pcb_cost_t edge_cost(const edge_t * e, const pcb_cost_t too_big);
+static rnd_heap_cost_t edge_cost(const edge_t * e, const rnd_heap_cost_t too_big);
 static void best_path_candidate(routeone_state_t *s, edge_t * e, routebox_t * best_target);
 
 static rnd_rnd_box_t edge_to_box(const routebox_t * rb, rnd_direction_t expand_dir);
@@ -568,9 +568,9 @@ static inline rnd_rnd_box_t shrink_routebox(const routebox_t * rb)
 	return rb->sbox;
 }
 
-static inline pcb_cost_t box_area(const rnd_rnd_box_t b)
+static inline rnd_heap_cost_t box_area(const rnd_rnd_box_t b)
 {
-	pcb_cost_t ans = b.X2 - b.X1;
+	rnd_heap_cost_t ans = b.X2 - b.X1;
 	return ans * (b.Y2 - b.Y1);
 }
 
@@ -1278,9 +1278,9 @@ static void ResetSubnet(routebox_t * net)
 	PCB_END_LOOP;
 }
 
-static inline pcb_cost_t pcb_cost_to_point_on_layer(const rnd_cheap_point_t * p1, const rnd_cheap_point_t * p2, rnd_cardinal_t point_layer)
+static inline rnd_heap_cost_t pcb_cost_to_point_on_layer(const rnd_cheap_point_t * p1, const rnd_cheap_point_t * p2, rnd_cardinal_t point_layer)
 {
-	pcb_cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
+	rnd_heap_cost_t x_dist = p1->X - p2->X, y_dist = p1->Y - p2->Y, r;
 	x_dist *= x_cost[point_layer];
 	y_dist *= y_cost[point_layer];
 	/* cost is proportional to orthogonal distance. */
@@ -1290,9 +1290,9 @@ static inline pcb_cost_t pcb_cost_to_point_on_layer(const rnd_cheap_point_t * p1
 	return r;
 }
 
-static pcb_cost_t pcb_cost_to_point(const rnd_cheap_point_t * p1, rnd_cardinal_t point_layer1, const rnd_cheap_point_t * p2, rnd_cardinal_t point_layer2)
+static rnd_heap_cost_t pcb_cost_to_point(const rnd_cheap_point_t * p1, rnd_cardinal_t point_layer1, const rnd_cheap_point_t * p2, rnd_cardinal_t point_layer2)
 {
-	pcb_cost_t r = pcb_cost_to_point_on_layer(p1, p2, point_layer1);
+	rnd_heap_cost_t r = pcb_cost_to_point_on_layer(p1, p2, point_layer1);
 	/* apply via cost penalty if layers differ */
 	if (point_layer1 != point_layer2)
 		r += AutoRouteParameters.ViaCost;
@@ -1302,10 +1302,10 @@ static pcb_cost_t pcb_cost_to_point(const rnd_cheap_point_t * p1, rnd_cardinal_t
 /* return the minimum *cost* from a point to a box on any layer.
  * It's safe to return a smaller than minimum cost
  */
-static pcb_cost_t pcb_cost_to_layerless_box(const rnd_cheap_point_t * p, rnd_cardinal_t point_layer, const rnd_rnd_box_t * b)
+static rnd_heap_cost_t pcb_cost_to_layerless_box(const rnd_cheap_point_t * p, rnd_cardinal_t point_layer, const rnd_rnd_box_t * b)
 {
 	rnd_cheap_point_t p2 = rnd_closest_cheap_point_in_box(p, b);
-	register pcb_cost_t c1, c2;
+	register rnd_heap_cost_t c1, c2;
 
 	c1 = p2.X - p->X;
 	c2 = p2.Y - p->Y;
@@ -1335,9 +1335,9 @@ rnd_bool TargetPoint(rnd_cheap_point_t * nextpoint, const routebox_t * target)
  * via costs if the route box is on a different layer.
  * assume routbox is bloated unless it is an expansion area
  */
-static pcb_cost_t pcb_cost_to_routebox(const rnd_cheap_point_t * p, rnd_cardinal_t point_layer, const routebox_t * rb)
+static rnd_heap_cost_t pcb_cost_to_routebox(const rnd_cheap_point_t * p, rnd_cardinal_t point_layer, const routebox_t * rb)
 {
-	register pcb_cost_t trial = 0;
+	register rnd_heap_cost_t trial = 0;
 	rnd_cheap_point_t p2 = closest_point_in_routebox(p, rb);
 	if (!usedGroup[point_layer] || !usedGroup[rb->group])
 		trial = AutoRouteParameters.NewLayerPenalty;
@@ -1538,12 +1538,12 @@ struct minpcb_cost_target_closure {
 	const rnd_cheap_point_t *CostPoint;
 	rnd_cardinal_t CostPointLayer;
 	routebox_t *nearest;
-	pcb_cost_t nearest_cost;
+	rnd_heap_cost_t nearest_cost;
 };
 static pcb_r_dir_t __region_within_guess(const rnd_rnd_box_t * region, void *cl)
 {
 	struct minpcb_cost_target_closure *mtc = (struct minpcb_cost_target_closure *) cl;
-	pcb_cost_t pcb_cost_to_region;
+	rnd_heap_cost_t pcb_cost_to_region;
 	if (mtc->nearest == NULL)
 		return PCB_R_DIR_FOUND_CONTINUE;
 	pcb_cost_to_region = pcb_cost_to_layerless_box(mtc->CostPoint, mtc->CostPointLayer, region);
@@ -1558,7 +1558,7 @@ static pcb_r_dir_t __found_new_guess(const rnd_rnd_box_t * box, void *cl)
 {
 	struct minpcb_cost_target_closure *mtc = (struct minpcb_cost_target_closure *) cl;
 	routebox_t *guess = (routebox_t *) box;
-	pcb_cost_t pcb_cost_to_guess = pcb_cost_to_routebox(mtc->CostPoint, mtc->CostPointLayer, guess);
+	rnd_heap_cost_t pcb_cost_to_guess = pcb_cost_to_routebox(mtc->CostPoint, mtc->CostPointLayer, guess);
 	assert(pcb_cost_to_guess >= 0);
 	/* if this is cheaper than previous guess... */
 	if (pcb_cost_to_guess < mtc->nearest_cost) {
@@ -1594,7 +1594,7 @@ static routebox_t *minpcb_cost_target_to_point(const rnd_cheap_point_t * CostPoi
 /* minpcb_cost_target_guess can be NULL */
 static edge_t *CreateEdge(routebox_t * rb,
 													rnd_coord_t CostPointX, rnd_coord_t CostPointY,
-													pcb_cost_t pcb_cost_to_point, routebox_t * minpcb_cost_target_guess, rnd_direction_t expand_dir, rnd_rtree_t * targets)
+													rnd_heap_cost_t pcb_cost_to_point, routebox_t * minpcb_cost_target_guess, rnd_direction_t expand_dir, rnd_rtree_t * targets)
 {
 	edge_t *e;
 	assert(__routepcb_box_is_good(rb));
@@ -1638,7 +1638,7 @@ static edge_t *CreateEdge2(routebox_t * rb, rnd_direction_t expand_dir,
 {
 	rnd_rnd_box_t thisbox;
 	rnd_cheap_point_t thiscost, prevcost;
-	pcb_cost_t d;
+	rnd_heap_cost_t d;
 
 	assert(rb && previous_edge);
 	/* okay, find cheapest costpoint to costpoint of previous edge */
@@ -1663,9 +1663,9 @@ static edge_t *CreateViaEdge(const rnd_rnd_box_t * area, rnd_cardinal_t group,
 {
 	routebox_t *rb;
 	rnd_cheap_point_t costpoint;
-	pcb_cost_t d;
+	rnd_heap_cost_t d;
 	edge_t *ne;
-	pcb_cost_t scale[3];
+	rnd_heap_cost_t scale[3];
 
 	scale[0] = 1;
 	scale[1] = AutoRouteParameters.LastConflictPenalty;
@@ -1725,11 +1725,11 @@ static edge_t *CreateViaEdge(const rnd_rnd_box_t * area, rnd_cardinal_t group,
  */
 static edge_t *CreateEdgeWithConflicts(const rnd_rnd_box_t * interior_edge,
 																			 routebox_t * container, edge_t * previous_edge,
-																			 pcb_cost_t cost_penalty_to_box, rnd_rtree_t * targets)
+																			 rnd_heap_cost_t cost_penalty_to_box, rnd_rtree_t * targets)
 {
 	routebox_t *rb;
 	rnd_cheap_point_t costpoint;
-	pcb_cost_t d;
+	rnd_heap_cost_t d;
 	edge_t *ne;
 	assert(interior_edge && container && previous_edge && targets);
 	assert(!container->flags.homeless);
@@ -1768,9 +1768,9 @@ static void DestroyEdge(edge_t ** e)
 }
 
 /* cost function for an edge. */
-static pcb_cost_t edge_cost(const edge_t * e, const pcb_cost_t too_big)
+static rnd_heap_cost_t edge_cost(const edge_t * e, const rnd_heap_cost_t too_big)
 {
-	pcb_cost_t penalty = e->pcb_cost_to_point;
+	rnd_heap_cost_t penalty = e->pcb_cost_to_point;
 	if (e->rb->flags.is_thermal || e->rb->type == PLANE)
 		return penalty;							/* thermals are cheap */
 	if (penalty > too_big)
@@ -2207,7 +2207,7 @@ struct E_result *Expand(rnd_rtree_t * rtree, edge_t * e, const rnd_rnd_box_t * b
  * It returns 1 for any fixed blocker that is not part
  * of this net and zero otherwise.
  */
-static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, rnd_rnd_box_t * box, rnd_direction_t dir)
+static int blocker_to_heap(rnd_heap_t * heap, routebox_t * rb, rnd_rnd_box_t * box, rnd_direction_t dir)
 {
 	rnd_rnd_box_t b = rb->sbox;
 	if (rb->style->Clearance > AutoRouteParameters.style->Clearance)
@@ -2221,16 +2221,16 @@ static int blocker_to_heap(pcb_heap_t * heap, routebox_t * rb, rnd_rnd_box_t * b
 		 * first.
 		 */
 	case RND_NORTH:
-		pcb_heap_insert(heap, b.X1 - b.X1 / (b.X2 + 1.0), rb);
+		rnd_heap_insert(heap, b.X1 - b.X1 / (b.X2 + 1.0), rb);
 		break;
 	case RND_EAST:
-		pcb_heap_insert(heap, b.Y1 - b.Y1 / (b.Y2 + 1.0), rb);
+		rnd_heap_insert(heap, b.Y1 - b.Y1 / (b.Y2 + 1.0), rb);
 		break;
 	case RND_SOUTH:
-		pcb_heap_insert(heap, -(b.X2 + b.X1 / (b.X2 + 1.0)), rb);
+		rnd_heap_insert(heap, -(b.X2 + b.X1 / (b.X2 + 1.0)), rb);
 		break;
 	case RND_WEST:
-		pcb_heap_insert(heap, -(b.Y2 + b.Y1 / (b.Y2 + 1.0)), rb);
+		rnd_heap_insert(heap, -(b.Y2 + b.Y1 / (b.Y2 + 1.0)), rb);
 		break;
 	default:
 		assert(0);
@@ -2453,7 +2453,7 @@ moveable_edge(vector_t * result, const rnd_rnd_box_t * box, rnd_direction_t dir,
 }
 
 struct break_info {
-	pcb_heap_t *heap;
+	rnd_heap_t *heap;
 	routebox_t *parent;
 	rnd_rnd_box_t box;
 	rnd_direction_t dir;
@@ -2513,7 +2513,7 @@ vector_t *BreakManyEdges(routeone_state_t * s, rnd_rtree_t * targets, rnd_rtree_
 {
 	struct break_info bi;
 	vector_t *edges;
-	pcb_heap_t *heap[4];
+	rnd_heap_t *heap[4];
 	rnd_coord_t first, last;
 	rnd_coord_t bloat;
 	rnd_direction_t dir;
@@ -2564,7 +2564,7 @@ vector_t *BreakManyEdges(routeone_state_t * s, rnd_rtree_t * targets, rnd_rtree_
 		int tmp;
 		/* don't break the edge we came from */
 		if (e->expand_dir != ((dir + 2) % 4)) {
-			heap[dir] = pcb_heap_create();
+			heap[dir] = rnd_heap_create();
 			bi.box = rnd_bloat_box(&rb->sbox, bloat);
 			bi.heap = heap[dir];
 			bi.dir = dir;
@@ -2638,11 +2638,11 @@ vector_t *BreakManyEdges(routeone_state_t * s, rnd_rtree_t * targets, rnd_rtree_
  */
 	first = last = -1;
 	for (dir = RND_NORTH; dir <= RND_WEST; dir = directionIncrement(dir)) {
-		if (heap[dir] && !pcb_heap_is_empty(heap[dir])) {
+		if (heap[dir] && !rnd_heap_is_empty(heap[dir])) {
 			/* pull the very first one out of the heap outside of the
 			 * heap loop because it is special; it can be part of a corner
 			 */
-			routebox_t *blk = (routebox_t *) pcb_heap_remove_smallest(heap[dir]);
+			routebox_t *blk = (routebox_t *) rnd_heap_remove_smallest(heap[dir]);
 			rnd_rnd_box_t b = rb->sbox;
 			struct broken_boxes broke = break_box_edge(&b, dir, blk);
 			if (broke.is_valid_left) {
@@ -2720,9 +2720,9 @@ vector_t *BreakManyEdges(routeone_state_t * s, rnd_rtree_t * targets, rnd_rtree_
 				default:
 					assert(0);
 				}
-				if (pcb_heap_is_empty(heap[dir]))
+				if (rnd_heap_is_empty(heap[dir]))
 					break;
-				blk = (routebox_t *) pcb_heap_remove_smallest(heap[dir]);
+				blk = (routebox_t *) rnd_heap_remove_smallest(heap[dir]);
 				broke = break_box_edge(&b, dir, blk);
 				if (broke.is_valid_left)
 					moveable_edge(edges, &broke.left, dir, rb, NULL, e, targets, s, NULL, NULL);
@@ -2775,7 +2775,7 @@ vector_t *BreakManyEdges(routeone_state_t * s, rnd_rtree_t * targets, rnd_rtree_
 	/* done with all expansion edges of this box */
 	for (dir = RND_NORTH; dir <= RND_WEST; dir = directionIncrement(dir)) {
 		if (heap[dir])
-			pcb_heap_destroy(&heap[dir]);
+			rnd_heap_destroy(&heap[dir]);
 	}
 	return edges;
 }
@@ -3332,7 +3332,7 @@ CreateSearchEdge(routeone_state_t *s, vetting_t * work, edge_t * parent,
 {
 	routebox_t *target;
 	rnd_rnd_box_t b;
-	pcb_cost_t cost;
+	rnd_heap_cost_t cost;
 	assert(__routepcb_box_is_good(rb));
 	/* find the cheapest target */
 #if 0
@@ -3358,7 +3358,7 @@ CreateSearchEdge(routeone_state_t *s, vetting_t * work, edge_t * parent,
 		ne->pcb_cost_to_point = parent->pcb_cost_to_point;
 		ne->cost_point = parent->cost_point;
 		ne->cost = cost;
-		pcb_heap_insert(s->workheap, ne->cost, ne);
+		rnd_heap_insert(s->workheap, ne->cost, ne);
 	}
 	else {
 		mtsFreeWork(&work);
@@ -3371,7 +3371,7 @@ static void add_or_destroy_edge(routeone_state_t *s, edge_t * e)
 	assert(__edge_is_good(e));
 	assert(is_layer_group_active[e->rb->group]);
 	if (e->cost < s->best_cost)
-		pcb_heap_insert(s->workheap, e->cost, e);
+		rnd_heap_insert(s->workheap, e->cost, e);
 	else
 		DestroyEdge(&e);
 }
@@ -3597,7 +3597,7 @@ static void source_conflicts(rnd_rtree_t * tree, routebox_t * rb)
 typedef struct routeone_status_s {
 	rnd_bool found_route;
 	int route_had_conflicts;
-	pcb_cost_t best_route_cost;
+	rnd_heap_cost_t best_route_cost;
 	rnd_bool net_completely_routed;
 } routeone_status_t;
 
@@ -3739,13 +3739,13 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 
 	/* okay, main expansion-search routing loop. */
 	/* set up the initial activity heap */
-	s.workheap = pcb_heap_create();
+	s.workheap = rnd_heap_create();
 	assert(s.workheap);
 	while (!vector_is_empty(source_vec)) {
 		edge_t *e = (edge_t *) vector_remove_last(source_vec);
 		assert(is_layer_group_active[e->rb->group]);
 		e->cost = edge_cost(e, EXPENSIVE);
-		pcb_heap_insert(s.workheap, e->cost, e);
+		rnd_heap_insert(s.workheap, e->cost, e);
 	}
 	vector_destroy(&source_vec);
 	/* okay, process items from heap until it is empty! */
@@ -3756,8 +3756,8 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 	vss.free_space_vec = vector_create();
 	vss.lo_conflict_space_vec = vector_create();
 	vss.hi_conflict_space_vec = vector_create();
-	while (!pcb_heap_is_empty(s.workheap)) {
-		edge_t *e = (edge_t *) pcb_heap_remove_smallest(s.workheap);
+	while (!rnd_heap_is_empty(s.workheap)) {
+		edge_t *e = (edge_t *) rnd_heap_remove_smallest(s.workheap);
 #ifdef ROUTE_DEBUG
 		if (aabort)
 			goto dontexpand;
@@ -3765,7 +3765,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		/* don't bother expanding this edge if the minimum possible edge cost
 		 * is already larger than the best edge cost we've found. */
 		if (s.best_path && e->cost >= s.best_cost) {
-			pcb_heap_free(s.workheap, KillEdge);
+			rnd_heap_free(s.workheap, KillEdge);
 			goto dontexpand;					/* skip this edge */
 		}
 		/* surprisingly it helps to give up and not try too hard to find
@@ -4010,7 +4010,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		DestroyEdge(&e);
 	}
 	touch_conflicts(NULL, 1);
-	pcb_heap_destroy(&s.workheap);
+	rnd_heap_destroy(&s.workheap);
 	pcb_r_destroy_tree(&targets);
 	assert(vector_is_empty(edge_vec));
 	vector_destroy(&edge_vec);
@@ -4191,11 +4191,11 @@ struct routeall_status RouteAll(routedata_t * rd)
 	rnd_bool rip;
 	int request_cancel;
 #ifdef NET_HEAP
-	pcb_heap_t *net_heap;
+	rnd_heap_t *net_heap;
 #endif
-	pcb_heap_t *this_pass, *next_pass, *tmp;
+	rnd_heap_t *this_pass, *next_pass, *tmp;
 	routebox_t *net, *p, *pp;
-	pcb_cost_t total_net_cost, last_cost = 0, this_cost = 0;
+	rnd_heap_cost_t total_net_cost, last_cost = 0, this_cost = 0;
 	int i;
 	int this_heap_size;
 	int this_heap_item;
@@ -4203,10 +4203,10 @@ struct routeall_status RouteAll(routedata_t * rd)
 	/* initialize heap for first pass;
 	 * do smallest area first; that makes
 	 * the subsequent costs more representative */
-	this_pass = pcb_heap_create();
-	next_pass = pcb_heap_create();
+	this_pass = rnd_heap_create();
+	next_pass = rnd_heap_create();
 #ifdef NET_HEAP
-	net_heap = pcb_heap_create();
+	net_heap = rnd_heap_create();
 #endif
 	LIST_LOOP(rd->first_net, different_net, net);
 	{
@@ -4221,7 +4221,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 		}
 		PCB_END_LOOP;
 		area = (double) (bb.X2 - bb.X1) * (bb.Y2 - bb.Y1);
-		pcb_heap_insert(this_pass, area, net);
+		rnd_heap_insert(this_pass, area, net);
 	}
 	PCB_END_LOOP;
 
@@ -4235,15 +4235,15 @@ struct routeall_status RouteAll(routedata_t * rd)
 			printf("--------- STARTING SMOOTHING PASS %d -------------\n", i - passes);
 #endif
 		ras.total_subnets = ras.routed_subnets = ras.conflict_subnets = ras.failed = ras.ripped = 0;
-		assert(pcb_heap_is_empty(next_pass));
+		assert(rnd_heap_is_empty(next_pass));
 
-		this_heap_size = pcb_heap_size(this_pass);
-		for (this_heap_item = 0; !pcb_heap_is_empty(this_pass); this_heap_item++) {
+		this_heap_size = rnd_heap_size(this_pass);
+		for (this_heap_item = 0; !rnd_heap_is_empty(this_pass); this_heap_item++) {
 #ifdef ROUTE_DEBUG
 			if (aabort)
 				break;
 #endif
-			net = (routebox_t *) pcb_heap_remove_smallest(this_pass);
+			net = (routebox_t *) rnd_heap_remove_smallest(this_pass);
 			InitAutoRouteParameters(i, net->style, i < passes, i > passes, i == passes + smoothes);
 			if (i > 0) {
 				/* rip up all unfixed traces in this net ? */
@@ -4299,7 +4299,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					ResetSubnet(net);
 				}
 				else {
-					pcb_heap_insert(next_pass, 0, net);
+					rnd_heap_insert(next_pass, 0, net);
 					continue;
 				}
 			}
@@ -4318,7 +4318,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 			if (ras.total_subnets == 0)
 #endif
 			{
-				pcb_heap_insert(next_pass, 0, net);
+				rnd_heap_insert(next_pass, 0, net);
 				continue;
 			}
 
@@ -4330,7 +4330,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 				rnd_rnd_box_t b = shrink_routebox(p);
 				/* using a heap allows us to start from smaller objects and
 				 * end at bigger ones. also prefer to start at planes, then pads */
-				pcb_heap_insert(net_heap, (float) (b.X2 - b.X1) *
+				rnd_heap_insert(net_heap, (float) (b.X2 - b.X1) *
 #if defined(ROUTE_RANDOMIZED)
 										(0.3 + rnd_rand() / (RAND_MAX + 1.0)) *
 #endif
@@ -4338,8 +4338,8 @@ struct routeall_status RouteAll(routedata_t * rd)
 			}
 			PCB_END_LOOP;
 			ros.net_completely_routed = 0;
-			while (!pcb_heap_is_empty(net_heap)) {
-				p = (routebox_t *) pcb_heap_remove_smallest(net_heap);
+			while (!rnd_heap_is_empty(net_heap)) {
+				p = (routebox_t *) rnd_heap_remove_smallest(net_heap);
 #endif
 				if (!p->flags.fixed || p->flags.subnet_processed || p->type == OTHER)
 					continue;
@@ -4396,7 +4396,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 			 * but it will do no good to rip it up and try it again
 			 * without first changing any of the other routes
 			 */
-			pcb_heap_insert(next_pass, total_net_cost, net);
+			rnd_heap_insert(next_pass, total_net_cost, net);
 			if (total_net_cost < EXPENSIVE)
 				this_cost += total_net_cost;
 			/* reset subnet_processed flags */
@@ -4408,7 +4408,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 		}
 		/* swap this_pass and next_pass and do it all over again! */
 		ro = 0;
-		assert(pcb_heap_is_empty(this_pass));
+		assert(rnd_heap_is_empty(this_pass));
 		tmp = this_pass;
 		this_pass = next_pass;
 		next_pass = tmp;
@@ -4434,10 +4434,10 @@ struct routeall_status RouteAll(routedata_t * rd)
 	rnd_message(RND_MSG_INFO, "%d of %d nets successfully routed.\n", ras.routed_subnets, ras.total_subnets);
 
 out:
-	pcb_heap_destroy(&this_pass);
-	pcb_heap_destroy(&next_pass);
+	rnd_heap_destroy(&this_pass);
+	rnd_heap_destroy(&next_pass);
 #ifdef NET_HEAP
-	pcb_heap_destroy(&net_heap);
+	rnd_heap_destroy(&net_heap);
 #endif
 
 	/* no conflicts should be left at the end of the process. */

@@ -37,32 +37,32 @@
 
 /* Heap used by the polygon code and autoroute */
 
-#ifndef PCB_HEAP_H
-#define PCB_HEAP_H
+#ifndef RND_HEAP_H
+#define RND_HEAP_H
 
 #include <librnd/config.h>
 
 /* type of heap costs */
-typedef double pcb_cost_t;
+typedef double rnd_heap_cost_t;
 /* what a heap looks like */
-typedef struct pcb_heap_s pcb_heap_t;
+typedef struct rnd_heap_s rnd_heap_t;
 
 /* create an empty heap */
-pcb_heap_t *pcb_heap_create();
+rnd_heap_t *rnd_heap_create();
 /* destroy a heap */
-void pcb_heap_destroy(pcb_heap_t ** heap);
+void rnd_heap_destroy(rnd_heap_t ** heap);
 /* free all elements in a heap */
-void pcb_heap_free(pcb_heap_t * heap, void (*funcfree) (void *));
+void rnd_heap_free(rnd_heap_t * heap, void (*funcfree) (void *));
 
 /* -- mutation -- */
-void pcb_heap_insert(pcb_heap_t * heap, pcb_cost_t cost, void *data);
-void *pcb_heap_remove_smallest(pcb_heap_t * heap);
+void rnd_heap_insert(rnd_heap_t * heap, rnd_heap_cost_t cost, void *data);
+void *rnd_heap_remove_smallest(rnd_heap_t * heap);
 /* replace the smallest item with a new item and return the smallest item.
  * (if the new item is the smallest, than return it, instead.) */
-void *pcb_heap_replace(pcb_heap_t * heap, pcb_cost_t cost, void *data);
+void *rnd_heap_replace(rnd_heap_t * heap, rnd_heap_cost_t cost, void *data);
 
 /* -- interrogation -- */
-int pcb_heap_is_empty(pcb_heap_t * heap);
-int pcb_heap_size(pcb_heap_t * heap);
+int rnd_heap_is_empty(rnd_heap_t * heap);
+int rnd_heap_size(rnd_heap_t * heap);
 
-#endif /* PCB_HEAP_H */
+#endif /* RND_HEAP_H */

@@ -909,15 +909,15 @@ returns poly is inside outfst ? pcb_true : pcb_false */
 static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, rnd_polyarea_t * outfst, rnd_bool test)
 {
 	rnd_polyarea_t *outer = outfst;
-	pcb_heap_t *heap;
+	rnd_heap_t *heap;
 
 	assert(poly != NULL);
 	assert(outer != NULL);
 
-	heap = pcb_heap_create();
+	heap = rnd_heap_create();
 	do {
 		if (cntrbox_inside(poly, outer->contours))
-			pcb_heap_insert(heap, outer->contours->area, (void *) outer);
+			rnd_heap_insert(heap, outer->contours->area, (void *) outer);
 	}
 	/* if checking touching, use only the first polygon */
 	while (!test && (outer = outer->f) != outfst);
@@ -927,19 +927,19 @@ static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, rnd_polyarea_t * outfst,
 	do {
 		int cnt;
 
-		if (pcb_heap_is_empty(heap))
+		if (rnd_heap_is_empty(heap))
 			break;
-		outer = (rnd_polyarea_t *) pcb_heap_remove_smallest(heap);
+		outer = (rnd_polyarea_t *) rnd_heap_remove_smallest(heap);
 
 		pcb_r_search(outer->contour_tree, (rnd_rnd_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
 		switch (cnt) {
 		case 0:										/* Didn't find anything in this piece, Keep looking */
 			break;
 		case 1:										/* Found we are inside this piece, and not any of its holes */
-			pcb_heap_destroy(&heap);
+			rnd_heap_destroy(&heap);
 			return pcb_true;
 		case 2:										/* Found inside a hole in the smallest polygon so far. No need to check the other polygons */
-			pcb_heap_destroy(&heap);
+			rnd_heap_destroy(&heap);
 			return pcb_false;
 		default:
 			printf("Something strange here\n");
@@ -947,7 +947,7 @@ static int cntr_in_M_pcb_polyarea_t(pcb_pline_t * poly, rnd_polyarea_t * outfst,
 		}
 	}
 	while (1);
-	pcb_heap_destroy(&heap);
+	rnd_heap_destroy(&heap);
 	return pcb_false;
 }																/* cntr_in_M_pcb_polyarea_t */
 
@@ -1153,12 +1153,12 @@ struct polyarea_info {
 
 static pcb_r_dir_t heap_it(const rnd_rnd_box_t * b, void *cl)
 {
-	pcb_heap_t *heap = (pcb_heap_t *) cl;
+	rnd_heap_t *heap = (rnd_heap_t *) cl;
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
 	pcb_pline_t *p = pa_info->pa->contours;
 	if (p->Count == 0)
 		return PCB_R_DIR_NOT_FOUND;										/* how did this happen? */
-	pcb_heap_insert(heap, p->area, pa_info);
+	rnd_heap_insert(heap, p->area, pa_info);
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
@@ -1188,7 +1188,7 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, pcb_pline_t ** sr
 {
 	rnd_polyarea_t *curc;
 	pcb_pline_t *curh, *container;
-	pcb_heap_t *heap;
+	rnd_heap_t *heap;
 	rnd_rtree_t *tree;
 	int i;
 	int num_polyareas = 0;
@@ -1229,9 +1229,9 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, pcb_pline_t ** sr
 
 		container = NULL;
 		/* build a heap of all of the polys that the hole is inside its bounding box */
-		heap = pcb_heap_create();
+		heap = rnd_heap_create();
 		pcb_r_search(tree, (rnd_rnd_box_t *) curh, NULL, heap_it, heap, NULL);
-		if (pcb_heap_is_empty(heap)) {
+		if (rnd_heap_is_empty(heap)) {
 #ifndef NDEBUG
 #ifdef DEBUG
 			poly_dump(dest);
@@ -1244,8 +1244,8 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, pcb_pline_t ** sr
 		 * in the heap, assume it is the container without the expense of
 		 * proving it.
 		 */
-		pa_info = (struct polyarea_info *) pcb_heap_remove_smallest(heap);
-		if (pcb_heap_is_empty(heap)) {	/* only one possibility it must be the right one */
+		pa_info = (struct polyarea_info *) rnd_heap_remove_smallest(heap);
+		if (rnd_heap_is_empty(heap)) {	/* only one possibility it must be the right one */
 			assert(pcb_poly_contour_in_contour(pa_info->pa->contours, curh));
 			container = pa_info->pa->contours;
 		}
@@ -1255,13 +1255,13 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, pcb_pline_t ** sr
 					container = pa_info->pa->contours;
 					break;
 				}
-				if (pcb_heap_is_empty(heap))
+				if (rnd_heap_is_empty(heap))
 					break;
-				pa_info = (struct polyarea_info *) pcb_heap_remove_smallest(heap);
+				pa_info = (struct polyarea_info *) rnd_heap_remove_smallest(heap);
 			}
 			while (1);
 		}
-		pcb_heap_destroy(&heap);
+		rnd_heap_destroy(&heap);
 		if (container == NULL) {
 			/* bad input polygons were given */
 #ifndef NDEBUG

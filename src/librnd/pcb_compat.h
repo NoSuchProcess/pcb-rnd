@@ -530,3 +530,14 @@
 #define pcb_grid_list_step rnd_grid_list_step
 #define pcb_grid_inval rnd_grid_inval
 #define pcb_grid_install_menu rnd_grid_install_menu
+#define pcb_cost_t rnd_heap_cost_t
+#define pcb_heap_s rnd_heap_s
+#define pcb_heap_t rnd_heap_t
+#define pcb_heap_create rnd_heap_create
+#define pcb_heap_destroy rnd_heap_destroy
+#define pcb_heap_free rnd_heap_free
+#define pcb_heap_insert rnd_heap_insert
+#define pcb_heap_remove_smallest rnd_heap_remove_smallest
+#define pcb_heap_replace rnd_heap_replace
+#define pcb_heap_is_empty rnd_heap_is_empty
+#define pcb_heap_size rnd_heap_size

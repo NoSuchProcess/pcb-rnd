@@ -70,7 +70,7 @@ struct mtspace {
 
 typedef union {
 	vector_t *v;
-	pcb_heap_t *h;
+	rnd_heap_t *h;
 } heap_or_vector;
 
 /* this is a vetting_t */
@@ -193,12 +193,12 @@ struct query_closure {
 	rnd_bool touch_is_vec;
 };
 
-static inline void heap_append(pcb_heap_t * heap, rnd_cheap_point_t * desired, rnd_rnd_box_t * newone)
+static inline void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, rnd_rnd_box_t * newone)
 {
 	rnd_cheap_point_t p = *desired;
 	assert(desired);
 	rnd_closest_cheap_point_in_box(&p, newone);
-	pcb_heap_insert(heap, PCB_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
+	rnd_heap_insert(heap, PCB_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
 }
 
 static inline void append(struct query_closure *qc, rnd_rnd_box_t * newone)
@@ -318,8 +318,8 @@ static void qloop(struct query_closure *qc, rnd_rtree_t * tree, heap_or_vector r
 	rnd_rnd_box_t *cbox;
 	int n;
 
-	while (!(qc->desired ? pcb_heap_is_empty(qc->checking.h) : vector_is_empty(qc->checking.v))) {
-		cbox = qc->desired ? (rnd_rnd_box_t *) pcb_heap_remove_smallest(qc->checking.h) : (rnd_rnd_box_t *) vector_remove_last(qc->checking.v);
+	while (!(qc->desired ? rnd_heap_is_empty(qc->checking.h) : vector_is_empty(qc->checking.v))) {
+		cbox = qc->desired ? (rnd_rnd_box_t *) rnd_heap_remove_smallest(qc->checking.h) : (rnd_rnd_box_t *) vector_remove_last(qc->checking.v);
 		if (setjmp(qc->env) == 0) {
 			assert(rnd_box_is_good(cbox));
 			qc->cbox = cbox;
@@ -344,14 +344,14 @@ void mtsFreeWork(vetting_t ** w)
 {
 	vetting_t *work = (*w);
 	if (work->desired.X != -SPECIAL || work->desired.Y != -SPECIAL) {
-		pcb_heap_free(work->untested.h, free);
-		pcb_heap_destroy(&work->untested.h);
-		pcb_heap_free(work->no_fix.h, free);
-		pcb_heap_destroy(&work->no_fix.h);
-		pcb_heap_free(work->no_hi.h, free);
-		pcb_heap_destroy(&work->no_hi.h);
-		pcb_heap_free(work->hi_candidate.h, free);
-		pcb_heap_destroy(&work->hi_candidate.h);
+		rnd_heap_free(work->untested.h, free);
+		rnd_heap_destroy(&work->untested.h);
+		rnd_heap_free(work->no_fix.h, free);
+		rnd_heap_destroy(&work->no_fix.h);
+		rnd_heap_free(work->no_hi.h, free);
+		rnd_heap_destroy(&work->no_hi.h);
+		rnd_heap_free(work->hi_candidate.h, free);
+		rnd_heap_destroy(&work->hi_candidate.h);
 	}
 	else {
 		while (!vector_is_empty(work->untested.v))
@@ -414,12 +414,12 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_rnd_box_t * region,
 		cbox = (rnd_rnd_box_t *) malloc(sizeof(rnd_rnd_box_t));
 		*cbox = rnd_bloat_box(region, clearance + radius);
 		if (desired) {
-			work->untested.h = pcb_heap_create();
-			work->no_fix.h = pcb_heap_create();
-			work->hi_candidate.h = pcb_heap_create();
-			work->no_hi.h = pcb_heap_create();
+			work->untested.h = rnd_heap_create();
+			work->no_fix.h = rnd_heap_create();
+			work->hi_candidate.h = rnd_heap_create();
+			work->no_hi.h = rnd_heap_create();
 			assert(work->untested.h && work->no_fix.h && work->no_hi.h && work->hi_candidate.h);
-			pcb_heap_insert(work->untested.h, 0, cbox);
+			rnd_heap_insert(work->untested.h, 0, cbox);
 			work->desired = *desired;
 		}
 		else {
@@ -471,7 +471,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_rnd_box_t * region,
 		/* qloop (&qc, is_odd ? mtspace->etree : mtspace->otree, (heap_or_vector)free_space_vec, pcb_true); */
 		if (!vector_is_empty(free_space_vec)) {
 			if (qc.desired) {
-				if (pcb_heap_is_empty(work->untested.h))
+				if (rnd_heap_is_empty(work->untested.h))
 					break;
 			}
 			else {
@@ -496,9 +496,9 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_rnd_box_t * region,
 			/*   (heap_or_vector)hi_conflict_space_vec, pcb_true); */
 		}
 	}
-	while (!(qc.desired ? pcb_heap_is_empty(work->untested.h) : vector_is_empty(work->untested.v)));
+	while (!(qc.desired ? rnd_heap_is_empty(work->untested.h) : vector_is_empty(work->untested.v)));
 	if (qc.desired) {
-		if (pcb_heap_is_empty(work->no_fix.h) && pcb_heap_is_empty(work->no_hi.h) && pcb_heap_is_empty(work->hi_candidate.h)) {
+		if (rnd_heap_is_empty(work->no_fix.h) && rnd_heap_is_empty(work->no_hi.h) && rnd_heap_is_empty(work->hi_candidate.h)) {
 			mtsFreeWork(&work);
 			return NULL;
 		}

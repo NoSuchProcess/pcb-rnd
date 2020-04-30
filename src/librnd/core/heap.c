@@ -47,15 +47,15 @@
 #undef SLOW_ASSERTIONS
 
 struct heap_element {
-	pcb_cost_t cost;
+	rnd_heap_cost_t cost;
 	void *data;
 };
-struct pcb_heap_s {
+struct rnd_heap_s {
 	struct heap_element *element;
 	int size, max;
 };
 
-static pcb_cost_t MIN_COST = 0;
+static rnd_heap_cost_t MIN_COST = 0;
 
 /* ---------------------------------------------------------------------------
  * functions.
@@ -63,7 +63,7 @@ static pcb_cost_t MIN_COST = 0;
 /* helper functions for assertions */
 #ifndef NDEBUG
 #ifdef SLOW_ASSERTIONS
-static int __heap_is_good_slow(pcb_heap_t * heap)
+static int __heap_is_good_slow(rnd_heap_t * heap)
 {
 	int i;
 	/* heap condition: key in each node should be smaller than in its children */
@@ -76,7 +76,7 @@ static int __heap_is_good_slow(pcb_heap_t * heap)
 	return 1;
 }
 #endif /* SLOW_ASSERTIONS */
-static int __heap_is_good(pcb_heap_t * heap)
+static int __heap_is_good(rnd_heap_t * heap)
 {
 	return heap && (heap->max == 0 || heap->element) &&
 		(heap->max >= 0) && (heap->size >= 0) && (heap->max == 0 || heap->size < heap->max) &&
@@ -88,22 +88,22 @@ static int __heap_is_good(pcb_heap_t * heap)
 #endif /* ! NDEBUG */
 
 /* create an empty heap */
-pcb_heap_t *pcb_heap_create()
+rnd_heap_t *rnd_heap_create()
 {
-	pcb_heap_t *heap;
+	rnd_heap_t *heap;
 	/* initialize MIN_COST if necessary */
 	if (MIN_COST == 0)
 		MIN_COST = -1e23;
 	assert(MIN_COST < 0);
 	/* okay, create empty heap */
-	heap = (pcb_heap_t *) calloc(1, sizeof(*heap));
+	heap = (rnd_heap_t *) calloc(1, sizeof(*heap));
 	assert(heap);
 	assert(__heap_is_good(heap));
 	return heap;
 }
 
 /* destroy a heap */
-void pcb_heap_destroy(pcb_heap_t ** heap)
+void rnd_heap_destroy(rnd_heap_t ** heap)
 {
 	assert(heap && *heap);
 	assert(__heap_is_good(*heap));
@@ -114,7 +114,7 @@ void pcb_heap_destroy(pcb_heap_t ** heap)
 }
 
 /* free all elements in the heap */
-void pcb_heap_free(pcb_heap_t * heap, void (*freefunc) (void *))
+void rnd_heap_free(rnd_heap_t * heap, void (*freefunc) (void *))
 {
 	assert(heap);
 	assert(__heap_is_good(heap));
@@ -125,7 +125,7 @@ void pcb_heap_free(pcb_heap_t * heap, void (*freefunc) (void *))
 }
 
 /* -- mutation -- */
-static void __upheap(pcb_heap_t * heap, int k)
+static void __upheap(rnd_heap_t * heap, int k)
 {
 	struct heap_element v;
 
@@ -139,7 +139,7 @@ static void __upheap(pcb_heap_t * heap, int k)
 	heap->element[k] = v;
 }
 
-void pcb_heap_insert(pcb_heap_t * heap, pcb_cost_t cost, void *data)
+void rnd_heap_insert(rnd_heap_t * heap, rnd_heap_cost_t cost, void *data)
 {
 	assert(heap && __heap_is_good(heap));
 	assert(cost >= MIN_COST);
@@ -164,7 +164,7 @@ void pcb_heap_insert(pcb_heap_t * heap, pcb_cost_t cost, void *data)
  * k with the smaller of its two children as necessary and stopping when
  * the node at k is smaller than both children or the bottom is reached.
  */
-static void __downheap(pcb_heap_t * heap, int k)
+static void __downheap(rnd_heap_t * heap, int k)
 {
 	struct heap_element v;
 
@@ -184,7 +184,7 @@ static void __downheap(pcb_heap_t * heap, int k)
 	heap->element[k] = v;
 }
 
-void *pcb_heap_remove_smallest(pcb_heap_t * heap)
+void *rnd_heap_remove_smallest(rnd_heap_t * heap)
 {
 	struct heap_element v;
 	assert(heap && __heap_is_good(heap));
@@ -200,11 +200,11 @@ void *pcb_heap_remove_smallest(pcb_heap_t * heap)
 	return v.data;
 }
 
-void *pcb_heap_replace(pcb_heap_t * heap, pcb_cost_t cost, void *data)
+void *rnd_heap_replace(rnd_heap_t * heap, rnd_heap_cost_t cost, void *data)
 {
 	assert(heap && __heap_is_good(heap));
 
-	if (pcb_heap_is_empty(heap))
+	if (rnd_heap_is_empty(heap))
 		return data;
 
 	assert(heap->size > 0);
@@ -219,14 +219,14 @@ void *pcb_heap_replace(pcb_heap_t * heap, pcb_cost_t cost, void *data)
 }
 
 /* -- interrogation -- */
-int pcb_heap_is_empty(pcb_heap_t * heap)
+int rnd_heap_is_empty(rnd_heap_t * heap)
 {
 	assert(__heap_is_good(heap));
 	return heap->size == 0;
 }
 
 /* -- size -- */
-int pcb_heap_size(pcb_heap_t * heap)
+int rnd_heap_size(rnd_heap_t * heap)
 {
 	assert(__heap_is_good(heap));
 	return heap->size;
