@@ -61,7 +61,7 @@ digraph g {
 		label="config files"
 		bgcolor=grey
 		lht_system        [label="/usr/share/pcb-rnd/pcb-conf.lht" shape=hexagon]
-		pcb_default       [label="/usr/share/pcb-rnd/default.pcb" shape=hexagon]
+		pcb_default       [label="default board, e.g.\n/usr/share/pcb-rnd/default4.lht" shape=hexagon]
 		project           [label="./project.lht" shape=hexagon]
 		lht_user          [label="~/.pcb-rnd/pcb-conf.lht" shape=hexagon]
 	}
@@ -74,14 +74,14 @@ digraph g {
 	}
 
 	lht_internal      [label="hardwired\nin the\nexecutable"]
-	design            [label="settings\nin the\n.pcb file" shape=hexagon]
+	design            [label="settings\nin the\nboard file\n(.lht and .pcb)" shape=hexagon]
 
 	lht_internal -> CFR_INTERNAL    [label="program startup"]
 	lht_system   -> CFR_SYSTEM      [label="loaded at startup"]
 	pcb_default  -> CFR_DEFAULTPCB  [label="loadad in CreateNewPCB()"]
 	lht_user     -> CFR_USER        [label="loaded at startup" dir=both]
 	env          -> CFR_ENV         [label="built at startup"]
-	project      -> CFR_PROJECT     [label="loaded when a\nnew .pcb or project\nis loaded" dir=both]
+	project      -> CFR_PROJECT     [label="loaded when a\nnew board or project\nis loaded" dir=both]
 	design       -> CFR_DESIGN      [label="extracted when loading a design" dir=both]
 	cli          -> CFR_CLI         [label="built during\ncommand line argument\nparsing"]
 
