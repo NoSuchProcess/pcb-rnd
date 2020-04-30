@@ -1,4 +1,4 @@
-extern pcb_tool_t pcb_tool_line;
+extern rnd_tool_t pcb_tool_line;
 
 void pcb_tool_line_init(void);
 void pcb_tool_line_uninit(void);

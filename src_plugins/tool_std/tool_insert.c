@@ -185,7 +185,7 @@ static const char *ins_icon[] = {
 "ooo   o ooo o    oooo"
 };
 
-pcb_tool_t pcb_tool_insert = {
+rnd_tool_t pcb_tool_insert = {
 	"insert", NULL, NULL, 100, ins_icon, RND_TOOL_CURSOR_NAMED("dotbox"), 0,
 	NULL,
 	pcb_tool_insert_uninit,

@@ -1,4 +1,4 @@
-extern pcb_tool_t pcb_tool_poly;
+extern rnd_tool_t pcb_tool_poly;
 
 void pcb_tool_poly_uninit(void);
 void pcb_tool_poly_notify_mode(rnd_hidlib_t *hl);

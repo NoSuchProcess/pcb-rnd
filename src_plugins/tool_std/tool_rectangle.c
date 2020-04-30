@@ -155,7 +155,7 @@ static const char *rect_icon[] = {
 };
 
 
-pcb_tool_t pcb_tool_rectangle = {
+rnd_tool_t pcb_tool_rectangle = {
 	"rectangle", NULL, NULL, 100, rect_icon, RND_TOOL_CURSOR_NAMED("ul_angle"), 0,
 	NULL,
 	pcb_tool_rectangle_uninit,

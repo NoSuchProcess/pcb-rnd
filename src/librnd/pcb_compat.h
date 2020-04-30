@@ -1115,8 +1115,8 @@
 #define pcb_tool_flags_t rnd_tool_flags_t
 #define PCB_TOOL_CURSOR_NAMED RND_TOOL_CURSOR_NAMED
 #define PCB_TOOL_CURSOR_XBM RND_TOOL_CURSOR_XBM
-#define pcb_tool_s rnd_tool_s
-#define pcb_tool_t rnd_tool_t
+#define rnd_tool_s rnd_tool_s
+#define rnd_tool_t rnd_tool_t
 #define pcb_tools rnd_tools
 #define pcb_tool_prev_id rnd_tool_prev_id
 #define pcb_tool_next_id rnd_tool_next_id
@@ -1200,3 +1200,6 @@
 #define pcb_funchash_reverse rnd_funchash_reverse
 #define pcb_funchash_init rnd_funchash_init
 #define pcb_funchash_uninit rnd_funchash_uninit
+#define PCB_TLF_AUTO_TOOLBAR RND_TLF_AUTO_TOOLBAR
+#define pcb_tool_s rnd_tool_s
+#define pcb_tool_t rnd_tool_t

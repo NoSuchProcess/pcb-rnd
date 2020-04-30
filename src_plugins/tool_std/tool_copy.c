@@ -119,7 +119,7 @@ rnd_bool pcb_tool_copy_undo_act(rnd_hidlib_t *hl)
 	return rnd_true;
 }
 
-pcb_tool_t pcb_tool_copy = {
+rnd_tool_t pcb_tool_copy = {
 	"copy", NULL, NULL, 100, NULL, RND_TOOL_CURSOR_NAMED("crosshair"), 0,
 	NULL,
 	pcb_tool_copy_uninit,

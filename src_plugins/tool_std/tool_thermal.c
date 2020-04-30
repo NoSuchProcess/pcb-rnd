@@ -132,7 +132,7 @@ static const char *thrm_icon[] = {
 "oo ooo oo o oo o ooo "
 };
 
-pcb_tool_t pcb_tool_thermal = {
+rnd_tool_t pcb_tool_thermal = {
 	"thermal", NULL, NULL, 100, thrm_icon, RND_TOOL_CURSOR_NAMED("iron_cross"), 0,
 	NULL,
 	NULL,

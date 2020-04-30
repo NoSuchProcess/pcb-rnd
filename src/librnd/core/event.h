@@ -35,7 +35,7 @@ typedef enum {
 	RND_EVENT_GUI_INIT,               /* finished initializing the GUI called right before the main loop of the GUI; args: (void) */
 	RND_EVENT_CLI_ENTER,              /* the user pressed enter on a CLI command - called before parsing the line for actions; args: (str commandline) */
 
-	RND_EVENT_TOOL_REG,               /* called after a new tool has been registered; arg is (pcb_tool_t *) of the new tool */
+	RND_EVENT_TOOL_REG,               /* called after a new tool has been registered; arg is (rnd_tool_t *) of the new tool */
 	RND_EVENT_TOOL_SELECT_PRE,        /* called before a tool is selected; arg is (int *ok, int toolid); if ok is non-zero if the selection is accepted */
 	RND_EVENT_TOOL_RELEASE,           /* no arg */
 	RND_EVENT_TOOL_PRESS,             /* no arg */

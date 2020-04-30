@@ -60,7 +60,7 @@ void rnd_tool_init(void)
 void rnd_tool_uninit(void)
 {
 	while(vtp0_len(&rnd_tools) != 0) {
-		const pcb_tool_t *tool = rnd_tool_get(0);
+		const rnd_tool_t *tool = rnd_tool_get(0);
 		rnd_message(RND_MSG_WARNING, "Unregistered tool: %s of %s; check your plugins, fix them to unregister their tools!\n", tool->name, tool->cookie);
 		rnd_tool_unreg_by_cookie(tool->cookie);
 	}
@@ -73,7 +73,7 @@ void rnd_tool_chg_mode(rnd_hidlib_t *hl)
 		rnd_tool_select_by_id(hl, rnd_conf.editor.mode);
 }
 
-rnd_toolid_t rnd_tool_reg(pcb_tool_t *tool, const char *cookie)
+rnd_toolid_t rnd_tool_reg(rnd_tool_t *tool, const char *cookie)
 {
 	rnd_toolid_t id;
 	if (rnd_tool_lookup(tool->name) != RND_TOOLID_INVALID) /* don't register two tools with the same name */
@@ -91,7 +91,7 @@ void rnd_tool_unreg_by_cookie(const char *cookie)
 {
 	rnd_toolid_t n;
 	for(n = 0; n < vtp0_len(&rnd_tools); n++) {
-		const pcb_tool_t *tool = (const pcb_tool_t *)rnd_tools.array[n];
+		const rnd_tool_t *tool = (const rnd_tool_t *)rnd_tools.array[n];
 		if (tool->cookie == cookie) {
 			vtp0_remove(&rnd_tools, n, 1);
 			n--;
@@ -103,7 +103,7 @@ rnd_toolid_t rnd_tool_lookup(const char *name)
 {
 	rnd_toolid_t n;
 	for(n = 0; n < vtp0_len(&rnd_tools); n++) {
-		const pcb_tool_t *tool = (const pcb_tool_t *)rnd_tools.array[n];
+		const rnd_tool_t *tool = (const rnd_tool_t *)rnd_tools.array[n];
 		if (strcmp(tool->name, name) == 0)
 			return n;
 	}
@@ -162,7 +162,7 @@ int rnd_tool_select_highest(rnd_hidlib_t *hidlib)
 	rnd_toolid_t n, bestn = RND_TOOLID_INVALID;
 	unsigned int bestp = -1;
 	for(n = 0; n < vtp0_len(&rnd_tools) && (bestp > 0); n++) {
-		const pcb_tool_t *tool = (const pcb_tool_t *)rnd_tools.array[n];
+		const rnd_tool_t *tool = (const rnd_tool_t *)rnd_tools.array[n];
 		if (tool->priority < bestp) {
 			bestp = tool->priority;
 			bestn = n;
@@ -195,12 +195,12 @@ int rnd_tool_restore(rnd_hidlib_t *hidlib)
 void rnd_tool_gui_init(void)
 {
 	rnd_toolid_t n;
-	pcb_tool_t **tool;
+	rnd_tool_t **tool;
 
 	if (rnd_gui == NULL)
 		return;
 
-	for(n = 0, tool = (pcb_tool_t **)rnd_tools.array; n < rnd_tools.used; n++,tool++)
+	for(n = 0, tool = (rnd_tool_t **)rnd_tools.array; n < rnd_tools.used; n++,tool++)
 		if (*tool != NULL)
 			rnd_gui->reg_mouse_cursor(rnd_gui, n, (*tool)->cursor.name, (*tool)->cursor.pixel, (*tool)->cursor.mask);
 }
@@ -208,10 +208,10 @@ void rnd_tool_gui_init(void)
 /**** current tool function wrappers ****/
 #define wrap(func, err_ret, prefix, args) \
 	do { \
-		const pcb_tool_t *tool; \
+		const rnd_tool_t *tool; \
 		if ((rnd_conf.editor.mode < 0) || (rnd_conf.editor.mode >= vtp0_len(&rnd_tools))) \
 			{ err_ret; } \
-		tool = (const pcb_tool_t *)rnd_tools.array[rnd_conf.editor.mode]; \
+		tool = (const rnd_tool_t *)rnd_tools.array[rnd_conf.editor.mode]; \
 		if (tool->func == NULL) \
 			{ err_ret; } \
 		prefix tool->func args; \
@@ -309,7 +309,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_tool_select_by_id(RND_ACT_HIDLIB, rnd_conf.editor.mode);
 	}
 	else if (rnd_strcasecmp(cmd, "Escape") == 0) {
-		const pcb_tool_t *t;
+		const rnd_tool_t *t;
 		escape:;
 		t = rnd_tool_get(rnd_conf.editor.mode);
 		if ((t == NULL) || (t->escape == NULL)) {

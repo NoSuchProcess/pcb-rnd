@@ -189,7 +189,7 @@ static const char *poly_icon[] = {
 "ooooooooooooooooooooo"
 };
 
-pcb_tool_t pcb_tool_poly = {
+rnd_tool_t pcb_tool_poly = {
 	"poly", NULL, NULL, 100, poly_icon, RND_TOOL_CURSOR_NAMED("up_arrow"), 0,
 	NULL,
 	pcb_tool_poly_uninit,

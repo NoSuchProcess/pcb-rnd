@@ -406,7 +406,7 @@ rnd_bool tool_serpentine_undo_act()
 	return rnd_true;
 }
 
-static pcb_tool_t tool_serpentine = {
+static rnd_tool_t tool_serpentine = {
 	"serpentine", "experimental",
 	NULL, 100, NULL, RND_TOOL_CURSOR_NAMED(NULL), 0,
 	tool_serpentine_init,

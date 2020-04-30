@@ -268,7 +268,7 @@ static const char *arrow_icon[] = {
 "o ooo o ooo oo ooo oo"
 };
 
-pcb_tool_t pcb_tool_arrow = {
+rnd_tool_t pcb_tool_arrow = {
 	"arrow", NULL, NULL, 10, arrow_icon, RND_TOOL_CURSOR_NAMED("left_ptr"), 0,
 	NULL,
 	pcb_tool_arrow_uninit,

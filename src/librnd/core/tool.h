@@ -45,10 +45,10 @@ typedef struct rnd_tool_cursor_s {
 #define RND_TOOL_CURSOR_XBM(pixel, mask)  { NULL, pixel, mask }
 
 typedef enum rnd_tool_flags_e {
-	PCB_TLF_AUTO_TOOLBAR = 1      /* automatically insert in the toolbar if the menu file didn't do it */
+	RND_TLF_AUTO_TOOLBAR = 1      /* automatically insert in the toolbar if the menu file didn't do it */
 } rnd_tool_flags_t;
 
-typedef struct pcb_tool_s {
+typedef struct rnd_tool_s {
 	const char *name;             /* textual name of the tool */
 	const char *help;             /* help/tooltip that explains the feature */
 	const char *cookie;           /* plugin cookie _pointer_ of the registrar (comparision is pointer based, not strcmp) */
@@ -69,7 +69,7 @@ typedef struct pcb_tool_s {
 	void     (*escape)(rnd_hidlib_t *hl);
 	
 	unsigned long user_flags;
-} pcb_tool_t;
+} rnd_tool_t;
 
 extern vtp0_t rnd_tools;
 extern rnd_toolid_t rnd_tool_prev_id;
@@ -84,7 +84,7 @@ void rnd_tool_uninit(void);
 void rnd_tool_chg_mode(rnd_hidlib_t *hl);
 
 /* Insert a new tool in rnd_tools; returns -1 on failure */
-rnd_toolid_t rnd_tool_reg(pcb_tool_t *tool, const char *cookie);
+rnd_toolid_t rnd_tool_reg(rnd_tool_t *tool, const char *cookie);
 
 /* Unregister all tools that has matching cookie */
 void rnd_tool_unreg_by_cookie(const char *cookie);
@@ -122,6 +122,6 @@ void rnd_tool_do_press(rnd_hidlib_t *hidlib);
 /**** Low level, for internal use ****/
 
 /* Get the tool pointer of a tool by id */
-#define rnd_tool_get(id) ((const pcb_tool_t *)*vtp0_get(&rnd_tools, id, 0))
+#define rnd_tool_get(id) ((const rnd_tool_t *)*vtp0_get(&rnd_tools, id, 0))
 
 #endif

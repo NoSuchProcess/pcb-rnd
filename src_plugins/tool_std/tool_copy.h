@@ -1,4 +1,4 @@
-extern pcb_tool_t pcb_tool_copy;
+extern rnd_tool_t pcb_tool_copy;
 
 void pcb_tool_copy_uninit(void);
 void pcb_tool_copy_notify_mode(rnd_hidlib_t *hl);

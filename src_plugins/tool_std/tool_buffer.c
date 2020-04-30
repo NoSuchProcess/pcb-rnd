@@ -129,7 +129,7 @@ static const char *buf_icon[] = {
 "ooooooooooooooooooooo"
 };
 
-pcb_tool_t pcb_tool_buffer = {
+rnd_tool_t pcb_tool_buffer = {
 	"buffer", NULL, NULL, 100, buf_icon, RND_TOOL_CURSOR_NAMED("hand"), 0,
 	pcb_tool_buffer_init,
 	pcb_tool_buffer_uninit,

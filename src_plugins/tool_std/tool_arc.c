@@ -232,7 +232,7 @@ static const char *arc_icon[] = {
 "ooooooooooooooooooooo"
 };
 
-pcb_tool_t pcb_tool_arc = {
+rnd_tool_t pcb_tool_arc = {
 	"arc", NULL, NULL, 100, arc_icon, RND_TOOL_CURSOR_NAMED("question_arrow"), 0,
 	pcb_tool_arc_init,
 	pcb_tool_arc_uninit,

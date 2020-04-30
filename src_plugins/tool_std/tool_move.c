@@ -128,7 +128,7 @@ rnd_bool pcb_tool_move_undo_act(rnd_hidlib_t *hl)
 	return rnd_true;
 }
 
-pcb_tool_t pcb_tool_move = {
+rnd_tool_t pcb_tool_move = {
 	"move", NULL, NULL, 100, NULL, RND_TOOL_CURSOR_NAMED("crosshair"), 0,
 	NULL,
 	pcb_tool_move_uninit,

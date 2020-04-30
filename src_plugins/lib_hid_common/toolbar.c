@@ -79,7 +79,7 @@ static void toolbar_select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_tool_select_by_id(rnd_gui->get_dad_hidlib(hid_ctx), tid);
 }
 
-static void toolbar_create_tool(rnd_toolid_t tid, pcb_tool_t *tool, const char *menufile_help)
+static void toolbar_create_tool(rnd_toolid_t tid, rnd_tool_t *tool, const char *menufile_help)
 {
 	int wid;
 	const char *help = tool->help;
@@ -107,13 +107,13 @@ static void toolbar_create_static(rnd_hid_cfg_t *cfg)
 	if ((ts != NULL) && (ts->type == LHT_LIST)) {
 		for(t = ts->data.list.first; t != NULL; t = t->next) {
 			rnd_toolid_t tid = rnd_tool_lookup(t->name);
-			pcb_tool_t **tool;
+			rnd_tool_t **tool;
 			const char *mf_help;
 			lht_node_t *nhelp;
 			lht_err_t err;
 
 
-			tool = (pcb_tool_t **)vtp0_get(&rnd_tools, tid, 0);
+			tool = (rnd_tool_t **)vtp0_get(&rnd_tools, tid, 0);
 			if ((tid < 0) || (tool == NULL)) {
 				rnd_message(RND_MSG_ERROR, "toolbar: tool '%s' not found (referenced from the menu file %s:%d)\n", t->name, t->file_name, t->line);
 				continue;
@@ -135,11 +135,11 @@ static void toolbar_create_static(rnd_hid_cfg_t *cfg)
 
 static void toolbar_create_dyn_all(void)
 {
-	pcb_tool_t **t;
+	rnd_tool_t **t;
 	rnd_toolid_t tid;
-	for(tid = 0, t = (pcb_tool_t **)rnd_tools.array; tid < rnd_tools.used; tid++,t++) {
+	for(tid = 0, t = (rnd_tool_t **)rnd_tools.array; tid < rnd_tools.used; tid++,t++) {
 		int *wid = vti0_get(&toolbar.tid2wid, tid, 0);
-		if (((*t)->flags & PCB_TLF_AUTO_TOOLBAR) == 0)
+		if (((*t)->flags & RND_TLF_AUTO_TOOLBAR) == 0)
 			continue; /* static or inivisible */
 		if ((wid != NULL) && (*wid != 0))
 			continue; /* already has an icon */
@@ -188,9 +188,9 @@ void pcb_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 void pcb_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((toolbar.sub_inited) && (argv[1].type == RND_EVARG_PTR)) {
-		pcb_tool_t *tool = argv[1].d.p;
+		rnd_tool_t *tool = argv[1].d.p;
 		rnd_toolid_t tid = rnd_tool_lookup(tool->name);
-		if ((tool->flags & PCB_TLF_AUTO_TOOLBAR) != 0) {
+		if ((tool->flags & RND_TLF_AUTO_TOOLBAR) != 0) {
 			int *wid = vti0_get(&toolbar.tid2wid, tid, 0);
 			if ((wid != NULL) && (*wid != 0))
 				return;
