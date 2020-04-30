@@ -99,7 +99,7 @@ static rnd_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 		return 0;
 	}
 	v /= ctx->unit->scale_factor;
-	if (ctx->unit->family == PCB_UNIT_METRIC)
+	if (ctx->unit->family == RND_UNIT_METRIC)
 		return RND_MM_TO_COORD(v);
 	return RND_MIL_TO_COORD(v);
 }

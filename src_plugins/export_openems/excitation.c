@@ -149,7 +149,7 @@ static rnd_bool to_hz(const char *s, double *out)
 	double d;
 	if (!rnd_get_value_unit(s, NULL, 0, &d, &u))
 		return rnd_false;
-	if (u->family != PCB_UNIT_FREQ)
+	if (u->family != RND_UNIT_FREQ)
 		return rnd_false;
 	*out = d;
 	return rnd_true;

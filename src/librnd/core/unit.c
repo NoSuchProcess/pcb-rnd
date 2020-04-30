@@ -41,27 +41,27 @@
 /* Should be kept in order of smallest scale_factor to largest -- the code
    uses this ordering for finding the best scale to use for a group of units */
 rnd_unit_t rnd_units[] = {
-	{"km",   'k', 0.000001, PCB_UNIT_METRIC,   RND_UNIT_ALLOW_KM, 5},
-	{"m",    'f', 0.001,    PCB_UNIT_METRIC,   RND_UNIT_ALLOW_M, 5},
-	{"cm",   'e', 0.1,      PCB_UNIT_METRIC,   RND_UNIT_ALLOW_CM, 5},
-	{"mm",   'm', 1,        PCB_UNIT_METRIC,   RND_UNIT_ALLOW_MM, 4},
-	{"um",   'u', 1000,     PCB_UNIT_METRIC,   RND_UNIT_ALLOW_UM, 2},
-	{"du",   'd', 10000,    PCB_UNIT_METRIC,   RND_UNIT_ALLOW_DU, 2},  /* eagle bin decimicron */
-	{"nm",   'n', 1000000,  PCB_UNIT_METRIC,   RND_UNIT_ALLOW_NM, 0},
+	{"km",   'k', 0.000001, RND_UNIT_METRIC,   RND_UNIT_ALLOW_KM, 5},
+	{"m",    'f', 0.001,    RND_UNIT_METRIC,   RND_UNIT_ALLOW_M, 5},
+	{"cm",   'e', 0.1,      RND_UNIT_METRIC,   RND_UNIT_ALLOW_CM, 5},
+	{"mm",   'm', 1,        RND_UNIT_METRIC,   RND_UNIT_ALLOW_MM, 4},
+	{"um",   'u', 1000,     RND_UNIT_METRIC,   RND_UNIT_ALLOW_UM, 2},
+	{"du",   'd', 10000,    RND_UNIT_METRIC,   RND_UNIT_ALLOW_DU, 2},  /* eagle bin decimicron */
+	{"nm",   'n', 1000000,  RND_UNIT_METRIC,   RND_UNIT_ALLOW_NM, 0},
 
-	{"in",   'i', 0.001,    PCB_UNIT_IMPERIAL, RND_UNIT_ALLOW_IN, 5},
-	{"mil",  'l', 1,        PCB_UNIT_IMPERIAL, RND_UNIT_ALLOW_MIL, 2},
-	{"dmil", 'k', 10,       PCB_UNIT_IMPERIAL, RND_UNIT_ALLOW_DMIL, 1},/* kicad legacy decimil unit */
-	{"cmil", 'c', 100,      PCB_UNIT_IMPERIAL, RND_UNIT_ALLOW_CMIL, 0},
+	{"in",   'i', 0.001,    RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_IN, 5},
+	{"mil",  'l', 1,        RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_MIL, 2},
+	{"dmil", 'k', 10,       RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_DMIL, 1},/* kicad legacy decimil unit */
+	{"cmil", 'c', 100,      RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_CMIL, 0},
 
-	{"Hz",   'z', 1,           PCB_UNIT_FREQ,  RND_UNIT_ALLOW_HZ, 3},
-	{"kHz",  'Z', 0.001,       PCB_UNIT_FREQ,  RND_UNIT_ALLOW_KHZ, 6},
-	{"MHz",  'M', 0.000001,    PCB_UNIT_FREQ,  RND_UNIT_ALLOW_MHZ, 6},
-	{"GHz",  'G', 0.000000001, PCB_UNIT_FREQ,  RND_UNIT_ALLOW_GHZ, 6},
+	{"Hz",   'z', 1,           RND_UNIT_FREQ,  RND_UNIT_ALLOW_HZ, 3},
+	{"kHz",  'Z', 0.001,       RND_UNIT_FREQ,  RND_UNIT_ALLOW_KHZ, 6},
+	{"MHz",  'M', 0.000001,    RND_UNIT_FREQ,  RND_UNIT_ALLOW_MHZ, 6},
+	{"GHz",  'G', 0.000000001, RND_UNIT_FREQ,  RND_UNIT_ALLOW_GHZ, 6},
 
 	/* aliases - must be a block at the end */
-	{"inch",  0,  0.001,    PCB_UNIT_IMPERIAL, RND_UNIT_ALLOW_IN, 5},
-	{"pcb",   0,  100,      PCB_UNIT_IMPERIAL, RND_UNIT_ALLOW_CMIL, 0} /* old io_pcb unit */
+	{"inch",  0,  0.001,    RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_IN, 5},
+	{"pcb",   0,  100,      RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_CMIL, 0} /* old io_pcb unit */
 };
 
 #define N_UNITS ((int) (sizeof rnd_units / sizeof rnd_units[0]))
@@ -158,9 +158,9 @@ double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x)
 	if (unit == NULL)
 		return -1;
 	switch(unit->family) {
-		case PCB_UNIT_METRIC: base = RND_COORD_TO_MM(1); break;
-		case PCB_UNIT_IMPERIAL: base = RND_COORD_TO_MIL(1); break;
-		case PCB_UNIT_FREQ: base = 1.0; break;
+		case RND_UNIT_METRIC: base = RND_COORD_TO_MM(1); break;
+		case RND_UNIT_IMPERIAL: base = RND_COORD_TO_MIL(1); break;
+		case RND_UNIT_FREQ: base = 1.0; break;
 	}
 	return x * unit->scale_factor * base;
 }
@@ -173,22 +173,22 @@ rnd_coord_t rnd_unit_to_coord(const rnd_unit_t *unit, double x)
 		return -1;
 
 	switch(unit->family) {
-		case PCB_UNIT_METRIC:   base = RND_MM_TO_COORD(x); break;
-		case PCB_UNIT_IMPERIAL: base = RND_MIL_TO_COORD(x); break;
-		case PCB_UNIT_FREQ:     base = x; break;
+		case RND_UNIT_METRIC:   base = RND_MM_TO_COORD(x); break;
+		case RND_UNIT_IMPERIAL: base = RND_MIL_TO_COORD(x); break;
+		case RND_UNIT_FREQ:     base = x; break;
 	}
 	res = rnd_round(base/unit->scale_factor);
 
 	/* clamp */
 	switch(unit->family) {
-		case PCB_UNIT_METRIC:
-		case PCB_UNIT_IMPERIAL:
+		case RND_UNIT_METRIC:
+		case RND_UNIT_IMPERIAL:
 			if (res >= (double)RND_COORD_MAX)
 				return RND_COORD_MAX;
 			if (res <= -1.0 * (double)RND_COORD_MAX)
 				return -RND_COORD_MAX;
 			break;
-		case PCB_UNIT_FREQ:
+		case RND_UNIT_FREQ:
 			break;
 	}
 	return res;

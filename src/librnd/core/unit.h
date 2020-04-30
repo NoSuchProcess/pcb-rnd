@@ -76,9 +76,9 @@ enum rnd_allow_e {
 
 /* bitfield */
 typedef enum rnd_family_e {
-	PCB_UNIT_METRIC   = 1,
-	PCB_UNIT_IMPERIAL = 2,
-	PCB_UNIT_FREQ     = 4
+	RND_UNIT_METRIC   = 1,
+	RND_UNIT_IMPERIAL = 2,
+	RND_UNIT_FREQ     = 4
 } rnd_family_t;
 
 enum rnd_suffix_e { RND_UNIT_NO_SUFFIX, RND_UNIT_SUFFIX, RND_UNIT_FILE_MODE };

@@ -172,9 +172,9 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 
 	/* Check our freedom in choosing units */
 	if ((allow & RND_UNIT_ALLOW_IMPERIAL) == 0)
-		family = PCB_UNIT_METRIC;
+		family = RND_UNIT_METRIC;
 	else if ((allow & RND_UNIT_ALLOW_METRIC) == 0)
-		family = PCB_UNIT_IMPERIAL;
+		family = RND_UNIT_IMPERIAL;
 	else {
 		int met_votes = 0, imp_votes = 0;
 
@@ -185,18 +185,18 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 				++met_votes;
 
 		if (imp_votes > met_votes)
-			family = PCB_UNIT_IMPERIAL;
+			family = RND_UNIT_IMPERIAL;
 		else
-			family = PCB_UNIT_METRIC;
+			family = RND_UNIT_METRIC;
 	}
 
 	/* Set base unit */
 	for (i = 0; i < n_coords; ++i) {
 		switch (family) {
-			case PCB_UNIT_METRIC:
+			case RND_UNIT_METRIC:
 				value[i] = RND_COORD_TO_MM(coord[i]);
 				break;
-			case PCB_UNIT_IMPERIAL:
+			case RND_UNIT_IMPERIAL:
 				value[i] = RND_COORD_TO_MIL(coord[i]);
 				break;
 			default:
@@ -292,7 +292,7 @@ static inline int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, dou
 	unsigned int score;
 
 	/* convert the value to the proposed unit */
-	if (unit->family == PCB_UNIT_METRIC)
+	if (unit->family == RND_UNIT_METRIC)
 		v = RND_COORD_TO_MM(coord);
 	else
 		v = RND_COORD_TO_MIL(coord);

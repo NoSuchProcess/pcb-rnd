@@ -195,7 +195,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 				RND_DAD_DEFAULT_PTR(ctx.dlg, def_unit);
 				RND_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 			
-			if (spin->unit_family == (PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)) {
+			if (spin->unit_family == (RND_UNIT_METRIC | RND_UNIT_IMPERIAL)) {
 				RND_DAD_LABEL(ctx.dlg, "Use the global");
 				RND_DAD_BOOL(ctx.dlg, "");
 					RND_DAD_HELP(ctx.dlg, "Ignore the above unit selection,\nuse the global unit (grid unit) in this spinbox,\nfollow changes of the global unit");
@@ -230,7 +230,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 	if ((dlgfail == 0) && (ctx.valid)) {
 		rnd_hid_attr_val_t hv;
 		int unum = ctx.dlg[ctx.wunit].val.lng;
-		int can_glob = (spin->unit_family == (PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL));
+		int can_glob = (spin->unit_family == (RND_UNIT_METRIC | RND_UNIT_IMPERIAL));
 
 		if (!can_glob)
 			spin->unit = &rnd_units[unum];

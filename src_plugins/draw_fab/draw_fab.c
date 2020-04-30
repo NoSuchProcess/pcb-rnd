@@ -207,7 +207,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 	char utcTime[64];
 
 	AllDrills = drill_get_info(PCB->Data);
-	if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+	if (rnd_conf.editor.grid_unit->family == RND_UNIT_IMPERIAL)
 		drill_round_info(AllDrills, RND_MIL_TO_COORD(1));
 	else
 		drill_round_info(AllDrills, RND_MM_TO_COORD(0.01));
@@ -263,12 +263,12 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 			text_at(info, gc, RND_MIL_TO_COORD(980), yoff, RND_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
 		rnd_render->set_color(gc, &conf_core.appearance.color.element);
-		if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+		if (rnd_conf.editor.grid_unit->family == RND_UNIT_IMPERIAL)
 			text_at(info, gc, RND_MIL_TO_COORD(450), yoff, RND_MIL_TO_COORD(2), "%0.3f", RND_COORD_TO_INCH(drill->DrillSize));
 		else
 			text_at(info, gc, RND_MIL_TO_COORD(450), yoff, RND_MIL_TO_COORD(2), "%1.2f", RND_COORD_TO_MM(drill->DrillSize));
 		if (plated_sym != -1 && unplated_sym != -1) {
-			if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+			if (rnd_conf.editor.grid_unit->family == RND_UNIT_IMPERIAL)
 				text_at(info, gc, RND_MIL_TO_COORD(450), yoff + TEXT_LINE, RND_MIL_TO_COORD(2), "%0.3f", RND_COORD_TO_INCH(drill->DrillSize));
 			else
 				text_at(info, gc, RND_MIL_TO_COORD(450), yoff + TEXT_LINE, RND_MIL_TO_COORD(2), "%1.2f", RND_COORD_TO_MM(drill->DrillSize));
@@ -280,7 +280,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 
 	rnd_render->set_color(gc, &conf_core.appearance.color.element);
 	text_at(info, gc, 0, yoff, RND_MIL_TO_COORD(9), "Symbol");
-	if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
+	if (rnd_conf.editor.grid_unit->family == RND_UNIT_IMPERIAL)
 		text_at(info, gc, RND_MIL_TO_COORD(410), yoff, RND_MIL_TO_COORD(9), "Diam. (Inch)");
 	else
 		text_at(info, gc, RND_MIL_TO_COORD(410), yoff, RND_MIL_TO_COORD(9), "Diam. (mm)");

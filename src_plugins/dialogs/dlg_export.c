@@ -215,7 +215,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.dbl);
 									break;
 								case RND_HATT_UNIT:
-									PCB_DAD_UNIT(export_ctx.dlg, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL);
+									PCB_DAD_UNIT(export_ctx.dlg, RND_UNIT_METRIC | RND_UNIT_IMPERIAL);
 									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
 									break;
 								default:
