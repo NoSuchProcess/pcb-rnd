@@ -48,7 +48,7 @@ static int mkdirp(const char *dir)
 {
 	int len;
 	char buff[RND_PATH_MAX+32];
-	len = pcb_snprintf(buff, sizeof(buff), "mkdir -p '%s'", dir);
+	len = rnd_snprintf(buff, sizeof(buff), "mkdir -p '%s'", dir);
 	if (len >= sizeof(buff)-1)
 		return -1;
 	return pcb_system(NULL, buff);

@@ -56,10 +56,10 @@ static void print_sqpad_coords(FILE *f, pcb_any_line_t *Pad, rnd_coord_t cx, rnd
 	rnd_coord_t x[4], y[4];
 
 	pcb_sqline_to_rect((pcb_line_t *)Pad, x, y);
-	pcb_fprintf(f, " %.9mm %.9mm", x[0] - cx, y[0] - cy);
-	pcb_fprintf(f, " %.9mm %.9mm", x[1] - cx, y[1] - cy);
-	pcb_fprintf(f, " %.9mm %.9mm", x[2] - cx, y[2] - cy);
-	pcb_fprintf(f, " %.9mm %.9mm", x[3] - cx, y[3] - cy);
+	rnd_fprintf(f, " %.9mm %.9mm", x[0] - cx, y[0] - cy);
+	rnd_fprintf(f, " %.9mm %.9mm", x[1] - cx, y[1] - cy);
+	rnd_fprintf(f, " %.9mm %.9mm", x[2] - cx, y[2] - cy);
+	rnd_fprintf(f, " %.9mm %.9mm", x[3] - cx, y[3] - cy);
 }
 
 #define elem_layer(elem, obj) \
@@ -121,7 +121,7 @@ int tedax_pstk_fsave(pcb_pstk_t *padstack, rnd_coord_t ox, rnd_coord_t oy, FILE 
 		return 1;
 	}
 	if (proto->hdia > 0)
-		pcb_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(padstack->term), padstack->x - ox, padstack->y - oy, proto->hdia, proto->hplated ? "-" : "unplated");
+		rnd_fprintf(f, "	hole %s %mm %mm %mm %s\n", TERM_NAME(padstack->term), padstack->x - ox, padstack->y - oy, proto->hdia, proto->hplated ? "-" : "unplated");
 
 	tshp = pcb_pstk_get_tshape(padstack);
 	for(n = 0, shp = tshp->shape; n < tshp->len; n++,shp++) {
@@ -134,7 +134,7 @@ int tedax_pstk_fsave(pcb_pstk_t *padstack, rnd_coord_t ox, rnd_coord_t oy, FILE 
 			case PCB_PSSH_HSHADOW:
 				break;
 			case PCB_PSSH_CIRC:
-				pcb_fprintf(f, "	fillcircle %s %s %s %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
+				rnd_fprintf(f, "	fillcircle %s %s %s %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
 					padstack->x + shp->data.circ.x - ox, padstack->y + shp->data.circ.y - oy,
 					shp->data.circ.dia/2, clr);
 				break;
@@ -146,25 +146,25 @@ int tedax_pstk_fsave(pcb_pstk_t *padstack, rnd_coord_t ox, rnd_coord_t oy, FILE 
 					tmp.Point2.X = shp->data.line.x2 + padstack->x;
 					tmp.Point2.Y = shp->data.line.y2 + padstack->y;
 					tmp.Thickness = shp->data.line.thickness;
-					pcb_fprintf(f, "	polygon %s %s %s %mm 4", lloc, ltyp, TERM_NAME(padstack->term), clr);
+					rnd_fprintf(f, "	polygon %s %s %s %mm 4", lloc, ltyp, TERM_NAME(padstack->term), clr);
 					print_sqpad_coords(f, &tmp, ox, oy);
-					pcb_fprintf(f, "\n");
+					rnd_fprintf(f, "\n");
 				}
 				else {
-					pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
+					rnd_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(padstack->term),
 						shp->data.line.x1 + padstack->x - ox, shp->data.line.y1 + padstack->y - oy,
 						shp->data.line.x2 + padstack->x - ox, shp->data.line.y2 + padstack->y - oy,
 						shp->data.line.thickness, clr);
 				}
 				break;
 			case PCB_PSSH_POLY:
-				pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(padstack->term),
+				rnd_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(padstack->term),
 					clr, shp->data.poly.len);
 				for(i = 0; i < shp->data.poly.len; i++)
-					pcb_fprintf(f, " %.06mm %.06mm",
+					rnd_fprintf(f, " %.06mm %.06mm",
 						shp->data.poly.x[i] + padstack->x - ox,
 						shp->data.poly.y[i] + padstack->y - oy);
-				pcb_fprintf(f, "\n");
+				rnd_fprintf(f, "\n");
 				break;
 		}
 	}
@@ -200,7 +200,7 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 			PCB_LINE_LOOP(ly)
 			{
 				if (line->term != NULL) print_terma(&terms, line->term, line);
-				pcb_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(line->term),
+				rnd_fprintf(f, "	line %s %s %s %mm %mm %mm %mm %mm %mm\n", lloc, ltyp, TERM_NAME(line->term),
 					line->Point1.X - ox, line->Point1.Y - oy, line->Point2.X - ox, line->Point2.Y - oy,
 					line->Thickness, line->Clearance);
 			}
@@ -209,7 +209,7 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 			PCB_ARC_LOOP(ly)
 			{
 				if (arc->term != NULL) print_terma(&terms, arc->term, arc);
-				pcb_fprintf(f, "	arc %s %s %s %mm %mm %mm %f %f %mm %mm\n", lloc, ltyp, TERM_NAME(arc->term),
+				rnd_fprintf(f, "	arc %s %s %s %mm %mm %mm %f %f %mm %mm\n", lloc, ltyp, TERM_NAME(arc->term),
 					arc->X - ox, arc->Y - oy, (arc->Width + arc->Height)/2, arc->StartAngle, arc->Delta,
 					arc->Thickness, arc->Clearance);
 			}
@@ -242,7 +242,7 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 				}
 
 				if (polygon->term != NULL) print_terma(&terms, polygon->term, polygon);
-				pcb_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(polygon->term),
+				rnd_fprintf(f, "	polygon %s %s %s %.06mm %ld", lloc, ltyp, TERM_NAME(polygon->term),
 					(PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon) ? 0 : polygon->Clearance),
 					numpt);
 
@@ -250,8 +250,8 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
 				pcb_poly_contour(&it);
 				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
-					pcb_fprintf(f, " %.06mm %.06mm", x - ox, y - oy);
-				pcb_fprintf(f, "\n");
+					rnd_fprintf(f, " %.06mm %.06mm", x - ox, y - oy);
+				rnd_fprintf(f, "\n");
 			}
 			PCB_END_LOOP;
 		}

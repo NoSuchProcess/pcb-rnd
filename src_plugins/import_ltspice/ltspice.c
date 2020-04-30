@@ -280,8 +280,8 @@ static void gen_filenames(const char *fname, char **fname_net, char **fname_asc)
 	if (fname_base == NULL)
 		fname_base = rnd_strdup(fname);
 
-	*fname_net = pcb_strdup_printf("%s.net", fname_base);
-	*fname_asc = pcb_strdup_printf("%s.asc", fname_base);
+	*fname_net = rnd_strdup_printf("%s.net", fname_base);
+	*fname_asc = rnd_strdup_printf("%s.asc", fname_base);
 	free(fname_base);
 }
 

@@ -407,7 +407,7 @@ static void ltf_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 	ltf_hidlib = hidlib;
 	if ((work_area == 0) || (hidlib == NULL))
 		return;
-	/*pcb_printf("PCB Changed! %$mD\n", ltf_hidlib->size_x, ltf_hidlib->size_y); */
+	/*rnd_printf("PCB Changed! %$mD\n", ltf_hidlib->size_x, ltf_hidlib->size_y); */
 	stdarg_n = 0;
 	stdarg(XmNminimum, 0);
 	stdarg(XmNvalue, 0);
@@ -1073,7 +1073,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #else
 			alt_pressed = (keys_buttons & Mod1Mask);
 #endif
-			/*pcb_printf("m %#mS %#mS\n", Px(e->xmotion.x), Py(e->xmotion.y)); */
+			/*rnd_printf("m %#mS %#mS\n", Px(e->xmotion.x), Py(e->xmotion.y)); */
 			crosshair_in_window = 1;
 			in_move_event = 1;
 			if (panning)
@@ -2301,7 +2301,7 @@ static void set_gc(rnd_hid_gc_t gc)
 		abort();
 	}
 #if 0
-	pcb_printf("set_gc c%s %08lx w%#mS c%d x%d e%d\n", gc->colorname, gc->color, gc->width, gc->cap, gc->xor_set, gc->erase);
+	rnd_printf("set_gc c%s %08lx w%#mS c%d x%d e%d\n", gc->colorname, gc->color, gc->width, gc->cap, gc->xor_set, gc->erase);
 #endif
 	switch (gc->cap) {
 	case rnd_cap_square:
@@ -2362,14 +2362,14 @@ static void lesstif_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
 #if 0
-	pcb_printf("draw_line %#mD-%#mD @%#mS", x1, y1, x2, y2, gc->width);
+	rnd_printf("draw_line %#mD-%#mD @%#mS", x1, y1, x2, y2, gc->width);
 #endif
 	dx1 = Vx(x1);
 	dy1 = Vy(y1);
 	dx2 = Vx(x2);
 	dy2 = Vy(y2);
 #if 0
-	pcb_printf(" = %#mD-%#mD %s\n", x1, y1, x2, y2, gc->colorname);
+	rnd_printf(" = %#mD-%#mD %s\n", x1, y1, x2, y2, gc->colorname);
 #endif
 
 #if 1
@@ -2400,7 +2400,7 @@ static void lesstif_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 	if (conf_core.editor.thin_draw && gc->erase)
 		return;
 #if 0
-	pcb_printf("draw_arc %#mD %#mSx%#mS s %d d %d", cx, cy, width, height, start_angle, delta_angle);
+	rnd_printf("draw_arc %#mD %#mSx%#mS s %d d %d", cx, cy, width, height, start_angle, delta_angle);
 #endif
 	width = Vz(width);
 	height = Vz(height);
@@ -2424,7 +2424,7 @@ static void lesstif_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 	if (start_angle >= 180)
 		start_angle -= 360;
 #if 0
-	pcb_printf(" = %#mD %#mSx%#mS %d %s\n", cx, cy, width, height, gc->width, gc->colorname);
+	rnd_printf(" = %#mD %#mSx%#mS %d %s\n", cx, cy, width, height, gc->width, gc->colorname);
 #endif
 	set_gc(gc);
 	XDrawArc(display, pixmap, my_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
@@ -2470,7 +2470,7 @@ static void lesstif_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
 #if 0
-	pcb_printf("fill_circle %#mD %#mS", cx, cy, radius);
+	rnd_printf("fill_circle %#mD %#mS", cx, cy, radius);
 #endif
 	radius = Vz(radius);
 	cx = Vx(cx) - radius;
@@ -2480,7 +2480,7 @@ static void lesstif_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 	if (cy < -2 * radius || cy > view_height)
 		return;
 #if 0
-	pcb_printf(" = %#mD %#mS %lx %s\n", cx, cy, radius, gc->color, gc->colorname);
+	rnd_printf(" = %#mD %#mS %lx %s\n", cx, cy, radius, gc->color, gc->colorname);
 #endif
 	set_gc(gc);
 	XFillArc(display, pixmap, my_gc, cx, cy, radius * 2, radius * 2, 0, 360 * 64);

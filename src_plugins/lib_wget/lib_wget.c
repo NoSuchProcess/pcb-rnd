@@ -40,7 +40,7 @@ static char *pcb_wget_command(const char *url, const char *ofn, int update, cons
 	gds_t tmp;
 
 	gds_init(&tmp);
-	pcb_append_printf(&tmp, "%s -O '%s'", wget_cmd, ofn);
+	rnd_append_printf(&tmp, "%s -O '%s'", wget_cmd, ofn);
 	if (update)
 		gds_append_str(&tmp, " -c");
 

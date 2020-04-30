@@ -223,7 +223,7 @@ static long int *ListBlock_(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool Flag,
 	long int *list = NULL;
 
 	fix_box_dir(Box, 0);
-/*pcb_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, PCB_IS_BOX_NEGATIVE(Box), rnd_conf.editor.view.flip_x, rnd_conf.editor.view.flip_y);*/
+/*rnd_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, PCB_IS_BOX_NEGATIVE(Box), rnd_conf.editor.view.flip_x, rnd_conf.editor.view.flip_y);*/
 
 /* append an object to the return list OR set the flag if there's no list */
 #define append(undo_type, p1, obj) \

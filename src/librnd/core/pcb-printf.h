@@ -95,8 +95,8 @@
  *   No support for %zu size_t printf spec
  */
 
-#ifndef	PCB_PCB_PRINTF_H
-#define	PCB_PCB_PRINTF_H
+#ifndef RND_PCB_PRINTF_H
+#define RND_PCB_PRINTF_H
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -106,45 +106,45 @@
 typedef enum {                    /* bitmask for printf hardening */
 	PCB_SAFEPRINT_arg_max = 1023,   /* for internal use */
 	PCB_SAFEPRINT_COORD_ONLY = 1024 /* print only coords (%m); anything else will result in error, returning -1  */
-} pcb_safe_printf_t;
+} rnd_safe_printf_t;
 
-int pcb_fprintf(FILE * f, const char *fmt, ...);
-int pcb_vfprintf(FILE * f, const char *fmt, va_list args);
-int pcb_sprintf(char *string, const char *fmt, ...);
-int pcb_snprintf(char *string, size_t len, const char *fmt, ...);
-int pcb_safe_snprintf(char *string, size_t len, pcb_safe_printf_t safe, const char *fmt, ...);
-int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args);
-int pcb_printf(const char *fmt, ...);
-char *pcb_strdup_printf(const char *fmt, ...);
-char *pcb_strdup_vprintf(const char *fmt, va_list args);
+int rnd_fprintf(FILE * f, const char *fmt, ...);
+int rnd_vfprintf(FILE * f, const char *fmt, va_list args);
+int rnd_sprintf(char *string, const char *fmt, ...);
+int rnd_snprintf(char *string, size_t len, const char *fmt, ...);
+int rnd_safe_snprintf(char *string, size_t len, rnd_safe_printf_t safe, const char *fmt, ...);
+int rnd_vsnprintf(char *string, size_t len, const char *fmt, va_list args);
+int rnd_printf(const char *fmt, ...);
+char *rnd_strdup_printf(const char *fmt, ...);
+char *rnd_strdup_vprintf(const char *fmt, va_list args);
 
-int pcb_append_printf(gds_t *str, const char *fmt, ...);
+int rnd_append_printf(gds_t *str, const char *fmt, ...);
 
 /* Low level call that does the job */
-int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *fmt, va_list args);
+int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *fmt, va_list args);
 
 /* Predefined slots (macros): %[n] will use the nth string from this list.
    The first 8 are user-definable. */
 typedef enum {
-	PCB_PRINTF_SLOT_USER0,
-	PCB_PRINTF_SLOT_USER1,
-	PCB_PRINTF_SLOT_USER2,
-	PCB_PRINTF_SLOT_USER3,
-	PCB_PRINTF_SLOT_USER4,
-	PCB_PRINTF_SLOT_USER5,
-	PCB_PRINTF_SLOT_USER6,
-	PCB_PRINTF_SLOT_USER7,
-	PCB_PRINTF_SLOT_FF_ORIG_COORD, /* %[8] original .pcb file format coord prints */
-	PCB_PRINTF_SLOT_FF_SAFE_COORD, /* %[9] safe .pcb file format coord print that doesn't lose precision */
-	PCB_PRINTF_SLOT_max
-} pcb_printf_slot_idx_t;
-extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
+	RND_PRINTF_SLOT_USER0,
+	RND_PRINTF_SLOT_USER1,
+	RND_PRINTF_SLOT_USER2,
+	RND_PRINTF_SLOT_USER3,
+	RND_PRINTF_SLOT_USER4,
+	RND_PRINTF_SLOT_USER5,
+	RND_PRINTF_SLOT_USER6,
+	RND_PRINTF_SLOT_USER7,
+	RND_PRINTF_SLOT_FF_ORIG_COORD, /* %[8] original .pcb file format coord prints */
+	RND_PRINTF_SLOT_FF_SAFE_COORD, /* %[9] safe .pcb file format coord print that doesn't lose precision */
+	RND_PRINTF_SLOT_max
+} rnd_printf_slot_idx_t;
+extern const char *rnd_printf_slot[RND_PRINTF_SLOT_max];
 
 /* strdup and return a string built from a template, controlled by flags:
 
-   PCB_SUBST_HOME: replace leading ~ with the user's home directory
+   RND_SUBST_HOME: replace leading ~ with the user's home directory
 
-   PCB_SUBST_PERCENT: attempt to replace printf-like formatting
+   RND_SUBST_PERCENT: attempt to replace printf-like formatting
    directives (e.g. %P) using an user provided callback function. The callback
    function needs to recognize the directive at **input (pointing to the byte
    after the %) and append the substitution to s and increase *input to point
@@ -152,27 +152,27 @@ extern const char *pcb_printf_slot[PCB_PRINTF_SLOT_max];
    on unknown directive (which will be copied verbatim). %% will always
    be translated into a single %, without calling cb.
 
-   PCB_SUBST_CONF: replace $(conf) automatically (no callback)
+   RND_SUBST_CONF: replace $(conf) automatically (no callback)
 
    Implemented in paths.c because it depends on conf_core.h and error.h .
 */
 typedef enum {
-	PCB_SUBST_HOME = 1,
-	PCB_SUBST_PERCENT = 2,
-	PCB_SUBST_CONF = 4,
-	PCB_SUBST_BACKSLASH = 8, /* substitute \ sequences as printf(3) does */
+	RND_SUBST_HOME = 1,
+	RND_SUBST_PERCENT = 2,
+	RND_SUBST_CONF = 4,
+	RND_SUBST_BACKSLASH = 8, /* substitute \ sequences as printf(3) does */
 
-	PCB_SUBST_ALL = 0x7f, /* substitute all, but do not enable quiet */
+	RND_SUBST_ALL = 0x7f, /* substitute all, but do not enable quiet */
 
-	PCB_SUBST_QUIET = 0x80
-} pcb_strdup_subst_t;
+	RND_SUBST_QUIET = 0x80
+} rnd_strdup_subst_t;
 
 /* Substitute template using cb, leaving extra room at the end and append the
    result to s. Returns 0 on success. */
-int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room);
+int rnd_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags, size_t extra_room);
 
-/* Same as pcb_subst_append(), but returns a dynamic allocated string
+/* Same as rnd_subst_append(), but returns a dynamic allocated string
    (the caller needs to free() after use) or NULL on error. */
-char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags);
+char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags);
 
 #endif

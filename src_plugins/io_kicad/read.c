@@ -140,10 +140,10 @@ static int kicad_error(gsxl_node_t *subtree, char *fmt, ...)
 	va_list ap;
 
 	gds_init(&str);
-	pcb_append_printf(&str, "io_kicad parse error at %d.%d: ", subtree->line, subtree->col);
+	rnd_append_printf(&str, "io_kicad parse error at %d.%d: ", subtree->line, subtree->col);
 
 	va_start(ap, fmt);
-	pcb_safe_append_vprintf(&str, 0, fmt, ap);
+	rnd_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
 	gds_append(&str, '\n');
@@ -160,10 +160,10 @@ static int kicad_warning(gsxl_node_t *subtree, char *fmt, ...)
 	va_list ap;
 
 	gds_init(&str);
-	pcb_append_printf(&str, "io_kicad warning at %d.%d: ", subtree->line, subtree->col);
+	rnd_append_printf(&str, "io_kicad warning at %d.%d: ", subtree->line, subtree->col);
 
 	va_start(ap, fmt);
-	pcb_safe_append_vprintf(&str, 0, fmt, ap);
+	rnd_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
 	gds_append(&str, '\n');

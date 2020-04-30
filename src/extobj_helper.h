@@ -167,7 +167,7 @@ RND_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, rnd_hid_
 	pcb_subc_t *subc = caller_data;
 	char tmp[128];
 
-	pcb_snprintf(tmp, sizeof(tmp), "%$mm", attr->val.crd);
+	rnd_snprintf(tmp, sizeof(tmp), "%$mm", attr->val.crd);
 	pcb_exto_dlg_gui_chg_attr(subc, attr, tmp);
 }
 
@@ -227,7 +227,7 @@ RND_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, rnd_hid_at
 	pcb_subc_t *subc = caller_data;
 	char tmp[128];
 
-	pcb_snprintf(tmp, sizeof(tmp), "%d", attr->val.lng);
+	rnd_snprintf(tmp, sizeof(tmp), "%d", attr->val.lng);
 	pcb_exto_dlg_gui_chg_attr(subc, attr, tmp);
 }
 

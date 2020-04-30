@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
 	setlocale(LC_ALL, "C");
 
-	pcb_printf_slot[0] = "%mr";
+	rnd_printf_slot[0] = "%mr";
 
 	for(n = 2; n < argc; n++) {
 		rnd_bool success;
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 		crd = val;
 	}
 
-	pcb_fprintf(stdout, fmt, crd, 70000, 70000, 70000, 70000);
+	rnd_fprintf(stdout, fmt, crd, 70000, 70000, 70000, 70000);
 
 	printf("\n");
 

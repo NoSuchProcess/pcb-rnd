@@ -176,7 +176,7 @@ static void vfs_list_obj(pcb_board_t *pcb, gds_t *path, pcb_any_obj_t *obj, pcb_
 	SEE;
 
 	orig_used = path->used;
-	pcb_append_printf(path, "/%s/%ld", pcb_obj_type_name(obj->type), obj->ID);
+	rnd_append_printf(path, "/%s/%ld", pcb_obj_type_name(obj->type), obj->ID);
 	cb(ctx, path->array, 1);
 	gds_append(path, '/');
 	ou = path->used;
@@ -239,7 +239,7 @@ static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, con
 		pcb_propedit_t pctx;
 
 		path.used = orig_used;
-		pcb_append_printf(&path, "%ld", lid);
+		rnd_append_printf(&path, "%ld", lid);
 		cb(ctx, path.array, 1);
 
 		cb_mkdir(cb, ctx, &path, "/line");
@@ -295,7 +295,7 @@ static void vfs_list_subcs(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, cons
 
 
 		path.used = orig_used;
-		pcb_append_printf(&path, "%ld/data", subc->ID);
+		rnd_append_printf(&path, "%ld/data", subc->ID);
 		cb(ctx, path.array, 1);
 		vfs_list_layers(pcb, cb, ctx, path.array, subc->data);
 	}
@@ -438,7 +438,7 @@ static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 		pcb_propedit_t pctx;
 
 		path.used = orig_used;
-		pcb_append_printf(&path, "%ld", gid);
+		rnd_append_printf(&path, "%ld", gid);
 		cb(ctx, path.array, 1);
 
 		pcb_props_init(&pctx, pcb);
@@ -501,7 +501,7 @@ static int vfs_conf_printf(void *ctx, const char *fmt, ...)
 	int res;
 
 	va_start(ap, fmt);
-	res = pcb_safe_append_vprintf(buff, 0, fmt, ap);
+	res = rnd_safe_append_vprintf(buff, 0, fmt, ap);
 	va_end(ap);
 	return res;
 }

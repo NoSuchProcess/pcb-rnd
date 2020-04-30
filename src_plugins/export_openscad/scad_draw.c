@@ -90,7 +90,7 @@ static int scad_draw_outline(void)
 	fprintf(f, "	polygon([\n\t\t");
 	/* we need the as-drawn polygon and we know there are no holes */
 	for(n = 0; n < poly->PointN; n++)
-		pcb_fprintf(f, "[%mm,%mm]%s", TRX_(poly->Points[n].X), TRY_(poly->Points[n].Y), ((n < (poly->PointN-1)) ? "," : "\n"));
+		rnd_fprintf(f, "[%mm,%mm]%s", TRX_(poly->Points[n].X), TRY_(poly->Points[n].Y), ((n < (poly->PointN-1)) ? "," : "\n"));
 	fprintf(f, "	]);\n");
 	fprintf(f, "}\n");
 
@@ -110,8 +110,8 @@ static void scad_draw_pstk(const pcb_pstk_t *ps)
 TODO("padstack: this ignores bbvias")
 TODO("slot: this ignores slots")
 	if (proto->hdia > 0) {
-		pcb_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(ps->x), TRY_(ps->y));
-		pcb_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", proto->hdia/2);
+		rnd_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(ps->x), TRY_(ps->y));
+		rnd_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", proto->hdia/2);
 	}
 }
 

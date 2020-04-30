@@ -152,16 +152,16 @@ static const char *corner_name(corner_s * c)
 	bp = buf[bn] + strlen(buf[bn]);
 
 	if (c->pin)
-		pcb_sprintf(bp, "pin %s:%s at %#mD", element_name_for(c), c->pin->term, c->x, c->y);
+		rnd_sprintf(bp, "pin %s:%s at %#mD", element_name_for(c), c->pin->term, c->x, c->y);
 	else if (c->via)
-		pcb_sprintf(bp, "via at %#mD", c->x, c->y);
+		rnd_sprintf(bp, "via at %#mD", c->x, c->y);
 	else if (c->pad) {
-		pcb_sprintf(bp, "pad %s:%s at %#mD %#mD-%#mD",
+		rnd_sprintf(bp, "pad %s:%s at %#mD %#mD-%#mD",
 								element_name_for(c), c->pad->term, c->x, c->y,
 								c->pad->BoundingBox.X1, c->pad->BoundingBox.Y1, c->pad->BoundingBox.X2, c->pad->BoundingBox.Y2);
 	}
 	else
-		pcb_sprintf(bp, "at %#mD", c->x, c->y);
+		rnd_sprintf(bp, "at %#mD", c->x, c->y);
 	sprintf(bp + strlen(bp), " n%d l%d]\033[0m", c->n_lines, c->layer);
 	return buf[bn];
 }
@@ -222,7 +222,7 @@ static void check2(int srcline, corner_s * c, line_s * l)
 		if (!ll->is_pad
 				&& (ll->s->x != ll->line->Point1.X
 						|| ll->s->y != ll->line->Point1.Y || ll->e->x != ll->line->Point2.X || ll->e->y != ll->line->Point2.Y)) {
-			pcb_printf("line: %#mD to %#mD  pcbline: %#mD to %#mD\n",
+			rnd_printf("line: %#mD to %#mD  pcbline: %#mD to %#mD\n",
 								 ll->s->x, ll->s->y,
 								 ll->e->x, ll->e->y, ll->line->Point1.X, ll->line->Point1.Y, ll->line->Point2.X, ll->line->Point2.Y);
 			dj_abort("check:%d: line doesn't match pcbline\n", srcline);
@@ -598,7 +598,7 @@ static void add_corner_to_rect_if(rect_s * rect, corner_s * c, rect_s * e)
 	if (c->x > e->x2 && c->y > e->y2 && dist(c->x, c->y, e->x2, e->y2) > diam)
 		return;
 
-	/*pcb_printf("add point %#mD diam %#mS\n", c->x, c->y, diam); */
+	/*rnd_printf("add point %#mD diam %#mS\n", c->x, c->y, diam); */
 	add_point_to_rect(rect, c->x, c->y, diam);
 }
 
@@ -1406,7 +1406,7 @@ static int orthopull()
 		c = c->next;
 	}
 	if (rv)
-		pcb_printf("orthopull: %ml mils saved\n", rv);
+		rnd_printf("orthopull: %ml mils saved\n", rv);
 	return rv;
 }
 
@@ -1537,7 +1537,7 @@ static int debumpify()
 
 	rv += simple_optimizations();
 	if (rv)
-		pcb_printf("debumpify: %ml mils saved\n", rv / 50);
+		rnd_printf("debumpify: %ml mils saved\n", rv / 50);
 	return rv;
 }
 
@@ -1770,7 +1770,7 @@ static int vianudge()
 	}
 
 	if (rv)
-		pcb_printf("vianudge: %ml mils saved\n", rv);
+		rnd_printf("vianudge: %ml mils saved\n", rv);
 	return rv;
 }
 

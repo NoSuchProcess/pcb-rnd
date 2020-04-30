@@ -99,7 +99,7 @@ static int wrax_lyt2id(wctx_t *ctx, pcb_layer_type_t lyt)
 static void wrax_map_layer_error(wctx_t *ctx, pcb_layergrp_t *grp, const char *msg, const char *hint)
 {
 	char tmp[256];
-	pcb_snprintf(tmp, sizeof(tmp), "%s (omitting layer group): %s", msg, grp->name);
+	rnd_snprintf(tmp, sizeof(tmp), "%s (omitting layer group): %s", msg, grp->name);
 	pcb_io_incompat_save(ctx->pcb->Data, NULL, "layer", tmp, hint);
 }
 
@@ -220,7 +220,7 @@ TODO("need to figure which side the padstack is on!")
 TODO("figure which is the gnd and which is the power plane")
 TODO("add checks for thermals: only gnd/pwr can have them, warn for others")
 
-	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n",
+	rnd_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %d %.0ml 1 %d\r\n",
 		x+dx, PCB->hidlib.size_y - (y+dy), w, h,
 		ashape, drill_dia, alayer);
 
@@ -247,7 +247,7 @@ static int wrax_vias(wctx_t *ctx, pcb_data_t *Data, rnd_coord_t dx, rnd_coord_t 
 static int wrax_line(wctx_t *ctx, pcb_line_t *line, rnd_cardinal_t layer, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int user_routed = 1;
-	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", line->Point1.X+dx, PCB->hidlib.size_y - (line->Point1.Y+dy), line->Point2.X+dx, PCB->hidlib.size_y - (line->Point2.Y+dy), line->Thickness, layer, user_routed);
+	rnd_fprintf(ctx->f, "%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", line->Point1.X+dx, PCB->hidlib.size_y - (line->Point1.Y+dy), line->Point2.X+dx, PCB->hidlib.size_y - (line->Point2.Y+dy), line->Thickness, layer, user_routed);
 	return 0;
 }
 
@@ -255,7 +255,7 @@ static int wrax_line(wctx_t *ctx, pcb_line_t *line, rnd_cardinal_t layer, rnd_co
 static int wrax_pline_segment(wctx_t *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t Thickness, rnd_cardinal_t layer)
 {
 	int user_routed = 1;
-	pcb_fprintf(ctx->f, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", x1, PCB->hidlib.size_y - y1, x2, PCB->hidlib.size_y - y2, Thickness, layer, user_routed);
+	rnd_fprintf(ctx->f, "FT\r\n%.0ml %.0ml %.0ml %.0ml %.0ml %d %d\r\n", x1, PCB->hidlib.size_y - y1, x2, PCB->hidlib.size_y - y2, Thickness, layer, user_routed);
 	return 0;
 }
 
@@ -340,7 +340,7 @@ static int wrax_arc(wctx_t *ctx, pcb_arc_t *arc, int current_layer, rnd_coord_t 
 	else {
 		radius = arc->Width;
 	}
-	pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", arc->X+dx, PCB->hidlib.size_y - (arc->Y+dy), radius, pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta), arc->Thickness, current_layer);
+	rnd_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", arc->X+dx, PCB->hidlib.size_y - (arc->Y+dy), radius, pcb_rnd_arc_to_autotrax_segments(arc->StartAngle, arc->Delta), arc->Thickness, current_layer);
 	return 0;
 }
 
@@ -361,11 +361,11 @@ static int wrax_equipotential_netlists(wctx_t *ctx)
 			pcb_net_t *net = e->value;
 
 			fprintf(ctx->f, "NETDEF\r\n");
-			pcb_fprintf(ctx->f, "%s\r\n", net->name);
-			pcb_fprintf(ctx->f, "%d\r\n", show_status);
+			rnd_fprintf(ctx->f, "%s\r\n", net->name);
+			rnd_fprintf(ctx->f, "%d\r\n", show_status);
 			fprintf(ctx->f, "(\r\n");
 			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t))
-				pcb_fprintf(ctx->f, "%s-%s\r\n", t->refdes, t->term);
+				rnd_fprintf(ctx->f, "%s-%s\r\n", t->refdes, t->term);
 			fprintf(ctx->f, ")\r\n");
 		}
 	}
@@ -384,9 +384,9 @@ static int wrax_lines(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rn
 		int local_flag = 0;
 		linelist_foreach(&layer->Line, &it, line) {
 			if (in_subc)
-				pcb_fprintf(ctx->f, "CT\r\n");
+				rnd_fprintf(ctx->f, "CT\r\n");
 			else
-				pcb_fprintf(ctx->f, "FT\r\n");
+				rnd_fprintf(ctx->f, "FT\r\n");
 			wrax_line(ctx, line, current_layer, dx, dy);
 			local_flag |= 1;
 		}
@@ -408,9 +408,9 @@ static int wrax_arcs(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd
 		int local_flag = 0;
 		arclist_foreach(&layer->Arc, &it, arc) {
 			if (in_subc)
-				pcb_fprintf(ctx->f, "CA\r\n");
+				rnd_fprintf(ctx->f, "CA\r\n");
 			else
-				pcb_fprintf(ctx->f, "FA\r\n");
+				rnd_fprintf(ctx->f, "FA\r\n");
 			wrax_arc(ctx, arc, current_layer, dx, dy);
 			local_flag |= 1;
 		}
@@ -469,7 +469,7 @@ TODO("indicate save incompatibility")
 				else if (direction == 0) /*normal text */
 					rotation = 0;
 
-				pcb_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X+dx, PCB->hidlib.size_y - (text->Y+dy), textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);
+				rnd_fprintf(ctx->f, "%.0ml %.0ml %.0ml %d %.0ml %d\r\n", text->X+dx, PCB->hidlib.size_y - (text->Y+dy), textHeight, rotation + autotrax_mirrored, strokeThickness, current_layer);
 				for(index = 0; index < 32; index++) {
 					if (text->TextString[index] == '\0')
 						index = 32;
@@ -478,7 +478,7 @@ TODO("indicate save incompatibility")
 					else /* need to truncate to 32 alphanumeric chars */
 						fputc(text->TextString[index], ctx->f);
 				}
-				pcb_fprintf(ctx->f, "\r\n");
+				rnd_fprintf(ctx->f, "\r\n");
 			}
 			local_flag |= 1;
 		}
@@ -521,9 +521,9 @@ TODO("do not hardwire these layers, even if the autotrax format hardwires them -
 	fprintf(ctx->f, "COMP\r\n%s\r\n", or_empty(subc->refdes));
 	fprintf(ctx->f, "%s\r\n", or_empty(rnd_attribute_get(&subc->Attributes, "footprint")));
 	fprintf(ctx->f, "%s\r\n", or_empty(rnd_attribute_get(&subc->Attributes, "value")));
-	pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos, silk_layer); /* designator */
-	pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos2, silk_layer); /* pattern */
-	pcb_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos3, silk_layer); /* comment field */
+	rnd_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos, silk_layer); /* designator */
+	rnd_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos2, silk_layer); /* pattern */
+	rnd_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos3, silk_layer); /* comment field */
 
 	res = wrax_data(ctx, subc->data, 0, 0);
 
@@ -580,7 +580,7 @@ TODO("why do we recalculate the bounding box here?")
 					if (maxy < polygon->Points[i].Y)
 						maxy = polygon->Points[i].Y;
 				}
-				pcb_fprintf(ctx->f, "%cF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", (in_subc ? 'C' : 'F'), minx+dx, PCB->hidlib.size_y - (miny+dy), maxx+dx, PCB->hidlib.size_y - (maxy+dy), current_layer);
+				rnd_fprintf(ctx->f, "%cF\r\n%.0ml %.0ml %.0ml %.0ml %d\r\n", (in_subc ? 'C' : 'F'), minx+dx, PCB->hidlib.size_y - (miny+dy), maxx+dx, PCB->hidlib.size_y - (maxy+dy), current_layer);
 
 				local_flag |= 1;
 /* here we need to test for non rectangular polygons to flag imperfect export to easy/autotrax
@@ -640,7 +640,7 @@ int wrax_data(wctx_t *ctx, pcb_data_t *data, rnd_coord_t dx, rnd_coord_t dy)
 		int alid = wrax_layer2id(ctx, ly); /* autotrax layer ID */
 		if (alid == 0) {
 			char tmp[256];
-			pcb_snprintf(tmp, sizeof(tmp), "Ignoring unmapped layer: %s", ly->name);
+			rnd_snprintf(tmp, sizeof(tmp), "Ignoring unmapped layer: %s", ly->name);
 			pcb_io_incompat_save(data, NULL, "layer", tmp, NULL);
 			continue;
 		}

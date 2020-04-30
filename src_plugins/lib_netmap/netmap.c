@@ -41,7 +41,7 @@ static pcb_net_t *alloc_net(pcb_netmap_t *map)
 	dyn_net_t *dn = calloc(sizeof(dyn_net_t), 1);
 	dn->next = map->dyn_nets;
 	map->dyn_nets = dn;
-	dn->net.name = pcb_strdup_printf("netmap_anon_%d", map->anon_cnt++);
+	dn->net.name = rnd_strdup_printf("netmap_anon_%d", map->anon_cnt++);
 	return &dn->net;
 }
 

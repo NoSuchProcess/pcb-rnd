@@ -55,7 +55,7 @@ char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int siz
 		}
 	}
 
-	pcb_snprintf(out, size, "%s\n[%s]", gname, lname);
+	rnd_snprintf(out, size, "%s\n[%s]", gname, lname);
 	return out;
 }
 
@@ -84,7 +84,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	/* instance */
 	if ((proto != NULL) && (proto->name != NULL))
 		prn = proto->name;
-	pcb_snprintf(tmp, sizeof(tmp), "#%ld:%d (%s)", (long int)pse->ps->proto, pse->ps->protoi, prn);
+	rnd_snprintf(tmp, sizeof(tmp), "#%ld:%d (%s)", (long int)pse->ps->proto, pse->ps->protoi, prn);
 	RND_DAD_SET_VALUE(hid_ctx, pse->proto_id, str, tmp);
 	RND_DAD_SET_VALUE(hid_ctx, pse->clearance, crd, pse->ps->Clearance);
 	RND_DAD_SET_VALUE(hid_ctx, pse->rot, dbl, pse->ps->rot);
@@ -108,20 +108,20 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 				case PCB_PSSH_CIRC:
 					RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "circle");
 					if ((shape->data.circ.x != 0) || (shape->data.circ.y != 0))
-						pcb_snprintf(tmp, sizeof(tmp), "dia=%.06$mm\nat %.06$mm;%.06$mm", shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
+						rnd_snprintf(tmp, sizeof(tmp), "dia=%.06$mm\nat %.06$mm;%.06$mm", shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
 					else
-						pcb_snprintf(tmp, sizeof(tmp), "dia=%.06$mm", shape->data.circ.dia);
+						rnd_snprintf(tmp, sizeof(tmp), "dia=%.06$mm", shape->data.circ.dia);
 					break;
 				case PCB_PSSH_LINE:
 					if (shape->data.line.square)
 						RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "square line");
 					else
 						RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "round line");
-					pcb_snprintf(tmp, sizeof(tmp), "thickness=%.06$mm", shape->data.line.thickness);
+					rnd_snprintf(tmp, sizeof(tmp), "thickness=%.06$mm", shape->data.line.thickness);
 					break;
 				case PCB_PSSH_POLY:
 					RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "polygon");
-					pcb_snprintf(tmp, sizeof(tmp), "corners=%d", shape->data.poly.len);
+					rnd_snprintf(tmp, sizeof(tmp), "corners=%d", shape->data.poly.len);
 					break;
 				default:
 					RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "<unknown>");
@@ -848,7 +848,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							char *help = NULL;
 
 							if (pcb_proto_board_layer_for(PCB->Data, pcb_proto_layers[n].mask, pcb_proto_layers[n].comb) == -1) {
-								layname = layname_tmp = pcb_strdup_printf("(%s)", pcb_proto_layers[n].name);
+								layname = layname_tmp = rnd_strdup_printf("(%s)", pcb_proto_layers[n].name);
 								help = "No board layer available for this layer type.\nThis shape will not show on the board\nuntil the corresponding layer in the matching layer group type is created.";
 							}
 

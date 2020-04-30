@@ -412,7 +412,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 				if (strncmp(e->key, "rc/path/", 8) != 0)
 					continue;
 
-				pcb_snprintf(tmp, sizeof(tmp), "$(rc.path.%s)", e->key + 8);
+				rnd_snprintf(tmp, sizeof(tmp), "$(rc.path.%s)", e->key + 8);
 				RND_DAD_LABEL(ctx->dlg, tmp);
 				RND_DAD_LABEL(ctx->dlg, nat->val.string[0] == NULL ? "" : nat->val.string[0]);
 			}

@@ -3353,13 +3353,13 @@ static pcb_flag_t pcb_flag_old(unsigned int flags)
 static void load_meta_coord(const char *path, rnd_coord_t crd)
 {
 	char tmp[128];
-	pcb_sprintf(tmp, "%$mm", crd);
+	rnd_sprintf(tmp, "%$mm", crd);
 	rnd_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
 }
 
 static void load_meta_float(const char *path, double val)
 {
 	char tmp[128];
-	pcb_sprintf(tmp, "%f", val);
+	rnd_sprintf(tmp, "%f", val);
 	rnd_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
 }

@@ -92,7 +92,7 @@ static const char *hyp_grp_name(hyp_wr_t *wr, pcb_layergrp_t *grp, const char *s
 			}
 		}
 		if (dup)
-			name = pcb_strdup_printf("%s___%d", name, n);
+			name = rnd_strdup_printf("%s___%d", name, n);
 		else
 			name = rnd_strdup(name);
 		htpp_set(&wr->grp_names, grp, (char *)name);
@@ -163,7 +163,7 @@ static const char *get_layer_name(hyp_wr_t * wr, pcb_parenttype_t pt, pcb_layer_
 
 static void write_pr_line(hyp_wr_t * wr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, flip(y1), x2, flip(y2));
+	rnd_fprintf(wr->f, "  (PERIMETER_SEGMENT X1=%me Y1=%me X2=%me Y2=%me)\n", x1, flip(y1), x2, flip(y2));
 }
 
 static void hyp_pstk_init(hyp_wr_t *wr)
@@ -215,7 +215,7 @@ TODO(": check if it is a rectangle")
 				shnum = 2;
 			break;
 	}
-	pcb_fprintf(wr->f, "	(%s, %d, %me, %me, 0)\n", lynam, shnum, sx, sy);
+	rnd_fprintf(wr->f, "	(%s, %d, %me, %me, 0)\n", lynam, shnum, sx, sy);
 }
 
 /* WARNING: not reentrant! */
@@ -240,7 +240,7 @@ static const char *hyp_pstk_cache(hyp_wr_t *wr, pcb_pstk_proto_t *proto, int pri
 		int n;
 
 		if (proto->hdia > 0)
-			pcb_fprintf(wr->f, "{PADSTACK=%s,%me\n", name, proto->hdia);
+			rnd_fprintf(wr->f, "{PADSTACK=%s,%me\n", name, proto->hdia);
 		else
 			fprintf(wr->f, "{PADSTACK=%s\n", name);
 
@@ -272,9 +272,9 @@ static void write_pstk(hyp_wr_t *wr, pcb_pstk_t *ps)
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 
 	if ((subc != NULL) && (ps->term != NULL))
-		pcb_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n", ps->x, flip(ps->y), safe_subc_name(wr, subc), ps->term, hyp_pstk_cache(wr, proto, 0));
+		rnd_fprintf(wr->f, "  (PIN X=%me Y=%me R=\"%s.%s\" P=%[4])\n", ps->x, flip(ps->y), safe_subc_name(wr, subc), ps->term, hyp_pstk_cache(wr, proto, 0));
 	else
-		pcb_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n", ps->x, flip(ps->y), hyp_pstk_cache(wr, proto, 0));
+		rnd_fprintf(wr->f, "  (VIA X=%me Y=%me P=%[4])\n", ps->x, flip(ps->y), hyp_pstk_cache(wr, proto, 0));
 }
 
 static void write_poly(hyp_wr_t * wr, pcb_poly_t * poly)
@@ -295,17 +295,17 @@ static void write_poly(hyp_wr_t * wr, pcb_poly_t * poly)
 		v = pl->head->next;
 
 		if (pl == poly->Clipped->contours)
-			pcb_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
+			rnd_fprintf(wr->f, "  {POLYGON L=%[4] T=POUR W=0.0 ID=%d X=%me Y=%me\n",
 									get_layer_name(wr, poly->parent_type, poly->parent.layer), ++wr->poly_id, v->point[0], flip(v->point[1]));
 		else
 			/* hole. Use same ID as polygon. */
-			pcb_fprintf(wr->f, "  {POLYVOID ID=%d X=%me Y=%me\n", wr->poly_id, v->point[0], flip(v->point[1]));
+			rnd_fprintf(wr->f, "  {POLYVOID ID=%d X=%me Y=%me\n", wr->poly_id, v->point[0], flip(v->point[1]));
 
 		for (v = v->next; v != pl->head->next; v = v->next)
-			pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], flip(v->point[1]));
+			rnd_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], flip(v->point[1]));
 
 		v = pl->head->next;					/* repeat first point */
-		pcb_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], flip(v->point[1]));
+		rnd_fprintf(wr->f, "    (LINE X=%me Y=%me)\n", v->point[0], flip(v->point[1]));
 
 		fprintf(wr->f, "  }\n");
 	} while ((pl = pl->next) != NULL);
@@ -314,7 +314,7 @@ static void write_poly(hyp_wr_t * wr, pcb_poly_t * poly)
 
 static void write_line(hyp_wr_t * wr, pcb_line_t * line)
 {
-	pcb_fprintf(wr->f, "  (SEG X1=%me Y1=%me X2=%me Y2=%me W=%me L=%[4])\n",
+	rnd_fprintf(wr->f, "  (SEG X1=%me Y1=%me X2=%me Y2=%me W=%me L=%[4])\n",
 							line->Point1.X, flip(line->Point1.Y), line->Point2.X, flip(line->Point2.Y),
 							line->Thickness, get_layer_name(wr, line->parent_type, line->parent.layer));
 }
@@ -340,10 +340,10 @@ static void write_arc_(hyp_wr_t * wr, const char *cmd, pcb_arc_t * arc, const ch
 		pcb_arc_get_end(arc, 0, &x2, &y2);
 	}
 
-	pcb_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me", cmd, x1, flip(y1), x2, flip(y2), arc->X,
+	rnd_fprintf(wr->f, "(%s X1=%me Y1=%me X2=%me Y2=%me XC=%me YC=%me R=%me", cmd, x1, flip(y1), x2, flip(y2), arc->X,
 							flip(arc->Y), arc->Width);
 	if (layer != NULL)
-		pcb_fprintf(wr->f, " W=%me L=%[4]", arc->Thickness, layer);
+		rnd_fprintf(wr->f, " W=%me L=%[4]", arc->Thickness, layer);
 	fprintf(wr->f, ")\n");
 }
 
@@ -417,7 +417,7 @@ static int write_lstack(hyp_wr_t * wr)
 		const char *name = grp->name;
 
 		if (grp->ltype & PCB_LYT_COPPER) {
-			pcb_fprintf(wr->f, "  (SIGNAL T=0.003500 L=%[4])\n", hyp_grp_name(wr, grp, name));
+			rnd_fprintf(wr->f, "  (SIGNAL T=0.003500 L=%[4])\n", hyp_grp_name(wr, grp, name));
 			if (grp->ltype & PCB_LYT_TOP)
 				wr->ln_top = name;
 			else if (grp->ltype & PCB_LYT_BOTTOM)
@@ -429,7 +429,7 @@ static int write_lstack(hyp_wr_t * wr)
 				sprintf(tmp, "dielectric layer %d", n);
 				name = tmp;
 			}
-			pcb_fprintf(wr->f, "  (DIELECTRIC T=0.160000 L=%[4])\n", hyp_grp_name(wr, grp, name));
+			rnd_fprintf(wr->f, "  (DIELECTRIC T=0.160000 L=%[4])\n", hyp_grp_name(wr, grp, name));
 		}
 	}
 
@@ -460,7 +460,7 @@ static int write_devices(hyp_wr_t * wr)
 		if (descr == NULL)
 			descr = "?";
 
-		pcb_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_subc_name(wr, subc), descr, layer);
+		rnd_fprintf(wr->f, "  (? REF=%[4] NAME=%[4] L=%[4])\n", safe_subc_name(wr, subc), descr, layer);
 		cnt++;
 	}
 
@@ -499,7 +499,7 @@ static int write_nets(hyp_wr_t * wr)
 	for (e = htpp_first(&map.n2o); e != NULL; e = htpp_next(&map.n2o, e)) {
 		dyn_obj_t *o;
 		pcb_net_t *net = e->key;
-		pcb_fprintf(wr->f, "{NET=%[4]\n", net->name);
+		rnd_fprintf(wr->f, "{NET=%[4]\n", net->name);
 		for (o = e->value; o != NULL; o = o->next) {
 			switch (o->obj->type) {
 			case PCB_OBJ_LINE:
@@ -549,7 +549,7 @@ int io_hyp_write_pcb(pcb_plug_io_t * ctx, FILE * f, const char *old_filename, co
 	hyp_pstk_init(&wr);
 	hyp_grp_init(&wr);
 
-	pcb_printf_slot[4] = "%{{\\}\\()\t\r\n \"=}mq";
+	rnd_printf_slot[4] = "%{{\\}\\()\t\r\n \"=}mq";
 
 	if (write_hdr(&wr) != 0)
 		goto err;

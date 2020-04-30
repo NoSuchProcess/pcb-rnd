@@ -940,7 +940,7 @@ static int undo_chg_attr_swap(void *udata)
 static void undo_chg_attr_print(void *udata, char *dst, size_t dst_len)
 {
 	chg_attr_t *ca = udata;
-	pcb_snprintf(dst, dst_len, "chg_attr: #%ld/%s to '%s'\n",
+	rnd_snprintf(dst, dst_len, "chg_attr: #%ld/%s to '%s'\n",
 		ca->obj->ID, ca->key, ca->delete ? "<delete>" : ca->value);
 }
 

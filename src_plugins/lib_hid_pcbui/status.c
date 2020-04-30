@@ -77,7 +77,7 @@ static void build_st_line1(void)
 		*kbd = '\0';
 
 
-	pcb_append_printf(&status.buf,
+	rnd_append_printf(&status.buf,
 	"%m+view=%s  "
 	"grid=%$mS  "
 	"line=%mS (%s%s) "
@@ -90,7 +90,7 @@ static void build_st_line1(void)
 
 static void build_st_line2(void)
 {
-	pcb_append_printf(&status.buf,
+	rnd_append_printf(&status.buf,
 		"via=%mS (%mS)  "
 		"clr=%mS  "
 		"text=%d%% %$mS "
@@ -116,7 +116,7 @@ static void build_st_help(void)
 	else
 		unit_inv = unit_mm;
 
-	pcb_append_printf(&status.buf,
+	rnd_append_printf(&status.buf,
 		"%m+"
 		"grid=%$mS  "
 		"line=%mS "
@@ -173,19 +173,19 @@ static void status_rd_pcb2dlg(void)
 	/* coordinate readout (right side box) */
 	if (conf_core.appearance.compact) {
 		status.buf.used = 0;
-		pcb_append_printf(&status.buf, "%m+%-mS", rnd_conf.editor.grid_unit->allow, pcb_crosshair.X);
+		rnd_append_printf(&status.buf, "%m+%-mS", rnd_conf.editor.grid_unit->allow, pcb_crosshair.X);
 		hv.str = status.buf.array;
 		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
 
 		status.buf.used = 0;
-		pcb_append_printf(&status.buf, "%m+%-mS", rnd_conf.editor.grid_unit->allow, pcb_crosshair.Y);
+		rnd_append_printf(&status.buf, "%m+%-mS", rnd_conf.editor.grid_unit->allow, pcb_crosshair.Y);
 		hv.str = status.buf.array;
 		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[1], &hv);
 		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 0);
 	}
 	else {
 		status.buf.used = 0;
-		pcb_append_printf(&status.buf, "%m+%-mS %-mS", rnd_conf.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
+		rnd_append_printf(&status.buf, "%m+%-mS %-mS", rnd_conf.editor.grid_unit->allow, pcb_crosshair.X, pcb_crosshair.Y);
 		hv.str = status.buf.array;
 		rnd_gui->attr_dlg_set_value(status.rdsub.dlg_hid_ctx, status.wrd2[0], &hv);
 		rnd_gui->attr_dlg_widget_hide(status.rdsub.dlg_hid_ctx, status.wrd2[1], 1);
@@ -202,14 +202,14 @@ static void status_rd_pcb2dlg(void)
 		double a = atan2(dy, dx) * RND_RAD_TO_DEG;
 
 		s1 = status.buf.array;
-		pcb_append_printf(&status.buf, "%m+r %-mS%c", rnd_conf.editor.grid_unit->allow, r, sep);
+		rnd_append_printf(&status.buf, "%m+r %-mS%c", rnd_conf.editor.grid_unit->allow, r, sep);
 		s2 = status.buf.array + status.buf.used;
-		pcb_append_printf(&status.buf, "phi %-.1f%c", a, sep);
+		rnd_append_printf(&status.buf, "phi %-.1f%c", a, sep);
 		s3 = status.buf.array + status.buf.used;
-		pcb_append_printf(&status.buf, "%m+ %-mS %-mS", rnd_conf.editor.grid_unit->allow, dx, dy);
+		rnd_append_printf(&status.buf, "%m+ %-mS %-mS", rnd_conf.editor.grid_unit->allow, dx, dy);
 	}
 	else {
-		pcb_append_printf(&status.buf, "r __.__%cphi __._%c__.__ __.__", sep, sep, sep);
+		rnd_append_printf(&status.buf, "r __.__%cphi __._%c__.__ __.__", sep, sep, sep);
 		s1 = status.buf.array;
 		s2 = status.buf.array + 8;
 		s3 = status.buf.array + 17;

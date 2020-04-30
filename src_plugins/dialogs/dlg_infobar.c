@@ -97,7 +97,7 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		}
 
 		/* update labels */
-		hv.str = pcb_strdup_printf("The file %s has changed on disk", PCB->hidlib.filename);
+		hv.str = rnd_strdup_printf("The file %s has changed on disk", PCB->hidlib.filename);
 		rnd_gui->attr_dlg_set_value(sub.dlg_hid_ctx, wlab[0], &hv);
 		free((char *)hv.str);
 

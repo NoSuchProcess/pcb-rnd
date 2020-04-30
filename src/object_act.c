@@ -139,7 +139,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 
 			if (s->refdes != NULL)
-				buf = pcb_strdup_printf("Subcircuit %s Attributes", s->refdes);
+				buf = rnd_strdup_printf("Subcircuit %s Attributes", s->refdes);
 			else
 				buf = rnd_strdup("Unnamed Subcircuit's Attributes");
 
@@ -1157,10 +1157,10 @@ static fgw_error_t pcb_act_subc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 					vt = e->value;
 					str.used = 0;
-					pcb_append_printf(&str, "subc eq %u:", e->key);
+					rnd_append_printf(&str, "subc eq %u:", e->key);
 					for(n = 0; n < vt->used; n++) {
 						sc = (pcb_subc_t *)vt->array[n];
-						pcb_append_printf(&str, " #%ld(%s):%d", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_eq(sc, (pcb_subc_t*)vt->array[0]));
+						rnd_append_printf(&str, " #%ld(%s):%d", sc->ID, (sc->refdes == NULL ? "<no refdes>" : sc->refdes), pcb_subc_eq(sc, (pcb_subc_t*)vt->array[0]));
 					}
 					rnd_message(RND_MSG_INFO, "%s\n", str.array);
 					vtp0_uninit(vt);

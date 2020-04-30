@@ -92,11 +92,11 @@ char *pcb_query_sprint_val(pcb_qry_val_t *val)
 {
 	switch(val->type) {
 		case PCBQ_VT_VOID:   return rnd_strdup("<void>");
-		case PCBQ_VT_COORD:  return pcb_strdup_printf("%mI=%$mH", val->data.crd, val->data.crd);
-		case PCBQ_VT_LONG:   return pcb_strdup_printf("%ld", val->data.lng, val->data.lng);
-		case PCBQ_VT_DOUBLE: return pcb_strdup_printf("%f", val->data.dbl);
-		case PCBQ_VT_STRING: return pcb_strdup_printf("\"%s\"", val->data.str);
-		case PCBQ_VT_OBJ:    return pcb_strdup_printf("<obj ID=%ld>", val->data.obj->ID);
+		case PCBQ_VT_COORD:  return rnd_strdup_printf("%mI=%$mH", val->data.crd, val->data.crd);
+		case PCBQ_VT_LONG:   return rnd_strdup_printf("%ld", val->data.lng, val->data.lng);
+		case PCBQ_VT_DOUBLE: return rnd_strdup_printf("%f", val->data.dbl);
+		case PCBQ_VT_STRING: return rnd_strdup_printf("\"%s\"", val->data.str);
+		case PCBQ_VT_OBJ:    return rnd_strdup_printf("<obj ID=%ld>", val->data.obj->ID);
 		case PCBQ_VT_LST:    return rnd_strdup("<lst>");
 	}
 	return rnd_strdup("<invalid>");
@@ -206,15 +206,15 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 	if (level < sizeof(ind))  ind[level] = '\0';
 	printf("%s%s%s    ", prefix, ind, pcb_qry_nodetype_name(nd->type));
 	switch(nd->type) {
-		case PCBQ_DATA_INVALID:pcb_printf("%s%s invalid (literal)\n", prefix, ind); break;
-		case PCBQ_DATA_COORD:  pcb_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->data.crd, nd->data.crd); break;
-		case PCBQ_DATA_DOUBLE: pcb_printf("%s%s %f\n", prefix, ind, nd->data.dbl); break;
-		case PCBQ_DATA_CONST:  pcb_printf("%s%s %s\n", prefix, ind, nd->data.str); break;
-		case PCBQ_DATA_OBJ:    pcb_printf("%s%s %s\n", prefix, ind, nd->data.str); break;
-		case PCBQ_ITER_CTX:    pcb_printf("%s%s vars=%d\n", prefix, ind, nd->data.iter_ctx->num_vars); break;
-		case PCBQ_FLAG:        pcb_printf("%s%s %s\n", prefix, ind, nd->precomp.flg->name); break;
+		case PCBQ_DATA_INVALID:rnd_printf("%s%s invalid (literal)\n", prefix, ind); break;
+		case PCBQ_DATA_COORD:  rnd_printf("%s%s %mI (%$mm)\n", prefix, ind, nd->data.crd, nd->data.crd); break;
+		case PCBQ_DATA_DOUBLE: rnd_printf("%s%s %f\n", prefix, ind, nd->data.dbl); break;
+		case PCBQ_DATA_CONST:  rnd_printf("%s%s %s\n", prefix, ind, nd->data.str); break;
+		case PCBQ_DATA_OBJ:    rnd_printf("%s%s %s\n", prefix, ind, nd->data.str); break;
+		case PCBQ_ITER_CTX:    rnd_printf("%s%s vars=%d\n", prefix, ind, nd->data.iter_ctx->num_vars); break;
+		case PCBQ_FLAG:        rnd_printf("%s%s %s\n", prefix, ind, nd->precomp.flg->name); break;
 		case PCBQ_VAR:
-			pcb_printf("%s%s ", prefix, ind);
+			rnd_printf("%s%s ", prefix, ind);
 			if ((it_ctx != NULL) && (nd->data.crd < it_ctx->num_vars)) {
 				if (it_ctx->vects == NULL)
 					pcb_qry_iter_init(it_ctx);
@@ -227,25 +227,25 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 			{
 				const char *name = pcb_qry_fnc_name(nd->data.fnc);
 				if (name == NULL)
-					pcb_printf("%s%s <unknown>\n", prefix, ind);
+					rnd_printf("%s%s <unknown>\n", prefix, ind);
 				else
-					pcb_printf("%s%s %s()\n", prefix, ind, name);
+					rnd_printf("%s%s %s()\n", prefix, ind, name);
 			}
 			break;
 		case PCBQ_RULE:
-			pcb_printf("%s%s%s\n", prefix, ind, nd->data.children->next->data.str);
+			rnd_printf("%s%s%s\n", prefix, ind, nd->data.children->next->data.str);
 			n = nd->data.children->next->next;
 			if (n != NULL) {
 				for(; n != NULL; n = n->next)
 					pcb_qry_dump_tree_(prefix, level+1, n, it_ctx);
 			}
 			else
-				pcb_printf("%s%s<empty>\n", prefix, ind);
+				rnd_printf("%s%s<empty>\n", prefix, ind);
 			break;
 		case PCBQ_FIELD:
 		case PCBQ_LISTVAR:
 		case PCBQ_DATA_REGEX:
-		case PCBQ_DATA_STRING: pcb_printf("%s%s '%s'\n", prefix, ind, nd->data.str); break;
+		case PCBQ_DATA_STRING: rnd_printf("%s%s '%s'\n", prefix, ind, nd->data.str); break;
 		default:
 			printf("\n");
 			if (level < sizeof(ind))  ind[level] = ' ';

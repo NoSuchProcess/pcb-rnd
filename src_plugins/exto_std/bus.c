@@ -322,11 +322,11 @@ static pcb_subc_t *pcb_bus_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *
 	if (copy_from == NULL) {
 		char tmp[32];
 		rnd_attribute_put(&subc->Attributes, "extobj::width", "2");
-		pcb_sprintf(tmp, "%$$mH", conf_core.design.line_thickness + conf_core.design.clearance/2);
+		rnd_sprintf(tmp, "%$$mH", conf_core.design.line_thickness + conf_core.design.clearance/2);
 		rnd_attribute_put(&subc->Attributes, "extobj::pitch", tmp);
-		pcb_sprintf(tmp, "%$$mH", conf_core.design.line_thickness);
+		rnd_sprintf(tmp, "%$$mH", conf_core.design.line_thickness);
 		rnd_attribute_put(&subc->Attributes, "extobj::thickness", tmp);
-		pcb_sprintf(tmp, "%$$mH", conf_core.design.clearance);
+		rnd_sprintf(tmp, "%$$mH", conf_core.design.clearance);
 		rnd_attribute_put(&subc->Attributes, "extobj::clearance", tmp);
 	}
 

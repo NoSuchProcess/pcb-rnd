@@ -437,7 +437,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		subclist_foreach(&src->subc, &sit, subc) {
 			FILE *f;
-			char *fullname = pcb_strdup_printf("%s.%ld%s%s", name, (long)sit.count, sep, ending);
+			char *fullname = rnd_strdup_printf("%s.%ld%s%s", name, (long)sit.count, sep, ending);
 
 			f = pcb_fopen(RND_ACT_HIDLIB, fullname, "w");
 			free(fullname);

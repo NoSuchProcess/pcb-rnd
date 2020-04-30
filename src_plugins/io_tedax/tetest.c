@@ -113,9 +113,9 @@ static void tedax_etest_fsave_pstk(FILE *f, pcb_pstk_t *ps, const char *netname,
 	fprintf(f, " ");
 	tedax_fprint_escape(f, term == NULL ? "-" : term);
 
-	pcb_fprintf(f, " %.06mm %.06mm %s round %.06mm %.06mm 0 ", ps->x + shx, ps->y + shy, sides(copper), dia, dia);
+	rnd_fprintf(f, " %.06mm %.06mm %s round %.06mm %.06mm 0 ", ps->x + shx, ps->y + shy, sides(copper), dia, dia);
 	if (proto->hdia > 0)
-		pcb_fprintf(f, "%s %.06mm ", proto->hplated ? "plated" : "unplated", proto->hdia);
+		rnd_fprintf(f, "%s %.06mm ", proto->hplated ? "plated" : "unplated", proto->hdia);
 	else
 		fprintf(f, "- - ");
 

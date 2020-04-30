@@ -118,7 +118,7 @@ RND_INLINE void DEBUGP(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	pcb_vfprintf(stderr, fmt, ap);
+	rnd_vfprintf(stderr, fmt, ap);
 	va_end(ap);
 }
 #else
@@ -150,7 +150,7 @@ static void pline_dump(pcb_vnode_t * v)
 	s = v;
 	do {
 		n = v->next;
-		pcb_fprintf(stderr, "Line [%#mS %#mS %#mS %#mS 10 10 \"%s\"]\n",
+		rnd_fprintf(stderr, "Line [%#mS %#mS %#mS %#mS 10 10 \"%s\"]\n",
 								v->point[0], v->point[1], n->point[0], n->point[1], theState(v));
 	}
 	while ((v = v->next) != s);
@@ -2923,7 +2923,7 @@ RND_INLINE rnd_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *fmt, ...)
 #ifndef NDEBUG
 	va_list ap;
 	va_start(ap, fmt);
-	pcb_vsnprintf(res->msg, sizeof(res->msg), fmt, ap);
+	rnd_vsnprintf(res->msg, sizeof(res->msg), fmt, ap);
 	va_end(ap);
 #endif
 	return pcb_true;
@@ -3048,8 +3048,8 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t 
 	if (val < min) min = val; \
 	if (val > max) max = val;
 	if (chk != NULL)
-		pcb_fprintf(stderr, "Details: %s\n", chk->msg);
-	pcb_fprintf(stderr, "!!!animator start\n");
+		rnd_fprintf(stderr, "Details: %s\n", chk->msg);
+	rnd_fprintf(stderr, "!!!animator start\n");
 	v = pl;
 	do {
 		n = v->next;
@@ -3059,13 +3059,13 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t 
 		update_minmax(miny, maxy, n->point[1]);
 	}
 	while ((v = v->next) != pl);
-	pcb_fprintf(stderr, "scale 1 -1\n");
-	pcb_fprintf(stderr, "viewport %mm %mm - %mm %mm\n", minx, miny, maxx, maxy);
-	pcb_fprintf(stderr, "frame\n");
+	rnd_fprintf(stderr, "scale 1 -1\n");
+	rnd_fprintf(stderr, "viewport %mm %mm - %mm %mm\n", minx, miny, maxx, maxy);
+	rnd_fprintf(stderr, "frame\n");
 	v = pl;
 	do {
 		n = v->next;
-		pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
+		rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
 	}
 	while ((v = v->next) != pl);
 
@@ -3073,8 +3073,8 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t 
 		int n, MR=PCB_MM_TO_COORD(0.05);
 		fprintf(stderr, "color #770000\n");
 		for(n = 0; n < chk->marks; n++) {
-			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]-MR, chk->x[n]+MR, chk->y[n]+MR);
-			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]+MR, chk->x[n]+MR, chk->y[n]-MR);
+			rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]-MR, chk->x[n]+MR, chk->y[n]+MR);
+			rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]+MR, chk->x[n]+MR, chk->y[n]-MR);
 		}
 	}
 
@@ -3082,7 +3082,7 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t 
 		int n;
 		fprintf(stderr, "color #990000\n");
 		for(n = 0; n < chk->lines; n++)
-			pcb_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x1[n], chk->y1[n], chk->x2[n], chk->y2[n]);
+			rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x1[n], chk->y1[n], chk->x2[n], chk->y2[n]);
 	}
 
 	fprintf(stderr, "flush\n");
@@ -3102,7 +3102,7 @@ rnd_bool pcb_poly_valid(rnd_polyarea_t * p)
 #if 0
 (disabled for too many false positive)
 #ifndef NDEBUG
-		pcb_fprintf(stderr, "Invalid polyarea: no contours\n");
+		rnd_fprintf(stderr, "Invalid polyarea: no contours\n");
 #endif
 #endif
 		return pcb_false;
@@ -3110,7 +3110,7 @@ rnd_bool pcb_poly_valid(rnd_polyarea_t * p)
 
 	if (p->contours->Flags.orient == PCB_PLF_INV) {
 #ifndef NDEBUG
-		pcb_fprintf(stderr, "Invalid Outer pcb_pline_t: failed orient\n");
+		rnd_fprintf(stderr, "Invalid Outer pcb_pline_t: failed orient\n");
 		pcb_poly_valid_report(p->contours, p->contours->head, NULL);
 #endif
 		return pcb_false;
@@ -3118,7 +3118,7 @@ rnd_bool pcb_poly_valid(rnd_polyarea_t * p)
 
 	if (pcb_polyarea_contour_check_(p->contours, &chk)) {
 #ifndef NDEBUG
-		pcb_fprintf(stderr, "Invalid Outer pcb_pline_t: failed contour check\n");
+		rnd_fprintf(stderr, "Invalid Outer pcb_pline_t: failed contour check\n");
 		pcb_poly_valid_report(p->contours, p->contours->head, &chk);
 #endif
 		return pcb_false;
@@ -3127,21 +3127,21 @@ rnd_bool pcb_poly_valid(rnd_polyarea_t * p)
 	for (c = p->contours->next; c != NULL; c = c->next) {
 		if (c->Flags.orient == PCB_PLF_DIR) {
 #ifndef NDEBUG
-			pcb_fprintf(stderr, "Invalid Inner: pcb_pline_t orient = %d\n", c->Flags.orient);
+			rnd_fprintf(stderr, "Invalid Inner: pcb_pline_t orient = %d\n", c->Flags.orient);
 			pcb_poly_valid_report(c, c->head, NULL);
 #endif
 			return pcb_false;
 		}
 		if (pcb_polyarea_contour_check_(c, &chk)) {
 #ifndef NDEBUG
-			pcb_fprintf(stderr, "Invalid Inner: failed contour check\n");
+			rnd_fprintf(stderr, "Invalid Inner: failed contour check\n");
 			pcb_poly_valid_report(c, c->head, &chk);
 #endif
 			return pcb_false;
 		}
 		if (!pcb_poly_contour_in_contour(p->contours, c)) {
 #ifndef NDEBUG
-			pcb_fprintf(stderr, "Invalid Inner: overlap with outer\n");
+			rnd_fprintf(stderr, "Invalid Inner: overlap with outer\n");
 			pcb_poly_valid_report(c, c->head, NULL);
 #endif
 			return pcb_false;

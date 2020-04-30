@@ -130,7 +130,7 @@ static void parse_polyline(long int *nlines, rnd_coord_t clear, const gsxl_node_
 			/*pcb_line_t *line = */pcb_line_new_merge(layer, lx, PCB->hidlib.size_y - ly,
 				x, PCB->hidlib.size_y - y, thick, clear, pcb_flag_make(PCB_FLAG_AUTO | PCB_FLAG_CLEARLINE));
 /*				pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, layer, line);*/
-/*				pcb_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
+/*				rnd_printf("LINE: %$mm %$mm .. %$mm %$mm\n", lx, ly, x, y);*/
 		}
 		lx = x;
 		ly = y;

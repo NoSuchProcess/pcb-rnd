@@ -177,7 +177,7 @@ static ewire_t *sketch_insert_ewire(sketch_t *sk, wire_t *w)
 			int repeat_cnt;
 
 #ifdef SK_DEBUG
-			pcb_printf("  wire point %d at (%mm, %mm); ", i, curr_wp->p->pos.x, -curr_wp->p->pos.y);
+			rnd_printf("  wire point %d at (%mm, %mm); ", i, curr_wp->p->pos.x, -curr_wp->p->pos.y);
 #endif
 
 			for (j = 0; j < 4; j++) {
@@ -219,7 +219,7 @@ repeat_current_point:
 			}
 
 #ifdef SK_DEBUG
-			pcb_printf("dest spoke (dir %d) at (%mm, %mm); ", next_sp->dir, next_p.pos.x, -next_p.pos.y);
+			rnd_printf("dest spoke (dir %d) at (%mm, %mm); ", next_sp->dir, next_p.pos.x, -next_p.pos.y);
 #endif
 
 			/* 2. check if the ewire should be attached to any of the remaining spokes at the current point */
@@ -257,7 +257,7 @@ repeat_current_point:
 						prev_p = curr_p;
 						curr_p = *p;
 #ifdef SK_DEBUG
-						pcb_printf("found obstructing spoke (dir %d) at (%mm, %mm); ", curr_sp->dir, curr_p.pos.x, -curr_p.pos.y);
+						rnd_printf("found obstructing spoke (dir %d) at (%mm, %mm); ", curr_sp->dir, curr_p.pos.x, -curr_p.pos.y);
 #endif
 						if (++repeat_cnt == 4)
 							break;
@@ -277,7 +277,7 @@ repeat_current_point:
 				}
 				else {
 #ifdef SK_DEBUG
-						pcb_printf("found concavity, skip; ");
+						rnd_printf("found concavity, skip; ");
 #endif
 				}
 			}
@@ -286,7 +286,7 @@ repeat_current_point:
 			prev_p = curr_p;
 			curr_p = next_p;
 #ifdef SK_DEBUG
-			pcb_printf("\n");
+			rnd_printf("\n");
 #endif
 		}
 
@@ -306,7 +306,7 @@ static void wire_print(wire_t *w, const char *tab)
 {
 	int i;
 	for (i = 0; i < w->point_num; i++)
-		pcb_printf("%sP%i: (%mm,%mm) %s\n", tab, i, w->points[i].p->pos.x, -w->points[i].p->pos.y,
+		rnd_printf("%sP%i: (%mm,%mm) %s\n", tab, i, w->points[i].p->pos.x, -w->points[i].p->pos.y,
 							 w->points[i].side == SIDE_LEFT ? "LEFT" : w->points[i].side == SIDE_RIGHT ? "RIGHT" : "TERM");
 }
 #endif
@@ -538,7 +538,7 @@ static wire_t *sketch_insert_wire(sketch_t *sk, wire_t *wire)
 			next_wp = &new_w->points[i+1];
 
 #ifdef SK_DEBUG
-			pcb_printf("  add point at (%mm, %mm); ", wp->p->pos.x, -wp->p->pos.y,
+			rnd_printf("  add point at (%mm, %mm); ", wp->p->pos.x, -wp->p->pos.y,
 								 wirelist_length(pd->terminal_wires) - 1);
 #endif
 
@@ -547,14 +547,14 @@ static wire_t *sketch_insert_wire(sketch_t *sk, wire_t *wire)
 			cdt_insert_constrained_edge(sk->cdt, wp->p, next_wp->p);
 			insert_wire_at_point(wp, new_w, &pd->terminal_wires, -1);
 #ifdef SK_DEBUG
-			pcb_printf("start terminal; %d other wires connected\n", wirelist_length(pd->terminal_wires) - 1);
+			rnd_printf("start terminal; %d other wires connected\n", wirelist_length(pd->terminal_wires) - 1);
 #endif
 		}
 		else if (i == new_w->point_num - 1) { /* last point */
 			assert(wp->side == SIDE_TERM);
 			insert_wire_at_point(wp, new_w, &pd->terminal_wires, -1);
 #ifdef SK_DEBUG
-			pcb_printf("end terminal; %d other wires connected\n", wirelist_length(pd->terminal_wires) - 1);
+			rnd_printf("end terminal; %d other wires connected\n", wirelist_length(pd->terminal_wires) - 1);
 #endif
 		}
 		else { /* middle point */
@@ -588,7 +588,7 @@ static wire_t *sketch_insert_wire(sketch_t *sk, wire_t *wire)
 					n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
 					insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
 #ifdef SK_DEBUG
-					pcb_printf("collinear; list_num=%d; n=%d; attached pos=%d; attached len=%d\n", list_num, n,
+					rnd_printf("collinear; list_num=%d; n=%d; attached pos=%d; attached len=%d\n", list_num, n,
 										 wirelist_length(wp->wire_node)-1, wirelist_length(pd->attached_wires[list_num]));
 #endif
 				}
@@ -610,7 +610,7 @@ static wire_t *sketch_insert_wire(sketch_t *sk, wire_t *wire)
 					n += count_uturn_wires_coming_from_previous_point(prev_wp, wp, list_num);
 					insert_wire_at_point(wp, new_w, &pd->uturn_wires, n);
 #ifdef SK_DEBUG
-					pcb_printf("uturn; list_num=%d; n=%d; uturn pos=%d; uturn len=%d\n", list_num, n,
+					rnd_printf("uturn; list_num=%d; n=%d; uturn pos=%d; uturn len=%d\n", list_num, n,
 										 wirelist_length(wp->wire_node)-1, wirelist_length(pd->uturn_wires));
 #endif
 				}
@@ -639,7 +639,7 @@ static wire_t *sketch_insert_wire(sketch_t *sk, wire_t *wire)
 				n += count_wires_coming_from_previous_point(prev_wp, wp, list_num);
 				insert_wire_at_point(wp, new_w, &pd->attached_wires[list_num], n);
 #ifdef SK_DEBUG
-					pcb_printf("list_num=%d; n=%d, attached pos=%d; attached len=%d\n", list_num, n,
+					rnd_printf("list_num=%d; n=%d, attached pos=%d; attached len=%d\n", list_num, n,
 										 wirelist_length(wp->wire_node)-1, wirelist_length(pd->attached_wires[list_num]));
 #endif
 			}
@@ -717,12 +717,12 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	pcb_r_search(layer->polygon_tree, &bbox, NULL, r_search_cb, &info, NULL);
 	pcb_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
 
-	pcb_snprintf(name, sizeof(name), "%s: CDT", layer->name);
+	rnd_snprintf(name, sizeof(name), "%s: CDT", layer->name);
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, &layer->meta.real.color);
 	sk->ui_layer_cdt->meta.real.vis = pcb_false;
 	sketch_update_cdt_layer(sk);
 
-	pcb_snprintf(name, sizeof(name), "%s: ERBS", layer->name);
+	rnd_snprintf(name, sizeof(name), "%s: ERBS", layer->name);
 	sk->ui_layer_erbs = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, &layer->meta.real.color);
 	sketch_update_erbs_layer(sk);
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);

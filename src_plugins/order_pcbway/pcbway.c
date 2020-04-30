@@ -105,14 +105,14 @@ static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 
 	pcb_mkdir(hidlib, cachedir, 0755);
 	wopts.post_file = "/dev/null";
-	path = pcb_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
+	path = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
 	if (pcbway_cahce_update_(hidlib, SERVER "/api/Address/GetCountry", path, 0, &wopts) != 0) {
 		res = -1;
 		goto quit;
 	}
 	free(path);
 
-	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, RND_DIR_SEPARATOR_C);
+	path = rnd_strdup_printf("%s%cPCBWay_Api.xml", cachedir, RND_DIR_SEPARATOR_C);
 	if (pcbway_cahce_update_(hidlib, SERVER "/xml/PCBWay_Api.xml", path, 1, NULL) != 0) {
 		res = -1;
 		goto quit;
@@ -293,13 +293,13 @@ static int pcbway_load_fields(pcb_order_imp_t *imp, order_ctx_t *octx)
 	}
 
 	cachedir = rnd_build_fn(&PCB->hidlib, conf_order.plugins.order.cache);
-	path = pcb_strdup_printf("%s%cPCBWay_Api.xml", cachedir, RND_DIR_SEPARATOR_C);
+	path = rnd_strdup_printf("%s%cPCBWay_Api.xml", cachedir, RND_DIR_SEPARATOR_C);
 	doc = pcbway_xml_load(path);
 	if (doc != NULL) {
 		root = xmlDocGetRootElement(doc);
 		if ((root != NULL) && (xmlStrcmp(root->name, (xmlChar *)"PCBWayAPI") == 0)) {
 			octx->odata = calloc(sizeof(pcbway_form_t), 1);
-			country_fn = pcb_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
+			country_fn = rnd_strdup_printf("%s%cGetCountry", cachedir, RND_DIR_SEPARATOR_C);
 			if (pcbway_load_countries(octx->odata, country_fn) != 0)
 				res = -1;
 			else if (pcbway_load_fields_(&PCB->hidlib, imp, octx, root) != 0) {
@@ -485,7 +485,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 				fprintf(fx, "%d", f->val.lng);
 				break;
 			case RND_HATT_COORD:
-				pcb_fprintf(fx, "%mm", f->val.crd);
+				rnd_fprintf(fx, "%mm", f->val.crd);
 				break;
 
 			case RND_HATT_STRING:

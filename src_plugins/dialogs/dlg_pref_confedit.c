@@ -140,7 +140,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		case RND_CFN_BOOLEAN:
 		case RND_CFN_INTEGER: sprintf(buf, "%ld", attr->val.lng); break;
 		case RND_CFN_REAL:    sprintf(buf, "%f", attr->val.dbl); break;
-		case RND_CFN_COORD:   pcb_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.crd); break;
+		case RND_CFN_COORD:   rnd_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.crd); break;
 		case RND_CFN_UNIT:
 			if ((attr->val.lng < 0) || (attr->val.lng >= pcb_get_n_units(0)))
 				return;

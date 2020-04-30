@@ -81,7 +81,7 @@ static void tag_add(const char *key, const char *val)
 		while(*val == ' ') val++;
 		if (*val == '\0')
 			break;
-		tmp = pcb_strdup_printf("%s:%s", key, val);
+		tmp = rnd_strdup_printf("%s:%s", key, val);
 		tag_add_(tmp);
 		free(tmp);
 	}
@@ -146,7 +146,7 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 	if (strncmp(path, REQUIRE_PATH_PREFIX, strlen(REQUIRE_PATH_PREFIX)) != 0)
 		return -1;
 
-	pcb_snprintf(last_sum_fn, sizeof(last_sum_fn), "%s" RND_DIR_SEPARATOR_S "edakrill.last", conf_fp_wget.plugins.fp_wget.cache_dir);
+	rnd_snprintf(last_sum_fn, sizeof(last_sum_fn), "%s" RND_DIR_SEPARATOR_S "edakrill.last", conf_fp_wget.plugins.fp_wget.cache_dir);
 
 	gds_init(&vpath);
 	gds_append_str(&vpath, REQUIRE_PATH_PREFIX);

@@ -373,7 +373,7 @@ void free_strlist(gadl_list_t *lst)
 
 void require_gnetlist_backend(const char *dir, const char *backend)
 {
-	char *path = pcb_strdup_printf("%s/gnet-%s.scm", dir, backend);
+	char *path = rnd_strdup_printf("%s/gnet-%s.scm", dir, backend);
 	if (!rnd_file_readable(path))
 		rnd_message(RND_MSG_WARNING, "WARNING: %s is not found, gnetlist will probably fail; please check your pcb-rnd installation!\n", path);
 	free(path);

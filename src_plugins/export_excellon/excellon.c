@@ -70,21 +70,21 @@ static rnd_cardinal_t drill_print_objs(pcb_board_t *pcb, FILE *f, pcb_drill_ctx_
 		}
 		if (pd->is_slot) {
 			if (first) {
-				pcb_fprintf(f, "G00");
+				rnd_fprintf(f, "G00");
 				first = 0;
 			}
 			if (force_g85)
-				pcb_fprintf(f, "X%[3]Y%[3]G85X%[3]Y%[3]\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
+				rnd_fprintf(f, "X%[3]Y%[3]G85X%[3]Y%[3]\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
 			else
-				pcb_fprintf(f, "X%[3]Y%[3]\r\nM15\r\nG01X%[3]Y%[3]\r\nM17\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
+				rnd_fprintf(f, "X%[3]Y%[3]\r\nM15\r\nG01X%[3]Y%[3]\r\nM17\r\n", excellonDrX(pcb, pd->x), excellonDrY(PCB, pd->y), excellonDrX(pcb, pd->x2), excellonDrY(PCB, pd->y2));
 			first = 1; /* each new slot will need a G00 for some fabs that ignore M17 and M15 */
 		}
 		else {
 			if (first) {
-				pcb_fprintf(f, "G05\r\n");
+				rnd_fprintf(f, "G05\r\n");
 				first = 0;
 			}
-			pcb_fprintf(f, "X%[3]Y%[3]\r\n", excellonDrX(pcb, pd->x), excellonDrY(pcb, pd->y));
+			rnd_fprintf(f, "X%[3]Y%[3]\r\n", excellonDrX(pcb, pd->x), excellonDrY(pcb, pd->y));
 		}
 		cnt++;
 	}
@@ -101,7 +101,7 @@ static rnd_cardinal_t drill_print_holes(pcb_board_t *pcb, FILE *f, pcb_drill_ctx
 	   always six-digit 0.1 mil resolution (i.e. 001100 = 0.11") */
 	fprintf(f, "M48\r\n%s\r\n", coord_fmt_hdr);
 	for (search = ctx->apr.data; search; search = search->next)
-		pcb_fprintf(f, "T%02dC%[2]\r\n", search->dCode, search->width);
+		rnd_fprintf(f, "T%02dC%[2]\r\n", search->dCode, search->width);
 	fprintf(f, "%%\r\n");
 
 	/* dump pending drills in sequence */
@@ -127,8 +127,8 @@ void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force
 	}
 
 	cfmt = &coord_format[coord_fmt_idx];
-	pcb_printf_slot[3] = cfmt->cfmt;
-	pcb_printf_slot[2] = cfmt->afmt;
+	rnd_printf_slot[3] = cfmt->cfmt;
+	rnd_printf_slot[2] = cfmt->afmt;
 
 	if (ctx->obj.used > 0)
 		drill_print_holes(pcb, f, ctx, force_g85, cfmt->hdr1);
@@ -396,7 +396,7 @@ static void use_gc(rnd_hid_gc_t gc, rnd_coord_t radius)
 	if (radius != lastwidth) {
 		aperture_t *aptr = find_aperture(&(get_drill_ctx()->apr), radius, ROUND);
 		if (aptr == NULL)
-			pcb_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
+			rnd_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
 		lastwidth = radius;
 	}
 }

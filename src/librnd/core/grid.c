@@ -144,9 +144,9 @@ pcb_bool_t rnd_grid_append_print(gds_t *dst, const rnd_grid_t *src)
 		gds_append_str(dst, src->name);
 		gds_append(dst, ':');
 	}
-	pcb_append_printf(dst, "%$.08mH", src->size);
+	rnd_append_printf(dst, "%$.08mH", src->size);
 	if ((src->ox != 0) || (src->oy != 0))
-		pcb_append_printf(dst, "@%$.08mH,%$.08mH", src->ox, src->oy);
+		rnd_append_printf(dst, "@%$.08mH,%$.08mH", src->ox, src->oy);
 	if (src->unit != NULL) {
 		gds_append(dst, '!');
 		gds_append_str(dst, src->unit->suffix);

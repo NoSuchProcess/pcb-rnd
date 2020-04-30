@@ -118,7 +118,7 @@ static lht_node_t *build_textf(const char *key, const char *fmt, ...)
 
 	field = lht_dom_node_alloc(LHT_TEXT, key);
 	va_start(ap, fmt);
-	field->data.text.value = pcb_strdup_vprintf(fmt, ap);
+	field->data.text.value = rnd_strdup_vprintf(fmt, ap);
 	va_end(ap);
 	return field;
 }
@@ -226,7 +226,7 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type, int intconn)
 				if (name != NULL)
 					txt->data.text.value = rnd_strdup(name);
 				else
-					txt->data.text.value = pcb_strdup_printf("%d", t);
+					txt->data.text.value = rnd_strdup_printf("%d", t);
 				lht_dom_hash_put(lst, txt);
 				added++;
 				thrm++;
@@ -641,12 +641,12 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 				}
 			}
 			if (polylist_length(&ly->Polygon) > 0) {
-				char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
+				char *desc = rnd_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
 				pcb_io_incompat_save(subc->data, NULL, desc, "subc-objs", "only lines and arcs are exported");
 				free(desc);
 			}
 			if (textlist_length(&ly->Text) > 1) {
-				char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element", ly->name);
+				char *desc = rnd_strdup_printf("Text on layer %s can not be exported in an element", ly->name);
 				pcb_io_incompat_save(subc->data, NULL, desc, "subc-objs", "only lines and arcs are exported");
 				free(desc);
 			}
@@ -654,7 +654,7 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 		}
 
 		if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
-			char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element", ly->name);
+			char *desc = rnd_strdup_printf("Objects on layer %s can not be exported in an element", ly->name);
 			pcb_io_incompat_save(subc->data, NULL, desc, "subc-layer", "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
 			free(desc);
 		}
@@ -1294,7 +1294,7 @@ static lht_node_t *build_netlist(pcb_netlist_t *netlist, const char *name, int *
 			/* grow the connection list */
 			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
 				pn = lht_dom_node_alloc(LHT_TEXT, "");
-				pn->data.text.value = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+				pn->data.text.value = rnd_strdup_printf("%s-%s", t->refdes, t->term);
 				lht_dom_list_append(pl, pn);
 			}
 			lht_dom_list_append(nl, nnet);
@@ -1464,7 +1464,7 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 
 		v1 = rnd_get_value_ex(ondisk_value, NULL, NULL, NULL, NULL, &success1);
 		v2 = rnd_get_value_ex(inmem_node->data.text.value, NULL, NULL, NULL, NULL, &success2);
-/*		pcb_fprintf(stderr, " %d %d | %mm %mm\n", success1, success2, v1, v2);*/
+/*		rnd_fprintf(stderr, " %d %d | %mm %mm\n", success1, success2, v1, v2);*/
 		if (success1 && success2) {
 			/* smart: if values are the same, keep the on-disk version */
 			if (v1 == v2)
@@ -1520,7 +1520,7 @@ static int io_lihata_write_pcb(pcb_plug_io_t *ctx, FILE * FP, const char *old_fi
 		   Thus this feature should be disabled */
 		if ((fnpat != NULL) && (*fnpat != '\0')) {
 			char *orig_fn, *end;
-			char *pcb_fn = pcb_strdup_subst(fnpat, rnd_build_fn_cb, &PCB->hidlib, PCB_SUBST_ALL);
+			char *pcb_fn = rnd_strdup_subst(fnpat, rnd_build_fn_cb, &PCB->hidlib, RND_SUBST_ALL);
 			
 			orig_fn = PCB->hidlib.filename;
 			PCB->hidlib.filename = NULL;

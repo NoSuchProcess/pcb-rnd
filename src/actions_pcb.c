@@ -86,7 +86,7 @@ static int layerid_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 			ARG_CONV_CASE_INVALID(tmp, conv_err)
 			case FGW_AUTO:
 			case FGW_STR:
-				arg->val.str = (char *)pcb_strdup_printf("#%ld", (long)tmp);
+				arg->val.str = (char *)rnd_strdup_printf("#%ld", (long)tmp);
 				arg->type = FGW_STR | FGW_DYN;
 				return 0;
 		}
@@ -171,7 +171,7 @@ static int layergrpid_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target
 			ARG_CONV_CASE_INVALID(tmp, conv_err)
 			case FGW_AUTO:
 			case FGW_STR:
-				arg->val.str = (char *)pcb_strdup_printf("#%ld", (long)tmp);
+				arg->val.str = (char *)rnd_strdup_printf("#%ld", (long)tmp);
 				arg->type = FGW_STR | FGW_DYN;
 				return 0;
 		}

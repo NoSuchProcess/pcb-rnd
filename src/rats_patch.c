@@ -122,7 +122,7 @@ static int undo_ratspatch_append_undo(void *udata)
 static void undo_ratspatch_append_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_ratspatch_append_t *a = udata;
-	pcb_snprintf(dst, dst_len, "ratspatch_append: op=%d '%s' '%s' '%s' (used by attr: %d)", a->op, RND_EMPTY(a->id), RND_EMPTY(a->a1), RND_EMPTY(a->a2), a->used_by_attr);
+	rnd_snprintf(dst, dst_len, "ratspatch_append: op=%d '%s' '%s' '%s' (used by attr: %d)", a->op, RND_EMPTY(a->id), RND_EMPTY(a->a1), RND_EMPTY(a->a2), a->used_by_attr);
 }
 
 static void undo_ratspatch_append_free(void *udata)

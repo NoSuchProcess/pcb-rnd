@@ -119,7 +119,7 @@ static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int
 	pcb_line_t *l;
 
 	gctx.drawn_objs++;
-	pcb_fprintf(gctx.f, "G0 Z#100\nG0 X%mm Y%mm\n", TX(from->Point1.X), TY(from->Point1.Y));
+	rnd_fprintf(gctx.f, "G0 Z#100\nG0 X%mm Y%mm\n", TX(from->Point1.X), TY(from->Point1.Y));
 
 	if (passes > 1)
 		fprintf(gctx.f, "(new path)\n");
@@ -127,8 +127,8 @@ static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int
 		/* mill from..to (forward) */
 		fprintf(gctx.f, "G0 Z#%d\n", depth++);
 		for(l = from; l != to; l = l->link.next)
-			pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(l->Point2.X), TY(l->Point2.Y));
-		pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(to->Point2.X), TY(to->Point2.Y));
+			rnd_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(l->Point2.X), TY(l->Point2.Y));
+		rnd_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(to->Point2.X), TY(to->Point2.Y));
 		if (--passes <= 0)
 			break;
 
@@ -143,8 +143,8 @@ static void gcode_print_lines_(pcb_line_t *from, pcb_line_t *to, int passes, int
 		/* mill to..from (backward) */
 		fprintf(gctx.f, "G0 Z#%d\n", depth++);
 		for(l = to; l != from; l = l->link.prev)
-			pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(l->Point1.X), TY(l->Point1.Y));
-		pcb_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(from->Point1.X), TY(from->Point1.Y));
+			rnd_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(l->Point1.X), TY(l->Point1.Y));
+		rnd_fprintf(gctx.f, "G1 X%mm Y%mm\n", TX(from->Point1.X), TY(from->Point1.Y));
 		if (--passes <= 0)
 			break;
 	}
@@ -160,8 +160,8 @@ static void gcode_print_header(void)
 	rnd_coord_t total = gcode_values[HA_totalcutdepth].crd;
 	rnd_coord_t at = gcode_values[HA_layerdepth].crd;
 
-	pcb_fprintf(gctx.f, "#100=%mm  (safe Z for travels above the board)\n", gcode_values[HA_safeZ].crd);
-	pcb_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_layerdepth].crd);
+	rnd_fprintf(gctx.f, "#100=%mm  (safe Z for travels above the board)\n", gcode_values[HA_safeZ].crd);
+	rnd_fprintf(gctx.f, "#101=%mm  (cutting depth for layers)\n", gcode_values[HA_layerdepth].crd);
 
 
 	if (step > 0)
@@ -181,11 +181,11 @@ static void gcode_print_header(void)
 	}
 
 	for(gctx.passes = 0, at += step; at > total; gctx.passes++, at += step)
-		pcb_fprintf(gctx.f, "#%d=%mm  (%s cutting depth for thru-cuts)\n", thru_start_depth+gctx.passes, at, gctx.passes == 0 ? "first" : "next");
-	pcb_fprintf(gctx.f, "#%d=%mm  (last cutting depth for thru-cuts)\n", thru_start_depth+gctx.passes, total);
+		rnd_fprintf(gctx.f, "#%d=%mm  (%s cutting depth for thru-cuts)\n", thru_start_depth+gctx.passes, at, gctx.passes == 0 ? "first" : "next");
+	rnd_fprintf(gctx.f, "#%d=%mm  (last cutting depth for thru-cuts)\n", thru_start_depth+gctx.passes, total);
 	gctx.passes++;
 
-	pcb_fprintf(gctx.f,
+	rnd_fprintf(gctx.f,
 		"G17 " /* X-Y plane */
 		"G21 " /* mm */
 		"G90 " /* absolute coords */
@@ -199,7 +199,7 @@ static void gcode_print_header(void)
 
 static void gcode_print_footer(void)
 {
-	pcb_fprintf(gctx.f,
+	rnd_fprintf(gctx.f,
 		"G0 Z#100\n" /* remove the tool from the board, just in case */
 		"M05 " /* stop spindle */
 		"M09 " /* coolant off */
@@ -216,7 +216,7 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 	int start_depth, passes;
 
 	if (tctx->res_path->Line.lst.length == 0) {
-		pcb_fprintf(gctx.f, "(empty layer group: %s)\n", grp->name);
+		rnd_fprintf(gctx.f, "(empty layer group: %s)\n", grp->name);
 		return;
 	}
 

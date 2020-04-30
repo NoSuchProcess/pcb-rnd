@@ -62,7 +62,7 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 				fprintf(f, "%s", buff);
 			}
 			fclose(fin);
-			pcb_snprintf(buff, sizeof(buff), "pcb_part_%s", safe_name);
+			rnd_snprintf(buff, sizeof(buff), "pcb_part_%s", safe_name);
 			htsp_set(models, (char *)name, rnd_strdup(buff));
 			free(safe_name);
 		}
@@ -75,28 +75,28 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 	if (ref != NULL) {
 		char tab[] = "\t\t\t\t\t\t\t\t";
 		int ind = 0;
-		pcb_append_printf(&model_calls, "	translate([%mm,%mm,%c0.8])\n", x0, y0, on_bottom ? '-' : '+');
+		rnd_append_printf(&model_calls, "	translate([%mm,%mm,%c0.8])\n", x0, y0, on_bottom ? '-' : '+');
 		ind++;
 		tab[ind] = '\0';
 
 		if (on_bottom) {
-			pcb_append_printf(&model_calls, "	%smirror([0,0,1])\n", tab);
+			rnd_append_printf(&model_calls, "	%smirror([0,0,1])\n", tab);
 			tab[ind] = '\t'; ind++; tab[ind] = '\0';
 		}
 		if (rot != 0) {
-			pcb_append_printf(&model_calls, "	%srotate([0,0,%f])\n", tab, rot);
+			rnd_append_printf(&model_calls, "	%srotate([0,0,%f])\n", tab, rot);
 			tab[ind] = '\t'; ind++; tab[ind] = '\0';
 		}
 		if (transf != NULL) {
-			pcb_append_printf(&model_calls, "	%s%s\n", tab, transf);
+			rnd_append_printf(&model_calls, "	%s%s\n", tab, transf);
 			tab[ind] = '\t'; ind++; tab[ind] = '\0';
 		}
 
 		
 		if (param != NULL)
-			pcb_append_printf(&model_calls, "	%s%s(%s);\n", tab, ref, param);
+			rnd_append_printf(&model_calls, "	%s%s(%s);\n", tab, ref, param);
 		else
-			pcb_append_printf(&model_calls, "	%s%s();\n", tab, ref);
+			rnd_append_printf(&model_calls, "	%s%s();\n", tab, ref);
 	}
 }
 

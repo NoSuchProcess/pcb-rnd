@@ -106,7 +106,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 		PCB_LINE_LOOP(ly);
 		{
 			net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)line);
-			pcb_fprintf(wctx->f,"    (wire (path \"%s\" %[4] %[4] %[4] %[4] %[4])", gname, line->Thickness,
+			rnd_fprintf(wctx->f,"    (wire (path \"%s\" %[4] %[4] %[4] %[4] %[4])", gname, line->Thickness,
 				COORDX(line->Point1.X), COORDY(line->Point1.Y),
 				COORDX(line->Point2.X), COORDY(line->Point2.Y));
 			if (net != NULL)
@@ -154,7 +154,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	/* set units to mm with nm resolution */
 	fprintf(wctx->f, "  (resolution mm 1000000)\n");
 	fprintf(wctx->f, "  (unit mm)\n");
-	pcb_printf_slot[4] = "%.07mm";
+	rnd_printf_slot[4] = "%.07mm";
 
 	res |= dsn_write_structure(wctx);
 	res |= dsn_write_wiring(wctx);

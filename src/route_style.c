@@ -60,7 +60,7 @@ char *pcb_route_string_make(vtroutestyle_t *styles)
 
 	gds_init(&str);
 	for (i = 0; i < vtroutestyle_len(styles); ++i) {
-		pcb_append_printf(&str, "%s,%mc,%mc,%mc,%mc", styles->array[i].name,
+		rnd_append_printf(&str, "%s,%mc,%mc,%mc,%mc", styles->array[i].name,
 																				 styles->array[i].Thick, styles->array[i].Diameter,
 																				 styles->array[i].Hole, styles->array[i].Clearance);
 		if (i > 0)

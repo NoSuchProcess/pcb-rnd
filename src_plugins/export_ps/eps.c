@@ -184,12 +184,12 @@ static void eps_print_header(FILE *f, const char *outfn)
 	fprintf(f, "72 72 scale\n");
 	fprintf(f, "1 dup neg scale\n");
 	fprintf(f, "%g dup scale\n", options_[HA_scale].dbl);
-	pcb_fprintf(f, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
+	rnd_fprintf(f, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
 	if (options_[HA_as_shown].lng && conf_core.editor.show_solder_side)
-		pcb_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
+		rnd_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
 
 #define Q (rnd_coord_t) PCB_MIL_TO_COORD(10)
-	pcb_fprintf(f,
+	rnd_fprintf(f,
 							"/nclip { %mi %mi moveto %mi %mi lineto %mi %mi lineto %mi %mi lineto %mi %mi lineto eoclip newpath } def\n",
 							bounds->X1 - Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y2 + Q,
 							bounds->X2 + Q, bounds->Y2 + Q, bounds->X2 + Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y1 - Q);
@@ -506,7 +506,7 @@ static void use_gc(rnd_hid_gc_t gc)
 {
 	eps_drawn_objs++;
 	if (linewidth != gc->width) {
-		pcb_fprintf(f, "%mi setlinewidth\n", gc->width);
+		rnd_fprintf(f, "%mi setlinewidth\n", gc->width);
 		linewidth = gc->width;
 	}
 	if (lastcap != gc->cap) {
@@ -539,7 +539,7 @@ static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 static void eps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
-	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
+	rnd_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
 static void eps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
@@ -561,14 +561,14 @@ static void eps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 		rnd_coord_t vx1 = x1 + dx;
 		rnd_coord_t vy1 = y1 + dy;
 
-		pcb_fprintf(f, "%mi %mi moveto ", vx1, vy1);
-		pcb_fprintf(f, "%mi %mi %mi %g %g arc\n", x2, y2, w, deg - 90, deg + 90);
-		pcb_fprintf(f, "%mi %mi %mi %g %g arc\n", x1, y1, w, deg + 90, deg + 270);
+		rnd_fprintf(f, "%mi %mi moveto ", vx1, vy1);
+		rnd_fprintf(f, "%mi %mi %mi %g %g arc\n", x2, y2, w, deg - 90, deg + 90);
+		rnd_fprintf(f, "%mi %mi %mi %g %g arc\n", x1, y1, w, deg + 90, deg + 270);
 		fprintf(f, "nclip\n");
 
 		return;
 	}
-	pcb_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
+	rnd_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
 static void eps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
@@ -597,13 +597,13 @@ static void eps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	w = width;
 	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
 		w = 0.0001;
-	pcb_fprintf(f, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double) linewidth / w);
+	rnd_fprintf(f, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double) linewidth / w);
 }
 
 static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	use_gc(gc);
-	pcb_fprintf(f, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
+	rnd_fprintf(f, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
 static void eps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
@@ -612,7 +612,7 @@ static void eps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	const char *op = "moveto";
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
-		pcb_fprintf(f, "%mi %mi %s\n", x[i] + dx, y[i] + dy, op);
+		rnd_fprintf(f, "%mi %mi %s\n", x[i] + dx, y[i] + dy, op);
 		op = "lineto";
 	}
 
@@ -628,7 +628,7 @@ static void eps_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_
 static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
-	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
+	rnd_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
 static void eps_calibrate(rnd_hid_t *hid, double xval, double yval)

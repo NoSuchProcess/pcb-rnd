@@ -235,7 +235,7 @@ static void scad_close_layer_group()
 		scad_dump_comp();
 		fprintf(f, "}\n\n");
 
-		pcb_append_printf(&layer_group_calls, "	layer_group_%s();\n", scad_group_name);
+		rnd_append_printf(&layer_group_calls, "	layer_group_%s();\n", scad_group_name);
 		scad_group_name = NULL;
 		scad_group_color = NULL;
 		scad_group_level = 0;
@@ -488,7 +488,7 @@ static void openscad_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	TRX(x2); TRY(y2);
 
 	fix_rect_coords();
-	pcb_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f, %f);\n",
+	rnd_fprintf(f, "			pcb_fill_rect(%mm, %mm, %mm, %mm, %f, %f);\n",
 		x1, y1, x2, y2, 0.0, effective_layer_thickness);
 }
 
@@ -508,7 +508,7 @@ static void openscad_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	else
 		cap_style = "rc";
 
-	pcb_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
+	rnd_fprintf(f, "			pcb_line_%s(%mm, %mm, %mm, %f, %mm, %f);\n", cap_style,
 		x1, y1, (rnd_coord_t)rnd_round(length), angle * RND_RAD_TO_DEG, gc->width, effective_layer_thickness);
 }
 
@@ -566,7 +566,7 @@ static void openscad_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy
 {
 	TRX(cx); TRY(cy);
 
-	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, effective_layer_thickness);
+	rnd_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, effective_layer_thickness);
 }
 
 static void openscad_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
@@ -574,8 +574,8 @@ static void openscad_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_
 	int n;
 	fprintf(f, "			pcb_fill_poly([");
 	for(n = 0; n < n_coords-1; n++)
-		pcb_fprintf(f, "[%mm,%mm],", TRX_(x[n]+dx), TRY_(y[n]+dy));
-	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]+dx), TRY_(y[n]+dy), effective_layer_thickness);
+		rnd_fprintf(f, "[%mm,%mm],", TRX_(x[n]+dx), TRY_(y[n]+dy));
+	rnd_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]+dx), TRY_(y[n]+dy), effective_layer_thickness);
 }
 
 static void openscad_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
@@ -640,7 +640,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 				fprintf(f, "polygon([");
 				/* iterate over the vectors of the contour */
 				for(go = pcb_poly_vect_first(&it, &x, &y),cnt = 0; go; go = pcb_poly_vect_next(&it, &x, &y), cnt++)
-					pcb_fprintf(f, "%s[%mm,%mm]", (cnt > 0 ? "," : ""), x, y);
+					rnd_fprintf(f, "%s[%mm,%mm]", (cnt > 0 ? "," : ""), x, y);
 				fprintf(f, "]);\n");
 			}
 		}

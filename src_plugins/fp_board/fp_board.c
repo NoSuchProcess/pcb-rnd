@@ -64,7 +64,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 		/* remember location by ID - because of the dedup search by name is unsafe */
 		if (e != NULL)
-			e->data.fp.loc_info = pcb_strdup_printf("%s@%lu", path, id);
+			e->data.fp.loc_info = rnd_strdup_printf("%s@%lu", path, id);
 
 	} PCB_END_LOOP;
 

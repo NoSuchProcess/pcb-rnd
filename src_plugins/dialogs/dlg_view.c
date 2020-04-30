@@ -114,7 +114,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 			rt->user_data2.lng = 0;
 		}
 
-		cell[0] = pcb_strdup_printf("%lu", v->uid);
+		cell[0] = rnd_strdup_printf("%lu", v->uid);
 		cell[1] = rnd_strdup(v->title);
 		r = rnd_dad_tree_append_under(attr, rt, cell);
 		r->user_data2.lng = v->uid;
@@ -175,9 +175,9 @@ void view_simple_show(view_ctx_t *ctx)
 				break;
 			case PCB_VIEW_DRC:
 				if (v->data.drc.have_measured)
-					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
+					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup_printf("DRC: %m+required: %$ms\nmeasured: %$ms\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value, v->data.drc.measured_value));
 				else
-					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, pcb_strdup_printf("DRC: %m+required: %$ms\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value));
+					RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wmeasure, str, rnd_strdup_printf("DRC: %m+required: %$ms\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value));
 				break;
 		}
 	}

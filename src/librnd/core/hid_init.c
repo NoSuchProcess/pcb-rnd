@@ -543,7 +543,7 @@ int rnd_main_args_add(rnd_main_args_t *ga, char *cmd, char *arg)
 		if ((strcmp(cmd, "?") == 0) || (strcmp(cmd, "h") == 0) || (strcmp(cmd, "-help") == 0)) {
 			if (arg != NULL) {
 			/* memory leak, but who cares for --help? */
-				ga->main_action = pcb_strdup_printf("PrintUsage(%s)", arg);
+				ga->main_action = rnd_strdup_printf("PrintUsage(%s)", arg);
 				return 1;
 			}
 			ga->main_action = "PrintUsage()";

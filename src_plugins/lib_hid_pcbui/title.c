@@ -52,7 +52,7 @@ static void update_title(void)
 		filename = PCB->hidlib.filename;
 
 	title_buf.used = 0;
-	pcb_append_printf(&title_buf, "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
+	rnd_append_printf(&title_buf, "%s%s (%s) - %s - pcb-rnd", PCB->Changed ? "*" : "", name, filename, PCB->is_footprint ? "footprint" : "board");
 	rnd_gui->set_top_title(rnd_gui, title_buf.array);
 }
 

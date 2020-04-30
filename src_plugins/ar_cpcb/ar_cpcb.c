@@ -216,13 +216,13 @@ static void cpcb_print_pads(pcb_board_t *pcb, FILE *f, pcb_any_obj_t *o, cpcb_la
 						TODO("generate a poly");
 						break;
 					case PCB_PSSH_POLY:
-						pcb_fprintf(f, "(0 %mm (%mm %mm %d) (", conf_core.design.clearance, ps->x, ps->y, lidx);
+						rnd_fprintf(f, "(0 %mm (%mm %mm %d) (", conf_core.design.clearance, ps->x, ps->y, lidx);
 						for(n = 0; n < shp->data.poly.len; n++)
-							pcb_fprintf(f, "(%mm %mm)", shp->data.poly.x[n], shp->data.poly.y[n]);
+							rnd_fprintf(f, "(%mm %mm)", shp->data.poly.x[n], shp->data.poly.y[n]);
 						fprintf(f, "))");
 						break;
 					case PCB_PSSH_CIRC:
-						pcb_fprintf(f, "(%mm %mm (%mm %mm %d) ())", shp->data.circ.dia/2, conf_core.design.clearance, ps->x, ps->y, lidx);
+						rnd_fprintf(f, "(%mm %mm (%mm %mm %d) ())", shp->data.circ.dia/2, conf_core.design.clearance, ps->x, ps->y, lidx);
 						break;
 				}
 			}
@@ -256,7 +256,7 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	htpp_entry_t *e;
 
 	/* print dims */
-	pcb_fprintf(f, "(%d %d %d)\n", (int)(PCB_COORD_TO_MM(pcb->hidlib.size_x)+0.5), (int)(PCB_COORD_TO_MM(pcb->hidlib.size_y)+0.5), stack->maxlayer);
+	rnd_fprintf(f, "(%d %d %d)\n", (int)(PCB_COORD_TO_MM(pcb->hidlib.size_x)+0.5), (int)(PCB_COORD_TO_MM(pcb->hidlib.size_y)+0.5), stack->maxlayer);
 
 	/* print tracks */
 	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {
@@ -264,15 +264,15 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 		dyn_obj_t *o, *olist = e->value;
 		long id = htpi_get(&nmap->n2i, net);
 
-/*		pcb_fprintf(f, "# %s: %ld\n", net->Name, id);*/
-		pcb_fprintf(f, "(%ld %mm %mm %mm\n", id, conf_core.design.line_thickness/2, conf_core.design.via_thickness/2, conf_core.design.clearance);
+/*		rnd_fprintf(f, "# %s: %ld\n", net->Name, id);*/
+		rnd_fprintf(f, "(%ld %mm %mm %mm\n", id, conf_core.design.line_thickness/2, conf_core.design.via_thickness/2, conf_core.design.clearance);
 
 		/* print pads (terminals) */
-		pcb_fprintf(f, "	(");
+		rnd_fprintf(f, "	(");
 		for(o = olist; o != NULL; o = o->next)
 			if (o->obj->term != NULL)
 				cpcb_print_pads(pcb, f, o->obj, stack);
-		pcb_fprintf(f, ")\n");
+		rnd_fprintf(f, ")\n");
 
 		fprintf(f, "	()\n");
 
@@ -382,7 +382,7 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cpcb_save(PCB, f, &stk, &nmap);
 	fclose(f);
 
-	cmdline = pcb_strdup_printf("%s < %s", cmd, tmpfn);
+	cmdline = rnd_strdup_printf("%s < %s", cmd, tmpfn);
 	f = pcb_popen(&PCB->hidlib, cmdline, "r");
 	if (f != NULL) {
 		cpcb_load(PCB, f, &stk, NULL);

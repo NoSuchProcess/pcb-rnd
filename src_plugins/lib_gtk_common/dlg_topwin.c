@@ -313,7 +313,7 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 
 	gtk_button_set_image(GTK_BUTTON(button), image);
 
-	css_descr = pcb_strdup_printf(".%s {min-width:0; min-height:0;}\n", css_class);
+	css_descr = rnd_strdup_printf(".%s {min-width:0; min-height:0;}\n", css_class);
 	gtkc_widget_add_class_style(button, css_class, css_descr);
 	free(css_descr);
 

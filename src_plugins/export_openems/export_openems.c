@@ -207,8 +207,8 @@ static void openems_write_tunables(wctx_t *ctx)
 	fprintf(ctx->f, "base_priority=%ld;\n", ctx->options[HA_base_prio].lng);
 	fprintf(ctx->f, "\n");
 	fprintf(ctx->f, "%% offset on the whole layout to locate it relative to the simulation origin\n");
-	pcb_fprintf(ctx->f, "offset.x = %mm;\n", -ctx->ox);
-	pcb_fprintf(ctx->f, "offset.y = %mm;\n", ctx->oy);
+	rnd_fprintf(ctx->f, "offset.x = %mm;\n", -ctx->ox);
+	rnd_fprintf(ctx->f, "offset.y = %mm;\n", ctx->oy);
 	fprintf(ctx->f, "offset.z = 0;\n");
 	fprintf(ctx->f, "\n");
 
@@ -251,9 +251,9 @@ TODO(": try openems::attr first - make a new core call for prefixed get, this wi
 	fmt = (grp->ltype & PCB_LYT_COPPER) ? cop_fmt : subs_fmt;
 	assert(opt >= 0);
 	if (fmt == NULL)
-		pcb_fprintf(ctx->f, "%s", ctx->options[opt].str);
+		rnd_fprintf(ctx->f, "%s", ctx->options[opt].str);
 	else
-		pcb_fprintf(ctx->f, fmt, ctx->options[opt].crd);
+		rnd_fprintf(ctx->f, fmt, ctx->options[opt].crd);
 }
 
 static void openems_write_layers(wctx_t *ctx)
@@ -339,15 +339,15 @@ TODO("layer: consider multiple outline layers instead")
 		long n;
 		pcb_poly_t *p = pcb_topoly_conn(ctx->pcb, out1, PCB_TOPOLY_KEEP_ORIG | PCB_TOPOLY_FLOATING);
 		for(n = 0; n < p->PointN; n++)
-			pcb_fprintf(ctx->f, "outline_xy(1, %ld) = %mm; outline_xy(2, %ld) = %mm;\n", n+1, p->Points[n].X, n+1, -p->Points[n].Y);
+			rnd_fprintf(ctx->f, "outline_xy(1, %ld) = %mm; outline_xy(2, %ld) = %mm;\n", n+1, p->Points[n].X, n+1, -p->Points[n].Y);
 		pcb_poly_free(p);
 	}
 	else {
 		/* rectangular board size */
-		pcb_fprintf(ctx->f, "outline_xy(1, 1) = 0; outline_xy(2, 1) = 0;\n");
-		pcb_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->hidlib.size_x);
-		pcb_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->hidlib.size_x, -ctx->pcb->hidlib.size_y);
-		pcb_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->hidlib.size_y);
+		rnd_fprintf(ctx->f, "outline_xy(1, 1) = 0; outline_xy(2, 1) = 0;\n");
+		rnd_fprintf(ctx->f, "outline_xy(1, 2) = %mm; outline_xy(2, 2) = 0;\n", ctx->pcb->hidlib.size_x);
+		rnd_fprintf(ctx->f, "outline_xy(1, 3) = %mm; outline_xy(2, 3) = %mm;\n", ctx->pcb->hidlib.size_x, -ctx->pcb->hidlib.size_y);
+		rnd_fprintf(ctx->f, "outline_xy(1, 4) = 0; outline_xy(2, 4) = %mm;\n", -ctx->pcb->hidlib.size_y);
 	}
 
 	/* create all substrate layers using this polygon*/
@@ -392,7 +392,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 		if (!isalnum(*s))
 			*s = '_';
 
-	pcb_fprintf(ctx->f, "\npoint%s(1, 1) = %mm; point%s(2, 1) = %mm;\n", safe_name, x, safe_name, -y);
+	rnd_fprintf(ctx->f, "\npoint%s(1, 1) = %mm; point%s(2, 1) = %mm;\n", safe_name, x, safe_name, -y);
 	fprintf(ctx->f, "[start%s, stop%s] = CalcPcbrnd2PortV(PCBRND, point%s, %d, %d);\n", safe_name, safe_name, safe_name, ctx->lg_pcb2ems[gid1], ctx->lg_pcb2ems[gid2]);
 	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, start%s, stop%s, [0 0 -1]%s);\n", ctx->port_id, ctx->port_id, resistance, safe_name, safe_name, act ? ", true" : "");
 
@@ -512,7 +512,7 @@ static void openems_write_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
 {
 	rnd_cardinal_t n;
 	for(n = 0; n < vtc0_len(&l->result); n++)
-		pcb_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : " "), l->result.array[n]);
+		rnd_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : " "), l->result.array[n]);
 }
 
 static void openems_write_mesh1(wctx_t *ctx)
@@ -554,7 +554,7 @@ static void openems_write_mesh2(wctx_t *ctx)
 	}
 	fprintf(ctx->f, "%%%%%% Board mesh, part 2\n");
 
-	pcb_fprintf(ctx->f, "z_bottom_copper=%mm\n", mesh->z_bottom_copper);
+	rnd_fprintf(ctx->f, "z_bottom_copper=%mm\n", mesh->z_bottom_copper);
 
 	fprintf(ctx->f, "mesh.y=[");
 	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_HORIZONTAL]);
@@ -761,9 +761,9 @@ static void openems_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 	wctx_t *ctx = ems_ctx;
 	long oid = ctx->oid++;
 
-	pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, cx, oid, -cy);
-	pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, cx, oid, -cy);
-	pcb_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, radius*2);
+	rnd_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, cx, oid, -cy);
+	rnd_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, cx, oid, -cy);
+	rnd_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, radius*2);
 }
 
 static void openems_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
@@ -773,7 +773,7 @@ static void openems_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t
 	long oid = ctx->oid++;
 
 	for(n = 0; n < n_coords; n++)
-		pcb_fprintf(ctx->f, "poly%ld_xy(1, %ld) = %mm; poly%ld_xy(2, %ld) = %mm;\n", oid, n+1, x[n]+dx, oid, n+1, -(y[n]+dy));
+		rnd_fprintf(ctx->f, "poly%ld_xy(1, %ld) = %mm; poly%ld_xy(2, %ld) = %mm;\n", oid, n+1, x[n]+dx, oid, n+1, -(y[n]+dy));
 
 	fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
 }
@@ -799,9 +799,9 @@ static void openems_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 	}
 	else {
 		long oid = ctx->oid++;
-		pcb_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x1, oid, -y1);
-		pcb_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x2, oid, -y2);
-		pcb_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, gc->width);
+		rnd_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x1, oid, -y1);
+		rnd_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x2, oid, -y2);
+		rnd_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, gc->width);
 	}
 }
 

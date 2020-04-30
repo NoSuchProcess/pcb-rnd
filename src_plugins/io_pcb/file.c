@@ -291,13 +291,13 @@ static void WritePCBDataHeader(FILE * FP)
 
 	fputs("\nPCB[", FP);
 	pcb_print_quoted_string(FP, (char *) RND_EMPTY(PCB->hidlib.name));
-	pcb_fprintf(FP, " %[0] %[0]]\n\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
-	pcb_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->hidlib.grid, PCB->hidlib.grid_ox, PCB->hidlib.grid_oy, rnd_conf.editor.draw_grid);
-	pcb_fprintf(FP, "Cursor[%[0] %[0] 1000]\n", pcb_crosshair.X, pcb_crosshair.Y);
+	rnd_fprintf(FP, " %[0] %[0]]\n\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
+	rnd_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->hidlib.grid, PCB->hidlib.grid_ox, PCB->hidlib.grid_oy, rnd_conf.editor.draw_grid);
+	rnd_fprintf(FP, "Cursor[%[0] %[0] 1000]\n", pcb_crosshair.X, pcb_crosshair.Y);
 	/* PolyArea should be output in square cmils, no suffix */
 	fprintf(FP, "PolyArea[%s]\n", c_dtostr(PCB_COORD_TO_MIL(PCB_COORD_TO_MIL(conf_core.design.poly_isle_area) * 100) * 100));
-	pcb_fprintf(FP, "Thermal[%s]\n", c_dtostr(PCB->ThermScale));
-	pcb_fprintf(FP, "DRC[%[0] %[0] %[0] %[0] %[0] %[0]]\n", conf_core.design.bloat, conf_core.design.shrink,
+	rnd_fprintf(FP, "Thermal[%s]\n", c_dtostr(PCB->ThermScale));
+	rnd_fprintf(FP, "DRC[%[0] %[0] %[0] %[0] %[0] %[0]]\n", conf_core.design.bloat, conf_core.design.shrink,
 							conf_core.design.min_wid, conf_core.design.min_slk, conf_core.design.min_drill, conf_core.design.min_ring);
 	fprintf(FP, "Flags(%s)\n", pcb_strflg_board_f2s(pcb_flags));
 	fprintf(FP, "Groups(\"%s\")\n", LayerGroupsToString(&PCB->LayerGroups));
@@ -305,10 +305,10 @@ static void WritePCBDataHeader(FILE * FP)
 
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
 		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++)
-			pcb_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
+			rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
 									PCB->RouteStyle.array[group].Thick,
 									PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
-		pcb_fprintf(FP, "%s,%[0],%[0],%[0],%[0]\"]\n\n", PCB->RouteStyle.array[group].name,
+		rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]\"]\n\n", PCB->RouteStyle.array[group].name,
 								PCB->RouteStyle.array[group].Thick,
 								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
 	}
@@ -330,13 +330,13 @@ static void WritePCBFontData(FILE * FP)
 			continue;
 
 		if (isprint(i))
-			pcb_fprintf(FP, "Symbol['%c' %[0]]\n(\n", i, font->Symbol[i].Delta);
+			rnd_fprintf(FP, "Symbol['%c' %[0]]\n(\n", i, font->Symbol[i].Delta);
 		else
-			pcb_fprintf(FP, "Symbol[%i %[0]]\n(\n", i, font->Symbol[i].Delta);
+			rnd_fprintf(FP, "Symbol[%i %[0]]\n(\n", i, font->Symbol[i].Delta);
 
 		line = font->Symbol[i].Line;
 		for (j = font->Symbol[i].LineN; j; j--, line++)
-			pcb_fprintf(FP, "\tSymbolLine[%[0] %[0] %[0] %[0] %[0]]\n",
+			rnd_fprintf(FP, "\tSymbolLine[%[0] %[0] %[0] %[0] %[0]]\n",
 									line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->Thickness);
 		fputs(")\n", FP);
 	}
@@ -359,7 +359,7 @@ static void WriteViaData(FILE * FP, pcb_data_t *Data)
 			continue;
 		}
 
-		pcb_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
+		rnd_fprintf(FP, "Via[%[0] %[0] %[0] %[0] %[0] %[0] ", x, y,
 			pad_dia, clearance*2, mask, drill_dia);
 		pcb_print_quoted_string(FP, (char *) RND_EMPTY(name));
 		fprintf(FP, " %s]\n", pcb_strflg_f2s(pcb_pstk_compat_pinvia_flag(ps, cshape, PCB_PSTKCOMP_OLD_OCTAGON), PCB_OBJ_VIA, NULL, 1));
@@ -373,7 +373,7 @@ static void WritePCBRatData(FILE * FP)
 
 	/* write information about rats */
 	ratlist_foreach(&PCB->Data->Rat, &it, line) {
-		pcb_fprintf(FP, "Rat[%[0] %[0] %d %[0] %[0] %d ",
+		rnd_fprintf(FP, "Rat[%[0] %[0] %d %[0] %[0] %d ",
 								line->Point1.X, line->Point1.Y, line->group1, line->Point2.X, line->Point2.Y, line->group2);
 		fprintf(FP, " %s]\n", F2S(line, PCB_OBJ_RAT));
 	}
@@ -473,7 +473,7 @@ TODO("textrot: incompatibility warning")
 		pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&sc->Attributes, "refdes")));
 		fputc(' ', FP);
 		pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&sc->Attributes, "value")));
-		pcb_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_OBJ_ELEMENT_NAME) : "\"\"");
+		rnd_fprintf(FP, " %[0] %[0] %[0] %[0] %d %d %s]\n(\n", ox, oy, rx, ry, rdir, rscale, trefdes != NULL ? F2S(trefdes, PCB_OBJ_ELEMENT_NAME) : "\"\"");
 		WriteAttributeList(FP, &sc->Attributes, "\t", attr_inhibit);
 
 		padstacklist_foreach(&sc->data->padstack, &it, ps) {
@@ -482,7 +482,7 @@ TODO("textrot: incompatibility warning")
 			rnd_bool plated, square, nopaste;
 			unsigned char ic = ps->intconn;
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
-				pcb_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ", x - ox, y - oy, pad_dia, clearance*2, mask, drill_dia);
+				rnd_fprintf(FP, "\tPin[%[0] %[0] %[0] %[0] %[0] %[0] ", x - ox, y - oy, pad_dia, clearance*2, mask, drill_dia);
 				pcb_print_quoted_string(FP, (char *)RND_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
 				fprintf(FP, " ");
 				pcb_print_quoted_string(FP, (char *) RND_EMPTY(rnd_attribute_get(&ps->Attributes, "term")));
@@ -490,7 +490,7 @@ TODO("textrot: incompatibility warning")
 			}
 			else if (pcb_pstk_export_compat_pad(ps, &x1, &y1, &x2, &y2, &thickness, &clearance, &mask, &square, &nopaste)) {
 				unsigned long fl = (square ? PCB_FLAG_SQUARE : 0) | (nopaste ? PCB_FLAG_NOPASTE : 0) | (on_bot ? PCB_FLAG_ONSOLDER : 0);
-				pcb_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
+				rnd_fprintf(FP, "\tPad[%[0] %[0] %[0] %[0] %[0] %[0] %[0] ",
 					x1 - ox, y1 - oy, x2 - ox, y2 - oy, thickness, clearance, mask);
 					pcb_print_quoted_string(FP, (char *)RND_EMPTY(rnd_attribute_get(&ps->Attributes, "name")));
 					fprintf(FP, " ");
@@ -511,23 +511,23 @@ TODO("textrot: incompatibility warning")
 
 			if ((ly->meta.bound.type & PCB_LYT_SILK) && (ly->meta.bound.type & my_side)) {
 				linelist_foreach(&ly->Line, &it, line) {
-					pcb_fprintf(FP, "\tElementLine [%[0] %[0] %[0] %[0] %[0]]\n",
+					rnd_fprintf(FP, "\tElementLine [%[0] %[0] %[0] %[0] %[0]]\n",
 						line->Point1.X - ox, line->Point1.Y - oy,
 						line->Point2.X - ox, line->Point2.Y - oy,
 						line->Thickness);
 				}
 				arclist_foreach(&ly->Arc, &it, arc) {
-					pcb_fprintf(FP, "\tElementArc [%[0] %[0] %[0] %[0] %ma %ma %[0]]\n",
+					rnd_fprintf(FP, "\tElementArc [%[0] %[0] %[0] %[0] %ma %ma %[0]]\n",
 						arc->X - ox, arc->Y - oy, arc->Width, arc->Height,
 						arc->StartAngle, arc->Delta, arc->Thickness);
 				}
 				if (polylist_length(&ly->Polygon) > 0) {
-					char *desc = pcb_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
+					char *desc = rnd_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
 					pcb_io_incompat_save(sc->data, NULL, "element-obj", desc, "only lines and arcs are exported");
 					free(desc);
 				}
 				if (textlist_length(&ly->Text) > 1) {
-					char *desc = pcb_strdup_printf("Text on layer %s can not be exported in an element", ly->name);
+					char *desc = rnd_strdup_printf("Text on layer %s can not be exported in an element", ly->name);
 					pcb_io_incompat_save(sc->data, NULL, "element-obj", desc, "only lines and arcs are exported");
 					free(desc);
 				}
@@ -535,7 +535,7 @@ TODO("textrot: incompatibility warning")
 			}
 
 			if (!(ly->meta.bound.type & PCB_LYT_VIRTUAL) && (!pcb_layer_is_pure_empty(ly))) {
-				char *desc = pcb_strdup_printf("Objects on layer %s can not be exported in an element", ly->name);
+				char *desc = rnd_strdup_printf("Objects on layer %s can not be exported in an element", ly->name);
 				pcb_io_incompat_save(sc->data, NULL, "element-layer", desc, "only top silk lines and arcs are exported; heavy terminals are not supported, use padstacks only");
 				free(desc);
 			}
@@ -548,7 +548,7 @@ static int io_pcb_WriteSubcData(pcb_plug_io_t *ctx, FILE *FP, pcb_data_t *Data, 
 	gdl_iterator_t sit;
 	pcb_subc_t *sc;
 
-	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
+	rnd_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 
 	subclist_foreach(&Data->subc, &sit, sc) {
 		if ((subc_idx != -1) && (subc_idx != sit.count))
@@ -566,7 +566,7 @@ int io_pcb_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, 
 
 int io_pcb_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc)
 {
-	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
+	rnd_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	io_pcb_print_subc(ctx, f, subc);
 	return 0;
 }
@@ -613,12 +613,12 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 		WriteAttributeList(FP, &layer->Attributes, "\t", NULL);
 
 		linelist_foreach(&layer->Line, &it, line) {
-			pcb_fprintf(FP, "\tLine[%[0] %[0] %[0] %[0] %[0] %[0] %s]\n",
+			rnd_fprintf(FP, "\tLine[%[0] %[0] %[0] %[0] %[0] %[0] %s]\n",
 									line->Point1.X, line->Point1.Y,
 									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, PCB_OBJ_LINE));
 		}
 		arclist_foreach(&layer->Arc, &it, arc) {
-			pcb_fprintf(FP, "\tArc[%[0] %[0] %[0] %[0] %[0] %[0] %ma %ma %s]\n",
+			rnd_fprintf(FP, "\tArc[%[0] %[0] %[0] %[0] %[0] %[0] %ma %ma %s]\n",
 									arc->X, arc->Y, arc->Width,
 									arc->Height, arc->Thickness, arc->Clearance, arc->StartAngle, arc->Delta, F2S(arc, PCB_OBJ_ARC));
 		}
@@ -627,7 +627,7 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 			if (!pcb_text_old_direction(&dir, text->rot)) {
 TODO("textrot: incompatibility warning")
 			}
-			pcb_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, text->Scale);
+			rnd_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, text->Scale);
 			pcb_print_quoted_string(FP, (char *) RND_EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_OBJ_TEXT));
 		}
@@ -651,7 +651,7 @@ TODO("textrot: incompatibility warning")
 					if (hole)
 						fputs("\t", FP);
 				}
-				pcb_fprintf(FP, "[%[0] %[0]] ", point->X, point->Y);
+				rnd_fprintf(FP, "[%[0] %[0]] ", point->X, point->Y);
 			}
 			if (hole > 0)
 				fputs("\n\t\t)", FP);
@@ -721,7 +721,7 @@ static void WriteLayers(FILE *FP, pcb_data_t *data)
 		int purpi = pcb_layer_purpose_(ly, NULL);
 		if ((!(lyt & (PCB_LYT_COPPER | PCB_LYT_SILK))) && (!PCB_LAYER_IS_ROUTE(lyt, purpi))) {
 			if (!pcb_layer_is_pure_empty(ly)) {
-				char *desc = pcb_strdup_printf("Layer %s can be exported only as a copper layer", ly->name);
+				char *desc = rnd_strdup_printf("Layer %s can be exported only as a copper layer", ly->name);
 				pcb_io_incompat_save(data, NULL, "layer", desc, NULL);
 				free(desc);
 			}
@@ -736,7 +736,7 @@ int io_pcb_WritePCB(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, con
 
 	LayersFixup();
 
-	pcb_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
+	rnd_printf_slot[0] = ((io_pcb_ctx_t *)(ctx->plugin_data))->write_coord_fmt;
 	WritePCBInfoHeader(FP);
 	WritePCBDataHeader(FP);
 	WritePCBFontData(FP);
@@ -915,7 +915,7 @@ int pcb_layer_improvise(pcb_board_t *pcb, rnd_bool setup)
 		/* make sure every layer has a name */
 		for(lid = 0; lid < pcb->Data->LayerN; lid++)
 			if (pcb->Data->Layer[lid].name == NULL)
-				pcb->Data->Layer[lid].name = pcb_strdup_printf("anon_%d", lid);
+				pcb->Data->Layer[lid].name = rnd_strdup_printf("anon_%d", lid);
 
 		for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 			if (strcmp(pcb->Data->Layer[lid].name, "silk") == 0) {
@@ -1051,9 +1051,9 @@ TODO("subc: TextFlags")
 
 	if (Flags.f & PCB_FLAG_HIDENAME) {
 		char tmp[128];
-		pcb_sprintf(tmp, "%$mm", TextX);
+		rnd_sprintf(tmp, "%$mm", TextX);
 		rnd_attribute_put(&sc->Attributes, "io_pcb::hidename_x", tmp);
-		pcb_sprintf(tmp, "%$mm", TextY);
+		rnd_sprintf(tmp, "%$mm", TextY);
 		rnd_attribute_put(&sc->Attributes, "io_pcb::hidename_y", tmp);
 		sprintf(tmp, "%d", Direction);
 		rnd_attribute_put(&sc->Attributes, "io_pcb::hidename_direction", tmp);

@@ -57,7 +57,7 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 	v = pl->head;
 	do {
 		n = v->next;
-		pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
+		rnd_fprintf(f, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
 	}
 	while((v = v->next) != pl->head);
 	fprintf(f, "!pline end\n");
@@ -68,8 +68,8 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 static void cross(FILE *f, rnd_coord_t x, rnd_coord_t y)
 {
 	static rnd_coord_t cs = PCB_MM_TO_COORD(0.2);
-	pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x - cs, y, x + cs, y);
-	pcb_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x, y - cs, x, y + cs);
+	rnd_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x - cs, y, x + cs, y);
+	rnd_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x, y - cs, x, y + cs);
 }
 #endif
 

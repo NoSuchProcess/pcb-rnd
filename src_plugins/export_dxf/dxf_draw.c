@@ -79,8 +79,8 @@ static void dxf_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx, gc);
 	fprintf(ctx->f, "100\nAcDbLine\n");
-	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x1), TRY(y1));
-	pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x2), TRY(y2));
+	rnd_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x1), TRY(y1));
+	rnd_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x2), TRY(y2));
 }
 
 static void dxf_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
@@ -93,19 +93,19 @@ static void dxf_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 	/* contour, just in case the hatch fails */
 	if (ctx->drill_contour) {
 		fprintf(ctx->f, "100\nAcDbCircle\n");
-		pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
-		pcb_fprintf(ctx->f, "40\n%mm\n", r);
+		rnd_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
+		rnd_fprintf(ctx->f, "40\n%mm\n", r);
 	}
 
 	/* hatch for fill circle: use it for copper or if explicitly requested */
 	if (ctx->drill_fill || !gc->drawing_hole) {
 		dxf_hatch_pre(ctx, &thin, 1);
-		pcb_fprintf(ctx->f, "72\n2\n"); /* circular contour */
-		pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
-		pcb_fprintf(ctx->f, "40\n%mm\n", r);
-		pcb_fprintf(ctx->f, "50\n0\n");
-		pcb_fprintf(ctx->f, "51\n360\n");
-		pcb_fprintf(ctx->f, "73\n1\n"); /* is closed */
+		rnd_fprintf(ctx->f, "72\n2\n"); /* circular contour */
+		rnd_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
+		rnd_fprintf(ctx->f, "40\n%mm\n", r);
+		rnd_fprintf(ctx->f, "50\n0\n");
+		rnd_fprintf(ctx->f, "51\n360\n");
+		rnd_fprintf(ctx->f, "73\n1\n"); /* is closed */
 		dxf_hatch_post(ctx);
 	}
 }
@@ -134,8 +134,8 @@ static void dxf_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	dxf_draw_handle(ctx);
 	dxf_draw_line_props(ctx, gc);
 	fprintf(ctx->f, "100\nAcDbCircle\n");
-	pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
-	pcb_fprintf(ctx->f, "40\n%mm\n", (width + height)/2);
+	rnd_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(cx), TRY(cy));
+	rnd_fprintf(ctx->f, "40\n%mm\n", (width + height)/2);
 	fprintf(ctx->f, "100\nAcDbArc\n");
 	fprintf(ctx->f, "50\n%f\n", start_angle);
 	fprintf(ctx->f, "51\n%f\n", end_angle);
@@ -167,8 +167,8 @@ static void dxf_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 			if (to == n_coords)
 				to = 0;
 			fprintf(ctx->f, "72\n1\n"); /* edge=line */
-			pcb_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]+dx), TRY(y[n]+dy));
-			pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]+dx), TRY(y[to]+dy));
+			rnd_fprintf(ctx->f, "10\n%mm\n20\n%mm\n", TRX(x[n]+dx), TRY(y[n]+dy));
+			rnd_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x[to]+dx), TRY(y[to]+dy));
 		}
 		dxf_hatch_post(ctx);
 	}

@@ -112,7 +112,7 @@ static void fill_field_coord(write_ctx_t *ctx, char *dst, int start, int end, rn
 		sprintf(fmt, "%%0%d.0mm", len);
 		crd *= 1000;
 	}
-	pcb_snprintf(tmp, sizeof(tmp), fmt, crd);
+	rnd_snprintf(tmp, sizeof(tmp), fmt, crd);
 	fill_field(dst, start, end, tmp, name);
 }
 

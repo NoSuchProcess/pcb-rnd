@@ -53,13 +53,13 @@ static void set_right(srchedit_ctx_t *ctx, rnd_hid_attribute_t *attr)
 			ctx->se.right = rnd_strdup(attr->val.str);
 			break;
 		case RIGHT_INT:
-			ctx->se.right = pcb_strdup_printf("%d", attr->val.lng);
+			ctx->se.right = rnd_strdup_printf("%d", attr->val.lng);
 			break;
 		case RIGHT_DOUBLE:
-			ctx->se.right = pcb_strdup_printf("%f", attr->val.dbl);
+			ctx->se.right = rnd_strdup_printf("%f", attr->val.dbl);
 			break;
 		case RIGHT_COORD:
-			ctx->se.right = pcb_strdup_printf("%$mm", attr->val.crd);
+			ctx->se.right = rnd_strdup_printf("%$mm", attr->val.crd);
 			break;
 		case RIGHT_CONST:
 		case RIGHT_max:
@@ -94,7 +94,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 	/* add all items */
 	cell[1] = NULL;
 	for(o = op->ops; *o != NULL; o++) {
-		cell[0] = pcb_strdup_printf(*o);
+		cell[0] = rnd_strdup_printf(*o);
 		r = rnd_dad_tree_append(attr, NULL, cell);
 		r->user_data = (void *)(*o); /* will be casted back to const char * only */
 		if ((!click) && (ctx->se.op == *o))
@@ -129,7 +129,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 	/* add all items */
 	cell[1] = NULL;
 	for(o = s->expr->right_const->ops; *o != NULL; o++) {
-		cell[0] = pcb_strdup_printf(*o);
+		cell[0] = rnd_strdup_printf(*o);
 		rnd_dad_tree_append(attr, NULL, cell);
 	}
 

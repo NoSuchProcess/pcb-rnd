@@ -35,7 +35,7 @@ static void pcb_conf_legacy_(rnd_conf_native_t *ndst, rnd_conf_native_t *nlegacy
 	const char *dst_path = ndst->hash_path;
 
 	gds_init(&tmp);
-	rnd_conf_print_native_field((rnd_conf_pfn)pcb_append_printf, &tmp, 0, &nlegacy->val, nlegacy->type, nlegacy->prop, 0);
+	rnd_conf_print_native_field((rnd_conf_pfn)rnd_append_printf, &tmp, 0, &nlegacy->val, nlegacy->type, nlegacy->prop, 0);
 	if (tmp.used > 0)
 		rnd_conf_set(RND_CFR_INTERNAL, dst_path, -1, tmp.array, RND_POL_OVERWRITE);
 	gds_uninit(&tmp);

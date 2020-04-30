@@ -43,7 +43,7 @@ static const char *search_acts[] = { "select", "unselect", "view", NULL };
 #define NEW_EXPR_LAB "<edit me>"
 
 /* for debugging: */
-/*#define NEW_EXPR_LAB pcb_strdup_printf("%d:%d", row, col)*/
+/*#define NEW_EXPR_LAB rnd_strdup_printf("%d:%d", row, col)*/
 
 #include "dlg_search_tab.h"
 

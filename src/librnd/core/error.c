@@ -42,7 +42,7 @@ void rnd_trace(const char *Format, ...)
 #ifndef NDEBUG
 	va_list args;
 	va_start(args, Format);
-	pcb_vfprintf(stderr, Format, args);
+	rnd_vfprintf(stderr, Format, args);
 	va_end(args);
 #endif
 }
@@ -63,7 +63,7 @@ void rnd_message(rnd_message_level_t level, const char *Format, ...)
 
 		if ((level >= min_level) || (rnd_conf.rc.verbose)) {
 			va_start(args, Format);
-			pcb_vfprintf(stderr, Format, args);
+			rnd_vfprintf(stderr, Format, args);
 			va_end(args);
 		}
 	}
@@ -74,7 +74,7 @@ void rnd_message(rnd_message_level_t level, const char *Format, ...)
 	gds_enlarge(&tmp, sizeof(rnd_logline_t));
 	tmp.used = offsetof(rnd_logline_t, str);
 	va_start(args, Format);
-	pcb_safe_append_vprintf(&tmp, 0, Format, args);
+	rnd_safe_append_vprintf(&tmp, 0, Format, args);
 	va_end(args);
 
 	/* add the header and link in */

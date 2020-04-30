@@ -121,7 +121,7 @@ void cmd_print(char *arg)
 		return;
 	}
 	gds_init(&s);
-	rnd_conf_print_native((rnd_conf_pfn)pcb_append_printf, &s, NULL, 0, node);
+	rnd_conf_print_native((rnd_conf_pfn)rnd_append_printf, &s, NULL, 0, node);
 	printf("%s='%s'\n", node->hash_path, s.array);
 	gds_uninit(&s);
 }

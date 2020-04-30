@@ -88,14 +88,14 @@ static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up, rnd_coord_t
 	fprintf(f, "		outer loop\n");
 
 	if (up) {
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
+		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
+		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
+		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
 	}
 	else {
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
-		pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
+		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
+		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
+		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
 	}
 
 	fprintf(f, "		endloop\n");
@@ -114,17 +114,17 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 
 	fprintf(f, "	facet normal %f %f 0\n", nx, ny);
 	fprintf(f, "		outer loop\n");
-	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
-	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z1);
-	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
+	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
+	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z1);
+	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
 	fprintf(f, "		endloop\n");
 	fprintf(f, "	endfacet\n");
 
 	fprintf(f, "	facet normal %f %f 0\n", nx, ny);
 	fprintf(f, "		outer loop\n");
-	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
-	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
-	pcb_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z0);
+	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
+	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
+	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z0);
 	fprintf(f, "		endloop\n");
 	fprintf(f, "	endfacet\n");
 }

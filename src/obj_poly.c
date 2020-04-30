@@ -311,7 +311,7 @@ static int undo_poly_mirror_swap(void *udata)
 static void undo_poly_mirror_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_poly_mirror_t *g = udata;
-	pcb_snprintf(dst, dst_len, "poly mirror y=%$mm", g->y_offs);
+	rnd_snprintf(dst, dst_len, "poly mirror y=%$mm", g->y_offs);
 }
 
 static const uundo_oper_t undo_poly_mirror = {

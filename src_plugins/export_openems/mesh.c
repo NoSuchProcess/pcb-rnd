@@ -125,9 +125,9 @@ TODO("reorder to avoid fwd decl")
 static void mesh_auto_add_smooth(vtc0_t *v, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t d1, rnd_coord_t d, rnd_coord_t d2);
 
 #define SAVE_INT(name) \
-	pcb_append_printf(dst, "%s  " #name" = %d\n", prefix, (int)me->dlg[me->name].val.lng);
+	rnd_append_printf(dst, "%s  " #name" = %d\n", prefix, (int)me->dlg[me->name].val.lng);
 #define SAVE_COORD(name) \
-	pcb_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (rnd_coord_t)me->dlg[me->name].val.crd);
+	rnd_append_printf(dst, "%s  " #name" = %.08$$mm\n", prefix, (rnd_coord_t)me->dlg[me->name].val.crd);
 void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 {
 	int n;
@@ -135,7 +135,7 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 	if (prefix == NULL)
 		prefix = "";
 
-	pcb_append_printf(dst, "%sha:pcb-rnd-mesh-v1 {\n", prefix);
+	rnd_append_printf(dst, "%sha:pcb-rnd-mesh-v1 {\n", prefix);
 	SAVE_COORD(dens_obj);
 	SAVE_COORD(dens_gap);
 	SAVE_COORD(min_space);
@@ -151,7 +151,7 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 	SAVE_COORD(max_air);
 	SAVE_COORD(def_subs_thick);
 	SAVE_COORD(def_copper_thick);
-	pcb_append_printf(dst, "%s  li:boundary = {", prefix);
+	rnd_append_printf(dst, "%s  li:boundary = {", prefix);
 	for(n = 0; n < 6; n++) {
 		int bidx = me->dlg[me->bnd[n]].val.lng;
 		const char *bs;
@@ -171,10 +171,10 @@ void pcb_mesh_save(const mesh_dlg_t *me, gds_t *dst, const char *prefix)
 			bs = "invalid";
 		else
 			bs = subslines[sidx];
-		pcb_append_printf(dst, "%s  subslines = %s\n", prefix, bs);
+		rnd_append_printf(dst, "%s  subslines = %s\n", prefix, bs);
 	}
 
-	pcb_append_printf(dst, "%s}\n", prefix);
+	rnd_append_printf(dst, "%s}\n", prefix);
 }
 #undef SAVE_INT
 #undef SAVE_COORD
@@ -1038,7 +1038,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 
 	free(mesh.ui_name_xy);
 	free((char *)mesh.ui_layer_xy->name); /* we have strdup'd it */
-	mesh.ui_name_xy = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
+	mesh.ui_name_xy = rnd_strdup_printf("mesh 0: %s", mesh.layer->name);
 	mesh.ui_layer_xy->name = rnd_strdup(mesh.ui_name_xy);
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 

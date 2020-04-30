@@ -1218,7 +1218,7 @@ static int undo_pstk_mirror_swap(void *udata)
 static void undo_pstk_mirror_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_pstk_mirror_t *g = udata;
-	pcb_snprintf(dst, dst_len, "pstk mirror y_offs=%$mm swap_side=%d disable_xmirror=%d", g->y_offs, g->swap_side, g->disable_xmirror);
+	rnd_snprintf(dst, dst_len, "pstk mirror y_offs=%$mm swap_side=%d disable_xmirror=%d", g->y_offs, g->swap_side, g->disable_xmirror);
 }
 
 static const uundo_oper_t undo_pstk_mirror = {
@@ -1322,7 +1322,7 @@ static int undo_pstk_thermal_swap(void *udata)
 static void undo_pstk_thermal_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_pstk_thermal_t *t = udata;
-	pcb_snprintf(dst, dst_len, "pstk_thermal: #%ld %ld %d", t->ps->ID, t->lid, t->shape);
+	rnd_snprintf(dst, dst_len, "pstk_thermal: #%ld %ld %d", t->ps->ID, t->lid, t->shape);
 }
 
 static const uundo_oper_t undo_pstk_thermal = {
@@ -1439,7 +1439,7 @@ static int undo_change_instance_swap(void *udata)
 static void undo_change_instance_print(void *udata, char *dst, size_t dst_len)
 {
 	padstack_change_instance_t *u = udata;
-	pcb_snprintf(dst, dst_len, "padstack change: clearance=%$mm rot=%.2f xmirror=%d smirror=%d\n", u->clearance, u->rot, u->xmirror, u->smirror);
+	rnd_snprintf(dst, dst_len, "padstack change: clearance=%$mm rot=%.2f xmirror=%d smirror=%d\n", u->clearance, u->rot, u->xmirror, u->smirror);
 }
 
 static const uundo_oper_t undo_pstk_change_instance = {

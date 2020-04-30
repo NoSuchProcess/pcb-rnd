@@ -459,11 +459,11 @@ static void layer_vis_box(gen_xpm_t *dst, int filled, const rnd_color_t *color, 
 	char *p;
 	unsigned int w, line = 0, n;
 
-	pcb_snprintf(dst->buf[line++], 20, "%d %d 4 1", width, height);
+	rnd_snprintf(dst->buf[line++], 20, "%d %d 4 1", width, height);
 	strcpy(dst->buf[line++], ".	c None");
 	strcpy(dst->buf[line++], "u	c None");
 	strcpy(dst->buf[line++], "b	c #000000");
-	pcb_snprintf(dst->buf[line++], 20, "c	c #%02X%02X%02X", color->r, color->g, color->b);
+	rnd_snprintf(dst->buf[line++], 20, "c	c #%02X%02X%02X", color->r, color->g, color->b);
 
 	while (height--) {
 		w = width;

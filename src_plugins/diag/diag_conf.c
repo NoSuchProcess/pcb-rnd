@@ -41,6 +41,6 @@ void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefi
 			if (strncmp(node->hash_path, match_prefix, pl) != 0)
 				continue;
 		}
-		rnd_conf_print_native((rnd_conf_pfn)pcb_fprintf, f, prefix, verbose, node);
+		rnd_conf_print_native((rnd_conf_pfn)rnd_fprintf, f, prefix, verbose, node);
 	}
 }

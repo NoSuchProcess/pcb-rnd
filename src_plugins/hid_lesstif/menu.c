@@ -212,7 +212,7 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 			if (p == aw)
 				have_xy = 1;
 		}
-		/*pcb_printf("have xy from %s: %$mD\n", XtName(aw), action_x, action_y); */
+		/*rnd_printf("have xy from %s: %$mD\n", XtName(aw), action_x, action_y); */
 	}
 
 	lesstif_need_idle_proc();

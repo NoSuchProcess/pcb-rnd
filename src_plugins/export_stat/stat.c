@@ -243,7 +243,7 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 			fprintf(f, "			lines=%lu\n", ls.lines);
 			fprintf(f, "			arcs=%lu\n",  ls.arcs);
 			fprintf(f, "			polys=%lu\n", ls.polys);
-			pcb_fprintf(f, "			trace_len=%$mm\n", ls.trace_len);
+			rnd_fprintf(f, "			trace_len=%$mm\n", ls.trace_len);
 			fprintf(f, "			copper_area={%f mm^2}\n", (double)ls.copper_area / (double)PCB_MM_TO_COORD(1) / (double)PCB_MM_TO_COORD(1));
 		}
 		fprintf(f, "		}\n");
@@ -259,7 +259,7 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 			fprintf(f, "			lines=%lu\n", lgss[lgid].lines);
 			fprintf(f, "			arcs=%lu\n",  lgss[lgid].arcs);
 			fprintf(f, "			polys=%lu\n", lgss[lgid].polys);
-			pcb_fprintf(f, "			trace_len=%$mm\n", lgss[lgid].trace_len);
+			rnd_fprintf(f, "			trace_len=%$mm\n", lgss[lgid].trace_len);
 			fprintf(f, "			copper_area={%f mm^2}\n", (double)lgss[lgid].copper_area / (double)PCB_MM_TO_COORD(1) / (double)PCB_MM_TO_COORD(1));
 			fprintf(f, "		}\n");
 		}
@@ -348,8 +348,8 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	fprintf(f, "		id={%s}\n", options[HA_board_id].str == NULL ? "" : options[HA_board_id].str);
 	fprintf(f, "		license={%s}\n", options[HA_license].str);
 	fprintf(f, "		format={%s}\n", PCB->Data->loader == NULL ? "unknown" : PCB->Data->loader->description);
-	pcb_fprintf(f, "		width=%$mm\n", width);
-	pcb_fprintf(f, "		height=%$mm\n", height);
+	rnd_fprintf(f, "		width=%$mm\n", width);
+	rnd_fprintf(f, "		height=%$mm\n", height);
 	fprintf(f, "		gross_area={%.4f mm^2}\n", (double)PCB_COORD_TO_MM(width) * (double)PCB_COORD_TO_MM(height));
 	fprintf(f, "		holes_plated=%d\n", hp);
 	fprintf(f, "		holes_unplated=%d\n", hup);

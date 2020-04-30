@@ -61,7 +61,7 @@ static void cam_gen_fn(pcb_cam_t *dst)
 	ctx.cam = dst;
 	ctx.vars = pcb_cam_vars;
 	free(dst->fn);
-	dst->fn = pcb_strdup_subst(dst->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	dst->fn = rnd_strdup_subst(dst->fn_template, cam_update_name_cb, &ctx, RND_SUBST_HOME | RND_SUBST_PERCENT | RND_SUBST_CONF);
 }
 
 
@@ -85,10 +85,10 @@ char *pcb_layer_to_file_name_append(gds_t *dest, rnd_layer_id_t lid, unsigned in
 		if (styp == NULL) styp = "none";
 		if (purpose == NULL) purpose = "none";
 		if (group < 0) {
-			pcb_append_printf(dest, "%s.%s.%s.none", sloc, styp, purpose);
+			rnd_append_printf(dest, "%s.%s.%s.none", sloc, styp, purpose);
 		}
 		else
-			pcb_append_printf(dest, "%s.%s.%s.%ld", sloc, styp, purpose, group);
+			rnd_append_printf(dest, "%s.%s.%s.%ld", sloc, styp, purpose, group);
 		return dest->array;
 	}
 
@@ -115,7 +115,7 @@ char *pcb_layer_to_file_name_append(gds_t *dest, rnd_layer_id_t lid, unsigned in
 		else if (flags & PCB_LYT_PASTE)
 			res = "toppaste";
 		else if (purpose != NULL) {
-			pcb_snprintf(buf, sizeof(buf), "top-%s", purpose);
+			rnd_snprintf(buf, sizeof(buf), "top-%s", purpose);
 			res = buf;
 		}
 		else
@@ -129,7 +129,7 @@ char *pcb_layer_to_file_name_append(gds_t *dest, rnd_layer_id_t lid, unsigned in
 		else if (flags & PCB_LYT_PASTE)
 			res = "bottompaste";
 		else if (purpose != NULL) {
-			pcb_snprintf(buf, sizeof(buf), "bottom-%s", purpose);
+			rnd_snprintf(buf, sizeof(buf), "bottom-%s", purpose);
 			res = buf;
 		}
 		else
@@ -444,7 +444,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 		tune = get_tune(input);
 
 		pcb_layergrp_dist(PCB, pcb_layergrp_id(PCB, ctx->grp), tcop_id, PCB_LYT_COPPER, &from_top);
-		pcb_append_printf(s, "%d", from_top+tune);
+		rnd_append_printf(s, "%d", from_top+tune);
 	}
 	else if (strncmp(*input, "bot_offs", 8) == 0) {
 		int tune, from_bot = -1;
@@ -455,7 +455,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 		tune = get_tune(input);
 
 		pcb_layergrp_dist(PCB, pcb_layergrp_id(PCB, ctx->grp), bcop_id, PCB_LYT_COPPER, &from_bot);
-		pcb_append_printf(s, "%d", from_bot+tune);
+		rnd_append_printf(s, "%d", from_bot+tune);
 	}
 	else {
 		char *end = strchr(*input, '%');
@@ -498,7 +498,7 @@ static int cam_update_name(pcb_cam_t *cam, rnd_layergrp_id_t gid, const pcb_virt
 	ctx.grp = pcb_get_layergrp(cam->pcb, gid);
 	ctx.vl = vl;
 	ctx.vars = pcb_cam_vars;
-	cam->fn = pcb_strdup_subst(cam->fn_template, cam_update_name_cb, &ctx, PCB_SUBST_HOME | PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	cam->fn = rnd_strdup_subst(cam->fn_template, cam_update_name_cb, &ctx, RND_SUBST_HOME | RND_SUBST_PERCENT | RND_SUBST_CONF);
 	if ((cam->fn_last == NULL) || (strcmp(cam->fn, cam->fn_last) != 0)) {
 		cam->fn_changed = 1;
 		free(cam->fn_last);

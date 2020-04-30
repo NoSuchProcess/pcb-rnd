@@ -167,7 +167,7 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 
 	if (type == PCB_FP_PARAMETRIC) {
 		/* concat name and () */
-		/* do not use pcb_strdup_printf or Concat here, do not increase gsch2pcb-rnd deps */
+		/* do not use rnd_strdup_printf or Concat here, do not increase gsch2pcb-rnd deps */
 		int nl = strlen(name);
 		entry->name = malloc(nl+3);
 		memcpy(entry->name, name, nl);

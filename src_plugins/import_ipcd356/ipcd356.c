@@ -51,7 +51,7 @@ static const char *ipcd356_cookie = "ipcd356 importer";
 static void set_src(rnd_attribute_list_t *a, const char *fn, long lineno)
 {
 	char src[8192];
-	pcb_snprintf(src, sizeof(src), "ipcd356::%s:%ld", fn, lineno);
+	rnd_snprintf(src, sizeof(src), "ipcd356::%s:%ld", fn, lineno);
 	rnd_attribute_put(a, "source", src);
 }
 

@@ -1296,10 +1296,10 @@ static int eagle_read_contactref(read_state_t *st, trnode_t *subtree, void *obj,
 	}
 
 	if (elem != NULL && elem[0] == '-' && elem[1] == '\0') {
-		pcb_snprintf(conn, sizeof(conn), "%s-%s", "HYPHEN", pad);
+		rnd_snprintf(conn, sizeof(conn), "%s-%s", "HYPHEN", pad);
 		rnd_message(RND_MSG_WARNING, "Substituted invalid element name '-' with 'HYPHEN'\n");
 	} else {
-		pcb_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
+		rnd_snprintf(conn, sizeof(conn), "%s-%s", elem, pad);
 	}
 
 	net = eagle_get_attrs(st, PARENT(subtree), "name", NULL);

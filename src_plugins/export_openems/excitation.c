@@ -192,7 +192,7 @@ static char *exc_gaus_get(int idx)
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc"), &fc))
 		rnd_message(RND_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::fc\n");
 
-	return pcb_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
+	return rnd_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
 }
 
 static void exc_gaus_ser(int idx, int save)
@@ -227,7 +227,7 @@ static char *exc_sin_get(int idx)
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0"), &f0))
 		rnd_message(RND_MSG_ERROR, "Sinus excitation: unable to parse frequency sinusoidal::f0\n");
 
-	return pcb_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
+	return rnd_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
 }
 
 static void exc_sin_ser(int idx, int save)
@@ -267,7 +267,7 @@ static char *exc_cust_get(int idx)
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"), &f0))
 		rnd_message(RND_MSG_ERROR, "Custom excitation: unable to parse frequency custom::f0\n");
 
-	return pcb_strdup_printf(
+	return rnd_strdup_printf(
 		"FDTD = SetCustomExcite(FDTD, %f, %s)",
 		f0,
 		rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
@@ -492,7 +492,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 		RND_PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
 		RND_PCB_ACT_CONVARG(start+1, FGW_STR, OpenemsExcitation, val = argv[start+1].val.str);
 
-		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
+		attrkey = rnd_strdup_printf(AEPREFIX "%s::%s", a1, key);
 		rnd_attribute_put(&PCB->Attributes, attrkey, val);
 		free(attrkey);
 
@@ -512,7 +512,7 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 
 		RND_PCB_ACT_CONVARG(start+0, FGW_STR, OpenemsExcitation, key = argv[start+0].val.str);
 
-		attrkey = pcb_strdup_printf(AEPREFIX "%s::%s", a1, key);
+		attrkey = rnd_strdup_printf(AEPREFIX "%s::%s", a1, key);
 		res->type = FGW_STR;
 		res->val.cstr = rnd_attribute_get(&PCB->Attributes, attrkey);
 		free(attrkey);

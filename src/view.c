@@ -210,7 +210,7 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 static void view_append_str(gds_t *dst, const char *prefix, const char *key, const char *value)
 {
 	const char *s;
-	pcb_append_printf(dst, "%s  %s = {", prefix, key);
+	rnd_append_printf(dst, "%s  %s = {", prefix, key);
 	for(s = value; *s != '\0'; s++) {
 		switch(*s) {
 			case '\\':
@@ -244,44 +244,44 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 	if (prefix == NULL)
 		prefix = "";
 
-	pcb_append_printf(dst, "%sha:view.%lu {\n", prefix, v->uid);
+	rnd_append_printf(dst, "%sha:view.%lu {\n", prefix, v->uid);
 	view_append_str(dst, prefix, "type", v->type);
 	view_append_str(dst, prefix, "title", v->title);
 	view_append_str(dst, prefix, "description", v->description);
 	if (v->have_bbox)
-		pcb_append_printf(dst, "%s  li:bbox = {%.08$$mm; %.08$$mm; %.08$$mm; %.08$$mm;}\n", prefix, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
+		rnd_append_printf(dst, "%s  li:bbox = {%.08$$mm; %.08$$mm; %.08$$mm; %.08$$mm;}\n", prefix, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 	if (v->have_xy)
-		pcb_append_printf(dst, "%s  li:xy = {%.08$$mm; %.08$$mm;}\n", prefix, v->x, v->y);
+		rnd_append_printf(dst, "%s  li:xy = {%.08$$mm; %.08$$mm;}\n", prefix, v->x, v->y);
 
 	for(g = 0; g < 2; g++) {
 		if (pcb_idpath_list_length(&v->objs[g]) > 0) {
 			pcb_idpath_t *i;
-			pcb_append_printf(dst, "%s  li:objs.%d {\n", prefix, g);
+			rnd_append_printf(dst, "%s  li:objs.%d {\n", prefix, g);
 			for(i = pcb_idpath_list_first(&v->objs[g]); i != NULL; i = pcb_idpath_list_next(i)) {
-				pcb_append_printf(dst, "%s    li:id {", prefix);
+				rnd_append_printf(dst, "%s    li:id {", prefix);
 				for(n = 0; n < i->len; n++)
-					pcb_append_printf(dst, "%ld;", i->id[n]);
-				pcb_append_printf(dst, "}\n", prefix);
+					rnd_append_printf(dst, "%ld;", i->id[n]);
+				rnd_append_printf(dst, "}\n", prefix);
 			}
-			pcb_append_printf(dst, "%s  }\n", prefix);
+			rnd_append_printf(dst, "%s  }\n", prefix);
 		}
 	}
 
 	switch(v->data_type) {
 		case PCB_VIEW_PLAIN:
-			pcb_append_printf(dst, "%s  data_type = plain\n", prefix);
+			rnd_append_printf(dst, "%s  data_type = plain\n", prefix);
 			break;
 		case PCB_VIEW_DRC:
-			pcb_append_printf(dst, "%s  data_type = drc\n", prefix);
-			pcb_append_printf(dst, "%s  ha:data {\n", prefix);
-			pcb_append_printf(dst, "%s    required_value = %.08$$mm\n", prefix, v->data.drc.required_value);
+			rnd_append_printf(dst, "%s  data_type = drc\n", prefix);
+			rnd_append_printf(dst, "%s  ha:data {\n", prefix);
+			rnd_append_printf(dst, "%s    required_value = %.08$$mm\n", prefix, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
-				pcb_append_printf(dst, "%s    measured_value = %.08$$mm\n", prefix, v->data.drc.measured_value);
-			pcb_append_printf(dst, "%s  }\n", prefix);
+				rnd_append_printf(dst, "%s    measured_value = %.08$$mm\n", prefix, v->data.drc.measured_value);
+			rnd_append_printf(dst, "%s  }\n", prefix);
 			break;
 	}
 
-	pcb_append_printf(dst, "%s}\n", prefix);
+	rnd_append_printf(dst, "%s}\n", prefix);
 }
 
 typedef struct {

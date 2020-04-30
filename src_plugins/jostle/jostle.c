@@ -356,13 +356,13 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 	p[0] = line->Point1.X;
 	p[1] = line->Point1.Y;
 	if (pcb_poly_contour_inside(info->brush->contours, p)) {
-		pcb_fprintf(stderr, "\tinside1 %ms,%ms\n", p[0], p[1]);
+		rnd_fprintf(stderr, "\tinside1 %ms,%ms\n", p[0], p[1]);
 		inside++;
 	}
 	p[0] = line->Point2.X;
 	p[1] = line->Point2.Y;
 	if (pcb_poly_contour_inside(info->brush->contours, p)) {
-		pcb_fprintf(stderr, "\tinside2 %ms,%ms\n", p[0], p[1]);
+		rnd_fprintf(stderr, "\tinside2 %ms,%ms\n", p[0], p[1]);
 		inside++;
 	}
 	lp = pcb_poly_from_pcb_line(line, line->Thickness);
@@ -387,14 +387,14 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 		return 0;
 	r = pcb_polyarea_boolean_free(copy, lp, &tmp, PCB_PBO_SUB);
 	if (r != pcb_err_ok) {
-		pcb_fprintf(stderr, "Error while jostling PCB_PBO_SUB: %d\n", r);
+		rnd_fprintf(stderr, "Error while jostling PCB_PBO_SUB: %d\n", r);
 		return 0;
 	}
 	if (tmp == tmp->f) {
 		/* it didn't slice, must have glanced. intersect instead
 		 * to get the glancing sliver??
 		 */
-		pcb_fprintf(stderr, "try isect??\n");
+		rnd_fprintf(stderr, "try isect??\n");
 		lp = pcb_poly_from_pcb_line(line, line->Thickness);
 		r = pcb_polyarea_boolean_free(tmp, lp, &tmp, PCB_PBO_ISECT);
 		if (r != pcb_err_ok) {
@@ -409,7 +409,7 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 	n = tmp;
 	small = big = tmp->contours->area;
 	do {
-		pcb_fprintf(stderr, "\t\tarea %g, %ms,%ms %ms,%ms\n", n->contours->area, n->contours->xmin, n->contours->ymin,
+		rnd_fprintf(stderr, "\t\tarea %g, %ms,%ms %ms,%ms\n", n->contours->area, n->contours->xmin, n->contours->ymin,
 								n->contours->xmax, n->contours->ymax);
 		if (n->contours->area <= small) {
 			smallest = n;
@@ -451,9 +451,9 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 			side = JSOUTHEAST;
 		}
 	}
-	pcb_fprintf(stderr, "\t%s\n", dirnames[side]);
+	rnd_fprintf(stderr, "\t%s\n", dirnames[side]);
 	if (info->line == NULL || (!nocentroid && (big - small) < info->centroid)) {
-		pcb_fprintf(stderr, "\tkeep it!\n");
+		rnd_fprintf(stderr, "\tkeep it!\n");
 		if (info->smallest) {
 			pcb_polyarea_free(&info->smallest);
 		}
@@ -491,7 +491,7 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	do {
 		info.box = pcb_polyarea_t_boundingBox(info.brush);
 		Debugpcb_polyarea_t(info.brush, NULL);
-		pcb_fprintf(stderr, "search (%ms,%ms)->(%ms,%ms):\n", info.box.X1, info.box.Y1, info.box.X2, info.box.Y2);
+		rnd_fprintf(stderr, "search (%ms,%ms)->(%ms,%ms):\n", info.box.X1, info.box.Y1, info.box.X2, info.box.Y2);
 		info.line = NULL;
 		info.smallest = NULL;
 		pcb_r_search(info.layer->line_tree, &info.box, NULL, jostle_callback, &info, &found);

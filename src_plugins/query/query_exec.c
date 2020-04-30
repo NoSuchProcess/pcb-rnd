@@ -296,13 +296,13 @@ static const char *op2str(char *buff, int buff_size, pcb_qry_val_t *val)
 {
 	switch(val->type) {
 		case PCBQ_VT_COORD:
-			pcb_snprintf(buff, buff_size, "%mI", val->data.crd);
+			rnd_snprintf(buff, buff_size, "%mI", val->data.crd);
 			return buff;
 		case PCBQ_VT_LONG:
-			pcb_snprintf(buff, buff_size, "%ld", val->data.lng);
+			rnd_snprintf(buff, buff_size, "%ld", val->data.lng);
 			return buff;
 		case PCBQ_VT_DOUBLE:
-			pcb_snprintf(buff, buff_size, "%f", val->data.crd);
+			rnd_snprintf(buff, buff_size, "%f", val->data.crd);
 			return buff;
 		case PCBQ_VT_STRING:
 			return val->data.str;

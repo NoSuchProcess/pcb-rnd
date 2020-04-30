@@ -127,7 +127,7 @@ static int undo_term_alloc_undo(void *udata)
 static void undo_term_alloc_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_term_alloc_t *a = udata;
-	pcb_snprintf(dst, dst_len, "net_term_alloc: %s/%d %s-%s", a->netname, a->nl_idx, a->refdes, a->term);
+	rnd_snprintf(dst, dst_len, "net_term_alloc: %s/%d %s-%s", a->netname, a->nl_idx, a->refdes, a->term);
 }
 
 static void undo_term_alloc_free(void *udata)
@@ -315,7 +315,7 @@ static int undo_net_alloc_undo(void *udata)
 static void undo_net_alloc_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_net_alloc_t *a = udata;
-	pcb_snprintf(dst, dst_len, "net_alloc: %d %s", a->nl_idx, a->netname);
+	rnd_snprintf(dst, dst_len, "net_alloc: %d %s", a->nl_idx, a->netname);
 }
 
 static const uundo_oper_t undo_net_alloc = {

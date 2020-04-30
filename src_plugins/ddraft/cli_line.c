@@ -117,7 +117,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 		argn = argc - 1;
 		if (argn < 0) {
 			/* empty arg list */
-			pcb_snprintf(buff, sizeof(buff), " from %.08$$mm,%.08$$mm", pcb_crosshair.X, pcb_crosshair.Y);
+			rnd_snprintf(buff, sizeof(buff), " from %.08$$mm,%.08$$mm", pcb_crosshair.X, pcb_crosshair.Y);
 			printf("append: '%s'\n", buff);
 			cursor = cli_str_insert(line, strlen(line), buff, 1);
 			goto update;
@@ -142,7 +142,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 		case CLI_FROM:
 		case CLI_TO:
 			rnd_trace("abs");
-			pcb_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X, pcb_crosshair.Y);
+			rnd_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X, pcb_crosshair.Y);
 			goto maybe_replace_after;
 			break;
 		case CLI_RELATIVE:
@@ -152,7 +152,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 				return 0;
 			}
 			rnd_trace("rel from %$mm,%$mm", ox, oy);
-			pcb_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X - ox, pcb_crosshair.Y - oy);
+			rnd_snprintf(buff, sizeof(buff), "%.08$$mm,%.08$$mm", pcb_crosshair.X - ox, pcb_crosshair.Y - oy);
 			maybe_replace_after:;
 			if ((by+1 < argc) && (argv[by+1].type == CLI_COORD)) {
 				argn = by+1;
@@ -166,7 +166,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 				return 0;
 			}
 			replace=1;
-			pcb_snprintf(buff, sizeof(buff), "<%f", atan2(pcb_crosshair.Y - oy, pcb_crosshair.X - ox) * RND_RAD_TO_DEG);
+			rnd_snprintf(buff, sizeof(buff), "<%f", atan2(pcb_crosshair.Y - oy, pcb_crosshair.X - ox) * RND_RAD_TO_DEG);
 			break;
 		case CLI_DIST:
 			res = get_rel_coord(argc, argv, argn, &ox, &oy);
@@ -175,7 +175,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 				return 0;
 			}
 			replace=1;
-			pcb_snprintf(buff, sizeof(buff), "~%.08$$mm", rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, ox, oy));
+			rnd_snprintf(buff, sizeof(buff), "~%.08$$mm", rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, ox, oy));
 			break;
 		case_object: ;
 			{
@@ -185,7 +185,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 					return 0;
 				o = p2;
 				replace=1;
-				pcb_snprintf(buff, sizeof(buff), "%s %ld", find_rev_type(argv[by].type), (long)o->ID);
+				rnd_snprintf(buff, sizeof(buff), "%s %ld", find_rev_type(argv[by].type), (long)o->ID);
 			}
 			break;
 		default:

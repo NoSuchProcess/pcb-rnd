@@ -265,7 +265,7 @@ do { \
 #define RND_DAD_LABELF(table, printf_args) \
 do { \
 	RND_DAD_ALLOC(table, RND_HATT_LABEL); \
-	RND_DAD_SET_ATTR_FIELD(table, name, pcb_strdup_printf printf_args); \
+	RND_DAD_SET_ATTR_FIELD(table, name, rnd_strdup_printf printf_args); \
 } while(0)
 
 #define RND_DAD_ENUM(table, choices) \

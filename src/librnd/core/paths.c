@@ -115,23 +115,23 @@ int rnd_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
 
 char *rnd_build_fn(rnd_hidlib_t *hidlib, const char *template)
 {
-	pcb_strdup_subst_t sbs = PCB_SUBST_ALL;
+	rnd_strdup_subst_t sbs = RND_SUBST_ALL;
 #ifdef __WIN32__
-	sbs &= ~PCB_SUBST_BACKSLASH;
+	sbs &= ~RND_SUBST_BACKSLASH;
 #endif
-	return pcb_strdup_subst(template, rnd_build_fn_cb, hidlib, sbs);
+	return rnd_strdup_subst(template, rnd_build_fn_cb, hidlib, sbs);
 }
 
 char *rnd_build_argfn(const char *template, rnd_build_argfn_t *arg)
 {
-	pcb_strdup_subst_t sbs = PCB_SUBST_ALL;
+	rnd_strdup_subst_t sbs = RND_SUBST_ALL;
 #ifdef __WIN32__
-	sbs &= ~PCB_SUBST_BACKSLASH;
+	sbs &= ~RND_SUBST_BACKSLASH;
 #endif
-	return pcb_strdup_subst(template, rnd_build_argfn_cb, arg, sbs);
+	return rnd_strdup_subst(template, rnd_build_argfn_cb, arg, sbs);
 }
 
-int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room)
+int rnd_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags, size_t extra_room)
 {
 	const char *curr, *next;
 
@@ -150,9 +150,9 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 	}
 #endif
 
-	if ((*template == '~') && (flags & PCB_SUBST_HOME)) {
+	if ((*template == '~') && (flags & RND_SUBST_HOME)) {
 		if (rnd_conf.rc.path.home == NULL) {
-			rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve home dir required for path %s\n", template);
+			rnd_message(RND_MSG_ERROR, "rnd_strdup_subst(): can't resolve home dir required for path %s\n", template);
 			goto error;
 		}
 		gds_append_str(s, rnd_conf.rc.path.home);
@@ -171,7 +171,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 
 		switch(*next) {
 			case '\\':
-				if (flags & PCB_SUBST_BACKSLASH) {
+				if (flags & RND_SUBST_BACKSLASH) {
 					char c;
 					next++;
 					switch(*next) {
@@ -190,7 +190,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 				}
 				break;
 			case '%':
-				if (flags & PCB_SUBST_PERCENT) {
+				if (flags & RND_SUBST_PERCENT) {
 					next++;
 					switch(*next) {
 						case '%':
@@ -211,7 +211,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 				}
 				break;
 			case '$':
-				if (flags & PCB_SUBST_CONF) {
+				if (flags & RND_SUBST_CONF) {
 					const char *start, *end;
 					next++;
 					switch(*next) {
@@ -224,8 +224,8 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								char path[256], *q;
 								size_t len = end - start;
 								if (len > sizeof(path) - 1) {
-									if (!(flags & PCB_SUBST_QUIET))
-										rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
+									if (!(flags & RND_SUBST_QUIET))
+										rnd_message(RND_MSG_ERROR, "rnd_strdup_subst(): can't resolve $() conf var, name too long: %s\n", start);
 									goto error;
 								}
 								memcpy(path, start, len);
@@ -235,13 +235,13 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 										*q = '/';
 								cn = rnd_conf_get_field(path);
 								if (cn == NULL) {
-									if (!(flags & PCB_SUBST_QUIET))
-										rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
+									if (!(flags & RND_SUBST_QUIET))
+										rnd_message(RND_MSG_ERROR, "rnd_strdup_subst(): can't resolve $(%s) conf var: not found in the conf tree\n", path);
 									goto error;
 								}
 								if (cn->type != RND_CFN_STRING) {
-									if (!(flags & PCB_SUBST_QUIET))
-										rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
+									if (!(flags & RND_SUBST_QUIET))
+										rnd_message(RND_MSG_ERROR, "rnd_strdup_subst(): can't resolve $(%s) conf var: value type is not string\n", path);
 									goto error;
 								}
 								if (cn->val.string[0] != NULL) {
@@ -259,8 +259,8 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								curr = end+1;
 							}
 							else {
-								if (!(flags & PCB_SUBST_QUIET))
-									rnd_message(RND_MSG_ERROR, "pcb_strdup_subst(): unterminated $(%s)\n", start);
+								if (!(flags & RND_SUBST_QUIET))
+									rnd_message(RND_MSG_ERROR, "rnd_strdup_subst(): unterminated $(%s)\n", start);
 								goto error;
 							}
 							break;
@@ -287,35 +287,35 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 	return -1;
 }
 
-static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags, size_t extra_room)
+static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags, size_t extra_room)
 {
 	gds_t s;
 
 	if (template == NULL)
 		return NULL;
 
-	memset(&s, 0, sizeof(s)); /* shouldn't do gds_init() here, pcb_subst_append() will do that */
+	memset(&s, 0, sizeof(s)); /* shouldn't do gds_init() here, rnd_subst_append() will do that */
 
-	if (pcb_subst_append(&s, template, cb, ctx, flags, extra_room) == 0)
+	if (rnd_subst_append(&s, template, cb, ctx, flags, extra_room) == 0)
 		return s.array;
 
 	gds_uninit(&s);
 	return NULL;
 }
 
-char *pcb_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, pcb_strdup_subst_t flags)
+char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags)
 {
 	return pcb_strdup_subst_(template, cb, ctx, flags, 0);
 }
 
 void rnd_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
 {
-	pcb_strdup_subst_t flags = PCB_SUBST_ALL;
+	rnd_strdup_subst_t flags = RND_SUBST_ALL;
 #ifdef __WIN32__
-	flags &= ~PCB_SUBST_BACKSLASH;
+	flags &= ~RND_SUBST_BACKSLASH;
 #endif
 	if (quiet)
-		flags |= PCB_SUBST_QUIET;
+		flags |= RND_SUBST_QUIET;
 	for (; numpaths > 0; numpaths--, in++, out++)
 		*out = pcb_strdup_subst_(*in, rnd_build_fn_cb, hidlib, flags, extra_room);
 }

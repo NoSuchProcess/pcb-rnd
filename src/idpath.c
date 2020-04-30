@@ -173,7 +173,7 @@ void pcb_append_idpath(gds_t *dst, const pcb_idpath_t *idp, rnd_bool relative)
 	}
 
 	for(n = 0; n < idp->len; n++)
-		pcb_append_printf(dst, "/%ld", idp->id[n]);
+		rnd_append_printf(dst, "/%ld", idp->id[n]);
 }
 
 char *pcb_idpath2str(const pcb_idpath_t *idp, rnd_bool relative)

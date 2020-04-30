@@ -275,7 +275,7 @@ static void update_expose_data(pcb_gtk_preview_t *prv)
 	prv->expose_data.view.X2 = prv->view.x0 + prv->view.width;
 	prv->expose_data.view.Y2 = prv->view.y0 + prv->view.height;
 
-/*	pcb_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f %$mm)\n",
+/*	rnd_printf("EXPOSE_DATA: %$mm %$mm - %$mm %$mm (%f %$mm)\n",
 		prv->expose_data.view.X1, prv->expose_data.view.Y1,
 		prv->expose_data.view.X2, prv->expose_data.view.Y2,
 		prv->view.coord_per_px, prv->view.x0);*/
@@ -324,7 +324,7 @@ static gboolean button_press_(GtkWidget *w, rnd_hid_cfg_mod_t btn)
 	switch (btn) {
 	case RND_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
-/*				pcb_printf("bp %mm %mm\n", cx, cy); */
+/*				rnd_printf("bp %mm %mm\n", cx, cy); */
 			if (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_PRESS, cx, cy))
 				gtk_widget_queue_draw(w);
 		}
@@ -416,7 +416,7 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 		break;
 	case RND_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
-/*				pcb_printf("br %mm %mm\n", cx, cy); */
+/*				rnd_printf("br %mm %mm\n", cx, cy); */
 			if (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_RELEASE, cx, cy))
 				gtk_widget_queue_draw(w);
 		}

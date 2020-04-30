@@ -153,7 +153,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	printf(" Native:\n");
-	rnd_conf_print_native((rnd_conf_pfn)pcb_fprintf, stdout, "  ", 1, nat);
+	rnd_conf_print_native((rnd_conf_pfn)rnd_fprintf, stdout, "  ", 1, nat);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -258,7 +258,7 @@ static void print_font(pcb_font_t *f, const char *prefix)
 	}
 
 	name = f->name == NULL ? "<anon>" : f->name;
-	pcb_printf("%s: %d %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, f->id, name, f->MaxWidth, f->MaxHeight, g, gletter, gdigit);
+	rnd_printf("%s: %d %s; dim: %$$mm * %$$mm glyphs: %d (letter: %d, digit: %d)\n", prefix, f->id, name, f->MaxWidth, f->MaxHeight, g, gletter, gdigit);
 }
 
 static const char dump_fonts_syntax[] = "dumpfonts()\n";
@@ -317,7 +317,7 @@ static void dump_data(pcb_data_t *data, dd_flags what, int ind, const char *pare
 		cx = (o->BoundingBox.X1+o->BoundingBox.X2)/2;
 		cy = (o->BoundingBox.Y1+o->BoundingBox.Y2)/2;
 		printf("%*s %s", ind, "", type);
-		pcb_printf(" #%ld %mm;%mm ", o->ID, cx, cy);
+		rnd_printf(" #%ld %mm;%mm ", o->ID, cx, cy);
 
 		if (parent != NULL)
 			printf("%s", parent);
@@ -361,10 +361,10 @@ static int dumpflag_cb(void *ctx, gds_t *s, const char **input)
 {
 	pcb_flag_bits_t *flag = (pcb_flag_bits_t *)ctx;
 	switch(**input) {
-		case 'm': (*input)++; pcb_append_printf(s, "%lx", flag->mask); break;
+		case 'm': (*input)++; rnd_append_printf(s, "%lx", flag->mask); break;
 		case 'M': (*input)++; gds_append_str(s, flag->mask_name); break;
 		case 'N': (*input)++; gds_append_str(s, flag->name); break;
-		case 't': (*input)++; pcb_append_printf(s, "%lx", flag->object_types); break;
+		case 't': (*input)++; rnd_append_printf(s, "%lx", flag->object_types); break;
 		case 'H': (*input)++; gds_append_str(s, flag->name); break;
 		default:
 			return -1;
@@ -384,7 +384,7 @@ static fgw_error_t pcb_act_dumpflags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	for(n = 0; n < pcb_object_flagbits_len; n++) {
 		char *tmp;
-		tmp = pcb_strdup_subst(fmt, dumpflag_cb, &pcb_object_flagbits[n], PCB_SUBST_PERCENT /*| PCB_SUBST_BACKSLASH*/);
+		tmp = rnd_strdup_subst(fmt, dumpflag_cb, &pcb_object_flagbits[n], RND_SUBST_PERCENT /*| RND_SUBST_BACKSLASH*/);
 		printf("%s", tmp);
 		free(tmp);
 	}
@@ -528,9 +528,9 @@ static fgw_error_t pcb_act_DumpLibFootprint(fgw_arg_t *res, int argc, fgw_arg_t 
 		}
 
 		if (want_bbox)
-			pcb_printf(DLF_PREFIX "bbox mm %mm %mm %mm %mm\n", SCRATCH.BoundingBox.X1, SCRATCH.BoundingBox.Y1, SCRATCH.BoundingBox.X2, SCRATCH.BoundingBox.Y2);
+			rnd_printf(DLF_PREFIX "bbox mm %mm %mm %mm %mm\n", SCRATCH.BoundingBox.X1, SCRATCH.BoundingBox.Y1, SCRATCH.BoundingBox.X2, SCRATCH.BoundingBox.Y2);
 		if (want_origin)
-			pcb_printf(DLF_PREFIX "origin mm %mm %mm\n", SCRATCH.X, SCRATCH.Y);
+			rnd_printf(DLF_PREFIX "origin mm %mm %mm\n", SCRATCH.X, SCRATCH.Y);
 
 		RND_ACT_IRES(0);
 	}

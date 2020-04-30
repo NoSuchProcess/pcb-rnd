@@ -156,7 +156,7 @@ static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, cons
 			save_prop(pcb, f, name, "fab-color", fab_color);
 		}
 		else {
-			char *title = pcb_strdup_printf("Unsupported group fab-color: %s", grp->name);
+			char *title = rnd_strdup_printf("Unsupported group fab-color: %s", grp->name);
 			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Only outer layer groups should have fab-color.");
 			free(title);
 		}
@@ -166,7 +166,7 @@ static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, cons
 			save_prop(pcb, f, name, "dielect", dielect);
 		}
 		else {
-			char *title = pcb_strdup_printf("Unsupported group dielect: %s", grp->name);
+			char *title = rnd_strdup_printf("Unsupported group dielect: %s", grp->name);
 			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Group type should not have dielect constant - only substrate layers should.");
 			free(title);
 		}
@@ -176,7 +176,7 @@ static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, cons
 			save_prop(pcb, f, name, "material", mat);
 		}
 		else {
-			char *title = pcb_strdup_printf("Unsupported group material: %s", grp->name);
+			char *title = rnd_strdup_printf("Unsupported group material: %s", grp->name);
 			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Group type should not have a material - only substrate layers should.");
 			free(title);
 		}
@@ -188,17 +188,17 @@ static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, cons
 			double th = rnd_get_value(thick, NULL, NULL, &succ);
 			if (succ) {
 				char tmp[64];
-				pcb_sprintf(tmp, "%mu", (rnd_coord_t)th);
+				rnd_sprintf(tmp, "%mu", (rnd_coord_t)th);
 				save_prop(pcb, f, name, "thickness", tmp);
 			}
 			else {
-				char *title = pcb_strdup_printf("Invalid thickness value: %s", grp->name);
+				char *title = rnd_strdup_printf("Invalid thickness value: %s", grp->name);
 				pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Thicnkess value must be a numeric with an unit suffix, e.g. 0.7mm");
 				free(title);
 			}
 		}
 		else {
-			char *title = pcb_strdup_printf("Unsupported group thickness: %s", grp->name);
+			char *title = rnd_strdup_printf("Unsupported group thickness: %s", grp->name);
 			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Group type should not have a thickness - only substrate and copper layers should.");
 			free(title);
 		}
@@ -233,7 +233,7 @@ static const tedax_layer_t *tedax_layer_lookup_by_type(pcb_board_t *pcb, const p
 			else if (grp->ltype & PCB_LYT_VIRTUAL) *lloc = "virtual";
 			else if ((grp->ltype & PCB_LYT_ANYWHERE) == 0) *lloc = "all";
 			else {
-				char *title = pcb_strdup_printf("Unsupported group loc: %s", grp->name);
+				char *title = rnd_strdup_printf("Unsupported group loc: %s", grp->name);
 				pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "The group is omitted from the output.");
 				free(title);
 				continue;
@@ -291,7 +291,7 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stac
 		const tedax_layer_t *lt = tedax_layer_lookup_by_type(pcb, grp, &lloc);
 
 		if (lt == NULL) {
-			char *title = pcb_strdup_printf("Unsupported group: %s", grp->name);
+			char *title = rnd_strdup_printf("Unsupported group: %s", grp->name);
 			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Layer type/purpose/location is not supported by tEDAx, layer will be omitted from the save.");
 			free(title);
 			continue;
@@ -304,7 +304,7 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stac
 		}
 
 		if (grp->len > 1) {
-			char *title = pcb_strdup_printf("Multilayer group: %s", grp->name);
+			char *title = rnd_strdup_printf("Multilayer group: %s", grp->name);
 			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "All layers are merged into a single layer");
 			free(title);
 		}

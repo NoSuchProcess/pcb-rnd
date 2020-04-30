@@ -212,7 +212,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	}
 
 	res->type = FGW_STR | FGW_DYN;
-	res->val.str = pcb_strdup_printf("#%02x%02x%02x", ctx.clr.r, ctx.clr.g, ctx.clr.b);
+	res->val.str = rnd_strdup_printf("#%02x%02x%02x", ctx.clr.r, ctx.clr.g, ctx.clr.b);
 	RND_DAD_FREE(ctx.dlg);
 	return 0;
 }

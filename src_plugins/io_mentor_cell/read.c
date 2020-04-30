@@ -145,12 +145,12 @@ static int hkp_error(node_t *nd, char *fmt, ...)
 	gds_init(&str);
 	gds_append_str(&str, "io_mentor_cell ERROR");
 	if (nd != NULL)
-		pcb_append_printf(&str, " at %s:%d: ", nd->tree->filename, nd->lineno);
+		rnd_append_printf(&str, " at %s:%d: ", nd->tree->filename, nd->lineno);
 	else
 		gds_append_str(&str, ": ");
 
 	va_start(ap, fmt);
-	pcb_safe_append_vprintf(&str, 0, fmt, ap);
+	rnd_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
 	rnd_message(RND_MSG_ERROR, "%s", str.array);

@@ -290,7 +290,7 @@ static int undo_board_size_swap(void *udata)
 static void undo_board_size_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_board_size_t *s = udata;
-	pcb_snprintf(dst, dst_len, "board_size: %mmx%mm", s->w, s->h);
+	rnd_snprintf(dst, dst_len, "board_size: %mmx%mm", s->w, s->h);
 }
 
 static const uundo_oper_t undo_board_size = {

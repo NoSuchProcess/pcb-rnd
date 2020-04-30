@@ -244,7 +244,7 @@ static void pcb_fuse_destroy(void *private_data)
 
 	/* pwd is lost during daemonisation */
 	if (!rnd_is_path_abs(PCB->hidlib.filename))
-		fn = pcb_strdup_printf("%s%c%s", fuse_cwd, RND_DIR_SEPARATOR_C, PCB->hidlib.filename);
+		fn = rnd_strdup_printf("%s%c%s", fuse_cwd, RND_DIR_SEPARATOR_C, PCB->hidlib.filename);
 
 	if (pcb_save_pcb(fn, NULL) != 0) {
 		fprintf(stderr, "Failed to save the modified board file\n");

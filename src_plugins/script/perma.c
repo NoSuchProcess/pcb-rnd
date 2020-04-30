@@ -42,7 +42,7 @@ static int perma_load(const char *dir, const char *id, const char *path_in, cons
 
 	if (!rnd_is_path_abs(path_in)) {
 		path = spath;
-		pcb_snprintf(spath, sizeof(spath), "%s%c%s", dir, RND_DIR_SEPARATOR_C, path_in);
+		rnd_snprintf(spath, sizeof(spath), "%s%c%s", dir, RND_DIR_SEPARATOR_C, path_in);
 	}
 	else
 		path = path_in;
@@ -58,7 +58,7 @@ static void perma_script_load_conf(const char *dir)
 	FILE *f;
 	long succ = 0;
 
-	pcb_snprintf(path, sizeof(path), "%s%c%s", dir, RND_DIR_SEPARATOR_C, "scripts.lht");
+	rnd_snprintf(path, sizeof(path), "%s%c%s", dir, RND_DIR_SEPARATOR_C, "scripts.lht");
 	f = pcb_fopen(NULL, path, "r");
 	if (f == NULL)
 		return; /* non-existing or unreadable file is no error */

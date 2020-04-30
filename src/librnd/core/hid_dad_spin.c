@@ -116,10 +116,10 @@ static char *gen_str_coord(rnd_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, i
 	else
 		unit = rnd_conf.editor.grid_unit;
 	if (buf != NULL) {
-		pcb_snprintf(buf, buflen, "%$m*", unit->suffix, c);
+		rnd_snprintf(buf, buflen, "%$m*", unit->suffix, c);
 		return buf;
 	}
-	return pcb_strdup_printf("%$m*", unit->suffix, c);
+	return rnd_strdup_printf("%$m*", unit->suffix, c);
 }
 
 typedef struct {
@@ -152,7 +152,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		rnd_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
 	}
 
-	pcb_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
+	rnd_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
 	hv.str = su->buf;
 	rnd_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
 	if (!is_globbing && can_glob) {
@@ -503,12 +503,12 @@ void rnd_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord
 		case RND_DAD_SPIN_INT:
 			attr->val.lng = l;
 			free((char *)str->val.str);
-			str->val.str = pcb_strdup_printf("%ld", l);
+			str->val.str = rnd_strdup_printf("%ld", l);
 			break;
 		case RND_DAD_SPIN_DOUBLE:
 			attr->val.dbl = d;
 			free((char *)str->val.str);
-			str->val.str = pcb_strdup_printf("%f", d);
+			str->val.str = rnd_strdup_printf("%f", d);
 			break;
 		case RND_DAD_SPIN_COORD:
 			attr->val.crd = c;

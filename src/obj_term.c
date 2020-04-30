@@ -215,7 +215,7 @@ static int undo_term_rename_swap(void *udata)
 static void undo_term_rename_print(void *udata, char *dst, size_t dst_len)
 {
 	term_rename_t *r = udata;
-	pcb_snprintf(dst, dst_len, "term_rename: %s #%ld to '%s'\n",
+	rnd_snprintf(dst, dst_len, "term_rename: %s #%ld to '%s'\n",
 		pcb_obj_type_name(r->obj->type), r->obj->ID, r->str);
 }
 

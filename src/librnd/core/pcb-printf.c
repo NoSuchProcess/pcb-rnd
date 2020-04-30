@@ -42,7 +42,7 @@
 #include <librnd/config.h>
 #include <librnd/core/pcb-printf.h>
 
-const char *pcb_printf_slot[PCB_PRINTF_SLOT_max] =
+const char *rnd_printf_slot[RND_PRINTF_SLOT_max] =
 {
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, /* 8 user formats */
 	"%mr",      /* original unitless cmil file format coord */
@@ -420,7 +420,7 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
  * [in] args   Arguments to specifier
  *
  * return 0 on success */
-int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *fmt, va_list args)
+int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *fmt, va_list args)
 {
 	gds_t spec;
 	const char *qstr, *needsq;
@@ -469,7 +469,7 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 			if ((gds_len(&spec) > 2) && (spec.array[1] == '[')) {
 				int slot = atoi(spec.array+2);
 				gds_t new_spec;
-				if ((slot < 0) || (slot > PCB_PRINTF_SLOT_max)) {
+				if ((slot < 0) || (slot > RND_PRINTF_SLOT_max)) {
 					fprintf(stderr, "Internal error: invalid printf slot addressed: '%s'\n", spec.array);
 					abort();
 				}
@@ -478,12 +478,12 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					fprintf(stderr, "Internal error: printf slot recursion too deep on addressed: '%s'\n", spec.array);
 					abort();
 				}
-				if (pcb_printf_slot[slot] == NULL) {
+				if (rnd_printf_slot[slot] == NULL) {
 					fprintf(stderr, "Internal error: printf empty slot reference: '%s'\n", spec.array);
 					abort();
 				}
 				gds_init(&new_spec);
-				gds_append_str(&new_spec, pcb_printf_slot[slot]);
+				gds_append_str(&new_spec, rnd_printf_slot[slot]);
 				if (*fmt == ']')
 					fmt++;
 				gds_append_str(&new_spec, fmt);
@@ -756,7 +756,7 @@ err:;
 	return retval;
 }
 
-int pcb_sprintf(char *string, const char *fmt, ...)
+int rnd_sprintf(char *string, const char *fmt, ...)
 {
 	gds_t str;
 	va_list args;
@@ -770,13 +770,13 @@ int pcb_sprintf(char *string, const char *fmt, ...)
 	str.alloced = 1<<31;
 	str.no_realloc = 1;
 
-	pcb_safe_append_vprintf(&str, 0, fmt, args);
+	rnd_safe_append_vprintf(&str, 0, fmt, args);
 
 	va_end(args);
 	return str.used;
 }
 
-int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
+int rnd_snprintf(char *string, size_t len, const char *fmt, ...)
 {
 	gds_t str;
 	va_list args;
@@ -788,13 +788,13 @@ int pcb_snprintf(char *string, size_t len, const char *fmt, ...)
 	str.alloced = len;
 	str.no_realloc = 1;
 
-	pcb_safe_append_vprintf(&str, 0, fmt, args);
+	rnd_safe_append_vprintf(&str, 0, fmt, args);
 
 	va_end(args);
 	return str.used;
 }
 
-int pcb_safe_snprintf(char *string, size_t len, pcb_safe_printf_t safe, const char *fmt, ...)
+int rnd_safe_snprintf(char *string, size_t len, rnd_safe_printf_t safe, const char *fmt, ...)
 {
 	gds_t str;
 	va_list args;
@@ -809,7 +809,7 @@ int pcb_safe_snprintf(char *string, size_t len, pcb_safe_printf_t safe, const ch
 	if (len > 0)
 		*string = '\0'; /* make sure the string is empty on error of the low level call didn't print anything */
 
-	res = pcb_safe_append_vprintf(&str, safe, fmt, args);
+	res = rnd_safe_append_vprintf(&str, safe, fmt, args);
 
 	va_end(args);
 	if (res < 0)
@@ -818,7 +818,7 @@ int pcb_safe_snprintf(char *string, size_t len, pcb_safe_printf_t safe, const ch
 }
 
 
-int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args)
+int rnd_vsnprintf(char *string, size_t len, const char *fmt, va_list args)
 {
 	gds_t str;
 
@@ -828,24 +828,24 @@ int pcb_vsnprintf(char *string, size_t len, const char *fmt, va_list args)
 	str.alloced = len;
 	str.no_realloc = 1;
 
-	pcb_safe_append_vprintf(&str, 0, fmt, args);
+	rnd_safe_append_vprintf(&str, 0, fmt, args);
 
 	return str.used;
 }
 
-int pcb_fprintf(FILE * fh, const char *fmt, ...)
+int rnd_fprintf(FILE * fh, const char *fmt, ...)
 {
 	int rv;
 	va_list args;
 
 	va_start(args, fmt);
-	rv = pcb_vfprintf(fh, fmt, args);
+	rv = rnd_vfprintf(fh, fmt, args);
 	va_end(args);
 
 	return rv;
 }
 
-int pcb_vfprintf(FILE * fh, const char *fmt, va_list args)
+int rnd_vfprintf(FILE * fh, const char *fmt, va_list args)
 {
 	int rv;
 	gds_t str;
@@ -854,7 +854,7 @@ int pcb_vfprintf(FILE * fh, const char *fmt, va_list args)
 	if (fh == NULL)
 		rv = -1;
 	else {
-		pcb_safe_append_vprintf(&str, 0, fmt, args);
+		rnd_safe_append_vprintf(&str, 0, fmt, args);
 		rv = fprintf(fh, "%s", str.array);
 	}
 
@@ -862,7 +862,7 @@ int pcb_vfprintf(FILE * fh, const char *fmt, va_list args)
 	return rv;
 }
 
-int pcb_printf(const char *fmt, ...)
+int rnd_printf(const char *fmt, ...)
 {
 	int rv;
 	gds_t str;
@@ -871,7 +871,7 @@ int pcb_printf(const char *fmt, ...)
 	gds_init(&str);
 	va_start(args, fmt);
 
-	pcb_safe_append_vprintf(&str, 0, fmt, args);
+	rnd_safe_append_vprintf(&str, 0, fmt, args);
 	rv = printf("%s", str.array);
 
 	va_end(args);
@@ -879,7 +879,7 @@ int pcb_printf(const char *fmt, ...)
 	return rv;
 }
 
-char *pcb_strdup_printf(const char *fmt, ...)
+char *rnd_strdup_printf(const char *fmt, ...)
 {
 	gds_t str;
 	va_list args;
@@ -887,31 +887,31 @@ char *pcb_strdup_printf(const char *fmt, ...)
 	gds_init(&str);
 
 	va_start(args, fmt);
-	pcb_safe_append_vprintf(&str, 0, fmt, args);
+	rnd_safe_append_vprintf(&str, 0, fmt, args);
 	va_end(args);
 
 	return str.array; /* no other allocation has been made */
 }
 
-char *pcb_strdup_vprintf(const char *fmt, va_list args)
+char *rnd_strdup_vprintf(const char *fmt, va_list args)
 {
 	gds_t str;
 	gds_init(&str);
 
-	pcb_safe_append_vprintf(&str, 0, fmt, args);
+	rnd_safe_append_vprintf(&str, 0, fmt, args);
 
 	return str.array; /* no other allocation has been made */
 }
 
 
 /* Wrapper for pcb_safe_append_vprintf that appends to a string using vararg API */
-int pcb_append_printf(gds_t *str, const char *fmt, ...)
+int rnd_append_printf(gds_t *str, const char *fmt, ...)
 {
 	int retval;
 
 	va_list args;
 	va_start(args, fmt);
-	retval = pcb_safe_append_vprintf(str, 0, fmt, args);
+	retval = rnd_safe_append_vprintf(str, 0, fmt, args);
 	va_end(args);
 
 	return retval;

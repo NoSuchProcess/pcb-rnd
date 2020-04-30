@@ -97,7 +97,7 @@ static void setup_tree(pref_ctx_t *ctx)
 			*bnsep = '/';
 			parent = rnd_dad_tree_mkdirp(tree, path, NULL);
 			for(i = 0; i < nat->array_size; i++) {
-				cell[0] = pcb_strdup_printf("[%d]", i);
+				cell[0] = rnd_strdup_printf("[%d]", i);
 				rnd_dad_tree_append_under(attr, parent, cell);
 			}
 		}
@@ -156,7 +156,7 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 			nd = rnd_conf_lht_get_at_mainplug(n, nat->hash_path, 1, 0);
 			if (nd != NULL) { /* role, prio, policy, value */
 				rnd_conf_get_policy_prio(nd, &pol, &prio);
-				cell[1] = pcb_strdup_printf("%ld", prio);
+				cell[1] = rnd_strdup_printf("%ld", prio);
 				cell[2] = rnd_strdup(rnd_conf_policy_name(pol));
 				cell[3] = rnd_strdup(pref_conf_get_val(nd, nat, idx));
 			}
@@ -176,7 +176,7 @@ static const char *print_conf_val(rnd_conf_native_type_t type, const rnd_confite
 		case RND_CFN_BOOLEAN:  strcpy(buf, *val->boolean ? "true" : "false"); break;
 		case RND_CFN_INTEGER:  sprintf(buf, "%ld", *val->integer); break;
 		case RND_CFN_REAL:     sprintf(buf, "%f", *val->real); break;
-		case RND_CFN_COORD:    pcb_snprintf(buf, sizebuf, "%mH\n%mm\n%ml", *val->coord, *val->coord, *val->coord); break;
+		case RND_CFN_COORD:    rnd_snprintf(buf, sizebuf, "%mH\n%mm\n%ml", *val->coord, *val->coord, *val->coord); break;
 		case RND_CFN_UNIT:     strcpy(buf, (*val->unit)->suffix); break;
 		case RND_CFN_COLOR:    strcpy(buf, val->color->str); break;
 		case RND_CFN_LIST:     strcpy(buf, "<list>"); break;
@@ -247,7 +247,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 				strval = print_conf_val(n->type, &n->val, buf, sizeof(buf));
 
 			cell[0] = rolename == NULL ? rnd_strdup("") : rnd_strdup(rolename);
-			cell[1] = pcb_strdup_printf("%ld", n->prop.prio);
+			cell[1] = rnd_strdup_printf("%ld", n->prop.prio);
 			cell[2] = rnd_strdup(strval);
 			cell[3] = 0;
 			rnd_dad_tree_append(attr, NULL, cell);
@@ -262,10 +262,10 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 	src = nat->prop[idx].src;
 	if (src != NULL) {
 		rolename = rnd_conf_role_name(rnd_conf_lookup_role(nat->prop[idx].src));
-		hv.str = tmp = pcb_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
+		hv.str = tmp = rnd_strdup_printf("prio: %d role: %s\nsource: %s:%d.%d", nat->prop[idx].prio, rolename, src->file_name, src->line, src->col);
 	}
 	else
-		hv.str = tmp = pcb_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[idx].prio);
+		hv.str = tmp = rnd_strdup_printf("prio: %d\nsource: <not saved>", nat->prop[idx].prio);
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wsrc[nat->type], &hv);
 	free(tmp);
 

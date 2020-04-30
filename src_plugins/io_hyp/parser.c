@@ -400,7 +400,7 @@ void hyp_netlist_add(char *device_name, char *pin_name)
 		rnd_message(RND_MSG_DEBUG, "netlist net: '%s' device: '%s' pin: '%s'\n", net_name, device_name, pin_name);
 
 	if ((net_name != NULL) && (device_name != NULL) && (pin_name != NULL)) {
-		pcb_snprintf(conn, sizeof(conn), "%s-%s", device_name, pin_name);
+		rnd_snprintf(conn, sizeof(conn), "%s-%s", device_name, pin_name);
 		rnd_actionva(&PCB->hidlib, "Netlist", "Add", net_name, conn, NULL);
 	}
 	return;
@@ -869,7 +869,7 @@ rnd_layer_id_t hyp_create_layer(char *lname)
 	else {
 		/* no layer name given. find unused layer name in range 1..PCB_MAX_LAYER */
 		for (n = 1; n < PCB_MAX_LAYER; n++) {
-			pcb_sprintf(new_layer_name, "%i", n);
+			rnd_sprintf(new_layer_name, "%i", n);
 			if (pcb_layer_by_name(PCB->Data, new_layer_name) < 0) {
 				lname = new_layer_name;
 				break;
@@ -1633,7 +1633,7 @@ rnd_bool exec_devices(parse_param * h)
 		new_device->value = rnd_strdup(h->value_string);
 	else if (h->value_float_set) {
 		/* convert double to string */
-		pcb_snprintf(value, sizeof(value), "%f", h->value_float);
+		rnd_snprintf(value, sizeof(value), "%f", h->value_float);
 		new_device->value = rnd_strdup(value);
 	}
 
@@ -1903,12 +1903,12 @@ void hyp_draw_pstk(padstack_t *padstk, rnd_coord_t x, rnd_coord_t y, char *ref)
 		/* make sure device and pin name have valid values, even if reference has wrong format */
 		if ((device_name == NULL) || (strcmp(device_name, "") == 0)) {
 			device_name = malloc(MAX_STRING);
-			pcb_sprintf(device_name, "NONAME%0d", unknown_device_number++);
+			rnd_sprintf(device_name, "NONAME%0d", unknown_device_number++);
 		}
 
 		if ((pin_name == NULL) || (strcmp(pin_name, "") == 0)) {
 			pin_name = malloc(MAX_STRING);
-			pcb_sprintf(pin_name, "NONUMBER%0d", unknown_pin_number++);
+			rnd_sprintf(pin_name, "NONUMBER%0d", unknown_pin_number++);
 		}
 
 		/* find device by name */

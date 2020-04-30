@@ -214,7 +214,7 @@ static int dimension_gen(pcb_subc_t *subc)
 	draw_arrow(dim, subc->data, ly, x2, y2, -arrx, arry);
 
 	/* text */
-	if (pcb_safe_snprintf(ttmp, sizeof(ttmp), PCB_SAFEPRINT_COORD_ONLY | 1, dim->fmt, (rnd_coord_t)dim->len) < 0)
+	if (rnd_safe_snprintf(ttmp, sizeof(ttmp), PCB_SAFEPRINT_COORD_ONLY | 1, dim->fmt, (rnd_coord_t)dim->len) < 0)
 		strcpy(ttmp, "<invalid format>");
 	t = pcb_text_new(ly, pcb_font(PCB, 0, 0), 0, 0, 0, 100, 0, ttmp, pcb_flag_make(0));
 	tx = t->BoundingBox.X2 - t->BoundingBox.X1;
@@ -297,7 +297,7 @@ rnd_trace("let's do it!\n");
 
 	dimension_clear(subc);
 	dim->displace = d;
-	pcb_snprintf(tmp, sizeof(tmp), "%.08$mH", (rnd_coord_t)d);
+	rnd_snprintf(tmp, sizeof(tmp), "%.08$mH", (rnd_coord_t)d);
 	rnd_attribute_put(&subc->Attributes, "extobj::displace", tmp);
 	dimension_gen(subc);
 }

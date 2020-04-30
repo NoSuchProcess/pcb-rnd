@@ -912,7 +912,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (name != NULL)
 			g->name = rnd_strdup(name);
 		else
-			g->name = pcb_strdup_printf("%s%s%s", sloc == NULL ? "" : sloc, sloc == NULL ? "" : "-", stype);
+			g->name = rnd_strdup_printf("%s%s%s", sloc == NULL ? "" : sloc, sloc == NULL ? "" : "-", stype);
 		g->ltype = ltype | lloc;
 		g->vis = 1;
 		g->open = 1;

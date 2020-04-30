@@ -722,7 +722,7 @@ static int undo_proto_set_swap(void *udata)
 
 static void undo_proto_set_print(void *udata, char *dst, size_t dst_len)
 {
-	pcb_snprintf(dst, dst_len, "proto set");
+	rnd_snprintf(dst, dst_len, "proto set");
 }
 
 static const uundo_oper_t undo_proto_set = {
@@ -939,7 +939,7 @@ static int undo_change_hole_swap(void *udata)
 static void undo_change_hole_print(void *udata, char *dst, size_t dst_len)
 {
 	padstack_proto_change_hole_t *u = udata;
-	pcb_snprintf(dst, dst_len, "padstack proto hole change: plated=%d dia=%$mm top=%d bottom=%d\n", u->hplated, u->hdia, u->htop, u->hbottom);
+	rnd_snprintf(dst, dst_len, "padstack proto hole change: plated=%d dia=%$mm top=%d bottom=%d\n", u->hplated, u->hdia, u->htop, u->hbottom);
 }
 
 static const uundo_oper_t undo_pstk_proto_change_hole = {
@@ -1013,7 +1013,7 @@ static int undo_change_name_swap(void *udata)
 static void undo_change_name_print(void *udata, char *dst, size_t dst_len)
 {
 	padstack_proto_change_name_t *u = udata;
-	pcb_snprintf(dst, dst_len, "padstack proto name change to: '%s'\n", u->name);
+	rnd_snprintf(dst, dst_len, "padstack proto name change to: '%s'\n", u->name);
 }
 
 static const uundo_oper_t undo_pstk_proto_change_name = {
@@ -1249,7 +1249,7 @@ static int undo_shape_geo_swap(void *udata)
 static void undo_shape_geo_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_shape_geo_t *g = udata;
-	pcb_snprintf(dst, dst_len, "pstk shape geo proto=%d %d/%d shape=%d clearance=%d", g->proto_id, g->tridx, g->shpidx, g->shp_valid, g->clr_valid);
+	rnd_snprintf(dst, dst_len, "pstk shape geo proto=%d %d/%d shape=%d clearance=%d", g->proto_id, g->tridx, g->shpidx, g->shp_valid, g->clr_valid);
 }
 
 static const char core_shape_cookie[] = "core-pstk-proto-shape";

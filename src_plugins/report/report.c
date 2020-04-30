@@ -132,7 +132,7 @@ static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	while (*thestring != '\0')
 		thestring++;
 	for (n = 0; n < AllDrills->DrillN; n++) {
-		pcb_sprintf(thestring,
+		rnd_sprintf(thestring,
 								"%10m*\t\t\t%d\t\t%d\t\t%d\t\t\t\t%d\n",
 								rnd_conf.editor.grid_unit->suffix,
 								AllDrills->Drill[n].DrillSize,
@@ -181,14 +181,14 @@ static void report_pstk(gds_t *dst, pcb_pstk_t *ps)
 #endif
 	proto = pcb_pstk_get_proto(ps);
 
-	pcb_append_printf(dst, "%m+PADSTACK ID# %ld; Flags:%s\n"
+	rnd_append_printf(dst, "%m+PADSTACK ID# %ld; Flags:%s\n"
 		"(X,Y) = %$mD.\n", USER_UNITMASK, ps->ID, pcb_strflg_f2s(ps->Flags, PCB_OBJ_PSTK, NULL, 0),
 		ps->x, ps->y);
 
 	if ((proto != NULL) && (proto->hdia > 0))
-		pcb_append_printf(dst, "%m+Hole diameter: %$mS", USER_UNITMASK, proto->hdia);
+		rnd_append_printf(dst, "%m+Hole diameter: %$mS", USER_UNITMASK, proto->hdia);
 
-	pcb_append_printf(dst, "\n%s%s%s", gen_locked(ps), gen_term(ps));
+	rnd_append_printf(dst, "\n%s%s%s", gen_locked(ps), gen_term(ps));
 }
 
 static void report_line(gds_t *dst, pcb_line_t *line)
@@ -197,7 +197,7 @@ static void report_line(gds_t *dst, pcb_line_t *line)
 	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(line->parent.layer->line_tree, 0);
 #endif
-	pcb_append_printf(dst, "%m+LINE ID# %ld;  Flags:%s\n"
+	rnd_append_printf(dst, "%m+LINE ID# %ld;  Flags:%s\n"
 		"FirstPoint(X,Y)  = %$mD, ID = %ld.\n"
 		"SecondPoint(X,Y) = %$mD, ID = %ld.\n"
 		"Width = %$mS.\nClearance = %$mS.\n"
@@ -219,7 +219,7 @@ static void report_rat(gds_t *dst, pcb_rat_t *line)
 	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(PCB->Data->rat_tree, 0);
 #endif
-	pcb_append_printf(dst, "%m+RAT-LINE ID# %ld;  Flags:%s\n"
+	rnd_append_printf(dst, "%m+RAT-LINE ID# %ld;  Flags:%s\n"
 		"FirstPoint(X,Y)  = %$mD; ID = %ld; "
 		"connects to layer group #%d (%s).\n"
 		"SecondPoint(X,Y) = %$mD; ID = %ld; "
@@ -239,7 +239,7 @@ static void report_arc(gds_t *dst, pcb_arc_t *arc)
 	pcb_arc_get_end(arc, 0, &box.X1, &box.Y1);
 	pcb_arc_get_end(arc, 1, &box.X2, &box.Y2);
 
-	pcb_append_printf(dst, "%m+ARC ID# %ld;  Flags:%s\n"
+	rnd_append_printf(dst, "%m+ARC ID# %ld;  Flags:%s\n"
 		"CenterPoint(X,Y) = %$mD.\n"
 		"Width = %$mS.\nClearance = %$mS.\n"
 		"Radius = %$mS, StartAngle = %ma degrees, DeltaAngle = %ma degrees.\n"
@@ -278,7 +278,7 @@ static void report_poly(gds_t *dst, pcb_poly_t *poly)
 	area = area / u;
 	area = area / u;
 
-	pcb_append_printf(dst, "%m+POLYGON ID# %ld;  Flags:%s\n"
+	rnd_append_printf(dst, "%m+POLYGON ID# %ld;  Flags:%s\n"
 		"Its bounding box is %$mD %$mD.\n"
 		"It has %d points and could store %d more\n"
 		"  without using more memory.\n"
@@ -302,7 +302,7 @@ static void report_subc(gds_t *dst, pcb_subc_t *subc)
 	if (rnd_gui->shift_is_pressed(rnd_gui))
 		pcb_r_dump_tree(PCB->Data->subc_tree, 0);
 #endif
-	pcb_append_printf(dst, "%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
+	rnd_append_printf(dst, "%m+SUBCIRCUIT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Refdes \"%s\".\n"
 		"Footprint \"%s\".\n"
@@ -322,7 +322,7 @@ static void report_text(gds_t *dst, pcb_text_t *text)
 			pcb_r_dump_tree(text->parent.layer->text_tree, 0);
 #endif
 
-	pcb_append_printf(dst, "%m+TEXT ID# %ld;  Flags:%s\n"
+	rnd_append_printf(dst, "%m+TEXT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Font id %d\nclearance %$mS\nthickness %$mS\nrotation %f\n"
 		, USER_UNITMASK,
@@ -339,7 +339,7 @@ static void report_gfx(gds_t *dst, pcb_gfx_t *gfx)
 			pcb_r_dump_tree(gfx->parent.layer->gfx_tree, 0);
 #endif
 
-	pcb_append_printf(dst, "%m+GFX ID# %ld;  Flags:%s\n"
+	rnd_append_printf(dst, "%m+GFX ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
 		"Center %$mD\nSize %$mD\nrotation %f\n"
 		, USER_UNITMASK,
@@ -351,7 +351,7 @@ static void report_gfx(gds_t *dst, pcb_gfx_t *gfx)
 
 static void report_point(gds_t *dst, int type, pcb_layer_t *layer, rnd_point_t *point)
 {
-	pcb_append_printf(dst, "%m+POINT ID# %ld.\n"
+	rnd_append_printf(dst, "%m+POINT ID# %ld.\n"
 		"Located at (X,Y) = %$mD.\n"
 		"It belongs to a %s on layer %d.\n", USER_UNITMASK, point->ID,
 		point->X, point->Y,
@@ -397,12 +397,12 @@ static fgw_error_t pcb_act_report_dialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			rnd_message(RND_MSG_INFO, "Nothing found to report on\n");
 			RND_ACT_IRES(1);
 			return 0;
-		default: pcb_append_printf(&tmp, "Unknown\n"); break;
+		default: rnd_append_printf(&tmp, "Unknown\n"); break;
 	}
 
 	subc = pcb_obj_parent_subc((pcb_any_obj_t *)ptr2);
 	if (subc != NULL)
-		pcb_append_printf(&tmp, "\nPart of subcircuit #%ld\n", subc->ID);
+		rnd_append_printf(&tmp, "\nPart of subcircuit #%ld\n", subc->ID);
 
 	{
 		pcb_idpath_t *idp = pcb_obj2idpath((pcb_any_obj_t *)ptr2);
@@ -437,7 +437,7 @@ static int report_found_pins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_data_it_t it;
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
 			if ((o->term != NULL) && (PCB_FLAG_TEST(PCB_FLAG_FOUND, o)))
-				pcb_append_printf(&list, "%s-%s,%c", subc->refdes, o->term, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
+				rnd_append_printf(&list, "%s-%s,%c", subc->refdes, o->term, ((col++ % (conf_report.plugins.report.columns + 1)) == conf_report.plugins.report.columns) ? '\n' : ' ');
 	}
 
 	rdialog("Report", list.array);
@@ -516,11 +516,11 @@ static double xy_to_net_length(rnd_coord_t x, rnd_coord_t y, int *found, gds_t *
 	if (nt.net != NULL) {
 		rnd_cardinal_t explen = pcb_termlist_length(&nt.net->conns);
 		if (explen != nt.terms)
-			pcb_append_printf(err, "\nonly %ld terminals of the %ld on the network are connected!", (long)nt.terms, (long)explen);
+			rnd_append_printf(err, "\nonly %ld terminals of the %ld on the network are connected!", (long)nt.terms, (long)explen);
 		if (nt.badterms != 0)
-			pcb_append_printf(err, "\n%ld terminals or other networks are connected (shorted)", (long)nt.badterms);
+			rnd_append_printf(err, "\n%ld terminals or other networks are connected (shorted)", (long)nt.badterms);
 		if (nt.badobjs != 0)
-			pcb_append_printf(err, "\n%ld polygons/texts are ignored while they may affect the signal path", (long)nt.badobjs);
+			rnd_append_printf(err, "\n%ld polygons/texts are ignored while they may affect the signal path", (long)nt.badobjs);
 	}
 
 	return nt.length;
@@ -557,7 +557,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			gds_init(&err);
 			length = xy_to_net_length(x, y, &found, &err);
 
-			pcb_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
+			rnd_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
 			if (err.used != 0)
 				rnd_message(RND_MSG_INFO, "Net %s length %s, BUT BEWARE:%s\n", net->name, buf, err.array);
 			else
@@ -610,7 +610,7 @@ static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, rnd_coo
 		char buf[50];
 		const char *netname = net_name_found(PCB);
 
-		pcb_snprintf(buf, sizeof(buf), "%$m*", rnd_conf.editor.grid_unit->suffix, length);
+		rnd_snprintf(buf, sizeof(buf), "%$m*", rnd_conf.editor.grid_unit->suffix, length);
 		if (netname)
 			rnd_message(RND_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
@@ -748,7 +748,7 @@ static int report_net_length_by_name(const char *tofind)
 
 	{
 		char buf[50];
-		pcb_snprintf(buf, sizeof(buf), "%$m*", rnd_conf.editor.grid_unit->suffix, length);
+		rnd_snprintf(buf, sizeof(buf), "%$m*", rnd_conf.editor.grid_unit->suffix, length);
 		if (netname)
 			rnd_message(RND_MSG_INFO, "Net \"%s\" length: %s\n", netname, buf);
 		else
@@ -806,7 +806,7 @@ static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	printf("Filename: %s\n", PCB->hidlib.filename);
-	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
+	rnd_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
 		rnd_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
 		unsigned int gflg = pcb_layergrp_flags(PCB, lg);

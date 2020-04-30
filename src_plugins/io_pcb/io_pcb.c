@@ -67,7 +67,7 @@ int pplg_init_io_pcb(void)
 	memset(&io_pcb, 0, sizeof(io_pcb));
 
 	/* register the IO hook */
-	ctx[0].write_coord_fmt = pcb_printf_slot[8];
+	ctx[0].write_coord_fmt = rnd_printf_slot[8];
 	io_pcb[0].plugin_data = &ctx[0];
 	io_pcb[0].fmt_support_prio = io_pcb_fmt;
 	io_pcb[0].test_parse = io_pcb_test_parse;
@@ -89,7 +89,7 @@ int pplg_init_io_pcb(void)
 	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[0]));
 	pcb_centimil_io_pcb = &io_pcb[0];
 
-	ctx[1].write_coord_fmt = pcb_printf_slot[9];
+	ctx[1].write_coord_fmt = rnd_printf_slot[9];
 	io_pcb[1].plugin_data = &ctx[1];
 	io_pcb[1].fmt_support_prio = io_pcb_fmt;
 	io_pcb[1].write_buffer = NULL;

@@ -161,7 +161,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 				inv++;
 		}
 		if (inv > 0)
-			pcb_append_printf(&scope, "%d invalid layers, ", inv);
+			rnd_append_printf(&scope, "%d invalid layers, ", inv);
 		inv = 0;
 		for(n = 0, l = ctx->pe.layergrps.array; n < vtl0_len(&ctx->pe.layergrps); n++, l++) {
 			const char *name = pcb_layergrp_name(ctx->pe.pcb, *l);
@@ -174,7 +174,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 				inv++;
 		}
 		if (inv > 0)
-			pcb_append_printf(&scope, "%d invalid layer groups, ", inv);
+			rnd_append_printf(&scope, "%d invalid layer groups, ", inv);
 
 		if (ctx->pe.nets_inited) {
 			htsp_entry_t *e;
@@ -189,19 +189,19 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 					inv++;
 			}
 			if (inv > 0)
-				pcb_append_printf(&scope, "%d invalid nets, ", inv);
+				rnd_append_printf(&scope, "%d invalid nets, ", inv);
 		}
 
 		inv = 0;
 		for(idp = pcb_idpath_list_first(&ctx->pe.objs); idp != NULL; idp = pcb_idpath_list_next(idp)) {
 			pcb_any_obj_t *o = pcb_idpath2obj_in(ctx->pe.data, idp);
 			if (o != NULL)
-				pcb_append_printf(&scope, "%s #%ld, ", pcb_obj_type_name(o->type), o->ID);
+				rnd_append_printf(&scope, "%s #%ld, ", pcb_obj_type_name(o->type), o->ID);
 			else
 				inv++;
 		}
 		if (inv > 0)
-			pcb_append_printf(&scope, "%d invalid objects, ", inv);
+			rnd_append_printf(&scope, "%d invalid objects, ", inv);
 
 		gds_truncate(&scope, gds_len(&scope)-2);
 
@@ -289,7 +289,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 
 	for(n = 0; n < p->values.used; n++) {
 		rnd_hid_row_t *r;
-		cell[0] = pcb_strdup_printf("%ld", pvs[n].cnt);
+		cell[0] = rnd_strdup_printf("%ld", pvs[n].cnt);
 		cell[1] = pcb_propsel_printval(p->type, pvs[n].val);
 		r = rnd_dad_tree_append(attr, NULL, cell);
 		r->user_data = pvs[n].val;
@@ -408,7 +408,7 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	while(isspace(*key)) key++;
 
 	if ((failed == 0) && (*key != '\0')) {
-		char *path = pcb_strdup_printf("a/%s", key);
+		char *path = rnd_strdup_printf("a/%s", key);
 		pcb_propsel_set_str(&ctx->pe, path, dlg[wval].val.str);
 		free(path);
 		prop_refresh(ctx);

@@ -163,7 +163,7 @@ static int eeschema_parse_net(gsxl_dom_t *dom)
 					rnd_message(RND_MSG_WARNING, "eeschema: ignoring incomplete connection to net %s: refdes=%s pin=%s \n", netname, ref, pin);
 					continue;
 				}
-				pcb_snprintf(refpin, sizeof(refpin), "%s-%s", ref, pin);
+				rnd_snprintf(refpin, sizeof(refpin), "%s-%s", ref, pin);
 				rnd_actionva(&PCB->hidlib, "Netlist", "Add",  netname, refpin, NULL);
 			}
 		}

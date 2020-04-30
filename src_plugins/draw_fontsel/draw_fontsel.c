@@ -117,7 +117,7 @@ static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 	pcb_font_id_t target_fid = (txt == NULL) ? conf_core.design.text_font_id : txt->fid;
 
 	nm = (f->name == NULL) ? "<anonymous>" : f->name;
-	pcb_snprintf(buf, sizeof(buf), "#%d [abc ABC 123] %s", f->id, nm);
+	rnd_snprintf(buf, sizeof(buf), "#%d [abc ABC 123] %s", f->id, nm);
 
 	dchkbox(gc, x-4, *y, (f->id == target_fid));
 

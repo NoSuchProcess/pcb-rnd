@@ -160,14 +160,14 @@ static char *templ_exec(pcb_subc_t *subc, gdl_list_t *temp)
 					pcb_subc_get_origin(subc, &x, &y);
 					have_coords = 1;
 				}
-				pcb_append_printf(&s, "%.08mm", x);
+				rnd_append_printf(&s, "%.08mm", x);
 				break;
 			case TT_Y:
 				if (!have_coords) {
 					pcb_subc_get_origin(subc, &x, &y);
 					have_coords = 1;
 				}
-				pcb_append_printf(&s, "%.08mm", y);
+				rnd_append_printf(&s, "%.08mm", y);
 				break;
 		}
 	}
@@ -435,7 +435,7 @@ static void group_progress_update(void *hid_ctx, group_t *grp)
 			done++;
 	}
 
-	tmp = pcb_strdup_printf("%d/%d", done, total);
+	tmp = rnd_strdup_printf("%d/%d", done, total);
 	rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], grp->row, 5, tmp);
 }
 

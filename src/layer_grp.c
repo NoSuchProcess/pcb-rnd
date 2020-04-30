@@ -546,7 +546,7 @@ static int undo_layergrp_steply_swap(void *udata)
 static void undo_layergrp_steply_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layergrp_steply_t *s = udata;
-	pcb_snprintf(dst, dst_len, "step layer in grp: #%ld/#%ld: %+d", s->gid, s->lid, s->delta);
+	rnd_snprintf(dst, dst_len, "step layer in grp: #%ld/#%ld: %+d", s->gid, s->lid, s->delta);
 }
 
 static const uundo_oper_t undo_layergrp_steply = {
@@ -653,7 +653,7 @@ static void undo_layergrp_del_free(void *udata)
 static void undo_layergrp_del_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layergrp_del_t *r = udata;
-	pcb_snprintf(dst, dst_len, "layergrp %s: '%s'", r->del ? "delete" : "insert", r->del ? r->save.name : pcb_layergrp_name(r->pcb, r->gid));
+	rnd_snprintf(dst, dst_len, "layergrp %s: '%s'", r->del ? "delete" : "insert", r->del ? r->save.name : pcb_layergrp_name(r->pcb, r->gid));
 }
 
 static const uundo_oper_t undo_layergrp_del = {
@@ -1018,7 +1018,7 @@ static int undo_layergrp_rename_swap(void *udata)
 static void undo_layergrp_rename_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layergrp_rename_t *r = udata;
-	pcb_snprintf(dst, dst_len, "rename layergrp: '%s' -> '%s'", r->grp->name, r->name);
+	rnd_snprintf(dst, dst_len, "rename layergrp: '%s' -> '%s'", r->grp->name, r->name);
 }
 
 static void undo_layergrp_rename_free(void *udata)
@@ -1092,7 +1092,7 @@ static int undo_layergrp_repurp_swap(void *udata)
 static void undo_layergrp_repurp_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layergrp_repurp_t *r = udata;
-	pcb_snprintf(dst, dst_len, "repurpose layergrp: '%s' -> '%s'", r->grp->purpose, r->purps);
+	rnd_snprintf(dst, dst_len, "repurpose layergrp: '%s' -> '%s'", r->grp->purpose, r->purps);
 }
 
 static void undo_layergrp_repurp_free(void *udata)
@@ -1174,7 +1174,7 @@ static int undo_layergrp_ltype_swap(void *udata)
 static void undo_layergrp_ltype_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layergrp_ltype_t *r = udata;
-	pcb_snprintf(dst, dst_len, "layergrp type: '%lx' -> '%lx'", r->grp->ltype, r->ltype);
+	rnd_snprintf(dst, dst_len, "layergrp type: '%lx' -> '%lx'", r->grp->ltype, r->ltype);
 }
 
 static const uundo_oper_t undo_layergrp_ltype = {

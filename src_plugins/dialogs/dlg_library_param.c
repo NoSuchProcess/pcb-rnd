@@ -270,10 +270,10 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 			if (arg != NULL) {
 				if (strlen(arg) > 32) {
 					arg[32] = '\0';
-					evl = pcb_strdup_printf("%s (%s...)", col, arg);
+					evl = rnd_strdup_printf("%s (%s...)", col, arg);
 				}
 				else
-					evl = pcb_strdup_printf("%s (%s)", col, arg);
+					evl = rnd_strdup_printf("%s (%s)", col, arg);
 			}
 			else
 				evl = rnd_strdup(col);
@@ -334,7 +334,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 			case RND_HATT_COORD:
 			case RND_HATT_END:
 				val = buff;
-				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->val.crd);
+				rnd_snprintf(buff, sizeof(buff), "%$$mH", a->val.crd);
 				break;
 			default:;
 		}
@@ -348,7 +348,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 		if ((n == pushed) && (n < ctx->first_optional))
 			gds_append_str(&sres, val); /* positional */
 		else
-			pcb_append_printf(&sres, "%s=%s", ctx->pnames[n], val);
+			rnd_append_printf(&sres, "%s=%s", ctx->pnames[n], val);
 		pushed++;
 	}
 
@@ -554,13 +554,13 @@ static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
 #ifdef __WIN32__
 	{
 		char *s;
-		cmd = pcb_strdup_printf("%s/sh -c \"%s --help\"", rnd_w32_bindir, l->data.fp.loc_info);
+		cmd = rnd_strdup_printf("%s/sh -c \"%s --help\"", rnd_w32_bindir, l->data.fp.loc_info);
 		for(s = cmd; *s != '\0'; s++)
 			if (*s == '\\')
 				*s = '/';
 	}
 #else
-	cmd = pcb_strdup_printf("%s --help", l->data.fp.loc_info);
+	cmd = rnd_strdup_printf("%s --help", l->data.fp.loc_info);
 #endif
 	f = pcb_popen(NULL, cmd, "r");
 	free(cmd);

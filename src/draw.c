@@ -1205,7 +1205,7 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	/* fallback when template is not available or failed */
 	if (intconn <= 0)
 		return lab;
-	pcb_snprintf(buff, bufflen, "%s[%d]", lab, intconn);
+	rnd_snprintf(buff, bufflen, "%s[%d]", lab, intconn);
 
 	return buff;
 }

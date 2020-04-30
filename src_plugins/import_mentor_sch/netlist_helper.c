@@ -295,7 +295,7 @@ void nethlp_net_add_term(rnd_hidlib_t *hl, nethlp_net_ctx_t *nctx, const char *p
 	if (refdes == NULL) {
 		rnd_message(RND_MSG_ERROR, "nethelper: can't resolve refdes of part %s\n", part);
 	}
-	pcb_snprintf(term, sizeof(term), "%s-%s", refdes, pin);
+	rnd_snprintf(term, sizeof(term), "%s-%s", refdes, pin);
 	rnd_actionva(hl, "Netlist", "Add",  nctx->netname, term, NULL);
 }
 

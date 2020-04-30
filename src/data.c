@@ -1012,7 +1012,7 @@ char *pcb_data_name_by_addr(int addr, char *buf)
 {
 	if (addr == 0) *buf = '\0';
 	else if (addr == 1) strcpy(buf, "pcb");
-	else pcb_snprintf(buf, 16, "buffer#%d", addr-2);
+	else rnd_snprintf(buf, 16, "buffer#%d", addr-2);
 	return buf;
 }
 
@@ -1042,7 +1042,7 @@ const char *pcb_data_to_name(pcb_board_t *pcb, pcb_data_t *data, char *buf, int 
 
 	for(n = 0; n < PCB_MAX_BUFFER; n++) {
 		if (data == pcb_buffers[n].Data) {
-			pcb_sprintf(buf, "buffer#%d", n);
+			rnd_sprintf(buf, "buffer#%d", n);
 			return buf;
 		}
 	}

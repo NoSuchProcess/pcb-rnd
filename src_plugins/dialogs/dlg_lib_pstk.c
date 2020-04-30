@@ -110,10 +110,10 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 	for(id = 0, proto = data->ps_protos.array; id < pcb_vtpadstack_proto_len(&data->ps_protos); proto++,id++) {
 		if (!proto->in_use)
 			continue;
-		cell[0] = pcb_strdup_printf("%ld", id);
+		cell[0] = rnd_strdup_printf("%ld", id);
 		cell[1] = rnd_strdup(proto->name == NULL ? "" : proto->name);
 		if (ctx->stat != NULL)
-			cell[2] = pcb_strdup_printf("%d", ctx->stat[id]);
+			cell[2] = rnd_strdup_printf("%d", ctx->stat[id]);
 		else
 			cell[2] = rnd_strdup("");
 		rnd_dad_tree_append(attr, NULL, cell);
@@ -604,9 +604,9 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 
 	if (subc_id > 0) {
 		if (sc->refdes != NULL)
-			name = pcb_strdup_printf("pcb-rnd padstacks - subcircuit #%ld (%s)", subc_id, sc->refdes);
+			name = rnd_strdup_printf("pcb-rnd padstacks - subcircuit #%ld (%s)", subc_id, sc->refdes);
 		else
-			name = pcb_strdup_printf("pcb-rnd padstacks - subcircuit #%ld", subc_id);
+			name = rnd_strdup_printf("pcb-rnd padstacks - subcircuit #%ld", subc_id);
 	}
 	else
 		name = rnd_strdup("pcb-rnd padstacks - board");

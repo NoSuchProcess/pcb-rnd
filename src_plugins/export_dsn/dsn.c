@@ -140,7 +140,7 @@ TODO("revise this; use attributes instead")
 			pcb_net_t *net = e->value;
 			if (!strcmp(g->name, net->name)) {
 				free(layeropts);
-				layeropts = pcb_strdup_printf("(type power) (use_net \"%s\")", g->name);
+				layeropts = rnd_strdup_printf("(type power) (use_net \"%s\")", g->name);
 			}
 		}
 		fprintf(fp, "    (layer \"%ld__%s\"\n", (long)GRP_NAME(g));
@@ -150,20 +150,20 @@ TODO("revise this; use attributes instead")
 	}
 
 	/* PCB outline */
-	pcb_fprintf(fp, "    (boundary\n");
-	pcb_fprintf(fp, "      (rect pcb 0.0 0.0 %.6mm %.6mm)\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
-	pcb_fprintf(fp, "    )\n");
-	pcb_fprintf(fp, "    (via via_%ld_%ld)\n", viawidth, viadrill);
+	rnd_fprintf(fp, "    (boundary\n");
+	rnd_fprintf(fp, "      (rect pcb 0.0 0.0 %.6mm %.6mm)\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
+	rnd_fprintf(fp, "    )\n");
+	rnd_fprintf(fp, "    (via via_%ld_%ld)\n", viawidth, viadrill);
 
 	/* DRC rules */
-	pcb_fprintf(fp, "    (rule\n");
-	pcb_fprintf(fp, "      (width %mm)\n", trackwidth);
-	pcb_fprintf(fp, "      (clear %mm)\n", clearance);
-	pcb_fprintf(fp, "      (clear %mm (type wire_area))\n", clearance);
-	pcb_fprintf(fp, "      (clear %mm (type via_smd via_pin))\n", clearance);
-	pcb_fprintf(fp, "      (clear %mm (type smd_smd))\n", clearance);
-	pcb_fprintf(fp, "      (clear %mm (type default_smd))\n", clearance);
-	pcb_fprintf(fp, "    )\n  )\n");
+	rnd_fprintf(fp, "    (rule\n");
+	rnd_fprintf(fp, "      (width %mm)\n", trackwidth);
+	rnd_fprintf(fp, "      (clear %mm)\n", clearance);
+	rnd_fprintf(fp, "      (clear %mm (type wire_area))\n", clearance);
+	rnd_fprintf(fp, "      (clear %mm (type via_smd via_pin))\n", clearance);
+	rnd_fprintf(fp, "      (clear %mm (type smd_smd))\n", clearance);
+	rnd_fprintf(fp, "      (clear %mm (type default_smd))\n", clearance);
+	rnd_fprintf(fp, "    )\n  )\n");
 }
 
 static void print_placement(FILE * fp)
@@ -187,9 +187,9 @@ static void print_placement(FILE * fp)
 			ename = rnd_strdup(subc->refdes);
 		else
 			ename = rnd_strdup("null");
-		pcb_fprintf(fp, "    (component %d\n", subc->ID);
-		pcb_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ox, PCB->hidlib.size_y - oy, side);
-		pcb_fprintf(fp, "    )\n");
+		rnd_fprintf(fp, "    (component %d\n", subc->ID);
+		rnd_fprintf(fp, "      (place \"%s\" %.6mm %.6mm %s 0 (PN 0))\n", ename, ox, PCB->hidlib.size_y - oy, side);
+		rnd_fprintf(fp, "    )\n");
 		free(ename);
 	}
 	PCB_END_LOOP;
@@ -197,9 +197,9 @@ static void print_placement(FILE * fp)
 TODO("padstack: check if real shapes are exported")
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{ /* add mounting holes */
-		pcb_fprintf(fp, "    (component %d\n", padstack->ID);
-		pcb_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", padstack->ID, padstack->x, (PCB->hidlib.size_y - padstack->y), "front");
-		pcb_fprintf(fp, "    )\n");
+		rnd_fprintf(fp, "    (component %d\n", padstack->ID);
+		rnd_fprintf(fp, "      (place %d %.6mm %.6mm %s 0 (PN 0))\n", padstack->ID, padstack->x, (PCB->hidlib.size_y - padstack->y), "front");
+		rnd_fprintf(fp, "    )\n");
 	}
 	PCB_END_LOOP;
 
@@ -212,14 +212,14 @@ static void print_polyshape(gds_t *term_shapes, pcb_pstk_poly_t *ply, rnd_coord_
 	int fld;
 	int n;
 
-	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%d__%s\" 0", GRP_NAME(grp));
+	rnd_snprintf(tmp, sizeof(tmp), "        (polygon \"%d__%s\" 0", GRP_NAME(grp));
 	gds_append_str(term_shapes, tmp);
 
 	fld = 0;
 	for(n = 0; n < ply->len; n++) {
 		if ((fld % 3) == 0)
 			gds_append_str(term_shapes, "\n       ");
-		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (ply->x[n] - ox) * partsidesign, -(ply->y[n] - oy));
+		rnd_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (ply->x[n] - ox) * partsidesign, -(ply->y[n] - oy));
 		gds_append_str(term_shapes, tmp);
 		fld++;
 	}
@@ -235,7 +235,7 @@ static void print_lineshape(gds_t *term_shapes, pcb_pstk_line_t *lin, rnd_coord_
 	int n;
 	pcb_line_t ltmp;
 
-	pcb_snprintf(tmp, sizeof(tmp), "        (polygon \"%d__%s\" 0", GRP_NAME(grp));
+	rnd_snprintf(tmp, sizeof(tmp), "        (polygon \"%d__%s\" 0", GRP_NAME(grp));
 	gds_append_str(term_shapes, tmp);
 
 	memset(&ltmp, 0, sizeof(ltmp));
@@ -252,7 +252,7 @@ TODO("padstack: this ignores round cap")
 	for(n = 0; n < 4; n++) {
 		if ((fld % 3) == 0)
 			gds_append_str(term_shapes, "\n       ");
-		pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x[n] - ox) * partsidesign, -(y[n] - oy));
+		rnd_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x[n] - ox) * partsidesign, -(y[n] - oy));
 		gds_append_str(term_shapes, tmp);
 		fld++;
 	}
@@ -264,12 +264,12 @@ static void print_circshape(gds_t *term_shapes, pcb_pstk_circ_t *circ, rnd_coord
 {
 	char tmp[512];
 
-	pcb_snprintf(tmp, sizeof(tmp), "        (circle \"%d__%s\"", GRP_NAME(grp));
+	rnd_snprintf(tmp, sizeof(tmp), "        (circle \"%d__%s\"", GRP_NAME(grp));
 	gds_append_str(term_shapes, tmp);
 
 TODO("padstack: this ignores circle center offset")
 
-	pcb_snprintf(tmp, sizeof(tmp), " %.6mm)\n", circ->dia);
+	rnd_snprintf(tmp, sizeof(tmp), " %.6mm)\n", circ->dia);
 	gds_append_str(term_shapes, tmp);
 }
 
@@ -281,14 +281,14 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 	int go;
 
 	if (pl != NULL) {
-		pcb_snprintf(tmp, sizeof(tmp), "(polygon \"%d__%s\" 0", GRP_NAME(grp));
+		rnd_snprintf(tmp, sizeof(tmp), "(polygon \"%d__%s\" 0", GRP_NAME(grp));
 		gds_append_str(term_shapes, tmp);
 
 		fld = 0;
 		for(go = pcb_poly_vect_first(it, &x, &y); go; go = pcb_poly_vect_next(it, &x, &y)) {
 			if ((fld % 3) == 0)
 				gds_append_str(term_shapes, "\n       ");
-			pcb_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x - ox) * partsidesign, -(y - oy));
+			rnd_snprintf(tmp, sizeof(tmp), " %.6mm %.6mm", (x - ox) * partsidesign, -(y - oy));
 			gds_append_str(term_shapes, tmp);
 			fld++;
 		}
@@ -302,12 +302,12 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, rnd_
 	if (poly->term != NULL) {
 		rnd_layergrp_id_t gid = term_on_bottom ? pcb_layergrp_get_bottom_copper() : pcb_layergrp_get_top_copper();
 		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
-		char *padstack = pcb_strdup_printf("Term_poly_%ld", poly->ID);
+		char *padstack = rnd_strdup_printf("Term_poly_%ld", poly->ID);
 		pcb_poly_it_t it;
 		rnd_polyarea_t *pa;
 
 
-		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, poly->term, 0, 0);
+		rnd_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, poly->term, 0, 0);
 
 		gds_append_str(term_shapes, "    (padstack ");
 		gds_append_str(term_shapes, padstack);
@@ -407,9 +407,9 @@ static void print_library(FILE * fp)
 		PCB_PADSTACK_LOOP(subc->data);
 		{
 			rnd_layergrp_id_t group;
-			char *pid = pcb_strdup_printf("Pstk_shape_%ld", padstack->ID);
+			char *pid = rnd_strdup_printf("Pstk_shape_%ld", padstack->ID);
 
-			pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, (padstack->x-ox)*partsidesign, -(padstack->y-oy));
+			rnd_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, (padstack->x-ox)*partsidesign, -(padstack->y-oy));
 
 			gds_append_str(&term_shapes, "    (padstack ");
 			gds_append_str(&term_shapes, pid);
@@ -434,8 +434,8 @@ static void print_library(FILE * fp)
 	PCB_END_LOOP;
 
 	/* add padstack for terminals */
-	pcb_fprintf(fp, "%s", term_shapes.array);
-	pcb_fprintf(fp, "  )\n");
+	rnd_fprintf(fp, "%s", term_shapes.array);
+	rnd_fprintf(fp, "  )\n");
 
 
 	gds_uninit(&term_shapes);
@@ -470,11 +470,11 @@ static void print_network(FILE * fp)
 		pcb_net_t *net = e->value;
 		fprintf(fp, " \"%s\"", net->name);
 	}
-	pcb_fprintf(fp, "\n");
-	pcb_fprintf(fp, "      (circuit\n");
-	pcb_fprintf(fp, "        (use_via via_%ld_%ld)\n", viawidth, viadrill);
-	pcb_fprintf(fp, "      )\n");
-	pcb_fprintf(fp, "      (rule (width %.6mm))\n    )\n  )\n", trackwidth);
+	rnd_fprintf(fp, "\n");
+	rnd_fprintf(fp, "      (circuit\n");
+	rnd_fprintf(fp, "        (use_via via_%ld_%ld)\n", viawidth, viadrill);
+	rnd_fprintf(fp, "      )\n");
+	rnd_fprintf(fp, "      (rule (width %.6mm))\n    )\n  )\n", trackwidth);
 }
 
 static void print_wires(FILE * fp)
@@ -492,7 +492,7 @@ static void print_wires(FILE * fp)
 
 			PCB_LINE_LOOP(lay);
 			{
-				pcb_fprintf(fp,
+				rnd_fprintf(fp,
 					"        (wire (path %d__%s %.6mm %.6mm %.6mm %.6mm %.6mm)\n", GRP_NAME(g), line->Thickness,
 					line->Point1.X, (PCB->hidlib.size_y - line->Point1.Y),
 					line->Point2.X, (PCB->hidlib.size_y - line->Point2.Y));

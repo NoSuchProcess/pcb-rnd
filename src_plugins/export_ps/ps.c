@@ -444,11 +444,11 @@ void ps_start_file(FILE * f)
 	 *
 	 * Media sizes are in PCB units
 	 */
-	pcb_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
+	rnd_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
 							pcb_media_data[global.media_idx].name,
 							72 * PCB_COORD_TO_INCH(pcb_media_data[global.media_idx].width),
 							72 * PCB_COORD_TO_INCH(pcb_media_data[global.media_idx].height));
-	pcb_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[global.media_idx].name);
+	rnd_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[global.media_idx].name);
 
 	/* End General Header Comments. */
 
@@ -690,10 +690,10 @@ static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
 	 * of the thick line.
 	 */
 
-	pcb_fprintf(fh, "gsave %mi setlinewidth %mi %mi translate %d %d scale\n", thick * 2, x, y, dx, dy);
-	pcb_fprintf(fh, "%mi %mi moveto %mi %mi %mi 0 90 arc %mi %mi lineto\n", len, thick, thick, thick, len2 + thick, thick, len);
+	rnd_fprintf(fh, "gsave %mi setlinewidth %mi %mi translate %d %d scale\n", thick * 2, x, y, dx, dy);
+	rnd_fprintf(fh, "%mi %mi moveto %mi %mi %mi 0 90 arc %mi %mi lineto\n", len, thick, thick, thick, len2 + thick, thick, len);
 	if (dx < 0 && dy < 0)
-		pcb_fprintf(fh, "%mi %mi moveto 0 %mi rlineto\n", len2 * 2 + thick, thick, -len2);
+		rnd_fprintf(fh, "%mi %mi moveto 0 %mi rlineto\n", len2 * 2 + thick, thick, -len2);
 	fprintf(fh, "stroke grestore\n");
 }
 
@@ -784,7 +784,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		lastgroup = group;
 
 		if ((!ps_cam.active) && (global.pagecount != 0)) {
-			pcb_fprintf(global.f, "showpage\n");
+			rnd_fprintf(global.f, "showpage\n");
 		}
 		global.pagecount++;
 		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
@@ -851,7 +851,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		}
 		fprintf(global.f, "newpath\n");
 
-		pcb_fprintf(global.f, "72 72 scale %mi %mi translate\n", global.media_width / 2, global.media_height / 2);
+		rnd_fprintf(global.f, "72 72 scale %mi %mi translate\n", global.media_width / 2, global.media_height / 2);
 
 		boffset = global.media_height / 2;
 		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
@@ -866,7 +866,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			fprintf(global.f, "1 -1 scale\n");
 
 		fprintf(global.f, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.scale_factor);
-		pcb_fprintf(global.f, "%mi %mi translate\n", -PCB->hidlib.size_x / 2, -PCB->hidlib.size_y / 2);
+		rnd_fprintf(global.f, "%mi %mi translate\n", -PCB->hidlib.size_x / 2, -PCB->hidlib.size_y / 2);
 
 		/* Keep the drill list from falling off the left edge of the paper,
 		 * even if it means some of the board falls off the right edge.
@@ -875,9 +875,9 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		if (PCB_LAYER_IS_FAB(flags, purpi)) {
 			rnd_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
 			rnd_coord_t needed = pcb_stub_draw_fab_overhang();
-			pcb_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
+			rnd_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)
-				pcb_fprintf(global.f, "0 %mi translate\n", needed - natural);
+				rnd_fprintf(global.f, "0 %mi translate\n", needed - natural);
 		}
 
 		if (global.invert) {
@@ -891,7 +891,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 
 		if (!global.has_outline || global.invert) {
 			if ((PCB_LAYER_IS_ROUTE(flags, purpi)) || (global.outline)) {
-				pcb_fprintf(global.f,
+				rnd_fprintf(global.f,
 									"0 setgray %mi setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
 									conf_core.design.min_wid,
@@ -920,7 +920,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 						"/c { 0 360 arc fill } bind def\n"
 						"/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
 		if (global.drill_helper)
-			pcb_fprintf(global.f,
+			rnd_fprintf(global.f,
 									"/dh { gsave %mi setlinewidth 0 gray %mi 0 360 arc stroke grestore} bind def\n",
 									(rnd_coord_t) global.drill_helper_size, (rnd_coord_t) (global.drill_helper_size * 3 / 2));
 	}
@@ -1026,7 +1026,7 @@ static void use_gc(rnd_hid_gc_t gc)
 		abort();
 	}
 	if (global.linewidth != gc->width) {
-		pcb_fprintf(global.f, "%mi setlinewidth\n", gc->width);
+		rnd_fprintf(global.f, "%mi setlinewidth\n", gc->width);
 		global.linewidth = gc->width;
 	}
 	if (lastcap != gc->cap) {
@@ -1073,7 +1073,7 @@ static void use_gc(rnd_hid_gc_t gc)
 static void ps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
-	pcb_fprintf(global.f, "%mi %mi %mi %mi dr\n", x1, y1, x2, y2);
+	rnd_fprintf(global.f, "%mi %mi %mi %mi dr\n", x1, y1, x2, y2);
 }
 
 static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
@@ -1111,7 +1111,7 @@ static void ps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 		return;
 	}
 	use_gc(gc);
-	pcb_fprintf(global.f, "%mi %mi %mi %mi t\n", x1, y1, x2, y2);
+	rnd_fprintf(global.f, "%mi %mi %mi %mi t\n", x1, y1, x2, y2);
 }
 
 static void ps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
@@ -1140,7 +1140,7 @@ static void ps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coo
 	w = width;
 	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
 		w = 0.0001;
-	pcb_fprintf(global.f, "%ma %ma %mi %mi %mi %mi %f a\n",
+	rnd_fprintf(global.f, "%ma %ma %mi %mi %mi %mi %f a\n",
 							sa, ea, -width, height, cx, cy, (double)(global.linewidth) / w);
 }
 
@@ -1150,7 +1150,7 @@ static void ps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
 		if (gc->erase && global.is_copper && global.drill_helper && radius >= global.drill_helper_size)
 			radius = global.drill_helper_size;
-		pcb_fprintf(global.f, "%mi %mi %mi c\n", cx, cy, radius);
+		rnd_fprintf(global.f, "%mi %mi %mi c\n", cx, cy, radius);
 	}
 }
 
@@ -1160,7 +1160,7 @@ static void ps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, 
 	const char *op = "moveto";
 	use_gc(gc);
 	for (i = 0; i < n_coords; i++) {
-		pcb_fprintf(global.f, "%mi %mi %s\n", x[i]+dx, y[i]+dy, op);
+		rnd_fprintf(global.f, "%mi %mi %s\n", x[i]+dx, y[i]+dy, op);
 		op = "lineto";
 	}
 	fprintf(global.f, "fill\n");
@@ -1210,8 +1210,8 @@ do { \
 #define lseg_line(x1_, y1_, x2_, y2_) \
 	do { \
 			fprintf(global.f, "newpath\n"); \
-			pcb_fprintf(global.f, "%mi %mi moveto\n", x1_, y1_); \
-			pcb_fprintf(global.f, "%mi %mi lineto\n", x2_, y2_); \
+			rnd_fprintf(global.f, "%mi %mi moveto\n", x1_, y1_); \
+			rnd_fprintf(global.f, "%mi %mi lineto\n", x2_, y2_); \
 			fprintf (global.f, "stroke\n"); \
 	} while(0)
 
@@ -1246,7 +1246,7 @@ static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 		return;
 	}
 #endif
-	pcb_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
+	rnd_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
 rnd_hid_attribute_t ps_calib_attribute_list[] = {

@@ -82,12 +82,12 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(act, "ToggleView(ui:%d)", idx);
 			sprintf(chk, "ChkView(ui:%d)", idx);
 
-			pcb_snprintf(end, len_avail, "  %s", ly->name);
+			rnd_snprintf(end, len_avail, "  %s", ly->name);
 			rnd_gui->create_menu(rnd_gui, path, &props);
 		}
 
 		props.checked = NULL;
-		pcb_snprintf(end, len_avail, "[UI]");
+		rnd_snprintf(end, len_avail, "[UI]");
 		rnd_gui->create_menu(rnd_gui, path, &props);
 	}
 
@@ -106,19 +106,19 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(act, "SelectLayer(%s)", ml->abbrev);
 			sprintf(chk, "ChkLayer(%s)", ml->abbrev);
 		}
-		pcb_snprintf(end, len_avail, "  %s", ml->name);
+		rnd_snprintf(end, len_avail, "  %s", ml->name);
 		rnd_gui->create_menu(rnd_gui, path, &props);
 	}
 
 	props.checked = NULL;
-	pcb_snprintf(end, len_avail, "[virtual]");
+	rnd_snprintf(end, len_avail, "[virtual]");
 	rnd_gui->create_menu(rnd_gui, path, &props);
 
 
 	/* have to go reverse to keep order because this will insert items */
 	for(sect = 0; sect < 2; sect++) {
 
-		pcb_snprintf(end, len_avail, "-");
+		rnd_snprintf(end, len_avail, "-");
 		props.foreground = NULL;
 		props.background = NULL;
 		props.checked = NULL;
@@ -152,14 +152,14 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 					sprintf(act, "SelectLayer(%ld)", lid+1);
 					sprintf(chk, "ChkLayer(%ld)", lid+1);
 				}
-				pcb_snprintf(end, len_avail, "  %s", l->name);
+				rnd_snprintf(end, len_avail, "  %s", l->name);
 				rnd_gui->create_menu(rnd_gui, path, &props);
 			}
 
 			props.foreground = NULL;
 			props.background = NULL;
 			props.checked = NULL;
-			pcb_snprintf(end, len_avail, "[%s]", g->name);
+			rnd_snprintf(end, len_avail, "[%s]", g->name);
 			rnd_gui->create_menu(rnd_gui, path, &props);
 		}
 	}
@@ -174,7 +174,7 @@ static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char
 	char *key = rnd_attribute_get(&l->Attributes, attrname);
 	if (key != NULL) {
 		keyprops->accel = key;
-		pcb_snprintf(end, len_avail, "%s %ld:%s", menu_prefix, lid+1, l->name);
+		rnd_snprintf(end, len_avail, "%s %ld:%s", menu_prefix, lid+1, l->name);
 		sprintf((char *)keyprops->action, "%s(%ld)", action_prefix, lid+1);
 		rnd_gui->create_menu(rnd_gui, path, keyprops);
 	}

@@ -166,12 +166,12 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int
 		}
 		if (parent != NULL) {
 			if (parent->refdes == NULL)
-				s = pcb_strdup_printf("%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);
+				s = rnd_strdup_printf("%s #%ld \\nof #%ld", typ, n->to->ID, parent->ID);
 			else
-				s = pcb_strdup_printf("%s #%ld \\nof %s", typ, n->to->ID, parent->refdes);
+				s = rnd_strdup_printf("%s #%ld \\nof %s", typ, n->to->ID, parent->refdes);
 		}
 		else
-			s = pcb_strdup_printf("%s #%ld", typ, n->to->ID);
+			s = rnd_strdup_printf("%s #%ld", typ, n->to->ID);
 
 		g->node2name[n->gid] = s;
 		if ((o->term == NULL) && (o->type != PCB_OBJ_RAT))

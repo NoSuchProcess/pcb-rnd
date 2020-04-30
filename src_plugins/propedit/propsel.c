@@ -1003,11 +1003,11 @@ char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val)
 {
 	switch(type) {
 		case PCB_PROPT_STRING: return val->string == NULL ? rnd_strdup("") : rnd_strdup(val->string);
-		case PCB_PROPT_COORD:  return pcb_strdup_printf("%m+%.02mS", rnd_conf.editor.grid_unit->allow, val->coord);
-		case PCB_PROPT_ANGLE:  return pcb_strdup_printf("%f", val->angle);
-		case PCB_PROPT_INT:    return pcb_strdup_printf("%d", val->i);
+		case PCB_PROPT_COORD:  return rnd_strdup_printf("%m+%.02mS", rnd_conf.editor.grid_unit->allow, val->coord);
+		case PCB_PROPT_ANGLE:  return rnd_strdup_printf("%f", val->angle);
+		case PCB_PROPT_INT:    return rnd_strdup_printf("%d", val->i);
 		case PCB_PROPT_BOOL:   return rnd_strdup(val->i ? "true" : "false");
-		case PCB_PROPT_COLOR:  return pcb_strdup_printf("#%02x%02x%02x", val->clr.r, val->clr.g, val->clr.b);
+		case PCB_PROPT_COLOR:  return rnd_strdup_printf("#%02x%02x%02x", val->clr.r, val->clr.g, val->clr.b);
 		default:
 			return rnd_strdup("<error>");
 	}

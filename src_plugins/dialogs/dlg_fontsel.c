@@ -126,7 +126,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 static void btn_replace_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	char file[1] = "", id[5];
-	pcb_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
+	rnd_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
 	rnd_actionva(&PCB->hidlib, "LoadFontFrom", file, id, NULL); /* modal, blocking */
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }

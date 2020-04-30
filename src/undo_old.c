@@ -110,7 +110,7 @@ void pcb_undo_old_print(void *udata, char *dst, size_t dst_len)
 	UndoListType *slot = udata;
 #ifndef NDEBUG
 	const char *res = undo_type2str(slot->Type);
-	pcb_snprintf(dst, dst_len, "%s ser=%d id=%d", res, slot->Serial, slot->ID);
+	rnd_snprintf(dst, dst_len, "%s ser=%d id=%d", res, slot->Serial, slot->ID);
 #else
 	sprintf(dst, "%d", slot->Type);
 #endif

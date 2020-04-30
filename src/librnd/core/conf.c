@@ -291,7 +291,7 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 				int res = conf_merge_plug(d, role, path);
 				if (res) {
 					char id[256];
-					pcb_snprintf(id, sizeof(id), "%s:%s", rnd_conf_role_name(role), fn);
+					rnd_snprintf(id, sizeof(id), "%s:%s", rnd_conf_role_name(role), fn);
 					rnd_file_loaded_set_at("conf/plugin", id, path, NULL);
 				}
 				cnt += res;
@@ -1831,7 +1831,7 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 				}
 			}
 			else {
-				rnd_conf_print_native_field((rnd_conf_pfn)pcb_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
+				rnd_conf_print_native_field((rnd_conf_pfn)rnd_append_printf, &s, 0, &n->val, n->type, n->prop+i, i);
 				ch = lht_dom_node_alloc(LHT_TEXT, isarr ? "" : name+1);
 				ch->data.text.value = s.array;
 				if (isarr)
@@ -2229,7 +2229,7 @@ void rnd_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *
 	va_list ap;
 
 	va_start(ap, fmt);
-	tmp = pcb_strdup_vprintf(fmt, ap);
+	tmp = rnd_strdup_vprintf(fmt, ap);
 	va_end(ap);
 
 	rnd_conf_set(role, path, idx, tmp, RND_POL_OVERWRITE);

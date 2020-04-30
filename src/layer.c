@@ -582,7 +582,7 @@ static int undo_layer_rename_swap(void *udata)
 static void undo_layer_rename_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layer_rename_t *r = udata;
-	pcb_snprintf(dst, dst_len, "rename layer: '%s' -> '%s'", r->layer->name, r->name);
+	rnd_snprintf(dst, dst_len, "rename layer: '%s' -> '%s'", r->layer->name, r->name);
 }
 
 static void undo_layer_rename_free(void *udata)
@@ -654,7 +654,7 @@ static int undo_layer_recolor_swap(void *udata)
 static void undo_layer_recolor_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layer_recolor_t *r = udata;
-	pcb_snprintf(dst, dst_len, "recolor layer: '%s' -> '%s'", r->layer->meta.real.color.str, r->color.str);
+	rnd_snprintf(dst, dst_len, "recolor layer: '%s' -> '%s'", r->layer->meta.real.color.str, r->color.str);
 }
 
 static const uundo_oper_t undo_layer_recolor = {
@@ -961,7 +961,7 @@ static int undo_layer_move_swap(void *udata)
 static void undo_layer_move_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_layer_move_t *m = udata;
-	pcb_snprintf(dst, dst_len, "layer_move: %s %s lid=%ld grp=%ld", m->append ? "append" : "delete", m->name, m->lid, m->grp);
+	rnd_snprintf(dst, dst_len, "layer_move: %s %s lid=%ld grp=%ld", m->append ? "append" : "delete", m->name, m->lid, m->grp);
 }
 
 static void undo_layer_move_free(void *udata)
@@ -1487,7 +1487,7 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, rnd_xform_t **xform
 
 void pcb_layer_edit_attrib(pcb_layer_t *layer)
 {
-	char *buf = pcb_strdup_printf("Layer %s Attributes", layer->name);
+	char *buf = rnd_strdup_printf("Layer %s Attributes", layer->name);
 	rnd_gui->edit_attributes(rnd_gui, buf, &(layer->Attributes));
 	free(buf);
 }

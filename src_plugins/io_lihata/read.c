@@ -85,12 +85,12 @@ static int iolht_error(lht_node_t *nd, char *fmt, ...)
 	gds_init(&str);
 	gds_append_str(&str, "io_lihata parse error");
 	if (nd != NULL)
-		pcb_append_printf(&str, " at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+		rnd_append_printf(&str, " at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
 	else
 		gds_append_str(&str, ": ");
 
 	va_start(ap, fmt);
-	pcb_safe_append_vprintf(&str, 0, fmt, ap);
+	rnd_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
 	rnd_message(RND_MSG_ERROR, "%s", str.array);
@@ -114,12 +114,12 @@ static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
 	gds_init(&str);
 	gds_append_str(&str, "io_lihata parse warning");
 	if (nd != NULL)
-		pcb_append_printf(&str, "at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+		rnd_append_printf(&str, "at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
 	else
 		gds_append_str(&str, ": ");
 
 	va_start(ap, fmt);
-	pcb_safe_append_vprintf(&str, 0, fmt, ap);
+	rnd_safe_append_vprintf(&str, 0, fmt, ap);
 	va_end(ap);
 
 	rnd_message(RND_MSG_WARNING, "%s", str.array);

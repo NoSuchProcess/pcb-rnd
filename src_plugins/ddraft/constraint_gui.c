@@ -62,7 +62,7 @@ do { \
 			*end++ = ' '; \
 			len--; \
 		} \
-		l = pcb_snprintf(end, len, fmt, cons.name[n]); \
+		l = rnd_snprintf(end, len, fmt, cons.name[n]); \
 		len -= l; \
 		end += l; \
 	} \

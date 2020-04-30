@@ -418,7 +418,7 @@ static int undo_arc_geo_swap(void *udata)
 
 static void undo_arc_geo_print(void *udata, char *dst, size_t dst_len)
 {
-	pcb_snprintf(dst, dst_len, "arc geo");
+	rnd_snprintf(dst, dst_len, "arc geo");
 }
 
 static const uundo_oper_t undo_arc_geo = {

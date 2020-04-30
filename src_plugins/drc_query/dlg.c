@@ -257,7 +257,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 		}
 	}
 
-	info = pcb_strdup_printf("DRC rule edit: %s on role %s", rule, rnd_conf_role_name(role));
+	info = rnd_strdup_printf("DRC rule edit: %s on role %s", rule, rnd_conf_role_name(role));
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		RND_DAD_LABEL(ctx->dlg, info);
@@ -406,7 +406,7 @@ static void drc_rlist_pcb2dlg(void)
 		cell[1] = rnd_strdup(rnd_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
 		if (st->run_cnt > 0)
-			cell[3] = pcb_strdup_printf("%.3fs", st->last_run_time);
+			cell[3] = rnd_strdup_printf("%.3fs", st->last_run_time);
 		else
 			cell[3] = "-";
 		rnd_dad_tree_append(attr, NULL, cell);
@@ -536,14 +536,14 @@ static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 
 	gds_init(&tmp);
 	st = pcb_drcq_stat_get(nd->name);
-	pcb_append_printf(&tmp, "Ran %ld times", st->run_cnt);
+	rnd_append_printf(&tmp, "Ran %ld times", st->run_cnt);
 	if (st->run_cnt > 0) {
-		pcb_append_printf(&tmp, "\nLast run took: %.6f s", st->last_run_time);
-		pcb_append_printf(&tmp, "\nTotal run time: %.6f s", st->sum_run_time);
-		pcb_append_printf(&tmp, "\nAverage run time: %.6f s", st->sum_run_time / (double)st->run_cnt);
-		pcb_append_printf(&tmp, "\nLast run violations: %ld", st->last_hit_cnt);
-		pcb_append_printf(&tmp, "\nTotal violations: %ld", st->sum_hit_cnt);
-		pcb_append_printf(&tmp, "\nAverage violations: %.2f", (double)st->sum_hit_cnt / (double)st->run_cnt);
+		rnd_append_printf(&tmp, "\nLast run took: %.6f s", st->last_run_time);
+		rnd_append_printf(&tmp, "\nTotal run time: %.6f s", st->sum_run_time);
+		rnd_append_printf(&tmp, "\nAverage run time: %.6f s", st->sum_run_time / (double)st->run_cnt);
+		rnd_append_printf(&tmp, "\nLast run violations: %ld", st->last_hit_cnt);
+		rnd_append_printf(&tmp, "\nTotal violations: %ld", st->sum_hit_cnt);
+		rnd_append_printf(&tmp, "\nAverage violations: %.2f", (double)st->sum_hit_cnt / (double)st->run_cnt);
 	}
 	hv.str = tmp.array;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wstat, &hv);

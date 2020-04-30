@@ -240,7 +240,7 @@ int insert_hdr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 	if (strcmp(name, "extmin") == 0)
 		fprintf(f, "10\n0\n20\n0\n30\n0\n");
 	else if (strcmp(name, "extmax") == 0)
-		pcb_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
+		rnd_fprintf(f, "10\n%mm\n20\n0\n30\n%mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y);
 	else if (strcmp(name, "layers") == 0) {
 		const char **s;
 		for(s = layer_names; *s != NULL; s++)

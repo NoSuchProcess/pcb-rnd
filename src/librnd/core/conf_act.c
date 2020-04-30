@@ -49,7 +49,7 @@ static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
 	int res;
 	va_list ap;
 	va_start(ap, fmt);
-	res = pcb_safe_append_vprintf((gds_t *)ctx, 0, fmt, ap);
+	res = rnd_safe_append_vprintf((gds_t *)ctx, 0, fmt, ap);
 	va_end(ap);
 	return res;
 }

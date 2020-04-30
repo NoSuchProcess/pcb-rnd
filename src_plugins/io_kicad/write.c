@@ -234,7 +234,7 @@ static void kicad_print_line(const wctx_t *ctx, const klayer_t *kly, pcb_line_t 
 	const char *cmd[] = {"segment", "gr_line", "fp_line"};
 
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f,
+	rnd_fprintf(ctx->f,
 		"(%s (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		cmd[kly->type],
 		line->Point1.X + dx, line->Point1.Y + dy,
@@ -283,14 +283,14 @@ TODO(": what do we need this for?")
 	switch(kly->type) {
 		case KLYT_COPPER:
 TODO(": this should be a proper line approximation using a helper (to be written)")
-			pcb_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", copperStartX, copperStartY, xEnd, yEnd, kly->name, arc->Thickness); /* neglect (net ___ ) for now */
+			rnd_fprintf(ctx->f, "(segment (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n", copperStartX, copperStartY, xEnd, yEnd, kly->name, arc->Thickness); /* neglect (net ___ ) for now */
 			pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)arc, "copper-arc", "Kicad does not support copper arcs; using line approximation", NULL);
 			break;
 		case KLYT_GR:
-			pcb_fprintf(ctx->f, "(gr_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kly->name, arc->Thickness);
+			rnd_fprintf(ctx->f, "(gr_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kly->name, arc->Thickness);
 			break;
 		case KLYT_FP:
-			pcb_fprintf(ctx->f, "(fp_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kly->name, arc->Thickness);
+			rnd_fprintf(ctx->f, "(fp_arc (start %.3mm %.3mm) (end %.3mm %.3mm) (angle %ma) (layer %s) (width %.3mm))\n", xStart, yStart, xEnd, yEnd, arc->Delta, kly->name, arc->Thickness);
 			break;
 	}
 }
@@ -316,7 +316,7 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 	}
 
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(gr_text %[4] ", text->TextString);
+	rnd_fprintf(ctx->f, "(gr_text %[4] ", text->TextString);
 	defaultXSize = 5 * PCB_SCALE_TEXT(mWidth, text->Scale) / 6; /* IIRC kicad treats this as kerned width of upper case m */
 	defaultYSize = defaultXSize;
 	strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale / 2);
@@ -388,12 +388,12 @@ TODO("textrot: use the degrees instead of 90 deg steps")
 		}
 		textOffsetX = halfStringWidth;
 	}
-	pcb_fprintf(ctx->f, "(at %.3mm %.3mm", text->X + dx + textOffsetX, text->Y + dy + textOffsetY);
+	rnd_fprintf(ctx->f, "(at %.3mm %.3mm", text->X + dx + textOffsetX, text->Y + dy + textOffsetY);
 	if (text->rot != 0.0)
 		fprintf(ctx->f, " %f", text->rot);
-	pcb_fprintf(ctx->f, ") (layer %s)\n", kly->name);
+	rnd_fprintf(ctx->f, ") (layer %s)\n", kly->name);
 	fprintf(ctx->f, "%*s", ind + 2, "");
-	pcb_fprintf(ctx->f, "(effects (font (size %.3mm %.3mm) (thickness %.3mm))", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
+	rnd_fprintf(ctx->f, "(effects (font (size %.3mm %.3mm) (thickness %.3mm))", defaultXSize, defaultYSize, strokeThickness); /* , rotation */
 	if (kicadMirrored == 0) {
 		fprintf(ctx->f, " (justify mirror)");
 	}
@@ -422,9 +422,9 @@ TODO(": do not hardwire thicknesses and gaps and hatch values!")
 
 	/* now the zone outline is defined */
 	for(i = 0; i < polygon->PointN; i = i + 5) { /* kicad exports five coords per line in s-expr files */
-		fprintf(ctx->f, "%*s", ind + 6, ""); /* pcb_fprintf does not support %*s   */
+		fprintf(ctx->f, "%*s", ind + 6, ""); /* rnd_fprintf does not support %*s   */
 		for(j = 0; (j < polygon->PointN) && (j < 5); j++) {
-			pcb_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + dx, polygon->Points[i + j].Y + dy);
+			rnd_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + dx, polygon->Points[i + j].Y + dy);
 			if ((j < 4) && ((i + j) < (polygon->PointN - 1))) {
 				fputs(" ", ctx->f);
 			}
@@ -453,9 +453,9 @@ TODO(": do not hardwire thicknesses and gaps and hatch values!")
 
 	/* now the zone outline is defined */
 	for(i = 0; i < polygon->PointN; i = i + 5) { /* kicad exports five coords per line in s-expr files */
-		fprintf(ctx->f, "%*s", ind + 4, ""); /* pcb_fprintf does not support %*s   */
+		fprintf(ctx->f, "%*s", ind + 4, ""); /* rnd_fprintf does not support %*s   */
 		for(j = 0; (j < polygon->PointN) && (j < 5); j++) {
-			pcb_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + dx, polygon->Points[i + j].Y + dy);
+			rnd_fprintf(ctx->f, "(xy %.3mm %.3mm)", polygon->Points[i + j].X + dx, polygon->Points[i + j].Y + dy);
 			if ((j < 4) && ((i + j) < (polygon->PointN - 1))) {
 				fputs(" ", ctx->f);
 			}
@@ -552,7 +552,7 @@ static void kicad_print_pstks(wctx_t *ctx, pcb_data_t *Data, int ind, rnd_coord_
 			if (pcb_pstk_export_compat_via(ps, &x, &y, &drill_dia, &pad_dia, &clearance, &mask, &cshape, &plated)) {
 				fprintf(ctx->f, "%*s", ind, "");
 TODO(": handle all cshapes (throw warnings)")
-				pcb_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s)",
+				rnd_fprintf(ctx->f, "(pad %s thru_hole %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (drill %.3mm) (layers %s %s)",
 					ps->term, ((cshape == PCB_PSTK_COMPAT_SQUARE) ? "rect" : "oval"),
 					x + dx, y + dy, psrot,
 					pad_dia, pad_dia,
@@ -618,7 +618,7 @@ TODO("hshadow TODO")
 				}
 
 				fprintf(ctx->f, "%*s", ind, "");
-				pcb_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (layers",
+				rnd_fprintf(ctx->f, "(pad %s smd %s (at %.3mm %.3mm %f) (size %.3mm %.3mm) (layers",
 					ps->term, shape_str,
 					ps->x + dx, ps->y + dy, psrot,
 					w, h,
@@ -650,7 +650,7 @@ TODO("hshadow TODO")
 TODO(": set klayer_from and klayer_to using bb span of ps")
 
 			fprintf(ctx->f, "%*s", ind, "");
-			pcb_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
+			rnd_fprintf(ctx->f, "(via (at %.3mm %.3mm) (size %.3mm) (layers %s %s))\n",
 				x + dx, y + dy, pad_dia,
 				kicad_sexpr_layer_to_text(ctx, klayer_from), kicad_sexpr_layer_to_text(ctx, klayer_to)
 				); /* skip (net 0) for now */
@@ -764,18 +764,18 @@ TODO(": the unique name makes no sense if we override it with unknown - if the u
 TODO(": why the heck do we hardwire timestamps?!!?!?!")
 		fprintf(ctx->f, "%*s", ind, "");
 rnd_trace("copper layer=\n", copperLayer);
-		pcb_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(ctx, copperLayer));
+		rnd_fprintf(ctx->f, "(module %[4] (layer %s) (tedit 4E4C0E65) (tstamp 5127A136)\n", currentElementName, kicad_sexpr_layer_to_text(ctx, copperLayer));
 		fprintf(ctx->f, "%*s", ind + 2, "");
-		pcb_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
+		rnd_fprintf(ctx->f, "(at %.3mm %.3mm)\n", xPos, yPos);
 
 		fprintf(ctx->f, "%*s", ind + 2, "");
-		pcb_fprintf(ctx->f, "(descr %[4])\n", currentElementName);
+		rnd_fprintf(ctx->f, "(descr %[4])\n", currentElementName);
 
 		fprintf(ctx->f, "%*s", ind + 2, "");
 
 TODO(": do not hardwire these coords, look up the first silk dyntext coords instead")
-		pcb_fprintf(ctx->f, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
-		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
+		rnd_fprintf(ctx->f, "(fp_text reference %[4] (at 0.0 -2.56) ", currentElementRef);
+		rnd_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
 
 TODO(": do not hardwire font sizes here, look up the first silk dyntext sizes instead")
 		fprintf(ctx->f, "%*s", ind + 4, "");
@@ -784,8 +784,8 @@ TODO(": do not hardwire font sizes here, look up the first silk dyntext sizes in
 
 TODO(": do not hardwire these coords, look up the first silk dyntext coords instead")
 		fprintf(ctx->f, "%*s", ind + 2, "");
-		pcb_fprintf(ctx->f, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
-		pcb_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
+		rnd_fprintf(ctx->f, "(fp_text value %[4] (at 0.0 -1.27) ", currentElementVal);
+		rnd_fprintf(ctx->f, "(layer %s)\n", kicad_sexpr_layer_to_text(ctx, silkLayer));
 
 TODO(": do not hardwire font sizes here, look up the first silk dyntext sizes instead")
 		fprintf(ctx->f, "%*s", ind + 4, "");
@@ -841,7 +841,7 @@ static int write_kicad_layout_via_drill_size(FILE *FP, rnd_cardinal_t indentatio
 {
 TODO(": do not hardwire the drill size here - does kicad support only one size, or what?")
 	fprintf(FP, "%*s", indentation, "");
-	pcb_fprintf(FP, "(via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
+	rnd_fprintf(FP, "(via_drill 0.635)\n"); /* mm format, default for now, ~= 0.635mm */
 	return 0;
 }
 
@@ -859,7 +859,7 @@ int io_kicad_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_sub
 	wctx_t wctx;
 
 TODO(": make this initialization a common function with write_kicad_layout()")
-	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
+	rnd_printf_slot[4] = "%{\\()\t\r\n \"}mq";
 
 	wctx.f = f;
 	wctx.pcb = PCB;
@@ -892,7 +892,7 @@ static int write_kicad_equipotential_netlists(FILE *FP, pcb_board_t *Layout, rnd
 
 		netNumber++;
 		fprintf(FP, "%*s(net %d ", indentation, "", netNumber); /* netlist 0 was used for unconnected pads  */
-		pcb_fprintf(FP, "%[4])\n", net->name);
+		rnd_fprintf(FP, "%[4])\n", net->name);
 		net->export_tmp = netNumber;
 	}
 	return 0;
@@ -942,7 +942,7 @@ TODO(": rewrite this: rather have a table and a loop that hardwired calculations
 			LayoutXOffset = PCB_MIL_TO_COORD(sheetWidth) / 2 - PCB->hidlib.size_x / 2;
 		}
 		else { /* the layout is bigger than A0; most unlikely, but... */
-			/* pcb_fprintf(ctx->f, "%.0ml ", PCB->hidlib.size_x); */
+			/* rnd_fprintf(ctx->f, "%.0ml ", PCB->hidlib.size_x); */
 			LayoutXOffset = 0;
 		}
 		if (sheetHeight > PCB_COORD_TO_MIL(PCB->hidlib.size_y)) {
@@ -950,7 +950,7 @@ TODO(": rewrite this: rather have a table and a loop that hardwired calculations
 			LayoutYOffset = PCB_MIL_TO_COORD(sheetHeight) / 2 - PCB->hidlib.size_y / 2;
 		}
 		else { /* the layout is bigger than A0; most unlikely, but... */
-			/* pcb_fprintf(ctx->f, "%.0ml", PCB->hidlib.size_y); */
+			/* rnd_fprintf(ctx->f, "%.0ml", PCB->hidlib.size_y); */
 			LayoutYOffset = 0;
 	}
 
@@ -964,22 +964,22 @@ TODO(": rewrite this: rather have a table and a loop that hardwired calculations
 static void kicad_print_implicit_outline(wctx_t *ctx, const char *lynam, rnd_coord_t thick, int ind)
 {
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->ox, ctx->oy,
 		ctx->pcb->hidlib.size_x + ctx->ox, ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->pcb->hidlib.size_x + ctx->ox, ctx->oy,
 		ctx->pcb->hidlib.size_x + ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->pcb->hidlib.size_x + ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
 		ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
 		lynam, thick);
 	fprintf(ctx->f, "%*s", ind, "");
-	pcb_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
+	rnd_fprintf(ctx->f, "(gr_line (start %.3mm %.3mm) (end %.3mm %.3mm) (layer %s) (width %.3mm))\n",
 		ctx->ox, ctx->pcb->hidlib.size_y + ctx->oy,
 		ctx->ox, ctx->oy,
 		lynam, thick);
@@ -1014,7 +1014,7 @@ int io_kicad_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, c
 	wctx.f = FP;
 
 	/* Kicad string quoting pattern: protect parenthesis, whitespace, quote and backslash */
-	pcb_printf_slot[4] = "%{\\()\t\r\n \"}mq";
+	rnd_printf_slot[4] = "%{\\()\t\r\n \"}mq";
 
 	fprintf(FP, "(kicad_pcb (version 3) (host pcb-rnd \"(%s %s)\")", PCB_VERSION, PCB_REVISION);
 

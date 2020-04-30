@@ -145,7 +145,7 @@ static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)
 
 	(*fidoly_next)++;
 	if (*fidoly_next > 15) {
-		char *msg = pcb_strdup_printf("FidoCadJ can't handle this many layers - layer %s is not exported\n", lyname);
+		char *msg = rnd_strdup_printf("FidoCadJ can't handle this many layers - layer %s is not exported\n", lyname);
 		pcb_io_incompat_save(NULL, NULL, "layer", msg, NULL);
 		free(msg);
 		return -1;
@@ -155,7 +155,7 @@ static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)
 
 static void write_custom_subc(FILE *f, pcb_subc_t *sc)
 {
-	char *msg = pcb_strdup_printf("Can't export custom footprint for %s yet\n", sc->refdes);
+	char *msg = rnd_strdup_printf("Can't export custom footprint for %s yet\n", sc->refdes);
 	pcb_io_incompat_save(sc->parent.data, (pcb_any_obj_t *)sc, msg, "subc", "subcircuit omitted - add the footprint type on the footprint list!");
 	free(msg);
 }

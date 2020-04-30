@@ -616,7 +616,7 @@ static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_r
 	assert(*rbpp);
 	(*rbpp)->group = layergroup;
 	clr = pcb_obj_clearance_at(PCB, term, layer);
-pcb_printf("***** CLR=%mm\n", clr);
+rnd_printf("***** CLR=%mm\n", clr);
 	init_const_box(*rbpp,
 								 /*X1 */ term->BoundingBox.X1 + clr,
 								 /*Y1 */ term->BoundingBox.Y1 + clr,
@@ -823,7 +823,7 @@ static routebox_t *FindRouteBoxOnLayerGroup(routedata_t * rd, rnd_coord_t X, rnd
 #ifdef ROUTE_DEBUG_VERBOSE
 static void DumpRouteBox(routebox_t * rb)
 {
-	pcb_printf("RB: %#mD-%#mD l%d; ", rb->box.X1, rb->box.Y1, rb->box.X2, rb->box.Y2, (int) rb->group);
+	rnd_printf("RB: %#mD-%#mD l%d; ", rb->box.X1, rb->box.Y1, rb->box.X2, rb->box.Y2, (int) rb->group);
 	switch (rb->type) {
 	case TERM:
 		printf("TERM[%s] ", rb->parent.term->term);
@@ -3229,7 +3229,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 #if defined(ROUTE_DEBUG) && defined(DEBUG_SHOW_ROUTE_BOXES)
 	showroutebox(path);
 #if defined(ROUTE_VERBOSE)
-	pcb_printf("TRACEPOINT start %#mD\n", nextpoint.X, nextpoint.Y);
+	rnd_printf("TRACEPOINT start %#mD\n", nextpoint.X, nextpoint.Y);
 #endif
 #endif
 
@@ -3257,7 +3257,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 #if defined(ROUTE_DEBUG_VERBOSE)
 		printf("TRACEPATH: ");
 		DumpRouteBox(path);
-		pcb_printf("TRACEPATH: point %#mD to point %#mD layer %d\n",
+		rnd_printf("TRACEPATH: point %#mD to point %#mD layer %d\n",
 							 lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, path->group);
 #endif
 

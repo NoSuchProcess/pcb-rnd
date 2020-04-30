@@ -324,7 +324,7 @@ static void pcb_act_spin_upd(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_int, &hv);
 	sprintf(tmp, "%f", ctx->dlg[ctx->wspin_double].val.dbl);
 	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_double, &hv);
-	pcb_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].val.crd, ctx->dlg[ctx->wspin_coord].val.crd);
+	rnd_snprintf(tmp, sizeof(tmp), "%mm\n%ml", ctx->dlg[ctx->wspin_coord].val.crd, ctx->dlg[ctx->wspin_coord].val.crd);
 	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspout_coord, &hv);
 }
 
@@ -353,7 +353,7 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	rnd_hid_row_t *new_row, *row = rnd_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
-	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
+	rowdata[0] = rnd_strdup_printf("dyn_%d", ctx->ttctr++);
 	new_row = rnd_dad_tree_insert(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
 
@@ -369,7 +369,7 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	rnd_hid_row_t *new_row, *row = rnd_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
-	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
+	rowdata[0] = rnd_strdup_printf("dyn_%d", ctx->ttctr++);
 	new_row = rnd_dad_tree_append(treea, row, rowdata);
 	new_row->user_data2.lng = 1;
 
@@ -519,7 +519,7 @@ static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_
 
 static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
-	pcb_printf("Mouse %d %mm %mm\n", kind, x, y);
+	rnd_printf("Mouse %d %mm %mm\n", kind, x, y);
 	return (kind == RND_HID_MOUSE_PRESS) || (kind == RND_HID_MOUSE_RELEASE);
 }
 

@@ -153,7 +153,7 @@ static int undo_text_geo_swap(void *udata)
 
 static void undo_text_geo_print(void *udata, char *dst, size_t dst_len)
 {
-	pcb_snprintf(dst, dst_len, "text geo");
+	rnd_snprintf(dst, dst_len, "text geo");
 }
 
 static const uundo_oper_t undo_text_geo = {
@@ -273,7 +273,7 @@ static unsigned char *pcb_text_render_str(pcb_text_t *text)
 	if (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, text))
 		return (unsigned char *)text->TextString;
 
-	res = (unsigned char *)pcb_strdup_subst(text->TextString, pcb_text_render_str_cb, text, PCB_SUBST_PERCENT | PCB_SUBST_CONF);
+	res = (unsigned char *)rnd_strdup_subst(text->TextString, pcb_text_render_str_cb, text, RND_SUBST_PERCENT | RND_SUBST_CONF);
 	if (res == NULL) {
 		res = (unsigned char *)rnd_strdup("<!>");
 	}
@@ -287,7 +287,7 @@ static unsigned char *pcb_text_render_str(pcb_text_t *text)
 
 int pcb_append_dyntext(gds_t *dst, const pcb_any_obj_t *obj, const char *fmt)
 {
-	return pcb_subst_append(dst, fmt, pcb_text_render_str_cb, (void *)obj, PCB_SUBST_PERCENT | PCB_SUBST_CONF, 0);
+	return rnd_subst_append(dst, fmt, pcb_text_render_str_cb, (void *)obj, RND_SUBST_PERCENT | RND_SUBST_CONF, 0);
 }
 
 /* Free rendered if it was allocated */

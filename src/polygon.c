@@ -1627,10 +1627,10 @@ rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 void debug_pline(pcb_pline_t * pl)
 {
 	pcb_vnode_t *v;
-	pcb_fprintf(stderr, "\txmin %#mS xmax %#mS ymin %#mS ymax %#mS\n", pl->xmin, pl->xmax, pl->ymin, pl->ymax);
+	rnd_fprintf(stderr, "\txmin %#mS xmax %#mS ymin %#mS ymax %#mS\n", pl->xmin, pl->xmax, pl->ymin, pl->ymax);
 	v = pl->head;
 	while (v) {
-		pcb_fprintf(stderr, "\t\tvnode: %#mD\n", v->point[0], v->point[1]);
+		rnd_fprintf(stderr, "\t\tvnode: %#mD\n", v->point[0], v->point[1]);
 		v = v->next;
 		if (v == pl->head)
 			break;
@@ -1652,7 +1652,7 @@ void debug_polygon(pcb_poly_t * p)
 	rnd_polyarea_t *pa;
 	fprintf(stderr, "POLYGON %p  %d pts\n", (void *)p, p->PointN);
 	for (i = 0; i < p->PointN; i++)
-		pcb_fprintf(stderr, "\t%d: %#mD\n", i, p->Points[i].X, p->Points[i].Y);
+		rnd_fprintf(stderr, "\t%d: %#mD\n", i, p->Points[i].X, p->Points[i].Y);
 	if (p->HoleIndexN) {
 		fprintf(stderr, "%d holes, starting at indices\n", p->HoleIndexN);
 		for (i = 0; i < p->HoleIndexN; i++)

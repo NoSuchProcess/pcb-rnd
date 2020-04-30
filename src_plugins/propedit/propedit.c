@@ -307,17 +307,17 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		switch(p->type) {
 			case PCB_PROPT_STRING: printf("	common='%s'\n", com.string); break;
 			case PCB_PROPT_COORD:
-				pcb_printf("	common='%$$mm'\n", com.coord);
-				pcb_printf("	min/avg/max=%$$mm/%$$mm/%$$mm\n", min.coord, avg.coord, max.coord);
+				rnd_printf("	common='%$$mm'\n", com.coord);
+				rnd_printf("	min/avg/max=%$$mm/%$$mm/%$$mm\n", min.coord, avg.coord, max.coord);
 				break;
 			case PCB_PROPT_ANGLE:
-				pcb_printf("	common='%f'\n", com.angle);
-				pcb_printf("	min/avg/max=%f/%f/%f\n", min.angle, avg.angle, max.angle);
+				rnd_printf("	common='%f'\n", com.angle);
+				rnd_printf("	min/avg/max=%f/%f/%f\n", min.angle, avg.angle, max.angle);
 				break;
 			case PCB_PROPT_INT:
 			case PCB_PROPT_BOOL:
-				pcb_printf("	common='%d'\n", com.i);
-				pcb_printf("	min/avg/max=%d/%d/%d\n", min.i, avg.i, max.i);
+				rnd_printf("	common='%d'\n", com.i);
+				rnd_printf("	min/avg/max=%d/%d/%d\n", min.i, avg.i, max.i);
 				break;
 			case PCB_PROPT_COLOR: printf("	common=#%02d%02d%02d\n", com.clr.r, com.clr.g, com.clr.b); break;
 			case PCB_PROPT_invalid:

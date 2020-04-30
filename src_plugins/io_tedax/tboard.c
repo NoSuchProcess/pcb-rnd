@@ -52,10 +52,10 @@
 #include "tnetlist.h"
 
 #define ps2fpname(fpname, padstack) \
-	pcb_snprintf(fpname, sizeof(fpname), "ps_glob_%ld%s", padstack->protoi, (!!padstack->smirror) != (!!padstack->xmirror) ? "m" : "")
+	rnd_snprintf(fpname, sizeof(fpname), "ps_glob_%ld%s", padstack->protoi, (!!padstack->smirror) != (!!padstack->xmirror) ? "m" : "")
 
 #define subc2fpname(fpname, subc) \
-	pcb_snprintf(fpname, sizeof(fpname), "sc_glob_%ld", subc->ID)
+	rnd_snprintf(fpname, sizeof(fpname), "sc_glob_%ld", subc->ID)
 
 static int tedax_global_pstk_fwrite(pcb_board_t *pcb, FILE *f)
 {
@@ -149,22 +149,22 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	fprintf(f, "\nbegin board v1 ");
 	tedax_fprint_escape(f, pcb->hidlib.name);
 	fputc('\n', f);
-	pcb_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->hidlib.size_x, pcb->hidlib.size_y);
+	rnd_fprintf(f, " drawing_area 0 0 %.06mm %.06mm\n", pcb->hidlib.size_x, pcb->hidlib.size_y);
 	for(n = 0, a = pcb->Attributes.List; n < pcb->Attributes.Number; n++,a++) {
-		pcb_fprintf(f, " attr ");
+		rnd_fprintf(f, " attr ");
 		tedax_fprint_escape(f, a->name);
 		fputc(' ', f);
 		tedax_fprint_escape(f, a->value);
 		fputc('\n', f);
 	}
-	pcb_fprintf(f, " stackup %s\n", stackupid);
-	pcb_fprintf(f, " netlist %s\n", netlistid);
-	pcb_fprintf(f, " drc %s\n", drcid);
+	rnd_fprintf(f, " stackup %s\n", stackupid);
+	rnd_fprintf(f, " netlist %s\n", netlistid);
+	rnd_fprintf(f, " drc %s\n", drcid);
 
 	PCB_PADSTACK_LOOP(pcb->Data) {
 		char fpname[256];
 		ps2fpname(fpname, padstack);
-		pcb_fprintf(f, " place %ld %s %.06mm %.06mm %f %d via\n", padstack->ID, fpname, padstack->x, padstack->y, padstack->rot, !!padstack->smirror);
+		rnd_fprintf(f, " place %ld %s %.06mm %.06mm %f %d via\n", padstack->ID, fpname, padstack->x, padstack->y, padstack->rot, !!padstack->smirror);
 	}
 	PCB_END_LOOP;
 
@@ -193,7 +193,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 
 		subc2fpname(fpname, proto);
 		pcb_subc_get_host_trans(subc,  &tr, 0);
-		pcb_fprintf(f, " place %s %s %.06mm %.06mm %f %d comp\n", refdes, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
+		rnd_fprintf(f, " place %s %s %.06mm %.06mm %f %d comp\n", refdes, fpname, tr.ox, tr.oy, tr.rot, tr.on_bottom);
 
 		/* placement text */
 		PCB_TEXT_ALL_LOOP(subc->data) {
@@ -203,7 +203,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 					const char **lyname = (const char **)vtp0_get(&ctx.g2n, rl->meta.real.grp, 0);
 					if (lyname != NULL) {
 						gds_t tmp;
-						pcb_fprintf(f, " place_text %s %s %.06mm %.06mm %.06mm %.06mm %d %f ",
+						rnd_fprintf(f, " place_text %s %s %.06mm %.06mm %.06mm %.06mm %d %f ",
 							refdes, *lyname, text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
 							text->Scale, text->rot);
 						gds_init(&tmp);
@@ -220,12 +220,12 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 		/* placement attributes */
 		for(n = 0, a = subc->Attributes.List; n < subc->Attributes.Number; n++,a++) {
 			if ((strcmp(a->name, "footprint") == 0) || (strcmp(a->name, "value") == 0)) {
-				pcb_fprintf(f, " place_fattr %s %s ", refdes, a->name);
+				rnd_fprintf(f, " place_fattr %s %s ", refdes, a->name);
 				tedax_fprint_escape(f, a->value);
 				fputc('\n', f);
 			}
 			else {
-				pcb_fprintf(f, " place_attr %s ", refdes);
+				rnd_fprintf(f, " place_attr %s ", refdes);
 				tedax_fprint_escape(f, a->name);
 				fputc(' ', f);
 				tedax_fprint_escape(f, a->value);

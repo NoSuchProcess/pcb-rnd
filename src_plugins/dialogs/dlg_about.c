@@ -86,7 +86,7 @@ static void pcb_dlg_about(void)
 					gds_truncate(&s, 0);
 					for (e2 = htsp_first(&cat->data.category.children); e2; e2 = htsp_next(&cat->data.category.children, e2)) {
 						rnd_file_loaded_t *file = e2->value;
-						pcb_append_printf(&s, "  %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
+						rnd_append_printf(&s, "  %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
 					}
 					RND_DAD_LABEL(about_ctx.dlg, s.array);
 				}

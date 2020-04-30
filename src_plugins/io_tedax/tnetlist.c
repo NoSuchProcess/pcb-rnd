@@ -214,7 +214,7 @@ int tedax_net_fsave(pcb_board_t *pcb, const char *netlistid, FILE *f)
 				fputc('\n', f);
 				continue;
 			}
-			pcb_fprintf(f, " comptag %s ", subc->refdes);
+			rnd_fprintf(f, " comptag %s ", subc->refdes);
 			tedax_fprint_escape(f, a->name);
 			fputc(' ', f);
 			tedax_fprint_escape(f, a->value);

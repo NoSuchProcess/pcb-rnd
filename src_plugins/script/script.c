@@ -250,7 +250,7 @@ static char *script_fn(const char *fn)
 {
 	if (*fn != '~')
 		return rnd_strdup(fn);
-	return pcb_strdup_printf("%s%c%s", rnd_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
+	return rnd_strdup_printf("%s%c%s", rnd_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
 }
 
 int pcb_script_load(const char *id, const char *fn, const char *lang)
@@ -280,7 +280,7 @@ TODO(": guess")
 		if (strcmp(engname, "fbas") == 0) engname = "fawk";
 		else if (strcmp(engname, "fpas") == 0) engname = "fawk";
 
-		pcb_snprintf(name, sizeof(name), "fungw_%s", engname);
+		rnd_snprintf(name, sizeof(name), "fungw_%s", engname);
 
 		old_id = script_persistency_id;
 		script_persistency_id = id;

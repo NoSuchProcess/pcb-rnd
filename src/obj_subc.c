@@ -1661,7 +1661,7 @@ static int undo_subc_unbind_swap(void *udata)
 static void undo_subc_unbind_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_subc_unbind_t *u = udata;
-	pcb_snprintf(dst, dst_len, "subc unbind layer: %s #%ld:%ld", u->unbind ? "unbind" : "rebind", u->sc->ID, u->slot);
+	rnd_snprintf(dst, dst_len, "subc unbind layer: %s #%ld:%ld", u->unbind ? "unbind" : "rebind", u->sc->ID, u->slot);
 }
 
 static const uundo_oper_t undo_subc_unbind = {
@@ -1861,7 +1861,7 @@ static int undo_subc_mirror_swap(void *udata)
 static void undo_subc_mirror_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_subc_mirror_t *g = udata;
-	pcb_snprintf(dst, dst_len, "subc mirror y_offs=%$mm smirror=%d", g->y_offs, g->smirror);
+	rnd_snprintf(dst, dst_len, "subc mirror y_offs=%$mm smirror=%d", g->y_offs, g->smirror);
 }
 
 static const uundo_oper_t undo_subc_mirror = {

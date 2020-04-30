@@ -239,7 +239,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 	}
 
 	if (photo_mode) {
-		pcb_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		rnd_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, board_color);
 	}
 
@@ -304,7 +304,7 @@ static void svg_header(void)
 	y2 = PCB->hidlib.size_y;
 	x2 += PCB_MM_TO_COORD(5);
 	y2 += PCB_MM_TO_COORD(5);
-	pcb_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
+	rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 }
 
 static void svg_footer(void)
@@ -497,10 +497,10 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 		case RND_HID_COMP_RESET:
 			comp_cnt++;
 			gds_init(&sclip);
-			pcb_append_printf(&snormal, "<!-- Composite: reset -->\n");
-			pcb_append_printf(&snormal, "<defs>\n");
-			pcb_append_printf(&snormal, "<g id=\"comp_pixel_%d\">\n", comp_cnt);
-			pcb_append_printf(&sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", comp_cnt, PCB->hidlib.size_x, PCB->hidlib.size_y);
+			rnd_append_printf(&snormal, "<!-- Composite: reset -->\n");
+			rnd_append_printf(&snormal, "<defs>\n");
+			rnd_append_printf(&snormal, "<g id=\"comp_pixel_%d\">\n", comp_cnt);
+			rnd_append_printf(&sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", comp_cnt, PCB->hidlib.size_x, PCB->hidlib.size_y);
 			break;
 
 		case RND_HID_COMP_POSITIVE:
@@ -509,12 +509,12 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			break;
 
 		case RND_HID_COMP_FLUSH:
-			pcb_append_printf(&snormal, "</g>\n");
-			pcb_append_printf(&sclip, "</mask>\n");
+			rnd_append_printf(&snormal, "</g>\n");
+			rnd_append_printf(&sclip, "</mask>\n");
 			gds_append_str(&snormal, sclip.array);
-			pcb_append_printf(&snormal, "</defs>\n");
-			pcb_append_printf(&snormal, "<use xlink:href=\"#comp_pixel_%d\" mask=\"url(#comp_clip_%d)\"/>\n", comp_cnt, comp_cnt);
-			pcb_append_printf(&snormal, "<!-- Composite: finished -->\n");
+			rnd_append_printf(&snormal, "</defs>\n");
+			rnd_append_printf(&snormal, "<use xlink:href=\"#comp_pixel_%d\" mask=\"url(#comp_clip_%d)\"/>\n", comp_cnt, comp_cnt);
+			rnd_append_printf(&snormal, "<!-- Composite: finished -->\n");
 			gds_uninit(&sclip);
 			break;
 	}
@@ -572,17 +572,17 @@ static void indent(gds_t *s)
 	if (group_open < sizeof(ind)-1) {
 		ind[group_open] = '\0';
 		if (s == NULL)
-			pcb_fprintf(f, ind);
+			rnd_fprintf(f, ind);
 		else
-			pcb_append_printf(s, ind);
+			rnd_append_printf(s, ind);
 		ind[group_open] = ' ';
 		return;
 	}
 
 	if (s == NULL)
-		pcb_fprintf(f, ind);
+		rnd_fprintf(f, ind);
 	else
-		pcb_append_printf(s, ind);
+		rnd_append_printf(s, ind);
 }
 
 static void svg_set_draw_xor(rnd_hid_gc_t gc, int xor_)
@@ -607,11 +607,11 @@ static void draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord
 	const char *clip_color = svg_clip_color(gc);
 
 	indent(&snormal);
-	pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+	rnd_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 		x1, y1, w, h, stroke, svg_color(gc), CAPS(gc->cap));
 	if (clip_color != NULL) {
 		indent(&sclip);
-		pcb_append_printf(&sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		rnd_append_printf(&sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, w, h, stroke, clip_color, CAPS(gc->cap));
 	}
 }
@@ -630,22 +630,22 @@ static void draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sdark);
-			pcb_append_printf(&sdark, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			rnd_append_printf(&sdark, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				x1+photo_offs, y1+photo_offs, w, h, photo_palette[photo_color].dark);
 			indent(&sbright);
-			pcb_append_printf(&sbright, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			rnd_append_printf(&sbright, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				x1-photo_offs, y1-photo_offs, w, h, photo_palette[photo_color].bright);
 		}
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		rnd_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			x1, y1, w, h, photo_palette[photo_color].normal);
 	}
 	else {
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		rnd_append_printf(&snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			x1, y1, w, h, svg_color(gc));
 		if (clip_color != NULL)
-			pcb_append_printf(&sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			rnd_append_printf(&sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				x1, y1, w, h, clip_color);
 	}
 }
@@ -665,22 +665,22 @@ static void pcb_line_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
-			pcb_append_printf(&sbright, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+			rnd_append_printf(&sbright, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 				x1-photo_offs, y1-photo_offs, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
 			indent(&sdark);
-			pcb_append_printf(&sdark, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+			rnd_append_printf(&sdark, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 				x1+photo_offs, y1+photo_offs, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
 		}
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+		rnd_append_printf(&snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 			x1, y1, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
 	}
 	else {
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+		rnd_append_printf(&snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 			x1, y1, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
 		if (clip_color != NULL) {
-			pcb_append_printf(&sclip, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
+			rnd_append_printf(&sclip, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 				x1, y1, x2, y2, gc->width, clip_color, CAPS(gc->cap));
 		}
 	}
@@ -700,22 +700,22 @@ static void pcb_arc_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(&sbright);
-			pcb_append_printf(&sbright, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			rnd_append_printf(&sbright, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1-photo_offs, y1-photo_offs, r, r, large, sweep, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
 			indent(&sdark);
-			pcb_append_printf(&sdark, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			rnd_append_printf(&sdark, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1+photo_offs, y1+photo_offs, r, r, large, sweep, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
 		}
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		rnd_append_printf(&snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
 	}
 	else {
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+		rnd_append_printf(&snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
 		if (clip_color != NULL)
-			pcb_append_printf(&sclip, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
+			rnd_append_printf(&sclip, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1, y1, r, r, large, sweep, x2, y2, gc->width, clip_color, CAPS(gc->cap));
 	}
 }
@@ -790,29 +790,29 @@ static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 			rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 			if ((!gc->drill) && (photo_offs != 0)) {
 				indent(&sbright);
-				pcb_append_printf(&sbright, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				rnd_append_printf(&sbright, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 					cx-photo_offs, cy-photo_offs, r, stroke, photo_palette[photo_color].bright);
 
 				indent(&sdark);
-				pcb_append_printf(&sdark, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+				rnd_append_printf(&sdark, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 					cx+photo_offs, cy+photo_offs, r, stroke, photo_palette[photo_color].dark);
 			}
 			indent(&snormal);
-			pcb_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			rnd_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				cx, cy, r, stroke, photo_palette[photo_color].normal);
 		}
 		else {
 			indent(&snormal);
-			pcb_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			rnd_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				cx, cy, r, stroke, "#000000");
 		}
 	}
 	else{
 		indent(&snormal);
-		pcb_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		rnd_append_printf(&snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			cx, cy, r, stroke, svg_color(gc));
 		if (clip_color != NULL)
-			pcb_append_printf(&sclip, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+			rnd_append_printf(&sclip, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				cx, cy, r, stroke, clip_color);
 	}
 }
@@ -834,9 +834,9 @@ static void draw_poly(gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, 
 	for (i = 0; i < n_coords; i++) {
 		rnd_coord_t px = x[i], py = y[i];
 		TRX(px); TRY(py);
-		pcb_append_printf(s, "%mm,%mm ", px+dx, py+dy);
+		rnd_append_printf(s, "%mm,%mm ", px+dx, py+dy);
 	}
-	pcb_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
+	rnd_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
 }
 
 static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)

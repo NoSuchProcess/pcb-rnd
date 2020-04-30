@@ -333,7 +333,7 @@ static int netlist_merge(pcb_board_t *pcb, const char *from, const char *to, int
 
 	/* move over all terminals from nfrom to nto */
 	for(t = pcb_termlist_first(&nfrom->conns); t != NULL; t = tnext) {
-		char *pinname = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+		char *pinname = rnd_strdup_printf("%s-%s", t->refdes, t->term);
 
 		tnext = pcb_termlist_next(t);
 		pcb_net_term_del(nfrom, t);
@@ -520,13 +520,13 @@ static void pcb_net_claim_from_list(pcb_board_t *pcb, pcb_net_t *net, vtp0_t *te
 
 		if (t != NULL) {
 			/* remove term from its original net */
-			pinname = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+			pinname = rnd_strdup_printf("%s-%s", t->refdes, t->term);
 			pcb_ratspatch_append_optimize(PCB, RATP_DEL_CONN, pinname, net->name, NULL);
 			free(pinname);
 		}
 
 		t = pcb_net_term_get(net, subc->refdes, obj->term, PCB_NETA_ALLOC);
-		pinname = pcb_strdup_printf("%s-%s", t->refdes, t->term);
+		pinname = rnd_strdup_printf("%s-%s", t->refdes, t->term);
 		pcb_ratspatch_append_optimize(PCB, RATP_ADD_CONN, pinname, net->name, NULL);
 		free(pinname);
 	}

@@ -185,7 +185,7 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
 
-	pcb_snprintf(tmp, sizeof(tmp), "pnp-origin-%s", format_name);
+	rnd_snprintf(tmp, sizeof(tmp), "pnp-origin-%s", format_name);
 
 	ctx->origin_score = 0;
 	ctx->ox = ctx->oy = 0;
@@ -365,12 +365,12 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 	}
 	if (strncmp(*input, "boardw%", 7) == 0) {
 		*input += 7;
-		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_x);
+		rnd_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_x);
 		return 0;
 	}
 	if (strncmp(*input, "boardh%", 7) == 0) {
 		*input += 7;
-		pcb_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_y);
+		rnd_append_printf(s, "%m+%mN", xy_unit->allow, PCB->hidlib.size_y);
 		return 0;
 	}
 	if (strncmp(*input, "subc.", 5) == 0) {
@@ -480,69 +480,69 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "x%", 2) == 0) {
 			*input += 2;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->x);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->x);
 			return 0;
 		}
 		if (strncmp(*input, "y%", 2) == 0) {
 			*input += 2;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->y);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->y);
 			return 0;
 		}
 		if (strncmp(*input, "padcx%", 6) == 0) {
 			*input += 6;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cx);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cx);
 			return 0;
 		}
 		if (strncmp(*input, "padcy%", 6) == 0) {
 			*input += 6;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cy);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cy);
 			return 0;
 		}
 		if (strncmp(*input, "padcx_prerot%", 13) == 0) {
 			*input += 13;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_cx);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_cx);
 			return 0;
 		}
 		if (strncmp(*input, "padcy_prerot%", 13) == 0) {
 			*input += 13;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_cy);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_cy);
 			return 0;
 		}
 		if (strncmp(*input, "rot%", 4) == 0) {
 			*input += 4;
-			pcb_append_printf(s, "%g", ctx->theta);
+			rnd_append_printf(s, "%g", ctx->theta);
 			return 0;
 		}
 		if (strncmp(*input, "negrot%", 7) == 0) {
 			*input += 7;
-			pcb_append_printf(s, "%g", -ctx->theta);
+			rnd_append_printf(s, "%g", -ctx->theta);
 			return 0;
 		}
 		if (strncmp(*input, "siderot%", 8) == 0) {
 			*input += 8;
-			pcb_append_printf(s, "%g", ctx->xray_theta);
+			rnd_append_printf(s, "%g", ctx->xray_theta);
 			return 0;
 		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
 			*input += 8;
-			pcb_append_printf(s, "%g", (270-ctx->theta));
+			rnd_append_printf(s, "%g", (270-ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "side270-rot%", 12) == 0) {
 			*input += 12;
-			pcb_append_printf(s, "%g", (270-ctx->theta));
+			rnd_append_printf(s, "%g", (270-ctx->theta));
 			return 0;
 		}
 		if (strncmp(*input, "90rot%", 6) == 0) {
 			*input += 6;
 			if (ctx->theta == 0) {
-				pcb_append_printf(s, "0");
+				rnd_append_printf(s, "0");
 			} else if (ctx->theta == 90) {
-				pcb_append_printf(s, "1");
+				rnd_append_printf(s, "1");
 			} else if (ctx->theta == 180) {
-				pcb_append_printf(s, "2");
+				rnd_append_printf(s, "2");
 			} else {
-				pcb_append_printf(s, "3");
+				rnd_append_printf(s, "3");
 			}
 			return 0;
 		}
@@ -558,7 +558,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "count%", 6) == 0) {
 			*input += 6;
-			pcb_append_printf(s, "%d", ctx->count);
+			rnd_append_printf(s, "%d", ctx->count);
 			return 0;
 		}
 		if (strncmp(*input, "num-side%", 9) == 0) {
@@ -568,33 +568,33 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "pad_width%", 10) == 0) {
 			*input += 10;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_w);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_w);
 			return 0;
 		}
 		if (strncmp(*input, "pad_height%", 11) == 0) {
 			*input += 11;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_h);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_h);
 			return 0;
 		}
 		if (strncmp(*input, "pad_width_prerot%", 17) == 0) {
 			*input += 17;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_w);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_w);
 			return 0;
 		}
 		if (strncmp(*input, "pad_height_prerot%", 18) == 0) {
 			*input += 18;
-			pcb_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_h);
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->prpad_h);
 			return 0;
 		}
 		if (strncmp(*input, "smdvsthru%", 10) == 0) {
 			*input += 10;
 			count_pins_pads(ctx, &pin_cnt, &pad_cnt);
 			if (pin_cnt > 0) {
-				pcb_append_printf(s, "PTH");
+				rnd_append_printf(s, "PTH");
 			} else if (pad_cnt > 0) {
-				pcb_append_printf(s, "SMD");
+				rnd_append_printf(s, "SMD");
 			} else {
-				pcb_append_printf(s, "0");
+				rnd_append_printf(s, "0");
 			}
 			return 0;
 		}
@@ -602,11 +602,11 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			*input += 13;
 			count_pins_pads(ctx, &pin_cnt, &pad_cnt);
 			if (pin_cnt > 0) {
-				pcb_append_printf(s, "2");
+				rnd_append_printf(s, "2");
 			} else if (pad_cnt > 0) {
-				pcb_append_printf(s, "1");
+				rnd_append_printf(s, "1");
 			} else {
-				pcb_append_printf(s, "0");
+				rnd_append_printf(s, "0");
 			}
 			return 0;
 		}
@@ -614,11 +614,11 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			*input += 9;
 			count_pins_pads(ctx, &pin_cnt, &pad_cnt);
 			if (pin_cnt > 0) {
-				pcb_append_printf(s, "%d", pin_cnt);
+				rnd_append_printf(s, "%d", pin_cnt);
 			} else if (pad_cnt > 0) {
-				pcb_append_printf(s, "%d", pad_cnt);
+				rnd_append_printf(s, "%d", pad_cnt);
 			} else {
-				pcb_append_printf(s, "0");
+				rnd_append_printf(s, "0");
 			}
 			return 0;
 		}
@@ -628,9 +628,9 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		if (strncmp(*input, "netname%", 8) == 0) {
 			*input += 8;
 			if (*ctx->pad_netname != '\0')
-				pcb_append_printf(s, "%s", ctx->pad_netname);
+				rnd_append_printf(s, "%s", ctx->pad_netname);
 			else
-				pcb_append_printf(s, "NC");
+				rnd_append_printf(s, "NC");
 			return 0;
 		}
 	}
@@ -640,7 +640,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 {
 	if (templ != NULL) {
-		char *tmp = pcb_strdup_subst(templ, subst_cb, ctx, PCB_SUBST_PERCENT);
+		char *tmp = rnd_strdup_subst(templ, subst_cb, ctx, RND_SUBST_PERCENT);
 		fprintf(f, "%s", tmp);
 		free(tmp);
 	}
