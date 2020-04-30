@@ -1104,3 +1104,6 @@
 #define pcb_fopen_fn rnd_fopen_fn
 #define pcb_fopen_at rnd_fopen_at
 #define pcb_fopen_first rnd_fopen_first
+#define pcb_opendir rnd_opendir
+#define pcb_readdir rnd_readdir
+#define pcb_closedir rnd_closedir

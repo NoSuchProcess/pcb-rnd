@@ -156,7 +156,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	fn_end = fn + l + 1;
 
 	/* First try opening the directory specified by path */
-	if ((subdirobj = pcb_opendir(&PCB->hidlib, new_subdir)) == NULL) {
+	if ((subdirobj = rnd_opendir(&PCB->hidlib, new_subdir)) == NULL) {
 		rnd_opendir_error_message(new_subdir);
 		if (chdir(olddir))
 			rnd_chdir_error_message(olddir);
@@ -166,7 +166,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	/* Now loop over files in this directory looking for files.
 	 * We ignore certain files which are not footprints.
 	 */
-	while ((subdirentry = pcb_readdir(subdirobj)) != NULL) {
+	while ((subdirentry = rnd_readdir(subdirobj)) != NULL) {
 #ifdef DEBUG
 /*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
 #endif
@@ -223,7 +223,7 @@ TODO("fp: make this a configurable list")
 		}
 	}
 	/* Done.  Clean up, cd back into old dir, and return */
-	pcb_closedir(subdirobj);
+	rnd_closedir(subdirobj);
 	if (chdir(olddir))
 		rnd_chdir_error_message(olddir);
 	return n_footprints;

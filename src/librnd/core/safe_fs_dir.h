@@ -1,4 +1,4 @@
 #include <librnd/core/compat_inc.h>
-DIR *pcb_opendir(rnd_hidlib_t *hidlib, const char *name);
-struct dirent *pcb_readdir(DIR *dir);
-int pcb_closedir(DIR *dir);
+DIR *rnd_opendir(rnd_hidlib_t *hidlib, const char *name);
+struct dirent *rnd_readdir(DIR *dir);
+int rnd_closedir(DIR *dir);

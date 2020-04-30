@@ -106,7 +106,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 		char fn[RND_PATH_MAX*2], *fn_end;
 		int dirlen;
 		struct dirent *de;
-		DIR *d = pcb_opendir(hl, *path);
+		DIR *d = rnd_opendir(hl, *path);
 
 		if (d == NULL)
 			continue;
@@ -117,7 +117,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 		*fn_end = RND_DIR_SEPARATOR_C;
 		fn_end++;
 
-		while((de = pcb_readdir(d)) != NULL) {
+		while((de = rnd_readdir(d)) != NULL) {
 			FILE *f;
 			int el, len = strlen(de->d_name);
 			char *s1, *s2, *eng, *s, *end, line[1024];
@@ -150,7 +150,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 			}
 			fclose(f);
 		}
-		pcb_closedir(d);
+		rnd_closedir(d);
 	}
 	lvs->langs = (char **)vl.array;
 	lvs->lang_engines = (char **)ve.array;

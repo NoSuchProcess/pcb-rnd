@@ -252,7 +252,7 @@ int rnd_unlink(rnd_hidlib_t *hidlib, const char *path)
 }
 
 
-DIR *pcb_opendir(rnd_hidlib_t *hidlib, const char *name)
+DIR *rnd_opendir(rnd_hidlib_t *hidlib, const char *name)
 {
 	DIR *d;
 	char *path_exp = rnd_build_fn(hidlib, name);
@@ -263,12 +263,12 @@ DIR *pcb_opendir(rnd_hidlib_t *hidlib, const char *name)
 	return d;
 }
 
-struct dirent *pcb_readdir(DIR *dir)
+struct dirent *rnd_readdir(DIR *dir)
 {
 	return readdir(dir);
 }
 
-int pcb_closedir(DIR *dir)
+int rnd_closedir(DIR *dir)
 {
 	return closedir(dir);
 }
@@ -295,11 +295,11 @@ static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *f
 	if (!recursive)
 		return NULL;
 
-	d = pcb_opendir(hidlib, from);
+	d = rnd_opendir(hidlib, from);
 	if (d == NULL)
 		return NULL;
 
-	while((de = pcb_readdir(d)) != NULL) {
+	while((de = rnd_readdir(d)) != NULL) {
 		struct stat st;
 		if (de->d_name[0] == '.')
 			continue;
