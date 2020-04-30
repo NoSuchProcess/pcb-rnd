@@ -737,3 +737,14 @@
 #define pcb_hid_cfg_keys_t rnd_hid_cfg_keys_t
 #define hid_cfg_key_default_trans rnd_hid_cfg_key_default_trans
 #define pcb_hid_cfg_mod_t rnd_hid_cfg_mod_t
+#define pcb_hid_text_set_t rnd_hid_text_set_t
+#define PCB_HID_TEXT_INSERT RND_HID_TEXT_INSERT
+#define PCB_HID_TEXT_REPLACE RND_HID_TEXT_REPLACE
+#define PCB_HID_TEXT_APPEND RND_HID_TEXT_APPEND
+#define PCB_HID_TEXT_MARKUP RND_HID_TEXT_MARKUP
+#define pcb_hid_text_t rnd_hid_text_t
+#define pcb_hid_row_t rnd_hid_row_t
+#define pcb_hid_tree_t rnd_hid_tree_t
+#define pcb_hid_preview_s rnd_hid_preview_s
+#define pcb_hid_preview_t rnd_hid_preview_t
+#define pcb_hid_compound_t rnd_hid_compound_t

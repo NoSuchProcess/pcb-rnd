@@ -67,8 +67,8 @@ static void cb_clear(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 static void undo_data2dlg(undo_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
 	char *cell[4], *cursor_path = NULL;
 	uundo_item_t *i;
 	char *payload, buff[8192], mark[2], ser[64];

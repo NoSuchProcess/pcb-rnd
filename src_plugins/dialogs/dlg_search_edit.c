@@ -69,9 +69,9 @@ static void set_right(srchedit_ctx_t *ctx, rnd_hid_attribute_t *attr)
 
 static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, int click)
 {
-	pcb_hid_tree_t *tree;
+	rnd_hid_tree_t *tree;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_row_t *r, *cur = NULL;
+	rnd_hid_row_t *r, *cur = NULL;
 	char *cell[2], *cursor_path = NULL;
 	const char **o;
 
@@ -115,7 +115,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 
 static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr_t *s)
 {
-	pcb_hid_tree_t *tree;
+	rnd_hid_tree_t *tree;
 	rnd_hid_attribute_t *attr;
 	char *cell[2];
 	const char **o;
@@ -189,9 +189,9 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 	ctx->last_rtype = s->expr->rtype;
 }
 
-static void srch_expr_left_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void srch_expr_left_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
 	const expr_wizard_t *e;
 
@@ -207,9 +207,9 @@ static void srch_expr_left_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 	srch_expr_fill_in_right(ctx, &ctx->se);
 }
 
-static void srch_expr_op_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void srch_expr_op_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
 
 	if (row != NULL)
@@ -224,7 +224,7 @@ static int fill_in_left(srchedit_ctx_t *ctx)
 {
 	const expr_wizard_t *t;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_row_t *r, *parent = NULL, *cur = NULL;
+	rnd_hid_row_t *r, *parent = NULL, *cur = NULL;
 	char *cell[2];
 
 	attr = &ctx->dlg[ctx->wleft];
@@ -266,9 +266,9 @@ static void srchexpr_right_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	set_right(ctx, attr);
 }
 
-static void srch_expr_right_table_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void srch_expr_right_table_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
 
 	free(ctx->se.right);

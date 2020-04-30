@@ -59,7 +59,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	rnd_hid_attr_val_t hv;
 	pcb_route_style_t *rst;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
+	rnd_hid_tree_t *tree;
 	rnd_attribute_t *a;
 
 	if (!rstdlg_ctx.active)
@@ -212,7 +212,7 @@ static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 {
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
 	rnd_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(treea);
 	char *key, *val;
 
 	if (row == NULL)
@@ -232,7 +232,7 @@ static void rst_del_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
 	rnd_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(treea);
 
 	if (row == NULL)
 		return;

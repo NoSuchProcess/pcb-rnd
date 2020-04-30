@@ -78,7 +78,7 @@ static void ltf_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	pcb_ltf_preview_t *pd = e->draw_data;
 	rnd_hid_attribute_t *attr = pd->attr;
-	pcb_hid_preview_t *prv = attr->wdata;
+	rnd_hid_preview_t *prv = attr->wdata;
 	prv->user_expose_cb(attr, prv, gc, e);
 }
 
@@ -96,7 +96,7 @@ static void ltf_preview_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 
 static void ltf_preview_zoomto(rnd_hid_attribute_t *attr, void *hid_ctx, const rnd_rnd_box_t *view)
 {
-	pcb_hid_preview_t *prv = attr->wdata;
+	rnd_hid_preview_t *prv = attr->wdata;
 	pcb_ltf_preview_t *pd = prv->hid_wdata;
 
 	pd->x1 = view->X1;
@@ -112,7 +112,7 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 {
 	pcb_ltf_preview_t *pd = pd_;
 	rnd_hid_attribute_t *attr = pd->attr;
-	pcb_hid_preview_t *prv = attr->wdata;
+	rnd_hid_preview_t *prv = attr->wdata;
 	rnd_coord_t x, y;
 	Window root, child;
 	unsigned int keys_buttons;
@@ -132,7 +132,7 @@ static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCal
 {
 	pcb_ltf_preview_t *pd = pd_;
 	rnd_hid_attribute_t *attr = pd->attr;
-	pcb_hid_preview_t *prv = attr->wdata;
+	rnd_hid_preview_t *prv = attr->wdata;
 	rnd_coord_t x, y;
 	rnd_hid_mouse_ev_t kind = -1;
 
@@ -166,7 +166,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid
 {
 	Widget pw;
 	pcb_ltf_preview_t *pd;
-	pcb_hid_preview_t *prv = attr->wdata;
+	rnd_hid_preview_t *prv = attr->wdata;
 
 	pd = calloc(1, sizeof(pcb_ltf_preview_t));
 	prv->hid_wdata = pd;
@@ -321,29 +321,29 @@ static void ltf_text_set_text_(Widget wtxt, unsigned how, const char *txt)
 	XmTextPosition pos;
 
 	switch(how & 0x0F) { /* ignore flags - no markup support */
-		case PCB_HID_TEXT_INSERT:
+		case RND_HID_TEXT_INSERT:
 			stdarg_n = 0;
 			stdarg(XmNcursorPosition, &pos);
 			XtGetValues(wtxt, stdarg_args, stdarg_n);
 			XmTextInsert(wtxt, pos, XmStrCast(txt));
 			break;
-		case PCB_HID_TEXT_REPLACE:
+		case RND_HID_TEXT_REPLACE:
 			XmTextSetString(wtxt, XmStrCast(txt));
 			break;
-		case PCB_HID_TEXT_APPEND:
+		case RND_HID_TEXT_APPEND:
 			pos = 1<<30;
 			XmTextInsert(wtxt, pos, XmStrCast(txt));
 			break;
 	}
 }
 
-static void ltf_text_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+static void ltf_text_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_text_set_t how, const char *txt)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
 	Widget wtxt = ctx->wl[idx];
 
-	if (how & PCB_HID_TEXT_MARKUP) {
+	if (how & RND_HID_TEXT_MARKUP) {
 		char *orig, *tmp = rnd_strdup(txt);
 		pcb_markup_state_t st = 0;
 		char *seg;
@@ -365,7 +365,7 @@ static void ltf_text_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 
 static void ltf_text_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 {
-	ltf_text_set_text(&ctx->attrs[idx], ctx, PCB_HID_TEXT_REPLACE, val);
+	ltf_text_set_text(&ctx->attrs[idx], ctx, RND_HID_TEXT_REPLACE, val);
 }
 
 
@@ -476,7 +476,7 @@ static void ltf_text_scroll_to_bottom(rnd_hid_attribute_t *attrib, void *hid_ctx
 static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	Widget wtxt;
-	pcb_hid_text_t *txt = attr->wdata;
+	rnd_hid_text_t *txt = attr->wdata;
 
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNeditMode, XmMULTI_LINE_EDIT);

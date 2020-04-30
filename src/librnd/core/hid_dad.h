@@ -24,8 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_HID_DAD_H
-#define PCB_HID_DAD_H
+#ifndef RND_HID_DAD_H
+#define RND_HID_DAD_H
 
 #include <stddef.h>
 #include <assert.h>
@@ -37,13 +37,13 @@
 #include <genlist/gendlist.h>
 
 typedef enum {
-	PCB_HID_TEXT_INSERT,           /* insert at cursor or replace selection */
-	PCB_HID_TEXT_REPLACE,          /* replace the entire text */
-	PCB_HID_TEXT_APPEND,           /* append to the end of the text */
+	RND_HID_TEXT_INSERT,           /* insert at cursor or replace selection */
+	RND_HID_TEXT_REPLACE,          /* replace the entire text */
+	RND_HID_TEXT_APPEND,           /* append to the end of the text */
 
 	/* modifiers (bitfield) */
-	PCB_HID_TEXT_MARKUP = 0x0010   /* interpret minimal html-like markup - some HIDs may ignore these */
-} pcb_hid_text_set_t;
+	RND_HID_TEXT_MARKUP = 0x0010   /* interpret minimal html-like markup - some HIDs may ignore these */
+} rnd_hid_text_set_t;
 
 typedef struct {
 	/* cursor manipulation callbacks */
@@ -52,7 +52,7 @@ typedef struct {
 	void (*hid_set_xy)(rnd_hid_attribute_t *attrib, void *hid_ctx, long x, long y); /* can be very slow */
 	void (*hid_set_offs)(rnd_hid_attribute_t *attrib, void *hid_ctx, long offs);
 	void (*hid_scroll_to_bottom)(rnd_hid_attribute_t *attrib, void *hid_ctx);
-	void (*hid_set_text)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt);
+	void (*hid_set_text)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_text_set_t how, const char *txt);
 	char *(*hid_get_text)(rnd_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
 	void (*hid_set_readonly)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly); /* by default text views are not read-only */
 
@@ -63,7 +63,7 @@ typedef struct {
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
 	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
-} pcb_hid_text_t;
+} rnd_hid_text_t;
 
 
 typedef struct {
@@ -82,35 +82,35 @@ typedef struct {
 		double dbl;
 	} user_data2;
 	char *cell[1];   /* each cell is a char *; the true length of the array is the value of the len field; the array is allocated together with the struct */
-} pcb_hid_row_t;
+} rnd_hid_row_t;
 
 typedef struct {
 	gdl_list_t rows; /* ordered list of first level rows (tree root) */
-	htsp_t paths;    /* translate first column paths iinto (pcb_hid_row_t *) */
+	htsp_t paths;    /* translate first column paths iinto (rnd_hid_row_t *) */
 	rnd_hid_attribute_t *attrib;
 	const char **hdr; /* optional column headers (NULL means disable header) */
 
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
-	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-	void (*user_selected_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-	int (*user_browse_activate_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* returns non-zero if the row should auto-activate while browsing (e.g. stepping with arrow keys) */
-	const char *(*user_copy_to_clip_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* returns the string to copy to clipboard for the given row (if unset, first column text is used) */
+	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
+	void (*user_selected_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
+	int (*user_browse_activate_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row); /* returns non-zero if the row should auto-activate while browsing (e.g. stepping with arrow keys) */
+	const char *(*user_copy_to_clip_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row); /* returns the string to copy to clipboard for the given row (if unset, first column text is used) */
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
-	void (*hid_insert_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row);
-	void (*hid_modify_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col); /* if col is negative, all columns have changed */
-	void (*hid_remove_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
-	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
-	pcb_hid_row_t *(*hid_get_selected_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
-	void (*hid_jumpto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row); /* row = NULL means deselect all */
-	void (*hid_expcoll_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
+	void (*hid_insert_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *new_row);
+	void (*hid_modify_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row, int col); /* if col is negative, all columns have changed */
+	void (*hid_remove_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row);
+	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row);
+	rnd_hid_row_t *(*hid_get_selected_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
+	void (*hid_jumpto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row); /* row = NULL means deselect all */
+	void (*hid_expcoll_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
 	void (*hid_update_hide_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
-} pcb_hid_tree_t;
+} rnd_hid_tree_t;
 
-typedef struct pcb_hid_preview_s pcb_hid_preview_t;
-struct pcb_hid_preview_s {
+typedef struct rnd_hid_preview_s rnd_hid_preview_t;
+struct rnd_hid_preview_s {
 	rnd_hid_attribute_t *attrib;
 
 	rnd_rnd_box_t initial_view;
@@ -121,8 +121,8 @@ struct pcb_hid_preview_s {
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
 	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
-	void (*user_expose_cb)(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
-	rnd_bool (*user_mouse_cb)(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
+	void (*user_expose_cb)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
+	rnd_bool (*user_mouse_cb)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
@@ -144,7 +144,7 @@ typedef struct {
 	void (*set_field_ptr)(rnd_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
 	void (*set_geo)(rnd_hid_attribute_t *attr, rnd_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
 	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the RND_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
-} pcb_hid_compound_t;
+} rnd_hid_compound_t;
 
 #include <librnd/core/hid_dad_spin.h>
 
@@ -303,7 +303,7 @@ do { \
 
 #define PCB_DAD_TEXT(table, user_ctx_) \
 do { \
-	pcb_hid_text_t *txt = calloc(sizeof(pcb_hid_text_t), 1); \
+	rnd_hid_text_t *txt = calloc(sizeof(rnd_hid_text_t), 1); \
 	txt->user_ctx = user_ctx_; \
 	PCB_DAD_ALLOC(table, RND_HATT_TEXT); \
 	PCB_DAD_SET_ATTR_FIELD(table, wdata, txt); \
@@ -352,7 +352,7 @@ do { \
 
 #define PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
 do { \
-	pcb_hid_preview_t *prv = calloc(sizeof(pcb_hid_preview_t), 1); \
+	rnd_hid_preview_t *prv = calloc(sizeof(rnd_hid_preview_t), 1); \
 	prv->user_ctx = user_ctx_; \
 	prv->user_expose_cb = expose_cb; \
 	prv->user_mouse_cb = mouse_cb; \
@@ -373,7 +373,7 @@ do { \
 
 #define pcb_dad_preview_zoomto(attr, view) \
 do { \
-	pcb_hid_preview_t *prv = ((attr)->wdata); \
+	rnd_hid_preview_t *prv = ((attr)->wdata); \
 	if (prv->hid_zoomto_cb != NULL) \
 		prv->hid_zoomto_cb((attr), prv->hid_wdata, view); \
 } while(0)
@@ -411,7 +411,7 @@ do { \
 
 #define PCB_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
 do { \
-	pcb_hid_tree_t *tree = calloc(sizeof(pcb_hid_tree_t), 1); \
+	rnd_hid_tree_t *tree = calloc(sizeof(rnd_hid_tree_t), 1); \
 	htsp_init(&tree->paths, strhash, strkeyeq); \
 	PCB_DAD_ALLOC(table, RND_HATT_TREE); \
 	tree->attrib = &table[table ## _len-1]; \
@@ -431,11 +431,11 @@ do { \
 	pcb_dad_tree_insert(&table[table ## _len-1], row_before, cells)
 
 /* set the named tree user callback to func_or_data; name is automatically
-   appended with user_, any field prefixed with user_ in pcb_hid_tree_t
+   appended with user_, any field prefixed with user_ in rnd_hid_tree_t
    can be set */
 #define PCB_DAD_TREE_SET_CB(table, name, func_or_data) \
 do { \
-	pcb_hid_tree_t *__tree__ = table[table ## _len-1].wdata; \
+	rnd_hid_tree_t *__tree__ = table[table ## _len-1].wdata; \
 	__tree__->user_ ## name = func_or_data; \
 } while(0)
 
@@ -474,7 +474,7 @@ do { \
 		switch(table[table ## _len - 1].type) { \
 			case RND_HATT_END: \
 				{ \
-					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+					rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_help != NULL)) \
 						cmp->set_help(&table[table ## _len - 1], (val)); \
 				} \
@@ -490,7 +490,7 @@ do { \
 			case RND_HATT_BEGIN_COMPOUND: \
 			case RND_HATT_END: \
 				{ \
-					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+					rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_val_ptr != NULL)) \
 						cmp->set_val_ptr(&table[table ## _len - 1], (void *)(val_)); \
 					else \
@@ -508,7 +508,7 @@ do { \
 			case RND_HATT_BEGIN_COMPOUND: \
 			case RND_HATT_END: \
 				{ \
-					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+					rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_val_num != NULL)) \
 						cmp->set_val_num(&table[table ## _len - 1], (long)(val_), (double)(val_), (rnd_coord_t)(val_)); \
 					else \
@@ -534,8 +534,8 @@ do { \
 /* Update widget internals after a potential attr pointer change */
 #define PCB_DAD_UPDATE_INTERNAL(table, widx) \
 	do { \
-		pcb_hid_preview_t *__prv__; \
-		pcb_hid_tree_t *__tree__; \
+		rnd_hid_preview_t *__prv__; \
+		rnd_hid_tree_t *__tree__; \
 		switch(table[(widx)].type) { \
 			case RND_HATT_PREVIEW: \
 				__prv__ = table[(widx)].wdata; \
@@ -656,7 +656,7 @@ do { \
 		case RND_HATT_BEGIN_COMPOUND: \
 		case RND_HATT_END: \
 			{ \
-				pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+				rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
 					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val_), (double)(val_), (rnd_coord_t)(val_)); \
 				else \
@@ -715,7 +715,7 @@ do { \
 		case RND_HATT_BEGIN_COMPOUND: \
 		case RND_HATT_END: \
 			{ \
-				pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+				rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 				if ((cmp != NULL) && (cmp->set_field_ptr != NULL)) \
 					cmp->set_field_ptr(&table[table ## _len - 1], #field, (void *)(val_)); \
 				else \
@@ -749,7 +749,7 @@ do { \
 			break; \
 		case RND_HATT_PREVIEW: \
 			{ \
-				pcb_hid_preview_t *prv = table[field].wdata; \
+				rnd_hid_preview_t *prv = table[field].wdata; \
 				if (prv->user_free_cb != NULL) \
 					prv->user_free_cb(&table[field], prv->user_ctx, prv->hid_wdata); \
 				if (prv->hid_free_cb != NULL) \
@@ -759,7 +759,7 @@ do { \
 			break; \
 		case RND_HATT_TEXT: \
 			{ \
-				pcb_hid_text_t *txt = table[field].wdata; \
+				rnd_hid_text_t *txt = table[field].wdata; \
 				if (txt->user_free_cb != NULL) \
 					txt->user_free_cb(&table[field], txt->user_ctx, txt->hid_wdata); \
 				if (txt->hid_free_cb != NULL) \
@@ -770,7 +770,7 @@ do { \
 		case RND_HATT_BEGIN_COMPOUND: \
 		case RND_HATT_END: \
 			{ \
-				pcb_hid_compound_t *cmp = table[field].wdata; \
+				rnd_hid_compound_t *cmp = table[field].wdata; \
 				if ((cmp != NULL) && (cmp->free != NULL)) \
 					cmp->free(&table[field]); \
 			} \
@@ -787,7 +787,7 @@ do { \
 #define PCB_DAD_WIDTH_CHR(table, width) \
 do { \
 	if ((table[table ## _len - 1].type) == RND_HATT_END) { \
-		pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+		rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 		if (cmp->set_geo != NULL) \
 			cmp->set_geo(&table[table ## _len - 1], RND_HATF_HEIGHT_CHR, (width)); \
 	} \

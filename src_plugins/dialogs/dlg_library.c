@@ -223,7 +223,7 @@ static void update_edit_button(library_ctx_t *ctx)
 {
 	const char *otext = ctx->dlg[ctx->wfilt].val.str;
 	int param_entered = 0, param_selected = 0;
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
 
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
@@ -252,7 +252,7 @@ static void library_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(library_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
-static void create_lib_tree_model_recurse(rnd_hid_attribute_t *attr, pcb_fplibrary_t *parent_lib, pcb_hid_row_t *parent_row)
+static void create_lib_tree_model_recurse(rnd_hid_attribute_t *attr, pcb_fplibrary_t *parent_lib, rnd_hid_row_t *parent_row)
 {
 	char *cell[2];
 	pcb_fplibrary_t *l;
@@ -260,7 +260,7 @@ static void create_lib_tree_model_recurse(rnd_hid_attribute_t *attr, pcb_fplibra
 
 	cell[1] = NULL;
 	for(l = parent_lib->data.dir.children.array, n = 0; n < parent_lib->data.dir.children.used; l++, n++) {
-		pcb_hid_row_t *row;
+		rnd_hid_row_t *row;
 
 		cell[0] = rnd_strdup(l->name);
 		row = pcb_dad_tree_append_under(attr, parent_row, cell);
@@ -274,8 +274,8 @@ static void create_lib_tree_model_recurse(rnd_hid_attribute_t *attr, pcb_fplibra
 static void library_lib2dlg(library_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
 	char *cursor_path = NULL;
 
 	attr = &ctx->dlg[ctx->wtree];
@@ -329,10 +329,10 @@ static void library_select_show_param_example(library_ctx_t *ctx, pcb_fplibrary_
 	pcb_pclose(f);
 }
 
-static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	rnd_hid_attr_val_t hv;
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	library_ctx_t *ctx = tree->user_ctx;
 	int close_param = 1;
 	static pcb_fplibrary_t *last = NULL;
@@ -376,7 +376,7 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 
 }
 
-static void library_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void library_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	library_ctx_t *ctx = prv->user_ctx;
 	int orig_po = pcb_draw_force_termlab;
@@ -415,9 +415,9 @@ static int tag_match(pcb_fplibrary_t *l, vtp0_t *taglist)
 	return 1;
 }
 
-static void library_tree_unhide(pcb_hid_tree_t *tree, gdl_list_t *rowlist, re_sei_t *preg, vtp0_t *taglist)
+static void library_tree_unhide(rnd_hid_tree_t *tree, gdl_list_t *rowlist, re_sei_t *preg, vtp0_t *taglist)
 {
-	pcb_hid_row_t *r, *pr;
+	rnd_hid_row_t *r, *pr;
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		if (((preg == NULL) || (re_sei_exec(preg, r->cell[0]))) && tag_match(r->user_data, taglist)) {
@@ -433,7 +433,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 {
 	library_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
+	rnd_hid_tree_t *tree;
 	const char *otext;
 	char *text, *sep, *para_start;
 	int have_filter_text, is_para, is_para_closed = 0;
@@ -527,9 +527,9 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	free(text);
 }
 
-static pcb_hid_row_t *find_fp_prefix_(pcb_hid_tree_t *tree, gdl_list_t *rowlist, const char *name, int namelen)
+static rnd_hid_row_t *find_fp_prefix_(rnd_hid_tree_t *tree, gdl_list_t *rowlist, const char *name, int namelen)
 {
-	pcb_hid_row_t *r, *pr;
+	rnd_hid_row_t *r, *pr;
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		pcb_fplibrary_t *l = r->user_data;
@@ -542,10 +542,10 @@ static pcb_hid_row_t *find_fp_prefix_(pcb_hid_tree_t *tree, gdl_list_t *rowlist,
 	return NULL;
 }
 
-static pcb_hid_row_t *find_fp_prefix(library_ctx_t *ctx, const char *name, int namelen)
+static rnd_hid_row_t *find_fp_prefix(library_ctx_t *ctx, const char *name, int namelen)
 {
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
+	rnd_hid_tree_t *tree;
 
 	attr = &ctx->dlg[ctx->wtree];
 	tree = attr->wdata;
@@ -558,7 +558,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	library_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_row_t *r, *rnew;
+	rnd_hid_row_t *r, *rnew;
 	const char *otext = ctx->dlg[ctx->wfilt].val.str;
 	char *name, *sep;
 	int namelen;
@@ -609,7 +609,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 static void library_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	library_ctx_t *ctx = caller_data;
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
 	pcb_fplibrary_t *l;
 	char *oname;
 
@@ -633,7 +633,7 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 }
 
 
-static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false;
 }

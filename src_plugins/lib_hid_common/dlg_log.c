@@ -55,7 +55,7 @@ static void log_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 static void log_append(log_ctx_t *ctx, rnd_hid_attribute_t *atxt, rnd_logline_t *line)
 {
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	const char *prefix = NULL;
 	int popup;
 
@@ -74,11 +74,11 @@ static void log_append(log_ctx_t *ctx, rnd_hid_attribute_t *atxt, rnd_logline_t 
 				gds_append(&tmp, '/');
 				gds_append_str(&tmp, prefix+1);
 			}
-			txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, tmp.array);
+			txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_APPEND | RND_HID_TEXT_MARKUP, tmp.array);
 			gds_uninit(&tmp);
 		}
 		else
-			txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND, line->str);
+			txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_APPEND, line->str);
 	}
 	else {
 		if ((line->prev == NULL) || (line->prev->str[line->prev->len-1] == '\n')) {
@@ -89,9 +89,9 @@ static void log_append(log_ctx_t *ctx, rnd_hid_attribute_t *atxt, rnd_logline_t 
 				case RND_MSG_ERROR:   prefix = "E: "; break;
 			}
 			if (prefix != NULL)
-				txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, prefix);
+				txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_APPEND | RND_HID_TEXT_MARKUP, prefix);
 		}
-		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, line->str);
+		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_APPEND | RND_HID_TEXT_MARKUP, line->str);
 	}
 	if (popup && (rnd_gui->attr_dlg_raise != NULL))
 		rnd_gui->attr_dlg_raise(ctx->dlg_hid_ctx);
@@ -124,7 +124,7 @@ static void btn_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 static void maybe_scroll_to_bottom()
 {
 	rnd_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 
 	if ((log_ctx.dlg[log_ctx.wscroll].val.lng) && (txt->hid_scroll_to_bottom != NULL))
 		txt->hid_scroll_to_bottom(atxt, log_ctx.dlg_hid_ctx);
@@ -174,7 +174,7 @@ static void log_window_create(rnd_hidlib_t *hidlib)
 
 	{
 		rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-		pcb_hid_text_t *txt = atxt->wdata;
+		rnd_hid_text_t *txt = atxt->wdata;
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}
 	hv.lng = 1;
@@ -217,9 +217,9 @@ static void log_clear_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 {
 	if (log_ctx.active) {
 		rnd_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
-		pcb_hid_text_t *txt = atxt->wdata;
+		rnd_hid_text_t *txt = atxt->wdata;
 
-		txt->hid_set_text(atxt, log_ctx.dlg_hid_ctx, PCB_HID_TEXT_REPLACE, "");
+		txt->hid_set_text(atxt, log_ctx.dlg_hid_ctx, RND_HID_TEXT_REPLACE, "");
 		log_import(&log_ctx);
 	}
 }

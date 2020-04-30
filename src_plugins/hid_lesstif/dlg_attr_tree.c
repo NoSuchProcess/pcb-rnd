@@ -7,7 +7,7 @@ typedef struct {
 	rnd_hid_attribute_t *attr;
 	gdl_list_t model;
 	Widget w;
-	pcb_hid_tree_t *ht;
+	rnd_hid_tree_t *ht;
 	tt_entry_t *cursor;
 } ltf_tree_t;
 
@@ -28,10 +28,10 @@ static tt_entry_t *ltf_tt_lookup_row(const tt_table_event_data_t *data, unsigned
 	return NULL;
 }
 
-static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
+static void ltf_tt_insert_row(ltf_tree_t *lt, rnd_hid_row_t *new_row)
 {
 	tt_entry_t *e, *at;
-	pcb_hid_row_t *prev, *next, *parent;
+	rnd_hid_row_t *prev, *next, *parent;
 	gdl_list_t *parlist;
 	int n;
 
@@ -94,9 +94,9 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 
 extern void xm_extent_prediction(XmTreeTableWidget w);
 
-static void ltf_tree_insert_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
+static void ltf_tree_insert_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *new_row)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	ltf_tt_insert_row(lt, new_row);
@@ -104,9 +104,9 @@ static void ltf_tree_insert_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb
 	REDRAW();
 }
 
-static void ltf_tree_modify_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
+static void ltf_tree_modify_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row, int col)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	/* the caller modifies data strings directly, no need to do anything just flush */
@@ -116,8 +116,8 @@ static void ltf_tree_modify_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb
 
 static void cursor_changed(ltf_tree_t *lt)
 {
-	pcb_hid_tree_t *ht = lt->ht;
-	pcb_hid_row_t *c_row = NULL;
+	rnd_hid_tree_t *ht = lt->ht;
+	rnd_hid_row_t *c_row = NULL;
 
 	if (lt->cursor != NULL)
 		c_row = lt->cursor->user_data;
@@ -127,9 +127,9 @@ static void cursor_changed(ltf_tree_t *lt)
 		ht->user_selected_cb(lt->attr, lt->ctx, c_row);
 }
 
-static void ltf_tree_remove_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_remove_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *e = row->hid_data;
 	int changed = 0;
@@ -148,9 +148,9 @@ static void ltf_tree_remove_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb
 		cursor_changed(lt);
 }
 
-static void ltf_tree_free_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_free_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *i;
 
@@ -164,9 +164,9 @@ static void ltf_tree_free_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_h
 	ht->hid_wdata = NULL;
 }
 
-static pcb_hid_row_t *ltf_tree_get_selected_cb(rnd_hid_attribute_t *attrib, void *hid_wdata)
+static rnd_hid_row_t *ltf_tree_get_selected_cb(rnd_hid_attribute_t *attrib, void *hid_wdata)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 
 	if (lt->cursor == NULL)
@@ -229,9 +229,9 @@ static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 		cursor_changed(lt);
 }
 
-static void ltf_tree_jumpto_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_jumpto_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	if (row != NULL) {
 		tt_entry_t *e = row->hid_data;
@@ -272,9 +272,9 @@ static void ltf_tree_expcoll(ltf_tree_t *lt, tt_entry_t *e, int expanded)
 static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 {
 	rnd_hid_attribute_t *attr = &ctx->attrs[idx];
-	pcb_hid_tree_t *ht = attr->wdata;
+	rnd_hid_tree_t *ht = attr->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
-	pcb_hid_row_t *r, *row;
+	rnd_hid_row_t *r, *row;
 	tt_entry_t *e;
 
 	if (val == NULL) {
@@ -307,9 +307,9 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 	ltf_tt_jumpto(lt, row->hid_data, 1); /* implies a REDRAW() */
 }
 
-static void ltf_tree_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
+static void ltf_tree_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row, int expanded)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	ltf_tree_expcoll(lt, row->hid_data, expanded);
 	REDRAW();
@@ -317,17 +317,17 @@ static void ltf_tree_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pc
 
 static void ltf_tree_update_hide_cb(rnd_hid_attribute_t *attrib, void *hid_wdata)
 {
-	pcb_hid_tree_t *ht = attrib->wdata;
+	rnd_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	tt_entry_t *e;
 	for(e = gdl_first(&lt->model); e != NULL; e = gdl_next(&lt->model, e)) {
-		pcb_hid_row_t *row = e->user_data;
+		rnd_hid_row_t *row = e->user_data;
 		e->flags.is_uhidden = row->hide;
 	}
 	REDRAW();
 }
 
-static void ltf_tt_append_row(ltf_tree_t *lt, pcb_hid_row_t *new_row, int level)
+static void ltf_tt_append_row(ltf_tree_t *lt, rnd_hid_row_t *new_row, int level)
 {
 	tt_entry_t *e;
 	int n;
@@ -346,7 +346,7 @@ static void ltf_tt_append_row(ltf_tree_t *lt, pcb_hid_row_t *new_row, int level)
 
 static void ltf_tt_import(ltf_tree_t *lt, gdl_list_t *lst, int level)
 {
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 
 	for(r = gdl_first(lst); r != NULL; r = gdl_next(lst, r)) {
 		ltf_tt_append_row(lt, r, level);
@@ -399,7 +399,7 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 
 static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *ht = attr->wdata;
+	rnd_hid_tree_t *ht = attr->wdata;
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
 	Widget table = xm_create_tree_table_widget_cb(parent, &lt->model, lt, ltf_tt_xevent_cb, NULL, NULL);
 

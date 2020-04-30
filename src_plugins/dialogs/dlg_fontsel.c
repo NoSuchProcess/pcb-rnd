@@ -71,7 +71,7 @@ static void fontsel_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		memset(ctx, 0, sizeof(fontsel_ctx_t));
 }
 
-void fontsel_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+void fontsel_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
 
@@ -88,7 +88,7 @@ void fontsel_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_
 	}
 }
 
-rnd_bool fontsel_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+rnd_bool fontsel_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
 

@@ -109,33 +109,33 @@ static void txt_set_text_(GtkTextBuffer *b, unsigned how, const char *txt, long 
 	GtkTextIter it, it2;
 
 	switch(how & 0x0F) {
-		case PCB_HID_TEXT_INSERT:
+		case RND_HID_TEXT_INSERT:
 			gtk_text_buffer_insert_at_cursor(b, txt, len);
 			break;
-		case PCB_HID_TEXT_REPLACE:
+		case RND_HID_TEXT_REPLACE:
 			gtk_text_buffer_get_start_iter(b, &it);
 			gtk_text_buffer_get_end_iter(b, &it2);
 			gtk_text_buffer_delete(b, &it, &it2);
 			gtk_text_buffer_get_start_iter(b, &it);
 			gtk_text_buffer_insert(b, &it, txt, len);
 			break;
-		case PCB_HID_TEXT_APPEND:
+		case RND_HID_TEXT_APPEND:
 			gtk_text_buffer_get_end_iter(b, &it);
 			gtk_text_buffer_insert(b, &it, txt, len);
 			break;
 	}
 }
 
-static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *str)
+static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_text_set_t how, const char *str)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	pcb_hid_text_t *txt = attrib->wdata;
+	rnd_hid_text_t *txt = attrib->wdata;
 	dad_txt_t *tctx = txt->hid_wdata;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *wtxt = ctx->wl[idx];
 	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
 
-	if (how & PCB_HID_TEXT_MARKUP) {
+	if (how & RND_HID_TEXT_MARKUP) {
 		pcb_markup_state_t st = 0;
 		const char *seg;
 		long seglen;
@@ -178,7 +178,7 @@ static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_tex
 
 static int ghid_text_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
-	txt_set_text(&ctx->attrs[idx], ctx, PCB_HID_TEXT_REPLACE, val->str);
+	txt_set_text(&ctx->attrs[idx], ctx, RND_HID_TEXT_REPLACE, val->str);
 	return 0;
 }
 
@@ -224,7 +224,7 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, G
 {
 	GtkWidget *wtxt;
 	GtkTextBuffer *buffer;
-	pcb_hid_text_t *txt = attr->wdata;
+	rnd_hid_text_t *txt = attr->wdata;
 	dad_txt_t *tctx;
 
 

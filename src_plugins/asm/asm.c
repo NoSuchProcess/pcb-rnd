@@ -71,7 +71,7 @@ typedef struct {
 typedef struct {
 	int is_grp;
 	char *name;
-	pcb_hid_row_t *row;
+	rnd_hid_row_t *row;
 	vtp0_t parts;
 } group_t;
 
@@ -80,7 +80,7 @@ typedef struct {
 	char *name;
 	long int id;
 	int done;
-	pcb_hid_row_t *row;
+	rnd_hid_row_t *row;
 	group_t *parent;
 } part_t;
 
@@ -350,7 +350,7 @@ static void select_part(part_t *p)
 		rnd_gui->pan(rnd_gui, (sc->BoundingBox.X1+sc->BoundingBox.X2)/2, (sc->BoundingBox.Y1+sc->BoundingBox.Y2)/2, 0);
 }
 
-static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	long n;
 	int isgrp = 0, ispart = 0;
@@ -388,9 +388,9 @@ static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid
 	rnd_hid_redraw(PCB); /* for displaying the new selection */
 }
 
-static void skip(void *hid_ctx, int pick_grp, pcb_hid_row_t *row)
+static void skip(void *hid_ctx, int pick_grp, rnd_hid_row_t *row)
 {
-	pcb_hid_row_t *nr = NULL;
+	rnd_hid_row_t *nr = NULL;
 	int is_grp = *(int *)row->user_data;
 
 	if (pick_grp && !is_grp) {
@@ -451,7 +451,7 @@ static void done(void *hid_ctx, part_t *part, int done)
 
 static void asm_done_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
 		return;
 	done(hid_ctx, row->user_data, 1);
@@ -460,7 +460,7 @@ static void asm_done_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 static void asm_undo_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
 		return;
 	done(hid_ctx, row->user_data, 0);
@@ -469,7 +469,7 @@ static void asm_undo_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 static void asm_skip_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
 		return;
 	skip(hid_ctx, 0, row);
@@ -479,7 +479,7 @@ static void asm_done_group_(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	long n;
 	group_t *g;
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 
 	if (!*(int *)row->user_data) {
 		part_t *p = row->user_data;
@@ -506,7 +506,7 @@ static void asm_undo_group(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 static void asm_skip_group(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 
 	skip(hid_ctx, 1, row);
 }
@@ -540,7 +540,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
 			PCB_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_SCROLL);
 			for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
-				pcb_hid_row_t *parent, *child;
+				rnd_hid_row_t *parent, *child;
 				row[0] = (*g)->name;
 				row[1] = "";
 				row[2] = "";

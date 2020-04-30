@@ -51,7 +51,7 @@ static void setup_tree(pref_ctx_t *ctx)
 {
 	char *cell[2] = {NULL};
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wtree];
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 	htsp_entry_t *e;
 	htsp_entry_t **sorted;
 	int num_paths, n;
@@ -67,7 +67,7 @@ static void setup_tree(pref_ctx_t *ctx)
 
 	for(n = 0; n < num_paths; n++) {
 		char *basename, *bnsep;
-		pcb_hid_row_t *parent;
+		rnd_hid_row_t *parent;
 		rnd_conf_native_t *nat;
 
 		e = sorted[n];
@@ -140,8 +140,8 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 {
 	rnd_conf_role_t n;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
-	pcb_hid_tree_t *tree = attr->wdata;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *r;
 
 	pcb_dad_tree_clear(tree);
 
@@ -233,7 +233,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 	if ((nat->type == RND_CFN_LIST) || (nat->type == RND_CFN_HLIST)) {
 		/* non-default: lists are manually loaded */
 		rnd_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[nat->type]];
-		pcb_hid_tree_t *tree = attr->wdata;
+		rnd_hid_tree_t *tree = attr->wdata;
 		rnd_conf_listitem_t *n;
 		char *cell[4];
 
@@ -272,9 +272,9 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 	return;
 }
 
-static void dlg_conf_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void dlg_conf_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	char *end, *end2;
 	rnd_conf_native_t *nat;
 
@@ -322,7 +322,7 @@ static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, rnd_hi
 {
 	pref_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
+	rnd_hid_tree_t *tree;
 	const char *text;
 	int have_filter_text;
 

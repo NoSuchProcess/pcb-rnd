@@ -37,7 +37,7 @@
 
 #define PCB dont_use
 
-static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -81,7 +81,7 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 	lht_node_t *nd = rnd_conf_lht_get_at_mainplug(ctx->role, ctx->path, 1, 0);
 	if (nd != NULL) {
 		rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
-		pcb_hid_text_t *txt = atxt->wdata;
+		rnd_hid_text_t *txt = atxt->wdata;
 		int *dis, dis_ = 0;
 
 		dis = drc_get_disable(ctx->rule);
@@ -93,7 +93,7 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdisable, str, *dis ? "yes" : "no");
 		PCB_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdesc,    str, textval(nd, "desc"));
 
-		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, PCB_HID_TEXT_REPLACE, textval(nd, "query"));
+		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_REPLACE, textval(nd, "query"));
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Rule %s disappeared from the config tree.\n", ctx->rule);
@@ -115,7 +115,7 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	rule_edit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	char *script = txt->hid_get_text(atxt, hid_ctx);
 	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
 	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
@@ -175,7 +175,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	lht_node_t *nd;
 	rnd_conf_role_t role;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 
 	if ((ri < 0) || (ri >= sizeof(save_rolee)/sizeof(save_rolee[0]))) {
 		rnd_message(RND_MSG_ERROR, "Internal error: role out of range, rule is NOT saved\n");
@@ -365,8 +365,8 @@ static void drc_rlist_pcb2dlg(void)
 {
 	drc_rlist_ctx_t *ctx = &drc_rlist_ctx;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
 	char *cell[5], *cursor_path = NULL;
 	gdl_iterator_t it;
 	rnd_conf_listitem_t *i;
@@ -427,7 +427,7 @@ static void drc_rlist_pcb2dlg(void)
 static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	int *dis;
 
 	if (row == NULL) {
@@ -472,7 +472,7 @@ do { \
 static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	rnd_conf_role_t role;
 
 	rlist_fetch();
@@ -483,7 +483,7 @@ static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	lht_node_t *nd;
 	const char *script;
 	rnd_conf_role_t role;
@@ -505,10 +505,10 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
-static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	rnd_hid_attr_val_t hv;
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	drc_rlist_ctx_t *ctx = tree->user_ctx;
 	lht_node_t *nd;
 	gds_t tmp;

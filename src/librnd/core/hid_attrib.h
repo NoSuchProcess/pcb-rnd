@@ -53,7 +53,7 @@ typedef enum rnd_hid_attr_type_e {
 	RND_HATT_PICTURE,             /* static picture from xpm - picture data in wdata */
 	RND_HATT_PICBUTTON,           /* button with static picture from xpm - picture data in wdata */
 	RND_HATT_COLOR,               /* color pick (user input: select a color) */
-	RND_HATT_TEXT,                /* plain text editor; data is in 'wdata' as pcb_hid_text_t */
+	RND_HATT_TEXT,                /* plain text editor; data is in 'wdata' as rnd_hid_text_t */
 
 	/* groups (e.g. boxes) */
 	RND_HATT_BEGIN_HBOX,          /* NOTE: RND_HATT_IS_COMPOSITE() depends on it */
@@ -62,7 +62,7 @@ typedef enum rnd_hid_attr_type_e {
 	RND_HATT_BEGIN_VPANE,         /* vertical split and offer two vboxes; the split ratio is dbl between 0 and 1, that describes the left side's size */
 	RND_HATT_BEGIN_TABLE,         /* wdata_aux1 is the number of columns */
 	RND_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->wdata stores the tab names and a NULL; default_val's integer value is the index of the current tab */
-	RND_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (pcb_hid_compound_t *) stored in END's wdata */
+	RND_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (rnd_hid_compound_t *) stored in END's wdata */
 	RND_HATT_END                  /* close one level of PCB_HATT_* */
 } rnd_hid_attr_type_t;
 

@@ -100,7 +100,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 		case RND_CFN_LIST:
 			{
 				rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-				pcb_hid_tree_t *tree = attr->wdata;
+				rnd_hid_tree_t *tree = attr->wdata;
 			
 				pcb_dad_tree_clear(tree);
 				if (nd->type != LHT_LIST)
@@ -150,8 +150,8 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		case RND_CFN_LIST:
 			{
 				rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-				pcb_hid_tree_t *tree = attr->wdata;
-				pcb_hid_row_t *r;
+				rnd_hid_tree_t *tree = attr->wdata;
+				rnd_hid_row_t *r;
 				lht_node_t *nd = rnd_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
 
 				if (nd == NULL) {
@@ -198,7 +198,7 @@ static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
 	if (r != NULL) {
 		pcb_dad_tree_remove(attr, r);
@@ -206,7 +206,7 @@ static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 	}
 }
 
-static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, rnd_hid_attribute_t *attr, pcb_hid_row_t *r)
+static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_hid_row_t *r)
 {
 	char *nv = rnd_hid_prompt_for(&PCB->hidlib, "list item value:", r->cell[0], "Edit config list item");
 	if (nv == NULL)
@@ -220,7 +220,7 @@ static void pref_conf_editval_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
 	if (r != NULL)
 		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
@@ -230,7 +230,7 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	char *cols[] = {NULL, NULL};
 
 	cols[0] = rnd_strdup("");
@@ -257,7 +257,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pref_ctx_t *pctx = caller_data;
 	confedit_ctx_t *ctx;
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 	int b[4] = {0};
 
 	if (pctx->conf.selected_nat == NULL) {
@@ -410,7 +410,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 static void pref_conf_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *pctx = caller_data;
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 
 	if (pctx->conf.selected_nat == NULL) {
 		rnd_message(RND_MSG_ERROR, "You need to select a conf leaf node to remove\nTry the tree on the left.\n");

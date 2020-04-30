@@ -309,7 +309,7 @@ static void exc_user_ser(int idx, int save)
 {
 	int wscript;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_text_t *txt;
+	rnd_hid_text_t *txt;
 
 	wscript = exc_ctx.exc_data[idx].w[I_SCRIPT];
 	attr = &exc_ctx.dlg[wscript];

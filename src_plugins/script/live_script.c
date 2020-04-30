@@ -281,7 +281,7 @@ static int live_stop(live_script_t *lvs)
 static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	char *src, *fn, *lang;
 	int res = 0;
@@ -351,7 +351,7 @@ static int live_undo(live_script_t *lvs)
 static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
 	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	gds_t tmp;
 
@@ -382,7 +382,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 		}
 	}
 
-	txt->hid_set_text(atxt, lvs->dlg_hid_ctx, PCB_HID_TEXT_REPLACE, tmp.array);
+	txt->hid_set_text(atxt, lvs->dlg_hid_ctx, RND_HID_TEXT_REPLACE, tmp.array);
 
 	gds_uninit(&tmp);
 	fclose(f);
@@ -392,7 +392,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
 	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	char *src;
 	int res = 0;

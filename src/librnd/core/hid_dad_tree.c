@@ -32,8 +32,8 @@
 /* recursively free a row list subtree */
 static void pcb_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *list)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *r;
 
 	while((r = gdl_first(list)) != NULL) {
 		gdl_remove(list, r, link);
@@ -55,24 +55,24 @@ static void pcb_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *lis
 /* Internal: free all rows and caches and the tree itself */
 void pcb_dad_tree_free(rnd_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 	htsp_uninit(&tree->paths);
 	pcb_dad_tree_free_rowlist(attr, &tree->rows);
 	free(tree);
 }
 
-void pcb_dad_tree_hide_all(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int val)
+void pcb_dad_tree_hide_all(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int val)
 {
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		r->hide = val;
 		pcb_dad_tree_hide_all(tree, &r->children, val);
 	}
 }
 
-void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text)
+void pcb_dad_tree_unhide_filter(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text)
 {
-	pcb_hid_row_t *r, *pr;
+	rnd_hid_row_t *r, *pr;
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		if (strstr(r->cell[col], text) != NULL) {
@@ -84,10 +84,10 @@ void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int c
 	}
 }
 
-pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cells)
+rnd_hid_row_t *pcb_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cells)
 {
 	char *cell[2] = {NULL};
-	pcb_hid_row_t *parent;
+	rnd_hid_row_t *parent;
 	char *last, *old;
 
 	parent = htsp_get(&tree->paths, path);

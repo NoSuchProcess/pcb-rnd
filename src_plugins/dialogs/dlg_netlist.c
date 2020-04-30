@@ -53,8 +53,8 @@ static void netlist_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
 	char *cell[4], *cursor_path = NULL;
 	pcb_net_t **n, **nets;
 
@@ -92,8 +92,8 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 {
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
 	char *cell[2], *cursor_path = NULL;
 	pcb_net_term_t *t;
 
@@ -146,9 +146,9 @@ static void netlist_force_redraw(netlist_ctx_t *ctx)
 }
 
 
-static void netlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void netlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	netlist_ctx_t *ctx= tree->user_ctx;
 	const char *netname = NULL;
 	pcb_net_t *net = NULL;
@@ -162,9 +162,9 @@ static void netlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb
 	netlist_force_redraw(ctx);
 }
 
-static void termlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void termlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	netlist_ctx_t *ctx= tree->user_ctx;
 	char *refdes, *term;
 	pcb_any_obj_t *obj;
@@ -192,7 +192,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	netlist_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *atree;
 	int w = attr - ctx->dlg;
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 	const char *name;
 
 	atree = &ctx->dlg[ctx->wnetlist];
@@ -255,14 +255,14 @@ static void netlist_claim_fnd_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 
 static vtp0_t netlist_color_save;
 
-static void netlist_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	netlist_ctx_t *ctx = prv->user_ctx;
 	rnd_xform_t xform;
 	size_t n;
 	void **p;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 	pcb_net_t *net = NULL;
 
 	attr = &ctx->dlg[ctx->wnetlist];
@@ -302,7 +302,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	}
 }
 
-static rnd_bool netlist_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool netlist_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false;
 }

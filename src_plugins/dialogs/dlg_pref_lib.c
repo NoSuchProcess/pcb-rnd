@@ -39,7 +39,7 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 static void pref_lib_update_buttons(void)
 {
 	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	int en = (r != NULL);
 
 	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wedit, en);
@@ -48,12 +48,12 @@ static void pref_lib_update_buttons(void)
 	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmovedown, en);
 }
 
-static void pref_lib_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void pref_lib_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	pref_lib_update_buttons();
 }
 
-static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	free(row->cell[0]);
 	free(row->cell[1]);
@@ -66,8 +66,8 @@ static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx)
 {
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
 
 	if ((pref_ctx.lib.lock) || (!pref_ctx.active))
 		return;
@@ -151,9 +151,9 @@ static void lht_clean_list(lht_node_t * lst)
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 	lht_node_t *m, *lst, *nd;
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 
 	ctx->lib.lock++;
 
@@ -186,7 +186,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 static void lib_btn_remove(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
 	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
 	if (r == NULL)
 		return;
@@ -200,8 +200,8 @@ static void lib_btn_remove(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 static void lib_btn_up(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
 	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *prev, *r = pcb_dad_tree_get_selected(attr);
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *prev, *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
 
 	if (r == NULL)
@@ -227,8 +227,8 @@ static void lib_btn_up(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *bt
 static void lib_btn_down(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
 	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *next, *r = pcb_dad_tree_get_selected(attr);
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *next, *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
 
 	if (r == NULL)
@@ -314,11 +314,11 @@ static void lib_btn_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 {
 	pref_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	char *cell[4];
 
 	if (r == NULL) {
-		pcb_hid_tree_t *tree = attr->wdata;
+		rnd_hid_tree_t *tree = attr->wdata;
 
 		switch(pos) {
 			case 0: /* replace */
@@ -435,7 +435,7 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 {
 	static const char *hdr[] = {"configured path", "actual path on the filesystem", "config source", NULL};
-	pcb_hid_tree_t *tree;
+	rnd_hid_tree_t *tree;
 
 	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL); /* get the parent vbox, which is the tab's page vbox, to expand and fill */
 

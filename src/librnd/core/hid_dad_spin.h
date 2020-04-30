@@ -32,7 +32,7 @@
 #include <genlist/gendlist.h>
 
 typedef struct {
-	pcb_hid_compound_t cmp;
+	rnd_hid_compound_t cmp;
 	double step; /* how much an up/down step modifies; 0 means automatic */
 	double vmin, vmax;
 	unsigned vmin_valid:1;

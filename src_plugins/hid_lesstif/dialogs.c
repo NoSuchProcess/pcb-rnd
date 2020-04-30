@@ -498,7 +498,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_
 			goto err;
 		case RND_HATT_END:
 			{
-				pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
+				rnd_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 				if ((cmp != NULL) && (cmp->set_value != NULL))
 					cmp->set_value(&ctx->attrs[idx], ctx, idx, val);
 				else
@@ -785,7 +785,7 @@ int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 		return -1;
 
 	if (ctx->attrs[idx].type == RND_HATT_END) {
-		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
+		rnd_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_state != NULL))
 			cmp->widget_state(&ctx->attrs[idx], ctx, idx, enabled);
 		else
@@ -806,7 +806,7 @@ int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 	if (ctx->attrs[idx].type == RND_HATT_BEGIN_COMPOUND)
 		return -1;
 	if (ctx->attrs[idx].type == RND_HATT_END) {
-		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
+		rnd_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_hide != NULL))
 			cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
 		else

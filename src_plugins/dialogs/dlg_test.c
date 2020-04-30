@@ -52,8 +52,8 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 static void cb_ttbl_jump(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 static void cb_ttbl_filt(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
-static void cb_ttbl_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-static void cb_ttbl_free_row(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+static void cb_ttbl_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
+static void cb_ttbl_free_row(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
 static void cb_pane_set(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 static void cb_text_replace(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 static void cb_text_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
@@ -63,8 +63,8 @@ static void cb_text_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 static void cb_text_offs(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 static void cb_text_ro(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
-static void prv_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
-static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
+static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
+static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 
 static const char * test_xpm[] = {
 "8 8 4 1",
@@ -94,7 +94,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *row3[] = {"three", "baz", "BAZ", NULL};
 	const char *hdr[] = {"num", "data1", "data2", NULL};
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
-	pcb_hid_row_t *row;
+	rnd_hid_row_t *row;
 	int failed;
 
 	test_t ctx;
@@ -350,7 +350,7 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	char *rowdata[] = {NULL, "ins", "dummy", NULL};
-	pcb_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
@@ -366,7 +366,7 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	char *rowdata[] = {NULL, "app", "dummy", NULL};
-	pcb_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
@@ -388,7 +388,7 @@ static void cb_ttbl_jump(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 static void ttbl_filt(gdl_list_t *list, int hide)
 {
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 	for(r = gdl_first(list); r != NULL; r = gdl_next(list, r)) {
 		if (r->user_data2.lng)
 			r->hide = hide;
@@ -400,7 +400,7 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
-	pcb_hid_tree_t *tree = treea->wdata;
+	rnd_hid_tree_t *tree = treea->wdata;
 
 	ttbl_filt(&tree->rows, attr->val.lng);
 	pcb_dad_tree_update_hide(treea);
@@ -409,7 +409,7 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 /* table level selection */
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *row = pcb_dad_tree_get_selected(attr);
 	if (attr->val.str != NULL)
 		rnd_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->val.str, row, row->cell[0]);
 	else
@@ -417,7 +417,7 @@ static void cb_ttbl_select(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 }
 
 /* row level selection */
-static void cb_ttbl_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void cb_ttbl_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	if (row != NULL)
 		rnd_trace("tt row selected: row=%p '%s'\n", row, row->cell[0]);
@@ -425,7 +425,7 @@ static void cb_ttbl_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb
 		rnd_trace("tt row selected: <NONE>\n");
 }
 
-static void cb_ttbl_free_row(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void cb_ttbl_free_row(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	if (row->user_data2.lng)
 		free(row->cell[0]);
@@ -445,31 +445,31 @@ static void cb_text_replace(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
-	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, "Hello\nworld!\n");
+	rnd_hid_text_t *txt = atxt->wdata;
+	txt->hid_set_text(atxt, hid_ctx, RND_HID_TEXT_REPLACE, "Hello\nworld!\n");
 }
 
 static void cb_text_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
-	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_INSERT, "ins");
+	rnd_hid_text_t *txt = atxt->wdata;
+	txt->hid_set_text(atxt, hid_ctx, RND_HID_TEXT_INSERT, "ins");
 }
 
 static void cb_text_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
-	txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_APPEND | PCB_HID_TEXT_MARKUP, "app<R>red</R>\n");
+	rnd_hid_text_t *txt = atxt->wdata;
+	txt->hid_set_text(atxt, hid_ctx, RND_HID_TEXT_APPEND | RND_HID_TEXT_MARKUP, "app<R>red</R>\n");
 }
 
 static void cb_text_get(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	char *s;
 	s = txt->hid_get_text(atxt, hid_ctx);
 	printf("text: '%s'\n", s);
@@ -479,7 +479,7 @@ static void cb_text_get(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 static void cb_text_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	test_t *ctx = caller_data;
-	pcb_hid_text_t *txt = attr->wdata;
+	rnd_hid_text_t *txt = attr->wdata;
 	long x, y, o;
 	char buf[256];
 	rnd_hid_attr_val_t val;
@@ -495,7 +495,7 @@ static void cb_text_offs(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	txt->hid_set_offs(atxt, hid_ctx, txt->hid_get_offs(atxt, hid_ctx) / 2);
 }
 
@@ -503,12 +503,12 @@ static void cb_text_ro(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 {
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	pcb_hid_text_t *txt = atxt->wdata;
+	rnd_hid_text_t *txt = atxt->wdata;
 	ctx->txtro = !ctx->txtro;
 	txt->hid_set_readonly(atxt, hid_ctx, ctx->txtro);
 }
 
-static void prv_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	rnd_render->set_color(gc, rnd_color_red);
 	pcb_text_draw_string_simple(NULL, "foo", PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 500, 10.0, 0, 0, 0, 0, 0);
@@ -517,7 +517,7 @@ static void prv_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_
 }
 
 
-static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	pcb_printf("Mouse %d %mm %mm\n", kind, x, y);
 	return (kind == RND_HID_MOUSE_PRESS) || (kind == RND_HID_MOUSE_RELEASE);

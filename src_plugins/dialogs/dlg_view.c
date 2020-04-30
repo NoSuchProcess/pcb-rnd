@@ -87,8 +87,8 @@ static void view2dlg_list(view_ctx_t *ctx)
 {
 	pcb_view_t *v;
 	rnd_hid_attribute_t *attr;
-	pcb_hid_tree_t *tree;
-	pcb_hid_row_t *r;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
 
 	attr = &ctx->dlg[ctx->wlist];
@@ -105,7 +105,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 	/* add all items */
 	cell[2] = NULL;
 	for(v = pcb_view_list_first(ctx->lst); v != NULL; v = pcb_view_list_next(v)) {
-		pcb_hid_row_t *r, *rt;
+		rnd_hid_row_t *r, *rt;
 		rt = htsp_get(&tree->paths, v->type);
 		if (rt == NULL) {
 			cell[0] = rnd_strdup(v->type);
@@ -191,9 +191,9 @@ void view_simple_show(view_ctx_t *ctx)
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
 }
 
-static void view_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void view_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attrib->wdata;
+	rnd_hid_tree_t *tree = attrib->wdata;
 	view_ctx_t *ctx = tree->user_ctx;
 
 	if (row != NULL)
@@ -203,7 +203,7 @@ static void view_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 
 static vtp0_t view_color_save;
 
-static void view_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	view_ctx_t *ctx = prv->user_ctx;
 	rnd_xform_t xform;
@@ -256,7 +256,7 @@ static void view_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 }
 
 
-static rnd_bool view_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool view_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false; /* don't redraw */
 }
@@ -318,7 +318,7 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	}
 	else { /* full dialog, go by the list */
 		rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-		pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+		rnd_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 
 		if (r == NULL)
 			return;
@@ -349,7 +349,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	pcb_view_t *v;
 	gds_t tmp;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 	int btn_idx = attr_btn - ctx->dlg;
 	int cut = (ctx->wbtn_cut == btn_idx);
 
@@ -396,7 +396,7 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	size_t clen;
 	pcb_view_t *v, *vt = NULL;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
 	if (r != NULL) {
 		/* if cursor is a category */
@@ -528,7 +528,7 @@ static void view_select_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 {
 	view_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 
 	if (r == NULL)
 		return;

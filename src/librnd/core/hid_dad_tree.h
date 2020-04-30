@@ -37,25 +37,25 @@
 #include <genht/htsp.h>
 
 /* recursively sets the hide flag on all nodes to val */
-void pcb_dad_tree_hide_all(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int val);
+void pcb_dad_tree_hide_all(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int val);
 
 /* recursively unhide items that match text in the given column; parents are unhidden too */
-void pcb_dad_tree_unhide_filter(pcb_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text);
+void pcb_dad_tree_unhide_filter(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text);
 
 /* Recursively create the node and all parents in a tree. If cells is not NULL,
    the target path row is created with these cells, else only the first col
    is filled in. Temporarily modifies path (but changes it back) */
-pcb_hid_row_t *pcb_dad_tree_mkdirp(pcb_hid_tree_t *tree, char *path, char **cells);
+rnd_hid_row_t *pcb_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cells);
 
 /* Internal: Allocate a new row and load the cells (but do not insert it anywhere) */
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_new_row(char **cols)
 {
 	int num_cols;
-	pcb_hid_row_t *nrow;
+	rnd_hid_row_t *nrow;
 	char **s, **o;
 	for(s = cols, num_cols = 0; *s != NULL; s++, num_cols++);
 
-	nrow = calloc(sizeof(pcb_hid_row_t) + sizeof(char *) * num_cols, 1);
+	nrow = calloc(sizeof(rnd_hid_row_t) + sizeof(char *) * num_cols, 1);
 	nrow->cols = num_cols;
 	for(s = cols, o = nrow->cell; *s != NULL; s++, o++)
 		*o = *s;
@@ -63,7 +63,7 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_new_row(char **cols)
 	return nrow;
 }
 
-RND_INLINE void pcb_dad_tree_free_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
+RND_INLINE void pcb_dad_tree_free_row(rnd_hid_tree_t *tree, rnd_hid_row_t *row)
 {
 	int do_free_path = 0;
 	/* do this before the user callback just in case row->path == row->cell[0]
@@ -83,31 +83,31 @@ RND_INLINE void pcb_dad_tree_free_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
 }
 
 
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_parent_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_parent_row(rnd_hid_tree_t *tree, rnd_hid_row_t *row)
 {
 	char *ptr = (char *)row->link.parent;
 	if ((ptr == NULL) || ((gdl_list_t *)ptr == &tree->rows))
 		return NULL;
 
 	ptr -= offsetof(gdl_elem_t, parent);
-	ptr -= offsetof(pcb_hid_row_t, children);
-	return (pcb_hid_row_t *)ptr;
+	ptr -= offsetof(rnd_hid_row_t, children);
+	return (rnd_hid_row_t *)ptr;
 }
 
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_prev_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_prev_row(rnd_hid_tree_t *tree, rnd_hid_row_t *row)
 {
 	return row->link.prev;
 }
 
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_next_row(pcb_hid_tree_t *tree, pcb_hid_row_t *row)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_next_row(rnd_hid_tree_t *tree, rnd_hid_row_t *row)
 {
 	return row->link.next;
 }
 
 /* recursively build a full path of a tree node in path */
-RND_INLINE void pcb_dad_tree_build_path(pcb_hid_tree_t *tree, gds_t *path, pcb_hid_row_t *row)
+RND_INLINE void pcb_dad_tree_build_path(rnd_hid_tree_t *tree, gds_t *path, rnd_hid_row_t *row)
 {
-	pcb_hid_row_t *par = pcb_dad_tree_parent_row(tree, row);
+	rnd_hid_row_t *par = pcb_dad_tree_parent_row(tree, row);
 	if (par != NULL)
 		pcb_dad_tree_build_path(tree, path, par);
 	if (path->used > 0)
@@ -116,9 +116,9 @@ RND_INLINE void pcb_dad_tree_build_path(pcb_hid_tree_t *tree, gds_t *path, pcb_h
 }
 
 /* calculate path of a row and insert it in the tree hash */
-RND_INLINE void pcb_dad_tree_set_hash(rnd_hid_attribute_t *attr, pcb_hid_row_t *row)
+RND_INLINE void pcb_dad_tree_set_hash(rnd_hid_attribute_t *attr, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 	if (attr->rnd_hatt_flags & RND_HATF_TREE_COL) {
 		gds_t path;
 		gds_init(&path);
@@ -132,10 +132,10 @@ RND_INLINE void pcb_dad_tree_set_hash(rnd_hid_attribute_t *attr, pcb_hid_row_t *
 
 /* allocate a new row and append it after aft; if aft is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_append(rnd_hid_attribute_t *attr, pcb_hid_row_t *aft, char **cols)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_append(rnd_hid_attribute_t *attr, rnd_hid_row_t *aft, char **cols)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
-	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
 
 	assert(attr == tree->attrib);
@@ -156,10 +156,10 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_append(rnd_hid_attribute_t *attr, pcb_hid
 
 /* allocate a new row and inert it before bfr; if bfr is NULL, the new row is inserted at the
    beginning of the list of entries in the root (== at the top of the list) */
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_insert(rnd_hid_attribute_t *attr, pcb_hid_row_t *bfr, char **cols)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_insert(rnd_hid_attribute_t *attr, rnd_hid_row_t *bfr, char **cols)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
-	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of bfr and the new row */
 
 	assert(attr == tree->attrib);
@@ -180,10 +180,10 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_insert(rnd_hid_attribute_t *attr, pcb_hid
 
 /* allocate a new row and append it under prn; if aft is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(rnd_hid_attribute_t *attr, pcb_hid_row_t *prn, char **cols)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_append_under(rnd_hid_attribute_t *attr, rnd_hid_row_t *prn, char **cols)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
-	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
 	gdl_list_t *par; /* the list that is the common parent of aft and the new row */
 
 	assert(attr == tree->attrib);
@@ -200,10 +200,10 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(rnd_hid_attribute_t *attr, p
 	return nrow;
 }
 
-RND_INLINE int pcb_dad_tree_remove(rnd_hid_attribute_t *attr, pcb_hid_row_t *row)
+RND_INLINE int pcb_dad_tree_remove(rnd_hid_attribute_t *attr, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
-	pcb_hid_row_t *r, *rn, *par = pcb_dad_tree_parent_row(tree, row);
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *r, *rn, *par = pcb_dad_tree_parent_row(tree, row);
 	gdl_list_t *lst = (par == NULL) ? &tree->rows : &par->children;
 	int res = 0;
 
@@ -227,16 +227,16 @@ RND_INLINE int pcb_dad_tree_remove(rnd_hid_attribute_t *attr, pcb_hid_row_t *row
 	return res;
 }
 
-RND_INLINE void pcb_dad_tree_clear(pcb_hid_tree_t *tree)
+RND_INLINE void pcb_dad_tree_clear(rnd_hid_tree_t *tree)
 {
-	pcb_hid_row_t *r;
+	rnd_hid_row_t *r;
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
 		pcb_dad_tree_remove(tree->attrib, r);
 }
 
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(rnd_hid_attribute_t *attr)
+RND_INLINE rnd_hid_row_t *pcb_dad_tree_get_selected(rnd_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -248,7 +248,7 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(rnd_hid_attribute_t *attr)
 
 RND_INLINE void pcb_dad_tree_update_hide(rnd_hid_attribute_t *attr)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -256,9 +256,9 @@ RND_INLINE void pcb_dad_tree_update_hide(rnd_hid_attribute_t *attr)
 		tree->hid_update_hide_cb(tree->attrib, tree->hid_wdata);
 }
 
-RND_INLINE int pcb_dad_tree_modify_cell(rnd_hid_attribute_t *attr, pcb_hid_row_t *row, int col, char *new_val)
+RND_INLINE int pcb_dad_tree_modify_cell(rnd_hid_attribute_t *attr, rnd_hid_row_t *row, int col, char *new_val)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -282,9 +282,9 @@ RND_INLINE int pcb_dad_tree_modify_cell(rnd_hid_attribute_t *attr, pcb_hid_row_t
 	return 0;
 }
 
-RND_INLINE void pcb_dad_tree_jumpto(rnd_hid_attribute_t *attr, pcb_hid_row_t *row)
+RND_INLINE void pcb_dad_tree_jumpto(rnd_hid_attribute_t *attr, rnd_hid_row_t *row)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 
@@ -292,10 +292,10 @@ RND_INLINE void pcb_dad_tree_jumpto(rnd_hid_attribute_t *attr, pcb_hid_row_t *ro
 		tree->hid_jumpto_cb(tree->attrib, tree->hid_wdata, row);
 }
 
-RND_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
+RND_INLINE void pcb_dad_tree_expcoll_(rnd_hid_tree_t *tree, rnd_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
 {
 	if (recursive) {
-		pcb_hid_row_t *r;
+		rnd_hid_row_t *r;
 		for(r = gdl_first(&row->children); r != NULL; r = gdl_next(&row->children, r))
 			pcb_dad_tree_expcoll_(tree, r, expanded, recursive);
 	}
@@ -303,9 +303,9 @@ RND_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, 
 		tree->hid_expcoll_cb(tree->attrib, tree->hid_wdata, row, expanded);
 }
 
-RND_INLINE void pcb_dad_tree_expcoll(rnd_hid_attribute_t *attr, pcb_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
+RND_INLINE void pcb_dad_tree_expcoll(rnd_hid_attribute_t *attr, rnd_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
 {
-	pcb_hid_tree_t *tree = attr->wdata;
+	rnd_hid_tree_t *tree = attr->wdata;
 
 	assert(attr == tree->attrib);
 

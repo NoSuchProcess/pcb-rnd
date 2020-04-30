@@ -60,13 +60,13 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *att
 
 static void ghid_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
-	pcb_hid_preview_t *prv = e->draw_data;
+	rnd_hid_preview_t *prv = e->draw_data;
 	prv->user_expose_cb(prv->attrib, prv, gc, e);
 }
 
 static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
-	pcb_hid_preview_t *prv = draw_data;
+	rnd_hid_preview_t *prv = draw_data;
 	if (prv->user_mouse_cb != NULL)
 		return prv->user_mouse_cb(prv->attrib, prv, kind, x, y);
 	return pcb_false;
@@ -92,7 +92,7 @@ static int ghid_preview_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *
 
 void ghid_preview_config(pcb_gtk_preview_t *gp, GtkWidget *widget)
 {
-	pcb_hid_preview_t *prv = gp->expose_data.draw_data;
+	rnd_hid_preview_t *prv = gp->expose_data.draw_data;
 	if (prv->initial_view_valid) {
 		pcb_gtk_preview_zoomto(PCB_GTK_PREVIEW(widget), &prv->initial_view);
 		gtk_widget_queue_draw(widget);
@@ -104,7 +104,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 {
 	GtkWidget *bparent, *prv;
 	pcb_gtk_preview_t *p;
-	pcb_hid_preview_t *hp = attr->wdata;
+	rnd_hid_preview_t *hp = attr->wdata;
 
 	hp->hid_wdata = ctx;
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
